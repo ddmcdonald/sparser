@@ -3,7 +3,7 @@
 ;;; copyright (c) 2011,2015-2017 David D. McDonald  -- all rights reserved
 
 ;; /Mumble/derivation-trees/types.lisp
-;; June 2017
+;; July 2017
 
 ;; Initated 9/16/09. Added derivation tree nodes 10/6. 3/9/11 removed
 ;; co: from the defobject calls not that's it's been brought into utils.
@@ -233,3 +233,13 @@
   (:documentation "For cases where there are multiple subcategorization
     patterns for a given lexical item, and the choice will depend on
     how many variables we want to express in the realization."))
+
+
+(defun mumble-rdata? (item)
+  "Is this item one of the several kinds of mumble realization data?"
+  (typecase item
+    (category-linked-phrase t)
+    (mumble-rdata t)
+    (multi-subcat-mdata t)
+    (cons (every #'mumble-rdata? item))
+    (otherwise nil)))

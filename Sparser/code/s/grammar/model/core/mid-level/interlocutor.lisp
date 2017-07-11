@@ -51,3 +51,7 @@
 (defmethod grammatical-number ((i (eql sp::*me*))) 'singular)
 (defmethod grammatical-number ((i (eql sp::*you*))) 'singular)
 (defmethod grammatical-number ((i (eql sp::*us*))) 'plural)
+
+(defmethod grammatical-person ((i (eql sp::*me*))) 'first)
+(defmethod grammatical-person ((i (eql sp::*you*))) 'second)
+(defmethod grammatical-person ((i (eql sp::*us*))) 'first)

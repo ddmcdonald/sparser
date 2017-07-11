@@ -241,6 +241,7 @@ attach-via-binding. |#
                    (case rpos
                      (:interjection 'adverbial-preceding)
                      (otherwise 'vp-final-adjunct))))))))
+    (tr "Attaching adjective: ~a" adjective)
     (make-complement-node 'a adjective adjp)
     (make-adjunction-node (make-lexicalized-attachment ap adjp) dtn)))
 
@@ -249,6 +250,7 @@ attach-via-binding. |#
         (ap (ecase pos
               ((adjective noun) 'np-prep-adjunct)
               (verb 'vp-prep-complement))))
+    (tr "Attaching a pp: ~a ~a" prep object)
     (make-complement-node 'prep-object object pp)
     (make-adjunction-node (make-lexicalized-attachment ap pp) dtn)))
 
@@ -266,12 +268,15 @@ attach-via-binding. |#
         (t item)))
 
 (defun attach-subject (subject dtn)
+  (tr "Attaching subject: ~a" subject)
   (make-complement-node 's (possibly-pronoun subject) dtn))
 
 (defun attach-object (object dtn)
+  (tr "Attaching object: ~a" object)
   (make-complement-node 'o (possibly-pronoun object) dtn))
 
 (defun attach-complement (complement dtn)
+  (tr "Attaching complement: ~a" complement)
   (make-complement-node 'c (possibly-pronoun complement) dtn))
 
 
@@ -286,6 +291,7 @@ attach-via-binding. |#
          (word (word-for-string number-string 'number))
          (phrase (phrase-named 'bare-np-head))
          (dtn (make-dtn :referent i :resource phrase)))
+    (tr "Realize-number: ~a" i)
     (make-complement-node 'n word dtn)
     dtn))
 
@@ -299,6 +305,7 @@ attach-via-binding. |#
   (cond ((sp::itypep i 'sp::collection)
          (let ((items (sp::value-of 'sp::items i))
                (type (sp::value-of 'sp::type i)))
+           (tr "Realizing collection ~a" i)
            (if (null items)
              (plural (realize-via-category i type))
              (cl:labels ((conjoin (one &optional two &rest more)
@@ -313,10 +320,13 @@ attach-via-binding. |#
                                conjunction))))
                (apply #'conjoin items)))))
         ((sp::itypep i 'sp::number)
+         (tr "Realizing number ~a" i)
          (realize-number i))
         ((sp::itypep i 'sp::polar-question)
+         (tr "Realizing polar-question ~a" i)
          (discourse-unit (question (realize (sp::value-of 'sp::statement i)))))
         ((sp::itypep i 'sp::copular-predication)
+         (tr "Realizing copular-predication ~a" i) ;;/// explicit call
          (let ((be (realize-via-bindings (sp::value-of 'sp::predicate i)
                                          :pos 'verb
                                          :resource (phrase-named 's-be-comp))))
@@ -324,24 +334,32 @@ attach-via-binding. |#
            (attach-complement (sp::value-of 'sp::value i) be)
            be))
         ((sp::itypep i 'sp::explicit-suggestion)
+         (tr "Realizing explicit-suggestion ~a" i) ;;/// explicit call
          (let ((dtn (realize-via-bindings (sp::value-of 'sp::suggestion i)))
                (m (sp::value-of 'sp::marker i))
                (ap 'initial-adverbial))
            (make-adjunction-node (make-lexicalized-attachment ap m) dtn)
            dtn))
         ((sp::itypep i 'sp::there-exists)
+         (tr "Realizing there-exists ~a" i) ;;/// explicit call
          (let ((be (realize-via-bindings (sp::value-of 'sp::predicate i)
                                          :pos 'verb
                                          :resource (phrase-named 's-be-comp))))
            (attach-subject (find-word "there" 'pronoun) be)
            (attach-complement (sp::value-of 'sp::value i) be)
            be))
+        
         ((sp::itypep i 'sp::object-dependent-location) ;; 'end of the row'
+         (tr "Realizing object-dependent-location ~a" i)
          (apply-category-linked-phrase i))
+        
         ((sp::itypep i 'sp::relative-location)
+         (tr "Realizing relative-location ~a" i)
          (apply-category-linked-phrase i))
+        
         ((and (null (sp::indiv-binds i)) ;; nothing for realize-via-bindings to chew on
               (sp::rdata-head-word i t))
+         (tr "Realizing ~a, with no bindings" i)
          (apply-lexical-resource i))
         (t (realize-via-bindings i))))
 
@@ -350,6 +368,7 @@ attach-via-binding. |#
    as the resource"
   (let ((lp (get-lexicalized-phrase i)))
     (tr "For ~a using lexical resource ~a" i lp)
+    (assert lp (i) "No lexicalized resource on ~a" i)
     (make-dtn :referent i :resource lp)))
 
 (defgeneric realize-via-category (i category) ;; "a big red block."
@@ -374,20 +393,30 @@ attach-via-binding. |#
   
   (:method ((i sp::individual) &key pos resource)
     "Look for realization data on the individual or its category and marshal it."
-    (let* ((lp (get-lexicalized-phrase i))
-           (pos (or pos ;; passed in for copular-predication, there-exists
-                    (if lp (lookup-pos lp) (guess-pos i))))
+
+    (let* ((lp (find-lexicalized-phrase i))
+           (pos (cond
+                  (pos ;; passed in for copular-predication, there-exists
+                   (tr "explicit part of speech passed in: ~a" pos)
+                   pos)
+                  (lp (lookup-pos lp))
+                  (t (tr "Have to guess POS of ~a" i)
+                     (guess-pos i))))
            ;; rdata is essentially an annotated category-linked-phrase.
            ;; It encodes the variable to phrase-parameter mapping.
+           ;; It's also POS-specific.
            (rdata (sp::has-mumble-rdata i :pos pos)))
-      
+      (when rdata ;; lp can be more specific
+        (setq lp (linked-phrase rdata)))
       (unless resource
         (setq resource (if lp lp (ecase pos ;; make the lp from scratch
                                    (adjective (word-for i pos))
                                    (noun (noun (word-for i pos)))
                                    (verb (verb (word-for i pos)
                                                (verb-frame-for i)))))))
-      (tr "Realize-via-bindings for ~a  lp = ~a" i lp)
+      (tr "Realize-via-bindings for ~a  lp = ~a~
+         ~%       rdata = ~a" i lp rdata)
+      
       (let ((dtn (make-dtn :referent i :resource resource)))            
         (case pos (verb (tense dtn))) ;; also checks for command
         (if rdata
@@ -402,7 +431,10 @@ attach-via-binding. |#
            (loop for pvp in map
               as variable = (corresponding-variable pvp)
               as parameter = (corresponding-parameter pvp)
-              as value = (sp::value-of variable i)
+              as value = (etypecase variable
+                           (word variable) ;; e.g. "together"
+                           (sp::lambda-variable
+                            (sp::value-of variable i)))
               do (when value (make-complement-node parameter value dtn))
               collect variable)))
       (loop for binding in (reverse (sp::indiv-binds i))
@@ -436,8 +468,8 @@ attach-via-binding. |#
                         (adjective (word-for i pos))
                         (noun (noun (word-for i pos))) ;; see derivation-trees/builders.lisp
                         (verb (verb (word-for i pos) ;; for def of noun and verb
-                                    (verb-frame-for i)))))) |#
-    "Realize a Sparser individual as a DTN with its bindings attached."
+                                    (verb-frame-for i))))))
+    "Realize a Sparser individual as a DTN with its bindings attached."  |#
 
 
 ;;-------- attach-via-binding
@@ -446,6 +478,7 @@ attach-via-binding. |#
   (:documentation "Dispatch off the identity of the variable to
     determine how to add the value of the binding to the dtn
     that was passed in. ")
+  
   (:method (binding var-name dtn pos)
     "Attach a binding as a subject, object, or prepositional phrase."
     (declare (ignore var-name))
@@ -476,25 +509,31 @@ attach-via-binding. |#
                  (find :object subcats))
              (attach-object value dtn))
             ((sp::itypep value 'sp::attribute-value) ; a modifier like 'red'
+             (tr "attribute-value: ~a" value)
              (attach-adjective value dtn pos))
             (prep
+             (tr "Preposition: ~a ~a" prep value)
              (attach-pp (word-for prep 'preposition) value dtn pos))
             ((find :thatcomp subcats)
+             (tr "thatcomp: ~a" value)
              (make-adjunction-node
               (make-lexicalized-attachment 'restrictive-relative-clause value)
               dtn))
             ((find :m subcats)
+             (tr "M subcat label: ~a" value)
              (attach-adjective value dtn pos))
             (t (tr "No handler for unmarked binding ~a" variable)
                nil))))
   
   (:method (binding (var-name (eql 'sp::adverb)) dtn pos)
     "Attach an adverb."
+    (tr "Binding var is adverb: ~a" binding)
     (attach-adjective (sp::binding-value binding) dtn pos))
   
   (:method (binding (var-name (eql 'sp::has-determiner)) dtn pos)
     "Attach a determiner."
     (declare (ignore pos))
+    (tr "Binding var is has-determiner: ~a" binding)
     (case (sp::cat-name (sp::itype-of (sp::binding-value binding)))
       (sp::a (initially-indefinite dtn))
       (sp::the (always-definite dtn))
@@ -502,18 +541,22 @@ attach-via-binding. |#
   
   (:method (binding (var-name (eql 'sp::modal)) dtn pos)
     "Attach a modal."
+    (tr "Binding var is modal: ~a" binding)
     (add-accessory dtn :tense-modal (word-for (sp::binding-value binding) pos) t))
   
   (:method (binding (var-name (eql 'sp::modifier)) dtn pos)
     "Attach a modifier as an adjective."
+    (tr "Binding var is modifier: ~a" binding)
     (attach-adjective (sp::binding-value binding) dtn pos))
   
   (:method (binding (var-name (eql 'sp::negation)) dtn pos)
     "Attach a negation."
+    (tr "Binding var is negation: ~a" binding)
     (negate dtn))
   
   (:method (binding (var-name (eql 'cl:number)) dtn pos) ;; "a three step staircase"
     "Attach a numeric quantifier as an adjective so it retains its determiner."
+    (tr "Binding var is number: ~a" binding)
     (attach-adjective
      (let ((number (sp::binding-value binding)))
        (if (sp::itypep number 'sp::ordinal)
@@ -523,6 +566,7 @@ attach-via-binding. |#
   
   (:method (binding (var-name (eql 'sp::position)) dtn pos)
     "Attach a position as a premodifier."
+    (tr "Binding var is position: ~a" binding)
     (attach-adjective (sp::binding-value binding) dtn pos))
   
   (:method (binding (var-name (eql 'sp::predicate)) dtn pos)
@@ -558,15 +602,18 @@ attach-via-binding. |#
   
   (:method (binding (var-name (eql 'sp::quantifier)) dtn pos)
     "Attach a quantifier as a premodifier."
+    (tr "Binding var is quantifier: ~a" binding)
     (attach-adjective (sp::binding-value binding) dtn pos))
 
   (:method (binding (var-name (eql 'sp::parts)) dtn pos)
+    (tr "Bindng var is parts (of): ~a" binding)
     "This variable is defined by partonomic and will hold a set -of- parts"
     (attach-pp (find-word "of") (sp::binding-value binding) dtn pos))
   
   (:method (binding (var-name (eql 'sp::time)) dtn pos)
     "Attach a time as an adverbial."
     (declare (ignore pos))
+    (tr "Binding var is time: ~a" binding)
     (make-adjunction-node
      (make-lexicalized-attachment 'adverbial-preceding (sp::binding-value binding))
      dtn))

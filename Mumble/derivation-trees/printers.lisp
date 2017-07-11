@@ -166,6 +166,16 @@
           (var (corresponding-variable pvp)))
       (format stream "~a : ~a" param var))))
 
+(defmethod print-object ((vmp variable-mdata-pair) stream)
+  (print-unreadable-object (vmp stream)
+    (let* ((vars (mpair-vars vmp))
+           (mdata (mpair-mdata vmp))
+           (lp (linked-phrase mdata))
+           (phrase (etypecase lp
+                     (phrase lp)
+                     (lexicalized-phrase (phrase lp)))))
+      (format stream "pair ~a, ~a" (name phrase) vars))))
+
 
 
 ;;------------ copy

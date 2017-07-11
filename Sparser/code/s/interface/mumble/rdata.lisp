@@ -107,17 +107,29 @@
 
 ;;--- retrieving
 
+#| The realization of an individual is principally determined by its
+lexicalized-phrase (see m::get-lexicalized-phrase). However, we may also
+know how to realize the entire relation (category) that the individual
+instantiates. 
+   If there is more than one possible realization we have to select
+among them on some basis. Presently we can do this by part of speech
+and/or by which subcategorized arguments the individual binds. 
+|#
+
 #+:mumble
 (defgeneric has-mumble-rdata (category &key pos)
   (:documentation "Return the mumble field in the category's rdata.
     If there are several realizations, use the part of speech to
     discriminate among them.")
+  
   (:method ((i individual) &key pos)
-    (has-mumble-rdata (itype-of i) :pos pos))
+    (let ((mumble-rdata (has-mumble-rdata (itype-of i) :pos pos)))
+      (when mumble-rdata
+        (m::select-realization mumble-rdata i pos))))
+
   (:method ((c category) &key pos)
     (let ((rdata-field (rdata c)))
-      (when rdata-field
-        ;; does the category have any recorded realizations?
+      (when rdata-field ;; does the category have any recorded realizations?
         (when (some #'mumble-rdata rdata-field)
           ;; do any have mumble realiation information on them?
           (let* ((relevant-rdata (loop for r in rdata-field
@@ -126,22 +138,21 @@
                  (mumble-rdata (loop for rr in relevant-rdata
                                   collect (mumble-rdata rr))))
             (when mumble-rdata
-              (unless (typep (car mumble-rdata) 'm::mumble-rdata)
-                (if (typep (car (car mumble-rdata)) 'm::mumble-rdata)
-                  (setq mumble-rdata (car mumble-rdata))
-                  (error "Ill-formed rdata for mumble: ~a" mumble-rdata)))
-
-              ;;(lsp-break "mumble-data for ~a" c)
-              (if (null (cdr mumble-rdata))
-                (car mumble-rdata)
-                (m::select-realization mumble-rdata :pos pos)))))))))
+              (when (consp mumble-rdata) ;; expected
+                (unless (every #'m::mumble-rdata? mumble-rdata)
+                  ;; could be a spurious extra level of parens
+                  (if (and (= 1 (length mumble-rdata))
+                           (m::mumble-rdata? (car (car mumble-rdata))))
+                    (setq mumble-rdata (car mumble-rdata))
+                    (error "Ill-formed rdata for mumble: ~a" mumble-rdata))))
+              mumble-rdata )))))))
 
 
 ;;--- expedited access
 
 (defgeneric mumble-data (unit)
-  (:documentation "Return the mumble field of the unit if
-    there is one.")
+  (:documentation "Return the mumble field of the unit
+    if there is one.")
   (:method ((i individual)) (mumble-data (itype-of i)))
   (:method ((s symbol)) (mumble-data (category-named s :error-if-null)))
   (:method ((c referential-category)) (mumble-data (cat-realization c)))
@@ -298,7 +309,7 @@ a word. |#
     (itypep c 'subcategorization-pattern)))
 
 (defun apply-inherited-mumble-data (category)
-  "Look up the realization data, on the class we inherit from and 
+  "Look up the realization data on the class we inherit from and 
    apply it to this category, which we expect to at least have
    a lexical realization"
     ;; copy the inherited rdata and augment it with whatever local
@@ -311,48 +322,53 @@ a word. |#
       (warn "first case of multiple local rdata: ~a" category)
       ;;/// synonym for "seem" -- "appear" gets this. Two local rdata, one where
       ;; the head is "seem", the other where it's "appear"
-      (if  inherited-rdata ;; do the first one
-        (setq local-rdata (car local-rdata-field))
+      (if inherited-rdata
+        (setq local-rdata (car local-rdata-field)) ;; do the first one
         (return-from apply-inherited-mumble-data nil))) ;; punt
+    
     (when inherited-rdata
       (let ((new-rdata (m::copy-instance inherited-rdata))
             (local-head (rdata-head-words local-rdata)))
         
         (labels ((change-linked-category (mdata category)
-                 (etypecase mdata
-                   (m::mumble-rdata (setf (m::linked-category mdata) category))
-                   (m::multi-subcat-mdata
-                    (loop for pair in (m::mdata-pairs mdata)
-                       as embedded-mdata = (m::mpair-mdata pair)
-                       do (change-linked-category embedded-mdata category))))))
+                   (etypecase mdata
+                     (m::mumble-rdata (setf (m::linked-category mdata) category))
+                     (m::multi-subcat-mdata
+                      (loop for pair in (m::mdata-pairs mdata)
+                         as embedded-mdata = (m::mpair-mdata pair)
+                         do (change-linked-category embedded-mdata category))))))
           
           (change-linked-category new-rdata category)
           (unless local-head (error "why no head word for ~a" category))
           
           (let* ((pos (car local-head))
-                 (s-word (cadr local-head)))
+                 (mpos (mumble-pos pos))
+                 (s-word (cadr local-head))
+                 (m-word (get-mumble-word-for-sparser-word s-word mpos)))
+            (unless (eq pos :verb) (error "Not specializing a verb"))
             
-            (flet ((lexicalize (phrase)
-                     (unless (typep phrase 'm::phrase) (lsp-break "???"))
-                     (make-resource-for-sparser-word
-                      s-word pos category phrase)))
+            (flet ((lexicalize (phrase m-word)
+                     (m::verb m-word phrase)))
               
               (etypecase new-rdata
                 (m::mumble-rdata
-                 (multiple-value-bind (lp m-word)
-                     (lexicalize (m::linked-phrase new-rdata))
+                 (multiple-value-bind (lp)
+                     (lexicalize (m::linked-phrase new-rdata) m-word)
                    (setf (m::head-word new-rdata) m-word)
                    (setf (m::linked-phrase new-rdata) lp)))
+                
                 (m::multi-subcat-mdata
                  ;; modify each one in place
                  (dolist (pair (m::mdata-pairs new-rdata))
+                   ;; pull out the phrase and lexicalize it
                    (let* ((mdata (m::mpair-mdata pair))
                           (phrase (m::linked-phrase mdata)))
-                     (multiple-value-bind (lp m-word)
-                         (lexicalize phrase)
+                     (assert (typep phrase 'm::phrase))
+                     (multiple-value-bind (lp)
+                         (lexicalize phrase m-word)
                        (setf (m::head-word mdata) m-word)
                        (setf (m::linked-phrase mdata) lp))))))
-              ;;(lsp-break "look")
+              (setf (mumble-rdata local-rdata) new-rdata) ;; belt & suspenders for now
               (setf (get-tag :mumble category) new-rdata))))))))
 
 

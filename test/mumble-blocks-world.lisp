@@ -15,7 +15,7 @@
 
 (deftest (say toyota)
   (mumble-says "the Toyota block")
-  "the Toyota block")
+  "The Toyota Block")
 
 (deftest (say big red block)
   (mumble-says "a big red block.")
@@ -25,13 +25,40 @@
   (mumble-says "Build a three step staircase.")
   "build a three step staircase")
 
-(deftest (say let\'s build staircase)
+(deftest (say let\'s build staircase) ; tests explicit-suggestion path
   (mumble-says "Let's build a 3 step staircase.")
   "let's build a three step staircase")
+;; "step" goes through 'no-bindings' path
 
-(deftest (say make steps green)
-  (mumble-says "Make the steps green.")
+(deftest (say there be block) ; tests 'there-exists' path
+  (mumble-says "There is a block")
+  "there is a block")
+
+(deftest (say question block red) ; test polar-question, copular-predication
+  (mumble-says "is the block red?")
+  "Is the block red?")
+
+(deftest (say red blocks) ;; collection w/o items. 'red' is attribute-value
+  (mumble-says "red blocks")
+  "red blocks")
+
+(deftest (say make steps green) ; predicate-binding case: subtracts a diff given
+  (mumble-says "Make the steps green.") ; how Rusty analyzes the semantics
   "make the steps green")
+
+(deftest (say bottom row) ; headed on 'row'. 'bottom' is a location
+  (mumble-says "the bottom row.")
+  "the bottom row")
+
+(deftest (say object dependent) ;; object-dependent-location path
+  (mumble-says "end of the row")
+  "end of the row")
+
+;; "to the left of the block" -- sem is a vanila pp
+
+(deftest (say left of block) ; relative-location case (orientation-dependent-location)
+  (mumble-says "the left of the block")
+  "the left of the block")
 
 (deftest (say not enough green blocks)
   (mumble-says "We do not have enough green blocks.")
@@ -133,7 +160,7 @@
 
 (deftest (say push together block and another)
   (mumble-says "Push together the block and another block.")
-  "push together the block and another block")
+  "push the block and another block together")
 
 (deftest (say push block to other block)
   (mumble-says "Push the block to the other block.")
@@ -148,9 +175,32 @@
   "hold the ball")
 
 
+;;;--- test multiple subcategorizations
+(deftest (say want block)
+  (mumble-says "I want the block")
+  "I want the block")
+
+(deftest (say want hold block)
+  (mumble-says "I want to hold the block")
+  "I want to hold the block")
+
+(deftest (say want you hold block)
+  (mumble-says "I want you to hold the block")
+ "I want you to hold the block")
+
 ;;;--- from clic-bw-tests
-;; 7/5/17 the labeled 'B' blocks have regressed. 
-;; "put B7 on the table"
-;; "push B1 and B2 together"
-;; "put B1 on B2"
+
+(deftest (say B7 on table)
+  (mumble-says "put B7 on the table")
+  "put B7 on the table")
+
+(deftest (say B1 B2 together)
+  (mumble-says "push B1 and B2 together")
+  "push B1 and B2 together")
+
+(deftest (say B1 on B2)
+  (mumble-says "put B1 on B2")
+  "put B1 on B2")
+
+;; 7/7/17 This doesn't lift and needs a 2d B7 in place of "it"
 ;; "put B7 on the table and put B8 on it"

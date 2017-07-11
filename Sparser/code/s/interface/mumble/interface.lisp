@@ -71,10 +71,42 @@
   (get-lexicalized-phrase (symbol-name (sp::cat-symbol category))))
 
 (defmethod get-lexicalized-phrase ((i sp::individual))
+  "Falls through to look for an lp on the type if it's 
+   not specific to the individual"
   (or (gethash i *individuals-to-lexicalized-phrases*)
       (get-lexicalized-phrase (sp::itype-of i))))
 
+(defgeneric get-recorded-lexicalized-phrase (i)
+  (:documentation "Just looks on the hashtable. Does not fall
+    through to look on the type if that fails")
+  (:method ((i sp::individual))
+    (gethash i *individuals-to-lexicalized-phrases*)))
 
+(defun unwind-to-i-with-lp (i)
+  "When we're using the description lattice, the individual that
+   the lp was defined on may have been 'buried' under derived
+   individuals as it participated in bindings."
+  (let* ((uplinks (sp::uplinks-of i))
+         (k (loop for link in uplinks
+               as j = (sp::uplink-indiv link)
+               when (get-recorded-lexicalized-phrase j)
+               return j)))
+    (when k
+      (get-recorded-lexicalized-phrase k))))
+
+(defgeneric find-lexicalized-phrase (i)
+  (:documentation "Look in the places where a lexicalized phrase
+   might be. Basically an ''or' of two methods above, but this
+   packaging makes their tight coordination more obvious.
+   The fall-through to the type is needed for cases like 'block'.")
+  (:method ((i sp::individual))
+    (or (get-recorded-lexicalized-phrase i)
+        (unwind-to-i-with-lp i)
+        (get-lexicalized-phrase (sp::itype-of i)))))
+
+
+
+;;--- cases were timing can mean we're looking at individuals
 
 (defmethod discourse-unit  ((i sp::individual))
   (mumble::make-discourse-unit-dtn i i))
@@ -83,8 +115,10 @@
   (mumble::make-discourse-unit-dtn i i))
 
 
-(defmethod grammatical-number ((subj sp::individual))
-  (if (sp::itypep subj 'collection) 'plural 'singular))
+(defmethod grammatical-number ((i sp::individual))
+  (if (sp::itypep i 'collection) 'plural 'singular))
+
+(defmethod grammatical-person ((i sp::individual)) 'third)
 
 
 ;;--- other pp-dtn methods in Mumble/derivation-trees/printers.lisp

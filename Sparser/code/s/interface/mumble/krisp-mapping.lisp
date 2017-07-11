@@ -3,7 +3,7 @@
 ;;;
 ;;;     File: "krisp-mapping"
 ;;;   Module: "interface;mumble;"
-;;;  Version: May 2017
+;;;  Version: July 2017
 
 ;;; Krisp category / lexical head to annotated phrase
 
@@ -72,26 +72,89 @@
     dtn))
 
 
-(defgeneric select-realization (mumble-rdata &key pos)
+(defgeneric select-realization (mumble-rdata i pos)
   (:documentation "There are at least two if not more possible
-    realizations on this category. Return the most appropriate
-    one. Presently called by sp::has-mumble-rdata only.")
-  (:method ((rdata-choices cons) &key pos)
-    "Which of the choices best fits the part of speech"
-    (assert (symbolp pos))
-    (let* ((mpos (if (eq (symbol-package pos) (find-package :mumble))
-                   pos
-                   (sp::mumble-pos pos))) ;; presume sparser
-           (consistent (loop for mrd in rdata-choices
-                          when (eq mpos (lookup-pos mrd))
-                          collect mrd)))
-      (if (null (cdr consistent))
-        (car consistent)
-        (else (warn "More than one consistent realization")
-              (car consistent)))))
-  (:method ((fall-through t) &key pos)
+    realizations on this category. Return the most appropriate one
+    for this particular individual.")
+
+  (:method ((rdata cons) i pos)
+    "First filter by pos if necessary. Pass the result to
+     the other methods"
+    (select-realization (if (null (cdr rdata))
+                          (car rdata)
+                          (filter-rdata-by-pos rdata pos))
+                        i pos))
+                        
+  (:method ((rdata mumble-rdata) i pos) rdata)
+  (:method ((pair variable-mdata-pair) i pos) (mpair-mdata pair))
+
+  (:method ((msm multi-subcat-mdata) (i sp::individual) pos)
+    "The alternatives correspond to different subcategorizations,
+     which is manifest by which variables are bound by the individual.
+     Select the alternative that has a binding for each of the
+     variables it specifie. Returns a variable-mdata-pair"
+    (flet ((binds-all-vars (i vars)
+             (loop for v in vars
+                unless (sp::value-of v i)
+                return nil
+                finally (return t))))
+      (let ((consistent (loop for pair in (mdata-pairs msm)
+                           as vars = (mpair-vars pair)
+                           as mdata = (mpair-mdata pair)
+                           when (binds-all-vars i vars)
+                           collect pair)))
+        (if (null (cdr consistent)) ;; pairs
+          (mpair-mdata (car consistent))
+          (let ((var-count 0) longest)
+            (loop for pair in consistent
+               as vars = (mpair-vars pair)
+               as mdata = (mpair-mdata pair)
+               when (> (length vars) var-count)
+               do (setq var-count (length vars)
+                        longest mdata))
+            longest)))))
+
+  (:method ((fall-through t) i pos)
     (break "Caller passed unexpected data type to select-realization: ~
             ~a~%~a" (type-of fall-through) fall-through)))
+
+
+
+(defgeneric filter-rdata-by-pos (rdata-choices pos)
+  (:documentation  "Which of the alternatives is consistent
+     with this part of speech")
+  (:method ((alternatives cons) (pos symbol))
+    (let* ((mpos (if (eq (symbol-package pos) (find-package :mumble))
+                   pos
+                   (sp::mumble-pos pos)))) ;; presume sparser
+      (loop for mrd in alternatives
+         when (eq mpos (lookup-pos mrd))
+         collect mrd))))
+
+  
+
+(defgeneric lookup-pos (resource)
+  (:documentation "Return the mumble word-level part-of-speech
+   of the resource. Interpolate phrase levels to their implicit heads")
+  (:method ((w word))
+    (name (car (word-labels w))))
+  (:method ((lp lexicalized-phrase))
+    (lookup-pos (realizing-label lp)))
+  (:method ((mrd mumble-rdata))
+    (lookup-pos (head-word mrd)))
+  (:method ((msm multi-subcat-mdata))
+    "Assume they're all the same pos so just pick one"
+    (lookup-pos (mpair-mdata (car (mdata-pairs msm)))))
+  (:method ((n node-label))
+    (let ((name (name n)))
+      (case name
+        ((clause vp) 'verb)
+        (adv 'adverb)
+        (ap 'adjective)
+        (np 'noun)
+        (otherwise
+         ;;(warn "No pos option for ~a" n)
+         'noun)))))
 
 (defgeneric realizing-label (resource)
   (:documentation "Return the label of the resource,
@@ -109,26 +172,6 @@
         (slot-label first))))
   (:method ((w word))
     (car (word-labels w))))
-
-(defgeneric lookup-pos (resource)
-  (:documentation "Return the mumble word-level part-of-speech
-   of the resource. Interpolate phrase levels to their implicit heads")
-  (:method ((w word))
-    (name (car (word-labels w))))
-  (:method ((lp lexicalized-phrase))
-    (lookup-pos (realizing-label lp)))
-  (:method ((mrd mumble-rdata))
-    (lookup-pos (head-word mrd)))
-  (:method ((n node-label))
-    (let ((name (name n)))
-      (case name
-        ((clause vp) 'verb)
-        (adv 'adverb)
-        (ap 'adjective)
-        (np 'noun)
-        (otherwise
-         ;;(warn "No pos option for ~a" n)
-         'noun)))))
 
 (defun all-the-phrases ()
   (members (mcatalog (mtype 'phrase))))
