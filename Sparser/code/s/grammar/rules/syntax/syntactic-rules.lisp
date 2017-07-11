@@ -707,6 +707,7 @@
 
 
 (loop for vv in '((subordinate-clause subordinate-clause)
+                  (subordinate-s subordinate-s)
                   ;; as in "Thus, although genetic alterations that engender C-RAF activation..."
 		  (s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed)(vp+past vp+past)
                   (vg vp)(vg+ing vp+ing)

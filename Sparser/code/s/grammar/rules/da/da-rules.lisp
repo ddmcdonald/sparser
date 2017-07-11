@@ -394,11 +394,19 @@
   :pattern ( subordinate-clause vp+ing )
   :action (:function attach-trailing-participle-to-subordinate-clause-base first second))
 
+(define-debris-analysis-rule attach-trailing-participle-to-subordinate-s-base
+  :pattern ( subordinate-s vp+ing )
+  :action (:function attach-trailing-participle-to-subordinate-clause-base first second))
+
 (defun attach-trailing-participle-to-subordinate-clause-base (s vp)
   (attach-trailing-participle-to-clause-with-conjunction s nil vp))
 
 (define-debris-analysis-rule attach-trailing-vp+ing-to-subordinate-clause-with-conjunction-comma
   :pattern ( subordinate-clause "," vp+ing )
+  :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-comma first second third))
+
+(define-debris-analysis-rule attach-trailing-vp+ing-to-subordinate-s-with-conjunction-comma
+  :pattern ( subordinate-s "," vp+ing )
   :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-comma first second third))
 
 (defun attach-trailing-participle-to-subordinate-clause-with-conjunction-comma (s comma vp)
@@ -409,12 +417,24 @@
   :pattern ( subordinate-clause and vp+ing )
   :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-and first second third))
 
+(define-debris-analysis-rule attach-trailing-vp+ing-to-subordinate-s-with-conjunction-and
+  :pattern ( subordinate-s and vp+ing )
+  :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-and first second third))
+
 (define-debris-analysis-rule attach-trailing-participle-to-subordinate-clause-with-conjunction-and
   :pattern ( subordinate-clause and vp+ed )
   :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-and first second third))
 
+(define-debris-analysis-rule attach-trailing-participle-to-subordinate-s-with-conjunction-and
+  :pattern ( subordinate-s and vp+ed )
+  :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-and first second third))
+
 (define-debris-analysis-rule attach-trailing-vp+past-to-subordinate-clause-with-conjunction-and
   :pattern ( subordinate-clause and vp+past )
+  :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-and first second third))
+
+(define-debris-analysis-rule attach-trailing-vp+past-to-subordinate-s-with-conjunction-and
+  :pattern ( subordinate-s and vp+past )
   :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-and first second third))
 
 (defun attach-trailing-participle-to-subordinate-clause-with-conjunction-and (s and vp)
@@ -456,8 +476,12 @@
   :pattern ( vp+ing "," s )
   :action (:function attach-preceding-participle-with-comma-to-clause first second third))
 
-(define-debris-analysis-rule attach-preceding-participle-with-comma-to-clause
+(define-debris-analysis-rule attach-preceding-participle-with-comma-to-subordinate-clause
   :pattern ( vp+ing "," subordinate-clause )
+  :action (:function attach-preceding-participle-with-comma-to-clause first second third))
+
+(define-debris-analysis-rule attach-preceding-participle-with-comma-to-subordinate-s
+  :pattern ( vp+ing "," subordinate-s )
   :action (:function attach-preceding-participle-with-comma-to-clause first second third))
 
 (defun attach-preceding-participle-with-comma-to-clause (vp+ing-edge comma-edge s-edge)
@@ -482,6 +506,13 @@
 ;;------------------- more s rules -------------------------------
 (define-debris-analysis-rule attach-comma-appositive-np-under-s
   :pattern ( s "," np)
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           attach-comma-appositive-np-under-s
+           first second third))
+
+(define-debris-analysis-rule attach-comma-appositive-np-under-pp
+  :pattern ( pp "," np)
   ;; The action can fail. Returning nil ought to suffice
   :action (:function
            attach-comma-appositive-np-under-s
@@ -520,6 +551,13 @@
 
 (define-debris-analysis-rule attach-comma-appositive-proper-noun-under-s
   :pattern ( s "," proper-noun)
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           attach-comma-appositive-proper-noun-under-s
+           first second third))
+
+(define-debris-analysis-rule attach-comma-appositive-proper-noun-under-pp
+  :pattern ( pp "," proper-noun)  ; via the tyrosine phosphorylation of an adapter protein, p130 CAS (XREF_BIBR).
   ;; The action can fail. Returning nil ought to suffice
   :action (:function
            attach-comma-appositive-proper-noun-under-s
@@ -1104,6 +1142,14 @@
   :pattern (subordinate-clause and s )
   :action (:function subordinate-comma-clause first second third))
 
+(define-debris-analysis-rule subordinate-s-comma-clause
+  :pattern (subordinate-s "," s )
+  :action (:function subordinate-comma-clause first second third))
+
+(define-debris-analysis-rule subordinate-s-and-clause
+  :pattern (subordinate-s and s )
+  :action (:function subordinate-comma-clause first second third))
+
 (defun subordinate-comma-clause (sc comma s)
   (declare (ignore comma))
   (create-event-relation s sc))
@@ -1111,6 +1157,18 @@
 
 (define-debris-analysis-rule subordinate-comma-subordinate-clause
   :pattern (subordinate-clause "," subordinate-clause )
+  :action (:function subordinate-comma-subordinate-clause first second third))
+
+(define-debris-analysis-rule subordinate-comma-subordinate-clause
+  :pattern (subordinate-s "," subordinate-clause )
+  :action (:function subordinate-comma-subordinate-clause first second third))
+
+(define-debris-analysis-rule subordinate-comma-subordinate-clause
+  :pattern (subordinate-clause "," subordinate-s )
+  :action (:function subordinate-comma-subordinate-clause first second third))
+
+(define-debris-analysis-rule subordinate-comma-subordinate-clause
+  :pattern (subordinate-s "," subordinate-s )
   :action (:function subordinate-comma-subordinate-clause first second third))
 
 (defun subordinate-comma-subordinate-clause (sc comma sc-2)
@@ -1122,14 +1180,29 @@
   :pattern (subordinate-clause ";" subordinate-clause )
   :action (:function subordinate-comma-subordinate-clause first second third))
 
+(define-debris-analysis-rule subordinate-semicolon-subordinate-s
+  :pattern (subordinate-clause ";" subordinate-s )
+  :action (:function subordinate-comma-subordinate-clause first second third))
+
+(define-debris-analysis-rule subordinate-s-semicolon-subordinate-s
+  :pattern (subordinate-s ";" subordinate-s )
+  :action (:function subordinate-comma-subordinate-clause first second third))
 
 (define-debris-analysis-rule subordinate-semicolon-subordinate-clause
   :pattern (s ";" subordinate-clause )
   :action (:function subordinate-comma-subordinate-clause first second third))
 
+(define-debris-analysis-rule subordinate-semicolon-subordinate-s
+  :pattern (s ";" subordinate-s )
+  :action (:function subordinate-comma-subordinate-clause first second third))
+
 
 (define-debris-analysis-rule clause-and-subordinate
   :pattern ( s conjunction subordinate-clause  )
+  :action (:function clause-and-subordinate  first second third))
+
+(define-debris-analysis-rule clause-and-subordinate-s
+  :pattern ( s conjunction subordinate-s  )
   :action (:function clause-and-subordinate  first second third))
 
 (defun clause-and-subordinate (s conjunction sc)
@@ -1140,6 +1213,10 @@
   :pattern ( s "," subordinate-clause )
   :action (:function clause-comma-subordinate  first second third))
 
+(define-debris-analysis-rule clause-comma-subordinate-s
+  :pattern ( s "," subordinate-s )
+  :action (:function clause-comma-subordinate  first second third))
+
 (defun clause-comma-subordinate (s comma sc)
   (declare (ignore comma))
   (create-event-relation s sc))
@@ -1147,6 +1224,10 @@
 
 (define-debris-analysis-rule clause-subordinate
   :pattern ( s subordinate-clause )
+  :action (:function clause-subordinate first second))
+
+(define-debris-analysis-rule clause-subordinate-s
+  :pattern ( s subordinate-s )
   :action (:function clause-subordinate first second))
 
 (defun clause-subordinate (s sc)
@@ -1375,8 +1456,20 @@
   :action (:function s-conjunction-np
                      first second third))
 
+(define-debris-analysis-rule subordinate-s-and-np
+  :pattern ( subordinate-s and np)  
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function s-conjunction-np
+                     first second third))
+
 (define-debris-analysis-rule subordinate-clause-or-np
   :pattern ( subordinate-clause or np)  
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function s-conjunction-np
+                     first second third))
+
+(define-debris-analysis-rule subordinate-s-or-np
+  :pattern ( subordinate-s or np)  
   ;; The action can fail. Returning nil ought to suffice
   :action (:function s-conjunction-np
                      first second third))

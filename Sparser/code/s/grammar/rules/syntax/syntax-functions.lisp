@@ -1410,18 +1410,32 @@
 
 
 ;;  in what+s where+S, when+S, etc.
+
 (defun make-subordinate-clause (conj clause)
-  (declare (special category::pp))
+  (declare (special category::pp conj clause))
   (if *subcat-test*
-    t
-    (or
-     (when (use-methods)
-       (compose conj clause))
-     (unless (eq (edge-form (left-edge-for-referent)) ;; 'conj' argument
-                 category::pp)
-       (bind-dli-variable 'subordinate-conjunction conj clause))
-     ;; as a final resort drop the 'conj'
-     clause)))
+      t
+      (let ((cl
+             (or
+              (when (use-methods)
+                (compose conj clause))
+              (unless (eq (edge-form (left-edge-for-referent)) ;; 'conj' argument
+                          category::pp)
+                (bind-dli-variable 'subordinate-conjunction conj clause))
+              ;; as a final resort drop the 'conj'
+              clause)))
+       ;; (lsp-break "make-subordinate-clause")
+        (when (and cl
+                   (not (and (category-p conj)
+                             (member (cat-name conj)
+                                     '(who what where when why))))
+                   *right-edge-into-reference*
+                   (eq (edge-referent *right-edge-into-reference*)
+                       clause)
+                   (member (cat-name (edge-form *right-edge-into-reference*))
+                           '(s subordinate-s)))
+          (revise-parent-edge :form category::subordinate-s))
+        cl)))
 
 
 ;; for v in (vp vp+passive vg+passive vg)

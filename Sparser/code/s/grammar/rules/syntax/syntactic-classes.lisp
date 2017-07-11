@@ -70,6 +70,10 @@
   :index (:temporary :sequential-keys conj comp))
 (mark-as-form-category category::subordinate-clause)
 
+(define-category subordinate-s
+    :specializes subordinate-clause)
+(mark-as-form-category category::subordinate-s)
+
 
 ;;--- pied-piping
 
