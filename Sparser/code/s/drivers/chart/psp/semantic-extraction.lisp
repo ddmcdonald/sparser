@@ -592,13 +592,14 @@
           (loop for pair in (reverse args)
                 do
                   (let* ((*pair* pair)
+                         (val (case (car pair)
+                                (items (loop for desc in (second pair)
+                                             collect (to-krisp desc)))
+                                (t (to-krisp (second pair)))))
                          (var/name
                           (if (find-variable-for-category (car pair) indiv)
                               (car pair)
-                              (subcategorized-variable indiv (car pair) val)))
-                         (val (case (car pair)
-                                (items (loop for desc in (second pair) collect (to-krisp desc)))
-                                (t (to-krisp (second pair))))))
+                              (subcategorized-variable indiv (car pair) val))))
                     (declare (special *pair* val var/name))
                     (if (null var/name)
                         (lsp-break "can't find variable corresponding to triple (~s ~s ~s)~%"
