@@ -442,7 +442,6 @@
 
 (defun indra-post-process (mentions sentence output-stream)
   (loop for mention in mentions
-        ;;when (or
         do (indra-post-process-mention mention sentence output-stream)))
 
 (defun indra-post-process-mention (mention sentence output-stream)
@@ -456,6 +455,7 @@
               (c-itypep ref 'bio-inactivate)
               (c-itypep ref 'inhibit)
               (c-itypep ref 'gene-transcript-express)
+              (c-itypep ref 'gene-transcript-over-express)
               (c-itypep ref 'transcribe))
       (maybe-push-sem mention ref sentence '(object) output-stream))
 
@@ -494,7 +494,9 @@
     (push-sem->indra-post-process
      mention
      sentence
-     (loop for v in necessary-vars thereis (eq (value-of v ref) '*lambda-var*))
+     ;; is there any variable bound to the lambda expression
+     ;;   (thus a trace to containing item)
+     (loop for b in (indiv-binds ref) thereis (eq (binding-value b) '*lambda-var*))
      output-stream
      desc)))
 
@@ -515,7 +517,7 @@
   (when *current-article* (symbol-name (name *current-article*))))
 
 (defun push-sem->indra-post-process (mention sentence lambda-expansion output-stream &optional desc)
-  (declare (special *indra-text* *predication-links-ht*))
+  (declare (special *indra-text* *predication-links-ht* lambda-expansion desc))
   (unless desc (setq desc (base-description mention)))
   (let* ((lambda-expansion
           (when lambda-expansion (gethash desc *predication-links-ht*)))
