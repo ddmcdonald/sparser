@@ -48,6 +48,12 @@
     (setq pos (part-of-speech-given-word s-word))
     (get-mumble-word-for-sparser-word (pname s-word) pos))
 
+  (:method ((s-word-data cons) pos)
+    (let ((s-word (car s-word-data)) ;; #<word "find">
+          (irregulars (cdr s-word-data))) ;; (:past-tense #<word "found">)
+      (declare (ignore irregulars)) ;;/// how to refactor?
+      (get-mumble-word-for-sparser-word s-word pos)))
+
   (:method ((pname string) pos)
     "If the mumble word doesn't exist (or not for this part of speech)
      then create it."
