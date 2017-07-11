@@ -500,7 +500,9 @@
                         (polyword-p value)
                         (numberp value))
                        `(,(binding-variable b) ,value)
-                       (create-dependency-pair b (find-binding-dependency value edges top-edge b)))))))
+                       (create-dependency-pair
+                        b
+                        (find-binding-dependency value edges top-edge b)))))))
     (declare (special deps))
     #+ignore
     (when (eq 10 (edge-position-in-resource-array top-edge))
