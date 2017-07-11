@@ -291,6 +291,7 @@
    print the semtree and pass it to mumble:say."
   (let ((tree (p/s string)))
     (pprint tree)
+    (terpri) (terpri)
     (mumble::say tree)))
 
 (defun p/r (string)
