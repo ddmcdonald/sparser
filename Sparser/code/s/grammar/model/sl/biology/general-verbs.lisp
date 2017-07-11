@@ -496,6 +496,8 @@
 
 
 (define-category bio-form :specializes caused-bio-process
+  :restrict ((object (:or cellular-location ;; such locations are structures that can be formed
+                          bio-entity cell-entity molecular-location measurement bio-scalar disease)))
   :realization
   (:verb "form"
          ;; "form" has never been seen as a verb in the corpus, but "forms" and "formed"
