@@ -1194,10 +1194,9 @@
          (let ((revised-complement
                 (if object
                   ;; 'I want you to wash the dishes' vs 'I want to wash the dishes'
-                    (assimilate-subject object complement)
-                    
-                    (assimilate-subject subj complement))))
-           (setq vp (bind-variable 'theme revised-complement vp))))
+                  (assimilate-subject object complement)
+                  (assimilate-subject subj complement))))
+           (setq vp (rebind-variable 'theme revised-complement vp))))
        (assimilate-subcat vp :subject subj)))
 
     ((itypep vp 'copular-predication)
