@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1994, 2006 David D. McDonald -- all rights reserved
+;;; copyright (c) 1991-1994,2016-2017 David D. McDonald -- all rights reserved
 ;;; extensions copyright (c) 2009-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "setup"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  March 2016
+;;;  Version:  July 2017
 
 ;; 1.1  (1/17/91 v1.8)  Conditionalized the relevant intializations using
 ;;      the globals that control loading.

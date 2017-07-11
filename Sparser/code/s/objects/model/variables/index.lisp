@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995,2010-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2010-2017 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  September 2016
+;;;  version:  July 2017
 
 ;; initiated 11/18/91 v2.1, typo 11/24
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -63,7 +63,6 @@
     ;; First we look on the category itself. Then we look through
     ;; of its superc's as determined by super-categories-of,
     ;; Finally we consult the category's mixins.
-
     (if (cached-variable-lookup?)
         (hash-find-variable variable-name category)
         (or (find-variable-in-category variable-name category) 
@@ -72,6 +71,10 @@
   
   (:method ((var anonymous-variable) (category category))
     (find-variable-for-category (pname var) category)))
+
+;;;---------------
+;;; cached lookup
+;;;---------------
 
 (defun cached-variable-lookup? ()
   (> (hash-table-count *inherited-cat-variables*) 0))
@@ -109,8 +112,13 @@
         (setf (gethash cat *inherited-cat-variables*) var-ht))))
 
 (defun cache-variable-lookup ()
-  (format t "~%cache-variable-lookup~%")
+  "Called by setup-session-globals/grammar"
   (loop for c in *categories-defined* do (fill-inherited-vars c)))
+
+
+;;;--------------------------------
+;;; more specific lookup functions
+;;;--------------------------------
 
 ;;/// depricated
 (defun find-variable-from-individual (variable-name i)
