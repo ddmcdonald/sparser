@@ -3,7 +3,9 @@
 ;;;
 ;;;     File:  "interface"
 ;;;   Module:  "interface;mumble;"
-;;;  Version:  May 2017
+;;;  Version:  July 2017
+
+;; File for Mumble methods specialized on Sparser classes
 
 ;; initiated 11/12/10. Elaborated through ..12/9 Picked up again 3/16/11.
 ;; Refactored to use realization-history for the crawling around 3/20.
@@ -15,9 +17,9 @@
 
 (in-package :mumble)
 
-;;;-----------------------------------------------
-;;; Mumble methods specialized on Sparser classes
-;;;-----------------------------------------------
+;;;---------------
+;;; say & realize 
+;;;---------------
 
 (defmethod say ((object string))
   "Parse the string and generate from the semantics."
@@ -46,41 +48,93 @@
   (find-or-make-word (sp::pname w)))
 
 
-;;--- linking/accessing lexicalized-phrases
+;;;-------------------------------------------
+;;; recording & accessing lexicalized-phrases
+;;;-------------------------------------------
 ;; see Mumble/derivation-trees/make.lisp
 
+;;--- categories
+
+(defparameter *categories-to-lexicalized-phrases* (make-hash-table :test 'equal)
+  "It doesn't make particular sense to use a word as the lp key for 
+   a category, but a category may have realizations in mulitple parts of
+   speech so we need to record a cons of (category . pos)")
+
 (defmethod record-lexicalized-phrase ((category sp::category)
-                                      (lp lexicalized-resource))
+                                      (lp lexicalized-resource)
+                                      (pos symbol))
   "Called from sp:make-resource-from-sparser-word along the usual path
    from sp::make-corresponding-resource in the initialization of the
    rdata for a category. This goes to a table from strings to lp."
-  (record-lexicalized-phrase (symbol-name (sp::cat-symbol category)) lp))
+  ;;(record-lexicalized-phrase (symbol-name (sp::cat-symbol category)) lp)
+  (setf (gethash (cons category pos) *categories-to-lexicalized-phrases*)
+        lp))
+
+(defmethod get-lexicalized-phrase ((category sp::category) (pos symbol))
+  ;;(get-lexicalized-phrase (symbol-name (sp::cat-symbol category)))
+  (gethash (cons category pos) *categories-to-lexicalized-phrases*))
+
+
+(defvar *pos-lp-keys* nil
+  "Record of all keys used for lp linked to categories")
+
+;;/// collect the keys for exaustive lookup (but what's the point then)
+;;/// do slot/grammatical-characteristic pos constraint and
+;;  make the exaustive list the fall back
+
+(defgeneric find-category-lp (category)
+  (:documentation "Until we expand the surface structure and encounter
+    objects (individuals) embedded in particular slots during the
+    traversal we don't have a reliable way to determine the germane
+    part of speech to pick out the intended reading of a lexically-
+    realized category. In lieu of that we adopt the weak approach of
+    trying all parts of speech.")
+  (:method ((c sp::category))
+    (or (get-lexicalized-phrase c 'noun)
+        (get-lexicalized-phrase c 'verb)
+        (get-lexicalized-phrase c 'adjective)
+        (get-lexicalized-phrase c 'adverb)
+        (get-lexicalized-phrase c 'preposition))))
+             
+
+
+;;--- individuals
 
 (defparameter *individuals-to-lexicalized-phrases* (make-hash-table)
-  "Special index serving the same function as *strings-to-lexicalized-phrases*
+  "Special index serving the same function as *words-to-lexicalized-phrases*
    but for direct linking to individuals")
 
 (defmethod record-lexicalized-phrase ((i sp::individual)
-                                      (lp lexicalized-resource))
+                                      (lp lexicalized-resource)
+                                      (pos symbol))
   "Deliberately associating the lp with the individual rather than
    the usual link to the category. Needed with the category is too
-   general as with attributes (size, color, etc.)."
+   general such as attributes (size, color, etc.)."
+  (declare (ignore pos)) ;;/// can we get away with this?
   (setf (gethash i *individuals-to-lexicalized-phrases*) lp))
 
-(defmethod get-lexicalized-phrase ((category sp::category))
-  (get-lexicalized-phrase (symbol-name (sp::cat-symbol category))))
 
-(defmethod get-lexicalized-phrase ((i sp::individual))
-  "Falls through to look for an lp on the type if it's 
-   not specific to the individual"
-  (or (gethash i *individuals-to-lexicalized-phrases*)
-      (get-lexicalized-phrase (sp::itype-of i))))
+(defgeneric find-lexicalized-phrase (i)
+  (:documentation "Look in the places where a lexicalized phrase
+   might be. Basically an ''or' of the other methods, but this
+   packaging makes their tight coordination more obvious.
+   The fall-through to the type is needed for cases like 'block'.")
+  (:method ((i sp::individual))
+    (or (get-recorded-lexicalized-phrase i)
+        (unwind-to-i-with-lp i)
+        (find-category-lp (sp::itype-of i)))))
 
 (defgeneric get-recorded-lexicalized-phrase (i)
   (:documentation "Just looks on the hashtable. Does not fall
     through to look on the type if that fails")
   (:method ((i sp::individual))
     (gethash i *individuals-to-lexicalized-phrases*)))
+
+(defmethod get-lexicalized-phrase ((i sp::individual) (pos symbol))
+  "Falls through to look for an lp on the type if it's 
+   not specific to the individual"
+  (or (gethash i *individuals-to-lexicalized-phrases*)
+      (get-lexicalized-phrase (sp::itype-of i) pos)))
 
 (defun unwind-to-i-with-lp (i)
   "When we're using the description lattice, the individual that
@@ -91,22 +145,12 @@
                as j = (sp::uplink-indiv link)
                when (get-recorded-lexicalized-phrase j)
                return j)))
-    (when k
-      (get-recorded-lexicalized-phrase k))))
-
-(defgeneric find-lexicalized-phrase (i)
-  (:documentation "Look in the places where a lexicalized phrase
-   might be. Basically an ''or' of two methods above, but this
-   packaging makes their tight coordination more obvious.
-   The fall-through to the type is needed for cases like 'block'.")
-  (:method ((i sp::individual))
-    (or (get-recorded-lexicalized-phrase i)
-        (unwind-to-i-with-lp i)
-        (get-lexicalized-phrase (sp::itype-of i)))))
+    (when k (get-recorded-lexicalized-phrase k))))
 
 
-
-;;--- cases were timing can mean we're looking at individuals
+;;;------------------------------------------------------------
+;;; methods where timing can mean we're looking at individuals
+;;;------------------------------------------------------------
 
 (defmethod discourse-unit  ((i sp::individual))
   (mumble::make-discourse-unit-dtn i i))
@@ -121,7 +165,10 @@
 (defmethod grammatical-person ((i sp::individual)) 'third)
 
 
-;;--- other pp-dtn methods in Mumble/derivation-trees/printers.lisp
+;;;---------------
+;;; print methods
+;;;---------------
+;; Mumble/derivation-trees/printers.lisp
 
 (defparameter *how-to-dtn-pprint-individuals* :pointer
   "Controls the form that's produced when we're pretty-printing
@@ -138,8 +185,10 @@
        `( ,(sp::cat-symbol category) )
        ))))
 
+(defmethod pp-dtn ((c sp::category)) (sp::pname c))
 
-;;------- print methods for derivation types refering categories
+
+;;--- print methods for derivation types refering categories
 
 (defmethod print-object ((clp category-linked-phrase) stream)
   (print-unreadable-object (clp stream)

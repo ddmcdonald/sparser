@@ -100,9 +100,9 @@
         (word word-data)
         (polyword word-data))
     (declare (ignore irregulars)) ;;//// third arg in define-word/expr
-    (multiple-value-bind (lp m-word)
+    (multiple-value-bind (lp m-word m-pos)
         (make-resource-for-sparser-word s-head-word pos category phrase)
-      (values m-word lp))))
+      (values m-word lp m-pos))))
 
 
 ;;--- retrieving
@@ -192,9 +192,8 @@ a word. |#
    for verbs. Look up the m-word, create the map, and create
    and store the lp and CLP.
    Called from setup-rdata when the mumble flag is up."
-  ;; e.g. (:mumble ("build" svo :o artifact))
+  ;; e.g. (:mumble ("build" svo :s agent :o artifact))
   ;;      (:mumble ("push" svo :s agent :o theme))
-  ;;      (:mumble (transitive-with-final-adverbial "push" "together"))
   ;;      (:mumble ((svo :s agent :o patient) 
   ;;                (svicomp :s agent :c theme)
   ;;                (svoicomp :s agent :o patient :c theme))
@@ -203,14 +202,13 @@ a word. |#
                              (member :mumble rdata)
                              (assq :mumble rdata)))))
     (when mumble-spec
-      (push-debug `(,mumble-spec))
       (assert (consp mumble-spec))
       (if (some #'keywordp mumble-spec) ;; Two-way split. One rspec vs. several
         (decode-one-mumble-spec category mumble-spec)
         (decode-multiple-mumble-specs category mumble-spec)))))
 
 (defun decode-one-mumble-spec (category mumble-spec)
-  (multiple-value-bind (clp lp m-word)
+  (multiple-value-bind (clp lp m-word m-pos)
       (decode-mumble-spec category mumble-spec)
     (setf (get-tag :mumble category) clp)
     (let ((rdata ;;(rdata/pos category :verb)
@@ -219,8 +217,8 @@ a word. |#
       (unless rdata (error "why no rdata yet for ~a" category))
       (setf (mumble-rdata rdata) `(,clp))
       (when m-word
-        (m::record-lexicalized-phrase m-word lp)
-        (mumble::record-krisp-mapping m-word clp))   )))
+        (m::record-lexicalized-phrase category lp m-pos)
+        (mumble::record-krisp-mapping m-word clp)))))
 
 (defun decode-multiple-mumble-specs (category mumble-specs)
   "The only case so far where there is a good reason for multiple mumble
@@ -229,9 +227,9 @@ a word. |#
    though."
   (let ((rdata (rdata/pos category :verb)))
     ;; do one my hand to get the m-word
-    (multiple-value-bind (clp lp m-word)
+    (multiple-value-bind (clp lp m-word m-pos)
         (decode-mumble-spec category (first mumble-specs))
-      (declare (ignore lp))
+      (declare (ignore lp m-word m-pos))
       (let* ((mdata-list (cons clp (loop for spec in (cdr mumble-specs)
                                       collect (decode-mumble-spec category spec))))
              (pairs (loop for mdata in mdata-list
@@ -244,24 +242,29 @@ a word. |#
                              :mpairs pairs)))
         (setf (get-tag :mumble category) multi-data)))))
 
+
 (defun decode-mumble-spec (category mumble-spec)
-  "Separate cases (+/- includes the verb), decode the symbols, and
-   create the spec per se. Caller decides what to do with it.
+  "Decode the symbols, and create the spec object. 
+   Caller decides what to do with it.
+   Separate cases (+/- whether it includes the verb)
    If there is no pname then either we have a case like relative-location
    where the variables supply all the parts, or we have an abstraction
-   like subcategorization mixin."
+   like a subcategorization mixin category."
   (let* ((pname (when (stringp (car mumble-spec)) (car mumble-spec)))
          (phrase&args (if pname (cdr mumble-spec) mumble-spec))
-         m-word  lp )
+         m-word m-pos lp )
     (assert phrase&args)
-    
+
+    ;;//////  If we do these explicit mumble datams for anything other than
+    ;; verbs then the syntax has to extend to include the pos
     (when pname
-      (setq m-word (m::find-word pname 'm::verb))
+      (setq m-word (m::find-word pname 'm::verb)
+            m-pos 'm::verb)
       (unless m-word
         (let ((sparser-word (resolve pname)))
           (assert sparser-word (pname)
                   "There is no word in Sparser for ~a" pname)
-          (setq m-word (get-mumble-word-for-sparser-word sparser-word 'm::verb)))))
+          (setq m-word (get-mumble-word-for-sparser-word sparser-word m-pos)))))
 
     (let* ((phrase-name (car phrase&args))
            (phrase (m::phrase-named (mumble-symbol phrase-name)))
@@ -269,35 +272,37 @@ a word. |#
       (assert phrase (phrase-name) "There is no Mumble phrase named ~a." phrase-name)
 
       (let* ((map (loop for (param-name var-name) on p&v-pairs by #'cddr
-                    as param = (mumble::parameter-named (mumble-symbol param-name))
+                     as param = (m::parameter-named (mumble-symbol param-name))
                      as var = (etypecase var-name
                                 (string (get-mumble-word-for-sparser-word
                                          (resolve var-name) nil))
                                 (symbol
                                  (find-variable-for-category var-name category)))
-                    do (progn
-                         (assert var () "No variable named ~a in category ~a." var-name category)
-                         (assert param () "No parameter named ~a in the phrase ~a." param-name phrase))
-                    collect (make-instance 'mumble::parameter-variable-pair
-                                           :var var
-                                           :param param)))
+                     do (progn
+                          (assert var () "No variable named ~a in category ~a." var-name category)
+                          (assert param () "No parameter named ~a in the phrase ~a." param-name phrase))
+                     collect (make-instance 'mumble::parameter-variable-pair
+                                            :var var
+                                            :param param)))
              (variables (loop for pvp in map
-                           collect (m::corresponding-variable pvp)))
+                           as var = (m::corresponding-variable pvp)
+                           when (typep var 'lambda-variable)
+                           collect var))
              (clp (make-instance 'm::mumble-rdata
                     :class category
                     :map map
                     :vars variables)))
-
         (cond
           (m-word ;; add lexicalized phrase and head to CLP
            (setq lp (m::verb m-word phrase))
+           (m::record-lexicalized-phrase category lp m-pos)
            (setf (m::linked-phrase clp) lp)
            (setf (m::head-word clp) m-word))
-          (t ;; record the phrase for use by inheritors
+          (t ;; record just the phrase for use by inheritors
            (setf (m::linked-phrase clp) phrase)))
         
         ;;(lsp-break "decode")
-        (values clp lp m-word)))))
+        (values clp lp m-word m-pos)))))
 
   
 
@@ -345,8 +350,8 @@ a word. |#
                  (mpos (mumble-pos pos))
                  (s-word (cadr local-head))
                  (m-word (get-mumble-word-for-sparser-word s-word mpos)))
-            (unless (eq pos :verb) (error "Not specializing a verb"))
             
+            (unless (eq pos :verb) (error "Not specializing a verb"))
             (flet ((lexicalize (phrase m-word)
                      (m::verb m-word phrase)))
               
@@ -358,7 +363,7 @@ a word. |#
                    (setf (m::linked-phrase new-rdata) lp)))
                 
                 (m::multi-subcat-mdata
-                 ;; modify each one in place
+                 ;; We're working on a copy so modify each pair in place
                  (dolist (pair (m::mdata-pairs new-rdata))
                    ;; pull out the phrase and lexicalize it
                    (let* ((mdata (m::mpair-mdata pair))
@@ -380,7 +385,7 @@ a word. |#
 ;;; head words
 ;;;------------
          
-(defun make-corresponding-lexical-resource (head-word category)
+(defun make-corresponding-lexical-resource (head-field category)
   "Called from the initialize-instance method of realization-data;
    see make-realization-data. The 'head-word' was constructed by
    decode-rdata-heads. The goal is to arrange that every word
@@ -390,8 +395,8 @@ a word. |#
   (declare (special *build-mumble-equivalents*))
   (when (or *build-mumble-equivalents*
             *CwC*)
-    (let* ((pos-tag (car head-word))
-           (word-or-variable (cadr head-word))
+    (let* ((pos-tag (car head-field))
+           (word-or-variable (cadr head-field))
            (word (etypecase word-or-variable
                    ((or word polyword) word-or-variable)
                    (list (car word-or-variable))
@@ -421,14 +426,20 @@ a word. |#
     (when (or *build-mumble-equivalents*
               *CwC*)
       (call-next-method)))
+  
   (:method (word pos-tag (i individual))
     "Route for attributes"
-    (let ((lp (make-resource-for-sparser-word word pos-tag i)))
-      (when lp (m::record-lexicalized-phrase i lp))))
+    (multiple-value-bind (lp m-word m-pos)
+        (make-resource-for-sparser-word word pos-tag i)
+      (declare (ignore m-word))
+      (when lp (m::record-lexicalized-phrase i lp m-pos))))
+  
   (:method (word pos-tag (c category))
     "Route for lemmas, preposititions, make-rules-for-head"
-    (let ((lp (make-resource-for-sparser-word word pos-tag c)))
-      (when lp (m::record-lexicalized-phrase c lp)))))
+    (multiple-value-bind (lp m-word m-pos)
+        (make-resource-for-sparser-word word pos-tag c)
+      (declare (ignore m-word))
+      (when lp (m::record-lexicalized-phrase c lp m-pos)))))
 
 
 (defun make-resource-for-sparser-word (word pos-tag category &optional verb-phrase)
@@ -436,16 +447,16 @@ a word. |#
    Make the mumble word ('m-word'). Then create and record 
    lexicalized phrase to embed the word in the appropriate
    elementary tree (i.e. lexicalize the appropriate phrase).
-   Record the lexicalized tree on the mumble word and th
-   See Mumble/derivation-trees/builders.lisp for the lexicalized
+   Record the lexicalized tree on the mumble word with its mumble-side
+   pos. See Mumble/derivation-trees/builders.lisp for the lexicalized
    phrase creators." 
   (when (consp word) ;; irregulars e.g. ("bacterium" :plural "bacteria")
     ;; drop them on the floor for now. /// lookup Mumble rep of irregulars
     (setq word (car word)))
   (let ((m-pos (mumble-pos pos-tag)))
     (when m-pos
-      (let* ((m-word (and m-pos (get-mumble-word-for-sparser-word word m-pos)))
-             (lp (or (m::get-lexicalized-phrase m-word)
+      (let* ((m-word (get-mumble-word-for-sparser-word word m-pos))
+             (lp (or (m::get-lexicalized-phrase m-word m-pos)
                      (case pos-tag
                        (:adjective (m::adjective m-word))
                        ((or :noun :common-noun) (m::noun m-word))
@@ -457,13 +468,14 @@ a word. |#
                        (:pronoun (m::pronoun m-word))
                        (:interjection (m::interjection m-word))))))
         (when lp
-          (m::record-lexicalized-phrase m-word lp)
+          (m::record-lexicalized-phrase m-word lp m-pos)
           (values lp
-                  m-word))))))
+                  m-word
+                  m-pos))))))
 
 (defun mumble-pos (pos-tag) ;; keep in sync w/ sparser-pos in binding-centric
   "Translate a Sparser part of speech into the Mumble equivalent"
-  ;; Also in Mumble word labels: {past,present}-participle, {comparative,superlative}-adjective
+  ;; Other Mumble word labels: {past,present}-participle, {comparative,superlative}-adjective
   ;; abstract-noun, {interrogative,wh,relative}-pronoun, particle, complementizer,
   ;; exclamation, expletive, vocative, punctuation.
   (ecase pos-tag

@@ -16,33 +16,47 @@
 
 ;;--- word to its lexicalized phrase 
 
-(defparameter *strings-to-lexicalized-phrases*
-  (make-hash-table :test 'equalp))
+(defparameter *words-to-lexicalized-phrases*
+  (make-hash-table :test 'equal)
+  "Map pairs of (word . pos) to lexicalized-phrases")
 
-(defgeneric get-lexicalized-phrase (word)
-  (:documentation "Given a word or a string, return
-   the lexicalized-phrase it grounds.")
-  (:method ((name symbol))
-    (get-lexicalized-phrase (symbol-name name)))
-  (:method ((w word))
-    (get-lexicalized-phrase (pname w)))
-  (:method ((pname string))
-    (gethash pname *strings-to-lexicalized-phrases*)))
+(defgeneric get-lexicalized-phrase (word pos)
+  (:documentation "Given a word or a string and its part of speech, 
+   return the lexicalized-phrase it grounds if there is one.")
+  
+  (:method ((name symbol) (pos symbol))
+    (get-lexicalized-phrase (symbol-name name) pos))
 
-;; There methods with Sparser signatures are in
-;; Sparser/.../interface/mumble/interface.lisp
+  (:method ((pname string) (pos symbol))
+    (let ((word (find-word pname pos)))
+      (assert word (pos pname)
+              "There is no Mumble word ~s with pos ~a" pname pos)
+      (get-lexicalized-phrase word pos)))
+  
+  (:method ((word word) (pos symbol))
+    (gethash (cons word pos) *words-to-lexicalized-phrases*)))
+  
+  #+ignore(:method ((pname string))
+    (gethash pname *strings-to-lexicalized-phrases*))
 
-(defgeneric record-lexicalized-phrase (word lp)
+
+
+(defgeneric record-lexicalized-phrase (word lp pos)
   (:documentation "When a lexicalized phrase is defined,
-   record the association of the head word and the phrase
-   so that it can be retrieved by get-lexicalized-phrase.
-   Note there is no provision for linking to more than
-   one word -- would need a protocal to determine which
-   to use.")
-  (:method ((word word) (lp lexicalized-resource))
-    (record-lexicalized-phrase (pname word) lp))
-  (:method ((pname string) (lp lexicalized-resource))
-    (setf (gethash pname *strings-to-lexicalized-phrases*) lp)))
+   record the association of the head word (in the indicated
+   part of speech) and the phrase so that it can be retrieved 
+   by get-lexicalized-phrase. 
+      N.b. There is no way to associate any Mumble word
+   with more than one lexicalized phrase.")
+  
+  (:method ((word word) (lp lexicalized-resource) (pos symbol))
+    "Trust the caller to have done the find before making
+     so there's not already a lp recorded for this word/pos pair"
+    (setf (gethash (cons word pos) *words-to-lexicalized-phrases*)
+          lp)))
+            
+  #+ignore(:method ((pname string) (lp lexicalized-resource))
+    (setf (gethash pname *strings-to-lexicalized-phrases*) lp))
 
 
 ;;;-------------------------------------------

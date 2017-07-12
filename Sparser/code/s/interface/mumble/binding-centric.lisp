@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "binding-centric"
 ;;;   Module:  "interface;mumble;"
-;;;  Version:  June 2017
+;;;  Version:  July 2017
 
 ;; Broken out from interface 4/7/13.
 ;; Completely rewritten 8/16 by AFP.
@@ -334,7 +334,7 @@ attach-via-binding. |#
            (attach-complement (sp::value-of 'sp::value i) be)
            be))
         ((sp::itypep i 'sp::explicit-suggestion)
-         (tr "Realizing explicit-suggestion ~a" i) ;;/// explicit call
+         (tr "Realizing explicit-suggestion ~a" i)
          (let ((dtn (realize-via-bindings (sp::value-of 'sp::suggestion i)))
                (m (sp::value-of 'sp::marker i))
                (ap 'initial-adverbial))
@@ -366,7 +366,7 @@ attach-via-binding. |#
 (defun apply-lexical-resource (i)
   "There's a word associated with this individual. Use it's lexicalized phrase
    as the resource"
-  (let ((lp (get-lexicalized-phrase i)))
+  (let ((lp (find-lexicalized-phrase i)))
     (tr "For ~a using lexical resource ~a" i lp)
     (assert lp (i) "No lexicalized resource on ~a" i)
     (make-dtn :referent i :resource lp)))
@@ -375,9 +375,9 @@ attach-via-binding. |#
   (:documentation "Use the category as the source of the head, then add
     any other binding on the individual")
   (:method ((i sp::individual) (c sp::referential-category))
-    (let ((lp (get-lexicalized-phrase c)))
-      (assert lp (c) "No lexicalized resource on ~a" c)
+    (let ((lp (find-category-lp c)))
       (tr "realizing ~a via its category" i)
+      (assert lp (c) "No lexicalized resource on ~a" c)
       (let ((pos (lookup-pos lp))
             (dtn (make-dtn :referent i :resource lp)))
         (loop-over-bindings i pos dtn)))))
@@ -393,35 +393,37 @@ attach-via-binding. |#
   
   (:method ((i sp::individual) &key pos resource)
     "Look for realization data on the individual or its category and marshal it."
+    ;; 1st split on 'supplied by caller' vs taken off the individual
+    (if (and pos resource)
+      (old-style-realize-via-bindings i pos resource)
+      (new-style-realize-via-bindings i))))
 
-    (let* ((lp (find-lexicalized-phrase i))
-           (pos (cond
-                  (pos ;; passed in for copular-predication, there-exists
-                   (tr "explicit part of speech passed in: ~a" pos)
-                   pos)
-                  (lp (lookup-pos lp))
-                  (t (tr "Have to guess POS of ~a" i)
-                     (guess-pos i))))
-           ;; rdata is essentially an annotated category-linked-phrase.
-           ;; It encodes the variable to phrase-parameter mapping.
-           ;; It's also POS-specific.
-           (rdata (sp::has-mumble-rdata i :pos pos)))
-      (when rdata ;; lp can be more specific
+(defun old-style-realize-via-bindings (i pos resource)
+  "Used for there-exists, copular-predication"
+  (tr "Old style: ~a ~a ~a" i pos resource) 
+  (realize-via-bindings-common-path i pos resource))
+
+(defun new-style-realize-via-bindings (i)
+  (let ((lp ;; open-coded (find-lexicalized-phrase i) while experimenting
+         (or (get-recorded-lexicalized-phrase i)
+             (unwind-to-i-with-lp i)
+             (find-category-lp (sp::itype-of i)))))                                         
+    (assert lp (i) "Couldn't get lexicalized phrase for ~a" i)
+    (let* ((pos (lookup-pos lp))
+           (rdata (sp::has-mumble-rdata i :pos pos)))       
+      (when rdata ;; its lp can be more specific (e.g. "want")
         (setq lp (linked-phrase rdata)))
-      (unless resource
-        (setq resource (if lp lp (ecase pos ;; make the lp from scratch
-                                   (adjective (word-for i pos))
-                                   (noun (noun (word-for i pos)))
-                                   (verb (verb (word-for i pos)
-                                               (verb-frame-for i)))))))
       (tr "Realize-via-bindings for ~a  lp = ~a~
          ~%       rdata = ~a" i lp rdata)
-      
-      (let ((dtn (make-dtn :referent i :resource resource)))            
-        (case pos (verb (tense dtn))) ;; also checks for command
-        (if rdata
-          (loop-over-some-bindings i pos dtn rdata)
-          (loop-over-bindings i pos dtn))))))
+      (realize-via-bindings-common-path i pos lp rdata))))
+
+(defun realize-via-bindings-common-path (i pos resource &optional rdata)
+  (let ((dtn (make-dtn :referent i :resource resource)))            
+    (case pos (verb (tense dtn))) ;; also checks for command
+    (if rdata
+      (loop-over-some-bindings i pos dtn rdata)
+      (loop-over-bindings i pos dtn))
+    dtn))
  
 (defun loop-over-some-bindings (i pos dtn rdata)
   "Use the map on the rdata to handle the core bindings

@@ -253,8 +253,16 @@ Should mirror the cases on the *single-words* ETF."
     :documentation "A plist of head words keyed on part of speech.")))
 
 (defmethod print-object ((rdata realization-data) stream)
-  (print-unreadable-object (rdata stream :identity t)
-    (format stream "realization for ~a" (cat-name (rdata-for rdata)))))
+  (print-unreadable-object (rdata stream)
+    (let ((head-info (rdata-head-words rdata)))
+      (if head-info
+        (let ((word (car head-info))
+              (pos (cadr head-info)))
+          (when (consp word) ;; irregulars
+            (setq word (car word)))
+          (format stream "realization for ~a: ~s ~a"
+                  (cat-name (rdata-for rdata)) (pname word) pos))
+        (format stream "realization for ~a" (cat-name (rdata-for rdata)))))))
 
 (defmethod initialize-instance :after ((instance realization-data)
                                        &key category etf heads mumble)
