@@ -79,7 +79,7 @@
       ;; at the details of description-lattice case established
       ;; that including the word serves no purpose except to gratuitously
       ;; generate another individual
-      (let* ((i (define-individual category))
+      (let* ((i (define-individual category)) ;; :word word))
              (word-rule
               (def-cfr/expr category `(,word)
                 :form (resolve-form-category form)
