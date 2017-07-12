@@ -277,7 +277,8 @@
    associated-attachment-points
        (non-restrictive-relative-clause non-restrictive-appositive
         np-prep-complement np-prep-adjunct of-complement nominal-premodifier
-	adjective restrictive-relative-clause restrictive-appositive))
+	adjective restrictive-relative-clause restrictive-appositive)
+   grammatical-constraints (noun))
 
 
 (define-slot-label compound-noun-head)
