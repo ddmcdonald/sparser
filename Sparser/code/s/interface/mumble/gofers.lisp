@@ -3,7 +3,7 @@
 ;;;
 ;;;     File: "gofers"
 ;;;   Module: "interface;mumble;"
-;;;  Version: June 2017
+;;;  Version: July 2017
 
 ;; Initated 1/7/16 to consolidate usable gofer-type code from files
 ;; that for various reasons (OBE mostly) are not being loaded.
@@ -69,7 +69,9 @@
   (word-named (mumble::pname m-word)))
 
 
-;;--- symbols
+;;;-----------------------
+;;; cross-package symbols
+;;;-----------------------
 
 (defgeneric mumble-symbol (symbol)
   (:method ((s symbol)) (mumble-symbol (symbol-name s)))
