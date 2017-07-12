@@ -44,7 +44,7 @@
                   :etf (svo-passive)
                   :s agent
                   :o artifact
-                  :mumble ("build" svo :o artifact)))
+                  :mumble ("build" svo :s agent :o artifact)))
 
 (define-category hold-something
   :specializes process
