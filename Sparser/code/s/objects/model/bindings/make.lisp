@@ -292,6 +292,7 @@ returning a new one.
 
 
 (defun perform-over-ridden-variable-disambiguation (over-ridden-binding var/name i)
+  (declare (special *left-edge-into-reference* *right-edge-into-reference*))
   (let* ((new (find-or-make-lattice-description-for-cat-list (indiv-type i)))
 	 (over-ridden-var (binding-variable over-ridden-binding))
 	 (over-ridden-variables (dvar-variables over-ridden-var))

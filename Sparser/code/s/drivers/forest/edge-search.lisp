@@ -408,6 +408,7 @@ for ambiguous words"
        ))))
 
 (defun losing-to-leftwards-pp? (l-triple r-triple)
+  (declare (special category::adjective category::as))
   (let ((r-triple-rhs (cfr-rhs (car r-triple))))
     (and
      (prep? (cat-symbol (car (cfr-rhs (car l-triple))))) ;;l-triple-left
@@ -445,6 +446,7 @@ for ambiguous words"
 (defun pp-absorbing-edge? (preceding-edge)
   ;; there must be a constituent which can absorb the result of
   ;; the left competing rule
+  (declare (special *ng-head-categories* *vg-head-categories* *adjg-head-categories*))
   (let ((sym (safe-edge-form preceding-edge)))
     (or
      (member sym *ng-head-categories*)

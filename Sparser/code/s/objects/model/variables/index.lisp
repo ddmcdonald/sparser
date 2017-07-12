@@ -76,10 +76,10 @@
 ;;; cached lookup
 ;;;---------------
 
+(defparameter *inherited-cat-variables* (make-hash-table :size 5000))
+
 (defun cached-variable-lookup? ()
   (> (hash-table-count *inherited-cat-variables*) 0))
-
-(defparameter *inherited-cat-variables* (make-hash-table :size 5000))
 
 (defun hash-find-variable (var-name cat)
   (declare (special category::top))
