@@ -189,7 +189,7 @@ Should mirror the cases on the *single-words* ETF."
    The routines in objects;model;tree-families;driver.lisp create the rules
    when individuals of the category are created. The function that actually
    makes the rules is make-rules-for-rdata."
-  (declare (optimize debug))
+  (declare (optimize debug) (special *build-mumble-equivalents*))
   (check-type category category)
   (check-type rdata list)
   (when delete
@@ -223,9 +223,11 @@ Should mirror the cases on the *single-words* ETF."
   "For adverbs, adjectives, and anything else whose realization
    is made by rule rather than the interpretation of an rdata
    expression. The call oridinates in define-function-term, where
-   the category will be based on the word."  
-  (assert (or (word-p word) (polyword-p word)))
-  (make-realization-data category :heads `(,pos ,word)))
+   the category will be based on the word."
+  (declare (special *build-mumble-equivalents*))
+  (when *build-mumble-equivalents*
+    (assert (or (word-p word) (polyword-p word)))
+    (make-realization-data category :heads `(,pos ,word))))
 
 
 ;;;----------------------------
