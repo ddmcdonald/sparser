@@ -17,22 +17,24 @@
 (defparameter *break-on-null-interp* nil)
 (defparameter *break-on-null-edge* nil)
 (defparameter *break-on-null-surface-strings* nil)
-
+(defparameter *contextual-interpretation* nil)
 
 (defun interpret-treetops-in-context (treetops)
-  (when *interpret-in-context*
-    (loop for tt in treetops
-          when (and (edge-p tt)
-                    (category-p (edge-category tt))
-                    (edge-referent tt)
-                    ;; in "More detailed understanding of these various pathways will require careful analysis of BMMCs designed to be deficient in multiple adapters and signaling molecules."
-                    ;; there is a NIL interpretation of "designed to be deficient"
-                    (not
-                     (member (cat-name (edge-category tt))
-                             ;; we don't interpret such quoted strings
-                             '(quotation parentheses dash  square-brackets semicolon comma))))
-          do
-            (interpret-in-context (edge-mention tt)))))
+  (let ((*contextual-interpretation* t))
+    (declare (special *contextual-interpretation*))
+    (when *interpret-in-context*
+      (loop for tt in treetops
+            when (and (edge-p tt)
+                      (category-p (edge-category tt))
+                      (edge-referent tt)
+                      ;; in "More detailed understanding of these various pathways will require careful analysis of BMMCs designed to be deficient in multiple adapters and signaling molecules."
+                      ;; there is a NIL interpretation of "designed to be deficient"
+                      (not
+                       (member (cat-name (edge-category tt))
+                               ;; we don't interpret such quoted strings
+                               '(quotation parentheses dash  square-brackets semicolon comma))))
+            do
+              (interpret-in-context (edge-mention tt))))))
 
 ;;;_______________________________________________
 
