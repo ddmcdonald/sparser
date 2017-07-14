@@ -3761,7 +3761,7 @@
 (define-protein "UP:P0CG37" ("CFC1" "CFC1_HUMAN" "CRYPTIC" "Cryptic protein" "FRL-1" "HGNC:18292" "HTX2" "N-aspartyl-glycosylphosphatidylinositolethanolamine-CFC1" "P0CG37" "UP:P0CG37 CFC1" "cryptic family 1" "heterotaxy 2 (autosomal dominant)")) 
 (define-protein "UP:P0CG37" ("CRYPTIC" "NCIT:C51419" "cryptic")) 
 (define-protein "UP:P0CG40" ("HGNC:30690" "Sp9" "Sp9 transcription factor")) 
-(define-protein "UP:P0CG48" ("P0CG48" "PR:000003153" "UBC" "UBC_HUMAN" "Ubc" "Ubiquitin")) 
+(define-protein "UP:P0CG48" ("P0CG48" "PR:000003153" "UBC" "UBC_HUMAN" "Ubc" "ubiquitin")) 
 (define-protein "UP:P0CG63" ("P0CG63" "PR:P0CG63" "polyubiquitinate" "polyubiquitinated" "polyubiquitination")) 
 (define-protein "UP:P0CG72" ("P0CG72" "PR:P0CG72" "polyubiquitin")) 
 (define-protein "UP:P0CG83" ("Polyubiquitin" "polyubiquitins")) 
