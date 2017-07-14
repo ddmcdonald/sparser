@@ -588,9 +588,9 @@
     (if premod-n-variable
         (bind-dli-variable premod-n-variable qualifier head)
    
-        (let ((subject (subcategorized-variable  qualifier :subject head)))
+        (let ((subject-var (subcategorized-variable  qualifier :subject head)))
           (cond
-            (*subcat-test* subject)
+            (*subcat-test* subject-var)
             ((word-p qualifier)
              ;; probably a case of an unknown verb+ing created by morphology
              ;;  like "mating" in PMC352229
@@ -599,13 +599,29 @@
              ;; what it means
              head)
             (t
-             (setq qualifier (individual-for-ref qualifier))
-             (when subject ;; really should check for passivizing
-               (setq qualifier (create-predication-by-binding
-                                subject head qualifier
-                                (list 'link-in-verb+ing (parent-edge-for-referent)))))
+             (setq qualifier
+                   (interpret-verb-as-predication
+                    'link-in-verb+ing
+                    head
+                    qualifier
+                    *left-edge-into-reference*
+                    subject-var))
              (setq head (bind-dli-variable 'predication qualifier head))
              head))))))
+
+(defun interpret-verb-as-predication (rule-fn head qualifier edge-for-qualifier var)
+  (unless (eq qualifier (edge-referent edge-for-qualifier))
+    (lsp-break "bad call to extend-interpretation-of-verb-as-predication"))
+  (setq qualifier (individual-for-ref qualifier))
+  (cond (var
+         ;; really should check for passivizing
+         (setq qualifier (create-predication-by-binding
+                          var head qualifier
+                          (list rule-fn (parent-edge-for-referent))))
+         (set-edge-referent edge-for-qualifier qualifier))
+        (t
+         (lsp-break "call to extend-interpretation-of-verb-as-predication with null binding variable, var")))
+  qualifier)
 
 
 
@@ -628,10 +644,13 @@
 (defun link-in-verb (qualifier head)
   (let ((var (subcategorized-variable qualifier :object head)
 	  #+ignore (object-variable qualifier head)))
-    (setq qualifier (individual-for-ref qualifier))
-    (when var ;; really should check for passivizing
-      (setq qualifier (create-predication-by-binding var head qualifier
-						      (list 'link-in-verb (parent-edge-for-referent)))))
+    (setq qualifier
+          (interpret-verb-as-predication
+           'link-in-verb
+           head
+           qualifier
+           *left-edge-into-reference*
+           var))
     (setq head (bind-dli-variable 'predication qualifier head))
     head))
 
