@@ -128,28 +128,9 @@ returning a new one.
     (*description-lattice*
      (setq individual (look-for-ambiguous-variables individual var/name))
      (when (individual-p value)
-       (setq value (look-for-over-ridden-variables value)))
+       (setq value (make-maximal-projection value)))
      (find-or-make-lattice-subordinate individual var/name value category))
     (t (old-bind-variable var/name value individual category))))
-
-(defun make-maximal-projection (indiv)
-  "The value is now being used as a modifier of another entity -- so it is no longer on the head line, and will no longer have modifiers attached to it -- barring DA rules?"
-  (let ((binding-to-override
-         (loop for binding in (indiv-binds indiv)
-               when
-                 (and
-                  (disjunctive-lambda-variable-p (binding-variable binding))
-                  (eq (var-name (binding-variable binding)) 'agent-or-object))
-               do (return binding))))
-    (when binding-to-override
-      (setf (indiv-binds indiv)
-            (remove binding-to-override
-                   (indiv-binds indiv)))
-      (print (list 'over-ridden (semtree indiv))))
-    indiv))
-          
-
-
 
 (defun bind-variable (var/name value individual &optional category)
   "Standard way of binding a variable on an individual. What actually
@@ -276,45 +257,50 @@ returning a new one.
 		new)))
     new))
 
-(defun look-for-over-ridden-variables (individual)
+(defun make-maximal-projection (individual &optional edge)
   "Called from bind-dli-variable, where it has to return the individual,
    original or as modified to do any local disambiguation."
-  (let ((over-ridden-binding
-         (loop for binding in (binds individual)
-               when (and (disjunctive-lambda-variable-p (binding-variable binding))
-                         (eq (var-name (binding-variable binding)) 'agent-or-object))
-            do (return binding))))
-    (if over-ridden-binding
-      (setq individual
-            (perform-over-ridden-variable-disambiguation
-             over-ridden-binding 'agent individual))
-      individual)))
+  (declare (special *da-constituents* *contextual-interpretation*))
+  (if *contextual-interpretation*
+      ;; don't make maximal projections during contextual reinterpretation
+      individual
+      (let ((over-ridden-binding
+             (loop for binding in (binds individual)
+                   when
+                     (and
+                      (disjunctive-lambda-variable-p (binding-variable binding))
+                      (member (var-name (binding-variable binding))
+                              '(agent-or-object
+                                agent-or-substrate
+                                substrate-or-kinase)))
+                   do (return binding))))
+        (when over-ridden-binding
+          (setq individual
+                (perform-over-ridden-variable-disambiguation
+                 over-ridden-binding 'agent individual)))
+        individual)))
 
 
 (defun perform-over-ridden-variable-disambiguation (over-ridden-binding var/name i)
   (declare (special *left-edge-into-reference* *right-edge-into-reference*))
+
   (let* ((new (find-or-make-lattice-description-for-cat-list (indiv-type i)))
 	 (over-ridden-var (binding-variable over-ridden-binding))
-	 (over-ridden-variables (dvar-variables over-ridden-var))
-         (left *left-edge-into-reference*)
-         (right *right-edge-into-reference*))
-   
+	 (over-ridden-variables (dvar-variables over-ridden-var)))
+    (when (null edge)
+      (warn "null edge in perform-over-ridden-variable-disambiguation, for binding ~s in sentence ~s~%"
+            over-ridden-binding (when *sentence-in-core* (sentence-string *sentence-in-core*)))
+      (return-from perform-over-ridden-variable-disambiguation i))
     (loop for binding in (reverse (indiv-binds i))
-       do
-	 (setq new
-	       (bind-dli-variable
-		(disambiguated-variable binding over-ridden-binding
-                                        over-ridden-variables
-                                        var/name)
-		(binding-value binding)
-		new)))
-    (cond ((and (edge-p left) (eq i (edge-referent left)))
-           ;; typically for a noun-type premodifier
-           (reinterpret-edge? left i new))
-          ((and (edge-p right) (eq i (edge-referent right)))
-           ;; typically for a noun-type premodifier
-           (reinterpret-edge? right i new)))
-          
+          do
+            (setq new
+                  (bind-dli-variable
+                   (disambiguated-variable binding over-ridden-binding
+                                           over-ridden-variables
+                                           var/name)
+                   (binding-value binding)
+                   new)))
+    (reinterpret-edge? edge i new)
     new))
 
 (defun reinterpret-edge? (edge old-indiv new-indiv)
