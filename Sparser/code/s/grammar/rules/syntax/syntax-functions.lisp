@@ -148,6 +148,7 @@
 ;;;-------------
 
 (defparameter *predication-links-ht* (make-hash-table :size 100 :test #'equal))
+(defparameter *lambda-var-warnings* nil)
 
 (defun create-predication-by-binding (var val pred source &key (insert-edge t))
   "Given a variable (var), and two referents (val, pred), assert that
@@ -157,6 +158,15 @@
   (let ((new-predication (bind-dli-variable  var **lambda-var** pred)))
     (declare (special new-predication))
     ;; Rusty - how could the binding fail?  AKA, why the cond here.
+    (when (and val (not (individual-p val))
+               (not (referential-category-p val))
+               ;; above happens for "when oncogenic RAS is induced in HKe3 ER:HRASV12 cells (Figure S3B) "
+               )
+      (if (eq val '*lambda-var*)
+          (when *lambda-var-warnings*
+            (warn "still trying to bind *lambda-var* in predication, in ~s~%"
+                (sentence-string *sentence-in-core*)))
+          (lsp-break "non individual as val")))
     (cond (new-predication
            (setf (gethash new-predication *predication-links-ht*) val)
            (if (and insert-edge (edge-p (parent-edge-for-referent)))
@@ -1339,7 +1349,9 @@
 	   (revise-parent-edge :category (itype-of obj)
 			       :form category::n-bar
 			       :referent result)
-	   (revise-parent-edge :category (itype-of vg)
+	   (revise-parent-edge :category (if (itype vg 'collection)
+                                             (value-of 'type vg)
+                                             (itype-of vg))
 			       :form (case (cat-name (edge-form (parent-edge-for-referent)))
 				       ((vg vp) category::vp)
 				       ((vp+ing vg+ing) category::vp+ing)
