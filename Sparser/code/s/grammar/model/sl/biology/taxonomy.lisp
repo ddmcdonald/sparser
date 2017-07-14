@@ -457,6 +457,7 @@
   :restrict ((agent
               (:or
                bio-grouping ;; a group/set/subset...
+               cell-entity
                organism ;; "these animals showed..."
                these
                ;; bio-entity too general -- leads to problems with created semantic rules
@@ -974,7 +975,10 @@
 ;; "Structural basis for conformational switching and GTP loading of the large G protein atlastin"
 
 (define-mixin-category on-substrate :specializes bio-process
-  :binds ((substrate (:or bio-complex peptide protein-domain region-of-molecule))))
+ :binds ((substrate
+          (:or bio-complex peptide))
+         (site
+          (:or protein-domain region-of-molecule))))
 
 (define-category molecule-load :specializes caused-bio-process
   :mixins (on-substrate)
@@ -1077,6 +1081,7 @@
   :realization
      (:noun "domain"
       :m substrate
+      :m domain      
       :of substrate))
 
 (def-synonym protein-domain (:noun "region"))
