@@ -27,6 +27,7 @@
           "post-transcriptional modification" "post-transcriptional fate")
          :o substrate
 	 :o site
+         :o amino-acid
          :m amino-acid
          :m substrate
          :m site
@@ -455,6 +456,14 @@
   :realization
   (:verb ("hyperphosphorylate" "hyper-phosphorylate")
          :noun ("hyperphosphorylation" "hyper-phosphorylation")
+         :etf (svo-passive)))
+
+(define-category hypophosphorylate
+  :specializes phosphorylation-modification
+  :instantiates self
+  :realization
+  (:verb ("hypophosphorylate" "hypo-phosphorylate")
+         :noun ("hypophosphorylation" "hypo-phosphorylation")
    :etf (svo-passive)))
 
 (define-category unphosphorylate
