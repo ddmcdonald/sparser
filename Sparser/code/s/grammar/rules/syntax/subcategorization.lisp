@@ -717,14 +717,23 @@
            head)))))
 
 (defun assimilate-subcat-to-collection (head subcat-label item
-                                        &aux (heads (value-of 'items head)))
-  (declare (special head subcat-label item heads))
-  ;;(lsp-break "assimilate-subcat-to-collection")
+                                        &aux (heads (value-of 'items head))
+                                          (item-edge
+                                           (constituent-edge-with-value item)))
+  (declare (special *subcat-test* head subcat-label item heads))
+  (unless item-edge
+    (lsp-break "assimilate-subcat-to-collection has no edge for its item"))
+  ;; we use item-edge rather than item, since maximal projection of item
+  ;;  triggered by assignment to earlier conjuncts can change the item
+  ;;  before it is assigned to later conjuncts
+  
   (if *subcat-test*
       (loop for head-elt in heads
             always (subcategorized-variable head-elt subcat-label item))
-      (let ((interps (loop for head-elt in heads
-                           collect (assimilate-subcat head-elt subcat-label item))))
+      (let ((interps
+             (loop for head-elt in heads
+                   collect (assimilate-subcat head-elt subcat-label
+                                              (edge-referent item-edge)))))
         (when (loop for i in interps always i)
           (create-collection
            interps
