@@ -277,18 +277,31 @@ returning a new one.
         (when over-ridden-binding
           (setq individual
                 (perform-over-ridden-variable-disambiguation
-                 over-ridden-binding 'agent individual)))
+                 over-ridden-binding 'agent individual
+                 (or edge (constituent-edge-with-value individual)))))
         individual)))
 
+(defun current-constituent-edges ()
+  `(,.(and *left-edge-into-reference* (list *left-edge-into-reference*))
+      ,.(and *right-edge-into-reference* (list *right-edge-into-reference*))
+      ,@ *da-constituent-edges*))
+    
 
-(defun perform-over-ridden-variable-disambiguation (over-ridden-binding var/name i)
+(defun constituent-edge-with-value (value)
+  (let ((edges (current-constituent-edges)))
+    (loop for e in edges
+          when (eq (edge-referent e) value)
+          return e)))
+
+
+(defun perform-over-ridden-variable-disambiguation (over-ridden-binding var/name i edge)
   (declare (special *left-edge-into-reference* *right-edge-into-reference*))
 
   (let* ((new (find-or-make-lattice-description-for-cat-list (indiv-type i)))
 	 (over-ridden-var (binding-variable over-ridden-binding))
 	 (over-ridden-variables (dvar-variables over-ridden-var)))
     (when (null edge)
-      (warn "null edge in perform-over-ridden-variable-disambiguation, for binding ~s in sentence ~s~%"
+      (lsp-break "null edge in perform-over-ridden-variable-disambiguation, for binding ~s in sentence ~s~%"
             over-ridden-binding (when *sentence-in-core* (sentence-string *sentence-in-core*)))
       (return-from perform-over-ridden-variable-disambiguation i))
     (loop for binding in (reverse (indiv-binds i))
