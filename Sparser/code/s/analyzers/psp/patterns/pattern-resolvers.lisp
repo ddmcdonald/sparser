@@ -141,7 +141,9 @@
                              category::verb+ed
                              category::vp+ed))
                         ((member (cat-name (edge-form right-edge))
-                                 '(common-noun common-noun/plural proper-noun))
+                                 '(common-noun common-noun/plural proper-noun
+                                   n-bar ;; point-mutations are n-bar
+                                   ))
                          category::n-bar)
                         (t
                          category::adjective))
