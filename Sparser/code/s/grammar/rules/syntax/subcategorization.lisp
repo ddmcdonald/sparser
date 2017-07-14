@@ -698,21 +698,37 @@
 
 (defun assimilate-subcat (head subcat-label item)
   (declare (special *subcat-test*))
-  (let ((variable-to-bind
-         ;; test if there is a known interpretation of the combination
-         ;; using that label
-         (subcategorized-variable head subcat-label item)))
-    (cond
-     (*subcat-test* variable-to-bind)
-     (variable-to-bind
-      (collect-subcat-statistics head subcat-label variable-to-bind item)
-      (setq head (individual-for-ref head))
-      (when (is-pronoun? item)
-        (setq item
-              (condition-anaphor-edge
-               item subcat-label (var-value-restriction variable-to-bind))))
-      (setq head (bind-dli-variable variable-to-bind item head))
-      head))))
+  (if (is-basic-collection? head)
+      (assimilate-subcat-to-collection head subcat-label item)
+      (let ((variable-to-bind
+             ;; test if there is a known interpretation of the combination
+             ;; using that label
+             (subcategorized-variable head subcat-label item)))
+        (cond
+          (*subcat-test* variable-to-bind)
+          (variable-to-bind
+           (collect-subcat-statistics head subcat-label variable-to-bind item)
+           (setq head (individual-for-ref head))
+           (when (is-pronoun? item)
+             (setq item
+                   (condition-anaphor-edge
+                    item subcat-label (var-value-restriction variable-to-bind))))
+           (setq head (bind-dli-variable variable-to-bind item head))
+           head)))))
+
+(defun assimilate-subcat-to-collection (head subcat-label item
+                                        &aux (heads (value-of 'items head)))
+  (declare (special head subcat-label item heads))
+  ;;(lsp-break "assimilate-subcat-to-collection")
+  (if *subcat-test*
+      (loop for head-elt in heads
+            always (subcategorized-variable head-elt subcat-label item))
+      (let ((interps (loop for head-elt in heads
+                           collect (assimilate-subcat head-elt subcat-label item))))
+        (when (loop for i in interps always i)
+          (create-collection
+           interps
+           (itype-of (car heads)))))))
 
 (defparameter *show-one-anaphora* nil)
 
@@ -729,7 +745,8 @@
              pat-or-v/r))
         (source (when (subcat-pattern-p pat-or-v/r) (subcat-source pat-or-v/r)))
         (var (when (subcat-pattern-p pat-or-v/r) (subcat-variable pat-or-v/r)))
-        (override-category (override-label (itype-of item))))
+        (override-category (unless (symbolp item) ;; happens for '*lambda-var*
+                             (override-label (itype-of item)))))
     (when (and *trivial-subcat-test*
                (note-failed-tests item restriction))
       (return-from satisfies-subcat-restriction? t))
@@ -1042,7 +1059,8 @@
     (cond
       ((cdr pats)
        (setq variable (mapcar #'subcat-variable pats))
-       (if (itypep item category::number)
+       (if (and (not (symbolp item))
+                (itypep item category::number))
            (setq variable (car variable))
            ;; these are mostly bad parses with a dangling number -- we should collect them
            (push (list head label item
