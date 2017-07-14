@@ -196,7 +196,11 @@
    about how we interleave going up a main line and up from mixins,
    the 'raw' collected can't guarentee this so we do it manually."
   (declare (special *top-of-category-tree*))
-  (when category-list
+  (when (and category-list
+             ;; we have a subtle bug with PARAGRAPH being the interpretation
+             ;;  of a word, and also a form-category
+             (not (member category::form-category category-list)))
+    
     ;; can be null with mixins
     (let ((top *top-of-category-tree*)) ;; shorten the name
       (assert (memq top category-list) ()
