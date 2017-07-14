@@ -145,13 +145,16 @@
 
 (define-category increase
   :specializes positive-bio-control
-  :restrict ((object (:or biological scalar-quality)))
+  :restrict ((object (:or ;;bio-chemical-entity
+                      bio-entity ;; allows for "population"
+                      scalar-quality)))
   :realization
     (:verb ("increase" :third-singular "increases"  :past-tense "increased"
             :present-participle "increasing")
      :etf (svo-passive)
      :for object
      :in object
+     :in affected-process
      :of object
      :optional-object t))
 ;; DAVID -- why can't I put this in the previous definition -- the NOUN form gets clobbered
