@@ -1184,6 +1184,12 @@
    :of :object
    :with treatment))
 
+
+(define-category underline :specializes bio-rhetorical
+  :realization
+  (:verb "underline" ;; keyword: ENDS-IN-ED 
+         :etf (svo-passive)))
+
 (define-category understand :specializes bio-rhetorical
   :realization
   (:verb ("understand" :past-tense "understood")
