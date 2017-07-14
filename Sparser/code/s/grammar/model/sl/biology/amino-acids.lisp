@@ -376,14 +376,21 @@ We therefore have the special cases:
    :to object
    :within location))
 
-(define-category point-mutation :specializes mutation ;; amino-acid position on-protein
-  ;; if we had 'mutation' that might be better
-  ;; but these do involve a particular residue
+(define-mixin-category with-point-mutation
   :binds ((new-amino-acid . amino-acid)
           (original-amino-acid . amino-acid)
-          (position number)) ;; counting from the N terminus
+          (position number)))
+
+(define-category point-mutation :specializes mutation ;; amino-acid position on-protein
+  :mixins (with-point-mutation)
+  ;; if we had 'mutation' that might be better
+  ;; but these do involve a particular residue
+ ;; counting from the N terminus
   :lemma (common-noun "point mutation")
   :index (:permanent :sequential-keys new-amino-acid position))
+
+(define-category point-mutated-protein :specializes protein
+  :mixins (with-point-mutation))
 
 (defun reify-point-mutation (words pos-before pos-after)
   (let ((edges (treetops-between pos-before pos-after)))
@@ -409,7 +416,7 @@ We therefore have the special cases:
           (let* ((number (find-or-make-number ref2))
                  (interp (make-point-mutation aa2 aa1 number))
                  (wd (resolve/make (actual-characters-of-word pos-before pos-after words))))
-            (def-cfr/expr category::point-mutation
+            (def-cfr/expr category::point-mutated-protein
                 (list wd)
               :form category::common-noun
               :referent interp)
@@ -439,7 +446,7 @@ We therefore have the special cases:
               
 
 (defun make-point-mutation (original replacement residue-number)
-  (find-or-make-individual 'point-mutation
+  (find-or-make-individual 'point-mutated-protein
     :original-amino-acid original
     :new-amino-acid replacement
     :position residue-number))
