@@ -299,8 +299,9 @@
    (such as the 'that' of a relative clause), if so, we return
    true, since we expect the semantic content of the edge to be 
    on one of this edge's daughters."
-  (and (not (is-basic-collection? (edge-referent edge)))
-       (or (member (cat-name (edge-form edge)) '(subject-relative-clause thatcomp))
+  (and ;;(not (is-basic-collection? (edge-referent edge)))
+       (or (member (cat-name (edge-form edge))
+                   '(subject-relative-clause thatcomp))
            (and (eq 'there-exists (cat-name (edge-category edge)))
                 (not (eq 'question (cat-name (edge-form edge))))))))
 
@@ -416,15 +417,20 @@
    prior mention of i? Cannonical situation is walking up a head line,
    where each progressively higher edge is a (more specific) reference
    to i."
+  (declare (special edge))
   (cond ((null i)
          (error "null individual in subsumed-mention?"))
         ((and (member (edge-rule edge) '(make-predication-edge))
-              (typep (edge-mention (edge-left-daughter edge)) 'discourse-mention))
-         (return-from subsumed-mention? (edge-mention (edge-left-daughter edge))))
-        ((embedded-statement? edge)
+              (typep (edge-mention (edge-left-daughter edge))
+                     'discourse-mention))
+         (return-from subsumed-mention?
+           (edge-mention (edge-left-daughter edge))))
+        ((and (not (itypep i 'wh-question))
+              (embedded-statement? edge))
          (return-from subsumed-mention? nil)))
 
   (let ((un-embedded-edge (un-embed-edge edge)))
+    (declare (special un-embedded-edge))
     (when (and (not (eq edge un-embedded-edge))
                (typep (edge-mention un-embedded-edge) 'discourse-mention)
                (or (eq (edge-referent edge)(edge-referent un-embedded-edge))
@@ -434,12 +440,14 @@
       ;; as in "that the RBD of PI3KC2β binds nucleotide-free Ras"
       (return-from subsumed-mention?
         (edge-mention un-embedded-edge)))
-
     (setq edge un-embedded-edge)
-    (cond ((member (edge-rule edge)
+    (cond ((and (itypep i 'wh-question)
+                (typep (edge-mention edge) 'discourse-mention))
+           (edge-mention edge))
+          ((member (edge-rule edge)
                    '(:conjunction/identical-form-labels
                      :conjunction/identical-adjacent-labels))
-           nil)
+           (edge-mention edge))
           ((member (cat-name (edge-form edge))
                    '(subject-relative-clause thatcomp than-np))
            (safe-edge-mention (edge-right-daughter edge)))
@@ -470,8 +478,8 @@
                              collect e)))
                   (if (and subsumed-edges
                            (null (cdr subsumed-edges)))
-                    (edge-mention (car subsumed-edges))
-                    nil)))))))))
+                      (edge-mention (car subsumed-edges))
+                      nil)))))))))
 
 (defun subsumed-mention-edge? (i edge)
   "Is the edge a more-specific reference to i?"
