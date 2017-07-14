@@ -347,7 +347,10 @@
           (and (or (not (edge-p source))
                    (not (eq (edge-rule source) 'make-ns-pair)))
                (subsumed-mention? i source)))
-	 (m (if subsumed-mention
+	 (m (if (and subsumed-mention
+                     ;; "which accumulates and can act "
+                     ;;  tries to create a mention twice
+                     (typep subsumed-mention 'discourse-mention))
                 
                 (update-subsumed-mention subsumed-mention i source)
                 (let ((new-mention
@@ -449,7 +452,7 @@
                      :conjunction/identical-adjacent-labels))
            (edge-mention edge))
           ((member (cat-name (edge-form edge))
-                   '(subject-relative-clause thatcomp than-np))
+                   '(subject-relative-clause thatcomp))
            (safe-edge-mention (edge-right-daughter edge)))
           ((and (cfr-p (edge-rule edge))
                 (equal '(:funcall create-partitive-np left-referent right-referent)
