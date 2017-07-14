@@ -110,17 +110,17 @@ SP> (stree 51)
     e12 "binding domain"      p13 - p15   polyword
       "binding domain"
 |#
-(defparameter *da-constituents* nil
+(defparameter *da-constituent-edges* nil
   "This is used by make-maximal-projection to find the edge which corresponds to the maximal projection")
 (defun standardized-apply-da-function-action (rule)
-  (declare (special *current-da-rule* *da-constituents*))
+  (declare (special *current-da-rule* *da-constituent-edges*))
   (setq *current-da-rule* rule)
   (let* ((form (da-action-description rule))
          (fn (second form))
          (args (cddr form))
          (constituents
           (mapcar #'lookup-matched-tt args))
-         (*da-constituents* constituents))
+         (*da-constituent-edges* constituents))
     
     (when (symbolp fn)
       (unless (fboundp fn)
