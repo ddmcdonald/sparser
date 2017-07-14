@@ -363,6 +363,13 @@
   (declare (special *index-cards*))
   (when *scan-for-unsaturated-individuals*
     (sweep-for-unsaturated-individuals sentence))
+
+  ;; the top level fragments are maximal -- resolve binding ambiguities
+  ;;  with defaults where possible
+  (loop for e in (all-tts (starts-at-pos sentence) (ends-at-pos sentence))
+        when (and (edge-p e) (individual-p (edge-referent e)))
+        do
+          (make-maximal-projection (edge-referent e) e))
   (identify-salient-text-structure sentence)
   (when *do-anaphora*
     (handle-any-anaphora sentence))
@@ -444,61 +451,66 @@
   (loop for mention in mentions
         do (indra-post-process-mention mention sentence output-stream)))
 
-(defun indra-post-process-mention (mention sentence output-stream)
-  (let ((ref (base-description mention))
-        (necessary-vars nil))
-    (declare (special ref))
+(defun indra-post-process-mention (mention sentence output-stream
+                                   &optional (ippm-ref (base-description mention)))
+  (declare (special ippm-ref))
+  (let* ((necessary-vars (necessary-vars? ippm-ref))
+         (desc (if (and (c-itypep ippm-ref 'positive-bio-control)
+                        (individual-p (value-of 'affected-process ippm-ref))
+                        (itypep (value-of 'affected-process ippm-ref) 'post-translational-modification))
+                   ;;e.g. "Rho induces tyrosine phosphorylation of gamma-catenin"
+                   (bind-dli-variable 'agent
+                                      (value-of 'agent ippm-ref)
+                                      (value-of 'affected-process ippm-ref))
+                   ippm-ref)))
+
     ;; Revise the code to 1) allow for conjoined verbs (use c-itypep)
     ;;  and follwing on that 2) allow a single mention/edge to have more
     ;;  than one type of INDRA statement (MEK phosphorylates and activates ERK"
-    (when (or (c-itypep ref 'bio-activate)
+    (maybe-push-sem mention ippm-ref sentence necessary-vars output-stream desc)))
+
+(defun necessary-vars? (ref)
+  (cond ((or (c-itypep ref 'bio-activate)
               (c-itypep ref 'bio-inactivate)
               (c-itypep ref 'inhibit)
               (c-itypep ref 'gene-transcript-express)
               (c-itypep ref 'gene-transcript-over-express)
               (c-itypep ref 'transcribe))
-      (maybe-push-sem mention ref sentence '(object) output-stream))
+         '(object))
 
-    (when (c-itypep ref 'inhibit)
-      (maybe-push-sem mention ref sentence '(affected-process) output-stream))
-
-    (when (and (c-itypep ref 'positive-bio-control)
-               (individual-p (value-of 'affected-process ref))
-               (itypep (value-of 'affected-process ref) 'post-translational-modification))
-      ;;e.g. "Rho induces tyrosine phosphorylation of gamma-catenin"
-      (maybe-push-sem mention ref sentence '(agent) output-stream
-                      (bind-dli-variable 'agent
-                                         (value-of 'agent ref)
-                                         (value-of 'affected-process ref))))
-
-    (when (or (c-itypep ref 'translocation)
-              (c-itypep ref 'import)
-              (c-itypep ref 'export)
-              (c-itypep ref 'recruit))
-      (maybe-push-sem mention ref sentence '(object moving-object moving-object-or-agent-or-object agent) output-stream))
-
-    (when
-        (or
-         (c-itypep ref 'post-translational-modification)
-         (c-itypep ref 'methylation)
-         (and (is-basic-collection? ref)
-              (or ;;(lsp-break)
-               (c-itypep (value-of 'type ref)
-                         'post-translational-modification))))
-      (maybe-push-sem mention ref sentence '(substrate agent-or-substrate site) output-stream))
-    ))
+        ((c-itypep ref 'inhibit)
+         '(affected-process))
+        ((and (c-itypep ref 'positive-bio-control)
+              (individual-p (value-of 'affected-process ref))
+              (itypep (value-of 'affected-process ref) 'post-translational-modification))
+         '(agent))
+        ((or (c-itypep ref 'translocation)
+             (c-itypep ref 'import)
+             (c-itypep ref 'export)
+             (c-itypep ref 'recruit))
+         '(object moving-object moving-object-or-agent-or-object agent))
+        ((or (c-itypep ref 'post-translational-modification)
+             (c-itypep ref 'methylation)
+             (and (is-basic-collection? ref)
+                  (or (c-itypep (value-of 'type ref)
+                                'post-translational-modification))))
+         '(substrate agent-or-substrate site substrate-or-site))))
 
 (defun maybe-push-sem (mention ref sentence necessary-vars output-stream &optional desc)
-      
-  (when (loop for v in necessary-vars thereis (value-of v ref))
-    (push-sem->indra-post-process
-     mention
-     sentence
-     ;; is there any variable bound to the lambda expression
-     ;;   (thus a trace to containing item)
-     (loop for b in (indiv-binds ref) thereis (eq (binding-value b) '*lambda-var*))
-     output-stream
-     desc)))
+  (declare (special mention ref sentence necessary-vars output-stream desc))
+  (if (is-basic-collection? ref)
+      (loop for cref in (value-of 'items ref)
+            do
+              (indra-post-process-mention mention sentence output-stream cref))      
+      (when (loop for v in necessary-vars thereis (value-of v ref))
+        (push-sem->indra-post-process
+         mention
+         sentence
+         ;; is there any variable bound to the lambda expression
+         ;;   (thus a trace to containing item)
+         (loop for b in (indiv-binds ref) thereis (eq (binding-value b) '*lambda-var*))
+         output-stream
+         desc))))
 
 
 (defun c-itypep (c super)
@@ -519,6 +531,7 @@
 (defun push-sem->indra-post-process (mention sentence lambda-expansion output-stream &optional desc)
   (declare (special *indra-text* *predication-links-ht* lambda-expansion desc))
   (unless desc (setq desc (base-description mention)))
+  ;;(lsp-break "push-sem->indra-post-process")
   (let* ((lambda-expansion
           (when lambda-expansion (gethash desc *predication-links-ht*)))
          (desc-sexp (sem-sexp desc))
