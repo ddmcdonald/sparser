@@ -428,7 +428,8 @@
     (when *save-bio-processes* (save-bio-processes sentence))
     (write-semantics sentence *sentence-results-stream*))
   (when *indra-post-process*
-    (let ((mentions (find-all-mentions sentence)))
+    (let ((mentions ;;(find-all-mentions sentence)
+           (mentions-in-sentence-edges sentence)))
         (indra-post-process mentions sentence *sentence-results-stream*)))
   (when *localization-interesting-heads-in-sentence*
     (let ((colorized-sentence (split-sentence-string-on-loc-heads)))
@@ -452,10 +453,11 @@
         do (indra-post-process-mention mention sentence output-stream)))
 
 (defun indra-post-process-mention (mention sentence output-stream
-                                   &optional (ippm-ref (base-description mention)))
+                                   &optional
+                                     (ippm-ref (base-description mention))
+                                     (nec-vars? (necessary-vars? ippm-ref)))
   (declare (special ippm-ref))
-  (let* ((necessary-vars (necessary-vars? ippm-ref))
-         (desc (if (and (c-itypep ippm-ref 'positive-bio-control)
+  (let*  ((desc (if (and (c-itypep ippm-ref 'positive-bio-control)
                         (individual-p (value-of 'affected-process ippm-ref))
                         (itypep (value-of 'affected-process ippm-ref) 'post-translational-modification))
                    ;;e.g. "Rho induces tyrosine phosphorylation of gamma-catenin"
@@ -467,7 +469,7 @@
     ;; Revise the code to 1) allow for conjoined verbs (use c-itypep)
     ;;  and follwing on that 2) allow a single mention/edge to have more
     ;;  than one type of INDRA statement (MEK phosphorylates and activates ERK"
-    (maybe-push-sem mention ippm-ref sentence necessary-vars output-stream desc)))
+    (maybe-push-sem mention ippm-ref sentence necessary-vars output-stream desc nec-vars?)))
 
 (defun necessary-vars? (ref)
   (cond ((or (c-itypep ref 'bio-activate)
@@ -475,6 +477,9 @@
               (c-itypep ref 'inhibit)
               (c-itypep ref 'gene-transcript-express)
               (c-itypep ref 'gene-transcript-over-express)
+              (c-itypep ref 'gene-transcript-under-express)
+              (c-itypep ref 'gene-transcript-co-express)
+              (c-itypep ref 'gene-transcript-co-over-express)
               (c-itypep ref 'transcribe))
          '(object))
 
@@ -489,20 +494,34 @@
              (c-itypep ref 'export)
              (c-itypep ref 'recruit))
          '(object moving-object moving-object-or-agent-or-object agent))
+        ((c-itypep ref 'auto-phosphorylate)
+         '(agent))
+
         ((or (c-itypep ref 'post-translational-modification)
              (c-itypep ref 'methylation)
+             (c-itypep ref 'site)
              (and (is-basic-collection? ref)
                   (or (c-itypep (value-of 'type ref)
                                 'post-translational-modification))))
          '(substrate agent-or-substrate site substrate-or-site))))
 
-(defun maybe-push-sem (mention ref sentence necessary-vars output-stream &optional desc)
+(defun maybe-push-sem (mention ref sentence necessary-vars output-stream &optional desc nec-vars?)
   (declare (special mention ref sentence necessary-vars output-stream desc))
-  (if (is-basic-collection? ref)
-      (loop for cref in (value-of 'items ref)
-            do
-              (indra-post-process-mention mention sentence output-stream cref))      
-      (when (loop for v in necessary-vars thereis (value-of v ref))
+  (if (and (is-basic-collection? ref)
+           (c-itypep ref 'caused-bio-process))
+      (let ((external-bindings
+             (loop for b in (indiv-binds ref)
+                   unless (member (var-name (binding-variable b))
+                                  '(items type number))
+                   collect b)))
+        (loop for cref in (value-of 'items ref)
+              do
+                (indra-post-process-mention mention sentence output-stream
+                                            (if external-bindings
+                                                (do-external-bindings cref external-bindings)
+                                                cref)
+                                            (has-necessary-vars necessary-vars cref))))
+      (when (or nec-vars? (has-necessary-vars necessary-vars ref))
         (push-sem->indra-post-process
          mention
          sentence
@@ -511,6 +530,20 @@
          (loop for b in (indiv-binds ref) thereis (eq (binding-value b) '*lambda-var*))
          output-stream
          desc))))
+
+(defun do-external-bindings (i bindings)
+  (loop for b in bindings
+        do
+          (setq i (or (bind-dli-variable (binding-variable b)
+                                         (binding-value b)
+                                         i)
+                      i)))
+  i)
+
+
+(defun has-necessary-vars (necessary-vars ref)
+  (loop for v in necessary-vars when  (value-of v ref)
+        collect (list v (value-of v ref))))
 
 
 (defun c-itypep (c super)
@@ -557,4 +590,10 @@
   (if (not (consp list-struct))
       (eq atom list-struct)
       (loop for item in list-struct
-              thereis (contains-atom atom item))))
+            thereis (contains-atom atom item))))
+
+(defun contains-string (string list-struct)
+  (if (not (consp list-struct))
+      (equal string list-struct)
+      (loop for item in list-struct
+              thereis (contains-string string item))))
