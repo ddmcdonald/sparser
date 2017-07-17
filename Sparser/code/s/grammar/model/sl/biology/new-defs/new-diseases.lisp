@@ -1,7 +1,7 @@
 (in-package :sparser)
 
 
-(def-indiv-with-id bacterium "Chlamydia" "NCIT:C76271" :name "chlamydia")
+(def-indiv-with-id bacterium "Chlamydia" "NCIT:C76271" :name "chlamydia" :synonyms ("C. trachomatis"))
 (def-indiv-with-id bacterium "Erwinia" "NCIT:C127280" :name "dickeya") 
 (def-indiv-with-id bacterium "Francisella" "NCIT:C86396" :name "francisella") 
 (def-indiv-with-id bacterium "mycobacterium" "NCIT:C76369" :name "mycobacterium" :plural ("mycobacteriums" "mycobacteria")) 
