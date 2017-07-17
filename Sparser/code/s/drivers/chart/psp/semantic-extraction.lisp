@@ -927,6 +927,28 @@
 (defmethod traverse-sem ((v lambda-variable) fn)
   nil)
 
+(defun traverse-edges-below (e fn)
+  (when (edge-p e)
+    (funcall fn e)
+    (loop for ee in (edges-under e)
+          do (traverse-edges-below ee fn))))
+
+
+(defun mentions-in-sentence-edges (s)
+  (let ((*mentions* nil))
+    (declare (special *mentions*))
+    (loop for tt in (all-tts (starts-at-pos s) (ends-at-pos s))
+          when (edge-p tt)
+          do
+            (traverse-edges-below
+             tt
+             #'(lambda (e)
+                 (when (and (edge-p e)
+                            (typep (edge-mention e) 'discourse-mention))
+                   (push (edge-mention e) *mentions*)))))
+    *mentions*))
+          
+
 ;; a useful example -- traversal functions to be used with traverse-sem
 (defmethod find-biochemical-entities ((s sentence))
   (traverse-sem s #'find-bce)
