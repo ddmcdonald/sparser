@@ -1243,25 +1243,30 @@
      (assimilate-subcat vp :subject subj))
       
     ((and right-edge
-          (eq (edge-form right-edge) category::subordinate-clause))
+          (member (cat-name (edge-form right-edge))
+                  '(subordinate-clause vp+ed vg+ed)))
      (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
             (vg-edge
-             (if (eq 's (cat-name (edge-form (edge-right-daughter right-edge))))
-                 ;; case where subordinate conjunction is attached above the S
-                 ;; "...since p130 CAS , paxillin, and FAK  are already hyperphosphorylated.
-                 (edge-right-daughter (edge-right-daughter right-edge))
-                 (edge-right-daughter right-edge))))
+             (cond ((member (cat-name (edge-form right-edge)) '(vp+ed vg+ed))
+                    right-edge)
+                   ((eq 's (cat-name (edge-form (edge-right-daughter right-edge))))
+                    ;; case where subordinate conjunction is attached above the S
+                    ;; "...since p130 CAS , paxillin, and FAK  are already hyperphosphorylated.
+                    (edge-right-daughter (edge-right-daughter right-edge)))
+                   (t (edge-right-daughter right-edge)))))
        (when (edge-p vg-edge)
          ;; vg-edge is :long-span for cases where the
          ;;  subordinate clause is a conjunction
          ;; HANDLE THESE CORRECTLY
-         (if (is-passive? vg-edge)
-           (when (and (object-variables vg-edge)
-                      (loop for v in (object-variables vg-edge)
+         (if (or (is-passive? vg-edge)
+                 (member (cat-name (edge-form right-edge)) '(vp+ed vg+ed)))
+             (when 
+               (and (object-variables vg-edge)
+                        (loop for v in (object-variables vg-edge)
                               never (value-of (object-variable vg-edge) svp)))
-             (assimilate-subcat svp :object subj))
-           (when (missing-subject-vars (edge-referent vg-edge))
-             (assimilate-subcat svp :subject subj))))))
+               (assimilate-subcat svp :object subj))
+             (when (missing-subject-vars (edge-referent vg-edge))
+               (assimilate-subcat svp :subject subj))))))
       
     ((and right-edge (is-passive? right-edge))
      (assimilate-subcat vp :object subj))
@@ -1310,14 +1315,15 @@
       (*subcat-test*
        (and
         (or (can-fill-vp-subject? vp subj) ;; case for S not reduced relative
-            (and (can-fill-vp-object? vp subj)
+            (and (can-fill-vp-object? vp subj *left-edge-into-reference*)
                  ;; make sure this is a non-trivial relative clause (not just the verb)
                  (loop for binding in (indiv-old-binds vp)
                        thereis (not (member (var-name (binding-variable binding))
                                             '(past raw-text))))
                  ))))
       
-      ((can-fill-vp-object? vp subj)
+      ((can-fill-vp-object? vp subj *left-edge-into-reference*)
+       ;; since this is applied to vp+ed, there is no syntactic object present
        (setq vp
              (create-predication-by-binding (subcategorized-variable vp :object subj)
                                             subj vp
