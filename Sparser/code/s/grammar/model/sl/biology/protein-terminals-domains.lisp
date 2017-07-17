@@ -88,13 +88,17 @@ it is created from N-terminus to C-terminus.|#
 (define-category t-loop :specializes protein-domain
   :realization (:noun "t-loop"))
 
-(define-category s-motif :specializes protein-domain
+(define-category motif  :specializes protein-domain
+  :realization (:noun "motif"))
+
+(define-category s-motif  :specializes motif
   :realization (:noun "s-motif"))
 
 (define-category binding-domain :specializes protein-domain
   :binds ((bound-item bio-chemical-entity))
   :realization
-  (:noun ("binding domain" "binding region")
+  (:noun ("binding domain" "binding region"
+                           "binding motif")
          :m bound-item))
 
 (def-synonym binding-domain ;; as in "metal-binding center"    
