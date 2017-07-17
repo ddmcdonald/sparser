@@ -733,9 +733,12 @@
 (define-category gene-transcript-express :specializes caused-bio-process
     :binds ((location bio-location)
             (from biological))
-    :restrict ((agent (:or bio-entity cell-line)))
+    :restrict ((agent (:or bio-entity cell-line))
+               (object (:or gene peptide rna mutant)))
     :realization
-    (:verb "express"
+    (:verb ("express" :past-tense "expressed"
+                      :past-participle ("expressed" "expresseed") ;; block  typo problem for "SLAM is expresseed on ..."
+                      )
 	   :noun "expression"
 	   :etf (svo-passive)
            ))
@@ -745,12 +748,41 @@
             (from biological))
     :restrict ((agent (:or bio-entity cell-line)))
     :realization
-    (:verb "over-express"
+    (:verb ("over-express" :past-tense "over-expressed" :past-participle "over-expressed")
 	   :noun "over-expression"
 	   :etf (svo-passive)))
 
 (def-synonym gene-transcript-over-express
-    (:verb "overexpress" :noun "overexpression" :etf (svo-passive)))
+    (:verb ("overexpress" :past=tense "overexpressed" :past-participle "overexpressed")
+           :noun "overexpression" :etf (svo-passive)))
+
+(define-category gene-transcript-co-over-express :specializes caused-bio-process
+    :binds ((location bio-location)
+            (from biological))
+    :restrict ((agent (:or bio-entity cell-line)))
+    :realization
+    (:verb ("co-over-express" :past-tense "co-over-expressed" :past-participle "co-over-expressed")
+	   :noun "co-over-expression"
+	   :etf (svo-passive)))
+
+(def-synonym gene-transcript-over-express
+    (:verb ("cooverexpress" :past=tense "cooverexpressed" :past-participle "cooverexpressed")
+           :noun "cooverexpression" :etf (svo-passive)))
+
+
+(define-category gene-transcript-under-express :specializes caused-bio-process
+    :binds ((location bio-location)
+            (from biological))
+    :restrict ((agent (:or bio-entity cell-line)))
+    :realization
+    (:verb ("under-express" :past-tense "under-expressed" :past-participle "under-expressed")
+	   :noun "under-expression"
+	   :etf (svo-passive)))
+
+(def-synonym gene-transcript-under-express
+    (:verb ("underexpress" :past=tense "underexpressed" :past-participle "underexpressed")
+           :noun "underexpression" :etf (svo-passive)))
+
 
 (define-category gene-code :specializes caused-bio-process
     :binds ((location bio-location)
@@ -769,7 +801,7 @@
     :binds ((from biological)
             (other-protein (:or protein gene)))
     :realization
-    (:verb "co-express"
+    (:verb ("co-express" :past-tense "co-expressed" :past-particple "co-expressed")
 	   :noun "co-expression"
 	   :etf (svo-passive)
            :from from
@@ -778,7 +810,7 @@
            :with other-protein))
 
 (def-synonym gene-transcript-co-express
-             (:verb ("coexpress" :past-tense "coexpressed")
+             (:verb ("coexpress" :past-tense "coexpressed" :past-participle "coexpressed")
                     :etf (svo-passive)
                     :noun "coexpression"))
 
