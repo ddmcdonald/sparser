@@ -356,6 +356,11 @@ for ambiguous words"
                     category::n-bar))
   (or *l-triple-tests*
       (setq *l-triple-tests*
+            (loop for v in '(category::vg category::vg+ing category::infinitive)
+                 append
+                    (loop for n in (cons category::np *n-bar-categories*)
+                          collect (list (eval v) (eval n)))))))
+#|
             `((,category::vg  ,category::np)
               (,category::vg  ,category::n-bar)
               ;; have to allow for participles such as
@@ -367,6 +372,7 @@ for ambiguous words"
               ;; them to compete for objects
               (,category::infinitive  ,category::np)
               (,category::infinitive  ,category::n-bar)))))
+|#
 
 (defparameter *rule-with-non-category* nil)
 
@@ -390,7 +396,8 @@ for ambiguous words"
       (or
        (eq 'category::syntactic-there l-triple-left) ;; competing against a "there BE"
        (and
-        (member l-triple-rhs (l-triple-tests) :test #'equal)
+        (competition-against-clausal-object? l-triple-rhs)
+        
         ;; likely competition against a relative clause or a main clause
         ;;  accept r-triple as a winner if if is a rightward extension of and NP
         ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
@@ -400,12 +407,15 @@ for ambiguous words"
                       (get-tag :loc-pp-complement (itype-of (edge-referent (second l-triple)))))
               (not (some-edge-satisfying? (edges-after r-triple-3) #'pp?)))
          (not (member (cat-name (edge-form r-triple-3))
-                      '(pp
+                      '(pp vg+ing ;;and prevent GTP loading"
                         ;; "To validate the use of an in vitro system to dissect the mechanism of Ras regulation.
                         to-comp where-relative-clause when-relative-clause
                         subject-relative-clause comma-separated-subject-relative-clause)))))
        (losing-to-leftwards-pp? l-triple r-triple)
        ))))
+
+(defun competition-against-clausal-object? (l-triple-rhs)
+  (member l-triple-rhs (l-triple-tests) :test #'equal))
 
 (defun losing-to-leftwards-pp? (l-triple r-triple)
   (declare (special category::adjective category::as))
