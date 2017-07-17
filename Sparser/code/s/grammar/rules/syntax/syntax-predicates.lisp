@@ -116,9 +116,15 @@
             (typep *current-chunk* 'chunk)
             (memq 'ng (chunk-forms *current-chunk*))))))
        
-(defun can-fill-vp-object? (vp subj)
-  (and ;; vp has a bound subject -- NP can fill object
-   (not (can-fill-vp-subject? vp subj))
+(defun can-fill-vp-object? (vp subj subj-edge &aux (left-edge (edge-to-its-left subj-edge)))
+  (and
+   ;; this is only called in the context of NP VP+ED -- so we prefer reduced relative clause
+   ;;  with the NP having an OBJECT reading
+   ;; vp has a bound subject -- NP can fill object
+   ;;(not (can-fill-vp-subject? vp subj))
+   ;; block relativization of "we realized", and of "that X VP+ED ..."
+   (not (and (edge-p subj-edge) (eq (cat-name (edge-category subj-edge)) 'pronoun/first/plural)))
+   (not (and (edge-p left-edge) (eq (cat-name (edge-category left-edge)) 'that)))
    (not (intransitive? (itype-of vp)))
    (subcategorized-variable vp :object subj)))
 
