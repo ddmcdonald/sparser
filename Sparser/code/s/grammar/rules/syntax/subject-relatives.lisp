@@ -203,22 +203,32 @@
   (let ((before (edges-before (left-edge-for-referent))))
     (declare (special before))
     (loop for e in before
-       thereis
-         (let ((ref (edge-referent e)))
-           (when (and (null ref)
-                      (not (member (cat-name (edge-category e))
-                                   '(apostrophe-s parentheses semicolon)))
-                      *break-on-null-ref-in-context-needs-clause*)
-             (break "null ref in context-needs-clause -- quiet this by ~
+          thereis
+            (let ((ref (edge-referent e)))
+              (when (and (null ref)
+                         (not (member (cat-name (edge-category e))
+                                      '(apostrophe-s parentheses semicolon)))
+                         *break-on-null-ref-in-context-needs-clause*)
+                (break "null ref in context-needs-clause -- quiet this by ~
                      setting *break-on-null-ref-in-context-needs-clause* to nil"
-                    (sentence-string *sentence-in-core*)))
-           (and ref
-                (or (itypep ref 'that)
-                    (itypep ref 'whether)
-                    (eq (edge-category e) category::do) ;; auxiliary --
-                    ;; see "Does phosphorylated BRAF being high precede phosphorylated MAP2K1 reaching... level?"
-                    (itypep ref 'precede)
-                    (itypep ref 'follow))))))) ;; need to generalize
+                       (sentence-string *sentence-in-core*)))
+              (and ref
+                   ;; these previous items want a following clause
+                   (or (itypep ref 'that)
+                       (itypep ref 'whether)
+                       (eq (edge-category e) category::do) ;; auxiliary --
+                       ;; see "Does phosphorylated BRAF being high precede phosphorylated MAP2K1 reaching... level?"
+                       (itypep ref 'precede)
+                       (itypep ref 'follow))
+                   ;;these items would allow an NP to make a clause
+                   (not
+                    (and *right-edge-into-reference*
+                         (loop for e in
+                                 (edges-after *right-edge-into-reference*)
+                               thereis
+                                 (member (cat-name (edge-form e))
+                                         '(vg vp vp+passive vp+past)))))
+                   ))))) ;; need to generalize
              
 
 (defun apply-object-relative-clause (np-ref vp-ref)
