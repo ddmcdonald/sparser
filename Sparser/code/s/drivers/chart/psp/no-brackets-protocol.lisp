@@ -455,9 +455,10 @@
 (defun indra-post-process-mention (mention sentence output-stream
                                    &optional
                                      (ippm-ref (base-description mention))
-                                     (nec-vars? (necessary-vars? ippm-ref)))
+                                     (nec-vars? nil))
   (declare (special ippm-ref))
-  (let*  ((desc (if (and (c-itypep ippm-ref 'positive-bio-control)
+  (let*  ((necessary-vars (necessary-vars? ippm-ref))
+          (desc (if (and (c-itypep ippm-ref 'positive-bio-control)
                         (individual-p (value-of 'affected-process ippm-ref))
                         (itypep (value-of 'affected-process ippm-ref) 'post-translational-modification))
                    ;;e.g. "Rho induces tyrosine phosphorylation of gamma-catenin"
