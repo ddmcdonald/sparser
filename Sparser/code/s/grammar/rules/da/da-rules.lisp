@@ -320,18 +320,21 @@
     ;; here. /// Need to take a serious look at that
     ;; matching code
     (throw :no-da-pattern-matched :trie-exhausted))
-  (let* ((s-subj-var (subject-variable s-edge))
-         (vp-subj-var (subject-variable vp-edge))
+  (let* ((s-subject (get-subject-from-s-edge s-edge))
          (s-ref (edge-referent s-edge))
          (vp-ref (edge-referent vp-edge)))
-    (when (and s-ref vp-ref 
-               s-subj-var vp-subj-var
-               (not (value-of vp-subj-var vp-ref)))
-      (let ((subject (value-of s-subj-var s-ref)))
-        (when subject
-          (setq vp-ref (bind-dli-variable vp-subj-var subject vp-ref))
-          (update-edge-mention-referent vp-edge vp-ref)
-          )))
+    (when (and s-ref vp-ref s-subject)
+      (let ((vp-var
+             (if (is-passive? vp-edge)
+                        (subcategorized-variable vp-ref :object s-subject)
+                        (subcategorized-variable vp-ref :subject s-subject))))
+        (cond (vp-var
+               (setq vp-ref (bind-dli-variable vp-var s-subject vp-ref))
+               (set-edge-referent vp-edge vp-ref))
+              (t (warn "couldnt attach S subject ~s as subject of conjoined vp ~s in ~s~%"
+                       s-subject
+                       vp-ref
+                       (sentence-string *sentence-in-core*))))))
     ;; regardless of whether we could set the subject of the
     ;; vp we should create the edge
     ;; This returns a edge and uses referent-of-two-conjoined-edges 
@@ -350,6 +353,10 @@
 
 (define-debris-analysis-rule conjoin-clause-and-vp+passive
   :pattern ( s conjunction vp+passive )
+  :action (:function conjoin-clause-and-vp+passive first second third))
+
+(define-debris-analysis-rule conjoin-clause-and-vg+passive
+  :pattern ( s conjunction vg+passive )
   :action (:function conjoin-clause-and-vp+passive first second third))
 
 (defun conjoin-clause-and-vp+passive (s-edge  and vp-edge)
@@ -1059,6 +1066,12 @@
            ;; field keep them connected in the web graph
            s-vp+ed first second))
 
+(define-debris-analysis-rule vp-ing-vp+ed
+  :pattern (vp+ing vp+ed )
+  :action (:function ;; providing all edges should let the constituents
+           ;; field keep them connected in the web graph
+           s-vp+ed first second))
+
 (defun s-vp+ed (s-edge vp+ed)
   (or
    (let* ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?))
@@ -1407,8 +1420,12 @@
       (let ((collection
              (make-an-individual 'collection
                                  :items `(,(edge-referent target)
-                                           ,(edge-referent np-1)
-                                           ,(edge-referent np-2))
+                                           ,(make-maximal-projection
+                                             (edge-referent np-1)
+                                             np-1)
+                                           ,(make-maximal-projection
+                                             (edge-referent np-2)
+                                             np-2))
                                  :number 3
                                  :type (itype-of (edge-referent target)))))
         (setq collection
@@ -1479,7 +1496,9 @@
           (when target
             (make-an-individual 'collection
                                 :items `(,(edge-referent target)
-                                          ,(edge-referent np))
+                                          ,(make-maximal-projection
+                                            (edge-referent np)
+                                            np))
                                 :number 2
                                 :type (itype-of (edge-referent target))))))
     
