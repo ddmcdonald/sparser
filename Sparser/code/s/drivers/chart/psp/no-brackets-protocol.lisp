@@ -429,7 +429,8 @@
     (write-semantics sentence *sentence-results-stream*))
   (when *indra-post-process*
     (let ((mentions ;;(find-all-mentions sentence)
-           (mentions-in-sentence-edges sentence)))
+           (remove-collection-item-mentions
+            (mentions-in-sentence-edges sentence))))
         (indra-post-process mentions sentence *sentence-results-stream*)))
   (when *localization-interesting-heads-in-sentence*
     (let ((colorized-sentence (split-sentence-string-on-loc-heads)))
@@ -470,9 +471,9 @@
     ;; Revise the code to 1) allow for conjoined verbs (use c-itypep)
     ;;  and follwing on that 2) allow a single mention/edge to have more
     ;;  than one type of INDRA statement (MEK phosphorylates and activates ERK"
-    (maybe-push-sem mention ippm-ref sentence necessary-vars output-stream desc nec-vars?)))
+    (maybe-push-sem Mention ippm-ref sentence necessary-vars output-stream desc nec-vars?)))
 
-(defun necessary-vars? (ref)
+(defun necessary-vars? (Ref)
   (cond ((or (c-itypep ref 'bio-activate)
               (c-itypep ref 'bio-inactivate)
               (c-itypep ref 'inhibit)
@@ -482,10 +483,12 @@
               (c-itypep ref 'gene-transcript-co-express)
               (c-itypep ref 'gene-transcript-co-over-express)
               (c-itypep ref 'transcribe))
-         '(object))
+         '(object affected-process))
 
         ((c-itypep ref 'inhibit)
          '(affected-process))
+        ((c-itypep ref 'site)
+         '(process))
         ((and (c-itypep ref 'positive-bio-control)
               (individual-p (value-of 'affected-process ref))
               (itypep (value-of 'affected-process ref) 'post-translational-modification))
@@ -496,11 +499,12 @@
              (c-itypep ref 'recruit))
          '(object moving-object moving-object-or-agent-or-object agent))
         ((c-itypep ref 'auto-phosphorylate)
-         '(agent))
+         '(agent substrate))
 
         ((or (c-itypep ref 'post-translational-modification)
              (c-itypep ref 'methylation)
              (c-itypep ref 'site)
+             (c-itypep ref 'residue-on-protein)
              (and (is-basic-collection? ref)
                   (or (c-itypep (value-of 'type ref)
                                 'post-translational-modification))))
@@ -513,8 +517,10 @@
       (let ((external-bindings
              (loop for b in (indiv-binds ref)
                    unless (member (var-name (binding-variable b))
-                                  '(items type number))
+                                  '(raw-text items type number))
                    collect b)))
+        (declare (special external-bindings))
+        ;;(lsp-break "maybe-push-sem")
         (loop for cref in (value-of 'items ref)
               do
                 (indra-post-process-mention mention sentence output-stream
