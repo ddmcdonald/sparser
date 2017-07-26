@@ -272,12 +272,26 @@ returning a new one.
                       (member (var-name (binding-variable binding))
                               '(agent-or-object
                                 agent-or-substrate
-                                substrate-or-kinase)))
+                                substrate-or-kinase
+                                kinase-or-substrate)))
+                   do (return binding)))
+            (existing-substrate-binding
+             (loop for binding in (binds individual)
+                   when
+                     (and (eq (var-name (binding-variable binding)) 'site)
+                          (individual-p (binding-value binding))
+                          (value-of 'substrate (binding-value binding)))
                    do (return binding))))
         (when over-ridden-binding
           (setq individual
                 (perform-over-ridden-variable-disambiguation
-                 over-ridden-binding 'agent individual
+                 over-ridden-binding
+                 (if (or existing-substrate-binding
+                         ;; for CHK phosphorylation site -- CHK is the kinase in this case
+                         (value-of 'process individual))
+                     'substrate
+                     'agent)
+                 individual
                  (or edge (constituent-edge-with-value individual)))))
         individual)))
 
