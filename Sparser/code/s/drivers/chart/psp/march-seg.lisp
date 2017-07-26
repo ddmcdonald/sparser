@@ -204,6 +204,7 @@
 (defun priority-triple? (triple chunk)
   (declare (special *n-bar-categories*))
   (or (priority-rule? (car triple))
+      (domain-priority-triple? triple)
       (and (memq 'ng (chunk-forms chunk))
            (edge-p (second triple))
            (edge-p (third triple))
@@ -220,6 +221,11 @@
             (format t "~%~s in ~s~%" triple chunk) ;; this gives an indication of where internal NG priority rules fire
             )
            )))
+
+(defun domain-priority-triple? (triple)
+  (and (itypep (edge-referent (second triple)) 'protein)
+       (itypep (edge-referent (third triple)) 'post-translational-modification)))
+               
 
 #+ignore
 (defun select-best-triple (triples chunk)
