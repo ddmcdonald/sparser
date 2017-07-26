@@ -298,7 +298,9 @@
               (maybe-record-localization-interesting-heads edge referent)
               
               (when (or
-                     (and  (eq (edge-right-daughter edge) :SINGLE-TERM)
+                     (and  (member (edge-right-daughter edge)
+                                   '(:SINGLE-TERM :long-span))
+                           ;; :long-span for polywords ;ic "cyclin D1"
                            (individual-p referent))
                      (itypep (edge-referent edge) 'residue-on-protein))
                 (maybe-record-bio-chemical-entity-strings str referent)
@@ -944,9 +946,25 @@
              tt
              #'(lambda (e)
                  (when (and (edge-p e)
-                            (typep (edge-mention e) 'discourse-mention))
+                            (typep (edge-mention e) 'discourse-mention)
+                            (or
+                             (not (itypep (edge-mention e) 'collection))
+                             (loop for dep in (dependencies (edge-mention e))
+                                   thereis (not (member (var-name (car dep))
+                                                        '(raw-text items type number))))))
                    (push (edge-mention e) *mentions*)))))
     *mentions*))
+
+(defun remove-collection-item-mentions (mentions)
+  (let ((item-refs nil))
+    (declare (special item-refs))
+    (loop for m in mentions when (is-basic-collection? (edge-referent (mention-source m)))
+          do
+            (loop for item in (value-of 'items (edge-referent (mention-source m)))
+                  do (push item item-refs)))
+    ;;(lsp-break "foo")
+    (loop for m in mentions unless (member (edge-referent (mention-source m)) item-refs)
+            collect m)))
           
 
 ;; a useful example -- traversal functions to be used with traverse-sem
