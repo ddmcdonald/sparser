@@ -20,7 +20,8 @@
   :mixins (on-substrate with-specified-amino-acid)               
   :binds (;; allow variant to pick up "phosphorylated fraction"
 	  (site (:or molecular-location residue))) ;; which is attached here
-  :restrict ((agent (:or protein bio-complex bio-mechanism bio-activate peptide )) ;;bio-process
+  :restrict ((agent (:or protein bio-complex bio-mechanism bio-activate peptide component;; this is for "fraction of ..."
+                         )) ;;bio-process
 	     (object blocked-category)) ;; trying to BLOCK object by giving it an impossible class
   :realization 
   (:noun ("post-translational modification" "PTM" 
