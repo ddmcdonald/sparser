@@ -10,7 +10,7 @@ to be moved to more general places and be modified to no longer
 be biology specific, since they aren't. |#
 
 
-
+(define-adverb "so")
 (define-adverb "barely")
 (define-adverb "a bit more")
 (define-adverb "even")
