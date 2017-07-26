@@ -284,7 +284,7 @@
 
 
 (defmethod ng-compatible? ((e edge) evlist)
-  (declare (special category::adverb category::also category::be category::have
+  (declare (special e category::adverb category::also category::be category::have
                     category::modal
                     category::common-noun category::det category::ordinal
                     category::parentheses category::pronoun
@@ -295,6 +295,7 @@
                     word::comma))
   (let ((edges (ev-top-edges (car evlist)))
         (eform (when (edge-p e) (edge-form e))))
+    (declare (special edges eform))
     (cond
       ((plural-noun-and-present-verb? e)
        (plural-noun-not-present-verb e))
@@ -350,17 +351,17 @@
                         (not (eq (edge-form edge) category::det))
                         (not (eq (edge-form edge) category::quantifier)))))
              (t t)))
-      ((and
-        (eq eform category::verb+ed)
-        ;; don't allow a verb form after a parenthetical -- most likely a relative clause or a main clause
-        ;;"RNA interference (RNAi) blocked MEK/ERK activation."
-        (or
-         (preceding-adverb-preceded-by-ng edges)
-         ;; too tight, but probably OK
-         ;; blocks "interaction eventually influencing ecm - driven cell motility"
-         (eq (edge-category e) category::have)
-         (loop for edge in edges thereis (eq (edge-category edge) category::parentheses))))
-       nil)
+      ((eq eform category::verb+ed)
+       ;; don't allow a verb form after a parenthetical -- most likely a relative clause or a main clause
+       ;;"RNA interference (RNAi) blocked MEK/ERK activation."
+       (if (or
+            (preceding-adverb-preceded-by-ng edges)
+            ;; too tight, but probably OK
+            ;; blocks "interaction eventually influencing ecm - driven cell motility"
+            (eq (edge-category e) category::have)
+            (loop for edge in edges thereis (eq (edge-category edge) category::parentheses)))
+           nil
+           t))
       ((ng-compatible? (edge-form e) edges)))))
 
 (defun preceding-adverb-preceded-by-ng (edges)
@@ -979,8 +980,6 @@ than a bare "to".  |#
           (not
            (eq (edge-category edge) category::have))
           (eq 'category::verb+ed (cat-symbol (edge-form edge)))
-          ;; new code -- don't accept a past participle immediately following a noun 
-          ;; -- most likely to be a main verb or a reduced relative in this case
           (let*
               ((ev-edge (when (car ev-list)(car (ev-top-edges (car ev-list))))) ; 
                (prev-edge (when ev-edge (edge-just-to-left-of ev-edge))))
@@ -1002,12 +1001,22 @@ than a bare "to".  |#
                        *suppressed-verb+ed*))
                nil)
               (t t)))
+          ;; new code -- don't accept a past participle immediately following a noun 
+          ;; -- most likely to be a main verb or a reduced relative in this case
           (or
            (loop for e in (ev-top-edges (car ev-list))
               thereis
                 (and
                  (edge-form e)
-                 (memq (cat-symbol (edge-form e)) *n-bar-categories*)))
+                 (and (memq (cat-symbol (edge-form e)) *n-bar-categories*) 
+                      ;;MAJOR CHANGE --  VERB+ED IS LIKELY TO BE PART
+                      ;;  OF THE NG IF IT IS PRECEDED BY A PROPER NOUN
+                      ;;  AS IN "HDAC2 induced phosphorylation"
+                      ;; not quite right
+                      ;; "PD184352 and sorafenib inhibited ERK in all of these lines"
+                      ;; ""recombinant COT induced pThr202/Tyr204 phosphorylation of ERK1 in vitro"
+                      ;;(not (memq (cat-name (edge-form e)) '(proper-noun proper-name)))
+                      )))
            (and ;; e.g. "EGF strongly activated EGFR"
             (cadr ev-list)
             (loop for e in (ev-top-edges (cadr ev-list))
