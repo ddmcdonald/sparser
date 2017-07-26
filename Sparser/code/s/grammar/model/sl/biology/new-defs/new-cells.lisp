@@ -2224,7 +2224,7 @@
 (def-indiv-with-id cell-line "kbp" "CVCL:1Q74" :name "KB-P" :no-plural t) 
 (def-indiv-with-id cell-line "jck" "CVCL:M270" :name "JCK" :no-plural t) 
 (def-indiv-with-id cell-line "irs1SF" "CVCL:K038" :name "CHO irs1SF" :no-plural t) 
-(def-indiv-with-id cell-line "nef" "CVCL:D900" :name "NEF" :no-plural t) 
+;; (def-indiv-with-id cell-line "nef" "CVCL:D900" :name "NEF" :no-plural t)  interferes with protein nef
 (def-indiv-with-id cell-line "nab" "CVCL:9T72" :name "NAB" :no-plural t) 
 (def-indiv-with-id cell-line "mtH" "CVCL:9W67" :name "MTh" :no-plural t) 
 (def-indiv-with-id cell-line "mpkCCDc14" "CVCL:F596" :name "mpkCCDc14" :no-plural t) 

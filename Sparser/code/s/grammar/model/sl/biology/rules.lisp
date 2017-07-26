@@ -46,6 +46,19 @@
   category::top) ;; overly high type bound to.
 ;; used by knit-parens-into-neighbor 
 
+#|
+(def-cfr phosphorylate (amino-acid phosphorylate)
+  :form category::np
+  :referent (:function assimilate-object right-edge left-edge))
+
+(def-cfr hypophosphorylate (amino-acid hypophosphorylate)
+  :form category::np
+  :referent (:function assimilate-object right-edge left-edge))
+
+(def-cfr hyperphosphorylate (amino-acid hyperphosphorylate)
+  :form category::np
+  :referent (:function assimilate-object right-edge left-edge))
+|#
 
 ;;; no-space pattern
 

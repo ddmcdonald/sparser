@@ -23,7 +23,6 @@
       :m residue
       :m kinase
       :m substrate
-      ;;:m kinase-or-substrate
       :of process
       :for process
       :in substrate

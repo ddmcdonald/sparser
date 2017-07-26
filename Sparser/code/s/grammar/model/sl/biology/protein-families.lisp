@@ -763,6 +763,8 @@
 (def-family "alpha 1" :members ("UP:P68133" "UP:Q03692"))
 (def-family "alpha-2-antiplasmin" :members ("UP:P08697" "UP:P28800"))
 (def-family "alpha-internexin" :members ("UP:Q08DH7" "UP:Q16352"))
+;; BAD!!
+#+ignore
 (def-family "antigen" :members ("UP:O43653" "UP:P01889" "UP:P04008" "UP:P04009" "UP:P04216" "UP:P04222" "UP:P04233" "UP:P04234" "UP:P05109" "UP:P05533" "UP:P06731" "UP:P07288" "UP:P08473" "UP:P11274" "UP:P11836" "UP:P11912" "UP:P12004" "UP:P12956" "UP:P15941" "UP:P16410" "UP:P16422" "UP:P18289" "UP:P24063" "UP:P25063" "UP:P29508" "UP:P31483" "UP:P52912" "UP:Q02223" "UP:Q04609" "UP:Q14254" "UP:Q64896" "UP:Q64897" "UP:Q86TM3" "UP:Q86VB7" "UP:Q8BIF2" "UP:Q96DU3" "UP:Q9BY66" "UP:Q9NXZ1" "UP:Q9UJW2"))
 (def-family "aquaporin" :members ("UP:Q25074" "UP:Q7KY01" "UP:Q9V5Z7"))
 (def-family "arf-1" :members ("UP:P84077" "UP:Q9ULH1"))
@@ -945,9 +947,9 @@
 (def-family "p31" :members ("UP:P36543" "UP:Q9NZ43"))
 (def-family "p36" :members ("UP:P07355" "UP:Q9H0P0"))
 (def-family "p38 SAPK" :members ("UP:Q16539" "UP:Q15759"))
-(def-family "p38 mitogen activated protein kinase" :members ("UP:P27638" "UP:Q16539"))
-(def-family "p38" :members ("UP:O75791" "UP:P46108" "UP:Q16539"))
-(def-family "p38" :members ("UP:O75791" "UP:P46108"))
+(def-family "p38 mitogen activated protein kinase" :members ("UP:P53778" "UP:O15264" "UP:P46108" "UP:Q15759"
+                                                                         "UP:Q16539" "P53778")
+            :synonyms ("p38 MAP kinase" "P38 MAP kinase" "p38 MAPK"))
 (def-family "p39" :members ("UP:P05412" "UP:P61421"))
 (def-family "p4" :members ("UP:Q00223" "UP:Q01780" "UP:Q9HC77"))
 (def-family "p4" :members ("UP:Q01780" "UP:Q9HC77"))

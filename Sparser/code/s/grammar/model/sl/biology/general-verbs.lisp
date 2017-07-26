@@ -100,6 +100,14 @@
          :etf (svo-passive)
          :noun "application"))
 
+(define-category arrest ;; was drug-inhibit but inhibit fits answer key
+  :specializes negative-bio-control
+  :realization 
+  (:verb ("arrest" :past-tense "arrested" 
+                    :present-participle "arresting" )
+   :noun "arrest"
+   :etf (svo-passive)))
+
 
 ;; overnight
 (define-category assume :specializes bio-rhetorical

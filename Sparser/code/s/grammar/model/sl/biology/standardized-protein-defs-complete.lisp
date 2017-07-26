@@ -9599,7 +9599,7 @@
 (define-protein "UP:Q37374" ("COX-3" "COX3" "XFAM:PF00510.16")) 
 (define-protein "UP:Q37874" ("ORF45" "Uncharacterized protein in rusA 3'region")) 
 (define-protein "UP:Q38199" ("GIN" "XFAM:PF10764.7" "gin")) 
-(define-protein "UP:Q38424" ("GO:0003720" "telomerase activity" "telomerases")) 
+(define-protein "UP:Q38424" ("GO:0003720" "telomerases")) 
 (define-protein "UP:Q38850" ("ATM-2")) 
 (define-protein "UP:Q38914" ("ANT" "XFAM:PF03374.12")) 
 (define-protein "UP:Q38SD2" ("HGNC:18608" "LRRK1" "Lrrk1" "leucine rich repeat kinase 1")) 
