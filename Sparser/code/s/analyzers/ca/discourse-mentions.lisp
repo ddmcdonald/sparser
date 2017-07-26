@@ -487,9 +487,28 @@
 (defun subsumed-mention-edge? (i edge)
   "Is the edge a more-specific reference to i?"
   (and (edge-p edge)
-       (is-dl-child? i (edge-referent edge))
        (not (eq t (edge-mention edge)))
+       (or
+        (is-dl-child? i (edge-referent edge))
+        ;;(subsumed-with-disambiguation i (edge-referent edge))
+        )
        edge))
+
+
+(defun subsumed-with-disambiguation (extended base)
+  (let ((extended-binds (indiv-binds extended))
+        (base-binds (indiv-binds base)))
+    (loop for eb in (cdr extended-binds)
+          as bb in base-binds
+          always
+            (let ((eb-var (binding-variable eb))
+                  (bb-var (binding-variable bb)))
+              
+              (and (eq (binding-value eb) (binding-value bb))
+                   (or (eq eb-var bb-var)
+                       (and (disjunctive-lambda-variable-p bb-var)
+                            (member eb-var (dvar-variables bb-var)))))))))
+  
 
 (defun safe-edge-mention (edge)
   "return the edge-mention of the edge, provided that it is a discourse-mention"
