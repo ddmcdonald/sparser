@@ -1451,7 +1451,9 @@
 (defun make-subordinate-clause (conj clause)
   (declare (special category::pp conj clause))
   (if *subcat-test*
-      t
+       (not (and (member (cat-name (edge-form (right-edge-for-referent))) '(vp+ed vg+ed vp vg))
+                 (member (cat-name (edge-category (left-edge-for-referent))) '(so))))
+      ;; some subordinate conjunctions like SO cannot apply between subject and vp
       (let ((cl
              (or
               (when (use-methods)
