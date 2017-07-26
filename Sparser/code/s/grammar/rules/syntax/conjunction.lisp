@@ -409,6 +409,9 @@
          ;; to NPs and clauses -- the real fix should be
          ;; at the point of the break...
          nil)
+        ((eq (edge-referent edge-before) (edge-referent edge-after))
+         ;; "p53 and p53 transaction" where it is parsed as "(p53 and p53) transactivation"
+         nil)
         ((or (and (eq label-before label-after)
                   (or (not (eq form-before category::vp+ed))
                       (eq form-after category::vp+ed))
