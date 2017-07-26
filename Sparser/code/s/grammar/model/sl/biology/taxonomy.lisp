@@ -271,6 +271,7 @@
 (def-synonym bio-grouping (:noun "subset"))
 (def-synonym bio-grouping (:noun "collection"))
 (def-synonym bio-grouping (:noun "family"))
+(def-synonym bio-grouping (:noun "superfamily"))
 
 
 
@@ -907,13 +908,11 @@
 
 
 
-(define-category gene :specializes bio-chemical-entity
-  :instantiates :self
-  :binds ((:expresses . protein))
-  :index (:permanent :key name)
-  :lemma (:common-noun "gene")
+(define-category gene :specializes dna
+  :binds ((expresses  protein))
   :realization
-    (:common-noun name))
+  (:noun "gene"
+         :m expresses))
 
 (define-category oncogene :specializes gene 
   :instantiates :self
@@ -1386,7 +1385,7 @@ the aggregate across the predicate it's in. |#
   :binds ((position number)) ;; counting from the N terminus
   :index (:permanent :sequential-keys amino-acid position)
   :realization
-     (:noun "residue"
+     (:noun ("residue" :plural "residues")
       :of substrate
       :on substrate
       :in substrate
