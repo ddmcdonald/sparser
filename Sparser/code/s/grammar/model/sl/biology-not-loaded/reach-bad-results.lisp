@@ -1,0 +1,321 @@
+(in-package :sparser)
+(defparameter *rsm-r-other-bad*
+  '(
+     ((:TEXT
+   "53BP1 is involved in the phosphorylation of various ataxia telangiectasia mutated protein (ATM) substrates such as cell cycle checkpoint kinase 2 (CHEK2) [XREF_BIBR, XREF_BIBR].")
+  (:MIS-MATCHES
+   ("phosphorylation"
+    (("substrate" "ataxia telangiectasia mutated") (:REACH)))))
+ ((:TEXT
+   "The MAPK kinase kinase kinases of the first level are phosphorylated in response to various extracellular stimuli through interaction with small GTP binding proteins like Ras, Raf, etc..")
+  (:MIS-MATCHES ("phosphorylated" (("substrate" "MAPK") (:REACH)))))
+    
+    ((:TEXT
+   "The activated enzymes then phosphorylate one of 14 kinases of the second level (the MAPKKKs, that is, Raf proteins, MEKK1-4, etc.), which themselves activate one of the MAPK kinases (MEK1 and 2, MKK3-7) of the third level.")
+  (:MIS-MATCHES ("phosphorylate" (("substrate" "Raf") (:REACH)))))
+ ((:TEXT
+   "In mouse keratinocytes, ocadaic acid treatment leads to phosphorylation of JunD and FosB by ERK and subsequent activation of an AP-1-responsive promoter (Rosenberger et al, 1999).")
+  (:MIS-MATCHES
+   ("phosphorylation" (("substrate" "FosB") (:REACH ((("enzyme" "acid")))))
+                      (("substrate" "JunD") (:REACH ((("enzyme" "acid"))))))))
+    
+    ((:TEXT
+   "The Fos related antigens Fra-1 and Fra-2 are phosphorylated by MAPK in vitro, which leads to stabilisation, strong conformational change and an increase in DNA binding affinity (Gruda et al, 1994).")
+  (:MIS-MATCHES
+   ("phosphorylated" (("substrate" "Fos") (:REACH ((("enzyme" "MAPK"))))))))
+    ((:TEXT
+   "The correlations found for the nonphosphorylated ERK proteins with c-Fos and Fra-2 expression (XREF_TABLE) might not reflect an effect of MAP kinases on AP-1 proteins, since these associations were not found with the activated enzymes, but rather point to a regulation of ERK expression by AP-1 or common regulatory mechanisms.")
+      (:MIS-MATCHES ("nonphosphorylated" (("substrate" "ERK") (:REACH)))))
+    
+     ((:TEXT
+   "Tat independent activation of the HIV LTR by TSA has been documented both in vitro using chromatinized templates, and in vivo using cell lines containing integrated HIV genomes defective for Tat mediated transactivation [XREF_BIBR, XREF_BIBR, XREF_BIBR].")
+  (:MIS-MATCHES
+   ("activation" (("controlled" "LTR") (:REACH ((("controller" "Tat"))))))))
+    ((:TEXT
+      "Since HIV-1 Env protein may activate DOCK2 controlled signaling pathways through binding to chemokine receptors such as CXCR4, env defective, VSV-G-pseudotyped viruses were used in these experiments.")
+     (:MIS-MATCHES
+      ("activate"
+       (("controlled" "DOCK2") (:REACH ((("controller" "Env protein"))))))))
+    ((:TEXT
+      "Both JNK activation by VEGF and its PEDF dependent increase persisted for 1 h (unpublished data).")
+     (:MIS-MATCHES
+      ("activation" (("controlled" "JNK") (:REACH ((("controller" "PEDF"))))))))
+    
+    ((:TEXT
+      "Moreover, Rac activation by DOCK2 facilitates T cell responsiveness to antigen, as disrupted Rac activation in DOCK2 (-/-) and Rac2 (-/-) mice is associated with defective immunological synapse formation and depressed antigen specific responses (XREF_BIBR; XREF_BIBR).")
+     (:MIS-MATCHES
+      ("activation" (("controlled" "DOCK2") (:REACH ((("controller" "Rac"))))))))
+    ((:TEXT
+      "In parallel, pRb protein and Ser795 phosphorylation diminished almost completely after irradiation on polystyrene, whereas on FN the strong Ser795 phosphorylation remained unchanged.")
+     (:MIS-MATCHES
+      ("phosphorylation" (("substrate" "pRb") (:REACH ((("site" "Ser795"))))))))
+    ((:TEXT
+      "The kinase activity coimmunoprecipitated with CK8 and 18 and phosphorylated immunoprecipitates of the CK.")
+     (:MIS-MATCHES ("phosphorylated" (("substrate" "CK") (:REACH)))))
+    
+    ((:TEXT
+      "The observed ILK overexpression was accompanied by a constitutive phosphorylation of the ILK downstream targets PKBalpha and Akt and GSK-3beta.")
+     (:MIS-MATCHES
+      ("phosphorylation" (("substrate" "Akt") (:REACH))
+                         (("substrate" "ILK") (:REACH)) (("substrate" "GSK-3beta") (:REACH)))))
+
+    ((:TEXT
+      "Phosphorylation involves the reversible covalent attachment of a phosphate group to serine, threonine, or tyrosine residues on proteins, whereas nitrosylation involves the reversible covalent attachment of an NO group to cysteine residues.")
+     (:MIS-MATCHES
+      ("Phosphorylation"
+       (("substrate" "phosphate") (:REACH ((("site" "threonine"))))))))
+    ((:TEXT "HIPK2 activates p53 mediated transcription.")
+     (:MIS-MATCHES
+      ("HIPK2 activates p53-mediated transcription"
+       (("controlled" "HIPK2 activates p53-mediated transcription")
+        (:REACH ((("controller" "p53"))))))))
+    ((:TEXT
+      "Since HIPK2 contains a serine/threonine kinase domain and since multiple serine/threonine phosphorylation sites are present in p53 protein, we used antibodies that specifically detect single phosphorylated serine residues of p53 to look for a putative HIPK2 mediated phosphorylation of p53.")
+     (:MIS-MATCHES
+      ("phosphorylated"
+       (("substrate" "p53") (:REACH ((("site" "serine residues"))))))))
+    ((:TEXT
+      "Similar to the decrease in the amount of p53 protein in the presence of the K221A mutant there was a decrease in phosphorylated p53 after treatment with doxorubicin.")
+     (:MIS-MATCHES ("phosphorylated" (("substrate" "doxorubicin") (:REACH)))))
+    ((:TEXT
+      "Taken together, HIPK2 is not sufficient for phosphorylation of p53 at serine residues 15 and 20, where doxorubicin seems to be required, and for phosphorylation of serine 392.")
+     (:MIS-MATCHES
+      ("phosphorylation"
+       (("substrate" "p53") (:REACH ((("site" "serine residues"))))))))
+    ((:TEXT
+      "Only wildtype HIPK2 activated NFkappaB mediated transcription slightly but not significantly.")
+     (:MIS-MATCHES
+      ("HIPK2 activated NFkappaB-mediated transcription"
+       (("controlled" "HIPK2 activated NFkappaB-mediated transcription")
+        (:REACH ((("controller" "NFkappaB"))))))))
+    
+    ((:TEXT
+      "The p53 responsive enhancer element becomes activated by HIPK2 in cell lines with p53 but not in a cell line devoid of p53.")
+     (:MIS-MATCHES
+      ("activated" (("controlled" "p53") (:REACH ((("controller" "HIPK2"))))))))
+    ((:TEXT
+      "The transcription activator Elk1 becomes phosphorylated and activated by the MAP (mitogen activated protein) kinase.")
+     (:MIS-MATCHES
+      ("activator"
+       (("controlled" "transcription") (:REACH ((("controller" "Elk1"))))))))
+    ((:TEXT
+      "The conclusion is, that HIPK2 seems to activate components of the MAP kinase pathway.")
+     (:MIS-MATCHES
+      ("activate" (("controlled" "MAP") (:REACH ((("controller" "HIPK2"))))))))
+
+    ((:TEXT
+      "XREF_FIG a shows that cortactin is not constitutively tyrosine hyperphosphorylated in the PTP-PEST (-/-) cells, suggesting that it is not a direct or indirect substrate for this phosphatase.")
+     (:MIS-MATCHES ("hyperphosphorylated" (("substrate" "PTP-PEST") (:REACH)))))
+    ((:TEXT
+      "Paxillin was shown to be hyperphosphorylated in FAK null cell lines, a mutation that was also associated with a decrease in cell mobility and increase in numbers of focal adhesions (XREF_BIBR).")
+     (:MIS-MATCHES ("hyperphosphorylated" (("substrate" "FAK") (:REACH)))))
+    ((:TEXT
+      "Deletion of LD4 completely eliminated the 95- and 68-kD phosphorylated bands, consistent with the loss of binding of the p95PKL, PIX, and PAK complex.")
+     (:MIS-MATCHES
+      ("phosphorylated" (("substrate" "PAK") (:REACH)))))
+    ((:TEXT
+      "The p53 responsive enhancer element becomes activated by HIPK2 in cell lines with p53 but not in a cell line devoid of p53.")
+     (:MIS-MATCHES
+      ("activated" (("controlled" "p53") (:REACH ((("controller" "HIPK2"))))))))
+
+    ((:TEXT
+      "XREF_FIG a shows that cortactin is not constitutively tyrosine hyperphosphorylated in the PTP-PEST (-/-) cells, suggesting that it is not a direct or indirect substrate for this phosphatase.")
+     (:MIS-MATCHES ("hyperphosphorylated" (("substrate" "PTP-PEST") (:REACH)))))
+    ((:TEXT
+      "Paxillin was shown to be hyperphosphorylated in FAK null cell lines, a mutation that was also associated with a decrease in cell mobility and increase in numbers of focal adhesions (XREF_BIBR).")
+     (:MIS-MATCHES ("hyperphosphorylated" (("substrate" "FAK") (:REACH)))))
+    ((:TEXT
+      "Deletion of LD4 completely eliminated the 95- and 68-kD phosphorylated bands, consistent with the loss of binding of the p95PKL, PIX, and PAK complex.")
+     (:MIS-MATCHES
+      ("phosphorylated" (("substrate" "PAK") (:REACH))
+                        (("substrate" "PIX") (:REACH)))))
+    ((:TEXT
+      "In addition, the phosphoamino acid analysis of immunoprecipitated beta-catenin showed that P-Ser was the major phosphorylated amino acid, and, as expected, the relative P-Ser content of beta-catenin in Ras transduced cells was much lower than that of parental cells (XREF_FIG b).")
+     (:MIS-MATCHES
+      ("phosphorylated" (("substrate" "beta-catenin") (:REACH))
+                        (("substrate" "acid") (:REACH)) (("substrate" "Ras") (:REACH)))))
+    ((:TEXT
+      "The p120 Ras-GTPase activating protein (Ras-GAP) and p190 Rho-GAP (p190) have both been implicated in remodeling the actin cytoskeleton.")
+     (:MIS-MATCHES
+      ("activating" (("controlled" "p190") (:REACH ((("controller" "p120"))))))))
+    ((:TEXT
+      "In PTP-PEST (-/-) cells, this can cause Src to constitutively bind p130 CAS and hyperphosphorylate the Crk binding motifs on p130 CAS.")
+     (:MIS-MATCHES ("hyperphosphorylate" (("substrate" "Crk") (:REACH)))))
+    ((:TEXT
+      "HIPK2, homeodomain interacting protein kinase 2; MAP, mitogen activated protein; Mdm2, murine double minute clone 2.")
+     (:MIS-MATCHES
+      ("activated"
+       (("controlled" "Mdm2")
+        (:REACH
+         ((("controller" "HIPK2"))
+          (("controller" "homeodomain-interacting protein kinase 2"))))))))
+    ((:TEXT
+      "Since the ligand for Ros is unknown, we used a chimerical receptor composed of the extracellular part of human TrkA and the intracellular domain of murine Ros (TrkA-Ros), which is activated in response to NGFbeta (Riethmacher et al. 1994).")
+     (:MIS-MATCHES
+      ("activated" (("controlled" "NGFbeta") (:REACH ((("controller" "Ros"))))))))
+    ((:TEXT
+      "The relative amounts of the increase of the p53 protein levels and the increase in doxorubicin induced phosphorylation of serine residue 15 are comparable and give rise to the assumption that the total amount of p53 protein present becomes phosphorylated under doxorubicin treatment.")
+     (:MIS-MATCHES ("phosphorylated" (("substrate" "doxorubicin") (:REACH)))))
+    ((:TEXT
+      "These results demonstrate that nitric oxide selectively activates the stress activated p38 MAP kinase in human SH-SY5Y neuroblastoma cells.")
+     (:MIS-MATCHES
+      ("activates"
+       (("controlled" "p38") (:REACH ((("controller" "nitric oxide")))))
+       (("controlled" "MAP") (:REACH ((("controller" "nitric oxide"))))))))
+    ((:TEXT
+      "To understand where the tyrosine residues hyperphosphorylated on p130 CAS, paxillin, and FAK in the PTP-PEST (-/-) cells are, and to verify if these sites could be specific SH2 binding motifs, we examined the physical association of each of these proteins with a panel of SH2 domains in vitro.")
+     (:MIS-MATCHES ("hyperphosphorylated" (("substrate" "PTP-PEST") (:REACH)))))
+    ((:TEXT
+      "In summary, we demonstrated that beta-NAD is protective against thrombin, LPS-and PLY- induced EC barrier dysfunction via cAMP activated PKA and EPAC1 and Rac1 dependent actin cytoskeleton rearrangement.")
+     (MIS-MATCHES
+      ("activated" (("controlled" "EPAC1") (:REACH ((("controller" "EC")))))
+                   (("controlled" "PKA")
+                    (:REACH ((("controller" "cAMP")) (("controller" "EC")))))
+                   (("controlled" "Rac1") (:REACH ((("controller" "EC"))))))))
+    ((:TEXT
+      "Guanine nucleotide exchange factors (GEFs) activate GTPases by promoting the dissociation of GDP to allow the binding of GTP, which is available in great excess over GDP levels in the cytoplasm.")
+     (MIS-MATCHES
+      ("activate"
+       (("controlled" "GTPases")
+        (:REACH ((("controller" "Guanine")) (("controller" "GEFs")))))
+       (("controlled" "GDP")
+        (:REACH ((("controller" "Guanine")) (("controller" "GEFs"))))))))
+    ((:TEXT
+      "Our finding of decreased stability of SHP upon p53 overexpression is somewhat different from a recent report that stability of the SHP protein was increased in HepG2 cells treated with the p53 activator doxorubicin (DXR) XREF_BIBR.")
+     (MIS-MATCHES
+      ("activator"
+       (("controlled" "p53") (:REACH ((("controller" "doxorubicin")))))
+       (("controlled" "doxorubicin") (:REACH ((("controller" "p53"))))))))
+    ((:TEXT
+      "However, caveolin-1-deficient mice show increased VEGFR2 tyrosine phosphorylation and enhanced vascular permeability (XREF_BIBR).")
+     (MIS-MATCHES
+      ("phosphorylation"
+       (("substrate" "vascular permeability") (:REACH ((("site" "tyrosine"))))))))
+    ((:TEXT
+      "In contrast, EGFR phosphorylated YY-TLR3 and FY-TLR3, but not YF-TLR3 or FF-TLR3 (XREF_FIG).")
+     (MIS-MATCHES
+      ("phosphorylated" (("substrate" "YY-TLR3") (:REACH ((("enzyme" "EGFR")))))
+                        (("substrate" "YF-TLR3") (:REACH ((("enzyme" "EGFR")))))
+                        (("substrate" "FF-TLR3") (:REACH ((("enzyme" "EGFR")))))
+                        (("substrate" "FY-TLR3") (:REACH ((("enzyme" "EGFR"))))))))
+    ((:TEXT
+      "However, serine to alanine mutations on sites S 394, S 411, S 422 and S 424 significantly attenuated CSE induced HDAC2 phosphorylation while the C-terminal 88-amino acid deletion mutant (1-400) construct was only modestly phosphorylated suggesting serine sites S 422 and S 424 as crucial for CSE induced HDAC2 phosphorylation (XREF_FIG).")
+     (MIS-MATCHES ("phosphorylated" (("substrate" "acid") (:REACH)))))
+    ((:TEXT
+      "Phosphorylation of RB on Ser612 but not Ser780 was more obvious at a later stage of the lytic cycle, suggesting it as a downstream effect of EBV elicited DDR in the cells (XREF_FIG A).")
+     (MIS-MATCHES
+      ("Phosphorylation" (("substrate" "RB") (:REACH ((("site" "Ser780"))))))))
+    ((:TEXT
+      "BGLF4 phosphorylates lamin A at amino acids 22, 390, 392, 652 and 657, leading to the disassembly and reorganization of the nuclear lamina XREF_BIBR.")
+     (MIS-MATCHES
+      ("phosphorylates" (("substrate" "lamin") (:REACH ((("enzyme" "BGLF4"))))))))
+    ((:TEXT
+      "Dephosphorylation of Ser273 by TZD is required to induce adiponectin (XREF_BIBR).")
+     (MIS-MATCHES
+      ("Dephosphorylation" (("substrate" "TZD") (:REACH ((("site" "Ser273"))))))))
+    ((:TEXT
+      "Rapamycin pre-treatment did not blunt phosphorylation of either STAT3 site induced by exogenous IL-6 (XREF_FIG).")
+     (MIS-MATCHES
+      ("phosphorylation" (("substrate" "STAT3") (:REACH ((("enzyme" "IL-6"))))))))
+    ((:TEXT
+      "Both A549 and CCD32 cells grown on polystyrene or FN demonstrated pronounced decreases in basal ILK and PKBalpha and Akt activity as well as GSK-3beta phosphorylation after incubation with these inhibitors indicating a PI3-K-dependent mechanism (XREF_FIG).")
+     (MIS-MATCHES
+      ("phosphorylation" (("substrate" "Akt") (:REACH))
+                         (("substrate" "ILK") (:REACH)) (("substrate" "PKBalpha") (:REACH)))))
+    ((:TEXT
+      "Therefore, we concluded that Nef primarily activates Rac and not CDC42 in CD4 + T lymphocytes in the absence of antigenic stimuli.")
+     (MIS-MATCHES
+      ("activates" (("controlled" "CD4") (:REACH ((("controller" "Nef")))))
+                   (("controlled" "CDC42") (:REACH ((("controller" "Nef"))))))))
+    ((:TEXT
+      "PEDF Decreased NFAT DNA Binding Activity and Blocked c-FLIP Gene Transcription by NFAT in the Activated Endothelium.")
+     (MIS-MATCHES
+      ("PEDF Decreased NFAT DNA Binding Activity and Blocked c-FLIP Gene Transcription"
+       (("controlled"
+         "PEDF Decreased NFAT DNA Binding Activity and Blocked c-FLIP Gene Transcription")
+        (:REACH ((("controller" "c-FLIP"))))))))
+    ((:TEXT
+      "Lck silencing in Jurkat T cells was shown to impair Themis1 phosphorylation (XREF_BIBR) and Lyn was reported to bind constitutively to Themis2 in the Raw264.7 macrophages cell line (XREF_BIBR).")
+     (MIS-MATCHES
+      ("phosphorylation" (("substrate" "Lyn") (:REACH ((("enzyme" "Lck")))))
+                         (("substrate" "Themis1") (:REACH ((("enzyme" "Lck"))))))))
+    ((:TEXT
+      "As expected, immunoprecipitated flag tagged HDAC2 was significantly phosphorylated on serine residues which was de-phosphorylated by pre-treating immunoprecipitated beads with lambda-phosphatase for 1 h at 30 degreesC prior to resolving samples on an SDS-polyacrylamide gel (XREF_FIG).")
+     (MIS-MATCHES
+      ("phosphorylated"
+       (("substrate" "HDAC2") (:REACH ((("site" "serine residues"))))))))
+    ((:TEXT
+      "We noticed that substitution of these serine residues with alanines (c-Jun-S63A and S73A) greatly impaired the phosphorylation (XREF_FIG) and PES1 promoter activity (XREF_FIG), suggesting that phosphorylation of c-Jun is critical for activating PES1 expression.")
+     (MIS-MATCHES ("phosphorylation" (("substrate" "PES1") (:REACH)))))
+    ((:TEXT
+      "Deletion of LD4 completely eliminated the 95- and 68-kD phosphorylated bands, consistent with the loss of binding of the p95PKL, PIX, and PAK complex.")
+     (MIS-MATCHES
+      ("phosphorylated" (("substrate" "PAK") (:REACH))
+                        (("substrate" "PIX") (:REACH)))))
+    ((:TEXT
+      "Many phosphotyrosine dependent protein protein interactions are mediated through modular binding domains that directly recognize phosphorylated tyrosine residues within specific sequence contexts, such as SH2 and PTB domains XREF_BIBR, XREF_BIBR These domains are found on a large number of signaling proteins, including several key protein kinases and phosphatases that are themselves recruited to activated RTKs.")
+     (MIS-MATCHES
+      ("phosphorylated"
+       (("substrate" "SH2") (:REACH ((("site" "PTB domains"))))))))
+    ((:TEXT
+      "Robust co-clustering indicates EGFR phosphorylation site specific protein interactions.")
+     (MIS-MATCHES ("phosphorylation" (("substrate" "EGFR") (:REACH)))))
+    ((:TEXT
+      "For the EGFR phosphorylation sites, which likely represent the most well studied nodes in this dataset, the generated graphs from the co-occurrence matrix were compared with current knowledge.")
+     (MIS-MATCHES ("phosphorylation" (("substrate" "EGFR") (:REACH)))))
+    ((:TEXT
+      "The edges are colored if there is direct evidence that the indicated protein interacts specifically with the EGFR phosphorylation site the edge is connecting.")
+     (MIS-MATCHES ("phosphorylation" (("substrate" "EGFR") (:REACH)))))
+    ((:TEXT
+      "EGFR Y1069 is robustly co-regulated with PLCG1 Y771 phosphorylation, which is not the PLCG1 phosphorylation site that is robustly co-regulated with EGFR Y998.")
+     (MIS-MATCHES ("phosphorylation" (("substrate" "PLCG1") (:REACH)))))
+    ((:TEXT
+      "Furthermore, it has been reported that Fbw7, another F-box protein, facilitates degradation of c-Myc through phosphorylation of serine at amino acid number 62, which is present in the myc box I, followed by phosphorylation of threonine at amino acid number 58 (T58) XREF_BIBR.")
+     (MIS-MATCHES
+      ("phosphorylation" (("substrate" "acid") (:REACH ((("site" "serine"))))))))
+    ((:TEXT
+      "Consequently, due to the importance of RAS activated RAF --> MEK --> ERK signaling in PDA, we examined in more depth the effects of mitogen activated protein and extracellular signal regulated kinase 1/2 (MEK1/2) inhibition on patterns of mRNA expression in vitro and in vivo using a panel of PDA cell lines (XREF_BIBR, XREF_BIBR).")
+     (MIS-MATCHES
+      ("activated" (("controlled" "ERK") (:REACH ((("controller" "RAS")))))
+                   (("controlled" "PDA") (:REACH ((("controller" "RAS")))))
+                   (("controlled" "MEK") (:REACH ((("controller" "RAS"))))))))
+    ((:TEXT
+      "GSK3B, in addition to its many functions in cell signaling, also modulates presynaptic vesicle release by phosphorylating the voltage dependent calcium channels and reducing intracellular Ca 2+ levels.")
+     (MIS-MATCHES
+      ("phosphorylating"
+       (("substrate" "calcium") (:REACH ((("enzyme" "GSK3B"))))))))
+    ((:TEXT
+      "This contrasted with the activity of either DUSP8 (M3/6), which does not inactivate ERK, but is specific for p38 and JNK [XREF_BIBR], or the inducible nuclear phosphatase DUSP1/MKP-1, which can bind and dephosphorylate all three major classes of MAPK (ERK, p38 and JNK) both in vitro and in vivo [XREF_BIBR, XREF_BIBR].")
+     (MIS-MATCHES
+      ("inactivate"
+       (("controlled" "ERK")
+        (:REACH ((("controller" "phosphatase")) (("controller" "M3/6"))))))))
+    ((:TEXT
+      "TRIF acts as a platform to recruit signaling molecules such as TRAF3 (TNF Receptor Associated Factor 3), TBK1 (TANK Binding Kinase 1), IKKepsilon (Inhibitor of KappaB Kinase epsilon), TRAF2 (TNF receptor associated factor 2), TRAF6 (TNF receptor associated factor 6), to activate downstream transcription factors, IRF-3 (Interferon Regulatory Factor-3) and NF-kappaB (Nuclear Factor Kappa-light-chain-enhancer of activated B cells) (XREF_BIBR, XREF_BIBR).")
+     (MIS-MATCHES
+      ("activate"
+       (("controlled" "transcription") (:REACH ((("controller" "TRAF6"))))))))
+    ((:TEXT
+      "Here, we report that the recruitment of another tyrosine kinase, the epidermal growth factor receptor (EGFR), by dsRNA bound TLR3 is an early event of the signaling process which is followed by Src recruitment, TLR3 Tyr phosphorylation, TRIF recruitment and the rest of the signaling process.")
+     (MIS-MATCHES
+      ("phosphorylation" (("substrate" "TRIF") (:REACH ((("site" "Tyr")))))
+                         (("substrate" "Src") (:REACH ((("site" "Tyr")))))
+                         (("substrate" "rest") (:REACH ((("site" "Tyr"))))))))
+    ((:TEXT
+      "Titanium dioxide nanoparticles activate the ATM-Chk2 DNA damage response in human dermal fibroblasts.")
+     (MIS-MATCHES
+      ("activate"
+       (("controlled" "DNA damage response")
+        (:REACH ((("controller" "Titanium dioxide"))))))))
+    ((:TEXT
+      "The expression of S-phase cyclins, cyclin E and cyclin A, is up-regulated and leads to an increase in the associated S-phase Cdk activity and RB hyperphosphorylation in cells replicating EBV.")
+     (MIS-MATCHES ("hyperphosphorylation" (("substrate" "Cdk") (:REACH)))))
+    ((:TEXT
+      "We noticed that in a previous study, only RB phosphorylation, but not the downstream E2F1 transactivation activity, was monitored in the presence of BGLF4 XREF_BIBR.")
+     (MIS-MATCHES ("phosphorylation" (("substrate" "E2F1") (:REACH)))))
+    ((:TEXT
+      "In addition, RB was shown to be hyperphosphorylated in response to the ectopic expression of BGLF4 and other CHPKs, including HCMV UL97 XREF_BIBR.")
+     (MIS-MATCHES ("hyperphosphorylated" (("substrate" "UL97") (:REACH))))))
+
+
+  )
