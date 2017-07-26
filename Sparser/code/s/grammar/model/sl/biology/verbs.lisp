@@ -87,6 +87,10 @@
   (when (word-p verb) 
     ;; came in from setup-verb
     (setq verb (word-pname verb)))
+  (when (equal "residue" (pname verb))
+  	
+    (warn "trying to redefine residue")
+    (return-from svo/bio/expr nil))
   (let* ((category-name (intern (string-upcase verb)
                                 (find-package :sparser)))
          (existing-bio-verb-category-name
@@ -224,6 +228,14 @@
   :realization
   (:verb "feature" :etf (svo-passive)
          :noun "feature"))
+
+(define-category augment
+  :specializes positive-bio-control
+  :realization
+  (:verb "augment" :noun "augmentation"
+   :etf (svo-passive)
+   :with agent))    ;; by <entity>
+
 
 ;; HOW TO DEAL WITH AMBIGUITY WITH PHYSICAL SUPPORT 
 ;;  "a 3-fold alpha-helical bundle supporting a triple-stranded anti-parallel beta-sheet"
@@ -733,7 +745,7 @@
 (define-category gene-transcript-express :specializes caused-bio-process
     :binds ((location bio-location)
             (from biological))
-    :restrict ((agent (:or bio-entity cell-line))
+    :restrict ((agent cell-entity)
                (object (:or gene peptide rna mutant)))
     :realization
     (:verb ("express" :past-tense "expressed"
@@ -746,7 +758,7 @@
 (define-category gene-transcript-over-express :specializes caused-bio-process
     :binds ((location bio-location)
             (from biological))
-    :restrict ((agent (:or bio-entity cell-line)))
+    :restrict ((agent cell-entity))
     :realization
     (:verb ("over-express" :past-tense "over-expressed" :past-participle "over-expressed")
 	   :noun "over-expression"
@@ -759,7 +771,7 @@
 (define-category gene-transcript-co-over-express :specializes caused-bio-process
     :binds ((location bio-location)
             (from biological))
-    :restrict ((agent (:or bio-entity cell-line)))
+    :restrict ((agent cell-entity))
     :realization
     (:verb ("co-over-express" :past-tense "co-over-expressed" :past-participle "co-over-expressed")
 	   :noun "co-over-expression"
@@ -773,7 +785,7 @@
 (define-category gene-transcript-under-express :specializes caused-bio-process
     :binds ((location bio-location)
             (from biological))
-    :restrict ((agent (:or bio-entity cell-line)))
+    :restrict ((agent cell-entity))
     :realization
     (:verb ("under-express" :past-tense "under-expressed" :past-participle "under-expressed")
 	   :noun "under-expression"
@@ -788,7 +800,7 @@
     :binds ((location bio-location)
             (from biological)
             (protein (:or protein gene variant)))
-    :restrict ((agent (:or bio-entity cell-line)))
+    :restrict ((agent cell-entity))
     :realization
     (:verb "code"
 	   :etf (svo-passive)
@@ -1138,7 +1150,9 @@
   :realization 
   (:verb "recruit" :noun "recruitment"
          :etf (svo-passive)
-         :o moving-object))
+         :o moving-object
+         :of moving-object
+         :by destination))
 
 (define-category reduce :specializes negative-bio-control
     :binds ((bio biological))
