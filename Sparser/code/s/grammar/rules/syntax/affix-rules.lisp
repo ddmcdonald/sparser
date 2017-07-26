@@ -49,6 +49,7 @@
 
 (defparameter *unknown-word* nil)
 (defparameter *show-morphs* nil)
+(defparameter *block-verbification* nil)
 
 (defun assign-morph-brackets-to-unknown-word (word morph-keyword)
   "Called from make-word/all-properties, which is itself called
@@ -75,18 +76,30 @@
           (let ((lemma (stem-form word)))
             (tr :defining-lemma-as-given-morph lemma 'verb)
             (if *edge-for-unknown-words*
-              (then
-                (setup-verb lemma)
-                (sanity-check-word-formation word lemma :ed))
+                (then
+                  (if (and *block-verbification*
+                           ;; originally put in to block creation of a verb form of "residue"
+                           ;;  based in a typo "residued"
+                           (category-p (form-of lemma))
+                           (eq (cat-symbol (form-of lemma)) 'category::common-noun))
+                      (lsp-break "^^^^Refusing to verbify a previously defined noun ~s~%"
+                            word)
+                      (then (setup-verb lemma)
+                            (sanity-check-word-formation word lemma :ed))))
               (assign-brackets-as-a-main-verb lemma))))
 
          (:ends-in-ing
           (let ((lemma (stem-form word)))
             (tr :defining-lemma-as-given-morph lemma 'verb)
             (if *edge-for-unknown-words*
-              (then
-                (setup-verb lemma)
-                (sanity-check-word-formation word lemma :ing))
+                (then
+                  (if (and *block-verbification*
+                           (category-p (form-of lemma))
+                           (eq (cat-symbol (form-of lemma)) 'category::common-noun))
+                      (lsp-break "^^^^Refusing to verbify a previously defined noun ~s~%"
+                            word)
+                      (then (setup-verb lemma)
+                            (sanity-check-word-formation word lemma :ing))))
               (assign-brackets-as-a-main-verb lemma))))
          
          (:ends-in-ly
@@ -223,14 +236,20 @@
                       category::ends-in-s))
        (:ends-in-ed
         (let ((lemma (stem-form word)))
-          (make-morph-edge-over-unknown-word
-           word position-scanned next-position
-           category::verb :lemma lemma)))
+          (if (and (category-p (form-of lemma))
+                   (member (cat-symbol (form-of lemma)) *n-bar-categories*))
+              nil
+              (make-morph-edge-over-unknown-word
+               word position-scanned next-position
+               category::verb :lemma lemma))))
        (:ends-in-ing
         (let ((lemma (stem-form word)))
-          (make-morph-edge-over-unknown-word
-           word position-scanned next-position
-           category::verb :lemma lemma)))
+          (if (and (category-p (form-of lemma))
+                   (member (cat-symbol (form-of lemma)) *n-bar-categories*))
+              nil
+              (make-morph-edge-over-unknown-word
+               word position-scanned next-position
+               category::verb :lemma lemma))))
        (:ends-in-ly  (make-morph-edge-over-unknown-word
                       word position-scanned next-position
                       category::adverb))))
