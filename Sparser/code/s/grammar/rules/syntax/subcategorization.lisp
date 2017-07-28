@@ -741,6 +741,31 @@
 
 (defparameter *show-one-anaphora* nil)
 
+(defun pronominal-or-deictic? (item)
+  (cond
+    ((or
+      (itypep item category::this)
+      (itypep item category::that)
+      (itypep item category::these)
+      (itypep item category::those)
+      ;;(itypep item category::numerated-anaphor) for "the seven" in DM&P
+      (itypep item category::quantifier)) ;; as in "the other",
+     t)
+    ( ;;(itypep item 'pronoun/first/plural) - but should add check for agentive verbs
+     (itypep item category::pronoun) ;; of any sort
+     t)
+    ((itypep item 'interlocutor)
+     ;; replacement for forms of "I", "we", "you" 6/23/17
+     t)))
+
+(defun one-anaphor-item? (item)
+  (and (itypep item category::number)
+       (not (itypep item '(:or post-ordinal ordinal hyphenated-number)))
+       (not (and (numberp (value-of 'value item))
+                 (or (floatp (value-of 'value item))
+                     (> (value-of 'value item) 10))))
+       (not (itypep item 'ordinal ))))
+
 (defun satisfies-subcat-restriction? (item pat-or-v/r)
   (declare (special *trivial-subcat-test* *subcat-test*
                     *sentence-in-core*
@@ -764,7 +789,7 @@
                (eq 'bio-entity (cat-name (itype-of item))))
       (unless *subcat-test*
         (format t "accepting ~s as AGENT in ~s~%"
-              item pat-or-v/r))
+                item pat-or-v/r))
       (return-from satisfies-subcat-restriction? t))
     (flet ((subcat-itypep (item category)
              ;; For protein-families and such that are re-written
@@ -776,26 +801,8 @@
                ((itypep item category)) ;; handles conjunctions
                (t (eq category override-category)))))
       (cond
-        ((or
-          (itypep item category::this)
-          (itypep item category::that)
-          (itypep item category::these)
-          (itypep item category::those)
-          ;;(itypep item category::numerated-anaphor) for "the seven" in DM&P
-          (itypep item category::quantifier)) ;; as in "the other",
-         t)
-        (;;(itypep item 'pronoun/first/plural) - but should add check for agentive verbs
-         (itypep item category::pronoun) ;; of any sort
-         t)
-        ((itypep item 'interlocutor)
-         ;; replacement for forms of "I", "we", "you" 6/23/17
-         t)
-        ((and (itypep item category::number)
-              (not (itypep item '(:or post-ordinal ordinal hyphenated-number)))
-              (not (and (numberp (value-of 'value item))
-                        (or (floatp (value-of 'value item))
-                            (> (value-of 'value item) 10))))
-              (not (itypep item 'ordinal ))
+        ((pronominal-or-deictic? item) t)
+        ((and (one-anaphor-item? item)
               (not *in-collect-no-space-segment-into-word*)
               (not (member pat-or-v/r
                            '(blocked-category
@@ -812,7 +819,7 @@
          (cond
            ((eq (car restriction) :or)
             (loop for type in (cdr restriction)
-               thereis (subcat-itypep item type)))
+                  thereis (subcat-itypep item type)))
            ((eq (car restriction) :primitive)
             ;; this is usually meant for NAME (a WORD) or
             ;; other special cases
@@ -824,7 +831,7 @@
          (subcat-itypep item restriction))
         ((null restriction) t)
         ((symbolp restriction) ;; this is the case for :prep subcat-patterns
-          nil)
+         nil)
         (t (error "Unexpected type of subcat restriction: ~a"
                   restriction))))))
 
