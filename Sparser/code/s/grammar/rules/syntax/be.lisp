@@ -153,7 +153,12 @@
 (def-form-rule (be vg+passive) ;; "were previously used"
   :form vg+passive
   :referent (:head right-edge
-             :function check-passive-and-add-tense/aspect left-edge right-edge))
+                   :function check-passive-and-add-tense/aspect left-edge right-edge))
+
+(def-form-rule (be vp+ed) ;; get vp+ed when there is an intervening NP premod to the verb
+    ;; as in "is serine phosphorylated by ERK"
+  :form vp+passive
+  :referent (:function check-passive-and-add-tense/aspect left-edge right-edge))
 
  
 
