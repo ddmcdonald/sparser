@@ -494,7 +494,7 @@
   ;; this per newline character encountered.
   (unless (and *current-paragraph*
                (eql start-pos (starts-at-pos *current-paragraph*)))
-    (lsp-break "newline setting up paragraph at ~a" start-pos)
+    ;;(warn "newline setting up paragraph at ~a" start-pos)
     ;; Rejigger the parent of the current sentence
     (begin-new-paragraph start-pos)))
 
