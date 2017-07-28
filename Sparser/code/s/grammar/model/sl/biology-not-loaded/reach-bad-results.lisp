@@ -1,6 +1,15 @@
 (in-package :sparser)
 (defparameter *rsm-r-other-bad*
   '(
+    ((:TEXT "Tuberin contains multiple S/T phosphorylation sites (XREF_FIG).")
+  (:MIS-MATCHES ("phosphorylation" (("substrate" "S/T") (:REACH)))))
+     ((:TEXT
+   "However, the T1462A single mutant partitioned in the cell similarly to wild-type tuberin (XREF_FIG), indicating that T1462 phosphorylation was not directing translocation of tuberin from the membrane to the cytosol.")
+  (:MIS-MATCHES ("phosphorylation" (("substrate" "tuberin") (:REACH)))))
+ ((:TEXT
+   "Previously, AKT was shown to directly phosphorylate and inhibit tuberin function upon stimulation with growth factors (XREF_BIBR).")
+  (:MIS-MATCHES ("phosphorylate" (("substrate" "tuberin") (:REACH)))))
+    
      ((:TEXT
    "53BP1 is involved in the phosphorylation of various ataxia telangiectasia mutated protein (ATM) substrates such as cell cycle checkpoint kinase 2 (CHEK2) [XREF_BIBR, XREF_BIBR].")
   (:MIS-MATCHES
