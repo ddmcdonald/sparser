@@ -57,21 +57,31 @@
                       (null (pos-terminal ending-position)))
             (all-tts ending-position stop-pos)))))
 
+;; we were getting no parses when a sentence started with a position
+;;  that had no edges like one starting with  © ,
+;;  because adjacent-tt-pairs returned NIL in that case. We need to start from
+;;  the first position that has an actual edge over it
 
+(defun first-position-with-edges (pos end)
+  (cond ((ev-top-node (pos-starts-here pos))
+         pos)
+        ((eq pos end) end)
+        (t (first-position-with-edges (chart-position-after pos) end))))
 
 (defun adjacent-tt-pairs (sentence)
   ;;(push-debug `(,sentence)) (break "tt")
-  (let* ((start-pos (starts-at-pos sentence))
+  (let* ((start-pos (first-position-with-edges
+                     (starts-at-pos sentence)
+                     (ends-at-pos sentence)))
          (start-ev (pos-starts-here start-pos))
          (start-edges (tt-edges-starting-at start-ev))
          (end-pos (ends-at-pos sentence)))
-    (adjacent-tt-pairs1 start-edges
-                        end-pos)))
+    (adjacent-tt-pairs1 start-edges end-pos)))
 
 (defun adjacent-tt-pairs1 (edges-to-left end-pos)
   (when edges-to-left
     ;; can be nil sometimes -- may want to diagnose cases
-    ;;  seems to happen when running over the edge of a sentence
+    ;;  seems to happen when running over the edge of a sentence(d
     (let* ((random-left-edge (car edges-to-left))
 	   (left-ev (edge-ends-at random-left-edge))
 	   (left-end-position (ev-position left-ev)))
@@ -401,7 +411,14 @@ for ambiguous words"
         ;; likely competition against a relative clause or a main clause
         ;;  accept r-triple as a winner if if is a rightward extension of and NP
         ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
+        (not
+         ;; the rule for NP + VP+ED (in case of "is serine phosphorylated by ERK")
+         (and (consp (cfr-referent (car r-triple)))
+              (or (eq (second (cfr-referent (car r-triple))) 'interpret-premod-to-verb)
+                  ;;(eq (second (cfr-referent (car r-triple))) 'assimilate-subject-to-vp-ed)
+                  )))
         (or
+
          (and (eq (cat-name (edge-form r-triple-3)) 'pp)
               (member (edge-left-daughter (edge-left-daughter r-triple-3))
                       (get-tag :loc-pp-complement (itype-of (edge-referent (second l-triple)))))
