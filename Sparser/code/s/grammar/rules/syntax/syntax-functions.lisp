@@ -375,6 +375,42 @@
       (setq head (bind-variable variable-to-bind premod head))
       head))))
 
+(defparameter *premod-to-verb-examples* nil)
+
+(defun interpret-premod-to-verb (premod head) ;; for things like "thymine phosphorylated"
+  (when (and (not (pronominal-or-deictic? premod))
+             (not (one-anaphor-item? premod))
+             (or (not (eq (cat-name (edge-form  (left-edge-for-referent))) 'np))
+                 (not (value-of 'has-determiner premod)))
+             (subcategorized-variable head :m premod))
+    (push (list premod (value-of 'raw-text premod)
+                head  (value-of 'raw-text head)
+                (sentence-string *sentence-in-core*))
+          *premod-to-verb-examples*))
+  (let* ((*ambiguous-variables* nil)
+         (premod-edge (left-edge-for-referent))
+         (variable-to-bind (test-premod-to-verb premod head premod-edge) ))
+    (declare (special *ambiguous-variables*))
+    (cond
+      (*subcat-test* variable-to-bind)
+      (variable-to-bind
+       (when *collect-subcat-info*
+         (push (subcat-instance head :m variable-to-bind premod)
+               *subcat-info*))
+       (setq head (individual-for-ref head))
+       (setq head (bind-variable variable-to-bind premod head))
+       head))))
+
+(defun test-premod-to-verb (premod head premod-edge)
+  (when (and nil
+             (not (pronominal-or-deictic? premod))
+             (or (not (eq (cat-name (edge-form premod-edge)) 'np))
+                 (not (value-of 'has-determiner premod))))
+    ;; really want an n-bar type item here, but these get raised to NPs
+    ;;  the check is to distinguish "serine" gets "raised" to an NP
+    ;;  and "an event" 
+    (subcategorized-variable head :m premod)))
+
 (defun adj-noun-compound (adjective head &optional adj-edge)
   (when (category-p head) (setq head (individual-for-ref head)))
   (cond
@@ -681,18 +717,27 @@
 
 (defun check-passive-and-add-tense/aspect (aux vg)
   (declare (special category::vg *parent-edge-getting-reference*))
-  (loop for vg-item
-        in (if (is-basic-collection? vg) (value-of 'items vg) (list vg))
-        do
-          (let ((vg-cat (vg-cat vg-item)))
-            (when (and (first (cat-realization vg-cat))
-                       (rdata-etf (first (cat-realization vg-cat)))
-                       (not (member  (etf-name (rdata-etf (first (cat-realization vg-cat))))
-                                     '(passive/with-by-phrase))))
-              (when *parent-edge-getting-reference*
-                ;; this is now (12/23/2016) used in polar questions, so there is no edge yet
-                (revise-parent-edge :form category::vg)))))
-  (add-tense/aspect aux vg))
+  (let ((be-edge (left-edge-for-referent)))
+    (when (or
+           (member (cat-name (edge-form be-edge))
+                   '(verb verb+present verb+past verb+ed verb+ing vg+ed vg vg+ing infinitive))
+           (if (member (cat-name (edge-form be-edge)) '(to-comp vp S subject-relative-clause))
+               nil
+               (print (list 'check-passive-and-add-tense/aspect 'got
+                            (cat-name (edge-form be-edge))))))
+           
+      (loop for vg-item
+            in (if (is-basic-collection? vg) (value-of 'items vg) (list vg))
+            do
+              (let ((vg-cat (vg-cat vg-item)))
+                (when (and (first (cat-realization vg-cat))
+                           (rdata-etf (first (cat-realization vg-cat)))
+                           (not (member  (etf-name (rdata-etf (first (cat-realization vg-cat))))
+                                         '(passive/with-by-phrase))))
+                  (when *parent-edge-getting-reference*
+                    ;; this is now (12/23/2016) used in polar questions, so there is no edge yet
+                    (revise-parent-edge :form category::vg)))))
+      (add-tense/aspect aux vg))))
 
 (defgeneric add-tense/aspect-to-subordinate-clause (aux sc)
   (:method ((aux category) (sc category))
@@ -1295,7 +1340,8 @@
   (declare (special category::transitive-clause-without-object category::np))
   ;; (push-debug `(,subj ,vp)) (setq subj (car *) vp (cadr *))
   (let* ((vp-edge (right-edge-for-referent))
-         (vp-form (edge-form vp-edge)))
+         (vp-form (edge-form vp-edge))
+         result)
     ;; We have to determine whether this is an s (which the rule
     ;; that's being invoked assumes) or actually a reduced relative,
     ;; where the criteria is whether the verb is in oblique or tensed
@@ -1313,16 +1359,21 @@
     
     (cond
       (*subcat-test*
-       (and
-        (or (can-fill-vp-subject? vp subj) ;; case for S not reduced relative
-            (and (can-fill-vp-object? vp subj *left-edge-into-reference*)
-                 ;; make sure this is a non-trivial relative clause (not just the verb)
-                 (loop for binding in (indiv-old-binds vp)
-                       thereis (not (member (var-name (binding-variable binding))
-                                            '(past raw-text))))
-                 ))))
+       (or (can-fill-vp-subject? vp subj) ;; case for S not reduced relative
+           (and (can-fill-vp-object? vp subj *left-edge-into-reference*)
+                ;; make sure this is a non-trivial relative clause (not just the verb)
+                (loop for binding in (indiv-old-binds vp)
+                      thereis (not (member (var-name (binding-variable binding))
+                                           '(past raw-text)))))
+           (and 
+                (member(cat-name (edge-form vp-edge)) '(vg+ed verb+ed))
+                (interpret-premod-to-verb subj vp))))
       
-      ((can-fill-vp-object? vp subj *left-edge-into-reference*)
+      ((and (can-fill-vp-object? vp subj *left-edge-into-reference*)
+            (not (test-premod-to-verb subj vp (left-edge-for-referent)))
+            (loop for binding in (indiv-old-binds vp)
+                      thereis (not (member (var-name (binding-variable binding))
+                                           '(past raw-text)))))
        ;; since this is applied to vp+ed, there is no syntactic object present
        (setq vp
              (create-predication-by-binding (subcategorized-variable vp :object subj)
@@ -1343,6 +1394,9 @@
        ;;/// try using assimilate-subject
 
        (assimilate-subcat vp :subject subj))
+      ((setq result (interpret-premod-to-verb subj vp))
+       (revise-parent-edge :form category::vg+ed)
+       result)
       (t (warn "Error in sentence: ~s"
                (sentence-string *sentence-in-core*))
          (error "How can this happen? Null referent produced in assimilate-subject-to-vp-ed~%" )))))

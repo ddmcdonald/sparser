@@ -445,6 +445,21 @@
 	   :form subordinate-clause
 	   :referent (:function assimilate-subject-to-subordinate-clause left-edge right-edge))))
 
+(loop for vv in '((verb+ing vg+ing)
+                  (verb+present vg)
+                  (verb vg)
+                  (vg+ing vg+ing)
+                  (vp+ed vp+ed) 
+                  )
+      do
+        (loop for nb in `(np ,@*n-bar-categories*)
+              do
+                (eval
+                 `(def-syntax-rule  (,nb ,(car vv) )
+                      :head :right-edge
+                      :form ,(second vv)
+                      :referent (:function interpret-premod-to-verb left-edge right-edge)))))
+
 ;; special handlng for vp+ed/vg+ed  -- may be a reduced relative or a main clause
 
 (loop for n in `(np pronoun  vp+ing vg+ing ,@*n-bar-categories*)
