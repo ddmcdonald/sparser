@@ -301,6 +301,10 @@
   :pattern ( s conjunction vp )
   :action (:function conjoin-clause-and-vp first second third))
 
+(define-debris-analysis-rule conjoin-transitive-clause-without-object-and-vp
+  :pattern ( transitive-clause-without-object conjunction vp )
+  :action (:function conjoin-clause-and-vp first second third))
+
 ;; this should see if there is a buried VP on the right fringe and do a conjunction there
 ;; e.g.
 #+ignore
@@ -359,6 +363,10 @@
   :pattern ( s conjunction vg+passive )
   :action (:function conjoin-clause-and-vp+passive first second third))
 
+(define-debris-analysis-rule conjoin-trans-clause-without-object-and-vg+passive
+  :pattern ( transitive-clause-without-object conjunction vg+passive )
+  :action (:function conjoin-clause-and-vp+passive first second third))
+
 (defun conjoin-clause-and-vp+passive (s-edge  and vp-edge)
   (conjoin-clause-and-vp s-edge  and vp-edge))
 
@@ -379,12 +387,20 @@
   :pattern ( s conjunction vp+ing )
   :action (:function attach-trailing-participle-to-clause-with-conjunction first second third))
 
+(define-debris-analysis-rule attach-trailing-vp+ing-to-transitive-clause-without-object-with-conjunction-and
+  :pattern (transitive-clause-without-object conjunction vp+ing )
+  :action (:function attach-trailing-participle-to-clause-with-conjunction first second third))
+
 (define-debris-analysis-rule attach-trailing-vp+ed-to-clause-with-conjunction-and
   :pattern ( s conjunction vp+ed )
   :action (:function attach-trailing-participle-to-clause-with-conjunction first second third))
 
 (define-debris-analysis-rule attach-trailing-vp+past-to-clause-with-conjunction-and
   :pattern ( s conjunction vp+past )
+  :action (:function attach-trailing-participle-to-clause-with-conjunction first second third))
+
+(define-debris-analysis-rule attach-trailing-vp+past-to-transitive-clause-without-object-with-conjunction-and
+  :pattern ( transitive-clause-without-object conjunction vp+past )
   :action (:function attach-trailing-participle-to-clause-with-conjunction first second third))
 
 
@@ -1198,6 +1214,11 @@
   :pattern ( s conjunction subordinate-s  )
   :action (:function clause-and-subordinate  first second third))
 
+
+(define-debris-analysis-rule transitive-clause-without-object-and-subordinate-s
+  :pattern ( transitive-clause-without-object conjunction subordinate-s  )
+  :action (:function clause-and-subordinate  first second third))
+
 (defun clause-and-subordinate (s conjunction sc)
   (create-event-relation s sc))
 
@@ -1231,6 +1252,9 @@
   :pattern ( s conjunction s  )
   :action (:function clause-and-subordinate  first second third))
 
+(define-debris-analysis-rule transitive-clause-without-object-and-clause
+  :pattern ( transitive-clause-without-object conjunction s  )
+  :action (:function clause-and-subordinate  first second third))
 
 (define-debris-analysis-rule when-relative-clause-comma
                :pattern (when-relative-clause "," s)
