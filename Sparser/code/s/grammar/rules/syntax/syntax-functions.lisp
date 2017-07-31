@@ -382,7 +382,7 @@
              (not (one-anaphor-item? premod))
              (or (not (eq (cat-name (edge-form  (left-edge-for-referent))) 'np))
                  (not (value-of 'has-determiner premod)))
-             (subcategorized-variable head :m premod))
+             (subcategorized-variable head :verb-premod premod))
     (push (list premod (value-of 'raw-text premod)
                 head  (value-of 'raw-text head)
                 (sentence-string *sentence-in-core*))
@@ -395,21 +395,20 @@
       (*subcat-test* variable-to-bind)
       (variable-to-bind
        (when *collect-subcat-info*
-         (push (subcat-instance head :m variable-to-bind premod)
+         (push (subcat-instance head :verb-premod variable-to-bind premod)
                *subcat-info*))
        (setq head (individual-for-ref head))
        (setq head (bind-variable variable-to-bind premod head))
        head))))
 
 (defun test-premod-to-verb (premod head premod-edge)
-  (when (and nil
-             (not (pronominal-or-deictic? premod))
+  (when (and (not (pronominal-or-deictic? premod))
              (or (not (eq (cat-name (edge-form premod-edge)) 'np))
                  (not (value-of 'has-determiner premod))))
     ;; really want an n-bar type item here, but these get raised to NPs
     ;;  the check is to distinguish "serine" gets "raised" to an NP
     ;;  and "an event" 
-    (subcategorized-variable head :m premod)))
+    (subcategorized-variable head :verb-premod premod)))
 
 (defun adj-noun-compound (adjective head &optional adj-edge)
   (when (category-p head) (setq head (individual-for-ref head)))
@@ -721,10 +720,15 @@
     (when (or
            (member (cat-name (edge-form be-edge))
                    '(verb verb+present verb+past verb+ed verb+ing vg+ed vg vg+ing infinitive))
-           (if (member (cat-name (edge-form be-edge)) '(to-comp vp S subject-relative-clause))
+           (if (member (cat-name (edge-form be-edge))
+                       '(that-comp to-comp vp S subject-relative-clause
+                         subordinate-s subordinate-clause
+                         object-relative-clause ;; "that PTEN protein levels are, in part, regulated by ..."
+                         transitive-clause-without-object))
                nil
-               (print (list 'check-passive-and-add-tense/aspect 'got
-                            (cat-name (edge-form be-edge))))))
+               (warn "check-passive-and-add-tense/aspect got ~s in ~s~%"
+                     (cat-name (edge-form be-edge))
+                     (sentence-string *sentence*))))
            
       (loop for vg-item
             in (if (is-basic-collection? vg) (value-of 'items vg) (list vg))
@@ -1249,9 +1253,11 @@
       (assimilate-subject subj vp)))
 
 (defun assimilate-subject (subj vp
-                           &optional (right-edge (right-edge-for-referent)))
+                           &optional (right-edge (right-edge-for-referent))
+                             dont-revise-parent-edge)
   (declare (special category::subordinate-clause category::copular-predication
-                    category::transitive-clause-without-object))
+                    category::transitive-clause-without-object
+                    subj vp ))
   ;; right-edge is NIL when called from polar questions on adjectives
   ;;  this may want to be fixed
   (unless (and subj vp) ;; have had cases of uninterpreted VPs
@@ -1274,9 +1280,23 @@
        (assimilate-subcat vp :subject subj)))
 
     ((itypep vp 'copular-predication)
-     (and (null (value-of 'item vp))
-          (or *subcat-test*
-              (apply-copula subj vp))))
+     (let* ((vp-val (value-of 'value vp))
+            (control-vp (and (individual-p vp-val)
+                             (or (itypep vp-val 'control-verb)
+                                 (itypep vp-val 'control-verb-intrans))))
+            (controlled-val
+             (if (not control-vp)
+                 t
+                 (interpret-control-copula subj vp
+                                           (left-edge-for-referent)
+                                           (right-edge-for-referent)))))
+       (declare (special controlled-val control-vp))
+       
+       (cond (*subcat-test* controlled-val)
+             ((individual-p controlled-val)
+              (apply-copula subj controlled-val))
+             (t (and (null (value-of 'item vp))
+                     (apply-copula subj vp))))))
     
     ((transitive-vp-missing-object? vp right-edge)
      (unless *subcat-test*
@@ -1284,7 +1304,8 @@
        (when *warn-about-optional-objects*
          (warn "~%transitive verb without object: ~s~%"
                (extract-string-spanned-by-edge (right-edge-for-referent))))
-       (revise-parent-edge :form category::transitive-clause-without-object))
+       (unless dont-revise-parent-edge
+         (revise-parent-edge :form category::transitive-clause-without-object)))
      (assimilate-subcat vp :subject subj))
       
     ((and right-edge
@@ -1317,8 +1338,27 @@
      (assimilate-subcat vp :object subj))
       
     (t (assimilate-subcat vp :subject subj))))
-      
 
+(defun interpret-control-copula (subj copula subj-edge copula-edge)
+  (let* ((copula-value (value-of 'value copula)) ;; e.g. (ability ...)
+         (copula-adj-edge (edge-right-daughter copula-edge))
+         (right (and (edge-p copula-adj-edge)
+                     (edge-right-daughter copula-adj-edge)))
+         (right-val (edge-referent right))
+         (new-value
+          (and (edge-p right)
+               (eq (edge-referent copula-adj-edge) copula-value)
+               (assimilate-subject subj right-val right t))))
+    (cond (*subcat-test* new-value)
+          (new-value
+           (set-edge-referent right new-value)
+           (rebind-value copula-value
+                         (rebind-value right-val new-value copula-value)
+                         copula))
+                             
+          (t
+           (lsp-break  "interpret-control-copula fails")))))
+      
 
 (defun assimilate-subject-to-vp-ing (subj vp)
   ;; special case where the vp is a gerund, and we make it
@@ -1334,7 +1374,6 @@
   (if (is-passive? (right-edge-for-referent))
       (assimilate-subcat vp :object subj)
       (assimilate-subcat vp :subject subj)))
-
 
 (defun assimilate-subject-to-vp-ed (subj vp)
   (declare (special category::transitive-clause-without-object category::np))
