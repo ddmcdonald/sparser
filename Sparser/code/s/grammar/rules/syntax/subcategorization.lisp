@@ -773,6 +773,7 @@
      t)))
 
 (defun one-anaphor-item? (item)
+  (declare (special category::number))
   (and (itypep item category::number)
        (not (itypep item '(:or post-ordinal ordinal hyphenated-number)))
        (not (and (numberp (value-of 'value item))
