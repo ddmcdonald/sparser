@@ -1,45 +1,190 @@
 (in-package :sparser)
 (defparameter *rsm-r-other-bad*
   '(
+     ((:TEXT
+   "p130CAS function is dependent on tyrosine phosphorylation of its substrate domain (SD).")
+  (:MIS-MATCHES
+   ("phosphorylation" (("substrate" "SD") (:REACH ((("site" "tyrosine"))))))))
+    
+     ((:TEXT
+   "ERK5 activates NFkappaB by causing IkappaB degradation, a process that is regulated by ribosomal S6 kinase 2 (RSK2).")
+  (:MIS-MATCHES
+   ("activates"
+    (("controlled" "IkappaB") (:REACH ((("controller" "ERK5"))))))))
+     ((:TEXT
+   "However, RSK2 phosphorylates IkappaB on S32, but not S36, which is necessary but not sufficient for IkappaB degradation (XREF_BIBR; XREF_BIBR).")
+  (:MIS-MATCHES
+   ("phosphorylates"
+    (("substrate" "IkappaB") (:REACH ((("enzyme" "RSK2") ("site" "S36"))))))))
+    ((:TEXT
+      "This function is facilitated through binding and activation of cyclin dependent kinases (CDK) 4 and 6, with phosphorylation of the retinoblastoma protein (Rb), and release of sequestered transcription factors such as E2F [XREF_BIBR, XREF_BIBR].")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "Rb") (:REACH)))))
+    ((:TEXT
+      "Three different, partly interacting signalling pathways have been identified in mammalian cells, leading to the activation of three types of MAP kinases : the MAP kinase JNK (Jun kinase) phosphorylates c-Jun, JunB, ATF2 and ELK1, etc., P38 activates ATF2, ELK-1 and MAX, whereas ERK1 and ERK2 phosphorylate c-Myc, SAP-1, Fra-1 and Fra-2, etc..")
+     (:MIS-MATCHES
+      ("phosphorylates"
+       (("substrate" "ATF2") (:REACH ((("enzyme" "MAP")) (("enzyme" "Jun")))))
+       (("substrate" "JunB") (:REACH ((("enzyme" "MAP")) (("enzyme" "Jun")))))
+       (("substrate" "ELK1") (:REACH ((("enzyme" "MAP")) (("enzyme" "Jun")))))
+       (("substrate" "c-Jun") (:REACH ((("enzyme" "Jun")) (("enzyme" "MAP"))))))))
+    
+    ((:TEXT
+      "c-Jun and JunB are phosphorylated by the Jun N-terminal kinase JNK (Mechta-Grigoriou et al, 2001).")
+     (:MIS-MATCHES
+      ("phosphorylated" (("substrate" "JunB") (:REACH ((("enzyme" "Jun")))))
+                        (("substrate" "c-Jun") (:REACH ((("enzyme" "Jun"))))))))
+    ((:TEXT
+      "This increase in migration occurs via the tyrosine phosphorylation of an adapter protein, p130 CAS (XREF_BIBR).")
+     (:MIS-MATCHES
+      ("phosphorylation"
+       (("substrate" "protein") (:REACH ((("site" "tyrosine"))))))))
+    
+    ((:TEXT
+      "Second, the FAK homologue Pyk2 is activated by DDR1 and this activation is essential for the full response of BxPC3 cells to collagen I.")
+     (:MIS-MATCHES
+      ("activated" (("controlled" "FAK") (:REACH ((("controller" "DDR1"))))))))
+    ((:TEXT
+      "The signal transduction pathways activated by ErbB receptors include well-known signaling cascades such as the Ras-Erk1/2 pathway, the phospholipase Cgamma protein kinase C pathway, the phosphatidyl inositol 3 (PI 3)-kinase-Akt pathway, and STAT signaling.")
+     (:MIS-MATCHES
+      ("activated"
+       (("controlled" "signal transduction pathways")
+        (:REACH ((("controller" "ErbB"))))))))
+    ((:TEXT
+      "Cbl can bind EGFR either directly by binding to phosphorylated Y1045, or indirectly via the adaptor protein Grb2, which binds to phosphorylated Y1068 and Y1086 (Levkowitz et al..")
+     (:MIS-MATCHES ("phosphorylated" (("substrate" "Grb2") (:REACH)))))
+    ((:TEXT
+      "The EGF activated EGFR is also associated with Cbl in early endosomes, resulting in continued ubiquitination of EGFR (Duan et al..")
+     (:MIS-MATCHES
+      ("activated"
+       (("controlled" "EGFR is also associated with Cbl")
+        (:REACH ((("controller" "EGF"))))))))
+    ((:TEXT
+      "The process resulted in the formation of EGFR positive tubular structures, and it was dependent on actin reorganization, receptor phosphorylation, PI 3-kinase activity, and dynamin 2.")
+     (:MIS-MATCHES
+      ("phosphorylation" (("substrate" "actin") (:REACH))
+                         (("substrate" "PI") (:REACH)) (("substrate" "dynamin 2") (:REACH)))))
+    ((:TEXT
+      "Furthermore, co-expression of a dominant negative mutant of STAT3 (STAT3 (Y705F)) that can not be phosphorylated on this tyrosine was sufficient to reduce the G-CSF and G-CSFR-dependent activation of the -184/+248-luc or of the -184/-58-mintk-luc reporter gene constructs (XREF_FIG F and data not shown).")
+     (:MIS-MATCHES ("phosphorylated" (("substrate" "STAT3") (:REACH)))))
+    ((:TEXT
+      "Of the three tested C/EBP proteins, C/EBPalpha and C/EBPbeta activated the -184 to +248 MAD1 promoter fragment strongly, while C/EBPepsilon was a poor stimulator (XREF_FIG A).")
+     (:MIS-MATCHES
+      ("activated"
+       (("controlled" "MAD1")
+        (:REACH ((("controller" "C/EBPbeta")) (("controller" "C/EBPalpha"))))))))
+    ((:TEXT
+      "The fourth C/EBP family member analyzed, C/EBPbeta, was capable to activate the MAD1 reporter genes in a CCAAT-box-dependent manner and bound to the promoter in cells (XREF_FIG).")
+     (:MIS-MATCHES
+      ("activate"
+       (("controlled" "MAD1")
+        (:REACH ((("controller" "C/EBPbeta")) (("controller" "C/EBP"))))))))
+    ((:TEXT
+      "Immunolocalisation of phosphorylated STAT3, interleukin 11 and leukaemia inhibitory factor in endometrium of women with unexplained infertility during the implantation window.")
+     (:MIS-MATCHES ("phosphorylated" (("substrate" "interleukin 11") (:REACH)))))
+    ((:TEXT
+      "Reduced IL-11 production and STAT3 phosphorylation may contribute to unexplained infertility in some women.")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "IL-11") (:REACH)))))
+    ((:TEXT
+      "The observation that BID is a poor substrate for mGzmB suggests that this protease does not efficiently activate the BID pathway to cell death in the mouse.")
+     (:MIS-MATCHES
+      ("activate"
+       (("controlled" "cell death") (:REACH ((("controller" "protease"))))))))
+    ((:TEXT
+      "Here we show that type Igamma phosphatidylinositol phosphate kinase (PIPKIgamma) directly binds to E-cadherin and modulates E-cadherin trafficking.")
+     (:MIS-MATCHES
+      ("phosphate kinase (PIPKIgamma) directly binds to E-cadherin"
+       (NIL (:REACH ((("theme" "phosphate") ("theme" "E-cadherin"))))))
+      ("phosphatidylinositol phosphate kinase (PIPKIgamma) directly binds to E-cadherin"
+       (NIL
+        (:REACH ((("theme" "phosphatidylinositol") ("theme" "E-cadherin"))))))))
+    ((:TEXT
+      "Recent evidence suggests that Rab11 (XREF_BIBR), p120-catenin, ARF6, tyrosine phosphorylation, and ubiquitination (XREF_BIBR) all control the trafficking and assembly of E-cadherin in mammalian cells.")
+     (:MIS-MATCHES
+      ("phosphorylation"
+       (("substrate" "p120-catenin") (:REACH ((("site" "tyrosine")))))
+       (("substrate" "ARF6") (:REACH ((("site" "tyrosine"))))))))
+    ((:TEXT
+      "For example, p73 can bind to and activate various p53 target genes, and can induce growth arrest or apoptosis when over-expressed [XREF_BIBR, XREF_BIBR].")
+     (:MIS-MATCHES
+      ("activate" (("controlled" "p53") (:REACH ((("controller" "p73"))))))))
+    ((:TEXT
+      "The guanine nucleotide exchange factor, Tiam1, specifically activates the Rho like GTPase Rac (Michiels et al, 1995) and Tiam1-Rac signaling affects cell migration (Hordijk et al, 1997; Sander et al, 1998), invasion (Michiels et al, 1995; Keely et al, 1997; Engers et al, 2001), and metastasis (Habets et al, 1994) of tumour cells.")
+     (:MIS-MATCHES
+      ("activates" (("controlled" "Rho") (:REACH ((("controller" "guanine"))))))))
+    ((:TEXT
+      "Also, Cdc6-wt, p49-tCdc6, and p32-tCdc6 but not Cdc6-AAA were all similarly phosphorylated when they were prepared from cells that coexpressed cyclin A. Phosphorylation was prevented in cells expressing Cdk2-DN (XREF_FIG).")
+     (:MIS-MATCHES ("phosphorylated" (("substrate" "Cdc6-wt") (:REACH)))
+      ("Phosphorylation" (("substrate" "cyclin") (:REACH)))))
+    
+    ((:TEXT
+      "We asked whether an uncleavable mutant of Cdc6 (Cdc6-UM) has the effects described for tCdc6 that disturb Mcm2 loading to the chromatin and activate DNA damage sensing kinase activity and proapoptotic effect.")
+     (:MIS-MATCHES
+      ("activate"
+       (("controlled" "DNA damage") (:REACH ((("controller" "Cdc6"))))))))
+    ((:TEXT
+      "In particular, we show that Cdc6 truncation impairs Mcm2 loading onto chromatin and subsequently activates DNA damage sensing kinase activities that may be linked to p53-Bax-mediated programmed cell death.")
+     (:MIS-MATCHES
+      ("activates"
+       (("controlled" "DNA damage") (:REACH ((("controller" "Cdc6"))))))))
+    ((:TEXT
+      "When released, Cdc14 inactivates cyclin B-Cdk while activating the anaphase promoting complex (APC) that targets the destruction of mitosis specific cyclins [XREF_BIBR, XREF_BIBR].")
+     (:MIS-MATCHES
+      ("inactivates"
+       (("controlled" "cyclin") (:REACH ((("controller" "Cdc14"))))))))
+    ((:TEXT
+      "In further support of similarities in function is the finding that hCdc14A can, like Cdc14 in S. cerevisiae, activate the anaphase promoting complex (APC) in late anaphase by dephosphorylating the APC co-factor Cdh1 [XREF_BIBR] and dephosphorylate substrates of cyclin dependent kinases [XREF_BIBR, XREF_BIBR, XREF_BIBR].")
+     (:MIS-MATCHES ("dephosphorylate" (("substrate" "cyclin") (:REACH)))))
+    ((:TEXT
+      "alpha-Smooth Muscle Actin alpha-SMA 5-bromo-2 '-deoxyuridine BrdU cyclin D1 gene CCND1 Connective Tissue Growth Factor CTGF Extracellular Matrix ECM Fetal Calf Serum FCS Fluorescence Activated Cell Sorting FACS Farnesylpyrophosphate FPP Geranylgeranylpyrophosphate GGPP Glyceraldehyde-3-phosphate dehydrogenase GAPDH Guanine nucleotide binding regulatory protein G protein Guanosine triphosphatase GTPase 3 hydroxy3methylglutaryl Coenzyme A HMG CoA Idiopathic Pulmonary Fibrosis IPF Phosphate buffered saline PBS Reverse Transcription Polymerase Chain Reaction RT-PCR Serum-free DMEM media SF-DMEM Suppressor of cytokine Signalling SOCS Transforming Growth Factor-beta1 TGF-beta1 Competing interests.")
+     (:MIS-MATCHES
+      ("Activated"
+       (("controlled" "Phosphate") (:REACH ((("controller" "Actin")))))
+       (("controlled" "CoA") (:REACH ((("controller" "Actin"))))))))
+    ((:TEXT
+      "Specifically, Nef was reported to associate with Vav (XREF_BIBR) and activate p21 activated serine threonine kinases (PAKs), possibly though the activation of Rac or CDC42 (XREF_BIBR).")
+     (:MIS-MATCHES
+      ("activated" (("controlled" "Rac") (:REACH ((("controller" "p21")))))
+                   (("controlled" "CDC42") (:REACH ((("controller" "p21"))))))))
+    
     ((:TEXT "Tuberin contains multiple S/T phosphorylation sites (XREF_FIG).")
-  (:MIS-MATCHES ("phosphorylation" (("substrate" "S/T") (:REACH)))))
-     ((:TEXT
-   "However, the T1462A single mutant partitioned in the cell similarly to wild-type tuberin (XREF_FIG), indicating that T1462 phosphorylation was not directing translocation of tuberin from the membrane to the cytosol.")
-  (:MIS-MATCHES ("phosphorylation" (("substrate" "tuberin") (:REACH)))))
- ((:TEXT
-   "Previously, AKT was shown to directly phosphorylate and inhibit tuberin function upon stimulation with growth factors (XREF_BIBR).")
-  (:MIS-MATCHES ("phosphorylate" (("substrate" "tuberin") (:REACH)))))
-    
-     ((:TEXT
-   "53BP1 is involved in the phosphorylation of various ataxia telangiectasia mutated protein (ATM) substrates such as cell cycle checkpoint kinase 2 (CHEK2) [XREF_BIBR, XREF_BIBR].")
-  (:MIS-MATCHES
-   ("phosphorylation"
-    (("substrate" "ataxia telangiectasia mutated") (:REACH)))))
- ((:TEXT
-   "The MAPK kinase kinase kinases of the first level are phosphorylated in response to various extracellular stimuli through interaction with small GTP binding proteins like Ras, Raf, etc..")
-  (:MIS-MATCHES ("phosphorylated" (("substrate" "MAPK") (:REACH)))))
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "S/T") (:REACH)))))
+    ((:TEXT
+      "However, the T1462A single mutant partitioned in the cell similarly to wild-type tuberin (XREF_FIG), indicating that T1462 phosphorylation was not directing translocation of tuberin from the membrane to the cytosol.")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "tuberin") (:REACH)))))
+    ((:TEXT
+      "Previously, AKT was shown to directly phosphorylate and inhibit tuberin function upon stimulation with growth factors (XREF_BIBR).")
+     (:MIS-MATCHES ("phosphorylate" (("substrate" "tuberin") (:REACH)))))
     
     ((:TEXT
-   "The activated enzymes then phosphorylate one of 14 kinases of the second level (the MAPKKKs, that is, Raf proteins, MEKK1-4, etc.), which themselves activate one of the MAPK kinases (MEK1 and 2, MKK3-7) of the third level.")
-  (:MIS-MATCHES ("phosphorylate" (("substrate" "Raf") (:REACH)))))
- ((:TEXT
-   "In mouse keratinocytes, ocadaic acid treatment leads to phosphorylation of JunD and FosB by ERK and subsequent activation of an AP-1-responsive promoter (Rosenberger et al, 1999).")
-  (:MIS-MATCHES
-   ("phosphorylation" (("substrate" "FosB") (:REACH ((("enzyme" "acid")))))
-                      (("substrate" "JunD") (:REACH ((("enzyme" "acid"))))))))
+      "53BP1 is involved in the phosphorylation of various ataxia telangiectasia mutated protein (ATM) substrates such as cell cycle checkpoint kinase 2 (CHEK2) [XREF_BIBR, XREF_BIBR].")
+     (:MIS-MATCHES
+      ("phosphorylation"
+       (("substrate" "ataxia telangiectasia mutated") (:REACH)))))
+    ((:TEXT
+      "The MAPK kinase kinase kinases of the first level are phosphorylated in response to various extracellular stimuli through interaction with small GTP binding proteins like Ras, Raf, etc..")
+     (:MIS-MATCHES ("phosphorylated" (("substrate" "MAPK") (:REACH)))))
     
     ((:TEXT
-   "The Fos related antigens Fra-1 and Fra-2 are phosphorylated by MAPK in vitro, which leads to stabilisation, strong conformational change and an increase in DNA binding affinity (Gruda et al, 1994).")
-  (:MIS-MATCHES
-   ("phosphorylated" (("substrate" "Fos") (:REACH ((("enzyme" "MAPK"))))))))
+      "The activated enzymes then phosphorylate one of 14 kinases of the second level (the MAPKKKs, that is, Raf proteins, MEKK1-4, etc.), which themselves activate one of the MAPK kinases (MEK1 and 2, MKK3-7) of the third level.")
+     (:MIS-MATCHES ("phosphorylate" (("substrate" "Raf") (:REACH)))))
     ((:TEXT
-   "The correlations found for the nonphosphorylated ERK proteins with c-Fos and Fra-2 expression (XREF_TABLE) might not reflect an effect of MAP kinases on AP-1 proteins, since these associations were not found with the activated enzymes, but rather point to a regulation of ERK expression by AP-1 or common regulatory mechanisms.")
-      (:MIS-MATCHES ("nonphosphorylated" (("substrate" "ERK") (:REACH)))))
+      "In mouse keratinocytes, ocadaic acid treatment leads to phosphorylation of JunD and FosB by ERK and subsequent activation of an AP-1-responsive promoter (Rosenberger et al, 1999).")
+     (:MIS-MATCHES
+      ("phosphorylation" (("substrate" "FosB") (:REACH ((("enzyme" "acid")))))
+                         (("substrate" "JunD") (:REACH ((("enzyme" "acid"))))))))
     
-     ((:TEXT
-   "Tat independent activation of the HIV LTR by TSA has been documented both in vitro using chromatinized templates, and in vivo using cell lines containing integrated HIV genomes defective for Tat mediated transactivation [XREF_BIBR, XREF_BIBR, XREF_BIBR].")
-  (:MIS-MATCHES
-   ("activation" (("controlled" "LTR") (:REACH ((("controller" "Tat"))))))))
+    ((:TEXT
+      "The Fos related antigens Fra-1 and Fra-2 are phosphorylated by MAPK in vitro, which leads to stabilisation, strong conformational change and an increase in DNA binding affinity (Gruda et al, 1994).")
+     (:MIS-MATCHES
+      ("phosphorylated" (("substrate" "Fos") (:REACH ((("enzyme" "MAPK"))))))))
+    ((:TEXT
+      "The correlations found for the nonphosphorylated ERK proteins with c-Fos and Fra-2 expression (XREF_TABLE) might not reflect an effect of MAP kinases on AP-1 proteins, since these associations were not found with the activated enzymes, but rather point to a regulation of ERK expression by AP-1 or common regulatory mechanisms.")
+     (:MIS-MATCHES ("nonphosphorylated" (("substrate" "ERK") (:REACH)))))
+    
+    ((:TEXT
+      "Tat independent activation of the HIV LTR by TSA has been documented both in vitro using chromatinized templates, and in vivo using cell lines containing integrated HIV genomes defective for Tat mediated transactivation [XREF_BIBR, XREF_BIBR, XREF_BIBR].")
+     (:MIS-MATCHES
+      ("activation" (("controlled" "LTR") (:REACH ((("controller" "Tat"))))))))
     ((:TEXT
       "Since HIV-1 Env protein may activate DOCK2 controlled signaling pathways through binding to chemokine receptors such as CXCR4, env defective, VSV-G-pseudotyped viruses were used in these experiments.")
      (:MIS-MATCHES

@@ -2,27 +2,76 @@
 
 (defparameter *rsm-r-other-good*
   '(
-
-     ((:TEXT
-   "Both studies differ in the antibodies used : in the first (Adeyinka et al, 2002), a polyclonal phospho-p44 and p42 (Thr 202/Tyr 204) antibody (New England Biolabs, Frankfurt a.m., Germany) was employed, whereas in the second (Gee et al, 2001), a polyclonal anti-ACTIVE (TM) MAPK antibody (Promega, Mannheim, Germany) for dually phosphorylated ERK1/2 forms was used.")
-      (:MIS-MATCHES ("phosphorylated" (("substrate" "ERK1/2") (:REACH)))))
     ((:TEXT
-   "PEDF dependent JNK activation restored NFATc2 phosphorylation and localization to the cytoplasm in ECs activated by VEGF and bFGF.")
+   "Most epithelial tumor cells (including BxPC3) express another collagen receptor, DDR1, which is a not an integrin receptor but rather is a receptor tyrosine kinase that binds to and is activated by collagen (XREF_BIBR).")
   (:MIS-MATCHES
-   ("activated"
-    (("controlled" "ECs")
-     (:REACH ((("controller" "VEGF")) (("controller" "bFGF"))))))
-   ("phosphorylation"
-    (("substrate" "NFATc2") (:REACH ((("enzyme" "PEDF"))))))))
+   ("activated" (("controlled" "DDR1") (:REACH ((("controller" "collagen")))))
+    (("controlled" "collagen receptor")
+     (:REACH ((("controller" "collagen"))))))))
+    ((:TEXT
+      "The JNK1 portion of the fusion protein is phosphorylated on both Thr 183 and Tyr 185 residues by the MKK7 portion of the fusion protein.")
+     (:MIS-MATCHES
+      ("phosphorylated"
+       (("substrate" "JNK1")
+        (:REACH
+         ((("enzyme" "MKK7") ("site" "Thr 183"))
+          (("enzyme" "MKK7") ("site" "Tyr 185"))))))))
+    ((:TEXT
+      "The PIK3CA gene encodes the catalytic subunit p110-alpha, one of the three catalytic subunit proteins of the class IA PI-3 kinases that are usually activated by growth factor receptor tyrosine kinases.")
+     (:MIS-MATCHES
+      ("activated"
+       (("controlled" "IA")
+        (:REACH ((("controller" "growth factor receptor"))))))))
+    ((:TEXT
+      "Thus, the PIK3CA promoter contains a functional NF-kappaB binding site and can be activated by NF-kappaB.")
+     (:MIS-MATCHES
+      ("activated"
+       (("controlled" "PIK3CA") (:REACH ((("controller" "NF-kappaB"))))))))
+    ((:TEXT
+      "Wnt ligands bind to cell-surface Frizzled receptors and LRP5/6 coreceptors and result in changes in phosphorylation of several intracellular signaling components with the subsequent accumulation of nonphosphorylated beta-catenin [XREF_BIBR - XREF_BIBR].")
+     (:MIS-MATCHES ("nonphosphorylated" (("substrate" "beta-catenin") (:REACH)))))
+    ((:TEXT
+      "This common arrangement appears to provide a more stable and rigid packing solution than the alternative SOCS2 structure, potentially reflecting the greater selection for rapid induction and degradation responses in the CIS and SOCS1-SOCS 3 subfamily (for example, phosphorylation of the SOCS3 interface Y221 induces its degradation).")
+     (:MIS-MATCHES
+      ("phosphorylation" (("substrate" "SOCS3") (:REACH ((("site" "Y221"))))))))
+    ((:TEXT
+      "Dysfunction of this regulatory pathway may result in the accumulation of a hypophosphorylated stable form of beta-catenin in the cytoplasm (XREF_BIBR), from whence it translocates to the nucleus, binding to the high mobility group domain factors Tcf/LEF (XREF_BIBR) and stimulating transcription of target genes such as c-myc and cyclin D1 (XREF_BIBR).")
+     (:MIS-MATCHES
+      ("hypophosphorylated" (("substrate" "beta-catenin") (:REACH)))))
     
-     ((:TEXT
-   "Western blotting with the antibodies against active, dually phosphorylated JNK showed activation of the two JNK isoforms likely corresponding to the JNK-1 and JNK-2 (XREF_FIG b).")
-  (:MIS-MATCHES ("phosphorylated" (("substrate" "JNK") (:REACH)))))
- ((:TEXT
-   "The MITF promoter is potently activated by beta-catenin in a manner dependent upon the TCF/LEF binding site based on deletion mutagenesis, consistent with point mutagenesis studies of XREF_BIBR.")
-  (:MIS-MATCHES
-   ("activated"
-    (("controlled" "MITF") (:REACH ((("controller" "beta-catenin"))))))))
+    ((:TEXT
+      "In normal unstressed cells, the p53 protein is present at very low levels because of continuous degradation mediated by Mdm2, a protein that is also transcriptionally activated by p53 (XREF_BIBR).")
+     (:MIS-MATCHES
+      ("activated" (("controlled" "Mdm2") (:REACH ((("controller" "p53"))))))))
+    ((:TEXT
+      "Although some have suggested that BID may be the most relevant GzmB substrate during CTL attack, others have suggested that BID proteolysis is indirect and is mediated by caspase-3, which is also activated by GzmB (XREF_BIBR).")
+     (:MIS-MATCHES
+      ("activated"
+       (("controlled" "caspase-3") (:REACH ((("controller" "GzmB"))))))))    
+
+    ((:TEXT
+      "Treatment with CIAP resulted in both membrane and cytosolic tuberin migrating faster, indicating that tuberin within the cytosolic fraction is hyperphosphorylated.")
+     (:MIS-MATCHES ("hyperphosphorylated" (("substrate" "tuberin") (:REACH)))))
+    ((:TEXT
+      "Both studies differ in the antibodies used : in the first (Adeyinka et al, 2002), a polyclonal phospho-p44 and p42 (Thr 202/Tyr 204) antibody (New England Biolabs, Frankfurt a.m., Germany) was employed, whereas in the second (Gee et al, 2001), a polyclonal anti-ACTIVE (TM) MAPK antibody (Promega, Mannheim, Germany) for dually phosphorylated ERK1/2 forms was used.")
+     (:MIS-MATCHES ("phosphorylated" (("substrate" "ERK1/2") (:REACH)))))
+    ((:TEXT
+      "PEDF dependent JNK activation restored NFATc2 phosphorylation and localization to the cytoplasm in ECs activated by VEGF and bFGF.")
+     (:MIS-MATCHES
+      ("activated"
+       (("controlled" "ECs")
+        (:REACH ((("controller" "VEGF")) (("controller" "bFGF"))))))
+      ("phosphorylation"
+       (("substrate" "NFATc2") (:REACH ((("enzyme" "PEDF"))))))))
+    
+    ((:TEXT
+      "Western blotting with the antibodies against active, dually phosphorylated JNK showed activation of the two JNK isoforms likely corresponding to the JNK-1 and JNK-2 (XREF_FIG b).")
+     (:MIS-MATCHES ("phosphorylated" (("substrate" "JNK") (:REACH)))))
+    ((:TEXT
+      "The MITF promoter is potently activated by beta-catenin in a manner dependent upon the TCF/LEF binding site based on deletion mutagenesis, consistent with point mutagenesis studies of XREF_BIBR.")
+     (:MIS-MATCHES
+      ("activated"
+       (("controlled" "MITF") (:REACH ((("controller" "beta-catenin"))))))))
     ((:TEXT
       "4E-BP1 phosphorylation at Thr 37/46 was not different between men and women at baseline or during post-exercise recovery with exercise having no effect on post-exercise recovery 4E-BP1 phosphorylation (P> 0.05; data not shown).")
      (MIS-MATCHES
