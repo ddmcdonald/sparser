@@ -329,11 +329,7 @@
                (eq (edge-category e) category::be)
                (loop for edge in edges thereis (eq (edge-category edge) category::parentheses)))
               nil)
-             (#+ignore
-              (loop for ee in (all-edges-on (pos-starts-here (pos-edge-ends-at e)))
-                 thereis (and (category-p (edge-form ee))
-                              (member (cat-symbol (edge-form ee)) *n-bar-categories*)))
-              (loop for edge in edges thereis
+             ((loop for edge in edges thereis
                    (and (ng-head? edge)
                         (not (eq (edge-form edge) category::det))
                         (not (eq (edge-form edge) category::quantifier))))
@@ -961,46 +957,50 @@ than a bare "to".  |#
 
 
 (defparameter *suppressed-verb+ed* nil)
-(defun likely-verb+ed-clause (edge ev-list)
+(defun likely-verb+ed-clause (edge ev-list
+                              &aux (edge-form-name
+                                    (and (edge-form edge)
+                                         (cat-name (edge-form edge)))))
   (declare (special category::verb+ed *n-bar-categories*
                     category::preposition category::det category::have
                     category::pronoun *verb+ed-sents* *sentence-in-core*
-                    *chunk*))
-  (when (and (eq 'adverb (cat-name (edge-form edge)))
+                    *chunk*
+                    edge ev-list)
+           (optimize (debug 3)))
+  (when (and (eq 'adverb edge-form-name)
              (edge-p (edge-just-to-right-of edge))
              (eq 'verb+ed (cat-name (edge-form (edge-just-to-right-of edge)))))
     (setq edge (edge-just-to-right-of edge)))
   (cond
     ((and (edge-form edge) ;; COMMA has no edge-form
-          (not
-           (and ;; e.g. COT-mediated
-            (individual-p (edge-referent edge))
-            (eq (cat-symbol (car (indiv-type (edge-referent edge))))
-                'category::hyphenated-pair)))
-          (not
-           (eq (edge-category edge) category::have))
-          (eq 'category::verb+ed (cat-symbol (edge-form edge)))
+          (not (eq (edge-category edge) category::have))
+          (eq edge-form-name 'verb+ed)
+          (not (and (individual-p (edge-referent edge))
+                    (eq (cat-symbol (car (indiv-type (edge-referent edge))))
+                        'category::hyphenated-pair))) ;; e.g. COT-mediated
+
           (let*
-              ((ev-edge (when (car ev-list)(car (ev-top-edges (car ev-list))))) ; 
-               (prev-edge (when ev-edge (edge-just-to-left-of ev-edge))))
-            (declare (special ev-edge prev-edge))
-            (cond
-              ((and 
-                prev-edge 
-                (edge-form prev-edge)
-                (memq (cat-symbol (edge-form prev-edge))
-                      '(category::verb category::verb+ed)))
-               (when *suppressed-verb+ed*
-                 (push (list  (list (edge-form prev-edge)
-                                    (edge-referent prev-edge))
-                              (list (edge-form ev-edge)
-                                    (edge-referent ev-edge))
-                              (list (edge-form edge)
-                                    (edge-referent edge))
-                              (sentence-string *sentence-in-core*))
-                       *suppressed-verb+ed*))
-               nil)
-              (t t)))
+              ((ev-edge (when (car ev-list)(car (ev-top-edges (car ev-list)))))
+               (ev-edge-form (and ev-edge  (edge-form ev-edge)))
+               (prev-edge (when ev-edge (edge-just-to-left-of ev-edge)))
+               (p-edge-form-name (and (edge-p prev-edge)
+                                      (category-p (edge-form prev-edge))
+                                      (cat-name (edge-form prev-edge)))))
+            (declare (special ev-edge ev-edge-form prev-edge p-edge-form-name))
+            ;;(lsp-break "bah")
+            (cond ((not (and prev-edge (edge-form prev-edge))) t)
+                  ((or (memq p-edge-form-name '(verb verb+ed))
+                       (and (member p-edge-form-name '(prep spatial-preposition))
+                            (or (eq ev-edge-form category::np)
+                                (member (cat-symbol ev-edge-form) *n-bar-categories*))))
+                   (when *suppressed-verb+ed*
+                     (push `((,(edge-form prev-edge) ,(edge-referent prev-edge))
+                             (,(edge-form ev-edge) ,(edge-referent ev-edge))
+                             (,(edge-form edge) ,(edge-referent edge))
+                             ,(sentence-string *sentence-in-core*))
+                           *suppressed-verb+ed*))
+                   nil)
+                  (t t)))
           ;; new code -- don't accept a past participle immediately following a noun 
           ;; -- most likely to be a main verb or a reduced relative in this case
           (or
@@ -1008,15 +1008,9 @@ than a bare "to".  |#
               thereis
                 (and
                  (edge-form e)
-                 (and (memq (cat-symbol (edge-form e)) *n-bar-categories*) 
-                      ;;MAJOR CHANGE --  VERB+ED IS LIKELY TO BE PART
-                      ;;  OF THE NG IF IT IS PRECEDED BY A PROPER NOUN
-                      ;;  AS IN "HDAC2 induced phosphorylation"
-                      ;; not quite right
-                      ;; "PD184352 and sorafenib inhibited ERK in all of these lines"
-                      ;; ""recombinant COT induced pThr202/Tyr204 phosphorylation of ERK1 in vitro"
-                      ;;(not (memq (cat-name (edge-form e)) '(proper-noun proper-name)))
-                      )))
+                 (memq (cat-symbol (edge-form e)) *n-bar-categories*)
+                 (or (is-basic-collection? (edge-referent e))
+                     (not (find-subcat-var (edge-referent e) :verb-premod (edge-referent edge))))))
            (and ;; e.g. "EGF strongly activated EGFR"
             (cadr ev-list)
             (loop for e in (ev-top-edges (cadr ev-list))
