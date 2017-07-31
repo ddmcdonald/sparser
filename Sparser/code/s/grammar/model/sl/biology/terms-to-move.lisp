@@ -365,6 +365,8 @@ be biology specific, since they aren't. |#
 
 (noun "example" :super variant)
 (noun "form" :super variant)
+(noun "homolog" :super variant)
+(def-synonym homolog (:noun "homologue"))
 
 (noun "position" :super residue-on-protein)
 
