@@ -283,7 +283,11 @@
 (def-family "Neural Wiskott-Aldrich syndrome protein" :members ("UP:O00401" "UP:Q95107")) 
 (def-family "ODC1" :members ("UP:P11926" "UP:Q9BQT8")) 
 (def-family "ORC1" :members ("UP:Q13415" "UP:Q9Y619")) 
-(def-family "PAK-1" :members ("UP:Q13153" "UP:Q16512") :synonyms ("PAK1")) 
+(def-family "PAK-1" :members ("UP:Q13153" "UP:Q16512") :synonyms ("PAK1"))
+(def-family "PAK" :members ("UP:Q13153" "UP:Q16512" "UP:Q13177" "UP:O75914" "UP:O96013"
+                                        "UP:Q9P286" "P:Q9NQU5")
+            :synonyms ("PAK"
+                       "p21-activated kinase" "p21 activated serine threonine kinases"))
 (def-family "PAR-3" :members ("UP:O00254" "UP:Q8TEW0")) 
 (def-family "PB2" :members ("UP:P03428" "UP:Q693B9")) 
 (def-family "PBP" :members ("UP:P02775" "UP:P30086" "UP:Q15648")) 
