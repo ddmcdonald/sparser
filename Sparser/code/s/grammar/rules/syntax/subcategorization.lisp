@@ -226,6 +226,21 @@
                                                       category))
                                patterns :test #'subcat-pattern-equal))
         finally (return patterns)))
+(deftype literal-subcat-slot-label ()
+  '(member
+    :as-comp
+    :ifcomp
+    :l
+    :m
+    :object
+    :premod
+    :subject
+    :thatcomp
+    :to-comp
+    :verb-premod
+    :whethercomp
+    ))
+
 
 (defun override-subcat-patterns (category patterns slots)
   "Override or extend inherited subcategorization patterns from local slots.
@@ -242,10 +257,7 @@
                                   patterns :key #'subcat-label))
         for (pname var-name) on slots by #'cddr
         as label = (etypecase pname
-                     ((member :subject :object :premod :m :l
-                              :thatcomp :whethercomp :to-comp :ifcomp :as-comp)
-                      pname)
-                     ((or word polyword)
+                     ((or word polyword literal-subcat-slot-label)
                       pname)
                      ((or string symbol)
                       (resolve/make (string-downcase pname))))
@@ -742,6 +754,8 @@
 (defparameter *show-one-anaphora* nil)
 
 (defun pronominal-or-deictic? (item)
+  (declare (special category::this category::that category::these category::those
+                    category::quantifier category::pronoun category::interlocutor))
   (cond
     ((or
       (itypep item category::this)
@@ -754,7 +768,7 @@
     ( ;;(itypep item 'pronoun/first/plural) - but should add check for agentive verbs
      (itypep item category::pronoun) ;; of any sort
      t)
-    ((itypep item 'interlocutor)
+    ((itypep item category::interlocutor)
      ;; replacement for forms of "I", "we", "you" 6/23/17
      t)))
 
