@@ -445,20 +445,30 @@
 	   :form subordinate-clause
 	   :referent (:function assimilate-subject-to-subordinate-clause left-edge right-edge))))
 
-(loop for vv in '((verb+ing vg+ing)
-                  (verb+present vg)
-                  (verb vg)
-                  (vg+ing vg+ing)
-                  (vp+ed vp+ed) 
-                  )
+(loop for nb in `(np ,@*n-bar-categories*)
       do
-        (loop for nb in `(np ,@*n-bar-categories*)
-              do
-                (eval
-                 `(def-syntax-rule  (,nb ,(car vv) )
-                      :head :right-edge
-                      :form ,(second vv)
-                      :referent (:function interpret-premod-to-verb left-edge right-edge)))))
+        (progn
+          ;; this causes parses like "to activate Rac1 resulting "
+          ;; where the resulting is absorbed into the Rac1 
+          #+ignore
+          (eval
+           (unless (eq nb 'np)
+             `(def-syntax-rule  (,nb vg+ing)
+                  :head :right-edge
+                  :form vg+ing
+                  :referent (:function assimilate-object right-edge left-edge))))
+          (loop for vv in '((verb+ing vg+ing)
+                            (verb+present vg)
+                            (verb vg)
+                            (vp+ed vp+ed) 
+                            )
+                do
+
+                  (eval
+                   `(def-syntax-rule  (,nb ,(car vv) )
+                        :head :right-edge
+                        :form ,(second vv)
+                        :referent (:function interpret-premod-to-verb left-edge right-edge))))))
 
 ;; special handlng for vp+ed/vg+ed  -- may be a reduced relative or a main clause
 
