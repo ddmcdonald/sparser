@@ -32,6 +32,8 @@
          :m amino-acid
          :m substrate
          :m site
+         :verb-premod site
+         :verb-premod amino-acid
          :m agent ;;somehow this overrides the ones below
          :of substrate
          :of site
