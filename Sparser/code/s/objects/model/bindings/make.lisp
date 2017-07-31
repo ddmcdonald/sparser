@@ -315,7 +315,7 @@ returning a new one.
 	 (over-ridden-var (binding-variable over-ridden-binding))
 	 (over-ridden-variables (dvar-variables over-ridden-var)))
     (when (null edge)
-      (lsp-break "null edge in perform-over-ridden-variable-disambiguation, for binding ~s in sentence ~s~%"
+      (error "null edge in perform-over-ridden-variable-disambiguation, for binding ~s in sentence ~s~%"
             over-ridden-binding (when *sentence-in-core* (sentence-string *sentence-in-core*)))
       (return-from perform-over-ridden-variable-disambiguation i))
     (loop for binding in (reverse (indiv-binds i))
