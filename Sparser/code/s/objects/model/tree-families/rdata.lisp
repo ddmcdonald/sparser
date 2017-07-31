@@ -112,6 +112,7 @@ Should mirror the cases on the *single-words* ETF."
     :in :into
     :like :l
     :m
+    :verb-premod
     #|:next\ to|#
     :object :of :on :onto #|:on\ top\ of|# :over
     :premod
@@ -127,9 +128,9 @@ Should mirror the cases on the *single-words* ETF."
 
 (deftype subcat-relation-keyword ()
   '(member :adjp-complement
-           :complement-variable
-           :loc-pp-complement
-           :optional-object))
+    :complement-variable
+    :loc-pp-complement
+    :optional-object))
 
 (defun decode-subcat-slots (rdata)
   "Separate subcategorization slots and relations from the realization args."
