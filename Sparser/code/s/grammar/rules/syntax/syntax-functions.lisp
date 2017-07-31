@@ -721,7 +721,7 @@
            (member (cat-name (edge-form be-edge))
                    '(verb verb+present verb+past verb+ed verb+ing vg+ed vg vg+ing infinitive))
            (if (member (cat-name (edge-form be-edge))
-                       '(that-comp to-comp vp S subject-relative-clause
+                       '(that-comp thatcomp to-comp vp S subject-relative-clause
                          subordinate-s subordinate-clause
                          object-relative-clause ;; "that PTEN protein levels are, in part, regulated by ..."
                          transitive-clause-without-object))
@@ -1344,11 +1344,14 @@
          (copula-adj-edge (edge-right-daughter copula-edge))
          (right (and (edge-p copula-adj-edge)
                      (edge-right-daughter copula-adj-edge)))
-         (right-val (edge-referent right))
+         (right-val (and (edge-p right)
+                         (edge-referent right)))
          (new-value
           (and (edge-p right)
                (eq (edge-referent copula-adj-edge) copula-value)
                (assimilate-subject subj right-val right t))))
+    (declare (special copula-value copula-adj-edge right edge-right-daughter
+                      right-val new-value))
     (cond (*subcat-test* new-value)
           (new-value
            (set-edge-referent right new-value)
@@ -1357,7 +1360,9 @@
                          copula))
                              
           (t
-           (lsp-break  "interpret-control-copula fails")))))
+           (error  "interpret-control-copula fails with subj=~s, copula=~s in ~s~%"
+                   subj copula
+                   (sentence-string *sentence-in-core*))))))
       
 
 (defun assimilate-subject-to-vp-ing (subj vp)
