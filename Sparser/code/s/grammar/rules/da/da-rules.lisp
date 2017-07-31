@@ -314,6 +314,8 @@
      and the assumption that there are no proteins in vivo that might stabilize 
      nucleotide-free Ras and prevent GTP loading. "
 
+(defparameter *conjoined-s-failures* nil)
+
 (defun conjoin-clause-and-vp (s-edge  and vp-edge)
   ;; get the value of the subject or (perhaps) the subject
   ;; variable of the s. Look up the s variable of the vp
@@ -330,15 +332,16 @@
     (when (and s-ref vp-ref s-subject)
       (let ((vp-var
              (if (is-passive? vp-edge)
-                        (subcategorized-variable vp-ref :object s-subject)
-                        (subcategorized-variable vp-ref :subject s-subject))))
+                 (subcategorized-variable vp-ref :object s-subject)
+                 (subcategorized-variable vp-ref :subject s-subject))))
         (cond (vp-var
                (setq vp-ref (bind-dli-variable vp-var s-subject vp-ref))
                (set-edge-referent vp-edge vp-ref))
-              (t (warn "couldnt attach S subject ~s as subject of conjoined vp ~s in ~s~%"
-                       s-subject
-                       vp-ref
-                       (sentence-string *sentence-in-core*))))))
+              (t (push (format nil "couldnt attach S subject ~s as subject of conjoined vp ~s in ~s~%"
+                               s-subject
+                               vp-ref
+                               (sentence-string *sentence-in-core*))
+                       *conjoined-s-failures*)))))
     ;; regardless of whether we could set the subject of the
     ;; vp we should create the edge
     ;; This returns a edge and uses referent-of-two-conjoined-edges 
@@ -1159,6 +1162,22 @@
   :pattern (subordinate-s and s )
   :action (:function subordinate-comma-clause first second third))
 
+(define-debris-analysis-rule subordinate-comma-clause
+  :pattern (subordinate-clause "," s )
+  :action (:function subordinate-comma-clause first second third))
+
+(define-debris-analysis-rule subordinate-and-clause
+  :pattern (subordinate-clause and s )
+  :action (:function subordinate-comma-clause first second third))
+
+(define-debris-analysis-rule subordinate-s-comma-clause
+  :pattern (subordinate-s "," s )
+  :action (:function subordinate-comma-clause first second third))
+
+(define-debris-analysis-rule subordinate-s-and-clause
+  :pattern (subordinate-s and s )
+  :action (:function subordinate-comma-clause first second third))
+
 (defun subordinate-comma-clause (sc comma s)
   (declare (ignore comma))
   (create-event-relation s sc))
@@ -1717,6 +1736,11 @@
          (lsp-break "null np in update-edge-as-lambda-predicate")
          (return-from update-edge-as-lambda-predicate nil))
         ((edge-p np) (setq np (edge-referent np))))
+  (when (and (eq :subject syntactic-label)
+             (member (cat-name (edge-form vp-edge)) '(vp+passive)))
+    ;; example "is mediated by caspase-3, which is also activated by GzmB"
+    (setq syntactic-label :object))
+       
   (let ((vp-indiv (edge-referent vp-edge)))
     (cond ((itypep vp-indiv 'wh-question)
            (update-wh-question-as-lambda-predicate vp-edge np syntactic-label))
