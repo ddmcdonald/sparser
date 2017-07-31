@@ -494,7 +494,7 @@
 (def-family "PAK-1" :members ("UP:Q13153" "UP:Q16512") :synonyms ("PAK1"))
 (def-family "PAO" :synonyms ("PaO") :identifier "XFAM:PF08417.10")
 (def-family "PAK" :members
-  ("UP:Q13153" "UP:Q16512" "UP:Q13177" "UP:O75914" "UP:O96013" "UP:Q9P286" "P:Q9NQU5")
+  ("UP:Q13153" "UP:Q16512" "UP:Q13177" "UP:O75914" "UP:O96013" "UP:Q9P286" "UP:Q9NQU5")
   :synonyms ("PAK" "p21-activated kinase" "p21 activated serine threonine kinases"))
 (def-family "PAP-2" :synonyms ("PAP2") :identifier "XFAM:PF01569.19")
 (def-family "PAR-3" :members ("UP:O00254" "UP:Q8TEW0"))
