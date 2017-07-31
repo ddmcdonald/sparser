@@ -1027,7 +1027,8 @@
   :restrict ((moving-object molecule)) 
   :realization 
   (:verb "localize" 
-   :noun "localization" 
+   :noun "localization"
+   :verb-premod destination      
    :etf (svo-passive) 
    :o moving-object))
 
