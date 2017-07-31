@@ -414,14 +414,16 @@ returning a new one.
                            (bind-dli-variable ;; keep the others
                             (binding-variable b) (binding-value b) new))))
         (if (not rebound)
-            (lsp-break "attempting to change a binding which does not exist"))
-        new)
-      (else
-        (let ((b (binding-of-individual var individual)))
-          (setf (binding-value b) value)
-          ;; now it needs to be indexed, but that would entail
-          ;; refactoring some code and can wait for a bit (1/31/17)
-          individual))))
+            (then (error "attempting to change a binding for ~s which does not exist in ~s~%"
+                         val
+                         (sentence-string *sentence-in-core*))
+
+                  (let ((b (binding-of-individual var individual)))
+                    (setf (binding-value b) value)
+                    ;; now it needs to be indexed, but that would entail
+                    ;; refactoring some code and can wait for a bit (1/31/17)
+                    individual))
+            new))))
 
 
 (defun copy-indiv-minus-variable (i var/name)
