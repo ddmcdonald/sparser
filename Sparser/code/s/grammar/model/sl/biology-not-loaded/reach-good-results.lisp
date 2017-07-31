@@ -3,6 +3,20 @@
 (defparameter *rsm-r-other-good*
   '(
     ((:TEXT
+   "Phosphorylation of estrogen receptor-alpha (ERalpha) at specific residues in transcription activation function 1 (AF-1) can stimulate ERalpha activity in a ligand independent manner.")
+  (:MIS-MATCHES
+   ("Phosphorylation" (("substrate" "ERalpha") (:REACH))
+    (("substrate" "estrogen receptor-alpha") (:REACH)))))
+    ((:TEXT
+   "L2 did not induce phosphorylation of Epidermal Growth Factor Receptor (EGFR; XREF_FIG), suggesting there is specificity for PDGFRbeta.")
+  (:MIS-MATCHES ("phosphorylation" (("substrate" "EGFR") (:REACH)))))
+     ((:TEXT
+   "Mutation of AKT phosphorylation sites in tuberin alters its localization.")
+  (:MIS-MATCHES
+   ("phosphorylation"
+    (("substrate" "tuberin") (:REACH ((("enzyme" "AKT"))))))))
+    
+    ((:TEXT
    "Most epithelial tumor cells (including BxPC3) express another collagen receptor, DDR1, which is a not an integrin receptor but rather is a receptor tyrosine kinase that binds to and is activated by collagen (XREF_BIBR).")
   (:MIS-MATCHES
    ("activated" (("controlled" "DDR1") (:REACH ((("controller" "collagen")))))

@@ -1,6 +1,57 @@
 (in-package :sparser)
 (defparameter *rsm-r-other-bad*
-  '(
+  '(((:TEXT
+   "XREF_FIG shows that baseline phosphorylation of Spry2 is increased in response to FGF2 in cells expressing WT FGFR3, while the increased amount of Spry2 detected in cells expressing TDII FGFR3 is maximally phosphorylated independent of FGF2 treatment.")
+  (:MIS-MATCHES ("phosphorylated" (("substrate" "Spry2") (:REACH)))))
+     ((:TEXT
+   "HIF-1alpha activates the transcription of vascular endothelial growth factor (VEGF), a key factor in tumor angiogenesis, and the expression of glucose transporters, glycolytic enzymes, and growth factors, which may promote tumor cell survival under hypoxic conditions [XREF_BIBR].")
+  (:MIS-MATCHES
+   ("activates"
+    (("controlled" "expression of glucose")
+     (:REACH ((("controller" "HIF-1alpha"))))))))
+     ((:TEXT
+   "Various explanations may be offered for the appearance of these bands in western blots, including longer splice variants (XREF_BIBR), formation of homo- or heterodimers (XREF_BIBR), phosphorylation or ubiquitination (XREF_BIBR) and complexes of ERalpha with any of its possible binding partners (XREF_BIBR).")
+  (:MIS-MATCHES ("phosphorylation" (("substrate" "ERalpha") (:REACH)))))
+     ((:TEXT
+   "This finding suggests that c-Myc phosphorylation on Ser 62 is important for increased cyclin B1 promoter activity by cyclin G1 (XREF_FIG).")
+  (:MIS-MATCHES
+   ("promoter activity"
+    (("controlled" "B1") (:REACH ((("controller" "cyclin"))))))))
+    ((:TEXT
+   "Further, we suggest that these effects result in increased cyclin B1 promoter activation in cyclin G1 overexpressing cells, which are frequently observed in cancer cells (XREF_FIG).")
+  (:MIS-MATCHES
+   ("promoter
+ activation"
+    (("controlled" "cyclin") (:REACH ((("controller" "B1"))))))))
+    ((:TEXT
+   "Bacterial internalization can occur through activation of PDGFRbeta or through independent activation of Abl kinase, culminating in phosphorylation of the Rac guanine nucleotide exchange factor (GEF), Vav2, and two actin nucleators, WAVE2 and Cortactin.")
+  (:MIS-MATCHES
+   ("phosphorylation" (("substrate" "Cortactin") (:REACH))
+    (("substrate" "GEF") (:REACH)) (("substrate" "Vav2") (:REACH))
+    (("substrate" "guanine") (:REACH)) (("substrate" "actin") (:REACH))
+    (("substrate" "Rac") (:REACH)) (("substrate" "WAVE2") (:REACH)))))
+    ((:TEXT
+   "We confirmed the role of Abl kinases in phosphorylating EB associated proteins by examining tyrosine phosphorylation of C. trachomatis infected Abl and Arg -/- cells or Abl siRNA depleted HeLa cells.")
+  (:MIS-MATCHES
+   ("phosphorylating" (("substrate" "EB") (:REACH ((("site" "tyrosine"))))))
+   ("phosphorylation"
+    (("substrate" "Abl") (:REACH ((("site" "Arg")) (("site" "tyrosine"))))))))
+    ((:TEXT
+   "A qualitative reduction in the amount of tyrosine phosphorylation of EGFP-TARP in the Abl and Arg -/- cells compared to the parental cells was noted (XREF_FIG).")
+  (:MIS-MATCHES
+   ("phosphorylation"
+    (("substrate" "EGFP-TARP") (:REACH ((("site" "Arg"))))))))
+    ((:TEXT
+   "Our screen confirmed some previously known host targets and has, most importantly, identified for the first time the activation of PDGFR and Abl kinase signaling pathways as key events in the pathogenesis of C. trachomatis infections.")
+  (:MIS-MATCHES
+   ("activation" (("controlled" "PDGFR") (:REACH ((("controller" "Abl"))))))))
+    ((:TEXT
+   "Activation of these kinases culminates in phosphorylation of the Rac guanine nucleotide exchange factor, Vav2, and several actin nucleators, including WAVE2 and Cortactin, that ultimately promote efficient uptake of this obligate intracellular parasite.")
+  (:MIS-MATCHES
+   ("phosphorylation" (("substrate" "guanine") (:REACH))
+    (("substrate" "Rac") (:REACH)) (("substrate" "actin") (:REACH))
+    (("substrate" "Vav2") (:REACH)))))
+    
      ((:TEXT
    "p130CAS function is dependent on tyrosine phosphorylation of its substrate domain (SD).")
   (:MIS-MATCHES
