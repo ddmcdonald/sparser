@@ -1355,6 +1355,8 @@
                          (edge-referent right)))
          (new-value
           (and (edge-p right)
+               (loop for b in (indiv-old-binds copula-value)
+                       thereis (eq (binding-value b) right-val))
                (eq (edge-referent copula-adj-edge) copula-value)
                (assimilate-subject subj right-val right t))))
     (declare (special copula-value copula-adj-edge right edge-right-daughter
@@ -1421,7 +1423,7 @@
                 (interpret-premod-to-verb subj vp))))
       
       ((and (can-fill-vp-object? vp subj *left-edge-into-reference*)
-            (not (test-premod-to-verb subj vp (left-edge-for-referent)))
+            (not (verb-premod-sequence? (left-edge-for-referent)))
             (loop for binding in (indiv-old-binds vp)
                       thereis (not (member (var-name (binding-variable binding))
                                            '(past raw-text)))))
@@ -1736,27 +1738,38 @@
   (when (itypep copular-pp 'wh-question)
     ;; e.g. "cancer patients who may not have been at risk themselves"
     (setq copular-pp (value-of 'statement copular-pp)))
-  (if (null copular-pp)
+  (cond ((null copular-pp)
       ;; happens in "This analysis identified a group of tumours with good prognosis, almost all of which were of low grade and metastasis-free up to 5 years ( xref )."
-      nil
-      (let* ((prep-indiv (value-of 'prep copular-pp))
-             (prep (get-word-for-prep (unless (null prep-indiv) prep-indiv)))
-             (pobj (value-of 'value copular-pp))
-             (var-to-bind (when prep (subcategorized-variable np prep pobj))))
-        ;;(lsp-break "apply-copular-pp to ~a and ~a" np copular-pp)
-        (cond
-          (*subcat-test* var-to-bind)
-          (t
-           (when *collect-subcat-info*
-             (push (subcat-instance np prep var-to-bind copular-pp)
-                   *subcat-info*))
+         nil)
+        ((is-basic-collection? copular-pp)
+         (if *subcat-test*
+             (loop for cop-p in (value-of 'items copular-pp)
+                   always (test-and-apply-simple-copula-pp np cop-p))
+             (revise-variable
+              (bind-dli-variable 'item np copular-pp))))
+        (t
+         (test-and-apply-simple-copula-pp np copular-pp)
+         )))
 
-           (setq np (individual-for-ref np))
-           (revise-parent-edge :category category::copular-predicate)
+(defun test-and-apply-simple-copula-pp (np copular-pp)
+  (let* ((prep-indiv (value-of 'prep copular-pp))
+         (prep (get-word-for-prep (unless (null prep-indiv) prep-indiv)))
+         (pobj (value-of 'value copular-pp))
+         (var-to-bind (when prep (subcategorized-variable np prep pobj))))
+    ;;(lsp-break "apply-copular-pp to ~a and ~a" np copular-pp)
+    (cond
+      (*subcat-test* var-to-bind)
+      (t
+       (when *collect-subcat-info*
+         (push (subcat-instance np prep var-to-bind copular-pp)
+               *subcat-info*))
 
-           (let ((i copular-pp)) ;; renaming to reinforce the framing
-             (setq i (bind-variable 'item np i))
-             i ))))))
+       (setq np (individual-for-ref np))
+       (revise-parent-edge :category category::copular-predicate)
+
+       (let ((i copular-pp)) ;; renaming to reinforce the framing
+         (setq i (bind-variable 'item np i))
+         i )))))
 
 
 

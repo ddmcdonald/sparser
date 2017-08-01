@@ -330,9 +330,9 @@
                (loop for edge in edges thereis (eq (edge-category edge) category::parentheses)))
               nil)
              ((loop for edge in edges thereis
-                   (and (ng-head? edge)
-                        (not (eq (edge-form edge) category::det))
-                        (not (eq (edge-form edge) category::quantifier))))
+                      (and (ng-head? edge)
+                           (not (eq (edge-form edge) category::det))
+                           (not (eq (edge-form edge) category::quantifier))))
               nil)
              ((preceding-adverb-preceded-by-ng edges)
               ;; too tight, but probably OK
@@ -341,11 +341,11 @@
              #+ignore
              ;; check to block splitting up "the p53 binding ability"
              ((loop for edge in edges thereis
-                   (and (ng-head? edge)
-                        ;; rule out demonstrative pronouns
-                        ;; "such co-occurring events"
-                        (not (eq (edge-form edge) category::det))
-                        (not (eq (edge-form edge) category::quantifier)))))
+                      (and (ng-head? edge)
+                           ;; rule out demonstrative pronouns
+                           ;; "such co-occurring events"
+                           (not (eq (edge-form edge) category::det))
+                           (not (eq (edge-form edge) category::quantifier)))))
              (t t)))
       ((eq eform category::verb+ed)
        ;; don't allow a verb form after a parenthetical -- most likely a relative clause or a main clause
@@ -358,7 +358,9 @@
             (loop for edge in edges thereis (eq (edge-category edge) category::parentheses)))
            nil
            t))
-      ((ng-compatible? (edge-form e) edges)))))
+      ((and
+        (not (verb-premod-sequence? (edge-just-to-right-of e)))
+        (ng-compatible? (edge-form e) edges))))))
 
 (defun preceding-adverb-preceded-by-ng (edges)
   (and
@@ -497,17 +499,39 @@
 
 (defmethod compatible-with-vg? ((e edge))
   (declare (special category::not category::apostrophe-t
-                    category::subordinate-conjunction category::then category::time))
+                    category::subordinate-conjunction category::then category::time
+                    e)
+           (optimize (debug 3)(speed 1)))
   ;;(lsp-break "compatible with vg? e = ~a" e)
   (or
    (vg-compatible? (edge-form e))
    (eq category::not (edge-category e))
    (eq category::apostrophe-t (edge-category e))
+   (verb-premod-sequence? e)
    (and
     (eq category::time (edge-category e))
     (not
      (loop for ee in (all-edges-at e)
         thereis (eq category::subordinate-conjunction (edge-form ee)))))))
+
+(defun verb-premod? (n v)
+  (find-subcat-var n :verb-premod v))
+
+(defun verb-premod-sequence? (e)
+  "special case for a noun preceding the verb where the noun is a verb-premod
+   e.g. '... tyrosine phosphorylated'"
+  (and (edge-p e)
+       (category-p (edge-form e))
+       (member (cat-symbol (edge-form e)) *n-bar-categories*)
+       (let ((right (edge-just-to-right-of e))
+             (left (edge-just-to-left-of e)))
+         (and (edge-p right)
+              (category-p (edge-form right))
+              (member (cat-symbol (edge-form right)) *vg-head-categories*)
+              (verb-premod? (edge-referent e) (edge-referent right))
+              (or (not (edge-p left))
+                  (not (or (eq (edge-category left) category::that)
+                           (eq (edge-category left) word::comma))))))))
 
 (defun gross-infinitive-chunker-test (chunk)
   "Called from delimit-next-chunk when the chunk is finished.
@@ -563,6 +587,8 @@ than a bare "to".  |#
             (ecn (cat-name (edge-category e))))
         (declare (special *ng-start-tests-in-progress*))
         (cond
+          ((verb-premod-sequence? (edge-just-to-right-of e))
+           nil)
           ((eq (cat-name (edge-category e)) 'not)
            nil)
           ((plural-noun-and-present-verb? e)
@@ -1010,7 +1036,7 @@ than a bare "to".  |#
                  (edge-form e)
                  (memq (cat-symbol (edge-form e)) *n-bar-categories*)
                  (or (is-basic-collection? (edge-referent e))
-                     (not (find-subcat-var (edge-referent e) :verb-premod (edge-referent edge))))))
+                     (not (verb-premod? (edge-referent e) (edge-referent edge))))))
            (and ;; e.g. "EGF strongly activated EGFR"
             (cadr ev-list)
             (loop for e in (ev-top-edges (cadr ev-list))
