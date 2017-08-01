@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "return-value"
 ;;;   Module:  drivers;sinks:
-;;;  Version:  May 2017
+;;;  Version:  July 2017
 
 ;; Initiated 4/27/09 for checkpoint demo. Modified 9/26/09
 
@@ -58,7 +58,7 @@
         (:spire
          (let ((*sentence-results-stream* t))
            (declare (special *sentence-results-stream*))
-           (spire-tree referent)))
+           (krisp->sexpr referent)))
         (otherwise
          *analysis-return-value*)))
     :analysis-completed))
