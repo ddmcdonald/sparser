@@ -131,8 +131,8 @@
          (setf (edge-form edge) category::vg+ing))
         ((category::verb+ed)
          (setf (edge-form edge) category::vg+ed))
-
-
+        (category::transitive-clause-without-object)
+        (category::post-ordinal)
 	(otherwise
 	 (unless *cfg-flag*
            (push-debug `(,edge))
