@@ -5,7 +5,7 @@
 (def-indiv-with-id organism "nude mice" "TI:10090") 
 (def-indiv-with-id organism "Wistar rat" "TI:10116") 
 (def-indiv-with-id organism "transgenic mice" "TI:10090") 
-(def-indiv-with-id organism "Helicobacter pylori" "TI:210") 
+(def-indiv-with-id organism "Helicobacter pylori" "TI:210" :synonyms ("H. pylori")) 
 (def-indiv-with-id organism "guinea pig" "TI:10141") 
 (def-indiv-with-id organism "Epstein-Barr virus" "TI:10376") 
 (def-indiv-with-id organism "Sprague-Dawley rat" "TI:10116") 

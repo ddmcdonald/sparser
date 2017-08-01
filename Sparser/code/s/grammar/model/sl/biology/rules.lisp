@@ -159,22 +159,36 @@
   :form np
   :referent (:function create-residue-from-amino-acid-position left-edge right-edge))
 
+;; "1980" is treated as a YEAR, not a number
+;;  so "S1980" was not recognized as a residue
+(def-cfr residue-on-protein (single-capitalized-letter year)
+  :form np
+  :referent (:function create-residue-from-amino-acid-position left-edge right-edge))
+
+
 (defun create-residue-from-amino-acid-position (amino-acid position)
   (create-residue-on-protein nil amino-acid position nil))
 
 (defun create-residue-on-protein (explicit-residue amino-acid position substrate)
+  (declare (special position))
   (when (and
          (or (not (itypep amino-acid 'single-capitalized-letter))
              (gethash amino-acid *single-letters-to-amino-acids*))
          (or (null position)
              (itypep position 'hyphenated-number)
+             ;; "1980" is treated as a YEAR, not a number
+             ;;  so "S1980" was not recognized as a residue
+             (itypep position 'year)
              (is-basic-collection? position)
              (and (itypep position 'number)
                   (or
                    (not (itypep amino-acid 'single-capitalized-letter))
-                   (> (value-of 'value position) 10)))))
+                   ;; want to get "S6"
+                   (> (value-of 'value position) 5)))))
     (when (itypep amino-acid 'single-capitalized-letter)
       (setq amino-acid (gethash amino-acid *single-letters-to-amino-acids*)))
+    (when (itypep position 'year)
+      (setq position (find-or-make-number (value-of 'value position))))
     (or *subcat-test*
         (let ((residue (or explicit-residue
                            (find-or-make-lattice-description-for-ref-category

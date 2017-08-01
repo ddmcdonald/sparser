@@ -52,6 +52,7 @@ be biology specific, since they aren't. |#
 ;;---- time
 
 (noun "the next day" :specializes time)
+(noun "p.i" :specializes time) ;; post-infection!
 
 (define-category time-course :specializes bio-scalar ;;(noun "rate" :super bio-scalar 
   :realization 

@@ -1071,12 +1071,12 @@
 
 (cond ((not *use-small-proteins*)
        (def-family "FAK" :identifier "FA:03125" :synonyms ("FAK subfamily") :members ("PTK2" "PTK2B"))
-       (def-family "p53" :identifier "FA:02632" :synonyms ("p-53" "p53"  "p53 family" "p53−") :members ("TP53" "TP63" "TP73"))
+       ;;(def-family "p53" :identifier "FA:02632" :synonyms ("p-53" "p53"  "p53 family" "p53−") :members ("TP53" "TP63" "TP73"))
        (def-family "beta-catenin" :identifier "FA:00361" :synonyms ( "beta-catenin family")
                    :members("CTNNB1" "CTNND1" "CTNND2" "JUP" "PKP1" "PKP2" "PKP3" "PKP4")))
       (t
        (def-family "FAK" :identifier "FA:03125" :synonyms ("FAK subfamily"))
-       (def-family "p53" :identifier "FA:02632" :synonyms ( "p53 family"))
+       ;;(def-family "p53" :identifier "FA:02632" :synonyms ( "p53 family"))
        (def-family "beta-catenin" :identifier "FA:00361" :synonyms ( "beta-catenin family"))))
 
 ;;(def-family "Eukaryotic translation initiation factor 4E-binding protein 1" :members ("UP:Q0P5A7" "UP:Q13541"))

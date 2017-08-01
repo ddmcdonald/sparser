@@ -366,7 +366,8 @@
   :realization
     (:verb "activate" 
      :noun "activation"
-     :etf (svo-passive)))
+     :etf (svo-passive)
+     :verb-premod agent))
 
 (define-category auto-activate
   :specializes bio-activate

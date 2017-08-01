@@ -2192,7 +2192,7 @@
 (def-indiv-with-id cell-line "ht4" "CVCL:U378" :name "HT4" :no-plural t) 
 (def-indiv-with-id cell-line "ht2" "CVCL:5T92" :name "HT-2" :no-plural t) 
 (def-indiv-with-id cell-line "ht1" "CVCL:4W51" :name "HUEhT-1" :no-plural t) 
-(def-indiv-with-id cell-line "hsp" "CVCL:5291" :name "HS-P" :no-plural t) 
+(def-indiv-with-id cell-line "HS-P" "CVCL:5291" :name "HS-P" :no-plural t) 
 (def-indiv-with-id cell-line "hp21" "CVCL:T618" :name "MDCC-HP21" :no-plural t) 
 (def-indiv-with-id cell-line "hmg" "CVCL:W288" :name "HMG" :no-plural t) 
 (def-indiv-with-id cell-line "heta" "CVCL:5F69" :name "HetA" :no-plural t) 

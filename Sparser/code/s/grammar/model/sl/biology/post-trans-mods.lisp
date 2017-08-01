@@ -446,6 +446,13 @@
    :noun ("dephosphorylation" "de-phosphorylation" "dephophosphorylation") ;; mispelling from comments
    :etf (svo-passive)))
 
+(define-category diphosphorylate
+  :specializes post-translational-modification
+  :realization
+  (:verb ("diphosphorylate" "di-phosphorylate")
+   :noun ("diphosphorylation" "di-phosphorylation" ) ;; mispelling from comments
+   :etf (svo-passive)))
+
 (define-category transphosphorylate
   :specializes phosphorylation-modification
   :instantiates self
