@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "semantic-extraction"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  March 2017
+;;;  version:  August 2017
 
 
 ;;; This file contains all the functions/methods for extracting the elements of the semantics of a
@@ -498,7 +498,7 @@
                (not (eq 'collection (car tree))))
       (when (not (consp (car tree)))
         (if (not (entity-p (car tree)))
-         (lsp-break "(car tree) is not an tntity in ~s"
+         (lsp-break "(car tree) is not an entity in ~s"
                     (sentence-string *sentence-in-core*))
          (push (extract-relation tree) relations))))
     (loop for binding in (cdr tree)
@@ -548,6 +548,9 @@
              *semtree-seen-individuals*)
     indivs))
 
+;;;----------------------------------------------------------------------------
+;;; drivers of semtree binding special variables for collect-model-description
+;;;----------------------------------------------------------------------------
 
 (defun spire-tree (item &optional (with-ids nil))
   (declare (special *sentence-in-core*  *sentence-results-stream*))
@@ -558,8 +561,20 @@
           (*with-uids* with-ids))
       (declare (special *for-spire* *with-uids*))
       (semtree item))))
+#| As of 8/1/17 spire-tree is called 
+in object/doc/save-doc-semantics.lisp by write-sem-tree and
+  the method write-combined-sentence-results
+in cwc-integ/spire/interface/sparser.lisp
+  by spire::sparser-indiv->all-exprs
+|#
 
 (defun krisp->sexpr (item)
+  "Approved standard way to serialize Krisp objects as sexp.
+   The call to semtree becomes call to collect-model-description
+   which creates the sexp. Note value for *with-uids* and that
+   the *sentence-results-stream* has been set to nil and *for-spire*
+   is t. These three flags control the details of what goes into
+   the sexp we create."
   (let ((*sentence-results-stream* nil))
     (declare (special *sentence-results-stream*))
     (let ((*for-spire* t)
@@ -568,6 +583,8 @@
       (semtree item))))
 
 (defun to-krisp (sexpr)
+  "Correct way to recover Krisp objects from an sexp created
+   by krisp->sexpr"
   (etypecase sexpr
     (symbol (to-krisp (list sexpr)))
     (string sexpr)
@@ -577,9 +594,10 @@
        (category (category-named (second sexpr)))
        (wd (resolve (second sexpr)))
        (t
-        (let* ((cat-name (case (car sexpr) (you 'pronoun/second)
-                               (i 'pronoun/first/singular)
-                               (t (car sexpr))))
+        (let* ((cat-name (case (car sexpr)
+                           (you 'pronoun/second)
+                           (i 'pronoun/first/singular)
+                           (t (car sexpr))))
                (indiv 
                 (find-or-make-lattice-description-for-ref-category
                  (category-named cat-name)))
@@ -614,7 +632,9 @@
 (defmacro -?krisp (sexpr)
   (to-krisp sexpr))
 
-;;----- semtree methods
+;;;-----------------
+;;; semtree methods
+;;;-----------------
 
 (defmethod semtree ((x null))
   nil)
@@ -644,7 +664,9 @@
   (collect-model-description i))
 
 
-;;----- collect-model-description mentods
+;;;-----------------------------------
+;;; collect-model-description methods
+;;;-----------------------------------
 
 (defmethod collect-model-description ((cat category))
   (declare (special *for-spire* *sentence-results-stream*))
@@ -659,7 +681,7 @@
 (defmethod collect-model-description ((w word))
   (declare (special *for-spire* *sentence-results-stream*))
   (cond (*sentence-results-stream* (pname w))
-        (*for-spire* `(wd ,(pname w)))
+        (*for-spire* `(wd ,(pname w))) ;; "wd" reversed by to-krisp w/ resolve
         (t (pname w))))
 
 (defmethod collect-model-description ((w polyword)) ;
@@ -670,8 +692,8 @@
 
 (defmethod collect-model-description ((cal cons))
   `(collection :members 
-                   (,@(loop for l in cal 
-                         collect (collect-model-description l)))))
+               (,@(loop for l in cal 
+                     collect (collect-model-description l)))))
 
 
 (defun indiv-or-type (i)
@@ -703,7 +725,7 @@
           (not (itypep i category::ordinal))
           (not *print-sem-tree*)
           (not (or *for-spire* *sentence-results-stream*)))
-     (if (collection-p  i)
+     (if (collection-p i)
       (value-of 'items i)
       (value-of 'value i)))
    	
@@ -735,7 +757,7 @@
        ;; a subject variable: (subject-variable type), 
        ;; but that's missing interesting noun phrase referents.
        (loop for b in  (indiv-binds i)
-          as var  = (binding-variable b)
+          as var = (binding-variable b)
           as var-name = (var-name var)
           as restriction = (var-value-restriction var)
           as value = (binding-value b)
@@ -850,9 +872,9 @@
             (incf *print-sentences*))))
 
 
-
-;;;; semantic tree traversal
-
+;;;-------------------------
+;;; semantic tree traversal
+;;;-------------------------
 
 #+ignore
 (defmethod traverse-sem ((s sentence) fn)
