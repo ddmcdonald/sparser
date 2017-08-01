@@ -317,8 +317,12 @@
 (defparameter *conjoined-s-failures* nil)
 
 (defun conjoin-clause-and-vp (s-edge  and vp-edge)
+  (conjoin-clause-vp s-edge vp-edge))
+
+(defun conjoin-clause-vp (s-edge vp-edge)
   ;; get the value of the subject or (perhaps) the subject
   ;; variable of the s. Look up the s variable of the vp
+  (declare (optimize (speed 1)(debug 3)))
   (unless s-edge
     ;; This occurred when s-and-vp was run middle-out from
     ;; the conjunction. The constituent to the left of the
@@ -361,6 +365,10 @@
 (define-debris-analysis-rule conjoin-clause-and-vp+passive
   :pattern ( s conjunction vp+passive )
   :action (:function conjoin-clause-and-vp+passive first second third))
+
+(define-debris-analysis-rule conjoin-clause-vp+passive
+  :pattern ( s vp+passive )
+  :action (:function conjoin-clause-vp first second))
 
 (define-debris-analysis-rule conjoin-clause-and-vg+passive
   :pattern ( s conjunction vg+passive )
@@ -732,20 +740,24 @@
     :action (:function s-comma-subj-relative first second third))
 
 (defun s-comma-subj-relative (s-edge comma-edge srel-edge)
-  (declare (ignore comma-edge))
+  (declare (ignore comma-edge)
+           (optimize (debug 3)(speed 1)))
   (when (edge-referent srel-edge) ;; can be null as in "which is consistent "
     (let* ((s (edge-referent s-edge))
-           (target (find-target-satisfying
-                    (right-fringe-of s-edge)
-                    #'(lambda(x)
-                        (and (np-target? x)
-                             (subcategorized-variable
-                              (edge-referent srel-edge) :subject (edge-referent x))))))
+           (s-rel (edge-referent srel-edge)) ;; can be null?!
+           (target (when (and s-rel
+                              (not (is-basic-collection? s-rel)))
+                     (find-target-satisfying
+                      (right-fringe-of s-edge)
+                      #'(lambda(x)
+                          (and (np-target? x)
+                               (subcategorized-variable s-rel :subject (edge-referent x)))))))
            ;; update-edge-as-lambda-predicate now returns NIL if there is
            ;;  no available binding for the variable (s-var or t-var) on srel-edge
            (t-pred (when target
                      (update-edge-as-lambda-predicate srel-edge target)))
-           (s-pred (when (and (null t-pred)
+           (s-pred (when (and target
+                              (null t-pred)
                               (not (eq (cat-name (edge-form s-edge)) 'pp)))
                      (update-edge-as-lambda-predicate srel-edge s))))
       (declare (special s-var t-var target))
@@ -1092,19 +1104,24 @@
            s-vp+ed first second))
 
 (defun s-vp+ed (s-edge vp+ed)
-  (or
-   (let* ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?))
-          (target-ref (when target (edge-referent target)))
-          (vp (edge-referent vp+ed))
-          (pred (when target
-                  (update-edge-as-lambda-predicate vp+ed target-ref :object))))
-     (when pred
-       (make-edge-spec
-        :category (edge-category target)
-        :form category::np
-        :referent (bind-dli-variable 'predication pred (edge-referent target))
-        :target target
-        :direction :right)))))
+  (let* ((target
+          (find-target-satisfying (right-fringe-of s-edge)
+                                  #'(lambda(x)
+                                      (and (np-target? x)
+                                           (subcategorized-variable
+                                            (edge-referent vp+ed)
+                                            :object (edge-referent x))))))
+         (target-ref (when target (edge-referent target)))
+         (vp (edge-referent vp+ed))
+         (pred (when target
+                 (update-edge-as-lambda-predicate vp+ed target-ref :object))))
+    (when pred
+      (make-edge-spec
+       :category (edge-category target)
+       :form category::np
+       :referent (bind-dli-variable 'predication pred (edge-referent target))
+       :target target
+       :direction :right))))
 #|
    (let ((target (find-target-satisfying (right-fringe-of s-edge) #'clause-t
    (conjoin-clause-and-vp s-edge nil vp+ed)))
