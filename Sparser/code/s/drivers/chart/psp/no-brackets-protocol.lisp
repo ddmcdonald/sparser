@@ -428,9 +428,13 @@
     (when *save-bio-processes* (save-bio-processes sentence))
     (write-semantics sentence *sentence-results-stream*))
   (when *indra-post-process*
-    (let ((mentions ;;(find-all-mentions sentence)
-           (remove-collection-item-mentions
-            (mentions-in-sentence-edges sentence))))
+    (let ((mentions
+           ;; sort, so that embedding edges for positive-bio-control come out first
+           (sort
+            (remove-collection-item-mentions
+             (mentions-in-sentence-edges sentence))
+            #'>
+            :key #'(lambda (m) (edge-position-in-resource-array (mention-source m))))))
         (indra-post-process mentions sentence *sentence-results-stream*)))
   (when *localization-interesting-heads-in-sentence*
     (let ((colorized-sentence (split-sentence-string-on-loc-heads)))
@@ -448,8 +452,10 @@
 
 (defparameter *colorized-sentence* (make-hash-table :size 1000 :test #'equal))
 (defparameter *indra-post-process* nil)
+(defparameter *indra-embedded-post-mods* nil)
 
 (defun indra-post-process (mentions sentence output-stream)
+  (setq *indra-embedded-post-mods* nil)
   (loop for mention in mentions
         do (indra-post-process-mention mention sentence output-stream)))
 
@@ -458,20 +464,23 @@
                                      (ippm-ref (base-description mention))
                                      (nec-vars? nil))
   (declare (special ippm-ref))
-  (let*  ((necessary-vars (necessary-vars? ippm-ref))
-          (desc (if (and (c-itypep ippm-ref 'positive-bio-control)
-                        (individual-p (value-of 'affected-process ippm-ref))
-                        (itypep (value-of 'affected-process ippm-ref) 'post-translational-modification))
-                   ;;e.g. "Rho induces tyrosine phosphorylation of gamma-catenin"
-                   (bind-dli-variable 'agent
-                                      (value-of 'agent ippm-ref)
-                                      (value-of 'affected-process ippm-ref))
-                   ippm-ref)))
-
-    ;; Revise the code to 1) allow for conjoined verbs (use c-itypep)
-    ;;  and follwing on that 2) allow a single mention/edge to have more
-    ;;  than one type of INDRA statement (MEK phosphorylates and activates ERK"
-    (maybe-push-sem Mention ippm-ref sentence necessary-vars output-stream desc nec-vars?)))
+  (unless (member ippm-ref *indra-embedded-post-mods*)
+    (let*  ((necessary-vars (necessary-vars? ippm-ref))
+            (desc (if (and (c-itypep ippm-ref 'positive-bio-control)
+                           (value-of 'agent ippm-ref)
+                           (individual-p (value-of 'affected-process ippm-ref))
+                           (itypep (value-of 'affected-process ippm-ref) 'post-translational-modification))
+                      ;;e.g. "Rho induces tyrosine phosphorylation of gamma-catenin"
+                      (bind-dli-variable 'agent
+                                         (value-of 'agent ippm-ref)
+                                         (value-of 'affected-process ippm-ref))
+                      ippm-ref)))
+      ;; Revise the code to 1) allow for conjoined verbs (use c-itypep)
+      ;;  and follwing on that 2) allow a single mention/edge to have more
+      ;;  than one type of INDRA statement (MEK phosphorylates and activates ERK"
+      (when (not (eq desc ippm-ref))
+        (push (value-of 'affected-process ippm-ref) *indra-embedded-post-mods*))
+      (maybe-push-sem mention ippm-ref sentence necessary-vars output-stream desc nec-vars?))))
 
 (defun necessary-vars? (Ref)
   (cond ((or (c-itypep ref 'bio-activate)
