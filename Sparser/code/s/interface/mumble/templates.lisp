@@ -22,7 +22,15 @@ that we can pass to Archie. ///or we let it pass us an individual
 
 p/r-sem -> analyze-text-from-string -> analysis-core
   -> analysis-cor-return-value -> spire-tree
+
+In drivers/chart/psp/semantic-extraction.lisp
+  to-krisp (<sexpr>)
+  krisp->sexpr (<individual>)
 |#
+
+;;;--------------
+;;; tree walkers
+;;;--------------
 
 ;; copied from Peter Norvig's textbook code
 (defun find-anywhere (item tree)
@@ -55,6 +63,10 @@ p/r-sem -> analyze-text-from-string -> analysis-core
                (replace-sublist target (car tree)))
              (replace-sublist target (cdr tree)))))))
 
+
+;;;-----------------------------------
+;;; basic clause-level template macro
+;;;-----------------------------------
 
 (defmacro define-krisp-template (name parameter tree)
   (assert (find-package :mumble) () "The mumble package isn't defied!")
