@@ -326,8 +326,6 @@
   (when *include-model-facilities*
     (load-delayed-dossiers)
 
-    ;; This call announces the # of individuals in all the defined categories
-    ;; that have instances (see *referential-categories*)
     (declare-all-existing-individuals-permanent)))
 
 (when *connect-to-the-corpus*
