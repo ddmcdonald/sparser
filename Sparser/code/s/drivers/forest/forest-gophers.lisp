@@ -377,7 +377,8 @@
       ((and (vp-category? (edge-form edge))
             (word-p (edge-left-daughter edge)))
        edge)
-      ((eq 'attach-to-comp-comma-to-s (edge-rule edge))
+      ((member (edge-rule edge) '(attach-to-comp-comma-to-s
+                                  attach-trailing-participle-to-clause-with-comma))
        (find-verb (car (last (edge-constituents edge)))))
       (t
        (let* ((left (edge-left-daughter edge))
