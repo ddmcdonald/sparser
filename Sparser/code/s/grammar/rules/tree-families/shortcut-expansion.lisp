@@ -54,33 +54,35 @@
   "Rebuild the schematic mapping into a real mapping according to the
    category-specific substitution arguments; cf. decode-rdata-mapping."
   (loop for (term . value) in (schema-mapping schema)
-        if (eq value :self)
-          collect (cons term (or (override-label category) category))
-        else if (stringp value)
-          collect (cons term (resolve/make value))
-        else
-          collect (cons term
-                        (let ((value (or (cdr (assq value args-to-substitute))
-                                         (error "No value for ~a among the substitution args."
-                                                value))))
-                          (etypecase value
-                            ((or category lambda-variable)
-                             value)
-                            (symbol
-                             (or (category-named value)
-                                 (find-variable-in-category value category)
-                                 (error "No category or variable named ~a." value)))
-                            ((cons (eql :or))
-                             (assert (every #'category-p (cdr value))
-                                     ((cdr value))
-                                     "Bad disjunctive value restriction.")
-                             (cdr value)))))))
+     if (or (eq value :self)
+            (eq value 'self))
+     collect (cons term (or (override-label category) category))
+     else if (stringp value)
+     collect (cons term (resolve/make value))
+     else
+     collect (cons term
+                   (let ((value (or (cdr (assq value args-to-substitute))
+                                    (error "No value for ~a among the substitution args."
+                                           value))))
+                     (etypecase value
+                       ((or category lambda-variable)
+                        value)
+                       (symbol
+                        (or (category-named value)
+                            (find-variable-in-category value category)
+                            (error "No category or variable named ~a." value)))
+                       ((cons (eql :or))
+                        (assert (every #'category-p (cdr value))
+                                ((cdr value))
+                                "Bad disjunctive value restriction.")
+                        (cdr value)))))))
 
 (defun make-mumble-mapping (schematic-map substitution-map category)
   "Use the regular substitution map for this category to the replace the
    terms in the parameter mapping (e.g. subj-slot)."
   (loop for (parameter . schematic-value) in schematic-map
-     if (eq schematic-value :self)
+     if (or (eq schematic-value :self)
+            (eq schematic-value 'self))
      collect `(,parameter ,category)
      else
      collect (cons parameter
