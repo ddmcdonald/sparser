@@ -188,12 +188,32 @@
   (:method ((text string))
     (m::say text)))
 
+#+:mumble
+(defgeneric mdata (item)
+  (:documentation "Retrieve the mumble resource(s) linked to
+ the item, using the same accessors that the realization function
+ would. Tries to anticipate what information we'll want to see.")
+  (:method ((n number))
+    (mdata (individual-object# n)))
+  (:method ((i individual))
+    (let* ((lp (m::find-lexicalized-phrase i))
+           (pos (m::lookup-pos lp))
+           (rdata (has-mumble-rdata i :pos pos)))
+      (values lp rdata)))
+  (:method ((name symbol))
+    (mdata (category-named name :break-if-undef)))
+  (:method ((c category))
+    (let* ((lp (m::find-category-lp c))
+           (pos (when lp (m::lookup-pos lp)))
+           (rdata (mumble-map-data c)))
+      (values lp rdata))))
 
 ;;--- accessors
 
 (defun psr# (n)
   (let ((symbol (make-cfr-symbol n)))
     (eval symbol)))
+
 
 (defun p# (n)
   (position# n))
