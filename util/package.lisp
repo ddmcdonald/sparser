@@ -37,6 +37,7 @@
            #:plist-to-alist
            #:deep-copy
            #:flatten #:flattenc
+           #:all-the-same
 
            ;; strings
            #:string-append

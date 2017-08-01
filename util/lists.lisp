@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2010-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2010-2017  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "list hacking"
 ;;;    Module:   "util:"
-;;;   Version:   March 2016
+;;;   Version:   July 2017
 
 ;; initiated 12/30/93 v2.3.  4/11/95 added nil-checkers. 
 ;; 8/24/10 moved in quote-every-second-one from forms/categories
@@ -122,3 +122,13 @@ edge of the tree, except for nils. Can deal with non-list cdrs."
                    (setf tail (cdr tail))))))
       (walk cons-structure)
       (cdr head))))
+
+(defun all-the-same (list &key (test #'eql))
+  "Are all of the items in this single-level list the identical
+   value? Can use :test parameter to change the comparison
+   function, which defaults to eql."
+  (let ((1st-item (car list)))
+    (loop for item in (cdr list)
+       unless (funcall test item 1st-item)
+       do (return nil)
+         finally (return t))))
