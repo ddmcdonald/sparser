@@ -17,8 +17,11 @@
 ;;--- word to its lexicalized phrase 
 
 (defparameter *words-to-lexicalized-phrases*
-  (make-hash-table :test 'equal)
+  (make-hash-table 
+   :size 90000
+   :test 'equal)
   "Map pairs of (word . pos) to lexicalized-phrases")
+;; 7/14/17 CwC count was 1,452, R3 45,418
 
 (defgeneric get-lexicalized-phrase (word pos)
   (:documentation "Given a word or a string and its part of speech, 

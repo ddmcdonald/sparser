@@ -3,13 +3,25 @@
 ;;;
 ;;;     File: "rdata"
 ;;;   Module: "interface;mumble;"
-;;;  Version: June 2017
+;;;  Version: July 2017
 
 (in-package :sparser)
 
 ;;;--------------------------------------------
 ;;; Mumble information within shortcut schemes
 ;;;--------------------------------------------
+#|  Infer variable-parameter maps by exploiting information stored
+on the EFT family objects used by short-cut realizations. E.g
+
+(define-category grow ...
+  :realization
+     (:verb ("grow" :past-tense "grown")
+      :etf (svo-passive)) ... )
+
+
+
+ information analogous to what we could state explicitly
+|#
 
 ;;--- creating
 
@@ -119,7 +131,7 @@ and/or by which subcategorized arguments the individual binds.
 #+:mumble
 (defgeneric has-mumble-rdata (category &key pos)
   (:documentation "Return the mumble field in the category's rdata.
-    If there are several realizations, use the part of speech to
+    If there are several realizations use the part of speech to
     discriminate among them.")
   
   (:method ((i individual) &key pos)
@@ -155,12 +167,31 @@ and/or by which subcategorized arguments the individual binds.
     if there is one.")
   (:method ((i individual)) (mumble-data (itype-of i)))
   (:method ((s symbol)) (mumble-data (category-named s :error-if-null)))
-  (:method ((c referential-category)) (mumble-data (cat-realization c)))
+  (:method ((c referential-category))
+    (let ((rdata (cat-realization c)))
+      (when rdata (mumble-data rdata))))
   (:method ((list cons))
     (when (every #'(lambda (o) (typep o 'realization-data)) list)
       (mumble-data (car list))))
   (:method ((rdata realization-data)) (mumble-rdata rdata)))
 
+(defgeneric mumble-map-data (unit)
+  (:documentation "Does the mumble field of the unit include
+     a data type that has a variables to parameters map?")
+  (:method ((i individual)) (mumble-map-data (itype-of i)))
+  (:method ((s symbol)) (mumble-map-data (category-named s :error-if-null)))
+  (:method ((c referential-category)) (mumble-map-data (rdata c)))
+  (:method ((no null)) nil)
+  (:method ((list cons))
+    (when (or (some #'(lambda (o) (typep o 'realization-data)) list)
+              (some #'m::mumble-rdata? list))
+      (mumble-map-data (car list))))
+  (:method ((rdata realization-data)) (mumble-map-data (mumble-rdata rdata)))
+  (:method ((clp m::category-linked-phrase))
+    (when (m::parameter-variable-map clp) clp))
+  (:method ((mrd m::mumble-rdata))
+    (when (m::parameter-variable-map mrd) mrd))
+  (:method ((msm m::multi-subcat-mdata)) msm))
 
 
 ;;;-----------------------------------------------
@@ -210,38 +241,65 @@ a word. |#
 (defun decode-one-mumble-spec (category mumble-spec)
   (multiple-value-bind (clp lp m-word m-pos)
       (decode-mumble-spec category mumble-spec)
-    (setf (get-tag :mumble category) clp)
-    (let ((rdata ;;(rdata/pos category :verb)
-           (car (rdata category)) ;; relative-location isn't verb-based
-            ))
-      (unless rdata (error "why no rdata yet for ~a" category))
+    (let ((rdata (rdatum-for-mdata category clp)))
+      (setf (get-tag :mumble category) clp)
       (setf (mumble-rdata rdata) `(,clp))
       (when m-word
         (m::record-lexicalized-phrase category lp m-pos)
         (mumble::record-krisp-mapping m-word clp)))))
 
 (defun decode-multiple-mumble-specs (category mumble-specs)
-  "The only case so far where there is a good reason for multiple mumble
-   data is with control verb (e.g. 'want'), where there are different
-   maps according to what variables are involved. They're all for verbs
-   though."
-  (let ((rdata (rdata/pos category :verb)))
-    ;; do one my hand to get the m-word
-    (multiple-value-bind (clp lp m-word m-pos)
-        (decode-mumble-spec category (first mumble-specs))
-      (declare (ignore lp m-word m-pos))
-      (let* ((mdata-list (cons clp (loop for spec in (cdr mumble-specs)
-                                      collect (decode-mumble-spec category spec))))
-             (pairs (loop for mdata in mdata-list
-                       as variables = (m::variables-consumed mdata)
-                       collect (make-instance 'm::variable-mdata-pair
-                                              :vars variables
-                                              :mdata mdata)))
-             (multi-data
-              (make-instance 'm::multi-subcat-mdata
-                             :mpairs pairs)))
-        (setf (get-tag :mumble category) multi-data)))))
+  "There are multiple mumble specifications on this category.
+   Decode them all, and then distribute and store them so they
+   can be found consistently."
+  (let* ((mdata-list (loop for spec in mumble-specs
+                        collect (decode-mumble-spec category spec)))
+         (pairs (loop for mdata in mdata-list
+                   as variables = (m::variables-consumed mdata)
+                   collect (make-instance 'm::variable-mdata-pair
+                                          :vars variables
+                                          :mdata mdata)))
+         (pair-mpos (loop for mdata in mdata-list
+                       collect (m::lookup-pos mdata))))
+    ;; If all same pos, then collect into single multi-mdata.
+    ;; Otherwise distribute
+    (if (ddm-util::all-the-same pair-mpos)
+      (let* ((multi-data (make-instance 'm::multi-subcat-mdata
+                                        :mpairs pairs))
+             (rdata (rdatum-for-mdata category multi-data)))
+        (setf (mumble-rdata rdata) multi-data)
+        (setf (get-tag :mumble category) multi-data))
+      (distribute-mdata-by-pos category pairs))))
 
+(defun distribute-mdata-by-pos (category pairs)
+  "The mdata is usually specific to part of speech. Identify the different
+  readings in the realization of the category (verb, noun, adjective, pp)
+  and record the approriate mdata on the appropriate rdata object.
+  This could entail breaking down the multi-data into its individual CLP."
+  (let ((pairs-pos (loop for pair in pairs
+                      as m-pos = (m::lookup-pos pair)
+                      collect `(,m-pos . pair))))
+    (lsp-break "Multiple pos on mdata for ~a~%~a" category pairs-pos)))
+
+(defun rdatum-for-mdata (category mdata)
+  "The mumble rdata is for a particular part of speech. 
+   Examine the realization-data objects on this category,
+   identify which one is for the comparable reading."
+  (let* ((m-pos (m::lookup-pos mdata))
+         (s-pos (m::sparser-pos m-pos))
+         (all-readings (rdata category))
+         (rdatum (when all-readings (rdata/pos category s-pos))))
+    (unless rdatum
+      ;; At abstract levels there won't be any lexical information in the rdata
+      (cond
+        ((and all-readings (null (cdr all-readings)))
+         (setq rdatum (car all-readings)))
+        (all-readings
+         (error "There is no reading on ~a for POS ~a" (sp::pname category) s-pos))
+        (t (error "There is no realization-data object on ~a" (sp::pname category)))))
+    rdatum))
+
+;;--- decoder
 
 (defun decode-mumble-spec (category mumble-spec)
   "Decode the symbols, and create the spec object. 
@@ -254,7 +312,6 @@ a word. |#
          (phrase&args (if pname (cdr mumble-spec) mumble-spec))
          m-word m-pos lp )
     (assert phrase&args)
-
     ;;//////  If we do these explicit mumble datams for anything other than
     ;; verbs then the syntax has to extend to include the pos
     (when pname
@@ -277,7 +334,9 @@ a word. |#
                                 (string (get-mumble-word-for-sparser-word
                                          (resolve var-name) nil))
                                 (symbol
-                                 (find-variable-for-category var-name category)))
+                                 (if (or (eq var-name :self) (eq var-name 'self))
+                                   category
+                                   (find-variable-for-category var-name category))))
                      do (progn
                           (assert var () "No variable named ~a in category ~a." var-name category)
                           (assert param () "No parameter named ~a in the phrase ~a." param-name phrase))
@@ -301,39 +360,52 @@ a word. |#
           (t ;; record just the phrase for use by inheritors
            (setf (m::linked-phrase clp) phrase)))
         
-        ;;(lsp-break "decode")
+        ;;(lsp-break "decode -- look at clp")
         (values clp lp m-word m-pos)))))
 
-  
+
+;;;------------------------
+;;; inheriting mumble data
+;;;------------------------
 
 (defgeneric inherits-mumble-data? (category)
-  (:documentation "Abstracts away from the actual type check")
+  (:documentation "Abstracts away from the actual type check.
+    Returns a category.")
   (:method ((name symbol))
     (inherits-mumble-data? (category-named name :error-if-missing)))
-  (:method ((c category))
-    (itypep c 'subcategorization-pattern)))
+  (:method ((c referential-category))
+    "Either we inherit from an explicit subcat pattern category
+     such as control-verb, or our immediate supercategory has
+     mumble-data recorded on it."
+    (or (itypep c 'subcategorization-pattern)
+        (let ((super (superc c)))
+          (when (mumble-map-data super) super))))
+  (:method ((c mixin-category)) nil))
 
 (defun apply-inherited-mumble-data (category)
   "Look up the realization data on the class we inherit from and 
    apply it to this category, which we expect to at least have
-   a lexical realization"
-    ;; copy the inherited rdata and augment it with whatever local
-    ;; data there is.
+   a lexical realization.  We copy the inherited rdata and augment 
+   it with whatever local data there is. Modifying the copy as
+   needed. Called from setup-rdata when the category being setup 
+   satisfies inherits-mumble-data?"
   (let* ((category-inheriting-from (inherits-mumble-data? category))
          (inherited-rdata (get-tag :mumble category-inheriting-from))
          (local-rdata-field (rdata category))
-         (local-rdata (when (null (cdr local-rdata-field)) (car local-rdata-field))))
+         (local-rdata (when (null (cdr local-rdata-field))
+                        (car local-rdata-field))))
     (unless local-rdata
       (warn "first case of multiple local rdata: ~a" category)
       ;;/// synonym for "seem" -- "appear" gets this. Two local rdata, one where
       ;; the head is "seem", the other where it's "appear"
       (if inherited-rdata
-        (setq local-rdata (car local-rdata-field)) ;; do the first one
+        (setq local-rdata (car local-rdata-field)) ;; just do the first one
         (return-from apply-inherited-mumble-data nil))) ;; punt
     
     (when inherited-rdata
       (let ((new-rdata (m::copy-instance inherited-rdata))
-            (local-head (rdata-head-words local-rdata)))
+            (local-head-data (rdata-head-words local-rdata)))
+        (unless local-head-data (error "Why isn't there a head word for ~a" category))
         
         (labels ((change-linked-category (mdata category)
                    (etypecase mdata
@@ -342,39 +414,60 @@ a word. |#
                       (loop for pair in (m::mdata-pairs mdata)
                          as embedded-mdata = (m::mpair-mdata pair)
                          do (change-linked-category embedded-mdata category))))))
+          (change-linked-category new-rdata category))
           
-          (change-linked-category new-rdata category)
-          (unless local-head (error "why no head word for ~a" category))
-          
-          (let* ((pos (car local-head))
-                 (mpos (mumble-pos pos))
-                 (s-word (cadr local-head))
-                 (m-word (get-mumble-word-for-sparser-word s-word mpos)))
-            
-            (unless (eq pos :verb) (error "Not specializing a verb"))
-            (flet ((lexicalize (phrase m-word)
-                     (m::verb m-word phrase)))
-              
-              (etypecase new-rdata
-                (m::mumble-rdata
-                 (multiple-value-bind (lp)
-                     (lexicalize (m::linked-phrase new-rdata) m-word)
-                   (setf (m::head-word new-rdata) m-word)
-                   (setf (m::linked-phrase new-rdata) lp)))
+        (let* ((pos (car local-head-data))
+               (mpos (mumble-pos pos))
+               (s-word (cadr local-head-data))
+               (m-word (get-mumble-word-for-sparser-word s-word mpos)))
+
+          (flet ((lexicalize (phrase m-word)
+                   ;; Could be all the cases in make-resource-for-sparser-word
+                   ;; in principle, but rather than refactor just putting in the
+                   ;; one's being used so far
+                   (ecase pos
+                     (:verb (m::verb m-word phrase))
+                     (:common-noun (m::noun m-word phrase))
+                     (:preposition (m::prep m-word))))
+
+                 (replace-map-self-values (clp)
+                   (let ((map (m::parameter-variable-map clp)))
+                     (assert map)
+                     (loop for pvp in map
+                        as variable = (m::corresponding-variable pvp)
+                        when (category-p variable)
+                        do (setf (m::corresponding-variable pvp)
+                                 m-word)))))                   
+
+            ;; Modify (on the copy -- new-rdata) the head word and lp.
+            ;; Store the new lp on the category. Also revise the maps
+            ;; to ensure that self nodes (which show up as categories)
+            ;; are replaced with the (mumble) head word.
+            (etypecase new-rdata
+              (m::mumble-rdata
+               (multiple-value-bind (lp)
+                   (lexicalize (m::linked-phrase new-rdata) m-word)
+                 (setf (m::head-word new-rdata) m-word)
+                 (setf (m::linked-phrase new-rdata) lp)
+                 (replace-map-self-values new-rdata)
+                 (m::record-lexicalized-phrase category lp mpos)))
                 
-                (m::multi-subcat-mdata
-                 ;; We're working on a copy so modify each pair in place
-                 (dolist (pair (m::mdata-pairs new-rdata))
-                   ;; pull out the phrase and lexicalize it
-                   (let* ((mdata (m::mpair-mdata pair))
-                          (phrase (m::linked-phrase mdata)))
-                     (assert (typep phrase 'm::phrase))
-                     (multiple-value-bind (lp)
-                         (lexicalize phrase m-word)
-                       (setf (m::head-word mdata) m-word)
-                       (setf (m::linked-phrase mdata) lp))))))
-              (setf (mumble-rdata local-rdata) new-rdata) ;; belt & suspenders for now
-              (setf (get-tag :mumble category) new-rdata))))))))
+              (m::multi-subcat-mdata
+               ;; (push-debug `(,new-rdata)) (lsp-break "1")
+               (dolist (pair (m::mdata-pairs new-rdata))
+                 ;; pull out the phrase and lexicalize it
+                 (let* ((mdata (m::mpair-mdata pair))
+                        (phrase (m::linked-phrase mdata)))
+                   (assert (typep phrase 'm::phrase)) ;; indicates +abstract
+                   (multiple-value-bind (lp)
+                       (lexicalize phrase m-word)
+                     (setf (m::head-word mdata) m-word)
+                     (setf (m::linked-phrase mdata) lp)
+                     (replace-map-self-values mdata)
+                     (m::record-lexicalized-phrase category lp mpos))))))
+
+            (setf (mumble-rdata local-rdata) new-rdata) ;; belt & suspenders for now
+            (setf (get-tag :mumble category) new-rdata)))))))
 
 
 
@@ -384,17 +477,19 @@ a word. |#
 ;;;------------
 ;;; head words
 ;;;------------
-         
+
+;;--- rdata-initialization entry point
+
 (defun make-corresponding-lexical-resource (head-field category)
-  "Called from the initialize-instance method of realization-data;
-   see make-realization-data. The 'head-word' was constructed by
+  "Only called from the initialize-instance method of realization-data;
+   see make-realization-data.
+ The 'head-word' was constructed by
    decode-rdata-heads. The goal is to arrange that every word
    that is mentioned in realization data of a category should 
    have a mumble word created for it. We ensure there's a sparser
    word first, then make its mumble equivalent."
   (declare (special *build-mumble-equivalents*))
-  (when (or *build-mumble-equivalents*
-            *CwC*)
+  (when *build-mumble-equivalents*
     (let* ((pos-tag (car head-field))
            (word-or-variable (cadr head-field))
            (word (etypecase word-or-variable
@@ -416,16 +511,26 @@ a word. |#
       (when word
         (make-corresponding-mumble-resource word pos-tag category)))))
 
+
+;;--- general entry point
+
 (defgeneric make-corresponding-mumble-resource (word pos-tag krisp-obj)
-  (:documentation "Used when the caller has the word and part-of-speech 
-    in hand, such as lemmas or in the after method or make-rules-for-head's
-    after method.
-    Calls the standard lexicalized tree constructor and then records
-    the result on the Krisp category or individual.")
+  (:documentation "Used when there isn't a mumble expression in the
+ category's realization, but the caller has the word and part-of-speech 
+ in hand:
+    (a) The after method of make-rules-for-head
+    (b) Old-style prepositions
+    (c) quantifiers, attribute-value, pronouns
+    (d) time/anaphors ('now')
+    (e) directions
+ Calls the standard lexicalized tree constructor and then records
+ the result on the Krisp category or individual.
+ Calls extend to look for possibility of inheriting more rdata from
+ a parent or mixed-in category.")
   (:method :around (word pos-tag krisp-obj)
-    (when (or *build-mumble-equivalents*
-              *CwC*)
-      (call-next-method)))
+    (declare (special *build-mumble-equivalents*))
+    (when *build-mumble-equivalents*
+       (call-next-method)))
   
   (:method (word pos-tag (i individual))
     "Route for attributes"
@@ -438,9 +543,54 @@ a word. |#
     "Route for lemmas, preposititions, make-rules-for-head"
     (multiple-value-bind (lp m-word m-pos)
         (make-resource-for-sparser-word word pos-tag c)
-      (declare (ignore m-word))
-      (when lp (m::record-lexicalized-phrase c lp m-pos)))))
+      (when lp
+        (record/extend-mdata c lp m-pos m-word word pos-tag)))))
 
+
+(defvar *recording-extended-mdata* nil
+  "Flag to block recursion (infinite loop) while paths get debugged")
+
+(defun record/extend-mdata (category lp m-pos m-word s-word s-pos)
+  "Additional operations over category for mdata. 
+    -- Record the lexicalized phrase
+    -- If we're not in the scope of the category's rdata object's
+   construction (i.e. the object exists and we can store stuff on
+   its mumble field), then look for the possibility of inheriting
+   map data from a super category."
+  (declare (special *recording-extended-mdata* *during-rdata-initialization*))
+  (when *recording-extended-mdata*
+    (lsp-break "Potential loop on ~a mdata" category))
+  (let ((*recording-extended-mdata* t))
+    (declare (special *recording-extended-mdata*))
+
+    ;; record the lp.
+    (m::record-lexicalized-phrase category lp m-pos)
+
+    (unless *during-rdata-initialization*
+      (when (inherits-mumble-data? category)
+        ;; To do this we need local head word data, which we
+        ;; expect to get from the rdata object in the category's
+        ;; realization. 
+
+        ;; These shouldn't happen. If they do, then there's been
+        ;; another path through setup-rdata -> mumble resources
+        ;; that has to be accommodated.
+        (unless (rdata category)
+          (lsp-break "Why no realization on ~a?" category))
+        (unless (rdata/pos category s-pos)
+          (lsp-break "No head entry for ~a on ~a" s-pos category))
+
+        ;;  Look for the possibiity of inheriting map data.
+        (let ((mdata
+               (if (inherits-mumble-data? category)
+                 (apply-inherited-mumble-data category)
+                 ))) ;;//// what would we build to help when there's no map.
+          (values category lp mdata))))))
+
+
+;;;-------------------------------
+;;; making the lexicalized-phrase
+;;;-------------------------------
 
 (defun make-resource-for-sparser-word (word pos-tag category &optional verb-phrase)
   "Look up the corresponding mumble part of speech ('m-pos').
@@ -459,11 +609,11 @@ a word. |#
              (lp (or (m::get-lexicalized-phrase m-word m-pos)
                      (case pos-tag
                        (:adjective (m::adjective m-word))
-                       ((or :noun :common-noun) (m::noun m-word))
+                       ((:noun :common-noun) (m::noun m-word))
                        (:proper-noun (m::proper-noun m-word))
                        (:verb (m::verb m-word verb-phrase))
                        (:adverb (m::adverb m-word))
-                       (:prep (m::prep m-word))
+                       ((:prep :preposition) (m::prep m-word))
                        (:quantifier (m::quantifier m-word))
                        (:pronoun (m::pronoun m-word))
                        (:interjection (m::interjection m-word))))))

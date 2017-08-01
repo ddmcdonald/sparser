@@ -23,7 +23,11 @@
   (:method ((w word) &optional phrase-name)
     (noun (pname w)  phrase-name))
   (:method ((pname string)  &optional phrase-name)
-    (let* ((phrase (phrase-named (or phrase-name 'common-noun)))
+    (let* ((phrase (if phrase-name ;; it was supplied
+                     (etypecase phrase-name
+                       (phrase phrase-name)
+                       (symbol (phrase-named phrase-name)))
+                     (phrase-named 'common-noun)))
            (parameter (parameter-named 'n))
            (parameters (remove parameter (parameters-to-phrase phrase)))
            (word (word-for-string pname 'noun))
