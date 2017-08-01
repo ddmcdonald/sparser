@@ -322,5 +322,4 @@ omitted and then run (perhaps) after the image has been launched."
   ;;(gate-grammar *kraql*
   ;;  (gload "kraql;loader"))
 
-  (postprocess-grammar-indexes))
-
+  )

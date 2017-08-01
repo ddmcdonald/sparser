@@ -321,12 +321,7 @@
 
 (when *load-the-grammar*
   (lload "loaders;grammar")
-  (load-the-grammar)
-
-  (when *include-model-facilities*
-    (load-delayed-dossiers)
-
-    (declare-all-existing-individuals-permanent)))
+  (load-the-grammar))
 
 (when *connect-to-the-corpus*
   ;; Load the set of logicals that define articles in the corpus.

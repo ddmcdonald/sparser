@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "session"
 ;;;    Module: "init;"
-;;;   Version: January 2017
+;;;   Version: August 2017
 
 (in-package :sparser)
 
@@ -14,6 +14,9 @@
 
     ;; This call announces the # of individuals in all the defined categories
     ;; that have instances (see *referential-categories*)
+    (postprocess-grammar-indexes)
+
+    ;;---------- the very last thing to do ----------
     (declare-all-existing-individuals-permanent)))
 
 ;; Final session setup.

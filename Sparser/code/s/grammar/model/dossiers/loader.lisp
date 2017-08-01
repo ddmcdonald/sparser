@@ -237,6 +237,3 @@
 
 (gload "dossiers;template-library")
 
-
-;;---------- the very last thing to do ----------
-(declare-all-existing-individuals-permanent)
