@@ -182,6 +182,12 @@
            :to to
            :upon bio))
 
+(define-category confirm :specializes bio-rhetorical
+    :mixins (bio-thatcomp)
+    :realization
+    (:verb "confirm" ;; keyword: ENDS-IN-ED 
+	   :noun "confirmation"
+	   :etf (svo-passive)))
 
 (define-category consider :specializes bio-rhetorical
     :mixins (bio-whethercomp raising-to-object)
