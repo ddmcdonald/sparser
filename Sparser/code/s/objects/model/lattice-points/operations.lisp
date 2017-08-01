@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  March 2017
+;;;  version:  July 2017
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
@@ -116,6 +116,26 @@
         ;; block trying to go through a form-category where
         ;; the notion of super category is undefined.
         (lp-super-category lp)))))
+
+(defun immediate-supers (c)
+  "Return a category's super-catgory and mixins, reading only
+   from the category object."
+  (let* ((lp (cat-lattice-position c)) ; 
+         (mixins (cat-mix-ins c)))
+    (if (and (lattice-point-p lp)
+             (lp-super-category lp))
+      (cons (lp-super-category lp) mixins)
+      mixins)))
+
+(defgeneric superc (category)
+  (:documentation "Return the single first-level super-category
+    recorded on the category's lattice point")
+  (:method ((name symbol))
+    (superc (category-named name :error-if-missing)))
+  (:method ((c category)) (superc (cat-lattice-position c)))
+  (:method ((lp top-lattice-point)) (lp-super-category lp))
+  (:method ((no null)) nil))
+
 
 ;;--- entry points
 
@@ -357,16 +377,6 @@
                finally (return nil))))))))
 
 
-(defun immediate-supers (c)
-  "Return a category's super-catgory and mixins, reading directly
-   from the category object."
-  (let* ((lp (cat-lattice-position c)) ; 
-         (mixins (cat-mix-ins c)))
-    (if (and (lattice-point-p lp)
-             (lp-super-category lp))
-      (cons (lp-super-category lp) mixins)
-      mixins)))
-
 ;;;--------------------------------------------
 ;;; pulling down operations stored on superc's
 ;;;--------------------------------------------
@@ -568,52 +578,15 @@
             (setf (gethash category *category-was-displayed*) t)
             (loop for subc in (subcategories-of category)
               collect (collect-sub-tree subc (- depth 1))))))))
-  
-
-
-;;;----------------------------------------------------
-;;; hook for broader relationships than just daughters
-;;;----------------------------------------------------
-
-(defparameter *categories-without-supercs* nil
-  "an accumulator")
-
-
-(defun workout-the-relationships-among-the-categories ()
-  "This is called from Postprocess-grammar-indexes which runs
-   at the end of load-the-grammar
-"
-  (setq *categories-without-supercs*
-        (compute-daughter-relationships *referential-categories*))
-  (sort-referential-categories-hierarchically)
-  (setq *mixin-categories*       (sort-categories *mixin-categories*))
-  (setq *grammatical-categories* (sort-categories *grammatical-categories*))
-  ;(setq *form-categories*        (sort-categories *form-categories*))
-  ;;  try viewing them in their order of definition, which mirrors
-  ;;   major
-  (setq *dotted-categories*      (sort-categories *dotted-categories*))
-
-  (setq *all-intra-category-relationships-noticed?* t)
-
-  (format t "~&~%-------------------------------------------~
-             ~% ~A~5,2T Referential categories~
-             ~% ~A~5,2T Syntactic form categories~
-             ~% ~A~5,2T Mixin categories~
-             ~% ~A~5,2T non-terminal categories~
-             ~% ~A~5,2T dotted categories~
-             ~%-------------------------------------------"
-          (length *referential-categories*)
-          (length *form-categories*)
-          (length *mixin-categories*)
-          (length *grammatical-categories*)
-          (length *dotted-categories*)))
-
 
 
 
 ;;;----------------------
 ;;; printing the lattice
 ;;;----------------------
+
+(defparameter *categories-without-supercs* nil
+  "an accumulator")
 
 (defun walk/accumulate-category-lattice ()
   ;; Returns a list of conses to be used by display routines. The list

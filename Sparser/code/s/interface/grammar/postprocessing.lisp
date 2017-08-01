@@ -44,9 +44,6 @@
     (setq *tree-families-defined* (postprocess-tree-families
                                    *tree-families-defined*)))
 
-  (when *include-model-facilities*
-    (workout-the-relationships-among-the-categories))
-
   (dolist (gm *grammar-modules-in-image*)
     (unless (gmod-parent-module gm)
       (push gm *toplevel-grammar-modules*))
@@ -58,9 +55,42 @@
         *grammar-modules-in-image* (nreverse *grammar-modules-in-image*)
         *toplevel-grammar-modules* (nreverse *toplevel-grammar-modules*))
 
+  (when *include-model-facilities*
+    (workout-the-relationships-among-the-categories))
   (report-word-and-rules-count)
 
   :grammar-is-postprocessed )
+
+
+
+
+(defun workout-the-relationships-among-the-categories ()
+  "This is called from Postprocess-grammar-indexes which runs
+   at the end of load-the-grammar
+"
+  (setq *categories-without-supercs*
+        (compute-daughter-relationships *referential-categories*))
+  (sort-referential-categories-hierarchically)
+  (setq *mixin-categories*       (sort-categories *mixin-categories*))
+  (setq *grammatical-categories* (sort-categories *grammatical-categories*))
+  ;(setq *form-categories*        (sort-categories *form-categories*))
+  ;;  try viewing them in their order of definition, which mirrors
+  ;;   major
+;;  (setq *dotted-categories*      (sort-categories *dotted-categories*))
+
+  (setq *all-intra-category-relationships-noticed?* t)
+
+  (format t "~&~%-------------------------------------------~
+             ~% ~A~5,2T Referential categories~
+             ~% ~A~5,2T Syntactic form categories~
+             ~% ~A~5,2T Mixin categories~
+             ~% ~A~5,2T non-terminal categories~
+             ~%-------------------------------------------"
+          (length *referential-categories*)
+          (length *form-categories*)
+          (length *mixin-categories*)
+          (length *grammatical-categories*)))
+
 
 (defun report-word-and-rules-count ()
   (format t "~% ~a~5,2T Words~

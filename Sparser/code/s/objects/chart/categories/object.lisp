@@ -43,7 +43,6 @@
 (defvar *referential-categories* nil)
 (defvar *mixin-categories* nil)
 (defvar *grammatical-categories* nil)
-(defvar *dotted-categories* nil)
 (defvar *form-categories* nil)
 (defvar *derived-categories* nil)
 
