@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1997-2005,2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1997-2005,2012,2017 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "printers"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  November 2012
+;;;  version:  July 2017
 
 ;; initiated 11/29/97. First populated 2/24/98. Fixed order of args bug
 ;; 3/3. Debugged 3/11. Tweaked, elaborated through 5/5. Added index 6/21/0.
@@ -35,10 +34,12 @@
 
 (defun print-top-lattice-point-structure (lp stream depth)
   (declare (ignore depth))
-  (format stream "#<top-lp-of ~a  ~a>"
-          (string-downcase
-           (symbol-name (cat-symbol (lp-category lp))))
-          (lp-index lp)))
+  (let ((superc (lp-super-category lp)))
+    (format stream "#<top-lp ~a->~a  ~a>"
+            (string-downcase
+             (symbol-name (cat-symbol (lp-category lp))))
+            (if superc (string-downcase (pname superc)) "")
+            (lp-index lp))))
 
 (defun print-subtype-lattice-point (lp stream depth)
   (declare (ignore depth))
