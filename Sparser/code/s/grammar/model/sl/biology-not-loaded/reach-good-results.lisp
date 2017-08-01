@@ -3,25 +3,81 @@
 (defparameter *rsm-r-other-good*
   '(
     ((:TEXT
-   "Phosphorylation of estrogen receptor-alpha (ERalpha) at specific residues in transcription activation function 1 (AF-1) can stimulate ERalpha activity in a ligand independent manner.")
-  (:MIS-MATCHES
-   ("Phosphorylation" (("substrate" "ERalpha") (:REACH))
-    (("substrate" "estrogen receptor-alpha") (:REACH)))))
+      "For immunostaining of FLAG, phosphorylated S6, or Ki-67, after antigen retrieval by autoclave at 121degreesC for 15 min in 10 mmol/l sodium citrate (pH 6.0) and quenching of endogenous peroxidase with 3% H 2 O 2 for 10 min, the sections were incubated with the anti-FLAG antibody (DYKDDDDK Tag antibody; Cell Signaling), anti-phospho-S6 ribosomal protein (Ser235/236), or anti-Ki-67 antibody (Dako Japan).")
+     (:MIS-MATCHES
+      ("phosphorylated" (("substrate" "Ki-67") (:REACH))
+                        (("substrate" "S6") (:REACH)))))
     ((:TEXT
-   "L2 did not induce phosphorylation of Epidermal Growth Factor Receptor (EGFR; XREF_FIG), suggesting there is specificity for PDGFRbeta.")
-  (:MIS-MATCHES ("phosphorylation" (("substrate" "EGFR") (:REACH)))))
-     ((:TEXT
-   "Mutation of AKT phosphorylation sites in tuberin alters its localization.")
-  (:MIS-MATCHES
-   ("phosphorylation"
-    (("substrate" "tuberin") (:REACH ((("enzyme" "AKT"))))))))
+      "Phosphorylation of S6 (Ser235/236) was clearly higher in islets prepared from transgenic mice than in those prepared from wild-type littermates (XREF_FIG A).")
+     (:MIS-MATCHES ("Phosphorylation" (("substrate" "S6") (:REACH)))))
+    ((:TEXT
+      "Moreover, immunostaining of the pancreas sections with the anti-phospho-S6 antibody revealed an increase in S6 phosphorylation in the transgenic beta-cells.")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "S6") (:REACH)))))
+    ((:TEXT
+      "Thus, either Jak2 or an unknown tyrosine kinase downstream of Jak2 phosphorylates the YxxM sequence of Gab2.")
+     (:MIS-MATCHES
+      ("phosphorylates"
+       (("substrate" "Gab2")
+        (:REACH ((("enzyme" "Jak2") ("site" "tyrosine"))))))))
+    ((:TEXT
+      "Further, PKD activated by RhoA protects against oxidative stress induced intestinal epithelial cell injury via its activation through a ROCK and protein kinase Cdelta (PKCdelta)-mediated signaling pathway [XREF_BIBR].")
+     (:MIS-MATCHES
+      ("activated" (("controlled" "PKD") (:REACH ((("controller" "RhoA"))))))))
+    ((:TEXT
+      "This may recapitulate the view that FBPs are activators of c-myc in renal cancer.")
+     (:MIS-MATCHES
+      ("are activators"
+       (("controlled" "c-myc") (:REACH ((("controller" "FBPs"))))))))
+    ((:TEXT
+      "Cells were subsequently stimulated with IFNbeta at given time-points p.i. and STAT phosphorylation was assessed in Western blots.")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "STAT") (:REACH)))))
+    ((:TEXT
+      "However, at later time points (6-10 h p.i.), in A549 cells both virus- and IFN induced STAT1 and STAT2 phosphorylation was markedly reduced (XREF_FIG).")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "STAT2") (:REACH)))))
+    ((:TEXT
+      "Several protein tyrosine phosphatases (PTPs) are known to mediate dephosphorylation of both, JAKs and STATs XREF_BIBR.")
+     (:MIS-MATCHES
+      ("dephosphorylation" (("substrate" "STATs") (:REACH ((("enzyme" "PTPs")))))
+                           (("substrate" "JAKs") (:REACH ((("enzyme" "PTPs"))))))))
+    ((:TEXT
+      "In the presence of survival factors, Akt, the survival kinase, is phosphorylated and activated, which in turn phosphorylates FOXO3a, leading to association with 14-3-3 proteins, nuclear exclusion, and retention and degradation of FOXO3a in the cytoplasm.")
+     (:MIS-MATCHES ("phosphorylates" (("substrate" "FOXO3a") (:REACH)))
+      ("phosphorylated" (("substrate" "Akt") (:REACH)))))
+    ((:TEXT
+      "We have found that despite comparable levels of phosphorylation of internalized and cell surface EGFR, only the intracellular EGFR can induce caspase-3-mediated apoptosis.")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "EGFR") (:REACH)))))
+    ((:TEXT
+      "Using a stable and activated-mutant form of arm (arm *; S44Y mutation in sgg and GSK3 phosphorylation site XREF_BIBR), we tested whether dE2f1 expression could modify an arm dependent phenotype.")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "GSK3") (:REACH)))))
+    ((:TEXT
+      "Alternatively, phosphorylation of the steroid receptor co-activator (SRC1) has been proposed to promote a more stable interaction between SRC1 and p300 and CBP, facilitating their functional synergism (XREF_BIBR).")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "SRC1") (:REACH)))))
+    ((:TEXT
+      "Several phospho-peptide antibodies have been developed to analyze Hsp phosphorylation, but these approaches provide only a qualitative assessment.")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "Hsp") (:REACH)))))
+    ((:TEXT
+      "The microbially derived dithiole thiolutin (N-(4-methyl-3-oxo-7,8-dithia-4-azabicyclo [3.3.0] octa-1,5-dien-2-yl) acetamide) XREF_BIBR is known to inhibit tumor angiogenesis, XREF_BIBR and increased phosphorylation of Hsp27 was found to be a conserved response of endothelial cells to at least seven other angiogenesis inhibitors.")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "Hsp27") (:REACH)))))
+    ((:TEXT
+      "Phosphorylation of estrogen receptor-alpha (ERalpha) at specific residues in transcription activation function 1 (AF-1) can stimulate ERalpha activity in a ligand independent manner.")
+     (:MIS-MATCHES
+      ("Phosphorylation" (("substrate" "ERalpha") (:REACH))
+                         (("substrate" "estrogen receptor-alpha") (:REACH)))))
+    ((:TEXT
+      "L2 did not induce phosphorylation of Epidermal Growth Factor Receptor (EGFR; XREF_FIG), suggesting there is specificity for PDGFRbeta.")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "EGFR") (:REACH)))))
+    ((:TEXT
+      "Mutation of AKT phosphorylation sites in tuberin alters its localization.")
+     (:MIS-MATCHES
+      ("phosphorylation"
+       (("substrate" "tuberin") (:REACH ((("enzyme" "AKT"))))))))
     
     ((:TEXT
-   "Most epithelial tumor cells (including BxPC3) express another collagen receptor, DDR1, which is a not an integrin receptor but rather is a receptor tyrosine kinase that binds to and is activated by collagen (XREF_BIBR).")
-  (:MIS-MATCHES
-   ("activated" (("controlled" "DDR1") (:REACH ((("controller" "collagen")))))
-    (("controlled" "collagen receptor")
-     (:REACH ((("controller" "collagen"))))))))
+      "Most epithelial tumor cells (including BxPC3) express another collagen receptor, DDR1, which is a not an integrin receptor but rather is a receptor tyrosine kinase that binds to and is activated by collagen (XREF_BIBR).")
+     (:MIS-MATCHES
+      ("activated" (("controlled" "DDR1") (:REACH ((("controller" "collagen")))))
+                   (("controlled" "collagen receptor")
+                    (:REACH ((("controller" "collagen"))))))))
     ((:TEXT
       "The JNK1 portion of the fusion protein is phosphorylated on both Thr 183 and Tyr 185 residues by the MKK7 portion of the fusion protein.")
      (:MIS-MATCHES

@@ -1,72 +1,147 @@
 (in-package :sparser)
 (defparameter *rsm-r-other-bad*
-  '(((:TEXT
-   "XREF_FIG shows that baseline phosphorylation of Spry2 is increased in response to FGF2 in cells expressing WT FGFR3, while the increased amount of Spry2 detected in cells expressing TDII FGFR3 is maximally phosphorylated independent of FGF2 treatment.")
-  (:MIS-MATCHES ("phosphorylated" (("substrate" "Spry2") (:REACH)))))
-     ((:TEXT
-   "HIF-1alpha activates the transcription of vascular endothelial growth factor (VEGF), a key factor in tumor angiogenesis, and the expression of glucose transporters, glycolytic enzymes, and growth factors, which may promote tumor cell survival under hypoxic conditions [XREF_BIBR].")
-  (:MIS-MATCHES
-   ("activates"
-    (("controlled" "expression of glucose")
-     (:REACH ((("controller" "HIF-1alpha"))))))))
-     ((:TEXT
-   "Various explanations may be offered for the appearance of these bands in western blots, including longer splice variants (XREF_BIBR), formation of homo- or heterodimers (XREF_BIBR), phosphorylation or ubiquitination (XREF_BIBR) and complexes of ERalpha with any of its possible binding partners (XREF_BIBR).")
-  (:MIS-MATCHES ("phosphorylation" (("substrate" "ERalpha") (:REACH)))))
-     ((:TEXT
-   "This finding suggests that c-Myc phosphorylation on Ser 62 is important for increased cyclin B1 promoter activity by cyclin G1 (XREF_FIG).")
-  (:MIS-MATCHES
-   ("promoter activity"
-    (("controlled" "B1") (:REACH ((("controller" "cyclin"))))))))
+  '(
+    
+
     ((:TEXT
-   "Further, we suggest that these effects result in increased cyclin B1 promoter activation in cyclin G1 overexpressing cells, which are frequently observed in cancer cells (XREF_FIG).")
-  (:MIS-MATCHES
-   ("promoter
+      "Moreover, also Ku70 serin phosphorylation pattern was affected by IL-6 treatment, as shown by western blot analysis of cytoplasmic extracts co-immunoprecipitated with anti-Ku70 antibody and probed with anti-phosphoserin antibody (XREF_FIG).")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "serin") (:REACH)))))
+    ((:TEXT
+      "The increased Ku70 fraction bound to Bax correlated to the Ku70 serin phosphorylated pattern raise (XREF_FIG).")
+     (:MIS-MATCHES ("phosphorylated" (("substrate" "serin") (:REACH)))))
+    ((:TEXT
+      "Pak phosphorylates two mediators of the MAP kinase pathway, MEK1 and Raf1, at Ser298 and at Ser338, respectively [XREF_BIBR - XREF_BIBR].")
+     (:MIS-MATCHES
+      ("phosphorylates"
+       (("substrate" "MEK1")
+        (:REACH
+         ((("enzyme" "Pak") ("site" "Ser298"))
+          (("enzyme" "Pak") ("site" "Ser338")))))
+       (("substrate" "Raf1")
+        (:REACH
+         ((("enzyme" "Pak") ("site" "Ser338"))
+          (("enzyme" "Pak") ("site" "Ser298")))))
+       (("substrate" "MAP")
+        (:REACH
+         ((("enzyme" "Pak") ("site" "Ser338"))
+          (("enzyme" "Pak") ("site" "Ser298"))))))))
+    ((:TEXT
+      "We also explored the hypothesis that phosphorylation might regulate the deacetylase activity of SIRT1, as it is known to do with other classes of protein deacetylases, such as HDAC1 and HDAC2 XREF_BIBR, XREF_BIBR.")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "SIRT1") (:REACH)))))
+    ((:TEXT
+      "Although we expected that phosphorylation by Cdk1, an M-phase kinase, would alter the percentage of Sirt1-/- ES cells in M-phase, there was no difference compared to Sirt1 +/+ ES cells (XREF_FIG).")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "ES") (:REACH)))))
+    ((:TEXT
+      "FOXO transcription factors are phosphorylated by Akt which leads to cytoplasmic retention and impairment of FOXO nuclear transcriptional activity 6.")
+     (:MIS-MATCHES
+      ("phosphorylated" (("substrate" "FOXO") (:REACH ((("enzyme" "Akt"))))))))
+    ((:TEXT
+      "Several lines of evidence suggest that S/T phosphorylation may regulate p120 activity, but the upstream kinases involved have not been established, nor has a discreet measurable function been assigned to an individual site.")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "S/T") (:REACH)))))
+    
+    ((:TEXT
+      "Several lines of evidence suggest that S/T phosphorylation regulates p120 activity, but the upstream kinases involved have not been established nor has a discreet measurable function been assigned to an individual site.")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "S/T") (:REACH)))))
+    ((:TEXT
+      "Studies in NIH3T3 fibroblasts have shown that Raf-1, a kinase upstream of ERK, is directly phosphorylated by PKCalpha in response to TPA treatment [XREF_BIBR].")
+     (:MIS-MATCHES
+      ("phosphorylated" (("substrate" "Raf-1") (:REACH ((("enzyme" "PKCalpha")))))
+                        (("substrate" "ERK") (:REACH ((("enzyme" "PKCalpha"))))))))
+    
+    ((:TEXT
+      "Involvement of EGFR in H. pylori mediated phosphorylation of PDK1 and AKT signalling.")
+     (:MIS-MATCHES
+      ("phosphorylation" (("substrate" "PDK1") (:REACH ((("enzyme" "EGFR")))))
+                         (("substrate" "AKT") (:REACH ((("enzyme" "EGFR"))))))))
+    ((:TEXT
+      "In these cells, EGFR was constitutively detected with the ERK consensus site phosphorylation specific antibody and EGF induced EGFR downregulation was modest, but was substantially enhanced by pretreatment with MEK1 and ERK inhibitor.")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "ERK") (:REACH)))))
+    ((:TEXT
+      "This hypothesis is supported by recent studies showing that nutlin, a small molecule inhibitor of MDM2, can reactivate p53 function and induce cell death of retinoblastoma cells [XREF_BIBR, XREF_BIBR].")
+     (:MIS-MATCHES
+      ("reactivate"
+       (("controlled" "p53")
+        (:REACH ((("controller" "MDM2")) (("controller" "nutlin"))))))))
+    ((:TEXT
+      "The same eleven sites were detected in denatured samples of monomer phosphorylated prior to filament formation (XREF_FIG, Column 2 - pre-poly.)")
+     (:MIS-MATCHES ("phosphorylated" (("substrate" "filament") (:REACH)))))
+    ((:TEXT
+      "The second was at low protein concentrations, equivalent to conditions used to phosphorylate \" pre-assembled tau \" but without ARA.")
+     (:MIS-MATCHES ("phosphorylate" (("substrate" "ARA") (:REACH)))))
+    ((:TEXT
+      "We conclude that tau filaments are a good substrate for GSK-3beta and phosphorylation can be detected at a minimum of five sites.")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "GSK-3beta") (:REACH)))))
+    ((:TEXT
+      "mTOR inhibitors were observed to similarly stabilize the expression of CD80, MHC-I, and MHC-II on LPS activated DCs (data not shown).")
+     (:MIS-MATCHES
+      ("activated" (("controlled" "DCs") (:REACH ((("controller" "LPS"))))))))
+    ((:TEXT
+      "XREF_FIG shows that baseline phosphorylation of Spry2 is increased in response to FGF2 in cells expressing WT FGFR3, while the increased amount of Spry2 detected in cells expressing TDII FGFR3 is maximally phosphorylated independent of FGF2 treatment.")
+     (:MIS-MATCHES ("phosphorylated" (("substrate" "Spry2") (:REACH)))))
+    ((:TEXT
+      "HIF-1alpha activates the transcription of vascular endothelial growth factor (VEGF), a key factor in tumor angiogenesis, and the expression of glucose transporters, glycolytic enzymes, and growth factors, which may promote tumor cell survival under hypoxic conditions [XREF_BIBR].")
+     (:MIS-MATCHES
+      ("activates"
+       (("controlled" "expression of glucose")
+        (:REACH ((("controller" "HIF-1alpha"))))))))
+    ((:TEXT
+      "Various explanations may be offered for the appearance of these bands in western blots, including longer splice variants (XREF_BIBR), formation of homo- or heterodimers (XREF_BIBR), phosphorylation or ubiquitination (XREF_BIBR) and complexes of ERalpha with any of its possible binding partners (XREF_BIBR).")
+     (:MIS-MATCHES ("phosphorylation" (("substrate" "ERalpha") (:REACH)))))
+    ((:TEXT
+      "This finding suggests that c-Myc phosphorylation on Ser 62 is important for increased cyclin B1 promoter activity by cyclin G1 (XREF_FIG).")
+     (:MIS-MATCHES
+      ("promoter activity"
+       (("controlled" "B1") (:REACH ((("controller" "cyclin"))))))))
+    ((:TEXT
+      "Further, we suggest that these effects result in increased cyclin B1 promoter activation in cyclin G1 overexpressing cells, which are frequently observed in cancer cells (XREF_FIG).")
+     (:MIS-MATCHES
+      ("promoter
  activation"
-    (("controlled" "cyclin") (:REACH ((("controller" "B1"))))))))
+       (("controlled" "cyclin") (:REACH ((("controller" "B1"))))))))
     ((:TEXT
-   "Bacterial internalization can occur through activation of PDGFRbeta or through independent activation of Abl kinase, culminating in phosphorylation of the Rac guanine nucleotide exchange factor (GEF), Vav2, and two actin nucleators, WAVE2 and Cortactin.")
-  (:MIS-MATCHES
-   ("phosphorylation" (("substrate" "Cortactin") (:REACH))
-    (("substrate" "GEF") (:REACH)) (("substrate" "Vav2") (:REACH))
-    (("substrate" "guanine") (:REACH)) (("substrate" "actin") (:REACH))
-    (("substrate" "Rac") (:REACH)) (("substrate" "WAVE2") (:REACH)))))
+      "Bacterial internalization can occur through activation of PDGFRbeta or through independent activation of Abl kinase, culminating in phosphorylation of the Rac guanine nucleotide exchange factor (GEF), Vav2, and two actin nucleators, WAVE2 and Cortactin.")
+     (:MIS-MATCHES
+      ("phosphorylation" (("substrate" "Cortactin") (:REACH))
+                         (("substrate" "GEF") (:REACH)) (("substrate" "Vav2") (:REACH))
+                         (("substrate" "guanine") (:REACH)) (("substrate" "actin") (:REACH))
+                         (("substrate" "Rac") (:REACH)) (("substrate" "WAVE2") (:REACH)))))
     ((:TEXT
-   "We confirmed the role of Abl kinases in phosphorylating EB associated proteins by examining tyrosine phosphorylation of C. trachomatis infected Abl and Arg -/- cells or Abl siRNA depleted HeLa cells.")
-  (:MIS-MATCHES
-   ("phosphorylating" (("substrate" "EB") (:REACH ((("site" "tyrosine"))))))
-   ("phosphorylation"
-    (("substrate" "Abl") (:REACH ((("site" "Arg")) (("site" "tyrosine"))))))))
+      "We confirmed the role of Abl kinases in phosphorylating EB associated proteins by examining tyrosine phosphorylation of C. trachomatis infected Abl and Arg -/- cells or Abl siRNA depleted HeLa cells.")
+     (:MIS-MATCHES
+      ("phosphorylating" (("substrate" "EB") (:REACH ((("site" "tyrosine"))))))
+      ("phosphorylation"
+       (("substrate" "Abl") (:REACH ((("site" "Arg")) (("site" "tyrosine"))))))))
     ((:TEXT
-   "A qualitative reduction in the amount of tyrosine phosphorylation of EGFP-TARP in the Abl and Arg -/- cells compared to the parental cells was noted (XREF_FIG).")
-  (:MIS-MATCHES
-   ("phosphorylation"
-    (("substrate" "EGFP-TARP") (:REACH ((("site" "Arg"))))))))
+      "A qualitative reduction in the amount of tyrosine phosphorylation of EGFP-TARP in the Abl and Arg -/- cells compared to the parental cells was noted (XREF_FIG).")
+     (:MIS-MATCHES
+      ("phosphorylation"
+       (("substrate" "EGFP-TARP") (:REACH ((("site" "Arg"))))))))
     ((:TEXT
-   "Our screen confirmed some previously known host targets and has, most importantly, identified for the first time the activation of PDGFR and Abl kinase signaling pathways as key events in the pathogenesis of C. trachomatis infections.")
-  (:MIS-MATCHES
-   ("activation" (("controlled" "PDGFR") (:REACH ((("controller" "Abl"))))))))
+      "Our screen confirmed some previously known host targets and has, most importantly, identified for the first time the activation of PDGFR and Abl kinase signaling pathways as key events in the pathogenesis of C. trachomatis infections.")
+     (:MIS-MATCHES
+      ("activation" (("controlled" "PDGFR") (:REACH ((("controller" "Abl"))))))))
     ((:TEXT
-   "Activation of these kinases culminates in phosphorylation of the Rac guanine nucleotide exchange factor, Vav2, and several actin nucleators, including WAVE2 and Cortactin, that ultimately promote efficient uptake of this obligate intracellular parasite.")
-  (:MIS-MATCHES
-   ("phosphorylation" (("substrate" "guanine") (:REACH))
-    (("substrate" "Rac") (:REACH)) (("substrate" "actin") (:REACH))
-    (("substrate" "Vav2") (:REACH)))))
+      "Activation of these kinases culminates in phosphorylation of the Rac guanine nucleotide exchange factor, Vav2, and several actin nucleators, including WAVE2 and Cortactin, that ultimately promote efficient uptake of this obligate intracellular parasite.")
+     (:MIS-MATCHES
+      ("phosphorylation" (("substrate" "guanine") (:REACH))
+                         (("substrate" "Rac") (:REACH)) (("substrate" "actin") (:REACH))
+                         (("substrate" "Vav2") (:REACH)))))
     
-     ((:TEXT
-   "p130CAS function is dependent on tyrosine phosphorylation of its substrate domain (SD).")
-  (:MIS-MATCHES
-   ("phosphorylation" (("substrate" "SD") (:REACH ((("site" "tyrosine"))))))))
+    ((:TEXT
+      "p130CAS function is dependent on tyrosine phosphorylation of its substrate domain (SD).")
+     (:MIS-MATCHES
+      ("phosphorylation" (("substrate" "SD") (:REACH ((("site" "tyrosine"))))))))
     
-     ((:TEXT
-   "ERK5 activates NFkappaB by causing IkappaB degradation, a process that is regulated by ribosomal S6 kinase 2 (RSK2).")
-  (:MIS-MATCHES
-   ("activates"
-    (("controlled" "IkappaB") (:REACH ((("controller" "ERK5"))))))))
-     ((:TEXT
-   "However, RSK2 phosphorylates IkappaB on S32, but not S36, which is necessary but not sufficient for IkappaB degradation (XREF_BIBR; XREF_BIBR).")
-  (:MIS-MATCHES
-   ("phosphorylates"
-    (("substrate" "IkappaB") (:REACH ((("enzyme" "RSK2") ("site" "S36"))))))))
+    ((:TEXT
+      "ERK5 activates NFkappaB by causing IkappaB degradation, a process that is regulated by ribosomal S6 kinase 2 (RSK2).")
+     (:MIS-MATCHES
+      ("activates"
+       (("controlled" "IkappaB") (:REACH ((("controller" "ERK5"))))))))
+    ((:TEXT
+      "However, RSK2 phosphorylates IkappaB on S32, but not S36, which is necessary but not sufficient for IkappaB degradation (XREF_BIBR; XREF_BIBR).")
+     (:MIS-MATCHES
+      ("phosphorylates"
+       (("substrate" "IkappaB") (:REACH ((("enzyme" "RSK2") ("site" "S36"))))))))
     ((:TEXT
       "This function is facilitated through binding and activation of cyclin dependent kinases (CDK) 4 and 6, with phosphorylation of the retinoblastoma protein (Rb), and release of sequestered transcription factors such as E2F [XREF_BIBR, XREF_BIBR].")
      (:MIS-MATCHES ("phosphorylation" (("substrate" "Rb") (:REACH)))))
