@@ -35,13 +35,27 @@ support a substantial number of blocks.
   :index (:permanent :list)
   :realization (:common-noun "table"))
 
+(define-category shelf
+  :specializes rectangular-solid
+  :index (:permanent :list)
+  :realization (:common-noun "shelf"))
+
 (define-category ball
   :specializes object
   :index (:permanent :list)
-  :realization (:common-noun "ball")
+  :index (:permanent :key name)
+  :lemma (:common-noun "ball")
+  :realization (:common-noun name)
   :documentation "FIXME: needs a disinction from 'block'
     that licenses 'roll' but not 'slide'")
 
+(define-category box
+  :specializes object
+  :instantiates :self
+  :mixins (container)
+  :index (:permanent :key name)
+  :lemma (:common-noun "box")
+  :realization (:proper-noun name))
 
 ;;--- Composites
 
