@@ -24,12 +24,18 @@
 
 ;; This whole loader is gated on *location* by the master loader
 
+
+(defparameter *prepositions-as-relations* t
+  "Temporary flag to facilitate preserving earlier version of spatial
+   prepositions while promulgating the new version (7/14/17)")
+
+
 (gload "places;object")
 (gload "places;operators")
 
 (gate-grammar *locations-core*
-  (gload "places;directions")
   (gload "places;relational")
+  (gload "places;directions") ;; uses relative-location
   ;; (gload "places;methods") moved to load-the-grammar
   (gload "places;compass points")
 )

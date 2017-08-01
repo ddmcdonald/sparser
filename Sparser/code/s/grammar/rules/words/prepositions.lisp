@@ -49,57 +49,86 @@
 
 
 (defun define-preposition (string &key brackets form super-category synonyms)
+  "Define the category and rule for the preposition whose pname is 'string'.
+   The form argument is used to determine how this preposition slots into 
+   the model."
+  ;; e.g. (define-preposition "at" :form 'spatial-preposition) ;;what about "at 5PM"
+  (declare (special *description-lattice* *prepositions-as-relations*))
   (unless brackets  ;; v.s. ].treetop  treetop.[ 
     (setq brackets *preposition-brackets*))
   (unless form
     (setq form 'preposition))
   (unless super-category
     (setq super-category
-          (ecase form
-            (spatial-preposition (if *location* ;; depends on this grammar module
-                                   'spatial-operator
-                                   'prepositional-operator))
-            (spatio-temporal-preposition ;; ignore time for now
-             (if *location* 'spatial-operator 'prepositional-operator))
-            (preposition 'prepositional-operator))))
-  (let ((word (define-function-word string
-                  :brackets brackets
-                  :form form))
-        (category-name (name-to-use-for-category string)))
-    (let* ((expr `(define-category ,category-name
-                    :specializes ,super-category
-                    :mixins (linguistic)
-                    :instantiates :self
-                    :index (:permanent :key word)
-                    :bindings (word ,word)))
+          (if *location* ;; grammar module has to be loaded to ensure these categories exist
+            (if *prepositions-as-relations*
+              (ecase form
+                (spatial-preposition 'relative-location)
+                (spatio-temporal-preposition 'relative-location)
+                (preposition 'prepositional-operator))
+              (ecase form
+                (spatial-preposition 'spatial-operator)            
+                (spatio-temporal-preposition 'spatial-operator)
+                (preposition 'prepositional-operator)))
+            'prepositional-operator)))
 
-           (category (eval expr)))
+  (let* ((word (define-function-word string
+                   :brackets brackets
+                   :form form))
+         (category-name (name-to-use-for-category string))
+         (expr
+          (if *prepositions-as-relations*
+            `(define-category ,category-name
+                 :specializes ,super-category
+                 :mixins (linguistic) ;; supplies 'word' variable
+                 :instantiates :self
+                 :index (:permanent :list)
+                 :lemma (:preposition ,word)) ;; uses a lemma
+            `(define-category ,category-name
+                 :specializes ,super-category
+                 :mixins (linguistic)
+                 :instantiates :self
+                 :index (:permanent)
+                 :bindings (word ,word)) )) ;; binds the word - no rdata
+         (category (eval expr)))
 
-      ;; Patterned on determiner and quantifier except that looking
-      ;; at the details of description-lattice case established
-      ;; that including the word serves no purpose except to gratuitously
-      ;; generate another individual
-      (let* ((i (define-individual category)) ;; :word word))
-             (word-rule
-              (def-cfr/expr category `(,word)
-                :form (resolve-form-category form)
-                :schema (get-schematic-word-rule :preposition)
-                :referent i))) ;; had been the category
-        (add-rule word-rule category)
-        (when synonyms
-          (let ((rules
-                 (loop for syn-string in synonyms
-                  as synonym = (resolve-string-to-word/make syn-string)
-                  collect
-                  (define-cfr category `(,synonym)
-                    :form (resolve-form-category form)
-                    :schema (get-schematic-word-rule :preposition)
-                    :referent i)))) ;; had been category
-            (add-rules rules category)))
-        (make-corresponding-mumble-resource word :prep category)
-        (values i
-                category
-                word-rule )))))
+    (flet ((prep-synonym (syn-string referent name-of-form)
+             (let* ((syn-word (resolve-string-to-word/make syn-string))
+                    (rule (define-cfr category `(,syn-word)
+                            :form (resolve-form-category name-of-form)
+                            :schema (get-schematic-word-rule :preposition)
+                            :referent referent)))
+               (add-rule rule category))))
+
+      (if *prepositions-as-relations*
+        ;; The lemma on the category made a rule. We have to fix it's
+        ;; form. The category processing has made the Mumble resources.
+        (let ((cfr (find-form-cfr word :preposition)))
+          (unless cfr (lsp-break "no cfr on ~s ?" string))
+          (setf (cfr-form cfr) (category-named form))
+          (when synonyms (loop for s in synonyms
+                            do (prep-synonym s category form))))
+        (let* ((referent
+                (if *description-lattice*
+                  ;; Patterned on determiner and quantifier. Though looking
+                  ;; at the details of description-lattice case established
+                  ;; that including the word argument serves no purpose except to gratuitously
+                  ;; generate another individual.
+                  (define-individual category)
+                  (define-individual category :word word)))
+               (word-rule
+                (def-cfr/expr category `(,word)
+                  :form (resolve-form-category form)
+                  :schema (get-schematic-word-rule :preposition)
+                  :referent referent)))
+          (add-rule word-rule category)
+          (make-corresponding-mumble-resource word :preposition category)
+          (when synonyms
+            (let ((rules (loop for syn-string in synonyms
+                            do (prep-synonym syn-string referent form))))
+              (add-rules rules category)))))
+      
+      category )))
 
 ;; "to" and "of" may warrant special treatment
 
@@ -296,6 +325,4 @@
 (define-preposition "within" :form 'spatial-preposition)
 (define-preposition "without" :synonyms '("w/o"))
 (define-preposition "worth")
-
-
 

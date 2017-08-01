@@ -322,7 +322,8 @@
        ((when (use-methods) ;; "left side" (etc. see core/places/methods.lisp)
           (compose qualifier head)))
        ((and (not (eq script :biology))
-             (itypep qualifier 'dependent-location)) ;; w/o methods: "bottom" in "bottom block"
+             ;; w/o methods: "bottom" in "bottom block"
+             (itypep qualifier 'object-dependent-location))
         (add-dependent-location qualifier head))
        ((and
          (category-named 'knockout-pattern)
@@ -1138,49 +1139,55 @@
      ;;(lsp-break "pp collection")
      nil)
     ((and np pp)
-     (or (when (use-methods) ;; "the block at the left end of the row"
+     (or (when (use-methods)
+           ;; e.g. has-location + location : "the block at the left end of the row"
            (compose np pp))
          (let* ((pp-edge (right-edge-for-referent))
                 (prep-word (identify-preposition pp-edge))
-                ;;(*pobj-edge* (edge-right-daughter pp-edge))
                 (pobj-referent (identify-pobj pp-edge))
                 (of (word-named "of"))
                 (variable-to-bind
-                 ;; test if there is a known interpretation of the NP/PP combination
-                 (or
-                  (subcategorized-variable np prep-word pobj-referent)
-                  (and (eq prep-word of)
-                       (itypep np 'attribute))
-                  ;; or if we are making a last ditch effort
-                  ;; if not, then return NIL, failing the rule
-                  (and *force-modifiers* 'modifier))))
+                 (or (subcategorized-variable np prep-word pobj-referent)
+                     (and (eq prep-word of)
+                          (itypep np 'attribute))
+                     (and *force-modifiers* ;; set in CwC
+                          'modifier))))
            (cond
              (*subcat-test*
               (or variable-to-bind
                   (and (eq prep-word of)
                        (or (itypep np 'attribute)
                            (and
-                            (itypep np 'dependent-location)
+                            ;; (itypep np 'dependent-location)
+                            (itypep np 'object-dependent-location)
                             (itypep pobj-referent 'partonomic))
                            (and
                             (itypep np 'partonomic)
                             (compatible-with-specified-part-type pobj-referent np))))))
              ((and (eq prep-word of)
                    (itypep np 'attribute)) ;; "color of the block"
+              ;; "block" in "the bottom block of the stack" is an attribute
+              ;; because it's inheriting from Dimension -- /// reanalyze
+              ;;(lsp-break "quality-predicate? np = ~a, pp = ~a" np pp)
               (find-or-make-individual 'quality-predicate
                                        :attribute (itype-of np) :item pobj-referent))
+
              ((and (eq prep-word of)
-                   (itypep np 'dependent-location)
+                   ;; (itypep np 'dependent-location) non-operator version
+                   (itypep np 'object-dependent-location)
                    (itypep pobj-referent 'partonomic)) ;; "bottom of the stack"
-              (find-or-make-individual 'object-dependent-location
-                                       :prep np :ground pobj-referent))
+              (tr :np+pp/np-is-partonomic np pobj-referent)
+              (make-object-dependent-location np pobj-referent))
+
              ((and (eq prep-word of)
                    (itypep np 'partonomic) ;; "a row of two blocks"
                    (compatible-with-specified-part-type pobj-referent np))
               (setq np (bind-variable 'parts pobj-referent np)))
+
              ((and (use-methods)
                    (eq prep-word of))
               (let ((result (compose np pobj-referent)))
+                (when result (tr :compose-other-of np pobj-referent result))
                 (or result
                     (else ;; uses the default
                       (warn "interpret-pp-adjunct-to-np: No compose method applied ~
@@ -1673,6 +1680,7 @@
   (if *subcat-test*
     (not (itypep prep 'prepositional-phrase))
     (else
+      (setq prep (individual-for-ref prep))
       (or (when (use-methods)
             (compose prep pobj))
           (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<

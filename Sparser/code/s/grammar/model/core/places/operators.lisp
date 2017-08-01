@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "operators"
 ;;;   Module:  "model;core:places:"
-;;;  version:  April 2017
+;;;  version:  July 2017
 
 ;; instantiates 11/2/16 to provide a semantic grounding to spatial
 ;; prepositions and such as functions. 
@@ -21,6 +21,7 @@ objects to spatial relationships or selected component parts.
 determined by the operator and the types of the two objects,
 |#
 
+;; 7/16/17 is this OBE once we swap over?
 (define-category spatial-operator
   :specializes prepositional
   :documentation "Provides a super type for spatial prespositions.
@@ -62,23 +63,25 @@ determined by the operator and the types of the two objects,
   :realization (:common-noun name))
 
 
-;;--- define them
+;;--- define the words
 
 (defun define-dependent-location (string &key multiple category-name)
   "Modeled on define-preposition with supercategory determined
    by keyword arg. Lots of room for growth."
+  (declare (special *prepositions-as-relations*))
   (let ((word (resolve/make string))
         (form 'common-noun)
         (category-name (or category-name ;; don't redefine 'top'
                            (name-to-use-for-category string)))
-        (super-category (if multiple
-                         'multiple-dependent-location
-                         'dependent-location)))
+        (super-category (if *prepositions-as-relations*
+                          'object-dependent-location
+                          (if multiple
+                            'multiple-dependent-location
+                            'dependent-location))))
     (let* ((expr `(define-category ,category-name
                     :specializes ,super-category
                     :instantiates :self
                     :lemma (:common-noun ,word)))
-                    ;;:realization (:common-noun ,word)
            (category (eval expr))
            (word-rule
 	    (def-cfr/expr category `(,word)
@@ -87,19 +90,39 @@ determined by the operator and the types of the two objects,
               :referent category)))
       (add-rule word-rule category)
       (when multiple
-        (add-rules (make-cn-plural-rules
-                     word category category)
+        (add-rules (make-cn-plural-rules word category category)
                    category))
       (values category
               word-rule))))
 
-  ;; Original treatment makes them individuals
-  #+ignore(let ((*inhibit-constructing-plural* (not multiple)))
-    (declare (special *inhibit-constructing-plural*))
-    (define-individual (if multiple
-                         'multiple-dependent-location
-                         'dependent-location)
-        :name string))
 
+
+;;;------------------
+;;; syntax functions
+;;;------------------
+
+(defun add-dependent-location (operator head)
+  "Called in noun-noun-compound when the qualifier ('operator')
+   is a dependent-location such as 'bottom' or 'end'."
+  (tr :add-dependent-location operator head)
+  (bind-variable 'location operator head))
+
+(defun make-object-dependent-location (operator object)
+  "For phrases like 'the bottom of the stack', where the calling
+   syntax-function (interpret-pp-adjunct-to-np np pp) has soaked up
+   the 'of' and has checked that the np is a dependent-location
+   and the object of the pp is partonomic (so we can identify  
+   one of its parts)."
+  (declare (special *prepositions-as-relations*))
+  (if *prepositions-as-relations*
+    (then
+      (assert (itypep operator 'relative-location))
+      (tr :make-object-dependent-location operator object)
+      (bind-variable 'ground object operator))
+    (else ;; old analysis
+      (find-or-make-individual 'object-dependent-location
+                               :prep operator
+                               :ground object))))
+  
 
 

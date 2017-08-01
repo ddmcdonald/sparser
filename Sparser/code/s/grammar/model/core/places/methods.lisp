@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "methods"
 ;;;   Module:  "model;core:places:"
-;;;  version:  May 2017.
+;;;  version:  July 2017.
 
 ;; N.b. This file is loaded late after all categories have been defined.
 ;; It is for location-oriented compose methods
@@ -21,11 +21,11 @@
 ;; "the block on the table"
 (def-k-method compose ((np category::has-location)
                        (pp category::location))
-  ;; Called by interpret-pp-adjunct-to-np
+  "Binds the location variable of an object that is defined to
+   have a location (any 'object'). Called by interpret-pp-adjunct-to-np
+   in the first clause of its 'or'."
   (declare (special *subcat-test*))
   (if *subcat-test*
-    ;; given this specific a pattern, if we get here
-    ;; then the interpretation/rule will go through
     t
     (else
       (tr :has-location+location np pp)
@@ -34,41 +34,42 @@
 
 
 
-;;--- spatial-operator
+;;--- simple prepositional location operators
 
 (defun make-relative-location/revise-parent (operator place)
   "shared subroutine. Construct and return the relative-location
-   individual. Relable the parent edges as a 'location'."
-  (let ((i (find-or-make-individual 'relative-location
-                                    :prep operator
-                                    :ground place)))
+   individual. Relable the parent edge as a 'location'."
+  (declare (special *prepositions-as-relations*))
+  (let ((i (if *prepositions-as-relations*
+             (bind-variable 'ground place operator)             
+             (find-or-make-individual 'relative-location
+                                      :prep operator
+                                      :ground place))))
     (revise-parent-edge :category (category-named 'location))
     i))
 
 
 ;; Designed for phrases like "on the table",  or "the top block"
-(def-k-method compose ((operator category::spatial-operator)
+(def-k-method compose ((op category::relative-location)  ;;  spatial-operator)
                        (place category::has-location)) ;; e.g. 'object'
   (declare (special *subcat-test* category::pp))
   (if *subcat-test*
     t
     (else
-      (tr :spatial-operator+endurant operator place)
+      (tr :spatial-operator+endurant op place)
       (let ((form (edge-form (parent-edge-for-referent))))
         (cond
           ((np-category? form) ;; called from noun-noun-compound
-           ;; "the bottom block"
-           (let ((head (bind-variable 'location operator place)))
-             head))
+           (add-dependent-location op place))  ;; "the bottom block"
           ((eq form category::pp)
-           (make-relative-location/revise-parent operator place))
+           (make-relative-location/revise-parent op place))
           (t
-           (push-debug `(,operator ,place))
+           (push-debug `(,op ,place))
            (error "Unanticipated form on parent edge: ~a" form)))))))
 
 
 ;; "next to it"
-(def-k-method compose ((operator category::spatial-operator)
+(def-k-method compose ((operator category::relative-location)
                        (place category::pronoun/inanimate))
   (if *subcat-test*
     t
@@ -78,7 +79,7 @@
 
 
 ;; for "at the right end of the row"
-(def-k-method compose ((operator category::spatial-operator)
+(def-k-method compose ((operator category::relative-location)
                        (place category::location))
   (declare (special *subcat-test*))
   (if *subcat-test*
@@ -89,34 +90,15 @@
 
 
 ;; "at the end"
-(def-k-method compose ((operator category::spatial-operator)
+(def-k-method compose ((op category::relative-location)  ;; spatial-operator)
                        (place category::dependent-location))
   (declare (special *subcat-test*))
   (if *subcat-test*
     t
     (else
-      (tr :spatial-operator+dependent-location operator place)
-      (make-relative-location/revise-parent operator place))))
+      (tr :spatial-operator+dependent-location op place)
+      (make-relative-location/revise-parent op place))))
 
-
-
-(defun add-dependent-location (operator head)
-  "Called in noun-noun-compound when the qualifier ('operator')
-   is a dependent-location such as 'bottom' or 'end'."
-  (lsp-break "call to add-dependent-location")
-  (bind-variable 'location operator head))
-
-#|     Too confusing for the generator since it only has the one
-       realization pattern which presupposes the ground variable
-   We make an instance of object-dependent-location that is
-   open in the value for its ground variable (which eventually
-   will be bound when we get a pp complement like 'of the row'),
-   and make that the value of the location variable of the head.
-   Returns the head to be the referent of the edge."
-  (let ((i (find-or-make-individual 'object-dependent-location
-                                    :prep operator)))
-    (setq head (bind-variable 'location i head))
-    head)) |#
 
 
 
@@ -125,14 +107,16 @@
 (def-k-method compose ((qualifier category::direction)
                        (head category::dependent-location))
   ;; as in "the left side of ...". We get that in noun-noun-compound
-  (declare (special *subcat-test*))
+  (declare (special *subcat-test* *prepositions-as-relations*))
   (if *subcat-test*
     t
     (else
       (tr :direction+dependent-location qualifier head)
-      (let ((i (find-or-make-individual 'orientation-dependent-location
-                                        :prep qualifier
-                                        :ground head)))
+      (let ((i (if *prepositions-as-relations*
+                 (bind-variable 'ground head qualifier)
+                 (find-or-make-individual 'orientation-dependent-location
+                                          :prep qualifier
+                                          :ground head))))
         (revise-parent-edge :category (category-named 'location))
         i))))
 
@@ -156,9 +140,11 @@
   (or (when *subcat-test* t)
       (else
         (tr :direction+object head ground)
-        (let ((i (find-or-make-individual 'orientation-dependent-location
-                                          :prep head
-                                          :ground ground)))
+        (let ((i (if *prepositions-as-relations*
+                   (bind-variable 'ground ground head)
+                   (find-or-make-individual 'orientation-dependent-location
+                                            :prep head
+                                            :ground ground))))
           (revise-parent-edge :category (category-named 'location))
           i))))
 
@@ -211,3 +197,39 @@
   (when *trace-methods*
     (trace-msg "Composing direction (i~a) & object (i~a)"
                (indiv-uid head) (indiv-uid ground))))
+
+
+;;--- For related syntax-functions functions.
+
+(defparameter *trace-syntactic-composition* nil)
+(defun trace-composition ()
+  (setq *trace-syntactic-composition* t))
+(defun untrace-composition ()
+  (setq *trace-syntactic-composition* nil))
+
+(deftrace :np+pp/np-is-partonomic (np pobj) ;; "a row of two blocks"
+  (when *trace-syntactic-composition*
+    (trace-msg "Compose: np is partonomic ~a + ~a" np pobj)))
+
+(deftrace :compose-other-of (np pobj result)
+  (when *trace-syntactic-composition*
+    (trace-msg "Compose: unflagged method over ~a + ~a produced ~a"  np pobj result)))
+
+(deftrace :add-dependent-location (operator head) 
+  ;; called in add-dependent-location -- "bottom block"
+  (when *trace-syntactic-composition*
+    (trace-msg "Compose: adding operator ~a as location on ~a"  operator head)))
+
+(deftrace :make-object-dependent-location (operator object)
+  ;; called for "the bottom of the stack"
+  (when *trace-syntactic-composition*
+    (trace-msg "Compose: binding ~a as ground of ~a" object operator)))
+#|
+(deftrace : (np pobj)
+  (when *trace-syntactic-composition*
+    (trace-msg ""  np pobj)))
+
+(deftrace : (np pobj)
+  (when *trace-syntactic-composition*
+    (trace-msg ""  np pobj)))
+|#
