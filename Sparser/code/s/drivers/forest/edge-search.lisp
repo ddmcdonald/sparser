@@ -98,8 +98,15 @@
 	  (when (member nil edges-to-right)
 	    (lsp-break "bad edge"))
 	  (let ((recursive-pairs
-		 (when edges-to-right
-		   (adjacent-tt-pairs1 edges-to-right end-pos))))
+		 (if edges-to-right
+                     (adjacent-tt-pairs1 edges-to-right end-pos)
+                     (let* ((next-pos
+                             (first-position-with-edges left-end-position end-pos))
+                            (next-right-edges
+                             (when next-pos
+                               (tt-edges-starting-at (pos-starts-here next-pos)))))
+                       (when next-right-edges
+                         (adjacent-tt-pairs1 next-right-edges end-pos))))))
 	    (let ((return-value
 		   (if recursive-pairs
 		       (nconc pairs recursive-pairs)
@@ -366,7 +373,9 @@ for ambiguous words"
                     category::n-bar))
   (or *l-triple-tests*
       (setq *l-triple-tests*
-            (loop for v in '(category::vg category::vg+ing category::infinitive)
+            (loop for v in '(category::vg category::vg+ing category::infinitive
+                             category::vg+ed category::vg+ing
+                             )
                  append
                     (loop for n in (cons category::np *n-bar-categories*)
                           collect (list (eval v) (eval n)))))))
@@ -407,6 +416,7 @@ for ambiguous words"
        (eq 'category::syntactic-there l-triple-left) ;; competing against a "there BE"
        (and
         (competition-against-clausal-object? l-triple-rhs)
+        (not (eq 'thatcomp (cat-name (edge-form r-triple-3))))
         
         ;; likely competition against a relative clause or a main clause
         ;;  accept r-triple as a winner if if is a rightward extension of and NP
