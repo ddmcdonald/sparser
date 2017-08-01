@@ -108,8 +108,13 @@
                   :loc-pp-complement (to next\ to)
                   :mumble ("push" svo :s agent :o theme)))
 
+;; If push-together inherits from push, it will try to
+;; inherit the mdata on push, which leads to an odd clash
+;; that's not worth addressing yet (7/20/17)
 (define-category push-together
-  :specializes push
+  :specializes process
+  :mixins (with-an-agent theme)
+  :restrict ((theme object))
   :binds ((items collection))
   :realization (:verb "push together"
                 :etf (svo-passive)
