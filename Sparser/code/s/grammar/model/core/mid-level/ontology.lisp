@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ontology"
 ;;;   Module:  "model;core:relations:"
-;;;  version:  November 2016
+;;;  version:  July 2017
 
 ;; Initiated 12/3/15.
 
@@ -82,7 +82,7 @@ files once an area looks big enough to warrant it.  |#
 
 (define-category object-face
   :specializes object
-  :mixins (two-dimensional)
+  ;; :mixins (two-dimensional)
   :documentation  "Intrinsically a block has six 'faces'. 
  For a cube, each face is the same size and is connected
  along each of its edges to another face. This geometry is
@@ -95,7 +95,7 @@ files once an area looks big enough to warrant it.  |#
 
 (define-category rectangular-solid
   :specializes object
-  :mixins (three-dimensional partonomic)
+  :mixins (#|three-dimensional|# partonomic)
   :restrict ((part-type object-face))
   :documentation "This is where we represent haw blocks
  have a set of 6 'faces'/'sides' that (a) can be assumed
