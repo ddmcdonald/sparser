@@ -11,297 +11,13 @@
 (in-package :mumble)
 
 
-(defparameter *check-lp-coverage* nil
-  "Guards breaks used when testing whether the coverage of lexicalized
-   phrases provided by the rdata on categories and individuals is thorough")
-
-
-;;;-----------------------------------------------------------
-;;; interface into Mumble's state at the time we make the dtn
-;;;-----------------------------------------------------------
-
-(defun current-position ()
-  "Wraps the generation state variable *current-position*, which only
-   has a value when Mumble has started instantiating and executing phrases.
-   Returns nil if the variable does not have a meaningful value."
-  (when (boundp '*current-position*)
-    (when *current-position* ;; nil check
-      *current-position*)))
-
-(defun current-position-p (&rest labels)
-  "Return true if the slot being generated has one of the given labels."
-  (let ((slot (current-position)))
-    (when slot
-      (memq (name slot) labels))))
-
-;;;----------------------
-;;; poor man's def-trace
-;;;----------------------
-
-(defparameter *trace-archie* nil)
-
-(defun tr (string &rest args)
-  (when *trace-archie*
-    (let ((doctored-string (string-append "~&" string "~%")))
-      (apply #'format t doctored-string args))))
-
-;;;--------------------------------------
-;;; subroutines to realizing individuals
-;;;--------------------------------------
-
-(defun pretty-bio-name (name)
-  "Heuristically guess a nice name for a protein or other biological entity."
-  (let ((syns (sp::get-bio-synonyms name)))
-    (if syns
-      (or (let ((human (search "_HUMAN" name))) ; prefer the synonym without the _HUMAN suffix
-            (find (subseq name 0 human) syns :test #'string-equal))
-          (first (stable-sort ; prefer shortest synonym
-                  (cons name (copy-list syns))
-                  #'< :key #'length)))
-      ;; no synonyms, so look for removable parts
-      (let ((index (search "_HUMAN" name)))
-        (if index
-          (subseq name 0 index)
-          (subseq name (case (search "BIO-" name :test #'char-equal)
-                         (0 4) ; elide bio-prefix
-                         (t 0))))))))
-
-;;/// move into mumble proper
-(deftype mumble-part-of-speech ()
-  `(member noun
-           proper-noun
-           verb
-           modal
-           adjective
-           adverb
-           preposition
-           determiner
-           quantifier
-           pronoun
-           interjection
-           number))
-
-
-(defun sparser-pos (pos)
-  "Translate a Mumble part-of-speech tag to the equivalent Sparser tag.
-   The other direction is mumble-pos "
-  (ecase pos
-    (noun :common-noun)
-    (verb :verb)
-    (adjective :adjective)
-    (adverb :adverb)
-    (preposition :prep)
-    (quantifier :quantifier)
-    (pronoun :pronoun)
-    (interjection :interjection)))
-
-
-(defvar *original-pos* nil
-  "Guard against infinite mutual recursion in WORD-FOR.")
-
-(defgeneric word-for (item pos)
-  (:documentation "Try to determine what word to use for this type
-   of item. Around methods provide alternatives and some special handling.")
-  (:method ((item null) pos)
-    (declare (ignore pos)))
-  (:method ((item word) pos)
-    (declare (ignore pos))
-    item)
-  (:method ((item string) pos)
-    (word-for-string item pos))
-  (:method ((item sp::word) pos)
-    (sp::get-mumble-word-for-sparser-word item pos))
-  (:method ((item sp::polyword) pos)
-    (sp::get-mumble-word-for-sparser-word item pos))
-  (:method ((item sp::referential-category) pos)
-    "Try to get a head word for a category."
-    (let ((head (sp::rdata-head-word item (sparser-pos pos))))
-      (when *check-lp-coverage*
-        (break "word-for: category ~a" item))
-      (word-for (typecase head
-                  (sp::lambda-variable (sp::lemma item (sparser-pos pos)))
-                  (null (string-downcase (sp::cat-name item)))
-                  (t head))
-                pos)))
-  (:method ((item sp::individual) pos)
-    "Try to get a head word for an individual."
-    (when *check-lp-coverage*
-      (break "word-for: individual ~a" item))
-    (let ((head (or (sp::rdata-head-word item (sparser-pos pos))
-                    (sp::lemma item (sparser-pos pos))
-                    (sp::value-of 'sp::name item)
-                    (sp::value-of 'sp::word item))))
-      (and head (word-for head pos))))
-  
-  (:method :around ((item sp::individual) pos)
-    "Treat biological entities, collections, and prepositions specially."
-    (cond ((sp::itypep item 'sp::biological)
-           (let ((word (call-next-method)))
-             (and word
-                  (word-for-string (pretty-bio-name (sp::pname word)) pos))))
-          ((sp::itypep item 'sp::collection)
-           (word-for (sp::value-of 'sp::type item) pos))
-          ((sp::itypep item 'sp::dependent-location) ;; "end" or "top" are nouns
-           (sp::get-mumble-word-for-sparser-word item (sparser-pos 'noun)))
-          ((sp::itypep item 'sp::prepositional) ;; vs. prepositions "of" or "on"
-           (sp::get-mumble-word-for-sparser-word item 'preposition))
-          (t (or (call-next-method) ; last-ditch effort
-                 (word-for (string-downcase (sp::cat-name (sp::itype-of item))) pos)))))
-  (:method :around (item (pos (eql 'adjective)))
-    "Allow nouns as premodifiers."
-    (or (call-next-method)
-        (unless *original-pos*
-          (let ((*original-pos* pos))
-            (word-for item 'noun)))))
-  (:method :around (item (pos (eql 'noun)))
-    "Allow nouns as predications."
-    (or (call-next-method)
-        (unless *original-pos*
-          (let ((*original-pos* pos))
-            (word-for item 'adjective)))))
-  (:method :around (item (pos (eql 'verb)))
-    "Allow verbs as predications."
-    (or (call-next-method)
-        (word-for item 'adjective))))
-
-(defgeneric guess-pos (i)
-  (:documentation "Guess the part of speech to be used for an individual.")
-  (:method-combination or)
-  (:method or ((i sp::individual))
-    (cond ((let ((subject (sp::bound-subject-var i)))
-             (and subject (eq (sp::value-of subject i) sp::**lambda-var**)))
-           'adjective)
-          ((or (sp::bound-subject-var i)
-               (sp::bound-object-var i)
-               (find sp::**lambda-var** (sp::indiv-binds i)
-                     :key #'sp::binding-value))
-           'verb)
-          ;; ((sp::rdata-head-word i t)  )
-          ))
-  (:method or ((i sp::referential-category))
-    (cond ((or (sp::subject-variable i)
-               (sp::object-variable i))
-           'verb)))
-  (:method or (i)
-    (when *check-lp-coverage*
-      (break "fell through quess-pos on ~a" i))
-    (if (current-position-p 'adjective 'relative-clause)
-      'adjective
-      'noun)))
-
-
-(defgeneric tense (object)
-  (:documentation "Determine and attach tense to the given object.")
-  (:method ((dtn derivation-tree-node) &aux (referent (referent dtn)))
-    "Attach tense to the given DTN by inspecting its referent."
-    (cond ((sp::value-of 'sp::past referent)
-           (past-tense dtn))
-          ((sp::value-of 'sp::progressive referent)
-           (progressive dtn))
-          ((sp::value-of 'sp::perfect referent)
-           (had dtn))
-          ((current-position-p 'adjective 'complement-of-be 'relative-clause)
-           (past-tense dtn))
-          (t (present-tense dtn))))
-  (:method :after ((dtn derivation-tree-node) &aux (referent (referent dtn)))
-    "Interpret a referent with an object but no subject as an imperative."
-    (when (and (sp::individual-p referent)
-               (sp::missing-subject-vars referent)
-               (let ((object-var (sp::bound-object-var referent)))
-                 (and object-var (not (eq (sp::value-of object-var referent)
-                                          sp::**lambda-var**)))))
-      (command dtn))))
-
-(defun heavy-predicate-p (i)
-  "Return true if the individual is too heavy to be used as a premodifier."
-  (and (sp::individual-p i)
-       (remove-if (lambda (b)
-                    (or (eq (sp::binding-value b) sp::**lambda-var**)
-                        (eq (sp::var-name (sp::binding-variable b)) 'sp::name)))
-                  (sp::indiv-binds i))))
-
-
-;;--------- dtn modifiers
-#| These take a dtn that was created by their caller and add to it.
-Many use methods in derivation-trees/builders.lisp or make.lisp
-to do the actual manipulation. These are called by cases in
-attach-via-binding. |#
-
-(defun attach-adjective (adjective dtn pos)
-  (let ((adjp (make-dtn :referent adjective
-                        :resource (phrase-named 'adjp)))
-        (ap (ecase pos
-              ((adjective noun) 'adjective)
-              ((adverb verb)
-               (if (sp::itypep adjective 'sp::intensifier)
-                 'adverbial-preceding
-                 (multiple-value-bind (head rpos)
-                     (sp::rdata-head-word adjective t)
-                   (declare (ignore head))
-                   (case rpos
-                     (:interjection 'adverbial-preceding)
-                     (otherwise 'vp-final-adjunct))))))))
-    (tr "Attaching adjective: ~a" adjective)
-    (make-complement-node 'a adjective adjp)
-    (make-adjunction-node (make-lexicalized-attachment ap adjp) dtn)))
-
-(defun attach-pp (prep object dtn pos)
-  (let ((pp (make-dtn :resource (prep prep)))
-        (ap (ecase pos
-              ((adjective noun) 'np-prep-adjunct)
-              (verb 'vp-prep-complement))))
-    (tr "Attaching a pp: ~a ~a" prep object)
-    (make-complement-node 'prep-object object pp)
-    (make-adjunction-node (make-lexicalized-attachment ap pp) dtn)))
-
-
-(defun possibly-pronoun (item)
-  "Wrapper around subject, object, and complement below."
-  (cond ((sp::itypep item 'sp::pronoun/first/singular)
-         (pronoun-named 'first-person-singular))
-        ((sp::itypep item 'sp::pronoun/first/plural)
-         (pronoun-named 'first-person-plural))
-        ((sp::itypep item 'sp::pronoun/second)
-         (pronoun-named 'second-person-singular))
-        ((sp::itypep item 'sp::pronoun/plural)
-         (pronoun-named 'third-person-plural))
-        (t item)))
-
-(defun attach-subject (subject dtn)
-  (tr "Attaching subject: ~a" subject)
-  (make-complement-node 's (possibly-pronoun subject) dtn))
-
-(defun attach-object (object dtn)
-  (tr "Attaching object: ~a" object)
-  (make-complement-node 'o (possibly-pronoun object) dtn))
-
-(defun attach-complement (complement dtn)
-  (tr "Attaching complement: ~a" complement)
-  (make-complement-node 'c (possibly-pronoun complement) dtn))
-
-
-;;---- dtn sources for particular cases
-
-(defun realize-number (i)
-  "Make a dtn for simple number words. For long, multi-word numbers recover
-   the algorithm from grammar/numbers.lisp"
-  (let* ((lisp-number (sp::value-of 'sp::value i))    
-         (number-string (format nil "~r" lisp-number))
-         ;; (format nil "~r" 1325) => "one thousand three hundred twenty-five"
-         (word (word-for-string number-string 'number))
-         (phrase (phrase-named 'bare-np-head))
-         (dtn (make-dtn :referent i :resource phrase)))
-    (tr "Realize-number: ~a" i)
-    (make-complement-node 'n word dtn)
-    dtn))
-
-;;;--------------------------------------
-;;; Realizations for Sparser individuals
-;;;--------------------------------------
+;;;------------------
+;;;  Realize method
+;;;------------------
 
 (defmethod realize ((i sp::individual))
-  "Realize a Sparser individual. Handles special cases then falls through
-   to realize-via-bindings."
+  "Realize a Sparser individual. Special cases are handled here,
+   then falls through to realize-via-bindings."
   (cond ((sp::itypep i 'sp::collection)
          (let ((items (sp::value-of 'sp::items i))
                (type (sp::value-of 'sp::type i)))
@@ -348,42 +64,24 @@ attach-via-binding. |#
            (attach-subject (find-word "there" 'pronoun) be)
            (attach-complement (sp::value-of 'sp::value i) be)
            be))
-        
-        ((sp::itypep i 'sp::object-dependent-location) ;; 'end of the row'
-         (tr "Realizing object-dependent-location ~a" i)
-         (apply-category-linked-phrase i))
-        
-        ((sp::itypep i 'sp::relative-location)
-         (tr "Realizing relative-location ~a" i)
-         (apply-category-linked-phrase i))
-        
-        ((and (null (sp::indiv-binds i)) ;; nothing for realize-via-bindings to chew on
+               
+        ((and (null (sp::indiv-binds i))
+              ;; nothing for realize-via-bindings to chew on
               (sp::rdata-head-word i t))
+         ;; There's a word associated with this individual.
+         ;; Use its lexicalized phrase as the resource"
          (tr "Realizing ~a, with no bindings" i)
-         (apply-lexical-resource i))
+         (let ((lp (find-lexicalized-phrase i)))
+           (tr "Using lexical resource ~a" lp)
+           (assert lp (i) "No lexicalized resource on ~a" i)
+           (make-dtn :referent i :resource lp)))
+        
         (t (realize-via-bindings i))))
 
-(defun apply-lexical-resource (i)
-  "There's a word associated with this individual. Use it's lexicalized phrase
-   as the resource"
-  (let ((lp (find-lexicalized-phrase i)))
-    (tr "For ~a using lexical resource ~a" i lp)
-    (assert lp (i) "No lexicalized resource on ~a" i)
-    (make-dtn :referent i :resource lp)))
 
-(defgeneric realize-via-category (i category) ;; "a big red block."
-  (:documentation "Use the category as the source of the head, then add
-    any other binding on the individual")
-  (:method ((i sp::individual) (c sp::referential-category))
-    (let ((lp (find-category-lp c)))
-      (tr "realizing ~a via its category" i)
-      (assert lp (c) "No lexicalized resource on ~a" c)
-      (let ((pos (lookup-pos lp))
-            (dtn (make-dtn :referent i :resource lp)))
-        (loop-over-bindings i pos dtn)))))
-
-
-;;--- realize-via-bindings
+;;;----------------------
+;;; realize-via-bindings
+;;;----------------------
 
 (defgeneric realize-via-bindings (i &key pos resource)
   (:documentation "Loop over the bindings of the individual 'i' to populate
@@ -404,10 +102,7 @@ attach-via-binding. |#
   (realize-via-bindings-common-path i pos resource))
 
 (defun new-style-realize-via-bindings (i)
-  (let ((lp ;; open-coded (find-lexicalized-phrase i) while experimenting
-         (or (get-recorded-lexicalized-phrase i)
-             (unwind-to-i-with-lp i)
-             (find-category-lp (sp::itype-of i)))))                                         
+  (let ((lp (find-lexicalized-phrase i)))
     (assert lp (i) "Couldn't get lexicalized phrase for ~a" i)
     (let* ((pos (lookup-pos lp))
            (rdata (sp::has-mumble-rdata i :pos pos)))       
@@ -433,10 +128,7 @@ attach-via-binding. |#
            (loop for pvp in map
               as variable = (corresponding-variable pvp)
               as parameter = (corresponding-parameter pvp)
-              as value = (etypecase variable
-                           (word variable) ;; e.g. "together"
-                           (sp::lambda-variable
-                            (sp::value-of variable i)))
+              as value = (value-of-map-var variable i)
               do (when value (make-complement-node parameter value dtn))
               collect variable)))
       (loop for binding in (reverse (sp::indiv-binds i))
@@ -632,3 +324,16 @@ attach-via-binding. |#
          (make-lexicalized-attachment ap i)
          dtn)))))
     
+
+
+(defgeneric realize-via-category (i category) ;; "a big red block."
+  (:documentation "Use the category as the source of the head, then add
+    any other binding on the individual")
+  ;; Used for handling the type-case in conjunctions
+  (:method ((i sp::individual) (c sp::referential-category))
+    (let ((lp (find-category-lp c)))
+      (tr "realizing ~a via its category" i)
+      (assert lp (c) "No lexicalized resource on ~a" c)
+      (let ((pos (lookup-pos lp))
+            (dtn (make-dtn :referent i :resource lp)))
+        (loop-over-bindings i pos dtn)))))

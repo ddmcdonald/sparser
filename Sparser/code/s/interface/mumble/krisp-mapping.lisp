@@ -9,6 +9,10 @@
 
 (in-package :mumble)
 
+;;;---------------------------------------------
+;;; Record/apply category-linked phrases (maps)
+;;;---------------------------------------------
+
 (defparameter *mappings-for-category-linked-phrase*
   (make-hash-table :test 'equal))
 
@@ -39,6 +43,45 @@
   (:method ((pname string))
     (gethash pname *mappings-for-category-linked-phrase*)))
 
+(defgeneric apply-category-linked-phrase (individual)
+  (:documentation "If there is a category-linked-phrase associated
+    with this individual, use it to make the dtn")
+  (:method ((i sp::individual))
+    (let ((clp (realizing-resource i)))
+      (when clp
+        (tr "applying clp ~a" clp)
+        (apply-CLP-to-individual i clp)))))
+
+(defun apply-CLP-to-individual (i clp)
+  (let* ((phrase (linked-phrase clp))
+         (map (parameter-variable-map clp))
+         (dtn (make-dtn :referent i :resource phrase)))
+    (loop for pair in map
+       as parameter = (corresponding-parameter pair)
+       as variable = (corresponding-variable pair)
+       as value = (value-of-map-var variable i)
+       do (make-complement-node parameter value dtn))
+    dtn))
+
+(defgeneric value-of-map-var (variable i)
+  (:documentation "Common subroutine to code that reads out
+    parameter-variable maps to replace variables with their
+    values on the the individual i.")
+  (:method ((variable sp::lambda-variable) (i sp::individual))
+    (let ((result (sp::value-of variable i)))
+      (or result
+          #+ignore(error "No value for ~a on ~a" variable i))))
+  (:method ((word word) (i sp::individual)) ;; e.g. "together", "near"
+    (declare (ignore i))
+    word))
+#| Dependent locations ('side') take a ground variable, but w/in
+just an np ("left side") the ground won't be on the individual
+and moreover wouldn't make sense 
+|#
+
+;;;----------------
+;;; generic lookup
+;;;----------------
 
 (defgeneric realizing-resource (item)
   (:documentation "Look up the resource(s) that will be used
@@ -51,26 +94,10 @@
   (:method ((c sp::referential-category))
     (sp::get-tag :mumble c)))
 
-(defgeneric apply-category-linked-phrase (individual)
-  (:documentation "If there is a category-linked-phrase associated
-    with this individual use it to make the dtn")
-  (:method ((i sp::individual))
-    (let ((clp (realizing-resource i)))
-      (when clp
-        (apply-CLP-to-individual i clp)))))
 
-(defun apply-CLP-to-individual (i clp)
-  (let* ((phrase (linked-phrase clp))
-         (map (parameter-variable-map clp))
-         (dtn (make-dtn :referent i
-                        :resource phrase)))
-    (loop for pair in map
-       as parameter = (corresponding-parameter pair)
-       as variable = (corresponding-variable pair)
-       as value = (sp::value-of variable i)
-       do (make-complement-node parameter value dtn))
-    dtn))
-
+;;;------------------------------------
+;;; filtering alternative realizations
+;;;------------------------------------
 
 (defgeneric select-realization (mumble-rdata i pos)
   (:documentation "There are at least two if not more possible
@@ -119,7 +146,6 @@
             ~a~%~a" (type-of fall-through) fall-through)))
 
 
-
 (defgeneric filter-rdata-by-pos (rdata-choices pos)
   (:documentation  "Which of the alternatives is consistent
      with this part of speech")
@@ -131,7 +157,15 @@
          when (eq mpos (lookup-pos mrd))
          collect mrd))))
 
-  
+
+;;;--------------------------
+;;; part-of-speech functions
+;;;--------------------------
+
+(defparameter *check-lp-coverage* nil
+  "Guards breaks used when testing whether the coverage of lexicalized
+   phrases provided by the rdata on categories and individuals is thorough")
+
 
 (defgeneric lookup-pos (resource)
   (:documentation "Return the mumble word-level part-of-speech
@@ -140,8 +174,15 @@
     (name (car (word-labels w))))
   (:method ((lp lexicalized-phrase))
     (lookup-pos (realizing-label lp)))
+  (:method ((p phrase))
+    (lookup-pos (realizing-label p)))
   (:method ((mrd mumble-rdata))
-    (lookup-pos (head-word mrd)))
+    (if (head-word mrd)
+      (lookup-pos (head-word mrd))
+      (else ;; it's abstract
+        (lookup-pos (linked-phrase mrd)))))
+  (:method ((pair variable-mdata-pair))
+    (lookup-pos (mpair-mdata pair)))
   (:method ((msm multi-subcat-mdata))
     "Assume they're all the same pos so just pick one"
     (lookup-pos (mpair-mdata (car (mdata-pairs msm)))))
@@ -187,6 +228,134 @@ m> (all-phrase-labels)
  #<node-label discourse-unit> #<slot-label comp> #<node-label clause>
  #<node-label conjunction> #<node-label np> #<node-label compound-sentence>
  #<node-label vp> #<node-label whp> #<node-label ap>) |#
+
+;;/// move into mumble proper
+(deftype mumble-part-of-speech ()
+  `(member noun
+           proper-noun
+           verb
+           modal
+           adjective
+           adverb
+           preposition
+           determiner
+           quantifier
+           pronoun
+           interjection
+           number))
+
+
+(defun sparser-pos (pos)
+  "Translate a Mumble part-of-speech tag to the equivalent Sparser tag.
+   The other direction is mumble-pos "
+  (ecase pos
+    (noun :common-noun)
+    (verb :verb)
+    (adjective :adjective)
+    (adverb :adverb)
+    (preposition :prep)
+    (quantifier :quantifier)
+    (pronoun :pronoun)
+    (interjection :interjection)))
+
+
+;;---- formerly in binding-centric.lisp. May be OBE
+
+(defgeneric guess-pos (i)
+  (:documentation "Guess the part of speech to be used for an individual.")
+  (:method-combination or)
+  (:method or ((i sp::individual))
+    (cond ((let ((subject (sp::bound-subject-var i)))
+             (and subject (eq (sp::value-of subject i) sp::**lambda-var**)))
+           'adjective)
+          ((or (sp::bound-subject-var i)
+               (sp::bound-object-var i)
+               (find sp::**lambda-var** (sp::indiv-binds i)
+                     :key #'sp::binding-value))
+           'verb)
+          ;; ((sp::rdata-head-word i t)  )
+          ))
+  (:method or ((i sp::referential-category))
+    (cond ((or (sp::subject-variable i)
+               (sp::object-variable i))
+           'verb)))
+  (:method or (i)
+    (when *check-lp-coverage*
+      (break "fell through quess-pos on ~a" i))
+    (if (current-position-p 'adjective 'relative-clause)
+      'adjective
+      'noun)))
+
+
+(defvar *original-pos* nil
+  "Guard against infinite mutual recursion in WORD-FOR.")
+
+(defgeneric word-for (item pos)
+  (:documentation "Try to determine what word to use for this type
+   of item. Around methods provide alternatives and some special handling.")
+  (:method ((item null) pos)
+    (declare (ignore pos)))
+  (:method ((item word) pos)
+    (declare (ignore pos))
+    item)
+  (:method ((item string) pos)
+    (word-for-string item pos))
+  (:method ((item sp::word) pos)
+    (sp::get-mumble-word-for-sparser-word item pos))
+  (:method ((item sp::polyword) pos)
+    (sp::get-mumble-word-for-sparser-word item pos))
+  (:method ((item sp::referential-category) pos)
+    "Try to get a head word for a category."
+    (let ((head (sp::rdata-head-word item (sparser-pos pos))))
+      (when *check-lp-coverage*
+        (break "word-for: category ~a" item))
+      (word-for (typecase head
+                  (sp::lambda-variable (sp::lemma item (sparser-pos pos)))
+                  (null (string-downcase (sp::cat-name item)))
+                  (t head))
+                pos)))
+  (:method ((item sp::individual) pos)
+    "Try to get a head word for an individual."
+    (when *check-lp-coverage*
+      (break "word-for: individual ~a" item))
+    (let ((head (or (sp::rdata-head-word item (sparser-pos pos))
+                    (sp::lemma item (sparser-pos pos))
+                    (sp::value-of 'sp::name item)
+                    (sp::value-of 'sp::word item))))
+      (and head (word-for head pos))))
+  
+  (:method :around ((item sp::individual) pos)
+    "Treat biological entities, collections, and prepositions specially."
+    (cond ((sp::itypep item 'sp::biological)
+           (let ((word (call-next-method)))
+             (and word
+                  (word-for-string (pretty-bio-name (sp::pname word)) pos))))
+          ((sp::itypep item 'sp::collection)
+           (word-for (sp::value-of 'sp::type item) pos))
+          ((sp::itypep item 'sp::dependent-location) ;; "end" or "top" are nouns
+           (sp::get-mumble-word-for-sparser-word item (sparser-pos 'noun)))
+          ((sp::itypep item 'sp::prepositional) ;; vs. prepositions "of" or "on"
+           (sp::get-mumble-word-for-sparser-word item 'preposition))
+          (t (or (call-next-method) ; last-ditch effort
+                 (word-for (string-downcase (sp::cat-name (sp::itype-of item))) pos)))))
+  
+  (:method :around (item (pos (eql 'adjective)))
+    "Allow nouns as premodifiers."
+    (or (call-next-method)
+        (unless *original-pos*
+          (let ((*original-pos* pos))
+            (word-for item 'noun)))))
+  (:method :around (item (pos (eql 'noun)))
+    "Allow nouns as predications."
+    (or (call-next-method)
+        (unless *original-pos*
+          (let ((*original-pos* pos))
+            (word-for item 'adjective)))))
+  (:method :around (item (pos (eql 'verb)))
+    "Allow verbs as predications."
+    (or (call-next-method)
+        (word-for item 'adjective))))
+
 
     
 ;;;------------------------------------

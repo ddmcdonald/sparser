@@ -55,10 +55,14 @@
 
 ;;--- categories
 
-(defparameter *categories-to-lexicalized-phrases* (make-hash-table :test 'equal)
+(defparameter *categories-to-lexicalized-phrases*
+  (make-hash-table
+   :size 6000
+   :test 'equal)
   "It doesn't make particular sense to use a word as the lp key for 
    a category, but a category may have realizations in mulitple parts of
    speech so we need to record a cons of (category . pos)")
+;; 7/13/17 CwC count was 1,042, R3 2,441
 
 (defmethod record-lexicalized-phrase ((category sp::category)
                                       (lp lexicalized-resource)
@@ -100,9 +104,13 @@
 
 ;;--- individuals
 
-(defparameter *individuals-to-lexicalized-phrases* (make-hash-table)
+(defparameter *individuals-to-lexicalized-phrases*
+  (make-hash-table
+   :size 90000
+   :test 'eq)
   "Special index serving the same function as *words-to-lexicalized-phrases*
    but for direct linking to individuals")
+;; 7/13/17 CwC count was 404, R3 was 65,670
 
 (defmethod record-lexicalized-phrase ((i sp::individual)
                                       (lp lexicalized-resource)
@@ -201,18 +209,22 @@
     (let* ((category (linked-category md))
            (vars (variables-consumed md))
            (lp (linked-phrase md)))
-      (if (null lp)
-        (format stream "mdata: ~a"
-                       (sp::pname category))
-        (let* ((phrase (phrase lp))
-               (bound (bound lp))
-               (pvp (car bound)))
-          (format stream "mdata: ~a, ~a ~a=~a ~a"
-                  (sp::pname category)
-                  (phrase-name-for-printing phrase)
-                  (name (phrase-parameter pvp))
-                  (pprint-value (value pvp))
-                  vars))))))
+      (cond
+        ((null lp)
+         (format stream "mdata: ~a" (sp::pname category)))
+        ((typep lp 'phrase)
+         (format stream "mdata: ~a ~a"
+                 (sp::pname category)  lp))
+        ((typep lp 'lexicalized-phrase)
+         (let* ((phrase (phrase lp))
+                (bound (bound lp))
+                (pvp (car bound)))
+           (format stream "mdata: ~a, ~a ~a=~a ~a"
+                   (sp::pname category)
+                   (phrase-name-for-printing phrase)
+                   (name (phrase-parameter pvp))
+                   (pprint-value (value pvp))
+                   vars)))))))
 
 ;;--- other print methods
 
