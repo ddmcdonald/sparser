@@ -193,6 +193,16 @@
            :head :right-edge
            :form n-bar 
            :referent (:function verb+ing-noun-compound left-edge right-edge)))
+        
+     (eval
+      ;; transitive-clause-without-object comes from "PEDF activated" in
+      ;; "PEDF activated kinases"
+      `(def-syntax-rule (transitive-clause-without-object ,nb)
+           :head :right-edge
+           :form n-bar 
+           :referent (:function verb-noun-compound left-edge right-edge)))
+
+        
      (eval
       `(def-syntax-rule (quantifier ,nb)
            :head :right-edge
