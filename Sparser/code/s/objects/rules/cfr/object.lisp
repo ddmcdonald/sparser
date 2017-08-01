@@ -62,12 +62,26 @@ This sorts out what to use as the category in the unusual cases."
 ;;; accessing rules from the rule-sets of words
 ;;;---------------------------------------------
 
-(defun find-form-cfr (word form)
-  "Given a word, search its rule set for the first unary-rule
-   of the specified form"
-  (when (rule-set-p (rule-set-for word))
-    (loop for cfr in (rs-single-term-rewrites (rule-set-for word))
-      when (eq form (cfr-form cfr))
+(defgeneric find-form-cfr (word form)
+  (:documentation "Given a word, search its rule set for
+    the first unary-rule of the specified form")
+  (:method ((pname string) (form symbol))
+    (let ((word (resolve pname)))
+      (unless word (error "There is no word spelled ~s" pname))
+      (find-form-cfr word form)))
+  (:method ((word word) (name symbol))
+    (find-form-cfr word (category-named name :error-if-missing)))
+  (:method ((pw polyword) (name symbol))
+    (find-form-cfr pw (category-named name :error-if-missing)))
+  (:method ((word word) (form category))
+    (find-form-cfr (rule-set-for word) form))
+  (:method ((pw polyword) (form category))
+    (find-form-cfr (rule-set-for pw) form))
+  (:method ((none NULL) (form t))
+    nil)
+  (:method ((rs rule-set) (form category))
+    (loop for cfr in (rs-single-term-rewrites rs)
+       when (eq form (cfr-form cfr))
        do (return cfr))))
 
 (defgeneric find-single-unary-cfr (word)
