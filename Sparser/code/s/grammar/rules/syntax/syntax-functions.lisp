@@ -1752,6 +1752,7 @@
          )))
 
 (defun test-and-apply-simple-copula-pp (np copular-pp)
+  (declare (special category::copular-predicate))
   (let* ((prep-indiv (value-of 'prep copular-pp))
          (prep (get-word-for-prep (unless (null prep-indiv) prep-indiv)))
          (pobj (value-of 'value copular-pp))
