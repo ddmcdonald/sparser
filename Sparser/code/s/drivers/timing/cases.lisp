@@ -22,15 +22,6 @@
      Includes minimal loop for testing the overhead.
 |#
 
-;;;------------------------------------------------------------------------
-;;; variables tracked in the guts of the analysis for factoring the timing
-;;;------------------------------------------------------------------------
-
-(defvar *time-at-chart-level* 0)
-;; Initialized and read in chart-based-analysis
-
-
-
 ;;;-----------------------
 ;;; Fixed strings to test
 ;;;-----------------------

@@ -23,11 +23,14 @@
 (setup-session-globals/parser)
 (setup-session-globals/grammar)
 
+(stop-timer '*time-to-load-everything*)
+(report-time-to-load-system)
+
 (when cl-user::location-of-text-corpora
   (push :full-corpus *features*))
 
 ;; Finally, print a salutation.
-(format t "~&Welcome to the Sparser natural language analysis system.~
+(format t "~%Welcome to the Sparser natural language analysis system.~
            ~%Copyright (c) David D. McDonald 1991-2005, 2010-2017.~
            ~%Distributed under the Eclipse Public License.~
            ~%~

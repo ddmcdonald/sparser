@@ -37,6 +37,21 @@
      ,@body))
 
 
+;;; reporting timer elapsed times
+
+(defun report-timer-value (symbol)
+  "Returns the value of the timer symbol as a string"
+  (let* ((raw-elapsed-time (eval symbol))
+         (per-unit (/ raw-elapsed-time internal-time-units-per-second)))
+    (format nil "~4,1F" (float per-unit))))
+
+(defun report-time-to-load-system (&optional (stream *standard-output*))
+  (let ((number-string (report-timer-value '*time-to-load-everything*)))
+    (format stream "~&System loaded in ~a seconds~%"
+            (trim-whitespace number-string))))
+
+
+
 ;;;--------------------------------------------
 ;;; analysis based on the elapsed-time samples
 ;;;--------------------------------------------

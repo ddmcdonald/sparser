@@ -1,22 +1,26 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:sparser -*-
-;;; copyright (c) 1992,2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2014,2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "calculation"
 ;;;   Module:  "drivers;timing:"
-;;;  Version:   January 2014
+;;;  Version:   August 2017
 
 ;; initiated 2/91. Added some usage documentation 1/27/14.
 
 (in-package :sparser)
 
-#|
-These are embedded in chart-based-analysis which is the inner loop 
-of the analysis, using the symbol *time-at-chart-level* which is
-bound in drivers/timing/cases.lisp.
+;;--- Timer globals
 
-In drivers/timing/presentation.lisp the function run-string-for-timing
-uses this information. 
-|#
+(defvar *time-at-chart-level* 0
+  "Initialized and read in chart-based-analysis. Wrapped around 
+  the inner loop of the analysis.")
+
+(defvar *time-to-load-everything* 0
+  "Started as early as possible within the-master-loader. Stopped
+   during the session setup.")
+
+
+;;--- start/stop timers
 
 (defun start-timer (symbol)
   (unless (boundp symbol)

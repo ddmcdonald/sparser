@@ -92,6 +92,9 @@
 
 (defun the-master-loader ()) ;; for meta-point
 
+(lload "timing;calculation")
+(start-timer '*time-to-load-everything*)
+
 ;;;----------------
 ;;; pre-load hooks
 ;;;----------------
@@ -320,6 +323,7 @@
 ;;;------------------
 
 (when *load-the-grammar*
+  ;;(lsp-break "about to load the grammar")
   (lload "loaders;grammar")
   (load-the-grammar))
 
