@@ -376,7 +376,7 @@ sentences.
          (format t "~&[terminal edges sweep] at p~a is ~a"
                  (pos-token-index position-before)
                  (or word edge)))
-      (when word
+      (if word
         (let ((edges
                (do-just-terminal-edges word position-before position-after)))
           (tr :scanned-terminal-edges edges position-before position-after)
@@ -389,7 +389,10 @@ sentences.
                       position-before (chart-position-before where-fsa-ended))
                 (unless (includes-state where-fsa-ended :scanned)
                   (scan-next-position))
-                (setq word (pos-terminal where-fsa-ended))))))))))
+                (setq word (pos-terminal where-fsa-ended))))))
+        (else
+          (when word ;; nil at the end of the loop
+            (format t "~&No edge over ~s~%~%" (pname word))))))))
 
 
 ;;--- 1st pass subroutines
