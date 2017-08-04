@@ -28,23 +28,17 @@
    and before loading the grammar, though that's
    insufficient for testing the parser given the functions
    salted through the grammar files."
-  (setq *cl-functions* (all-package-fns :cl)) ;; 752
+  (setq *cl-functions* (all-package-fns :cl)) ;; 752 on 8/2/17
   (setq *cl-user-functions* (all-package-fns :cl-user)) ;; 990
-  (let* ((sparser-fns (all-package-fns :sparser))
-         (mumble-fns (all-package-fns :mumble))
+  (let* ((sparser-fns (all-package-fns :sparser)) ;; 7,615
+         (mumble-fns (all-package-fns :mumble)) ;; 1,946
          (util-fns (all-package-fns :ddm-util))
-         (net-base-fns (loop for fn in *cl-functions*
-                          unless (memq fn *cl-user-functions*)
-                         collect fn))
-         (aggregate util-fns))
-    
-    (loop for function-list in (list mumble-fns sparser-fns)
-       do (setq aggregate
-                (loop for fn in function-list
-                   unless (or (memq fn net-base-fns)
-                              (memq fn *cl-user-functions*)
-                              (memq fn aggregate))
-                   collect fn)))
+         (sys-fns (append *cl-functions* *cl-user-functions*))
+         (aggregate nil))
+    (loop for function-list in (list util-fns mumble-fns sparser-fns)
+       do (loop for fn in function-list
+             unless (memq fn sys-fns)
+             do (push fn aggregate)))
     (length (setq *functions-to-profile* aggregate))))
     
 

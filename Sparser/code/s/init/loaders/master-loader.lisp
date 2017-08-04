@@ -323,7 +323,8 @@
 ;;;------------------
 
 (when *load-the-grammar*
-  ;;(lsp-break "about to load the grammar")
+  ;; (populate-functions-for-profiling)
+  ;; (prime-sparser-profiler)
   (lload "loaders;grammar")
   (load-the-grammar))
 
