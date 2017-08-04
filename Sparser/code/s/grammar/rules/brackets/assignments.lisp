@@ -3,7 +3,7 @@
 ;;;
 ;;;     File: "assignments"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  January 2017
+;;;  Version:  August 2017
 
 ;; Extracted from diverse files 12/4/12. Added referent construction
 ;; 12/11/12. Revised those 'setup' constructors 2/23/13 to specialize
@@ -19,8 +19,6 @@
 ;; checks. 10/21/15 fixed explicit-plurals
 
 (in-package :sparser)
-
-(defvar *BREAK-ON-PATTERN-OUTSIDE-COVERAGE?*) ;; actually set in do-transitions1.lisp
 
 ;;;---------------
 ;;; Bracket lists
@@ -185,6 +183,7 @@
 ;; the code in morphology just as its used by ETF.
 
 (defun setup-common-noun (word &optional comlex-clause ambiguous?)
+  (declare (special *break-on-pattern-outside-coverage?*))
   (let ((marked-plural
          (when comlex-clause (explicit-plurals comlex-clause)))
         (category-name (name-to-use-for-category word))
@@ -224,7 +223,8 @@
   (setq *show-R3-new-verb-definitions* t))
 
 (defun setup-verb (word &optional comlex-clause ambiguous?)
-  (declare (special *big-mechanism* *unknown-word*))
+  (declare (special *big-mechanism* *unknown-word*
+                    *break-on-pattern-outside-coverage?*))
   (if *big-mechanism*
     (then
       (when *show-R3-new-verb-definitions*
@@ -272,6 +272,7 @@
   ;; /// pull stuff out of the clause
   ;; Comlex has a 'gradable' feature on adjectives, with 
   ;; a flag for er-est. See adjectives in sl/checkpoint/
+  (declare (special *break-on-pattern-outside-coverage?*))
   (let ((category-name (name-to-use-for-category word))
         (super-category (super-category-for-POS :adjective)))
     (when ambiguous?
@@ -307,6 +308,7 @@
   ;; define-adverb. Ones that we import are by that
   ;; token ones we wouldn't know what to do with, so
   ;; we go through the morphology routine used with ETF.
+  (declare (special *break-on-pattern-outside-coverage?*))
   (let ((category-name (name-to-use-for-category word))
         (super-category (super-category-for-POS :adverb)))
     (when ambiguous?
@@ -410,11 +412,13 @@
 ;;; Making a category name from a word string
 ;;;-------------------------------------------
 
+
+
 (defgeneric name-to-use-for-category (string)
   (:documentation"Encapsulates the lisp-specific checks 
     for what case to use. Also makes polyword category names hyphenated")
-  
   (:method ((string string))
+    (declare (special *break-on-pattern-outside-coverage?*))
     (assert (not (string-equal string "top")) ()
             "You mustn't define another 'top' category")
     (when (contains-whitespace string)
@@ -425,6 +429,9 @@
            (symbol (intern s (find-package :sparser))))
       ;; n.b. not the category package. The pname will be interned there
       ;; as part of creating the category
+      (when (and *break-on-pattern-outside-coverage?*
+                 (category-named symbol))
+        (error "The proposed name ~a is already names a category" symbol))
       symbol))
 
   (:method ((w word))
