@@ -63,12 +63,32 @@ In drivers/chart/psp/semantic-extraction.lisp
                (replace-sublist target (car tree)))
              (replace-sublist target (cdr tree)))))))
 
+;;;--------
+;;; gofers
+;;;--------
+
+(defgeneric template-method-name (name)
+  (:documentation "Return a symbol in the mumble package. 
+   If it's aready fboundp then add '-template' to the its end.")
+  (:method ((name symbol))
+    (template-method-name (symbol-name name)))
+  (:method ((pname string))
+    (let ((m-sym (intern pname (find-package :mumble))))
+      (if (fboundp m-sym)
+        (intern (string-append (string-upcase pname) '#:-template)
+                (find-package :mumble))
+        m-sym))))
 
 ;;;-----------------------------------
 ;;; basic clause-level template macro
 ;;;-----------------------------------
 
 (defmacro define-krisp-template (name parameter tree)
+  "The input tree is just as it would be when returned by krisp->expr
+   after a parse. It has a value for the variable named by the
+   parameter, but it can be trivial since its used just to identify
+   the place in the tree were we're going to substitute the
+   expression we really want."
   (assert (find-package :mumble) () "The mumble package isn't defied!")
   (assert (symbolp name))
   (assert (and (listp parameter) (= 1 (length parameter))))
@@ -80,11 +100,13 @@ In drivers/chart/psp/semantic-extraction.lisp
             "no variable named ~a on ~a" var-name category)
     (assert (find-anywhere var-name tree) (var-name tree)
             "There isn't an instance of the parameter ~a in ~a" var-name tree)
-    (let ((method-name (intern (symbol-name name)
-                               (find-package :mumble))))
+    (let ((method-name (template-method-name name)))
       (replace-sublist var-name tree) ;; side-effects on tree
       `(defgeneric ,method-name ,parameter
          (:method ((i individual))
+           ;; Alternatively, set the variable directly.
+           ;; Makes a difference it that does away with the
+           ;; need for a dummy value. 
            (let ((sexp (krisp->sexpr i)))
              (,name sexp)))
          (:method ((sexp cons))
@@ -93,9 +115,112 @@ In drivers/chart/psp/semantic-extraction.lisp
                   (new-value (cons ',var-name (list sexp)))
                   (full-tree (subst new-value pattern fresh-copy
                                     :test #'equal)))
-             ;;(push-debug `(,new-value ,fresh-copy ,pattern))
-             ;;(lsp-break "inside")
              (to-krisp full-tree)))))))
 
 
+(defmacro define-wrapper-template (name exp-to-add)
+  "The exp-to-add should be a simple stripped variable and value,
+   e.g. (modal (can))
+   The function takes an expression or an individual it expands.
+   It returns the input expression with the new exp-to-add
+   folded in as its first var+value."
+  (let ((method-name (template-method-name name)))
+    ;; Runtime really should check that it's adding a valid
+    ;; variable for this category
+    `(defgeneric ,method-name (sexp)
+       (:method ((i individual))
+         (let ((sexp (krisp->sexpr i)))
+           (,name sexp)))
+       (:method ((sexp cons))
+         (let ((extended (push ',exp-to-add (cdr sexp))))
+           sexp)))))
 
+
+(defmacro def-noun (string) ;;/// add plural
+  "This runs the Mumble machinery to define the word and lexicalized
+   phrase for the string as a Mumble-side word. Packages that up into
+   a function of the same name as the string, assuming that it does not
+   clash with an already defined function."
+  (let* ((method-name (template-method-name string))
+         (category (noun/expr string))
+         (category-name (cat-name category)))
+    ;; 'noun' is the standard Sparser shortcut.
+    ;; It defines a category with the same name as the string,
+    ;; Sparser rules for singlar and plurals, 
+    ;; and a lexicalized phrase for the singular form. All done w/ ordinary
+    ;; define-category machinery.
+    `(defgeneric ,method-name (&key attribute)
+       (:method (&key attribute)
+         (let ((sexp '(,category-name (has-determiner (a))) ))
+           (when attribute
+             (template-handle-attribute sexp attribute))
+           sexp))
+       ;; How do I discriminate these cases in a general way?
+       #+ignore(:method (&key attribute)
+         (let ((i (find-or-make-individual ,category)))
+           (when attribute
+             (template-handle-attribute i attribute))
+           i)))))
+
+;; can do same trick for adj(ectives)
+
+
+(defmacro def-verb (string)
+  "Construct a minimal category to support the mumble resources for
+   the string as a verb. Defaults to svo, actor/patient. Contruct a
+   function for it with keyword arguments to specify constituents
+   (default: s, o)."
+  ;;/// add irregulars, alternative subcategorizations, variables
+  (multiple-value-bind (category parameters-and-variables)
+      (define-template-verb string)
+    (let ((method-name (template-method-name string))
+          (category-name (cat-name category))
+          (parameters (loop for pv in parameters-and-variables
+                         collect (car pv))))            
+      `(defgeneric ,method-name (&key ,@parameters)
+         (:documentation "When the keyword arguments are used,
+             each one is 'bound' to the corresponding variable
+             to form a full expression.")
+         (:method (&key ,@parameters)
+           (let ((base '(,category-name)))
+             ,@(template-parameter-cases parameters-and-variables)
+             base))))))
+
+(defun template-parameter-cases (parameters-and-variables)
+  "Generates a set of when clauses to check for parameters and 'bind'
+   the corresponding variable. parameters-and-variables is a list of
+   dotted pairs: (parameter . variable)."
+  (loop for pv in parameters-and-variables
+     as parameter = (car pv)
+     as variable = (cdr pv)
+     collect `(when ,parameter
+                (template-bind base ',variable ,parameter))))
+
+
+
+;;--- pan-template subroutines
+
+(defgeneric template-bind (base var-name value)
+  (:documentation "Abstracts whether we're passing individuals or sexp")
+  (:method ((base cons) (var-name symbol) (value cons))
+    (let ((binding-exp `(,var-name ,value)))
+      (push binding-exp (cdr base)))))
+
+(defgeneric template-handle-attribute (base attribute)
+  (:documentation "Extend the base, which presumably conrresponds to
+    a nominal of some sort, to incorporate the attribute as a modifier.
+    The realization of the modifier will be pre- or post-head depending
+    on how heavy it is.")
+  ;; (:method ((i individual) (attr-sexp cons))
+  ;;   ;; bindings in the description-lattice protocol entail finding/making
+  ;;   ;; new individuals, which is hard to thread through back to the caller.
+  ;;   )
+  ;; (:method ((i individual) (mod individual))
+  ;;   )
+  (:method ((base cons) (attr-sexp cons))
+    ;; base = (<category name> ...)
+    ;; attr-exp = (<var name> <value form>)
+    (push attr-sexp (cdr base)))
+  (:method ((base cons) (mod individual))
+    (let ((attr-exp (cons 'modifier (krisp->sexpr mod))))
+      (template-handle-attribute base attr-exp))))

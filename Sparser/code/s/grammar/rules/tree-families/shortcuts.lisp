@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2017 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "shortcuts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  October 2016
+;;;  version:  August 2017
 
 
 ;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
@@ -543,6 +543,46 @@ see if there are issues"
            (rule (eval bootstap-rule)))
       (add-rule rule category)
       name)))
+
+
+(defun define-template-verb (string &key infinitive  ;; "to give"
+                                      tensed/singular    ;; "he gives"
+                                      tensed/plural      ;; "they give"
+                                      past-tense         ;; "they gave"
+                                      past-participle    ;; "they have given"
+                                      present-participle ;; "they are giving"
+                                      ((:etf tree) 'svo-passive)
+                                      ((:subcats mixin) 'action-verb))
+  "Auto-define a verb to be used in a Krisp template. 
+   This is like the other verb-based shortcuts here except
+   that it's not using the circa 2012/15 shortcut value restriction
+   patterns (no v/r at all) or explicit realizations (uses current
+   shorter verson),and it's real focus is on getting the correct
+   mumble-data created. Returns not only the category but the set
+   of parameters to use (since that depends on the eft)."
+  (when past-tense (error "Extend the function to take irregulars"))
+  (unless (and (eq tree 'svo-passive) (eq mixin 'action-verb))
+    (error "Do etf/mix vars properly"))
+  (let ((*break-on-pattern-outside-coverage?* t)) ;; block duplicates
+    (declare (special *break-on-pattern-outside-coverage?*))
+    (let* ((name (name-to-use-for-category string))
+           ;; writing these out explicitly to put off task
+           ;; of doing them for real. 
+           (variables
+            '((actor) (patient)))
+           (name-of-phrase 'svo)
+           (parameter-map '(:s actor :o patient))
+           (p/v-alist '((s . actor) (o . patient)))
+           (form
+            `(define-category ,name
+               :instantiates nil
+               :specializes perdurant
+               :binds ,variables
+               :lemma (verb ,string)
+               :realization
+               (:mumble (,name-of-phrase ,@parameter-map))))
+           (category (eval form)))
+      (values category p/v-alist))))
 
 
 

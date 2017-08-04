@@ -15,3 +15,13 @@
      (value (block (has-determiner (a))))
      (predicate (be))))
  
+;; (m::there-is '(block (has-determiner (a (word (wd "a"))))))
+
+(define-wrapper-template can (model (can)))
+;;/// add macro to iterate over all the modals
+
+(define-wrapper-template not (negation (not))) ;; => not-template
+
+(def-noun "gene")
+
+(def-verb "call")
