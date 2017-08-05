@@ -494,14 +494,21 @@
               (c-itypep ref 'transcribe))
          '(object affected-process))
 
+        ((c-itypep ref 'bio-scalar)
+         '(measured-item))
         ((c-itypep ref 'inhibit)
          '(affected-process))
         ((c-itypep ref 'site)
          '(process))
-        ((and (c-itypep ref 'positive-bio-control)
+        ((and (c-itypep ref 'negative-bio-control)
               (individual-p (value-of 'affected-process ref))
               (itypep (value-of 'affected-process ref) 'post-translational-modification))
          '(agent))
+
+        ((c-itypep ref 'bio-control)
+         '(affected-process))
+
+        
         ((or (c-itypep ref 'translocation)
              (c-itypep ref 'import)
              (c-itypep ref 'export)
