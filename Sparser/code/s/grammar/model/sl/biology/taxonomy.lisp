@@ -213,9 +213,11 @@
   :mixins (bio-quality)
   :documentation "Provides a generalization over 
     biological and scalar-quality"
+  :restrict ((participant blocked-category))
   :binds ((measured-item biological))
   :realization
-    (:of measured-item))
+  (:of measured-item
+       :m measured-item))
 
 
 ;;;--------------
@@ -849,7 +851,12 @@
   :lemma (:common-noun "micro-rna")
   :realization
      (:common-noun name 
-      :noun ("miR" "microRNA" "miRNA")))
+                   :noun ("miR" "microRNA" "miRNA")))
+
+(define-category ce-rna  :specializes rna
+  :instantiates self
+  :realization
+     (:noun ("ceRNA" "ce-RNA" "competing endogenous RNA")))
 
 
 (define-category lipid :specializes molecule
