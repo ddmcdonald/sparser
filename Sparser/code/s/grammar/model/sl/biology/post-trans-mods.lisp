@@ -70,6 +70,22 @@
    :noun ("de-acetylation" "deacetylation")
    :etf (svo-passive)))
 
+(define-category hyper-acetylation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0006476")
+  :realization
+  (:verb ("hyper-acetylate" "hyperacetylate")
+   :noun ("hyper-acetylation" "hyperacetylation")
+   :etf (svo-passive)))
+
+(define-category hypo-acetylation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0006476")
+  :realization
+  (:verb ("hypo-acetylate" "hypoacetylate")
+   :noun ("hypo-acetylation" "hypoacetylation")
+   :etf (svo-passive)))
+
 ;; manually added from TRIPS
 (define-category acylation
   :specializes post-translational-modification
