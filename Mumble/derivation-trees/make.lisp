@@ -17,32 +17,32 @@
 ;;--- word to its lexicalized phrase 
 
 (defparameter *words-to-lexicalized-phrases*
-  (make-hash-table 
-   :size 90000
-   :test 'equal)
-  "Map pairs of (word . pos) to lexicalized-phrases")
+  (make-hash-table :size 20000 :test 'eq)
+  "Map words to their lexicalized phrases. Lp are stored in
+ an alist according to their part of speech. Tried using an
+ equal hashtable but that had a dramatic bad effect on
+ the time to work with the tables")
 ;; 7/14/17 CwC count was 1,452, R3 45,418
+
+(defvar *count-of-calls-to-get-word-lp* 0) ;; r3 76,882 8/4/17
 
 (defgeneric get-lexicalized-phrase (word pos)
   (:documentation "Given a word or a string and its part of speech, 
-   return the lexicalized-phrase it grounds if there is one.")
-  
+   return the lexicalized-phrase for it if there is one.")
   (:method ((name symbol) (pos symbol))
     (get-lexicalized-phrase (symbol-name name) pos))
-
   (:method ((pname string) (pos symbol))
     (let ((word (find-word pname pos)))
       (assert word (pos pname)
               "There is no Mumble word ~s with pos ~a" pname pos)
       (get-lexicalized-phrase word pos)))
-  
   (:method ((word word) (pos symbol))
-    (gethash (cons word pos) *words-to-lexicalized-phrases*)))
-  
-  #+ignore(:method ((pname string))
-    (gethash pname *strings-to-lexicalized-phrases*))
+    (incf *count-of-calls-to-get-word-lp*)
+    (let ((entry (gethash word *words-to-lexicalized-phrases*)))
+      (cdr (assq pos entry)))))
 
 
+(defvar *count-of-calls-to-record-word-lp* 0) ;; 76,869 r3 8/4/17
 
 (defgeneric record-lexicalized-phrase (word lp pos)
   (:documentation "When a lexicalized phrase is defined,
@@ -53,13 +53,17 @@
    with more than one lexicalized phrase.")
   
   (:method ((word word) (lp lexicalized-resource) (pos symbol))
-    "Trust the caller to have done the find before making
-     so there's not already a lp recorded for this word/pos pair"
-    (setf (gethash (cons word pos) *words-to-lexicalized-phrases*)
-          lp)))
+    "Trust the caller to have already looked for an existing lp
+     before it calls this."
+    (incf *count-of-calls-to-record-word-lp*)
+    (let ((entry (gethash word *words-to-lexicalized-phrases*)))
+      (if entry
+        (let ((subentry (assq pos entry)))
+          (unless subentry ;; multiple calls trap here
+            (push `(,pos . ,lp) (cdr entry))))
+        (setf (gethash word *words-to-lexicalized-phrases*)
+              `((,pos . ,lp)) )))))
             
-  #+ignore(:method ((pname string) (lp lexicalized-resource))
-    (setf (gethash pname *strings-to-lexicalized-phrases*) lp))
 
 
 ;;;-------------------------------------------
