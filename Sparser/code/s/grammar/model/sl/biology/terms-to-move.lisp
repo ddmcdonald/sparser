@@ -97,7 +97,16 @@ be biology specific, since they aren't. |#
 (adj "high" :super bio-predication)
 (adj "low" :super bio-predication)
 
-(noun "level" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
+
+;; should be bio-level, because it restricts the argument
+;;  but I don't want to impact parsing and Spire
+ ;;levels of incorporated 32P (January sentence 34)
+(define-category level :specializes bio-scalar
+ :restrict ((measured-item (:or bio-chemical-entity bio-process)))
+ :realization (:noun "level"))
+                  
+
+                  
 
 
 #+ignore(define-comparative "lower") ;; conflicts with definition in verbs.lisp
