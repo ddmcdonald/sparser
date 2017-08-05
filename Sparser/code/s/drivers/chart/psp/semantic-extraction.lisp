@@ -124,6 +124,7 @@
     bio-method
     residue-on-protein
     cellular-location
+    bio-scalar
     ))
 
 
