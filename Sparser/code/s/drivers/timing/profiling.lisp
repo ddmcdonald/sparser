@@ -39,7 +39,7 @@
        do (loop for fn in function-list
              unless (memq fn sys-fns)
              do (push fn aggregate)))
-    (length (setq *functions-to-profile* aggregate))))
+    (length (setq *functions-to-profile* (remove-duplicates aggregate)))))
     
 
 

@@ -323,7 +323,7 @@
 ;;;------------------
 
 (when *load-the-grammar*
-  ;; (populate-functions-for-profiling)
+  ;; (populate-functions-for-profiling) ;; (sp-profile:report) to see profile
   ;; (prime-sparser-profiler)
   (lload "loaders;grammar")
   (load-the-grammar))
