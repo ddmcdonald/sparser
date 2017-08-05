@@ -294,73 +294,80 @@
                     category::verb+ed
                     word::comma))
   (let ((edges (ev-top-edges (car evlist)))
-        (eform (when (edge-p e) (edge-form e))))
-    (declare (special edges eform))
+        (eform (when (edge-p e) (cat-name (edge-form e))))
+        (ecat (when (edge-p e) (cat-name (edge-category e))))
+        preceding-noun-refs)
+    (declare (special edges eform ecat preceding-noun-refs))
     (cond
-      ((plural-noun-and-present-verb? e)
-       (plural-noun-not-present-verb e))
-      ((singular-noun-and-present-verb? e)
-       (and
-        (not (preceding-pronoun-or-which? e))
-        (not (sentence-initial? e)))) ;; this is a case of an imperative
-      ((singular-noun-and-present-verb? e))
-      ((constrain-following e) nil)
-      ((or
-        (some-edge-satisfying? edges #'pronoun-or-wh-pronoun)
-        (and
-         (some-edge-satisfying? (all-edges-at e) #'preposition?)
-         (not (preceding-determiner? e))))
+      ((member ecat '(modal syntactic-there)) nil)                  #|MODAL, SYNTACTIC-THERE|# 
+      ((eq ecat 'ordinal) t)                                        ;;ORDINAL
+     
+      ((or (some-edge-satisfying? edges #'pronoun-or-wh-pronoun) ;; BLOCK NG CONTINUATION after WH and pronouns
+           ;; this makes sense when we have very few questioned NPs like "which mutated proteins"
+           (and (some-edge-satisfying? (all-edges-at e) #'preposition-edge?) 
+                (not (preceding-determiner? e))))
        nil)
-      ((eq word::comma (edge-category e))
+      ((plural-noun-and-present-verb? e)                            ;;PLURAL-NOUN-AND-PRESENT-VERB?
+       (plural-noun-not-present-verb? e))
+      ((singular-noun-and-present-verb? e)                          ;;SINGULAR-NOUN-AND-PRESENT-VERB?
+       (and (not (preceding-pronoun-or-which? e))
+            (not (sentence-initial? e)))) ;; this is a case of an imperative
+      ((comma? e)                                                   ;;COMMA
        ;;comma can come in the middle of an NP chunk
        ;; as in "active, GTP-bound Ras"
        ;; BUT THIS IS NOT AS COMMON AS OTHER USES OF COMMA -- DROP IT FOR NOW
        nil)
-      ((eq category::ordinal (edge-category e))
-       ;;WORKAROUND -- DAVID
-       t)
-      ((eq (edge-category e) category::modal) nil)
-      ((eq (edge-category e) category::syntactic-there) nil)
-      ((eq eform category::adverb )
-       (not (eq (edge-category e) category::also)))
-      ((eq category::verb+ing eform)
-       (cond ((or
-               (eq (edge-category e) category::have)
-               (eq (edge-category e) category::be)
-               (loop for edge in edges thereis (eq (edge-category edge) category::parentheses)))
-              nil)
-             ((loop for edge in edges thereis
-                      (and (ng-head? edge)
-                           (not (eq (edge-form edge) category::det))
-                           (not (eq (edge-form edge) category::quantifier))))
-              nil)
-             ((preceding-adverb-preceded-by-ng edges)
-              ;; too tight, but probably OK
-              ;; blocks "interaction eventually influencing ecm - driven cell motility"
-              nil)
-             #+ignore
-             ;; check to block splitting up "the p53 binding ability"
-             ((loop for edge in edges thereis
-                      (and (ng-head? edge)
-                           ;; rule out demonstrative pronouns
-                           ;; "such co-occurring events"
-                           (not (eq (edge-form edge) category::det))
-                           (not (eq (edge-form edge) category::quantifier)))))
-             (t t)))
-      ((eq eform category::verb+ed)
-       ;; don't allow a verb form after a parenthetical -- most likely a relative clause or a main clause
-       ;;"RNA interference (RNAi) blocked MEK/ERK activation."
-       (if (or
-            (preceding-adverb-preceded-by-ng edges)
-            ;; too tight, but probably OK
-            ;; blocks "interaction eventually influencing ecm - driven cell motility"
-            (eq (edge-category e) category::have)
-            (loop for edge in edges thereis (eq (edge-category edge) category::parentheses)))
-           nil
-           t))
-      ((and
-        (not (verb-premod-sequence? (edge-just-to-right-of e)))
-        (ng-compatible? (edge-form e) edges))))))
+      ((member ecat '(have be)) nil)                                ;; not HAVING or BEING
+      ((and (member eform '(verb+ing verb+ed))                      ;; no participles after a paren
+            ;; don't allow a verb form after a parenthetical -- most likely a relative clause or a main clause
+            (loop for edge in edges thereis (is-parenthesis? edge)))
+       nil)
+      (t
+       (case eform
+         (following-adj (prev-noun-or-adj e))                       ;; FOLLOWING is treated as an adj
+         (adverb (not (eq ecat 'also)))                             ;; ADVERB
+         (verb+ing                                                  ;; VERB+ING
+          ;;(lsp-break "check verb+ing in NG")
+          (cond ((setq preceding-noun-refs (preceding-noun-refs edges))
+                 ;; have a strange case where "Ra" is made into a bio-entity, and "Ras" is its plural
+                 ;; check to block splitting up "the p53 binding ability"
+
+                 ;; tighter check for cases like "Ras expressing cells"
+                 (loop for ref in preceding-noun-refs thereis (is-object-not-subject? ref e)))
+                ((loop for edge in edges thereis
+                         (member (cat-name (edge-form edge)) '(det quantifier adjective))))))
+         (verb+ed
+          ;;"RNA interference (RNAi) blocked MEK/ERK activation."
+          (not (preceding-adverb-preceded-by-ng edges))
+          ;; too tight, but probably OK
+          ;; blocks "interaction eventually influencing ecm - driven cell motility"
+          )
+         (t (if (preceding-adverb-preceded-by-ng edges)
+                ;; too tight, but probably OK
+                ;; blocks "interaction eventually influencing ecm - driven cell motility"
+                nil
+                (and
+                 (not (verb-premod-sequence? (edge-just-to-right-of e)))
+                 (ng-compatible? (edge-form e) edges)))))))))
+
+(defun comma? (e)(eq word::comma (edge-category e)))
+(defun is-parenthesis? (edge)
+  (eq (edge-category edge) category::parentheses))
+
+(defun noun-like-ng-head? (edge)
+  (and (ng-head? edge)
+       (not (member (cat-name (edge-form edge)) '(det quantifier)))))
+
+(defun preceding-noun-refs (edges)
+  (loop for edge in edges
+        when (noun-like-ng-head? edge) collect (edge-referent edge)))
+
+(defun is-object-not-subject? (mod e)
+  (let ((ref (if (edge-p mod) (edge-referent mod) mod))
+        (head (if (edge-p e) (edge-referent e) e)))
+    (and (not (find-subcat-var ref :subject head))
+         (find-subcat-var ref :object head))))
+
 
 (defun preceding-adverb-preceded-by-ng (edges)
   (and
@@ -420,7 +427,7 @@
 (defun singular-det (e)
   (member (cat-name (edge-category e)) '(a that this)))
 
-(defun plural-noun-not-present-verb (e &optional (edges-before (edges-before e)))
+(defun plural-noun-not-present-verb? (e &optional (edges-before (edges-before e)))
   (or
    (null edges-before) ;; sentence initial
    (and
@@ -439,12 +446,13 @@
    (eq (cat-name (edge-form edge)) 'pronoun )
    (member (cat-name (edge-category edge)) '(which what))))
 
-(defun preposition? (edge)
-  (eq (cat-name (edge-form edge)) 'preposition))
+(defun preposition-edge? (edge)
+  (prep? (cat-name (edge-form edge))))
 
 (defun pp? (edge)
    (eq (cat-name (edge-form edge)) 'pp))
 
+#+ignore
 (defun constrain-following (e)
   (and (category-p (edge-category e))
        (eq (cat-name (edge-category e)) 'following-adj)
@@ -478,7 +486,7 @@
          (some-edge-satisfying? (edges-before e) #'singular-det)
          (not (preceding-det-prep-poss-or-adj e edges-before)))
         (or
-         (not (plural-noun-not-present-verb e))
+         (not (plural-noun-not-present-verb? e))
          (some-edge-satisfying? (edges-after e) #'clear-np-start?)
          (not (ng-compatible? e nil))
          (not (ng-head? e)))))
@@ -523,6 +531,8 @@
   (and (edge-p e)
        (category-p (edge-form e))
        (member (cat-symbol (edge-form e)) *n-bar-categories*)
+       (not (and (edge-p (edge-just-to-left-of edge))
+                 (preposition-edge? (edge-just-to-left-of edge))))
        (let ((right (edge-just-to-right-of e))
              (left (edge-just-to-left-of e)))
          (and (edge-p right)
@@ -578,7 +588,7 @@ than a bare "to".  |#
   (declare (special category::modifier category::adjective category::adverb
                     category::be category::parentheses
                     category::that category::verb+ed category::verb+ing
-                    category::preposition category::and category::also
+                    category::also
                     category::vp+ed category::subordinate-conjunction
 		    category::to))
   (if (member e *ng-start-tests-in-progress*)
@@ -592,7 +602,7 @@ than a bare "to".  |#
           ((eq (cat-name (edge-category e)) 'not)
            nil)
           ((plural-noun-and-present-verb? e)
-           (plural-noun-not-present-verb e))
+           (plural-noun-not-present-verb? e))
           ((singular-noun-and-present-verb? e)
            (not
             (or
@@ -664,7 +674,7 @@ than a bare "to".  |#
                           (eq category::parentheses (edge-category prev-edge))
                           (eq word::comma (edge-category prev-edge))
                           (eq category::and (edge-category prev-edge))
-                          (eq category::preposition (edge-form prev-edge))
+                          (preposition-edge? prev-edge)
                           (eq category::subordinate-conjunction (edge-form prev-edge))
                           (ng-head? prev-edge)))))))
           ((ng-start? (edge-form e))
@@ -672,9 +682,11 @@ than a bare "to".  |#
 
 
 (defmethod ng-head? ((e edge))
-  (declare (special *chunk* word::comma)) 
-  (let ((edges-before (edges-before e)))
-    (or (and (eq (cat-name (edge-form e)) 'number)
+  (declare (special e *chunk* word::comma)) 
+  (let ((edges-before (edges-before e))
+        (e-form-name  (cat-name (edge-form e))))
+    (declare (special edges-before e-form-name))
+    (or (and (eq e-form-name 'number)
              (or (null edges-before)
                  (loop for ee in edges-before
                     thereis
@@ -683,8 +695,9 @@ than a bare "to".  |#
                        (member (cat-name (edge-form ee))
                                '(quantifier det adverb punctuation))))))
         (when (not (preceding-adverb e edges-before))
+          ;;(lsp-break "foo")
           (cond
-            ((eq (cat-name (edge-form e)) 'quantifier)
+            ((eq e-form-name 'quantifier)
              (and
               (not (itypep (edge-referent e) 'not))
               (or
@@ -694,9 +707,9 @@ than a bare "to".  |#
                (not (boundp '*chunk*)) ;; happens in looking at np-head? of first chunk
 
                (not (chunk-ev-list *chunk*)))))
-            ((eq (cat-name (edge-form e)) 'verb+ed)
+            ((eq e-form-name 'verb+ed)
              nil)
-            ((some-edge-satisfying? (all-edges-at e) #'preposition?)
+            ((some-edge-satisfying? (all-edges-at e) #'preposition-edge?)
              nil)
             ((plural-noun-and-present-verb? e)
              ;; fix logic error -- if we hav a noun-verb ambiduity,
@@ -712,7 +725,7 @@ than a bare "to".  |#
              (and
               (not (preceding-pronoun-or-which? e edges-before))
               (ng-head? (edge-form e))))
-            ((eq (cat-name (edge-form e)) 'VERB+ING) ;
+            ((eq e-form-name 'VERB+ING) ;
              (let
                  ((end-pos (pos-edge-ends-at e))
                   (prev-edge (left-treetop-at/edge (pos-edge-starts-at e))))
@@ -1010,13 +1023,12 @@ than a bare "to".  |#
                (ev-edge-form (and ev-edge  (edge-form ev-edge)))
                (prev-edge (when ev-edge (edge-just-to-left-of ev-edge)))
                (p-edge-form-name (and (edge-p prev-edge)
-                                      (category-p (edge-form prev-edge))
                                       (cat-name (edge-form prev-edge)))))
             (declare (special ev-edge ev-edge-form prev-edge p-edge-form-name))
             ;;(lsp-break "bah")
             (cond ((not (and prev-edge (edge-form prev-edge))) t)
                   ((or (memq p-edge-form-name '(verb verb+ed))
-                       (and (member p-edge-form-name '(prep spatial-preposition))
+                       (and (preposition-edge? prev-edge)
                             (or (eq ev-edge-form category::np)
                                 (member (cat-symbol ev-edge-form) *n-bar-categories*))))
                    (when *suppressed-verb+ed*
@@ -1031,31 +1043,28 @@ than a bare "to".  |#
           ;; -- most likely to be a main verb or a reduced relative in this case
           (or
            (loop for e in (ev-top-edges (car ev-list))
-              thereis
-                (and
-                 (edge-form e)
-                 (memq (cat-symbol (edge-form e)) *n-bar-categories*)
-                 (or (is-basic-collection? (edge-referent e))
-                     (not (verb-premod? (edge-referent e) (edge-referent edge))))))
+                 thereis
+                   (and
+                    (edge-form e)
+                    (memq (cat-symbol (edge-form e)) *n-bar-categories*)
+                    (or (is-basic-collection? (edge-referent e))
+                        (not (verb-premod? (edge-referent e) (edge-referent edge))))))
            (and ;; e.g. "EGF strongly activated EGFR"
             (cadr ev-list)
             (loop for e in (ev-top-edges (cadr ev-list))
-               thereis
-                 (and
-                  (edge-form e)
-                  (memq (cat-symbol (edge-form e)) *n-bar-categories*)))
+                  thereis
+                    (and
+                     (edge-form e)
+                     (memq (cat-symbol (edge-form e)) *n-bar-categories*)))
             (loop for e in (ev-top-edges (car ev-list))
-               thereis
-                 (and
-                  (edge-form e)
-                  (eq (cat-symbol (edge-form e)) 'category::adverb))))))
+                  thereis
+                    (and
+                     (edge-form e)
+                     (eq (cat-symbol (edge-form e)) 'category::adverb))))))
      (when (and *verb+ed-sents*
                 (not
-                 (let* ((ev (pos-starts-here (pos-edge-ends-at edge)))
-                        (edges (ev-top-edges ev)))
-                   (loop for e in edges
-                      thereis (memq (cat-name (edge-form e))
-                                    '('preposition det pronoun))))))
+                 (loop for e in (ev-top-edges (pos-starts-here (pos-edge-ends-at edge)))
+                       thereis (preposition-edge? e))))
        ;;(break "verb+ed")          
        (push (list (string-of-words-between 
                     (chunk-start-pos *chunk*)
@@ -1091,9 +1100,7 @@ than a bare "to".  |#
 (defun det-prep-poss-or-adj? (ee)
   (or (member (cat-name (edge-form ee)) '(det possessive adjective number
                                           verb+ed verb+ing))
-      (and
-       (member (cat-name (edge-form ee))
-               '(preposition spatial-preposition)))))
+      (preposition-edge? ee)))
 
 
 (defun sentence-initial? (e)
@@ -1119,7 +1126,7 @@ than a bare "to".  |#
 (defun followed-by-verb (e &optional (edges-after (edges-after e)))
   (loop for ee in edges-after
      thereis
-       (member (cat-name (edge-form ee)) '(verb))))
+       (member (cat-name (edge-form ee)) '(verb verb+ed verb+ing))))
 
 (defun preceding-adverb (e &optional (edges (edges-before e)))
   (loop for ee in edges
