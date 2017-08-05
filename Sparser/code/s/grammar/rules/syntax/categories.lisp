@@ -235,8 +235,7 @@
 (def-form-category  as-comp) ;; to + vp or to+vg
 (def-form-category  prep-comp) ;; {by, for, after, ..} + vg{+ing}
 
-
-
+(def-form-category rel-pro-to-be-quantified) ;; "of which" in the context "<quantifier> of which"
 
 ;;;------------
 ;;; word level
