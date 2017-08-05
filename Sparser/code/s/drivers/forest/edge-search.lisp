@@ -62,11 +62,19 @@
 ;;  because adjacent-tt-pairs returned NIL in that case. We need to start from
 ;;  the first position that has an actual edge over it
 
+(defparameter *no-edge-pairs* nil)
+
 (defun first-position-with-edges (pos end)
+  (declare (special pos))
   (cond ((ev-top-node (pos-starts-here pos))
          pos)
         ((eq pos end) end)
-        (t (first-position-with-edges (chart-position-after pos) end))))
+        (t #+ignore
+           (pushnew (list (pos-terminal pos) (sentence-string *sentence-in-core*))
+                    *no-edge-pairs*
+                    :test #'equal)
+           (first-position-with-edges (chart-position-after pos) end))))
+
 
 (defun adjacent-tt-pairs (sentence)
   ;;(push-debug `(,sentence)) (break "tt")
@@ -448,7 +456,7 @@ for ambiguous words"
   (declare (special category::adjective category::as))
   (let ((r-triple-rhs (cfr-rhs (car r-triple))))
     (and
-     (prep? (cat-symbol (car (cfr-rhs (car l-triple))))) ;;l-triple-left
+     (prep? (cat-name (car (cfr-rhs (car l-triple))))) ;;l-triple-left
      (not (subordinate-conjunction? l-triple))
      (or (not (possible-spatio-temporal-prep? l-triple))
          (itypep (edge-referent (third l-triple)) 'process))
@@ -516,9 +524,8 @@ for ambiguous words"
          '(category::which category::who category::whom category::where))
    (eq (cat-symbol (second r-triple-rhs)) 'category::s)))
 
-(defun prep? (cat)
-  (memq cat '(category::preposition category::spatial-preposition
-              category::spatio-temporal-preposition)))
+(defun prep? (cat-name)
+  (member cat-name '(preposition spatial-preposition spatio-temporal-preposition)))
 
 (defun possible-spatio-temporal-prep? (l-triple)
   (declare (special category::spatio-temporal-preposition))
@@ -549,7 +556,7 @@ for ambiguous words"
   (when (eq (second r-triple) (third l-triple))	
     ;; there is an edge which is being competed for
     (let* ((l-triple-rhs (cfr-rhs (car l-triple)))
-           (l-triple-left (cat-symbol (car l-triple-rhs)))
+           (l-triple-left (cat-name (car l-triple-rhs)))
            (r-triple-rhs (cfr-rhs (car r-triple)))
            (r-triple-left (cat-symbol (car r-triple-rhs)))
            (r-triple-right 
@@ -571,7 +578,7 @@ for ambiguous words"
          ;; but makes ""the ability of PKCtheta to phosphorylate BAD is enhanced by the co-expression of Raf-1 and B-Raf." work
          
 
-         (eq 'category::syntactic-there l-triple-left) ;; competing against a "there BE"
+         (eq 'syntactic-there l-triple-left) ;; competing against a "there BE"
 	 (and
 	  (member l-triple-rhs (l-triple-tests) :test #'equal)
 	  ;; likely competition against a relative clause or a main clause
