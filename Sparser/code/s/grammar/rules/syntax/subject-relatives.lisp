@@ -135,11 +135,20 @@
 ;;; Really doing it
 ;;;-----------------
 
-(defun apply-subject-relative-clause (np-ref vp-ref)
+(defun apply-subject-relative-clause (np-ref vp-ref
+                                      &aux (left-edge (left-edge-for-referent))
+                                        (right-edge (right-edge-for-referent)))
   (declare (special category::have category::subject-relative-clause vp-ref))
   ;; block "histone 2B ... had high levels ..."
-  (when (and (eq (edge-category (right-edge-for-referent)) category::have)
-	     (eq (edge-form (right-edge-for-referent)) category::VP+ED))
+  (when (or
+         (and (eq (edge-category right-edge) category::have)
+              (eq (edge-form right-edge) category::VP+ED))
+         (and (eq (edge-rule left-edge) 'sdm-span-segment)
+              ;; have absorbed a number as the right hand end of an unparsed segment
+              ;; e.g. AKT1 mutation 3.
+              (member (cat-name (edge-category
+                                 (car (last (edge-constituents left-edge)))))
+                      '(year number))))
     (return-from apply-subject-relative-clause nil))
 
   (setq np-ref (individual-for-ref np-ref))
@@ -156,7 +165,7 @@
             ;; see compose-wh-with-vp for details
             (value-of 'var vp-ref))
            (t
-            (if (is-passive? (right-edge-for-referent))
+            (if (is-passive? right-edge)
               (subcategorized-variable vp-ref :object np-ref)
               (subcategorized-variable vp-ref :subject np-ref))))))
     (cond
@@ -164,9 +173,9 @@
        var)
       (var
        (cond
-         ((and (not (and (edge-p (right-edge-for-referent))
+         ((and (not (and (edge-p right-edge)
                          (eq category::subject-relative-clause
-                             (edge-form (right-edge-for-referent)))))
+                             (edge-form right-edge))))
                ;; this check is supposed to disambiguate cases where
                ;;  the context wants a clause, and the vp-ref is
                ;;  a vg+ing or vp+ing, not an explicit subject-relative-clause
