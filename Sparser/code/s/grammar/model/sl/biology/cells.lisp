@@ -34,7 +34,8 @@
   (def-bio/expr line 'cell-line :takes-plurals nil))
 
 
-(def-cell-line "cancer cell")
+(def-bio/expr "cancer cell" 'cell-line :takes-plurals t
+              :synonyms '("cancer cell lines"))
 
 
 (def-cell-line "A375")
