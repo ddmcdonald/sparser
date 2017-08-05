@@ -2504,7 +2504,7 @@
 (define-protein "UP:O43448" ("AKR6A9" "KCAB3_HUMAN" "KCNA3B" "KCNAB3" "o43448" "voltage-gated potassium channel subunit beta-3" "beta member 3" "potassium voltage-gated channel subfamily A regulatory beta subunit 3" "voltage gated subfamily A regulatory beta subunit 3")) 
 (define-protein "UP:O43451" ("MGA" "MGAM" "MGA_HUMAN" "o43451" "alpha-glucosidase" "glucoamylase" "maltase" "maltase-glucoamylase" "maltase-glucoamylase monomer")) 
 (define-protein "UP:O43462" ("KFSD" "MBTP2_HUMAN" "MBTPS2" "o43462" "S2P" "keratosis follicularis spinulosa decalvans" "site 2" "site-2 protease")) 
-(define-protein "UP:O43463" ("Histone-lysine N-methyltransferase SUV39H1" "KMT1A" "o43463" "SUV39H" "SUV39H1" "SUV91_HUMAN" "Suv39H1" "suppressor of variegation 3-9 (Drosophila)homolog 1" "suppressor of variegation 3-9 homolog 1" "suppressor of variegation 3-9 homolog 1 (Drosophila)" "suv39h" "variegation 3-9 homolog 1")) 
+(define-protein "UP:O43463" ("Histone-lysine N-methyltransferase SUV39H1" "KMT1A" "o43463" "SUV39H" "SUV39H1" "SUV91_HUMAN" "Suv39H1" "suppressor of variegation 3-9 (Drosophila)homolog 1" "suppressor of variegation 3-9 homolog 1" "suppressor of variegation 3-9 homolog 1 (Drosophila)" "suv39h" "variegation 3-9 homolog 1" "H3K9me 1")) 
 (define-protein "UP:O43464" ("HTRA2" "HTRA2_HUMAN" "High temperature requirement protein A2" "HtrA serine peptidase 2" "HtrA2" "htra2" "o43464" "OMI" "omi" "omi stress-regulated endoprotease" "serine protease 25" "Serine protease HTRA2, mitochondrial" "Serine proteinase OMI" "protease HTRA2" "tbid")) 
 (define-protein "UP:O43474" ("EZF" "Epithelial zinc finger protein EZF" "factor 4" "GKLF" "gklf" "gut-enriched krueppel-like factor" "KLF-4" "KLF4" "KLF4_HUMAN" "klf4" "krueppel-like factor 4" "kruppel like factor 4" "o43474")) 
 (define-protein "UP:O43482" ("CT86" "MIS18 kinetochore protein homolog B (S. pombe)" "MIS18B" "MS18B_HUMAN" "o43482" "OIP5" "opa interacting protein 5" "Protein Mis18-beta" "cancer/testis antigen 86" "hMIS18beta")) 
@@ -16552,7 +16552,7 @@
 (define-protein "UP:Q70J99" ("UNC13D")) 
 (define-protein "UP:Q70JA7" ("CHSS3_HUMAN" "CHSY-2" "CHSY3" "CSS3" "Q70JA7" "chondroitin sulfate synthase 3")) 
 (define-protein "UP:Q70KD0" ("GENC")) 
-(define-protein "UP:Q70KF0" ("gene")) 
+;;(define-protein "UP:Q70KF0" ("gene")) REALLY is "genE"
 (define-protein "UP:Q70PY2" ("PGRP-SB1")) 
 (define-protein "UP:Q70SY1" ("BBF2H7" "CREB3L2" "cAMP responsive element binding protein 3 like 2")) 
 (define-protein "UP:Q70UQ0" ("IKBIP" "IKIP" "IKK interacting protein")) 
