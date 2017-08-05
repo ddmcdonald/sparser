@@ -106,6 +106,10 @@
     :head :left-edge
     :referent (:function create-partitive-np left-edge right-edge))
 
+(def-syntax-rule (quantifier rel-pro-to-be-quantified) ;; "many of which"
+    :form np
+    :head :left-edge
+    :referent (:function create-partitive-np left-edge right-edge))
 
 ;;--- other cases of leading quantifiers making det's or np's
 
@@ -239,6 +243,12 @@
     :form np
     :referent (:function quantifier-noun-compound left-edge right-edge))
 
+(def-syntax-rule (quantifier number) ;; "all three" (should be red)
+    :head :right-edge
+    :form np
+    :referent (:function quantifier-noun-compound left-edge right-edge))
+
+
 
 
 ;; These two are special cases where we do want to attach post-modifiers to full NPs
@@ -367,6 +377,12 @@
   
   (eval
    `(def-syntax-rule  (adverb ,(car vv))
+        :head :right-edge
+        :form ,(second vv)
+        :referent (:function interpret-adverb+verb left-edge right-edge)))
+
+  (eval
+   `(def-syntax-rule  (approximator ,(car vv))
         :head :right-edge
         :form ,(second vv)
         :referent (:function interpret-adverb+verb left-edge right-edge)))
@@ -817,16 +833,18 @@
   :form to-comp
   :referent (:daughter right-edge))
 
-
-(def-syntax-rule (preposition vg+ing) ;; J3 hydrolysis maybe elevate?
-    :head :left-edge
-    :form pp
-    :referent (:function apply-preposition-to-complement left-edge right-edge))
-
-(def-syntax-rule (preposition vp+ing) ;; aspp2 # 64 "in prompting senescence
-    :head :left-edge
-    :form pp
-    :referent (:function apply-preposition-to-complement left-edge right-edge))
+(loop for prep in '(preposition spatial-preposition spatio-temporal-preposition)
+      do
+        (eval 
+         `(def-syntax-rule (,prep vg+ing) ;; J3 hydrolysis maybe elevate?
+              :head :left-edge
+              :form pp
+              :referent (:function apply-preposition-to-complement left-edge right-edge)))
+        (eval
+         `(def-syntax-rule (,prep vp+ing) ;; aspp2 # 64 "in prompting senescence
+              :head :left-edge
+              :form pp
+              :referent (:function apply-preposition-to-complement left-edge right-edge))))
 
 
 ;;/// written as expedient way to handle "even in" (overnight #6)
@@ -928,8 +946,6 @@
         :head :left-edge
         :form pp-wh-pronoun
         :referent (:function make-relativized-pp left-referent right-referent))))
-
-
 
 ;;-------------------
 
