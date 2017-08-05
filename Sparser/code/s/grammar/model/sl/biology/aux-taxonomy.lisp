@@ -13,15 +13,23 @@
 
 ;;----------
 
+
+(define-mixin-category protein-verb-premod :specializes process-control-process
+   :binds ((protein-agent protein))
+   :realization (:verb-premod protein-agent))
+
 (define-category bio-control :specializes process-control-process
   ;; increase in rate vs increase in RAS activity
   :binds ((multiplier (:or fold unit-of-measure)))
+  :mixins (protein-verb-premod)
   :realization
-    (:verb ("control" :present-participle "controlling"
-                      :present-participle "controling") 
-           :etf (svo-passive)
-           :by multiplier
-           :m multiplier))
+  (:verb ("control" :present-participle "controlling"
+                    :present-participle "controling") 
+         :etf (svo-passive)
+         :by multiplier
+         :m multiplier
+         ))
+                    
 
 (define-category negative-bio-control :specializes bio-control
   :binds ((inhibited-process bio-process))
