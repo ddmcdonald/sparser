@@ -33,7 +33,7 @@
     :nominalization "")
 
 |#
-
+#|
 (define-main-verb 'break
     :infinitive "break"
     :past-tense "broke"
@@ -45,7 +45,7 @@
     :past-tense "gave"
     :past-participle "given"
     :present-participle "giving")
-
+|#
 ;;added in 8/30/13
 #|
 (define-main-verb 'catch
