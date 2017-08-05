@@ -1017,7 +1017,7 @@
          :o theme
          :in visual-presentation))
 
-(define-category require :specializes bio-control
+(define-category require :specializes process-control-process
   :binds ((requirement (:or biological process)))
   :restrict ((purpose biological))
   :realization
