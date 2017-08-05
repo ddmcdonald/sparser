@@ -366,8 +366,7 @@
   :realization
     (:verb "activate" 
      :noun "activation"
-     :etf (svo-passive)
-     :verb-premod agent))
+     :etf (svo-passive)))
 
 (define-category auto-activate
   :specializes bio-activate
@@ -1383,10 +1382,12 @@
 
 (define-category transcribe :specializes caused-bio-process
   :binds ((bio biological))
+  :restrict ((agent cell-entity))             
   :realization 
   (:verb "transcribe" 
    :noun "transcription"
    :etf (svo-passive)
+   :in agent
    :from bio
    :into bio
    :to bio
