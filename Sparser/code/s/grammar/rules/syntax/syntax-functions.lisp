@@ -470,14 +470,15 @@
   ;; e.g. "three of which"  of-pp should be a relativized-prepositional-phrase
   ;; and the quantifier is a quantifier or a number
   (if *subcat-test*
-    (itypep of-pp 'relativized-prepositional-phrase)
-    (let* ((wh (value-of 'pobj of-pp))
-           (i (define-or-find-individual 'partitive-relativizer
-                  :quantifier quantifier :relativizer wh)))
-      ;; Make "6 of which" have the same labels as "which"
-      (revise-parent-edge :category (category-named 'which)
-                          :form (category-named 'wh-pronoun))
-      i)))
+      (or (itypep of-pp 'relativized-prepositional-phrase)
+          (eq (edge-form (right-edge-for-referent)) category::rel-pro-to-be-quantified))
+      (let* ((wh (value-of 'pobj of-pp))
+             (i (define-or-find-individual 'partitive-relativizer
+                    :quantifier quantifier :relativizer wh)))
+        ;; Make "6 of which" have the same labels as "which"
+        (revise-parent-edge :category (category-named 'which)
+                            :form (category-named 'wh-pronoun))
+        i)))
     
 
 (defparameter *dets-seen* nil)
@@ -1264,14 +1265,18 @@
                              dont-revise-parent-edge)
   (declare (special category::subordinate-clause category::copular-predication
                     category::transitive-clause-without-object
-                    subj vp ))
+                    subj vp *left-edge-into-reference*))
   ;; right-edge is NIL when called from polar questions on adjectives
   ;;  this may want to be fixed
   (unless (and subj vp) ;; have had cases of uninterpreted VPs
     (return-from assimilate-subject nil))
+  (when (is-non-anaphor-numeric? *left-edge-into-reference* subj)
+    (return-from assimilate-subject nil))
+
   (when (is-basic-collection? vp)
     (revise-parent-edge :category (value-of 'type vp)))
 
+    
   (cond
     ((itypep vp 'control-verb) ;; e.g. "want"
      (when *subcat-test* (return-from assimilate-subject t))
@@ -1385,6 +1390,8 @@
             (if (> (length (sentence-string *sentence-in-core*)) 0)
 		(sentence-string *sentence-in-core*)
 		*string-from-analyze-text-from-string*)))
+  (when (is-non-anaphor-numeric? *left-edge-into-reference* subj)
+    (return-from assimilate-subject-to-vp-ing nil))
   (if (is-passive? (right-edge-for-referent))
       (assimilate-subcat vp :object subj)
       (assimilate-subcat vp :subject subj)))
@@ -1462,12 +1469,26 @@
 (defun assimilate-object (vg obj)
   (assimilate-subcat vg :object obj))
 
+(defun is-non-anaphor-numeric? (edge ref)
+  (declare (special edge ref))
+  (and (edge-p edge)
+       (eq ref (edge-referent edge))
+       (itypep (edge-referent edge) 'number)
+       (or (and (eq :single-term (edge-right-daughter edge)) ;; digits, like "3"
+                (eq :its-a-number (edge-rule edge)))
+           (and (eq :long-span (edge-right-daughter edge))   ;; digit as head, no real parse
+                (eq 'sdm-span-segment (edge-rule edge))))))
+           
+
 (defun assimilate-np-to-v-as-object (vg obj)
   (declare (special category::n-bar category::vp category::vp+ing
                     category::vp+ed category::to-comp category::n-bar))
   (when *subcat-test*
     (unless (and vg obj)
+      (return-from assimilate-np-to-v-as-object nil))
+    (when (is-non-anaphor-numeric? *right-edge-into-reference* obj)
       (return-from assimilate-np-to-v-as-object nil)))
+               
   (let ((result
 	 (if (and (typep *current-chunk* 'chunk)
                   (member 'ng (chunk-forms *current-chunk*)))
@@ -1630,43 +1651,58 @@
    make-pp-relative-clause which will unfold the pied-piped
    preposition."  
   (if *subcat-test*
-    (not (itypep prep 'prepositional-phrase))
-    (let* ((prep-word (identify-preposition (parent-edge-for-referent)))
-           (wh-obj (cond ((itypep wh 'wh-pronoun) ;; which
-                          (make-wh-object wh))
-                         ((itypep wh 'partitive-relativizer) ;; each of which
-                          wh)
-                         (t wh)))
-           (i (define-or-find-individual 'relativized-prepositional-phrase
-                  :prep prep-word :pobj wh-obj)))
-      i)))
+      (not (itypep prep 'prepositional-phrase))
+      (let* ((to-left (edge-to-its-left (left-edge-for-referent)))
+             (left-quant (when (and (edge-p to-left)
+                                    (eq (cat-name (edge-form to-left)) 'quantifier))
+                           to-left))
+             (prep-word (identify-preposition (parent-edge-for-referent)))
+             (wh-obj (cond ((itypep wh 'wh-pronoun) ;; which
+                            (make-wh-object wh))
+                           ((itypep wh 'partitive-relativizer) ;; each of which
+                            wh)
+                           (t wh))))
+        (cond (left-quant
+               (revise-parent-edge :form category::rel-pro-to-be-quantified)
+               wh)
+              (t (define-or-find-individual 'relativized-prepositional-phrase
+                     :prep prep-word :pobj wh-obj))))))
 
-(defun make-pp-relative-clause (wh-pp vp)
+(defun quantify-rel-pro (quant rel-pro)
+  "Many of which"
+  (declare (special quant rel-pro))
+  (when (category-p rel-pro) 
+    (setq rel-pro (find-or-make-lattice-description-for-ref-category rel-pro)))
+  (cond (*subcat-test* t)
+        (t
+         (revise-parent-edge :category (itype-of rel-pro))
+         (bind-dli-variable 'quantifier quant rel-pro))))
+
+(defun make-pp-relative-clause (wh-pp vp &aux (left (left-edge-for-referent)))
   "Goes with rules pp-wh-pronoun + {vp's or vg's}. The result is
    essentially a regular wh-relative clause except that the
    preposition should be subcategorized by the head (the vp)
    and the variable that governs the relative clause is determined
    by that."
+  (declare (special wh-pp vp))
   (if *subcat-test*
       (and wh-pp vp
-           (edge-to-its-left (left-edge-for-referent))
+           (edge-to-its-left left)
            (not
-            (member (cat-name
-                      (edge-category
-                       (edge-to-its-left (left-edge-for-referent))))
-                    '(number quantifier all some each both))))
+            (member (cat-name (edge-category (edge-to-its-left left)))
+                    '(number quantifier all some each both many most))))
     (let* ((preposition (value-of 'prep wh-pp))
            (wh-obj (value-of 'pobj wh-pp))
-           (variable (find-subcat-vars preposition vp)))
-
+           (var (find-subcat-vars preposition vp)))
+      (declare (special preposition wh-obj var))
       ;; while debugging -- what's a reasonable default?
-      (unless variable
+      (unless var
         (warn "no variable for ~a on ~a in~%~s"
               preposition vp (current-string))
         (return-from make-pp-relative-clause nil))
 
       (let ((q (extend-wh-object wh-obj
-                                 :variable variable
+                                 :variable var
                                  :statement vp)))
         (tr :wh-make-pp-relative-clause q)
         q))))
