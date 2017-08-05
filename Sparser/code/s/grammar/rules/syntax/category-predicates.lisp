@@ -180,7 +180,8 @@
     CATEGORY::NOUN/VERB-AMBIGUOUS
     CATEGORY::MODAL
     category::infinitive
-    CATEGORY::NOT))
+    CATEGORY::NOT
+    CATEGORY::APPROXIMATOR))
 
 (defvar *vg-head-categories*
   '(CATEGORY::VERB
