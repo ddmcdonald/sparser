@@ -224,3 +224,56 @@ In drivers/chart/psp/semantic-extraction.lisp
   (:method ((base cons) (mod individual))
     (let ((attr-exp (cons 'modifier (krisp->sexpr mod))))
       (template-handle-attribute base attr-exp))))
+
+
+;;;---------------------------------------------------------
+;;; lifting the variable out from a parsed text with markup
+;;;---------------------------------------------------------
+
+(defvar *parsing-to-make-template* nil
+  "Flag to control the behavior of, e.g., square bracket handling.")
+
+(defvar *template-variable-data* nil
+  "Conduit between the parse-time detection of variable-ized text
+   segments and their post-parse handling. Pushed onto by
+   lift-out-variablized-segment")
+
+(defgeneric parse-to-create-template (text)
+  (:documentation "First parse the string.
+   While parsing, when we encounter a variable-ized segment,
+   record the edge and its referent.
+   When the parse has finished, trace up from what we recorded
+   to determine what variable the referent is bound to
+   so we can convert that portion of the total sexp
+    to a pattern we can subst into. ")
+  (:method ((text string))
+    (let ((*parsing-to-make-template* t))
+      (declare (special *parsing-to-make-template*))
+      (analyze-text-from-string text)
+      *template-variable-data* )))
+
+(defun lift-out-variablized-segment (pos-before-open pos-after-open
+                                     pos-before-close pos-after-close)
+    "Called from span-square-bracts when we're doing templates.
+     Since we should only be working with texts that parse
+     completely, and we only delimit proper constituents, there
+     should always be a single edge between the brackets.
+     To continue the parse we respan around the brackts with
+     what amounts to a copy of the edge between them."
+    (let ((coverage (coverage-over-region pos-after-open pos-before-close))
+          (edge (right-treetop-at/edge pos-after-open)))
+      (unless (eq coverage :one-edge-over-entire-segment)
+        (error "The edge coverage between p~a and p~a is ~a.~
+              ~%It's supposed to be a single edge."
+               (pos-array-index pos-after-open)
+               (pos-array-index pos-before-close) coverage))
+      (let ((referent (edge-referent edge)))
+        (push `(,referent ,edge) *template-variable-data*)
+        (let ((spanning-edge
+               (make-edge-over-long-span
+                pos-before-open pos-after-close
+                (edge-category edge)
+                :form (edge-form edge)
+                :referent (edge-referent edge)
+                :rule 'lift-out-variablized-segment)))
+          spanning-edge))))

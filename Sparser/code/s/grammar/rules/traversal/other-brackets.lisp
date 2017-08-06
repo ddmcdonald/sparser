@@ -67,15 +67,21 @@
 
 
 (defun span-square-brackets (pos-before-close pos-after-close)
+  (declare (special *parsing-to-make-template*))
   (let ((pos-before-open *pending-open-square-bracket*))
     (when pos-before-open
       ;;(break/debug "Can't find matching open square bracket"))
-
       (let ((pos-after-open (chart-position-after pos-before-open)))
+        
+        (if *parsing-to-make-template*
+          (lift-out-variablized-segment
+           pos-before-open pos-after-open
+           pos-before-close pos-after-close)
+          
+          (do-paired-punctuation-interior
+              :square-brackets
+            pos-before-open pos-after-open
+            pos-before-close pos-after-close))))
 
-	(do-paired-punctuation-interior
-	    :square-brackets
-	  pos-before-open pos-after-open
-	  pos-before-close pos-after-close)))
     (setq *pending-open-square-bracket* nil)))
 
