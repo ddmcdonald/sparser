@@ -75,3 +75,37 @@
               (t (break "Layout of segment routine can't analyse ~
                          this case.")))))))
 
+#|/// need to merge this with the pts version -- segment-coverage
+and modify the readers since their choice of labels is a bit different
+Davidsmbookpro2:s ddm$ grep coverage-over-region  **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp 
+analyzers/traversal/forest-scan.lisp:  (let ((coverage (coverage-over-region left-bound right-bound))
+analyzers/traversal/forest-scan.lisp:                 (new-coverage (coverage-over-region left-bound right-bound)))
+analyzers/traversal/forest-scan.lisp:                   (new-coverage (coverage-over-region left-bound right-bound)))
+drivers/forest/island-driving.lisp:    (let ((coverage (coverage-over-region start-pos end-pos)))
+drivers/forest/island-driving.lisp:  (let ((coverage (coverage-over-region start-pos end-pos)))
+drivers/forest/island-driving.lisp:       ((eq (coverage-over-region start-pos end-pos) :one-edge-over-entire-segment)
+drivers/forest/island-driving.lisp:      (setq coverage (coverage-over-region start-pos end-pos))
+drivers/forest/island-driving.lisp:             (setq coverage (coverage-over-region start-pos end-pos))
+drivers/sinks/return-value.lisp:    (let ((coverage (coverage-over-region
+drivers/chart/psp/incremental.lisp:    (let ((coverage (coverage-over-region start-pos end-pos)))
+drivers/chart/psp/pts.lisp:      (coverage-over-region left-end position))))
+drivers/chart/psp/pts.lisp:(defun coverage-over-region (left-end right-end)
+Davidsmbookpro2:s ddm$ 
+Davidsmbookpro2:s ddm$ grep analyze-segment-layout  **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp 
+analyzers/forest/layout.lisp:(defun analyze-segment-layout (left-bound right-bound
+analyzers/forest/layout.lisp:          (return-from analyze-segment-layout :single-span)))
+analyzers/forest/layout.lisp:              (return-from analyze-segment-layout
+analyzers/traversal/dispatch.lisp:  (let ((layout (analyze-segment-layout pos-after-open
+analyzers/traversal/dispatch.lisp:               layout (analyze-segment-layout
+analyzers/traversal/forest-scan.lisp:      (let ((layout (analyze-segment-layout
+analyzers/traversal/forest-scan.lisp:    (let ((layout (analyze-segment-layout
+grammar/rules/dmp/capitalized-sequences.lisp:           (analyze-segment-layout start-pos end-pos)
+grammar/rules/sgml/dci-cases.lisp:  (let ((layout (analyze-segment-layout start-pos end-pos)))
+grammar/rules/sgml/djns-wsj-cases.lisp:  (let ((layout (analyze-segment-layout start-pos end-pos)))
+grammar/rules/sgml/djns-wsj-cases.lisp:  (let ((layout (analyze-segment-layout start-pos end-pos)))
+grammar/rules/sgml/djns-wsj-cases.lisp:  (let ((layout (analyze-segment-layout start-pos end-pos)))
+grammar/rules/sgml/djns-wsj-cases.lisp:  (let ((layout (analyze-segment-layout start-pos end-pos)))
+grammar/rules/sgml/tipster-cases.lisp:  (let ((layout (analyze-segment-layout start-pos end-pos)))
+grammar/rules/sgml/tipster-cases.lisp:  (let ((layout (analyze-segment-layout start-pos end-pos)))
+grammar/rules/sgml/tipster-cases.lisp:  (let ((layout (analyze-segment-layout start-pos end-pos)))
+|#
