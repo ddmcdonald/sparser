@@ -351,7 +351,9 @@
                  (ng-compatible? (edge-form e) edges)))))))))
 
 (defun comma? (e)(eq word::comma (edge-category e)))
+
 (defun is-parenthesis? (edge)
+  (declare (special category::parentheses))
   (eq (edge-category edge) category::parentheses))
 
 (defun noun-like-ng-head? (edge)
@@ -528,6 +530,8 @@
 (defun verb-premod-sequence? (e)
   "special case for a noun preceding the verb where the noun is a verb-premod
    e.g. '... tyrosine phosphorylated'"
+  (declare (special *n-bar-categories* *vg-head-categories*
+                    category::that word::comma))
   (and (edge-p e)
        (category-p (edge-form e))
        (member (cat-symbol (edge-form e)) *n-bar-categories*)
@@ -588,7 +592,7 @@ than a bare "to".  |#
   (declare (special category::modifier category::adjective category::adverb
                     category::be category::parentheses
                     category::that category::verb+ed category::verb+ing
-                    category::also
+                    category::also category::and
                     category::vp+ed category::subordinate-conjunction
 		    category::to))
   (if (member e *ng-start-tests-in-progress*)
@@ -996,13 +1000,15 @@ than a bare "to".  |#
 
 
 (defparameter *suppressed-verb+ed* nil)
+
 (defun likely-verb+ed-clause (edge ev-list
                               &aux (edge-form-name
                                     (and (edge-form edge)
                                          (cat-name (edge-form edge)))))
   (declare (special category::verb+ed *n-bar-categories*
                     category::preposition category::det category::have
-                    category::pronoun *verb+ed-sents* *sentence-in-core*
+                    category::pronoun category::np *verb+ed-sents* 
+                    *sentence-in-core*
                     *chunk*
                     edge ev-list)
            (optimize (debug 3)))
