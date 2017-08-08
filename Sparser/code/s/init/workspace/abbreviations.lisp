@@ -305,6 +305,20 @@
     (when (null (cdr edges)) ;; single span
       (semtree (car edges)))))
 
+(defun p/s-all (string &optional no-print)
+  "Parse string then print out the treetops followed by a list of
+   semtrees for all treetops with semantics; with option no-print,
+   doesn't print the tts, just returns the semtree list"
+  (if no-print
+      (qpp string)
+      (else (pp string)
+            (format t "~&") (tts)))
+  (let ((edges (all-tts)))
+    (loop for edge in edges
+          as sem = (semtree edge)
+            when sem
+            collect sem)))
+    
 #+:mumble
 (defun p/m (string)
   "Parse the string, and if the result is a single edge
