@@ -193,8 +193,8 @@
   :restrict ((participant (:or biological visual-representation)))
   :realization
   (:s participant
-      ;;:of participant
-      :as-comp as-comp))
+      :as-comp as-comp
+      :of participant))
 
 (define-mixin-category of-participant-bio-predication :specializes bio-predication
   :realization (:of participant))
@@ -202,8 +202,7 @@
 ;;--- Quality
 
 (define-category bio-quality :specializes bio-predication
-  :mixins (biological
-           of-participant-bio-predication)
+  :mixins (biological)
   )
 
 (define-category bio-scalar
@@ -406,7 +405,7 @@
                   ))
             (object
              (:or bio-entity cell-entity molecular-location
-                  measurement bio-scalar disease)))
+                  measurement bio-quality disease)))
     :realization
     (:s agent
         :s cause
@@ -418,7 +417,7 @@
 
 
 (define-category process-control-process :specializes caused-bio-process
-  :binds ((affected-process (:or bio-process bio-mechanism bio-method bio-quality
+  :binds ((affected-process (:or bio-process bio-mechanism bio-method
                                  bio-predication bio-relation medical-treatment)))
   :realization
   (:o affected-process
@@ -693,7 +692,7 @@
              (theme perdurant))
   :realization
     (:s participant
-     :o theme))
+        :o theme))
 
 (define-category aspectual-relation :specializes bio-relation
   :mixins (control-verb-intrans))

@@ -167,7 +167,7 @@ be biology specific, since they aren't. |#
 ;;--- bio-relation
 
 (define-category ability :specializes bio-relation
-   :mixins (control-verb-intrans of-participant-bio-predication)
+   :mixins (control-verb-intrans)
    :binds ((ability bio-process))
    :realization (:noun "ability"
                        :adj "able"

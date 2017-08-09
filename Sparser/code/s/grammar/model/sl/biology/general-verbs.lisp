@@ -190,7 +190,7 @@
 	   :etf (svo-passive)))
 
 (define-category consider :specializes bio-rhetorical
-    :mixins (bio-whethercomp raising-to-object)
+    :mixins (raising-to-object)
     :restrict ((theme (:or be biological))) ;; could be "the effects..."
     :realization
     (:verb ("consider" :present-participle "considering"
@@ -258,7 +258,6 @@
 
 (define-category correspond :specializes bio-relation
   :binds ((property common-noun))
-  :mixins (of-participant-bio-predication)
   :realization
   (:verb "correspond" :noun "correspondence"
          :etf (sv)
@@ -281,6 +280,17 @@
   (:verb   "compromise"
 	   :etf (svo-passive)))
 
+(define-category damage :specializes caused-bio-process
+  :restrict ((object (:or protein gene dna)))
+  :realization
+  (:verb "damage" :noun "damage" 
+   :etf (svo-passive)
+   :m object
+   :in object
+   :into object
+   :on location
+   :to object
+   :within location))
 
 (delete-noun-cfr (resolve "delay"))
 ;; Remove existing version of "delay" to replace it with this one
@@ -305,7 +315,6 @@
 
 (define-category depend
   :specializes bio-relation
-  :mixins (of-participant-bio-predication)
   :realization
   (:verb "depend" :noun "dependency"
          :adj "dependent"
@@ -329,7 +338,7 @@
 
 
 (define-category determine :specializes bio-rhetorical
-  :mixins (bio-whethercomp bio-ifcomp)
+  :mixins (bio-ifcomp)
   :realization
   (:verb "determine"
          :noun "determination"
@@ -373,7 +382,6 @@
 
 
 (define-category dominate :specializes bio-relation 
-  :mixins (of-participant-bio-predication)
   :realization 
   (:verb "dominate" 
   :noun "domination" 
@@ -467,8 +475,7 @@
          :etf (svo-passive) 
          :as to-be))
 
-(define-category examine
-  :specializes bio-rhetorical
+(define-category examine :specializes bio-rhetorical
   :mixins (bio-whethercomp bio-ifcomp)
   :binds ((presence-of biological))
   :realization
@@ -479,7 +486,6 @@
 
 
 (define-category exist :specializes bio-predication
-  :mixins (of-participant-bio-predication)
   :binds ((measurement (:or measurement bio-scalar))
           (theme bio-chemical-entity))
   :realization
@@ -655,7 +661,6 @@
 
 
 (define-category involve :specializes bio-relation
-  :mixins (of-participant-bio-predication)
   :realization
   (:verb "involve" ;; keyword: ENDS-IN-ING 
          :etf (svo)
@@ -772,7 +777,7 @@
 
 
 (define-category need :specializes bio-relation
-    :mixins (control-verb of-participant-bio-predication)
+    :mixins (control-verb)
     :binds ((needed-for process))
     :realization
       (:verb "need" 
@@ -806,7 +811,6 @@
            :without source))
 
 (define-category occur :specializes bio-predication
-  :mixins (of-participant-bio-predication)
   :realization
     (:verb ("occur" :present-participle "occurring" :past-tense "occurred")
 	   :noun "occurrence"
@@ -814,7 +818,6 @@
 
 
 (define-category overlap :specializes bio-relation
-  :mixins (of-participant-bio-predication)
   :realization
     (:verb ("overlap" "over-lap")
      :noun "overlap"
@@ -978,7 +981,6 @@
          :etf (svo-passive)))
 
 (define-category persist :specializes bio-predication
-  :mixins (of-participant-bio-predication)
   :realization
   (:verb "persist" :etf (sv)))
 
@@ -1028,7 +1030,6 @@
            :for purpose))
 
 (define-category result :specializes bio-relation
-  :mixins (of-participant-bio-predication)
   :binds ((results-in (:or bio-process bio-method bio-predication)))
   :restrict ((participant perdurant))
     :realization
@@ -1144,18 +1145,20 @@
 
 
 (define-category succeed :specializes bio-predication
-  :mixins (of-participant-bio-predication)
   :realization
   (:verb "succeed" :noun "success"
    :etf (sv)
    :in theme))
 
 (define-category suggest :specializes bio-rhetorical
-  :mixins (bio-thatcomp)
+  :mixins (raising-to-object bio-thatcomp)
+  :restrict ((theme (:or be biological))) ;; could be "the effects..."
   :realization
-  (:verb "suggest" :noun "suggestion"
-         :etf (sv)))
-
+  (:verb ("suggest" :present-participle "suggesting"
+                       :past-tense "suggested") ;; keyword: ENDS-IN-ED 
+	   :noun "suggestion"
+	   :etf (svo-passive)))
+  
 (define-category bio-take :specializes bio-method
     :binds ((approach approach))
     :realization ;; (p/s "use KRAS to treat pancreatic cancer")

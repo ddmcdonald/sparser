@@ -373,7 +373,6 @@
 
 
 (define-category responsive :specializes bio-relation
-  :mixins (of-participant-bio-predication)
   :realization
   (:noun  "responsiveness"
           :adj "responsive"
@@ -424,7 +423,7 @@
 
 
 (define-category unable :specializes bio-relation
-  :mixins (control-verb-intrans of-participant-bio-predication)
+  :mixins (control-verb-intrans)
   :restrict ((theme bio-process))
   :realization
   (:adj "unable" :noun "inability"))
