@@ -349,12 +349,32 @@ returning a new one.
                        (warn  "~%still ambiguous ~s~% in sentence: ~s~%" ambig-variables
                               (sentence-string *sentence-in-core*))))
 		 (car ambig-variables)) ;;
-	  (loop for v in ambig-variables
-	     when (not (or (eq v var/name)
-			   (eq (var-name v) var/name)))
-	     do (return v)))
+	  (or (loop for v in ambig-variables
+                    when (not (ambiguity-equivalent-var? v var/name))
+                    do (return v))
+              (loop for v in ambig-variables
+                    when (not (eq (if (symbolp v) v (pname v))
+                                  (if (symbolp var/name) var/name (pname var/name))))
+                    do (return v))))
       (binding-variable binding)))
 
+(defun ambiguity-equivalent-var? (v1 v2)
+  (setq v1 (if (symbolp v1) v1 (pname v1)))
+  (setq v2 (if (symbolp v2) v2 (pname v2)))
+  (or (eq v1 v2)
+      (and (member v1 '(object affected-process))
+           (member v2 '(object affected-process)))))
+
+;; data obtained from
+#|(setq dups
+      (loop for xx in
+              (remove-duplicates
+               (remove nil
+                       (loop for c in *categories-defined*
+                             collect (find-subcat-patterns :object c)))
+               :test #'equal)
+            when (cdr xx) collect (mapcar #'pname (mapcar #'subcat-variable xx))))
+|#
 
 ;;;-----------------------------------------------------
 ;;; changing the value on a binding that already exists
