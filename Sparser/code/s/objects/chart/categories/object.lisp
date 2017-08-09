@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1990 Content Technologies Inc.
-;;; copyright (c) 1992,2012-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2012-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;categories:"
-;;;  Version:   1.3 May 2014
+;;;  Version:   August 2017
 
 ;; initiated 6/90
 ;; 1.1 (v1.5) added new fields to handle the new rule regime
@@ -45,6 +45,5 @@
 (defvar *grammatical-categories* nil)
 (defvar *form-categories* nil)
 (defvar *derived-categories* nil)
-
-
+(defvar *categories-without-supercs* nil) ;; see compute-daughter-relationships")
 

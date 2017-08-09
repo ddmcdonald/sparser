@@ -144,44 +144,6 @@
 
 
 
-;;;----------------------------------------------------
-;;; hook for broader relationships than just daughters
-;;;----------------------------------------------------
-
-(defparameter *categories-without-supercs* nil
-  "an accumulator")
-
-
-(defun workout-the-relationships-among-the-categories ()
-  ;; called from Postprocess-grammar-indexes
-  (setq *categories-without-supercs*
-        (compute-daughter-relationships *referential-categories*))
-  (sort-referential-categories-hierarchically)
-  (setq *mixin-categories*       (sort-categories *mixin-categories*))
-  (setq *grammatical-categories* (sort-categories *grammatical-categories*))
-  ;(setq *form-categories*        (sort-categories *form-categories*))
-  ;;  try viewing them in their order of definition, which mirrors
-  ;;   major
-  (setq *dotted-categories*      (sort-categories *dotted-categories*))
-
-  (setq *all-intra-category-relationships-noticed?* t)
-
-  (format t "~&~%-------------------------------------------~
-             ~% ~A~5,2T Referential categories~
-             ~% ~A~5,2T Syntactic form categories~
-             ~% ~A~5,2T Mixin categories~
-             ~% ~A~5,2T non-terminal categories~
-             ~% ~A~5,2T dotted categories~
-             ~%-------------------------------------------"
-          (length *referential-categories*)
-          (length *form-categories*)
-          (length *mixin-categories*)
-          (length *grammatical-categories*)
-          (length *dotted-categories*)))
-
-
-
-
 ;;;----------------------
 ;;; printing the lattice
 ;;;----------------------

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1998,2014-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2014-2017  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "postprocessing"
 ;;;    Module:  "interface;grammar:"
-;;;   version:  December 2016
+;;;   version:  August 2017
 
 #| Goes through the grammar modules after all the grammar has been loaded
    into an image and organizes them for display.  |#
@@ -27,8 +27,7 @@
 ;;;--------
 
 (defun postprocess-grammar-indexes ()
-  ;; called as the last action in Load-the-grammar
-
+  "Called in session.lisp after all the grammar has been loaded."
   (setq *words-defined*     (sort-words *words-defined*)
         *polywords-defined* (sort-polywords *polywords-defined*)
         *non-terminals-defined* (sort-categories *non-terminals-defined*)
@@ -37,37 +36,31 @@
         *csrs-defined* (sort-csrs *csrs-defined*)
         ;;//// need sort routines for *form-rules-defined* 
         ;; and *syntax-rules-defined*
-        *context-free-rules-defined*
-        (sort-cf&cs-rules-together *context-free-rules-defined*)
+        *context-free-rules-defined* (sort-cf&cs-rules-together *context-free-rules-defined*)
         *polywords-ending-in-period* (polywords-with-final-period *polywords-defined*))
   (when *tree-families*
-    (setq *tree-families-defined* (postprocess-tree-families
-                                   *tree-families-defined*)))
-
+    (setq *tree-families-defined* (postprocess-tree-families *tree-families-defined*)))
   (dolist (gm *grammar-modules-in-image*)
     (unless (gmod-parent-module gm)
       (push gm *toplevel-grammar-modules*))
     (when (gmod-sub-modules gm)
       (setf (gmod-sub-modules gm) (nreverse (gmod-sub-modules gm))))
     (post-process-grammar-module gm))
-
   (setq *summary-grammar-modules*  (nreverse *summary-grammar-modules*)
         *grammar-modules-in-image* (nreverse *grammar-modules-in-image*)
         *toplevel-grammar-modules* (nreverse *toplevel-grammar-modules*))
-
   (when *include-model-facilities*
     (workout-the-relationships-among-the-categories))
   (report-word-and-rules-count)
-
   :grammar-is-postprocessed )
 
 
 
 
 (defun workout-the-relationships-among-the-categories ()
-  "This is called from Postprocess-grammar-indexes which runs
-   at the end of load-the-grammar
-"
+  "Called by postprocess-grammar-indexes which runs after all
+   the grammar is loaded."
+  (declare (special *categories-without-supercs*))
   (setq *categories-without-supercs*
         (compute-daughter-relationships *referential-categories*))
   (sort-referential-categories-hierarchically)
@@ -76,8 +69,6 @@
   ;(setq *form-categories*        (sort-categories *form-categories*))
   ;;  try viewing them in their order of definition, which mirrors
   ;;   major
-;;  (setq *dotted-categories*      (sort-categories *dotted-categories*))
-
   (setq *all-intra-category-relationships-noticed?* t)
 
   (format t "~&~%-------------------------------------------~
@@ -119,9 +110,8 @@
 ;;;-----------------
 
 (defun post-process-grammar-module (gm)
-  ;; order/sort the objects in the various fields in ways that
-  ;; will make sense when they appear in a menu
-
+  "Order/sort the objects in the various fields in ways that
+   will make sense when they appear in a menu"
   (setf (gmod-cf-rules gm)      (sort-cfrs (gmod-cf-rules gm)))
   (setf (gmod-cs-rules gm)      (sort-csrs (gmod-cs-rules gm)))
   (setf (gmod-non-terminals gm) (sort-categories (gmod-non-terminals gm)))
