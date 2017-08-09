@@ -314,6 +314,7 @@
         ;; criteria for not using that rule
         (when (and rule
                    (equal (chunk-forms chunk) '(NG))
+                   (chunk-head? (second pair) chunk) ;; only if combining with head
                    ;; When we're parsing an NP,
                    ;; rule out rules for verb-like things
                    (rule-is-for-a-verb? rule)
