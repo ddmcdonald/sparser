@@ -494,7 +494,8 @@
               (c-itypep ref 'transcribe))
          '(object affected-process))
 
-        ((c-itypep ref 'bio-scalar)
+        ((and (c-itypep ref 'bio-scalar)
+              (not (c-itypep ref 'sensitivity)))
          '(measured-item))
         ((c-itypep ref 'inhibit)
          '(affected-process))
