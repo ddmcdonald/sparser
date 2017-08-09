@@ -236,6 +236,10 @@
          (print (save-corpus-sents c))
       finally (return *sent-snapshots-directory*))))
 
+(defun save-semantics-for-corpora (&optional
+                                     (corpora '(overnight dec-test dry-run aspp2 erk dynamic-model)))
+  (save-sent-snapshots :corpora corpora))
+
 (defun save-corpus-sents (name)
   (let ((corpus (get-sentence-corpus name))
         (*sent-snapshots-directory*

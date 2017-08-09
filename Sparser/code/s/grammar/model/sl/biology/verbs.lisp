@@ -253,7 +253,6 @@
 (define-category range :specializes bio-relation ;; REVIEW!!
   :binds ((low-value scalar-quantity)
           (high-value scalar-quantity))
-  :mixins (of-participant-bio-predication)
   :realization
   (:verb "range"
          :etf (sv)
@@ -356,8 +355,15 @@
   (:verb "function"
          :etf sv))
 
-(define-category bio-functionality :specializes bio-quality
-  :mixins (of-participant-bio-predication)
+(define-category bio-functionality :specializes bio-process
+  ;; bio-functionality takes none of the modifiers of bio-process except participant
+  :restrict ((by-means-of blocked-category)
+             (using blocked-category)
+             (manner blocked-category) ;; conflict with "increase" bio-process CHECK THIS WAS  bio-method
+             (without-using blocked-category)
+             (without-means-of blocked-category)
+             (as-comp blocked-category)
+             (target blocked-category))
   :realization
   (:noun "function"))
 
@@ -765,8 +771,12 @@
 	   :etf (svo-passive)))
 
 (def-synonym gene-transcript-over-express
-    (:verb ("overexpress" :past=tense "overexpressed" :past-participle "overexpressed")
+    (:verb ("overexpress" :past-tense "overexpressed" :past-participle "overexpressed")
            :noun "overexpression" :etf (svo-passive)))
+
+(def-synonym gene-transcript-over-express
+    (:verb ("over express" :past-tense "over expressed" :past-participle "over expressed")
+           :noun "over expression" :etf (svo-passive)))
 
 (define-category gene-transcript-co-over-express :specializes caused-bio-process
     :binds ((location bio-location)
@@ -777,8 +787,8 @@
 	   :noun "co-over-expression"
 	   :etf (svo-passive)))
 
-(def-synonym gene-transcript-over-express
-    (:verb ("cooverexpress" :past=tense "cooverexpressed" :past-participle "cooverexpressed")
+(def-synonym gene-transcript-co-over-express
+    (:verb ("cooverexpress" :past-tense "cooverexpressed" :past-participle "cooverexpressed")
            :noun "cooverexpression" :etf (svo-passive)))
 
 
@@ -792,7 +802,7 @@
 	   :etf (svo-passive)))
 
 (def-synonym gene-transcript-under-express
-    (:verb ("underexpress" :past=tense "underexpressed" :past-participle "underexpressed")
+    (:verb ("underexpress" :past-tense "underexpressed" :past-participle "underexpressed")
            :noun "underexpression" :etf (svo-passive)))
 
 
@@ -914,7 +924,6 @@
 
 
 (define-category impact :specializes bio-relation
-  :mixins (of-participant-bio-predication)
   :realization
   (:verb "impact" 
          :etf (svo-passive)
@@ -1212,7 +1221,6 @@
     (:verb "re-activate" :noun "re-activation"))
 
 (define-category relapse :specializes bio-predication
-  :mixins (of-participant-bio-predication)
   :realization
   (:verb "relapse" ;; keyword: ENDS-IN-ING 
          :noun "relapse"
@@ -1257,7 +1265,6 @@
 
 
 (define-category resist :specializes bio-relation
-  :mixins (of-participant-bio-predication)
   :realization
   (:verb "resist"
          :noun "resistance"
