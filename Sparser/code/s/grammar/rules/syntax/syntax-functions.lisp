@@ -409,7 +409,13 @@
     ;; really want an n-bar type item here, but these get raised to NPs
     ;;  the check is to distinguish "serine" gets "raised" to an NP
     ;;  and "an event" 
-    (subcategorized-variable head :verb-premod premod)))
+    (or (subcategorized-variable head :verb-premod premod)
+        (ecase (cat-name (edge-form (right-edge-for-referent)))
+          (verb+ing (subcategorized-variable head :object premod))
+          (verb+ed (subcategorized-variable head :subject premod))
+          ((verb+present verb vg+ed) nil) ;;these are cases in a prenominal, so don't use these rules
+          ))))
+        
 
 (defun adj-noun-compound (adjective head &optional adj-edge)
   (when (category-p head) (setq head (individual-for-ref head)))
