@@ -11,6 +11,22 @@
 
 
 #| -----------  TO DO
+(define-main-verb 'break
+    :infinitive "break"
+    :past-tense "broke"
+    :past-participle "broken"
+    :present-participle "broken")
+(define-main-verb 'catch
+  :infinitive "catch"
+  :past-tense "caught"
+  :past-participle "caught"
+  :present-participle "catching")
+(define-main-verb 'give
+    :infinitive "give"
+    :past-tense "gave"
+    :past-participle "given"
+    :present-participle "giving")
+
  understand
 |
  get attempt try  -to
