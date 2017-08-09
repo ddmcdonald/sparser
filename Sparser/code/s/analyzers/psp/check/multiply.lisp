@@ -225,7 +225,7 @@
           (else
             (tr :no-semantic-rule)))
 
-      (unless rule ;; check for form fule
+      (unless rule ;; check for form rule
         (setq rule (mult/ids-on-form-label left-edge right-edge))
         (if rule
             (then
