@@ -492,7 +492,8 @@
                  '(s subordinate-s)) ;; possible/likely conjunction
          (find-base-np-vp-edge (edge-left-daughter e)))
         
-        (t (lsp-break "find-base-np-vp-edge"))))
+        (t (error "find-base-np-vp-edge failed for ~s in ~s"
+                  s-edge (sentence-string *sentence-in-core*)))))
       
 
 
@@ -1828,11 +1829,6 @@
    (eq (cat-name (edge-form e)) 'conjunction)
    (eq (edge-category e) word::comma)))
 
-(defun unpack-subject-control (subject vp vp-edge)
-  (set-edge-referent vp-edge
-        (bind-dli-variable (subject-variable vp) **lambda-var** vp))
-  ;;(update-edge-mention-referent vp-edge (edge-referent vp-edge))
-  )
 
 (defun find-target-satisfying (fringe pred)
   (loop for edge in fringe
