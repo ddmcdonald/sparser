@@ -238,28 +238,50 @@ In drivers/chart/psp/semantic-extraction.lisp
    segments and their post-parse handling. Pushed onto by
    lift-out-variablized-segment")
 
-(defgeneric parse-to-create-template (text)
-  (:documentation "First parse the string.
-   While parsing, when we encounter a variable-ized segment,
-   record the edge and its referent.
-   When the parse has finished, trace up from what we recorded
-   to determine what variable the referent is bound to
-   so we can convert that portion of the total sexp
-    to a pattern we can subst into. ")
-  (:method ((text string))
-    (let ((*parsing-to-make-template* t))
-      (declare (special *parsing-to-make-template*))
-      (analyze-text-from-string text)
-      *template-variable-data* )))
+(defmacro p-template (name text)
+  "First parse the string.
+   While parsing, when we encounter a variable-ized segment, record
+   the edge and its referent.  When the parse has finished, figure out
+   what the referent is bound to so we can note the variable and its
+   restriction.
+   (The bound-in field should suffice.). Package all that up
+   into a subst-based method."
+  (declare (special *template-variable-data*))
+  (setq *template-variable-data* nil) ;; initialize
+  (let ((*parsing-to-make-template* t))
+    (declare (special *parsing-to-make-template*))
+    (let ((*return-a-value* t)
+          (*what-value-to-return* :spire))
+      (declare (special *return-a-value* *what-value-to-return*))
+      (let ((fn-name (template-method-name name))
+            (sexp (analyze-text-from-string text)))
+        (push-debug `(,sexp))
+        (when (cdr *template-variable-data*) (error "extend to 2+ vars"))
+        ;; Now get the variable and individual that binds it
+        (let* ((i (car (car *template-variable-data*)))
+               (target (krisp->sexpr i))
+               (b (car (indiv-bound-in i)))
+               (var (binding-variable b))
+               (v/r (var-value-restriction var))
+               (j (binding-body b)))
+
+          `(defgeneric ,fn-name (,(var-name var))
+             (:method ((value-exp cons))
+               ;; <is the value valid for this var?>
+               (let ((full (subst value-exp ',target
+                                  (copy-tree ',sexp)
+                                  :test #'equal)))
+                 (to-krisp full)))) )))))
+
 
 (defun lift-out-variablized-segment (pos-before-open pos-after-open
                                      pos-before-close pos-after-close)
-    "Called from span-square-bracts when we're doing templates.
+    "Called from span-square-brackets when we're doing templates.
      Since we should only be working with texts that parse
      completely, and we only delimit proper constituents, there
      should always be a single edge between the brackets.
-     To continue the parse we respan around the brackts with
-     what amounts to a copy of the edge between them."
+     To continue the parse we respan around the brackets with
+     what amounts to a copy of the edge that's between them."
     (let ((coverage (coverage-over-region pos-after-open pos-before-close))
           (edge (right-treetop-at/edge pos-after-open)))
       (unless (eq coverage :one-edge-over-entire-segment)
