@@ -235,12 +235,14 @@
 (noun "calcium" :super molecule)
 
 (define-category calcium-ion :specializes ion
-  :restrict ((molecule calcium)))
+                 :restrict ((molecule calcium))
+                 :realization
+  (:noun ("Ca2+" "Ca(2+)" "Ca 2+")))
 
-(def-synonym calcium-ion
+#+ignore(def-synonym calcium-ion
              (:noun "Ca2+"))
-(def-synonym calcium-ion
-             (:noun "Ca(2+)"))
+#+ignore(def-synonym calcium-ion
+            (:noun "Ca(2+)"))
 
 (define-category calcium-complex :specializes bio-complex
   :bindings (component (category-named 'calcium-ion)))

@@ -310,6 +310,9 @@
   :realization
     (:noun ("anti-oxidant response element" "ARE")))               
 
+(define-category rna-region :specializes bio-chemical-entity
+                 :documentation "subpart of RNA, e.g., UTR for untranslated region")
+
 (define-category ion :specializes bio-chemical-entity
   :binds ((molecule molecule)))
 

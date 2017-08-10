@@ -11,7 +11,7 @@
 (def-family-with-id "epithelial sodium channel" "IPR004724") 
 (def-family-with-id "natriuretic peptide" "IPR000663") 
 (def-family-with-id "interleukin 31" "XFAM:PF15209") 
-(def-family-with-id "Protein Kinase C" "IPR012233") 
+(def-family-with-id "Protein Kinase C" "IPR012233" :synonyms ("PKC") :members ("UP:O94806" "UP:P05129" "UP:P05771" "UP:P17252" "UP:P24723" "UP:P41743" "UP:Q02156" "UP:Q04759" "UP:Q05513" "UP:Q05655" "UP:Q15139" "UP:Q9BZL6")) 
 (def-family-with-id "immediate early response" "IPR008653") 
 (def-family-with-id "transforming growth factor-beta" "IPR016319") 
 (def-family-with-id "bacterial lipoprotein" "XFAM:PF12182") 
@@ -461,7 +461,7 @@
 (def-family-with-id "GAM" "XFAM:PF06064.9" :name "gam") 
 (def-family-with-id "GPI-anchor" "UP:SL-9902" :name "GPI-anchor") 
 (def-family-with-id "HRM" "XFAM:PF02793.20" :name "HRM") 
-(def-family-with-id "MAP3Ks" "BE:MAP3K" :name "MAP3K") 
+(def-family-with-id "MAP3Ks" "BE:MAP3K" :name "MAP3K" :synonyms ("MEK1 kinase" "MAP kinase kinase kinase" "MAP2K kinase" "mitogen-activated protein kinase kinase kinase" "MEKK" "MAPKKK") :members ("UP:P04049" #|Raf1|# "UP:P41279" "UP:P57077" "UP:P80192" "UP:Q02779" "UP:Q12852" "UP:Q13233" "UP:Q16584" "UP:Q7L7X3" "UP:Q99558" "UP:Q99683" "UP:Q99759" "UP:Q9H2K8" "UP:Q9UL54" "UP:Q9Y2U5" "UP:Q9Y6R4" "UP:O43283" "UP:O43318" "UP:O95382")) 
 (def-family-with-id "Neuropilin" "FA:02453" :name "neuropilin family") 
 (def-family-with-id "Nucleobindin" "FA:02541" :name "nucleobindin family") 
 (def-family-with-id "OmpA" "XFAM:PF00691.18" :name "OmpA") 
@@ -516,3 +516,5 @@
 (def-family-with-id "semaphorin" "FA:03563" :name "semaphorin family") 
 (def-family-with-id "single-pass" "UP:SL-9904" :name "Single-pass membrane protein") 
 (def-family-with-id "β-APP" "XFAM:PF03494.11" :name "beta-APP") 
+(def-family-with-id "Nef" "XFAM:PF00469" :name "Negative Regulatory Factor")
+(def-family-with-id "dynamin" "XFAM:PF00350" :name "dynamin" :members ("UP:Q05193" "UP:P50570" "UP:Q9UQ16")) ;; all the human one

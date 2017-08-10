@@ -44,7 +44,7 @@
 (define-cellular-location "cell-cell junction" "GO:0005911")
 (define-cellular-location "cytoplasm" "GO:0005737" :adj "cytoplasmic")
 (define-cellular-location "cytoplasmic vesicle" "GO:0031410")
-(define-cellular-location "cytoskeleton" "GO:0005856")
+(define-cellular-location "cytoskeleton" "GO:0005856" :adj "cytoskeletal")
 (define-cellular-location "cytosol" "GO:0005829" :adj "cytosolic")
 (define-cellular-location "dendritic spine" "GO:0043197")
 (define-cellular-location "early endosome" "GO:0005769")

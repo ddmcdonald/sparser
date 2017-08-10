@@ -45,13 +45,13 @@
 (def-bio "GDP" nucleotide  :identifier "CHEBI:17552" :mitre-link "PubChem:8977")
 (noun "dGDP" :super nucleotide)
 
-(noun ("AMP" "adenosine 3',5'-monophosphate") :super nucleotide)
+(def-indiv-with-id nucleotide "adenosine monophosphate" "PCID:6083" :synonyms ("AMP" "adenosine 3',5'-monophosphate" "adenosine monophosphate"))
 (noun ("cAMP" "cyclic adenosine 3',5'-monophosphate") :super nucleotide)
 
 (noun "dAMP" :super nucleotide)
-(noun "ATP" :super nucleotide)
+(noun ("ATP" "adenosine triphosphate") :super nucleotide)
 (noun "dATP" :super nucleotide)
-(noun "ADP" :super nucleotide)
+(noun ("ADP" "adenosine diphosphate") :super nucleotide)
 (noun "dADP" :super nucleotide)
 
 
@@ -84,7 +84,7 @@
 (noun "AICAR" :super peptide)
 (def-synonym abeta (:noun "amyloid beta"))
 ;; to be reviewed -- from Localization
-
+(noun "D-peptide" :super peptide) ; d-enantiomers of peptides -- came up in article 3640864
 
 ;;;-------------
 ;;; lipids
@@ -167,6 +167,8 @@
 (noun "lactate" :super molecule)
 (noun "32P" :super molecule) 
 ;; actually an isotope -- need to adjust taxonomy 
+
+;; note: calcium and calcium ion are defined in bio-complexes
 
 ;;;-------------
 ;;; miscellaneous with IDs

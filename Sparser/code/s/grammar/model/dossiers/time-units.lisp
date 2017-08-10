@@ -18,7 +18,7 @@
 
 ;;new time units 
 (define-individual 'time-unit :name "second")
-(define-individual 'time-unit :name "minute")
+(define-named-individual-with-synonyms time-unit ("minute" "min"))
 (define-individual 'time-unit :name "hour")
 
 

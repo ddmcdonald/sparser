@@ -29,7 +29,7 @@
 (noun "isomerase" :super enzyme)
 (noun "ligase" :super enzyme)
 (noun "ubiquitinase" :super enzyme)
-(noun "deubiquitinase" :super enzyme)
+(noun ("deubiquitinase" "deubiquitylase" "DUB") :super enzyme)
 
 ;;;-----------------
 ;;; protein-families
@@ -232,9 +232,12 @@
 (def-family "DT" :members ("UP:P40126" "UP:Q03001"))
 (def-family "DUP" :members ("UP:P20585" "UP:Q9H211"))
 (def-family "DUSP") ;; there are a bunch of these, but we will ignore them for the moment
+(def-family "USP" :synonyms ("ubiquitin-specific protease" "ubiquitin-specific peptidase")) ;; there are a lot of these too
+(def-family "UBL" :synonyms ("ubiquitin-like")) ;; many of these
 (def-family "DVL" :synonyms ("Dvl") :identifier "XFAM:PF08137.10")
 (def-family "Doppel" :synonyms ("doppel") :identifier "XFAM:PF11466.6")
 (def-family "E2F-1" :members ("UP:Q01094" "UP:Q90977") :synonyms ("Transcription factor E2F1"))
+(def-family "E3 ligase" :synonyms ("E3 ubiquitin ligase" "ubiquitin ligase") :members ("UP:P78317" "UP:P90489" "UP:P98170" "UP:Q00987" "UP:Q05086" "UP:Q06587" "UP:Q13049" "UP:Q13191" "UP:Q14258" "UP:Q14669" "UP:Q15034" "UP:Q15386" "UP:Q15751" "UP:Q1PSW8" "UP:Q2Q1W2" "UP:Q5GLZ8" "UP:Q5T447" "UP:Q5T4S7" "UP:Q5TA31" "UP:Q5TJF3" "UP:Q5U5Q3" "UP:Q5U5R9" "UP:Q5VTB9" "UP:Q5VTR2" "UP:Q5XPI4" "UP:Q63HN8" "UP:Q6AZZ1" "UP:Q6Q0C0" "UP:Q6TEM9" "UP:Q6UWE0" "UP:Q6VVB1" "UP:Q6ZMZ0" "UP:Q6ZNA4" "UP:Q75N03" "UP:Q76N89" "UP:Q7Z3V4" "UP:Q7Z419" "UP:Q7Z6E9" "UP:Q7Z6J0" "UP:Q7Z6J8" "UP:Q7Z6Z7" "UP:Q7Z569")) ;; there are more, but I eventually stopped
 (def-family "E6" :synonyms NIL :identifier "XFAM:PF00518.15")
 (def-family "EB1" :members ("UP:O14548" "UP:Q15691" "UP:Q1HVG1"))
 (def-family "EBP" :members ("UP:Q15125" "UP:Q5HYK7"))
@@ -288,7 +291,7 @@
 (def-family "GNT1" :members ("UP:O60656" "UP:P19224" "UP:P22309" "UP:P35503" "UP:Q9HAW7" "UP:Q9HAW8" "UP:Q9HAW9") :synonyms ("UGT1"))
 (def-family "GP3" :synonyms NIL :identifier "XFAM:PF03076.12")
 (def-family "GP41" :synonyms ("gp41") :identifier "XFAM:PF00517.15")
-(def-family "GPCR")
+(def-family "GPCR" :synonyms ("G protein–coupled receptor")) ;; wikipedia claims the id is XFAM:PF00001, but that's only for the rhodopsin-like subfamily
 (def-family "GPP34" :synonyms NIL :identifier "XFAM:PF05719.9")
 (def-family "GRF2" :members ("UP:O14827" "UP:Q13905"))
 (def-family "GRIP1" :members ("UP:Q15596" "UP:Q96DT0" "UP:Q9Y3R0"))
@@ -415,8 +418,9 @@
 (def-family "Lst2" :synonyms ("lst-2") :identifier "FA:02122")
 (def-family "MAD-1" :synonyms ("MAD1") :identifier "FA:02139")
 (def-family "MAG" :members ("UP:P18074" "UP:P20916"))
+(def-family "MAP" :synonyms ("microtubule-associated protein" "microtubule associated protein") :members ("UP:P10636" "UP:P11137" "UP:P27816" "UP:P46821" "UP:P78559" "UP:Q14244" "UP:Q15691" "UP:Q49MG5" "UP:Q66K74" "UP:Q8IWC1" "UP:Q96JE9" "UP:Q9GZQ8" "UP:Q9H492" "UP:Q9UPY8"))
 (def-family "MAP2K" :members ("MAP2K1" "MAP2K2" "MAP2K3" "MAP2K4" "MAP2K5" "MAP2K6" "MAP2K7") :identifier "BE:MAP2K" :synonyms ("mitogen activated protein kinase kinase" "MAP kinase kinase") )
-(def-family "MAPK" :members ("UP:Q5A1D3" "UP:P27638" "UP:Q54QB1" ) :long "mitogen activated protein kinase" :synonyms ("ERK" "extracellular signal-regulated kinase" "ERK1/2" "erk" "mapk" "MAP kinase"  "map kinase" "mitogen-activated protein kinase" "mitogen activated protein kinas" "ERK-1/2") :identifier "PR:000000019")
+(def-family "MAPK" :members ("UP:Q5A1D3" "UP:P27638" "UP:Q54QB1" ) :long "mitogen activated protein kinase" :synonyms ("ERK" "extracellular signal-regulated kinase" "ERK1/2" "erk" "mapk" "MAP kinase"  "map kinase" "mitogen-activated protein kinase" "mitogen activated protein kinas" "ERK-1/2" "mitogen-activated protein (MAP) kinase" "Extracellular signal Regulated Kinase" "HEK5" "MAPK)/extracellular activating kinase" "MAPK)/extracellular signal regulated kinase" "extra-cellular signal regulated kinase" "extracellular regulated kinase" "extracellular regulated protein kinase" "extracellular regulating kinase" "extracellular signal regulated kinase 1/2" "extracellular signal regulated protein kinase" "extracellular signal related kinase" "extracellular-signal-regulated kinase" "signal regulated kinase") :identifier "PR:000000019")
 (def-family "MAT1" :members ("UP:P51948" "UP:Q15121" "XFAM:PF06391.11"))
 (def-family "MAT1" :synonyms ("Mat1") :identifier "XFAM:PF06391.11")
 (def-family "MBP-1" :members ("UP:P06733" "UP:P22032"))
@@ -515,8 +519,7 @@
 (def-family "PIK1" :synonyms ("Pik1" "pik1") :identifier "XFAM:PF11522.6")
 (def-family "PIM" :synonyms ("Pim") :identifier "FA:03078")
 (def-family "PIP" :members ("UP:O95861" "UP:P12273"))
-(def-family "PKC" :members ("PKC-alpha" "PKC-delta" "nPKC-epsilon"))
-(def-family "PKCdelta" :members ("UP:P10829" "UP:P83099" "UP:Q05655"))
+(def-family "PKCdelta" :members ( "UP:P83099" "UP:Q05655")) ; removed the rabbit one "UP:P10829"
 (def-family "PKD" :synonyms ("PKDs") :identifier "FA:03079")
 (def-family "PKD2" :members ("UP:Q13563" "UP:Q9BZL6"))
 (def-family "PKK" :synonyms NIL :identifier "XFAM:PF12474.6")
@@ -560,9 +563,9 @@
 (def-family "Prostaglandin E synthase" :members ("UP:O14684" "UP:Q9JM51") :synonyms ("mPGES-1"))
 (def-family "Protein Nef" :members ("UP:B0ZG58" "UP:J9RB96"))
 (def-family "Protein disulfide-isomerase A3" :members ("UP:P11598" "UP:P30101"))
-(def-family "Protein kinase C gamma type" :members ("UP:P05129" "UP:P10829" "UP:Q05655"))
-(def-family "Protein kinase C gamma type" :members ("UP:P05129" "UP:P10829"))
-(def-family "Protein kinase C-like 1" :members ("UP:P34722" "UP:Q16512"))
+;(def-family "Protein kinase C gamma type" :members ("UP:P05129")) ; removed rabbit one, also human one that was delta not gamma and so it's no longer really a family, so I moved this name to the one remaining protein
+;(def-family "Protein kinase C gamma type" :members ("UP:P05129" "UP:P10829"))
+;(def-family "Protein kinase C-like 1" :members ("UP:P34722" "UP:Q16512")) removed c elegans one and then there's only one left
 (def-family "Protein lin-28 homolog B" :members ("UP:Q45KJ4" "UP:Q6ZN17"))
 (def-family "Proto-oncogene c-Fgr" :members ("UP:P09769" "UP:P11362"))
 (def-family "Q9HDB5" :members ("UP:Q9HDB5" "UP:Q9Y4C0"))
@@ -773,15 +776,13 @@
 (def-family "arf-1" :members ("UP:P84077" "UP:Q9ULH1"))
 (def-family "arpc1b" :members ("UP:A4D275" "UP:O15143"))
 (def-family "arrestin") ;; lots of family members -- put them in some day
-(def-family "arrestin-2" :members ("UP:P17870" "UP:P32121"))
+;(def-family "arrestin-2" :members ("UP:P17870" "UP:P32121")) removed the bovine one, so it's no longer a family
 (def-family "ataxin-3" :members ("UP:P54252" "UP:Q9W689"))
 (def-family "aw-19" :members ("UP:P16190" "UP:P30459" "UP:P30512"))
-(def-family "aw-19" :members ("UP:P16190" "UP:P30459" "UP:P30512"))
 (def-family "basic membrane protein" :identifier "XFAM:PF02608.12" :synonyms ("BMP") :members ("UP:P35855"))
-(def-family "beta-arrestin-1" :members ("UP:P17870" "UP:P49407"))
-(def-family "beta-arrestin-2" :members ("UP:P32120" "UP:P32121"))
+;(def-family "beta-arrestin-1" :members ("UP:P17870" "UP:P49407")) removed the bovine one, so it's no longer a family
+;(def-family "beta-arrestin-2" :members ("UP:P32120" "UP:P32121")) removed the bovine one, so it's no longer a family
 (def-family "beta-defensin 1" :members ("UP:O19038" "UP:O89117" "UP:P60022"))
-(def-family "beta-defensin 1" :members ("UP:O19038" "UP:P60022"))
 (def-family "beta-defensin 2" :members ("UP:O15263" "UP:P82020"))
 (def-family "beta-gal" :members ("UP:P06864" "UP:P70753"))
 (def-family "bone morphogenetic protein" :identifier "NCIT:C17274" :synonyms ("BMP") :members ("UP:O95390" "UP:O95393""UP:O95972" "UP:P12643" "UP:P12644" "UP:P12645" "UP:P13497" "UP:P18075" "UP:P22003" "UP:P22004" "UP:P34819" "UP:P34820" "UP:P43026" "UP:P55107" "UP:Q6KF10" "UP:Q7Z5Y6" "UP:Q9UK05")) ;; this is the same as "PR:000000034"
@@ -882,7 +883,7 @@
 (def-family "interferon alpha" :members ("UP:P01563" "UP:P35849"))
 (def-family "interferon regulatory factor 3" :members ("UP:Q14653" "UP:Q4JF28"))
 (def-family "interferon regulatory factor 5" :members ("UP:Q13568" "UP:Q58DJ0"))
-(def-family "interleukin" :members ("NCIT:C20497" "UP:P05231" "UP:P08700" "UP:P10145" "UP:P13232" "UP:P60568" "UP:Q15KG7"))
+(def-family "interleukin" :members ("NCIT:C20497" "UP:P01583" "UP:P01584" "UP:P05231" "UP:P08700" "UP:P10145" "UP:P13232" "UP:P60568" "UP:Q15KG7"))
 (def-family "interleukin-33" :members ("UP:O95760" "UP:O97863"))
 (def-family "interleukin-6" :members ("UP:P05231" "UP:P40189"))
 (def-family "jagged1" :members ("UP:P78504" "UP:Q90Y57"))
@@ -1011,7 +1012,7 @@
 (def-family "rad1" :members ("UP:O60671" "UP:Q9BSD3"))
 (def-family "rap1" :members ("UP:P0C768" "UP:Q9NYB0"))
 (def-family "rap2" :members ("UP:P10114" "UP:Q96NL0"))
-(def-family "receptor tyrosine kinase" :members ("NCIT:C17660" "UP:P04629" "UP:P51854"))
+(def-family "receptor tyrosine kinase" :identifier "NCIT:C17660" :synonyms ("TKR" "RTK" "receptor-tyrosine kinase"):members ("UP:P04629" "UP:P51854"))
 (def-family "receptor-type tyrosine-protein phosphatase kappa" :members ("UP:Q15262" "UP:Q6P493"))
 (def-family "replication-associated protein" :members ("UP:P0C768" "UP:P18919"))
 (def-family "reprimo" :synonyms NIL :identifier "FA:03263")
@@ -1062,12 +1063,18 @@
 (def-family "tyrphostin") ;; Tyrosine-kinase inhibitor -- actually a drug?
 (def-family "vascular endothelial growth factor receptor 2" :members ("UP:P35968" "UP:P52583"))
 (def-family "vascular endothelial growth factor" :members ("UP:P15692" "UP:P17948" "UP:P35968"))
-(def-family "zeta" :members ("FA:01677" "UP:P40227" "UP:Q05513"))
-(def-family "β2" :members ("UP:Q60430" "UP:Q9Y691"))
-(def-family "β5" :members ("UP:G3MZC5" "UP:Q9Y5E4"))
+(def-family "zeta" :synonyms ("zeta family") :identifier "FA:01677") ;; the two previous members defined in this were not part of the zeta family, just a couple of proteins with zeta in the name, but there are a few members of the actual zeta family defined based on http://www.uniprot.org/uniprot/?query=family:%22Zeta%20family%22
+;(def-family "β2" :members ("UP:Q60430" "UP:Q9Y691")) not really a family, one is for calcium, the other for beta cells, and the former isn't really known as beta2
+;;(def-family "β5" :members ("UP:G3MZC5" "UP:Q9Y5E4")) not really a family, and only one really has just β5 for a short name
 ;(def-family "BMP" :members ( )) ;; not really a family -- some are "bone morphogenetic protein" others are "basic membrane protein" -- better to have it defined on the fly by the article
 ;(def-family "protein" :members ("UP:P27392" "UP:P63162" "UP:Q64902" "UP:Q8WWW0" "UP:Q9UPM9"))
 ;;(def-family "LY" :members ("UP:P42336" "UP:Q15910")) none of these seem to legitimately be named "LY"
+(def-family "adrenergic receptor" :identifier "GO:0004935" :synonyms ("adrenoreceptor") :members ("UP:P07550" "UP:P08588" "UP:P08913" "UP:P13945" "UP:P25100" "UP:P35626" "UP:Q91175"))
+(def-family "clathrin" :members ("UP:P09496" "UP:P09497" "UP:P53675" "UP:Q00610"))
+(def-family "clathrin adaptor protein" :members ("UP:P98082" "UP:P49407"))
+(def-family "trypsin" :members ("UP:P07477" "UP:P07478" "UP:P35030"))
+(def-family "tryptase" :members ("UP:Q15661" "UP:Q9GZN4" "UP:Q9NRR2" "UP:Q02844"))
+(def-family "phospholipase Cβ" :synonyms ("phospholipase Cbeta" "phospholipase C-beta" "PLC-beta" "PLC-β" "PLCbeta" "PLCβ" "PLCB") :members ("UP:Q9NQ66" "UP:Q00722" "UP:Q01970" "UP:Q15147"))
 
 (cond ((not *use-small-proteins*)
        (def-family "FAK" :identifier "FA:03125" :synonyms ("FAK subfamily") :members ("PTK2" "PTK2B"))

@@ -16,6 +16,16 @@
 (noun "saRNA" :super rna)
 (def-synonym saRNA (:noun "small activating RNA")) ;; no findable ontology ID yet but wiki article with sources https://en.wikipedia.org/wiki/SaRNA
 
+
+(noun "UTR" :super rna-region)
+(def-synonym UTR (:noun "untranslated region"))
+
+(noun "3′-UTR" :super utr)
+(def-synonym 3′-UTR (:noun "3′ -UTR"))
+;; three prime untranslated region of mRNA -- comes up as "CRAF 3′-UTR" in article 3522295
+(noun "5′-UTR" :super utr)
+(def-synonym 5′-UTR (:noun "5′ -UTR"))
+
 (noun "miR-26A" :super micro-rna)
 (noun "miR-26A2" :super micro-rna)
 (def-synonym miR-26A2
