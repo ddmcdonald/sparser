@@ -11295,7 +11295,7 @@
 (define-protein "UP:P78536" ("3.4.24.86" "ADA17_HUMAN" "ADAM 17" "ADAM metallopeptidase domain 17" "ADAM-17" "ADAM17" "adam17" "CD156b" "CSVP" "disintegrin and metalloproteinase domain-containing protein 17" "p78536" "snake venom-like protease" "TACE" "TNF-alpha convertase" "TNF-alpha-converting enzyme" "TNF-α" "TNF-α convertase" "TNF-α-converting enzyme")) 
 (define-protein "UP:P78537" ("BL1S1_HUMAN" "BLOC1S1" "BLOS1" "GCN5L1" "p78537" "RT-14" "RT14")) 
 (define-protein "UP:P78540" ("ARG2" "ARGI2_HUMAN" "arginase-2, mitochondrial" "p78540" "arginase 2")) 
-(define-protein "UP:P78543" ("BTG anti-proliferation factor 2" "BTG family member 2" "BTG2" "BTG2_HUMAN" "btg2" "NGF-inducible anti-proliferative protein PC3" "p78543" "PC3" "Protein BTG2" "TIS21" "pERK1/2" "protein BTG2")) 
+(define-protein "UP:P78543" ("BTG anti-proliferation factor 2" "BTG family member 2" "BTG2" "BTG2_HUMAN" "btg2" "NGF-inducible anti-proliferative protein PC3" "p78543" "PC3" "Protein BTG2" "TIS21" "protein BTG2")) 
 (define-protein "UP:P78545" ("E74 like ETS transcription factor 3" "e74-like factor-3" "ELF3" "ERT" "ESE-1" "ESE1" "ESX" "elf3" "ese1" "jen" "p78545" "ert")) 
 (define-protein "UP:P78549" ("Endonuclease III-like protein 1" "Endonuclease III-like protein 1 (EC 4.2.99.18)" "NTH1" "NTHL1" "NTH_HUMAN" "OCTS3" "p78549" "hNTH1" "nth (E.coli endonuclease III)-like 1" "nth endonuclease III-like 1 (E. coli)" "nth like DNA glycosylase 1")) 
 (define-protein "UP:P78552" ("CD213a1" "CT19" "cancer/testis antigen 19" "I13R1_HUMAN" "IL-13 receptor subunit alpha-1" "IL-13 receptor subunit α-1" "IL-13R subunit alpha-1" "IL-13R subunit α-1" "IL-13R-alpha-1" "IL-13R-α-1" "IL-13RA1" "IL-13Rα1" "IL13R" "IL13RA" "IL13RA1" "IL13Ralpha1" "IL13Rα1" "IL13ra1" "il13ra1" "interleukin-13 receptor subunit alpha-1" "p78552" "interleukin 13 receptor subunit alpha 1")) 
@@ -17558,7 +17558,7 @@
 (define-protein "UP:Q8GSQ1" ("dwarf")) 
 (define-protein "UP:Q8GT20" ("hsr201")) 
 (define-protein "UP:Q8GTR4" ("LDA" "PU-1" "PU1")) 
-(define-protein "UP:Q8GUH1" ("e3-ubiquitin ligase" "Q8GUH1")) 
+;(define-protein "UP:Q8GUH1" ("e3-ubiquitin ligase" "Q8GUH1")) mouse ear cress -- the family is more likely 
 (define-protein "UP:Q8GUH7" ("HYP1")) 
 (define-protein "UP:Q8GUQ8" ("xdh1")) 
 (define-protein "UP:Q8GVZ6" ("ELE")) 
@@ -17566,7 +17566,7 @@
 (define-protein "UP:Q8GWA1" ("ndi1")) 
 (define-protein "UP:Q8GWJ6" ("MUB6")) 
 (define-protein "UP:Q8GWW7" ("AIH")) 
-(define-protein "UP:Q8GX23" ("p-Erk5" "pERK5")) 
+;(define-protein "UP:Q8GX23" ("p-Erk5" "pERK5")) mouse-ear cress PERK5 -- unlikely to be what we actually want
 (define-protein "UP:Q8GXF0" ("AtRad51c" "DNA repair protein RAD51 homolog 3")) 
 (define-protein "UP:Q8GXV7" ("PDLP1" "PDLP1a")) 
 (define-protein "UP:Q8GY84" ("RH10")) 
@@ -22542,7 +22542,7 @@
 (define-protein "UP:Q9LJX0" ("PGP19")) 
 (define-protein "UP:Q9LJX1" ("pre5")) 
 (define-protein "UP:Q9LJY0" ("PRKA")) 
-(define-protein "UP:Q9LK03" ("P-ERK-2" "p-ERK2" "pERK-2" "pERK2")) 
+;(define-protein "UP:Q9LK03" ("P-ERK-2" "p-ERK2" "pERK-2" "pERK2")) mouse ear cress PERK2 -- not likely to be what we want
 (define-protein "UP:Q9LK09" ("SYP32")) 
 (define-protein "UP:Q9LK35" ("THE1")) 
 (define-protein "UP:Q9LK48" ("ACE3")) 

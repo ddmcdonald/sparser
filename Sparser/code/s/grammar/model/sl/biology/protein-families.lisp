@@ -237,7 +237,7 @@
 (def-family "DVL" :synonyms ("Dvl") :identifier "XFAM:PF08137.10")
 (def-family "Doppel" :synonyms ("doppel") :identifier "XFAM:PF11466.6")
 (def-family "E2F-1" :members ("UP:Q01094" "UP:Q90977") :synonyms ("Transcription factor E2F1"))
-(def-family "E3 ligase" :synonyms ("E3 ubiquitin ligase" "ubiquitin ligase") :members ("UP:P78317" "UP:P90489" "UP:P98170" "UP:Q00987" "UP:Q05086" "UP:Q06587" "UP:Q13049" "UP:Q13191" "UP:Q14258" "UP:Q14669" "UP:Q15034" "UP:Q15386" "UP:Q15751" "UP:Q1PSW8" "UP:Q2Q1W2" "UP:Q5GLZ8" "UP:Q5T447" "UP:Q5T4S7" "UP:Q5TA31" "UP:Q5TJF3" "UP:Q5U5Q3" "UP:Q5U5R9" "UP:Q5VTB9" "UP:Q5VTR2" "UP:Q5XPI4" "UP:Q63HN8" "UP:Q6AZZ1" "UP:Q6Q0C0" "UP:Q6TEM9" "UP:Q6UWE0" "UP:Q6VVB1" "UP:Q6ZMZ0" "UP:Q6ZNA4" "UP:Q75N03" "UP:Q76N89" "UP:Q7Z3V4" "UP:Q7Z419" "UP:Q7Z6E9" "UP:Q7Z6J0" "UP:Q7Z6J8" "UP:Q7Z6Z7" "UP:Q7Z569")) ;; there are more, but I eventually stopped
+(def-family "E3 ligase" :synonyms ("E3 ubiquitin ligase" "ubiquitin ligase" "e3-ubiquitin ligase") :members ("UP:P78317" "UP:P90489" "UP:P98170" "UP:Q00987" "UP:Q05086" "UP:Q06587" "UP:Q13049" "UP:Q13191" "UP:Q14258" "UP:Q14669" "UP:Q15034" "UP:Q15386" "UP:Q15751" "UP:Q1PSW8" "UP:Q2Q1W2" "UP:Q5GLZ8" "UP:Q5T447" "UP:Q5T4S7" "UP:Q5TA31" "UP:Q5TJF3" "UP:Q5U5Q3" "UP:Q5U5R9" "UP:Q5VTB9" "UP:Q5VTR2" "UP:Q5XPI4" "UP:Q63HN8" "UP:Q6AZZ1" "UP:Q6Q0C0" "UP:Q6TEM9" "UP:Q6UWE0" "UP:Q6VVB1" "UP:Q6ZMZ0" "UP:Q6ZNA4" "UP:Q75N03" "UP:Q76N89" "UP:Q7Z3V4" "UP:Q7Z419" "UP:Q7Z6E9" "UP:Q7Z6J0" "UP:Q7Z6J8" "UP:Q7Z6Z7" "UP:Q7Z569")) ;; there are more, but I eventually stopped
 (def-family "E6" :synonyms NIL :identifier "XFAM:PF00518.15")
 (def-family "EB1" :members ("UP:O14548" "UP:Q15691" "UP:Q1HVG1"))
 (def-family "EBP" :members ("UP:Q15125" "UP:Q5HYK7"))
