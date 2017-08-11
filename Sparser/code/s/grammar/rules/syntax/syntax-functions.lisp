@@ -165,7 +165,7 @@
       (if (eq val '*lambda-var*)
           (when *lambda-var-warnings*
             (warn "still trying to bind *lambda-var* in predication, in ~s~%"
-                (sentence-string *sentence-in-core*)))
+                (current-string)))
           (lsp-break "non individual as val")))
     (cond (new-predication
            (setf (gethash new-predication *predication-links-ht*) val)
@@ -247,7 +247,7 @@
                (edge-left-daughter pre-pred-edge))
               ((eq statement (edge-referent (edge-right-daughter pre-pred-edge)))
                (edge-right-daughter pre-pred-edge))
-              (t (warn "bad make-predication-edge in ~s~%" (sentence-string *sentence-in-core*))
+              (t (warn "bad make-predication-edge in ~s~%" (current-string))
                  nil))
         pre-pred-edge)))
 
@@ -386,7 +386,7 @@
              (subcategorized-variable head :verb-premod premod))
     (push (list premod (value-of 'raw-text premod)
                 head  (value-of 'raw-text head)
-                (sentence-string *sentence-in-core*))
+                (current-string))
           *premod-to-verb-examples*))
   (let* ((*ambiguous-variables* nil)
          (premod-edge (left-edge-for-referent))
@@ -492,7 +492,6 @@
 (defun determiner-noun (determiner head)
   "Depending on the value of *determiners-in-DL* either bind the determiner
    to a variable or stash it by calling add-def-ref and handle it later"
-  (declare (special *sentence-in-core*))
   (push-debug `(,determiner ,head))
   (or *subcat-test*
       (let* ((parent-edge (parent-edge-for-referent))
@@ -620,21 +619,21 @@
 
 
 
-(defun verb+ing-noun-compound (qualifier head)
+(defun verb+ing-noun-compound (verb head)
   (or (when (use-methods)
-        (compose qualifier head))
-      (link-in-verb+ing qualifier head)))
+        (compose verb head))
+      (link-in-verb+ing verb head)))
 
-(defun link-in-verb+ing (qualifier head)
+(defun link-in-verb+ing (verb head)
   (let ((premod-n-variable
-         (subcategorized-variable head :m qualifier)))
+         (subcategorized-variable head :m verb)))
     (if premod-n-variable
-        (bind-dli-variable premod-n-variable qualifier head)
+        (bind-dli-variable premod-n-variable verb head)
    
-        (let ((subject-var (subcategorized-variable  qualifier :subject head)))
+        (let ((subject-var (subcategorized-variable  verb :subject head)))
           (cond
             (*subcat-test* subject-var)
-            ((word-p qualifier)
+            ((word-p verb)
              ;; probably a case of an unknown verb+ing created by morphology
              ;;  like "mating" in PMC352229
              ;; "the complementary mating type-switched strain PJ69–4A"
@@ -642,26 +641,31 @@
              ;; what it means
              head)
             (t
-             (setq qualifier
+             (setq verb
                    (interpret-verb-as-predication
                     'link-in-verb+ing
                     head
-                    qualifier
+                    verb
                     *left-edge-into-reference*
                     subject-var))
-             (setq head (bind-dli-variable 'predication qualifier head))
+             (setq head (bind-dli-variable 'predication verb head))
              head))))))
 
 (defun interpret-verb-as-predication (rule-fn head qualifier edge-for-qualifier var)
-  (unless (eq qualifier (edge-referent edge-for-qualifier))
+  (unless (or (null edge-for-qualifier) (eq qualifier (edge-referent edge-for-qualifier)))
     (lsp-break "bad call to extend-interpretation-of-verb-as-predication"))
   (setq qualifier (individual-for-ref qualifier))
   (cond (var
          ;; really should check for passivizing
          (setq qualifier (create-predication-by-binding
                           var head qualifier
-                          (list rule-fn (parent-edge-for-referent))))
-         (set-edge-referent edge-for-qualifier qualifier))
+                          (list rule-fn (when edge-for-qualifier (parent-edge-for-referent)))
+                          :insert-edge
+                          (not (null edge-for-qualifier))))
+         (if (edge-p edge-for-qualifier)
+             (set-edge-referent edge-for-qualifier qualifier)
+             qualifier))
+           
         (t
          (lsp-break "call to extend-interpretation-of-verb-as-predication with null binding variable, var")))
   qualifier)
@@ -706,7 +710,7 @@
      addition onto the vector associated with the vg head.")
   (:method (aux (w word))
     (warn "can't apply add-tense/aspect to ~s and word ~s ~% in ~s%" aux w
-          (sentence-string *sentence-in-core*))
+          (current-string))
     nil)
   (:method ((aux category) (vg category))
     (add-tense/aspect (individual-for-ref aux) (individual-for-ref vg)))
@@ -727,7 +731,7 @@
   (let ((be-edge (left-edge-for-referent)))
     (when (or
            (member (cat-name (edge-form be-edge))
-                   '(verb verb+present verb+past verb+ed verb+ing vg+ed vg vg+ing infinitive))
+                   '(verb verb+present verb+past verb+ed verb+ing vg+ed vg vg+ing vp+ing infinitive))
            (if (member (cat-name (edge-form be-edge))
                        '(that-comp thatcomp to-comp vp S subject-relative-clause
                          subordinate-s subordinate-clause
@@ -736,7 +740,7 @@
                nil
                (warn "check-passive-and-add-tense/aspect got ~s in ~s~%"
                      (cat-name (edge-form be-edge))
-                     (sentence-string *sentence*))))
+                     (current-string))))
            
       (loop for vg-item
             in (if (is-basic-collection? vg) (value-of 'items vg) (list vg))
@@ -874,7 +878,7 @@
                (warn "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
                      (edge-string (left-edge-for-referent))
                      (edge-string (right-edge-for-referent))
-                     (sentence-string *sentence-in-core*)))
+                     (current-string)))
               nil)))
           (variable-to-bind
            (bind-dli-variable variable-to-bind adverb vg))
@@ -927,7 +931,7 @@
             (warn "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
                   (edge-string (left-edge-for-referent))
                   (edge-string (right-edge-for-referent))
-                  (sentence-string *sentence-in-core*)))
+                  (current-string)))
           nil)))
 
       ;; Execution options if subcat-test is satisfied
@@ -1242,7 +1246,7 @@
       ;;; found it is mostly being called for the right things, but we need to make it play better
       ;; with finding discourse-mentions
       (format t "~%interpret-pp-as-head-of-np run on ~s ~s in ~s~%"
-              (retrieve-surface-string np)(retrieve-surface-string pp) (sentence-string *sentence-in-core*))
+              (retrieve-surface-string np)(retrieve-surface-string pp) (current-string))
       (setq pobj-referent (individual-for-ref pobj-referent))
       (setq pobj-referent (bind-dli-variable variable-to-bind np pobj-referent))
       (revise-parent-edge :category (itype-of pobj-referent))
@@ -1382,7 +1386,7 @@
           (t
            (error  "interpret-control-copula fails with subj=~s, copula=~s in ~s~%"
                    subj copula
-                   (sentence-string *sentence-in-core*))))))
+                   (current-string))))))
       
 
 (defun assimilate-subject-to-vp-ing (subj vp)
@@ -1393,8 +1397,8 @@
       t ;;   *subcat-test*
     (format t "~&----assimilate-subject-to-vp-ing make an NP for ~s and ~s---~&  in ~s~&" 
             subj vp
-            (if (> (length (sentence-string *sentence-in-core*)) 0)
-		(sentence-string *sentence-in-core*)
+            (if (> (length (current-string)) 0)
+		(current-string)
 		*string-from-analyze-text-from-string*)))
   (when (is-non-anaphor-numeric? *left-edge-into-reference* subj)
     (return-from assimilate-subject-to-vp-ing nil))
@@ -1464,7 +1468,7 @@
        (revise-parent-edge :form category::vg+ed)
        result)
       (t (warn "Error in sentence: ~s"
-               (sentence-string *sentence-in-core*))
+               (current-string))
          (error "How can this happen? Null referent produced in assimilate-subject-to-vp-ed~%" )))))
 
 
@@ -1517,7 +1521,7 @@
 				       ((vp+ed vg+ed vp+past) category::vp+past)
                                        ((to-comp) category::to-comp)
                                        (t (warn "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP? in ~s!"
-                                                (sentence-string *sentence-in-core*))
+                                                (current-string))
                                        category::n-bar))
 			       :referent result))
        result))))
@@ -1744,6 +1748,8 @@
   (declare (special category::to category::to-comp category::prepositional-phrase))
   ;;(push-debug `(,prep ,complement)) (break "where prep?") 
   (cond
+    ((subordinate-conjunction? (left-edge-for-referent))
+     nil)
     (*subcat-test*
      (and prep complement))
     ((or (eq prep category::to)
