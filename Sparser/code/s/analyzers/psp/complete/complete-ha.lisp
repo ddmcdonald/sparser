@@ -156,7 +156,7 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
                      (gethash pname *name-realizations*)))))))
 
 (defun get-np-head-edge (np-edge)
-  (declare (special *chunks* *sentence-in-core*))
+  (declare (special *chunks*))
   (let* ((np-chunk
           (loop for chunk in (reverse *chunks*)
              when (and (<= (pos-token-index (pos-edge-starts-at np-edge))
@@ -177,9 +177,9 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
              (examples (assoc pname *null-name-realizations* :test #'equalp)))
         ;;(lsp-break "null head edge in get-np-head-edge")
         (if examples
-            (push (sentence-string *sentence-in-core*)
+            (push (current-string)
                   (cdr examples))
-            (push (list pname (sentence-string *sentence-in-core*))
+            (push (list pname (current-string))
                   *null-name-realizations*))))
     head-edge))
 

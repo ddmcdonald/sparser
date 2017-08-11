@@ -19,7 +19,7 @@
    to the right (or left: direction) to form a new edge (new-edge).
    Now we have to reconstruct pointers so that the edge that
    had dominated the subsumed one dominates the new pair."
-  (declare (special *current-da-rule* *sentence-in-core*))
+  (declare (special *current-da-rule*))
   
   ;; (push-debug `(,subsumed-edge ,new-edge ,dominating-edge ,direction))
   ;; (setq subsumed-edge (car *) new-edge (cadr *) dominating-edge (caddr *))  (break "tucking 1")
@@ -51,7 +51,7 @@
                     ~%edge-right-daughter in dominating edge ~s ~
                     ~%is not subsumed-edge ~s in sentence:~%~s~%"
                  *current-da-rule* dominating-edge subsumed-edge
-                 (sentence-string *sentence-in-core*)))
+                 (current-string)))
         (setf (edge-right-daughter dominating-edge) new-edge))
        ((eq direction :left)
         (unless (eq (edge-left-daughter dominating-edge) subsumed-edge)
@@ -99,26 +99,25 @@
 (defparameter *reinterpret-dominating-edges-warning* nil)
 
 (defun reinterpret-dominating-edges (edge &optional *visited*)
-  (declare (special *sentence-in-core*))
   (let ((new-ref (referent-for-edge edge)))
     (cond
       ((null new-ref)
        (when *reinterpret-dominating-edges-warning*
          (warn "reinterpretation of edge ~s failed in reinterpret-~
                 dominating-edges by producing null interpretation~% in ~s~%"
-               edge (sentence-string *sentence-in-core*))))
+               edge (current-string))))
       ((eq new-ref :abort-edge)
        (when *reinterpret-dominating-edges-warning*
          (warn "reinterpretation of edge ~s failed in reinterpret-~
                 dominating-edges by producing :abort-edge interpretation~% in ~s~%"
-               edge (sentence-string *sentence-in-core*))))
+               edge (current-string))))
       (t
        (set-edge-referent edge new-ref)
        (if (edge-mention edge)
          (if (typep (edge-mention edge) 'discourse-mention)
            (setf (base-description (edge-mention edge)) new-ref))
          (warn "null edge-mention on edge ~s in ~%~s"
-               edge (sentence-string *sentence-in-core*)))
+               edge (current-string)))
        (let ((parent (edge-used-in edge)))
          (cond
            ((edge-p parent)

@@ -647,7 +647,6 @@ so we return the edge for the POBJ"
 (defun dependency-pair-value (dp) (second dp))
 
 (defun create-dependency-pair (b e)
-  (declare (special *sentence-in-core*))
   `(,(binding-variable b) ;; dependency-pair-variable
      ;; dependency-pair-value
      ,(cond ((consp e) e)
@@ -671,7 +670,7 @@ so we return the edge for the POBJ"
             ((referential-category-p (edge-referent e))
              (edge-referent e))             
             (t
-             (let ((str  (sentence-string *sentence-in-core*)))
+             (let ((str (current-string)))
                (case *no-source-for-binding-action*
                  (:none nil)
                  (:break
@@ -686,7 +685,6 @@ so we return the edge for the POBJ"
 ;;(defparameter *missing-mention-action* :break)
 
 (defun check-plausible-missing-edge-for-dependency (b edge)
-  (declare (special *sentence-in-core*))
   (let ((val (binding-value b)))
     (cond ((acceptable-missing-mention? b edge val)
            ;; these are expected cases and are no issue at all
@@ -696,21 +694,21 @@ so we return the edge for the POBJ"
            (case *missing-mention-action*
              (:warn
               (warn "~%can't find source edge for ~s in ~s within sentence: ~s~%"
-                    val *mention-individual*  (sentence-string *sentence-in-core*)))
+                    val *mention-individual*  (current-string)))
              (:break
               (lsp-break "~%can't find source edge for ~s in ~s within sentence: ~s~%"
-                         val *mention-individual* (sentence-string *sentence-in-core*)))
+                         val *mention-individual* (current-string)))
              (t nil))
            nil)
           (t
            (case *no-source-for-binding-action*
              (:none nil)
              (:break (lsp-break "no source for binding ~s in ~s~%"
-                                b (sentence-string *sentence-in-core*)))
+                                b (current-string)))
              (:warn (warn "no dependency ~s; rule: ~s ~% in ~s~%"
                           b
                           (edge-rule edge)
-                          (sentence-string *sentence-in-core*))))))
+                          (current-string))))))
     nil))
 
 (defun acceptable-missing-mention? (b edge val)

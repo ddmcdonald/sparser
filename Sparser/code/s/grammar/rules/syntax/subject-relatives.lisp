@@ -220,7 +220,7 @@
                          *break-on-null-ref-in-context-needs-clause*)
                 (break "null ref in context-needs-clause -- quiet this by ~
                      setting *break-on-null-ref-in-context-needs-clause* to nil"
-                       (sentence-string *sentence-in-core*)))
+                       (current-string)))
               (and ref
                    ;; these previous items want a following clause
                    (or (itypep ref 'that)
@@ -331,7 +331,7 @@
       (format t "~%convert-clause-to-reduced-relative fired on ~s ~s~%  in ~s~%"
 	      (note-surface-string np-edge)
 	      (note-surface-string vp-edge)
-	      (sentence-string *sentence-in-core*))
+	      (current-string))
       #+ignore
       (error "Timing may be wrong with when referent is ~
               computed and edge parts are assembled. Parent S ~

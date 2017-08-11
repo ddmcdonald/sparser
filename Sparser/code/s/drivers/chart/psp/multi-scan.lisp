@@ -1199,7 +1199,7 @@ was dropped.
 			(when *show-acronym-conflicts*
                           (warn "~&***Acronym -- attempting to change category of rule ~s to ~s~%  in ~s~%" rule
 				(edge-category regular-edge)
-				(sentence-string *sentence-in-core*)))
+				(current-string)))
                         (return-from recover-acronym-if-necessary nil))
 		      (setf (cfr-category rule) (edge-category regular-edge))
 		      (setf (cfr-rhs rule) (list uppercase-word))

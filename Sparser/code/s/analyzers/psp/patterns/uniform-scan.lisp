@@ -355,7 +355,7 @@
   ;; called from reify-ns-name-and-make-edge when *big-mechanism*
   ;; flag is up. Responsible for returning the category to use,
   ;; the rule, and the referent so that the caller can make an edge
-  (declare (special *sentence-in-core* category::bio-entity))
+  (declare (special category::bio-entity))
   (let* ((words-string (actual-characters-of-word pos-before pos-after words))
          (obo (corresponding-obo words-string))
          (uc-word (resolve (string-upcase words-string))))
@@ -410,7 +410,7 @@
                     (format t "~&^^^^^^ Known word ~s, but no associated rule. ~
                               Probably a part of a polyword, now defining it ~
                               as a bio-entity~%  in ~s~%"
-                            w (sentence-string *sentence-in-core*)))
+                            w (current-string)))
                   (values category::bio-entity
                           'reify-ns-name-as-bio-entity
                           (find-or-make-individual 'bio-entity :name w))))))))
@@ -473,8 +473,8 @@ included, collect ns from n june articles"
 (defparameter *ns-sub-patterns* (list nil))
 
 (defun save-ns-example (start-pos end-pos edges)
-  (declare (special *sentence-in-core* edges))
-  (let* ((ns-sentence (sentence-string *sentence-in-core*))
+  (declare (special edges))
+  (let* ((ns-sentence (current-string))
          (nsitem (actual-characters-of-word start-pos end-pos nil))
          (real-edges (remove-non-edges edges)) 
          (ns-edge-pattern (characterize-words-in-region start-pos end-pos real-edges)))

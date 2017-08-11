@@ -237,8 +237,7 @@
       ""))
 
 (defun split-sentence-string-on-loc-heads ()
-  (declare (special *sentence-in-core*))
-  (let ((rem-sent-string (sentence-string *sentence-in-core*))
+  (let ((rem-sent-string (current-sentence))
         (loc-heads (sort-loc-heads))
         items)
     (loop for head in loc-heads
@@ -493,14 +492,12 @@
        (cddr r)))
 
 (defun relations-in (tree)
-  (declare (special *sentence-in-core*))
   (let (relations)
     (when (and (consp tree)
                (not (eq 'collection (car tree))))
       (when (not (consp (car tree)))
         (if (not (entity-p (car tree)))
-         (lsp-break "(car tree) is not an entity in ~s"
-                    (sentence-string *sentence-in-core*))
+         (lsp-break "(car tree) is not an entity in ~s" (current-string))
          (push (extract-relation tree) relations))))
     (loop for binding in (cdr tree)
        do
@@ -554,7 +551,7 @@
 ;;;----------------------------------------------------------------------------
 
 (defun spire-tree (item &optional (with-ids nil))
-  (declare (special *sentence-in-core*  *sentence-results-stream*))
+  (declare (special  *sentence-results-stream*))
   (let ((*sentence-results-stream*
          (unless with-ids *sentence-results-stream*)))
     (declare (special *sentence-results-stream*))
@@ -866,10 +863,10 @@ in cwc-integ/spire/interface/sparser.lisp
 (defparameter *print-sentences* nil)
 
 (defun possibly-print-sentence ()
-  (declare (special *sentence-in-core* *print-sentences*))
+  (declare (special *print-sentences*))
   (when (numberp *print-sentences*)
     (format t "~&~&*** (p ~s) ;; ~s" 
-            (sentence-string *sentence-in-core*) 
+            (current-string) 
             (incf *print-sentences*))))
 
 

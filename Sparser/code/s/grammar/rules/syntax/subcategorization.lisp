@@ -468,7 +468,7 @@
   (declare (special *subcat-test* *sentence-in-core*))
   (unless *subcat-test*
     (warn "passing a list to known-subcategorization? -- ~s~% in sentence: ~s~%"
-          c (sentence-string *sentence-in-core*)))
+          c (current-string)))
   nil)
 
 
@@ -784,7 +784,6 @@
 
 (defun satisfies-subcat-restriction? (item pat-or-v/r)
   (declare (special *trivial-subcat-test* *subcat-test*
-                    *sentence-in-core*
                     *in-collect-no-space-segment-into-word*
                     category::pronoun/first/plural category::quantifier
                     category::this category::that category::these category::those
@@ -827,7 +826,7 @@
          (when (and *show-one-anaphora* (not *subcat-test*))
            (format t "~%one anaphora ~s in ~s~%"
                    (list item pat-or-v/r)
-                   (sentence-string *sentence-in-core*)))
+                   (current-string)))
 
          t ;; this was done to handle one anaphora, but should be revisited
          )
@@ -863,7 +862,7 @@
 (defun subcategorized-variable (head label item)
   "Returns the variable on the HEAD that is subcategorized for
    the ITEM when it has the grammatical relation LABEL to the head."
-  (declare (special *pobj-edge* *subcat-test* *sentence-in-core*))
+  (declare (special *pobj-edge* *subcat-test*))
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
@@ -880,21 +879,21 @@
        ((and (boundp '*pobj-edge*) *pobj-edge*)
 	(warn "~&*** null item in subcategorized pobj for ~
                  edge ~s~&  in sentence: ~s~%" *pobj-edge*
-                 (sentence-string *sentence-in-core*)))
+                 (current-string)))
        ((eq label :subject)
         (warn "~&*** null item in subcategorized subject for ~
                  clause ~s~&  in sentence: ~s~%"
               (retrieve-surface-string head)
-              (sentence-string *sentence-in-core*)))
+              (current-string)))
        ((eq label :object)
         (lsp-break "~&*** null item in subcategorized object for ~
                  clause ~s~&  in sentence: ~s~%"
               (retrieve-surface-string head)
-              (sentence-string *sentence-in-core*)))
+              (current-string)))
        (t
         (warn "~&*** null item in subcategorized-variable~& ~
                  edge ~s~&  in sentence: ~s~%" *pobj-edge*
-                 (sentence-string *sentence-in-core*))))
+                 (current-string))))
      nil)
     ((consp item)
      (unless *subcat-test*
@@ -907,7 +906,7 @@
 
 (defun find-subcat-var (item label head)
   (declare (special item label head *subcat-test* *subcat-use*
-                    *left-edge-into-reference* *sentence-in-core*))
+                    *left-edge-into-reference* ))
   (let* ((category (itype-of head))
          (subcat-patterns (known-subcategorization? head))
          (of-object
@@ -940,7 +939,7 @@
               (unless *subcat-test*
                 ;;(lsp-break "of-object")
                 (warn "ambiguous-of-object for ~s attaching to ~s in ~s"
-                      item head (sentence-string *sentence-in-core*))))
+                      item head (current-string))))
           (setq label :object)))
     (when subcat-patterns
       (setq *label* label)
@@ -1078,15 +1077,14 @@
 
 
 (defun announce-over-ridden-ambiguities (item head label variable)
-  (declare (special *sentence-in-core*))
   (when *show-over-ridden-ambiguities*
     (format t "~%over-ridden ambiguity now preserved~
                ~%  ambiguous subcats for attaching ~s to ~s ~
                  with ~s:~%  ~s~%   ~s~%"
-            item head label variable (sentence-string *sentence-in-core*))))
+            item head label variable (current-string))))
 
 (defun variable-from-pats (item head label pats subcat-patterns)
-  (declare (special category::number *sentence-in-core*))
+  (declare (special category::number))
   (let ( variable )
     (cond
       ((cdr pats)
@@ -1096,7 +1094,7 @@
            (setq variable (car variable))
            ;; these are mostly bad parses with a dangling number -- we should collect them
            (push (list head label item
-                       (sentence-string *sentence-in-core*)
+                       (current-string)
                        (loop for pat in pats collect
                             (list (subcat-variable pat)(subcat-source pat))))
                  *ambiguous-variables*)))

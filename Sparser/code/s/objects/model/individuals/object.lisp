@@ -59,7 +59,7 @@ grammar/model/core/titles/rules.lisp:                 (i-type-of possessive)
 grammar/model/core/names/fsa/gofers-for-examine.lisp:  (let ((c (i-type-of i)))
 |#
 (defun i-type-of (i)
-  (declare (special *subcat-test* *sentence-in-core*))
+  (declare (special *subcat-test*))
   (typecase i
     (individual
      (let ((type-field (indiv-type i)))
@@ -84,7 +84,7 @@ grammar/model/core/names/fsa/gofers-for-examine.lisp:  (let ((c (i-type-of i)))
          ;; e.g. the 1970s
          (then
            (unless *subcat-test*
-             (warn "plural itypep for ~s in sentence ~s~%" i (SENTENCE-STRING *SENTENCE-IN-CORE*)))
+             (warn "plural itypep for ~s in sentence ~s~%" i (current-string)))
            i)
          (report-bad-itype-of i)))
     (otherwise
