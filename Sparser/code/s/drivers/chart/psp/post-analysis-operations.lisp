@@ -204,9 +204,12 @@ where it regulates gene expression.")
         do
           (let* ((ival (interpret-in-context val)))
             (declare (special ival))
+            (loop for i in interps when (not (individual-p i))
+                  do (warn "non-individual among ~s in reinterp-list-using-bindings, in: ~s~%"
+                           interps (sentence-string *sentence-in-core*)))
             (setq interps
                   (loop for i in interps
-                        when i
+                        when (individual-p i)
                         nconc
                           (cond ((eq (var-name var) 'family-members)
                                  (list (bind-dli-variable var ival i)))
