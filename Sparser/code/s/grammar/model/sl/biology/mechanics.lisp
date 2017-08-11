@@ -1389,6 +1389,46 @@ for this species"
       ;; If we didn't use such a specific category these would matter.
       i)))
 
+(defun reify-phosphorylated-protein (words prot-edge start-pos next-position)
+  (declare (special words edges start-pos next-position))
+
+  (let* ((words-string (actual-characters-of-word start-pos next-position words))
+         (protein (edge-referent prot-edge))
+         (edge
+          (make-edge-over-long-span
+           start-pos
+           next-position
+           (edge-category prot-edge)
+           :rule 'reify-phosphorylated-protein
+           :form (edge-form prot-edge)
+           :referent (make-phosphorylated-protein protein) 
+           :words words)))
+    (def-phosphorylated-protein words-string prot-edge)
+    edge))
+        
+
+(defun make-phosphorylated-protein (protein)
+  (let ((prot-sexpr (krisp->sexpr protein)))
+    (bind-dli-variable
+     'predication
+     (interpret-verb-as-predication
+      'link-in-verb+ed
+      (to-krisp (remove (assoc 'raw-text (cdr prot-sexpr)) prot-sexpr))
+      category::phosphorylate
+      nil
+      (subcategorized-variable  category::phosphorylate :object protein))
+     protein)))
+
+(defun def-phosphorylated-protein (word-string protein-edge
+                                   &aux (protein (edge-referent protein-edge)))
+  (declare (special category::phosphorylate))
+  (let ((i (make-phosphorylated-protein protein)))
+    (let ((word (resolve/make word-string)))
+      (define-cfr (itype-of protein) `(,word)
+        :form (edge-form protein-edge)
+        :referent i))))
+
+
 
 
 ;;;-------------------
