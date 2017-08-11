@@ -107,10 +107,11 @@
    until the next time that's called. Not dynamically bound.")
 
 (defun current-string ()
-  (or *current-sentence-string*
-      *string-from-analyze-text-from-string*
-      (let ((s (identify-current-sentence :no-break)))
+  (or (let ((s (identify-current-sentence :no-break)))
         (when s (sentence-string s)))
+      *current-sentence-string*
+      *string-from-analyze-text-from-string*
+
       ""))
 
 (defun identify-current-sentence (&optional no-break)
@@ -229,6 +230,12 @@
   (declare (special *sweep-for-patterns* *do-early-rules-sweep*
                      *grammar-and-model-based-parsing*))
   (setq *sentence-in-core* sentence)
+  (let ((verbified (loop for v in (remove "inding" *verbified-nouns* :test #'equal)
+                           when (or (search (format nil " ~a" v) (current-string) :test #'equal)
+                                    (search (format nil "-~a" v) (current-string) :test #'equal))
+                           collect v)))
+    (if verbified (warn "verbified noun(s) ~s in ~s~%"
+                        verbified (current-string))))
   (possibly-print-sentence)
 
   (when *grammar-and-model-based-parsing*
@@ -293,8 +300,16 @@
         (tr :scan-to-eof-start-pos start-pos)
         (catch :end-of-sentence
           ;; Throw from period-hook
-          (scan-words-loop start-pos first-word))
+          (scan-words-loop start-pos first-word)
+          (when *show-sentence-for-early-errors*
+            (format t "  in sentence: ~s ~%"
+                    (sentence-string sentence))
+            (setq *show-sentence-for-early-errors* nil)))
         (setq sentence (next sentence))))))
+
+(defparameter *show-sentence-for-early-errors* nil
+  "some errors or interesting events happen in the sentence creating sweep, 
+   and we want to se the entire sentence context")
 
 (defun sweep-successive-sentences-from (sentence)
   "Called from the toplevel driver initiate-successive-sweeps
@@ -310,7 +325,10 @@
   (loop
      (tr :sweep-reading-sentence sentence)
      (setq *current-sentence-string* (sentence-string sentence))
-     (setq *sentence-in-core* sentence)
+    (setq *sentence-in-core* sentence)
+    (when *show-sentence-for-early-errors*
+      (format t "  in sentence: ~s ~%" (current-string))
+      (setq *show-sentence-for-early-errors* nil))
 
      (if *trap-error-skip-sentence*
        (error-trapped-scan-and-core sentence)
