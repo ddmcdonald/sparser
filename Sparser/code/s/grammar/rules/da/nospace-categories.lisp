@@ -398,7 +398,7 @@ for each case and define a k-method to make sense of it all.
     (cond
      (composite-word
       ;; Lookup its unary rule / rule-set and make those edges
-      (let ((word-rule (find-single-unary-cfr word2)))
+      (let ((word-rule (when word2 (find-single-unary-cfr word2))))
         (if word-rule
           (let ((edge (install-preterminal-edge
                        word-rule composite-word pos-before pos-after)))

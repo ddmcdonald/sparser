@@ -116,7 +116,10 @@
         ;; If the sweep encountered any more edges we have to fold 
         ;; them in or else we'll get the wrong pattern
         (setq edges (sort-out-edges-in-ns-region edges long-edge))
-       
+        (when (and edges (is-phosphorylated-protein? edges))
+          (return-from collect-no-space-segment-into-word
+            (span-phosphorylated-protein edges)))
+
         
         
         ;;(push-debug `(,start-pos ,end-pos))
@@ -199,6 +202,33 @@
         
         end-pos))))
 
+(defun is-phosphorylated-protein? (edges)
+  (let* ((start (edge-starting-position (car edges)))
+         (end (edge-ending-position (car (last edges))))
+         (sur-str (extract-characters-between-positions start end))
+         (pro-string? (when (eq #\p (aref  sur-str 0))
+                        (subseq sur-str
+                                (if (eq 0 (search "p-" sur-str)) 2 1))))
+         (pro-word? (when pro-string? (resolve pro-string?)))
+         (pro-cfr? (when pro-word? (find-single-unary-cfr pro-word?)))
+         (pro? (when (and pro-cfr? (itypep (cfr-referent pro-cfr?) 'protein))
+                 (cfr-referent pro-cfr?))))
+    (declare (special sur-str pro-string? pro-word? pro-cfr? pro?))
+    (when pro? (values pro? start end pro-cfr? pro-string?))))
+
+(defun span-phosphorylated-protein (edges)
+  (multiple-value-bind (protein start end cfr pro-string?)
+      (is-phosphorylated-protein? edges)
+    (make-edge-over-long-span
+     start
+     end
+     (cfr-category cfr)
+     :rule 'span-phosphorylated-protein
+     :form (cfr-form cfr)
+     :referent (make-phosphorylated-protein protein pro-string?))
+    end))
+                            
+        
 
 ;;;----------
 ;;; Dispatch
@@ -347,7 +377,7 @@
              (tr :made-edge edge)
              edge)))))
 
-(defparameter *bio-entity-strings* nil)
+(defparameter *bio-entity-strings* (list nil))
 (defun collect-bio-entity-strings ()
   (setq *bio-entity-strings* (list "111BOGUSSTRING***")))
 
@@ -355,10 +385,11 @@
   ;; called from reify-ns-name-and-make-edge when *big-mechanism*
   ;; flag is up. Responsible for returning the category to use,
   ;; the rule, and the referent so that the caller can make an edge
-  (declare (special category::bio-entity))
+  (declare (special category::bio-entity words))
   (let* ((words-string (actual-characters-of-word pos-before pos-after words))
          (obo (corresponding-obo words-string))
          (uc-word (resolve (string-upcase words-string))))
+    (declare (special words-string))
     (cond
       ((and uc-word
 	    (rule-set-for uc-word)

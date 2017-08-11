@@ -54,10 +54,10 @@
         (setq word (pos-terminal next-pos)
               edge (right-treetop-at/only-edges next-pos))
         (cond
-         ((and edge (not (one-word-long? edge)))
-          (tr :ns-edge-sweep edge)
-          (setq long-edge-ends-at (pos-edge-ends-at edge))
-          (push edge edges))
+          ((and edge (not (one-word-long? edge)))
+           (tr :ns-edge-sweep edge)
+           (setq long-edge-ends-at (pos-edge-ends-at edge))
+           (push edge edges))
 
          (t ;; just a word at this position
           (tr :ns-word-sweep word)
@@ -77,6 +77,7 @@
               (setq next-pos (chart-position-after next-pos)))
             (tr :ns-return-punch-terminates-seq word next-pos)
             (return))))
+        (when (edge-p edge) (push edge edges))
         (setq position next-pos
               next-pos (or long-edge-ends-at
                            (chart-position-after next-pos)))

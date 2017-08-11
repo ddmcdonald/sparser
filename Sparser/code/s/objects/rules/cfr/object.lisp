@@ -89,12 +89,18 @@ This sorts out what to use as the category in the unusual cases."
    Ignores the possibility of there being more than one rule.")
   ;; c.f. single-term-rewrite? in rules/rule-links/generic.lisp
   (:method ((word word))
-    (let ((rs (rule-set-for word)))
-      (when rs
-        (let ((single-rewrites (rs-single-term-rewrites rs)))
-          (when single-rewrites
-            ;;/// check for there being more than one?
-            (car single-rewrites)))))))
+    (when (rule-set-for word)
+      (find-single-unary-cfr (rule-set-for word))))
+  (:method ((word polyword))
+    (when  (rule-set-for word)
+      (find-single-unary-cfr (rule-set-for word))))
+  (:method ((rs rule-set))
+    (when rs
+      (let ((single-rewrites (rs-single-term-rewrites rs)))
+        (when single-rewrites
+          ;;/// check for there being more than one?
+          (car single-rewrites))))))
+
 
 (defgeneric find-unary-cfr/referent (word category)
   (:documentation
