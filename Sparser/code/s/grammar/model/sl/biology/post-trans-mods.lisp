@@ -427,7 +427,8 @@
   :specializes phosphorylation-modification
   :instantiates self
   :realization
-  (:verb "phosphorylate" :noun "phosphorylation" :adj "phospho"
+  (:verb ("phosphorylate" :past-participle ("p" "p-" "phosphorylated"))
+                          :noun "phosphorylation" :adj "phospho"
          :etf (svo-passive)))
 
 
