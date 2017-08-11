@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1996,2013-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013-2017  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "alphabet"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  December 2016
+;;;  Version:  August 2017
 
 ;; file created 9/15/92 v2.3, populated 9/21
 ;; 8/20/93 fixed mistake in entry for #127
@@ -28,6 +28,11 @@
 ;;    (:punctuation . ,(punctuation-named #\U+2192)))
 ;; 6/28/2015 correct handling of  (8764 (:punctuation . ,(punctuation-named (code-char 8764)))) ;; #\∼
 
+;; NOTE: Uppercase alphabetic characters feed lowercase letters to the tokenizer.
+;; e.g. (setf (elt *character-dispatch-array* 80)  ;; #\P
+;;           `(:alphabetical
+;;              . (:uppercase . ,#\p )))
+;; This is deliberate. See Sparser/documentation/manual/6. Analyzing a text.pdf
 
 
 (in-package :sparser)
@@ -41,6 +46,7 @@
 (defun announce-out-of-range-character ()
   (let* ((character (elt *character-buffer-in-use* *index-of-next-character*))
          (code (char-code character)))
+    (push-debug `(,*index-of-next-character* ,*character-buffer-in-use*))      
     (push-debug `(,character ,code))
     ;;(lsp-break "out-of-range-char")
     (error "~%The input stream contains the character \"~A\", whose character code~
@@ -49,35 +55,27 @@
             ~%extended character array (128 to 255) or its table of 'out of bound'~
             ~%characters. Note that above ascii the character encoding is~
             ~%expected to be unicode, UTF-8.~
-
+            ~%~
             ~%   If the character shouldn't have been in the stream, then you~
             ~%should just remove it and try again. If it does belong there, then ~
             ~%you can extend the character set. If you meta-. on this function~
             ~%that will take you to the file analyzers/tokenizer/alphabet.lisp~
             ~%where you can see examples to copy and read more details.~
             ~%"
-           character code (length *character-dispatch-array*))
-    ))
+           character code (length *character-dispatch-array*))))
 
 #| When you get that error it's likely because the text you're running
 has a UTF-8 character that we don't have an entry for yet. The error message
 showed you what the character was visually, and identified the code point
 that has to be added to the *entries-for-out-of-band-characters* alist at
-the bottom of this file. Your job, is to figure out what "normal" character
+the bottom of this file. Your job is to figure out what "normal" character
 that corresponds to (e.g. a unicode left-single-quotation-mark corresponds
 to an ascii single quote), as least for the purpose of telling the token fsa
 how to handle it -- the original character won't be replaced in the token.
 
 This will usually entail a web search. There are lots of unicode web pages.
 This is a reasonable choice http://www.fileformat.info/info/unicode/char/search.htm
-
 |#
-
-
-#+:apple ;; old character set, hopefully OBE
-(setf (elt *character-dispatch-array* 138)  ;; #\212  "a" with an umlaut
-      `(:alphabetical
-        . (:lowercase . ,#\212 )))
 
 
 #|
@@ -87,9 +85,9 @@ and eventually passed to finish-token where the capitalization information
 is noted by the capitalization-fsa and the character is entered into
 the buffer that is fed to find-word and becomes part of the word's pname.
 
-(:alphabetical . (:lowercase . ,#\212 ))
+(:alphabetical . (:lowercase . ,#\212 ))  |#
 
-|#
+
 
 ;;---------------- standard ascii ----------------
 

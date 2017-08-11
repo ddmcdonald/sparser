@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1996,2013-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013-2017  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "token FSA"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  December 2016
+;;;  Version:  August 2017
 
 ;;  initated ~6/90
 ;;  1.1  (12/90) Added a call to zero-lookup-buffer when the end-of-stream is
@@ -28,9 +28,13 @@
 
 
 (defun run-token-fsa ()
-  ;; we're starting a new token.
+  "Primary caller is the next-token function, which needs to 
+   advance the chart one more token along the input stream.
+   The inner look of collecting characters is all tail recursive,
+   ending in a call to find-word when it's accumulated all the
+   characters for the next token."
   (let ((char
-         (unless *pending-entry*
+         (unless *pending-entry* ;; previous token ended by punctuation
            (elt *character-buffer-in-use*
                 (incf *index-of-next-character*))))
         entry  char-type )
@@ -44,7 +48,7 @@
     (if entry
       (if (eq :punctuation 
               (setq char-type (car entry)))
-            
+        ;; punctuation tokens are just one character long
         (do-punctuation (cdr entry))
             
         (else
@@ -52,7 +56,7 @@
           ;; pointers to keep track of it
           (setq *category-of-accumulating-token*  (car entry))
           (when (consp (cdr (cdr entry)))
-            (break "bad character entry: ~a" entry))
+            (error "bad character entry: ~a" entry))
           (continue-token (kcons (cdr entry)
                                  nil)
                           1
@@ -62,24 +66,30 @@
 
 
 (defun continue-token (accumulated-entries length char-type)
+  "Continue to accumulate characters from the input buffer 
+   until the character type changes, indicating that the token
+   is finished.
+   The set of possible types is defined by the characters entries,
+   see analyzers/tokenizer/ alphabet.lisp,
+   e.g. :punctuation, :number, :alphabetical,
+   :greek, :katakana, :hiragana."  
   (declare (special accumulated-entries))
+  
   (when (consp (cdr (car accumulated-entries)))
-    (break "bad accumulated entries"))
+    (error "bad accumulated entries"))
 
   (let ((next-entry
          (character-entry (elt *character-buffer-in-use*
                                (incf *index-of-next-character*)))))
 
-    (when (and (numberp next-entry) (= next-entry 0))
+    (when (and (numberp next-entry)
+               (= next-entry 0))
       ;; Presumably a character in the Latin-1 range that we don't
-      ;; haev an entry for, but keeping this info around just in case
-      (push-debug `(,*index-of-next-character* ,*character-buffer-in-use*))
-      (let* ((char (elt *character-buffer-in-use* *index-of-next-character*))
-             (code-point (char-code char)))
-        (push-debug `(,code-point ,char))
-        (announce-out-of-range-character)))
+      ;; have an entry for
+      (announce-out-of-range-character))
 
     (if next-entry
+      
       (if (eq (car next-entry) :punctuation)
         (do-punctuation-from-continue
          next-entry accumulated-entries length char-type)
@@ -99,17 +109,13 @@
       
       (announce-out-of-range-character))))
 
-(defun create-raw-string (accumulated-entries)
-  (format nil "~{~a~}"
-          (loop for cc in
-                  (reverse accumulated-entries)
-                collect
-                  (if (eq (car cc) :uppercase)
-                      (string-upcase (cdr cc))
-                      (string-downcase (cdr cc))))))
 
-(defparameter *collect-init-lowercase* nil)
 (defun finish-token (accumulated-entries length char-type)
+  "Walk through the list of entries and populate the word lookup
+   buffer with their characters. Note that the list of character entries
+   is in reverse order. Afterwards update the token globals and 
+   leave by tail-recursively calling find-word to continue the
+   processing of the token."
   (declare (special accumulated-entries))
   (if (> length *word-lookup-buffer-length*)
     (format t "~%~%The token just found:~%  ~s~
@@ -126,9 +132,11 @@
           entry )
       
       (setf (fill-pointer interning-array) length)
+      
       (when (initial-lowercase? accumulated-entries)
         (pushnew (create-raw-string accumulated-entries)
                  *collect-init-lowercase* :test #'equal))
+      
       (loop
         (when (null accumulated-entries)
           (return))
@@ -144,12 +152,29 @@
       (setq *capitalization-of-current-token*
             (cleanup-call-to-caps-fsa capitalization-state length))
       (setq *length-of-the-token* length)
-      (setq *exact-pname-of-token* ;;/// rewrite in a reusable buffer
+      (setq *exact-pname-of-token* ;;/// rewrite using a reusable buffer
             (subseq *character-buffer-in-use*
                     (- *index-of-next-character* length)
                     *index-of-next-character*))
 
       (find-word char-type))))
+
+
+
+
+;;/// Rusty -- still need these? I like to keep this section
+;; of the code really lean
+
+(defparameter *collect-init-lowercase* nil)
+
+(defun create-raw-string (accumulated-entries)
+  (format nil "~{~a~}"
+          (loop for cc in
+                  (reverse accumulated-entries)
+                collect
+                  (if (eq (car cc) :uppercase)
+                      (string-upcase (cdr cc))
+                      (string-downcase (cdr cc))))))
 
 (defun initial-lowercase? (acc)
   (and *collect-init-lowercase*
