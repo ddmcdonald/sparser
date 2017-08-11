@@ -38,8 +38,11 @@
            (pos-edge-ends-at (right-edge-for-referent)))
           *prep-complements*))
   (cond
-   ((eq prep (category-named 'upon))
-    (find-or-make-individual 'upon-condition :condition comp))
-   (t ;; equivalent of daughter
-    (make-pp prep comp))))
+    ((subordinate-conjunction? (left-edge-for-referent))
+     ;; don't take the prepositional form for, e.g., "as"
+     nil)
+    ((eq prep (category-named 'upon))
+     (find-or-make-individual 'upon-condition :condition comp))
+    (t ;; equivalent of daughter
+     (make-pp prep comp))))
 
