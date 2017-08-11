@@ -70,7 +70,7 @@
          pos)
         ((eq pos end) end)
         (t #+ignore
-           (pushnew (list (pos-terminal pos) (sentence-string *sentence-in-core*))
+           (pushnew (list (pos-terminal pos) (current-string))
                     *no-edge-pairs*
                     :test #'equal)
            (first-position-with-edges (chart-position-after pos) end))))
@@ -344,7 +344,7 @@
                     ;;#+ignore ;; used only to check where losing-competition? succeeds
                     (push (list (car second-triple)
                                 (car first-triple)
-                                (sentence-string *sentence-in-core*))
+                                (current-string))
                           *losing-competitions*)
                     (return-from left-winner? second-triple)))))
 
@@ -457,7 +457,7 @@ for ambiguous words"
   (let ((r-triple-rhs (cfr-rhs (car r-triple))))
     (and
      (prep? (cat-name (car (cfr-rhs (car l-triple))))) ;;l-triple-left
-     (not (subordinate-conjunction? l-triple))
+     (not (subordinate-conjunction? (second l-triple)))
      (or (not (possible-spatio-temporal-prep? l-triple))
          (itypep (edge-referent (third l-triple)) 'process))
      ;; "until" is both a preposition and a subordinate conjunction
@@ -534,9 +534,9 @@ for ambiguous words"
        (eq (edge-form e) category::spatio-temporal-preposition)))
 
 
-(defun subordinate-conjunction? (l-triple)
+(defun subordinate-conjunction? (e)
   (declare (special category::subordinate-conjunction))
-  (loop for e in (all-edges-at (second l-triple))
+  (loop for e in (all-edges-at e)
      thereis
        (eq (edge-form e) category::subordinate-conjunction)))
 
@@ -596,7 +596,7 @@ for ambiguous words"
                           subject-relative-clause comma-separated-subject-relative-clause)))))
 	 (and
 	  (prep? l-triple-left)
-          (not (subordinate-conjunction? l-triple))
+          (not (subordinate-conjunction? (second l-triple)))
           (or (not (possible-spatio-temporal-prep? l-triple))
               (itypep (edge-referent (third l-triple)) 'process))
           ;; "until" is both a preposition and a subordinate conjunction
