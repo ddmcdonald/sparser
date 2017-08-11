@@ -50,10 +50,13 @@
 (defparameter *unknown-word* nil)
 (defparameter *show-morphs* nil)
 (defparameter *block-verbification* nil)
+(defparameter *show-verbification* nil)
+(defparameter *verbified-nouns* nil)
 
 (defun assign-morph-brackets-to-unknown-word (word morph-keyword)
   "Called from make-word/all-properties, which is itself called
    on the way back from the tokenizer. "
+  (declare (special *show-sentence-for-early-errors*))
   (tr :defining-unknown-word-from-morph word morph-keyword)
 
   (let ((*source-of-unknown-words-definition* :morphology)
@@ -77,14 +80,16 @@
             (tr :defining-lemma-as-given-morph lemma 'verb)
             (if *edge-for-unknown-words*
                 (then
-                  (if (and *block-verbification*
+                  (cond ((and *block-verbification*
                            ;; originally put in to block creation of a verb form of "residue"
                            ;;  based in a typo "residued"
                            (category-p (form-of lemma))
                            (eq (cat-symbol (form-of lemma)) 'category::common-noun))
-                      (lsp-break "^^^^Refusing to verbify a previously defined noun ~s~%"
-                            word)
-                      (then (setup-verb lemma)
+                         (unless *sentence-making-sweep*
+                           (when *show-verbification*
+                             (warn "^^^^Refusing to verbify a previously defined noun ~s~%" word)
+                             (pushnew (pname word) *verbified-nouns* :test #'equal))))
+                        (t (setup-verb lemma)
                             (sanity-check-word-formation word lemma :ed))))
               (assign-brackets-as-a-main-verb lemma))))
 
@@ -93,14 +98,16 @@
             (tr :defining-lemma-as-given-morph lemma 'verb)
             (if *edge-for-unknown-words*
                 (then
-                  (if (and *block-verbification*
-                           (category-p (form-of lemma))
-                           (eq (cat-symbol (form-of lemma)) 'category::common-noun))
-                      (lsp-break "^^^^Refusing to verbify a previously defined noun ~s~%"
-                            word)
-                      (then (setup-verb lemma)
-                            (sanity-check-word-formation word lemma :ing))))
-              (assign-brackets-as-a-main-verb lemma))))
+                  (cond ((and *block-verbification*
+                              (category-p (form-of lemma))
+                              (eq (cat-symbol (form-of lemma)) 'category::common-noun))
+                         (unless *sentence-making-sweep*
+                           (when *show-verbification*
+                             (warn "^^^^Refusing to verbify a previously defined noun ~s~%" word)
+                             (pushnew (pname word) *verbified-nouns* :test #'equal))))
+                        (t (setup-verb lemma)
+                           (sanity-check-word-formation word lemma :ing))))
+                (assign-brackets-as-a-main-verb lemma))))
          
          (:ends-in-ly
           (tr :defining-as-given-morph 'adverb)
