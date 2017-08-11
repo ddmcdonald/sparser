@@ -679,12 +679,25 @@ uid binding, if there is one"
      If the post-p characters do not correspond to a known word
    then we call the other 'out' to store the word and have it handled
    later. Runs for side-effects."
-  (let* ((phame (pname word))
+  (let* ((pname (pname word))
          (post-p (subseq pname 1))
          (known-word (resolve post-p)))
     (if known-word
-      (then
-        (lsp-break "What rule do we write for 'p' plus ~a" known-word))
+      (let* ((rule (find-single-unary-cfr known-word))
+             (i (when rule (cfr-referent rule))))
+        (if i
+          (if (itypep i 'protein)
+            (let* ((phospho-i (when i (make-phosphorylated-protein i)))
+                   (rule (define-cfr/resolved
+                           (cfr-category rule) ;; lhs
+                           (list word) ;; rhs
+                           (cfr-form rule)
+                           phospho-i ;; referent
+                           (cfr-schema rule))))
+              ;; trace goes here
+              rule)
+            (store-word-and-handle-it-later word))
+          (store-word-and-handle-it-later word)))
       (store-word-and-handle-it-later word))))
 
 
