@@ -81,7 +81,7 @@
         (warn "attach-leading-pp-to-clause doesn't work for copular-predication ~% can't attach ~s to ~s in ~s~%"
               (retrieve-surface-string pp)
               (retrieve-surface-string clause-referent)
-              (sentence-string *sentence-in-core*)))
+              (current-string)))
       (return-from attach-leading-pp-to-clause nil))
 
     (let (*edge-spec*)
@@ -145,6 +145,8 @@
 	    (retrieve-surface-string clause-referent)))
   nil)
 (defparameter *warn-on-cant-find-corresponding-clauses* nil)
+(defparameter *show-finding-corresponding-clauses* nil)
+
 (defun distribute-pp-to-conjoined-clauses (pp clause prep-word pobj-referent clause-referent rule-name)
   (let* ((clauses (value-of 'items clause-referent))
          (clause-edges
@@ -171,11 +173,12 @@
                                (typep (edge-mention c-clause) 'discourse-mention))
                           (edge-mention c-clause))))
 		  (if c-mention
-                    (format t "found corresponding clause ~s for ~s distribute-pp-to-conjoined-clauses~%"
-                            c-clause c)
-                    (when *warn-on-cant-find-corresponding-clauses*
-                      (warn "can't find corresponding clause ~s for ~s distribute-pp-to-conjoined-clauses~%"
-                            c-clause c)))
+                      (when *show-finding-corresponding-clauses*
+                        (format t "found corresponding clause ~s for ~s distribute-pp-to-conjoined-clauses~%"
+                                c-clause c))
+                      (when *warn-on-cant-find-corresponding-clauses*
+                        (warn "can't find corresponding clause ~s for ~s distribute-pp-to-conjoined-clauses~%"
+                              c-clause c)))
                   (update-mention-referent c-mention new-c t)
 		  new-c))
 	   :number (length clauses)
@@ -344,7 +347,7 @@
               (t (push (format nil "couldnt attach S subject ~s as subject of conjoined vp ~s in ~s~%"
                                s-subject
                                vp-ref
-                               (sentence-string *sentence-in-core*))
+                               (current-string))
                        *conjoined-s-failures*)))))
     ;; regardless of whether we could set the subject of the
     ;; vp we should create the edge
@@ -493,7 +496,7 @@
          (find-base-np-vp-edge (edge-left-daughter e)))
         
         (t (error "find-base-np-vp-edge failed for ~s in ~s"
-                  s-edge (sentence-string *sentence-in-core*)))))
+                  e (current-sentence)))))
       
 
 
@@ -1410,40 +1413,47 @@
        (is-basic-collection? (edge-referent e))))
 
 (defun np-conj-pp (np-containing-edge pp-edge)
-  (let ((np-conj-edge
-         (find-target-satisfying
-          (right-fringe-of np-containing-edge)
-          #'np-conjunction-edge?)))
-    (declare (special np-conj-edge))
-    (when np-conj-edge
-      (let* ((np-ref (edge-referent np-conj-edge))
-             (prep (identify-preposition pp-edge))
-             (*pobj-edge* (edge-right-daughter pp-edge))
-             (pobj-referent (edge-referent *pobj-edge*))
-             (label (identify-preposition pp-edge))
-             (last-np
-              (and np-ref
-                   (value-of 'items np-ref)
-                   (car (last (value-of 'items np-ref)))))
-             (var-to-bind
-              (when last-np
-                (find-subcat-var pobj-referent label last-np)))
-             (target
-              (when var-to-bind
-                (cond
-                  ((edge-p (edge-right-daughter np-conj-edge))
-                   (edge-right-daughter np-conj-edge))
-                  ((edge-constituents np-conj-edge)
-                   (car (last (edge-constituents np-conj-edge))))))))
-        (declare (special np-ref label last-np))
-        (when (and var-to-bind target)
-          (make-edge-spec
-           :category (itype-of last-np)
-           :form category::np
-           :referent (bind-dli-variable var-to-bind pobj-referent last-np)
-           :target target
-           :direction :right
-           ))))))
+  (let* ((prep (identify-preposition pp-edge))
+         (*pobj-edge* (edge-right-daughter pp-edge))
+         (pobj-referent (edge-referent *pobj-edge*)))
+    (if (itypep (edge-category pp-edge) 'but-not)
+        (make-edge-spec
+         :category (itype-of (edge-referent np-containing-edge))
+         :form category::np
+         :referent (bind-dli-variable 'excluding pobj-referent (edge-referent np-containing-edge))
+         :target np-containing-edge
+         :direction :right)
+        (let ((np-conj-edge
+               (find-target-satisfying
+                (right-fringe-of np-containing-edge)
+                #'np-conjunction-edge?)))
+          (declare (special np-conj-edge))
+          (when np-conj-edge
+            (let* ((np-ref (edge-referent np-conj-edge))
+                   (label (identify-preposition pp-edge))
+                   (last-np
+                    (and np-ref
+                         (value-of 'items np-ref)
+                         (car (last (value-of 'items np-ref)))))
+                   (var-to-bind
+                    (when last-np
+                      (find-subcat-var pobj-referent label last-np)))
+                   (target
+                    (when var-to-bind
+                      (cond
+                        ((edge-p (edge-right-daughter np-conj-edge))
+                         (edge-right-daughter np-conj-edge))
+                        ((edge-constituents np-conj-edge)
+                         (car (last (edge-constituents np-conj-edge))))))))
+              (declare (special np-ref label last-np))
+              (when (and var-to-bind target)
+                (make-edge-spec
+                 :category (itype-of last-np)
+                 :form category::np
+                 :referent (bind-dli-variable var-to-bind pobj-referent last-np)
+                 :target target
+                 :direction :right
+                 ))))))))
 
 
 (define-debris-analysis-rule s-with-np-conj-pp
