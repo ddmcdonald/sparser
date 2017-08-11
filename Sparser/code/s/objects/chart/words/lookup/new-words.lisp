@@ -41,7 +41,7 @@
    because they don't have its predilection for POS ambiguity. However
    some definition is much preferred to none. Also includes special
    handling when we're in *big-mechanism*."
-  (declare (special *capitalization-of-current-token*
+  (declare (special *capitalization-of-current-token* *exact-pname-of-token*
                     *primed-words* ;; Comlex table
                     *word-to-be-defined?* *show-word-defs*
                     *big-mechanism*
@@ -80,7 +80,7 @@
              (setup-word-denoting-an-OBO word))
             ((and *big-mechanism*
                   (eq *capitalization-of-current-token* :mixed-case)
-                  (eql #\p (aref (pname word) 0))) ;; "pERK"
+                  (eql #\p (aref *exact-pname-of-token* 0))) ;; "pERK"
              (little-p-hack word))
             ((and *big-mechanism*
                   (eq *capitalization-of-current-token*

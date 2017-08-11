@@ -45,59 +45,59 @@
 ;;;-------------
 
 (defun install-terminal-edges (word position-scanned next-position)
-  (let ((rule-set (word-rules word))
-        edges)
+  "Called from introduce-terminal-edges or from do-just-terminal-edges which
+   is almost identical. 'position-scanned' is to the left of the word,
+   'next-position' is to its right. Looks the rules associated with the word
+   and applies all of them. Tries to make the best possible match to
+   the actual capitalization of the word (read off the position-scanned)."
+  
+  (flet ((unneeded-polyword-literal (edge)
+           "Filters the returned edges to exclude some odd cases"
+           (declare (special word::comma word::|to|  *non-comma-literals-are-bad-edges*))
+           (when *non-comma-literals-are-bad-edges*
+             (and (eq (edge-right-daughter edge) :literal-in-a-rule)
+                  (not (eq (edge-category edge) word::comma))
+                  (not (eq (edge-category edge) word::|to|)))))
+         (word-is-spanned? (position-after)
+           "This is a very limited case, but it handles a timing interaction
+            where the traversal action on '>' in the case of a section marker
+            (e.g. '</para>') will set up an edge over the '>', but then
+            if we don't take any action (like this) another edge will
+            be put over the '>' because it is mentioned explicitly in rules,
+            and that second edge will be higher than the section marker
+            edge, which violates the 'top edges only' criterion."
+           (ev-top-node (pos-ends-here position-after))))
+  
+    (let ((rule-set (word-rules word)))
+      (tr :installing-edges-over-word/un/known word rule-set)
 
-    (tr :installing-edges-over-word/un/known word rule-set)
+      (if (word-is-spanned? next-position)
+        (then
+          (tr :install/already-spanned word)
+          nil)
+        (let ((edges
+               (if (and rule-set
+                        (rule-set-with-rules rule-set))
+                 (then
+                   (tr :install/has-rule-set word)
+                   (preterminals-for-known
+                    rule-set word position-scanned next-position))
+                 (else
+                   (tr :install/no-rule-set word)
+                   (preterminals-for-unknown
+                    word position-scanned next-position)))))
+          
+          (setq edges (remove-if #'unneeded-polyword-literal edges))
 
-    (if (word-is-spanned? next-position)
-      (then
-        (tr :install/already-spanned word)
-        nil )
-      (else
-        (setq edges
-              (remove-if
-               'unneeded-polyword-literal
-              (if (and rule-set
-                       (rule-set-with-rules rule-set))
-                (then
-                  (tr :install/has-rule-set word)
-                  (preterminals-for-known
-                   rule-set word position-scanned next-position))
-                (else
-                  (tr :install/no-rule-set word)
-                  (preterminals-for-unknown
-                   word position-scanned next-position)))))
+          (tr :edges-installed edges word)
+          
+          (when (> (length edges) 1)
+            (setup-multiple-initial-edges position-scanned
+                                          next-position))
 
-        (tr :edges-installed edges word)
+          (set-status :preterminals-installed position-scanned)
+          edges )))))
 
-        (when (> (length edges) 1)
-          (setup-multiple-initial-edges position-scanned
-                                        next-position))
-
-        (set-status :preterminals-installed position-scanned)
-        edges ))))
-
-(defun unneeded-polyword-literal (edge)
-  (declare (special word::comma word::|to|))
-  (and
-   (eq (edge-right-daughter edge) :literal-in-a-rule)
-   (not (eq (edge-category edge) word::comma))
-   ;; only reason for treating "to" this way is rules that explicitly mention "to"
-   ;;  that shouldn't be done (DAVID?!)
-   (not (eq (edge-category edge) word::|to|)))
-  )
-
-
-(defun word-is-spanned? (position-after)
-  ;; this is a very limited case, but it handles a timing interaction
-  ;; where the traversal action on ">" in the case of a section marker
-  ;; (e.g. "</para>") will set up an edge over the ">", but then
-  ;; if we don't take any action (like this one) another edge will
-  ;; be put over the ">" because it is mentioned explicitly in rules,
-  ;; and that second edge will be higher than the section marker
-  ;; edge, which violates the 'top edges only' criterion.
-  (ev-top-node (pos-ends-here position-after)))
 
 
 ;;;-------------------------

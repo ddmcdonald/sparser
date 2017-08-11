@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1990  Content Technologies Inc.
-;;; copyright (c) 1992  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2017  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "state"
 ;;;   Module:  "tokenizer;"
-;;;  Version:   2.0 September 1992
+;;;  Version:   August 2017
 
 ;; initial version 6/90
 ;; 2.0 (9/28/92 v2.3) completely redone -- flushed the defstruct that
@@ -34,12 +34,13 @@
 ;;;-----------------
 
 (defun initialize-tokenizer-state ()
-  (declare (special *length-of-the-token* *capitalization-of-current-token*))
+  (declare (special *length-of-the-token* *capitalization-of-current-token*
+                    *exact-pname-of-token*))
   (setq *pending-entry* nil
         *category-of-accumulating-token* nil
         *length-of-the-token* 0
         *capitalization-of-current-token* :uncalculated
-        )
+        *exact-pname-of-token* "")
   (clear-unhandled-unknown-words))
 
 
@@ -54,3 +55,8 @@
   "Set in Finish-token as result of cleaning up the last state
    of the capitalization-fsa - read in Bump-&-store-word")
 
+(defvar *exact-pname-of-token* ""
+  "Set in finish-token to the sub-sequence of the character
+   buffer that contains the just-scanned token. Read in
+   unknown word handlers that need the precise information
+   to better deal with mixed cases words.")

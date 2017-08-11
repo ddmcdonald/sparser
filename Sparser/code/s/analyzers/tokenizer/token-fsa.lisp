@@ -144,7 +144,11 @@
       (setq *capitalization-of-current-token*
             (cleanup-call-to-caps-fsa capitalization-state length))
       (setq *length-of-the-token* length)
-      
+      (setq *exact-pname-of-token* ;;/// rewrite in a reusable buffer
+            (subseq *character-buffer-in-use*
+                    (- *index-of-next-character* length)
+                    *index-of-next-character*))
+
       (find-word char-type))))
 
 (defun initial-lowercase? (acc)

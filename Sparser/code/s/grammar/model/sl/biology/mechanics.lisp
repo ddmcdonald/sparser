@@ -679,18 +679,21 @@ uid binding, if there is one"
      If the post-p characters do not correspond to a known word
    then we call the other 'out' to store the word and have it handled
    later. Runs for side-effects."
-  (let* ((pname (pname word))
-         (post-p (subseq pname 1))
+  (declare (special *exact-pname-of-token*))
+  (let* ((pname *exact-pname-of-token*) ;; "pRas"
+         (post-p (subseq pname 1))      ;; "Ras"
          (known-word (resolve post-p)))
     (if known-word
       (let* ((rule (find-single-unary-cfr known-word))
              (i (when rule (cfr-referent rule))))
         (if i
           (if (itypep i 'protein)
-            (let* ((phospho-i (when i (make-phosphorylated-protein i post-p)))
+            (let* ((phospho-i (when i (make-phosphorylated-protein i)))
+                   (p-word (define-word/expr pname :override-duplicates))
+                   ;;/// delete the lowercase version ('word')
                    (rule (define-cfr/resolved
                            (cfr-category rule) ;; lhs
-                           (list word) ;; rhs
+                           (list p-word) ;; rhs
                            (cfr-form rule)
                            phospho-i ;; referent
                            (cfr-schema rule))))
