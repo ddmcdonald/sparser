@@ -687,7 +687,7 @@ uid binding, if there is one"
              (i (when rule (cfr-referent rule))))
         (if i
           (if (itypep i 'protein)
-            (let* ((phospho-i (when i (make-phosphorylated-protein i)))
+            (let* ((phospho-i (when i (make-phosphorylated-protein i post-p)))
                    (rule (define-cfr/resolved
                            (cfr-category rule) ;; lhs
                            (list word) ;; rhs
@@ -1441,22 +1441,35 @@ for this species"
            :form (edge-form prot-edge)
            :referent (make-phosphorylated-protein protein) 
            :words words)))
-    (def-phosphorylated-protein words-string prot-edge)
+        (def-phosphorylated-protein words-string prot-edge)
     edge))
         
 
-(defun make-phosphorylated-protein (protein)
-  (let ((prot-sexpr (krisp->sexpr protein)))
+(defun make-phosphorylated-protein (protein &optional (add-raw "funnyprotein"))
+  (let* ((prot-sexpr (krisp->sexpr protein))
+         (new-text (when add-raw (format nil "p-~a"
+                                         (or (a-get-item 'raw-text (cdr prot-sexpr))
+                                             add-raw))))
+         (new-prot (if add-raw
+                       (to-krisp
+                        (if (assoc 'raw-text (cdr prot-sexpr))
+                            (subst `(raw-text ,new-text)
+                                   (assoc 'raw-text (cdr prot-sexpr))
+                                   prot-sexpr)
+                            `(,(car prot-sexpr) (raw-text ,new-text) ,@(cdr prot-sexpr))))
+                       protein)))
     (bind-dli-variable
      'predication
      (interpret-verb-as-predication
       'link-in-verb+ed
-      (to-krisp (remove (assoc 'raw-text (cdr prot-sexpr)) prot-sexpr))
+      new-prot
       category::phosphorylate
       nil
       (subcategorized-variable  category::phosphorylate :object protein))
-     protein)))
+     new-prot)))
 
+
+;; don't make the definition of, e.g., p-ERK, because it interferes with handling p-ERK1
 (defun def-phosphorylated-protein (word-string protein-edge
                                    &aux (protein (edge-referent protein-edge)))
   (declare (special category::phosphorylate))
@@ -1465,6 +1478,7 @@ for this species"
       (define-cfr (itype-of protein) `(,word)
         :form (edge-form protein-edge)
         :referent i))))
+
 
 
 
