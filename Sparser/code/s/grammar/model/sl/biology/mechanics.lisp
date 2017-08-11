@@ -665,6 +665,31 @@ uid binding, if there is one"
       (break "stub: possible p protein?"))))
 
 
+;;;--------------------
+;;; "pERK" and friends
+;;;--------------------
+
+(defun little-p-hack (word)
+  "Called from make-word/all-properties/or-primed if the word is 
+   unknown (~ doesn't have rule-set); its capitalization is mixed
+   case, and it starts with a lower-case p (while running in big 
+   mech mode). Determine whether the characters after the p 
+   correspond to a known word (frequently a protein), and give 
+   the word a rule / rule-set that will do the right thing when we run it.
+     If the post-p characters do not correspond to a known word
+   then we call the other 'out' to store the word and have it handled
+   later. Runs for side-effects."
+  (let* ((phame (pname word))
+         (post-p (subseq pname 1))
+         (known-word (resolve post-p)))
+    (if known-word
+      (then
+        (lsp-break "What rule do we write for 'p' plus ~a" known-word))
+      (store-word-and-handle-it-later word))))
+
+
+
+
 ;;;--------------------------------------------
 ;;; interpreting unknown words as bio-entities
 ;;;--------------------------------------------

@@ -43,6 +43,8 @@
    handling when we're in *big-mechanism*."
   (declare (special *capitalization-of-current-token*
                     *primed-words* ;; Comlex table
+                    *word-to-be-defined?* *show-word-defs*
+                    *big-mechanism*
                     *introduce-brackets-for-unknown-words-from-their-suffixes*))
 
   (let* ((symbol (make-word-symbol))
@@ -76,6 +78,10 @@
             ((and *big-mechanism*
                   (suitable-for-and-in-OBO word))
              (setup-word-denoting-an-OBO word))
+            ((and *big-mechanism*
+                  (eq *capitalization-of-current-token* :mixed-case)
+                  (eql #\p (aref (pname word) 0))) ;; "pERK"
+             (little-p-hack word))
             ((and *big-mechanism*
                   (eq *capitalization-of-current-token*
                       :all-caps)) ;; potential acronym
