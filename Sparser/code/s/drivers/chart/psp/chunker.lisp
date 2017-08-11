@@ -302,7 +302,7 @@
       ((member ecat '(modal syntactic-there)) nil)                  #|MODAL, SYNTACTIC-THERE|# 
       ((eq ecat 'ordinal) t)                                        ;;ORDINAL
      
-      ((or (some-edge-satisfying? edges #'pronoun-or-wh-pronoun) ;; BLOCK NG CONTINUATION after WH and pronouns
+      ((or (some-edge-satisfying? edges #'pronoun-or-wh-pronoun)    ;; BLOCK NG CONTINUATION after WH and pronouns
            ;; this makes sense when we have very few questioned NPs like "which mutated proteins"
            (and (some-edge-satisfying? (all-edges-at e) #'preposition-edge?) 
                 (not (preceding-determiner? e))))
@@ -336,7 +336,7 @@
                  (loop for ref in preceding-noun-refs thereis (is-object-not-subject? ref e)))
                 ((loop for edge in edges thereis
                          (member (cat-name (edge-form edge)) '(det quantifier adjective))))))
-         (verb+ed
+         (verb+ed                                                   ;; VERB+ED
           ;;"RNA interference (RNAi) blocked MEK/ERK activation."
           (not (preceding-adverb-preceded-by-ng edges))
           ;; too tight, but probably OK
@@ -346,9 +346,8 @@
                 ;; too tight, but probably OK
                 ;; blocks "interaction eventually influencing ecm - driven cell motility"
                 nil
-                (and
-                 (not (verb-premod-sequence? (edge-just-to-right-of e)))
-                 (ng-compatible? (edge-form e) edges)))))))))
+                (and (not (verb-premod-sequence? (edge-just-to-right-of e)))
+                     (ng-compatible? (edge-form e) edges)))))))))
 
 (defun comma? (e)(eq word::comma (edge-category e)))
 
@@ -513,16 +512,15 @@
                     e)
            (optimize (debug 3)(speed 1)))
   ;;(lsp-break "compatible with vg? e = ~a" e)
-  (or
-   (vg-compatible? (edge-form e))
-   (eq category::not (edge-category e))
-   (eq category::apostrophe-t (edge-category e))
-   (verb-premod-sequence? e)
-   (and
-    (eq category::time (edge-category e))
-    (not
-     (loop for ee in (all-edges-at e)
-        thereis (eq category::subordinate-conjunction (edge-form ee)))))))
+  (or (vg-compatible? (edge-form e))
+      (eq category::not (edge-category e))
+      (eq category::apostrophe-t (edge-category e))
+      (verb-premod-sequence? e)
+      (and
+       (eq category::time (edge-category e))
+       (not
+        (loop for ee in (all-edges-at e)
+              thereis (eq category::subordinate-conjunction (edge-form ee)))))))
 
 (defun verb-premod? (n v)
   (find-subcat-var n :verb-premod v))
@@ -532,20 +530,26 @@
    e.g. '... tyrosine phosphorylated'"
   (declare (special *n-bar-categories* *vg-head-categories*
                     category::that word::comma))
-  (and (edge-p e)
-       (category-p (edge-form e))
-       (member (cat-symbol (edge-form e)) *n-bar-categories*)
-       (not (and (edge-p (edge-just-to-left-of e))
-                 (preposition-edge? (edge-just-to-left-of e))))
-       (let ((right (edge-just-to-right-of e))
-             (left (edge-just-to-left-of e)))
-         (and (edge-p right)
-              (category-p (edge-form right))
-              (member (cat-symbol (edge-form right)) *vg-head-categories*)
-              (verb-premod? (edge-referent e) (edge-referent right))
-              (or (not (edge-p left))
-                  (not (or (eq (edge-category left) category::that)
-                           (eq (edge-category left) word::comma))))))))
+  (let ((right (edge-just-to-right-of e))
+        (left (edge-just-to-left-of e)))
+
+    (and (edge-p e)
+         (category-p (edge-form e))
+         (member (cat-symbol (edge-form e)) *n-bar-categories*)
+         (not (and (edge-p left)
+                   (preposition-edge? left)))
+         (edge-p right)
+         (category-p (edge-form right))
+         (member (cat-symbol (edge-form right)) *vg-head-categories*)
+         (verb-premod? (edge-referent e) (edge-referent right))
+
+         (or (not (edge-p left))
+             (and (not (eq (edge-category left) word::comma))
+                  (or (ng-head? (edge-form left))
+                      (member (cat-name (edge-category left))
+                              '(be have)))
+                  (not (eq (edge-category left) category::that))
+                  (not (eq (edge-form left) category::det)))))))
 
 (defun gross-infinitive-chunker-test (chunk)
   "Called from delimit-next-chunk when the chunk is finished.
@@ -868,7 +872,7 @@ than a bare "to".  |#
              ((setq head-edge (car head-edges))
               (when *warn-on-multiple-heads*
                 (warn "taking arbitrary head from among ~s in ~s~%"
-                      head-edges (sentence-string *sentence-in-core*)))
+                      head-edges (current-string)))
               head-edge)
              (t (lsp-break "Need another multiple head edge recovery option")))))
         
@@ -1008,7 +1012,6 @@ than a bare "to".  |#
   (declare (special category::verb+ed *n-bar-categories*
                     category::preposition category::det category::have
                     category::pronoun category::np *verb+ed-sents* 
-                    *sentence-in-core*
                     *chunk*
                     edge ev-list)
            (optimize (debug 3)))
@@ -1041,7 +1044,7 @@ than a bare "to".  |#
                      (push `((,(edge-form prev-edge) ,(edge-referent prev-edge))
                              (,(edge-form ev-edge) ,(edge-referent ev-edge))
                              (,(edge-form edge) ,(edge-referent edge))
-                             ,(sentence-string *sentence-in-core*))
+                             ,(current-string))
                            *suppressed-verb+ed*))
                    nil)
                   (t t)))
@@ -1075,7 +1078,7 @@ than a bare "to".  |#
        (push (list (string-of-words-between 
                     (chunk-start-pos *chunk*)
                     (pos-edge-ends-at edge))
-                   (sentence-string *sentence-in-core*)) 
+                   (current-string)) 
              *verb+ed-sents*))
      t)
     (t nil)))
