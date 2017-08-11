@@ -315,8 +315,8 @@ returning a new one.
 	 (over-ridden-var (binding-variable over-ridden-binding))
 	 (over-ridden-variables (dvar-variables over-ridden-var)))
     (when (null edge)
-      (error "null edge in perform-over-ridden-variable-disambiguation, for binding ~s in sentence ~s~%"
-            over-ridden-binding (when *sentence-in-core* (sentence-string *sentence-in-core*)))
+      (warn "null edge in perform-over-ridden-variable-disambiguation, for binding ~s in sentence ~s~%"
+            over-ridden-binding (when *sentence-in-core* (current-string)))
       (return-from perform-over-ridden-variable-disambiguation i))
     (loop for binding in (reverse (indiv-binds i))
           do
@@ -338,16 +338,15 @@ returning a new one.
 (defparameter *quiet-ambiguous-variable* t)
 
 (defun disambiguated-variable (binding ambiguous-binding ambig-variables var/name)
-  (declare (special *sentence-in-core*))
   (if (eq binding ambiguous-binding)
       (if (cddr ambig-variables)
 	  ;; still ambiguous
 	  (progn (if *break-on-ambiguous-variable*
                      (lsp-break  "~%still ambiguous ~s~% in sentence: ~s~%" ambig-variables
-                                 (sentence-string *sentence-in-core*))
+                                 (current-string))
                      (unless *quiet-ambiguous-variable*
                        (warn  "~%still ambiguous ~s~% in sentence: ~s~%" ambig-variables
-                              (sentence-string *sentence-in-core*))))
+                              (current-string))))
 		 (car ambig-variables)) ;;
 	  (or (loop for v in ambig-variables
                     when (not (ambiguity-equivalent-var? v var/name))
@@ -436,7 +435,7 @@ returning a new one.
         (if (not rebound)
             (then (error "attempting to change a binding for ~s which does not exist in ~s~%"
                          val
-                         (sentence-string *sentence-in-core*))
+                         (current-string))
 
                   (let ((b (binding-of-individual var individual)))
                     (setf (binding-value b) value)
