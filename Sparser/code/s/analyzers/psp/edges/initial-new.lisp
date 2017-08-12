@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2016-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "initial"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:   July 2016
+;;;  Version:   August 2017
 
 ;; 1.1 (4/21/91 v1.8.4)  Changed the arguments
 ;;     (9/12/92 v2.3) improved the documentation
@@ -23,13 +23,13 @@
                                position
                                next-position
                                rule-set)
-
-  ;; Called from Install-terminal-edges when a word is mentioned
-  ;; literally in a non-unary rule. The rule set of the word indicates
-  ;; it composes in some direction and we create this edge to provide
-  ;; what amounts to a carrier so that the word looks like everything
-  ;; else that interacts in the parsing algorithm.
-
+  
+  "Called from Install-terminal-edges when a word is mentioned
+   literally in a non-unary rule. The rule set of the word indicates
+   it composes in some direction and we create this edge to provide
+   what amounts to a carrier so that the word looks like everything
+   else that participates in the parsing algorithm."
+  
   (let ((edge (next-edge-from-resource))
         (starting-vector (pos-starts-here position))
         (ending-vector   (pos-ends-here next-position))
@@ -39,10 +39,10 @@
     (setf (edge-starts-at edge) starting-vector)
     (setf (edge-ends-at edge)   ending-vector)
 
-    #+ignore ;; confuses the innocent
-    ;; Put something here if we can keep track of the rules
-    ;; that are being interpreted that mention this word
-    ;; as a literal.
+    #+ignore 
+    ;; If we can keep track of the rules that mention this word
+    ;; as a literal. Then we could list them here, otherwise the
+    ;; numbers for the ids just confuse the innocent
     (let ((ll-rules (rs-left-looking-ids rule-set))
           (rl-rules (rs-right-looking-ids rule-set)))
       (setf (edge-rule edge)
@@ -54,8 +54,8 @@
 
     (if (setq form-category (function-word? word))
       (if (eq form-category t)
-        ;; the default when the function word hasn't been given
-        ;; a semantics yet
+        ;; t is the default when the function word hasn't been defined yet.
+        ;; See define-function-term, and its subroutine define-function-word
         (setf (edge-form edge) nil)
         (setf (edge-form edge) form-category))
       (setf (edge-form edge) nil))
