@@ -262,8 +262,9 @@ digit now a 'known' word, so we have to have a rule there for
 it to execute.
 |#
 (defun reify-digit-word (word edge)
+  "Called by preterminals-for-unknown if the flags permit it."
   (let ((i (edge-referent edge)))
-    ;; Defining the rule puts it on the rule set
+    ;; Defining the rule puts it on the word's rule set
     (define-cfr *the-category-of-digit-sequences*
                 `(,word)
       :form (category-named 'number)
