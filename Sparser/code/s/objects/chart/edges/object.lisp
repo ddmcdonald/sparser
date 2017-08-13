@@ -136,10 +136,6 @@ code is make-edge-over-abbreviation and its feeders. |#
 
 
 
-(defun dotted-edge? (e)
-  (when (cfr-p (edge-rule e))
-    (dotted-rule (edge-rule e))))
-
 
 ;;;----------------------
 ;;; special Set routines

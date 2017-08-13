@@ -69,8 +69,6 @@
   (let* ((parent (top-edge-used-in tt))  ;; condition for getting here
          (category-name (cat-symbol (edge-category parent))))
     (or
-     (not (dotted-edge? tt))
-
      (member category-name
              `( category::quotation
                 category::parentheses
