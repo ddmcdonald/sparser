@@ -460,8 +460,7 @@ sentences.
             (if *use-occasional-polywords*
               (starts-occasional-polyword word)
               (starts-polyword word)))
-           (caps-word (capitalized-correspondent1 
-                       position-before word))
+           (caps-word (capitalized-correspondent position-before word))
            (caps-initial-state
             (when caps-word
               (if *use-occasional-polywords*

@@ -108,7 +108,7 @@
     (when (rule-set-for label) ;; assume it has backets
       ;; If "iraqi" does not introduce brackets, check for brackets
       ;; on its variant "Iraqi"
-      (let ((v (capitalized-correspondent label position-after)))
+      (let ((v (capitalized-correspondent position-after label)))
         (when v
           (tr :switched-to-capitalized-variant label v)
           (setq label v)))))
@@ -149,7 +149,7 @@
 
   (when (word-p label)
     (when (rule-set-for label) ;; assume it has backets
-      (let ((v (capitalized-correspondent1 position-before label)))
+      (let ((v (capitalized-correspondent position-before label)))
         (when v
           (tr :switched-to-capitalized-variant label v)
           (setq label v)))))

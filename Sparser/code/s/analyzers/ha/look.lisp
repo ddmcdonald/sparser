@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-1995,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2013,2017  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "look"
 ;;;   Module:  "analyzers;HA:"
-;;;  Version:  April 2013
+;;;  Version:  August 2017
 
 ;; 5/23/94 completely redesigned the check to take into account the
 ;;  source of the bracket.  Added traces 1/5/95.  Added {close/open}-bracket
@@ -46,7 +46,7 @@
   ;; "Asking whether there is a [ on p~A because of '~A'"
   (let* ((starting-vector (pos-starts-here p))
          (bracket (ev-boundary starting-vector))
-         (variant (capitalized-correspondent word p)))
+         (variant (capitalized-correspondent p word)))
     (if bracket
       (let ((source (get-tag :bracket-source starting-vector)))
         (if (not (consp source)) ;; two sources
@@ -83,7 +83,7 @@
   (let* ((ending-vector (pos-ends-here p))
          (bracket (ev-boundary ending-vector))
          (variant (when (word-p word) ;; vs. a form category
-                    (capitalized-correspondent word p))))
+                    (capitalized-correspondent p word))))
     (if bracket      
       (let ((source (get-tag :bracket-source ending-vector)))
         (if (not (consp source))

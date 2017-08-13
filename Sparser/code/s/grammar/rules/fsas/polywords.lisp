@@ -73,9 +73,7 @@ grammar/rules/FSAs/polywords4.lisp:  (defun do-polyword-fsa (word cfr position-s
           (tr :pw-word-doesnt-extend))
 
         (unless next-state ;; maybe the capitalization is wrong
-          (push-debug `(,word ,position ,table))
-          ;; (setq word (car *) position (cadr *) table (caddr *))
-          (let ((caps-word (capitalized-correspondent1 position word)))
+          (let ((caps-word (capitalized-correspondent position word)))
             (tr :pw-caps-variant position word)
             (cond
              (caps-word

@@ -1,10 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1996,2012-2016 David D. McDonald  -- all rights reserved
-
+;;; copyright (c) 1990-1996,2012-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "capitalization"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  September 2016
+;;;  Version:  August 2017
 
 ;; initiated 10/90
 ;; 0.1 (11/23/92 v2.3) Revised slightly to appreciate the case where the
@@ -35,87 +34,39 @@
 ;;; adjudicating among variations given the capitalization of the instance
 ;;;------------------------------------------------------------------------
 
-(defun sort-out-multiple-word-variants (list-of-defined-variations
-                                        lower-case-default
-                                        capitalization-on-position)
-
-  ;; locus of any interpretations that might get made, e.g. whether
-  ;; full caps counts as an instance of a capitalized variation
-
-  (dolist (w list-of-defined-variations)
-    (when (eq (word-capitalization w)
-              capitalization-on-position)
-      (return-from sort-out-multiple-word-variants w)))
-
-  lower-case-default )
-
-
-
-(defun capitalized-correspondent (lc-word position-after-word)
-  ;; given the lowercase word, is the position marked for
-  ;; capitalization and does that marking match or is it subsumed
-  ;; by a defined capitalized-variant of the word.
-  ;;   If the position isn't marked or there are no variants
-  ;; then return nil right away.
-  (unless (category-p lc-word)
-    ;; When we get here from [-on-position-because-of-word? when
-    ;; it's looking for brackets associated with the form label
-    ;; on an edge, we get a category for this parameter rather than
-    ;; a word, so of course this doesn't make sense.
-    (let* ((position-before (chart-position-before position-after-word))
-           (capitalization (pos-capitalization position-before)))
-      (capitalized-version lc-word capitalization))))
-
-
-(defun capitalized-correspondent1 (position-before lc-word)
-  ;; This switching positions is brain dead. Below is the list of
-  ;; of references, many of them in the brackets operations. Don't
-  ;; want to disturb them right now, so making this alternative
-  ;; which we switch all the way over to once the conversion is complete
-  (unless (category-p lc-word)
-    ;; When we get here from [-on-position-because-of-word? when
-    ;; it's looking for brackets associated with the form label
-    ;; on an edge, we get a category for this parameter rather than
-    ;; a word, so of course this doesn't make sense.
+(defun capitalized-correspondent (position-before lc-word)
+  "Given the lowercase word, is this position marked for
+   capitalization and does that marking match or is it subsumed by
+    a defined capitalized-variant of the word.
+       If the position isn't marked or there are no variants
+    then return nil right away."
+  (unless (category-p lc-word) ;; When the call comes from
+    ;; [-on-position-because-of-word? looking for brackets
+    ;; associated with the form label, capitalization is irrelevant
     (let ((capitalization (pos-capitalization position-before)))
       (capitalized-version lc-word capitalization))))
 
-#|
-analyzers/FSA/words2.lisp:          (let ((caps-word (capitalized-correspondent word position-before)))
-analyzers/HA/look.lisp:         (variant (capitalized-correspondent word p)))
-analyzers/HA/look.lisp:                    (capitalized-correspondent word p))))
-analyzers/HA/place-brackets1.lisp:      (let ((v (capitalized-correspondent label position-after)))
-analyzers/HA/place-brackets1.lisp:      (let ((v (capitalized-correspondent label position-before)))
-drivers/chart/psp/no-brackets-protocol.lisp:    ;; This is reinforced by capitalized-correspondent, which figures
-grammar/rules/FSAs/abbreviations2.lisp:;;      that it passed to capitalized-correspondent was causing failures.
-grammar/rules/FSAs/abbreviations2.lisp:         (caps-variant? (capitalized-correspondent
-objects/chart/words/lookup/capitalization.lisp:;;      was on  when source is ] after. (6/3/14) fixed case in capitalized-correspondent
-objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent (lc-word position-after-word)
-|#
 
 
 (defun capitalized-version (lc-word caps-type)
-  "We're trying to establish the grammatical propeties 
+  "We're trying to establish the grammatical properties 
  of lc-word -- does it introduce initial edges, does it extend
  a polyword. The caller could not find what it wanted on the
  rule-set of the lowercase word it has in its hand (lc-word)
  so it wants to know if a capitalization-variant of this
  word exists. If there are one or more variants and they
  are consistent with the actual observed case (caps-type, stored
- on the same position object as the word is), then it returns it."
+ on the same position object as the word is), then return it."
   (let ((variants (word-capitalization-variants lc-word)))
     (when (not (eq caps-type :lower-case))
       (when variants
-        (unless (typep variants 'top-lattice-point)
-          ;; happened for "seven" as part of checking "on bracket 
-          ;; because of word" in "a seven-day deadline"
-          (or (find caps-type variants  ;; exact match
-                    :key #'word-capitalization)
-              (subsuming-variant caps-type variants lc-word)))))))
+        (or (find caps-type variants  ;; exact match
+                  :key #'word-capitalization)
+            (subsuming-variant caps-type variants lc-word))))))
 
 
 (defun subsuming-variant (actual-state defined-variants lc-word)
-  "Teturns one of the defined variants if the capitalization on the
+  "Returns one of the defined variants if the capitalization on the
  variant is defined by this function to be a reasonable subsumer for 
  the observed capitalizaton (actual-state).
    When this is called we know that the actual state isn't lowercase 
@@ -244,8 +195,6 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
 
           (define-word new-string)))))
 
-
-
 (defun get-word-string-from-position (lc-word position)
   (declare (special *length-of-character-input-buffer* *index-of-next-character*
                     *character-buffer-in-use*))
@@ -303,8 +252,7 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
   "A predicate testing whether the word is capitalized in any way,
    i.e. first letter, all upper case, or mixed case."
   (when (typep word 'word)
-    (let ((capitalization-field
-           (word-capitalization word)))
+    (let ((capitalization-field (word-capitalization word)))
       (when capitalization-field
         (unless (eq capitalization-field :lower-case)
           (unless (eq capitalization-field :digits)
