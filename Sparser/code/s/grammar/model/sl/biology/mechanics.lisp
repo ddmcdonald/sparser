@@ -1451,7 +1451,6 @@ for this species"
         
 
 (defun make-phosphorylated-protein (protein &optional (raw-text "funnyprotein"))
->>>>>>> Stashed changes
   (declare (special category::phosphorylate))
   (let* ((prot-sexpr (krisp->sexpr protein))
          (old-raw (a-get-item 'raw-text (cdr prot-sexpr)))
