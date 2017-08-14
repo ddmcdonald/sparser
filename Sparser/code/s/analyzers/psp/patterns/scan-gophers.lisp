@@ -31,16 +31,20 @@
   ;; After that we could reach a terminating criteron.
 
   ;;  (push-debug `(,position)) (break "sweep to end from ~a" position)
-  (declare (special *the-punctuation-hyphen*))
+  (declare (special *the-punctuation-hyphen* initial-long-edge))
   (let* ((position initial-position)
          (next-pos (if initial-long-edge
                      (pos-edge-ends-at initial-long-edge)
                      (chart-position-after initial-position)))
          (word (pos-terminal position))
-         (edges (when initial-long-edge (list initial-long-edge)))
+         (first-edge (or initial-long-edge
+                         (right-treetop-at/only-edges initial-position)))
+         ;; firstr-edge is NIL in "(Sebolt-Leopold et al., 1999)"
+         (edges (when first-edge (list first-edge)))
          hyphens  slashes  colons  other-punct 
          edge  long-edge-ends-at  )
-
+    (declare (special position next-pos word edges edge))
+    ;;(print `(position ,position next-pos ,next-pos))
     (flet ((store-important-punctuation (word)
              (cond
               ((eq word *the-punctuation-hyphen*) (push position hyphens))
@@ -48,6 +52,7 @@
               ((eq word (punctuation-named #\:)) (push position colons))
               ((punctuation? word) ;; but not terminating punctuation
                (push position other-punct))))) ;; e.g. %, +, ~
+      ;;(lsp-break "sweep-to-end-of-ns-regions")
       (loop
         ;; we enter the loop looking for a reason to stop
         (store-important-punctuation word)
@@ -57,7 +62,7 @@
           ((and edge (not (one-word-long? edge)))
            (tr :ns-edge-sweep edge)
            (setq long-edge-ends-at (pos-edge-ends-at edge))
-           (push edge edges))
+           )
 
          (t ;; just a word at this position
           (tr :ns-word-sweep word)
@@ -77,6 +82,7 @@
               (setq next-pos (chart-position-after next-pos)))
             (tr :ns-return-punch-terminates-seq word next-pos)
             (return))))
+        ;;(print edge)
         (when (edge-p edge) (push edge edges))
         (setq position next-pos
               next-pos (or long-edge-ends-at

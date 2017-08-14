@@ -58,7 +58,7 @@
             (all-tts ending-position stop-pos)))))
 
 ;; we were getting no parses when a sentence started with a position
-;;  that had no edges like one starting with  © ,
+;;  that had no edges like one starting with  ï¿½ ,
 ;;  because adjacent-tt-pairs returned NIL in that case. We need to start from
 ;;  the first position that has an actual edge over it
 

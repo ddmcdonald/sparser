@@ -33,7 +33,9 @@
 
 ;;--- entry points (/// should be consolidated)
 
-(defun itype-of (i) (i-type-of i))
+(defun itype-of (i)
+  (declare (optimize (speed 3)(safety 0)))
+  (i-type-of i))
 
 #| i-type-of should be replaced with itype-of
 

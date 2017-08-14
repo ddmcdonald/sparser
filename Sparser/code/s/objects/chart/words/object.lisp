@@ -41,6 +41,7 @@
 (defun word-rules (w)
   (label-rule-set w))
 
+#+ignore
 (defun word-plist (w)
   (label-plist w))
 

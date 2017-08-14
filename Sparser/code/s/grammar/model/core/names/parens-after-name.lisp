@@ -24,6 +24,7 @@
   ;; is an acronym for it, where the acronymic-word has been passed in to us
   ;; as the referent-of-right-edge.  We establish that word as referring to a
   ;; name that is one of the names of the item on the left.
+  (declare (special *left-edge-into-reference*))
 
   (typecase referent-of-left-edge
     (individual

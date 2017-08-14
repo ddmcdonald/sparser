@@ -37,6 +37,7 @@
 (defun get-tag (tag obj &optional default)
   "Return the value for TAG in the plist of OBJ.
 N.B. the order of arguments matches MEMQ, not GETF."
+  (declare (optimize (speed 3)(safety 0)))
   (check-type tag keyword "a tag")
   (getf (plist-for obj) tag default))
 

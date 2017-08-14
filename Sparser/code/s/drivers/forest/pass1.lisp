@@ -149,6 +149,7 @@
 ;;;---------------------------------------------------
 ;;This now also handle premodifiers for prepositions, as in "30 minutes after"
 (defun look-for-prep-binders ()
+  (declare (special *rules-for-pairs*))
   (clrhash *rules-for-pairs*) ;; avoid history from previous broken parses
   (dolist (prep-edge (prepositions (layout)))
     (unless (edge-used-in prep-edge)

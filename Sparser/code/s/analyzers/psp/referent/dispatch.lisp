@@ -83,6 +83,7 @@
 ;;;---------------------------------------------------
 
 (defun indicate-head (direction)
+  (declare (special *left-edge-into-reference* *right-edge-into-reference*))
   (ecase direction
     (:left (setq *head-edge* *left-edge-into-reference*))
     (:right (setq *head-edge* *right-edge-into-reference*))))

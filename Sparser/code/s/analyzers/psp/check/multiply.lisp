@@ -85,7 +85,8 @@
 
 (defun category-ids (edge direction field)
   ;; Every access goes through here. For debugging it can be called
-  ;; with a category rather than an edge. 
+  ;; with a category rather than an edge.
+  (declare (optimize (speed 3)(safety 0)))
   (let ((label (cond
                 ((category-p edge) edge)
                 (t (case field
@@ -367,6 +368,7 @@
 (defparameter *cat-names* (make-hash-table :size 1000))
 
 (defun cat-name (cat)
+  (declare (optimize (speed 3)(safety 0)))
   (when (category-p cat) ;; words don't have edge-forms
     (or
      (gethash cat *cat-names*)

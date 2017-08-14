@@ -118,6 +118,7 @@
   (remove-history-of-instance/edge edge))
 
 (defun remove-history-of-daughters ()
+  (declare (special *left-edge-into-reference* *right-edge-into-reference*))
   (let ((left-edge *left-edge-into-reference*)
         (right-edge *right-edge-into-reference*))
     ;(break)

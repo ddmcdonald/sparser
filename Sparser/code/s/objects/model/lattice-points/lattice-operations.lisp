@@ -48,6 +48,7 @@
       (setf (gethash variable *dl-vv-from-variable*) (make-hash-table :size 100 :test #'equal))))
 
 (defun find-or-make-dlvv-from-var-val (variable value)
+  (declare (optimize (speed 3)(safety 0)))
   (let ((vht (find-or-make-dlvv-ht-from-variable variable)))
     (or (gethash value vht)
         (setf (gethash value vht) 
@@ -97,6 +98,7 @@
           ref)))
 
 (defun set-dli (ref dli)
+  (declare (optimize (speed 3)(safety 0)))
   (push ref (gethash dli *source-ht*))
   (setf (gethash ref *lattice-ht*) dli))
 

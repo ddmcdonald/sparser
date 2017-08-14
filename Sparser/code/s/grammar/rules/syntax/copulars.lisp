@@ -144,7 +144,7 @@ machinery. |#
   :referent (:function make-copular-pp left-edge right-edge))
 
 (defun make-copular-pp (be-ref pp)
-  (declare (special category::copular-predication-of-pp))
+  (declare (special category::copular-predication-of-pp *left-edge-into-reference*))
   (when (and
          be-ref
          (null (value-of 'predicate be-ref))

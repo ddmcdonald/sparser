@@ -46,6 +46,10 @@
 
 (in-package :sparser)
 
+
+(defvar *n-bar-categories*)
+(defvar *n-bar-category-names*)
+
 ;;; to review and fix or remove
 #+ignore
 (def-form-rule (comma subject-relative-clause)

@@ -159,7 +159,8 @@
 
 (defun ref/instantiate-individual-with-binding
        (rule-field left-referent right-referent right-edge)
-  (declare (ignore right-edge))
+  (declare (ignore right-edge)
+           (special *left-edge-into-reference* *right-edge-into-reference*))
   ;;(push-debug `(,rule-field ,left-referent ,right-referent ,right-edge))
   ;;(break "~a + ~a" left-referent right-referent)
 
@@ -290,7 +291,8 @@
 (defun ref/binding (binding-exp
                     left-referent right-referent right-edge
                     &optional value-datum )
-  (declare (ignore right-edge))
+  (declare (ignore right-edge)
+           (special *left-edge-into-reference* *right-edge-into-reference*))
 
   (let ((variable (if value-datum  ;;///nasty patch over inconsistency
                     binding-exp    ;; in packaging by rdata vs. others

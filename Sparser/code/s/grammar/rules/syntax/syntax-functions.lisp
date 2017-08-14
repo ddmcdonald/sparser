@@ -82,6 +82,10 @@
 ;; (parent-edge-for-referent)
 
 
+;; used all over
+(defvar *left-edge-into-reference*)
+(defvar *right-edge-into-reference*)
+
 ;;;------------
 ;;; parameters
 ;;;------------

@@ -260,7 +260,7 @@ returning a new one.
 (defun make-maximal-projection (individual &optional edge)
   "Called from bind-dli-variable, where it has to return the individual,
    original or as modified to do any local disambiguation."
-  (declare (special *da-constituents* *contextual-interpretation*))
+  (declare (special *contextual-interpretation*))
   (if *contextual-interpretation*
       ;; don't make maximal projections during contextual reinterpretation
       individual
@@ -439,8 +439,8 @@ returning a new one.
                          val
                          (current-string))
 
-                  (let ((b (binding-of-individual var individual)))
-                    (setf (binding-value b) value)
+                  (let ((b (binding-of-individual val individual)))
+                    (setf (binding-value b) val)
                     ;; now it needs to be indexed, but that would entail
                     ;; refactoring some code and can wait for a bit (1/31/17)
                     individual))

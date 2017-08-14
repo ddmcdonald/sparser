@@ -82,7 +82,8 @@
   (> (hash-table-count *inherited-cat-variables*) 0))
 
 (defun hash-find-variable (var-name cat)
-  (declare (special category::top))
+  (declare (special category::top)
+           (optimize (speed 3)(safety 0)))
   (let ((var-table (gethash cat *inherited-cat-variables*)))
     (when (and (not (hash-table-p var-table))
                (itypep cat category::top))

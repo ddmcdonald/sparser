@@ -71,6 +71,7 @@
   #+ignore(defmacro memq (item list)
     `(member ,item ,list :test #'eq))
   (defun memq (item list)
+    (declare (optimize (speed 3)(safety 0)))
     (member item list :test #'eq)))
 
 (defun memq/assq (item alist)

@@ -100,6 +100,7 @@
 
 (defparameter *show-semantics-output-name* nil)
 (defun close-article-semantic-file-if-needed ()
+  (declare (special *indra-post-process*))
   (when (and *article-semantics-directory*
              (streamp *sentence-results-stream*)
              (open-stream-p *sentence-results-stream*))

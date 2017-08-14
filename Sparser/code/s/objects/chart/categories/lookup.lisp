@@ -50,7 +50,7 @@
 (defun find-or-make-category-object (symbol &optional (source :define-category) source-location)
   ;; core routine used by all the various sources for categories to
   ;; make the minimal object and have it cataloged.
-  (declare (special *all-intra-category-relationships-noticed?*))
+  (declare (special *all-intra-category-relationships-noticed?* *dotted-categories*))
   (unless (if *include-model-facilities*
             (referential-category-p symbol) ;; can happen in generated code
             nil)
@@ -147,6 +147,7 @@
   (format t "~%~% category-named ~s~%" name)
   (sb-debug::map-backtrace #'print :count 5 :start 0)
   |#
+  (declare (optimize (speed 3)(safety 0)))
   (let ((c-symbol (if (eq (symbol-package name) *category-package*)
                     name
                     (find-symbol (symbol-name name) *category-package*))))
@@ -157,7 +158,8 @@
 
 
 (defmethod category-named ((c category) &optional errorp)
-  (declare (ignore errorp))
+  (declare (ignore errorp)
+           (optimize (speed 3)(safety 0)))
   c)
 
 

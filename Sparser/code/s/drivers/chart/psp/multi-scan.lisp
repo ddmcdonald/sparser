@@ -919,6 +919,7 @@ sentences.
           ;; The others are presently doing no work, but will
           ;; be useful if we need to change the protocol. 
           (tr :check-for-uniform-no-space-sequence position-before)
+          ;;(lsp-break "do-no-space-collection")
           (setq pos-reached
                 (collect-no-space-segment-into-word position-after)))
 

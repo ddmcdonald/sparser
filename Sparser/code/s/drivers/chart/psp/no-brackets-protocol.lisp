@@ -284,6 +284,10 @@
 ;;; document-driven processing
 ;;;----------------------------
 
+(defparameter *show-sentence-for-early-errors* nil
+  "some errors or interesting events happen in the sentence creating sweep, 
+   and we want to se the entire sentence context")
+
 (defun scan-sentences-to-eof (first-sentence)
   "Called from initiate-successive-sweeps when we're
    in the initial sweep phase and need to identify
@@ -308,9 +312,7 @@
             (setq *show-sentence-for-early-errors* nil)))
         (setq sentence (next sentence))))))
 
-(defparameter *show-sentence-for-early-errors* nil
-  "some errors or interesting events happen in the sentence creating sweep, 
-   and we want to se the entire sentence context")
+
 
 (defun sweep-successive-sentences-from (sentence)
   "Called from the toplevel driver initiate-successive-sweeps
@@ -426,12 +428,14 @@
 ;;; final operations on sentence before moving to the next one
 ;;;------------------------------------------------------------
 
+(defparameter *indra-post-process* nil)
+(defparameter *indra-embedded-post-mods* nil)
+
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article* *sentence-results-stream*
                     *end-of-sentence-display-operation*
                     *localization-interesting-heads-in-sentence*
-                    *localization-split-sentences*
-                    *colorized-sentence*
+                    *localization-split-sentences* *colorized-sentence*
                     *save-bio-processes*  *indra-post-process*
                     *predication-links-ht*))
   (set-discourse-history sentence (cleanup-lifo-instance-list))
@@ -470,8 +474,7 @@
 (defparameter *save-bio-processes* nil)
 
 (defparameter *colorized-sentence* (make-hash-table :size 1000 :test #'equal))
-(defparameter *indra-post-process* nil)
-(defparameter *indra-embedded-post-mods* nil)
+
 
 (defun indra-post-process (mentions sentence output-stream)
   (setq *indra-embedded-post-mods* nil)
@@ -511,7 +514,7 @@
               (c-itypep ref 'gene-transcript-co-express)
               (c-itypep ref 'gene-transcript-co-over-express)
               (c-itypep ref 'transcribe))
-         '(object affected-process))
+         '(object affected-process modifier)) ;; modifier is for "p-ERK expression"
 
         ((and (c-itypep ref 'bio-scalar)
               (not (c-itypep ref 'sensitivity)))
@@ -605,7 +608,7 @@
   (when *current-article* (symbol-name (name *current-article*))))
 
 (defun push-sem->indra-post-process (mention sentence lambda-expansion output-stream &optional desc)
-  (declare (special *indra-text* *predication-links-ht* lambda-expansion desc))
+  (declare (special *indra-text* *predication-links-ht* *indra-post-process* lambda-expansion desc))
   (unless desc (setq desc (base-description mention)))
   ;;(lsp-break "push-sem->indra-post-process")
   (let* ((lambda-expansion
@@ -634,6 +637,12 @@
       (eq atom list-struct)
       (loop for item in list-struct
             thereis (contains-atom atom item))))
+
+(defun contains-list (l list-struct)
+  (when (consp list-struct)
+    (or (equal l list-struct)
+        (loop for item in list-struct
+              thereis (contains-list l item)))))
 
 (defun contains-string (string list-struct)
   (if (not (consp list-struct))
