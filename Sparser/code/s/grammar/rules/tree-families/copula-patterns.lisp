@@ -1,11 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2013,2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "copula patterns"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  October 2013
+;;;  version:  August 2017
 
 ;; formed 10/18/95. Cleaned up a bit 10/9/13.
+;; 8/14/17Referring to 'be' in complement clause is all of a sudden weirding out
+;; the decode-etf-rule-case call to form-category?
 
 (in-package :sparser)
 
@@ -22,13 +24,13 @@
       Semantically, the result is to put the individual into a relationship 
       with the property or description."
   :binding-parameters ( result  individual  description )
-  :labels ( s  vp  np/subject  complement )
+  :labels ( s  vp copular-verb np/subject  complement )
   :cases
      ((:subject (s (np/subject vp)
                  :head right-edge
                  :binds (individual left-edge)))
 
-      (:complement-of-be  (vp (be complement)
+      (:complement-of-be  (vp (copular-verb complement)
                            :instantiate-individual  result
                            :head left-edge
                            :binds (description right-edge)))

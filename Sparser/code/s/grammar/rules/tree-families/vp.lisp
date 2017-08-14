@@ -29,9 +29,9 @@
     many forms which would lead to technically duplicated rules with different
     meanings. This provides an realization for these 'value categories'"
   :binding-parameters ( result description )
-  :labels ( vp complement )
+  :labels ( vp copular-verb complement )
   :cases
-    ((:complement-of-be  (vp (be complement)
+    ((:complement-of-be  (vp ( copular-verb complement)
                            :instantiate-individual  result
                            :head left-edge
                            :binds (description right-edge)))))

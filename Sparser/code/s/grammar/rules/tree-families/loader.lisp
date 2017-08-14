@@ -44,13 +44,14 @@
 (gload "tree-families;ditransitive")
 (gload "tree-families;indirect obj pattern")
 (gload "tree-families;verbs taking pps")
-(gload "tree-families;copula patterns")
+(gload "tree-families;copula patterns") ;; thing-is-description
 (gload "tree-families;that comp")
 
-(gload "tree-families;VP")
+(gload "tree-families;VP") ;; be-description
 (gload "tree-families;VP adjuncts")
 
-(gload "tree-families;compounds")
+;;(gload "tree-families;compounds")
+;;   conventional-or, with literals for "or" and ","
 
 (gload "tree-families;prepositional phrases")
 (gload "tree-families;adjective phrases")
