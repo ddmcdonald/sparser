@@ -1456,7 +1456,7 @@ for this species"
          (old-raw (a-get-item 'raw-text (cdr prot-sexpr)))
          (new-text (or raw-text
                        (when (and old-raw
-                                  (not (eq #\p (aref old-rawj 0))))
+                                  (not (eq #\p (aref old-raw 0))))
                          (format nil "p-~a" old-raw))))
          (new-prot (if raw-text
                        (to-krisp
