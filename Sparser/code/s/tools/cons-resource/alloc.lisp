@@ -47,6 +47,7 @@
 (defparameter *number-of-calls-to-deallocate-kons* 0)
 
 (defun deallocate-kons (cell)
+  (declare (optimize (speed 3)(safety 0)))  
   (unless (consp cell)
     ;; don't need to worry about the cost of this check since
     ;; most deallocation will be part of initializing the chart
