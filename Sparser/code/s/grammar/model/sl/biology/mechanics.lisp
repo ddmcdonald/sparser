@@ -1451,6 +1451,7 @@ for this species"
         
 
 (defun make-phosphorylated-protein (protein &optional (add-raw "funnyprotein"))
+  (declare (special category::phosphorylate))
   (let* ((prot-sexpr (krisp->sexpr protein))
          (new-text (when add-raw (format nil "p-~a"
                                          (or (a-get-item 'raw-text (cdr prot-sexpr))

@@ -215,7 +215,7 @@
    walks up the superc chains, but since we are not being clever
    about how we interleave going up a main line and up from mixins,
    the 'raw' collected can't guarentee this so we do it manually."
-  (declare (special *top-of-category-tree*))
+  (declare (special *top-of-category-tree* category::form-category))
   (when (and category-list
              ;; we have a subtle bug with PARAGRAPH being the interpretation
              ;;  of a word, and also a form-category
@@ -554,7 +554,8 @@
     (unless (or
              (form-category? category)
              (member (get-tag :source category) '(:comlex :morphology)))
-      (loop for subc in (sort (subcategories-of category) #'string< :key #'(lambda (c)(string-downcase (format nil "~a" (cat-name c)))))
+      (loop for subc in (sort (subcategories-of category) #'string<
+                              :key #'(lambda (c)(string-downcase (format nil "~a" (cat-name c)))))
          as i from 0 to max-width
          do
            (if (eq i max-width)

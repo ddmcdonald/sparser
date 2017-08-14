@@ -116,7 +116,7 @@
    is in reverse order. Afterwards update the token globals and 
    leave by tail-recursively calling find-word to continue the
    processing of the token."
-  (declare (special accumulated-entries))
+  (declare (special accumulated-entries *collect-init-lowercase*))
   (if (> length *word-lookup-buffer-length*)
     (format t "~%~%The token just found:~%  ~s~
                ~%is longer than the word lookup buffer can ~

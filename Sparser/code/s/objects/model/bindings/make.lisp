@@ -296,6 +296,7 @@ returning a new one.
         individual)))
 
 (defun current-constituent-edges ()
+  (declare (special *da-constituent-edges* *left-edge-into-reference* *right-edge-into-reference*))
   `(,.(and *left-edge-into-reference* (list *left-edge-into-reference*))
       ,.(and *right-edge-into-reference* (list *right-edge-into-reference*))
       ,@ *da-constituent-edges*))
@@ -309,7 +310,8 @@ returning a new one.
 
 
 (defun perform-over-ridden-variable-disambiguation (over-ridden-binding var/name i edge)
-  (declare (special *left-edge-into-reference* *right-edge-into-reference*))
+  (declare (special *left-edge-into-reference*
+                    *right-edge-into-reference* *sentence-in-core*))
 
   (let* ((new (find-or-make-lattice-description-for-cat-list (indiv-type i)))
 	 (over-ridden-var (binding-variable over-ridden-binding))

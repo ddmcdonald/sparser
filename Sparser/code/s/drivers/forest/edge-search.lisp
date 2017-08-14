@@ -376,9 +376,11 @@ for ambiguous words"
 
 (defparameter *l-triple-tests* nil)
 (defun l-triple-tests ()
-  (declare (special category::as category::infinitive category::syntactic-there
-                    category::vg category::vg+ing category::np category::adjective
-                    category::n-bar))
+  (declare (special category::as category::infinitive
+                    category::syntactic-there category::vg
+                    category::vg+ing category::vg+ed category::np
+                    category::adjective category::n-bar
+                    *n-bar-categories*))
   (or *l-triple-tests*
       (setq *l-triple-tests*
             (loop for v in '(category::vg category::vg+ing category::infinitive

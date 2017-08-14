@@ -228,7 +228,7 @@
    or scan-terminals-and-do-core depending one whether we're
    working with a document or just a text stream."
   (declare (special *sweep-for-patterns* *do-early-rules-sweep*
-                     *grammar-and-model-based-parsing*))
+                     *grammar-and-model-based-parsing* *verbified-nouns*))
   (setq *sentence-in-core* sentence)
   (let ((verbified (loop for v in (remove "inding" *verbified-nouns* :test #'equal)
                            when (or (search (format nil " ~a" v) (current-string) :test #'equal)
@@ -292,6 +292,7 @@
    but no substantive processing. Does not return.
    We leave the loop via a throw to sentences-finished
    from simple-eos-check from inside scan-words-loop."
+  (declare (special *show-sentence-for-early-errors*))
   (tr :start-scan-to-eof first-sentence)
   (let ((sentence first-sentence))
     (loop
