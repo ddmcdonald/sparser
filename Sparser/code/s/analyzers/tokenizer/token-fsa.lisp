@@ -110,6 +110,29 @@
       (announce-out-of-range-character))))
 
 
+;;/// Rusty -- still need these? I like to keep this section
+;; of the code really lean
+
+;; Yes -- these allow us to collect patterns of tokens with initiol lower case
+;;  followed by upper-case
+
+(defparameter *collect-init-lowercase* nil)
+
+(defun create-raw-string (accumulated-entries)
+  (format nil "~{~a~}"
+          (loop for cc in
+                  (reverse accumulated-entries)
+                collect
+                  (if (eq (car cc) :uppercase)
+                      (string-upcase (cdr cc))
+                      (string-downcase (cdr cc))))))
+
+(defun initial-lowercase? (acc)
+  (and *collect-init-lowercase*
+       (eq (caar (last acc)) :lowercase)
+       (loop for a in acc thereis (eq (car a) :uppercase))))
+
+
 (defun finish-token (accumulated-entries length char-type)
   "Walk through the list of entries and populate the word lookup
    buffer with their characters. Note that the list of character entries
@@ -162,21 +185,3 @@
 
 
 
-;;/// Rusty -- still need these? I like to keep this section
-;; of the code really lean
-
-(defparameter *collect-init-lowercase* nil)
-
-(defun create-raw-string (accumulated-entries)
-  (format nil "~{~a~}"
-          (loop for cc in
-                  (reverse accumulated-entries)
-                collect
-                  (if (eq (car cc) :uppercase)
-                      (string-upcase (cdr cc))
-                      (string-downcase (cdr cc))))))
-
-(defun initial-lowercase? (acc)
-  (and *collect-init-lowercase*
-       (eq (caar (last acc)) :lowercase)
-       (loop for a in acc thereis (eq (car a) :uppercase))))
