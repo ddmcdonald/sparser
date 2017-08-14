@@ -37,6 +37,7 @@
 ;;;----------
 
 (defun ref/daughter (edge-designator left-referent right-referent)
+  (declare (special *left-edge-into-reference* *right-edge-into-reference*))
   (multiple-value-bind (ref head arg)
       (case edge-designator
         (left-referent (values left-referent 
@@ -169,6 +170,7 @@ construction code.
 ;;;-----------
 
 (defun ref/function (rule-field)
+  (declare (special *left-edge-into-reference* *right-edge-into-reference*))
   (let ((n-ary-rule (get-tag :rolled-out-from *rule-being-interpreted*)))
     (if n-ary-rule
       (ref/function/n-ary-rules n-ary-rule rule-field)
