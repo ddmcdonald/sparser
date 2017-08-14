@@ -107,8 +107,6 @@
              (break "Unclassified case of ~a between p~a and p~a"
                     pattern (pos-token-index start-pos) (pos-token-index end-pos)))))
     (cond
-      ((equal pattern '(:phosphorylate :protein))
-       (reify-phosphorylated-protein words (second edges) start-pos end-pos))
      ((or (equal pattern '(:full :single-digit)) ;; AF6, MEK1, SHOC2
           (equal pattern '(:full :digits)))
       (look-before-punting)
