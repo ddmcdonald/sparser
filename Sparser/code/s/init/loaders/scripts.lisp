@@ -96,6 +96,7 @@ in conjunction with an early version of Hark. Notable for using the
   (:script-variable *big-mechanism*)
   (:parameters
    (*description-lattice* t)
+   (*ignore-literal-edges* t)
    (*index-under-permanent-instances* t)
    (*index-bindings-to-variables* nil))
   (:grammar-configuration "bio-grammar")

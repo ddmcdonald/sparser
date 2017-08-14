@@ -96,26 +96,19 @@
       collect (aref vector i))))
 
 (defun tt-edges-starting-at (start-ev)
-  ;; Special purpose lookup for whack-a-rule.
-  ;; Called from adjacent-tt-pairs where we want to
-  ;; include literal rules in the case of multiple-initial-edges
-  (let* ((edge (ev-top-node start-ev)))
-    (when edge
-      ;; seem to be able to get a NIL in all positions of the edge vector when we look at the end of sentence in an article
-      #|
-      Slots with :INSTANCE allocation:
-      PLIST            = NIL
-      EDGE-VECTOR      = #(NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL..
-      TOP-NODE         = NIL
-      NUMBER-OF-EDGES  = 0
-      BOUNDARY         = NIL
-      POSITION         = #<position115 115 ".">
-      DIRECTION        = :|starting at|
-      MARKER           = NIL
-      |#
-      (if (eq edge :multiple-initial-edges) 
-      (all-edges-on start-ev) 
-      `(,edge)))))
+  "Special purpose lookup for whack-a-rule.
+   Called from adjacent-tt-pairs where we want to include literal rules.
+   We include them when either we  have multiple-initial-edges or
+   the top edge is just one word long (which handles cases like 'can't'
+   where the 'can' both participates in the rule for the contraction
+   and means something by itself."
+  (let* ((top-edge (ev-top-node start-ev)))
+    (when top-edge ;; seem to be able to get a NIL in all positions of 
+      ;; the edge vector when we look at the end of sentence in an article
+      (if (or (eq top-edge :multiple-initial-edges)
+              (one-word-long? top-edge))
+        (all-edges-on start-ev)
+        `(,top-edge)))))
 
 
 (defun span-covered-by-one-edge? (start end)

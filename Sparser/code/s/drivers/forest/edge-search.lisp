@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "edge-search"
 ;;;   Module:  "drivers/forest/"
-;;;  version:  July 2016
+;;;  version:  August 2017
 
 ;; Broken out of analyzers/forest/treetops/ 7/21/16. Has all of the
 ;; code that implements the "whack a rule" search that's driven from
@@ -87,6 +87,7 @@
     (adjacent-tt-pairs1 start-edges end-pos)))
 
 (defun adjacent-tt-pairs1 (edges-to-left end-pos)
+  (declare (optimize debug))
   (when edges-to-left
     ;; can be nil sometimes -- may want to diagnose cases
     ;;  seems to happen when running over the edge of a sentence(d
@@ -98,13 +99,11 @@
 	(let* ((next-ev (pos-starts-here left-end-position))
 	       (edges-to-right (tt-edges-starting-at next-ev))
 	       pairs )
-	  (declare (special next-ev edges-to-right))
 	  (when (member nil edges-to-right)
 	    (lsp-break "bad edge"))
 	  (setq pairs (form-all-pairs edges-to-left
 				      edges-to-right))
-	  (when (member nil edges-to-right)
-	    (lsp-break "bad edge"))
+          ;;(lsp-break "pairs")
 	  (let ((recursive-pairs
 		 (if edges-to-right
                      (adjacent-tt-pairs1 edges-to-right end-pos)
@@ -122,27 +121,32 @@
 	      return-value)))))))
 
 
-
 (defun form-all-pairs (left-list right-list)
-  (let ( pairs )
-    (loop for left in left-list
-       unless (bad-edge? left)
-       do (loop for right in right-list
-	     unless (bad-edge? right)
-	     do (push (list left right) pairs)))
-    pairs))
+  "Form all possibile pairs between these lists of adjacent edges.
+   If the flag to ignore literals is up then omit edges whose labels are words."
+  (flet ((illegal-literal? (edge)
+           "Exceptions to the 'ignore literals' rule"
+           (declare (special word::comma *ignore-literal-edges*))
+           (and *ignore-literal-edges*
+                (or (not (edge-p edge))
+                    (and (edge-for-literal? edge)
+                         (not (eq word::comma (edge-referent edge))))))))
+    (let ( pairs )
+      (loop for left in left-list
+         unless (illegal-literal? left)
+         do (loop for right in right-list
+               unless (illegal-literal? right)
+               do (push (list left right) pairs)))
+      pairs)))
 
-(defparameter *non-comma-literals-are-bad-edges* t)
 
-(defun bad-edge? (edge)
-  (declare (special word::comma))
-  (or
-   (not (edge-p edge)) ;; how can this happen?!@
-   (when *non-comma-literals-are-bad-edges*
-     (and
-      (eq :literal-in-a-rule  (edge-right-daughter edge))
-      (not (eq word::comma (edge-referent edge)))))))
-
+#+ignore(defun illegal-literal? (edge)
+           "Exceptions to the 'ignore literals' rule"
+           (declare (special word::comma *ignore-literal-edges*))
+           (when *ignore-literal-edges*
+             (or (not (edge-p edge))
+                 (and (edge-for-literal? edge)
+                      (not (eq word::comma (edge-referent edge)))))))
 
 
 (defun best-treetop-rule (sentence)

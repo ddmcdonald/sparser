@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "parameters"
 ;;;    Module: "init;"
-;;;   Version: January 2017
+;;;   Version: August 2017
 
 ;;;----------------------------
 ;;; parameterizing the loading
@@ -43,6 +43,13 @@ is looked at in bind-variable/expr.")
   "If non-nil, we look for edge label combinations off the labels
 provided by the referent (often more general than the category)
 including composite referents.")
+
+(defvar *ignore-literal-edges* nil
+  "Used in the pair-wise edge search to control whether rules over
+   literals (edges whose labels are words; see, e.g., the handling 
+   of modals) are permitted to be run. If flag is up, no bare words
+   will ever be edge labels while applying rules, though a significant
+   class of rules will be excluded.")
 
 (defvar *allow-form-rules* t
   "Permits checking category labels against grammar ('form') labels
