@@ -217,7 +217,7 @@
          (np (edge-referent (second edges))) ;; the ball
          (adj (edge-referent (third edges))) ;; red
          (*left-edge-into-reference* (first edges))
-         (copular-adj (make-copular-adjective be adj (car edges)))
+         (copular-adj (make-copular-adjective be adj))
          (copular-statement (when copular-adj
                               (assimilate-subject np copular-adj nil))))
     (declare (special *left-edge-into-reference*))
