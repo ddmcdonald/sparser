@@ -238,7 +238,7 @@
 
 (defun save-semantics-for-corpora (&optional
                                      (corpora '(overnight dec-test dry-run aspp2 erk dynamic-model)))
-  (save-sent-snapshots :corpora corpora))
+  (save-sent-snapshots corpora))
 
 (defun save-corpus-sents (name)
   (let ((corpus (get-sentence-corpus name))
@@ -597,6 +597,7 @@
 ;;  any of various items (categories, polywords, words) for printout
 ;; It produces a symbol in the :sparser package
 (defun simple-label (cat)
+  (declare (optimize (speed 3)(safety 0)))
   (etypecase cat
     (null nil)
     (symbol cat)
