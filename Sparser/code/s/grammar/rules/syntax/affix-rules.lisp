@@ -49,7 +49,7 @@
 
 (defparameter *unknown-word* nil)
 (defparameter *show-morphs* nil)
-(defparameter *block-verbification* nil)
+(defparameter *block-verbification* t)
 (defparameter *show-verbification* nil)
 (defparameter *verbified-nouns* nil)
 
@@ -77,6 +77,7 @@
          ;;/// put in both ??      
          (:ends-in-ed
           (let ((lemma (stem-form word)))
+            (declare (special lemma))
             (tr :defining-lemma-as-given-morph lemma 'verb)
             (if *edge-for-unknown-words*
                 (then
@@ -84,7 +85,8 @@
                            ;; originally put in to block creation of a verb form of "residue"
                            ;;  based in a typo "residued"
                            (category-p (form-of lemma))
-                           (eq (cat-symbol (form-of lemma)) 'category::common-noun))
+                           (eq (cat-symbol (form-of lemma)) 'category::common-noun)
+                           (names-bio-chemical-entity? lemma))
                          (unless *sentence-making-sweep*
                            (when *show-verbification*
                              (warn "^^^^Refusing to verbify a previously defined noun ~s~%" word)
@@ -100,7 +102,8 @@
                 (then
                   (cond ((and *block-verbification*
                               (category-p (form-of lemma))
-                              (eq (cat-symbol (form-of lemma)) 'category::common-noun))
+                              (eq (cat-symbol (form-of lemma)) 'category::common-noun)
+                              (names-bio-chemical-entity? lemma))
                          (unless *sentence-making-sweep*
                            (when *show-verbification*
                              (warn "^^^^Refusing to verbify a previously defined noun ~s~%" word)
@@ -161,7 +164,13 @@
               (setup-verb word)
               (assign-brackets-as-a-main-verb word)))))))))
 
-
+(defun names-bio-chemical-entity? (lemma)
+  (let* ((cfr (find-single-unary-cfr lemma))
+         (ltype (and cfr (cfr-referent cfr)
+                     (itype-of (cfr-referent cfr)))))
+    (when (itypep ltype 'bio-chemical-entity)
+      (warn "blocking verbification of ~s" lemma)
+      t)))
 
 (defparameter *announce-bad-affixes* nil)
     
@@ -232,7 +241,7 @@
       Note that the edge-maker this calls will use a 'setup'
    routine to make a category for this word whenever the flag
    *edge-for-unknown-words* is up."
-  
+  (declare (special *n-bar-categories*))
   ;;(lsp-break "making morph edge for ~a with ~a" word (word-morphology word))
   
   (etypecase (word-morphology word)
