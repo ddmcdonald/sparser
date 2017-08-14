@@ -247,8 +247,8 @@
 (def-family "EPHB receptor" :members ("EPHB1_HUMAN" "EPHB2_HUMAN" "EPHB3_HUMAN" "EPHB4_HUMAN" "EPHB6_HUMAN")) ;; removed "EPHB5_HUMAN" because there doesn't seem to be a human homolog for #5 in uniprot even though there is for #6 -- there's a #5 in chickens which we have defined, but that's it
 (def-family "ERD2" :synonyms ("erd2") :identifier "FA:01126")
 (def-family "ERH" :identifier "PR:000007177" :members ("UP:P84090" "UP:P84089"))
-(def-family "ERK-1" :members ("UP:P27361" "UP:Q5A1D3") :synonyms ("ERK1" "extracellular signal-regulated kinase 1"))
-(def-family "ERK2" :members ("UP:P28482" "UP:Q54QB1") :synonyms ("extracellular signal-regulated kinase 2"))
+;(def-family "ERK-1" :members ("UP:P27361" "UP:Q5A1D3") :synonyms ("ERK1" "extracellular signal-regulated kinase 1")) this was just the human and yeast ones, but the yeast one is unlikely to be of interest
+;(def-family "ERK2" :members ("UP:P28482" "UP:Q54QB1") :synonyms ("extracellular signal-regulated kinase 2")) this was just the human and slime mold -- the slime mold one is unlikely to be of interest
 (def-family "ERp60" :members ("UP:P27797" "UP:P30101"))
 (def-family "ET-1" :members ("UP:P05305" "UP:P22387") :synonyms ("endothelin-1"))
 (def-family "ETS" :synonyms ("Ets") :identifier "FA:01142")
@@ -292,6 +292,7 @@
 (def-family "GP3" :synonyms NIL :identifier "XFAM:PF03076.12")
 (def-family "GP41" :synonyms ("gp41") :identifier "XFAM:PF00517.15")
 (def-family "GPCR" :synonyms ("G protein–coupled receptor")) ;; wikipedia claims the id is XFAM:PF00001, but that's only for the rhodopsin-like subfamily
+(def-family "G protein") ; previously we had this defined as a particular bacteriophage protein that had nothing to do with the G proteins involved in GPCRs -- could fill in members for this at some point in the future
 (def-family "GPP34" :synonyms NIL :identifier "XFAM:PF05719.9")
 (def-family "GRF2" :members ("UP:O14827" "UP:Q13905"))
 (def-family "GRIP1" :members ("UP:Q15596" "UP:Q96DT0" "UP:Q9Y3R0"))
@@ -364,7 +365,7 @@
 (def-family "INPP4B" :members ("UP:O15327" "UP:Q9BS68"))
 (def-family "IQGAP" :members ("IQGAP1" "IQGAP2" "IQGAP3"))
 (def-family "IRF" :synonyms ("IRFs") :identifier "FA:01910")
-(def-family "IRS-1" :members ("UP:P35568" "UP:Q28224") :synonyms ("IRS1" "insulin receptor substrate-1" "insulin receptor substrate 1"))
+;(def-family "IRS-1" :members ("UP:P35568" "UP:Q28224") :synonyms ("IRS1" "insulin receptor substrate-1" "insulin receptor substrate 1")) this was just the human and green monkey, but the green monkey one is unlikely to be of interest
 (def-family "ISWI" :synonyms NIL :identifier "FA:03705")
 (def-family "ITFG3" :synonyms NIL :identifier "FA:01923")
 (def-family "ITIH" :synonyms NIL :identifier "FA:01924")
@@ -420,15 +421,14 @@
 (def-family "MAG" :members ("UP:P18074" "UP:P20916"))
 (def-family "MAP" :synonyms ("microtubule-associated protein" "microtubule associated protein") :members ("UP:P10636" "UP:P11137" "UP:P27816" "UP:P46821" "UP:P78559" "UP:Q14244" "UP:Q15691" "UP:Q49MG5" "UP:Q66K74" "UP:Q8IWC1" "UP:Q96JE9" "UP:Q9GZQ8" "UP:Q9H492" "UP:Q9UPY8"))
 (def-family "MAP2K" :members ("MAP2K1" "MAP2K2" "MAP2K3" "MAP2K4" "MAP2K5" "MAP2K6" "MAP2K7") :identifier "BE:MAP2K" :synonyms ("mitogen activated protein kinase kinase" "MAP kinase kinase") )
-(def-family "MAPK" :members ("UP:Q5A1D3" "UP:P27638" "UP:Q54QB1" ) :long "mitogen activated protein kinase" :synonyms ("ERK" "extracellular signal-regulated kinase" "ERK1/2" "erk" "mapk" "MAP kinase"  "map kinase" "mitogen-activated protein kinase" "mitogen activated protein kinas" "ERK-1/2" "mitogen-activated protein (MAP) kinase" "Extracellular signal Regulated Kinase" "HEK5" "MAPK)/extracellular activating kinase" "MAPK)/extracellular signal regulated kinase" "extra-cellular signal regulated kinase" "extracellular regulated kinase" "extracellular regulated protein kinase" "extracellular regulating kinase" "extracellular signal regulated kinase 1/2" "extracellular signal regulated protein kinase" "extracellular signal related kinase" "extracellular-signal-regulated kinase" "signal regulated kinase") :identifier "PR:000000019")
+(def-family "MAPK" :members ("UP:P27361" "UP:P28482" ) :long "mitogen activated protein kinase" :synonyms ("ERK" "extracellular signal-regulated kinase" "ERK1/2" "erk" "mapk" "MAP kinase"  "map kinase" "mitogen-activated protein kinase" "mitogen activated protein kinas" "ERK-1/2" "mitogen-activated protein (MAP) kinase" "Extracellular signal Regulated Kinase" "HEK5" "MAPK)/extracellular activating kinase" "MAPK)/extracellular signal regulated kinase" "extra-cellular signal regulated kinase" "extracellular regulated kinase" "extracellular regulated protein kinase" "extracellular regulating kinase" "extracellular signal regulated kinase 1/2" "extracellular signal regulated kinases 1 and 2" "extracellular signal regulated protein kinase" "extracellular signal related kinase" "extracellular-signal-regulated kinase" "signal regulated kinase") :identifier "PR:000000019")
 (def-family "MAT1" :members ("UP:P51948" "UP:Q15121" "XFAM:PF06391.11"))
 (def-family "MAT1" :synonyms ("Mat1") :identifier "XFAM:PF06391.11")
 (def-family "MBP-1" :members ("UP:P06733" "UP:P22032"))
 (def-family "MCRA" :synonyms NIL :identifier "XFAM:PF06100.9")
 (def-family "MEF2" :synonyms NIL :identifier "FA:02224")
 (def-family "MEI5" :synonyms ("mei5") :identifier "XFAM:PF10376.7")
-(def-family "MEK" :members ("MEK1" "MEK2") :identifier "BE:MEK" :synonyms ("MEK1/2" "MAPKK" "mitogen activated ERK kinase" "mitogen activated protein kinase kinase" "mitogen-activated protein kinase kinase"))
-(def-family "MEK" :members ("UP:P36507" "UP:Q02750" "UP:Q94A06"))
+(def-family "MEK" :members ("MEK1" "MEK2") :identifier "BE:MEK" :synonyms ("MEK1/2" "MAPKK" "mitogen activated ERK kinase" "mitogen activated protein kinase kinase" "mitogen-activated protein kinase kinase") :members ("UP:P36507" "UP:Q02750"))
 (def-family "MESD" :synonyms ("Mesd") :identifier "FA:02236")
 (def-family "METTL20" :synonyms NIL :identifier "FA:04857")
 (def-family "MGAT3" :members ("UP:Q09327" "UP:Q86VF5"))
