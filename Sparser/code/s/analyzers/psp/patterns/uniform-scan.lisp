@@ -79,14 +79,14 @@
    This 'position-after' is the position that has no-space recorded
    on it, indicating that it and the previous word (or multi-word edge)
    are not separated."
-  
+  (declare (special position-after))
   (let* ((*in-collect-no-space-segment-into-word* t) ;; used to block one anaphora, when numbers appear in an NS pattern
          (leftmost-edge (left-treetop-at/only-edges position-after))
          ;; There's always an edge. The question is how long it is.
          (long-edge (when leftmost-edge
                       (unless (one-word-long? leftmost-edge)
                         leftmost-edge))))
-    (declare (special *in-collect-no-space-segment-into-word* long-edge))
+    (declare (special *in-collect-no-space-segment-into-word* leftmost-edge long-edge))
         
     (let ((start-pos (if leftmost-edge
                        (pos-edge-starts-at leftmost-edge)
@@ -205,19 +205,23 @@
 (defun is-phosphorylated-protein? (edges)
   (let* ((start (edge-starting-position (car edges)))
          (end (edge-ending-position (car (last edges))))
-         (sur-str (extract-characters-between-positions start end))
-         (pro-string? (when (eq #\p (aref  sur-str 0))
-                        (subseq sur-str
-                                (if (eq 0 (search "p-" sur-str)) 2 1))))
+         (sur-str  (string-trim " " (extract-characters-between-positions start end)))
+         (pro-string? (cond ((eq #\p (aref  sur-str 0))
+                             (subseq sur-str
+                                     (if (eq 0 (search "p-" sur-str)) 2 1)))
+                            ((and (eq #\P (aref  sur-str 0))
+                                  (eq #\- (aref  sur-str 1)))
+                             (subseq sur-str 2))))
          (pro-word? (when pro-string? (resolve pro-string?)))
          (pro-cfr? (when pro-word? (find-single-unary-cfr pro-word?)))
          (pro? (when (and pro-cfr? (itypep (cfr-referent pro-cfr?) 'protein))
                  (cfr-referent pro-cfr?))))
     (declare (special sur-str pro-string? pro-word? pro-cfr? pro?))
-    (when pro? (values pro? start end pro-cfr? pro-string?))))
+    ;;(lsp-break "is-pro")
+    (when pro? (values pro? start end pro-cfr? sur-str))))
 
 (defun span-phosphorylated-protein (edges)
-  (multiple-value-bind (protein start end cfr pro-string?)
+  (multiple-value-bind (protein start end cfr sur-string)
       (is-phosphorylated-protein? edges)
     (make-edge-over-long-span
      start
@@ -225,7 +229,7 @@
      (cfr-category cfr)
      :rule 'span-phosphorylated-protein
      :form (cfr-form cfr)
-     :referent (make-phosphorylated-protein protein pro-string?))
+     :referent (make-phosphorylated-protein protein sur-string))
     end))
                             
         
