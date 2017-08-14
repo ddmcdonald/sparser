@@ -5,7 +5,7 @@
 (def-indiv-with-id protein-domain "protein kinase domain" "XFAM:PF00069") 
 (def-indiv-with-id protein-domain "EF-hand domain" "XFAM:PF08976") 
 (def-indiv-with-id protein-domain "zinc-finger" "XFAM:PF15269.4" :name "zf-C2H2 7") 
-(def-indiv-with-id protein-domain "ubiquitin-like" "XFAM:PF13019.4" :name "telomere Sde2") 
+(def-indiv-with-id protein-domain "telomere Sde2" "XFAM:PF13019.4" :name "telomere Sde2") ; used to redefine "ubiquitin-like" but this protein domain is not that 
 (def-indiv-with-id protein-domain "proteasome" "XFAM:PF00227.24" :name "proteasome") 
 (def-indiv-with-id protein-domain "helix-turn-helix" "XFAM:PF00126.25" :name "HTH 1") 
 (def-indiv-with-id protein-domain "furin-like" "XFAM:PF00757.18" :name "furin-like") 
