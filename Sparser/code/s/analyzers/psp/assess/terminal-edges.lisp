@@ -55,8 +55,8 @@
   
   (flet ((unneeded-polyword-literal (edge)
            "Filters the returned edges to exclude some odd cases"
-           (declare (special word::comma word::|to|  *non-comma-literals-are-bad-edges*))
-           (when *non-comma-literals-are-bad-edges*
+           (declare (special word::comma word::|to| *ignore-literal-edges*))
+           (when *ignore-literal-edges*
              (and (eq (edge-right-daughter edge) :literal-in-a-rule)
                   (not (eq (edge-category edge) word::comma))
                   (not (eq (edge-category edge) word::|to|)))))
