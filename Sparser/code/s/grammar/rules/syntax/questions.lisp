@@ -210,7 +210,7 @@
 ;; (p "are there drugs that treat pancreatic cancer?")
 (defun make-polar-pp-question (edges)
   (push-debug edges)
-  (warn "Polar PP questions are not implemented yet."))'
+  (warn "Polar PP questions are not implemented yet."))
     
 (defun make-polar-adjective-question (start-pos end-pos edges)
   (let* ((be (edge-referent (first edges)))  ;; is
