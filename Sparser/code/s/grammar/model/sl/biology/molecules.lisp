@@ -133,9 +133,11 @@
               ;; bio-scalar is for "a  fragment of the same mass as ..."
               (measure (:or measurement bio-scalar)))
       :realization
-      (:noun ("fragment" "subunit")
+      (:noun "fragment"
              :of whole
              :of measure))
+
+(def-synonym fragment (:noun  "subunit"))
 
 (define-category substrate :specializes bio-chemical-entity
       :binds ((enzyme protein))

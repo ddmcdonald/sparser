@@ -399,7 +399,13 @@
   :specializes bio-control
   :realization
   (:verb   "direct" :noun "direction"
-   :etf (svo-passive)))
+           :etf (svo-passive)))
+
+(define-category cull
+  :specializes bio-method
+  :realization
+    (:verb "cull"
+	   :etf (svo-passive)))
 
 
 
@@ -507,7 +513,16 @@
     (:verb "explain" 
            :noun "explanation" 
            :etf (svo-passive)))
+(define-category bio-fit :specializes bio-method
+  :realization
+  (:verb "fit"
+         :etf (svo-passive)
+         :noun "application"))
 
+(define-category fragment-action :specializes bio-method
+  :realization
+  (:verb ("fragmentXX" :past-participle "fragmented" :present-participle "fragmenting");; don't accept present tense "fragments"
+         :etf (svo-passive)))
 
 (define-category grow :specializes bio-method
   :realization
@@ -760,6 +775,11 @@
    :o object
    :of :object))
 
+(define-category bio-mask :specializes bio-method
+  :realization
+  (:verb "mask"
+         :etf (svo-passive)
+         :noun "application"))
 
 (define-category mean :specializes bio-rhetorical
   :mixins (bio-thatcomp)
@@ -767,6 +787,11 @@
   :realization
   (:verb ("mean"  :past-tense "meant")
          :etf (svo)))
+
+(define-category melt :specializes bio-method
+  :realization
+  (:verb ("melt" :past-tense "melted")
+         :etf (svo-passive)))
 
 (define-category modify :specializes bio-control
   :binds ((site molecular-location))
@@ -841,6 +866,22 @@
            :on beneficiary
            :with using))
 
+(define-category bio-poison :specializes bio-method
+  :realization
+  (:verb "poison"
+         :etf (svo-passive)))
+
+(define-category run :specializes bio-method
+    :binds ((beneficiary biological)
+            (using biological)
+            (method bio-method))
+    :realization
+    (:verb ("run" :past-tense "ran" :past-participle "run") ;; keyword: ENDS-IN-ED 
+	   :noun "performance"
+	   :etf (svo-passive)
+           :by method
+           :on beneficiary
+           :with using))
 
 (define-category place :specializes bio-method
   :binds ((site molecular-location))
@@ -1106,6 +1147,13 @@
   (:verb ("show" :past-tense "showed" :past-participle "shown")
          :etf (svo-passive)))
 
+(define-category bio-make-statement :specializes bio-rhetorical
+  :mixins (bio-thatcomp)
+  :realization
+  (:verb "state" ;; keyword: ENDS-IN-ED 
+         :noun "statement"
+         :etf (svo-passive)))
+
 ;; want this to inherit from SHOW, so moved it here
 (define-category reveal :specializes show
   :realization
@@ -1163,6 +1211,13 @@
     :binds ((approach approach))
     :realization ;; (p/s "use KRAS to treat pancreatic cancer")
       (:verb ("take" :past-tense "took" :past-participle "taken")
+             :etf (svo-passive)))
+
+(define-category bio-target :specializes bio-method
+    :binds ((approach approach))
+    :realization ;; (p/s "use KRAS to treat pancreatic cancer")
+    (:verb ("target" :past-tense "targeted" :past-participle "targeted"
+                     :present-participle "targeting")
        :etf (svo-passive)))
 
 (define-category tend :specializes bio-rhetorical

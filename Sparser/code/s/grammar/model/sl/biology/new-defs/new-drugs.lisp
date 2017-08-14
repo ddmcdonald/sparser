@@ -113,7 +113,7 @@
 (def-indiv-with-id drug "luteolin" "CHEBI:15864" :name "luteolin" :no-plural t) 
 (def-indiv-with-id drug "lovastatin" "NCIT:C620" :name "lovastatin" :no-plural t) 
 (def-indiv-with-id drug "locostatin" "MESH:C529490" :name "locostatin" :no-plural t) 
-(def-indiv-with-id drug "lipopolysaccharide" "NCIT:C101788" :name "lipopolysaccharide" :no-plural t) 
+(def-indiv-with-id drug "lipopolysaccharide" "NCIT:C101788" :name "lipopolysaccharide" :no-plural t :synonyms ("LPS"))
 (def-indiv-with-id drug "limonene" "MESH:C008281" :name "limonene" :no-plural t) 
 (def-indiv-with-id drug "leflunomide" "NCIT:C1128" :name "leflunomide" :no-plural t) 
 (def-indiv-with-id drug "latanoprost" "NCIT:C29151" :name "latanoprost" :no-plural t) 

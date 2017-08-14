@@ -752,7 +752,8 @@
     :binds ((location bio-location)
             (from biological))
     :restrict ((agent cell-entity)
-               (object (:or gene peptide rna mutant)))
+               (object (:or gene peptide rna mutant))
+               (using blocked-category))  ;; better handling of "comparison of p-ERK expression WITH ..."
     :realization
     (:verb ("express" :past-tense "expressed"
                       :past-participle ("expressed" "expresseed") ;; block  typo problem for "SLAM is expresseed on ..."
@@ -761,7 +762,7 @@
 	   :etf (svo-passive)
            ))
 
-(define-category gene-transcript-over-express :specializes caused-bio-process
+(define-category gene-transcript-over-express :specializes gene-transcript-express
     :binds ((location bio-location)
             (from biological))
     :restrict ((agent cell-entity))
@@ -778,7 +779,7 @@
     (:verb ("over express" :past-tense "over expressed" :past-participle "over expressed")
            :noun "over expression" :etf (svo-passive)))
 
-(define-category gene-transcript-co-over-express :specializes caused-bio-process
+(define-category gene-transcript-co-over-express :specializes gene-transcript-over-express
     :binds ((location bio-location)
             (from biological))
     :restrict ((agent cell-entity))
@@ -792,7 +793,7 @@
            :noun "cooverexpression" :etf (svo-passive)))
 
 
-(define-category gene-transcript-under-express :specializes caused-bio-process
+(define-category gene-transcript-under-express :specializes gene-transcript-express
     :binds ((location bio-location)
             (from biological))
     :restrict ((agent cell-entity))
@@ -1003,6 +1004,8 @@
          :etf (svo-passive)
          :into substrate
          :to substrate))
+
+(def-synonym ligate (:verb "conjugate"))
 
 
 (define-category link :specializes caused-bio-process
