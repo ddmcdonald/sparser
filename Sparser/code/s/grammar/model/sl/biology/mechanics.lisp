@@ -1450,13 +1450,16 @@ for this species"
     edge))
         
 
-(defun make-phosphorylated-protein (protein &optional (add-raw "funnyprotein"))
+(defun make-phosphorylated-protein (protein &optional (raw-text "funnyprotein"))
+>>>>>>> Stashed changes
   (declare (special category::phosphorylate))
   (let* ((prot-sexpr (krisp->sexpr protein))
-         (new-text (when add-raw (format nil "p-~a"
-                                         (or (a-get-item 'raw-text (cdr prot-sexpr))
-                                             add-raw))))
-         (new-prot (if add-raw
+         (old-raw (a-get-item 'raw-text (cdr prot-sexpr)))
+         (new-text (or raw-text
+                       (when (and old-raw
+                                  (not (eq #\p (aref old-rawj 0))))
+                         (format nil "p-~a" old-raw))))
+         (new-prot (if raw-text
                        (to-krisp
                         (if (assoc 'raw-text (cdr prot-sexpr))
                             (subst `(raw-text ,new-text)
@@ -1474,12 +1477,10 @@ for this species"
       (subcategorized-variable  category::phosphorylate :object protein))
      new-prot)))
 
-
-;; don't make the definition of, e.g., p-ERK, because it interferes with handling p-ERK1
 (defun def-phosphorylated-protein (word-string protein-edge
                                    &aux (protein (edge-referent protein-edge)))
   (declare (special category::phosphorylate))
-  (let ((i (make-phosphorylated-protein protein)))
+  (let ((i (make-phosphorylated-protein protein word-string)))
     (let ((word (resolve/make word-string)))
       (define-cfr (itype-of protein) `(,word)
         :form (edge-form protein-edge)
