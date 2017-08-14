@@ -106,7 +106,8 @@
     (when top-edge ;; seem to be able to get a NIL in all positions of 
       ;; the edge vector when we look at the end of sentence in an article
       (if (or (eq top-edge :multiple-initial-edges)
-              (one-word-long? top-edge))
+              ;;(one-word-long? top-edge)
+              )
         (all-edges-on start-ev)
         `(,top-edge)))))
 
