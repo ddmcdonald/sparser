@@ -128,6 +128,23 @@
     CATEGORY::PROPER-NOUN
      CATEGORY::PROPER-NAME))
 
+(defparameter *n-bar-category-names*
+  '(COMMON-NOUN/PLURAL
+    NOUN/VERB-AMBIGUOUS
+    N-BAR
+    COMMON-NOUN
+    PROPER-NOUN
+    PROPER-NAME))
+
+(defparameter *np-category-names*
+  '(NP
+    COMMON-NOUN/PLURAL
+    NOUN/VERB-AMBIGUOUS
+    N-BAR
+    COMMON-NOUN
+    PROPER-NOUN
+    PROPER-NAME))
+
 (defparameter *all-np-categories* `(category::NP ,@*n-bar-categories*))
 
 (defparameter *vp-categories*
@@ -276,14 +293,12 @@
 	   (equal (word-pname (value-of 'name (edge-referent e))) "there"))))
 
 (defgeneric ng-head? (label)
-  (:documentation "Is a category which can occur as the head of an NG"))
-
-(defmethod ng-head? ((c referential-category))
-  (ng-head? (cat-symbol c)))
-(defmethod ng-head? ((name symbol))
-  (memq name *ng-head-categories*))
-(defmethod ng-head? ((w word))
-  nil)
+  (:documentation "Is a category which can occur as the head of an NG")
+  (:method ((c referential-category))
+    (ng-head? (cat-symbol c)))
+  (:method  ((name symbol))
+    (memq name *ng-head-categories*))
+  (:method ((w word))  nil))
 
 (defgeneric ng-compatible? (label evlist)
   (:documentation "Is a category which can occur inside a NG"))
@@ -294,7 +309,7 @@
 
 (defgeneric vg-compatible? (label)
   (:documentation "Is a category which can occur inside a VG")
-  (:method ((w word)) t)
+  (:method ((w word)) nil)
   (:method ((c referential-category))
     (vg-compatible? (cat-symbol c)))
   (:method ((name symbol))
@@ -303,10 +318,13 @@
 (defgeneric vg-head? (label)
   (:documentation "Is a category which can occur as the head of a VG")
   (:method ((w word)) t)
+  (:method ((e edge))
+    (vg-head? (edge-form e)))
   (:method ((c referential-category))
     (vg-head? (cat-symbol c)))
   (:method ((name symbol))
-  (memq name *vg-head-categories*)))
+    (memq name *vg-head-categories*))
+  (:method (item) nil))
 
 
 (defmethod copula-verb? ((c category))  
