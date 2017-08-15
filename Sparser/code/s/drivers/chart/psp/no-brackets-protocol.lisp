@@ -543,7 +543,7 @@
         ((or (c-itypep ref 'post-translational-modification)
              (c-itypep ref 'methylation)
              (c-itypep ref 'site)
-             (c-itypep ref 'residue-on-protein)
+             ;;(c-itypep ref 'residue-on-protein)
              (and (is-basic-collection? ref)
                   (or (c-itypep (value-of 'type ref)
                                 'post-translational-modification))))
