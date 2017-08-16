@@ -664,7 +664,6 @@
 (def-indiv-with-id molecule "coumestrol" "CHEBI:3908" :name "coumestrol") 
 (def-indiv-with-id molecule "concanamycin" "CHEBI:73195" :name "concanamycin") 
 (def-indiv-with-id molecule "com" "CHEBI:17905" :name "coenzyme M") 
-(def-indiv-with-id molecule "cohort" "CHEBI:34935" :name "propyzamide") 
 (def-indiv-with-id molecule "cofactor" "CHEBI:23357" :name "cofactor") 
 (def-indiv-with-id molecule "coenzyme" "CHEBI:23354" :name "coenzyme") 
 (def-indiv-with-id molecule "chrysotile" "CHEBI:46664" :name "chrysotile") 
