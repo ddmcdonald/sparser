@@ -1885,3 +1885,4 @@
 (def-indiv-with-id drug "genistein" "CHEBI:28088" :name "genistein" :no-plural t)
 (def-indiv-with-id drug "pregnenolone" "CHEBI:16581" :name "pregnenolone" :no-plural t)
 (def-indiv-with-id drug "tyrphostin 25" "MESH:C079836" :name "tyrphostin A25" :synonyms ("tyrphostin-25") :no-plural t)
+(def-indiv-with-id drug "CH5126766" "MESH:C577924" :name "RO5126766" :no-plural t)

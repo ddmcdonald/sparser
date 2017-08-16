@@ -70,7 +70,7 @@
 (def-indiv-with-id molecule "valproic acid" "PCID:3121") 
 (def-indiv-with-id molecule "(3) H" "PCID:119434") 
 (def-indiv-with-id molecule "G418" "PCID:2733531") 
-(def-indiv-with-id molecule "poly I : C" "PCID:86583374") 
+(def-indiv-with-id molecule "poly I : C" "PCID:32744" :name "polyinosinic-polycytidylic acid" :synonyms ("pIpC" "pI-pC" "Poly(I+C)" "Poly(I:C)")) 
 (def-indiv-with-id molecule "oroxylin A" "PCID:86289424") 
 (def-indiv-with-id molecule "adenosine triphosphate" "PCID:5957") 
 (def-indiv-with-id molecule "guanosine monophosphate" "PCID:6804") 
