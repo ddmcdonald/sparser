@@ -223,8 +223,11 @@
            )))
 
 (defun domain-priority-triple? (triple)
-  (and (itypep (edge-referent (second triple)) 'protein)
-       (itypep (edge-referent (third triple)) 'post-translational-modification)))
+  (or
+   (and (itypep (edge-referent (second triple)) 'protein)
+        (itypep (edge-referent (third triple)) 'post-translational-modification))
+   (and (itypep (edge-referent (second triple)) 'protein)
+        (itypep (edge-referent (third triple)) 'depend))))
                
 
 #+ignore
