@@ -159,9 +159,9 @@
   (:method ((ref-object category))
     (get-subcategorization ref-object))
   (:method ((ref-object individual))
-    (declare (special category::collection))
+    (declare (special category::collection category::question))
     (cond 
-      ((itypep ref-object 'question)
+      ((itypep ref-object category::question)
        (let ((stmt (value-of 'statement ref-object)))
          (get-ref-subcategorization stmt)))
       ;; question goes before collection -- aspp2 # 74

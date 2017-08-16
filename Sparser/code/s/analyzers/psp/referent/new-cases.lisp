@@ -348,7 +348,7 @@
       (setq body (bind-dli-variable variable value body)))
 
     ;; //// annotate the value re. what c+v it's been bound to
-    (annotate-site-bound-to value variable (i-type-of body) edge-being-bound)
+    (annotate-site-bound-to value variable (itype-of body) edge-being-bound)
 
     (tr :ref/binding-result variable body)
     

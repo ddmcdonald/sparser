@@ -45,8 +45,8 @@
   :referent (:function make-infinitive left-edge right-edge))
 
 (defun make-infinitive (prep-or-pp verb-element)
-  (declare (special prep-or-pp verb-element))
-  (when (not (itypep prep-or-pp 'prepositional-phrase))
+  (declare (special prep-or-pp verb-element category::prepositional-phrase))
+  (when (not (itypep prep-or-pp category::prepositional-phrase))
     verb-element))
 
 

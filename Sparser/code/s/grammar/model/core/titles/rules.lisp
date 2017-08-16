@@ -106,7 +106,7 @@
           (push-debug `(,possessive ,title))
           (error "New type for possessive: ~a~%  ~a"
                  (if (individual-p possessive)
-                   (i-type-of possessive) 
+                   (itype-of possessive) 
                    (type-of possessive))
                  possessive))))
     title))

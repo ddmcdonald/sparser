@@ -138,7 +138,8 @@
 (defun apply-subject-relative-clause (np-ref vp-ref
                                       &aux (left-edge (left-edge-for-referent))
                                         (right-edge (right-edge-for-referent)))
-  (declare (special category::have category::subject-relative-clause vp-ref))
+  (declare (special category::have category::subject-relative-clause vp-ref
+                    category::wh-question))
   ;; block "histone 2B ... had high levels ..."
   (when (or
          (and (eq (edge-category right-edge) category::have)
@@ -152,7 +153,7 @@
     (return-from apply-subject-relative-clause nil))
 
   (setq np-ref (individual-for-ref np-ref))
-  (when (and (itypep vp-ref 'wh-question)
+  (when (and (itypep vp-ref category::wh-question)
              (value-of 'statement vp-ref))
     (setq vp-ref (value-of 'statement vp-ref)))
 
@@ -160,10 +161,6 @@
          (cond
            ((itypep vp-ref 'copular-predication)
             (find-variable-for-category 'item 'copular-predication))
-           #+ignore ;; we are ignoring that now
-           ((itypep vp-ref 'wh-question) ;; already checked on the var
-            ;; see compose-wh-with-vp for details
-            (value-of 'var vp-ref))
            (t
             (if (is-passive? right-edge)
               (subcategorized-variable vp-ref :object np-ref)

@@ -154,7 +154,7 @@
     (t
      ;; This is done because the value of marker is now
      ;;  automatically made into an individual
-     (when (individual-p marker) (setq marker (i-type-of marker)))
+     (when (individual-p marker) (setq marker (itype-of marker)))
      (let ((s (find-or-make-individual
                'explicit-suggestion :marker marker :suggestion proposal)))
        (revise-parent-edge :category category::explicit-suggestion)

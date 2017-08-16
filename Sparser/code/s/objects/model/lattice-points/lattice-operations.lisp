@@ -44,8 +44,10 @@
 (defparameter *dl-vv-from-variable* (make-hash-table :size 500))
 
 (defun find-or-make-dlvv-ht-from-variable (variable)
+  (declare (optimize (speed 3)(safety 0)))
   (or (gethash variable *dl-vv-from-variable*)
-      (setf (gethash variable *dl-vv-from-variable*) (make-hash-table :size 100 :test #'equal))))
+      (setf (gethash variable *dl-vv-from-variable*) (make-hash-table :size 1000 :rehash-size 4.0
+                                                                      :test #'equal))))
 
 (defun find-or-make-dlvv-from-var-val (variable value)
   (declare (optimize (speed 3)(safety 0)))
@@ -92,6 +94,7 @@
   "Inverse link to *lattice-ht*")
 
 (defun get-dli (ref)
+  (declare (optimize (speed 3)(safety 0)(debug 0)))
   (or (gethash ref *lattice-ht*)
       ;; make get-dli idempotent
       (if (gethash ref *source-ht*)

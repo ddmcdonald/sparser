@@ -350,7 +350,8 @@
    It's likely that the two connected words are names,
    so we won't assume that they might be connected by rules
    but more like some generalized meaning between the two. "
-  (declare (ignore pattern))
+  (declare (ignore pattern)
+           (special category::protein))
   (tr :resolve-hyphen-between-two-terms words)
   
   (let* ((left-edge (first edges))
@@ -370,7 +371,7 @@
       (make-bio-pair left-edge right-edge words
                      pos-before pos-after))
 
-     ((or (itypep left-ref 'protein) ;; includes bio-family
+     ((or (itypep left-ref category::protein) ;; includes bio-family
           (itypep left-ref 'small-molecule) ;; GTP-GDP ???
           (itypep left-ref 'nucleotide))
       (make-protein-pair left-edge right-edge words

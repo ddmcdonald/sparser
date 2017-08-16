@@ -638,13 +638,13 @@
          (etypecase t1
            (individual
             (or ;(word-pname (value-of 'word t1))
-                (symbol-name (cat-symbol (i-type-of t1)))))
+                (symbol-name (cat-symbol (itype-of t1)))))
            (category (symbol-name (cat-symbol t1)))))
         (string2
          (etypecase t2
            (individual
             (or ;(word-pname (value-of 'word t2))
-                (symbol-name (cat-symbol (i-type-of t2)))))
+                (symbol-name (cat-symbol (itype-of t2)))))
            (category (symbol-name (cat-symbol t2))))))
     (string< string1 string2)))
 

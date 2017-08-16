@@ -21,6 +21,9 @@
 
 (in-package :sparser)
 
+(defvar category::protein)
+(defvar category::proper-noun)
+
 ;;; Define a new variable for the actual spelling of the definition
 ;;;   for HMS INDRA processing
 (define-lambda-variable 'raw-text
@@ -634,13 +637,14 @@ uid binding, if there is one"
   ;; called from make-protein-pair/convert-bio-entity and
   ;; from multi-colong-ns-patterns, which will send in protein
   ;; edges as well as ones that need to be converted
+  (declare (special category::protein))
   (let ((old-ref (edge-referent e)))
-    (unless (itypep old-ref 'protein)
+    (unless (itypep old-ref category::protein)
       (let ((rule (edge-rule e))
             (new-ref (convert-bio-entity-to-protein old-ref)))
         (declare (ignore rule)) ;; for now
         ;; subvert both this edge and the rule
-        (setf (edge-category e) (category-named 'protein))
+        (setf (edge-category e) category::protein)
         (set-edge-referent e new-ref)
         ;;(update-edge-mention-referent e new-ref)
         new-ref))))
@@ -681,7 +685,7 @@ uid binding, if there is one"
    its (presumed to be single) unary rule) then we call the other
    'out' for Big Mechanism unknown words which to store the word 
    and have it handled  later. Runs for side-effects."
-  (declare (special *exact-pname-of-token*)) ;; set in the tokenizer
+  (declare (special *exact-pname-of-token* category::protein)) ;; set in the tokenizer
   (let* ((pname *exact-pname-of-token*) ;; "pRas"
          (post-p (subseq pname 1))      ;; "Ras"
          (known-word (resolve post-p)))
@@ -689,7 +693,7 @@ uid binding, if there is one"
       (let* ((rule (find-single-unary-cfr known-word))
              (i (when rule (cfr-referent rule))))
         (if i
-          (if (itypep i 'protein)
+          (if (itypep i category::protein)
             (let* ((phospho-i (make-phosphorylated-protein i pname))
                    (p-word (define-word/expr pname :override-duplicates))
                    ;;/// delete the lowercase version ('word')
@@ -776,8 +780,9 @@ the process.
 ;;;-------------------------------
 
 (defun ras2-protein? (i)
+  (declare (special category::protein))
   (and (individual-p i)
-       (itypep i 'protein)
+       (itypep i category::protein)
        (value-of 'ras2-model i)))
 
 ;;obsolete
@@ -955,12 +960,11 @@ the process.
    `(define-protein ,(second dp) ,(cddr dp))))
 
 (defun all-proteins ()
+  (declare (special category::protein))
   (loop for s in *all-sentences*
     append
     (loop for e in (second s)
-      when (or
-            (itypep e 'protein)
-            (itypep e 'protein-family))
+      when (itypep e category::protein)
       collect e)))
 
 (defun pro-name (pro)
@@ -1167,7 +1171,7 @@ the process.
             because it does not provide a 'name' variable" category))
   
   (let ((label (or (override-label category) category))
-        (form (category-named 'proper-noun))
+        (form category::proper-noun)
         ;; proper noun makes sense for named proteins and such
         ;; but the marker may actually be the capitalization
         ;; of the word, which would have to be caught upstream
@@ -1355,7 +1359,7 @@ for this species"
   (unless members
     (error "It doesn't make sense to define a family without members"))
   (unless type
-    (setq type (category-named 'protein)))
+    (setq type category::protein))
   (unless species
     (when (consp members) 
       (if (loop for m in members
@@ -1365,9 +1369,9 @@ for this species"
   (let* ((category-name
           (cond
             ((and (eq species (get-human-species))
-                  (eq type (category-named 'protein)))
+                  (eq type category::protein))
              'human-protein-family)
-            ((eq type (category-named 'protein))
+            ((eq type category::protein)
              'protein-family)
             (t (break "what type of family is this supposed to be?"))))
          (i (def-bio/expr name category-name
@@ -1395,7 +1399,7 @@ for this species"
   (unless members
     (error "It doesn't make sense to define a family without members"))
   (unless type
-    (setq type (category-named 'protein)))
+    (setq type category::protein))
   (unless species
     (when (consp members) 
       (if (loop for m in members
@@ -1406,9 +1410,9 @@ for this species"
   (let* ((category-name
           (cond
             ((and (eq species (get-human-species))
-                  (eq type (category-named 'protein)))
+                  (eq type category::protein))
              'human-protein-family)
-            ((eq type (category-named 'protein))
+            ((eq type category::protein)
              'protein-family)
             (t (break "what type of family is this supposed to be?"))))
          (i (define-individual-with-id category-name word id 

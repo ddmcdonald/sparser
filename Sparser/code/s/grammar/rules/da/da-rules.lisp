@@ -1772,6 +1772,7 @@
 ;;  no available binding for the variable (s-var or t-var) on srel-edge
 
 (defun update-edge-as-lambda-predicate (vp-edge np &optional (syntactic-label :subject))
+  (declare (special category::wh-question))
   (cond ((null np)
          (lsp-break "null np in update-edge-as-lambda-predicate")
          (return-from update-edge-as-lambda-predicate nil))
@@ -1782,7 +1783,7 @@
     (setq syntactic-label :object))
        
   (let ((vp-indiv (edge-referent vp-edge)))
-    (cond ((itypep vp-indiv 'wh-question)
+    (cond ((itypep vp-indiv category::wh-question)
            (update-wh-question-as-lambda-predicate vp-edge np syntactic-label))
           ((is-basic-collection? vp-indiv)
            (update-conjunctive-edge-as-lambda-predicate vp-edge np syntactic-label))

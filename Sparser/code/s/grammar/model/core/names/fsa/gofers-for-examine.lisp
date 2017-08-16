@@ -317,7 +317,7 @@
 
 (defmethod title-element? ((i individual))
   (declare (special category::title category::title-modifier))
-  (let ((c (i-type-of i)))
+  (let ((c (itype-of i)))
     (memq c `(,category::title-modifier
               ,category::title
               ;;,category::country

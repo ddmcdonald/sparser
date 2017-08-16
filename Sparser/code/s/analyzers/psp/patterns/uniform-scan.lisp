@@ -30,7 +30,7 @@
 ;; 1/3/16 Tweaked final-colon handling to deal with fencepost.
 
 (in-package :sparser)
-
+(defvar category::protein)
 ;;;----------------
 ;;; gating globals
 ;;;----------------
@@ -183,9 +183,8 @@
                                         hyphen-positions slash-positions
                                         colon-positions other-punct
                                         :final-colon))
-                 (when (memq end-cat '(category::protein category::protein-family
-                                       category::small-molecule category::ion 
-                                       category::nucleotide))
+                 (when (memq (cat-name end-cat) '(protein protein-family
+                                                  small-molecule ion nucleotide))
                    (ns-protein-pattern-resolve  start-pos end-pos edges
                                                 hyphen-positions slash-positions
                                                 colon-positions other-punct))
@@ -214,7 +213,7 @@
                              (subseq sur-str 2))))
          (pro-word? (when pro-string? (resolve pro-string?)))
          (pro-cfr? (when pro-word? (find-single-unary-cfr pro-word?)))
-         (pro? (when (and pro-cfr? (itypep (cfr-referent pro-cfr?) 'protein))
+         (pro? (when (and pro-cfr? (itypep (cfr-referent pro-cfr?) category::protein))
                  (cfr-referent pro-cfr?))))
     (declare (special sur-str pro-string? pro-word? pro-cfr? pro?))
     ;;(lsp-break "is-pro")

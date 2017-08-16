@@ -66,7 +66,7 @@ by their type (pond, river, street, town, etc.)
             (define-sequence `(,name)))
            (t (push-debug `(,name name-edge))
               (error "Unexpected type of name: ~a~%~a"
-                     (i-type-of name) name)))))
+                     (itype-of name) name)))))
     (let* ((place-name (define-individual 'name-of-location
                          :sequence sequence))
            (place (define-individual 'named-location

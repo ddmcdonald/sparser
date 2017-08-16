@@ -33,6 +33,11 @@
 ;;; initiator
 ;;;-----------
 
+(defvar category::protein)
+(defvar category::post-translational-modification)
+(defvar category::protein)
+(defvar category::depend)
+
 ;; (trace-parse-edges)
 
 (defun parse-at-the-segment-level (segment-end-pos)
@@ -224,10 +229,10 @@
 
 (defun domain-priority-triple? (triple)
   (or
-   (and (itypep (edge-referent (second triple)) 'protein)
-        (itypep (edge-referent (third triple)) 'post-translational-modification))
-   (and (itypep (edge-referent (second triple)) 'protein)
-        (itypep (edge-referent (third triple)) 'depend))))
+   (and (itypep (edge-referent (second triple)) category::protein)
+        (itypep (edge-referent (third triple)) category::post-translational-modification))
+   (and (itypep (edge-referent (second triple)) category::protein)
+        (itypep (edge-referent (third triple)) category::depend))))
                
 
 #+ignore

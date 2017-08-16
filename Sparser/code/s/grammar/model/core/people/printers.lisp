@@ -42,7 +42,7 @@
            (when version-obj
              (etypecase version-obj
                (individual
-                (ecase (cat-symbol (i-type-of version-obj))
+                (ecase (cat-symbol (itype-of version-obj))
                   (category::person-version
                    (word-pname (value-of 'name version-obj)))))
                (referential-category

@@ -67,8 +67,10 @@
   (defun assq (item alist)
     (assoc item alist :test #'eq)))
 
+(declaim (inline memq))
 (unless (fboundp 'memq)
-  #+ignore(defmacro memq (item list)
+  #+ignore
+  (defmacro memq (item list)
     `(member ,item ,list :test #'eq))
   (defun memq (item list)
     (declare (optimize (speed 3)(safety 0)))

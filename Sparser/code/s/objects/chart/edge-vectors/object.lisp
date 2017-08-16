@@ -56,9 +56,11 @@
 
 
 (defun pos-edge-starts-at (edge)
+  (declare (optimize (speed 3)))
   (ev-position (edge-starts-at edge)))
 
 (defun pos-edge-ends-at (edge)
+  (declare (optimize (speed 3)))
   (ev-position (edge-ends-at edge)))
 
 

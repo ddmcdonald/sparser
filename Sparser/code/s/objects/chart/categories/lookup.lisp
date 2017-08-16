@@ -141,20 +141,21 @@
 (defgeneric category-named (name &optional errorp)
   (:documentation "Look up a category by name."))
 
-
+(defparameter *cat-named* nil)
 (defmethod category-named ((name symbol) &optional errorp)
   #|
   (format t "~%~% category-named ~s~%" name)
   (sb-debug::map-backtrace #'print :count 5 :start 0)
   |#
   (declare (optimize (speed 3)(safety 0)))
+  (push name *cat-named*)
   (let ((c-symbol (if (eq (symbol-package name) *category-package*)
                     name
                     (find-symbol (symbol-name name) *category-package*))))
-    (if c-symbol
-      (category-named/c-symbol c-symbol errorp)
-      (when errorp
-        (error "There is no category named ~a." name)))))
+    (if (and c-symbol (boundp c-symbol))
+        (symbol-value c-symbol)
+        (when errorp
+          (error "There is no category named ~a." name)))))
 
 
 (defmethod category-named ((c category) &optional errorp)

@@ -11,7 +11,7 @@
 ;;     (4/20) added Add-permanent-individual and cleaned up a little
 ;; 1.0 (5/13/95) Added notion of a permanent individual that appears on a separate
 ;;      list and isn't recycled.
-;; 1.1 (7/7) put a patch in Additional-categories.. when the i-type-of returned nil.
+;; 1.1 (7/7) put a patch in Additional-categories.. when the itype-of returned nil.
 ;;     (9/30/99) Somewhen in the interim I null-ified declare-all-existing-individuals-
 ;;      permanent by doing a return-from before it had done anything. No record available
 ;;      of why. Put it all back today and nothing untoward happened when I ran it.
@@ -189,7 +189,7 @@ e.g. when anaphora is turned off."
       (incf count)
       (when *trace-reclaimation*
         (format t "~&Tentatively reclaiming ~a~%" i))
-      (pushnew (i-type-of i) augmented-list))
+      (pushnew (itype-of i) augmented-list))
     augmented-list ))
 
 

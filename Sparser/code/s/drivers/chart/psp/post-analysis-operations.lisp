@@ -74,7 +74,8 @@ Return the contextual interpretation of the item."))
   (loop for item in items collect (interpret-in-context item)))
 
 (defmethod interpret-in-context ((mention discourse-mention))
-  (declare (special mention))
+  (declare (special mention category::hyphenated-pair category::hyphenated-triple
+                    category::two-part-label))
   "Mentions now have a dependencies field, which contains a list of two-element
  lists (variable value) representing the binding of value as variable. 
  Where possible, the values are themselves mentions.
@@ -89,9 +90,9 @@ Return the contextual interpretation of the item."))
       (let* ((base (base-description mention))
              (re-interpretation
               (cond
-                ((or (itypep base 'hyphenated-pair)
-                     (itypep base 'hyphenated-triple)
-                     (itypep base 'two-part-label))
+                ((or (itypep base category::hyphenated-pair)
+                     (itypep base category::hyphenated-triple)
+                     (itypep base category::two-part-label))
                  ;; not sure what to do for such things -- example ER-β is a hyphenated pair
                  base)
                 ((is-basic-collection? base)
@@ -269,7 +270,7 @@ where it regulates gene expression.")
 (defun special-collection-interp (mention)
   (let ((i (base-description mention)))
     (when (and *special-collection-interp*
-               (or (itypep i 'protein) (itypep i 'protein-family))
+               (itypep i category::protein) ;; protein-family is included
                (search "/" (retrieve-surface-string i)))
       (interpret-as-pathway-or-complex mention))))
 

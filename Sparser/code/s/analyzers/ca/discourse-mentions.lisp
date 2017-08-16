@@ -168,6 +168,7 @@
   (car (mentioned-where m)))
 
 (defmethod end-pos ((m discourse-mention))
+  (declare (optimize (speed 3)(safety 0)))
   (cdr (mentioned-where m)))
 
 (defmethod start-pos ((e edge))
@@ -177,6 +178,7 @@
   (lsp-break "start-pos handed a list"))
 
 (defmethod end-pos ((e edge))
+  (declare (optimize (speed 3)(safety 0)))
   (pos-edge-ends-at e))
 
 (defun update-mention-links (edge)
@@ -420,7 +422,7 @@
    prior mention of i? Cannonical situation is walking up a head line,
    where each progressively higher edge is a (more specific) reference
    to i."
-  (declare (special edge))
+  (declare (special edge category::wh-question))
   (cond ((null i)
          (error "null individual in subsumed-mention?"))
         ((and (member (edge-rule edge) '(make-predication-edge))
@@ -428,12 +430,12 @@
                      'discourse-mention))
          (return-from subsumed-mention?
            (edge-mention (edge-left-daughter edge))))
-        ((and (not (itypep i 'wh-question))
+        ((and (not (itypep i category::wh-question))
               (embedded-statement? edge))
          (return-from subsumed-mention? nil)))
 
   (let ((un-embedded-edge (un-embed-edge edge)))
-    (declare (special un-embedded-edge))
+    (declare (special un-embedded-edge category::wh-question))
     (when (and (not (eq edge un-embedded-edge))
                (typep (edge-mention un-embedded-edge) 'discourse-mention)
                (or (eq (edge-referent edge)(edge-referent un-embedded-edge))
@@ -444,7 +446,7 @@
       (return-from subsumed-mention?
         (edge-mention un-embedded-edge)))
     (setq edge un-embedded-edge)
-    (cond ((and (itypep i 'wh-question)
+    (cond ((and (itypep i category::wh-question)
                 (typep (edge-mention edge) 'discourse-mention))
            (edge-mention edge))
           ((member (edge-rule edge)
@@ -571,11 +573,11 @@
 
 
 (defun find-binding-dependency (value edges top-edge &optional b &aux (top-ref (edge-referent top-edge)))
-  (declare (special top-edge))
+  (declare (special top-edge category::prepositional-phrase))
   (cond ((and b (eq (pname (binding-variable b)) 'items))
          (find-binding-dependencies-for-items value edges top-edge))
         ((and (individual-p top-ref)
-              (itypep top-ref 'protein-family)
+              (itypep top-ref category::protein-family)
               b
               (member (pname (binding-variable b))
                       '(family-members uid name count)))
@@ -588,7 +590,7 @@
          ;; e.g. "longer periods" -- the comparative is constructed whole cloth -- DAVID
          nil)
         ((and (individual-p value)
-              (itypep value 'prepositional-phrase))
+              (itypep value category::prepositional-phrase))
          ;; NEED TO WORK WITH DAVID HERE
          ;; "Only in conditions where RAS is constitutively active "
          nil)
@@ -901,7 +903,7 @@ so we return the edge for the POBJ"
          (space-prin1 (value-of 'value i) stream))
         ((and (eq *semantic-output-format* :xml)
               *short-protein-xml*
-              (itypep (base-description m) 'protein)
+              (itypep (base-description m) category::protein)
               (= (length (filter-bl i)) 2)
               (value-of 'name i)
               (value-of 'uid i))

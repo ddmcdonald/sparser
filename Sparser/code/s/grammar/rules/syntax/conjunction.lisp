@@ -739,13 +739,13 @@
                             (individual
                              (if (is-basic-collection? left-ref)
                                  (value-of 'type left-ref)
-                                 (i-type-of left-ref)))
+                                 (itype-of left-ref)))
                             (category left-ref)))
                (right-type (etypecase right-ref
                              (individual
                               (if (is-basic-collection? right-ref)
                                   (value-of 'type right-ref)
-                                  (i-type-of right-ref)))
+                                  (itype-of right-ref)))
                              (category right-ref)))
                (type left-type))
           

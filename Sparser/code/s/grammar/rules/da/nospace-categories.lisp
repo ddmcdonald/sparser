@@ -201,9 +201,10 @@
                              words pos-before pos-after)
   "Instantiate one of the pair categories, according to the category
    that's specified which becomes the label on the edge."
+  (declare (special category::protein))
   (let ((label (cond
                 ((eq cat-name 'paired-protein)
-                 (category-named 'protein))
+                 category::protein)
                 (t (category-named cat-name :break-if-none))))
         (pair-category
          (case cat-name 

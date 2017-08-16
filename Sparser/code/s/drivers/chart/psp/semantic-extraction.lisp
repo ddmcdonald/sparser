@@ -273,6 +273,7 @@
   ;; Called on every edge from complete-edge/hugin
   ;; Record the information about the surface string from the span dictated 
   ;; by the edge.
+  (declare (special category::residue-on-protein))
   (let ((referent (edge-referent edge)))
     (when t ;; (and referent (individual-p referent))
       (let* ((start-pos (pos-edge-starts-at edge))
@@ -302,7 +303,7 @@
                                    '(:SINGLE-TERM :long-span))
                            ;; :long-span for polywords ;ic "cyclin D1"
                            (individual-p referent))
-                     (itypep (edge-referent edge) 'residue-on-protein))
+                     (itypep (edge-referent edge) category::residue-on-protein))
                 (maybe-record-bio-chemical-entity-strings str referent)
                 (setq referent (maybe-insert-raw-text-variable referent edge)))
               (maybe-record-all-referent-surface-strings referent str)
@@ -709,7 +710,9 @@ in cwc-integ/spire/interface/sparser.lisp
 
 (defmethod collect-model-description ((i individual))
   (declare (special script category::number category::ordinal
-                    *for-spire* *sentence-results-stream*))
+                    *for-spire* *sentence-results-stream*
+                    category::protein-family
+                    category::prepositional-phrase))
   (cond
     ((gethash i *semtree-seen-individuals*)
      (if (or *for-spire* *sentence-results-stream*)
@@ -728,7 +731,7 @@ in cwc-integ/spire/interface/sparser.lisp
       (value-of 'value i)))
    	
     ((and (eq script :biology)
-          (itypep i 'protein-family) ;; get rid of bio-family -- misnamed...
+          (itypep i category::protein-family) ;; get rid of bio-family -- misnamed...
           (not (collection-p i)))
      (let ((bindings (indiv-binds i))
            (desc (indiv-or-type i)))
@@ -777,7 +780,7 @@ in cwc-integ/spire/interface/sparser.lisp
                 (typecase value
                   (individual 
                    (if (and (not (or *for-spire* *sentence-results-stream*))
-                            (itypep value 'prepositional-phrase))
+                            (itypep value category::prepositional-phrase))
                      (push (list var-name
                                  (collect-model-description
                                   (value-of 'pobj value)))
@@ -808,6 +811,7 @@ in cwc-integ/spire/interface/sparser.lisp
 
 
 (defun collect-model-description-for-collection (i)
+  (declare (special category::prepositional-phrase))
   (let ((desc (indiv-or-type i)))
     (loop for b in  (indiv-binds i)
        as var  = (binding-variable b)
@@ -839,7 +843,7 @@ in cwc-integ/spire/interface/sparser.lisp
                      (push (list var-name
                                  (collect-model-description
                                   (if (and (not (or *for-spire* *sentence-results-stream*))
-                                           (itypep value 'prepositional-phrase))
+                                           (itypep value category::prepositional-phrase))
                                     (value-of 'pobj value)
                                     value)))
                            desc))

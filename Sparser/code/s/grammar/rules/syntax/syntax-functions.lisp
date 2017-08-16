@@ -852,7 +852,7 @@
 (defparameter *show-missing-adverb-slots* nil)
 
 (defun interpret-adverb+verb (adverb vg-phrase)
-  (declare (special category::pp))
+  (declare (special category::pp category::hyphenated-pair category::hyphenated-triple))
   ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
   (if (word-p vg-phrase)
       (then (format t "vg-phrase ~s is not a category or an individual,~
@@ -876,8 +876,8 @@
              ((and (is-basic-collection? vg)
                    ;; saw an error in  "phase–contrast only"
                    ;; where "phase-contrast" was treated as a verb
-                   (not (itypep vg 'hyphenated-pair))
-                   (not (itypep vg 'hyphenated-triple))
+                   (not (itypep vg category::hyphenated-pair))
+                   (not (itypep vg category::hyphenated-triple))
                    (or
                     (subcategorized-variable 
                      (car (value-of 'items vg)) :adv adverb)
@@ -1633,6 +1633,7 @@
 (defun compose-wh-with-vp (wh-obj predicate)
   "Question the subject or the object of the predicate (the VP)
    depending on which one is open."
+  (declare (special category::wh-question))
   ;;/// To set the form of the new edge have to know
   ;; whether we're a toplevel question or embedded
   (if *subcat-test*
@@ -1646,7 +1647,7 @@
        ;; so instead we drop the relativizer on the floor and let the np + relative
        ;; composition do what it would otherwise normally do.
        predicate)
-      ((itypep wh-obj 'wh-question)
+      ((itypep wh-obj category::wh-question)
        (let* ((wh (value-of 'wh wh-obj))
               (wh-name (cat-symbol wh))
               (open-var (open-core-variable predicate))
@@ -1670,9 +1671,10 @@
    to create a phrase with form pp-wh-pronoun.
    We need to assemble a structure that will be unpacked by
    make-pp-relative-clause which will unfold the pied-piped
-   preposition."  
+   preposition."
+  (declare (special category::prepositional-phrase))
   (if *subcat-test*
-      (not (itypep prep 'prepositional-phrase))
+      (not (itypep prep category::prepositional-phrase))
       (let* ((to-left (edge-to-its-left (left-edge-for-referent)))
              (left-quant (when (and (edge-p to-left)
                                     (eq (cat-name (edge-form to-left)) 'quantifier))
@@ -1737,7 +1739,7 @@
 (defun make-pp (prep pobj)
   (declare (special category::prepositional-phrase))
   (if *subcat-test*
-    (not (itypep prep 'prepositional-phrase))
+    (not (itypep prep category::prepositional-phrase))
     (else
       (setq prep (individual-for-ref prep))
       (or (when (use-methods)
@@ -1790,11 +1792,11 @@
 
 
 (defun apply-copular-pp (np copular-pp)
-  (declare (special category::copular-predicate))
+  (declare (special category::copular-predicate category::wh-question))
   (when (itypep copular-pp 'subordinate-clause)
     ;; this may no longer work -- get an example and test it
     (setq copular-pp (value-of 'comp copular-pp)))
-  (when (itypep copular-pp 'wh-question)
+  (when (itypep copular-pp category::wh-question)
     ;; e.g. "cancer patients who may not have been at risk themselves"
     (setq copular-pp (value-of 'statement copular-pp)))
   (cond ((null copular-pp)

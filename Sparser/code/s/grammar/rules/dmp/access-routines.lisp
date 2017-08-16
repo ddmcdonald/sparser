@@ -22,7 +22,7 @@
 
       (etypecase verb-segment
         (individual
-         (case (cat-symbol (i-type-of verb-segment))
+         (case (cat-symbol (itype-of verb-segment))
            (category::verb-object
             ;; use the whole thing
             verb-segment)

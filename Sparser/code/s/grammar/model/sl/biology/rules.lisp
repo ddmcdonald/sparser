@@ -170,12 +170,12 @@
   (create-residue-on-protein nil amino-acid position nil))
 
 (defun create-residue-on-protein (explicit-residue amino-acid position substrate)
-  (declare (special position))
+  (declare (special position category::residue-on-protein category::hyphenated-number))
   (when (and
          (or (not (itypep amino-acid 'single-capitalized-letter))
              (gethash amino-acid *single-letters-to-amino-acids*))
          (or (null position)
-             (itypep position 'hyphenated-number)
+             (itypep position category::hyphenated-number)
              ;; "1980" is treated as a YEAR, not a number
              ;;  so "S1980" was not recognized as a residue
              (itypep position 'year)
@@ -192,7 +192,7 @@
     (or *subcat-test*
         (let ((residue (or explicit-residue
                            (find-or-make-lattice-description-for-ref-category
-                            (category-named 'residue-on-protein)))))
+                            category::residue-on-protein))))
           (when amino-acid
             (setq residue (bind-dli-variable 'amino-acid amino-acid residue)))
           (when position

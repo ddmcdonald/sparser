@@ -70,7 +70,8 @@
   "Master switch allowing all trace code to be ignored.")
 
 (defun tr/expr (keyword  &rest arguments)
-  (declare (special *trace-the-trace-calls*))
+  (declare (special *trace-the-trace-calls*)
+           (optimize (speed 3)(safety 0)))
   (when *allow-tr-tracing*
     (when *trace-the-trace-calls*
       (format t "~&tr: ~a~%" keyword))

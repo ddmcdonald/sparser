@@ -7,8 +7,8 @@
 
 ;; initiated 7/16/92 v2.3
 ;; (6/8/93) added Indiv-typep
-;; (8/7/94) added itypep as respelling of Indiv-typep and i-type-of
-;; 0.1 (3/3/95) modified i-type-of to not break if it is passed an object
+;; (8/7/94) added itypep as respelling of Indiv-typep and itype-of
+;; 0.1 (3/3/95) modified itype-of to not break if it is passed an object
 ;;      other than an individual
 ;; 0.2 (9/13) extended indiv-typep to look up the lattice
 ;; 0.3 (8/14/13) Since itypep may be used in cases where its argument
@@ -33,66 +33,73 @@
 
 ;;--- entry points (/// should be consolidated)
 
-(defun itype-of (i)
-  (declare (optimize (speed 3)(safety 0)))
-  (i-type-of i))
 
-#| i-type-of should be replaced with itype-of
+#| itype-of should be replaced with itype-of
 
-Davidsmcbookpro:s ddm$ grep "(i-type-of" **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
-analyzers/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t1)))))
-analyzers/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t2)))))
-analyzers/psp/referent/new-cases.lisp:    (annotate-site-bound-to value variable (i-type-of body) edge-being-bound)
-grammar/rules/dmp/access-routines.lisp:         (case (cat-symbol (i-type-of verb-segment))
-grammar/rules/dmp/display.lisp:     (case (cat-symbol (i-type-of obj))
-grammar/rules/dmp/display.lisp:          (i-type-of obj))
-grammar/rules/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t1)))))
-grammar/rules/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t2)))))
-grammar/rules/syntax/conjunction.lisp:                            (individual (i-type-of left-ref))
-grammar/rules/syntax/conjunction.lisp:                             (individual (i-type-of right-ref))
-objects/model/categories/clos-backing.lisp:                 (individual (i-type-of o))
-objects/model/individuals/object.lisp:(defun itype-of (i) (i-type-of i))
-objects/model/individuals/object.lisp:             (values t (i-type-of i)))))))
-objects/model/individuals/object.lisp:  (cat-symbol (i-type-of i)))
-objects/model/individuals/reclaim.lisp:      (pushnew (i-type-of i) augmented-list))
-grammar/model/core/people/printers.lisp:                (ecase (cat-symbol (i-type-of version-obj))
-grammar/model/core/places/places.lisp:                     (i-type-of name) name)))))
-grammar/model/core/titles/rules.lisp:                 (i-type-of possessive) 
-grammar/model/core/names/fsa/gofers-for-examine.lisp:  (let ((c (i-type-of i)))
+!Davidsmcbookpro:s ddm$ grep "(itype-of" **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
+!analyzers/dmp/measure.lisp:                (symbol-name (cat-symbol (itype-of t1)))))
+!analyzers/dmp/measure.lisp:                (symbol-name (cat-symbol (itype-of t2)))))
+!analyzers/psp/referent/new-cases.lisp:    (annotate-site-bound-to value variable (itype-of body) edge-being-bound)
+!grammar/rules/dmp/access-routines.lisp:         (case (cat-symbol (itype-of verb-segment))
+!grammar/rules/dmp/display.lisp:     (case (cat-symbol (itype-of obj))
+!grammar/rules/dmp/display.lisp:          (itype-of obj))
+!grammar/rules/dmp/measure.lisp:                (symbol-name (cat-symbol (itype-of t1)))))
+!grammar/rules/dmp/measure.lisp:                (symbol-name (cat-symbol (itype-of t2)))))
+!grammar/rules/syntax/conjunction.lisp:                            (individual (itype-of left-ref))
+!grammar/rules/syntax/conjunction.lisp:                             (individual (itype-of right-ref))
+!objects/model/categories/clos-backing.lisp:                 (individual (itype-of o))
+!objects/model/individuals/object.lisp:(defun itype-of (i) (itype-of i))
+!objects/model/individuals/object.lisp:             (values t (itype-of i)))))))
+!objects/model/individuals/object.lisp:  (cat-symbol (itype-of i)))
+!objects/model/individuals/reclaim.lisp:      (pushnew (itype-of i) augmented-list))
+!grammar/model/core/people/printers.lisp:                (ecase (cat-symbol (itype-of version-obj))
+!grammar/model/core/places/places.lisp:                     (itype-of name) name)))))
+!grammar/model/core/titles/rules.lisp:                 (itype-of possessive) 
+!grammar/model/core/names/fsa/gofers-for-examine.lisp:  (let ((c (itype-of i)))
 |#
-(defun i-type-of (i)
-  (declare (special *subcat-test*))
-  (typecase i
-    (individual
-     (let ((type-field (indiv-type i)))
-       (values (car type-field)
-               type-field)))
-    (model-category i)
-    (polyword 
-     (report-bad-itype-of i)     
-     nil)
-    (word 
-     (report-bad-itype-of i)     
-     nil)
-    (null
-     (report-bad-itype-of i)
-     nil)
-    (cons
-     (if (and (consp (car i))
-              (eq (caar i) :head)
-              (consp (second i))
-              (eq (car (second  i)) :subtype))
-         ;; we don't handle plurals in the noew SUBTYPE form for types
-         ;; e.g. the 1970s
-         (then
-           (unless *subcat-test*
-             (warn "plural itypep for ~s in sentence ~s~%" i (current-string)))
-           i)
-         (report-bad-itype-of i)))
-    (otherwise
-     (push-debug `(,i))
-     (error "itype-of applied to a ~a rather than ~
-             an individual" (type-of i)))))
+  
+
+
+(defgeneric itype-of (i)
+  (:documentation "Get the primary super categories and the list of all super-categories of an individual")
+  (:method ((i individual))
+    (declare (optimize (speed 3)(safety 0)))
+    (let ((type-field (indiv-type i)))
+      (values (car type-field) type-field)))
+  (:method ((m model-category))
+    (declare (optimize (speed 3)(safety 0)))
+    m)
+  (:method ((i polyword ))
+    (declare (optimize (speed 3)(safety 0)))
+    (report-bad-itype-of i)     
+    nil)
+  (:method ((i word ))
+    (declare (optimize (speed 3)(safety 0)))
+    (report-bad-itype-of i)     
+    nil)
+  (:method ((i null))
+    (declare (optimize (speed 3)(safety 0)))
+    (report-bad-itype-of i)
+    nil)
+  (:method ((i cons))
+    (declare (special *subcat-test*)
+             (optimize (speed 3)(safety 0)))
+    (if (and (consp (car i))
+             (eq (caar i) :head)
+             (consp (second i))
+             (eq (car (second  i)) :subtype))
+        ;; we don't handle plurals in the noew SUBTYPE form for types
+        ;; e.g. the 1970s
+        (then
+          (unless *subcat-test*
+            (warn "plural itypep for ~s in sentence ~s~%" i (current-string)))
+          i)
+        (report-bad-itype-of i)))
+  (:method (i)
+    (declare (optimize (speed 3)(safety 0)))
+    (push-debug `(,i))
+    (error "itype-of applied to a ~a rather than ~
+             an individual" (type-of i))))
 
 
 #| itype should change to be itypep -- by analogy to typep
@@ -231,7 +238,7 @@ grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorize
                 #+ignore(category-inherits-type? (car type-field) ;; for conj
                                          category) ;; 'reference category'
            (when inherits-it?
-             (values t (i-type-of i)))))))
+             (values t (itype-of i)))))))
       (otherwise
        (when *break-on-pattern-outside-coverage?*
          (push-debug `(,i ,category/symbol))

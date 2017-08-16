@@ -248,7 +248,7 @@
 (defun princ-dm&p-obj (obj)
   (typecase obj
     (individual
-     (case (cat-symbol (i-type-of obj))
+     (case (cat-symbol (itype-of obj))
 
        ;;--- dm&p categories
 
@@ -367,7 +367,7 @@
 
 (defun dm&p-printing/new-type (obj)
   (format t "~&Princ-dm&p-obj -- New type of individual: ~A~%"
-          (i-type-of obj))
+          (itype-of obj))
   (setq *dm&p-unprintable-individual* obj)
   "<new individual>")
 
