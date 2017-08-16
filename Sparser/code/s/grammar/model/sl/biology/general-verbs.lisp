@@ -322,6 +322,10 @@
    :on theme
    :upon theme))
 
+(def-cfr depend (protein depend)
+  :form category::adjg
+  :referent (:function assimilate-object right-edge left-edge))
+
 
 (define-category describe :specializes bio-rhetorical
     :realization
