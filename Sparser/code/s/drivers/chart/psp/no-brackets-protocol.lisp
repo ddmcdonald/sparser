@@ -529,7 +529,7 @@
          '(agent))
 
         ((c-itypep ref 'bio-control)
-         '(affected-process))
+         '(affected-process object modifier))
 
         
         ((or (c-itypep ref 'translocation)
@@ -539,6 +539,9 @@
          '(object moving-object moving-object-or-agent-or-object agent))
         ((c-itypep ref 'auto-phosphorylate)
          '(agent substrate))
+
+        ((c-itypep ref 'binding)
+         '(binder bindee direct-bindee))
 
         ((or (c-itypep ref 'post-translational-modification)
              (c-itypep ref 'methylation)
