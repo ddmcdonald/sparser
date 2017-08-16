@@ -426,6 +426,8 @@
   :binds ((object biological)
           (objects biological)
           (site molecular-location))
+  :restrict ((using blocked-category)
+             (by-means-of blocked-category))
   :realization 
   (:verb "associate"
          :noun "association"
