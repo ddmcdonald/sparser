@@ -2156,7 +2156,6 @@
 (define-protein "UP:O18412" ("fzo")) 
 (define-protein "UP:O18413" ("UG")) 
 (define-protein "UP:O18602" ("RPG")) 
-(define-protein "UP:O18735" ("proto-oncogene c-erbB-2")) 
 (define-protein "UP:O18778" ("LN1")) 
 (define-protein "UP:O18836" ("MH")) 
 (define-protein "UP:O18979" ("NESP55" "neuroendocrine secretory protein 55")) 
@@ -4484,12 +4483,18 @@
 (define-protein "UP:P04601" ("p04601" "lated")) 
 (define-protein "UP:P04608" ("p04608")) 
 (define-protein "UP:P04618" ("p04618")) 
-(define-protein "UP:P04626" ("C-ErbB2" "CD340" "ERBB-2" "ERBB2" "ERBB2 receptor protein-tyrosine kinase" "ERBB2_HUMAN" "Erb-B2" "ErbB-2" "ErbB2" "erbb2" "HER" "HER-2"
-                                       "human epidermal growth factor receptor 2" "HER2" "herstatin" "MLN 19" "MLN19" "metastatic lymph node gene 19 protein"
-                                       "mηstatic lymph node gene 19 protein" "NEU" "NGL" "neus" "p04626" "Proto-oncogene Neu" "Proto-oncogene c-ErbB-2"
-                                       "Receptor tyrosine-protein kinase erbB-2" "Tyrosine kinase-type cell surface receptor HER2" "c-Erb-B2"
-                                       "c-ErbB2" "c-erbB-2" "c-erbB2" "c-erbb2" "cErbB2" "cerbB2" "erb-b2" "erb-b2 receptor tyrosine kinase 2"
-                                       "erbB-2" "neu" "p185ErbB2" "p185erbB2" "pY-ErbB2" "sErbB2" "soluble ERBB-2 protein")) 
+(define-protein "UP:P04626" ("C-ErbB2" "CD340" "ERBB-2" "ERBB2" "ERBB2 receptor protein-tyrosine kinase"
+                                       "ERBB2_HUMAN" "Erb-B2" "ErbB-2" "ErbB2" "erbb2" "HER" "HER-2"
+                                       "human epidermal growth factor receptor 2" "HER2" "herstatin"
+                                       "MLN 19" "MLN19" "metastatic lymph node gene 19 protein"
+                                       "mηstatic lymph node gene 19 protein" "NEU" "NGL" "neus"
+                                       "p04626" "Proto-oncogene Neu" "Proto-oncogene c-ErbB-2"
+                                       "Receptor tyrosine-protein kinase erbB-2"
+                                       "Tyrosine kinase-type cell surface receptor HER2" "c-Erb-B2"
+                                       "c-ErbB2" "c-erbB-2" "c-erbB2" "c-erbb2" "cErbB2" "cerbB2"
+                                       "erb-b2" "erb-b2 receptor tyrosine kinase 2"
+                                       "erbB-2" "neu" "p185ErbB2" "p185erbB2" "pY-ErbB2"
+                                       "sErbB2" "soluble ERBB-2 protein")) 
 (define-protein "UP:P04628" ("INT1" "p04628" "Proto-oncogene Int-1 homolog" "Proto-oncogene Wnt-1" "WNT1" "WNT1_HUMAN" "wnt" "wnt family member 1" "wnt-1" "wnt1" "wingless-type MMTV integration site family")) 
 (define-protein "UP:P04629" ("high affinity nerve growth factor receptor" "MTC" "NTRK" "NTRK1" "NTRK1_HUMAN" "neurotrophic tyrosine kinase receptor type 1" "p04629" "TRK" "TRK-T1" "TRK1-transforming tyrosine kinase protein" "TRKA" "trk" "Trk-A" "TrkA" "TrkAIII" "Tropomyosin-related kinase A" "tyrosine kinase receptor" "Tyrosine kinase receptor A" "gp140trk" "high affinity nerve growth factor receptor isoform trkA-III" "neurotrophic receptor tyrosine kinase 1" "p140-TrkA" "trkA")) 
 (define-protein "UP:P04632" ("30K" "CANP small subunit" "CANPS" "CAPN4" "CAPNS" "CAPNS1" "CDPS" "CDPs" "CPNS1_HUMAN" "CSS1" "calcium dependent protease small subunit" "calcium-activated neutral proteinase small subunit" "calcium-dependent protease small subunit" "calcium-dependent protease small subunit 1" "capn4" "p04632" "calpain" "calpain regulatory subunit" "calpain small subunit 1"))
@@ -4728,7 +4733,7 @@
 (define-protein "UP:P06726" ("protein pp71" "pp71")) 
 (define-protein "UP:P06727" ("APOA4" "APOA4(21-94)" "APOA4_HUMAN" "ApoA4" "Apolipoprotein A-IV amyloid fragment" "Apolipoprotein A4" "p06727" "apoA-IV" "apolipoprotein A-IV" "apolipoprotein A4")) 
 (define-protein "UP:P06729" ("CD2" "CD2_HUMAN" "LFA-2" "LFA-3 receptor" "p06729" "rosette receptor" "SRBC" "SRBCs" "T-cell surface antigen CD2" "T-cell surface antigen T11/Leu-5" "erythrocyte receptor")) 
-(define-protein "UP:P06730" ("EIF4E" "EIF4E1" "EIF4EL1" "Eukaryotic translation initiation factor 4E" "IF4E_HUMAN" "p06730" "cap-binding protein" "eIF" "eIF-4E" "eIF-4F 25 kDa subunit" "eIF-4e" "eIF4E" "eIF4F" "eukaryotic translation Initiation Factor 4E" "eukaryotic translation initiation factor 4E" "initiation factor 4E" "mRNA cap-binding protein")) 
+(define-protein "UP:P06730" ("EIF4E" "eIF4E" "EIF4E1" "EIF4EL1" "Eukaryotic translation initiation factor 4E" "IF4E_HUMAN" "p06730" "cap-binding protein" "eIF" "eIF-4E" "eIF-4F 25 kDa subunit" "eIF-4e" "eIF4E" "eIF4F" "eukaryotic translation Initiation Factor 4E" "eukaryotic translation initiation factor 4E" "initiation factor 4E" "mRNA cap-binding protein")) 
 (define-protein "UP:P06731" ("CEA" "CEA family" "CEACAM" "CEACAM5" "carcinoembryonic" "carcinoembryonic antigen")) 
 (define-protein "UP:P06732" ("CKM" "CKMM" "ckm" "Creatine kinase M chain" "Creatine kinase M-type" "KCRM_HUMAN" "M-CK" "m-type" "MCK" "p06732" "creatine" "creatine kinase" "mck")) 
 (define-protein "UP:P06733" ("ENO1" "ENO1L1" "ENOA_HUMAN" "MBP-1" "MBP1" "MBPB1" "MPB-1" "MPB1" "NNE" "p06733" "alpha-enolase" "enolase 1" "pPH" "phosphopyruvate hydratase")) 
