@@ -736,10 +736,16 @@
         (let* ((new-left-ref left-ref)
                (new-right-ref right-ref)
                (left-type (etypecase left-ref
-                            (individual (i-type-of left-ref))
+                            (individual
+                             (if (is-basic-collection? left-ref)
+                                 (value-of 'type left-ref)
+                                 (i-type-of left-ref)))
                             (category left-ref)))
                (right-type (etypecase right-ref
-                             (individual (i-type-of right-ref))
+                             (individual
+                              (if (is-basic-collection? right-ref)
+                                  (value-of 'type right-ref)
+                                  (i-type-of right-ref)))
                              (category right-ref)))
                (type left-type))
           
