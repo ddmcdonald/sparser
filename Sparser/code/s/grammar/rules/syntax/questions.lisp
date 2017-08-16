@@ -16,6 +16,10 @@
 ;;; question categories
 ;;;---------------------
 
+(defparameter *show-wh-problems* nil
+  "complain about problems in creating WH questions -- there are strange things in articles...")
+
+
 (define-category question
   :specializes linguistic
   :instantiates nil 
@@ -368,7 +372,8 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
           ;;(push-debug `(,aux-edge ,attr-edge ,other-edges))
           ;; (lsp-break "wh-type = ~a" wh-type)
           (unless aux-edge
-            (warn "No aux-edge with ~a" wh-type))
+            (when *show-wh-problems*
+              (warn "No aux-edge with ~a" wh-type)))
           
           (let ((attr
                  (cond
@@ -380,7 +385,8 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                    (other-edges ;; "How important is ..."
                     (if (null (cdr other-edges))
                       (edge-referent (car other-edges))
-                      (warn "Multiple 'other edges': ~a" other-edges))))))
+                      (when *show-wh-problems*
+                        (warn "Multiple 'other edges' in ~s: ~a" (current-string) other-edges)))))))
             (let ((q (if attr
                        (make-wh-object wh-type :attribute attr)
                        (make-wh-object wh-type))))
