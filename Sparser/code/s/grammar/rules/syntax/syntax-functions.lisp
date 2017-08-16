@@ -444,9 +444,16 @@
        head))))
 
 
+
+(defparameter *premod-adjps* nil)
 (defun adj-postmodifies-noun (n adj &optional (adj-edge nil))
   ;; adj-edge is set when we are postmodifying
   ;; to be more picky about which adjectives can post-modify a noun
+  (when (and (consp *premod-adjps*)
+             (boundp '*current-chunk*)
+             *current-chunk*
+             (member 'ng (chunk-forms *current-chunk*)))
+    (push (list (itype-of n)  (itype-of adj)) *premod-adjps*))
   (when (or adj-edge (itypep adj 'post-adj))
     (adj-noun-compound adj n adj-edge)))
 
