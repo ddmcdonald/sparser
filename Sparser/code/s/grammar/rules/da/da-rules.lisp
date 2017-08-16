@@ -1101,6 +1101,12 @@
            ;; field keep them connected in the web graph
            s-vp+ed first second))
 
+(define-debris-analysis-rule vp-vp+ed
+  :pattern (vp vp+ed )
+  :action (:function ;; providing all edges should let the constituents
+           ;; field keep them connected in the web graph
+           s-vp+ed first second))
+
 (define-debris-analysis-rule adjp-vp+ed
   :pattern (adjp vp+ed )
   :action (:function ;; providing all edges should let the constituents
