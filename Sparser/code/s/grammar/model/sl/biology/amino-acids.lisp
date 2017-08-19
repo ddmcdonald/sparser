@@ -252,7 +252,8 @@ We therefore have the special cases:
     :left first
     :right second))
   
-(defun reify-amino-acid-pair (words start-pos end-pos)
+(defun reify-amino-acid-pair (start-pos end-pos
+                              &aux (words (words-between start-pos end-pos)))
   ;; called from one-slash-ns-patterns for the pattern
   ;; `(:lower :forward-slash :lower). If we aren't one of these
   ;; we return nil and it goes on to its next choice
@@ -392,7 +393,7 @@ We therefore have the special cases:
 (define-category point-mutated-protein :specializes protein
   :mixins (with-point-mutation))
 
-(defun reify-point-mutation (words pos-before pos-after)
+(defun reify-point-mutation (pos-before pos-after)
   (let ((edges (treetops-between pos-before pos-after)))
     (unless (= 3 (length edges))
       (break "Should be three edges for a point mutation but we have ~s~%"
@@ -415,7 +416,7 @@ We therefore have the special cases:
         (when (and aa1 aa2)
           (let* ((number (find-or-make-number ref2))
                  (interp (make-point-mutation aa2 aa1 number))
-                 (wd (resolve/make (actual-characters-of-word pos-before pos-after words))))
+                 (wd (resolve/make (actual-characters-of-word pos-before pos-after))))
             (def-cfr/expr category::point-mutated-protein
                 (list wd)
               :form category::common-noun
@@ -425,10 +426,11 @@ We therefore have the special cases:
 ;;/// this refactoring doesn't return the
 ;; edges that the edge-maker has wanted so its constituents
 ;; are cleanly indicated.
-(defun reify-point-mutation-and-make-edge (words pos-before pos-after)
+(defun reify-point-mutation-and-make-edge (pos-before pos-after
+                                           &aux (words (words-between pos-before pos-after)))
   ;; Called from resolve-ns-pattern when the pattern is either
   ;; '(:single-cap :digits :single-cap) or '(:single-lower :digits :single-lower)
-  (let ((i (reify-point-mutation words pos-before pos-after)))
+  (let ((i (reify-point-mutation pos-before pos-after)))
     (when i
       ;; the letters might not designated amino acids
       (let ((edge
