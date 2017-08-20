@@ -33,7 +33,8 @@
 ;;; for approximations -- which aren't actually modeled
 ;;;-----------------------------------------------------
 
-(defun package-approximation-number (words start-pos end-pos)
+(defun package-approximation-number (start-pos end-pos
+                                     &aux (words (effective-words-given-edges start-pos end-pos)))
   (declare (special category::number))
   (push-debug `(,words ,start-pos ,end-pos))
   ;; (setq words (car *) start-pos (cadr *) end-pos (caddr *))
@@ -57,9 +58,10 @@
       edge)))
 
 ;;  (p "2.22±0.25.")
-(defun package-number-plus-error (edges words start-pos end-pos)
+(defun package-number-plus-error (start-pos end-pos)
   (declare (special category::number))
-  (let* ((base-edge (car edges))
+  (let* ((edges (treetops-between start-pos end-pos))
+         (base-edge (car edges))
          (base (edge-referent base-edge))
          (range-edge (cadr edges))
          (range (edge-referent range-edge)))
@@ -71,7 +73,7 @@
                  :rule 'package-number-plus-error
                  :form category::number
                  :referent base
-                 :words words)))
+                 :words (effective-words-given-edges start-pos end-pos))))
       (tr :no-space-made-edge edge)
       edge)))
 
@@ -81,14 +83,14 @@
 ;;;-------------------
 
 ;;/// Repair -- doesn't really go here
-(defun fix-doubled-colon (pattern edges)
+(defun fix-doubled-colon (pattern start-pos end-pos
+                          &aux (edges (treetops-between start-pos end-pos)))
   ;;/// hack for the presenting case. Need more ex. to find
   ;; any useful generalizations
   ;; pattern = (:bio-entity :colon :colon :protein)
   (let ((pattern1 (cons (car pattern) (cddr pattern)))
         (edges1 (cons (car edges) (cddr edges))))
-    (values pattern1
-            edges1)))
+    (values pattern1 edges1)))
 
 
 

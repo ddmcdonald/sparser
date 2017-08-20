@@ -13,29 +13,25 @@
 ;;  (p "For example, SHOC2/Sur-8 bridges.")
 ;; "PI3K/AKT signaling"
 
-(defun resolve-slash-pattern (pattern words edges
-                              slash-positions hyphen-positions 
-                              pos-before pos-after)
+(defun resolve-slash-pattern (pattern pos-before pos-after)
   "Called from ns-pattern-dispatch when the salient punctuation is one or
    more slashes. Returns nil if it doesn't know what the pattern means
    and we go back to the dispatch."
-  (if (null (cdr slash-positions)) ;; only one
-    (one-slash-ns-patterns
-     pattern words edges slash-positions hyphen-positions pos-before pos-after)
-    (divide-and-recombine-ns-pattern-with-slash 
-     pattern words edges slash-positions hyphen-positions pos-before pos-after)))
 
-(defun one-slash-ns-patterns (pattern words edges
-                              slash-positions hyphen-positions 
-                              pos-before pos-after)
+  (if (null (member :forward-slash
+                    (cdr (member :forward-slash pattern)))) ;; only one
+      (one-slash-ns-patterns pattern pos-before pos-after)
+      (divide-and-recombine-ns-pattern-with-slash pattern pos-before pos-after)))
+
+(defun one-slash-ns-patterns (pattern pos-before pos-after)
   (cond   
-   (hyphen-positions
-    (divide-and-recombine-ns-pattern-with-slash 
-     pattern words edges slash-positions hyphen-positions pos-before pos-after))
-
+   ((member :hyphen pattern)
+    (divide-and-recombine-ns-pattern-with-slash pattern  pos-before pos-after))
+   ((equal pattern '(:protein :forward-slash :protein))
+    (make-protein-collection pos-before pos-after))
    ((equal pattern '(:lower :forward-slash :lower))
-    (or (reify-amino-acid-pair words pos-before pos-after)
-        (reify-ns-name-and-make-edge words pos-before pos-after)))
+    (or (reify-amino-acid-pair pos-before pos-after)
+        (reify-ns-name-and-make-edge pos-before pos-after)))
 
    ((equal pattern '(:mixed :digits :forward-slash :capitalized :digits))
     ;; recombinant COT induced pThr202/Tyr204 phosphorylation of ERK1 
@@ -46,23 +42,26 @@
       (break "finish pThr202/Tyr204")))
 
    ((equal pattern '(:full :forward-slash :full))
-    (resolve-hyphen-between-two-terms pattern words edges pos-before pos-after))
+    (resolve-hyphen-between-two-terms pattern pos-before pos-after))
 
    ((equal pattern '(:full :forward-slash :single-lower)) ;; "BALB/c"
     ;; probably a variant of a protein, but that requires the 'full' portion
     ;; to be recognized as a protein ///pick up again when doing morph.decomp.
-    (reify-ns-name-and-make-edge words pos-before pos-after))
+    (reify-ns-name-and-make-edge pos-before pos-after))
 
    (*work-on-ns-patterns* 
+    (print `(new one-slash-pattern ,pattern
+                 matches
+                 ,(actual-characters-of-word pos-before pos-after)
+                 in
+                 ,(current-string)))
     (push-debug `(,pattern ,pos-before ,pos-after))
     (break "New slash pattern to resolve: ~a" pattern))
-   (t (tr :no-ns-pattern-matched) 
+   (t (tr :no-ns-pattern-matched)
       nil)))
 
 
-(defun divide-and-recombine-ns-pattern-with-slash (pattern words edges
-                                                   slash-positions hyphen-positions 
-                                                   pos-before pos-after)
+(defun divide-and-recombine-ns-pattern-with-slash (pattern pos-before pos-after)
   "Called from ns-pattern-dispatch when there are both (one or more) slashes
    and hyphens in the pattern.
   Assumes that slash has precedence over any other punctuation,
@@ -74,57 +73,88 @@
   ;; At this point the terminals are covered by edges. They probably
   ;; have what we want. A second time around they certainly will.
 
-  (push-debug `(,slash-positions ,pos-before ,pos-after ,words ,pattern))
+  #+ignore
+  (push-debug `(,slash-positions ,pos-before ,pos-after
+                                 ,(treetops-between pos-before pos-after)
+                                 ,pattern))
   ;; (setq slash-positions (car *) pos-before (cadr *) pos-after (caddr *) words (cadddr *) pattern (nth 4 *))
   (tr :slash-ns-pattern pos-before pos-after)    
   (when *trace-ns-sequences* (tts))
 
   (cond 
-   ((eq (first slash-positions) pos-before)
-    (when *work-on-ns-patterns*
-      (error "New case: Slash is initial term in no-space region between p~a and p~a"
-             (pos-token-index pos-before) (pos-token-index pos-after))))
+    ((eq (car pattern) :forward-slash)
+     (when *work-on-ns-patterns*
+       (error "New case: Slash is initial term in no-space region between p~a and p~a"
+              (pos-token-index pos-before) (pos-token-index pos-after))))
 
-   ((eq (car (last pattern)) :forward-slash) ;; it's final
-    ;; It's probably a mistake in the source: "c-Raf/ MAPK-mediated [6]."
-    (cond
-     ((not (= 1 (length slash-positions)))
-      (when *work-on-ns-patterns*
-        (error "New case: more than one slash in a slash-final pattern")))
-     (t
-      (let* ((pos-after-minus-1 (chart-position-before pos-after))
-             ;; 1st do the check that would have been done w/o the slash
-             (edge? (span-covered-by-one-edge? pos-before pos-after-minus-1)))
-        (or edge?
-            (else
-              ;;/// I can't think of a meaningfull version of this pattern so
-              ;; dropping the slash on the floor and shrinking the pattern to let
-              ;; the ordinary hyphen-handler do it's thing
-              (setq pattern (nreverse (cdr (nreverse pattern)))
-                    words (nreverse (cdr (nreverse words))))
-              (resolve-hyphen-pattern pattern words edges hyphen-positions 
-                                      pos-before pos-after-minus-1)))))))
+    ((eq (car (last pattern)) :forward-slash) ;; it's final
+     ;; It's probably a mistake in the source: "c-Raf/ MAPK-mediated [6]."
+     (cond
+       ((not (= 1 (count-if pattern #'(lambda(x)(eq x :forward-slash) pattern))))
+        (when *work-on-ns-patterns*
+          (error "New case: more than one slash in a slash-final pattern")))
+       (t
+        (let* ((pos-after-minus-1 (chart-position-before pos-after))
+               ;; 1st do the check that would have been done w/o the slash
+               (edge? (span-covered-by-one-edge? pos-before pos-after-minus-1)))
+          (or edge?
+              (else
+                ;;/// I can't think of a meaningfull version of this pattern so
+                ;; dropping the slash on the floor and shrinking the pattern to let
+                ;; the ordinary hyphen-handler do it's thing
+                (setq pattern (nreverse (cdr (nreverse pattern))))
+                (resolve-hyphen-pattern pattern pos-before pos-after-minus-1)))))))
 
-   (t ;; slash(s) somewhere in the middle   
-    (let* ((segment-start pos-before)
-           segment-pattern  segments  remainder )
-    (multiple-value-setq (segment-pattern remainder)
-      (pop-up-to-slash pattern))
-    (dolist (slash-pos slash-positions)
-      (let ((resolution (resolve-slash-segment 
-                         segment-pattern hyphen-positions segment-start slash-pos)))
-        (unless resolution
-          (push-debug `(,segment-pattern ,segment-start ,slash-pos))
-          (error "pattern resolver called by slash returned nil ~
+    (t ;; slash(s) somewhere in the middle   
+     (let* ((segment-start pos-before)
+            (tts (positions-and-treetops-between pos-before pos-after))
+            (tt-pats (divide-tts-and-patterns tts pattern))
+            segment-pattern  segments  remainder )
+       (multiple-value-setq (segment-pattern remainder)
+         (pop-up-to-slash pattern))
+       (loop for tt-pat in tt-pats
+             do
+               (resolve-slash-segment (second tt-pat)
+                                      (caar (car tt-pat))
+                                      (caar (last (car tt-pat)))))
+       (package-slashed-sequence pos-before pos-after)
+       ;;(warn "Please handle divide-and-recombine-ns-pattern-with-slash")
+       #|
+       (dolist (slash-pos slash-positions)
+       (let ((resolution (resolve-slash-segment segment-pattern segment-start slash-pos)))
+       (unless resolution
+       (push-debug `(,segment-pattern ,segment-start ,slash-pos))
+       (error "pattern resolver called by slash returned nil ~
                   on ~a" segment-pattern))
-        (push resolution segments)
-        (setq segment-start (chart-position-after slash-pos))
-        (multiple-value-setq (segment-pattern remainder)
-          (pop-up-to-slash remainder))))
-      (push (resolve-slash-segment segment-pattern hyphen-positions segment-start pos-after)
-            segments)
-      (package-slashed-sequence
-       (nreverse segments) words pos-before pos-after)))))
+       (push resolution segments)
+       (setq segment-start (chart-position-after slash-pos))
+       (multiple-value-setq (segment-pattern remainder)
+       (pop-up-to-slash remainder))))
+       (push (resolve-slash-segment segment-pattern segment-start pos-after)
+       segments)
+       (package-slashed-sequence pos-before pos-after)
+       |#))))
+
+(defun divide-tts-and-patterns (tts patterns)
+  (let (tt-seg  pat-seg tt-pat-segs)
+    (loop for tt in tts
+          as pat in patterns
+          do
+            (cond ((eq pat :forward-slash)
+                   (push tt tt-seg)
+                   (push (list (reverse tt-seg) (reverse pat-seg)) tt-pat-segs)
+                   (setq tt-seg nil)
+                   (setq pat-seg nil))
+                  (t (push tt tt-seg)
+                     (push pat pat-seg)))
+          finally
+            (multiple-value-bind (tt pos)
+                (next-treetop/rightward (caar tt-seg))
+              (push (list pos nil) tt-seg))
+            (push (list (reverse tt-seg) (reverse pat-seg)) tt-pat-segs))
+    (reverse tt-pat-segs)))
+
+            
 
 
 (defun pop-up-to-slash (pattern)
@@ -141,7 +171,7 @@
       (values pattern nil))))
 
 
-(defun resolve-slash-segment (segment-pattern hyphen-positions start-pos end-pos)
+(defun resolve-slash-segment (segment-pattern start-pos end-pos)
   "Look at the region between start and end positions and return an edge
    that accounts for its content. Feeds package-slashed-sequence"
   (tr :resolve-slash-segment segment-pattern start-pos end-pos)
@@ -154,23 +184,15 @@
       single-edge)
      (t
       (tr :slash-recursive-resolution)
-      (let ((words (words-between start-pos end-pos)))        
-        (resolve-non-slash-ns-pattern 
-         segment-pattern words hyphen-positions start-pos end-pos))))))
+      (resolve-non-slash-ns-pattern segment-pattern start-pos end-pos)))))
 
-(defun resolve-non-slash-ns-pattern (pattern words hyphen-positions
-                                     pos-before pos-after) 
+(defun resolve-non-slash-ns-pattern (pattern pos-before pos-after)
+  (declare (special pattern pos-b efore pos-after))
   (tr :trying-to-resolve-ns-pattern pattern)
-  (let ((relevant-hyphen-positions
-         (when hyphen-positions 
-           (loop for pos in hyphen-positions 
-             when (position-is-between pos pos-before pos-after)
-             collect pos)))
-        (edges (remove-non-edges (treetops-between pos-before pos-after))))
-    (or (when relevant-hyphen-positions
-          (resolve-hyphen-pattern 
-           pattern words edges relevant-hyphen-positions pos-before pos-after))
-        (resolve-ns-pattern pattern words edges pos-before pos-after)
-        (reify-ns-name-and-make-edge words pos-before pos-after))))
+  ;;(lsp-break "resolve-non-slash-ns-pattern")
+  (or (when (member :hyphen pattern)
+        (resolve-hyphen-pattern pattern pos-before pos-after))
+      (resolve-ns-pattern pattern pos-before pos-after)
+      (reify-ns-name-and-make-edge pos-before pos-after)))
 
 

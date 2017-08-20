@@ -658,7 +658,8 @@ uid binding, if there is one"
     do (convert-bio-entity-to-protein edge)))
 
 
-(defun reify-p-protein-and-make-edge (words start-pos end-pos)
+(defun reify-p-protein-and-make-edge (start-pos end-pos
+                                      &aux (words (effective-words-given-edges start-pos end-pos)))
   ;; Called from resolve-ns-pattern on (:single-cap :digits).
   ;; Looks for a "p" and if it finds it makes a protein.
   ;; E.g "suggesting that p38 SAPK was active" in Jan #34
@@ -1439,7 +1440,7 @@ for this species"
 (defun reify-phosphorylated-protein (words prot-edge start-pos next-position)
   (declare (special words edges start-pos next-position))
 
-  (let* ((words-string (actual-characters-of-word start-pos next-position words))
+  (let* ((words-string (actual-characters-of-word start-pos next-position))
          (protein (edge-referent prot-edge))
          (edge
           (make-edge-over-long-span

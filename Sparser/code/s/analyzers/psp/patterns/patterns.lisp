@@ -43,8 +43,9 @@
 ;;; patterns with punctuation other than slash, hypen, or colon
 ;;;-------------------------------------------------------------
 
-(defun resolve-other-punctuation-pattern (pattern words edges other-punct
-                                          start-pos end-pos)
+(defun resolve-other-punctuation-pattern (pattern start-pos end-pos
+                                          &aux (edges (treetops-between start-pos end-pos))
+                                            (words (effective-words-given-edges start-pos end-pos)))
   "Called from ns-pattern-dispatch when odd punctuation has been found
    in the sequence."
   ;;/// Caller isn't testing that there aren't also slashes, colons,
@@ -57,7 +58,7 @@
    ((or (equal pattern `(:tilda :digits))  ;; ~60 in Dec# 52
         (equal pattern `(:tilda :single-digit)))
     ;;/// n.b. does do all it should -- ignores the approximation
-    (package-approximation-number words start-pos end-pos))
+    (package-approximation-number start-pos end-pos))
 
    ((equal pattern '(:tilda :digits :percent-sign)) ;; "~15%"
     ;;/// parser should have noticed the percentage
@@ -77,14 +78,14 @@
 
    ;; (p "2.22Â±0.25.")
    ((equal pattern '(:number :plus-minus  :number))
-    (package-number-plus-error edges words start-pos end-pos))
+    (package-number-plus-error edges start-pos end-pos))
    
    (*work-on-ns-patterns*
     (push-debug `(,pattern ,edges ,start-pos ,end-pos ,words))
     (break "New 'other punctuation' pattern to resolve: ~a" pattern))
 
    (t (tr :no-ns-pattern-matched)
-      (reify-ns-name-and-make-edge words start-pos end-pos))))
+      (reify-ns-name-and-make-edge start-pos end-pos))))
 
  
   
@@ -94,13 +95,13 @@
 
 ;; To-do:  "30–37% identity" (hyphenated-number percent-sign)
 
-(defun resolve-ns-pattern (pattern words edges start-pos end-pos)
+(defun resolve-ns-pattern (pattern start-pos end-pos)
   "Called from ns-pattern-dispatch when the sequence does not include
    any special characters, just alphanumerics. This is the 'default'.
    If we return nil, we'll fall back just calling reify-ns-name-and-make-edge
    which, by definition, can't give us better information about what
    we've found."
-  (push-debug `(,pattern ,edges ,start-pos ,end-pos ,words)) ;; for the new cases
+  ;;(push-debug `(,pattern ,edges ,start-pos ,end-pos ,words)) ;; for the new cases
   (flet ((look-before-punting ()
            ;; Often in an or -- so either breaks or returns nil
            (when *work-on-ns-patterns*
@@ -110,49 +111,49 @@
      ((or (equal pattern '(:full :single-digit)) ;; AF6, MEK1, SHOC2
           (equal pattern '(:full :digits)))
       (look-before-punting)
-      (reify-ns-name-and-make-edge words start-pos end-pos))
+      (reify-ns-name-and-make-edge start-pos end-pos))
 
      ((equal pattern '(:capitalized :digits))
-      (or (reify-residue-and-make-edge words start-pos end-pos)
+      (or (reify-residue-and-make-edge start-pos end-pos)
           (look-before-punting)
-          (reify-ns-name-and-make-edge words start-pos end-pos)))
+          (reify-ns-name-and-make-edge start-pos end-pos)))
      
      ((equal pattern '(:capitalized :single-digit)) ;; Mst1, Mst2
       ;;/// we should track the number, perhaps in a tailored kind of bio-entity
-      (reify-ns-name-and-make-edge words start-pos end-pos))
+      (reify-ns-name-and-make-edge start-pos end-pos))
      
      ((equal pattern '(:mixed :single-digit)) ;; PLCÎ³1
       (look-before-punting)
-      (reify-ns-name-and-make-edge words start-pos end-pos))
+      (reify-ns-name-and-make-edge start-pos end-pos))
 
      ((equal pattern '(:single-cap :single-digit)) ;; "in Figure S1,"
-      (reify-two-part-label words edges start-pos end-pos :cap-first))
+      (reify-two-part-label start-pos end-pos :cap-first))
 
      ((or (equal pattern '(:single-digit :single-lower)) ;; (Fig. 4c, 4d) in Dec. 42 
           (equal pattern '(:single-digit :single-cap))) ;; "3C" "Histone 2B phosphorylated by..." in Jan 34.
-      (reify-two-part-label words edges start-pos end-pos :digit-first))
+      (reify-two-part-label start-pos end-pos :digit-first))
 
      ((equal pattern '(:single-cap :digits))
-      (or (reify-residue-and-make-edge words start-pos end-pos) ;; Y420
+      (or (reify-residue-and-make-edge start-pos end-pos) ;; Y420
           (look-before-punting)
-          (reify-ns-name-and-make-edge words start-pos end-pos)))
+          (reify-ns-name-and-make-edge start-pos end-pos)))
 
      ((equal pattern '(:single-lower :digits))
-      (or (reify-p-protein-and-make-edge words start-pos end-pos) ;; p38
-          (reify-residue-and-make-edge words start-pos end-pos)
+      (or (reify-p-protein-and-make-edge start-pos end-pos) ;; p38
+          (reify-residue-and-make-edge start-pos end-pos)
           (look-before-punting)
-          (reify-ns-name-and-make-edge words start-pos end-pos)))
+          (reify-ns-name-and-make-edge start-pos end-pos)))
 
      ((equal pattern '(:single-cap :single-digit :single-cap))
       (look-before-punting)
-      (reify-ns-name-and-make-edge words start-pos end-pos))
+      (reify-ns-name-and-make-edge start-pos end-pos))
 
      ((or (equal pattern '(:single-cap :digits :single-cap))
           (equal pattern '(:single-lower :digits :single-lower)))
       ;;/// and a bunch more
-      (or (reify-point-mutation-and-make-edge words start-pos end-pos)
+      (or (reify-point-mutation-and-make-edge start-pos end-pos)
           (look-before-punting)
-          (reify-ns-name-and-make-edge words start-pos end-pos)))
+          (reify-ns-name-and-make-edge start-pos end-pos)))
 
      (*work-on-ns-patterns*
       (break "New simple pattern to resolve: ~a" pattern))

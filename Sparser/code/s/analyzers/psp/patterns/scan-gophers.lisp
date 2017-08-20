@@ -23,7 +23,9 @@
   make this a property of punctuation characters, but if the list
   is small this will suffice.")
 
-(defun sweep-to-end-of-ns-regions (initial-position initial-long-edge)
+
+
+(defun sweep-to-end-of-ns-regions (start-pos end-pos)
   ;; Called from collect-no-space-segment-into-word starting from
   ;; the very beginning of the sequence (initial-position). That means
   ;; that the very next position after that is marked to say there
@@ -31,99 +33,37 @@
   ;; After that we could reach a terminating criteron.
 
   ;;  (push-debug `(,position)) (break "sweep to end from ~a" position)
-  (declare (special *the-punctuation-hyphen* initial-long-edge))
-  (let* ((position initial-position)
-         (next-pos (if initial-long-edge
-                     (pos-edge-ends-at initial-long-edge)
-                     (chart-position-after initial-position)))
-         (word (pos-terminal position))
-         (first-edge (or initial-long-edge
-                         (right-treetop-at/only-edges initial-position)))
-         ;; firstr-edge is NIL in "(Sebolt-Leopold et al., 1999)"
-         (edges (when first-edge (list first-edge)))
-         hyphens  slashes  colons  other-punct 
-         edge  long-edge-ends-at  )
-    (declare (special position next-pos word edges edge))
-    ;;(print `(position ,position next-pos ,next-pos))
-    (flet ((store-important-punctuation (word)
-             (cond
-              ((eq word *the-punctuation-hyphen*) (push position hyphens))
-              ((eq word (punctuation-named #\/)) (push position slashes))
-              ((eq word (punctuation-named #\:)) (push position colons))
-              ((punctuation? word) ;; but not terminating punctuation
-               (push position other-punct))))) ;; e.g. %, +, ~
-      ;;(lsp-break "sweep-to-end-of-ns-regions")
-      (loop
-        ;; we enter the loop looking for a reason to stop
-        (store-important-punctuation word)
-        (setq word (pos-terminal next-pos)
-              edge (right-treetop-at/only-edges next-pos))
-        (cond
-          ((and edge (not (one-word-long? edge)))
-           (tr :ns-edge-sweep edge)
-           (setq long-edge-ends-at (pos-edge-ends-at edge))
-           )
-
-         (t ;; just a word at this position
-          (tr :ns-word-sweep word)
-          (when (pos-preceding-whitespace next-pos)
-            (tr :ns-return-because-whitespace next-pos)
-            (return))
-          (when (first-word-is-bracket-punct word)
-            (tr :ns-return-because-bracket-punct word)
-            (return))
-          (when (word-never-in-ns-sequence word)
-            (tr :ns-return-word-never-in-ns-seq word)
-            (return))
-          (when (and (punctuation? word)
-                     (punctuation-terminates-no-space-sequence word next-pos))
-            (unless (memq word *terminal-ns-punct-encountered*)
-              ;; We looked ahead, so reflect that in the stopping position
-              (setq next-pos (chart-position-after next-pos)))
-            (tr :ns-return-punch-terminates-seq word next-pos)
-            (return))))
-        ;;(print edge)
-        (when (edge-p edge) (push edge edges))
-        (setq position next-pos
-              next-pos (or long-edge-ends-at
-                           (chart-position-after next-pos)))
-        (tr :ns-next-position-is next-pos)
-        (setq long-edge-ends-at nil ;; cleanup for next iteration
-              edge nil)
-        (when (pos-preceding-whitespace next-pos)
-          ;; doing the check here given that we might get
-          ;; an edge next and not go through this check in the word path
-          (tr :ns-return-because-whitespace next-pos)
-          (return))))
-
-    (values next-pos
-            (when hyphens (nreverse hyphens))
-            (when slashes (nreverse slashes))
-            (when colons (nreverse colons))
-            (when other-punct (nreverse other-punct))
-            (when edges (nreverse edges)))))
-
+  (declare (special *the-punctuation-hyphen* start-pos end-pos))
+  (sweep-ns-region start-pos end-pos))
 
 ;;;-----------------------------------------
 ;;; reasons to abort or get out of the loop
 ;;;-----------------------------------------
 
-(defun word-never-in-ns-sequence (word)
-  (declare (special *the-punctuation-period*
-                    *the-punctuation-question-mark*
-                    *the-punctuation-comma*
-                    *the-punctuation-semicolon*
-                    *the-punctuation-percent*
-                    *the-punctuation-prime*
-                    *the-punctuation-single-quote*))
-  (when (punctuation? word)
-    (or (eq word *the-punctuation-period*)
-        (eq word  *the-punctuation-question-mark*)
-        (eq word *the-punctuation-comma*)
-        (eq word *the-punctuation-semicolon*)
-        (eq word *the-punctuation-percent*)
-        (eq word *the-punctuation-prime*)
-        (eq word *the-punctuation-single-quote*))))
+(defgeneric word-never-in-ns-sequence (word)
+  (:method ((e edge))
+    (word-never-in-ns-sequence
+     (pos-terminal (edge-starting-position e))))
+  (:method ((word word))
+    (declare (special *the-punctuation-period*
+                      *the-punctuation-question-mark*
+                      *the-punctuation-comma*
+                      *the-punctuation-semicolon*
+                      *the-punctuation-percent*
+                      *the-punctuation-prime*
+                      *the-punctuation-single-quote*))
+    (when (punctuation? word)
+      (or (eq word *the-punctuation-period*)
+          (eq word  *the-punctuation-question-mark*)
+          (eq word *the-punctuation-comma*)
+          (eq word *the-punctuation-semicolon*)
+          (eq word *the-punctuation-percent*)
+          (eq word *the-punctuation-prime*)
+          (eq word *the-punctuation-single-quote*)
+          (eq word word::close-paren)
+          (eq word word::open-paren)
+          (eq word word::open-square-bracket)
+          (eq word word::close-square-bracket)))))
 
 
 (defun second-word-not-in-ns-sequence (word next-position)

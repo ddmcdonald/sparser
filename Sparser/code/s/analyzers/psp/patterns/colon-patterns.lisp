@@ -13,43 +13,39 @@
 ; (p "endogenous C-RAF:B-RAF heterodimers.") -- works
 ; (p "KSR1:MARK3.") -- ditto
 
-(defun resolve-colon-pattern (pattern words edges 
-                              colon-positions start-pos end-pos)
+(defun resolve-colon-pattern (pattern start-pos end-pos)
   ;; called from ns-pattern-dispatch when the only puctuation is a colon
-   (push-debug `(,pattern ,words ,edges ,colon-positions ,start-pos ,end-pos))
+   (push-debug `(,pattern ,(treetops-between  start-pos end-pos)  ,start-pos ,end-pos))
   ;;(break "starting colon pattern: ~a" pattern)
   (cond
-   ((null (cdr colon-positions))
-    (one-colon-ns-patterns
-     pattern words edges colon-positions start-pos end-pos))
-   ((and (= 2 (length colon-positions))
+   ((null (member :colon (cdr (member :colon pattern))))
+    (one-colon-ns-patterns pattern (treetops-between start-pos end-pos) start-pos end-pos))
+   ((and (= 2 (count-if #'(lambda(x)(eq x :colon)) pattern))
          ;; typo probably: "of GLR-1::GFP in the VNC"
-         (adjacent-positions (car colon-positions) (cadr colon-positions)))
+         (eq :colon (second  (member :colon pattern))))
     (multiple-value-bind (pattern1 edges1)
-                         (fix-doubled-colon pattern edges)
-      (one-colon-ns-patterns pattern1 words edges1 colon-positions start-pos end-pos)))
+        (fix-doubled-colon pattern start-pos end-pos)
+      ;; does not really do the right thing for
+      ;; "BCG carrying either pVV16:: kasB _WT or pVV16:: kasB _T334A/T336A..."
+      (one-colon-ns-patterns pattern1 edges1 start-pos end-pos)))
    (t
-    (multi-colon-ns-patterns
-     pattern words edges colon-positions start-pos end-pos))))
+    (multi-colon-ns-patterns pattern start-pos end-pos))))
 
 ;;;-----------
 ;;; one colon
 ;;;-----------
 
-(defun one-colon-ns-patterns (pattern words edges colon-positions start-pos end-pos)
+(defun one-colon-ns-patterns (pattern edges start-pos end-pos) ;; have to get edges from above
   ;; called from resolve-colon-pattern
   (cond
    ((equal pattern '(:protein :colon :protein)) "KSR1:MARK3"
-    (make-ns-pair 'protein (first edges) (third edges)
-                  words start-pos end-pos))
+    (make-ns-pair 'protein (first edges) (third edges) start-pos end-pos))
 
    ((equal pattern '(:protein :colon :bio-entity)) 
-    (make-protein-pair/convert-bio-entity
-     start-pos end-pos edges words :right))
+    (make-protein-pair/convert-bio-entity start-pos end-pos :right))
 
    ((equal pattern '(:bio-entity :hyphen :protein))
-    (make-protein-pair/convert-bio-entity
-     start-pos end-pos edges words :left))
+    (make-protein-pair/convert-bio-entity start-pos end-pos :left))
 
    ((or (equal pattern '(:single-digit :colon :single-digit))
         (equal pattern '(:single-digit :colon :digits))
@@ -64,27 +60,23 @@
     (make-word-colon-word-structure (first edges) (third edges)))
 
    (*work-on-ns-patterns*
-    (push-debug `(,pattern ,edges ,words ,colon-positions ,start-pos ,end-pos))
-    ;;  (setq pattern (nth 0 *) edges (nth 1 *) words (nth 2 *) colon-positions (nth 3 *) start-pos (nth 4 *) end-pos (nth 5 *))
+    (push-debug `(,pattern ,edges ,start-pos ,end-pos))
     (break "unknown NS pattern with one colon:~%  ~a" pattern))
 
    ;; fall through
    (t (tr :no-ns-pattern-matched)
-      (reify-ns-name-and-make-edge words start-pos end-pos))))
+      (reify-ns-name-and-make-edge start-pos end-pos))))
 
 
 ;;;---------------------
 ;;; more than one colon
 ;;;---------------------
 
-(defun multi-colon-ns-patterns (pattern words edges colon-positions start-pos end-pos)
+(defun multi-colon-ns-patterns (pattern start-pos end-pos)
   ;; called from ns-patterns/edge-colon-edge when the only punctuation
   ;; in the sequence is colon. Do a divide and recombine
   (declare (special category::protein))
-  ;; (push-debug `(,words ,edges ,colon-positions ,start-pos ,end-pos))
-  ;; (setq pattern (nth 0 *) words (nth 1 *) edges (nth 2 *) colon-positions (nth 3 *) pos-before (nth 4 *) pos-after (nth 5 *))
-  (let ((segments (divide-colon-sequence
-                    words colon-positions start-pos end-pos)))
+  (let ((segments (divide-colon-sequence pattern start-pos end-pos)))
     (push-debug `(,segments)) ;;/// merge when debugged
     (let ((pattern (convert-pattern-edges-to-labels segments)))
       (push-debug `(,pattern))
@@ -105,51 +97,39 @@
                (edge (make-ns-edge
                       start-pos end-pos category::protein
                       :referent i :rule 'multi-colon-ns-patterns
-                      :constituents segments :words words)))
+                      :constituents segments
+                      :words (effective-words-given-edges start-pos end-pos))))
           edge))
        (*work-on-ns-patterns*
-        (push-debug `(,pattern ,edges ,words ,colon-positions ,start-pos ,end-pos))
+        (push-debug `(,pattern ,(treetops-between start-pos end-pos) ,start-pos ,end-pos))
         ;; In localization: "in CHCl 3 /CH 3 OH/NH 4 OH/H 2 O(45:35:7:3)"
         (lsp-break "Another multi-colon pattern: ~a" pattern))
        (t
         (tr :no-ns-pattern-matched)
-        (reify-ns-name-and-make-edge words start-pos end-pos))))))
+        (reify-ns-name-and-make-edge start-pos end-pos))))))
 
 
 ;;--- dividing the ns sequence by colon position
 
-(defun divide-colon-sequence (words colon-positions start-pos end-pos)
+(defun divide-colon-sequence (pattern start-pos end-pos
+                              &aux (tts (treetops-between start-pos end-pos)))
   "Walks through the regions between colons, resolves the pattern for
    each one, returns the corresponding ilst of edges."
-  (let ((seg-start start-pos)
-        (colons (copy-list colon-positions)) ;; just for debugging
-        (seg-end (pop colon-positions))
-        edge  segments )
-    (push-debug `(,words ,colons ,start-pos ,end-pos))
-    (loop
-      (setq edge (span-covered-by-one-edge? seg-start seg-end))
-      (if edge 
-        (push edge segments)
-        (let ((result (configure-and-analyze-sub-ns-sequence words seg-start seg-end)))
-          ;;(lsp-break "result = ~a" result)
-          (push result segments)))
-      (when (eq seg-end end-pos)
-        (return))
-      (setq seg-start (chart-position-after seg-end))
-      (if colon-positions
-        (setq seg-end (pop colon-positions))
-        (setq seg-end end-pos)))
-    (nreverse segments)))
+ ;; (lsp-break "divide-colon-sequence")
+  (let (segment edge  segments )
+    (push-debug `(,tts ,pattern ,start-pos ,end-pos))
+    (loop for tt in tts as pat in pattern
+          unless (eq pat :colon)
+          collect tt)))
 
-(defun configure-and-analyze-sub-ns-sequence (words start-pos end-pos)
+(defun configure-and-analyze-sub-ns-sequence (start-pos end-pos)
   "Returns the edge made by the pattern resolver."
-  (let ((pattern (sweep-ns-region start-pos end-pos))
-        (edges (treetops-between start-pos end-pos)))
+  (let ((pattern (sweep-ns-region start-pos end-pos)))
     (tr :segment-ns-pattern pattern)
     ;; Question is whether this is a simple pattern or one that
     ;; might motivate going all the way back to the master dispatch
     ;;//// punting on that for the moment. Need the right list
-    (resolve-ns-pattern pattern words edges start-pos end-pos)))
+    (resolve-ns-pattern pattern start-pos end-pos)))
 
 
 
@@ -158,14 +138,9 @@
 ;;;------------------
 
 ;; endogenous C-RAF:B-RAF heterodimers
-(defun divide-and-recombine-ns-pattern-with-colon (pattern words edges
-                                                   colon-positions hyphen-positions 
-                                                   pos-before pos-after)
+(defun divide-and-recombine-ns-pattern-with-colon (pattern pos-before pos-after)
   "Called from ns-pattern-dispatch when there are both colons and hyphens
    in the pattern"
-  (declare (ignore hyphen-positions colon-positions))
-  ;;(push-debug `(,hyphen-positions ,colon-positions ,pos-before ,pos-after ,words ,pattern))
-
   (let ((treetops (treetops-between pos-before pos-after)))
     (cond
      ((= (length treetops) 3)
@@ -173,7 +148,7 @@
       ;; side of the colon
       (make-word-colon-word-structure (first treetops) (third treetops)))
      (*work-on-ns-patterns*
-      (push-debug `(,treetops ,pattern ,edges))
+      (push-debug `(,treetops ,pattern))
       (break "colon+hyphen stub: have to construct one of the constituents"))
      (t ;; bail
-      (reify-ns-name-and-make-edge words pos-before pos-after)))))
+      (reify-ns-name-and-make-edge pos-before pos-after)))))

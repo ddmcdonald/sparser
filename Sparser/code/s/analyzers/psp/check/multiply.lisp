@@ -365,7 +365,7 @@
     (cat-name (cfr-form rule))))
 
 ;; speedup pointed out by SBCL profiling
-(defparameter *cat-names* (make-hash-table :size 1000))
+(defparameter *cat-names* (make-hash-table :size 5000))
 
 (defun cat-name (cat)
   (declare (optimize (speed 3)(safety 0)))

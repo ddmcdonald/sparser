@@ -683,9 +683,9 @@
                     (value-of 'prep (edge-referent (car e)))
                     (value-of 'pobj (edge-referent (car e)))
                     (actual-characters-of-word (pos-edge-starts-at (second e))
-                                               (pos-edge-ends-at (second e)) nil)
+                                               (pos-edge-ends-at (second e)))
                     (actual-characters-of-word (pos-edge-starts-at (car e))
-                                               (pos-edge-ends-at (car e)) nil)))))
+                                               (pos-edge-ends-at (car e)))))))
       (setq *missing-subcats*
             (nconc pp-pairs *missing-subcats*)))))
 
@@ -1150,11 +1150,11 @@
                       (when *left-edge-into-reference*
                         (actual-characters-of-word
                          (pos-edge-starts-at *left-edge-into-reference*)
-                         (pos-edge-ends-at *left-edge-into-reference*) nil))
+                         (pos-edge-ends-at *left-edge-into-reference*)))
                       (when *right-edge-into-reference*
                         (actual-characters-of-word
                          (pos-edge-starts-at *right-edge-into-reference*)
-                         (pos-edge-ends-at *right-edge-into-reference*) nil))))
+                         (pos-edge-ends-at *right-edge-into-reference*)))))
                  *tight-subcats*
                  :test #'equal)))))
     

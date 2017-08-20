@@ -808,6 +808,56 @@ sentences.
 ;; were to want to more of these it would be worth abstracting
 ;; the control structure.
 
+(defun start-of-ns-region (pos &optional sent-end-pos &aux tt next-pos)
+  "Returns the pos just before a pos with without pos-preceding-whitespace"
+  (declare (special pos tt next-pos))
+  (loop
+    (multiple-value-setq (tt next-pos)
+      (next-treetop/rightward pos))
+    (cond ((eq next-pos sent-end-pos)
+           (return nil))
+          ((or (pos-preceding-whitespace next-pos)
+               (word-never-in-ns-sequence
+                (or (left-treetop-at/only-edges next-pos)
+                    (pos-terminal
+                     (chart-position-before next-pos)))))
+           (setq pos next-pos))
+          (t (return pos)))))
+
+(defun end-of-ns-region (pos &optional sent-end-pos &aux tt next-pos)
+  ;; Called from collect-no-space-segment-into-word starting from
+  ;; the very beginning of the sequence (initial-position). That means
+  ;; that the very next position after that is marked to say there
+  ;; is no space between it and the word that starts this ns-region.
+  ;; After that we could reach a terminating criteron.
+  #| TAKE THESE INTOP ACCOUNT
+  (when (pos-preceding-whitespace next-pos)
+  (tr :ns-return-because-whitespace next-pos)
+  (return))
+  (when (first-word-is-bracket-punct word)
+  (tr :ns-return-because-bracket-punct word)
+  (return))
+  (when (word-never-in-ns-sequence word)
+  (tr :ns-return-word-never-in-ns-seq word)
+  (return))
+  (when (and (punctuation? word)
+  (punctuation-terminates-no-space-sequence word next-pos))
+  (unless (memq word *terminal-ns-punct-encountered*)
+              ;; We looked ahead, so reflect that in the stopping position ;
+  (setq next-pos (chart-position-after next-pos)))
+  (tr :ns-return-punch-terminates-seq word next-pos)
+  (return)))
+|#
+  (loop
+    (multiple-value-setq (tt next-pos)
+      (next-treetop/rightward pos))
+    (if (or (eq next-pos sent-end-pos)
+            (pos-preceding-whitespace next-pos)
+            (word-never-in-ns-sequence (pos-terminal next-pos)))        
+        (return next-pos)
+        (setq pos next-pos))))
+
+
 (defun sweep-for-no-space-patterns (sentence)
   "If there is no-space between two successive words in the
    chart (no-space-before-word?) then call check-for-pattern
@@ -816,57 +866,30 @@ sentences.
   (declare (special *sentence-terminating-punctuation*
                     *trace-sweep*))
   (tr :sweep-for-no-space-patterns)
-  (let ((position-before (starts-at-pos sentence))
-        (end-pos (ends-at-pos sentence))
-        treetop  position-after  multiple?  )
+  (let ((pos (starts-at-pos sentence))
+        (sent-end-pos (ends-at-pos sentence))
+        ns-end-pos)
     (loop
-      (multiple-value-setq (treetop position-after multiple?)
-        (next-treetop/rightward position-before))
-      (when multiple?
-        (setq treetop (elt (ev-edge-vector treetop)
-                           (1- (ev-number-of-edges treetop)))))
-      (when *trace-sweep*
-        (format t "~&[pattern sweep] p~a ~a p~a~%"
-                (pos-token-index position-before)
-                treetop
-                (pos-token-index position-after)))
-       
-      (when (and (word-p treetop)
-                 (memq treetop *sentence-terminating-punctuation*))
-        (tr :terminated-sweep-at position-after)
-        (return))
-      (when (eq position-after end-pos)
-        (tr :terminated-sweep-at position-after)
-        (return))
-      (unless (pos-assessed? position-after)
-        ;; catches bugs in the termination conditions
-        (error "Pattern sweep walked beyond the bounds of the sentence"))
+          while (and pos
+                     (setq pos (start-of-ns-region pos sent-end-pos)))
+          do
+            (setq ns-end-pos (end-of-ns-region pos sent-end-pos))
+            (when *trace-sweep*
+              (format t "~&[pattern sweep] p~a ~a p~a~%"
+                      (pos-token-index pos)
+                      (pos-terminal pos)
+                      (pos-token-index ns-end-pos)))
+            (setq ns-end-pos (collect-no-space-segment-into-word pos ns-end-pos))
+            (if (eq ns-end-pos sent-end-pos)
+                (setq pos nil)
+                (setq pos ns-end-pos)))
 
-      (when (no-space-before-word? position-after)
-        (tr :no-specific-pattern-trying-uniform position-before)
-        (let ((where-uniform-ns-ended
-               (do-no-space-collection 
-                   treetop position-before position-after)))
-          (if where-uniform-ns-ended
-            (then
-              (tr :successful-uniform-ns-reached where-uniform-ns-ended)
-              (setq position-after where-uniform-ns-ended)
-              (when (eq position-after end-pos)
-                ;; check here, since the next pass can take
-                ;; us past the end
-                (return)))
-            (else
-              (tr :uniform-ns-pattern-failed)))))
-
-       (deal-with-unhandled-unknown-words-at position-before)
-
-       ;; The pattern could have taken us just past the period
-       (when (position-precedes end-pos position-after)
-         (return))
-       (setq position-before position-after))
-
-    (clear-unhandled-unknown-words)))
-
+    (tr :terminated-sweep-at ns-end-pos)
+    (loop for pos in (copy-list *positions-with-unhandled-unknown-words*)
+            do
+            (deal-with-unhandled-unknown-words-at pos))
+    (clear-unhandled-unknown-words)
+    ))
 
 
 ;;--- subroutines
@@ -893,7 +916,8 @@ sentences.
 
 ;; (trace-network-flow)
 
-(defun do-no-space-collection (tt position-before position-after)
+#+ignore
+(defun do-no-space-collection (position-before position-after)
   "Used by sweep-for-no-space-patterns to hide details. Caller
    determined that there is no whitespace between the word at 
    the position-after and the previous word."
@@ -901,10 +925,6 @@ sentences.
         pos-reached )
     (unless (or (word-is-bracket-punct word-at-pos-before)
                 (word-never-in-ns-sequence word-at-pos-before))
-      (unless tt
-        (push-debug `(,position-before ,position-after))
-        (error "Why doesn't tt have a value?"))
-
       (let ((end-pos (typecase tt
                        (edge (pos-edge-ends-at tt))
                        (word (chart-position-after position-before))

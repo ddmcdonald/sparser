@@ -159,8 +159,8 @@
 ;;; precursors to other routines
 ;;;------------------------------
 
-(defun make-protein-pair/convert-bio-entity (start-pos end-pos
-                                             edges words which-one)
+(defun make-protein-pair/convert-bio-entity (start-pos end-pos which-one
+                                             &aux (edges (treetops-between start-pos end-pos)))
   ;; Called from one-hyphen-ns-patterns 
   ;; /// compare to operation in multi-colon-ns-patterns 
   ;;  which shares a lot  
@@ -168,20 +168,7 @@
                             (:right (third edges))
                             (:left (first edges)))))
     (convert-bio-entity-to-protein edge-to-convert) ;; converts the edge
-    (make-protein-pair (first edges) (third edges) words start-pos end-pos)))
+    (make-protein-pair (first edges) (third edges) start-pos end-pos)))
     
 
-#+ignore ;; this version makes a collection rather than
-   ;; a pair -- will be useful elsewhere for parts. 
-(defun make-protein-pair/setup (edges start-pos end-pos)
-  (let* ((proteins (list (edge-referent (first edges))
-                         (edge-referent (third edges))))
-         (i (find-or-make-individual 'collection
-                                     :type category::protein
-                                     :items proteins))
-         (edge (make-ns-edge
-                start-pos end-pos category::protein
-                :referent i :rule 'make-protein-pair/convert-bio-entity
-                :constituents edges)))
-    edge))
 

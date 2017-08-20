@@ -138,8 +138,7 @@
       edge)))
 
 
-(defun make-ns-pair (category-name left-edge right-edge
-                     words pos-before pos-after)
+(defun make-ns-pair (category-name left-edge right-edge pos-before pos-after)
   "Instantiate a particular kind os no-space-pair according
    to the indicated category. Make the edge, using the left-edge 
    as the source of the labels."
@@ -160,8 +159,8 @@
       (error "A word leaked through to make-ns-pair"))
 
     (let ((i (find-or-make-individual 'no-space-pair
-                           :left left-ref
-                           :right right-ref)))
+                                      :left left-ref
+                                      :right right-ref)))
       (setf (indiv-type i)
             ;; Subcat checks are on the referent, so we make
             ;; sure that it has the expected type
@@ -172,40 +171,32 @@
                    :referent i
                    :rule 'make-ns-pair
                    :constituents `(,left-edge ,right-edge)
-                   :words words)))
+                   :words (effective-words-given-edges pos-before pos-after))))
         ;; trace
         edge))))
 
 
-(defun make-protein-pair (left-edge right-edge words
-                          pos-before pos-after)
+(defun make-protein-pair (left-edge right-edge pos-before pos-after)
   ;; called from resolve-hyphen-between-two-terms
-  (make-hyphenated-pair 'protein left-edge right-edge
-                        words pos-before pos-after))
+  (make-hyphenated-pair 'protein left-edge right-edge pos-before pos-after))
 
-(defun make-bio-pair (left-edge right-edge words
-                      pos-before pos-after)
+(defun make-bio-pair (left-edge right-edge pos-before pos-after)
   ;; called from resolve-hyphen-between-two-terms
-  (make-hyphenated-pair 'bio-pair left-edge right-edge
-                        words pos-before pos-after))
+  (make-hyphenated-pair 'bio-pair left-edge right-edge pos-before pos-after))
 
 ;; RBD-Ras -- second is a protein, nothing interesting
 ;; known about the first yet.
-(defun make-pair-with-protein (left-edge right-edge words
-                               pos-before pos-after)
-  (make-hyphenated-pair 'paired-protein left-edge right-edge
-                        words pos-before pos-after))
+(defun make-pair-with-protein (left-edge right-edge pos-before pos-after)
+  (make-hyphenated-pair 'paired-protein left-edge right-edge pos-before pos-after))
 
 
-(defun make-hyphenated-pair (cat-name left-edge right-edge
-                             words pos-before pos-after)
+(defun make-hyphenated-pair (cat-name left-edge right-edge pos-before pos-after)
   "Instantiate one of the pair categories, according to the category
    that's specified which becomes the label on the edge."
   (declare (special category::protein))
-  (let ((label (cond
-                ((eq cat-name 'paired-protein)
-                 category::protein)
-                (t (category-named cat-name :break-if-none))))
+  (let ((label (if (eq cat-name 'paired-protein)
+                   category::protein
+                   (category-named cat-name :break-if-none)))
         (pair-category
          (case cat-name 
            (protein 'protein-pair)
@@ -227,12 +218,12 @@
                   :rule 'make-hyphenated-pair
                   :referent i
                   :constituents `(,left-edge ,right-edge)
-                  :words words)))
+                  :words (effective-words-given-edges pos-before pos-after))))
       (tr :made-hyphenated-pair pair-category edge)
       edge)))
 
 
-(defun make-hyphenated-number (left-edge right-edge words)
+(defun make-hyphenated-number (left-edge right-edge)
   "What this does needs to correspond to what digit-FSA does in 
    the same situation."
   (declare (special category::hyphenated-number category::number))
@@ -248,7 +239,7 @@
                 :form category::number
                 :referent i
                 :constituents `(,left-edge ,right-edge)
-                :words words)))
+                :words `(,left-edge ,right-edge))))
       edge))
 
       
@@ -281,32 +272,34 @@
 ;;; stranded hyphens
 ;;;------------------
 
-(defun resolve-trailing-stranded-hyphen (pattern edges words start-pos end-pos)
+(defun resolve-trailing-stranded-hyphen (pattern start-pos end-pos)
   ;; called from one-hyphen-ns-patterns for (:lower :hyphen),
   ;; e.g. "mono-"
   (declare (special *salient-hyphenated-literals*))
-  (let ((word (car words)))
+  (let* ((words (effective-words-given-edges start-pos end-pos))
+         (word (car words)))
     (tr :resolve-hyphen-trailing word)
     (cond
      ((memq word *salient-hyphenated-literals*)
-      (compose-salient-hyphenated-literals pattern words start-pos end-pos))
+      (compose-salient-hyphenated-literals pattern start-pos end-pos))
      (t   ;; "p53- independent manner" (even though it's a typo)
       ;; Same as in initial hyphens We cover the edge
-      (let* ((edge-to-elevate (first edges))
-             (new-edge (make-edge-over-long-span
-                        start-pos end-pos
-                        (edge-category edge-to-elevate)
-                        :rule 'resolve-trailing-stranded-hyphen
-                        :form (edge-form edge-to-elevate)
-                        :referent (maybe-make-individual
-                                   (edge-referent edge-to-elevate))
-                        :constituents edges)))
+      (let* ((edge-to-elevate (first (treetops-between start-pos end-pos)))
+             (new-edge(when (edge-p edge-to-elevate)
+                        (make-edge-over-long-span
+                         start-pos end-pos
+                         (edge-category edge-to-elevate)
+                         :rule 'resolve-trailing-stranded-hyphen
+                         :form (edge-form edge-to-elevate)
+                         :referent (maybe-make-individual
+                                    (edge-referent edge-to-elevate))
+                         :constituents (treetops-between start-pos end-pos)))))
         (tr :no-space-made-edge new-edge)
         new-edge)))))
 
 ;; e.g. "-tagged" in
 ;; "green fluorescent protein (GFP)-tagged ERK1" (ERK #4)
-(defun resolve-initial-stranded-hyphen  (pattern edges start-pos end-pos)
+(defun resolve-initial-stranded-hyphen  (pattern start-pos end-pos)
   "It connects to something on its left. At the level of no-space
    handling we're not in a posiion to know what that is.
    /// Instead we should note that we have one of these and where
@@ -314,7 +307,8 @@
    Right now just do the first step and swallow the hyphen
    in the manner of a daughter rule."
   (declare (special category::verb+ed category::adjective))
-  (let* ((edge-to-elevate (second edges))
+  (let* ((edges (treetops-between start-pos end-pos))
+         (edge-to-elevate (second edges))
          (form (and (edge-p edge-to-elevate)
                     ;; preventing error in "CXCL3 silencing inhibited tumor growth in the CD133 + population, although there was no significant difference in the tumor mass between CD133 + -shCXCL3 and CD133 - cells groups (), suggesting that CXCL3 promoted CD133 + HCC CSC maintenance in vivo"
                     (edge-form edge-to-elevate))))
@@ -378,8 +372,8 @@ for each case and define a k-method to make sense of it all.
   (some #'(lambda (word) (memq word *salient-hyphenated-literals*))
         words))
 
-(defun compose-salient-hyphenated-literals (pattern words
-                                            pos-before pos-after)
+(defun compose-salient-hyphenated-literals (pattern pos-before pos-after
+                                            &aux (words (effective-words-given-edges pos-before pos-after)))
   ;; Called from resolve-hyphen-between-two-words and from
   ;; one-hyphen-ns-patterns when the label prefix sees the literal
   (tr :salient-hyphenated-literal)
@@ -387,7 +381,7 @@ for each case and define a k-method to make sense of it all.
     (when *work-on-ns-patterns*
       (push-debug `(,words ,pattern ,pos-before ,pos-after))
       (break "new case: ~a words" (length words)))
-    (reify-ns-name-and-make-edge words pos-before pos-after)
+    (reify-ns-name-and-make-edge pos-before pos-after)
     (return-from compose-salient-hyphenated-literals t))
 
   (let* ((word1 (car words))
@@ -405,7 +399,7 @@ for each case and define a k-method to make sense of it all.
                        word-rule composite-word pos-before pos-after)))
             edge)
           (else
-            (reify-ns-name-and-make-edge words pos-before pos-after)))))
+            (reify-ns-name-and-make-edge pos-before pos-after)))))
 
      ((when (or (prog1 (memq word1 *salient-hyphenated-literals*)
                   (setq left t))
@@ -423,7 +417,7 @@ for each case and define a k-method to make sense of it all.
               (push-debug `(,words ,pos-after ,pos-before ,pattern))
               (error "Neither of these words is spanned by an edge. ~
                       No way to proceeded."))
-            (reify-ns-name-and-make-edge words pos-before pos-after))
+            (reify-ns-name-and-make-edge pos-before pos-after))
           
           ;; Should add the literal as a modifier or some such in 
           ;; syntax function that will call-compose such as
@@ -549,8 +543,9 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
   :instantiates :self
   :index (:permanent :key items))
 
-(defun package-slashed-sequence (edges words start-pos end-pos)
-  (push-debug `(,edges ,words ,start-pos ,end-pos))
+(defun package-slashed-sequence (start-pos end-pos
+                                 &aux (edges (treetops-between start-pos end-pos)))
+  (push-debug `(,edges ,start-pos ,end-pos))
   (let* ((elements (loop for edge in edges
                      collect (maybe-make-individual (edge-referent edge))))
          (i (find-or-make-individual 'slashed-sequence :items elements))
@@ -588,35 +583,30 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
           (part-two))
   :index (:sequential-keys part-one part-two))
 
-(defun reify-two-part-label (words edges start-pos end-pos which-is-first)
+(defun reify-two-part-label (start-pos end-pos which-is-first)
   "Called from resolve-ns-pattern. Both words are one character long.
    The digit may be first or it may be the letter. In the digit case
    we use its individual in the object. Single lower-case letters don't
    have categories, so we just use the word. In this case there won't
    be an edge over the word."
-  (declare (ignore edges which-is-first))
+  (declare (ignore which-is-first))
   ;; which-is-first is either :digit-first or :cap-first
 
-  (let ((i (find-or-make-individual 'two-part-label
-             :part-one (first words)
-             :part-two (second words))))
+  (let* ((words (effective-words-given-edges start-pos end-pos))
+         (i (find-or-make-individual 'two-part-label
+                                     :part-one (first words)
+                                     :part-two (second words))))
     (tr :making-two-part-label start-pos end-pos)
     (let ((edge (make-ns-edge
                  start-pos end-pos category::two-part-label
                  :rule 'reify-two-part-label
                  :form category::common-noun
-                 :referent i
-                 ;;:constituents edges
-                 )))
-        edge)))
+                 :referent i)))
+      edge)))
 
 
-(defun resolve-protein-prefix (prefix-edge protein-edge words start-pos end-pos)
-  (declare (special prefix protein words start-pos end-pos category::protein))
-  #+ignore
-  (format t "~%resolve-protein-prefix gets prefix ~s on ~s~%"
-          (head-string prefix-edge)
-          (head-string protein-edge))
+(defun resolve-protein-prefix (prefix-edge protein-edge start-pos end-pos)
+  (declare (special prefix protein start-pos end-pos category::protein))
   (if (or (null (head-string prefix-edge))
           (null (head-string protein-edge)))
       nil ;;(lsp-break "null string"))

@@ -72,80 +72,38 @@
 ;; (trace-scan-patterns)  for large scale
 
 (defparameter *in-collect-no-space-segment-into-word* nil)
-(defun collect-no-space-segment-into-word (position-after)
+(defun collect-no-space-segment-into-word (start-pos end-pos)
   "As called from do-no-space-collection At this point all of the
    words in the sentence have been spanned with unary edges, and there
    are multi-word edges over polywords or created by an FSA (e.g. numbers).
    This 'position-after' is the position that has no-space recorded
    on it, indicating that it and the previous word (or multi-word edge)
    are not separated."
-  (declare (special position-after))
-  (let* ((*in-collect-no-space-segment-into-word* t) ;; used to block one anaphora, when numbers appear in an NS pattern
-         (leftmost-edge (left-treetop-at/only-edges position-after))
-         ;; There's always an edge. The question is how long it is.
-         (long-edge (when leftmost-edge
-                      (unless (one-word-long? leftmost-edge)
-                        leftmost-edge))))
+  (declare (special start-pos end-pos))
+  (let* ((*in-collect-no-space-segment-into-word* t)) ;; used to block one anaphora, when numbers appear in an NS pattern)
     (declare (special *in-collect-no-space-segment-into-word* leftmost-edge long-edge))
         
-    (let ((start-pos (if leftmost-edge
-                       (pos-edge-starts-at leftmost-edge)
-                       (chart-position-before position-after))))
-      (declare (special start-pos))
-      (tr :no-space-sequence-started-at start-pos)
-      (when long-edge
-        (tr :no-space-initial-long-edge long-edge))
+    (tr :no-space-sequence-started-at start-pos)
       
-      ;; Redundant for the modern caller, but relevant for earlier ones
-      (when (or (word-is-bracket-punct (pos-terminal position-after))
-                (word-never-in-ns-sequence (pos-terminal position-after)))
-        (return-from collect-no-space-segment-into-word nil))
+    ;; Redundant for the modern caller, but relevant for earlier ones
+    #+ignore
+    (when (or (word-is-bracket-punct (pos-terminal end-pos))
+              (word-never-in-ns-sequence (pos-terminal end-pos)))
+      (return-from collect-no-space-segment-into-word nil))
       
-      (multiple-value-bind (end-pos hyphen-positions slash-positions
-                            colon-positions other-punct edges)
-                           (sweep-to-end-of-ns-regions start-pos long-edge)
-        (declare (special edges end-pos))
-        ;; Sweep from the very beginning just to be sure we catch any
-        ;; marked punctuation there.
-       ; (lsp-break "collect-ns post edges bind")
-        (when (ns-apostrophe-check position-after edges)
-          (tr :returning-because-its-a-conjunction)
-          (try-all-contiguous-edge-combinations start-pos end-pos) ;; see note with fn
-          (return-from collect-no-space-segment-into-word nil))
 
-        ;; If the sweep encountered any more edges we have to fold 
-        ;; them in or else we'll get the wrong pattern
-        (setq edges (sort-out-edges-in-ns-region edges long-edge))
-        (when (and edges (is-phosphorylated-protein? edges))
-          (return-from collect-no-space-segment-into-word
-            (span-phosphorylated-protein edges)))
+      ;; If the sweep encountered any more edges we have to fold 
+      ;; them in or else we'll get the wrong pattern
+      (when (is-phosphorylated-protein? start-pos end-pos)
+        (return-from collect-no-space-segment-into-word
+          (span-phosphorylated-protein start-pos end-pos)))
+        
+      (tr :looking-at-ns-segment start-pos end-pos)
 
-        
-        
-        ;;(push-debug `(,start-pos ,end-pos))
-        ;; on this sentence: (p "Pre-clinical studies have demonstrated that 
-        ;;   B-RAFV600E mutation predicts a dependency on the mitogen activated 
-        ;;   protein kinase (MAPK) signaling cascade in melanoma 
-        ;;   [1–5] —an observation that has been validated by the success of 
-        ;;   RAF and MEK inhibitors in clinical trials 6–8.")
-        ;; and perhaps others, the sweep to the end routine returns a string
-        ;; as the value of end-pos, e.g. "6-8. "
-        ;; Rather than figure it out just now (12/18/14) I'm just dropping it
-        ;; on the floor.
-        (when (stringp end-pos) ;; may be bad display in backtrace
-          (tr :bailing-from-ns/end-pos-is-the-string end-pos)
-          (return-from collect-no-space-segment-into-word nil))
-        (when (stringp start-pos) ;; This one is weirder
-          (tr :bailing-from-ns/start-pos-is-the-string start-pos)
-          (return-from collect-no-space-segment-into-word nil))
-        (unless (position-precedes start-pos end-pos) ;; bug may actually be this
-          (tr :bailing-from-ns/end-pos-less-than-start-pos start-pos end-pos)
-          (return-from collect-no-space-segment-into-word nil))
-        
-        (tr :looking-at-ns-segment start-pos end-pos)
-
-        (multiple-value-bind (layout edge)
-                             (parse-between-nospace-scan-boundaries start-pos end-pos)          
+      (multiple-value-bind (layout edge)
+          (parse-between-nospace-scan-boundaries start-pos end-pos)
+        (multiple-value-bind (ns-pattern)
+            (sweep-ns-region start-pos end-pos)
           (tr :ns-segment-layout layout)
           ;;(lsp-break "layout = ~a edge = ~a" layout edge)
           (cond
@@ -154,62 +112,49 @@
              (tr :ns-spanned-by-edge edge)
              (revise-form-of-nospace-edge-if-necessary edge :find-it)
              #+ignore(when *collect-ns-examples*
-               (update-ns-examples start-pos))
+                       (update-ns-examples start-pos))
              (when *collect-ns-examples* 
-               (save-ns-example start-pos end-pos edges)))
-           (t
-            ;; This may be overkill, especially for punctuation,
-            ;; but it may also be more informative
-            (setq edges (treetops-between start-pos end-pos))
-            ;;(break "input edges = ~a" edges)
-
-            ;; TO-DO -- review this code -- issues occurred when there
-            ;; are multiple edges at the end of the pattern
-            ;; (ambiguity) and only one of the edges satisfies a
-            ;; pattern this is not done cleanly, and needs some
-            ;; pair-programming
-            (when *collect-ns-examples* 
-              (save-ns-example start-pos end-pos edges))
-            (catch :punt-on-nospace-without-resolution
-              (let* ((end-edge (car (last edges)))
-                     (end-cat (when (and (edge-p end-edge)
-                                         (category-p (edge-category end-edge)))
-                                (cat-symbol (edge-category end-edge)))))
-                (or
-                 (when (punctuation-final-in-ns-span? end-pos)
-                   ;; n.b. only fires on colons
-                   (setq end-pos (chart-position-before end-pos))
-                   (ns-pattern-dispatch start-pos end-pos edges
-                                        hyphen-positions slash-positions
-                                        colon-positions other-punct
-                                        :final-colon))
-                 (when (memq (cat-name end-cat) '(protein protein-family
-                                                  small-molecule ion nucleotide))
-                   (ns-protein-pattern-resolve  start-pos end-pos edges
-                                                hyphen-positions slash-positions
-                                                colon-positions other-punct))
-                 (when (eq end-cat 'category::amino-acid)
-                   (ns-amino-pattern-resolve  start-pos end-pos edges
-                                              hyphen-positions slash-positions
-                                              colon-positions other-punct))
-                 (ns-pattern-dispatch start-pos end-pos edges
-                                      hyphen-positions slash-positions
-                                      colon-positions other-punct)))))))
+               (save-ns-example start-pos end-pos)))
+            (t
+             ;; TO-DO -- review this code -- issues occurred when there
+             ;; are multiple edges at the end of the pattern
+             ;; (ambiguity) and only one of the edges satisfies a
+             ;; pattern this is not done cleanly, and needs some
+             ;; pair-programming
+             (when *collect-ns-examples* 
+               (save-ns-example start-pos end-pos))
+             (catch :punt-on-nospace-without-resolution
+               (let* ((edges (treetops-between start-pos end-pos))
+                      (end-edge (car (last edges)))
+                      (end-cat (when (and (edge-p end-edge)
+                                          (category-p (edge-category end-edge)))
+                                 (cat-symbol (edge-category end-edge)))))
+                 (or
+                  (when (punctuation-final-in-ns-span? end-pos)
+                    ;; n.b. only fires on colons
+                    (setq end-pos (chart-position-before end-pos))
+                    (ns-pattern-dispatch ns-pattern start-pos end-pos :final-colon))
+                  (when (memq (car (last ns-pattern))
+                              '(:protein :protein-family
+                                :small-molecule :ion :nucleotide))
+                    (ns-protein-pattern-resolve  ns-pattern start-pos end-pos))
+                  (when (eq end-cat 'category::amino-acid)
+                    (ns-amino-pattern-resolve  ns-pattern start-pos end-pos))
+                  (ns-pattern-dispatch ns-pattern start-pos end-pos)))))))
             
         (when *collect-ns-examples*
           (update-ns-examples start-pos))
         
-        end-pos))))
+        end-pos)))
 
-(defun is-phosphorylated-protein? (edges)
-  (let* ((start (edge-starting-position (car edges)))
-         (end (edge-ending-position (car (last edges))))
-         (sur-str  (string-trim " " (extract-characters-between-positions start end)))
+(defun is-phosphorylated-protein? (start end)
+  (let* ((sur-str  (string-trim " " (extract-characters-between-positions start end)))
          (pro-string? (cond ((eq #\p (aref  sur-str 0))
                              (subseq sur-str
                                      (if (eq 0 (search "p-" sur-str)) 2 1)))
                             ((and (eq #\P (aref  sur-str 0))
-                                  (eq #\- (aref  sur-str 1)))
+                                  (and (> (length sur-str) 1)
+                                       (eq #\- (aref  sur-str 1))))
                              (subseq sur-str 2))))
          (pro-word? (when pro-string? (resolve pro-string?)))
          (pro-cfr? (when pro-word? (find-single-unary-cfr pro-word?)))
@@ -219,9 +164,9 @@
     ;;(lsp-break "is-pro")
     (when pro? (values pro? start end pro-cfr? sur-str))))
 
-(defun span-phosphorylated-protein (edges)
+(defun span-phosphorylated-protein (start end)
   (multiple-value-bind (protein start end cfr sur-string)
-      (is-phosphorylated-protein? edges)
+      (is-phosphorylated-protein? start end)
     (make-edge-over-long-span
      start
      end
@@ -237,18 +182,13 @@
 ;;; Dispatch
 ;;;----------
 
-(defun ns-pattern-dispatch (start-pos end-pos unsorted-edges
-                            hyphen-positions slash-positions
-                            colon-positions other-punct
-                            &optional final-colon?)
+(defun ns-pattern-dispatch (ns-pattern start-pos end-pos  &optional final-colon?)
   ;; Subroutine of collect-no-space-segment-into-word that does the
   ;; dispatch. Every path is expected to form an edge over the
   ;; span one way or another.
-  (let* ((edges (remove-non-edges unsorted-edges))
-         (pattern (characterize-words-in-region start-pos end-pos edges))
-         (words (if edges
-                  (effective-words-given-edges unsorted-edges start-pos end-pos)
-                  (words-between start-pos end-pos))))
+  (let* ((edges (treetops-between start-pos end-pos))
+         (pattern ns-pattern)
+         (words (effective-words-given-edges start-pos end-pos)))
     
     (when final-colon?
       ;; If the span to the left of the colon is a single word then
@@ -259,79 +199,80 @@
         (tr :single-word-followed-by-colon (car words))
         (return-from ns-pattern-dispatch t)))
     
+    #+ignore
     (when edges
       (tr :ns-pattern-includes-edges edges)
       (setq pattern (convert-mixed-pattern-edges-to-labels pattern)))
     
     (tr :segment-ns-pattern pattern)
 
-    (unless hyphen-positions
-      (when (memq :hyphen pattern)
-        ;; Final hyphen isn't being recorded by the scan.
-        ;; "p53- independent" in ASPP2 #65
-        (setq hyphen-positions (list (chart-position-before end-pos)))))
-
     (cond 
-     ((eq :double-quote (car pattern))
-      (tr :ns-scare-quote)
-      (scare-quote-specialist start-pos ;; leading-quote-pos
-                              words start-pos end-pos))
+      ((eq :double-quote (car pattern))
+       (tr :ns-scare-quote)
+       (scare-quote-specialist start-pos ;; leading-quote-pos
+                               end-pos))
 
-     ((and slash-positions
-           hyphen-positions)
-      (tr :ns-slash-hyphen-combination)
-      (divide-and-recombine-ns-pattern-with-slash 
-       pattern words edges slash-positions hyphen-positions start-pos end-pos))
+      ((and (member :forward-slash pattern)
+            (member :hyphen  pattern))
+       (tr :ns-slash-hyphen-combination)
+       (divide-and-recombine-ns-pattern-with-slash pattern start-pos end-pos))
 
-     (other-punct
-      ;; this probably has to be spread over the other cases
-      ;; in some sort of combination, but this is a start
-      (tr :ns-other-punct other-punct)
-      (resolve-other-punctuation-pattern
-       pattern words edges other-punct start-pos end-pos))
+      ((member :forward-slash pattern)
+       (tr :ns-looking-at-slash-patterns)
+       (when (eq (car pattern) :forward-slash)
+         (setq start-pos
+               (if (top-edge-at/ending start-pos) 
+                   (edge-starting-position (top-edge-at/ending start-pos))
+                   (chart-position-before start-pos)))
+         (setq pattern (sweep-ns-region start-pos end-pos)))
+       (or (resolve-slash-pattern pattern start-pos end-pos)
+           (reify-ns-name-and-make-edge start-pos end-pos)))
 
-     (slash-positions
-      (tr :ns-looking-at-slash-patterns)
-      (or (resolve-slash-pattern 
-           pattern words edges slash-positions hyphen-positions start-pos end-pos)
-          (reify-ns-name-and-make-edge words start-pos end-pos)))
+      ((and (member :hyphen pattern)
+            (member :colon pattern))
+       (tr :ns-hyphen-and-colon-patterns)
+       (divide-and-recombine-ns-pattern-with-colon pattern start-pos end-pos))
 
-     ((and hyphen-positions
-           colon-positions)
-      (tr :ns-hyphen-and-colon-patterns)
-      (divide-and-recombine-ns-pattern-with-colon
-       pattern words edges colon-positions hyphen-positions start-pos end-pos))
-
-     (colon-positions
-      (tr :ns-looking-at-colon-patterns)
-      (or (resolve-colon-pattern pattern words edges colon-positions start-pos end-pos)
-          (reify-ns-name-and-make-edge words start-pos end-pos)))
+      ((member :colon pattern)
+       (tr :ns-looking-at-colon-patterns)
+       (or (resolve-colon-pattern pattern start-pos end-pos)
+           (reify-ns-name-and-make-edge start-pos end-pos)))
      
-     (hyphen-positions
-      (tr :ns-looking-at-hyphen-patterns)
-      (or (resolve-hyphen-pattern 
-           pattern words edges hyphen-positions start-pos end-pos)
-          (reify-ns-name-and-make-edge words start-pos end-pos)))
+      ((member :hyphen pattern)
+       (tr :ns-looking-at-hyphen-patterns)
+       (or (resolve-hyphen-pattern pattern start-pos end-pos)
+           (reify-ns-name-and-make-edge start-pos end-pos)))
+      ((find-if #'(lambda(x)(other-punct? x)) pattern)
+       ;; this probably has to be spread over the other cases
+       ;; in some sort of combination, but this is a start
+       ;;(tr :ns-other-punct other-punct)
+       (resolve-other-punctuation-pattern pattern start-pos end-pos))
+      (t 
+       (tr :ns-taking-default)
+       (or (resolve-ns-pattern pattern start-pos end-pos)
+           (reify-ns-name-and-make-edge start-pos end-pos))))))
 
-     (t 
-      (tr :ns-taking-default)
-      (or (resolve-ns-pattern pattern words edges start-pos end-pos)
-          (reify-ns-name-and-make-edge words start-pos end-pos))))))
+(defparameter *other-punct* nil)
 
+(defun other-punct? (x)
+    (pushnew x *other-punct*)
+    nil)
 
-(defun ns-apostrophe-check (pos-after edges)
+(defun ns-apostrophe-check (pos-after  start-pos end-pos)
   "Is the terminal on the position an apostrophe and did an FSA already
    handle it and the word following it to make a one of the known
    apostrophe-x edges?"
   (declare (special *categories-based-on-apostrophe*))
   (when (eq (pos-terminal pos-after)
             (punctuation-named #\'))
-    (when (null (cdr edges))
-      (let* ((edge (car edges))
-             ;; (car edges) is null in "We used 2' deoxythymidines..."
-             (label (and (edge-p edge)(edge-category edge))))
-        (and (category-p label)
-             (memq label *categories-based-on-apostrophe*))))))
+    
+    (let ((edges (treetops-between start-pos end-pos)))
+      (when (null (cdr edges))
+        (let* ((edge (car edges))
+               ;; (car edges) is null in "We used 2' deoxythymidines..."
+               (label (and (edge-p edge)(edge-category edge))))
+          (and (category-p label)
+               (memq label *categories-based-on-apostrophe*)))))))
 
 
 
@@ -339,7 +280,7 @@
 ;;; Default -- basic definition plus polyword
 ;;;-------------------------------------------
 
-(defun reify-ns-name-and-make-edge (words pos-before next-position)
+(defun reify-ns-name-and-make-edge (pos-before next-position)
   ;; We make an instance of a spelled name with the words as its sequence.
   ;; We make a rule that treats the pnames of the words as a polyword,
   ;; and we make a category for that rule with that same spelling,
@@ -364,9 +305,8 @@
 
          (multiple-value-bind (category rule referent)
              (if *big-mechanism*
-                 (reify-ns-name-as-bio-entity 
-                  words pos-before next-position)
-                 (reify-spelled-name words))
+                 (reify-ns-name-as-bio-entity pos-before next-position)
+                 (reify-spelled-name (treetops-between pos-before next-position)))
            (tr :reified-ns-name referent pos-before next-position)
            (let ((edge
                   (make-edge-over-long-span
@@ -376,7 +316,7 @@
                    :rule rule
                    :form (category-named 'proper-name)
                    :referent referent
-                   :words words)))
+                   :words (effective-words-given-edges pos-before next-position))))
              (tr :made-edge edge)
              edge)))))
 
@@ -384,12 +324,12 @@
 (defun collect-bio-entity-strings ()
   (setq *bio-entity-strings* (list "111BOGUSSTRING***")))
 
-(defun reify-ns-name-as-bio-entity (words pos-before pos-after)
+(defun reify-ns-name-as-bio-entity (pos-before pos-after)
   ;; called from reify-ns-name-and-make-edge when *big-mechanism*
   ;; flag is up. Responsible for returning the category to use,
   ;; the rule, and the referent so that the caller can make an edge
   (declare (special category::bio-entity words))
-  (let* ((words-string (actual-characters-of-word pos-before pos-after words))
+  (let* ((words-string (actual-characters-of-word pos-before pos-after))
          (obo (corresponding-obo words-string))
          (uc-word (resolve (string-upcase words-string))))
     (declare (special words-string))
@@ -506,23 +446,23 @@ included, collect ns from n june articles"
 
 (defparameter *ns-sub-patterns* (list nil))
 
-(defun save-ns-example (start-pos end-pos edges)
-  (declare (special edges))
+(defun save-ns-example (start-pos end-pos)
   (let* ((ns-sentence (current-string))
-         (nsitem (actual-characters-of-word start-pos end-pos nil))
-         (real-edges (remove-non-edges edges)) 
-         (ns-edge-pattern (characterize-words-in-region start-pos end-pos real-edges)))
-    (declare (special ns-item ns-edge-pattern real-edges))
+         (nsitem (actual-characters-of-word start-pos end-pos)) 
+         (ns-edge-pattern
+          (list (characterize-words-in-region start-pos end-pos)
+                (swee-ns-region  start-pos end-pos))))
+    (declare (special ns-item ns-edge-pattern))
     ;;(when (or (search "-" nsitem) (search "/" nsitem))
     ;;(lsp-break "collect-no-space-sequence-into-word")
-    (setq ns-edge-pattern 
-          (edge-pattern-to-cats ns-edge-pattern))
+    ;;(setq ns-edge-pattern (edge-pattern-to-cats ns-edge-pattern))
     (push (list 
            ns-edge-pattern 
            nsitem
            ns-sentence)
           *collect-ns-examples*)
-    (let* ((edge-strings (mapcar #'get-string-from-edge-word edges))
+    (let* ((edges (treetops-between start-pos end-pos))
+           (edge-strings (mapcar #'get-string-from-edge-word edges))
            (ns-patt-edges (interleave-edge-pattern edge-strings ns-edge-pattern))
            (ns-split (ns-punct-pattern-split ns-patt-edges))
            (ns-undef-patt (get-undefined-ns-patterns ns-split)))
@@ -533,20 +473,14 @@ included, collect ns from n june articles"
   )
 
 (defun edge-pattern-to-cats (ns-edge-pattern)
-  (convert-mixed-pattern-edges-to-labels ns-edge-pattern)
-  #+ignore(loop for i in ns-edge-pattern
-        collect  
-                  (if (edge-p i)
-                    (list  (simple-label (edge-form i))
-                           (simple-label (edge-category i)))
-                    i)))
+  (convert-mixed-pattern-edges-to-labels ns-edge-pattern))
 
-(defun interleave-edge-pattern (edges pattern)
+(defun interleave-edge-pattern (edge-strings pattern)
   "Given a list of edges and patterns, interleave them with the patterns first"
-  (when (eq (length edges) (length pattern))
+  (when (eq (length edge-strings) (length pattern))
     (loop for p in pattern
-            as n from 0
-            append (list p (nth n edges)) into edge-pats
+            as s in edge-strings
+            append (list p s) into edge-pats
             finally (return edge-pats))))
 
 (defun ns-punct-pattern-split (pattern)

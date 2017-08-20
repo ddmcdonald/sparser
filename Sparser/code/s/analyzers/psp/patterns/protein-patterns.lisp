@@ -7,29 +7,21 @@
 
 (in-package :sparser)
 
-(defun ns-protein-pattern-resolve (start-pos end-pos unsorted-edges
-                                   hyphen-positions slash-positions
-                                   colon-positions other-punct)
+(defun ns-protein-pattern-resolve (pattern start-pos end-pos)
   (or
    (cond
-     (colon-positions (make-bio-complex start-pos end-pos))
-     (slash-positions (make-protein-collection start-pos end-pos))
-     (hyphen-positions ;;(make-bio-complex-with-hyphen start-pos end-pos)
+     ((member :colon pattern) (make-bio-complex start-pos end-pos))
+     ((member :forward-slash pattern) (make-protein-collection start-pos end-pos))
+     ((member :hyphen pattern) ;;(make-bio-complex-with-hyphen start-pos end-pos)
       (make-protein-collection start-pos end-pos)))
-   (ns-pattern-dispatch start-pos end-pos unsorted-edges
-                        hyphen-positions slash-positions
-                        colon-positions other-punct)))
+   (ns-pattern-dispatch pattern start-pos end-pos)))
 
-(defun ns-amino-pattern-resolve (start-pos end-pos unsorted-edges
-                                 hyphen-positions slash-positions
-                                 colon-positions other-punct)
+(defun ns-amino-pattern-resolve (pattern start-pos end-pos)
   (or
    (cond
-     (slash-positions (make-amino-collection start-pos end-pos))
-     (hyphen-positions (make-amino-collection start-pos end-pos)))
-   (ns-pattern-dispatch start-pos end-pos unsorted-edges
-                        hyphen-positions slash-positions
-                        colon-positions other-punct)))
+     ((member :forward-slash pattern) (make-amino-collection start-pos end-pos))
+     ((member :hyphen pattern) (make-amino-collection start-pos end-pos)))
+   (ns-pattern-dispatch pattern start-pos end-pos)))
 
 
 
@@ -40,8 +32,8 @@
                     category::n-bar
                     category::small-molecule
                     category::protein-family))
-  (let* ((ttops (treetops-between start-pos end-pos))
-         (edges (loop for tt in ttops when (edge-p tt) collect tt))
+  (let* ((edges (loop for tt in (treetops-between start-pos end-pos)
+                      when (edge-p tt) collect tt))
          (referent (find-or-make-individual 'bio-complex))
          (nucleotides nil))
                    
@@ -76,8 +68,8 @@
 
 (defun make-protein-collection (start-pos end-pos)
   (declare (special category::protein category::collection category::n-bar))
-  (let* ((ttops (treetops-between start-pos end-pos))
-         (edges (loop for tt in ttops when (edge-p tt) collect tt))
+  (let* ((edges (loop for tt in (treetops-between start-pos end-pos)
+                      when (edge-p tt) collect tt))
          proteins
          (category
           (if (cddr proteins)
@@ -110,8 +102,8 @@
 
 (defun make-amino-collection (start-pos end-pos)
   (declare (special category::amino-acid category::collection category::n-bar))
-  (let* ((ttops (treetops-between start-pos end-pos))
-         (edges (loop for tt in ttops when (edge-p tt) collect tt))
+  (let* ((edges (loop for tt in (treetops-between start-pos end-pos)
+                      when (edge-p tt) collect tt))
          aminos)
     (cond
      ((loop for edge in edges
