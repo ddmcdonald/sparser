@@ -51,7 +51,11 @@
                       *the-punctuation-semicolon*
                       *the-punctuation-percent*
                       *the-punctuation-prime*
-                      *the-punctuation-single-quote*))
+                      *the-punctuation-single-quote*
+                      word::close-paren
+                      word::open-paren
+                      word::close-square-bracket
+                      word::open-square-bracket))
     (when (punctuation? word)
       (or (eq word *the-punctuation-period*)
           (eq word  *the-punctuation-question-mark*)

@@ -52,7 +52,7 @@
   ;; or hyphens in the pattern. Try reordering it in the cond
   ;; in ns-pattern-displatch, but not without more citations to
   ;; test for regressions.
-  (push-debug `(,pattern ,words ,other-punct ,start-pos ,end-pos))
+  (push-debug `(,pattern ,words  ,start-pos ,end-pos))
    
   (cond
    ((or (equal pattern `(:tilda :digits))  ;; ~60 in Dec# 52
