@@ -573,7 +573,7 @@
 
 
 (defun find-binding-dependency (value edges top-edge &optional b &aux (top-ref (edge-referent top-edge)))
-  (declare (special top-edge category::prepositional-phrase))
+  (declare (special top-edge category::prepositional-phrase category::protein-family))
   (cond ((and b (eq (pname (binding-variable b)) 'items))
          (find-binding-dependencies-for-items value edges top-edge))
         ((and (individual-p top-ref)
