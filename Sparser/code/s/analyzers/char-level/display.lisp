@@ -116,7 +116,7 @@
       (write-string string *standard-output*))))
 
 
-(defun actual-characters-of-word (pos-before pos-after words)
+(defun actual-characters-of-word (pos-before pos-after)
   ;; call from reify-fullcaps-as-bio-entity for starters.
   ;; May be useful in other cases. Not tied to the tokenizer
   ;; march, just a workable portion of the character buffers.
@@ -145,8 +145,7 @@
         ;; that strattles them, but alternatively have we moved 
         ;; completely into the current buffer, in which case
         ;; we turn this flag off.
-        (push-debug `(,start-index ,end-index ,adjusted-end ,words))
-        ;; (setq start-index (car *) end-index (cadr *) adjusted-end (caddr *) words (cadddr *))
+        (push-debug `(,start-index ,end-index ,adjusted-end))
         ;;(break "Check whether we're completely on the current buffer")
         (let ((usable-buffer-length
                (+ *length-accumulated-from-prior-buffers*
@@ -154,7 +153,8 @@
           (push-debug `(,usable-buffer-length))
           (if (< start-index ;; it's in the other buffer
                  *length-accumulated-from-prior-buffers*)
-            (break "word is split across buffers: ~a" words)
+              (break "word is split across buffers: ~a"
+                     (treetops-between pos-before pos-after))
             (setq *buffers-in-transition* nil))))
 
       (if *buffers-in-transition*
@@ -164,7 +164,7 @@
           ;; capitalization
           (try-reconsituting-split-tokens words start-index adjusted-end))
          (t
-          (let ((pnames (mapcar #'word-pname words)))
+          (let ((pnames (mapcar #'word-pname (treetops-between pos-before pos-after))))
             (apply #'string-append pnames))))
 
         (let ((start (- start-index
