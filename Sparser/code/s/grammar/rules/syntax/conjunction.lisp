@@ -510,13 +510,12 @@
 (defun show-protein-coercion (e1 e2)
   (when *show-protein-coercions*
     (let ((e1-chars (actual-characters-of-word (pos-edge-starts-at e1)
-					       (pos-edge-ends-at e1) nil)))
+					       (pos-edge-ends-at e1))))
       ;; (lsp-break "Likely protein: ~a" e1-chars)
       (format t "~&*** ~s is likely a protein -- conjoined with ~s in ~s~&"
 	      e1-chars
 	      (actual-characters-of-word (pos-edge-starts-at e2)
-					 (pos-edge-ends-at e2)
-					 nil)
+					 (pos-edge-ends-at e2))
 	      (current-string)))))
 
 (defun edge-string (e)
@@ -563,8 +562,7 @@
   (when (null pass) (lsp-break "unknown-conjunction-pass"))
   `(,before ,after 
         ,(actual-characters-of-word (pos-edge-starts-at edge-before)
-                                    (pos-edge-ends-at edge-after)
-                                    nil)
+                                    (pos-edge-ends-at edge-after))
         ,(or pass 'unknown-pass)
         ,*p-sent*))
 
