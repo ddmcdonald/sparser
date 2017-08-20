@@ -22,33 +22,35 @@
          (start-ev (pos-starts-here position))
          (top-edge (ev-top-node start-ev)))
     ;;(break "For ~s caps = ~a, top-edge = ~a" (word-pname word) caps top-edge)
-    (case caps
-      (:digits
-       (if (= 1 (length (word-pname word)))
-        :single-digit
-        :digits))
-      (:initial-letter-capitalized
-       :capitalized) ;; "Gly", "Ras"
-      (:single-capitalized-letter
-       :single-cap)
-      (:all-caps
-       :full)
-      (:mixed-case
-       :mixed ) ;;(characterize-type-for-mixed-case word))
-      (:lower-case
-       (if (= 1 (length (word-pname word)))
-         (if (string-equal (word-pname word) "p")
-           :little-p
-           :single-lower)
-         :lower))
-      (:punctuation
-       (keyword-for-word word))
-      (otherwise (break "~a is a new case to characterize for p~a and ~s~
+    (if (not (word-p word)) ;; can be an edge!
+        (intern (pname (edge-category word)) :keyword)
+        (case caps
+          (:digits
+           (if (= 1 (length (word-pname word)))
+               :single-digit
+               :digits))
+          (:initial-letter-capitalized
+           :capitalized) ;; "Gly", "Ras"
+          (:single-capitalized-letter
+           :single-cap)
+          (:all-caps
+           :full)
+          (:mixed-case
+           :mixed ) ;;(characterize-type-for-mixed-case word))
+          (:lower-case
+           (if (= 1 (length (word-pname word)))
+               (if (string-equal (word-pname word) "p")
+                   :little-p
+                   :single-lower)
+               :lower))
+          (:punctuation
+           (keyword-for-word word))
+          (otherwise (break "~a is a new case to characterize for p~a and ~s~
                        ~%under ~a"
-                        caps
-                        (pos-token-index position) 
-                        (word-pname word)
-                        top-edge)))))
+                            caps
+                            (pos-token-index position) 
+                            (word-pname word)
+                            top-edge))))))
 
 (defparameter *word-nospace-keywords*
   '(:capitalized :single-cap :full :mixed :single-lower :little-p :lower))
@@ -58,37 +60,18 @@
 
 
 
-(defun characterize-words-in-region  (start-pos end-pos edges)
+(defun characterize-words-in-region  (start-pos end-pos)
   "Returns a pattern. Presumes that the whole region has been scanned,
    and that the edges are correctly ordered left to right."
 ;; maybe change to use treetops-between
-  (let ((position start-pos)
-        (word (pos-terminal start-pos))
-        pattern-elements  element  edge
-        (edge-start-positions 
-         (when edges (loop for e in edges
-                       collect (pos-edge-starts-at e))))
-        previous-pos  )
-    (loop
-      (cond 
-       ((memq position edge-start-positions)
-        (setq edge (pop edges))
-        (push edge ;;(edge-form edge) 
-              pattern-elements))
-       (t 
-        (setq word (pos-terminal position))
-        (setq element (characterize-word-type position word))
-        (push element pattern-elements)))
-      (setq position
-            (cond (edge (pos-edge-ends-at edge))
-                  (t (chart-position-after position))))
-      (when edge (setq edge nil)) ;; reset
-      (when (eq position previous-pos)
-        (error "characterize-words-in-region is looping"))
-      (setq previous-pos position)
-      (when (eq position end-pos)
-        (return)))
-    (nreverse pattern-elements)))
+  (let* ((pos-tt-list (positions-and-treetops-between start-pos end-pos)))
+    (loop for (pos tt) in pos-tt-list
+          collect
+            (cond ((edge-p tt) tt)
+                  ((edge-vector-p tt) ;; not sure, but what else can we do
+                   (elt (ev-edge-vector tt)
+                        (1- (ev-number-of-edges tt))))
+                  (t (characterize-word-type pos tt))))))
 
 
 (defun sweep-ns-region (start-pos end-pos)
@@ -98,9 +81,9 @@
    over to more easily fit into the pattern tests."
   ;;//// When we do a major revision of the style of NS revision
   ;; this should be merged somehow with characterize-words-in-region 
-  ;; so patterns can be put in the right form earlier -- like at top
+  ;; so patterns can bernte put in the right form earlier -- like at top
   ;; of ns-pattern-dispatch, though that wants the positions.
-  (let ((treetops (treetops-between start-pos end-pos))
+  (let ((pos-treetops (positions-and-treetops-between start-pos end-pos))
         pattern-elements )
     ;;/// That sweep was designed for simplistic parsing and ignores
     ;; things like multiple edges. May need a tailored one
@@ -108,42 +91,50 @@
                (push-debug `(,start-pos ,end-pos ,treetops))
                (error "Not every treetop is an edge: ~a" treetops))
 
-    (flet ((label-for-pattern (edge)
-             (let* ((label (cat-symbol (edge-category edge)))
-                    (position (pos-edge-starts-at edge))
-                    (word (word-under-edge edge))
-                    (pname (word-pname word)))
+    (flet ((label-for-pattern (position item)
+             (let* ((label (when (and (edge-p item)
+                                      (category-p (edge-category item)))
+                             (cat-name (edge-category item))))
+                    (word (if (and (edge-p item)
+                                   ;; happens with A38G, where A38 is
+                                   ;;  made into a residue-on-protein
+                                   (single-word-edge? item))
+                              (word-under-edge item)
+                              item))
+                    (pname (and (word-p word)
+                                (word-pname word))))
                (cond
-                 ((eq label 'category::number)
+                 ((eq label 'number)
                   (if (= 1 (length pname)) :single-digit :digits))
-                 ((eq label 'category::bio-entity)
+                 ((eq label 'bio-entity)
                   (characterize-word-type position word))
                  ((search (symbol-name '#:-kind) (symbol-name label))
                   (characterize-word-type position word))
-                 ((memq label '(protein wild-type))
+                 ((itypep label 'protein)
+                  :protein)
+                 ((memq label '(wild-type))
                   ;;(eq label 'protein) 
-                  label)
+                  (intern (pname label) :keyword))
+                 ((and (edge-p item)
+                       (single-word-edge? item))
+                  (characterize-word-type position word))
+                 ((edge-p item)
+                  (intern (pname label) :keyword))
                  ;;//// need to look for massive set of cases
                  ;; since we don't want to return something the
                  ;; patterns won't recognize. Protein is an obvious
                  ;; case, but what else?
                  (t (characterize-word-type position word))))))
       
-      (loop for tt in treetops
-            collect (if (not (edge-p tt))
-                        tt
-                        (if (one-word-long? tt)
-                            (label-for-pattern tt)
-                            (push (edge-category tt) pattern-elements)))))))
+      (loop for (pos tt) in pos-treetops
+            collect (label-for-pattern pos tt)))))
 
+(defun single-word-edge? (item)
+  (< (length (words-between
+              (pos-edge-starts-at item)
+              (pos-edge-ends-at item)))
+     2))
 
-
-(defun remove-non-edges (list)
-  "Used by ns-pattern-dispatch to remove the words that appear
-   in the initial list, which is created by treetops-between and
-   consequently can feed in edges, e.g. for tildas."
-  (loop for item in list
-    when (edge-p item) collect item))
 
 
 ;;//// Question is how to fold this into the matcher
@@ -192,21 +183,27 @@
    return it's category label as a keyword, otherwise convert it
    back to a keyword for a word."
   (loop for item in pattern
-    unless (or (keywordp item) (edge-p item))
-    do (error "New type in pattern: ~a" item))
+        unless (or (keywordp item)
+                   (edge-p item)
+                   (category-p item))
+                   
+        do (error "New type in pattern: ~a" item))
   (loop for item in pattern
-    when (keywordp item) collect item
-    when (edge-p item) 
-    collect (cond
-             ((one-word-long? item)
-              (convert-edge-to-one-word-characterization item))
-             ((category-p (edge-category item))
-              (edge-category-to-keyword item))
-             (t ;; not sure what to do here -- this happend for p14 in
-              ;; as in "Using conditional gene disruption of p14 in mice,
-              ;; we now demonstrate that the p14–MP1-MEK1 signaling complex
-              ;; regulates late endosomal traffic and cellular proliferation."
-              (convert-edge-to-one-word-characterization item)))))
+        when (keywordp item) collect item
+        when (edge-p item) 
+        collect
+          (cond
+            ((category-p item)
+             (intern (pname item) :keyword))
+            ((one-word-long? item)
+             (convert-edge-to-one-word-characterization item))
+            ((category-p (edge-category item))
+             (edge-category-to-keyword item))
+            (t ;; not sure what to do here -- this happend for p14 in
+             ;; as in "Using conditional gene disruption of p14 in mice,
+             ;; we now demonstrate that the p14–MP1-MEK1 signaling complex
+             ;; regulates late endosomal traffic and cellular proliferation."
+             (convert-edge-to-one-word-characterization item)))))
 
 ;;--- go'fers
 
@@ -234,51 +231,23 @@
 
 
 ;; "EphB1-induced."  "pThr202/Tyr204" dec#46
-(defun effective-words-given-edges (edges start-pos end-pos)
+(defun effective-words-given-edges (start-pos end-pos)
   "Return a list of the words between the two positions but
    allowing for polywords, e.g. protein edges"
   ;; called from ns-pattern-dispatch -- sort of open-codes
   ;; a variant on words-between and edges-between
-  (let* ((pos start-pos)
-         (edge-copy (copy-list edges))
-         (edge (pop edge-copy))
-         (next-pos (chart-position-after start-pos))
-         longer? words )
-    ;;(push-debug `(,edges ,start-pos ,end-pos))
-    (loop
-       (when (eq pos end-pos) (return))
-       ;;(format t "~&edge = ~a next-pos = ~a" edge next-pos)
-       (cond
-         ((word-p edge) ;; e.g. in "non-radioactivity" overnight #13
-          (push edge words))
-         ((not (eq (pos-edge-ends-at edge) next-pos))
-          ;;(format t "~&longer: edge = ~a" edge)
-          (let* ((long-string
-                  (trim-whitespace
-                   (extract-characters-between-positions
-                    pos (pos-edge-ends-at edge))))
-                 (long-word (resolve long-string)))
-            ;; It's not a good idea to make these polywords
-            ;; since going forward they would take precedence
-            ;; over the compositional edge without providing
-            ;; the content that the edge does. 
-            #+ignore(unless long-word
-              (tr :ns-making-word-to-match-edge edge long-string)
-              (setq long-word (resolve/make long-string)))
-            (setq longer? t)
-            (push long-word words)))
-         ((eq (pos-edge-ends-at edge) next-pos)
-          ;;(format t "~&same size: edge = ~a" edge)
-          (push (pos-terminal pos) words)))
-       (cond
-         (longer?          
-          (setq pos (pos-edge-ends-at edge)
-                next-pos (chart-position-after pos)
-                longer? nil))
-         (t
-          (setq pos (chart-position-after pos)
-                next-pos (chart-position-after next-pos))))
-       (setq edge (pop edge-copy)))
-    (nreverse words)))
+  (loop for tt in (treetops-between start-pos end-pos)
+        collect
+          (if (edge-p tt)
+              (if (= 1 (number-of-terminals-between
+                        (pos-edge-starts-at tt)
+                        (pos-edge-ends-at tt)))
+                  (pos-terminal (pos-edge-starts-at tt))
+                  (resolve
+                   (trim-whitespace
+                    (extract-characters-between-positions
+                     (pos-edge-starts-at tt)
+                     (pos-edge-ends-at tt)))))
+              tt)))
 
 
