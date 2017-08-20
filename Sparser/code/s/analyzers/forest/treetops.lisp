@@ -290,4 +290,19 @@
                         (1- (ev-number-of-edges tt)))))
         (push tt tts))
       (nreverse tts))))
+
+(defun positions-and-treetops-between (start end)
+  (unless (eq start end)
+    (let ((this-pos start) next-pos tt pos-list )
+      (loop
+        until (eq next-pos end)
+            do
+              (multiple-value-setq (tt next-pos)
+                (next-treetop/rightward this-pos))
+              (when (edge-vector-p tt)
+                (setq tt (elt (ev-edge-vector tt)
+                              (1- (ev-number-of-edges tt)))))
+              (push (list this-pos tt) pos-list)
+              (setq this-pos next-pos))
+      (nreverse pos-list))))
     
