@@ -25,7 +25,7 @@
 ;;; single 'scare' quotes
 ;;;-----------------------
  
-(defun scare-quote-specialist (leading-quote-pos words pos-before next-position)
+(defun scare-quote-specialist (start-pos end-pos)
   "Called by ns-pattern-dispatch if the first term in the pattern is a 
    double quote. "
   ;; It's reasonably clear what to do with scare quotes. At a minimum we move
@@ -35,19 +35,21 @@
   ;; is something different than that we just leave it for a debris collector
   ;;  (push-debug `(,leading-quote-pos ,words ,pos-before ,next-position))
   ;;  (setq leading-quote-pos (car *) words (cadr *) pos-before (caddr *) next-position (cadddr *))
-  (when (and (eq leading-quote-pos pos-before)
-             (eq (first words) (car (last words))))
-    (tr :scare-quotes-creating-edge-around (second words))
+  (when (eq (right-treetop-at/only-edges start-pos)
+            (left-treetop-at/only-edges end-pos)) ;; matching quotes
+
     (let* ((word-edge (left-treetop-at/only-edges 
-                       (chart-position-before next-position)))
-           (edge (make-edge-over-long-span
-                  pos-before
-                  next-position
-                  (edge-category word-edge)
-                  :rule 'scare-quote-specialist
-                  :form (edge-form word-edge)
-                  :referent (edge-referent word-edge)
-                  :words words)))
+                       (chart-position-before end-pos)))
+           (edge (when word-edge ;; often not defined the first time through, which is why "scare quotes"
+                   (make-edge-over-long-span
+                    start-pos
+                    end-pos
+                    (edge-category word-edge)
+                    :rule 'scare-quote-specialist
+                    :form (edge-form word-edge)
+                    :referent (edge-referent word-edge)
+                    :words (effective-words-given-edges start-pos end-pos)))))
+      (tr :scare-quotes-creating-edge-around edge)
       (tr :made-edge edge)
       edge)))
 

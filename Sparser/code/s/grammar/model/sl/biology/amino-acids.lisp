@@ -155,13 +155,14 @@ We therefore have the special cases:
 
 (defparameter *break-on-bad-residues* nil)
 
-(defun reify-residue-and-make-edge (words start-pos end-pos)
+(defun reify-residue-and-make-edge (start-pos end-pos)
   ;; called from the no-space pattern machinery when the
   ;; pattern is (:single-cap :digits) and it's possible that
   ;; that first word is the short form af an amino acid.
   ;; Return nil if this doesn't work out
   ;; (setq words (car *) start-pos (cadr *) end-pos (caddr *))
-  (let* ((single-letter (car words))
+  (let* ((words (effective-words-given-edges start-pos end-pos))
+         (single-letter (car words))
          (variants (word-capitalization-variants single-letter))
          ;; given this pattern, there will only be one if there is one
          (capitalized-letter (when variants (car variants)))
