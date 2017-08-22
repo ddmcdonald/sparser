@@ -10,6 +10,7 @@
 
 (in-package :mumble)
 
+;; (setq m::*trace-archie* t)
 
 ;;;------------------
 ;;;  Realize method
@@ -18,6 +19,7 @@
 (defmethod realize ((i sp::individual))
   "Realize a Sparser individual. Special cases are handled here,
    then falls through to realize-via-bindings."
+  (declare (optimize debug))
   (cond ((sp::itypep i 'sp::collection)
          (let ((items (sp::value-of 'sp::items i))
                (type (sp::value-of 'sp::type i)))
@@ -92,6 +94,7 @@
   (:method ((i sp::individual) &key pos resource)
     "Look for realization data on the individual or its category and marshal it."
     ;; 1st split on 'supplied by caller' vs taken off the individual
+    (declare (optimize debug))
     (if (and pos resource)
       (old-style-realize-via-bindings i pos resource)
       (new-style-realize-via-bindings i))))
@@ -102,6 +105,7 @@
   (realize-via-bindings-common-path i pos resource))
 
 (defun new-style-realize-via-bindings (i)
+  (declare (optimize debug))
   (let ((lp (find-lexicalized-phrase i)))
     (assert lp (i) "Couldn't get lexicalized phrase for ~a" i)
     (let* ((pos (lookup-pos lp))
@@ -113,6 +117,7 @@
       (realize-via-bindings-common-path i pos lp rdata))))
 
 (defun realize-via-bindings-common-path (i pos resource &optional rdata)
+  (declare (optimize debug))
   (let ((dtn (make-dtn :referent i :resource resource)))            
     (case pos (verb (tense dtn))) ;; also checks for command
     (if rdata
@@ -123,6 +128,7 @@
 (defun loop-over-some-bindings (i pos dtn rdata)
   "Use the map on the rdata to handle the core bindings
    then use the normal binding loop dispatch for the rest."
+  (declare (optimize debug))
   (let ((map (parameter-variable-map rdata)))
     (let ((handled
            (loop for pvp in map
@@ -140,6 +146,7 @@
 
 (defun loop-over-bindings (i pos dtn)
   "Handle every binding on i"
+  (declare (optimize debug))
   (loop
      for binding in (reverse (sp::indiv-binds i))
      as variable = (sp::binding-variable binding)
