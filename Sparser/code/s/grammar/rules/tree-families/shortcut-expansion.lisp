@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "shortcut-expansion"
 ;;;   Module:  "grammar;rules;tree-families;"
-;;;  Version:  May 2017
+;;;  Version:  August 2017
 
 ;; Broken out of shortcut-master 9/21/14 to allow both files to be
 ;; seen at once now that the cases have gotten intricate.
@@ -80,11 +80,12 @@
 (defun make-mumble-mapping (schematic-map substitution-map category)
   "Use the regular substitution map for this category to the replace the
    terms in the parameter mapping (e.g. subj-slot)."
+  ;; Had mapped self to [ collect `(,parameter ,category) ] but the
+  ;; rationale for that goes back to a incremental parsing design
+  ;; and it's just clutter from an NLG perspective
   (loop for (parameter . schematic-value) in schematic-map
-     if (or (eq schematic-value :self)
-            (eq schematic-value 'self))
-     collect `(,parameter ,category)
-     else
+     unless (or (eq schematic-value :self)
+                (eq schematic-value 'self))
      collect (cons parameter
                    (let ((value (or (cdr (assq schematic-value substitution-map))
                                     (error "No value for ~a among the substitution args."

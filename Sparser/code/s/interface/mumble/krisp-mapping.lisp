@@ -74,10 +74,7 @@
   (:method ((word word) (i sp::individual)) ;; e.g. "together", "near"
     (declare (ignore i))
     word))
-#| Dependent locations ('side') take a ground variable, but w/in
-just an np ("left side") the ground won't be on the individual
-and moreover wouldn't make sense 
-|#
+
 
 ;;;----------------
 ;;; generic lookup
