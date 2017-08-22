@@ -212,13 +212,14 @@ Should mirror the cases on the *single-words* ETF."
                                :etf etf
                                :mapping mapping
                                :local-rules local-rules
-                               :mumble mdata)))
-    (when mumble ;; check flag
-      (cond
-        ((includes-mumble-spec? rdata)
-         (apply-mumble-rdata category rdata))
-        ((inherits-mumble-data? category)
-         (apply-inherited-mumble-data category))))))
+                               :mumble mdata)
+        (when mumble
+          (cond
+            ((includes-mumble-spec? rdata)
+             (unless etf ;; already done by make-realization-data
+               (apply-mumble-rdata category rdata)))
+            ((inherits-mumble-data? category)
+             (apply-inherited-mumble-data category))))))))
 
 (defun setup-word-data (word pos category)
   "For adverbs, adjectives, and anything else whose realization
