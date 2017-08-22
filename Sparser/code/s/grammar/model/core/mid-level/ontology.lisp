@@ -138,3 +138,11 @@ files once an area looks big enough to warrant it.  |#
   ;; also time-created or is it a specialization from the lifetime of Endurant?
   :lemma (:common-noun "artifact"))
 
+
+(define-category structure
+  :specializes artifact
+  :realization (:common-noun "structure")
+  :documentation "No commitment to what the structure is made out of
+ of even whether it actually exists or is only imagined (though 'object'
+ does imply existence/location. /// so worth recasting when looking at
+ inferences/consequences and envisionment vs. construction.")
