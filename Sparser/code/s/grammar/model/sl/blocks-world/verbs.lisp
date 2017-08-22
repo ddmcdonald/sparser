@@ -54,19 +54,6 @@
   :documentation "Needs extension or a variant for variants
     like 'hold it up' or (?) 'hold it higher'")
 
-(define-category make
-  :specializes process
-  :mixins (with-an-agent)
-  :binds ((object physical) ;; what they build
-          (adj-comp attribute-value)) ;; "make the stack green"
-  :realization
-    (:verb ("make" :past-tense "made")
-     :etf (svo-passive)
-     :s agent
-     :o object
-     :adjp-complement adj-comp
-     :mumble ("make" svo :o object)))
-          
 (define-category move-something-somewhere
   :specializes process
   :mixins (with-an-agent with-specified-location) ;; adds 'agent' variable and location variables

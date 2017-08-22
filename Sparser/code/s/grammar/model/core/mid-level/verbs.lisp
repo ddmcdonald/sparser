@@ -27,8 +27,18 @@
     :past-participle "given"
     :present-participle "giving")
 
- understand
-|
+
+ create (bio;general-verbs)  "Is your intent to ~a something?"
+   model (bio;bio-methods) -- as a noun
+ change
+
+ interpret
+ mean (what you meant to change.)
+ recognize (your intent) (what you're doing)
+ understand (what you meant to change)
+
+ wait
+
  get attempt try  -to
 
  desire 
@@ -42,23 +52,24 @@
  intend to / that
 
  promise --status of raised 'object' and complement
- persuade   Requires consulting the verb / have
+ persuade   requires consulting the verb 
 
  go  come    
  going to X / gonna
 
- -- BDI  --self action vs other action
-| <something> wants 
-     <to do something> ;; they do something
-     <something> (to do somthing)
 
 |#
   
 
-
 #|  N.b. if one of these verbs is also used in biology, there should
 be an entry for it in bio;overrides.lisp that expunges it. |#
 
+
+(define-category believe ;; in P, that P, J
+  :specializes state
+  :mixins (prop-attitude)
+  :realization (:verb "believe")
+  :documentation "")
 
 ;; expect -- to do, that P, John to 
 (define-category expect
@@ -74,7 +85,7 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
   :realization 
     (:verb "fail"))
 
-(define-category find ;; see bio;harvard-terms
+(define-category find ;; see bio;harvard-terms: bio-find
   :specializes process
   :mixins (action-verb)
   :restrict ((patient (:or physical-object location))) ;; find a block
@@ -82,22 +93,52 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
     (:verb ("find" :past-tense "found")))
 
 
+(define-category get
+  :specializes accomplishment
+  :mixins (action-verb)
+  :restrict ((actor physical-agent)
+             (patient physical))
+  :realization (:verb ("get" :past-tense "got"
+                       :past-participle "gotten")) ;; "have gotten a block"
+  :documentation "'Get' as in 'come to have'. Could be
+    construded as generalized possession: 'I've got a cold'.")
+
 (define-category intend
   :specializes state
-  :mixins (control-verb)
-  :realization (:verb "intend"))
-;;/// Fits control paradigm except for not taking a simple object
+  :mixins (control-verb) ;;  except for not taking a simple object
+  :realization (:verb "intend")
+  :documentation "Ignoring obvious relationship to the noun
+    'intention' -- need a good use-case to tie them together
+    like some early transformational grammar did.")
 
 
 ;; know -- that P, John, John will P ("that" optional),
 ;;   how to
+;;/// know of (any drug for cancer)
 (define-category know
   :specializes process
   :mixins (knowledge-verb)
   :realization
-  (:verb ("know"
-          :past-tense "knew"
-          :past-participle "known")))
+    (:verb ("know" :past-tense "knew" :past-participle "known")))
+;; "know the blocks are red", "what to do"
+;; know Spencer to be a good car
+;; know that Spencer is a good cat    
+
+
+(define-category make
+  :specializes process
+  :mixins (action-verb)
+  :restrict ((actor physical-agent)
+             (patient artifact)) ;; what they build ('result' ??)
+  :binds ((adj-comp attribute-value)) ;; "make the stack green"
+  :realization
+    (:verb ("make" :past-tense "made")
+     ;; :etf (svo-passive)
+     ;; :s actor
+     ;; :o patient
+     ;; :adjp-complement adj-comp
+     :mumble ("make" svo :a actor :o patient)))
+          
 #|
 (define-category propose
     :specializes achievement

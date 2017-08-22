@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  March 2017
+;;;  version:  August 2017
 
 ;; Initiated 12/3/15
 
@@ -22,5 +22,6 @@
 
 (gload "mid-level;subcat-patterns")
 (gload "mid-level;verbs")
+(gload "mid-level;things")
 
 (gload "mid-level;cars")
