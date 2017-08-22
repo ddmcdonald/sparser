@@ -50,8 +50,7 @@
  may be empty or may be occupied (the 'bottom row of the stairs').
  This duality implies that we are sometimes describing things
  as well as locations, hence the physical mixin."
-  :realization ((:mumble ((of-genitive :p ground)
-                          (common-noun :n self)))))
+  :realization ((:mumble ((of-genitive :p ground)))))
 
 
 ;;;-----------------------------------------------------------

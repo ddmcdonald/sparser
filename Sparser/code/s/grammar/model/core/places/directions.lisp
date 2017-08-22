@@ -66,7 +66,7 @@
   :mixins (relative-location)
   :restrict ((ground partonomic))
   :realization (:mumble ((of-genitive :p ground)
-                         (common-noun :n self)))
+                         #+ignore(common-noun :n self)))
   :documentation "These are 'directions' to distinguish them
  from dependent directions like 'bottom' or 'side'. They get
  their 'ground' variable from relative-location.")
