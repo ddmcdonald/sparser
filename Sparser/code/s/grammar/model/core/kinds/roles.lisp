@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "predicate"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  June 2017
+;;;  version:  August 2017
 
 ;; To move all the standard thematic roles up to a place that
 ;; loads early so they're available for restriction as lower levels
@@ -16,10 +16,18 @@
   :binds ((agent (:or pronoun physical-agent))))
 ;; Dolce has 'agency' as the union of physical and social agent
 
+;;/// replaces with-an-agent
+(define-mixin-category agent
+  :specializes relation
+  :binds ((agent))
+  :documentation "Participant that intentionally initiates
+    the action.")
+
 (define-mixin-category actor
   :specializes relation
   :binds ((actor))
-  :documentation "")
+  :documentation "The entity that performs the action.
+    No implied agency. No obvious specified type.")
 
 (define-mixin-category takes-adverb
   :specializes relation
@@ -33,7 +41,8 @@
 (define-mixin-category experiencer
   :specializes relation
   :binds ((experiencer))
-  :documentation "")
+  :documentation "Participant that is aware of something
+    pertaining to the event.")
 
 (define-category has-location
   :specializes relation
@@ -45,7 +54,7 @@
 (define-mixin-category patient
   :specializes relation
   :binds ((patient))
-  :documentation "")
+  :documentation "The participant that is affected by the action.")
 
 (define-mixin-category theme
   :specializes relation
