@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "discourse"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  May 2017
+;;;  version:  August 2017
 
 ;; Initiated 9/6/16, initially as a common resting place for the
 ;; "interjections", with contributions from checkpoint/vocabulary.lisp
@@ -38,7 +38,7 @@
 
 
 ;;-- Acknowledgements
-(define-category  acknowledgement  ;; Trips SA_ACT, presumably
+(define-category  acknowledgement  ;; TRIPS SA_ACT, presumably
   :instantiates self
   :specializes speech-act
   :binds ((name :primitive word))
@@ -54,13 +54,14 @@
 (define-individual 'acknowledgement :name "good")
 
 (define-individual 'acknowledgement :name "alright")
+(define-individual 'acknowledgement :name "alright then")
 
 
 ;;-- Greetings
 (define-category  greeting ;; SA_GREET
   :instantiates self
   :specializes speech-act
-  :binds ((name :primitive word))
+  ;;:binds ((name :primitive word))
   :realization (:interjection name))
 
 (define-individual 'greeting :name "hello")
@@ -68,6 +69,17 @@
 (define-individual 'greeting :name "goodbye")
 (define-individual 'greeting :name "bye")
 
+
+;;--- Apologies
+(define-category  apology
+  :instantiates self
+  :specializes speech-act
+  :realization (:interjection name)
+  :documentation "Interjections are usually realized in
+ sentence-initial position. There are variations on apology
+ that can occur. Probably equivalent to ont:apologize in T.")
+
+(define-individual 'apology :name "sorry")
 
 ;;;----------------------
 ;;; markers of proposals
