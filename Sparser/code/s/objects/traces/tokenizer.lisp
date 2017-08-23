@@ -107,10 +107,16 @@
                (word-pname word)
               (pos-token-index pos-before))))
 
-(deftrace :handling-unknown-word-stared-os (pos-before)
+(deftrace :handling-unknown-word-stared-ot (pos-before)
   ;; called from deal-with-unhandled-unknown-words-at
   (when *trace-delay-unknown-judgment*
-    (trace-msg "[unknown] Handling unknown word at p~a"
+    (trace-msg "[unknown] (early) Handling unknown word at p~a"
+               (pos-token-index pos-before))))
+
+(deftrace :dealing-with-unknown-word-stared-ot (pos-before)
+  ;; called from deal-with-unhandled-unknown-words-at
+  (when *trace-delay-unknown-judgment*
+    (trace-msg "[unknown] (late) Handling unknown word at p~a"
                (pos-token-index pos-before))))
 
 (deftrace :unknown-word-is-known (edge)

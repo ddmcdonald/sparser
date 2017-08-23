@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  January 2017
+;;;  version:  August 2017
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -161,10 +161,10 @@
 (defun polyword-sweep-loop (position-before word)
   "First pass over the text. Checks each successive word for
    initiating a polyword (polyword-check). The longest completion
-   is spanned with an edge. This loop stops with a throw from
-   the period hook (period-check) or encountering the end of
-   the stream being analyzed (simple-eos-check). These delimit
-   one sentence-worth of text."
+   is spanned with an edge. 
+      This loop stops with a throw from the period hook (period-check) 
+   or  pmon encountering the end of the stream being analyzed (simple-eos-check). 
+   These delimit one sentence-worth of text."
   (declare (special *trace-sweep*))
   (tr :polyword-sweep-loop)
   (loop
@@ -486,6 +486,7 @@ sentences.
           (if position-reached ;; one of them succeeded
               (let ((pw-edge (edge-spanning position-before position-reached)))
                 (unless pw-edge (error "wrong span on polyword search"))
+                (unhandled-word-in-span? position-before position-reached)
                 (tr :pw-was-found position-before position-reached pw-edge))
               (tr :pw-not-found word position-before))
 
@@ -509,35 +510,45 @@ sentences.
 ;;; unknown words -- delayed action
 ;;;---------------------------------
 
-;; (trace-morphology)
+;; (trace-delay-unknown-judgment)
+
 (defvar *positions-with-unhandled-unknown-words* nil
   "Part of scheme for delaying assigning a semantic interpetation
    (and thereby an edge) to an uknown word. ")
 
 (defun store-word-and-handle-it-later (word)
   "Called from make-word/all-properties/or-primed when the
-   *big-mechanism* flag is up and our next option is the default,
-   which would probably be the wrong thing to do."
+   *big-mechanism* flag is up and capitalization suggests that
+   this unknown word may well be absorbed during the no-space
+   pattern checks."
   (declare (special *position-being-filled*)) ;; bound in add-terminal-to-chart
   (tr :storing-unknown-for-later word *position-being-filled*)
   (push *position-being-filled*
         *positions-with-unhandled-unknown-words*)
   word)
 
+(defun unhandled-word-in-span? (from-pos to-pos)
+  (declare (special *positions-with-unhandled-unknown-words*))
+  (when *positions-with-unhandled-unknown-words*
+    (loop for pos in *positions-with-unhandled-unknown-words*
+       when (position-is-at-or-between pos from-pos to-pos)
+       do (tr :handling-unknown-word-stared-ot pos)
+          (setq *positions-with-unhandled-unknown-words*
+                (delete pos *positions-with-unhandled-unknown-words*)))))
+
+
 (defun deal-with-unhandled-unknown-words-at (pos-before)
   "Called at the last action in the pattern-sweep treetop loop.
    Did we make a record of an unhandled unknown word at position-before.
    If so, pop that position from the list and figure out what sort
    of edge to create for it and how (or whether) to record it."
+  (declare (special *trace-delay-unknown-judgment*))
   (when *positions-with-unhandled-unknown-words*
     (when (memq pos-before *positions-with-unhandled-unknown-words*)
-      ;; clear the flag
       (push-debug `(,pos-before)) ;(lsp-break "Check for covered at ~a" pos-before)
       (setq *positions-with-unhandled-unknown-words*
             (delete pos-before *positions-with-unhandled-unknown-words*))
-
-      (tr :handling-unknown-word-stared-os pos-before)
-
+      (tr :dealing-with-unknown-word-stared-ot pos-before)
       (let* ((top-edge (right-treetop-at/only-edges pos-before)))
         (cond
          ((and top-edge
@@ -550,9 +561,11 @@ sentences.
             (cond
              ((covered-by-nearby-edge pos-before)
               (tr :unknown-word-is-covered))
-             (t
+             (t 
               ;; We're only here because it's a *big-mechanism* case,
               ;; so we call a function there to do the handling.
+              (when *trace-delay-unknown-judgment*
+                (lsp-break "About to make a bio-entity for ~a" pos-before))
               (handle-unknown-word-as-bio-entity pos-before)))))
          (t
           (lsp-break "Any reason not to rewrite as bio-entity?")))))))
@@ -804,92 +817,36 @@ sentences.
       (setq position-before position-after))))
 
 
-;; Straight copy of loop code in sweep-for-scan-patterns if we
-;; were to want to more of these it would be worth abstracting
-;; the control structure.
-
-(defun start-of-ns-region (pos &optional sent-end-pos &aux tt next-pos)
-  "Returns the pos just before a pos with without pos-preceding-whitespace"
-  (declare (special pos tt next-pos))
-  (loop
-    (multiple-value-setq (tt next-pos)
-      (next-treetop/rightward pos))
-    (cond ((eq next-pos sent-end-pos)
-           (return nil))
-          ((or (pos-preceding-whitespace next-pos)
-               (word-never-in-ns-sequence
-                (or (left-treetop-at/only-edges next-pos)
-                    (pos-terminal
-                     (chart-position-before next-pos)))))
-           (setq pos next-pos))
-          (t (return pos)))))
-
-(defun end-of-ns-region (pos &optional sent-end-pos &aux tt next-pos)
-  ;; Called from collect-no-space-segment-into-word starting from
-  ;; the very beginning of the sequence (initial-position). That means
-  ;; that the very next position after that is marked to say there
-  ;; is no space between it and the word that starts this ns-region.
-  ;; After that we could reach a terminating criteron.
-  #| TAKE THESE INTOP ACCOUNT
-  (when (pos-preceding-whitespace next-pos)
-  (tr :ns-return-because-whitespace next-pos)
-  (return))
-  (when (first-word-is-bracket-punct word)
-  (tr :ns-return-because-bracket-punct word)
-  (return))
-  (when (word-never-in-ns-sequence word)
-  (tr :ns-return-word-never-in-ns-seq word)
-  (return))
-  (when (and (punctuation? word)
-  (punctuation-terminates-no-space-sequence word next-pos))
-  (unless (memq word *terminal-ns-punct-encountered*)
-              ;; We looked ahead, so reflect that in the stopping position ;
-  (setq next-pos (chart-position-after next-pos)))
-  (tr :ns-return-punch-terminates-seq word next-pos)
-  (return)))
-|#
-  (loop
-    (multiple-value-setq (tt next-pos)
-      (next-treetop/rightward pos))
-    (if (or (eq next-pos sent-end-pos)
-            (pos-preceding-whitespace next-pos)
-            (word-never-in-ns-sequence (pos-terminal next-pos)))        
-        (return next-pos)
-        (setq pos next-pos))))
-
-
 (defun sweep-for-no-space-patterns (sentence)
   "If there is no-space between two successive words in the
    chart (no-space-before-word?) then call check-for-pattern
    to initiate the process in collect-no-space-segment-into-word
    and manage the return value."
-  (declare (special *sentence-terminating-punctuation*
-                    *trace-sweep*))
+  (declare (special *sentence-terminating-punctuation* *trace-sweep*))
   (tr :sweep-for-no-space-patterns)
   (let ((pos (starts-at-pos sentence))
         (sent-end-pos (ends-at-pos sentence))
         ns-end-pos)
+        
     (loop
-          while (and pos
-                     (setq pos (start-of-ns-region pos sent-end-pos)))
-          do
-            (setq ns-end-pos (end-of-ns-region pos sent-end-pos))
-            (when *trace-sweep*
-              (format t "~&[pattern sweep] p~a ~a p~a~%"
-                      (pos-token-index pos)
-                      (pos-terminal pos)
-                      (pos-token-index ns-end-pos)))
-            (setq ns-end-pos (collect-no-space-segment-into-word pos ns-end-pos))
-            (if (eq ns-end-pos sent-end-pos)
-                (setq pos nil)
-                (setq pos ns-end-pos)))
+       while (and pos
+                  (setq pos (start-of-ns-region pos sent-end-pos)))
+       do
+         (setq ns-end-pos (end-of-ns-region pos sent-end-pos))
+         (when *trace-sweep*
+           (format t "~&[pattern sweep] p~a ~a p~a~%"
+                   (pos-token-index pos)
+                   (pos-terminal pos)
+                   (pos-token-index ns-end-pos)))
+         (setq ns-end-pos (collect-no-space-segment-into-word pos ns-end-pos))
+         (if (eq ns-end-pos sent-end-pos)
+           (setq pos nil)
+           (setq pos ns-end-pos)))
 
-    (tr :terminated-sweep-at ns-end-pos)
     (loop for pos in (copy-list *positions-with-unhandled-unknown-words*)
-            do
-            (deal-with-unhandled-unknown-words-at pos))
-    (clear-unhandled-unknown-words)
-    ))
+       do (deal-with-unhandled-unknown-words-at pos))
+    
+    (clear-unhandled-unknown-words)))
 
 
 ;;--- subroutines
@@ -914,80 +871,31 @@ sentences.
         pos-reached))))
 
 
-;; (trace-network-flow)
-
-#+ignore
-(defun do-no-space-collection (position-before position-after)
-  "Used by sweep-for-no-space-patterns to hide details. Caller
-   determined that there is no whitespace between the word at 
-   the position-after and the previous word."
-  (let ((word-at-pos-before (pos-terminal position-before))
-        pos-reached )
-    (unless (or (word-is-bracket-punct word-at-pos-before)
-                (word-never-in-ns-sequence word-at-pos-before))
-      (let ((end-pos (typecase tt
-                       (edge (pos-edge-ends-at tt))
-                       (word (chart-position-after position-before))
-                       (otherwise
-                        (error "Unexpected type for tt: ~a~%~a"
-                               (type-of tt) tt)))))
-        (cond
-         ((eq end-pos position-after)
-          ;; Given that end-pos and position-after are always in
-          ;; sync, this clause is the only one that's ever taken.
-          ;; The others are presently doing no work, but will
-          ;; be useful if we need to change the protocol. 
-          (tr :check-for-uniform-no-space-sequence position-before)
-          ;;(lsp-break "do-no-space-collection")
-          (setq pos-reached
-                (collect-no-space-segment-into-word position-after)))
-
-         ;; (p "a 0.45Î¼m filter")
-
-         ;; Quick hit. Is there whitespace on the position
-         ;; where it ends?  If there is, then we're done
-         ;; because this is where the sequence would have ended anyway. 
-         ((pos-preceding-whitespace end-pos)
-          (pos-edge-ends-at tt))
-
-         ;; Let it deal with whatever's there
-         (t  (collect-no-space-segment-into-word end-pos)))
-        ;;/// trace
-        pos-reached ))))
+(defun start-of-ns-region (pos &optional sent-end-pos &aux tt next-pos)
+  "Returns the pos just before a pos with without pos-preceding-whitespace"
+  (loop
+    (multiple-value-setq (tt next-pos)
+      (next-treetop/rightward pos))
+    (cond ((eq next-pos sent-end-pos)
+           (return nil))
+          ((or (pos-preceding-whitespace next-pos)
+               (word-never-in-ns-sequence
+                (or (left-treetop-at/only-edges next-pos)
+                    (pos-terminal
+                     (chart-position-before next-pos)))))
+           (setq pos next-pos))
+          (t (return pos)))))
 
 
-#| Experimented with a sweep based on low-level debris analysis
-patterns but the entry points just wrong and the effort
-was dropped. 
-;; (look-for-DA-pattern treetop)
-;;/// this isn't properly handled. The return value if
-;; there is a pattern and it succeeds is not properly
-;; handled -- the standalone-da-execution runs for 
-;; side-effects and we don't appreciate them. The
-;; more customary eecute-da-trie call shows how the
-;; 'result' can be more interesting 
-
-(defun look-for-DA-pattern (treetop)  ;; (trace-da)
-  ;;/// use in look-for-length-three-patterns since this encapsulates
-  ;; better probably
-  (let ((vertex (trie-for-1st-item treetop)))
-    (if vertex
-      (let ((edge (standalone-da-execution vertex treetop)))
-        ;;/// trace (if edge ...
-        edge)
-      (else
-       ;; trace
-       nil))))
-|#
-;; (p "PIK3CA and BRAF are, in part, regulated.")
-
-(defun look-for-da-pattern (tt)
-  "If there is a da pattern that starts at this treetop
-  execute it and return the 'result' Used by old-pass2
-  and execute-one-da-rule as of 1/3/17"
-  (let ((da-node (trie-for-1st-item tt)))
-    (when da-node
-      (standalone-da-execution da-node tt))))
+(defun end-of-ns-region (pos &optional sent-end-pos &aux tt next-pos)
+  (loop
+    (multiple-value-setq (tt next-pos)
+      (next-treetop/rightward pos))
+    (if (or (eq next-pos sent-end-pos)
+            (pos-preceding-whitespace next-pos)
+            (word-never-in-ns-sequence (pos-terminal next-pos)))        
+        (return next-pos)
+        (setq pos next-pos))))
 
 
 ;;;-------------------------
