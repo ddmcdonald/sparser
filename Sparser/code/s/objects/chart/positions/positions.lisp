@@ -174,8 +174,8 @@
     (< text-index ref-index)))
 
 (defun number-of-terminals-between (p1 p2)
-  ;; return an integer corresponding to the number of words
-  ;; between those two positions
+  "Return an integer corresponding to the number of words
+   between those two positions"
   (- (pos-token-index p2)
      (pos-token-index p1)))
 
@@ -184,6 +184,14 @@
           (pos-token-index start-pos))
        (< (pos-token-index position)
           (pos-token-index end-pos))))
+
+(defun position-is-at-or-between (position start-pos end-pos)
+  "The position can be the start or end postion as well
+   as between them."
+  (and (>= (pos-token-index position)
+           (pos-token-index start-pos))
+       (<= (pos-token-index position)
+           (pos-token-index end-pos))))
  
 ;;;------------------------
 ;;; construction functions
