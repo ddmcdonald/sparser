@@ -232,6 +232,15 @@
       (setq result (look-for-da-pattern tt))
       (and result (not (eq result :trie-exhausted))))))
 
+(defun look-for-da-pattern (tt)
+  "If there is a da pattern that starts at this treetop
+  execute it and return the 'result' Used by old-pass2
+  and execute-one-da-rule as of 1/3/17"
+  (let ((da-node (trie-for-1st-item tt)))
+    (when da-node
+      (standalone-da-execution da-node tt))))
+
+
 
 
 (defun old-pass2 (sentence start-pos end-pos treetops number-of-treetops)
