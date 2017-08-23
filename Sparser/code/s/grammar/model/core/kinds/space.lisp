@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2017 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "space"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  February 2016
+;;;  version:  August 2017
 
 ;; Broken out of container-and-suv 11/11/13. Moved to kinds 4/14/14 and
 ;; included container. 2/1/16 merging with the location in places.
@@ -26,7 +26,6 @@
   idiosyncratically dependent on the category of location"
   :index (:key name))
 
-
 (define-category spatial-region
   :specializes location
   :documentation "These variables are appropriate to most kinds of regions
@@ -41,6 +40,16 @@
  of a book. Ontologically, a boundary is a Feature, dependent on the
  Region for its existence." |#
 
+
+(let ((*inhibit-constructing-comparatives* t))
+  (declare (special *inhibit-constructing-comparatives*))
+#| This isn't right. 'space' is a generic/mass kind of stuff
+so it's interpretation shouldn't be a location instance.
+/// So redesign it all in a bit. This gets the vocabulary in. |#
+(define-realization location
+    :noun ("space" "location")
+    :adj ("spatial" "spatio"))
+) ;; close let -- other use of this is 'time'
 
 
 ;;;----------------

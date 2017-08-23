@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "assign-lemmas"
 ;;;   Module:  "model;core:kinds:"
@@ -33,8 +33,6 @@
 (assign-lemma physical (adjective "physical"))
 (assign-lemma kind (common-noun "kind"))
 
-(assign-lemma time (common-noun "time"))
-
 (assign-lemma object (common-noun "object"))
 (assign-lemma feature (common-noun "feature"))
 (assign-lemma aggregate(common-noun "aggregate"))
@@ -43,25 +41,4 @@
 
 (assign-lemma negative (adjective "negative"))
 
-
-;;;------------------
-;;; realization data
-;;;------------------
-
-#| incomplete experiment
-(define-realization attribute-value
-  ((:tree-family be-description
-    ;; This covers "is red"
-    :mapping ((result . :self)
-              (description . value)
-              (vp . :self)
-              (complement np adjective adjp)))
-   (:tree-family
-    ;; This covers '(the) speed (is (150 knots))'
-    :mapping((result . :self)
-                             (subject . attribute)
-                             (predicate . value)
-                             (np/subject . ,category-name) ;; speed
-                             (vp . ,predicate-names)))))) ;
-|#
 
