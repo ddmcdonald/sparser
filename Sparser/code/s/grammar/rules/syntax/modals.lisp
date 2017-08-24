@@ -98,7 +98,7 @@
 
 (define-modal "can"
   :negatives (("cann" apostrophe-t)
-              ("can" apostrophe-t)
+              ("can't") ;;("can" apostrophe-t)
               "cannot"))
 
 (define-modal "could"
@@ -139,6 +139,13 @@
   :referent (:function absorb-auxiliary left-edge right-edge))
 
 
+(def-cfr modal (modal not)
+  :form vg
+  :referent (:head left-edge
+             :bind (negation right-edge)))
+
+
+
 ;;--- modal + verb+ed
 ;; This is spurious in a proper grammar, but if an infinitive form
 ;; is mis-labeled as a past tense then we'll get here gratuitously
@@ -149,126 +156,6 @@
   :form vg
   :referent (:function absorb-auxiliary left-edge right-edge))
 
-
-
-(def-cfr modal (modal not)
-  :form vg
-  :referent (:head left-edge
-             :bind (negation right-edge)))
-
-
-
-;;; ugly TEMPORARY (triaged) solution for "can then" as in "MAPK phosphorylates ASPP2 which can then relocate to..."
-;; drop the "then" on the floor
-
-#+ignore ;; we need to handle this now RJB 5/26/2016
-(def-cfr modal (modal then)
-  :form modal
-  :referent (:head left-edge))
-
-
-
-
-#|
-
-Have to sort out how to do this. And they need schema anyway.
-If we just substitute 'modal' for the previous generated categories
-like 'will' then we have form rules with two form rules, which will
-blow up. 
-
-They would work find as syntax rules.
-They might well work as straight-up cfr rules, and that's a case
- for a one-off ETF for aux-hopping
-
-;;--- modal + infinitive
-
-(def-form-rule (will infinitive)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype will
-                   ))
-
-(def-form-rule (would infinitive)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype would
-                   ))
-
-(def-form-rule (could infinitive)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype could
-                   ))
-
-(def-form-rule (should infinitive)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype should
-                   ))
-
-(def-form-rule (can infinitive)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype can
-                   ))
-
-(def-form-rule (may infinitive)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype may
-                   ))
-
-(def-form-rule (might infinitive)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype might
-                   ))
-|#
-
-
-#|
-(def-form-rule (will verb+ed)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype will
-                   ))
-
-(def-form-rule (would verb+ed)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype would
-                   ))
-
-(def-form-rule (could verb+ed)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype could
-                   ))
-
-(def-form-rule (should verb+ed)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype should
-                   )) 
-
-(def-form-rule (can verb+ed)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype can
-                   ))
-
-(def-form-rule (may verb+ed)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype may
-                   ))
-
-(def-form-rule (might verb+ed)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype might
-                   ))
-|#
 
 ;;--- modal + verb
 
@@ -282,95 +169,6 @@ They might well work as straight-up cfr rules, and that's a case
   :form vg
   :referent (:function absorb-auxiliary left-edge right-edge))
 
-#|
-(def-form-rule (will verb)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype will
-                   ))
-
-(def-form-rule (would verb)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype would
-                   ))
-
-(def-form-rule (could verb)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype could
-                   ))
-
-(def-form-rule (should verb)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype should
-                   )) 
-
-(def-form-rule (can verb)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype can
-                   ))
-
-(def-form-rule (may verb)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype may
-                   ))
-
-(def-form-rule (might verb)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype might
-                   ))
-
-
-;;--- modal + vp
-
-(def-form-rule (will verb+object)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype will
-                   ))
-
-(def-form-rule (would verb+object)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype would
-                   ))
-
-(def-form-rule (could verb+object)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype could
-                   ))
-
-(def-form-rule (should verb+object)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype should
-                   ))
-
-(def-form-rule (can verb+object)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype can
-                   ))
-
-(def-form-rule (may verb+object)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype may
-                   ))
-
-(def-form-rule (might verb+object)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype might
-                   ))
-|#
-
 
 ;;--- modal + verb+passive
 
@@ -383,51 +181,5 @@ They might well work as straight-up cfr rules, and that's a case
                 :head :right-edge
   :form vg+passive
   :referent (:function absorb-auxiliary left-edge right-edge))
-
-
-#|
-(def-form-rule (will verb+passive)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype will
-                   ))
-
-(def-form-rule (would verb+passive)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype would
-                   ))
-
-(def-form-rule (could verb+passive)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype could
-                   ))
-
-(def-form-rule (should verb+passive)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype should
-                   ))
-
-(def-form-rule (can verb+passive)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype can
-                   ))
-
-(def-form-rule (may verb+passive)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype may
-                   ))
-
-(def-form-rule (might verb+passive)
-  :form vg
-  :referent (:head right-edge
-             ;;:subtype might
-                   ))
-
-|#
 
 
