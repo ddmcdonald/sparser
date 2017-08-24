@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "affix rules"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  January 2017
+;;;  Version:  August 2017
 
 ;; moved over from preterminals code 5/11/93, v2.3
 ;; 0.1 (3/28/94) changed the 'rule' on these edges from :known-affix to
@@ -47,162 +47,119 @@
 ;;; Assigning brackets and making categories
 ;;;------------------------------------------
 
-(defparameter *unknown-word* nil)
-(defparameter *show-morphs* nil)
-(defparameter *block-verbification* t)
-(defparameter *show-verbification* nil)
-(defparameter *verbified-nouns* nil)
+(defparameter *unknown-word* nil "Dynamically bound to the original unknown word")
+
+(defparameter *show-morphs* nil "Store data on the unknowns")
+(defparameter *block-verbification* t "Gates flet function below")
+(defparameter *show-verbification* nil "Accounce them")
+(defparameter *verbified-nouns* nil "Accumulates a list of them")
 
 (defun assign-morph-brackets-to-unknown-word (word morph-keyword)
   "Called from make-word/all-properties, which is itself called
-   on the way back from the tokenizer. "
+   on the way back from the tokenizer."
   (declare (special *show-sentence-for-early-errors*))
   (tr :defining-unknown-word-from-morph word morph-keyword)
 
   (let ((*source-of-unknown-words-definition* :morphology)
         (*unknown-word* word))
     (declare (special *source-of-unknown-words-definition* *unknown-word*))
+
+    (flet ((block-verbified-nouns (lemma)
+             ;; originally put in to block creation of a verb form of "residue"
+             ;;  based in a typo "residued"
+             (declare (special *verbified-nouns*))
+             (when (and (category-p (form-of lemma))
+                        (eq (cat-symbol (form-of lemma)) 'category::common-noun)
+                        (names-bio-chemical-entity? lemma))
+               (unless *sentence-making-sweep*
+                 (when *show-verbification*
+                   (warn "^^^^Refusing to verbify a previously defined noun ~s~%" word)
+                   (pushnew (pname word) *verbified-nouns* :test #'equal))))))
   
-    ;;(push-debug `(,word ,morph-keyword)) (break "fix stemming")
-    (add-new-word-to-catalog word morph-keyword)
+      ;;(push-debug `(,word ,morph-keyword)) (break "fix stemming")
+      (add-new-word-to-catalog word morph-keyword)
 
-    (setq morph-keyword (no-morph-on-short-words word))
-    (when (and *show-morphs* morph-keyword)
-      (push (list morph-keyword word) *show-morphs*))
-    (etypecase morph-keyword
-      (null (setup-unknown-word-by-default word))
-      (keyword 
-       (case morph-keyword
-         ;;(:ends-in-s) ;; always ambiguous?
-         ;;/// put in both ??      
-         (:ends-in-ed
-          (let ((lemma (stem-form word)))
-            (declare (special lemma))
-            (tr :defining-lemma-as-given-morph lemma 'verb)
-            (if *edge-for-unknown-words*
-                (then
-                  (cond ((and *block-verbification*
-                           ;; originally put in to block creation of a verb form of "residue"
-                           ;;  based in a typo "residued"
-                           (category-p (form-of lemma))
-                           (eq (cat-symbol (form-of lemma)) 'category::common-noun)
-                           (names-bio-chemical-entity? lemma))
-                         (unless *sentence-making-sweep*
-                           (when *show-verbification*
-                             (warn "^^^^Refusing to verbify a previously defined noun ~s~%" word)
-                             (pushnew (pname word) *verbified-nouns* :test #'equal))))
-                        (t (setup-verb lemma)
-                            (sanity-check-word-formation word lemma :ed))))
-              (assign-brackets-as-a-main-verb lemma))))
-
-         (:ends-in-ing
-          (let ((lemma (stem-form word)))
-            (tr :defining-lemma-as-given-morph lemma 'verb)
-            (if *edge-for-unknown-words*
-                (then
-                  (cond ((and *block-verbification*
-                              (category-p (form-of lemma))
-                              (eq (cat-symbol (form-of lemma)) 'category::common-noun)
-                              (names-bio-chemical-entity? lemma))
-                         (unless *sentence-making-sweep*
-                           (when *show-verbification*
-                             (warn "^^^^Refusing to verbify a previously defined noun ~s~%" word)
-                             (pushnew (pname word) *verbified-nouns* :test #'equal))))
-                        (t (setup-verb lemma)
-                           (sanity-check-word-formation word lemma :ing))))
+      (setq morph-keyword (no-morph-on-short-words word)) ;; one-syllable?
+      
+      (when (and *show-morphs* morph-keyword)
+        (push (list morph-keyword word) *show-morphs*))
+    
+      (etypecase morph-keyword
+        (null (setup-unknown-word-by-default word))
+        (keyword 
+         (case morph-keyword
+           ;;(:ends-in-s) ;; always ambiguous?
+           (:ends-in-ed
+            (let ((lemma (stem-form word)))
+              (tr :defining-lemma-as-given-morph lemma 'verb)
+              (if *edge-for-unknown-words*
+                (if *block-verbification*
+                  (block-verbified-nouns lemma)
+                  (else (setup-verb lemma)
+                        (sanity-check-word-formation word lemma :ed)))              
                 (assign-brackets-as-a-main-verb lemma))))
-         
-         (:ends-in-ly
-          (tr :defining-as-given-morph 'adverb)
-          (if *edge-for-unknown-words*
-            (setup-adverb word)
-            (assign-brackets-to-adverb word)))
-         
-         (:ends-in-er
-          (tr :defining-as-given-morph 'comparative)
-          (if *edge-for-unknown-words*
-            (setup-comparative word)
-            (assign-brackets-to-adjective word)))
-         
-         (:ends-in-est
-          (tr :defining-as-given-morph 'superlative)
-          (if *edge-for-unknown-words*
-            (setup-superlative word)
-            (assign-brackets-to-adjective word)))
-         
-         (otherwise
-          (push-debug `(,word ,morph-keyword))
-          (error "Unexpected affix keyword: ~A"
-                 (word-morphology word)))))
-      (cons
-       ;; e.g. ("ible" ADJ)
-       (let ((morph-key (cadr morph-keyword)))
-         (ecase morph-key
-           (n
-            (tr :defining-as-given-morph 'noun)
+
+           (:ends-in-ing
+            (let ((lemma (stem-form word)))
+              (tr :defining-lemma-as-given-morph lemma 'verb)
+              (if *edge-for-unknown-words*
+                (if *block-verbification*
+                  (block-verbified-nouns lemma)
+                  (else (setup-verb lemma)
+                        (sanity-check-word-formation word lemma :ing)))
+                (assign-brackets-as-a-main-verb lemma))))
+           
+           (:ends-in-ly
+            (tr :defining-as-given-morph 'adverb)
             (if *edge-for-unknown-words*
-              (setup-common-noun word)
-              (assign-brackets-as-a-common-noun word)))
-           (adj
-            (tr :defining-as-given-morph 'adjective)
-            (if *edge-for-unknown-words*
-              (setup-adjective word)
-              (assign-brackets-to-adjective word)))
-           (comparative
-            (tr :defining-as-given-morph 'adjective)
+              (setup-adverb word)
+              (assign-brackets-to-adverb word)))
+           
+           (:ends-in-er
+            (tr :defining-as-given-morph 'comparative)
             (if *edge-for-unknown-words*
               (setup-comparative word)
               (assign-brackets-to-adjective word)))
-           (superlative
-            (tr :defining-as-given-morph 'adjective)
+           
+           (:ends-in-est
+            (tr :defining-as-given-morph 'superlative)
             (if *edge-for-unknown-words*
               (setup-superlative word)
               (assign-brackets-to-adjective word)))
-           (v
-            (tr :defining-as-given-morph 'verb)
-            (if *edge-for-unknown-words*
-              (setup-verb word)
-              (assign-brackets-as-a-main-verb word)))))))))
-
-(defun names-bio-chemical-entity? (lemma)
-  (let* ((cfr (find-single-unary-cfr lemma))
-         (ltype (and cfr (cfr-referent cfr)
-                     (itype-of (cfr-referent cfr)))))
-    (when (itypep ltype 'bio-chemical-entity)
-      (warn "blocking verbification of ~s" lemma)
-      t)))
-
-(defparameter *announce-bad-affixes* nil)
-    
-(defun sanity-check-word-formation (word lemma type)
-  "The rules for forming +ing and +ed verb forms from a lemma
-   will make mistakes in applying their criteria for when the
-   final consonant is doubled. If that happened, then the rule
-   set will be on a word that doesn't occur, e.g. 'anchorring'.
-   We make a new rule set and unary rule for the correct 
-   word ('anchoring') copying as much as possible."
-  (unless (rule-set-for word)
-    ;; It will have a rule set if the affix was added correctly
-    (let* ((bad-word (ecase type
-                       (:ed (ed-form-of-verb lemma))
-                       (:ing (ing-form-of-verb lemma))))
-           (bad-rs (rule-set-for bad-word))
-           (bad-rule (car (rs-single-term-rewrites bad-rs)))
-           (new-rs (establish-rule-set-for word)))
-      (when *announce-bad-affixes*
-        (format t "~&Bad ~a form: ~a~%" type bad-word))
-      (let ((new-rule (construct-cfr ;; as basic as possible
-                       (cfr-category bad-rule)
-                       (list word)
-                       (cfr-form bad-rule)
-                       (cfr-referent bad-rule)
-                       :def-cfr ;; well sort of
-                       (cfr-schema bad-rule))))
-        (when *announce-bad-affixes*
-          (format t "~&New rule: ~a~%" new-rule))
-
-        (setf (rs-single-term-rewrites new-rs) (list new-rule))
-        (setf (rs-phrase-boundary new-rs) (rs-phrase-boundary bad-rs))))))
+           
+           (otherwise
+            (push-debug `(,word ,morph-keyword))
+            (error "Unexpected affix keyword: ~A"
+                   (word-morphology word)))))
+        (cons
+         ;; e.g. ("ible" ADJ)
+         (let ((morph-key (cadr morph-keyword)))
+           (ecase morph-key
+             (n
+              (tr :defining-as-given-morph 'noun)
+              (if *edge-for-unknown-words*
+                (setup-common-noun word)
+                (assign-brackets-as-a-common-noun word)))
+             (adj
+              (tr :defining-as-given-morph 'adjective)
+              (if *edge-for-unknown-words*
+                (setup-adjective word)
+                (assign-brackets-to-adjective word)))
+             (comparative
+              (tr :defining-as-given-morph 'adjective)
+              (if *edge-for-unknown-words*
+                (setup-comparative word)
+                (assign-brackets-to-adjective word)))
+             (superlative
+              (tr :defining-as-given-morph 'adjective)
+              (if *edge-for-unknown-words*
+                (setup-superlative word)
+                (assign-brackets-to-adjective word)))
+             (v
+              (tr :defining-as-given-morph 'verb)
+              (if *edge-for-unknown-words*
+                (setup-verb word)
+                (assign-brackets-as-a-main-verb word))))))))))
 
 
 ;;;------------------------
@@ -320,5 +277,63 @@
     (list edge)))
 
 
+;;;-----------------------------------------------
+;;; Block known bad conversions. Collect evidence
+;;;-----------------------------------------------
+
+(defparameter *announce-bad-affixes* nil
+  "flag used in sanity-check-word-formation")
+    
+(defun sanity-check-word-formation (word lemma type)
+  "The rules for forming +ing and +ed verb forms from a lemma
+   will make mistakes in applying their criteria for when the
+   final consonant is doubled. If that happened, then the rule
+   set will be on a word that doesn't occur, e.g. 'anchorring'.
+   We make a new rule set and unary rule for the correct 
+   word ('anchoring') copying as much as possible."
+  (unless (rule-set-for word)
+    ;; It will have a rule set if the affix was added correctly
+    (let* ((bad-word (ecase type
+                       (:ed (ed-form-of-verb lemma))
+                       (:ing (ing-form-of-verb lemma))))
+           (bad-rs (rule-set-for bad-word))
+           (bad-rule (car (rs-single-term-rewrites bad-rs)))
+           (new-rs (establish-rule-set-for word)))
+      (when *announce-bad-affixes*
+        (format t "~&Bad ~a form: ~a~%" type bad-word))
+      (let ((new-rule (construct-cfr ;; as basic as possible
+                       (cfr-category bad-rule)
+                       (list word)
+                       (cfr-form bad-rule)
+                       (cfr-referent bad-rule)
+                       :def-cfr ;; well sort of
+                       (cfr-schema bad-rule))))
+        (when *announce-bad-affixes*
+          (format t "~&New rule: ~a~%" new-rule))
+
+        (setf (rs-single-term-rewrites new-rs) (list new-rule))
+        (setf (rs-phrase-boundary new-rs) (rs-phrase-boundary bad-rs))))))
 
 
+(defun names-bio-chemical-entity? (lemma)
+  (let* ((cfr (find-single-unary-cfr lemma))
+         (ltype (and cfr (cfr-referent cfr)
+                     (itype-of (cfr-referent cfr)))))
+    (when (itypep ltype 'bio-chemical-entity)
+      (warn "blocking verbification of ~s" lemma)
+      t)))
+
+(defun warn-about-verbified-nouns ()
+  "Called as the last action taken by scan-terminals-loop, which is
+   just before the drivers call sentence-processing-core to do the
+   'above the word' parsing. 
+"
+  (declare (special *verbified-nouns*))
+  (let ((verbified
+         (loop for v in (remove "inding" *verbified-nouns* :test #'equal)
+            when (or (search (format nil " ~a" v) (current-string) :test #'equal)
+                     (search (format nil "-~a" v) (current-string) :test #'equal))
+            collect v)))
+    (when verbified
+      (warn "verbified noun(s) ~s in ~s~%"
+            verbified (current-string)))))

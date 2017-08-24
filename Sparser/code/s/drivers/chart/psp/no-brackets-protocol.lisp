@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "no-brackets-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  May 2017
+;;;  version:  August 2017
 
 ;; Initiated 10/5/14, starting from the code for detecting bio-entities.
 ;; 10/29/14 added flags to turn off various steps so lower ones
@@ -111,7 +111,6 @@
         (when s (sentence-string s)))
       *current-sentence-string*
       *string-from-analyze-text-from-string*
-
       ""))
 
 (defun identify-current-sentence (&optional no-break)
@@ -226,18 +225,14 @@
   "Handles all of the processing on a sentence that is done
    after scan-terminals-loop runs. Called by sentence-sweep-loop
    or scan-terminals-and-do-core depending one whether we're
-   working with a document or just a text stream."
+   working with a document or just a text stream.
+    The operation just before this is scan-terminals-loop, 
+   which handled polywords, fsa, no-space, and populating
+   the terminal edges."
   (declare (special *sweep-for-patterns* *do-early-rules-sweep*
-                     *grammar-and-model-based-parsing* *verbified-nouns*))
+                    *grammar-and-model-based-parsing*))
   (setq *sentence-in-core* sentence)
-  (let ((verbified (loop for v in (remove "inding" *verbified-nouns* :test #'equal)
-                           when (or (search (format nil " ~a" v) (current-string) :test #'equal)
-                                    (search (format nil "-~a" v) (current-string) :test #'equal))
-                           collect v)))
-    (if verbified (warn "verbified noun(s) ~s in ~s~%"
-                        verbified (current-string))))
   (possibly-print-sentence)
-
   (when *grammar-and-model-based-parsing*
     ;; This flag is T by default. It is rebound to nil
     ;; during the epistemic phase of document processing

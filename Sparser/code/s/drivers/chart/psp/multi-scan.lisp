@@ -23,7 +23,7 @@
 (in-package :sparser)
 
 ;;;---------------------------------------------------------
-;;; 0th pass - just the new words and sentence delimitation
+;;; 0th pass -- delimiting / using sentences from documents
 ;;;---------------------------------------------------------
 
 (defparameter *trace-scan-words-loop* nil
@@ -31,6 +31,8 @@
 
 ;; (trace-paragraphs) -- period-hook 
 ;; (setq *trace-scan-words-loop* t)
+
+;;--- For working with a document
 
 (defun scan-words-loop (position-before word)
   "This routine is called by scan-sentences-to-eof which itself
@@ -116,17 +118,24 @@
   "Carries out the first layer of analysis by checking for and
    applying word-level rules. It is the core routine regardless
    of whether source is a document or just a string.
+
    Structured as a succession of passes ('sweeps') over
    a sentence-worth of text:
+
    1st. do the polywords. This sweep also has the job of 
-   delimiting the sentence using a throw from period-hook.
+     delimiting the sentence using a throw from period-hook.
    2d. sweep over the treetops in the sentence to
-   handle any word-level fsas. 
+     handle any word-level fsas. 
    3d. Apply word-level completion hook to each word that
-   isn't covered by an edge.
+     isn't covered by an edge.
    4th. Introduce the terminal edges for every unspanned word. 
+
    We return by throwing to :end-of-sentence, which is
    what period-hook does if its called conventionally."
+
+  (declare (special *sweep-for-polywords* *sweep-for-word-level-fsas*
+                    *sweep-for-terminal-edges*))
+  
   (tr :scan-terminals-loop)
   (simple-eos-check position-before word)
   (sentence-level-initializations) ;; clear traversal state
@@ -154,6 +163,8 @@
     (when *sweep-for-terminal-edges*
       (terminal-edges-sweep initial-position-before end-pos))
 
+    (warn-about-verbified-nouns)
+    
     (tr :scan-terminals-loop-finished)
     (throw :end-of-sentence t)))
 

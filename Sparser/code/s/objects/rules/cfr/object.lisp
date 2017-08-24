@@ -101,6 +101,11 @@ This sorts out what to use as the category in the unusual cases."
           ;;/// check for there being more than one?
           (car single-rewrites))))))
 
+(defun form-of (word)
+  (let ((cfr (find-single-unary-cfr word)))
+    (when cfr
+      (cfr-form cfr))))
+#| from <r3>/code/sparser-extensions/new-words.lisp |#
 
 (defgeneric find-unary-cfr/referent (word category)
   (:documentation
