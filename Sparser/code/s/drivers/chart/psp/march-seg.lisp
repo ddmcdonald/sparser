@@ -209,7 +209,7 @@
 (defun priority-triple? (triple chunk)
   (declare (special *n-bar-categories*))
   (or (priority-rule? (car triple))
-      (domain-priority-triple? triple)
+      (when (current-script :biology) (domain-priority-triple? triple))
       (and (memq 'ng (chunk-forms chunk))
            (edge-p (second triple))
            (edge-p (third triple))

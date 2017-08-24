@@ -289,26 +289,26 @@
 
         (if (not (and start-index end-index))
             ;; need both indices to extract the string
-            (setf (gethash referent *surface-strings*) "")
-            (let ((str
-                   (extract-string-from-char-buffers start-index end-index)))
-              (setf (gethash edge *surface-strings*) str)
-              (setq str (string-trim " 
+          (setf (gethash referent *surface-strings*) "")
+          
+          (let ((str (extract-string-from-char-buffers start-index end-index)))
+            (setf (gethash edge *surface-strings*) str)
+            (setq str (string-trim " 
 " str))
-              (setf (gethash referent *surface-strings*) str)
+            (setf (gethash referent *surface-strings*) str)
+
+            (when (current-script :biology)            
               (maybe-record-localization-interesting-heads edge referent)
-              
-              (when (or
-                     (and  (member (edge-right-daughter edge)
-                                   '(:SINGLE-TERM :long-span))
-                           ;; :long-span for polywords ;ic "cyclin D1"
-                           (individual-p referent))
-                     (itypep (edge-referent edge) category::residue-on-protein))
+              (when (or (and  (member (edge-right-daughter edge)
+                                      '(:single-term :long-span))
+                              ;; :long-span for polywords ;ic "cyclin D1"
+                              (individual-p referent))
+                        (itypep (edge-referent edge) category::residue-on-protein))
                 (maybe-record-bio-chemical-entity-strings str referent)
-                (setq referent (maybe-insert-raw-text-variable referent edge)))
+                (setq referent (maybe-insert-raw-text-variable referent edge)))            
               (maybe-record-all-referent-surface-strings referent str)
               (maybe-record-bio-entity-heads referent edge)
-              (maybe-record-bio-chemical-heads referent edge)))))))
+              (maybe-record-bio-chemical-heads referent edge))))))))
 
 
 

@@ -577,6 +577,7 @@
   (cond ((and b (eq (pname (binding-variable b)) 'items))
          (find-binding-dependencies-for-items value edges top-edge))
         ((and (individual-p top-ref)
+              (current-script :biology)
               (itypep top-ref category::protein-family)
               b
               (member (pname (binding-variable b))
