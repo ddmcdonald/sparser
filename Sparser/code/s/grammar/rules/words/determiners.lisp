@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "determiners"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   March 2017
+;;;   Version:   August 2017
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 0.1 (6/8) added Define-determiner
@@ -47,11 +47,51 @@
              (cfr ;; the base rule for the word
                (def-cfr/expr category ;; lhs
                              (list word) ;; rhs
-                :form (category-named 'det)
+                 :form (category-named 'det)
                  :referent object)))
         (add-rule cfr object)
         object))))
 
+
+
+(define-category demonstrative
+  :specializes linguistic
+  :documentation "Like determiner, this category is for reasoning 
+ about these terms, particularly to organize their anaphoric aspects.
+ A demonstrative by itself 'that is a red block' will have a denotation
+ in context. Can also refer to eventualities: 'I don't know how to
+ do that'. When we know what to with them we can add variables to
+ model notions like distal vs. proxal.")
+
+#| The grammar already refers to the demonstratives individually
+by their label as a category. Shifting the type of the category
+is transparent in the grammar but does provide a descriminating
+type for variable restrictions and reference. |#
+
+(defun define-demonstrative (string &key brackets)
+  (unless brackets
+    (setq brackets '( ].phrase .[article)))
+  (let ((word (define-function-word string
+                :brackets brackets
+                :form 'det))
+        (category-name (name-to-use-for-category string)))
+
+    (let* ((category-form
+            `(define-category ,category-name
+               :specializes demonstrative
+               :instantiates :self
+               :bindings (word ,word)))
+           (category (eval category-form)))
+
+      (let* ((object (define-individual category
+                        :word word))
+             (cfr ;; the base rule for the word
+               (def-cfr/expr category ;; lhs
+                             (list word) ;; rhs
+                 :form (category-named 'det)
+                 :referent object)))
+        (add-rule cfr object)
+        object))))
 
 ;;;-------
 ;;; cases
@@ -62,17 +102,11 @@
 (define-determiner "a")
 (define-determiner "A") ;;/// still needed?
 
-;; gets its own brackets because of its functional ambiguity
-;; with a subordinate conjunction. Giving it a different opening
-;; bracket than 'article' or 'np' will let the close bracket from
-;; any immediately following verb to go through rather than
-;; be overridden (i.e. with that, we assume that a spelling form
-;; that can be a verb -is- one in this case, rather than assume
-;; its noun/verb ambiguous and should be taken in its noun
-;; reading.
-(define-determiner "that"  :brackets '( ].phrase  |.[that| ))
 
-(define-determiner "this"  :brackets '( ].phrase .[np ))
-(define-determiner "these"  :brackets '( ].phrase .[np ))
-(define-determiner "those"  :brackets '( ].phrase .[np ))
+;; 'that' gets its own brackets because of its functional ambiguity
+;; with a subordinate conjunction.
+(define-demonstrative "that"  :brackets '( ].phrase  |.[that| ))
+(define-demonstrative "this"  :brackets '( ].phrase .[np ))
+(define-demonstrative "these"  :brackets '( ].phrase .[np ))
+(define-demonstrative "those"  :brackets '( ].phrase .[np ))
 
