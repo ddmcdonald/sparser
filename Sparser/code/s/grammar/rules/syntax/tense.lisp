@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "tense"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2017
+;;;  Version:  August 2017
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3
 ;; 0.1 (5/15) giving it some real semantic content
@@ -66,7 +66,6 @@
 ;; Has sort of an anaphoric feel sometimes, even as
 ;; an auxiliary. 
 
-
 (def-cfr do ("do")
   :form verb
   :referent do)
@@ -120,3 +119,20 @@
 (def-form-rule (do vg)
   :form vg
   :referent (:function absorb-auxiliary left-edge right-edge))
+
+
+;;--- composing with demonstratives
+
+(defun setup-do+demonstative-rules ()
+  (let ((rules
+         (loop for o in '(this that these those)
+            collect (eval
+                     `(def-cfr do (do ,o)
+                        :form vp
+                        :referent (:head left-edge
+                                   :bind (predicate right-edge))) ))))
+    (add-rules rules category::do)))
+#| Can't use a form rule because the head is automatically the
+form edge (i.e. demonstrative). Can't use syntactic rules because
+they're over two form categories.|#
+(setup-do+demonstative-rules)
