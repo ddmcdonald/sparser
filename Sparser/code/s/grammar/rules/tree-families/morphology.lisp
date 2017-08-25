@@ -1022,10 +1022,14 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 
     (let* ((word-list (copy-list words))
            (final-cell (last word-list)))
+      (declare (special word-list))
       (rplaca final-cell last-word-plural)
-
-      (let* ((word-strings (loop for w in word-list collect (word-pname w)))
-             (pw-string (spaced-string word-strings)))
+      (let* ((word-strings (mapcar #'word-pname word-list))
+             (pw-string
+              ;;(spaced-string word-strings)))
+              ;; the above causes issues now that we're not ignoring
+              ;; whitespace in definitions
+              (apply #'string-append word-strings)))
         (define-polyword/expr pw-string)))))
 
 

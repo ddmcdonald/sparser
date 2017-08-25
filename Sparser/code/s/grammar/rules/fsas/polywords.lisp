@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2015-2017  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "polywords"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  5.0 May 2015
+;;;  Version:  August 2017
 
 ;; 3.0 (10/2/92 v2.3) tweeked interactions with scan as that routine
 ;;      was broken down into smaller parts.
@@ -19,7 +19,11 @@
 ;; 4.4 (8/1) elaborated mix-case check to allow competion of lc's as a default if the
 ;;      specific case doesn't complete
 ;;     (8/4/91) added field for the rule to the edges these form
-;; 5.0 (5/19/15) Complete make-over as a FSA. 
+;; 5.0 (5/19/15) Complete make-over as a FSA.
+
+;; 8/26/17 changed so that polywords appreciate whether they were
+;; defined with spaces so things like the cell line "AT5" no longer
+;; claim to match on phrases like "at 5min"
 
 (in-package :sparser)
 
@@ -35,79 +39,138 @@ grammar/rules/FSAs/polywords4.lisp:  (defun do-polyword-fsa (word cfr position-s
 
 ;; (trace-fsas)
 
+(defvar *longest-pw-success-state* nil
+  "Set during the traversal of the polyword state sequence whenever
+   the state is an accept state. The traversal will often continue
+   looking for a longer pw, so this provides a memory of identified
+   pw should that continuation fail.")
+
+(defvar *position-of-longest-success-state* nil)
+
+
+;; (trace-fsas)
+
 (defun do-polyword-fsa (first-word initial-state position-before)
-  ;; Some polyword starts at this position. 
-  ;; We have its initial state and proceed to look 
-  ;; for continuations. 
-  ;; We need the next position and the word there. 
-  ;; That word takes us into a new state of the polyword
-  ;; that starts here or it doesn't.
+  "Called by check-for-polywords in scan or by polyword-check in
+   multi-scan. We have just scanned 'first-word' at 'position-before'.
+   and determined that it is the first word in a polyword (or the
+   first word of many alternative polywords). That check provided
+   us with the polyword-state passed in as 'initial-state'. 
+      Note that because this is an fsa, we are required to return
+   the position that we end at, or else nil if we didn't succeed."
+  (declare (special *longest-pw-success-state*
+                    *position-of-longest-success-state*
+                    *one-space*))
+                                        ;
+
   (when (cfr-p initial-state) ;; bad one on old style
     ;; e.g. "a2abe5_human"
     (return-from do-polyword-fsa nil))
 
-  (flet ((make-pw-edge (first-pos end-pos pw)
-           ;; the 'last-pos' halds the word that's the 
-           ;; last element of the pw
-           (let ((starting-vector (pos-starts-here first-pos))
-                 (ending-vector (pos-ends-here end-pos)))
-             (make-edge-for-polyword 
-              pw starting-vector ending-vector))))
+  ;; initialize state
+  (setq *longest-pw-success-state* nil
+        *position-of-longest-success-state* nil)
 
+  ;; prime the pump
+  (let ((state initial-state)
+        (prior-position position-before)
+        next-state  next-position )
+    (declare (special state prior-position))
     (tr :polyword-start first-word position-before)
-    (let ((position (chart-position-after position-before))
-          (state initial-state)
-          word  table  next-state    
-          accept-pw  accept-positions )
-      (loop
-        (unless (includes-state position :scanned)
-          (scan-next-position))
-        (setq word (pos-terminal position))
-        (tr :pw-word-check word)
-        (setq table (pw-continuations state)
-              next-state (gethash word table)
-              accept-pw (when next-state
-                          (pw-accept-state? next-state)))
+    
+    ;; call the loop
+    (loop
+       (unless (pw-continuations state)
+         (return))
+      ;(lsp-break "before try-to-extend-pw")
+       (multiple-value-setq (next-state next-position)
+         (try-to-extend-pw state prior-position))
+
+       (unless next-state (return))
+
+       ;; update for next pass through the loop
+       (setq state next-state
+             prior-position next-position))
+
+    (when *longest-pw-success-state*
+      ;(lsp-break "found polyword")
+      ;; We succeeded. Lookup the polyword. Make an edge over it.
+      ;; Return the position we succeeded at.
+      ;; Otherwise we're returning nil to indicate we didn't find one.
+      (let* ((pw (pw-accept-state? *longest-pw-success-state*))
+             (edge (make-edge-for-polyword 
+                    pw
+                    (pos-starts-here position-before)
+                    (pos-ends-here *position-of-longest-success-state*))))
+        *position-of-longest-success-state* ))))
+
+
+
+
+(defun try-to-extend-pw (state prior-position &aux next-state)
+  "We have just reached 'state' from 'prior-position'. 
+   If there are no continuations from this state then we're done
+   but that's checked for in the outer-loop.
+   Look at the next position, paying attention both to its
+   whitespace (representing the whitespace, if any, between
+   the prior word and the word starting there) and the word.
+   If the word has a capitalized variant that applies at this
+   position try to extend with it before trying the standard, 
+   lower case word."
+  (declare (special *longest-pw-success-state*
+                    *position-of-longest-success-state*
+                    *one-space* *end-of-source*))
+
+  (flet ((canonicalize-whitespace (position)
+           (when (pos-preceding-whitespace position)
+             *one-space*))
+         (continues (term state)
+           (when state
+             (gethash term (pw-continuations state)))))
+
+    (let ((position (chart-position-after prior-position)))
+      
+      (unless (includes-state position :scanned)
+        (scan-next-position))
+      
+      (let* ((whitespace (canonicalize-whitespace position))
+             ;; if there is whitespace, we need to check if the pw can
+             ;; continue past it and set the state to include the
+             ;; space before dealing with the pos-terminal
+             (curr-state (if whitespace
+                             (continues whitespace state)
+                             state))
+             (word (pos-terminal position))
+             (variant (capitalized-correspondent position word)))
+
+        (when (eq word *end-of-source*) ;; we can't possibly extend
+          (return-from try-to-extend-pw
+            (values nil position)))
+
+        ;; lookup the next state. This cascade assumes that
+        ;; if there is whitespace then the continuation will depend
+        ;; on that whitespace, and that if there is a capitalized
+        ;; variant and it does not continue then neither will the
+        ;; lowercase word.
+        (if variant
+            (setq next-state (continues variant curr-state))
+            (setq next-state (continues word curr-state)))
         (if next-state
-          (tr :pw-word-extends)
+          (then 
+            (tr :pw-word-extends)
+            (when (pw-accept-state? next-state)
+              (setq *longest-pw-success-state* next-state
+                    ;; the end position needs to be the one after the word we've just added
+                    *position-of-longest-success-state* (chart-position-after position))))
           (tr :pw-word-doesnt-extend))
 
-        (unless next-state ;; maybe the capitalization is wrong
-          (let ((caps-word (capitalized-correspondent position word)))
-            (tr :pw-caps-variant position word)
-            (cond
-             (caps-word
-              (tr :pw-found-caps-variant caps-word)
-              (setq next-state (gethash caps-word table))
-              (cond
-               (next-state
-                (tr :pw-word-extends)
-                (setq accept-pw (pw-accept-state? next-state)))
-               (t (tr :pw-word-doesnt-extend))))
-             (t (tr :pw-no-caps-variant)))))
+        ;; return the new position and that next state        
+        (values next-state position)))))
 
-        (when accept-pw
-          (tr :pw-complete-looking-further accept-pw)
-          (push (cons accept-pw position) accept-positions))
-        (cond
-         ((null next-state)
-          (if accept-positions
-            (let* ((best (car accept-positions))
-                   (pw (car best))
-                   (end-pos (chart-position-after (cdr best))))
-              (let ((edge (make-pw-edge 
-                           position-before end-pos pw)))
-                (tr :pw-doesnt-extend-taking-complete edge)
-                (return end-pos)))
-            (else
-              (tr :pw-word-doesnt-extend)
-              (return nil))))
-         (t ;; keep looking
-          (setq position (chart-position-after position)
-                state next-state)))))))
 
- 
 
+;;///////// this is unchanged -- could be part of tracing out the
+;; entire continuation space from a start-word
 
 (defun walk-pw-states (pw)
   (let* ((word-list (pw-words pw))
