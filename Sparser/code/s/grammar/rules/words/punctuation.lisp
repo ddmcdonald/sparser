@@ -22,7 +22,7 @@
 (in-package :sparser)
 
 
-(define-punctuation tab  #\tab)             ;; ascii 9
+(define-punctuation tab-char  #\tab)             ;; ascii 9
 (define-punctuation linefeed #\Linefeed)    ;; 10
 (define-punctuation new-page #\Page)        ;; 12
 ;; newline, #13, is defined in grammar/rules/words/required.lisp
