@@ -73,4 +73,4 @@
 (noun "GST-PIMT-N" :super plasmid)
 (noun "GST-Med1-CRAF-BXB" :super plasmid)
 (noun "pCMV-ERK2-HA" :super plasmid)
-
+(noun "pGL3B" :super plasmid) ; luciferase reporter plasmid

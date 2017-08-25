@@ -46,10 +46,11 @@
 (noun "dGDP" :super nucleotide)
 
 (def-indiv-with-id nucleotide "adenosine monophosphate" "PCID:6083" :synonyms ("AMP" "adenosine 3',5'-monophosphate" "adenosine monophosphate"))
-(noun ("cAMP" "cyclic adenosine 3',5'-monophosphate") :super nucleotide)
 
+(def-indiv-with-id nucleotide "cyclic-AMP" "CHEBI:17489" :name "3',5'-cyclic AMP" :synonyms ("cAMP" "cyclic adenosine 3',5'-monophosphate" "cyclic adenosine monophosphate"))
 (noun "dAMP" :super nucleotide)
-(noun ("ATP" "adenosine triphosphate") :super nucleotide)
+
+(def-indiv-with-id nucleotide "ATP"  "PCID:5957" :name "adenosine triphosphate")
 (noun "dATP" :super nucleotide)
 (noun ("ADP" "adenosine diphosphate") :super nucleotide)
 (noun "dADP" :super nucleotide)
@@ -60,12 +61,16 @@
 (noun "dUDP" :super nucleotide)
 (noun "UDP" :super nucleotide)
 (noun "dGMP" :super nucleotide)
-(noun "GMP" :super nucleotide)
+(def-indiv-with-id nucleotide "GMP"  "PCID:6804" :name "guanosine monophosphate") 
 (noun "CMP" :super nucleotide)
 (noun "dCMP" :super nucleotide)
 (noun "dUMP" :super nucleotide)
 (noun "UMP" :super nucleotide)
-(noun "TDP" :super nucleotide)
+(def-indiv-with-id nucleotide "UTP" "CHEBI:15713" :name "uridine triphosphate") ;; also PCID:6133
+(def-indiv-with-id nucleotide "dUTP" "CHEBI:17625" :name "deoxyuridine triphosphate") ;; also "PCID:65070"
+
+
+(def-indiv-with-id nucleotide "TDP" "CHEBI:18075" :name "thymidine diphosphate" :synonyms ("dTDP" "deoxythymidine diphosphate" "dTPP")) ; in this case the deoxy is the same thing
 (noun ("TMP" "(deoxy)thymidine monophosphate" "thymidine monophosphate") :super nucleotide) 
 ;; the same according to wikipedia
 (noun "cytidine monophosphate" :super nucleotide)

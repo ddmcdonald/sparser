@@ -242,6 +242,7 @@
 (def-family "EB1" :members ("UP:O14548" "UP:Q15691" "UP:Q1HVG1"))
 (def-family "EBP" :members ("UP:Q15125" "UP:Q5HYK7"))
 (def-family "EBP-2" :synonyms ("EBP2") :identifier "FA:01056")
+(def-family "eIF" :synonyms ("eukaryotic initiation factor" "eiF")) ; not listing members because there are about 75 of them we have defined
 (def-family "EIF2alpha" :synonyms ("eIF-2-alpha" "eIF2alpha") :identifier "FA:01067")
 (def-family "ELF" :synonyms ("elf") :identifier "XFAM:PF03317.11")
 (def-family "EPHB receptor" :members ("EPHB1_HUMAN" "EPHB2_HUMAN" "EPHB3_HUMAN" "EPHB4_HUMAN" "EPHB6_HUMAN")) ;; removed "EPHB5_HUMAN" because there doesn't seem to be a human homolog for #5 in uniprot even though there is for #6 -- there's a #5 in chickens which we have defined, but that's it
@@ -685,6 +686,7 @@ Guanine Nucleotide Binding Protein" "GTP-Binding Protein")) ; previously we had 
 (def-family "Spy1" :synonyms ("spy1") :identifier "XFAM:PF11357.6")
 (def-family "StAR" :members ("UP:P25092" "UP:P49675"))
 (def-family "Strumpellin" :synonyms ("strumpellin") :identifier "FA:03857")
+(def-family "TAB2/3" :members ("UP:Q9NYJ8" "UP:Q8N5C8"))
 (def-family "TAP" :members ("UP:O60763" "UP:O75369"))
 (def-family "TCL1" :synonyms NIL :identifier "FA:03946")
 (def-family "TCRP1" :synonyms NIL :identifier "XFAM:PF14944.4")
@@ -694,7 +696,6 @@ Guanine Nucleotide Binding Protein" "GTP-Binding Protein")) ; previously we had 
 (def-family "TGF-B superfamily receptor type I" :members ("UP:P37023" "UP:Q04771") :synonyms ("TSR-I"))
 (def-family "TGF-beta" :synonyms ("TGF-β" "TGF-βs" "TGFbeta" "TGFβ" "TGFβs" "Tgfbeta" "Tgfβ") :identifier "FA:03989")
 (def-family "TIM" :members ("UP:P60174" "UP:Q12774" "UP:Q96D42" "UP:Q9UNS1"))
-(def-family "TIM" :members ("UP:Q12774" "UP:Q96D42" "UP:Q9UNS1"))
 (def-family "TIP120" :synonyms NIL :identifier "XFAM:PF08623.8")
 (def-family "TIP49" :synonyms ("Tip49") :identifier "XFAM:PF06068.11")
 (def-family "TKT" :members ("UP:P29401" "UP:Q16832"))
@@ -706,7 +707,6 @@ Guanine Nucleotide Binding Protein" "GTP-Binding Protein")) ; previously we had 
 (def-family "TORC-3" :members ("UP:Q6UUV7" "UP:Q6UUV9") :synonyms ("Transducer of CREB protein 3"))
 (def-family "TPH" :synonyms ("Tph") :identifier "XFAM:PF13868.4")
 (def-family "TPT" :synonyms NIL :identifier "XFAM:PF03151.14")
-(def-family "TR" :members ("UP:P02786" "UP:P25116" "UP:Q16881"))
 (def-family "TR" :members ("UP:P02786" "UP:P25116" "UP:Q16881"))
 (def-family "TRAM" :synonyms NIL :identifier "FA:04146")
 (def-family "TRAM-1" :members ("UP:Q15629" "UP:Q9Y6Q9"))
