@@ -129,3 +129,16 @@ This sorts out what to use as the category in the unusual cases."
        when (itypep referent c) ;; n.b. itypep takes anything
        collect cfr)))
     
+(defun form-of (word) 
+  (declare (special word)) 
+  (let* 
+      ((rs (word-rule-set word))) 
+    (declare (special rs)) 
+    (when rs 
+      (let* 
+          ((rules (rs-single-term-rewrites rs)) 
+           (first-rule (car rules)) 
+           (form (and first-rule 
+                      (cfr-form first-rule)))) 
+        (declare (special rules first-rule form)) 
+        form))))
