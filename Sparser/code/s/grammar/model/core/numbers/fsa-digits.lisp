@@ -45,7 +45,7 @@
 ;;     (6/3/14) In continue-digit-sequence-after-period got a case where there
 ;;       were multiple edges over "3", apparently because it's appeared as
 ;;       a literal somewhere. 
-;; 6.10 (2/5/15) Computed a referent for hyphenated-numbers 
+;; 6.10 (2/5/15) Computed a referent for hypenated-numbers
 ;; 5/25/2015 Added call to place-referent-in-lattice around computation of
 ;;  edge-referent field
 ;;  Initial work to produce a lattice of descriptions
@@ -197,27 +197,27 @@ the fsa would be identified at the word level rather than the category level.
                            ending-position
                            number-of-segments
                            *digit-position-array*))
-      (:hyphenated-numbers
+      (:hypenated-numbers
        (if (eq ending-position (chart-position-after starting-position))
          ;; this is a fencepost condition, e.g. "44-" as in "44-years-old"
-           (span-digits-number starting-position
-                               ending-position
-                               number-of-segments
-                               *digit-position-array*)
-           (let* ((left-edge (aref *digit-position-array* 0))
-                  (left-ref (edge-referent left-edge))
-                  (right-edge (aref *digit-position-array* 1))
-                  (right-ref (edge-referent right-edge))
-                  (i (find-or-make-individual 'hyphenated-number
-                                              :left left-ref :right right-ref)))
-             (make-chart-edge :starting-position starting-position
-                              :ending-position ending-position
-                              :left-daughter left-edge
-                              :right-daughter right-edge
-                              :category category::hyphenated-number
-                              :form category::number
-                              :referent  i
-                              :rule 'digit-fsa)))))
+         (span-digits-number starting-position
+                             ending-position
+                             number-of-segments
+                             *digit-position-array*)
+         (let* ((left-edge (aref *digit-position-array* 0))
+                (left-ref (edge-referent left-edge))
+                (right-edge (aref *digit-position-array* 1))
+                (right-ref (edge-referent right-edge))
+                (i (find-or-make-individual 'hyphenated-number
+                      :left left-ref :right right-ref)))
+           (make-chart-edge :starting-position starting-position
+                            :ending-position ending-position
+                            :left-daughter left-edge
+                            :right-daughter right-edge
+                            :category category::hyphenated-number
+                            :form category::number
+                            :referent  i
+                            :rule 'digit-fsa)))))
     ending-position ))
 
   
@@ -263,7 +263,7 @@ the fsa would be identified at the word level rather than the category level.
                 next-cell array next-position))
                     
               ((eq word-at-next-position *the-punctuation-hyphen*)
-               (setq *interpretation-of-digit-sequence* :hyphenated-numbers)
+               (setq *interpretation-of-digit-sequence* :hypenated-numbers)
                (continue-digit-sequence-after-hyphen
                 next-cell array next-position))
                     
@@ -376,7 +376,7 @@ unknown---in any event, we're taking the first edge that is installed.
                   (or (includes-edge-with-label category::digit-sequence edges)
                       (else
                        (push-debug `(,edges ,next-position))
-                       (error "No obvious digit edge among~%~a" edges))))))
+                       (error "No obvious digit edge amoung~%~a" edges))))))
           (when (null edges) 
             (error "continue-digit-sequence-after-period got null edges"))
           (when (> next-cell 4)
