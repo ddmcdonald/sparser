@@ -153,6 +153,7 @@
 
 (defparameter *predication-links-ht* (make-hash-table :size 100 :test #'equal))
 (defparameter *lambda-var-warnings* nil)
+(defparameter *partitive-pp-warnings* nil)
 
 (defun create-predication-by-binding (var val pred source &key (insert-edge t))
   "Given a variable (var), and two referents (val, pred), assert that
@@ -1710,7 +1711,7 @@
   (declare (special wh-pp vp))
   (if *subcat-test*
       (and wh-pp vp
-           (edge-to-its-left left)
+           (edge-p (edge-to-its-left left))
            (not
             (member (cat-name (edge-category (edge-to-its-left left)))
                     '(number quantifier all some each both many most))))
@@ -1720,8 +1721,8 @@
       (declare (special preposition wh-obj var))
       ;; while debugging -- what's a reasonable default?
       (unless var
-        (warn "no variable for ~a on ~a in~%~s"
-              preposition vp (current-string))
+        (when *partitive-pp-warnings*
+          (warn "no variable for ~a on ~a in~%~s" preposition vp (current-string)))
         (return-from make-pp-relative-clause nil))
 
       (let ((q (extend-wh-object wh-obj
@@ -1870,12 +1871,12 @@
     (let ((variable
            (subcategorized-variable clause preposition pobj-referent)))
       (if *subcat-test*
-        variable
-        (else
-          (collect-subcat-statistics
-           clause preposition variable pobj-referent)
-          (setq clause (bind-variable variable pobj-referent clause))
-          clause)))))
+          variable
+          (when variable
+            (collect-subcat-statistics
+             clause preposition variable pobj-referent)
+            (setq clause (bind-variable variable pobj-referent clause))
+            clause)))))
 
 
 (defun assimilate-adj-complement (vp adjp)
