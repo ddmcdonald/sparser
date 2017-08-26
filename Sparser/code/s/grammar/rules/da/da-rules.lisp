@@ -496,7 +496,7 @@
          (find-base-np-vp-edge (edge-left-daughter e)))
         
         (t (error "find-base-np-vp-edge failed for ~s in ~s"
-                  e (current-sentence)))))
+                  e (current-string)))))
       
 
 
