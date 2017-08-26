@@ -18,6 +18,7 @@
 ;;;-------------------------------------------------
 
 (defvar *show-failed-fronted-pp-attachment* nil)
+(defvar *show-failed-find-base-np-vp-edge* nil)
 
 (defstruct edge-spec category form referent target dominating direction preposed)
 
@@ -495,8 +496,9 @@
                  '(s subordinate-s)) ;; possible/likely conjunction
          (find-base-np-vp-edge (edge-left-daughter e)))
         
-        (t (error "find-base-np-vp-edge failed for ~s in ~s"
-                  e (current-string)))))
+        (t (when *show-failed-find-base-np-vp-edge*
+             (warn "find-base-np-vp-edge failed for ~s in ~s" e (current-string)))
+           nil)))
       
 
 
@@ -1419,6 +1421,7 @@
        (is-basic-collection? (edge-referent e))))
 
 (defun np-conj-pp (np-containing-edge pp-edge)
+  (declare (special np-containing-edge pp-edge))
   (let* ((prep (identify-preposition pp-edge))
          (*pobj-edge* (edge-right-daughter pp-edge))
          (pobj-referent (edge-referent *pobj-edge*)))
@@ -1434,7 +1437,9 @@
                 (right-fringe-of np-containing-edge)
                 #'np-conjunction-edge?)))
           (declare (special np-conj-edge))
-          (when np-conj-edge
+          (when (and np-conj-edge
+                     (not (eq np-conj-edge
+                              (edge-left-daughter np-containing-edge))))
             (let* ((np-ref (edge-referent np-conj-edge))
                    (label (identify-preposition pp-edge))
                    (last-np
@@ -1447,9 +1452,14 @@
                    (target
                     (when var-to-bind
                       (cond
-                        ((edge-p (edge-right-daughter np-conj-edge))
+                        ((and (edge-p (edge-right-daughter np-conj-edge))
+                              (eq (edge-referent (edge-right-daughter np-conj-edge))
+                                  last-np))
                          (edge-right-daughter np-conj-edge))
-                        ((edge-constituents np-conj-edge)
+                        ((and (edge-constituents np-conj-edge)
+                              (edge-p (car (last (edge-constituents np-conj-edge))))
+                              (eq (edge-referent (car (last (edge-constituents np-conj-edge))))
+                                  last-np))
                          (car (last (edge-constituents np-conj-edge))))))))
               (declare (special np-ref label last-np))
               (when (and var-to-bind target)
