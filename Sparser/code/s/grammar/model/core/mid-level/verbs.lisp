@@ -131,12 +131,15 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
   :restrict ((actor physical-agent)
              (patient artifact)) ;; what they build ('result' ??)
   :binds ((adj-comp attribute-value)) ;; "make the stack green"
+  :documentation "The :adjp-complement is seen by the syntax fn
+ assimilate-adj-complement to deal with the 'green' when it 
+ composes with 'make the stack'."
   :realization
     (:verb ("make" :past-tense "made")
      ;; :etf (svo-passive)
      ;; :s actor
      ;; :o patient
-     ;; :adjp-complement adj-comp
+     :adjp-complement adj-comp 
      :mumble ("make" svo :a actor :o patient)))
           
 #|
