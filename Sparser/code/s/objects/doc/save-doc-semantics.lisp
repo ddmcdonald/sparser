@@ -110,8 +110,11 @@
       (:hms-json
        (let ((iforms
               (remove nil
-                      (loop for f in (cdr (reverse *indra-post-process*))
-                            append (indra-form-for-sexpr f (get-pmid) nil)))))
+                      (loop for form in
+                              (loop for f in (cdr (reverse *indra-post-process*))
+                                    append (indra-form-for-sexpr f (get-pmid) nil))
+                            when (cdr (assoc :type form))
+                              collect form))))
          (initialize-indentation)
          (pp-json-list iforms *sentence-results-stream* 3)
          (setq *indra-post-process* (list t)))))
