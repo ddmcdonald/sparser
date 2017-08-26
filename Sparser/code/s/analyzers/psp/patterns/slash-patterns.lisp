@@ -90,7 +90,7 @@
     ((eq (car (last pattern)) :forward-slash) ;; it's final
      ;; It's probably a mistake in the source: "c-Raf/ MAPK-mediated [6]."
      (cond
-       ((not (= 1 (count-if pattern #'(lambda(x)(eq x :forward-slash) pattern))))
+       ((not (= 1 (count-if  #'(lambda(x)(eq x :forward-slash) pattern) pattern)))
         (when *work-on-ns-patterns*
           (error "New case: more than one slash in a slash-final pattern")))
        (t
