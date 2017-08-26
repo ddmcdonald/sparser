@@ -99,21 +99,23 @@
    the special cases handed by do-explicit-rule-completion"
   (let ((edge-to-promulgate (cfr-completion rule)))
     (if (not (keywordp edge-to-promulgate))
-        (cerror
-            "Rule ~s is not a form rule" rule))
-    (let ((promulgated-label
-           (ecase edge-to-promulgate
-             (:left-edge
-              (setq head-edge left-edge)
-              (edge-category left-edge))
-             (:right-edge
-              (setq head-edge right-edge)
-              (edge-category right-edge)))))
+        (progn
+          (warn
+           "Rule ~s is not a form rule" rule)
+          head-edge)
+        (let ((promulgated-label
+               (ecase edge-to-promulgate
+                 (:left-edge
+                  (setq head-edge left-edge)
+                  (edge-category left-edge))
+                 (:right-edge
+                  (setq head-edge right-edge)
+                  (edge-category right-edge)))))
       
-      (setf (edge-category edge) promulgated-label)
-      (setf (edge-form     edge) (or (cfr-form rule)
-                                     (edge-form head-edge)))
-      head-edge)))
+          (setf (edge-category edge) promulgated-label)
+          (setf (edge-form     edge) (or (cfr-form rule)
+                                         (edge-form head-edge)))
+          head-edge))))
 
 
 
