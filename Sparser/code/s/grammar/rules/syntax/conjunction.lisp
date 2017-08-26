@@ -395,6 +395,7 @@
   ;; This is the actual check that says whether we should conjoin
   ;; or not. More heuristic judgements go here as they are
   ;; developed
+   (declare (special edge-before edge-after))
   (when (and (edge-p edge-before)(edge-p edge-after))
     (let ((label-before (edge-category edge-before))
           (label-after (edge-category edge-after))
@@ -402,6 +403,8 @@
           (ref-after (edge-referent edge-after))
           (form-before (edge-form edge-before))
           (form-after (edge-form edge-after)))
+     
+      ;(lsp-break "conjunction-heuristics")
       (cond
         ((eq form-before category::pp)
          ;; don't conjoin prepositional phrases until rest of system can deal with them
@@ -694,6 +697,8 @@
   ;; the edges conjoined so far (i.e. 'right-edge') then return
   ;; that new segment and the position it starts at.  Otherwise
   ;; return nil
+  (declare (special middle-pos right-edge))
+  ;(lsp-break  "seg-before-conjoins")
   (when (eq word::comma (pos-terminal middle-pos))
     (let ((left-edge (edge-ending-at middle-pos)))
       (when left-edge

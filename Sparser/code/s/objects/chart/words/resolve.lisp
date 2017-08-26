@@ -75,7 +75,7 @@
   (let ((strings (token-strings-in-string string)))
     (mapcar #'resolve-string-to-word/make strings)))
 
-(defparameter *symbolp-punct-list* nil)
+
 (defun token-strings-in-string (string)
   (let* ((char-list (coerce string 'list))
          (pending-category (car (tokenizer-entry (first char-list))))
@@ -101,17 +101,10 @@
                (push (coerce (nreverse characters) 'string)
                      strings))
 
-             ;;(unless (symbolp (cdr entry))
-             ;; the punctuation is whitespace or a reserved character
+             (unless (symbolp (cdr entry))
                ;(format t "~&   punctuation is not whitespace~%")
-
-             ;;(if (symbolp (cdr entry))
-               ;;  (pushnew entry *symbolp-punct-list*)
-
-             ;; with r3 load up, the only symbolp punctuation is space
-             ;; and we want to preserve that information when defining
-             ;; polywords
-               (push (coerce (list char) 'string) strings);)
+               ;; the punctuation is whitespace or a reserved character
+               (push (coerce (list char) 'string) strings))
 
              (setq pending-category nil
                        characters nil))

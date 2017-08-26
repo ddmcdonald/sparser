@@ -81,6 +81,7 @@
   (declare (special word::period word::question-mark))
   (define-completion-action word::period :hook 'period-hook)
   (define-completion-action word::question-mark :hook 'period-hook)
+  (define-completion-action word::newline :hook 'period-hook)
   (setq *the-period-hook-is-on* t))
 
 (defun period-hook-off ()
