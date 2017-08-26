@@ -1262,6 +1262,7 @@ applied to l, and values are values associated with that key example"
 
 (defvar *semantic-output-format*)
 (defun init-phase3-directory (&key (semantic-output-format *semantic-output-format*))
+  (declare (special *comparable-indra*))
   (setq *semantic-output-format* semantic-output-format)
   (when (eq semantic-output-format :hms-json)
     (setq *comparable-indra* nil))
