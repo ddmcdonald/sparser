@@ -737,8 +737,7 @@ the process.
           (trim-whitespace
            (extract-characters-between-positions pos-before pos-after)))
          (word (resolve/make actual-characters)))
-    ;;(format t "~&~%Making ~s a bio-entity~%~%" (word-pname word))
-
+    (tr :unknown-word-to-bio-entity word)
     ;; This will record it in the list of *newly-found-unknown-words*
     ;; if the *collect-new-words* flag is up.
     (add-new-word-to-catalog word :BgMech-default)
