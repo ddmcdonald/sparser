@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,2013-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2013-2017  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "paragraphs"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  November 2014
+;;;  Version:  August 2017
 
 ;; initiated 1/5/94 v2.3. Added untrace fn. 5/20
 ;; (3/12/10) Added more traces to track the FSA
@@ -20,6 +20,12 @@
 
 (defun untrace-paragraphs ()
   (setq *trace-paragraphs* nil))
+
+(defparameter *trace-period-hook* nil)
+(defun trace-period-hook ()
+  (setq *trace-period-hook* t))
+(defun untrace-period-hook ()
+  (setq *trace-period-hook* nil))
 
 (defparameter *trace-period-eos-lookahead* nil)
 (defun trace-eos-lookahead ()
@@ -62,16 +68,16 @@
 
 ;;---- sentences
 
-(deftrace :period-hook (pos)
+(deftrace :period-hook-sentence-end (pos)
   ;; Called from period-hook
-  (when (or *trace-paragraphs* *trace-period-eos-lookahead*)
+  (when (or *trace-period-hook* *trace-period-eos-lookahead*)
     (trace-msg "[S] finished ~a at p~a" 
                (previous-sentence)
                (pos-token-index pos))))
 
 (deftrace :period-at-p-not-eos (pos)
   ;; Called from period-hook
-  (when (or *trace-paragraphs* *trace-period-eos-lookahead*)
+  (when (or *trace-period-hook* *trace-period-eos-lookahead*)
     (trace-msg "[S] period at p~a does not end sentence"
                (pos-token-index pos))))
 
@@ -82,6 +88,18 @@
     (trace-msg "[eos] looking deeper at whether period at p~a ~
                 ends its sentence"
                (pos-token-index pos-of-period))))
+
+(deftrace :eos-initial-author-pattern ()
+  (when *trace-period-eos-lookahead*
+    (trace-msg "[eos] Fail: initial followed by capitalized word")))
+
+(deftrace :eos-two-initials ()
+  (when *trace-period-eos-lookahead*
+    (trace-msg "[eos] Fail: two successive initials")))
+
+(deftrace :eos-implicit-abbreviation (word)
+  (when *trace-period-eos-lookahead*
+    (trace-msg "[eos] Fail: implicit abbreviation: ~a" word)))
 
 (deftrace :eos-following-lowercase ()
   (when *trace-period-eos-lookahead*

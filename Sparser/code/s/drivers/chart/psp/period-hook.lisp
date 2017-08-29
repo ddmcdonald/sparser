@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "period-hook"
 ;;;    Module:  drivers/chart/psp  ;;"grammar;rules:DM&P:"
-;;;   version:  March 2017
+;;;   version:  August 2017
 
 ;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
 ;; hooked it into creating sentences. 2/10/14 Added period-hook-off.
@@ -46,7 +46,8 @@
 
 ;;--- Basic hook function. Invoked by completion of a period
 
-;; (trace-paragraphs)
+;; (trace-period-hook)  -- brief
+;; (trace-eos-lookahead)  -- thorough
 
 (defun period-hook (the-word-period position-before position-after)
   "Hook is envoked by word-level completion when a period or question-
@@ -80,7 +81,7 @@
        (t ;; ordinary reading from a stream
         (start-sentence pos-after-period)))
 
-      (tr :period-hook position-after)
+      (tr :period-hook-sentence-end position-after)
       (when *break-on-next-sentence*
         (push-debug `(,s))
         (break "sentence: ~a" s))
@@ -145,20 +146,18 @@
    Look for evidence that this instance of a
    period marks the end of a sentence. Returns nil
    if this isn't the end of the ongoing sentence."
-  ;; What other capitalization cases could count?
-  ;; Does the amount of space between the words matter?
-  ;;   (pos-preceding-whitespace position-after)
-  ;; This is enough to correctly ignore "11.4" and "p. 200"
-  ;; If a sentence does start with, e.g. "p52" then we'll
-  ;; not see it without a much more careful management of
-  ;; non-final periods that this permits. 
   (unless (pos-terminal position-after)
     (scan-next-position))
   (or (eq (pos-terminal position-after) *end-of-source*)
-      (memq (pos-capitalization position-after)
-            '(:initial-letter-capitalized
-              :single-capitalized-letter
-              :all-caps))
+      (and (pnf-is-not-running)
+           ;; seen in Cure article: "(K. Naoki and M. M., unpublished data)"
+           (eq (pos-capitalization position-after)
+               :all-caps))
+      (and (not (pnf-is-not-running))
+           (memq (pos-capitalization position-after)
+                 '(:initial-letter-capitalized
+                   :single-capitalized-letter
+                   :all-caps)))
       (period-marks-sentence-end?/look-deeper position-after)))
 
 
@@ -171,7 +170,12 @@
    that would permit us to conclude the period we just scanned
    indicates the end of a sentence. Return nil to continue
    the sentence. Non-nil to say that the period ends the sentence."
-  (declare (special *big-mechanism* *sentence-making-sweep*))
+  (declare (special *sentence-making-sweep* *trace-period-eos-lookahead*)
+           (optimize debug))
+
+  (unless (has-been-status? :scanned pos-after)
+    (scan-next-position))
+  
   (let* ((word-just-after-period (pos-terminal pos-after))
          (position-back-one
           (chart-position-before (chart-position-before pos-after)))
@@ -179,11 +183,33 @@
           (pos-terminal position-back-one))
          (pre-caps (pos-capitalization position-back-one))
          (post-caps (pos-capitalization pos-after))
-         (next-pos (chart-position-after pos-after)))
+         (next-pos (chart-position-after pos-after))
+         (next-caps (pos-capitalization next-pos))
+         (next-word (pos-terminal next-pos)))
+    
+    (when *trace-period-eos-lookahead*
+      (push-debug `(,word-just-after-period ,word-just-before-period
+                    ,pre-caps ,post-caps ,next-caps ,next-pos)))
+    
     (tr :eos-lookahead-start pos-after)
 
+    ;; Author pattern: "K. Naoki"
+    (when (and (pnf-is-not-running)
+               (eq post-caps :initial-letter-capitalized)
+               (eq pre-caps :single-capitalized-letter))
+      (tr :eos-initial-author-pattern)
+      (return-from period-marks-sentence-end?/look-deeper nil))
+    
+    ;; Author as abbreviation: "M. M."
+    (when (and (pnf-is-not-running)
+               (eq pre-caps :single-capitalized-letter)
+               (eq post-caps :single-capitalized-letter))
+      (tr :eos-two-initials)
+      (return-from period-marks-sentence-end?/look-deeper nil))
+   
     ;; Look at the word just before the period
     (when (implicit-abbreviation? word-just-before-period)
+      (tr :eos-implicit-abbreviation word-just-before-period)
       (return-from period-marks-sentence-end?/look-deeper nil))
 
     ;; The period could be a decimal point, which would
@@ -228,10 +254,9 @@
     ;; If the next word is one character long, then it must be touching
     ;; the following word, and we check for periods (and what else?)
     ;; First get the second word after the period
-    (unless (has-been-status? :scanned pos-after)
-      (scan-next-position))
-    (let ((next-word (pos-terminal pos-after)))
-      (tr :eos-next-word next-word)
+    (tr :eos-next-word next-word)
+      
+
 
       (unless (no-space-before-word? next-pos)
         (tr :eos-separated-by-space)
@@ -252,16 +277,29 @@
       ;; we'll call (characterize-word-type pos-after next-word)))
       ;; and look more closely
       (tr :eos-fall-through-accept)
-      t)))
+      t))
 
 
+(defun pnf-is-not-running ()
+  "If the Proper Name Facility were running, it would handle all issues
+  with initials and capitalized names. We turned it off for biology 
+  because the names and capitalization patterns were irrelevant and
+  needlessly difficult ('C. Elegans'). This flag should suffice to
+  mark whether we've actually turned on PNF. It's set by a call to
+  establish-pnf-routine, as organized by the switch setting, see e.g.
+  sublanguage-settings or blocks-world-setting for pattern."
+  (declare (special *big-mechanism*))
+  (or *big-mechanism*
+      *ignore-capitalization* ;; blocks-world-setting
+      (not *pnf-routine*))) ;; no call made to establish-pnf-routine
 
+  
 (defparameter *permit-ad-hoc-abbreviations*
-  (eq :biology common-lisp-user::script)
-  "Should be up if a 'proper' set of abbreviations isn't available.
- For instance there's a list of *person-prefixes is the dossier
- of that name, and in modes where that's loaded we should go the
- high road on all abbreviations.")
+  (pnf-is-not-running)
+ "Should be up if a 'proper' set of abbreviations isn't available.
+  For instance there's a list of *person-prefixes is the dossier
+  of that name, and in modes where that's loaded we should go the
+  high road on all abbreviations.")
 
 (defvar *words-observed-to-confuse-eos*
   '("Dr"

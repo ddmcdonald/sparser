@@ -134,6 +134,11 @@
   (when *trace-delay-unknown-judgment*
     (trace-msg "[unknown]   Some edge covers it.")))
 
+(deftrace :unknown-word-to-bio-entity (word)
+  ;; called from handle-unknown-word-as-bio-entity
+  (when *trace-delay-unknown-judgment*
+    (trace-msg "[unknown] Defining ~s as a bio-entity" (pname word))))
+
 (deftrace :unknown-word-bio-edge (edge)
   ;; called from handle-unknown-word-as-bio-entity
   (when *trace-delay-unknown-judgment*

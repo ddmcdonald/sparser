@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2016-2017  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "FSA"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  October 2016
+;;;  Version:  August 2017
 
 ;; initiated November 1990
 ;; 0.1  (2/15/91 v1.8.1)  Changed *trace-pw-buffer* to *trace-next-terminal*
@@ -29,46 +29,55 @@
   (setq *trace-fsas* nil))
 
 
+(defparameter *trace-polywords* nil)
+
+(defun trace-polywords* ()
+  (setq *trace-polywords* t))
+
+(defun untrace-polywords* ()
+  (setq *trace-polywords* nil))
+
+
 ;;;-----------
 ;;; polywords
 ;;;-----------
 
 (deftrace :pw-word-does-not-initiate-polywords (word)
   ;; called from check-for-polywords
-  (when *trace-fsas*
+  (when *trace-polywords*
     (trace-msg "[pw] ~s does not start any polywords" (pname word))))
 
 (deftrace :pw-no-rule-set-on (word)
   ;; called from check-for-polywords
-  (when *trace-fsas*
+  (when *trace-polywords*
     (trace-msg "[pw] no rule set on ~s" (pname word))))
 
 (deftrace :polyword-start (word position-scanned)
   ;; in do-polyword-fsa
-  (when *trace-fsas*
+  (when *trace-polywords*
     (trace-msg "[pw] Looking for polywords starting with ~A at p~A"
                word (pos-token-index position-scanned))))
 
 (deftrace :pw-word-check (next-word)
-  (when *trace-fsas*
+  (when *trace-polywords*
     (trace-msg "[pw]  The next word is ~A" next-word)))
 
 (deftrace :pw-word-extends ()
-  (when *trace-fsas*
+  (when *trace-polywords*
     (trace-msg "[pw]     it extends the polyword")))
 
 (deftrace :pw-word-doesnt-extend ()
-  (when *trace-fsas*
+  (when *trace-polywords*
     (trace-msg "[pw]     it does not extend the polyword")))
 
 (deftrace :pw-complete-looking-further (label)
-  (when *trace-fsas*
+  (when *trace-polywords*
     (trace-msg "[pw]     it completes the polyword as ~A~
               ~%            Looking further."
                label)))
 
 (deftrace :pw-doesnt-extend-taking-complete (edge)
-  (when *trace-fsas*
+  (when *trace-polywords*
     (trace-msg "[pw]     it doesn't extend the polyword~
               ~%            Taking the pending completion and ~
                 forming the edge:~
@@ -76,17 +85,17 @@
                edge)))
 
 (deftrace :pw-caps-variant (p word)
-  (when *trace-fsas*
+  (when *trace-polywords*
     (trace-msg "[pw]   Looking for capitalized variant of ~
               ~s at p~a" (word-pname word)
               (pos-token-index p))))
 
 (deftrace :pw-found-caps-variant (caps-word)
-  (when *trace-fsas*
+  (when *trace-polywords*
     (trace-msg "[pw]     found ~s" (word-pname caps-word))))
 
 (deftrace :pw-no-caps-variant ()
-  (when *trace-fsas*
+  (when *trace-polywords*
     (trace-msg "[pw]     nothing found")))
 
 ;;;-----------------
