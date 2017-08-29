@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2016-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "initials"
 ;;;   Module:  "model;core:names:"
-;;;  version:  April 2016 
+;;;  version:  August 2017 
 
 ;; 2.0 (11/10/92 v2.3)  Flushed the original and put in new semantics 
 ;;       version.
@@ -60,13 +60,30 @@
   ;; but that doesn't look possible in a R3 configuration.
   ;; The position parameter is the one holding the period
   (declare (special category::single-capitalized-letter))
-  (let ((prior-edge (left-treetop-at/only-edges pos-before)))
-    (when prior-edge ;; vs. a word
+  (let* ((prior-pos (chart-position-before pos-before))
+         (prior-word (pos-terminal prior-pos))
+         (prior-caps (pos-capitalization prior-pos))
+         (prior-edge (left-treetop-at/only-edges pos-before)))
+    (when (or prior-edge ;; vs. a word
+              (eq prior-caps :single-capitalized-letter))
+      (unless prior-edge
+        ;; In successive-sweeps, we'll encounter periods we'd like
+        ;; to fold into initials before we introduce the edge
+        ;; over single capitalized letters.
+        (install-terminal-edges prior-word prior-pos pos-before) ;; returned nil ??///
+        (let* ((edges (preterminal-edges prior-pos))
+               (single-caps-edge
+                (find category::single-capitalized-letter edges
+                      :key #'edge-category)))
+          (unless single-caps-edge
+            (error "No caps in on ~a~%among ~a" prior-pos edges))
+          (setq prior-edge single-caps-edge)))
+
       (when (eq (edge-category prior-edge)
                 category::single-capitalized-letter)
         ;; adapted from grammar/rules/FSAs/initials.lisp
         ;; except that this isn't making an initials object.
-        ;; Uses the capitalized letter has the referent.
+        ;; Uses the capitalized letter as the referent.
         (let ((edge
                (make-chart-edge
                 :starting-position (chart-position-before pos-before)
