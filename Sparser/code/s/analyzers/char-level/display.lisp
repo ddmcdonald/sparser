@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "display"
 ;;;   Module:  "analyzers;char-level:"
-;;;  Version:  January 2016
+;;;  Version:  August 2017
 
 ;; initiated 1/92, fixed end-of-source glitch 3/13
 ;; Added the straight-through case for a word explicitly 6/26
@@ -191,6 +191,9 @@
 
 
 (defun extract-string-from-char-buffers (start end)
+  "Sets up a call to subseq on the character buffer being used. 
+   Worries about what happens when we're going across buffers."
+  (assert end (start) "Can't use an end index of nil. Start is ~a" start)
   (let ((accumulated *length-accumulated-from-prior-buffers*))
     (cond
      (*buffers-in-transition*
@@ -206,13 +209,12 @@
               (end-current-buffer (- end accumulated)))
           (break "About to extract a string from character ~
                   buffers in transition.~%Is start of ~a (in ~
-                  previous buffer) and and end of ~a (current) ~
+                  previous buffer) and an end of ~a (current) ~
                   sensible numbers?" offset-start end-current-buffer)
           (let ((prefix (subseq *the-next-character-buffer* offset-start))
                 (suffix
                  (subseq *character-buffer-in-use*
                          0 end-current-buffer)))
-
             ;;(break "~s~%~s" prefix suffix)
             ;;(setq *buffers-in-transition* nil)
             (string-append prefix suffix))))))
