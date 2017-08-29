@@ -29,7 +29,7 @@
 (defparameter *trace-scan-words-loop* nil
   "Echos the word being scanned")
 
-;; (trace-paragraphs) -- period-hook 
+;; (trace-period-hook)
 ;; (setq *trace-scan-words-loop* t)
 
 ;;--- For working with a document
@@ -113,6 +113,9 @@
   "Used as a flag by scan-terminals-loop to control the
    behavior of the eos check and period hook.")
 
+#| N.b. sweeps for early rules, patterns, no-space, early information, 
+conjunctions, and parentheses run after the sweeps that are organized
+by scan-terminals-loop. Under the control of sentence-processing-core |#
 
 (defun scan-terminals-loop (position-before word)
   "Carries out the first layer of analysis by checking for and
@@ -169,12 +172,16 @@
     (throw :end-of-sentence t)))
 
 
+;;;------------------------------
+;;; sweep sentence for polywords
+;;;-----------------------------
+
 (defun polyword-sweep-loop (position-before word)
   "First pass over the text. Checks each successive word for
    initiating a polyword (polyword-check). The longest completion
    is spanned with an edge. 
       This loop stops with a throw from the period hook (period-check) 
-   or  pmon encountering the end of the stream being analyzed (simple-eos-check). 
+   or upon encountering the end of the stream being analyzed (simple-eos-check). 
    These delimit one sentence-worth of text."
   (declare (special *trace-sweep*))
   (tr :polyword-sweep-loop)
@@ -221,6 +228,10 @@
          (setq position-before position-after
                word next-word)))))
 
+
+;;;--------------------------
+;;; sweep for FSA's on words
+;;;--------------------------
 
 (defun word-level-fsa-sweep (start-pos end-pos)
   "At this point some spans may be covered with edges introduced
@@ -271,6 +282,11 @@
                               (chart-position-after position-after))))))
 
 
+
+;;;------------------------------------------
+;;; sweep for word-level completion routines
+;;;------------------------------------------
+
 ;; (setq *trace-completion-hook* t)
 
 (defun word-level-completion-sweep (start-pos end-pos)
@@ -292,7 +308,7 @@
     
     (loop
        (when *trace-sweep*
-         (format t "~&[completion sweep] at p~a is ~a"
+         (format t "~&[word-level completion sweep] at p~a is ~a"
                  (pos-token-index position-before)
                  (or word edge)))
        (when word
@@ -370,6 +386,10 @@ sentences.
             (throw :end-of-sentence t))))))
 
 
+;;;------------------------------------------------
+;;; sweep to intoduce single-word edges over words
+;;;------------------------------------------------
+
 (defun terminal-edges-sweep (start-pos end-pos)
   "Sweep through the chart from the start position to the end
    position (the span of the current sentence). Whenever it
@@ -406,7 +426,11 @@ sentences.
             (format t "~&No edge over ~s~%~%" (pname word))))))))
 
 
-;;--- 1st pass subroutines
+
+
+;;;----------------------
+;;; 1st pass subroutines
+;;;----------------------
 
 (defun period-check (position-before word)
   "How to engage the period-hook without calling completion.
@@ -456,7 +480,7 @@ sentences.
       (tr :eos-terminate-chart-level)
       (terminate-chart-level-process)))))
 
-;; (trace-fsas)
+;; (trace-polywords)
 (defun polyword-check (position-before word)
   "Lifted from check-for-polywords. Here all we want is for
    the PW fsa to fire if there is one, and to get the position
@@ -653,9 +677,9 @@ sentences.
     (record-preposed-aux aux-edge actual-form)))
 
 
-;;;------------------------------
+;;;-------------------------------------------------------
 ;;; 1.5d pass -- early binary rules operating on NS pairs
-;;;------------------------------
+;;;-------------------------------------------------------
 
 
 #|currently this handles
@@ -845,7 +869,7 @@ sentences.
        do
          (setq ns-end-pos (end-of-ns-region pos sent-end-pos))
          (when *trace-sweep*
-           (format t "~&[pattern sweep] p~a ~a p~a~%"
+           (format t "~&[no-space sweep] p~a ~a p~a~%"
                    (pos-token-index pos)
                    (pos-terminal pos)
                    (pos-token-index ns-end-pos)))
