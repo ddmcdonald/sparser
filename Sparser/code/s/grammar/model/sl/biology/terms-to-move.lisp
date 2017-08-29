@@ -310,7 +310,10 @@ be biology specific, since they aren't. |#
 (adj "further" :super bio-predication)
 (define-adverb "further")
 
-(adj "initial" :super bio-predication)
+(adj bio-initial :adj "initial" :super bio-predication)
+;; Avoid smashing the category 'initial' in core/names/initials.lisp
+;; Usage in bio appears to be as a sequencer: first vs. subsequent
+
 (adj "least" :super bio-predication)
 
 (delete-adj-cfr (resolve "novel"))
