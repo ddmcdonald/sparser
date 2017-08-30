@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "new words"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  February 2017
+;;;  Version:  August 2017
 
 ;; 4.0 (9/28/92 v2.3) accomodates changes to tokenizer
 ;; 4.1 (7/16/93) updated field name
@@ -65,9 +65,12 @@
     (ecase character-type
       (:number
        (establish-properties-of-new-digit-sequence word))
+      
       (:alphabetical
        (setf (word-capitalization word) *capitalization-of-current-token*)
-       (let ((morph-keyword (calculate-morphology-of-word/in-buffer))
+       (let ((morph-keyword (or (when existing-word
+                                  (word-morphology existing-word))
+                                (calculate-morphology-of-word/in-buffer)))
              (entry (gethash (symbol-name symbol) *primed-words*)))
          (unless morph-keyword ;; n.b. returns a list of the affix and its POS
            (setq morph-keyword (affix-checker (word-pname word))))
@@ -85,7 +88,7 @@
             ((and *big-mechanism*
                   (eq *capitalization-of-current-token*
                       :all-caps)) ;; potential acronym
-             ;; Don't swallow regular words unnecessarily
+             ;; and don't swallow regular words unnecessarily
              (store-word-and-handle-it-later word))
             (morph-keyword
              (assign-morph-brackets-to-unknown-word
@@ -97,9 +100,11 @@
             (t
              (setup-unknown-word-by-default word)))
 
-           ;; else
-           (when entry
-             (unpack-primed-word word symbol entry)))))
+           (else
+             (if entry
+               (unpack-primed-word word symbol entry)
+               (setup-unknown-word-by-default word))))))
+      
       (:greek
        ;; Get here when there are two (or more) Greek characteris in a row.
        ;; They're almost certainly a suffix on a protein that will be
@@ -118,8 +123,8 @@
        ;; This call makes a noun
        ;; and also gives them a category. But it's better than falling
        ;; through the ecase and we can do something more tailored later.
-       (setup-unknown-word-by-default word))
-      )
+       (setup-unknown-word-by-default word)))
+      
     word ))
 ; (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
 
