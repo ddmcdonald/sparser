@@ -1601,30 +1601,32 @@
 (defun make-subordinate-clause (conj clause)
   (declare (special category::pp conj clause))
   (if *subcat-test*
-       (not (and (member (cat-name (edge-form (right-edge-for-referent))) '(vp+ed vg+ed vp vg))
-                 (member (cat-name (edge-category (left-edge-for-referent))) '(so))))
-      ;; some subordinate conjunctions like SO cannot apply between subject and vp
-      (let ((cl
-             (or
-              (when (use-methods)
-                (compose conj clause))
-              (unless (eq (edge-form (left-edge-for-referent)) ;; 'conj' argument
-                          category::pp)
-                (bind-dli-variable 'subordinate-conjunction conj clause))
-              ;; as a final resort drop the 'conj'
-              clause)))
-       ;; (lsp-break "make-subordinate-clause")
-        (when (and cl
-                   (not (and (category-p conj)
-                             (member (cat-name conj)
-                                     '(who what where when why))))
-                   *right-edge-into-reference*
-                   (eq (edge-referent *right-edge-into-reference*)
-                       clause)
-                   (member (cat-name (edge-form *right-edge-into-reference*))
-                           '(s subordinate-s)))
-          (revise-parent-edge :form category::subordinate-s))
-        cl)))
+    ;; some subordinate conjunctions like SO cannot apply between subject and vp
+    (not (and (member (cat-name (edge-form (right-edge-for-referent)))
+                      '(vp+ed vg+ed vp vg))
+              (member (cat-name (edge-category (left-edge-for-referent)))
+                      '(so))))
+    (let ((cl
+           (or
+            (when (use-methods)
+              (compose conj clause))
+            (unless (eq (edge-form (left-edge-for-referent)) ;; 'conj' argument
+                        category::pp)
+              (bind-dli-variable 'subordinate-conjunction conj clause))
+            ;; as a final resort drop the 'conj'
+            clause)))
+      ;; (lsp-break "make-subordinate-clause")
+      (when (and cl
+                 (not (and (category-p conj)
+                           (member (cat-name conj)
+                                   '(who what where when why))))
+                 *right-edge-into-reference*
+                 (eq (edge-referent *right-edge-into-reference*)
+                     clause)
+                 (member (cat-name (edge-form *right-edge-into-reference*))
+                         '(s subordinate-s)))
+        (revise-parent-edge :form category::subordinate-s))
+      cl)))
 
 
 ;; for v in (vp vp+passive vg+passive vg)
@@ -1634,9 +1636,7 @@
 (defun compose-wh-with-vp (wh-obj predicate)
   "Question the subject or the object of the predicate (the VP)
    depending on which one is open."
-  (declare (special category::wh-question))
-  ;;/// To set the form of the new edge have to know
-  ;; whether we're a toplevel question or embedded
+  (declare (special category::wh-question category::subject-relative-clause))
   (if *subcat-test*
     t
     (cond
@@ -1660,7 +1660,12 @@
             (tr :wh-compose-wh-with-vp q)
             q)))
       ((itypep wh-obj 'wh-pronoun)
-       (compose wh-obj predicate))
+       ;; "which", "who", "where", ... See syntax/wh-word-semantic.lisp
+       ;; which also has the relevant compose method. 
+       (let ((wh-clause (compose wh-obj predicate)))
+         (unless (top-level-wh-question?)
+           (revise-parent-edge :form category::subject-relative-clause))
+         wh-clause))
       (t (warn "New type of wh-obj in compose-wh-with-vp: ~a~
                 in~%~s" (itype-of wh-obj) (current-string))))))
 

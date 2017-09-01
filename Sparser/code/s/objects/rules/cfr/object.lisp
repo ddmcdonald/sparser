@@ -84,29 +84,6 @@ This sorts out what to use as the category in the unusual cases."
        when (eq form (cfr-form cfr))
        do (return cfr))))
 
-(defgeneric find-single-unary-cfr (word)
-  (:documentation "Return the first unary rule for this word if there is one.
-   Ignores the possibility of there being more than one rule.")
-  ;; c.f. single-term-rewrite? in rules/rule-links/generic.lisp
-  (:method ((word word))
-    (when (rule-set-for word)
-      (find-single-unary-cfr (rule-set-for word))))
-  (:method ((word polyword))
-    (when  (rule-set-for word)
-      (find-single-unary-cfr (rule-set-for word))))
-  (:method ((rs rule-set))
-    (when rs
-      (let ((single-rewrites (rs-single-term-rewrites rs)))
-        (when single-rewrites
-          ;;/// check for there being more than one?
-          (car single-rewrites))))))
-
-(defun form-of (word)
-  (let ((cfr (find-single-unary-cfr word)))
-    (when cfr
-      (cfr-form cfr))))
-#| from <r3>/code/sparser-extensions/new-words.lisp |#
-
 (defgeneric find-unary-cfr/referent (word category)
   (:documentation
    "Search through the unary rules of 'word' and collect all those
@@ -133,17 +110,28 @@ This sorts out what to use as the category in the unusual cases."
        as referent = (cfr-referent cfr)
        when (itypep referent c) ;; n.b. itypep takes anything
        collect cfr)))
-    
-(defun form-of (word) 
-  (declare (special word)) 
-  (let* 
-      ((rs (word-rule-set word))) 
-    (declare (special rs)) 
-    (when rs 
-      (let* 
-          ((rules (rs-single-term-rewrites rs)) 
-           (first-rule (car rules)) 
-           (form (and first-rule 
-                      (cfr-form first-rule)))) 
-        (declare (special rules first-rule form)) 
-        form))))
+
+(defgeneric find-single-unary-cfr (word)
+  (:documentation "Return the first unary rule for this word if there is one.
+   Ignores the possibility of there being more than one rule.")
+  (:method ((word word))
+    (when (rule-set-for word)
+      (find-single-unary-cfr (rule-set-for word))))
+  (:method ((word polyword))
+    (when  (rule-set-for word)
+      (find-single-unary-cfr (rule-set-for word))))
+  (:method ((rs rule-set))
+    (when rs
+      (let ((single-rewrites (rs-single-term-rewrites rs)))
+        (when single-rewrites
+          ;;/// check for there being more than one?
+          (car single-rewrites))))))
+;; c.f. single-term-rewrite? in rules/rule-links/generic.lisp
+;; which does essentially this same thing
+
+
+(defun form-of (word)
+  (let ((cfr (find-single-unary-cfr word)))
+    (when cfr
+      (cfr-form cfr))))
+#| from <r3>/code/sparser-extensions/new-words.lisp |#
