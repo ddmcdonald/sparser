@@ -54,6 +54,8 @@
 (defparameter *show-verbification* nil "Accounce them")
 (defparameter *verbified-nouns* nil "Accumulates a list of them")
 
+;; (trace-morpphology)
+
 (defun assign-morph-brackets-to-unknown-word (word morph-keyword)
   "Called from make-word/all-properties, which is itself called
    on the way back from the tokenizer."
@@ -62,6 +64,7 @@
 
   (let ((*source-of-unknown-words-definition* :morphology)
         (*unknown-word* word))
+
     (declare (special *source-of-unknown-words-definition* *unknown-word*))
 
     (flet ((block-verbified-nouns (lemma)
@@ -79,7 +82,7 @@
       ;;(push-debug `(,word ,morph-keyword)) (break "fix stemming")
       (add-new-word-to-catalog word morph-keyword)
 
-      (setq morph-keyword (no-morph-on-short-words word)) ;; one-syllable?
+      (setq morph-keyword (no-morph-on-short-words word)) ;; one-syllable
       
       (when (and *show-morphs* morph-keyword)
         (push (list morph-keyword word) *show-morphs*))
@@ -93,20 +96,20 @@
             (let ((lemma (stem-form word)))
               (tr :defining-lemma-as-given-morph lemma 'verb)
               (if *edge-for-unknown-words*
-                (if *block-verbification*
-                  (block-verbified-nouns lemma)
-                  (else (setup-verb lemma)
-                        (sanity-check-word-formation word lemma :ed)))              
+                (or (when *block-verbification* (block-verbified-nouns lemma))
+                    (else (setup-verb lemma)
+                          (sanity-check-word-formation word lemma :ed)))         
                 (assign-brackets-as-a-main-verb lemma))))
 
            (:ends-in-ing
             (let ((lemma (stem-form word)))
               (tr :defining-lemma-as-given-morph lemma 'verb)
               (if *edge-for-unknown-words*
-                (if *block-verbification*
-                  (block-verbified-nouns lemma)
-                  (else (setup-verb lemma)
-                        (sanity-check-word-formation word lemma :ing)))
+                (or (when *block-verbification* (block-verbified-nouns lemma))
+                    (let ((category (setup-verb lemma)))
+                      #+ignore(when already-exists?
+                                (reconcile-lemma-and-original category already-exists? :ing))
+                      (sanity-check-word-formation word lemma :ing)))
                 (assign-brackets-as-a-main-verb lemma))))
            
            (:ends-in-ly
@@ -160,6 +163,26 @@
               (if *edge-for-unknown-words*
                 (setup-verb word)
                 (assign-brackets-as-a-main-verb word))))))))))
+
+
+;; Turns out not to be necessary. Leaving it for a little while
+;; in case something simlar turns up (ddm 8/31/17)
+(defun reconcile-lemma-and-original (category original-word morph-case)
+  "Find the corresponding new word for the original one.
+   Steal its rule-set to merger with the rs or the original.
+   Delete the new one. Rewrite the new rule to use the original."
+  (push-debug `(,category ,original-word ,morph-case))
+  (let ((original-rule-set (rule-set-for original-word))
+        (rules (get-rules category))
+        (form (ecase morph-case
+                (:ing (category-named 'verb+ing))
+                (:ed (category-named 'verb+ed)))))
+    (push-debug `(,rules))
+    (let ((cfr-to-modify (loop for cfr in rules
+                            when (eq (cfr-form cfr) form)
+                            return cfr)))
+      (push-debug `(,original-word ,cfr-to-modify))
+      (lsp-break "now"))))
 
 
 ;;;------------------------
