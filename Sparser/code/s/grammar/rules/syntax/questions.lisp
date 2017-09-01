@@ -400,7 +400,6 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
   (is-pronoun? next-edge)) 
 
 
-
 ;; (p/s "What color is the block?")
 (defun apply-question-marker (wh-edge vg-edge np-edge)
   "Called by DA rule, wh-be-thing, since parsing is going to be stymied by
@@ -453,7 +452,6 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
     q))
 
 
-
 (defun wh-initial-two-edges (wh-initial? edges start-pos end-pos)
   (let* ((wh (edge-referent wh-initial?))
          (complement (edge-referent (second edges)))
@@ -488,6 +486,20 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
        :form category::question
        :referent q
        :constituents edges))))
+
+
+
+;;;-------------------
+;;; context predicate
+;;;-------------------
+
+(defun top-level-wh-question? (&aux (left-edge (left-edge-for-referent)))
+  "Called from compose-wh-with-vp where we might be forming 
+   a question or this might be a relative clause. Of course there are
+   also embedded questions which function as if they were NPs where the
+   distinction turn on whether there is aux-inversion.
+      For now just a trivial test based on sentence position."
+  (= 1 (pos-token-index (pos-edge-starts-at left-edge))))
 
 
 
