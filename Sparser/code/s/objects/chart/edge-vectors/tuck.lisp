@@ -99,6 +99,12 @@
 (defparameter *reinterpret-dominating-edges-warning* nil)
 
 (defun reinterpret-dominating-edges (edge &optional *visited*)
+  "If the description lattice is active, we call this at the
+   end of tuck-new-edge-under-already-knit because the 
+   rearrangement of the edges will have made the existing
+   mentions inaccurate. Use referent-for-edge to rerun the
+   rules that formed the edges. Recurse up the tree unless
+   the rerun fails."
   (let ((new-ref (referent-for-edge edge)))
     (cond
       ((null new-ref)
@@ -122,8 +128,7 @@
          (cond
            ((edge-p parent)
             (when (member parent *visited*)
-              ;; happens in
-              ;; <give example here>
+              ;; happens in <give example here>
               (error "circular-loop in reinterpret-dominating-edges"))
             (reinterpret-dominating-edges parent (cons parent *visited*)))
            ((null parent) ;; reached the topmost edge

@@ -157,14 +157,13 @@
              (value-of 'statement vp-ref))
     (setq vp-ref (value-of 'statement vp-ref)))
 
-  (let ((var
-         (cond
-           ((itypep vp-ref 'copular-predication)
-            (find-variable-for-category 'item 'copular-predication))
-           (t
-            (if (is-passive? right-edge)
-              (subcategorized-variable vp-ref :object np-ref)
-              (subcategorized-variable vp-ref :subject np-ref))))))
+  (let ((var (cond
+               ((itypep vp-ref 'copular-predication)
+                (find-variable-for-category 'item 'copular-predication))
+               (t
+                (if (is-passive? right-edge)
+                  (subcategorized-variable vp-ref :object np-ref)
+                  (subcategorized-variable vp-ref :subject np-ref))))))
     (cond
       (*subcat-test*
        var)
@@ -188,8 +187,6 @@
             clause-ref))
          (t
           ;; copy down the upstairs subject
-          ;; Should we check if it was already bound to something?
-          ;; (push-debug `(,np-ref ,vp-ref)) (lsp-break "regular")
           (setq vp-ref (create-predication-by-binding
                         var    ;; var
                         np-ref ;; val
@@ -198,7 +195,6 @@
                               (parent-edge-for-referent))))
           ;; link the rc to the np
           (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
-          ;; referent of the combination is the np
           np-ref))))))
 
 (defparameter *break-on-null-ref-in-context-needs-clause* t)

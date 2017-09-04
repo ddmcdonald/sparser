@@ -203,37 +203,41 @@
 ;;;------------------------------
 
 (defparameter *show-referent-for-edge-gaps* nil)
+
 (defun referent-for-edge (edge)
-  "Called during tuck-new-edge-under-already-knit when the description
-   lattice is active and we call reinterpret-dominating-edges to
-   facilitate getting the mentions right. This code re-applies
-   the referent interpretation in certain circumstances."
+  "Used by reinterpret-dominating-edges to reapply the rule
+   that created the edge. Presently we can't always do
+   it because :long-span edges often don't have a record
+   of their constituents and we've not set up DA rules
+   to facilitate this. Returns the new referent of the
+   edge."
   (cond ((and (symbolp (edge-rule edge))
               (eq :long-span (edge-right-daughter edge)))
+         ;; Not enough information to reapply the rule
          (when *show-referent-for-edge-gaps*
            (format t "~% referent-for-edge appplied to a da-rule ~
                       edge ~s~% with rule ~s and constituents ~s~%"
                    edge (edge-rule edge) (edge-constituents edge)))
-         ;; PUNT right now
          (edge-referent edge))
+        
+        ((eq :long-span (edge-right-daughter edge))
+         (when *show-referent-for-edge-gaps*
+           (format t "~% referent-for-edge appplied to a da-rule ~
+                      edge ~s~% with rule ~s and constituents ~s~%"
+                   edge (edge-rule edge) (edge-constituents edge)))
+         (edge-referent edge))
+        
         ((lambda-abstraction-edge? edge)
          (apply-lambda-abstraction
           (edge-referent edge) ;; the *lambda-abstraction* edge
           ;; the underlying edge whose interpretation may 
           (edge-referent (edge-left-daughter edge))
           edge))
-        ((eq :long-span (edge-right-daughter edge))
-         (when *show-referent-for-edge-gaps*
-           (format t "~% referent-for-edge appplied to a da-rule ~
-                      edge ~s~% with rule ~s and constituents ~s~%"
-                   edge (edge-rule edge) (edge-constituents edge)))
-         ;; PUNT right now
-         (edge-referent edge))
+        
         (t
          (let ((*current-chunk* 'dummy-chunk))
-           ;; have NP chunk rules that check to see that they are in a chunk
-           ;;  e.g. funtion verb-noun-coumpount
-           ;; fake them out
+           ;; To fake out NP chunk rules that check to see that
+           ;; they are in a chunk e.g. funtion verb-noun-coumpount
            (referent-from-rule
             (edge-left-daughter edge)
             (edge-right-daughter edge)
@@ -246,7 +250,7 @@
        (eq (edge-form edge) category::lambda-form)))
 
 (defun apply-lambda-abstraction (old-lambda-pred new-pred-form edge)
-  (declare (special new-pred-form old-lambda-pred **lambda-var**))
+  (declare (special **lambda-var**))
   (let* ((lambda-variable
           (loop for b in (indiv-binds old-lambda-pred)
                 when (eq **lambda-var** (binding-value b))
@@ -254,10 +258,10 @@
          (new-lambda-form
           (when lambda-variable
             (create-predication-by-binding
-             lambda-variable
-             **lambda-var**
-             new-pred-form
-             (list 'referent-for-edge edge)
+             lambda-variable ;; var parameter
+             **lambda-var**  ;; val
+             new-pred-form   ;; pred
+             (list 'referent-for-edge edge) ;; source
              :insert-edge nil))))
     new-lambda-form))
 
