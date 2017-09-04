@@ -157,9 +157,8 @@
 
 (defun create-predication-by-binding (var val pred source &key (insert-edge t))
   "Given a variable (var), and two referents (val, pred), assert that
-   the variable is abstracted out from the pred(icate). 
-   Ignore any provided 'val' argument."
-  ;;(declare (ignore val)) ;; we now ignore the val, and just use **lambda-var**
+   the variable is abstracted out from the pred(icate)."
+  (declare (special **lambda-var**))
   (let ((new-predication (bind-dli-variable  var **lambda-var** pred)))
     (declare (special new-predication))
     ;; Rusty - how could the binding fail?  AKA, why the cond here.
@@ -1661,15 +1660,22 @@
             q)))
       ((itypep wh-obj 'wh-pronoun)
        ;; "which", "who", "where", ... See syntax/wh-word-semantic.lisp
-       ;; which also has the relevant compose method. 
-       (let ((wh-clause (compose wh-obj predicate)))
-         (unless (top-level-wh-question?)
-           (revise-parent-edge :form category::subject-relative-clause))
-         wh-clause))
+       ;; which also has the relevant compose method.
+       (if (top-level-wh-question?)
+         (compose wh-obj predicate)
+         (wh-vp-as-relative-clause wh-obj predicate)))
       (t (warn "New type of wh-obj in compose-wh-with-vp: ~a~
                 in~%~s" (itype-of wh-obj) (current-string))))))
 
-
+(defun wh-vp-as-relative-clause (wh-obj predicate)
+  ;; Provides something to feed apply-subject-relative-clause by
+  ;; following model of create-thatcomp. That is fine for "which"
+  ;; and presumably for "who", but inadequate for "where", "when", etc
+  ;; that select for different variables. Also inadequate for wh-clauses
+  ;; used as descriptive NPs.
+  (declare (ignore wh-obj))
+  (revise-parent-edge :form category::subject-relative-clause)
+  predicate)
 
 ;; for 'after which', 'in which' and such
 (defun make-relativized-pp (prep wh)
