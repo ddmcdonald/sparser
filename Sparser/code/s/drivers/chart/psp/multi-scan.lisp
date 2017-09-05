@@ -626,9 +626,26 @@ sentences.
           (position-precedes pos-before its-end-pos))))))
 
 (defun clear-unhandled-unknown-words ()
-  "Called after pattern-sweep has looped over the entire sentence,
-   which seems as good a place as any to do this."
+  "Initialization function called from initialize-tokenizer-state
+   and its equivalents"
   (setq *positions-with-unhandled-unknown-words* nil))
+
+(defun clean-unhandled-unknown-words (sentence-end-pos)
+  "Called after pattern-sweep has looped over the entire sentence,
+   which seems as good a place as any to do this. Because the
+   process that determines when a sentence edges will often scan
+   the next position after the period. It can pickup an unknown
+   word. The position argument is right over the period -- any
+   words on this list beyond that position should be retained."
+  (declare (special *positions-with-unhandled-unknown-words*))
+  (when *positions-with-unhandled-unknown-words*
+    (let ((positions-retained
+           (loop for pos in *positions-with-unhandled-unknown-words*
+              when (position-precedes sentence-end-pos pos)
+              collect pos)))
+      (setq *positions-with-unhandled-unknown-words* positions-retained))))
+
+
 
 
 ;;;----------------------------------
@@ -879,11 +896,10 @@ sentences.
            (setq pos ns-end-pos)))
 
     (loop for pos in (copy-list *positions-with-unhandled-unknown-words*)
-          unless (> (pos-token-index pos)
-                    (pos-token-index (ends-at-pos sentence)))
+          unless (position-precedes sent-end-pos pos)
           do (deal-with-unhandled-unknown-words-at pos))
-    
-    (clear-unhandled-unknown-words)))
+    (clean-unhandled-unknown-words sent-end-pos)))
+
 
 
 ;;--- subroutines
