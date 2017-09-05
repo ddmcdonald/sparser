@@ -1395,9 +1395,10 @@
                          copula))
                              
           (t
-           (error  "interpret-control-copula fails with subj=~s, copula=~s in ~s~%"
+           (warn  "interpret-control-copula fails with subj=~s, copula=~s in ~s~%"
                    subj copula
-                   (current-string))))))
+                   (current-string))
+           nil))))
       
 
 (defun assimilate-subject-to-vp-ing (subj vp)
