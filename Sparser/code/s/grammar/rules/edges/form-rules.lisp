@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "form rules"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  February 2017
+;;;  Version:  September 2017
 
 ;; initiated 10/12/92 v2.3
 ;; 0.1 (6/4/93) allowed a default if the rule doesn't specify the form
@@ -92,30 +92,47 @@
           edge )))))
 
 
+
 (defun set-labels-from-promulgated-edge (edge ;; being created
                                          left-edge right-edge rule
                                          &aux head-edge)
-  "Used by make-discontinuous-edge to accommodate the largest of
-   the special cases handed by do-explicit-rule-completion"
-  (let ((edge-to-promulgate (cfr-completion rule)))
-    (if (not (keywordp edge-to-promulgate))
-        (progn
-          (warn
-           "Rule ~s is not a form rule" rule)
-          head-edge)
-        (let ((promulgated-label
-               (ecase edge-to-promulgate
-                 (:left-edge
-                  (setq head-edge left-edge)
-                  (edge-category left-edge))
-                 (:right-edge
-                  (setq head-edge right-edge)
-                  (edge-category right-edge)))))
+  "Called from make-discontinuous-edge to set the category and
+   form labels when a form-rule is being used. For reference
+   see do-explicit-rule-completion which has all the cases."
+  (let ((completion-field (cfr-completion rule)))
+    (assert completion-field)
+    (let ((edge-to-promulgate
+           (etypecase completion-field
+             (keyword completion-field)
+             (cons
+              (assert (and (keywordp (car completion-field))
+                           (category-p (cdr completion-field)))
+                      () "Oddly formatted completion field")
+              (car completion-field))))
+          (lhs-category
+           (when (consp completion-field)
+             (cdr completion-field))))
+
+      (unless (keywordp edge-to-promulgate)
+        (if (form-rule? rule)
+          (error "Supposed to be a form rule: ~a" rule)
+          (error "Unexpected completion field in ~a" rule)))
+
+      (let ((promulgated-label
+             (ecase edge-to-promulgate
+               (:left-edge
+                (setq head-edge left-edge)
+                (edge-category left-edge))
+               (:right-edge
+                (setq head-edge right-edge)
+                (edge-category right-edge)))))
       
-          (setf (edge-category edge) promulgated-label)
+          (setf (edge-category edge) (or lhs-category
+                                         promulgated-label))
           (setf (edge-form     edge) (or (cfr-form rule)
                                          (edge-form head-edge)))
           head-edge))))
+
 
 
 
