@@ -1378,7 +1378,10 @@
          (right (and (edge-p copula-adj-edge)
                      (edge-right-daughter copula-adj-edge)))
          (right-val (and (edge-p right)
-                         (edge-referent right)))
+                         (edge-referent right)
+                         (if (itypep (edge-referent right) 'prepositional-phrase)
+                             (value-of 'pobj (edge-referent right))
+                             (edge-referent right))))
          (new-value
           (and (edge-p right)
                (loop for b in (indiv-old-binds copula-value)
