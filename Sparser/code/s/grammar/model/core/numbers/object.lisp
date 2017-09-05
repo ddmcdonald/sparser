@@ -146,6 +146,22 @@
 (defun number-value (indiv-number)
   (value-of 'value indiv-number))
 
+(defgeneric integer-for-number (number)
+  (:documentation "Given a number individual, 
+    return the integer value it represents")
+  (:method ((e edge))
+    (integer-for-number (edge-referent e)))
+  (:method ((i individual))
+    (cond
+      ((or (number-ones i) ;; #<ones-number 2>
+           (number-teens i) ;;
+           (number-tens i))
+       (number-value i))
+      ((itypep i 'multiplier)
+       (let ((n (value-of 'value i)))
+         (number-value n)))
+      (t (error "Unexpected type of number object: ~a" i)))))
+
 
 ;;;-------------------------------
 ;;; routines for the plist fields

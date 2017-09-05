@@ -98,7 +98,7 @@
   ;; Since we've at least got one number here it won't make sense
   ;; to return Nil.
   (tr :nw-starting-with triggering-edge)
-  (let ((end-of-number-word-sequence
+  (let ((end-of-number-word-sequence ;; position just after
          (scan-for-more-number-words
           (chart-position-after starting-position)))
         (prior-number-edge
@@ -147,7 +147,7 @@
 
       ;; multiple edges
       (else
-	(if *keep-number-sequence-raw*
+	(if *keep-number-sequence-raw* ;; for call signs
 	  (assemble-raw-number-sequence
 	   starting-position end-of-number-word-sequence prior-number-edge)
 	  (else
@@ -199,13 +199,17 @@
             (else
               (tr :nw-not-number-word next-word)
               (tr :nw-terminating-at starting-position)
-              starting-position)))
+              ;;(chart-position-before starting-position)
+              starting-position
+)))
 
         ;; otherwise return this position as where the sequence of
         ;; number words ends
         (else
           (tr :nw-terminating-at starting-position)
-          starting-position)))))
+          ;;(chart-position-before starting-position)
+          starting-position
+)))))
 
 
 (defun look-for-number-rule-in-list-of-cfrs (cfrs)
@@ -257,7 +261,41 @@
         net-number ))))
 
 
-;; old, original treatment for this case from Number-word-fsa
+
+(defun parse-number-sequence (start-pos end-pos
+                              &optional prior-number-edge )
+  "The scan has laid-down number edges to record every number
+   word it encountered. Here we apply as(elsesimilate them into
+   an edge with a representation of the numberic value they
+   correspond to."
+  ;;/// Lookup Longuit-Higgens' general algorithm. For the
+  ;; moment just consider two-edge case.
+  (let ((edges (treetops-between start-pos end-pos)))
+    (tr :nw-compute-value edges)
+    (let ((value
+           (cond
+             ((and prior-number-edge (= 1 (length edges))) ;; e.g. "10 million"
+              (find-or-make-number
+               (number-times-number-word prior-number-edge (car edges))))
+             (t
+              (compute-word-based-number edges)))))
+    
+      (let ((edge       
+            (make-edge-over-long-span
+             (if prior-number-edge ;; starting positiono
+               (pos-edge-starts-at prior-number-edge)
+               start-pos)
+             end-pos
+             category::number
+             :form category::number
+             :rule 'parse-number-sequence
+             :referent value
+             :constituents edges)))
+        (tr :nw-made-edge edge value)
+        edge))))
+
+
+
 (defun number-times-number-word (number-edge number-word-edge)
   ;; e.g. "10 million" -- it only works for canonical numbers and
   ;;   not for other pronunciations like "runway one forty"
@@ -281,51 +319,23 @@
           (warn "Unhandled number pattern: ~a ~a" number-edge number-word-edge))
         0))))
 
-
-
-(defun parse-number-sequence (start-pos end-pos
-                              &optional prior-number-edge )
-  "The scan has laid-down number edges to record every number
-   word it encountered. Here we apply as(elsesimilate them into
-   an edge with a representation of the numberic value they
-   correspond to."
-  ;;/// Lookup Longuit-Higgens' general algorithm. For the
-  ;; moment just consider two-edge case.
-  (let ((edges (treetops-between start-pos end-pos))
-        value )
-    (tr :nw-compute-value edges)
-    (cond
-      ((and prior-number-edge (= 1 (length edges))) ;; e.g. "10 million"
-       (setq value (number-times-number-word prior-number-edge
-                                             (car edges))))
-      (t
-       (when *trace-number-word-fsa*
-         (lsp-break "Unhandled case: ~a" edges))))
-    (let* ((referent (construct-temporary-number nil nil value))
-           (edge       
-            (make-edge-over-long-span
-             :starting-position (if prior-number-edge
-                                  (pos-edge-starts-at prior-number-edge)
-                                  start-pos)
-             :ending-position end-pos
-             category::number
-             :form category::number
-             :rule 'parse-number-sequence
-             :referent referent
-             :constituents edges)))
-      (tr :nw-made-edge edge value)
-      edge)))
+(defun compute-word-based-number (edges)
+  "Muliply successives prefixes: ((two hundred) thousand).
+   Tricky part is recognizing when we shift back down and will need to
+   include an addition step: 'two hundred fifty'"
+  (let* ((categories (mapcar #'edge-category edges)) ;; for downshifting
+         (numbers (mapcar #'edge-referent edges))
+         (integers (loop for number in numbers
+                      collect (integer-for-number number))))
+    ;; Simplifying initial runs by restricting to just two numbers
+    (when (> (length edges) 2)
+      (warn "more than three edges in number word: ~a" edges))
+    (let ((value (* (car integers) (cadr integers))))
+      (find-or-make-number value))))
 
 
 
-#|
-(defun assimilate-and-scan-ahead (left-edge right-edge)
-  (let ((cfr (multiply-labels (edge-category left-edge)
-                              (edge-category right-edge))))
-    (unless cfr
-      (break "No number rule combining~%  ~A and ~A"
-             (edge-category left-edge) (edge-category right-edge)))
-    )) |#
+
 
 
 
