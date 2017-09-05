@@ -288,7 +288,7 @@
   mark whether we've actually turned on PNF. It's set by a call to
   establish-pnf-routine, as organized by the switch setting, see e.g.
   sublanguage-settings or blocks-world-setting for pattern."
-  (declare (special *big-mechanism*))
+  (declare (special *big-mechanism* *pnf-routine*))
   (or *big-mechanism*
       *ignore-capitalization* ;; blocks-world-setting
       (not *pnf-routine*))) ;; no call made to establish-pnf-routine

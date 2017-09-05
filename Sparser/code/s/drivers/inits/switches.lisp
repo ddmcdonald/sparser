@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2011-2017 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  October 2016
+;;;  Version:  September 2017
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -83,13 +83,8 @@
 
 (in-package :sparser)
 
-(defvar *PNF-ROUTINE*)
-(defvar *TREAT-SINGLE-CAPITALIZED-WORDS-AS-NAMES*)
-(defvar *CHARACTER-TRANSLATION-PROTOCOL*)
-(defvar *KEEP-NUMBER-SEQUENCE-RAW*)
 (defvar *NO-SEGMENT-LEVEL-OPERATIONS*)
-(defvar *COMLEX-WORD-LISTS-LOADED*)
-(defvar *COMLEX-WORDS-PRIMED*)
+
 (defvar *BREAK-ON-NEW-BRACKET-SITUATIONS*)
 (defvar *ARABIC-NAMES*)
 (defvar *THE-CATEGORY-OF-DIGIT-SEQUENCES*)
@@ -108,7 +103,9 @@
 (defun switch-settings (&optional full? (stream *standard-output*))
   (declare (special *treat-single-Capitalized-words-as-names*
                     *pnf-routine* *break-policy* *description-lattice*
-                    *allow-pure-syntax-rules*))
+                    *allow-pure-syntax-rules* *character-translation-protocol*
+                    *keep-number-sequence-raw*
+))
   (format stream "~&~%Sparser switch settings:")
   (format stream " ~A" *switch-setting*)
   (format stream "~%              Chart-level protocol: ~A"
@@ -220,6 +217,7 @@
   (setq *introduce-brackets-for-unknown-words-from-their-suffixes* nil))
 
 (defun include-comlex ()
+  (declare (special *comlex-word-lists-loaded* *comlex-words-primed*))
   (setq *incorporate-generic-lexicon* t)
   (what-to-do-with-unknown-words :check-for-primed)  
   (establish-version-of-def-word :comlex)
@@ -236,6 +234,7 @@
 
 
 (defun standard-extras ()  ;; n.b. doesn't stand by itself
+  (declare (special *no-segment-level-operations*))
   (setq *do-forest-level* t) ;; <-- needs a protocol assignment
   (setq *do-heuristic-segment-analysis* *ha*)
   (setq *do-conceptual-analysis* *ca*)
@@ -245,6 +244,7 @@
   (setq *count-input-lines* t))
 
 (defun turnoff-standard-extras ()
+  (declare (special *no-segment-level-operations*))
   (setq *do-forest-level* nil)
   (setq *do-heuristic-segment-analysis* nil)
   (setq *do-conceptual-analysis* nil)
@@ -304,6 +304,7 @@
 
 
 (defun sublanguage-settings ()
+  (declare (special *treat-single-Capitalized-words-as-names*))
   (ignore-unknown-words)
   (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
   (designate-sentence-container :simple)
@@ -430,6 +431,7 @@
   "Goes with the 'fire' configuration. Intended as eventual
    replacement for all general settings, particularly for 
    Strider-like applications."
+  (declare (special *treat-single-capitalized-words-as-names*))
   (tuned-grok)
   (setq *note-text-relations* nil) ;; 3/6/16 overly complicated just now
   (designate-sentence-container :complex) ;;// overkill - separate doc vs sentence
@@ -449,6 +451,7 @@
 
 (defun bio-setting ()
   "Used in the 'biology' configuration/script"
+  (declare (special *treat-single-capitalized-words-as-names*))
   (revert-to-error-break) ;; also the loader default
   ;; from (use-default-settings) with the obvious change
   ;; to take new words
@@ -596,7 +599,8 @@
 
 (defun just-bracketing-setting ()
   "Goes with the 'no-grammar' option"
-  (declare (special category::number))
+  (declare (special category::number *no-segment-level-operations*
+                    *the-category-of-digit-sequences*))
   (word-frequency-setting) ;; to turn off fire setting et al.
   (ignore-comlex)
   ;; from top-edges
@@ -654,6 +658,7 @@
 ;;--- Older, unused switch sets, no reason to assume they're consistent
 
 (defun ambush-setting ()
+  (declare (special *keep-number-sequence-raw* *speech*))
   (fire-setting)
   (setq *keep-number-sequence-raw* t) ;; call signs
   (setq *speech* t)
@@ -677,6 +682,7 @@
 ;; in segment-finished
 
 (defun checkpoint-ops-setting ()
+  (declare (special *keep-number-sequence-raw* *speech*))
   (top-edges-setting)
   ;; maybe (setq *do-forest-level* nil) 
   (what-to-do-at-the-forest-level :parse-forest-and-do-treetops) ;; otherwise
