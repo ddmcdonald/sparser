@@ -879,7 +879,9 @@ sentences.
            (setq pos ns-end-pos)))
 
     (loop for pos in (copy-list *positions-with-unhandled-unknown-words*)
-       do (deal-with-unhandled-unknown-words-at pos))
+          unless (> (pos-token-index pos)
+                    (pos-token-index (ends-at-pos sentence)))
+          do (deal-with-unhandled-unknown-words-at pos))
     
     (clear-unhandled-unknown-words)))
 
