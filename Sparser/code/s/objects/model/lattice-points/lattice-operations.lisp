@@ -85,7 +85,7 @@
 
 
 
-(defparameter *lattice-ht* (make-hash-table :size 30000 :test #'eq)
+(defparameter *lattice-ht* (make-hash-table :size 600000 :test #'eq)
   "This is the initial way that edge-referent's are linked to the structures that are in the lattice.
    A bit slower than putting a field in the referent, but applicable to all referents, and does not change their structure.")
 
