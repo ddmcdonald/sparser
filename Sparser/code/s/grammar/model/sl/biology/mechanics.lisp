@@ -1404,7 +1404,8 @@ for this species"
     (when (consp members) 
       (if (loop for m in members
                 thereis (human-mnemonic? m))
-          (setq species (get-human-species))))) 
+          (setq species (get-human-species)))))
+  (unless name (setq name word))
   ;(lsp-break "def-family pre-let")
   ;; don't want to default to human unless the members are
   (let* ((category-name
