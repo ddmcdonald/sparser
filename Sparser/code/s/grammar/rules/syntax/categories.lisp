@@ -385,7 +385,7 @@
 
 (def-form-category  thematic)  ;; said of an NP prefixed by "this"
 (def-form-category  denumerated)  ;; said of an NP with a number as its prefix
-;;(def-form-category  modified)  ;; said of an NP with an adjective (phrase) as its prefix
+(def-form-category  modified)  ;; said of an NP with an adjective (phrase) as its prefix
 (def-form-category  anonymous) ;; said of an NP with "a" or "an" as its determiner
 
 (def-form-category  paragraph) ;; created by the NL fsas or XML tags
