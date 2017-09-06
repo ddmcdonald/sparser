@@ -497,7 +497,8 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 
 
 (defun test-against-comlex (putative-stem morphology)
-  (declare (ignore morphology)) ;; if we want more educated extensions
+  (declare (ignore morphology)
+           (special *comlex-word-lists-loaded*)) ;; if we want more educated extensions
   (if (and
        (boundp '*comlex-word-lists-loaded*)
        *comlex-word-lists-loaded*) ;; do (load-comlex)
