@@ -20,14 +20,15 @@
   :instantiates money
   :binds ((money . money)
           (amount-per-share . amount-per-share))
-  :realization (:tree-family conventional-or
+ #| :realization (:tree-family conventional-or
                 :mapping ((first . money)
                           (second . amount-per-share)
                           (result . :self)
                           (A . money)
                           (B . amount-per-share)
                           (tail . or-amount-per-share)
-                          (top . money))))
+                          (top . money)))|||#  )
+;; The conventional-or ETF is commented out. Needs fixing
 
 
 

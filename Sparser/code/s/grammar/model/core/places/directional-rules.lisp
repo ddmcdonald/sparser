@@ -29,6 +29,8 @@
 
 
 ;;--- of-complement ("south of the Lee exit")
+#| Needs a different analysis to fit current definition
+of the category relative-location
 
 (define-additional-realization relative-location
   ;; category defined in places/relational)
@@ -39,4 +41,4 @@
              (complement . location)
              (base-np . direction) ;; compass-point
                 ;; some directions as well, but not all
-             (result-type . relative-location))))
+             (result-type . relative-location))))  |#
