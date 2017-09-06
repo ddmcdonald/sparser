@@ -984,7 +984,7 @@
 
 (define-mixin-category on-substrate :specializes bio-process
  :binds ((substrate
-          (:or bio-complex peptide))
+          (:or bio-complex peptide component))
          (site
           (:or protein-domain region-of-molecule))))
 
