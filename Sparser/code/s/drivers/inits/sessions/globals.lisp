@@ -149,6 +149,12 @@
    documents with that style. In an incremental scan it gates
    whether or not we call PNF to identify proper names.")
 
+(defparameter *pnf-routine* nil
+  "Records the keyword that was passed to establish-pnf-routine to
+   determine which variation is the runtime definition of the
+   function pnf. Can stand as a proxie for whether there has been
+   a call to that function.")
+
 (defparameter *do-forest-level* t
   "Set as part of the switch settings, read by Move-to-forest-level
    as a gate on that whole phase of the analysis")

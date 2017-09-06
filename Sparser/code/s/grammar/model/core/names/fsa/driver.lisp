@@ -40,10 +40,6 @@
   "Used as a flag inside headlines and such. Set by various
    header-field actions. Initialzed by Initialize-section-state.")
 
-
-(defvar *pnf-routine* nil
-  "Records the keyword that names the PNF routine that is in use.")
-
 (defparameter *cap-seq-edge-data-routine* 'cap-seq-no-referent
   "The function used by Make-edge-over-capitalized-sequence to compute
    the category, form, referent, etc. of the edge formed when the
