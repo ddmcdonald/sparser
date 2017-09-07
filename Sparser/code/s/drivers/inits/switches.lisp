@@ -83,13 +83,6 @@
 
 (in-package :sparser)
 
-(defvar *NO-SEGMENT-LEVEL-OPERATIONS*)
-
-(defvar *BREAK-ON-NEW-BRACKET-SITUATIONS*)
-(defvar *ARABIC-NAMES*)
-(defvar *THE-CATEGORY-OF-DIGIT-SEQUENCES*)
-(defvar *CAP-SEQ-EDGE-DATA-ROUTINE*)
-
 
 (defvar *switch-setting* nil
   "Set by one of the switch-setting routines. Purely for the
@@ -399,6 +392,7 @@
 
 
 (defun strider-setting ()
+  (declare (special *arabic-names*))
   (blocks-world-setting)
   ;; except
   (include-comlex)
@@ -451,7 +445,8 @@
 
 (defun bio-setting ()
   "Used in the 'biology' configuration/script"
-  (declare (special *treat-single-capitalized-words-as-names*))
+  (declare (special *treat-single-capitalized-words-as-names*
+                    *break-on-new-bracket-situations*))
   (revert-to-error-break) ;; also the loader default
   ;; from (use-default-settings) with the obvious change
   ;; to take new words
@@ -639,7 +634,7 @@
 
 (defun dm&p-setting ()
   "Used for the 'just-dm&p' configuration/script"
-  (declare (special *dm&p-forest-protocol*))
+  (declare (special *dm&p-forest-protocol* *cap-seq-edge-data-routine*))
   (debris-analysis-setting)
   (use-unknown-words)
   (what-to-do-at-the-forest-level :dm&p-forest-level)
