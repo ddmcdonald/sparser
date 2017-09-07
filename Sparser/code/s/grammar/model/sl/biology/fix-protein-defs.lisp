@@ -634,6 +634,295 @@ from NCIT, HGNC, etc. and also cut off compound UPA ids (with - or space -- get 
     (when (and fm (null (cdr fm)))
       (second (car fm)))))
 
+(defparameter *prot-fam-name-syns-ht* (make-hash-table :size 100000 :test #'equal))
+
+
+(defun set-up-prot-fam-name-syns-ht (prot-fam)
+  (declare (special *prot-fam-name-syns-ht*))
+  (let* ((word (second prot-fam))
+         (long (getf prot-fam :long))
+         (synonyms (getf prot-fam :synonyms))
+         (all-names (append `(,word ,long) synonyms)))
+    (loop for name in all-names
+          do (setf (gethash name *prot-fam-name-syns-ht*) prot-fam))))
+
+
+(defun remove-family-names-from-protein-defs     (&key (nofams-file "standardized-protein-defs-no-fams.lisp") )
+    ;(&key (family-file "protein-families-mod.lisp") )
+  (declare (special *prot-fam-name-syns-ht*))
+  #+ignore(let ((input (open (concatenate 'string "sparser:bio;" family-file)
+                                          :if-does-not-exist nil)))
+    (when input
+      (loop for prot-fam = (read input nil)
+            while prot-fam
+            when (stringp (second prot-fam))
+            do (let* ((word (second prot-fam))
+                      (long (getf prot-fam :long))
+                      (synonyms (getf prot-fam :synonyms))
+                      (all-names (append `(,word ,long) synonyms)))
+                 (loop for name in all-names
+                       do (setf (gethash name *prot-fam-name-syns-ht*) prot-fam))))))
+  (with-open-file (std-prot-no-fam (concatenate 'string "sparser:bio;" nofams-file)
+                                       :direction :output :if-exists :supersede 
+                                       :if-does-not-exist :create
+                                       :external-format :UTF-8)
+    (format std-prot-no-fam "(in-package :sparser)~%~%")
+    (let ((std-prot-input (open "sparser:bio;standardized-protein-defs.lisp"
+                                :if-does-not-exist nil)))
+      (when std-prot-input
+        (loop for prot-def = (read std-prot-input nil)
+              while prot-def
+            when (stringp (second prot-def))
+              do (let ((id (second prot-def))
+                       (syns (third prot-def)))
+                   (lc-one-line-print `(define-protein ,id ,(remove-fams-from-prot prot-def))
+                                      std-prot-no-fam)))))))
+
+(defparameter *potential-fam-ids* nil)
+(defparameter *prot-missing-from-fam* nil)
+(defparameter *human-prot-missing-from-fam* nil)
+(defparameter *problematic-prot-fams-ht* (make-hash-table :size 300 :test #'equal))
+
+(defun remove-fams-from-prot (prot-def)
+  (declare (special *prot-fam-name-syns-ht* *potential-fam-ids* *prot-missing-from-fam* *upa-key-upm-val* *human-prot-missing-from-fam*))
+  (unless (boundp '*upa-key-upm-val*)
+    (load "sparser:bio;uniprot-accession-id-mnemonic.lisp"))
+  (let* ((id (second prot-def))
+        (syns (third prot-def))
+        (human-protein? (human-mnemonic? (gethash (string-trim "UP:" id) *upa-key-upm-val*))))
+    (loop for syn in syns
+            as syn-def = (gethash syn *prot-fam-name-syns-ht*)
+        if (null syn-def)
+        collect syn into good-syns
+        else
+          when (not (eq 0 (search "UP:" id)))
+            do (push prot-def *potential-fam-ids*)
+          end
+            and 
+          unless (or (member id (getf syn-def :members)
+                           :test #'equal)
+                     (equal id (getf syn-def :identifier)))
+             if human-protein?
+                do (push (list syn-def prot-def) *human-prot-missing-from-fam*)
+                   (setf (gethash (second syn-def) *problematic-prot-fams-ht*)
+                         syn-def)
+                and collect syn into good-syns
+            else 
+                do (push (list syn-def prot-def) *prot-missing-from-fam*)
+            end
+        finally (return good-syns))))
+
+
+(defparameter *prot-fam-names-ht* (make-hash-table :size 10000 :test #'equal))
+(defparameter *prot-fam-members-ht* (make-hash-table :size 10000 :test #'equal))
+(defparameter *post-merge-prot-fam-names-ht* (make-hash-table :size 10000 :test #'equal))
+
+(defun read-and-normalize-protein-fam-defs (&key (family-file "protein-families-mod.lisp") )
+  "Taking all the family definitions in protein-families and filtering
+them into those with identifiers and not -- identifiers get output to
+new file to append to new-prot-fam, those without get filtered to "
+  (declare (special *prot-fam-names-ht* *prot-fam-members-ht* *post-merge-prot-fam-names-ht*))
+  (let ((input (open (concatenate 'string "sparser:bio;" family-file)
+                     :if-does-not-exist nil)))
+    (when input
+      (loop for prot-fam = (read input nil)
+            while prot-fam
+            when (stringp (second prot-fam))
+            do (set-up-prot-fam-name-ht prot-fam))))
+  (loop for prot-fam-name being the hash-keys in *prot-fam-names-ht* using (hash-value prot-fam-def)
+          as members = (getf prot-fam-def :members)
+        do (cond ((and members
+                       (gethash members *prot-fam-members-ht*))
+                  (merge-fam-defs prot-fam-def "members" members))
+                 (members
+                  (setf (gethash members *prot-fam-members-ht*)
+                        prot-fam-def))
+                 (t ; for protein families with no members, we need to add to the post-merge list
+                  (setf (gethash prot-fam-name *post-merge-prot-fam-names-ht*)
+                        prot-fam-def))))
+  (loop for mem-prot-fam being the hash-keys in *prot-fam-members-ht*
+        using (hash-value prot-fam-def)
+        do (setf (gethash (second prot-fam-def) *post-merge-prot-fam-names-ht*)
+                 prot-fam-def))
+  (loop for prot-fam-def being the hash-values of *post-merge-prot-fam-names-ht*
+        do (set-up-prot-fam-name-syns-ht prot-fam-def))
+
+  (remove-family-names-from-protein-defs)
+  (output-new-prot-fam-files))
+
+(defun set-up-prot-fam-name-ht (prot-fam)
+  (declare (special *prot-fam-names-ht*))
+  (let* ((prot-fam-name (second prot-fam))
+         (id (getf prot-fam :identifier))
+         (init-members (getf prot-fam :members))
+         (sorted-members (when init-members
+                           (remove-duplicates (sort init-members #'string<)
+                                              :test #'equal)))
+        (synonyms (getf prot-fam :synonyms))
+        (long (getf prot-fam :long)))
+    (if (gethash prot-fam-name *prot-fam-names-ht*)
+        (merge-fam-defs prot-fam "name" sorted-members)
+        (setf (gethash prot-fam-name *prot-fam-names-ht*)
+              `(def-family ,prot-fam-name
+                   ,.(when id `(:identifier ,id))
+                   ,.(when long `(:long ,long))
+                   ,.(when synonyms `(:synonyms ,synonyms))
+                   ,.(when sorted-members `(:members ,sorted-members)))))))
+
+(defun merge-fam-defs (prot-fam merge-type &optional sorted-members)
+  ;; note: this protects against merging families that both have
+  ;; different ids from the same ontology, however families where one
+  ;; has an id and the other has members may be problematic if the id
+  ;; doesn't really go with those members, and merging families with
+  ;; the same members may be problematic when one is a super family
+  ;; where we just haven't filled in the extra members, but there's
+  ;; enough problematic duplication in the current file that this was
+  ;; judged to be more likely to improve things relative to the
+  ;; issues. may want to reconsider later.
+  (declare (special *prot-fam-names-ht* *prot-fam-members-ht* *post-merge-prot-fam-names-ht*))
+  (unless (or (equal merge-type "name")
+              (equal merge-type "members"))
+    (lsp-break "unknown family merge-type ~s" merge-type))
+  (let* ((prot-fam-name (second prot-fam))
+         (id (getf prot-fam :identifier))
+         (synonyms (getf prot-fam :synonyms))
+         (long (getf prot-fam :long))
+         (alt-def (if (equal merge-type "name")
+                      (gethash prot-fam-name *prot-fam-names-ht*)
+                      (gethash sorted-members *prot-fam-members-ht*)))
+         (alt-def-id (getf alt-def :identifier))
+         (alt-def-syns (getf alt-def :synonyms))
+         (alt-def-long (getf alt-def :long))
+         (alt-def-members (getf alt-def :members alt-def))
+         (ids-match (equal id alt-def-id))
+         (longs-match (equal long alt-def-long))
+         (new-id (if (and (not ids-match)
+                          (equal (subseq id 0 (search ":" id))
+                                 (subseq alt-def-id 0 (search ":" alt-def-id))))
+                     (lsp-break "incompatible IDs for ~%~s~% and ~%~s~%"
+                                (cdr prot-fam) alt-def)
+                     (or id alt-def-id)))
+         (alt-syns-with-id (if ids-match
+                               alt-def-syns
+                               (append `(,alt-def-id) alt-def-syns)))
+         (alt-syns-with-long (if longs-match
+                                 alt-syns-with-id
+                                 (append `(,alt-def-long) alt-syns-with-id)))
+         (alt-syns-with-name (if (equal merge-type "name")
+                                 alt-syns-with-long
+                                 (append `(,(second alt-def)) alt-syns-with-long)))
+         (new-syns (union synonyms alt-syns-with-name :test #'equal))
+         (new-long (or long alt-def-long))
+         (union-members (union sorted-members alt-def-members
+                                       :test #'equal))
+         (new-members (if (and (equal merge-type "name")
+                               sorted-members)
+                          ;(lsp-break "union-members: ~%~s ~%sorted-members:~%~s ~%alt-def-members:~%~s~%" union-members sorted-members alt-def-members)
+                          (sort union-members #'string<)
+                          alt-def-members))
+         (new-def `(def-family ,prot-fam-name
+                       ,.(when new-id `(:identifier ,new-id))
+                       ,.(when new-long `(:long ,new-long))
+                       ,.(when new-syns `(:synonyms ,new-syns))
+                       ,.(when new-members `(:members ,new-members)))))
+    (if (equal merge-type "name")
+        (setf (gethash prot-fam-name *prot-fam-names-ht*)
+              new-def)
+        (setf (gethash alt-def-members *prot-fam-members-ht*)
+              new-def))))
+
+(defun output-new-prot-fam-files ()
+  (declare (special *post-merge-prot-fam-names-ht*))
+  (with-open-file (prot-fam-with-id (concatenate 'string "sparser:bio;" 
+                                                     "protein-fam-with-id.lisp")
+                                       :direction :output :if-exists :supersede 
+                                       :if-does-not-exist :create
+                                       :external-format :UTF-8)
+    (with-open-file (prot-fam-no-id (concatenate 'string "sparser:bio;" 
+                                                     "protein-fam-no-id.lisp")
+                                       :direction :output :if-exists :supersede 
+                                       :if-does-not-exist :create
+                                       :external-format :UTF-8)
+          (with-open-file (problematic-prot-fam (concatenate 'string "sparser:bio;" 
+                                                     "problematic-protein-fams.lisp")
+                                       :direction :output :if-exists :supersede 
+                                       :if-does-not-exist :create
+                                       :external-format :UTF-8)
+      (loop for prot-fam being the hash-keys in *post-merge-prot-fam-names-ht*
+            using (hash-value prot-fam-def)
+            do (let ((id (getf prot-fam-def :identifier))
+                     (long (getf prot-fam-def :long))
+                     (synonyms (getf prot-fam-def :synonyms))
+                     (members (getf prot-fam-def :members)))
+                                        ; these are families that are potentially missing
+                                        ; their human members but we want to make sure
+                                        ; before we fold them in
+                 (cond ((gethash prot-fam *problematic-prot-fams-ht*)
+                        (lc-one-line-print prot-fam-def problematic-prot-fam))
+                       (id
+                        (lc-one-line-print
+                         `(def-family-with-id ,prot-fam ,id ,.(when long `(:name ,long))
+                                              ,.(when synonyms `(:synonyms ,synonyms))
+                                              ,.(when members `(:members ,members)))
+                         prot-fam-with-id))
+                       ((and (parse-integer (subseq prot-fam 0 1) :junk-allowed t)
+                             (equal "." (subseq prot-fam 1 2)))
+                        ;; things with names like "1.1.1.239" are actually EC
+                        ;; (enzyme) IDs, so we should treat them as such -- ECs
+                        ;; can only start with 1-6 so there should always be a
+                        ;; period as the second digit. 
+                        (lc-one-line-print
+                         `(def-family-with-id ,prot-fam ,(concatenate 'string "EC:" prot-fam)
+                            ,.(if long `(:name ,long) `(:name ,prot-fam))
+                            ,.(when synonyms `(:synonyms ,synonyms))
+                            ,.(when members `(:members ,members)))
+                         prot-fam-with-id))
+                       (t
+                        (lc-one-line-print prot-fam-def prot-fam-no-id)
+                        ))))))))
+
+      #+ignore(defun resolve-same-prot-fam-name (prot-fam &optional sorted-members)
+  (declare (special *prot-fam-names-ht*))
+  (let* ((prot-fam-name (second prot-fam))
+         (id (second (assoc :identifier prot-fam)))
+         (synonyms (second (assoc :synonyms prot-fam)))
+         (long (second (assoc :long prot-fam)))
+         (alt-def (gethash prot-fam-name *prot-fam-names-ht*))
+         (alt-def-id (second (assoc :identifier alt-def)))
+         (alt-def-syns (second (assoc :synonyms alt-def)))
+         (alt-def-long (second (assoc :long alt-def)))
+         (ids-match (equal id alt-def-id))
+         (longs-match (equal long alt-def-long))
+         (new-id (cond ((and (not ids-match)
+                           (equal (subseq id 0 (search ":" id))
+                                  (subseq alt-def-id 0 (search ":" alt-def-id))))
+                           (lsp-break "incompatible IDs for ~%~s~% and ~%~s~%"
+                                      (cdr prot-fam) alt-def)
+                        (id
+                         id)
+                        (alt-def-id
+                         alt-def-id)
+                        (t nil))))
+         (alt-syns-with-id (if ids-match
+                               alt-def-syns
+                               (append `(,alt-def-id) alt-def-syns)))
+         (alt-syns-with-long (if longs-match
+                                 alt-syns-with-id
+                                 (append `(,alt-def-long) alt-syns-with-id)))
+         (new-syns (union synonyms alt-syns-with-long :test #'equal))
+         (new-long (if long
+                       long
+                       alt-def-long))
+         (new-members (sort (union sorted-members (second (assoc :members alt-def))
+                                   :test #'equal)
+                            #'string<)))
+    
+    (setf (gethash prot-fam-name *prot-fam-names-ht*)
+          `(def-family prot-fam-name ,.(when new-id `(:identifier new-id))
+                              ,.(when new-long `(:long new-long))
+                              ,.(when new-syns `(:synonyms ',new-syns))
+                              ,.(when new-members `(:members ',new-members))))))
+
 ;;;;;;;; normalization for standardized-protein-defs-complete.lisp
 #|
 (load-protein-id-hash-tables)
@@ -706,3 +995,4 @@ from NCIT, HGNC, etc. and also cut off compound UPA ids (with - or space -- get 
                     collect (cons d (fries-match d)))))
 
 |#
+
