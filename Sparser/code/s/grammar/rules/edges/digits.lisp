@@ -124,6 +124,7 @@
   ;; placed over individual digit sequences that were not predefined
   ;; in the grammar.  Called from Specific-assessed-actions or
   ;; from preterminals-for-unknown
+  (declare (special *the-category-of-digit-sequences*))
   (let ((digit-string (word-pname word))
         (next-position (chart-position-after position)))
 
