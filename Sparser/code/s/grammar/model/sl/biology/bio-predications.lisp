@@ -174,4 +174,4 @@
 (adj "unmodified" :super bio-predication)
 (adj "wild-type" :super bio-predication)
 (def-synonym wild-type (:adj "wild type"))
-(def-synonym wild-type (:adj "WT"))
+(def-synonym wild-type (:adj "wt"))
