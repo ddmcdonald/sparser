@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2012 David D. McDonald
+;;; Copyright (c) 2010-2017 David D. McDonald
 ;;;
 ;;;     File: "comlex"
 ;;;   Module: "grammar;rules:words:one-offs:"
-;;;  Version:  December 2012
+;;;  Version:  September 2017
 
 ;; initiated 8/16/10. 11/3 cleaned up the loader. Added vivifying code.
 ;; 7/10/11 started finishing it. 7/28 Decided to use priming system
@@ -20,15 +20,6 @@
 ;;;--------
 ;;; Comlex
 ;;;--------
-(defvar *COMLEX-ADJECTIVES-LIST*)
-(defvar *COMLEX-NOUNS-LIST*)
-(defvar *COMLEX-VERBS-LIST*)
-(defvar *IS-A-FUNCTION-WORD-IN-COMLEX*)
-(defvar *IS-A-NOUN-IN-COMLEX*)
-(defvar *IS-A-VERB-IN-COMLEX*)
-(defvar *IS-AN-ADJECTIVE-IN-COMLEX*)
-(defvar *IS-AN-ADVERB-IN-COMLEX*)
-
 
 #| Given the full Comlex file from the LDC, read it in and stash
  its contents into tables by the POS type that Comlex assigned.
@@ -177,21 +168,27 @@ non-words 26
 (defvar verb-adj-ambiguous-words (make-hash-table))
 
 (defun comlex-noun-verb-ambiguous-words () ;; 2,879
+  (declare (special *is-a-verb-in-comlex* *is-a-noun-in-comlex*))
   (loop for key being the hash-key in *is-a-verb-in-comlex*
      when (gethash key *is-a-noun-in-comlex*)
        do (setf (gethash key noun-verb-ambiguous-words) t)))
 
 (defun comlex-noun-adjective-ambiguous-words () ;; 1,008
+  (declare (special *is-an-adjective-in-comlex* *is-a-noun-in-comlex*))
   (loop for key being the hash-key in *is-an-adjective-in-comlex*
      when (gethash key *is-a-noun-in-comlex*)
      do (setf (gethash key noun-adj-ambiguous-words) t)))
 
 (defun comlex-verb-adjective-ambiguous-words () ;; 275
+  (declare (special *is-an-adjective-in-comlex* *is-a-verb-in-comlex*))
   (loop for key being the hash-key in *is-an-adjective-in-comlex*
      when (gethash key *is-a-verb-in-comlex*)
        do (setf (gethash key verb-adj-ambiguous-words) t)))
 
 (defun diff-the-comlex-word-lists ()
+  (declare (special *comlex-adjectives-list* *comlex-nouns-list* *comlex-verbs-list*
+                    *is-a-noun-in-comlex* *is-an-adjective-in-comlex*
+                    *is-a-verb-in-comlex*))
   (loop for s in *comlex-verbs-list* ;; 5,665
        when (not (or (gethash s *is-a-noun-in-comlex*)
                      (gethash s *is-an-adjective-in-comlex*)))
@@ -226,14 +223,12 @@ non-words 26
  morphological variants yet.
 |#
 
-(defvar *comlex-word-lists-loaded* nil
-  "Provides a flag to gate operations that reference these lists")
-
 (defun load-comlex ()
   "Pupulate the hashtables used by is-in-comlex?"
   ;; The word files are a part of the standard Sparser load
   ;; Just having loaded the files gives us defvar's pointing
-  ;; to each of the major word lists. 
+  ;; to each of the major word lists.
+  (declare (special *comlex-word-lists-loaded*))
   (populate-comlex-adjectives)
   (populate-comlex-adverbs)
   (populate-comlex-nouns)
@@ -251,6 +246,9 @@ non-words 26
 (defmethod is-in-comlex? ((s symbol))
   ;; interesting words will fit many parts of speech, 
   ;; which we could note here with a cond-every or some such.
+  (declare (special *is-a-noun-in-comlex* *is-a-verb-in-comlex*
+                    *is-an-adjective-in-comlex* *is-an-adverb-in-comlex*
+                    *is-a-function-word-in-comlex*))
   (or (gethash s *is-a-noun-in-comlex*)
       (gethash s *is-a-verb-in-comlex*)
       (gethash s *is-an-adjective-in-comlex*)
