@@ -78,7 +78,8 @@ grammar/model/sl/NIH/gene-protein.lisp:    (let ((long-word (when long-form (def
   "This is the guts of define-polyword. It's available to call 
    directly on strings that fail the not-all-same char test,
    though that should be fixable."
-  ;;(lsp-break "Making polyword for ~s" multi-word-string)
+  ;(lsp-break "Making polyword for ~s" multi-word-string)
+  (declare (special *one-space* multi-word-string))
   (let* ((symbol (or (find-symbol multi-word-string *polyword-package*)
                      (intern multi-word-string *polyword-package*)))
          (redefinition? (boundp symbol))
@@ -94,10 +95,13 @@ grammar/model/sl/NIH/gene-protein.lisp:    (let ((long-word (when long-form (def
 
     (let ((list-of-words
            (mapcan #'(lambda (word)
-                       (unless (eq :whitespace (word-rules word))
-                         (list word)))
+                                        ;(unless (eq :whitespace (word-rules word))
+                       (if (eq :whitespace (word-rules word))
+                           (list *one-space*) ;; canonicalizing whitespace that is part of a polyword
+                           ;;(lsp-break "whitespace word in ~s for word ~s" multi-word-string word)
+                           (list word)))
                    (words-in-string multi-word-string))))
-
+     
       (setf (pw-words polyword) list-of-words)
 
       (setf (pw-fsa polyword)
