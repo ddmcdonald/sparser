@@ -8,13 +8,54 @@
 (in-package :sparser)
 
 (defun ns-protein-pattern-resolve (pattern start-pos end-pos)
-  (or
    (cond
      ((member :colon pattern) (make-bio-complex start-pos end-pos))
      ((member :forward-slash pattern) (make-protein-collection start-pos end-pos))
-     ((member :hyphen pattern) ;;(make-bio-complex-with-hyphen start-pos end-pos)
-      (make-protein-collection start-pos end-pos)))
-   (ns-pattern-dispatch pattern start-pos end-pos)))
+     ((and (eq (second pattern) :hyphen)
+           (= (length pattern) 3)
+           (not (member (car pattern)
+                        '(:full :lower :single-lower
+                          :capitalized :mixed :single-cap
+                          :single-digit :digits
+                          ;; above are unknown words
+                          ;;  handle "anti-..." and 
+                          ;;  below are semantically combining forms
+                          ;; that we do not yet handle
+                          :drug
+                          :bio-entity
+                          :cell-line
+                          :sh2
+                          :residue-on-protein
+                          ))))
+      (make-bio-complex-with-hyphen start-pos end-pos))
+     (t (ns-pattern-dispatch pattern start-pos end-pos))))
+
+(defun make-bio-complex-with-hyphen (start-pos end-pos)
+  (let ((tts (all-tts start-pos end-pos)))
+    (declare (special tts category::protein category::np))
+    (cond ((and (edge-p (car tts))
+                (itypep (edge-referent (car tts)) 'protein)
+                (edge-p (third tts))
+                (itypep (edge-referent (third tts)) 'protein))
+           (make-bio-complex start-pos end-pos))
+          ((and (edge-p (car tts))
+                (itypep (edge-referent (car tts)) 'protein)
+                (edge-p (third tts))
+                (itypep (edge-referent (third tts)) 'nucleotide))
+           (make-bio-complex start-pos end-pos))
+          ((and (edge-p (car tts))
+                (itypep (edge-referent (car tts)) 'phosphorylate))
+           (make-edge-over-long-span
+            start-pos
+            end-pos
+            category::protein
+            :rule 'make-bio-complex-with-hyphen
+            :form category::np
+            :referent (make-phosphorylated-protein
+                       (edge-referent (third tts))
+                       (string-trim " " (extract-characters-between-positions start-pos end-pos)))))
+          (t 
+             (make-protein-collection start-pos end-pos)))))
 
 (defun ns-amino-pattern-resolve (pattern start-pos end-pos)
   (or
@@ -63,8 +104,7 @@
       (tr :conditions-for-bio-complex-failed start-pos end-pos)
       nil))))
 
-(defun make-bio-complex-with-hyphen (start-pos end-pos)
-  (make-bio-complex start-pos end-pos))
+
 
 (defun make-protein-collection (start-pos end-pos)
   (declare (special category::protein category::collection category::n-bar))
