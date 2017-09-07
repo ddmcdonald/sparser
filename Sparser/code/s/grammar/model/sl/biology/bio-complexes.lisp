@@ -270,7 +270,8 @@
 
 (def-indiv-with-id bio-complex "9-1-1" "EBI:2606881" :synonyms ("Rad9-Hus1-Rad1 complex" "9-1-1 complex" "Rad9-Hus1-Rad1 (9-1-1) clamp complex" "Rad9-Rad1-Hus1"))
 (def-indiv-with-id bio-complex "proteasome complex" "GO:0000502" :adj "proteasomal" :synonyms ("PR:000027410"))
-(def-indiv-with-id bio-complex "mediator complex" "NCIT:C19864" :synonyms ("mediator of activation")) ;; used to be defined as protein with "mediators" as a synonym, but I'm not sure that's likely to be the primary definition of "mediators" 
+(def-indiv-with-id bio-complex "mediator complex" "NCIT:C19864" :synonyms ("mediator of activation")) ;; used to be defined as protein with "mediators" as a synonym, but I'm not sure that's likely to be the primary definition of "mediators"
+(def-indiv-with-id bio-complex "VLA-4" "NCIT:C97745" :name "Integrin Alpha4/Beta1" :synonyms ("VLA4" "integrin alpha4-beta1")) ;; components are ("UP:P13612" "UP:P05556")
 
 ;(def-family "DDR" :identifier "IPR003208" :synonyms ("diol dehydratase-reactivating factor")) ;; also PR:000027169 -- both a family and a complex
 ;(def-family "TSH" :identifier "NCIT:C2280" :synonyms ("thyroid stimulating hormone") :members ("UP:P01215" "UP:P01222")) ;; alternate id  "PR:000028269" -- more of a complex than a protein family
