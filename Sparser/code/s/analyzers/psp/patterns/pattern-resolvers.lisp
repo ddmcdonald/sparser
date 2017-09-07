@@ -125,34 +125,63 @@
                     category::n-bar))
   (when (category-p right-ref)
     (setq right-ref (individual-for-ref right-ref)))
-  (let ((variable (second-imposes-relation-on-first?
-                   left-ref right-ref right-edge)))
-    (unless variable
-      (tr :ns-no-variable-relating-them left-ref right-ref)
-      (return-from do-relation-between-first-and-second nil))
-    (tr :make-right-head-with-agent-left variable)
-    (let ((edge
-           (make-ns-edge
-            (pos-edge-starts-at left-edge)
-            (pos-edge-ends-at right-edge)
-            (edge-category right-edge)
-            :form (cond ((eq (edge-form right-edge) category::verb+ed)
-                         (if (itypep left-ref 'no-space-prefix)
-                             category::verb+ed
-                             category::vp+ed))
-                        ((member (cat-name (edge-form right-edge))
-                                 '(common-noun common-noun/plural proper-noun
-                                   n-bar ;; point-mutations are n-bar
-                                   ))
-                         category::n-bar)
-                        (t
-                         category::adjective))
-            :referent (bind-variable variable left-ref right-ref)
-            :rule 'do-relation-between-first-and-second
-            :constituents `(,left-edge ,right-edge))))
-      (tr :no-space-made-edge edge)
-      edge)))
+  (cond ((itypep left-ref 'wild-type)
+         (make-wild-type-edge left-ref right-ref left-edge right-edge))
+        ((itypep right-ref 'wild-type)
+         (make-wild-type-edge right-ref left-ref right-edge left-edge))
+        (t
 
+         (let ((variable (second-imposes-relation-on-first?
+                          left-ref right-ref right-edge)))
+           (unless variable
+             (tr :ns-no-variable-relating-them left-ref right-ref)
+             (return-from do-relation-between-first-and-second nil))
+           (tr :make-right-head-with-agent-left variable)
+           (let ((edge
+                  (make-ns-edge
+                   (pos-edge-starts-at left-edge)
+                   (pos-edge-ends-at right-edge)
+                   (edge-category right-edge)
+                   :form (cond ((eq (edge-form right-edge) category::verb+ed)
+                                (if (itypep left-ref 'no-space-prefix)
+                                    category::verb+ed
+                                    category::vp+ed))
+                               ((member (cat-name (edge-form right-edge))
+                                        '(common-noun common-noun/plural proper-noun
+                                          n-bar ;; point-mutations are n-bar
+                                          ))
+                                category::n-bar)
+                               (t
+                                category::adjective))
+                   :referent (bind-variable variable left-ref right-ref)
+                   :rule 'do-relation-between-first-and-second
+                   :constituents `(,left-edge ,right-edge))))
+             (tr :no-space-made-edge edge)
+             edge)))))
+
+
+(defun make-wild-type-edge (wild-type protein wild-type-edge protein-edge)
+  (make-ns-edge
+   (pos-edge-starts-at
+    (if (position-precedes (pos-edge-starts-at wild-type-edge)
+                           (pos-edge-starts-at protein-edge))
+        wild-type-edge
+        protein-edge))
+   (pos-edge-ends-at
+    (if (position-precedes (pos-edge-starts-at wild-type-edge)
+                           (pos-edge-starts-at protein-edge))
+        protein-edge
+        wild-type-edge))
+
+   (edge-category protein-edge)
+   :form category::n-bar
+   :referent (bind-dli-variable 'predication wild-type protein)
+   :rule 'make-wild-type-edge
+   :constituents
+   (if (position-precedes (pos-edge-starts-at wild-type-edge)
+                           (pos-edge-starts-at protein-edge))
+       `(,wild-type-edge ,protein-edge)
+       `(,protein-edge ,wild-type-edge))))
 
 
 ;;;------------------------------
