@@ -194,33 +194,35 @@
   "Instantiate one of the pair categories, according to the category
    that's specified which becomes the label on the edge."
   (declare (special category::protein))
-  (let ((label (if (eq cat-name 'paired-protein)
-                   category::protein
-                   (category-named cat-name :break-if-none)))
-        (pair-category
-         (case cat-name 
-           (protein 'protein-pair)
-           (paired-protein 'pair-with-protein)
-           (bio-pair 'bio-pair)
-           (otherwise
-            (error "Unanticipated type of hyphenated-pair: ~a" cat-name))))
-        (left-ref (maybe-make-individual (edge-referent left-edge)))
-        (right-ref (maybe-make-individual (edge-referent right-edge))))
+  (when (and (edge-p left-edge)
+             (edge-p right-edge))
+    (let ((label (if (eq cat-name 'paired-protein)
+                     category::protein
+                     (category-named cat-name :break-if-none)))
+          (pair-category
+           (case cat-name 
+             (protein 'protein-pair)
+             (paired-protein 'pair-with-protein)
+             (bio-pair 'bio-pair)
+             (otherwise
+              (error "Unanticipated type of hyphenated-pair: ~a" cat-name))))
+          (left-ref (maybe-make-individual (edge-referent left-edge)))
+          (right-ref (maybe-make-individual (edge-referent right-edge))))
 
-    (let* ((i (find-or-make-individual pair-category 
-                                       :left left-ref
-                                       :right right-ref
-                                       :type label
-                                       :items (list left-ref right-ref)))
-           (edge (make-ns-edge
-                  pos-before pos-after label
-                  :form category::n-bar
-                  :rule 'make-hyphenated-pair
-                  :referent i
-                  :constituents `(,left-edge ,right-edge)
-                  :words (effective-words-given-edges pos-before pos-after))))
-      (tr :made-hyphenated-pair pair-category edge)
-      edge)))
+      (let* ((i (find-or-make-individual pair-category 
+                                         :left left-ref
+                                         :right right-ref
+                                         :type label
+                                         :items (list left-ref right-ref)))
+             (edge (make-ns-edge
+                    pos-before pos-after label
+                    :form category::n-bar
+                    :rule 'make-hyphenated-pair
+                    :referent i
+                    :constituents `(,left-edge ,right-edge)
+                    :words (effective-words-given-edges pos-before pos-after))))
+        (tr :made-hyphenated-pair pair-category edge)
+        edge))))
 
 
 (defun make-hyphenated-number (left-edge right-edge)
