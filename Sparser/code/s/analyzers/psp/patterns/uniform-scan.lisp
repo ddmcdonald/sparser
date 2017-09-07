@@ -164,15 +164,15 @@
     ;;(lsp-break "is-pro")
     (when pro? (values pro? start end pro-cfr? sur-str))))
 
-(defun span-phosphorylated-protein (start end)
+(defun span-phosphorylated-protein (start end &optional cat form)
   (multiple-value-bind (protein start end cfr sur-string)
       (is-phosphorylated-protein? start end)
     (make-edge-over-long-span
      start
      end
-     (cfr-category cfr)
+     (or cat (cfr-category cfr))
      :rule 'span-phosphorylated-protein
-     :form (cfr-form cfr)
+     :form (or form (cfr-form cfr))
      :referent (make-phosphorylated-protein protein sur-string))
     end))
                             
