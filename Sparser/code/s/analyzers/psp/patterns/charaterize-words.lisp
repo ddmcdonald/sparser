@@ -112,7 +112,7 @@
                   (characterize-word-type position word))
                  ((itypep label 'protein)
                   :protein)
-                 ((memq label '(wild-type))
+                 ((memq label '(wild-type nucleotide))
                   ;;(eq label 'protein) 
                   (intern (pname label) :keyword))
                  ((and (edge-p item)
