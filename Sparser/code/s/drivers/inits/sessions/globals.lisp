@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  June 2017
+;;;  Version:  September 2017
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -138,6 +138,10 @@
   "Set as part of the switch settings.
    Read within make-word/all-properties to gate actions by Introduce-
    morph-brackets-from-unknown-word.")
+
+(defvar *comlex-word-lists-loaded* nil
+  "Provides a flag to gate operations that reference these lists.
+   Set by load-comlex")
 
 ;;;----------
 ;;; analysis
