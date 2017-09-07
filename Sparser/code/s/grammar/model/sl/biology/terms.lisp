@@ -52,7 +52,12 @@
 
 
 
+;; avoid errors for words describing processes in biology and computation
 
+;; turns out "line" is a protein
+(define-adjective "in-line")
+(define-adjective "on-line")
+(define-adjective "over-arching")
 
 
 ;; Moved in from dossiers/modifiers.lisp
