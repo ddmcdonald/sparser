@@ -201,14 +201,15 @@
 
 
 (defun create-entry-in-discourse-history (category i edge)
-  (unless (referential-category-p category)
+  (unless (or (referential-category-p category)
+              (mixin-category-p category))
     (error "Key is not a referential category:~%    ~A" category))
   ;; Called from update-discourse-history when the discourse 
   ;; history of this category is empty, i.e. this is the first
   ;; time an individual of this category has been mentioned.
   (tr :creating-category-dh-entry category i edge)
   (setf (discourse-entry category)
-	(create-discourse-entry i edge)))
+        (create-discourse-entry i edge)))
 
 (defun discourse-entry (category)
   (gethash category *objects-in-the-discourse*))
