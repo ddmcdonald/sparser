@@ -68,74 +68,74 @@
   (unless *position-before-last-period*
     (setq *position-before-last-period* (position# 0)))
 
-  (if (period-marks-sentence-end? position-after)
-    (let ((s (sentence))
-          (pos-after-period (chart-position-after position-before)))
-      ;; Do we make another sentence or reuse one that's
-      ;; already been made on a previous pass.
-      (cond 
-       (*reading-populated-document*
-        (unless (and (slot-boundp s 'next) ;; next sentence exists
-                     (next s))
-          (start-sentence pos-after-period)))
-       (t ;; ordinary reading from a stream
-        (start-sentence pos-after-period)))
+  (cond ((period-marks-sentence-end? position-after)
+         (let ((s (sentence))
+               (pos-after-period (chart-position-after position-before)))
+           ;; Do we make another sentence or reuse one that's
+           ;; already been made on a previous pass.
+           (cond 
+             (*reading-populated-document*
+              (unless (and (slot-boundp s 'next) ;; next sentence exists
+                           (next s))
+                (start-sentence pos-after-period)))
+             (t ;; ordinary reading from a stream
+              (start-sentence pos-after-period)))
 
-      (tr :period-hook-sentence-end position-after)
-      (when *break-on-next-sentence*
-        (push-debug `(,s))
-        (break "sentence: ~a" s))
-
-      (setq *position-before-last-period* position-before)
-      
-      (cond
-       ;; First dispatch is by 'mode' -- either we going sentence
-       ;; by sentence at the lower levels (sweeps) or we're scanning
-       ;; phrases incrementally and then going to the forest level 
-       ;; at the sentence boundary (new-forest-protocol?)
-       ((sucessive-sweeps?)
-        (when *break-on-next-sentence-status*
-          (push-debug `(,s))
-          (lsp-break "~&======= at p~a the status of~
-                      ~%    ~a is ~a~%"
-                     (pos-token-index position-before)
-                     s (parsing-status s)))
-        (if *scanning-terminals*
-          (case *scanning-terminals*
-            (:polywords (throw :pw-sweep position-before))
-            (t (break ":COMPLETION-SWEEP fell through CASE expression")
-               nil))
-          (case (parsing-status s)
-            ;; this is the sentence that we're finishing
-            (:initial
-             ;; This is the first moment when we know the length
-             ;; of the sentence. 'position-before' is the one that
-             ;; has the period as the value of its terminal slot.
-             (when *sentence-making-sweep*
-               (set-sentence-endpoints position-before s)) ;; and saves the string
-             (set-sentence-status s :scanned)
-             (throw :end-of-sentence :finished-scanning))
-            (:scanned
-             (when *reading-populated-document*
-               (throw :end-of-sentence :finished-scanning)))
-            (:chunked
-             ;; shouldn't have to do this. Compensates for something
-             (when *reading-populated-document*
-               (throw :end-of-sentence :finished-scanning)))
-            (otherwise
+           (tr :period-hook-sentence-end position-after)
+           (when *break-on-next-sentence*
              (push-debug `(,s))
-             (break "Period-hook did not expect the status ~a ~
+             (break "sentence: ~a" s))
+
+           (setq *position-before-last-period* position-before)
+      
+           (cond
+             ;; First dispatch is by 'mode' -- either we going sentence
+             ;; by sentence at the lower levels (sweeps) or we're scanning
+             ;; phrases incrementally and then going to the forest level 
+             ;; at the sentence boundary (new-forest-protocol?)
+             ((sucessive-sweeps?)
+              (when *break-on-next-sentence-status*
+                (push-debug `(,s))
+                (lsp-break "~&======= at p~a the status of~
+                      ~%    ~a is ~a~%"
+                           (pos-token-index position-before)
+                           s (parsing-status s)))
+              (if *scanning-terminals*
+                  (case *scanning-terminals*
+                    (:polywords (throw :pw-sweep position-before))
+                    (t (break ":COMPLETION-SWEEP fell through CASE expression")
+                       nil))
+                  (case (parsing-status s)
+                    ;; this is the sentence that we're finishing
+                    (:initial
+                     ;; This is the first moment when we know the length
+                     ;; of the sentence. 'position-before' is the one that
+                     ;; has the period as the value of its terminal slot.
+                     (when *sentence-making-sweep*
+                       (set-sentence-endpoints position-before s)) ;; and saves the string
+                     (set-sentence-status s :scanned)
+                     (throw :end-of-sentence :finished-scanning))
+                    (:scanned
+                     (when *reading-populated-document*
+                       (throw :end-of-sentence :finished-scanning)))
+                    (:chunked
+                     ;; shouldn't have to do this. Compensates for something
+                     (when *reading-populated-document*
+                       (throw :end-of-sentence :finished-scanning)))
+                    (otherwise
+                     (push-debug `(,s))
+                     (break "Period-hook did not expect the status ~a ~
                    on ~a" (parsing-status s) s)))))
        
-       ((new-forest-protocol?)
-        ;; goes with the incremental protocol when waiting
-        ;; for an entire sentence to be chunked before
-        ;; rolling any of them up.
-        (new-forest-driver position-before))))
+             ((new-forest-protocol?)
+              ;; goes with the incremental protocol when waiting
+              ;; for an entire sentence to be chunked before
+              ;; rolling any of them up.
+              (new-forest-driver position-before)))))
     
-    (else
-      (tr :period-at-p-not-eos position-after)
-      (handle-period-as-initial position-before))))
+        ((not (period-end-blocked-by-unit-of-measure position-before))
+         (tr :period-at-p-not-eos position-after)
+         (handle-period-as-initial position-before))))
 
 
 ;;--- Sentences
@@ -163,6 +163,26 @@
 
 ;; (trace-eos-lookahead)
 
+(defun period-end-blocked-by-unit-of-measure (pos-after)
+    
+  (let* ((position-back-one (chart-position-before pos-after))
+         (edge-just-before-period
+          (ev-top-node (pos-starts-here position-back-one))))
+
+    (or
+     (and (edge-p edge-just-before-period)
+          (eq (edge-category edge-just-before-period)
+              category::unit-of-measure))
+
+     ;; for some reason, this is called before the edge is put in!
+     (and (boundp 'word::LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE)
+          (eq (pos-terminal position-back-one)
+              word::LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE)))
+    ;; see note in unit-of-measure about angstrom --
+    ;; can't put the example here because the string
+    ;; (format nil "~a" #\LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE))
+    ))
+
 (defun period-marks-sentence-end?/look-deeper (pos-after)
   "Subroutine of period-marks-sentence-end?.
    We have ruled out this position holding the eos or holding a word
@@ -170,7 +190,8 @@
    that would permit us to conclude the period we just scanned
    indicates the end of a sentence. Return nil to continue
    the sentence. Non-nil to say that the period ends the sentence."
-  (declare (special *sentence-making-sweep* *trace-period-eos-lookahead*)
+  (declare (special *sentence-making-sweep* *trace-period-eos-lookahead*
+                    category::unit-of-measure)
            (optimize debug))
 
   (unless (has-been-status? :scanned pos-after)
@@ -181,6 +202,8 @@
           (chart-position-before (chart-position-before pos-after)))
          (word-just-before-period
           (pos-terminal position-back-one))
+         (edge-just-before-period
+          (ev-top-node (pos-starts-here position-back-one)))
          (pre-caps (pos-capitalization position-back-one))
          (post-caps (pos-capitalization pos-after))
          (next-pos (chart-position-after pos-after))
@@ -193,6 +216,21 @@
     
     (tr :eos-lookahead-start pos-after)
 
+    (when (or
+           (or
+            (and (edge-p edge-just-before-period)
+                 (eq (edge-category edge-just-before-period)
+                     category::unit-of-measure))
+
+            ;; for some reason, this is called before the edge is put in!
+            (and (boundp 'word::LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE)
+                 (eq (pos-terminal position-back-one)
+                     word::LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE))))
+      ;; see note in unit-of-measure about angstrom --
+      ;; can't put the example here because the string
+      ;; (format nil "~a" #\LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE))
+      (return-from period-marks-sentence-end?/look-deeper nil))
+               
     ;; Author pattern: "K. Naoki"
     (when (and (pnf-is-not-running)
                (eq post-caps :initial-letter-capitalized)
