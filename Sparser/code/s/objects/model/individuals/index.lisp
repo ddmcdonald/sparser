@@ -95,10 +95,11 @@
 (defun all-instances (category)
   "Return all instances of a category."
   (check-type category category "a category")
-  (typecase (cat-instances category)
-    (null)
-    (hash-table (all-hash-vals (cat-instances category)))
-    (otherwise (get-tag :instances category))))
+  (unless (mixin-category-p category)
+    (typecase (cat-instances category)
+      (null)
+      (hash-table (all-hash-vals (cat-instances category)))
+      (otherwise (get-tag :instances category)))))
 
 (defun all-instances-of (symbol-for-category)
   (all-instances (category-named symbol-for-category t)))
