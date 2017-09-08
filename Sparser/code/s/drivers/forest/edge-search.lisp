@@ -422,7 +422,7 @@ for ambiguous words"
              (not (high-priority-postmod? r-triple)))
     ;; there is an edge which is being competed for
     (let* ((l-triple-rhs (cfr-rhs (car l-triple)))
-           (l-triple-left (cat-symbol (car l-triple-rhs)))
+           (l-triple-left (and (category-p l-triple-rhs) (cat-symbol (car l-triple-rhs))))
            (r-triple-3 (third r-triple)))
       (declare (special l-triple-rhs l-triple-left triple-1-rhs r-triple-3))
       ;;(lsp-break "compete")
