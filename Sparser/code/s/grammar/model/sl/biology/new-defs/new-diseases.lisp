@@ -62,7 +62,9 @@
 (def-indiv-with-id cancer "renal cancer" "TS-1225") 
 (def-indiv-with-id cancer "skin cancer" "TS-1227") 
 (def-indiv-with-id cancer "thyroid cancer" "TS-1226") 
-(def-indiv-with-id cancer "thyroid carcinoma" "TS-1044") 
+(def-indiv-with-id cancer "thyroid carcinoma" "TS-1044")
+(def-indiv-with-id cancer "retinoblastoma" "NCIT:C7541")
+
 (def-indiv-with-id disease "AD-HIES" "ORPHANET:2314" :name "Autosomal dominant hyper-IgE syndrome") 
 (def-indiv-with-id disease "ARDS" "EFO:1000637" :name "acute respiratory distress syndrome") 
 (def-indiv-with-id disease "Dia" "NCIT:C9476" :name "desmoplastic infantile astrocytoma") 
@@ -100,7 +102,8 @@
 (def-indiv-with-id disease "polyploidy" "ORPHANET:96321" :name "Polyploidy") 
 (def-indiv-with-id disease "preeclampsia" "NCIT:C85021" :name "preeclampsia") 
 (def-indiv-with-id disease "pruritus" "HP:0000989" :name "Pruritus") 
-(def-indiv-with-id disease "retinopathy" "EFO:0003839" :name "retinopathy") 
+(def-indiv-with-id disease "retinopathy" "EFO:0003839" :name "retinopathy")
+
 (def-indiv-with-id disease "telangiectasia" "NCIT:C28194" :name "telangiectasia") 
 (def-indiv-with-id disease "uveitis" "EFO:1001231" :name "uveitis") 
 (def-indiv-with-id virus "DENV2" "NCIT:C112267" :name "dengue virus 2") 
