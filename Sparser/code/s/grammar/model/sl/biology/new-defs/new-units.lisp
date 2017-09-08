@@ -9,7 +9,9 @@
 (def-indiv-with-id unit-of-measure "CFU" "UO:0000210" :name "colony forming unit" :maintain-case t) 
 (def-indiv-with-id unit-of-measure "microgram" "UO:0000023" :name "microgram")
 
-(def-indiv-with-id unit-of-measure "angstrom" "UO:0000019" :name "angstrom") 
+(eval `(def-indiv-with-id unit-of-measure "angstrom" "UO:0000019"
+                          :name "angstrom"
+                          :synonyms (,(format nil "~a" #\LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE))))
 (def-indiv-with-id unit-of-measure "nanometer" "UO:0000018" :name "nanometer") 
 (def-indiv-with-id unit-of-measure "micrometer" "UO:0000017" :name "micrometer") 
 (def-indiv-with-id unit-of-measure "Gray" "UO:0000134" :name "Gray") 
