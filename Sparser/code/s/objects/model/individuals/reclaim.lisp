@@ -289,6 +289,7 @@ e.g. when anaphora is turned off."
        (if (hash-table-p (cat-instances category))
          (clrhash (cat-instances category))
          (setf (cat-instances category) nil)))
+      (mixin-category nil)
       (lattice-point
        ;; appear to only use their plist
        (setf (get-tag :instances category) nil))))
