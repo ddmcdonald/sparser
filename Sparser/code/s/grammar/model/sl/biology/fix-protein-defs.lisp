@@ -838,16 +838,19 @@ new file to append to new-prot-fam, those without get filtered to "
                                        :direction :output :if-exists :supersede 
                                        :if-does-not-exist :create
                                        :external-format :UTF-8)
+    (format prot-fam-with-id "(in-package :sparser)~%~%")
     (with-open-file (prot-fam-no-id (concatenate 'string "sparser:bio;" 
                                                      "protein-fam-no-id.lisp")
                                        :direction :output :if-exists :supersede 
                                        :if-does-not-exist :create
                                        :external-format :UTF-8)
+      (format prot-fam-no-id "(in-package :sparser)~%~%")
           (with-open-file (problematic-prot-fam (concatenate 'string "sparser:bio;" 
                                                      "problematic-protein-fams.lisp")
                                        :direction :output :if-exists :supersede 
                                        :if-does-not-exist :create
                                        :external-format :UTF-8)
+            (format problematic-prot-fam "(in-package :sparser)~%~%")
       (loop for prot-fam being the hash-keys in *post-merge-prot-fam-names-ht*
             using (hash-value prot-fam-def)
             do (let ((id (getf prot-fam-def :identifier))
@@ -881,6 +884,70 @@ new file to append to new-prot-fam, those without get filtered to "
                         (lc-one-line-print prot-fam-def prot-fam-no-id)
                         ))))))))
 
+(defparameter *sp-undefined-hms-grounded-words* nil)
+(defparameter *sp-no-uid-hms-grounded-words* nil)
+(defparameter *sp-uid-mismatch-hms-grounding* nil)
+(defparameter *sp-uid-matches-hms-grounding* nil)
+(defun check-hms-groundings (&optional (sp-hms-matching-file "sp-hms-matching-file.lisp"))
+  (declare (special *hms-grounding*))
+  (load "sparser:bio-not-loaded;hms-grounding-map.lisp")
+  (loop for mapping in *hms-grounding*
+        do (let* ((word (car mapping))
+                  (rword (resolve word))
+                  (str-word (single-term-rewrite? word :no-warn t))
+                  (word-category (when str-word (cat-name (itype-of (cfr-referent (car str-word))))))
+                  (word-uid (word-has-uid-p word))
+                  (word-file (when rword (getf (unit-plist rword) :FILE-LOCATION)))
+                  (groundings (cdr mapping))
+                  (primary-grounding (car groundings)))
+             (cond ((or (null rword)
+                        (equal "can't get rule" word-uid))
+                    (push (list word groundings) *sp-undefined-hms-grounded-words*))
+                   ((null word-uid)
+                    (push (list word-category word groundings) *sp-no-uid-hms-grounded-words*))
+                   ((not (member word-uid groundings :test #'equal))
+                    (push (list word-category word word-uid groundings) *sp-uid-mismatch-hms-grounding*))
+                   (t
+                    (push word *sp-uid-matches-hms-grounding*)))))
+          (with-open-file (sp-hms-matching (concatenate 'string "sparser:bio-not-loaded;" sp-hms-matching-file)
+                                       :direction :output :if-exists :supersede 
+                                       :if-does-not-exist :create
+                                       :external-format :UTF-8)
+            (format sp-hms-matching "(in-package :sparser)~%~%")
+            (format sp-hms-matching "(defparameter *sp-undefined-hms-grounded-words*~%'(~s)~%~%"
+                    *sp-undefined-hms-grounded-words*)
+            (format sp-hms-matching "(defparameter *sp-no-uid-hms-grounded-words* ~%'(~s)~%~%"
+                    (sort *sp-no-uid-hms-grounded-words* #'string< :key #'car))
+            (format sp-hms-matching "(defparameter *sp-uid-mismatch-hms-grounding* ~%'(~s)~%~%"
+                    (sort *sp-uid-mismatch-hms-grounding* #'string< :key #'car))
+            (format sp-hms-matching "(defparameter *sp-uid-matches-hms-grounding* ~%'(~s)~%~%"
+                    *sp-uid-matches-hms-grounding*)))
+
+(defun hms-groundings->sp-onts (groundings)
+  (let ((grnd-i 0)
+        good-groundings)
+    (loop
+      (when (>= grnd-i (- (length groundings) 1))
+        (return (nreverse good-groundings)))
+      (let ((grounding (nth grnd-i groundings)))
+        (cond ((search ":" grounding)
+               (push grounding  good-groundings)
+               (setq grnd-i (+ grnd-i 1)))
+              ;; "PUBCHEM" "702"
+              ((equal "PUBCHEM" grounding)
+               (push (concatenate 'string "PCID:" (nth (+ grnd-i 1) groundings))
+                     good-groundings)
+               (setq grnd-i (+ grnd-i 2)))
+              ;; "GO" "GO:0006915"
+              ((equal "GO" grounding)
+               (push (nth (+ grnd-i 1) groundings) good-groundings)
+               (setq grnd-i (+ grnd-i 2)))
+               ;; "HMDB" "HMDB00108"  "MESH" "D017209" instead of "MESH:D017209" "NONCODE" "NONHSAT028507.2" "LINCS" "10023-103"  "CHEMBL" "CHEMBL98"
+               (t
+                (push (concatenate 'string grounding ":" (nth (+ grnd-i 1) groundings))
+                      good-groundings)
+                (setq grnd-i (+ grnd-i 1))))))))
+  
       #+ignore(defun resolve-same-prot-fam-name (prot-fam &optional sorted-members)
   (declare (special *prot-fam-names-ht*))
   (let* ((prot-fam-name (second prot-fam))
