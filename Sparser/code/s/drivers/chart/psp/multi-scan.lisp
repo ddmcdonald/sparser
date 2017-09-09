@@ -946,7 +946,8 @@ sentences.
       (next-treetop/rightward pos))
     (if (or (eq next-pos sent-end-pos)
             (pos-preceding-whitespace next-pos)
-            (word-never-in-ns-sequence (pos-terminal next-pos)))        
+            (when (pos-terminal next-pos)
+              (word-never-in-ns-sequence (pos-terminal next-pos))))
         (return next-pos)
         (setq pos next-pos))))
 
@@ -1193,7 +1194,10 @@ sentences.
                       ;;/// presuposes that caller only made the acronym
                       ;; from one word.
                       (assert (word-p word))
-		      (when (cfr-p rule)
+		      (when (and (cfr-p rule)
+                                 ;; case like "anti-SGOL1 (ABNOVA)"
+                                 ;; where the regular edge has a referent created by a function
+                                 (not (consp (cfr-referent rule))))
 			;; have a case where previous edge was a conjunction, and the "rule" was a symbol
 			;;  "xxx and neuregulin (nrg) ..."
 			(let ((rule (define-cfr/resolved
