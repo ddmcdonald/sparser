@@ -75,7 +75,7 @@
 (def-family "AIP4" :members ("UP:Q66PJ3" "UP:Q96J02")) 
 (def-family "ANT 2" :members ("UP:P05141" "UP:P12236")) 
 (def-family "AP4" :synonyms ("AP-4") :members ("UP:Q9UPM8" "UP:Q9Y587" "UP:Q9Y6B7" "UP:O00189")) 
-(def-family "AR" :members ("UP:P10275" "UP:P15121" "UP:P15514")) 
+;; (def-family "AR" :members ("UP:P10275" "UP:P15121" "UP:P15514"))  "UP:P10275" according to HMS
 (def-family "ARIA" :members ("UP:Q02297" "UP:Q19T08")) 
 (def-family "ASF" :members ("UP:P54793" "UP:P55036")) 
 (def-family "ASIP" :members ("UP:P42127" "UP:Q8TEW0")) 
@@ -90,7 +90,7 @@
 (def-family "BRF1" :members ("UP:Q07352" "UP:Q92994")) 
 (def-family "CAP2" :members ("UP:P40123" "UP:P50452")) 
 (def-family "CAR" :members ("UP:P36575" "UP:P78310")) 
-(def-family "CAS" :members ("UP:O60716" "UP:P56945")) 
+;; (def-family "CAS" :members ("UP:O60716" "UP:P56945"))  "UP:Q8IX12" according to HMS
 (def-family "CCR4-associated factor 1" :members ("UP:A5YKK6" "UP:Q9UIV1")) 
 (def-family "CD36" :members ("UP:P16671" "UP:Q14108")) 
 (def-family "CDH3" :members ("UP:P22223" "UP:P55291")) 
@@ -164,7 +164,7 @@
 (def-family "INPP4B" :members ("UP:O15327" "UP:Q9BS68")) 
 (def-family "IQGAP" :members ("IQGAP1" "IQGAP2" "IQGAP3")) 
 (def-family "IgG" :members ("UP:P12314" "UP:P31994" "UP:P55899")) 
-(def-family "Jnk" :members ("JNK1" "JNK2" "JNK3A")) 
+(def-family "Jnk" :identifier "BE:JNK" :members ("JNK1" "JNK2" "JNK3A") :synonyms ("JNK1/2")) 
 (def-family "KCIP-1" :synonyms ("Protein kinase C inhibitor protein 1") :members ("UP:P31946" "UP:P61981" "UP:P63104")) 
 (def-family "KLK3" :members ("UP:P03952" "UP:P07288")) 
 (def-family "KNS2" :members ("UP:O00139" "UP:Q07866")) 
@@ -198,7 +198,7 @@
 (def-family "ODC1" :members ("UP:P11926" "UP:Q9BQT8")) 
 (def-family "ORC1" :members ("UP:Q13415" "UP:Q9Y619")) 
 (def-family "ORF2" :members ("UP:P42537" "UP:P52069" "UP:Q68985")) 
-(def-family "PAK" :synonyms ("PAK" "p21-activated kinase" "p21 activated serine threonine kinases") :members ("UP:O75914" "UP:O96013" "UP:Q13153" "UP:Q13177" "UP:Q16512" "UP:Q9NQU5" "UP:Q9P286")) 
+(def-family "PAK" :identifier "BE:PAK" :synonyms ("PAK" "p21-activated kinase" "p21 activated serine threonine kinases") :members ("UP:O75914" "UP:O96013" "UP:Q13153" "UP:Q13177" "UP:Q16512" "UP:Q9NQU5" "UP:Q9P286")) 
 (def-family "PAR-3" :members ("UP:O00254" "UP:Q8TEW0")) 
 (def-family "PB2" :synonyms ("polymerase basic protein 2") :members ("UP:P03428" "UP:Q6UBL8"))
 (def-family "PBP" :members ("UP:P02775" "UP:P30086" "UP:Q15648")) 
@@ -216,7 +216,7 @@
 (def-family "PPT" :members ("UP:P20366" "UP:P50897" "UP:P53041")) 
 (def-family "PRP" :members ("UP:F7VJQ1" "UP:P04003" "UP:P32119")) 
 (def-family "PSP" :members ("UP:O00186" "UP:P05451")) 
-(def-family "PTC" :members ("UP:P00740" "UP:P07949" "UP:Q13635")) 
+;; (def-family "PTC" :members ("UP:P00740" "UP:P07949" "UP:Q13635")) HMS says "UP:P18502"
 (def-family "PTP" :members ("UP:P05451" "UP:Q00325")) 
 (def-family "Proto-oncogene c-Fgr" :members ("UP:P09769" "UP:P11362")) 
 (def-family "Q9HDB5" :members ("UP:Q9HDB5" "UP:Q9Y4C0")) 
@@ -248,7 +248,7 @@
 (def-family "TGF-B superfamily receptor type I" :synonyms ("TSR-I") :members ("UP:P37023" "UP:Q04771")) 
 (def-family "TIM" :members ("UP:P60174" "UP:Q12774" "UP:Q96D42" "UP:Q9UNS1")) 
 (def-family "TKT" :members ("UP:P29401" "UP:Q16832")) 
-(def-family "TNC" :members ("UP:P24821" "UP:P63316")) 
+(def-family "TNC" :identifier "BE:Troponin_C" :members ("UP:P24821" "UP:P63316")) 
 (def-family "TORC-3" :synonyms ("Transducer of CREB protein 3") :members ("UP:Q6UUV7" "UP:Q6UUV9")) 
 (def-family "TR" :members ("UP:P02786" "UP:P25116" "UP:Q16881")) 
 (def-family "TRAM-1" :members ("UP:Q15629" "UP:Q9Y6Q9")) 
@@ -256,11 +256,11 @@
 
 (def-family "WBP1" :members ("UP:P39656" "UP:Q96G27")) 
 (def-family "a3" :members ("UP:P05813" "UP:Q13488")) 
+(def-family "actin" :identifier "BE:Actin" :members ("UP:P63267" "UP:P68133"))
 (def-family "actin depolymerizing factor" :synonyms ("ADF") :members ("UP:P23528" "UP:Q9Y281"))
-(def-family "actin" :members ("UP:P63267" "UP:P68133")) 
 (def-family "adenosine deaminase" :members ("UP:P00813" "UP:P78563")) 
 (def-family "adenylate monophosphate kinase" :members ("UP:P00568" "UP:P54819")) 
-(def-family "adiponectin" :members ("UP:Q15848" "UP:Q3Y5Z3")) 
+;;(def-family "adiponectin" :members ("UP:Q15848" "UP:Q3Y5Z3"))  HMS says "UP:Q15848"
 (def-family "albumin" :members ("UP:P02768" "UP:Q10586")) 
 (def-family "aldehyde reductase" :members ("UP:P14550" "UP:P15121")) 
 (def-family "alpha 1" :members ("UP:P68133" "UP:Q03692")) 
@@ -319,9 +319,9 @@
 (def-family "myosin" :members ("UP:B0I1T2" "UP:B2RTY4" "UP:O00159" "UP:O43795" "UP:O94832" "UP:Q13402" "UP:Q13459" "UP:Q9HD67" "UP:Q9NQX4" "UP:Q9ULV0" "UP:Q9Y6X6"))
 (def-family "non-structural protein 1" :members ("UP:Q0H8C5" "UP:Q0PDM0" "UP:Q9INI2")) 
 (def-family "non-structural protein 3" :members ("UP:Q3ZK63" "UP:Q9YWQ0")) 
-(def-family "noxa" :members ("UP:Q0GKC8" "UP:Q13794")) 
+;; (def-family "noxa" :members ("UP:Q0GKC8" "UP:Q13794")) HMS says "UP:Q13794"
 (def-family "o00505" :synonyms ("o00629") :members ("UP:O00505" "UP:O00629")) 
-(def-family "p100" :members ("UP:P40967" "UP:Q9ULW0")) 
+;;  (def-family "p100" :members ("UP:P40967" "UP:Q9ULW0")) HMS says "HGNC:NFKB2"
 (def-family "p102" :members ("UP:P25205" "UP:P35606")) 
 (def-family "p11" :members ("UP:P55957" "UP:P60903" "UP:Q5RKV6")) 
 (def-family "p18" :members ("UP:O43324" "UP:P23528" "UP:P63279")) 
@@ -330,7 +330,7 @@
 (def-family "p22 phagocyte B-cytochrome" :members ("UP:P04839" "UP:P13498")) 
 (def-family "p24" :members ("UP:O94811" "UP:P21926" "UP:Q15363")) 
 (def-family "p25" :members ("UP:P13985" "UP:P80188" "UP:Q9BVK6")) 
-(def-family "p27" :members ("UP:P40305" "UP:Q13177" "UP:P46527")) 
+;; (def-family "p27" :members ("UP:P40305" "UP:Q13177" "UP:P46527"))  HMS says "UP:P46527"
 (def-family "p29" :members ("UP:O95926" "UP:P24158")) 
 (def-family "p3" :members ("UP:P09131" "UP:Q01780")) 
 (def-family "p31" :members ("UP:P36543" "UP:Q9NZ43")) 
@@ -347,9 +347,9 @@
 (def-family "p57" :members ("UP:P31146" "UP:P49918"))
 (def-family "p58" :members ("UP:P14618" "UP:P30101" "UP:Q13177")) 
 (def-family "p59" :members ("UP:Q02790" "UP:Q9H8Y8")) 
-(def-family "p62" :members ("UP:Q07666" "UP:Q13501"))
-(def-family "p63" :members ("UP:Q07065" "UP:Q9H3D4" "UP:Q9P2Y5")) 
-(def-family "p65" :members ("UP:P21579" "UP:Q9H4A3" "UP:Q04206")) 
+;; (def-family "p62" :members ("UP:Q07666" "UP:Q13501")) HMS says "UP:Q13501"
+;; (def-family "p63" :members ("UP:Q07065" "UP:Q9H3D4" "UP:Q9P2Y5"))  HMS says "UP:Q9H3D4"
+;; (def-family "p65" :members ("UP:P21579" "UP:Q9H4A3" "UP:Q04206"))  HMS says "UP:Q04206"
 (def-family "p68" :members ("UP:P08133" "UP:Q07666")) 
 (def-family "p75" :members ("UP:P14317" "UP:P14784" "UP:P20333" "UP:Q92945" "UP:Q9Y286")) 
 (def-family "p8" :members ("UP:P05109" "UP:Q7Z2W7")) 
