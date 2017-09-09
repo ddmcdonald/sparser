@@ -36,7 +36,9 @@
 (gload "bio;aux-taxonomy")
 ;; have to get the uniprot-names before you do any define-protein's
 (gload "bio;uniprot-names.lisp")
-(gload "bio;standardized-protein-defs")
+;(gload "bio;standardized-protein-defs")
+(gload "bio;standardized-protein-defs-no-fams")
+
 ;(gload "bio;non-upa-upm-proteins") all of these have been folded into real defs now
 (gload "bio;proteins-revised")
 (gload "bio;fix-protein-defs")
@@ -85,7 +87,10 @@
 (gload "bio;rules")
 
 ;;(gload "bio;UCD-proteins")
-(gload "bio;protein-families")
+;(gload "bio;protein-families")
+(gload "bio;protein-fam-no-id")
+(gload "bio;protein-fam-with-id")
+
 (gload "bio;new-defs;new-prot-fam")
 ;(gload "bio;phenomena") ;; basically empty
 (gload "bio;pathways") ;; after proteins
