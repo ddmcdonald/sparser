@@ -173,7 +173,7 @@
 (defun word-has-uid-p (word)
   "Given a string that is known to resolve, returns the value of the
 uid binding, if there is one"
-  (let* ((cat-indiv-rule (car (single-term-rewrite? word)))
+  (let* ((cat-indiv-rule (car (single-term-rewrite? word :no-warn t)))
          (cat-indiv (when cat-indiv-rule
                       (get-head-ref-from-rule cat-indiv-rule))))
     (if cat-indiv
