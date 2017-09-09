@@ -1383,6 +1383,7 @@ for this species"
 (defmacro def-family-with-id (word id &key type species members
                            name synonyms maintain-case)
   (unless (stringp word) (error "Word argument should be a string"))
+  (setq maintain-case t)
   `(define-family-with-id
      ',word ',id ,.(when type `(:type ',type)) 
      ,.(when species `(:species ',species)) 
