@@ -1,3 +1,4 @@
+(in-package :sparser)
 
 (def-family-with-id "ABCC" "FA:00048" :synonyms ("aBCC")) 
 (def-family-with-id "ACCA" "XFAM:PF03255.12") 
