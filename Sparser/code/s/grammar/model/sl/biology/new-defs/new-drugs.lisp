@@ -1887,4 +1887,4 @@
 (def-indiv-with-id drug "tyrphostin 25" "MESH:C079836" :name "tyrphostin A25" :synonyms ("tyrphostin-25") :no-plural t)
 (def-indiv-with-id drug "CH5126766" "MESH:C577924" :name "RO5126766" :no-plural t)
 (def-indiv-with-id drug "aphidicolin" "CHEBI:2766" :name "aphidicolin" :no-plural t)
-(def-indiv-with-id drug "PCCG-4" "PC:5311344" :name "PCCG-4" :no-plural t)
+(def-indiv-with-id drug "PCCG-4" "PCID:5311344" :name "PCCG-4" :no-plural t)
