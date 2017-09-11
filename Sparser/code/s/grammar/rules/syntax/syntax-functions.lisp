@@ -2016,8 +2016,9 @@
              ;; of the np with the completed-attribution as its value.
              (unless edge-over-comparative
                (push-debug `(,open-attribution))
-               (warn "Could not locate edge over ~a under ~a"
-                     attribution (left-edge-for-referent))
+               (warn "Could not locate edge over ~a under ~a in ~s~%"
+                     attribution (left-edge-for-referent)
+                     (current-string))
                (return-from maybe-extend-comparative-with-than-np nil))
              (respan-edge-for-new-referent edge-over-comparative
                                            complete-attribution)
