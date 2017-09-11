@@ -76,9 +76,9 @@
   ;; called from ns-patterns/edge-colon-edge when the only punctuation
   ;; in the sequence is colon. Do a divide and recombine
   (declare (special category::protein))
-  (let ((segments (divide-colon-sequence pattern start-pos end-pos)))
-    (push-debug `(,segments)) ;;/// merge when debugged
-    (let ((pattern (convert-pattern-edges-to-labels segments)))
+  (let* ((pos-tt-segments (divide-colon-sequence pattern start-pos end-pos))
+         (segments (mapcar #'second pos-tt-segments)))
+    (let ((pattern (convert-pattern-edges-to-labels pos-tt-segments)))
       (push-debug `(,pattern))
       (cond
        ;;/// wild-type check goes here
@@ -112,15 +112,15 @@
 ;;--- dividing the ns sequence by colon position
 
 (defun divide-colon-sequence (pattern start-pos end-pos
-                              &aux (tts (treetops-between start-pos end-pos)))
+                              &aux (tts (positions-and-treetops-between start-pos end-pos)))
   "Walks through the regions between colons, resolves the pattern for
    each one, returns the corresponding ilst of edges."
- ;; (lsp-break "divide-colon-sequence")
+  ;; (lsp-break "divide-colon-sequence")
   (let (segment edge  segments )
     (push-debug `(,tts ,pattern ,start-pos ,end-pos))
-    (loop for tt in tts as pat in pattern
+    (loop for pos-tt in tts as pat in pattern
           unless (eq pat :colon)
-          collect tt)))
+          collect (list (car pos-tt) pat))))
 
 (defun configure-and-analyze-sub-ns-sequence (start-pos end-pos)
   "Returns the edge made by the pattern resolver."

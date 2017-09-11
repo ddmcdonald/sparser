@@ -167,15 +167,20 @@
    whether to characterize an edge by its label or by the form
    of the word it covers.")
 
-(defun convert-pattern-edges-to-labels (pattern)
+(defun convert-pattern-edges-to-labels (pos-pat-list)
   "When there is an edge in the pattern, return
    it's category label as a keyword."
-  (loop for item in pattern
-    unless (or (keywordp item) (edge-p item))
-    do (error "New type in pattern: ~a" item))
-  (loop for item in pattern
-    when (keywordp item) collect item
-    when (edge-p item) collect (edge-category-to-keyword item)))
+  (loop for pos-pat in pos-pat-list
+        unless
+          (let ((item (second pos-pat)))
+            (or (keywordp item) (edge-p item) (word-p item)))
+        do (error "New type in pattern: ~a" (second pos-pat)))
+  (loop for pos-tt in pos-pat-list
+        collect
+        (let ((item (second pos-tt)))
+          (cond ((keywordp item) item)
+                ((word-p item) (characterize-word-type (car pos-tt) item))
+                ((edge-p item) (edge-category-to-keyword item))))))
 
 
 (defun convert-mixed-pattern-edges-to-labels (pattern)
@@ -189,10 +194,10 @@
                    
         do (error "New type in pattern: ~a" item))
   (loop for item in pattern
-        when (keywordp item) collect item
-        when (edge-p item) 
+        when (or (edge-p item) (keywordp item))
         collect
           (cond
+            ((keywordp item) item)
             ((category-p item)
              (intern (pname item) :keyword))
             ((one-word-long? item)
