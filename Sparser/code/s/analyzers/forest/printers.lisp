@@ -433,6 +433,7 @@ there were ever to be any.  ///hook into final actions ??  |#
   (typecase tt
     (edge (ev-position (edge-ends-at tt)))
     (word (chart-position-after starting-position))
+    (null tt)
     (symbol
      (if (eq tt :multiple-initial-edges)
        (chart-position-after starting-position)
