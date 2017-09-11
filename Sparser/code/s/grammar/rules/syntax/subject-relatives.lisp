@@ -211,7 +211,7 @@
                          (not (member (cat-name (edge-category e))
                                       '(apostrophe-s parentheses semicolon)))
                          *break-on-null-ref-in-context-needs-clause*)
-                (break "null ref in context-needs-clause -- quiet this by ~
+                (warn "null ref in context-needs-clause -- quiet this by ~
                      setting *break-on-null-ref-in-context-needs-clause* to nil"
                        (current-string)))
               (and ref
