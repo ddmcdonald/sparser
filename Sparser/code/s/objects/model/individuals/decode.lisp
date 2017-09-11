@@ -140,21 +140,25 @@
   ;; changed to use itypep, which is more general than what was here
   (etypecase exp
     (word
-       (v/r-violation "The type of the individual given as the value,~
+     (v/r-violation "The type of the individual given as the value,~
                          ~%   ~A~%does not match the value restriction ~A"
-                      exp category))
+                    exp category))
     (individual
-     (if (itypep exp category)
-       exp
-       (v/r-violation "The type of the individual given as the value,~
+     (cond ((itypep exp category)
+            exp)
+           ((and (itypep exp 'year)
+                 (eq category category::number))
+            (setq exp
+                  (find-or-make-number (value-of 'value exp))))
+           (t
+            (v/r-violation "The type of the individual given as the value,~
                          ~%   ~A~%does not match the value restriction ~A"
-                      exp category)))
-
-    ((or referential-category  ;; e.g. 1st
+                           exp category))))
+    ((or referential-category ;; e.g. 1st
          mixin-category)
      (if (itypep exp category) ;; (category-inherits-type? exp category)
-       exp
-       (v/r-violation "The type of the category given as the value,~
+         exp
+         (v/r-violation "The type of the category given as the value,~
                          ~%   ~A~%does not match the value restriction ~A"
                         exp category)))
 
