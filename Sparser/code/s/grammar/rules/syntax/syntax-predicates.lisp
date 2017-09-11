@@ -236,7 +236,11 @@
          (left-daughter (when (edge-p prep-edge)
                           (edge-left-daughter prep-edge)))
          (right-daughter (when (edge-p prep-edge)
-                           (edge-right-daughter prep-edge))))
+                           (cond ((eq :long-span (edge-right-daughter prep-edge))
+                                  (second (edge-constituents prep-edge)))
+                                 ((edge-p (edge-right-daughter prep-edge))
+                                  (edge-right-daughter prep-edge))
+                                 (t nil)))))
     (declare (special prep-edge left-daughter right-daughter))
     
     (flet ((prep-edge? (edge)
@@ -244,8 +248,15 @@
                    '(preposition
                      spatio-temporal-preposition spatial-preposition))))
       (cond
+        ((and
+          (eq (edge-rule prep-edge) 'resolve-initial-stranded-hyphen)
+          (eq (cat-name (edge-category right-daughter)) 'preposition))
+         ;; strange case "qRT-PCR- Smyd3 -For 5′ TGCGCACCATGGAGCCGTAC"
+         ;; probably not a preoposition, but avoid this error
+         right-daughter)
         ((word-p left-daughter)
          left-daughter)
+
         ((edge-p left-daughter) ;; formerly left-daughter = prep-word
          (cond
            ((polyword-p (edge-rule left-daughter))
