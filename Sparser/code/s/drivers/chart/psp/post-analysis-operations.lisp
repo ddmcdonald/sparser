@@ -205,7 +205,7 @@ where it regulates gene expression.")
         do
           (let* ((ival (interpret-in-context val)))
             (declare (special ival))
-            (loop for i in interps when (not (individual-p i))
+            (loop for i in interps when (not (or (individual-p i)(category-p i)))
                   do (warn "non-individual among ~s in reinterp-list-using-bindings, in: ~s~%"
                            interps (sentence-string *sentence-in-core*)))
             (setq interps
