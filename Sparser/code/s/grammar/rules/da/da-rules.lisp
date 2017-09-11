@@ -204,9 +204,10 @@
 	   (subcategorized-variable (edge-referent left-clause) prep-word pobj-referent)
 	   (failed-pp-attachment pp left-clause)))
 	 new-left new-items new-interp new-edge)
+    #+ignore
     (when var-name
       (when (eq clause (edge-used-in left-clause))
-        (warn "circular structure produced in distribute-pp-to-first-conjoined-clause")
+        (lsp-break "circular structure produced in distribute-pp-to-first-conjoined-clause")
         (return-from distribute-pp-to-first-conjoined-clause nil)))
     
     ;;(lsp-break "2d")
