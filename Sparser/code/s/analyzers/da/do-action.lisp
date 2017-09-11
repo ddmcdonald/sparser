@@ -120,7 +120,10 @@ SP> (stree 51)
          (args (cddr form))
          (constituents
           (mapcar #'lookup-matched-tt args))
-         (*da-constituent-edges* constituents))
+         (*da-constituent-edges* constituents)
+         (*parent-edge-getting-reference* nil))
+    (declare (special *parent-edge-getting-reference*))
+
     
     (when (symbolp fn)
       (unless (fboundp fn)
@@ -171,10 +174,15 @@ SP> (stree 51)
                    (or preposed
                        target
                        (first constituents)))
-                  (pos-edge-ends-at
-                   (if preposed
-                       target
-                       (car (last constituents))))
+                  (let ((end-edge
+                         (if preposed
+                             target
+                             (car (last constituents)))))
+                    (cond ((edge-p end-edge)
+                           (pos-edge-ends-at end-edge))
+                          ((and (consp end-edge) (position-p (third end-edge)))
+                           (chart-position-after (third end-edge)))
+                          (t (error "can't find edge-end in standardized-apply-da-function-action, ~s" (current-string)))))
                   (edge-spec-category *edge-spec*)
                   :form (edge-spec-form *edge-spec*)
                   :referent (edge-spec-referent *edge-spec*)
@@ -199,7 +207,15 @@ SP> (stree 51)
 (defun constituents-between (first-const last-const)
   (cons first-const
         (treetops-between (pos-edge-ends-at first-const)
-                          (pos-edge-ends-at last-const))))
+                          (cond ((edge-p last-const)
+                                 (pos-edge-ends-at last-const))
+                                ((and (consp last-const)
+                                      (position-p (third last-const)))
+                                 (chart-position-after
+                                  (third last-const)))
+                                (t (error
+                                    "strange ending position for constituents-between, ~s~%"
+                                    (current-string)))))))
 
 (defun bind-context-and-apply-da-function-action (form)
   (let ((function (car form))
