@@ -59,9 +59,15 @@
              :bind (time right-edge)))
 
 (def-form-rule (s time)
-  :form s
-  :referent (:head left-edge
-             :bind (time right-edge)))
+    :form s
+    :head :left-edge
+    :referent (:function add-time-to-event left-edge right-edge))
+
+(defun add-time-to-event (event time)
+  (let ((var (find-variable-for-category 'time event)))
+    (cond (*subcat-test* var)
+          (var 
+           (bind-dli-variable 'var time event)))))
 
 
 ;;;----------
