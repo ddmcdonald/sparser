@@ -2003,15 +2003,19 @@
        (or open-attribution
            (value-of 'comparative-predication np)))
       (open-attribution
-       (let ((attribution (binding-value open-attribution))
-             (variable (binding-variable open-attribution))
-             (i (binding-body open-attribution)))
+       (let* ((attribution (binding-value open-attribution))
+              (variable (binding-variable open-attribution))
+              (i (binding-body open-attribution))
+              (edge-value
+               (if (eq (var-name variable) 'quantifier) ;; "more", "lesser"
+                 (value-of 'value attribution)
+                 attribution)))
          (unless (eq i np)
            (error "incorrect assumption about what's the head"))
          (let ((complete-attribution
                 (bind-variable 'reference-set than-np attribution)))
            (multiple-value-bind (edge-over-comparative)
-               (search-tree-for-referent (left-edge-for-referent) attribution)
+               (search-tree-for-referent (left-edge-for-referent) edge-value)
              ;; Insert a new edge over the comparative edge
              ;; of the np with the completed-attribution as its value.
              (unless edge-over-comparative
