@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2017  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edge-vectors:"
-;;;  Version:  2.6 December 2014
+;;;  Version:  September 2017
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;;     (5/5/93) Added Preterminal-edges
@@ -87,6 +87,27 @@
       (when accumulate?
         (push e edges-above)))
     (nreverse edges-above)))
+
+(defun transpose-edges-up-one (ev edges)
+  ;; The last edge should be topmost on the vector
+  ;; we start there and move everything up into the
+  ;; slot its just-higher edge has been in
+  ;; Remember -- vector is zero indexed
+  (let ((vector (ev-edge-vector ev))
+        (index (1- (ev-number-of-edges ev)))
+        (count (length edges)))
+    (loop for i downfrom index to (- index count)
+       as j = (1+ i)
+       as edge = (aref vector i)
+       do (setf (aref vector j) edge))
+    vector))
+
+(defun insert-edge-into-vector-at (ev edge index)
+  "Caller has to warrant that this cell of the edge vector
+   can be overridden."
+  (let ((vector (ev-edge-vector ev)))
+    (setf (aref vector index) edge)
+    vector))
 
 
 (defun all-edges-on (ev)

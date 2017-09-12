@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "tuck"
 ;;;   Module:  "objects/chart/edge vectors/"
-;;;  Version:  February 2017
+;;;  Version:  September 2017
 
 ;; Initiated 9/19/13 from code formerly in DA. 9/22/13 modifying it
 ;; to work in either direction. 9/29/14 fixed tuck-in-just-above to
@@ -238,20 +238,13 @@
      parent ;; gets moved up, as do any edges above it
      starting-vector ending-vector ;; edge vectors of original edge
      side)
+  "Which ev are we working on. The new edge goes directly
+   onto the original's start and end, but we have to 'elevate'
+   the already existing edges on only one side."  
   ;; Very similar to what conjoin-and-rethread-edges does,
   ;; but want something working before I look for the
   ;; generalization. (ddm 2/10/17)
 
-  #+ignore(when (and (eq starting-vector (edge-starts-at parent))
-             (eq ending-vector (edge-ends-at parent)))
-    ;; The parent has the same span as the edge. Not expecting
-    ;; this in the target use case, so not going there (2/10/17 ddm)
-    (error "Bad assumption about parent when respanning ~a ~
-            with ~a" edge new-edge))
-
-  ;; Which ev are we working on. The new edge goes directly
-  ;; onto the originals start and end, but we have to 'elevate'
-  ;; the already existing edges on only one side
   (let* ((ev (ecase side
                (:left starting-vector)
                (:right ending-vector)))
@@ -268,10 +261,20 @@
         new-edge starting-vector ending-vector)
        (knit-edge-into-positions
         parent starting-vector ending-vector))
+      
+      (edges-over-parent
+       ;; Move all the edges above the parent
+       ;; up by one. Put the new edge in the opened-up
+       ;; slot of the array. Set the ev of the edge by hand
+       ;; since we can't really use knit here without unwinding
+       ;; every edge needlessly
+       (setf (edge-starts-at new-edge) starting-vector
+             (edge-ends-at new-edge) ending-vector)
+       (transpose-edges-up-one ev edges-over-parent)
+       (insert-edge-into-vector-at ev new-edge (1+ edge-index)))
+
       (t
        (push-debug `(,edge-index ,edges-over-parent ,count))
-       (lsp-break "Next case for insertion")))))
+       (lsp-break "Next case for inserting the new edge")))))
 
 
-    ;; remove the parent and other edges from the vector
-    
