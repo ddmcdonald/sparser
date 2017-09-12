@@ -225,6 +225,11 @@
 
     (insert-new-edge-between-daughter-and-parent
      edge new-edge parent starting-vector ending-vector side)
+    (unless (edge-starts-at new-edge)
+      (error "Insertion of new edge missed something.~
+            ~%  edge being respanned: ~a~
+            ~%  parent: ~a~
+            ~%  side: ~a" edge parent side))
 
     ;; we should complete it (e.g. for its mention)
     ;; but it would make no sense to assess it
@@ -244,7 +249,6 @@
   ;; Very similar to what conjoin-and-rethread-edges does,
   ;; but want something working before I look for the
   ;; generalization. (ddm 2/10/17)
-
   (let* ((ev (ecase side
                (:left starting-vector)
                (:right ending-vector)))
@@ -252,7 +256,6 @@
          (edges-over-parent ;; list includes the parent
           (edges-on-ev-above parent ev))
          (count (ev-number-of-edges ev))) ;; total number
-
     (cond
       ((eq parent (ev-top-node ev))
        ;; remove it, add the new edge, put it back
@@ -261,20 +264,18 @@
         new-edge starting-vector ending-vector)
        (knit-edge-into-positions
         parent starting-vector ending-vector))
-      
       (edges-over-parent
        ;; Move all the edges above the parent
        ;; up by one. Put the new edge in the opened-up
        ;; slot of the array. Set the ev of the edge by hand
        ;; since we can't really use knit here without unwinding
        ;; every edge needlessly
-       (setf (edge-starts-at new-edge) starting-vector
-             (edge-ends-at new-edge) ending-vector)
        (transpose-edges-up-one ev edges-over-parent)
        (insert-edge-into-vector-at ev new-edge (1+ edge-index)))
-
       (t
        (push-debug `(,edge-index ,edges-over-parent ,count))
-       (lsp-break "Next case for inserting the new edge")))))
+       (lsp-break "Next case for inserting the new edge")))
+    (setf (edge-starts-at new-edge) starting-vector
+          (edge-ends-at new-edge) ending-vector)))
 
 

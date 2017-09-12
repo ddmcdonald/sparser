@@ -2006,24 +2006,21 @@
        (let* ((attribution (binding-value open-attribution))
               (variable (binding-variable open-attribution))
               (i (binding-body open-attribution))
-              (edge-value
-               (if (eq (var-name variable) 'quantifier) ;; "more", "lesser"
-                 (value-of 'value attribution)
-                 attribution)))
+              (value-of-attr (value-of 'value attribution))
+              (edge-value (or value-of-attr attribution)))
          (unless (eq i np)
            (error "incorrect assumption about what's the head"))
          (let ((complete-attribution
                 (bind-variable 'reference-set than-np attribution)))
            (multiple-value-bind (edge-over-comparative)
                (search-tree-for-referent (left-edge-for-referent) edge-value)
-             ;; Insert a new edge over the comparative edge
-             ;; of the np with the completed-attribution as its value.
              (unless edge-over-comparative
-               (push-debug `(,open-attribution))
                (warn "Could not locate edge over ~a under ~a in ~s~%"
                      attribution (left-edge-for-referent)
                      (current-string))
                (return-from maybe-extend-comparative-with-than-np nil))
+             ;; Insert a new edge over the comparative edge
+             ;; of the np with the completed-attribution as its value.
              (respan-edge-for-new-referent edge-over-comparative
                                            complete-attribution)
              (setq i (rebind-variable variable complete-attribution i))
