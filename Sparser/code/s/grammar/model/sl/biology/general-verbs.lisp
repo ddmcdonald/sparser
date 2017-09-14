@@ -324,7 +324,12 @@
 
 (def-cfr depend (protein depend)
   :form category::adjg
-  :referent (:function assimilate-object right-edge left-edge))
+  :referent (:function assimilate-object-to-dependent right-edge left-edge))
+
+(defun assimilate-object-to-dependent (protein depend)
+  (when (and (edge-p (right-edge-for-referent))
+             (eq (cat-name (edge-form (right-edge-for-referent))) 'adjective))
+    (assimilate-object protein depend)))
 
 
 (define-category describe :specializes bio-rhetorical
