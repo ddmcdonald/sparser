@@ -147,7 +147,7 @@
      (cond ((itypep exp category)
             exp)
            ((and (itypep exp 'year)
-                 (eq category category::number))
+                 (eq (cat-name category) 'number))
             (setq exp
                   (find-or-make-number (value-of 'value exp))))
            (t

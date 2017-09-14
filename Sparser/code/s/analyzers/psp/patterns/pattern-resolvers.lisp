@@ -174,7 +174,7 @@
         wild-type-edge))
 
    (edge-category protein-edge)
-   :form category::n-bar
+   :form (category-named 'n-bar)
    :referent (bind-dli-variable 'predication wild-type protein)
    :rule 'make-wild-type-edge
    :constituents

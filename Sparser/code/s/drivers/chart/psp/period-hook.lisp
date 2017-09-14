@@ -171,8 +171,8 @@
 
     (or
      (and (edge-p edge-just-before-period)
-          (eq (edge-category edge-just-before-period)
-              category::unit-of-measure))
+          (eq (cat-name (edge-category edge-just-before-period))
+              'unit-of-measure))
 
      ;; for some reason, this is called before the edge is put in!
      (and (boundp 'word::LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE)
