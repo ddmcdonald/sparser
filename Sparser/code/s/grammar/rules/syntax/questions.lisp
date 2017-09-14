@@ -348,7 +348,8 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
          ;; These won't (??) have extended wh phrases like the others
          (cover-wh (make-wh-object wh-type) next-pos))
         (t
-          (loop ;; search ahead for the aux/modal, then assess
+         (loop ;; search ahead for the aux/modal, then assess
+           (when (null next-edge) (return))
            (cond
              ((or (auxiliary-word? next-word)  ;; we've gone as far as we should
                   (verb-category? next-edge))
@@ -366,8 +367,7 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
              
            (setq next-pos (chart-position-after next-pos)
                  next-word (pos-terminal next-pos)
-                 next-edge (highest-edge (pos-starts-here next-pos)))
-           (when (null next-edge) (return)))
+                 next-edge (highest-edge (pos-starts-here next-pos))))
 
           ;;(push-debug `(,aux-edge ,attr-edge ,other-edges))
           ;; (lsp-break "wh-type = ~a" wh-type)
