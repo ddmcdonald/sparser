@@ -1888,3 +1888,6 @@
 (def-indiv-with-id drug "CH5126766" "MESH:C577924" :name "RO5126766" :no-plural t)
 (def-indiv-with-id drug "aphidicolin" "CHEBI:2766" :name "aphidicolin" :no-plural t)
 (def-indiv-with-id drug "PCCG-4" "PCID:5311344" :name "PCCG-4" :no-plural t)
+(def-indiv-with-id drug "resveratrol" "PCID:445154" :name "Resveratrol" :no-plural t)
+(def-indiv-with-id drug "WA" "CHEBI:69120" :name "withaferin A" :no-plural t)
+

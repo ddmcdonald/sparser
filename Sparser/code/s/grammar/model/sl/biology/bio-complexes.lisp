@@ -247,7 +247,7 @@
 (define-category calcium-complex :specializes bio-complex
   :bindings (component (category-named 'calcium-ion)))
 
-(define-protein "CALM_HUMAN" ("calmodulin" "CALM1" "CaM"))
+;(define-protein "CALM_HUMAN" ("calmodulin" "CALM1" "CaM")) defined in std proteins, also CALM_HUMAN is deprecated
 
 (define-category calcium-calmodulin-complex :specializes calcium-complex
   :bindings (component (category-named 'calmodulin)))

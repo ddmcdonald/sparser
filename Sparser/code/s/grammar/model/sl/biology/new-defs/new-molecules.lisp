@@ -1592,3 +1592,5 @@
 (def-indiv-with-id molecule "triterpenoid" "CHEBI:36615" :name "triterpenoid") 
 (def-indiv-with-id molecule "Polynucleotide" "CHEBI:15986" :name "polynucleotide") 
 (def-indiv-with-id molecule "epoxomicin" "PCID:16760412") 
+(def-indiv-with-id molecule "PA" "CHEBI:16337" :name "phosphatidic acid") 
+(def-indiv-with-id molecule "VPA" "CHEBI:39867" :name "valproic acid") 

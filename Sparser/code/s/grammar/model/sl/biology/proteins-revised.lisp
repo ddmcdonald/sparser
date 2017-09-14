@@ -38,13 +38,12 @@
 ;(def-bio "BCR-ABL" protein);;  a constitutively activated version, MEK1S219D,S223D (MEK1DD)
 (def-bio "type IV collagen" protein) ;; a very generic term -- can't find an identifier TO-DO
 
-
+#| folded into new std-prot-defs
 (define-protein "P06926" ("E1-E4"))
 (define-protein "Q9T1U2" ("E2F4-6"))
-
 (define-protein "Q96PP8" ("GBP-5"))
 (define-protein "Q8TE85" ("Grhl3")) 
-(define-protein "P01112" ("H-Ras" "H-RasV12"))
+(define-protein "P01112" ( "H-RasV12"))
 (define-protein "P98177" ("flag-FOXO4" "HA-FOXO4"))
 (define-protein "Q99814" ("HIF-2alpha protein"))
 (define-protein "P10277" ("HIF-alpha"))
@@ -61,7 +60,6 @@
 (define-protein "P13645" ("Keratin 10"))
 (define-protein "O36417" ("Ki-67"))
 (define-protein "Q8N4N8" ("Kif2b"))
-(define-protein "P46527" ("P27 kip1" "Kip1"))
 (define-protein "P04233" ("MHC-II" "LC3B-II"))
 (define-protein "P03679" ("TAPI-1"))
 (define-protein "P19256" ("LFA-3"))
@@ -71,58 +69,44 @@
 (define-protein "Q03111" ("MLL-ENL"))
 (define-protein "Q92565" ("mr-gef" "MR-GEF"))
 (define-protein "P36952" ("Maspin"))
-(define-protein "Q07820" ("Mcl-1"))
 (define-protein "Q9Y316" ("Memo"))
 (define-protein "O95140" ("Mfn2"))
-(define-protein "Q9Y6Q6" ("NF-kappaB"))
 (define-protein "Q12879" ("NMDA receptor"))
 (define-protein "P04839" ("NOX-2"))
 (define-protein "Q99801" ("Nkx3.1"))
 (define-protein "Q9UM47" ("Notch3"))
-(define-protein "Q16236" ("Nrf2"))
 (define-protein "P58400" ("Nrxn1"))
-(define-protein "P54644" ("P-Akt"))
 (define-protein "P16234" ("PDGF receptors"))
 (define-protein "P83099" ("PKCeta"))
 (define-protein "Q19266" ("PKCzeta"))
-(define-protein "O60260" ("Parkin"))
 (define-protein "P23760" ("Pax3"))
 (define-protein "P40763" ("Stat3C" "Phospho-STAT3"))
 (define-protein "O95365" ("Pokemon"))
 (define-protein "Q06330" ("RBP-jkappa"))
 (define-protein "P20339" ("Rab5Q79L" "Rab5CA" "Rab5"))
 (define-protein "Q9P2R3" ("Rabankyrin-5"))
-(define-protein "P63000" ("Rac1"))
 (define-protein "P04049" ("Raf1"))
 (define-protein "P42685" ("Rak"))
-(define-protein "Q9NYB0" ("Rap1"))
-(define-protein "P69208" ("RasV12"))
 (define-protein "Q8WZ75" ("Robo4"))
-(define-protein "P84022" ("Smad3"))
 (define-protein "O15105" ("Smad7"))
-(define-protein "P08047" ("Sp1"))
 (define-protein "P36897" ("TGFbetaR1"))
 (define-protein "P07996" ("TSP-1 protein"))
 (define-protein "Q13207" ("Tbx2"))
-(define-protein "Q13009" ("Tiam1"))
 (define-protein "Q02763" ("Tie-2"))
 (define-protein "P05135" ("VN-ITSN1-S"))
-(define-protein "P15498" ("Vav1"))
 (define-protein "P19563" ("Vif"))
 (define-protein "P56704" ("Wnt3A"))
 (define-protein "P04004" ("alphaVbeta3"))
 (define-protein "P34722" ("cPKC"))
 (define-protein "P08134" ("dnRhoC" "caRhoC"))
-(define-protein "O15379" ("class I HDACs"))
 (define-protein "O60220" ("dDp"))
 (define-protein "Q9NQB0" ("dnTCF"))
 (define-protein "P09466" ("gD"))
 (define-protein "G5EGD2" ("hypoxia-inducible factor 1"))
-(define-protein "P41159" ("leptin receptors"))
 (define-protein "O14746" ("mTERT"))
 (define-protein "P42336" ("p110CAAX"))
 (define-protein "P04637" ("wtTP53" "p53DD"))
-
+|#
 ;;;------------------------
 ;;; GTP, GDP, GEFs & GAPs
 ;;;------------------------
@@ -131,21 +115,16 @@
 (noun ("GEF" "guanine nucleotide exchange factor" "guanyl-nucleotide-exchange factor") :super nucleotide-exchange-factor)
 (noun "growth factor" :super protein) ;; actually, either a protein or hormone, but occasionally some other molecule
 
-(define-protein "Ras-GDP" ()) ;; not really a "protein" but a complex, but for now...
-(define-protein "Ras-GTP" ()) ;; not really a "protein" but a complex, but for now...
-(define-protein "p52" () ) 
+;(define-protein "Ras-GDP" ()) ;; not really a "protein" but a complex, but for now...
+;(define-protein "Ras-GTP" ()) ;; not really a "protein" but a complex, but for now...
 (define-protein "RasGEF" ("Ras-GEF" "Ras GEF")) 
 (define-protein "ERK1-4" ())
 (define-protein "GST-ASPP2" ())
-(define-protein "MAP" ())
 (define-protein "Raf CAAX" ())
 (define-protein "RasG12V" ()) ;; this is a variant
 (define-protein "V600EBRAF" ()) ;; need to figure out how to represent this variant in the ontology :synonyms ("B-RAFV600E" "V600EB-RAF" "BRAFV600E"))
 (define-protein "brafv" ())
 (define-protein "mek1dd" ())
-(define-protein "trypsin" ())
-(define-protein "histone 2B"  ())
-(define-protein "histone" ())
 (defparameter *bio-ents* nil)
 (defparameter *mitre-bio-ents* nil)
 (defun new-bio-entities ()

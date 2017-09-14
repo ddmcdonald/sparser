@@ -33,7 +33,6 @@
 (define-protein "GO:0004645" ("phosphorylase" "phosphorylase activity")) 
 (define-protein "GO:0004660" ("ftase" "protein farnesyltransferase activity")) 
 (define-protein "GO:0004673" ("sln1p" "protein histidine kinase activity")) 
-(define-protein "GO:0004709" ("MAP kinase kinase kinase activity" "MAPKKKs" "MEKKs")) 
 (define-protein "GO:0004725" ("PTPases" "protein tyrosine phosphatase activity")) 
 (define-protein "GO:0004908" ("IL-1Rs" "interleukin-1 receptor activity")) 
 (define-protein "GO:0004921" ("IL11R" "interleukin-11 receptor activity")) 
@@ -109,7 +108,6 @@
 (define-protein "GO:0050248" ("renilla-luciferin 2-monooxygenase activity" "aequorin")) 
 (define-protein "GO:0050321" ("glycogen synthase kinase-3beta" "tau-protein kinase activity")) 
 (define-protein "GO:0050355" ("triphosphatase" "triphosphatase activity" "triphosphatases")) 
-;(define-protein "GO:0051920" ("peroxiredoxin activity" "peroxiredoxins")) moved to fam
 (define-protein "GO:0052664" ("NaO" "nitroalkane oxidase activity")) 
 (define-protein "GO:0070122" ("isopeptidase activity" "isopeptidases")) 
 (define-protein "GO:0070330" ("aromatase activity" "aromatases")) 
@@ -145,7 +143,6 @@
 (define-protein "NCIT:C114504" ("HHV8 ORF74 gene" "ORF74" "q00095")) 
 (define-protein "NCIT:C114506" ("HHV8 ORF59 gene" "ORF59" "q00138")) 
 (define-protein "NCIT:C114946" ("ATAD5" "ELG1" "q12050")) 
-;(define-protein "NCIT:C116019" ("5-AMP-activated protein kinase catalytic subunit alpha" "PRKAA")) 
 ;(define-protein "NCIT:C116033" ("5-AMP-activated protein kinase catalytic subunit alpha-1" "AMPK-alpha1" "" "AMPKalpha1" "AMPKÎ±1" "AMPKα1" "P0CY06")) moved to fams
 (define-protein "NCIT:C116285" ("HOTAIR")) 
 (define-protein "NCIT:C116963" ("P1NP" "PINP" "procollagen type I N-terminal peptide")) 
@@ -163,7 +160,6 @@
 (define-protein "NCIT:C126954" ("SEP15" "sep15")) 
 (define-protein "NCIT:C127014" ("IGHV3-21" "q16927" "V-H")) 
 (define-protein "NCIT:C128275" ("LXR" "LXRs" "liver X receptor-like family")) 
-;(define-protein "NCIT:C128285" ("PDGF-AA" "PDGFAA" "platelet-derived growth factor-AA")) moved to fams
 ;(define-protein "NCIT:C128286" ("PDGF-AB" "" "platelet-derived growth factor-AB")) moved to fams
 (define-protein "NCIT:C128287" ("PDGF-BB" "Q8L649" "platelet-derived growth factor-BB")) 
 (define-protein "NCIT:C128309" ("HLA class I histocompatibility antigen B-44 alpha chain" "HLA-B44")) 
@@ -181,7 +177,6 @@
 (define-protein "NCIT:C16614" ("GAG" "GAG gene")) 
 (define-protein "NCIT:C16682" ("HDAC" "Q54VQ7" "histone deacetylase")) 
 (define-protein "NCIT:C16685" ("p22843" "histone-H3" "histoneH3")) 
-;(define-protein "NCIT:C16687" ("histone" "histones")) moved to fam
 (define-protein "NCIT:C16692" ("HLA-DR" "HLA-DR antigen" "q03372")) 
 (define-protein "NCIT:C16725" ("immunoprotein")) 
 (define-protein "NCIT:C16819" ("Mn-SOD" "MnSOD" "manganese superoxide dismutase")) 
@@ -244,7 +239,6 @@
 (define-protein "NCIT:C21414" ("q91780" "cyclin-E1" "cyclinE1")) 
 (define-protein "NCIT:C21483" ("DNA-PK" "DNAPK" "XRCC7" "protein kinase DNA-activated catalytic subunit")) 
 (define-protein "NCIT:C2273" ("gonadotrophin" "gonadotrophins" "gonadotropin")) 
-;(define-protein "NCIT:C2276" ("inhibin" "inhibins")) moved to fam
 ;(define-protein "NCIT:C2277" ("inhibin-A")) moved to fam
 (define-protein "NCIT:C2284" ("thymosin" "thymosins")) 
 (define-protein "NCIT:C25186" ("HDLs" "p81182" "high density lipoprotein")) 
@@ -252,18 +246,15 @@
 (define-protein "NCIT:C25202" ("SGOT" "SGOT-AST protein")) 
 (define-protein "NCIT:C25293" ("p13432" "SGPT" "SGPT-ALT protein")) 
 (define-protein "NCIT:C25773" ("Q9LTG0" "cyclin-B2" "cyclinB2")) 
-;(define-protein "NCIT:C26233" ("GRK" "GRKs" "p42287" "g protein-coupled receptor kinase family")) 
 (define-protein "NCIT:C26418" ("t-cell receptor beta locus" "TCRβ" "tcrβ")) 
 (define-protein "NCIT:C26421" ("t-cell receptor gamma locus" "TCRG")) 
 (define-protein "NCIT:C28459" ("oxygenase")) 
 (define-protein "NCIT:C28471" ("p10277" "inhibin alpha" "inhibin-alpha")) 
 (define-protein "NCIT:C29877" ("ROCK1 protein" "p160-ROCK")) 
 (define-protein "NCIT:C29903" ("TRUP" "ribosomal protein-L7A")) 
-;(define-protein "NCIT:C32650" ("p34785" "gamma-tubulin" "γtubulin")) moved to fam
 (define-protein "NCIT:C34071" ("DNA-directed RNA polymerase-II polypeptide-A" "p18616" "RPB1" "rpb1")) 
 (define-protein "NCIT:C37313" ("p13586" "protein tyrosine phosphatase receptor type-J" "scc1")) 
 (define-protein "NCIT:C37314" ("o93262" "PTP-SL" "PTPBR7" "PTPSL" "protein tyrosine phosphatase-PCPTP1")) 
-(define-protein "NCIT:C38897" nil) 
 (define-protein "NCIT:C38903" ("CD3-zeta" "CD3-ζ" "CD3zeta" "CD3ζ" "CD3–ζ" "T-cell receptor-T3 zeta chain")) 
 (define-protein "NCIT:C38958" ("eF1" "elongation factor-1")) 
 (define-protein "NCIT:C38959" ("EEF1B1 gene" "eEF1b")) 
@@ -292,12 +283,10 @@
 (define-protein "NCIT:C88929" ("o84462" "TARP" "TARPs" "tarp")) 
 (define-protein "NCIT:C88995" ("SNORA74A")) 
 (define-protein "NCIT:C94600" ("BCR-ABL fusion gene" "Bcr-–Abl" "Bcr–Abl" "BCR-ABL")) 
-;(define-protein "NCIT:C95114" ("gamma secretase" "gamma-secretase")) moved to fam
 (define-protein "NCIT:C95244" ("elongin" "elongins")) 
 (define-protein "NCIT:C95407" ("core histone macro-H2A" "mH2A" "macroH2A")) 
 (define-protein "NCIT:C95408" ("ACA" "aca" "anticardiolipin antibody")) 
 (define-protein "NCIT:C95943" ("Q819Y5" "rDNA" "ribosomal RNA gene")) 
-;(define-protein "NCIT:C96314" ("MTORC1" "mTOR-C1" "mTORC-1" "mTORC1")) moved to fam
 ;(define-protein "NCIT:C96315" ("MTORC2" "Rictor-mTOR" "mTORC2")) moved to fam
 (define-protein "NCIT:C97383" ("G1 S-specific cyclin-D3" "p42753" "cyclinD3" "cyclinsD3")) 
 (define-protein "NCIT:C97560" ("HB9" "MNX1")) 
@@ -536,7 +525,6 @@
 (define-protein "UP:A5PLK6" ("A5PLK6" "RGSL" "RGSL1" "RGSL2" "RGSL_HUMAN" "Regulator of G-protein signaling protein-like" "regulator of G-protein signaling like 1" "regulator of G-protein signaling like 2" "regulator of G-protein signalling like 1" "regulator of G-protein signalling like 2")) 
 (define-protein "UP:A5PLL0" ("A5PLL0" "A5PLL0_HUMAN" "CPT1B protein")) 
 (define-protein "UP:A5PLL7" ("KUA" "TMEM189" "transmembrane protein 189")) 
-;(define-protein "UP:A5WWI6" ("A5WWI6" "profilins")) 
 (define-protein "UP:A5X5Y0" ("5-hydroxytryptamine (serotonin)receptor 3E" "5-hydroxytryptamine receptor 3E" "5HT3E_HUMAN" "A5X5Y0" "HTR3E" "family member E")) 
 (define-protein "UP:A5YKK6" ("A5YKK6" "AD-005" "CCR4-NOT transcription complex" "CCR4-NOT transcription complex subunit 1" "CDC39" "CNOT1" "CNOT1_HUMAN" "KIAA1007" "NOT1" "NOT1H" "negative regulator of transcription subunit 1 homolog" "not1" "hNOT1")) 
 (define-protein "UP:A5YM72" ("A5YM72" "ATP-grasp domain containing 1" "ATPGD1" "CARNS1" "CRNS1_HUMAN" "KIAA1394" "carnosine synthase 1")) 
@@ -5218,7 +5206,6 @@
 (define-protein "UP:P0C6Y2" ("ExoN" "NendoU" "nsP1-4")) 
 (define-protein "UP:P0C726" ("LF2")) 
 (define-protein "UP:P0C727" ("LF3")) 
-;(define-protein "UP:P0C768" nil) potato
 (define-protein "UP:P0C776" ("Gag-Pro")) 
 (define-protein "UP:P0C781" ("Protein X" "vpx")) 
 (define-protein "UP:P0C788" ("OX-2 membrane glycoprotein homolog" "vOX2")) 
@@ -5931,8 +5918,8 @@
 (define-protein "UP:P15036" ("ETS proto-oncogene 2" "ETS proto-oncogene 2, transcription factor" "ETS-2" "ETS2" "ETS2 protein" "ETS2_HUMAN" "ets-2" "Ets-2" "ets2" "p15036" "Protein C-ets-2" "c-ets-2" "transcription factor" "v-ets avian erythroblastosis virus E26 oncogene homolog 2" "v-ets erythroblastosis virus E26 oncogene homolog 2 (avian)")) 
 (define-protein "UP:P15042" ("PDEC"))
 (define-protein "UP:P15054"("SRC_AVIS2" "v-Src" "V-SRC" "p60-Src" "Tyrosine-protein kinase transforming protein Src"))
-(define-protein "UP:P15056" ("B-RAF" "B-Raf" "B-Raf proto-oncogene, serine/threonine kinase" "B-Raf1" "b-raf" "BRAF" "BRAF1" "BRAF_HUMAN" "BRaf" "braf" "FLAG-BRAF" "p15056" "Proto-oncogene B-Raf" "RAFB1" "bRaf-1" "p94" "v-RAF murine sarcoma viral oncogene" "v-Raf murine sarcoma viral oncogene homolog B1")) 
-(define-protein "UP:P15057" ("p15057" "lysozyme")) 
+(define-protein "UP:P15056" ("B-RAF" "B-Raf" "B-Raf proto-oncogene, serine/threonine kinase" "B-Raf1" "b-raf" "BRAF" "BRAF1" "BRAF_HUMAN" "BRaf" "braf" "FLAG-BRAF" "p15056" "Proto-oncogene B-Raf" "RAFB1" "bRaf-1" "p94" "v-RAF murine sarcoma viral oncogene" "v-Raf murine sarcoma viral oncogene homolog B1"))
+;(define-protein "UP:P15057" ("p15057" "lysozyme")) stapholococcus
 (define-protein "UP:P15059" ("B13R" "p15059" "SPI-2" "VACWR195")) 
 (define-protein "UP:P15064" ("rasG")) 
 (define-protein "UP:P15066" ("JUND1")) 
@@ -6311,7 +6298,7 @@
 (define-protein "UP:P18010" ("IpaA")) 
 (define-protein "UP:P18031" ("p18031" "PTN1_HUMAN" "PTP-1B" "PTP1B" "PTPN1" "Protein-tyrosine phosphatase 1B" "protein tyrosine phosphatase, non-receptor type 1" "protein-tyrosine phosphatase-1B" "protein-tyrosine-phosphatase 1B")) 
 (define-protein "UP:P18032" ("ArtA")) 
-(define-protein "UP:P18047" ("fiber protein 1" "spike" "spiked" "spikes" "spiking")) 
+(define-protein "UP:P18047" ("fiber protein 1" "SPIKE")) 
 (define-protein "UP:P18054" ("12LO" "12S type" "12S-LOX" "12S-lipoxygenase" "12S-type" "ALOX12" "Arachidonate 12-lipoxygenase, 12S-type" "LOG12" "LOX12_HUMAN" "Lipoxin synthase 12-LO" "p18054" "platelet-type lipoxygenase 12" "arachidonate 12-lipoxygenase" "arachidonate 12-lipoxygenase, 12S type" "lo" "platelet 12-LOX")) 
 (define-protein "UP:P18056" ("HOC")) 
 (define-protein "UP:P18064" ("gpa1")) 
@@ -6942,7 +6929,7 @@
 (define-protein "UP:P23434" ("GCSH_HUMAN" "Glycine cleavage system H protein, mitochondrial" "lipoic acid-containing protein" "p23434" "gcsh")) 
 (define-protein "UP:P23435" ("cbln1" "cer" "cerebellin" "cerebellin 1 precursor" "cerebellin1" "precerebellin")) 
 (define-protein "UP:P23440" ("MPB")) 
-(define-protein "UP:P23443" ("70 kDa ribosomal protein S6 kinase 1" "70-KD" "KS6B1_HUMAN" "P-S6K" "P70S6K"  "P70S6K1" "RPS6KB1" "Ribosomal protein S6 kinase I"  "Ribosomal protein S6 kinase beta-1" "S6K-beta-1" "S6K-bη-1" "S6K1" "S6Ks"  "STK14A" "Serine/threonine-protein kinase 14A" "p23443" "p70 S6 kinase alpha"  "p70 S6 kinase α" "p70 S6K-alpha" "p70 S6K-α" "p70 S6KA"  "p70 ribosomal S6 kinase alpha" "p70 ribosomal S6 kinase α" "p70-S6K 1"  "p70S6" "p70S6-K" "p70S6K" "p70s6K" "p70S6K1" "p70S6k1" "p70alpha" "p70s6K" "pS6K"  "ribosomal protein S6 kinase beta-1" "rps6kb1" "s6k"))
+(define-protein "UP:P23443" ("70 kDa ribosomal protein S6 kinase 1" "70-KD" "KS6B1_HUMAN" "P-S6K" "p23443" "P70S6K" "P70S6K1" "RPS6KB1" "Ribosomal protein S6 kinase I" "rps6kb1" "S6K-beta-1" "S6K-bη-1" "S6Ks" "STK14A" "Serine/threonine-protein kinase 14A" "p70 S6 kinase alpha" "p70 S6 kinase α" "p70 S6K-alpha" "p70 S6K-α" "p70 S6KA" "p70 ribosomal S6 kinase alpha" "p70 ribosomal S6 kinase α" "p70-S6K 1" "p70S6" "p70S6-K" "p70S6K" "p70S6K1" "p70alpha" "pS6K" "ribosomal protein S6 kinase beta-1" "s6k" "S6K1" "Ribosomal protein S6 kinase beta-1" "p70S6K1" "p70S6k1")) 
 (define-protein "UP:P23457" ("akr1c9")) 
 (define-protein "UP:P23458" ("JAK-1" "Jak1" "JAK1" "JAK1A" "JAK1B" "JAK1_HUMAN" "janus kinase 1" "p23458")) 
 (define-protein "UP:P23467" ("p23467" "PTPRB" "PtpB" "RPTP-beta" "RPTPbeta" "RPTPβ" "VE-PTP" "protein tyrosine phosphatase, receptor type B" "receptor-type tyrosine-protein phosphatase beta")) 
@@ -7547,7 +7534,7 @@
 (define-protein "UP:P29337" ("BCC")) 
 (define-protein "UP:P29349" ("csw")) 
 (define-protein "UP:P29350" ("HCP" "HCPs" "hematopoietic cell protein-tyrosine phosphatase" "p29350" "PTN6_HUMAN" "PTP-1C" "PTP1C" "PTPN6" "Protein-tyrosine phosphatase 1C" "Protein-tyrosine phosphatase SHP-1" "SH-PTP1" "SHP-1" "SHP1" "SHPTP1" "shp-1" "tyrosine-protein phosphatase non-receptor type 6" "non-receptor type 6 protein tyrosine phosphatase" "protein tyrosine phosphatase, non-receptor type 6")) 
-(define-protein "UP:P29353" ("p29353" "SH2 domain containing transforming protein-1" "SH2 domain protein C1" "SHC" "SHC adaptor protein 1" "SHC transforming protein 1" "SHC-transforming protein 3" "SHC-transforming protein A" "SHC1" "SHC1_HUMAN" "SHCA" "shc" "shc1" "ShcA" "Src homology 2 domain-containing-transforming protein C1" "p66Shc" "shc-1")) 
+(define-protein "UP:P29353" ("p29353" "SH2 domain containing transforming protein-1" "SH2 domain protein C1" "SHC" "SHC adaptor protein 1" "SHC transforming protein 1" "SHC-transforming protein 3" "SHC-transforming protein A" "SHC1" "SHC1_HUMAN" "SHCA" "shc" "Shc" "shc1" "ShcA" "Src homology 2 domain-containing-transforming protein C1" "p66Shc" "shc-1")) 
 (define-protein "UP:P29355" ("sem5" "sem-5")) 
 (define-protein "UP:P29366" ("BEM-1" "bem1")) 
 (define-protein "UP:P29371" ("HH11" "NK3 receptor" "NK3R" "NK3R_HUMAN" "NKR" "Neuromedin K receptor" "p29371" "TAC3R" "TACR3" "neurokinin beta receptor" "tachykinin receptor 3" "tachykinin receptor-3")) 
@@ -8851,7 +8838,7 @@
 (define-protein "UP:P40631" ("MLH")) 
 (define-protein "UP:P40688" ("SWA")) 
 (define-protein "UP:P40692" ("COCA2" "DNA mismatch repair protein Mlh1" "FCC2" "HNPCC" "HNPCC2" "MLH1" "MLH1_HUMAN" "MutL protein homolog 1" "p40692" "hMLH1" "mutL (E. coli)homolog 1 (colon cancer" "mutL homolog 1" "nonpolyposis type 2 (E. coli)" "nonpolyposis type 2)")) 
-(define-protein "UP:P40695" ("pLCR")) 
+;(define-protein "UP:P40695" ("pLCR")) 
 (define-protein "UP:P40713" ("fructokinase")) 
 (define-protein "UP:P40722" ("SopD")) 
 (define-protein "UP:P40758" ("glnK")) 
@@ -9036,7 +9023,6 @@
 (define-protein "UP:P42263" ("AMPA 3" "GLUR3" "GLURC" "GRIA3" "GRIA3_HUMAN" "GluA3" "GluR3" "glutamate receptor 3" "MRX94" "p42263" "glutamate ionotropic receptor AMPA type subunit 3" "ionotrophic")) 
 (define-protein "UP:P42285" ("DOB1" "dob1" "KIAA0052" "mtr4" "p42285" "SK2L2_HUMAN" "SKIV2L2" "Ski2 like RNA helicase 2" "superkiller viralicidic activity 2-like 2" "fSAP118" "functional spliceosome-associated protein 118" "superkiller viralicidic activity 2-like 2 (S. cerevisiae)")) 
 (define-protein "UP:P42286" ("thr")) 
-;(define-protein "UP:P42287" ("GRK")) 
 (define-protein "UP:P42307" ("S3B")) 
 (define-protein "UP:P42312" ("nupG" "yxjA")) 
 (define-protein "UP:P42322" ("cnb1")) 
@@ -9347,7 +9333,6 @@
 (define-protein "UP:P46926" ("GNPDA" "GNPDA1" "GNPI" "GNPI1_HUMAN" "glucosamine-6-phosphate isomerase 1" "HLN" "KIAA0060" "p46926" "glucosamine-6-phosphate deaminase" "glucosamine-6-phosphate deaminase 1" "glucosamine-6-phosphate isomerase" "oscillin")) 
 (define-protein "UP:P46934" ("cell proliferation-inducing gene 53 protein" "E3 ubiquitin-protein ligase NEDD4" "KIAA0093" "MGC176705" "NEDD-4" "NEDD-4-1" "NEDD4" "NEDD4-1" "NEDD4_HUMAN" "nedd 4" "nedd4" "neural precursor cell expressed developmentally down-regulated protein 4" "p46934" "PIG53" "developmentally down-regulated 4" "nedd4-1" "receptor-potentiating factor 1")) 
 (define-protein "UP:P46937" ("YAP1" "YAP2" "YAP65" "yap1" "yap2" "yap65" "transcriptional coactivator YAP1" "yes associated protein 1" "yki" "yorkie homolog" "YAP" "Yap")) 
-;(define-protein "UP:P46938" ("YAP" "p-YAP")) mouse
 (define-protein "UP:P46939" ("dystrophin-related protein 1" "p46939" "UTRO_HUMAN" "utr" "utrn" "utrophin")) 
 (define-protein "UP:P46940" ("IQ motif containing GTPase activating protein 1" "IQGA1_HUMAN" "IQGAP-1" "IQGAP1" "KIAA0051" "p46940" "p195")) 
 (define-protein "UP:P46944" ("TRS85 family" "trs85" "YDR108W")) 
@@ -9477,7 +9462,7 @@
 (define-protein "UP:P48307" ("PP5" "TFPI-2" "TFPI2" "tissue factor pathway inhibitor 2")) 
 (define-protein "UP:P48348" ("GRF8")) 
 (define-protein "UP:P48349" ("aft1" "GRF6" "general regulatory factor 6")) 
-(define-protein "UP:P48357" ("db" "HuB219" "LEP-R" "LEPR" "LEPR_HUMAN" "lepr" "Leptin Receptor" "leptin receptor" "OB receptor" "OB-R" "OBR" "Ob-R" "ObR" "p48357" "binding/activation")) 
+(define-protein "UP:P48357" ("db" "HuB219" "LEP-R" "LEPR" "LEPR_HUMAN" "lepr" "Leptin Receptor" "leptin receptor" "leptin receptors" "OB receptor" "OB-R" "OBR" "Ob-R" "ObR" "p48357")) 
 (define-protein "UP:P48361" ("RGC2")) 
 (define-protein "UP:P48363" ("GIM2" "pac10")) 
 (define-protein "UP:P48365" ("gyp7")) 
@@ -11857,7 +11842,6 @@
 (define-protein "UP:Q02577" ("Class A basic helix-loop-helix protein 34" "HEN-2" "HEN2" "HEN2_HUMAN" "helix-loop-helix protein 2" "NHLH2" "NSCL-2" "NSCL2" "nescient helix loop helix 2" "q02577" "bHLHa34" "nescient helix-loop-helix 2")) 
 (define-protein "UP:Q02629" ("nup100")) 
 (define-protein "UP:Q02630" ("nup116")) 
-;(define-protein "UP:Q02637" ("CCAAT/enhancer binding protein")) dros
 (define-protein "UP:Q02641" ("Beta 1 subunit of VGCC" "CAB1" "CACB1_HUMAN" "CACNB1" "CACNLB1" "q02641" "calcium voltage-gated channel auxiliary subunit beta 1")) 
 (define-protein "UP:Q02643" ("GHRH receptor" "GHRHR" "GHRHR_HUMAN" "growth hormone-releasing hormone receptor" "q02643" "growth hormone releasing hormone receptor")) 
 (define-protein "UP:Q02651" ("sma1")) 
@@ -11918,7 +11902,6 @@
 (define-protein "UP:Q03135" ("CAV" "CAV1" "CAV1_HUMAN" "q03135" "cav-1" "cav1" "Cav1" "cave-olin-1" "caveolin 1" "caveolin-1" "caveolin1" "caveolins-1" "pph3")) 
 (define-protein "UP:Q03145" ("SEK2")) 
 (define-protein "UP:Q03148" ("SNZ1")) 
-;(define-protein "UP:Q03149" ("WA")) 
 (define-protein "UP:Q03154" ("ACY1" "ACY1_HUMAN" "aminoacylase-1" "q03154" "aminoacylase 1")) 
 (define-protein "UP:Q03164" ("ALL-1" "ALL1" "CXXC-type zinc finger protein 7" "CXXC7" "HRX" "HRx" "HTRX" "HTRX1" "Histone-lysine N-methyltransferase 2A" "Histone-lysine N-methyltransferase MLL" "KMT2A" "KMT2A_HUMAN" "Lysine N-methyltransferase 2A" "MLL" "MLL1" "MLL1A" "MLL1_HUMAN" "MLLs" "Mixed Lineage Leukemia protein" "mll1" "myeloid/lymphoid or mixed-lineage leukemia" "myeloid/lymphoid or mixed-lineage leukemia protein 1" "q03164" "trithorax-like protein" "Zinc finger protein HRX" "hTrx" "lysine (K)-specific methyltransferase 2A" "lysine methyltransferase 2A" "myeloid" "myeloid/lymphoid or mixed-lineage leukemia (trithorax (Drosophila)homolog)" "myeloid/lymphoid or mixed-lineage leukemia (trithorax homolog" "p180")) 
 (define-protein "UP:Q03167" ("q03167" "TGFBR3" "tgfbr3" "beta receptor III" "betaglycan" "transforming growth factor beta receptor 3" "transforming growth factor beta receptor III" "transforming growth factor beta receptor-III")) 
@@ -12670,7 +12653,6 @@
 (define-protein "UP:Q11203" ("CMP-N-acetylneuraminate-beta-1,4-galactoside alpha-2,3-sialyltransferase" "MRT12" "q11203" "SIAT6" "SIAT6_HUMAN" "ST3 beta-galactoside alpha-2,3-sialyltransferase 3" "ST3GAL3" "ST3Gal III" "ST3GalIII" "sialyltransferase 6 (N-acetyllacosaminide alpha 2,3-sialyltransferase)")) 
 (define-protein "UP:Q11206" ("CGS23" "CMP-N-acetylneuraminate-beta-galactosamide-alpha-2,3-sialyltransferase 4" "FLJ11867" "NANTA3" "q11206" "SAT3" "SIA4C_HUMAN" "SIAT4" "SIAT4C" "ST3 beta-galactoside alpha-2,3-sialyltransferase 4" "ST3GAL4" "ST3Gal IV" "STZ" "sat3" "sialyltransferase 4C (beta-galactosidase alpha-2,3-sialytransferase)")) 
 (define-protein "UP:Q11207" ("PARP-2" "Poly [ADP-ribose] polymerase 2")) 
-;(define-protein "UP:Q11208" ("PARP")) non-human
 (define-protein "UP:Q12000" ("tma46")) 
 (define-protein "UP:Q12008" ("GPM2")) 
 (define-protein "UP:Q12018" ("cdc53")) 
@@ -13798,7 +13780,6 @@
 (define-protein "UP:Q17077" ("PBP1")) 
 (define-protein "UP:Q17078" ("PBP2")) 
 (define-protein "UP:Q170J7" ("MOE")) 
-;(define-protein "UP:Q17103" ("q17103" "c myc" "c-MYC" "c-Myc" "cMYC" "myc protein")) ;starfish
 (define-protein "UP:Q17134" ("BRA-1")) 
 (define-protein "UP:Q17237" ("POU-M1")) 
 (define-protein "UP:Q17239" ("serotonin receptor")) 
@@ -14251,7 +14232,6 @@
 (define-protein "UP:Q38793" ("RBCs" "RuBisCo small subunit")) 
 (define-protein "UP:Q38799" ("mAb1")) 
 (define-protein "UP:Q38805" ("MT2b")) 
-;(define-protein "UP:Q38813" ("b1" "B1")) mouse ear cress
 (define-protein "UP:Q38814" ("ARA6")) 
 (define-protein "UP:Q38822" ("IAA3" "SHY2")) 
 (define-protein "UP:Q38826" ("IAA8")) 
@@ -14479,7 +14459,6 @@
 (define-protein "UP:Q43383" ("2A6")) 
 (define-protein "UP:Q43470" ("14-3-3b")) 
 (define-protein "UP:Q43725" ("CSC")) 
-;(define-protein "UP:Q43731" ("p50")) arath
 (define-protein "UP:Q43857" ("AI")) 
 (define-protein "UP:Q43880" ("thermolysin")) 
 (define-protein "UP:Q43883" ("NifB")) 
@@ -14763,7 +14742,6 @@
 (define-protein "UP:Q54K32" ("DGAP1" "rasgap1")) 
 (define-protein "UP:Q54KB8" ("GLUS")) 
 (define-protein "UP:Q54KF7" ("SibA")) 
-;(define-protein "UP:Q54KM6" ("Q54KM6" "c-CBL" "c-Cbl" "ccbl")) ;slime mold
 (define-protein "UP:Q54L75" ("tgrE1")) 
 (define-protein "UP:Q54M22" ("bkdA")) 
 (define-protein "UP:Q54MF3" ("CNB-B")) 
@@ -15509,7 +15487,6 @@
 (define-protein "UP:Q64770" ("Protein GAM-1" "gam1")) 
 (define-protein "UP:Q64896" ("EGFR-C" "HBeAg" "q64896" "c-Fes" "c-fes" "tyrosine-protein kinase FES-FPS")) 
 (define-protein "UP:Q64897" ("CORE protein" "HBcAg" "q64897" "core protein")) 
-;(define-protein "UP:Q64902" ("HBx" "PX")) squirrel hepB
 (define-protein "UP:Q157B2" ("HBx" "PX")) ;reg hepB
 (define-protein "UP:Q64K31" ("SUB6")) 
 (define-protein "UP:Q64K32" ("SUB5")) 
@@ -15555,7 +15532,6 @@
 (define-protein "UP:Q684P5" ("GARNL4" "GTPase-activating Rap/Ran-GAP domain-like protein 4" "KIAA1039" "Q684P5" "RAP1GA2" "RAP1GAP2" "RPGP2_HUMAN" "Rap1GAP2")) 
 (define-protein "UP:Q685J3" ("Core 2 (MUC17)" "Core 2S (MUC17)" "Core 2a (MUC17)" "Core 3 (MUC17)" "Core 4 (MUC17)" "Core 5 (MUC17)" "Core 6 (MUC17)" "Core 7 (MUC17)" "Core 8 (MUC17)" "Disialyl T-antigen (MUC17)" "MUC17" "MUC17_HUMAN" "mucin-17" "Q685J3" "Sialyl T-antigen (MUC17)" "Sialyl-2,3 T-antigen (MUC17)" "T-antigen (MUC17)" "extended Core 6 (MUC17)" "mucin 17")) 
 (define-protein "UP:Q687X5" ("Metalloreductase STEAP4" "STEAP4" "STEAP4 metalloreductase" "stamp2")) 
-;(define-protein "UP:Q687Y7" ("IL-17" "Interleukin-17A")) bovine
 (define-protein "UP:Q68985" ("CAPSD_HEVHY" "Protein ORF2" "pORF2")) 
 (define-protein "UP:Q689D6" ("rpd1")) 
 (define-protein "UP:Q68CJ9" ("CR3L3_HUMAN" "CREB-H" "CREB3L3" "CREBH" "HYST1481" "Q68CJ9" "cAMP responsive element binding protein 3 like 3" "crebh" "cyclic AMP-responsive element-binding protein 3-like protein 3")) 
@@ -18586,7 +18562,6 @@
 (define-protein "UP:Q8T626" ("DLT" "VA")) 
 (define-protein "UP:Q8T6B9" ("HFP")) 
 (define-protein "UP:Q8T6Z0" ("OBL" "obelin")) 
-;(define-protein "UP:Q8T7K0" ("ALG-2 interacting protein X" "ALIX" "alix")) slime mold
 (define-protein "UP:Q8T9S7" ("ptenA")) 
 (define-protein "UP:Q8TA86" ("RP9")) 
 (define-protein "UP:Q8TA94" ("FLJ34797" "Q8TA94" "ZN563_HUMAN" "ZNF563" "zinc finger protein 563")) 
@@ -19055,7 +19030,8 @@
 (define-protein "UP:Q8WXG9" ("GPR98" "mass1" "VLGR1")) 
 (define-protein "UP:Q8WXH0" ("KIAA1011" "NUA" "Q8WXH0" "SYNE2" "SYNE2_HUMAN" "syne-2" "nesprin-2")) 
 (define-protein "UP:Q8WXH4" ("ASB11" "ASB11_HUMAN" "Ankyrin repeat and SOCS box protein 11" "asb11" "DKFZp779E2460" "Q8WXH4" "ankyrin repeat and SOCS box containing 11" "ankyrin repeat and SOCS box-containing 11")) 
-(define-protein "UP:Q8WXH5" nil) 
+(define-protein "UP:Q8WXH5" nil)
+
 (define-protein "UP:Q8WXI2" ("CNK2" "CNKR2_HUMAN" "CNKSR2" "Connector enhancer of kinase suppressor of Ras 2" "KIAA0902" "Q8WXI2" "connector enhancer of kinase suppressor of Ras 2")) 
 (define-protein "UP:Q8WXI3" ("ASB10" "ASB10_HUMAN" "Ankyrin repeat and SOCS box protein 10" "f (adult-onset)" "GLC1F" "Q8WXI3" "ankyrin repeat and SOCS box containing 10" "ankyrin repeat and SOCS box-containing 10" "glaucoma 1")) 
 (define-protein "UP:Q8WXI4" ("ACO11_HUMAN" "ACOT11" "BFIT" "KIAA0707" "Q8WXI4" "THEA")) 
@@ -19631,7 +19607,6 @@
 (define-protein "UP:Q96329" ("atg6")) 
 (define-protein "UP:Q96356" ("2-AP1")) 
 (define-protein "UP:Q96502" ("COL2")) 
-;(define-protein "UP:Q96518" ("q96518" "p16" "p16 protein")) mouse-ear cress
 (define-protein "UP:Q96528" ("catalase1")) 
 (define-protein "UP:Q966U0" ("ApnA")) 
 (define-protein "UP:Q967F4" ("hmr-1")) 

@@ -10,7 +10,7 @@
 
 (def-indiv-with-id rna "mtRNA" "NCIT:C25975" :name "mitochondrial RNA") 
 (def-indiv-with-id micro-rna "MiR29b" "NCIT:C105365" :name "microRNA 29b") 
-(def-indiv-with-id micro-rna "MiR124" "NCIT:C106407" :name "microRNA 124") 
+(def-indiv-with-id micro-rna "MiR124" "NCIT:C106407" :name "microRNA 124")
 (def-indiv-with-id rna "dsRNA" "NCIT:C95938" :name "double-stranded RNA") 
 (def-indiv-with-id rna "gRNA" "NCIT:C95952" :name "guide RNA") 
 (def-indiv-with-id rna "ncRNA" "NCIT:C26549" :name "functional RNA") 
@@ -26,3 +26,5 @@
 (def-indiv-with-id rna "snRNA" "NCIT:C815" :name "small nuclear RNA") 
 (def-indiv-with-id rna "PCA3" "NCIT:C92559" :name "prostate cancer antigen 3") 
 (def-indiv-with-id micro-rna "miRs181" "NCIT:C116021" :name "microRNA 181") 
+(def-indiv-with-id micro-rna "MIR155" "MIPF0000157" :name "microRNA 155" :synonyms ("MiR-155"))
+(def-indiv-with-id micro-rna "miR-7" "MI0000263" :name "microRNA 7" :synonyms ("MiR-7" "miR7"))

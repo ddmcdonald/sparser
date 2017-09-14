@@ -37,10 +37,11 @@
 ;; have to get the uniprot-names before you do any define-protein's
 (gload "bio;uniprot-names.lisp")
 ;(gload "bio;standardized-protein-defs")
-(gload "bio;standardized-protein-defs-no-fams")
+;(gload "bio;standardized-protein-defs-no-fams")
+(gload "bio;standardized-protein-defs-new")
 
 ;(gload "bio;non-upa-upm-proteins") all of these have been folded into real defs now
-(gload "bio;proteins-revised")
+(gload "bio;proteins-revised") 
 (gload "bio;fix-protein-defs")
 #|
 (gload "bio;uniprot-accession-id-mnemonic")
@@ -71,7 +72,7 @@
 (gload "bio;new-defs;new-post-trans-mod")
 (gload "bio;substances")
 (gload "bio;new-defs;new-substances")
-(gload "bio;new-defs;reach-additional-proteins")
+;(gload "bio;new-defs;reach-additional-proteins") folded into std prot
 
 (gload "bio;amino-acids")
 (gload "bio;terms-to-move")
@@ -89,6 +90,7 @@
 ;;(gload "bio;UCD-proteins")
 ;(gload "bio;protein-families")
 (gload "bio;protein-fam-no-id")
+(gload "bio;new-protein-fam-no-id") ; temporary, while fixing things
 (gload "bio;protein-fam-with-id")
 
 (gload "bio;new-defs;new-prot-fam")
