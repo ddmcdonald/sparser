@@ -49,6 +49,9 @@
 
     (knit-into-psg-tables cfr)
     (catalog/cfr cfr r-symbol)
+    #+ignore ;; tracking down redefinition of "being" from "beings"
+    (when (equal (pname (car rhs)) "being")
+      (lsp-break "redefining being"))
 
     cfr ))
 

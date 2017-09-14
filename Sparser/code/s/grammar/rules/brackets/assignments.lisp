@@ -184,6 +184,13 @@
 
 (defun setup-common-noun (word &optional comlex-clause ambiguous?)
   (declare (special *break-on-pattern-outside-coverage?*))
+  #+ignore ;; this is for finding out where redefinition occurs
+  (when (and (rule-set-for word)
+             (rs-single-term-rewrites (rule-set-for word)))
+    (lsp-break "*** avoiding redefinition of already known word ~s~%"
+          word)
+    (return-from setup-common-noun nil))
+      
   (let ((marked-plural
          (when comlex-clause (explicit-plurals comlex-clause)))
         (category-name (name-to-use-for-category word))
