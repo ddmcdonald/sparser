@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "harvard-terms"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: February 2017
+;;; version: September 2017
 
 ;; Isolating terms, etc. that are specific to handling the texts
 ;; from HMS.
@@ -14,29 +14,42 @@
 ;;; certainty -- target for generalizing
 ;;;--------------------------------------
 
-(define-category certainty
+(define-category certain
   :specializes bio-rhetorical
   ;; inherits 'statement' from bio-complement > bio-thancomp
   ;;  > bio-rhetorical. Should we restrict it
   :mixins (qualifiable) ;; "quite certain", "entirely certain"
-  :realization (:noun "certainty"
-                :adj "certain"))
+           ;;adj-complement)
+  :documentation "Using just the adjective reading goes with
+    the reading of the canonical category that it's an
+    attitude of the speaker."
+  :realization (:adj "certain"
+                :mumble ("certain" adj-comp :c statement)))
+
+(adj "confident" :super certain)
+(adj "sure" :super certain)
+(adj "uncertain" :super certain)
+;; Need a notion of polarity on 'certainty'.
+;; If it's via a mixin, we can have a method on "not" that
+;; flips the polarity (!!)
+
+#| Dropping "certainty" (noun) and "certainly" (adv) on the floor
+to not muddy NLG story on the adjective. ddm 9/12/17
+;; ... :noun "certainty"
+;; can't seem to get this to work -- DAVID??
+;; n.b. "certainly" is an adverb in modifiers - default superc
+;;(define-adverb "certainly" :super-category category::certainty) |#
 
 ;; --- fold in to test return value of comparatives
 ;; can't seem to get this to work -- DAVID??
 ;;(define-adverb "certainly" :super-category category::certainty)
 
-(adj "sure" :super certainty)
-(adj "uncertain" :super certainty)
-;; Need a notion of polarity on 'certainty'.
-;; If it's via a mixin, we can have a method on "not" that
-;; flips the polarity (!!)
 
-(adj "confident" :super certainty)
+#|
 (noun "chance" :super certainty)
 (noun "likelihood" :super certainty)
 (noun "probability" :super certainty)
-
+|#
 ;; modifiers -- likelihood adverbs (where "likely" was)
 ;; make sense here too. 
 
@@ -69,6 +82,8 @@
 
 ;; presently has to follow all the definitions
 (define-canonical-category 'certainty)
+
+
 
 
 ;;;---------------------
@@ -117,9 +132,22 @@
   :realization
     (:verb ("find" :past-tense "found")
      :etf (svo-passive)
-     :noun "finding" ;; to allow for "findings"
      :o object))
 
+(define-category finding
+  :specializes bio-process
+  :realization (:noun "finding")) ;; really for "findings"
+#| From show-sents
+(aspp2 62
+ "These findings established ASPP2 as a tumor suppressor and an activator
+ of p53 family.") 
+(dry-run 13 "These data support our in vitro findings that monoubiquitination
+increases the population of active, GTP–bound Ras through a defect in
+sensitivity to GAP–mediated regulation.") 
+(dec-test 19
+ "The mechanism we describe is another paradigm of RAF activation downstream 
+of RAS and based on our findings, we propose the following mechanism 
+by which this occurs.") |#
 
 
 (define-category bio-amount :specializes bio-scalar
@@ -142,6 +170,14 @@
 (def-synonym decrease (:verb ("taper off" :present-participle "tapering off"
                               :past-tense "taper off")
                        :etf (sv)))
+
+;; Potentially problematic since the plural will misparse
+;; "monoubiquitination decreases". Committing horrible hack
+;; of putting in a dummy plural to circumvent that.
+;; When we finally encounter are legitimate use of the
+;; plural noun form we'll have to reconsider all this.
+(def-synonym decrease (:noun ("decrease" :plural "ddddecrease")))
+
 
 (define-category increase
   :specializes positive-bio-control
@@ -203,13 +239,6 @@
          :for theme
          :in theme
          :to level))
-
-;; Potentially problematic since the plural will misparse
-;; "monoubiquitination decreases". Committing horrible hack
-;; of putting in a dummy plural to circumvent that.
-;; When we finally encounter are legitimate use of the
-;; plural noun form we'll have to reconsider all this.
-(def-synonym decrease (:noun ("decrease" :plural "ddddecrease")))
 
 
 

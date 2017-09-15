@@ -112,10 +112,11 @@
 ;; overnight
 (define-category assume :specializes bio-rhetorical
   :mixins (bio-thatcomp)
-  :realization
-  (:verb "assume" ;; keyword: ENDS-IN-ED 
-         :noun "assumption"
-         :etf (svo-passive)))
+  :realization (:verb "assume" :etf (svo-passive)))
+;;/// split to accommodate flaw in NLG sorting out POS
+(define-category assumption :specializes bio-rhetorical
+  :mixins (bio-thatcomp)
+  :realization (:noun "assumption"))
 
 
 ;; The category 'attribute' is in core/kinds/attribution.lisp.
