@@ -70,7 +70,9 @@ sp> (schema-mapping schema)
     (cons phrase decoded-pairs)))
 
 
-;;-- Processing explicit mumble fields
+;;;-----------------------------------
+;;; Processing explicit mumble fields
+;;;-----------------------------------
 
 #| (define-category build ...
      :realization (:verb ("build" :past-tense "built")
@@ -81,10 +83,15 @@ sp> (schema-mapping schema)
 
 Setup-rdata processess the :realization field.
 If there is an etf in it (marking it as a 'shortcut' style of
- realization), then the field is read by decode-shortcut-rdata 
- which passes along the :mumble field as one of its return arguments.
+  realization), then the field is read by decode-shortcut-rdata 
+  which passes along the :mumble field as one of its return arguments.
 The next call is to make-realization-data and the mumble field
- where the initialize method calls setup-mumble-data
+ where the initialize method calls setup-mumble-data.
+
+N.b. In the case of phosphorylate, whose variables are spread out
+all over, the mapping derived from the ETF interfered with the
+explicit mapping in the mumble field.
+
 |#
 (defun setup-mumble-data (raw-data category rdata)
   "Called from the initialize-instance method of realization-data.
@@ -209,6 +216,76 @@ and/or by which subcategorized arguments the individual binds.
                     (setq mumble-rdata (car mumble-rdata))
                     (error "Ill-formed rdata for mumble: ~a" mumble-rdata))))
               mumble-rdata )))))))
+
+#+:mumble
+(defgeneric applicable-resources (i)
+  (:documentation "Lookup and return all the realization options on
+   the individual without regard to what part of speech they apply to.
+   Get both mrd and lp options (/// lp is impoverished today).")
+  ;; could be the feeder to has-mumble-rdata -- separate options
+  ;; from selection.
+  (:method ((i individual))
+    (applicable-resources (itype-of i)))
+  (:method ((name symbol))
+    (applicable-resources (category-named name :error-if-nil)))
+  (:method ((c category))
+    (let ((rdata-field (rdata c))
+          resources )
+      #| e.g. (#<realization for decrease: "decrease" verb>
+               #<realization for decrease: "drop" verb>
+               #<realization for decrease: "taper off" verb>
+               #<realization for decrease: "decrease" common-noun>) |#
+      (loop for rdata in rdata-field
+         do (let ((head-field (rdata-head-words rdata))
+                  (mdata-field (mumble-rdata rdata)))
+              (when head-field
+                (loop for (pos word) on head-field by #'cddr
+                   as m-pos = (mumble-pos pos)
+                   as m-word = (get-mumble-word-for-sparser-word word m-pos)
+                   as lp = (when m-word
+                             (m::get-lexicalized-phrase m-word m-pos))
+                   when lp do (pushnew lp resources)))
+              (when mdata-field
+                (loop for mdata in mdata-field do
+                     (etypecase mdata
+                       (m::mumble-rdata (push mdata resources))
+                       (m::multi-subcat-mdata
+                        (loop for md in (m::mdata-pairs mdata)
+                           do (push md resources))))))))
+      resources)))
+
+(defgeneric incluldes-suggestive-variables (i pos)
+  (:documentation "Does this individual bind particular variables that
+    a frequently present when an interpretation is for a particular
+    part of speech. Noun vs. verb is pretty clear, others less so.
+    Only part of the decision that m::determine-pos has to make.")
+  (:method ((i individual) (pos (eql :noun)))
+    (or (value-of 'has-determiner i)
+        (value-of 'name i)))
+  (:method ((i individual) (pos (eql :verb)))
+    (or (indicates-tense? i)))
+  (:method ((i individual) (pos (eql :adjective)))
+    nil)
+  (:method ((i individual) (pos T))
+    (error "Unexpected part of speech: ~a" pos)))
+ 
+
+      
+;;--- data collection     
+
+(defun collect-cases-of-multiple-rdata-heads () ;; 355 in bio
+  (remove nil
+          (loop for c in (append *mixin-categories* ;; 47
+                                *referential-categories*) ;; 2,420 in bio
+            collect (loop for rdata in (rdata c)
+                       as heads = (rdata-head-words rdata)
+                       when (> (length heads) 2)
+                       return c))))
+(defun number-of-cases-without-realizations () ;; 308
+  (let ((count 0))
+    (loop for c in (append *mixin-categories* *referential-categories*)
+       unless (rdata c) do (incf count))
+    count))
 
 
 ;;--- expedited access (and see mdata in abbreviations)
@@ -487,6 +564,7 @@ have been filled in if the rdata includes an etf and a word.
                      (ecase pos
                        (:verb (m::verb m-word phrase))
                        (:common-noun (m::noun m-word phrase))
+                       (:adjective (m::adjective m-word))
                        (:preposition (m::prep m-word))))
 
                    ;;////////////////////////////////// will already be excised?

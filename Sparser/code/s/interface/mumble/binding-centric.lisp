@@ -106,15 +106,16 @@
 
 (defun new-style-realize-via-bindings (i)
   (declare (optimize debug))
-  (let ((lp (find-lexicalized-phrase i)))
-    (assert lp (i) "Couldn't get lexicalized phrase for ~a" i)
-    (let* ((pos (lookup-pos lp))
-           (rdata (sp::has-mumble-rdata i :pos pos)))       
-      (when rdata ;; its lp can be more specific (e.g. "want")
-        (setq lp (linked-phrase rdata)))
-      (tr "Realize-via-bindings for ~a  lp = ~a~
-         ~%       rdata = ~a" i lp rdata)
-      (realize-via-bindings-common-path i pos lp rdata))))
+  (let* ((pos (determine-pos i))
+         (lp (find-lexicalized-phrase i))
+         (rdata (sp::has-mumble-rdata i :pos pos)))
+    (assert (or lp rdata) (i) "Couldn't get lexicalized phrase for ~a" i)
+    (when rdata ;; its lp can be more specific (e.g. "want")
+      (setq lp (linked-phrase rdata)))
+    (tr "Realize-via-bindings for ~a~
+       ~%  lp = ~a~
+       ~%       rdata = ~a" i lp rdata)
+    (realize-via-bindings-common-path i pos lp rdata)))
 
 (defun realize-via-bindings-common-path (i pos resource &optional rdata)
   (declare (optimize debug))

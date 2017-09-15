@@ -33,6 +33,10 @@
                                           (lemma c pos)
                                           (string-downcase (pname c)))
                                       pos))
+  (:method ((v lambda-variable) (pos T))
+    "This will happen if we're walking over an rdata head word 
+     field and it has an option for a variable to use with individuals"
+    nil)
   (:method ((s-word word) pos)
     (get-mumble-word-for-sparser-word (pname s-word) pos))
   (:method ((s-word polyword) pos)

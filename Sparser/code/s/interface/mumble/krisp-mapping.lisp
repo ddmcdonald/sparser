@@ -102,12 +102,18 @@
     for this particular individual.")
 
   (:method ((rdata cons) i pos)
-    "First filter by pos if necessary. Pass the result to
-     the other methods"
-    (select-realization (if (null (cdr rdata))
-                          (car rdata)
-                          (filter-rdata-by-pos rdata pos))
-                        i pos))
+    "We have a list of possible realization data. See if we knock any
+     out as inconsistent with the specified part-of-speech. 
+     If we can't then we probably have a set of synonyms
+     (/// which we should mark as such) and we'll arbitrarily
+     take the first one"
+    (let ((consistent-rdata (filter-rdata-by-pos rdata pos)))
+      (cond
+        ((null (cdr consistent-rdata))
+         (select-realization (car consistent-rdata) i pos))
+        ((equal consistent-rdata rdata) ;; nothing filtered out
+         (select-realization (car consistent-rdata) i pos))
+        (t (error "New case after pos filter on ~a" i)))))
                         
   (:method ((rdata mumble-rdata) i pos) rdata)
   (:method ((pair variable-mdata-pair) i pos) (mpair-mdata pair))
@@ -143,6 +149,36 @@
             ~a~%~a" (type-of fall-through) fall-through)))
 
 
+
+;;;--------------------------
+;;; part-of-speech functions
+;;;--------------------------
+
+(defgeneric determine-pos (individual)
+  (:documentation "Consult the properties of the individual 
+   as well as the set of realization resources associated with it
+   to determine what is the appropriate part of speech to use.
+   (For individuals embedded in the phrase we also look at constraints
+   on its slot. For individuals at top-level all options are
+   possible so linguistic context provides no constraints.")
+  (:method ((i sp::individual))
+    "First determine our options by looking at the range of options
+     provided by the resources. Then look for bound variables that are
+     suggestive of noun vs. verb reading for this particular individual"
+    (let* ((resources (sp::applicable-resources i))
+           (possible-pos
+            (remove-duplicates (loop for r in resources
+                                  collect (lookup-pos r)))))
+      (loop for m-pos in possible-pos
+         as key-pos = (intern (symbol-name m-pos) (find-package :keyword))
+         when (sp::incluldes-suggestive-variables i key-pos)
+         do (return-from determine-pos m-pos))
+      ;; If that wasn't enough, what next?
+      (lsp-break "Need more heuristics to break tie for ~a among ~a"
+                 i possible-pos))))
+
+
+
 (defgeneric filter-rdata-by-pos (rdata-choices pos)
   (:documentation  "Which of the alternatives is consistent
      with this part of speech")
@@ -154,19 +190,9 @@
          when (eq mpos (lookup-pos mrd))
          collect mrd))))
 
-
-;;;--------------------------
-;;; part-of-speech functions
-;;;--------------------------
-
-(defparameter *check-lp-coverage* nil
-  "Guards breaks used when testing whether the coverage of lexicalized
-   phrases provided by the rdata on categories and individuals is thorough")
-
-
 (defgeneric lookup-pos (resource)
   (:documentation "Return the mumble word-level part-of-speech
-   of the resource. Interpolate phrase levels to their implicit heads")
+   of the resource. Interpolate phrase node levels to their implicit heads")
   (:method ((w word))
     (name (car (word-labels w))))
   (:method ((lp lexicalized-phrase))
@@ -192,7 +218,13 @@
         (np 'noun)
         (otherwise
          ;;(warn "No pos option for ~a" n)
-         'noun)))))
+         'noun))))
+  (:method ((items cons))
+    "For some reason (///) probably going all the way back to has-mumble-rdata
+     or even earlier. We are getting lists around singleton rdata"
+    (if (null (cdr items))
+      (lookup-pos (car items))
+      (error "Non-singleton list passed in:~%~a" items))))
 
 (defgeneric realizing-label (resource)
   (:documentation "Return the label of the resource,
@@ -241,7 +273,6 @@ m> (all-phrase-labels)
            interjection
            number))
 
-
 (defun sparser-pos (pos)
   "Translate a Mumble part-of-speech tag to the equivalent Sparser tag.
    The other direction is mumble-pos "
@@ -256,7 +287,12 @@ m> (all-phrase-labels)
     (interjection :interjection)))
 
 
+
 ;;---- formerly in binding-centric.lisp. May be OBE
+
+(defparameter *check-lp-coverage* nil
+  "Guards breaks used when testing whether the coverage of lexicalized
+   phrases provided by the rdata on categories and individuals is thorough")
 
 (defgeneric guess-pos (i)
   (:documentation "Guess the part of speech to be used for an individual.")
