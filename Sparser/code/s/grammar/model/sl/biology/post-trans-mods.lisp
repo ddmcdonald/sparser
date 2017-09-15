@@ -44,7 +44,7 @@
          :in substrate
          :on substrate ;; the tyrosine residues hyperphosphorylated on p130 CAS
 	 :m site
-	 :on site))			    
+	 :on site))	    
 
 #+ignore ;; not sure if this is a post-translational process or a cellular-process
 (define-category transformation
@@ -427,9 +427,11 @@
   :specializes phosphorylation-modification
   :instantiates self
   :realization
-  (:verb ("phosphorylate" :past-participle ("p" "p-" "phosphorylated"))
-                          :noun "phosphorylation" :adj "phospho"
-         :etf (svo-passive)))
+     (:verb ("phosphorylate" :past-participle ("p" "p-" "phosphorylated"))
+      :noun "phosphorylation"
+      :adj "phospho"
+      ;; :etf (svo-passive) <-- messed up the mapping
+      :mumble ("phosphorylate" svo :s agent :o substrate)))
 
 
 (define-category auto-phosphorylate
