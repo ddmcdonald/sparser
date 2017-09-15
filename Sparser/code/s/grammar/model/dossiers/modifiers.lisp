@@ -749,7 +749,7 @@
 (define-adjective "causal")
 (define-adjective "cellular") ;cell
 (define-adjective "central" :form 'spatial-adjective)
-(define-adjective "certain") ;interesting
+;;(define-adjective "certain") ; stronger def in harvard-terms
 (define-adjective "chimeric")
 
 (define-adjective "chronic")
