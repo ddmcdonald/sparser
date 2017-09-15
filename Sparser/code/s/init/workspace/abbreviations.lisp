@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "init;workspace:"
-;;;  version:  June 2017
+;;;  version:  September 2017
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -171,13 +171,29 @@
   (display-subcategorization category-name)
   (category-named category-name))
 
+(defgeneric loc (item)
+  (:documentation "Where was this in the file system when it was 
+     catalogued. (The same name can be introduced several times")
+  (:method ((pname string))
+    (loc (resolve pname)))
+  (:method ((name symbol))
+    (let ((c (category-named name)))
+      (if c (loc c)
+          (format nil "The symbol ~a does not name a category" name))))
+  (:method ((w word))
+    (file-location w))
+  (:method ((c category))
+    (file-location c)))
+
 #+:mumble
 (defgeneric realize (individual)
   (:documentation "Packages frequent idiom when working with Mumble tests")
   (:method ((n number))
     (realize (individual-object# n)))
   (:method ((i individual))
-    (m::pp-dtn (m::realize i))))
+    (let ((m::*trace-archie* t))
+      (declare (special m::*trace-archie*))
+      (m::pp-dtn (m::realize i)))))
 #+:mumble
 (defgeneric say (item)
   (:documentation "Another standard idiom for Mumble test")
