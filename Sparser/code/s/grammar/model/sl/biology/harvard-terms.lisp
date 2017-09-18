@@ -14,6 +14,8 @@
 ;;; certainty -- target for generalizing
 ;;;--------------------------------------
 
+;;--- adjective perspective
+
 (define-category certain
   :specializes bio-rhetorical
   ;; inherits 'statement' from bio-complement > bio-thancomp
@@ -25,33 +27,44 @@
     attitude of the speaker."
   :realization (:adj "certain"
                 :mumble ("certain" adj-comp :c statement)))
+#| Dropping "certainty" (noun) and "certainly" (adv) on the floor
+to not muddy NLG story on the adjective. ddm 9/12/17
+;; ... :noun "certainty" |#
 
 (adj "confident" :super certain)
 (adj "sure" :super certain)
 (adj "uncertain" :super certain)
-;; Need a notion of polarity on 'certainty'.
+
+;; Need a notion of polarity on certainty.
 ;; If it's via a mixin, we can have a method on "not" that
 ;; flips the polarity (!!)
 
-#| Dropping "certainty" (noun) and "certainly" (adv) on the floor
-to not muddy NLG story on the adjective. ddm 9/12/17
-;; ... :noun "certainty"
+;;(define-adverb "certainly" :super-category category::certainty) 
 ;; can't seem to get this to work -- DAVID??
-;; n.b. "certainly" is an adverb in modifiers - default superc
-;;(define-adverb "certainly" :super-category category::certainty) |#
-
-;; --- fold in to test return value of comparatives
-;; can't seem to get this to work -- DAVID??
-;;(define-adverb "certainly" :super-category category::certainty)
+;; n.b. "certainly" is an adverb in modifiers - default superc  
 
 
-#|
+;;--- nominal perspective
+#| Wasn't a good way to determine desired POS if we included
+noun or adverb reading on certain, as before. But there's the
+other framing that's based on nouns. Hacking up an equivalent 
+of 'certain'. Not particularly thought through |#
+;; copies original except for nlg
+(define-category certainty
+  :specializes bio-rhetorical
+  :realization (:noun "certainty")
+  :documentation "The word 'certainty' doesn't pattern like
+     'likelyhood' or 'probability' but this probably does
+     no substantial harm")
+
 (noun "chance" :super certainty)
 (noun "likelihood" :super certainty)
 (noun "probability" :super certainty)
-|#
+
 ;; modifiers -- likelihood adverbs (where "likely" was)
 ;; make sense here too. 
+
+
 
 ;; is likely to be mediated by
 ;; is likely that this possible feedback
@@ -136,6 +149,7 @@ to not muddy NLG story on the adjective. ddm 9/12/17
 
 (define-category finding
   :specializes bio-process
+  :mixins (bio-rhetorical)
   :realization (:noun "finding")) ;; really for "findings"
 #| From show-sents
 (aspp2 62
