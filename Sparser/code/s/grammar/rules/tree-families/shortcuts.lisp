@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "shortcuts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  August 2017
+;;;  version:  September 2017
 
 
 ;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
@@ -80,10 +80,12 @@ broadly speaking doing for you all the things you might do by hand.
     ;; for organizing the information.
     i))
 
+
 (defparameter *uid-to-individual* (make-hash-table :size 10000 :test #'equal))
 (defparameter *id-mult-defs* nil) ;; to aid in definition consolidation later
 
-(defmacro def-indiv-with-id (category-name word id &key name members adj synonyms plural no-plural maintain-case)
+(defmacro def-indiv-with-id (category-name word id &key name members adj synonyms plural
+                                                        no-plural maintain-case)
   `(define-individual-with-id ',category-name ,word ,id ,.(when name `(:name ,name))
                               ,.(when members `(:members ',members))
                               ,.(when adj `(:adj ',adj))
@@ -92,14 +94,14 @@ broadly speaking doing for you all the things you might do by hand.
                               ,.(when no-plural `(:no-plural ',no-plural))
                               ,.(when maintain-case `(:maintain-case ',maintain-case))))
 
-(defun define-individual-with-id (category-name word id &key name members adj synonyms plural no-plural 
-                                  maintain-case pos)
+(defun define-individual-with-id (category-name word id &key name members adj synonyms plural
+                                                             no-plural  maintain-case pos)
   "This creates individuals with UIDs, given a category, a word, and
-an ID. There are also keyword options for including a name, members,
-an adjectival form, synonyms, unusual plurals (e.g. rhinoviridae for
-rhinovirus), specifying that this should not create plurals, whether
-to maintain case for the word, and what part of speech this should
-be (defaults to common noun)"
+ an ID. There are also keyword options for including a name, members,
+ an adjectival form, synonyms, unusual plurals (e.g. rhinoviridae for
+ rhinovirus), specifying that this should not create plurals, whether
+ to maintain case for the word, and what part of speech this should
+ be (defaults to common noun)"
   (assert (and category-name word id))
   (when (gethash id *uid-to-individual*)
     (push `(,id ,category-name ,word ,.(when name `(:name ,name))) *id-mult-defs*))
@@ -113,6 +115,7 @@ be (defaults to common noun)"
                         (if name
                             (bind-dli-variable :name name ind)
                             ind))))))
+    ;;(when (equal (pname base-word) "MEK") (lsp-break "MEK before"))
     (add-rules-cond-plural base-word category i :plural plural :no-plural no-plural)
     (when (and name 
                (not (equal name base-word))) ;; if the name is the same as the base-word, there's nothing to do
@@ -121,16 +124,30 @@ be (defaults to common noun)"
                                               category i) i))
     (when synonyms (loop for s in synonyms
                          do (add-rules-cond-plural s category i :no-plural no-plural)))
+    (stipulate-simple-mumble-resource i base-word :common-noun)
+    ;; putting it before we add the familiy members has a chance of matching
+    ;; what's on the rules. This members statement should be much earlier
+    ;; to i for the rules has it. 
     (when (consp members) (setq i (set-family-members i members)))
     i))
 
-(defparameter *inhibited-plurals* nil) 
+(defun stipulate-simple-mumble-resource (i s-word s-pos)
+  (let* ((m-word (get-mumble-word-for-sparser-word s-word s-pos))
+         (m-pos (mumble-pos s-pos))
+         (lp (m::get-lexicalized-phrase m-word m-pos)))
+    (assert lp (i s-word) "No lexicalized phrase was defined for ~s on ~a"
+            (pname s-word) i)
+    ;;(when (equal (pname s-word) "MEK") (lsp-break "MEK after"))
+    (m::record-lexicalized-phrase i lp m-pos)
+    lp))
 
 (defun get-head-ref-from-rule (s-t-r-rule)
   (let ((ref (cfr-referent s-t-r-rule)))
     (if (consp ref) ;; happens when the ref word is a collection (e.g. "RNAs") and maybe other cases?
         (second (assoc :head ref))
         ref)))
+
+(defparameter *inhibited-plurals* nil "Collects these for later review")
 
 (defun add-rules-cond-plural (word category ind &key plural no-plural (pos :common-noun))
   "Given a word, category, and individual, add-rules to the individual
@@ -155,8 +172,9 @@ see if there are issues"
         (add-rules (make-rules-for-head pos (resolve/make word) category ind :plural plural) ind)
         (add-rules (make-rules-for-head pos (resolve/make word) category ind) ind))))
 
+    
 
-;; old NP patterns for MUMBLE use
+;; early version of 'noun'
 (defmacro common-noun (name
                 &key noun 
                      super specializes index
