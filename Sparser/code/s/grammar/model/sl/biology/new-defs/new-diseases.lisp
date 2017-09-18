@@ -126,3 +126,6 @@
 (def-indiv-with-id virus "lentivirus" "NCIT:C14290" :name "lentivirus") 
 (def-indiv-with-id virus "parapoxvirus" "NCIT:C112367" :name "parapoxvirus") 
 (def-indiv-with-id virus "retrovirus" "NCIT:C14268" :name "retrovirus" :plural ("retroviruses" "retroviridae"))
+(def-indiv-with-id disease "fatal familial insomnia" "NCIT:C84711" :name "fatal familial insomnia") 
+(def-indiv-with-id disease "CJD" "NCIT:C26802" :name "Creutzfeldt-Jakob disease")
+(def-indiv-with-id disease "Gerstmann-Strausler-Scheinker syndrome" "NCIT:C84727" :name "Gerstmann-Straussler-Scheinker disease") 

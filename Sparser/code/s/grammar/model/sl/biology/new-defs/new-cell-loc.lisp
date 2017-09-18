@@ -154,3 +154,4 @@
 (def-indiv-with-id cellular-location "tectum" "GO:0043676" :name "tectum") 
 (def-indiv-with-id cellular-location "soma" "GO:0044297" :name "cell body") 
 (def-indiv-with-id cellular-location "Perikaryon" "UP:SL-0197" :name "Perikaryon" :plural ("perikaryons" "perikarya"))
+(def-indiv-with-id cellular-location "nucleosome" "GO:0000786" :name "nucleosome") 

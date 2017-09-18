@@ -3,7 +3,8 @@
 (defparameter *sp-undefined-hms-grounded-words*
 '((("YBX protein family" ("BE:YBX")) ("Y-box-binding protein" ("BE:YBX"))
    ("Y box binding protein" ("BE:YBX")) ("Wnt5a" ("UP:P41221"))
-   ("WNT" ("BE:Wnt")) ("wild type c-Cbl" ("UP:P22681")) ("Vpu" ("UP:P05919"))
+   ("wild type c-Cbl" ("UP:P22681")) ("WA" ("PCID:265237" "CHEBI:69120"))
+   ("Vpu" ("UP:P05919")) ("VPA" ("PCID:3121" "CHEBI:39867"))
    ("VLDL" ("CHEBI:39027")) ("Vemurafenib" ("PCID:42611257" "CHEBI:63637"))
    ("VEGF receptors" ("BE:VEGFR")) ("VEGF receptor" ("BE:VEGFR"))
    ("Vav" ("BE:VAV")) ("ubiquitin-conjugating enzymes" ("BE:UBE2"))
@@ -49,9 +50,8 @@
    ("Tcf" ("BE:TCF_LEF")) ("Tax" ("UP:P03409")) ("TAP transporter" ("BE:TAP"))
    ("TAK165" ("PCID:6444692"))
    ("T-cell factor (TCF)/lymphoid enhancer factor" ("BE:TCF_LEF"))
-   ("Syk" ("UP:P43405")) ("SWI/SNF complex" ("BE:SWI_SNF"))
-   ("SWI and SNF complex" ("BE:SWI_SNF")) ("Survivin" ("UP:O15392"))
-   ("SUR" ("BE:Sulfonylurea_receptor"))
+   ("SWI/SNF complex" ("BE:SWI_SNF")) ("SWI and SNF complex" ("BE:SWI_SNF"))
+   ("Survivin" ("UP:O15392")) ("SUR" ("BE:Sulfonylurea_receptor"))
    ("sulfonylurea receptors" ("BE:Sulfonylurea_receptor"))
    ("sulfonylurea receptor" ("BE:Sulfonylurea_receptor"))
    ("Sulfonylurea Receptor" ("BE:Sulfonylurea_receptor"))
@@ -67,7 +67,7 @@
    ("Snail" ("UP:O95863")) ("SNAI family" ("BE:SNAI")) ("Smc1" ("BE:SMC1"))
    ("small HSPs" ("BE:HSPB")) ("Smad4" ("UP:Q13485"))
    ("Smad2/3-T220/T179" ("BE:SMAD2_3")) ("Smad2/3" ("BE:SMAD2_3"))
-   ("Smad2" ("UP:Q15796")) ("Smad" ("BE:SMAD")) ("SMAD 2/3" ("BE:SMAD2_3"))
+   ("Smad" ("BE:SMAD")) ("SMAD 2/3" ("BE:SMAD2_3"))
    ("slow myosin" ("BE:MYL_slow")) ("SLC2" ("BE:SLC2A")) ("Skp2" ("UP:Q13309"))
    ("Shp2" ("UP:Q06124")) ("Shc" ("BE:SHC")) ("SERCAs" ("BE:SERCA"))
    ("SB203580" ("PCID:176155" "CHEBI:90705"))
@@ -79,10 +79,8 @@
    ("RhoGDIs" ("BE:RhoGDI")) ("rhoGDI" ("BE:RhoGDI")) ("RHOGDI" ("BE:RhoGDI"))
    ("RHO" ("BE:RHO")) ("Rheb" ("UP:Q15382")) ("RFX proteins" ("BE:RFX"))
    ("RFX family" ("BE:RFX")) ("retinoid X receptors" ("BE:RXR"))
-   ("retinoic acid receptors" ("BE:RAR"))
-   ("Resveratrol" ("PCID:445154" "CHEBI:27881"))
-   ("replication protein A" ("BE:RPA")) ("Replication protein A" ("BE:RPA"))
-   ("replication factor C" ("BE:RFC")) ("RelA" ("UP:Q04206"))
+   ("retinoic acid receptors" ("BE:RAR")) ("replication protein A" ("BE:RPA"))
+   ("Replication protein A" ("BE:RPA")) ("replication factor C" ("BE:RFC"))
    ("regulatory subunit of calcineurin" ("BE:PPP3R"))
    ("regulatory myosin light chain" ("BE:MYL_regulatory"))
    ("regulatory family X" ("BE:RFX"))
@@ -90,7 +88,7 @@
    ("regulatory A subunit of PP2A" ("BE:PPP2R_A"))
    ("receptor tyrosine kinase-like orphan receptors" ("BE:ROR"))
    ("receptor tyrosine kinase-like orphan receptor" ("BE:ROR"))
-   ("Rb" ("UP:P06400")) ("RASSF family" ("BE:RASSF")) ("RAS-GTP" ("BE:RAS"))
+   ("RasV12" ("BE:RAS")) ("RASSF family" ("BE:RASSF")) ("RAS-GTP" ("BE:RAS"))
    ("Ras-association domain family" ("BE:RASSF"))
    ("RAS-association domain family" ("BE:RASSF")) ("RAS-AKT" ("BE:AKT"))
    ("Ras association domain family" ("BE:RASSF"))
@@ -112,8 +110,8 @@
    ("Pyruvate dehydrogenase kinase" ("BE:PDK")) ("Pyk2" ("UP:Q14289"))
    ("pTyr176-AKT" ("BE:AKT")) ("PTX" ("BE:Pertussis_toxin"))
    ("pTpYERK" ("BE:ERK")) ("PTEN-Ser380/Thr382/Thr383" ("UP:P60484"))
-   ("Pten" ("UP:P60484")) ("Ptc" ("UP:P18502"))
-   ("protein kinase G" ("BE:PRKG")) ("protein kinase C" ("BE:PKC"))
+   ("Pten" ("UP:P60484")) ("protein kinase G" ("BE:PRKG"))
+   ("protein kinase C" ("BE:PKC"))
    ("protein kinase A regulatory subunits" ("BE:PRKAR"))
    ("Protein kinase A regulatory subunits" ("BE:PRKAR"))
    ("Protein kinase A regulatory subunit" ("BE:PRKAR"))
@@ -126,8 +124,8 @@
    ("Propionyl-CoA carboxylase" ("BE:Propionyl_CoA_carboxylase"))
    ("Proliferation" ("GO:0008283")) ("Profilins" ("BE:PFN"))
    ("Profilin" ("BE:PFN")) ("PRKAG" ("BE:AMPK_gamma"))
-   ("PRKAB" ("BE:AMPK_beta")) ("PPP1C" ("BE:PPP1C"))
-   ("PP2B catalytic subunit" ("BE:PPP3C"))
+   ("PRKAB" ("BE:AMPK_beta")) ("pRb" ("UP:P06400")) ("pRB" ("UP:P06400"))
+   ("PPP1C" ("BE:PPP1C")) ("PP2B catalytic subunit" ("BE:PPP3C"))
    ("PP2A regulatory subunit B" ("BE:PPP2R_B"))
    ("PP2A regulatory subunit A" ("BE:PPP2R_A"))
    ("PP2A catalytic C subunit" ("BE:PPP2C")) ("PP2 phosphatases" ("BE:PPP2"))
@@ -184,23 +182,22 @@
    ("PDGFRbetabeta" ("BE:PDGFR_BB")) ("PDGFRalphabeta" ("BE:PDGFR_AB"))
    ("PDGFRalphaalpha" ("BE:PDGFR_AA")) ("PDGFR-betabeta" ("BE:PDGFR_BB"))
    ("PDGFR-BB" ("BE:PDGFR_BB")) ("PDGFR-alphabeta" ("BE:PDGFR_AB"))
-   ("PDGFR-alphaalpha" ("BE:PDGFR_AA")) ("PDGFAB" ("BE:PDGF_AB"))
-   ("PDGF-dd" ("BE:PDGF_DD")) ("PDGF-DD" ("BE:PDGF_DD"))
-   ("PDGF-cc" ("BE:PDGF_CC")) ("PDGF-CC" ("BE:PDGF_CC"))
-   ("PDGF-bb" ("BE:PDGF_BB")) ("PDGF-ab" ("BE:PDGF_AB"))
-   ("PDGF-aa" ("BE:PDGF_AA")) ("PDGF DD" ("BE:PDGF_DD"))
-   ("PDGF CC" ("BE:PDGF_CC")) ("PDE4 isoforms" ("BE:PDE4"))
-   ("PDE 2" ("HGNC:PDE2A")) ("PD98509" ("CHEBI:79091")) ("PD" ("MESH:D010300"))
-   ("Pca" ("MESH:D011471")) ("PBXs" ("BE:PBX")) ("pbx" ("BE:PBX"))
-   ("Patched" ("BE:Patched")) ("PATCHED" ("BE:Patched"))
-   ("Parvins" ("BE:PARV")) ("Parvin" ("BE:PARV")) ("Parp" ("UP:P09874"))
-   ("PARP genes" ("BE:PARP")) ("Pak2" ("UP:Q13177")) ("Pak" ("BE:PAK"))
-   ("p70S6 kinase" ("UP:P23443")) ("p70 S6 kinase" ("BE:P70S6K"))
-   ("p53S15" ("UP:P04637")) ("p53/p63/p73 family" ("BE:p53_family"))
-   ("P53" ("UP:P04637")) ("p53 Family" ("BE:p53_family"))
-   ("P53 family" ("BE:p53_family")) ("p40 phox" ("UP:Q15080"))
-   ("p38MAPK" ("BE:p38")) ("p38-MAPK" ("BE:p38")) ("P38 MAPK" ("BE:p38"))
-   ("P2Y receptor" ("BE:P2RY")) ("P2X" ("BE:P2RX"))
+   ("PDGFR-alphaalpha" ("BE:PDGFR_AA")) ("PDGF-dd" ("BE:PDGF_DD"))
+   ("PDGF-DD" ("BE:PDGF_DD")) ("PDGF-cc" ("BE:PDGF_CC"))
+   ("PDGF-CC" ("BE:PDGF_CC")) ("PDGF-bb" ("BE:PDGF_BB"))
+   ("PDGF-ab" ("BE:PDGF_AB")) ("PDGF-aa" ("BE:PDGF_AA"))
+   ("PDGF DD" ("BE:PDGF_DD")) ("PDGF CC" ("BE:PDGF_CC"))
+   ("PDE4 isoforms" ("BE:PDE4")) ("PDE 2" ("HGNC:PDE2A"))
+   ("PD98509" ("CHEBI:79091")) ("PD" ("MESH:D010300")) ("Pca" ("MESH:D011471"))
+   ("PBXs" ("BE:PBX")) ("pbx" ("BE:PBX")) ("Patched" ("BE:Patched"))
+   ("PATCHED" ("BE:Patched")) ("Parvins" ("BE:PARV")) ("Parvin" ("BE:PARV"))
+   ("Parp" ("UP:P09874")) ("PARP genes" ("BE:PARP")) ("Pak2" ("UP:Q13177"))
+   ("Pak" ("BE:PAK")) ("p70S6 kinase" ("UP:P23443"))
+   ("p70 S6 kinase" ("BE:P70S6K")) ("p53S15" ("UP:P04637"))
+   ("p53/p63/p73 family" ("BE:p53_family")) ("P53" ("UP:P04637"))
+   ("p53 Family" ("BE:p53_family")) ("P53 family" ("BE:p53_family"))
+   ("p40 phox" ("UP:Q15080")) ("p38MAPK" ("BE:p38")) ("p38-MAPK" ("BE:p38"))
+   ("P38 MAPK" ("BE:p38")) ("P2Y receptor" ("BE:P2RY")) ("P2X" ("BE:P2RX"))
    ("P2X receptors" ("BE:P2RX")) ("P2X receptor" ("BE:P2RX"))
    ("P2X purinoreceptors" ("BE:P2RX")) ("P2X purinoreceptor" ("BE:P2RX"))
    ("p22 phox" ("UP:P13498")) ("p21 WAF1" ("UP:P38936"))
@@ -225,9 +222,8 @@
    ("nicotinic acetylcholine receptor" ("BE:CHRN"))
    ("nicotine class acetylcholine receptors" ("BE:CHRN"))
    ("NFkappaBp65" ("HGNC:RELA")) ("NFkappaB p50" ("HGNC:NFKB1"))
-   ("NFkappaB complexes" ("BE:NFkappaB")) ("NF-kappaBs" ("BE:NFkappaB"))
-   ("NF-kappaBp65" ("HGNC:RELA")) ("NF-kappaBp50" ("HGNC:NFKB1"))
-   ("NF-kappabeta" ("BE:NFkappaB")) ("NF-kappaB TFs" ("BE:NFkappaB"))
+   ("NFkappaB complexes" ("BE:NFkappaB")) ("NF-kappaBp65" ("HGNC:RELA"))
+   ("NF-kappaBp50" ("HGNC:NFKB1")) ("NF-kappaB TFs" ("BE:NFkappaB"))
    ("NF-kappaB subunits" ("BE:NFkappaB")) ("NF-kappaB p50" ("HGNC:NFKB1"))
    ("NF-kappaB genes" ("BE:NFkappaB")) ("NF-kappaB factors" ("BE:NFkappaB"))
    ("NF-kappaB Factors" ("BE:NFkappaB")) ("NF-kappaB dimers" ("BE:NFkappaB"))
@@ -260,6 +256,7 @@
    ("Myc" ("UP:P01106")) ("mutp53" ("UP:P04637")) ("Mu-A" ("PCID:375150"))
    ("mTOR inhibitors" ("CHEBI:68481")) ("mTOR inhibitor" ("CHEBI:68481"))
    ("MST2" ("UP:Q13188")) ("Miz1" ("UP:Q13105"))
+   ("miR-7" ("MIRBASE" "MI0000263" "HGNC:MIR7-1"))
    ("miR-21" ("MIRBASE" "MI0000077" "HGNC:MIR21"))
    ("miR-155" ("MIRBASE" "MI0000681" "HGNC:MIR155"))
    ("miR-145" ("MIRBASE" "MI0000461" "HGNC:MIR145"))
@@ -305,13 +302,12 @@
    ("HRASV12" ("UP:P01112")) ("homeodomain iroquois proteins" ("BE:IRX"))
    ("histone-3" ("BE:Histone_H3")) ("Histone" ("BE:Histone"))
    ("histone H3" ("BE:Histone_H3")) ("histone H2A" ("BE:Histone_H2A"))
-   ("Histone H2A" ("BE:Histone_H2A")) ("histone deacetylases" ("BE:HDAC"))
-   ("Histone 2A" ("BE:Histone_H2A")) ("High-density lipoproteins" ("BE:HDL"))
-   ("Hifbeta" ("BE:HIF_beta")) ("HIFbeta" ("BE:HIF_beta"))
-   ("Hifalpha" ("BE:HIF_alpha")) ("HIFalpha" ("BE:HIF_alpha"))
-   ("HIF-1alpha protein" ("UP:Q16665")) ("Hic-5" ("UP:O43294"))
-   ("HG" ("HMDB" "HMDB00122")) ("Hes" ("BE:HES")) ("HES" ("BE:HES"))
-   ("Hes genes" ("BE:HES")) ("Hes gene family" ("BE:HES"))
+   ("Histone H2A" ("BE:Histone_H2A")) ("Histone 2A" ("BE:Histone_H2A"))
+   ("High-density lipoproteins" ("BE:HDL")) ("Hifbeta" ("BE:HIF_beta"))
+   ("HIFbeta" ("BE:HIF_beta")) ("Hifalpha" ("BE:HIF_alpha"))
+   ("HIFalpha" ("BE:HIF_alpha")) ("HIF-1alpha protein" ("UP:Q16665"))
+   ("Hic-5" ("UP:O43294")) ("HG" ("HMDB" "HMDB00122")) ("Hes" ("BE:HES"))
+   ("HES" ("BE:HES")) ("Hes genes" ("BE:HES")) ("Hes gene family" ("BE:HES"))
    ("HER2 receptor" ("UP:P04626")) ("heme oxygenase" ("BE:HMOX"))
    ("Hedgehog" ("BE:Hedgehog")) ("hedgehog signaling proteins" ("BE:Hedgehog"))
    ("hedgehog protein" ("BE:Hedgehog"))
@@ -330,8 +326,7 @@
    ("Gq alpha subunit" ("BE:G_q_alpha")) ("GPIT" ("BE:GPIT"))
    ("GPIT complex" ("BE:GPIT")) ("GpIb-V-IX" ("BE:GPIb_IX_V"))
    ("GPIb-IX-V" ("BE:GPIb_IX_V")) ("GPIb-IX-V complex" ("BE:GPIb_IX_V"))
-   ("GPI transamidase complex" ("BE:GPIT")) ("GPCR kinases" ("BE:GRK"))
-   ("gp47 phox" ("UP:P14598"))
+   ("GPI transamidase complex" ("BE:GPIT")) ("gp47 phox" ("UP:P14598"))
    ("glycosylphosphatidylinositol transamidase complex" ("BE:GPIT"))
    ("Glycoprotein Ib/V/IX" ("BE:GPIb_IX_V"))
    ("Glycoprotein Ib-V-IX" ("BE:GPIb_IX_V"))
@@ -348,32 +343,31 @@
    ("Gamma tubulin" ("BE:TUBG")) ("GalphaS" ("BE:G_s_alpha"))
    ("Galphaq" ("BE:G_q_alpha")) ("Galphai" ("BE:G_i_alpha"))
    ("GABA receptors" ("BE:GABR")) ("GABA receptor" ("BE:GABR"))
-   ("Gab2" ("UP:Q9UQC2")) ("Gab1" ("UP:Q13480")) ("Ga12" ("BE:G_12_alpha"))
-   ("G12" ("BE:G_12")) ("G12 proteins" ("BE:G_12")) ("G12 family" ("BE:G_12"))
+   ("Gab2" ("UP:Q9UQC2")) ("Ga12" ("BE:G_12_alpha")) ("G12" ("BE:G_12"))
+   ("G12 proteins" ("BE:G_12")) ("G12 family" ("BE:G_12"))
    ("G-protein beta" ("BE:G_beta")) ("G-Protein alpha-s" ("BE:G_s_alpha"))
    ("G-Protein alpha-q" ("BE:G_q_alpha"))
    ("G-Protein alpha-i" ("BE:G_i_alpha"))
    ("G-protein alpha-12" ("BE:G_12_alpha")) ("G-AlphaS" ("BE:G_s_alpha"))
    ("G-alpha(s)" ("BE:G_s_alpha")) ("G(q/11)" ("BE:G_q")) ("G(12)" ("BE:G_12"))
-   ("G S protein" ("BE:G_s")) ("G protein-coupled receptor kinases" ("BE:GRK"))
-   ("G protein(s)" ("BE:G_s")) ("G protein Gs" ("BE:G_s"))
-   ("G protein gamma" ("BE:G_gamma"))
+   ("G S protein" ("BE:G_s")) ("G protein(s)" ("BE:G_s"))
+   ("G protein Gs" ("BE:G_s")) ("G protein gamma" ("BE:G_gamma"))
    ("G protein gamma subunit" ("BE:G_gamma")) ("G protein beta" ("BE:G_beta"))
    ("G alphaS" ("BE:G_s_alpha")) ("G alphaq" ("BE:G_q_alpha"))
-   ("G alphai" ("BE:G_i_alpha")) ("Fz" ("BE:FZD")) ("Fyn" ("UP:P06241"))
-   ("FTase" ("BE:FNT")) ("FRK" ("UP:P42685"))
-   ("follicle-stimulating hormone" ("BE:FSH")) ("FLRT proteins" ("BE:FLRT"))
-   ("Flrt family" ("BE:FLRT")) ("FLRT family" ("BE:FLRT"))
-   ("Flip" ("UP:O15519")) ("FGF" ("BE:FGF")) ("Fas" ("UP:P25445"))
-   ("farnesyltransferase" ("BE:FNT")) ("FANC proteins" ("BE:FANC"))
-   ("F-actin" ("BE:F_actin"))
+   ("G alphai" ("BE:G_i_alpha")) ("Fz" ("BE:FZD")) ("FTase" ("BE:FNT"))
+   ("FRK" ("UP:P42685")) ("follicle-stimulating hormone" ("BE:FSH"))
+   ("FLRT proteins" ("BE:FLRT")) ("Flrt family" ("BE:FLRT"))
+   ("FLRT family" ("BE:FLRT")) ("Flip" ("UP:O15519")) ("FGF" ("BE:FGF"))
+   ("Fas" ("UP:P25445")) ("farnesyltransferase" ("BE:FNT"))
+   ("FANC proteins" ("BE:FANC")) ("F-actin" ("BE:F_actin"))
    ("Extracellular Signal Regulated Kinase" ("BE:ERK"))
    ("exocyst complex" ("BE:EXOC")) ("EXOC" ("BE:EXOC"))
    ("Everolimus" ("PCID:6442177" "CHEBI:68478"))
    ("eukaryotic initiation factor-4A" ("BE:EIF4A")) ("Erk1/2" ("BE:ERK"))
    ("Erk1" ("UP:P27361")) ("Erk" ("BE:ERK")) ("ERK inhibitors" ("CHEBI:79091"))
    ("ERK 1/2" ("BE:ERK")) ("epsilon-tubulin" ("HGNC:TUBE1"))
-   ("Eps8" ("UP:Q12929")) ("Eph receptors" ("BE:Ephrin_receptor"))
+   ("Eps8" ("UP:Q12929")) ("EphB1" ("UP:P54762"))
+   ("Eph receptors" ("BE:Ephrin_receptor"))
    ("Eph receptor" ("BE:Ephrin_receptor")) ("Env" ("UP:U3LIR9"))
    ("embelin" ("CHEBI:4778" "PCID:3218"))
    ("ELR-positive CXC family" ("BE:CXCL_ELR_positive"))
@@ -383,7 +377,7 @@
    ("ELR (-) CXC chemokines" ("BE:CXCL_ELR_negative"))
    ("ELR (+) CXC chemokines" ("BE:CXCL_ELR_positive")) ("Elk-1" ("UP:P19419"))
    ("EGFRvIII" ("UP:P00533")) ("EGFR ligands" ("BE:EGFR_ligand"))
-   ("EGCG" ("PCID:65064" "CHEBI:4806")) ("Ect2" ("UP:Q9H8V3"))
+   ("EGCG" ("PCID:65064" "CHEBI:4806"))
    ("early growth response proteins" ("BE:EGR")) ("E7" ("UP:P03129"))
    ("E3" ("BE:E3_Ub_ligase")) ("E2" ("UP:P27958")) ("E2" ("BE:UBE2"))
    ("E2 ubiquitin-conjugating enzyme" ("BE:UBE2")) ("E2 enzyme" ("BE:UBE2"))
@@ -442,9 +436,8 @@
    ("Class II NF-kappaBs" ("BE:NFkappaB_2"))
    ("class II histone deacetylases" ("BE:HDAC_II"))
    ("class II HDACs" ("BE:HDAC_II")) ("class I NF-kappaBs" ("BE:NFkappaB_1"))
-   ("Class I NF-kappaBs" ("BE:NFkappaB_1"))
-   ("class I histone deacetylases" ("BE:HDAC_I"))
-   ("Class I HDACs" ("BE:HDAC_I")) ("class 2 NF-kappaBs" ("BE:NFkappaB_2"))
+   ("Class I NF-kappaBs" ("BE:NFkappaB_1")) ("Class I HDACs" ("BE:HDAC_I"))
+   ("class 2 NF-kappaBs" ("BE:NFkappaB_2"))
    ("Class 2 NF-kappaBs" ("BE:NFkappaB_2"))
    ("class 1 NF-kappaBs" ("BE:NFkappaB_1"))
    ("Class 1 NF-kappaBs" ("BE:NFkappaB_1")) ("clade B serpins" ("BE:SERPINB"))
@@ -503,14 +496,13 @@
    ("BMP Receptor Type II" ("BE:BMP_receptor_type_II"))
    ("BMP Receptor Type I" ("BE:BMP_receptor_type_I"))
    ("BITC" ("PCID:2346" "CHEBI:17484")) ("Bim" ("UP:O43521"))
-   ("Bid" ("UP:P55957")) ("BEZ235" ("PCID:49803145" "CHEBI:71952"))
-   ("betaARK" ("BE:ADRBK")) ("betaAR" ("BE:ADRB"))
-   ("beta-adrenoreceptor" ("BE:ADRB")) ("beta-adrenergic receptor" ("BE:ADRB"))
-   ("beta interferons" ("BE:IFNB")) ("Beclin-1" ("UP:Q14457"))
-   ("Bcl2" ("UP:P10415")) ("Bcl-3" ("HGNC:BCL3")) ("BCKDH" ("BE:BCKDC"))
-   ("BCKDC" ("BE:BCKDC")) ("BAX" ("UP:Q07812")) ("barrestins" ("BE:ARRB"))
-   ("BARK" ("BE:ADRBK")) ("Bam32" ("UP:Q9UN19")) ("Bad" ("UP:Q92934"))
-   ("b-receptors" ("BE:ADRB")) ("b-arrestin" ("BE:ARRB"))
+   ("BEZ235" ("PCID:49803145" "CHEBI:71952")) ("betaARK" ("BE:ADRBK"))
+   ("betaAR" ("BE:ADRB")) ("beta-adrenoreceptor" ("BE:ADRB"))
+   ("beta-adrenergic receptor" ("BE:ADRB")) ("beta interferons" ("BE:IFNB"))
+   ("Beclin-1" ("UP:Q14457")) ("Bcl2" ("UP:P10415")) ("Bcl-3" ("HGNC:BCL3"))
+   ("BCKDH" ("BE:BCKDC")) ("BCKDC" ("BE:BCKDC")) ("BAX" ("UP:Q07812"))
+   ("barrestins" ("BE:ARRB")) ("BARK" ("BE:ADRBK")) ("Bam32" ("UP:Q9UN19"))
+   ("Bad" ("UP:Q92934")) ("b-receptors" ("BE:ADRB")) ("b-arrestin" ("BE:ARRB"))
    ("b-adrenergic receptor" ("BE:ADRB"))
    ("AZD6244" ("CHEBI:90227" "PCID:10127622")) ("Axin" ("BE:AXIN"))
    ("Autophagy" ("GO:0006914")) ("ATRA" ("CHEBI:15367" "PCID:8143163"))
@@ -594,10 +586,10 @@
    ("Acetyl Coenzyme A Carboxylase" ("BE:ACC"))
    ("acetyl CoA synthase" ("BE:Acetyl_CoA_synthetase"))
    ("acetyl CoA ligase" ("BE:Acetyl_CoA_synthetase"))
-   ("Acetate-CoA ligase" ("BE:Acetyl_CoA_synthetase")) ("ACC" ("BE:ACC"))
-   ("ACAD" ("BE:ACAD")) ("Abl" ("UP:P00519")) ("Abi1" ("UP:Q8IZP0"))
-   ("A2t" ("BE:Annexin_II_heterotetramer")) ("a-cathenin" ("BE:CTNNA"))
-   ("a-adrenoreceptor" ("BE:ADRA")) ("14-3-3 proteins" ("BE:p14_3_3"))
+   ("Acetate-CoA ligase" ("BE:Acetyl_CoA_synthetase")) ("ACCs" ("BE:ACC"))
+   ("ACC" ("BE:ACC")) ("ACAD" ("BE:ACAD")) ("Abl" ("UP:P00519"))
+   ("Abi1" ("UP:Q8IZP0")) ("A2t" ("BE:Annexin_II_heterotetramer"))
+   ("a-cathenin" ("BE:CTNNA")) ("a-adrenoreceptor" ("BE:ADRA"))
    ("9-1-1) complex" ("BE:9_1_1")) ("Na,K-ATPase" ("BE:Na_K_ATPase"))
    ("Na,K-ATPase beta subunit" ("BE:ATP1B"))
    ("Na(+),K(+)-ATPase" ("BE:Na_K_ATPase"))
@@ -649,7 +641,7 @@
    (DRUG "celecoxib" ("PCID:2662" "CHEBI:41423"))
    (DRUG "bortezomib" ("CHEBI:52717" "PCID:387447"))
    (DRUG "afatinib" ("PCID:57519523" "LINCS:10133-101"))
-   (EMT "EMT" ("GO:GO:0001837" "MESH:D058750"))
+   (EMT "EMT" ("GO:GO:0001837" "MESH:D058750")) (GEF "GEF" ("BE:GEF"))
    (HUMAN-PROTEIN-FAMILY "cadherin" ("BE:Cadherin"))
    (LACTATE "lactate" ("PCID:91435" "CHEBI:24996"))
    (LEAD "lead" ("PCID:5352425" "CHEBI:25016"))
@@ -662,65 +654,7 @@
    (PIP3 "PIP3" ("MESH:C060974" "PCID:101362114"))
    (PROLIFERATION "proliferation" ("GO:0008283" "MESH:D049109"))
    (PROLIFERATION "cell proliferation" ("GO:0008283" "MESH:D049109"))
-   (PROTEIN-FAMILY "Wnt" ("BE:Wnt"))
-   (PROTEIN-FAMILY "VCAM-1" ("UP:P19320"))
-   (PROTEIN-FAMILY "vascular endothelial growth factor" ("BE:VEGF"))
-   (PROTEIN-FAMILY "tryptases" ("BE:Tryptase"))
-   (PROTEIN-FAMILY "tryptase" ("BE:Tryptase"))
-   (PROTEIN-FAMILY "trypsin" ("CHEBI:9765"))
-   (PROTEIN-FAMILY "thioredoxin reductase" ("BE:TXNRD"))
-   (PROTEIN-FAMILY "TAP" ("BE:TAP"))
-   (PROTEIN-FAMILY "StAR" ("HGNC:STAR" "UP:P49675"))
-   (PROTEIN-FAMILY "smad" ("BE:SMAD"))
-   (PROTEIN-FAMILY "SMAD" ("BE:SMAD"))
-   (PROTEIN-FAMILY "S6K1" ("UP:P23443"))
-   (PROTEIN-FAMILY "RasGAPs" ("BE:RasGAP"))
-   (PROTEIN-FAMILY "RasGAP" ("BE:RasGAP"))
-   (PROTEIN-FAMILY "ptc" ("UP:P18502"))
-   (PROTEIN-FAMILY "PTC" ("UP:P18502"))
-   (PROTEIN-FAMILY "protein phosphatase 2" ("BE:PPP2"))
-   (PROTEIN-FAMILY "protease" ("BE:Protease"))
-   (PROTEIN-FAMILY "PR" ("UP:P06401"))
-   (PROTEIN-FAMILY "PP2A" ("BE:PPP2"))
-   (PROTEIN-FAMILY "PKCdelta" ("UP:Q05655"))
    (PROTEIN-FAMILY "PIP" ("PCID:86289149" "CHEBI:28765"))
-   (PROTEIN-FAMILY "phospholipase Cbeta" ("BE:PLCB"))
-   (PROTEIN-FAMILY "phospholipase C-beta" ("BE:PLCB"))
-   (PROTEIN-FAMILY "phosphodiesterases" ("BE:PDE"))
-   (PROTEIN-FAMILY "phosphodiesterase" ("BE:PDE"))
-   (PROTEIN-FAMILY "PAK1" ("UP:Q13153"))
-   (PROTEIN-FAMILY "p85" ("BE:PI3K_p85"))
-   (PROTEIN-FAMILY "p65" ("UP:Q04206"))
-   (PROTEIN-FAMILY "p63" ("UP:Q9H3D4"))
-   (PROTEIN-FAMILY "p62" ("UP:Q13501"))
-   (PROTEIN-FAMILY "p38 MAPKs" ("BE:p38"))
-   (PROTEIN-FAMILY "p38 MAPK" ("BE:p38"))
-   (PROTEIN-FAMILY "p27" ("UP:P46527"))
-   (PROTEIN-FAMILY "p100" ("HGNC:NFKB2"))
-   (PROTEIN-FAMILY "myosin light chains" ("BE:MYL"))
-   (PROTEIN-FAMILY "myosin light chain" ("BE:MYL"))
-   (PROTEIN-FAMILY "myosin heavy chains" ("BE:MYH"))
-   (PROTEIN-FAMILY "myosin heavy chain" ("BE:MYH"))
-   (PROTEIN-FAMILY "MLC" ("BE:MYL"))
-   (PROTEIN-FAMILY "GSK3" ("BE:GSK3"))
-   (PROTEIN-FAMILY "GPCRs" ("BE:GPCR"))
-   (PROTEIN-FAMILY "GPCR" ("BE:GPCR"))
-   (PROTEIN-FAMILY "fibronectin" ("UP:P02751"))
-   (PROTEIN-FAMILY "ET-1" ("UP:P05305"))
-   (PROTEIN-FAMILY "ERK1/2" ("BE:ERK"))
-   (PROTEIN-FAMILY "epidermal growth factor receptor" ("UP:P00533"))
-   (PROTEIN-FAMILY "E2F-1" ("UP:Q01094"))
-   (PROTEIN-FAMILY "DUSP" ("BE:DUSP"))
-   (PROTEIN-FAMILY "CREB" ("BE:CREB"))
-   (PROTEIN-FAMILY "collagen" ("MESH:D003094" "CHEBI:3815"))
-   (PROTEIN-FAMILY "cofilin" ("BE:Cofilin"))
-   (PROTEIN-FAMILY "clathrin" ("BE:Clathrin"))
-   (PROTEIN-FAMILY "CDKN2" ("BE:CDKN2"))
-   (PROTEIN-FAMILY "AR" ("UP:P10275"))
-   (PROTEIN-FAMILY "AP-1" ("BE:AP1"))
-   (PROTEIN-FAMILY "AMPK" ("BE:AMPK"))
-   (PROTEIN-FAMILY "adiponectin" ("UP:Q15848"))
-   (PROTEIN-FAMILY "actin" ("BE:Actin"))
    (SENESCENCE "senescence" ("GO:0090398" "MESH:D016922"))
    (SENESCENCE "cellular senescence" ("GO:0090398" "MESH:D016922"))
    (SURVIVAL "cell survival" ("MESH:D002470"))
@@ -736,12 +670,7 @@
    (BIO-PROCESS "neovascularization" "NCIT:C16900" ("GO:0001525"))
    (BIO-PROCESS "invasion" "NCIT:C20625" ("MESH:D009361"))
    (BIO-PROCESS "biosynthesis" "NCIT:C17702" ("GO:0009058"))
-   (CELL-LINE "YAP" "CVCL:8467" ("UP:P46937"))
-   (CELL-LINE "TLR2" "CVCL:5600" ("UP:O60603"))
-   (CELL-LINE "PKR" "CVCL:2693" ("UP:P19525"))
    (CELL-LINE "PDH" "CVCL:1G98" ("BE:PDH"))
-   (CELL-LINE "PA" "CVCL:E800" ("CHEBI:16337" "PCID:8144759"))
-   (CELL-LINE "LAT" "CVCL:2101" ("UP:O43561"))
    (CELLULAR-LOCATION "kinetochore" "UP:SL-0149" ("BE:Kinetochore"))
    (CELLULAR-PROCESS "mitochondrial membrane potential" "GO:0051881"
     ("MESH:D053078"))
@@ -789,27 +718,23 @@
    (MOLECULE "glucose" "CHEBI:17234" ("HMDB" "HMDB00122"))
    (MOLECULE "Activin A" "CHEBI:81351" ("BE:Activin_A"))
    (NIL "RTKs" "NCIT:C17660" ("BE:RTK")) (NIL "Rabs" "FA:03661" ("BE:RAB"))
+   (NIL "peroxiredoxins" "GO:0051920" ("BE:PRDX"))
    (NIL "parvins" "FA:02660" ("BE:PARV"))
    (NIL "mitogen-activated protein kinases" "PR:000000019" ("BE:MAPK"))
    (NIL "kinetochores" "UP:SL-0149" ("BE:Kinetochore"))
    (NIL "integrins" "NCIT:C16748" ("BE:Integrins"))
+   (NIL "histones" "NCIT:C16687" ("BE:Histone"))
+   (NIL "histone deacetylases" "NCIT:C16682" ("BE:HDAC"))
+   (NIL "GRKs" "NCIT:C26233" ("BE:GRK"))
+   (NIL "GPCR kinases" "NCIT:C26233" ("BE:GRK"))
    (NIL "G proteins" "NCIT:C17458" ("BE:G_protein"))
    (NIL "ERKs" "NCIT:C26360" ("BE:ERK"))
    (NIL "endothelins" "XFAM:PF00322.15" ("BE:EDN"))
    (NIL "cyclins" "FA:00815" ("BE:Cyclin"))
    (NIL "cullins" "FA:00787" ("BE:CUL"))
    (NIL "BIRs" "XFAM:PF00653.19" ("BE:BIRC"))
-   (NUCLEOTIDE "GDP" "CHEBI:17552"
-    ("HMDB" "HMDB01201" "PCID:8977" "CHEBI:17552
-GEF"
-     "BE:GEF"))
-   (PROTEIN "Zeb1" "P37275" ("UP:P37275"))
-   (PROTEIN "WA" "UP:Q03149" ("PCID:265237" "CHEBI:69120"))
-   (PROTEIN "VPA" "UP:Q58L90" ("PCID:3121" "CHEBI:39867"))
    (PROTEIN "VEGFRs" "UP:P17948" ("BE:VEGFR"))
    (PROTEIN "VEGFR" "UP:P17948" ("BE:VEGFR"))
-   (PROTEIN "VEGF" "UP:P15692" ("BE:VEGF"))
-   (PROTEIN "Vav1" "P15498" ("UP:P15498"))
    (PROTEIN "ubiquitin" "UP:P0CG48" ("BE:Ubiquitin"))
    (PROTEIN "UBE2" "UP:P41226" ("BE:UBE2"))
    (PROTEIN "type I collagen" "UP:P02452" ("BE:COL1"))
@@ -830,7 +755,6 @@ GEF"
    (PROTEIN "TnC" "UP:P63316" ("BE:Troponin_C"))
    (PROTEIN "TN-C" "UP:P24821" ("BE:Troponin_C"))
    (PROTEIN "tissue kallikrein" "UP:P20151" ("BE:KLK"))
-   (PROTEIN "Tiam1" "Q13009" ("UP:Q13009"))
    (PROTEIN "thrombin" "UP:P84122" ("IP" "IPR003966" "UP:P00734"))
    (PROTEIN "thioredoxins" "UP:P10599" ("BE:TXN"))
    (PROTEIN "thioredoxin" "UP:P10599" ("BE:TXN"))
@@ -843,7 +767,7 @@ GEF"
    (PROTEIN "TCF" "UP:P91943" ("BE:TCF_LEF"))
    (PROTEIN "tau" "UP:Q5TCY1" ("UP:P10636"))
    (PROTEIN "Tat" "UP:P17735" ("UP:P04608"))
-   (PROTEIN "TAp73" "P04637" ("UP:O15350"))
+   (PROTEIN "TAp73" "UP:P04637" ("UP:O15350"))
    (PROTEIN "TAK1" "UP:P49116" ("UP:O43318"))
    (PROTEIN "STZ" "UP:Q11206" ("PCID:29327"))
    (PROTEIN "stearoyl-CoA desaturase" "UP:O00767" ("BE:SCD"))
@@ -852,12 +776,9 @@ GEF"
    (PROTEIN "SPRY" "UP:O44783" ("BE:SPRY"))
    (PROTEIN "SPC" "UP:P11686" ("CHEBI:17689" "PCID:5280613"))
    (PROTEIN "SP600125" "UP:P33981" ("PCID:8515" "CHEBI:90695"))
-   (PROTEIN "Sp1" "P08047" ("UP:P08047"))
    (PROTEIN "SOS" "UP:P26675" ("BE:SOS"))
    (PROTEIN "SOD" "UP:P00441" ("BE:SOD"))
    (PROTEIN "SMC1" "UP:Q14683" ("BE:SMC1"))
-   (PROTEIN "Smad3" "P84022" ("UP:P84022"))
-   (PROTEIN "Sirt1" "Q96EB6" ("UP:Q96EB6"))
    (PROTEIN "SHC" "UP:P29353" ("BE:SHC"))
    (PROTEIN "SFN" "UP:P31947" ("CHEBI:47807" "PCID:5350"))
    (PROTEIN "SERCA" "UP:P86911" ("BE:SERCA"))
@@ -876,25 +797,20 @@ GEF"
    (PROTEIN "RFX" "UP:P22670" ("BE:RFX"))
    (PROTEIN "RFC" "UP:P41440" ("BE:RFC"))
    (PROTEIN "RF-C" "UP:P41440" ("BE:RFC"))
-   (PROTEIN "resveratrol" "UP:P16083" ("PCID:445154" "CHEBI:27881"))
-   (PROTEIN "Rb1" "P06400" ("UP:P06400"))
-   (PROTEIN "RasV12" "P69208" ("BE:RAS"))
    (PROTEIN "RASGRP" "UP:O95267" ("BE:RASGRP"))
    (PROTEIN "RASAL" "UP:O95294" ("BE:RASAL"))
    (PROTEIN "RASA" "UP:P20936" ("BE:RASA"))
-   (PROTEIN "RAR" "UP:P54136" ("BE:RAR")) (PROTEIN "Rap1" "Q9NYB0" ("BE:RAP1"))
+   (PROTEIN "RAR" "UP:P54136" ("BE:RAR"))
+   (PROTEIN "Rap1" "UP:Q9NYB0" ("BE:RAP1"))
    (PROTEIN "RAL" "UP:P11233" ("HGNC:RALA"))
    (PROTEIN "RAL" "UP:P11233" ("BE:RAL"))
-   (PROTEIN "Rac1" "P63000" ("UP:P63000"))
    (PROTEIN "RAC" "UP:P31749" ("BE:RAC"))
    (PROTEIN "RA" "UP:P10896" ("PCID:444795" "CHEBI:26536" "HMDB" "HMDB06219"))
+   (PROTEIN "ptc" "UP:Q13635" ("UP:P18502"))
    (PROTEIN "protein phosphatase 2B" "UP:Q08209" ("BE:PPP3"))
    (PROTEIN "protein kinase A" "UP:Q9RI12" ("BE:PKA"))
    (PROTEIN "protein kinase A regulatory subunit" "UP:P07278" ("BE:PRKAR"))
    (PROTEIN "progesterone" "UP:P06401" ("CHEBI:17026" "PCID:5994"))
-   (PROTEIN "profilins" "UP:A5WWI6" ("BE:PFN"))
-   (PROTEIN "profilin" "UP:P35080" ("BE:PFN"))
-   (PROTEIN "PRKAA" "NCIT:C116019" ("BE:AMPK_alpha"))
    (PROTEIN "PRC2" "UP:P21243" ("BE:PRC2_complex"))
    (PROTEIN "PRC1" "UP:O43663" ("BE:PRC1_complex"))
    (PROTEIN "PPAR" "UP:Q07869" ("BE:PPAR"))
@@ -905,7 +821,7 @@ GEF"
    (PROTEIN "PP1c" "UP:P36873" ("BE:PPP1C"))
    (PROTEIN "PP1C" "UP:P36873" ("BE:PPP1C"))
    (PROTEIN "polycomb repressive complex 2" "UP:P21243" ("BE:PRC2_complex"))
-   (PROTEIN "Pol I" "Q9UNA4" ("BE:RNApo_I"))
+   (PROTEIN "Pol I" "UP:Q9UNA4" ("BE:RNApo_I"))
    (PROTEIN "PLX" "UP:P81565" ("PCID:42611257" "CHEBI:63637"))
    (PROTEIN "PLC" "UP:P98160" ("BE:PLC"))
    (PROTEIN "PLB" "UP:Q6P1J6" ("UP:P26678"))
@@ -920,6 +836,7 @@ GEF"
    (PROTEIN "phosphorylase kinase" "UP:P46020" ("BE:PhK"))
    (PROTEIN "phospholipase C" "UP:P51178" ("BE:PLC"))
    (PROTEIN "phospholipase A2" "UP:P04054" ("BE:PLA2"))
+   (PROTEIN "phosphodiesterases" "UP:Q08499" ("BE:PDE"))
    (PROTEIN "phosphodiesterase-1" "UP:P12019" ("BE:PDE1"))
    (PROTEIN "phosphodiesterase 7" "UP:Q54HY0" ("BE:PDE7"))
    (PROTEIN "phosphodiesterase 6" "UP:Q8MM62" ("BE:PDE6"))
@@ -930,15 +847,10 @@ GEF"
    (PROTEIN "phosphatidylinositol" "UP:Q9W1M7"
     ("PCID:53477912" "MESH:D010716"))
    (PROTEIN "PhK" "UP:P46019" ("BE:PhK"))
-   (PROTEIN "peroxiredoxins" "GO:0051920" ("BE:PRDX"))
-   (PROTEIN "peroxiredoxin" "UP:P32119" ("BE:PRDX"))
    (PROTEIN "PDT" "UP:P57472" ("MESH:D010778"))
    (PROTEIN "PDGFR" "UP:P16234" ("BE:PDGFR"))
    (PROTEIN "PDGFBB" "UP:Q8L649" ("BE:PDGF_BB"))
-   (PROTEIN "PDGFAA" "NCIT:C128285" ("BE:PDGF_AA"))
    (PROTEIN "PDGF-BB" "UP:Q8L649" ("BE:PDGF_BB"))
-   (PROTEIN "PDGF-AB" "NCIT:C128286" ("BE:PDGF_AB"))
-   (PROTEIN "PDGF-AA" "NCIT:C128285" ("BE:PDGF_AA"))
    (PROTEIN "PDEs" "UP:P49419" ("BE:PDE"))
    (PROTEIN "PDE8" "UP:O88502" ("BE:PDE8"))
    (PROTEIN "PDE7" "UP:Q54HY0" ("BE:PDE7"))
@@ -949,55 +861,43 @@ GEF"
    (PROTEIN "PDE 3" "UP:Q8I0P7" ("BE:PDE3"))
    (PROTEIN "PARPs" "UP:P35875" ("BE:PARP"))
    (PROTEIN "PARP" "UP:Q11208" ("UP:P09874"))
-   (PROTEIN "Parkin" "O60260" ("UP:O60260"))
    (PROTEIN "PAR3" "UP:O00254" ("UP:Q8TEW0"))
+   (PROTEIN "PA" "UP:Q9UL45" ("CHEBI:16337" "PCID:8144759"))
    (PROTEIN "P70S6K" "UP:P23443" ("BE:P70S6K"))
    (PROTEIN "p70" "UP:P08133" ("UP:P23443"))
    (PROTEIN "p66Shc" "UP:P29353" ("UP:P29353-1"))
    (PROTEIN "p53 family" "UP:P04637" ("BE:p53_family"))
-   (PROTEIN "p52" "p52" ("HGNC:NFKB2"))
+   (PROTEIN "p52" "UP:O75439" ("HGNC:NFKB2"))
    (PROTEIN "p50" "UP:Q43731" ("UP:P19838"))
    (PROTEIN "p42" "UP:Q8NFH3" ("UP:Q9UQ80"))
    (PROTEIN "p42" "UP:Q8NFH3" ("UP:P28482"))
    (PROTEIN "p38" "UP:Q16539" ("BE:p38"))
-   (PROTEIN "p27 Kip1" "P46527" ("UP:P46527"))
+   (PROTEIN "p38 MAPKs" "UP:P41279" ("BE:p38"))
    (PROTEIN "p16" "UP:Q96518" ("UP:P42771"))
    (PROTEIN "p130" "UP:Q08999" ("UP:P56945"))
    (PROTEIN "p120" "UP:Q00839" ("UP:O60716"))
    (PROTEIN "p110" "UP:P39880" ("BE:PI3K_p110"))
    (PROTEIN "p105" "UP:Q14511" ("HGNC:NFKB1"))
+   (PROTEIN "p100" "UP:Q00653" ("HGNC:NFKB2"))
    (PROTEIN "nuclear receptor corepressor" "UP:O75376" ("BE:NCOR"))
-   (PROTEIN "Nrf2" "Q16236" ("UP:Q16236"))
-   (PROTEIN "NRF2" "UP:Q06546" ("UP:Q16236"))
-   (PROTEIN "Notch1" "P46531" ("UP:P46531"))
    (PROTEIN "NOS" "UP:O61608" ("BE:NOS"))
-   (PROTEIN "NFkappaB" "UP:Q04206" ("BE:NFkappaB"))
    (PROTEIN "NFkappaB p65" "UP:Q04206" ("HGNC:RELA"))
    (PROTEIN "NF-Y" "UP:Q13952" ("BE:NFY"))
-   (PROTEIN "NF-kB" "UP:P19838" ("BE:NFkappaB"))
    (PROTEIN "NF-kappaB2" "UP:Q00653" ("HGNC:NFKB2"))
    (PROTEIN "NF-kappaB1" "UP:P19838" ("HGNC:NFKB1"))
-   (PROTEIN "NF-kappaB" "Q9Y6Q6" ("BE:NFkappaB"))
    (PROTEIN "neuregulin" "UP:Q02297" ("BE:NRG"))
    (PROTEIN "NADPH oxidase" "UP:Q96PH1" ("BE:NADPH_oxidase"))
    (PROTEIN "NADH dehydrogenase" "UP:Q330K2" ("BE:NADH_dehydrogenase"))
    (PROTEIN "NAC" "UP:Q9C000" ("PCID:12035" "CHEBI:7421"))
-   (PROTEIN "mTORC2" "NCIT:C96315" ("BE:mTORC2"))
-   (PROTEIN "mTORC1" "NCIT:C96314" ("BE:mTORC1"))
    (PROTEIN "MMPs" "UP:P03956" ("BE:MMP"))
    (PROTEIN "MMC" "UP:P0A3R9" ("PCID:5746" "CHEBI:27504"))
    (PROTEIN "MM" "UP:O16011" ("MESH:D009101"))
-   (PROTEIN "miR-7" "UP:Q8NHL6" ("MIRBASE" "MI0000263" "HGNC:MIR7-1"))
    (PROTEIN "MG132" "UP:Q9NXV6" ("PCID:462382" "CHEBI:75142"))
    (PROTEIN "MEF2" "UP:Q02078" ("BE:MEF2"))
    (PROTEIN "MCP-1" "UP:P13500" ("UP:P0CW71"))
    (PROTEIN "MCM" "UP:P22033" ("BE:MCM"))
-   (PROTEIN "Mcl-1" "Q07820" ("UP:Q07820"))
-   (PROTEIN "MAPK kinase" "UP:P10506" ("BE:MAP2K"))
-   (PROTEIN "MAPK kinase kinase" "UP:P28829" ("BE:MAP3K"))
    (PROTEIN "maf" "UP:O75444" ("BE:MAF"))
-   (PROTEIN "MAF" "UP:O75444" ("BE:MAF"))
-   (PROTEIN "Mad2" "Q13257" ("UP:Q13257")) (PROTEIN "LH" "UP:Q20679" ("BE:LH"))
+   (PROTEIN "MAF" "UP:O75444" ("BE:MAF")) (PROTEIN "LH" "UP:Q20679" ("BE:LH"))
    (PROTEIN "LC3" "UP:Q9H492" ("BE:MAP1LC3"))
    (PROTEIN "LA" "NCIT:C70620" ("CHEBI:30314" "PCID:6112"))
    (PROTEIN "KSR" "UP:Q8IVT5" ("BE:KSR"))
@@ -1010,8 +910,6 @@ GEF"
    (PROTEIN "interferon gamma receptor" "UP:P15260"
     ("BE:Interferon_gamma_receptor"))
    (PROTEIN "interferon beta" "UP:P01574" ("BE:IFNB"))
-   (PROTEIN "inhibin-A" "NCIT:C2277" ("BE:Inhibin_A"))
-   (PROTEIN "inhibin" "NCIT:C2276" ("BE:Inhibin"))
    (PROTEIN "IL-17" "UP:Q687Y7" ("UP:Q16552"))
    (PROTEIN "IL-12" "UP:Q9T1T6" ("BE:IL12"))
    (PROTEIN "IKK" "UP:O15111" ("BE:IKK_family"))
@@ -1022,42 +920,33 @@ GEF"
    (PROTEIN "IFN" "UP:P51526" ("BE:Interferon"))
    (PROTEIN "I/R" "UP:P06213" ("MESH:D011839"))
    (PROTEIN "HSP90A" "UP:P07900" ("BE:HSP90A"))
-   (PROTEIN "HSP70" "NCIT:C17765" ("BE:HSPA"))
    (PROTEIN "HOTAIR" "NCIT:C116285"
     ("HGNC:HOTAIR" "NONCODE:NONHSAT028507.2" "LNCRNADB:HOTAIR HR" "GO:0000725"
      "MESH:D059767"))
    (PROTEIN "HLA-DR" "UP:Q03372" ("BE:HLA_DR"))
-   (PROTEIN "histones" "NCIT:C16687" ("BE:Histone"))
-   (PROTEIN "histone" "histone" ("BE:Histone"))
    (PROTEIN "histone H4" "UP:P62805" ("BE:Histone_H4"))
    (PROTEIN "histone H1" "UP:P09426" ("BE:Histone_H1"))
-   (PROTEIN "HIF1alpha protein" "Q16665" ("UP:Q16665"))
    (PROTEIN "HIF-1" "UP:Q9BYW2" ("BE:HIF1"))
    (PROTEIN "HIF" "UP:Q9NWT6" ("BE:HIF"))
    (PROTEIN "HDL" "UP:Q9YHE8" ("BE:HDL"))
-   (PROTEIN "HDAC" "UP:Q54VQ7" ("BE:HDAC"))
    (PROTEIN "hCG" "UP:Q9NFL4" ("BE:hCG"))
    (PROTEIN "HBx" "UP:Q64902" ("UP:Q157B2"))
    (PROTEIN "hAxin" "UP:O15169" ("BE:AXIN"))
    (PROTEIN "H2B" "UP:Q16778" ("BE:Histone_H2B"))
    (PROTEIN "H/R" "UP:O43593" ("MESH:D015687"))
-   (PROTEIN "H-Ras" "P01112" ("UP:P01112"))
    (PROTEIN "GTPase" "UP:P20936" ("BE:GTPase"))
    (PROTEIN "GSTs" "UP:Q86UG4" ("BE:GST"))
    (PROTEIN "GST" "UP:Q86UG4" ("BE:GST"))
    (PROTEIN "GSK-3" "UP:Q9U2Q9" ("BE:GSK3"))
-   (PROTEIN "GRKs" "NCIT:C26233" ("BE:GRK"))
    (PROTEIN "GR" "UP:P04150" ("UP:P00390"))
    (PROTEIN "gp120" "UP:Q14624" ("UP:P04578"))
    (PROTEIN "glutathione S-transferase" "UP:O60760" ("BE:GST"))
    (PROTEIN "glutathione peroxidase" "UP:Q98234" ("BE:GPX"))
    (PROTEIN "GLUT" "UP:P11166" ("BE:SLC2A"))
-   (PROTEIN "gamma-tubulin" "NCIT:C32650" ("BE:TUBG"))
-   (PROTEIN "gamma secretase" "NCIT:C95114" ("BE:Gamma_secretase"))
-   (PROTEIN "Galpha12" "Q03113" ("BE:G_12_alpha"))
+   (PROTEIN "Galpha12" "UP:Q03113" ("BE:G_12_alpha"))
    (PROTEIN "GA" "UP:Q9UI32" ("PCID:370" "CHEBI:30778"))
    (PROTEIN "G 2" "E2RYF7" ("MESH:D016195"))
-   (PROTEIN "G 1" "P55008" ("GO:0051318" "MESH:D016193"))
+   (PROTEIN "G 1" "UP:P55008" ("GO:0051318" "MESH:D016193"))
    (PROTEIN "FTS" "UP:Q9H8T0" ("PCID:5469318"))
    (PROTEIN "FSH" "UP:P13709" ("BE:FSH"))
    (PROTEIN "fructose-bisphosphate aldolase" "UP:Q86A67" ("BE:ALDO"))
@@ -1073,9 +962,7 @@ GEF"
    (PROTEIN "epsins" "UP:Q54EH1" ("BE:EPN"))
    (PROTEIN "epsin" "UP:Q54EH1" ("BE:EPN"))
    (PROTEIN "ephrin receptor" "UP:P21709" ("BE:Ephrin_receptor"))
-   (PROTEIN "EphB1" "P54762" ("UP:P54762"))
    (PROTEIN "enolase" "UP:Q42971" ("BE:ENO"))
-   (PROTEIN "Elk1" "P19419" ("UP:P19419"))
    (PROTEIN "elastase" "UP:P32197" ("BE:ELA"))
    (PROTEIN "eIF4G" "UP:Q76E23" ("BE:EIF4G"))
    (PROTEIN "eIF4A" "UP:P60842" ("BE:EIF4A"))
@@ -1093,7 +980,6 @@ GEF"
    (PROTEIN "dexamethasone" "UP:Q9Y272" ("PCID:5743" "CHEBI:41879"))
    (PROTEIN "death receptor" "UP:O14763" ("BE:Death_receptor"))
    (PROTEIN "cytosolic phospholipase A2" "UP:P47712" ("BE:PLA2"))
-   (PROTEIN "cytochrome c" "P99999" ("UP:P99999"))
    (PROTEIN "cytochrome c oxidase subunit VIII" "UP:P10176" ("BE:COX8"))
    (PROTEIN "cyclophilins" "UP:Q27450" ("BE:Cyclophilin"))
    (PROTEIN "cyclophilin" "UP:Q27450" ("BE:Cyclophilin"))
@@ -1107,7 +993,6 @@ GEF"
    (PROTEIN "COX6A" "UP:P12074" ("BE:COX6A"))
    (PROTEIN "cortactin" "UP:Q66HL2" ("IP" "IPR015503" "UP:Q14247"))
    (PROTEIN "cohesin" "UP:Q06851" ("BE:Cohesin"))
-   (PROTEIN "class I HDACs" "O15379" ("BE:HDAC_I"))
    (PROTEIN "CKI" "UP:P35790" ("BE:CDKN"))
    (PROTEIN "chemokines" "UP:F1P167" ("BE:Chemokine"))
    (PROTEIN "chemokine" "UP:F1P167" ("BE:Chemokine"))
@@ -1117,7 +1002,6 @@ GEF"
    (PROTEIN "CD64" "UP:P12314" ("BE:CD64"))
    (PROTEIN "CD32" "UP:P31994" ("BE:CD32"))
    (PROTEIN "CD16" "UP:P08637" ("BE:CD16"))
-   (PROTEIN "CCAAT/enhancer binding protein" "UP:Q02637" ("BE:CEBP"))
    (PROTEIN "CBF3" "UP:Q9M0L0" ("BE:CBF3"))
    (PROTEIN "caveolin" "UP:P56539" ("BE:CAV"))
    (PROTEIN "caspases" "UP:Q8WZ73" ("BE:Caspase"))
@@ -1130,10 +1014,9 @@ GEF"
    (PROTEIN "CaN" "UP:P35658" ("BE:PPP3"))
    (PROTEIN "CaMKII" "UP:Q13555" ("BE:CAMK2_complex"))
    (PROTEIN "CAMK2" "UP:Q13554" ("BE:CAMK2_family"))
-   (PROTEIN "CaM" "CALM_HUMAN" ("BE:CALM"))
+   (PROTEIN "CaM" "UP:P62158" ("BE:CALM"))
    (PROTEIN "calpain" "UP:P27730" ("BE:CAPN"))
-   (PROTEIN "calmodulin" "CALM_HUMAN" ("BE:CALM"))
-   (PROTEIN "C/EBP" "P49715" ("BE:CEBP"))
+   (PROTEIN "calmodulin" "UP:P62158" ("BE:CALM"))
    (PROTEIN "c-Myc" "UP:Q17103" ("UP:P01106"))
    (PROTEIN "c-MYC" "UP:Q17103" ("UP:P01106"))
    (PROTEIN "c-Myb" "UP:Q708E1" ("UP:P10242"))
@@ -1155,9 +1038,6 @@ GEF"
    (PROTEIN "AP3" "UP:P35632" ("BE:Adaptor_protein_III"))
    (PROTEIN "AP1" "UP:P05412" ("BE:AP1"))
    (PROTEIN "AP-2 transcription factor" "UP:P05549" ("BE:TFAP2"))
-   (PROTEIN "AngII" "P01019" ("UP:P01019"))
-   (PROTEIN "AMPKalpha1" "NCIT:C116033" ("UP:Q13131"))
-   (PROTEIN "AMPK-alpha1" "NCIT:C116033" ("UP:Q13131"))
    (PROTEIN "AMLC" "UP:P12829" ("BE:MYL_alkali"))
    (PROTEIN "AM" "UP:P35318" ("MESH:D000650"))
    (PROTEIN "alpha-catenin" "UP:P35221" ("BE:CTNNA"))
@@ -1167,13 +1047,11 @@ GEF"
    (PROTEIN "ALDH" "UP:O74187" ("BE:ALDH"))
    (PROTEIN "aldehyde dehydrogenase" "UP:P30838" ("BE:ALDH"))
    (PROTEIN "alcohol dehydrogenase" "UP:Q8IWW8" ("BE:ADH"))
-   (PROTEIN "Akt2" "P31751" ("UP:P31751"))
    (PROTEIN "adenylyl cyclase" "UP:O69199" ("BE:ADCY"))
    (PROTEIN "acyl-CoA dehydrogenase" "UP:P11310" ("BE:ACAD"))
    (PROTEIN "activins" "UP:P19883" ("BE:Activin"))
    (PROTEIN "activin" "UP:P36896" ("BE:Activin"))
    (PROTEIN "acetylcholine receptor" "UP:P11229" ("BE:CHRM"))
-   (PROTEIN "ACCs" "Q96QU6" ("BE:ACC"))
    (PROTEIN "AC" "UP:Q13510" ("UP:Q08828"))
    (PROTEIN "AC" "UP:Q13510" ("MESH:D000230"))
    (PROTEIN "ABL" "UP:P00519" ("BE:ABL_family"))
@@ -1206,14 +1084,20 @@ GEF"
    (PROTEIN-FAMILY "rab" "FA:03661" ("BE:RAB"))
    (PROTEIN-FAMILY "Rab" "FA:03661" ("BE:RAB"))
    (PROTEIN-FAMILY "RAB" "FA:03661" ("BE:RAB"))
+   (PROTEIN-FAMILY "PRKAA" "NCIT:C116019" ("BE:AMPK_alpha"))
    (PROTEIN-FAMILY "PP2B" "FA:03002" ("BE:PPP3"))
    (PROTEIN-FAMILY "PP1" "FA:03001" ("BE:PPP1"))
    (PROTEIN-FAMILY "PKC" "IPR012233" ("BE:PKC"))
-   (PROTEIN-FAMILY "PI3K" "PF00454" ("BE:PI3K"))
-   (PROTEIN-FAMILY "PI3-kinase" "PF00454" ("BE:PI3K"))
+   (PROTEIN-FAMILY "PI3K" "XFAM:PF00454" ("BE:PI3K"))
+   (PROTEIN-FAMILY "PI3-kinase" "XFAM:PF00454" ("BE:PI3K"))
    (PROTEIN-FAMILY "phospholipase D" "IPR015679" ("BE:PLD"))
-   (PROTEIN-FAMILY "phosphatidylinositol 3-kinase" "PF00454" ("BE:PI3K"))
+   (PROTEIN-FAMILY "phosphatidylinositol 3-kinase" "XFAM:PF00454" ("BE:PI3K"))
+   (PROTEIN-FAMILY "peroxiredoxin" "GO:0051920" ("BE:PRDX"))
    (PROTEIN-FAMILY "PDK" "BE:PDK" ("UP:O15530"))
+   (PROTEIN-FAMILY "PDGFAB" "NCIT:C128286" ("BE:PDGF_AB"))
+   (PROTEIN-FAMILY "PDGFAA" "NCIT:C128285" ("BE:PDGF_AA"))
+   (PROTEIN-FAMILY "PDGF-AB" "NCIT:C128286" ("BE:PDGF_AB"))
+   (PROTEIN-FAMILY "PDGF-AA" "NCIT:C128285" ("BE:PDGF_AA"))
    (PROTEIN-FAMILY "PDE3" "FA:00803" ("BE:PDE3"))
    (PROTEIN-FAMILY "PDE1" "FA:00801" ("BE:PDE1"))
    (PROTEIN-FAMILY "parvin" "FA:02660" ("BE:PARV"))
@@ -1222,21 +1106,33 @@ GEF"
    (PROTEIN-FAMILY "NFAT" "NCIT:C17903" ("BE:NFAT"))
    (PROTEIN-FAMILY "Nef" "XFAM:PF00469" ("UP:P03406"))
    (PROTEIN-FAMILY "NAP" "XFAM:PF00956.16" ("UP:P80723"))
+   (PROTEIN-FAMILY "mTORC2" "NCIT:C96314" ("BE:mTORC2"))
+   (PROTEIN-FAMILY "mTORC1" "NCIT:C96314" ("BE:mTORC1"))
    (PROTEIN-FAMILY "mitogen-activated protein kinase" "PR:000000019"
     ("BE:MAPK"))
    (PROTEIN-FAMILY "MAPK" "PR:000000019" ("BE:ERK"))
+   (PROTEIN-FAMILY "MAPK kinase" "NCIT:C105947" ("BE:MAP2K"))
    (PROTEIN-FAMILY "LDH" "FA:02022" ("BE:LDH"))
    (PROTEIN-FAMILY "integrin" "NCIT:C16748" ("BE:Integrins"))
+   (PROTEIN-FAMILY "inhibin-A" "NCIT:C2276" ("BE:Inhibin_A"))
+   (PROTEIN-FAMILY "inhibin" "NCIT:C2276" ("BE:Inhibin"))
    (PROTEIN-FAMILY "IL-1" "FA:01820" ("BE:IL1"))
    (PROTEIN-FAMILY "IkappaB" "NCIT:C17583" ("BE:IKB"))
    (PROTEIN-FAMILY "IFNalpha" "NCIT:C20494" ("BE:IFNA"))
    (PROTEIN-FAMILY "IFN-alpha" "NCIT:C20494" ("BE:IFNA"))
    (PROTEIN-FAMILY "HSP90" "XFAM:PF02518" ("BE:HSP90"))
+   (PROTEIN-FAMILY "HSP70" "NCIT:C17765" ("BE:HSPA"))
    (PROTEIN-FAMILY "HSP20" "XFAM:PF00011.19" ("UP:O14558"))
+   (PROTEIN-FAMILY "histone" "NCIT:C16687" ("BE:Histone"))
    (PROTEIN-FAMILY "HIFs" "NCIT:C113839" ("BE:HIF"))
+   (PROTEIN-FAMILY "HDAC" "NCIT:C16682" ("BE:HDAC"))
    (PROTEIN-FAMILY "glycogen synthase" "XFAM:PF05693" ("BE:GYS"))
    (PROTEIN-FAMILY "GATA" "FA:04921" ("BE:GATA"))
    (PROTEIN-FAMILY "GAP" "XFAM:PF00616" ("BE:GAP"))
+   (PROTEIN-FAMILY "gamma-tubulin" "NCIT:C32650" ("BE:TUBG"))
+   (PROTEIN-FAMILY "gamma secretase" "NCIT:C95114" ("BE:Gamma_secretase"))
+   (PROTEIN-FAMILY "G protein-coupled receptor kinases" "NCIT:C26233"
+    ("BE:GRK"))
    (PROTEIN-FAMILY "G protein" "NCIT:C17458" ("BE:G_protein"))
    (PROTEIN-FAMILY "FOXO" "NCIT:C118892" ("BE:FOXO"))
    (PROTEIN-FAMILY "Fos" "FA:00408" ("BE:FOS_family"))
@@ -1251,7 +1147,7 @@ GEF"
    (PROTEIN-FAMILY "eIF2alpha" "FA:01067" ("UP:P05198"))
    (PROTEIN-FAMILY "E6" "XFAM:PF00518.15" ("UP:P03126"))
    (PROTEIN-FAMILY "dynamin" "XFAM:PF00350" ("BE:DNM"))
-   (PROTEIN-FAMILY "Dvl" "XFAM:PF08137.10" ("BE:DVL"))
+   (PROTEIN-FAMILY "Dvl" "XFAM:PF02377.13" ("BE:DVL"))
    (PROTEIN-FAMILY "dishevelled" "XFAM:PF02377.13" ("BE:DVL"))
    (PROTEIN-FAMILY "DDR" "XFAM:PF08841.8" ("GO:0042769"))
    (PROTEIN-FAMILY "cyclin" "FA:00815" ("BE:Cyclin"))
@@ -1269,58 +1165,75 @@ GEF"
    (PROTEIN-FAMILY "Akt" "FA:03066" ("BE:AKT"))))
 
 (defparameter *sp-uid-matches-hms-grounding* 
-'(("ZEB1" "YAP1" "XIAP" "VEGFR2" "VEGFR-2" "VEGF-A" "uPAR" "uPA" "tunicamycin"
-   "tuberin" "TSC2" "TSC1" "TrkB" "TrkA" "TRIM" "TRAIL" "TRAF6" "TRAF3" "TRAF2"
-   "TP53" "TNFR1" "TNFalpha" "TNF-alpha" "TNF" "TLR4" "TLR" "TIAM2" "TIAM1"
-   "thioredoxin" "thapsigargin" "TGFbeta1" "TGFalpha" "TGF-beta1" "TGF-alpha"
-   "telomerase" "TBK1" "tamoxifen" "SYNJ2" "survivin" "superoxide" "STZ"
-   "STING" "Stat3" "STAT3" "STAT1" "SRF" "SRC" "SPRED" "SOX2" "SOS1" "SNAI"
-   "smad2" "SLP-76" "SIRT1" "signal transduction" "SHP2" "SHP-2" "SAF-1" "S6"
-   "rutin" "RUNX2" "RSK2" "RPS6KA" "ROS" "ROCK2" "ROCK1" "ROCK" "RKIP" "RIP1"
-   "RIG-I" "RICTOR" "ribosomal protein S6" "RhoC" "RhoB" "RhoA" "RET" "REDD1"
-   "RB1" "RB" "RASSF1A" "RASGRF" "RAS" "raptor" "RANKL" "RalA" "RAGE" "RAD51"
-   "RAC1" "quercetin" "PUMA" "PTX3" "PTP1B" "PTEN" "proteolysis" "PRL-3" "PRC1"
-   "pRb" "pRB" "PRAS40" "PPP1" "PPARgamma" "PPAR-gamma" "PML" "PLK1"
-   "PLCgamma1" "PLC-gamma1" "PKM2" "PKCepsilon" "PKCalpha" "PIK3R" "PIK3CA"
-   "PGC-1alpha" "PEA-15" "PDPK1" "PDKs" "PDK1" "PDK" "PDGFRbeta" "PDGFRalpha"
-   "PDGFR-AB" "PDGFR-AA" "PDGF" "PCNA" "Pbx" "PBX" "paxillin" "PARP-1" "PAK4"
-   "Pak1" "PAK" "PAI-1" "p85alpha" "p73" "p70S6K" "p67 phox" "p53" "p47 phox"
-   "p300" "p21" "p110beta" "p110alpha" "P-REX1" "OPN" "OPG" "Nutlin-3" "NTRKs"
-   "NTRK" "NTF3" "NRG1" "NRAS" "NPM" "NOX4" "NOX3" "NOX2" "NOX1" "nitric oxide"
-   "NGF" "NFY" "NF-kappaB p65" "NEMO" "NDRG2" "NADPH" "N-Ras" "MYPT1" "MYCN"
-   "MYC" "MUC1" "MTX" "mTOR" "MST1" "MMP9" "MMP-9" "MMP-2" "MMP" "MKP3" "MKP-1"
+'(("Zeb1" "ZEB1" "YAP1" "YAP" "XIAP" "Wnt" "WNT" "VEGFR2" "VEGFR-2" "VEGF-A"
+   "VEGF" "VCAM-1" "Vav1" "vascular endothelial growth factor" "uPAR" "uPA"
+   "tunicamycin" "tuberin" "TSC2" "TSC1" "tryptases" "tryptase" "trypsin"
+   "TrkB" "TrkA" "TRIM" "TRAIL" "TRAF6" "TRAF3" "TRAF2" "TP53" "TNFR1"
+   "TNFalpha" "TNF-alpha" "TNF" "TLR4" "TLR2" "TLR" "TIAM2" "Tiam1" "TIAM1"
+   "thioredoxin" "thioredoxin reductase" "thapsigargin" "TGFbeta1" "TGFalpha"
+   "TGF-beta1" "TGF-alpha" "telomerase" "TBK1" "TAP" "tamoxifen" "SYNJ2" "Syk"
+   "survivin" "superoxide" "STZ" "STING" "Stat3" "STAT3" "STAT1" "StAR" "SRF"
+   "SRC" "SPRED" "Sp1" "SOX2" "SOS1" "SNAI" "Smad3" "smad2" "Smad2" "smad"
+   "SMAD" "SLP-76" "Sirt1" "SIRT1" "signal transduction" "SHP2" "SHP-2" "SAF-1"
+   "S6K1" "S6" "rutin" "RUNX2" "RSK2" "RPS6KA" "ROS" "ROCK2" "ROCK1" "ROCK"
+   "RKIP" "RIP1" "RIG-I" "RICTOR" "ribosomal protein S6" "RhoC" "RhoB" "RhoA"
+   "RET" "resveratrol" "Resveratrol" "RelA" "REDD1" "Rb1" "RB1" "Rb" "RB"
+   "RASSF1A" "RASGRF" "RasGAPs" "RasGAP" "RAS" "raptor" "RANKL" "RalA" "RAGE"
+   "RAD51" "Rac1" "RAC1" "quercetin" "PUMA" "PTX3" "PTP1B" "PTEN" "Ptc" "PTC"
+   "proteolysis" "protein phosphatase 2" "protease" "profilins" "profilin"
+   "PRL-3" "PRC1" "PRAS40" "PR" "PPP1" "PPARgamma" "PPAR-gamma" "PP2A" "PML"
+   "PLK1" "PLCgamma1" "PLC-gamma1" "PKR" "PKM2" "PKCepsilon" "PKCdelta"
+   "PKCalpha" "PIK3R" "PIK3CA" "phospholipase Cbeta" "phospholipase C-beta"
+   "phosphodiesterase" "PGC-1alpha" "PEA-15" "PDPK1" "PDKs" "PDK1" "PDK"
+   "PDGFRbeta" "PDGFRalpha" "PDGFR-AB" "PDGFR-AA" "PDGF" "PCNA" "Pbx" "PBX"
+   "paxillin" "PARP-1" "Parkin" "PAK4" "Pak1" "PAK1" "PAK" "PAI-1" "p85alpha"
+   "p85" "p73" "p70S6K" "p67 phox" "p65" "p63" "p62" "p53" "p47 phox"
+   "p38 MAPK" "p300" "p27" "p27 Kip1" "p21" "p110beta" "p110alpha" "P-REX1"
+   "OPN" "OPG" "Nutlin-3" "NTRKs" "NTRK" "NTF3" "NRG1" "Nrf2" "NRF2" "NRAS"
+   "NPM" "NOX4" "NOX3" "NOX2" "NOX1" "Notch1" "nitric oxide" "NGF" "NFY"
+   "NFkappaB" "NF-kB" "NF-kappaBs" "NF-kappabeta" "NF-kappaB" "NF-kappaB p65"
+   "NEMO" "NDRG2" "NADPH" "N-Ras" "MYPT1" "myosin light chains"
+   "myosin light chain" "myosin heavy chains" "myosin heavy chain" "MYCN" "MYC"
+   "MUC1" "MTX" "mTOR" "MST1" "MMP9" "MMP-9" "MMP-2" "MMP" "MLC" "MKP3" "MKP-1"
    "MKK4" "MITF" "MIF" "metabolism" "MET" "melatonin" "MEK1/2" "MEK1" "MEK"
-   "MEF2C" "MED23" "MED14" "MDMX" "MDM2" "MAZ" "MAPKKK" "MAPK3" "MAPK1"
-   "MAP3K2" "MAP3K" "MAP2K2" "MAP2K1" "mammalian target of rapamycin" "maf"
-   "MAF" "luteolin" "LRRK2" "LMP1" "LKB1" "LIF" "leptin" "KRAS" "KLF5" "K-Ras"
-   "JNK1/2" "JNK1" "JAK2" "IRS2" "IRS1" "IRS-2" "IRS-1" "iron" "IRF3" "IR"
-   "IQGAP1" "invasiveness" "insulin" "insulin receptor" "iNOS"
-   "inflammatory response" "inflammation" "infiltration" "immune response"
-   "IL-8" "IL-6" "IL-4" "IL-2" "IL-1beta" "IL-18" "IL-10" "IKKbeta" "IKKalpha"
-   "IkappaBalpha" "IGF1R" "IGF1" "IGF-IR" "IGF-I" "IGF-1R" "IGF-1" "IFNgamma"
-   "IFN-beta" "IFI16" "IER3" "ICAM-1" "HuR" "hTERT" "HSPB" "HSP90AA" "HSP27"
-   "HSF1" "HRAS" "HO-1" "HMGB1" "HIPK2" "HIF1alpha" "HIF-1alpha" "HGF" "HER3"
-   "HER2" "HER-2" "HDM2" "HDAC3" "HDAC2" "HDAC1" "HB-EGF" "H2AX" "GTP"
-   "GSK3beta" "GSK-3beta" "GRP78" "GRB2" "gp91 phox" "glycolysis" "genistein"
-   "GEF-H1" "GDF15" "gastrin" "FoxO3a" "FOXO3a" "FOXO3" "FoxO1" "FOXO1" "FOXM1"
-   "FN" "FLT3" "FGFR4" "FGFR3" "FGFR2" "FGFR1" "FGF2" "FGF-2" "FasL" "FANCJ"
-   "FANC" "FAM83B" "FADD" "ezrin" "EZH2" "ETS1" "Ets-1" "ETS-1" "ethanol"
-   "estrogen" "estrogen receptor" "estradiol" "ERK5" "ERK2" "ERK1" "ErbB3"
-   "ErbB2" "ERBB2" "ERalpha" "ER" "epidermal growth factor" "EphA2" "eNOS"
-   "endocytosis" "ELMO1" "eIF4E" "EGFR" "EGF" "EGF receptor" "E2F1" "E2F"
-   "E-cadherin" "DUSP1" "DR4" "dopamine" "DNA-PKcs" "cytokine production"
-   "cytochrome C" "CYLD" "cyclin D2" "CXCR4" "CXCR2" "CXCL8" "CXCL12" "CtIP"
-   "CSF-1R" "CRAF" "COX-2" "CIP2A" "CIP1" "CHOP" "CHK2" "CHK1" "ceramide"
-   "cell viability" "cell migration" "cell cycle" "CDKN1A" "CDK9" "CDK8" "CDK6"
-   "CDK4" "cdk2" "CDK2" "Cdk1" "CDK1" "CDK" "CDC42" "CD95" "CD44" "CD4" "CD28"
-   "CD24" "CCND1" "CCN2" "CBP" "caveolin-1" "catalase" "caspase-9" "caspase-3"
-   "caspase-1" "caspase 8" "caspase 3" "CARP-1" "CAP23" "cAMP" "C/EBPbeta"
-   "C/EBPalpha" "c-Src" "c-Raf" "c-myc" "c-Met" "c-maf" "c-jun" "c-Jun" "c-fos"
-   "c-FLIP" "c-Abl" "BubR1" "BRSK2" "BRSK1" "BRCA2" "BRCA1" "BRCA" "BRAF"
-   "BMP9" "BMI1" "BMF" "BIM" "bFGF" "berberine" "BCR" "BCL2" "Bcl-xL" "bcl-2"
-   "Bcl-2" "BCL-2" "Bax" "Bak" "BAD" "B-Raf" "autophagic cell death" "ATR"
-   "ATM" "ATF2" "ASPP2" "ASPP1" "ASK1" "arsenic" "ARF" "apoptosis" "apocynin"
-   "apoA" "apigenin" "APC" "angiogenesis" "Ang II" "AMPK-alpha2" "AMP" "AM"
-   "ALS" "ALK" "aldosterone" "AKT2" "AKT1" "AKT" "AHR" "53BP1" "4EBP1" "4E-BP1"
-   "14-3-3zeta"))
+   "MEF2C" "MED23" "MED14" "MDMX" "MDM2" "Mcl-1" "MAZ" "MAPKKK" "MAPK3" "MAPK1"
+   "MAPK kinase kinase" "MAP3K2" "MAP3K" "MAP2K2" "MAP2K1"
+   "mammalian target of rapamycin" "maf" "MAF" "Mad2" "luteolin" "LRRK2" "LMP1"
+   "LKB1" "LIF" "leptin" "LAT" "KRAS" "KLF5" "K-Ras" "JNK1/2" "JNK1" "JAK2"
+   "IRS2" "IRS1" "IRS-2" "IRS-1" "iron" "IRF3" "IR" "IQGAP1" "invasiveness"
+   "insulin" "insulin receptor" "iNOS" "inflammatory response" "inflammation"
+   "infiltration" "immune response" "IL-8" "IL-6" "IL-4" "IL-2" "IL-1beta"
+   "IL-18" "IL-10" "IKKbeta" "IKKalpha" "IkappaBalpha" "IGF1R" "IGF1" "IGF-IR"
+   "IGF-I" "IGF-1R" "IGF-1" "IFNgamma" "IFN-beta" "IFI16" "IER3" "ICAM-1" "HuR"
+   "hTERT" "HSPB" "HSP90AA" "HSP27" "HSF1" "HRAS" "HO-1" "HMGB1" "HIPK2"
+   "HIF1alpha" "HIF1alpha protein" "HIF-1alpha" "HGF" "HER3" "HER2" "HER-2"
+   "HDM2" "HDAC3" "HDAC2" "HDAC1" "HB-EGF" "H2AX" "H-Ras" "GTP" "GSK3beta"
+   "GSK3" "GSK-3beta" "GRP78" "GRB2" "GPCRs" "GPCR" "gp91 phox" "glycolysis"
+   "genistein" "GEF-H1" "GDP" "GDF15" "gastrin" "Gab1" "Fyn" "FoxO3a" "FOXO3a"
+   "FOXO3" "FoxO1" "FOXO1" "FOXM1" "FN" "FLT3" "fibronectin" "FGFR4" "FGFR3"
+   "FGFR2" "FGFR1" "FGF2" "FGF-2" "FasL" "FANCJ" "FANC" "FAM83B" "FADD" "ezrin"
+   "EZH2" "ETS1" "Ets-1" "ETS-1" "ethanol" "ET-1" "estrogen"
+   "estrogen receptor" "estradiol" "ERK5" "ERK2" "ERK1/2" "ERK1" "ErbB3"
+   "ErbB2" "ERBB2" "ERalpha" "ER" "epidermal growth factor"
+   "epidermal growth factor receptor" "EphA2" "eNOS" "endocytosis" "ELMO1"
+   "Elk1" "eIF4E" "EGFR" "EGF" "EGF receptor" "Ect2" "E2F1" "E2F-1" "E2F"
+   "E-cadherin" "DUSP1" "DUSP" "DR4" "dopamine" "DNA-PKcs"
+   "cytokine production" "cytochrome c" "cytochrome C" "CYLD" "cyclin D2"
+   "CXCR4" "CXCR2" "CXCL8" "CXCL12" "CtIP" "CSF-1R" "CREB" "CRAF" "COX-2"
+   "collagen" "cofilin" "clathrin" "class I histone deacetylases"
+   "class I HDACs" "CIP2A" "CIP1" "CHOP" "CHK2" "CHK1" "ceramide"
+   "cell viability" "cell migration" "cell cycle" "CDKN2" "CDKN1A" "CDK9"
+   "CDK8" "CDK6" "CDK4" "cdk2" "CDK2" "Cdk1" "CDK1" "CDK" "CDC42" "CD95" "CD44"
+   "CD4" "CD28" "CD24" "CCND1" "CCN2" "CCAAT/enhancer binding protein" "CBP"
+   "caveolin-1" "catalase" "caspase-9" "caspase-3" "caspase-1" "caspase 8"
+   "caspase 3" "CARP-1" "CAP23" "cAMP" "C/EBPbeta" "C/EBPalpha" "C/EBP" "c-Src"
+   "c-Raf" "c-myc" "c-Met" "c-maf" "c-jun" "c-Jun" "c-fos" "c-FLIP" "c-Abl"
+   "BubR1" "BRSK2" "BRSK1" "BRCA2" "BRCA1" "BRCA" "BRAF" "BMP9" "BMI1" "BMF"
+   "BIM" "Bid" "bFGF" "berberine" "BCR" "BCL2" "Bcl-xL" "bcl-2" "Bcl-2" "BCL-2"
+   "Bax" "Bak" "BAD" "B-Raf" "autophagic cell death" "ATR" "ATM" "ATF2" "ASPP2"
+   "ASPP1" "ASK1" "arsenic" "ARF" "AR" "apoptosis" "apocynin" "apoA" "apigenin"
+   "APC" "AP-1" "angiogenesis" "AngII" "Ang II" "AMPKalpha1" "AMPK-alpha2"
+   "AMPK-alpha1" "AMPK" "AMP" "AM" "ALS" "ALK" "aldosterone" "Akt2" "AKT2"
+   "AKT1" "AKT" "AHR" "adiponectin" "actin" "53BP1" "4EBP1" "4E-BP1"
+   "14-3-3zeta" "14-3-3 proteins"))
 

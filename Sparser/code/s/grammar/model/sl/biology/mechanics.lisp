@@ -1388,7 +1388,9 @@ for this species"
      ',word ',id ,.(when type `(:type ',type)) 
      ,.(when species `(:species ',species)) 
      ,.(when members `(:members ',members))
-     ,.(when name `(:name ',name)) 
+     ,.(if name
+           `(:name ',name)
+           `(:name ',word)) 
      ,.(when synonyms `(:synonyms ',synonyms))
      ,.(when maintain-case `(:maintain-case ',maintain-case))))
 

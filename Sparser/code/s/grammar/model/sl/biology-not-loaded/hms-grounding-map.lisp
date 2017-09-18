@@ -817,8 +817,8 @@
     ("GATA" "BE:GATA")
     ("Gbeta" "BE:G_beta")
     ("GDF15" "UP:Q99988")
-    ("GDP" "HMDB" "HMDB01201" "PCID:8977" "CHEBI:17552
-GEF" "BE:GEF")
+    ("GDP" "HMDB" "HMDB01201" "PCID:8977" "CHEBI:17552")
+    ("GEF" "BE:GEF")
     ("GEF-H1" "UP:Q92974")
     ("gefitinib" "PCID:123631" "CHEBI:49668")
     ("GEFs" "BE:GEF")
@@ -2101,10 +2101,11 @@ GEF" "BE:GEF")
     ("Zeb1" "UP:P37275")
     ))
 
-#|(defparameter *hms-grounding-ht* (make-hash-table :size 3000 :test #'equal))
+(defparameter *hms-grounding-ht* (make-hash-table :size 3000 :test #'equal))
 
 (defun create-hms-grounding-ht ()
-  (mapc #'(lambda(list) (setf (gethash (first list) *hms-grounding-ht*) (cdr list))) *hms-grounding*))
+  (mapc #'(lambda(list)
+            (setf (gethash (first list) *hms-grounding-ht*) (cdr list)))
+        *hms-grounding*))
 
 (create-hms-grounding-ht)
-|#

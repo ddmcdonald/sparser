@@ -68,9 +68,143 @@ it outputs it to the non-upa-file"
       (output-protein-defs-to-files *new-protein-defs* output-file non-upa-file)
       output-file)))
 
+(defun read-and-replace-protein-defs-with-rev-defs (&key (protein-file "standardized-protein-defs-no-fams-complete.lisp") 
+                                                      (output-file "standardized-protein-defs-new.lisp")
+                                                      (non-upa-file "non-upa-upm-proteins-new.lisp")
+                                                      (prot-fam-file "new-protein-fam-no-id.lisp")
+                                                      (minimal-prot-fam "minimal-protein-families.lisp"))
+
+  "Taking an input list of the existing proteins and hash tables using
+UPA ID (Uniprot Accession number) as keys and UPM ID (Uniprot
+Mnemonic) as keys, output a file that has all proteins whose IDs are
+in the hash table changed to have \"UP:$UPA\" as their ID and the UPA
+and UPM in their alternate names field -- if the ID isn't a UPA or UPM
+it outputs it to the non-upa-file"
+  (unless (boundp '*upa-key-upm-val*)
+    (load
+     (concatenate 'string "sparser:bio;"
+                  "uniprot-accession-id-mnemonic.lisp")))
+
+  (unless (boundp '*hgnc-up-ht*)
+    (load (concatenate 'string "sparser:bio-not-loaded;"
+                       "hgnc;hgnc-with-ids-2.lisp")))
+
+  (let* ((new-defs (read-and-normalize-protein-defs :protein-file protein-file))
+         (prot-rev (read-and-normalize-protein-defs :protein-file "proteins-revised-def-proteins.lisp" :missing-up t))
+         (reach-prot (read-and-normalize-protein-defs :protein-file "new-defs;reach-additional-proteins.lisp" :missing-up t)))
+    
+    (multiple-value-bind (prot-defs fam-defs)
+          (merge-duplicates-and-separate-families-with-rev-defs (append new-defs prot-rev reach-prot))
+    
+    (unless (and (eq output-file t)
+                 (eq non-upa-file t))
+      ;; the two files must be opened and superseded at the top of the loop
+      ;;  so that we can re-run the code and generate new files
+      ;;  without items from old files hanging around
+      (output-protein-and-fam-defs-to-files prot-defs fam-defs output-file
+                                            non-upa-file prot-fam-file minimal-prot-fam)
+      output-file))))
+
 (defparameter *duplicate-protein-ht* (make-hash-table :size 30000 :test #'equal))
 
 (defparameter *minimal-families* nil)
+(defparameter *non-human-alt-defs* nil)
+(defparameter *non-hms-alt-defs* nil)
+(defparameter *hms-for-minimal-fam* nil)
+(defparameter *one-human-minimal-fam* nil)
+(defun merge-duplicates-and-separate-families-with-rev-defs (defs)
+  (declare (special defs *duplicate-protein-ht* *non-human-alt-defs* *hms-grounding-ht*))
+  (unless (boundp '*hms-grounding-ht*)
+    (load "sparser:bio-not-loaded;hms-grounding-map.lisp"))
+  (unless (boundp '*upa-key-upm-val*)
+    (load "sparser:bio;uniprot-accession-id-mnemonic.lisp"))
+  (let (non-standard-defs merged-defs protein-family-ht)
+    (declare (special non-standard-defs merged-defs protein-family-ht))
+    (setq *duplicate-protein-ht* (merge-duplicate-protein-defs defs)) 
+    (setq non-standard-defs
+          (loop for d in defs unless (eq (car d) 'define-protein)
+                  collect d))
+
+    ;; not downcasing alt-defs because it affects whether phosphorylation gets applied appropriately
+    #+ignore(setq merged-defs (sort (mapcar #'(lambda (x)
+                                        (strip-explicit-ids-and-downcase (cdr x)))
+                                    (hal *duplicate-protein-ht*)) #'string< :key #'second))
+    (setq merged-defs (sort (mapcar #'(lambda(x) (let ((def (cdr x)))
+                                                   `(,(car def) ,(second def)
+                                                      ,(remove-duplicates (third def) :test #'equal))))
+                                    (hal *duplicate-protein-ht*)) #'string< :key #'second))
+    (setq protein-family-ht (get-protein-family-ht merged-defs))
+;    (lsp-break "post-fam-ht")
+    (setq *minimal-families* nil)
+    (loop for possible-family in (hal protein-family-ht)
+            
+          when (eq (length possible-family) 3)
+          do (let* ((fam-word (first possible-family))
+                    (1st-id (second possible-family))
+                    (2nd-id (third possible-family))
+                    (1st-id-def (gethash 1st-id *duplicate-protein-ht*))
+                    (2nd-id-def (gethash 2nd-id *duplicate-protein-ht*))
+                    (1st-up? (search "UP:" 1st-id :test #'equal))
+                    (2nd-up? (search "UP:" 2nd-id :test #'equal))
+                    (1st-human? (human-mnemonic? (gethash (string-trim "UP:" 1st-id)
+                                                         *upa-key-upm-val*)))
+                    (2nd-human? (human-mnemonic? (gethash (string-trim "UP:" 1st-id)
+                                                          *upa-key-upm-val*)))
+                    (hms-mapping (gethash fam-word *hms-grounding-ht*)))
+              ; (declare (special possible-family fam-word 1st-id 2nd-id))
+              ; (lsp-break "minimal family defs") 
+                    (cond ((and 1st-up? 2nd-up?)
+                           (cond ((and 1st-human?
+                                       (not 2nd-human?))
+                                  (push `(,2nd-id ,possible-family) *non-human-alt-defs*)
+                                  (setf (gethash 2nd-id *duplicate-protein-ht*)
+                                        (remove-syn-from-prot-def 2nd-id-def fam-word))
+                                  (remhash fam-word protein-family-ht))
+                                 ((and 2nd-human?
+                                       (not 1st-human?))
+                                  (push `(,1st-id ,possible-family) *non-human-alt-defs*)
+                                  (setf (gethash 1st-id *duplicate-protein-ht*)
+                                        (remove-syn-from-prot-def 1st-id-def fam-word))
+                                  (remhash fam-word protein-family-ht))
+                                 (t
+                                  t)))
+                          ((equal hms-mapping 1st-id)
+                           (push `(,2nd-id ,possible-family) *non-hms-alt-defs*)
+                           (setf (gethash 2nd-id *duplicate-protein-ht*)
+                                 (remove-syn-from-prot-def 2nd-id-def fam-word))
+                           (remhash fam-word protein-family-ht))
+                          ((equal hms-mapping 2nd-id)
+                           (push `(,1st-id ,possible-family) *non-hms-alt-defs*)
+                           (setf (gethash 1st-id *duplicate-protein-ht*)
+                                 (remove-syn-from-prot-def 1st-id-def fam-word))
+                           (remhash fam-word protein-family-ht))
+                          (hms-mapping
+                           (push `(,hms-mapping ,possible-family) *hms-for-minimal-fam*)
+                           (remhash fam-word protein-family-ht))
+                          ((or 1st-human? 2nd-human?)
+                           (push possible-family *one-human-minimal-fam*)
+                           (remhash fam-word protein-family-ht))
+                          (t
+                           (push possible-family *minimal-families*)
+                           (remhash fam-word protein-family-ht))
+                         )))
+    (setq merged-defs (sort (mapcar #'(lambda (x) (remove-dup-alt-defs (cdr x)))
+                                    (hal *duplicate-protein-ht*)) #'string< :key #'second))
+    (setq merged-defs
+          (append
+           (loop for def in merged-defs
+                 collect (remove-family-names def protein-family-ht t))
+           (loop for def in non-standard-defs
+                 collect (remove-family-names def protein-family-ht t))))
+    ;;(lsp-break "merge-duplicates-and-separate-families")
+    (values merged-defs
+            (sort
+             (merge-family-defs
+              (loop for fam in (hal protein-family-ht)
+                    when (cddr fam)
+                    collect `(def-family ,(car fam) :members ,(sort (cdr fam) #'string<))))
+             #'string< :key #'car))))
+
 (defun merge-duplicate-protein-defs (defs)
   (clrhash *duplicate-protein-ht*)
   (loop for def in defs
@@ -82,7 +216,6 @@ it outputs it to the non-upa-file"
                     def
                     (gethash (second def) *duplicate-protein-ht*))))))
   *duplicate-protein-ht*)
-
 
 (defun merge-duplicates-and-separate-families (defs)
   (declare (special defs))
@@ -150,6 +283,11 @@ it outputs it to the non-upa-file"
                       `(:synonyms ,(cddr fd)))))))
                
 
+(defun remove-dup-alt-defs (def)
+  `(,(car def) ,(second def)
+     ,(put-reactome-ids-at-end
+       (remove-duplicates (third def)))))
+
 (defun strip-explicit-ids-and-downcase (def)
   `(,(car def) ,(second def)
      ,(put-reactome-ids-at-end
@@ -169,12 +307,19 @@ it outputs it to the non-upa-file"
          (loop for wd in wds when (eq 0 (search "PROTEIN" wd)) collect wd)))
   
 
-(defun remove-family-names (def ht)
+(defun remove-family-names (def ht &optional keep-uids)
   `(,(car def) ,(second def)
      ,(loop for alt in (third def)
-            unless
-              (or (cdr (gethash alt ht))
-                  (search ":" alt))
+            unless (if keep-uids
+                       (cdr (gethash alt ht))
+                       (or (cdr (gethash alt ht))
+                           (search ":" alt)))
+            collect alt)))
+
+(defun remove-syn-from-prot-def (def syn)
+  `(,(car def) ,(second def)
+     ,(loop for alt in (third def)
+            unless (equal syn alt)
             collect alt)))
 
 (defun merge-protein-defs (def1 def2)
@@ -184,6 +329,54 @@ it outputs it to the non-upa-file"
          ,(sort (remove-duplicates (append (third def1) (third def2))
                                    :test #'equal)
                 #'string<))))
+
+(defparameter *min-fam-etc* '(*minimal-families*  *non-human-alt-defs*  *non-hms-alt-defs*
+                              *hms-for-minimal-fam*  *one-human-minimal-fam*))
+(defun output-protein-and-fam-defs-to-files (prot-defs fam-defs output-file-name
+                                             non-upa-file-name prot-fam-file minimal-prot-fam)
+  (declare (special *min-fam-etc*))
+  (with-open-file (prot-stream (concatenate 'string "sparser:bio;" output-file-name)
+                               :direction :output :if-exists :supersede 
+                               :if-does-not-exist :create
+                               :external-format :UTF-8)
+    (with-open-file (non-upa-stream (concatenate 'string "sparser:bio;" non-upa-file-name)
+                                    :direction :output :if-exists :supersede
+                                    :if-does-not-exist :create
+                                    :external-format :UTF-8)
+      (with-open-file (fam-stream (concatenate 'string "sparser:bio;" prot-fam-file)
+                                  :direction :output :if-exists :supersede 
+                                  :if-does-not-exist :create
+                                  :external-format :UTF-8)
+        (with-open-file (minimal-fam-stream (concatenate 'string "sparser:bio;" minimal-prot-fam)
+                                            :direction :output :if-exists :supersede
+                                            :if-does-not-exist :create
+                                            :external-format :UTF-8)
+          (format non-upa-stream "(in-package :sparser)~%~%")
+          (format prot-stream "(in-package :sparser)~%~%")
+          (format fam-stream "(in-package :sparser)~%~%")
+          (format minimal-fam-stream "(in-package :sparser)~%~%")
+          ;; REMEMBER-- sort is a destructive operation -- you can't safely sort the same variable twice
+          (setq prot-defs (sort prot-defs #'string< :key #'second))
+          (loop for def in prot-defs
+                do
+                  (case (car def)
+                    (define-protein (lc-one-line-print def prot-stream))
+                    (t (unless (or (search "PROTEIN" (second def))
+                                   (search ">" (second def))
+                                   (search "phosphorylated" (second def) :test #'equalp)
+                                   (search "del" (second def)))
+                         (lc-one-line-print `(define-protein ,.(cdr def)) non-upa-stream)))))
+          (setq fam-defs (sort fam-defs #'string< :key #'second))
+          (loop for def in fam-defs
+                do
+                  (case (car def)
+                    (def-family (lc-one-line-print def fam-stream))
+                    (t nil)))
+           (loop for min-fam  in *min-fam-etc*
+                 do (format minimal-fam-stream "(defparameter ~s ~%'~s)~%~%" min-fam (symbol-value min-fam)))
+           #+ignore(loop for def in *minimal-families*
+                do (lc-one-line-print def minimal-fam-stream)))))))
+
 
 (defun output-protein-defs-to-files (new-defs output-file-name non-upa-file-name)
   (with-open-file (stream (concatenate 'string "sparser:bio;" output-file-name)
@@ -215,7 +408,7 @@ it outputs it to the non-upa-file"
                 (t nil))))))
 
 
-(defun read-and-normalize-protein-defs (&key (protein-file "standardized-protein-defs-complete.lisp") )
+(defun read-and-normalize-protein-defs  (&key (protein-file "standardized-protein-defs-complete.lisp") missing-up)
   "Taking an input list of the existing proteins and hash tables using
 UPA ID (Uniprot Accession number) as keys and UPM ID (Uniprot
 Mnemonic) as keys, output a list that has all proteins whose IDs are
@@ -232,9 +425,9 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
       (loop for prot = (read input nil)
             while prot
             when (and (stringp (second prot)) (consp (third prot)))
-            collect (revise-protein-def prot )))))
+            collect (revise-protein-def prot :missing-up missing-up)))))
 
-(defun revise-protein-def (def
+(defun revise-protein-def (def &key missing-up
                            &aux
                              (prot (second def))
                              (syns (cons prot (third def)))
@@ -243,9 +436,12 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
                              (name (get-best-protein-name id syns))
                              (simp-syns (simplify-protein-names syns)))
   (declare (special def))
-  (if (search ":" id)
-      `(,(car def) ,id ,(remove id simp-syns :test #'equal))
-      `(non-standard-define-protein ,(or id (car syns)) ,(remove (or id (car syns)) simp-syns :test #'equal))))
+  (if (and missing-up
+           (not (search "UP:" id)))
+      `(,(car def) ,(concatenate 'string "UP:" id) ,(remove id simp-syns :test #'equal))
+      (if (search ":" id)
+          `(,(car def) ,id ,(remove id simp-syns :test #'equal))
+          `(non-standard-define-protein ,(or id (car syns)) ,(remove (or id (car syns)) simp-syns :test #'equal)))))
 
 (defun get-best-protein-id (def &aux (syns (cons (second def) (third def))))
   (or (find-upa-entry syns)
@@ -938,8 +1134,9 @@ new file to append to new-prot-fam, those without get filtered to "
                (push (concatenate 'string "PCID:" (nth (+ grnd-i 1) groundings))
                      good-groundings)
                (setq grnd-i (+ grnd-i 2)))
-              ;; "GO" "GO:0006915"
-              ((equal "GO" grounding)
+              ;; "GO" "GO:0006915" "IP" "IPR015503"
+              ((or (equal "GO" grounding)
+                   (equal "IPR" grounding))
                (push (nth (+ grnd-i 1) groundings) good-groundings)
                (setq grnd-i (+ grnd-i 2)))
                ;; "HMDB" "HMDB00108"  "MESH" "D017209" instead of "MESH:D017209" "NONCODE" "NONHSAT028507.2" "LINCS" "10023-103"  "CHEMBL" "CHEMBL98"
