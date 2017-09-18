@@ -164,18 +164,26 @@
   (:method ((i sp::individual))
     "First determine our options by looking at the range of options
      provided by the resources. Then look for bound variables that are
-     suggestive of noun vs. verb reading for this particular individual"
+     suggestive of noun vs. verb reading for this particular individual.
+     If there's no descrimination, just check whether all the resources
+     agree on the pos and return that."
     (let* ((resources (sp::applicable-resources i))
            (possible-pos
             (remove-duplicates (loop for r in resources
                                   collect (lookup-pos r)))))
+
+      (when (null (cdr possible-pos))
+        (return-from determine-pos (car possible-pos)))
+
       (loop for m-pos in possible-pos
          as key-pos = (intern (symbol-name m-pos) (find-package :keyword))
          when (sp::incluldes-suggestive-variables i key-pos)
          do (return-from determine-pos m-pos))
+
       ;; If that wasn't enough, what next?
-      (lsp-break "Need more heuristics to break tie for ~a among ~a"
-                 i possible-pos))))
+      (push-debug `(,resources ,possible-pos))
+      (break "Need more heuristics to break tie for ~a among ~a"
+             i possible-pos))))
 
 
 
@@ -185,7 +193,7 @@
   (:method ((alternatives cons) (pos symbol))
     (let* ((mpos (if (eq (symbol-package pos) (find-package :mumble))
                    pos
-                   (sp::mumble-pos pos)))) ;; presume sparser
+                   (sp::mumble-pos pos)))) ;; presume sparser pos
       (loop for mrd in alternatives
          when (eq mpos (lookup-pos mrd))
          collect mrd))))
@@ -202,7 +210,7 @@
   (:method ((mrd mumble-rdata))
     (if (head-word mrd)
       (lookup-pos (head-word mrd))
-      (else ;; it's abstract
+      (else ;; mrd is abstract
         (lookup-pos (linked-phrase mrd)))))
   (:method ((pair variable-mdata-pair))
     (lookup-pos (mpair-mdata pair)))
@@ -216,8 +224,10 @@
         (adv 'adverb)
         (ap 'adjective)
         (np 'noun)
+        (preposition 'preposition)
+        (pp 'preposition)
         (otherwise
-         ;;(warn "No pos option for ~a" n)
+         (warn "No part of speech option for ~a" n)
          'noun))))
   (:method ((items cons))
     "For some reason (///) probably going all the way back to has-mumble-rdata

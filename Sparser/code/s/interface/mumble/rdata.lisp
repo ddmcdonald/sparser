@@ -246,12 +246,18 @@ and/or by which subcategorized arguments the individual binds.
                              (m::get-lexicalized-phrase m-word m-pos))
                    when lp do (pushnew lp resources)))
               (when mdata-field
-                (loop for mdata in mdata-field do
-                     (etypecase mdata
-                       (m::mumble-rdata (push mdata resources))
-                       (m::multi-subcat-mdata
-                        (loop for md in (m::mdata-pairs mdata)
-                           do (push md resources))))))))
+                (etypecase mdata-field
+                  (cons (loop for mdata in mdata-field do
+                             (etypecase mdata
+                               (m::mumble-rdata (push mdata resources))
+                               (m::multi-subcat-mdata
+                                (loop for md in (m::mdata-pairs mdata)
+                                   do (push md resources))))))
+                  (m::mumble-rdata
+                   (push mdata-field resources))
+                  (m::multi-subcat-mdata
+                   (loop for md in (m::mdata-pairs mdata-field)
+                      do (push md resources)))))))
       resources)))
 
 (defgeneric incluldes-suggestive-variables (i pos)
@@ -265,6 +271,8 @@ and/or by which subcategorized arguments the individual binds.
   (:method ((i individual) (pos (eql :verb)))
     (or (indicates-tense? i)))
   (:method ((i individual) (pos (eql :adjective)))
+    nil)
+  (:method ((i individual) (pos (eql :preposition)))
     nil)
   (:method ((i individual) (pos T))
     (error "Unexpected part of speech: ~a" pos)))
