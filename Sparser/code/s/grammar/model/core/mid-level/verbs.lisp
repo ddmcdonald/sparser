@@ -136,9 +136,6 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
  composes with 'make the stack'."
   :realization
     (:verb ("make" :past-tense "made")
-     ;; :etf (svo-passive)
-     ;; :s actor
-     ;; :o patient
      :adjp-complement adj-comp 
      :mumble ("make" svo :a actor :o patient)))
           

@@ -69,6 +69,7 @@ support a substantial number of blocks.
 
 (define-category step
   :specializes block
+  :mixins (artifact) ;; to serve it's function it's effectively man-made
   :restrict ((part-of staircase))
   :realization (:noun "step"))
 
