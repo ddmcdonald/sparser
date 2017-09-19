@@ -1181,15 +1181,9 @@ the process.
                          (stringp (car (gethash (pname word) *uniprot-name-ht*))))
                 (resolve/make (car (gethash (pname word) *uniprot-name-ht*))))))
 
-    ;; The real form to use
-    ;;     (setq i (find-or-make-individual category :name word))
-    ;; The find-or-make call will set up a rule for the short form
-    ;; as a common noun that has this individual as its referent.
-    ;; Ignoring brackets since this runs with the new chunker
-
-
-
     (setq i (find-or-make-individual category :name (or name word)))
+    ;; This also sets up a rule for the name/word as a common noun
+    ;; with the individual as its referent
     
     ;;(lsp-break "make-typed-bio-entity")
    
@@ -1215,6 +1209,8 @@ the process.
       (when (consp members)
         (setq i (set-family-members i members)))
 
+      ;; Update the referents of the rules to be the extended
+      ;; individual created by binding the identifier.
       (cond
         (rules
          (loop for r in rules when (cfr-p r)
@@ -1235,11 +1231,11 @@ the process.
                     :form form
                     :referent i)
                   rules))))
-    (when
-        (or name word)
-      (make-corresponding-mumble-resource
-       (or name word)
-       :common-noun i))
+      
+      (when (or name ;; from Uniprot
+                word) ;; passed in
+        (make-mumble-resource-stripping-underbar-human i name word))
+      
     
       (when synonyms ;; quoted list of strings
         (dolist (syn synonyms)
@@ -1262,8 +1258,8 @@ the process.
                 (push (define-cfr label `(,plural)
                         :form form
                         :referent (if (value-of 'name i)
-                                  (bind-dli-variable 'raw-text word i)
-                                  (bind-dli-variable 'name word i)))
+                                    (bind-dli-variable 'raw-text word i)
+                                    (bind-dli-variable 'name word i)))
                       rules))))))
 
       ;; Now we do that by-hand for the long-form. If the long form needs
@@ -1292,6 +1288,26 @@ the process.
         (store-category-documentation i documentation))
 
       i)))
+
+
+(defun make-mumble-resource-stripping-underbar-human (i name word)
+  "For some reason I don't really understand, the realization we've been
+   getting for, e.g., BRAF has been 'BRAF_HUMAN'. This and variations
+   on the problem led Alex to writte pretty-bio-name to look at the
+   protein and see what could be done better (interface/mumble/binding-helpers.lisp).
+   It's not so easy to thread that check in during realization in the 
+   new, more grammar-directed code, so rather than jump through hoops
+   to remove the '_HUMAN' during realization, we'll set up the lp with 
+   the proper form to begin with. 
+   The input name/word are words (polywords) at this point"
+  (let* ((term (or name word)) ;; original version perferred name
+         (pname (pname term))
+         (index (search "_HUMAN" pname)))
+    (when index
+      (let ((prefix (subseq pname 0 index)))
+        (setq term (resolve/make prefix))))
+    (make-corresponding-mumble-resource term  :common-noun i)))
+
 
 
 (defun rules-with-greek-chars-substituted (short long greek-words label form i)
