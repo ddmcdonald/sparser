@@ -1794,7 +1794,7 @@
 (def-family "transcriptional adapter 3" :members ("UP:O75528" "UP:Q8R0L9")) 
 (def-family "transporter" :members ("UP:P48029" "UP:Q9DGN5")) 
 (def-family "transportin" :members ("UP:P38217" "UP:Q55CQ7")) 
-(def-family "trap" :members ("UP:P13686" "UP:Q8NHU6")) 
+;;(def-family "trap" :members ("UP:P13686" "UP:Q8NHU6")) 
 (def-family "tri" :members ("UP:Q8VYI5" "UP:Q9NQV6")) 
 (def-family "trif" :members ("UP:Q86XR7" "UP:Q8IUC6")) 
 (def-family "trigger factor" :members ("UP:P0A850" "UP:Q6F159")) 
