@@ -133,6 +133,9 @@
                            as mdata = (mpair-mdata pair)
                            when (binds-all-vars i vars)
                            collect pair)))
+        (unless consistent
+          (error "None of the pairs's variables are consistent ~
+                  with bindings on ~a" i))
         (if (null (cdr consistent)) ;; pairs
           (mpair-mdata (car consistent))
           (let ((var-count 0) longest)
