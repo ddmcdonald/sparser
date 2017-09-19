@@ -115,7 +115,6 @@ broadly speaking doing for you all the things you might do by hand.
                         (if name
                             (bind-dli-variable :name name ind)
                             ind))))))
-    ;;(when (equal (pname base-word) "MEK") (lsp-break "MEK before"))
     (add-rules-cond-plural base-word category i :plural plural :no-plural no-plural)
     (when (and name 
                (not (equal name base-word))) ;; if the name is the same as the base-word, there's nothing to do
@@ -132,12 +131,21 @@ broadly speaking doing for you all the things you might do by hand.
     i))
 
 (defun stipulate-simple-mumble-resource (i s-word s-pos)
+  "In define-individual-with-id, where there is a provision for synonyms, the base
+   word and every synonym is processed by calling make-rules-for-head, which is
+   about as high a def function as we have to get the job done (e.g. write the
+   needed unary rules). Make-rules-for-head is also the locus of the action that
+   sets up the mapping to lexicalized phrases used to realized the individual.
+   This mapping is a hash-table, last setf wins. This stipulate function is called
+   from a point where we know that no other calls to make-rules-for-head will
+   occur. Its purpose is to fix things up by looking up the lexicalized phrase
+   for the base word (i.e. 'MEK' rather than 'mitogen-activated protein kinase kinase')
+   and making the mapping point to it."
   (let* ((m-word (get-mumble-word-for-sparser-word s-word s-pos))
          (m-pos (mumble-pos s-pos))
          (lp (m::get-lexicalized-phrase m-word m-pos)))
     (assert lp (i s-word) "No lexicalized phrase was defined for ~s on ~a"
             (pname s-word) i)
-    ;;(when (equal (pname s-word) "MEK") (lsp-break "MEK after"))
     (m::record-lexicalized-phrase i lp m-pos)
     lp))
 
