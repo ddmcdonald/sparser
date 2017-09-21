@@ -232,6 +232,44 @@ collected a set of ns-examples"
           ',(hal *bio-chemical-heads*))
        stream)))
   filename)
+
+(defun ns-biochemical-heads->file (&key (prefix "1-500")
+                                     (filename 
+                                      (format nil
+                                              "sparser:tools;ns-stuff;ns-biochemical-heads-~a.lisp"
+                                              prefix)))
+  "Save the collected biochemical-heads to a file"
+  (when (and (boundp '*bio-chemical-heads*)
+             *bio-chemical-heads*)
+    (with-open-file (str filename :direction :output :if-does-not-exist :create
+                         :if-exists :supersede)
+      (print `(in-package :sparser) str)
+      (print `(defparameter *bio-entity-head-strings*
+                (remove-duplicates
+                 (append
+                  ',(mapcar #'car (hal *bio-entity-heads*))
+                  (if (boundp '*bio-entity-head-strings*)
+                      *bio-entity-head-strings*
+                      nil))
+                 :test #'equal))
+                     
+             str)
+      (pprint
+       `(defparameter *incremental-biochem-heads*
+          ',(hal *bio-chemical-heads*))
+       str)
+      (pprint `(unless (boundp '*all-biochemical-heads*)
+                 (defparameter *all-biochemical-heads*
+                   (make-hash-table :size 300000 :test #'equal)))
+              str)
+      (pprint
+       `(loop for h in *incremental-biochem-heads*
+              do
+                (incf (gethash (car h) *all-biochemical-heads* 0)
+                      (cdr h)))
+       str))))
+
+     
           
 (defparameter *undef-ns* nil)
 
