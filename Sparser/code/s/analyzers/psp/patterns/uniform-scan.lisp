@@ -148,8 +148,11 @@
         end-pos)))
 
 (defun is-phosphorylated-protein? (start end)
-  (let* ((sur-str  (string-trim " " (extract-characters-between-positions start end)))
-         (pro-string? (cond ((eq #\p (aref  sur-str 0))
+  (let* ((extr-string (extract-characters-between-positions start end))
+         (sur-str  (when (> (length extr-string) 0) (string-trim " " extr-string)))
+         (pro-string? (cond ((equal extr-string "") ;; couldn't get it
+                             nil)
+                            ((eq #\p (aref  sur-str 0))
                              (subseq sur-str
                                      (if (eq 0 (search "p-" sur-str)) 2 1)))
                             ((and (eq #\P (aref  sur-str 0))
@@ -451,7 +454,7 @@ included, collect ns from n june articles"
          (nsitem (actual-characters-of-word start-pos end-pos)) 
          (ns-edge-pattern
           (list (characterize-words-in-region start-pos end-pos)
-                (swee-ns-region  start-pos end-pos))))
+                (sweep-ns-region  start-pos end-pos))))
     (declare (special ns-item ns-edge-pattern))
     ;;(when (or (search "-" nsitem) (search "/" nsitem))
     ;;(lsp-break "collect-no-space-sequence-into-word")
