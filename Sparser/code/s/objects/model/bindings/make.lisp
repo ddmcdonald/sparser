@@ -386,6 +386,8 @@ returning a new one.
    value of the variable in its binding is replaced with this value."
   (declare (special *description-lattice*))
   (let ((var (find-variable-for-category var/name individual)))
+    (if (null var)
+        individual ;; can't rebind -- no variable
     (if *description-lattice*
       (let ((bindings (indiv-old-binds individual))
             (new (make-dli-for-ref-category (itype-of individual)))
@@ -411,7 +413,7 @@ returning a new one.
           (setf (binding-value b) value)
           ;; now it needs to be indexed, but that would entail
           ;; refactoring some code and can wait for a bit (1/31/17)
-          individual)))))
+          individual))))))
 
 (defun rebind-value (val new-val individual)
   "Create (or find) a variant of individual where the previous

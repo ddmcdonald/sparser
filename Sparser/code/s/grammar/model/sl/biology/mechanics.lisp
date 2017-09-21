@@ -693,7 +693,7 @@ uid binding, if there is one"
     (if known-word
       (let* ((rule (find-single-unary-cfr known-word))
              (i (when rule (cfr-referent rule))))
-        (if i
+        (if (and (individual-p i) (not (value-of 'predication i))) ;; strange case "ppERK"
           (if (itypep i category::protein)
             (let* ((phospho-i (make-phosphorylated-protein i pname))
                    (p-word (define-word/expr pname :override-duplicates))
@@ -1305,9 +1305,9 @@ the process.
          (index (search "_HUMAN" pname)))
     (when index
       (let ((prefix (subseq pname 0 index)))
-        (setq term (resolve/make prefix))))
-    (make-corresponding-mumble-resource term  :common-noun i)))
-
+        (setq term (resolve prefix))))
+    (when term
+      (make-corresponding-mumble-resource term  :common-noun i))))
 
 
 (defun rules-with-greek-chars-substituted (short long greek-words label form i)

@@ -73,10 +73,13 @@
         (install-terminal-edges prior-word prior-pos pos-before) ;; returned nil ??///
         (let* ((edges (preterminal-edges prior-pos))
                (single-caps-edge
-                (find category::single-capitalized-letter edges
-                      :key #'edge-category)))
+                (or
+                 (find category::single-capitalized-letter edges
+                       :key #'edge-category)
+                 (find category::greek-letter edges :key #'edge-category))))
+          (declare (special edges))
           (unless single-caps-edge
-            (error "No caps in on ~a~%among ~a" prior-pos edges))
+            (lsp-break "No caps in on ~a~%among ~a" prior-pos edges))
           (setq prior-edge single-caps-edge)))
 
       (when (eq (edge-category prior-edge)

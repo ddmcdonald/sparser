@@ -128,17 +128,18 @@
     ;;/// There's an edge case when the whitespace after
     ;; is just over the edge into the next buffer
     (let ((adjusted-end
-           (cond 
-            ((null ws-after) end-index)
-            ((spaces-word? ws-after)
-             (- end-index (number-of-spaces ws-after)))
-            ((eq ws-after *newline*)
-             (- end-index 1))
-            (t
-             (push-debug `(,ws-after ,pos-before ,pos-after))
-             (break "New case of 'whitespace after' in ~
+           (cond
+             ((null end-index) nil)
+             ((null ws-after) end-index)
+             ((spaces-word? ws-after)
+              (- end-index (number-of-spaces ws-after)))
+             ((eq ws-after *newline*)
+              (- end-index 1))
+             (t
+              (push-debug `(,ws-after ,pos-before ,pos-after))
+              (break "New case of 'whitespace after' in ~
                      computing actual-characters-of-word ~%~a"
-                    ws-after)))))
+                     ws-after)))))
 
       (when *buffers-in-transition*
         ;; We recently swapped buffers and might have a token
@@ -157,12 +158,16 @@
                      (treetops-between pos-before pos-after))
             (setq *buffers-in-transition* nil))))
 
-      (if *buffers-in-transition*
+      (if (or *buffers-in-transition* (null adjusted-end))
         (cond
          #+ignore(t 
           ;; fall through to the version that will lose the
           ;; capitalization
-          (try-reconsituting-split-tokens words start-index adjusted-end))
+                  (try-reconsituting-split-tokens words start-index adjusted-end))
+         ((member nil (treetops-between pos-before pos-after))
+          ;; can get nils in cases like
+          ;;  "g. Mdm2, could be the targets for phosphorylation by HIPK2."
+          (error "actual-characters-of-word -- can't extract characters in word -- bad string, possibly sentence corruption"))
          (t
           (let ((pnames (mapcar #'word-pname (treetops-between pos-before pos-after))))
             (apply #'string-append pnames))))
@@ -184,7 +189,11 @@
 (defun extract-characters-between-positions (start-pos end-pos)
   (let ((start (pos-character-index start-pos))
         (end (pos-character-index end-pos)))
-    (extract-string-from-char-buffers start end)))
+    (if (and (numberp start) (numberp end))
+        (extract-string-from-char-buffers start end)
+        (else (warn "can't extract string between ~s and ~s in ~s"
+                    start end (current-string))
+              ""))))
 
 (defun write-characters-between-positions (start-pos end-pos stream)
   (format stream "~a" (extract-characters-between-positions start-pos end-pos)))

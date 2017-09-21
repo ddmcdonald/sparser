@@ -744,17 +744,21 @@ sentences.
                (or (not (eq script :biology))
                    (not (and (itypep (edge-referent left-edge) 'amino-acid)
                              (itypep (edge-referent right-edge) 'number))))))
-        (do-early-rules-sweep-between (where-tt-ends left-edge start) end)
-        (else
-          (multiple-value-setq (new-edge rule)
-            (apply-early-rule-at start mid-pos))
-          (do-early-rules-sweep-between
-              (if new-edge
-                ;; edge at the beginning changed, so start at the
-                ;;  same start, since the middle position has shifted
-                (pos-edge-starts-at new-edge) ;; CS rules generate an edge
-                mid-pos)
-            end))))))
+          (if (where-tt-ends left-edge start)
+              (do-early-rules-sweep-between (where-tt-ends left-edge start) end)
+              (warn "do-early-rules-sweep-between (where-tt-ends left-edge start) is nil in ~s"
+                    (current-string)))
+          (else
+            (multiple-value-setq (new-edge rule)
+              (apply-early-rule-at start mid-pos))
+            (let ((start-pos (if new-edge
+                                 ;; edge at the beginning changed, so start at the
+                                 ;;  same start, since the middle position has shifted
+                                 (pos-edge-starts-at new-edge) ;; CS rules generate an edge
+                                 mid-pos)))
+              (if (position-p start-pos)
+                  (do-early-rules-sweep-between start-pos end)
+                  (lsp-break "(position-p start-pos)"))))))))
         
 (defun apply-early-rule-at (start middle-pos)
   (let* ((edges-ending-there (tt-edges-starting-at (pos-starts-here start)))
@@ -798,10 +802,15 @@ sentences.
 
 ;; (trace-terminals-sweep)
 
+
+(defparameter *show-sent* nil)
 (defun pattern-sweep (sentence)
   "Scans the sentence treetop by treetop in a loop.
    Looks for patterns initiated by there being no space 
    between successive words."
+  (when *show-sent*
+    (print `(processing ,(current-string))))
+         
   (sweep-for-scan-patterns sentence)
   (sweep-for-no-space-patterns sentence))
 
