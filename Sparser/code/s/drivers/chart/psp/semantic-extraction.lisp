@@ -352,15 +352,25 @@
   (when (and *bio-entity-heads*
              (eq (itype-of referent) (category-named 'bio-entity))
              (not (eq (edge-rule edge) 'REIFY-NS-NAME-AS-BIO-ENTITY)))
+    #+ignore
     (when (equal (head-string edge) "ankyrin")
       (lsp-break "maybe-record-bio-entity-heads"))
     (setf (gethash (head-string edge) *bio-entity-heads*) t)))
 
 (defun maybe-record-bio-chemical-heads (referent edge)
   (when (and *bio-chemical-heads*
-             (itypep referent 'bio-chemical-entity))
-    (setf (gethash (head-string edge) *bio-chemical-heads*)
-          (cat-name (itype-of referent)))))
+             (itypep referent 'bio-chemical-entity)
+             (not (itypep referent 'collection)))
+    (incf (gethash
+           (list (cat-name (itype-of referent))
+                 (value-of 'uid referent)
+                 (head-string edge))
+           *bio-chemical-heads*
+           0))))
+
+
+
+     
 
 (defun all-surface-strings (i)
   (gethash i *referent-surface-strings*))
