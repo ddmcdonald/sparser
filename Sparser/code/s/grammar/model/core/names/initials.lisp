@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "initials"
 ;;;   Module:  "model;core:names:"
-;;;  version:  August 2017 
+;;;  version:  September 2017 
 
 ;; 2.0 (11/10/92 v2.3)  Flushed the original and put in new semantics 
 ;;       version.
@@ -54,12 +54,18 @@
 
 (defun handle-period-as-initial (pos-before)
   "Called from period-hook in the case where it's determined
-   that the period is not marking end of sentence."
+   that the period is not marking end of sentence.
+   Our charge is to cover the period with an edge if we can
+   give it a reasonable interpretation as an initial.
+   European names often have non-ascii initials in them, so if
+   we need to dynamically extend the set of letters that
+   for initials we do."
   ;;/// This is for species names like "M. tuberculosis".
   ;; It would be better to make initials actually run,
   ;; but that doesn't look possible in a R3 configuration.
   ;; The position parameter is the one holding the period
-  (declare (special category::single-capitalized-letter))
+  (declare (special category::single-capitalized-letter
+                    category::greek-letter))
   (let* ((prior-pos (chart-position-before pos-before))
          (prior-word (pos-terminal prior-pos))
          (prior-caps (pos-capitalization prior-pos))
@@ -70,16 +76,25 @@
         ;; In successive-sweeps, we'll encounter periods we'd like
         ;; to fold into initials before we introduce the edge
         ;; over single capitalized letters.
-        (install-terminal-edges prior-word prior-pos pos-before) ;; returned nil ??///
+
+        ;; Handle the known cases
+        (install-terminal-edges prior-word prior-pos pos-before)
         (let* ((edges (preterminal-edges prior-pos))
                (single-caps-edge
-                (or
-                 (find category::single-capitalized-letter edges
-                       :key #'edge-category)
-                 (find category::greek-letter edges :key #'edge-category))))
-          (declare (special edges))
+                (or (find category::single-capitalized-letter edges
+                          :key #'edge-category)
+                    (find category::greek-letter edges :key #'edge-category))))
+
           (unless single-caps-edge
-            (lsp-break "No caps in on ~a~%among ~a" prior-pos edges))
+            ;; Extend the set.
+            (lsp-break "make sure positions are the right ones")
+            (multiple-value-bind (letter rule)
+                (define-single-capitalized-letter (pname prior-word))
+              (assert rule)
+              (let ((edge (install-preterminal-edge
+                           rule prior-word prior-pos pos-before)))
+                (setq single-caps-edge edge))))
+
           (setq prior-edge single-caps-edge)))
 
       (when (eq (edge-category prior-edge)
