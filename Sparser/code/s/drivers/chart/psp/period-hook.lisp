@@ -150,10 +150,10 @@
     (scan-next-position))
   (or (eq (pos-terminal position-after) *end-of-source*)
       (and (pnf-is-not-running)
-           ;; seen in Cure article: "(K. Naoki and M. M., unpublished data)"
            (eq (pos-capitalization position-after)
                :all-caps))
       (and (not (pnf-is-not-running))
+           ;; seen in Cure article: "(K. Naoki and M. M., unpublished data)"
            (memq (pos-capitalization position-after)
                  '(:initial-letter-capitalized
                    :single-capitalized-letter
@@ -162,26 +162,6 @@
 
 
 ;; (trace-eos-lookahead)
-
-(defun period-end-blocked-by-unit-of-measure (pos-after)
-    
-  (let* ((position-back-one (chart-position-before pos-after))
-         (edge-just-before-period
-          (ev-top-node (pos-starts-here position-back-one))))
-
-    (or
-     (and (edge-p edge-just-before-period)
-          (eq (cat-name (edge-category edge-just-before-period))
-              'unit-of-measure))
-
-     ;; for some reason, this is called before the edge is put in!
-     (and (boundp 'word::LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE)
-          (eq (pos-terminal position-back-one)
-              word::LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE)))
-    ;; see note in unit-of-measure about angstrom --
-    ;; can't put the example here because the string
-    ;; (format nil "~a" #\LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE))
-    ))
 
 (defun period-marks-sentence-end?/look-deeper (pos-after)
   "Subroutine of period-marks-sentence-end?.
@@ -294,28 +274,47 @@
     ;; First get the second word after the period
     (tr :eos-next-word next-word)
       
+    (unless (no-space-before-word? next-pos)
+      (tr :eos-separated-by-space)
+      (return-from period-marks-sentence-end?/look-deeper nil))
+
+    (when (eq next-word *end-of-source*)
+      (tr :eos-reached-eos)
+      (return-from period-marks-sentence-end?/look-deeper nil))
+    (when (eq next-word *the-punctuation-period*)
+      (tr :eos-followed-by-a-period)
+      (return-from period-marks-sentence-end?/look-deeper nil))
+
+    ;; We know that the second word after the period
+    ;; is touching the word just after the period
+    ;; and the obvious cases have been looked for
+
+    ;; Lets just take it. If there turn out to be issues
+    ;; we'll call (characterize-word-type pos-after next-word)))
+    ;; and look more closely
+    (tr :eos-fall-through-accept)
+    t))
 
 
-      (unless (no-space-before-word? next-pos)
-        (tr :eos-separated-by-space)
-        (return-from period-marks-sentence-end?/look-deeper nil))
+(defun period-end-blocked-by-unit-of-measure (pos-after)
+    
+  (let* ((position-back-one (chart-position-before pos-after))
+         (edge-just-before-period
+          (ev-top-node (pos-starts-here position-back-one))))
 
-      (when (eq next-word *end-of-source*)
-        (tr :eos-reached-eos)
-        (return-from period-marks-sentence-end?/look-deeper nil))
-      (when (eq next-word *the-punctuation-period*)
-        (tr :eos-followed-by-a-period)
-        (return-from period-marks-sentence-end?/look-deeper nil))
+    (or
+     (and (edge-p edge-just-before-period)
+          (eq (cat-name (edge-category edge-just-before-period))
+              'unit-of-measure))
 
-      ;; We know that the second word after the period
-      ;; is touching the word just after the period
-      ;; and the obvious cases have been looked for
-
-      ;; Lets just take it. If there turn out to be issues
-      ;; we'll call (characterize-word-type pos-after next-word)))
-      ;; and look more closely
-      (tr :eos-fall-through-accept)
-      t))
+     ;; for some reason, this is called before the edge is put in!
+     (and (boundp 'word::LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE)
+          (eq (pos-terminal position-back-one)
+              word::LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE)))
+    ;; see note in unit-of-measure about angstrom --
+    ;; can't put the example here because the string
+    ;; (format nil "~a" #\LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE))
+    ))
 
 
 (defun pnf-is-not-running ()
