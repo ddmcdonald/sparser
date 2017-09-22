@@ -65,7 +65,8 @@
   ;; but that doesn't look possible in a R3 configuration.
   ;; The position parameter is the one holding the period
   (declare (special category::single-capitalized-letter
-                    category::greek-letter))
+                    category::greek-letter)
+           (optimize (debug 3)(safety 1)(speed 1)))
   (let* ((prior-pos (chart-position-before pos-before))
          (prior-word (pos-terminal prior-pos))
          (prior-caps (pos-capitalization prior-pos))
@@ -87,7 +88,7 @@
 
           (unless single-caps-edge
             ;; Extend the set.
-            (lsp-break "make sure positions are the right ones")
+            ;;(lsp-break "make sure positions are the right ones")
             (multiple-value-bind (letter rule)
                 (define-single-capitalized-letter (pname prior-word))
               (assert rule)
