@@ -298,7 +298,10 @@
         (make-adjunction-node
          (make-lexicalized-attachment
           'restrictive-relative-clause
-          (realize-via-bindings predicate :pos 'verb))
+          ;; We don't have to realize it now. We can wait, which
+          ;; lets us use more context once we're in a slot. 
+          #+ignore(realize-via-bindings predicate :pos 'verb)
+          predicate)
          dtn)
         (attach-adjective predicate dtn pos))))
   
