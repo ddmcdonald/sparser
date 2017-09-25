@@ -132,10 +132,13 @@
               ;; for an entire sentence to be chunked before
               ;; rolling any of them up.
               (new-forest-driver position-before)))))
-    
-        ((not (period-end-blocked-by-unit-of-measure position-before))
+
+        (t
+         ;; The period has been determined to -not- indicate the
+         ;; end of the sentence, but we should see if we can cover it.
          (tr :period-at-p-not-eos position-after)
-         (handle-period-as-initial position-before))))
+         (or (preceded-by-angstrom-character? position-before)
+             (handle-period-as-initial position-before)))))
 
 
 ;;--- Sentences
@@ -144,8 +147,8 @@
   "The position-after is the position with the 
    terminal (word) that comes just after the period.
    Look for evidence that this instance of a
-   period marks the end of a sentence. Returns nil
-   if this isn't the end of the ongoing sentence."
+   period marks the end of a sentence. 
+     Returns nil if this is not the end of the ongoing sentence."
   (unless (pos-terminal position-after)
     (scan-next-position))
   (or (eq (pos-terminal position-after) *end-of-source*)
@@ -163,13 +166,14 @@
 
 ;; (trace-eos-lookahead)
 
-(defun period-marks-sentence-end?/look-deeper (pos-after)
+(defun period-marks-sentence-end?/look-deeper (pos-after) ;; after the period
   "Subroutine of period-marks-sentence-end?.
    We have ruled out this position holding the eos or holding a word
    that's capitalized. Look for possibly domain-specific conditions
    that would permit us to conclude the period we just scanned
-   indicates the end of a sentence. Return nil to continue
-   the sentence. Non-nil to say that the period ends the sentence."
+   indicates the end of a sentence. 
+     Return nil to continue the sentence. 
+     Non-nil to say that the period does end the sentence."
   (declare (special *sentence-making-sweep* *trace-period-eos-lookahead*
                     category::unit-of-measure)
            (optimize debug))
@@ -178,8 +182,8 @@
     (scan-next-position))
   
   (let* ((word-just-after-period (pos-terminal pos-after))
-         (position-back-one
-          (chart-position-before (chart-position-before pos-after)))
+         (pos-before (chart-position-before pos-after)) ;; before the period
+         (position-back-one (chart-position-before pos-before))
          (word-just-before-period
           (pos-terminal position-back-one))
          (edge-just-before-period
@@ -196,20 +200,8 @@
     
     (tr :eos-lookahead-start pos-after)
 
-    (when (or
-           (or
-            (and (edge-p edge-just-before-period)
-                 (eq (edge-category edge-just-before-period)
-                     category::unit-of-measure))
-
-            ;; for some reason, this is called before the edge is put in!
-            (and (boundp 'word::LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE)
-                 (eq (pos-terminal position-back-one)
-                     word::LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE))))
-      ;; see note in unit-of-measure about angstrom --
-      ;; can't put the example here because the string
-      ;; (format nil "~a" #\LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE))
-      (return-from period-marks-sentence-end?/look-deeper nil))
+    (when (preceded-by-angstrom-character? pos-before edge-just-before-period)
+      (return-from period-marks-sentence-end?/look-deeper t))
                
     ;; Author pattern: "K. Naoki"
     (when (and (pnf-is-not-running)
@@ -296,25 +288,25 @@
     t))
 
 
-(defun period-end-blocked-by-unit-of-measure (pos-after)
-    
-  (let* ((position-back-one (chart-position-before pos-after))
+(defun preceded-by-angstrom-character? (pos-before ;; before the period
+                                        &optional edge-before)
+  "Does the position to the immediate left of the period hold the
+   character for an angstrom? It is a unit of measure, which means
+   that it does not consume the period the way, say, an initial would.
+   Depending on the stage of processing the angstrom may be
+   already covered by an edge."
+  (let* ((position-back-one (chart-position-before pos-before))
          (edge-just-before-period
-          (ev-top-node (pos-starts-here position-back-one))))
-
-    (or
-     (and (edge-p edge-just-before-period)
-          (eq (cat-name (edge-category edge-just-before-period))
-              'unit-of-measure))
-
-     ;; for some reason, this is called before the edge is put in!
-     (and (boundp 'word::LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE)
-          (eq (pos-terminal position-back-one)
-              word::LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE)))
-    ;; see note in unit-of-measure about angstrom --
-    ;; can't put the example here because the string
-    ;; (format nil "~a" #\LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE))
-    ))
+          (or edge-before
+              (ev-top-node (pos-starts-here position-back-one)))))
+    (or (and (edge-p edge-just-before-period)
+             (eq (cat-name (edge-category edge-just-before-period))
+                 'unit-of-measure))
+        ;; In the initial sentence-creation sweep through
+        ;; a document there won't be any edges except for PWs
+        (and (boundp 'word::LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE)
+             (eq (pos-terminal position-back-one)
+                 word::LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE)))))
 
 
 (defun pnf-is-not-running ()
