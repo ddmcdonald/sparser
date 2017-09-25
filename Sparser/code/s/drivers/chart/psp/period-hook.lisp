@@ -201,6 +201,7 @@
     (tr :eos-lookahead-start pos-after)
 
     (when (preceded-by-angstrom-character? pos-before edge-just-before-period)
+      (tr :eos-preceded-by-angstrom
       (return-from period-marks-sentence-end?/look-deeper t))
                
     ;; Author pattern: "K. Naoki"
@@ -225,9 +226,14 @@
     ;; The period could be a decimal point, which would
     ;; mean there were digits to either side. 
     (when (and (eq pre-caps :digits) (eq post-caps :digits))
+      (tr :eos-period-surrounded-by-digits)
       (if (no-space-before-word? pos-after) ;; ".. Ser259. 14-3-3 .."
-        (return-from period-marks-sentence-end?/look-deeper nil)
-        (return-from period-marks-sentence-end?/look-deeper t)))
+        (then
+          (tr :eos-no-space-before-trailing-digit)
+          (return-from period-marks-sentence-end?/look-deeper nil))
+        (else
+          (tr :eos-space-before-trailing-digit)
+          (return-from period-marks-sentence-end?/look-deeper t))))
 
     (when *sentence-making-sweep*
       ;; Is this period inside a polyword (which would have covered

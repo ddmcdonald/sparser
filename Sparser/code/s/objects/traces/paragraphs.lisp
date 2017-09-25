@@ -89,6 +89,10 @@
                 ends its sentence"
                (pos-token-index pos-of-period))))
 
+(deftrace :eos-preceded-by-angstrom ()
+  (when *trace-period-eos-lookahead*
+    (trace-msg "[eos] Succeed: period preceded by an angstrom")))
+
 (deftrace :eos-initial-author-pattern ()
   (when *trace-period-eos-lookahead*
     (trace-msg "[eos] Fail: initial followed by capitalized word")))
@@ -100,6 +104,17 @@
 (deftrace :eos-implicit-abbreviation (word)
   (when *trace-period-eos-lookahead*
     (trace-msg "[eos] Fail: implicit abbreviation: ~a" word)))
+
+(deftrace :eos-period-surrounded-by-digits ()
+  (when *trace-period-eos-lookahead*
+    (trace-msg "[eos] there are digits on either side of the period")))
+(deftrace :eos-no-space-before-trailing-digit ()
+  (when *trace-period-eos-lookahead*
+    (trace-msg "      No space after the period. Continue")))
+(deftrace :eos-space-before-trailing-digit ()
+  (when *trace-period-eos-lookahead*
+    (trace-msg "      There's a space after the period. Stop")))
+
 
 (deftrace :eos-following-lowercase ()
   (when *trace-period-eos-lookahead*
