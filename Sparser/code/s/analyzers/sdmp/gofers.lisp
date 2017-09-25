@@ -101,12 +101,19 @@
     (edge-between *segment-position-just-left-of-head*
                   *right-segment-boundary*)))
 
-(defun edge-over-segment-head ()
+(defun edge-over-just-segment-head ()
   "The edge over just the word in head position (rightmost in
    the segment. Doesn't notice if there's a bigger edge that
    goes over it."
   (edge-between *segment-position-just-left-of-head*
                 *right-segment-boundary*))
+
+(defun edge-over-segment-head ()
+  "Is there an edge, of any length, that ends at the
+   right boundary of the segment?"
+  (let ((ev (pos-ends-here *right-segment-boundary*)))
+    (ev-top-node ev)))
+  
 
 (defun head-word-of-segment ()
   (let ((word
