@@ -173,6 +173,8 @@
 (defmethod grammatical-person ((i sp::individual)) 'third)
 
 
+(defmethod syntax-driven-sources ((i sp::individual)) nil)
+
 ;;;---------------
 ;;; print methods
 ;;;---------------
@@ -190,8 +192,7 @@
     (:pointer i)
     (:type
      (let ((category (sp::itype-of i)))
-       `( ,(sp::cat-symbol category) )
-       ))))
+       `( ,(sp::cat-symbol category) ) ))))
 
 (defmethod pp-dtn ((c sp::category)) (sp::pname c))
 
