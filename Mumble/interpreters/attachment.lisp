@@ -1,6 +1,4 @@
 ;;; -*- Mode: LISP; Syntax: Common-lisp; Base: 10 -*-
-;;; $Id: attachment.lisp 341 2009-12-29 17:09:23Z dmcdonal $
-
 ;;; MUMBLE-86:  interpreters> attachment
 
 ;;; Copyright (C) 1985, 1986, 1987, 1988  David D. McDonald
@@ -9,6 +7,7 @@
 ;;;   this file of the Mumble-86 system for
 ;;;   non-commercial purposes.
 ;;; Copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (C) 2017 David D. McDonald. All Rights Reserved
 
 (in-package :mumble)
 
@@ -25,8 +24,8 @@
   "Called by Process-further-specifications. It does the attachment and specializes 
 the realization-function of the rspec accordingly."
   (landmark 'attaching-via-attachment-fn rspec attachment-function)
-  (unless (rspec? rspec)
-    (setq rspec (realize rspec)))
+  #+ignore(unless (rspec? rspec)  ;; delay realization until slot
+    (setq rspec (realize rspec))) ;; context is available
   (let-with-dynamic-extent ((*bundle-being-attached* rspec))
     (multiple-value-bind (ap usable-choices)
                          (etypecase attachment-function

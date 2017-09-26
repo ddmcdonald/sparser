@@ -81,6 +81,7 @@ that knows how to how to handle the specific accessories."
 ;;;--------------
 
 (defun rspec? (o)
+  ;; Only referenced (and now ignored) in attach
   (typecase o
     (derivation-tree-node t)
     (bundle-specification t)
