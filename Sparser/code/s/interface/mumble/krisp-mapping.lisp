@@ -170,7 +170,7 @@
      suggestive of noun vs. verb reading for this particular individual.
      If there's no descrimination, just check whether all the resources
      agree on the pos and return that."
-    (let* ((resources (sp::applicable-resources i))
+    (let* ((resources (sp::mumble-resources-for i))
            (possible-pos
             (remove-duplicates (loop for r in resources
                                   collect (lookup-pos r)))))
@@ -185,7 +185,7 @@
 
       ;; If that wasn't enough, what next?
       (push-debug `(,resources ,possible-pos))
-      (break "Need more heuristics to break tie for ~a among ~a"
+      (error "Need more heuristics to break tie for ~a among ~a"
              i possible-pos))))
 
 

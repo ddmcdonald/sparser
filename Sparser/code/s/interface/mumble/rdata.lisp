@@ -218,16 +218,16 @@ and/or by which subcategorized arguments the individual binds.
               mumble-rdata )))))))
 
 #+:mumble
-(defgeneric applicable-resources (i)
+(defgeneric mumble-resources-for (i)
   (:documentation "Lookup and return all the realization options on
    the individual without regard to what part of speech they apply to.
    Get both mrd and lp options (/// lp is impoverished today).")
   ;; could be the feeder to has-mumble-rdata -- separate options
   ;; from selection.
   (:method ((i individual))
-    (applicable-resources (itype-of i)))
+    (mumble-resources-fors (itype-of i)))
   (:method ((name symbol))
-    (applicable-resources (category-named name :error-if-nil)))
+    (mumble-resources-for (category-named name :error-if-nil)))
   (:method ((c category))
     (let ((rdata-field (rdata c))
           resources )
