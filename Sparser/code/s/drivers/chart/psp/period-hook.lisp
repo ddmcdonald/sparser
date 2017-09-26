@@ -201,7 +201,7 @@
     (tr :eos-lookahead-start pos-after)
 
     (when (preceded-by-angstrom-character? pos-before edge-just-before-period)
-      (tr :eos-preceded-by-angstrom
+      (tr :eos-preceded-by-angstrom)
       (return-from period-marks-sentence-end?/look-deeper t))
                
     ;; Author pattern: "K. Naoki"

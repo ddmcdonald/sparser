@@ -225,7 +225,7 @@ and/or by which subcategorized arguments the individual binds.
   ;; could be the feeder to has-mumble-rdata -- separate options
   ;; from selection.
   (:method ((i individual))
-    (mumble-resources-fors (itype-of i)))
+    (mumble-resources-for (itype-of i)))
   (:method ((name symbol))
     (mumble-resources-for (category-named name :error-if-nil)))
   (:method ((c category))

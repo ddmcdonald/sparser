@@ -174,6 +174,7 @@
 
 
 (defmethod syntax-driven-sources ((i sp::individual)) nil)
+(defmethod syntax-driven-sources ((c sp::category)) nil)
 
 ;;;---------------
 ;;; print methods
