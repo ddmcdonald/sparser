@@ -238,6 +238,8 @@ In drivers/chart/psp/semantic-extraction.lisp
    segments and their post-parse handling. Pushed onto by
    lift-out-variablized-segment")
 
+#| For example
+   (p-template foo-1 "I cannot find any genes regulated by [SRC]")  |#
 (defmacro p-template (name text)
   "First parse the string.
    While parsing, when we encounter a variable-ized segment, record
