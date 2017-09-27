@@ -310,8 +310,10 @@
 (def-form-category  comparative-adjp)
 (def-form-category  superlative-adjp)
 (def-form-category  proper-adjective)
-(def-form-category  comparative)
-(def-form-category  superlative)
+(def-form-category  comparative) ;; more, less -- they make the comparative forms of adjectives
+(def-form-category  superlative) ;; most, least -- they make the superlative forms of adjectives
+(def-form-category  comparative-adjective)
+(def-form-category  superlative-adjective)
 (def-form-category  spatial-adjective)
 (def-form-category  temporal-adjective)
 

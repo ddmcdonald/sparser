@@ -255,22 +255,22 @@ comparative rather than content-word.  |#
   ;; simpler while designing these than extending the head keywords
   (let ((rule (find-form-cfr word category::content-word)))
     (when rule
-      (setf (cfr-form rule) category::comparative))
+      (setf (cfr-form rule) category::comparative-adjective))
     (or rule
-        (find-form-cfr word category::comparative))))
+        (find-form-cfr word category::comparative-adjective))))
 
 (defun switch-form-to-superlative (word)
   (let ((rule (find-form-cfr word category::content-word)))
     (when rule
-      (setf (cfr-form rule) category::superlative))
+      (setf (cfr-form rule) category::superlative-adjective))
     (or rule
-        (find-form-cfr word category::superlative))))
+        (find-form-cfr word category::superlative-adjective))))
 
 (defun modify-comparatives-rule-labels (base-word er-word est-word)
   (let* ((base-rule (find-form-cfr base-word category::adjective))
          (base-label (cfr-category base-rule))
-         (er-rule (find-form-cfr er-word category::comparative))
-         (est-rule (find-form-cfr est-word category::superlative)))
+         (er-rule (find-form-cfr er-word category::comparative-adjective))
+         (est-rule (find-form-cfr est-word category::superlative-adjective)))
     (setf (cfr-category er-rule) base-label)
     (setf (cfr-category est-rule) base-label)))
        

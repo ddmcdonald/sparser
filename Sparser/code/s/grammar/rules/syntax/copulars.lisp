@@ -39,9 +39,9 @@
 
 ;;--- be + adjective or adjp
 
-(loop for aa in '(adjective adjp
-                  comparative comparative-adjp
-                  superlative superlative-adjp)
+(loop for aa in '(adjective adjp 
+                  comparative comparative-adjective comparative-adjp
+                  superlative superlative-adjective superlative-adjp)
    do (def-form-rule/expr `(be ,aa)
          :form 'vp
          :referent '(:function make-copular-adjective

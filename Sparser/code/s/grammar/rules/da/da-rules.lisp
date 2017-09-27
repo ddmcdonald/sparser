@@ -1710,7 +1710,8 @@
            :direction :right))))))
 
 
-(loop for ap in '(adjp adjective comparative superlative
+(loop for ap in '(adjp adjective comparative-adjective superlative-adjective
+                  comparative superlative
                   comparative-adjp superlative-adjp)
    do (let ((pattern `(preposed-auxiliary np ,ap))
             (name (s-intern '#:aux-np- ap)))
