@@ -120,6 +120,8 @@
                   (characterize-word-type position word))
                  ((edge-p item)
                   (intern (pname label) :keyword))
+                 ((null word) ;;
+                  nil)
                  ;;//// need to look for massive set of cases
                  ;; since we don't want to return something the
                  ;; patterns won't recognize. Protein is an obvious
