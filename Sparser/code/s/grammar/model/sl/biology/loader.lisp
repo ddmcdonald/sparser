@@ -36,6 +36,7 @@
 (gload "bio;aux-taxonomy")
 ;; have to get the uniprot-names before you do any define-protein's
 (gload "bio;uniprot-names.lisp")
+;(gload "bio;new-prot-defs-from-reach") temporary
 (gload "bio;standardized-protein-defs")
 ;(gload "bio;standardized-protein-defs-no-fams-complete")
 ;(gload "bio;standardized-protein-defs-new")
@@ -72,6 +73,7 @@
 (gload "bio;new-defs;new-post-trans-mod")
 (gload "bio;substances")
 (gload "bio;new-defs;new-substances")
+(gload "bio;other-defs-from-reach") ; temporary -- will be folded into the correct definition files once checked
 ;(gload "bio;new-defs;reach-additional-proteins") folded into std prot
 
 (gload "bio;amino-acids")
@@ -92,6 +94,7 @@
 (gload "bio;protein-fam-no-id")
 ;(gload "bio;new-protein-fam-no-id") ; temporary, while fixing things
 (gload "bio;protein-fam-with-id")
+(gload "bio;new-prot-fam-from-reach") ; temporary -- will be folded into protein-fam-with-id once checked
 
 ;(gload "bio;new-defs;new-prot-fam")
 ;(gload "bio;phenomena") ;; basically empty
