@@ -21,6 +21,64 @@
           do
          (pushnew id (gethash wd *protein-family-ht*) :test #'equal))))
 
+(defparameter *likely-phospho-issues* nil)
+(defparameter *protein-paren-issues* nil)
+(defparameter *new-prot-defs* nil)
+
+(defun remove-phospho-defs-and-merge-stranded-parens (&key (prot-file "standardized-protein-defs")
+                                                        (new-prot-file "standardized-protein-defs-nophos")
+                                                        (issues-file "protein-phospho-and-paren-issues"))
+    (with-open-file (input-stream (concatenate 'string "sparser:bio;" prot-file ".lisp")
+                          :direction :input 
+                          :external-format :UTF-8)
+      )
+   (with-open-file (new-prot-stream (concatenate 'string "sparser:bio;" new-prot-file)
+                               :direction :output :if-exists :supersede 
+                               :if-does-not-exist :create
+                               :external-format :UTF-8)
+     )
+    (with-open-file (issues-stream (concatenate 'string "sparser:bio-not-loaded;" issues-file)
+                                    :direction :output :if-exists :supersede
+                                    :if-does-not-exist :create
+                                    :external-format :UTF-8)
+      ))
+
+(defun phospho-prefix-matches-other-def (syn syns)
+  (loop for prefix in '("p" "p-" "phospho" "phospho-" "phosphorylated ")
+        thereis (and (eq 0 (search prefix syn :test #'equalp))
+                     (member (string-right-trim prefix syn) syns :test #'equalp))))
+(defun merge-stranded-parens-remove-phospho-defs (def)
+  (declare (special *likely-phospho-issues* *protein-paren-issues* *new-prot-defs*))
+  (let ((syns (third def)))
+    (loop for syn in syns
+          when (phospho-prefix-matches-other-def syn syns)
+          do (push `(,syn def) *likely-phospho-issues*)
+            (setq def (remove-syn-from-prot-def def syn))
+          end
+            ;and
+          when (and (search "(" syn)
+                    (not (search ")" syn)))
+          collect syn into open-paren-defs
+          end
+          ;and
+            when (and (search ")" syn)
+                    (not (search "(" syn)))
+          collect syn into close-paren-defs
+          end
+          finally (return (cond ((and (eq 1 (length open-paren-defs))
+                                      (eq 1 (length close-paren-defs)))
+                                 (let* ((inc-def1 (remove-syn-from-prot-def def (car open-paren-defs)))
+                                        (inc-def2 (remove-syn-from-prot-def inc-def1 (car close-paren-defs)))
+                                        (new-syn (concatenate 'string (car open-paren-defs) " "
+                                                              (car close-paren-defs))))
+                                   (push (add-syn-to-prot-def inc-def2 new-syn) *new-prot-defs*)))
+                                ((and (null open-paren-defs)
+                                      (null close-paren-defs))
+                                 (push def *new-prot-defs*))
+                                (t
+                                 (push (list open-paren-defs close-paren-defs def) *protein-paren-issues*)
+                                 (push def *new-prot-defs*)))))))
+
 (defun load-protein-id-hash-tables ()
   (declare (special *ncit->up-ht*))
   (unless (boundp '*upa-key-upm-val*)
@@ -321,6 +379,10 @@ it outputs it to the non-upa-file"
      ,(loop for alt in (third def)
             unless (equal syn alt)
             collect alt)))
+
+(defun add-syn-to-prot-def (def syn)
+  `(,(car def) ,(second def)
+     ,(append `(,syn) (third def))))
 
 (defun merge-protein-defs (def1 def2)
   (if (null def2)
@@ -1260,3 +1322,112 @@ new file to append to new-prot-fam, those without get filtered to "
 
 |#
 
+
+(defparameter *new-reach-prot-defs* nil)
+(defparameter *new-reach-prot-fam-defs* nil)
+(defparameter *new-reach-other-defs* nil)
+(defparameter *potential-other-reach-defs* nil) ; things where we can't determine a category based on the ontology
+(defparameter *reach-sparser-mismatch-defs* nil)
+
+(defun protein-p (string)
+  (let* ((word (resolve string))
+         (rule-list (when word (single-term-rewrite? word :no-warn t)))
+         (word-cat (when rule-list
+                     (category-of (get-head-ref-from-rule (car rule-list))))))
+    (or (eq word-cat (category-named 'protein))
+      (eq word-cat (category-named 'protein-family)))))
+
+(defun new-reach-defs->krisp (&key (good-reach-defs-file "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/hms-grounding/vetted-reach-defs-3.lisp") (new-prot-def-file "new-prot-defs-from-reach.lisp") (new-prot-fam-file "new-prot-fam-from-reach.lisp") (other-defs-file "other-defs-from-reach.lisp") (potential-defs-file "potential-other-defs-from-reach.lisp")(mismatch-defs-file "sparser-reach-mismatch-defs.lisp"))
+  (with-open-file (new-defs good-reach-defs-file :direction :input 
+                            :external-format :UTF-8)
+    (when new-defs
+      (loop for def  = (read new-defs nil)
+            while def
+            do (when (stringp (first def))
+                 (let* ((item (first def))
+                        (reach-uids (second def))
+                        (word (or (resolve item) (resolve (string-downcase item))))
+                        (str-word (when word (single-term-rewrite? word :no-warn t)))
+                        (word-uid (when word (word-has-uid-p word)))
+                        (item-hyphen (search "-" item)))
+                        (cond ((and word-uid
+                                    (member word-uid reach-uids :test #'equal))
+                               (push def *reach-sparser-mismatch-defs*))
+                              ((and item-hyphen
+                                    (protein-p (subseq item 0 item-hyphen)) 
+                                    (protein-p (subseq item (+ 1 item-hyphen)))) 
+                               (push `("complex" ,def) *reach-sparser-mismatch-defs*))
+                              (str-word
+                               (push `("uid-mismatch" ,word-uid ,def) *reach-sparser-mismatch-defs*))
+                              (t
+                               (new-reach-def->krisp-def def)))))))
+      (print-defs-to-file *new-reach-prot-defs* new-prot-def-file)
+      (print-defs-to-file *new-reach-prot-fam-defs* new-prot-fam-file)
+      (print-defs-to-file *new-reach-other-defs* other-defs-file)
+      (print-defs-to-file *potential-other-reach-defs* potential-defs-file)
+      (print-defs-to-file *reach-sparser-mismatch-defs* mismatch-defs-file)))
+
+(defun print-defs-to-file (def-list file)
+   (with-open-file (stream (concatenate 'string "sparser:bio;" file)
+                                       :direction :output :if-exists :supersede 
+                                       :if-does-not-exist :create
+                                       :external-format :UTF-8)
+     (format stream "(in-package :sparser)~%~%")
+      (loop for def in def-list
+            do (lc-one-line-print def stream))))
+     
+(defun uid-is-family? (uid)
+  (or (search "BE:" uid)
+      (search "IPR" uid)
+      (search "XFAM:" uid)))
+
+(defun uid-is-molecule? (uid)
+  (or (search "PCID:" uid)
+      (search "CHEBI:" uid)
+      (search "HMDB:" uid))) ;; human metabolome db == small molecules
+
+(defun uid-is-drug? (uid)
+  (search "CHEMBL:" uid)) ;; db of molecules with drug-like properties
+
+(defun new-reach-def->krisp-def (reach-def)
+  (let* ((word (first reach-def))
+         (uids (second reach-def))
+         (first-uid (first uids))
+         (up-uid (if (search "UP:" first-uid)
+                     first-uid
+                     ;; if there's a up def, it's either first, or one of two with the HGNC id
+                     (when (and (< 1 (length uids))
+                                (search "UP:" (second uids)))
+                       (second uids))))
+         (alt-uid-for-mesh (when (and (< 1 (length uids))
+                                      (search "MESH:" first-uid))
+                             ;; mesh isn't diagnostic of category, but if it has an alt like CHEBI, we can use that
+                             (second uids)))
+         (preferred-uid (or up-uid alt-uid-for-mesh first-uid))
+         (uid-indiv (or (gethash preferred-uid *uid-to-individual*)
+                        ;; in case we have the mesh uid instead of the alt uid
+                        (gethash first-uid *uid-to-individual*)))
+         (uid-indiv-cat (when uid-indiv (category-of uid-indiv))))
+    (cond (up-uid ;; there's no way to check if the uid is already defined
+            (push `(define-protein ,up-uid (,word)) *new-reach-prot-defs*))
+           ((or (uid-is-family? preferred-uid)
+                (eq uid-indiv-cat (category-named 'protein-family)))
+                                        ; def-family-with-id uses
+                                        ; def-individual-with-id, so
+                                        ; if the uid exists it
+                                        ; automatically makes synonyms
+                                        ; instead of overwriting def
+            (push `(def-family-with-id ,word ,preferred-uid) *new-reach-prot-fam-defs*))
+           (uid-indiv
+            ;; this will create a synonym
+            (push `(def-indiv-with-id ,uid-indiv-cat ,word ,preferred-uid) *new-reach-other-defs*))
+           ((uid-is-molecule? preferred-uid)
+            (push `(def-indiv-with-id molecule ,word ,preferred-uid) *new-reach-other-defs*))
+           ((uid-is-drug? preferred-uid)
+            (push `(def-indiv-with-id drug ,word ,preferred-uid) *new-reach-other-defs*))
+           (t
+            ;; the uid isn't diagnostic of category (e.g., mesh and go
+            ;; can be lots of things) so we can't create a definition
+            (push reach-def *potential-other-reach-defs*)))))
+            
+            
