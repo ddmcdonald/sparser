@@ -375,7 +375,10 @@
              form (edge-position-in-resource-array edge)))
     (cond
       ((and (vp-category? (edge-form edge))
-            (word-p (edge-left-daughter edge)))
+            (or (word-p (edge-left-daughter edge))
+                (polyword-p (edge-left-daughter edge))
+                ;; "the drug up-regulates..."
+                (polyword-p (edge-category (edge-left-daughter edge)))))
        edge)
       ((member (edge-rule edge) '(attach-to-comp-comma-to-s
                                   attach-trailing-participle-to-clause-with-comma))
