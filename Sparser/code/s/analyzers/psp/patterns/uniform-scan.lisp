@@ -423,9 +423,14 @@
                                           
          (form-symbols (loop for l in form-labels
                              when l collect (if (category-p l)(cat-symbol l) l))))
-    (loop for symbol in form-symbols
-          thereis (or (memq symbol '(category::pronoun category::modal
-                                     PRONOUN/FEMALE APOSTROPHE-S WORD::SINGLE-QUOTE))))))
+    (or (and (edge-p (car edges))
+             (itypep (edge-referent (car edges)) 'year)
+             (edge-p (second edges))
+             (eq (edge-category (second edges)) word::|s|))
+        (loop for symbol in form-symbols
+              thereis (or (memq symbol
+                                '(category::pronoun category::modal
+                                  PRONOUN/FEMALE APOSTROPHE-S WORD::SINGLE-QUOTE)))))))
          
    
     
