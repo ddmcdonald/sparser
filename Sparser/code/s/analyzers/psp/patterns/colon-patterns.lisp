@@ -143,7 +143,7 @@
    in the pattern"
   (let ((treetops (treetops-between pos-before pos-after)))
     (cond
-     ((= (length treetops) 3)
+     ((and (= (length treetops) 3) (loop for e in treetops always (edge-p e)))
       ;; nothing to do, there's already a parse of the consituents to either 
       ;; side of the colon
       (make-word-colon-word-structure (first treetops) (third treetops)))
