@@ -1329,13 +1329,14 @@ new file to append to new-prot-fam, those without get filtered to "
 (defparameter *potential-other-reach-defs* nil) ; things where we can't determine a category based on the ontology
 (defparameter *reach-sparser-mismatch-defs* nil)
 
-(defun protein-p (string)
+(defun protein-or-nucleotide-p (string)
   (let* ((word (resolve string))
          (rule-list (when word (single-term-rewrite? word :no-warn t)))
          (word-cat (when rule-list
                      (category-of (get-head-ref-from-rule (car rule-list))))))
     (or (eq word-cat (category-named 'protein))
-      (eq word-cat (category-named 'protein-family)))))
+        (eq word-cat (category-named 'protein-family))
+        (eq word-cat (category-named 'nucleotide)))))
 
 (defun new-reach-defs->krisp (&key (good-reach-defs-file "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/hms-grounding/vetted-reach-defs-3.lisp") (new-prot-def-file "new-prot-defs-from-reach.lisp") (new-prot-fam-file "new-prot-fam-from-reach.lisp") (other-defs-file "other-defs-from-reach.lisp") (potential-defs-file "potential-other-defs-from-reach.lisp")(mismatch-defs-file "sparser-reach-mismatch-defs.lisp"))
   (with-open-file (new-defs good-reach-defs-file :direction :input 
@@ -1354,8 +1355,11 @@ new file to append to new-prot-fam, those without get filtered to "
                                     (member word-uid reach-uids :test #'equal))
                                (push def *reach-sparser-mismatch-defs*))
                               ((and item-hyphen
-                                    (protein-p (subseq item 0 item-hyphen)) 
-                                    (protein-p (subseq item (+ 1 item-hyphen)))) 
+                                    (or (protein-or-nucleotide-p (subseq item 0 item-hyphen))
+                                        (protein-or-nucleotide-p (string-downcase (subseq item 0 item-hyphen))))
+                                    (or (protein-or-nucleotide-p (subseq item (+ 1 item-hyphen)))
+                                        (protein-or-nucleotide-p (string-downcase (subseq item (+ 1 item-hyphen))))))
+                               ;;should also add check for residue on protein, but don't have an easy way
                                (push `("complex" ,def) *reach-sparser-mismatch-defs*))
                               (str-word
                                (push `("uid-mismatch" ,word-uid ,def) *reach-sparser-mismatch-defs*))
@@ -1384,10 +1388,10 @@ new file to append to new-prot-fam, those without get filtered to "
 (defun uid-is-molecule? (uid)
   (or (search "PCID:" uid)
       (search "CHEBI:" uid)
-      (search "HMDB:" uid))) ;; human metabolome db == small molecules
+      (search "HMDB" uid))) ;; human metabolome db == small molecules
 
 (defun uid-is-drug? (uid)
-  (search "CHEMBL:" uid)) ;; db of molecules with drug-like properties
+  (search "CHEMBL" uid)) ;; db of molecules with drug-like properties
 
 (defun new-reach-def->krisp-def (reach-def)
   (let* ((word (first reach-def))
@@ -1407,11 +1411,11 @@ new file to append to new-prot-fam, those without get filtered to "
          (uid-indiv (or (gethash preferred-uid *uid-to-individual*)
                         ;; in case we have the mesh uid instead of the alt uid
                         (gethash first-uid *uid-to-individual*)))
-         (uid-indiv-cat (when uid-indiv (category-of uid-indiv))))
+         (uid-indiv-cat (when uid-indiv (cat-name (category-of uid-indiv)))))
     (cond (up-uid ;; there's no way to check if the uid is already defined
             (push `(define-protein ,up-uid (,word)) *new-reach-prot-defs*))
            ((or (uid-is-family? preferred-uid)
-                (eq uid-indiv-cat (category-named 'protein-family)))
+                (eq uid-indiv-cat 'protein-family))
                                         ; def-family-with-id uses
                                         ; def-individual-with-id, so
                                         ; if the uid exists it
