@@ -60,7 +60,8 @@
                                (chart-position-after position-before))))
       (when where-pw-ended
          (tr :scanned-pw-ended-at word where-pw-ended)
-         (setq position-before where-pw-ended)
+         (setq position-before where-pw-ended
+               position-after (chart-position-after position-before))
          (unless (includes-state where-pw-ended :scanned)
            ;; PW can complete without thinking about the
            ;; word that follows it.
@@ -69,6 +70,7 @@
       
       ;; Trigger the period-hook (n.b. also gets conjunctions,
       ;; parentheses, etc.)
+      
       (complete-word/hugin word position-before position-after)
 
       (let ((next-word (pos-terminal position-after)))
@@ -462,6 +464,7 @@ sentences.
        (ecase *scanning-terminals*
          (:polywords
           (tr :eos-scanning-terminals/pw)
+          ;; catch is in scan-terminals-loop
           (throw :pw-sweep position-before))))
      (*pre-read-all-sentences*
       ;; The catch is in initiate-successive-sweeps when

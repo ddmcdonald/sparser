@@ -295,16 +295,18 @@
   (tr :start-scan-to-eof first-sentence)
   (let ((sentence first-sentence))
     (loop
-      (let* ((start-pos (starts-at-pos sentence))
-             (first-word (pos-terminal start-pos)))
+      (let* ((start-pos (starts-at-pos sentence)))
         (tr :scan-to-eof-start-pos start-pos)
-        (catch :end-of-sentence
-          ;; Throw from period-hook
-          (scan-words-loop start-pos first-word)
-          (when *show-sentence-for-early-errors*
-            (format t "  in sentence: ~s ~%"
-                    (sentence-string sentence))
-            (setq *show-sentence-for-early-errors* nil)))
+        (catch :end-of-sentence ;; Thrown from period-hook
+          (let ((first-word (pos-terminal start-pos)))
+            (unless first-word
+              (scan-next-position)
+              (setq first-word (pos-terminal start-pos)))
+            (scan-words-loop start-pos first-word)
+            (when *show-sentence-for-early-errors*
+              (format t "  in sentence: ~s ~%"
+                      (sentence-string sentence))
+              (setq *show-sentence-for-early-errors* nil))))
         (setq sentence (next sentence))))))
 
 

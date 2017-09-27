@@ -588,6 +588,7 @@
           (if *current-sentence*
             (pos-character-index pos)
             1))
+    (when (null (starts-at-char s)) (lsp-break "bad index"))
     (setf (contents s) (make-sentence-container s))
     ;; lookup the current section for parent
     (when *current-sentence*

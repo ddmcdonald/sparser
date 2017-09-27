@@ -68,6 +68,9 @@
   (unless *position-before-last-period*
     (setq *position-before-last-period* (position# 0)))
 
+  (when (eq position-before position-after)
+        (lsp-break "pathology in scan-words"))
+
   (cond ((period-marks-sentence-end? position-after)
          (let ((s (sentence))
                (pos-after-period (chart-position-after position-before)))
