@@ -43,7 +43,8 @@
 (defun second-imposes-relation-on-first? (left-ref right-ref right-edge)
   "If it's reasonable to take the second as the head, return
    the variable it would use to compose with the first."
-  (declare (special category::verb+ed category::adjective category::verb+ing
+  (declare (special left-ref right-ref right-edge
+                    category::verb+ed category::adjective category::verb+ing
                     category::verb+ed))
   (when (or (word-p left-ref) (word-p right-ref)) ;; e.g. "-tagged"
     (return-from second-imposes-relation-on-first? nil))
@@ -65,7 +66,7 @@
 			 (if (category-p sc)
 			     (cat-slots sc) ;; what case??
 			     (cat-slots (itype-of sc)))))
-	      (variable 
+	      (the-variable 
 	       (cond
 		 ((eq form category::verb+ed)
                   (tr :ns-using-subject-variable-of right-ref)
@@ -83,6 +84,7 @@
 	       (if (individual-p right-ref)
 		   (itype-of right-ref)
 		   right-ref)))
+         (declare (special vars the-variable right-cat))
 	 ;; Which variable this is really depends on the two referents.
 	 ;; For the "induced" example its an agent (= subject). But the
 	 ;; tyrosine goes on the site variable of the phosphoryate.
@@ -90,15 +92,16 @@
 	 ;; fall as they may. Elevating the right edge as the head
 	 ;; but making it an adjective overall. 
 	 (unless (and
-		  variable
+		  the-variable
+                  (find-variable-for-category (var-name the-variable) right-cat)
 		  (satisfies-subcat-restriction?
 		   left-ref
 		   (var-value-restriction
-		    (find-variable-for-category (var-name variable) right-cat))))
+		    (find-variable-for-category (var-name the-variable) right-cat))))
 	   ;;/// clear motivation for structure on variables on perhaps
 	   ;; on the mixing in of categories for this same purpose
 	   ;; Default to modifier ??
-	   (setq variable
+	   (setq the-variable
 		 ;; applies if there's just one variable on category
 		 (or
 		  (single-on-variable-on-category right-ref)
@@ -107,9 +110,9 @@
 			   left-ref
 			   (subcat-restriction sp))
 		     do (return (subcat-variable sp))))))
-	 (when variable
+	 (when the-variable
 	   (tr :ns-used-the-single-variable-on right-ref))
-	 variable))
+	 the-variable))
       
       (subcat-var
        (tr :ns-second-subcategizes-for-first subcat-var)

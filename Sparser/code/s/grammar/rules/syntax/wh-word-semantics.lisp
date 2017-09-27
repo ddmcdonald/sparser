@@ -68,6 +68,7 @@
 
 (define-wh-pronoun "what" :variable 'patient :on 'action-verb)
 (define-wh-pronoun "which" :variable 'patient :on 'action-verb) ;; ??
+(define-wh-pronoun "whichever" :variable 'patient :on 'action-verb) ;; ??
 
 (define-wh-pronoun "where" :variable 'location :on 'has-location)
 (define-wh-pronoun "when" :variable 'time :on 'perdurant)

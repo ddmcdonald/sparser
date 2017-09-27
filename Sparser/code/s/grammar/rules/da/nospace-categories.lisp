@@ -608,9 +608,13 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
 
 
 (defun resolve-protein-prefix (prefix-edge protein-edge start-pos end-pos)
+  "This piece of code MUST b e generalized to handle the prefixes specified by HMS"
   (declare (special prefix protein start-pos end-pos category::protein))
   (if (or (null (head-string prefix-edge))
-          (null (head-string protein-edge)))
+          (null (head-string protein-edge))
+          (and (or (category-p (edge-referent prefix-edge))
+                   (individual-p (edge-referent prefix-edge)))
+              (not (find-variable-for-category 'substrate (edge-referent prefix-edge)))))
       nil ;;(lsp-break "null string"))
       (let* ((predicate 
               (create-predication-by-binding

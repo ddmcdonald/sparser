@@ -345,16 +345,21 @@
       (throw :punt-on-nospace-without-resolution nil))
     (let* ((left (first edges))
            (right (third edges))
-           (left-ref (when (edge-p left) (edge-referent left))))
+           (left-ref (when (edge-p left) (edge-referent left)))
+           (right-ref (when (edge-p right) (edge-referent right))))
       (cond
         ((or (not (edge-p (first edges)))(not (edge-p (third edges))))
          nil)
         ((not (or (individual-p left-ref) (category-p left-ref)))
          (make-bio-pair left right pos-before pos-after))
 
-        ((or (itypep left-ref category::protein) ;; includes bio-family
-             (itypep left-ref 'small-molecule)   ;; GTP-GDP ???
-             (itypep left-ref 'nucleotide))
+        ((and
+          (or (itypep left-ref category::protein) ;; includes bio-family
+              (itypep left-ref 'small-molecule)   ;; GTP-GDP ???
+              (itypep left-ref 'nucleotide))
+          (or (itypep right-ref category::protein) ;; includes bio-family
+              (itypep right-ref 'small-molecule)   ;; GTP-GDP ???
+              (itypep right-ref 'nucleotide)))
          (make-protein-pair left right pos-before pos-after))
 
         ((itypep left-ref 'amino-acid)
