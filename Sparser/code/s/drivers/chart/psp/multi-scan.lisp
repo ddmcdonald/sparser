@@ -49,7 +49,9 @@
   (simple-eos-check position-before word)  
   (let ((position-after (chart-position-after position-before)))
     (unless (includes-state position-after :scanned)
-      (scan-next-position)) ;; unknown words are noticed here
+      (scan-next-position);; unknown words are noticed here
+      ;; this can actually set up the pos-terminal of position-before
+      (unless word (setq word (pos-terminal position-before))))
     (simple-eos-check position-before word)
 
     (when *trace-scan-words-loop*
