@@ -1,15 +1,12 @@
 (in-package :sparser)
 
 
-(def-indiv-with-id organism "S. aureus" "TI:1280") 
+
 (def-indiv-with-id organism "nude mice" "TI:10090") 
 (def-indiv-with-id organism "Wistar rat" "TI:10116") 
 (def-indiv-with-id organism "transgenic mice" "TI:10090") 
-(def-indiv-with-id organism "Helicobacter pylori" "TI:210" :synonyms ("H. pylori")) 
 (def-indiv-with-id organism "guinea pig" "TI:10141") 
-(def-indiv-with-id organism "Epstein-Barr virus" "TI:10376") 
 (def-indiv-with-id organism "Sprague-Dawley rat" "TI:10116") 
-(def-indiv-with-id organism "Haemophilus influenzae" "TI:727") 
 (def-indiv-with-id bio-organ "hematopoietic system" "UBERON:0002390") 
 (def-indiv-with-id bio-organ "sex specific" "UBERON:0014402") 
 (def-indiv-with-id bio-organ "dermis" "UBERON:0002067") 

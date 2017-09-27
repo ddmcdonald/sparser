@@ -66,10 +66,8 @@
 (def-synonym golgi-apparatus (:noun "Golgi")) 
 (def-indiv-with-id cellular-location "Cross-Bridge" "GO:0097595" :name "ventral disc crossbridge") 
 (def-indiv-with-id cellular-location "Z-body" "UP:SL-0314" :name "Z-body")
-
 (def-indiv-with-id cellular-location "cyclosome" "GO:0005680" :name "anaphase-promoting complex") 
 (def-indiv-with-id cellular-location "peroxisome" "UP:SL-0204" :name "Peroxisome") 
-
 (def-indiv-with-id cellular-location "PVC" "UP:SL-0223" :name "Prevacuolar compartment") 
 (def-indiv-with-id cellular-location "kinetoplast" "UP:SL-0150" :name "Kinetoplast") 
 (def-indiv-with-id cellular-location "chiasmata" "GO:0005712" :name "chiasma") 
@@ -131,7 +129,6 @@
 (def-indiv-with-id cellular-location "pSG" "GO:0034515" :name "proteasome storage granule") 
 (def-indiv-with-id cellular-location "phagolysosome" "GO:0032010" :name "phagolysosome") 
 (def-indiv-with-id cellular-location "septum" "GO:0030428" :name "cell septum" :plural ("septums" "septa")) 
-(def-indiv-with-id cellular-location "aminoacyl-tRNA" "CHEBI:2651" :name "alpha-aminoacyl-tRNA") 
 (def-indiv-with-id cellular-location "axoneme" "GO:0005930" :name "axoneme") 
 (def-indiv-with-id cellular-location "chromocentre" "GO:0010369" :name "chromocenter") 
 (def-indiv-with-id cellular-location "microbody" "GO:0042579" :name "microbody") 
@@ -144,7 +141,6 @@
 (def-indiv-with-id cellular-location "midbody" "UP:SL-0469" :name "Midbody") 
 (def-indiv-with-id cellular-location "tight-junction" "UP:SL-0265" :name "Tight junction" :synonyms ("TJ")) 
 (def-indiv-with-id cellular-location "CVC" "UP:SL-0073" :name "Contractile vacuole") 
-
 (def-indiv-with-id cellular-location "Y-chromosome" "GO:0000806" :name "Y chromosome") 
 (def-indiv-with-id cellular-location "C-fiber" "GO:0044299" :name "C-fiber" :plural ("C-fibers" "c-fibers") :synonyms ("c-fibre")) 
 (def-indiv-with-id cellular-location "chorion" "GO:0042600" :name "chorion") 
