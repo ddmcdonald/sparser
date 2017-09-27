@@ -3095,7 +3095,7 @@
 (define-protein "UP:O75845" ("SC5D" "SC5DL" "SC5D_HUMAN" "delta-5-desaturase)-like" "fungal)-like" "lathosterol oxidase" "o75845" "sterol-C5-desaturase" "sterol-C5-desaturase (ERG3 delta-5-desaturase homolog" "sterol-C5-desaturase (fungal ERG3")) 
 (define-protein "UP:O75865" ("HSPC289" "MGC2650" "TPC6A_HUMAN" "TRAPPC6A" "TRS33" "o75865" "trafficking protein particle complex 6A")) 
 (define-protein "UP:O75874" ("Cytosolic NADP-isocitrate dehydrogenase" "IDH" "IDH1" "IDHC_HUMAN" "IDP" "IDPs" "Isocitrate dehydrogenase [NADP] cytoplasmic" "NADP(+)-specific ICDH" "isocitrate" "isocitrate dehydrogenase (NADP(+)) 1, cytosolic" "isocitrate dehydrogenase (NADP(+))1, cytosolic" "isocitrate dehydrogenase NADP cytoplasmic" "isocitrate dehydrogenase [NADP] cytoplasmic" "o75874" "oxalosuccinate decarboxylase")) 
-(define-protein "UP:O75879" ("GATB" "TB")) 
+(define-protein "UP:O75879" ("GATB")) 
 (define-protein "UP:O75880" ("Protein SCO1 homolog, mitochondrial" "SCO (cytochrome oxidase deficient" "SCO cytochrome oxidase deficient homolog 1 (yeast)" "SCO1" "SCO1_HUMAN" "SCOD1" "o75880")) 
 (define-protein "UP:O75881" ("CYP7B1" "cytochrome P450 family 7 subfamily B member 1" "oxysterol 7 alpha-hydroxylase")) 
 (define-protein "UP:O75886" ("HSE1 homolog (S. cerevisiae)" "STAM2" "STAM2_HUMAN" "o75886" "signal transducing adaptor molecule (SH3 domain and ITAM motif)2" "signal transducing adaptor molecule 2")) 

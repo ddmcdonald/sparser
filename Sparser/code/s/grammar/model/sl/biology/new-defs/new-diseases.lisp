@@ -132,3 +132,4 @@
 (def-indiv-with-id disease "Gerstmann-Strausler-Scheinker syndrome" "NCIT:C84727" :name "Gerstmann-Straussler-Scheinker disease") 
 (def-indiv-with-id virus "Epstein-Barr virus" "TI:10376") 
 (def-indiv-with-id virus "Haemophilus influenzae" "TI:727") 
+(def-indiv-with-id disease "TB" "NCIT:C3423" :name "tuberculosis")
