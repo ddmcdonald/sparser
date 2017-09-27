@@ -52,6 +52,12 @@
 
 ;; what to do about stacks e.g. "just barely"
 
+
+;; not sure if this is appropriate, but we are getting bad parses for "one or more proteins"
+(define-approximator/determiner "or more")
+(define-approximator/determiner "or fewer")
+(define-approximator/determiner "or less")
+
 (define-approximator/determiner "almost")
 (define-approximator/determiner "about")
 (define-preposition "about")
@@ -421,6 +427,7 @@
 (define-adverb "distributionally")
 (define-adverb "dynamically")
 (define-adverb "e.g.")
+(define-adverb "e. g.")
 (define-adverb "easily")
 (define-adverb "effectively")
 (define-adverb "efficiently")
