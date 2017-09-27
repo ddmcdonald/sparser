@@ -335,7 +335,8 @@
                  ;; tighter check for cases like "Ras expressing cells"
                  (loop for ref in preceding-noun-refs thereis (is-object-not-subject? ref e)))
                 ((loop for edge in edges thereis
-                         (member (cat-name (edge-form edge)) '(det quantifier adjective))))))
+                         (member (cat-name (edge-form edge)) '(det quantifier adjective
+                                                               comparative-adjective superlative-adjective))))))
          (verb+ed                                                   ;; VERB+ED
           ;;"RNA interference (RNAi) blocked MEK/ERK activation."
           (not (preceding-adverb-preceded-by-ng edges))
@@ -466,14 +467,13 @@
 
 
 (defun prev-noun-or-adj (e &optional (edges-before (edges-before e)))
-  (declare (special category::adjective category::common-noun
-		    category::proper-noun))
   (loop for ee in edges-before
-     thereis
-       (and
-        (category-p (edge-form ee))
-        (member (cat-symbol (edge-form ee))
-                '(category::adjective category::common-noun category::proper-noun)))))
+        thereis
+          (and
+           (category-p (edge-form ee))
+           (member (cat-name (edge-form ee))
+                   '(adjective comparative-adjective superlative-adjective
+                     common-noun proper-noun)))))
 
 
 (defmethod vg-start? ((e edge))
@@ -587,7 +587,9 @@ than a bare "to".  |#
   "to prevent looping?")
 
 (defmethod ng-start? ((e edge))
-  (declare (special category::modifier category::adjective category::adverb
+  (declare (special category::modifier category::adjective
+                    category::comparative-adjective category::superlative-adjective
+                    category::adverb
                     category::be category::parentheses
                     category::that category::verb+ed category::verb+ing
                     category::also category::and
@@ -633,7 +635,9 @@ than a bare "to".  |#
                         (eq (chunk-end-pos (car *chunks*))
                             (pos-edge-starts-at e)))))))
           ((or (eq category::modifier (edge-category e))
-               (eq category::adjective (edge-form e)))
+               (eq category::adjective (edge-form e))
+               (eq category::comparative-adjective (edge-form e))
+               (eq category::superlative-adjective (edge-form e)))
            ;;when the previous chunk was a copula verb (just check for BE at this time)
            ;; and this is an adjective
            (or
@@ -1076,7 +1080,9 @@ than a bare "to".  |#
      thereis (det-prep-poss-or-adj? ee)))
 
 (defun det-prep-poss-or-adj? (ee)
-  (or (member (cat-name (edge-form ee)) '(det possessive adjective number
+  (or (member (cat-name (edge-form ee)) '(det possessive adjective
+                                          comparative-adjective superlative-adjective
+                                          number
                                           verb+ed verb+ing))
       (preposition-edge? ee)))
 
