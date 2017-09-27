@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "binding-helpers"
 ;;;   Module:  "/interface/mumble/"
-;;;  version:  July 2017
+;;;  version:  September 2017
 
 ;; initiated 7/25/17 to hold all the auxiliary subroutines of the
 ;; realization procesure.
@@ -27,6 +27,55 @@
   (let ((slot (current-position)))
     (when slot
       (memq (name slot) labels))))
+
+(defun current-position-is-top-level? ()
+  "Is the current position something like turn or a similar
+   main-clause holding slot like sentence, question, or s.
+   If the current position isn't bound yet then we're in 
+   declared to be at top level. 
+      Controls application of command in the tense fn."
+  (let ((slot (current-position)))
+    (if (null slot)
+      t
+      (let ((name (name slot))) ;; the 1st label
+        (memq name '(turn sentence question s paragraph))))))
+
+
+
+(defun current-position-compatible-with-pos (pos-label)
+  "Is the current syntactic position compatible with
+   realizations of this particular part-of-speech?"
+  (let ((slot (current-position)))
+    (when slot
+      (grammatically-compatible? slot pos-label))))
+
+(defgeneric grammatically-compatible? (position pos)
+  (:documentation "Are the grammatical constraints on this position
+    compatible with realizations of this part of speech")
+  (:method ((slot slot) (pos symbol))
+    (let* ((table *slot-name-part-of-speech-table*)
+           (labels-on-slot (labels slot))
+           (label-names (loop for l in labels-on-slot
+                           collect (name l))))
+      (let ((entries (loop for name in label-names
+                        when (assoc name table)
+                        collect (cadr (assoc name table)))))
+        (unless entries (warn "no slot-pos entry for ~a" label-names))
+        (loop for entry in entries
+           when (memq pos entry)
+           do (return-from grammatically-compatible? t))
+        nil))))
+
+(defparameter *slot-name-part-of-speech-table*
+  '((turn (verb noun adjective adverb))
+    ;; grammatical-constraints (clause np vp pp adjp advp)
+    (subject (noun)) ;; (np vp)
+    (direct-object (noun)) ;; (np)
+    (relative-clause (verb))
+    )
+  "Has the information we could otherwise glean (and abstract to
+   the needed level) from the grammatical constraints on slot labels")
+
 
 ;;;----------------------
 ;;; poor man's def-trace
@@ -96,6 +145,7 @@
   (:method :after ((dtn derivation-tree-node) &aux (referent (referent dtn)))
     "Interpret a referent with an object but no subject as an imperative."
     (when (and (sp::individual-p referent)
+               (current-position-is-top-level?)
                (sp::missing-subject-vars referent)
                (let ((object-var (sp::bound-object-var referent)))
                  (and object-var (not (eq (sp::value-of object-var referent)
@@ -103,12 +153,38 @@
       (command dtn))))
 
 (defun heavy-predicate-p (i)
-  "Return true if the individual is too heavy to be used as a premodifier."
+  "Return true if the individual is too heavy to be used as a premodifier.
+   Applied to predication and location bindings in attach-via-binding"
   (and (sp::individual-p i)
-       (remove-if (lambda (b)
+       ;; Could it be a pp or a clause that has a subj or obj that's not lambda
+       ;;/// how to test pp case -- e.g. for location?
+       (includes-real-subj/obj? i)))
+
+;; Original definition. Doesn't deal properly with "phosphorylated MEK"
+;; Where that instance of phosphorylated should be deemed light.
+       #+ignore(remove-if (lambda (b)
                     (or (eq (sp::binding-value b) sp::**lambda-var**)
                         (eq (sp::var-name (sp::binding-variable b)) 'sp::name)))
-                  (sp::indiv-binds i))))
+                          (sp::indiv-binds i))
+
+(defun includes-real-subj/obj? (i)
+  (let ((subject (loop for v in (sp::find-subject-vars i)
+                    as value = (sp::value-of v i)
+                    when value do (return value)))
+        ;; ignoring possibilty of intransitives since we don't know
+        ;; what the realization really would be
+        (object (loop for v in (sp::find-object-vars i)
+                   as value = (sp::value-of v i)
+                   when value do (return value))))
+    (when subject
+      (when (eq subject sp::**lambda-var**)
+        (setq subject nil)))
+    (when object
+      (when (eq object sp::**lambda-var**)
+        (setq object nil)))
+    (or subject object)))
+
+
 
 
 

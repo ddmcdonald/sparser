@@ -120,7 +120,8 @@
 (defun realize-via-bindings-common-path (i pos resource &optional rdata)
   (declare (optimize debug))
   (let ((dtn (make-dtn :referent i :resource resource)))            
-    (case pos (verb (tense dtn))) ;; also checks for command
+    (case pos (verb (tense dtn))) ;; adds tense & checks for command
+    ;;(push-debug `(,dtn ,i)) (break "look at ~a" dtn)
     (if rdata
       (loop-over-some-bindings i pos dtn rdata)
       (loop-over-bindings i pos dtn))

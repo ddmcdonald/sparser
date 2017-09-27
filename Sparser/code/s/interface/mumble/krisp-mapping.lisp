@@ -183,10 +183,27 @@
          when (sp::incluldes-suggestive-variables i key-pos)
          do (return-from determine-pos m-pos))
 
-      ;; If that wasn't enough, what next?
-      (push-debug `(,resources ,possible-pos))
-      (error "Need more heuristics to break tie for ~a among ~a"
-             i possible-pos))))
+      (let ((remainder
+             (loop for r in resources
+                as pos = (lookup-pos r)
+                when (current-position-compatible-with-pos pos)
+                collect r)))
+        (when (null remainder)
+          (error "All realization resources for ~a~%ruled out by context" i))
+        (when (null (cdr remainder))
+          (return-from determine-pos (car remainder)))
+
+        ;; Make an educated guess based on preferences
+        (let ((remaining-pos
+               (loop for rr in remainder
+                  as pos = (lookup-pos rr)
+                  collect pos )))
+          (cond
+            ((memq 'verb remaining-pos) 'verb)
+            ((memq 'adjective remaining-pos) 'adjective)
+            ((memq 'noun remaining-pos) 'noun)
+            (t (car remaining-pos))))))))
+
 
 
 
@@ -298,6 +315,8 @@ m> (all-phrase-labels)
     (quantifier :quantifier)
     (pronoun :pronoun)
     (interjection :interjection)))
+
+
 
 
 
