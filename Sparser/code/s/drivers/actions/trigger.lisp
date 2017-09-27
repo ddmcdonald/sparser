@@ -43,7 +43,8 @@
   (when *trace-completion-hook*
     (format t "~&Checking for completion actions associated with the ~
                word ~A~%" word))
-  (let ((rule-set (rule-set-for word)))
+  (let ((rule-set (when word (rule-set-for word))))
+    ;; got null word in "mdck ii cells were grown in dmem containing 10% fcs, penicillin, and streptomycin on 12-mm round coverslips or 12- mm diameter transwell TRADE_MARK_SIGN filters ( corning coaster corp.) with a pore size of 0.4 μm. for"
     (if rule-set
       (etypecase rule-set
         (symbol  ;;e.g. :whitespace
