@@ -175,6 +175,16 @@
            :head :right-edge
            :form n-bar
            :referent (:function adj-noun-compound left-edge right-edge)))
+     (eval
+      `(def-syntax-rule (comparative-adjective ,nb) ;; "blacker suv"
+           :head :right-edge
+           :form n-bar
+           :referent (:function adj-noun-compound left-edge right-edge)))
+     (eval
+      `(def-syntax-rule (superlative-adjective ,nb) ;; "blackest suv"
+           :head :right-edge
+           :form n-bar
+           :referent (:function adj-noun-compound left-edge right-edge)))
      (eval 
       `(def-syntax-rule (adjg ,nb) ;; "black suv"
            :head :right-edge
@@ -554,6 +564,8 @@
                   (infinitive to-comp)
                   (to-comp to-comp)
                   (adjective adjp)
+                  (comparative-adjective adjp)
+                  (superlative-adjective adjp)
                   (adjp adjp))
   do
   (eval
@@ -1020,6 +1032,7 @@ similar to an oncogenic RasG12V mutation (9)."))
   :referent (:function passive-is-covert-tocomp left-edge right-edge))
 
 
+
 ;;;------------------------------
 ;;; comparatives -- at any level
 ;;;------------------------------
@@ -1037,28 +1050,28 @@ similar to an oncogenic RasG12V mutation (9)."))
 		  ,@*n-bar-categories*)
    do
      (eval 
-      `(def-syntax-rule (comparative ,nb) ;; "bigger suv"
+      `(def-syntax-rule (comparative-adjective ,nb) ;; "bigger suv"
            :head :right-edge
            :form n-bar
            :referent (:function comparative-adj-noun-compound left-edge right-edge)))
      (eval 
-      `(def-syntax-rule (superlative ,nb) ;; "biggest suv"
+      `(def-syntax-rule (superlative-adjective ,nb) ;; "biggest suv"
            :head :right-edge
            :form n-bar
            :referent (:function superlative-adj-noun-compound left-edge right-edge)))
      (eval 
-      `(def-syntax-rule (comparative-adjp ,nb) ;; "more studied suv"
+      `(def-syntax-rule (comparative-adjp ,nb) ;; "more intelligent woman"
            :head :right-edge
            :form n-bar
            :referent (:function comparative-adj-noun-compound left-edge right-edge)))
      (eval 
-      `(def-syntax-rule (superlative-adjp ,nb) ;; "most studied suv"
+      `(def-syntax-rule (superlative-adjp ,nb) ;; "most intelligent woman"
            :head :right-edge
            :form n-bar
            :referent (:function superlative-adj-noun-compound left-edge right-edge))))
 
 
-(def-syntax-rule (comparative pp)
+(def-syntax-rule (comparative-adjective pp)
     :head :left-edge
     :form comparative-adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
@@ -1067,7 +1080,7 @@ similar to an oncogenic RasG12V mutation (9)."))
     :form comparative-adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
 
-(def-syntax-rule (superlative pp)
+(def-syntax-rule (superlative-adjective pp)
     :head :left-edge
     :form superlative-adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
@@ -1092,7 +1105,7 @@ similar to an oncogenic RasG12V mutation (9)."))
 
 ;;--- comparative + than-np
 
-(def-syntax-rule (comparative than-np) ;; (p/s "bigger than that block")
+(def-syntax-rule (comparative-adjective than-np) ;; (p/s "bigger than that block")
     :head :left-edge
     :form comparative-adjp
     :referent (:function make-comparative-adjp-with-np left-edge right-edge))
