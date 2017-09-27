@@ -63,7 +63,29 @@
    (loop for r in (rs-single-term-rewrites rs)
       when (and (cfr-p r)
                 (not (consp (cfr-referent r))))
-      collect (itype-of (cfr-referent r)))))
+         collect (itype-of (cfr-referent r)))))
+
+(defun rs-distinct-categories (rs)
+  "Collect the set of categies of the referents of all
+   the unary rules on this rule-set"
+  (remove-duplicates
+   (loop for r in (rs-single-term-rewrites rs)
+      when (and (cfr-p r)
+                (not (consp (cfr-referent r))))
+         collect (itype-of (cfr-referent r)))))
+
+(defun word-distinct-categories (word)
+  (rs-distinct-categories (rule-set-for word)))
+
+(defun string-distinct-categories (str)
+  (cond ((and (resolve str)
+              (rule-set-for (resolve str))
+              (rs-single-term-rewrites (rule-set-for (resolve str))))
+         (cons str (word-distinct-categories (resolve str))))
+        ((and (resolve (string-downcase str))
+              (rule-set-for (resolve (string-downcase str)))
+              (rs-single-term-rewrites (rule-set-for (resolve (string-downcase str)))))
+         (cons (string-downcase str) (word-distinct-categories (resolve (string-downcase str)))))))
 
 
 ;;;----------------------
