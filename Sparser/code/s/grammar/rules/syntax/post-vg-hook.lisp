@@ -130,9 +130,10 @@
             
             (t 
              (push-debug `(,left ,right))
-             (error "new configuration of daughters ~
-                         in vg that doesn't record tense: ~a"
-                        vg-edge)))
+             (warn "new configuration of daughters ~
+                         in vg that doesn't record tense: ~a in ~s"
+                   vg-edge
+                   (current-string))))
         
           (set-edge-referent vg-edge referent-with-tense)
           ;;(update-edge-mention-referent vg-edge referent-with-tense)
