@@ -234,6 +234,3 @@
   (gload "dossiers;semantics-weak verbs"))
 
 (gload "dossiers;rules-to-turn-off")
-
-(gload "dossiers;template-library")
-
