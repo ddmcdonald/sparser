@@ -1338,7 +1338,7 @@ new file to append to new-prot-fam, those without get filtered to "
         (eq word-cat (category-named 'protein-family))
         (eq word-cat (category-named 'nucleotide)))))
 
-(defun new-reach-defs->krisp (&key (good-reach-defs-file "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/hms-grounding/vetted-reach-defs-3.lisp") (new-prot-def-file "new-prot-defs-from-reach.lisp") (new-prot-fam-file "new-prot-fam-from-reach.lisp") (other-defs-file "other-defs-from-reach.lisp") (potential-defs-file "potential-other-defs-from-reach.lisp")(mismatch-defs-file "sparser-reach-mismatch-defs.lisp"))
+(defun new-reach-defs->krisp (&key (good-reach-defs-file "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/hms-grounding/vetted-reach-defs3r.lisp") (new-prot-def-file "new-prot-defs-from-reach.lisp") (new-prot-fam-file "new-prot-fam-from-reach.lisp") (other-defs-file "other-defs-from-reach.lisp") (potential-defs-file "potential-other-defs-from-reach.lisp")(mismatch-defs-file "sparser-reach-mismatch-defs.lisp"))
   (with-open-file (new-defs good-reach-defs-file :direction :input 
                             :external-format :UTF-8)
     (when new-defs
@@ -1347,29 +1347,33 @@ new file to append to new-prot-fam, those without get filtered to "
             do (when (stringp (first def))
                  (let* ((item (first def))
                         (reach-uids (second def))
+                        (reach-up-uid (loop for uid in reach-uids
+                                            when (search "UP:" uid)
+                                            return uid))
                         (word (or (resolve item) (resolve (string-downcase item))))
                         (str-word (when word (single-term-rewrite? word :no-warn t)))
                         (word-uid (when word (word-has-uid-p word)))
                         (item-hyphen (search "-" item)))
-                        (cond ((and word-uid
-                                    (member word-uid reach-uids :test #'equal))
-                               (push def *reach-sparser-mismatch-defs*))
-                              ((and item-hyphen
-                                    (or (protein-or-nucleotide-p (subseq item 0 item-hyphen))
-                                        (protein-or-nucleotide-p (string-downcase (subseq item 0 item-hyphen))))
-                                    (or (protein-or-nucleotide-p (subseq item (+ 1 item-hyphen)))
-                                        (protein-or-nucleotide-p (string-downcase (subseq item (+ 1 item-hyphen))))))
-                               ;;should also add check for residue on protein, but don't have an easy way
-                               (push `("complex" ,def) *reach-sparser-mismatch-defs*))
-                              (str-word
-                               (push `("uid-mismatch" ,word-uid ,def) *reach-sparser-mismatch-defs*))
-                              (t
-                               (new-reach-def->krisp-def def)))))))
-      (print-defs-to-file *new-reach-prot-defs* new-prot-def-file)
-      (print-defs-to-file *new-reach-prot-fam-defs* new-prot-fam-file)
-      (print-defs-to-file *new-reach-other-defs* other-defs-file)
-      (print-defs-to-file *potential-other-reach-defs* potential-defs-file)
-      (print-defs-to-file *reach-sparser-mismatch-defs* mismatch-defs-file)))
+                   (cond ((and word-uid
+                               (member word-uid reach-uids :test #'equal))
+                          (push def *reach-sparser-mismatch-defs*))
+                         ((and item-hyphen
+                               (not reach-up-uid) ;; up definitions have been vetted against uniprots synonyms, and sometimes real protein names are hyphenated words where the two haves also name other protein names/families, e.g., "p41-Arc"
+                               (or (protein-or-nucleotide-p (subseq item 0 item-hyphen))
+                                   (protein-or-nucleotide-p (string-downcase (subseq item 0 item-hyphen))))
+                               (or (protein-or-nucleotide-p (subseq item (+ 1 item-hyphen)))
+                                   (protein-or-nucleotide-p (string-downcase (subseq item (+ 1 item-hyphen))))))
+                          ;;should also add check for residue on protein, but don't have an easy way
+                          (push `("complex" ,def) *reach-sparser-mismatch-defs*))
+                         (str-word
+                          (push `("uid-mismatch" ,word-uid ,def) *reach-sparser-mismatch-defs*))
+                         (t
+                          (new-reach-def->krisp-def def)))))))
+    (print-defs-to-file *new-reach-prot-defs* new-prot-def-file)
+    (print-defs-to-file *new-reach-prot-fam-defs* new-prot-fam-file)
+    (print-defs-to-file *new-reach-other-defs* other-defs-file)
+    (print-defs-to-file *potential-other-reach-defs* potential-defs-file)
+    (print-defs-to-file *reach-sparser-mismatch-defs* mismatch-defs-file)))
 
 (defun print-defs-to-file (def-list file)
    (with-open-file (stream (concatenate 'string "sparser:bio;" file)

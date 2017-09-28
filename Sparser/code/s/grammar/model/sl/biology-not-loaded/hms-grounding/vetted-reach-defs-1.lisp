@@ -7715,7 +7715,7 @@
 ("mI" ("PCID:892"))
 ("mK3" ("HGNC:6888" "UP:Q16644"))
 ("mK5" ("HGNC:6889" "UP:Q8IW41"))
-("mL" ("HGNC:11795" "UP:P40225"))
+;("mL" ("HGNC:11795" "UP:P40225"))
 ("mRNA cap-binding" ("HGNC:3287" "UP:P06730"))
 ("mRNA export factor" ("HGNC:9828" "UP:P78406"))
 ("mRpL10" ("HGNC:14055" "UP:Q7Z7H8"))

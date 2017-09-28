@@ -69,7 +69,8 @@
 (def-family-with-id "GP3" "XFAM:PF03076.12") 
 (def-family-with-id "GP41" "XFAM:PF00517.15" :synonyms ("gp41")) 
 (def-family-with-id "G protein" "NCIT:C17458" :synonyms ("g protein" "g-protein" "
-Guanine Nucleotide Binding Protein" "GTP-Binding Protein")) 
+Guanine Nucleotide Binding Protein" "GTP-Binding Protein"))
+(def-family-with-id "globin" "XFAM:PF01152")
 (def-family-with-id "Glypicans" "FA:01627" :synonyms ("glypican"))
 (def-family-with-id "glutaminase" "GO:0004359")
 (def-family-with-id "GnRH" "FA:01630" :synonyms ("GnRHs"))

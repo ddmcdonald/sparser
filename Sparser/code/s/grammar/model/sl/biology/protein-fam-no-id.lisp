@@ -1459,7 +1459,7 @@
 (def-family "galanin" :members ("UP:P22466" "UP:P47215")) 
 (def-family "galphaq" :members ("UP:P23625" "UP:P50148")) 
 (def-family "gamma 1" :members ("UP:P19174" "UP:Q99490")) 
-(def-family "gamma 2" :members ("UP:P02528" "UP:P63267")) 
+;(def-family "gamma 2" :members ("UP:P02528" "UP:P63267")) 
 (def-family "gamma polypeptide" :members ("UP:P00326" "UP:P48736")) 
 (def-family "gamma-glutamyltransferase 5" :members ("UP:P36269" "UP:Q9Z2A9")) 
 (def-family "gastric triacylglycerol lipase" :members ("UP:P07098" "UP:Q29458")) 
