@@ -228,6 +228,10 @@
                    (pprint-value (value pvp))
                    vars)))))))
 
+;(defmethod print-object ((msd multi-subcat-mdata) stream)
+;  (print-unreadable-object (msd stream)
+    
+
 ;;--- other print methods
 
 (defmethod pprint-value ((c sp::category))

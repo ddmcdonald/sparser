@@ -185,45 +185,27 @@ and/or by which subcategorized arguments the individual binds.
 
 #+:mumble
 (defgeneric has-mumble-rdata (category &key pos)
-  (:documentation "Return the mumble field in the category's rdata.
-    If there are several realizations use the part of speech to
-    discriminate among them. 
-        This function is what m::new-style-realize-via-bindings calls
-    (on the individual its realizing), so this is where we stage
-    all the sorting out of alternative realizations.")
-  
+  (:documentation "Used in m::new-style-realize-via-bindings to 
+    retrieve any structured rdata associated with individuals
+    of this category (as oposed to lexicalized-phrases). 
+    If there is more than one, descriminate them by part of speech.")
   (:method ((i individual) &key pos)
     (let ((mumble-rdata (has-mumble-rdata (itype-of i) :pos pos)))
       (when mumble-rdata
         (m::select-realization mumble-rdata i pos))))
-
   (:method ((c category) &key pos)
-    (let ((rdata-field (rdata c)))
-      (when rdata-field ;; does the category have any recorded realizations?
-        (when (some #'mumble-rdata rdata-field)
-          ;; do any have mumble realiation information on them?
-          (let* ((relevant-rdata (loop for r in rdata-field
-                                    when (mumble-rdata r)
-                                    collect r))
-                 (mumble-rdata (loop for rr in relevant-rdata
-                                  collect (mumble-rdata rr))))
-            (when mumble-rdata
-              (when (consp mumble-rdata) ;; expected
-                (unless (every #'m::mumble-rdata? mumble-rdata)
-                  ;; could be a spurious extra level of parens
-                  (if (and (= 1 (length mumble-rdata))
-                           (m::mumble-rdata? (car (car mumble-rdata))))
-                    (setq mumble-rdata (car mumble-rdata))
-                    (error "Ill-formed rdata for mumble: ~a" mumble-rdata))))
-              mumble-rdata )))))))
+    (let ((all-resources (mumble-resources-for c)))
+      (let ((rdata (loop for r in all-resources
+                      when (or (typep r 'm::mumble-rdata)
+                               (typep r 'm::multi-subcat-mdata))
+                      collect r)))
+        rdata))))
 
 #+:mumble
 (defgeneric mumble-resources-for (i)
   (:documentation "Lookup and return all the realization options on
    the individual without regard to what part of speech they apply to.
-   Get both mrd and lp options (/// lp is impoverished today).")
-  ;; could be the feeder to has-mumble-rdata -- separate options
-  ;; from selection.
+   Get both mrd and lp options .")
   (:method ((i individual))
     (mumble-resources-for (itype-of i)))
   (:method ((name symbol))
@@ -260,11 +242,11 @@ and/or by which subcategorized arguments the individual binds.
                       do (push md resources)))))))
       resources)))
 
+
 (defgeneric incluldes-suggestive-variables (i pos)
   (:documentation "Does this individual bind particular variables that
     a frequently present when an interpretation is for a particular
-    part of speech. Noun vs. verb is pretty clear, others less so.
-    Only part of the decision that m::determine-pos has to make.")
+    part of speech. Noun vs. verb is pretty clear, others less so.")
   (:method ((i individual) (pos (eql :noun)))
     (or (value-of 'has-determiner i)
         (value-of 'name i)))

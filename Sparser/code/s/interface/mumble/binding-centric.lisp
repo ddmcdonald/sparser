@@ -180,7 +180,9 @@
 (defgeneric attach-via-binding (binding var-name dtn pos)
   (:documentation "Dispatch off the identity of the variable to
     determine how to add the value of the binding to the dtn
-    that was passed in. ")
+    that was passed in. 
+       The part-of-speech argument is the pos of the individual
+    these bindings are on.")
   
   (:method (binding var-name dtn pos)
     "Attach a binding as a subject, object, or prepositional phrase."

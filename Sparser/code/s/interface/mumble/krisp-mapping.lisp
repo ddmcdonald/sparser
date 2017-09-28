@@ -153,6 +153,19 @@
 
 
 
+
+(defgeneric filter-rdata-by-pos (rdata-choices pos)
+  (:documentation  "Which of the alternatives is consistent
+     with this part of speech")
+  (:method ((alternatives cons) (pos symbol))
+    (let* ((mpos (if (eq (symbol-package pos) (find-package :mumble))
+                   pos
+                   (sp::mumble-pos pos)))) ;; presume sparser pos
+      (loop for mrd in alternatives
+         when (eq mpos (lookup-pos mrd))
+         collect mrd))))
+
+
 ;;;--------------------------
 ;;; part-of-speech functions
 ;;;--------------------------
@@ -204,19 +217,6 @@
             ((memq 'noun remaining-pos) 'noun)
             (t (car remaining-pos))))))))
 
-
-
-
-(defgeneric filter-rdata-by-pos (rdata-choices pos)
-  (:documentation  "Which of the alternatives is consistent
-     with this part of speech")
-  (:method ((alternatives cons) (pos symbol))
-    (let* ((mpos (if (eq (symbol-package pos) (find-package :mumble))
-                   pos
-                   (sp::mumble-pos pos)))) ;; presume sparser pos
-      (loop for mrd in alternatives
-         when (eq mpos (lookup-pos mrd))
-         collect mrd))))
 
 (defgeneric lookup-pos (resource)
   (:documentation "Return the mumble word-level part-of-speech
