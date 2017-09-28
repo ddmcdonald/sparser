@@ -14,9 +14,14 @@
 
 (defgeneric grammatical-person (item)
   (:documentation "Should this item be referred to using 'first',
-    'second', or 'third' person: I vs. you vs. it. The default
-    is third.")
-  
+    'second', or 'third' person: I vs. you vs. it.")
+
+  (:method (item)
+    (declare (ignore item)))
+  (:method :around (item)
+    "Default to third person."
+    (or (call-next-method) 'third))
+
   (:method ((item specification))
     (let ((acc (get-accessory-value ':person item)))
       (and acc (name acc))))
@@ -37,7 +42,8 @@
            (and acc (name acc))))
         (pronoun (person orig)))))
 
-  (:method ((item pronoun)) (person item)))
+  (:method ((item pronoun))
+    (person item)))
 
 
 ;;--- Number
@@ -50,9 +56,14 @@
       The within-Mumble cases are handled here. See the Sparser
    mumble interface for example methods for outside cases.
    The principle consumer of this function is number-of-current-subject
-   in grammar/morphology.lisp. If we fall through an don't return 
-   a value it will default to singular.")
-  
+   in grammar/morphology.lisp.")
+
+  (:method (item)
+    (declare (ignore item)))
+  (:method :around (item)
+    "Default to singular"
+    (or (call-next-method) 'singular))
+
   (:method ((item specification))
     "Number specified in a bundle-style input specification"
     (let ((acc (get-accessory-value ':number item)))
@@ -81,4 +92,3 @@
 
   (:method ((item pronoun))
     (number item)))
- 

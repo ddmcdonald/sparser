@@ -281,21 +281,12 @@ The exceptions are optional."
 (defun number-of-current-subject ()
   "Return the NUMBER (singular or plural) of the current subject,
 as specified by the *CURRENT-PHRASAL-ROOT*. Default is SINGULAR."
-  (let ((subj (current-subject)))
-    (the (member singular plural)
-         (let ((number ;;(number-of-subject subj)
-                (grammatical-number subj)))
-           (unless number
-             (warn "no number recorded on subject ~a" subj))
-           (or number 'singular)))))
+  (grammatical-number (current-subject)))
 
 (defun person-of-current-subject ()
   "Return the PERSON (first, second or third) of the current subject,
 as specified by the *CURRENT-PHRASAL-ROOT*. Default is THIRD."
-  (let ((subj (current-subject)))
-    (the (member first second third)
-	 (or (grammatical-person subj)
-	     'third))))
+  (grammatical-person (current-subject)))
 
 (defun process-trace (item slot-name)
   (if (pname item)
