@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  February 2017
+;;;  Version:  September 2017
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -303,6 +303,7 @@
 
 (defun noun-noun-compound (qualifier head)
   ;; goes with (common-noun common-noun) syntactic rule
+  ;; and {common-noun} → n-bar common-noun
   (cond
     (*subcat-test*
      (not (or (word-p head) ;; this happened with word = HYPHEN, "from FCS-treated cells"
@@ -357,7 +358,14 @@
                  (value-of 'name qualifier)))
         ;; intended as test for proper noun or other specific NP
         (revise-parent-edge :form category::proper-noun)
-	qualifier)
+	qualifier)             
+       ((and (itypep qualifier (itype-of head))
+             ;; "The concentration of BRAF-NRAS complex." comes out
+             ;; as 'complex of complex of' if we fall through to
+             ;; the subcategoization case just below.
+             (has-only-trivial-bindings head))
+        qualifier)
+       
        ((interpret-premod-to-np qualifier head))
        ;; subcat test is here. If there's a :premod subcategorization
        ;; that's compapatible this gets it.
@@ -366,6 +374,16 @@
 	;; they are qualifiers, so perhaps subtype?
 	(setq head (bind-variable 'modifier qualifier head)) ;; safe
 	head)))))
+
+(defun has-only-trivial-bindings (i)
+  "raw-text doesn't count"
+  (let* ((vars (loop for b in (indiv-binds i)
+                  collect (binding-variable b)))
+         (names (loop for v in vars collect (var-name v))))
+    (cond
+      ((and (null (cdr names)) (eq (car names) 'raw-text)) t)
+      (t nil))))
+       
 
 (defun interpret-premod-to-np (premod head)
   (let ((variable-to-bind
