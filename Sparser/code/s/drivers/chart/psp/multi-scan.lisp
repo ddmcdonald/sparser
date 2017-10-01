@@ -34,8 +34,113 @@
 
 ;;--- For working with a document
 
+(defun scan-words-loop (start-pos &optional word)
+  "WRITE THIS DOCUMENTATION"
+  (declare (special *sentence-terminating-punctuation*)
+           (optimize (speed 1)(debug 3)))
+  (scan-sentences-and-pws-to-eos start-pos)
+
+  (let* ((position-before start-pos)
+         (ev (pos-starts-here start-pos))
+         (edge (ev-top-node ev))
+         (word (unless edge (pos-terminal start-pos)))
+         (position-after (if edge
+                             (pos-edge-ends-at edge)
+                             (chart-position-after position-before))))
+         
+    
+    (loop
+      (when (eq word *end-of-source*)
+        (throw 'sentences-finished nil))
+      (when *trace-scan-words-loop*
+        (if word
+            (format t " ~s" (word-pname word))
+            (format t " edge: ~s" edge)))
+      (when word
+        ;; The function check-for-completion-actions/word looks on the
+        ;; rule-set of the word for a completion action or actions and
+        ;; runs carry-out-actions to execute (funcall) them. 
+        (tr :scan-completing word position-before position-after)
+        ;; Trigger the period-hook (n.b. also gets conjunctions,
+        ;; parentheses, etc.)
+        (when (member word *sentence-terminating-punctuation*)
+          ;; possibly exit loop here -- when you have a real period
+          (period-hook word position-before position-after)))
+
+      (setq position-before position-after
+            ev (pos-starts-here position-after)
+            edge (ev-top-node ev)
+            word (unless edge (pos-terminal position-after))
+            position-after (if edge
+                               (pos-edge-ends-at edge)
+                               (chart-position-after position-after)))
+
+      )))
+
+
+(defun scan-sentences-and-pws-to-eos (position
+                                      &aux (word (pos-terminal position))
+                                        (sentence (sentence))
+                                        (*scanning-terminals* :polywords))
+  "First pass over the text. Checks each successive word for
+   initiating a polyword (polyword-check). The longest completion
+   is spanned with an edge. 
+      This loop stops at the *end-of-source*"
+  (declare (special *trace-sweep* *scanning-terminals*)
+           (optimize debug))
+  (tr :polyword-sweep-loop)
+  (cond ((includes-state position :polywords-check)
+         (values (eos-sweep-loop position)
+                 (sentence)))
+        (t 
+         (loop
+           (cond ((eq word *end-of-source*)
+                  (if (eq (starts-at-pos (sentence)) position)
+                      ;;  there was a period just before the EOS
+                      (let ((prev (previous (sentence))))
+                        (when prev ;; can have paragraph with no text!
+                          ;;  see PMC1240052
+                          (setf (next prev) nil)))
+                      ;; sentence ends with EOS, not a period
+                      (tie-off-ongoing-sentence-at-eos position))
+                  (return))
+                 ((and (member word *sentence-terminating-punctuation*)
+                       (period-marks-sentence-end? (chart-position-after position)))
+                  (start-sentence (chart-position-after position))))
+
+           (let* ((where-pw-ended (polyword-check position word))
+                  (position-after (or where-pw-ended
+                                      (chart-position-after position))))
+             (when where-pw-ended
+               (tr :scanned-pw-ended-at word where-pw-ended)
+               (setq position where-pw-ended)
+               (unless (includes-state where-pw-ended :scanned)
+                 ;; PW can complete without thinking about the
+                 ;; word that follows it.
+                 (scan-next-position))
+               (setq word (pos-terminal where-pw-ended)))
+       
+             (unless (includes-state position-after :scanned)
+               (scan-next-position))
+
+             (let ((next-word (pos-terminal position-after)))
+               (tr :next-terminal-to-scan position-after next-word)
+               (setq position position-after)
+               (setq word next-word))))
+         (values position sentence))))
+
+(defun eos-sweep-loop (position &aux (word (pos-terminal position)))
+  (loop
+    (when (eq word *end-of-source*)
+      (return-from eos-sweep-loop position))
+    (setq position (chart-position-after position))
+    (setq word (pos-terminal position))))
+
+
+
+#+ignore
 (defun scan-words-loop (position-before word)
-  "This routine is called by scan-sentences-to-eof which itself
+  "This routine is called by ... which itself
    is called by initiate-successive-sweeps when we are reading
    a document and need to populate (create) all the sentences.
    Starting at the beginning of a sentence, add words into the
@@ -46,6 +151,7 @@
   ;;/// rewrite this as a loop. Maybe incorporate the
   ;; by-hand invocation of period-hook
   ;; (tr :scan-words-loop) <-- needs to be loop before not loud
+  (declare (optimize (speed 1)(debug 3)))
   (simple-eos-check position-before word)  
   (let ((position-after (chart-position-after position-before)))
     (unless (includes-state position-after :scanned)
@@ -100,7 +206,7 @@
              (parent sentence)))
     (tr :scanning-terminals-of sentence)
     (catch :end-of-sentence
-      (scan-terminals-loop start-pos first-word))))
+      (scan-terminals-loop start-pos first-word (ends-at-pos sentence)))))
 
 
 ;;;---------------------------------------------------
@@ -118,10 +224,10 @@
    behavior of the eos check and period hook.")
 
 #| N.b. sweeps for early rules, patterns, no-space, early information, 
-conjunctions, and parentheses run after the sweeps that are organized
-by scan-terminals-loop. Under the control of sentence-processing-core |#
+      conjunctions, and parentheses run after the sweeps that are organized
+      by scan-terminals-loop. Under the control of sentence-processing-core |#
 
-(defun scan-terminals-loop (position-before word)
+(defun scan-terminals-loop (position-before word end-pos)
   "Carries out the first layer of analysis by checking for and
    applying word-level rules. It is the core routine regardless
    of whether source is a document or just a string.
@@ -140,40 +246,32 @@ by scan-terminals-loop. Under the control of sentence-processing-core |#
    We return by throwing to :end-of-sentence, which is
    what period-hook does if its called conventionally."
 
-  (declare (special *sweep-for-polywords* *sweep-for-word-level-fsas*
-                    *sweep-for-terminal-edges*))
+  (declare (special end-pos  *sweep-for-polywords* *sweep-for-word-level-fsas*
+                    *sweep-for-terminal-edges*)
+           (optimize debug))
   
   (tr :scan-terminals-loop)
   (simple-eos-check position-before word)
   (sentence-level-initializations) ;; clear traversal state
 
-  (let ((initial-position-before position-before)
-        (initial-word word)
-        end-pos )
-    ;; N.b. This assumes all the flags are up. If that is not the case
-    ;; then the logic has to change to accommodate it, particularly
-    ;; for delimiting the sentence
+  ;; N.b. This assumes all the flags are up. If that is not the case
+  ;; then the logic has to change to accommodate it, particularly
+  ;; for delimiting the sentence
+
+
+  (tr :pw-sweep-returned end-pos)
+  (when *sweep-for-word-level-fsas*
+    (word-level-fsa-sweep position-before end-pos))
+
+  (word-level-completion-sweep position-before end-pos)
+
+  (when *sweep-for-terminal-edges*
+    (terminal-edges-sweep position-before end-pos))
+
+  (warn-about-verbified-nouns)
     
-    (when *sweep-for-polywords*
-      (let ((*scanning-terminals* :polywords))
-        (declare (special *scanning-terminals*))
-        (setq end-pos
-              (catch :pw-sweep
-                (polyword-sweep-loop initial-position-before initial-word)))))
-    (tr :pw-sweep-returned end-pos)
-
-    (when *sweep-for-word-level-fsas*
-      (word-level-fsa-sweep initial-position-before end-pos))
-
-    (word-level-completion-sweep initial-position-before end-pos)
-
-    (when *sweep-for-terminal-edges*
-      (terminal-edges-sweep initial-position-before end-pos))
-
-    (warn-about-verbified-nouns)
-    
-    (tr :scan-terminals-loop-finished)
-    (throw :end-of-sentence t)))
+  (tr :scan-terminals-loop-finished)
+  (throw :end-of-sentence t))
 
 
 ;;;------------------------------
@@ -210,15 +308,15 @@ by scan-terminals-loop. Under the control of sentence-processing-core |#
          (setq word (pos-terminal where-pw-ended)))
 
        #| Version that fixed problem of calling no-space processing
-       when the beginning and end positions are identical
-       (when where-pw-ended
-         (tr :scanned-pw-ended-at word where-pw-ended)
-         ;;(setq position-before where-pw-ended)
-         (setq position-before where-pw-ended
-               position-after (chart-position-after where-pw-ended))
-         (unless (includes-state where-pw-ended :scanned)
-           (scan-next-position))
-         (setq word (pos-terminal position-before))) |#
+      when the beginning and end positions are identical
+      (when where-pw-ended
+       (tr :scanned-pw-ended-at word where-pw-ended)
+         ;;(setq position-before where-pw-ended) ;
+       (setq position-before where-pw-ended
+       position-after (chart-position-after where-pw-ended))
+       (unless (includes-state where-pw-ended :scanned)
+       (scan-next-position))
+       (setq word (pos-terminal position-before))) |#
 
        #+ignore(when (eq position-before position-after)
                  (error "Scan-terminals-loop: before and after positions are
@@ -243,7 +341,8 @@ by scan-terminals-loop. Under the control of sentence-processing-core |#
    that it introduces an fsa. The chart is already populated
    with the words introduced by the pw sweep, so we don't need
    to do our own scans."
-  (declare (special *trace-sweep*))
+  (declare (special *trace-sweep* *trace-fsa*)
+           (optimize debug))
   (tr :word-level-fsa-sweep start-pos end-pos)      
   (let* ((position-before start-pos)
          (ev (pos-starts-here start-pos))
@@ -254,9 +353,10 @@ by scan-terminals-loop. Under the control of sentence-processing-core |#
                            (chart-position-after position-before))))
     (loop
        (when *trace-sweep*
-         (format t "~&[fsa sweep] at p~a is ~a"
+         (format t "~&[fsa sweep] at p~a is ~a, position-after is ~s"
                  (pos-token-index position-before)
-                 (or word edge)))
+                 (or word edge)
+                 position-after))
        ;; if word, check it. Else advance
        (when word
          ;; FSA's calls lifted from check-word-level-fsa-trigger 
@@ -339,27 +439,27 @@ by scan-terminals-loop. Under the control of sentence-processing-core |#
            (return))))))
 
 #| 3/27/17 ddm -- In at least two of the "phase 3" articles from HMS
-there are abbreviated months, e.g. "Mar. 2009", and the period is
-not (yet) being correctly recognized as indicating an abbreviation
-rather than an end-of-sentence marker. During the word-level completion 
-sweep, applying the abbreviation creates an edge whose end-point
-is beyond the end-pos (the end position is the end position of the
+      there are abbreviated months, e.g. "Mar. 2009", and the period is
+      not (yet) being correctly recognized as indicating an abbreviation
+      rather than an end-of-sentence marker. During the word-level completion 
+      sweep, applying the abbreviation creates an edge whose end-point
+      is beyond the end-pos (the end position is the end position of the
 overly-short sentence.), which leads to a tight infinite loop.
-To avoid this, we look for having walked beyond the end of the
-populated chart, as indicated by the next pos-terminal being nil.
-(Though that doesn't work when the chart was already filled by longer 
+      To avoid this, we look for having walked beyond the end of the
+      populated chart, as indicated by the next pos-terminal being nil.
+      (Though that doesn't work when the chart was already filled by longer 
 sentence. In the presenting case today the bad length sentences
 were at the beginning of a paragraph when the chart had just been
 deliberately emptied.)
-   When we detect this in word-level-completion-sweep we just return
-and leave the loop because we want to continue on to the final word-level
-sweep. When we detect it there in terminal-edges-sweep (actually in the
+      When we detect this in word-level-completion-sweep we just return
+      and leave the loop because we want to continue on to the final word-level
+      sweep. When we detect it there in terminal-edges-sweep (actually in the
 macro it and only expands) we throw to end-of-sentence, which finishes
-this whole level.
-   Test with this to see the exact point of failure and the short
-sentences.
- (run-an-article :id "PMID22252115" :corpus :phase3 :quiet nil :show-sect t)
-|#
+      this whole level.
+      Test with this to see the exact point of failure and the short
+      sentences.
+      (run-an-article :id "PMID22252115" :corpus :phase3 :quiet nil :show-sect t)
+      |#
 
 
 ;; candidate to redo earlier loops -- used in terminal-edges-sweep below
@@ -462,7 +562,6 @@ sentences.
     (cond
       (*scanning-terminals*
        (tie-off-ongoing-sentence-at-eos position-before)
-       ;;(lsp-break "hit eos = ~a" *scanning-terminals*)
        (ecase *scanning-terminals*
          (:polywords
           (tr :eos-scanning-terminals/pw)
@@ -705,21 +804,21 @@ sentences.
 
 
 #|currently this handles
-#<PSR-1254 comma-number → COMMA number>
-#<PSR-1394 unit-of-measure → HYPHEN unit-of-measure>
-#<PSR-1423 quarter → HYPHEN quarter>
-#<PSR-1443 time → HYPHEN time>
-#<PSR-1444 time-unit → HYPHEN time-unit>
-#<PSR-1447 amount-of-time → number time-unit>
-#<PSR-46366 article-figure → article-figure number>
-#<PSR-46811 antibody → antibody protein>
-#<PSR-46832 residue-on-protein → amino-acid number>
-#<PSR-46839 protein → protein point-mutation>
-#<PSR-61810 migration → bio-entity migration>
-#<PSR-929 do → "doesn" apostrophe-t>
-#<PSR-977 be → isn apostrophe-t>
-#<PSR-979 be → wasn apostrophe-t>
-|#
+      #<PSR-1254 comma-number → COMMA number>
+      #<PSR-1394 unit-of-measure → HYPHEN unit-of-measure>
+      #<PSR-1423 quarter → HYPHEN quarter>
+      #<PSR-1443 time → HYPHEN time>
+      #<PSR-1444 time-unit → HYPHEN time-unit>
+      #<PSR-1447 amount-of-time → number time-unit>
+      #<PSR-46366 article-figure → article-figure number>
+      #<PSR-46811 antibody → antibody protein>
+      #<PSR-46832 residue-on-protein → amino-acid number>
+      #<PSR-46839 protein → protein point-mutation>
+      #<PSR-61810 migration → bio-entity migration>
+      #<PSR-929 do → "doesn" apostrophe-t>
+      #<PSR-977 be → isn apostrophe-t>
+      #<PSR-979 be → wasn apostrophe-t>
+      |#
 (defparameter *show-early-rules* nil)
 
 ;; (trace-early-rules)
@@ -735,37 +834,39 @@ sentences.
 ;;  (not (and (itypep (edge-referent left-edge) 'amino-acid)
 ;;                             (itypep (edge-referent right-edge) 'number)))
 
-(defun do-early-rules-sweep-between (start end)
-  (when (not (eq start end))
-    (let* ((left-edge (right-treetop-edge-at start))
-           (mid-pos  (when (edge-p left-edge) (pos-edge-ends-at left-edge)))
-           (right-edge (when (edge-p left-edge) (right-treetop-edge-at mid-pos)))
-           new-edge  rule)
-      (tr :early-rule-check-at start)
-      (if (or (not (edge-p left-edge))
-              (not (edge-p right-edge))
-              (and
-               (pos-preceding-whitespace mid-pos)
-               (or (not (eq script :biology))
-                   (not (and (itypep (edge-referent left-edge) 'amino-acid)
-                             (itypep (edge-referent right-edge) 'number))))))
-          (if (where-tt-ends left-edge start)
-              (do-early-rules-sweep-between (where-tt-ends left-edge start) end)
-              (warn "do-early-rules-sweep-between (where-tt-ends left-edge start) is nil in ~s"
-                    (current-string)))
-          (else
-            (multiple-value-setq (new-edge rule)
-              (apply-early-rule-at start mid-pos))
-            (let ((start-pos (if new-edge
-                                 ;; edge at the beginning changed, so start at the
-                                 ;;  same start, since the middle position has shifted
-                                 (pos-edge-starts-at new-edge) ;; CS rules generate an edge
-                                 mid-pos)))
-              (if (position-p start-pos)
-                  (do-early-rules-sweep-between start-pos end)
-                  (lsp-break "(position-p start-pos)"))))))))
+(defun do-early-rules-sweep-between (start end &aux left-edge mid-pos right-edve)
+  (declare (special left-edge mid-pos right-edge new-edge rule))
+  (tr :early-rule-check-at start)
+  (loop
+    (cond ((eq start end) (return-from do-early-rules-sweep-between nil))
+          ((null start)
+           (lsp-break
+            "do-early-rules-sweep-between start is nil in ~s"
+            (current-string)))
+          ((not (position-p start)) (lsp-break "(position-p start-pos)")))
+    (setq left-edge (right-treetop-edge-at start))
+    (setq mid-pos  (when (edge-p left-edge) (pos-edge-ends-at left-edge)))
+    (setq right-edge (when (edge-p left-edge) (right-treetop-edge-at mid-pos)))
+
+    (if (and (edge-p left-edge)
+             (edge-p right-edge)
+             (or
+              (not (pos-preceding-whitespace mid-pos))
+              (and (eq script :biology)
+                   (itypep (edge-referent left-edge) 'amino-acid)
+                   (itypep (edge-referent right-edge) 'number))))
+
+        (multiple-value-bind (new-edge rule)
+            (apply-early-rule-at start mid-pos)
+          (setq start (if new-edge
+                          ;; edge at the beginning changed, so start at the
+                          ;;  same start, since the middle position has shifted
+                          (pos-edge-starts-at new-edge) ;; CS rules generate an edge
+                          mid-pos)))
+        (setq start (where-tt-ends left-edge start)))))
         
 (defun apply-early-rule-at (start middle-pos)
+  (declare (optimize (debug 3)(speed 1)))
   (let* ((edges-ending-there (tt-edges-starting-at (pos-starts-here start)))
          (edges-starting-there (all-edges-on (pos-starts-here middle-pos)))
          (*allow-pure-syntax-rules* nil)
@@ -1110,8 +1211,8 @@ sentences.
                 ,pos-before-close ,pos-after-close))
   ;; (lsp-break "call to assess-parenthesized-content")
   #| (setq first-edge (nth 0 *) pos-before-open (nth 1 *)
-        pos-after-open (nth 2 *) pos-before-close (nth 3 *)
-        pos-after-close (nth 4 *)) |#
+pos-after-open (nth 2 *) pos-before-close (nth 3 *)
+pos-after-close (nth 4 *)) |#
   ;; Some of this lookup is recreating observations within
   ;; do-paired-punctuation-interior but it simpler than figuring out
   ;; a way to export it.
