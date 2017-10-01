@@ -149,14 +149,24 @@ previous records of treetop-counts.
                    (let ((*snapshot-index* index))
                      (declare (special *snapshot-index*))
                      (eval exp)
-                     (let ((sentence (previous (sentence))))
+                     (let ((sentence (or (previous (sentence))
+                                         (sentence) ;; with new code, the sentence is the first
+                                         )))
                        ;;(push-debug `(,sentence ,corpus)) (break "check sentence")
                        (if (null sentence) ;; if we are aborting a sentence when we get an error
                            (progn (warn "Error during parsing of ~s~%" exp)
                                   (push `(,index . ,0) pairs))
-                           (let ((count (length (treetops-between
-                                                 (starts-at-pos sentence)
-                                                 (ends-at-pos sentence)))))
+                           (let ((count (length
+                                         (if (previous (sentence)) ;; old style
+                                             (treetops-between
+                                              (starts-at-pos sentence)
+                                              (ends-at-pos))
+                                             ;; amazingly, we have only been counting
+                                             ;;  treetops in the LAST SENTENCE
+                                             (treetops-between
+                                              (starts-at-pos (last-sent))
+                                              (ends-at-pos (last-sent)))
+                                             ))))
                              (push `(,index . ,count) pairs))))))))
 
           (if save-info
@@ -188,7 +198,19 @@ previous records of treetop-counts.
                                           (ends-at-pos sentence)))))
                       (push `(,index . ,count) pairs)))))
 
+(defun last-sent ()
+  (let ((s (sentence)))
+    (loop while (next s)
+          do (setq s (next s))
+          finally (return s))))
 
+(defun last-sent-pos ()
+  (if (previous (sentence)) ;; old style
+      (ends-at-pos (previous (sentence)))
+      (let ((s (sentence)))
+        (loop while (next s)
+              do (setq s (next s))
+                finally (return (ends-at-pos s))))))
 
 ;;--- compare current performance to a snapshot
 
