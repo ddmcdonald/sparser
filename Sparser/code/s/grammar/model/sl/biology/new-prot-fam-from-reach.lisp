@@ -4,7 +4,7 @@
 (def-family-with-id "beta-defensin" "XFAM:PF13841") 
 (def-family-with-id "beta-adrenergic receptor" "BE:ADRB") 
 (def-family-with-id "TGF-Beta" "BE:TGFB") 
-(def-family-with-id "S1" "XFAM:PF00575") 
+;;(def-family-with-id "S1" "XFAM:PF00575")  this is a figure label
 (def-family-with-id "PI3K/AKT/mTOR" "BE:PI3K") 
 (def-family-with-id "5ng/ml" "IPR003939") 
 (def-family-with-id "interferon" "BE:Interferon") 
