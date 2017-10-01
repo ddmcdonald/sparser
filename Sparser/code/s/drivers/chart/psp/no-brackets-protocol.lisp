@@ -145,36 +145,60 @@
 
 (defun initiate-successive-sweeps ()
   (declare (special *reading-populated-document*
-                    *sentence-making-sweep*))
+                    *sentence-making-sweep* *new-sentence* *current-paragraph*)
+           (optimize debug))
   ;; Called from lookup-the-kind-of-chart-processing-to-do which
   ;; is the content of analysis-core after it finishes initializing.
   ;; N.b. The initialization routines created a sentence already
   (scan-next-position) ;; pull the source-start word into the chart
   (scan-next-position) ;; adds 1st real word into the chart
   (cond
-   (*reading-populated-document*
-    ;; Dynamically bound by paragraph method for read-from-document
-    (let ((s1 (sentence)))
-      (unless (prepopulated? s1)
-        (let ((*pre-read-all-sentences* t))
-          (declare (special *pre-read-all-sentences*))
-          (catch 'sentences-finished
-            ;; throw done by simple-eos-check
-            (scan-sentences-to-eof s1))))
+    (*reading-populated-document*
+     ;; Dynamically bound by paragraph method for read-from-document
+     (let ((s1 (sentence)))
+       (unless (prepopulated? s1)
+         (let ((*pre-read-all-sentences* t))
+           (declare (special *pre-read-all-sentences*))
+           (catch 'sentences-finished
+             ;; throw done by simple-eos-check
+             (multiple-value-bind (eos-pos sentence)
+                 (scan-sentences-and-pws-to-eos (p# 1))
+               (setq *current-sentence* s1)))))
 
-      (if *sentence-making-sweep*
-        (then ;; we've done all that we need to on this pass
-          ;; over the document, so move on.
-          (throw 'do-next-paragraph nil))
-        (else
-          ;; Now do the regular loop. All the linguistic
-          ;; analysis is done here. This either just returns
-          ;; when it runs out of sentences or it reaches eof
-          ;; and there's a thow back into the document reader
-          (sweep-successive-sentences-from s1)))))
-   (t
-    ;; default path used by p or f
-    (sentence-sweep-loop))))
+       (if *sentence-making-sweep*
+           (then ;; we've done all that we need to on this pass
+             ;; over the document, so move on.
+             (throw 'do-next-paragraph nil))
+           (else
+             ;; Now do the regular loop. All the linguistic
+             ;; analysis is done here. This either just returns
+             ;; when it runs out of sentences or it reaches eof
+             ;; and there's a thow back into the document reader
+             ;;  (sweep-successive-sentences-from s1)
+             ;;(terminate-chart-level-process)
+             (let ((initial-sentence (sentence)))
+               (multiple-value-bind (eos-pos sentence)
+                   (scan-sentences-and-pws-to-eos (p# 1))
+                 ;; sweep-for-polywords-to-eos calls (start-sentence) for each sentence
+                 ;;  and that resets *current-sentence* -- set it back to first sentence
+                 (setq *new-sentence* sentence)
+                 (setq *current-sentence* initial-sentence)
+                 (catch 'do-next-paragraph
+                   (sweep-successive-sentences-from initial-sentence))
+                 (terminate-chart-level-process)))
+               
+             ))))
+    (t
+     ;; default path used by p or f
+     (let ((initial-sentence (sentence)))
+       (multiple-value-bind (eos-pos sentence)
+           (scan-sentences-and-pws-to-eos (p# 1))
+         ;; sweep-for-polywords-to-eos calls (start-sentence) for each sentence
+         ;;  and that resets *current-sentence* -- set it back to first sentence
+         (setq *current-sentence* initial-sentence)
+         (catch 'do-next-paragraph
+           (sweep-successive-sentences-from initial-sentence))
+         (terminate-chart-level-process))))))
 
 
 ;;;------------------------------------------------------
@@ -186,10 +210,19 @@
    a stream of characters rather than a pre-structured document.
    Organizes all the parsing layers from lowest to highest.
    Expects a first sentence to exist but not to be populated"
+  (declare (special *current-sentence*))
   (tr :entering-sentence-sweep-loop)
-  (let* ((sentence (sentence)) ;; to pass to subroutines
+  (let* ((sentence (sentence))  ;; to pass to subroutines
          (*sentence* sentence)) ;; for global reference
-    (declare (special *sentence*))
+    (declare (special *sentence* *this-sen)
+             (optimize debug))
+    ;; scan through the complete string, filling in the chart
+    (let ((*scanning-terminals* :polywords))
+      (declare (special *scanning-terminals*))
+      (scan-sentences-to-eos (starts-at-pos sentence)))
+    ;;  scan-sentences-to-eos calls (start-sentence) for each sentence
+    ;;  and that resets *current-sentence* -- set it back to first sentence
+    (setq *current-sentence* sentence)
     (loop
       (let* ((start-pos (starts-at-pos sentence))
              (first-word (pos-terminal start-pos)))
@@ -209,7 +242,7 @@
         ;; after this one that we're working on. 
         (tr :scanning-terminals-of sentence)
         (catch :end-of-sentence
-          (scan-terminals-loop start-pos first-word))
+          (scan-terminals-loop start-pos first-word (ends-at-pos sentence)))
         (sentence-processing-core sentence)
         
         (setq sentence (next sentence))
@@ -283,7 +316,7 @@
   "some errors or interesting events happen in the sentence creating sweep, 
    and we want to se the entire sentence context")
 
-(defun scan-sentences-to-eof (first-sentence)
+(defun scan-sentences-to-eof (first-sentence &aux (sentence first-sentence)start-pos)
   "Called from initiate-successive-sweeps when we're
    in the initial sweep phase and need to identify
    and populate the sentences of the paragraphs.
@@ -291,23 +324,26 @@
    but no substantive processing. Does not return.
    We leave the loop via a throw to sentences-finished
    from simple-eos-check from inside scan-words-loop."
-  (declare (special *show-sentence-for-early-errors*))
+  (declare (special *show-sentence-for-early-errors* *current-sentence*)
+           (optimize (debug 3)(speed 1)))
   (tr :start-scan-to-eof first-sentence)
-  (let ((sentence first-sentence))
-    (loop
-      (let* ((start-pos (starts-at-pos sentence)))
-        (tr :scan-to-eof-start-pos start-pos)
-        (catch :end-of-sentence ;; Thrown from period-hook
-          (let ((first-word (pos-terminal start-pos)))
-            (unless first-word
-              (scan-next-position)
-              (setq first-word (pos-terminal start-pos)))
-            (scan-words-loop start-pos first-word)
-            (when *show-sentence-for-early-errors*
-              (format t "  in sentence: ~s ~%"
-                      (sentence-string sentence))
-              (setq *show-sentence-for-early-errors* nil))))
-        (setq sentence (next sentence))))))
+  (setq *current-sentence* first-sentence)
+  (lsp-break "foo")
+  (loop
+    (when (null sentence) (return-from scan-sentences-to-eof nil))
+    (setq start-pos (starts-at-pos sentence))
+    (tr :scan-to-eof-start-pos start-pos)
+    (catch :end-of-sentence ;; Thrown from period-hook
+      (let ((first-word (pos-terminal start-pos)))
+        (unless first-word
+          (scan-next-position)
+          (setq first-word (pos-terminal start-pos)))
+        (scan-words-loop start-pos first-word)
+        (when *show-sentence-for-early-errors*
+          (format t "  in sentence: ~s ~%"
+                  (sentence-string sentence))
+          (setq *show-sentence-for-early-errors* nil))))
+    (setq sentence (next sentence))))
 
 
 
@@ -321,7 +357,8 @@
    This function in a document context does the same job
    as sentence-sweep-loop does for strings: apply the
    parser to successive sentences."
-  (declare (special *trap-error-skip-sentence*))
+  (declare (special *trap-error-skip-sentence*)
+           (optimize debug))
   (loop
      (tr :sweep-reading-sentence sentence)
      (setq *current-sentence-string* (sentence-string sentence))
