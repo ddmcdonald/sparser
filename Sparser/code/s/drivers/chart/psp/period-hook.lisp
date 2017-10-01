@@ -82,7 +82,9 @@
                            (next s))
                 (start-sentence pos-after-period)))
              (t ;; ordinary reading from a stream
-              (start-sentence pos-after-period)))
+              (unless  (and (slot-boundp s 'next) ;; next sentence exists
+                            (next s)) ;; already created
+                (start-sentence pos-after-period))))
 
            (tr :period-hook-sentence-end position-after)
            (when *break-on-next-sentence*
