@@ -288,9 +288,12 @@
    in some odd cases."
   (when *show-section-printouts*
     (format t "~&~%--------- starting paragraph ~a~%" p))
+  (read-from-paragraph-guts p))
+
+(defun read-from-paragraph-guts (p)
   (let ((*reading-populated-document* t)
         (*recognize-sections-within-articles* nil) ;; turn of doc init
-        (*accumulate-content-across-documents* t)  ;; don't clear history
+        (*accumulate-content-across-documents* t) ;; don't clear history
         (*current-document-element* p)
         (*current-paragraph* p)) ;; read by sentence-maker
     (declare (special *reading-populated-document*
@@ -299,7 +302,7 @@
                       *current-document-element*
                       *current-paragraph*))
     (install-contents p)
-    (let ((text (content-string p)))
+    (let* ((text (content-string p)))
       (initialize-sentences) ;; set up or reuse the 1st sentence
       (paragraph-trace-hook p)
       
