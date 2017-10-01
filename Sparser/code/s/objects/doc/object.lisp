@@ -193,10 +193,14 @@
     ;; whether to just drop these into the regular pass
     ;; rather than simulating it. 
 
+    (read-from-paragraph-guts title)
+    
+    ;; code above is the right, and more general way to do this
+    #+ignore
     (let ((*reading-populated-document* t) ;; for period-hook ??
           (*sentence-making-sweep* t) 
-          (*pre-read-all-sentences* t) ;; for simple-eos-check
-          (*current-paragraph* title)) ;; for initialize-sentences
+          (*pre-read-all-sentences* t)     ;; for simple-eos-check
+          (*current-paragraph* title))     ;; for initialize-sentences
       (declare (special *reading-populated-document*
                         *sentence-making-sweep*
                         *pre-read-all-sentences*
@@ -226,9 +230,9 @@
           ;; the essence of what it does without working in
           ;; terms of sentence objects.
           (catch :end-of-sentence
-            (scan-words-loop p1 word)))
+            (scan-words-loop p1 word)))))
 
-        title))))
+    title))
 
 (defun replace-title-text-in-multiples (replacement tt-to-remove)
   (let* ((first (car tt-to-remove))
@@ -600,6 +604,9 @@
         (setf (parent s) section)
         (set-document-index s index)
         (setq *previous-sentence* last)
+        (when (position-precedes (chart-position-before pos)
+                                 (starts-at-pos last))
+          (error "end before start"))
 
         (setf (ends-at-pos last) ;; stop at the period
               (chart-position-before pos))
@@ -607,8 +614,14 @@
         (when (string-equal "" (sentence-string last))
           ;; tie off the prev contents
           (setf (sentence-string last)
-                (extract-characters-between-positions 
-                 (starts-at-pos last) (ends-at-pos last))))))
+                (extract-string-from-char-buffers
+                 (pos-character-index (starts-at-pos last))
+                 ;; this is to make sure we get the "." at the end of the sentence
+                 (+ (if (member (pos-terminal (ends-at-pos last))
+                                *sentence-terminating-punctuation*)
+                        1
+                        0)
+                    (pos-character-index (ends-at-pos last))))))))
     (tr :starting-sentence pos)
     (setq *current-sentence* s)))
 
@@ -665,6 +678,8 @@
 (defun set-sentence-endpoints (period-pos sentence)
   "Called from period-hook during the sentence-making document
    sweep. The period-pos is the one that holds the period."
+  (when (position-precedes period-pos (starts-at-pos sentence))
+    (error "malformed sentence"))
   (setf (ends-at-pos sentence) period-pos)
   (setf (ends-at-char sentence)
         ;; include a period, exclude the EOS flag (cntrl-B)
