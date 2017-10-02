@@ -403,6 +403,20 @@
         (leaving-previous-context result)))
     result))
 
+(defun general-dtn-bundle-driver (dtn root-node)
+  "Blends clausal-bundle-driver with general-bundle-driver.
+   Intended for minor phrase types where there may be
+   further-specification that extend the phrase by attachment
+   but there are never any features. 
+   Called from realize(dtn)."
+  (landmark 'realizing-general-bundle dtn)
+  (set-backpointer-of-root root-node dtn)
+  (when (adjuncts dtn)
+    (entering-new-context root-node)
+    (process-further-specifications (adjuncts dtn))
+    (leaving-previous-context root-node))
+  root-node)
+
 
 
 ;; This bundle is the smallest container we can have for a kernel.
