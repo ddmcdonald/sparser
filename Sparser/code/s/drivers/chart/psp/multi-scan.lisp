@@ -136,55 +136,6 @@
     (setq position (chart-position-after position))
     (setq word (pos-terminal position))))
 
-
-
-#+ignore
-(defun scan-words-loop (position-before word)
-  "This routine is called by ... which itself
-   is called by initiate-successive-sweeps when we are reading
-   a document and need to populate (create) all the sentences.
-   Starting at the beginning of a sentence, add words into the
-   chart until a sentence-ending period (or question-mark) is encountered.
-   It's a recursive loop. We get out of it when the period-hook
-   runs and throws to :end-of-sentence."
-  ;; position-before - word - position-after
-  ;;/// rewrite this as a loop. Maybe incorporate the
-  ;; by-hand invocation of period-hook
-  ;; (tr :scan-words-loop) <-- needs to be loop before not loud
-  (declare (optimize (speed 1)(debug 3)))
-  (simple-eos-check position-before word)  
-  (let ((position-after (chart-position-after position-before)))
-    (unless (includes-state position-after :scanned)
-      (scan-next-position);; unknown words are noticed here
-      ;; this can actually set up the pos-terminal of position-before
-      (unless word (setq word (pos-terminal position-before))))
-    (simple-eos-check position-before word)
-
-    (when *trace-scan-words-loop*
-      (format t " ~s" (word-pname word)))
-    
-    (let* ((where-pw-ended (polyword-check position-before word))
-           (position-after (or where-pw-ended
-                               (chart-position-after position-before))))
-      (when where-pw-ended
-         (tr :scanned-pw-ended-at word where-pw-ended)
-         (setq position-before where-pw-ended
-               position-after (chart-position-after position-before))
-         (unless (includes-state where-pw-ended :scanned)
-           ;; PW can complete without thinking about the
-           ;; word that follows it.
-           (scan-next-position))
-         (setq word (pos-terminal where-pw-ended)))
-      
-      ;; Trigger the period-hook (n.b. also gets conjunctions,
-      ;; parentheses, etc.)
-      
-      (complete-word/hugin word position-before position-after)
-
-      (let ((next-word (pos-terminal position-after)))
-        (scan-words-loop position-after next-word)))))
-
-
 (defun scan-terminals-of-sentence (sentence)
   "Called from scan-terminals-and-do-core in the path that starts
    with a prepopulated documents. Provides sentence-based way to
@@ -235,7 +186,7 @@
    Structured as a succession of passes ('sweeps') over
    a sentence-worth of text:
 
-   1st. do the polywords. This sweep also has the job of 
+   1st. NO LONGER DONE HERE -- done above do the polywords. This sweep also has the job of 
      delimiting the sentence using a throw from period-hook.
    2d. sweep over the treetops in the sentence to
      handle any word-level fsas. 

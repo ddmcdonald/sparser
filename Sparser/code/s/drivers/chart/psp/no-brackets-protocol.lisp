@@ -316,34 +316,7 @@
   "some errors or interesting events happen in the sentence creating sweep, 
    and we want to se the entire sentence context")
 
-(defun scan-sentences-to-eof (first-sentence &aux (sentence first-sentence)start-pos)
-  "Called from initiate-successive-sweeps when we're
-   in the initial sweep phase and need to identify
-   and populate the sentences of the paragraphs.
-   Does scan-next-terminal and detects sentence boundaries 
-   but no substantive processing. Does not return.
-   We leave the loop via a throw to sentences-finished
-   from simple-eos-check from inside scan-words-loop."
-  (declare (special *show-sentence-for-early-errors* *current-sentence*)
-           (optimize (debug 3)(speed 1)))
-  (tr :start-scan-to-eof first-sentence)
-  (setq *current-sentence* first-sentence)
-  (lsp-break "foo")
-  (loop
-    (when (null sentence) (return-from scan-sentences-to-eof nil))
-    (setq start-pos (starts-at-pos sentence))
-    (tr :scan-to-eof-start-pos start-pos)
-    (catch :end-of-sentence ;; Thrown from period-hook
-      (let ((first-word (pos-terminal start-pos)))
-        (unless first-word
-          (scan-next-position)
-          (setq first-word (pos-terminal start-pos)))
-        (scan-words-loop start-pos first-word)
-        (when *show-sentence-for-early-errors*
-          (format t "  in sentence: ~s ~%"
-                  (sentence-string sentence))
-          (setq *show-sentence-for-early-errors* nil))))
-    (setq sentence (next sentence))))
+
 
 
 
