@@ -78,9 +78,25 @@
       :phrase-parameter parameter
       :value value)))
 
-;;;--------------------------------
-;;; Operations on derivation trees
-;;;--------------------------------
+;;;------------------
+;;; derivation trees
+;;;------------------
+
+;;--- indexing
+
+(defvar *referents-to-dtns* (make-hash-table)
+  "Maps the referents of a dtn to the dtn to facilitate
+   debugging")
+
+(defgeneric store-dtn (referent dtn)
+  (:method ((referent T) (dtn derivation-tree))
+    (setf (gethash referent *referents-to-dtns*) dtn)))
+
+(defgeneric get-dtn (referent)
+  (:documentation "Most of the methods are on the Sparser side")
+  (:method ((referent T))
+    (gethash referent *referents-to-dtns*))
+  (:method ((bad null)) nil))
 
 ;;--- base case
 
@@ -88,6 +104,7 @@
   (let ((dtn (make-instance 'derivation-tree-node
                :referent referent
                :resource resource)))
+    (when referent (store-dtn referent dtn))
     dtn))
 
 

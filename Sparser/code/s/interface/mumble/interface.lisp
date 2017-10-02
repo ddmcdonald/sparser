@@ -176,6 +176,16 @@
 (defmethod syntax-driven-sources ((i sp::individual)) nil)
 (defmethod syntax-driven-sources ((c sp::category)) nil)
 
+
+;;--- DTN access
+
+(defmethod get-dtn ((number integer))
+  (get-dtn (sp::individual-object# number)))
+
+(defmethod get-dtn ((i sp::individual))
+  (declare (special *referents-to-dtns*))
+  (gethash i *referents-to-dtns*))
+
 ;;;---------------
 ;;; print methods
 ;;;---------------
