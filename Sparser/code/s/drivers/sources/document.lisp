@@ -288,9 +288,9 @@
    in some odd cases."
   (when *show-section-printouts*
     (format t "~&~%--------- starting paragraph ~a~%" p))
-  (read-from-paragraph-guts p))
+  (read-paragraph-guts p))
 
-(defun read-from-paragraph-guts (p)
+(defun read-paragraph-guts (p)
   (let ((*reading-populated-document* t)
         (*recognize-sections-within-articles* nil) ;; turn of doc init
         (*accumulate-content-across-documents* t) ;; don't clear history

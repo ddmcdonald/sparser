@@ -193,7 +193,7 @@
     ;; whether to just drop these into the regular pass
     ;; rather than simulating it. 
 
-    (read-from-paragraph-guts title)
+    (read-paragraph-guts title)
     
     ;; code above is the right, and more general way to do this
     #+ignore
