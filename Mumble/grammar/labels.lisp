@@ -68,7 +68,7 @@
 
 (define-node-label ap  ;; deprecated
   outgoing-attachment-points (adjective))
-(define-node-label adjp  ;; deprecated
+(define-node-label adjp
   outgoing-attachment-points (adjective))
 
 (define-node-label advp
@@ -235,17 +235,20 @@
 (define-slot-label adverb
   grammatical-constraints (adverb)
   associated-attachment-points (of-complement
-              			 np-prep-complement
-				 nominal-premodifier))
+              	        	np-prep-complement
+				nominal-premodifier))
 
 (define-slot-label adjp-head
-    associated-attachment-points (intensifier adverbial-preceding adverbial-following)
+    associated-attachment-points (intensifier
+                                  adverbial-preceding adverbial-following
+                                  adjp-prep-complement))
     grammatical-constraints (adjp adjective))
 
 (define-slot-label comparative-head
   grammatical-constraints (np clause)
-  associated-attachment-points (intensifier adverbial-preceding adverbial-following
-                                than-complement))
+  associated-attachment-points (intensifier
+                                adverbial-preceding adverbial-following
+                                than-complement)
 
 (define-slot-label superlative-head
   associated-attachment-points (intensifier adverbial-preceding adverbial-following))

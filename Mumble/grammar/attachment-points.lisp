@@ -135,18 +135,18 @@ by KEY-POSITION.
   link (previous)
   new-slot (interrogative-pronoun))
 
-(define-splicing-attachment-point VP-PREP-COMPLEMENT 
+(define-splicing-attachment-point vp-prep-complement 
   reference-labels (vp)
   link (last)
   new-slot (prepcomp))
 
 
-(define-splicing-attachment-point ADVERBIAL-FOLLOWING 
+(define-splicing-attachment-point adverbial-following 
   reference-labels (predicate adjective adverbial-phrase)
   link (next)
   new-slot (adverbial-phrase))
 
-(define-splicing-attachment-point ADVERBIAL-PRECEDING
+(define-splicing-attachment-point adverbial-preceding
   reference-labels (predicate adjective adverbial-phrase)
   link (previous)
   new-slot (adverbial-phrase))
@@ -154,12 +154,12 @@ by KEY-POSITION.
 (define-splicing-attachment-point initial-adverbial 
   reference-labels (clause)
   link (first)
-  new-slot ( ADVERBIAL-PHRASE))
+  new-slot ( adverbial-phrase))
 
 (define-splicing-attachment-point final-adverbial 
   reference-labels (clause)
   link (last)
-  new-slot ( ADVERBIAL-PHRASE))
+  new-slot ( adverbial-phrase))
 
 
 
@@ -203,6 +203,10 @@ by KEY-POSITION.
   link (next)
   new-slot (than-complement))
 
+(define-splicing-attachment-point adjp-prep-complement
+  reference-labels (adjp-head)
+  link (next)
+  new-slot (prepcomp))
 
 
 ;#################################################################
@@ -226,7 +230,7 @@ by KEY-POSITION.
   key-position (sentence))
 
 
-(define-lowering-attachment-point quantifier-OF  ;; "all of the ..."
+(define-lowering-attachment-point quantifier-of  ;; "all of the ..."
   new-phrase (partitive)
   key-position (of-complement))
 

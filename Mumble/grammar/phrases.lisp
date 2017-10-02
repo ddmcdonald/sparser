@@ -1694,50 +1694,50 @@
 ;;--- adjective phrase patterns
 
 (define-phrase bare-adjp (a)
-  (AP
+  (adjp
     adjective a))
 
 (define-phrase adjp (a)
-  (AP
+  (adjp
    adjp-head a))
 
 (define-phrase comparative-adjp (a)
-  (AP
+  (adjp
    comparative-head a))
 
 (define-phrase superlative-adjp (a)
-  (AP
+  (adjp
    superlative-head a))
 
 
 (define-phrase modified-adjp (m a)  ;; "two stories high" /// rename!
-  (AP
+  (adjp
    adj-premodifier m
    adjp-head a))
 
 (define-phrase quantified-adjp (q a)
-  (AP
+  (adjp
    quantifier q
    adjp-head a))
 
 ;;-- "(is) able to"
 ;;
 (define-phrase adj-comp (a c)
-  (AP
+  (adjp
    adjp-head a
    inf-comp c))
 
 ;;-- "(is) down in the dumps"
 ;;
 (define-phrase adjp-prepcomp (a c)
-  (AP
+  (adjp
    adjp-head a
    prepcomp c))
 
 ;;--- "(be) careful that"
 ;;
 (define-phrase adj-that-comp (a c)
-  (AP
+  (adjp
    adjp-head a
    inf-comp c :additional-labels (that)))
 
@@ -1745,13 +1745,13 @@
 ;;--- "(is) capable of"
 ;;
 (define-phrase adjective-of-complement (a c)
-  (AP
+  (adjp
    adjp-head a
    of-complement c))
 
 
 (define-phrase X-to-Y (x p y)  ;; for "heart to heart" see 6/1 #2 notes
-  (AP
+  (adjp
    direct-object x
    prep p
    to-dative y))
