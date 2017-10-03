@@ -434,18 +434,18 @@ see if there are issues"
 		   restrict rule-label obo-id)
   (declare (ignore rule-label instantiates))
   (unless (or super specializes)
-    (setq  specializes (super-category-for-POS :adjective)))
+    (setq specializes (super-category-for-POS :adjective)))
   (when binds
     (unless realization
       (error "Variables were specified (:binds) but not a realization")))
-  (when realization
-    (unless (or binds 
-                ;; should actually check for inherited categories as well
-                (and super (cat-slots (category-named super)))
-                (and specializes (cat-slots (category-named specializes))))
-      (error "A realization was specified but no variables"))
-    (setq realization
-          (cons :adj (cons adj realization))))
+  ;; (when realization
+  ;;   (unless (or binds 
+  ;;               ;; should actually check for inherited categories as well
+  ;;               (and super (cat-slots (category-named super)))
+  ;;               (and specializes (cat-slots (category-named specializes))))
+  ;;     (error "A realization was specified but no variables"))
+  ;;   (setq realization
+  ;;         (cons :adj (cons adj realization))))
   (let* ((form
 	  `(define-category ,name
 	       :specializes ,super
@@ -453,10 +453,8 @@ see if there are issues"
 	       :restrict ,restrict
 	       :mixins ,mixins
 	       :realization
-	       ,(if adj `(:adj ,(if (consp adj)
-					  (car adj)
-					  adj)
-				     ,.realization)
+	       ,(if adj `(:adj ,(if (consp adj) (car adj) adj)
+			  ,.realization)
 		    realization)))
 	 (category (eval form)))
     (when obo-id
