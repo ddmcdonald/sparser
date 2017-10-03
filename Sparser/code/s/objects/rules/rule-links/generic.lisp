@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2013-2017  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "generic"
 ;;;    Module:   "objects;rules;rule links;"
-;;;   Version:   1.5 January 2016
+;;;   Version:   Octover 2017
 
 ;;  1.1  (v1.5)  cat-rules -> cat-rule-set
 ;;  1.2  (3/20/91 v1.8.1)  Changed Establish-rule-set-for to look for an
@@ -84,5 +84,7 @@
 
 (defun add-rules (rules obj)
   (check-type rules list)
+  (push-debug `(,rules ,obj))
+  (setq rules (loop for r in rules when r collect r)) ;; has nil in redefines
   (assert (every #'cfr-p rules) (rules) "Invalid rule list.")
   (nconcf (get-rules obj) (set-difference rules (get-rules obj))))
