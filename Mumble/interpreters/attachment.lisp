@@ -65,9 +65,10 @@ the realization-function of the rspec accordingly."
 		      using the attachment point~a"
 		  rspec attachment-point))
 	(values attachment-point choices))
-       attachment-point)
-    (mbug "Attachment point ~a is unavailable in the present context~%" 
-	  attachment-point)))
+      attachment-point)
+    (let* ((root-node (name (node *current-phrasal-root*))))
+      (mbug "Attachment point ~a is unavailable within a ~a node~%" 
+	  (name attachment-point) root-node))))
 
 
 (defun check-validity-of-attachment-choice (attachment-choice rspec)
