@@ -86,15 +86,18 @@
 ;;;----------------------
 
 (defgeneric realize-via-bindings (i &key pos resource)
-  (:documentation "Loop over the bindings of the individual 'i' to populate
-    its dtn. If the caller knows the part of speech (pos) or the resource
-    phrase should be used it supplies it, otherwise we make as good a guess
-    as we can before starting to walk over the bindings.")
+  (:documentation "Splits into two alternatives that then join to
+   a common path where they walk over the individual's bindings.
+   In the 'old' style the caller has determined the part of speech 
+   and resource to use. In the 'new' style we determine the pos
+   locally by considering the resources available to realize the
+   individual, what it binds, and what the context is. The new
+   style also emphasizes the use of predefined mappings for the
+   distribution of bindings over open constituent positions in the
+   phrase that realizes the individual's head word.")
   
   (:method ((i sp::individual) &key pos resource)
-    "Look for realization data on the individual or its category and marshal it."
-    ;; 1st split on 'supplied by caller' vs taken off the individual
-    (declare (optimize debug))
+    "First split on resources 'supplied by caller' vs taken off the individual"
     (if (and pos resource)
       (old-style-realize-via-bindings i pos resource)
       (new-style-realize-via-bindings i))))
@@ -114,7 +117,7 @@
       (setq lp (linked-phrase rdata)))
     (tr "Realize-via-bindings for ~a~
        ~%  lp = ~a~
-       ~%       rdata = ~a" i lp rdata)
+       ~%  pos = ~a rdata = ~a" i lp pos rdata)
     (realize-via-bindings-common-path i pos lp rdata)))
 
 (defun realize-via-bindings-common-path (i pos resource &optional rdata)
@@ -157,23 +160,6 @@
      finally (return dtn)))
 
 
-(defun verb-frame-for (i)
-  ;; Should be able to eliminate this along with the other guess work
-  ;; since these cases shold be handled by rdata
-  (when *check-lp-coverage*
-    (break "call to verb-frame-for"))
-  'svo )
-
-;; Original for reference during transition
-#|  (:method ((i sp::individual) &key
-            (pos (guess-pos i))
-            (resource (ecase pos
-                        (adjective (word-for i pos))
-                        (noun (noun (word-for i pos))) ;; see derivation-trees/builders.lisp
-                        (verb (verb (word-for i pos) ;; for def of noun and verb
-                                    (verb-frame-for i))))))
-    "Realize a Sparser individual as a DTN with its bindings attached."  |#
-
 
 ;;-------- attach-via-binding
 
@@ -183,12 +169,11 @@
     that was passed in. 
        The part-of-speech argument is the pos of the individual
     these bindings are on.")
-  
+ 
   (:method (binding var-name dtn pos)
     "Attach a binding as a subject, object, or prepositional phrase."
     (declare (ignore var-name))
     (declare (optimize debug))
-    (tr "unmarked binding: ~a" binding)
     (let* ((individual (sp::binding-body binding))
            (variable (sp::binding-variable binding))
            (value (sp::binding-value binding))
@@ -204,6 +189,8 @@
                                    (length (sp::pname label)))))))
            (prep (or (find-if #'sp::word-p subcats) ; prefer single words
                      (find-if #'sp::polyword-p subcats))))
+      (tr "unmarked binding: ~a~
+         ~%  i = ~a var = ~a pos = ~a" binding individual variable pos)
       (cond ((eql value sp::**lambda-var**)) ;; effectively a trace
             ((or (eql variable (sp::subject-variable individual))
                  (find :subject subcats))
