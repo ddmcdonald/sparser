@@ -60,20 +60,21 @@
 (define-unit-of-measure "kD")
 (define-unit-of-measure "kb")
 (define-unit-of-measure "mL")
-(define-unit-of-measure "mg")
 (define-unit-of-measure "ml")
-(define-unit-of-measure "mg")
+;(define-unit-of-measure "mg");moved to be with new-units def
 (define-unit-of-measure "mm")
-(define-unit-of-measure "nM")
-(define-unit-of-measure "ng")
-(define-unit-of-measure "nm")
-(define-unit-of-measure "pmol")
+;(define-unit-of-measure "nM");moved to be with new-units def
+;(define-unit-of-measure "ng");moved to be with new-units def
+;(define-unit-of-measure "nm");moved to be with new-units def
+;(define-unit-of-measure "pmol")
 (define-unit-of-measure "pmol/min/mg")
 (define-unit-of-measure "BMD") ;; bone mineral density -- can't find ID #
 (define-unit-of-measure "IC50") ;; "half maximal inhibitory concentration"
 (define-unit-of-measure "IC 50");; "half maximal inhibitory concentration"
-(define-unit-of-measure "μm")
+;(define-unit-of-measure "μm");moved to be with new-units def
 ;;#+sbcl (define-unit-of-measure "μm")
 ;;(define-unit-of-measure "µm") this fails in ACL. Reading in UTF-8 ?
 ;; add mug as a synonym of ug and microgram
 (define-unit-of-measure "mOsM") ;milliosmole
+
+

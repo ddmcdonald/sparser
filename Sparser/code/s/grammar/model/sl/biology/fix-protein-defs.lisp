@@ -1350,7 +1350,11 @@ new file to append to new-prot-fam, those without get filtered to "
                         (reach-up-uid (loop for uid in reach-uids
                                             when (search "UP:" uid)
                                             return uid))
-                        (word (or (resolve item) (resolve (string-downcase item))))
+                        (word (or (and (single-term-rewrite? item :no-warn t)
+                                       (resolve item))
+                                  ;; only want to get words with single-term-rewrites
+                                  (and (single-term-rewrite? (string-downcase item) :no-warn t)
+                                       (resolve (string-downcase item)))))
                         (str-word (when word (single-term-rewrite? word :no-warn t)))
                         (word-uid (when word (word-has-uid-p word)))
                         (item-hyphen (search "-" item)))

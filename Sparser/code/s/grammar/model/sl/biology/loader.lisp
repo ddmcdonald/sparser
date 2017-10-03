@@ -36,7 +36,7 @@
 (gload "bio;aux-taxonomy")
 ;; have to get the uniprot-names before you do any define-protein's
 (gload "bio;uniprot-names.lisp")
-;(gload "bio;new-prot-defs-from-reach") temporary
+;(gload "bio;new-prot-defs-from-reach") temporary -- need to fold in
 (gload "bio;standardized-protein-defs")
 ;(gload "bio;standardized-protein-defs-no-fams-complete")
 ;(gload "bio;standardized-protein-defs-new")
