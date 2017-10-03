@@ -49,6 +49,7 @@
     ;; grammatical-constraints (clause np vp pp adjp advp)
     (subject (noun)) ;; (np vp)
     (direct-object (noun)) ;; (np)
+    (complement-of-be (adjective adverb verb noun))
     (relative-clause (verb))
     )
   "Has the information we could otherwise glean (and abstract to
@@ -220,14 +221,19 @@ attach-via-binding. |#
     (make-complement-node 'a adjective adjp)
     (make-adjunction-node (make-lexicalized-attachment ap adjp) dtn)))
 
+
+
 (defun attach-pp (prep object dtn pos)
   (let ((pp (make-dtn :resource (prep prep)))
         (ap (ecase pos
-              ((adjective noun) 'np-prep-adjunct)
+              (adjective 'adjp-prep-complement)
+              (noun 'np-prep-adjunct)
               (verb 'vp-prep-complement))))
-    (tr "Attaching a pp: ~a ~a" prep object)
+    (tr "Attaching a pp: ~a ~a via ~a" prep object ap)
     (make-complement-node 'prep-object object pp)
     (make-adjunction-node (make-lexicalized-attachment ap pp) dtn)))
+
+
 
 
 (defun possibly-pronoun (item)

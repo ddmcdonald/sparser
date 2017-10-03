@@ -223,24 +223,36 @@
            (lp (linked-phrase md)))
       (cond
         ((null lp)
-         (format stream "mdata: ~a" (sp::pname category)))
+         (format stream "m-mdata: ~a" (sp::pname category)))
         ((typep lp 'phrase)
-         (format stream "mdata: ~a ~a"
+         (format stream "m-mdata: ~a ~a"
                  (sp::pname category)  lp))
         ((typep lp 'lexicalized-phrase)
          (let* ((phrase (phrase lp))
                 (bound (bound lp))
                 (pvp (car bound)))
-           (format stream "mdata: ~a, ~a ~a=~a ~a"
+           (format stream "m-rdata: ~a, ~a ~a=~a ~a"
                    (sp::pname category)
                    (phrase-name-for-printing phrase)
                    (name (phrase-parameter pvp))
                    (pprint-value (value pvp))
                    vars)))))))
 
-;(defmethod print-object ((msd multi-subcat-mdata) stream)
-;  (print-unreadable-object (msd stream)
-    
+(defmethod print-object ((msd multi-subcat-mdata) stream)
+  (print-unreadable-object (msd stream)
+    (let* ((pairs (mdata-pairs msd))
+           (embedded-mdata (loop for p in pairs collect (mpair-mdata p)))
+           (embedded-lp (loop for e in embedded-mdata collect (linked-phrase e)))
+           (phrases (loop for l in embedded-lp collect (phrase l)))
+           (phrase-names (loop for p in phrases collect (name p)))
+           (phrase (car phrases))
+           (word (when (typep phrase 'partially-saturated-lexicalized-phrase)
+                   (value (car (bound phrase))))))
+      (if word
+        (format stream "multi-subcat-mdata ~s ~a" (pname word) phrase-names)
+        (format stream "multi-subcat-mdata ~a" phrase-names)))))
+           
+
 
 ;;--- other print methods
 
