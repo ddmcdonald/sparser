@@ -1739,7 +1739,7 @@
 (define-phrase adj-that-comp (a c)
   (adjp
    adjp-head a
-   inf-comp c :additional-labels (that)))
+   scomp c :additional-labels (that)))
 
 
 ;;--- "(is) capable of"
