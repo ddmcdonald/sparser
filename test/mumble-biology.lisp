@@ -43,9 +43,15 @@
   (mumble-says "The amount of phosphorylated BRAF.")
   "the amount of phosphorylated BRAF")
 
+
+#| The scheme for getting the simple, 'use with a person' name from the 
+defining function for proteins works for BRAF, but not for NRAS
+Instead we get "RASN" -- changing all the tests to reflect that
+|#
+
 (deftest (say concentration braf-nras complex)
   (mumble-says "The concentration of BRAF-NRAS complex.")
-  "the concentration of complex of BRAF and NRAS")
+  "the concentration of complex of BRAF and RASN")
 
 (deftest (say mek phosphorylates erk)
   (mumble-says "MEK phosphorylates ERK.")
@@ -53,7 +59,7 @@
 
 (deftest (say egfr binds egf)
   (mumble-says "The receptor tyrosine kinase EGFR binds the growth factor ligand EGF.")
-  "the Trk EGFR binds the growth factor ligand EGF")
+  "the receptor tyrosine kinase EGFR binds the growth factor ligand EGF")
 
 ;; Section 2.2.
 (deftest (say double amount of braf)
@@ -62,7 +68,7 @@
 
 (deftest (say assume no nras)
   (mumble-says "Assume there is no NRAS in the system.")
-  "assume there is no NRAS in the system")
+  "assume there is no RASN in the system")
 
 (deftest (say set amount of braf to zero)
   (mumble-says "Set the amount of BRAF to zero.") ; missing total
@@ -70,7 +76,7 @@
 
 (deftest (say decrease binding rate of nras and braf)
   (mumble-says "Decrease the binding rate of NRAS and BRAF.")
-  "decrease the binding rate of NRAS and BRAF")
+  "decrease the binding rate of RASN and BRAF")
 
 ;; Section 2.4.
 
