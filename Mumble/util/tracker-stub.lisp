@@ -1,7 +1,6 @@
 ;;; -*- Syntax: Common-lisp; Mode: LISP -*-
-;;; $Id: tracker-stub.lisp 100 2007-07-04 14:31:27Z dmcdonal $
 
-;;;  MUMBLE-86:  tracker; program-interface
+;;;  MUMBLE-86:  util/tracker-stub.lisp
 
 ;;; Copyright (C) 1985, 1986, 1987, 1988  David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
@@ -9,6 +8,7 @@
 ;;;   this file of the Mumble-86 system for
 ;;;   non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (C) 2017 David D. McDonald. All Rights Reserved
 
 
 (in-package :mumble)
@@ -23,11 +23,9 @@
 
 (defun landmark (title &rest args)
   (when (eq *tracker* :on) 
-    (format t "~%~a: " title)
+    (format t "~&~a: " title)
      (dolist (arg args)
-       (format t "~a " arg))
-     (format t "~% " )) 
-  )
+       (format t "~a " arg))))
 
 
 (defun turn-on-tracker ()
