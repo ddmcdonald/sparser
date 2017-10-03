@@ -241,14 +241,14 @@
 (define-slot-label adjp-head
     associated-attachment-points (intensifier
                                   adverbial-preceding adverbial-following
-                                  adjp-prep-complement))
+                                  adjp-prep-complement)
     grammatical-constraints (adjp adjective))
 
 (define-slot-label comparative-head
   grammatical-constraints (np clause)
   associated-attachment-points (intensifier
                                 adverbial-preceding adverbial-following
-                                than-complement)
+                                than-complement))
 
 (define-slot-label superlative-head
   associated-attachment-points (intensifier adverbial-preceding adverbial-following))
