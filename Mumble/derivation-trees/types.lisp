@@ -179,9 +179,9 @@
     for use with saturated or partially saturated lexicalized phrases"))
 
 
-;;;-----------------------------------------------
-;;; Sparser category Mumble phrase correspondence
-;;;----------------------------------------------
+;;;-------------------------------------------------
+;;; Sparser category - Mumble phrase correspondence
+;;;-------------------------------------------------
 
 (defclass parameter-variable-pair ()
   ((parameter :initarg :param :initform nil :accessor corresponding-parameter
@@ -225,7 +225,10 @@
   ((variables :initarg :vars :initform nil :accessor mpair-vars
     :documentation "a list of Krisp variables")
    (mdata :initarg :mdata :initform nil :accessor mpair-mdata
-    :documentation "a mumble-rdata object")))
+          :documentation "a mumble-rdata object"))
+  (:documentation "Packaging for use in multi-subcat-mdata.
+    It exposes the variables, which are the primary discriminator
+    for selecting one of the mumble-rdata rather than another."))
 
 (defclass multi-subcat-mdata ()
   ((pairs :initarg :mpairs :initform nil :accessor mdata-pairs
