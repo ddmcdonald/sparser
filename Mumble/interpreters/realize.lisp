@@ -73,7 +73,10 @@ that knows how to how to handle the specific accessories."
       (case (and phrase-type (name phrase-type))
         (clause (clausal-bundle-driver dtn root-node))
         ((np np/no-det) (general-np-bundle-driver dtn root-node))
-        (otherwise (general-dtn-bundle-driver dtn root-node))))))
+        (otherwise
+         (or (when (pronoun-p root-node) root-node)
+             ;;/// and what else?
+             (general-dtn-bundle-driver dtn root-node)))))))
 
 
 ;;;--------------
