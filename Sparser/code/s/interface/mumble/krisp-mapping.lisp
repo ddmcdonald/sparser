@@ -99,21 +99,23 @@
 (defgeneric select-realization (mumble-rdata i pos)
   (:documentation "There are at least two if not more possible
     realizations on this category. Return the most appropriate one
-    for this particular individual.")
+    for this particular individual. Pass the rdata through a
+    succession of filters until we've narrowed it down to one
+    choice. Most of the work is done by the part of speech
+    consistency check and the subcategorization check.")
 
   (:method ((rdata cons) i pos)
     "We have a list of possible realization data. See if we knock any
      out as inconsistent with the specified part-of-speech. 
-     If we can't then we probably have a set of synonyms
-     (/// which we should mark as such) and we'll arbitrarily
-     take the first one"
+     If we can't then we'll arbitrarily take the first one"
     (let ((consistent-rdata (filter-rdata-by-pos rdata pos)))
       (cond
         ((null (cdr consistent-rdata))
          (select-realization (car consistent-rdata) i pos))
-        ((equal consistent-rdata rdata) ;; nothing filtered out
+        ((equal consistent-rdata rdata)
+         ;; Nothing filtered out. Arbitrarily taking the 1st on
          (select-realization (car consistent-rdata) i pos))
-        (t (error "New case after pos filter on ~a" i)))))
+        (t (error "New case after POS filter on ~a" i)))))
                         
   (:method ((rdata mumble-rdata) i pos) rdata)
   (:method ((pair variable-mdata-pair) i pos) (mpair-mdata pair))
@@ -242,12 +244,12 @@
       (case name
         ((clause vp) 'verb)
         (adv 'adverb)
-        (ap 'adjective)
+        ((adjp ap) 'adjective)
         (np 'noun)
         (preposition 'preposition)
         (pp 'preposition)
         (otherwise
-         (warn "No part of speech option for ~a" n)
+         (warn "Lookup-pos: No part of speech option defined for ~a" n)
          'noun))))
   (:method ((items cons))
     "For some reason (///) probably going all the way back to has-mumble-rdata

@@ -197,7 +197,8 @@ and/or by which subcategorized arguments the individual binds.
     (let ((all-resources (mumble-resources-for c)))
       (let ((rdata (loop for r in all-resources
                       when (or (typep r 'm::mumble-rdata)
-                               (typep r 'm::multi-subcat-mdata))
+                               (typep r 'm::multi-subcat-mdata)
+                               (typep r 'm::variable-mdata-pair))
                       collect r)))
         rdata))))
 
@@ -233,12 +234,14 @@ and/or by which subcategorized arguments the individual binds.
                              (etypecase mdata
                                (m::mumble-rdata (push mdata resources))
                                (m::multi-subcat-mdata
-                                (loop for md in (m::mdata-pairs mdata)
+                                (push mdata resources)
+                                #+ignore(loop for md in (m::mdata-pairs mdata)
                                    do (push md resources))))))
                   (m::mumble-rdata
                    (push mdata-field resources))
                   (m::multi-subcat-mdata
-                   (loop for md in (m::mdata-pairs mdata-field)
+                   (push mdata-field resources)
+                   #+ignore(loop for md in (m::mdata-pairs mdata-field)
                       do (push md resources)))))))
       resources)))
 
