@@ -26,12 +26,13 @@
     the reading of the canonical category that it's an
     attitude of the speaker."
   :realization (:adj "certain"
-                :mumble ("certain" adj-comp :c statement)))
+                :mumble ("certain" adj-that-comp :c statement)))
 #| Dropping "certainty" (noun) and "certainly" (adv) on the floor
 to not muddy NLG story on the adjective. ddm 9/12/17
 ;; ... :noun "certainty" |#
 
-(adj "confident" :super certain)
+(adj "confident" :super certain
+ :realization (:adj "confident" :mumble ("confident" adj-that-comp :c statement)))
 (adj "sure" :super certain)
 (adj "uncertain" :super certain)
 
