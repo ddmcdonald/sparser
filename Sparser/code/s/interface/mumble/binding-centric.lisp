@@ -214,7 +214,8 @@
             ((find :m subcats)
              (tr "M subcat label: ~a" value)
              (attach-adjective value dtn pos))
-            (t (tr "No handler for unmarked binding ~a" variable)
+            (t (unless (ignorable-variable? variable)
+                 (tr "No handler for unmarked binding ~a" variable))
                nil))))
   
   (:method (binding (var-name (eql 'sp::adverb)) dtn pos)
@@ -240,6 +241,16 @@
     "Attach a modifier as an adjective."
     (tr "Binding var is modifier: ~a" binding)
     (attach-adjective (sp::binding-value binding) dtn pos))
+
+  (:method (binding (var-name (eql 'sp::qualifier)) dtn pos)
+    "Attach a qualifier, probably to an adjective head"
+    ;; Canonical example is "quite certain", where 'quite' is an intensifier
+    ;; see interpret-adverb+adjective and k-method is core/adjuncts/others.lisp
+    (tr "Binding var is qualifier: ~a" binding)
+    (let ((value (sp::binding-value binding)))
+      (if (sp::itypep value 'sp::intensifier)
+        (add-attachment 'intensifier value dtn)
+        (warning "Don't know what to do with qualifier binding ~a" binding))))
   
   (:method (binding (var-name (eql 'sp::negation)) dtn pos)
     "Attach a negation."
