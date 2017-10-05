@@ -99,7 +99,6 @@ explicit mapping in the mumble field.
    ('raw-data'), and working from the information on the phrase 
    create the runtime ('mdata') object that realize et al. will access. 
    Store that on the realization-data instance ('rdata')."
-  ;;(declare (optimize debug))  (lsp-break "setup")
   (let ((head-data (rdata-head-words rdata)))
     (let ( m-readings ) ;; if multiple pos will have mulitple mdata
       (do ((pos (car head-data) (car rest))
@@ -116,6 +115,7 @@ explicit mapping in the mumble field.
   "If its a verb and there's a verb-oriented lp in the raw data we'll
    assume it gets the map. For other parts of speech we leave those
    fields empty and just use the lp we get from the word."
+  ;;(lsp-break "construct")
   (case pos
     (:verb
      (let* ((phrase (car raw-data))
@@ -429,62 +429,80 @@ have been filled in if the rdata includes an etf and a word.
 (defun decode-mumble-spec (category mumble-spec)
   "Decode the symbols, and create the spec object. 
    Caller decides what to do with it.
-   Separate cases (+/- whether it includes the verb)
+   Separate cases (+/- whether it includes ////the verb)
    If there is no pname then either we have a case like relative-location
    where the variables supply all the parts, or we have an abstraction
    like a subcategorization mixin category.
    Returns a mumble-rdata, which is a category-linked-phrase plus head
    and variable data."
-  (declare (optimize debug))
-  (let* ((pname (when (stringp (car mumble-spec)) (car mumble-spec)))
-         (phrase&args (if pname (cdr mumble-spec) mumble-spec))
-         m-word m-pos lp )
-    (assert phrase&args)
-    (when pname
-      (setq m-word (m::find-word pname 'm::verb)
-            m-pos 'm::verb)
-      (unless m-word
-        (let ((sparser-word (resolve pname)))
-          (assert sparser-word (pname) "There is no word in Sparser for ~a" pname)
-          (setq m-word (get-mumble-word-for-sparser-word sparser-word m-pos)))))
+  (flet ((make-lexicalized-phrase (m-word m-pos phrase)
+           (let ((lp (ecase m-pos ;; Reduced version of make-resource-for-sparser-word
+                       (m::verb (m::verb m-word phrase))
+                       (m::adjective (m::adjective m-word phrase)))))
+             (m::record-lexicalized-phrase category lp m-pos)
+             lp)))
 
-    (let* ((phrase-name (car phrase&args))
-           (phrase (m::phrase-named (mumble-symbol phrase-name)))
-           (p&v-pairs (cdr phrase&args)))               
-      (assert phrase (phrase-name) "There is no Mumble phrase named ~a." phrase-name)
+    (let* ((pname (when (stringp (car mumble-spec)) (car mumble-spec)))
+           (phrase&args (if pname (cdr mumble-spec) mumble-spec))
+           m-word m-pos lp )
+      (assert phrase&args)
 
-      (let* ((map (loop for (param-name var-name) on p&v-pairs by #'cddr
-                     as param = (m::parameter-named (mumble-symbol param-name))
-                     as var = (etypecase var-name
-                                (string (get-mumble-word-for-sparser-word
-                                         (resolve var-name) nil))
-                                (symbol ;; had been :self check here
-                                 (find-variable-for-category var-name category)))
-                     do (progn
-                          (assert var () "No variable named ~a in category ~a." var-name category)
-                          (assert param () "No parameter named ~a in the phrase ~a." param-name phrase))
-                     collect (make-instance 'mumble::parameter-variable-pair
-                                            :var var
-                                            :param param)))
-             (variables (loop for pvp in map
-                           as var = (m::corresponding-variable pvp)
-                           when (typep var 'lambda-variable)
-                           collect var))
-             (clp (make-instance 'm::mumble-rdata
-                    :class category
-                    :map map
-                    :vars variables)))
-        (cond
-          (m-word ;; add lexicalized phrase and head to CLP
-           (setq lp (m::verb m-word phrase))
-           (m::record-lexicalized-phrase category lp m-pos)
-           (setf (m::linked-phrase clp) lp)
-           (setf (m::head-word clp) m-word))
-          (t ;; record just the phrase for use by inheritors
-           (setf (m::linked-phrase clp) phrase)))
+      (let* ((phrase-name (car phrase&args))
+             (phrase (m::phrase-named (mumble-symbol phrase-name)))
+             (p&v-pairs (cdr phrase&args)))               
+        (assert phrase (phrase-name) "There is no Mumble phrase named ~a." phrase-name)
         
-        ;;(lsp-break "decode -- look at clp")
-        (values clp lp m-word m-pos)))))
+        (when pname
+          (multiple-value-bind (s-word pos)
+              (rdata-head-word category t)
+            (assert (memq pos '(:verb :adjective :noun)))
+            (setq m-pos (mumble-pos pos)
+                  m-word (m::find-word pname m-pos))
+            ;; (setq m-word (m::find-word pname 'm::verb)
+            ;;       m-pos 'm::verb)
+            (unless m-word
+              (let ((sparser-word (resolve pname)))
+                (assert sparser-word (pname) "There is no word in Sparser for ~a" pname)
+                (setq m-word (get-mumble-word-for-sparser-word sparser-word m-pos))))
+            
+            (setq lp (m::get-lexicalized-phrase m-word m-pos))
+            (if lp
+              (unless (eq phrase (m::phrase lp))
+                ;; but is it the right phrase? Default probably already ran
+                (setq lp (make-lexicalized-phrase m-word m-pos phrase)))
+              (setq lp (make-lexicalized-phrase m-word m-pos phrase)))))          
+        
+
+        (let* ((map (loop for (param-name var-name) on p&v-pairs by #'cddr
+                       as param = (m::parameter-named (mumble-symbol param-name))
+                       as var = (etypecase var-name
+                                  (string (get-mumble-word-for-sparser-word
+                                           (resolve var-name) nil))
+                                  (symbol ;; had been :self check here
+                                   (find-variable-for-category var-name category)))
+                       do (progn
+                            (assert var () "No variable named ~a in category ~a." var-name category)
+                            (assert param () "No parameter named ~a in the phrase ~a." param-name phrase))
+                       collect (make-instance 'mumble::parameter-variable-pair
+                                              :var var
+                                              :param param)))
+               (variables (loop for pvp in map
+                             as var = (m::corresponding-variable pvp)
+                             when (typep var 'lambda-variable)
+                             collect var))
+               (clp (make-instance 'm::mumble-rdata
+                                   :class category
+                                   :map map
+                                   :vars variables)))
+          (cond
+            (m-word ;; add lexicalized phrase and head to CLP
+             (setf (m::linked-phrase clp) lp)
+             (setf (m::head-word clp) m-word))
+            (t ;; record just the phrase for use by inheritors
+             (setf (m::linked-phrase clp) phrase)))
+          
+          ;;(lsp-break "decode -- look at clp")
+          (values clp lp m-word m-pos))))))
 
 
 ;;;------------------------
@@ -519,8 +537,9 @@ have been filled in if the rdata includes an etf and a word.
   (let* ((category-inheriting-from (inherits-mumble-data? category))
          (inherited-rdata (get-tag :mumble category-inheriting-from)))
     
-    (when inherited-rdata ;; not all subcat mixins have maps yet
-      
+    (when (and inherited-rdata ;; not all subcat mixins have maps yet
+               (abstract-mdata? inherited-rdata))
+
       (let* ((local-rdata-field (rdata category))
              (local-rdata (when (null (cdr local-rdata-field))
                             (car local-rdata-field))))
@@ -557,7 +576,7 @@ have been filled in if the rdata includes an etf and a word.
                      (ecase pos
                        (:verb (m::verb m-word phrase))
                        (:common-noun (m::noun m-word phrase))
-                       (:adjective (m::adjective m-word))
+                       (:adjective (m::adjective m-word phrase))
                        (:preposition (m::prep m-word))))
 
                    ;;////////////////////////////////// will already be excised?
@@ -601,6 +620,27 @@ have been filled in if the rdata includes an etf and a word.
               (setf (get-tag :mumble category) new-rdata))))))))
 
 
+(defgeneric abstract-mdata? (mdata)
+  (:documentation "Used as a check when inheriting mumble data from a super
+    category. Some super-categories have mdata that is specific to them
+    and should not be inherited. The difference is whether their lp field
+    contains a phrase (abtract) or a lexicalized phrase (specific).")
+  (:method ((mdata T))
+    (push-debug `(,mdata))
+    (error "New data type passed to abstract-mdata? check: ~a" (type-of mdata)))
+  (:method ((mdata m::mumble-rdata))
+    "Base case. More elaborate mumble types are built on these."
+    (let ((lp (m::linked-phrase mdata)))
+      (typep lp 'm::phrase)))
+  (:method ((msm m::multi-subcat-mdata))
+    (abstract-mdata? (car (m::mdata-pairs msm))))
+  (:method ((pair m::variable-mdata-pair))
+    (abstract-mdata? (m::mpair-mdata pair)))
+  (:method ((cat-name symbol))
+    (let* ((category (category-named cat-name :errorp))
+           (rdata (get-tag :mumble category)))
+      (assert rdata (cat-name) "No mumble realization data on ~a" cat-name)
+      (abstract-mdata? rdata))))
 
 
 
@@ -731,7 +771,7 @@ have been filled in if the rdata includes an etf and a word.
    Record the lexicalized tree on the mumble word with its mumble-side
    pos. See Mumble/derivation-trees/builders.lisp for the lexicalized
    phrase creators." 
-  (when (consp word) ;; irregulars e.g. ("bacterium" :plural "bacteria")
+  (when (consp word) ;; irregulars e.g. ("bacterium" :plural "1bacteria")
     ;; drop them on the floor for now. /// lookup Mumble rep of irregulars
     (setq word (car word)))
   (let ((m-pos (mumble-pos pos-tag)))
@@ -739,7 +779,7 @@ have been filled in if the rdata includes an etf and a word.
       (let* ((m-word (get-mumble-word-for-sparser-word word m-pos))
              (lp (or (m::get-lexicalized-phrase m-word m-pos)
                      (case pos-tag
-                       (:adjective (m::adjective m-word))
+                       (:adjective (m::adjective m-word nil))
                        ((:noun :common-noun) (m::noun m-word))
                        (:proper-noun (m::proper-noun m-word))
                        (:verb (m::verb m-word verb-phrase))
@@ -754,11 +794,12 @@ have been filled in if the rdata includes an etf and a word.
                   m-word
                   m-pos))))))
 
-(defun mumble-pos (pos-tag) ;; keep in sync w/ sparser-pos in binding-centric
+(defun mumble-pos (pos-tag)
   "Translate a Sparser part of speech into the Mumble equivalent"
   ;; Other Mumble word labels: {past,present}-participle, {comparative,superlative}-adjective
   ;; abstract-noun, {interrogative,wh,relative}-pronoun, particle, complementizer,
   ;; exclamation, expletive, vocative, punctuation.
+  ;; keep in sync w/ sparser-pos in krisp-mapping
   (ecase pos-tag
     ((or :noun :common-noun) 'm::noun)
     (:proper-noun 'm::proper-noun)
