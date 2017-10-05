@@ -812,9 +812,9 @@ designations"
              (t
               term)))
       (cellosaurus
-       (list word atlas :TYPE type :ID (concatenate 'string "CVCL:" (string-trim "CVCL_" id))))
+       (list word atlas :TYPE type :ID (concatenate 'string "CVCL:" (remove-prefix "CVCL_" id))))
       (cl ;; for consistency with trips and 
-       (list word atlas :TYPE type :ID (concatenate 'string "CO:" (string-trim "CL:" id))))
+       (list word atlas :TYPE type :ID (concatenate 'string "CO:" (remove-prefix "CL:" id))))
       (mesh
        (list word atlas :TYPE type :ID (concatenate 'string "MESH:" id))) 
       (pubchem

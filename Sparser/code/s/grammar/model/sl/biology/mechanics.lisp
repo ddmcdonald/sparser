@@ -350,7 +350,7 @@ uid binding, if there is one"
 
 (defun match-words-minus-suffix? (word suffix pname)
   (and (search suffix word :test #'equal) ;; need to check because string-trim just uses a character bag so order isn't preserved
-       (search (string-right-trim suffix word) pname :test #'equalp)))
+       (equalp (remove-sufix pname suffix) pname)))
 
 (defun trips-class->krisp (term)
   (unless (null (second term))

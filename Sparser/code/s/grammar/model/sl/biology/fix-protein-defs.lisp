@@ -171,6 +171,10 @@ it outputs it to the non-upa-file"
 (defparameter *non-hms-alt-defs* nil)
 (defparameter *hms-for-minimal-fam* nil)
 (defparameter *one-human-minimal-fam* nil)
+
+(defun remove-uniprot-prefix (str)
+  (remove-prefix str "UP:"))
+  
 (defun merge-duplicates-and-separate-families-with-rev-defs (defs)
   (declare (special defs *duplicate-protein-ht* *non-human-alt-defs* *hms-grounding-ht*))
   (unless (boundp '*hms-grounding-ht*)
@@ -205,9 +209,9 @@ it outputs it to the non-upa-file"
                     (2nd-id-def (gethash 2nd-id *duplicate-protein-ht*))
                     (1st-up? (search "UP:" 1st-id :test #'equal))
                     (2nd-up? (search "UP:" 2nd-id :test #'equal))
-                    (1st-human? (human-mnemonic? (gethash (string-trim "UP:" 1st-id)
+                    (1st-human? (human-mnemonic? (gethash (remove-uniprot-prefix 1st-id)
                                                          *upa-key-upm-val*)))
-                    (2nd-human? (human-mnemonic? (gethash (string-trim "UP:" 1st-id)
+                    (2nd-human? (human-mnemonic? (gethash (remove-uniprot-prefix 1st-id)
                                                           *upa-key-upm-val*)))
                     (hms-mapping (gethash fam-word *hms-grounding-ht*)))
               ; (declare (special possible-family fam-word 1st-id 2nd-id))
@@ -948,7 +952,7 @@ from NCIT, HGNC, etc. and also cut off compound UPA ids (with - or space -- get 
     (load "sparser:bio;uniprot-accession-id-mnemonic.lisp"))
   (let* ((id (second prot-def))
         (syns (third prot-def))
-        (human-protein? (human-mnemonic? (gethash (string-trim "UP:" id) *upa-key-upm-val*))))
+         (human-protein? (human-mnemonic? (gethash (remove-uniprot-prefix id) *upa-key-upm-val*))))
     (loop for syn in syns
             as syn-def = (gethash syn *prot-fam-name-syns-ht*)
         if (null syn-def)
