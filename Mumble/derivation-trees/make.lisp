@@ -63,6 +63,16 @@
             (push `(,pos . ,lp) (cdr entry))))
         (setf (gethash word *words-to-lexicalized-phrases*)
               `((,pos . ,lp)) )))))
+
+
+(defgeneric delete-lexicalized-phrase (word pos)
+  (:documentation "This comes in handy when debugging lp choice")
+  (:method ((word word) (pos symbol))
+    (let ((entry (gethash word *words-to-lexicalized-phrases*)))
+      (when entry
+        (if (cdr entry) ;; word is on several parts of speech
+          (error "stub")
+          (setf (gethash word *words-to-lexicalized-phrases*) nil))))))
             
 
 
@@ -177,6 +187,27 @@ but we don't want to count on that.
                 :point ap
                 :value v)))
       la)))
+
+
+(defgeneric add-attachment (ap value dtn)
+  (:documentation "Does the functionality of make-lexicalized-attachment
+   and make-adjunction node in one package.")
+  
+  (:method ((ap-name symbol) value (dtn derivation-tree-node))
+    (let ((ap (attachment-point-named ap-name)))
+      (assert ap (ap-name) "There is no attachment point named ~a" ap-name)
+      (add-attachment ap value dtn)))
+
+  (:method ((ap attachment-point) value (dtn derivation-tree-node))
+    "It's unclear that the 'lexicalization' step means anything
+     given what the bundle drivers actually do with an adjunction
+     node."
+    (let ((node (make-instance 'adjunction-node
+                               :ap ap
+                               :value value)))
+      (push node (adjuncts dtn))
+      dtn)))
+    
 
 
 (defgeneric make-adjunction-node (attachment dtn)
