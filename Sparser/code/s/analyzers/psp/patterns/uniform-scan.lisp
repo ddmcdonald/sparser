@@ -149,7 +149,7 @@
 
 (defun is-phosphorylated-protein? (start end)
   (let* ((extr-string (extract-characters-between-positions start end))
-         (sur-str  (when (> (length extr-string) 0) (string-trim " " extr-string)))
+         (sur-str  (when (> (length extr-string) 0) (trim-whitespace extr-string)))
          (pro-string? (cond ((equal extr-string "") ;; couldn't get it
                              nil)
                             ((eq #\p (aref  sur-str 0))

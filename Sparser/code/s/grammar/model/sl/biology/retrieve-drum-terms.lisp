@@ -13,13 +13,13 @@
   (declare (string string))
   (loop for item in 
           (cl-ppcre::split "[	{]" string)
-        collect (string-trim " " item)))
+        collect (trim-whitespace item)))
 
 (defun split-on-curly-tab-parens (string)
   (declare (string string))
   (loop for item in 
           (cl-ppcre::split "[	{()]" string)
-          collect (string-trim " " item)))
+          collect (trim-whitespace  item)))
   
 
 (defun split-terms (string)

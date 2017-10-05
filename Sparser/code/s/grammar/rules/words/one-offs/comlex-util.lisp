@@ -731,7 +731,7 @@
 	(gethash (list feature sub-feature value) *tag-feature-table*)))
 
 (defun shorten-other (string)
-  (setf string (string-trim '(#\TAB #\Space #\Newline) string))
+  (setf string (trim-whitespaee string))
   (subseq string 0 (or (position-if #'(lambda (x) (member x '(#\Space #\Newline #\TAB))) string) (length string)))
   )
 
@@ -1006,8 +1006,7 @@
 	     (cond 
 	      ((eq 0 
 		   (position 
-		    #\; (string-trim '(#\Tab #\Space #\Newline)
-				     line)))
+		    #\; (trim-whitespace line)))
 	       (with-open-file 
 		   (outstream outfile :direction :output 
 		    :if-does-not-exist :create :if-exists :append)
@@ -1335,9 +1334,6 @@
 			*sgml-symbols* :test #'equalp))
 	   (concatenate 'string 
 	     (subseq string 0 less-than-pos)
-	     ;;	     (string-trim '(#\space #\tab #\newline #\>) 
-	     ;;			  (eliminate-sgml-symbols
-	     ;;			   (subseq string (+ 1 next-space))))
 	     " "
 	     (eliminate-sgml-symbols (subseq string (+ 1 greater-than-pos)))
 	     ))

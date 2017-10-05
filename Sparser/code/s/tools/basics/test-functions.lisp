@@ -884,7 +884,7 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
                (visit-indiv-generalizations i (itype-of i) #'record-bce))
        (remove nil
                (mapcar #'(lambda (x) (let ((ss (retrieve-surface-string x)))
-                                       (when ss (string-trim " " ss))))
+                                       (when ss (trim-whitespace ss))))
                        *found-bces*))))))
 
 (defun safe-sentence-individuals (contents)
@@ -908,7 +908,7 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
                (visit-indiv-generalizations i (itype-of i) #'record-bce))
        (remove nil
                (mapcar #'(lambda (x) (let ((ss (retrieve-surface-string x)))
-                                       (when ss (string-trim " " ss))))
+                                       (when ss (trim-whitespace ss))))
                        *found-bces*))))))
 
 (defparameter *use-traverse-sem-for-reach-events* t)

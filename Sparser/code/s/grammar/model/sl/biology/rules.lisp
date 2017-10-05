@@ -309,7 +309,7 @@
     (unless (or
              (pos-preceding-whitespace after-pos)
              (and next-edge
-                  (not (member (string-trim " " (retrieve-surface-string next-edge))
+                  (not (member (trim-whitespace (retrieve-surface-string next-edge))
                           '("," ")" "(" ".")
                           :test #'equal))))
       (bind-dli-variable 'variant-number number protein))))

@@ -53,7 +53,7 @@
             :form category::np
             :referent (make-phosphorylated-protein
                        (edge-referent (third tts))
-                       (string-trim " " (extract-characters-between-positions start-pos end-pos)))))
+                       (trim-whitespace (extract-characters-between-positions start-pos end-pos)))))
           (t 
              (make-protein-collection start-pos end-pos)))))
 

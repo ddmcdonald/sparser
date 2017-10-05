@@ -293,8 +293,7 @@
           
           (let ((str (extract-string-from-char-buffers start-index end-index)))
             (setf (gethash edge *surface-strings*) str)
-            (setq str (string-trim " 
-" str))
+            (setq str (trim-whitespace str))
             (setf (gethash referent *surface-strings*) str)
 
             (when (current-script :biology)            

@@ -147,9 +147,7 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
            (realizations (gethash pname *name-realizations*))
            (head-edge (get-np-head-edge edge))
            (head-string (and head-edge
-                             (string-trim
-                              '(#\Space #\Tab #\Newline)
-                              (extract-string-spanned-by-edge head-edge))))
+                             (trim-whitespace (extract-string-spanned-by-edge head-edge))))
            (count (assoc head-string realizations :test #'equalp)))
       (cond (count (incf (second count)))
             (t (push (list head-string 1)
