@@ -116,6 +116,7 @@
       (write-string string *standard-output*))))
 
 
+#+ignore
 (defun actual-characters-of-word (pos-before pos-after)
   ;; call from reify-fullcaps-as-bio-entity for starters.
   ;; May be useful in other cases. Not tied to the tokenizer
@@ -177,6 +178,11 @@
               (end (- adjusted-end
                       *length-accumulated-from-prior-buffers*)))
           (subseq *character-buffer-in-use* start end))))))
+
+(defun actual-characters-of-word (pos-before pos-after)
+  (trim-whitespace
+   (extract-characters-between-positions pos-before pos-after)))
+
 
 
 (defun extract-string-spanned-by-edge (edge)
