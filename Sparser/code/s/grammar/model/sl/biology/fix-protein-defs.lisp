@@ -46,7 +46,7 @@
 (defun phospho-prefix-matches-other-def (syn syns)
   (loop for prefix in '("p" "p-" "phospho" "phospho-" "phosphorylated ")
         thereis (and (eq 0 (search prefix syn :test #'equalp))
-                     (member (string-right-trim prefix syn) syns :test #'equalp))))
+                     (member (string-left-trim prefix syn) syns :test #'equalp))))
 (defun merge-stranded-parens-remove-phospho-defs (def)
   (declare (special *likely-phospho-issues* *protein-paren-issues* *new-prot-defs*))
   (let ((syns (third def)))
@@ -126,11 +126,11 @@ it outputs it to the non-upa-file"
       (output-protein-defs-to-files *new-protein-defs* output-file non-upa-file)
       output-file)))
 
-(defun read-and-replace-protein-defs-with-rev-defs (&key (protein-file "standardized-protein-defs-no-fams-complete.lisp") 
+(defun read-and-replace-protein-defs-with-rev-defs (&key (protein-file "standardized-protein-defs.lisp") 
                                                       (output-file "standardized-protein-defs-new.lisp")
                                                       (non-upa-file "non-upa-upm-proteins-new.lisp")
-                                                      (prot-fam-file "new-protein-fam-no-id.lisp")
-                                                      (minimal-prot-fam "minimal-protein-families.lisp"))
+                                                      (prot-fam-file "new-protein-fam-no-id2.lisp")
+                                                      (minimal-prot-fam "minimal-protein-families2.lisp"))
 
   "Taking an input list of the existing proteins and hash tables using
 UPA ID (Uniprot Accession number) as keys and UPM ID (Uniprot
@@ -148,11 +148,12 @@ it outputs it to the non-upa-file"
                        "hgnc;hgnc-with-ids-2.lisp")))
 
   (let* ((new-defs (read-and-normalize-protein-defs :protein-file protein-file))
-         (prot-rev (read-and-normalize-protein-defs :protein-file "proteins-revised-def-proteins.lisp" :missing-up t))
-         (reach-prot (read-and-normalize-protein-defs :protein-file "new-defs;reach-additional-proteins.lisp" :missing-up t)))
+         #+ignore(prot-rev (read-and-normalize-protein-defs :protein-file "proteins-revised-def-proteins.lisp" :missing-up t))
+         #+ignore(reach-prot (read-and-normalize-protein-defs :protein-file "new-defs;reach-additional-proteins.lisp" :missing-up t))
+         (hms-reach-prots (read-and-normalize-protein-defs :protein-file "new-prot-defs-from-reach.lisp" :missing-up t)))
     
     (multiple-value-bind (prot-defs fam-defs)
-          (merge-duplicates-and-separate-families-with-rev-defs (append new-defs prot-rev reach-prot))
+          (merge-duplicates-and-separate-families-with-rev-defs (append new-defs hms-reach-prots)); prot-rev reach-prot))
     
     (unless (and (eq output-file t)
                  (eq non-upa-file t))

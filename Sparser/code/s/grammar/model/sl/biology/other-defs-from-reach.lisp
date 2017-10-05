@@ -1948,3 +1948,4 @@
 (def-indiv-with-id molecule "(32)P" "PCID:26751") 
 (def-indiv-with-id molecule "(3)H" "PCID:119434") 
 (def-indiv-with-id molecule "(-)-Epigallocatechin gallate" "PCID:65064") 
+(def-indiv-with-id molecule "cis-RA" "PCID:5282379") 

@@ -12,13 +12,13 @@
 
 
 (define-individual 'time-unit :name "day")
-(define-individual 'time-unit :name "week")
+(define-named-individual-with-synonyms time-unit ("week" "wk"))
 (define-individual 'time-unit :name "month")
 (define-individual 'time-unit :name "year")
 
 ;;new time units 
 (define-individual 'time-unit :name "second")
 (define-named-individual-with-synonyms time-unit ("minute" "min"))
-(define-individual 'time-unit :name "hour")
+(define-named-individual-with-synonyms time-unit ("hour" "hr"))
 
 

@@ -188,7 +188,7 @@
 (def-family "CTP synthase" :members ("UP:P0A7E5" "UP:P17812") :synonyms ("CTPS")) 
 (def-family "CTX" :members ("UP:P41416" "UP:Q02318")) 
 (def-family "CUTL1" :members ("UP:P39880" "UP:Q13948") :synonyms ("CUX1")) 
-(def-family "CYK4" :members ("UP:P19013" "UP:Q9H0H5")) 
+(def-family "CYK4" :members ("UP:P19013" "UP:Q9H0H5") :synonyms ("Cyk-4")) 
 (def-family "CYP2C" :members ("UP:P08683" "UP:P33260")) 
 (def-family "CaM2" :members ("UP:P0DH97" "UP:P62158")) 
 (def-family "CaMKI" :members ("UP:Q14012" "UP:Q9P7I2")) 
