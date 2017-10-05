@@ -966,6 +966,7 @@
       ;; Execution options if subcat-test is satisfied
       ((and (itypep adverb 'intensifier) ;; compose will apply
             (itypep adj-phrase 'qualifiable))
+       ;; method is in core/adjuncts/others.lisp in the intensifier section
        (compose adverb adj)) ;; "very unlikely"
 
       (variable-to-bind
