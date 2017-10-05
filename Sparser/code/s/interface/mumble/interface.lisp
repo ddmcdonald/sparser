@@ -240,17 +240,21 @@
 
 (defmethod print-object ((msd multi-subcat-mdata) stream)
   (print-unreadable-object (msd stream)
-    (let* ((pairs (mdata-pairs msd))
+    (format stream "multi-subcat-mdata ")))
+#|
+(defun pprint-msm (msm &optional (stream standard-output))
+  (let* ((pairs (mdata-pairs msm))
+         
            (embedded-mdata (loop for p in pairs collect (mpair-mdata p)))
            (embedded-lp (loop for e in embedded-mdata collect (linked-phrase e)))
-           (phrases (loop for l in embedded-lp collect (phrase l)))
+           (phrases (loop for l in embedded-lp collect (phrase l))) ;; wrong for abstract
            (phrase-names (loop for p in phrases collect (name p)))
            (phrase (car phrases))
            (word (when (typep phrase 'partially-saturated-lexicalized-phrase)
                    (value (car (bound phrase))))))
       (if word
         (format stream "multi-subcat-mdata ~s ~a" (pname word) phrase-names)
-        (format stream "multi-subcat-mdata ~a" phrase-names)))))
+        (format stream "multi-subcat-mdata ~a" phrase-names)))) |#
            
 
 
