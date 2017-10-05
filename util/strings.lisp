@@ -81,3 +81,16 @@
       (push "_" interleaved-list)
       (push (string-downcase string) interleaved-list))
     (apply #'string-append (nreverse interleaved-list))))
+
+
+(defun remove-prefix (str prefix)
+  (cond ((eq 0 (search prefix str :test #'equal))
+         (subseq str (length prefix)))
+        (t str)))
+
+(defun remove-suffix (str suffix)
+  (let ((rem-length (- (length str)(length suffix))))
+    (cond ((and (> rem-length 0) 
+                (equal (subseq str rem-length) suffix))
+           (subseq str 0 rem-length))
+          (t str))))
