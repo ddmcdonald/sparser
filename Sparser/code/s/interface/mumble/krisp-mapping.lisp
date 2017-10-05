@@ -43,6 +43,10 @@
   (:method ((pname string))
     (gethash pname *mappings-for-category-linked-phrase*)))
 
+
+;;--- realization using category-linked phrases
+;; may be OBE though parts are probably reusable
+
 (defgeneric apply-category-linked-phrase (individual)
   (:documentation "If there is a category-linked-phrase associated
     with this individual, use it to make the dtn")
@@ -90,6 +94,19 @@
         (get-lexicalized-phrase i)))
   (:method ((c sp::referential-category))
     (sp::get-tag :mumble c)))
+
+
+(defgeneric verb-based-realization (item)
+  (:documentation "Is the likely realization of this item going to be
+    a clause, as opposed to an np, adjp or other oblique phrase.
+    The DTN-based method will have a definitive answer.")
+  (:method ((dtn derivation-tree-node))
+    (let ((lp (resource dtn)))
+      (verb-based-realization lp)))
+  (:method ((lp lexicalized-phrase))
+    (eq 'verb (lookup-pos lp)))
+  (:method ((p phrase))
+    (eq 'verb (lookup-pos p))))
 
 
 ;;;------------------------------------
@@ -152,7 +169,6 @@
   (:method ((fall-through t) i pos)
     (break "Caller passed unexpected data type to select-realization: ~
             ~a~%~a" (type-of fall-through) fall-through)))
-
 
 
 
