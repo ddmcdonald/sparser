@@ -94,3 +94,4 @@
                 (equal (subseq str rem-length) suffix))
            (subseq str 0 rem-length))
           (t str))))
+

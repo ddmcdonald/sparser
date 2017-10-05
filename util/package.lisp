@@ -44,6 +44,8 @@
            #:s-intern
            #:*whitespace-chars*
            #:remove-leading-whitespace
+           #:remove-prefix
+           #:remove-suffix
            #:remove-trailing-whitespace
            #:trim-whitespace
            #:contains-whitespace
