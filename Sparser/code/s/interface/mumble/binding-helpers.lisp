@@ -34,11 +34,15 @@
    If the current position isn't bound yet then we're in 
    declared to be at top level. 
       Controls application of command in the tense fn."
-  (let ((slot (current-position)))
-    (if (null slot)
-      t
-      (let ((name (name slot))) ;; the 1st label
-        (memq name '(turn sentence question s paragraph))))))
+  (let* ((slot (current-position))
+         (name (name slot)))
+    (cond
+      ((null slot) t)
+      ((memq name '(turn sentence question s paragraph)) t)
+      ((eq name 'item)
+       ;; This is from a conjunction phrase. Toplevel if not below a clause.
+       (null (dominating-clause)))
+      (t nil))))
 
 
 
@@ -51,6 +55,7 @@
     (direct-object (noun)) ;; (np)
     (complement-of-be (adjective adverb verb noun))
     (relative-clause (verb))
+    (adjp-head (adjective))
     )
   "Has the information we could otherwise glean (and abstract to
    the needed level) from the grammatical constraints on slot labels")
@@ -141,15 +146,16 @@
     work.")
   (:method ((dtn derivation-tree-node) &aux (referent (referent dtn)))
     "Attach tense to the given DTN by inspecting its referent."
-    (cond ((sp::value-of 'sp::past referent)
-           (past-tense dtn))
-          ((sp::value-of 'sp::progressive referent)
-           (progressive dtn))
-          ((sp::value-of 'sp::perfect referent)
-           (had dtn))
-          ((current-position-p 'adjective 'complement-of-be 'relative-clause)
-           (past-tense dtn))
-          (t (present-tense dtn))))
+    (when (verb-based-realization dtn)
+      (cond ((sp::value-of 'sp::past referent)
+             (past-tense dtn))
+            ((sp::value-of 'sp::progressive referent)
+             (progressive dtn))
+            ((sp::value-of 'sp::perfect referent)
+             (had dtn))
+            ((current-position-p 'adjective 'complement-of-be 'relative-clause)
+             (past-tense dtn))
+            (t (present-tense dtn)))))
   (:method :after ((dtn derivation-tree-node) &aux (referent (referent dtn)))
     "Interpret a referent with an object but no subject as an imperative."
     (when (and (sp::individual-p referent)
@@ -158,7 +164,8 @@
                (let ((object-var (sp::bound-object-var referent)))
                  (and object-var (not (eq (sp::value-of object-var referent)
                                           sp::**lambda-var**)))))
-      (command dtn))))
+      (when (verb-based-realization dtn)
+        (command dtn)))))
 
 (defun heavy-predicate-p (i)
   "Return true if the individual is too heavy to be used as a premodifier.
@@ -202,6 +209,17 @@
 Many use methods in derivation-trees/builders.lisp or make.lisp
 to do the actual manipulation. These are called by cases in
 attach-via-binding. |#
+
+(defparameter *variables-to-ignore-for-attach-by-binding*
+  '(sp::present
+    )
+  "Holds list of variables that attach-via-bindings needn't bother
+   to look at because either they don't contribute to the
+   content we're generating or some other process will handle them.")
+
+(defun ignorable-variable? (v)
+  (memq (sp::var-name v) *variables-to-ignore-for-attach-by-binding*))
+
 
 (defun attach-adjective (adjective dtn pos)
   (let ((adjp (make-dtn :referent adjective
