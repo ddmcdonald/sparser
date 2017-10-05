@@ -87,20 +87,25 @@
                        :bound `(,pair))))))
 
 
-(defgeneric adjective (word)
+(defgeneric adjective (word phrase)
   (:documentation "Defines a lexicalized phrase for an adjective.
     Leaves the decision of how to position this adjective phrase
     within the text open, e.g. as premodifier, predicate adjective,
     resultative, etc.")
-  (:method ((w word))
-    (adjective (pname w)))
-  (:method ((pname string))
-    (let ((phrase (phrase-named 'adjp))
-          (adjective (word-for-string pname 'adjective)))
+  (:method ((w word) (phrase-name symbol))
+    (adjective (pname w)
+               (etypecase phrase-name
+                 (null (phrase-named 'adjp))
+                 (symbol (phrase-named phrase-name)))))
+  (:method ((w word) (phrase phrase))
+    (adjective (pname w) phrase))
+  (:method ((pname string) (phrase phrase))
+    (let ((adjective (word-for-string pname 'adjective)))
       (make-instance
        'saturated-lexicalized-phrase
        :phrase phrase
        :bound (list (pvp 'a adjective))))))
+
 
 (defgeneric adjectivial-modifier (word)
   (:documentation "Interpret the word as an adjective but
