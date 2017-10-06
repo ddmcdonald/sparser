@@ -1273,3 +1273,16 @@ applied to l, and values are values associated with that key example"
        (concatenate 'string
                     (eval (intern "*R3-TRUNK*" (find-package :r3)))
                     "corpus/phase3_nxml/results/"))))))
+
+(defun init-annot2017-directory (&key (semantic-output-format *semantic-output-format*))
+  (declare (special *comparable-indra*))
+  (setq *semantic-output-format* semantic-output-format)
+  (when (eq semantic-output-format :hms-json)
+    (setq *comparable-indra* nil))
+  (when (find-package :r3)
+    (save-article-semantics
+     (pathname
+      (ensure-directories-exist
+       (concatenate 'string
+                    (eval (intern "*R3-TRUNK*" (find-package :r3)))
+                    "corpus/2017-callisto-annotated-articles/results/"))))))
