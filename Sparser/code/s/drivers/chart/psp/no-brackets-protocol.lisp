@@ -437,14 +437,20 @@
 
 (defparameter *indra-post-process* nil)
 (defparameter *indra-embedded-post-mods* nil)
-
+(defparameter *callisto-compare* nil)
+(defparameter *sp-clsto-entity-mentions* nil)
+(defparameter *sp-clsto-relations* nil)
+(defparameter *sp-clsto-used-edges* nil)
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article* *sentence-results-stream*
                     *end-of-sentence-display-operation*
                     *localization-interesting-heads-in-sentence*
                     *localization-split-sentences* *colorized-sentence*
                     *save-bio-processes*  *indra-post-process*
-                    *predication-links-ht*))
+                    *predication-links-ht* *callisto-compare*
+                    *sp-clsto-entity-mentions* *sp-clsto-relations*
+                    *sp-clsto-used-edges*))
+  (declaim (optimize (debug 3)))
   (set-discourse-history sentence (cleanup-lifo-instance-list))
   (when *end-of-sentence-display-operation*
     (funcall *end-of-sentence-display-operation* sentence))
@@ -465,14 +471,57 @@
              (mentions-in-sentence-edges sentence))
             #'>
             :key #'(lambda (m) (edge-position-in-resource-array (mention-source m))))))
-        (indra-post-process mentions sentence *sentence-results-stream*)))
+      (indra-post-process mentions sentence *sentence-results-stream*)))
+  (when *callisto-compare*
+     (let* ((mentions
+           ;; sort, so that embedding edges for positive-bio-control come out first
+           (sort
+            (remove-collection-item-mentions
+             (mentions-in-sentence-edges sentence))
+            #'>
+            :key #'(lambda (m) (edge-position-in-resource-array (mention-source m)))))
+            (mentions-copy mentions))
+       (declare (special mentions-copy))
+       (loop for mention in mentions
+             do (let* ((ref (base-description mention))
+                       (edge (mention-source mention))
+                       (head-edge (find-head-edge edge))
+                       (dependencies (dependencies mention)))
+                  (cond ((itypep ref 'bio-chemical-entity)
+                         (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-edges*)
+                           (push `(,mention (:head ,(get-edge-char-offsets-and-surface-string head-edge))
+                                             (:full ,(get-edge-char-offsets-and-surface-string edge)))
+                                 *sp-clsto-entity-mentions*)
+                           (push edge *sp-clsto-used-edges*)))
+                         ((itypep ref '(:or bio-control post-translational-modification))
+                          (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-edges*)
+                            (push `(,mention (:event (:full ,(get-edge-char-offsets-and-surface-string edge)))
+                                             (:relation (:head ,(get-edge-char-offsets-and-surface-string head-edge)))
+                                             ,.(loop for item in dependencies
+                                                    when (typep (second item) 'discourse-mention)
+                                                     collect `(,(pname (car item))
+                                                                (:head ,(get-edge-char-offsets-and-surface-string
+                                                                         (find-head-edge (mention-source (second item)))))
+                                                                (:full ,(get-edge-char-offsets-and-surface-string
+                                                                         (mention-source (second item)))))))
+                                  *sp-clsto-relations*)))
+                         (t
+                          t))))))
   (when *localization-interesting-heads-in-sentence*
     (let ((colorized-sentence (split-sentence-string-on-loc-heads)))
       (setf (gethash sentence *colorized-sentence*) colorized-sentence)
       (push colorized-sentence *localization-split-sentences*)))
   (clrhash *predication-links-ht*))
 
-
+(defun get-edge-char-offsets-and-surface-string (edge)
+  (let ((surface-string (extract-string-spanned-by-edge edge))
+        (char-start (- (pos-character-index (pos-edge-starts-at edge)) 1))
+        (char-end (- (pos-character-index (pos-edge-ends-at edge)) 1)))
+    (list char-start char-end surface-string)))
+                                             
+(defun edge-subsumed-by-edge-in-list (edge edge-list)
+  (member edge edge-list :test #'(lambda(edge x) (edge-subsumes-edge? x edge))))
+                          
 ;;;----------------------------------
 ;;; diverse processing for HMS/Indra
 ;;;----------------------------------
