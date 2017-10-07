@@ -165,7 +165,7 @@
            ((= 2 (length edges)) ;; take the second as the statement
             (wh-initial-two-edges wh-initial? edges start-pos end-pos))
            
-           ((and (= 3 (length edges)) ;; "How many blocks did you add to the row?"
+           ((and (and (= 3 (length edges)) (edge-p (second edges))) ;; "How many blocks did you add to the row?"
                  (edge-over-aux? (second edges)))
             (wh-initial-three-edges wh-initial? edges start-pos end-pos))
            
