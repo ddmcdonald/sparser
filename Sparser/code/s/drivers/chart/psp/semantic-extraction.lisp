@@ -1129,8 +1129,7 @@ in cwc-integ/spire/interface/sparser.lisp
   (when edge 
     (let ((found-head (find-head-edge edge)))
       (when found-head
-        (string-right-trim " 
-" (extract-string-spanned-by-edge found-head))))))
+        (trim-whitespace (extract-string-spanned-by-edge found-head))))))
 
 
 (defmethod head-string ((i individual))

@@ -3839,7 +3839,10 @@ NIL
                   (tree (when ref (spire-tree ref)))
                   (rels (when ref (contains-some-of tree *er-signals*))))
              (when rels
-               (list (list rels (extract-string-spanned-by-edge tt) (edge-referent tt))))))
+               (list (list
+                      rels
+                      (trim-whitespace (extract-string-spanned-by-edge tt))
+                      (edge-referent tt))))))
     (error (e)
       (ignore-errors ;; got an error with something printing once
         (format t "~&Error in ~s~%~a~%~%" text e)))))
