@@ -646,7 +646,8 @@ In article 2  "c-termini"
 
 ;; Sentence sweep (dies on 2d wrap)
 ;   sentence-sweep  extract-string-from-char-buffers 
-;   *length-of-character-input-buffer*  -- goosed to 50k
+;   *length-of-character-input-buffer*  -- goosed to 50k -- now goosed further to 200000
+
 
 ; (setq *work-on-ns-patterns* t)
 
