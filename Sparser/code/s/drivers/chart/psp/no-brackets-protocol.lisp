@@ -472,46 +472,53 @@
             #'>
             :key #'(lambda (m) (edge-position-in-resource-array (mention-source m))))))
       (indra-post-process mentions sentence *sentence-results-stream*)))
-  (when *callisto-compare*
-     (let* ((mentions
-           ;; sort, so that embedding edges for positive-bio-control come out first
-           (sort
-            (remove-collection-item-mentions
-             (mentions-in-sentence-edges sentence))
-            #'>
-            :key #'(lambda (m) (edge-position-in-resource-array (mention-source m)))))
-            (mentions-copy mentions))
-       (declare (special mentions-copy))
-       (loop for mention in mentions
-             do (let* ((ref (base-description mention))
-                       (edge (mention-source mention))
-                       (head-edge (find-head-edge edge))
-                       (dependencies (dependencies mention)))
-                  (cond ((itypep ref 'bio-chemical-entity)
-                         (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-edges*)
-                           (push `(,mention (:head ,(get-edge-char-offsets-and-surface-string head-edge))
-                                             (:full ,(get-edge-char-offsets-and-surface-string edge)))
-                                 *sp-clsto-entity-mentions*)
-                           (push edge *sp-clsto-used-edges*)))
-                         ((itypep ref '(:or bio-control post-translational-modification))
-                          (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-edges*)
-                            (push `(,mention (:event (:full ,(get-edge-char-offsets-and-surface-string edge)))
-                                             (:relation (:head ,(get-edge-char-offsets-and-surface-string head-edge)))
-                                             ,.(loop for item in dependencies
-                                                    when (typep (second item) 'discourse-mention)
-                                                     collect `(,(pname (car item))
-                                                                (:head ,(get-edge-char-offsets-and-surface-string
-                                                                         (find-head-edge (mention-source (second item)))))
-                                                                (:full ,(get-edge-char-offsets-and-surface-string
-                                                                         (mention-source (second item)))))))
-                                  *sp-clsto-relations*)))
-                         (t
-                          t))))))
+  (when *callisto-compare* (extract-callisto-data sentence))
+    
   (when *localization-interesting-heads-in-sentence*
     (let ((colorized-sentence (split-sentence-string-on-loc-heads)))
       (setf (gethash sentence *colorized-sentence*) colorized-sentence)
       (push colorized-sentence *localization-split-sentences*)))
   (clrhash *predication-links-ht*))
+
+
+
+;;;----------------------------------
+;;; processing for comparison to calisto annotations
+;;;----------------------------------
+(defun extract-callisto-data (sentence)
+  (let* ((mentions
+          ;; sort, so that embedding edges for positive-bio-control come out first
+          (sort
+           (remove-collection-item-mentions
+            (mentions-in-sentence-edges sentence))
+           #'>
+           :key #'(lambda (m) (edge-position-in-resource-array (mention-source m)))))
+         (mentions-copy mentions))
+    (declare (special mentions-copy))
+    (loop for mention in mentions
+          do (let* ((ref (base-description mention))
+                    (edge (mention-source mention))
+                    (head-edge (find-head-edge edge))
+                    (dependencies (dependencies mention)))
+               (cond ((itypep ref 'bio-chemical-entity)
+                      (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-edges*)
+                        (push `(,mention (:head ,(get-edge-char-offsets-and-surface-string head-edge))
+                                         (:full ,(get-edge-char-offsets-and-surface-string edge)))
+                              *sp-clsto-entity-mentions*)
+                        (push edge *sp-clsto-used-edges*)))
+                     ((itypep ref '(:or bio-control post-translational-modification))
+                      (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-edges*)
+                        (push `(,mention (:event (:full ,(get-edge-char-offsets-and-surface-string edge)))
+                                         (:relation (:head ,(get-edge-char-offsets-and-surface-string head-edge)))
+                                         ,.(loop for item in dependencies
+                                                 when (and (typep (second item) 'discourse-mention)
+                                                           (not (member (pname (car item)) '(modifier raw-text))))
+                                                 collect `(,(pname (car item))
+                                                            (:head ,(get-edge-char-offsets-and-surface-string
+                                                                     (find-head-edge (mention-source (second item)))))
+                                                            (:full ,(get-edge-char-offsets-and-surface-string
+                                                                     (mention-source (second item)))))))
+                              *sp-clsto-relations*))))))))
 
 (defun get-edge-char-offsets-and-surface-string (edge)
   (let ((surface-string (trim-whitespace (extract-string-spanned-by-edge edge)))
