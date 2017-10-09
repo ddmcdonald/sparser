@@ -522,6 +522,9 @@
 	 :with co-precipitant))
 
 (def-synonym coimmunoprecipitate
+    (:noun "co-IP"))
+
+(def-synonym coimmunoprecipitate
     (:noun "coimmunoprecipitation"
 	   :verb "coimmunoprecipitate" :etf (svo-passive) ))
 
@@ -920,11 +923,12 @@
 (define-category immunoprecipitate :specializes immune-method
   :binds ((origin bio-location))
   :realization 
-  (:verb "immunoprecipitate" :noun "immunoprecipitation"
+  (:verb "immunoprecipitate" :noun "immunoprecipitate"
          :etf (svo-passive)
          :from origin))
 
-
+(def-synonym immunoprecipitate
+    (:noun "IP"))
 
 (define-category impact :specializes bio-relation
   :realization
