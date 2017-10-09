@@ -141,6 +141,10 @@ grammar/rules/FSAs/polywords4.lisp:  (defun do-polyword-fsa (word cfr position-s
                              (continues whitespace state)
                              state))
              (word (pos-terminal position))
+             ;; variants is for words like "co-IPs" where
+             ;; "ips" has three known variants "iPS" "IPS" "IPs"
+             (variants (unless (eq :lower-case (pos-capitalization position))
+                         (word-capitalization-variants word)))
              (variant (capitalized-correspondent position word)))
 
         (when (eq word *end-of-source*) ;; we can't possibly extend
@@ -149,12 +153,16 @@ grammar/rules/FSAs/polywords4.lisp:  (defun do-polyword-fsa (word cfr position-s
 
         ;; lookup the next state. This cascade assumes that
         ;; if there is whitespace then the continuation will depend
-        ;; on that whitespace, and that if there is a capitalized
-        ;; variant and it does not continue then neither will the
+        ;; on that whitespace, and that if there is an unambiguus
+        ;; capitalized variant and it does not continue then neither will the
         ;; lowercase word.
-        (if variant
-            (setq next-state (continues variant curr-state))
-            (setq next-state (continues word curr-state)))
+        (if (cdr variants)
+            (loop for v in `(,@variants ,word)
+                  when (continues v  curr-state)
+                    do (setq next-state (continues v curr-state)))
+            (if variant
+                (setq next-state (continues variant curr-state))
+                (setq next-state (continues word curr-state))))
         (if next-state
           (then 
             (tr :pw-word-extends)
