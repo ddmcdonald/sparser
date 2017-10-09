@@ -332,6 +332,18 @@
              (eq (cat-name (edge-form (right-edge-for-referent))) 'adjective))
     (assimilate-object protein depend)))
 
+#|
+(def-cfr tag (protein tag)
+  :form category::adjg
+  :referent (:function assimilate-subject-to-tagged left-edge right-edge))
+
+(defun assimilate-subject-to-tagged (protein tagged)
+  (declare (special protein tagged))
+  ;;(lsp-break  "tagged")
+  (when (and (edge-p (right-edge-for-referent))
+             (member (print (cat-name (edge-form (right-edge-for-referent)))) '(adjective verb+ed vg+ed vp+past)))
+    (assimilate-subject protein tagged)))
+|#
 
 (define-category describe :specializes bio-rhetorical
     :realization
