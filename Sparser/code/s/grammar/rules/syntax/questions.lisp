@@ -121,8 +121,14 @@
                     start-pos)
                   end-pos))
            (edges (all-tts start-pos end-pos)))
+      ;; -- DAVID
+      ;; (p "Is the ibogaine congener 18-Methoxycoronaridine safer than ibogaine?.")
+      ;; was throwing an error because (third edges) was a word  #<word QUESTION-MARK>
+      ;; I think this should be a question, but I don't have time to make this work
+      ;; I am just testing that (third edges) is an edge 
+
       (cond
-        (edge
+        ((edge-p edge)
          (when preposed?
            ;; The wh-initial? case doesn't need further handling
            (let ((q (make-polar-question (edge-referent edge))))
@@ -136,6 +142,8 @@
                spanning-edge))))     
         
         ((and (= 3 (length edges))
+              (edge-p (car edges))
+             	;;(edge-p (third edges))
               (itypep (edge-referent (car edges)) 'be))              
          (cond ((member (cat-name (edge-form (third edges)))
                         '(adjp adjective comparative superlative
