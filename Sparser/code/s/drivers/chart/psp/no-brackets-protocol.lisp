@@ -502,7 +502,8 @@
                     (dependencies (dependencies mention)))
                (cond ((itypep ref 'bio-chemical-entity)
                       (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-edges*)
-                        (if (is-basic-collection? ref)
+                        (if (and (is-basic-collection? ref)
+                                 (not (eq (edge-rule edge) 'make-protein-collection)))
                             (extract-callisto-conjunction-data ref edge head-edge dependencies)
                             (push `( ;;,mention
                                     (:category ,(cat-name (itype-of ref)))
