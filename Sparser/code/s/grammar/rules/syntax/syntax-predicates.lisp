@@ -270,6 +270,9 @@
            ((and (prep-edge? left-daughter)
                  (edge-p left-daughter))
             (cond
+              ((and (individual-p (edge-referent left-daughter))
+                    (itypep (edge-referent left-daughter) 'collection))
+               nil)
               ((word-p (edge-left-daughter left-daughter))
                (edge-left-daughter left-daughter))
               (t (push-debug `(,edge ,prep-edge ,left-daughter))
