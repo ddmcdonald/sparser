@@ -502,23 +502,47 @@
                     (dependencies (dependencies mention)))
                (cond ((itypep ref 'bio-chemical-entity)
                       (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-edges*)
-                        (push `(,mention (:head ,(get-edge-char-offsets-and-surface-string head-edge))
-                                         (:full ,(get-edge-char-offsets-and-surface-string edge)))
-                              *sp-clsto-entity-mentions*)
+                        (if (is-basic-collection? ref)
+                            (extract-callisto-conjunction-data ref edge head-edge dependencies)
+                            (push `( ;;,mention
+                                    (:category ,(cat-name (itype-of ref)))
+                                    (:uid ,(value-of 'uid ref))
+                                    (:head ,(get-edge-char-offsets-and-surface-string head-edge))
+                                    (:full ,(get-edge-char-offsets-and-surface-string edge)))
+                                  *sp-clsto-entity-mentions*))
                         (push edge *sp-clsto-used-edges*)))
                      ((itypep ref '(:or bio-control post-translational-modification))
                       (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-edges*)
-                        (push `(,mention (:event (:full ,(get-edge-char-offsets-and-surface-string edge)))
-                                         (:relation (:head ,(get-edge-char-offsets-and-surface-string head-edge)))
-                                         ,.(loop for item in dependencies
-                                                 when (and (typep (second item) 'discourse-mention)
-                                                           (not (member (pname (car item)) '(modifier raw-text))))
-                                                 collect `(,(pname (car item))
-                                                            (:head ,(get-edge-char-offsets-and-surface-string
-                                                                     (find-head-edge (mention-source (second item)))))
-                                                            (:full ,(get-edge-char-offsets-and-surface-string
-                                                                     (mention-source (second item)))))))
-                              *sp-clsto-relations*))))))))
+                        (push
+                         `( ;;,mention
+                           (:event (:full ,(get-edge-char-offsets-and-surface-string edge)))
+                           (:relation (:head ,(get-edge-char-offsets-and-surface-string head-edge)))
+                           ,.(loop for item in dependencies
+                                   when (and (typep (second item) 'discourse-mention)
+                                             (not (member (pname (car item)) '(modifier raw-text))))
+                                   collect `(,(pname (car item))
+                                              (:head ,(get-edge-char-offsets-and-surface-string
+                                                       (find-head-edge (mention-source (second item)))))
+                                              (:full ,(get-edge-char-offsets-and-surface-string
+                                                       (mention-source (second item)))))))
+                         *sp-clsto-relations*))))))))
+
+(defun extract-callisto-conjunction-data (ref edge head-edge dependencies)
+  (loop for sub-mention in (loop for bb in dependencies
+                                 when (eq 'items (pname (cxar bb)))
+                                 do (return (second bb)))
+        do
+          (let* ((ref (base-description sub-mention))
+                 (edge (mention-source sub-mention))
+                 (head-edge (find-head-edge edge))
+                 (dependencies (dependencies sub-mention)))
+            (push `( ;;,mention
+                    (:category ,(cat-name (itype-of ref)))
+                    (:uid ,(value-of 'uid ref))
+                    (:head ,(get-edge-char-offsets-and-surface-string head-edge))
+                    (:full ,(get-edge-char-offsets-and-surface-string edge)))
+                  *sp-clsto-entity-mentions*))))
+          
 
 (defun get-edge-char-offsets-and-surface-string (edge)
   (let ((surface-string (trim-whitespace (extract-string-spanned-by-edge edge)))
