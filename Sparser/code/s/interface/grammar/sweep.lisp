@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2016 David D. McDonald -- all rights reserved
+;;; copyright (c) 2015-2017 David D. McDonald -- all rights reserved
 ;;;
 ;;;      File:   "sweep"
 ;;;    Module:   interface/grammar/
-;;;   Version:   June 2016
+;;;   Version:   October 2017
 
 ;; Routines for sweeping down through the structure of Krisp referents.
 ;; Initiated 1/11/15 with code from December. 
@@ -249,5 +249,42 @@
 
 
 
+;;;------------------------------------;;;------------------------------------
+
+;;; tabulating facts about the grammar
+
+(defun words-with-rule-sets () ;; vanilla R3 10/9/18 32,146
+  (loop for w in *words-defined* ;; 66,638
+       as rs = (rule-set-for w)
+       when (and rs (typep rs 'rule-set)) collect rs))
+
+(defun polywords-with-rule-sets () ;; 73,235
+  (loop for pw in *polywords-defined* ;; 97,902
+       as rs = (rule-set-for pw)
+       when (and rs (typep rs 'rule-set)) collect rs))
 
 
+(defun categories-with-rule-sets () ;; 969
+  (let ((rule-sets nil))
+    (loop for accumulator in '(*referential-categories* ;; 2,430
+                               *form-categories* ;; 127
+                               *mixin-categories* ;; 46
+                               *grammatical-categories*) ;; 503
+       as categories = (eval accumulator)
+       do (loop for c in categories
+             as rs = (rule-set-for c)
+             when (and rs (typep rs 'rule-set)) do (push rs rule-sets)))
+    rule-sets))
+
+
+(defun all-defined-rule-sets () ;; 106,350
+  (append (categories-with-rule-sets)
+          (words-with-rule-sets)
+          (polywords-with-rule-sets)))
+
+(defun tally-rule-ids-in-use ()
+  (let ((left 0) (right 0))
+    (loop for rs in (all-defined-rule-sets)
+       when (rs-right-looking-ids rs) do (incf right)
+       when (rs-left-looking-ids rs) do (incf left))
+    (values left right))) ;; 913, 570
