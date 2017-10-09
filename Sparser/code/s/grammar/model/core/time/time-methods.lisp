@@ -51,4 +51,4 @@
       (relative-time-value c :next) ;; Lookup the value
       
       ;; otherwise we make a relative time
-      (break "make relative-time"))))
+      (else (warn "make relative-time fails in ~s" (current-string)) nil))))
