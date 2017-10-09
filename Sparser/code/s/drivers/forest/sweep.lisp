@@ -92,19 +92,12 @@
               (push-debug `(,tt ,pos-after))
               (error "No form value on ~a" tt)))))
         
-        (when form
-          (case (cat-symbol form)
+        (when (category-p form)
+          (case (cat-name form)
             ;; this is a gross control structure, but it lets
             ;; us play while sorting out what will be better
-            ((category::np
-              category::proper-name
-              category::proper-noun
-              category::n-bar
-              category::common-noun
-              category::pronoun
-              category::WH-PRONOUN
-              category::reflexive/pronoun
-              category::possessive/pronoun) 
+            ((np proper-name proper-noun n-bar common-noun
+              pronoun wh-pronoun reflexive/pronoun possessive/pronoun) 
              (cond ((np-over-that? tt)
                     (push-that tt))
                    ((null prior-tt)
@@ -124,33 +117,31 @@
                (tr :noticed-pronoun tt)
                (push-pronoun tt)))
             
-            (category::vg
+            (vg
              (if main-verb-seen?
                  ;;/// need to modify verb builder and set of form categories
                  ;; to retain the participlial nature of, e.g. "inhibiting"
                  (push-post-mvs-verbs tt)
                  (set-main-verb tt))) ;;/// won't work for preposed participles
             
-            (category::vp
+            (vp
              (push-verb-phrase tt))
             
-            (category::adjective
+            (adjective
              (push-loose-adjective tt))
             
-            (category::s
+            (s
              (push-loose-clauses tt))
             
-            (category::subj+verb
+            (subj+verb
              (push-loose-subj+verb tt))
             
-            (category::adverb
+            (adverb
              (if sentence-initial?
                  (setf (starts-with-adverb (layout)) tt)
                  (push-loose-adverb tt)))
             
-            ((category::preposition
-              category::spatial-preposition
-              category::spatio-temporal-preposition) ;; under
+            ((preposition spatial-preposition spatio-temporal-preposition) ;; under
              (when sentence-initial?
                (setf (starts-with-prep (layout)) tt))
              (let ((prep (edge-left-daughter tt)))
@@ -158,23 +149,22 @@
                    (push-of tt)
                    (push-preposition tt))))
             
-            (category::pp
+            (pp
              (push-prepositional-phrase tt))
             
-            (category::conjunction
+            (conjunction
              (push-conjunction tt))
             
-            (category::subordinate-conjunction
+            (subordinate-conjunction
              (push-subordinate-conjunction tt))
             
-            ((category::parentheses
-              category::square-brackets)
+            ((parentheses square-brackets)
              (push-parentheses tt))
             
-            (category::quantifier
+            (quantifier
              ;; drop it on the floor for now: "each of"
              )
-            (category::det
+            (det
              (if (eq (edge-category tt) category::that)
                  (then
                    (when *show-thatcomps* 
