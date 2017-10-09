@@ -1302,7 +1302,15 @@
 
 (defun assimilate-subject (subj vp
                            &optional (right-edge (right-edge-for-referent))
-                             dont-revise-parent-edge)
+                             dont-revise-parent-edge
+                           &aux (right-daughter
+                                 (when right-edge
+                                   (if (eq (edge-right-daughter right-edge) :long-span)
+                                       (if (edge-p (car (last (edge-constituents right-edge))))
+                                           (car (last (edge-constituents right-edge)))
+                                           (else (warn  "can't find right daughter in assimilate-subject -- ~s~%" (current-string))
+                                                 nil))
+                                       (edge-right-daughter right-edge)))))
   (declare (special category::subordinate-clause category::copular-predication
                     category::transitive-clause-without-object
                     subj vp *left-edge-into-reference*))
@@ -1367,11 +1375,11 @@
             (vg-edge
              (cond ((member (cat-name (edge-form right-edge)) '(vp+ed vg+ed))
                     right-edge)
-                   ((eq 's (cat-name (edge-form (edge-right-daughter right-edge))))
+                   ((eq 's (cat-name (edge-form right-daughter)))
                     ;; case where subordinate conjunction is attached above the S
                     ;; "...since p130 CAS , paxillin, and FAK  are already hyperphosphorylated.
-                    (edge-right-daughter (edge-right-daughter right-edge)))
-                   (t (edge-right-daughter right-edge)))))
+                    (edge-right-daughter right-daughter))
+                   (t right-daughter))))
        (when (edge-p vg-edge)
          ;; vg-edge is :long-span for cases where the
          ;;  subordinate clause is a conjunction
