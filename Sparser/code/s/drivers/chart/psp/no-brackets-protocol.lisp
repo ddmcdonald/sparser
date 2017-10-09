@@ -503,7 +503,9 @@
                (cond ((itypep ref 'bio-chemical-entity)
                       (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-edges*)
                         (if (and (is-basic-collection? ref)
-                                 (not (eq (edge-rule edge) 'make-protein-collection)))
+                                 (not (eq (edge-rule edge) 'make-protein-collection))
+                                 (loop for item in (get-mention-items dependencies)
+                                       always (typep item 'discourse-mention)))
                             (extract-callisto-conjunction-data ref edge head-edge dependencies)
                             (push `( ;;,mention
                                     (:category ,(cat-name (itype-of ref)))
@@ -528,10 +530,13 @@
                                                        (mention-source (second item)))))))
                          *sp-clsto-relations*))))))))
 
+(defun get-mention-items (dependencies)
+  (loop for bb in dependencies
+        when (eq 'items (pname (car bb)))
+        do (return (second bb))))
+
 (defun extract-callisto-conjunction-data (ref edge head-edge dependencies)
-  (loop for sub-mention in (loop for bb in dependencies
-                                 when (eq 'items (pname (cxar bb)))
-                                 do (return (second bb)))
+  (loop for sub-mention in (get-mention-items dependencies)
         do
           (let* ((ref (base-description sub-mention))
                  (edge (mention-source sub-mention))
