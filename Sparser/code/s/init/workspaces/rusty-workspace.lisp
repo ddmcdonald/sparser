@@ -117,7 +117,10 @@
 
 (defun pos (n)(chart-array-cell n))
 (defun np (l &optional (stream t))
-  (loop for ll in l do (print ll stream)))
+  (loop for ll in l do
+          (let* ((*print-pretty* nil))
+            (print ll stream))))
+
 (defun ht-to-alist (ht)
   (let
       ((alist nil))

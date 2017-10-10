@@ -638,6 +638,9 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
          (*print-case* :DOWNCASE))
     (print x stream)))
 
+(defun one-line-print (x stream)
+  (let* ((*print-pretty* nil))
+    (print x stream)))
     
 (defun non-redundant-def (prot)
   (setq prot `(,(car prot) ,(second prot)
