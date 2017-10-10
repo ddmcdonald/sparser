@@ -1362,7 +1362,7 @@
 (def-family "coat protein" :members ("UP:P21942" "UP:Q9UBF2")) 
 (def-family "collybistin" :members ("UP:O43307" "UP:Q58DL7")) 
 (def-family "complement receptor type 3" :members ("UP:P20023" "UP:P94854")) 
-(def-family "complex I" :members ("UP:O95139" "UP:Q07842")) 
+(def-family "complex I" :members ("UP:O95139" "UP:Q9Y375" "UP:Q9Y6M9")) ; partial list -- 50 human ones in all 
 (def-family "condensin complex subunit 1" :members ("UP:Q15021" "UP:Q9YHY6")) 
 (def-family "connexin37" :members ("UP:A4IFL1" "UP:P35212") :synonyms ("gap junction alpha-4 protein")) 
 (def-family "cortactin" :members ("UP:Q01406" "UP:Q66HL2")) 
