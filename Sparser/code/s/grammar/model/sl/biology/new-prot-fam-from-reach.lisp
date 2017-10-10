@@ -291,7 +291,7 @@
 (def-family-with-id "E4" "XFAM:PF02711") 
 (def-family-with-id "E3 ubiquitin  ligase" "XFAM:PF12483") 
 (def-family-with-id "Docking" "XFAM:PF08990") 
-(def-family-with-id "Death Effector Domain" "XFAM:PF01335") 
+;;(def-family-with-id "Death Effector Domain" "XFAM:PF01335") 
 (def-family-with-id "Death Domain" "XFAM:PF00531") 
 (def-family-with-id "DUF1669" "XFAM:PF07894") 
 (def-family-with-id "DNAseI" "IPR016202") 

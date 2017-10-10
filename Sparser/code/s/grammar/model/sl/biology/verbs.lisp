@@ -1484,6 +1484,24 @@
    :etf (svo-passive)
    :o moving-object))
 
+(define-category mobilize :specializes bio-transport
+  :restrict ((agent blocked-category)
+             (object blocked-category))
+  :realization 
+  (:verb "mobilize" 
+   :noun "mobilization" 
+   :etf (svo-passive)
+   :o moving-object))
+
+(define-category redistribute :specializes bio-transport
+  :restrict ((agent blocked-category)
+             (object blocked-category))
+  :realization 
+  (:verb "redistribute" 
+   :noun "redistribution"
+   :etf (svo-passive)
+   :o moving-object))
+
 (define-category export :specializes bio-transport
   :restrict ((agent blocked-category)
              (object blocked-category))                 

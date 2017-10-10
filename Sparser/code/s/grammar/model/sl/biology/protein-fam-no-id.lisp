@@ -24,6 +24,11 @@
 
 (noun ("deubiquitinase" "deubiquitylase" "DUB") :super enzyme)
 
+;; likely figure numbers
+;;(def-family "2B" :members ("UP:O94953" "UP:Q93097" "UP:Q9UQ03"))
+;;(def-family "3B" :members ("UP:Q13214" "UP:Q96PB8" "UP:Q9UBC3"))
+
+
 ;; to be verified
 
 (cond ((not *use-small-proteins*)
@@ -66,8 +71,6 @@
 
 (def-family "20 alpha-hydroxysteroid dehydrogenase" :synonyms ("20 α-hydroxysteroid dehydrogenase" "20-α-HSD" "E2DH" "EDH17B2") :members ("UP:P14061" "UP:P37059"))
 (def-family "20-alpha-HSD" :members ("UP:P14061" "UP:P37059" "UP:Q04828")) 
-(def-family "2B" :members ("UP:O94953" "UP:Q93097" "UP:Q9UQ03"))
-(def-family "3B" :members ("UP:Q13214" "UP:Q96PB8" "UP:Q9UBC3"))
 (def-family "51 kDa FK506-binding protein" :members ("UP:Q02790" "UP:Q13451")) 
 (def-family "ADF" :members ("UP:P06396" "UP:P10599")) 
 (def-family "ADH1" :members ("UP:P07327" "UP:P00325" "UP:P00326") :synonyms ("ADH1" "ADH-1" "alcohol dehydrogenase 1"))

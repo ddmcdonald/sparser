@@ -1128,7 +1128,7 @@
 (define-protein "UP:F1MCA7" ("densin" "leucine-rich repeat-containing protein 7")) 
 (define-protein "UP:F1MMS9" ("integrin-α3")) 
 (define-protein "UP:F1P167" ("F1P167" "chemokine" "chemokines")) 
-(define-protein "UP:F1REV3" ("SAN" "santa")) 
+(define-protein "UP:F1REV3" ("santa")) ;;"SAN" too easily confusible with location "San Antonio"
 (define-protein "UP:F2Z266" ("BEL" "bel" "boletus edulis lectin")) 
 (define-protein "UP:F4DAE8" ("RMF")) 
 (define-protein "UP:F4HPR5" ("DRP5A")) 
@@ -2333,7 +2333,7 @@
 (define-protein "UP:O43687" ("AKAP15" "AKAP18" "AKAP7" "a-kinase anchoring protein 7")) 
 (define-protein "UP:O43688" ("LPP2" "PAP-2c" "PLPP2" "PLPP2_HUMAN" "PPAP2C" "Phosphatidate phosphatase (PPAP2C)" "o43688" "phosphatidic acid phosphatase type 2C" "phospholipid phosphatase 2")) 
 (define-protein "UP:O43699" ("CD327" "CD33L" "CD33L1" "OB-BP1" "OBBP1" "SIGL6_HUMAN" "SIGLEC-6" "SIGLEC6" "SIL6_HUMAN" "Sialic acid binding Ig-like lectin 6 precursor" "o43699" "sialic acid binding Ig like lectin 6" "sialic acid binding Ig-like lectin 6")) 
-(define-protein "UP:O43704" ("1B" "ST1B1_HUMAN" "ST1B2" "SULT1B1" "SULT1B1 monomer" "SULT1B2" "o43704" "sulfotransferase family 1B member 1")) 
+(define-protein "UP:O43704" ( "ST1B1_HUMAN" "ST1B2" "SULT1B1" "SULT1B1 monomer" "SULT1B2" "o43704" "sulfotransferase family 1B member 1")) ;;"1B" usually a figure
 (define-protein "UP:O43707" ("ACTN4" "ACTN4_HUMAN" "FSGS1" "actinin alpha 4" "actinin-4" "alpha-actinin 4" "alpha-actinin-4" "o43707" "α-actinin-4")) 
 (define-protein "UP:O43708" ("GSTZ1" "GSTZ1-1" "Glutathione S- transferase zeta 1) (GSTZ1-1" "MAAI" "MAAI_HUMAN" "MAI" "aleylacetoacetate isomerase" "glutathione S-transferase zeta 1" "glutathione transferase zeta 1" "maleylacetoacetate isomerase" "maleylacetoacetic acid isomerase apoenzyme monomer" "o43708")) 
 (define-protein "UP:O43709" ("HUSSY-03" "MERM1" "MGC19709" "MGC2022" "MGC5140" "PP3381" "Probable 18S rRNA" "WBMT" "WBS22_HUMAN" "WBSCR22" "Williams Beuren syndrome chromosome region 22" "Williams-Beuren syndrome chromosome region 22" "metastasis-related methyltransferase 1" "o43709")) 
@@ -3065,7 +3065,7 @@
 (define-protein "UP:O75888" ("A proliferation-inducing ligand" "APRIL" "APRIL with phosphothreonine 244" "CD256" "TNF13_HUMAN" "TNFSF13" "a proliferation inducing ligand" "o75888" "p-T244-TNFSF13" "sAPRIL" "sTNFSF13" "tumor necrosis factor ligand superfamily member 13" "tumor necrosis factor superfamily member 13")) 
 (define-protein "UP:O75891" ("10-fTHF" "AL1L1_HUMAN" "ALDH1L1" "Aldh1l1" "FTHFD" "aldehyde dehydrogenase 1 family member L1" "cytosolic 10-formyltetrahydrofolate dehydrogenase" "formyltetrahydrofolate dehydrogenase" "member L1" "o75891")) 
 (define-protein "UP:O75896" ("FUS-1 protein" "FUS1" "Fus1" "O75896" "TUSC2" "o75896" "tumor suppressor candidate 2")) 
-(define-protein "UP:O75897" ("1C" "ST1C4_HUMAN" "SULT1C" "SULT1C2" "SULT1C2 monomer" "SULT1C4" "o75897" "sulfotransferase family 1C member 4")) 
+(define-protein "UP:O75897" ( "ST1C4_HUMAN" "SULT1C" "SULT1C2" "SULT1C2 monomer" "SULT1C4" "o75897" "sulfotransferase family 1C member 4"))  ;; "1C" usually a figure
 (define-protein "UP:O75899" ("GABABR2" "GABBR2" "GABR2_HUMAN" "GB2" "GPR51" "GPRC3B" "Gamma-aminobutyric acid type B receptor subunit 2" "HG20" "g protein-coupled receptor 51" "g-protein-coupled receptor 51" "gamma-aminobutyric acid type B receptor subunit 2" "o75899")) 
 (define-protein "UP:O75900" ("MMP23B" "matrix metallopeptidase 23B")) 
 (define-protein "UP:O75901" ("RASSF9" "pamci" "ras association domain family member 9")) 
@@ -3822,7 +3822,7 @@
 (define-protein "UP:P01275" ("GCG" "GCG(1-180)" "GCG(146-178)" "GCG(21-180)" "GLP-1" "GLP1" "GLP2" "GLUC_HUMAN" "GRPP" "Glp1" "OXM" "P01275" "glicentin-related polypeptide" "glucagon" "glucagon-like peptide 1" "glucagon-like peptide 2" "glucagon-like peptide-1" "glucagon-like-peptide-1" "glucagon-like-peptide-2" "incretin hormone" "oxy" "oxyntomodulin" "p01275" "preproglucagon" "proglucagon")) 
 (define-protein "UP:P01282" ("VIP" "p01282" "vasoactive intestinal peptide" "vasoactive intestinal polypeptide")) 
 (define-protein "UP:P01286" ("GHRF" "GHRH" "GRF" "GRFs" "SLIB_HUMAN" "growth hormone releasing factor" "growth hormone releasing hormone" "p01286" "sermorelin" "somatocrinin" "somatoliberin")) 
-(define-protein "UP:P01298" ("P-P" "PAHO_HUMAN" "PP" "PPY" "PPY(30-65)" "Ph" "p01298" "pH" "pancreatic peptide" "pancreatic polypeptide" "pancreatic polypeptide Y" "pancreatic prohormone" "prepro-PP (prepropancreatic polypeptide)")) 
+(define-protein "UP:P01298" ("P-P" "PAHO_HUMAN" "PP" "PPY" "PPY(30-65)" "Ph" "p01298" "pancreatic peptide" "pancreatic polypeptide" "pancreatic polypeptide Y" "pancreatic prohormone" "prepro-PP (prepropancreatic polypeptide)")) 
 (define-protein "UP:P01303" ("NPY" "NPY_HUMAN" "Neuropeptide Y" "Pro-neuropeptide Y" "neuropeptide Y" "p01303")) 
 (define-protein "UP:P01308" ("INS" "INS_HUMAN" "Insulin A chain" "Insulin B chain" "in- sulin" "insu-  lin" "insulin" "insulin A chain" "insulin B chain" "p01308")) 
 (define-protein "UP:P01344" ("IGF II" "IGF-II" "IGF2" "IGF2_HUMAN" "IGFII" "Igf-2" "Insulin like growth factor II" "Insulin-like growth factor II" "Insulin-like growth factor II Ala-25 Del" "Somatomedin-A" "igf2" "igfII" "insulin like growth factor 2" "insulin-like growth factor II" "p01344" "preptin" "somatomedin A")) 
@@ -4932,7 +4932,7 @@
 (define-protein "UP:P0A3H1" ("HBs" "HBs protein" "P0A3H1")) 
 (define-protein "UP:P0A3I6" ("CyaC")) 
 (define-protein "UP:P0A3R9" ("MMC" "NCS" "neocarzinostatin")) 
-(define-protein "UP:P0A3T1" ("6-B" "6B")) 
+;;(define-protein "UP:P0A3T1" ("6-B" "6B"))  likely a figure number
 (define-protein "UP:P0A3U8" ("OMP28")) 
 (define-protein "UP:P0A3W8" ("single-strand DNA binding protein" "virE2")) 
 (define-protein "UP:P0A3X8" ("CytA")) 
@@ -7346,7 +7346,7 @@
 (define-protein "UP:P29017" ("BDCA-1" "CD1C" "CD1C antigen" "CD1C_HUMAN" "CD1c" "CD1c antigen" "CD1c molecule" "T-cell surface glycoprotein CD1c" "c polypeptide" "p29017")) 
 (define-protein "UP:P29033" ("26kD (connexin 26)" "26kDa" "26kDa (connexin 26)" "CX26" "CXB2_HUMAN" "DFNA3" "DFNB1" "GJB2" "HisD" "NSRD1" "connexin 26" "connexin-26" "cx26" "gap junction beta-2 protein" "gap junction protein beta 2" "hisD" "p29033")) 
 (define-protein "UP:P29034" ("S100 calcium binding protein A2" "S100A2")) 
-(define-protein "UP:P29072" ("chen")) 
+;; (define-protein "UP:P29072" ("chen")) likely a name
 (define-protein "UP:P29074" ("MeG" "PTPMEG" "PtPN4" "protein tyrosine phosphatase, non-receptor type 4")) 
 (define-protein "UP:P29082" ("SOR")) 
 (define-protein "UP:P29083" ("56kD)" "GTF2E1" "General transcription factor IIE 56 kDa subunit" "P29083" "T2EA_HUMAN" "TF2E1" "TFIIE alpha subunit" "TFIIE-A" "TFIIE-alpha" "TFIIEalpha" "TFIIEα" "Transcription initiation factor IIE, alpha subunit" "alpha 56kDa" "general transcription factor IIE" "general transcription factor IIE subunit 1" "p29083" "polypeptide 1 (alpha subunit" "transcription initiation factor-IIE alpha subunit")) 
@@ -7404,7 +7404,7 @@
 (define-protein "UP:P29484" ("TCPS")) 
 (define-protein "UP:P29508" ("P29508" "Protein T4-A" "SCCA" "SCCA-1" "SCCAs" "SCCs" "SERPIN B3" "SERPINB3" "SPB3_HUMAN" "Serpin B3" "SerpinB3" "Squamous Cell Carcinoma Antigen 1" "p29508" "serpin B3" "serpin family B member 3" "squamous cell carcinoma antigen 1" "squamous cell carcinoma antigen-1" "t4a")) 
 (define-protein "UP:P29523" ("MALP" "membrane-bound alkaline phosphatase")) 
-(define-protein "UP:P29536" ("1D" "LMOD1" "LMOD1_HUMAN" "leiomodin 1" "leiomodin 1 (smooth muscle)" "leiomodin-1" "p29536")) 
+(define-protein "UP:P29536" ( "LMOD1" "LMOD1_HUMAN" "leiomodin 1" "leiomodin 1 (smooth muscle)" "leiomodin-1" "p29536")) ;;"1D" usually a figure
 (define-protein "UP:P29552" ("abd-A" "abdA")) 
 (define-protein "UP:P29558" ("MSSP" "RBMS1" "RNA binding motif single stranded interacting protein 1" "SCR2" "p29558")) 
 (define-protein "UP:P29590" ("MyL" "PML" "PML_HUMAN" "PMLs" "PP8675" "Pml" "Protein PML" "RING finger protein" "RING finger protein 71" "RNF71" "TRIM19" "p29590" "promyelocytic" "promyelocytic leukemia" "promyelocytic leukemia protein" "protein PML" "tripartite motif protein-TRIM19" "tripartite motif-containing protein 19")) 
@@ -9990,7 +9990,7 @@
 (define-protein "UP:P54070" ("KTR6")) 
 (define-protein "UP:P54075" ("PAFc")) 
 (define-protein "UP:P54098" ("DNA polymerase gamma, catalytic subunit" "POLG" "POLG1" "PolgA" "polg")) 
-(define-protein "UP:P54105" ("1A" "CLCI" "CLNS1A" "ICLN" "ICLN_HUMAN" "ICln" "chloride nucleotide-sensitive channel 1A" "methylosome subunit pICln" "nucleotide-sensitive" "p54105" "pICln")) 
+(define-protein "UP:P54105" ( "CLCI" "CLNS1A" "ICLN" "ICLN_HUMAN" "ICln" "chloride nucleotide-sensitive channel 1A" "methylosome subunit pICln" "nucleotide-sensitive" "p54105" "pICln")) ;; "1A" usually a figure
 (define-protein "UP:P54108" ("CRISP3" "SGP28" "crisp3" "cysteine rich secretory protein 3")) 
 (define-protein "UP:P54113" ("ADE16")) 
 (define-protein "UP:P54115" ("ald6")) 
@@ -11954,7 +11954,7 @@
 (define-protein "UP:Q06488" ("RSC2")) 
 (define-protein "UP:Q06495" ("NAPI-3" "NPT2" "NPT2A_HUMAN" "NPTIIa" "Na+-phosphate cotransporter type II" "SLC11" "SLC17A2" "SLC34A1" "Sodium dependent phosphate transport protein 2A" "Sodium-dependent phosphate transport protein 2A" "q06495" "sodium/phosphate co-transporter" "solute carrier family 34 (sodium phosphate)" "solute carrier family 34 (type II sodium/phosphate cotransporter)" "solute carrier family 34 member 1")) 
 (define-protein "UP:Q06508" ("VPS66")) 
-(define-protein "UP:Q06520" ("2A" "DHEA-ST" "Hydroxysteroid Sulfotransferase" "Q06520" "ST2A1" "ST2A1_HUMAN" "ST2A3" "STD" "SULT2A1" "Std" "Stichoposide D" "Sulfotransferase 2A1" "bile salt sulfotransferase" "catabolism" "dehydroepiandrosterone (DHEA)-preferring" "dehydroepiandrosterone sulfotransferase" "q06520" "sulfotransferase family 2A member 1" "sult2a1")) 
+(define-protein "UP:Q06520" ( "DHEA-ST" "Hydroxysteroid Sulfotransferase" "Q06520" "ST2A1" "ST2A1_HUMAN" "ST2A3" "STD" "SULT2A1" "Std" "Stichoposide D" "Sulfotransferase 2A1" "bile salt sulfotransferase" "catabolism" "dehydroepiandrosterone (DHEA)-preferring" "dehydroepiandrosterone sulfotransferase" "q06520" "sulfotransferase family 2A member 1" "sult2a1")) ;; "2A" usually a figure
 (define-protein "UP:Q06528" ("dnrk")) 
 (define-protein "UP:Q06529" ("FC" "TrkB-Fc" "cytochrome subunit of sulfide dehydrogenase" "fc" "q06529")) 
 (define-protein "UP:Q06546" ("E4TF1-60" "E4TF1A" "GA binding protein transcription factor" "GA binding protein transcription factor alpha subunit" "GA-binding protein alpha chain" "GA-binding protein transcription factor" "GABPA" "GABPA_HUMAN" "GABPa" "NFT2" "NRF2 alpha subunit" "NRF2A" "alpha subunit (60kD)" "alpha subunit 60kDa" "human nuclear respiratory factor-2 subunit alpha" "nrf2a" "nuclear respiratory factor 2 alpha subunit" "q06546")) 
@@ -24952,7 +24952,7 @@
 (define-protein "UP:Q9Z7R4" ("RL-16")) 
 (define-protein "UP:Q9Z899" ("pmp6")) 
 (define-protein "UP:Q9ZAA7" ("GCDC")) 
-(define-protein "UP:Q9ZAB8" ("cobb" "cobyrinic acid a,c-diamide synthase activity")) 
+(define-protein "UP:Q9ZAB8" ("cobyrinic acid a,c-diamide synthase activity")) ;; "cobb" a name
 (define-protein "UP:Q9ZAG3" ("lima")) 
 (define-protein "UP:Q9ZG88" ("PodJ")) 
 (define-protein "UP:Q9ZHD3" ("sIL-R")) 

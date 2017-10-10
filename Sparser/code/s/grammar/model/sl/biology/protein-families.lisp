@@ -290,7 +290,7 @@
 (def-family "GNT1" :members ("UP:O60656" "UP:P19224" "UP:P22309" "UP:P35503" "UP:Q9HAW7" "UP:Q9HAW8" "UP:Q9HAW9") :synonyms ("UGT1"))
 (def-family "GP3" :synonyms NIL :identifier "XFAM:PF03076.12")
 (def-family "GP41" :synonyms ("gp41") :identifier "XFAM:PF00517.15")
-(def-family "GPCR" :synonyms ("G protein–coupled receptor")) ;; wikipedia claims the id is XFAM:PF00001, but that's only for the rhodopsin-like subfamily
+(def-family "GPCR" :synonyms ("G protein–coupled receptor" "G protein-coupled receptor") ;; wikipedia claims the id is XFAM:PF00001, but that's only for the rhodopsin-like subfamily
 (def-family "G protein" :identifier "NCIT:C17458" :synonyms ("g protein" "g-protein" "
 Guanine Nucleotide Binding Protein" "GTP-Binding Protein")) ; previously we had this defined as a particular bacteriophage protein that had nothing to do with the G proteins involved in GPCRs -- could fill in members for this at some point in the future
 (def-family "GPP34" :synonyms NIL :identifier "XFAM:PF05719.9")
@@ -769,7 +769,8 @@ Guanine Nucleotide Binding Protein" "GTP-Binding Protein")) ; previously we had 
 (def-family "aquaporin" :members ("UP:Q25074" "UP:Q7KY01" "UP:Q9V5Z7"))
 (def-family "arf-1" :members ("UP:P84077" "UP:Q9ULH1"))
 (def-family "arpc1b" :members ("UP:A4D275" "UP:O15143"))
-(def-family "arrestin") ;; lots of family members -- put them in some day
+(def-family "arrestin")
+(def-family ""β-arrestin");; lots of family members -- put them in some day
 ;(def-family "arrestin-2" :members ("UP:P17870" "UP:P32121")) removed the bovine one, so it's no longer a family
 (def-family "ataxin-3" :members ("UP:P54252" "UP:Q9W689"))
 (def-family "aw-19" :members ("UP:P16190" "UP:P30459" "UP:P30512"))
