@@ -501,7 +501,11 @@
                     (edge (mention-source mention))
                     (head-edge (find-head-edge edge))
                     (dependencies (dependencies mention)))
-               (cond ((itypep ref 'bio-chemical-entity)
+               (cond ((itypep ref '(:or bio-chemical-entity molecular-location
+                                    bio-movement ;; translocation
+                                    cellular-process ;; autophagy, apoptosis
+                                    pathway
+                                    ))
                       (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-entity-edges*)
                         (if (and (is-basic-collection? ref)
                                  (not (eq (edge-rule edge) 'make-protein-collection))
@@ -514,7 +518,10 @@
                                     (:head ,(get-edge-char-offsets-and-surface-string head-edge))
                                     (:full ,(get-edge-char-offsets-and-surface-string edge)))
                                   *sp-clsto-entity-mentions*))
-                        (push edge *sp-clsto-used-entity-edges*)))
+                        (when (and (itypep ref '(:or bio-chemical-entity molecular-location))
+                                   (not (itypep ref '(:or bio-complex dimer residue-on-protein
+                                                      molecular-location))))
+                          (push edge *sp-clsto-used-entity-edges*))))
                      ((itypep ref '(:or bio-control post-translational-modification))
                       (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-relation-edges*)
                         (push
