@@ -438,9 +438,6 @@
 (defparameter *indra-post-process* nil)
 (defparameter *indra-embedded-post-mods* nil)
 (defparameter *callisto-compare* nil)
-(defparameter *sp-clsto-entity-mentions* nil)
-(defparameter *sp-clsto-relations* nil)
-(defparameter *sp-clsto-used-edges* nil)
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article* *sentence-results-stream*
                     *end-of-sentence-display-operation*
@@ -483,8 +480,12 @@
 
 
 ;;;----------------------------------
-;;; processing for comparison to calisto annotations
+;;; processing for comparison to callisto annotations
 ;;;----------------------------------
+(defparameter *sp-clsto-entity-mentions* nil)
+(defparameter *sp-clsto-relations* nil)
+(defparameter *sp-clsto-used-entity-edges* nil)
+(defparameter *sp-clsto-used-relation-edges* nil)
 (defun extract-callisto-data (sentence)
   (let* ((mentions
           ;; sort, so that embedding edges for positive-bio-control come out first
@@ -501,7 +502,7 @@
                     (head-edge (find-head-edge edge))
                     (dependencies (dependencies mention)))
                (cond ((itypep ref 'bio-chemical-entity)
-                      (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-edges*)
+                      (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-entity-edges*)
                         (if (and (is-basic-collection? ref)
                                  (not (eq (edge-rule edge) 'make-protein-collection))
                                  (loop for item in (get-mention-items dependencies)
@@ -513,9 +514,9 @@
                                     (:head ,(get-edge-char-offsets-and-surface-string head-edge))
                                     (:full ,(get-edge-char-offsets-and-surface-string edge)))
                                   *sp-clsto-entity-mentions*))
-                        (push edge *sp-clsto-used-edges*)))
+                        (push edge *sp-clsto-used-entity-edges*)))
                      ((itypep ref '(:or bio-control post-translational-modification))
-                      (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-edges*)
+                      (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-relation-edges*)
                         (push
                          `( ;;,mention
                            (:event (:full ,(get-edge-char-offsets-and-surface-string edge)))
@@ -528,7 +529,8 @@
                                                        (find-head-edge (mention-source (second item)))))
                                               (:full ,(get-edge-char-offsets-and-surface-string
                                                        (mention-source (second item)))))))
-                         *sp-clsto-relations*))))))))
+                         *sp-clsto-relations*)
+                        (push edge *sp-clsto-used-relation-edges*))))))))
 
 (defun get-mention-items (dependencies)
   (loop for bb in dependencies
