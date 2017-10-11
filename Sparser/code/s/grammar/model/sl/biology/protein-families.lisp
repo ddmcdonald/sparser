@@ -770,7 +770,7 @@ Guanine Nucleotide Binding Protein" "GTP-Binding Protein")) ; previously we had 
 (def-family "arf-1" :members ("UP:P84077" "UP:Q9ULH1"))
 (def-family "arpc1b" :members ("UP:A4D275" "UP:O15143"))
 (def-family "arrestin")
-(def-family ""β-arrestin");; lots of family members -- put them in some day
+(def-family "β-arrestin" :synonyms ("βArrestin" "β-Arrestin" "β-Arrestin" "β-arrestin"));; lots of family members -- put them in some day
 ;(def-family "arrestin-2" :members ("UP:P17870" "UP:P32121")) removed the bovine one, so it's no longer a family
 (def-family "ataxin-3" :members ("UP:P54252" "UP:Q9W689"))
 (def-family "aw-19" :members ("UP:P16190" "UP:P30459" "UP:P30512"))
