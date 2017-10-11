@@ -23,7 +23,7 @@
 ;;;  creating a chart from scratch
 ;;;----------------------------------
 
-(defvar *number-of-positions-in-the-chart* 20000
+(defvar *number-of-positions-in-the-chart* 40000
   "The number of words that can be parsed before the chart resource wraps.")
 
 (defvar *make-chart-with-edge-vectors* t
