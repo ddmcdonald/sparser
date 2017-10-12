@@ -550,7 +550,7 @@
                                               (:full ,(get-edge-char-offsets-and-surface-string
                                                        lambda-edge))))))
                          *sp-clsto-relations*)
-                        (push edge *sp-clsto-used-relation-edges*))))))))
+                        (push edge *sp-clsto-used-relation-edges*)))))))))
 
 (defun get-mention-items (dependencies)
   (loop for bb in dependencies
