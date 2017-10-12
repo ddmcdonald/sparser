@@ -5732,7 +5732,7 @@
 (define-protein "UP:P14324" ("(2E,6E)-farnesyl diphosphate synthase" "FDPS" "FPP synthase" "FPPS_HUMAN" "dimethylallyltranstransferase" "farnesyl pyrophosphate synthase" "fdps" "geranyltranstransferase" "p14324")) 
 (define-protein "UP:P14359" ("sna3")) 
 (define-protein "UP:P14373" ("P14373" "RET finger protein" "TRIM27" "Trim27" "tripartite motif containing 27")) 
-(define-protein "UP:P14384" ("CPM" "Carboxypeptidase M" "carboxypeptidase M" "cpm")) 
+(define-protein "UP:P14384" ("CPM" "Carboxypeptidase M" "carboxypeptidase M")) 
 (define-protein "UP:P14406" ("COX7A2" "P14406")) 
 (define-protein "UP:P14410" ("P14410" "S I" "SI" "Si" "si" "siEGFP" "siGFP" "sucrase" "sucrase-isomaltase")) 
 (define-protein "UP:P14415" ("AMOG" "AT1B2_HUMAN" "ATP1B2" "ATPase Na+/K+ transporting subunit beta 2" "Sodium/potassium-transporting ATPase subunit beta-2" "atp1b2" "beta 2 polypeptide" "p14415" "sodium pump subunit beta-2" "sodium-potassium ATPase subunit beta 2 (non-catalytic)" "sodium/potassium-transporting ATPase subunit beta-2")) 

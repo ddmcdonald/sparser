@@ -1594,3 +1594,4 @@
 (def-indiv-with-id molecule "epoxomicin" "PCID:16760412") 
 (def-indiv-with-id molecule "PA" "CHEBI:16337" :name "phosphatidic acid") 
 (def-indiv-with-id molecule "VPA" "CHEBI:39867" :name "valproic acid") 
+(def-indiv-with-id molecule "Nonidet P-40" "CHEBI:78708" :name "Nonidet P-40") ;a lysis buffer
