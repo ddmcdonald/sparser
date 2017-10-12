@@ -178,6 +178,16 @@
                (values new-predication nil)))
 	  (t (values pred nil)))))
 
+(defun get-lambda-ref-edge-from-pred-edge (pred-edge)
+  "When you have an edge in hand that is a lambda expression, this
+will retrieve the edge the lambda variable refers to"
+  (let* ((dom-edge (edge-used-in pred-edge))
+         (lower-edges (edges-under dom-edge))
+         (lamda-ref (gethash (edge-referent pred-edge) *predication-links-ht*)))
+    (loop for edge in lower-edges
+          when (eq (edge-referent edge) lamda-ref)
+            do (return edge))))
+
 
 (defun insert-predication-edge (pred new-predication)
   (declare (special new-predication))

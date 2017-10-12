@@ -501,6 +501,7 @@
                     (edge (mention-source mention))
                     (head-edge (find-head-edge edge))
                     (dependencies (dependencies mention)))
+               ;(declare (special edge))
                (cond ((itypep ref '(:or bio-chemical-entity molecular-location
                                     bio-movement ;; translocation
                                     cellular-process ;; autophagy, apoptosis
@@ -523,7 +524,11 @@
                                                       molecular-location))))
                           (push edge *sp-clsto-used-entity-edges*))))
                      ((itypep ref '(:or bio-control post-translational-modification))
-                      (unless (edge-subsumed-by-edge-in-list edge *sp-clsto-used-relation-edges*)
+                      ;;(lsp-break "at type bio-control/post-trans-mod")
+                      (unless (or (edge-subsumed-by-edge-in-list edge *sp-clsto-used-relation-edges*)
+                                  (and (null dependencies)
+                                       ;; we got a lot events for listings of p-values
+                                       (equal "p" (trim-whitespace (extract-string-spanned-by-edge edge))))
                         (push
                          `( ;;,mention
                            (:event (:full ,(get-edge-char-offsets-and-surface-string edge)))
@@ -535,7 +540,15 @@
                                               (:head ,(get-edge-char-offsets-and-surface-string
                                                        (find-head-edge (mention-source (second item)))))
                                               (:full ,(get-edge-char-offsets-and-surface-string
-                                                       (mention-source (second item)))))))
+                                                       (mention-source (second item)))))
+                                   end
+                                   when (eq (second item) '*lambda-var*)
+                                   collect (let ((lambda-edge (get-lambda-ref-edge-from-pred-edge edge)))
+                                                   `(,(pname (car item))
+                                              (:head ,(get-edge-char-offsets-and-surface-string
+                                                       (find-head-edge lambda-edge)))
+                                              (:full ,(get-edge-char-offsets-and-surface-string
+                                                       lambda-edge))))))
                          *sp-clsto-relations*)
                         (push edge *sp-clsto-used-relation-edges*))))))))
 
@@ -663,7 +676,7 @@
                    unless (member (var-name (binding-variable b))
                                   '(raw-text items type number))
                    collect b)))
-        (declare (special external-bindings))
+        ;(declare (special external-bindings))
         ;;(lsp-break "maybe-push-sem")
         (loop for cref in (value-of 'items ref)
               do
@@ -691,11 +704,9 @@
                       i)))
   i)
 
-
 (defun has-necessary-vars (necessary-vars ref)
   (loop for v in necessary-vars when  (value-of v ref)
         collect (list v (value-of v ref))))
-
 
 (defun c-itypep (c super)
   (or
@@ -703,10 +714,6 @@
    (and (is-basic-collection? c)
         (loop for item in (value-of 'items c) thereis (itypep item super)))))
               
-
-  
-
-
 (defparameter *show-indra-lambda-substitutions* nil)
 
 (defun get-pmid ()
