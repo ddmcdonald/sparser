@@ -1,0 +1,443 @@
+-*-org-*-
+#+DATE: 10/13/17 13:28:32
+
+ + 0 top vars: {modifier, name, negation, predicate, predication, ordinal, appositive-description, comp, subordinate-conjunction, quantifier, number, has-determiner, event-relation, amount-of-time, intensity, superlative-predication, comparative-predication, comparative, compared-to, superlative-from-set, that-rel, category, raw-text, trailing-parenthetical}
+  + 1 abstract 
+    + 2 amount vars: {measurement, stuff, alternative-amount, time-period}
+      + 3 amount-at-time vars: {amount, time}
+      + 3 amount-of-time vars: {units, quantity}
+        + 4 period vars: {context, state}
+          + 5 period-of-time 
+      + 3 fraction-of-amount-of-time vars: {selector, portion}
+      + 3 vague-amount vars: {name}
+    + 2 bar 
+    + 2 bio-abstract 
+      + 3 article-table 
+      + 3 mortality 
+      + 3 partner 
+      + 3 stoichiometry vars: {physicalentity, stoichiometriccoefficient}
+      + 3 visual-representation 
+        + 4 arrow 
+        + 4 article-figure vars: {label}
+        + 4 diagram 
+        + 4 star 
+    + 2 biopax-entry vars: {datasource, xref}
+    + 2 blocked-category 
+    + 2 collection vars: {items, type, number}
+      + 3 sequence vars: {items, item, type, number}
+        + 4 hyphenated-pair vars: {left, right}
+        + 4 hyphenated-triple vars: {left, middle, right}
+        + 4 number-colon-number vars: {left, right}
+        + 4 qualifying-pair vars: {head, qualifier}
+        + 4 sequence-of-numbers vars: {numbers}
+        + 4 slashed-pair vars: {left, right}
+        + 4 slashed-sequence 
+        + 4 two-part-label vars: {part-one, part-two}
+        + 4 word-colon-word vars: {left, right}
+    + 2 detail 
+    + 2 document-part 
+      + 3 article-table 
+      + 3 bib-reference 
+        + 4 et-al. 
+        + 4 xref 
+    + 2 information 
+  + 1 biological vars: {context, cell-line, cell-type, organ, preparation, cellular-location, organism, non-cellular-location, examples, excluding, like, unlike, location}
+    + 2 bio-context vars: {process, entity, relation, quantitative-condition}
+      + 3 disease vars: {organ}
+        + 4 abnormality 
+        + 4 anaphylaxis 
+        + 4 cancer 
+          + 5 glioblastoma 
+          + 5 keratoacanthoma 
+          + 5 melanoma 
+          + 5 neuroblastoma 
+        + 4 cml 
+        + 4 disorder 
+        + 4 metaplasia 
+        + 4 neurofibromatosis 
+      + 3 experimental-condition 
+        + 4 absence vars: {measurement}
+        + 4 experimental-system 
+        + 4 fetal-calf-serum 
+        + 4 in-situ 
+        + 4 in-vitro 
+        + 4 in-vivo 
+        + 4 medium 
+        + 4 natural-growth-conditions 
+        + 4 presence vars: {measurement}
+        + 4 radioactivity vars: {material}
+      + 3 injury vars: {organ}
+      + 3 setting 
+      + 3 trial 
+    + 2 difference vars: {compared}
+    + 2 member vars: {set}
+    + 2 model 
+    + 2 reference-item 
+      + 3 small-molecule-reference 
+  + 1 endurant vars: {number, quantifier}
+    + 2 bio-location 
+      + 3 cellular-location 
+        + 4 basolateral-plasma-membrane 
+        + 4 caveola 
+        + 4 cell-adhesive--structure 
+        + 4 cell-cell-junction 
+        + 4 cell-leading-edge 
+        + 4 cytoplasm 
+        + 4 cytoplasmic-vesicle 
+        + 4 cytoskeleton 
+        + 4 cytosol 
+        + 4 dendritic-spine 
+      + 3 molecular-location 
+        + 4 protein-domain 
+          + 5 activation-loop 
+          + 5 af-2 
+          + 5 bc-domain 
+          + 5 binding-domain vars: {bound-item}
+            + 6 dbd 
+            + 6 g-domain 
+            + 6 metal-binding-domain 
+            + 6 rbd 
+              + 7 raf-rbd 
+          + 5 brct 
+          + 5 brct1 
+          + 5 brct2 
+          + 5 epitope 
+            + 6 ha.11 
+          + 5 g1 
+          + 5 g2 
+        + 4 region-of-molecule vars: {bounds}
+          + 5 linker-region 
+        + 4 residue-on-protein vars: {position}
+          + 5 position 
+        + 4 site vars: {process, kinase, residue}
+          + 5 docking-site 
+        + 4 surface-area 
+      + 3 non-cellular-location 
+        + 4 bio-organ vars: {organism}
+          + 5 brain 
+          + 5 breast 
+          + 5 colon 
+          + 5 eye 
+          + 5 inner_cell_mass 
+          + 5 kidney 
+          + 5 liver 
+          + 5 lung 
+          + 5 pancreas 
+          + 5 parathyroid 
+        + 4 secretion vars: {organism}
+        + 4 tissue vars: {organism}
+        + 4 tumor vars: {organism}
+    + 2 mechanism vars: {process, goal}
+      + 3 bio-mechanism vars: {participant}
+        + 4 aspect vars: {whole}
+        + 4 feedback-loop 
+          + 5 negative-feedback-loop 
+          + 5 positive-feedback-loop 
+        + 4 networking 
+        + 4 pathway vars: {protein-sequence, pathwaycomponent, pathwayorder}
+          + 5 signaling-pathway 
+        + 4 route 
+    + 2 named-object vars: {name}
+    + 2 non-physical 
+      + 3 mental-object 
+      + 3 social-object 
+        + 4 social-agent 
+        + 4 social-nonagentivive 
+    + 2 organism 
+      + 3 bacterium 
+      + 3 mammal 
+      + 3 species 
+        + 4 human 
+      + 3 virus 
+    + 2 physical vars: {location}
+      + 3 aggregate 
+        + 4 bio-aggregate 
+          + 5 bio-pair vars: {left, right}
+            + 6 amino-acid-pair vars: {left, right}
+            + 6 no-space-pair vars: {left, right}
+            + 6 protein-pair vars: {left, right}
+          + 5 pair-with-protein vars: {left, right}
+      + 3 feature 
+      + 3 individual 
+      + 3 kind vars: {name, reduced-relative}
+      + 3 physical-object 
+        + 4 bio-entity vars: {produced-by}
+          + 5 binder 
+          + 5 bio-agent vars: {causes}
+            + 6 carcinogen 
+          + 5 bio-chemical-entity vars: {in-equilibrium-with}
+            + 6 bio-complex vars: {component, componentstoichiometry}
+              + 7 calcium-complex 
+                + 8 calcium-calmodulin-complex 
+              + 7 dimer 
+                + 8 heterodimer 
+                + 8 homo/heterodimer 
+                + 8 homodimer 
+              + 7 monomer 
+              + 7 tetramer 
+                + 8 homotetramer 
+              + 7 tricomplex 
+              + 7 trimer 
+                + 8 homotriamer 
+            + 6 chemical-product 
+            + 6 dna 
+              + 7 gene vars: {expresses}
+                + 8 oncogene 
+                  + 9 proto-oncogene 
+            + 6 dna-motif 
+              + 7 dna-response-element 
+                + 8 anti-oxidant-response-element 
+              + 7 promoter 
+            + 6 ion vars: {molecule}
+              + 7 calcium-ion vars: {molecule}
+            + 6 ligand 
+            + 6 molecule vars: {molecule-type}
+              + 7 |32P| 
+              + 7 activator vars: {activated}
+              + 7 agonist 
+              + 7 amino-acid vars: {three-letter-code, one-letter-code}
+                + 8 phosphorylated-amino-acid vars: {modified-amino-acid}
+              + 7 anchor 
+              + 7 calcium 
+              + 7 component vars: {whole}
+              + 7 derivative 
+              + 7 drug 
+                + 8 inhibitor vars: {process, protein}
+                  + 9 negative-regulator 
+                  + 9 repressor 
+                  + 9 suppressor 
+                + 8 therapeutics 
+              + 7 lactate 
+            + 6 mutant vars: {basis}
+            + 6 regulator vars: {theme}
+            + 6 rna-region 
+              + 7 utr 
+                + 8 3′-utr 
+                + 8 5′-utr 
+          + 5 bio-grouping vars: {group-members}
+          + 5 bio-preparation 
+            + 6 slice 
+          + 5 bio-reagent 
+            + 6 gel 
+          + 5 bond 
+          + 5 factor 
+          + 5 frame 
+          + 5 lysate 
+        + 4 cell-entity vars: {with-protein}
+          + 5 cell-line 
+          + 5 cell-type 
+            + 6 induced-pluripotent-stem-cell 
+            + 6 keratin 
+            + 6 mensc 
+        + 4 object 
+          + 5 artifact vars: {made-by}
+            + 6 motor-vehicle vars: {made-by}
+            + 6 structure 
+          + 5 object-face 
+          + 5 rectangular-solid vars: {part-type}
+        + 4 physical-agent 
+          + 5 interlocutor 
+          + 5 maker-of-artifacts 
+            + 6 car-manufacturer vars: {product}
+  + 1 perdurant vars: {participant, time, purpose, reason, circumstance, manner, occurs-at-moment}
+    + 2 be vars: {subject, predicate}
+      + 3 become 
+      + 3 remain vars: {participant}
+      + 3 seem vars: {theme}
+      + 3 stay 
+    + 2 bio-rhetorical vars: {ratio-condition, fig, method, result, by-means-of, agent}
+      + 3 argument-support vars: {argument}
+      + 3 articulate 
+      + 3 assume 
+      + 3 assumption 
+      + 3 attribute/verb vars: {cause}
+      + 3 base vars: {cause}
+      + 3 bio-make-statement 
+      + 3 bio-question 
+      + 3 call 
+      + 3 certain 
+        + 4 confident 
+        + 4 sure 
+        + 4 uncertain 
+    + 2 event 
+    + 2 event-relation vars: {relation, event, subordinated-event}
+    + 2 process 
+      + 3 bio-process vars: {by-means-of, using, manner, without-using, without-means-of, as-comp, target, participant}
+        + 4 bio-event vars: {process}
+        + 4 bio-find vars: {object}
+        + 4 bio-functionality vars: {by-means-of, using, manner, without-using, without-means-of, as-comp, target}
+        + 4 bio-interaction 
+          + 5 bio-conversion 
+            + 6 biochemical-reaction 
+        + 4 bio-movement vars: {moving-object, co-object, origin, destination, cellular-location}
+          + 5 bio-exchange vars: {state-before, state-after, participant}
+            + 6 nucleotide-exchange 
+              + 7 gdp-to-gtp-exchange 
+              + 7 guanyl-nucleotide-exchange 
+          + 5 bio-self-movement 
+            + 6 co-migrate 
+            + 6 culminate 
+            + 6 localization vars: {moving-object}
+            + 6 migration 
+            + 6 originate 
+          + 5 bio-transport 
+            + 6 export vars: {agent, object}
+            + 6 import vars: {agent, object}
+            + 6 mobilize vars: {agent, object}
+            + 6 propagate vars: {object, origin, destination}
+            + 6 recruit vars: {destination, object}
+            + 6 redistribute vars: {agent, object}
+            + 6 translocation 
+              + 7 entry 
+              + 7 relocate 
+        + 4 cascade 
+        + 4 caused-bio-process vars: {cause, object, participant, agent}
+          + 5 accumulation vars: {amount}
+          + 5 acquire vars: {method}
+          + 5 addition vars: {added}
+          + 5 bio-form vars: {object}
+          + 5 bio-insert vars: {between, after}
+          + 5 bio-open 
+          + 5 bio-switch 
+          + 5 cancer-transform vars: {object}
+          + 5 caused-biochemical-process vars: {process-for}
+            + 6 post-translational-modification vars: {site, agent, object}
+              + 7 acetylation 
+              + 7 acylation 
+              + 7 alkylation 
+              + 7 amidation 
+              + 7 biotinylation 
+              + 7 carboxylation 
+              + 7 de-acetylation 
+              + 7 de-acylation 
+              + 7 de-glycosylation 
+              + 7 de-methylation vars: {substrate}
+          + 5 chemical-cleavage 
+        + 4 cellular-process vars: {participant}
+          + 5 adhesion 
+          + 5 anchorage vars: {anchor, anchored}
+          + 5 apoptosis 
+            + 6 pro-apoptotic 
+          + 5 autophagy 
+          + 5 axon-guidance vars: {initial, final}
+          + 5 cell-cell-communications 
+          + 5 cell-cell-contact 
+          + 5 cell-cycle-progression 
+          + 5 cell-growth 
+          + 5 death 
+        + 4 co-operate vars: {co-participant, participant}
+        + 4 complementation vars: {complement}
+      + 3 disease-process 
+        + 4 metastasis vars: {cancer}
+      + 3 do vars: {agent, predicate}
+      + 3 fail vars: {theme}
+      + 3 find vars: {patient}
+      + 3 know vars: {topic, theme}
+      + 3 make vars: {adj-comp, actor, patient}
+      + 3 make-artifacts vars: {procedure, product, type-of-product}
+      + 3 paradigm vars: {basis}
+      + 3 purposive-process vars: {result-or-purpose}
+        + 4 bio-method vars: {object, instrument, agent}
+          + 5 analyze 
+          + 5 approach 
+          + 5 array 
+          + 5 assess 
+          + 5 baseline 
+          + 5 bifc 
+          + 5 bio-apply 
+          + 5 bio-fit 
+          + 5 bio-fraction vars: {basis}
+          + 5 bio-grow 
+        + 4 medical-treatment vars: {disease, medical-treatment}
+          + 5 chemotherapy 
+          + 5 organ-transplant 
+          + 5 therapeutic-strategy 
+    + 2 state 
+      + 3 believe 
+      + 3 bio-predication vars: {as-comp, certainty, participant}
+        + 4 -like 
+        + 4 abundant 
+        + 4 acidic 
+        + 4 adaptor 
+        + 4 additive 
+        + 4 adhesion 
+        + 4 allosteric 
+        + 4 anti 
+        + 4 anticancer 
+        + 4 apparent 
+      + 3 expect 
+      + 3 have vars: {possessor, thing-possessed}
+      + 3 intend 
+      + 3 modality vars: {name}
+        + 4 can 
+        + 4 could 
+        + 4 may 
+        + 4 might 
+        + 4 must 
+        + 4 shall 
+        + 4 should 
+        + 4 will 
+        + 4 would 
+      + 3 predication vars: {predicate}
+        + 4 copular-predication vars: {item, value, predicate}
+          + 5 copular-predication-of-pp vars: {prep}
+        + 4 has-attribute vars: {item, attribute, value}
+          + 5 comparative-predication 
+        + 4 quantified vars: {quantifier, body}
+        + 4 there-exists vars: {predicate, value}
+        + 4 upon-condition vars: {condition}
+      + 3 switch-state vars: {name}
+      + 3 want 
+  + 1 quality 
+    + 2 age vars: {age}
+    + 2 age-ago vars: {age-ago}
+    + 2 attribute vars: {var}
+      + 3 dimension 
+        + 4 three-dimensional 
+        + 4 two-dimensional 
+      + 3 orientation 
+      + 3 scalar-attribute vars: {comparative, superlative}
+        + 4 amount-as-level 
+        + 4 color 
+        + 4 comparative-modification 
+        + 4 comparative-quantification 
+        + 4 height 
+        + 4 length 
+          + 5 bio-length 
+        + 4 rate-of-change 
+        + 4 size 
+        + 4 width 
+    + 2 designator 
+      + 3 index 
+        + 4 assession-number vars: {date, index-number}
+        + 4 illions-distribution vars: {number, illion, value}
+        + 4 position-in-a-sequence vars: {number, item, sequence}
+      + 3 name 
+        + 4 greek-letter vars: {letter}
+        + 4 initial vars: {word}
+        + 4 name-word vars: {name, name-of}
+        + 4 single-capitalized-letter vars: {letter}
+        + 4 uncategorized-name vars: {name/s}
+          + 5 spelled-name vars: {name/s}
+    + 2 qualifiable vars: {qualifier}
+    + 2 scalar 
+      + 3 scalar-quality 
+        + 4 bio-scalar vars: {measured-item, participant}
+          + 5 bio-amount 
+          + 5 bio-concentration 
+          + 5 bio-strength 
+          + 5 duration vars: {participant}
+          + 5 dynamics 
+          + 5 extent 
+          + 5 insensitivity vars: {cause}
+          + 5 level vars: {measured-item}
+          + 5 mass 
+          + 5 peak 
+  + 1 speech-act 
+    + 2 acknowledgement vars: {name}
+    + 2 apology 
+    + 2 discourse-adverbial 
+      + 3 anyway 
+    + 2 greeting 
+    + 2 sa-propose 
+      + 3 explicit-suggestion vars: {marker, suggestion}
