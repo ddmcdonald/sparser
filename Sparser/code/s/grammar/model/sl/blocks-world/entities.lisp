@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "entities"
 ;;;    Module:  grammar/model/sl/blocks-world/
-;;;   version:  April 2017
+;;;   version:  October 2017
 
 ;; Initiated 12/3/15.
 
@@ -11,8 +11,10 @@
 
 #| Table is defined in vocabulary.lisp as a Sparser category.|#
 (defvar *the-table* (sp::make-an-individual 'sp::table))
-
 (stipulate-to-be-unique *the-table*)
+
+(defvar *the-shelf* (sp::make-an-individual 'sp::shelf))
+(stipulate-to-be-unique *the-shelf*)
 
 (defvar *numbered-blocks*
   (loop for block-number from 1 to 32
