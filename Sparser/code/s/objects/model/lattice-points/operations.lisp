@@ -525,7 +525,8 @@
 
 
 (defun display-with-subcs (category stream
-                           &optional (depth -1) (max-width 10) (with-parens t) (with-vars t))
+                           &optional (depth -1) (max-width 10)
+                                     (with-parens t) (with-vars t))
   "Write a formatted view of the subcategories of the category to the stream. 
    Calls itself recursively for 'depth' levels, e.g. with depth=2 it writes out
    the category and its immediates subcategories. The default setting of depth (-1)
@@ -542,7 +543,8 @@
                               (if (and with-vars (cat-slots category))
                                   (let ((vars (mapcar #'pname
                                                       (loop for slot in (cat-slots category)
-                                                            unless (search "-OR-" (format nil "~a" (pname slot)))
+                                                         unless (search "-OR-"
+                                                                        (format nil "~a" (pname slot)))
                                                             collect slot))))
                                     (if vars
                                         (string-downcase
