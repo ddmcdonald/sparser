@@ -15,7 +15,7 @@
 
 (define-category block
   :specializes rectangular-solid
-  :mixins (#|has-name|# with-specified-location)
+  :mixins (with-specified-location)
   ;; inherits 'location' variable -- :binds ((position relative-position))
   :instantiates :self
   :index (:permanent :key name)

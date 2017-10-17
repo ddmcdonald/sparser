@@ -186,29 +186,10 @@
 ;;; names -- simple and root of real ones
 ;;;---------------------------------------
 
-(define-category has-name
-  :specializes relation 
-  ;; Can hang lots of realizations here
-  ;; 'known as', 'called', ...
-  :documentation "Had been used to supply a simple name variable
- but that has moved to top. Now just the supercategory of named-type
- so should look into eliminate has-name altogether.")
-
 (define-mixin-category has-UID
   :specializes relation
   :binds ((uid))
   :documentation "UID is a field in many TRIPS objects")
-
-(define-category named-type  ;; "Honda"
-  :specializes has-name ;; n.b. just simple names
-  :binds ((type-of :primitive category))
-  :documentation
-    "Describes or names something. Not a thing itself (not physical)
- because if anything it designates the whole class of the stuff 
- it names. The type-of variable indicates what actual kind of thing
- to instantiate when we have reason to deference this type to something
- physical.")
-
 
 (define-category designator
   :specializes quality
@@ -230,6 +211,16 @@
  security numbers, serial numbers, etc. Could be used for
  a 'cursor' that changes as we iterate over some sequence.
  Motivating case is position-in-a sequence in numbers/ordinals.lisp")
+
+(define-category named-type  ;; "Honda"
+  :specializes designator
+  :binds ((type-of :primitive category))
+  :documentation
+    "Describes or names something. Not a thing itself (not physical)
+ because if anything it designates the whole class of the stuff 
+ it names. The type-of variable indicates what actual kind of thing
+ to instantiate when we have reason to deference this type to something
+ physical.")
 
 
 

@@ -34,7 +34,6 @@
 (define-category  kind-of-company
   :instantiates self
   :specializes named-type
-  :mixins (has-name)
   :index (:permanent :key name)
   :realization (:tree-family np-common-noun
                 :mapping ((np . company-descriptor)

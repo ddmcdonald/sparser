@@ -149,7 +149,6 @@ and the word can stand by itself "that distance"
 
 (define-category qualitative-rate
   :specializes rate
-  :mixins (has-name)
   :index (:permanent :key name)
   :documentation "The category of any word that describes the rate
     at which something happens without giving it a precise value

@@ -18,7 +18,7 @@
 ;; 1st try
 (realization-pattern ;; clearly a macro. Easy to imagine abbreviated form
  :for maker-of-artifacts
- :where (agent = has-name) ;; pairs, for each restricted variable
+ :where (agent = maker-of-artifacts) ;; pairs, for each restricted variable
 )
 
 
@@ -46,5 +46,4 @@
 
 ;; 4th
 (define-realization 
-
 

@@ -59,7 +59,6 @@
 
 (define-category gene ;; "NFkappaB2 gene"
   :specializes bio-entity
-  :mixins (has-name)
   :binds ((transcription-factor . protein))
   :index (:permanent :key transcription-factor)
   ;; Well the name is also defintive?  /// need an 'or' index

@@ -157,7 +157,6 @@ with something else
 |#
 
 (define-category knockout-pattern :specializes bio-quality
-  :mixins (has-name)
   :binds ((gene-or-protein (:or gene protein)))
   :realization
   (:m gene-or-protein

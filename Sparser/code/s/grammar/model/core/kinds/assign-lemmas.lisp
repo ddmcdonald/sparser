@@ -37,8 +37,6 @@
 (assign-lemma feature (common-noun "feature"))
 (assign-lemma aggregate(common-noun "aggregate"))
 
-(assign-lemma has-name (:proper-noun "name"))
-
 (assign-lemma negative (adjective "negative"))
 
 

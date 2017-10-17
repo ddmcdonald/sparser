@@ -19,7 +19,7 @@
 ;;;-------------
 
 (define-category bio-organ :specializes non-cellular-location
-  :mixins (has-UID has-name)
+  :mixins (has-UID)
   :binds ((organism organism))
   :instantiates self
   :index (:permanent :key name)
@@ -60,7 +60,7 @@
 ;;;-------------
 
 (define-category tissue :specializes non-cellular-location
-  :mixins (has-UID has-name)
+  :mixins (has-UID)
   :binds ((organism organism))
   :instantiates self
   :index (:permanent :key name)
@@ -74,7 +74,7 @@
 ;;;-------------
 
 (define-category tumor :specializes non-cellular-location
-  :mixins (has-UID has-name)
+  :mixins (has-UID)
   :binds ((organism organism))
   :instantiates self
   :index (:permanent :key name)
@@ -90,7 +90,7 @@
 ;; for fluids, secretions, feces, and other organism substances --
 ;; currently only used when pulling in terms defined by reach
 (define-category secretion :specializes non-cellular-location
-  :mixins (has-UID has-name)
+  :mixins (has-UID)
   :binds ((organism organism))
   :instantiates self
   :index (:permanent :key name)
@@ -104,7 +104,7 @@
 ;;;-------------
 
 (define-category mammal :specializes organism
-  :mixins (has-UID has-name)
+  :mixins (has-UID)
   :instantiates self
   :index (:permanent :key name)
   :realization
@@ -124,7 +124,7 @@
 
 (def-indiv-with-id species "Saccharomyces cerevisiae" "NCIT:C14271" :synonyms ("saccharomyces" "yeast" "S. cerevisiae"))
 (define-category human :specializes species
-                 :mixins (has-UID has-name mammal) ;; not sure if mixins is the right thing?
+                 :mixins (has-UID mammal) ;; not sure if mixins is the right thing?
                    :instantiates self
                    :index (:permanent :key name)
                    :bindings (uid "NCIT:C14225")

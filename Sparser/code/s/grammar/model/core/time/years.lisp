@@ -27,7 +27,7 @@
 (define-category year
   :specializes time
   :instantiates self
-  :mixins (has-name takes-numerical-value)
+  :mixins (takes-numerical-value)
   :binds ((year-of-century :primitive number))
   :realization (:common-noun name)) ;; strands the 2 digit version!
 

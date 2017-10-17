@@ -177,12 +177,7 @@ make them according to the spec given in the class instance
    the instance the function GET-SPEAKER will retrieve it. The function
    FIND-OR-MAKE-SPEAKER will make an instance of the speaker class
    with the symbol it takes as an argument. The function CLEAR-SPEAKER
-   will reinitialize the table.
-
-   Presumes, but doesn't check, that the class inherits from has-name
-   to simplify (by burning in) the initialization parameters of the
-   class. "
-
+   will reinitialize the table."
                                         ;  (ecase storage-type ;; alist??
                                         ;    (:table))
   (if (and (consp class-name)
