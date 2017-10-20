@@ -196,12 +196,6 @@
   :documentation "Provides a generalization over diffent
   kinds of things that pick out instances from some set.")
 
-(define-category  name
-  :specializes designator 
-  :instantiates self
-  :documentation "This is the root for all (real) names.
-   Something 'has' a (real) name, which is why it's a quality.")
-
 (define-category index
   :specializes designator
   :instantiates nil

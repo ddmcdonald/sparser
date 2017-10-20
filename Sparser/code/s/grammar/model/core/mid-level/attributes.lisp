@@ -4,11 +4,32 @@
 ;;;
 ;;;     File:  "attributes"
 ;;;   Module:  "grammar/core/mid-level/
-;;;  version:  February 2017
+;;;  version:  October 2017
 
 ;; Initiated 1/11/17 to collect all the attributes together
 
 (in-package :sparser)
+
+;;;------
+;;; name
+;;;------
+
+(define-category  name
+  :specializes attribute 
+  :instantiates self
+  :lemma (common-noun "name")
+  :documentation "This is the root for all (real) names.
+   Something 'has' a (real) name, which is why name is a quality.
+   See model/core/names.lisp, particularly its fsa subdirectory,
+   and specializations in core/people & companies.")
+
+
+;;;---------------------
+;;; standard attributes
+;;;---------------------
+;; Their values are defined in model/dossiers/modifiers.lisp
+;; along with their values for comparatives by using the
+;; functions these definitions created
 
 (define-attribute color)  ;; "blue"
 (define-attribute size)   ;; "big"
