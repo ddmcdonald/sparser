@@ -1333,7 +1333,6 @@ will retrieve the edge the lambda variable refers to"
 
   (when (is-basic-collection? vp)
     (revise-parent-edge :category (value-of 'type vp)))
-
     
   (cond
     ((itypep vp 'control-verb) ;; e.g. "want"
@@ -1364,7 +1363,7 @@ will retrieve the edge the lambda variable refers to"
        
        (cond (*subcat-test* controlled-val)
              ((individual-p controlled-val)
-              (apply-copula subj controlled-val))
+              (apply-copula subj controlled-val)) ;; in syntax/copulars.lisp
              (t (and (null (value-of 'item vp))
                      (apply-copula subj vp))))))
     
@@ -1433,7 +1432,6 @@ will retrieve the edge the lambda variable refers to"
            (rebind-value copula-value
                          (rebind-value right-val new-value copula-value)
                          copula))
-                             
           (t
            (warn  "interpret-control-copula fails with subj=~s, copula=~s in ~s~%"
                    subj copula
@@ -1531,16 +1529,6 @@ will retrieve the edge the lambda variable refers to"
 (defun assimilate-object (vg obj)
   (assimilate-subcat vg :object obj))
 
-(defun is-non-anaphor-numeric? (edge ref)
-  (declare (special edge ref))
-  (and (edge-p edge)
-       (eq ref (edge-referent edge))
-       (itypep (edge-referent edge) 'number)
-       (or (and (eq :single-term (edge-right-daughter edge)) ;; digits, like "3"
-                (eq :its-a-number (edge-rule edge)))
-           (and (eq :long-span (edge-right-daughter edge))   ;; digit as head, no real parse
-                (eq 'sdm-span-segment (edge-rule edge))))))
-           
 
 (defun assimilate-np-to-v-as-object (vg obj)
   (declare (special category::n-bar category::vp category::vp+ing

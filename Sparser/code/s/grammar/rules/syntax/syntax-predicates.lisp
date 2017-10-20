@@ -63,6 +63,19 @@
     (t nil)))
 
 
+(defun is-non-anaphor-numeric? (edge ref)
+  (declare (special edge ref))
+  (and (edge-p edge)
+       (eq ref (edge-referent edge))
+       (itypep (edge-referent edge) 'number)
+       (or (and (eq :single-term (edge-right-daughter edge)) ;; digits, like "3"
+                (eq :its-a-number (edge-rule edge)))
+           (and (eq :long-span (edge-right-daughter edge))   ;; digit as head, no real parse
+                (eq 'sdm-span-segment (edge-rule edge))))))
+           
+
+
+
 (defparameter *flag-new-cases-for-open-core-variable* nil
   "Gates the warning in open-core-variable")
 
