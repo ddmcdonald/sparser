@@ -120,7 +120,6 @@
 (define-adjective "telomeric") ;telomere
 (define-adjective "therapeutic") ;related to therapy
 (define-adjective "tractable")
-(define-adjective "transcriptional") ;transcription: process
 (define-adjective "transmembrane")
 (define-adjective "tumorigenic") ;tumorigenesis
 

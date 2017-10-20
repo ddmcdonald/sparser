@@ -1402,6 +1402,7 @@
   :realization 
   (:verb "transcribe" 
    :noun "transcription"
+   :adj "transcriptional"
    :etf (svo-passive)
    :in agent
    :from bio
