@@ -226,7 +226,14 @@ with something else
 ;;; miscellaneous
 ;;;------------------------
 
-(noun "factor" :super bio-entity) ;; keyword: (or N) 
+(noun "factor" :super bio-entity) ;; keyword: (or N)
+
+#| several transcription factors, including CREB
+forkhead transcription factors
+transcription factors such as LEF-1 or Tcf4
+the STAT1 transcription factor |#
+(noun "transcription factor" :specializes bio-entity)
+
 
 (define-category bio-reagent :specializes bio-entity) ;; not really
 (noun "gel" :super bio-reagent)
@@ -249,7 +256,6 @@ with something else
          :of whole))
 
 (define-adverb "at baseline")
-(noun "model" :super biological) ;; almost never used as a verb
 
 (noun "gain" :super positive-bio-control)
 
