@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1994,2013-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2013-2017  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "be"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2016
+;;;  Version:  October 2017
 
 ;; redesigned from scratch 5/12/93 v2.3, completed category's realization
 ;; data 5/27. Added "there's" -> "there is", and negative contractions 1/11/94
@@ -44,11 +44,14 @@
 (define-category  be
   :instantiates  self
   :specializes perdurant ;; as specific as 'state' ?
-  :binds ((subject)
-          (predicate))
+  :binds ((subject top)
+          (predicate top))
   :index (:temporary :list)
-  :realization (:s subject
-                :o predicate)
+  :realization (:verb "be" ;; see [note]
+                :etf svo
+                :s subject
+                :o predicate
+                :mumble ("be" SVBeComp :s subject :c predicate))   
   :documentation "Represents the relation, broadly speaking,
  between a subject and a predicate that is established by
  the verb to-be (the 'copula') and similar verbs. This is
@@ -58,6 +61,26 @@
  Note that because this category ihherits from perdurant
  it carries all of the variables that record information
  about tense and aspect.")
+
+#| Note -- We don't need to give subject or predicate
+value restrictions. The tests understand that the absence
+of a restriction implies that it takes anything. We do have
+to provide restrictions, however, when we're using an etf
+since they're part of the process that makes semantic rules
+(even though we handle 'be' mostly syntactically because
+it indeed has no restrictions on what its two variables might
+be bound to.
+   We're providing an explicit statement of "be" being
+the verb realization for 'be' in order to make the mumble
+processing happy (see setup-mumble-data). This has the
+unfortunate side-effect of generating a bunch of rules
+and lexical forms that we do not use, but the alternative
+is to define a new top-level def-form for 'standalone mumble
+mappings' (could call it define-mumble-data), which would
+end up using much of the same subroutines as the eft+explicit
+verb scheme does, and we only need it for irregulars like
+this -- 'have' is done the same way. |#
+
 
 (defparameter *the-category-to-be* (category-named 'be)
   "For use by code that's loaded before the grammar is.")
