@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2015-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:   1.4 August 1999
+;;;  Version:   October 2017
 
 ;; redesigned 7/92
 ;; 1.1 (12/22/93 v2.3) Added hyphenated-number and slashed-sequence-of-numbers
@@ -11,7 +11,7 @@
 ;;      independent module. 
 ;; 1.3 (6/12/99) moved the definition of multplier to objects so that it could
 ;;      be a proper referential category.
-;; 1.4 (8/12) Reworked how the number-words fsa is added so that it doesn't
+;; 1.4 (8/12/99) Reworked how the number-words fsa is added so that it doesn't
 ;;      overwrite any rule information that already exists, presently the case
 ;;      for multiplier.
 ;;     (2/5/15) put some cntent on hyphenated-number
@@ -31,18 +31,22 @@
 ;;; and linking up the FSAs
 ;;;----------------------------------------------------
 
-;(define-category multiplier) now defined in numbers;object1
-(add-fsa category::multiplier *fsa-for-number-words*)
+(define-category class-of-numbers
+  :specializes designator
+  :instantiates nil
+  :documentation "Just a marker class for the tens, teens, etc.")
 
-(define-category tens-number)
+(define-category tens-number :specializes class-of-numbers)
 (add-fsa category::tens-number *fsa-for-number-words*)
 
-(define-category teens-number)
+(define-category teens-number :specializes class-of-numbers)
 (add-fsa category::teens-number *fsa-for-number-words*)
 
-(define-category ones-number)
+(define-category ones-number :specializes class-of-numbers)
 (add-fsa category::ones-number *fsa-for-number-words*)
 
+
+(add-fsa category::multiplier *fsa-for-number-words*)
 
 ;;;------------------
 ;;; other categories
