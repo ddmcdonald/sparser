@@ -70,9 +70,9 @@ sp> (schema-mapping schema)
     (cons phrase decoded-pairs)))
 
 
-;;;-----------------------------------
-;;; Processing explicit mumble fields
-;;;-----------------------------------
+;;;-------------------------------------------------------------
+;;; Processing explicit mumble fields with lexical info and etf
+;;;-------------------------------------------------------------
 
 #| (define-category build ...
      :realization (:verb ("build" :past-tense "built")
@@ -85,8 +85,8 @@ Setup-rdata processess the :realization field.
 If there is an etf in it (marking it as a 'shortcut' style of
   realization), then the field is read by decode-shortcut-rdata 
   which passes along the :mumble field as one of its return arguments.
-The next call is to make-realization-data and the mumble field
- where the initialize method calls setup-mumble-data.
+The next call is to make-realization-data where the initialize method
+  on the realization-data class calls setup-mumble-data.
 
 N.b. In the case of phosphorylate, whose variables are spread out
 all over, the mapping derived from the ETF interfered with the
@@ -115,7 +115,7 @@ explicit mapping in the mumble field.
   "If its a verb and there's a verb-oriented lp in the raw data we'll
    assume it gets the map. For other parts of speech we leave those
    fields empty and just use the lp we get from the word."
-  ;;(lsp-break "construct")
+  ;; Goes this route for "have", "add-to", "build", other BW verbs
   (case pos
     (:verb
      (let* ((phrase (car raw-data))
@@ -344,11 +344,13 @@ have been filled in if the rdata includes an etf and a word.
       (assq :mumble rdata))))
 
 (defun apply-mumble-rdata (category rdata)
-  "Called from setup-rdata to provide phrase and argument information
-   for verbs. Look up the m-word, create the map, and create
-   and store the lp and CLP.
-
-   Called from setup-rdata when the mumble flag is up."
+  "Called from setup-rdata when the mumble flag is up and there was
+   no eft in realization data.
+   Provides phrase and argument information, particularly for verbs. 
+   Look up the m-word, create the map, and create and store the lp and CLP.
+   Gets its lexical information (word) from full rdata by using
+   rdata-head-word with a T argument to get anything rather than
+   one particular POS."
   ;; e.g  :mumble ((svo :s agent :o patient) 
   ;;               (svicomp :s agent :c theme)
   ;;               (svoicomp :s agent :o patient :c theme))
@@ -455,11 +457,10 @@ have been filled in if the rdata includes an etf and a word.
         (when pname
           (multiple-value-bind (s-word pos)
               (rdata-head-word category t)
+            (when (null pos) (error "no lexical head information for ~a" category))
             (assert (memq pos '(:verb :adjective :noun)))
             (setq m-pos (mumble-pos pos)
                   m-word (m::find-word pname m-pos))
-            ;; (setq m-word (m::find-word pname 'm::verb)
-            ;;       m-pos 'm::verb)
             (unless m-word
               (let ((sparser-word (resolve pname)))
                 (assert sparser-word (pname) "There is no word in Sparser for ~a" pname)
@@ -468,7 +469,9 @@ have been filled in if the rdata includes an etf and a word.
             (setq lp (m::get-lexicalized-phrase m-word m-pos))
             (if lp
               (unless (eq phrase (m::phrase lp))
-                ;; but is it the right phrase? Default probably already ran
+                ;; But the default (if we're on a path where there is one)
+                ;; is unlikely to be correct given the specific instructions
+                ;; we're getting here.
                 (setq lp (make-lexicalized-phrase m-word m-pos phrase)))
               (setq lp (make-lexicalized-phrase m-word m-pos phrase)))))          
         
