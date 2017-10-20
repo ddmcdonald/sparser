@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "space"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  August 2017
+;;;  version:  October 2017
 
 ;; Broken out of container-and-suv 11/11/13. Moved to kinds 4/14/14 and
 ;; included container. 2/1/16 merging with the location in places.
@@ -26,21 +26,6 @@
   idiosyncratically dependent on the category of location"
   :index (:key name))
 
-(define-category spatial-region
-  :specializes location
-  :documentation "These variables are appropriate to most kinds of regions
-    but we're focusing on what's needed for space"
-  :binds ((interior . region)
-          (boundary)))
-#|   Boundary is the thing that separates the region from its melieu so as to
- distinguish  things that are inside the region from those that are
- outside it. In real stuff (as opposed to mathematical idealizations),
- the boundary has substance and is an entity in its own right: the
- membrane of a cell, the border (DMZ) between two countries, the cover
- of a book. Ontologically, a boundary is a Feature, dependent on the
- Region for its existence." |#
-
-
 (let ((*inhibit-constructing-comparatives* t))
   (declare (special *inhibit-constructing-comparatives*))
 #| This isn't right. 'space' is a generic/mass kind of stuff
@@ -51,13 +36,26 @@ so it's interpretation shouldn't be a location instance.
     :adj ("spatial" "spatio"))
 ) ;; close let -- other use of this is 'time'
 
+(define-category bounded-region
+  :specializes region
+  :instantiates nil
+  :documentation "This is an abstract class that just provides
+ variables for the essence of any container-like thing without
+ also committing to what kind of thing is caontained in the
+ interior region and that there is a boundary.
+     Boundary is the thing that separates the region from its melieu
+ so as to distinguish  things that are inside the region from those that 
+ are outside it. In real stuff (as opposed to mathematical idealizations),
+ the boundary has substance and is an entity in its own right: the
+ membrane of a cell, the border (DMZ) between two countries, the cover
+ of a book. Ontologically, a boundary is a Feature, dependent on the
+ Region for its existence."
+  :binds ((interior region)
+          (boundary)))
 
-;;;----------------
-;;; container, etc.
-;;;----------------
 
 (define-category container
-  :specializes spatial-region
+  :specializes bounded-region
   :binds ((contents))
   :documentation
  "A container is a region that has (at least the potential) to contain
