@@ -430,7 +430,7 @@
 
 (defun plural-noun-not-present-verb? (e &optional (edges-before (edges-before e)))
   (or
-   (null edges-before) ;; sentence initial
+   (sentence-initial? e) ;; sentence initial
    (and
     (not (or
           (some-edge-satisfying? edges-before #'np-end-edge)
@@ -649,7 +649,9 @@ than a bare "to".  |#
                       (member 'vg (chunk-forms (car *chunks*)))
                       (loop for edge in (ev-top-edges (car (chunk-ev-list (car *chunks*))))
                          thereis (eq category::be (edge-category edge)))))))
-          ((eq 'that (cat-name (edge-category e)))
+          ((and (eq 'that (cat-name (edge-category e)))
+                (not (sentence-initial? e)) ;; don't treat as relative clause marker when sentence initial
+           )
            ;; it is almost never the case that THAT is a determiner, 
            ;; it is usually a relative clause marker or a thatcomp marker
            (and (not *big-mechanism*)

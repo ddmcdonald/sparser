@@ -97,7 +97,10 @@
 
 (defun compose-that-with-vp (relative predicate)
   (if *subcat-test*
-    t
+      (let* ((that-pos (pos-edge-starts-at (left-edge-for-referent)))
+             (leftward-tt (left-treetop-at/edge  that-pos)))
+        ;; definitely not a relative clause when it is the first word
+        (not (eq leftward-tt *source-start*)))
     (bind-dli-variable 'that-rel t predicate)))
 ;; earlier version of code for compose-wh-with-vp
 ;; just invoked 'add-subject-relation' on its arguments
