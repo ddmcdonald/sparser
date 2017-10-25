@@ -24,6 +24,9 @@
  ('the cat is on the mat'). Note that through their connection to
  predication, individuals of this category are states and take tense.")
 
+(assign-subject category::copular-predication category::top 'item)
+(assign-object category::copular-predication category::top 'value)
+
 (define-category copular-predicate
   :documentation "This is strictly a labeling category that is used
  to label the edge over copular verb phrases ('has been unclear').
