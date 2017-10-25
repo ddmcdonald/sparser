@@ -395,13 +395,36 @@
 
 
 
-(defmacro with-bindings (variable-list object &body body)
-  (let ((let-bindings
-          (loop for var-name in variable-list
-            collect `(,var-name (value-of ',var-name obj-pointer)))))
-    `(let* ((obj-pointer ,object)
-           ,@let-bindings)
-       ,@body)))
+(defmacro with-bindings (var-list object &body body)
+  "Usage: (with-binding (v1 v2 ...) i &body)
+   The symbols are understood to be the names of variables.
+   This macro wraps the body in a let statement where the
+   symbols are local variables that are set to the value
+   of the symbol (qua variable) on the individual i.
+     Note that the variable list can be overloaded by
+   having it begin with a package designator inside parens
+   as its first element, e.g. ((:sparser) v1 v2 ...).
+   In this condition, the variable lookup is done using 
+   variable names in the designated package, while the
+   locals are in the native package of the site where
+   this macro is called."
+  (let ((pkg-shift? (consp (first var-list))))
+    (when pkg-shift?
+      (let* ((pkg-name (car (first var-list)))
+             (pkg (find-package pkg-name)))
+        (assert (packagep pkg))
+        (setq var-list (cdr var-list))))
+    (let* ((variables (if pkg-shift?
+                        (reintern-symbols var-list)
+                        var-list))
+           (locals var-list)
+           (let-bindings
+            (loop for var-name in var-list
+               as local in locals
+               collect `(,local (value-of ',var-name obj-pointer)))))
+      `(let* ((obj-pointer ,object)
+              ,@let-bindings)
+         ,@body)  )))
 
 
 (defgeneric open-in (individual variable)
