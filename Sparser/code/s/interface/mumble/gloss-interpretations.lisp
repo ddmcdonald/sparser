@@ -20,10 +20,10 @@ renaming role keywords that are always different in the Krisp ontology
 (rename-roles-as-needed), and renaming symbols that are different between
 the two ontologies (rename-eci-terms-as-needed).
 
-Then is calls gloss-interpretation, which recursively walks through the
+Then it calls gloss-interpretation, which recursively walks through the
 s-exp, which is structured as a plist. The :isa tag is used to lookup
 the Krisp category to use (corresponding-krisp-category) which is usually
-as direct symbol-names-category relationship but can also use a stipulated
+a direct symbol-names-category relationship but can also use a stipulated
 mapping like the role and symbols do. 
 
 From the category we get an individual and bind its variables by walking
@@ -31,9 +31,9 @@ through the rest of the expression. Identifiers in the sub-expressions
 can identify specific, already created entities (find-individual-for-gloss)
 or will make a fresh one given the category. 
 
-Given the individual that is retrieved or made using the description lattice
-we would next apply the needed default informaition (tense, mood, definiteness)
-and produce a text. 
+Given the individual that has been retrieved or made using the description lattice,
+the next step would be to apply any needed default information (tense, mood, 
+definiteness) and produce a text. 
 
 |#
 
@@ -70,6 +70,16 @@ and produce a text.
     (gloss-interpretation sexp)))
     
 (defun gloss-interpretation (sexp)
+  "Fixed point in the recursive walk through the sexp.
+   First it decodes the sexp, e.g.
+            (a b1 :isa block)
+   by picking out the specifier ('a') and identifier ('b1'),
+   plus the remaining role/value information in the sexp.
+   Then it determines the Krisp category to use and get the
+   base individual ('i'). The walk through the remainder of
+   the expression (the role / value pairs) binds the appropriate
+   variables on the individual, which we return as the
+   value of the function."
   (cond
     ((symbolp sexp)
      (find-individual-for-gloss sexp nil))
@@ -83,7 +93,7 @@ and produce a text.
        (assert (eq specifier 'a) (sexp)
                "Dont' know how to understand a Spire expression like this ~a" sexp)
        (let ((category (corresponding-krisp-category name-of-predicate role-names)))
-         ;; need a fallback strategy
+         ;; need a fallback strategy for when we can't get a category
          (let ((i (individual-for-gloss identifier category)))
            (do ((var-name (car arg-plist) (car rest))
                 (value-exp (cadr arg-plist) (cadr rest))
@@ -124,10 +134,10 @@ and produce a text.
 
 
 (defun formulate-individual-for-variable (identifier category)
-  ;; e.g. 'a block', 'a gene'
+  ;;TO-DO e.g. 'a block', 'a gene'
   )
 
-;;--- translate role
+;;--- translate roles
   
 (defparameter *spire-to-krisp-role-renaming*
   '((:final-location . :location))
@@ -142,11 +152,13 @@ and produce a text.
 ;;--- translate stray symbols
 
 (defparameter *eci-term-names-to-krisp*
-  '((SYS . *me*)
-    (the-shelf . *the-shelf*)
+  '((SYS . *me*) ;; see model/core/mid-level/interlocutor.lisp
+    (the-shelf . *the-shelf*) ;; see blocks-world/entities.lisp
     )
   "For swapping the names for things that aren't the same
-   between ECI and Krisp models (for no good reason probably)")
+   between ECI and Krisp models (for no good reason probably).
+   Note that a symbol like *me* is a global that's bound
+   to an individual.")
 
 (defun rename-eci-terms-as-needed (sexp)
   (nsublis *eci-term-names-to-krisp* sexp))
