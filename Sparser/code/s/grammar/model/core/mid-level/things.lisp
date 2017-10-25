@@ -90,3 +90,84 @@ Tr "goal" words: "intent" "objective" "target"
 Dolce: mental-object
 |#
 
+;;;---------------
+;;; Having a name
+;;;---------------
+#|
+(define-category has-a-name
+  :specializes has-attribute ;; vars: item, attribute, value
+  :mixins (patient)
+  :restrict ((agent physical-agent)
+             )
+  :documentation " The attribute per se is 'name'
+    and with particular names ('RAS', 'David') as the
+    values of the attribute.
+"
+  :realization 
+    (:verb "name"
+     :eft svo
+     :s agent  ;; "we[s] named him[o] Daniel[
+     :s patient
+     :o patient
+     :
+
+;; "call" is in general-verbs as svo bio-rhetorical
+
+     
+(define-category give-something-a-name
+  :specializes has-attribute ;; vars: item, attribute, value
+  :mixins (agent patient)
+  :restrict ((agent physical-agent)
+             )
+  :documentation "If there's an agent it's the entity
+    that assigned the name to the patient (e.g. a parent
+    or an NIH committee). The attribute per se is 'name'
+    and with particular names ('RAS', 'David') as the
+    values of the attribute.
+"
+  :realization 
+    (:verb "name"
+     :eft svoa ;; subject,verb,object,a value -- like "paint them red"
+     :s agent  ;; "we[s] named him[o] Daniel[
+     :s patient
+     :o patient
+     :
+     |#
+
+
+;;--- "model"
+#|  'create/make/build a model where <description>
+"add X to the model",  "remove X from" => make is a container
+"the model contains X"
+"build a model" -- artifact (like 'stack')
+Show sents:  
+  "a novel model for", "an established in vitro model for" <== dominant case
+      -- purpose?
+  "our model suggests"  --- information?
+  "supporting the model that"
+  "in this model P" -- the contents of the model do P
+  |#
+(define-category model
+  :specializes container
+  :mixins (predication) ;; make "consistent"/bio-relation's theme v/r happy
+  :realization (:noun "model"))
+
+
+
+;;--- "contain" is also in general-verbs as a bio-relation
+#|
+sp> (p/s "the model contains MEK")
+[the model ][contains ][MEK]
+                    source-start
+e7    CONTAIN       1 "the model contains MEK" 5
+                    end-of-source
+(#<contain 92950>
+ (participant (#<model 92947> (has-determiner (#<the 106> (word "the")))))
+ (theme
+  (#<protein-family MEK 85897> (raw-text "MEK") (name "MEK") (uid "BE:MEK")))
+ (present #<ref-category PRESENT>))
+
+
+;;--- "contruct" is also in general-verbs as a bio-method
+probably to get the noun reading
+|#
