@@ -68,53 +68,11 @@
  of the ground object and the point of view (perspective) of the 
  observer to be properly understood. Used with words (spatial 
  functions) like 'left' or 'front'."
-  :realization ((:mumble ((of-genitive :p ground)
-                          (common-noun :n self)))))
+  :realization ((:mumble ((of-genitive :p ground)))))
 
 
 
 
-;;;------------
-;;; originals
-;;;------------
-
-(unless *prepositions-as-relations*
-    (define-category relative-location  ;; "above the house"
-      :instantiates self
-      :specializes location
-      :binds ((ground) ;; has-location -- more like 'is suitable as a location'
-              (prep spatial-operator)) 
-      :index (:temporary :sequential-keys prep ground)
-      :realization ((:mumble (prepositional-phrase
-                              :p prep :prep-object ground))))  )
-
-(unless *prepositions-as-relations*
-  
-(define-category object-dependent-location ;; same name as in TRIPS
-  :specializes relative-location
-  :mixins (physical)
-  :restrict ((ground partonomic)
-             (prep dependent-location))
-  :instantiates self ;; inherits index
-  :documentation "Defines a location in terms of a name-like label
- and an object that has an element that can be characterized by
- that label. The result is a location (the 'end' of the row) that
- may be empty or may be occupied (the 'bottom row of the stairs').
- This duality implies that we are sometimes describing things
- as well as locations, hence the physical mixin."
-  :realization ((:mumble (of-genitive :n prep :p ground))))  )
 
 
-(unless *prepositions-as-relations*
-  
-  (define-category orientation-dependent-location
-    :specializes relative-location
-    :instantiates self
-    :restrict ((ground partonomic)
-               (prep direction))
-    :instantiates self ;; inherits index
-    :documentation "Defines a location that depends on the orientation
- of the ground object and the point of view (perspective) of the 
- observer to be properly understood. Used with words (spatial 
- functions) like 'left' or 'front'."
-    :realization ((:mumble (of-genitive :n prep :p ground))))  )
+

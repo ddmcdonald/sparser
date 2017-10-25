@@ -19,6 +19,8 @@
 
 (in-package :sparser)
 
+;; words are in model/dossiers/directions.lisp
+
 ;;;----------
 ;;; category 
 ;;;----------
@@ -53,7 +55,7 @@
 ;;---- "(to the) {left, front} (of <reference-point>)"
 ;;      "the left side of the block"  "the Left Bank"
 
-;; These are np heads.  When their deictic anchors are given explicitly
+;; These are np heads. When their deictic anchors are given explicitly
 ;; they appear as prepositional complements: "left of the garage"
 ;; except in the case of proper names where they're also simple classifiers:
 ;; "(to) John's left". 
@@ -65,14 +67,13 @@
   :specializes direction
   :mixins (relative-location)
   :restrict ((ground partonomic))
-  :realization (:mumble ((of-genitive :p ground)
-                         #+ignore(common-noun :n self)))
+  :realization (:mumble ((of-genitive :p ground)))
   :documentation "These are 'directions' to distinguish them
  from dependent directions like 'bottom' or 'side'. They get
  their 'ground' variable from relative-location.")
 
 (defun define-standalone-direction (string)
-  ;; following pattern define-dependent-location, define-preposition
+  ;; following pattern in define-dependent-location, define-preposition
   ;; where all the mumble resources are developed during the
   ;; handling of the lemma
   (let* ((word (or (resolve string)
@@ -100,30 +101,11 @@
                    (define-function-word string
                      :form 'np
                      :brackets '( .[np np]. ))))
-         ;;(category-name (name-to-use-for-category string))
-        ;; (expr `(define-category 
-
-
          (i (define-individual 'direction :name word))
          (rule (define-cfr category::direction `(,word)
                  :form category::np
                  :referent i)))
     (make-corresponding-mumble-resource word :common-noun i) ;; misses np aspect
-    (add-rule rule i)
-    i))
-
-
-;; original
-#+ignore(defun define-standalone-direction (string)
-  (let* ((word (or (word-named string)
-                   (define-function-word string 
-                     :form 'noun
-                     :brackets '( .[np ))))
-         (i (define-individual 'direction :name word))
-         (rule (define-cfr category::direction `(,word)
-                 :form category::common-noun
-                 :referent i)))
-    (make-corresponding-mumble-resource word :common-noun i)
     (add-rule rule i)
     i))
 

@@ -38,7 +38,7 @@ determined by the operator and the types of the two objects,
 ;;;------------------------------------------------------------------
 ;;; nouns and such that define object-dependent-locations ("bottom")
 ;;;------------------------------------------------------------------
-;; dossier: dependent-locations
+;; dossier: dependent-locations -- "bottom", "side"
 #|/// Where/how do we do we state facts about opositions (e.g. 
  the two ends of a row) or geometry (e.g. of the sides of a block? |#
 
@@ -68,16 +68,11 @@ determined by the operator and the types of the two objects,
 (defun define-dependent-location (string &key multiple category-name)
   "Modeled on define-preposition with supercategory determined
    by keyword arg. Lots of room for growth."
-  (declare (special *prepositions-as-relations*))
   (let ((word (resolve/make string))
         (form 'common-noun)
         (category-name (or category-name ;; don't redefine 'top'
                            (name-to-use-for-category string)))
-        (super-category (if *prepositions-as-relations*
-                          'object-dependent-location
-                          (if multiple
-                            'multiple-dependent-location
-                            'dependent-location))))
+        (super-category 'object-dependent-location))
     (let* ((expr `(define-category ,category-name
                     :specializes ,super-category
                     :instantiates :self
@@ -113,16 +108,7 @@ determined by the operator and the types of the two objects,
    the 'of' and has checked that the np is a dependent-location
    and the object of the pp is partonomic (so we can identify  
    one of its parts)."
-  (declare (special *prepositions-as-relations*))
-  (if *prepositions-as-relations*
-    (then
-      (assert (itypep operator 'relative-location))
-      (tr :make-object-dependent-location operator object)
-      (bind-variable 'ground object operator))
-    (else ;; old analysis
-      (find-or-make-individual 'object-dependent-location
-                               :prep operator
-                               :ground object))))
+  (assert (itypep operator 'relative-location))
+  (tr :make-object-dependent-location operator object)
+  (bind-variable 'ground object operator))
   
-
-

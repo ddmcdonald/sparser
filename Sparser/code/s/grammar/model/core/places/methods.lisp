@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "methods"
 ;;;   Module:  "model;core:places:"
-;;;  version:  July 2017.
+;;;  version:  October 2017.
 
 ;; N.b. This file is loaded late after all categories have been defined.
 ;; It is for location-oriented compose methods
@@ -38,13 +38,8 @@
 
 (defun make-relative-location/revise-parent (operator place)
   "shared subroutine. Construct and return the relative-location
-   individual. Relable the parent edge as a 'location'."
-  (declare (special *prepositions-as-relations*))
-  (let ((i (if *prepositions-as-relations*
-             (bind-variable 'ground place operator)             
-             (find-or-make-individual 'relative-location
-                                      :prep operator
-                                      :ground place))))
+   individual. Relabel the parent edge as a 'location'."
+  (let ((i (bind-variable 'ground place operator)))
     (revise-parent-edge :category (category-named 'location))
     i))
 
@@ -71,6 +66,7 @@
 ;; "next to it"
 (def-k-method compose ((operator category::relative-location)
                        (place category::pronoun/inanimate))
+  (declare (special *subcat-test*))
   (if *subcat-test*
     t
     (else
@@ -107,16 +103,12 @@
 (def-k-method compose ((qualifier category::direction)
                        (head category::dependent-location))
   ;; as in "the left side of ...". We get that in noun-noun-compound
-  (declare (special *subcat-test* *prepositions-as-relations*))
+  (declare (special *subcat-test*))
   (if *subcat-test*
     t
     (else
       (tr :direction+dependent-location qualifier head)
-      (let ((i (if *prepositions-as-relations*
-                 (bind-variable 'ground head qualifier)
-                 (find-or-make-individual 'orientation-dependent-location
-                                          :prep qualifier
-                                          :ground head))))
+      (let ((i (bind-variable 'ground head qualifier)))
         (revise-parent-edge :category (category-named 'location))
         i))))
 
@@ -140,11 +132,7 @@
   (or (when *subcat-test* t)
       (else
         (tr :direction+object head ground)
-        (let ((i (if *prepositions-as-relations*
-                   (bind-variable 'ground ground head)
-                   (find-or-make-individual 'orientation-dependent-location
-                                            :prep head
-                                            :ground ground))))
+        (let ((i (bind-variable 'ground ground head)))
           (revise-parent-edge :category (category-named 'location))
           i))))
 

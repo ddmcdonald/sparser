@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "prepositions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   March 2017
+;;;   Version:   October 2017
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 1/11/94 added "through"  7/14 added "up" & "down"  8/19 added "off"
@@ -53,7 +53,6 @@
    The form argument is used to determine how this preposition slots into 
    the model."
   ;; e.g. (define-preposition "at" :form 'spatial-preposition) ;;what about "at 5PM"
-  (declare (special *description-lattice* *prepositions-as-relations*))
   (unless brackets  ;; v.s. ].treetop  treetop.[ 
     (setq brackets *preposition-brackets*))
   (unless form
@@ -61,15 +60,10 @@
   (unless super-category
     (setq super-category
           (if *location* ;; grammar module has to be loaded to ensure these categories exist
-            (if *prepositions-as-relations*
-              (ecase form
-                (spatial-preposition 'relative-location)
-                (spatio-temporal-preposition 'relative-location)
-                (preposition 'prepositional-operator))
-              (ecase form
-                (spatial-preposition 'spatial-operator)            
-                (spatio-temporal-preposition 'spatial-operator)
-                (preposition 'prepositional-operator)))
+            (ecase form
+              (spatial-preposition 'relative-location)
+              (spatio-temporal-preposition 'relative-location)
+              (preposition 'prepositional-operator))
             'prepositional-operator)))
 
   (let* ((word (define-function-word string
@@ -77,58 +71,35 @@
                    :form form))
          (category-name (name-to-use-for-category string))
          (expr
-          (if *prepositions-as-relations*
-            `(define-category ,category-name
-                 :specializes ,super-category
-                 :mixins (linguistic) ;; supplies 'word' variable
-                 :instantiates :self
-                 :index (:permanent :list)
-                 :lemma (:preposition ,word)) ;; uses a lemma
-            `(define-category ,category-name
-                 :specializes ,super-category
-                 :mixins (linguistic)
-                 :instantiates :self
-                 :index (:permanent)
-                 :bindings (word ,word)) )) ;; binds the word - no rdata
+          `(define-category ,category-name
+             :specializes ,super-category
+             :mixins (linguistic) ;; supplies 'word' variable
+             :instantiates :self
+             :index (:permanent :list)
+             :lemma (:preposition ,word)))
          (category (eval expr)))
+    
+    ;; The lemma on the category made a rule, but it used a generic
+    ;; form for the preposition. We have to fix it to be the
+    ;; specified form. 
+    ;; The category processing has made the Mumble resources.
+    (let ((cfr (find-form-cfr word :preposition)))
+      (unless cfr (error "no cfr on the preposition ~s ?" string))
+      (setf (cfr-form cfr) (category-named form)))
 
-    (flet ((prep-synonym (syn-string referent name-of-form)
-             (let* ((syn-word (resolve-string-to-word/make syn-string))
-                    (rule (define-cfr category `(,syn-word)
-                            :form (resolve-form-category name-of-form)
-                            :schema (get-schematic-word-rule :preposition)
-                            :referent referent)))
-               (add-rule rule category))))
-
-      (if *prepositions-as-relations*
-        ;; The lemma on the category made a rule. We have to fix it's
-        ;; form. The category processing has made the Mumble resources.
-        (let ((cfr (find-form-cfr word :preposition)))
-          (unless cfr (lsp-break "no cfr on ~s ?" string))
-          (setf (cfr-form cfr) (category-named form))
-          (when synonyms (loop for s in synonyms
-                            do (prep-synonym s category form))))
-        (let* ((referent
-                (if *description-lattice*
-                  ;; Patterned on determiner and quantifier. Though looking
-                  ;; at the details of description-lattice case established
-                  ;; that including the word argument serves no purpose except to gratuitously
-                  ;; generate another individual.
-                  (define-individual category)
-                  (define-individual category :word word)))
-               (word-rule
-                (def-cfr/expr category `(,word)
-                  :form (resolve-form-category form)
-                  :schema (get-schematic-word-rule :preposition)
-                  :referent referent)))
-          (add-rule word-rule category)
-          (make-corresponding-mumble-resource word :preposition category)
-          (when synonyms
-            (let ((rules (loop for syn-string in synonyms
-                            do (prep-synonym syn-string referent form))))
-              (add-rules rules category)))))
+    (when synonyms
+      (flet ((prep-synonym (syn-string referent name-of-form)
+               (let* ((syn-word (resolve-string-to-word/make syn-string))
+                      (rule (define-cfr category `(,syn-word)
+                              :form (resolve-form-category name-of-form)
+                              :schema (get-schematic-word-rule :preposition)
+                              :referent referent)))
+                 (add-rule rule category))))
+         (loop for s in synonyms
+            do (prep-synonym s category form))))
       
-      category )))
+    category ))
+
 
 ;; "to" and "of" may warrant special treatment
 
