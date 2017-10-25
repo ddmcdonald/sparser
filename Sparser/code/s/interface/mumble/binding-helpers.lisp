@@ -136,6 +136,51 @@
     (make-complement-node 'n word dtn)
     dtn))
 
+(defun realize-wh-question/attribute (i)
+  (let ((wh-category (sp::value-of 'sp::wh i))
+        (attribute (sp::value-of 'sp::attribute i))
+        (statement (sp::value-of 'sp::statement i))
+        (top-dtn (make-dtn :referent i :resource (phrase-named 'comp-s)))
+        (wh-dtn (make-dtn :resource wh-term)))
+    ;; setup wh phrase
+    (make-complement-node 'wh wh-category wh-dtn)
+    (make-complement-node 'q attribute wh-dtn)
+    ;; setup top
+    (make-complement-node 'wh wh-dtn top-dtn)
+    (make-complement-node 's statement top-dtn)
+
+    (discourse-unit ;; supply the "?" as well as capitalizing
+     (question ;; invert the aux
+      top-dtn))))
+
+(defun realize-copular-predication (i)
+  ;;(sp::with-bindings ((:sparser) item value prep predicate) i <= getting nil's
+    ;;/// The predicate variable holds the tense, e.g.
+  ;; (predicate (#<be 84923> (present #<ref-category PRESENT>)))
+  (let ((item (sp::value-of 'sp::item i))
+        (value (sp::value-of 'sp::value i))
+        (prep (sp::value-of 'sp::prep i))
+        (predicate (sp::value-of 'sp::predicate i)))
+    (let* ((of-pp? (sp::itypep i 'sp::copular-predication-of-pp))
+           (phrase (if of-pp?
+                     (phrase-named 'SVPrepO)
+                     (phrase-named 's-be-comp)))
+           (dtn (make-dtn :referent i :resource phrase)))
+      (when item (attach-subject item dtn))
+      (when value
+        (if of-pp?
+          (attach-object value dtn)
+          (attach-complement value dtn)))
+      (when prep (attach-preposition prep dtn))
+      
+      (when predicate
+        (attach-verb predicate dtn)) ;; refactor tense
+
+      dtn)))
+
+
+
+
 
 (defgeneric tense (object)
   (:documentation "Determine and attach tense to the given object.
@@ -166,6 +211,69 @@
                                           sp::**lambda-var**)))))
       (when (verb-based-realization dtn)
         (command dtn)))))
+
+
+(defun attach-adjective (adjective dtn pos)
+  (let ((adjp (make-dtn :referent adjective
+                        :resource (phrase-named 'adjp)))
+        (ap (ecase pos
+              ((adjective noun) 'adjective)
+              ((adverb verb)
+               (if (sp::itypep adjective 'sp::intensifier)
+                 'adverbial-preceding
+                 (multiple-value-bind (head rpos)
+                     (sp::rdata-head-word adjective t)
+                   (declare (ignore head))
+                   (case rpos
+                     (:interjection 'adverbial-preceding)
+                     (otherwise 'vp-final-adjunct))))))))
+    (tr "Attaching adjective: ~a" adjective)
+    (make-complement-node 'a adjective adjp)
+    (make-adjunction-node (make-lexicalized-attachment ap adjp) dtn)))
+
+
+(defun attach-pp (prep object dtn pos)
+  (let ((pp (make-dtn :resource (prep prep)))
+        (ap (ecase pos
+              (adjective 'adjp-prep-complement)
+              (noun 'np-prep-adjunct)
+              (verb 'vp-prep-complement))))
+    (tr "Attaching a pp: ~a ~a via ~a" prep object ap)
+    (make-complement-node 'prep-object object pp)
+    (make-adjunction-node (make-lexicalized-attachment ap pp) dtn)))
+
+(defun attach-verb (verb dtn)
+  (make-complement-node 'v verb dtn))
+
+(defun possibly-pronoun (item)
+  "Wrapper around subject, object, and complement below."
+  (cond ((sp::itypep item 'sp::pronoun/first/singular)
+         (pronoun-named 'first-person-singular))
+        ((sp::itypep item 'sp::pronoun/first/plural)
+         (pronoun-named 'first-person-plural))
+        ((sp::itypep item 'sp::pronoun/second)
+         (pronoun-named 'second-person-singular))
+        ((sp::itypep item 'sp::pronoun/plural)
+         (pronoun-named 'third-person-plural))
+        (t item)))
+
+(defun attach-subject (subject dtn)
+  (tr "Attaching subject: ~a" subject)
+  (make-complement-node 's (possibly-pronoun subject) dtn))
+
+(defun attach-object (object dtn)
+  (tr "Attaching object: ~a" object)
+  (make-complement-node 'o (possibly-pronoun object) dtn))
+
+(defun attach-complement (complement dtn)
+  (tr "Attaching complement: ~a" complement)
+  (make-complement-node 'c (possibly-pronoun complement) dtn))
+
+(defun attach-preposition (prep dtn)
+  (make-complement-node 'p prep dtn))
+
+
+;;--- tests
 
 (defun heavy-predicate-p (i)
   "Return true if the individual is too heavy to be used as a premodifier.
@@ -201,17 +309,9 @@
     (or subject object)))
 
 
-
-
-
-;;--------- dtn modifiers
-#| These take a dtn that was created by their caller and add to it.
-Many use methods in derivation-trees/builders.lisp or make.lisp
-to do the actual manipulation. These are called by cases in
-attach-via-binding. |#
-
 (defparameter *variables-to-ignore-for-attach-by-binding*
   '(sp::present
+    sp::raw-text
     )
   "Holds list of variables that attach-via-bindings needn't bother
    to look at because either they don't contribute to the
@@ -219,63 +319,3 @@ attach-via-binding. |#
 
 (defun ignorable-variable? (v)
   (memq (sp::var-name v) *variables-to-ignore-for-attach-by-binding*))
-
-
-(defun attach-adjective (adjective dtn pos)
-  (let ((adjp (make-dtn :referent adjective
-                        :resource (phrase-named 'adjp)))
-        (ap (ecase pos
-              ((adjective noun) 'adjective)
-              ((adverb verb)
-               (if (sp::itypep adjective 'sp::intensifier)
-                 'adverbial-preceding
-                 (multiple-value-bind (head rpos)
-                     (sp::rdata-head-word adjective t)
-                   (declare (ignore head))
-                   (case rpos
-                     (:interjection 'adverbial-preceding)
-                     (otherwise 'vp-final-adjunct))))))))
-    (tr "Attaching adjective: ~a" adjective)
-    (make-complement-node 'a adjective adjp)
-    (make-adjunction-node (make-lexicalized-attachment ap adjp) dtn)))
-
-
-
-(defun attach-pp (prep object dtn pos)
-  (let ((pp (make-dtn :resource (prep prep)))
-        (ap (ecase pos
-              (adjective 'adjp-prep-complement)
-              (noun 'np-prep-adjunct)
-              (verb 'vp-prep-complement))))
-    (tr "Attaching a pp: ~a ~a via ~a" prep object ap)
-    (make-complement-node 'prep-object object pp)
-    (make-adjunction-node (make-lexicalized-attachment ap pp) dtn)))
-
-
-
-
-(defun possibly-pronoun (item)
-  "Wrapper around subject, object, and complement below."
-  (cond ((sp::itypep item 'sp::pronoun/first/singular)
-         (pronoun-named 'first-person-singular))
-        ((sp::itypep item 'sp::pronoun/first/plural)
-         (pronoun-named 'first-person-plural))
-        ((sp::itypep item 'sp::pronoun/second)
-         (pronoun-named 'second-person-singular))
-        ((sp::itypep item 'sp::pronoun/plural)
-         (pronoun-named 'third-person-plural))
-        (t item)))
-
-(defun attach-subject (subject dtn)
-  (tr "Attaching subject: ~a" subject)
-  (make-complement-node 's (possibly-pronoun subject) dtn))
-
-(defun attach-object (object dtn)
-  (tr "Attaching object: ~a" object)
-  (make-complement-node 'o (possibly-pronoun object) dtn))
-
-(defun attach-complement (complement dtn)
-  (tr "Attaching complement: ~a" complement)
-  (make-complement-node 'c (possibly-pronoun complement) dtn))
-
-

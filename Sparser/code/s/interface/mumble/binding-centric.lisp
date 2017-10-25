@@ -37,20 +37,22 @@
                                (apply #'conjoin conjunction more)
                                conjunction))))
                (apply #'conjoin items)))))
+
         ((sp::itypep i 'sp::number)
          (tr "Realizing number ~a" i)
          (realize-number i))
+
         ((sp::itypep i 'sp::polar-question)
          (tr "Realizing polar-question ~a" i)
          (discourse-unit (question (realize (sp::value-of 'sp::statement i)))))
+        ((sp::itypep i 'sp::wh-question/attribute)
+         (tr "Realizing wh/attribute question ~a" i)
+         (realize-wh-question/attribute i))
+
         ((sp::itypep i 'sp::copular-predication)
-         (tr "Realizing copular-predication ~a" i) ;;/// explicit call
-         (let ((be (realize-via-bindings (sp::value-of 'sp::predicate i)
-                                         :pos 'verb
-                                         :resource (phrase-named 's-be-comp))))
-           (attach-subject (sp::value-of 'sp::item i) be)
-           (attach-complement (sp::value-of 'sp::value i) be)
-           be))
+         (tr "Realizing copular-predication ~a" i)
+         (realize-copular-predication i))
+
         ((sp::itypep i 'sp::explicit-suggestion)
          (tr "Realizing explicit-suggestion ~a" i)
          (let ((dtn (realize-via-bindings (sp::value-of 'sp::suggestion i)))
@@ -58,6 +60,7 @@
                (ap 'initial-adverbial))
            (make-adjunction-node (make-lexicalized-attachment ap m) dtn)
            dtn))
+
         ((sp::itypep i 'sp::there-exists)
          (tr "Realizing there-exists ~a" i) ;;/// explicit call
          (let ((be (realize-via-bindings (sp::value-of 'sp::predicate i)
@@ -67,10 +70,9 @@
            (attach-complement (sp::value-of 'sp::value i) be)
            be))
                
-        ((and (null (sp::indiv-binds i))
-              ;; nothing for realize-via-bindings to chew on
+        ((and (null (sp::indiv-binds i)) ;; nothing for realize-via-bindings to chew on
               (sp::rdata-head-word i t))
-         ;; There's a word associated with this individual.
+         ;; But there is a word associated with this individual.
          ;; Use its lexicalized phrase as the resource"
          (tr "Realizing ~a, with no bindings" i)
          (let ((lp (find-lexicalized-phrase i)))
