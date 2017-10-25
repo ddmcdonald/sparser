@@ -1676,23 +1676,30 @@ will retrieve the edge the lambda variable refers to"
        ;; so instead we drop the relativizer on the floor and let the np + relative
        ;; composition do what it would otherwise normally do.
        predicate)
+      
       ((itypep wh-obj category::wh-question)
        (let* ((wh (value-of 'wh wh-obj))
               (wh-name (cat-symbol wh))
               (open-var (open-core-variable predicate))
               (default (value-of 'variable wh)))
-         (let ((q (make-wh-object
-                   wh
-                   :variable (or open-var default)
-                   :statement predicate)))
-            (tr :wh-compose-wh-with-vp q)
-            q)))
+         ;;(lsp-break "open-var?")
+         (let ((q (extend-wh-object wh-obj :statement predicate)))
+           (when open-var
+             (setq q (extend-wh-object q :variable open-var)))
+           ;; This is essentially what the compose method call below
+           ;; is doing in the wh-pronoun case
+           (tr :wh-compose-wh-with-vp q)
+           (when (top-level-wh-question?)
+             (revise-parent-edge :form category::question))
+           q)))
+      
       ((itypep wh-obj 'wh-pronoun)
        ;; "which", "who", "where", ... See syntax/wh-word-semantic.lisp
        ;; which also has the relevant compose method.
        (if (top-level-wh-question?)
-         (compose wh-obj predicate)
+         (compose wh-obj predicate) ;; k-methods in questions.lisp
          (wh-vp-as-relative-clause wh-obj predicate)))
+      
       (t (warn "New type of wh-obj in compose-wh-with-vp: ~a~
                 in~%~s" (itype-of wh-obj) (current-string))))))
 
