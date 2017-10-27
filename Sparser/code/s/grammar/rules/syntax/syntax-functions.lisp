@@ -642,15 +642,12 @@ will retrieve the edge the lambda variable refers to"
   ;; make a composite individual using a collection.
   ;; See notes on forming plurals in tree-families/morphology.lisp
   (cond
-    (*subcat-test* (and number head
+    (*subcat-test* (and number head ;; J34: "Histone 2B"
                         (not (itypep head 'single-capitalized-letter))))
     (t
      (setq head (individual-for-ref head))
-     (when (itypep head 'endurant) ;; J34: "Histone 2B"
-       ;;    ~600 kinase
-       (setf (non-dli-mod-for head) (list 'number number))
-       ;;(setq  head (bind-dli-variable 'number number head))
-       )
+     (when (itypep head 'endurant) ;; ~600 kinase
+       (setf (non-dli-mod-for head) (list 'number number)))
      (when (and *determiners-in-DL*
                 (or (individual-p head )(category-p head)))
        (setq head (bind-dli-variable 'number number head)))
