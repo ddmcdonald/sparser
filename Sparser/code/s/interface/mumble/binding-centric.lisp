@@ -252,7 +252,7 @@
     (let ((value (sp::binding-value binding)))
       (if (sp::itypep value 'sp::intensifier)
         (add-attachment 'intensifier value dtn)
-        (warning "Don't know what to do with qualifier binding ~a" binding))))
+        (warn "Don't know what to do with qualifier binding ~a" binding))))
   
   (:method (binding (var-name (eql 'sp::negation)) dtn pos)
     "Attach a negation."

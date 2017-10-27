@@ -141,7 +141,7 @@
         (attribute (sp::value-of 'sp::attribute i))
         (statement (sp::value-of 'sp::statement i))
         (top-dtn (make-dtn :referent i :resource (phrase-named 'comp-s)))
-        (wh-dtn (make-dtn :resource wh-term)))
+        (wh-dtn (make-dtn :resource (phrase-named 'wh-term))))
     ;; setup wh phrase
     (make-complement-node 'wh wh-category wh-dtn)
     (make-complement-node 'q attribute wh-dtn)
@@ -311,7 +311,8 @@
 
 (defparameter *variables-to-ignore-for-attach-by-binding*
   '(sp::present
-    sp::raw-text
+    sp::raw-text  sp::uid
+    sp::name
     )
   "Holds list of variables that attach-via-bindings needn't bother
    to look at because either they don't contribute to the
