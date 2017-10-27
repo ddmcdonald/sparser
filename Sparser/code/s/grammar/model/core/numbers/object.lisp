@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2014-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  December 2016
+;;;  Version:  October 2017
 
 ;; 1.2 (7/19/92 v2.3) made over as "real" category. 8/4/94 finished princ routine
 ;;     (10/3) improved the printer.  11/15/95 added a sort routine.
@@ -44,23 +44,27 @@
   :instantiates self
   :specializes number
   :index (:key name)
+  :documentation "A multiplier is a number-like term
+ that contributes to the calculation of the value of
+ a numeric expression by literally multiplying its own
+ value with whatever the base value is."
   :realization (:common-noun name))
-
-
-(define-category illions-distribution :specializes index
-  :binds ((number number)      ;; #<number 1,110,087.0>
-          (illion multiplier)  ;; #<multiplier "million">
-          (value number)))     ;; #<number 110>
 
 
 ;;; -----------------------------
 ;;; making illions-distributions
 ;;; -----------------------------
 
-;; Nothing in English parses directly to an illions-distribution.
-;; We establish them by hand in the various special-purpose
-;; routines for numbers. See Set-illion-distribution-from-edge
-;; and Apply-multiplier.
+(define-category illions-distribution
+  :specializes index
+  :binds ((number number)      ;; #<number 1,110,087.0>
+          (illion multiplier)  ;; #<multiplier "million">
+          (value number))      ;; #<number 110>
+  :documentation
+ "Nothing in English parses directly to an illions-distribution.
+ We establish them by hand in the various special-purpose
+ routines for numbers. See Set-illion-distribution-from-edge
+ and Apply-multiplier.")
 
 (defun set-illion-distribution (number value illion)
   (define-individual 'illions-distribution
@@ -85,7 +89,6 @@
              (np-head . multiplier))))
 
 (assign-bracket number .[np)
-
 
 
 
@@ -235,60 +238,4 @@
        (error "Can not make a number individual from ~a~
              ~%which is a ~a" i (type-of i))))))
 
-
-
-
-#|  original stuff
-
-(defstruct (number/obj
-            ;; n.b. this can't be a "number" because that's a
-            ;; built-in Lisp type
-            (:conc-name #:number-)
-            (:print-function  print-number-structure))
-  rules
-  value
-  digit-sequence
-  plist )
-
-
-;;;---------------
-;;; print routine
-;;;---------------
-
-(defun print-number-structure (obj stream depth)
-  (declare (ignore depth))
-  (write-string "#<number " stream)
-  (format stream "~A" (number-value obj))
-  (write-string ">" stream))
-
-
-;;;------------
-;;; ancilaries
-;;;------------
-
-(setf (cat-index (category-named 'number))
-      (make-index/hash-on-slot))
-
-(defun find/number (lisp-number)
-  (gethash lisp-number
-           (cat-index (category-named/c-symbol 'category::number))))
-
-(defun number-named (lisp-number)
-  (unless (numberp lisp-number)
-    (error "The argument to Number-named should be a lisp number"))
-  (find/number lisp-number))
-
-(defun index/number (lisp-number number)
-  (setf (gethash lisp-number
-                 (cat-index (category-named/c-symbol 'category::number)))
-        number))
-
-(defun delete/number (lisp-number)
-  (let ((number (find/number lisp-number)))
-    (dolist (rule (number-rules number))
-      (delete/cfr rule))
-    (remhash lisp-number
-             (cat-index (category-named/c-symbol 'category::number)))
-    number ))
-|#
 

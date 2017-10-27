@@ -151,3 +151,22 @@
                 (show-sem-forest)))
 	 (format stream "~%~%~%"))))
 
+
+(defun test-dynamic-model-corpus (&optional (sentence-corpus *dynamic-model-sents*)
+                                            (stream *standard-output*))
+  (let ((count 0))
+    (loop for s in sentence-corpus
+         do (test-dynamic-model-sentence s (incf count) stream))))
+  
+(defun test-dynamic-model-sentence (s count &optional (stream *standard-output*))
+  (format stream "~%~%___________________~%~a: ~s~%"
+          count (second s))
+  ;; adapted from p/s in abbreviations
+  (pp (second s))
+  (format t "~&") (tts)
+  (let ((edges (all-tts)))
+    (when (null (cdr edges)) ;; single span
+      (format stream "~&~a" (semtree (car edges)))
+      (format stream "~&~%")
+      (stree (car edges)))))
+

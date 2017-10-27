@@ -98,9 +98,28 @@ of 'certain'. Not particularly thought through |#
 (define-canonical-category 'certainty)
 
 
-
-
 ;;;---------------------
+;;;   scalars, et al.
+;;;---------------------
+
+(define-category bio-amount :specializes bio-scalar
+  :realization
+  (:noun "amount"))
+#| and so are active in catalytic amounts.
+the amount of α-catenin
+the total amounts of α-catenin ;; similar, same, initial
+their relative amounts remained unchanged
+for various amounts of time
+increasing amounts of recombinant XRCC1.
+(dynamic-model 54 "Double the amount of total BRAF.")
+|#
+
+(noun "peak" :super bio-scalar)
+
+(define-category bio-concentration
+  :specializes bio-scalar
+  :realization
+    (:noun "concentration"))
 
 (define-category scalar-variation
   :specializes bio-predication)
@@ -110,13 +129,10 @@ of 'certain'. Not particularly thought through |#
 (adj "unchanged" :super scalar-variation)
 (adj "transient" :super scalar-variation)
 
-(noun "peak" :super bio-scalar)
 
-(define-category bio-concentration
-  :specializes bio-scalar
-  :realization
-    (:noun "concentration"))
-
+;;;---------
+;;; move !!
+;;;---------
 
 ;; Verbs added temporarily for Localization articles
 ;; -- to be reviewed and corrected
@@ -125,12 +141,29 @@ of 'certain'. Not particularly thought through |#
   :realization
     (:verb ("become" :third-singular "becomes" :past-tense "became"
 		     :present-participle "becoming")
-      :etf (svo)))
+     :etf (svo)))
 (make-copular-def "become")
 
-;;;----------------------
-;; failed to find a treatment for pancreatic cancer
 
+;;;---------------------------------------
+;;; verbs particular to Harvard sentences
+;;;---------------------------------------
+
+(define-category remain
+  :specializes be
+  :mixins (bio-relation)
+  :restrict ((participant biological)) 
+  ;; got 'subject' from be where there is no restriction, though
+  ;; there is a subject v/r on bio-relation
+  :realization
+      (:verb "remain"
+       :etf (sv)
+       ;; remains to be determined
+       :to-comp theme))
+(make-copular-def "remain") ;; gives it the adjective rules
+
+
+;; failed to find a treatment for pancreatic cancer
 (define-category fail :specializes aspectual-relation
   :restrict ((theme bio-process))
   :realization 
@@ -165,10 +198,10 @@ of RAS and based on our findings, we propose the following mechanism
 by which this occurs.") |#
 
 
-(define-category bio-amount :specializes bio-scalar
-  :realization
-  (:noun "amount"))
 
+;;;-----------------------------
+;;; verbs that apply to scalars
+;;;-----------------------------
 
 (define-category decrease
   :specializes negative-bio-control
@@ -214,6 +247,8 @@ by which this occurs.") |#
 
 
 
+;;--- bio-scalar
+
 ;; (p/s "Decrease the binding rate of NRAS and BRAF.")
 (delete-noun-cfr (resolve "rate")) ;;/// override it
 (define-category process-rate
@@ -224,8 +259,22 @@ by which this occurs.") |#
     (:noun "rate"
      :for components
      :m process))
-
 (def-synonym process-rate (:noun "kinetics"))
+
+;; e.g. displayed sustained ERK phosphorylation
+(define-category sustained
+   :specializes scalar-variation
+   :binds ((theme (:or process scalar-quality))
+           (level scalar-quality)
+           (above-level scalar-quality))
+   :realization
+      (:verb "sustain"
+       :etf (svo-passive)
+       :adj "sustained"
+       :o theme
+       :at level
+       :above above-level))
+
 
 
 #|
@@ -241,68 +290,57 @@ by which this occurs.") |#
 |#
 
 
+;;--- positive-bio-control
 
-
-
-(define-category make-double :specializes positive-bio-control
+(define-category make-double
+  :specializes positive-bio-control
   :restrict ((object (:or biological scalar-quality)))
   :binds ((theme biological)
           (level (:or measurement bio-scalar)))
   :realization
-  (:verb "double" 
+        (:verb "double" 
          :etf (svo-passive)
          :for theme
          :in theme
          :to level))
 
 
-
-(define-category reach :specializes bio-relation
-  :restrict ((participant (:or scalar-quality biological))
-             (theme (:or scalar-quality measurement)))
-  :realization
-  (:verb "reach"
-         :etf (svo)))
-
-(define-category remain :specializes be
-  :mixins (bio-relation)
-  :restrict ((participant biological)) 
-  ;; got 'subject' from be where there is no restriction, though
-  ;; there is a subject v/r on bio-relation
-  :realization
-    (:verb "remain" ;; keyword: ENDS-IN-ED 
-	   :etf (sv)
-           ;; remains to be determined
-           :to-comp theme))
-(make-copular-def "remain") ;; gives it the adjective rules
-
-(define-category follow :specializes bio-event-relation
-                 ;; this is intended to suppress definitions of "followed" and "follows"
-  :realization
-  (:verb ("follow" :past-tense "followed" :present-participle "followingxx"
-                   :third-singular "follows")
-         :etf (svo-passive)))
-
-(define-category precede :specializes bio-event-relation
-                 ;; this is intended to suppress definitions of "followed" and "follows"
-  :realization
-  (:verb "precede"
-         :etf (svo-passive)))
-
 ;; "vanish" comes in from Comlex
 #|(:source :comlex :comlex ((:subc ((pp :pval ("from" "into")) (intrans))))
  :inflection-of-verb #<word "vanishes"> :verb-inflections
- (#<word "vanishing"> #<word "vanished"> #<word "vanishes">)) |#
+ (#<word "vanishing"> #<word "vanished"> #<word "vanishes">))
+(dynamic-model 52 "Does the BRAF-NRAS complex vanish?") 
+(dynamic-model 53 "Does the BRAF-NRAS complex vanish at some time?") 
+(dynamic-model 63
+ "Does the BRAF-NRAS dimer vanish even if we increase the binding rate of NRAS and BRAF?")
+ |#
 
-;; e.g. displayed sustained ERK phosphorylation
-(define-category sustained :specializes scalar-variation
-   :binds ((theme (:or process scalar-quality))
-           (level scalar-quality)
-           (above-level scalar-quality))
-   :realization
-   (:verb "sustain" ;; keyword: ENDS-IN-ED 
-          :etf (svo-passive)
-          :adj "sustained"
-          :o theme
-          :at level
-          :above above-level))
+
+;;--- bio-relation
+
+(define-category reach
+  :specializes bio-relation
+  :restrict ((participant (:or scalar-quality biological))
+             (theme (:or scalar-quality measurement)))
+  :realization
+      (:verb "reach"
+       :etf (svo)))
+
+
+;;--- bio-event-relation
+
+(define-category follow
+  :specializes bio-event-relation
+  :realization
+     (:verb ("follow" :past-tense "followed" :present-participle "followingxx"
+            ;; this is intended to suppress definitions of "followed" and "follows"
+                      :third-singular "follows")
+      :etf (svo-passive)))
+
+
+(define-category precede
+  :specializes bio-event-relation
+  :realization
+    (:verb "precede" :etf (svo-passive)))
+
+

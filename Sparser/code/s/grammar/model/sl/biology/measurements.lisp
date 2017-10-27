@@ -21,19 +21,6 @@
 		 :realization
 		 (:noun ("datum" :plural "data")))
 
-;;/// N.b. the rule is written over the literal "fold"
-(define-category n-fold :specializes measurement
-  :binds ((number number))
-  :realization
-  (:noun "fold"
-         :m number))
-;; only used in phrases like nnn-fold, this is here to suppress the
-;;  attempt to ascribe a biological meaning to the verb
-
-(define-category order-of-magnitude :specializes unit-of-measure
-  :realization
-  (:noun ("order of magnitude"
-          :plural "orders of magnitude")))
 
 ;; below is needed because of a use of "transients" in the CURE corpus
 (define-category transient-measurement :specializes bio-measurement
@@ -46,8 +33,7 @@
 (noun "mass" :super bio-scalar)
 (noun "proportion" :super bio-scalar)
 (noun "scale" :super bio-scalar)     
-;; OBE (noun "concentration" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34) 
-;; in harvard-terms
+;; (noun "concentration" :super bio-scalar) ;; now in harvard-terms
 
 ;;;------------------
 ;;; Units of measure

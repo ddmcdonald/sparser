@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1998,2014-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2014-2017  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "percentages"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  1.3 April 2015
+;;;  Version:  October 2017
 
 ;; 1.1 (7/16/92 v2.3) pilot instances of the new representation regime
 ;; 1.2 (1/10/94) stubbed measurement to get around load-order paradox
@@ -52,14 +52,31 @@
 
 (define-category n-fold
   :instantiates :self
-  :specializes  measurement
+  :specializes  multiplier
   :rule-label measurement
   :binds  ((number . number))
   :index (:temporary :list)
   :realization (:tree-family item+idiomatic-head
                 :mapping ((np . :self)
-                          (np-head . "fold")
+                          (np-head . "fold") ;; literal
                           (modifier . number)
                           (result-type . :self)
                           (item . number))))
 
+(define-category n-fold :specializes multiplier
+  :binds ((number number))
+  :realization
+    (:noun "fold" ;; ///plural "folds" does act the same
+     :m number))
+
+
+
+;;;--------------------
+;;; order of magnitude
+;;;--------------------
+
+(define-category order-of-magnitude
+  :specializes multiplier ;; had been unit-of-measure
+  :realization
+    (:noun ("order of magnitude"
+            :plural "orders of magnitude")))
