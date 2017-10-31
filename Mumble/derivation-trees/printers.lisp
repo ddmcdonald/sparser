@@ -117,14 +117,18 @@
 
 (defmethod print-object ((slp saturated-lexicalized-phrase) stream)
   (print-unreadable-object (slp stream)
-    (format stream "lp ~a" (phrase-name-for-printing (phrase slp)))
+    (format stream "sat-lp ~a" (phrase-name-for-printing (phrase slp)))
     (print-lp-bound-values slp stream)))
 
 (defmethod print-object ((lp partially-saturated-lexicalized-phrase) stream)
   (print-unreadable-object (lp stream)
-    (format stream "lp: ~a" (name (phrase lp)))
+    (format stream "ps-lp: ~a" (name (phrase lp)))
     (format stream " ~a" (mapcar #'name (free lp)))
     (print-lp-bound-values lp stream)))
+
+(defmethod print-object ((lp lexicalized-phrase) stream)
+  (print-unreadable-object (lp stream)
+    (format stream "lp: ~a" (name (phrase lp)))))
 
 (defmethod print-object ((la lexicalized-attachment) stream)
   (print-unreadable-object (la stream)
