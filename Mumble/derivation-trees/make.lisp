@@ -80,12 +80,14 @@
 ;;; shortcut for making parameter-value-pairs
 ;;;-------------------------------------------
 
-(defun pvp (parameter-name value)
-  "Return a parameter-value-pair, typically for use
-   by a builder"
-  (let ((parameter (parameter-named parameter-name)))
+(defgeneric pvp (parameter-name value)
+  (:documentation "Return a parameter-value-pair, typically for use
+   by a builder")
+  (:method ((name symbol) value)
+    (pvp (parameter-named name) value))
+  (:method ((p parameter) value)
     (make-instance 'parameter-value-pair
-      :phrase-parameter parameter
+      :phrase-parameter p
       :value value)))
 
 ;;;------------------

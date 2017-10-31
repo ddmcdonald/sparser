@@ -100,11 +100,18 @@
   (:method ((w word) (phrase phrase))
     (adjective (pname w) phrase))
   (:method ((pname string) (phrase phrase))
-    (let ((adjective (word-for-string pname 'adjective)))
-      (make-instance
-       'saturated-lexicalized-phrase
-       :phrase phrase
-       :bound (list (pvp 'a adjective))))))
+    (let* ((adjective (word-for-string pname 'adjective))
+           (head-parameter (parameter-named 'a))
+           (parameters (remove head-parameter (parameters-to-phrase phrase)))
+           (pair (pvp head-parameter adjective)))
+      (if parameters
+        (make-instance 'partially-saturated-lexicalized-phrase
+                       :phrase phrase
+                       :free parameters
+                       :bound `(,pair))
+        (make-instance 'saturated-lexicalized-phrase
+                       :phrase phrase
+                       :bound `(,pair))))))
 
 
 (defgeneric adjectivial-modifier (word)
