@@ -31,6 +31,20 @@
         (error "There is no subject in the position table of ~a" clause))
       (splice-out-slot subject-slot))))
 
+
+(defgeneric head-of-relative-clause (rc-slot)
+  (:documentation "Return the individual (referent) of the head
+    of the np that dominates the relative clause slot")
+  (:method ((rc slot))
+    "previous -> [np-head]"
+    (assert (eq (name rc) 'relative-clause))
+    (let* ((np-root *current-phrasal-root*)
+           (dtn (original-rspec np-root)))
+      (values (referent dtn) dtn))))
+      
+    
+
+
 (defgeneric remove-tense-marker (clause-context)
   (:method ((root phrasal-root))
     (remove-tense-marker (context-object root)))
