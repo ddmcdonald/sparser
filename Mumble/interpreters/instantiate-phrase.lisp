@@ -1,7 +1,7 @@
 ;;; -*- Mode: LISP;  package: MUMBLE;  Syntax: Common-lisp; Base: 10 -*-
 ;;; MUMBLE-05:  interpreters> realization> instantiate-phrase
 
-;;; Copyright (C) 2005,2011-2016 David D. McDonald
+;;; Copyright (C) 2005,2011-2017 David D. McDonald
 ;;; Copyright (C) 1985, 1986, 1987, 1988, 1995  David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
 ;;;   reserved. Permission is granted to use and copy
@@ -35,6 +35,8 @@
   "Used by phrase builders to retrieve the value of a parameter"
   (declare (special *phrase-parameter-argument-list*))
   (let ((value (cdr (assoc parameter *phrase-parameter-argument-list*))))
+    (unless value
+      (error "NULL value for parameter ~a" parameter))
     (landmark 'value-of-parameter parameter value)
     value))
 
@@ -93,6 +95,7 @@
       (build-rooted-phrase (definition phrase)))))
 
 (defgeneric instantiate-phrase-in-dtn (lp dtn)
+  (:documentation "Some or all of the parameter values come from the dtn.")
   (:method ((lp partially-saturated-lexicalized-phrase)
             (dtn derivation-tree-node))
     "Some of the paramters are bound on the lp, the rest are given as
@@ -320,19 +323,19 @@
 
   (:method ((root phrasal-root) &optional (stream *standard-output*))
     (been-here-before? root)
-    (format stream "~a -> " (name root))
+    (format stream "~&~a -> " (name root))
     (trace-out-tree (first-constituent root)))
 
   (:method ((slot slot) &optional (stream *standard-output*))
     (been-here-before? slot)
-    (format stream "~a -> " (name slot))
+    (format stream "[~a] -> " (name slot))
     (trace-out-tree (contents slot))
     (let ((next (next slot)))
       (trace-out-tree next)))
 
   (:method ((node node) &optional (stream *standard-output*))
     (been-here-before? node)
-    (format stream "~a -> " (name node))
+    (format stream "~&~a -> " (name node))
     (trace-out-tree (first-constituent node))
     (trace-out-tree (next (first-constituent node))))
 
@@ -341,6 +344,12 @@
 
   (:method ((pn pronoun) &optional (stream *standard-output*))
     (format stream "~a -> " pn))
+
+  (:method ((tm tense-marker) &optional (stream *standard-output*))
+    (format stream "~a -> " tm))
+
+  (:method ((emtpy null) &optional (stream *standard-output*))
+    (format stream "NIL -> "))
 
   (:method ((unknown t) &optional (stream *standard-output*))
     (declare (ignore stream))
