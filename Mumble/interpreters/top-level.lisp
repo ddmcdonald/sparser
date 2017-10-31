@@ -80,27 +80,13 @@ is appropriate to that object class.")
   (if *mumbling?*
     (error "Can't run Mumble recursively.")
     (let-with-dynamic-extent ((*mumbling?*  t))
-      (when (consp content)
-        (setq content (car content)))
-
       (let ((new-slot-for-this-turn (slot-for-a-turn content)))
-
-	#+ignore(when window-code? ;; flag is a constant
-	  (paint-ss-into-new-line-buffers new-slot-for-this-turn))
-	  
 	(begin-tracker-run)
 	(phrase-structure-execution new-slot-for-this-turn)
-	(end-tracker-run)
+	(end-tracker-run)	  
+        ;; return value so we might be able to do something with it
+	new-slot-for-this-turn))))
 
-	#+ignore(when window-code?
-	  (let* ((ssd  *surface-structure-display-window*)
-		 (yah  (send ssd :you-are-here-blinker)))
-	    (send yah :set-visibility nil))
-	  (paint-ss-into-new-line-buffers new-slot-for-this-turn))
-	  
-        ;; return value when we've gotten to the other end of
-        ;; the phrase
-	(name new-slot-for-this-turn)))))
 
 (defun slot-for-a-turn (contents)
   (make-slot :name 	     'turn
