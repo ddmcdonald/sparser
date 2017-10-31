@@ -52,7 +52,12 @@
  predicate it is, this property may be implicit in the
  identity of the predicate itself (e.g. for many simple
  NP modifiers like adjectives), or may be explicitly
- represented in a variable.")
+ represented in a variable.
+    In general, predicates are 'partial', or 'unsaturated'
+ relations. Some of the terms in the relation have values
+ and some are 'open'. In this sense predicates are functions,
+ in that the can compose with terms to form complete,
+ 'saturated' relations, often characterized as predications.")
 
 (define-category predication
   :specializes state
