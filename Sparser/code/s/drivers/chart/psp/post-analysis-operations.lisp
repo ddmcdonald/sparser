@@ -67,6 +67,11 @@ Return the contextual interpretation of the item."))
   s)
 
 (defparameter **lambda-var** '*lambda-var*) ;; making it a constant doesn't seem to work
+
+(defun is-lambda-var (value)
+  "Hide the identify of the symbol"
+  (eq value **lambda-var**))
+
 (defparameter *error-on-list-nil* nil)
 
 (defmethod interpret-in-context ((items cons))
