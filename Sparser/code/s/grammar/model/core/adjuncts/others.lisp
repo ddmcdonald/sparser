@@ -63,8 +63,13 @@
 ;;  Functionally is a subordinating conjunction
 ;;  Takes nominalized clauses/participials
 
+
+;; These actually take nomimals, not only nominalized clauses
+;;  they are normalyy defined (and rightly so) as prepostions
+;; they are like 
+
 (defun define-reflection-on (string)
-  (define-function-term string 'subordinate-conjunction
+  (define-function-term string 'preposition ;;subordinate-conjunction
     ;; If we had a "starts clause" bracket that might help
     :brackets '( ].adverb .[np )
     ;; This isn't the right ETF, but it sort of patterns right

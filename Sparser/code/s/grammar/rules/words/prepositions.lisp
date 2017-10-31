@@ -99,7 +99,13 @@
             do (prep-synonym s category form))))
       
     category ))
+#|
+these are really prepositions, and should function as such
+(define-reflection-on "despite")
 
+(define-reflection-on "in spite of")
+(define-reflection-on "regardless of")
+|#
 
 ;; "to" and "of" may warrant special treatment
 
@@ -159,7 +165,7 @@
 (define-preposition "circa" :synonyms '("ca.")) 
 (define-preposition "close to" :form 'spatial-preposition) ;;can also be temporal, even an approximator?
 (define-preposition "contrary to")
-;; (define-preposition "despite") in modifiers as a reflection-on
+(define-preposition "despite") ;;in modifiers as a reflection-on
 (define-preposition "devoid of")
 (define-preposition "down"  :form 'spatial-preposition) ;; as in, 'down the street' ?
 (define-preposition "due to")
@@ -214,7 +220,7 @@
 (define-preposition "in respect to")
 (define-preposition "in return for")
 (define-preposition "in search of")
-;; (define-preposition "in spite of") in modifiers as a reflection-on
+(define-preposition "in spite of") ;;in modifiers as a reflection-on
 (define-preposition "in terms of")
 (define-preposition "in the face of")
 (define-preposition "in the light of")
@@ -263,7 +269,7 @@
 (define-preposition "prior to")
 (define-preposition "pursuant to")
 (define-preposition "regarding")
-;; (define-preposition "regardless of") in modifiers as a reflection-on
+(define-preposition "regardless of") ;;in modifiers as a reflection-on
 (define-preposition "short of")
 (define-preposition "since")
 (define-preposition "subsequent to")

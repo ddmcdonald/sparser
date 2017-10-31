@@ -95,12 +95,12 @@
 ;;;------------
 ;;; {attitude}
 ;;;------------
-
+#|
 (define-reflection-on "despite")
 
 (define-reflection-on "in spite of")
 (define-reflection-on "regardless of")
-
+|#
 
 ;;;------------
 ;;; enablement
