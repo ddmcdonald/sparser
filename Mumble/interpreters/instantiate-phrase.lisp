@@ -35,8 +35,12 @@
   "Used by phrase builders to retrieve the value of a parameter"
   (declare (special *phrase-parameter-argument-list*))
   (let ((value (cdr (assoc parameter *phrase-parameter-argument-list*))))
-    (unless value
-      (error "NULL value for parameter ~a" parameter))
+    ;; (unless value
+    ;;  This is useful when debugging odd cases, but there are situations
+    ;;  where the genuinely isn't a value for a mapped parameter.
+    ;;  One of the more esoteric traces could be considered, but that
+    ;;  would need substantial motivation
+    ;;   (error "NULL value for parameter ~a" parameter))
     (landmark 'value-of-parameter parameter value)
     value))
 
