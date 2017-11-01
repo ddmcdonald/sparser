@@ -32,20 +32,6 @@
 ;;///would be easier if the spatial operators -were- the relation
 
 
-;; 1.1 (p "Let's build a staircase.") 
-;;     (p "build a staircase.")
-(define-category build
-    :specializes process
-    ;; we're going through the steps of constucting the
-    ;; staircase. With "lets'" we haven't even started
-    :mixins (with-an-agent)
-    :binds ((artifact artifact)) ;; what they build
-    :realization (:verb ("build" :past-tense "built")
-                  :etf (svo-passive)
-                  :s agent
-                  :o artifact
-                  :mumble ("build" svo :s agent :o artifact)))
-
 (define-category hold-something
   :specializes process
   :mixins (action-verb)

@@ -71,6 +71,20 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
   :realization (:verb "believe")
   :documentation "")
 
+;; 1.1 (p "Let's build a staircase.") 
+;;     (p "build a staircase.")
+(define-category build
+    :specializes process
+    ;; we're going through the steps of constucting the
+    ;; staircase. With "lets'" we haven't even started
+    :mixins (agent)
+    :binds ((artifact artifact)) ;; what they build
+    :realization (:verb ("build" :past-tense "built")
+                  :etf (svo-passive)
+                  :s agent
+                  :o artifact
+                  :mumble ("build" svo :s agent :o artifact)))
+
 ;; expect -- to do, that P, John to 
 (define-category expect
   :specializes state
