@@ -1621,7 +1621,11 @@
    npcomp np))
 
 
-;;--- WH 
+;;--- WH
+
+(define-phrase WH (wh) ;; just the wh: "what did you do"
+  (WhP
+   wh wh))
 
 (define-phrase WHP (wh q)  ;; WH phrase -- "What else", "How many"
   (WhP
