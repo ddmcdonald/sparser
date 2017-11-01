@@ -75,6 +75,10 @@
   (declare (special *dec-tests*))
   (test-corpus   *dec-tests* numbers))
 
+(defun test-bioagents (&rest numbers)
+  (declare (special *bio-agent-capability-utterances*))
+  (test-corpus   *bio-agent-capability-utterances* numbers))
+
 (defun test-erk (&rest numbers)
   (declare (special *erk-abstract*))
   (test-corpus *erk-abstract* numbers))
