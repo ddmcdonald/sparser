@@ -276,9 +276,13 @@
   (unless *referent*
     (error "Subtype called without a head specified -- check rule:~
             ~%  ~A" *rule-being-interpreted*))
-  (if *use-subtypes*
-    (specialize-object *referent* ref-exp)
-    *referent*))
+  (cond (*use-subtypes*
+         (specialize-object *referent* ref-exp))
+        ((eq ref-exp category::collection)
+         (when (category-p *referent*)
+           (setq *referent* (individual-for-ref *referent*)))
+         (bind-dli-variable 'is-plural category::common-noun/plural *referent*))
+        (t *referent*)))
 
 
 

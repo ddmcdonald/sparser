@@ -137,6 +137,9 @@
 (define-lambda-variable 'has-determiner
     nil 'top)
 
+(define-lambda-variable 'is-plural
+    nil 'top)
+
 (define-lambda-variable 'approximator
     nil 'number)
 
@@ -535,7 +538,8 @@ will retrieve the edge the lambda variable refers to"
   (or *subcat-test*
       (let* ((parent-edge (parent-edge-for-referent))
 	     (det-edge (left-edge-for-referent))
-	     (det-word (edge-left-daughter det-edge)))
+	     (det-word (edge-left-daughter det-edge))
+             (head-edge (right-edge-for-referent)))
 	(unless (or (definite-determiner? det-word)
 		    (indefinite-determiner? det-word))
 	  ;; There are a ton of categories that are defined to be
@@ -553,6 +557,8 @@ will retrieve the edge the lambda variable refers to"
           ((and *determiners-in-DL*
                 (or (individual-p head) (category-p head)))
            (setq head (bind-dli-variable 'has-determiner determiner head))
+           (when (eq (edge-category head-edge) category::common-noun/plural)
+             (setq head (bind-dli-variable 'is-plural determiner head)))
            (when (definite-determiner? determiner)
              (add-def-ref determiner parent-edge)))
 	  ((definite-determiner? determiner)
