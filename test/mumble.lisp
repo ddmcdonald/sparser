@@ -124,10 +124,12 @@
   "the bone was snapped")
 
 (deftest (say bone that was snapped)
-  (let* ((bone (always-definite (bone)))
+  (let* ((me (me))
+         (bone (always-definite (bone)))
          (snap (past-tense (snap)))
          (that (make-lexicalized-attachment 'restrictive-relative-clause snap)))
-    (passive snap) ; no subject
+    (make-complement-node 's me snap) ; required by phrase
+    (passive snap)
     (make-complement-node 'o bone snap)
     (make-adjunction-node that bone)
     (mumble-says bone))

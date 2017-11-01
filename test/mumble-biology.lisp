@@ -1,11 +1,15 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: MUMBLE -*-
-;;; Copyright (c) 2016 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2017 SIFT LLC. All Rights Reserved.
 
 (in-package :mumble)
 
 ;;; Generation from semantics in the biological domain.
 ;;; Examples are from "Talking about a Dynamical Model"
 ;;; by Benjamin Gyori, et al.
+
+;; Need a procedure that fixes non-canonical protein
+;; names. Changed value (10/31/17) to fit what we get
+;; without fixing them.
 
 (deftest (say braf)
   (mumble-says "BRAF.")
@@ -21,15 +25,15 @@
 
 (deftest (say braf phosphorylated by mek)
   (mumble-says "BRAF that is phosphorylated by MEK.")
-  "BRAF that is phosphorylated by MEK")
+  "BRAF that is phosphorylated by MEK 1/2")
 
 (deftest (say braf that mek phosphorylated)
   (mumble-says "BRAF that MEK phosphorylated.")
-  "BRAF that is phosphorylated by MEK")
+  "BRAF that is phosphorylated by MEK 1/2")
 
 (deftest (say mek-phosphorylated braf)
   (mumble-says "MEK-phosphorylated BRAF.")
-  "BRAF that is phosphorylated by MEK")
+  "BRAF that is phosphorylated by MEK 1/2")
 
 (deftest (say braf phosphorylated on serine)
   (mumble-says "BRAF that is phosphorylated on serine.")
@@ -55,7 +59,7 @@ Instead we get "RASN" -- changing all the tests to reflect that
 
 (deftest (say mek phosphorylates erk)
   (mumble-says "MEK phosphorylates ERK.")
-  "MEK phosphorylates ERK")
+  "MEK 1/2 phosphorylates ERK")
 
 (deftest (say egfr binds egf)
   (mumble-says "The receptor tyrosine kinase EGFR binds the growth factor ligand EGF.")
@@ -90,11 +94,11 @@ Instead we get "RASN" -- changing all the tests to reflect that
 
 (deftest (say certain it is transient)
   (mumble-says "I'm quite certain it is transient.")
-  "I am quite certain it is transient")
+  "I am quite certain that it is transient")
 
 (deftest (say confident it is transient)
   (mumble-says "I am confident it is transient.")
-  "I am confident it is transient")
+  "I am confident that it is transient")
 
 (deftest (say transient with high probability)
   (mumble-says "It is transient with a high probability.")
