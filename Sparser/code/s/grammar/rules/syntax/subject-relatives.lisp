@@ -259,6 +259,31 @@
        ;; referent of the combination is the np
        np-ref))))
 
+(defun apply-pp-relative-clause (np-ref pp-vp-ref)
+  (declare (special category::have np-ref pp-vp-ref))
+  ;; block "histone 2B ... had high levels ..."
+  (when (and (eq (edge-category (right-edge-for-referent)) category::have)
+	     (eq (edge-form (right-edge-for-referent)) category::VP+ED))
+    (return-from apply-pp-relative-clause nil))
+  (setq np-ref (individual-for-ref np-ref))
+  ;;(lsp-break "foo")
+  (let ((var (subcategorized-variable pp-vp-ref :object np-ref)))
+    (cond
+      (*subcat-test* var)
+      (var
+       ;; copy down the upstairs subject
+       ;; Should we check if it was already bound to something?
+       (setq pp-vp-ref (create-predication-by-binding
+                     var np-ref pp-vp-ref
+                     (list 'apply-object-relative-clause
+                           (parent-edge-for-referent))))
+       ;; link the rc to the np
+       (setq np-ref (bind-dli-variable 'predication pp-vp-ref np-ref))
+       ;; referent of the combination is the np
+       np-ref))))
+
+
+
 ;; 3/1/17 {when, where} + S  now calls make-subordinate-clause
 ;;  Nothing explicitly calls this today
 (defun apply-where-when-relative-clause (np-ref vp-ref)
