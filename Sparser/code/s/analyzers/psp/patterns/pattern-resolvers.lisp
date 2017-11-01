@@ -53,19 +53,26 @@
 
   (let* ((form (when (edge-p right-edge)
                  (edge-form right-edge)))
-         (subcat-var (subcategorized-variable right-ref :m left-ref)))
-
+         subcat-var)
+    (declare (special form subcat-var))
     (cond
-      ((or (eq form category::verb+ed) ;; assume passive
-	   (eq form category::verb+ing)
-	   (eq form category::adjective))
+      ((and (eq form category::verb+ed)
+            (setq subcat-var (subcategorized-variable right-ref :subject left-ref)))
+       ;; assume passive, so choose subject
+       subcat-var)
+      ((and (eq form category::verb+ing)
+            (setq subcat-var (subcategorized-variable right-ref :object left-ref)))
+       ;; assume passive, so choose subject
+       subcat-var)
+      ((eq form category::adjective)
+       #+ignore (or (eq form category::verb+ed) (eq form category::verb+ing))
        ;; now figure out what variable on the second (right)
        ;; should be bound to the first (left)
        (let* ((vars (loop for sc in (super-categories-of right-ref)
-		       append
-			 (if (category-p sc)
-			     (cat-slots sc) ;; what case??
-			     (cat-slots (itype-of sc)))))
+                          append
+                            (if (category-p sc)
+                                (cat-slots sc) ;; what case??
+                                (cat-slots (itype-of sc)))))
 	      (the-variable 
 	       (cond
 		 ((eq form category::verb+ed)
@@ -79,12 +86,13 @@
 		  (or (object-variable right-ref) ;; if there is an object variable, use it
 		      (let ((sv (subject-variable right-ref)))
 			(loop for v in vars 
-			   when (not (eq v sv)) do (return v)))))))
+                              when (not (eq v sv)) do (return v)))))))
 	      (right-cat
 	       (if (individual-p right-ref)
 		   (itype-of right-ref)
 		   right-ref)))
          (declare (special vars the-variable right-cat))
+         ;;(lsp-break "foo")
 	 ;; Which variable this is really depends on the two referents.
 	 ;; For the "induced" example its an agent (= subject). But the
 	 ;; tyrosine goes on the site variable of the phosphoryate.
@@ -106,15 +114,15 @@
 		 (or
 		  (single-on-variable-on-category right-ref)
 		  (loop for sp in (subcat-patterns right-cat)
-		     when (satisfies-subcat-restriction?
-			   left-ref
-			   (subcat-restriction sp))
-		     do (return (subcat-variable sp))))))
+                        when (satisfies-subcat-restriction?
+                              left-ref
+                              (subcat-restriction sp))
+                        do (return (subcat-variable sp))))))
 	 (when the-variable
 	   (tr :ns-used-the-single-variable-on right-ref))
 	 the-variable))
       
-      (subcat-var
+      ((setq subcat-var (subcategorized-variable right-ref :m left-ref))
        (tr :ns-second-subcategizes-for-first subcat-var)
        subcat-var))))
 
@@ -154,6 +162,11 @@
                                           n-bar ;; point-mutations are n-bar
                                           ))
                                 category::n-bar)
+                               #+ignore
+                               ;; DAVID -- why does this not behave the same as an actual verb+ing edge
+                               ;; in terms of chunking in "COT-expressing cancer cells"?
+                               ((eq (cat-name (edge-form right-edge)) 'verb+ing)
+                                category::verb+ing)
                                (t
                                 category::adjective))
                    :referent (bind-variable variable left-ref right-ref)
