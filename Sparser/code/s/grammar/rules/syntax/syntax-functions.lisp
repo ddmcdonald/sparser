@@ -1755,10 +1755,10 @@ will retrieve the edge the lambda variable refers to"
   (declare (special wh-pp vp))
   (if *subcat-test*
       (and wh-pp vp
-           (edge-p (edge-to-its-left left))
-           (not
-            (member (cat-name (edge-category (edge-to-its-left left)))
-                    '(number quantifier all some each both many most))))
+           (or (not (edge-p (edge-to-its-left left)))
+               (not
+                (member (cat-name (edge-category (edge-to-its-left left)))
+                        '(number quantifier all some each both many most)))))
     (let* ((preposition (value-of 'prep wh-pp))
            (wh-obj (value-of 'pobj wh-pp))
            (var (find-subcat-vars preposition vp)))
