@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "binding-centric"
 ;;;   Module:  "interface;mumble;"
-;;;  Version:  July 2017
+;;;  Version:  October 2017
 
 ;; Broken out from interface 4/7/13.
 ;; Completely rewritten 8/16 by AFP.
@@ -19,7 +19,8 @@
 (defmethod realize ((i sp::individual))
   "Realize a Sparser individual. Special cases are handled here,
    then falls through to realize-via-bindings."
-  (declare (optimize debug))
+  (when m::*trace-archie*
+    (display-current-position))
   (cond ((sp::itypep i 'sp::collection)
          (let ((items (sp::value-of 'sp::items i))
                (type (sp::value-of 'sp::type i)))
@@ -97,20 +98,24 @@
    style also emphasizes the use of predefined mappings for the
    distribution of bindings over open constituent positions in the
    phrase that realizes the individual's head word.")
-  
   (:method ((i sp::individual) &key pos resource)
-    "First split on resources 'supplied by caller' vs taken off the individual"
+    "First split on resources 'supplied by caller' vs 'taken off the individual"
     (if (and pos resource)
       (old-style-realize-via-bindings i pos resource)
       (new-style-realize-via-bindings i))))
 
 (defun old-style-realize-via-bindings (i pos resource)
-  "Used for there-exists, copular-predication"
+  "Used for there-exists, copular-predication. Goes straight
+   to the common path"
   (tr "Old style: ~a ~a ~a" i pos resource) 
   (realize-via-bindings-common-path i pos resource))
 
 (defun new-style-realize-via-bindings (i)
-  (declare (optimize debug))
+  "First figure out what part of speech the individual has (which
+   looks both at the individual and the syntactic context). 
+   Look up the lexicalized phrase that's linked to the individual,
+   and look up the mapping data on the individual given the part of speech
+   (if any). Then go to the common path."
   (let* ((pos (determine-pos i))
          (lp (find-lexicalized-phrase i))
          (rdata (sp::has-mumble-rdata i :pos pos)))
@@ -119,31 +124,34 @@
       (setq lp (linked-phrase rdata)))
     (tr "Realize-via-bindings for ~a~
        ~%  lp = ~a~
-       ~%  pos = ~a rdata = ~a" i lp pos rdata)
+       ~%  pos = ~a~
+       ~%  rdata = ~a" i lp pos rdata)
     (realize-via-bindings-common-path i pos lp rdata)))
 
 (defun realize-via-bindings-common-path (i pos resource &optional rdata)
-  (declare (optimize debug))
-  (let ((dtn (make-dtn :referent i :resource resource)))            
-    (case pos (verb (tense dtn))) ;; adds tense & checks for command
-    ;;(push-debug `(,dtn ,i)) (break "look at ~a" dtn)
+  "Make the dtn. Run the appropriate loop over the bindings.
+   Call the verb-centric cleanup handler."
+  (let ((dtn (make-dtn :referent i :resource resource)))
     (if rdata
       (loop-over-some-bindings i pos dtn rdata)
       (loop-over-bindings i pos dtn))
+    (verb-aux-handler dtn i) ;; formerly called 'tense'
     dtn))
  
 (defun loop-over-some-bindings (i pos dtn rdata)
   "Use the map on the rdata to handle the core bindings
    then use the normal binding loop dispatch for the rest."
-  (declare (optimize debug))
   (let ((map (parameter-variable-map rdata)))
     (let ((handled
            (loop for pvp in map
               as variable = (corresponding-variable pvp)
               as parameter = (corresponding-parameter pvp)
-              as value = (value-of-map-var variable i)
-              do (when value (make-complement-node parameter value dtn))
+              as value = (wrap-if-abstracted
+                          (value-of-map-var variable i))
+              do (when value
+                   (make-complement-node parameter value dtn))
               collect variable)))
+      ;; do all the bindings that weren't in the mapping
       (loop for binding in (reverse (sp::indiv-binds i))
          as variable = (sp::binding-variable binding)
          as var-name = (sp::var-name variable)
@@ -153,7 +161,6 @@
 
 (defun loop-over-bindings (i pos dtn)
   "Handle every binding on i"
-  (declare (optimize debug))
   (loop
      for binding in (reverse (sp::indiv-binds i))
      as variable = (sp::binding-variable binding)
@@ -175,50 +182,49 @@
   (:method (binding var-name dtn pos)
     "Attach a binding as a subject, object, or prepositional phrase."
     (declare (ignore var-name))
-    (declare (optimize debug))
-    (let* ((individual (sp::binding-body binding))
-           (variable (sp::binding-variable binding))
-           (value (sp::binding-value binding))
-           (subcats (stable-sort ; prefer shorter words
-                     (typecase value
-                       ((or sp::referential-category sp::individual)
-                        (sp::find-subcat-labels value variable individual)))
-                     #'< :key (lambda (label)
-                                (etypecase label
-                                  ((or string symbol)
-                                   (length (string label)))
-                                  ((or sp::word sp::polyword)
-                                   (length (sp::pname label)))))))
-           (prep (or (find-if #'sp::word-p subcats) ; prefer single words
-                     (find-if #'sp::polyword-p subcats))))
-      (tr "unmarked binding: ~a~
+    (unless (ignorable-variable? (sp::binding-variable binding))
+      (let* ((individual (sp::binding-body binding))
+             (variable (sp::binding-variable binding))
+             (value (sp::binding-value binding))
+             (subcats (stable-sort ; prefer shorter words
+                       (typecase value
+                         ((or sp::referential-category sp::individual)
+                          (sp::find-subcat-labels value variable individual)))
+                       #'< :key (lambda (label)
+                                  (etypecase label
+                                    ((or string symbol)
+                                     (length (string label)))
+                                    ((or sp::word sp::polyword)
+                                     (length (sp::pname label)))))))
+             (prep (or (find-if #'sp::word-p subcats) ; prefer single words
+                       (find-if #'sp::polyword-p subcats))))
+        (tr "unmarked binding: ~a~
          ~%  i = ~a var = ~a pos = ~a" binding individual variable pos)
-      (cond ((eql value sp::**lambda-var**)) ;; effectively a trace
-            ((or (eql variable (sp::subject-variable individual))
-                 (find :subject subcats))
-             (if (current-position-p 'complement-of-be)
-               (attach-pp "by" value dtn pos) ; passive subject
-               (attach-subject value dtn)))
-            ((or (eql variable (sp::object-variable individual))
-                 (find :object subcats))
-             (attach-object value dtn))
-            ((sp::itypep value 'sp::attribute-value) ; a modifier like 'red'
-             (tr "attribute-value: ~a" value)
-             (attach-adjective value dtn pos))
-            (prep
-             (tr "Preposition: ~a ~a" prep value)
-             (attach-pp (word-for prep 'preposition) value dtn pos))
-            ((find :thatcomp subcats)
-             (tr "thatcomp: ~a" value)
-             (make-adjunction-node
-              (make-lexicalized-attachment 'restrictive-relative-clause value)
-              dtn))
-            ((find :m subcats)
-             (tr "M subcat label: ~a" value)
-             (attach-adjective value dtn pos))
-            (t (unless (ignorable-variable? variable)
-                 (tr "No handler for unmarked binding ~a" variable))
-               nil))))
+        (cond ((eql value sp::**lambda-var**)) ;; effectively a trace
+              ((or (eql variable (sp::subject-variable individual))
+                   (find :subject subcats))
+               (if (current-position-p 'complement-of-be)
+                 (attach-pp "by" value dtn pos) ; passive subject
+                 (attach-subject value dtn)))
+              (prep ;; should at least precede object check
+               (tr "Preposition: ~a ~a" prep value)
+               (attach-pp (word-for prep 'preposition) value dtn pos))
+              ((or (eql variable (sp::object-variable individual))
+                   (find :object subcats))
+               (attach-object value dtn))
+              ((sp::itypep value 'sp::attribute-value) ; a modifier like 'red'
+               (tr "attribute-value: ~a" value)
+               (attach-adjective value dtn pos))
+              ((find :thatcomp subcats)
+               (tr "thatcomp: ~a" value)
+               (make-adjunction-node
+                (make-lexicalized-attachment 'restrictive-relative-clause value)
+                dtn))
+              ((find :m subcats)
+               (tr "M subcat label: ~a" value)
+               (attach-adjective value dtn pos))
+              (t 
+               (tr "No handler for unmarked binding ~a" variable))))))
   
   (:method (binding (var-name (eql 'sp::adverb)) dtn pos)
     "Attach an adverb."
@@ -227,7 +233,6 @@
   
   (:method (binding (var-name (eql 'sp::has-determiner)) dtn pos)
     "Attach a determiner."
-    (declare (ignore pos))
     (tr "Binding var is has-determiner: ~a" binding)
     (case (sp::cat-name (sp::itype-of (sp::binding-value binding)))
       (sp::a (initially-indefinite dtn))
@@ -237,7 +242,11 @@
   (:method (binding (var-name (eql 'sp::modal)) dtn pos)
     "Attach a modal."
     (tr "Binding var is modal: ~a" binding)
-    (add-accessory dtn :tense-modal (word-for (sp::binding-value binding) pos) t))
+    ;;(break "modal")
+    (add-accessory dtn ;; at least use add-feature
+                   :tense-modal
+                   (word-for (sp::binding-value binding) pos)
+                   t))
   
   (:method (binding (var-name (eql 'sp::modifier)) dtn pos)
     "Attach a modifier as an adjective."

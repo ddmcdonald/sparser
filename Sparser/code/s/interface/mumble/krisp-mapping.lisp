@@ -127,6 +127,7 @@
      If we can't then we'll arbitrarily take the first one"
     (let ((consistent-rdata (filter-rdata-by-pos rdata pos)))
       (cond
+        ((null consistent-rdata) nil)
         ((null (cdr consistent-rdata))
          (select-realization (car consistent-rdata) i pos))
         ((equal consistent-rdata rdata)
@@ -194,7 +195,8 @@
    to determine what is the appropriate part of speech to use.
    (For individuals embedded in the phrase we also look at constraints
    on its slot. For individuals at top-level all options are
-   possible so linguistic context provides no constraints.")
+   possible so linguistic context provides no constraints.
+   Returns a mumble part-of-speech symbol.")
   (:method ((i sp::individual))
     "First determine our options by looking at the range of options
      provided by the resources. Then look for bound variables that are
@@ -222,7 +224,7 @@
         (when (null remainder)
           (error "All realization resources for ~a~%ruled out by context" i))
         (when (null (cdr remainder))
-          (return-from determine-pos (car remainder)))
+          (return-from determine-pos (lookup-pos (car remainder))))
 
         ;; Make an educated guess based on preferences
         (let ((remaining-pos
@@ -290,6 +292,23 @@
         (slot-label first))))
   (:method ((w word))
     (car (word-labels w))))
+
+;;;----------------------------
+;;; properties of the resource
+;;;----------------------------
+
+(defgeneric get-parameters (item)
+  (:documentation "Return the parameters on the phrase
+    of this resource")
+  (:method ((dtn derivation-tree-node))
+    (get-parameters (resource dtn)))
+  (:method ((lp lexicalized-phrase))
+    (get-parameters (phrase lp)))
+  (:method ((p phrase))
+    (parameters-to-phrase p)))
+
+
+
 
 (defun all-the-phrases ()
   (members (mcatalog (mtype 'phrase))))

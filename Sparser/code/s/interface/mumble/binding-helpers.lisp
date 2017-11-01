@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "binding-helpers"
 ;;;   Module:  "/interface/mumble/"
-;;;  version:  September 2017
+;;;  version:  October 2017
 
 ;; initiated 7/25/17 to hold all the auxiliary subroutines of the
 ;; realization procesure.
@@ -44,9 +44,19 @@
        (null (dominating-clause)))
       (t nil))))
 
+(defun display-current-position (&optional (stream *standard-output*))
+  (let* ((slot (current-position))
+         (toplevel? (unless slot (current-position-is-toplevel?))))
+    (format stream "~&Current position: ")
+    (cond
+      (slot (format stream "[~a]" (name slot)))
+      (toplevel? (format stream "toplevel"))
+      (t (format stream "unknown")))))
 
 
-;;--- grammatical constraint information
+;;;------------------------------------
+;;; grammatical constraint information
+;;;------------------------------------
 
 (defparameter *slot-name-part-of-speech-table*
   '((turn (verb noun adjective adverb))
@@ -91,8 +101,8 @@
 
 (defparameter *trace-archie* nil)
 
-(defun sp::trace-realize () (setq *trace-archie* t))
-(defun sp::untrace-realize () (setq *trace-archie* nil))
+(defun sp::trace-archie () (setq *trace-archie* t))
+(defun sp::untrace-archie () (setq *trace-archie* nil))
 
 (defun tr (string &rest args)
   (when *trace-archie*
@@ -153,6 +163,7 @@
      (question ;; invert the aux
       top-dtn))))
 
+
 (defun realize-copular-predication (i)
   ;;(sp::with-bindings ((:sparser) item value prep predicate) i <= getting nil's
     ;;/// The predicate variable holds the tense, e.g.
@@ -172,46 +183,80 @@
           (attach-object value dtn)
           (attach-complement value dtn)))
       (when prep (attach-preposition prep dtn))
-      
       (when predicate
-        (attach-verb predicate dtn)) ;; refactor tense
-
+        (attach-verb predicate dtn))
+      (verb-aux-handler dtn i)
       dtn)))
 
 
+;;;-------------------------------------------------------------
+;;; additional handling to sort out potential issues in clauses
+;;;-------------------------------------------------------------
 
-
-
-(defgeneric tense (object)
-  (:documentation "Determine and attach tense to the given object.
-    Uses the presence of one of the tense categories as the marker
-    and uses standard Mumble functions to implement the change to
-    the DTN.   After method looks at variables that are/aren't
-    present on the individual (referent of the dtn) to do additional
-    work.")
-  (:method ((dtn derivation-tree-node) &aux (referent (referent dtn)))
-    "Attach tense to the given DTN by inspecting its referent."
+(defgeneric verb-aux-handler (dtn i)
+  (:documentation "Called from realize-bindings-via-common-path 
+    and simpler clause-creating routines. Handle things that are
+    common to any verb-centric realization.")
+  (:method ((dtn derivation-tree-node) (i sp::individual))
     (when (verb-based-realization dtn)
-      (cond ((sp::value-of 'sp::past referent)
+      ;; Look for a specified tense
+      (cond ((sp::value-of 'sp::past i)
              (past-tense dtn))
-            ((sp::value-of 'sp::progressive referent)
+            ((sp::value-of 'sp::progressive i)
              (progressive dtn))
-            ((sp::value-of 'sp::perfect referent)
+            ((sp::value-of 'sp::perfect i)
              (had dtn))
-            ((current-position-p 'adjective 'complement-of-be 'relative-clause)
-             (past-tense dtn))
-            (t (present-tense dtn)))))
-  (:method :after ((dtn derivation-tree-node) &aux (referent (referent dtn)))
-    "Interpret a referent with an object but no subject as an imperative."
-    (when (and (sp::individual-p referent)
-               (current-position-is-top-level?) ;; e.g. not on relative clauses
-               (sp::missing-subject-vars referent)
-               (let ((object-var (sp::bound-object-var referent)))
-                 (and object-var (not (eq (sp::value-of object-var referent)
-                                          sp::**lambda-var**)))))
-      (when (verb-based-realization dtn)
-        (command dtn)))))
+            ;; ((current-position-p 'adjective 'complement-of-be 'relative-clause)
+            ;;  (past-tense dtn)) -- moved just below
+            (t (unless (get-accessory-value :tense-modal dtn) ;; e.g. a modal
+                 (present-tense dtn))))
+      ;; Look at the status of its variables.
+      ;; If some/all are abstract/missing then depending on the context
+      ;; we need to make various adjustments
+      (let ((parameters (get-parameters dtn)) ;; parameter objects
+            (slot (current-position))
+            (object (get-object i)) ;; value of object var
+            (subject (get-subject i)))
+        (cond
+          ((current-position-is-top-level?)
+           ;; ??? why did we check for a concrete object?
+           (when (sp::missing-subject-vars i)
+             (command dtn)))
+          ((current-position-p 'relative-clause)
+           (let ((head (head-of-relative-clause slot)))
+             (declare (ignore head)) ;; need more info in predication
+             (when (and object
+                        (sp::is-lambda-var object)) ;; =? the head
+               (passive dtn)
+               (when (and subject
+                          (explicit-subject dtn))
+                 ;; That subject will be clipped by the relative-clause
+                 ;; transformation. As good a reason as any for a by-phrase
+                 ;; since we're alrady passivized this clause.
+                 (attach-pp "by" subject dtn 'verb)))))
+          ;; complement-of-be -- leads to by-phrase w/in complement-of-be
+          ;; adjective
+          ))
+      dtn)))
 
+
+(defgeneric includes-tense? (idividual)
+  (:documentation "Do the bindings on the individual 
+    include any of the tense carriers?")
+  (:method ((i sp::individual))
+    (let* ((bindings (sp::indiv-binds i))
+           (variables (loop for b in bindings collect (sp::binding-variable b)))
+           (names (loop for v in variables collect (sp::var-name v))))
+      (or (memq 'sp::past names) ;;/// stage in syntax/tense.lisp
+          (memq 'sp::progressive names)
+          (memq 'sp::perfect names)
+          (memq 'sp::present names)))))
+
+
+
+;;;------------------------------------------
+;;; Subroutines for attaching various things
+;;;------------------------------------------
 
 (defun attach-adjective (adjective dtn pos)
   (let ((adjp (make-dtn :referent adjective
@@ -242,8 +287,16 @@
     (make-complement-node 'prep-object object pp)
     (make-adjunction-node (make-lexicalized-attachment ap pp) dtn)))
 
+
 (defun attach-verb (verb dtn)
-  (make-complement-node 'v verb dtn))
+  "The individual representing the verb can be carrying additional
+   bindings that need to be expressed, such as negation"
+  (make-complement-node 'v verb dtn)
+  (when (and (sp::individual-p verb) ;; vs. a word
+             (sp::indiv-binds verb)) ;; has some bindings
+    (loop-over-bindings verb 'verb dtn))
+  dtn)
+
 
 (defun possibly-pronoun (item)
   "Wrapper around subject, object, and complement below."
@@ -273,7 +326,9 @@
   (make-complement-node 'p prep dtn))
 
 
-;;--- tests
+;;;-------
+;;; tests
+;;;-------
 
 (defun heavy-predicate-p (i)
   "Return true if the individual is too heavy to be used as a premodifier.
@@ -281,7 +336,8 @@
   (and (sp::individual-p i)
        ;; Could it be a pp or a clause that has a subj or obj that's not lambda
        ;;/// how to test pp case -- e.g. for location?
-       (includes-real-subj/obj? i)))
+       (or (includes-real-subj/obj? i)
+           (includes-tense? i))))
 
 ;; Original definition. Doesn't deal properly with "phosphorylated MEK"
 ;; where that instance of 'phosphorylated' should be deemed light.
@@ -290,29 +346,59 @@
                         (eq (sp::var-name (sp::binding-variable b)) 'sp::name)))
                           (sp::indiv-binds i))
 
+;;--- accessors
+
+(defgeneric get-subject (item)
+  (:method ((i sp::individual))
+    (loop for v in (sp::find-subject-vars i)
+       as value = (sp::value-of v i)
+       when value do (return value))))
+
+(defgeneric get-object (item)
+  (:method ((i sp::individual))
+    (loop for v in (sp::find-object-vars i)
+       as value = (sp::value-of v i)
+       when value do (return value))))
+
+(defgeneric explicit-subject (item)
+  (:documentation "Is the subject parameter a bound complement
+     in the dtn?")
+  (:method ((dtn derivation-tree-node))  ;;  get-parameter-binding
+    (let ((s (parameter-named 's)))
+      (loop for node in (complements dtn)
+         when (eq (phrase-parameter node) s)
+         collect (value node)))))
+
 (defun includes-real-subj/obj? (i)
   "Discounts binding to the lambda variable as 'real'"
-  (let ((subject (loop for v in (sp::find-subject-vars i)
-                    as value = (sp::value-of v i)
-                    when value do (return value)))
+  (let ((subject (get-subject i))
         ;; ignoring possibilty of intransitives since we don't know
         ;; what the realization really would be
-        (object (loop for v in (sp::find-object-vars i)
-                   as value = (sp::value-of v i)
-                   when value do (return value))))
+        (object (get-object i)))
     (when subject
-      (when (eq subject sp::**lambda-var**)
+      (when (sp::is-lambda-var subject)
         (setq subject nil)))
     (when object
-      (when (eq object sp::**lambda-var**)
+      (when (sp::is-lambda-var object)
         (setq object nil)))
     (or subject object)))
 
+(defun wrap-if-abstracted (value)
+  "Called in loop-over-some-bindings to allow some value
+   to go through to the parameter, even if its realization
+   is the empty string."
+  (if (sp::is-lambda-var value)
+    (build-trace value)
+    value))
+
+
+
+;;--- ignore these
 
 (defparameter *variables-to-ignore-for-attach-by-binding*
   '(sp::present
     sp::raw-text  sp::uid
-    sp::name
+    sp::name sp::word
     )
   "Holds list of variables that attach-via-bindings needn't bother
    to look at because either they don't contribute to the
