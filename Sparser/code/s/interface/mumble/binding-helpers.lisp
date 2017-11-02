@@ -149,12 +149,13 @@
 (defun realize-wh-question/attribute (i)
   (let ((wh-category (sp::value-of 'sp::wh i))
         (attribute (sp::value-of 'sp::attribute i))
+        (other (sp::value-of 'sp::other i))
         (statement (sp::value-of 'sp::statement i))
         (top-dtn (make-dtn :referent i :resource (phrase-named 'comp-s)))
         (wh-dtn (make-dtn :resource (phrase-named 'wh-term))))
     ;; setup wh phrase
     (make-complement-node 'wh wh-category wh-dtn)
-    (make-complement-node 'q attribute wh-dtn)
+    (make-complement-node 'q (or attribute other) wh-dtn)
     ;; setup top
     (make-complement-node 'wh wh-dtn top-dtn)
     (make-complement-node 's statement top-dtn)
@@ -162,6 +163,16 @@
     (discourse-unit ;; supply the "?" as well as capitalizing
      (question ;; invert the aux
       top-dtn))))
+
+(defun realize-wh-question (i)
+  (let ((wh-category (sp::value-of 'sp::wh i))
+        (statement (sp::value-of 'sp::statement i))
+        (top-dtn (make-dtn :referent i :resource (phrase-named 'comp-s)))
+        (wh-dtn (make-dtn :resource (phrase-named 'wh))))
+    (make-complement-node 'wh wh-category wh-dtn)
+    (make-complement-node 'wh wh-dtn top-dtn)
+    (make-complement-node 's statement top-dtn)
+    (discourse-unit (question top-dtn))))
 
 
 (defun realize-copular-predication (i)

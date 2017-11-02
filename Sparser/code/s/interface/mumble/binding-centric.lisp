@@ -46,9 +46,14 @@
         ((sp::itypep i 'sp::polar-question)
          (tr "Realizing polar-question ~a" i)
          (discourse-unit (question (realize (sp::value-of 'sp::statement i)))))
+
         ((sp::itypep i 'sp::wh-question/attribute)
          (tr "Realizing wh/attribute question ~a" i)
          (realize-wh-question/attribute i))
+
+        ((sp::itype i 'sp::wh-question)
+         (tr "Realizing wh question ~a" i)
+         (realize-wh-question i))
 
         ((sp::itypep i 'sp::copular-predication)
          (tr "Realizing copular-predication ~a" i)

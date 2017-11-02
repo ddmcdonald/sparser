@@ -45,10 +45,11 @@
 (defun lexical-subject ()
   (let* ((subject-position
 	   (cdr (assoc 'subject (position-table *current-phrasal-root*))))
-	 (contents (contents subject-position)))
-    (typecase contents
-      (ttrace nil)
-      (t contents))))
+	 (contents (when subject-position (contents subject-position))))
+    (when contents
+      (typecase contents
+        (ttrace nil)
+        (t contents)))))
 
 (defun process-tense-modal-accessory (value)
   (let* ((ap (return-tense-modal-attachment-point))
