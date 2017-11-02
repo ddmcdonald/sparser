@@ -46,7 +46,7 @@
 
 (defun display-current-position (&optional (stream *standard-output*))
   (let* ((slot (current-position))
-         (toplevel? (unless slot (current-position-is-toplevel?))))
+         (toplevel? (when slot (current-position-is-top-level?))))
     (format stream "~&Current position: ")
     (cond
       (slot (format stream "[~a]" (name slot)))

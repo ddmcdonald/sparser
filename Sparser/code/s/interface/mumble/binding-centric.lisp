@@ -231,11 +231,6 @@
               (t 
                (tr "No handler for unmarked binding ~a" variable))))))
   
-  (:method (binding (var-name (eql 'sp::adverb)) dtn pos)
-    "Attach an adverb."
-    (tr "Binding var is adverb: ~a" binding)
-    (attach-adjective (sp::binding-value binding) dtn pos))
-  
   (:method (binding (var-name (eql 'sp::has-determiner)) dtn pos)
     "Attach a determiner."
     (tr "Binding var is has-determiner: ~a" binding)
@@ -243,21 +238,15 @@
       (sp::a (initially-indefinite dtn))
       (sp::the (always-definite dtn))
       (sp::that (attach-adjective "that" dtn 'noun))))
-  
-  (:method (binding (var-name (eql 'sp::modal)) dtn pos)
-    "Attach a modal."
-    (tr "Binding var is modal: ~a" binding)
-    ;;(break "modal")
-    (add-accessory dtn ;; at least use add-feature
-                   :tense-modal
-                   (word-for (sp::binding-value binding) pos)
-                   t))
+
+  (:method (binding (var-name (eql 'sp::is-plural)) dtn variable)
+    (plural dtn))
   
   (:method (binding (var-name (eql 'sp::modifier)) dtn pos)
     "Attach a modifier as an adjective."
     (tr "Binding var is modifier: ~a" binding)
     (attach-adjective (sp::binding-value binding) dtn pos))
-
+    
   (:method (binding (var-name (eql 'sp::qualifier)) dtn pos)
     "Attach a qualifier, probably to an adjective head"
     ;; Canonical example is "quite certain", where 'quite' is an intensifier
@@ -268,11 +257,6 @@
         (add-attachment 'intensifier value dtn)
         (warn "Don't know what to do with qualifier binding ~a" binding))))
   
-  (:method (binding (var-name (eql 'sp::negation)) dtn pos)
-    "Attach a negation."
-    (tr "Binding var is negation: ~a" binding)
-    (negate dtn))
-  
   (:method (binding (var-name (eql 'cl:number)) dtn pos) ;; "a three step staircase"
     "Attach a numeric quantifier as an adjective so it retains its determiner."
     (tr "Binding var is number: ~a" binding)
@@ -282,6 +266,26 @@
          (format nil "~:r" (sp::value-of 'sp::value (sp::value-of 'sp::number number)))
          (format nil "~r" (sp::value-of 'sp::value number))))
      dtn pos))
+  
+  (:method (binding (var-name (eql 'sp::adverb)) dtn pos)
+    "Attach an adverb."
+    (tr "Binding var is adverb: ~a" binding)
+    (attach-adjective (sp::binding-value binding) dtn pos))
+  
+  (:method (binding (var-name (eql 'sp::modal)) dtn pos)
+    "Attach a modal."
+    (tr "Binding var is modal: ~a" binding)
+    ;;(break "modal")
+    (add-accessory dtn ;; at least use add-feature
+                   :tense-modal
+                   (word-for (sp::binding-value binding) pos)
+                   t))
+
+  (:method (binding (var-name (eql 'sp::negation)) dtn pos)
+    "Attach a negation."
+    (tr "Binding var is negation: ~a" binding)
+    (negate dtn))
+
   
   (:method (binding (var-name (eql 'sp::position)) dtn pos)
     "Attach a position as a premodifier."

@@ -309,9 +309,23 @@ as specified by the *CURRENT-PHRASAL-ROOT*. Default is THIRD."
   (let ((root (cdr (assoc 'np (position-table *current-phrasal-root*)))))
     (case (state-value :number (state (context-object root)))
       (plural (send-to-output-stream (or (irregular-form 'plural word)
-                                         (append-suffix word "s" '("y" "ies")))
+                                         (pluralize-ending-in-y word)
+                                         (append-suffix word "s"))
                                      word))
       (otherwise (send-to-output-stream (pname word) word)))))
+
+(defun pluralize-ending-in-y (word)
+  "If the noun ends in 'y' we look at the previous letter to decide
+   whether to just add 's' (y after a vowel) or change the y to i and
+   add es (after a consonant -- not a vowel)."
+  (let* ((pname (etypecase word (string word) (word (pname word))))
+         (length (length pname)))
+    (when (eql #\y (elt pname (1- length)))
+      (let ((char-before-y (elt pname (- length 2))))
+        (if (memq char-before-y (list #\a #\e #\i #\o #\u))
+          (string-append pname "s")
+          (string-append (subseq pname (1-length)) "ies"))))))
+
 
 ;################################################################
 ;                PRONOUN MORPHOLOGY
