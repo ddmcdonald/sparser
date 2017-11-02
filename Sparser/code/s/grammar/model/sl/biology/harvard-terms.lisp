@@ -33,8 +33,10 @@ to not muddy NLG story on the adjective. ddm 9/12/17
 
 (adj "confident" :super certain
  :realization (:adj "confident" :mumble ("confident" adj-that-comp :c statement)))
-(adj "sure" :super certain)
-(adj "uncertain" :super certain)
+(adj "sure" :super certain
+     :realization (:adj "sure" :mumble ("sure" adj-that-comp :c statement)))
+(adj "uncertain" :super certain
+     :realization (:adj "uncertain" :mumble ("uncertain" adj-that-comp :c statement)))
 
 ;; Need a notion of polarity on certainty.
 ;; If it's via a mixin, we can have a method on "not" that
@@ -85,7 +87,7 @@ of 'certain'. Not particularly thought through |#
   :specializes certainty ;;bio-relation
   :realization
     (:adj "unlikely"
-     :thatcomp theme))
+          :thatcomp theme))
 ;; almost never an adverb in our texts
 ;; need a good way to distinguish the cases
 ;; "is likely to ..." vs "is likely due..."
