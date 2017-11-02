@@ -37,8 +37,8 @@
   (let ((value (cdr (assoc parameter *phrase-parameter-argument-list*))))
     ;; (unless value
     ;;  This is useful when debugging odd cases, but there are situations
-    ;;  where the genuinely isn't a value for a mapped parameter.
-    ;;  One of the more esoteric traces could be considered, but that
+    ;;  where there genuinely isn't a value for a mapped parameter.
+    ;;  One of the more esoteric trace types could be considered, but that
     ;;  would need substantial motivation
     ;;   (error "NULL value for parameter ~a" parameter))
     (landmark 'value-of-parameter parameter value)
@@ -354,6 +354,9 @@
 
   (:method ((emtpy null) &optional (stream *standard-output*))
     (format stream "NIL -> "))
+
+  (:method ((dtn derivation-tree-node) &optional (stream *standard-output*))
+    (format stream "~a ^ " dtn))
 
   (:method ((unknown t) &optional (stream *standard-output*))
     (declare (ignore stream))
