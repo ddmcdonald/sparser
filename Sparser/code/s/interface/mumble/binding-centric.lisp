@@ -270,7 +270,7 @@
   (:method (binding (var-name (eql 'sp::adverb)) dtn pos)
     "Attach an adverb."
     (tr "Binding var is adverb: ~a" binding)
-    (attach-adjective (sp::binding-value binding) dtn pos))
+    (attach-adverb (sp::binding-value binding) dtn pos))
   
   (:method (binding (var-name (eql 'sp::modal)) dtn pos)
     "Attach a modal."

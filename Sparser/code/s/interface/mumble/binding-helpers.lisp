@@ -288,6 +288,33 @@
     (make-adjunction-node (make-lexicalized-attachment ap adjp) dtn)))
 
 
+(defun attach-adverb (i dtn pos)
+  "Add an adverb (i) as an adjunct to the dtn. The choice of AP 
+   depends XX"
+  (flet ((retrieve-m-adverb (i)
+           (let ((lp (find-lexicalized-phrase i)))
+             (when lp
+               (extract-lexicalized-word lp 'adv)))))
+    (let ((ap (ecase pos ;; of the dtn we're adding to
+                 (adjective ;; i.e. an adjp-head slot
+                  'adverbial-preceding)))
+          (adverb (retrieve-m-adverb i)))
+      (if (or (sp::indiv-binds i)
+              (null adverb))
+        ;; It's got properties we'll probably express, so stash
+        ;; the Krisp into a phrase. Also applies if we need to
+        ;; kick the can down the road on the lexical resource.
+        (let ((adv-dtn (make-dtn :referent adverb
+                                 :resource (phrase-named 'advp))))
+          (make-complement-node 'adv i adv-dtn)
+          (add-attachment ap adv-dtn dtn))
+        (else
+          ;; It's simple and we should go straight to the adverb
+         (add-attachment ap adverb dtn)))
+      dtn)))
+
+
+
 (defun attach-pp (prep object dtn pos)
   (let ((pp (make-dtn :resource (prep prep)))
         (ap (ecase pos

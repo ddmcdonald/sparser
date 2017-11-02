@@ -480,6 +480,26 @@ a message to be expressed. See discussion in make.lisp |#
           lp)))))
 
 
+;;;-------------------------------------
+;;; deconstructing a lexicalized phras
+;;;-------------------------------------
+
+(defgeneric extract-lexicalized-word (phrase parameter)
+  (:documentation "Given a lexicalized phrase, return the word that is
+    bound to the indicated parameter, or nil if the parameter isn't bound.")
+  (:method ((lp saturated-lexicalized-phrase) (name symbol))
+    (let ((parameter (parameter-named name)))
+      (assert parameter)
+      (extract-lexicalized-word lp parameter)))
+  (:method ((lp saturated-lexicalized-phrase) (p parameter))
+    (let ((pvp-pairs (bound lp)))
+      (loop for pair in pvp-pairs
+         as parameter = (phrase-parameter pair)
+         when (eq parameter p)
+         return (value pair)))))
+
+
+
 ;;;-------------------------
 ;;; gensym names for things
 ;;;-------------------------
