@@ -79,6 +79,7 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
     ;; staircase. With "lets'" we haven't even started
     :mixins (agent)
     :binds ((artifact artifact)) ;; what they build
+    :restrict ((agent physical-agent))
     :realization (:verb ("build" :past-tense "built")
                   :etf (svo-passive)
                   :s agent
