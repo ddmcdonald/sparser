@@ -82,7 +82,8 @@
                          attribute-var
                          (value-of 'variable wh))))
     (let ((q (define-an-individual
-                 (if attribute 'wh-question/attribute 'wh-question)
+                 (if (or attribute other)
+                   'wh-question/attribute 'wh-question)
                  :wh wh
                  :var var-to-use
                  :statement statement)))
@@ -412,7 +413,8 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
               (return))
              (t (push next-edge other-edges)))
              
-           (setq next-pos (chart-position-after next-pos)
+            (setq next-pos (chart-position-after
+                            (if next-edge (pos-edge-ends-at next-edge) next-pos))
                  next-word (pos-terminal next-pos)
                  next-edge (highest-edge (pos-starts-here next-pos))))
 
