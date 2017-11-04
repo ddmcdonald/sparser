@@ -42,6 +42,17 @@
              (format stream "~&~A~%" item))
         finally (terpri stream)))
 
+(defun list-length* (list)
+  "Return the length of LIST even if it is not a proper list.
+Does not handle circular lists."
+  (labels ((list-length* (list accumulator)
+             (declare (fixnum accumulator) (optimize speed))
+             (typecase list
+               (null accumulator)
+               (atom (the fixnum (1+ accumulator)))
+               (cons (list-length* (cdr list) (1+ accumulator))))))
+    (list-length* list 0)))
+
 (defun tail-cons (item list)
   "Destructively cons an item onto the end of a list."
   (if list

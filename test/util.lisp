@@ -89,6 +89,16 @@ C
 
 ")
 
+(deftest list-length*
+  (values (list-length* nil)
+          (list-length* :a)
+          (list-length* '(:a :b))
+          (list-length* '(:a . :b)))
+  0
+  1
+  2
+  2)
+
 (deftest tail-cons
   (tail-cons :x (list :a :b :c))
   (:a :b :c :x))

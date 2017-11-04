@@ -29,6 +29,7 @@
            #:append-new
            #:mapappend
            #:pl
+           #:list-length*
            #:tail-cons
            #:appendf #:nconcf
            #:quote-every-other-one
