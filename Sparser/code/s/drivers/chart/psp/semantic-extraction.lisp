@@ -736,8 +736,9 @@ in cwc-integ/spire/interface/sparser.lisp
           (not *print-sem-tree*)
           (not (or *for-spire* *sentence-results-stream*)))
      (if (collection-p i)
-      (value-of 'items i)
-      (value-of 'value i)))
+       (value-of 'items i)
+       (or (value-of 'value i)
+           (indiv-or-type i))))
    	
     ((and (eq script :biology)
           (itypep i category::protein-family) ;; get rid of bio-family -- misnamed...
