@@ -266,6 +266,7 @@
         (np 'noun)
         (preposition 'preposition)
         (pp 'preposition)
+        (qp 'quantifier)
         (otherwise
          (warn "Lookup-pos: No part of speech option defined for ~a" n)
          'noun))))

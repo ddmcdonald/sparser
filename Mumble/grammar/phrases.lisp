@@ -1615,7 +1615,7 @@
   (qp
    quantifier q))
 
-(define-phrase QpNpcomop (q np)  ;; e.g. [whp "How many"] [c "rabbits"]
+(define-phrase QpNpcomp (q np)  ;; e.g. [whp "How many"] [c "rabbits"]
   (qp
    quantifier q
    npcomp np))

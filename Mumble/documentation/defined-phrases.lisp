@@ -108,7 +108,7 @@ determiner-phrase (d) ;; only  for understanding or fixed phrase
 
 QP (q)  ;; quantifier phrase
 
-QpNpcomop (q np)  ;; e.g. [whp "How many"] [c "rabbits"] /// spelling?
+QpNpcomp (q np)  ;; e.g. [whp "How many"] [c "rabbits"]
 
 
 WHP (wh q)  ;; WH phrase -- "What else", "How many"

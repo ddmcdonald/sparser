@@ -133,18 +133,45 @@
 
 ;;---- dtn sources for particular cases
 
-(defun realize-number (i)
+(defun realize-number (i &key (ordinal (sp::itypep i 'sp::ordinal)))
   "Make a dtn for simple number words. For long, multi-word numbers recover
    the algorithm from grammar/numbers.lisp"
-  (let* ((lisp-number (sp::value-of 'sp::value i))    
-         (number-string (format nil "~r" lisp-number))
+  (tr "Realize-number: ~a" i)
+  (cond ((numberp i)
          ;; (format nil "~r" 1325) => "one thousand three hundred twenty-five"
-         (word (word-for-string number-string 'number))
-         (phrase (phrase-named 'bare-np-head))
-         (dtn (make-dtn :referent i :resource phrase)))
-    (tr "Realize-number: ~a" i)
-    (make-complement-node 'n word dtn)
-    dtn))
+         ;; (format nil "~:r" 1325) => "one thousand three hundred twenty-fifth"
+         (format nil (if ordinal "~:r" "~r") i))
+        ((sp::value-of 'sp::number i) ; e.g., a multiplier like "10-fold"
+         (let* ((number (realize-number (sp::value-of 'sp::number i)
+                                        :ordinal ordinal))
+                (noun (sp::rdata-head-word i :common-noun))
+                (np (make-dtn :referent i
+                              :resource (phrase-named 'number-np))))
+           (make-complement-node 'number number np)
+           (when noun (make-complement-node 'n noun np))
+           np))
+        ((sp::value-of 'sp::value i) ; e.g., an ordinal or cardinal number
+         (let* ((number (realize-number (sp::value-of 'sp::value i)
+                                        :ordinal ordinal))
+                (word (word-for-string number 'number))
+                (np (make-dtn :referent i
+                              :resource (phrase-named 'bare-np-head))))
+           (make-complement-node 'n word np)
+           np))
+        ((sp::value-of 'sp::quantifier i) ; e.g., "many orders of magnitude"
+         (let* ((quantifier (sp::value-of 'sp::quantifier i))
+                (noun (sp::rdata-head-word i :common-noun))
+                (np (make-dtn :referent noun
+                              :resource (phrase-named 'bare-np-head)))
+                (qp (make-dtn :referent i
+                              :resource (phrase-named 'QpNpcomp))))
+           (make-complement-node 'n noun np)
+           (make-complement-node 'q quantifier qp)
+           (make-complement-node 'np np qp)
+           qp))
+        ((sp::value-of 'sp::has-determiner i) ; e.g., "an order of magnitude"
+         (sp::bind-variable 'sp::number 1 i))
+        (t (error "Don't know how to realize number ~a" i))))
 
 (defun realize-wh-question/attribute (i)
   (let ((wh-category (sp::value-of 'sp::wh i))

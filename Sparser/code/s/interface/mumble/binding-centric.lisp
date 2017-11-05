@@ -260,12 +260,8 @@
   (:method (binding (var-name (eql 'cl:number)) dtn pos) ;; "a three step staircase"
     "Attach a numeric quantifier as an adjective so it retains its determiner."
     (tr "Binding var is number: ~a" binding)
-    (attach-adjective
-     (let ((number (sp::binding-value binding)))
-       (if (sp::itypep number 'sp::ordinal)
-         (format nil "~:r" (sp::value-of 'sp::value (sp::value-of 'sp::number number)))
-         (format nil "~r" (sp::value-of 'sp::value number))))
-     dtn pos))
+    (attach-adjective (realize-number (sp::binding-value binding))
+                      dtn pos))
   
   (:method (binding (var-name (eql 'sp::adverb)) dtn pos)
     "Attach an adverb."

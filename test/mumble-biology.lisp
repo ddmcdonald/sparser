@@ -70,6 +70,10 @@ Instead we get "RASN" -- changing all the tests to reflect that
   (mumble-says "Double the amount of BRAF.") ; missing "total"
   "double the amount of BRAF")
 
+(deftest (say increase braf 10-fold)
+  (mumble-says "Increase the amount of BRAF by 10-fold.")
+  "increase by ten fold the amount of BRAF")
+
 (deftest (say assume no nras)
   (mumble-says "Assume there is no NRAS in the system.")
   "assume there is no RASN in the system")
