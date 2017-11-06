@@ -281,7 +281,7 @@
         ((eq ref-exp category::collection)
          (when (category-p *referent*)
            (setq *referent* (individual-for-ref *referent*)))
-         (bind-dli-variable 'is-plural category::common-noun/plural *referent*))
+         (bind-dli-variable 'is-plural t *referent*))
         (t *referent*)))
 
 
