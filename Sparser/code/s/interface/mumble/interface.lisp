@@ -115,14 +115,17 @@
       (get-lexicalized-phrase (sp::itype-of i) pos)))
 
 
-(defgeneric find-lexicalized-phrase (i)
+(defgeneric find-lexicalized-phrase (i &optional pos)
   (:documentation "Look in the places where a lexicalized phrase
    might be. Basically an 'or' of the other methods, but this
    packaging makes their tight coordination more obvious.
-   The fall-through to the type is needed for cases like 'block'.")
-  (:method ((i sp::individual))
+   When we know the target pos we can use the pos-specific
+   record. Othewise we fall-through to the type and pick
+   a pos according to an arbitrary order.")
+  (:method ((i sp::individual) &optional pos)
     (or (get-recorded-lexicalized-phrase i)
         (unwind-to-i-with-lp i)
+        (get-lexicalized-phrase (sp::itype-of i) pos)
         (find-category-lp (sp::itype-of i)))))
 
 (defgeneric get-recorded-lexicalized-phrase (i)
