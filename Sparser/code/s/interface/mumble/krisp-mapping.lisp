@@ -261,7 +261,7 @@
     (let ((name (name n)))
       (case name
         ((clause vp) 'verb)
-        (adv 'adverb)
+        ((advp adv) 'adverb)
         ((adjp ap) 'adjective)
         (np 'noun)
         (preposition 'preposition)

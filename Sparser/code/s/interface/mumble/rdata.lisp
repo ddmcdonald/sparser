@@ -257,6 +257,8 @@ and/or by which subcategorized arguments the individual binds.
     (or (indicates-tense? i)))
   (:method ((i individual) (pos (eql :adjective)))
     nil)
+  (:method ((i individual) (pos (eql :adverb)))
+    nil)
   (:method ((i individual) (pos (eql :preposition)))
     nil)
   (:method ((i individual) (pos T))
