@@ -253,6 +253,7 @@ by which this occurs.") |#
 
 ;; (p/s "Decrease the binding rate of NRAS and BRAF.")
 (delete-noun-cfr (resolve "rate")) ;;/// override it
+
 (define-category process-rate
  :specializes bio-scalar
  :binds ((components biological)
@@ -262,6 +263,25 @@ by which this occurs.") |#
      :for components
      :m process))
 (def-synonym process-rate (:noun "kinetics"))
+
+#| The parser will do "binding rate" compositionally, and will put
+the 'binding' in the process slot of the process-rate object.
+Unfortunately, generating from that requires coercing 'binding' 
+into a particple in order to provide an adjective realization,
+which if further than is worth going just now. (Same issue as we
+have with phosphorylated as a preposed modifier.) |#
+(define-category binding-rate
+  :specializes process-rate
+  :realization (:noun "binding rate"))
+
+(define-category dissociation-rate
+  :specializes process-rate
+  :realization (:noun "dissociation rate"))
+
+(define-category catalysis-rate
+  :specializes process-rate
+  :realization (:noun "catalysis rate"))
+
 
 ;; e.g. displayed sustained ERK phosphorylation
 (define-category sustained
@@ -277,19 +297,6 @@ by which this occurs.") |#
        :at level
        :above above-level))
 
-
-
-#|
-;; binding rate, dissociation rate, catalysis rate (from Ben Gyori)
-(define-category binding-rate :specializes process-rate
-		 :realization (:noun "binding rate"))
-
-(define-category dissociation-rate :specializes process-rate
-		 :realization (:noun "dissociation rate"))
-
-(define-category catalysis-rate :specializes process-rate
-		 :realization (:noun "catalysis rate"))
-|#
 
 
 ;;--- positive-bio-control
