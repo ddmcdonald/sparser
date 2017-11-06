@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "extensions"
 ;;;   Module:  "objects;model:categories:"
@@ -15,19 +15,25 @@
 ;;;----------------------------
 
 (defun handle-variable-restrictions (category restrictions)
-  ;; called from decode-category-parameter-list
-  (push-debug `(,category ,restrictions))
+  "Called from decode-category-parameter-list.
+   A restriction is expressed as a pair of variable name
+     and value restriction given in the usual form.
+   A category can not 'restrict' one of its own variables.
+     That doesn't make sense. It has to be inherited from one of
+     its supercategories (frequently a mixin).
+   We implement this by creating a new variable,
+     with the same name as the inherited one (which we record),
+     but with this new value restriction.
+   The new variables are added to the slots field of the category
+     after any variables that the category has already defined.
+   We add a tag to the old variable(s) -- :restricts -- and set
+     it to the new variable(s). On the category we set the
+     property :restrictions to the list of the new variables."
+
   (flet ((def-restriction (restriction)
-    #| A restriction is expressed as a pair of variable name
-       and value restriction given in the usual form. |#
            (let ((var-name (car restriction))
                  (exp (cadr restriction)))
-
-    #| A category cannot 'restrict' on of its own variables.
-       That doesn't make sense. It has to be inherited from one of
-       its supercategories (freequently a mixin). |#
              (when (find-variable-in-category var-name category)
-               (push-debug `(,category ,restrictions))
                (error "~a is a local variable bound by ~a~
                       ~%It does not make any sense to 'restrict' ~
                       a variable that is defined by the category."
@@ -35,7 +41,6 @@
              (let ((upper-var
                     (find-variable-for-category var-name category)))
                (unless upper-var
-                 (push-debug `(,category ,restrictions))
                  (error "None of the super categories of ~a ~
                          define a variable named ~a."
                         category var-name))
@@ -44,11 +49,7 @@
                ;; specific than the restriction its inheriting from?
                (let* ((restriction 
                        (resolve-variable-restriction exp))
-
-    #| So we can implement this by creating a new variable,
-       with the same name as the inherited one (which we record),
-       but with this new value restriction. |#
-               ;; see find/make-lambda-variable-for-category
+                      ;; see find/make-lambda-variable-for-category
                       (new-var
                        (make-lambda-variable
                         :name var-name
@@ -56,12 +57,6 @@
                         :category category)))
                  (setf (get-tag :restricts new-var) upper-var)
                  new-var)))))
-
-#|  One complication is with anything that uses the set of
-slots on the category as an easy saturation test, but since
-that's a naisent idea subject to change, and because we'll
-mark the category and the new variable to record their provinance
-it's not a deal breaker. |#
 
     (let ((restriction-variables
            (loop for r-exp in restrictions
@@ -76,10 +71,6 @@ it's not a deal breaker. |#
                     restriction-variables))
 
       restriction-variables)))
-
-
-  ;; create the store
-  ;; When the category is C, the restriction on variable V is R
 
 
 ;;;---------------

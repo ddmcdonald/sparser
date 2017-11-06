@@ -92,25 +92,32 @@
 
 
 (defun fill-inherited-vars (cat)
-  (if (not (itypep cat 'top)) ;; was (form-category? cat), but NUMBER has variables!
-      (setf (gethash cat *inherited-cat-variables*) (make-hash-table :size 2))
-      (let* ((sups (super-categories-of cat))
-             vars rvars
-             (var-ht (make-hash-table :size 40 :test #'eq)))
-        (loop for s in sups
-              do
-                (loop for v in (cat-slots s)
-                      do
-                        (push v vars)
-                        (when (get-tag :restricts v)
-                          (push (get-tag :restricts v) rvars))))
+  (if (not (itypep cat 'top))
+    (setf (gethash cat *inherited-cat-variables*)
+          (make-hash-table :size 2))
+    (let* ((sups (super-categories-of cat))
+           vars ;; collects all the variables
+           rvars ;; collects variables that have been restricted
+           (var-ht (make-hash-table :size 40 :test #'eq)))
       
-        (loop for v in vars unless (member v rvars :test #'eq)
+      ;; Walk up the list of super categories
+      (loop for s in sups
+         do
+           (loop for v in (cat-slots s)
               do
-                (setf (gethash (var-name v) var-ht) v))
-        ;;(lsp-break "fill-inherited-vars ~s" cat)
-          
-        (setf (gethash cat *inherited-cat-variables*) var-ht))))
+                (push v vars)
+                (when (get-tag :restricts v)
+                  (push (get-tag :restricts v) rvars))))
+      
+      ;; Walk through the accumulated variables to make the
+      ;; updated value of the variables that are accessible from
+      ;; this category. Omit any variable that has been marked
+      ;; as having been restricted. The more specific variable
+      ;; with that same name will be on the regular list
+      (loop for v in vars unless (member v rvars :test #'eq)
+         do (setf (gethash (var-name v) var-ht) v))
+      
+      (setf (gethash cat *inherited-cat-variables*) var-ht))))
 
 (defun cache-variable-lookup ()
   "Called by setup-session-globals/grammar"
