@@ -141,6 +141,8 @@
       (loop-over-some-bindings i pos dtn rdata)
       (loop-over-bindings i pos dtn))
     (verb-aux-handler dtn i) ;; formerly called 'tense'
+    (when m::*trace-archie*
+      (pprint (pp-dtn dtn)))
     dtn))
  
 (defun loop-over-some-bindings (i pos dtn rdata)
