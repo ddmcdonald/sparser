@@ -69,22 +69,30 @@
   (cond ((ev-top-node (pos-starts-here pos))
          pos)
         ((eq pos end) end)
-        (t #+ignore
+        ((eq end (chart-position-after pos)) nil)
+        ((position-precedes (chart-position-after pos) end)
+         #+ignore
            (pushnew (list (pos-terminal pos) (current-string))
                     *no-edge-pairs*
                     :test #'equal)
-           (first-position-with-edges (chart-position-after pos) end))))
+         (first-position-with-edges (chart-position-after pos) end))
+        (t ;; somehow overshot end of sentence!!
+         (error "somehow overshot end of sentence")
+         nil)
+        ))
+         
 
 
-(defun adjacent-tt-pairs (sentence)
+(defun adjacent-tt-pairs (sentence &aux (start-pos (first-position-with-edges
+                                                    (starts-at-pos sentence)
+                                                    (ends-at-pos sentence))))
   ;;(push-debug `(,sentence)) (break "tt")
-  (let* ((start-pos (first-position-with-edges
-                     (starts-at-pos sentence)
-                     (ends-at-pos sentence)))
-         (start-ev (pos-starts-here start-pos))
-         (start-edges (tt-edges-starting-at start-ev))
-         (end-pos (ends-at-pos sentence)))
-    (adjacent-tt-pairs1 start-edges end-pos)))
+  (when start-pos
+    ;; sometimes over-run the sentence
+    (let* ((start-ev (pos-starts-here start-pos))
+           (start-edges (tt-edges-starting-at start-ev))
+           (end-pos (ends-at-pos sentence)))
+      (adjacent-tt-pairs1 start-edges end-pos))))
 
 (defun adjacent-tt-pairs1 (edges-to-left end-pos)
   (declare (optimize debug))

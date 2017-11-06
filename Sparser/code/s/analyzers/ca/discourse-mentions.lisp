@@ -793,8 +793,11 @@ so we return the edge for the POBJ"
     (setf (mentioned-where m)
           (encode-mention-location
            (if (consp source) (second source) source)))
-    (setf (mentioned-in-article-where m)
-          (cons toc *current-paragraph*))
+    (when toc
+      ;; some mentions get created in MAKE-EDGE-FOR-POLYWORD
+      ;;  which occurs before sentences are delimited
+      (setf (mentioned-in-article-where m)
+          (cons toc *current-paragraph*)))
    ))
 
 

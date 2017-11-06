@@ -268,12 +268,13 @@
     
 
 (defun grade-sentence-tt-counts (paragraph quality)
-  (let ((count-list (sentence-tt-count (contents paragraph))))
-    (loop for count in (when (consp count-list) count-list) ;; not sure why this was 0 and not a list in some cases
-      when (= 1 count) do (incf (parses-with-one-edge quality))
-      when (and (> count 1) (<= count 5))
-           do (incf (medium-quality-parses quality))
-       when (> count 5) do (incf (horrible-parses quality)))))
+  (when (contents paragraph)
+    (let ((count-list (sentence-tt-count (contents paragraph))))
+      (loop for count in (when (consp count-list) count-list) ;; not sure why this was 0 and not a list in some cases
+            when (= 1 count) do (incf (parses-with-one-edge quality))
+            when (and (> count 1) (<= count 5))
+            do (incf (medium-quality-parses quality))
+            when (> count 5) do (incf (horrible-parses quality))))))
 
 (defun add-parse-quality-grades (source sink)
   "Expects to be part of a loop where the sink content object
@@ -723,6 +724,6 @@ is a case in handle-any-anaphor
   toc classes (as above), so returns nil if we aren't"
   (declare (special *reading-populated-document*))
   (when *reading-populated-document*
-    (let ((s (identify-current-sentence)))
-      (toc-index s))))
+    (let ((s (identify-current-sentence t)))
+      (when s (toc-index s)))))
 
