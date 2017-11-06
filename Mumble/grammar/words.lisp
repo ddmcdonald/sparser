@@ -1,13 +1,13 @@
 ;;; -*- Mode: Lisp; Package:MUMBLE; Syntax: COMMON-LISP; Base:10; -*-
-;;;; $Id: words.lisp 100 2007-07-04 14:31:27Z dmcdonal $
 
 ;;; MUMBLE-86>grammar>words
 ;;;
-;;; Copyright (C) 1985, 1986, 1987, 1988  David D. McDonald and the
+;;; Copyright (C) 1985-1988  David D. McDonald and the
 ;;;    Mumble Development Group.  All rights reserved.
 ;;;    Permission is granted to use and copy this file of the Mumble-86 system for
 ;;;    non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (c) 2017 David D. McDonald  -- all rights reserved
 
 (in-package :mumble)
 
@@ -239,6 +239,8 @@ IRREGULARITIES:
 (define-word "that" (complementizer) )
 
 (define-word "not" ())
+
+(define-word "no" (quantifier))
 
 
 
