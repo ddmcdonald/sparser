@@ -63,9 +63,11 @@
     ;; grammatical-constraints (clause np vp pp adjp advp)
     (subject (noun)) ;; (np vp)
     (direct-object (noun)) ;; (np)
+    (prep-obj (noun)) ;; (np)
     (complement-of-be (adjective adverb verb noun))
     (relative-clause (verb))
     (adjp-head (adjective))
+    (advp (adverb))
     )
   "Has the information we could otherwise glean (and abstract to
    the needed level) from the grammatical constraints on slot labels")
