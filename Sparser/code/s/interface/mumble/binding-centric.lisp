@@ -125,7 +125,7 @@
    and look up the mapping data on the individual given the part of speech
    (if any). Then go to the common path."
   (let* ((pos (determine-pos i))
-         (lp (find-lexicalized-phrase i))
+         (lp (find-lexicalized-phrase i pos))
          (rdata (sp::has-mumble-rdata i :pos pos)))
     (assert (or lp rdata) (i) "Couldn't get lexicalized phrase for ~a" i)
     (when rdata ;; its lp can be more specific (e.g. "want")

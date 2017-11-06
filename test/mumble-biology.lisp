@@ -17,7 +17,7 @@
 
 (deftest (say phosphorylated braf)
   (mumble-says "phosphorylated BRAF.")
-  "phosphorylated BRAF")
+  "phospho BRAF")
 
 (deftest (say braf that is phosphorylated)
   (mumble-says "BRAF that is phosphorylated.")
@@ -45,7 +45,7 @@
 
 (deftest (say amount phosphorylated braf)
   (mumble-says "The amount of phosphorylated BRAF.")
-  "the amount of phosphorylated BRAF")
+  "the amount of phospho BRAF")
 
 
 #| The scheme for getting the simple, 'use with a person' name from the 
