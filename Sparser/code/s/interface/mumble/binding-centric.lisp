@@ -39,6 +39,9 @@
                                conjunction))))
                (apply #'conjoin items)))))
 
+        ((sp::itypep i 'sp::bio-complex)
+         (realize-bio-complex i))
+
         ((sp::itypep i 'sp::number)
          (tr "Realizing number ~a" i)
          (realize-number i))

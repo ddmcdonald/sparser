@@ -55,7 +55,7 @@ Instead we get "RASN" -- changing all the tests to reflect that
 
 (deftest (say concentration braf-nras complex)
   (mumble-says "The concentration of BRAF-NRAS complex.")
-  "the concentration of complex of BRAF and RASN")
+  "the concentration of BRAF-RASN complex")
 
 (deftest (say mek phosphorylates erk)
   (mumble-says "MEK phosphorylates ERK.")
