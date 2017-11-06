@@ -220,6 +220,11 @@
        (mbug "error--attachment-point-for-next-aux; unexpected state")))))
 
 
+(defun process-no-accessory (np)
+  "Attach a quantifier slot and put 'no' in it"
+  (let ((no (find-word "no" 'quantifier)))
+    (attach no (attachment-point-named 'quantifier-premod))))
+
 (defun process-number-accessory (np value-of-number)
   (set-state (context-object np)
 	     (initialize-state :number (name value-of-number)

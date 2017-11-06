@@ -67,7 +67,7 @@
 	    (specification fspec)
 	    (position-of-AP-in-present-context attach-fn))
 	  ;;otherwise- use the normal channels
-	    (attach (specification fspec) attach-fn ))
+          (attach (specification fspec) attach-fn ))
       )))
 
 ;################################################################
@@ -142,7 +142,6 @@
   "This code checks the syntactic reasons to use a pronoun to see
   if any apply, in which case it pre-empts the normal processing
   and construction of an np."
-  (push-debug `(:np ,dtn ,np-root))
   (let* ((dom-clause (dominating-clause))
          (reason-to-pronominalize 
           (should-be-pronominalized-in-present-context? dtn))
@@ -160,15 +159,18 @@
                 (leaving-previous-context np-root))
               np-root))))
     (mention (referent dtn) result dom-clause)
-    (push-debug `(:np-bundle ,result))
     result))
 
 (defun process-np-accessories (np-root dtn)
-  (let ((number-acc (get-accessory-value :number dtn))
+  (let ((neg-acc (get-accessory :negate dtn))
+        (number-acc (get-accessory-value :number dtn))
         (person-acc (get-accessory-value :person dtn))
         (det-policy-acc (get-accessory-value :determiner-policy dtn))
         (proper-name? (assoc (accessory-type-named :proper-name)
 	                     (features dtn))))
+    (when neg-acc
+      ;; vs. process-negate-accessory for clauses
+      (process-no-accessory np-root))
     (when number-acc
       (process-number-accessory np-root number-acc))
     (when person-acc

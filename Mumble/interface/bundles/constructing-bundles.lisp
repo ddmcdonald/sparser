@@ -5,7 +5,7 @@
 
 ;;; Copyright (C) 1985, 1986, 1987, 1988  David D. McDonald
 ;;;   and the Mumble Development Group.
-;;; Copyright (C) 1995-2000,2013-2014 David D. McDonald
+;;; Copyright (C) 1995-2000,2013-2017 David D. McDonald
 ;;;   All rights reserved. Permission is granted to use and copy
 ;;;   this file of the Mumble-86 system for non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
@@ -150,6 +150,16 @@
              but it doesn't."
 	    dtn accessory-name))
     value))
+
+(defun get-accessory (accessory-name dtn &optional complain-if-null?)
+  "Some accessories are just flags without values"
+  (let* ((accessory-type (accessory-type-named accessory-name))
+	 (accessory (assoc accessory-type (features dtn))))
+    (when (and (null accessory) complain-if-null?)
+      (mbug "Caller expected the bundle ~a to have a ~a accessory, ~
+             but it doesn't."
+	    dtn accessory-name))
+    accessory))
 
 
 (defun add-accessory (bundle name &optional value literal?)
