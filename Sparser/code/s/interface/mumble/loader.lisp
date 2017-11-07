@@ -14,8 +14,6 @@
 (lload "mumble-interface;krisp-mapping")
 (lload "mumble-interface;rdata")
 (lload "mumble-interface;interface")
-(lload "mumble-interface;binding-helpers")
-(lload "mumble-interface;binding-centric")
 (lload "mumble-interface;rnode-centric")
 (lload "mumble-interface;mexp")
 (lload "mumble-interface;discourse-reference")

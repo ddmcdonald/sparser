@@ -110,7 +110,9 @@
                (:file "derivation-trees/interface")
                #+(or) (:file "derivation-trees/conversions")
                #+(or) (:file "interface/tsro/gofers")
-               #+(or) (:file "interface/tsro/map-translations")))
+               #+(or) (:file "interface/tsro/map-translations")
+               (:file "interface/sparser/binding-helpers")
+               (:file "interface/sparser/binding-centric")))
 
 (defsystem :mumble/biology
   :description "Generation for the biological domain."
