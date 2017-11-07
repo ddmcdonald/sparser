@@ -109,8 +109,12 @@
   (add-dummy-subject base)
   base )
 
-(def-accessory-operator question 
+(def-accessory-operator question ;; aux inversion
   (add-accessory base :question)
+  base )
+
+(def-accessory-operator wh ;; WH questions
+  (add-accessory base :wh)
   base )
 
 (def-accessory-operator negate 

@@ -133,6 +133,7 @@
 	       (accessory-value value)
 	       (label value)
 	       (specification   value)
+               (derivation-tree-node value)
 	       (list value)
 	       (string (word-for-string value)))))))
     (unless (slot-exists-p dtn 'features)

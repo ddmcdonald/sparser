@@ -135,6 +135,11 @@ by KEY-POSITION.
   link (previous)
   new-slot (interrogative-pronoun))
 
+(define-splicing-attachment-point wh-comp
+  reference-labels (clause)
+  link (previous)
+  new-slot (comp))
+
 (define-splicing-attachment-point vp-prep-complement 
   reference-labels (vp)
   link (last)

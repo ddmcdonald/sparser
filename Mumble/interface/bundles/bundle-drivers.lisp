@@ -97,6 +97,7 @@
 			   `(,fun (cdr it))
 			   `(,fun))))))
         ;; These have to be done in the following order
+        (ac :wh          process-wh-accessory            t)
         (ac :question    process-question-accessory    nil)
         (ac :tense-modal process-tense-modal-accessory   t)
         (ac :command     process-command-accessory     nil)
@@ -120,14 +121,14 @@
 			   `(,fun (cdr it))
 			   `(,fun))))))
     ;; These have to be done in the following order
+    (ac :wh          process-wh-accessory            t)
     (ac :question    process-question-accessory    nil)
     (ac :tense-modal process-tense-modal-accessory   t)
     (ac :command     process-command-accessory     nil)
     (ac :perfect     process-perfect-accessory     nil)
     (ac :progressive process-progressive-accessory nil)
     (ac :negate      process-negate-accessory      nil)
-    (ac :wh-adj      process-wh-adjunct-accessory    t))
-  )
+    (ac :wh-adj      process-wh-adjunct-accessory    t)))
 
 ;################################################################
 ;; Uniform "bundle" driver for DTNs

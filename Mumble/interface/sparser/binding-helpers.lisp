@@ -167,36 +167,37 @@
          (sp::bind-variable 'sp::number 1 i))
         (t (error "Don't know how to realize number ~a" i))))
 
+
 (sp::def-k-method realize-individual ((i category::polar-question) &key)
   (tr "Realizing polar-question ~a" i)
   (discourse-unit (question (realize (sp::value-of 'sp::statement i)))))
 
 (sp::def-k-method realize-individual ((i category::wh-question) &key)
   (tr "Realizing wh question ~a" i)
-  (let ((wh-category (sp::value-of 'sp::wh i))
-        (statement (sp::value-of 'sp::statement i))
-        (top-dtn (make-dtn :referent i :resource (phrase-named 'comp-s)))
-        (wh-dtn (make-dtn :resource (phrase-named 'wh))))
+  (let* ((wh-category (sp::value-of 'sp::wh i))
+         (statement (sp::value-of 'sp::statement i))
+         (top-dtn (realize statement))
+         (wh-dtn (make-dtn :resource (phrase-named 'wh))))
     (make-complement-node 'wh wh-category wh-dtn)
-    (make-complement-node 'wh wh-dtn top-dtn)
-    (make-complement-node 's statement top-dtn)
+    (add-feature top-dtn :wh wh-dtn)
     (discourse-unit (question top-dtn))))
 
 (sp::def-k-method realize-individual ((i category::wh-question/attribute) &key)
   (tr "Realizing wh/attribute question ~a" i)
-  (let ((wh-category (sp::value-of 'sp::wh i))
-        (attribute (sp::value-of 'sp::attribute i))
-        (other (sp::value-of 'sp::other i))
-        (statement (sp::value-of 'sp::statement i))
-        (top-dtn (make-dtn :referent i :resource (phrase-named 'comp-s)))
-        (wh-dtn (make-dtn :resource (phrase-named 'wh-term))))
-    ;; setup wh phrase
+  (let* ((wh-category (sp::value-of 'sp::wh i))
+         (attribute (sp::value-of 'sp::attribute i))
+         (other (sp::value-of 'sp::other i))
+         (statement (sp::value-of 'sp::statement i))
+         (top-dtn (realize statement))
+         (wh-dtn (make-dtn :resource (phrase-named 'wh-term))))
     (make-complement-node 'wh wh-category wh-dtn)
     (make-complement-node 'q (or attribute other) wh-dtn)
-    ;; setup top
-    (make-complement-node 'wh wh-dtn top-dtn)
-    (make-complement-node 's statement top-dtn)
-    (discourse-unit (question top-dtn))))
+    (add-feature top-dtn :wh wh-dtn)
+    (discourse-unit ;; supply the "?" as well as capitalizing
+     (question ;; invert the aux
+      top-dtn))))
+
+
 
 (sp::def-k-method realize-individual ((i category::copular-predication) &key)
   (tr "Realizing copular-predication ~a" i)

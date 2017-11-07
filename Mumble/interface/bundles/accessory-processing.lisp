@@ -8,12 +8,29 @@
 ;;;   this file of the Mumble-86 system for
 ;;;   non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
+;;; Copyright (c) 2015-2017 David D. McDonald  -- all rights reserved
 
 (in-package :mumble)
 
+(defun process-wh-accessory (rspec)
+  "The classic treatment of WH questions was to make them one of
+   choices in the tree family, using phrases that were specialized
+   to fit, and placed the WH phrase (maybe only the pronoun?) in
+   a comp slot that was a peer to the main clause. Now we're doing
+   essentially the same thing: the WH phrase goes into a comp
+   slot that is a peer of the main clause, but we're doing it by
+   attaching the slot on demand through a feature. Note that
+   the the :wh feature takes a dtn ('rspec') as its value. 
+   That dtn will be realized when it is reached in the traversal."
+  (let ((ap (attachment-point-named 'wh-comp)))
+    (attach rspec ap)))
+
 
 (defun process-question-accessory ()
+  "Rearranges the tense-modal attachment points to bring about
+   the subject - auxilary inversion that defines questions.
+   The inversion entails moving over the subject, but is
+   only needed if there actually is a subject."
   (when (lexical-subject)
     (set-state *current-phrasal-root*
 	       (change-state :aux-state 'prepose-aux
@@ -36,12 +53,6 @@
 	 (position (cdr active-ap)))
     (attach-by-splicing ap position value)))
 
-(defun process-command-accessory ()
-  (let ((root *current-phrasal-root*))
-    (remove-subject root)
-    (change-state
-     ':aux-state 'unmarked (state root))))
-
 (defun lexical-subject ()
   (let* ((subject-position
 	   (cdr (assoc 'subject (position-table *current-phrasal-root*))))
@@ -50,6 +61,12 @@
       (typecase contents
         (ttrace nil)
         (t contents)))))
+
+(defun process-command-accessory ()
+  (let ((root *current-phrasal-root*))
+    (remove-subject root)
+    (change-state
+     ':aux-state 'unmarked (state root))))
 
 (defun process-tense-modal-accessory (value)
   (let* ((ap (return-tense-modal-attachment-point))

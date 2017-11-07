@@ -44,7 +44,7 @@
 
 (define-node-label clause
    associated-attachment-points (new-main-clause new-main-clause_no-that
-                                 wh-marker  rationale-clause
+                                 wh-marker wh-comp  rationale-clause
                                  initial-adverbial final-adverbial
                                  add-comp))
 
