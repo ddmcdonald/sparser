@@ -46,12 +46,16 @@
             (character-entry char)))
     
     (if entry
-      (if (eq :punctuation 
-              (setq char-type (car entry)))
-        ;; punctuation tokens are just one character long
-        (do-punctuation (cdr entry))
+      (cond
+        ((and (numberp entry) (= entry 0)) ;; missing Latin-1 character
+         (announce-out-of-range-character))
+
+        ((eq :punctuation 
+             (setq char-type (car entry)))
+         ;; punctuation tokens are just one character long
+         (do-punctuation (cdr entry)))
             
-        (else
+        (t
           ;; it's now likely to be more than one character long, so set up
           ;; pointers to keep track of it
           (setq *category-of-accumulating-token*  (car entry))
@@ -136,7 +140,7 @@
 (defun finish-token (accumulated-entries length char-type)
   "Walk through the list of entries and populate the word lookup
    buffer with their characters. Note that the list of character entries
-   is in reverse order. Afterwards update the token globals and 
+   is in reverse order. Then update the token globals and 
    leave by tail-recursively calling find-word to continue the
    processing of the token."
   (declare (special accumulated-entries *collect-init-lowercase*))
