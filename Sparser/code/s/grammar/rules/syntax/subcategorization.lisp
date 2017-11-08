@@ -773,7 +773,7 @@
   (declare (special category::number))
   (and (itypep item category::number)
        (not (is-basic-collection? item))
-       (not (itypep item '(:or post-ordinal ordinal hyphenated-number)))
+       (not (itypep item '(:or post-ordinal ordinal hyphenated-number n-fold)))
        (not (and (numberp (value-of 'value item))
                  (or (floatp (value-of 'value item))
                      (> (value-of 'value item) 10))))
