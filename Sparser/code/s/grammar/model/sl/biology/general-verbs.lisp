@@ -1229,11 +1229,14 @@
 	   :noun "suggestion"
 	   :etf (svo-passive)))
   
+#| this is bogus -- bad copy and paste from "treat" and use of (approach ...)
+
 (define-category bio-take :specializes bio-method
     :binds ((approach approach))
     :realization ;; (p/s "use KRAS to treat pancreatic cancer")
       (:verb ("take" :past-tense "took" :past-participle "taken")
              :etf (svo-passive)))
+
 
 (define-category bio-target :specializes bio-method
     :binds ((approach approach))
@@ -1241,6 +1244,7 @@
     (:verb ("target" :past-tense "targeted" :past-participle "targeted"
                      :present-participle "targeting")
        :etf (svo-passive)))
+|#
 
 (define-category tend :specializes bio-rhetorical
    ;; :mixins (bio-tocomp) working on this.. other comps not working.

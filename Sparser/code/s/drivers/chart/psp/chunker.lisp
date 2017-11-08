@@ -611,6 +611,7 @@ than a bare "to".  |#
            (not
             (or
              (sentence-initial? e) ;; case of imperative verb like "DECREASE"
+             (preceding-pronoun-or-which? e)
              (and (edge-just-to-left-of e)
                   (eq (cat-name (edge-category (edge-just-to-left-of e))) 'to)))))
           ((member ecn '(modal following-adj syntactic-there))
@@ -1102,6 +1103,7 @@ than a bare "to".  |#
      thereis
        (or
         (eq (cat-name (edge-category ee)) 'which)
+        (eq (cat-name (edge-category ee)) 'that)
         (eq (cat-name (edge-form ee)) 'pronoun))))
 
 (defun preceding-determiner? (e &optional (edges (edges-before e)))
