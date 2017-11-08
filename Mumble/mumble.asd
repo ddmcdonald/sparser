@@ -117,6 +117,7 @@
 (defsystem :mumble/biology
   :description "Generation for the biological domain."
   :depends-on (:sparser/biology)
+  :components ((:file "interface/sparser/binding-bio-helpers"))
   :in-order-to ((test-op (test-op :mumble/biology-tests))))
 
 (defsystem :mumble/biology-tests

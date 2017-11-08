@@ -1,12 +1,5 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: MUMBLE -*-
 ;;; copyright (c) 2017 David D. McDonald  -- all rights reserved
-;;;
-;;;     File:  "binding-helpers"
-;;;   Module:  "/interface/mumble/"
-;;;  version:  October 2017
-
-;; initiated 7/25/17 to hold all the auxiliary subroutines of the
-;; realization procesure.
 
 (in-package :mumble)
 
@@ -115,69 +108,36 @@
 ;;; special cases for realizing individuals
 ;;;-----------------------------------------
 
-(defun pretty-bio-name (name)
-  "Heuristically guess a nice name for a protein or other biological entity."
-  (let ((syns (sp::get-bio-synonyms name)))
-    (if syns
-      (or (let ((human (search "_HUMAN" name))) ; prefer the synonym without the _HUMAN suffix
-            (find (subseq name 0 human) syns :test #'string-equal))
-          (first (stable-sort ; prefer shortest synonym
-                  (cons name (copy-list syns))
-                  #'< :key #'length)))
-      ;; no synonyms, so look for removable parts
-      (let ((index (search "_HUMAN" name)))
-        (if index
-          (subseq name 0 index)
-          (subseq name (case (search "BIO-" name :test #'char-equal)
-                         (0 4) ; elide bio-prefix
-                         (t 0))))))))
+(sp::def-k-method realize-individual ((i category::collection) &key)
+  (tr "Realizing collection ~a" i)
+  (let ((items (sp::value-of 'sp::items i))
+        (type (sp::value-of 'sp::type i)))
+    (if (null items)
+      (plural (realize-via-category i type))
+      (cl:labels ((conjoin (one &optional two &rest more)
+                    (let ((conjunction
+                           (make-dtn :referent `(and ,one ,two)
+                                     :resource (phrase-named 'two-item-conjunction))))
+                      (make-complement-node 'one one conjunction)
+                      (make-complement-node 'two two conjunction)
+                      (if more
+                        (apply #'conjoin conjunction more)
+                        conjunction))))
+        (apply #'conjoin items)))))
 
+(sp::def-k-method realize-individual ((i integer) &key ordinal)
+  ;; (format nil "~r" 1325) => "one thousand three hundred twenty-five"
+  ;; (format nil "~:r" 1325) => "one thousand three hundred twenty-fifth"
+  (format nil (if ordinal "~:r" "~r") i))
 
-;;---- dtn sources for particular cases
-
-(defun bio-complex-components (i)
-  "Sparser produces KRISP individuals of category BIO-COMPLEX with
-multiple bindings for the COMPONENT variable from text of the form
-'BRAF-NRAS' (see SP::MAKE-BIO-COMPLEX). For text of the form 'BRAF/NRAS',
-however, it forms a collection first, then binds a single COLLECTION
-variable to that collection. We reverse that logic here."
-  (let ((components (sp::binds-variable i 'sp::component :all t)))
-    (flet ((pname (i) (pretty-bio-name (sp::pname (sp::value-of 'sp::name i)))))
-      (cond ((null components)
-             nil)
-            ((cdr components)
-             (format nil "~{~a~^-~}"
-                     (mapcar #'pname
-                             (mapcar #'sp::binding-value
-                                     (reverse components)))))
-            ((sp::itypep (sp::binding-value (car components)) 'sp::collection)
-             (format nil "~{~a~^/~}"
-                     (mapcar #'pname
-                             (sp::value-of 'sp::items
-                                           (sp::binding-value (car components))))))))))
-
-(defun realize-bio-complex (i)
-  (let ((components (bio-complex-components i))
-        (complex (word-for-string
-                  (string-downcase
-                   (pretty-bio-name (sp::pname (sp::category-of i))))))
-        (dtn (make-dtn :referent i :resource (phrase-named 'common-noun))))
-    (make-complement-node 'n complex dtn)
-    (when components
-      (attach-adjective (word-for-string components) dtn 'adjective))
-    dtn))
-
-(defun realize-number (i &key (ordinal (sp::itypep i 'sp::ordinal)))
+(sp::def-k-method realize-individual ((i category::number) &key
+                                      (ordinal (sp::itypep i 'sp::ordinal)))
   "Make a dtn for simple number words. For long, multi-word numbers recover
    the algorithm from grammar/numbers.lisp"
-  (tr "Realize-number: ~a" i)
-  (cond ((numberp i)
-         ;; (format nil "~r" 1325) => "one thousand three hundred twenty-five"
-         ;; (format nil "~:r" 1325) => "one thousand three hundred twenty-fifth"
-         (format nil (if ordinal "~:r" "~r") i))
-        ((sp::value-of 'sp::number i) ; e.g., a multiplier like "10-fold"
-         (let* ((number (realize-number (sp::value-of 'sp::number i)
-                                        :ordinal ordinal))
+  (tr "Realizing number ~a" i)
+  (cond ((sp::value-of 'sp::number i) ; e.g., a multiplier like "10-fold"
+         (let* ((number (realize-individual (sp::value-of 'sp::number i)
+                                            :ordinal ordinal))
                 (noun (sp::rdata-head-word i :common-noun))
                 (np (make-dtn :referent i
                               :resource (phrase-named 'number-np))))
@@ -185,8 +145,8 @@ variable to that collection. We reverse that logic here."
            (when noun (make-complement-node 'n noun np))
            np))
         ((sp::value-of 'sp::value i) ; e.g., an ordinal or cardinal number
-         (let* ((number (realize-number (sp::value-of 'sp::value i)
-                                        :ordinal ordinal))
+         (let* ((number (realize-individual (sp::value-of 'sp::value i)
+                                            :ordinal ordinal))
                 (word (word-for-string number 'number))
                 (np (make-dtn :referent i
                               :resource (phrase-named 'bare-np-head))))
@@ -207,7 +167,23 @@ variable to that collection. We reverse that logic here."
          (sp::bind-variable 'sp::number 1 i))
         (t (error "Don't know how to realize number ~a" i))))
 
-(defun realize-wh-question/attribute (i)
+(sp::def-k-method realize-individual ((i category::polar-question) &key)
+  (tr "Realizing polar-question ~a" i)
+  (discourse-unit (question (realize (sp::value-of 'sp::statement i)))))
+
+(sp::def-k-method realize-individual ((i category::wh-question) &key)
+  (tr "Realizing wh question ~a" i)
+  (let ((wh-category (sp::value-of 'sp::wh i))
+        (statement (sp::value-of 'sp::statement i))
+        (top-dtn (make-dtn :referent i :resource (phrase-named 'comp-s)))
+        (wh-dtn (make-dtn :resource (phrase-named 'wh))))
+    (make-complement-node 'wh wh-category wh-dtn)
+    (make-complement-node 'wh wh-dtn top-dtn)
+    (make-complement-node 's statement top-dtn)
+    (discourse-unit (question top-dtn))))
+
+(sp::def-k-method realize-individual ((i category::wh-question/attribute) &key)
+  (tr "Realizing wh/attribute question ~a" i)
   (let ((wh-category (sp::value-of 'sp::wh i))
         (attribute (sp::value-of 'sp::attribute i))
         (other (sp::value-of 'sp::other i))
@@ -220,23 +196,10 @@ variable to that collection. We reverse that logic here."
     ;; setup top
     (make-complement-node 'wh wh-dtn top-dtn)
     (make-complement-node 's statement top-dtn)
-
-    (discourse-unit ;; supply the "?" as well as capitalizing
-     (question ;; invert the aux
-      top-dtn))))
-
-(defun realize-wh-question (i)
-  (let ((wh-category (sp::value-of 'sp::wh i))
-        (statement (sp::value-of 'sp::statement i))
-        (top-dtn (make-dtn :referent i :resource (phrase-named 'comp-s)))
-        (wh-dtn (make-dtn :resource (phrase-named 'wh))))
-    (make-complement-node 'wh wh-category wh-dtn)
-    (make-complement-node 'wh wh-dtn top-dtn)
-    (make-complement-node 's statement top-dtn)
     (discourse-unit (question top-dtn))))
 
-
-(defun realize-copular-predication (i)
+(sp::def-k-method realize-individual ((i category::copular-predication) &key)
+  (tr "Realizing copular-predication ~a" i)
   ;;(sp::with-bindings ((:sparser) item value prep predicate) i <= getting nil's
     ;;/// The predicate variable holds the tense, e.g.
   ;; (predicate (#<be 84923> (present #<ref-category PRESENT>)))
@@ -260,6 +223,22 @@ variable to that collection. We reverse that logic here."
       (verb-aux-handler dtn i)
       dtn)))
 
+(sp::def-k-method realize-individual ((i category::explicit-suggestion) &key)
+  (tr "Realizing explicit-suggestion ~a" i)
+  (let ((dtn (realize-via-bindings (sp::value-of 'sp::suggestion i)))
+        (m (sp::value-of 'sp::marker i))
+        (ap 'initial-adverbial))
+    (make-adjunction-node (make-lexicalized-attachment ap m) dtn)
+    dtn))
+
+(sp::def-k-method realize-individual ((i category::there-exists) &key)
+  (tr "Realizing there-exists ~a" i)
+  (let ((be (realize-via-bindings (sp::value-of 'sp::predicate i)
+                                  :pos 'verb
+                                  :resource (phrase-named 's-be-comp))))
+    (attach-subject (find-word "there" 'pronoun) be)
+    (attach-complement (sp::value-of 'sp::value i) be)
+    be))
 
 ;;;-------------------------------------------------------------
 ;;; additional handling to sort out potential issues in clauses

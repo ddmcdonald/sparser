@@ -1,95 +1,30 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: MUMBLE -*-
 ;;; Copyright (c) 2013-2017 David D. McDonald -- all rights reserved
-;;;
-;;;     File:  "binding-centric"
-;;;   Module:  "interface;mumble;"
-;;;  Version:  October 2017
-
-;; Broken out from interface 4/7/13.
-;; Completely rewritten 8/16 by AFP.
 
 (in-package :mumble)
 
 ;; (setq m::*trace-archie* t)
 
-;;;------------------
-;;;  Realize method
-;;;------------------
+;;;--------------------------------------
+;;; Realizations for Sparser individuals
+;;;--------------------------------------
+
+(sp::def-k-function realize-individual (i &key)
+  (:documentation "Realize a Sparser individual.
+Specific categories get specialized k-methods.") ; see binding-helpers.lisp
+  (:method (i &key)
+    "By default, choose a phrase or fall through to realize-via-bindings."
+    (if (and (null (sp::indiv-binds i)) ;; No bindings for realize-via-bindings,
+             (sp::rdata-head-word i t)) ;; but there is an associated word.
+      (make-dtn :referent i
+                :resource (or (find-lexicalized-phrase i)
+                              (error "No lexicalized resource on ~a" i)))
+      (realize-via-bindings i))))
 
 (defmethod realize ((i sp::individual))
-  "Realize a Sparser individual. Special cases are handled here,
-   then falls through to realize-via-bindings."
-  (when m::*trace-archie*
-    (display-current-position))
-  (cond ((sp::itypep i 'sp::collection)
-         (let ((items (sp::value-of 'sp::items i))
-               (type (sp::value-of 'sp::type i)))
-           (tr "Realizing collection ~a" i)
-           (if (null items)
-             (plural (realize-via-category i type))
-             (cl:labels ((conjoin (one &optional two &rest more)
-                           (let ((conjunction
-                                  (make-dtn :referent `(and ,one ,two)
-                                            :resource (phrase-named
-                                                       'two-item-conjunction))))
-                             (make-complement-node 'one one conjunction)
-                             (make-complement-node 'two two conjunction)
-                             (if more
-                               (apply #'conjoin conjunction more)
-                               conjunction))))
-               (apply #'conjoin items)))))
-
-        ((sp::itypep i 'sp::bio-complex)
-         (realize-bio-complex i))
-
-        ((sp::itypep i 'sp::number)
-         (tr "Realizing number ~a" i)
-         (realize-number i))
-
-        ((sp::itypep i 'sp::polar-question)
-         (tr "Realizing polar-question ~a" i)
-         (discourse-unit (question (realize (sp::value-of 'sp::statement i)))))
-
-        ((sp::itypep i 'sp::wh-question/attribute)
-         (tr "Realizing wh/attribute question ~a" i)
-         (realize-wh-question/attribute i))
-
-        ((sp::itype i 'sp::wh-question)
-         (tr "Realizing wh question ~a" i)
-         (realize-wh-question i))
-
-        ((sp::itypep i 'sp::copular-predication)
-         (tr "Realizing copular-predication ~a" i)
-         (realize-copular-predication i))
-
-        ((sp::itypep i 'sp::explicit-suggestion)
-         (tr "Realizing explicit-suggestion ~a" i)
-         (let ((dtn (realize-via-bindings (sp::value-of 'sp::suggestion i)))
-               (m (sp::value-of 'sp::marker i))
-               (ap 'initial-adverbial))
-           (make-adjunction-node (make-lexicalized-attachment ap m) dtn)
-           dtn))
-
-        ((sp::itypep i 'sp::there-exists)
-         (tr "Realizing there-exists ~a" i) ;;/// explicit call
-         (let ((be (realize-via-bindings (sp::value-of 'sp::predicate i)
-                                         :pos 'verb
-                                         :resource (phrase-named 's-be-comp))))
-           (attach-subject (find-word "there" 'pronoun) be)
-           (attach-complement (sp::value-of 'sp::value i) be)
-           be))
-               
-        ((and (null (sp::indiv-binds i)) ;; nothing for realize-via-bindings to chew on
-              (sp::rdata-head-word i t))
-         ;; But there is a word associated with this individual.
-         ;; Use its lexicalized phrase as the resource"
-         (tr "Realizing ~a, with no bindings" i)
-         (let ((lp (find-lexicalized-phrase i)))
-           (tr "Using lexical resource ~a" lp)
-           (assert lp (i) "No lexicalized resource on ~a" i)
-           (make-dtn :referent i :resource lp)))
-        
-        (t (realize-via-bindings i))))
+  "Punt to realize-individual."
+  (when m::*trace-archie* (display-current-position))
+  (realize-individual i))
 
 
 ;;;----------------------
@@ -265,7 +200,7 @@
   (:method (binding (var-name (eql 'cl:number)) dtn pos) ;; "a three step staircase"
     "Attach a numeric quantifier as an adjective so it retains its determiner."
     (tr "Binding var is number: ~a" binding)
-    (attach-adjective (realize-number (sp::binding-value binding))
+    (attach-adjective (realize-individual (sp::binding-value binding))
                       dtn pos))
   
   (:method (binding (var-name (eql 'sp::adverb)) dtn pos)
