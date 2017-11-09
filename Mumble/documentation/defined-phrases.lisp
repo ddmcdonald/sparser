@@ -1,5 +1,5 @@
 ;; ~/sparser/Mumble/documentation/defined-phrases.lisp
-;; 6/7/17
+;; 11/8/17
 
 ;;---------- preamble ----------
 
@@ -45,6 +45,7 @@ Vocative-Comma-S (vocative comma sentence)
 if/then (antec conseq) ;; inserts "if" and "then"
 if/silent (antec conseq) ;; just the "if"
 
+conjunct (conj) ;; for lexicalizing individual conjunctions
 two-item-conjunction (one two) ;; puts in the "and"
 two-item-conjunction-with-conjunction (one conj two) ;; explicit conjunction arg
 
