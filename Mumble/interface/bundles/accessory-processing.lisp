@@ -12,6 +12,10 @@
 
 (in-package :mumble)
 
+;;;-----------
+;;; questions
+;;;-----------
+
 (defun process-wh-accessory (rspec)
   "The classic treatment of WH questions was to make them one of
    choices in the tree family, using phrases that were specialized
@@ -62,11 +66,20 @@
         (ttrace nil)
         (t contents)))))
 
+;;;----------
+;;; command
+;;;----------
+
 (defun process-command-accessory ()
   (let ((root *current-phrasal-root*))
     (remove-subject root)
     (change-state
      ':aux-state 'unmarked (state root))))
+
+
+;;;----------------------
+;;; the auxiliary system
+;;;----------------------
 
 (defun process-tense-modal-accessory (value)
   (let* ((ap (return-tense-modal-attachment-point))
@@ -164,6 +177,22 @@
 		   (word-for-string "not")
 		   (slot-label-named 'negative))))))
 
+(defun attachment-point-for-next-aux (position contents)
+  (let ((ap (splicing-attachment-point-named 'next-aux)))
+    (set-link ap 'next)
+    (case (state-value ':aux-state (state *current-phrasal-root*))
+      ((initial unmarked) (cons ap position))
+      (prepose-aux 
+       (typecase contents
+	 (word (change-state ':aux-state 'initial (state *current-phrasal-root*))
+	       (cons ap (cdr (assoc 'subject
+				    (position-table *current-phrasal-root*)))))
+	 (tense-marker (cons ap position))
+	 (otherwise
+	   (mbug "error--attachment-point-for-next-aux; unexpected contents"))))
+      (otherwise
+       (mbug "error--attachment-point-for-next-aux; unexpected state")))))
+
 
 (defun process-perfect-accessory ()
   (let* ((ap (splicing-attachment-point-named 'next-aux))
@@ -182,10 +211,17 @@
 	      'prepose-aux)
         (change-state ':aux-state 'initial (state *current-phrasal-root*))))))
 
+#| Starting from (p/s "activating it") we get to process-progressive-accessory
+and there's no next-aux AP on the *current-phrasal-root* so we make it
+all the way to attach-by-splicing and fall on nil not being an mposition.
+available-aps does include tense-modal and preposed-tense-modal
+|#
 
 (defun process-progressive-accessory ()
   (let* ((ap (splicing-attachment-point-named 'next-aux))
+
 	 (ap-set (assoc ap (available-aps *current-phrasal-root*)))
+
 	 (position (cdr ap-set))
 	 (contents (word-for-string "be" 'verb)))
     (set-new-slot ap (label-named 'be+ing))
@@ -220,23 +256,12 @@
         (change-state ':aux-state 'initial (state *current-phrasal-root*))))))
 
 
-(defun attachment-point-for-next-aux (position contents)
-  (let ((ap (splicing-attachment-point-named 'next-aux)))
-    (set-link ap 'next)
-    (case (state-value ':aux-state (state *current-phrasal-root*))
-      ((initial unmarked) (cons ap position))
-      (prepose-aux 
-       (typecase contents
-	 (word (change-state ':aux-state 'initial (state *current-phrasal-root*))
-	       (cons ap (cdr (assoc 'subject
-				    (position-table *current-phrasal-root*)))))
-	 (tense-marker (cons ap position))
-	 (otherwise
-	   (mbug "error--attachment-point-for-next-aux; unexpected contents"))))
-      (otherwise
-       (mbug "error--attachment-point-for-next-aux; unexpected state")))))
-
 
+
+;;;----------------------------------
+;;; Accessories involving nouns/NPs
+;;;----------------------------------
+
 (defun process-no-accessory (np)
   "Attach a quantifier slot and put 'no' in it"
   (let ((no (find-word "no" 'quantifier)))
@@ -279,6 +304,10 @@
      (set-determiner-state np 'indefinite))))
 
 
+;;;--------------
+;;; conjunction 
+;;;--------------
+
 (defun process-conjunction-accessory (conjunction node)
   (typecase conjunction
     (symbol
@@ -293,6 +322,8 @@
 	(add-label-to (first-constituent node) conj1)
 	(add-label-to (last-constituent node) conj2)))
     ))
+
+
 
 
 
@@ -314,6 +345,10 @@
 				  (list label))))
       ))
 
+
+;;;-------
+;;;  VPs
+;;;-------
 
 (defun process-vp-accessories (B)
   (let ((acc (get-accessory-value :aspect B)))
