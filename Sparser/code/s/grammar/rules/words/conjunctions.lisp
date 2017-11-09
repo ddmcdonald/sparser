@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2012-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012-2017  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "conjunctions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   0.3 October 2015
+;;;   Version:   November 2017
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/11/94
 ;; added conjunction.] to "and" and "or" 3/17
@@ -35,7 +35,17 @@
   :binds ((word  :primitive word))
   :index (:permanent :key word))
 
- 
+#| Conjunction is not one of the head categories in the system
+(like :common-noun or :verb), so we have to do by hand some of
+the things we might otherwise have gotten for free.
+  The definitive write up on the behavior of conjunctions is
+in chapter 13 of the blue book, where they distinguish the
+syntactic properties of three types.
+  coordinators (and, or, but)
+  conjuncts (yet, so, however)
+  subordinators (for, so that, if, because)
+|#
+
 (defun define-conjunction (string &key
                            (brackets '( ].phrase phrase.[ ))
                            (form 'subordinate-conjunction))
@@ -53,14 +63,18 @@
                             :specializes ,superc
                             :instantiates :self
                             :bindings (word ,word))))
-         (object (or (find-individual form :word word)
-                     (define-individual form :word word)))
+         (i (or (find-individual form :word word)
+                (define-individual form :word word)))
          (cfr (def-cfr/expr category ;; lhs
                   (list word)        ;; rhs
                 :form form
-                :referent object)))
-    (setf (get-rules object) (list cfr))
-    object))
+                :referent i)))
+    (make-corresponding-mumble-resource
+     word
+     (if (eq form 'conjunction) :conjunction :subordinate-conjunction)
+     i)
+    (setf (get-rules i) (list cfr))
+    i))
     
 
 ;;------- simple conjunctions

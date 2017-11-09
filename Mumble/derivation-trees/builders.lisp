@@ -173,6 +173,24 @@
                      :phrase phrase
                      :bound (list (pvp 'q quantifier))))))
 
+(defgeneric conjunction (word)
+  (:documentation "Returns a freshly created lexicalized phrase
+    for a conjunction. This design (the choice of phrase, labels)
+    is arbitrary since Mumble originally expected a conjunctions
+    to be emitted as grammatical phenomenon. See the slot labels
+    'and', 'but', etc. for their word-stream actions. This is for
+    as standalone, expressly selected, conjunction as they come
+    out of Sparser.")
+  (:method ((w word))
+    (conjunction (pname w)))
+  (:method ((pname string))
+    (let ((phrase (phrase-named 'conjunct))
+          (conjunction (word-for-string pname 'conjunction)))
+      (make-instance 'saturated-lexicalized-phrase
+                     :phrase phrase
+                     :bound (list (pvp 'conj conjunction))))))
+    
+
 
 (defgeneric pronoun (word)
   (:documentation "Returns a lexicalized phrase expected to 

@@ -2004,6 +2004,10 @@
 ;;; conjunctions
 ;;;--------------
 
+(define-phrase conjunct (conj)
+  (conjunction
+   conjunct conj))
+
 (define-phrase two-item-conjunction (one two)
   (conjunction
    item one

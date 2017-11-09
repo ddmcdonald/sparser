@@ -659,11 +659,10 @@ have been filled in if the rdata includes an etf and a word.
 (defun make-corresponding-lexical-resource (head-field category)
   "Only called from the initialize-instance method of realization-data;
    see make-realization-data.
- The 'head-word' was constructed by
-   decode-rdata-heads. The goal is to arrange that every word
-   that is mentioned in realization data of a category should 
-   have a mumble word created for it. We ensure there's a sparser
-   word first, then make its mumble equivalent."
+   The 'head-word' was constructed by decode-rdata-heads. The goal is
+   to arrange that every word that is mentioned in realization data of
+   a category should have a mumble word created for it. We ensure
+   there's a sparser word first, then make its mumble equivalent."
   (declare (special *build-mumble-equivalents*))
   (when *build-mumble-equivalents*
     (let* ((pos-tag (car head-field))
@@ -691,16 +690,16 @@ have been filled in if the rdata includes an etf and a word.
 ;;--- general entry point
 
 (defgeneric make-corresponding-mumble-resource (word pos-tag krisp-obj)
-  (:documentation "Used when there isn't a mumble expression in the
- category's realization, but the caller has the word and part-of-speech 
- in hand:
+  (:documentation "Called directly when there is not a mumble expression in 
+ the category's realization, but the caller has the word and part-of-speech 
+ information in hand, such as:
     (a) The after method of make-rules-for-head
     (b) Old-style prepositions
     (c) quantifiers, attribute-value, pronouns
     (d) time/anaphors ('now')
     (e) directions
  Calls the standard lexicalized tree constructor and then records
- the result on the Krisp category or individual.
+ the result on the krisp-obj, which is a category or individual
  Calls extend to look for possibility of inheriting more rdata from
  a parent or mixed-in category.")
   (:method :around (word pos-tag krisp-obj)
@@ -792,6 +791,7 @@ have been filled in if the rdata includes an etf and a word.
                        ((:prep :preposition) (m::prep m-word))
                        (:quantifier (m::quantifier m-word))
                        (:pronoun (m::pronoun m-word))
+                       (:conjunction (m::conjunction m-word))
                        (:interjection (m::interjection m-word))))))
         (when lp
           (m::record-lexicalized-phrase m-word lp m-pos)
@@ -817,6 +817,7 @@ have been filled in if the rdata includes an etf and a word.
     (:quantifier 'm::quantifier)
     (:pronoun 'm::pronoun)
     (:interjection 'm::interjection)
+    ((:conjunction :subordinate-conjunction) 'm::conjunction)
     (:number 'm::number)
     (:word nil)))
 

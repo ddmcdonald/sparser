@@ -373,6 +373,8 @@
 (define-slot-label interrogative-pronoun
    grammatical-constraints (interrogative-pronoun))
 
+(define-slot-label conjunct ;; over "and", "thus" in conjunct phrase
+   grammatical-constraints (conjunction))
 
 ;;--- 'additional' labels
 
