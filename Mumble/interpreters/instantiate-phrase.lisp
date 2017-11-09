@@ -147,6 +147,7 @@
     ((context-object (make-phrasal-context))
      (root-node (top-level-build-phrase definition)))
     (set-node context-object root-node)
+    (set-name context-object (name root-node))
     (set-position-table context-object (create-position-table root-node))
     (set-available-aps context-object (create-attachment-point-list root-node))
     (set-context-object root-node context-object)

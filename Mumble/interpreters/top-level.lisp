@@ -24,12 +24,18 @@
 
 (defvar *current-position* nil
   "Keeps a pointer to the current position of the phrase structure execution process.
-It is mainly used for debugging. It's also used by the new browser, to disambiguate
-multiple occurrences of objects")
+ Provides a ready hook to our current location in the phrase structure tree. Its
+ value will be a slot or a node depending on just where we are.")
 
-(defvar *current-phrasal-root* nil)
+(defvar *current-phrasal-root* nil
+  "Points to the phrasal-context object of the syntactic maximal projection 
+ that we are currently inside. Created in calls to build-rooted-phrase.
+ Managed by subroutines of phrase-structure-execution.")
 
-(defvar *context-stack* nil)
+(defvar *context-stack* nil
+  "A push/pop stack of phrasal-context objects managed that coordinates
+ what context is in force as we enter/leave phrasal-root nodes in the
+ syntactic structure.")
 
 (defvar *pending-discourse-units* nil)
 

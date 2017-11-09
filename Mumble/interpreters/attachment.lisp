@@ -13,13 +13,32 @@
 
 ;############################################################
 ;  ATTACH is used for attaching further specifications which 
-;  are annotated with an attachment function (i.e. an attachment
-;   point or an attachment class).
+;  are annotated with an attachment point).
 ;############################################################
+#| 
+Attachments modify the surface structure by introducing
+new structure at a specified position. The set of attachment 
+points (AP) is defined in grammar/attachment-points.lisp.
+
+Slot and node labels specify what attachment points could be
+done at their location in the phrase structure. 
+
+What APs are available at a given moment is determined by the
+labels in the phrase that we are currently executing, and recorded
+on the context object (*current-phrasal-root*) of that phrase.
+
+The APs tallied (read off the labels of the phrase being built)
+and added onto the context object in the call to build-rooted-phrase.
+They are stored on the available-aps slot of the context object.
+
+Accessory handlers will adjust what is on the available-aps list
+to encode changes in state. Particulary in the auxiliary system
+and for commands.
+|#
 
 (defun attach (rspec attachment-point)
   "Called by Process-further-specifications. Checks whether the
-   context permits this attachment calls the dispatch to have it done.
+   context permits this attachment and calls the dispatch to have it done.
    Does nothing to the rspec other than pass it along into its attached slot."
   (landmark 'attaching-via-attachment-fn rspec attachment-point)
   (if (available-in-present-context attachment-point)
@@ -29,14 +48,6 @@
       (mbug "The ~a attachment point isn't available within a ~a node~%" 
             (name attachment-point) root-node))))
 
-(defun available-in-present-context (at-pt)
-  (let ((available-attachment-points (available-aps *current-phrasal-root*)))
-    (assoc at-pt available-attachment-points)))
-
-(defun position-of-ap-in-present-context (at-pt)
-  (cdr (assoc at-pt (available-aps *current-phrasal-root*))))
-
-
 (defun attach-at-attachment-point (at-pt rspec position)
   (etypecase at-pt
     (splicing-attachment-point (attach-by-splicing at-pt position rspec))
@@ -45,6 +56,20 @@
 	    (carry-out-action act rspec))
 	  (actions at-pt)))
 
+(defun available-in-present-context (at-pt)
+  "Is the attachment point one of the ones on the controlling
+   phrasal root."
+  (assoc at-pt (available-aps *current-phrasal-root*)))
+
+(defun position-of-ap-in-present-context (at-pt)
+  "Return the position of that AP in the current content"
+  (cdr (assoc at-pt (available-aps *current-phrasal-root*))))
+
+(defun position-of-ap (at-pt)
+  "Encapsulates an error-check. Intended for use by accessor handlers"
+  (unless (available-in-present-context at-pt)
+    (error "The ~a isn't available on ~a" at-pt *current-phrasal-root*))
+  (position-of-ap-in-present-context at-pt))
 
 
 

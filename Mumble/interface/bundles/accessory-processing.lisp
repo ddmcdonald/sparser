@@ -81,10 +81,14 @@
 ;;; the auxiliary system
 ;;;----------------------
 
+(defun return-tense-modal-attachment-point ()
+  (case (state-value ':aux-state (state *current-phrasal-root*))
+    (initial (splicing-attachment-point-named 'tense-modal))
+    (prepose-aux (splicing-attachment-point-named 'preposed-tense-modal))))
+
 (defun process-tense-modal-accessory (value)
   (let* ((ap (return-tense-modal-attachment-point))
-	 (active-ap (assoc ap (available-aps *current-phrasal-root*)))
-	 (position (cdr active-ap))
+         (position (position-of-ap ap))         
 	 (contents
 	   (cond ((or (eq value (accessory-value-named 'past))
 		      (eq value (accessory-value-named 'present)))
@@ -94,19 +98,33 @@
                   value)
 		 (t (mbug "unexpected contents of tense-modal ~a" value)))))
     (let ((new-position (attach-by-splicing ap position contents)))
-
+      (assert new-position)
+      ;; Remove tense-modal's current position
       (setf (available-aps *current-phrasal-root*) 
             (delete ap (available-aps *current-phrasal-root*)))
+      ;; Figure out what the next aux AP should be and add it
       (push (attachment-point-for-next-aux new-position contents)
 	    (available-aps *current-phrasal-root*))
+      ;; 
       (push (cons 'tense-marker new-position)
 	    (position-table *current-phrasal-root*)))))
 
-(defun return-tense-modal-attachment-point ()
-  (case (state-value ':aux-state (state *current-phrasal-root*))
-    (initial (splicing-attachment-point-named 'tense-modal))
-    (prepose-aux (splicing-attachment-point-named 'preposed-tense-modal))))
 
+(defun attachment-point-for-next-aux (position contents)
+  (let ((ap (splicing-attachment-point-named 'next-aux)))
+    (set-link ap 'next)
+    (case (state-value ':aux-state (state *current-phrasal-root*))
+      ((initial unmarked) (cons ap position))
+      (prepose-aux 
+       (typecase contents
+	 (word (change-state ':aux-state 'initial (state *current-phrasal-root*))
+	       (cons ap (cdr (assoc 'subject
+				    (position-table *current-phrasal-root*)))))
+	 (tense-marker (cons ap position))
+	 (otherwise
+	   (mbug "error--attachment-point-for-next-aux; unexpected contents"))))
+      (otherwise
+       (mbug "error--attachment-point-for-next-aux; unexpected state")))))
 
 
 (defun process-negate-accessory ()
@@ -177,27 +195,10 @@
 		   (word-for-string "not")
 		   (slot-label-named 'negative))))))
 
-(defun attachment-point-for-next-aux (position contents)
-  (let ((ap (splicing-attachment-point-named 'next-aux)))
-    (set-link ap 'next)
-    (case (state-value ':aux-state (state *current-phrasal-root*))
-      ((initial unmarked) (cons ap position))
-      (prepose-aux 
-       (typecase contents
-	 (word (change-state ':aux-state 'initial (state *current-phrasal-root*))
-	       (cons ap (cdr (assoc 'subject
-				    (position-table *current-phrasal-root*)))))
-	 (tense-marker (cons ap position))
-	 (otherwise
-	   (mbug "error--attachment-point-for-next-aux; unexpected contents"))))
-      (otherwise
-       (mbug "error--attachment-point-for-next-aux; unexpected state")))))
-
 
 (defun process-perfect-accessory ()
   (let* ((ap (splicing-attachment-point-named 'next-aux))
-	 (ap-set (assoc ap (available-aps *current-phrasal-root*)))
-	 (position (cdr ap-set))
+         (position (position-of-ap ap))
 	 (contents (word-for-string "have" 'verb)))
     (set-new-slot ap  (label-named 'have+en))
     (let ((new-position (attach-by-splicing ap position contents)))
@@ -211,18 +212,10 @@
 	      'prepose-aux)
         (change-state ':aux-state 'initial (state *current-phrasal-root*))))))
 
-#| Starting from (p/s "activating it") we get to process-progressive-accessory
-and there's no next-aux AP on the *current-phrasal-root* so we make it
-all the way to attach-by-splicing and fall on nil not being an mposition.
-available-aps does include tense-modal and preposed-tense-modal
-|#
 
 (defun process-progressive-accessory ()
   (let* ((ap (splicing-attachment-point-named 'next-aux))
-
-	 (ap-set (assoc ap (available-aps *current-phrasal-root*)))
-
-	 (position (cdr ap-set))
+         (position (position-of-ap ap))
 	 (contents (word-for-string "be" 'verb)))
     (set-new-slot ap (label-named 'be+ing))
     (let ((new-position (attach-by-splicing ap position contents)))
@@ -239,8 +232,7 @@ available-aps does include tense-modal and preposed-tense-modal
 
 (defun process-passive-accessory ()
   (let* ((ap (splicing-attachment-point-named 'next-aux))
-	 (ap-set (assoc ap (available-aps *current-phrasal-root*)))
-	 (position (cdr ap-set))
+         (position (position-of-ap ap))
 	 (contents (word-for-string "be" 'verb)))
     (set-new-slot ap (label-named 'be+en))
     (let ((new-position (attach-by-splicing ap position contents)))
