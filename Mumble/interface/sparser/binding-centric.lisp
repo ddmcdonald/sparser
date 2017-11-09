@@ -9,9 +9,15 @@
 ;;; Realizations for Sparser individuals
 ;;;--------------------------------------
 
+(defmethod realize ((i sp::individual))
+  "Punt to realize-individual."
+  (when m::*trace-archie* (display-current-position))
+  (realize-individual i))
+
 (sp::def-k-function realize-individual (i &key)
-  (:documentation "Realize a Sparser individual.
-Specific categories get specialized k-methods.") ; see binding-helpers.lisp
+  (:documentation "Realize a Sparser individual. Specific categories 
+    get specialized k-methods. (See examples in binding-helpers.lisp)
+    This is the default case, which falls through to realize-via-bindings.")
   (:method (i &key)
     "By default, choose a phrase or fall through to realize-via-bindings."
     (if (and (null (sp::indiv-binds i)) ;; No bindings for realize-via-bindings,
@@ -20,11 +26,6 @@ Specific categories get specialized k-methods.") ; see binding-helpers.lisp
                 :resource (or (find-lexicalized-phrase i)
                               (error "No lexicalized resource on ~a" i)))
       (realize-via-bindings i))))
-
-(defmethod realize ((i sp::individual))
-  "Punt to realize-individual."
-  (when m::*trace-archie* (display-current-position))
-  (realize-individual i))
 
 
 ;;;----------------------
@@ -146,17 +147,21 @@ Specific categories get specialized k-methods.") ; see binding-helpers.lisp
         (tr "unmarked binding: ~a~
          ~%  i = ~a var = ~a pos = ~a" binding individual variable pos)
         (cond ((eql value sp::**lambda-var**)) ;; effectively a trace
+
+              
               ((or (eql variable (sp::subject-variable individual))
                    (find :subject subcats))
                (if (current-position-p 'complement-of-be)
                  (attach-pp "by" value dtn pos) ; passive subject
                  (attach-subject value dtn)))
-              (prep ;; should at least precede object check
-               (tr "Preposition: ~a ~a" prep value)
-               (attach-pp (word-for prep 'preposition) value dtn pos))
               ((or (eql variable (sp::object-variable individual))
                    (find :object subcats))
                (attach-object value dtn))
+              (prep
+               (tr "Preposition: ~a ~a" prep value)
+               (attach-pp (word-for prep 'preposition) value dtn pos))
+
+              
               ((sp::itypep value 'sp::attribute-value) ; a modifier like 'red'
                (tr "attribute-value: ~a" value)
                (attach-adjective value dtn pos))
