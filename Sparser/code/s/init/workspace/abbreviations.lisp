@@ -337,12 +337,12 @@
     
 #+:mumble
 (defun p/m (string)
-  "Parse the string, and if the result is a single edge
-   print the semtree and pass it to mumble:say."
+  "Parse the string, print the semtree and mumble it."
   (let ((tree (p/s string)))
-    (pprint tree)
-    (terpri) (terpri)
-    (mumble::say tree)))
+    (when tree ;; is the text fully spanned
+      (pprint tree) (terpri) (terpri)
+      (with-output-to-string (mumble::*mumble-text-output*)
+        (mumble::say (car tree))))))
 
 (defun p/r (string)
   "Parse the string and then use the return-value capability
