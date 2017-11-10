@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "vocabulary"
 ;;;    Module:  grammar/model/sl/blocks-world/
-;;;   version:  July 2017
+;;;   version:  November 2017
 
 ;; Initiated 12/3/15.
 
@@ -15,11 +15,27 @@
 
 (define-category block
   :specializes rectangular-solid
-  :mixins (with-specified-location)
-  ;; inherits 'location' variable -- :binds ((position relative-position))
+  :mixins (can-change-location)
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "block")
+  :realization (:proper-noun name))
+
+(define-category ball
+  :specializes object
+  :mixins (can-change-location)
+  :index (:permanent :key name)
+  :lemma (:common-noun "ball")
+  :realization (:common-noun name)
+  :documentation "FIXME: needs a disinction from 'block'
+    that licenses 'roll' but not 'slide'")
+
+(define-category box
+  :specializes object ;; can we move a box?
+  :instantiates :self
+  :mixins (container)
+  :index (:permanent :key name)
+  :lemma (:common-noun "box")
   :realization (:proper-noun name))
 
 #| An interesting deference between a block and a table is
@@ -29,7 +45,7 @@ supporting other things is also markedly different since
 a block can typically only support a single other block
 (and any stack that starts with it) whereas a table can
 support a substantial number of blocks.
-|#
+|#  ;; And these don't move
 (define-category table
   :specializes rectangular-solid
   :index (:permanent :list)
@@ -39,23 +55,6 @@ support a substantial number of blocks.
   :specializes rectangular-solid
   :index (:permanent :list)
   :realization (:common-noun "shelf"))
-
-(define-category ball
-  :specializes object
-  :index (:permanent :list)
-  :index (:permanent :key name)
-  :lemma (:common-noun "ball")
-  :realization (:common-noun name)
-  :documentation "FIXME: needs a disinction from 'block'
-    that licenses 'roll' but not 'slide'")
-
-(define-category box
-  :specializes object
-  :instantiates :self
-  :mixins (container)
-  :index (:permanent :key name)
-  :lemma (:common-noun "box")
-  :realization (:proper-noun name))
 
 ;;--- Composites
 
