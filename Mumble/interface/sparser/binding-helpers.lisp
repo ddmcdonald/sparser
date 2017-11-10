@@ -414,9 +414,9 @@
    Applied to predication and location bindings in attach-via-binding"
   (and (sp::individual-p i)
        ;; Could it be a pp or a clause that has a subj or obj that's not lambda
-       ;;/// how to test pp case -- e.g. for location?
        (or (includes-real-subj/obj? i)
-           (includes-tense? i))))
+           (includes-tense? i)
+           (sp::itypep i 'sp::relative-location)))) ;; pp case
 
 ;; Original definition. Doesn't deal properly with "phosphorylated MEK"
 ;; where that instance of 'phosphorylated' should be deemed light.
