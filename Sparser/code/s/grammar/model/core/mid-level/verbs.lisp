@@ -153,7 +153,24 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
     (:verb ("make" :past-tense "made")
      :adjp-complement adj-comp 
      :mumble ("make" svo :a actor :o patient)))
-          
+
+(define-category move-something-somewhere
+  :specializes move
+  :mixins (agent)
+  :restrict ((agent physical-agent))
+  :documentation "Inherits variables from move (in kinds/movement.lisp).
+ The theme is restricted there to 'can-change-location'. 
+ Could have been named PTRANS. Intended as the common parent of push, 
+ put, place, nudge, etc."
+   :realization (:verb "move"
+                 :etf (svo-passive)
+                 :s agent
+                 :o theme
+                 :from from-location
+                 :to to-location
+                 :mumble ("move" svo :s agent :o theme)))
+
+
 #|
 (define-category propose
     :specializes achievement

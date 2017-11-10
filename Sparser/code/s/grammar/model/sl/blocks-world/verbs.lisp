@@ -40,6 +40,7 @@
   :documentation "Needs extension or a variant for variants
     like 'hold it up' or (?) 'hold it higher'")
 
+#| Original version -- definition moved to mid-level verbs
 (define-category move-something-somewhere
   :specializes process
   :mixins (with-an-agent with-specified-location) ;; adds 'agent' variable and location variables
@@ -51,7 +52,7 @@
                  :s agent
                  :o theme
                  :loc-pp-complement (to next\ to)
-                 :mumble ("move" svo :s agent :o theme)))
+                 :mumble ("move" svo :s agent :o theme))) |#
 
 (define-category pull
     :specializes process
