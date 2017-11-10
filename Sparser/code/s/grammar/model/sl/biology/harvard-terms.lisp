@@ -216,11 +216,21 @@ by which this occurs.") |#
    :in theme
    :to level))
 
-(def-synonym decrease (:verb "drop" :etf (svo-passive)))
-(def-synonym decrease (:verb ("taper off" :present-participle "tapering off"
+(define-category drop
+  :specializes decrease
+  :realization (:verb "drop" :etf (svo-passive)))
+ (define-category taper-off
+  :specializes decrease
+  :realization (:verb ("taper off" :present-participle "tapering off"
                               :past-tense "taper off")
-                       :etf (sv)))
+               :etf (sv)))
 
+;;(def-synonym decrease (:verb "drop" :etf (svo-passive)))
+;; (def-synonym decrease (:verb ("taper off" :present-participle "tapering off"
+;;                               :past-tense "taper off")
+;;                        :etf (sv)))
+
+  
 ;; Potentially problematic since the plural will misparse
 ;; "monoubiquitination decreases". Committing horrible hack
 ;; of putting in a dummy plural to circumvent that.
