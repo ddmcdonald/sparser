@@ -72,7 +72,7 @@ Instead we get "RASN" -- changing all the tests to reflect that
 
 (deftest (say increase braf 10-fold)
   (mumble-says "Increase the amount of BRAF by 10-fold.")
-  "increase by ten fold the amount of BRAF")
+  "increase the amount of BRAF by ten fold")
 
 (deftest (say assume no nras)
   (mumble-says "Assume there is no NRAS in the system.")
