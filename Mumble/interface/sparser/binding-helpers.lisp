@@ -337,8 +337,9 @@
              (when lp
                (extract-lexicalized-word lp 'adv)))))
     (let ((ap (ecase pos ;; of the dtn we're adding to
-                 (adjective ;; i.e. an adjp-head slot
-                  'adverbial-preceding)))
+                (adjective ;; i.e. an adjp-head slot
+                 'adverbial-preceding)
+                (verb 'adverbial-following)))
           (adverb (retrieve-m-adverb i)))
       (if (or (sp::indiv-binds i)
               (null adverb))
