@@ -58,7 +58,11 @@
   :documentation "The primary aim of the var(iable) is to provide
  the information to answer the question: where would we find it
  in an individual. For a simple wh-question ('where is the ball?')
- that's assumed to be the variable associated with the WH.")
+ that's assumed to be the variable associated with the WH.
+   N.b. used to use add-category-to-individual to incorporate the
+ type of the statement into the type of the whole interpretation
+ but the k-method dispatch is going the second, statement category
+ which confuses the realization process.")
 
 (define-category wh-question/attribute
   :specializes wh-question
@@ -87,12 +91,8 @@
                  :wh wh
                  :var var-to-use
                  :statement statement)))
-      (when statement
-        (setq q (add-category-to-individual q (itype-of statement))))
-      (when attribute
-        (setq q (bind-variable 'attribute attribute q)))
-      (when other
-        (setq q (bind-variable 'other other q)))
+      #|(when other
+        (setq q (bind-variable 'other other q)))|#
       q)))
 
 (defun extend-wh-object (q &key variable statement attribute)
@@ -106,7 +106,7 @@
         (setq q (bind-variable 'var attr-variable q)))))
   (when statement
     (setq q (bind-variable 'statement statement q))
-    (setq q (add-category-to-individual q (itype-of statement))))
+    #|(setq q (add-category-to-individual q (itype-of statement)))|# )
   q)
 
 
@@ -397,28 +397,31 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
          (cover-wh (make-wh-object wh-type) next-pos))
         (t
          (loop ;; search ahead for the aux/modal, then assess
-           (when (null next-edge) (return))
-           (cond
-             ((or (auxiliary-word? next-word)  ;; we've gone as far as we should
-                  (verb-category? next-edge))
-              (setq aux-edge next-edge)
-              (return))
-             ((itypep (edge-referent next-edge) 'attribute) ;; e.g. color
-              (setq attr-edge next-edge))
-             ((itypep (edge-referent next-edge) 'attribute-value) ;; "big"
-              (setq value-edge next-edge))
-             ((null (edge-referent next-edge)) ;; happens in cases like an edge over apostrophe-s
-              (push next-edge other-edges))
-             ((wh-is-declarative-heuristics next-edge)
-              (return))
-             (t (push next-edge other-edges)))
-             
-            (setq next-pos (chart-position-after
-                            (if next-edge (pos-edge-ends-at next-edge) next-pos))
-                 next-word (pos-terminal next-pos)
-                 next-edge (highest-edge (pos-starts-here next-pos))))
+            (when *debug-questions*
+              (format t "~&~a word = ~a, edge = ~a" next-pos next-word next-edge))
+            (when (null next-edge) (return))
+            (cond
+              ((or (auxiliary-word? next-word)  ;; we've gone as far as we should
+                   (verb-category? next-edge))
+               (setq aux-edge next-edge)
+               (return))
+              ((itypep (edge-referent next-edge) 'attribute) ;; e.g. color
+               (setq attr-edge next-edge))
+              ((itypep (edge-referent next-edge) 'attribute-value) ;; "big"
+               (setq value-edge next-edge))
+              ((null (edge-referent next-edge)) ;; happens in cases like an edge over apostrophe-s
+               (push next-edge other-edges))
+              ((wh-is-declarative-heuristics next-edge)
+               (return))
+              (t (push next-edge other-edges)))
+            ;;(lsp-break "old next-pos = ~a" next-pos)
+            (setq next-pos (if next-edge                  
+                             (rightmost (chart-position-after next-pos)
+                                        (pos-edge-ends-at next-edge))
+                             (chart-position-after next-edge))
+                  next-word (pos-terminal next-pos)
+                  next-edge (highest-edge (pos-starts-here next-pos))))
 
-          ;;(lsp-break "wh-type = ~a" wh-type)
          (unless aux-edge
            (if *debug-questions*
              (error "No aux-edge with ~a" wh-type)
@@ -438,7 +441,6 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                   (when *debug-questions*
                     (error "Multiple 'other edges' in ~s: ~a" (current-string) other-edges)))))
 
-           ;;(lsp-break "attr ?")
            (let ((q (if attr
                       (if other?
                         (make-wh-object wh-type :other attr)
@@ -502,8 +504,7 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
 
 (defun add-statement-to-wh-question (wh stmt)
   (declare (special category::question))
-  (let ((q (bind-variable 'statement stmt wh)))
-    (setq q (add-category-to-individual q (itype-of stmt)))
+  (let ((q (extend-wh-object wh :statement stmt)))
     (revise-parent-edge :form category::question
                         :referent q)
     (tr :wh+individual-method q)
