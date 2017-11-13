@@ -205,6 +205,15 @@
     (m::say text)))
 
 #+:mumble
+(defgeneric dtn (i)
+  (:documentation "Packages idiom for debugging realization,
+    hiding the mumble package")
+  (:method ((n number))
+    (dtn (individual-object# n)))
+  (:method ((i individual))
+    (m::pp-dtn (m::get-dtn i))))
+
+#+:mumble
 (defgeneric mdata (item)
   (:documentation "Retrieve the mumble resource(s) linked to
  the item, using the same accessors that the realization function
