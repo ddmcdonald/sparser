@@ -309,7 +309,7 @@ assess-edge-label, which rewrites the word as the category BE.
   :documentation "Paired down copular predication. Unless you
  want to imagine a transformation ('there is a cat on the mat'
  => 'the cat is on the mat') there is no 'item', just
- the predicate ('(there) has frequently been (at cat on the mat)')
+ the predicate ('(there) has frequently been (a cat on the mat)')
  and the value holds the description we are asserting
  the existence of.")
 
@@ -321,44 +321,43 @@ assess-edge-label, which rewrites the word as the category BE.
   :form subj+verb
   :referent (:function make-there-exists right-edge))
 
-(loop for n in '(np n-bar proper-noun common-noun common-noun/plural)
-   do
-     (eval `(def-form-rule (there-exists ,n)
-                ;;/// the effect of this rule is to make the category of
-                ;; the edge be the category of the NP, which is odd looking.
-                ;; The function could fix it if we care enough.
-                :form s
-                :referent (:function make-exist-claim left-edge right-edge))))
-
-
-
 (defun make-there-exists (vg)
-  #| In R3, but not in CwC or Fire (though only tested smallish
-  sentences), given the local treetops [there] [are] [no proteins...],
-  the rule search prefer to compose the last two using {vg + np}
-  rather than use {there-exists + be] as intended. ///The right thing
-  to do is to hack the rule search since "there" is a very particular
-  kind of subject and its search policy should be different.
-  But that will take too long (8/31/16) so this looks for what it
-  will see if it goes that way (an instance of 'be' with a predicate
-  and rearranges things accordingly. |#
+  "Instantiate a there-exists and fill in its predicate variable.
+   Another rule will add the value we're asserting the existence of."
   (declare (special category::s))
   (if *subcat-test*
     t
-    (cond
-      ((and (itypep vg 'be) (value-of 'predicate vg))
-       ;; this is the case where the search protocol should shift
-       ;;/// we lose the vg -- the rule applied to get the be+np
-       ;; is assimilate-np-to-v-as-object and it makes the vg
-       ;; the basis of the individual
-       (let* ((value (value-of 'predicate vg))
-              (i (find-or-make-individual 'there-exists :value value)))
-         (revise-parent-edge :form category::s) ;; vs subj+verb
-         i))
-       (t
-        (make-an-individual 'there-exists :predicate vg)))))
+    (let ((i
+           (cond
+             ((and (itypep vg 'be) (value-of 'predicate vg))
+              (format t "~&predicate~%")
+              (let* ((value (value-of 'predicate vg))
+                     (i (find-or-make-individual 'there-exists :value value)))
+                (revise-parent-edge :form category::s) ;; vs subj+verb
+                i))
+             (t
+              (make-an-individual 'there-exists :predicate vg)))))
+      ;; This is from "there + be" => there-exists
+      ;; The 'be' may well have tense and/or aspect information
+      ;; on it that we need to lift
+      ;; (predicate (#<be 1340> (modal (#<should 1338>))))
+      ;;(lsp-break "lift from prediate")
+      i)))
+
+
+(loop for n in '(np n-bar proper-noun common-noun common-noun/plural)
+   do (def-form-rule/expr `(there-exists ,n)
+          ;;/// Because it's a form rule this makes the category of
+          ;; the edge be the category of the NP, which is odd looking.
+          ;; The function could fix it if we care enough.
+          :form 's
+          :referent '(:function make-exist-claim left-edge right-edge)))
 
 (defun make-exist-claim (there+vg np)
-  (if *subcat-test* t
-      (bind-variable 'value np there+vg)))
+  "Fill the other variable of the there-exists individual"
+  (if *subcat-test*
+    t
+    (let ((i (bind-variable 'value np there+vg)))
+      (revise-parent-edge :category (edge-category (left-edge-for-referent)))
+      i)))
 
