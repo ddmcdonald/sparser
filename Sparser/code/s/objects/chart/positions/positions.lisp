@@ -192,7 +192,20 @@
            (pos-token-index start-pos))
        (<= (pos-token-index position)
            (pos-token-index end-pos))))
- 
+
+
+(defgeneric rightmost (p1 p2)
+  (:documentation "Which of the positions in the chart of the
+    two items is the furthest to the right. Return the position
+    of that item (end position if item is an edge).")
+  (:method ((p1 position) (p2 position))
+    (let ((i1 (pos-token-index p1))
+          (i2 (pos-token-index p2)))
+      (cond ((= i1 i2) p1)
+            ((> i1 i2) p1)
+            ((< i1 i2) p2)))))
+
+
 ;;;------------------------
 ;;; construction functions
 ;;;------------------------
