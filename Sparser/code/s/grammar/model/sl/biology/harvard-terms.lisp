@@ -136,10 +136,16 @@ increasing amounts of recombinant XRCC1.
 ;;; move !!
 ;;;---------
 
-;; Verbs added temporarily for Localization articles
-;; -- to be reviewed and corrected
+;; became very pronounced by 9 h.
+;; which became strongly tyrosine phosphorylated by 9 h of calcium treatment
+;; The Ras-related protein, RAL becomes activated once GDP is replaced by GTP.")
+;; "Does phosphorylated BRAF become high before phosphorylated MAP2K1 becomes high?"
+;; the ability of the mutant Gab1 proteins to become tyrosine phosphorylated in response to EGF."
+
+;; If "become" is followed by a verb ("activated") it's parsed as a passive
+;; and largely disappears from the interpretation. 
 (define-category become :specializes be
-  :mixins (bio-rhetorical)
+ ;; :mixins (bio-rhetorical)
   :realization
     (:verb ("become" :third-singular "becomes" :past-tense "became"
 		     :present-participle "becoming")
@@ -225,10 +231,6 @@ by which this occurs.") |#
                               :past-tense "taper off")
                :etf (sv)))
 
-;;(def-synonym decrease (:verb "drop" :etf (svo-passive)))
-;; (def-synonym decrease (:verb ("taper off" :present-participle "tapering off"
-;;                               :past-tense "taper off")
-;;                        :etf (sv)))
 
   
 ;; Potentially problematic since the plural will misparse
