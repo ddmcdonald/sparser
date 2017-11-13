@@ -62,7 +62,8 @@
    N.b. used to use add-category-to-individual to incorporate the
  type of the statement into the type of the whole interpretation
  but the k-method dispatch is going the second, statement category
- which confuses the realization process.")
+ which confuses the realization process. Now only including the
+ statement category when we're not a toplevel question.")
 
 (define-category wh-question/attribute
   :specializes wh-question
@@ -77,7 +78,7 @@
 
 ;;--- constructors
 
-(defun make-wh-object (wh &key variable statement attribute other)
+(defun make-wh-object (wh &key variable statement attribute other embedded)
   (declare (optimize debug))
   (push-debug `(,variable ,statement ,attribute ,other))
   (let* ((attribute-var
@@ -91,8 +92,16 @@
                  :wh wh
                  :var var-to-use
                  :statement statement)))
-      #|(when other
-        (setq q (bind-variable 'other other q)))|#
+      (when embedded
+        ;; If we are an interior wh-clause, then we are going to 
+        ;; compose with something, and it will be important to expose
+        ;; the category of the statement as part of this individual.
+        (when statement
+          (setq q (add-category-to-individual q (itype-of statement)))))
+      (when attribute
+        (setq q (bind-variable 'attribute attribute q)))
+      (when other
+        (setq q (bind-variable 'other other q)))
       q)))
 
 (defun extend-wh-object (q &key variable statement attribute)
