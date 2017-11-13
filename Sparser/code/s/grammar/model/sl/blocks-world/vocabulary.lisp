@@ -48,11 +48,13 @@ support a substantial number of blocks.
 |#  ;; And these don't move
 (define-category table
   :specializes rectangular-solid
+  :mixins (location)  
   :index (:permanent :list)
   :realization (:common-noun "table"))
 
 (define-category shelf
   :specializes rectangular-solid
+  :mixins (location)  
   :index (:permanent :list)
   :realization (:common-noun "shelf"))
 
