@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  September 2017
+;;;  Version:  November 2017
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -518,7 +518,7 @@
 
   ;; Somewhat ad-hoc things to get around error that should
   ;; be fixed or intrusions of the biology ontology that isn't included
-  (setq *force-modifiers* t) ;; if we don't have a variable use 'modifier'
+  ;;(setq *force-modifiers* t) ;; if we don't have a variable use 'modifier'
   (setq *collect-subcat-info* nil) ;; which gets an error there
   (setq *interpret-in-context* nil) ;;/// look at other cases
   ;; and sort out what pronoun policy to use
