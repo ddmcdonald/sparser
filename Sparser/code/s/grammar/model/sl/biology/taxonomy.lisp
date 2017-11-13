@@ -1009,6 +1009,7 @@
 
 
 (define-category experimental-condition :specializes bio-context
+                  :mixins (has-uid) 
   :instantiates self
   :index (:permanent :key name)
   :lemma (:common-noun "condition")
@@ -1281,7 +1282,13 @@
  :realization
    (:common-noun name))
 
-(def-synonym organism  (:noun "animal"))
+(define-category animal ;; changed to not be a synonym of organism
+                        ;; since not all organisms are animals
+    :specializes organism
+  :instantiates self 
+  :index (:permanent :key name)
+  :lemma (:common-noun "animal")
+  :realization (:common-noun name))
 
 (define-category species :specializes organism
   :instantiates self 

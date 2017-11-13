@@ -69,6 +69,9 @@
      :in organism
      :of organism))
 
+(noun ("acinus" :plural "acini") :super tissue) ;; any cluster of cells that resembles a many-lobed "berry"
+(noun "vasculature" :super tissue) ; to replace erroneous protein definition
+
 ;;;-------------
 ;;; tumor
 ;;;-------------
@@ -103,13 +106,17 @@
 ;;; organisms
 ;;;-------------
 
-(define-category mammal :specializes organism
+(define-category mammal :specializes animal
   :mixins (has-UID)
   :instantiates self
   :index (:permanent :key name)
   :realization
     (:noun "mammal"
      :adj "mammalian"))
+
+(noun "dam" :super mammal) ; dam is the female parent, generally for rodents -- this is to replace an erroneous protein definition of "dams"
+(noun "female" :super animal) 
+(noun "male" :super animal) 
 
 ;;;-------------------
 ;;; organisms with IDs

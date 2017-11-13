@@ -1,5 +1,7 @@
 (in-package :sparser)
 
+(def-indiv-with-id cell-type "CSC" "NCIT:C68706" :name "cancer stem cell")
+(def-indiv-with-id cell-type "REC" "CO:0002585" :name "retinal endothelial cell") 
 (def-indiv-with-id cell-type "lung endothelial cell" "CO:1001567") 
 (def-indiv-with-id cell-type "lung epithelial cell" "CO:0000082") 
 (def-indiv-with-id cell-type "type II alveolar epithelial cell" "CO:0002063") 

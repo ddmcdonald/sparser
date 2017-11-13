@@ -1915,3 +1915,5 @@
 (def-indiv-with-id drug "dacarbazine" "PCID:5281007" :name "dacarbazine" :no-plural t)
 (def-indiv-with-id drug "cobimetinib" "PCID:71491931" :name "cobimetinib" :no-plural t)
 (def-indiv-with-id drug "sorafenib" "CHEBI:50924" :name "Sorafenib" :no-plural t :synonyms("N -(3-trifluoromethyl-4-chlorophenyl)- N '-(4-(2-methylcarbamoyl pyridin-4-yl)oxyphenyl)urea)" "BAY43-9006" "sorafinib" "soranfinib" "sorfenib"))
+(def-indiv-with-id drug "DEX" "PCID:5743" :name "dexamethasone" :no-plural t)
+(def-indiv-with-id drug "pervanadate" "PCID:61671" :name "Sodium Orthovanadate" :no-plural t)

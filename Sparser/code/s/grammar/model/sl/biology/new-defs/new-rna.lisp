@@ -30,3 +30,9 @@
 (def-indiv-with-id micro-rna "miR-7" "MI0000263" :name "microRNA 7" :synonyms ("MiR-7" "miR7"))
 (def-indiv-with-id micro-rna "miR-10" "MIPF0000033" :name "microRNA 10" :synonyms ("miR10"))
 (def-indiv-with-id micro-rna "miR-1" "MIPF0000038" :name "microRNA 1" :synonyms ("miR1"))
+(def-indiv-with-id micro-rna "miR-101" "MI0000103" :name "microRNA 101" :synonyms ("miR101"))
+(def-indiv-with-id micro-rna "miR-155" "MI0000681" :name "microRNA 155" :synonyms ("miR155"))
+(def-indiv-with-id micro-rna "miR-145" "MI0000461" :name "microRNA 145" :synonyms ("miR145"))
+(def-indiv-with-id micro-rna "miR-21" "MI0000077" :name "microRNA 21" :synonyms ("miR21"))
+
+(def-indiv-with-id plasmid "BAC" "NCIT:C1860" :name "Bacterial Artificial Chromosome") ; it's based on a plasmid, but isn't actually one itself

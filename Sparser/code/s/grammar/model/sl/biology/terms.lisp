@@ -202,9 +202,10 @@
 (adj "anti" :super bio-predication)
 
 (define-category antibody :specializes protein
-  :binds ((antigen molecule))
+                 :binds ((antigen molecule))
+                 :bindings (uid "NCIT:C16295")
   :realization
-  (:noun ("antibody" "anti-")
+  (:noun ("antibody" "anti-" "Ab") ;; often plural "Abs"
          :m antigen
          :to antigen
          :for antigen))

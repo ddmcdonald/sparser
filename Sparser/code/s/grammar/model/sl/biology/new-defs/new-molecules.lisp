@@ -985,7 +985,7 @@
 (def-indiv-with-id molecule "NaVO3" "CHEBI:75221" :name "sodium metavanadate") 
 (def-indiv-with-id molecule "NPC" "CHEBI:80552" :name "NPC") 
 (def-indiv-with-id molecule "NNO" "CHEBI:17045" :name "dinitrogen oxide") 
-(def-indiv-with-id molecule "PHAS" "CHEBI:53387" :name "poly(hydroxyalkanoate)") 
+(def-indiv-with-id molecule "PHAS" "CHEBI:53387" :name "poly(hydroxyalkanoate)" :maintain-case t) ; block erroneous creation of plural "phases"
 (def-indiv-with-id molecule "PGPC" "CHEBI:61822" :name "2-O-glutaroyl-1-O-palmitoyl-sn-glycero-3-phosphocholine" :maintain-case t) 
 (def-indiv-with-id molecule "PGB" "CHEBI:26335" :name "prostaglandins B") 
 (def-indiv-with-id molecule "PDL" "CHEBI:53413" :name "poly(D-lysine) macromolecule") 
@@ -1421,7 +1421,7 @@
 (def-indiv-with-id molecule "IC87114" "CHEBI:90686" :name "IC-87114") 
 (def-indiv-with-id molecule "LVD" "CHEBI:73576" :name "Leu-Val-Asp") 
 (def-indiv-with-id molecule "MK886" "CHEBI:75390" :name "3-[3-(tert-butylsulfanyl)-1-(4-chlorobenzyl)-5-(propan-2-yl)-1H-indol-2-yl]-2,2-dimethylpropanoic acid") 
-(def-indiv-with-id molecule "Male" "CHEBI:30780" :name "maleate(2-)") 
+(def-indiv-with-id molecule "maleate" "CHEBI:30780" :name "maleate(2-)") 
 (def-indiv-with-id molecule "N-ethyl-N-nitrosourea" "CHEBI:23995" :name "N-ethyl-N-nitrosourea") 
 (def-indiv-with-id molecule "PEA" "CHEBI:71464" :name "palmitoyl ethanolamide") 
 (def-indiv-with-id molecule "PTT" "CHEBI:3088" :name "bilanafos") 
@@ -1595,3 +1595,4 @@
 (def-indiv-with-id molecule "PA" "CHEBI:16337" :name "phosphatidic acid") 
 (def-indiv-with-id molecule "VPA" "CHEBI:39867" :name "valproic acid") 
 (def-indiv-with-id molecule "Nonidet P-40" "CHEBI:78708" :name "Nonidet P-40") ;a lysis buffer
+(def-indiv-with-id molecule "DHT" "CHEBI:16330" :name "dihydrotestosterone") 

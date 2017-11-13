@@ -54,6 +54,8 @@
 (noun  "spectroscopy" :super bio-method)
 (noun  "microscopy" :super bio-method)
 (noun  "microscope" :super bio-method)
+(noun "LSM" :super bio-method)
+(def-synonym LSM (:noun "laser scanning microscope"))
 (noun  "microimaging" :super bio-method)
 (noun  "microarray" :super bio-method)
 (noun  "array" :super bio-method)
@@ -182,7 +184,7 @@ with something else
 ;;; experimental-conditions
 ;;;------------------------
 
-(noun "medium" :super experimental-condition)
+(noun ("medium" :plural "media") :super experimental-condition)
 (noun "unstimulated" :super experimental-condition)
 (define-category absence :specializes experimental-condition
   :binds ((measurement (:or measurement bio-scalar)))
@@ -190,9 +192,10 @@ with something else
   (:noun "absence"
 	 :of measurement))
 ;;(noun "condition" :super experimental-condition) OBE -- in taxonomy
-(noun "fetal calf serum" :super experimental-condition)
-(def-synonym category::fetal-calf-serum  (:noun "FCS"))
+;(noun "fetal calf serum" :super experimental-condition)
+;(def-synonym category::fetal-calf-serum  (:noun "FCS")) ; added with id now in new-bio-meths
 
+  
 (define-category in-situ :specializes experimental-condition
   :realization  ;; could also be considered as a location
   (:adj "in situ"))
@@ -217,7 +220,7 @@ with something else
       :realization
       (:noun "radioactivity" :adj "radioactive"
              :of material))
-(noun "serum" :super experimental-condition) 
+(noun ("serum" :plural "sera") :super experimental-condition)
 
 (noun "setting" :super bio-context)
 (noun "trial" :super bio-context)

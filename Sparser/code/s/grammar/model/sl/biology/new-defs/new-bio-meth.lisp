@@ -1,14 +1,19 @@
 (in-package :sparser)
 
 
+(def-indiv-with-id experimental-condition "FBS" "NCIT:C113696" :name "fetal bovine serum" :plural "fetal bovine sera" :synonyms ("fetal calf serum" "FCS")) 
+
 (def-indiv-with-id bio-method "xenograft" "EFO:0003942" :name "heterologous transplantation") 
 (def-indiv-with-id bio-method "recombination" "EFO:0004293" :name "recombination") 
 (def-indiv-with-id bio-method "cDNA" "EFO:0004187" :name "cDNA library construction") 
-(def-indiv-with-id bio-method "RNA-seq" "EFO:0002770" :name "transcription profiling by high throughput sequencing") 
+(def-indiv-with-id bio-method "RNA-seq" "EFO:0002770" :name "transcription profiling by high throughput sequencing")
+(def-indiv-with-id bio-method "ChIP" "NCIT:C106048" :name "chromatin immunoprecipitation" :synonyms ("Chromatin immunoprecipipation")) 
 (def-indiv-with-id bio-method "ChIP-seq" "EFO:0002692" :name "ChIP-seq") 
 (def-indiv-with-id bio-method "ChIP-chip" "EFO:0000748" :name "ChIP-Chip") 
-(def-indiv-with-id bio-method "t-test" "NCIT:C53231" :name "t-test") 
-(def-indiv-with-id bio-method "q-PCR" "NCIT:C51962" :name "real time PCR") 
+(def-indiv-with-id bio-method "t-test" "NCIT:C53231" :name "t-test")
+(def-indiv-with-id bio-method "CGH" "NCIT:C18084" :name "Comparative Genomic Hybridization") 
+(def-indiv-with-id bio-method "q-PCR" "NCIT:C51962" :name "real time PCR")
+(def-indiv-with-id bio-method "ANOVA" "NCIT:C53241" :name "Analysis of Variance")
 (def-indiv-with-id bio-method "meta-analysis" "NCIT:C17886" :name "meta-analysis" :plural ("meta-analysises" "meta-analyses")) 
 (def-indiv-with-id bio-method "end-point" "NCIT:C82866" :name "endpoint value derivation technique") 
 (def-indiv-with-id bio-method "densitometry" "NCIT:C86063" :name "densitometry") 

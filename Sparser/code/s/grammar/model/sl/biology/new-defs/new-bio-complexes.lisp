@@ -47,3 +47,4 @@
 (def-indiv-with-id bio-complex "EIF3" "GO:0005852" :name "eukaryotic translation initiation factor 3 complex") 
 (def-indiv-with-id bio-complex "RNP" "GO:1990904" :name "ribonucleoprotein complex") 
 (def-indiv-with-id bio-complex "heterochromatin" "GO:0000792" :name "heterochromatin") 
+(def-indiv-with-id bio-complex "chromatin" "GO:0000785" :name "chromatin") 
