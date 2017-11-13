@@ -21,6 +21,11 @@
     (when slot
       (memq (name slot) labels))))
 
+(defparameter *syntactically-embedded* nil
+  "Used by WH to indicate that a realization is not toplevel but
+   actually dominated by a sentence-level complementizer so the 
+   usual considerations of toplevel phenomena should not apply")
+
 (defun current-position-is-top-level? ()
   "Is the current position something like turn or a similar
    main-clause holding slot like sentence, question, or s.
@@ -173,29 +178,35 @@
   (discourse-unit (question (realize (sp::value-of 'sp::statement i)))))
 
 (sp::def-k-method realize-individual ((i category::wh-question) &key)
+  "Realize the statement of question with the wh element handled 
+   as a feature on the statement's dtn."
   (tr "Realizing wh question ~a" i)
   (let* ((wh-category (sp::value-of 'sp::wh i))
          (statement (sp::value-of 'sp::statement i))
-         (top-dtn (realize statement))
-         (wh-dtn (make-dtn :resource (phrase-named 'wh))))
-    (make-complement-node 'wh wh-category wh-dtn)
-    (add-feature top-dtn :wh wh-dtn)
-    (discourse-unit (question top-dtn))))
+         (*syntactically-embedded* t))
+    (declare (special *syntactically-embedded*))
+    (let ((top-dtn (realize statement))
+          (wh-dtn (make-dtn :resource (phrase-named 'wh))))
+      (make-complement-node 'wh wh-category wh-dtn)
+      (add-feature top-dtn :wh wh-dtn)
+      (discourse-unit (question top-dtn)))))
 
 (sp::def-k-method realize-individual ((i category::wh-question/attribute) &key)
   (tr "Realizing wh/attribute question ~a" i)
-  (let* ((wh-category (sp::value-of 'sp::wh i))
-         (attribute (sp::value-of 'sp::attribute i))
-         (other (sp::value-of 'sp::other i))
-         (statement (sp::value-of 'sp::statement i))
-         (top-dtn (realize statement))
-         (wh-dtn (make-dtn :resource (phrase-named 'wh-term))))
-    (make-complement-node 'wh wh-category wh-dtn)
-    (make-complement-node 'q (or attribute other) wh-dtn)
-    (add-feature top-dtn :wh wh-dtn)
+  (let ((wh-category (sp::value-of 'sp::wh i))
+        (attribute (sp::value-of 'sp::attribute i))
+        (other (sp::value-of 'sp::other i))
+        (statement (sp::value-of 'sp::statement i))
+        (*syntactically-embedded* t))
+    (declare (special *syntactically-embedded*))
+    (let ((top-dtn (realize statement))
+          (wh-dtn (make-dtn :resource (phrase-named 'wh-term))))
+      (make-complement-node 'wh wh-category wh-dtn)
+      (make-complement-node 'q (or attribute other) wh-dtn)
+      (add-feature top-dtn :wh wh-dtn)
     (discourse-unit ;; supply the "?" as well as capitalizing
      (question ;; invert the aux
-      top-dtn))))
+      top-dtn)))))
 
 
 
@@ -234,12 +245,16 @@
 
 (sp::def-k-method realize-individual ((i category::there-exists) &key)
   (tr "Realizing there-exists ~a" i)
-  (let ((be (realize-via-bindings (sp::value-of 'sp::predicate i)
-                                  :pos 'verb
-                                  :resource (phrase-named 's-be-comp))))
-    (attach-subject (find-word "there" 'pronoun) be)
-    (attach-complement (sp::value-of 'sp::value i) be)
-    be))
+  (when (sp::value-of 'location i)
+    (error "Analysis of 'there' construction seems to have two arguments"))
+  (let* ((subject (sp::value-of 'sp::value i))
+         (predicate (sp::value-of 'sp::predicate i))
+         (dtn (make-dtn :referent i
+                        :resource (phrase-named 'there-be-s))))
+    (make-complement-node 's subject dtn)
+    (verb-aux-handler dtn i)
+    dtn))
+
 
 ;;;-------------------------------------------------------------
 ;;; additional handling to sort out potential issues in clauses
@@ -250,6 +265,7 @@
     and simpler clause-creating routines. Handle things that are
     common to any verb-centric realization.")
   (:method ((dtn derivation-tree-node) (i sp::individual))
+    (declare (special *syntactically-embedded*))
     (when (verb-based-realization dtn)
       ;; Look for a specified tense
       (cond ((sp::value-of 'sp::past i)
@@ -271,9 +287,9 @@
             (subject (get-subject i)))
         (cond
           ((current-position-is-top-level?)
-           ;; ??? why did we check for a concrete object?
-           (when (sp::missing-subject-vars i)
-             (command dtn)))
+           (when (sp::missing-subject-vars i) ;; no subject binding
+             (unless *syntactically-embedded*
+               (command dtn))))
           ((current-position-p 'relative-clause)
            (let ((head (head-of-relative-clause slot)))
              (declare (ignore head)) ;; need more info in predication
