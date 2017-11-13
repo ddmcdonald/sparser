@@ -992,7 +992,7 @@
 (def-family-with-id "Coronin 1B" "IPR027340") 
 (def-family-with-id "Claudin1" "IPR003548") 
 (def-family-with-id "Class I HDACs" "BE:HDAC_I") 
-(def-family-with-id "Cc" "XFAM:PF04942") 
+;(def-family-with-id "Cc" "XFAM:PF04942") 
 (def-family-with-id "Cavin" "IPR026752") 
 (def-family-with-id "Cannabinoid receptor type 1" "IPR000810") 
 (def-family-with-id "Cannabinoid receptor" "IPR002230") 

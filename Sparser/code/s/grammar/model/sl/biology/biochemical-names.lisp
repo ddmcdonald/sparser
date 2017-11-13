@@ -3044,7 +3044,7 @@ atom"
     ("CHEBI:30775"
      (("HFAs" 84) ("HFA" 35) ("rVpr-treated HFAs" 3) ("Vpr-treated HFAs" 2)
       ("Vpr-treated primary HFAs" 1)))
-    ("CHEBI:30780" ; removed erroneous def
+    #+ignore("CHEBI:30780" ; removed erroneous def
      (("male" 4803) ("males" 3260) ("Male" 302) ("Males" 28) ("than males" 21)
       ("MalE" 13) ("Caucasian males" 7) ("more males" 6) ("homozygous males" 3)
       ("only anosmic males" 3) ("infertile males" 3) ("than males ( xref )" 3)
@@ -4902,7 +4902,7 @@ reported small molecule p53-Mdm4 antagonist"
     ("CHEBI:53376" (("polyglutamate" 30) ("polyglutamates" 1)))
     ("CHEBI:53383"
      (("polyglycine" 12) ("the internal non-conserved polyglycine" 1)))
-    ("CHEBI:53387" ;fixed to make the "PHAS" case-sensitive to hopefully block the erroneous plural 
+    #+ignore("CHEBI:53387" ;fixed to make the "PHAS" case-sensitive to hopefully block the erroneous plural 
      (("phases" 2190) ("Phases" 32) ("PHAS" 13) ("-phases" 8)
       ("all mitotic phases" 6) ("specific circadian phases" 4)
       ("different mitotic phases" 3) ("the subsequent phases" 3)
@@ -19670,7 +19670,7 @@ essential surface protein"
   (("CYP26A1" 17) ("Cyp26a1" 6) ("CYP26" 5) ("subfamily XXVIA" 5) ("Cyp26" 2)
    ("CP26" 2)))
  ("UP:O43175" ; added other def for sera
-  (("sera" 1632) ("Sera" 97) ("PHGDH" 82) ("normal sera" 16) ("sera (NHS)" 8)
+  (#+ignore("sera" 1632) #+ignore("Sera" 97) ("PHGDH" 82) ("normal sera" 16) ("sera (NHS)" 8)
    ("PDG" 5) ("SerA" 4) ("Immune sera" 3) ("crude sera" 3)
    ("control non-immune sera" 3) ("pre-immune sera" 2)
    ("representative cancer sera" 2) ("the pre-immune sera" 2)
@@ -42091,8 +42091,8 @@ protein"
   (("ACVR1" 7) ("ALK2" 4) ("Acvr1" 2) ("activin receptor like kinase 2" 2)))
  ("UP:Q04790" (("IFNR1" 1)))
  ("UP:Q04828" ; fixed DHT
-  (("DHT" 2570) ("ddH" 169) ("AKR1C1" 43) ("AKR1c1" 18) ("DHT-" 12)
-   ("Akr1c1" 8) ("DHT−" 6) ("dsD1" 4) ("–DHT" 2) ("-DHT" 1)
+  (#+ignore("DHT" 2570) ("ddH" 169) ("AKR1C1" 43) ("AKR1c1" 18) #+ignore("DHT-" 12)
+   ("Akr1c1" 8) #+ignore("DHT−" 6) ("dsD1" 4) #+ignore("–DHT" 2) ("-DHT" 1)
    ("the nonaromatizable DHT" 1)
    ("charcoal stripped (CS)-FBS + 1 nM DHT, and CS-FBS + 10 nM DHT" 1)
    ("exogenous DHT" 1) ("than DHT" 1) ("low intraprostatic DHT" 1)
@@ -55448,8 +55448,8 @@ homeodomain-interacting protein kinase-2"
    ("vesicular GABA transporter" 1)))
  ("UP:Q9H5I1" (("H3-K9" 26) ("SUV39H2" 7) ("Suv39h2" 6)))
  ("UP:Q9H5I5" (("PIEZO2" 1)))
- ("UP:Q9H5J4" ; removed face
-  (("face" 1157) ("LCE" 19) ("the inner face" 11) ("FACE" 7) ("ELOVL6" 6)
+ ("UP:Q9H5J4" ; removed lowercase face
+  (#+ignore("face" 1157) ("LCE" 19) #+ignore("the inner face" 11) ("FACE" 7) ("ELOVL6" 6)
    ("a triangular face" 5) ("characteristic face" 5) ("Face" 4)
    ("the upper face" 4) ("the nucleoplasmic face" 4) ("the hydrophilic face" 3)
    ("triangular face" 3) ("the concave face" 3) ("-face" 2)
@@ -55626,8 +55626,8 @@ homeodomain-interacting protein kinase-2"
  ("UP:Q9HAC7" (("c7orf10" 6) ("C7orf10" 2)))
  ("UP:Q9HAF1" (("CENP-28" 2) ("Eaf6" 1) ("hEaf6" 1)))
  ("UP:Q9HAH7" ; changed to FBRS since that's more correct and added good FBS def
-  (("FBS" 17067) ("SFS" 48) ("10% charcoal-stripped FBS" 40)
-   ("5% charcoal-stripped FBS" 34) ("GIBCO" 22) ("charcoal-stripped FBS" 20)
+  (#+ignore("FBS" 17067) ("SFS" 48) #+ignore("10% charcoal-stripped FBS" 40)
+   #+ignore("5% charcoal-stripped FBS" 34) ("GIBCO" 22) #+ignore("charcoal-stripped FBS" 20)
    ("FBS (GIBCO)" 12) ("charcoal stripped FBS" 12)
    ("10% charcoal stripped FBS" 10) ("FBS-" 10) ("normal FBS" 7) ("–FBS" 7)
    ("2.5% charcoal-stripped FBS" 6) ("5% charcoal stripped FBS" 5)
@@ -56053,7 +56053,7 @@ kinase"
  ("UP:Q9NA13" (("iPLA" 9))) ("UP:Q9NB71" (("hiw" 1)))
  ("UP:Q9NBK5" (("TRC" 168) ("the Public TRC" 1) ("pTRC" 1)))
  ("UP:Q9NFL4" (("hCG" 71) ("intact hCG" 1) ("HCGs" 1) ("hCGs" 1)))
- ("UP:Q9NFL6" ; removed
+ #+ignore("UP:Q9NFL6" ; removed - tarantula
   (("HCC" 11953) ("primary HCC" 24) ("than HCC" 8) ("HBV-associated HCC" 8)
    ("recurrent HCC" 7) ("EpCAM(+)/K19(+) HCC" 7) ("metastatic HCC" 6)
    ("IFNAR2-positive HCC" 6) ("hypoxic HCC" 5) ("Most HCC" 4)
@@ -56397,7 +56397,7 @@ kinase"
   (("DISC1" 383) ("dentate" 144) ("Disrupted in Schizophrenia 1" 5)
    ("disrupted in schizophrenia 1" 3) ("DISC1 peptide" 3) ("Disc1" 3)
    ("DISC1 protein" 2) ("the reciprocal DISC1" 1)))
- ("UP:Q9NRJ3" ; adeded cancer
+ ("UP:Q9NRJ3" ; added cancer but didin't delete this
   (("MEC" 371) ("Mec" 30) ("pulmonary MEC" 10) ("primary and recurrent MEC" 6)
    ("both primary and recurrent MEC" 4) ("primary MEC" 3) ("mec" 3) ("meC" 2)
    ("normal MEC" 2) ("MeC" 1) ("immortal nontumorigenic human MEC" 1)
@@ -57382,7 +57382,7 @@ transcription factor"
   (("CD57" 28) ("HNK-1" 15) ("GlcAT-P" 10) ("NK-1" 2) ("hNK-1" 2)
    ("the senescence-associated marker CD57" 1)))
  ("UP:Q9P2X3" ; removed lowercase
-  (("impact" 9599) ("Impact" 431) ("the prognostic impact" 175) ("IMPACT" 85)
+  (#+ignore("impact" 9599) #+ignore("Impact" 431) #+ignore("the prognostic impact" 175) ("IMPACT" 85)
    ("the potential impact" 48) ("the biological impact" 47)
    ("a profound impact" 38) ("the possible impact" 35) ("prognostic impact" 30)
    ("Prognostic impact" 25) ("a strong impact" 24) ("minimal impact" 22)
@@ -57655,7 +57655,7 @@ global impact"
  ("UP:Q9SI18" (("AT8" 72) ("the canonical AT8" 2)))
  ("UP:Q9SI56" (("TET1-3" 1))) ("UP:Q9SI85" (("PND4" 4)))
  ("UP:Q9SI96" (("HTB3" 4))) ("UP:Q9SIH2" (("Dot1" 3) ("DOT1" 1)))
- ("UP:Q9SIW2" ; added new chromatin def
+ #+ignore("UP:Q9SIW2" ; added new chromatin def
   (("chromatin" 17706) ("Chromatin" 1179) ("telomeric chromatin" 49)
    ("repressive chromatin" 39) ("local chromatin" 33) ("CHROMATIN" 30)
    ("Soluble chromatin" 16) ("chromatin-" 16) ("silent chromatin" 14)
@@ -57827,7 +57827,7 @@ chromatin"
  ("UP:Q9T0I1" (("DNMT3" 16) ("DNA methyltransferase 3" 15)))
  ("UP:Q9T1Q7" (("4-1" 59) ("4–1" 29) ("4–1 µ" 1)))
  ("UP:Q9T1R6" (("3-2" 83) ("3–2" 22)))
- ("UP:Q9T1U6" ; fixed -- all defs for this protein were bad
+ #+ignore("UP:Q9T1U6" ; fixed -- all defs for this protein were bad
   (("CGH" 936) ("proinsulin" 13) ("HTC-2" 7) ("EGFR-2" 6) ("Genome-Wide CGH" 2)
    ("intact proinsulin" 2) ("the Agilent Oligonucleotide Array-Based CGH" 1)
    ("Agilent CGH" 1)
@@ -57909,7 +57909,7 @@ protein complex"
     4)
    ("COPG2" 2) ("coatomer protein complex" 1)))
  ("UP:Q9UBF6" ; changed "sensitive to apoptosis" to "sensitive to apoptosis gene protein" since that's the uniprot
-  (("sensitive to apoptosis" 73) ("RBX2" 39) ("more sensitive to apoptosis" 12)
+  (#+ignore("sensitive to apoptosis" 73) ("RBX2" 39) ("more sensitive to apoptosis" 12)
    ("Rbx2" 5) ("RBX2 protein" 3)
    ("significantly more sensitive to apoptosis" 2)
    ("much less sensitive to apoptosis" 2) ("less sensitive to apoptosis" 1)
@@ -58016,7 +58016,7 @@ protein complex"
  ("UP:Q9UBX1" (("CTSF" 8))) ("UP:Q9UBX2" (("DUX4" 10)))
  ("UP:Q9UBX3" (("DIC" 309) ("strain DIC185" 1) ("SLC25A10" 1) ("DICs" 1)))
  ("UP:Q9UBX5" ; added emphysema definition
-  (("emphysema" 442) ("fibulin-5" 119) ("Fibulin-5" 34)
+  (#+ignore("emphysema" 442) ("fibulin-5" 119) ("Fibulin-5" 34)
    ("pulmonary emphysema" 18) ("FBLN5" 10) ("Emphysema" 9)
    ("cigarette-smoke-induced pulmonary emphysema" 4)
    ("age-related emphysema" 3) ("fibulin 5" 3) ("UP50" 2)
@@ -58249,7 +58249,7 @@ protein complex"
  ("UP:Q9UJ55" (("MAGEL2" 4) ("MAGE-L2" 2))) ("UP:Q9UJ68" (("MSRA" 10)))
  ("UP:Q9UJ70" (("NAGK" 1)))
  ("UP:Q9UJ71" ;fixed
-  (("fungi" 122) ("langerin" 101) ("Langerin" 65) ("CD207" 13)
+  (#+ignore("fungi" 122) ("langerin" 101) ("Langerin" 65) ("CD207" 13)
    ("langerin protein" 2) ("most green fungi" 1) ("Langerin−" 1)
    ("functional langerin" 1) ("Fungi" 1)))
  ("UP:Q9UJ78" (("ZNF237" 4)))
@@ -58257,7 +58257,7 @@ protein complex"
  ("UP:Q9UJ98" (("STAG3" 8))) ("UP:Q9UJ99" (("CDH22" 1)))
  ("UP:Q9UJA2" (("CLS" 105) ("approximately 15 CLS" 1)))
  ("UP:Q9UJA3" ; fixed
-  (("RECs" 52) ("MCM8" 7) ("KZ-41 treated irradiated RECs" 2)
+  (#+ignore("RECs" 52) ("MCM8" 7) ("KZ-41 treated irradiated RECs" 2)
    ("human primary RECs" 2)))
  ("UP:Q9UJC3"
   (("Hook1" 84) ("hook-1" 1) ("microtubule-associated Hook1" 1) ("HOOK1" 1)))
@@ -58277,8 +58277,8 @@ protein complex"
   (("Citrine" 9) ("citrine" 7) ("Slc25a13" 5)
    ("solute carrier family 25 member 13" 5) ("SLC25A13" 3) ("citrin" 1)))
  ("UP:Q9UJT0" ;removed lowercase tube
-  (("tube" 2614) ("Tube" 118) ("the fallopian tube" 87) ("the neural tube" 65)
-   ("fallopian tube" 51) ("the developing neural tube" 13) ("neural tube" 13)
+  (#+ignore("tube" 2614) #+ignore("Tube" 118) #+ignore("the fallopian tube" 87) #+ignore("the neural tube" 65)
+   #+ignore("fallopian tube" 51) #+ignore("the developing neural tube" 13) #+ignore("neural tube" 13)
    ("TUBE" 12) ("a separate tube" 8) ("the dorsal neural tube" 8)
    ("normal fallopian tube" 7) ("a new tube" 5) ("a conical tube" 5)
    ("the distal fallopian tube" 5) ("TUBE1" 4) ("tube (PMT)" 4)
@@ -58353,7 +58353,7 @@ tube"
    ("robust multilineage cell genesis" 1)))
  ("UP:Q9UJU6" (("CMAP" 12) ("HIP-55" 1) ("SH3P7" 1)))
  ("UP:Q9UJV9" ; fixed
-  (("Abs" 805) ("ABS" 73) ("DDX41" 14) ("primary Abs" 10) ("appropriate Abs" 8)
+  (#+ignore("Abs" 805) ("ABS" 73) ("DDX41" 14) #+ignore("primary Abs" 10) #+ignore("appropriate Abs" 8)
    ("Secondary Abs" 8) ("abs" 6) ("secondary Abs" 4)
    ("RRX-conjugated Fab goat Abs" 4) ("Monoclonal Abs" 3)
    ("The secondary Abs" 3) ("peroxidase-coupled secondary Abs" 3)
@@ -58514,19 +58514,19 @@ tube"
    ("Histone deacetylase 9" 3) ("all arterial beds strong HDAC9" 2)
    ("our new association around HDAC9" 1) ("-HDAC9" 1)))
  ("UP:Q9UKV3" ;fixed
-  (("acini" 1325) ("acinus" 180) ("Acini" 47) ("mammary acini" 23)
-   ("Acinus" 21) ("mature acini" 18) ("mammary epithelial acini" 17)
-   ("normal acini" 7) ("larger acini" 5) ("aberrant acini" 4)
-   ("smaller acini" 4) ("epithelial acini" 4)
-   ("differentiated mammary epithelial acini" 3) ("normoxic acini" 3)
-   ("hypoxic acini" 3) ("parental MCF-10A acini" 3) ("Normal acini" 2)
-   ("normal mammary acini" 2) ("uniform polar acini" 2)
-   ("IgG-treated 10A cont acini" 2) ("IgG-treated 10A L2 acini" 2)
-   ("LOXL2-expressing acini" 2) ("abnormal acini" 2)
-   ("the typical pancreatic acinus" 2)
-   ("Three-Dimensional Culture Assays-MCF10A Cells Form Acini" 2)
-   ("regressed mouse prostate glandular acini" 2)
-   ("phenotypically normal acini" 2) ("quiescent acini" 2) ("ACINUS" 2)
+  (#+ignore("acini" 1325) #+ignore("acinus" 180) #+ignore("Acini" 47) #+ignore("mammary acini" 23)
+   #+ignore("Acinus" 21) #+ignore("mature acini" 18) #+ignore("mammary epithelial acini" 17)
+   #+ignore("normal acini" 7) #+ignore("larger acini" 5) #+ignore("aberrant acini" 4)
+   #+ignore("smaller acini" 4) #+ignore("epithelial acini" 4)
+   #+ignore("differentiated mammary epithelial acini" 3) #+ignore("normoxic acini" 3)
+   #+ignore("hypoxic acini" 3) #+ignore("parental MCF-10A acini" 3) #+ignore("Normal acini" 2)
+   #+ignore("normal mammary acini" 2) #+ignore("uniform polar acini" 2)
+   #+ignore("IgG-treated 10A cont acini" 2) #+ignore("IgG-treated 10A L2 acini" 2)
+   #+ignore("LOXL2-expressing acini" 2) #+ignore("abnormal acini" 2)
+   #+ignore("the typical pancreatic acinus" 2)
+   #+ignore("Three-Dimensional Culture Assays-MCF10A Cells Form Acini" 2)
+   #+ignore("regressed mouse prostate glandular acini" 2)
+   #+ignore("phenotypically normal acini" 2) #+ignore("quiescent acini" 2) ("ACINUS" 2)
    ("cleaved caspase-3–positive acini" 2) ("mature 3D acini" 2)
    ("the mature acini" 2) ("less circular acini" 2)
    ("HER2-overexpressing acini" 2) ("misshapen acini" 2)
@@ -58653,7 +58653,7 @@ ubiquitin protein ligase"
   (("INO80" 204) ("Ino80" 28) ("INO80-" 7) ("INO80 protein" 5) ("Ino80-" 3)))
  ("UP:Q9ULG6" (("Ccpg1" 4) ("CCPG1" 2)))
  ("UP:Q9ULH0" ; removed lowercase arms
-  (("arms" 1649) ("ARMS" 632) ("aRMS" 110) ("Arms" 18) ("experimental arms" 11)
+  (#+ignore("arms" 1649) ("ARMS" 632) ("aRMS" 110) ("Arms" 18) ("experimental arms" 11)
    ("ARMs" 6) ("Kidins220" 6) ("PAX3/7-FOXO1-positive ARMS" 4)
    ("distinct arms" 4) ("“arms”" 4) ("KidIns220" 3) ("invasive arms" 3)
    ("PAX3/7-FOXO1-negative ARMS" 2) ("the homologous arms" 2)
@@ -58903,9 +58903,9 @@ ubiquitin protein ligase"
   (("DL" 206) ("dL" 136) ("dl" 18) ("EDAR" 8) ("Edar" 2) ("ED3" 1)
    ("cellular DL" 1)))
  ("UP:Q9UNE7" ; removed "chip" and "Chromatin immunoprecipitation" and defined the bio-method instead
-  (("ChIP" 9690) ("chip" 2371) ("Chromatin immunoprecipitation" 2317)
-   ("chromatin immunoprecipitation" 2099) ("CHIP" 1552)
-   ("Chromatin Immunoprecipitation" 918) ("Chip" 350) ("Stub1" 187) ("ChiP" 20)
+  (#+ignore("ChIP" 9690) #+ignore("chip" 2371) #+ignore("Chromatin immunoprecipitation" 2317)
+   #+ignore("chromatin immunoprecipitation" 2099) ("CHIP" 1552)
+   #+ignore("Chromatin Immunoprecipitation" 918) ("Chip" 350) ("Stub1" 187) ("ChiP" 20)
    ("sequential ChIP" 17) ("CHiP" 12) ("quantitative ChIP" 11)
    ("Sequential ChIP" 9) ("CHIP protein" 9) ("the bionic airway chip" 8)
    ("genome-wide chromatin immunoprecipitation" 6) ("STUB1" 5)
@@ -59026,7 +59026,7 @@ immunoprecipitation"
  ("UP:Q9UNW8"
   (("G2A" 107) ("G2 accumulation" 7) ("GPR132" 3) ("G2A-" 1) ("Gpr132" 1)
    ("G2a" 1)))
- ("UP:Q9UNW9" ; removed "ANOVA" "ANOVAs" and made bio-method
+ #+Ignore("UP:Q9UNW9" ; removed "ANOVA" "ANOVAs" and made bio-method
   (("ANOVA" 5097) ("ANOVAs" 33) ("SPSS" 12) ("Anova" 4)
    ("Nonparametric ANOVA" 4) ("ANOVA (ANOVA)" 4) ("the parametric ANOVA" 2)
    ("the two-tailed Student' t-test or one-way ANOVA" 2) ("A global ANOVA" 2)
@@ -59288,7 +59288,7 @@ immunoprecipitation"
  ("UP:Q9VWU1" (("PSH" 2))) ("UP:Q9VXE5" (("MBT" 18) ("mbt" 2)))
  ("UP:Q9VXG8" (("MEI-41" 1) ("Mei-41" 1) ("mei-41" 1)))
  ("UP:Q9VXN9" (("PGRP-LE" 1))) ("UP:Q9VYS4" (("WISP" 6)))
- ("UP:Q9VZF4" ; fixed
+ #+ignore("UP:Q9VZF4" ; fixed
   (("ago" 1350) ("Ago" 57) ("AGO" 31) ("than 20 years ago" 9)
    ("than a decade ago" 7) ("Ago protein" 7) ("a few years ago" 7)
    ("almost two decades ago" 5) ("than 10 years ago" 4)
@@ -59353,7 +59353,7 @@ ago"
  ("UP:Q9W0K4" (("BAB2" 3)))
  ("UP:Q9W0K7"
   (("BAB" 11) ("bric-a-brac" 5) ("Bric-a-brac" 3) ("Bric-a-Brac" 2) ("bab" 1)))
- ("UP:Q9W0Y6" ; fixed
+ #+ignore("UP:Q9W0Y6" ; fixed
   (("pain" 1287) ("neuropathic pain" 57) ("chronic pain" 52) ("severe pain" 50)
    ("Pain" 35) ("abdominal pain" 32) ("chronic pelvic pain" 11)
    ("inflammatory pain" 10) ("pelvic pain" 7) ("pain (LBP)" 7)
@@ -59446,7 +59446,8 @@ ago"
  ("UP:Q9WJJ2" (("JM-B" 80) ("JM-b" 10) ("a crucial JM-B" 2)))
  ("UP:Q9WTR1" (("GRC" 12))) ("UP:Q9WU81" (("CI2" 1)))
  ("UP:Q9WUI0" ; removed mix
-  (("mix" 6449) ("Mix" 5994) ("TaqMan Universal PCR Master Mix" 68)
+(
+ #|("mix" 6449) ("Mix" 5994) ("TaqMan Universal PCR Master Mix" 68)
    ("Mix (ABI)" 64) ("MIX" 35) ("Universal PCR Master Mix" 24)
    ("TaqMan Fast Universal PCR Master Mix" 22)
    ("TaqMan Universal Master Mix" 18) ("Taqman Universal PCR Master Mix" 17)
@@ -59478,7 +59479,8 @@ ago"
    ("1X Brilliant SYBR Green QPCR Master Mix" 4)
    ("using Taqman Universal Master Mix" 4)
    ("MISSION® Lentiviral Packaging Mix" 4) ("Fast Universal PCR Master Mix" 4)
-   ("using Brilliant III Ultra-Fast QPCR Master Mix" 4) ("MML" 4)
+("using Brilliant III Ultra-Fast QPCR Master Mix" 4)|#
+("MML" 4)
    ("1X TaqMan Universal PCR Mast Mix" 4) ("mix (VWR)" 4)
    ("Taqman Universal PCR master mix" 3)
    ("1× TaqMan fast universal master mix" 3) ("mix (ABI)" 3)
@@ -59687,7 +59689,7 @@ ago"
    ("EBV transformed lymphoblastoid LCL1" 1)
    ("EBV transformed B cell line LCL1" 1)
    ("an EBV transformed cell line LCL1" 1)))
- ("UP:Q9WXE6" ; removed line
+ #+ignore("UP:Q9WXE6" ; removed line
   (("line" 7550) ("LINE" 689) ("Line" 158) ("the parental line" 68)
    ("-line" 22) ("JY" 14) ("severe line" 10) ("line-" 9)
    ("the diagonal line" 7) ("parental line" 5) ("inducible line" 5)
@@ -59763,7 +59765,7 @@ LAPC4 parental line"
    ("−20°C. Complete PIC" 2) ("the viral dsRNA analog PIC" 2)
    ("the so-called PIC" 1) ("larger 43S translation PIC" 1)))
  ("UP:Q9XZ71" (("TNTs" 81) ("Troponin T" 3)))
- ("UP:Q9Y0A7" ; removed bad def -- need to add "region of interest"
+ #+ignore("UP:Q9Y0A7" ; removed bad def -- need to add "region of interest"
   (("ROI" 391) ("AMOs" 12) ("a constant circular ROI" 2)
    ("a nucleoplasmic ROI" 2) ("the entire ROI" 1) ("at least 10 ROI" 1)
    ("the selected circular ROI" 1) ("the dorsal amygdala ROI" 1)
@@ -59798,7 +59800,7 @@ LAPC4 parental line"
   (("SC1" 210) ("TCF19" 7) ("that SC1's" 3) ("given SC1's" 1) ("given SC1" 1)
    ("direct SC1's" 1)))
  ("UP:Q9Y243" ; removed pervanadate
-  (("Akt3" 878) ("AKT3" 588) ("pervanadate" 243) ("Akt-3" 23)
+  (("Akt3" 878) ("AKT3" 588) #+ignore("pervanadate" 243) ("Akt-3" 23)
    ("Pervanadate" 20) ("overexpressed Akt3" 5) ("PKB γ" 4) ("Akt 3" 4)
    ("pervanadate (PV)" 3) ("PKB gamma" 2) ("pAKT3" 2) ("pervanadate-" 2)
    ("-Akt3" 2) ("Akt3-" 2) ("the unspecific  PTP inhibitor pervanadate" 1)
@@ -59837,7 +59839,7 @@ LAPC4 parental line"
   (("CysLT1" 46) ("CysLT 1" 35) ("cysteinyl leukotriene receptor 1" 8)
    ("cysLT 1" 1) ("CysLTR1" 1)))
  ("UP:Q9Y272" ;removed dexamethasone
-  (("dexamethasone" 1139) ("Dexamethasone" 111) ("DEX" 45) ("RASD1" 15)
+  (#+ignore("dexamethasone" 1139) #+ignore("Dexamethasone" 111) ("DEX" 45) ("RASD1" 15)
    ("Ras-related protein" 8) ("dexamethasone (DEX)" 4)
    ("ras-related protein" 2) ("Dex" 2)
    ("the non-genotoxic drug dexamethasone" 1) ("dexamethasone-" 1)
@@ -59962,7 +59964,7 @@ LAPC4 parental line"
    ("FANCD2/FANCI-associated nuclease 1" 2)))
  ("UP:Q9Y2M5" (("KLHL20" 3)))
  ("UP:Q9Y2N7" ; removed normoxia, but haven't found new ontology
-  (("normoxia" 770) ("normoxia-" 8) ("IPAS" 6) ("Normoxia" 4) ("IPAs" 2)
+  (#+ignore("normoxia" 770) #+ignore("normoxia-" 8) ("IPAS" 6) #+ignore("Normoxia" 4) ("IPAs" 2)
    ("HIF3A" 1)))
  ("UP:Q9Y2P5"
   (("BACs" 88) ("BACS" 4) ("most nonmucinous BACs" 1) ("Schematic BACs" 1)
@@ -60062,7 +60064,7 @@ LAPC4 parental line"
   (("StarD13" 137) ("Rho GTPase activating protein" 16) ("STARD13" 5)
    ("Rho GTPase activating protein (GAP)" 2)
    ("Rho-GTPase activating protein" 1)))
- ("UP:Q9Y3P4" (("pTaG" 38) ("pTag" 9) ("pTAG" 1))) ; removed this bad def
+ #+ignore("UP:Q9Y3P4" (("pTaG" 38) ("pTag" 9) ("pTAG" 1))) ; removed this bad def
  ("UP:Q9Y3P8"
   (("SIT" 202) ("gp30/40" 181) ("gp30/ 40" 6) ("gp30/ 40 molecule" 3)
    ("gp30/40 molecule" 3) ("possibly  syk protein tyrosine kinases SIT" 1)
@@ -60137,7 +60139,7 @@ LAPC4 parental line"
  ("UP:Q9Y4D2" (("diacylglycerol lipase" 1)))
  ("UP:Q9Y4D7" (("PlexinD1" 21) ("plexin-D1" 4)))
  ("UP:Q9Y4E1" ; fixed CSC to be "cancer stem cells"
-  (("CSCs" 1849) ("gastric CSCs" 4) ("ovarian CSCs" 4) ("mammary CSCs" 3)
+  (#+ignore("CSCs" 1849) #+ignore("gastric CSCs" 4) #+ignore("ovarian CSCs" 4) #+ignore("mammary CSCs" 3)
    ("KIAA0592" 3) ("specifically kill CSCs" 2)
    ("CD44(+) CD24(-) breast CSCs" 2) ("the few CSCs" 2)
    ("one or more self-renewing CSCs" 2)
@@ -60154,14 +60156,17 @@ LAPC4 parental line"
    ("EMT-associated CSCs" 1) ("pre-committed resident CSCs" 1)
    ("Resident CSCs" 1) ("relative pure human CSCs" 1)))
  ("UP:Q9Y4E5" ;removed "receptors"
-  (("receptors" 12150) ("Receptors" 112) ("their respective receptors" 38)
+(
+ #|("receptors" 12150) ("Receptors" 112) ("their respective receptors" 38)
    ("MCLR" 36) ("LPAR" 16) ("hormonal receptors" 15)
    ("heterodimeric receptors" 12) ("costimulatory receptors" 9)
    ("targeted receptors" 9) ("soluble receptors" 8)
    ("the available receptors" 7) ("-receptors" 6) ("viral receptors" 6)
    ("other hormonal receptors" 5) ("available receptors" 5)
    ("the respective receptors" 5) ("phagocytic receptors" 5)
-   ("dimeric receptors" 5) ("IGF1R/IR heterodimeric receptors" 5) ("ZNF451" 5)
+("dimeric receptors" 5) ("IGF1R/IR heterodimeric receptors" 5)
+|#
+("ZNF451" 5)
    ("stimulatory receptors" 4) ("monomeric receptors" 4)
    ("Soluble receptors" 4) ("fibronectin endocytic receptors" 4)
    ("more receptors" 4) ("olfactory receptors" 4)
@@ -60301,10 +60306,13 @@ LAPC4 parental line"
   (("MAP4K5" 7) ("Kinase Homologous to SPS1/STE20" 2)
    ("kinase homologous to SPS1/STE20" 1)))
  ("UP:Q9Y4L1" ; removed hypoxia
-  (("hypoxia" 7253) ("Hypoxia" 588) ("severe hypoxia" 60)
+(
+ #|("hypoxia" 7253) ("Hypoxia" 588) ("severe hypoxia" 60)
    ("chronic hypoxia" 33) ("neonatal hypoxia" 21) ("intermittent hypoxia" 20)
    ("hypoxia-" 16) ("acute hypoxia" 14) ("intratumoral hypoxia" 10)
-   ("local hypoxia" 9) ("ORP150" 9) ("HYOU1" 8) ("intermittent hypoxia (IH)" 8)
+   ("local hypoxia" 9) 
+ |#
+ ("ORP150" 9) ("HYOU1" 8) ("intermittent hypoxia (IH)" 8)
    ("continuous hypoxia" 8) ("Intermittent hypoxia" 7) ("mild hypoxia" 7)
    ("Intratumoral hypoxia" 6) ("GRP170" 6) ("hypobaric hypoxia" 5)
    ("subsequent hypoxia" 4) ("mimetic hypoxia" 4) ("systemic hypoxia" 4)
@@ -60342,12 +60350,15 @@ LAPC4 parental line"
  ("UP:Q9Y4P3" (("TBL2" 1)))
  ("UP:Q9Y4P8" (("WIPI2" 19) ("phosphoinositide interacting 2" 3)))
  ("UP:Q9Y4R8" (("HCLK2" 8) ("hCLK2" 4)))
- ("UP:Q9Y4U1" (("with homocystinuria" 4))) ; removed this synonym
+ #+ignore("UP:Q9Y4U1" (("with homocystinuria" 4))) ; removed this synonym
  ("UP:Q9Y4W2" (("ribosome biogenesis factor" 9) ("Las1L" 1)))
  ("UP:Q9Y4X1" (("UDP glucuronosyltransferase 2 family" 3) ("complex locus" 1)))
- ("UP:Q9Y4X3" ; fixed
-  (("ILC" 336) ("ILCs" 83) ("pleomorphic ILC" 35) ("classic ILC" 31)
-   ("PILC" 30) ("CCL27" 10) ("pleomorphic ILCs" 7) ("classical ILC" 5)
+ ("UP:Q9Y4X3" ; fixed ILC
+(
+ #|("ILC" 336) ("ILCs" 83) ("pleomorphic ILC" 35) ("classic ILC" 31)
+   ("PILC" 30) 
+|#
+("CCL27" 10) ("pleomorphic ILCs" 7) ("classical ILC" 5)
    ("classic ILCs" 4) ("concurrent ILC" 4) ("metastatic ILC" 3)
    ("the classic ILC" 3) ("classic and pleomorphic ILCs" 3)
    ("16 pleomorphic ILC" 3) ("classic and pleomorphic ILC" 3) ("pure ILC" 2)
@@ -60360,7 +60371,7 @@ LAPC4 parental line"
    ("22 classic ILC" 1) ("most ILC" 1)))
  ("UP:Q9Y4X4" (("KLF12" 13) ("Klf12" 2)))
  ("UP:Q9Y4X5" ; removed "homolog of"
-  (("homolog of" 430) ("HHARI" 72) ("ARI" 30) ("Ariadne" 8) ("ARi" 7)
+  (#+ignore("homolog of" 430) ("HHARI" 72) ("ARI" 30) ("Ariadne" 8) ("ARi" 7)
    ("Homolog of" 4) ("the cellular homolog of" 3) ("cellular homolog of" 2)
    ("the functional homolog of" 1) ("a structural and functional homolog of" 1)
    ("the human cellular homolog of" 1) ("ariadne" 1)
@@ -60418,12 +60429,14 @@ LAPC4 parental line"
  ("UP:Q9Y5N6" (("ORC6" 10) ("Orc6" 8) ("ORC6 protein" 3) ("ORC6L" 1)))
  ("UP:Q9Y5P2" (("RPMI8226" 37)))
  ("UP:Q9Y5P4" ;fixed
-  (("lipids" 1753) ("Lipids" 129) ("caveolar membrane-specific lipids" 2)
+(
+ #|("lipids" 1753) ("Lipids" 129) ("caveolar membrane-specific lipids" 2)
    ("using exogenous radiolabeled lipids" 2)
    ("binding stress-inducible phosphoinositide (PI) signaling lipids" 2)
    ("anionic PIP2 lipids" 2) ("anionic membrane lipids" 2)
    ("the anionic POPS lipids" 2) ("fluorescent membrane lipids" 1)
-   ("COL4A3BP" 1)
+ |#
+ ("COL4A3BP" 1)
    ("monovalent
 PS lipids"
     1)
@@ -60590,7 +60603,7 @@ PS lipids"
    ("calcineurin binding protein 1" 2) ("cabin1" 2) ("Calcineurin Inhibitor" 2)
    ("Calcineurin inhibitor" 1) ("calcineurin inhibitor (CNI)" 1)
    ("calcineurin inhibitor protein" 1)))
- ("UP:Q9Y6J3" ; fixed
+ #+ignore("UP:Q9Y6J3" ; fixed
   (("dams" 107) ("diabetic dams" 14) ("nondiabetic wild-type dams" 5)
    ("the diabetic dams" 2) ("nondiabetic Ask1  −/− dams" 2)
    ("diabetic wild-type dams" 2) ("diabetic Ask1  −/− dams" 2)
@@ -60637,7 +60650,8 @@ PS lipids"
  ("UP:Q9Y6Q1" (("calpain-6" 1) ("calpain 6" 1) ("Calpain 6" 1)))
  ("UP:Q9Y6Q2" (("SALF" 5) ("STON1" 1))) ("UP:Q9Y6Q5" (("AP1M2" 2)))
  ("UP:Q9Y6Q6" ; removed "rank" and "loss of heterozygosity" as synonyms
-  (("rank" 4387) ("LOH" 2035) ("loss of heterozygosity" 861) ("RANK" 536)
+(#|("rank" 4387) ("LOH" 2035) ("loss of heterozygosity" 861)|#
+ ("RANK" 536)
    ("Rank" 282) ("Loss of heterozygosity" 123)
    ("loss of heterozygosity (LOH)" 79) ("FEO" 58) ("copy-neutral LOH" 20)
    ("Loss of Heterozygosity" 18) ("FEO-" 15) ("TNFRSF11A" 13)
@@ -61339,7 +61353,7 @@ terminal hemagglutinin"
    ("rhoGAP protein" 3) ("rhoGAP" 2) ("than 80 RhoGAPs" 1) ("RhoGap" 1)
    ("The RhoGAP's" 1)))
  ("XFAM:PF00658.16" (("PABP" 101) ("PABPs" 3)))
- ("XFAM:PF00661.19" ; removed matrix/matrices
+ #+ignore("XFAM:PF00661.19" ; removed matrix/matrices
   (("matrix" 8639) ("matrices" 1284) ("Matrix" 608) ("BD" 209)
    ("matrix protein" 126) ("matrixes" 43) ("Matrices" 26) ("matrix (ECM)" 19)
    ("matrix (PWM)" 15) ("matrix (PSSM)" 12) ("matrices (ECM)" 9)
@@ -61497,7 +61511,7 @@ terminal hemagglutinin"
    ("the type I collagen-rich fibrotic matrix" 1)
    ("both compliant and rigid collagen matrices" 1)
    ("three-dimensional (3D) matrices" 1)))
- ("XFAM:PF00668.18" ; removed condensation
+ #+ignore("XFAM:PF00668.18" ; removed condensation
   (("condensation" 1675) ("condensations" 40) ("Condensation" 32)
    ("premature chromatin condensation" 7) ("mitotic chromosome condensation" 7)
    ("mesenchymal condensation" 7) ("premature chromosome condensation (PCC)" 7)
@@ -61654,7 +61668,7 @@ therapy"
  ("XFAM:PF01413"
   (("C4" 498) ("c4" 21) ("-C4" 3) ("dihedral angles C4" 1)
    ("preparative C4" 1)))
- ("XFAM:PF01423" ; changed to LSm because that's correct for the protein -- added "LSM for the microscope
+ #+ignore("XFAM:PF01423" ; changed to LSm because that's correct for the protein -- added "LSM for the microscope
   (("LSM" 1447) ("a confocal microscope LSM" 2)
    ("a Zeiss Confocal Laser Microscope LSM" 2)
    ("a Zeiss confocal microscope LSM" 2)
@@ -61680,10 +61694,11 @@ LSM"
   (("Hepatitis C virus core protein" 3) ("Hepatitis C virus core" 2)
    ("hepatitis C virus core protein" 1) ("hepatitis C virus core" 1)))
  ("XFAM:PF01554" ;removed mate
-  (("mate" 101) ("mates" 52) ("Mate" 29) ("mates (FVB)" 4)
+  (#|("mate" 101) ("mates" 52) ("Mate" 29) ("mates (FVB)" 4)
    ("at least 10 fusion mates" 2)
    ("the pre-transformed Y187/pACT2 normalized universal human Mate" 1)
-   ("MATE" 1)
+|#   
+("MATE" 1)
    ("than their wild type litter mates which would agree with ASPP2 contributing"
     1)
    ("at least 10 different mate" 1) ("than control litter mates [ xref ]" 1)))
@@ -62052,7 +62067,7 @@ kinase inhibitors"
    ("Est1(1-13)/hEST1A(551-785)/Est1(290-699)-FLAG" 1)
    ("expressing EV or km23-1- FLAG" 1) ("exogenous FLAG" 1)))
  ("XFAM:PF03742" (("PETN" 2)))
- ("XFAM:PF03759.11" ; removed lower-case "prone
+ #+ignore("XFAM:PF03759.11" ; removed lower-case "prone
   (("prone" 1256) ("more prone" 94) ("less prone" 34) ("Prone" 5)
    ("highly cancer prone" 4) ("prone family" 3) ("much more prone" 3)
    ("more error prone" 2) ("no more tumor prone" 2) ("mice more tumor-prone" 2)
@@ -62080,7 +62095,7 @@ kinase inhibitors"
    ("the activated Rac1 became more prone" 1) ("RAD51 more prone" 1)
    ("cancers less prone" 1)))
  ("XFAM:PF03770" (("IPK" 6)))
- ("XFAM:PF03772"
+ #+ignore("XFAM:PF03772" ; removed
   (("competence" 339) ("transcriptional competence" 6) ("Competence" 4)
    ("self-renewal competence" 4) ("mitotic competence" 4)
    ("the transcriptional competence" 4) ("‘competence’" 3)
@@ -62151,7 +62166,7 @@ kinase inhibitors"
  ("XFAM:PF04886" (("Pt" 211) ("elemental Pt" 1)))
  ("XFAM:PF04927.10" (("SMP" 104) ("SMPs" 6) ("pSMP" 5)))
  ("XFAM:PF04938.10" (("SIP1" 90) ("SIP-1" 15) ("sip-1" 1)))
- ("XFAM:PF04942" ; fixed cholangiocarcinoma
+ #+ignore("XFAM:PF04942" ; fixed cholangiocarcinoma
   (("CC" 3135) ("cholangiocarcinoma" 455) ("CCs" 108)
    ("cholangiocarcinomas" 89) ("Cholangiocarcinoma" 45) ("cc" 33) ("ECC" 24)
    ("EHCC" 21) ("IHCC" 17) ("“CC”" 13) ("intrahepatic cholangiocarcinoma" 12)

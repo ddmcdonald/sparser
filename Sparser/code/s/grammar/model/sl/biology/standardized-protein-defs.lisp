@@ -21628,7 +21628,7 @@
 (define-protein "UP:Q9H598" ("Q9H598" "SLC32A1" "VGAT" "VIAAT" "VIAAT_HUMAN" "bA122O1.1" "solute carrier family 32 (GABA vesicular transporter)" "solute carrier family 32 member 1" "vesicular GABA transporter" "vesicular inhibitory amino acid transporter")) 
 (define-protein "UP:Q9H5I1" ("FLJ23414" "H3-K9" "H3-K9-HMTase 2" "Histone H3-K9 methyltransferase 2" "Histone-lysine N-methyltransferase SUV39H2" "KMT1B" "Lysine N-methyltransferase 1B" "Q9H5I1" "SUV39H2" "SUV92_HUMAN" "Suv39H2" "Suv39h2" "su(var)3-9 homolog 2" "suppressor of variegation 3-9 homolog 2" "suppressor of variegation 3-9 homolog 2 (Drosophila)")) 
 (define-protein "UP:Q9H5I5" ("PIEZO2" "piezo type mechanosensitive ion channel component 2")) 
-(define-protein "UP:Q9H5J4" ("ELOV6_HUMAN" "ELOVL family member 6" "ELOVL fatty acid elongase 6" "ELOVL6" "FLJ23378" "LCE" "MGC5487" "Q9H5J4" "elongation of very long chain fatty acids protein 6" "elovl6" "long chain fatty acids protein 6")) 
+(define-protein "UP:Q9H5J4" ("ELOV6_HUMAN" "ELOVL family member 6" "ELOVL fatty acid elongase 6" "ELOVL6" "FLJ23378" "FACE""LCE" "MGC5487" "Q9H5J4" "elongation of very long chain fatty acids protein 6" "elovl6" "long chain fatty acids protein 6")) 
 (define-protein "UP:Q9H5J8" ("JOSD3" "MGC5306" "Q9H5J8" "TAF(I)41" "TAF1D" "TAF1D_HUMAN" "TATA box-binding protein-associated factor RNA polymerase I subunit D" "josephin domain containing 3")) 
 (define-protein "UP:Q9H5K3" ("POMK")) 
 (define-protein "UP:Q9H5P4" ("PDZ domain containing 7" "PDZk7")) 
@@ -24214,7 +24214,7 @@
 (define-protein "UP:Q9VYS4" ("WISP")) 
 (define-protein "UP:Q9VYX7" ("PGRP-SA")) 
 (define-protein "UP:Q9VZ09" ("sis-A")) 
-;(define-protein "UP:Q9VZF4" ("ago")) 
+;(define-protein "UP:Q9VZF4" ("ago")) drosophila
 (define-protein "UP:Q9W0G1" ("Ptp61F")) 
 (define-protein "UP:Q9W0K0" ("JIP-1" "JNK-interacting protein 1")) 
 (define-protein "UP:Q9W0K4" ("bab2" "bric-a-brac 2")) 
