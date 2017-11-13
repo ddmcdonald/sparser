@@ -1606,8 +1606,10 @@ will retrieve the edge the lambda variable refers to"
   (cond
     (*subcat-test* t)
     (t (revise-parent-edge :form category::whethercomp)
-       (make-wh-object (category-named 'whether)
-                       :statement s))))
+       (let ((embedded? (not (top-level-wh-question?))))
+         (make-wh-object (category-named 'whether)
+                         :statement s
+                         :embedded embedded?)))))
 
 (defun create-howcomp (how s) ;; dry-run #40, aspp2 68
   ;; disturbed dry-run 41. aspp2 69
@@ -1617,8 +1619,10 @@ will retrieve the edge the lambda variable refers to"
   (cond
     (*subcat-test* t)
     (t (revise-parent-edge :form category::howcomp)
-       (make-wh-object (category-named 'how)
-                       :statement s))))
+        (let ((embedded? (not (top-level-wh-question?))))
+          (make-wh-object (category-named 'how)
+                          :statement s
+                          :embedded embedded?)))))
 
 (defun assimilate-howcomp (vg-or-np thatcomp)
   (assimilate-subcat vg-or-np :howcomp thatcomp))
