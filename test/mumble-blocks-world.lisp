@@ -156,7 +156,6 @@
   (mumble-says "Put a row of two blocks on top of the left end of the bottom row.")
   "put a row of two blocks on top of the left end of the bottom row")
 
-#+(or) ; uses the synonym "tower" instead of "stack"
 (deftest (say put stack on table)
   (mumble-says "Put a stack of two red blocks on the table.")
   "put a stack of two red blocks on the table")
