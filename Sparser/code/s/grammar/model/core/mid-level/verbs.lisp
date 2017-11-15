@@ -144,7 +144,8 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
   :specializes process
   :mixins (action-verb)
   :restrict ((actor physical-agent)
-             (patient artifact)) ;; what they build ('result' ??)
+             (patient (:or artifact ;; what they build ('result' ??)
+                           object-dependent-location)))
   :binds ((adj-comp attribute-value)) ;; "make the stack green"
   :documentation "The :adjp-complement is seen by the syntax fn
  assimilate-adj-complement to deal with the 'green' when it 
