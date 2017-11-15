@@ -426,21 +426,21 @@
 ;;; tests
 ;;;-------
 
-(defun heavy-predicate-p (i)
-  "Return true if the individual is too heavy to be used as a premodifier.
-   Applied to predication and location bindings in attach-via-binding"
-  (and (sp::individual-p i)
-       ;; Could it be a pp or a clause that has a subj or obj that's not lambda
-       (or (includes-real-subj/obj? i)
-           (includes-tense? i)
-           (sp::itypep i 'sp::relative-location)))) ;; pp case
+(defgeneric heavy-predicate-p (i)
+  (:documentation "Return true if the individual is too heavy to be used 
+    as a premodifier.  Applied to predication and location bindings in 
+    attach-via-binding")
+  (:method ((i sp::individual))
+    (or
+     ;; it will be realized as a clause
+     (includes-real-subj/obj? i) ;; not lambda-var
+     (includes-tense? i)
 
-;; Original definition. Doesn't deal properly with "phosphorylated MEK"
-;; where that instance of 'phosphorylated' should be deemed light.
-       #+ignore(remove-if (lambda (b)
-                    (or (eq (sp::binding-value b) sp::**lambda-var**)
-                        (eq (sp::var-name (sp::binding-variable b)) 'sp::name)))
-                          (sp::indiv-binds i))
+     ;; realized as a pp
+     (and (sp::itypep i 'sp::relative-location)
+          (sp::value-of 'sp::ground i)))))
+                            
+
 
 ;;--- accessors
 
