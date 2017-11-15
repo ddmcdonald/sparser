@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  September 2017
+;;;  Version:  November 2017
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -338,11 +338,15 @@ will retrieve the edge the lambda variable refers to"
      (setq head (individual-for-ref head))
      (cond
        ((when (use-methods) ;; "left side" (etc. see core/places/methods.lisp)
-          (compose qualifier head)))
+          (let ((result (compose qualifier head)))
+            (tr :composed-qualifier-with-head qualifier head result)
+            result)))
+
        ((and (not (eq script :biology))
              ;; w/o methods: "bottom" in "bottom block"
              (itypep qualifier 'object-dependent-location))
         (add-dependent-location qualifier head))
+        
        ((and
          (category-named 'knockout-pattern)
          (itypep head 'knockout-pattern)
@@ -380,7 +384,7 @@ will retrieve the edge the lambda variable refers to"
         qualifier)
        
        ((interpret-premod-to-np qualifier head))
-       ;; subcat test is here. If there's a :premod subcategorization
+       ;; subcat test is in here. If there's a :premod subcategorization
        ;; that's compapatible this gets it.
        (t
 	;; what's the right relationship? Systemics would say
@@ -477,6 +481,7 @@ will retrieve the edge the lambda variable refers to"
 
 
 (defparameter *premod-adjps* nil)
+
 (defun adj-postmodifies-noun (n adj &optional (adj-edge nil))
   ;; adj-edge is set when we are postmodifying
   ;; to be more picky about which adjectives can post-modify a noun
@@ -540,6 +545,7 @@ will retrieve the edge the lambda variable refers to"
 	     (det-edge (left-edge-for-referent))
 	     (det-word (edge-left-daughter det-edge))
              (head-edge (right-edge-for-referent)))
+        
 	(unless (or (definite-determiner? det-word)
 		    (indefinite-determiner? det-word))
 	  ;; There are a ton of categories that are defined to be
@@ -549,11 +555,16 @@ will retrieve the edge the lambda variable refers to"
 	  ;; quantity, approximator, etc. Pull them out of the
 	  ;; modifiers dossier. 
 	  (pushnew determiner *dets-seen*))
+        
         ;;(push-debug `(,det-word ,determiner)) (lsp-break "det+noun")
+        
 	(setf (non-dli-mod-for head) (list 'determiner determiner))
+        
 	(cond          
 	  ((when (use-methods) ;; ??? perhaps put in by reflex ??
-             (compose determiner head)))
+             (let ((result (compose determiner head)))
+               result)))
+          
           ((and *determiners-in-DL*
                 (or (individual-p head) (category-p head)))
            (setq head (bind-dli-variable 'has-determiner determiner head))
@@ -561,8 +572,10 @@ will retrieve the edge the lambda variable refers to"
              (setq head (bind-dli-variable 'is-plural determiner head)))
            (when (definite-determiner? determiner)
              (add-def-ref determiner parent-edge)))
+          
 	  ((definite-determiner? determiner)
            (add-def-ref determiner parent-edge)))
+
 	head)))
 
 (defun add-def-ref (determiner parent-edge)
@@ -1189,23 +1202,37 @@ will retrieve the edge the lambda variable refers to"
      (break "null interpretation for NP in interpret-pp-adjunct-to-np edge ~s~&"
             *left-edge-into-reference*)
      nil)
-    ((itypep pp 'collection)
-     ;;(lsp-break "pp collection")
+    ((itypep pp 'collection) ;;(lsp-break "pp collection")
      nil)
     ((and np pp)
-     (or (when (use-methods)
-           ;; e.g. has-location + location : "the block at the left end of the row"
-           (compose np pp))
-         (let* ((pp-edge (right-edge-for-referent))
-                (prep-word (identify-preposition pp-edge))
-                (pobj-referent (identify-pobj pp-edge))
-                (of (word-named "of"))
-                (variable-to-bind
-                 (or (subcategorized-variable np prep-word pobj-referent)
-                     (and (eq prep-word of)
-                          (itypep np 'attribute))
-                     (and *force-modifiers* ;; set in CwC
-                          'modifier))))
+     (let* ((pp-edge (right-edge-for-referent))
+            (prep-word (identify-preposition pp-edge))
+            (pobj-referent (identify-pobj pp-edge))
+            (of (word-named "of"))
+            (variable-to-bind
+             (or (subcategorized-variable np prep-word pobj-referent)
+                 (and (eq prep-word of)
+                      (itypep np 'attribute))
+                 (and *force-modifiers*
+                      'modifier))))
+       (setq np (individual-for-ref np))
+
+       (or (when (use-methods)
+             ;; e.g. has-location + location : "the block at the left end of the row"
+             (when (most-specific-k-method 'compose (list np pp))
+               (let ((result (compose np pp)))
+                 (when result
+                   (tr :np-pp-composition np pp)
+                   result))))
+
+           (when (and (use-methods)
+                      (eq prep-word of))
+             (when (most-specific-k-method 'compose (list np pobj-referent))
+               (let ((result (compose np pobj-referent)))
+                 (when result
+                 (tr :compose-other-of np pobj-referent result)
+                 result))))
+
            (cond
              (*subcat-test*
               (or variable-to-bind
@@ -1218,16 +1245,13 @@ will retrieve the edge the lambda variable refers to"
                            (and
                             (itypep np 'partonomic)
                             (compatible-with-specified-part-type pobj-referent np))))))
+
              ((and (eq prep-word of)
                    (itypep np 'attribute)) ;; "color of the block"
-              ;; "block" in "the bottom block of the stack" is an attribute
-              ;; because it's inheriting from Dimension -- /// reanalyze
-              ;;(lsp-break "quality-predicate? np = ~a, pp = ~a" np pp)
               (find-or-make-individual 'quality-predicate
                                        :attribute (itype-of np) :item pobj-referent))
 
              ((and (eq prep-word of)
-                   ;; (itypep np 'dependent-location) non-operator version
                    (itypep np 'object-dependent-location)
                    (itypep pobj-referent 'partonomic)) ;; "bottom of the stack"
               (tr :np+pp/np-is-partonomic np pobj-referent)
@@ -1238,27 +1262,22 @@ will retrieve the edge the lambda variable refers to"
                    (compatible-with-specified-part-type pobj-referent np))
               (setq np (bind-variable 'parts pobj-referent np)))
 
-             ((and (use-methods)
-                   (eq prep-word of))
-              (let ((result (compose np pobj-referent)))
-                (when result (tr :compose-other-of np pobj-referent result))
-                (or result
-                    (else ;; uses the default
-                      (warn "interpret-pp-adjunct-to-np: No compose method applied ~
-                             to i~a + i~a" (indiv-uid np) (indiv-uid pobj-referent))
-                      ;; modifier in cwc
-                      (setq np (bind-dli-variable variable-to-bind pobj-referent np))
-                      np))))
-
-             ;; This fall through will use 'modifier' in the blocks world
-             ;; because it sets *force-modifiers* to it in its switch setting
              (variable-to-bind
-              #+ignore(lsp-break "np(~a) + prep(~s) pobj(~a) falling through to default"
-                         (indiv-uid np) (pname prep-word) (indiv-uid pobj-referent))
               (collect-subcat-statistics np prep-word variable-to-bind pp)
-              (setq np (individual-for-ref np))
               (setq np (bind-dli-variable variable-to-bind pobj-referent np))
-              np)))))))
+              np)
+             
+             (t
+              (when (current-script :blocks-world)
+                (if (eq prep-word of)
+                  (warn "No interpretation of ~a 'of' ~a" np pobj-referent)
+                  (warn "No interpretation of np ~a with pp ~a" np pp))))))))))
+
+
+
+                    
+
+
 
 
 (defun interpret-pp-as-head-of-np (np pp)
@@ -1287,7 +1306,7 @@ will retrieve the edge the lambda variable refers to"
                 *subcat-info*))
       #+ignore ;; used this to check when the rule is applied
       ;;; found it is mostly being called for the right things, but we need to make it play better
-      ;; with finding discourse-mentions
+      ;; with finding disc
       (format t "~%interpret-pp-as-head-of-np run on ~s ~s in ~s~%"
               (retrieve-surface-string np)(retrieve-surface-string pp) (current-string))
       (setq pobj-referent (individual-for-ref pobj-referent))
