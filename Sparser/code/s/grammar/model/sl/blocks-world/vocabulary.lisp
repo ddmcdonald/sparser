@@ -62,6 +62,7 @@ support a substantial number of blocks.
 
 (define-category built-out-of-blocks
   :specializes artifact
+  :mixins (partonomic)
   :restrict ((part-type block))
   :index (:permanent :list)  
   :documentation "Wants a notion of where this type
@@ -84,7 +85,13 @@ support a substantial number of blocks.
 (define-category stack
   :specializes built-out-of-blocks 
   :realization (:common-noun "stack"))
-(def-synonym stack (:noun "tower"))
+
+(define-category tower
+  :specializes built-out-of-blocks 
+  :realization (:noun "tower")
+  :documentation "Nominally the same as a stack,
+    but it's a complication for NLG to make them
+    synonyms, and their connotations are different")
 
 (define-category row
   :specializes built-out-of-blocks 
