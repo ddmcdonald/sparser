@@ -21,7 +21,6 @@ objects to spatial relationships or selected component parts.
 determined by the operator and the types of the two objects,
 |#
 
-;; 7/16/17 is this OBE once we swap over?
 (define-category spatial-operator
   :specializes prepositional
   :documentation "Provides a super type for spatial prespositions.
@@ -42,27 +41,6 @@ determined by the operator and the types of the two objects,
 #|/// Where/how do we do we state facts about opositions (e.g. 
  the two ends of a row) or geometry (e.g. of the sides of a block? |#
 
-(define-category dependent-location
-  :specializes spatial-operator
-  :mixins (physical)
-  :documentation "Goes with the category object-dependent-location to
-    in the same way that spatial-operator goes with relative-location.
-    Typical instances would be 'bottom' and 'side'"
-  :instantiates self
-  :index (:permanent :key name)
-  :realization (:common-noun name))
-
-(define-category multiple-dependent-location
-  :specializes dependent-location
-  :mixins (partonomic)
-  :documentation "Used for 'sides' and any similar functional
-    dependent locations that occur more than once on the object 
-    they depend on."
-  :instantiates self
-  :index (:permanent :key name)
-  :realization (:common-noun name))
-
-
 ;;--- define the words
 
 (defun define-dependent-location (string &key multiple category-name)
@@ -72,7 +50,9 @@ determined by the operator and the types of the two objects,
         (form 'common-noun)
         (category-name (or category-name ;; don't redefine 'top'
                            (name-to-use-for-category string)))
-        (super-category 'object-dependent-location))
+        (super-category (if multiple
+                          'multi-dependent-location
+                          'object-dependent-location)))
     (let* ((expr `(define-category ,category-name
                     :specializes ,super-category
                     :instantiates :self
@@ -112,3 +92,10 @@ determined by the operator and the types of the two objects,
   (tr :make-object-dependent-location operator object)
   (bind-variable 'ground object operator))
   
+(defun make-relative-location/revise-parent (operator place)
+  "shared subroutine of location composition methods. 
+   Construct and return the relative-location individual. 
+   Re-label the parent edge as a 'location'."
+  (let ((i (bind-variable 'ground place operator)))
+    (revise-parent-edge :category (category-named 'location))
+    i))

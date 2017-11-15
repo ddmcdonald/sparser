@@ -32,6 +32,7 @@
   (gload "places;directions") ;; uses relative-location
   ;; (gload "places;methods") moved to load-the-grammar
   (gload "places;compass points")
+  (gload "places;traces")
 )
 
 (gate-grammar *countries*

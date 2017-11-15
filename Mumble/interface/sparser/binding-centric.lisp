@@ -198,9 +198,14 @@
     ;; see interpret-adverb+adjective and k-method is core/adjuncts/others.lisp
     (tr "Binding var is qualifier: ~a" binding)
     (let ((value (sp::binding-value binding)))
-      (if (sp::itypep value 'sp::intensifier)
-        (add-attachment 'intensifier value dtn)
-        (warn "Don't know what to do with qualifier binding ~a" binding))))
+      (cond
+        ((sp::itypep value 'sp::intensifier)
+         (add-attachment 'intensifier value dtn))
+        ((eq pos 'noun) ;; we're attaching to an np
+         (add-attachment 'nominal-premodifier value dtn))
+        (t
+         (warn "Don't know what to do with qualifier binding in a ~a ~
+                context. Value is ~a" pos value)))))
   
   (:method (binding (var-name (eql 'cl:number)) dtn pos) ;; "a three step staircase"
     "Attach a numeric quantifier as an adjective so it retains its determiner."
@@ -273,8 +278,12 @@
     (attach-adjective (sp::binding-value binding) dtn pos))
 
   (:method (binding (var-name (eql 'sp::parts)) dtn pos)
-    (tr "Bindng var is parts (of): ~a" binding)
+    (tr "Binding var is parts (of): ~a" binding)
     "This variable is defined by partonomic and will hold a set -of- parts"
+    (attach-pp (find-word "of") (sp::binding-value binding) dtn pos))
+
+  (:method (binding (var-name (eql 'sp::ground)) dtn pos)
+    (tr "Binding var is 'ground': ~a" binding)
     (attach-pp (find-word "of") (sp::binding-value binding) dtn pos))
   
   (:method (binding (var-name (eql 'sp::time)) dtn pos)

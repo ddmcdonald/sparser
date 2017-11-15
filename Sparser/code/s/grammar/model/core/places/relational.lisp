@@ -52,13 +52,24 @@
  as well as locations, hence the physical mixin."
   :realization ((:mumble ((of-genitive :p ground)))))
 
+(define-category multi-dependent-location
+  :specializes object-dependent-location
+  :binds ((qualifier direction)) ;;//and what else?
+  :instantiates self
+  :documentation "Used with dependent-location operators like
+ 'side' or 'end' that will apply to multiple locations on
+ the ground object (e.g. a 'block'). The additional variable
+ 'descriminator' is for recording terms that indicate which
+ of the possible locations on the ground object is intended,
+ as in 'left side (of the block)'."
+  :realization ((:mumble ((of-genitive :p ground)))))
+
 
 ;;;-----------------------------------------------------------
 ;;; locations that depend on the perspective: 'left', 'front'
 ;;;-----------------------------------------------------------
 ;; for direction-based locations ("left side")
 
-#+ignore
 (define-category orientation-dependent-location
   :specializes relative-location
   :instantiates self
