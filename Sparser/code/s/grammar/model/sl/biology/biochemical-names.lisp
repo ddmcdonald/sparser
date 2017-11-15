@@ -57904,8 +57904,7 @@ chromatin"
   (("MAGE-C2" 193) ("CT10" 20) ("MAGEC2" 2) ("MAGE-C2-" 2) ("than MAGE-C2" 1)
    ("ectopically expressed MAGE-C2" 1) ("expressed MAGE-C2" 1)))
  ("UP:Q9UBF2"
-  (("coatomer
-protein complex"
+  (("coatomer protein complex"
     4)
    ("COPG2" 2) ("coatomer protein complex" 1)))
  ("UP:Q9UBF6" ; changed "sensitive to apoptosis" to "sensitive to apoptosis gene protein" since that's the uniprot
@@ -63056,3 +63055,25 @@ binding"
  ("brafv"
   (("BRAFV" 888) ("BRafV" 6) ("BrafV" 4) ("exogenous BRAFV600E" 2) ("bRafV" 2)
    ("exogenous human BRAFV600E" 1)))))
+
+
+(defparameter *biochemical-names-for-test* nil)
+(defun make-json-sexpr-for-test ()
+  (setq *biochemical-names-for-test* (loop for x in *biochemical-names* when (and (> (length (car x)) 3)(search "UP:" (car x))) collect `(,(intern (caar (second x)) :keyword)  (,(intern "UP" :keyword) . ,(subseq (car x) 3))))))
+
+(defun make-json-name-test-file ()
+  (load "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology/biochemical-names.lisp")
+  (with-open-file (out "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology/biochemical-names-test.json" :direction :output :if-exists :supersede :if-does-not-exist :create)
+    (format out "{~%")
+    (let ((all-ups
+           (loop for s in *biochemical-names*
+                 when (and (> (length (car s)) 3)(search "UP:" (car s)))
+                 collect s)))
+      (loop for ss on all-ups
+            do (format out
+                       "~%  ~s: {~%   ~s: ~s}~a"
+                       (caar (second (car ss)))
+                       "UP"
+                       (subseq (car (car ss)) 3)
+                       (if (cdr ss) "," "")))
+      (format out "~%}~%"))))
