@@ -246,7 +246,8 @@
       ((null node))
     ;; Accept references in the second conjunct
     ;; to objects referenced in the first.
-    (when (and (eql (name node) 'conjunction)
+    (when (and (nodep node)
+               (eql (name node) 'conjunction)
                (not (eql (first-constituent node) *current-phrasal-root*)))
       (let ((contents (contents (first-constituent node))))
         (when (phrasal-root-p contents)

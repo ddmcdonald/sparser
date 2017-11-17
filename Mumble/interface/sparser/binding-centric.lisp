@@ -16,16 +16,18 @@
 
 (sp::def-k-function realize-individual (i &key)
   (:documentation "Realize a Sparser individual. Specific categories 
-    get specialized k-methods. (See examples in binding-helpers.lisp)
-    This is the default case, which falls through to realize-via-bindings.")
+    get specialized k-methods. (See examples in binding-helpers.lisp)")
   (:method (i &key)
-    "By default, choose a phrase or fall through to realize-via-bindings."
-    (if (and (null (sp::indiv-binds i)) ;; No bindings for realize-via-bindings,
-             (sp::rdata-head-word i t)) ;; but there is an associated word.
-      (make-dtn :referent i
-                :resource (or (find-lexicalized-phrase i)
-                              (error "No lexicalized resource on ~a" i)))
-      (realize-via-bindings i))))
+    "Punt to realize-via-bindings, unless there are no relevant bindings."
+    (cond ((notevery #'ignorable-variable?
+                     (mapcar #'sp::binding-variable (sp::indiv-binds i)))
+           (realize-via-bindings i))
+          ((sp::rdata-head-word i t)
+           (make-dtn :referent i
+                     :resource (or (find-lexicalized-phrase i)
+                                   (error "No lexicalized resource on ~a" i))))
+          ((sp::value-of 'sp::word i))
+          (t (error "Don't know how to realize ~a" i)))))
 
 
 ;;;----------------------

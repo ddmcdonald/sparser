@@ -65,7 +65,14 @@ Instead we get "RASN" -- changing all the tests to reflect that
   (mumble-says "The receptor tyrosine kinase EGFR binds the growth factor ligand EGF.")
   "the receptor tyrosine kinase EGFR binds the growth factor ligand EGF")
 
+;; Section 2.1.
+
+(deftest (say is complex sustained after 2 hours)
+  (mumble-says "Is the BRAF-NRAS complex sustained after 2 hours?")
+  "Is the BRAF-RASN complex sustained after two hours?")
+
 ;; Section 2.2.
+
 (deftest (say double amount of braf)
   (mumble-says "Double the amount of BRAF.") ; missing "total"
   "double the amount of BRAF")

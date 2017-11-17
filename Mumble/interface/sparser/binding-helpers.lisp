@@ -130,6 +130,14 @@
                         conjunction))))
         (apply #'conjoin items)))))
 
+(sp::def-k-method realize-individual ((i category::event-relation) &key)
+  (let ((dtn (make-dtn :referent i
+                       :resource (phrase-named 'two-item-conjunction-with-conjunction))))
+    (make-complement-node 'one (realize (sp::value-of 'sp::event i)) dtn)
+    (make-complement-node 'two (realize (sp::value-of 'sp::subordinated-event i)) dtn)
+    (make-complement-node 'conj (realize (sp::value-of 'sp::relation i)) dtn)
+    dtn))
+
 (sp::def-k-method realize-individual ((i integer) &key ordinal)
   ;; (format nil "~r" 1325) => "one thousand three hundred twenty-five"
   ;; (format nil "~:r" 1325) => "one thousand three hundred twenty-fifth"
@@ -172,6 +180,14 @@
          (sp::bind-variable 'sp::number 1 i))
         (t (error "Don't know how to realize number ~a" i))))
 
+(sp::def-k-method realize-individual ((i category::amount-of-time) &key)
+  (tr "Realizing amount-of-time ~a" i)
+  (let ((quantity (sp::value-of 'sp::quantity i))
+        (units (sp::value-of 'sp::units i))
+        (dtn (make-dtn :referent i :resource (phrase-named 'common-noun))))
+    (make-complement-node 'n units dtn)
+    (when quantity (attach-adjective quantity dtn 'adjective))
+    dtn))
 
 (sp::def-k-method realize-individual ((i category::polar-question) &key)
   (tr "Realizing polar-question ~a" i)
