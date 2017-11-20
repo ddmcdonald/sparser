@@ -1196,6 +1196,9 @@ will retrieve the edge the lambda variable refers to"
 ;;; NP + PP
 ;;;---------
 
+(defparameter *in-scope-of-np+pp* nil
+  "Flag to provide context for relative-location methods and others")
+
 (defun interpret-pp-adjunct-to-np (np pp)
   (cond
     ((null np) 
@@ -1214,7 +1217,10 @@ will retrieve the edge the lambda variable refers to"
                  (and (eq prep-word of)
                       (itypep np 'attribute))
                  (and *force-modifiers*
-                      'modifier))))
+                      'modifier)))
+            (*in-scope-of-np+pp* prep-word))
+       (declare (special *in-scope-of-np+pp*))
+       
        (setq np (individual-for-ref np))
 
        (or (when (use-methods)

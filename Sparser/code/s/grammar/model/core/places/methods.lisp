@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "methods"
 ;;;   Module:  "model;core:places:"
-;;;  version:  October 2017.
+;;;  version:  November 2017.
 
 ;; N.b. This file is loaded late after all categories have been defined.
 ;; It is for location-oriented compose methods
@@ -36,8 +36,9 @@
 
 ;;--- prepositional location operators
 
-;; "on the table", "the top block"
-(def-k-method compose ((op category::relative-location) (place category::has-location))
+;; "on the table"
+(def-k-method compose ((op category::relative-location)
+                       (place category::has-location))
   "Spatio(-temoral) prepositions are specializations of relative-location.
    The intended target of 'has-location' is anything that inherits from object."
   (declare (special *subcat-test* category::pp))
@@ -48,7 +49,7 @@
       (let ((form (edge-form (parent-edge-for-referent))))
         (cond
           ((np-category? form) ;; called from noun-noun-compound
-           (add-dependent-location op place))  ;; "the bottom block"
+           (add-dependent-location op place)) ;;?? "the bottom block"
           ((eq form category::pp)
            (make-relative-location/revise-parent op place))
           (t
@@ -56,7 +57,8 @@
            (error "Unanticipated form on parent edge: ~a" form)))))))
 
 ;; "next to it"
-(def-k-method compose ((op category::relative-location) (place category::pronoun/inanimate))
+(def-k-method compose ((op category::relative-location)
+                       (place category::pronoun/inanimate))
   (declare (special *subcat-test*))
   (if *subcat-test*
     t
@@ -65,15 +67,25 @@
       (make-relative-location/revise-parent op place))))
 
 
-;; "the end of the row"
-(def-k-method compose ((op category::multi-dependent-location) (place category::partonomic))
-  (declare (special *subcat-test*))
+;; "the end of the row", "the top block"
+(def-k-method compose ((op category::multi-dependent-location)
+                       (place category::partonomic))
+  "The 'of' case is called from interpret-pp-adjunct-to-np"
+  (declare (special *subcat-test* *in-scope-of-np+pp*))
   (if *subcat-test*
     t
     (else
-      (tr :multi-dependent-location+partonomic op place)
-      ;; make bind the ground and make it a location
-      (make-relative-location/revise-parent op place))))
+      (let ((form (edge-form (parent-edge-for-referent))))
+        (cond
+          (*in-scope-of-np+pp* ;; head is the op
+           (make-relative-location/revise-parent op place))
+          ((np-category? form) ;; head is the place
+           ;; binds op to location variable of the 'place'
+           (add-dependent-location op place))  ;; "the bottom block"
+          (t
+           (tr :multi-dependent-location+partonomic op place)
+           ;; make bind the ground and make it a location
+           (make-relative-location/revise-parent op place)))))))
 
 
 

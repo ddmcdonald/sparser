@@ -70,6 +70,10 @@
 ;;;-----------------------------------------------------------
 ;; for direction-based locations ("left side")
 
+;;//// Not used. The "left" is now a qualifier on
+;; the multi-dependent-location "side"
+;; Keeping around since may find a use when we have more
+;; complex point-of-view relative locations
 (define-category orientation-dependent-location
   :specializes relative-location
   :instantiates self
@@ -80,10 +84,3 @@
  observer to be properly understood. Used with words (spatial 
  functions) like 'left' or 'front'."
   :realization ((:mumble ((of-genitive :p ground)))))
-
-
-
-
-
-
-

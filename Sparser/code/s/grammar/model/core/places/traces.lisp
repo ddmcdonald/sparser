@@ -22,49 +22,49 @@
 
 (deftrace :relative-location+has-location (operator place)
    (when *trace-methods*
-    (trace-msg "Composing relative-location(~a) & has-location(~a)"
+    (trace-msg "Method: relative-location(~a) & has-location(~a)"
                operator place)))
 
 (deftrace :relative-location+pronoun (operator place)
   (when *trace-methods*
-    (trace-msg "Composing relative-location(~a) & pronoun(~a)"
+    (trace-msg "Method: relative-location(~a) & pronoun(~a)"
                operator place)))
 
 (deftrace :multi-dependent-location+partonomic (operator place)
   (when *trace-methods*
-    (trace-msg "Composing multi-dependent-location(~a) & partonomic(~a)"
+    (trace-msg "Method: multi-dependent-location(~a) & partonomic(~a)"
                operator place)))
 
 (deftrace :relative-location+location (operator place)
   (when *trace-methods*
-    (trace-msg "Composing relative-location(~a) & location(~a)"
+    (trace-msg "Method: relative-location(~a) & location(~a)"
                operator place)))
 
 (deftrace :direction+multiple-dependent-location (qualifier head)
   (when *trace-methods*
-    (trace-msg "Composing direction(~a) & multiple-dependent-location(~a)"
+    (trace-msg "Method: direction(~a) & multiple-dependent-location(~a)"
                qualifier head)))
 
 (deftrace :relative-location+object-dependent-location (operator place)
   (when *trace-methods*
-    (trace-msg "Composing relative-location(~a) & object-dependent-location(~a)"
+    (trace-msg "Method: relative-location(~a) & object-dependent-location(~a)"
                 operator place)))
 
 
 
 (deftrace :has-location+location (np pp)
   (when *trace-methods*
-    (trace-msg "Composing has-location(~a) & location(~a)" np pp)))
+    (trace-msg "Method: has-location(~a) & location(~a)" np pp)))
 
 (deftrace :direction+dependent-location (qualifier head)
   (when *trace-methods*
-    (trace-msg "Composing direction(~a) & dependent-location(~a)"
+    (trace-msg "Method: direction(~a) & dependent-location(~a)"
                qualifier head)))
 
 
 (deftrace :direction+object (head ground)
   (when *trace-methods*
-    (trace-msg "Composing direction (i~a) & object (i~a)"
+    (trace-msg "Method: direction (i~a) & object (i~a)"
                (indiv-uid head) (indiv-uid ground))))
 
 
