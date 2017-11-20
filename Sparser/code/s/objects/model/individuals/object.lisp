@@ -152,8 +152,12 @@ grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorize
 
 (defun itypep (i c/s) 
   (cond
+    ((null i) nil)
     ((symbolp i)
-     (and i (itypep (category-named i :break-if-none) c/s)))
+     (let ((cat (category-named i)))
+       (if (null cat)
+           (warn "no category named ~s~%" i)
+           (itypep cat c/s))))
     ((consp c/s)
      (case (car c/s)
        (:or (loop for c in (cdr c/s) thereis (itypep i c)))

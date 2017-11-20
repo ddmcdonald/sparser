@@ -314,6 +314,7 @@
    set will be on a word that doesn't occur, e.g. 'anchorring'.
    We make a new rule set and unary rule for the correct 
    word ('anchoring') copying as much as possible."
+  (declare (optimize (speed 1)(safety 3)(debug 3)))
   (unless (rule-set-for word)
     ;; It will have a rule set if the affix was added correctly
     (let* ((bad-word (ecase type
@@ -324,18 +325,20 @@
            (new-rs (establish-rule-set-for word)))
       (when *announce-bad-affixes*
         (format t "~&Bad ~a form: ~a~%" type bad-word))
-      (let ((new-rule (construct-cfr ;; as basic as possible
-                       (cfr-category bad-rule)
-                       (list word)
-                       (cfr-form bad-rule)
-                       (cfr-referent bad-rule)
-                       :def-cfr ;; well sort of
-                       (cfr-schema bad-rule))))
-        (when *announce-bad-affixes*
-          (format t "~&New rule: ~a~%" new-rule))
+      (if bad-rule                 ;; funny case with "residued"
+        (let ((new-rule (construct-cfr ;; as basic as possible
+                         (cfr-category bad-rule)
+                         (list word)
+                         (cfr-form bad-rule)
+                         (cfr-referent bad-rule)
+                         :def-cfr ;; well sort of
+                         (cfr-schema bad-rule))))
+          (when *announce-bad-affixes*
+            (format t "~&New rule: ~a~%" new-rule))
 
-        (setf (rs-single-term-rewrites new-rs) (list new-rule))
-        (setf (rs-phrase-boundary new-rs) (rs-phrase-boundary bad-rs))))))
+          (setf (rs-single-term-rewrites new-rs) (list new-rule))
+          (setf (rs-phrase-boundary new-rs) (rs-phrase-boundary bad-rs)))
+        (format t "~&Bad ~a form (XXX): ~a~%" type bad-word)))))
 
 
 (defun names-bio-chemical-entity? (lemma)

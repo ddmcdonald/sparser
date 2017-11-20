@@ -139,8 +139,9 @@
 		 (collect-triples-in-segment chunk)
 		 (reverse (collect-triples-in-segment chunk))))
        (when blocked-triples
-	 (setq triples (loop for tr in triples 
-			  unless (member tr blocked-triples)
+	 (setq triples (loop for tr in triples
+	          ;; not sure why we are seeing equal but not eq triples...
+			  unless (member tr blocked-triples :equal)
 			  collect tr)))
        (setq triple (select-best-chunk-triple triples chunk))
        (when (null triple)

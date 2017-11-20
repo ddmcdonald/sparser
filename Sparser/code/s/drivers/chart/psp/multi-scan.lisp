@@ -791,7 +791,7 @@ macro it and only expands) we throw to end-of-sentence, which finishes
   (loop
     (cond ((eq start end) (return-from do-early-rules-sweep-between nil))
           ((null start)
-           (lsp-break
+           (error
             "do-early-rules-sweep-between start is nil in ~s"
             (current-string)))
           ((not (position-p start)) (lsp-break "(position-p start-pos)")))

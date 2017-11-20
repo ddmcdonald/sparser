@@ -681,17 +681,26 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       `(:alphabetical . (:lowercase . ,(code-char 164)))) 
 ;;#\CURRENCY_SIGN 
 
+(setf (elt *character-dispatch-array* 164) 
+      `(:alphabetical . (:lowercase . ,(code-char 164))))
 
 ;;; added to cover biopax import issue
-(setf (elt *character-dispatch-array* 166) 
-      `(:alphabetical . (:lowercase . ,(code-char 167))))
+(setf (elt *character-dispatch-array* 165) ;;#\YEN_SIGN
+      `(:alphabetical . (:lowercase . ,(code-char 165))))
 
 (setf (elt *character-dispatch-array* 167) 
-      `(:alphabetical . (:lowercase . ,(code-char 166))))
-;;#\BROKEN_BAR 
+      `(:alphabetical . (:lowercase . ,(code-char 167))))
+;;#\BROKEN_BAR
+
+
+(setf (elt *character-dispatch-array* 168) ;;#\DIAERESIS
+      `(:alphabetical . (:lowercase . ,(code-char 168))))
 
 (setf (elt *character-dispatch-array* 169) ;; #\Copyright_Sign
       `(:punctuation . ,(punctuation-named (code-char 169))))
+
+;;(setf (elt *character-dispatch-array* 170) ;;#\FEMININE_ORDINAL_INDICATOR
+;;      `(:punctuation . ,(punctuation-named (code-char 170))))
 
 (setf (elt *character-dispatch-array* 171) 
       `(:punctuation . ,(punctuation-named (code-char 171)))) 
@@ -707,6 +716,9 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 (setf (elt *character-dispatch-array* 174) ;; #\Registered_Sign
       `(:punctuation . ,(punctuation-named (code-char 174))))
+
+(setf (elt *character-dispatch-array* 175) ;;#\MACRON
+      `(:alphabetical . (:lowercase . ,(code-char 175))))
 
 (setf (elt *character-dispatch-array* 176) ;; #\Degree_Sign
       `(:punctuation
