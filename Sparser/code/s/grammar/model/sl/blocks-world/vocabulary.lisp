@@ -14,7 +14,7 @@
 ;;;--------
 
 (define-category block
-  :specializes rectangular-solid
+  :specializes rectangular-solid ;; n.b. includes partonomy
   :mixins (can-change-location)
   :instantiates :self
   :index (:permanent :key name)
