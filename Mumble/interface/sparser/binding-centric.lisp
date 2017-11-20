@@ -281,7 +281,8 @@
 
   (:method (binding (var-name (eql 'sp::parts)) dtn pos)
     (tr "Binding var is parts (of): ~a" binding)
-    "This variable is defined by partonomic and will hold a set -of- parts"
+    "This variable is defined by partonomic and will hold 
+     a set -of- parts"
     (attach-pp (find-word "of") (sp::binding-value binding) dtn pos))
 
   (:method (binding (var-name (eql 'sp::ground)) dtn pos)
@@ -302,7 +303,9 @@
     (let* ((i (sp::binding-value binding)))
       (tr "location binding: ~a" i)
       (let ((ap (cond
-                 ((heavy-predicate-p i) 'np-prep-complement)
+                  ((heavy-predicate-p i) 'np-prep-complement)
+                  ((sp::itypep i 'sp::multi-dependent-location)
+                   'qualifier) ;; e.g. "top"
                   (t 'nominal-premodifier))))
         (make-adjunction-node
          (make-lexicalized-attachment ap i)
