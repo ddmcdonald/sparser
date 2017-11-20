@@ -1191,7 +1191,9 @@ the process.
     (when synonyms
       (add-bio-synonyms (or identifier (word-string word)) synonyms))
 
-    (let* ((retrieved-rules (get-rules i))
+    (let* ((retrieved-rules (or (get-rules i)
+                                (add-rules-cond-plural word category i
+                                                       :no-plural (not takes-plurals))))
            (rules retrieved-rules))
 
       #|
@@ -1286,7 +1288,6 @@ the process.
 
       (when documentation
         (store-category-documentation i documentation))
-
       i)))
 
 

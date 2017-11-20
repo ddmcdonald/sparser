@@ -163,7 +163,7 @@ for that word, and if no-plural or if the plural-version of the word
 resolves, it blocks the plural (and in the latter case adds the word
 to the list of *inhibited-plurals* so we can troubleshoot later and
 see if there are issues"
-  (let* ((plural-word (plural-version word))
+  (let* ((plural-word (unless no-plural (plural-version word)))
          (defined-plural? (and (resolve plural-word)
                                (single-term-rewrite? plural-word :no-warn t)))
          (defined-plural-sc (when defined-plural?
