@@ -669,7 +669,7 @@ have been filled in if the rdata includes an etf and a word.
            (word-or-variable (cadr head-field))
            (word (etypecase word-or-variable
                    ((or word polyword) word-or-variable)
-                   (list (car word-or-variable))
+                   (list word-or-variable) ;;(car word-or-variable))
                    (lambda-variable 
                     ;; Should we be doing words for variables?
                     ;; e.g. head-word = (:word #<variable name>)
@@ -705,12 +705,12 @@ have been filled in if the rdata includes an etf and a word.
   (:method :around (word pos-tag krisp-obj)
     (declare (special *build-mumble-equivalents*))
     (when *build-mumble-equivalents*
-       (call-next-method)))
-  
+      (call-next-method)))
+
   (:method (word pos-tag (i individual))
     "Route for attributes"
     (multiple-value-bind (lp m-word m-pos)
-        (make-resource-for-sparser-word word pos-tag i)
+        (make-resource-for-sparser-word word pos-tag i )
       (declare (ignore m-word))
       (when lp (m::record-lexicalized-phrase i lp m-pos))))
   
@@ -732,10 +732,13 @@ have been filled in if the rdata includes an etf and a word.
    construction (i.e. the object exists and we can store stuff on
    its mumble field), then look for the possibility of inheriting
    map data from a super category."
-  (declare (special *recording-extended-mdata* *during-rdata-initialization*))
+  (declare (special *recording-extended-mdata*
+                    *during-rdata-initialization*))
+  
   (when *recording-extended-mdata*
-    (lsp-break "Potential loop on ~a mdata" category))
-  (let ((*recording-extended-mdata* t))
+    (lsp-break "Potential loop on ~a mdata~%On prior pass data was ~a"
+               category *recording-extended-mdata*))
+  (let ((*recording-extended-mdata* `(,lp ,m-word ,s-word)))
     (declare (special *recording-extended-mdata*))
 
     ;; record the lp.
@@ -767,38 +770,60 @@ have been filled in if the rdata includes an etf and a word.
 ;;; making the lexicalized-phrase
 ;;;-------------------------------
 
-(defun make-resource-for-sparser-word (word pos-tag category &optional verb-phrase)
-  "Look up the corresponding mumble part of speech ('m-pos').
-   Make the mumble word ('m-word'). Then create and record 
-   lexicalized phrase to embed the word in the appropriate
-   elementary tree (i.e. lexicalize the appropriate phrase).
-   Record the lexicalized tree on the mumble word with its mumble-side
-   pos. See Mumble/derivation-trees/builders.lisp for the lexicalized
-   phrase creators." 
-  (when (consp word) ;; irregulars e.g. ("bacterium" :plural "1bacteria")
-    ;; drop them on the floor for now. /// lookup Mumble rep of irregulars
-    (setq word (car word)))
-  (let ((m-pos (mumble-pos pos-tag)))
-    (when m-pos
-      (let* ((m-word (get-mumble-word-for-sparser-word word m-pos))
-             (lp (or (m::get-lexicalized-phrase m-word m-pos)
-                     (case pos-tag
-                       (:adjective (m::adjective m-word nil))
-                       ((:noun :common-noun) (m::noun m-word))
-                       (:proper-noun (m::proper-noun m-word))
-                       (:verb (m::verb m-word verb-phrase))
-                       (:adverb (m::adverb m-word))
-                       ((:prep :preposition) (m::prep m-word))
-                       (:quantifier (m::quantifier m-word))
-                       (:pronoun (m::pronoun m-word))
-                       (:conjunction (m::conjunction m-word))
-                       (:interjection (m::interjection m-word))))))
-        (when lp
-          (m::record-lexicalized-phrase m-word lp m-pos)
-          (values lp
-                  m-word
-                  m-pos))))))
+(defgeneric make-resource-for-sparser-word (word pos-tag category 
+                                            &optional irregulars verb-phrase)
+  (:documentation "Look up the corresponding mumble part of speech ('m-pos').
+    Make the mumble word ('m-word'). Then create and record 
+    lexicalized phrase to embed the word in the appropriate
+    elementary tree (i.e. lexicalize the appropriate phrase).
+    Record the lexicalized tree on the mumble word with its mumble-side
+    pos. See Mumble/derivation-trees/builders.lisp for the lexicalized
+    phrase creators.")
+  (:method ((word-list list) pos-tag category &optional irregulars verb-phrase)
+    (let ((s-word (car word-list))
+          (rest (cdr word-list)))
+      (let* ((irregular-cases (when (keywordp (car rest)) rest))
+             (synonyms (unless irregular-cases rest)))
+        (cond
+          (irregulars (make-resource-for-sparser-word s-word pos-tag category
+                                                      irregular-cases verb-phrase))
+          (synonyms
+           ;; Take the first word as the value to return.
+           ;; Run the others for side effects of producing resources
+           (multiple-value-bind (lp m-word m-pos)
+               (make-resource-for-sparser-word (car synonyms) pos-tag category
+                                               nil verb-phrase)
+             (loop for s in (cdr synonyms)
+                do (make-resource-for-sparser-word s pos-tag category
+                                                   nil verb-phrase))
+             (values lp m-word m-pos)))           
+          (t
+           (make-resource-for-sparser-word s-word pos-tag category
+                                           nil verb-phrase))))))
+  
+  (:method (s-word pos-tag category &optional irregulars verb-phrase)
+    (let ((m-pos (mumble-pos pos-tag)))
+      (when m-pos
+        (let* ((m-word (get-mumble-word-for-sparser-word s-word m-pos irregulars))
+               (lp (or (m::get-lexicalized-phrase m-word m-pos)
+                       (case pos-tag
+                         (:adjective (m::adjective m-word nil))
+                         ((:noun :common-noun) (m::noun m-word))
+                         (:proper-noun (m::proper-noun m-word))
+                         (:verb (m::verb m-word verb-phrase))
+                         (:adverb (m::adverb m-word))
+                         ((:prep :preposition) (m::prep m-word))
+                         (:quantifier (m::quantifier m-word))
+                         (:pronoun (m::pronoun m-word))
+                         (:conjunction (m::conjunction m-word))
+                         (:interjection (m::interjection m-word))))))
+          (when lp
+            (m::record-lexicalized-phrase m-word lp m-pos)
+            (values lp
+                    m-word
+                    m-pos)))))))
 
+  
 (defun mumble-pos (pos-tag)
   "Translate a Sparser part of speech into the Mumble equivalent"
   ;; Other Mumble word labels: {past,present}-participle, {comparative,superlative}-adjective
