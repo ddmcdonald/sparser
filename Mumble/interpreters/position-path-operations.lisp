@@ -1,8 +1,4 @@
 ;;; -*- Syntax: Common-lisp; Mode: LISP; -*-
-;;; $Id: position-path-operations.lisp 100 2007-07-04 14:31:27Z dmcdonal $
-
-(in-package :mumble)
-
 ;;;  MUMBLE-86:  interpreters> position-path-operations
 
 ;;; Copyright (C) 1985, 1986, 1987, 1988  David D. McDonald
@@ -11,12 +7,17 @@
 ;;;   this file of the Mumble-86 system for
 ;;;   non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (C) 2005,2011-2017 David D. McDonald
+
+(in-package :mumble)
 
 
 (defun update (position)
+  "What is the next position after this one on the position
+   path of the ongoing phrase."
   (if (nodep position)
-      (first-constituent position)
-      (next position)))
+    (first-constituent position)
+    (next position)))
 
 
 (defun knit-phrase-into-tree (containing-slot node)

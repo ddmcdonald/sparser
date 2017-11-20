@@ -238,7 +238,9 @@
     node))
 
 
-
+;;;------------------------------------
+;;; subroutines of building the phrase
+;;;------------------------------------
 
 (defun reduce-argument (arg)
   (let ((spec (when (parameterp (car arg))
@@ -254,7 +256,10 @@
 
 
 (defun process-label-keywords (position)
-  (declare (special remaining-definition context-object))
+  "Carry out the ancillary instructions associated with a 
+   label in the definition of a phrase. This pops off more
+   of the definition, which is shared on the remaining-definition global."
+  (declare (special remaining-definition  context-object))
   (let ((key (pop remaining-definition))
 	(value (pop remaining-definition)))
     (ecase key
@@ -269,13 +274,12 @@
 		     (initialize-state field state-value
 				       (state context-object))))))
     (when (keywordp (car remaining-definition))
-      (process-label-keywords position))
-    ))
+      (process-label-keywords position))))
 
 
-(defun traversal-finished (root position flag)
-  (and flag (eq root position)))
-
+;;;---------------------------------------------
+;;; populating the fields of the context object
+;;;---------------------------------------------
 
 (defun create-attachment-point-list (root-node)
   (let (attachment-point-list)
@@ -288,6 +292,9 @@
       (when (and (slotp position) (nodep (contents position)))
         (dolist (item (create-attachment-point-list (contents position)))
           (push item attachment-point-list))))))
+
+(defun traversal-finished (root position flag)
+  (and flag (eq root position)))
 
 
 (defun collect-attachment-points (position)
@@ -309,6 +316,11 @@
         (dolist (item (create-position-table (contents position)))
           (push item position-list))))))
 
+
+
+;;;-----------------------
+;;; position-path printer
+;;;-----------------------
 
 (defvar *objects-reached-in-path* nil)
 
