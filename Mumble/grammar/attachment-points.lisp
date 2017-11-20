@@ -48,6 +48,14 @@ by KEY-POSITION.
   link (previous)
   new-slot (adjective))
 
+(define-splicing-attachment-point qualifier
+  reference-labels (np)
+  link (previous)
+  new-slot (qualifier))
+;;actions (((:set-state (:determiner no-determiner))))
+;; was intended to block a "the the ..." involving a qualifier
+;; but the source was spurious.
+
 (define-splicing-attachment-point quantifier-premod 
   reference-labels (np)
   link (first)
