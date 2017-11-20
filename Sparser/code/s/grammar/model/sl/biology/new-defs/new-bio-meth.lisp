@@ -1,6 +1,6 @@
 (in-package :sparser)
 
-
+(def-indiv-with-id experimental-condition "ROI" "NCIT:C85402" :name "region of interest")
 (def-indiv-with-id experimental-condition "FBS" "NCIT:C113696" :name "fetal bovine serum" :plural "fetal bovine sera" :synonyms ("fetal calf serum" "FCS")) 
 
 (def-indiv-with-id bio-method "xenograft" "EFO:0003942" :name "heterologous transplantation") 

@@ -1917,3 +1917,4 @@
 (def-indiv-with-id drug "sorafenib" "CHEBI:50924" :name "Sorafenib" :no-plural t :synonyms("N -(3-trifluoromethyl-4-chlorophenyl)- N '-(4-(2-methylcarbamoyl pyridin-4-yl)oxyphenyl)urea)" "BAY43-9006" "sorafinib" "soranfinib" "sorfenib"))
 (def-indiv-with-id drug "DEX" "PCID:5743" :name "dexamethasone" :no-plural t)
 (def-indiv-with-id drug "pervanadate" "PCID:61671" :name "Sodium Orthovanadate" :no-plural t)
+(def-indiv-with-id drug "OKT3" "CHEMBL:1201608" :name "Muromonab-CD3" :no-plural t :synonyms ("Orthoclone OKT3"))

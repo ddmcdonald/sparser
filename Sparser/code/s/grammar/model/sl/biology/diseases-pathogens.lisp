@@ -37,6 +37,7 @@
 
 (noun "abnormality" :super disease)
 (noun "disorder" :super disease)
+(noun "normoxia" :super disease) ; not really a disease - the opposite, but we have hypoxia as a disease and there's no ncit id for normoxia so I'm adding htis here
 
 ;;;----------------
 ;;; other diseases

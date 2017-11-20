@@ -1,5 +1,6 @@
 (in-package :sparser)
 
+(def-indiv-with-id bio-process "LOH" "NCIT:C18016" :name "loss of heterozygosity") 
 (def-indiv-with-id bio-process "biogenesis" "NCIT:C17702" :name "biosynthesis") 
 (def-indiv-with-id bio-process "oncogenesis" "NCIT:C18121" :name "tumorigenesis") 
 (def-indiv-with-id bio-process "trans-differentiation" "GO:0060290" :name "transdifferentiation") 

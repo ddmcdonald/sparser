@@ -144,3 +144,5 @@
 (def-indiv-with-id cancer "MEC" "NCIT:C3772" :name "Mucoepidermoid Carcinoma")
 (def-indiv-with-id cancer "CC" "NCIT:C4436" :name "cholangiocarcinoma")
 (def-indiv-with-id cancer "ICC" "NCIT:C35417" :name "Intrahepatic Cholangiocarcinoma" :synonyms ("IHCC"))
+(def-indiv-with-id disease "homocystinuria" "NCIT:C84765" :name "homocystinuria")
+(def-indiv-with-id cancer "TCC" "NCIT:C2930" :name "Transitional Cell Carcinoma")
