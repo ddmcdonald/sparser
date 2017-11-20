@@ -281,47 +281,53 @@
     and simpler clause-creating routines. Handle things that are
     common to any verb-centric realization.")
   (:method ((dtn derivation-tree-node) (i sp::individual))
-    (declare (special *syntactically-embedded*))
     (when (verb-based-realization dtn)
-      ;; Look for a specified tense
-      (cond ((sp::value-of 'sp::past i)
-             (past-tense dtn))
-            ((sp::value-of 'sp::progressive i)
-             (progressive dtn))
-            ((sp::value-of 'sp::perfect i)
-             (had dtn))
-            ;; ((current-position-p 'adjective 'complement-of-be 'relative-clause)
-            ;;  (past-tense dtn)) -- moved just below
-            (t (unless (get-accessory-value :tense-modal dtn) ;; e.g. a modal
-                 (present-tense dtn))))
-      ;; Look at the status of its variables.
-      ;; If some/all are abstract/missing then depending on the context
-      ;; we need to make various adjustments
-      (let ((parameters (get-parameters dtn)) ;; parameter objects
-            (slot (current-position))
-            (object (get-object i)) ;; value of object var
-            (subject (get-subject i)))
-        (cond
-          ((current-position-is-top-level?)
-           (when (sp::missing-subject-vars i) ;; no subject binding
-             (unless *syntactically-embedded*
-               (command dtn))))
-          ((current-position-p 'relative-clause)
-           (let ((head (head-of-relative-clause slot)))
-             (declare (ignore head)) ;; need more info in predication
-             (when (and object
-                        (sp::is-lambda-var object)) ;; =? the head
-               (passive dtn)
-               (when (and subject
-                          (explicit-subject dtn))
-                 ;; That subject will be clipped by the relative-clause
-                 ;; transformation. As good a reason as any for a by-phrase
-                 ;; since we're alrady passivized this clause.
-                 (attach-pp "by" subject dtn 'verb)))))
-          ;; complement-of-be -- leads to by-phrase w/in complement-of-be
-          ;; adjective
-          ))
-      dtn)))
+      (extract-tense dtn i))
+    (sort-out-implications-of-what-is-bound dtn i)))
+
+(defun extract-tense (dtn i)
+  "Pull tense/aspect info out of the individual.
+   Ensure that there's some value for tense-modal."
+  (when (sp::value-of 'sp::past i)
+    (past-tense dtn))
+  (when (sp::value-of 'sp::progressive i)
+    (progressive dtn))
+  (when (sp::value-of 'sp::perfect i)
+    (had dtn))
+  (unless (get-accessory-value :tense-modal dtn) ;; e.g. a modal
+    (present-tense dtn))
+  dtn)
+
+(defun sort-out-implications-of-what-is-bound (dtn i)
+  "Look at the status of its variables.
+   If some/all are abstract or missing then depending on the context
+   we need to make various adjustments"
+    (declare (special *syntactically-embedded*))
+    (let ((parameters (get-parameters dtn)) ;; parameter objects
+          (slot (current-position))
+          (object (get-object i)) ;; value of object var
+          (subject (get-subject i)))
+      (cond
+        ((current-position-is-top-level?)
+         (when (sp::missing-subject-vars i) ;; no subject binding
+           (unless *syntactically-embedded*
+             (command dtn))))
+        ((current-position-p 'relative-clause)
+         (let ((head (head-of-relative-clause slot)))
+           (declare (ignore head)) ;; need more info in predication
+           (when (and object
+                      (sp::is-lambda-var object)) ;; =? the head
+             (passive dtn)
+             (when (and subject
+                        (explicit-subject dtn))
+               ;; That subject will be clipped by the relative-clause
+               ;; transformation. As good a reason as any for a by-phrase
+               ;; since we're alrady passivized this clause.
+               (attach-pp "by" subject dtn 'verb)))))
+        ;; complement-of-be -- leads to by-phrase w/in complement-of-be
+        ;; adjective
+        )
+      dtn))
 
 
 (defgeneric includes-tense? (idividual)
