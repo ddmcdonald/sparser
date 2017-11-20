@@ -1,5 +1,5 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; -*-
-;;; Copyright 2016 SIFT LLC. All Rights Reserved.
+;;; Copyright 2016-2017 SIFT LLC. All Rights Reserved.
 
 (in-package :mumble)
 
@@ -33,7 +33,8 @@ returns true will be replaced with a one-anaphor.")
 
 (defvar *mentions* nil
   "A list of mention records containing the objects referenced
-and the way they were mentioned.")
+ and the way they were mentioned. Initialized by initialize-mumble-state
+ at the beginning of each call to say")
 
 (defgeneric local-mentions (object)
   (:documentation "Return a list of local (e.g., c-commanded)
