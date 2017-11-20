@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "/interface/mumble/"
-;;;  version:  October 2017
+;;;  version:  November 2017
 
 ;; initiated 11/12/10. Factoring original file 4/7/13
 
@@ -19,4 +19,5 @@
 (lload "mumble-interface;discourse-reference")
 
 (lload "mumble-interface;gloss-interpretations")
+(lload "mumble-interface;answers")
 (lload "mumble-interface;templates")
