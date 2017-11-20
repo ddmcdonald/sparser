@@ -1270,6 +1270,7 @@ applied to l, and values are values associated with that key example"
   (setq *semantic-output-format* semantic-output-format)
   (when (eq semantic-output-format :hms-json)
     (setq *comparable-indra* nil))
+  (case *semantic-output-format* (:hms-json (setq *indra-post-process* (list t))))
   (when (find-package :r3)
     (save-article-semantics
      (pathname
