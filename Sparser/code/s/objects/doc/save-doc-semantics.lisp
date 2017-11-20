@@ -114,7 +114,11 @@
                               (loop for f in (cdr (reverse *indra-post-process*))
                                     append (indra-form-for-sexpr f (get-pmid) nil))
                             when (cdr (assoc :type form))
-                              collect form))))
+                            collect
+                              (if (member nil form)
+                                  (progn (format t "~%removing NIL from ~s%" form)
+                                         (remove nil form))
+                                  form)))))
          (initialize-indentation)
          (pp-json-list iforms *sentence-results-stream* 3)
          (setq *indra-post-process* (list t)))))
