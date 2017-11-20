@@ -476,6 +476,15 @@ the virtual machine cleaner."
       (setf (gethash (cons irregular pos) *pnames-to-words*) word))
     word))
 
+(defun add-irregular-to-word (word pos case irregular)
+  "Given a word object (i.e. having already gotten the object for
+   the desired part of speech), add the 'irregular' word object
+   for a particular 'case' such as ed-form or plural."
+  (setf (gethash (cons irregular pos) *pnames-to-words*) word)
+  (let ((current-irregulars (irregularities word)))
+    (set-irregularities word (append `(,case ,irregular) current-irregulars))
+    word))
+
 (defgeneric find-word (name &optional pos)
   (:method ((name symbol) &optional (pos 'noun))
     (find-word (string-downcase (symbol-name name)) pos))
