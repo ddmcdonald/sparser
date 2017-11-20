@@ -106,12 +106,15 @@
 (defgeneric make-rules-for-head (pos word category referent &rest special-cases)
   (:documentation "Construct rules for a single word, multiple words,
  or a word with morphological special cases, e.g., :plural, :past-tense, etc.
- May be invoked on explicit works in the realization fields of categories
+   May be invoked on explicit works in the realization fields of categories
  (e.g. table has :realization (:common-noun table)) in which case the referent
  with be the category itself (see make-rules-for-rdata), or it may be invoked
  on individuals who are substituting a word they supply for a variable in the
  rdata (e.g. block has :realization (:proper-noun name), instance of block supply
- the word to use as the name) in which case the referent is the individual.")
+ the word to use as the name) in which case the referent is the individual.
+   This block of methods handles the general dispatch ans generic cases.
+ Irregulars are handled by methods for the particular part of speech cases
+ that understand them.")
   (:argument-precedence-order word pos category referent)
   
   (:method (pos (rdata realization-data) category referent &rest special-cases)
@@ -325,10 +328,19 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                                 nominalization
                                 past-tense past-participle present-participle
                                 third-singular third-plural
-                                (s-form (or third-singular (s-form-of-verb word)))
-                                (ed-form (or past-tense (ed-form-of-verb word)))
-                                (ing-form (or present-participle (ing-form-of-verb word))))
+                                (s-form third-singular)
+                                (ed-form past-tense)
+                                (ing-form present-participle))
   "Define rules for a verb and its various inflections."
+  (if s-form
+    (make-irreg-mword word :verb :third-singular s-form)
+    (setq s-form (s-form-of-verb word)))
+  (if ed-form
+    (make-irreg-mword word :verb :past-tense ed-form)
+    (setq ed-form (ed-form-of-verb word)))
+  (if ing-form
+    (make-irreg-mword word :verb :present-participle ing-form)
+    (setq ing-form (ing-form-of-verb word)))
   (let ( inflections )
     (labels ((convert-if-needed (raw)
                (etypecase raw
@@ -801,40 +813,6 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 ;(ed-form-of-verb (define-word "bat"))
 ;(ed-form-of-verb (define-word "join"))
 
-;;--- comparative/superlative
-
-(defun make-comparative/superlative (word &key (suffix "er") (y-suffix "ier"))
-  (declare (type word word)
-           (type string suffix y-suffix))
-  (let* ((pname (pname word))
-         (lastchar (elt pname (- (length pname) 1)))
-         (butlastchar (elt pname (- (length pname) 2)))
-    ;;/// we should abstract out the criteria for doubling the final
-    ;; consonant.
-         (derived-pname
-          (cond
-            ((char= lastchar #\y)
-             (string-append (subseq pname 0 (- (length pname) 1)) y-suffix))
-
-            ((and (vowel? lastchar)
-                  (vowel? (elt suffix 0)))
-             (string-append (subseq pname 0 (- (length pname) 1)) suffix))
-
-            ((and (consonant? lastchar)
-                  (vowel? butlastchar)
-                  (eql #\w lastchar))
-             (string-append pname suffix))
-            
-            ((and (consonant? lastchar)
-                  (vowel? butlastchar))
-             (string-append pname (string lastchar) suffix))
-            
-            (t (string-append pname suffix)))))
-
-    ;; the word might exist, so look before redefining
-    (resolve/make derived-pname)))
-
-
 ;;--- ing
 
 (defmethod ing-form-of-verb ((word word))
@@ -898,12 +876,69 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
     (string-append pname "ing")))
 
 
-
-
-
 ;(ing-form-of-verb (define-word "describe"))
 ;(ing-form-of-verb (define-word "set"))
 ;(ing-form-of-verb (define-word "look"))
+
+
+;;;------------
+;;; adjectives
+;;;------------
+
+(defmethod make-rules-for-head ((pos (eql :adjective)) word category referent &rest special-cases)
+  "Define rules for an adjective and possibly its comparative & superlative variants."
+  (declare (special *inhibit-constructing-comparatives*))
+  (let ((adj-rules (call-next-method)))
+    (if (or (punctuation? word)
+            (not (word-p word))
+            *inhibit-constructing-comparatives*)
+      adj-rules
+      (append adj-rules
+              (make-comparative-rules word category referent)
+              (make-superlative-rules word category referent)))))
+
+
+;;--- comparative/superlative
+
+(defparameter *inhibit-constructing-comparatives* nil
+  "Used when the caller knows more about how to construct 
+   the comparatives than the default routines. See define-attribute")
+
+(defmacro without-comparatives (&body body)
+  `(let ((*inhibit-constructing-comparatives* t))
+     (declare (special *inhibit-constructing-comparatives*))
+     ,@body))
+
+(defun make-comparative/superlative (word &key (suffix "er") (y-suffix "ier"))
+  (declare (type word word)
+           (type string suffix y-suffix))
+  (let* ((pname (pname word))
+         (lastchar (elt pname (- (length pname) 1)))
+         (butlastchar (elt pname (- (length pname) 2)))
+    ;;/// we should abstract out the criteria for doubling the final
+    ;; consonant.
+         (derived-pname
+          (cond
+            ((char= lastchar #\y)
+             (string-append (subseq pname 0 (- (length pname) 1)) y-suffix))
+
+            ((and (vowel? lastchar)
+                  (vowel? (elt suffix 0)))
+             (string-append (subseq pname 0 (- (length pname) 1)) suffix))
+
+            ((and (consonant? lastchar)
+                  (vowel? butlastchar)
+                  (eql #\w lastchar))
+             (string-append pname suffix))
+            
+            ((and (consonant? lastchar)
+                  (vowel? butlastchar))
+             (string-append pname (string lastchar) suffix))
+            
+            (t (string-append pname suffix)))))
+
+    ;; the word might exist, so look before redefining
+    (resolve/make derived-pname)))
 
 
 
@@ -925,36 +960,20 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
               (apply #'make-cn-plural-rules word category referent
                      special-cases)))))
 
-
-(defparameter *inhibit-constructing-comparatives* nil
-  "Used when the caller knows more about how to construct 
-   the comparatives than the default routines. See define-attribute")
-
-(defmacro without-comparatives (&body body)
-  `(let ((*inhibit-constructing-comparatives* t))
-     (declare (special *inhibit-constructing-comparatives*))
-     ,@body))
-
-(defmethod make-rules-for-head ((pos (eql :adjective)) word category referent &rest special-cases)
-  "Define rules for an adjective and possibly its comparative & superlative variants."
-  (declare (special *inhibit-constructing-comparatives*))
-  (let ((adj-rules (call-next-method)))
-    (if (or (punctuation? word)
-            (not (word-p word))
-            *inhibit-constructing-comparatives*)
-      adj-rules
-      (append adj-rules
-              (make-comparative-rules word category referent)
-              (make-superlative-rules word category referent)))))
-
 (defvar *deferred-collection-plurals* nil
   "An alist of word and category for all the plurals created before the
    category 'collection' was defined, mostly lemmas in the upper model.")
 
-(defun make-cn-plural-rules (word category referent &key
-                             (plural (etypecase word
-                                       (polyword (plural-version/pw word))
-                                       (word (plural-version word)))))
+(defun make-cn-plural-rules (word category referent &key plural)
+                             ;; (plural (etypecase word
+                             ;;           (polyword (plural-version/pw word))
+                             ;;           (word (plural-version word))))
+  (if plural ;; a marked irregular
+    (make-irreg-mword word :noun :plural plural)
+    (setq plural (etypecase word
+                   (polyword (plural-version/pw word))
+                   (word (plural-version word)))))
+
   (loop for plural in (ensure-list plural)
         as plural-word = (etypecase plural
                            ((or word polyword) plural)
