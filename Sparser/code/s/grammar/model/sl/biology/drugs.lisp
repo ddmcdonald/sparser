@@ -23,7 +23,12 @@
 (define-category inhibitor :specializes drug
   :binds ((process (:or bio-process bio-mechanism))
           (protein protein))
-  :realization (:noun "inhibitor" :m process :m protein :of process :of protein))
+  :realization (:noun "inhibitor"
+                :m process 
+                :m protein
+                :of process
+                :of protein
+                :for protein))
 
 
 ;; THIS NEEDS WORK
