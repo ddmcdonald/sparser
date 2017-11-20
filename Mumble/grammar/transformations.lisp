@@ -11,14 +11,25 @@
    updated the contents."
   (cond
     ((find 'relative-clause (labels position) :key #'name)
-     (let* ((subject-slot-contents (contents (first-constituent phrasal-root)))
-	    (trace (build-trace subject-slot-contents)))
-      (set-contents (first-constituent phrasal-root) trace)
-      (push (slot-label-named 'that) (labels position))))
+     (let* ((subject (contents (first-constituent phrasal-root)))
+            (trace-already? (typep subject 'ttrace)))
+       (cond
+         (trace-already?
+          (let ((original (original-specification subject)))
+            (cond
+              ((value-is-lambda original)
+               (let ((real-subj (head-of-relative-clause position)))
+                 (set-original-specification subject real-subj)))
+              (t (break "subject wasn't a trace")))))
+         (t (let ((trace (build-trace subject)))
+              (set-contents (first-constituent phrasal-root) trace))))
+       (push (slot-label-named 'that) (labels position))))
+    
     ((find 'inf-comp (labels position) :key #'name)
      (remove-subject phrasal-root)
      (remove-tense-marker phrasal-root)
      (set-aux-state 'initial))))
+
 
 (defgeneric remove-subject (clause)
   (:documentation "Find the subject slot and splice it out")
