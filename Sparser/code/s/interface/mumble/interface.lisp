@@ -171,13 +171,21 @@
 
 
 (defmethod grammatical-number ((i sp::individual))
-  (if (sp::itypep i 'collection) 'plural 'singular))
+  (cond
+    ((sp::itypep i 'collection) 'plural)
+    ((sp::value-of 'sp::is-plural i) 'plural)
+    (t 'singular)))
 
 (defmethod grammatical-person ((i sp::individual)) 'third)
 
 
 (defmethod syntax-driven-sources ((i sp::individual)) nil)
 (defmethod syntax-driven-sources ((c sp::category)) nil)
+
+
+(defun value-is-lambda (v)
+  "Sugar to hide the sparser package from an early loading file"
+  (sp::is-lambda-var v))
 
 
 ;;--- DTN access
