@@ -9,9 +9,10 @@
 ;; Code removed in refactoring of the various parse paths for documents and strings
 (in-package :sparser)
 
+;;;------------------------------
+;;; removed from multi-scan.lisp
+;;;------------------------------
 
-
-#+ignore
 (defun scan-sentences-to-eof (first-sentence &aux (sentence first-sentence)start-pos)
   "Called from initiate-successive-sweeps when we're
    in the initial sweep phase and need to identify
@@ -40,7 +41,7 @@
                   (sentence-string sentence))
           (setq *show-sentence-for-early-errors* nil))))
     (setq sentence (next sentence))))
-#+ignore
+
 (defun scan-words-loop (position-before word)
   "This routine is called by ... which itself
    is called by initiate-successive-sweeps when we are reading
@@ -85,3 +86,58 @@
 
       (let ((next-word (pos-terminal position-after)))
         (scan-words-loop position-after next-word)))))
+
+
+
+(defun polyword-sweep-loop (position-before word)
+  "First pass over the text. Checks each successive word for
+   initiating a polyword (polyword-check). The longest completion
+   is spanned with an edge. 
+      This loop stops with a throw from the period hook (period-check) 
+   or upon encountering the end of the stream being analyzed (simple-eos-check). 
+   These delimit one sentence-worth of text."
+  (declare (special *trace-sweep*))
+  (tr :polyword-sweep-loop)
+  (loop
+     (simple-eos-check position-before word)
+     (period-check position-before word)
+
+     (when *trace-sweep*
+       (format t "~&[polyword-sweep] ~s at p~a"
+               (pname word) (pos-token-index position-before)))
+
+     (let* ((where-pw-ended (polyword-check position-before word))
+            (position-after (or where-pw-ended
+                                (chart-position-after position-before))))
+       (when where-pw-ended
+         (tr :scanned-pw-ended-at word where-pw-ended)
+         (setq position-before where-pw-ended)
+         (unless (includes-state where-pw-ended :scanned)
+           ;; PW can complete without thinking about the
+           ;; word that follows it.
+           (scan-next-position))
+         (setq word (pos-terminal where-pw-ended)))
+
+       #| Version that fixed problem of calling no-space processing
+      when the beginning and end positions are identical
+      (when where-pw-ended
+       (tr :scanned-pw-ended-at word where-pw-ended)
+         ;;(setq position-before where-pw-ended) ;
+       (setq position-before where-pw-ended
+       position-after (chart-position-after where-pw-ended))
+       (unless (includes-state where-pw-ended :scanned)
+       (scan-next-position))
+       (setq word (pos-terminal position-before))) |#
+
+       #+ignore(when (eq position-before position-after)
+                 (error "Scan-terminals-loop: before and after positions are
+                  the same: ~a" position-after))
+       
+       (unless (includes-state position-after :scanned)
+         (scan-next-position))
+
+       (let ((next-word (pos-terminal position-after)))
+         (tr :next-terminal-to-scan position-after next-word)
+         (setq position-before position-after
+               word next-word)))))
+
