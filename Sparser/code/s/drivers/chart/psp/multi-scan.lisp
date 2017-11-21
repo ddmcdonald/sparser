@@ -182,8 +182,7 @@
   "Carries out the first layer of analysis by checking for and
    applying word-level rules. It is the core routine regardless
    of whether source is a document or just a string.
-
-   Structured as a succession of passes ('sweeps') over
+     Structured as a succession of passes ('sweeps') over
    a sentence-worth of text:
 
    1st. NO LONGER DONE HERE -- done above do the polywords. This sweep also has the job of 
@@ -209,7 +208,6 @@
   ;; then the logic has to change to accommodate it, particularly
   ;; for delimiting the sentence
 
-
   (tr :pw-sweep-returned end-pos)
   (when *sweep-for-word-level-fsas*
     (word-level-fsa-sweep position-before end-pos))
@@ -223,63 +221,6 @@
     
   (tr :scan-terminals-loop-finished)
   (throw :end-of-sentence t))
-
-
-;;;------------------------------
-;;; sweep sentence for polywords
-;;;-----------------------------
-
-(defun polyword-sweep-loop (position-before word)
-  "First pass over the text. Checks each successive word for
-   initiating a polyword (polyword-check). The longest completion
-   is spanned with an edge. 
-      This loop stops with a throw from the period hook (period-check) 
-   or upon encountering the end of the stream being analyzed (simple-eos-check). 
-   These delimit one sentence-worth of text."
-  (declare (special *trace-sweep*))
-  (tr :polyword-sweep-loop)
-  (loop
-     (simple-eos-check position-before word)
-     (period-check position-before word)
-
-     (when *trace-sweep*
-       (format t "~&[polyword-sweep] ~s at p~a"
-               (pname word) (pos-token-index position-before)))
-
-     (let* ((where-pw-ended (polyword-check position-before word))
-            (position-after (or where-pw-ended
-                                (chart-position-after position-before))))
-       (when where-pw-ended
-         (tr :scanned-pw-ended-at word where-pw-ended)
-         (setq position-before where-pw-ended)
-         (unless (includes-state where-pw-ended :scanned)
-           ;; PW can complete without thinking about the
-           ;; word that follows it.
-           (scan-next-position))
-         (setq word (pos-terminal where-pw-ended)))
-
-       #| Version that fixed problem of calling no-space processing
-      when the beginning and end positions are identical
-      (when where-pw-ended
-       (tr :scanned-pw-ended-at word where-pw-ended)
-         ;;(setq position-before where-pw-ended) ;
-       (setq position-before where-pw-ended
-       position-after (chart-position-after where-pw-ended))
-       (unless (includes-state where-pw-ended :scanned)
-       (scan-next-position))
-       (setq word (pos-terminal position-before))) |#
-
-       #+ignore(when (eq position-before position-after)
-                 (error "Scan-terminals-loop: before and after positions are
-                  the same: ~a" position-after))
-       
-       (unless (includes-state position-after :scanned)
-         (scan-next-position))
-
-       (let ((next-word (pos-terminal position-after)))
-         (tr :next-terminal-to-scan position-after next-word)
-         (setq position-before position-after
-               word next-word)))))
 
 
 ;;;--------------------------
@@ -452,8 +393,8 @@ macro it and only expands) we throw to end-of-sentence, which finishes
    edge it calls do-just-terminal-edges to create the edges
    for the word interpretation(s).
       It then looks for any category fsas that are associated
-   with a newly-instantiated edge (notably digit sequences)
-   and follows those out to where the end."
+   with an existing or newly-instantiated edge (notably digit
+   sequences) and follows those out to where the end."
   (declare (special *trace-sweep*))
   (tr :terminal-edges-sweep)
   (carefully-walk-initial-chart
@@ -462,23 +403,24 @@ macro it and only expands) we throw to end-of-sentence, which finishes
          (format t "~&[terminal edges sweep] at p~a is ~a"
                  (pos-token-index position-before)
                  (or word edge)))
-      (if word
-        (let ((edges
-               (do-just-terminal-edges word position-before position-after)))
-          (tr :scanned-terminal-edges edges position-before position-after)
-          (when edges ;; e.g. digit-sequence
-            (let ((where-fsa-ended
-                   (do-any-category-fsas edges position-before)))
-              (when where-fsa-ended
-                (tr :edge-fsa-ended-at word where-fsa-ended)
-                (setq position-after where-fsa-ended
-                      position-before (chart-position-before where-fsa-ended))
-                (unless (includes-state where-fsa-ended :scanned)
-                  (scan-next-position))
-                (setq word (pos-terminal where-fsa-ended))))))
-        (else
-          (when word ;; nil at the end of the loop
-            (format t "~&No edge over ~s~%~%" (pname word))))))))
+      (flet ((run-any-edge-fsa (edges)
+               (let ((where-fsa-ended
+                      (do-any-category-fsas edges position-before)))
+                 (when where-fsa-ended
+                   (tr :edge-fsa-ended-at word where-fsa-ended)
+                   (setq position-after where-fsa-ended
+                         position-before (chart-position-before where-fsa-ended))
+                   (unless (includes-state where-fsa-ended :scanned)
+                     (scan-next-position))
+                   (setq word (pos-terminal where-fsa-ended))))))
+      (cond
+        (edge ;; from an earlier pass, e.g. apostrophe-s
+         (run-any-edge-fsa (list edge)))
+        (word
+         (let ((edges (do-just-terminal-edges word position-before position-after)))
+           (tr :scanned-terminal-edges edges position-before position-after)
+           (when edges ;; e.g. digit-sequence
+             (run-any-edge-fsa edges)))))))))
 
 
 
