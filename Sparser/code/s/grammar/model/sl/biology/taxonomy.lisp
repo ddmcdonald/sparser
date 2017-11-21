@@ -827,17 +827,13 @@
 
 
 
-#+ignore
 (define-category drug :specializes molecule
-  :instantiates self
-  :index (:permanent :key name)
-  :lemma (:common-noun "drug")
+  :binds ((disease disease)
+          (target protein))
   :realization
-  (:common-noun name))
-
-(define-category drug :specializes molecule
-  :realization
-  (:noun "drug"))
+     (:noun "drug"
+      :for disease
+      :for target))
 
 
 (define-category rna :specializes molecule
