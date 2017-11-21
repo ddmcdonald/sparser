@@ -185,10 +185,10 @@
                 ;; <is> <something> <adj>
                 (make-polar-adjective-question start-pos end-pos edges))
                
-               ((member (cat-name (edge-form (third edges)))
-                        '(pp))
-                ;; stray time phrase?
-                (make-polar-pp-question edges))
+               ((and (member (cat-name (edge-form (third edges))) '(pp))
+                     (buried-there? (second edges)))
+                (make-polar-there-is-pp-question start-pos end-pos edges))
+               
                ((member (cat-name (edge-form (third edges)))
                         '(vp+ed vp+ing vg+ed vg+ing
                           vp+passive))
@@ -198,10 +198,14 @@
                ((or (eq (cat-name (edge-category (second edges))) 'syntactic-there)
                     (eq (cat-name (edge-category (second edges))) 'deictic-location))
                     ;; "is there <something, e.g. a cat on the rug>?"
-                    (make-polar-there-question start-pos end-pos edges))
+                (make-polar-there-question start-pos end-pos edges))
+
+               ((and (noun-category? (second edges))
+                     (noun-category? (third edges)))
+                ;; "Is Selumetinib an inhibitor of MEK1?"
+                (make-polar-copular-question start-pos end-pos edges))                                     
+
                (t
-                ;; don't break here -- just warn
-                ;;  have gotten some cases in articles
                 (if *show-wh-problems*
                   (lsp-break "unhandled 3 edge question: ~a" edges)
                   (warn "unhandled 3 edge question: ~a" edges)))))
@@ -247,9 +251,10 @@
   "Abstracted constructor so it will done the same way every time."
   (find-or-make-individual
    'polar-question :statement statement))
-                           
+
 ;;--- cases called from make-this-a-question-if-appropriate
 
+;; (p "are there drugs that treat pancreatic cancer?")
 (defun make-polar-there-question (start-pos end-pos edges)
   "We're asking about whether somthing exists"
   ;; caller knew the first edge was the aux and second 'there'
@@ -266,10 +271,43 @@
       ;; trace
       e)))
 
-;; (p "are there drugs that treat pancreatic cancer?")
-(defun make-polar-pp-question (edges)
-  (push-debug edges)
-  (warn "Polar PP questions are not implemented yet."))
+
+(defun buried-there? (edge)
+  "Compensates for bad chunking of 'there', e.g.
+   Are [there any drugs ]for [BRAF]. Second edge would be a long-span
+   with 'there' (deictic-location) as its first constituent. 
+   Return the second constituent"
+  (when (eq (pos-terminal (pos-edge-starts-at edge)) (word-named "there"))
+    (let ((edges (edge-constituents edge)))
+      (when (and edges (= 2 (length edges)))
+        (edge-referent (second edges))))))
+
+;; "Are there any drugs for BRAF?" -- ///drugs + "for" doesn't work
+(defun make-polar-there-is-pp-question (start-pos end-pos edges)
+  (let* ((be (edge-referent (first edges)))
+         (i (buried-there? (second edges)))
+         )
+    (break "polar-there-pp not finished")))
+         
+
+(defun make-polar-copular-question (start-pos end-pos edges)
+  "Construct an instance of 'be' by directly invoking the rules"
+  ;; (is) (Selumetinib) (an inhibitor of MEK1)
+  (let* ((be (edge-referent (first edges)))  ;; is
+         (subj (edge-referent (second edges))) ;; Selumetinib
+         (obj (edge-referent (third edges))) ;; an inhibitor of MEK1
+         ;; run the core of assimilate-np-to-v-as-object. Result in an instance of 'be'
+         (i (assimilate-object be obj)))
+    (setq i (bind-variable 'subject subj i))
+    (let ((q (make-polar-question i)))
+      (make-edge-over-long-span
+       start-pos end-pos
+       (itype-of i)
+       :rule 'make-polar-copular-question
+       :form category::question
+       :referent q))))
+         
+
     
 (defun make-polar-adjective-question (start-pos end-pos edges)
   (let* ((be (edge-referent (first edges)))  ;; is
