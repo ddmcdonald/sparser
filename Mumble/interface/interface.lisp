@@ -88,7 +88,8 @@
         ((or specification derivation-tree-node)
          (let ((acc (get-accessory-value ':number orig)))
            (and acc (name acc))))
-        (pronoun (number orig)))))
+        (pronoun (number orig))
+        (otherwise (grammatical-number orig)))))
 
   (:method ((item pronoun))
     (number item)))
