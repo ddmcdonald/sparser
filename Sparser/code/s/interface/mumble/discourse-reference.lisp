@@ -74,20 +74,6 @@ speakers.
         *current-turn* nil))
 
 
-;;;-----------
-;;; focus API
-;;;-----------
-
-(defmethod set-the-focus ((object sp::individual) &key)
-  (setf (object-in-focus *current-turn*) object))
-
-(defmethod in-focus? or ((object sp::individual) &key)
-  "Called by should-be-pronominalized-in-present-context
-  but determined by a discourse-level assessment of the
-  situation. We asking this during the current turn so the
-  answer is established by the prior turn."
-  (and *previous-turn* (eq object (object-in-focus *previous-turn*))))
-
 
 ;;;-------------------------------------------------------------
 ;;; what -kinds- of objects (events) have we been talking about
