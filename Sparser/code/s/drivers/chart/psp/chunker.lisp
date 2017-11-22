@@ -280,7 +280,18 @@
          (return 
            (find-consistent-edges *chunk*)))))
 
-
+(defun preceding-do? (e)
+  (or (loop for c in *chunks*
+            thereis
+               (and (car (chunk-edge-list c))
+                    (eq (cat-name (edge-category (car (chunk-edge-list c))))
+                        'do)))
+      (loop for ee in (all-tts)
+            thereis
+              (and (edge-p ee)
+                   (edge-precedes ee e)
+                   (eq (cat-name (edge-category ee)) 'do))))
+  )
 
 
 (defmethod ng-compatible? ((e edge) evlist)
@@ -316,6 +327,16 @@
        (plural-noun-not-present-verb? e))
       ((singular-noun-and-present-verb? e)                          ;;SINGULAR-NOUN-AND-PRESENT-VERB?
        (and (not (preceding-pronoun-or-which? e))
+            (not (preposed-aux?)) ;; does not capture preposed-aux in "What proteins does vemurafenib target"
+            (not (and
+                  (car *chunks*) ;; there is a preceding chunk
+                  (edge-p (car (chunk-edge-list (car *chunks*))))
+                  (eq (cat-name (edge-category (car (chunk-edge-list (car *chunks*)))))
+                      'do)))
+
+            ;; (not (preceding-do? e)) catches the "do" in
+            ;;Although current methods do not allow for detection of nucleotide-free 
+            ;;  GTPases in vivo, our BiFC results provide additional support for our model. "
             (not (sentence-initial? e)))) ;; this is a case of an imperative
       ((comma? e)                                                   ;;COMMA
        ;;comma can come in the middle of an NP chunk
@@ -618,6 +639,7 @@ than a bare "to".  |#
             (or
              (sentence-initial? e) ;; case of imperative verb like "DECREASE"
              (preceding-pronoun-or-which? e)
+             (preceding-do? e)
              (and (edge-just-to-left-of e)
                   (eq (cat-name (edge-category (edge-just-to-left-of e))) 'to)))))
           ((member ecn '(modal following-adj syntactic-there))
@@ -714,10 +736,11 @@ than a bare "to".  |#
           ;;(lsp-break "foo")
           (cond
             ((and (singular-noun-and-present-verb? e)
-                  (car *chunks*) ;; there is a preceding chunk
-                  (car (chunk-edge-list (car *chunks*)))
-                  (eq (cat-name (edge-category (car (chunk-edge-list (car *chunks*)))))
-                      'do))
+                  (loop for c in *chunks*
+                          thereis 
+                          (and (car (chunk-edge-list c))
+                               (eq (cat-name (edge-category (car (chunk-edge-list c))))
+                                   'do))))
              ;; e.g. "What proteins does vemurafenib target?"
              ;; where the "does" makes the verb reading more likely
              nil)
