@@ -713,6 +713,14 @@ than a bare "to".  |#
                        (eq e-form-name 'verb+ed)))
           ;;(lsp-break "foo")
           (cond
+            ((and (singular-noun-and-present-verb? e)
+                  (car *chunks*) ;; there is a preceding chunk
+                  (car (chunk-edge-list (car *chunks*)))
+                  (eq (cat-name (edge-category (car (chunk-edge-list (car *chunks*)))))
+                      'do))
+             ;; e.g. "What proteins does vemurafenib target?"
+             ;; where the "does" makes the verb reading more likely
+             nil)
             ((eq e-form-name 'quantifier)
              (and (not (itypep (edge-referent e) 'not))
                   (or (loop for ee in edges-before
