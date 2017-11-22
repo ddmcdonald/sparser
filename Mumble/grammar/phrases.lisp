@@ -1947,9 +1947,9 @@
    
 
 (define-phrase response-s (r s)
-  (discourse-unit
+  (compound-sentence
     leading-detached-adverbial-phrase r
-    sentence s))
+    s s))
 
 
 ;;--- vocatives

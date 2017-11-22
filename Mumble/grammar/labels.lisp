@@ -40,7 +40,9 @@
 		;;	(indent initial)
    ))
 
-(define-node-label compound-sentence)  ;; initial motivation from the S-Vocative phrase
+(define-node-label compound-sentence  ;; initial motivation from the S-Vocative phrase
+   word-stream-actions ((punctuation final period)
+                        (capitalize-the-next-word initial)))
 
 (define-node-label clause
    associated-attachment-points (new-main-clause new-main-clause_no-that
