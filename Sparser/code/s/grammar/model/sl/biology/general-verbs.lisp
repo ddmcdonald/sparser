@@ -378,7 +378,8 @@
            :adj "developmental"
            :object treatment
            :object disease
-           :of :object))
+           :of :object)) ;; note the colon on 'object' Tricky on NLG side
+;; DTDA: "What proteins might lead to the development of lung cancer?"
 
 (define-category diminish :specializes negative-bio-control
   :restrict ((object (:or biological scalar-quality)))
