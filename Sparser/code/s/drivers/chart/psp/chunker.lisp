@@ -544,6 +544,7 @@
          (verb-premod? (edge-referent e) (edge-referent right))
          (or (not (edge-p left))
              (and (not (eq (edge-category left) word::comma))
+                  (not (member (cat-name (edge-category left)) '(be do)))
                   (or (ng-head? left)
                       (member (cat-name (edge-category left))
                               '(be have not)))
