@@ -149,40 +149,51 @@
         (tr "unmarked binding: ~a~
          ~%  i = ~a var = ~a pos = ~a" binding individual variable pos)
         (cond ((eql value sp::**lambda-var**)) ;; effectively a trace
-
               
-              ((or (eql variable (sp::subject-variable individual))
-                   (find :subject subcats))
+              ((and (or (eql variable (sp::subject-variable individual))
+                        (find :subject subcats))
+                    (eq pos 'verb))
                (if (current-position-p 'complement-of-be)
                  (attach-pp "by" value dtn pos) ; passive subject
                  (attach-subject value dtn)))
-              ((or (eql variable (sp::object-variable individual))
-                   (find :object subcats))
+
+              ((and (or (eql variable (sp::object-variable individual))
+                        (find :object subcats))
+                   (eq pos 'verb))
                (attach-object value dtn))
+              
               (prep
                (tr "Preposition: ~a ~a" prep value)
                (attach-pp (word-for prep 'preposition) value dtn pos))
-
               
               ((sp::itypep value 'sp::attribute-value) ; a modifier like 'red'
                (tr "attribute-value: ~a" value)
                (attach-adjective value dtn pos))
+              
               ((find :thatcomp subcats)
                (tr "thatcomp: ~a" value)
                (make-adjunction-node
                 (make-lexicalized-attachment 'restrictive-relative-clause value)
                 dtn))
+              
               ((find :m subcats)
                (tr "M subcat label: ~a" value)
                (attach-adjective value dtn pos))
               (t 
                (tr "No handler for unmarked binding ~a" variable))))))
+
+  (:method (binding (var-name (eql 'sp::protein-agent)) dtn pos)
+    "This variable is provided by protein-verb-premod and applies when its value
+     is indeed a preposed agent to the verb. (Analysis is debateable: dtda #11)"
+    (tr "Binding is protein-agent")
+    (attach-object (sp::binding-value binding) dtn))
   
   (:method (binding (var-name (eql 'sp::has-determiner)) dtn pos)
     "Attach a determiner."
     (tr "Binding var is has-determiner: ~a" binding)
     (case (sp::cat-name (sp::itype-of (sp::binding-value binding)))
       (sp::a (initially-indefinite dtn))
+      (sp::an (initially-indefinite dtn)) ;; n.b. parser should generalize
       (sp::the (always-definite dtn))
       (sp::that (attach-adjective "that" dtn 'noun))))
 
