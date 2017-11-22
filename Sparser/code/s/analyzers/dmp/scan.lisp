@@ -1,7 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1994-1995,2013  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: scan1.lisp 207 2009-06-18 20:59:16Z cgreenba $
+
 ;;;
 ;;;      File:  "scan"
 ;;;    Module:  "analyzers;DM&P:"
@@ -197,9 +197,6 @@
 
 
 
-
-
-
 ;;;------------------------------------------------------------
 ;;; noting known edges for later analysis of segment structure
 ;;;------------------------------------------------------------
@@ -214,62 +211,6 @@
        (break "Stub: what's an analyzable record for a vanila category?"))
       (otherwise
        (break "New kind of label: ~a" label)))))
-
-
-
-;;;---------------
-;;; vetting edges
-;;;---------------
-
-(defun single-best-edge-over-word (pos-before)
-  (let ((result (only-nontrivial-edges
-                 (all-preterminals-at pos-before))))
-    (unless result
-      (push-debug `(,(all-preterminals-at pos-before) ,pos-before))
-      (break "Shouldn't happen: check for non-trivial edges returned 'nil'"))
-
-    (typecase result
-      (cons (highest-preterminal-at pos-before))
-      (edge result)
-      (otherwise
-       (break "New type of result: ~a" result)))))
-
-
-(defun single-best-edge-from-vector (ev)
-  ;; Assumes we have a 'starting-at' vector.  Only makes sense
-  ;; when there's an ambiguity, so also assuming the relevant edges
-  ;; span only one word
-  (single-best-edge-over-word (ev-position ev)))
-
-;;--- literals
-
-(defun only-nontrivial-edges (list-of-edges)
-  ;; version threaded from Single-best-edge-over-word
-  (let ( vetted-edges  label )
-    (dolist (edge list-of-edges)
-      (setq label (edge-category edge))
-
-      ;; no literals
-      (unless (word-p label)
-        ;; no morph edges
-        (unless (eq label category::capitalized-word)
-          (push edge vetted-edges))))
-
-    (when vetted-edges
-      (let ((edges (nreverse vetted-edges)))
-        (if (cdr edges)
-          (prefer-edge-referring-to-terms edges)
-          (list (first edges)))))))
-
-
-(defun filter-literals (ev)
-  ;; stand-alone version. Assumes we have a 'starting-at' vector,
-  ;; otherwise we need a different edge-collector
-  (let ( vetted-edges )
-    (dolist (edge (all-preterminals-at (ev-position ev)))
-      (unless (word-p (edge-category edge))
-        (push edge vetted-edges)))
-    (nreverse vetted-edges)))
 
 
 
