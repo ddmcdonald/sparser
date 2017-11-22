@@ -108,7 +108,9 @@
   (:documentation "Shared printer for simple objects in value fields.
      Returns a string.")
   (:method ((w word))
-    (format nil "~s" (pname w))))
+    (format nil "~s" (pname w)))
+  (:method ((dtn base-dt-node))
+    (format nil "<dtn for ~a>" (or (referent dtn) "null referent"))))
 
 
 (defmethod print-object ((dtn base-dt-node) stream)
