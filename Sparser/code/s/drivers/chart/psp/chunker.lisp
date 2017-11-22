@@ -299,7 +299,12 @@
         preceding-noun-refs)
     (declare (special edges eform ecat preceding-noun-refs))
     (cond
-      ((member ecat '(modal syntactic-there)) nil)                  #|MODAL, SYNTACTIC-THERE|# 
+      ((or (member ecat '(modal syntactic-there))
+           (some-edge-satisfying?
+            edges
+            #'(lambda(e) (eq (cat-name (edge-category e)) 'syntactic-there))))
+       nil)
+      #|MODAL, SYNTACTIC-THERE|# 
       ((eq ecat 'ordinal) t)                                        ;;ORDINAL
      
       ((or (some-edge-satisfying? edges #'pronoun-or-wh-pronoun)    ;; BLOCK NG CONTINUATION after WH and pronouns
