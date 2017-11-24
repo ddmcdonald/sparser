@@ -102,7 +102,8 @@
     (if (slot-boundp m 'di)
         (let ((i (base-description m)) ;; mention of what individual
               (location (mentioned-where m)) ;; at what paragraph position
-              (article-loc (car (mentioned-in-article-where m)))) ;; toc of sentence in doc
+              (article-loc (when (slot-boundp m 'location-in-article)
+                             (car (mentioned-in-article-where m))))) ;; toc of sentence in doc
           (format stream "m:~s i~a ~a ~a"
                   (mention-uid m)
                   (if (individual-p i)
@@ -110,7 +111,7 @@
                       i)
                   (if (individual-p i)
                       (string-for i))
-                  article-loc)
+                  (or article-loc ""))
           (cond
             ((mention-source m)
              (format stream " ~s" (mention-source m)))
