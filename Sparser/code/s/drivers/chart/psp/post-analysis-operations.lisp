@@ -332,7 +332,8 @@ is replaced with replacement."
   (declare (special c c-mention containing-mentions))
   (let ((specializations
 	 (remove-if #'predication?
-		    (all-mentioned-specializations c c-mention containing-mentions)))
+		    (all-mentioned-specializations
+                     c c-mention containing-mentions)))
 	spec-mentions)
     (declare (special specializations spec-mentions))
     (loop for s in specializations
@@ -352,8 +353,10 @@ is replaced with replacement."
   (or (eq edge np-edge)
       (and (edge-p np-edge)
 	   (or
-	    (np-containing-edge? edge (edge-left-daughter np-edge))
-	    (np-containing-edge? edge (edge-right-daughter np-edge))))))
+	    (np-containing-edge? edge
+                                 (edge-left-daughter np-edge))
+	    (np-containing-edge? edge
+                                 (edge-right-daughter np-edge))))))
 
 (defun np-head-edge? (edge np-edge)
   (or (eq edge np-edge)

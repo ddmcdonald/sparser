@@ -46,8 +46,9 @@
 (defun find-or-make-dlvv-ht-from-variable (variable)
   (declare (optimize (speed 3)(safety 0)))
   (or (gethash variable *dl-vv-from-variable*)
-      (setf (gethash variable *dl-vv-from-variable*) (make-hash-table :size 1000 :rehash-size 4.0
-                                                                      :test #'equal))))
+      (setf (gethash variable *dl-vv-from-variable*)
+            (make-hash-table :size 1000 :rehash-size 4.0
+                             :test #'equal))))
 
 (defun find-or-make-dlvv-from-var-val (variable value)
   (declare (optimize (speed 3)(safety 0)))
@@ -467,7 +468,8 @@
   (declare (special *maximal-lattice-mentions-in-paragraph* c c-mention containing-mentions))
   (let* ((am-specs
 	  (remove-duplicates
-	   (loop for m in (gethash (itype-of c) *maximal-lattice-mentions-in-paragraph*)
+	   (loop for m in (gethash (itype-of c)
+                                   *maximal-lattice-mentions-in-paragraph*)
 	      as ps = (base-description m)
 	      when
 		(and  (not (eq ps c))
