@@ -568,6 +568,84 @@ code is make-edge-over-abbreviation and its feeders. |#
           (prefer-edge-referring-to-terms edges)
           (list (first edges)))))))
 
+;;moved from DMP/scan which is not normally loaded
+
+(defun prefer-edge-referring-to-terms (list-of-edges)
+  ;; version threaded from Single-best-edge-over-word
+  ;; handles problem of "first" taken as an ordinal vs. reified
+  ;; as a term (e.g. "Disk First Aid")
+  (let ( term-edges class-edges )
+    (dolist (edge list-of-edges)
+      (cond
+       ((individual-p (edge-referent edge))
+        (push edge term-edges))
+       ((category-p (edge-referent edge)) ;; e.g. from Comlex
+        (push edge class-edges))))
+
+    (cond
+     ((and term-edges (cdr term-edges)) ;; check for null class-edges?
+      (take-top-edge-if-they-chain term-edges))
+     (t (or term-edges
+            class-edges)))))
+
+
+(defun take-top-edge-if-they-chain (list-of-edges)
+  ;; presupposing these are all the same length or start at the same position
+  (let ((start-pos (pos-edge-starts-at (first list-of-edges))))
+    (if (edges-all-chain start-pos :start)
+      (list (ev-top-node (pos-starts-here start-pos)))
+      (check-for-all-being-number-edges list-of-edges))))
+
+
+(defun check-for-all-being-number-edges (list-of-edges)
+  (let ((all-numbers? t)  representative-edge  )
+    (dolist (edge list-of-edges)
+      (typecase (edge-category edge)
+        ((or referential-category category mixin-category)
+         (case (cat-symbol (edge-category edge))
+           (category::number          (setq representative-edge edge))
+           (category::digit-sequence  (setq representative-edge edge))
+           (category::ones-number     (setq representative-edge edge))
+           (category::tens-number     (setq representative-edge edge))
+           (category::teens-number    (setq representative-edge edge))
+           (category::multiplier      (setq representative-edge edge))
+           (otherwise
+            (setq all-numbers? nil))))
+        (word )
+        (otherwise
+         (setq all-numbers? nil))))
+
+    (if all-numbers?
+      (list representative-edge)
+      (check-for-the-word-being-one list-of-edges))))
+
+
+(defun check-for-the-word-being-one (list-of-edges)
+  (let ((random-daughter (edge-left-daughter (second list-of-edges))))
+    ;; in the problematic case (9/15 PT, token id 10,110) the word
+    ;; "one" has gotten an interpretation as a term and the first
+    ;; edge, 'number', has :multiple-initial-edges as its left-daughter
+    (if (and (word-p random-daughter)
+             (eq random-daughter (word-named "one")))
+
+      (list (second list-of-edges))
+      ;; has to be a list because Mine-head/edge? etc. take car's on it
+
+      (prefer-capitalized-sequences list-of-edges))))
+
+
+(defun prefer-capitalized-sequences (list-of-edges)
+  ;; you can get a term and its capitalized version over the same word
+  (let ((caps-edge
+         (find (category-named 'capitalized-sequence)
+               list-of-edges
+               :key #'edge-category)))
+    (if caps-edge
+      (list caps-edge)
+
+      ;; give up
+      list-of-edges)))
+
 
 (defun filter-literals (ev)
   ;; stand-alone version. Assumes we have a 'starting-at' vector,
