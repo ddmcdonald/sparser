@@ -464,8 +464,8 @@
   (remove-duplicates
    (loop for i in (all-phrasal-dlis) collect (dli-ref-cat i))))
 
-(defun all-mentioned-specializations (c c-mention containing-mentions)
-  (declare (special *maximal-lattice-mentions-in-paragraph* c c-mention containing-mentions))
+(defun all-mentioned-specializations (c c-mention #+ignore containing-mentions)
+  (declare (special *maximal-lattice-mentions-in-paragraph* c c-mention #+ignore containing-mentions))
   (let* ((am-specs
 	  (remove-duplicates
 	   (loop for m in (gethash (itype-of c)
@@ -475,7 +475,8 @@
 		(and  (not (eq ps c))
 		      (as-specific? ps c)
 		      (mention-history ps)
-		      (loop for cm in containing-mentions
+		      #+ignore
+                      (loop for cm in containing-mentions
 			 never (eq ps (base-description cm)))
 		      (loop for ps-mention in (mention-history ps)
 			 thereis (earlier? ps-mention c-mention)))

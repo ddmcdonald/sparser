@@ -78,6 +78,9 @@ Return the contextual interpretation of the item."))
   "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
   (loop for item in items collect (interpret-in-context item)))
 
+(defparameter *expand-interpretations-in-context* nil
+  "Turned off because the majority of re-interpretations proposed currently are wrong...")
+
 (defmethod interpret-in-context ((mention discourse-mention))
   (declare (special mention category::hyphenated-pair category::hyphenated-triple
                     category::two-part-label))
@@ -107,7 +110,10 @@ Return the contextual interpretation of the item."))
                  (let ((interpretation (interpret-pronoun-in-context mention)))
                    (or (car interpretation) base)))
                 (t
-                 (reinterp-mention-using-bindings mention)))))
+                 (reinterp-mention-using-bindings mention)
+                 (when *expand-interpretations-in-context*
+                   (expand-interpretation-in-context-if-needed mention))
+                 ))))
         (declare (special re-interpretation))
         (setf (contextual-description mention) re-interpretation)
         re-interpretation)))
@@ -297,6 +303,47 @@ where it regulates gene expression.")
     (reinterp-list-using-bindings (list pathway)
 				  (dependencies mention))))
 
+;;; contextual interpretaion of underspecified descriptions
+(defun expand-interpretation-in-context-if-needed (mention) ;;(dt var containing-mentions)
+  (declare (special dt var containing-mentions))
+  (let* (;;(mention (dt-mention dt))
+	 (edge (mention-source mention))
+	 (interp (contextual-interpretation mention))
+	 spec-mentions)
+    (declare (special edge mention interp spec-mentions))
+    (when (or
+	   (cat-mention? mention 'preposition)
+	   (not (individual-p interp))
+	   ;;(not (is-maximal? mention))
+	   )
+      (return-from expand-interpretation-in-context-if-needed interp))
+    (setq spec-mentions  (spec-mentions mention))
+    (cond
+      ((cdr spec-mentions)
+       (when (and *show-contextual-replacements* nil)
+	 (format t 
+
+"~%--- Suppressing contextual interpretation due to ambiguous interpretations of ~s in:~%~s~%"
+		 (or (note-surface-string edge)
+		     (sur-string interp))
+		 (sentence-string *sentence-in-core*)))
+       ;;(lsp-break "ambiguous")
+       interp)
+      (spec-mentions
+       (when *break-on-null-surface-strings*
+	 (when (null (note-surface-string edge)) (lsp-break "Null edge string")))
+       (when *show-contextual-replacements*
+	 (format t "~%(   ~s     ===>  ~s)~% in sentence:~%  ~s~%"
+		 (nl->space (or (note-surface-string edge) (sur-string interp)))
+		 (nl->space (or (when (edge-p (mention-source (car spec-mentions)))
+				  (sur-string (mention-source (car spec-mentions))))
+				(sur-string (base-description (car spec-mentions)))))
+		 (nl->space (sentence-string *sentence-in-core*))))
+       (setf (contextual-description mention)
+	     (contextual-interpretation (car spec-mentions))))
+      (t interp))))
+
+
 ;;__________________ Create the dependency-tree from which re-interpretation is done
 
 (defparameter *show-relevant-edge-warnings* nil)
@@ -328,20 +375,25 @@ is replaced with replacement."
   (replace-all str *nl-str* " "))
 
 
-(defun spec-mentions (c c-mention containing-mentions)
-  (declare (special c c-mention containing-mentions))
+(defun spec-mentions (mention &aux (c (contextual-interpretation mention)))
+  (declare (special c mention))
   (let ((specializations
 	 (remove-if #'predication?
-		    (all-mentioned-specializations
-                     c c-mention containing-mentions)))
+		    (all-mentioned-specializations c mention)))
 	spec-mentions)
     (declare (special specializations spec-mentions))
     (loop for s in specializations
-       unless (np-containing-mention? s c-mention)
+       unless (np-containing-mention? s mention)
        do (loop for m in (mention-history s)
 	     ;;when (is-maximal? m)  we now only have maximal mentions in the list
 	     do (push m  spec-mentions)))
     spec-mentions))
+
+
+;; NOT SURE WHAT THIS IS USED TO BLOCK
+(defun predication? (desc)
+  (loop for b in (indiv-bound-in desc)
+     thereis (eq 'predication (var-name (binding-variable b)))))
 
 (defun np-containing-mention? (s mention)
   (loop for m in (mention-history s)
