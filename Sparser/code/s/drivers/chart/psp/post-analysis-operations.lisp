@@ -11,13 +11,23 @@
 
 ;; noisy reporting of situations interesting to Rusty
 (defparameter *report-on-multiple-edges-for-interp* nil)
-(defparameter *show-contextual-replacements* nil)
+
 
 ;; breaks on situations interesting to Rusty
 (defparameter *break-on-null-interp* nil)
 (defparameter *break-on-null-edge* nil)
 (defparameter *break-on-null-surface-strings* nil)
 (defparameter *contextual-interpretation* nil)
+
+(defparameter *expand-interpretations-in-context* nil
+  "Turned off because the majority of re-interpretations proposed currently are wrong...")
+(defparameter *show-contextual-replacements* nil)
+
+(defun do-contextual-interp ()
+  (setq *contextual-interpretation* t)
+  (setq *expand-interpretations-in-context* t)
+  (setq *show-contextual-replacements* t))
+
 
 (defun interpret-treetops-in-context (treetops)
   (let ((*contextual-interpretation* t))
@@ -78,8 +88,7 @@ Return the contextual interpretation of the item."))
   "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
   (loop for item in items collect (interpret-in-context item)))
 
-(defparameter *expand-interpretations-in-context* nil
-  "Turned off because the majority of re-interpretations proposed currently are wrong...")
+
 
 (defmethod interpret-in-context ((mention discourse-mention))
   (declare (special mention category::hyphenated-pair category::hyphenated-triple
@@ -110,11 +119,9 @@ Return the contextual interpretation of the item."))
                  (let ((interpretation (interpret-pronoun-in-context mention)))
                    (or (car interpretation) base)))
                 (t
-                 (reinterp-mention-using-bindings mention)
-                 (when *expand-interpretations-in-context*
-                   (expand-interpretation-in-context-if-needed mention))
-                 ))))
-        (declare (special re-interpretation))
+                 (reinterp-mention-using-bindings mention)))))
+        (when *expand-interpretations-in-context*
+          (expand-interpretation-in-context-if-needed mention))
         (setf (contextual-description mention) re-interpretation)
         re-interpretation)))
 
@@ -197,7 +204,12 @@ where it regulates gene expression.")
             collect (if (typep item 'discourse-mention)
                         (reinterp-mention-using-bindings item)
                         item))
-      bindings))))
+      (loop for b in bindings
+            ;; ignore the bindings that are part of what makes a collection a collection
+            ;;  only consider the 'actual' modifiers of the collection as a whole
+            unless (member (var-name (car b)) ;; bindings are lists whose car is the variable
+                           '(raw-text type number items))
+              collect b)))))
 
 (defun reinterp-mention-using-bindings (mention)
   (let ((interp (base-description mention)))
@@ -309,7 +321,7 @@ where it regulates gene expression.")
   (let* (;;(mention (dt-mention dt))
 	 (edge (mention-source mention))
 	 (interp (contextual-interpretation mention))
-	 spec-mentions)
+	 spec-interps)
     (declare (special edge mention interp spec-mentions))
     (when (or
 	   (cat-mention? mention 'preposition)
@@ -317,9 +329,9 @@ where it regulates gene expression.")
 	   ;;(not (is-maximal? mention))
 	   )
       (return-from expand-interpretation-in-context-if-needed interp))
-    (setq spec-mentions  (spec-mentions mention))
+    (setq spec-interps  (spec-interps mention))
     (cond
-      ((cdr spec-mentions)
+      ((cdr spec-interps)
        (when (and *show-contextual-replacements* nil)
 	 (format t 
 
@@ -329,18 +341,19 @@ where it regulates gene expression.")
 		 (sentence-string *sentence-in-core*)))
        ;;(lsp-break "ambiguous")
        interp)
-      (spec-mentions
+      (spec-interps
        (when *break-on-null-surface-strings*
 	 (when (null (note-surface-string edge)) (lsp-break "Null edge string")))
        (when *show-contextual-replacements*
 	 (format t "~%(   ~s     ===>  ~s)~% in sentence:~%  ~s~%"
 		 (nl->space (or (note-surface-string edge) (sur-string interp)))
-		 (nl->space (or (when (edge-p (mention-source (car spec-mentions)))
-				  (sur-string (mention-source (car spec-mentions))))
-				(sur-string (base-description (car spec-mentions)))))
+		 (semtree (car spec-interps))
+                 #+ignore
+                 (nl->space (or (value-of 'raw-text (car spec-interps))
+                                (sur-string (car spec-interps))))
 		 (nl->space (sentence-string *sentence-in-core*))))
        (setf (contextual-description mention)
-	     (contextual-interpretation (car spec-mentions))))
+	     (car spec-interps)))
       (t interp))))
 
 
@@ -372,7 +385,7 @@ is replaced with replacement."
 ")
 
 (defun nl->space (str)
-  (replace-all str *nl-str* " "))
+  (when str (replace-all str *nl-str* " ")))
 
 
 (defun spec-mentions (mention &aux (c (contextual-interpretation mention)))
@@ -388,6 +401,17 @@ is replaced with replacement."
 	     ;;when (is-maximal? m)  we now only have maximal mentions in the list
 	     do (push m  spec-mentions)))
     spec-mentions))
+
+(defun spec-interps (mention &aux (c (contextual-interpretation mention)))
+  (declare (special c mention))
+  (let ((specializations
+	 (remove-if #'predication?
+		    (all-mentioned-specializations c mention)))
+	spec-mentions)
+    (declare (special specializations spec-mentions))
+    (loop for s in specializations
+          unless (np-containing-mention? s mention)
+          collect s)))
 
 
 ;; NOT SURE WHAT THIS IS USED TO BLOCK
