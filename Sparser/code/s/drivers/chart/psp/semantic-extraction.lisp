@@ -655,9 +655,29 @@ in cwc-integ/spire/interface/sparser.lisp
       (semtree (i# n))
       (semtree (e# n))))
 
+(defmethod csemtree ((n number))
+  (if (> n 1000)
+      (semtree (i# n))
+      (csemtree (e# n))))
+
+
 (defmethod semtree ((e edge))
   (semtree (edge-referent e)))
 
+(defmethod csemtree ((e edge))
+  (semtree (contextual-interpretation (edge-mention e))))
+
+(defparameter *semtree-seen-individuals* (make-hash-table)
+  "Cleared and used by semtree to avoid walking through the
+  same individual twice and getting into a loop.")
+
+(defmethod semtree ((i individual))
+  (clrhash *semtree-seen-individuals*)
+  (collect-model-description i))
+
+(defmethod semtree ((i referential-category))
+  (clrhash *semtree-seen-individuals*)
+  (collect-model-description i))
 
 (defparameter *semtree-seen-individuals* (make-hash-table)
   "Cleared and used by semtree to avoid walking through the
