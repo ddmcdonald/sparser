@@ -351,37 +351,41 @@
 
 (defun as-specific? (sub-dli super-dli) ;; super-dli lies above sub-dli in the description lattice
   (when sub-dli
-    (or
-     (eq sub-dli super-dli)
-     (and (referential-category-p super-dli) ;; happens in calls from check-consistent-mention
-	  (itypep sub-dli super-dli))
-     (cond
-       ((referential-category-p sub-dli)
-	(and (referential-category-p super-dli)
-	     (itypep sub-dli super-dli)))
-       ((gethash super-dli (indiv-not-super sub-dli))
-	nil)
-       ((gethash super-dli (indiv-all-supers sub-dli)))
-       ((itypep sub-dli (itype-of super-dli))
-	(cond ((loop for r in (and (individual-p super-dli)
-				   (indiv-restrictions super-dli))
-		  as rval = (and (not (category-p r))(dlvv-value r))
-		  always
-		    (or (null rval)
-			(let* ((sub-r
-				(find-if #'(lambda (dlvv)
-					     (when
-						 (not (category-p dlvv))
-					       (eq (dlvv-variable dlvv) (dlvv-variable r))))
-					 (indiv-restrictions sub-dli)))
-			       (srval (and sub-r (dlvv-value sub-r))))
-			  (if (or (category-p rval)(individual-p rval))
-			      (and (or (category-p srval)(individual-p srval))
-				   (as-specific? srval rval))
-			      (equal rval srval)))))
-	       (setf (gethash super-dli (indiv-all-supers sub-dli)) t))
-	      (t (setf (gethash super-dli (indiv-not-super sub-dli)) t)
-		 nil)))))))
+    (or (eq sub-dli super-dli)
+        (and (referential-category-p super-dli) ;; happens in calls from check-consistent-mention
+             (itypep sub-dli super-dli))
+        (cond ((referential-category-p sub-dli)
+               (and (referential-category-p super-dli)
+                    (itypep sub-dli super-dli)))
+              ((gethash super-dli (indiv-not-super sub-dli))
+               nil)
+              ((gethash super-dli (indiv-all-supers sub-dli)))
+              ((itypep sub-dli (itype-of super-dli))
+               (cond ((loop for r in (and (individual-p super-dli)
+                                          (indiv-restrictions super-dli))
+                            always (or (category-p r)
+                                       (member (var-name (dlvv-variable r))
+                                               '(has-determiner raw-text is-plural))
+                                       (at-least-as-constrained-on (dlvv-variable r)
+                                                                   (dlvv-value r)
+                                                                   sub-dli)))
+                      (setf (gethash super-dli (indiv-all-supers sub-dli)) t))
+                     (t (setf (gethash super-dli (indiv-not-super sub-dli)) t)
+                        nil)))))))
+
+(defun at-least-as-constrained-on (super-var super-val sub-dli)
+  (loop for sub-r in (indiv-restrictions sub-dli)
+        thereis (let ((sub-val (dlvv-value sub-r))
+                      (sub-var (dlvv-variable sub-r)))
+                  (and (not (category-p sub-r))
+                       (if (disjunctive-lambda-variable-p super-var)
+                           (member sub-var (dvar-variables super-var))
+                           (eq sub-var super-var))
+                       (if (or (category-p super-val)(individual-p super-val))
+                           (and (or (category-p sub-val)(individual-p sub-val))
+                                (as-specific? sub-val super-val))
+                           (equal sub-val super-val))))))
+
 ;; was -- incorrectly -- (subsetp  (indiv-restrictions super-dli) (indiv-restrictions sub-dli)))
 
 (defun find-var-from-var/name (var/name parent)
@@ -466,23 +470,23 @@
 
 (defun all-mentioned-specializations (c c-mention #+ignore containing-mentions)
   (declare (special *maximal-lattice-mentions-in-paragraph* c c-mention #+ignore containing-mentions))
-  (let* ((am-specs
-	  (remove-duplicates
-	   (loop for m in (gethash (itype-of c)
-                                   *maximal-lattice-mentions-in-paragraph*)
-	      as ps = (base-description m)
-	      when
-		(and  (not (eq ps c))
-		      (as-specific? ps c)
-		      (mention-history ps)
-		      #+ignore
-                      (loop for cm in containing-mentions
-			 never (eq ps (base-description cm)))
-		      (loop for ps-mention in (mention-history ps)
-			 thereis (earlier? ps-mention c-mention)))
-	      collect ps))))
-    (declare (special am-specs))
-    am-specs))
+  (unless (itypep c 'number)
+    (let* ((am-specs
+            (remove-duplicates
+             (loop for m in (gethash (itype-of c) *maximal-lattice-mentions-in-paragraph*)
+                   as ps = (contextual-interpretation m) ;; (base-description m)
+                   when (earlier? m c-mention)
+                   nconc
+                     (cond ((is-basic-collection? ps)
+                            (loop for item in (value-of 'items ps)
+                                  when (and  (not (eq item c))
+                                             (as-specific? item c))
+                                  collect item))
+                           ((and  (not (eq ps c))
+                                  (as-specific? ps c))
+                            (list ps)))))))
+      (declare (special am-specs))
+      am-specs)))
 
 (defun earlier? (poss-mention source-mention)
   (cond
