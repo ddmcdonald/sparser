@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  August 2017
+;;;  version:  November 2017
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -671,20 +671,29 @@ macro it and only expands) we throw to end-of-sentence, which finishes
            ;; a wh-pronoun over a wh-determiner, but that's
            ;; only because of the luck of what's loaded later.
            (form-label (when edge (edge-form edge)))
-           (word (when edge (find-head-word edge))))
+           (word (when edge (find-head-word edge)))
+           (there? (eq (pos-terminal (chart-position-after position-before))
+                       (word-named "there"))))
+      
+      (flet ((handle-there-is (aux-edge)
+               (make-initial-there-is-edge aux-edge)))
 
-      (when form-label
-        (case (cat-symbol form-label)
-          ((category::verb category::verb+s category::verb+ed
-            category::verb+ing category::verb+present category::verb+past)
-           (when (auxiliary-word? word)
-             (store-preposed-aux edge)))
-          (category::modal
-           (store-preposed-aux edge))
-          (category::wh-pronoun
-           (delimit-and-label-initial-wh-term position-before edge)))))))
+        (when form-label
+          (case (cat-symbol form-label)
+            ((category::verb category::verb+s category::verb+ed
+                             category::verb+ing category::verb+present category::verb+past)
+             (when (auxiliary-word? word)
+               (when there? (handle-there-is edge))
+               (store-preposed-aux edge)))
+            (category::modal
+               (when there? (handle-there-is edge))
+             (store-preposed-aux edge))
+            (category::wh-pronoun
+             (delimit-and-label-initial-wh-term position-before edge))))))))
 
 (defun store-preposed-aux (aux-edge)
+  "Relabel the aux edge to keep other rules away from it
+   and make a record on the sentence."
   (declare (special category::preposed-auxiliary))
   (let ((actual-form (edge-form aux-edge)))
     (setf (edge-form aux-edge) category::preposed-auxiliary)

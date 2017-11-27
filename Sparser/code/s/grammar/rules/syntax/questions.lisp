@@ -156,7 +156,7 @@
       ;; In most cases, the proposed aux will have been accommodated by
       ;; the operations in the post-vg-hook, though that's just for explicit
       ;; auxiliaries.
-
+         
       ;; Look for heuristic ways we could get a full sentence
       ;; from a partial parse. The detection is in this cond.
       ;; The construction is mostly in the subroutines just below.
@@ -173,32 +173,30 @@
                      :rule 'make-this-a-question-if-appropriate
                      :form category::question
                      :referent q)))
-               spanning-edge))))     
-        
+               spanning-edge))))
+
+        ((and (= 1 (length edges))
+              (eq (edge-category (car edges)) category::there-exists))
+         (there-is-as-polar-question (car edges)))
+
+        ((eq (edge-category (car edges)) category::there-exists)
+         (sort-out-incompletely-parsed-there-is-q start-pos end-pos edges))
+
         ((and (= 3 (length edges))
               (edge-p (first edges))
               (itypep (edge-referent (first edges)) 'be))
-         
+
          (cond ((member (cat-name (edge-form (third edges)))
                         '(adjp adjective comparative superlative
                           comparative-adjp superlative-adjp))
                 ;; <is> <something> <adj>
                 (make-polar-adjective-question start-pos end-pos edges))
                
-               ((and (member (cat-name (edge-form (third edges))) '(pp))
-                     (buried-there? (second edges)))
-                (make-polar-there-is-pp-question start-pos end-pos edges))
-               
                ((member (cat-name (edge-form (third edges)))
                         '(vp+ed vp+ing vg+ed vg+ing
                           vp+passive))
                 ;; <is> <something> <x-ing?
                 (make-polar-participle-question start-pos end-pos edges))
-               
-               ((or (eq (cat-name (edge-category (second edges))) 'syntactic-there)
-                    (eq (cat-name (edge-category (second edges))) 'deictic-location))
-                    ;; "is there <something, e.g. a cat on the rug>?"
-                (make-polar-there-question start-pos end-pos edges))
 
                ((and (noun-category? (second edges))
                      (noun-category? (third edges)))
@@ -247,48 +245,70 @@
 ;;; polar questions (yes/no)
 ;;;--------------------------
 
+(defun make-initial-there-is-edge (preposed-aux-edge)
+  "Called by detect-early-information when there is a preposed auxillary
+   followed by the word 'there'. We select the correct edge over the
+   'there' and  form a there-exists constituent"
+  (let* ((start-pos (pos-edge-starts-at preposed-aux-edge))
+         (there-pos (pos-edge-ends-at preposed-aux-edge))
+         (ev (pos-starts-here there-pos))
+         (there-edge (loop for edge in (all-edges-on ev)
+                        when (eq (edge-category edge) category::syntactic-there)
+                        return edge)))
+    (assert there-edge)
+    (let ((rule (multiply-edges there-edge preposed-aux-edge)))
+      ;; n.b. we switch the order of the edges to make the rule happy
+      (assert rule)
+      (let ((edge (make-completed-binary-edge preposed-aux-edge
+                                               there-edge
+                                               rule)))
+        ;; add trace
+        edge))))
+
+
+
 (defun make-polar-question (statement)
   "Abstracted constructor so it will done the same way every time."
   (find-or-make-individual
    'polar-question :statement statement))
 
+
 ;;--- cases called from make-this-a-question-if-appropriate
 
-;; (p "are there drugs that treat pancreatic cancer?")
-(defun make-polar-there-question (start-pos end-pos edges)
-  "We're asking about whether somthing exists"
-  ;; caller knew the first edge was the aux and second 'there'
-  (let* ((np (edge-referent (third edges)))  ;; drugs that ...
-         (i (find-or-make-individual 'there-exists :value np))
-         (q (make-polar-question i)))
-    (let ((e (make-edge-over-long-span
+(defun there-is-as-polar-question (edge)
+  "We have a complete parse as a there-exists statement. Throw another
+   edge over it as a question -- same as fully-spanned case, which we don't
+   get because of the check for pre-posed."
+  (let* ((q (make-polar-question (edge-referent edge)))
+         (respanning-edge
+          (make-completed-unary-edge
+           (edge-starts-at edge) ; starting-vector
+           (edge-ends-at edge)   ; ending-vector
+           'there-is-as-polar-question ; rule
+           edge ; daughter
+           (edge-category edge) ; category
+           category::question ; form
+           q))) ; referent
+    respanning-edge))
+
+
+;;/// need an exemplar
+(defun sort-out-incompletely-parsed-there-is-q (start-pos end-pos edges)
+  (if *debug-questions*
+    (error "incomplete there-is question: ~a" edges)
+    (warn "Incomplete there-is question: ~s"
+          (string-of-words-between start-pos end-pos))))
+   #+ignore (let ((e (make-edge-over-long-span
               start-pos end-pos
               (itype-of i)
               :rule 'make-polar-there-question
               :form category::question
               :referent q
-              :constituents edges)))
-      ;; trace
-      e)))
+              :constituents edges))) )
 
 
-(defun buried-there? (edge)
-  "Compensates for bad chunking of 'there', e.g.
-   Are [there any drugs ]for [BRAF]. Second edge would be a long-span
-   with 'there' (deictic-location) as its first constituent. 
-   Return the second constituent"
-  (when (eq (pos-terminal (pos-edge-starts-at edge)) (word-named "there"))
-    (let ((edges (edge-constituents edge)))
-      (when (and edges (= 2 (length edges)))
-        (edge-referent (second edges))))))
 
-;; "Are there any drugs for BRAF?" -- ///drugs + "for" doesn't work
-(defun make-polar-there-is-pp-question (start-pos end-pos edges)
-  (let* ((be (edge-referent (first edges)))
-         (i (buried-there? (second edges)))
-         )
-    (break "polar-there-pp not finished")))
-         
+
 
 (defun make-polar-copular-question (start-pos end-pos edges)
   "Construct an instance of 'be' by directly invoking the rules"
