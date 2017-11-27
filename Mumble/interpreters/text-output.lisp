@@ -149,10 +149,13 @@ word-stream level of processing (e.g. muck with the flow through morphology)."
 	(possessive-marker (compute-proper-form-of-possessive-marker *last-word*))))))
 
 (defun dispatch-on-prior-word (item)
+  "Returns the actual word to send to the output stream, or nil if there
+   is no need to change it."
   (typecase item
     (string (cond ((string-equal "a" *last-item*)
                    (when (vowel-like-onset item)
-                     (convert-A-to-AN)))
+                     (convert-A-to-AN))
+                   nil)
                   ((string-equal "not" item)
                    ;; hard-wired mandatory contraction
                    (check-for-contraction *last-item*))
