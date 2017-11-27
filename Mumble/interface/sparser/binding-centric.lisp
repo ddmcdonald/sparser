@@ -161,7 +161,15 @@
                         (find :object subcats))
                    (eq pos 'verb))
                (attach-object value dtn))
-              
+
+              ((and (find :object subcats) ;; note the colon
+                    (eq pos 'noun))
+               (let ((preposition (or (when prep
+                                        (word-for prep 'preposition))
+                                      "of")))
+                 (tr ":object => ~a" preposition)
+                 (attach-pp preposition value dtn pos)))
+
               (prep
                (tr "Preposition: ~a ~a" prep value)
                (attach-pp (word-for prep 'preposition) value dtn pos))
