@@ -347,11 +347,17 @@
 #+:mumble
 (defun p/m (string)
   "Parse the string, print the semtree and mumble it."
-  (let ((tree (p/s string)))
-    (when tree ;; is the text fully spanned
-      (pprint tree) (terpri) (terpri)
-      (with-output-to-string (mumble::*mumble-text-output*)
-        (mumble::say (car tree))))))
+  (pp string)
+  (let ((edges (all-tts)))
+    (when (null (cdr edges))
+      (let* ((edge (car edges))
+             (sem (semtree edge)))
+        (format t "~&~%--> ~s~%"
+                (with-output-to-string (mumble::*mumble-text-output*)
+                  (mumble::say (car sem))))
+        (pprint sem) (terpri) (terpri)))
+    (tts)))
+
 
 (defun p/r (string)
   "Parse the string and then use the return-value capability
