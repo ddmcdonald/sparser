@@ -1,0 +1,110 @@
+11/22/17 -- ddm
+
+Notes on the ontology of amount
+
+* The idea
+
+Consider the phrase "530 tons of nitrogen". This is a complete term, a
+saturated relation. 
+
+In Sparser's original ontology this phrase was an "amount". Given the
+vagueness of our ordinary use of the language I would now call this an
+"amount of stuff" to reinforce the idea that not only do we have a
+"measurement" ("530 tons") but we have the stuff that is being
+measured ("nitrogen").
+
+The measurement decomposes into a unit of measure ("ton") and a number ("530")
+that says how many of these units are in this measurement.
+
+
+* The implementation
+
+This is the Krisp category for unit-of-measure.
+
+(define-category  unit-of-measure
+  :specializes abstract
+  :binds ((name :primitive word)))
+
+
+This is the category for measurement. 
+
+(define-category  measurement  ;; "10 yards"
+  :specializes abstract
+  :binds ((units  unit-of-measure)
+          (quantity  number)))
+
+
+This is amount. Note that there is no type restriction on the 'stuff'
+variable. Specialization of this category would restrict the stuff
+variable or the type of the measurement.
+
+(define-category amount-of-stuff
+  :specializes abstract ;; delimits a region in a quantity space
+  :binds ((measurement . measurement)
+          (stuff)
+
+
+* TRIPS
+
+The word "amount" is mapped to ont:quantity-abstr. Cabot's parse
+of "ten tons of nitrogen" looks like this (striped expression. keywords
+for the relations
+
+(Nitrogen
+  :quantity
+    (Quantity
+      :amount (Number :value 10)
+      :unit (Weight-unit ton)
+      :scale weight-scale))
+
+I think ont:quantity is the equivalent of k:measurement because they
+share the equivalent variables/properties.
+   t:unit <-> k:units
+   t:amount <-> k:quantity
+
+The equivalent of k:amount-of-stuff would appear to be the t:quantity
+relation between the block and the Quantity. That's a difference in
+packaging, but it reinforces my impression that their quantities are
+my measurements.
+
+** units / scales
+
+TRIPS makes a point of distinguishing different sorts of quantities
+according to the what is being measured (their scale property). I
+think this is correct and a natural additional property/variable to
+include in the Krisp definition of unit of measure. In English these
+only emerge in the language in a few cases ("ten years old"), but we
+all understand from the name of the unit that we are measuring,
+e.g. height, length, weight, etc.
+
+So their basic notion of a 'unit of measurement' is essentially the
+same as it is in Sparser. However, a unit-of-measure in Sparser has
+only its identifying label (name variable), e.g. "inch", "ton",
+etc. and in TRIPS it has an associated scale.
+
+The ECI store can take up the full set of TRIPS scales, though I'd
+drop the "-scale" from their names, e.g. area, 'linear' for time stuff,
+luminosity, money, size, sound, temperature, volume, weight. (They
+have a scale called "number-scale' that doesn't make intuitive 
+sense to me.)
+
+However, there's also a comparable portion of their ontology under
+ont:unit, where the first split is measure-unit vs. number-unit, and
+under measure-unit we have food-measure-unit and a set small
+hierarchies, e.g. tangible-unit (area, length, volume, weight),
+sound-unit (note-length-unit, pitch-unit), formal-unit (acoustic,
+angle, energy, memory, money, percent, rate, ...), and the obvious
+time-unit set.
+
+I'd get a sanity-check from James, but I think the ECIs should unify
+the TRIPS scales and units into a single system
+
+
+** A sample of TRIPS words
+
+Word lookup shows "measurement" is ont:measure-scale, whose
+inheritance looks like this measure-scale > attribute-scale >
+ordered-continuous > ordered-domain > domain > abstract-object
+
+The word "inch" in TRIPS is an ont:length-unit (tangible-unit >
+measure-unit > unit > abstract-object). 
