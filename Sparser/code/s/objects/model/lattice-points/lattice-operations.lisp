@@ -360,7 +360,10 @@
               ((gethash super-dli (indiv-not-super sub-dli))
                nil)
               ((gethash super-dli (indiv-all-supers sub-dli)))
-              ((itypep sub-dli (itype-of super-dli))
+              ((and (itypep sub-dli (itype-of super-dli))
+                    ;; next blocks cases where the only difference is a determiner
+                    ;;  e.g. "The RAS" and "RAS"
+                    (not (gethash sub-dli (indiv-all-supers super-dli))))
                (cond ((loop for r in (and (individual-p super-dli)
                                           (indiv-restrictions super-dli))
                             always (or (category-p r)
