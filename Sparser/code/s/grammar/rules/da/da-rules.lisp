@@ -151,9 +151,14 @@
 (defun distribute-pp-to-conjoined-clauses (pp clause prep-word pobj-referent clause-referent rule-name)
   (let* ((clauses (value-of 'items clause-referent))
          (clause-edges
-          (if (is-basic-collection? (edge-referent clause))
-              (edges-under clause)
-              (edges-under (edge-right-daughter clause))))
+          (loop for e in
+                  (if (is-basic-collection? (edge-referent clause))
+                      (edges-under clause)
+                      (edges-under (edge-right-daughter clause)))
+                  ;; get rid of edges for "and", etc.
+                when (and (edge-p e)
+                          (member (edge-referent e) clauses))
+                  collect e))
 	 (vars (loop for c in clauses
 		  collect
 		    (or (subcategorized-variable c prep-word pobj-referent)
@@ -175,17 +180,19 @@
                           (edge-mention c-clause))))
 		  (if c-mention
                       (when *show-finding-corresponding-clauses*
-                        (format t "found corresponding clause ~s for ~s distribute-pp-to-conjoined-clauses~%"
+                        (format t "~%found corresponding clause ~s for ~s distribute-pp-to-conjoined-clauses~%"
                                 c-clause c))
                       (when *warn-on-cant-find-corresponding-clauses*
-                        (warn "can't find corresponding clause ~s for ~s distribute-pp-to-conjoined-clauses~%"
+                        (warn "~%can't find corresponding clause ~s for ~s distribute-pp-to-conjoined-clauses~%"
                               c-clause c)))
+                  ;;(lsp-break "dpt")
+                  ;; here we smash the mention in the old clause edge so that it has the new interpretation
                   (update-mention-referent c-mention new-c t)
 		  new-c))
 	   :number (length clauses)
 	   :type (itype-of (car clauses))))
-	 edge) ;;(lsp-break "1st")
-    (declare (special clause-edges))
+	 edge)
+    (declare (special clauses clause-edges))
     (setq edge (make-edge-spec
                 :category (edge-category clause)
 		:form (edge-form clause)
