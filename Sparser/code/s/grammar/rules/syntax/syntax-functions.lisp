@@ -455,7 +455,7 @@ will retrieve the edge the lambda variable refers to"
           ((verb+present verb vg+ed) nil) ;;these are cases in a prenominal, so don't use these rules
           ))))
         
-
+#+ignore
 (defun adj-noun-compound (adjective head &optional adj-edge)
   (when (category-p head) (setq head (individual-for-ref head)))
   (cond
@@ -475,6 +475,34 @@ will retrieve the edge the lambda variable refers to"
                   :subject head adjective
                   (list 'adj-noun-compound (or adj-edge (left-edge-for-referent))))
 		 (individual-for-ref adjective))))
+       (setq head (bind-dli-variable 'predication predicate head))
+       head))))
+
+(defparameter *create-sdm-span-segment-semantics* t)
+(defun adj-noun-compound (adjective head &optional adj-edge)
+  (when (category-p head) (setq head (individual-for-ref head)))
+  (cond
+    (*subcat-test*
+     (or (takes-adj? head adjective))
+     *create-sdm-span-segment-semantics*)
+    ((when (use-methods) ;; "the Ras protein", where 'protein' is a type-marker
+       (compose adjective head)))
+    ((itypep adjective 'attribute-value) ;; "red block"
+     (handle-attribute-of-head adjective head))
+    ((interpret-premod-to-np adjective head)) ;; normal subcategorization
+    (t ;; Dec#2 has "low nM" which requires coercing 'low'
+     ;; into a number. Right now just falls through
+     (let ((predicate 
+            (cond
+              ((and (not (is-basic-collection? adjective))
+                    (find-variable-for-category :subject (itype-of adjective)))
+               (create-predication-by-binding
+                :subject head adjective
+                (list 'adj-noun-compound
+                      (or adj-edge (left-edge-for-referent)))))              
+              (*create-sdm-span-segment-semantics*
+               (individual-for-ref adjective))
+              (t (individual-for-ref adjective)))))
        (setq head (bind-dli-variable 'predication predicate head))
        head))))
 
@@ -559,7 +587,9 @@ will retrieve the edge the lambda variable refers to"
         ;;(push-debug `(,det-word ,determiner)) (lsp-break "det+noun")
         
 	(setf (non-dli-mod-for head) (list 'determiner determiner))
-        
+
+        (when (definite-determiner? determiner)
+          (add-def-ref determiner parent-edge))        
 	(cond          
 	  ((when (use-methods) ;; ??? perhaps put in by reflex ??
              (let ((result (compose determiner head)))
@@ -569,12 +599,7 @@ will retrieve the edge the lambda variable refers to"
                 (or (individual-p head) (category-p head)))
            (setq head (bind-dli-variable 'has-determiner determiner head))
            (when (eq (edge-category head-edge) category::common-noun/plural)
-             (setq head (bind-dli-variable 'is-plural determiner head)))
-           (when (definite-determiner? determiner)
-             (add-def-ref determiner parent-edge)))
-          
-	  ((definite-determiner? determiner)
-           (add-def-ref determiner parent-edge)))
+             (setq head (bind-dli-variable 'is-plural determiner head)))))
 
 	head)))
 
