@@ -75,14 +75,30 @@
 (defmethod definite-determiner? ((i individual))
   (declare (special category::the category::this
                     category::these category::those))
-  (memq (cat-symbol (itype-of i))
-        '(category::the category::this
-          category::these category::those)))
+  (memq (cat-name (itype-of i))
+        '(the this these those)))
 
 (defmethod definite-determiner? ((e edge))
   ;; it's a polyword like "at least", which is an approximatory.
   nil)
 
+
+(defmethod definite-np? ((e edge))
+  (or ;;(definite-np? (edge-mention e))
+   ;; not being reset? ERROR -- FIX THIS
+   (and (individual-p (edge-referent e))
+        (value-of 'has-determiner (edge-referent e))
+        (definite-determiner? (value-of 'has-determiner (edge-referent e))))))
+
+(defmethod definite-np? ((m discourse-mention))
+  #+ignore
+  (loop for ndli in (mention-non-dli-modifiers m)
+        thereis (and (eq (car ndli) 'determiner)
+                     (definite-determiner? (second ndli))))
+  (definite-np? (mention-source m)))
+
+                     
+#+ignore
 (defmethod definite-determiner? ((c category))
   (declare (special category::determiner))
   (category-inherits-type? c category::determiner))
