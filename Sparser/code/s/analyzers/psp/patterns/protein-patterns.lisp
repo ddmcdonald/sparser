@@ -111,13 +111,14 @@
   (let* ((edges (loop for tt in (treetops-between start-pos end-pos)
                       when (edge-p tt) collect tt))
          proteins
-         (category
-          (if (cddr proteins)
-              category::collection
-              category::collection
-              ;;category::hyphenated-pair Work in progress
-              ;;  want "phosphorylated Trk-ROS" to specify a complex
-              )))
+         (category category::slashed-protein-collection
+           #+ignore
+           (if (cddr proteins)
+               category::collection
+               category::collection
+               ;;category::hyphenated-pair Work in progress
+               ;;  want "phosphorylated Trk-ROS" to specify a complex
+               )))
     (cond
      ((loop for edge in edges
         always

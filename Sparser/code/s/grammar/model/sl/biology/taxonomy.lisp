@@ -1124,6 +1124,15 @@
      :in state
      :m site))
 
+(define-category slashed-protein-collection :specializes protein
+                 :mixins (collection)
+                 ;; for things like "MEK/ERK" which can be treated as protein collections
+                 ;; sometimes, and as part of a pathway description sometimes
+                 ;; don't want to treat this as a simple collection, since it is not
+                 ;; distributed in contextual-interpretation, e.g. "the MEK/ERK pathway" is
+                 ;; not the collection of the MEK and ERK pathways
+                 )
+
 (define-category protein-state :specializes molecule
   :binds ((protein protein)
           (post-translational-mod post-translational-modification)))
