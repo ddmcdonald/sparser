@@ -34,6 +34,8 @@
   the places they have been mentioned, encoded as 'mention'
   objects.")
 
+(defvar *mention-source-form-categories* (make-hash-table :size 10000))
+
 (defparameter *check-consistent-mentions* nil
   "when set, checks to see that all mentions start and remain consistent
    with the referent of their mention-source -- failures have indicated a lack
@@ -43,11 +45,22 @@
   (declare (special *lattice-individuals-to-mentions*))
   (gethash i *lattice-individuals-to-mentions*))
 
+
+
 (defun (setf mention-history) (mentions i)
   (declare (special *lattice-individuals-to-mentions*))
   (when *check-consistent-mentions*
     (loop for m in mentions do (check-consistent-mention m)))
   (setf (gethash i *lattice-individuals-to-mentions*) mentions))
+
+(defun mention-source-form-category (m)
+  (declare (special *mention-source-form-categories*))
+  (gethash m *mention-source-form-categories*))
+
+(defun (setf mention-source-form-category) (form-cat m)
+  (declare (special *mention-source-form-categories*))
+  (setf (gethash m *mention-source-form-categories*) form-cat))
+
 
 (defun m# (uid)
   (declare (special *lattice-individuals-to-mentions*))
@@ -305,6 +318,8 @@
   (and ;;(not (is-basic-collection? (edge-referent edge)))
        (or (member (cat-name (edge-form edge))
                    '(subject-relative-clause thatcomp))
+           ;; no longer correct for new han dling of there-exists...
+           #+ignore
            (and (eq 'there-exists (cat-name (edge-category edge)))
                 (not (eq 'question (cat-name (edge-form edge))))))))
 
@@ -618,6 +633,7 @@
 (defun find-binding-dependencies-for-items (items edges top-edge)
   (loop for item-sem in items collect
           (or (find-conjunction-item-mention item-sem top-edge)
+              (car (mention-history item-sem))
               item-sem)))
 
 (defun find-conjunction-item-mention (item-sem edge)
@@ -651,6 +667,9 @@ so we return the edge for the POBJ"
 (defun dependency-pair-value (dp) (second dp))
 
 (defun create-dependency-pair (b e)
+  (declare (optimize (debug 3) (speed 1))
+           (special b e))
+ ;;sp-break "cdp")
   `(,(binding-variable b) ;; dependency-pair-variable
      ;; dependency-pair-value
      ,(cond ((consp e) e)
@@ -661,7 +680,28 @@ so we return the edge for the POBJ"
                            part-two part-one
                            ;; the ones below are for hyphenated-pairs
                            left right prep)))
-             (binding-value b))
+             (if (and (null e)
+                      (individual-p (binding-value b))
+                      ;; in general we want to block looking at te history for
+                      ;;  simple named items without other predications --
+                      ;;  a good case in point is amino-acids...
+                      ;; this next test is a stand-in for a better test,
+                      ;;  (but it is enough to avoid an infinite recursion in
+                      ;; "the arginine corresponding to r28 in btk"
+                      ;; where "arginine" and "r" get confused and create a loop
+                      (not (member (pname (binding-variable b))
+                                   '(amino-acid)))
+                      (mention-history (binding-value b)))
+                 (cond ((or
+                         (itypep (binding-value b) 'be)
+                         (and (lambda-variable-p (binding-variable b))
+                             (member (pname (binding-variable b))
+                                     '(has-determiner))))
+                        (binding-value b))
+                       (t ;;(lsp-break "foo")
+                        ;;was (binding-value b) 
+                        (car (mention-history (binding-value b)))))
+                 (binding-value b)))
             ((and (member (edge-mention e) '(t nil))
                   (individual-p (edge-referent e))
                   ;; happens when e is a :digit-sequence
@@ -789,7 +829,8 @@ so we return the edge for the POBJ"
          (toc (location-in-article-of-current-sentence)))
     (when (edge-p source)
       (setf (mention-source m) source)
-      (setf (edge-mention source) m))
+      (setf (edge-mention source) m)
+      (setf (mention-source-form-category m) (edge-form source)))
     (setf (base-description m) i)
     (setf (mentioned-where m)
           (encode-mention-location
