@@ -121,7 +121,7 @@ Return the contextual interpretation of the item."))
                 (t
                  (reinterp-mention-using-bindings mention)))))
         (when *expand-interpretations-in-context*
-          (expand-interpretation-in-context-if-needed mention))
+          (expand-definite-references-in-context-if-needed mention))
         (setf (contextual-description mention) re-interpretation)
         re-interpretation)))
 
@@ -208,7 +208,7 @@ where it regulates gene expression.")
             ;; ignore the bindings that are part of what makes a collection a collection
             ;;  only consider the 'actual' modifiers of the collection as a whole
             unless (member (var-name (car b)) ;; bindings are lists whose car is the variable
-                           '(raw-text type number items))
+                           '(raw-text type number items family-members))
               collect b)))))
 
 (defun reinterp-mention-using-bindings (mention)
@@ -221,6 +221,26 @@ where it regulates gene expression.")
           ;; this allows for creation of new collections by distribution of internal collections
           (t (reinterp-list-using-bindings (list (dli-ref-cat interp))
                                            (dependencies mention))))))
+
+(defparameter *collective-variables*
+  '((bio-insert between)
+    (interact interactor)
+    (bio-associate objects)
+    (cycle path)
+    (link linked-processes)
+    (inter-regulate theme)
+    (bio-complex component)
+    (binding binding-set)
+    (feedback-loop participant)
+    (difference compared)
+    (region-of-molecule bounds)))
+
+(defun collective-variable? (interp var)
+  "Is var a variable on the category of interp that expects a collection as a value, which should not be distributed"
+  (loop for cv in *collective-variables*
+        thereis
+          (and (itypep interp (car cv))
+               (eq (pname var) (second cv)))))
 
 (defun reinterp-list-using-bindings (interps bindings)
   (loop for (var val) in (reverse bindings)
@@ -237,7 +257,8 @@ where it regulates gene expression.")
                         nconc
                           (cond ((eq (var-name var) 'family-members)
                                  (list (bind-dli-variable var ival i)))
-                                ((is-basic-collection? ival)
+                                ((and (is-basic-collection? ival)
+                                      (not (collective-variable? (car interps) var)))
                                  ;; This is the code that does a "distribution" of conjunctions
                                  (if (eq (var-name var) 'predication)
                                      ;; here the conjunction is taken as joint assertion
@@ -271,6 +292,7 @@ where it regulates gene expression.")
                     hyphenated-triple
                     slashed-sequence
                     two-part-label
+                    slashed-protein-collection
                     )))))
 
 (defgeneric contextual-interpretation (item)
@@ -316,45 +338,65 @@ where it regulates gene expression.")
 				  (dependencies mention))))
 
 ;;; contextual interpretaion of underspecified descriptions
-(defun expand-interpretation-in-context-if-needed (mention) ;;(dt var containing-mentions)
-  (declare (special dt var containing-mentions))
-  (let* (;;(mention (dt-mention dt))
-	 (edge (mention-source mention))
-	 (interp (contextual-interpretation mention))
-	 spec-interps)
-    (declare (special edge mention interp spec-mentions))
-    (when (or
-	   (cat-mention? mention 'preposition)
-	   (not (individual-p interp))
-	   ;;(not (is-maximal? mention))
-	   )
-      (return-from expand-interpretation-in-context-if-needed interp))
-    (setq spec-interps  (spec-interps mention))
-    (cond
-      ((cdr spec-interps)
-       (when (and *show-contextual-replacements* nil)
-	 (format t 
+(defun expand-definite-references-in-context-if-needed (mention) ;;(dt var containing-mentions)
+  (declare (special mention))
+  (unless (or
+           (cat-mention? mention 'preposition)
+           (not (individual-p (contextual-interpretation mention))))
+    (let* ((edge (mention-source mention))
+           ;;(definite? (definite-np? mention))
+           (interp (contextual-interpretation mention))
+           (spec-interps (spec-interps mention)))
+      (declare (special edge mention interp spec-interps))
 
-"~%--- Suppressing contextual interpretation due to ambiguous interpretations of ~s in:~%~s~%"
-		 (or (note-surface-string edge)
-		     (sur-string interp))
-		 (sentence-string *sentence-in-core*)))
-       ;;(lsp-break "ambiguous")
-       interp)
-      (spec-interps
-       (when *break-on-null-surface-strings*
-	 (when (null (note-surface-string edge)) (lsp-break "Null edge string")))
-       (when *show-contextual-replacements*
-	 (format t "~%(   ~s     ===>  ~s)~% in sentence:~%  ~s~%"
-		 (nl->space (or (note-surface-string edge) (sur-string interp)))
-		 (semtree (car spec-interps))
-                 #+ignore
-                 (nl->space (or (value-of 'raw-text (car spec-interps))
-                                (sur-string (car spec-interps))))
-		 (nl->space (sentence-string *sentence-in-core*))))
-       (setf (contextual-description mention)
-	     (car spec-interps)))
-      (t interp))))
+      (cond
+        ;;((not definite?) nil) ;; don't substitute for non-definite NPs
+        ((indefinite-np? mention)
+         nil)
+        ((not (or
+               (itypep interp 'endurant)
+               (itypep interp 'process))) ;;"phosphorylation"
+         nil)
+        ((itypep interp 'point-mutated-protein)
+         nil)
+        ((not (and (member (cat-name (edge-form edge)) *np-category-names*)
+                   (let ((spec-mention (car (mention-history (car spec-interps)))))
+                     (or (not (typep spec-mention 'discourse-mention))
+                         (not (category-p (mention-source-form-category spec-mention)))
+                         (member (cat-name (mention-source-form-category spec-mention))
+                                 *np-category-names*)))))
+         nil)
+        ((loop for b in (indiv-old-binds interp)
+               always (member (pname (binding-variable b))
+                              '(RAW-TEXT NAME UID IS-PLURAL FAMILY-MEMBERS COUNT)))
+         nil)
+        ((cdr spec-interps)
+         (when (and *show-contextual-replacements* nil)
+           (format t 
+
+                   "~%--- Suppressing contextual interpretation due to ambiguous interpretations of ~s in:~%~s~%"
+                   (or (note-surface-string edge)
+                       (sur-string interp))
+                   (sentence-string *sentence-in-core*)))
+         ;;(lsp-break "ambiguous")
+         interp)
+        (spec-interps
+         (when *break-on-null-surface-strings*
+           (when (null (note-surface-string edge)) (lsp-break "Null edge string")))
+         (when *show-contextual-replacements*
+           (format t "~%(   ~s (~s)     ===>  ~s)~% in sentence:~%  ~s~%"
+                   (nl->space (or (note-surface-string edge) (sur-string interp)))
+                   (edge-form edge)
+                   ;; because the 
+                   (or (retrieve-surface-string (car spec-interps))
+                       (semtree (car spec-interps)))
+                   #+ignore
+                   (nl->space (or (value-of 'raw-text (car spec-interps))
+                                  (sur-string (car spec-interps))))
+                   (nl->space (sentence-string *sentence-in-core*))))
+         (setf (contextual-description mention)
+               (car spec-interps)))
+        (t interp)))))
 
 
 ;;__________________ Create the dependency-tree from which re-interpretation is done
@@ -387,28 +429,11 @@ is replaced with replacement."
 (defun nl->space (str)
   (when str (replace-all str *nl-str* " ")))
 
-
-(defun spec-mentions (mention &aux (c (contextual-interpretation mention)))
-  (declare (special c mention))
-  (let ((specializations
-	 (remove-if #'predication?
-		    (all-mentioned-specializations c mention)))
-	spec-mentions)
-    (declare (special specializations spec-mentions))
-    (loop for s in specializations
-       unless (np-containing-mention? s mention)
-       do (loop for m in (mention-history s)
-	     ;;when (is-maximal? m)  we now only have maximal mentions in the list
-	     do (push m  spec-mentions)))
-    spec-mentions))
-
 (defun spec-interps (mention &aux (c (contextual-interpretation mention)))
   (declare (special c mention))
   (let ((specializations
 	 (remove-if #'predication?
-		    (all-mentioned-specializations c mention)))
-	spec-mentions)
-    (declare (special specializations spec-mentions))
+		    (all-mentioned-specializations c mention))))
     (loop for s in specializations
           unless (np-containing-mention? s mention)
           collect s)))
