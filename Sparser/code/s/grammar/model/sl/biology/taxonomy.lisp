@@ -215,6 +215,7 @@
   :binds ((measured-item biological))
   :realization
   (:of measured-item
+       :in measured-item ;; "a peak in the measured amount ..."
        :m measured-item))
 
 
@@ -960,12 +961,15 @@
     (:noun "state"
      :of stateful-item)) ;; subject in on bio-predication
 
-
-(define-category molecule-state :specializes bio-state)
+;; molecule-states are the predications, whereas bio-states are the
+;;  molecules in some states
+(define-category molecule-state :specializes bio-predication)
 
 (define-category bio-conformation :specializes molecule-state
+  :binds ((subject biological))
   :realization 
-    (:noun "conformation"))
+  (:noun "conformation"
+         :of subject))
 
 
 
