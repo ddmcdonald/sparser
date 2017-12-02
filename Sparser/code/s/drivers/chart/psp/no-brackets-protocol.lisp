@@ -297,8 +297,9 @@
 
     (post-analysis-operations sentence)
 
-    (interpret-treetops-in-context (all-tts (starts-at-pos sentence)
-                                            (ends-at-pos sentence)))
+    (when *interpret-in-context*
+      (interpret-treetops-in-context (all-tts (starts-at-pos sentence)
+                                            (ends-at-pos sentence))))
     (record-sentence-model-data sentence)
   
     ;; EOS throws to a higher catch. If the next sentence
