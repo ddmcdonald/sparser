@@ -107,7 +107,8 @@
 
 
 (defun make-protein-collection (start-pos end-pos)
-  (declare (special category::protein category::collection category::n-bar))
+  (declare (special category::protein category::collection category::n-bar
+                     category::slashed-protein-collection))
   (let* ((edges (loop for tt in (treetops-between start-pos end-pos)
                       when (edge-p tt) collect tt))
          proteins
