@@ -20541,7 +20541,7 @@
 (define-protein "UP:Q99594" ("ETFR-1" "q99594" "TEA domain family member 3" "TEA domain transcription factor 3" "TEAD3" "TEAD3_HUMAN" "TEAD5" "TEF-5" "TEF5" "Transcriptional enhancer factor TEF-5")) 
 (define-protein "UP:Q99595" ("MIMT17" "Mitochondrial import inner membrane translocase subunit Tim17-A" "q99595" "TI17A_HUMAN" "TIM17" "TIM17A" "TIMM17A" "translocase of inner mitochondrial membrane 17 homolog A (yeast)")) 
 (define-protein "UP:Q99598" ("q99598" "TRAX" "TSNAX" "TSNAX_HUMAN" "Translin-associated protein X" "tsnax" "translin associated factor X")) 
-(define-protein "UP:Q99607" ("E74 like ETS transcription factor 4" "ELF4" "MEF" "elF4" "mEF")) 
+(define-protein "UP:Q99607" ("E74 like ETS transcription factor 4" "ELF4" "elF4" ) 
 (define-protein "UP:Q99608" ("NDN" "necdin" "necdin, MAGE family member")) 
 (define-protein "UP:Q99612" ("COPEB" "CPBP" "KLF-6" "KLF6" "kruppel like factor 6" "q99612" "krueppel-like factor-6" "transcription factor Zf9" "zf9")) 
 (define-protein "UP:Q99613" ("110kDa" "EIF3C" "EIF3C_HUMAN" "EIF3S8" "q99613" "eIF3-p110" "eIF3c" "eukaryotic translation initiation factor 3 subunit 8" "eukaryotic translation initiation factor 3 subunit C" "subunit C")) 
