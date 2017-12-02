@@ -64,19 +64,23 @@
   (or (definite-determiner? word)
       (indefinite-determiner? word)))
 
-(defun indefinite-determiner? (word)
+(defmethod indefinite-determiner? ((word word))
   (unless *indefinite-determiners* (populate-in/definite-articles))
   (memq word *indefinite-determiners*))
+
+(defmethod indefinite-determiner? ((i individual))
+  (memq (cat-name (itype-of i)) '(a an most some any)))
+
+(defmethod indefinite-determiner? ((e edge))
+  ;; it's a polyword like "at least", which is an approximatory.
+  nil)
 
 (defmethod definite-determiner? ((word word))
   (unless *indefinite-determiners* (populate-in/definite-articles))
   (memq word *definite-determiners*))
 
 (defmethod definite-determiner? ((i individual))
-  (declare (special category::the category::this
-                    category::these category::those))
-  (memq (cat-name (itype-of i))
-        '(the this these those)))
+  (memq (cat-name (itype-of i)) '(the this that these those)))
 
 (defmethod definite-determiner? ((e edge))
   ;; it's a polyword like "at least", which is an approximatory.
@@ -91,18 +95,26 @@
         (definite-determiner? (value-of 'has-determiner (edge-referent e))))))
 
 (defmethod definite-np? ((m discourse-mention))
-  #+ignore
-  (loop for ndli in (mention-non-dli-modifiers m)
-        thereis (and (eq (car ndli) 'determiner)
-                     (definite-determiner? (second ndli))))
-  (definite-np? (mention-source m)))
+  (or
+   (loop for ndli in (mention-non-dli-modifiers m)
+         thereis (and (eq (car ndli) 'determiner)
+                      (definite-determiner? (second ndli))))
+   (definite-np? (mention-source m))))
+
+(defmethod indefinite-np? ((e edge))
+  (or (and (individual-p (edge-referent e))
+           (value-of 'has-determiner (edge-referent e))
+           (indefinite-determiner? (value-of 'has-determiner (edge-referent e))))))
+
+(defmethod indefinite-np? ((m discourse-mention))
+  (or
+   (loop for ndli in (mention-non-dli-modifiers m)
+         thereis (and (eq (car ndli) 'determiner)
+                      (indefinite-determiner? (second ndli))))
+   (indefinite-np? (mention-source m))))
+
 
                      
-#+ignore
-(defmethod definite-determiner? ((c category))
-  (declare (special category::determiner))
-  (category-inherits-type? c category::determiner))
-
 
 ;;;------------
 ;;; form rules
