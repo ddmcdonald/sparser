@@ -378,16 +378,17 @@
 
 (defun at-least-as-constrained-on (super-var super-val sub-dli)
   (loop for sub-r in (indiv-restrictions sub-dli)
-        thereis (let ((sub-val (dlvv-value sub-r))
-                      (sub-var (dlvv-variable sub-r)))
-                  (and (not (category-p sub-r))
-                       (if (disjunctive-lambda-variable-p super-var)
-                           (member sub-var (dvar-variables super-var))
-                           (eq sub-var super-var))
-                       (if (or (category-p super-val)(individual-p super-val))
-                           (and (or (category-p sub-val)(individual-p sub-val))
-                                (as-specific? sub-val super-val))
-                           (equal sub-val super-val))))))
+        thereis (and (not (category-p sub-r))
+                     (let ((sub-val (dlvv-value sub-r))
+                           (sub-var (dlvv-variable sub-r)))
+                       (and
+                        (if (disjunctive-lambda-variable-p super-var)
+                            (member sub-var (dvar-variables super-var))
+                            (eq sub-var super-var))
+                        (if (or (category-p super-val)(individual-p super-val))
+                            (and (or (category-p sub-val)(individual-p sub-val))
+                                 (as-specific? sub-val super-val))
+                            (equal sub-val super-val)))))))
 
 ;; was -- incorrectly -- (subsetp  (indiv-restrictions super-dli) (indiv-restrictions sub-dli)))
 
