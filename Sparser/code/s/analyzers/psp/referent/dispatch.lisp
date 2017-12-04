@@ -26,7 +26,8 @@
 
 (defun dispatch-on-rule-field-keys (rule-field left-referent 
                                     right-referent right-edge)
-  (declare (special  *head-edge* *arg-edge* *rule-being-interpreted*))
+  (declare (special *referent* *head-edge* *arg-edge*
+                    *rule-being-interpreted*))
 
   (let ((key (first rule-field)))
     (ecase key

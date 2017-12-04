@@ -395,7 +395,9 @@
               category ~a" var/name category))
     (let ((*legal-to-add-bindings-to-categories* t))
       (declare (special *legal-to-add-bindings-to-categories*))
-      (bind-variable/expr variable value category))))
+      (multiple-value-bind (binding individual)
+          (bind-variable/expr variable value category)
+        individual))))
 
 
 ;;;----------

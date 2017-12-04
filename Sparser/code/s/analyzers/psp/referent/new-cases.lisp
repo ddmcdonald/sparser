@@ -296,7 +296,9 @@
                     left-referent right-referent right-edge
                     &optional value-datum )
   (declare (ignore right-edge)
-           (special *left-edge-into-reference* *right-edge-into-reference*))
+           (special *left-edge-into-reference*
+                    *right-edge-into-reference*
+                    *referent*))
 
   (let ((variable (if value-datum  ;;///nasty patch over inconsistency
                     binding-exp    ;; in packaging by rdata vs. others
