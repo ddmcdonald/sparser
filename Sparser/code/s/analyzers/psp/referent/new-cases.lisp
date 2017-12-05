@@ -265,7 +265,7 @@
 ;;;-----------------------------------------------------------
 
 (defun ref/subtype (ref-exp left-referent right-referent)
-  (declare (special *referent* *use-subtypes*))
+  (declare (special *referent* *use-subtypes* category::collection))
   (when (symbolp ref-exp)
     (setq ref-exp (case ref-exp
                     (left-referent left-referent)

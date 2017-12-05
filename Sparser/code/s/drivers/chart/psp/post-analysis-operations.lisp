@@ -337,9 +337,12 @@ where it regulates gene expression.")
     (reinterp-list-using-bindings (list pathway)
 				  (dependencies mention))))
 
-;;; contextual interpretaion of underspecified descriptions
-(defun expand-definite-references-in-context-if-needed (mention) ;;(dt var containing-mentions)
-  (declare (special mention))
+
+
+(defun expand-definite-references-in-context-if-needed (mention) 
+  "Contextual interpretation of underspecified descriptions"
+  ;;(dt var containing-mentions)
+  (declare (special *np-category-names*))
   (unless (or
            (cat-mention? mention 'preposition)
            (not (individual-p (contextual-interpretation mention))))
@@ -373,7 +376,6 @@ where it regulates gene expression.")
         ((cdr spec-interps)
          (when (and *show-contextual-replacements* nil)
            (format t 
-
                    "~%--- Suppressing contextual interpretation due to ambiguous interpretations of ~s in:~%~s~%"
                    (or (note-surface-string edge)
                        (sur-string interp))
