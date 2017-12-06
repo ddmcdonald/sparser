@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2014,2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "weekdays"
 ;;;   Module:  "model;core:time:"
-;;;  version:  1.5 May 2014
+;;;  version:  December 2017
 
 ;; 1.0 (9/18/93 v2.3) completely revamped for new semantics
 ;; 1.1 (1/10/94) redid ordinals.  Broke out the cases 10/20
@@ -17,7 +17,8 @@
 ;; 1.5 (6/13/13) Found the problem. Original code needed to write the rule
 ;;      "by hand" in the def form. Now that's done by the act of defining the
 ;;      individual, and that version of doing it pays attention to rule-label.
-;;     (5/29/14) Made them sequential and cyclic
+;;     (5/29/14) Made them sequential and cyclic.
+;;     (12/6/17) took away the rewrite (rule-label) to time.
 
 (in-package :sparser)
 
@@ -28,7 +29,6 @@
 (define-category  weekday
   :specializes time
   :instantiates time
-  :rule-label time
   :mixins (sequential cyclic)
   :binds ((name :primitive word)
           (abbreviation :primitive word)
