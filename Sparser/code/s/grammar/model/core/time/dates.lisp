@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2012-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012-2014,2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "dates"
 ;;;   Module:  "model;core:time:"
-;;;  version:  2.1 May 2014
+;;;  version:  December 2017
 
 ;; 1.0 (12/15/92 v2.3) setting up for new semantics
 ;; 1.1 (9/18/93) actually doing it
@@ -47,8 +47,46 @@
                           (term3 . year)
                           (n4 . weekday)
                           (term4 . weekday)))
-|#                
+|#
+
+;;;----------------
+;;; assembly rules
+;;;----------------
+
+(defun assemble-date (left right)
+  "Easiest to organize as a set of methods. This is the driver.
+   Since this is driven by a semantic grammar we trust that
+   if we get here we can apply the methods."
+  (or *subcat-test*
+      (let ((result (make-date left right)))
+        (unless result (error "Need make-date method for a ~a and a ~a"
+                              (itype-of left) (itypep-of right)))
+        result)))
+
+(def-cfr date (day-of-the-month year) ;; "June 26 2010"
+  :form np
+  :referent (:function assemble-date left-edge right-edge))
+
+(def-k-method make-date ((dom category::day-of-the-month) (y category::year))
+  (with-bindings (month number) dom
+    (let ((i (find-or-make-individual 'date
+              :month month :day number :year y)))
+      i)))
+
+(def-cfr date (weekday date) ;; "Tuesday June 26 2010"
+  :form np
+  :referent (:function assemble-date left-edge right-edge))
+
+(def-k-method make-date ((w category::weekday) (d category::date))
+  (bind-variable 'weekday w d))
 
 
+(def-cfr date (weekday day-of-the-month) ;; "Tuesday June 26"
+  :form np
+  :referent (:function assemble-date left-edge right-edge))
 
 
+#|
+multiply-edges -> valid-rule? -> test-semantic-applicability
+ -> test-subcat-rule -> ref/function
+|#

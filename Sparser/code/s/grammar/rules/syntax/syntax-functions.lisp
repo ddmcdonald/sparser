@@ -687,7 +687,8 @@ will retrieve the edge the lambda variable refers to"
   ;; See notes on forming plurals in tree-families/morphology.lisp
   (cond
     (*subcat-test* (and number head ;; J34: "Histone 2B"
-                        (not (itypep head 'single-capitalized-letter))))
+                        (not (itypep head 'single-capitalized-letter))
+                        (not (itypep head 'year)))) ;; "December 4 2017"
     (t
      (setq head (individual-for-ref head))
      (when (itypep head 'endurant) ;; ~600 kinase
