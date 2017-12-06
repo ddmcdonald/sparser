@@ -552,6 +552,7 @@ code is make-edge-over-abbreviation and its feeders. |#
 
 (defun only-nontrivial-edges (list-of-edges)
   ;; version threaded from Single-best-edge-over-word
+  (declare (special category::capitalized-word))
   (let ( vetted-edges  label )
     (dolist (edge list-of-edges)
       (setq label (edge-category edge))
