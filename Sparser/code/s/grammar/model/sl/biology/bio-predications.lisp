@@ -146,10 +146,12 @@
 (adj "real-time" :super bio-predication)
 (def-synonym real-time (:adj "real time"))
 (adj "recombinant" :super bio-predication)
-(adj "responsible" :super bio-relation ;; adj/noun "resposibility"
-  :binds ((theme bio-entity))
+(adj "responsible" :super bio-predication ;; adj/noun "responsibility"
+     :binds ((theme bio-entity)
+             (responsible-for biological)) 
   :realization 
-  (:adj "responsible"))
+  (:adj "responsible"
+        :for responsible-for))
 
 (noun "restricted substrate" :super bio-predication)
 (adj "rich" :super bio-predication) ;; proline rich region
@@ -166,7 +168,8 @@
      :realization
      (:adj "sufficient"
            :s theme
-           :to-comp sufficient-for))
+           :to-comp sufficient-for
+           :for sufficient-for))
 
 (adj "supplementary" :super bio-predication) ;; keyword: (ary ADJ)
 (adj "synthetic" :super bio-predication)
