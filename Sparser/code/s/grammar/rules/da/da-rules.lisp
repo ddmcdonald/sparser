@@ -607,10 +607,6 @@
   (attach-appositive-np-under-s s comma np (pos-edge-ends-at np)))
 
 
-(define-debris-analysis-rule attach-comma-appositive-np-comma-under-s
-  :pattern ( s "," np ",")
-  ;; The action can fail. Returning nil ought to suffice
-  :action (:function attach-comma-appositive-np-comma-under-s first second third fourth))
 
 (defun attach-comma-appositive-np-comma-under-s (s comma-1 np comma-2)
   (attach-appositive-np-under-s s comma-1 np (pos-edge-ends-at comma-2)))
@@ -619,11 +615,12 @@
   (push-debug `(,s-edge ,comma-edge ,np-edge))
   ;; (setq s-edge (car *) comma-edge (cadr *) np-edge (caddr *))
   ;; Look up the right fridge of the s for a proper-noun
-  (unless
-      ;;DEC-TEST-2 "Sorafenib is a drug that inhibits V600EBRAF at 40 nM, CRAF at 13 nM,
-      ;; don't treat CRAF as an appositive
-      (loop for e in (ev-edges (pos-starts-here end-pos))
-         thereis (member (cat-name (edge-form e)) '(spatial-preposition preposition pp)))
+    (when
+        (and (word-p (pos-terminal end-pos))
+             (member (pname (pos-terminal end-pos))
+                     '("," "." ";" "?")
+                     :test #'equal))
+    
     (let ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?)))
       (when target
         (make-edge-spec 
@@ -1150,10 +1147,6 @@
        :referent (bind-dli-variable 'predication pred (edge-referent target))
        :target target
        :direction :right))))
-#|
-   (let ((target (find-target-satisfying (right-fringe-of s-edge) #'clause-t
-   (conjoin-clause-and-vp s-edge nil vp+ed)))
-|#
 
 (define-debris-analysis-rule s-comma-vp+ed
   :pattern (s "," vp+ed )
