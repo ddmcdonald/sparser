@@ -705,6 +705,8 @@ in cwc-integ/spire/interface/sparser.lisp
 (defmethod collect-model-description ((str string))
   str)
 
+(defmethod collect-model-description ((sym symbol))
+  sym)
 
 (defmethod collect-model-description ((w word))
   (declare (special *for-spire* *sentence-results-stream*))
