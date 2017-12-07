@@ -129,6 +129,7 @@
 (adj "molecular" :super bio-predication) ;; It's related to molecule, but how exactly? Seems wrong to jump to "is made of molecules"
 (adj "mutagenic" :super bio-predication)
 (adj "mutual" :super bio-predication) ;; keyword: (al ADJ) 
+(adj "naked" :super bio-predication)
 (adj "native" :super bio-predication)
 (adj "oncogenic" :super bio-predication)
 (adj "parallel" :super bio-predication)
