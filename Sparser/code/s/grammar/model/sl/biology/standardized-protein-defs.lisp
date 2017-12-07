@@ -7847,7 +7847,7 @@
 (define-protein "UP:P33224" ("aidB")) 
 (define-protein "UP:P33226" ("TORC")) 
 (define-protein "UP:P33228" ("RecT")) 
-(define-protein "UP:P33238" ("mx protein")) 
+;(define-protein "UP:P33238" ("mx protein")) non-human
 (define-protein "UP:P33240" ("64kD" "CF-1 64 kDa subunit" "CST2_HUMAN" "CSTF 64 kDa subunit" "CSTF2" "CSTF2_HUMAN" "Cleavage stimulation factor, 64 kDa subunit" "CstF 64" "CstF-64" "cleavage stimulation factor subunit 2" "p33240")) 
 (define-protein "UP:P33241" ("LSP-1" "LSP1" "lymphocyte specific protein 1" "lymphocyte-specific protein 1")) 
 (define-protein "UP:P33260" ("CP2CI_HUMAN" "CPCI" "CPCI_HUMAN" "CYP2C17" "CYP2C18" "Cytochrome P450 2C18" "P450IIC17" "cytochrome P450 family 2 subfamily C member 18" "p33260" "polypeptide 18" "subfamily IIC (mephenytoin 4-hydroxylase)")) 
@@ -22648,7 +22648,7 @@
 (define-protein "UP:Q9NWH9" ("SAFB like transcription modulator" "modulator of estrogen induced transcription" "sltm")) 
 (define-protein "UP:Q9NWM0" ("PAO-1" "PAO1" "PAOh1" "Q9NWM0" "SMOX" "SMOX-3" "SMOX_HUMAN" "smox" "spermine oxidase")) 
 (define-protein "UP:Q9NWM8" ("22 kDa" "FK506 binding protein 14" "FK506 binding protein 14 (22 kDa)" "FK506-binding protein 14" "FKB14_HUMAN" "FKBP14" "FKBP22" "FLJ20731" "Q9NWM8" "UNQ322/PRO381")) 
-(define-protein "UP:Q9NWQ8" ("CBP/PAG" "PAG1" "PHAG1_HUMAN" "Q9NWQ8" "Transmembrane adapter protein PAG" "Transmembrane phosphoprotein Cbp" "csk" "csk binding protein" "csk-binding protein" "phosphoprotein associated with glycosphingolipid microdomains 1" "phosphoprotein associated with glycosphingolipid-enriched microdomains 1" "phosphoprotein membrane anchor with glycosphingolipid microdomains 1" "transmembrane adaptor protein PAG")) 
+(define-protein "UP:Q9NWQ8" ("Cbp/PAG" "CBP/PAG" "PAG1" "PHAG1_HUMAN" "Q9NWQ8" "Transmembrane adapter protein PAG" "Transmembrane phosphoprotein Cbp" "csk" "csk binding protein" "csk-binding protein" "phosphoprotein associated with glycosphingolipid microdomains 1" "phosphoprotein associated with glycosphingolipid-enriched microdomains 1" "phosphoprotein membrane anchor with glycosphingolipid microdomains 1" "transmembrane adaptor protein PAG")) 
 (define-protein "UP:Q9NWS0" ("PIH1 domain containing 1" "PIH1D1")) 
 (define-protein "UP:Q9NWS1" ("C12orf48" "PARI" "PCNA-interacting partner" "Q9NWS1")) 
 (define-protein "UP:Q9NWS8" ("Q9NWS8" "RMND1" "RMND1_HUMAN" "c6orf96" "required for meiotic nuclear division 1 homolog")) 

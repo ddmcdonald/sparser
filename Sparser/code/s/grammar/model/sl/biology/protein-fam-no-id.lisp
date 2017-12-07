@@ -108,7 +108,7 @@
 (def-family "CTCBF" :synonyms ("TLAA" "thyroid-lupus autoantigen") :members ("UP:P12956" "UP:P13010")) 
 (def-family "CYP1" :members ("UP:O15528" "UP:P04798"))
 (def-family "Cam-PDE 1" :members ("PDE1A_HUMAN" "PDE1B_HUMAN" "PDE1C_HUMAN")) 
-(def-family "Cbp/PAG" :members ("UP:P40763" "UP:Q9NWQ8")) 
+;(def-family "Cbp/PAG" :members ("UP:P40763" "UP:Q9NWQ8")) bad def for UP:P40763
 (def-family "Constitutive NOS" :members ("UP:P29474" "UP:P29475")) 
 (def-family "Cyclin-dependent kinase inhibitor 2A" :synonyms ("Cyclin dependent kinase inhibitor 2A") :members ("UP:G3XAG3" "UP:P42771" "UP:Q8N726")) 
 (def-family "DAO" :members ("UP:P14920" "UP:P19801")) 
@@ -893,7 +893,7 @@
 (def-family "MTP" :members ("UP:P55157" "UP:Q1HVJ0")) 
 (def-family "MTs" :members ("UP:P03076" "UP:P23696")) 
 (def-family "MUM1" :members ("UP:Q15306" "UP:Q2TAK8")) 
-(def-family "MX" :members ("UP:P20591" "UP:P33238")) 
+;(def-family "MX" :members ("UP:P20591" "UP:P33238")) non-human
 (def-family "MYCC" :members ("UP:P01106" "UP:Q9R9I9")) 
 (def-family "MeCPs" :members ("UP:B0CBC9" "UP:Q9CAK8")) 
 (def-family "MetR" :members ("UP:Q46389" "UP:Q8KA72")) 
