@@ -858,9 +858,16 @@ in cwc-integ/spire/interface/sparser.lisp
          (unless (or (memq var-name '(trailing-parenthetical category ras2-model))
                      (typep value 'mixin-category)) ;; has-determiner
            (case var-name
-             ((type number)
+             (type
               ;;(when (or *for-spire* *sentence-results-stream*)
-                (push vv-pair desc)) ;;)
+              (push vv-pair desc)) ;;)
+             (number
+              ;; for some reason, sometimes have an individual and not a number
+              (push (list (car vv-pair)
+                          (if (individual-p (second vv-pair))
+                              (value-of 'value (second vv-pair))
+                              (second vv-pair)))
+                    desc))
              (items
               (let ((member-descs (mapcar #'collect-model-description value)))
                 (push (if (or *for-spire* *sentence-results-stream*)
