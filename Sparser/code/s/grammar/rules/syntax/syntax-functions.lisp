@@ -158,7 +158,43 @@
 (defparameter *lambda-var-warnings* nil)
 (defparameter *partitive-pp-warnings* nil)
 
-(defun create-predication-by-binding (var val pred source &key (insert-edge t))
+(defparameter *edge-not-created-by-c-p-b-b* nil)
+(defun push-info-to-edge-not-created-by-c-p-b-b (reason parent-edge pred)
+  (declare (special *edge-not-created-by-c-p-b-b*))
+  (let* ((orig-call (third (sb-debug::list-backtrace :count 3 :from :current-frame)))
+         (orig-caller (car orig-call))
+         (orig-call-surface-edges (list orig-caller
+                                        (mapcar #'(lambda(x) (cond ((edge-p x)
+                                                                    (extract-string-spanned-by-edge x))
+                                                                   ((individual-p x)
+                                                                    (pname (itype-of x)))
+                                                                   ((or (stringp x) (symbolp x))
+                                                                    x)
+                                                                   ((eq (type-of x) 'SB-IMPL::UNPRINTABLE-OBJECT)
+                                                                    "*UNPRINTABLE-OBJECT*")
+                                                                   ((eq (type-of x) 'position)
+                                                                    `(position ,(pos-token-index x)))
+                                                                   (t (pname x))))
+                                                (cdr orig-call)))))
+    #+ignore(when (eq orig-caller 'UPDATE-EDGE-AS-LAMBDA-PREDICATE)
+              (lsp-break))
+    #+ignore(when (eq orig-caller 'POSTMODIFYING-ADJ)
+      (lsp-break))
+    ;(unless (eq orig-caller 'APPLY-LAMBDA-ABSTRACTION)
+    ;; we know apply-lambda-abstraction only happens when there already is an edge
+    ;(lsp-break)
+      (push `(,reason
+              :sentence ,(current-string)
+              :called-by ,orig-call-surface-edges
+              :parent-edge ,(if (edge-p parent-edge)
+                                (if (deactivated? parent-edge)
+                                    'deactivated
+                                    (extract-string-spanned-by-edge parent-edge))
+                                parent-edge)
+              :pred ,(krisp->sexpr pred))
+            *edge-not-created-by-c-p-b-b*)));)
+
+(defun create-predication-by-binding (var val pred) ;source &key (insert-edge t)) ;obsolete
   "Given a variable (var), and two referents (val, pred), assert that
    the variable is abstracted out from the pred(icate)."
   (declare (special **lambda-var**))
@@ -176,10 +212,45 @@
           (lsp-break "non individual as val")))
     (cond (new-predication
            (setf (gethash new-predication *predication-links-ht*) val)
-           (if (and insert-edge (edge-p (parent-edge-for-referent)))
-               (insert-predication-edge pred new-predication)
-               (values new-predication nil)))
-	  (t (values pred nil)))))
+           new-predication)
+           #+ignore(cond ((and insert-edge (edge-p (parent-edge-for-referent)))
+                  (push-info-to-edge-not-created-by-c-p-b-b
+                   'edge-inserted *parent-edge-getting-reference* new-predication)
+                  (insert-predication-edge pred new-predication))
+                 (t (if insert-edge
+                        (push-info-to-edge-not-created-by-c-p-b-b
+                         'parent-edge-not-edge *parent-edge-getting-reference* new-predication)
+                        (push-info-to-edge-not-created-by-c-p-b-b
+                         'insert-edge-nil *parent-edge-getting-reference* new-predication))
+                    (values new-predication nil)))
+           (t
+            (push-info-to-edge-not-created-by-c-p-b-b
+             'new-pred-not-created *parent-edge-getting-reference* pred)
+            pred #+ignore(values pred nil)))))
+
+(defun create-predication-by-binding-only (var val pred)
+  (let ((new-pred (create-predication-by-binding var val pred)))
+    (push-info-to-edge-not-created-by-c-p-b-b
+     'no-edge-created *parent-edge-getting-reference* new-pred)
+    new-pred))
+
+(defun create-predication-and-edge-by-binding (var val pred pre-pred-edge)
+  (unless (and (edge-p pre-pred-edge)
+               (matched-pred? pred pre-pred-edge))
+    (lsp-break "create-predication-and-edge-by-binding invalid pre-pred-edge provided"))
+  (let* ((new-pred (create-predication-by-binding var val pred))
+         (new-edge (make-predication-edge pre-pred-edge new-pred)))
+    (push-info-to-edge-not-created-by-c-p-b-b
+     'edge-created *parent-edge-getting-reference* new-pred)
+    (values new-pred new-edge)))
+
+(defun create-predication-and-edge-by-binding-and-insert-edge (var val pred)
+  (unless (edge-p (parent-edge-for-referent))
+    (lsp-break "create-predication-and-edge-by-binding-and-insert-edge no valid parent edge"))
+  (let ((new-pred (create-predication-by-binding var val pred)))
+    (push-info-to-edge-not-created-by-c-p-b-b
+     'edge-inserted *parent-edge-getting-reference* new-pred)
+    (insert-predication-edge pred new-pred)))
 
 (defun get-lambda-ref-edge-from-pred-edge (pred-edge)
   "When you have an edge in hand that is a lambda expression, this
@@ -189,12 +260,62 @@ will retrieve the edge the lambda variable refers to"
          (lamda-ref (gethash (edge-referent pred-edge) *predication-links-ht*)))
     (loop for edge in lower-edges
           when (eq (edge-referent edge) lamda-ref)
-            do (return edge))))
+          do (return edge))))
 
+#+ignore(defun create-predication-by-binding-in-prog (val-edge pre-pred-edge parent-edge pred-pos)
+  "Given the value edge, predicate edge, and the edge they should be
+attached to, as well as the pred-pos (whether the predicate attaches
+to the left or right), make a new edge over the predicate, and
+attach it and the val-edge together on the parent edge. Currently,
+checking whether the val-edge can take the pred-edge should happen before this is called.
+
+e1 - NP -> ref = VAL (val-edge)
+e2 - VP -> pre-pred (e.g., \"phos by SAPK\") (pred-edge)
+e4 - (parent-edge-for-referent) -- what will hold the things being put together, but need to check if this is always the case especially for da
+
+1) check if there is a variable on pre-pred which accepts VAL -> set VAR
+    (maybe above create, or have create called twice based on whether var works)
+
+2) create a new edge (e3) over e2
+create a \"pred exp\" using pre-pred and VAL and VAR
+set-edge-referent e3 to pred-exp
+
+3) attach e3 and edge-ref(e3) to e1 and val by e4
+
+new arguments:
+parent (e4)
+val-edge
+pred-edge
+val-pred-var (pred vs modifier - left or right?)
+"
+  (declare (special **lambda-var**))
+  (let* ((val (edge-referent val-edge))
+         (pre-pred (edge-referent pre-pred-edge))
+         (var ())
+         (new-predication (bind-dli-variable  var **lambda-var** pred)))
+    
+    (declare (special new-predication))
+    ;; Rusty - how could the binding fail?  AKA, why the cond here.
+    (when (and val (not (individual-p val))
+               (not (referential-category-p val))
+               ;; above happens for "when oncogenic RAS is induced in HKe3 ER:HRASV12 cells (Figure S3B) "
+               )
+      (if (eq val '*lambda-var*)
+          (when *lambda-var-warnings*
+            (warn "still trying to bind *lambda-var* in predication, in ~s~%"
+                (current-string)))
+          (lsp-break "non individual as val")))
+    (cond (new-predication
+           (setf (gethash new-predication *predication-links-ht*) val)
+           (if (and insert-edge (edge-p (parent-edge-for-referent)))
+               (insert-predication-edge pred new-predication)
+               (values new-predication nil)))
+	  (t
+           (values pred nil)))))
 
 (defun insert-predication-edge (pred new-predication)
   (declare (special new-predication))
-  (let* ((parent (parent-edge-for-referent))
+  (let* ((parent (parent-edge-for-referent)) ;; e4 in rusty notation
          (left-edge (edge-left-daughter parent))
          (right-edge (edge-right-daughter parent))
          (pred-edge
@@ -496,10 +617,8 @@ will retrieve the edge the lambda variable refers to"
             (cond
               ((and (not (is-basic-collection? adjective))
                     (find-variable-for-category :subject (itype-of adjective)))
-               (create-predication-by-binding
-                :subject head adjective
-                (list 'adj-noun-compound
-                      (or adj-edge (left-edge-for-referent)))))              
+               (create-predication-and-edge-by-binding-and-insert-edge
+                :subject head adjective))              
               (*create-sdm-span-segment-semantics*
                (individual-for-ref adjective))
               (t (individual-for-ref adjective)))))
@@ -738,11 +857,11 @@ will retrieve the edge the lambda variable refers to"
   (setq qualifier (individual-for-ref qualifier))
   (cond (var
          ;; really should check for passivizing
-         (setq qualifier (create-predication-by-binding
-                          var head qualifier
-                          (list rule-fn (when edge-for-qualifier (parent-edge-for-referent)))
-                          :insert-edge
-                          (not (null edge-for-qualifier))))
+         (setq qualifier (create-predication-and-edge-by-binding-and-insert-edge
+                          var head qualifier))
+                          ;;(list rule-fn (when edge-for-qualifier (parent-edge-for-referent)))
+                          ;;:insert-edge
+                          ;;(not (null edge-for-qualifier))))
          (if (edge-p edge-for-qualifier)
              (set-edge-referent edge-for-qualifier qualifier)
              qualifier))
@@ -1550,10 +1669,8 @@ will retrieve the edge the lambda variable refers to"
                                            '(past raw-text)))))
        ;; since this is applied to vp+ed, there is no syntactic object present
        (setq vp
-             (create-predication-by-binding (subcategorized-variable vp :object subj)
-                                            subj vp
-                                            (list 'apply-subject-relative-clause
-                                                  (parent-edge-for-referent))))       
+             (create-predication-and-edge-by-binding-and-insert-edge
+              (subcategorized-variable vp :object subj) subj vp))       
        ;; link the rc to the np
        (setq  subj (bind-dli-variable 'predication vp subj))
        (revise-parent-edge :form category::np :category (itype-of subj))
@@ -2142,9 +2259,8 @@ will retrieve the edge the lambda variable refers to"
       (t (let ((predicate
                 (if (and (not (is-basic-collection? comparative))
                          (find-variable-for-category :subject (itype-of comparative)))
-                  (create-predication-by-binding
-                   :subject head comparative
-                   (list 'adj-noun-compound (left-edge-for-referent)))
+                  (create-predication-and-edge-by-binding-and-insert-edge
+                   :subject head comparative)
                   (individual-for-ref comparative))))
            (setq head (bind-variable 'predication predicate head))
            head)))))

@@ -686,29 +686,32 @@ uid binding, if there is one"
    its (presumed to be single) unary rule) then we call the other
    'out' for Big Mechanism unknown words which to store the word 
    and have it handled  later. Runs for side-effects."
-  (declare (special *exact-pname-of-token* category::protein)) ;; set in the tokenizer
+  (declare (special *exact-pname-of-token* ;; set in the tokenizer
+                    category::protein category::phosphorylate)) 
   (let* ((pname *exact-pname-of-token*) ;; "pRas"
          (post-p (subseq pname 1))      ;; "Ras"
-         (known-word (resolve post-p)))
-    (if known-word
-      (let* ((rule (find-single-unary-cfr known-word))
-             (i (when rule (cfr-referent rule))))
-        (if (and (individual-p i) (not (value-of 'predication i))) ;; strange case "ppERK"
-          (if (itypep i category::protein)
-            (let* ((phospho-i (make-phosphorylated-protein i pname))
-                   (p-word (define-word/expr pname :override-duplicates))
-                   ;;/// delete the lowercase version ('word')
-                   (rule (define-cfr/resolved
-                           (cfr-category rule) ;; lhs
-                           (list p-word) ;; rhs
-                           (cfr-form rule)
-                           phospho-i ;; referent
-                           (cfr-schema rule))))
-              ;; trace goes here
-              rule)
-            (store-word-and-handle-it-later word))
-          (store-word-and-handle-it-later word)))
-      (store-word-and-handle-it-later word))))
+         (known-word (resolve post-p))
+         (rule (when known-word (find-single-unary-cfr known-word)))
+         (protein (when rule (cfr-referent rule))))
+    (if (and (individual-p protein)
+             (not (value-of 'predication protein)) ;; strange case "ppERK"
+             (itypep protein category::protein))
+        (let* ((var (subcategorized-variable  category::phosphorylate :object protein))
+               (phospho-protein (create-predication-by-binding-only
+                                 var protein
+                                 (find-or-make-lattice-description-for-ref-category
+                                  category::phosphorylate)))
+               (p-word (define-word/expr pname :override-duplicates))
+                         ;;/// delete the lowercase version ('word')
+               (rule (define-cfr/resolved
+                         (cfr-category rule) ;; lhs
+                         (list p-word)       ;; rhs
+                       (cfr-form rule)
+                       phospho-protein ;; referent
+                       (cfr-schema rule))))
+          ;; trace goes here
+          rule)
+        (store-word-and-handle-it-later word))))
 
 
 
@@ -1457,6 +1460,7 @@ for this species"
       ;; If we didn't use such a specific category these would matter.
       i)))
 
+#+ignore
 (defun reify-phosphorylated-protein (words prot-edge start-pos next-position)
   (declare (special words edges start-pos next-position))
 
@@ -1493,14 +1497,13 @@ for this species"
                        protein)))
     (bind-dli-variable
      'predication
-     (interpret-verb-as-predication
-      'link-in-verb+ed
+     (create-predication-by-binding-only ;; possibly change to sometimes make pred edge
+      (subcategorized-variable  category::phosphorylate :object protein)
       new-prot
-      category::phosphorylate
-      nil
-      (subcategorized-variable  category::phosphorylate :object protein))
+      (find-or-make-lattice-description-for-ref-category category::phosphorylate))
      new-prot)))
 
+#+ignore
 (defun def-phosphorylated-protein (word-string protein-edge
                                    &aux (protein (edge-referent protein-edge)))
   (declare (special category::phosphorylate))

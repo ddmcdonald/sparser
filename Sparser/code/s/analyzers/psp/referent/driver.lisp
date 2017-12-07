@@ -257,12 +257,11 @@
                 do (return (binding-variable b))))
          (new-lambda-form
           (when lambda-variable
-            (create-predication-by-binding
+            (create-predication-by-binding-only
              lambda-variable ;; var parameter
              **lambda-var**  ;; val
              new-pred-form   ;; pred
-             (list 'referent-for-edge edge) ;; source
-             :insert-edge nil))))
+             ))))
     new-lambda-form))
 
 

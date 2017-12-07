@@ -1697,19 +1697,23 @@
                  (and (np-target? e)
                       (subcategorized-variable adjp :subject (edge-referent e)))))))
       (when target
-        (multiple-value-bind (pred)
-            (create-predication-by-binding
-             :subject (edge-referent target) adjp 
-             (list 'adj-noun-compound
-                   (or adjp-edge (left-edge-for-referent)))
-             :insert-edge nil)
-          (make-predication-edge adjp-edge pred)
+        (let ((pred
+               (create-predication-and-edge-by-binding
+                :subject (edge-referent target) adjp adjp-edge))) 
           (make-edge-spec
            :category (edge-category target)
            :form (edge-form target)
            :referent (bind-dli-variable 'predication pred (edge-referent target))
            :target target
-           :direction :right))))))
+           :direction :right)
+          #+ignore(multiple-value-bind (pred)
+                      (create-predication-by-binding
+                       :subject (edge-referent target) adjp 
+                       (list 'adj-noun-compound
+                             (or adjp-edge (left-edge-for-referent)))
+                       :insert-edge nil)
+                    (make-predication-edge adjp-edge pred))
+          )))))
 
 
 (loop for ap in '(adjp adjective comparative-adjective superlative-adjective
@@ -1809,7 +1813,13 @@
                   ;; (edge-referent vp-edge)
                   nil)
                  ((null (value-of svar (edge-referent vp-edge)))
-                  (let ((pred (create-predication-by-binding
+                  (let ((pred
+                         (create-predication-and-edge-by-binding
+                          svar np (edge-referent vp-edge) vp-edge)))
+                    ;; now creates a new edge, so doesn't have to set
+                    ;; the referent separately
+                    pred)
+                  #+ignore(let ((pred (create-predication-by-binding
                                svar np
                                (edge-referent vp-edge) vp-edge :insert-edge nil)))
                     (set-edge-referent vp-edge pred)
@@ -1831,28 +1841,26 @@
                    (edge-right-daughter vp-edge)
                    np
                    syntactic-label)))
-    (set-edge-referent vp-edge new-pred)
+    ;(set-edge-referent vp-edge new-pred)
     new-pred))
 
 (defun update-conjunctive-edge-as-lambda-predicate (vp-edge np syntactic-label)
   (declare (special vp-edge))
   ;;  (lsp-break "vp-edge")
-  (let* ((conj-preds (value-of 'items (edge-referent vp-edge)))
-         (new-preds
-          (loop for cpred in conj-preds
-                collect
-                  (create-predication-by-binding
-                   (or
-                    (best-variable-for-syntactic-label cpred np syntactic-label)
-                    ;; BAIL if no variable
-                    (return-from update-conjunctive-edge-as-lambda-predicate nil))
-                   np
-                   cpred
-                   nil
-                   :insert-edge nil)))
-         (new-conj (create-collection new-preds (itype-of (edge-referent vp-edge)))))
-    (set-edge-referent vp-edge new-conj)
-    new-conj))
+  (let ((conj-preds (value-of 'items (edge-referent vp-edge))))
+    (unless (loop for cpred in conj-preds
+                  always (best-variable-for-syntactic-label cpred np syntactic-label))
+      ;; BAIL unless all conjunctive clauses can be predicates on the np
+      (let* ((new-preds
+              (loop for cpred in conj-preds
+                    collect
+                      (create-predication-by-binding-only
+                       (best-variable-for-syntactic-label cpred np syntactic-label)
+                       np cpred)))
+             (new-conj (create-collection new-preds (itype-of (edge-referent vp-edge)))))
+        (make-predication-edge vp-edge new-conj) ;; make one predication edge over all
+        ;;(set-edge-referent vp-edge new-conj)
+        new-conj))))
 
 (defun conjunction-glue (e)
   "conjunction or comma that glues a conjunction edge together"
