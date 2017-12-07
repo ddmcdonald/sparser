@@ -156,8 +156,8 @@
                 edge word))
 
       (when *include-model-facilities*
-        (setq *parent-edge-getting-reference* edge)
-        (annotate-number number :unknown-digit-sequence nil))
+        (let ((*parent-edge-getting-reference* edge))
+          (annotate-number number :unknown-digit-sequence nil)))
 
       edge )))
 
