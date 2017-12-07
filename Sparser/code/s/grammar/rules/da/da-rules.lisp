@@ -852,7 +852,7 @@
     :pattern (np "," subject-relative-clause ",")
     :action (:function np-comma-subj-relative-comma first second third fourth))
 
-(define-debris-analysis-rule np-comma-subj-relative-comma
+(define-debris-analysis-rule proper-noun-comma-subj-relative-comma
     :pattern (proper-noun "," subject-relative-clause ",")
     :action (:function np-comma-subj-relative-comma first second third fourth))
 
@@ -963,7 +963,8 @@
              ;; field keep them connected in the web graph
              phrase-and-vg+ed first second))
 
-
+;; seems to be obviated by phrase-and-vg+ed
+#+ignore
 (defun np-vp+ed (np vp+ed)
   (declare (special category::np))
   (let* ((*left-edge-into-reference* np)
@@ -1024,7 +1025,8 @@
            proper-noun-vp+ed first second))
 
 (defun proper-noun-vp+ed (proper-noun vp+ed)
-  (np-vp+ed proper-noun vp+ed))
+  ;;(np-vp+ed proper-noun vp+ed))
+  (phrase-and-vg+ed proper-noun vp+ed))
 
 
 (define-debris-analysis-rule np-vg+ed
@@ -1692,7 +1694,7 @@
     :pattern (PP ADJP)
     :action (:function postmodifying-adj first second))
 
-(defun postmodifying-adj (first-edge adjp-edge)
+(defun postmodifying-adj (first-edge adjp-edge) ; examples 
   (when (not (preposed-aux?)) ;; if we have a preoposed-aux, this is a question
     (let* ((adjp (edge-referent adjp-edge))
            (target
