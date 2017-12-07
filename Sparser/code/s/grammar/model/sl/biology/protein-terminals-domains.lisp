@@ -184,6 +184,10 @@ it is created from N-terminus to C-terminus.|#
   :realization
   (:noun ("regulatory subunit" "regulatory sub-unit")))
 
+(define-category catalytic-subunit :specializes protein-domain
+  :realization
+  (:noun ("catalytic subunit" "catalytic sub-unit")))
+
 (define-category hypervariable-region :specializes protein-domain ;;not always protein domain, but that's where it's more likely to come up
                  :realization
                  (:noun ("hypervariable region" "HVR")))
