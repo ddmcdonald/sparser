@@ -118,9 +118,8 @@ SP> (stree 51)
   (let* ((form (da-action-description rule))
          (fn (second form))
          (args (cddr form))
-         (constituents
-          (mapcar #'lookup-matched-tt args))
-         (*da-constituent-edges* constituents)
+         (constituents (mapcar #'lookup-matched-tt args))
+         (*da-constituent-edges* constituents) ;; see note above
          (*parent-edge-getting-reference* nil))
     (declare (special *parent-edge-getting-reference*))
 
@@ -147,42 +146,19 @@ SP> (stree 51)
                  ;; new code to get the proper dominated edges in the case of
                  ;;  preposed prepositional phrases before a conjunction
                   (if preposed 
-                      (if (member target constituents)
-                          (loop for c in constituents
-                                until (member target result)
-                                collect c into result
-                                finally (return result))
-                          (substitute target
-                                      (edge-used-in target)
-                                      constituents))
+                      (if (not (member target constituents))
+                          ;; happens when the PP premodifies only the first S in a conjunction
+                          (substitute target (edge-used-in target) constituents)
+                          constituents)
                       (constituents-between
                        (or target (first constituents))
                        (car (last constituents))))))
            (declare (special *edge-spec* preposed target dominating new-constituents))
-           ;; see long note above
-           (when (and target dominating)
-             (when (and
-                    (eq (edge-starts-at target) (edge-starts-at dominating))
-                    (eq (edge-ends-at target) (edge-ends-at dominating))
-                    (edge-used-in dominating))
-               (setq target dominating)
-               (setq dominating (edge-used-in dominating))))
         
            (setq *new-edge*
                  (make-edge-over-long-span
-                  (pos-edge-starts-at
-                   (or preposed
-                       target
-                       (first constituents)))
-                  (let ((end-edge
-                         (if preposed
-                             target
-                             (car (last constituents)))))
-                    (cond ((edge-p end-edge)
-                           (pos-edge-ends-at end-edge))
-                          ((and (consp end-edge) (position-p (third end-edge)))
-                           (chart-position-after (third end-edge)))
-                          (t (error "can't find edge-end in standardized-apply-da-function-action, ~s" (current-string)))))
+                  (pos-edge-starts-at (car new-constituents))
+                  (pos-edge-ends-at (car (last new-constituents)))
                   (edge-spec-category *edge-spec*)
                   :form (edge-spec-form *edge-spec*)
                   :referent (edge-spec-referent *edge-spec*)
