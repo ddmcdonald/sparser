@@ -9,9 +9,18 @@
 
 (in-package :sparser)
 
+
+(defparameter *error-on-list-nil* nil)
+
+(defparameter **lambda-var** '*lambda-var*) ;; making it a constant doesn't seem to work
+
+(defun is-lambda-var (value)
+  "Hide the identify of the symbol"
+  (eq value **lambda-var**))
+
+
 ;; noisy reporting of situations interesting to Rusty
 (defparameter *report-on-multiple-edges-for-interp* nil)
-
 
 ;; breaks on situations interesting to Rusty
 (defparameter *break-on-null-interp* nil)
@@ -30,21 +39,27 @@
 
 
 (defun interpret-treetops-in-context (treetops)
+  "Called from sentence-processing-core after virtually every part of
+   parsing analysis has been completed. 
+   Call is conditioned on *interpret-in-context*
+   The treetops are from the current sentence."
   (let ((*contextual-interpretation* t))
     (declare (special *contextual-interpretation*))
-    (when *interpret-in-context*
+    (when *interpret-in-context* ;; for testing outside normal calling chain
       (loop for tt in treetops
-            when (and (edge-p tt)
-                      (category-p (edge-category tt))
-                      (edge-referent tt)
-                      ;; in "More detailed understanding of these various pathways will require careful analysis of BMMCs designed to be deficient in multiple adapters and signaling molecules."
-                      ;; there is a NIL interpretation of "designed to be deficient"
-                      (not
-                       (member (cat-name (edge-category tt))
-                               ;; we don't interpret such quoted strings
-                               '(quotation parentheses dash  square-brackets semicolon comma))))
-            do
-              (interpret-in-context (edge-mention tt))))))
+         when (and (edge-p tt)
+                   (category-p (edge-category tt))
+                   (edge-referent tt) ;; #1
+                   (not
+                    (member (cat-name (edge-category tt))
+                            ;; we don't interpret such quoted strings
+                            '(quotation parentheses dash  square-brackets semicolon comma))))
+         do
+           (interpret-in-context (edge-mention tt))))))
+
+#| #1  in "More detailed understanding of these various pathways will require careful analysis
+ of BMMCs designed to be deficient in multiple adapters and signaling molecules."
+  there had been a NIL interpretation of "designed to be deficient" |#
 
 ;;;_______________________________________________
 
@@ -52,42 +67,28 @@
 (defgeneric interpret-in-context (item-to-be-interpreted)
   (:documentation
    "Interpret item-to-be-interpreted in the given context 
-(structure of context still to be defined). 
-1) If the item is a mention, recursively interpret the base-description of 
-the mention, using the bindings in the dependencies field. Set the
-contextual-description of the mention to the resulting interpretation. 
-2) For non-mentions, we (temporarily) make the contextual interpretation
-be the item itself.
-Return the contextual interpretation of the item."))
+ (structure of context still to be defined). Return the contextual interpretation
+ of the item.
+   1) If the item is a mention, recursively interpret the base-description of 
+ the mention, using the bindings in the dependencies field. Set the
+ contextual-description of the mention to the resulting interpretation. 
+   2) For non-mentions, we (temporarily) make the contextual interpretation
+ nbe the item itself.
+   "))
 
 (defmethod interpret-in-context (item)
   item)
 
-(defmethod interpret-in-context ((c category))
-  "This may get more complex, so that e.g. protein categories may be interpreted metonymically as complexes..."
-  c)
+;; These may get more complex when we consider metonymic readings
 
-(defmethod interpret-in-context ((i individual))
-  "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
-  i)
+(defmethod interpret-in-context ((c category)) c)
 
-(defmethod interpret-in-context ((s string))
-    (declare (ignore variable containing-mentions))
-  "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
-  s)
+(defmethod interpret-in-context ((i individual)) i)
 
-(defparameter **lambda-var** '*lambda-var*) ;; making it a constant doesn't seem to work
-
-(defun is-lambda-var (value)
-  "Hide the identify of the symbol"
-  (eq value **lambda-var**))
-
-(defparameter *error-on-list-nil* nil)
+(defmethod interpret-in-context ((s string)) s)
 
 (defmethod interpret-in-context ((items cons))
-  "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
   (loop for item in items collect (interpret-in-context item)))
-
 
 
 (defmethod interpret-in-context ((mention discourse-mention))
@@ -130,58 +131,43 @@ Return the contextual interpretation of the item."))
 
 #| Pronoun examples to test (convert to regression tests when working)
 
-(p "Ras is a membrane bound protein. When inactive, it is bound to the small molecule GDP.")
+(p "Ras is a membrane bound protein. When inactive, 
+it is bound to the small molecule GDP.")
+;; That's two sentences. lifo test says "it" = GDP as only looks locally
 
 (p "The phosphorylated ERK protein then translocates to the nucleus
 where it regulates gene expression.")
 |#
 
 (defun interpret-pronoun-in-context (mention)
-  (declare (special category::be))
+  (declare (optimize debug))
   (let* ((pronoun (base-description mention))
-         (edge (mention-source mention))
-         variable ;; not sure where this will come from
-         )
-
-    (push-debug `(,edge ,pronoun))
+         (edge (mention-source mention)))
     (tr :dt-dereference-pn pronoun edge)
     
     (unless (slot-boundp mention 'restriction)
       (tr :dt-no-restriction)
-      (when *work-on-di-pronouns*
-        (lsp-break "no restriction"))
+      (when *work-on-di-pronouns* (lsp-break "no restriction"))
       (return-from interpret-pronoun-in-context nil))
       
     (let* ((restriction (mention-restriction mention))
-           ;; This goes with the check done in condition-anaphor-edge
-           ;; to ignore personal pronouns. If we refactored the actual
-           ;; check -- ignore-this-type-of-pronoun -- we could reframe
-           ;; this in more direct forms and protect is against someone
-           ;; changing the details of the class.
            (types (etypecase restriction
                     ((cons (eql :or)) (cdr restriction))
-                    (category (list restriction))
-                    (null
-                         (progn
-                           (warn
-                            "~&NIL restriction -- var: ~s~&"
-                            variable)
-                           nil)))))
+                    (category (list restriction)))))
       (tr :dt-restriction-on-pronoun types)
       (cond
         ((null types)
          (tr :dt-no-type-information)
-         (when *work-on-di-pronouns*
-           (lsp-break "no type information"))
+         (when *work-on-di-pronouns* (lsp-break "no type information"))
          nil)
-        (t (let ((ref (find-pronoun-in-lifo-instance types)))
+        (t (when *work-on-di-pronouns*
+             (push-debug `(,mention ,edge))
+             (break "lifo, etc."))
+           (let ((ref (find-pronoun-in-lifo-instance types)))
              (when ref (tr :pronoun-resolved-to ref))
              (or ref
                  (when *work-on-di-pronouns*
                    (lsp-break "Need another technique")))))))))
-
-		   
-
 
 (defun find-pronoun-in-lifo-instance (types)
   (declare (special *lifo-instance-list))  
@@ -189,6 +175,10 @@ where it regulates gene expression.")
      when (find-if #'(lambda (i) (itypep i type)) *lifo-instance-list*
                    :key #'car)
      return it))
+
+
+
+
 
 (defun find-dependency (name dependencies)
   (loop for vv in dependencies when (eq (var-name (car vv)) name) do (return (second vv))))

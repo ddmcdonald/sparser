@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-20167 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "pronouns"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  June 2016
+;;;  Version:  December 2017
 
 ;; Initiated 9/1/13. Added DefNP cases 3/6/15. Added more for tracking
 ;; the progress of handling the pronoun through various cases 9/29/15
@@ -70,7 +70,7 @@
     (trace-msg "The type constraint is ~a" types)))
   
 
-;;--- ref4 - doing the anaphora
+;;--- ref - doing the anaphora
 
 (deftrace :anaphora-looking-at-edge (edge)
   ;; called from handle-any-anaphora, which is called from
@@ -103,7 +103,7 @@
 (deftrace :pronoun-not-conditioned ()
   ;; called from handle-pronoun
   (when *tracing-pronouns*
-    (trace-msg "  Edge wasn't conditioned. Returning nil")))
+    (trace-msg "  Ref: Edge wasn't conditioned. Returning nil")))
 
 (deftrace :restriction-on-pronoun (type-restriction)
   ;; called from handle-pronoun
