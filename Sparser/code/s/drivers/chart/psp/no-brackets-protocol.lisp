@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "no-brackets-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  August 2017
+;;;  version:  December 2017
 
 ;; Initiated 10/5/14, starting from the code for detecting bio-entities.
 ;; 10/29/14 added flags to turn off various steps so lower ones
@@ -31,6 +31,10 @@
 
 (in-package :sparser)
 
+(defun sucessive-sweeps? ()
+  "syntactic sugar for a mode detector. Cf. new-forest-protocol?"
+  (eq *kind-of-chart-processing-to-do* :successive-sweeps))
+
 ;;; Sweep to introduce minimal edges over the text, one sentence
 ;;; at a time, covering all unary rules, polywords, word-driven
 ;;; fsa's (digits), no-space compositions, and word completions.
@@ -41,10 +45,6 @@
 ;; :successive-sweeps to call this function. The lookup fn is
 ;; called from chart-based-analysis where there is a catch to 
 ;; terminate chart parsing. 
-
-(defun sucessive-sweeps? ()
-  "syntactic sugar for a mode detector. Cf. new-forest-protocol?"
-  (eq *kind-of-chart-processing-to-do* :successive-sweeps))
 
 ;;;---------
 ;;; Globals
@@ -77,6 +77,10 @@
   was being analyzed at the time of the error.
     Presently always set (dynamically bound) deliberately.
   Right now (6/12/15) that only happens in read-article-set.")
+
+(defparameter *show-sentence-for-early-errors* nil
+  "some errors or interesting events happen in the sentence creating sweep, 
+   and we want to se the entire sentence context")
 
 
 ;;;------------------------------------------------
@@ -144,12 +148,14 @@
 ;;;--------
 
 (defun initiate-successive-sweeps ()
+  "Called from lookup-the-kind-of-chart-processing-to-do which
+   is the content of analysis-core after it finishes initializing.
+   Handles both reading document text and reading directly from strings
+   or files.
+   N.b. The initialization routines created a sentence already."
   (declare (special *reading-populated-document*
                     *sentence-making-sweep* *new-sentence* *current-paragraph*)
            (optimize debug))
-  ;; Called from lookup-the-kind-of-chart-processing-to-do which
-  ;; is the content of analysis-core after it finishes initializing.
-  ;; N.b. The initialization routines created a sentence already
   (scan-next-position) ;; pull the source-start word into the chart
   (scan-next-position) ;; adds 1st real word into the chart
   (cond
@@ -157,6 +163,8 @@
      ;; Dynamically bound by paragraph method for read-from-document
      (let ((s1 (sentence)))
        (unless (prepopulated? s1)
+         ;; If the document's sentences are already there then we're
+         ;; in the pass that creates them.
          (let ((*pre-read-all-sentences* t))
            (declare (special *pre-read-all-sentences*))
            (catch 'sentences-finished
@@ -164,7 +172,6 @@
              (multiple-value-bind (eos-pos sentence)
                  (scan-sentences-and-pws-to-eos (p# 1))
                (setq *current-sentence* s1)))))
-
        (if *sentence-making-sweep*
            (then ;; we've done all that we need to on this pass
              ;; over the document, so move on.
@@ -178,76 +185,89 @@
              ;;(terminate-chart-level-process)
              (let ((initial-sentence (sentence)))
                (multiple-value-bind (eos-pos sentence)
-                   (scan-sentences-and-pws-to-eos (p# 1))
+                   (scan-sentences-and-pws-to-eos (position# 1))
                  ;; sweep-for-polywords-to-eos calls (start-sentence) for each sentence
                  ;;  and that resets *current-sentence* -- set it back to first sentence
                  (setq *new-sentence* sentence)
                  (setq *current-sentence* initial-sentence)
                  (catch 'do-next-paragraph
                    (sweep-successive-sentences-from initial-sentence))
-                 (terminate-chart-level-process)))
-               
-             ))))
+                 (terminate-chart-level-process)))))))
     (t
-     ;; default path used by p or f
+     ;; Default path, used for string sourcse.
+     ;; N.b. this is the identical processing sequence as document case.
      (let ((initial-sentence (sentence)))
        (multiple-value-bind (eos-pos sentence)
-           (scan-sentences-and-pws-to-eos (p# 1))
-         ;; sweep-for-polywords-to-eos calls (start-sentence) for each sentence
-         ;;  and that resets *current-sentence* -- set it back to first sentence
+           (scan-sentences-and-pws-to-eos (position# 1))
          (setq *current-sentence* initial-sentence)
          (catch 'do-next-paragraph
            (sweep-successive-sentences-from initial-sentence))
          (terminate-chart-level-process))))))
 
 
-;;;------------------------------------------------------
-;;; "normal" processing directly from a character stream
-;;;------------------------------------------------------
 
-(defun sentence-sweep-loop ()
-  "Called from initiate-successive-sweeps when reading from 
-   a stream of characters rather than a pre-structured document.
-   Organizes all the parsing layers from lowest to highest.
-   Expects a first sentence to exist but not to be populated"
-  (declare (special *current-sentence*))
-  (tr :entering-sentence-sweep-loop)
-  (let* ((sentence (sentence))  ;; to pass to subroutines
-         (*sentence* sentence)) ;; for global reference
-    (declare (special *sentence* *this-sen)
-             (optimize debug))
-    ;; scan through the complete string, filling in the chart
-    (let ((*scanning-terminals* :polywords))
-      (declare (special *scanning-terminals*))
-      (scan-sentences-to-eos (starts-at-pos sentence)))
-    ;;  scan-sentences-to-eos calls (start-sentence) for each sentence
-    ;;  and that resets *current-sentence* -- set it back to first sentence
-    (setq *current-sentence* sentence)
-    (loop
-      (let* ((start-pos (starts-at-pos sentence))
-             (first-word (pos-terminal start-pos)))
-        (unless first-word
-          ;; There is a pending bug (7/16) that happens when a sentence
-          ;; ends in with a polyword followed by a question mark.
-          ;; Fixing the bug appears to be tied up with companion
-          ;; issue where the pointers that walk the sentence in
-          ;; the scan-terminals-loop are identical. First attempts
-          ;; to fix that led to fallback in other polyword processing.
-          (scan-next-position) ;; compensate for the bug
-          (setq first-word (pos-terminal start-pos)))
+(defun sweep-successive-sentences-from (sentence)
+  "Called from the toplevel driver initiate-successive-sweeps
+   after we have run scan-sentences-and-pws-to-eos and have
+   all the sentences.
+      This is the driver for looping over successive sentences.
+   It returns when we get to the end of the sentence chain by
+   throwing to :do-next-paragraph, which is caught by the
+   toplevel driver after the scan to eos policy was introduced."
+  (declare (special *trap-error-skip-sentence*)
+           (optimize debug))
+  (loop
+     (tr :sweep-reading-sentence sentence)
+     (setq *current-sentence-string* (sentence-string sentence))
+     (setq *sentence-in-core* sentence)
+     (when *show-sentence-for-early-errors*
+       (format t "  in sentence: ~s ~%" (current-string))
+       (setq *show-sentence-for-early-errors* nil))
 
-        ;; 1st scan the text into minimal terminal edges.
-        ;; The thow is from period-hook, which will also advance
-        ;; the value returned by (sentence) to be the next sentence
-        ;; after this one that we're working on. 
-        (tr :scanning-terminals-of sentence)
-        (catch :end-of-sentence
-          (scan-terminals-loop start-pos first-word (ends-at-pos sentence)))
-        (sentence-processing-core sentence)
-        
-        (setq sentence (next sentence))
-        (when (null sentence) ;; or a sentence with a null string?
-          (terminate-chart-level-process))))))
+     ;; All the post-polyword analysis is done below these
+     (if *trap-error-skip-sentence*
+       (error-trapped-scan-and-core sentence)
+       (scan-terminals-and-do-core sentence))
+
+     (cond ;; is there a 'next' sentence?
+       ((not (slot-boundp sentence 'next))
+        (throw 'do-next-paragraph nil))
+       ((null (next sentence))
+        ;;/// shouldn't happen. But happened in 8.a.p1 of
+        ;; (run-an-article :id "PMC1702556" :corpus :jun15eval)
+        ;; and the single sentence is a long list of
+        ;; accession numbers in GenBank
+        (throw 'do-next-paragraph nil)))
+     
+     (let ((next-sentence (next sentence)))
+       (tr :sweep-next-sentence next-sentence)
+       (when (string-equal "" (sentence-string next-sentence))
+         (tr :sweep-paragraph-end)
+         (throw 'do-next-paragraph nil))
+       (setq sentence next-sentence))))
+
+
+(defun scan-terminals-and-do-core (sentence)
+  "Do the remaining processing of the terminals followed
+   by all the sentence-level parsing"
+  (setq *sentence-in-core* sentence) ;; note 1
+  (scan-terminals-of-sentence sentence) ;; (tr :scanning-done)
+  (sentence-processing-core sentence))  ;; (tr :sweep-core-done)
+
+(defun error-trapped-scan-and-core (sentence)
+  "Wrapped scan-terminals-and-do-core inside an error catch"
+  ;; Modeled on code in get-bracketing-from-string and
+  ;; test-np-segmentation-for-sexp
+  (handler-case 
+      (scan-terminals-and-do-core sentence)
+    (error (e)
+      (ignore-errors ;; got an error with something printing once
+       (when *show-handled-sentence-errors*
+         (format t "~&Error in ~s~%~a~%~%" (current-string) e))))))
+
+#| Note #1  We sometimes get errors in scan-terminals-of-sentence
+ so it is important for the error message routines
+ to have the variable *sentence-in-core* set at this point. |#
 
 
 ;;;-------------------------------
@@ -256,12 +276,10 @@
 
 (defun sentence-processing-core (sentence)
   "Handles all of the processing on a sentence that is done
-   after scan-terminals-loop runs. Called by sentence-sweep-loop
-   or scan-terminals-and-do-core depending one whether we're
-   working with a document or just a text stream.
-    The operation just before this is scan-terminals-loop, 
-   which handled polywords, fsa, no-space, and populating
-   the terminal edges."
+   after scan-sentences-and-pws-to-eos and scan-terminals-loop
+   have run. They handled all the polywords, filling the chart,
+   introducing edges over the words, and running any word or
+   edge-level fsaa."
   (declare (special *sweep-for-patterns* *do-early-rules-sweep*
                     *grammar-and-model-based-parsing*))
   (setq *sentence-in-core* sentence)
@@ -309,76 +327,6 @@
     (end-of-sentence-processing-cleanup sentence)))
 
 
-;;;----------------------------
-;;; document-driven processing
-;;;----------------------------
-
-(defparameter *show-sentence-for-early-errors* nil
-  "some errors or interesting events happen in the sentence creating sweep, 
-   and we want to se the entire sentence context")
-
-
-
-
-
-(defun sweep-successive-sentences-from (sentence)
-  "Called from the toplevel driver initiate-successive-sweeps
-   after we have done the sentence-making sweep, so this
-   is only used with prepopulated documents whose sentences
-   have been delimited by scan-sentences-to-eof. 
-   Does all of the linguistic analysis, sentence by sentence
-   until we get to the end of the sentence chain.
-   This function in a document context does the same job
-   as sentence-sweep-loop does for strings: apply the
-   parser to successive sentences."
-  (declare (special *trap-error-skip-sentence*)
-           (optimize debug))
-  (loop
-     (tr :sweep-reading-sentence sentence)
-     (setq *current-sentence-string* (sentence-string sentence))
-    (setq *sentence-in-core* sentence)
-    (when *show-sentence-for-early-errors*
-      (format t "  in sentence: ~s ~%" (current-string))
-      (setq *show-sentence-for-early-errors* nil))
-
-     (if *trap-error-skip-sentence*
-       (error-trapped-scan-and-core sentence)
-       (scan-terminals-and-do-core sentence))
-
-     (cond ;; is there a 'next' sentence?
-       ((not (slot-boundp sentence 'next))
-        (throw 'do-next-paragraph nil))
-       ((null (next sentence))
-        ;;/// shouldn't happen. But happened in 8.a.p1 of
-        ;; (run-an-article :id "PMC1702556" :corpus :jun15eval)
-        ;; and the single sentence is a long list of
-        ;; accession numbers in GenBank
-        (throw 'do-next-paragraph nil)))
-     
-    (let ((next-sentence (next sentence)))
-      (tr :sweep-next-sentence next-sentence)
-      (when (string-equal "" (sentence-string next-sentence))
-        (tr :sweep-paragraph-end)
-        (throw 'do-next-paragraph nil))
-      (setq sentence next-sentence))))
-
-(defun scan-terminals-and-do-core (sentence)
-  ;; We sometimes get errors in scan-terminals-of-sentence
-  ;;  so it is important for the error message routines
-  ;;  to have the variable *sentence-in-core* set at this point
-  ;;  not (just) in sentence-processing-core
-  (setq *sentence-in-core* sentence)
-  (scan-terminals-of-sentence sentence) ;; (tr :scanning-done)
-  (sentence-processing-core sentence)) ;; (tr :sweep-core-done)
-
-(defun error-trapped-scan-and-core (sentence)
-  ;; Modeled on get-bracketing-from-string and test-np-segmentation-for-sexp
-  (handler-case 
-      (scan-terminals-and-do-core sentence)
-    (error (e)
-      (ignore-errors ;; got an error with something printing once
-       (when *show-handled-sentence-errors*
-         (format t "~&Error in ~s~%~a~%~%" (current-string) e))))))
 
 
 ;;;----------------------------------------------------
@@ -386,22 +334,22 @@
 ;;;----------------------------------------------------
 
 (defun post-analysis-operations (sentence)
-  "Called from sentence-processig-core once all of the parsing
+  "Called from sentence-processing-core once all of the parsing
    operations on the sentence have finished. Handles anaphora,
    discourse structure, data-collection for cards, and such."
   (declare (special *index-cards*))
   (when *scan-for-unsaturated-individuals*
     (sweep-for-unsaturated-individuals sentence))
-
-  ;; the top level fragments are maximal -- resolve binding ambiguities
-  ;;  with defaults where possible
   (loop for e in (all-tts (starts-at-pos sentence) (ends-at-pos sentence))
-        when (and (edge-p e) (individual-p (edge-referent e)))
-        do
-          (make-maximal-projection (edge-referent e) e))
+     ;; The top level fragments are maximal -- resolve binding ambiguities
+     ;;  with defaults where possible
+     when (and (edge-p e) (individual-p (edge-referent e)))
+     do (make-maximal-projection (edge-referent e) e))
   (identify-salient-text-structure sentence)
   (when *do-anaphora*
-    (handle-any-anaphora sentence))
+    (unless *constrain-pronouns-using-mentions*
+      ;; defer 'till interpret-treetops-in-context runs
+      (handle-any-anaphora sentence)))
   (when (and *readout-relations* *index-cards*)
     (push `(,(sentence-string sentence) 
             ,(all-individuals-in-tts sentence)
@@ -436,48 +384,67 @@
 ;;; final operations on sentence before moving to the next one
 ;;;------------------------------------------------------------
 
-(defparameter *indra-post-process* nil)
-(defparameter *indra-embedded-post-mods* nil)
-(defparameter *callisto-compare* nil)
 (defun end-of-sentence-processing-cleanup (sentence)
-  (declare (special *current-article* *sentence-results-stream*
+  (declare (special *current-article*
                     *end-of-sentence-display-operation*
-                    *localization-interesting-heads-in-sentence*
-                    *localization-split-sentences* *colorized-sentence*
-                    *save-bio-processes*  *indra-post-process*
-                    *predication-links-ht* *callisto-compare*
+                    *predication-links-ht* 
+                    
+                     
+                    
                     *sp-clsto-entity-mentions* *sp-clsto-relations*
                     *sp-clsto-used-edges*))
-  (declaim (optimize (debug 3)))
+  
   (set-discourse-history sentence (cleanup-lifo-instance-list))
   (when *end-of-sentence-display-operation*
     (funcall *end-of-sentence-display-operation* sentence))
   (when *current-article*
     (save-article-sentence *current-article* sentence))
-  ;;output sentence semantics, if desired, in format specified
-  ;; by *semantic-outut-format* -- code is in save-doc-semantics
+  (do-client-translations sentence)
+  (clrhash *predication-links-ht*))
+
+
+
+
+
+;;;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% split off the file here %%%%%%%%%
+
+
+(defparameter *indra-post-process* nil)
+(defparameter *indra-embedded-post-mods* nil)
+(defparameter *callisto-compare* nil)
+
+
+(defun do-client-translations (sentence)
+  (declare (special *sentence-results-stream* *semantic-output-format*
+                    *indra-post-process* *callisto-compare*
+                    *localization-interesting-heads-in-sentence*
+                    *colorized-sentence* *localization-split-sentences*
+                    *save-bio-processes* ))
+  (declaim (optimize (debug 3)))
+  
   (when (and (or (eq *sentence-results-stream* t)
                  (streamp *sentence-results-stream*))
              (not (eq *semantic-output-format* :HMS-JSON)))
+    ;;output sentence semantics, if desired, in format specified
+    ;; by *semantic-outut-format* -- code is in save-doc-semantics
     (when *save-bio-processes* (save-bio-processes sentence))
     (write-semantics sentence *sentence-results-stream*))
+  
   (when *indra-post-process*
-    (let ((mentions
-           ;; sort, so that embedding edges for positive-bio-control come out first
+    (let ((mentions ;; sort, so that embedding edges for positive-bio-control come out first
            (sort
             (remove-collection-item-mentions
              (mentions-in-sentence-edges sentence))
             #'>
             :key #'(lambda (m) (edge-position-in-resource-array (mention-source m))))))
       (indra-post-process mentions sentence *sentence-results-stream*)))
+  
   (when *callisto-compare* (extract-callisto-data sentence))
     
   (when *localization-interesting-heads-in-sentence*
     (let ((colorized-sentence (split-sentence-string-on-loc-heads)))
       (setf (gethash sentence *colorized-sentence*) colorized-sentence)
-      (push colorized-sentence *localization-split-sentences*)))
-  (clrhash *predication-links-ht*))
-
+      (push colorized-sentence *localization-split-sentences*))))
 
 
 ;;;----------------------------------

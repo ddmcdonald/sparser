@@ -87,6 +87,46 @@
       (let ((next-word (pos-terminal position-after)))
         (scan-words-loop position-after next-word)))))
 
+;; Later, intermediate version on the way to scan-sentences-and-pws-to-eos
+
+(defun scan-words-loop (start-pos &optional word)
+  "WRITE THIS DOCUMENTATION"
+  (declare (special *sentence-terminating-punctuation*)
+           (optimize (speed 1)(debug 3)))
+  (scan-sentences-and-pws-to-eos start-pos)
+
+  (let* ((position-before start-pos)
+         (ev (pos-starts-here start-pos))
+         (edge (ev-top-node ev))
+         (word (unless edge (pos-terminal start-pos)))
+         (position-after (if edge
+                             (pos-edge-ends-at edge)
+                             (chart-position-after position-before))))
+    (loop
+      (when (eq word *end-of-source*)
+        (throw 'sentences-finished nil))
+      (when *trace-scan-words-loop*
+        (if word
+            (format t " ~s" (word-pname word))
+            (format t " edge: ~s" edge)))
+      (when word
+        ;; The function check-for-completion-actions/word looks on the
+        ;; rule-set of the word for a completion action or actions and
+        ;; runs carry-out-actions to execute (funcall) them. 
+        (tr :scan-completing word position-before position-after)
+        ;; Trigger the period-hook (n.b. also gets conjunctions,
+        ;; parentheses, etc.)
+        (when (member word *sentence-terminating-punctuation*)
+          ;; possibly exit loop here -- when you have a real period
+          (period-hook word position-before position-after)))
+      (setq position-before position-after
+            ev (pos-starts-here position-after)
+            edge (ev-top-node ev)
+            word (unless edge (pos-terminal position-after))
+            position-after (if edge
+                               (pos-edge-ends-at edge)
+                               (chart-position-after position-after))))))
+
 
 
 (defun polyword-sweep-loop (position-before word)
@@ -141,3 +181,51 @@
          (setq position-before position-after
                word next-word)))))
 
+
+;;;-----------------------------------
+;;; removed from no-brackets-protocol
+;;;-----------------------------------
+
+(defun sentence-sweep-loop ()
+  "Called from initiate-successive-sweeps when reading from 
+   a stream of characters rather than a pre-structured document.
+   Organizes all the parsing layers from lowest to highest.
+   Expects a first sentence to exist but not to be populated"
+  (declare (special *current-sentence*))
+  (tr :entering-sentence-sweep-loop)
+  (let* ((sentence (sentence))  ;; to pass to subroutines
+         (*sentence* sentence)) ;; for global reference
+    (declare (special *sentence* *this-sen)
+             (optimize debug))
+    ;; scan through the complete string, filling in the chart
+    (let ((*scanning-terminals* :polywords))
+      (declare (special *scanning-terminals*))
+      (scan-sentences-to-eos (starts-at-pos sentence)))
+    ;;  scan-sentences-to-eos calls (start-sentence) for each sentence
+    ;;  and that resets *current-sentence* -- set it back to first sentence
+    (setq *current-sentence* sentence)
+    (loop
+      (let* ((start-pos (starts-at-pos sentence))
+             (first-word (pos-terminal start-pos)))
+        (unless first-word
+          ;; There is a pending bug (7/16) that happens when a sentence
+          ;; ends in with a polyword followed by a question mark.
+          ;; Fixing the bug appears to be tied up with companion
+          ;; issue where the pointers that walk the sentence in
+          ;; the scan-terminals-loop are identical. First attempts
+          ;; to fix that led to fallback in other polyword processing.
+          (scan-next-position) ;; compensate for the bug
+          (setq first-word (pos-terminal start-pos)))
+
+        ;; 1st scan the text into minimal terminal edges.
+        ;; The thow is from period-hook, which will also advance
+        ;; the value returned by (sentence) to be the next sentence
+        ;; after this one that we're working on. 
+        (tr :scanning-terminals-of sentence)
+        (catch :end-of-sentence
+          (scan-terminals-loop start-pos first-word (ends-at-pos sentence)))
+        (sentence-processing-core sentence)
+        
+        (setq sentence (next sentence))
+        (when (null sentence) ;; or a sentence with a null string?
+          (terminate-chart-level-process))))))

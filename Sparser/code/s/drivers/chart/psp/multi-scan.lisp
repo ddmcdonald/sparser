@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  November 2017
+;;;  version:  December 2017
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -22,70 +22,43 @@
 
 (in-package :sparser)
 
-;;;---------------------------------------------------------
-;;; 0th pass -- delimiting / using sentences from documents
-;;;---------------------------------------------------------
+
+#| N.b. The sweeps for early rules, patterns, no-space, early information, 
+   conjunctions, and parentheses run after the sweeps that are organized
+   by scan-terminals-loop. Under the control of sentence-processing-core  |#
+
+
+;;--- globals
+
+(defparameter *scanning-terminals* nil
+  "Used as a flag by scan-terminals-loop to control the
+   behavior of the eos check and period hook.")
 
 (defparameter *trace-scan-words-loop* nil
   "Echos the word being scanned")
 
+
+;;;----------------------------------------------------------------
+;;; Scan the entire text into the chart and run the polyword check
+;;;---------------------------------------------------------------
+
 ;; (trace-period-hook)
 ;; (setq *trace-scan-words-loop* t)
-
-;;--- For working with a document
-
-(defun scan-words-loop (start-pos &optional word)
-  "WRITE THIS DOCUMENTATION"
-  (declare (special *sentence-terminating-punctuation*)
-           (optimize (speed 1)(debug 3)))
-  (scan-sentences-and-pws-to-eos start-pos)
-
-  (let* ((position-before start-pos)
-         (ev (pos-starts-here start-pos))
-         (edge (ev-top-node ev))
-         (word (unless edge (pos-terminal start-pos)))
-         (position-after (if edge
-                             (pos-edge-ends-at edge)
-                             (chart-position-after position-before))))
-         
-    
-    (loop
-      (when (eq word *end-of-source*)
-        (throw 'sentences-finished nil))
-      (when *trace-scan-words-loop*
-        (if word
-            (format t " ~s" (word-pname word))
-            (format t " edge: ~s" edge)))
-      (when word
-        ;; The function check-for-completion-actions/word looks on the
-        ;; rule-set of the word for a completion action or actions and
-        ;; runs carry-out-actions to execute (funcall) them. 
-        (tr :scan-completing word position-before position-after)
-        ;; Trigger the period-hook (n.b. also gets conjunctions,
-        ;; parentheses, etc.)
-        (when (member word *sentence-terminating-punctuation*)
-          ;; possibly exit loop here -- when you have a real period
-          (period-hook word position-before position-after)))
-
-      (setq position-before position-after
-            ev (pos-starts-here position-after)
-            edge (ev-top-node ev)
-            word (unless edge (pos-terminal position-after))
-            position-after (if edge
-                               (pos-edge-ends-at edge)
-                               (chart-position-after position-after)))
-
-      )))
-
 
 (defun scan-sentences-and-pws-to-eos (position
                                       &aux (word (pos-terminal position))
                                         (sentence (sentence))
                                         (*scanning-terminals* :polywords))
-  "First pass over the text. Checks each successive word for
-   initiating a polyword (polyword-check). The longest completion
-   is spanned with an edge. 
-      This loop stops at the *end-of-source*"
+  "First pass over the text that the successive-sweeps driver does.
+   Called by initiate-successive-sweeps both when reading from a document
+   and when reading from a string/file.
+      Checks each successive word for initiating a polyword (polyword-check). 
+   The longest completion is spanned with an edge. Constructs sentence objects
+   as needed for strings or reuses previously constructed sentences when reading
+   from a document.  
+      Loop stops at *end-of-source* and returns the position reached and the
+   current sentence. N.b. does not use the period-hook, though uses it's 'is-a-sentence'
+   checks."
   (declare (special *trace-sweep* *scanning-terminals*)
            (optimize debug))
   (tr :polyword-sweep-loop)
@@ -129,22 +102,30 @@
                (setq word next-word))))
          (values position sentence))))
 
+
 (defun eos-sweep-loop (position &aux (word (pos-terminal position)))
+  "Subroutine of scan-sentences-and-pws-to-eos that applies if (when ?)
+   we get a situation where the polyword check has already been done
+   but we want to return same values as the cases when we're doing
+   the pw check."
   (loop
     (when (eq word *end-of-source*)
       (return-from eos-sweep-loop position))
     (setq position (chart-position-after position))
-    (setq word (pos-terminal position))))
+     (setq word (pos-terminal position))))
+
+
+;;;------------------------------------
+;;; Post-polyword per-sentences driver
+;;;------------------------------------
 
 (defun scan-terminals-of-sentence (sentence)
-  "Called from scan-terminals-and-do-core in the path that starts
-   with a prepopulated documents. Provides sentence-based way to
-   initiate scan-terminal-loop as it walks from sentence to sentence"
+  "Called from scan-terminals-and-do-core as the sentence-interface
+   to scan-terminals-loop which orchestrates the successive passes."
   (tr :scan-terminals-of-sentence)
   (let* ((start-pos (starts-at-pos sentence))
          (first-word (pos-terminal start-pos)))
-    (unless first-word ;; 7/14/16: ends with polyword followed by "?"
-      ;; compensate for what that bug kept it from doing
+    (unless first-word ;;/// can we prove this check is OBE?
       (scan-next-position)
       (setq first-word (pos-terminal start-pos)))
     (unless first-word
@@ -170,31 +151,26 @@
 ;; (trace-network)
 ;; (setq *trace-sweep* t)
 
-(defparameter *scanning-terminals* nil
-  "Used as a flag by scan-terminals-loop to control the
-   behavior of the eos check and period hook.")
-
-#| N.b. sweeps for early rules, patterns, no-space, early information, 
-      conjunctions, and parentheses run after the sweeps that are organized
-      by scan-terminals-loop. Under the control of sentence-processing-core |#
 
 (defun scan-terminals-loop (position-before word end-pos)
   "Carries out the first layer of analysis by checking for and
    applying word-level rules. It is the core routine regardless
-   of whether source is a document or just a string.
+   of whether source is a document or just a string. 
      Structured as a succession of passes ('sweeps') over
-   a sentence-worth of text:
+   a sentence-worth of text, though the start and end positions
+   or the sentence are used, which could provide flexibility later.
+     Follows the scanning of the entire
+   text into the chart and detection of any polywords.
 
-   1st. NO LONGER DONE HERE -- done above do the polywords. This sweep also has the job of 
-     delimiting the sentence using a throw from period-hook.
-   2d. sweep over the treetops in the sentence to
+   1st. Sweep over the treetops in the sentence to
      handle any word-level fsas. 
-   3d. Apply word-level completion hook to each word that
+   2d. Apply word-level completion hook to each word that
      isn't covered by an edge.
-   4th. Introduce the terminal edges for every unspanned word. 
+   3d. Introduce the terminal edges for every unspanned word
+     and run any associated category-fsas such as the number fsa
 
    We return by throwing to :end-of-sentence, which is
-   what period-hook does if its called conventionally."
+   what period-hook does if it's called conventionally."
 
   (declare (special end-pos  *sweep-for-polywords* *sweep-for-word-level-fsas*
                     *sweep-for-terminal-edges*)
@@ -204,11 +180,6 @@
   (simple-eos-check position-before word)
   (sentence-level-initializations) ;; clear traversal state
 
-  ;; N.b. This assumes all the flags are up. If that is not the case
-  ;; then the logic has to change to accommodate it, particularly
-  ;; for delimiting the sentence
-
-  (tr :pw-sweep-returned end-pos)
   (when *sweep-for-word-level-fsas*
     (word-level-fsa-sweep position-before end-pos))
 
@@ -230,7 +201,7 @@
 (defun word-level-fsa-sweep (start-pos end-pos)
   "At this point some spans may be covered with edges introduced
    by polywords. For any uncovered words, check for the possibility
-   that it introduces an fsa. The chart is already populated
+   that the word introduces an fsa. The chart is already populated
    with the words introduced by the pw sweep, so we don't need
    to do our own scans."
   (declare (special *trace-sweep* *trace-fsa*)
@@ -249,7 +220,7 @@
                  (pos-token-index position-before)
                  (or word edge)
                  position-after))
-       ;; if word, check it. Else advance
+       
        (when word
          ;; FSA's calls lifted from check-word-level-fsa-trigger 
          ;; and cwlft-cont
@@ -268,7 +239,6 @@
        (when (eq position-after end-pos)
          (return))
 
-       ;; (tr :next-terminal-to-scan position-after next-word)
        (setq position-before position-after
              ev (pos-starts-here position-after)
              edge (ev-top-node ev)
@@ -336,26 +306,25 @@
       rather than an end-of-sentence marker. During the word-level completion 
       sweep, applying the abbreviation creates an edge whose end-point
       is beyond the end-pos (the end position is the end position of the
-overly-short sentence.), which leads to a tight infinite loop.
+      overly-short sentence.), which leads to a tight infinite loop.
       To avoid this, we look for having walked beyond the end of the
       populated chart, as indicated by the next pos-terminal being nil.
       (Though that doesn't work when the chart was already filled by longer 
-sentence. In the presenting case today the bad length sentences
-were at the beginning of a paragraph when the chart had just been
-deliberately emptied.)
+      sentence. In the presenting case today the bad length sentences
+      were at the beginning of a paragraph when the chart had just been
+      deliberately emptied.)
       When we detect this in word-level-completion-sweep we just return
       and leave the loop because we want to continue on to the final word-level
       sweep. When we detect it there in terminal-edges-sweep (actually in the
-macro it and only expands) we throw to end-of-sentence, which finishes
+      macro it and only expands) we throw to end-of-sentence, which finishes
       this whole level.
       Test with this to see the exact point of failure and the short
       sentences.
       (run-an-article :id "PMID22252115" :corpus :phase3 :quiet nil :show-sect t)
       |#
 
-
-;; candidate to redo earlier loops -- used in terminal-edges-sweep below
 (defmacro carefully-walk-initial-chart (&body body)
+  ;; candidate to redo earlier loops -- used in terminal-edges-sweep below
   `(let* ((position-before start-pos)
           (ev (pos-starts-here position-before))
           (edge (ev-top-node ev))
@@ -476,6 +445,7 @@ macro it and only expands) we throw to end-of-sentence, which finishes
       ;; for terminating-chart-processing
       (tr :eos-terminate-chart-level)
       (terminate-chart-level-process)))))
+
 
 ;; (trace-polywords)
 (defun polyword-check (position-before word)
@@ -704,7 +674,6 @@ macro it and only expands) we throw to end-of-sentence, which finishes
 ;;; 1.5d pass -- early binary rules operating on NS pairs
 ;;;-------------------------------------------------------
 
-
 #|currently this handles
       #<PSR-1254 comma-number → COMMA number>
       #<PSR-1394 unit-of-measure → HYPHEN unit-of-measure>
@@ -742,9 +711,8 @@ macro it and only expands) we throw to end-of-sentence, which finishes
   (loop
     (cond ((eq start end) (return-from do-early-rules-sweep-between nil))
           ((null start)
-           (error
-            "do-early-rules-sweep-between start is nil in ~s"
-            (current-string)))
+           (error "do-early-rules-sweep-between start is nil in ~s"
+                  (current-string)))
           ((not (position-p start)) (lsp-break "(position-p start-pos)")))
     (setq left-edge (right-treetop-edge-at start))
     (setq mid-pos  (when (edge-p left-edge) (pos-edge-ends-at left-edge)))
