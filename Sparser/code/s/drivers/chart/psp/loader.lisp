@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  February 2017
+;;;  Version:  December 2017
 
 ;; initiated summer 1990
 ;;  3.0  (9/2/92) bumped to 3 and moved in the newly rationalized set
@@ -57,6 +57,7 @@
 (lload "psp-drivers;period-hook")
 (lload "psp-drivers;semantic-extraction")
 (lload "psp-drivers;post-analysis-operations")
+(lload "psp-drivers;client-operations")
 (lload "psp-drivers;multi-scan")
 (lload "psp-drivers;chunker")
 (lload "psp-drivers;generalize")
