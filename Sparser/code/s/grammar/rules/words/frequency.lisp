@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1996,2010-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1996,2010-2014,2017  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "frequency"
 ;;;   Module:  "rules;words:"
-;;;  Version:  0.5 April 2014
+;;;  Version:  December 2017
 
 ;; initiated 10/90
 ;; 3/21/92 Added capitalization information to the dummy words
@@ -49,7 +49,6 @@
      :punctuation will usually be lumped into the pseud-word
      *punctuation-word*"))
 
-(defvar *sorted-word-entries*)
 
 ;;;-----------------
 ;;; state variables
@@ -85,6 +84,8 @@
 (defparameter *word-count-buckets-most-freq-highest* nil
   "The same list ordered from most frequent word to least.")
 
+(defvar *sorted-word-entries* nil
+  "Used by setup-word-frequency-data to hold what it says")
 
 ;;;----------------
 ;;; initialization
@@ -171,16 +172,15 @@
 ;;; driver - hook into Sparser
 ;;;----------------------------
 
-#| When we run Sparser with its word-frequency-settings
- active, all it does is call record-word-frequency on
- every terminal in the documents it scans. 
-   Note that per-document variables like *words-in-run*
+#| Note that per-document variables like *words-in-run*
  need to be harvested and save off between documents if they
- are going to be meaningful.
-|#
+ are going to be meaningful. |#
 
 (defun record-word-frequency (word position)
-  ;; called in the body of look-at-terminal
+  "When we run Sparser in its word-frequency-setting switch setting,
+  the function look-at-terminal is setf'd to this function, which is
+  passed every word in the document in successive calls (see the driver
+  look-at-next-terminal/shell)."
   (incf *words-in-run*) ;; running total of document length
   (let ((classification (classify-word-for-frequency word position)))
     (record-word-frequency/over-all word classification)))
@@ -249,8 +249,6 @@
     (format t "~&  ~A words added~%" difference)
     (setq *word-types-at-start-of-article* *word-types*)))
 
-
-(defvar *sorted-word-entries* nil)
 
 (defun setup-word-frequency-data ()
   (let ((words-counted
@@ -691,12 +689,12 @@
 
 (defun classify-word-for-frequency (word position)
   (declare (ignore word position))
-  (break "No classifier has been picked for measuring word ~
+  (error "No classifier has been picked for measuring word ~
           frequency.~%You have to make a call to~
           ~%  Establish-word-frequency-classification"))
 
-
 (defun establish-word-frequency-classification (keyword function-name)
+  "Called with default by word-frequency-setting"
   (unless (fboundp function-name)
     (format t "~&~%Warning: the word frequency classification function~
             ~%  ~A  is not yet defined." function-name))
@@ -704,20 +702,11 @@
         (symbol-function function-name))
   (setq *word-frequency-classification* keyword))
 
-#|
-;; only one option left. Unclear that capitalization is meaningful
-;; unless we can distinguish sentence-internal from initial and
-;; get the initial proper names vis a workable heuristic
-;;///// Where is this set?
- (establish-word-frequency-classification :ignore-capitalization
-                                          'wf-classification/ignore-caps)
-|#
 
 (defun wf-classification/ignore-caps (word position)
   (if (word-rules word) ;; known
     (wf-classification/ignore-caps/known word position)
-    (let ((capitalization (pos-capitalization position))
-	  )
+    (let ((capitalization (pos-capitalization position)))
       (case capitalization
 	(:digits *number-word*)
 	(otherwise
@@ -733,6 +722,9 @@
             (error "Unexpected type of stem")))))))))
 
 (defun wf-classification/ignore-caps/known (word position)
+  "Unclear that capitalization is meaningful unless we can distinguish 
+   sentence-internal from initial and get the initial proper names 
+   via a workable heuristic."
   (if (get-tag :function-word word)
     (if *include-function-words-in-frequency-counts*
       word
@@ -754,6 +746,8 @@
            :single-capitalized-letter)
        word ))))
 
+#| (establish-word-frequency-classification :ignore-capitalization
+                                            'wf-classification/ignore-caps)  |#
 
 
 ;;--- Porter Stemming
@@ -799,28 +793,29 @@
   (word-frequency-setting)
   (analyze-text-from-file namestring))
 
+
 (defgeneric count-word-frequencies (document)
   (:documentation "Gets the text to be analyzed and counted
    from the document (doc-set, etc.) and stores the results 
-   on the object. "))
+   on the object. ")
 
-(defmethod count-word-frequencies ((doc document))
-  (word-frequency-setting)
-  (initialize-word-frequency-data)
-  (let ((filename (doc-location doc)))
-    (analyze-text-from-file filename)
-    (setf (token-count doc) *words-in-run*)
-    doc))
+  (:method ((doc document))
+    (word-frequency-setting)
+    (initialize-word-frequency-data)
+    (let ((filename (doc-location doc)))
+      (analyze-text-from-file filename)
+      (setf (token-count doc) *words-in-run*)
+      doc))
 
-(defmethod count-word-frequencies ((doc-set document-set))
-  (word-frequency-setting)
-  (initialize-word-frequency-data)
-  ;; need before/after-{document type} methods to provide 
-  ;; a hook for collecting. Perhaps a 'we're counting words' mode
-  ;; special for them to consult? Or perhaps the equivalent would
-  ;; be something that's set anyway to support word-frequency settings
-  ;; that's easily consulted.
-  (do-document-as-stream-of-files doc-set))
+  (:method ((doc-set document-set))
+    (word-frequency-setting)
+    (initialize-word-frequency-data)
+    ;; need before/after-{document type} methods to provide 
+    ;; a hook for collecting. Perhaps a 'we're counting words' mode
+    ;; special for them to consult? Or perhaps the equivalent would
+    ;; be something that's set anyway to support word-frequency settings
+    ;; that's easily consulted.
+    (do-document-as-stream-of-files doc-set)))
 
 
 
