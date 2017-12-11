@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "sweep"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  October 2015
+;;;  Version:  December 2017
 
 ;; Initiated 8/30/14. To hold the new class of containers to support
 ;; analysis and discourse structure to go with the new forest protocol
@@ -19,7 +19,7 @@
 
 
 (in-package :sparser)
-(defvar WORD::|of|)
+
 ;;;-------
 ;;; flags
 ;;;-------
@@ -38,9 +38,11 @@
 ;;; driver
 ;;;--------
 
+;; (trace-treetops-sweep)
+
 (defun sweep-sentence-treetops (sentence start-pos end-pos)
   "Scan the treetops left to right"
-  (declare (special category::that))
+  (declare (special category::that word::comma word::|of|))
   (tr :sweep-sentence-treetops start-pos end-pos)
   (push-debug `(,sentence ,start-pos ,end-pos))
   (clear-sweep-sentence-tt-state-vars)
@@ -49,7 +51,6 @@
         (sentence-initial? t)
         (count 0) ;; how many treetops have been scanned
         tt  prior-tt  form  pos-after  multiple?  )
-    (declare (special tt prior-tt))
 
     (loop
       (multiple-value-setq (tt pos-after multiple?)
@@ -94,21 +95,19 @@
         
         (when (category-p form)
           (case (cat-name form)
-            ;; this is a gross control structure, but it lets
-            ;; us play while sorting out what will be better
+            ;; this is a gross control structure, but it works
+            
             ((np proper-name proper-noun n-bar common-noun
-              pronoun wh-pronoun reflexive/pronoun possessive/pronoun) 
+              pronoun wh-pronoun reflexive/pronoun possessive/pronoun)
              (cond ((np-over-that? tt)
                     (push-that tt))
                    ((null prior-tt)
                     (set-subject tt))
                    ((and (edge-p prior-tt)
-                         (< count 3) ;; <adv> , <np>
-                         (category-p (edge-category prior-tt)) 
-                         ;; :SBCL errored on case where edge has a word as its category
-                         ;; (P "As RAS is upstream of..." edge over "As"
-                         (memq (cat-symbol (edge-category prior-tt))
-                               '(word::comma category::pp category::adverb)))
+                         (not main-verb-seen?)
+                         (or (eq (edge-category prior-tt) word::comma)
+                             (memq (cat-symbol (edge-category prior-tt))
+                                   '(category::pp category::adverb))))
                     (set-subject tt))
                    (main-verb-seen?
                     (push-loose-np tt))
@@ -197,5 +196,4 @@
       (setq prior-tt tt))
 
     layout))
-
 
