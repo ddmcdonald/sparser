@@ -116,7 +116,14 @@ increasing amounts of recombinant XRCC1.
 (dynamic-model 54 "Double the amount of total BRAF.")
 |#
 
-(noun "peak" :super bio-scalar)
+(define-category peak
+  :specializes bio-scalar
+  :realization (:noun "peak"
+                :in measured-item) ;; "a peak in the measured amount ..."
+  :documentation "The preposition 'in' does the same work as 'of'
+    in other kinds of amounts / quantities of stuff. In biology
+    it seems most appropriate when we are describing locations
+    in graphs, e.g. 'dip' ")
 
 (define-category bio-concentration
   :specializes bio-scalar

@@ -201,22 +201,18 @@
 ;;--- Quality
 
 (define-category bio-quality :specializes bio-predication
-  :mixins (biological)
-  )
+  :mixins (biological))
 
 (define-category bio-scalar
-;;  :specializes bio-quality
   :specializes scalar-quality ;; deprecated
-;;  :mixins (scalar)
   :mixins (bio-quality)
   :documentation "Provides a generalization over 
     biological and scalar-quality"
   :restrict ((participant blocked-category))
   :binds ((measured-item biological))
   :realization
-  (:of measured-item
-       :in measured-item ;; "a peak in the measured amount ..."
-       :m measured-item))
+     (:of measured-item
+      :m measured-item))
 
 
 ;;;--------------
