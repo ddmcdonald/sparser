@@ -1,4 +1,4 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(S2) -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; Copyright (c) 2006-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; Copyright (c) 2011-2013  David D. McDonald  -- all rights reserved
 ;;;
