@@ -362,7 +362,8 @@
     ((and *do-anaphora* (is-pronoun? item))
      (let* ((pn-edge (edge-for-referent item))
             (ignore? (ignore-this-type-of-pronoun (edge-category pn-edge))))
-       (tr :conditioning-anaphor-edge pn-edge)
+       ;; Using trace in assimilate-subcat instead
+       ;;(tr :conditioning-anaphor-edge pn-edge)
        (cond
 	 (ignore?
 	  item)
@@ -372,7 +373,7 @@
             ;; bound as determined by assimilate-subcat. It's frequently
             ;; the case that this variable doesn't have a value restriction,
             ;; particularly for default choices like 'subject'.
-            (tr :recording-pn-mention-v/r v/r)
+            ;;(tr :recording-pn-mention-v/r v/r) too noisy
             (setf (mention-restriction (edge-mention pn-edge)) v/r))
 	  item)
 	 (t

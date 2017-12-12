@@ -118,7 +118,7 @@
                  (reinterpret-collection-with-modifiers mention))
                 ((is-pronoun? base)
                  (let ((interpretation (interpret-pronoun-in-context mention)))
-                   (or (car interpretation) base)))
+                   (or interpretation base)))
                 (t
                  (reinterp-mention-using-bindings mention)))))
         (when *expand-interpretations-in-context*
@@ -127,20 +127,25 @@
         re-interpretation)))
 
 
-(defparameter *work-on-di-pronouns* nil)
+;;--- Pronouns
+
+(defparameter *work-on-di-pronouns* nil
+  "Gates breaks for when new things happen in pronoun cases")
 
 #| Pronoun examples to test (convert to regression tests when working)
 
 (p "Ras is a membrane bound protein. When inactive, 
-it is bound to the small molecule GDP.")
-;; That's two sentences. lifo test says "it" = GDP as only looks locally
+it is bound to the small molecule GDP.") ;; works
 
 (p "The phosphorylated ERK protein then translocates to the nucleus
-where it regulates gene expression.")
+where it regulates gene expression.") ;; no restriction on the 'it'
 |#
 
-(defun interpret-pronoun-in-context (mention)
-  (declare (optimize debug))
+(defun interpret-pronoun-in-context (mention &aux ref)
+  "Called by interpret-in-context which will interpret any non-nil
+   return values and the contextual description (de-referencing) of
+   the pronoun."
+  (declare (special *sentence-in-core*) (optimize debug))
   (let* ((pronoun (base-description mention))
          (edge (mention-source mention)))
     (tr :dt-dereference-pn pronoun edge)
@@ -153,21 +158,34 @@ where it regulates gene expression.")
     (let* ((restriction (mention-restriction mention))
            (types (etypecase restriction
                     ((cons (eql :or)) (cdr restriction))
-                    (category (list restriction)))))
-      (tr :dt-restriction-on-pronoun types)
+                    (category (list restriction))))
+           (sentence  *sentence-in-core*)
+           (layout (base-layout (contents sentence))))
+      ;;(tr :dt-restriction-on-pronoun types) too verbose
+      (when *work-on-di-pronouns*
+        (push-debug `(,mention ,layout)) (break "Interpret pronoun on ~a" edge))
       (cond
         ((null types)
          (tr :dt-no-type-information)
-         (when *work-on-di-pronouns* (lsp-break "no type information"))
+         (when *work-on-di-pronouns* (break "no type information"))
          nil)
-        (t (when *work-on-di-pronouns*
-             (push-debug `(,mention ,edge))
-             (break "lifo, etc."))
-           (let ((ref (find-pronoun-in-lifo-instance types)))
-             (when ref (tr :pronoun-resolved-to ref))
-             (or ref
-                 (when *work-on-di-pronouns*
-                   (lsp-break "Need another technique")))))))))
+        ((eq edge (subject layout))
+         (let ((previous-subject (subject-of-previous-sentence sentence)))
+           (if previous-subject
+             (then
+               (tr :resolving-pronoun/previous-subject previous-subject)
+               previous-subject)
+             (else
+               (tr :pronoun-no-previous-subject)
+               (when *work-on-di-pronouns* (error "no previous subject"))
+               nil))))
+        ((setq ref (find-pronoun-in-lifo-instance types))
+         ;;(tr :pronoun-resolved-to ref)
+         (tr :pronoun-lifo-compatible ref)
+         ref)
+        (t (tr ::no-compatible-referent)
+           (when *work-on-di-pronouns*
+             (lsp-break "Need another technique")))))))
 
 (defun find-pronoun-in-lifo-instance (types)
   (declare (special *lifo-instance-list))  
@@ -287,15 +305,14 @@ where it regulates gene expression.")
 
 (defgeneric contextual-interpretation (item)
   (:documentation
-   "Return the currently available contextual interpretation of th object -- the base-description if no contextual interpretation has been made."))
-
-;; This is the only version of this generic still called
-(defmethod contextual-interpretation ((m discourse-mention))
-  (if (and
-       (slot-boundp m 'ci)
-       (contextual-description m))
+   "Return the currently available contextual interpretation of the object.
+    The base-description if no contextual interpretation has been made.")
+  (:method ((m discourse-mention))
+    (if (and
+         (slot-boundp m 'ci)
+         (contextual-description m))
       (values (contextual-description m) t)
-      (values (base-description m) nil)))
+      (values (base-description m) nil))))
 
 
 (defparameter *special-collection-interp* t
@@ -469,7 +486,8 @@ is replaced with replacement."
 ;;;-------------------------
 
 (defun repair-bad-composition (sentence)
-  ;; 1st experiment -- generalize when there's been a third.
+  "1st experiment: subcategorized locations that were swallowed 
+   as modifiers to preceding np. Generalize when there's been a third example."
   (let* ((edge (span-covered-by-one-edge?
                 (starts-at-pos sentence)
                 (ends-at-pos sentence)))

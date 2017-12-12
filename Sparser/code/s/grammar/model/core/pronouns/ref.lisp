@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-2005,2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2013-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ref"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  October 2016
+;;;  version:  December 2017
 
 ;; 3.0 (7/11/94) completely redone from scratch
 ;; 4.0 (5/8/95) in progress ..5/22
@@ -96,6 +96,11 @@
                category::pronoun/second))))
 
 
+(defun subject-of-previous-sentence (sentence)
+  (when (slot-boundp sentence 'previous)
+    (get-sentence-subject (previous sentence))))
+
+
 (defun handle-pronoun (label form edge sentence)
   ;; This is for 'it' in the biology texts where the edge 
   ;; has been conditioned for us by condition-anaphor-edge
@@ -106,9 +111,7 @@
     (cond
      ;; are we the subject? 
      ((eq edge (subject layout))
-      (let ((previous-subject
-             (and (slot-boundp sentence 'previous)
-                  (get-sentence-subject (previous sentence)))))
+      (let (previous-subject (subject-of-previous-sentence sentence))
         (if (and previous-subject
                  (edge-p previous-subject))
           (then

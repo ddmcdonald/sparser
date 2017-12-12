@@ -31,12 +31,20 @@
 
 ;;--- Conditioning
 
-(deftrace :conditioning-anaphor-edge (pn-edge)
-  ;; called from condition-anaphor-edge 
-  (when *tracing-pronouns*
-    (trace-msg "Conditioning pronoun edge e~a"
-               (edge-position-in-resource-array pn-edge))))
+;; (deftrace :conditioning-anaphor-edge (pn-edge)
+;;   ;; called from condition-anaphor-edge 
+;;   (when *tracing-pronouns*
+;;     (trace-msg "Conditioning pronoun edge e~a"
+;;                (edge-position-in-resource-array pn-edge))))
 
+(deftrace :conditioning-anaphor-edge (pn variable i)
+  ;; called from assimilate-subcat when the item is a pronoun
+  (when *tracing-pronouns*
+    (trace-msg "Conditioning ~s as the ~a on ~a"
+               (pname (value-of 'word pn))
+               (var-name variable) i)))
+
+;; Too verbose
 (deftrace :recording-pn-mention-v/r (value-restriction)
   ;; called from condition-anaphor-edge 
   (when *tracing-pronouns*
@@ -55,15 +63,15 @@
 
 (deftrace :dt-dereference-pn (pronoun edge)
   (when *tracing-pronouns*
-    (trace-msg "Pronoun: ~a on ~a" pronoun edge)))
+    (trace-msg "Interpreting ~a on ~a" pronoun edge)))
 
 (deftrace :dt-no-restriction ()
   (when *tracing-pronouns*
-    (trace-msg "Can't deference -- no restriction recorded")))
+    (trace-msg "    Can't deference -- no restriction recorded")))
 
 (deftrace :dt-no-type-information ()
   (when *tracing-pronouns*
-    (trace-msg "Can't deference -- no type information")))
+    (trace-msg "    Can't deference -- no type information")))
 
 (deftrace :dt-restriction-on-pronoun (types)
   (when *tracing-pronouns*
@@ -100,6 +108,11 @@
     (trace-msg "  Resolved to the previous subject: ~a"
                previous-subject)))
 
+(deftrace :pronoun-no-previous-subject ()
+  ;; called from interpret-pronoun-in-context
+  (when *tracing-pronouns*
+    (trace-msg "   No previous subject")))
+
 (deftrace :pronoun-not-conditioned ()
   ;; called from handle-pronoun
   (when *tracing-pronouns*
@@ -111,12 +124,17 @@
     (trace-msg "  Looking for a ~a" type-restriction)))
 
 (deftrace :no-compatible-referent ()
-  ;; called from handle-pronoun
+  ;; called from handle-pronoun and interpret-pronoun-in-context
   (when *tracing-pronouns*
     (trace-msg "    Nothing found")))
 
+(deftrace :pronoun-lifo-compatible (ref)
+  ;; called from interpret-pronoun-in-context
+  (when *tracing-pronouns*
+    (trace-msg "    Using LIFO heuristic found ~a" i)))
+
 (deftrace :pronoun-resolved-to (i)
-  ; called from handle-pronoun
+  ; called from handle-pronoun interpret-pronoun-in-context
   (when *tracing-pronouns*
     (trace-msg "    Found ~a" i)))
 
