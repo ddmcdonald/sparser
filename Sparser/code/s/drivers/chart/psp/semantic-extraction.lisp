@@ -35,7 +35,7 @@
 
 (defun identify-relations (sentence)
   ;; sweep over every treetop in the sentence and look at
-  ;; their referents. For all sensible cases recursively
+  ;; their referents. For all sensible cases, recursively
   ;; examine the object and tally the entities and relations.
   ;; N.b. this sweep is based on collect-model, which is
   ;; defined in interface/grammar/sweep.lisp
@@ -252,7 +252,9 @@
       result)))
 
 
-;;--- saving surface strings
+;;;------------------------
+;;; saving surface strings
+;;;------------------------
 
 (defun save-surface-string (edge)
   (note-surface-string edge))
@@ -369,8 +371,6 @@
 
 
 
-     
-
 (defun all-surface-strings (i)
   (gethash i *referent-surface-strings*))
 
@@ -435,19 +435,6 @@
 ;;;------------------------------------
 ;;; collectors for semtree and friends
 ;;;------------------------------------
-
-(defun tts-semantics ()
-  (loop for edge in (all-tts) #+ignore (cdr (all-tts)) 
-    when (and (edge-p edge) 
-              (not (word-p (edge-referent edge))))
-    collect (semtree (edge-referent edge))))
-
-(defun tts-edge-semantics ()
-  (loop for edge in (all-tts)
-    when (and (edge-p edge) 
-              (not (word-p (edge-referent edge))))
-    collect (list edge
-                  (semtree (edge-referent edge)))))
 
 (defun all-entities (&optional (trees (tts-semantics)))
   (loop for st in trees
@@ -556,25 +543,10 @@
              *semtree-seen-individuals*)
     indivs))
 
-;;;----------------------------------------------------------------------------
-;;; drivers of semtree binding special variables for collect-model-description
-;;;----------------------------------------------------------------------------
 
-(defun spire-tree (item &optional (with-ids nil))
-  (declare (special  *sentence-results-stream*))
-  (let ((*sentence-results-stream*
-         (unless with-ids *sentence-results-stream*)))
-    (declare (special *sentence-results-stream*))
-    (let ((*for-spire* t)
-          (*with-uids* with-ids))
-      (declare (special *for-spire* *with-uids*))
-      (semtree item))))
-#| As of 8/1/17 spire-tree is called 
-in object/doc/save-doc-semantics.lisp by write-sem-tree and
-  the method write-combined-sentence-results
-in cwc-integ/spire/interface/sparser.lisp
-  by spire::sparser-indiv->all-exprs
-|#
+;;;-----------------
+;;; Spire <-> Krisp
+;;;-----------------
 
 (defun krisp->sexpr (item)
   "Approved standard way to serialize Krisp objects as sexp.
@@ -636,13 +608,55 @@ in cwc-integ/spire/interface/sparser.lisp
           indiv))))))
 
 
-
 (defmacro -?krisp (sexpr)
   (to-krisp sexpr))
+
+;;;----------------------------------------------------------------------------
+;;; drivers of semtree binding special variables for collect-model-description
+;;;----------------------------------------------------------------------------
+
+(defun spire-tree (item &optional (with-ids nil))
+  (declare (special  *sentence-results-stream*))
+  (let ((*sentence-results-stream*
+         (unless with-ids *sentence-results-stream*)))
+    (declare (special *sentence-results-stream*))
+    (let ((*for-spire* t)
+          (*with-uids* with-ids))
+      (declare (special *for-spire* *with-uids*))
+      (semtree item))))
+#| As of 8/1/17 spire-tree is called 
+in object/doc/save-doc-semantics.lisp by write-sem-tree and
+  the method write-combined-sentence-results
+in cwc-integ/spire/interface/sparser.lisp
+  by spire::sparser-indiv->all-exprs
+|#
+
+(defun tts-semantics ()
+  (loop for edge in (all-tts) #+ignore (cdr (all-tts)) 
+    when (and (edge-p edge) 
+              (not (word-p (edge-referent edge))))
+    collect (semtree (edge-referent edge))))
+
+(defun tts-edge-semantics ()
+  (loop for edge in (all-tts)
+    when (and (edge-p edge) 
+              (not (word-p (edge-referent edge))))
+    collect (list edge
+                  (semtree (edge-referent edge)))))
+
 
 ;;;-----------------
 ;;; semtree methods
 ;;;-----------------
+
+(defparameter *semtree-seen-individuals* (make-hash-table)
+  "Cleared and used by semtree to avoid walking through the
+  same individual twice and getting into a loop.")
+
+(defgeneric semtree (item)
+  (:documentation "Returns the Krisp interpretation of the item
+ as an sexpression. Overloaded by global parameters that modify
+ the content and pattern of what is in the sexp."))
 
 (defmethod semtree ((x null))
   nil)
@@ -655,22 +669,9 @@ in cwc-integ/spire/interface/sparser.lisp
       (semtree (i# n))
       (semtree (e# n))))
 
-(defmethod csemtree ((n number))
-  (if (> n 1000)
-      (semtree (i# n))
-      (csemtree (e# n))))
-
-
 (defmethod semtree ((e edge))
   (semtree (edge-referent e)))
 
-(defmethod csemtree ((e edge))
-  (semtree (contextual-interpretation (edge-mention e))))
-
-(defparameter *semtree-seen-individuals* (make-hash-table)
-  "Cleared and used by semtree to avoid walking through the
-  same individual twice and getting into a loop.")
-
 (defmethod semtree ((i individual))
   (clrhash *semtree-seen-individuals*)
   (collect-model-description i))
@@ -679,17 +680,17 @@ in cwc-integ/spire/interface/sparser.lisp
   (clrhash *semtree-seen-individuals*)
   (collect-model-description i))
 
-(defparameter *semtree-seen-individuals* (make-hash-table)
-  "Cleared and used by semtree to avoid walking through the
-  same individual twice and getting into a loop.")
 
-(defmethod semtree ((i individual))
-  (clrhash *semtree-seen-individuals*)
-  (collect-model-description i))
-
-(defmethod semtree ((i referential-category))
-  (clrhash *semtree-seen-individuals*)
-  (collect-model-description i))
+(defgeneric csemtree (item) ;; "Contextual-semtree"
+  (:documentation "Returns an sexp of the item's Krisp 
+   interpretationlike semtree. But operates on the mention 
+   associated with an edge")
+  (:method ((n number))
+    (if (> n 1000)
+      (semtree (i# n))
+      (csemtree (e# n))))
+  (:method ((e edge))
+    (semtree (contextual-interpretation (edge-mention e)))))
 
 
 ;;;-----------------------------------
