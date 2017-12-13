@@ -49,10 +49,12 @@
 (deftrace :recording-pn-mention-v/r (head var value-restriction)
   ;; called from condition-anaphor-edge 
   (when *tracing-pronouns*
-    (trace-msg "  Its value restriction (from ~s on ~s) is ~a"
+    (trace-msg "  Its value restriction (from ~s on ~s) ~%  is ~s"
                var
                head
-               value-restriction)))
+               (if (consp value-restriction)
+                   `(:or ,.(mapcar #'cat-name (cdr value-restriction)))
+                   (cat-name value-restriction)))))
 
 (deftrace :anaphor-conditioned-to (new-ref restriction relation-label)
   ;; called from condition-anaphor-edge 
@@ -135,7 +137,7 @@
 (deftrace :pronoun-lifo-compatible (ref)
   ;; called from interpret-pronoun-in-context
   (when *tracing-pronouns*
-    (trace-msg "    Using LIFO heuristic found ~a" i)))
+    (trace-msg "    Using LIFO heuristic found ~a" ref)))
 
 (deftrace :pronoun-resolved-to (i)
   ; called from handle-pronoun interpret-pronoun-in-context
