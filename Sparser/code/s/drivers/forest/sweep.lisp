@@ -114,7 +114,9 @@
                     (push-loose-np tt))
                    (t (push-loose-np tt)))
              (when (and (pronoun-category? form)
-                        (not (ignore-this-type-of-pronoun (edge-category tt))))
+                        ;; don't deal with personal pronouns (in biology)
+                        (or (not  (current-script :biology))
+                            (not (ignore-this-type-of-pronoun (edge-category tt)))))
                (tr :noticed-pronoun tt)
                (push-pronoun tt)))
             
