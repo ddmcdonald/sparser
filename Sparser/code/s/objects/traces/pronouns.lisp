@@ -24,8 +24,9 @@
 (deftrace :noticed-pronoun (edge)
   ;; called from sweep-sentence-treetops
   (when *tracing-pronouns*
-    (trace-msg "e~a is a ~a pronoun"
+    (trace-msg "e~a (~s) is a ~a pronoun"
                (edge-position-in-resource-array edge)
+               (extract-string-spanned-by-edge edge)
                (edge-category edge))))
 
 
@@ -45,10 +46,13 @@
                (var-name variable) i)))
 
 ;; Too verbose
-(deftrace :recording-pn-mention-v/r (value-restriction)
+(deftrace :recording-pn-mention-v/r (head var value-restriction)
   ;; called from condition-anaphor-edge 
   (when *tracing-pronouns*
-    (trace-msg "  Its value restriction is ~a" value-restriction)))
+    (trace-msg "  Its value restriction (from ~s on ~s) is ~a"
+               var
+               head
+               value-restriction)))
 
 (deftrace :anaphor-conditioned-to (new-ref restriction relation-label)
   ;; called from condition-anaphor-edge 

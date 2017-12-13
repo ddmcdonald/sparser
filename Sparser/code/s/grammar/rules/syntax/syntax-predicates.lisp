@@ -346,7 +346,7 @@
 ;;; recording pronouns
 ;;;--------------------
 
-(defun condition-anaphor-edge (item subcat-label v/r)
+(defun condition-anaphor-edge (head item subcat-label var)
   ;; We now know the restriction that any candidate referent for this
   ;; pronoun has to satisfy, and we know the v/r of the variable it has to bind. This
   ;; edge was recorded in the layout as a pronoun and will be retrieved in
@@ -358,6 +358,7 @@
   ;; the correct referent once we've identified it. Kind of Rube Goldberg
   ;; -esque, but it's the price we pay for delaying rather than trying to
   ;; identify the referent at moment the pronoun is encountered.
+  (declare (special var))
   (cond
     ((and *do-anaphora* (is-pronoun? item))
      (let* ((pn-edge (edge-for-referent item))
@@ -368,14 +369,15 @@
 	 (ignore?
 	  item)
 	 (*constrain-pronouns-using-mentions*
-          (when v/r
-            ;; Comes from the value restriction of the variable to be
-            ;; bound as determined by assimilate-subcat. It's frequently
-            ;; the case that this variable doesn't have a value restriction,
-            ;; particularly for default choices like 'subject'.
-            ;;(tr :recording-pn-mention-v/r v/r) too noisy
-            (setf (mention-restriction (edge-mention pn-edge)) v/r))
-	  item)
+          (let ((v/r (effective-pronoun-value-restriction var)))
+            (when v/r
+              ;; Comes from the value restriction of the variable to be
+              ;; bound as determined by assimilate-subcat. It's frequently
+              ;; the case that this variable doesn't have a value restriction,
+              ;; particularly for default choices like 'subject'.
+              (tr :recording-pn-mention-v/r head var v/r)
+              (setf (mention-restriction (edge-mention pn-edge)) v/r))
+            item))
 	 (t
 	  (let ((relation-label (or (form-label-corresponding-to-subcat subcat-label)
                                     category::np))
@@ -402,6 +404,21 @@
 		(setf (edge-rule pn-edge) 'condition-anaphor-edge))
 	      new-ref))))))
     (t item)))
+
+(defun effective-pronoun-value-restriction (var)
+  (if (disjunctive-lambda-variable-p var)
+      (let ((vrs
+             (remove-duplicates
+              (loop for v in (dvar-variables var)
+                      as v/r = (var-value-restriction v)
+                    append
+                      (if (and (consp v/r) (eq (car v/r) :or))
+                          (cdr v/r)
+                          (list v/r))))))
+        (if (cdr vrs)
+            `(:or ,.vrs)
+            (car vrs) ))
+      (var-value-restriction var)))
 
 (defun form-label-corresponding-to-subcat (subcat-label)
   ;; Used with pronouns to encode relationship when it's known

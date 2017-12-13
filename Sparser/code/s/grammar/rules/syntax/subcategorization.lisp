@@ -722,9 +722,13 @@
              (tr :conditioning-anaphor-edge item variable-to-bind head)
              (setq item
                    (condition-anaphor-edge
-                    item subcat-label (var-value-restriction variable-to-bind))))
+                    head
+                    item
+                    subcat-label
+                    variable-to-bind)))
            (setq head (bind-dli-variable variable-to-bind item head))
            head)))))
+
 
 (defun assimilate-subcat-to-collection (head subcat-label item
                                         &aux (heads (value-of 'items head))

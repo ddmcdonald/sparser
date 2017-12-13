@@ -113,7 +113,8 @@
                    (main-verb-seen?
                     (push-loose-np tt))
                    (t (push-loose-np tt)))
-             (when (pronoun-category? form)
+             (when (and (pronoun-category? form)
+                        (not (ignore-this-type-of-pronoun (edge-category tt))))
                (tr :noticed-pronoun tt)
                (push-pronoun tt)))
             
