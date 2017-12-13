@@ -106,8 +106,9 @@
                    ((and (edge-p prior-tt)
                          (not main-verb-seen?)
                          (or (eq (edge-category prior-tt) word::comma)
-                             (memq (cat-symbol (edge-category prior-tt))
-                                   '(category::pp category::adverb))))
+                             (and (category-p (edge-category prior-tt))
+                                  (memq (cat-symbol (edge-category prior-tt))
+                                        '(category::pp category::adverb)))))
                     (set-subject tt))
                    (main-verb-seen?
                     (push-loose-np tt))
