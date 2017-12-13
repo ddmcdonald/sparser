@@ -59,7 +59,7 @@
       Loop stops at *end-of-source* and returns the position reached and the
    current sentence. N.b. does not use the period-hook, though uses it's 'is-a-sentence'
    checks."
-  (declare (special *trace-sweep* *scanning-terminals*)
+  (declare (special *trace-sweep* *scanning-terminals* *sentence-terminating-punctuation*)
            (optimize debug))
   (tr :polyword-sweep-loop)
   (cond ((includes-state position :polywords-check)
