@@ -90,10 +90,9 @@
    this edge we're looking at (it's category) one of the
    proscribed cases"
   (and *ignore-personal-pronouns*
-       (memq (cat-symbol label)
-             '(category::pronoun/first/plural 
-               category::pronoun/first/singular
-               category::pronoun/second))))
+       (memq (cat-name label)
+             '(pronoun/first/plural pronoun/first/singular
+               pronoun/second which how))))
 
 
 (defun subject-of-previous-sentence (sentence)
