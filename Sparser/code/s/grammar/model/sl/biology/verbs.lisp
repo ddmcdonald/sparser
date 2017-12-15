@@ -1398,7 +1398,7 @@
 
 (define-category transcribe :specializes caused-bio-process
   :binds ((bio biological))
-  :restrict ((agent cell-entity))             
+  :restrict ((agent (:or cell-entity protein)))
   :realization 
   (:verb "transcribe" 
    :noun "transcription"
