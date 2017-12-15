@@ -216,7 +216,7 @@ with multiple variations.  |#
 When inactive, it is bound to the small molecule GDP.
 Upon growth factor stimulation of the cell, an exchange factor,
 such as the SOS protein,
-causes ras to release GDP and and ras will now bind to GTP.
+causes ras to release GDP and ras will now bind to GTP.
 Binding to GTP causes a conformational change of the ras protein
 that puts ras into the active state.
 GTP-bound ras binds to the raf protein kinase.
