@@ -275,6 +275,24 @@
   `(lookup-syntactic-rule
     (list (resolve ',label-name1) (resolve ',label-name2))))
 
+
+
+(defun ssbr () ;; "Snapshot Sentence Being Run"
+  "Compare-to-snapshots runs in 'quiet' mode where we don't know what
+ snapshot sentence is running, just the result. This function is 
+ valuable when an error occurs during compare-to-snapshots and
+ you want to know what the sentence text is, what snapshot corpus
+ it is from, and which number sentence  it is within the corpus.
+ This uses special variables that are managed by run-treetop-snapshot
+ in grammar/tests/citations/code/sentence-corpora.lisp."
+  (declare (special *snapshot-corpus* *snapshot-index* *p-sent*))
+  (let ((corpus *snapshot-corpus*)
+        (index *snapshot-index*)
+        (text *p-sent*))
+    (format t "~a #~a~%~a" corpus index text)))
+
+
+
 ;;;------------------
 ;;; packaged drivers
 ;;;------------------

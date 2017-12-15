@@ -115,13 +115,6 @@ previous records of treetop-counts.
   "Set to the text of the sentence being run in the run-sentences
    inner function of run-treetop-snapshot")
 
-(defun ssbr () ;; Snapshot Sentence Being Run
-  (declare (special *snapshot-corpus* *snapshot-corpus* *p-sent*))
-  (let ((corpus *snapshot-corpus*)
-        (index *snapshot-corpus*)
-        (text *p-sent*))
-    (format t "~a #~a~%~a" corpus index text)))
-
 
 (defmethod run-treetop-snapshot ((name symbol) &optional (save-info nil))
   (let ((corpus (get-sentence-corpus name)))
@@ -161,8 +154,6 @@ previous records of treetop-counts.
                                              (treetops-between
                                               (starts-at-pos sentence)
                                               (ends-at-pos))
-                                             ;; amazingly, we have only been counting
-                                             ;;  treetops in the LAST SENTENCE
                                              (treetops-between
                                               (starts-at-pos (last-sent))
                                               (ends-at-pos (last-sent)))
@@ -183,20 +174,7 @@ previous records of treetop-counts.
 
           (nreverse pairs))))))
 
-             ;; temp copy of second clause -- first used in flet
-            #+ignore(dolist (exp (eval variable)) ;; (p "...")
-              (setq *p-sent* exp)
-              (incf index)
-              (eval exp)
-              (let ((sentence (previous (sentence))))
-                ;;(push-debug `(,sentence ,corpus)) (break "check sentence")
-                (if (null sentence) ;; if we are aborting a sentence when we get an error
-                    (progn (warn "Error during parsing of ~s~%" exp)
-                           (push `(,index . ,0) pairs))
-                    (let ((count (length (treetops-between
-                                          (starts-at-pos sentence)
-                                          (ends-at-pos sentence)))))
-                      (push `(,index . ,count) pairs)))))
+
 
 (defun last-sent ()
   (let ((s (sentence)))
