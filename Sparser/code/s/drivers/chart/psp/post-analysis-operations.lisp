@@ -161,9 +161,9 @@ where it regulates gene expression.") ;; no restriction on the 'it'
                     (category (list restriction))))
            (sentence  *sentence-in-core*)
            (layout (base-layout (contents sentence))))
-      ;;(tr :dt-restriction-on-pronoun types) too verbose
       (when *work-on-di-pronouns*
         (push-debug `(,mention ,layout)) (break "Interpret pronoun on ~a" edge))
+      
       (cond
         ((null types)
          (tr :dt-no-type-information)
@@ -179,7 +179,7 @@ where it regulates gene expression.") ;; no restriction on the 'it'
                (tr :pronoun-no-previous-subject)
                (when *work-on-di-pronouns* (error "no previous subject"))
                nil))))
-        ((setq ref (find-pronoun-in-lifo-instance types))
+        ((setq ref (find-pronoun-in-lifo-instance types edge))
          ;;(tr :pronoun-resolved-to ref)
          (tr :pronoun-lifo-compatible ref)
          ref)
@@ -187,12 +187,26 @@ where it regulates gene expression.") ;; no restriction on the 'it'
            (when *work-on-di-pronouns*
              (lsp-break "Need another technique")))))))
 
-(defun find-pronoun-in-lifo-instance (types)
-  (declare (special *lifo-instance-list))  
-  (loop for type in types
-     when (find-if #'(lambda (i) (itypep i type)) *lifo-instance-list*
-                   :key #'car)
-     return it))
+(defun find-pronoun-in-lifo-instance (types pronoun-edge)
+  "The referent has to be to the left of the position of the edge over the pn.
+   The lifo list is a push list in of every object passed to record-instance-within-sequence
+   by add-subsuming-object-to-discourse-history so it's in right-to-left order
+   with respect to the sentence.
+    1. Walk the list to the first edge that is to the left of the pn edge, 
+    2. Select an object of compatible type from the remaining candidates."
+  (declare (special *lifo-instance-list*))
+  ;;(break "lifo = ~a" *lifo-instance-list*)
+  (let* ((pn-end (pos-edge-ends-at pronoun-edge))
+         (candidates (loop for pair in (reverse *lifo-instance-list*)
+                        as edge = (cadr pair)
+                        as edge-end-pos = (pos-edge-ends-at edge)
+                        when (position-precedes edge-end-pos pn-end)
+                        collect pair)))
+    ;;(break "candidates = ~a" candidates)
+    (let ((pair (loop for type in types
+                   when (find-if #'(lambda (i) (itypep i type)) candidates :key #'car)
+                   return it)))
+      (when pair (car pair)))))
 
 
 
