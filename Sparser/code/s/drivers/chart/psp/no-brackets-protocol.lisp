@@ -219,7 +219,8 @@
   (loop
      (tr :sweep-reading-sentence sentence)
      (setq *current-sentence-string* (sentence-string sentence))
-     (setq *sentence-in-core* sentence)
+     (setq *sentence-in-core* sentence
+           *current-sentence* sentence)
      (when *show-sentence-for-early-errors*
        (format t "  in sentence: ~s ~%" (current-string))
        (setq *show-sentence-for-early-errors* nil))
