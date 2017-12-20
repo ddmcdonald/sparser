@@ -216,14 +216,14 @@ with multiple variations.  |#
 When inactive, it is bound to the small molecule GDP.
 Upon growth factor stimulation of the cell, an exchange factor,
 such as the SOS protein,
-causes ras to release GDP and ras will now bind to GTP.
-Binding to GTP causes a conformational change of the ras protein
-that puts ras into the active state.
-GTP-bound ras binds to the raf protein kinase.
-This binding of raf to ras has the effect of
-activating the raf kinase
-and localizing the raf kinase to the cell membrane.
-Activated raf now phosphorylates and activates the Mek1 kinase.
+causes Ras to release GDP and Ras will now bind to GTP.
+Binding to GTP causes a conformational change of the Ras protein
+that puts Ras into the active state.
+GTP-bound Ras binds to the Raf protein kinase.
+This binding of Raf to Ras has the effect of
+activating the Raf kinase
+and localizing the Raf kinase to the cell membrane.
+Activated Raf now phosphorylates and activates the Mek1 kinase.
 The Mek1 kinase then phosphorylates the ERK kinase
 on both threonine and tyrosine residues
 which activate ERK kinase activity.
@@ -233,16 +233,16 @@ in part by phosphorylating the Elk1 transcription factor.
 Phospho-Elk then upregulates the gene expression of target genes
 such as the proto-oncogene c-fos.
 The entire signaling cascade is terminated by
-the intrinsic GTPase activity of ras
+the intrinsic GTPase activity of Ras
 which hydrolyzes the bound GTP into GTP,
-thus returning ras to the GDP bound state
-where it releases bound raf.
-The GTPase activity of ras is accelerated
+thus returning Ras to the GDP bound state
+where it releases bound Raf.
+The GTPase activity of Ras is accelerated
 by interaction with another protein called GAP.
-The oncogenic rasv12 mutant has diminished GTPase activity
+The oncogenic Rasv12 mutant has diminished GTPase activity
 and therefore stays in the active GTP bound state constitutively.
-Deletion of GAP or the related NF1 genes will also enhance ras activity
-by slowing the rate of ras-GTP hydrolysis.")
+Deletion of GAP or the related NF1 genes will also enhance Ras activity
+by slowing the rate of Ras-GTP hydrolysis.")
 
 
 
