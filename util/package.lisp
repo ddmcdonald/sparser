@@ -25,7 +25,7 @@
            #:mbug
 
            ;; lists
-           #:ensure-list
+           #:ensure-list #:designate-list
            #:append-new
            #:mapappend
            #:pl

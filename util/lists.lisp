@@ -20,6 +20,12 @@
     object
     (list object)))
 
+(defun designate-list (object)
+  "Return a list designator for OBJECT."
+  (if (and (listp object) (null (cdr object)))
+    (car object)
+    object))
+
 (defun append-new (&rest lists)
   "Append lists together, suppressing duplicates."
   (let ((output-list (nreverse (copy-list (car lists))))
