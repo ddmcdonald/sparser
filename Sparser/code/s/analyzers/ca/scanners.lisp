@@ -106,6 +106,25 @@
        ;; for associating terminals with positions
        (chart-position-before (ev-position ends-there))))))
 
+(defun edge-to-its-right (edge)
+  (unless (typep edge 'edge)
+    (error "Wrong argument type.~%   Expected an edge and got ~
+            a ~A" (type-of edge)))
+    (edge/word-to-the-right (ev-position (edge-ends-at edge))))
+
+(defun edge/word-to-the-right (position)
+  (let* ((starts-there (pos-starts-here position))
+         (top-edge (ev-top-node starts-there)))
+    (if top-edge
+      (if (eq top-edge :multiple-initial-edges)
+          starts-there ;; return the edge-vector
+          top-edge)
+      (pos-terminal
+       ;; n.b. this is wierd because of what the convention is
+       ;; for associating terminals with positions
+       (chart-position-after (ev-position starts-there))))))
+
+
 
 
 (defun edge-to-its-left/jump-word (edge)
