@@ -931,7 +931,8 @@ val-pred-var (pred vs modifier - left or right?)
   (let ((be-edge (left-edge-for-referent)))
     (when (or
            (member (cat-name (edge-form be-edge))
-                   '(verb verb+present verb+past verb+ed verb+ing vg+ed vg vg+ing vp+ing infinitive))
+                   '(verb verb+present verb+past verb+ed verb+ing
+                     vg+ed vg vg+ing vp+ing infinitive))
            (if (member (cat-name (edge-form be-edge))
                        '(that-comp thatcomp to-comp vp S subject-relative-clause
                          subordinate-s subordinate-clause

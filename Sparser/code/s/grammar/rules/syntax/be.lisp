@@ -170,8 +170,7 @@ this -- 'have' is done the same way. |#
 
 (def-form-rule (be vg+ed)
   :form vg+passive
-  :referent (:head right-edge
-             :function check-passive-and-add-tense/aspect left-edge right-edge))
+  :referent (:function check-passive-and-add-tense/aspect left-edge right-edge))
 
 (def-form-rule (be vg+passive) ;; "were previously used"
   :form vg+passive
