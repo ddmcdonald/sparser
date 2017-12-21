@@ -28,7 +28,7 @@
   (define-individual 'interlocutor :name "person"))
 
 (defvar *us*
-  (define-individual 'interlocutor :name "persan-and-machine"))
+  (define-individual 'interlocutor :name "person-and-machine"))
 
 
 (defun pre-interpret-first-and-second-pronouns (rule category-suffix)
