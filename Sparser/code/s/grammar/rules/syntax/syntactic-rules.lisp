@@ -682,21 +682,22 @@
 
 ;;--- wh cases
 (loop for rel in '(which who whom why)
-   ;;  (where, when) this is more often used as a subordinate conjunction
-   do
-     (eval
-      `(def-form-rule (,rel transitive-clause-without-object)
-           :head :right-edge
-           :form object-relative-clause
-           :referent (:function compose-wh-with-vp left-edge right-edge)))
-     
-     (loop for v in '(vp vp+passive vg+passive vg)
-        do
-          (eval
-           `(def-form-rule (,rel ,v) 
-                :head :right-edge
-                :form subject-relative-clause
-                :referent (:function compose-wh-with-vp left-edge right-edge)))))
+      ;;  (where, when) this is more often used as a subordinate conjunction
+      do
+        (eval
+         `(def-form-rule (,rel transitive-clause-without-object)
+              :head :right-edge
+              :form object-relative-clause
+              :referent (:function compose-wh-with-vp left-edge right-edge)))
+        
+        (loop for v in '(vp  vg vp+passive vg+passive)
+              do
+                (eval
+                 `(def-form-rule (,rel ,v) 
+                      :head :right-edge
+                      :form subject-relative-clause
+                      :referent (:function compose-wh-with-vp left-edge right-edge))))
+        )
 
 (loop for rel in '(which who whom)
    do
