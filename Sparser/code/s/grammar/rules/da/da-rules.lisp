@@ -787,6 +787,55 @@
               ))))))
 
 
+(define-debris-analysis-rule s-comma-obj-relative
+    :pattern (s "," object-relative-clause)
+    :action (:function s-comma-obj-relative first second third))
+
+(define-debris-analysis-rule vp-comma-obj-relative
+    :pattern (vp "," object-relative-clause)
+    :action (:function s-comma-obj-relative first second third))
+
+(define-debris-analysis-rule pp-comma-obj-relative
+    :pattern (pp "," object-relative-clause)
+    :action (:function s-comma-obj-relative first second third))
+
+(defun s-comma-obj-relative (s-edge comma-edge srel-edge)
+  (declare (ignore comma-edge)
+           (optimize (debug 3)(speed 1)))
+  (when (edge-referent srel-edge) ;; can be null as in "which is consistent "
+    (let* ((s (edge-referent s-edge))
+           (s-rel (edge-referent srel-edge)) ;; can be null?!
+           (target (when (and s-rel
+                              (not (is-basic-collection? s-rel)))
+                     (find-target-satisfying
+                      (right-fringe-of s-edge)
+                      #'(lambda(x)
+                          (and (np-target? x)
+                               (subcategorized-variable s-rel :object (edge-referent x)))))))
+           ;; update-edge-as-lambda-predicate now returns NIL if there is
+           ;;  no available binding for the variable (s-var or t-var) on srel-edge
+           (t-pred (when target
+                     (update-edge-as-lambda-predicate srel-edge target)))
+           (s-pred (when (and target
+                              (null t-pred)
+                              (not (eq (cat-name (edge-form s-edge)) 'pp)))
+                     (update-edge-as-lambda-predicate srel-edge s))))
+      (declare (special s-var t-var target))
+      (cond (t-pred
+             (make-edge-spec 
+              :category (edge-category target)
+              :form (edge-form target)
+              :referent (bind-dli-variable :predication t-pred (edge-referent target))
+              :target target
+              :direction :right))
+            (s-pred
+             (make-edge-spec 
+              :category (edge-category s-edge)
+              :form (edge-form s-edge)
+              :referent (bind-dli-variable 'predication s-pred s)
+              ))))))
+
+
 (define-debris-analysis-rule s-comma-where-relative
     :pattern (s "," where-relative-clause)
     :action (:function s-comma-where-relative first second third))
@@ -862,6 +911,46 @@
        :category (edge-category np-edge)
        :form (edge-form np-edge)
        :referent (bind-dli-variable 'predication s-pred np)))))
+
+;;  object relative NP
+
+(define-debris-analysis-rule np-comma-obj-relative
+    :pattern (np "," object-relative-clause)
+    :action (:function np-comma-obj-relative first second third))
+
+(define-debris-analysis-rule proper-noun-comma-obj-relative
+    :pattern (proper-noun "," object-relative-clause)
+    :action (:function np-comma-obj-relative first second third))
+
+(defun np-comma-obj-relative (np-edge comma-edge srel-edge)
+  (declare (ignore comma-edge))
+  (let* ((np (edge-referent np-edge))
+         (s-pred (update-edge-as-lambda-predicate srel-edge np)))
+    (when s-pred
+      (make-edge-spec 
+       :category (edge-category np-edge)
+       :form (edge-form np-edge)
+       :referent (bind-dli-variable 'predication s-pred np)))))
+
+(define-debris-analysis-rule np-comma-obj-relative-comma
+    :pattern (np "," object-relative-clause ",")
+    :action (:function np-comma-obj-relative-comma first second third fourth))
+
+(define-debris-analysis-rule proper-noun-comma-obj-relative-comma
+    :pattern (proper-noun "," object-relative-clause ",")
+    :action (:function np-comma-obj-relative-comma first second third fourth))
+
+(defun np-comma-obj-relative-comma (np-edge comma-edge srel-edge comma-2)
+  (declare (ignore comma-edge comma-2))
+  (let* ((np (edge-referent np-edge))
+         (s-pred (update-edge-as-lambda-predicate srel-edge np)))
+    (when s-pred
+      (make-edge-spec 
+       :category (edge-category np-edge)
+       :form (edge-form np-edge)
+       :referent (bind-dli-variable 'predication s-pred np)))))
+
+
 
 
 
@@ -1796,7 +1885,7 @@
          (return-from update-edge-as-lambda-predicate nil))
         ((edge-p np) (setq np (edge-referent np))))
   (when (and (eq :subject syntactic-label)
-             (member (cat-name (edge-form vp-edge)) '(vp+passive)))
+             (member (cat-name (edge-form vp-edge)) '(vp+passive object-relative-clause)))
     ;; example "is mediated by caspase-3, which is also activated by GzmB"
     (setq syntactic-label :object))
        
