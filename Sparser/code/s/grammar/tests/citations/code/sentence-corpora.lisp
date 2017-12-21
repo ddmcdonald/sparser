@@ -150,10 +150,10 @@ previous records of treetop-counts.
                            (progn (warn "Error during parsing of ~s~%" exp)
                                   (push `(,index . ,0) pairs))
                            (let ((count (length
-                                         (if (previous (sentence)) ;; old style
+                                         (if (previous (sentence))  ;; old style or multi-sentence!!
                                              (treetops-between
                                               (starts-at-pos sentence)
-                                              (ends-at-pos))
+                                              (ends-at-pos sentence))
                                              (treetops-between
                                               (starts-at-pos (last-sent))
                                               (ends-at-pos (last-sent)))
