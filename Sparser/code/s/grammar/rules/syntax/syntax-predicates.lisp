@@ -137,7 +137,10 @@
    ;;(not (can-fill-vp-subject? vp subj))
    ;; block relativization of "we realized", and of "that X VP+ED ..."
    (not (and (edge-p subj-edge) (eq (cat-name (edge-category subj-edge)) 'pronoun/first/plural)))
-   (not (and (edge-p left-edge) (eq (cat-name (edge-category left-edge)) 'that)))
+   (or (not (and (edge-p left-edge) (eq (cat-name (edge-category left-edge)) 'that)))
+       (and (edge-p (edge-to-its-right (right-edge-for-referent)))
+            (member (cat-name (edge-form (edge-to-its-right (right-edge-for-referent))))
+                    '(vp+ed vp))))
    (not (intransitive? (itype-of vp)))
    (subcategorized-variable vp :object subj)))
 
