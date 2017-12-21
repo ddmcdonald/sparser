@@ -138,7 +138,14 @@
 (defparameter *labels-to-their-subcategorization* (make-hash-table)
   "From words or categories to subcategorization objects")
 
-(defmethod subcat-patterns ((sf null)))
+(defun filter-patterns (item &optional label)
+  (let ((patterns (subcat-patterns item)))
+    (if label
+        (loop for pat in patterns when (eq (subcat-label pat) label)
+              collect pat)
+        patterns)))
+
+(defmethod subcat-patterns ((sf null)) nil)
 
 (defmethod subcat-patterns ((sf symbol))
   (subcat-patterns (category-named sf)))
