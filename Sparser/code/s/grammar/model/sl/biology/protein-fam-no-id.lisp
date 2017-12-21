@@ -66,8 +66,6 @@ the STAT1 transcription factor |#
 (def-family "eIF" :synonyms ("eukaryotic initiation factor" "eiF")) 
 (def-family "HLA class I molecule") 
 (def-family "PTK") 
-(def-family "ROCK" :synonyms ("rho associated kinase" "rho-kinase" "Rho- kinase")
-            :members ("UP:Q13464" "UP:075116"))
 
 (def-family "endophilin") 
 (def-family "importin") 
