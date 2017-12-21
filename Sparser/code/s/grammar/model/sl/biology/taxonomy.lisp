@@ -551,6 +551,7 @@
 
 (define-category bio-transport :specializes bio-movement
   :mixins (caused-bio-process)
+  :restrict ((object bio-entity))               
   :realization 
     (;;:verb "transport" 
      :noun "transport"))
@@ -981,7 +982,7 @@
 ;; "enhanced GTP loading"
 ;; "Structural basis for conformational switching and GTP loading of the large G protein atlastin"
 
-(define-mixin-category on-substrate :specializes bio-process
+(define-mixin-category on-substrate :specializes biological
  :binds ((substrate
           (:or bio-complex peptide component))
          (site

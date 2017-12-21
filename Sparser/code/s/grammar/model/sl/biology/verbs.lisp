@@ -322,12 +322,14 @@
 
 
 
-(define-category accumulation :specializes caused-bio-process
+(define-category accumulation :specializes bio-self-movement
   :binds ((amount scalar-quality))
+  :restrict ((origin blocked-category))               
   :realization
   (:verb "accumulate" :noun "accumulation"
-         :etf (svo-passive)
-         :to amount))
+         :to amount
+         :in destination
+         :at destination))
  
 (define-category acquire :specializes caused-bio-process ;; for conjunctions, as in "de novo or acquired"
     :binds ((method bio-method))
