@@ -938,25 +938,6 @@
 
 
 
-(define-category variant :specializes bio-chemical-entity
-  ;; not sure this is the correct term, but intended for things like "forms of ras" 
-  :binds ((basis bio-entity)) ;; can be a gene or protein, or something else
-  :instantiates :self
-  :realization
-    (:noun "variant"
-     :m basis
-     :of basis))
-
-;;; These have been moved here to allow state to be a variant
-
-(define-category bio-state
-  :specializes variant
-  :documentation  "not quite right, but it is almost always a protein
-      for things like activated state"
-  :binds ((stateful-item biological))
-  :realization
-    (:noun "state"
-     :of stateful-item)) ;; subject in on bio-predication
 
 ;; molecule-states are the predications, whereas bio-states are the
 ;;  molecules in some states
@@ -1124,6 +1105,28 @@
      :in equilibrium-state
      :in state
      :m site))
+
+(define-category variant :specializes protein ;; not true, but the most common case
+                 ;; need to write rules that make the class of the result of "Pak variant"
+                 ;;  be the class of "Pak"
+                 ;; bio-chemical-entity 
+  ;; not sure this is the correct term, but intended for things like "forms of ras" 
+  :binds ((basis bio-entity)) ;; can be a gene or protein, or something else
+  :instantiates :self
+  :realization
+    (:noun "variant"
+     :m basis
+     :of basis))
+
+;;; These have been moved here to allow state to be a variant
+
+(define-category bio-state :specializes variant
+  :documentation  "not quite right, but it is almost always a protein
+      for things like activated state"
+  :binds ((stateful-item biological))
+  :realization
+    (:noun "state"
+     :of stateful-item)) ;; subject in on bio-predication
 
 (define-category slashed-protein-collection :specializes protein
                  :mixins (collection)
