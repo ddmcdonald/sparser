@@ -1871,9 +1871,14 @@ val-pred-var (pred vs modifier - left or right?)
       ((itypep wh-obj 'wh-pronoun)
        ;; "which", "who", "where", ... See syntax/wh-word-semantic.lisp
        ;; which also has the relevant compose method.
-       (if (top-level-wh-question?)
-         (compose wh-obj predicate) ;; k-methods in questions.lisp
-         (wh-vp-as-relative-clause wh-obj predicate)))
+       (cond ((top-level-wh-question?)
+              (compose wh-obj predicate) ;; k-methods in questions.lisp
+              )
+             ((member (cat-name (edge-form (right-edge-for-referent)))
+                      '(vp+passive vg+passive))
+              (revise-parent-edge :form category::object-relative-clause)
+              predicate)
+             (t (wh-vp-as-relative-clause wh-obj predicate))))
       
       (t (warn "New type of wh-obj in compose-wh-with-vp: ~a~
                 in~%~s" (itype-of wh-obj) (current-string))))))
