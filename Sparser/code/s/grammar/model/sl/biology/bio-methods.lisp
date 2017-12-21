@@ -231,13 +231,6 @@ with something else
 
 (noun "factor" :super bio-entity) ;; keyword: (or N)
 
-#| several transcription factors, including CREB
-forkhead transcription factors
-transcription factors such as LEF-1 or Tcf4
-the STAT1 transcription factor |#
-(noun "transcription factor" :specializes bio-entity)
-
-
 (define-category bio-reagent :specializes bio-entity) ;; not really
 (noun "gel" :super bio-reagent)
 

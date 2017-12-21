@@ -24,6 +24,12 @@
 
 (noun ("deubiquitinase" "deubiquitylase" "DUB") :super enzyme)
 
+#| several transcription factors, including CREB
+forkhead transcription factors
+transcription factors such as LEF-1 or Tcf4
+the STAT1 transcription factor |#
+(noun "transcription factor" :super protein)
+
 ;; likely figure numbers
 ;;(def-family "2B" :members ("UP:O94953" "UP:Q93097" "UP:Q9UQ03"))
 ;;(def-family "3B" :members ("UP:Q13214" "UP:Q96PB8" "UP:Q9UBC3"))
@@ -54,13 +60,15 @@
 ;;; protein-families
 ;;;-----------------
 
+
 (def-family "USP" :synonyms ("ubiquitin-specific protease" "ubiquitin-specific peptidase")) 
 (def-family "UBL" :synonyms ("ubiquitin-like")) 
 (def-family "eIF" :synonyms ("eukaryotic initiation factor" "eiF")) 
 (def-family "HLA class I molecule") 
 (def-family "PTK") 
-(def-family "RAS GAP") 
- 
+(def-family "ROCK" :synonyms ("rho associated kinase" "rho-kinase" "Rho- kinase")
+            :members ("UP:Q13464" "UP:075116"))
+
 (def-family "endophilin") 
 (def-family "importin") 
 (def-family "karyopherin α" :synonyms ("karyopherin αs" "karyopherin alpha")) 
