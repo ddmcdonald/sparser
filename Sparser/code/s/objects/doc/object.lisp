@@ -541,14 +541,12 @@
  'current' sentence. When we are parsing a succession of
  sentences it is set in sweep-successive-sentences-from to
  the sentence object that is being worked on.")
- 
 (defun sentence () *current-sentence*)
 
 (defvar *previous-sentence* nil
   "Set in start-sentence when the next sentence is being created.
  It is NOT updated when we're parsing and looping over a chain of
  existing sentences.")
-
 (defun previous-sentence () *previous-sentence*)
 
 (defun first-sentence ()
