@@ -531,16 +531,49 @@
       (format stream "p~a" (pos-token-index(ends-at-pos s)))
       (format stream "?"))))
 
+
+;;--- traversing through the sentence chain
+
+(defvar *current-sentence* nil
+  "Gets its initial value from either initialize-sentences 
+ (for prepopoulated documents) or start-sentence (which is
+ the constructor for successive sentences that follow the first
+ 'current' sentence. When we are parsing a succession of
+ sentences it is set in sweep-successive-sentences-from to
+ the sentence object that is being worked on.")
+ 
+(defun sentence () *current-sentence*)
+
+(defvar *previous-sentence* nil
+  "Set in start-sentence when the next sentence is being created.
+ It is NOT updated when we're parsing and looping over a chain of
+ existing sentences.")
+
+(defun previous-sentence () *previous-sentence*)
+
+(defun first-sentence ()
+  "If there is a 'previous' sentence linked to the current
+   sentence then walk back that chain to the end."
+  (let ((first (sentence))) ;; prime pump
+    (loop for prior = (previous first)
+       when prior do (setq first prior)
+       unless prior return first)))
+
+(defun last-sentence (s)
+  "If there is a 'next' on the input sentence 's' then
+   walk forward on the 'next' chain until it ends."
+  (let ((last s))
+    (loop for next = (next last)
+       when next do (setq last next)
+       unless next return last)))
+
+
+;;--- resource
+
 (define-resource sentence)
 
 (defun allocate-sentence ()
   (allocate-next-instance (get-resource :sentence)))
-
-(defvar *previous-sentence* nil)
-(defun previous-sentence () *previous-sentence*)
-
-(defvar *current-sentence* nil)
-(defun sentence () *current-sentence*)
 
 (defun initialize-sentence-resource ()
   ;; called from initialize-document-element-resources
@@ -624,6 +657,7 @@
                     (pos-character-index (ends-at-pos last))))))))
     (tr :starting-sentence pos)
     (setq *current-sentence* s)))
+
 
 (defmethod display-contents  ((s sentence)
                               &optional (stream *standard-output*))
@@ -746,6 +780,8 @@
                        (intern (pname (name article))
                            (find-package :sp)))
                    *article-sentences*))))
+
+
 
 
 ;;;--------------

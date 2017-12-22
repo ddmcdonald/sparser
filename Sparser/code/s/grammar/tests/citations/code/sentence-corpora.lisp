@@ -142,53 +142,37 @@ previous records of treetop-counts.
                    (let ((*snapshot-index* index))
                      (declare (special *snapshot-index*))
                      (eval exp)
-                     (let ((sentence (or (previous (sentence))
-                                         (sentence) ;; with new code, the sentence is the first
-                                         )))
+                     (let ((sentence (sentence)))
                        ;;(push-debug `(,sentence ,corpus)) (break "check sentence")
                        (if (null sentence) ;; if we are aborting a sentence when we get an error
                            (progn (warn "Error during parsing of ~s~%" exp)
                                   (push `(,index . ,0) pairs))
-                           (let ((count (length
-                                         (if (previous (sentence))  ;; old style or multi-sentence!!
-                                             (treetops-between
-                                              (starts-at-pos sentence)
-                                              (ends-at-pos sentence))
-                                             (treetops-between
-                                              (starts-at-pos (last-sent))
-                                              (ends-at-pos (last-sent)))
-                                             ))))
+                           (let* ((first-sentence (first-sentence))
+                                  (count (length
+                                          (if (eq first-sentence sentence)
+                                            (treetops-between
+                                             (starts-at-pos sentence)
+                                             (ends-at-pos sentence))
+                                            
+                                            (treetops-between
+                                             (starts-at-pos first-sentence)
+                                             (ends-at-pos sentence))))))
                              (push `(,index . ,count) pairs))))))))
 
           (if save-info
             (let ((*reading-populated-document* t)
-                  (*recognize-sections-within-articles* nil) ;; turn of doc init
-                  (*accumulate-content-across-documents* t)) ;; doesn't clear history??
+                  (*recognize-sections-within-articles* nil) ;; turn off doc init
+                  (*accumulate-content-across-documents* t)) ;; don't clear history
               (declare (special *reading-populated-document*
                                 *recognize-sections-within-articles*
                                 *accumulate-content-across-documents*))
               (run-sentences variable))
-            
             (run-sentences variable))
-
 
           (nreverse pairs))))))
 
 
 
-(defun last-sent ()
-  (let ((s (sentence)))
-    (loop while (next s)
-          do (setq s (next s))
-          finally (return s))))
-
-(defun last-sent-pos ()
-  (if (previous (sentence)) ;; old style
-      (ends-at-pos (previous (sentence)))
-      (let ((s (sentence)))
-        (loop while (next s)
-              do (setq s (next s))
-                finally (return (ends-at-pos s))))))
 
 ;;--- compare current performance to a snapshot
 
