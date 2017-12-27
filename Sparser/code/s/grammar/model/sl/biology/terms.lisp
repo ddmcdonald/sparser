@@ -343,7 +343,9 @@
 (noun "paradox" :super bio-entity)
 
 (noun "partner" :super bio-abstract)
-(noun "patient" :super bio-entity)
+
+;; Overwrites the mixin role 'patient' in core/kinds/roles.lisp
+(noun bio-patient :super bio-entity :noun "patient")
 
 
 
