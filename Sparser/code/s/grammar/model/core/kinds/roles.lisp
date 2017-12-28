@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "predicate"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  August 2017
+;;;  version:  December 2017
 
 ;; To move all the standard thematic roles up to a place that
 ;; loads early so they're available for restriction as lower levels
@@ -11,7 +11,7 @@
 
 (in-package :sparser)
 
-(define-mixin-category with-an-agent
+(define-mixin-category with-an-agent ;; deprecated in favor of 'agent'
   :specializes relation
   :binds ((agent (:or pronoun physical-agent))))
 ;; Dolce has 'agency' as the union of physical and social agent
@@ -32,6 +32,18 @@
 (define-mixin-category takes-adverb
   :specializes relation
   :binds ((adverb)))
+
+(define-mixin-category with-attribute
+  :specializes relation
+  :binds ((attribute))
+  :documentation "Binds a property that is being attributed
+    to another participant in the relation. Very closely
+    related to the category 'attribute' (in kinds/attribution.lisp)
+    which has an elaborate analysis that's based on associating
+    attributes with specific variables and mixins designed to
+    characterize what one can say about some class of stuff.
+    Named chosen to deconfict with this other 'attribute' and
+    its predication 'has-attribute'.")
 
 (define-mixin-category beneficiary
   :specializes relation
