@@ -93,46 +93,69 @@ Dolce: mental-object
 ;;;---------------
 ;;; Having a name
 ;;;---------------
-#|
-(define-category has-a-name
+
+#| Ordinary simple attributes (color, size) are realized as
+adjectives. Since the suite of these attributes can largely
+be anticipated, the treatment in core/kinds/attribution.lisp
+defines their semantic relationship in terms of variables
+that are incorporated into the target categories as mixins
+(see, e.g., the definition of 'object' in core/mid-level/
+ontology.lisp). 
+
+Perhaps because of their salience in human relationships,
+names have a more diverse set of realizations and typically 
+establish the relationship using verbs.  
+
+  "my name is Inigo Montoya"
+  "we call him Daniel"
+
+The name attribute, per se, is the category 'name', which
+is defined with the other standard attributes in mid-level/
+attributes.lisp. The basic semantic model for names is given
+in the names, people, companies, and location directories
+of grammar/model/core/, and elaborated in several model/sl/'s.
+While the core/names/ module can be assumed, the other grammar 
+modules are not available in every configuration
+
+'Names' like 'Daniel' or 'MEK' are attribute 'values', like
+'red' and 'big'.  The entity to whom we're attributing the
+name fills the third variable of that (inherited) has-attribute
+category. 
+
+Note that names ('proper names') are individuals that instantiate
+some subcategory of the category 'name'
+
+|#
+(define-category has-name
   :specializes has-attribute ;; vars: item, attribute, value
-  :mixins (patient)
-  :restrict ((agent physical-agent)
-             )
-  :documentation " The attribute per se is 'name'
-    and with particular names ('RAS', 'David') as the
-    values of the attribute.
-"
+  ;; :mixins ()
   :realization 
-    (:verb "name"
-     :eft svo
-     :s agent  ;; "we[s] named him[o] Daniel[
-     :s patient
-     :o patient
-     :
-
-;; "call" is in general-verbs as svo bio-rhetorical
-
+    (:noun "name"
+     :of item
+))
      
-(define-category give-something-a-name
-  :specializes has-attribute ;; vars: item, attribute, value
-  :mixins (agent patient)
-  :restrict ((agent physical-agent)
-             )
+     
+(define-category name-something
+  :specializes achievement
+  :mixins (attributing-verb) ;; actor, patient, attribute
+  :restrict ((attribute name))
   :documentation "If there's an agent it's the entity
     that assigned the name to the patient (e.g. a parent
     or an NIH committee). The attribute per se is 'name'
     and with particular names ('RAS', 'David') as the
-    values of the attribute.
-"
-  :realization 
-    (:verb "name"
-     :eft svoa ;; subject,verb,object,a value -- like "paint them red"
-     :s agent  ;; "we[s] named him[o] Daniel[
-     :s patient
-     :o patient
-     :
-     |#
+    values of the attribute."
+  :realization  (:verb "name")) ;; "we[s] named him[o] Daniel[a]
+
+#|
+;; In biology examples (show-sents) "call" is invariably a reduced relative, e.g.
+"the upstream activator of Raf, called Ras, and the direct substrate of Raf, called MEK1/2"
+|#
+     ;; :eft svoa ;; subject,verb,object,a value -- like "paint them red"
+     ;; :s agent  ;; "we[s] named him[o] Daniel[a]
+     ;; :s patient
+     ;; :o patient
+     
+     
 
 
 ;;--- "model"
