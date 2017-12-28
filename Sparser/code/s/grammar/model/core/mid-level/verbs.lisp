@@ -21,11 +21,6 @@
   :past-tense "caught"
   :past-participle "caught"
   :present-participle "catching")
-(define-main-verb 'give
-    :infinitive "give"
-    :past-tense "gave"
-    :past-participle "given"
-    :present-participle "giving")
 
 
  create (bio;general-verbs)  "Is your intent to ~a something?"
@@ -68,8 +63,8 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
 (define-category believe ;; in P, that P, J
   :specializes state
   :mixins (prop-attitude)
-  :realization (:verb "believe")
-  :documentation "")
+  :realization (:verb "believe"))
+
 
 ;; 1.1 (p "Let's build a staircase.") 
 ;;     (p "build a staircase.")
@@ -105,9 +100,16 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
   :mixins (action-verb)
   :restrict ((patient (:or physical-object location))) ;; find a block
   :realization
-    (:verb ("find" :past-tense "found")))
+  (:verb ("find" :past-tense "found")))
 
 
+(define-category give
+  :specializes process
+  :mixins (directed-action)
+  :realization (:verb ("give" :past-tense "gave"
+                       :past-participle "given"
+                       :present-participle "giving")))
+ 
 (define-category get
   :specializes accomplishment
   :mixins (action-verb)
@@ -200,7 +202,7 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
 |#
 (define-category tell
   :specializes process
-  :mixins (directed-action prop-attitude)
+  :mixins (prop-attitude)
   :realization (:verb ("tell" :past-tense "told")))
 ;; tell someone to do something
 ;; tell someone that <proposition>

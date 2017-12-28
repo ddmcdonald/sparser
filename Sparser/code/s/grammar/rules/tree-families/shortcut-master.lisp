@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "shortcut-master"
 ;;;   Module:  "grammar;rules;tree-families;"
-;;;  Version:  May 2017
+;;;  Version:  December 2017
 
 ;; Initiated 9/14/14 to make more flexible, complete shortcuts.
 ;; 11/11/14 added keyword for obo-id.
@@ -77,6 +77,22 @@
                 (m-v/r (subcat-restriction m-pat)))
             (push `(modifier-slot . ,m-var) substitution-map)
             (push `(modifier-v/r . ,m-v/r) substitution-map))))
+
+      ;; attribute constituent
+      (let ((attr-pat (find-subcat-pattern :a subcat-frame)))
+        (when attr-pat
+          (let ((a-var (subcat-variable attr-pat))
+                (a-v/r (subcat-restriction attr-pat)))
+            (push `(attr-slot . ,a-var) substitution-map)
+            (push `(attr-v/r . a-v/r) substitution-map))))
+
+      ;; indirect object / beneficiary "give Marsha the present"
+      (let ((iobj-pat (find-subcat-pattern :i subcat-frame)))
+        (when iobj-pat
+          (let ((io-var (subcat-variable iobj-pat))
+                (io-v/r (subcat-restriction iobj-pat)))
+            (push `(iobj-slot . ,io-var) substitution-map)
+            (push `(iobj-v/r . ,io-v/r)  substitution-map))))
 
       ;; location subcategorized as an object (vs. an adjunct)
       (let ((l-pat (find-subcat-pattern :l subcat-frame)))

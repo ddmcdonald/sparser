@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "subcat-patterns"
 ;;;   Module:  "model;core:mid-level::"
-;;;  version:  August 2017
+;;;  version:  December 2017
 
 (in-package :sparser)
 
@@ -30,7 +30,7 @@ a simplified realization for a verb are (5/17)
 (define-mixin-category action-verb
   :specializes subcategorization-pattern ;; daughter of linguistic, abstract
   :instantiates nil
-  :mixins (actor patient theme)
+  :mixins (actor patient)
   :restrict ((actor (:or pronoun endurant))
              (patient physical))       
   :realization
@@ -54,13 +54,18 @@ a simplified realization for a verb are (5/17)
  to-complement argument as in 'I failed to find a block'")
 
 
-(define-mixin-category directed-action ;; tell, give
-  :specializes action-verb
+(define-mixin-category attributing-verb
+  :specializes subcategorization-pattern
   :instantiates nil
-  :mixins (beneficiary)
-  :restrict ((beneficiary (:or pronoun endurant)))
+  :mixins (actor patient with-attribute)
+  :restrict ((actor endurant)
+             (patient physical)
+             (attribute attribute))
   :realization
-    (:o beneficiary)) 
+    (:s actor
+     :o patient
+     :a attribute
+     :mumble (svo-adj :s actor :o patient :adj attribute)))
 
 
 ;; Have we ever had indirect objects? Using 'o' is just
@@ -97,32 +102,20 @@ a simplified realization for a verb are (5/17)
      :to-comp theme))
 
 
-(define-mixin-category prop-attitude ;; "believe that"
+(define-mixin-category directed-action ;; give, sell
   :specializes subcategorization-pattern
-  :mixins (agent patient theme)
+  :instantiates nil
+  :mixins (agent beneficiary theme)
   :restrict ((agent physical-agent)
-             (patient physical)
-             (theme perdurant))
-  :realization (:o patient
-                :in patient ;; "believe in dragons" only NPs?
-                :thatcomp theme
-                :whethercomp theme
-                :mumble ((svscomp :s agent :c theme)
-                         (svo :s agent :o patient)))
-  :documentation "Breaks out a complement argument that
-   common to many verbs -- taking a stance (e.g. 'believe',
-   'doubt') towards a proposition.  The variants that take
-   objects, particularly with 'in', may well want to be a
-   separate category.")
-
-
-(define-mixin-category knowledge-verb
-  :specializes subcategorization-pattern
-  :mixins (prop-attitude experiencer)
-  :restrict ((experiencer (:or pronoun physical-agent))) ;; "I"
+             (beneficiary endurant)
+             (theme endurant))
   :realization
-    (:s experiencer
-     :mumble (svscomp :s experiencer :c theme))) ;; I know that roses are re
+    (:s agent
+     :i beneficiary
+     :to beneficiary
+     :o theme
+     :mumble (s-v-io-do :s agent :do theme :io beneficiary)))
+
 
 (define-mixin-category move-something-verb
   :specializes subcategorization-pattern
@@ -140,6 +133,37 @@ a simplified realization for a verb are (5/17)
  is moving the theme from one location to another.
  The ETF for this set of arguments is 'svol'.
  In TRIPS 'put' is  agent, affected, result.")
+
+
+(define-mixin-category prop-attitude ;; "believe that"
+  :specializes subcategorization-pattern
+  :mixins (agent patient theme)
+  :restrict ((agent physical-agent)
+             (patient physical)
+             (theme perdurant))
+  :realization (:s agent
+                :o patient
+                :in patient ;; "believe in dragons" only NPs?
+                :thatcomp theme
+                :whethercomp theme
+                :mumble ((svscomp :s agent :c theme)
+                         (svo :s agent :o patient)
+                         (svoscomp :s agent  :o patient :c theme)))
+  :documentation "Breaks out a complement argument that
+   common to many verbs -- taking a stance (e.g. 'believe',
+   'doubt') towards a proposition.  The variants that take
+   objects, particularly with 'in', may well want to be a
+   separate category.")
+
+
+(define-mixin-category knowledge-verb
+  :specializes subcategorization-pattern
+  :mixins (prop-attitude experiencer)
+  :restrict ((experiencer (:or pronoun physical-agent))) ;; "I"
+  :realization
+    (:s experiencer
+     :mumble (svscomp :s experiencer :c theme))) ;; I know that roses are red
+
 
 (define-mixin-category raising-to-object
   ;;"allows X to ...", "consider X to ...", "enable X to ...", "know X to ...", "lead X to ...", "use X to ..."

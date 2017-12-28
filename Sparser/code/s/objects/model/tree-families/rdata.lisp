@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  June 2017
+;;;  version:  December 2017
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -104,14 +104,18 @@ Should mirror the cases on the *single-words* ETF."
         do (check-type key realization-keyword "a realization keyword")))
 
 (deftype subcat-slot-keyword ()
-  '(member :about :above :across :after :against :among :as :as-comp :at
+  '(member
+    :a ; attribute
+    :about :above :across :after :against :among :as :as-comp :at
     :before :below :between :but\ not :by
     :designator :during
     :following :for :from
     :ifcomp :howcomp
+    :i ; indirect object
     :in :into
-    :like :l
-    :m
+    :like
+    :l ; location
+    :m ; modifier
     :verb-premod
     #|:next\ to|#
     :object :of :on :onto #|:on\ top\ of|# :over

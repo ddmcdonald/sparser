@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "families"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  May 2017
+;;;  version:  December 2017
 
 ;; Initiated 2/6/14. Augment the realization options of shortcuts
 ;; 9/19/14 Supplanted original notion with a new one that seems
@@ -105,20 +105,6 @@ when contemplating using a new tree family
             (np/subject . subj-v/r)
             (np/object . theme-v/r)))
 
-(define-realization-scheme svol transitive-loc-comp
-  :head :verb
-  :phrase (SVO1O2 (s . subj-slot) (v . :self) 
-                  (o1 . theme-slot) (o2 . loc-slot))
-  :mapping ((agent . subj-slot)
-            (patient . theme-slot)
-            (location . loc-slot)
-            (s . :self)
-            (vp . :self)
-            (vg . :self)
-            (np/subject . subj-v/r)
-            (np/object . theme-v/r)
-            (loc . loc-v/r)))
-
 (define-realization-scheme svo-passive passive/with-by-phrase
   :args (agent-slot agent-v/r patient-slot patient-v/r)
   :head :verb
@@ -136,6 +122,51 @@ when contemplating using a new tree family
             (by-pp . by-v/r)
             (result-type . :self)))
             
+(define-realization-scheme svol transitive-loc-comp
+  :head :verb
+  :phrase (SVO1O2 (s . subj-slot) (v . :self) 
+                  (o1 . theme-slot) (o2 . loc-slot))
+  :mapping ((agent . subj-slot)
+            (patient . theme-slot)
+            (location . loc-slot)
+            (s . :self)
+            (vp . :self)
+            (vg . :self)
+            (np/subject . subj-v/r)
+            (np/object . theme-v/r)
+            (loc . loc-v/r)))
+
+(define-realization-scheme svio ditrans-pp/io
+  :head :verb
+  :phrase (s-v-io-do (s . subj-slot) (v . :self)
+                     (do . theme-slot) (io . iobj-slot))
+  :mapping ((agent . subj-slot)
+            (theme . theme-slot)
+            (patient . iobj-slot)
+            (s . :self)
+            (vp . :self)
+            (v-double-bar . :self)
+            (v-bar . :self)
+            (vg . :self)
+            (np/subject . subj-v/r)
+            (np/object . theme-v/r)
+            (np/patient . iobj-v/r)
+            (pp/patient . iobj-v/r)))
+
+(define-realization-scheme svoa ditransitive/attribute
+  :head :verb
+  :phrase (SVOA (s . subj-slot) (v . :self)
+                (o . theme-slot) (a . attr-slot))
+  :mapping ((agent . subj-slot)
+            (patient . theme-slot)
+            (attribute  . attr-slot)
+            (s . :self)
+            (vp . :self)
+            (vg . :self)
+            (np/subject . subj-v/r)
+            (np/object . theme-v/r)
+            (ap/attribute . loc-v/r)))
+
 (define-realization-scheme svcomp that-complement
   :head :verb
   :phrase (SVSCOMP (s v c))
@@ -147,6 +178,9 @@ when contemplating using a new tree family
             (result . :self)
             (agent . subj-slot)
             (theme . comp-slot)))
+
+
+;;--- NP schema
 
 (define-realization-scheme pre-mod premodifier-adds-property 
   ;; used in quarter: 2004 <quarter>
