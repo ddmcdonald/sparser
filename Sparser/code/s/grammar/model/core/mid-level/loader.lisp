@@ -1,16 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  August 2017
+;;;  version:  January 2018
 
 ;; Initiated 12/3/15
 
 (in-package :sparser)
 
-(when *locations-core*
-  (gload "mid-level;attributes")) ;; used in object
+
+(gload "mid-level;attributes") ;; used in object
 
 (gload "mid-level;ontology") ;; includes object as used in blocks world
 
