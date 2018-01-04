@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "ordinals"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  August 2016
+;;;  Version:  January 2018
 
 ;; initiated [ordinals1] 9/18/93 v2.3 as completely new treatment
 ;; 1.0 (1/7/94) redesigned as specialized categories
@@ -47,6 +47,7 @@
   :binds ((number number)
           (word  :primitive word)
           (roman-numeral :primitive word))
+  :index (:key number)
   :realization (:quantifier word))
 
 (defun string/ordinal (category)
