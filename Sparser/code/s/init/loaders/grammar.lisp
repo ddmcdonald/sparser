@@ -136,8 +136,8 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *paired-punctuation*
     (gload "traversal;loader"))
 
-  (gate-grammar *digits-fsa*
-    (gload "numbers;fsa digits"))
+  ;; (gate-grammar *digits-fsa*
+  ;;   (gload "numbers;fsa digits"))
 
   (gate-grammar *numbers*
     (gload "numbers;loader"))

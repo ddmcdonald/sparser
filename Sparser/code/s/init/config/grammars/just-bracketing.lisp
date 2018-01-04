@@ -115,6 +115,7 @@
 (include-grammar-module  *collections*)
 
 (include-grammar-module  *numbers*)
+(include-grammar-module  *digits-fsa*)
 (include-grammar-module  *amounts*)
 
 (include-grammar-module  *time*)
