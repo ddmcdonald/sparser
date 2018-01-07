@@ -142,6 +142,12 @@ By Erik Naggum."
   "Return a random element of the sequence."
   (elt sequence (random (length sequence) random-state)))
 
+(defun take-first-n (n list)
+  "Created a fresh list that consists of the first n elements
+   in the list, or the entire list if it is shorter than that."
+  (when (> n (length list)) (setq n (length list)))
+  (loop for i upto (1- n) collect (nth i list)))
+
 (defun deep-copy (l)
   (if (consp l)
     (cons (deep-copy (car l))
