@@ -263,6 +263,7 @@ it to execute.
 |#
 (defun reify-digit-word (word edge)
   "Called by preterminals-for-unknown if the flags permit it."
+  (declare (special *the-category-of-digit-sequences*))
   (let ((i (edge-referent edge)))
     ;; Defining the rule puts it on the word's rule set
     (define-cfr *the-category-of-digit-sequences*

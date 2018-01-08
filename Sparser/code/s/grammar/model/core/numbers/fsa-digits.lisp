@@ -80,8 +80,9 @@ the fsa would be identified at the word level rather than the category level.
 
 (define-category digit-sequence)
 
-(defparameter *the-category-of-digit-sequences*
-  (category-named 'digit-sequence))
+(defparameter *the-category-of-digit-sequences* (category-named 'digit-sequence)
+  "This default choice of category can be modified, e.g. by the 
+   just-bracket-setting switch setting")
 
 (unless *include-model-facilities*
   ;; If they are, we want a referential category. This form without
