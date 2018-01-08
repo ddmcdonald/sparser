@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "content-methods"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  March 2017
+;;;  Version:  January 2018
 
 ;; Created 5/12/15 to hold the container mixings and such that need
 ;; to have the document model elements already defined so they can
@@ -137,17 +137,7 @@
   (:documentation "Collects the entities and relations of
      the document layer below them summarizes them as
      tables of individuals and their count."))
-#|
-(defgeneric display-top-bio-terms (document-element
-                                   &optional (stream *standard-output*))
-  (:method ((a article))
-    (let* ((c (contents a))
-           (proteins (aggregated-proteins c)))
-      (format stream "~&~a~% Top 5 proteins:~[ ~a]~%"
-              a 
-|#
 
-            
 
 (defmethod aggregate-bio-terms ((p paragraph))
   "Collect the raw lists of entities and relations from 
@@ -227,6 +217,18 @@
          (new-bucket-value (cons entry bucket)))
     (setf (slot-value contents-instance slot-name)
           new-bucket-value)))
+
+;;--- display (see summary-document-stats)
+
+(defgeneric display-top-bio-terms (document-element &optional stream)
+  (:method ((a article) &optional stream)
+    (let* ((stream (or stream *standard-output*))
+           (c (contents a))
+           (proteins (take-first-n 5 (aggregated-proteins c))))
+      (format stream "~&~2TTop 5 proteins: ~a" (car proteins))
+      (loop for p in (cdr proteins) do
+           (format stream "~&~18T~a" p)))))
+
 
 ;;;--------------------------------
 ;;; how well is our analysis doing
@@ -310,6 +312,7 @@
           ((or section section-of-sections article)
            (aggregate-parse-performance e content)))))))
 
+
 (defun show-parse-performance (doc-element
                                &optional (stream *standard-output*))
   (let ((content (contents doc-element)))
@@ -318,10 +321,20 @@
       (let ((great (parses-with-one-edge content))
             (medium (medium-quality-parses content))
             (horrible (horrible-parses content)))
-        (format stream "~&~a: ~a, ~a, ~a~%"
-                doc-element great medium horrible)))))
+        (format stream "~&  Parsing coverage: ~a (1 edge), ~a (2-5), ~a (> 5)~%"
+                great medium horrible)))))
 
-          
+
+;;--------- summary statistics
+
+(defgeneric summary-document-stats (document-element &optional stream)
+  (:method ((a article) &optional stream)
+    (unless stream (setq stream *standard-output*))
+    (format stream "~&For ~a" a)
+    (show-parse-performance a stream)
+    (display-top-bio-terms a stream)))
+    
+
       
 ;;;----------------------------------------------
 ;;; convenience accessors to parts of an article
