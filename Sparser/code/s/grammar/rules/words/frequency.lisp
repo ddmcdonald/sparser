@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1996,2010-2014,2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1996,2010-2014,2017-2018  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "frequency"
 ;;;   Module:  "rules;words:"
-;;;  Version:  December 2017
+;;;  Version:  January 2018
 
 ;; initiated 10/90
 ;; 3/21/92 Added capitalization information to the dummy words
@@ -293,8 +293,7 @@
         (incf words-on-the-line)
         (when (= 5 words-on-the-line)
           (format stream "~%   ")
-          (setq words-on-the-line 0)
-          (terpri stream))))
+          (setq words-on-the-line 0))))
     (terpri stream)))
 
 
@@ -521,7 +520,6 @@
 		   (push word unique-to-d1)))
 	     table1)
     unique-to-d1))
-    
 
 (defmethod normalized-count ((w word) (d word-frequency))
   (let ((total-tokens (token-count d))
@@ -533,19 +531,18 @@
 	 (format nil "~,8F" ratio)
 	 ratio)))))
 
-(defmethod term-frequency ((w word) (d word-frequency))
-  (let ((total-tokens (token-count d))
-	(count-for-word (count-in-document w d)))
-    (unless (or (= total-tokens 0)
-		(null count-for-word)) ;; #<source-start>
-      (/ count-for-word total-tokens))))
-
 (defun number-of-documents-containing-word (word)
   (let ((entry (frequency-table-entry word)))
     (if entry
       (length (cdr entry))
       0)))
 
+(defmethod term-frequency ((w word) (d word-frequency))
+  (let ((total-tokens (token-count d))
+	(count-for-word (count-in-document w d)))
+    (unless (or (= total-tokens 0)
+		(null count-for-word)) ;; #<source-start>
+      (/ count-for-word total-tokens))))
 
 (defmethod inverse-document-frequency ((w word) (list-of-documents list))
   (let* ((doc-count (length list-of-documents))
