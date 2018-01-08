@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013.2018 David D. McDonald  -- all rights reserved
 ;;; copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "just bracketing"
 ;;;    Module:  "init;versions:v3.1:config:grammars:"
-;;;   version:  May 2013
+;;;   version:  January 2018
 
 ;; Initiated 2/20/10 by cutting down the 2/10 version of full-grammar
 ;; 5/27/10 removed the few core semantic modules that had been there
@@ -88,9 +88,9 @@
 (include-grammar-module  *tree-families*)
   ;; Needed at least for pronouns
 
-;(include-grammar-module  *standard-syntactic-constructions*)
+(include-grammar-module  *standard-syntactic-constructions*)
 (include-grammar-module  *default-semantics-for-vg*)
-;(include-grammar-module  *semantics-of-WH-words*)
+(include-grammar-module  *semantics-of-WH-words*) ;; questions
 ;(include-grammar-module  *verbs-with-weak-semantics*)
 (include-grammar-module  *default-semantics-for-NP*)
 (include-grammar-module  *heuristics-from-morphology*)
