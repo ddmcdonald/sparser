@@ -39,6 +39,7 @@
            #:reverse-plist
            #:sans
            #:choose
+           #:take-first-n
            #:deep-copy
            #:flatten #:flattenc
            #:all-the-same
