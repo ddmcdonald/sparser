@@ -322,9 +322,9 @@ as specified by the *CURRENT-PHRASAL-ROOT*. Default is THIRD."
          (length (length pname)))
     (when (eql #\y (elt pname (1- length)))
       (let ((char-before-y (elt pname (- length 2))))
-        (if (memq char-before-y (list #\a #\e #\i #\o #\u))
+        (if (memq char-before-y '(#\a #\e #\i #\o #\u))
           (string-append pname "s")
-          (string-append (subseq pname (1-length)) "ies"))))))
+          (string-append (subseq pname 0 (1- length)) "ies"))))))
 
 
 ;################################################################
