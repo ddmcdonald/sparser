@@ -18,10 +18,10 @@
                (:file "push-debug")
                (:file "auto-gen")
                (:file "time"))
-  :in-order-to ((test-op (test-op :ddm-util-tests)))
+  :in-order-to ((test-op (test-op :ddm-util/tests)))
   :perform (load-op :after (o c) (pushnew :ddm-utils *features*)))
 
-(defsystem :ddm-util-tests
+(defsystem :ddm-util/tests
   :serial t
   :depends-on (:ddm-util)
   :components ((:file "../test/rt")

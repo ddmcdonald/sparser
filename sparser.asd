@@ -4,12 +4,10 @@
 (defsystem :sparser
   :depends-on (:ddm-util :mumble)
   :components ((:file "Sparser/code/s/init/everything"))
-  :perform (load-op :after (o c)
-             (pushnew :sparser *features*) ; Sparser is now loaded
-             (asdf:load-system :mumble/sparser))
-  :in-order-to ((test-op (test-op :sparser-tests))))
+  :perform (load-op :after (o c) (pushnew :sparser *features*))
+  :in-order-to ((test-op (test-op :sparser/tests))))
 
-(defsystem :sparser-tests
+(defsystem :sparser/tests
   :depends-on (:sparser)
   :components ((:file "test/rt")
                (:file "test/k-methods")
