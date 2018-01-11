@@ -1945,7 +1945,7 @@ val-pred-var (pred vs modifier - left or right?)
                         '(number quantifier all some each both many most)))))
     (let* ((preposition (value-of 'prep wh-pp))
            (wh-obj (value-of 'pobj wh-pp))
-           (var (find-subcat-vars preposition vp)))
+           (var (car (find-subcat-vars preposition vp))))
       (declare (special preposition wh-obj var))
       ;; while debugging -- what's a reasonable default?
       (unless var
