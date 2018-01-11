@@ -1056,12 +1056,12 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
   (list (caar trio-cat) (car (second trio-cat))))
   
 
-(defun group-by (l key-fn &optional (extract-fn #'identity))
+(defun group-by (l key-fn &optional (extract-fn #'identity) &key (test #'equal))
   "Takes a list and a key function to group by, and optional function
 to pare down items (generally get the value that goes with the key)
 and make it into hash table whose keys are distinct vals of key-fn
 applied to l, and values are values associated with that key example"
-  (let ((ht (make-hash-table :size (length l) :test #'equal)))
+  (let ((ht (make-hash-table :size (length l) :test test)))
     (loop for item in l do
             (push (funcall extract-fn item)
                   (gethash (funcall key-fn item) ht)))
@@ -1265,7 +1265,7 @@ applied to l, and values are values associated with that key example"
         (loop for s in sents as i from 0 do (incf *hms-sent-count*)(qepp s)))))
 
 (defvar *semantic-output-format*)
-(defun init-phase3-directory (&key (semantic-output-format *semantic-output-format*))
+(defun init-phase3-directory (&key (semantic-output-format *semantic-output-format* *indra-post-process*))
   (declare (special *comparable-indra*))
   (setq *semantic-output-format* semantic-output-format)
   (when (eq semantic-output-format :hms-json)
