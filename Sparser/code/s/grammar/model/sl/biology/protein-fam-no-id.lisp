@@ -652,7 +652,7 @@ the STAT1 transcription factor |#
 (def-family "EPSPs" :members ("UP:B0C218" "UP:P39915")) 
 (def-family "ERIS" :members ("UP:Q86WV6" "UP:Q8N5K1")) 
 (def-family "ERs" :members ("UP:P03372" "UP:Q38846")) 
-(def-family "ETA" :members ("UP:P11439" "UP:P25101")) 
+;(def-family "ETA" :members ("UP:P11439" "UP:P25101")) one non-human 
 (def-family "EVI1" :members ("UP:P32248" "UP:Q03112")) 
 (def-family "EXT" :members ("UP:Q16394" "UP:Q39099")) 
 (def-family "Eukaryotic translation initiation factor 4E-binding protein 1" :members ("UP:Q0P5A7" "UP:Q13541")) 
@@ -661,7 +661,7 @@ the STAT1 transcription factor |#
 (def-family "FACT" :members ("UP:O82491" "UP:Q08945")) 
 (def-family "FAN1" :members ("UP:Q16658" "UP:Q9Y2M0")) 
 (def-family "FAS1" :members ("UP:P0C1Y9" "UP:P25445")) 
-(def-family "FAT" :members ("UP:P16671" "UP:Q14517") :synonyms ("fat")) 
+(def-family "FAT" :members ("UP:P16671" "UP:Q14517")) 
 (def-family "FATP1" :members ("UP:Q3ZKN0" "UP:Q6PCB7")) 
 (def-family "FBP" :members ("UP:P09467" "UP:Q96AE4")) 
 (def-family "FCP" :members ("UP:Q39709" "UP:Q42395")) 
@@ -1138,7 +1138,7 @@ the STAT1 transcription factor |#
 (def-family "SF1" :members ("UP:Q13285" "UP:Q15637")) 
 (def-family "SFRP3" :members ("UP:Q92765" "UP:Q95117") :synonyms ("secreted frizzled-related protein 3")) 
 (def-family "SH2 domain-containing protein 2A" :members ("UP:Q9NP31" "UP:Q9QXK9"))
-(def-family "SH3" :members ("UP:P62993" "UP:Q9NZQ3")) 
+;(def-family "SH3" :members ("UP:P62993" "UP:Q9NZQ3")) sh3 is a domain which these proteins contain
 (def-family "SH3BP1" :members ("UP:Q9H299" "UP:Q9Y3L3")) 
 (def-family "SHP1" :members ("UP:P29350" "UP:P29381")) 
 (def-family "SHPS1" :members ("UP:O46631" "UP:P78324")) 

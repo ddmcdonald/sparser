@@ -1918,3 +1918,4 @@
 (def-indiv-with-id drug "DEX" "PCID:5743" :name "dexamethasone" :no-plural t)
 (def-indiv-with-id drug "pervanadate" "PCID:61671" :name "Sodium Orthovanadate" :no-plural t)
 (def-indiv-with-id drug "OKT3" "CHEMBL:1201608" :name "Muromonab-CD3" :no-plural t :synonyms ("Orthoclone OKT3"))
+(def-indiv-with-id drug "AOP-RANTES" "MESH:C111989" :name "aminooxypentane-RANTES" :no-plural t :synonyms ("amino-oxypentane-RANTES" "(AOP)-RANTES" "aminooxypentane (AOP) - RANTES"))
