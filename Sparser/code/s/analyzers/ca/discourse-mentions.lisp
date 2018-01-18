@@ -869,11 +869,13 @@ so we return the edge for the POBJ"
   "Has this mention been converted to its long-term form?"
   (integerp (car (mentioned-where mention))))
 
+(defparameter *one-paragraph-article* nil)
 (defun long-term-ify-mention (mention)
   "Same idea a working with a conventional discourse entry
    in that we replace positions with their indexes. 
    The more important long-term location information is position
    in the article, which was recorded when the mention was made."
+  (declare (special *one-paragraph-article*))
   (unless (long-term-mention? mention)
     (let* ((cons (mentioned-where mention))
            (start-pos (car cons))
@@ -882,9 +884,11 @@ so we return the edge for the POBJ"
       (setf (mentioned-where mention)
             (cons (pos-character-index start-pos)
                   (pos-character-index end-pos)))
-      (when (and edge (edge-p edge))
-        (setf (edge-mention edge) nil))
-      (setf (mention-source mention) nil))))
+      (unless *one-paragraph-article*
+        ;; used in running localization on Maciej gold-standard articles
+        (when (and edge (edge-p edge))
+          (setf (edge-mention edge) nil))
+        (setf (mention-source mention) nil)))))
 
 
 (defun search-mentions-by-position (mentions edge)
