@@ -1325,6 +1325,8 @@ the STAT1 transcription factor |#
 (def-family "b8" :members ("UP:O43678" "UP:P12951")) 
 (def-family "bacteriorhodopsin" :members ("UP:P02945" "UP:P33969")) 
 ;(def-family "baculoviral IAP repeat-containing protein-2" :members ("UP:Q13489" "UP:Q13490")) 
+(def-family "β-arrestin" :synonyms ("βArrestin" "β-Arrestin" "β-Arrestin" "β-arrestin" "beta-arrestin") :members ("UP:P49407" "UP:P32121"));; lots of family members -- put them in some day
+
 (def-family "bcl-x" :members ("UP:O95999" "UP:Q07817")) 
 (def-family "beta 4" :members ("UP:P16144" "UP:Q9ULH1")) 
 (def-family "brachyury protein" :members ("UP:O15178" "UP:P24781")) 
