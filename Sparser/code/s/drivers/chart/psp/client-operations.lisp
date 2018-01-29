@@ -146,9 +146,11 @@
           
 
 (defun get-edge-char-offsets-and-surface-string (edge)
-  (let ((surface-string (trim-whitespace (extract-string-spanned-by-edge edge)))
+  (let* ((surface-string (trim-whitespace (extract-string-spanned-by-edge edge)))
         (char-start (- (pos-character-index (pos-edge-starts-at edge)) 1))
-        (char-end (- (pos-character-index (pos-edge-ends-at edge)) 1)))
+         ;;(char-end (- (pos-character-index (pos-edge-ends-at edge)) 1))
+         ;; the ends at doesn't appreciate trimmed whitespace
+         (char-end (+ char-start (length surface-string)))) 
     (list char-start char-end surface-string)))
                                              
 (defun edge-subsumed-by-edge-in-list (edge edge-list)
