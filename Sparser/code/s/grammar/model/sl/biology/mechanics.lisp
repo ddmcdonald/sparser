@@ -697,6 +697,9 @@ uid binding, if there is one"
              (not (value-of 'predication protein)) ;; strange case "ppERK"
              (itypep protein category::protein))
         (let* ((var (subcategorized-variable  category::phosphorylate :object protein))
+               ;; no longer calls make-phosphorylated-protein so we
+               ;; can split off cases like this where there is no edge
+               ;; since we're creating a word instead
                (phospho-protein (create-predication-by-binding-only
                                  var protein
                                  (find-or-make-lattice-description-for-ref-category
@@ -1480,6 +1483,17 @@ for this species"
         
 
 (defun make-phosphorylated-protein (protein &optional (raw-text "funnyprotein"))
+  "No longer used by little-p-hack, but still used by two no-space
+operations: span-phosphorylated-protein and
+make-bio-complex-with-hyphen -- span-phosphorylated-protein is called
+when there's a nospace item that starts with a p, p-, or P- and the
+remaining part of the word is a protein or protein family -- because
+of the this and the fact that in the case of a 'p' without a hyphen
+there is no edge over the 'p' as a phosphorylate, currently this does
+not create an edge over the predication -- we may fix that later so
+that we can make an edge for all cases. make-bio-complex-with-hyphen
+calls this function when the part before the hyphen is a phosphorylate
+e.g. 'phospho-'"
   (declare (special category::phosphorylate))
   (let* ((prot-sexpr (krisp->sexpr protein))
          (old-raw (a-get-item 'raw-text (cdr prot-sexpr)))

@@ -852,6 +852,12 @@ val-pred-var (pred vs modifier - left or right?)
              head))))))
 
 (defun interpret-verb-as-predication (rule-fn head qualifier edge-for-qualifier var)
+  "Used by link-in-verb+ing and link-in-verb -- no longer used by
+make-phosphorylated-protein (a function used in no-space operations)
+-- this way it is only used things at a level where it can make and
+insert edges instead of behaving differently based on whether or not
+there was an edge for the qualifier (e.g., there is no edge for the
+'p' in cases like 'pERK1/2')"
   (unless (or (null edge-for-qualifier) (eq qualifier (edge-referent edge-for-qualifier)))
     (lsp-break "bad call to extend-interpretation-of-verb-as-predication"))
   (setq qualifier (individual-for-ref qualifier))
@@ -859,9 +865,6 @@ val-pred-var (pred vs modifier - left or right?)
          ;; really should check for passivizing
          (setq qualifier (create-predication-and-edge-by-binding-and-insert-edge
                           var head qualifier))
-                          ;;(list rule-fn (when edge-for-qualifier (parent-edge-for-referent)))
-                          ;;:insert-edge
-                          ;;(not (null edge-for-qualifier))))
          (if (edge-p edge-for-qualifier)
              (set-edge-referent edge-for-qualifier qualifier)
              qualifier))
