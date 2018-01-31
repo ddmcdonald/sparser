@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; Copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2013-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "period-hook"
 ;;;    Module:  drivers/chart/psp  ;;"grammar;rules:DM&P:"
-;;;   version:  August 2017
+;;;   version:  January 2018
 
 ;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
 ;; hooked it into creating sentences. 2/10/14 Added period-hook-off.
@@ -223,8 +223,8 @@
       (tr :eos-two-initials)
       (return-from period-marks-sentence-end?/look-deeper nil))
    
-    ;; Look at the word just before the period
-    (when (implicit-abbreviation? word-just-before-period)
+    ;; Could the word just before the period be an abbreviation?
+    (when (implicit-abbreviation? word-just-before-period pos-before)
       (tr :eos-implicit-abbreviation word-just-before-period)
       (return-from period-marks-sentence-end?/look-deeper nil))
 
@@ -351,7 +351,7 @@
                   collect (resolve/make s))))
     (setq *words-observed-to-confuse-eos* words)))
   
-(defun implicit-abbreviation? (word)
+(defun implicit-abbreviation? (word period-pos)
   "Intended for configurations where we don't already have
    a substandial stock of abbreviations defined and/or 
    abbreviations aren't being looked for and so doing their
@@ -360,6 +360,7 @@
    Return t if the word is one of an anticipated set of
    abbreviations."
   (or (abbreviation? word) ;; see define-abbreviation
+      (will-trigger-abbreviation? period-pos) ;; ditto 
       (when *permit-ad-hoc-abbreviations*
         (when (stringp (car *words-observed-to-confuse-eos*))
           (vivify-words-observed-to-confuse-eos))

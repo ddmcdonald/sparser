@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2014-2018  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  2.2 May 2014
+;;;  Version:  January 2018
 
 ;; 2.0 (11/11/92 v2.3) new design to go with new style of caps fsa
 ;;     (5/22/93) finishing the job
@@ -223,6 +223,16 @@
   (check-for-abbreviation-before-position position))
 
 
+(defun will-trigger-abbreviation? (period-pos)
+  "Factors out the check that the abbreviation fsa and check functions
+   make to determine whether the word to the immediate left of
+   a period is marked as an abbreviation."
+  (let* ((prior-position (chart-position-before period-pos))
+         (lc-abbrev-word? (pos-terminal prior-position))
+         (caps-variant? (capitalized-correspondent prior-position lc-abbrev-word?)))
+    (or (gethash lc-abbrev-word? *word/s-for-abbreviation*)
+        (when caps-variant?
+          (gethash caps-variant? *word/s-for-abbreviation*)))))
 
 
 
