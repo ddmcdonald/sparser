@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1996,2013-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013-2018  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "token FSA"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  August 2017
+;;;  Version:  January 2018
 
 ;;  initated ~6/90
 ;;  1.1  (12/90) Added a call to zero-lookup-buffer when the end-of-stream is
@@ -30,9 +30,12 @@
 (defun run-token-fsa ()
   "Primary caller is the next-token function, which needs to 
    advance the chart one more token along the input stream.
-   The inner look of collecting characters is all tail recursive,
+   The inner loop of collecting characters is tail recursive,
    ending in a call to find-word when it's accumulated all the
-   characters for the next token."
+   characters for the next token. Note that what's actually
+   accumulating is the entries for the character as returned
+   by character-entry given the character object."
+  
   (let ((char
          (unless *pending-entry* ;; previous token ended by punctuation
            (elt *character-buffer-in-use*
@@ -58,7 +61,7 @@
         (t
           ;; it's now likely to be more than one character long, so set up
           ;; pointers to keep track of it
-          (setq *category-of-accumulating-token*  (car entry))
+          (setq *category-of-accumulating-token* (car entry))
           (when (consp (cdr (cdr entry)))
             (error "bad character entry: ~a" entry))
           (continue-token (kcons (cdr entry)
@@ -75,8 +78,7 @@
    is finished.
    The set of possible types is defined by the characters entries,
    see analyzers/tokenizer/ alphabet.lisp,
-   e.g. :punctuation, :number, :alphabetical,
-   :greek, :katakana, :hiragana."  
+   e.g. :punctuation, :number, :alphabetical, :greek, :katakana, :hiragana."  
   (declare (special accumulated-entries))
   
   (when (consp (cdr (car accumulated-entries)))
@@ -112,29 +114,6 @@
            (finish-token accumulated-entries length char-type))))
       
       (announce-out-of-range-character))))
-
-
-;;/// Rusty -- still need these? I like to keep this section
-;; of the code really lean
-
-;; Yes -- these allow us to collect patterns of tokens with initiol lower case
-;;  followed by upper-case
-
-(defparameter *collect-init-lowercase* nil)
-
-(defun create-raw-string (accumulated-entries)
-  (format nil "~{~a~}"
-          (loop for cc in
-                  (reverse accumulated-entries)
-                collect
-                  (if (eq (car cc) :uppercase)
-                      (string-upcase (cdr cc))
-                      (string-downcase (cdr cc))))))
-
-(defun initial-lowercase? (acc)
-  (and *collect-init-lowercase*
-       (eq (caar (last acc)) :lowercase)
-       (loop for a in acc thereis (eq (car a) :uppercase))))
 
 
 (defun finish-token (accumulated-entries length char-type)
@@ -179,13 +158,35 @@
       (setq *capitalization-of-current-token*
             (cleanup-call-to-caps-fsa capitalization-state length))
       (setq *length-of-the-token* length)
-      (setq *exact-pname-of-token* ;;/// rewrite using a reusable buffer
-            (subseq *character-buffer-in-use*
-                    (- *index-of-next-character* length)
-                    *index-of-next-character*))
+
+      (let ((start (- *index-of-next-character* length))
+            (end *index-of-next-character*))
+        (when (> start 0) ;; poor-man's check for the buffers having wrapped
+          (setq *exact-pname-of-token* ;;/// rewrite using a reusable buffer
+                (subseq *character-buffer-in-use* start end))))
 
       (find-word char-type))))
 
 
 
 
+;;/// Rusty -- still need these? I like to keep this section
+;; of the code really lean
+
+;; Yes -- these allow us to collect patterns of tokens with initiol lower case
+;;  followed by upper-case
+
+(defparameter *collect-init-lowercase* nil)
+
+(defun create-raw-string (accumulated-entries)
+  (format nil "~{~a~}"
+          (loop for cc in (reverse accumulated-entries)
+                collect
+                  (if (eq (car cc) :uppercase)
+                      (string-upcase (cdr cc))
+                      (string-downcase (cdr cc))))))
+
+(defun initial-lowercase? (acc)
+  (and *collect-init-lowercase*
+       (eq (caar (last acc)) :lowercase)
+       (loop for a in acc thereis (eq (car a) :uppercase))))
