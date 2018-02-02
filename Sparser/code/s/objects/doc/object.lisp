@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  March 2017
+;;;  Version:  February 2018
 
 ;; Created 2/6/13 to solve the problem of keeping document/section context.
 ;; [sfriedman:20130206.2038CST] I'm writing this using /objects/chart/edges/object3.lisp as an analog.
@@ -301,13 +301,13 @@
 ;;--- Where everything starts on each analysis run
 ;;
 (defun begin-new-article (&key name location date source)
-  ;; Called from per-article-initializations, which is
-  ;; called from analysis-core, which is called from
-  ;; either analyze-text-from-string or analyze-text-from-file
-  ;; though you can get to per-article-initializions from
-  ;; do-document-as-stream-of-files -- Responsible for
-  ;; kicking off the initialization (creation and linking
-  ;; of first instances) of all the other document elements.
+  "Called from per-article-initializations, which is
+   called from analysis-core, which is called from
+   either analyze-text-from-string or analyze-text-from-file
+   though you can get to per-article-initializions from
+   do-document-as-stream-of-files -- Responsible for
+   kicking off the initialization (creation and linking
+   of first instances) of all the other document elements."
   (let ((obj (allocate-article)))
     (setf (name obj) (or name (known-in-context :name)))
     (setf (article-location obj)
@@ -404,8 +404,8 @@
 (defclass section-of-sections (document-element named-object titled-entity)
   ()
   (:documentation "Motivated by the NXML for PubMed articles where there
-      is can be multiple titled 'section' elements within a section.
-      Doesn't appear to be recursive."))
+    can be multiple titled 'section' elements within a section.
+    Doesn't appear to be recursive."))
 
 (defmethod print-object ((s section-of-sections) stream)
   (print-unreadable-object (s stream :type t)
@@ -425,8 +425,9 @@
 
 (defclass paragraph (document-element named-object string-holder)
   ()
-  (:documentation "An orthographic paragraph as established
-    by patterns of newlines. See sort-out-result-of-newline-analysis"))
+  (:documentation "Either An orthographic paragraph as established
+    by patterns of newlines (see sort-out-result-of-newline-analysis)
+    or a document element delimited by XML markup."))
 
 (define-resource paragraph)
 
@@ -462,7 +463,7 @@
     (setf (parent p) section)
     (setf (children section)
           (if *use-reader-convention* `(,p) p))
-    (initialize-sentences) ;; moved here from 'every time' case
+    (initialize-sentences)
     p))
 
 (defun begin-new-paragraph (start-pos)
@@ -486,8 +487,6 @@
         (tts t (starts-at-pos ongoing) start-pos)
         (format t "~^&~%")))
     (setf *current-paragraph* p)
-    ;;(initialize-sentences) not in every condition but
-    ;; always the first time through
     p))
 
 (defun careful-begin-new-paragraph (start-pos)
@@ -589,9 +588,9 @@
   (setf (ends-at-char s) nil))
 
 (defun initialize-sentences ()
-  ;; Called from initialize-paragraphs or read-from-document,
-  ;; in which case it can be starting the first sentence of
-  ;; the next paragraph and had to do additional cleanup.
+  "Called from initialize-paragraphs or read-from-document,
+   in which case it can be starting the first sentence of
+   the next paragraph and had to do additional cleanup."
   (declare (special *current-paragraph*))
   (let ((p1 *current-paragraph*))
     (unless p1
@@ -609,8 +608,8 @@
         s1)))))
 
 (defun start-sentence (pos)
-  ;; Called from initialize-sentences for the first one, then
-  ;; from period-hook -- pos is the position after the period.
+  "Called from initialize-sentences for the first one, then
+   from period-hook -- pos is the position after the period."
   (declare (special *reading-populated-document*))
   (let ((s (if *reading-populated-document*
              (make-instance 'sentence) ;; permanent
@@ -638,7 +637,6 @@
         (when (position-precedes (chart-position-before pos)
                                  (starts-at-pos last))
           (error "end before start"))
-
         (setf (ends-at-pos last) ;; stop at the period
               (chart-position-before pos))
         (setf (ends-at-char last) (pos-character-index pos))
@@ -657,8 +655,7 @@
     (setq *current-sentence* s)))
 
 
-(defmethod display-contents  ((s sentence)
-                              &optional (stream *standard-output*))
+(defmethod display-contents  ((s sentence) &optional (stream *standard-output*))
   (display-contents (contents s) stream))
 
 
@@ -679,7 +676,6 @@
       (prepopulated? first-sentence))))
 
 (defmethod prepopulated? ((tt title-text))
-  ;;(push-debug `(,tt)) (lsp-break "prepopulated? tt")
   (let ((first-sentence (children tt)))
     (when first-sentence
       ;; Let's assume that if the first one has been handled
@@ -736,7 +732,12 @@
 
 ;;--- Gathering sentence lists (as strings) from an article
 
-(defparameter *article-sentences* nil)
+(defparameter *article-sentences* nil
+  "Initialized to a hash-table by save-article-sentence 
+   to store the sentences of an article.")
+
+(defparameter *save-the-sentences-of-the-article?* nil
+  "Gates whether or not we save the sentences.")
 
 (defun collect-sentences-from-articles ()
   (when *article-sentences*
@@ -770,14 +771,18 @@
 	     sl-name)))))
 
 (defmethod save-article-sentence ((article article) (sentence sentence))
-  (unless *article-sentences*
-    (setq *article-sentences* (make-hash-table)))
-  (when (or (name article) *article-name*)
-    (push (sentence-string sentence)
-          (gethash (or *article-name*
-                       (intern (pname (name article))
-                           (find-package :sp)))
-                   *article-sentences*))))
+  "Called from end-of-sentence-processing-cleanup and from a R3 article
+   utility function."
+  (declare (special *save-the-sentences-of-the-article?*))
+  (when *save-the-sentences-of-the-article?*
+    (unless *article-sentences*
+      (setq *article-sentences* (make-hash-table)))
+    (when (or (name article) *article-name*)
+      (push (sentence-string sentence)
+            (gethash (or *article-name*
+                         (intern (pname (name article))
+                                 (find-package :sp)))
+                     *article-sentences*)))))
 
 
 
@@ -802,3 +807,14 @@
 
 (setup-find-or-make 'document)
 
+
+;;;---------
+;;; display
+;;;---------
+
+(defun display-document-state (&optional (stream *standard-output*))
+  (format stream "~&   current article = ~a" (article))
+  (format stream "~&   current section = ~a" (section))
+  (format stream "~& current paragraph = ~a" (paragraph))
+  (format stream "~&  current sentence = ~a" (sentence)))
+          
