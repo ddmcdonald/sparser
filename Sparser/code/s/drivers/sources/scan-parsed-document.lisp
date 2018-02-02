@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "scan-parsed-document"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   December 2016
+;;;  Version:   February 2018
 
 ;; initiated 23-March-2017
 ;; Code to do a tree walk walk through a completely parsed document,
@@ -15,7 +15,6 @@
 ;;; The scan-through-document methods 
 ;;;--------------------------------
 
-(defparameter *current-article* nil)
 (defparameter *current-document-element* nil)
 
 (defgeneric scan-through-document (source to-do)
