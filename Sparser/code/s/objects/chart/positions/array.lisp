@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005,2012-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2012-2018  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "array"
 ;;;   Module:  "objects;chart:positions:"
-;;;  Version:  December 2016
+;;;  Version:  January 2018
 
 ;; initialized 1/91
 ;; 2.0 (8/13/91 v1.9) added Still-in-the-chart
@@ -82,21 +82,27 @@ the chart will require markedly less space.")
     (kreclaim (pos-status-lifo p)))
   (setf (pos-status-lifo          p) nil)
   (setf (pos-assessed?            p) nil)
-  (initialize-edge-vector (pos-ends-here p))
-  (initialize-edge-vector (pos-starts-here p)))
+  (initialize-edge-vector (pos-ends-here p) p)
+  (initialize-edge-vector (pos-starts-here p) p))
 
 
 (defun initialize-used-portion-of-chart ()
+  "Called during initialize-chart-state before starting "
   (declare (special *first-chart-position* *the-chart*
                     *next-chart-position-to-scan*))
   (let ((start *first-chart-position*)
         (end *next-chart-position-to-scan*))
-    (when (> start end)
-      (break "Stub: the chart has wrapped"))
-    (do* ((i start (1+ i))
-          (p (aref *the-chart* i) (aref *the-chart* i)))
-         ((= i end))
-      (initialize-position p (pos-token-index p)))))
+    (if *position-array-is-wrapped*
+      (then
+        ;;/// this isn't enough to make regular parsing
+        ;; succeed. Probably have to clear the sentences
+        ;; and possibly other document elements too
+        (make-the-chart)) ;; throw it all away
+      (else
+        (do* ((i start (1+ i))
+              (p (aref *the-chart* i) (aref *the-chart* i)))
+             ((= i end))
+          (initialize-position p (pos-token-index p)))))))
 
 
 

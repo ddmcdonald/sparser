@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2015-2018  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "init"
 ;;;   Module:  "objects;chart:edge vectors:"
-;;;  Version:  2.3 January 2015
+;;;  Version:  February 2018
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;; 2.1 (4/6/93) Moved some code around and put in switch for kcons vs. vector
@@ -16,16 +16,17 @@
 ;;; initializing the edge-vector object
 ;;;-------------------------------------
 
-(defun initialize-edge-vector (ev)
-  ;; called from Bump-&-store-word
-  ;; The position and direction are immutable. Everything else
-  ;; get's zero'd
-
+(defun initialize-edge-vector (ev position)
+  "Called by initialize-position, but that routine can
+   be called in circumstances where the whole chart needs to be
+   cleaned, so we adjust the position field in case it's not 
+   the one it should be. Otherwise the direction is immutable
+   and everything else get's zero'd."
   (if (ev-edge-vector ev)
     (cleanout-edge-vector-array ev)
     (setf (ev-edge-vector ev)
           (make-edge-vector-array)))
-
+  (setf (ev-position ev)        position)
   (setf (ev-top-node ev)        nil)
   (setf (ev-number-of-edges ev) 0)
   (setf (ev-boundary ev)        nil)  
