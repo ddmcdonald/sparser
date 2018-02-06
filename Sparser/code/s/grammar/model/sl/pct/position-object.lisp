@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2011,2018  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "position object"
 ;;;   Module:  "model;sl:pct:"
-;;;  version:  February 2011
+;;;  version:  February 2018
 
 ;; initiated 6/11/93 v2.3
 ;; (4/23/94) fixed substr.-shape bug in Index/position. 10/3 wrote reclaimer.
@@ -17,8 +17,8 @@
 ;;;--------
 
 (define-category  position-at-co
-  :instantiates nil
-  :specializes nil
+  :instantiates self
+  :specializes title
   :binds ((title . title)
           (company . company))
   :index (:special-case :find find/position
