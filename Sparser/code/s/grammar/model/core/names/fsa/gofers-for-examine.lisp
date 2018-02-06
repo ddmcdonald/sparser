@@ -2,7 +2,7 @@
 ;;;
 ;;;      File: "gofers-for-examine"
 ;;;    Module: model/core/names/fsa/
-;;;   Version: October 2016
+;;;   Version: February 2018
 
 ;; Initiated 3/28/13 by pulling out the odd tests and checks 
 ;; from examine. 
@@ -266,16 +266,17 @@
 ;;;-------------------------------------------------------
 
 (defun some-non-initial-in-items (items)
-  ;; the initials flag was up, but there is the danger of interpreting
-  ;; an unknown abbreviation as a person: "M.B.A." if we don't do
-  ;; this check. ///Having a notion of a 'patern' for the item 
-  ;; sequence would probably be more elegant, which is another
-  ;; reason to consider shifting back to the transition net
-  ;; The "non-initial" has to follow the initials, and they
-  ;; have to be first in the sequence. ///Need to look at titles
-  ;; and prefixes like "Mr."
-  ;;(push-debug `(,items)) (break "items = ~a" items)
-  (declare (special category::initial))
+  "Called from categorize-and-form-name when the initials flag is up.
+   Guards against misconstruing a sequence like 'M.B.A' as the
+   name of a person"
+  (loop for i in items unless (itypep i 'initial) return t))
+
+#| The original version here (1st version after moving away
+ from a transition net) is trying to see if it can find
+ patterns. Need to examine all the use cases to see whether
+ something more complicated or stateful like this has any value now,
+ but since it messed up on 'George L. Ball' there's something
+ wrong with this code as is.
   (let ((item-is-an-initial? nil)
         (state :start)) ;; :collecting-initials, :after-initials
      (flet ((initial? (item)
@@ -304,8 +305,7 @@
        ;; Returning t says it's ok to construe the initials
        ;; as part of a name because the initials were
        ;; followed by something 
-       t)))
-
+       t)))   |#
   
 
 

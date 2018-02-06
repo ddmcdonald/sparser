@@ -1,10 +1,10 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2011-2018  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "examine"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.20 September 2013
+;;;  version:  February 2018
 
 ;; initiated 4/1/94 v2.3
 ;; 0.1 (4/23) fixed change of where :literal-in-a-rule is in Sort-out-multiple-
@@ -75,7 +75,6 @@
 ;;       to the edge section. ////There must be others -- check.
 
 (in-package :sparser)
-(defvar CATEGORY::PERSON-NAME)
 
 ;;;-------------------------
 ;;; flag for error checking
@@ -512,7 +511,9 @@
                                  &-sign initials? person-version
                                  inc-term? of and the generic-co co-activity
                                  koc? ordinal location-head hurricane)
-  (declare (special category::company-name)(ignore hurricane name-state country))
+  (declare (special category::company-name category::person-name category::name
+                    category::location)
+           (ignore hurricane name-state country))
 
   ;; Analyze the evidence and determine what sort of name this is
   ;; and make it [[ why not look for existing one? ]]. 
@@ -521,8 +522,8 @@
 
   (when *break-before-creating-name*
     (push-debug `(,items)) ;; more flags?
-    (break "Look at what categorize-and-form-name with these items:~
-          ~%  ~a" items))
+    (break "Look at the locals in categorize-and-form-name~
+          ~%  items = ~a" items))
 
   (cond
    ((known-sequence items)) ;; throws if it succeeds
