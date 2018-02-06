@@ -610,7 +610,8 @@
 (defun start-sentence (pos)
   "Called from initialize-sentences for the first one, then
    from period-hook -- pos is the position after the period."
-  (declare (special *reading-populated-document*))
+  (declare (special *reading-populated-document*
+                    *sentence-terminating-punctuation*))
   (let ((s (if *reading-populated-document*
              (make-instance 'sentence) ;; permanent
              (allocate-sentence))) ;; reclaimed

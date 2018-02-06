@@ -89,7 +89,8 @@ the chart will require markedly less space.")
 (defun initialize-used-portion-of-chart ()
   "Called during initialize-chart-state before starting "
   (declare (special *first-chart-position* *the-chart*
-                    *next-chart-position-to-scan*))
+                    *next-chart-position-to-scan*
+                    *position-array-is-wrapped*))
   (let ((start *first-chart-position*)
         (end *next-chart-position-to-scan*))
     (if *position-array-is-wrapped*
