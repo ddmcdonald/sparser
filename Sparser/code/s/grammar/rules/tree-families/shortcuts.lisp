@@ -112,22 +112,27 @@ broadly speaking doing for you all the things you might do by hand.
          (i (or (gethash id *uid-to-individual*)
                 (setf (gethash id *uid-to-individual*)
                       (let ((ind (find-or-make-individual category :uid id)))
+                        (when (consp members) (setq ind (set-family-members ind members)))
                         (if name
                             (bind-dli-variable :name name ind)
-                            ind))))))
+                            ind)))))
+         (word-list `(,base-word ,word ,.(when name `(,name))
+                                 ,.(when synonyms `(,synonyms)))))
     (add-rules-cond-plural base-word category i :plural plural :no-plural no-plural)
     (when (and name 
                (not (equal name base-word))) ;; if the name is the same as the base-word, there's nothing to do
       (add-rules-cond-plural name category i :no-plural no-plural)) 
     (when adj (add-rules (make-rules-for-head :adjective (resolve/make (pname adj)) 
-                                              category i) i))
+                                              category i)
+                         i))
     (when synonyms (loop for s in synonyms
                          do (add-rules-cond-plural s category i :no-plural no-plural)))
+    (when (itypep i 'biological)
+      (add-bio-synonyms id word-list))
     (stipulate-simple-mumble-resource i base-word :common-noun)
     ;; putting it before we add the familiy members has a chance of matching
     ;; what's on the rules. This members statement should be much earlier
     ;; to i for the rules has it. 
-    (when (consp members) (setq i (set-family-members i members)))
     i))
 
 (defun stipulate-simple-mumble-resource (i s-word s-pos)

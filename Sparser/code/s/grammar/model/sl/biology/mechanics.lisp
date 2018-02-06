@@ -602,7 +602,7 @@ uid binding, if there is one"
 
 ;; This maps IDs (e.g., "BRAP_HUMAN") to a list of synonyms.
 ;; We use #'equalp for case-insensitivity. NO -- need to maintain case
-(defvar *bio-synonym-hash* (make-hash-table :test #'equalp))
+(defvar *bio-synonym-hash* (make-hash-table :test #'equal))
 
 (defun add-bio-synonyms (id synonyms)
   "Adds the given synonyms under the given ID."
@@ -613,6 +613,18 @@ uid binding, if there is one"
 (defun get-bio-synonyms (id)
   "Given an ID, retrieve synonyms (not including the ID)."
   (gethash id *bio-synonym-hash*))
+
+(defun indiv-bio-synonyms (indiv)
+  (or (get-bio-synonyms (value-of 'uid indiv))
+      (get-bio-synonyms (pname (value-of 'name indiv)))))
+
+(defun get-family-member-names (family)
+  (let ((fam-collection (or (value-of 'family-members family)
+                            (value-of 'family-members (gethash *uid-to-individual*
+                                                               (value-of 'uid family))))))
+    (when fam-collection
+      (loop for protein in (value-of 'items fam-collection)
+              append (indiv-bio-synonyms protein)))))
 
 ;;;-----------------------
 ;;; bio-entity -> protein
