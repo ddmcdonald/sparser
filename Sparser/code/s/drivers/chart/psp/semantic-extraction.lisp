@@ -755,6 +755,7 @@ in cwc-integ/spire/interface/sparser.lisp
          `(("!recursion!" ,i)))))
     
     ((and (itypep i category::number)
+          (not (value-of 'quantifier i)) ; "all three" should not return "3"
           (not (itypep i category::ordinal))
           (not *print-sem-tree*)
           (not (or *for-spire* *sentence-results-stream*)))
