@@ -126,6 +126,7 @@
 (def-indiv-with-id organism "drosophila" "NCIT:C14202" :synonyms ("fruit fly")) 
 (def-indiv-with-id organism "mouse" "NCIT:C14238" :plural "mice" :synonyms ("mus") :adj "murine")
 (def-indiv-with-id organism "rat" "NCIT:C14266")
+(def-indiv-with-id organism "goat" "NCIT:C14210")
 (def-indiv-with-id organism "xenopus" "NCIT:C14285") 
 (def-indiv-with-id organism "zebrafish" "NCIT:C14287") 
 
