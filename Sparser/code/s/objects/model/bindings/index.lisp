@@ -93,10 +93,9 @@
      (let ((name variable))
        (setq variable (find-variable-for-category name category))
        (unless variable
-         (error "There is no lambda-variable with the name ~A"
-                name))))
+         (error "There is no lambda-variable with the name '~A'~
+               ~%on the category ~a" name category))))
     (lambda-variable variable))
-  
   (let ( binding )
     (dolist (b list-of-bindings)
       (when (eq (binding-variable b) variable)
