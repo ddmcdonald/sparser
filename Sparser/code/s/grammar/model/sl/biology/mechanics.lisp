@@ -712,10 +712,11 @@ uid binding, if there is one"
                ;; no longer calls make-phosphorylated-protein so we
                ;; can split off cases like this where there is no edge
                ;; since we're creating a word instead
-               (phospho-protein (create-predication-by-binding-only
+               (prot-pred (create-predication-by-binding-only
                                  var protein
                                  (find-or-make-lattice-description-for-ref-category
                                   category::phosphorylate)))
+               (phospho-protein (bind-dli-variable 'predication prot-pred protein)) 
                (p-word (define-word/expr pname :override-duplicates))
                          ;;/// delete the lowercase version ('word')
                (rule (define-cfr/resolved
