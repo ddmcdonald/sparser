@@ -198,7 +198,7 @@
   "Given a variable (var), and two referents (val, pred), assert that
    the variable is abstracted out from the pred(icate)."
   (declare (special **lambda-var**))
-  (let ((new-predication (bind-dli-variable  var **lambda-var** pred)))
+  (let ((new-predication (bind-dli-variable var **lambda-var** pred)))
     (declare (special new-predication))
     ;; Rusty - how could the binding fail?  AKA, why the cond here.
     (when (and val (not (individual-p val))

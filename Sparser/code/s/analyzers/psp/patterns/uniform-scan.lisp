@@ -92,60 +92,60 @@
       (return-from collect-no-space-segment-into-word nil))
       
 
-      ;; If the sweep encountered any more edges we have to fold 
-      ;; them in or else we'll get the wrong pattern
-      (when (is-phosphorylated-protein? start-pos end-pos)
-        (return-from collect-no-space-segment-into-word
-          (span-phosphorylated-protein start-pos end-pos)))
+    ;; If the sweep encountered any more edges we have to fold 
+    ;; them in or else we'll get the wrong pattern
+    (when (is-phosphorylated-protein? start-pos end-pos)
+      (return-from collect-no-space-segment-into-word
+        (span-phosphorylated-protein start-pos end-pos)))
         
-      (tr :looking-at-ns-segment start-pos end-pos)
+    (tr :looking-at-ns-segment start-pos end-pos)
 
-      (multiple-value-bind (layout edge)
-          (parse-between-nospace-scan-boundaries start-pos end-pos)
-        (multiple-value-bind (ns-pattern)
-            (sweep-ns-region start-pos end-pos)
-          (tr :ns-segment-layout layout)
-          ;;(lsp-break "layout = ~a edge = ~a" layout edge)
-          (cond
-            ((or (eq layout :single-span) ;; Do nothing. It's already known
-                 (eq layout :one-edge-over-entire-segment))
-             (tr :ns-spanned-by-edge edge)
-             (revise-form-of-nospace-edge-if-necessary edge :find-it)
-             #+ignore(when *collect-ns-examples*
-                       (update-ns-examples start-pos))
-             (when *collect-ns-examples* 
-               (save-ns-example start-pos end-pos)))
-            (t
-             ;; TO-DO -- review this code -- issues occurred when there
-             ;; are multiple edges at the end of the pattern
-             ;; (ambiguity) and only one of the edges satisfies a
-             ;; pattern this is not done cleanly, and needs some
-             ;; pair-programming
-             (when *collect-ns-examples* 
-               (save-ns-example start-pos end-pos))
-             (catch :punt-on-nospace-without-resolution
-               (let* ((edges (treetops-between start-pos end-pos))
-                      (end-edge (car (last edges)))
-                      (end-cat (when (and (edge-p end-edge)
-                                          (category-p (edge-category end-edge)))
-                                 (cat-symbol (edge-category end-edge)))))
-                 (or
-                  (when (punctuation-final-in-ns-span? end-pos)
-                    ;; n.b. only fires on colons
-                    (setq end-pos (chart-position-before end-pos))
-                    (ns-pattern-dispatch ns-pattern start-pos end-pos :final-colon))
-                  (when (memq (car (last ns-pattern))
-                              '(:protein :protein-family
-                                :small-molecule :ion :nucleotide))
-                    (ns-protein-pattern-resolve  ns-pattern start-pos end-pos))
-                  (when (eq end-cat 'category::amino-acid)
-                    (ns-amino-pattern-resolve  ns-pattern start-pos end-pos))
-                  (ns-pattern-dispatch ns-pattern start-pos end-pos)))))))
+    (multiple-value-bind (layout edge)
+        (parse-between-nospace-scan-boundaries start-pos end-pos)
+      (multiple-value-bind (ns-pattern)
+          (sweep-ns-region start-pos end-pos)
+        (tr :ns-segment-layout layout)
+        ;;(lsp-break "layout = ~a edge = ~a" layout edge)
+        (cond
+          ((or (eq layout :single-span) ;; Do nothing. It's already known
+               (eq layout :one-edge-over-entire-segment))
+           (tr :ns-spanned-by-edge edge)
+           (revise-form-of-nospace-edge-if-necessary edge :find-it)
+           #+ignore(when *collect-ns-examples*
+                     (update-ns-examples start-pos))
+           (when *collect-ns-examples* 
+             (save-ns-example start-pos end-pos)))
+          (t
+           ;; TO-DO -- review this code -- issues occurred when there
+           ;; are multiple edges at the end of the pattern
+           ;; (ambiguity) and only one of the edges satisfies a
+           ;; pattern this is not done cleanly, and needs some
+           ;; pair-programming
+           (when *collect-ns-examples* 
+             (save-ns-example start-pos end-pos))
+           (catch :punt-on-nospace-without-resolution
+             (let* ((edges (treetops-between start-pos end-pos))
+                    (end-edge (car (last edges)))
+                    (end-cat (when (and (edge-p end-edge)
+                                        (category-p (edge-category end-edge)))
+                               (cat-symbol (edge-category end-edge)))))
+               (or
+                (when (punctuation-final-in-ns-span? end-pos)
+                  ;; n.b. only fires on colons
+                  (setq end-pos (chart-position-before end-pos))
+                  (ns-pattern-dispatch ns-pattern start-pos end-pos :final-colon))
+                (when (memq (car (last ns-pattern))
+                            '(:protein :protein-family
+                              :small-molecule :ion :nucleotide))
+                  (ns-protein-pattern-resolve  ns-pattern start-pos end-pos))
+                (when (eq end-cat 'category::amino-acid)
+                  (ns-amino-pattern-resolve  ns-pattern start-pos end-pos))
+                (ns-pattern-dispatch ns-pattern start-pos end-pos)))))))
             
-        (when *collect-ns-examples*
-          (update-ns-examples start-pos))
+      (when *collect-ns-examples*
+        (update-ns-examples start-pos))
         
-        end-pos)))
+      end-pos)))
 
 (defun is-phosphorylated-protein? (start end)
   (let* ((extr-string (extract-characters-between-positions start end))
