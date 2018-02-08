@@ -1075,6 +1075,7 @@
       :of substrate))
 
 (def-synonym protein-domain (:noun "region"))
+(def-synonym protein-domain (:noun "segment")) ;"C-terminal segment of PEA-15"
 
 (define-category peptide :specializes molecule
   :binds ((residue residue-on-protein))
