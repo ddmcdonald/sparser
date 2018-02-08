@@ -527,30 +527,34 @@
  :specializes post-translational-modification 
   :realization 
     (:verb ("ubiquitinate" "ubiquitylate")
-     :noun ("ubiquitination"  "ubiquitylation")
+     :noun ("ubiquitination" "ubiquitylation")
      :etf (svo-passive)))
   
 (define-category auto-ubiquitinate
   :specializes ubiquitination
   :realization
-  (:verb ("auto-ubiquitinate" "autoubiquitinate" "auto-ubiquitylate")
-   :noun ("auto-ubiquitination" "autoubiquitination" "auto-ubiquitylation")
+  (:verb ("auto-ubiquitinate" "autoubiquitinate"
+                              "auto-ubiquitylate" "autoubiquitylate")
+   :noun ("auto-ubiquitination" "autoubiquitination"
+                                "auto-ubiquitylation" "autoubiquitylation")
    :etf (sv)))
 
 (define-category poly-ubiquitination :specializes ubiquitination
   :bindings (uid  "GO:0000209") ;; manually added from TRIPS
   :realization
-  (:verb ("poly-ubiquitinate" "polyubiquitinate" "polyubiquitylate")
+  (:verb ("poly-ubiquitinate" "polyubiquitinate" "poly-ubiquitylate" "polyubiquitylate")
   :etf (svo-passive)
-  :noun ("poly-ubiquitination" "polyubiquitination" "poly-ubiquitylation"))) ;; manually added from TRIPS
+  :noun ("poly-ubiquitination" "polyubiquitination" "poly-ubiquitylation" "polyubiquitylation"))) ;; manually added from TRIPS
 
 ;; manually added from TRIPS
 (define-category de-ubiquitination :specializes post-translational-modification
   :bindings (uid  "GO:0016579") 
   :realization
-  (:verb ("de-ubiquitinate" "deubiquitinate")
+  (:verb ("de-ubiquitinate" "deubiquitinate"
+                            "de-ubiquitylate" "deubiquitylate")
    :etf (svo-passive)
-   :noun ("de-ubiquitination" "deubiquitination")))
+   :noun ("de-ubiquitination" "deubiquitination"
+                              "de-ubiquitylation" "deubiquitylation")))
 
 ;;;------------------------------
 ;;; mUbRas, monoubiquitinated Ras
