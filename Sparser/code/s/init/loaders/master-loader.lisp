@@ -115,8 +115,8 @@
 ;;;---------
 
 (lload "chart;units-labels;loader")
-(lload "rule objs;rule-links;object")
 (lload "chart;words;loader")
+(lload "rule objs;rule-links;object")
 (lload "lookup words;loader")
   ;; includes fsas for [morphology] and [capitalization]
 (lload "chart;categories;loader")
