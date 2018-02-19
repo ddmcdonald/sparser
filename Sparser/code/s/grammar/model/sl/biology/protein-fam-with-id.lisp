@@ -301,7 +301,7 @@ Guanine Nucleotide Binding Protein" "GTP-Binding Protein"))
 (def-family-with-id "DUSP" "BE:DUSP") 
 
 (def-family-with-id "ERH" "PR:000007177" :members ("UP:P84089" "UP:P84090"))
-(def-family-with-id "ERK1/2" "BE:ERK" :synonyms ("ERK-1/2" "extracellular signal regulated kinase 1/2" "extracellular signal-regulated kinase 1/2" "extracellular signal regulated kinases 1 and 2") :members ("UP:P27361" "UP:P28482")) 
+(def-family-with-id "ERK1/2" "BE:ERK" :synonyms ("ERK-1/2" "extracellular signal regulated kinase 1/2" "extracellular signal-regulated kinase 1/2" "extracellular signal regulated kinases 1 and 2" "extracellular signal–regulated kinases 1 and 2" "extracellular signal-regulated kinases 1 and 2") :members ("UP:P27361" "UP:P28482")) 
 (def-family-with-id "FOXC1" "PR:000007607" :members ("UP:Q12948" "UP:Q61572"))
 (def-family-with-id "GPCR" "BE:GPCR" :synonyms ("G protein–coupled receptor")) 
 
