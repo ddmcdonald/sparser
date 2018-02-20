@@ -1,4 +1,0 @@
-(:source-registry-cache
-  "Mumble/mumble.asd"
-  "sparser.asd"
-  "util/ddm-util.asd")
