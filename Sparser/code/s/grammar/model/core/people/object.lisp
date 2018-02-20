@@ -67,7 +67,8 @@
 |#
 (define-category person-type
   :instantiates self
-  :specializes kind)
+  :specializes named-type
+  :bindings (type-of 'person))
 
 
 ;;;-----------------------------------------
