@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2013-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2013-2018  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "words"
 ;;;   Module:  "analyzers;FSA:"
-;;;  Version:  January 2017
+;;;  Version:  February 2018
 
 ;; 5/5/93 v2.3, typed in hard copy of 11/24/92 that had been lost in
 ;;  disk crash
@@ -41,20 +41,26 @@
 ;;; initial dispatch
 ;;;------------------
 
-(defun do-word-level-fsas (word position)
-  ;; called from the psp drivers, e.g. scan-terminals-loop or scan3
-  (set-status :word-fsas-done position)
-  (tr :considering-word-level-fsas word position)
+(defun do-word-level-fsas (word position-before)
+  "Standard entry point, e.g. for scan-terminals-loop or scan. 
+   Looks for an FSA associated with the word and runs it if
+   if finds one and if it succeeds returns the position that
+   it reached, otherwise nil.
+   The position argument is used for the case where the
+   FSA is associated with a capitalized variant of the word
+   rather than the lowercase word that is passed in."
+  (set-status :word-fsas-done position-before)
+  (tr :considering-word-level-fsas word position-before)
 
   (if (eq word *the-unknown-word*)
-      (then (tr :wfsa/unknown-word word position)
+      (then (tr :wfsa/unknown-word word position-before)
             nil)
       (when word ;; null word happens in "PMC2171479.3.C.p1"
         (let ((rs (word-rules word)))
           (if rs
-              (search-word-for-fsas word rs position)
+              (search-word-for-fsas word rs position-before)
         
-              (let ((capitalization (pos-capitalization position)))
+              (let ((capitalization (pos-capitalization position-before)))
                 ;; So far we've been working with the canonical (lowercase)
                 ;; version of the word. If this instance isn't lowercase then
                 ;; there might be a rule set with one of the variations
@@ -63,12 +69,12 @@
                     (then
                       (tr :wfsa/marked-capitalization)
                       (if (word-capitalization-variants word)
-                          (check-variants-for-word-fsas word position)
+                          (check-variants-for-word-fsas word position-before)
                           (dispatch-off-capitalization-data capitalization
                                                             word
-                                                            position)))
+                                                            position-before)))
                     (else
-                      (tr :wfsa/no-routine word position)
+                      (tr :wfsa/no-routine word position-before)
                       nil ))))))))
 
 
@@ -76,8 +82,8 @@
 ;;----- alternative entry point
 
 (defun do-word-fsas/only-known (word position)
-  ;; same set of dispatches, but only known words will be considered.
-  ;; Called from PFWPNF
+  "Same set of dispatches as do-word-level-fsa, but only known words 
+   are considered."
   (set-status :word-fsas-done position)
   (unless (eq word *the-unknown-word*)
     (let ((rs (word-rules word)))
@@ -94,10 +100,10 @@
 ;;;-----------------------
 
 (defun search-word-for-fsas (lc-word rs position)
-  ;; it's a known word, but we should check whether it came in with
-  ;; marked capitalization and that case of the word is also known and
-  ;; so might trigger an fsa. If it is known, but it doesn't do an fsa,
-  ;; check the lowercase version as a default.
+  "It's a known word, but we should check whether it came in with
+   marked capitalization and that case of the word is also known and
+   so might trigger an fsa. If it is known, but it doesn't do an fsa,
+   check the lowercase version as a default."
 
   (if (not (eq :lower-case (pos-capitalization position)))
     ;; This instance has marked case
@@ -119,11 +125,10 @@
       (check-known-word-for-word-fsas lc-word rs position))))
 
 
-
 (defun search-known-word-for-fsas (lc-word rs position)
-  ;; just like the version above, except that it doesn't call check-
-  ;; variants because that has a default for unknown words.
-
+  "Just like the version above, except that it doesn't call check-
+   variants because that has a default for unknown words."
+  
   (if (not (eq :lower-case (pos-capitalization position)))
     ;; This instance has marked case
     (if (word-capitalization-variants lc-word)
@@ -145,12 +150,13 @@
 
 
 
-
 ;;---- core check
 
 (defun check-known-word-for-word-fsas (word rs position)
-  ;; called when we're sure that we have the relevant word. 
-  ;; Prior routines are responsible for thinking about capitalization
+  "Called when we're sure that we have the relevant word. 
+   Prior routines are responsible for thinking about capitalization.
+   Accesses the fsa field, executes the fsa it finds and returns
+   the position it reaches, or else nil."
   (when rs
     (let ((word-fsa-field (rs-fsa rs)))
       (if word-fsa-field
@@ -172,9 +178,9 @@
 ;;;---------------------
 
 (defun check-variants-for-word-fsas (lc-word position)
-  ;; we know there are variants defined or we wouldn't have gotten here.
-  ;; The question is whether the word that matches the current situation
-  ;; will trigger an fsa
+  "We know there are variants defined or we wouldn't have gotten here.
+   The question is whether the word that matches the current situation
+   will trigger an fsa."
   (let ((variants (word-capitalization-variants lc-word))
         (actual-state (pos-capitalization position)))
     (tr :wfsa/actual-state actual-state)
@@ -202,9 +208,9 @@
 
 
 (defun check-known-variants-for-fsas (lc-word position)
-  ;; same routine as Check-variants-for-word-fsas, but no escape
-  ;; to the capitalization-data dispatch if the corresponding
-  ;; variant isn't known
+  "Same routine as Check-variants-for-word-fsas, but no escape
+   to the capitalization-data dispatch if the corresponding
+   variant isn't known."
   (let ((variants (word-capitalization-variants lc-word))
         (actual-state (pos-capitalization position)))
     (let ((word-with-rules
@@ -224,7 +230,9 @@
              subsumer (word-rules subsumer) position)))))))
 
 
-;;--- Pulling out the polyword start state if there is one
+;;;-------------------------------------------------------
+;;; Pulling out the polyword start state if there is one
+;;;-------------------------------------------------------
 
 (defun includes-pw-start-state (fsa-field)
   (typecase fsa-field
@@ -261,8 +269,15 @@
 
 
 (defun starts-occasional-polyword (word)
+  "Polywords can be defined to be 'occasional' -- set aside for running
+   only in specific circumstances such as identifying the epistimological
+   status of passages in a document."
   (get-tag :occasional-polyword word))
 
+
+(defun push-polyword-state-onto-word (word state)
+  "Add a polyword initial state to the word"
+  (push-item-onto-fsa-field word state))
 
 
 ;;;-------------------------
@@ -270,8 +285,8 @@
 ;;;-------------------------
 
 (defun do-fsa-field (fsa-field word position)
-  ;; FSAs are differentiated from polywords, and checked for
-  ;; independently. 
+  "FSAs are differentiated from polywords, and checked for
+   independently."
   (let ( fsa  position-reached )
     ;;(tr :wfsa/options word position fsa-field)
 
@@ -303,46 +318,3 @@
                     (funcall fsa word position))
               (when position-reached
                 (return-from do-fsa-field position-reached)))))))))
-
-;;;-------------------------------------------------------------------
-;;; standard form for adding an FSA to the front of a word's rule-set
-;;;-------------------------------------------------------------------
-
-(defun add-fsa (category fsa)
-  "Given a category object and a symbol naming the function
-   that runs the fsa, extend the rule set of the category
-   to include the fsa. Examples in core/numbers/categories.lisp"
-  (let ((rule-set (cat-rule-set category)))
-    (unless rule-set
-      (setq rule-set (make-rule-set :backpointer category))
-      (setf (cat-rule-set category) rule-set))
-    (let ((fsa-field (rs-fsa rule-set)))
-      (if fsa-field
-        (unless (memq fsa fsa-field)
-          (push fsa fsa-field))
-        (setf (rs-fsa rule-set) (list fsa)))
-      rule-set)))
-
-(defun find-or-make-fsa-field (word)
-  (check-type word word)
-  (let* ((rs (establish-rule-set-for word)) ;; find or make
-         (fsa-field (rs-fsa rs)))
-    (or fsa-field
-        rs)))
-
-(defun push-item-onto-fsa-field (word item)
-  "The result is read by, e.g. initiates-polyword or do-fsa-field"
-  (let ((field-or-rs (find-or-make-fsa-field word)))
-    (etypecase field-or-rs
-      (rule-set (setf (rs-fsa field-or-rs) `(,item)))
-      (cons
-       (tail-cons item field-or-rs))
-      (symbol
-       (error "Bad initial state of fsa field of rule-set-for ~a" word)))))
-
-(defun push-fsa-onto-word (word fn-name)
-  (push-item-onto-fsa-field word fn-name))
-
-(defun push-polyword-state-onto-word (word state)
-  (push-item-onto-fsa-field word state))
-
