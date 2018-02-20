@@ -144,8 +144,9 @@
       (:scanned
        (introduce-leading-brackets
         (pos-terminal position-before) position-before))
-      (:brackets-from-word-introduced )
-      (:preterminals-installed )
+      (:brackets-from-word-introduced)
+      (:preterminals-installed)
+      (:polywords-check)
       (otherwise (break "assimilate new case for status in ~
                          PNF: ~A" status)))
 

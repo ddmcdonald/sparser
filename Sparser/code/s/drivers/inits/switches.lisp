@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2011-2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  November 2017
+;;;  Version:  February 2018
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -97,10 +97,11 @@
   (declare (special *treat-single-Capitalized-words-as-names*
                     *pnf-routine* *break-policy* *description-lattice*
                     *allow-pure-syntax-rules* *character-translation-protocol*
-                    *keep-number-sequence-raw*
-))
+                    *keep-number-sequence-raw*  *def-word-definition*))
   (format stream "~&~%Sparser switch settings:")
   (format stream " ~A" *switch-setting*)
+  (format stream "~%                       script used: ~a"
+          script)
   (format stream "~%              Chart-level protocol: ~A"
           *kind-of-chart-processing-to-do*)
   (format stream "~&               use syntactic rules: ~a"
@@ -108,7 +109,9 @@
   (format stream "~&       use the Description Lattice: ~a"
           *description-lattice*)
   (format stream "~%                     unknown words: ~A"
-          *unknown-word-policy*) ;; :check-for-primed = Comlex
+          *unknown-word-policy*)
+  (format stream "~%                        use COMLEX: ~a"
+          (eq *def-word-definition* :comlex))
   (format stream "~%             break function policy: ~a"
           *break-policy*)
   (format stream "~%       capitalization FSA dispatch: ~A"
@@ -442,7 +445,6 @@
   (setq *switch-setting* :fire))
 
 
-
 (defun bio-setting ()
   "Used in the 'biology' configuration/script"
   (declare (special *treat-single-capitalized-words-as-names*
@@ -454,7 +456,7 @@
   (top-edges-setting)
   (standard-extras)
   (include-comlex)
-
+  
   ;; cherry-pick, vary from sublangage-settings
   (use-unknown-words)
   (setq *make-edges-over-new-digit-sequences* t)
@@ -500,7 +502,6 @@
   (ignore-comlex)
   (setq *use-subtypes* t)
   (use-post-analysis-mentions-for-pronouns)
-
   (sublanguage-settings) ;; except
   (setq *ignore-capitalization* t)
   ;; The proper name facility (PNF) is not included in the blocks world
@@ -525,13 +526,13 @@
   (setq *collect-model* nil) ;; likely to hit tacit biology assumptions
 
   ;;--------- these guys have to be systematized.
-
   (period-hook-on)
   (designate-sentence-container :complex) ;; vs. :situation
   (setq *recognize-sections-within-articles* t) ;; otherwise no sentences
 
   (turn-off-debugging-flags)
   (setq *switch-setting* :blocks-world))
+
 
 
 
