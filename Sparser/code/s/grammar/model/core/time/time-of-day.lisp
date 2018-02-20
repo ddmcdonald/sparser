@@ -83,8 +83,8 @@
 
 (define-category timezone
   :instantiates  self
-  :specializes  region ;; get the geographical aspect
-  :mixins (sequential cyclic)
+  :specializes time
+  :mixins (bounded-region  sequential cyclic)
   :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
