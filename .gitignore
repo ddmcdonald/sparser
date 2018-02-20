@@ -1,3 +1,4 @@
 *.DS_Store
 *.fasl
 *.*fsl
+*.cl-source-registry.cache
