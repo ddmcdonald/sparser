@@ -30,7 +30,10 @@
   :instantiates self
   :specializes abstract
   :lemma (:common-noun "collection")
-  :index (:permanent :key items)
+  :index (:permanent
+          :special-case :find find/collection
+                        :index index/collection
+                        :reclaim reclaim/collection)
   :binds ((items :primitive list)
           (type :primitive category)
           (number :primitive integer))

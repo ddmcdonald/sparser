@@ -104,6 +104,24 @@
       (create-collection items category)))
 
 
+(defun index/collection (i collection-category bindings) (break "index"))
+(defun find/collection (i collection-category bindings) (break "find"))
+(defun reclaim/collection (i collection-category bindings) (break "reclaim"))
+
+(defun remove-collection-from-index (collection)
+  ;; Needed when the number or identity of the items in it changes
+  ;; and we need to reindex it.
+  (let ((old-items (value-of 'items collection category::collection)))
+    (unless (find-collection old-items collection)
+      (error "Collection isn't indexed. Can't remove it"))
+    (let ((instances (cat-instances category::collection))
+          (category (value-of 'type collection category::collection))
+          (count (value-of 'number collection category::collection)))
+      (let ((length-entry (gethash count instances)))
+        (let ((category-entry (gethash category length-entry)))
+          (remhash old-items category-entry))))))
+
+
 ;;;------
 ;;; find
 ;;;------
@@ -298,19 +316,6 @@
             ~%Look a value-cell" object collection)
       collection)))
 
-
-(defun remove-collection-from-index (collection)
-  ;; Needed when the number or identity of the items in it changes
-  ;; and we need to reindex it.
-  (let ((old-items (value-of 'items collection category::collection)))
-    (unless (find-collection old-items collection)
-      (error "Collection isn't indexed. Can't remove it"))
-    (let ((instances (cat-instances category::collection))
-          (category (value-of 'type collection category::collection))
-          (count (value-of 'number collection category::collection)))
-      (let ((length-entry (gethash count instances)))
-        (let ((category-entry (gethash category length-entry)))
-          (remhash old-items category-entry))))))
 
 
 
