@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1995,2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2016-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "object"
 ;;;    Module:   "objects;rules:rule links:"
-;;;   Version:   January 2017
+;;;   Version:   February 2018
 
 ;; 2.0 (9/4/92 v2.3) Changed the names and contents descriptions of the
 ;;      left/right combinations.
@@ -30,7 +30,6 @@
   plist
   )
 
-
 (defun print-rule-set-structure (obj stream depth)
   (declare (ignore depth))
   (write-string "#<rule-set for " stream)
@@ -56,36 +55,25 @@
       (rs-left-looking-ids rs)))
 
 
-(defun rs-distinct-categories (rs)
-  "Collect the set of categies of the referents of all
-   the unary rules on this rule-set"
-  (remove-duplicates
-   (loop for r in (rs-single-term-rewrites rs)
-      when (and (cfr-p r)
-                (not (consp (cfr-referent r))))
-         collect (itype-of (cfr-referent r)))))
+(defgeneric rs-distinct-categories (rs)
+  (:documentation  "Collect the set of categies of the referents
+   of all the unary rules on this rule-set. Takes either a word
+   or a string that resolves to a known word.")
+  (:method ((rs rule-set))
+    (remove-duplicates
+     (loop for r in (rs-single-term-rewrites rs)
+        when (and (cfr-p r)
+                  (not (consp (cfr-referent r))))
+        collect (itype-of (cfr-referent r)))))
+  
+  (:method ((w word))
+    (rs-distinct-categories (rule-set-for w)))
+  
+  (:method ((str string))
+    (let ((word (or (resolve str)
+                    (resolve (string-downcase str)))))
+      (rs-distinct-categories (rule-set-for word)))))
 
-(defun rs-distinct-categories (rs)
-  "Collect the set of categies of the referents of all
-   the unary rules on this rule-set"
-  (remove-duplicates
-   (loop for r in (rs-single-term-rewrites rs)
-      when (and (cfr-p r)
-                (not (consp (cfr-referent r))))
-         collect (itype-of (cfr-referent r)))))
-
-(defun word-distinct-categories (word)
-  (rs-distinct-categories (rule-set-for word)))
-
-(defun string-distinct-categories (str)
-  (cond ((and (resolve str)
-              (rule-set-for (resolve str))
-              (rs-single-term-rewrites (rule-set-for (resolve str))))
-         (cons str (word-distinct-categories (resolve str))))
-        ((and (resolve (string-downcase str))
-              (rule-set-for (resolve (string-downcase str)))
-              (rs-single-term-rewrites (rule-set-for (resolve (string-downcase str)))))
-         (cons (string-downcase str) (word-distinct-categories (resolve (string-downcase str)))))))
 
 
 ;;;----------------------
@@ -123,4 +111,4 @@
                       (incf words-with-pw-start))
                      (symbol
                       (incf words-with-fsa)))))))))))
-    (lsp-break "look the local count variables")))
+    (lsp-break "look at the local count variables")))
