@@ -220,22 +220,27 @@
                  (pos-token-index position-before)
                  (or word edge)
                  position-after))
-       
        (when word
-         ;; FSA's calls lifted from check-word-level-fsa-trigger 
-         ;; and cwlft-cont
          (tr :check-word-level-fsa-trigger position-before)
-         (let* ((where-fsa-ended (do-word-level-fsas word position-before))
-                (position-after (or where-fsa-ended
-                                    (chart-position-after position-before))))
-           (when where-fsa-ended
-             (tr :word-fsa-ended-at word where-fsa-ended)
-             (setq position-after where-fsa-ended
-                   position-before (chart-position-before where-fsa-ended))
-             (unless (includes-state where-fsa-ended :scanned)
-               (scan-next-position))
-             (setq word (pos-terminal where-fsa-ended)))))
-
+         (let ((fsa (word-or-variant-has-fsas? word position-before))
+               (pnf? (and (word-at-this-position-is-capitalized? position-before)
+                          *pnf-routine*)))
+           (when (or fsa pnf?)
+             (flet ((apply-fsa (fsa) (run-fsa fsa word position-before))
+                    (apply-pnf () (pnf position-before)))
+               (let ((where-fsa-ended
+                      (cond
+                        ((and fsa pnf?) (or (apply-pnf)
+                                            (apply-fsa fsa)))
+                        (fsa (apply-fsa fsa))
+                        (pnf? (apply-pnf)))))
+                 (when where-fsa-ended
+                   (tr :word-fsa-ended-at word where-fsa-ended)
+                   (setq position-after where-fsa-ended)
+                   (unless (includes-state where-fsa-ended :scanned)
+                     (scan-next-position))
+                   (setq word (pos-terminal where-fsa-ended))))))))   
+             
        (when (eq position-after end-pos)
          (return))
 
@@ -247,6 +252,7 @@
                               (pos-edge-ends-at edge)
                               (chart-position-after position-after))))))
 
+         
 
 
 ;;;------------------------------------------
