@@ -49,6 +49,13 @@
                           (term4 . weekday)))
 |#
 
+(define-category-princ-fn date ;; => princ-date
+  (let ((day (value-of 'day i))
+        (month (value-of 'month i))
+        (year (value-of 'year i)))
+    (format stream "~a/~a/~a"
+            (as-a-number month) day (as-a-number year))))
+
 ;;;----------------
 ;;; assembly rules
 ;;;----------------
