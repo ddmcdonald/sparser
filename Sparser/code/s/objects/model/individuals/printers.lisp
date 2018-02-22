@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "printers"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.8 August 2015
+;;;  version:  February 2018
 
 ;; initiated 7/16/92 v2.3, 9/3 added Princ-individual
 ;; (5/26/93) added Print-individual-with-name
@@ -239,6 +239,25 @@
 ;;; facility for defining category-specific printers
 ;;;--------------------------------------------------
 
+(defmacro define-category-princ-fn (category-name &body function-body)
+  "The 'special printing routine' machinery below is overly complex
+  as it presumes the same call will be made in any of three different
+  circumstances with different degrees of verboseness. This assumes
+  just one. Defines the function and puts its name on the operations field
+  of the category where the standard struct print method will see it.
+  The variable for the individual is always 'i' and the stream is
+  'stream', defaulting to *standard-output*. The category can be either
+  a category object or the symbol naming one."
+  (assert (symbolp category-name))
+  (let* ((category (category-named category-name :error-if-none))
+         (fn-name (intern (string-append ':princ- category-name) *sparser-source-package*))
+         (ops (cat-operations category)))
+    (setf (cat-ops-print ops) fn-name)
+    `(defun ,fn-name (i &optional (stream *standard-output*))
+       ,@function-body)))
+
+
+
 (defvar *print-short* nil
   "Flag read by the special printers")
 
@@ -249,13 +268,6 @@
   "Flag read by the special printers")
 
 
-
-(defgeneric name-of-category-print-function (category)
-  (:documentation "Creates the name that will be used by the special 
-    printing routine machinery for the function it defines. Note that this
-    function name becomes the value of the print field operations of the
-    category. This routine is used by print-individual-structure."))
-
 (defmacro define-special-printing-routine-for-category (category-name
                                                         &key short
                                                              full
@@ -263,36 +275,33 @@
   `(define-special-printing-routine-for-category/expr
      ',category-name ',short ',full ',string))
 
-
 (defun define-special-printing-routine-for-category/expr (category-name
                                                           short full string)
-  (let ((category (category-named category-name t))
-        (fn-name (name-of-category-print-function category-name)))
-    (let ((ops (cat-operations category)))
-      (setf (cat-ops-print ops) fn-name)
+  (flet ((name-of-category-print-function (name)
+           (let ((cat-name (etypecase name
+                             (symbol name)
+                             (category (cat-symbol name)))))
+             (intern (string-append category-name ':-print-routine)
+                     *sparser-source-package*))))
+    
+    (let ((category (category-named category-name t))
+          (fn-name (name-of-category-print-function category-name)))
+      (let ((ops (cat-operations category)))
+        (setf (cat-ops-print ops) fn-name)
 
-      (let ((fn `(defun ,fn-name (obj stream)
-                   (cond (*return-print-string*
-                          ,@string )
-                         (*print-short*
-                          ,@short )
-                         (t
-                          ,@full )))  ))
-        (eval fn)))))
+        (let ((fn `(defun ,fn-name (obj stream)
+                     (cond (*return-print-string*
+                            ,@string )
+                           (*print-short*
+                            ,@short )
+                           (t
+                            ,@full )))  ))
+          (eval fn))))))
 
 
 (defgeneric name-of-string-for-function (category)
   (:documentation "Creates the symbol that is expected by string-for
     to matchup with an already defined function, e.g. string/initial."))
-
-
-(defmethod name-of-category-print-function ((c category))
-  (name-of-string-for-function (cat-symbol c)))
-
-(defmethod name-of-category-print-function ((category-name symbol))
-  (intern (string-append category-name ':-print-routine)
-          *sparser-source-package*))
-
 
 (defmethod name-of-string-for-function ((c category))
   (name-of-string-for-function (cat-symbol c)))
@@ -300,7 +309,6 @@
 (defmethod name-of-string-for-function ((category-name symbol))
   (intern (string-append ':string/ category-name)
           *sparser-source-package*))
-
 
 (defun string-for (i)
   "Call the function that goes with this unit to return
