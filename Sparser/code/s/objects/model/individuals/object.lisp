@@ -211,24 +211,25 @@ grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorize
                       (return-from indiv-typep nil)))
         (type-field (and (individual-p i) (indiv-type i))))
     
-    (when (or (memq category::collection type-field)
-              (memq category::sequence type-field))
-      ;; of course, one can ask a collection whether it is 
-      ;; a collection and have it say yes rather than
-      ;; look at what it's a collection of
-      (unless (or (eq category category::collection)
-                  (eq category category::sequence))
-        (let ((conj-type (value-of 'type i)))
-          (when conj-type
-            ;; If there isn't a type, then this was either a badly
-            ;; modeled collection (though all the ones created by
-            ;; conjunction have been vetted), or it's an instance
-            ;; of the actual word, e.g. "a specific phorphorylation 
-            ;; sequence" in the ASPP January article. These need
-            ;; proper models, but we can't block a type-check waiting
-            ;; for them all to be done
-            (setq type-field 
-                  (if (consp conj-type) conj-type `(,conj-type)))))))
+    (when (category-named 'collection)
+      (when (or (memq category::collection type-field)
+                (memq category::sequence type-field))
+        ;; of course, one can ask a collection whether it is 
+        ;; a collection and have it say yes rather than
+        ;; look at what it's a collection of
+        (unless (or (eq category category::collection)
+                    (eq category category::sequence))
+          (let ((conj-type (value-of 'type i)))
+            (when conj-type
+              ;; If there isn't a type, then this was either a badly
+              ;; modeled collection (though all the ones created by
+              ;; conjunction have been vetted), or it's an instance
+              ;; of the actual word, e.g. "a specific phorphorylation 
+              ;; sequence" in the ASPP January article. These need
+              ;; proper models, but we can't block a type-check waiting
+              ;; for them all to be done
+              (setq type-field 
+                    (if (consp conj-type) conj-type `(,conj-type))))))))
 
     (typecase i
       (individual 
