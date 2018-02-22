@@ -313,8 +313,11 @@
     (multiple-value-bind (bindings new-indiv)
                          (apply-bindings individual binding-instructions)
       (setq individual new-indiv)
-      (unless *description-lattice*
+
+      (if *description-lattice*
+        (index-by-name individual category)
         (index/individual individual category bindings))
+
       individual )))
 
 

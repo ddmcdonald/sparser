@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-1996,2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2013-2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "index instances"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  February 2016
+;;;  version:  February 2018
 
 ;; initiated 8/9/94 v2.3 from pieces of other files. Tweeking ...8/19
 ;; (4/20/95) added subr and predicate for permanent objects.
@@ -48,6 +48,8 @@
          (note-impermanence-of-categorys-individuals category))
         ((member :permanent index-field)
          (note-permanence-of-categorys-individuals category)))
+  (when (member :get index-field) ;; see index-by-name
+    (register-category-for-indexing category))
   (decode-rest-of-index-field category index-field))
 
 

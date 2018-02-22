@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2011-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  March 2016
+;;;  version:  February 2018
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (9/18/93) added index/individual/seq-keys
@@ -86,6 +86,78 @@
     (when permanent
       (unless *override-category-permanent-individuals-assumption*
         (add-permanent-individual individual category)))))
+
+
+
+;;;-----------------------
+;;; supplemental indexing
+;;;-----------------------
+
+#| The find operation used in find-or-make when creating individuals
+is given the full set of bindings. However, the find-individual
+operation was also used to retrieve already created individuals by
+name (or other unique id) to use them programatically in other code. 
+  That trick doesn't work when multi-binding individuals
+(e.g. months) are assembled incrementally via 'intermediate'
+individuals binding by binding when we use the description
+lattice. There, a find call that's given just the value of
+the name binding will return one of the intermediate individuals,
+and some walking through the downlink hashtables is required
+to find the individual that has all of bindings.
+  That's both messy and indeterminate (i.e. how far do you
+unwind -- cf. m::unwind-to-i-with-lp where there's definitive
+criteria for how far to go). This code section approaches the
+problem by caching the 'full' individual as it's being built
+and storing it on the category's hash-table for instances
+which isn't being used when the DL has the primary responsibility
+for find-and-make. 
+   We only do this when the modeling operations call for it
+and signal this by including the keyword :get in the index field
+of the needed categories. |#
+
+(defvar *registered-for-by-name-indexing* nil
+  "Accumulated the names of categories whose individuals should
+   be 'indexed by their name'.")
+
+(defun register-category-for-indexing (category)
+  "Called from decode-index-field-aux when the category's index
+   field includes the keyword :get."
+  (push (cat-name category) *registered-for-by-name-indexing*))
+
+
+(defun index-by-name (i category)
+  "Called from make-simple-individual as the alternative to the normal
+   by-binding-value indexing that would have been done if we weren't
+   using the *description-lattice*
+     Used only when the category definition indicates that we should
+   do this setup so that it can define by-name 'get' function.
+     Uses the built-in hash table on    the category to map the designated
+  variable value to the entire individual."
+  (when (memq (cat-name category) *registered-for-by-name-indexing*)
+    (let* ((ops (cat-operations category))
+           (find-op (when ops (cat-ops-find ops))))
+      (when (and find-op (consp find-op)
+                 (eq (car find-op) 'find/individual/key/hash))
+        (let* ((index-var (cadr find-op))
+               (value (value-of index-var i))
+               (table (cat-instances category)))
+          (setf (gethash value table) i))))))
+        
+
+(defgeneric get-by-name (category key)
+  (:documentation "Given a category and the value for the name
+   or other individual designated as its index key, dereference
+   the value expression and retrieve that individual.")
+  (:method ((cat-name symbol) (pname string))
+    (get-by-name (category-named cat-name :error) pname))
+  (:method ((c category) (pname string))
+    (get-by-name c (resolve pname)))
+  (:method ((c category) (no-word null)) nil)
+  (:method ((c category) (w word))
+    (let ((table (cat-instances c)))
+      (unless (> (hash-table-size table) 0)
+        (error "No entries recorded for instances of ~a" c))
+      (gethash w table))))
 
 
 ;;;-----------------
