@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "months"
 ;;;   Module:  "model;core:time:"
-;;;  version:  1.5 March 2006
+;;;  version:  February 2018
 
 ;; 1.0 (12/15/92 v2.3) setting up for new semantics
 ;; 1.1 (9/18/93) actually doing it, fixed fencepost error 9/27
@@ -41,9 +41,14 @@
           (abbreviation :primitive word)
           (position-in-year . ordinal)
           (number-of-days . number))
-  :index (:permanent :key name)
+  :index (:permanent :key name :get)
   :realization (:common-noun name ))
                           
+
+(defun get-month (name)
+  (if *description-lattice*
+    (get-by-name category::month name)
+    (find-individual 'month :name name)))
 
 
 ;;;------
@@ -51,15 +56,14 @@
 ;;;------
 
 (defun define-month (string integer &optional length  abbrev)
-  (let ((month (define-or-find-individual
-                   'month :name string))
-        (ordinal (nth-ordinal integer))
-        ;; Allowing dnumber of days to be optional to
-        ;; accommodate cases where we don't know them,
-        ;; see model/sl/middle-east/months.lisp
-        (count (when length (find-or-make-number length))))
-    (setq month (bind-dli-variable 'position-in-year ordinal month))
-    (when count (setq month (bind-dli-variable 'number-of-days count month)))
+  "Allowing dnumber of days to be optional to accommodate cases 
+   where we don't know them, see model/sl/middle-east/months.lisp"
+  (let* ((count (when length (find-or-make-number length)))
+         (ordinal (nth-ordinal integer))
+         (month (define-or-find-individual 'month
+                    :name string
+                    :position-in-year ordinal
+                    :number-of-days count)))
     (when abbrev
       (define-abbreviation string abbrev))
     month ))

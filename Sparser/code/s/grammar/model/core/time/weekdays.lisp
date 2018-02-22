@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013-2014,2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2014,2017-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "weekdays"
 ;;;   Module:  "model;core:time:"
-;;;  version:  December 2017
+;;;  version:  February 2018
 
 ;; 1.0 (9/18/93 v2.3) completely revamped for new semantics
 ;; 1.1 (1/10/94) redid ordinals.  Broke out the cases 10/20
@@ -33,8 +33,14 @@
   :binds ((name :primitive word)
           (abbreviation :primitive word)
           (position-in-week . ordinal))
-  :index (:permanent :key name)
+  :index (:permanent :key name :get)
   :realization (:common-noun name))  
+
+
+(defun get-weekday (name)
+  (if *description-lattice*
+    (get-by-name category::weekday name)
+    (find-individual 'weekday :name name)))
 
 
 ;;;------
@@ -44,8 +50,9 @@
 (defun define-weekday (string
                        abbrev-string     ;; n.b. no period
                        position-integer)
-  (let ((weekday (define-or-find-individual 'weekday :name string))
-        (ordinal (nth-ordinal position-integer)))
-    (setq weekday (bind-dli-variable 'position-in-week ordinal weekday))
+  (let* ((ordinal (nth-ordinal position-integer))
+         (weekday (define-or-find-individual 'weekday
+                      :name string
+                      :position-in-week ordinal)))
     (define-abbreviation string abbrev-string)
     weekday ))

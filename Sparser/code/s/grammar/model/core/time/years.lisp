@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2000,2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2000,2013-2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "years"
 ;;;   Module:  "model;core:time:"
-;;;  version:  July 2016
+;;;  version:  February 2018
 
 ;; initiated in February 1991
 ;; 0.1 (4/9 v1.8.2)  Added the years from 1959 to 1979
@@ -29,6 +29,7 @@
   :instantiates self
   :mixins (takes-numerical-value)
   :binds ((year-of-century :primitive number))
+  :index (:permanent :key name)
   :realization (:common-noun name)) ;; strands the 2 digit version!
 
 
@@ -37,16 +38,13 @@
 ;;;---------------
 
 (defun define-year (string integer)  ;; e.g. "2015" & 15
-  (let ((word (define-word string))
-        (number (find-or-make-number string))
-        year )
+  (let ((number (find-or-make-number string)))
+    (or (find-individual 'year :name string)
+        (define-individual 'year
+            :name string
+            :value (value-of 'value number)
+            :year-of-century integer))))
 
-    (unless (setq year (find-individual 'year :name word))
-      (setq year (define-individual 'year
-                   :name word
-                   :value (value-of 'value number)
-                   :year-of-century integer)))
-    year ))
 
 
 ;;;---------------------------

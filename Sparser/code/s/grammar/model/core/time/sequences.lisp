@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014,2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "sequences"
-;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  December 2014
+;;;   Module:  grammar/model/core/time/
+;;;  version:  February 2018
 
 ;; initiated 5/25/14 to create real sequences out of months, years,
 ;; days, etc. 12/30/14 Fanout from binding restriction. 
@@ -35,8 +35,7 @@
 
 (defun make-months-sequence ()
   (let* ((the-months
-          (mapcar #'(lambda (string)
-                      (find-individual 'month 'name string))
+          (mapcar #'(lambda (string) (get-month string))
                   *month-names*))
          (sequence (create-sequence the-months)))
     (old-bind-variable 'sequence sequence category::month)
@@ -54,12 +53,20 @@
 
 (defun make-weekdays-sequence ()
   (let* ((the-weekdays
-          (mapcar #'(lambda (string)
-                      (find-individual 'weekday :name string))
+          (mapcar #'(lambda (string) (get-weekday string))
                   *weekday-names*))
          (sequence (create-sequence the-weekdays)))
     (old-bind-variable 'sequence sequence category::weekday))) ;; needs to be checked in DLI
 
+
+
+(def-k-function as-a-number (time-unit)
+  (:documentation "Motivated by the slash format for dates.
+    Return the sequence number for the individual.")
+  (:method ((y category::year))
+    (word-pname (value-of 'name y)))
+  (:method ((m category::month))
+    (value-of 'value (value-of 'number (value-of 'position-in-year m)))))
 
 
 ;;;------------------------------------------
