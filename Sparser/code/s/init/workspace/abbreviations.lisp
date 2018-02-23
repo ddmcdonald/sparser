@@ -129,12 +129,15 @@
        i))))
 
 
-(defmethod di ((n number))
-  (let ((i (i# n)))
-    (if i (di i) (format nil "No individual with the index ~a" n))))
-
-(defmethod di ((i individual))
-  (describe-individual i))
+(defgeneric di (individual)
+  (:documentation "Call describe-individual of the
+    argument. Usually used with numberical argument where
+    we use the UID number to retrieve the individual.")
+  (:method ((n number))
+    (let ((i (individual-object# n)))
+      (if i (di i) (format nil "No individual with the index ~a" n))))
+  (:method ((i individual))
+    (describe-individual i)))
           
 
 ;; edge vectors
