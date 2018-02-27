@@ -497,6 +497,7 @@
 (defun blocks-world-setting ()
   "What we get with the block-world script, aka CwC"
   (declare (special *collect-subcat-info* *force-modifiers*))
+  (revert-to-error-break)
   (uncontroversial-settings)
   (top-edges-setting)
   (ignore-comlex)
