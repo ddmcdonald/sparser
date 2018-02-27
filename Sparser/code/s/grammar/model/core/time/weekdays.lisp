@@ -29,7 +29,7 @@
 (define-category  weekday
   :specializes time
   :instantiates time
-  :mixins (sequential cyclic)
+  :mixins (cyclic)
   :binds ((name :primitive word)
           (abbreviation :primitive word)
           (position-in-week . ordinal))

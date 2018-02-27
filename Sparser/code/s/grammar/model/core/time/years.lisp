@@ -27,9 +27,9 @@
 (define-category year
   :specializes time
   :instantiates self
-  :mixins (takes-numerical-value)
+  :mixins (takes-numerical-value sequential)
   :binds ((year-of-century :primitive number))
-  :index (:permanent :key name)
+  :index (:permanent :key name :get)
   :realization (:common-noun name)) ;; strands the 2 digit version!
 
 
@@ -45,6 +45,46 @@
             :value (value-of 'value number)
             :year-of-century integer))))
 
+
+;;;-----------
+;;; functions
+;;;-----------
+
+(defun get-year (name)
+  (if *description-lattice*
+    (let ((word
+           (etypecase name
+             (string (resolve/make name))
+             (number
+              (resolve/make (format nil "~a" name)))
+             (word name))))     
+      (get-by-name category::year word))
+    (find-individual 'year :name name)))
+
+
+(def-k-method next-item ((year category::year))
+  (or (value-of 'next year)
+      (with-bindings (value) year
+        (let* ((value* (1+ value))
+               (next-year (or (get-year value*)
+                              (define-individual 'year
+                                  :name (format nil "~a" value*)
+                                  :value value*))))
+          (old-bind-variable 'previous next-year year)
+          (old-bind-variable 'next next-year year)
+          next-year))))
+
+(def-k-method prior-item ((year category::year))
+  (or (value-of 'previous year)
+      (with-bindings (value) year
+        (let* ((value* (1- value))
+               (prior-year (or (get-year value*)
+                              (define-individual 'year
+                                  :name (format nil "~a" value*)
+                                  :value value*))))
+          (old-bind-variable 'previous prior-year year)
+          (old-bind-variable 'next prior-year year)
+          prior-year))))
 
 
 ;;;---------------------------
@@ -67,7 +107,6 @@
       (define-year string (number-value number)))))
 
 
-
 ;;;---------------
 ;;; stranded year
 ;;;---------------
@@ -81,9 +120,6 @@
 ; edge if we find one.   ////Consider whether this should be a standard
 ; check within pts.
 
-;;/// This category would have come from the all-in-one date model
-;; but trying the old month+day month+year conception of dates
-;; so it's not loaded (5/27/14)
 (def-cfr comma-year ("," year)
   :form appositive
   :referent (:daughter right-edge))
@@ -99,4 +135,3 @@
       (let ((rule (multiply-edges date-edge comma-year-edge)))
         (when rule
           (make-edge-below-top-edge date-edge comma-year-edge rule))))))
-

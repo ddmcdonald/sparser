@@ -15,6 +15,9 @@
 ;;;-----------------
 
 (defun make-temporal-sequences ()
+  "Called directly from load-the-grammar after everything it needs
+   has been loaded. Sets up relationships between particular time 
+   objects and calls today to initialize the temporal-index."
   (let ((*legal-to-add-bindings-to-categories* t))
     (declare (special *legal-to-add-bindings-to-categories*))
     (make-months-sequence)
@@ -39,7 +42,9 @@
                   *month-names*))
          (sequence (create-sequence the-months)))
     (old-bind-variable 'sequence sequence category::month)
-    (old-bind-variable 'cycle-length 12 category::month)));; needs to be checked in DLI
+    (old-bind-variable 'cycle-length 12 category::month)
+    (thread-sequence sequence)))
+
 
 ;;;----------
 ;;; weekdays
@@ -56,9 +61,14 @@
           (mapcar #'(lambda (string) (get-weekday string))
                   *weekday-names*))
          (sequence (create-sequence the-weekdays)))
-    (old-bind-variable 'sequence sequence category::weekday))) ;; needs to be checked in DLI
+    (old-bind-variable 'sequence sequence category::weekday)
+    (old-bind-variable 'cycle-length 7 category::weekday)
+    (thread-sequence sequence)))
 
 
+;;;------------------
+;;; printing utility
+;;;------------------
 
 (def-k-function as-a-number (time-unit)
   (:documentation "Motivated by the slash format for dates.
@@ -66,40 +76,8 @@
   (:method ((y category::year))
     (word-pname (value-of 'name y)))
   (:method ((m category::month))
-    (value-of 'value (value-of 'number (value-of 'position-in-year m)))))
-
-
-;;;------------------------------------------
-;;; Computing position is temporal sequences
-;;;------------------------------------------
-
-(defun relative-time-value (category before/after)
-  ;; The day after today -- the unit after current
-  ;; or before, or two days before, ...
-  ;; The index unit always matches the category of the unit
-  (let* ((index (current-temporal-index))
-         (sequence ;; caller knows it's sequential
-          (value-of 'sequence category))
-         (cycle-length (when (category-inherits-type? 
-                              category category::cyclic)
-                         (value-of 'cycle-length category)))
-         (category-name (cat-symbol category))
-         (reference
-          (time-current-value index category-name)))
-    (push-debug `(,index ,before/after ,reference ,cycle-length))
-
-    ;; That gives us an individual, e.g., month
-    ;; and we need is position in its sequence.
-    ;;/// perhaps collapse all variables that bind ordinals
-    ;; to 'position' ??
-    (let ((ordinal
-           (ecase category-name ;; mimics case in
-             ;; category-of-time-unit for its range
-             (category::month
-              (value-of 'position-in-year reference)))))
-      (push-debug `(,ordinal ,sequence))
-
-
-      (break "next"))))
-        
+    (value-of 'value (value-of 'number (value-of 'position-in-year m))))
+  (:method ((n NULL))
+    ;; this case came up in printing the bound-in bindings of a month
+    nil))
 

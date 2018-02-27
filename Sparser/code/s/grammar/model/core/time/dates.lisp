@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2012-2014,2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012-2014,2017-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "dates"
 ;;;   Module:  "model;core:time:"
-;;;  version:  December 2017
+;;;  version:  February 2018
 
 ;; 1.0 (12/15/92 v2.3) setting up for new semantics
 ;; 1.1 (9/18/93) actually doing it
@@ -32,40 +32,107 @@
           (month . month)
           (year . year)
           (weekday . weekday))
+  :mixins (cyclic)
   :index (:permanent :sequential-keys month day year)
   :realization (:common-noun "date"))
 
-#|  The all-in-one realization, which is harder to index
-  :realization (:tree-family  date-pattern
-                :mapping ((type . :self)
-                          (np . :self)
-                          (n1 . month)
-                          (term1 . month)
-                          (n2 . number)
-                          (term2 . day)
-                          (n3 . year)
-                          (term3 . year)
-                          (n4 . weekday)
-                          (term4 . weekday)))
-|#
 
 (define-category-princ-fn date ;; => princ-date
   (let ((day (value-of 'day i))
         (month (value-of 'month i))
         (year (value-of 'year i)))
-    (format stream "~a/~a/~a"
+    (format stream "#<~a/~a/~a>"
             (as-a-number month) day (as-a-number year))))
+
+
+;;;-------------
+;;; constructor
+;;;-------------
+
+(def-k-function construct-date (day month year day-of-week)
+  (:method ((day integer) (m integer) (y integer) (dow integer))
+    (assert (and (< day 32) (< m 13) (< dow 8)))
+    (let ((month (nth-item (1- m) category::month))
+          (year (get-year y))
+          (weekday (nth-item dow category::weekday)))
+      (construct-date day month year weekday)))
+  (:method ((day integer) (month category::month)
+            (year category::year) (dow category::weekday))
+    (define-or-find-individual 'date
+        :day day
+        :month month
+        :year year
+        :weekday dow)))
+
+
+;;;---------------------
+;;; next/previous dates
+;;;---------------------
+
+(def-k-method next-item ((date category::date))
+  ;; What date follows the argument date. Wraps as needed.
+  ;; Caches its result
+  (or (value-of 'next date)
+      (with-bindings (day month year weekday) date
+        (let* ((day* (1+ day))
+               (month* (if (date-is-in-month day* month)
+                         month
+                         (next-item month)))
+               (year* (if (last-of month) ;; i.e. December
+                        (next-item year)
+                        year))
+               (dow* (next-item weekday)))
+          (when (not (eq month month*))
+            (setq day* 1))
+          (let ((next-date
+                 (construct-date day* month* year* dow*)))
+            (old-bind-variable 'previous date next-date)
+            (old-bind-variable 'next next-date date)
+            next-date)))))
+
+(def-k-method prior-item ((date category::date))
+  (or (value-of 'previous date)
+      (with-bindings (day month year weekday) date
+        (let* ((day* (1- day))
+
+               (month* (if (date-is-in-month day* month)
+                         month
+                         (prior-item month)))
+               (year* (if (first-of month) ;; i.e. January
+                        (prior-item year)
+                        year))
+               (dow* (prior-item weekday)))
+          (when (not (eq month month*))
+            (setq day (value-of 'value (value-of 'number-of-days month*))))
+          (let ((prior-date
+                 (construct-date day* month* year* dow*)))
+            (old-bind-variable 'previous prior-date date)
+            (old-bind-variable 'next date prior-date)
+            prior-date)))))
+
 
 ;;;----------------
 ;;; assembly rules
 ;;;----------------
+
+(def-k-function compose-date (left right)
+  (:documentation "Used for composition in time rules. 
+    Find or make a date from the teo time units.")
+  (:method ((dom category::day-of-the-month) (y category::year))
+    (with-bindings (month number) dom
+      (let ((i (define-or-find-individual 'date
+                   :month month :day number :year y)))
+        i)))
+  (:method ((w category::weekday) (d category::date))
+    (bind-variable 'weekday w d)))
+
 
 (defun assemble-date (left right)
   "Easiest to organize as a set of methods. This is the driver.
    Since this is driven by a semantic grammar we trust that
    if we get here we can apply the methods."
   (or *subcat-test*
-      (let ((result (make-date left right)))
+      (let ((result (compose-date left right)))
         (unless result (error "Need make-date method for a ~a and a ~a"
                               (itype-of left) (itypep-of right)))
         result)))
@@ -74,26 +141,40 @@
   :form np
   :referent (:function assemble-date left-edge right-edge))
 
-(def-k-method make-date ((dom category::day-of-the-month) (y category::year))
-  (with-bindings (month number) dom
-    (let ((i (find-or-make-individual 'date
-              :month month :day number :year y)))
-      i)))
+(def-cfr date (day-of-the-month comma-year) ;; "June 26, 2010"
+  :form np
+  :referent (:function assemble-date left-edge right-edge))
+
 
 (def-cfr date (weekday date) ;; "Tuesday June 26 2010"
   :form np
   :referent (:function assemble-date left-edge right-edge))
 
-(def-k-method make-date ((w category::weekday) (d category::date))
-  (bind-variable 'weekday w d))
-
 
 (def-cfr date (weekday day-of-the-month) ;; "Tuesday June 26"
   :form np
   :referent (:function assemble-date left-edge right-edge))
-
-
-#|
-multiply-edges -> valid-rule? -> test-semantic-applicability
- -> test-subcat-rule -> ref/function
-|#
+#|sp> (p/s "Tuesday June 26")
+[Tuesday June ]
+                    source-start
+e5    DAY-OF-THE-MONTH  1 "Tuesday June 26" 4
+                    end-of-source
+(#<day-of-the-month 91561>
+ (month
+  (#<month "June" 91559>
+   (modifier
+    (#<weekday "Tuesday" 714> (position-in-week (#<ordinal  553> (number 3)))
+     (name "Tuesday")))
+   (number-of-days 30) (position-in-year (#<ordinal  561> (number 6)))
+   (name "June")))
+ (number 26))
+sp> (stree 5)
+ e5 day-of-the-month/np       p1 - p4   rule 1701
+  e4 month/np                 p1 - p3   rule 437
+    e0 weekday/common-noun    p1 - p2   rule 1920
+      "Tuesday"
+    e1 month/common-noun      p2 - p3   rule 1940
+      "June"
+  e3 number/number            p3 - p4   number-fsa
+    e2 digit-sequence/number    p3 - p4   terminal
+      "26"  |#

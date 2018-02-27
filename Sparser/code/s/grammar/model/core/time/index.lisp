@@ -1,15 +1,18 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014,2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  May 2014
+;;;  version:  February 2018
 
 ;; initiated 5/27/14 to hold and compute real calendar times
 ;; that can be referenced for the temporal indexicals in anaphors.
 
 (in-package :sparser)
 
+;;;-----------------------------------
+;;; index to the current time - today
+;;;-----------------------------------
 
 (defclass temporal-index ()
   ((year :accessor current-year
@@ -64,6 +67,11 @@
 (defun set-temporal-index (i)
   (setq *current-temporal-index* i))
 
+
+;;;-------------------------
+;;; computing deictic times
+;;;-------------------------
+
 (defun today ()
   (multiple-value-bind (date month year day-of-week)
                        ;; => 27 5 2014 1  (where Monday = 0)
@@ -83,22 +91,37 @@
                 new))))
       (if (null new?)
         (current-date index)
+
         (let* ((year-word (resolve/make (format nil "~a" year)))
                (iyear (find-individual 'year :name year-word))
                (imonth (nth-item (1- month) category::month))
                (iweekday (nth-item day-of-week category::weekday)))
+
           (setf (current-year index) iyear)
           (setf (current-month index) imonth)
           (setf (current-day index) date)
           (setf (current-day-of-week index) iweekday)
+
           (let ((date (define-or-find-individual'date
                         :day date
                         :month imonth
                         :year iyear
                         :weekday iweekday)))
+
             (setf (current-date index) date)
             date))))))
 
+
+(defun tomorrow ()
+  (let ((today (today)))
+    (or (value-of 'next today)
+        (next-item today))))
+
+(defun yesterday ()
+  (let ((today (today)))
+    (or (value-of 'previous today)
+        (prior-item today))))
+    
 
 
 ;;; "this <time unit>"

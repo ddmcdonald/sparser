@@ -12,8 +12,7 @@
 (in-package :sparser)
 
 ;;;------------------
-;;; phase of the day
-;;;------------------
+;;; phase of the day;;;------------------
 
 (define-category phase-of-day
   :instantiates  self
@@ -84,7 +83,7 @@
 (define-category timezone
   :instantiates  self
   :specializes time
-  :mixins (bounded-region  sequential cyclic)
+  :mixins (bounded-region  cyclic)
   :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))

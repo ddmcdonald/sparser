@@ -36,20 +36,13 @@
   :specializes time
   :instantiates self
   ;; :rule-label time
-  :mixins (sequential cyclic)
+  :mixins (cyclic)
   :binds ((name :primitive word)
           (abbreviation :primitive word)
           (position-in-year . ordinal)
           (number-of-days . number))
   :index (:permanent :key name :get)
   :realization (:common-noun name ))
-                          
-
-(defun get-month (name)
-  (if *description-lattice*
-    (get-by-name category::month name)
-    (find-individual 'month :name name)))
-
 
 ;;;------
 ;;; form
@@ -67,3 +60,22 @@
     (when abbrev
       (define-abbreviation string abbrev))
     month ))
+
+;;;-----------
+;;; functions
+;;;-----------                        
+
+(defun get-month (name)
+  (if *description-lattice*
+    (get-by-name category::month name)
+    (find-individual 'month :name name)))
+
+(def-k-method date-is-in-month ((day integer) (m category::month))
+  (and (> day 0)
+       (<= day (value-of 'value (value-of 'number-of-days m)))))
+
+(def-k-method first-of ((m category::month))
+  (= 1 (value-of 'value (value-of 'number (value-of 'position-in-year m)))))
+
+(def-k-method last-of ((m category::month))
+  (= 12 (value-of 'value (value-of 'number (value-of 'position-in-year m)))))

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,2010-2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2010-2011,2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "relative moments"
 ;;;   Module:  "model;core:time:"
-;;;  version:  0.2 March 2011
+;;;  version:  February 2018
 
 ;; initiated 7/8/93 v2.3.
 ;; 0.1 (5/24/94) redid the rdata as 'time-deictic'. 6/26 fixed omission of
@@ -13,9 +13,42 @@
 ;;     (3/15/11) Added treatment of 'this' & 'that' + time-unit.
 ;;     (9/26/11) Added rule-label to noun and adverb definitions
 
-
 (in-package :sparser)
 
+
+;;;------------------------------------------
+;;; Computing position in temporal sequences
+;;;------------------------------------------
+
+(defun relative-time-value (category before/after)
+  ;; The day after today -- the unit after current
+  ;; or before, or two days before, ...
+  ;; The index unit always matches the category of the unit
+  (let* ((index (current-temporal-index))
+         (sequence ;; caller knows it's sequential
+          (value-of 'sequence category))
+         (cycle-length (when (category-inherits-type? 
+                              category category::cyclic)
+                         (value-of 'cycle-length category)))
+         (category-name (cat-symbol category))
+         (reference
+          (time-current-value index category-name)))
+    (push-debug `(,index ,before/after ,reference ,cycle-length))
+
+    ;; That gives us an individual, e.g., month
+    ;; and we need is position in its sequence.
+    ;;/// perhaps collapse all variables that bind ordinals
+    ;; to 'position' ??
+    (let ((ordinal
+           (ecase category-name ;; mimics case in
+             ;; category-of-time-unit for its range
+             (category::month
+              (value-of 'position-in-year reference)))))
+      (push-debug `(,ordinal ,sequence))
+
+
+      (break "next"))))
+        
 ;;;--------
 ;;; object
 ;;;--------
@@ -50,8 +83,6 @@
   :binds ((name  :primitive word))
   :index (:permanent :key name)
   :realization (:word name))
-
-
 
 ;; These are the phrases formed from the adverbs
 ;;
