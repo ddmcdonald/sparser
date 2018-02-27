@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2018 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  2.2 July 2013
+;;;  version:  February 2018
 
 ;; initiated 6/7/93 v2.3, added sequences 6/9 - finished them 6/17
 ;; fixed a bug 10/29
@@ -34,15 +34,6 @@
 
 (in-package :sparser)
 
-;;--- Trace flags (ad-hoc)
-
-(defvar *trace-collections* nil
-  "Salted into this code to check things")
-#|
-(when *trace-collections*
-   (format t "~&  ~%"
-|#
-
 
 ;;;-------------------------------------------------
 ;;; sort fn used by Sort-individuals-alphabetically
@@ -60,10 +51,12 @@
 ;;; create routines
 ;;;-----------------
 
+(defvar *trace-collections* nil
+  "Set to T to trace the operations")
+
 (defun create-sequence (items)
   (let ((sequence (make-unindexed-individual category::sequence))
         (count (length items)))
-    
     (setq sequence
           (bind-dli-variable 'items items 
                        (bind-dli-variable 'number count sequence)))
@@ -104,9 +97,9 @@
       (create-collection items category)))
 
 
-(defun index/collection (i collection-category bindings) (break "index"))
-(defun find/collection (i collection-category bindings) (break "find"))
-(defun reclaim/collection (i collection-category bindings) (break "reclaim"))
+(defun reclaim/collection (i collection-category bindings)
+  ;; Version for special index w/o the description lattice
+  (break "reclaim"))
 
 (defun remove-collection-from-index (collection)
   ;; Needed when the number or identity of the items in it changes
@@ -126,7 +119,7 @@
 ;;; find
 ;;;------
 
-;;/// Need make-over as with sequence
+;;/// Needs make-over as with sequence
 (defun find-collection (items category)
   (let ((instances (cat-instances category::collection))
         (count (length items)))
@@ -137,14 +130,14 @@
 	    (when category-entry
 	      (gethash items category-entry))))))))
 
-
-;;--- move to utilities
-
-(defun first-n-of-list (n list)
-  "Returns a new list"
-  (loop for i from 0 to n
-    as item in list
-    collect item))
+(defun find/collection (collection-category bindings)
+  ;; Version for special index w/o the description lattice
+  (let ((items (cadr (assoc 'items bindings :key #'var-name))))
+    (if items
+      (find-collection items collection-category)
+      (else
+        (push-debug `(,bindings))
+        (break "stub: find/collection: no items in binding list")))))
 
 
 (defun find-sequence (items)
@@ -181,8 +174,7 @@
         (setf (gethash first-item table)
               (list sequence))))))
 
-	
-;;/// Need make-over as with sequence
+;;/// Needs make-over as with sequence
 (defun index-collection (collection)
   (when (permanent-individual? collection)
     (note-permanence-of-categorys-individuals category::collection))
@@ -205,6 +197,14 @@
 		collection)
 	  collection)))))
 
+(defun index/collection (i collection-category bindings)
+  ;; Version for special index w/o the description lattice
+  (let ((items (value-of 'items i)))
+    (if items
+      (index-collection i)
+      (else
+        (push-debug `(,bindings))
+        (break "stub: index/collection - no bindings")))))
 
 
 ;;--- ancilary indexing
@@ -239,59 +239,6 @@
             pos-objects)))
 
 
-
-;;;-------------------------
-;;; operations on sequences
-;;;-------------------------
-
-(defun first-item-of-sequence (sequence)
-  (let ((items (value-of 'items sequence)))
-    (first items)))
-
-
-(defun last/iseq (sequence)
-  (let ((items (value-of 'items sequence)))
-    (car (last items))))
- 
-      
-(defun all-but-last/iseq (sequence)
-  (unless (itype sequence 'sequence)
-    (break "Data check: argument isn't a sequence:~%  ~A~%" sequence))
-  (let* ((items (value-of 'items sequence))
-         (temp (copy-list items)))
-    (setq temp (nreverse (cdr (nreverse temp))))
-    (when temp
-      ;; don't try to make a sequence if there aren't any items
-      (define-sequence temp))))
-
-
-(def-k-function nth-item (n sequence)
-  (:documentation "Return the nth element of sequence,
-    given zero-based indexing.")
-  (:method ((n integer) (category category::sequential))
-    ;; Motivating use is pulling the month sequences out of
-    ;; the month category
-    (nth-item n (value-of 'sequence category)))
-  (:method ((n integer) (seq category::sequence))
-    (nth-item n (value-of 'items seq)))
-  (:method ((n integer) (items list))
-    (nth n items)))
-
-
-(defgeneric next-item (reference sequence)
-  (:documentation "Return the item that follows the
-    reference item in the sequence."))
-
-(defmethod next-item ((n integer) (items list))
-  (nth-item (1+ n) items))
-
-(defgeneric next-item-in-cycle (reference sequence length)
-  (:documentation "Return the item that follows the
-    reference item in the sequence. When the reference
-    is to the last item, treat the sequence as a
-    cycle and return the first item."))
-
-
 ;;;---------------------------
 ;;; operations on collections
 ;;;---------------------------
@@ -317,8 +264,103 @@
       collection)))
 
 
+(defun collection-of-type/dh (collections-dh-entry  &rest possible-types )
+  "Walk through a list of collections, return a list of those
+   that fit any of a given set of type values."
+  ;; Only used by deref-plural-post in the "position rules" file
+  ;; of PCT where we're looking for existing collections of titles.
+  (push-debug `(,collections-dh-entry ,possible-types))
+  (let ( instances  instance  )
+    (dolist (item collections-dh-entry)
+      (setq instance (first item))
+      ;(break)
+      (when (member (first (value-of 'type instance))
+                    possible-types :test #'eq)
+        (push instance instances)))
+    (nreverse instances)))
 
 
-  
+;;;-------------------------
+;;; operations on sequences
+;;;-------------------------
 
+(defun first-item-of-sequence (sequence)
+  (let ((items (value-of 'items sequence)))
+    (first items)))
+
+(defun last/item-of-sequence (sequence)
+  (let ((items (value-of 'items sequence)))
+    (car (last items))))
+
+(def-k-function first-of (item)
+  (:documentation "Is the item the initial item in the sequence
+    it is naturally a part of"))
+
+(def-k-function last-of (item)
+  (:documentation "Is the item the final item in the sequence
+    it is naturally a part of"))
+
+      
+(defun all-but-last/iseq (sequence)
+  (unless (itype sequence 'sequence)
+    (break "Data check: argument isn't a sequence:~%  ~A~%" sequence))
+  (let* ((items (value-of 'items sequence))
+         (temp (copy-list items)))
+    (setq temp (nreverse (cdr (nreverse temp))))
+    (when temp
+      ;; don't try to make a sequence if there aren't any items
+      (define-sequence temp))))
+
+
+(def-k-function nth-item (n sequence)
+  (:documentation "Return the nth element of sequence,
+    given zero-based indexing.")
+  (:method ((n integer) (category category::sequential))
+    ;; Motivating use is pulling the month sequences out of
+    ;; the month category
+    (nth-item n (value-of 'sequence category)))
+  (:method ((n integer) (seq category::sequence))
+    (nth-item n (value-of 'items seq)))
+  (:method ((n integer) (items list))
+    (nth n items)))
+
+
+(def-k-function thread-sequence (sequence)
+  (:documentation "Walk through the sequence of a category that
+   is cyclic and set the previous and next variables of each
+   of the items in the sequence, wrapping the two ends.
+   Designed for months and weeks. Uses old bindings because
+   we're operating over a sequence of a fixed set individuals
+   and the continued replacement of individuals as the result
+   of making new DL individuals with each binding when the
+   variables represent fixed properties like the cycle length
+   of the months in a year is not warranted.")
+  (:method ((sequence category::sequence))
+    (let* ((items (value-of 'items sequence))
+           (first (car items))
+           (last (car (last items))))
+      (flet ((set-prior (prior item)
+               (old-bind-variable 'next item prior)
+               (old-bind-variable 'previous prior item)))
+        (do ((prior last item)
+             (item (car items) (if rest (car rest) first))
+             (rest (cdr items) (cdr rest)))
+            ((null rest)
+             (set-prior prior item)
+             (set-prior item first))
+          (set-prior prior item))))))
+
+
+(def-k-function next-item (item)
+  (:documentation "Return the item that follows the
+    reference item its natural sequence. Should wrap around
+    to the next item in its natural sequence if appropriate")
+  (:method ((item category::sequential))
+    (value-of 'next item)))
+
+(def-k-function prior-item (item)
+  (:documentation "Return the item that preceded the
+    reference item its natural sequence. Should wrap.")
+  (:method ((item category::sequential))
+    (value-of 'previous item)))
 

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993-2005,2012-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2012-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  January 2017
+;;;  version:  February 2018
 
 ;; initiated 6/7/93 v2.3, added Sequence 6/9.
 ;; 6/13/95 added searching routine: collection-of-type/dh
@@ -21,12 +21,7 @@
 ;;; generic object
 ;;;----------------
 
-#| A collection is an unordered bag of items.  We can have partial information
-   about a collection and then extend it, though nothing is in place for that
-   as yet. |#
-
 (define-category  collection
-  :mixins (takes-tense-aspect-modal takes-adverb)
   :instantiates self
   :specializes abstract
   :lemma (:common-noun "collection")
@@ -41,61 +36,58 @@
                  :mapping ((np-head . :self)
                            (quantifier . number)
                            (np . :self)
-                           (item . number)))))
+                           (item . number))))
+  :documentation "A collection is an unordered bag of items. 
+    They were designed for conjoined phrases such as a company
+    names, but we now also use them as the base of plural nouns.
+    The type of a conjunction is the type of its items, though
+    in practice it is just the type of the first item.")
+
+#| N.b. an interim version of this definition includes these mixins
+         :mixins (takes-tense-aspect-modal takes-adverb)
+Which had the effect of making a conjunction almost a perdurant in terms
+of the variables it provided for composition. That requirement is
+very likely OBE, but should the need for something like that to arise
+we should reconsider what the most useful representation of conjoined
+phrases actually is. |#
 
 
 ;;;-----------------
 ;;; specializations
 ;;;-----------------
 
-#| A sequence is a collection where the order matters.  You can't have partial
-   information about a sequence, and I'm not even sure that you can extend them
-   without creating a new object.  |#
-
 (define-category  sequence
   :instantiates collection
   :specializes collection
   :lemma (:common-noun "sequence")
   :index (:permanent :key items)
-  :binds ((items :primitive list)   ;;/// ought to do inheritance
-          (item)   ;; i.e. each individual item
-          (type :primitive category)
-          (number :primitive integer)))
+  :binds ((item))  ;; i.e. each individual item
+  :documentation "A sequence is a collection where the order matters
+.  You can't have partial information about a sequence, and I'm 
+   not even sure that you can extend them without creating a new object.")
 
 
-
-;;---- mixin
+;;;--------
+;;; mixins
+;;;--------
 
 (define-mixin-category sequential
-  ;; motivating case is the cyclic aspect of calendar time.
-  ;; Doesn't directly model the 'cycle' or 'spiral' aspect
-  ;; of the calendar ("what month comes after December?"
-  ;; but it's a start.
   ;;  :lemma (:adjective "sequential") ;; defined in bio;terms.lisp
-  :binds ((sequence . sequence)))
+  :specializes sequence
+  :binds ((sequence sequence)
+          (previous sequential)
+          (next sequential))
+  :documentation "Augments the concept of a sequence by providing
+ explicit relations tying together the successive items in the
+ sequence to each can point to its immediate neighbor.")
 
 (define-mixin-category cyclic
+  :specializes sequential
   :lemma (:adjective "cyclic")
-  :binds ((cycle-length :primitive number)))
+  :binds ((cycle-length :primitive number))
+  :documentation "Cyclic sequences wrap. The 'next' of the last item
+ in the sequence is the sequences first item. Natural way to conceptualize
+ the months of the year and most of the other categories in time.q")
 
 
 
-#|  Removed until we bring this sort of thing back.
-    It's referenced in one place: deref-plural-post in the "position rules" file
-    of PCT where we're looking for existing collections of titles.
-;;;-----------------------------
-;;; predicates over collections
-;;;-----------------------------
-|#
-(defun collection-of-type/dh (collections-dh-entry  &rest possible-types )
-  (push-debug `(,collections-dh-entry ,possible-types))
-  (break "stub"))
-#|  (let ( instances  instance   )
-    (dolist (item collections-dh-entry)
-      (setq instance (first item))
-      ;(break)
-      (when (member (first (value-of 'type instance))
-                    possible-types :test #'eq)
-        (push instance instances)))
-    (nreverse instances)))
-|#
