@@ -180,7 +180,7 @@
 
   (let* ((prior-position (chart-position-before position))
          (lc-abbrev-word? (pos-terminal prior-position))
-         (caps-variant? (capitalized-correspondent position lc-abbrev-word?))
+         (caps-variant? (capitalized-correspondent prior-position lc-abbrev-word?))
          full-word )
 
     (if (setq full-word
