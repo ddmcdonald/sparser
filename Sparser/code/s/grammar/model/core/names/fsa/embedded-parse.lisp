@@ -40,7 +40,10 @@
   ;; because the one-word case is handled by a different routine.
 
   (pfwpnf from-pos to-pos)
-  (parse-between-boundaries from-pos to-pos)
+  (let ((*allow-pure-syntax-rules* nil)
+        (*allow-form-rules* nil))
+    (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
+    (parse-between-boundaries from-pos to-pos))
   nil ) ;; return value is value of premature-termination?
 
 
