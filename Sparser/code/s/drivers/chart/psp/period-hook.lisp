@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "period-hook"
 ;;;    Module:  drivers/chart/psp  ;;"grammar;rules:DM&P:"
-;;;   version:  January 2018
+;;;   version:  March 2018
 
 ;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
 ;; hooked it into creating sentences. 2/10/14 Added period-hook-off.
@@ -142,8 +142,24 @@
          ;; The period has been determined to -not- indicate the
          ;; end of the sentence, but we should see if we can cover it.
          (tr :period-at-p-not-eos position-after)
-         (or (preceded-by-angstrom-character? position-before)
-             (handle-period-as-initial position-before)))))
+         (post-non-eos-period-operations position-before))))
+
+(defun post-non-eos-period-operations (pos-of-period)
+  "It's simplest to deal with these loose periods right away
+   than to trust that they will be dealt with properly in
+   the sweep since there will rarely be anything actively
+   looking for them (like the period hook does). 
+     Note that when this is running within scan-sentences-and-pws-to-eos
+   there will only be words to the left of the period, not edges."
+  (let* ((pos-before (chart-position-before pos-of-period))
+         (caps-type (pos-capitalization pos-before)))
+    (case caps-type
+      (:single-capitalized-letter
+       (handle-period-as-initial pos-of-period))
+      (:initial-letter-capitalized
+       (check-for-abbreviation-before-position pos-of-period))
+      (otherwise
+       (preceded-by-angstrom-character? pos-of-period)))))
 
 
 ;;--- Sentences
@@ -160,12 +176,6 @@
       (and (pnf-is-not-running)
            (eq (pos-capitalization position-after)
                :all-caps))
-      (and (not (pnf-is-not-running))
-           ;; seen in Cure article: "(K. Naoki and M. M., unpublished data)"
-           (memq (pos-capitalization position-after)
-                 '(:initial-letter-capitalized
-                   :single-capitalized-letter
-                   :all-caps)))
       (period-marks-sentence-end?/look-deeper position-after)))
 
 
@@ -185,7 +195,7 @@
 
   (unless (has-been-status? :scanned pos-after)
     (scan-next-position))
-  
+   
   (let* ((word-just-after-period (pos-terminal pos-after))
          (pos-before (chart-position-before pos-after)) ;; before the period
          (position-back-one (chart-position-before pos-before))
@@ -204,6 +214,12 @@
                     ,pre-caps ,post-caps ,next-caps ,next-pos)))
     
     (tr :eos-lookahead-start pos-after)
+   
+    ;; Could the word just before the period be an abbreviation?
+    ;; N.b. 2d sentence initial "Mr. Vinken ..."
+    (when (implicit-abbreviation? word-just-before-period pos-before)
+      (tr :eos-implicit-abbreviation word-just-before-period)
+      (return-from period-marks-sentence-end?/look-deeper nil))
 
     (when (preceded-by-angstrom-character? pos-before edge-just-before-period)
       (tr :eos-preceded-by-angstrom)
@@ -222,11 +238,6 @@
                (eq post-caps :single-capitalized-letter))
       (tr :eos-two-initials)
       (return-from period-marks-sentence-end?/look-deeper nil))
-   
-    ;; Could the word just before the period be an abbreviation?
-    (when (implicit-abbreviation? word-just-before-period pos-before)
-      (tr :eos-implicit-abbreviation word-just-before-period)
-      (return-from period-marks-sentence-end?/look-deeper nil))
 
     ;; The period could be a decimal point, which would
     ;; mean there were digits to either side. 
@@ -239,6 +250,16 @@
         (else
           (tr :eos-space-before-trailing-digit)
           (return-from period-marks-sentence-end?/look-deeper t))))
+
+    (when (and (not (pnf-is-not-running))
+               ;; seen in Cure article: "(K. Naoki and M. M., unpublished data)"
+               (memq (pos-capitalization pos-after)
+                     '(:initial-letter-capitalized
+                       :single-capitalized-letter
+                       :all-caps)))
+      (tr :eos-no-pnf-and-next-caps)
+      (return-from period-marks-sentence-end?/look-deeper t))
+         
 
     (when *sentence-making-sweep*
       ;; Is this period inside a polyword (which would have covered

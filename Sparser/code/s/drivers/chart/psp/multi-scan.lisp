@@ -77,9 +77,18 @@
                       ;; sentence ends with EOS, not a period
                       (tie-off-ongoing-sentence-at-eos position))
                   (return))
-                 ((and (member word *sentence-terminating-punctuation*)
-                       (period-marks-sentence-end? (chart-position-after position)))
-                  (start-sentence (chart-position-after position))))
+
+                 ((member word *sentence-terminating-punctuation*)
+                  (if (period-marks-sentence-end? (chart-position-after position))
+                    (then 
+                      (tr :scan-sentence-start (chart-position-after position))
+                      (start-sentence (chart-position-after position)))
+                    (post-non-eos-period-operations position))))
+
+                 ;; ((and (member word *sentence-terminating-punctuation*)
+                 ;;       (period-marks-sentence-end? (chart-position-after position)))
+                 ;;  (tr :scan-sentence-start (chart-position-after position))
+                 ;;  (start-sentence (chart-position-after position)))
 
            (let* ((where-pw-ended (polyword-check position word))
                   (position-after (or where-pw-ended
@@ -222,24 +231,25 @@
                  position-after))
        (when word
          (tr :check-word-level-fsa-trigger position-before)
-         (let ((fsa (word-or-variant-has-fsas? word position-before))
-               (pnf? (and (word-at-this-position-is-capitalized? position-before)
-                          *pnf-routine*)))
-           (when (or fsa pnf?)
-             (flet ((apply-fsa (fsa) (run-fsa fsa word position-before))
-                    (apply-pnf () (pnf position-before)))
-               (let ((where-fsa-ended
-                      (cond
-                        ((and fsa pnf?) (or (apply-pnf)
-                                            (apply-fsa fsa)))
-                        (fsa (apply-fsa fsa))
-                        (pnf? (apply-pnf)))))
-                 (when where-fsa-ended
-                   (tr :word-fsa-ended-at word where-fsa-ended)
-                   (setq position-after where-fsa-ended)
-                   (unless (includes-state where-fsa-ended :scanned)
-                     (scan-next-position))
-                   (setq word (pos-terminal where-fsa-ended))))))))   
+         (multiple-value-bind (fsa word-variant)
+             (word-or-variant-has-fsas? word position-before)
+           (let ((pnf? (and (word-at-this-position-is-capitalized? position-before)
+                            *pnf-routine*)))
+             (when (or fsa pnf?)
+               (flet ((apply-fsa (fsa) (run-fsa fsa word-variant position-before))
+                      (apply-pnf () (pnf position-before)))
+                 (let ((where-fsa-ended
+                        (cond
+                          ((and fsa pnf?) (or (apply-pnf)
+                                              #+ignore(apply-fsa fsa)))
+                          (fsa (apply-fsa fsa))
+                          (pnf? (apply-pnf)))))
+                   (when where-fsa-ended
+                     (tr :word-fsa-ended-at word where-fsa-ended)
+                     (setq position-after where-fsa-ended)
+                     (unless (includes-state where-fsa-ended :scanned)
+                       (scan-next-position))
+                     (setq word (pos-terminal where-fsa-ended)))))))))
              
        (when (eq position-after end-pos)
          (return))
