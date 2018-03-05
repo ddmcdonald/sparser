@@ -20,7 +20,8 @@
     there as well. Does an exact match on the actual cpitalization
     of the position. Could alternatively use get-word-string-from-position 
     to consider variants that are 'compatible' with the actual state.")
-  (:method ((pw polyword) (p position)) nil)
+  (:method ((pw polyword) (p position))
+    (has-fsa? pw))
   (:method ((w word) (p position))
     (or (has-fsa? w)
         (unless (eq :lower-case (pos-capitalization p))
@@ -29,7 +30,9 @@
             (when variants
               (let ((relevant-variant
                      (find actual-state variants :key #'word-capitalization)))
-                (has-fsa? relevant-variant))))))))
+                (values
+                 (has-fsa? relevant-variant)
+                 relevant-variant))))))))
               
 (defgeneric has-fsa? (word-or-category)
   (:documentation "Does this label include one or more fsa functions
