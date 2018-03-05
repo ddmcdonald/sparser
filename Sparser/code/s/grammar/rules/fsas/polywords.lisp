@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2015-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2015-2018  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "polywords"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  August 2017
+;;;  Version:  March 2018
 
 ;; 3.0 (10/2/92 v2.3) tweeked interactions with scan as that routine
 ;;      was broken down into smaller parts.
@@ -48,7 +48,7 @@ grammar/rules/FSAs/polywords4.lisp:  (defun do-polyword-fsa (word cfr position-s
 (defvar *position-of-longest-success-state* nil)
 
 
-;; (trace-fsas)
+;; (trace-polywords)
 
 (defun do-polyword-fsa (first-word initial-state position-before)
   "Called by check-for-polywords in scan or by polyword-check in
@@ -61,8 +61,6 @@ grammar/rules/FSAs/polywords4.lisp:  (defun do-polyword-fsa (word cfr position-s
   (declare (special *longest-pw-success-state*
                     *position-of-longest-success-state*
                     *one-space*))
-                                        ;
-
   (when (cfr-p initial-state) ;; bad one on old style
     ;; e.g. "a2abe5_human"
     (return-from do-polyword-fsa nil))
@@ -82,7 +80,6 @@ grammar/rules/FSAs/polywords4.lisp:  (defun do-polyword-fsa (word cfr position-s
     (loop
        (unless (pw-continuations state)
          (return))
-      ;(lsp-break "before try-to-extend-pw")
        (multiple-value-setq (next-state next-position)
          (try-to-extend-pw state prior-position))
 
@@ -103,8 +100,6 @@ grammar/rules/FSAs/polywords4.lisp:  (defun do-polyword-fsa (word cfr position-s
                     (pos-starts-here position-before)
                     (pos-ends-here *position-of-longest-success-state*))))
         *position-of-longest-success-state* ))))
-
-
 
 
 (defun try-to-extend-pw (state prior-position &aux next-state)
@@ -146,6 +141,7 @@ grammar/rules/FSAs/polywords4.lisp:  (defun do-polyword-fsa (word cfr position-s
              (variants (unless (eq :lower-case (pos-capitalization position))
                          (word-capitalization-variants word)))
              (variant (capitalized-correspondent position word)))
+        (tr :pw-word-check word)
 
         (when (eq word *end-of-source*) ;; we can't possibly extend
           (return-from try-to-extend-pw
@@ -167,6 +163,7 @@ grammar/rules/FSAs/polywords4.lisp:  (defun do-polyword-fsa (word cfr position-s
           (then 
             (tr :pw-word-extends)
             (when (pw-accept-state? next-state)
+              (tr :pw-accept-state)
               (setq *longest-pw-success-state* next-state
                     ;; the end position needs to be the one after the word we've just added
                     *position-of-longest-success-state* (chart-position-after position))))
