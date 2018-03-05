@@ -89,5 +89,5 @@ phrases actually is. |#
  in the sequence is the sequences first item. Natural way to conceptualize
  the months of the year and most of the other categories in time.q")
 
-
-
+(fixed-at-runtime '(sequence previous next) 'sequential)
+(fixed-at-runtime '(cycle-length) 'cyclic)

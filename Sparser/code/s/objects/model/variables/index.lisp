@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995,2010-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2010-2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  July 2017
+;;;  version:  March 2018
 
 ;; initiated 11/18/91 v2.1, typo 11/24
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -461,4 +461,33 @@
 	(t ;; placeholder for other kinds of modifications 
 	   ;; indicated by different patterns of keywords
 	 (error "No :to and or :in specified"))))))
+
+
+;;;---------------------------------------
+;;; Variables that are bound at load-time
+;;;---------------------------------------
+
+(defvar *variables-bound-at-load-time* nil
+  "Accumulates a list of variables that are bound at definition time
+   rather than parse time and consequently should be handled differently
+   by walking code that describes semantic interpretations or gathers
+   information by walking an interpretation.")
+
+(defun fixed-at-runtime (var-list cat-name)
+  (let* ((category (category-named cat-name :error-if-nil))
+         (variables (loop for v-name in var-list
+                       collect (find-variable-in-category v-name category))))
+    (assert (every #'lambda-variable-p variables))
+    (loop for var in variables do (push var *variables-bound-at-load-time*))
+    variables))
+
+(defgeneric fixed-value (variable)
+  (:documentation "A predicate that identifies a variable as
+   one whose value was fixed when it was defined. Used to block
+   recursive application of walking functions and thereby avoid
+   including unnecessary information or a run away recursion.")
+  (:method ((b binding))
+    (fixed-value (binding-variable b)))
+  (:method ((v lambda-variable))
+    (memq v *variables-bound-at-load-time*)))
 

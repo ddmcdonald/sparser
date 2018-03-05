@@ -44,6 +44,8 @@
   :index (:permanent :key name :get)
   :realization (:common-noun name ))
 
+(fixed-at-runtime '(abbreviation position-in-year number-of-days) 'month)
+
 ;;;------
 ;;; form
 ;;;------

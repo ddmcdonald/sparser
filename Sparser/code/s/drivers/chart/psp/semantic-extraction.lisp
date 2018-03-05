@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "semantic-extraction"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  August 2017
+;;;  version:  March 2018
 
 
 ;;; This file contains all the functions/methods for extracting the elements of the semantics of a
@@ -715,7 +715,7 @@ in cwc-integ/spire/interface/sparser.lisp
         (*for-spire* `(wd ,(pname w))) ;; "wd" reversed by to-krisp w/ resolve
         (t (pname w))))
 
-(defmethod collect-model-description ((w polyword)) ;
+(defmethod collect-model-description ((w polyword))
   (declare (special *for-spire*  *sentence-results-stream*))
   (cond (*sentence-results-stream* (pname w))
         (*for-spire* `(wd ,(pname w)))
@@ -800,17 +800,18 @@ in cwc-integ/spire/interface/sparser.lisp
             (unless (or (cond (*sentence-results-stream*
                                (or (memq var-name '(trailing-parenthetical category
                                                     ras2-model))
-                                   (and
-                                    (itypep i 'determiner)
-                                    (memq var-name '(word)))))
+                                   (and (itypep i 'determiner)
+                                        (memq var-name '(word)))))
                               ((not *for-spire*)
                                (memq var-name '(trailing-parenthetical category
                                                 ras2-model))))
-                        (typep value 'mixin-category)) ;; has-determiner
+                        (typep value 'mixin-category) ;; has-determiner
+                        (fixed-value var))
               (if (or (numberp value)
                       (symbolp value)
                       (stringp value))
                 (push (list var-name value) desc)
+                ;; // if b is fixed value print value but don't recurse //
                 (typecase value
                   (individual 
                    (if (and (not (or *for-spire* *sentence-results-stream*))
@@ -848,7 +849,7 @@ in cwc-integ/spire/interface/sparser.lisp
   (declare (special category::prepositional-phrase))
   (let ((desc (indiv-or-type i)))
     (loop for b in  (indiv-binds i)
-       as var  = (binding-variable b)
+       as var = (binding-variable b)
        as var-name = (var-name var)
        as value = (binding-value b)
        as vv-pair = `(,var-name
@@ -858,7 +859,8 @@ in cwc-integ/spire/interface/sparser.lisp
                          value))
        do
          (unless (or (memq var-name '(trailing-parenthetical category ras2-model))
-                     (typep value 'mixin-category)) ;; has-determiner
+                     (typep value 'mixin-category) ;; has-determiner
+                     (fixed-value var))
            (case var-name
              (type
               ;;(when (or *for-spire* *sentence-results-stream*)
@@ -878,26 +880,27 @@ in cwc-integ/spire/interface/sparser.lisp
                       desc)))
              (t
               (if (or (numberp value) (symbolp value) (stringp value))
-                  (push vv-pair desc)
-                  (typecase value
-                    (individual 
-                     (push (list var-name
-                                 (collect-model-description
-                                  (if (and (not (or *for-spire* *sentence-results-stream*))
-                                           (itypep value category::prepositional-phrase))
-                                    (value-of 'pobj value)
-                                    value)))
-                           desc))
-                    ((or word polyword)
-                     (when *show-words-and-polywords* (push vv-pair desc)))
-                    (category
-                     (push `(,var-name ,(collect-model-description value)) desc))
-                    (cons (lsp-break "how did we get a CONS ~s as a value for variable ~s~%"
-                                     value var-name))
-                    (rule-set) ;; the word "anti" presently does this
-                    ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)
-                    (otherwise
-                     (format t "~&~%Collect model: ~
+                (push vv-pair desc)
+                (typecase value
+                  (individual
+                   ;;//// fixed-value check
+                   (push (list var-name
+                               (collect-model-description
+                                (if (and (not (or *for-spire* *sentence-results-stream*))
+                                         (itypep value category::prepositional-phrase))
+                                  (value-of 'pobj value)
+                                  value)))
+                         desc))
+                  ((or word polyword)
+                   (when *show-words-and-polywords* (push vv-pair desc)))
+                  (category
+                   (push `(,var-name ,(collect-model-description value)) desc))
+                  (cons (lsp-break "how did we get a CONS ~s as a value for variable ~s~%"
+                                   value var-name))
+                  (rule-set) ;; the word "anti" presently does this
+                  ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)
+                  (otherwise
+                   (format t "~&~%Collect model: ~
                             Unexpected type of value of a binding in a collection: ~a~%~%" value))))))))
     (reverse desc)))
 
@@ -927,7 +930,12 @@ in cwc-integ/spire/interface/sparser.lisp
         when
           (edge-p tt)
         do
-          (traverse-sem (edge-referent tt) fn)))
+       (traverse-sem (edge-referent tt) fn)))
+
+(defgeneric traverse-sem (sem fn)
+  (:documentation "Map the function 'fn' recursively through
+    the indicated semantic structures. Function must run for
+    side-effects as there is no collection"))
 
 (defmethod traverse-sem ((s sentence) fn)
   (traverse-sem (previous s) fn)
@@ -937,18 +945,15 @@ in cwc-integ/spire/interface/sparser.lisp
 
 (defmethod traverse-sem ((m discourse-mention) fn)
   (funcall fn m)
-  (if (and
-       (is-basic-collection? (base-description m))
-       ;; how the Erk and p90RSK pathway phosphorylates and inactivates GSK-3beta.
-       ;; the HOWCOMP acts (erroneously) as a basic-collection
-       (value-of 'items (base-description m)))
+  (if (and (is-basic-collection? (base-description m))
+           ;; how the Erk and p90RSK pathway phosphorylates and inactivates GSK-3beta.
+           ;; the HOWCOMP acts (erroneously) as a basic-collection
+           (value-of 'items (base-description m)))
       (loop for dep-pair in (dependencies m)
-            
-            do
-              (if  (eq 'items (pname (dependency-pair-variable dep-pair)))
-                   (loop for v in (dependency-pair-value dep-pair)
-                         do (traverse-sem v fn))
-                   (traverse-sem (dependency-pair-value dep-pair) fn)))
+         do (if (eq 'items (pname (dependency-pair-variable dep-pair)))
+              (loop for v in (dependency-pair-value dep-pair)
+                 do (traverse-sem v fn))
+              (traverse-sem (dependency-pair-value dep-pair) fn)))
       (loop for dep-pair in (dependencies m)
             do (traverse-sem (dependency-pair-value dep-pair) fn))))
 
@@ -959,16 +964,15 @@ in cwc-integ/spire/interface/sparser.lisp
          (funcall fn (value-of 'value i)))
         ((is-basic-collection? i)
          (loop for b in (indiv-old-binds i)
-               do
-                 (if (eq (pname (binding-variable b)) 'items)
-                     (loop for item in (binding-value b)
-                           do (traverse-sem item fn))
-                     (traverse-sem b fn))))
-        (t
+            do (if (eq (pname (binding-variable b)) 'items)
+                 (loop for item in (binding-value b)
+                    do (traverse-sem item fn))
+                 (traverse-sem b fn))))
+        (t ;;//// if fixed-value, then apply to value but don't recurse
          (loop for b in (indiv-old-binds i)
-               do (traverse-sem b fn)))))
+            do (traverse-sem b fn)))))
 
-(defgeneric traverse-sem (sem fn))
+
 (defmethod traverse-sem ((w string) fn)
   (funcall fn w))
 
@@ -989,7 +993,9 @@ in cwc-integ/spire/interface/sparser.lisp
   (funcall fn c))
 
 (defmethod traverse-sem ((binding binding) fn)
-  (traverse-sem (binding-value binding) fn))
+  (if (fixed-value binding) ;; don't recurse
+    (funcall fn (binding-value binding))
+    (traverse-sem (binding-value binding) fn)))
 
 (defmethod traverse-sem ((v lambda-variable) fn)
   nil)

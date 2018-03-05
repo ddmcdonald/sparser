@@ -36,12 +36,7 @@
   :index (:permanent :key name :get)
   :realization (:common-noun name))  
 
-
-(defun get-weekday (name)
-  (if *description-lattice*
-    (get-by-name category::weekday name)
-    (find-individual 'weekday :name name)))
-
+(fixed-at-runtime '(abbreviation position-in-week) 'weekday)
 
 ;;;------
 ;;; form
@@ -56,3 +51,13 @@
                       :position-in-week ordinal)))
     (define-abbreviation string abbrev-string)
     weekday ))
+
+
+;;;-----------
+;;; functions
+;;;-----------                        
+
+(defun get-weekday (name)
+  (if *description-lattice*
+    (get-by-name category::weekday name)
+    (find-individual 'weekday :name name)))
