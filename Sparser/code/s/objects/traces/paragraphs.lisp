@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,2013-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2013-2018  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "paragraphs"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  August 2017
+;;;  Version:  March 2018
 
 ;; initiated 1/5/94 v2.3. Added untrace fn. 5/20
 ;; (3/12/10) Added more traces to track the FSA
@@ -82,6 +82,13 @@
                (pos-token-index pos))))
 
 
+(deftrace :scan-sentence-start (pos-of-period)
+  ;; Called from scan-sentences-and-pws-to-eos
+  (when (or *trace-period-hook* *trace-period-eos-lookahead*)
+    (trace-msg "[scan] period marks sentence end at ~a"
+               (pos-token-index pos-of-period))))
+
+
 
 (deftrace :eos-lookahead-start (pos-of-period)
   (when *trace-period-eos-lookahead*
@@ -114,6 +121,11 @@
 (deftrace :eos-space-before-trailing-digit ()
   (when *trace-period-eos-lookahead*
     (trace-msg "      There's a space after the period. Stop")))
+
+
+(deftrace :eos-no-pnf-and-next-caps ()
+  (when *trace-period-eos-lookahead*
+    (trace-msg "[eos] Succeed: next word is capitalized not using pnf")))
 
 
 (deftrace :eos-following-lowercase ()

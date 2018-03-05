@@ -31,10 +31,10 @@
 
 (defparameter *trace-polywords* nil)
 
-(defun trace-polywords* ()
+(defun trace-polywords ()
   (setq *trace-polywords* t))
 
-(defun untrace-polywords* ()
+(defun untrace-polywords ()
   (setq *trace-polywords* nil))
 
 
@@ -65,6 +65,10 @@
 (deftrace :pw-word-extends ()
   (when *trace-polywords*
     (trace-msg "[pw]     it extends the polyword")))
+
+(deftrace :pw-accept-state ()
+  (when *trace-polywords*
+    (trace-msg "[pw]     That is an accept state.")))
 
 (deftrace :pw-word-doesnt-extend ()
   (when *trace-polywords*
@@ -97,6 +101,8 @@
 (deftrace :pw-no-caps-variant ()
   (when *trace-polywords*
     (trace-msg "[pw]     nothing found")))
+
+
 
 ;;;-----------------
 ;;; word level fsas

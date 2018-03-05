@@ -636,7 +636,7 @@
                (pos-token-index pos-before) (pos-token-index pos-after))))
 
 (deftrace :check-for-polywords (word position-before)
-  (when *trace-network-flow*
+  (when (or *trace-network-flow* *trace-polywords*)
     (trace-msg "[scan] check-for-polywords starting with \"~a\" ~
                 at p~a" word (pos-token-index position-before))))
 
@@ -1369,7 +1369,7 @@
     (trace-msg "[scan] entered scan-terminals-loop")))
 
 (deftrace :polyword-sweep-loop ()
-  (when *trace-network-flow*
+  (when (or *trace-network-flow* *trace-polywords*)
     (trace-msg "[scan] entered polyword-sweep-loop")))
 
 (deftrace :word-level-fsa-sweep (from to)

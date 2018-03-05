@@ -85,6 +85,11 @@
               ~%        Its bracket state is ~A"
                cap-state bracket)))
 
+(deftrace :cont-caps-edge (edge)
+  (when *trace-pnf*
+    (trace-msg "PNF: Capitalized edge extends sequence: ~a"
+               edge)))
+
 (deftrace :lower-case-non-boundary-extends-over (word yes?)
   ;; called by lc-non-boundary-word-that-may-extend-cap-seq?
   (when *trace-pnf*
