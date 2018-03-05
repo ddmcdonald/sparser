@@ -1,9 +1,9 @@
 ;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: SPARSER -*-
-;;; Copyright (c) 2016 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2018 SIFT LLC. All Rights Reserved.
 ;;;
 ;;;      File: "scripts"
 ;;;    Module: "init;loaders;"
-;;;   Version: January 2016
+;;;   Version: February 2018
 
 (in-package :sparser)
 
@@ -135,9 +135,10 @@ and setting up to do style work by collecting statistics."
   "FIRE stands for 'Free-text Information and Relation Extraction'.
 It is essentially GROK going forward."
   (:parameters
+   (*description-lattice* t)
    (*index-bindings-to-variables* t))
   (:grammar-configuration "full grammar")
-  (:switches fire-setting))
+  (:switches neo-fire-setting))
 
 (defscript grok ()
   (:grammar-configuration "grok")

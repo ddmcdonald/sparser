@@ -564,6 +564,76 @@
 
 
 
+
+(defun neo-fire-setting ()
+  "Adapting ideas from R3 document parsing and C3"
+  (declare (special *treat-single-capitalized-words-as-names*
+                    *pnf-scan-respects-segment-boundaries*))
+  (revert-to-error-break)
+  (uncontroversial-settings)
+  (top-edges-setting)
+  (standard-extras)
+  
+  ;;(parsing-protocol-for-documents) which is ...
+  (what-to-do-at-the-forest-level :new-forest-protocol)
+  (setq *kind-of-chart-processing-to-do* :successive-sweeps)
+  
+  ;; in scan-terminals-loop
+  (setq *sweep-for-word-level-fsas* t
+        *sweep-for-terminal-edges* t )
+  (setq *grammar-and-model-based-parsing* t
+        *do-early-rules-sweep* t
+        *sweep-for-patterns* t
+        *sweep-for-early-information* t ;; questions
+        *sweep-for-conjunctions* t
+        *sweep-for-parentheses* t
+        
+        *chunk-sentence-into-phrases* t
+        ;;  *big-mechanism-ngs* t  /// check details
+        *parse-chunk-interior-online* t
+        
+        *sweep-sentence-treetops* t
+
+        *parse-chunked-treetop-forest* t
+        *sweep-sentence-treetops* t
+        *island-driving* t
+        )
+  (setq *edges-from-referent-categories* nil
+        *allow-pure-syntax-rules* t
+        *check-forms* t) ;; see multiply-edges
+  (whack-a-rule t)
+
+  (use-unknown-words)
+  (include-comlex)
+  (setq *make-edges-over-new-digit-sequences* t)
+  (what-to-do-with-unknown-words ;;/// maybe something weaker
+   :capitalization-digits-&-morphology/or-primed)
+  
+  ;; R3 sweeper doesn't introduce boundaries so no point
+  ;; in expecting them
+  (setq *pnf-scan-respects-segment-boundaries* nil)
+
+  (setq *ignore-capitalization* nil)
+  (setq *treat-single-capitalized-words-as-names* t)
+  (unless *proper-names* (error "Proper name module not loaded"))
+  (establish-pnf-routine :scan-classify-record)
+
+  (setq *use-subtypes* t) ;; plurals as collections
+
+  (setq *do-strong-domain-modeling* t)
+  (setq *new-segment-coverage* :trivial)
+  (setq *note-text-relations* nil) ;; for now
+  (setq *after-action-on-segments* 'sdm/analyze-segment)
+
+  (designate-sentence-container :complex) ;; holds preposed aux &such
+  (setq *recognize-sections-within-articles* t) ;; otherwise no sentences
+ 
+  ;;(setq *description-lattice* nil) ;; ??? permanence of bindings
+
+  (setq *switch-setting* :neo-fire))
+
+
+
 ;;--- Measuring word frequencies
 
 (defun word-frequency-setting ()
