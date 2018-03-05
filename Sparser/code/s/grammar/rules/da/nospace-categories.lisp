@@ -1,9 +1,9 @@
 ;;;-*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "nospace-categories"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  June 2016
+;;;  Version:  March 2018
 
 ;; Created 10/7/14 to hold categories and routines used by the
 ;; nospace character specialists (analyzers/psp/patterns/) since
@@ -40,7 +40,7 @@
 ;;;----------------
 
 (define-category hyphenated-pair
-  :specializes sequence
+  :specializes collection
   ;; inherits items, item, type, number
   :instantiates :self
   :index (:sequential-keys left right)
@@ -66,7 +66,7 @@
   for error.") |#
 
 (define-category qualifying-pair
-  :specializes sequence
+  :specializes collection
   ;; inherits items, item, type, number
   :instantiates :self
   :binds ((head) ;; 'Ras'
@@ -76,7 +76,7 @@
    or can't figure out the correct relationship (variable).")
 
 (define-category hyphenated-triple
-  :specializes sequence
+  :specializes collection
   ;; inherits items, item, type, number
   :instantiates :self
   :binds ((left)

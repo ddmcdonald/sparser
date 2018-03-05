@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  February 2018
+;;;  version:  March 2018
 
 ;; initiated 6/7/93 v2.3, added Sequence 6/9.
 ;; 6/13/95 added searching routine: collection-of-type/dh
@@ -24,6 +24,7 @@
 (define-category  collection
   :instantiates self
   :specializes abstract
+  :mixins (takes-tense-aspect-modal) ;; and takes-adverb ?
   :lemma (:common-noun "collection")
   :index (:permanent
           :special-case :find find/collection
@@ -43,13 +44,22 @@
     The type of a conjunction is the type of its items, though
     in practice it is just the type of the first item.")
 
-#| N.b. an interim version of this definition includes these mixins
-         :mixins (takes-tense-aspect-modal takes-adverb)
-Which had the effect of making a conjunction almost a perdurant in terms
+#| N.b. Including the mixin (takes-tense-aspect-modal
+has the effect of making a conjunction almost a perdurant in terms
 of the variables it provided for composition. That requirement is
-very likely OBE, but should the need for something like that to arise
-we should reconsider what the most useful representation of conjoined
-phrases actually is. |#
+a conceptual bug, but given that clause conjunctions are presently
+modeled as collections it's a requirement if we don't want to be
+bombared with warnings, e.g.
+
+warning:
+   no variable named past on #<collection #<gene-transcript-express 86609> #<purify 85065> 112298> of category nil
+ in sentence "Proteins were expressed and purified from E. coli as described
+                    previously xref ."
+
+We really need to develop a different target for conjunctions
+that can have the right syntactic reflexes (e.g. promoting the
+labeling on the conjoined children to the parent object)
+and not entangle the simple notion of a collection. |#
 
 
 ;;;-----------------
@@ -58,10 +68,14 @@ phrases actually is. |#
 
 (define-category  sequence
   :instantiates collection
-  :specializes collection
+  :specializes abstract  ;;collection -- waiting for conjunction that's not
+  ;; also a tensed clause
   :lemma (:common-noun "sequence")
   :index (:permanent :key items)
-  :binds ((item))  ;; i.e. each individual item
+  :binds ((item)  ;; i.e. each individual item
+          (items :primitive list) ;; copied down while conjunction is bad
+          (type :primitive category)
+          (number :primitive integer))
   :documentation "A sequence is a collection where the order matters
 .  You can't have partial information about a sequence, and I'm 
    not even sure that you can extend them without creating a new object.")
