@@ -52,12 +52,14 @@
 ;;;---------
 
 (defun cap-seq-continues-from-here? (position-before)
-  ;; called from pnf/scan-classify-record
-  ;; The prior position holds a capitalized word and the question is
-  ;; whether the current one does as well, with special cases for
-  ;; the punctuation that are checked first so that the brackets
-  ;; punctuation introduces don't get in the way.
-  ;; The value that we return becomes *pnf-end-of-span*.
+  "Initially called from pnf/scan-classify-record when the prior position 
+   holds a capitalized word and the question is whether the current one 
+   does as well, with special cases for the punctuation that are checked
+   first so that the brackets punctuation introduces don't get in the way.
+   The value that we return becomes *pnf-end-of-span*.
+     Also called from subroutines in the dynamic scope of this function
+   when they've concluded that we should continue, making it the central
+   dispatch point."
   (tr :cap-seq-continues-from-here? position-before)
 
   ;; scan the next word
@@ -73,24 +75,32 @@
   ;; evaluate whether to continue the sequence
   (let* ((cap-state (pos-capitalization position-before))
          (position-after (chart-position-after position-before))
-         (bracket (bracket-closing-segment-at position-before)))
+         (bracket (bracket-closing-segment-at position-before))
+         (edge (right-treetop-at/edge position-before)))
 
+    ;;(break "continues, before = ~a" position-before)
     (tr :cap-seq-continues/status cap-state bracket)
 
     (if (eq cap-state :digits)
       position-before
 
-      (if bracket   ;; "of"  "."
-        (if *pnf-scan-respects-segment-boundaries*
-          (boundary-continuation position-before position-after
-                                 cap-state)
-          (non-boundary-continuation position-before
-                                     position-after
-                                     cap-state
-                                     bracket))
-
-        (cap-seq-continues-from-here?/aux cap-state
-                                          position-before)))))
+      (cond
+        ((and edge ;; probably the result of the polyword pass
+              (edge-p edge) ;; accessor returns the word if no edge
+              (capitalized-instance position-before))
+         (tr :cont-caps-edge edge)
+         (cap-seq-continues-from-here? (pos-edge-ends-at edge)))
+        
+        (bracket   ;; "of"  "."
+         (if *pnf-scan-respects-segment-boundaries*
+           (boundary-continuation position-before position-after
+                                  cap-state)
+           (non-boundary-continuation position-before
+                                      position-after
+                                      cap-state
+                                      bracket)))
+        (t
+         (cap-seq-continues-from-here?/aux cap-state position-before))))))
 
 (defun cap-seq-continues-from-here?/aux (cap-state position-before)
   (cond

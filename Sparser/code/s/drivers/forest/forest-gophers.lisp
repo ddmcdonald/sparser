@@ -327,8 +327,8 @@
 	((symbolp daughter)
 	 (case daughter
 	   ((:digit-based-number :single-term :single-digit-sequence
-				 :literal-in-a-rule :context-sensitive
-				 :morphology-based-edge)
+	     :literal-in-a-rule :context-sensitive
+             :morphology-based-edge :proper-name)
 	    edge)
 	   (:long-span
 	    (let ((constituents (edge-constituents edge)))
@@ -349,7 +349,7 @@
 (defun find-copular-vp (vp-edges)
   (loop for edge in vp-edges
     when (copular-vp edge)
-    return edge)) ;;/// else ?? suppose none of them ar
+    return edge))
   
 (defun find-non-copular-vps (vp-edges)
   (loop for edge in vp-edges
