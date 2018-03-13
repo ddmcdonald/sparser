@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  October 2016
+;;;  Version:  March 2018
 
 ;; initiated 10/25/92 w/ mixin.  Given some content 5/17/95.  Added np cases
 ;; 4/1/05. Added common-noun 4/12/09. 10/14/12 Removed the 'that' rules 
@@ -35,12 +35,9 @@
   ;; See hack in record-any-determiner
   (push-debug `(,arg)) (break "indefinite stub"))
 
-;;(define-lambda-variable 'has-determiner nil category::det)
-
 ;; too fine grained?
 (define-lambda-variable 'definite nil category::definite)
 (define-lambda-variable 'indefinite nil category::indefinite)
-
 
 
 ;;---- Predicates
@@ -120,9 +117,8 @@
 ;;; form rules
 ;;;------------
 
-(when (or (current-script :fire)
+(when (or (current-script :default)
           (current-script :grok))
-  ;; And also several others, such as default and maybe grok.
   ;; These configurations do not use syntactic rules except under
   ;; very controlled circumstances so these explicit rules
   ;; are required.
