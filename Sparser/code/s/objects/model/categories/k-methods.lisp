@@ -3,7 +3,7 @@
 ;;;
 ;;;     File: "k-methods"
 ;;;   Module: "objects;model;categories;"
-;;;  Version: November 2016
+;;;  Version: March 2018
 ;;;
 ;;; Pseudo-generic functions with methods specialized on KRISP categories.
 
@@ -13,19 +13,31 @@
   specializers
   function)
 
+(deftype eql-specializer ()
+  '(cons (eql eql) (cons * null)))
+
+(defun eql-specializer-p (object)
+  (typep object 'eql-specializer))
+
 (defgeneric k-specializer-applicable-p (specializer argument)
+  (:method ((specializer category) argument) (itypep argument specializer))
   (:method ((specializer class) argument) (typep argument specializer))
-  (:method ((specializer category) argument) (itypep argument specializer)))
+  (:method ((specializer cons) argument)
+    (check-type specializer eql-specializer "an EQL specializer")
+    (eql argument (cadr specializer))))
 
 (defun k-method-applicable-p (k-method arguments)
+  "Return true if K-METHOD is applicable to ARGUMENTS."
   (loop for specializer in (k-method-specializers k-method)
         and arg in arguments
         always (k-specializer-applicable-p specializer arg)))
 
 (defun k-method-more-specific-p (k-method-1 k-method-2)
+  "Return true if K-METHOD-1 is more specific than K-METHOD-2."
   (loop for p in (k-method-specializers k-method-1)
         and q in (k-method-specializers k-method-2)
-        thereis (cond ((and (category-p p) (category-p q))
+        thereis (cond ((eql-specializer-p p) t)
+                      ((and (category-p p) (category-p q))
                        (and (itypep p q) (not (itypep q p))))
                       ((category-p p) t)
                       ((category-p q) nil)
@@ -106,6 +118,8 @@ Analogous to FMAKUNBOUND."
         else
           collect (etypecase arg
                     (symbol (find-class t))
+                    ((cons symbol (cons eql-specializer))
+                     `(eql ,(eval (cadadr arg))))
                     ((cons symbol (cons symbol null))
                      (let ((type (cadr arg)))
                        (if (eq (symbol-package type) *category-package*)
@@ -121,7 +135,7 @@ Analogous to FMAKUNBOUND."
                   else if required-arg
                     collect (etypecase arg
                               (symbol arg)
-                              ((cons symbol (cons symbol null))
+                              ((cons symbol)
                                (push (car arg) ignorable)
                                (car arg)))
                   else

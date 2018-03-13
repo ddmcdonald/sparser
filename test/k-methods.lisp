@@ -3,8 +3,13 @@
 
 (in-package :sparser)
 
+(defparameter *here*
+  (or (find-individual 'deictic-location :name "here")
+      (error "Don't know where \"here\" is.")))
+
 (def-k-function k-location-p (individual))
-;; Methods here are ordered most → least specific.
+;; These methods are defined in most → least specific order.
+(def-k-method k-location-p ((individual (eql *here*))) :here)
 (def-k-method k-location-p ((individual category::deictic-location)) :deictic)
 (def-k-method k-location-p ((individual category::location)) t)
 (def-k-method k-location-p (individual) (declare (ignore individual)))
@@ -14,13 +19,12 @@
           (k-location-p category::region)
           (k-location-p category::location)
           (k-location-p category::deictic-location)
-          (k-location-p (or (find-individual 'deictic-location :name "here")
-                            (error "Don't know where \"here\" is."))))
+          (k-location-p *here*))
   nil
   nil
   t
   :deictic
-  :deictic)
+  :here)
 
 (def-k-function k-member (item collection &key key test test-not)
   (:documentation "Is ITEM an element of COLLECTION?")
