@@ -96,15 +96,15 @@
 ;;; phrases
 ;;;---------
 
-(defgeneric identify-this-time-unit (determiner time-unit)
+(def-k-function identify-this-time-unit (determiner time-unit)
   (:documentation "Uses the temporal-index to identify the
      current month or year, etc."))
 
 ;;/// Modify ref/method to be able to setup for
 ;; one argument method calls. 
 
-
-(def-cfr time ("this" month) ;; "this December"
+#|
+(def-cfr time (this month) ;; "this December"
   :form np
   :referent (:method identify-this-time-unit left-edge right-edge))
 
@@ -112,10 +112,14 @@
   :form np
   :referent (:method identify-this-time-unit left-edge right-edge))
 
+(def-k-method identify-this-time-unit ((this (eql word::|this|)) ;; (this category::this)
+                                       (unit category::time-unit))
+  (break "got here"))
+
 (def-k-method identify-this-time-unit ((ignore t) (unit category::time-unit))
   (declare (ignore ignore unit))
   (error "stub: define value-of-current-time-unit(unit)"))
-
+|#
 
 #| being overhauled 5/30/14
 (def-cfr time (sequencer/determiner  ;; e.g. "next"
