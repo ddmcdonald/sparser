@@ -23,16 +23,7 @@
 ;; 6/28/2015 make sure to record determiners, and to use fom-lattice-description
 ;; in convert-referent-to-individual
 
-
-
 (in-package :sparser)
-
-(defvar CATEGORY::DEFINITE)
-(defvar CATEGORY::INDEFINITE)
-(defvar CATEGORY::DET)
-(defvar *DEBUG-SEGMENT-HANDLING*)
-(defvar *PARSE-FROM-CONTINUOUS-EDGES-IN-PROGRESS*)
-(defvar *DEBUG-SEGMENT-HANDLING*)
 
 #|  
   The point of this body of code is to heuristically fill in
@@ -59,6 +50,7 @@ to make any semantic or form edges that the grammar dictates.
    better, especially for reversing since it wants to recover
    the tree family that might have been used, but it's not
    at all complete."
+  (declare (special *debug-segment-handling*))
   (case *new-segment-coverage*
     (:trivial
      (just-cover-segment coverage))
@@ -92,6 +84,7 @@ to make any semantic or form edges that the grammar dictates.
 (defparameter *require-known-words-in-order-to-cover-a-segment* nil)
 
 (defun just-cover-segment (coverage)
+  (declare (special *debug-segment-handling*))
   (case coverage
     (:one-edge-over-entire-segment
      (let ((edge (edge-over-segment)))
@@ -216,6 +209,7 @@ to make any semantic or form edges that the grammar dictates.
   "Converts category referents to individuals. Has cases for
    everything else that could appear should we ever want to do
    something with them."
+  (declare (special *debug-segment-handling*))
   (let ((referent (edge-referent edge)))
     (typecase referent
       (referential-category
@@ -265,6 +259,7 @@ to make any semantic or form edges that the grammar dictates.
   ;; but referent expression interpreter there needs adjustment
   ;; so this is largely a hack
   ;;(push-debug `(,edge))
+  (declare (special category::definite category::indefinite category::det))
   (multiple-value-bind (word length)
                        (first-word-in-segment)
     (when (= length 1)
@@ -304,7 +299,8 @@ to make any semantic or form edges that the grammar dictates.
 ;; Runs when *new-segment-coverage* is :full
 
 (defun analyze-segment (coverage)
-  (declare (special *left-segment-boundary* *right-segment-boundary*))
+  (declare (special *left-segment-boundary* *right-segment-boundary*
+                    *debug-segment-handling*))
   (tr :calling-sdm/analyze-segment coverage)
   (case coverage
     (:one-edge-over-entire-segment
@@ -389,6 +385,8 @@ to make any semantic or form edges that the grammar dictates.
 
 
 (defun sdm-action/all-contiguous-edges/finish ()
+  (declare (special *debug-segment-handling*
+                    *parse-from-continuous-edges-in-progress*))
   (setq *parse-from-continuous-edges-in-progress* nil)
   (let ((coverage (segment-coverage)))
     (tr :sdm-all-contiguous-edges/new-coverage coverage)
