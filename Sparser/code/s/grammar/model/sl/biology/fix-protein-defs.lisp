@@ -126,11 +126,11 @@ it outputs it to the non-upa-file"
       (output-protein-defs-to-files *new-protein-defs* output-file non-upa-file)
       output-file)))
 
-(defun read-and-replace-protein-defs-with-rev-defs (&key (protein-file "standardized-protein-defs.lisp") 
+(defun read-and-replace-protein-defs-with-rev-defs (&key (protein-file "standardized-protein-defs-complete.lisp") 
                                                       (output-file "standardized-protein-defs-new.lisp")
-                                                      (non-upa-file "non-upa-upm-proteins-new.lisp")
-                                                      (prot-fam-file "new-protein-fam-no-id2.lisp")
-                                                      (minimal-prot-fam "minimal-protein-families2.lisp"))
+                                                      (non-upa-file "non-upa-upm-proteins-new2.lisp")
+                                                      (prot-fam-file "new-protein-fam-no-id3.lisp")
+                                                      (minimal-prot-fam "minimal-protein-families3.lisp"))
 
   "Taking an input list of the existing proteins and hash tables using
 UPA ID (Uniprot Accession number) as keys and UPM ID (Uniprot
@@ -150,7 +150,8 @@ it outputs it to the non-upa-file"
   (let* ((new-defs (read-and-normalize-protein-defs :protein-file protein-file))
          #+ignore(prot-rev (read-and-normalize-protein-defs :protein-file "proteins-revised-def-proteins.lisp" :missing-up t))
          #+ignore(reach-prot (read-and-normalize-protein-defs :protein-file "new-defs;reach-additional-proteins.lisp" :missing-up t))
-         (hms-reach-prots (read-and-normalize-protein-defs :protein-file "new-prot-defs-from-reach.lisp" :missing-up t)))
+         (hms-reach-prots ;(read-and-normalize-protein-defs :protein-file "new-prot-defs-from-reach.lisp" :missing-up t)
+          nil))
     
     (multiple-value-bind (prot-defs fam-defs)
           (merge-duplicates-and-separate-families-with-rev-defs (append new-defs hms-reach-prots)); prot-rev reach-prot))
@@ -1367,6 +1368,7 @@ new file to append to new-prot-fam, those without get filtered to "
                         (word-uid (when word (word-has-uid-p word)))
                         (item-hyphen (search "-" item)))
                    (cond ((and word-uid
+                               (not (single-term-rewrite? item :no-warn t)) ; have only lowercase version
                                (member word-uid reach-uids :test #'equal))
                           (push def *reach-sparser-mismatch-defs*))
                          ((and item-hyphen
@@ -1386,6 +1388,40 @@ new file to append to new-prot-fam, those without get filtered to "
     (print-defs-to-file *new-reach-other-defs* other-defs-file)
     (print-defs-to-file *potential-other-reach-defs* potential-defs-file)
     (print-defs-to-file *reach-sparser-mismatch-defs* mismatch-defs-file)))
+
+(defparameter *redundant-reach-prots* nil)
+(defun reach-vetted-up-defs->krisp (&key (good-reach-defs-file "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/mar2018-reach-uniprot/vetted-reach-defs1.lisp") (new-prot-def-file "new-prot-defs-from-reach.lisp")(mismatch-defs-file "sparser-reach-mismatch-defs.lisp"))
+ (with-open-file (new-defs good-reach-defs-file :direction :input 
+                            :external-format :UTF-8)
+    (when new-defs
+      (loop for def  = (read new-defs nil)
+            while def
+            do (when (stringp (first def))
+                 (let* ((item (first def))
+                        (reach-uids (second def))
+                        (reach-up-uid (loop for uid in reach-uids
+                                            when (search "UP:" uid)
+                                            return uid))
+                        (up-syns (when reach-up-uid
+                                   (get-bio-synonyms reach-up-uid)))
+                        (word (and (single-term-rewrite? item :no-warn t)
+                                       (resolve item)))
+                                  ;; only want to get words with single-term-rewrites
+                        (word-uid (when word (word-has-uid-p word))))
+                   (cond ((and up-syns
+                               (member item up-syns :test #'equal))
+                          (push def *redundant-reach-prots*))
+                         ((and word-uid
+                               (not (equal reach-up-uid word-uid))) ; should be redundant with above
+                          (push `("uid-mismatch" ,word-uid ,def) *reach-sparser-mismatch-defs*))
+                         (word
+                          (push `("non-uid-word-mismatch" ,def) *reach-sparser-mismatch-defs*))
+                         (t
+                          (push `(define-protein ,reach-up-uid (,item)) *new-reach-prot-defs*))))))
+      (print-defs-to-file *new-reach-prot-defs* new-prot-def-file)
+      (print-defs-to-file *reach-sparser-mismatch-defs* mismatch-defs-file))))
+
+               
 
 (defun print-defs-to-file (def-list file)
    (with-open-file (stream (concatenate 'string "sparser:bio;" file)
