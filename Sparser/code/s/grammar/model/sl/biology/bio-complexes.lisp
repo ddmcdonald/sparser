@@ -31,6 +31,8 @@
          :of component
          :between component))
 
+(def-synonym bio-complex (:noun "multimer"))
+
 (define-category tricomplex
   :specializes bio-complex
   :mixins (reactome-category)
@@ -120,6 +122,11 @@
    :with monomer
    :via domain ))
 
+(define-category multimerize :specializes oligomerize ;; it's a little unclear whether they're synonyms or if multimer is more for higher order combinations
+  :realization
+  (:verb "multimerize" 
+   :noun "multimerization"
+   :etf (sv)))
 
 ;; manually added from TRIPS
 (define-category polymerize :specializes oligomerize
@@ -178,6 +185,17 @@
            :etf (sv)
            :noun "homo- and hetero- dimerization"))
 
+(define-category heteromultimerize :specializes multimerize
+  :realization
+  (:verb "heteromultimerize" 
+   :noun "heteromultimerize"
+   :etf (sv)))
+
+(define-category homomultimerize :specializes multimerize
+  :realization
+  (:verb "homomultimerize" 
+   :noun "homomultimerize"
+   :etf (sv)))
 
 (define-category monomer :specializes bio-complex ;; a funny sort of complex, but needed to get conjunction of "monomers and dimers"
   :realization
@@ -216,7 +234,19 @@
   (:noun "homo/heterodimer"))
 
 (def-synonym homo/heterodimer
-             (:noun "homo-heterodimer"))
+    (:noun "homo-heterodimer"))
+
+(define-category multimer :specializes bio-complex
+  :realization
+  (:noun "multimer"))
+
+(define-category heteromultimer :specializes multimer
+  :realization
+  (:noun "heteromultimer"))
+
+(define-category homomultimer :specializes multimer
+  :realization
+  (:noun "homomultimer"))
 
 ; Dec32: C-RAF activation and heterodimerization with B-RAF constitute critical components
 ; Dec33: endogenous C-RAF:B-RAF heterodimers
