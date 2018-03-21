@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "relative moments"
 ;;;   Module:  "model;core:time:"
-;;;  version:  February 2018
+;;;  version:  March 2018
 
 ;; initiated 7/8/93 v2.3.
 ;; 0.1 (5/24/94) redid the rdata as 'time-deictic'. 6/26 fixed omission of
@@ -14,8 +14,68 @@
 ;;     (9/26/11) Added rule-label to noun and adverb definitions
 
 (in-package :sparser)
+        
+;;;--------
+;;; object
+;;;--------
+
+;; These are variations on the pure temporal anaphors defined in [time;anaphors].
+;; Those are standalone, these form up into phrases or if they do appear by themselves
+;; there is an implicit complement accessible from the context.  
 
 
+;; These take complements
+;; e.g. "(immediately) after dinner"
+;;
+(define-category  relative-time-adverb
+  :instantiates time
+  :specializes time
+  :rule-label time
+  :binds ((name  :primitive word))
+  :index (:permanent :key name)
+  :realization (:adverb name))
+
+(defun define-relative-time-adverb (string)
+  (define-individual 'relative-time-adverb :name string))
+
+
+;; These are the phrases formed from the adverbs
+;;
+(define-category  relative-time
+  :instantiates time
+  :specializes time
+  :binds ((relativizer (:or relative-time-adverb approximator sequencer))
+          (reference-time (:or time time-unit month weekday)))
+  :index (:sequential-keys reference-time relativizer)
+  :realization (:tree-family  modifier-creates-definite-individual
+                :mapping ((np . time)
+                          (modifier . (approximator
+                                       sequencer ))
+                          (np-head . (time
+                                      time-unit
+                                      month
+                                      weekday ))
+                          (result-type . relative-time)
+                          (individuator . relativizer)
+                          (base-category . reference-time))))
+
+
+(defun make-a-relative-time (relative reference)
+  (find-or-make-individual 'relative-time
+    :relativizer relative
+    :reference-time reference))
+
+
+#| being overhauled 5/30/14
+(def-cfr time (sequencer/determiner  ;; e.g. "next"
+               weekday)
+  :form np
+  :referent (:function calculate-time left-edge right-edge))
+
+(def-cfr time (sequencer/determiner time-unit)
+  :form np
+  :referent (:function calculate-time left-edge right-edge))
+|#
 ;;;------------------------------------------
 ;;; Computing position in temporal sequences
 ;;;------------------------------------------
@@ -48,78 +108,31 @@
 
 
       (break "next"))))
-        
-;;;--------
-;;; object
-;;;--------
-
-;; These are variations on the pure temporal anaphors defined in [time;anaphors].
-;; Those standalone, these form up into phrases or if they do appear by themselves
-;; there is an implicit complement accessible from the context.  
-
-;; Dossier for bother the adverbs and nouns is deictic-times
-
-;; These take complements
-;; e.g. "immediately"
-;;
-(define-category  relative-time-adverb
-  :instantiates time
-  :specializes time
-  :rule-label time
-  :binds ((name  :primitive word))
-  :index (:permanent :key name)
-  :realization (:adverb name))
 
 
-;; These do not take complements, but are still only meaningful when their
-;; reference time (e.g. an event) has been identified.  Before that happens
-;; we only have a partially saturated individual, albeit a fixed one.
-;; e.g. "afterwards", "soon", "eventually"
-;;
-(define-category  relative-time-noun
-  :instantiates time
-  :specializes time
-  :rule-label time
-  :binds ((name  :primitive word))
-  :index (:permanent :key name)
-  :realization (:word name))
 
-;; These are the phrases formed from the adverbs
-;;
-(define-category  relative-time
-  :instantiates time
-  :specializes time
-  :binds ((relativizer (:or relative-time-adverb approximator sequencer))
-          (reference-time (:or time time-unit month weekday)))
-  :index (:sequential-keys reference-time relativizer)
-  :realization (:tree-family  modifier-creates-definite-individual
-                :mapping ((np . time)
-                          (modifier . (approximator
-                                       sequencer
-                                       ;;modifier ?? since when/how is a title a modifier?
-                                       ))
-                          (np-head . (time
-                                      time-unit
-                                      month
-                                      weekday ))
-                          (result-type . relative-time)
-                          (individuator . relativizer)
-                          (base-category . reference-time))))
-
-(defun make-a-relative-time (relative reference)
-  ;; Called from, e.g., value-of-current-time-unit when it cann't do
-  ;; something more interesting. Writing the code here to keep that
-  ;; code relatively clean
-  (find-or-make-individual 'relative-time
-    :relativizer relative ; 
-    :reference-time reference))
-
+(define-category  age-ago ;; "10 years ago"
+  :specializes quality
+  :instantiates self
+  :binds ((age-ago . amount-of-time))
+  :index (:sequential-keys age-ago)
+  :realization (:tree-family  item+idiomatic-head
+                :mapping ((np . :self)
+                          (modifier . amount-of-time)
+                          (np-head . "ago")
+                          (result-type . :self)
+                          (item . age-ago)))
+  :documentation "Picks out a time a specific distance in the past,
+ compare 'ten years from now' which has the same formulation of
+ an amount of time followed by a temporal adverb. N.b. the way
+ this realization is formulated it does depend on 'ago' referenced
+ as a literal word. We could change that when we find more patterns
+ to formulate.")
 
 
 ;;--- Specific instance of time (units): "that day", "last month"
 ;;  These become particular times that can be dereferenced in context
 ;;     "Later that day it ..."
-
 #+ignore
 (define-category deictic-time-period
    :instantiates time
@@ -140,4 +153,18 @@
                    (base-category . time-period))))
 
 
+#|/// Have to sort out the status of the form categories
+  temporal-adjective, spatial-adjecive, ... which don't seem
+  to be doing any work
+
+Davids-macbookpro-2:s ddm$ grep temporal-adjective  **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
+grammar/model/dossiers/modifiers.lisp:(define-adjective "eventual" :form 'temporal-adjective)
+grammar/model/dossiers/modifiers.lisp:(define-adjective "recent" :form 'temporal-adjective)
+grammar/rules/sdmp/create-categories.lisp:        (category::temporal-adjective)
+grammar/rules/syntax/categories.lisp:(def-form-category  temporal-adjective)
+grammar/rules/syntax/categories.lisp:                spatial-adjective  temporal-adjective approximator)
+grammar/rules/tree-families/adverbs.lisp:     (:modifier (temporal-adjective (adverb temporal-adjective)
+grammar/rules/words/fn-word-routine.lisp:            ((adjective spatial-adjective temporal-adjective) *adjective-brackets*)
+grammar/rules/words/fn-word-routine.lisp:    ((or adjective spatial-adjective temporal-adjective) :adjective)
+|#
 

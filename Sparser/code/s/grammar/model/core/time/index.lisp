@@ -68,6 +68,24 @@
   (setq *current-temporal-index* i))
 
 
+;;--- packaging system time data
+
+;; => 27 5 2014 1   Monday = 0
+(defun extract-d-m-y-dow-from-system-time ()
+  (multiple-value-bind (second minute hour
+                        date month year day-of-week
+                        daylight-savings-time-p time-zone)
+      (get-decoded-time)
+    (declare (ignore second minute hour
+                     daylight-savings-time-p time-zone))
+    #+ignore(when (= day-of-week 0)
+      (format t "The number ~a does not identify any day of the week.~
+               ~%Declaring it to be Monday" day-of-week)
+      (setq day-of-week 2))
+    (values date month year day-of-week)))
+
+
+
 ;;;-------------------------
 ;;; computing deictic times
 ;;;-------------------------
@@ -121,50 +139,3 @@
   (let ((today (today)))
     (or (value-of 'previous today)
         (prior-item today))))
-    
-
-
-;;; "this <time unit>"
-
-(defun value-of-current-time-unit (unit)
-  ;; Time units are individuals. The easiest way to
-  ;; discriminate them is to use the words that name them
-  (let* ((word (value-of 'name unit))
-         (symbol (word-symbol word))
-         (index (current-temporal-index)))
-    (case symbol
-      (word::|year| (current-year index))
-      (word::|month| (current-month index))
-      ;; week
-      (word::|day| (today))
-      ((or word::|hour| word::|minute| word::|second|)
-       ;; Should be a call to make-a-relative-time here, but
-       ;; (1) we've lost the actual relativizer, and (2)
-       ;; in the presenting case it's the word "this"
-       ;; which is only a function word, not an instance
-       ;; of a determiner. 
-       unit)
-      (otherwise
-       (push-debug `(,word ,unit))
-         (break "What's the right default for 'this ~a'" unit)))))
-
-
-
-;;;----------------------------
-;;; packaging system time data
-;;;----------------------------
-
-;; => 27 5 2014 1   Monday = 0
-(defun extract-d-m-y-dow-from-system-time ()
-  (multiple-value-bind (second minute hour
-                        date month year day-of-week
-                        daylight-savings-time-p time-zone)
-      (get-decoded-time)
-    (declare (ignore second minute hour
-                     daylight-savings-time-p time-zone))
-    #+ignore(when (= day-of-week 0)
-      (format t "The number ~a does not identify any day of the week.~
-               ~%Declaring it to be Monday" day-of-week)
-      (setq day-of-week 2))
-    (values date month year day-of-week)))
-

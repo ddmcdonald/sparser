@@ -120,6 +120,8 @@
     Find or make a date from the teo time units.")
   (:method ((dom category::day-of-the-month) (y category::year))
     (with-bindings (month number) dom
+      (when (itypep number 'number) ;; use Lisp number
+        (setq number (value-of 'value number)))
       (let ((i (define-or-find-individual 'date
                    :month month :day number :year y)))
         i)))
@@ -154,27 +156,4 @@
 (def-cfr date (weekday day-of-the-month) ;; "Tuesday June 26"
   :form np
   :referent (:function assemble-date left-edge right-edge))
-#|sp> (p/s "Tuesday June 26")
-[Tuesday June ]
-                    source-start
-e5    DAY-OF-THE-MONTH  1 "Tuesday June 26" 4
-                    end-of-source
-(#<day-of-the-month 91561>
- (month
-  (#<month "June" 91559>
-   (modifier
-    (#<weekday "Tuesday" 714> (position-in-week (#<ordinal  553> (number 3)))
-     (name "Tuesday")))
-   (number-of-days 30) (position-in-year (#<ordinal  561> (number 6)))
-   (name "June")))
- (number 26))
-sp> (stree 5)
- e5 day-of-the-month/np       p1 - p4   rule 1701
-  e4 month/np                 p1 - p3   rule 437
-    e0 weekday/common-noun    p1 - p2   rule 1920
-      "Tuesday"
-    e1 month/common-noun      p2 - p3   rule 1940
-      "June"
-  e3 number/number            p3 - p4   number-fsa
-    e2 digit-sequence/number    p3 - p4   terminal
-      "26"  |#
+

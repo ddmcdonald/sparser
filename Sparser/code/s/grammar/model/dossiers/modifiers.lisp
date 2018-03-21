@@ -292,19 +292,20 @@
 
 ;;;---------- deictic, standalone
 
-(define-individual 'relative-time-adverb :name "already")
-(define-individual 'relative-time-adverb :name "as yet")
-(define-individual 'relative-time-adverb :name "currently")
-(define-individual 'relative-time-adverb :name "formerly") ;; might move / redefine?
-(define-individual 'relative-time-adverb :name "immediately")
-(define-individual 'relative-time-adverb :name "lately")
-(define-individual 'relative-time-adverb :name "presently")
-(define-individual 'relative-time-adverb :name "previously") ;;maybe
-(define-individual 'relative-time-adverb :name "recently")
-(define-individual 'relative-time-adverb :name "soon")
-(define-individual 'relative-time-adverb :name "still") ;; not just for time, though "still others" "standing still"
-(define-individual 'relative-time-adverb :name "thereafter") ;; "immediately thereafter" ?
-(define-individual 'relative-time-adverb :name "yet") 
+(define-relative-time-adverb "ago")
+(define-relative-time-adverb "already")
+(define-relative-time-adverb "as yet")
+(define-relative-time-adverb "currently")
+(define-relative-time-adverb "formerly") ;; might move / redefine?
+(define-relative-time-adverb "immediately")
+(define-relative-time-adverb "lately")
+(define-relative-time-adverb "presently")
+(define-relative-time-adverb "previously") ;;maybe
+(define-relative-time-adverb "recently")
+(define-relative-time-adverb "soon")
+(define-relative-time-adverb "still") ;; not just for time, though "still others" "standing still"
+(define-relative-time-adverb "thereafter") ;; "immediately thereafter" ?
+(define-relative-time-adverb "yet") 
 
 
 ;;;---------- deictic, complement-taking

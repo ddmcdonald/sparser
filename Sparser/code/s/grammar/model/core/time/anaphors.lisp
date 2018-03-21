@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2011-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "anaphors"
 ;;;   Module:  "model;core:time:"
-;;;  version:  June 2017
+;;;  version:  March 2018
 
 ;; 1.1 (10/19/94) completely reconceptualized.  10/30 fixed bad v/r
 ;;     (8/28/95) added simple phrases with sequencers
@@ -22,14 +22,6 @@
 ;;     (5/28/14) Trying that again since previous effort didn't get too far.
 
 (in-package :sparser)
-
-;;;-----------
-;;; indexical
-;;;-----------
-
-(define-mixin-category indexical
-  :binds ((extension)))
-
 
 
 ;;;----------------
@@ -90,20 +82,11 @@
       
       
 
-              
 
 ;;;---------
 ;;; phrases
 ;;;---------
 
-(def-k-function identify-this-time-unit (determiner time-unit)
-  (:documentation "Uses the temporal-index to identify the
-     current month or year, etc."))
-
-;;/// Modify ref/method to be able to setup for
-;; one argument method calls. 
-
-#|
 (def-cfr time (this month) ;; "this December"
   :form np
   :referent (:method identify-this-time-unit left-edge right-edge))
@@ -112,37 +95,62 @@
   :form np
   :referent (:method identify-this-time-unit left-edge right-edge))
 
-(def-k-method identify-this-time-unit ((this (eql word::|this|)) ;; (this category::this)
-                                       (unit category::time-unit))
-  (break "got here"))
 
-(def-k-method identify-this-time-unit ((ignore t) (unit category::time-unit))
-  (declare (ignore ignore unit))
-  (error "stub: define value-of-current-time-unit(unit)"))
-|#
+(define-category proxal-moment  ;; "this minute", "this December"
+  :specializes calculated-time
+  :instantiates time
+  :rule-label time
+  :mixins (indexical)
+  :binds ((unit time))
+  :index (:key unit :temporary)
+  :documentation "Provides a descriptive form of the demonstrative
+    plus time element construction whose principal meaning resides
+    in its extension at a particular time.")
 
-#| being overhauled 5/30/14
-(def-cfr time (sequencer/determiner  ;; e.g. "next"
-               weekday)
-  :form np
-  :referent (:function calculate-time left-edge right-edge))
-
-
-(def-cfr time ("this" time-unit)   ;; "month", "year"
-  :form np
-  :referent (:function calculate-time left-edge right-edge))
-
-(def-cfr time (sequencer/determiner time-unit)
-  :form np
-  :referent (:function calculate-time left-edge right-edge))
-|#
-
-;; 7/24/09 Doesn't work because there's no time variable anywhere
-;; upstream from calculated-day or some way to construe 'time'
-;; as sort of the equivalent of ':self' ddm 7/25/09
-;(define-realization calculated-day pre-verb-adverb
-;  ((modifier . time)
-;   (adverb . calculated-day)))
+(define-category distal-moment ;; "that minute", "that December"
+    :specializes proxal-moment)
 
 
+(def-k-function identify-this-time-unit (determiner time-unit)
+  (:documentation "Uses the temporal-index to identify the
+     current month or year, etc. Assemble a proxil/distal-moment
+     individual and compute the extension relative to 'today'.")
+  (:method ((this (eql word::|this|)) (unit category::time-unit))
+    (let ((i (define-or-make-individual 'proxal-moment
+                 :unit unit))
+          (j (value-of-current-time unit)))
+      (when j (setq i (bind-variable 'extension j i)))
+      i))
+  (:method ((that (eql word::|that|)) (unit category::time-unit))
+    (let ((i (define-or-make-individual 'distal-moment
+                 :unit unit))
+          (j (value-of-current-time unit)))
+      (when j (setq i (bind-variable 'extension j i)))
+      i)))
 
+
+(def-k-function value-of-current-time (unit)
+  (:documentation "Use the current-temporal-index to lookup the
+     extensional value of the unit relative to today.")
+  (:method ((unit category::time-unit))
+    (let* ((word (value-of 'name unit))
+           (symbol (word-symbol word))
+           (index (current-temporal-index)))
+      (case symbol
+        (word::|year| (current-year index))
+        (word::|month| (current-month index))
+        ;; week
+        (word::|day| (today))
+        ((or word::|hour| word::|minute| word::|second|)
+         ;;//// pull out the rest of the 'now' data, on the fly?
+         nil)
+        (otherwise
+         (push-debug `(,word ,unit))
+         (break "What's the right default for 'this ~a'" unit)))))
+  (:method ((m category::month))
+    ;; Lookup the month in this year
+    nil)
+  (:method ((dow category::weekday))
+    ;; lookup the day in the current week ///represent weeks
+    nil))
+  
