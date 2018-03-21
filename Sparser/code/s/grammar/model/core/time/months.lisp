@@ -42,7 +42,7 @@
           (position-in-year . ordinal)
           (number-of-days . number))
   :index (:permanent :key name :get)
-  :realization (:common-noun name ))
+  :realization (:proper-noun name ))
 
 (fixed-at-runtime '(abbreviation position-in-year number-of-days) 'month)
 

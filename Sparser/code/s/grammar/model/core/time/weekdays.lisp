@@ -34,7 +34,7 @@
           (abbreviation :primitive word)
           (position-in-week . ordinal))
   :index (:permanent :key name :get)
-  :realization (:common-noun name))  
+  :realization (:proper-noun name))  
 
 (fixed-at-runtime '(abbreviation position-in-week) 'weekday)
 
