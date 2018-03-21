@@ -48,7 +48,7 @@
                                         starting-vector
                                         ending-vector
                                         daughter)
-  ;; called from assess-edge-label/top
+  ;; called from assess-edge-label/all
   (dolist (rule (rs-single-term-rewrites rule-set))
     (make-completed-unary-edge
      starting-vector ending-vector rule daughter)))
@@ -91,16 +91,15 @@
                                     (unless (symbolp rule)
                                       (cfr-category rule))))
     (setf (edge-form edge)      (or form
-				    (when (word-p category) ;; case for comma
+                                    (when (word-p category) ;; case for comma
                                       category)
                                     (unless (symbolp rule)
                                       (cfr-form rule))))
-    (set-edge-referent edge  
-          (place-referent-in-lattice
-           (or referent
-               (referent-from-unary-rule
-                edge rule daughter))
-           edge))
+    (set-edge-referent edge
+                       (or referent
+                           (unless (symbolp rule)
+                             (referent-from-unary-rule
+                              edge rule daughter))))
     
     (complete edge)
     
@@ -112,7 +111,7 @@
                 (polyword daughter)
                 (edge (edge-position-in-resource-array daughter)))
               rule))
-    
+
     (assess-edge-label (or category
                            (unless (symbolp rule)
                              (cfr-category rule)))

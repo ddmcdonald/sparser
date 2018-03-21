@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1990,1991  Content Technologies Inc.  -- all rights reserved
-;;; copyright (c) 1992,1993  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1991  Content Technologies Inc.  -- all rights reserved
+;;; copyright (c) 1992-1993,2018  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "nonterminals"
 ;;;    Module:   "analyzers;psp:assess:"
-;;;   Version:   1.2 May 1993 
+;;;   Version:   March 2018
 
 ;; initiated 4/91
 ;; 1.0 (9/4/92 v2.3)
@@ -15,7 +15,10 @@
 
 
 (defun assess-edge-label/all (label edge)
-  ;; generic version for all-edges protocol
+  "Called after the call to complete with the introduction of each
+   edge. Checks whether the label on the newly introduced edge 
+   has any unary rules and if so runs them."
+  
   (let ((rule-set (rule-set-for label)))
 
     (when rule-set
@@ -28,23 +31,21 @@
 
 
 (defun assess-edge-label/top (label edge)
-  ;; identical for now
-  (let ((rule-set (rule-set-for label)))
+  "Called after the call to complete with the introduction of each
+   edge. Checks whether the label on the newly introduced edge 
+   has any unary rules and if so runs them. Notices the possibility
+   that the label on the new edge might be the same as the one
+   we just added and blocks those cases to avoid looping."
+  (let ((rule-set (when label (rule-set-for label))))
     (when rule-set
+      (let ((unary-rules (find-unary-rules label)))
+        (when unary-rules
+          (loop for rule in unary-rules
+             unless (eq (cfr-category rule) label)
+             do (make-completed-unary-edge
+                 (edge-starts-at edge)
+                 (edge-ends-at edge)
+                 rule
+                 edge)))))))
+;; (establish-version-of-assess-edge-label :treetops)
 
-      (if (word-p label)
-        ;; avoid looping on word edges
-        (if (eq (edge-left-daughter edge) label)
-          nil  ;; don't do anything
-          (complete-any-single-term-edges
-           rule-set
-           (edge-starts-at edge)
-           (edge-ends-at edge)
-           edge ))
-
-        (else
-          (complete-any-single-term-edges
-           rule-set
-           (edge-starts-at edge)
-           (edge-ends-at edge)
-           edge ))))))
