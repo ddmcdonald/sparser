@@ -47,6 +47,9 @@
   ;(if (category-p name) ;; "name/unknown-pattern"
   ;  *default-person*
   ;; The default-person isn't defined now (in loaded coade)
+  (declare (special *subcat-test*))
+  (when *subcat-test*
+    (return-from interpret-name-as-person t))
   (tr :interpreting-name-as-person name)
   (let ( person ) 
     ;; the value get lost in this recursive threading, 
