@@ -606,13 +606,23 @@
   (use-unknown-words)
   (include-comlex)
   (setq *make-edges-over-new-digit-sequences* t)
-  (what-to-do-with-unknown-words ;;/// maybe something weaker
-   :capitalization-digits-&-morphology/or-primed)
+  (what-to-do-with-unknown-words
+   ;; :capitalization-digits-&-morphology/or-primed
+   ;; -- too strong. Does a setup-common-noun on all
+   ;; otherwise unknown words.
+   ;; :capitalization-digits-&-morphology -- doesn't check Comlex
+   :check-for-primed) ;; checks Comlex
+  
+  (use-unknown-words)
+  (include-comlex)
+  (setq *edge-for-unknown-words* t)
+  ;; It's T by default. Used by assign-morph-brackets-to-unknown-word
+  ;; to control whether we make categories for the words
+  ;; it gets a POS analysis for. 
   
   ;; R3 sweeper doesn't introduce boundaries so no point
   ;; in expecting them
   (setq *pnf-scan-respects-segment-boundaries* nil)
-
   (setq *ignore-capitalization* nil)
   (setq *treat-single-capitalized-words-as-names* t)
   (unless *proper-names* (error "Proper name module not loaded"))

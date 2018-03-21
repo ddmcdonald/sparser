@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "new words"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  August 2017
+;;;  Version:  March 2018
 
 ;; 4.0 (9/28/92 v2.3) accomodates changes to tokenizer
 ;; 4.1 (7/16/93) updated field name
@@ -30,6 +30,7 @@
 
 (defparameter *word-to-be-defined?* nil
   "Provides a pointer for recording routines to notice")
+
 (defparameter *show-word-defs* nil
   "Controls whether we announce when a word goes through make-word
    routine. Only unknown words do that, so it can be a useful trace")
@@ -132,8 +133,13 @@
 
 (defun look-for-primed-word-else-all-properties (character-type
                                                  &optional existing-word)
+  "Stronger than make-word/all-properties because it looks for an entry
+   in Comlex before doing the 'all-properties' default. Though if the
+   word is capitalized we don't do the Comlex lookup because many name
+   elements correspond to ordinary words and that just confuses things."
   (declare (special *capitalization-of-current-token* 
                     *primed-words*))
+  
   (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
          (word (or existing-word ;; see find-word
                    (make-word :symbol symbol
@@ -144,30 +150,22 @@
       (:number
        (establish-properties-of-new-digit-sequence word))
       (:alphabetical
-       (let ((entry (gethash (symbol-name symbol) *primed-words*)))
-         (when (and (null entry)
-                    (eq *capitalization-of-current-token*
-                        :initial-letter-capitalized))
-           ;; Sentence-inital capitalization check
-           (let ((cap (string-capitalize (symbol-name symbol))))
-             (setq entry (gethash cap *primed-words*))))
-           
-         (if entry
+       (let ((entry (gethash (symbol-name symbol) *primed-words*)))         
+         (if (and entry
+                  (eq *capitalization-of-current-token*
+                      :lower-case))
            (unpack-primed-word word symbol entry)
-           (make-word/all-properties character-type)))))
+           (make-word/all-properties character-type word)))))
     word))
 ;(what-to-do-with-unknown-words :check-for-primed)
 
 
 (defun make-word/all-properties (character-type &optional existing-word)
+  "Called from Find-word as one of the  possible values for the function
+   Establish-unknown-word, or from look-for-primed-word-else-all-properties
+   if the word didn't have a Comlex entry."
   (declare (special *capitalization-of-current-token*
                     *introduce-brackets-for-unknown-words-from-their-suffixes*))
-
-  ;; Called from Find-word as one of the  possible values for the function
-  ;; Establish-unknown-word
-  ;;   In the *word-lookup-buffer* is the lowercase version of the word,
-  ;; and we can calculate where in the character buffer the original
-  ;; mixed case version is and use it if the capitalization seems important.
 
   (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
          (word (or existing-word
@@ -182,10 +180,9 @@
        (setf (word-capitalization word)
              *capitalization-of-current-token*)
        (let ((morph-keyword (calculate-morphology-of-word/in-buffer)))
-         (when t ;; lets us easily turn it off
-           (unless morph-keyword
-             ;; n.b. returns a list of the affix and its POS
-             (setq morph-keyword (affix-checker (word-pname word)))))
+         (unless morph-keyword
+           ;; Do a more precise check of POS-indicating affixes
+           (setq morph-keyword (affix-checker (word-pname word))))
          (setf (word-morphology word) morph-keyword)
          (when *introduce-brackets-for-unknown-words-from-their-suffixes*
            (when morph-keyword
