@@ -146,18 +146,18 @@ omitted and then run (perhaps) after the image has been launched."
     (gload "amounts;loader"))
 
   (gate-grammar *numbers*
-    ;; this is just a definition for 'fractions' whick conflicts with the
+    ;; this is just a definition for 'fractions' which conflicts with the
     ;; current treatment of "first quarter"
     (gload "numbers;loader 2"))
+
+  (gate-grammar *time*  ;; needs find/ordinal
+    (gload "core;time;loader"))
 
   (gate-grammar *people*
     (gload "people;loader"))
 
   (gate-grammar *companies*
     (gload "companies;loader"))
-
-  (gate-grammar *time*  ;; needs find/ordinal
-    (gload "core;time;loader"))
 
   (gate-grammar *titles* ;; needs calculated-time
     (gload "titles;loader"))
