@@ -70,7 +70,6 @@
 
 
 
-
 (defun check-bindings (individual binding-instructions)
   "Does the individual have a binding that fits these instructions
    for bindings, i.e. pairs of variables and values."
@@ -437,18 +436,3 @@
 
     (break "check list - value is a singleton")))
 
-
-
-
-
-
-;;;---------------------------
-;;; functions using the index
-;;;---------------------------
-
-(defun bound-as (var-name value)
-  ;; return all those bindings that involve this variable and value
-  (let ((variable (decode-variable-name var-name)))
-    (unless variable
-      (error "There is no variable named ~A" var-name))
-    (gethash value (var-instances variable))))
