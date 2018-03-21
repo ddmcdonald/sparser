@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2018  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "object"
 ;;;    Module:   "objects;rules:cfr:"   ;; "context free rules"
-;;;   Version:   1.4 September 2013
+;;;   Version:   March 2018
 
 ;; 1.1  (v1.5) added new fields to handle the new rule regime
 ;; 1.2  (1/29 v1.8) Moved in Binary-rule?
@@ -128,6 +128,22 @@ This sorts out what to use as the category in the unusual cases."
           (car single-rewrites))))))
 ;; c.f. single-term-rewrite? in rules/rule-links/generic.lisp
 ;; which does essentially this same thing
+
+(defgeneric find-unary-rules (label)
+  (:documentation "Returns a list of all the unary rules 
+    on the rule-set of this label (word or category).")
+  (:method ((ignore null)) nil)
+  (:method ((rs rule-set))
+    (when rs (rs-single-term-rewrites rs)))
+  (:method ((pname string))
+    (find-unary-rules (resolve pname)))
+  (:method ((w word))
+    (find-unary-rules (rule-set-for w)))
+  (:method ((pw polyword))
+    (find-unary-rules (rule-set-for pw)))
+  (:method ((c category))
+    (find-unary-rules (rule-set-for c))))
+
 
 
 (defun form-of (word)
