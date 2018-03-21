@@ -62,3 +62,4 @@
 (def-indiv-with-id cellular-process "leptotene" "GO:0000237" :name "leptotene") 
 (def-indiv-with-id cellular-process "pachytene" "GO:0000239" :name "pachytene")
 (def-indiv-with-id cellular-process "anoikis" "GO:0043276" :name "anoikis") 
+(def-indiv-with-id cellular-process "catabolism" "NCIT:C41544" :name "catabolism") 

@@ -97,7 +97,7 @@
 
 (def-indiv-with-id organism "Quail" "NCIT:C91813" :name "quail") 
 (def-indiv-with-id organism "Ross" "NCIT:C77099" :name "ross chicken") 
-(def-indiv-with-id organism "avians" "NCIT:C14189" :name "bird") 
+(def-indiv-with-id organism "avians" "NCIT:C14189" :name "bird" :adj "avian") 
 (def-indiv-with-id bio-organ "capitellum" "EFO:0003398" :name "capitellum" :plural ("capitellums" "Capitella")) 
 (def-indiv-with-id bio-organ "LDA" "EFO:0003613" :name "lateral dorsal aorta") 
 (def-indiv-with-id bio-organ "PMBC" "EFO:0003697" :name "primordial midbrain channel") 
@@ -203,7 +203,7 @@
 (def-indiv-with-id organism "Newfoundland" "NCIT:C53765" :name "newfoundland") 
 (def-indiv-with-id organism "Pon" "NCIT:C54054" :name "polish lowland sheepdog") 
 (def-indiv-with-id organism "amoeba" "NCIT:C119581" :name "amoeba" :plural ("amoebas" "amoebae")) 
-(def-indiv-with-id organism "protozoans" "NCIT:C77916" :name "protozoa") 
+(def-indiv-with-id organism "protozoan" "NCIT:C77916" :name "protozoa") 
 (def-indiv-with-id organism "recombinants" "NCIT:C14353" :name "recombinants") 
 (def-indiv-with-id organism "Plasmodium" "NCIT:C98268" :name "plasmodium") 
 (def-indiv-with-id organism "helminth" "NCIT:C125642" :name "helminth") 
@@ -211,3 +211,5 @@
 (def-indiv-with-id organism "Boswellia" "NCIT:C54081" :name "boswellia serrata") 
 (def-indiv-with-id bio-organ "thymus" "NCIT:C12433" :name "thymus" :plural ("thymuses" "thymi")) 
 (def-indiv-with-id organism "vertebrate" "NCIT:C14282" :name "vertebrate")
+(def-indiv-with-id organism "pig" "NCIT:C14280" :name "pig")
+(def-indiv-with-id bio-organ "CNS" "NCIT:C12433" :name "central nervous system" :synonyms ("Central Nervous System") :maintain-case t) 

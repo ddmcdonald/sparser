@@ -1077,7 +1077,7 @@
 (def-indiv-with-id cell-line "C57MG" "CVCL:6824" :name "C57MG" :no-plural t) 
 (def-indiv-with-id cell-line "Bl6" "CVCL:M564" :name "BL-6" :no-plural t) 
 (def-indiv-with-id cell-line "BRN3" "CVCL:0U17" :name "BRN-3" :no-plural t) 
-(def-indiv-with-id cell-line "BOY" "CVCL:7948" :name "BOY-12E" :no-plural t) 
+(def-indiv-with-id cell-line "BOY" "CVCL:7948" :name "BOY-12E" :no-plural t :maintain-case t) 
 (def-indiv-with-id cell-line "BE13" "CVCL:1081" :name "BE-13" :no-plural t) 
 (def-indiv-with-id cell-line "B6H12" "CVCL:J980" :name "B6H12.2" :no-plural t) 
 (def-indiv-with-id cell-line "Ash" "CVCL:R966" :name "ASH" :no-plural t) 

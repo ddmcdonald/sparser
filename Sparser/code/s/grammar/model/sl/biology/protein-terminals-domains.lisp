@@ -136,6 +136,7 @@ it is created from N-terminus to C-terminus.|#
 (noun ("g4" "g4 domain") :super protein-domain)
 (noun ("g5" "g5 domain") :super protein-domain)
 (noun ("pleckstrin-homology domain" "pleckstrin homology domain" "PH domain" "pleckstrin-homology" "pleckstrin homology (PH) domain" "Pleckstrin Homology (PH) domain" ) :super protein-domain)
+(noun ("IgC" "IgC domain") :super protein-domain)
 
 (define-category DBD :specializes binding-domain
       :mixins (on-substrate)

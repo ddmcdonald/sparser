@@ -46,4 +46,5 @@
 (def-indiv-with-id unit-of-measure "kDa" "UO:0000222" :name "kilodalton" :maintain-case t)
 (def-indiv-with-id unit-of-measure "kV" "UO:0000248" :name "kilovolt" :maintain-case t)
 (def-indiv-with-id unit-of-measure "mA" "UO:0000037" :name "milliampere" :maintain-case t)
+(def-indiv-with-id unit-of-measure "mV" "UO:0000247" :name "millivolt" :maintain-case t)
 (def-indiv-with-id unit-of-measure "cpm" "UO:0000148" :name "counts per minute" :maintain-case t :synonyms ("c.p.m.")) ;"c.p.m./pmol" activity of a radionuclide

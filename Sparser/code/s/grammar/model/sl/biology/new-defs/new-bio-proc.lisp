@@ -63,7 +63,7 @@
 (def-indiv-with-id bio-process "desensitization" "NCIT:C45549" :name "receptor desensitization") 
 (def-indiv-with-id bio-process "delamination" "GO:0060232" :name "delamination") 
 (def-indiv-with-id bio-process "degranulation" "NCIT:C114629" :name "mast cell degranulation") 
-(def-indiv-with-id bio-process "glycosidase" "GO:0016798" :name "hydrolase activity, acting on glycosyl bonds" :synonyms ("glycosylase")) ;should be protein family
+;(def-indiv-with-id bio-process "glycosidase" "GO:0016798" :name "hydrolase activity, acting on glycosyl bonds" :synonyms ("glycosylase")) ;should be protein family
 (def-indiv-with-id bio-process "gestation" "GO:0007565" :name "female pregnancy") 
 (def-indiv-with-id bio-process "fibroplasia" "NCIT:C120881" :name "fibroplasia") 
 (def-indiv-with-id bio-process "fibrinolysis" "GO:0042730" :name "fibrinolysis") 

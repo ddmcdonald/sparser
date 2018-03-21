@@ -121,7 +121,7 @@
 (def-indiv-with-id cellular-location "spherosomes" "GO:0012511" :name "monolayer-surrounded lipid storage body") 
 (def-indiv-with-id cellular-location "virion" "UP:SL-0274" :name "Virion") 
 (def-synonym lamellipodium (:noun "veil")) 
-(def-indiv-with-id cellular-location "IgC" "UP:SL-0186" :name "Nucleus speckle") 
+(def-indiv-with-id cellular-location "IGC" "UP:SL-0186" :name "Nucleus speckle" :maintain-case t) 
 (def-indiv-with-id cellular-location "Z-disc" "GO:0030018" :name "Z disc") 
 (def-indiv-with-id cellular-location "Chloroplast" "UP:SL-0049" :name "Chloroplast" :plural ("Chloroplasts" "chloroplasts")) 
 (def-indiv-with-id cellular-location "macropinosome" "GO:0044354" :name "macropinosome") 

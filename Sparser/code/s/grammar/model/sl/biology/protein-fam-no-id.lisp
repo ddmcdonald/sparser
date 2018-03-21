@@ -120,6 +120,7 @@ the STAT1 transcription factor |#
 (def-family "DAO" :members ("UP:P14920" "UP:P19801")) 
 (def-family "DAP5" :members ("UP:P78344" "UP:Q15398")) 
 (def-family "DBP" :members ("UP:P02774" "UP:P51659" "UP:Q10586"))
+;(def-family "DDH" :synonyms ("ddH") :members ("UP:P52895" "UP:Q04828"))
 (def-family "DEP1" :members ("UP:Q12913" "UP:Q6P493")) 
 (def-family "DLK" :members ("UP:O43293" "UP:P80370" "UP:Q12852")) 
 (def-family "DOC-2" :members ("UP:P98082" "UP:Q14183")) 
@@ -175,7 +176,9 @@ the STAT1 transcription factor |#
 (def-family "IL13R" :members ("UP:P78552" "UP:Q14627")) 
 (def-family "INPP4B" :members ("UP:O15327" "UP:Q9BS68")) 
 (def-family "IQGAP" :members ("IQGAP1" "IQGAP2" "IQGAP3")) 
-(def-family "IgG" :members ("UP:P12314" "UP:P31994" "UP:P55899")) 
+(def-family "IgG" :members ("UP:P12314" "UP:P31994" "UP:P55899"))
+(def-family "ISM" :synonyms ("isthmin") :members ("UP:B1AKI9" "UP:Q6H9L7"))
+
 (def-family "JNK1/2" :synonyms ("JNK1-2") :members ("JNK1" "JNK2"))
 (def-family "KCIP-1" :synonyms ("Protein kinase C inhibitor protein 1") :members ("UP:P31946" "UP:P61981" "UP:P63104")) 
 (def-family "KLK3" :members ("UP:P03952" "UP:P07288")) 

@@ -224,6 +224,8 @@ with something else
 
 (noun "setting" :super bio-context)
 (noun "trial" :super bio-context)
+(noun "pilot" :super bio-context)
+(def-synonym pilot (:noun "pilot study"))
 
 ;;;------------------------
 ;;; miscellaneous
