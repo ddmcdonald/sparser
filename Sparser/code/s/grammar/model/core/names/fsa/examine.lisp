@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "examine"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  February 2018
+;;;  version:  March 2018
 
 ;; initiated 4/1/94 v2.3
 ;; 0.1 (4/23) fixed change of where :literal-in-a-rule is in Sort-out-multiple-
@@ -80,8 +80,19 @@
 ;;; flag for error checking
 ;;;-------------------------
 
-(defparameter *break-on-new-categories-in-cap-seq* nil)
- ;; controling whether to debug these
+(defparameter *break-on-new-categories-in-cap-seq* nil
+  "Traps in otherwise clause of the check-cases category conditional
+   so we see unexpected categories before they muck things up
+   in unanticipated ways")
+
+(defvar *break-before-creating-name* nil
+  "Helpful in debugging PNF. Traps in categorize-and-form-name 
+   before it's made any real mistakes and built something 
+   we'll have to rip out.")
+
+(defvar *break-before-examining* nil
+  "Breaks just before we go into the loops that set the 
+   internal state locals.")
 
 
 ;;;-------------------------------------
@@ -91,7 +102,6 @@
 (defun occurs-in-names (category &optional (kind-of-name t))
   (setf (get-tag :category-is-valid-in-names (category-named category t))
         kind-of-name))
-
 
 (defun valid-name-category? (category)
   (get-tag :category-is-valid-in-names category))
@@ -103,14 +113,21 @@
 ;;;--------
 
 (defun examine-capitalized-sequence (starting-position ending-position)
-  
-  ;; Called from classify-&-record-span
-  ;; The span between the two positions has been parsed for polywords
-  ;; and preterminals. Any known abbreviation or name-word in it will
-  ;; thus have been identified.
-  ;;    We make a pass over it and analyze it for any patterns or
-  ;; inclusion of marker words/categories that would act as internal
-  ;; evidence for its classification. 
+  "Called from classify-&-record-span to look at the treetops (usually
+   single words) and catalog whats there for internal evidence to
+   classify what type of name (if any) we have.
+   The span between the two positions has been parsed for polywords
+   and preterminals. Any known abbreviation or name-word in it will
+   thus have been identified. 
+   This function maintains a large set of locals that will be bound
+   to the position of the siginificant edge, e.g. inc-term? or of.
+   These are consulted by the follow-on function, categorize-and-form-name,
+   to actually find or make the name objects.
+   Certain labels provide definitive negative evidence. There are a set
+   of catch tags in classify-&-record-span that allow the examination to
+   be stopped immediately. The value returned with the throw ('result' in
+   the caller) is an indicator of how to proceed.
+   The normal return is expected to be an individual of type name."
   
   (tr :examine-capitalized-sequence starting-position ending-position)
   (let ((count 0)
@@ -119,7 +136,7 @@
         name-state  edge-labeled-by-word multiple-treetops
         &-sign  initials?  person-version  inc-term?  of  and  the  slash
         generic-co co-activity koc?  ordinal  flush-suffix 
-        country  title
+        country  title  weekday month
         location-head  location  hurricane)
     
     (flet
@@ -171,7 +188,7 @@
                 ((word::|the| word::|The|)
                  (if items
                    ;; Then it's not the first thing in the sequence
-                   ;; s`o we have to throw out the prefix in front of it
+                   ;; so we have to throw out the prefix in front of it
                    (then
                     (tr :throwing-out-prefix tt)
                     (throw :leave-out-prefix position))
@@ -367,7 +384,12 @@
                  (tr :throwing-out-prefix tt)
                  (throw :leave-out-prefix (pos-edge-ends-at tt)))
                 (break "'be' embedded within a capitalized-sequence")))
-               
+
+             (category::weekday
+              (setq weekday (cons count (edge-referent tt))))
+
+             (category::month
+              (setq month (cons count (edge-referent tt))))
                
              (otherwise
               (or (valid-name-category? tt-category)
@@ -408,6 +430,10 @@
 
       ;; That was the end of the two flets. This is where we start actually
       ;; executing something
+
+      (when *break-before-examining*
+        (break "About to examine the capitalized span ~s"
+               (extract-string-from-char-buffers starting-position ending-position)))
         
       (loop
         ;; Loop over all the treetop constituents between the start and
@@ -480,7 +506,13 @@
           (when (only-country-in-items
                  items starting-position ending-position)
             (throw :abort-examination-not-a-name
-                   `(:not-a-name ,ending-position))))
+              `(:not-a-name ,ending-position))))
+
+        (when (or weekday month)
+          ;; "Ruby Tuesday", "April Wednesday" in PNF paper and such
+          ;; have to be coerced by external evidence.
+          (throw :abort-examination-not-a-name
+            `(:not-a-name ,ending-position)))
 
 
         (let ((name
@@ -499,11 +531,6 @@
              (list :suffix-flushed name flush-suffix))
               
             name ))))))
-
-
-(defvar *break-before-creating-name* nil
-  "Helpful in debugging PNF. Traps it before it's made any 
-   real mistakes and built something we'll have to rip out.")
 
 
 (defun categorize-and-form-name (items 
@@ -532,8 +559,7 @@
 
    (t
     ;;--- examine evidence for a way to categorize the name
-    (let (name
-          (category
+    (let ((category
             (cond (inc-term? category::company-name)
                   (title category::person-name)
                   (location-head category::location)
@@ -554,7 +580,8 @@
                    category::person-name )
                   (person-version category::person-name)
                   ;;////(hurricane category::hurricane) ;; sl dependent
-                  (t category::name))))
+                  (t category::name)))
+          name )
       ;; (break "1: category = ~a" category)
       ;;   With "U.N. officials, it's being seen as a person the
       ;;   second time through when classify&record-the-rest-of-the-sequence
