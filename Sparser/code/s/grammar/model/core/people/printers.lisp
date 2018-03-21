@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2005,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2013,2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "printers"
 ;;;   Module:  "model;core:people:"
-;;;  version:  0.2 June 2013
+;;;  version:  March 2018
 
 ;; file created 2/9/94 v2.3. Fleshed out 10/3.  Added string/person 2/24/95
 ;; 0.1 (7/7) revamped full version to do versions correctly.
@@ -76,13 +76,11 @@
   :full
   ((let ((name (value-of 'name obj)))
      (if name
-       (format stream "#<person ~A  ~A,~A>"
-               (string-for name)
-               (indiv-id obj) (indiv-uid obj))
+       (format stream "#<person ~A ~A>"
+               (string-for name) (indiv-uid obj))
        
        ;; else if there isn't a 'name', just give its ids
-       (format stream "#<person \"\" ~A,~A>"
-               (indiv-id obj) (indiv-uid obj)))))
+       (format stream "#<person \"\" ~A>" (indiv-uid obj)))))
 
   :short ((let ((name (value-of 'name obj)))
            (if name
