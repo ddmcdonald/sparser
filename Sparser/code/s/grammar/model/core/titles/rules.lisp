@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2011-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2011-20168 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "rules"
 ;;;   Module:  "model;core:titles:"
-;;;  version:  October 2016
+;;;  version:  March 2018
 
 ;; initited 6/15/93, starting over from scratch. 3/17/05 These are
 ;; interacting with rules made automatically from the etf schemas,
@@ -20,10 +20,10 @@
 ;;;--------------------------
 ;;; preposition combinations
 ;;;--------------------------
-;; Also defined by the etf for 'join', so that creation has to
-;; accept this rule or be modified to make that possible
+;; These combinations are occasionally also made by the realization
+;; rules on, e.g., job-events
 
-(define-marker-category as-title
+(define-marker-category as-title ;; needed by 'retire' additional rule 
   :realization (:tree-family transparent-pp
                 :mapping ((pp . as-title)
                           (preposition . "as")
@@ -34,7 +34,7 @@
                 :mapping ((pp . in-title)
                           (preposition . "in")
                           (complement . title))))
-
+#+ignore
 (define-marker-category to-title
   :realization (:tree-family transparent-pp
                 :mapping ((pp . to-title)

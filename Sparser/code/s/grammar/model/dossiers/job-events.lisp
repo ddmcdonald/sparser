@@ -246,7 +246,7 @@
 ;;--- "join"
 
 #| The as-title rule that this creates duplicates
-   the marker category in core/title/rules/
+   the marker category in core/title/rules/  |#
 (define-category  join-company
   :instantiates job-event
   :specializes  get-position
@@ -273,4 +273,4 @@
                 (patient . company)
                 (goal . title))
 
-      :verb "join" )) |#
+      :verb "join" ))
