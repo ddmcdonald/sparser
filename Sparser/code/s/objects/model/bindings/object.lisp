@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2011-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  February 2017
+;;;  version:  March 2018
 
 ;; initiated 11/30 v2.1
 ;; 7/17/92 v2.3 revised the definition
@@ -53,27 +53,11 @@
 ;;; operations over bindings and individuals with them
 ;;;----------------------------------------------------
 
-(defun bound-in-value-of (var-name individual &optional category)
-  (when (typep individual 'psi)
-    (push-debug `(,var-name ,individual))
-    (break "Stub: called with a psi"))
-  (when category
-    (setq category (category-named category :break)))
-  (let ((bindings (indiv-bound-in individual))
-        (variable (if category
-                    (find-variable-in-category var-name category)
-                    (find-variable-from-individual var-name individual))))
-    (unless variable
-      (push-debug `(,var-name ,individual))
-      (error "Cannot find a variable named ~a~%associated with ~
-              the individual ~a" var-name individual))
-    (find-bindings-body-for-var bindings variable)))
-
-
-
 (defun value-of (var-name individual &optional specified-category)
-  ;; convenient version for using in code since the variable
-  ;; is dereferenced from its name here inside the routine
+  "Standard way to get the value of a particular binding on
+   an individual. Convenient for using in code since the variable
+   is dereferenced from its name here. If a category is supplied
+   to get the variable from, it must be an object, not a name."
   (when (and specified-category (symbolp specified-category))
     (error "The category argument to value-of should be a real category object"))
   (etypecase individual
@@ -95,18 +79,13 @@
            (value/var variable individual))
          (else
           (when specified-category
-            ;; You should be asking for a variable that is associated
-            ;; with the category, otherwise you're confused.
+            ;; You should be asking for a variable that is known to be 
+            ;; associated with the category, otherwise you're confused.
             (push-debug `(,var-name ,individual ,category))
             (error "Cannot find a variable named ~a~%that is associated ~
                     with the individual ~a" var-name individual))
           (let ((bindings (indiv-binds individual)))
             (when bindings
-              ;; maybe the variable genuinely isn't associated with
-              ;; the category ///If everything went to top then it
-              ;; could probably be found? 
-              ;; Prototype case is the variable category associated with 
-              ;; category expressible-type, see  make-individual-for-dm&p
               (dolist (b bindings)
                 (when (eq (var-name (binding-variable b))
                           var-name)
@@ -119,11 +98,12 @@
            (value-of/binding var-name bindings category)))))))
 
 (defun value/var (variable individual)
-  ;; version to use when the object for the variable is available
+  "Caller did the dereferencing: both variable and individual are objects"
   (etypecase individual
     (individual
      (let ((bindings (indiv-binds individual)))
        (find-bindings-value-for-var bindings variable)))))
+
 
 (defun find-bindings-value-for-var (bindings variable)
   "Identify the binding within the list of bindings that is based
@@ -139,13 +119,14 @@
       (when binding
         (binding-value binding)))))
 
+
 (defun value-of/binding (var-name list-of-bindings &optional category)
   (let ((variable
          (etypecase var-name
            (symbol
             (if category
               (find-variable-for-category var-name category)
-              (break "Supply a category so that the variable name ~A~
+              (error "Supply a category so that the variable name ~A~
                       ~%can be disambiguated" var-name)))
            (lambda-variable var-name))))
     (when variable
@@ -155,8 +136,8 @@
 (defun who-binds (variable value)
   "This is 'who binds this variable to this value'.
    Look in the bound-in field of 'value', which should be 
-   an individual for all the bindings that use that variable.
-   Return a list of all of the 'body' individuals in those
+   an individual. For all the bindings that use that variable,
+   return a list of all of the body individuals in those
    bindings."
   (unless (individual-p value)
     (push-debug `(,variable ,value))
@@ -166,8 +147,6 @@
         (var-name (etypecase variable
                     (lambda-variable (var-name variable))
                     (symbol variable))))
-    ;; The variable knows what's bound to it, but the caller
-    ;; would have to be sure it had the right one
     (when bindings
       (loop for b in bindings
         when (eq (var-name (binding-variable b))
@@ -179,8 +158,9 @@
 (defun all-bindings-such-that (bindings
                                &key ((:body-type-is body-type))
                                     ((:variable-is variable)))
-  ;; return every binding some the argument set that fits the
-  ;; description laid out in the keyword arguments
+  "Return every binding some the argument set that fits the
+   description laid out in either of the keyword arguments.
+   Expects only one of keyword argument to have a value."
   (let ( good-ones )
     (dolist (b bindings)
       (cond (body-type
@@ -192,8 +172,7 @@
                        (binding-variable b))
                (push b good-ones)))
             (t
-             (break "Cond doesn't cover argument pattern"))))
-
+             (error "Cond doesn't cover argument pattern"))))
     (nreverse good-ones)))
 
 
@@ -211,7 +190,7 @@
 
 (defun binds-variable (indiv var-name  &key all )
   "Walk through the bindings on the individual and return 
-   the one that binds this variable. If 'all' is specified, 
+   the first one that binds this variable. If 'all' is specified, 
    return ever binding of that variable."
   (let ((variable (find-variable-from-individual var-name  indiv))
         (bindings (indiv-binds indiv))
@@ -225,10 +204,9 @@
 
 
 (defun bound-in (indiv &key all body-type super-category)
-  ;; search the individual's bound-in field for the first/all binding/s
-  ;; whose body is the indicated type. If a super category is indicated
-  ;; then look for the types of the bodies inheriting from that
-  ;; category
+  "Search the individual's bound-in field for the first (or all) binding/s
+   whose body is the indicated type. Alternatively, supply a super-category
+   and look for the types of the bodies inheriting from that category."
   (let ((category (when body-type
                     (typecase body-type
                       (symbol (category-named body-type))
@@ -246,7 +224,6 @@
                              the name of a category~%or a category.~
                              ~%Argument passed in is ~A" body-type)))))
         body  matched-bindings )
-
     (when body-type
       (unless category
         (break "The category specifier passed in: ~A~
@@ -297,13 +274,13 @@
 
 
 (defun all-values-for (var-name individual)
-  ;; search through the bindings of the individual, accumulate
-  ;; all the bindings of the variable, and return all the
-  ;; values in those bindings
+  "Search through the bindings of the individual, accumulate
+   all the bindings of the variable, and return all the
+   binding values in those bindings."
   (let ((variable
          (etypecase var-name
            (symbol
-            (let ((category (first (indiv-type individual)))
+            (let ((category (itype-of individual))
                   var )
               (setq var (find-variable-for-category var-name category))
               (unless var
@@ -320,10 +297,9 @@
 
 
 (defun up-and-over (b var &optional cat)
-  ;; a fanciful name for a standard manipulation of a binding.
-  ;; We have identified some individual on the basis of the binding 'b'
-  ;; and we now want the value of that individual's 'var' binding.
-
+  "A fanciful name for a standard manipulation of a binding.
+   We have identified some individual on the basis of the binding 'b'
+   and we now want the value of that individual's 'var' binding."
   (let* ((individual (binding-body b))
          (category
           (etypecase cat
@@ -332,53 +308,31 @@
          (variable (decode-variable-name 
                     var :individual individual
                         :category category)))
-
     (let ((value (value/var variable individual)))
       (when (null value)
-        (break "The individual ~A~
+        (error "The individual ~A~
                 ~%has no ~A binding" variable individual))
-
       value )))
 
 
 
 (defun all-such-that (category-name var-name value)
-  (let* ((category (category-named category-name t))
-         (variable (decode-variable-name  var-name :category category))
-         (instances-ht (var-instances variable)))
-    (gethash value instances-ht)))
+  "Using the hashtable index on the variable, return all the 
+   bindings of this value. The category is used to decode
+   the name of the variable."
+  (declare (special *index-bindings-to-variables*))
+  (when *index-bindings-to-variables*
+    (let* ((category (category-named category-name t))
+           (variable (decode-variable-name  var-name :category category))
+           (instances-ht (var-instances variable)))
+      (gethash value instances-ht))))
 
-
-
-#|  Tried writing this, but since variables index bindings by their
-    values, starting from the type on the body would be a gruesome
-    search.
-(defun all-individuals-such-that (&key ((var var-name))
-                                       category
-                                       value )
-  ;; must specify a variable and one of the other two keys
-  (let ((variable (if category
-                    (decode-variable-name  var-name :category category)
-                    (decode-variable-name  var-name))))
-    (if category
-      (all-bindings-with-body-type+var category variable)
-      (if value
-        (all-bindings-with-var+value variable value)
-        (error "Either a category or value must be supplied ~
-                ~%for this function to be well defined")))))
-
-
-(defun all-bindings-with-body-type+var (category variable)
-  (break "Stub"))
-
-(defun all-bindings-with-var+value (variable value)
-  (break "Stub"))  |#
 
 
 (defun add-item-to-list-value (item var-name individual)
   (let ((variable (decode-variable-name var-name
                                         :individual individual)))
-
+    (assert (list-type-variable? variable))
     (let ((binding (find variable (indiv-binds individual)
                          :test #'eq  :key #'binding-variable)))
       (unless binding
@@ -442,8 +396,5 @@
     (let ((category (itype-of i))) ;; assumes multiple categories don't matter
       ;;/// needs a proper sweep like super-categories-of might return
       (memq var (cat-slots category)))))
-
-
-
 
 
