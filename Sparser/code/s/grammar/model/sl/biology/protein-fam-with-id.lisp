@@ -75,6 +75,7 @@ Guanine Nucleotide Binding Protein" "GTP-Binding Protein"))
 (def-family-with-id "glutaminase" "GO:0004359")
 (def-family-with-id "GnRH" "FA:01630" :synonyms ("GnRHs"))
 (def-family-with-id "GRK" "NCIT:C26233" :synonyms ("g protein-coupled receptor kinase family" "G Protein-Coupled Receptor Kinase" "GPCR kinase" "G protein-coupled receptor kinases"))
+(def-family-with-id "GST" "GO:0004364" :name "Glutathione S-transferase") ; many members
 (def-family-with-id "GTPase" "BE:GTPase" :synonyms ("guanosine triphosphatase"))
 (def-family-with-id "gamma secretase" "NCIT:C95114" :synonyms ("gamma-secretase"))
 (def-family-with-id "gamma-tubulin" "NCIT:C32650" :synonyms ("gamma tubulin" "γtubulin" "TUBG"))

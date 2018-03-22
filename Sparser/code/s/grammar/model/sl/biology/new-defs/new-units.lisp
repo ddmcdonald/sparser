@@ -48,3 +48,5 @@
 (def-indiv-with-id unit-of-measure "mA" "UO:0000037" :name "milliampere" :maintain-case t)
 (def-indiv-with-id unit-of-measure "mV" "UO:0000247" :name "millivolt" :maintain-case t)
 (def-indiv-with-id unit-of-measure "cpm" "UO:0000148" :name "counts per minute" :maintain-case t :synonyms ("c.p.m.")) ;"c.p.m./pmol" activity of a radionuclide
+(def-indiv-with-id unit-of-measure "pH" "UO:0000196" :name "pH" :maintain-case t)
+(def-indiv-with-id unit-of-measure "mL" "UO:0000098" :name "milliliter" :synonyms ("millilitre") :maintain-case t)

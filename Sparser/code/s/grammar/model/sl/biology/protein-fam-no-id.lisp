@@ -16,12 +16,14 @@
 (noun "receptor protein" :super protein)
 (noun "receptor protein-tyrosine kinase" :super kinase)
 (noun "scaffold" :super protein)
+(noun "coactivator" :super protein)
 
 (noun "isomerase" :super enzyme)
 (noun "ligase" :super enzyme)
 (noun "ubiquitinase" :super enzyme)
 (noun "polymerase" :super enzyme)
 
+(noun "oxidase" :super enzyme)
 (noun ("deubiquitinase" "deubiquitylase" "DUB") :super enzyme)
 
 #| several transcription factors, including CREB
@@ -113,6 +115,7 @@ the STAT1 transcription factor |#
 (def-family "CSN3" :members ("UP:P07498" "UP:Q9UNS2")) 
 (def-family "CTCBF" :synonyms ("TLAA" "thyroid-lupus autoantigen") :members ("UP:P12956" "UP:P13010")) 
 (def-family "CYP1" :members ("UP:O15528" "UP:P04798"))
+(def-family "calmodulin" :synonyms ("CaM" "CALM_HUMAN") :members ("UP:P0DP23" "UP:P0DP24" "UP:P0DP25")) ; was "UP:P62158" but that was split by uniprot 5/2017 
 (def-family "Cam-PDE 1" :members ("PDE1A_HUMAN" "PDE1B_HUMAN" "PDE1C_HUMAN")) 
 ;(def-family "Cbp/PAG" :members ("UP:P40763" "UP:Q9NWQ8")) bad def for UP:P40763
 (def-family "Constitutive NOS" :members ("UP:P29474" "UP:P29475")) 
@@ -225,7 +228,9 @@ the STAT1 transcription factor |#
 (def-family "PKL" :members ("UP:P30613" "UP:Q14161")) 
 (def-family "PLAP-1" :members ("UP:P05187" "UP:Q9BXN1")) 
 (def-family "PNI" :members ("UP:P07093" "UP:Q15858" "UP:Q9H0P0")) 
-(def-family "POB1" :members ("UP:O94972" "UP:Q8NFH8")) 
+(def-family "POB1" :members ("UP:O94972" "UP:Q8NFH8"))
+(def-family "PPARgamma coactivator 1" :synonyms ("PPARgamma coactivator-1" "PPARGC1"  "receptor gamma coactivator") :members ("UP:Q86YN6" "UP:Q9UBK2"))
+(def-family "peroxisome proliferative activated receptor" :synonyms ("PPAR") :members ("UP:P37231" "UP:Q03181" "UP:Q07869"))
 (def-family "PP4" :members ("UP:P08758" "UP:P60510")) 
 (def-family "PPAT" :members ("UP:Q06203" "UP:Q13057")) 
 (def-family "PPIase" :members ("UP:P30414" "UP:Q9H2H8" "UP:Q9Y3C6")) 
@@ -258,7 +263,8 @@ the STAT1 transcription factor |#
 (def-family "SRK" :members ("UP:P43403" "UP:Q9UBS0")) 
 (def-family "ST7" :members ("UP:Q9NRC1" "UP:Q9Y561")) 
 (def-family "STK-1" :members ("UP:P36888" "UP:Q96GD4")) 
-(def-family "SWI2" :members ("UP:P28370" "UP:P51531")) 
+(def-family "SWI2" :members ("UP:P28370" "UP:P51531"))
+(def-family "syntenin" :members ("UP:O00560" "UP:Q9H190"))
 (def-family "TAB2/3" :members ("UP:Q8N5C8" "UP:Q9NYJ8")) 
 (def-family "TEP1" :members ("UP:P60484" "UP:Q99973")) 
 (def-family "TGF-B superfamily receptor type I" :synonyms ("TSR-I") :members ("UP:P37023" "UP:Q04771")) 
@@ -825,7 +831,7 @@ the STAT1 transcription factor |#
 (def-family "LIR" :members ("UP:P0AE06" "UP:Q08708")) 
 (def-family "LLP" :members ("UP:B0FRH7" "UP:Q29144")) 
 (def-family "LMP-1" :members ("UP:P03230" "UP:Q1HVB3") :synonyms ("latent membrane protein 1")) 
-(def-family "LNP" :members ("UP:Q9BXS6" "UP:Q9C0E8")) 
+;(def-family "LNP" :members ("UP:Q9BXS6" "UP:Q9C0E8")) 
 (def-family "LO" :members ("UP:P09917" "UP:P28300")) 
 (def-family "LP1" :members ("UP:O15354" "UP:Q60821")) 
 (def-family "LPD" :members ("UP:Q8NTE1" "UP:Q96GR2")) 
