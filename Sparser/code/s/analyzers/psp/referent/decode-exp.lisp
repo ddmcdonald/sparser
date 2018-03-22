@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2001,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2001,2011-2013.2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "decode exp"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   1.10 August 2011
+;;;   Version:   March 2018
 
 ;; initiated 12/91
 ;; 1.1 (7/17/92 v2.3) Revising details to fit new representation scheme
@@ -37,9 +37,9 @@
 ;;;--------
 
 (defun resolve-referent-expression (referent)
-  ;; called from Def-cfr/expr to examine the expression as given in
-  ;; the file format of rule.  Returns the expression/object to be
-  ;; used at runtime.
+  "Called from Def-cfr/expr to examine the expression as given in
+   the file format of rule. Returns the expression/object to be
+   used at runtime."
   (etypecase referent
     (null)
     (list (decode-list-referent-expressions referent))
@@ -58,7 +58,6 @@
                 :with
                 :bind
                 :subtype
-
                 :daughter
                 :function :method
                 :eval
@@ -68,18 +67,16 @@
 
 
 (defun decode-list-referent-expressions (list)
-  ;; the input is given in property list format, it gets passed back
-  ;; as lists of lists, one for each referent action.  If there is
-  ;; only one action, then a single level of list is returned.
-  ;; This is why there are two subroutines below, Pull-out-{first/next}
-  ;; -sublist, that are practically identical.
-
+  "The input is given in property list format, it gets passed back
+   as lists of lists, one for each referent action. If there is
+   only one action, then a single level of list is returned.
+   This is why there are two subroutines below, Pull-out-{first/next}
+   -sublist, that are practically identical."
   (or (member (first list) *toplevel-referent-actions* :test #'eq)
       (error "The first keyword, ~A, in the referent expression~
               ~%   ~A~
               ~%isn't one of the legal cases. Check the spelling"
              (first list) list))
-
   (pull-out-first-sublist list))
 
 
@@ -88,19 +85,16 @@
                        (pull-out-sub-referent-expression list)
     (let ((referent-action
            (decode-list-referent-expression sublist)))
-
       (if remainder-of-list
         (append (list referent-action)
                 (pull-out-next-sublist remainder-of-list))
         referent-action))))
-
 
 (defun pull-out-next-sublist (list)
   (multiple-value-bind (sublist remainder-of-list)
                        (pull-out-sub-referent-expression list)
     (let ((referent-action
            (decode-list-referent-expression sublist)))
-
       (if remainder-of-list
         (append (list referent-action)
                 (pull-out-next-sublist remainder-of-list))
@@ -109,18 +103,16 @@
 
 
 (defun pull-out-sub-referent-expression (list)
+  "The most common case is the list being just a single referent action
+   consisting of one of the designated keywords followed by some number
+   of arguments. So we just accumulate arguments/terms until we hit
+   another toplevel keyword, whereup we normally just terminate the
+   scan and return the remainder and wait for another call.
+   The exception is the case where the keyword is :instantiate-individual.
+   This case wants to incorporate any following ':with' expression
+   rather than leave it as a separate action."
 
-  ;; The most common case is the list being just a single referent action
-  ;; consisting of one of the designated keywords followed by some number
-  ;; of arguments.  So we just accumulate arguments/terms until we hit
-  ;; another toplevel keyword, whereup we normally just terminate the
-  ;; scan and return the remainder and wait for another call.
-  ;;
-  ;; The exception is the case where the keyword is :instantiate-individual.
-  ;; This case wants to incorporate any following ":with" expression
-  ;; rather than leave it as a separate action.
-
-  (let ( action accumulating-terms remainder-of-list )
+  (let ( action  accumulating-terms  remainder-of-list )
     (setq action (first list))
 
     (do* ((remainder (rest list)     (cdr remainder))
@@ -128,19 +120,18 @@
          ((or (null term)
               (member term *toplevel-referent-actions*))
           (if (and (eq action :instantiate-individual)
-                   (eq term :with)
-                   )
+                   (eq term :with))
             (then
               (setq action :instantiate-individual-with-binding)
               (setq accumulating-terms
-                    (append accumulating-terms
-                            (list (pop remainder)
-                                  (pop remainder)))))
+                    (append accumulating-terms ;; the category to instantiate
+                            (list (pop remainder) ;; :with keyword
+                                  (pop remainder)) ;; the binding plist
+                            )))
             (else
               (setq accumulating-terms
                     (nreverse accumulating-terms))
               (setq remainder-of-list remainder))))
-
       (when (keywordp term)
         (error "A referent expression includes the keyword ~A~
                 ~%which is not one of the defined actions.~
