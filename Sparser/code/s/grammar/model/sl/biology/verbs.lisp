@@ -79,6 +79,7 @@
 
 (defparameter *show-new-svo/bio-definitions* nil)
 (defparameter *comlex-category-names* nil)
+(defparameter *new-bio-processes* nil)
 
 (defun svo/bio/expr (verb)
   (declare (special category::bio-process))
@@ -121,6 +122,7 @@
                                :realization (:etf (svo-passive)
                                                   :verb ,verb :o object))))
                   (category (or existing-bio-verb-category (eval form))))
+             (pushnew category *new-bio-processes*)
              (when *show-new-svo/bio-definitions*
                (print form))
              ;; need to figure out a way to show the context!!
