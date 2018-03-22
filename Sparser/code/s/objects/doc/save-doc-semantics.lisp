@@ -151,11 +151,49 @@
 (defparameter *saved-bio-processes* nil)
 (defparameter *blank-sents* nil)
 
+(defparameter *default-bio-processes*
+  '(:or ABOLISH ABROGATE ACCELERATE ACCUMULATION ACETYLATION ACQUIRE ADDITION ADHESION
+    AFFECT ALLOW ALTER ANCHORAGE APOPTOSIS ARREST ASSEMBLE ATTENUATE AUGMENT
+    AUTO-PHOSPHORYLATE AUTOPHAGY AXON-GUIDANCE BINDING BIO-ACT BIO-ACTIVATE
+    BIO-ACTIVITY BIO-ADVANCE BIO-AMPLIFY BIO-ASSOCIATE BIO-CONTROL BIO-DEACTIVATE
+    BIO-DRIVE BIO-ENHANCE BIO-EVENT BIO-EXCHANGE BIO-FIND BIO-FORM BIO-FUNCTION
+    BIO-FUNCTIONALITY BIO-HYPERACTIVATE BIO-INACTIVATE BIO-INSERT BIO-OPEN
+    BIO-PROCESS BIO-PRODUCE BIO-PROMOTE BIO-REACTIVATE BIO-SWITCH BIO-TRANSITION
+    BIO-TRANSPORT BIO-TRIGGER BIOTINYLATION BLOCK CANCER-TRANSFORM CASCADE
+    CATALYSIS CATALYTIC-ACTIVITY CAUSE CELL-CELL-CONTACT CELL-CYCLE-PROGRESSION
+    CELL-GROWTH CELLULAR-PROCESS CHANGE CHEMICAL-CLEAVAGE CHEMICAL-REACTION
+    CO-MIGRATE COMPENSATE COMPLEMENTATION COMPROMISE CONFER CONFORMATIONAL-CHANGE
+    CONSERVE CONTRIBUTE CONVERSION-CHANGE COOPERATE CREATE CULMINATE CYCLE DAMAGE
+    DE-ACETYLATION DE-METHYLATION DE-UBIQUITINATION DEATH DECREASE DEGRADE DELAY
+    DEPHOSPHORYLATE DEPLETE DERIVE DEVELOPMENT DIFFERENTIATION DIMERIZE DIMINISH
+    DIRECT-CONTROL DISPLACE DISRUPT DISSOCIATE DIVISION DNA-BINDING DOWNREGULATE
+    DRIVE DROP DYSREGULATE EFFECT ELEVATE ELICIT EMT ENABLE ENCODE ENTRY
+    ENZYME-ACTIVITY ESCAPE EXHIBIT EXPORT EXPORT-SIGNAL FACILITATE FATE FAVOR
+    FINDING FREES FUCOSYLATION GAIN GENE-CODE GENE-DELETE
+    GENE-TRANSCRIPT-CO-EXPRESS GENE-TRANSCRIPT-EXPRESS
+    GENE-TRANSCRIPT-OVER-EXPRESS GENERATE GLYCOSYLATION GROWTH HETERODIMERIZE
+    HOMODIMERIZE HYDROLYZE HYDROXYLATION HYPER-ACETYLATION HYPERPHOSPHORYLATE
+    HYPO-METHYLATION IMPAIR IMPEDE IMPORT INCREASE INDUCE INFLUENCE INHIBIT
+    INITIATE INTERACT INTERFERE INTERNALIZE KINASE-ACTIVITY KNOCKDOWN LEAD LIGATE
+    LIMIT LINK LOCALIZATION LOSE LOWER MAINTAIN MAKE-DOUBLE MANNER MEDIATE
+    METHYLATION MIGRATION MOBILITY MOBILIZE MODIFY MODULATE MOLECULE-LOAD
+    MOLECULE-RELEASE MONOUBIQUITINATION MOTILITY MUTATION NEDDYLATION
+    NEURITE-OUTGROWTH OLIGOMERIZE OPERATE OUTCOME OXIDATION PARTICIPATE
+    PATHWAYSTEP PHOSPHORYLATE POINT-MUTATION POLY-ADENYLATION POLY-UBIQUITINATION
+    POLYMERIZE POST-TRANSLATIONAL-MODIFICATION POTENTIATE PRESERVE PREVENT PRIME
+    PROLIFERATION PROLONG PROTECT RAISE RECONSTITUTE RECRUIT REDISTRIBUTE REDUCE
+    REGULATE RELIEVE RELOCATE REPRESS REQUIRE RESPONSE RETENTION RETURN REVERT
+    SENESCENCE SERVE SET-VALUE SIGNAL SLOW STABILIZE STIMULATE STIMULUS STRENGTHEN
+    SULFATION SUMOYLATION SUPPRESS SURVIVAL TARGET TERMINATE TRANSACTIVATION
+    TRANSCRIBE TRANSDUCE TRANSFORMATION TRANSLATE TRANSLOCATION TRUNCATE
+    TUMOR-FORMATION UBIQUITINATION UNDERGO UNPHOSPHORYLATE UPREGULATE YIELD))
+
+
 
 ;; this is executed when *save-bio-processes* is T
-(defun save-bio-processes (*sent*)
+(defun save-bio-processes (*sent* &optional (bio-processes '(:or bio-process)))
   (declare (special *sent*))
-  (let ((sems (find-sem-type-instances (sent-sem))))
+  (let ((sems (find-sem-type-instances (sent-sem) bio-processes)))
     (if sems
         (push (list (sentence-string *sent*) sems) *saved-bio-processes*)
         (push (sentence-string *sent*) *blank-sents*))))
@@ -247,7 +285,11 @@
   (values
    (read-from-string
     (with-output-to-string (s)
-      (write-sem (previous (sentence)) s)))))
+      (if (and (previous (sentence))
+               (sentence-string (previous (sentence)))
+               (not (equal (sentence-string (previous (sentence))) "")))
+          (write-sem (previous (sentence)) s)
+          (write-sem (sentence) s))))))
 
 (defun sem-sexp (indiv)
   (read-from-string
@@ -257,14 +299,15 @@
 (defun find-sem-type-instances (s &optional (types
                                              '(:or bio-control post-translational-modification binding
                                                interact ;; not sure this constitues a cardable entity, but I think REACH thinks so
+                                               bio-process ;; most general for new REACH complex tests
                                                )))
-  (when (consp s)
+  (when (and (consp s) (symbolp (car s)))
     (if (and (category-named (car s) nil)
              (itypep (car s) types))
         (list s)
         (loop for ss in s when (consp ss)
            append
-             (find-sem-type-instances ss)))))
+             (find-sem-type-instances ss types)))))
 
 
 (defmethod write-sem ((s sentence) stream &optional (newline t))
