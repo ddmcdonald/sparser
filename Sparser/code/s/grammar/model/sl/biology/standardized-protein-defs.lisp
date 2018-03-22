@@ -5259,8 +5259,8 @@
 (define-protein "UP:P0DH90" ("FRI")) 
 (define-protein "UP:P0DH91" ("u5")) 
 (define-protein "UP:P0DH92" ("vha-c1")) 
-(define-protein "UP:P0DH95" ("calmodulin-1" "calmodulin1")) 
-(define-protein "UP:P0DH97" ("calmodulin-2")) 
+;(define-protein "UP:P0DH95" ("calmodulin-1" "calmodulin1")) 
+;(define-protein "UP:P0DH97" ("")) cress
 (define-protein "UP:P0DI07" ("GD1a")) 
 (define-protein "UP:P0DI81" ("MIP-2A" "P0DI81" "SEDL" "SEDT" "TPC2A_HUMAN" "TRAPPC2" "TRS20" "ZNF547L" "hYP38334" "sedlin subfamily" "spondyloepiphyseal dysplasia" "trafficking protein particle complex 2")) 
 (define-protein "UP:P0DI83" ("NARR" "RAB34, member RAS oncogene family" "RaH" "rab34" "rah")) 
@@ -10657,9 +10657,9 @@
 (define-protein "UP:P62136" ("PP-1A" "PP1A" "PP1A_HUMAN" "PP1alpha" "PP1α" "PPP1A" "PPP1CA" "Serine/threonine-protein phosphatase PP1-alpha catalytic subunit" "p62136" "protein phosphatase 1 catalytic subunit alpha")) 
 (define-protein "UP:P62140" ("PP-1B" "PP1B" "PP1B_HUMAN" "PP1beta" "PP1β" "PPP1C-B" "PPP1CB" "PPP1CD" "Serine/threonine-protein phosphatase PP1-beta catalytic subunit" "p62140" "protein phosphatase 1 catalytic subunit beta")) 
 ;(define-protein "UP:P62158" ("C-CAM" "CALM" "CALM1" "CALM2" "CALM3" "CALML2" "CALM_HUMAN" "CAM" "CAM1" "CAM3" "CAMB" "CAMC" "CAMIII" "CaM" "CaM1" "CaM3" "Mel-CAM" "calm2" "calmodulin" "calmodulin 1" "melanoma adhesion molecule" "p62158")) ; obsolete - split into 3 proteins below
-(define-protein "UP:P0DP23" ("CALM" "CALM1" "CALM1_HUMAN" "CAM" "Cam" "CAM1" "CaM1" "calm1" "calmodulin 1")) ;"C-CAM" 
-(define-protein "UP:P0DP24" ("CALM2" "CALM2_HUMAN" "CALML2" "CAMB" "CaMB" "calm2"))
-(define-protein "UP:P0DP25" ("CALM3" "CALM3_HUMAN" "CAM3" "CaM3" "CAMC" "CAMIII" "calm3"))
+(define-protein "UP:P0DP23" ("CALM" "CALM1" "CALM1_HUMAN" "CAM" "Cam" "CAM1" "CaM1" "calm1" "calmodulin 1" "calmodulin-1" "calmodulin1")) ;"C-CAM" 
+(define-protein "UP:P0DP24" ("CALM2" "CALM2_HUMAN" "CALML2" "CAMB" "CaMB" "calm2" "CaM2" "calmodulin-2" "calmodulin 2" "calmodulin2"))
+(define-protein "UP:P0DP25" ("CALM3" "CALM3_HUMAN" "CAM3" "CaM3" "CAMC" "CAMIII" "calm3" "calmodulin-3" "calmodulin 3" "calmodulin3"))
 (define-protein "UP:P0DP57" ("SLURP-2" "SLURP2" "Secreted Ly-6/uPAR domain-containing protein 2"))
 (define-protein "UP:P62166" ("NCS-1" "NCS1_HUMAN" "Neuronal Calcium Sensor-1" "freq" "frequenin homolog" "frequenin-like protein" "frequenin-like ubiquitous protein" "p62166")) 
 (define-protein "UP:P62172" ("GlnR")) 
