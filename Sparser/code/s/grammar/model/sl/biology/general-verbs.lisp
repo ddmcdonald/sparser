@@ -662,10 +662,6 @@
    :noun "inhibition"
    :etf (svo-passive)))
 
-(def-synonym inhibit  (:noun "inhibitory interaction" :with object))
-
-
-
 (define-category bio-insert :specializes caused-bio-process
   :mixins (on-substrate)
   :binds ((between residue-on-protein)
@@ -683,6 +679,12 @@
          :etf (sv) 
          :with interactor
          :between interactor))
+
+(define-category inhibitory-interaction ;; was drug-inhibit but inhibit fits answer key
+    :specializes interact
+    :mixins (negative-bio-control)
+    :realization 
+    (:noun ("inhibitory interaction")))
 
 (define-category interrogate :specializes bio-method
     :realization
