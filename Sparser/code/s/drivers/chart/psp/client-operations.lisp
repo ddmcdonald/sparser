@@ -27,12 +27,15 @@
                     *save-bio-processes* ))
   (declaim (optimize (debug 3)))
   
+  (when *save-bio-processes*
+    (save-bio-processes sentence *save-bio-processes*))
+
   (when (and (or (eq *sentence-results-stream* t)
                  (streamp *sentence-results-stream*))
              (not (eq *semantic-output-format* :HMS-JSON)))
     ;;output sentence semantics, if desired, in format specified
     ;; by *semantic-outut-format* -- code is in save-doc-semantics
-    (when *save-bio-processes* (save-bio-processes sentence))
+    
     (write-semantics sentence *sentence-results-stream*))
   
   (when *indra-post-process*
@@ -165,6 +168,69 @@
 
 (defparameter *colorized-sentence* (make-hash-table :size 1000 :test #'equal))
 
+
+(defparameter *complex-statements* nil)
+(defun read-from-json-list
+    (&optional (f "/Users/rusty/projects/r3/corpus/HMS-complex-data/reach_complex_stmts.json"))
+  (with-open-file (s f :direction :input)
+    (loop until (eql (read-char s) #\])
+          do
+            (push (funcall (intern "DECODE-JSON" :json) s) *complex-statements*)))
+  (format t "There are ~s items in *complex-statements*"
+          (length *complex-statements*)))
+
+
+(defun find-reach-sentence (indra-complex)
+  (list (cdr (assoc :text (second (assoc :evidence indra-complex))))
+        (loop for m in (cdr (assoc :members indra-complex))
+              collect (cdr (assoc :db--refs m)))))
+
+(defparameter *proteins* (make-hash-table :size 100000 :test #'equal))
+(defun find-reach-proteins (n)
+  (unless (and (boundp '*complex-statements*)
+               (consp *complex-statements*))
+    (read-from-json-list))
+  (clrhash *proteins*)
+  (loop for indra-complex in *complex-statements*
+        as i from 1 to n
+        do
+          (loop for m in (cdr (assoc :members indra-complex))
+                unless
+                  (or (sp::single-term-rewrite? (cdadr (assoc :db--refs m)) :no-warn t)
+                      (sp::single-term-rewrite? (string-downcase (cdadr (assoc :db--refs m))) :no-warn t));; (resolve (cdadr (assoc :db--refs m))) 
+                do (setf (gethash (cadr (assoc :db--refs m)) *proteins*)
+                         (cddr (assoc :db--refs m)))))
+  *proteins*)
+
+(defun find-reach-protein (indra-complex)
+  (list (cdr (assoc :text (second (assoc :evidence indra-complex))))
+        (loop for m in (cdr (assoc :members indra-complex))
+              collect (cdr (assoc :db--refs m)))))
+
+(defun find-reach-rule (indra-complex)
+  (let ((evidence (second (assoc :evidence indra-complex))))
+    (assoc :found--by (cdr (assoc :annotations evidence)))))
+
+
+(defparameter *reach-complex-processes* 
+  '(:or AFFINITY BINDING BINDING BINDING BIO-ACTIVITY BIO-ASSOCIATE BIO-ASSOCIATE
+    BIO-COMPLEX
+    COOPERATE DIMERIZE HETERODIMERIZE INTERACT INTERACT INTERACT INTERACT LIGATE
+    LIGATE OLIGOMERIZE RECRUIT))
+
+(defun reach-collect-bio-processes (n)
+  (unless (and (boundp '*complex-statements*)
+               (consp *complex-statements*))
+    (read-from-json-list))
+  (let ((sp::*save-bio-processes*
+         *reach-complex-processes*))
+    (loop for *rcs* in *complex-statements*
+          as i from 1 to n
+          collect
+            (let ((*saved-bio-processes* nil))
+              (safe-parse (car (find-reach-sentence *rcs*)))
+              (list (find-reach-sentence *rcs*)
+                    (second (car *saved-bio-processes*)))))))
 
 (defun indra-post-process (mentions sentence output-stream)
   (setq *indra-embedded-post-mods* nil)
