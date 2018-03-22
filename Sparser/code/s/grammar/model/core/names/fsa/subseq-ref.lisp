@@ -358,10 +358,21 @@
 
 
 (defun ambiguous-name-stub (names entities)
+  "We have to pick one of these names / people (etc.). With most
+   categories nailed down as permanent b/w runs and under the
+   augmented description implied by new individual regimine of the
+   description lattice, then many of our choices here will effectively
+   just be noise caused by successive bindings."
   (push-debug `(,names ,entities))
-  (break "More than one entity returned for the names~
+  ;; These are names based on the identical sequence of words.
+  ;; A sanity check would establish that all the candidates
+  ;; are / are not the same type.
+  ;; This choice may avoid some attribute bindings.
+  #+ignore(break "More than one entity returned for the names~
         ~%  ~a~
-        ~%Look at this and decide what to do." names))
+        ~%Look at this and decide what to do." names)
+  (throw :already-decoded-name (car (last entities))))
+ 
 
 
 (defun names-based-on-sequence (sequence)
