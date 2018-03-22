@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
-;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "category-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2017
+;;;  Version:  March 2018
 
 ;; Predicates on synteactic form categories, mostly for the use of the chunker.
 
@@ -121,7 +121,7 @@
     ))
 
 (defparameter *n-bar-categories*
-   '(CATEGORY::COMMON-NOUN/PLURAL
+  '(CATEGORY::COMMON-NOUN/PLURAL
     CATEGORY::NOUN/VERB-AMBIGUOUS
     CATEGORY::N-BAR
     CATEGORY::COMMON-NOUN
@@ -260,38 +260,6 @@
 
 
 
-(defmethod ng-compatible? ((c referential-category) evlist)
-  (ng-compatible? (cat-symbol c) evlist))
-
-(defmethod ng-compatible? ((name symbol) edges)
-  (declare (special category::all category::both ;;category::quantifier-of
-		    category::pronoun
-                    *ng-internal-categories*))
-  (or
-   (and
-    (memq name *ng-internal-categories*)
-    ;;in fact nothing should follow a pronoun (except a possessive pronoun)
-    (not
-       (loop for edge in edges
-         thereis
-         (eq category::pronoun (edge-form edge)))))
-   (and
-    ;; partitive construction e.g. "all of these lines"
-    (loop for edge in edges
-      thereis
-      (or
-       ;;(eq (edge-category edge) category::quantifier-of)
-       (eq (edge-category edge) category::all)
-       (eq (edge-category edge) category::both)))
-    (eq name 'category::det))))
-
-(defun edge-over-there? (e)
-  (declare (special category::syntactic-there category::deictic-location))
-  (or (eq (edge-category e) category::syntactic-there)
-      (and (eq (edge-category e) category::deictic-location)
-	   (word-p (value-of 'name (edge-referent e)))
-	   (equal (word-pname (value-of 'name (edge-referent e))) "there"))))
-
 (defgeneric ng-head? (label)
   (:documentation "Is a category which can occur as the head of an NG")
   (:method ((c referential-category))
@@ -300,11 +268,49 @@
     (memq name *ng-head-categories*))
   (:method ((w word))  nil))
 
+
+
 (defgeneric ng-compatible? (label evlist)
-  (:documentation "Is a category which can occur inside a NG"))
-(defmethod ng-compatible? ((w word) evlist)
-  (declare (ignore w evlist))
-  nil)
+  (:documentation "Is a category which can occur inside a NG.
+    Used by the chunker to extend (or not) a noun group chunk.
+    Return nil if not compabible. Usually fed edge form labels.
+    Standard call is from the ng-compatible? method in the chunker.")
+
+  (:method ((w word) evlist)
+    (declare (ignore w evlist))
+    nil)
+
+  (:method ((c referential-category) evlist) ;; for testing
+    (ng-compatible? (cat-symbol c) evlist))
+
+  (:method ((name symbol) edges)
+    (declare (special category::all category::both ;;category::quantifier-of
+                      category::pronoun
+                      *ng-internal-categories*))
+    (or
+     (and (memq name *ng-internal-categories*)
+          (not
+           ;;in fact nothing should follow a pronoun (except a possessive pronoun)
+           (loop for edge in edges
+              thereis (eq category::pronoun (edge-form edge)))))
+     
+     (and ;; partitive construction e.g. "all of these lines"
+      (loop for edge in edges
+         thereis (or
+                  ;;(eq (edge-category edge) category::quantifier-of)
+                  (eq (edge-category edge) category::all)
+                  (eq (edge-category edge) category::both)))
+      (eq name 'category::det)))))
+
+
+
+(defun edge-over-there? (e)
+  (declare (special category::syntactic-there category::deictic-location))
+  (or (eq (edge-category e) category::syntactic-there)
+      (and (eq (edge-category e) category::deictic-location)
+	   (word-p (value-of 'name (edge-referent e)))
+	   (equal (word-pname (value-of 'name (edge-referent e))) "there"))))
+
 
 
 (defgeneric vg-compatible? (label)

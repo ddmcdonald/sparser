@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "chunker"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  May 2017
+;;;  version:  March 2018
 
 ;; Initiated 10/8/14
 ;; ddm: 10/16/14 Rewrote identify-chunks. Commented out lines anticipating 
@@ -48,10 +48,10 @@
 ;;;-------------------------------------
 
 (defvar *chunk-forms* '(ng vg adjg))
-(defparameter *new-chunk-parse* t)
 
-
-(defvar *current-chunk* nil)
+(defvar *current-chunk* nil
+  "Bound in parse-chunk-interior so it's available in pts as
+   it parses the interior of that chunk")
 
 (defclass chunk ()
   ((start :initarg :start :accessor chunk-start-pos
@@ -133,19 +133,19 @@
 ;;;--------
 
 (defun identify-chunks (sentence)
-  ;; Called from sentence-sweep-loop after the short sweeps over 
-  ;; the sentence have fnished.
+  "Called from sentence-sweep-loop after the short sweeps over 
+   the sentence have finished. If the  *parse-chunk-interior-online*
+   parameter is up it parses the interior of every chunk."
   (declare (special *parse-edges* *parse-chunk-interior-online*))
   (when *parse-edges* (tts)) ;; when tracing
   (let ((chunks (find-chunks sentence)))
-    ;;(push-debug `(,sentence ,chunks)) (break "~a chunks" (length chunks))
-    ;;(pop-debug) (setq sentence (car *) chunks (cadr *))
     (when *parse-chunk-interior-online*
       (dolist (*chunk* chunks)
         (declare (special *chunk*))
         (push-debug `(,*chunk*))
         (tr :parsing-chunk-interior-of *chunk*)
-	(when (chunk-forms *chunk*) ;; don't parse a chunk like "EITHER" which has no form...
+	(when (chunk-forms *chunk*)
+          ;; don't parse a chunk like "EITHER" which has no form...
 	  (parse-chunk-interior *chunk*))))
     (set-sentence-status sentence :chunked)
     (when *record-all-chunks*
@@ -154,11 +154,11 @@
     chunks))
 
 (defun parse-chunk-interior (chunk)
-  ;; Use the standard machinery in PTS to parse the interior
-  ;; of the chunk and introduce a corresponding edge into
-  ;; the chart. Run pts in a mode that will make it run
-  ;; to completion and return rather than making a tail
-  ;; recursive call back to the scan level
+  "Use the standard machinery in PTS to parse the interior
+   of the chunk and introduce a corresponding edge into
+   the chart. Run pts in a mode that will make it run
+   to completion and return rather than making a tail
+   recursive call back to the scan level"
   (declare (special *left-segment-boundary*
                     *right-segment-boundary*))
   (setq *left-segment-boundary* (chunk-start-pos chunk)
@@ -172,8 +172,6 @@
      ;; this may belong somewhere within the dynamic scope 
      ;; of pts, but precisely where isn't clear yet.
      *left-segment-boundary* *right-segment-boundary*)))
-
-
 
 
 
@@ -223,7 +221,7 @@
 
 
 (defun delimit-next-chunk (ev forms sentence-end)
-  "We know that this edge vector starts a chunk of at least one time
+  "We know that this edge vector starts a chunk of at least one word
    as recorded in 'forms'. Look at successive positions (vectors of edges)
    to form the longest possible chunk starting here."
   (declare (special ev sentence-end forms))
@@ -280,21 +278,133 @@
          (return 
            (find-consistent-edges *chunk*)))))
 
-(defun preceding-do? (e)
-  (or (loop for c in *chunks*
-            thereis
-               (and (car (chunk-edge-list c))
-                    (eq (cat-name (edge-category (car (chunk-edge-list c))))
-                        'do)))
-      (loop for ee in (all-tts)
-            thereis
-              (and (edge-p ee)
-                   (edge-precedes ee e)
-                   (eq (cat-name (edge-category ee)) 'do))))
-  )
 
+(defun compatible-heads (forms ev next-pos)
+  "Called in the delimit-next-chunk loop to see whether we can
+   extend the current chunk. This is the 'step' function."
+  (loop for form in forms
+    when (compatible-head? form ev)
+    collect (list form next-pos)))
+
+(defun compatible-head? (form ev)
+  "The type of this chunk is 'form'. Checks whether any of 
+   the edges on this edge vector are suitable heads for that type."
+  (loop for edge in (ev-top-edges ev)
+    thereis (ecase form
+              (ng (ng-head? edge))
+              (vg (vg-head? edge))
+              (adjg (adjg-head? edge)))))
+
+(defun best-head (forms possible-heads)
+  "Called from delimit-next-chunk. Forms is a list of one or more symbols
+ naming chunk types (e.g. ng). Possible-heads is a list of pairs of chunk type
+ and the position it ends at. If there is more than one chunk select the one
+ whose end position is to the right of the others. "
+  (let (furthest)
+    (loop for p in possible-heads ;; e.g. (ng #<position 4 "on">)
+       when (and (member (car p) forms)
+                 (or (null furthest)
+                     (>= (pos-token-index (second p))
+                         (pos-token-index (second furthest)))))
+       do (setq furthest p))
+    furthest))
+
+(defun compatible-head-edges? (forms ev)
+  "Like compatible-head? except that it returns the edge (or edges)
+   that are compatible with the (one of) the form(s)."
+  (loop for edge in (ev-top-edges ev)
+        when (loop for form in forms
+                   thereis (ecase form
+                             (ng (ng-head? edge))
+                             (vg (vg-head? edge))
+                             (adjg (adjg-head? edge))))
+        collect edge))
+
+
+
+
+(defun remaining-forms (ev chunk) ;; &optional (forms *chunk-forms*))
+  "Called from the loop in delimit-next-chunk. This is the test that determines
+   whether the chunk should include get longer. It returns the forms
+   that are still compatible given at least on of the edges on this vector"
+  (loop for form in (chunk-forms chunk)
+        when (loop for e in (ev-top-edges ev)
+                   thereis (compatible-edge-form? e form (chunk-ev-list chunk) nil))
+        collect form))
+
+(defun compatible-edge-form? (edge form ev-list remaining-forms?)
+  "Dispatch point for continuing (or not) a chunk of a particular form
+   with this edge."
+  (case form 
+    (ng (if (sentential-adverb? edge)
+            (loop for ee in (edges-before edge)
+                  thereis (member (cat-name (edge-form ee)) '(det possessive)))
+            (and (ng-compatible? edge ev-list)      
+                 (or remaining-forms?
+                     (not (likely-verb+ed-clause edge ev-list))))))
+    (vg (and
+         (compatible-with-vg? edge)
+         (not (loop for ev in ev-list
+                 thereis
+                   (loop for e in (ev-top-edges ev)
+                      thereis
+                        (and
+                         (vg-head? e)
+                         (not (member (cat-name (edge-category e))
+                                      '(be have do modal)))))))))
+    (adjg (adjg-compatible? edge))))
+
+
+
+
+(defun starting-forms (ev &optional (forms *chunk-forms*))
+  "Used by the loop in find-chunks to determine whether any of the edges
+   on this start vector are chunk-starters. Return all of the
+   possible forms."
+  (loop for form in forms
+     when (loop for edge in (ev-top-edges ev)
+             thereis (can-start? form  edge))
+     collect form))
+
+(defun can-start? (form edge)
+  (case form
+    (ng (ng-start? edge))
+    (vg (vg-start? edge))
+    (adjg (adjg-compatible? edge))))
+
+
+
+
+(defun disambiguate-head-of-chunk (chunk) ;; called by find-chunks ///review
+  (let* ((head-ev (car (chunk-ev-list chunk)))
+         (top-node (ev-top-node head-ev))
+         (multi-edges
+          (when (eq :multiple-initial-edges top-node)
+            (ev-top-edges head-ev)))
+         (forms (chunk-forms chunk))
+         (head-compatible-edges
+          (when multi-edges
+            (compatible-head-edges? forms head-ev))))
+    (declare (special head-ev multi-edges top-node head-compatible-edges))
+    (when (and (not (equal forms '(adjg)))
+               ;; ADJG has confusions for NEXT and FOLLOWING which are non-chunked items
+               multi-edges ;; the head started as ambiguous
+               (car head-compatible-edges)
+               ;; but is disambiguated by the chunking
+               (null (cdr head-compatible-edges)))
+      (specify-top-edge (car head-compatible-edges)))))
+
+
+
+
+;;;------------------------
+;;; category-specific code
+;;;------------------------
 
 (defmethod ng-compatible? ((e edge) evlist)
+  "Is this edge a compatible part of a noun group.
+   Return nil if this edge is not compatible."
+  ;; n.b. all the companion methods are in syntax/category-predicates.lisp
   (declare (special e category::adverb category::also category::be category::have
                     category::modal
                     category::common-noun category::det category::ordinal
@@ -315,7 +425,7 @@
             edges
             #'(lambda(e) (eq (cat-name (edge-category e)) 'syntactic-there))))
        nil)
-      #|MODAL, SYNTACTIC-THERE|# 
+
       ((eq ecat 'ordinal) t)                                        ;;ORDINAL
      
       ((or (some-edge-satisfying? edges #'pronoun-or-wh-pronoun)    ;; BLOCK NG CONTINUATION after WH and pronouns
@@ -323,6 +433,7 @@
            (and (some-edge-satisfying? (all-edges-at e) #'preposition-edge?) 
                 (not (preceding-determiner? e))))
        nil)
+      
       ((plural-noun-and-present-verb? e)                            ;;PLURAL-NOUN-AND-PRESENT-VERB?
        (plural-noun-not-present-verb? e))
       ((singular-noun-and-present-verb? e)                          ;;SINGULAR-NOUN-AND-PRESENT-VERB?
@@ -333,21 +444,23 @@
                   (edge-p (car (chunk-edge-list (car *chunks*))))
                   (eq (cat-name (edge-category (car (chunk-edge-list (car *chunks*)))))
                       'do)))
-
             ;; (not (preceding-do? e)) catches the "do" in
             ;;Although current methods do not allow for detection of nucleotide-free 
             ;;  GTPases in vivo, our BiFC results provide additional support for our model. "
             (not (sentence-initial? e)))) ;; this is a case of an imperative
+      
       ((comma? e)                                                   ;;COMMA
        ;;comma can come in the middle of an NP chunk
        ;; as in "active, GTP-bound Ras"
        ;; BUT THIS IS NOT AS COMMON AS OTHER USES OF COMMA -- DROP IT FOR NOW
        nil)
+      
       ((member ecat '(have be)) nil)                                ;; not HAVING or BEING
       ((and (member eform '(verb+ing verb+ed))                      ;; no participles after a paren
             ;; don't allow a verb form after a parenthetical -- most likely a relative clause or a main clause
             (loop for edge in edges thereis (is-parenthesis? edge)))
        nil)
+      
       (t
        (case eform
          (following-adj (prev-noun-or-adj e))                       ;; FOLLOWING is treated as an adj
@@ -357,12 +470,14 @@
           (cond ((setq preceding-noun-refs (preceding-noun-refs edges))
                  ;; have a strange case where "Ra" is made into a bio-entity, and "Ras" is its plural
                  ;; check to block splitting up "the p53 binding ability"
-
-                 ;; tighter check for cases like "Ras expressing cells"
-                 (loop for ref in preceding-noun-refs thereis (is-object-not-subject? ref e)))
-                ((loop for edge in edges thereis
-                         (member (cat-name (edge-form edge)) '(det quantifier adjective
-                                                               comparative-adjective superlative-adjective))))))
+                 (loop for ref in preceding-noun-refs
+                    ;; tighter check for cases like "Ras expressing cells"
+                    thereis (is-object-not-subject? ref e)))
+                
+                ((loop for edge in edges 
+                    thereis (member (cat-name (edge-form edge))
+                                    '(det quantifier adjective
+                                      comparative-adjective superlative-adjective))))))
          (verb+ed                                                   ;; VERB+ED
           ;;"RNA interference (RNAi) blocked MEK/ERK activation."
           (not (preceding-adverb-preceded-by-ng edges))
@@ -376,45 +491,6 @@
                 (and (not (verb-premod-sequence? (edge-just-to-right-of e)))
                      (ng-compatible? (edge-form e) edges)))))))))
 
-(defun comma? (e)(eq word::comma (edge-category e)))
-
-(defun is-parenthesis? (edge)
-  (declare (special category::parentheses))
-  (eq (edge-category edge) category::parentheses))
-
-(defun noun-like-ng-head? (edge)
-  (and (ng-head? edge)
-       (not (member (cat-name (edge-form edge)) '(det quantifier)))))
-
-(defun preceding-noun-refs (edges)
-  (loop for edge in edges
-        when (noun-like-ng-head? edge) collect (edge-referent edge)))
-
-(defun is-object-not-subject? (mod e)
-  (let ((ref (if (edge-p mod) (edge-referent mod) mod))
-        (head (if (edge-p e) (edge-referent e) e)))
-    (and (not (find-subcat-var ref :subject head))
-         (find-subcat-var ref :object head))))
-
-
-(defun preceding-adverb-preceded-by-ng (edges)
-  (and
-   (loop for edge in edges thereis
-           (eq (cat-name (edge-form edge)) 'adverb))
-   (loop for edge in edges thereis
-           (let ((left (edge-just-to-left-of edge)))
-             (and (edge-p left)
-                  (or
-                   (and (eq (cat-name (edge-form left))  'adverb)
-                        (ng-head? (edge-just-to-left-of left)))
-                   (ng-head? left)))))))
-  
-(defun some-edge-satisfying? (edge-list predicate)
-  (loop for edge in edge-list thereis (funcall predicate edge)))
-
-(defun edges-after (e)(ev-top-edges (pos-starts-here (pos-edge-ends-at e)) ))
-(defun edges-before (e)(ev-top-edges (pos-ends-here (pos-edge-starts-at e)) ))
-(defun all-edges-at (e)(ev-top-edges (pos-starts-here (pos-edge-starts-at e)) ))
 
 ;;; FROM categories.lisp but should be here to maintain compatibility when structure of chunk changes
 (defun plural-noun-and-present-verb? (e)
@@ -442,10 +518,9 @@
 
 
 (defun non-det-or-verb-ng-start? (ee)
-  (and
-   (edge-p ee)
-   (ng-start? ee)
-   (not (member (cat-name (edge-form ee)) '(det verb+ed verb+ing)))))
+  (and (edge-p ee)
+       (ng-start? ee)
+       (not (member (cat-name (edge-form ee)) '(det verb+ed verb+ing)))))
 
 (defun np-end-edge (ee)
   (member (cat-name (edge-form ee)) '(proper-noun pronoun)))
@@ -456,50 +531,13 @@
 
 (defun plural-noun-not-present-verb? (e &optional (edges-before (edges-before e)))
   (or
-   (sentence-initial? e) ;; sentence initial
-   (and
-    (not (or
-          (some-edge-satisfying? edges-before #'np-end-edge)
-          (some-edge-satisfying? edges-before #'singular-det)))
+   (sentence-initial? e)
+   (and (not (or (some-edge-satisfying? edges-before #'np-end-edge)
+                 (some-edge-satisfying? edges-before #'singular-det)))
     (or
      (some-edge-satisfying? edges-before #'non-det-or-verb-ng-start?)
-     (not
-      (some-edge-satisfying? edges-before #'non-det-or-verb-ng-start?))))))
+     (not (some-edge-satisfying? edges-before #'non-det-or-verb-ng-start?))))))
                                    
-
-
-(defun pronoun-or-wh-pronoun (edge)
-  (or
-   (eq (cat-name (edge-form edge)) 'pronoun )
-   (member (cat-name (edge-category edge)) '(which what))))
-
-(defun preposition-edge? (edge)
-  (when (edge-p edge)
-    (prep? (cat-name (edge-form edge)))))
-
-(defun pp? (edge)
-   (eq (cat-name (edge-form edge)) 'pp))
-
-#+ignore
-(defun constrain-following (e)
-  (and (category-p (edge-category e))
-       (eq (cat-name (edge-category e)) 'following-adj)
-       (prev-noun-or-adj e)))
-
-(defun clear-np-start? (e)
-  (or
-   (member (cat-name (edge-category e)) '(which what))
-   (member (cat-name (edge-form e)) '(pronoun det))))
-
-
-(defun prev-noun-or-adj (e &optional (edges-before (edges-before e)))
-  (loop for ee in edges-before
-        thereis
-          (and
-           (category-p (edge-form ee))
-           (member (cat-name (edge-form ee))
-                   '(adjective comparative-adjective superlative-adjective
-                     common-noun proper-noun)))))
 
 
 (defmethod vg-start? ((e edge))
@@ -509,25 +547,21 @@
     (cond
       ((plural-noun-and-present-verb? e)
        (and
-        (or
-         (some-edge-satisfying? (edges-before e) #'singular-det)
-         (not (preceding-det-prep-poss-or-adj e edges-before)))
-        (or
-         (not (plural-noun-not-present-verb? e))
-         (some-edge-satisfying? (edges-after e) #'clear-np-start?)
-         (not (ng-compatible? e nil))
-         (not (ng-head? e)))))
+        (or (some-edge-satisfying? (edges-before e) #'singular-det)
+            (not (preceding-det-prep-poss-or-adj e edges-before)))
+        (or (not (plural-noun-not-present-verb? e))
+            (some-edge-satisfying? (edges-after e) #'clear-np-start?)
+            (not (ng-compatible? e nil))
+            (not (ng-head? e)))))
+      
       ((singular-noun-and-present-verb? e)
-       (or
-        (preceding-pronoun-or-which? e edges-before)
-        (and
-         (not (and
-               (preceding-det-prep-poss-or-adj e edges-before)
-               ;; allow for "to form GDP"
-               (not
-                (loop for ee in edges-before
-                   thereis (eq (cat-name (edge-category ee)) 'to)))))
-         (not (followed-by-verb e)))))
+       (or (preceding-pronoun-or-which? e edges-before)
+           (and (not (and (preceding-det-prep-poss-or-adj e edges-before)
+                          ;; allow for "to form GDP"
+                          (not
+                           (loop for ee in edges-before
+                              thereis (eq (cat-name (edge-category ee)) 'to)))))
+            (not (followed-by-verb e)))))
       
       (t (compatible-with-vg? e)))))
 
@@ -543,8 +577,7 @@
       (verb-premod-sequence? e)
       (and (eq category::time (edge-category e))
            (not (loop for ee in (all-edges-at e)
-                      thereis
-                        (eq category::subordinate-conjunction (edge-form ee)))))))
+                   thereis (eq category::subordinate-conjunction (edge-form ee)))))))
 
 (defun verb-premod? (n v)
   (and (not (is-basic-collection? n))
@@ -558,7 +591,6 @@
   (declare (special category::that word::comma))
   (let ((right (edge-just-to-right-of e))
         (left (edge-just-to-left-of e)))
-
     (and (ng-head? e)
          (not (preposition-edge? left))
          (vg-head? right)
@@ -601,7 +633,7 @@
             (setf (chunk-start-pos chunk) new-start)))))))
 #| This is a mixed bag of results, mostly because there's competition 
 between the verb wanting the 'to' to be bare (exposed as a treetop)
-mark an infinitive complement, the infinitive per-se. E.g. overnight #3,
+to mark an infinitive complement, the infinitive per-se. E.g. overnight #3,
 as well as marking purpose clauses (overnight 11).
   The motivating example was ERK #7, where the stored 'best' parse
 grossly miss-analyzed "shown consistently to be deficient", so the
@@ -635,13 +667,11 @@ than a bare "to".  |#
           ((plural-noun-and-present-verb? e)
            (plural-noun-not-present-verb? e))
           ((singular-noun-and-present-verb? e)
-           (not
-            (or
-             (sentence-initial? e) ;; case of imperative verb like "DECREASE"
-             (preceding-pronoun-or-which? e)
-             (preceding-do? e)
-             (and (edge-just-to-left-of e)
-                  (eq (cat-name (edge-category (edge-just-to-left-of e))) 'to)))))
+           (not (or (sentence-initial? e) ;; case of imperative verb like "DECREASE"
+                    (preceding-pronoun-or-which? e)
+                    (preceding-do? e)
+                    (and (edge-just-to-left-of e)
+                         (eq (cat-name (edge-category (edge-just-to-left-of e))) 'to)))))
           ((member ecn '(modal following-adj syntactic-there))
            nil)
           ((member (cat-name (edge-form e)) '(vp+ed))
@@ -663,6 +693,7 @@ than a bare "to".  |#
                         (member 'ng (chunk-forms (car *chunks*)))
                         (eq (chunk-end-pos (car *chunks*))
                             (pos-edge-starts-at e)))))))
+          
           ((or (eq category::modifier (edge-category e))
                (eq category::adjective (edge-form e))
                (eq category::comparative-adjective (edge-form e))
@@ -678,9 +709,9 @@ than a bare "to".  |#
                       (member 'vg (chunk-forms (car *chunks*)))
                       (loop for edge in (ev-top-edges (car (chunk-ev-list (car *chunks*))))
                          thereis (eq category::be (edge-category edge)))))))
+          
           ((and (eq 'that (cat-name (edge-category e)))
-                (not (sentence-initial? e)) ;; don't treat as relative clause marker when sentence initial
-           )
+                (not (sentence-initial? e))) ;; don't treat as relative clause marker when sentence initial
            ;; it is almost never the case that THAT is a determiner, 
            ;; it is usually a relative clause marker or a thatcomp marker
            (and (not *big-mechanism*)
@@ -690,8 +721,10 @@ than a bare "to".  |#
                 (not (and (car *chunks*)
                           (member 'ng (chunk-forms (car *chunks*)))
                           (thatcomp-noun (car (chunk-edge-list (car *chunks*))))))))
+          
           ((eq (edge-form e) category::adverb)
            (not (eq (edge-category e) category::also)))
+          
           ((and (edge-form e)
                 (eq (cat-name (edge-form e)) 'wh-pronoun)
                 (category-p (edge-referent e))
@@ -714,6 +747,7 @@ than a bare "to".  |#
                           (preposition-edge? prev-edge)
                           (eq category::subordinate-conjunction (edge-form prev-edge))
                           (ng-head? prev-edge)))))))
+          
           ((ng-start? (edge-form e))
            t)))))
 
@@ -723,6 +757,7 @@ than a bare "to".  |#
   (let ((edges-before (edges-before e))
         (e-form-name  (cat-name (edge-form e))))
     (declare (special edges-before e-form-name))
+    
     (or (and (eq e-form-name 'number)
              (or (null edges-before)
                  (loop for ee in edges-before
@@ -730,10 +765,10 @@ than a bare "to".  |#
                          (or (eq (edge-category ee) word::comma)
                              (member (cat-name (edge-form ee))
                                      '(quantifier det adverb punctuation))))))
-        (when (not (or (preceding-adverb e edges-before)
-                       (some-edge-satisfying? (all-edges-at e) #'preposition-edge?)
-                       (eq e-form-name 'verb+ed)))
-          ;;(lsp-break "foo")
+        
+        (unless (or (preceding-adverb e edges-before)
+                    (some-edge-satisfying? (all-edges-at e) #'preposition-edge?)
+                    (eq e-form-name 'verb+ed))
           (cond
             ((and (singular-noun-and-present-verb? e)
                   (loop for c in *chunks*
@@ -778,13 +813,19 @@ than a bare "to".  |#
               (eq category::det (edge-form e))
               (member (cat-name (edge-category e)) '(that this these those)))))))))
 
-(defun copula-edge? (e)
-  )
 
 
 ;;;---------------------
 ;;; auxiliary functions
 ;;;---------------------
+
+(defun some-edge-satisfying? (edge-list predicate)
+  "Used for tailored tests. See, e.g. plural-noun-not-present-verb?"
+  (loop for edge in edge-list thereis (funcall predicate edge)))
+
+(defun edges-after (e)(ev-top-edges (pos-starts-here (pos-edge-ends-at e)) ))
+(defun edges-before (e)(ev-top-edges (pos-ends-here (pos-edge-starts-at e)) ))
+(defun all-edges-at (e)(ev-top-edges (pos-starts-here (pos-edge-starts-at e)) ))
 
 (defun ev-edges (ev)
   "Return a list of all the edges on this edge vector.
@@ -820,49 +861,14 @@ than a bare "to".  |#
           (list top))))  |#
 
 
-(defun starting-forms (ev &optional (forms *chunk-forms*))
-  "Used by the loop in find-chunks to determine whether any of the edges
-   on this start vector are chunk-starters. Return all of the
-   possible forms."
-  (loop for form in forms
-     when (loop for edge in (ev-top-edges ev)
-             thereis (can-start? form  edge))
-     collect form))
-
-(defun can-start? (form edge)
-  (case form
-    (ng (ng-start? edge))
-    (vg (vg-start? edge))
-    (adjg (adjg-compatible? edge))))
-
-
-(defun disambiguate-head-of-chunk (chunk) ;; called by find-chunks ///review
-  (let* ((head-ev (car (chunk-ev-list chunk)))
-         (top-node (ev-top-node head-ev))
-         (multi-edges
-          (when (eq :multiple-initial-edges top-node)
-            (ev-top-edges head-ev)))
-         (forms (chunk-forms chunk))
-         (head-compatible-edges
-          (when multi-edges
-            (compatible-head-edges? forms head-ev))))
-    (declare (special head-ev multi-edges top-node head-compatible-edges))
-    (when (and (not (equal forms '(adjg)))
-               ;; ADJG has confusions for NEXT and FOLLOWING which are non-chunked items
-               multi-edges ;; the head started as ambiguous
-               (car head-compatible-edges)
-               ;; but is disambiguated by the chunking
-               (null (cdr head-compatible-edges)))
-      (specify-top-edge (car head-compatible-edges)))))
-
-
-(defun pos-ev-ends-at (ev forms)
+(defun pos-ev-ends-at (ev forms) ;; called just by delimit-next-chunk
   (declare (ignore forms))
   (pos-edge-ends-at (car (ev-top-edges ev))))
 
 
 
 (defparameter *warn-on-multiple-heads* nil)
+
 (defun find-consistent-edges (chunk)
   "Called as the finally clause in the delimit-next-chunk loop. Assuming there
    are forms associated with this chunk then we have
@@ -919,8 +925,6 @@ than a bare "to".  |#
          when (position/< ev-pos end-pos)
          collect ev))))
 
-  
-
 (defun suppress-extra-head-edges-if-necessary (chunk head-edge)
   "If there are multiple edges on this position (or if the wrong one is said
    to be the top edge, then parsing will get the right one only at chance, 
@@ -941,75 +945,8 @@ than a bare "to".  |#
              always (compatible-edge-form? e form ev-list t))
      do (return e)))
 
-(defun best-head (forms possible-heads)
-  "Called from delimit-next-chunk. Forms is a list of one or more symbols
- naming chunk types (e.g. ng). Possible-heads is a list of pairs of chunk type
- and the position it ends at. If there is more than one chunk select the one
- whose end position is to the right of the others. "
-  (let (furthest)
-    (loop for p in possible-heads ;; e.g. (ng #<position 4 "on">)
-       when (and (member (car p) forms)
-                 (or (null furthest)
-                     (>= (pos-token-index (second p))
-                         (pos-token-index (second furthest)))))
-       do (setq furthest p))
-    furthest))
-
-(defun compatible-heads (forms ev next-pos)
-  (loop for form in forms
-    when (compatible-head? form ev)
-    collect (list form next-pos)))
-
-(defun compatible-head? (form ev)
-  "The type of this chunk is 'form'. Checks whether any of 
-   the edges on this edge vector are suitable heads for that type."
-  (loop for edge in (ev-top-edges ev)
-    thereis (ecase form
-              (ng (ng-head? edge))
-              (vg (vg-head? edge))
-              (adjg (adjg-head? edge)))))
 
 
-(defun compatible-head-edges? (forms ev)
-  "Like compatible-head? except that it returns the edge (or edges)
-   that are compatible with the (one of) the form(s)."
-  (loop for edge in (ev-top-edges ev)
-        when (loop for form in forms
-                   thereis (ecase form
-                             (ng (ng-head? edge))
-                             (vg (vg-head? edge))
-                             (adjg (adjg-head? edge))))
-        collect edge))
-
-
-(defun remaining-forms (ev chunk) ;; &optional (forms *chunk-forms*))
-  "Called from the loop in delimit-next-chunk. This is the test that determines
-   whether the chunk should include get longer. It returns the forms
-   that are still compatible given at least on of the edges on this vector"
-  (loop for form in (chunk-forms chunk)
-        when (loop for e in (ev-top-edges ev)
-                   thereis (compatible-edge-form? e form (chunk-ev-list chunk) nil))
-        collect form))
-
-(defun compatible-edge-form? (edge form ev-list remaining-forms?)
-  (case form 
-    (ng (if (sentential-adverb? edge)
-            (loop for ee in (edges-before edge)
-                  thereis (member (cat-name (edge-form ee)) '(det possessive)))
-            (and (ng-compatible? edge ev-list)      
-                 (or remaining-forms?
-                     (not (likely-verb+ed-clause edge ev-list))))))
-    (vg (and
-         (compatible-with-vg? edge)
-         (not (loop for ev in ev-list
-                 thereis
-                   (loop for e in (ev-top-edges ev)
-                      thereis
-                        (and
-                         (vg-head? e)
-                         (not (member (cat-name (edge-category e))
-                                      '(be have do modal)))))))))
-    (adjg (adjg-compatible? edge))))
 
 (defun sentential-adverb? (edge)
   (declare (special edge))
@@ -1022,8 +959,54 @@ than a bare "to".  |#
   nil)
 
 
+(defun preceding-do? (e)
+  "called by ng-start?"
+  (or (loop for c in *chunks*
+            thereis
+               (and (car (chunk-edge-list c))
+                    (eq (cat-name (edge-category (car (chunk-edge-list c))))
+                        'do)))
+      (loop for ee in (all-tts)
+            thereis
+              (and (edge-p ee)
+                   (edge-precedes ee e)
+                   (eq (cat-name (edge-category ee)) 'do)))))
+
+(defun comma? (e) (eq word::comma (edge-category e)))
+
+(defun is-parenthesis? (edge)
+  (declare (special category::parentheses))
+  (eq (edge-category edge) category::parentheses))
+
+(defun noun-like-ng-head? (edge)
+  (and (ng-head? edge)
+       (not (member (cat-name (edge-form edge)) '(det quantifier)))))
+
+(defun preceding-noun-refs (edges)
+  (loop for edge in edges
+        when (noun-like-ng-head? edge) collect (edge-referent edge)))
 
 (defparameter *suppressed-verb+ed* nil)
+
+
+(defun is-object-not-subject? (mod e)
+  (let ((ref (if (edge-p mod) (edge-referent mod) mod))
+        (head (if (edge-p e) (edge-referent e) e)))
+    (and (not (find-subcat-var ref :subject head))
+         (find-subcat-var ref :object head))))
+
+(defun preceding-adverb-preceded-by-ng (edges)
+  (and
+   (loop for edge in edges thereis
+           (eq (cat-name (edge-form edge)) 'adverb))
+   (loop for edge in edges thereis
+           (let ((left (edge-just-to-left-of edge)))
+             (and (edge-p left)
+                  (or
+                   (and (eq (cat-name (edge-form left))  'adverb)
+                        (ng-head? (edge-just-to-left-of left)))
+                   (ng-head? left)))))))
+
 
 (defun likely-verb+ed-clause (edge ev-list &aux (right (edge-just-to-right-of edge)))
   (declare (special *np-category-names* edge ev-list)
@@ -1097,6 +1080,42 @@ than a bare "to".  |#
     (push `(,(string-of-words-between (chunk-start-pos *chunk*) (pos-edge-ends-at edge))
              ,(current-string))
           *verb+ed-sents*)))
+
+
+
+(defun pronoun-or-wh-pronoun (edge)
+  (or (eq (cat-name (edge-form edge)) 'pronoun )
+      (member (cat-name (edge-category edge)) '(which what))))
+
+(defun preposition-edge? (edge)
+  (when (edge-p edge)
+    (prep? (cat-name (edge-form edge)))))
+
+(defun pp? (edge)
+  (eq (cat-name (edge-form edge)) 'pp))
+
+#+ignore
+(defun constrain-following (e)
+  (and (category-p (edge-category e))
+       (eq (cat-name (edge-category e)) 'following-adj)
+       (prev-noun-or-adj e)))
+
+(defun clear-np-start? (e)
+  (or
+   (member (cat-name (edge-category e)) '(which what))
+   (member (cat-name (edge-form e)) '(pronoun det))))
+
+
+(defun prev-noun-or-adj (e &optional (edges-before (edges-before e)))
+  (loop for ee in edges-before
+        thereis
+          (and
+           (category-p (edge-form ee))
+           (member (cat-name (edge-form ee))
+                   '(adjective comparative-adjective superlative-adjective
+                     common-noun proper-noun)))))
+
+
 
 ;;;--------------------------------------------------------------------------
 ;;; code used for chunking, moved in from categories.lisp
