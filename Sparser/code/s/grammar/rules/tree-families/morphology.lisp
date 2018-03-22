@@ -603,6 +603,7 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                 (subseq pname 0 (- length 3))))
 
          ((and (consonant? char-minus-1)
+               (not (eql char-minus-1 #\x))
                (vowel? char-minus-2) ;; "named" => "name"
 	       (not (vowel? char-minus-3))) ;; "coiled" => "coil"
           ;; "..vced" -> "..vce"
@@ -804,6 +805,7 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 
       ((and (consonant? (char last3char 0))
             (vowel? (char last2char 0))
+            (not (eql (char lastchar 0) #\x))
             (consonant? (char lastchar 0)))
        (string-append pname lastchar "ed"))
 
@@ -849,7 +851,7 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
          (setq pname (string-append pname "y"))))
       
       ((eql #\w last-letter)) ;; "snow"
-      ((eql #\x last-letter))
+      ((eql #\x last-letter)) ;; "tax"
       ((eql #\y last-letter)) ;; "play"
 
       (ends-in-a-consonant? ;; something to double
