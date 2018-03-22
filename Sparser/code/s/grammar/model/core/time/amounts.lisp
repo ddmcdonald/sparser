@@ -57,9 +57,9 @@
 ;;; fractions of amounts
 ;;;----------------------
 
-(define-category  fraction-of-amount-of-time  ;; "the first three months"
+(define-category fraction-of-amount-of-time  ;; "the first three months"
   ;; by analogy to ordinal-fraction
-  :specializes amount
+  :specializes amount-of-time
   :instantiates self
   :binds ((selector . ordinal)
           (portion . amount-of-time))
@@ -68,6 +68,6 @@
 (def-cfr fraction-of-amount-of-time (ordinal amount-of-time)
   :form n-bar
   :referent (:instantiate-individual fraction-of-amount-of-time
-             :with (selector left-edge)
-                    portion right-edge))
+             :with (selector left-edge
+                    portion right-edge)))
 
