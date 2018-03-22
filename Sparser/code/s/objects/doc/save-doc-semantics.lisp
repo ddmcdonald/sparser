@@ -193,7 +193,7 @@
 ;; this is executed when *save-bio-processes* is T
 (defun save-bio-processes (*sent* &optional (bio-processes '(:or bio-process)))
   (declare (special *sent*))
-  (let ((sems (find-sem-type-instances (sent-sem) bio-processes)))
+  (let ((sems (find-sem-type-instances (sent-sem *sent*) bio-processes)))
     (if sems
         (push (list (sentence-string *sent*) sems) *saved-bio-processes*)
         (push (sentence-string *sent*) *blank-sents*))))
@@ -281,15 +281,11 @@
 (defun sent-sem (&optional sent)
   ;; produces an s-expression which is the item that write-sem would produce
   ;; on the stream
-  (when sent (p sent))
+  (when (stringp sent) (p sent))
   (values
    (read-from-string
     (with-output-to-string (s)
-      (if (and (previous (sentence))
-               (sentence-string (previous (sentence)))
-               (not (equal (sentence-string (previous (sentence))) "")))
-          (write-sem (previous (sentence)) s)
-          (write-sem (sentence) s))))))
+      (write-sem (or sent (sentence)) s)))))
 
 (defun sem-sexp (indiv)
   (read-from-string

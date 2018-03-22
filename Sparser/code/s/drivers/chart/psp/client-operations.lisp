@@ -222,15 +222,21 @@
   (unless (and (boundp '*complex-statements*)
                (consp *complex-statements*))
     (read-from-json-list))
-  (let ((sp::*save-bio-processes*
-         *reach-complex-processes*))
     (loop for *rcs* in *complex-statements*
           as i from 1 to n
           collect
-            (let ((*saved-bio-processes* nil))
-              (safe-parse (car (find-reach-sentence *rcs*)))
-              (list (find-reach-sentence *rcs*)
-                    (second (car *saved-bio-processes*)))))))
+            (find-reach-bio-processes (car (find-reach-sentence *rcs*))
+                                      (second (find-reach-sentence *rcs*)))))
+
+(defun find-reach-bio-processes (sent &optional other-data)
+  (let ((*save-bio-processes* *reach-complex-processes*)
+        (*saved-bio-processes* nil)
+        (*blank-sents* nil))
+    (declare (special *save-bio-processes* *saved-bio-processes* *blank-sents*))
+    (safe-parse sent)
+    (list (list sent other-data)
+          (loop for s in *saved-bio-processes*
+                append (second s)))))
 
 (defun indra-post-process (mentions sentence output-stream)
   (setq *indra-embedded-post-mods* nil)

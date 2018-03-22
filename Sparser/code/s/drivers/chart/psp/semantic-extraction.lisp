@@ -95,19 +95,21 @@
 ;;; Helper code for the cards
 ;;;---------------------------
 
-(defun all-individuals-in-tts (&optional (sentence (previous (sentence))))
+(defun all-individuals-in-tts ()
   ;; This used to both walk the treetops to identify
   ;; all of the individuals that they reference
   ;; and also recurd their surface strings.
   ;; Now it just does the walk and the strings
   ;; are recorded by the call to note-surface-string in complete/hugin.
-  (let ((individuals nil)
-        (start-pos (starts-at-pos sentence))
-        (end-pos (ends-at-pos sentence)))
-    (loop for tt in (all-tts start-pos end-pos)
-      do (loop for i in (individuals-under tt)
-           when (itypep i 'biological)
-           do (pushnew i individuals)))
+  (let ((individuals nil))
+    (loop for sentence in (all-current-sentences)
+          do
+            (let ((start-pos (starts-at-pos sentence))
+                  (end-pos (ends-at-pos sentence)))
+              (loop for tt in (all-tts start-pos end-pos)
+                    do (loop for i in (individuals-under tt)
+                             when (itypep i 'biological)
+                             do (pushnew i individuals)))))
     (reverse individuals)))
 
 
@@ -631,11 +633,17 @@ in cwc-integ/spire/interface/sparser.lisp
   by spire::sparser-indiv->all-exprs
 |#
 
-(defun tts-semantics ()
-  (loop for edge in (all-tts) #+ignore (cdr (all-tts)) 
-    when (and (edge-p edge) 
-              (not (word-p (edge-referent edge))))
-    collect (semtree (edge-referent edge))))
+(defun tts-semantics (&key (for-spire nil)(with-ids nil))
+  (let ((*for-spire* for-spire)
+        (*with-uids* with-ids))
+    (declare (special *for-spire* *with-uids*))
+    (loop for s in (all-current-sentences)
+          append
+            (let ((start-pos (starts-at-pos s))
+                  (end-pos (ends-at-pos s)))
+              (loop for edge in (all-tts start-pos end-pos)
+                    when (and (edge-p edge) (not (word-p (edge-referent edge))))
+                    collect (semtree (edge-referent edge)))))))
 
 (defun tts-edge-semantics ()
   (loop for edge in (all-tts)
@@ -922,16 +930,6 @@ in cwc-integ/spire/interface/sparser.lisp
 ;;; semantic tree traversal
 ;;;-------------------------
 
-#+ignore
-(defmethod traverse-sem ((s sentence) fn)
-  (traverse-sem (previous s) fn)
-  (funcall fn s)
-  (loop for tt in (all-tts (starts-at-pos s) (ends-at-pos s))
-        when
-          (edge-p tt)
-        do
-       (traverse-sem (edge-referent tt) fn)))
-
 (defgeneric traverse-sem (sem fn)
   (:documentation "Map the function 'fn' recursively through
     the indicated semantic structures. Function must run for
@@ -1176,14 +1174,14 @@ in cwc-integ/spire/interface/sparser.lisp
 (defmethod head-string (x)
   nil)
 
-(defun all-current-sentences (s)
+(defun all-current-sentences (&optional (s (sentence)))
   (when s
-    (cons s
-     (all-current-sentences (previous s)))))
+    (append (all-current-sentences (previous s))
+            (when (not (equal (sentence-string s) ""))
+              (list s)))))
 
 (defmethod top-edges-for-proteins ()
-  (let ((slist
-         (reverse (all-current-sentences (previous (sentence))))))
+  (let ((slist (all-current-sentences)))
     (loop for s in slist
           append
             (top-edges-for-interps-in-s
