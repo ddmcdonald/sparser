@@ -675,7 +675,7 @@
 (define-category interact :specializes other-bio-process
   :binds ((interactor biological)) 
   :realization 
-  (:verb "interact" :noun"interaction" 
+  (:verb "interact" :noun "interaction" 
          :etf (sv) 
          :with interactor
          :between interactor))

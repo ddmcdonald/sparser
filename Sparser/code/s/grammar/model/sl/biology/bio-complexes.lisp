@@ -17,19 +17,29 @@
 (define-category bio-complex   :specializes bio-chemical-entity
   ;; changed -- complexes are not molecules, but associated groups of
   ;; molecules, often proteins, but not always
+
+  ;; verb form is very rare, and causes problems -- BUT TRY IT NOW
+  ;;:verb ("complex" :third-singular "complexXXX") :etf (sv) 
+  ;; we have a comment with is complexed with SOS,
+  ;;:s component
   :mixins (reactome-category)
   :binds ((component
-	   (:or bio-complex small-molecule protein protein-domain ion)) ;; ion is for things like Ca2+-calmodulin
+           (:or bio-complex small-molecule protein protein-domain ion))
+          ;; ion is for things like Ca2+-calmodulin
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun ("complex" :plural "complexes")
-         ;; verb form is very rare, and causes problems
-         ;;:verb ("complex" :third-singular "complexXXX") :etf (sv) ;; we have a comment with is complexed with SOS,
-         ;;:s component
-         :m component
-         :with component
-         :of component
-         :between component))
+         :verb  ("complexXXX"  ;; block this form
+                 :third-singular "complexesXXX" ;; block this form
+                     :present-participle "complexing"
+                     :past-tense "complexed")
+   
+   :etf (sv)
+   :s component
+   :m component
+   :with component
+   :of component
+   :between component))
 
 (def-synonym bio-complex (:noun "multimer"))
 
