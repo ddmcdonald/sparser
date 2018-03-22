@@ -71,10 +71,9 @@
           (cell-location cellular-location)
           (complex bio-complex))
   :realization 
-  (:verb ("bind" :past-tense "bound" :present-participle "binding") ;; xxx is to prevent "binding" being a verb form
+  (:verb ("bind" :past-tense "bound" :present-participle "binding")
          :etf (svo-passive)
-
-         :noun "binding"
+         :noun ("binding" "binding activity")
          ;; to handle "bindings" and not break up "the p53 binding ability of ASPP2" during chinking
 
          :s binder
