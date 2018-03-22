@@ -171,7 +171,7 @@
 
 (defparameter *complex-statements* nil)
 (defun read-from-json-list
-    (&optional (f "/Users/rusty/projects/r3/corpus/HMS-complex-data/reach_complex_stmts.json"))
+    (&optional (f "~/projects/r3/corpus/HMS-complex-data/reach_complex_stmts.json"))
   (with-open-file (s f :direction :input)
     (loop until (eql (read-char s) #\])
           do
