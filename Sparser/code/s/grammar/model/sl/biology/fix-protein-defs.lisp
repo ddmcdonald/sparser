@@ -130,7 +130,7 @@ it outputs it to the non-upa-file"
                                                       (output-file "standardized-protein-defs-new.lisp")
                                                       (non-upa-file "non-upa-upm-proteins-new2.lisp")
                                                       (prot-fam-file "new-protein-fam-no-id3.lisp")
-                                                      (minimal-prot-fam "minimal-protein-families3.lisp"))
+                                                      (minimal-prot-fam "minimal-protein-families4.lisp"))
 
   "Taking an input list of the existing proteins and hash tables using
 UPA ID (Uniprot Accession number) as keys and UPM ID (Uniprot
@@ -1390,7 +1390,7 @@ new file to append to new-prot-fam, those without get filtered to "
     (print-defs-to-file *reach-sparser-mismatch-defs* mismatch-defs-file)))
 
 (defparameter *redundant-reach-prots* nil)
-(defun reach-vetted-up-defs->krisp (&key (good-reach-defs-file "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/mar2018-reach-uniprot/vetted-reach-defs1.lisp") (new-prot-def-file "new-prot-defs-from-reach.lisp")(mismatch-defs-file "sparser-reach-mismatch-defs.lisp"))
+(defun reach-vetted-up-defs->krisp (&key (good-reach-defs-file "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/mar2018-reach-uniprot/vetted-reach-defs4.lisp") (new-prot-def-file "new-prot-defs-from-reach1.lisp")(mismatch-defs-file "sparser-reach-mismatch-defs1.lisp"))
  (with-open-file (new-defs good-reach-defs-file :direction :input 
                             :external-format :UTF-8)
     (when new-defs
