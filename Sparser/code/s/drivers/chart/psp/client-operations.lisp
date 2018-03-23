@@ -195,12 +195,49 @@
         as i from 1 to n
         do
           (loop for m in (cdr (assoc :members indra-complex))
+                  as word = (cdadr (assoc :db--refs m))
                 unless
-                  (or (sp::single-term-rewrite? (cdadr (assoc :db--refs m)) :no-warn t)
-                      (sp::single-term-rewrite? (string-downcase (cdadr (assoc :db--refs m))) :no-warn t));; (resolve (cdadr (assoc :db--refs m))) 
+                  (or (single-term-rewrite? word :no-warn t)
+                      (single-term-rewrite? (string-downcase word) :no-warn t)
+                      (single-term-rewrite? (remove-prot-affixes word)
+                                            :no-warn t));; (resolve (cdadr (assoc :db--refs m))) 
                 do (setf (gethash (cadr (assoc :db--refs m)) *proteins*)
                          (cddr (assoc :db--refs m)))))
   *proteins*)
+
+(defparameter *prot-prefixes*
+ '("Ad-" "Adv-" "endogenous " "exogenous " "EGFP-" "eGFP-" "egfp-" "FLAG-" "Flag-" "flag-" "full-length " "full length " "GFP-" "gfp-" "Gfp-" "gfp" "GST " "Gst-" "HA-" "Ha-" "h" "hs" "Hs" "lenti-" "Lenti-" "lent-" "lentivirus-" "Lentivirus-" "LV-" "Lv-" "Luc-" "mammalian " "Mammalian " "MBP-" "mCherry-" "mcherry-" "mChy-" "Chy-" "CHY-" "MCHY-" "mEGFP-" "MMTV-" "mmu-" "Mmu-" "murine " "Murine " "oncogene " "oncogenic " "oncoprotein " "myc-" "Myc-" "MYC-" "protein " "proto-oncogene " "rAAV-" "recombinant " "Recombinant " "rh-" "Rh-" "rh" "Rh" "Wild type " "Wild-type " "wild-type " "wild type " "WT " "wt " "wt-" "WT-" "wt" "Wt" "WT" "YFP-" "protease " "transcription factor " "Transcription factor " "activated " "activated-" "active " "cytosolic " "cytoplasmic " "mutant " "Mutant " "mutated " "Mutated " "mut" "myr-" "Myr-" "myr" "nuclear " "p-" "P-" "p" "phospho-" "Phospho-" "phosphor-" "Phosphor-" "phosphorylated-" "phosphorylated " "pro-" "Pro-" "pro" "Ub-" "ubiquitinated " "DN-" "dn-" "dn" "dominant negative " "dominant-negative " "sh" "sh-" "SH-" "shRNA-" "si-" "Si-" "silencing " "Targeting " "-" ))
+(defparameter *prot-suffixes*
+ '("-flag" "-Flag" "-FLAG" "-Gfp" "-GFP" "-Gst" "-GST" "-HA" "-Ha" "-mcherry" "-mCherry" "-mChy" "-Chy" "-CHY" "-MCHY" "-myc" "-Myc" "-MYC" "-wt" "-Wt" "-WT" "-YFP" " protein" " Protein" " proteins" " Proteins" "-EGFP" "-eGFP" " mRNA" "-Ub" " knockdown" "-KD" " KD" " knockout" " siRNA" " siRNAs" " shRNA" "-shRNA" "-luc" "-Luc" "-LUC" "-" )) ; removed "KD"
+(defun remove-prot-affixes (protein)
+  (let* ((prot-no-pref nil)
+         (prot-no-suf nil)
+         (no-prefix-prot
+          (loop for pref in *prot-prefixes*
+                as last-char = (char pref (- (length pref) 1))
+                when (and (not (eq (length protein)
+                                   (length pref)))
+                          (eq 0 (search pref protein))
+                          (or (eq #\- last-char)
+                              (eq #\  last-char)
+                              (upper-case-p (char protein (length pref)))))
+                do (unless prot-no-pref
+                     (setq prot-no-pref (subseq protein (length pref))))
+                finally (return (or prot-no-pref
+                                    protein)))))
+;    (lsp-break "no-pref: ~s" no-prefix-prot)
+    (loop for suf in *prot-suffixes*
+          when (and (not (eq (length no-prefix-prot)
+                             (length suf)))
+                    (eq (- (length no-prefix-prot)
+                           (length suf))
+                        (search suf no-prefix-prot)))
+          do (unless prot-no-suf
+               (setq prot-no-suf (subseq no-prefix-prot 0
+                                       (- (length no-prefix-prot)
+                                          (length suf)))))
+          finally (return (or prot-no-suf
+                              no-prefix-prot)))))
 
 (defun find-reach-protein (indra-complex)
   (list (cdr (assoc :text (second (assoc :evidence indra-complex))))
