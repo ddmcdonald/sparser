@@ -125,10 +125,11 @@
   :realization
   (:verb "oligomerize" ;; need this (perhaps) for etf and :s and :o
    :etf (sv)
-   :noun ("oligomerization" "oligomerisation")
+   :noun ("oligomerization" "oligomerisation" "complex formation")
    :s monomer
    :of monomer
    :with monomer
+   :between monomer
    :via domain ))
 
 (define-category multimerize :specializes oligomerize ;; it's a little unclear whether they're synonyms or if multimer is more for higher order combinations
