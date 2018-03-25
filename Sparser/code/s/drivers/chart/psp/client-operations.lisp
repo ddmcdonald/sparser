@@ -248,10 +248,30 @@
   (let ((evidence (second (assoc :evidence indra-complex))))
     (assoc :found--by (cdr (assoc :annotations evidence)))))
 
+(defun contains-type? (s type)
+  (when (consp s)
+        (case (car s)
+          (set (loop for ss in (cdr s)
+                     collect (contains-type? ss type)))
+          (t
+           (if (itypep (car s) type)
+               (list type)
+               (let ((containing-branches
+                      (loop for branch in (cdr s)
+                            as contains? = (and (consp branch)
+                                                (consp (second branch))
+                                                (case (car branch)
+                                                  (type nil)
+                                                  (t (contains-type? (second branch) type))))
+                            when contains?
+                            collect (list (car branch) contains?))))
+                 (when containing-branches
+                   (cons (car s) containing-branches))))))))
+
 
 (defparameter *reach-complex-processes* 
   '(:or AFFINITY BINDING BIO-ACTIVITY BIO-ASSOCIATE BIO-COMPLEX
-    COOPERATE DIMERIZE HETERODIMERIZE INTERACT LIGATE OLIGOMERIZE RECRUIT))
+    COOPERATE DIMERIZE BIO-FORM HETERODIMERIZE INTERACT LIGATE OLIGOMERIZE RECRUIT))
 
 (defun reach-collect-bio-processes (n)
   (unless (and (boundp '*complex-statements*)
