@@ -563,7 +563,7 @@
          ;; "form" has never been seen as a verb in the corpus, but "forms" and "formed"
          ;; have been seen
          ;; NOW: "form" occurs in the Reactome comments
-         :noun "formation"
+         :noun ("formation" "form")
          :etf (svo-passive) ))
 
 (define-category frees :specializes caused-bio-process
