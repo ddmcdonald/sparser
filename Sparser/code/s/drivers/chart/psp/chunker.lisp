@@ -420,6 +420,18 @@
         preceding-noun-refs)
     (declare (special edges eform ecat preceding-noun-refs))
     (cond
+      ((let ((before (edges-before e)))
+         (loop for ee in before
+               thereis
+                 (and (member (cat-name (edge-form ee)) '(proper-noun np ng))
+                      (is-basic-collection? (edge-referent ee))
+                      (loop for b-edge in (edges-before ee)
+                            thereis
+                              (eq (cat-name (edge-category b-edge)) 'between)))))
+       ;; when you have a simple conjunction follwoing a "between" as in
+       ;;  "any possible interaction between LRP and APOE revealed little evidence"
+       ;;  don't extend the NG beyond the conjnction
+       nil)
       ((or (member ecat '(modal syntactic-there))
            (some-edge-satisfying?
             edges
