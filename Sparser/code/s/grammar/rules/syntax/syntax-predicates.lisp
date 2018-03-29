@@ -194,7 +194,8 @@
 
 (defun collection-p (item)
   (declare (special category::collection))
-  (itypep item category::collection))
+  (or (itypep item category::collection)
+      (itypep item category::sequence))) ;; added to make collect-model-desc work
 
 
 

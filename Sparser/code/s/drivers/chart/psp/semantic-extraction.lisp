@@ -840,7 +840,7 @@ in cwc-integ/spire/interface/sparser.lisp
                             var-name restriction value))
                    (push `(,var-name
                            (,(loop for item in value
-                                do (collect-model-description item)) ))
+                                collect (collect-model-description item)) ))
                          desc))
                   (rule-set) ;; the word "anti" presently does this
                   ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)
