@@ -268,6 +268,17 @@
                  (when containing-branches
                    (cons (car s) containing-branches))))))))
 
+(defparameter *complex-var-ht* (make-hash-table :size 1000 :test #'equal))
+(defun complex->contains-type-ht (n)
+  (let ((complex-set (reach-collect-bio-processes n)))
+    (loop for statement in complex-set
+          do (let ((sent (caar statement))
+                   (complexes (second statement)))
+               (loop for comp in complexes
+                     do (let ((contains-prot  (contains-type? comp 'protein)))
+                          (when contains-prot
+                            (pushnew sent (gethash contains-prot *complex-var-ht*)))))))))
+                              
 
 (defparameter *reach-complex-processes* 
   '(:or AFFINITY BINDING BIO-ACTIVITY BIO-ASSOCIATE BIO-COMPLEX
@@ -356,10 +367,31 @@
          '(object moving-object moving-object-or-agent-or-object agent))
         ((c-itypep ref 'auto-phosphorylate)
          '(agent substrate))
-
+        
+        ;; complexes/binding
         ((c-itypep ref 'binding)
          '(binder bindee direct-bindee))
-
+        ((c-itypep ref 'interact)
+         '(participant using interactor modifier purpose cell-line by-means-of predication manner following appositive-description))
+        ((c-itypep ref 'bio-associate)
+         '(participant))
+        ((c-itypep ref 'bio-activity)
+         '(protein modifier))
+        ;;  (BIO-ACTIVITY
+    ;; (MODIFIER
+    ;; (PROTEIN (RAW-TEXT "TAL1") (UID "UP:P17542") (NAME "TAL1_HUMAN")))
+    ;; (MODIFIER (DNA-BINDING (RAW-TEXT "DNA binding"))) (RAW-TEXT "activity"))
+        ((c-itypep ref 'complex)
+             ;(c-itypep ref 'heterodimer)
+         '(component))
+        ;; cooperate?
+        ((c-itypep ref 'dimerize)
+         '())
+         ((c-itypep ref 'bio-form)
+          '(agent object))
+         ((c-itype ref 'recruit)
+          '(moving-object destination))
+         
         ((or (c-itypep ref 'post-translational-modification)
              (c-itypep ref 'methylation)
              (c-itypep ref 'site)
