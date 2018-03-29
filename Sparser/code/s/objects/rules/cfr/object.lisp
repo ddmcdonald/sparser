@@ -45,6 +45,12 @@
 (defun polyword-rule? (cfr)
   (get-tag :polyword cfr))
 
+(defun form-rule? (cfr)
+  (get-tag :form-rule cfr))
+
+(defun syntactic-rule? (cfr)
+  (get-tag :syntax-rule cfr))
+
 ;;;----------
 ;;; decoders
 ;;;----------

@@ -125,13 +125,4 @@
     cfr ))
 
 
-;;;----------------------
-;;; predicate over rules
-;;;----------------------
-
-(defun syntactic-rule? (cfr)
-  (when (cfr-p cfr)
-    ;; Compare to form-rule? Both types of rules
-    ;; have the identical keyword in their lhs.
-    (get-tag :syntax-rule cfr)))
 

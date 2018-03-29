@@ -273,9 +273,6 @@
     cfr ))
 
 
-(defun form-rule? (cfr)
-  (get-tag :form-rule cfr))
-
 
 (defun revise-cfr-ancilaries (cfr form referent)
   ;; called from Def-form-rule/expr when the cfr was already defined
