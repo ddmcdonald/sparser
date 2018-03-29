@@ -86,7 +86,7 @@
   :realization (:common-noun "entry point"))
 
 (define-category target-waypoint
-  :instantiates wapoint
+  :instantiates waypoint
   :specializes waypoint
   :realization (:common-noun "target"))
 
