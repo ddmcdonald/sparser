@@ -824,7 +824,7 @@
 (def-indiv-with-id molecule "elaidic acid" "PCID:445639") 
 (def-indiv-with-id molecule "edaravone" "PCID:70335") 
 (def-indiv-with-id molecule "ebselen" "PCID:3194") 
-(def-indiv-with-id molecule "e3" "PCID:5756") 
+;(def-indiv-with-id molecule "e3" "PCID:5756") more commonly a short form of "E3 ligase"
 (def-indiv-with-id molecule "disulfiram" "PCID:3117") 
 (def-indiv-with-id molecule "dihydroxyacetone phosphate" "PCID:668") 
 (def-indiv-with-id molecule "dihydrofolic acid" "PCID:98792") 

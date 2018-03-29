@@ -97,11 +97,13 @@
 
 ;;lipids
 ;; in EGFR signaling comments
-(noun ("DAG" "diacylglycerol") :super lipid)
-(noun "Sphingosine" :super lipid)
-(noun ("IP3" "inositol 1,4,5-triphosphate") :super phospholipid) 
-(noun ("PIP2" "phosphatidylinositol 4,5-bisphosphate" "phosphatidylinositol-4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate") :super phospholipid)
-(noun ("PIP3" "phosphatidylinositol 3,4,5-triphosphate" "phosphatidylinositol-3,4,5-trisphosphate") :super phospholipid)
+;; added uids and moved to new-molecules
+;(noun ("DAG" "diacylglycerol") :super lipid)
+;(noun "Sphingosine" :super lipid)
+;(noun ("IP3" "inositol 1,4,5-triphosphate") :super phospholipid) 
+;(noun ("PIP2" "phosphatidylinositol 4,5-bisphosphate" "phosphatidylinositol-4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate") :super phospholipid)
+;;(noun ("PIP3" "phosphatidylinositol 3,4,5-triphosphate" "phosphatidylinositol-3,4,5-trisphosphate") :super phospholipid)
+
 (noun "LPA" :super phospholipid)
 (def-synonym lpa (:noun "lysophosphatidic acid"))
 

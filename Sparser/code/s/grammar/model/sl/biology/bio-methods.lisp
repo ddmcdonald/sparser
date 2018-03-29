@@ -220,7 +220,7 @@ with something else
       :realization
       (:noun "radioactivity" :adj "radioactive"
              :of material))
-(noun ("serum" :plural "sera") :super experimental-condition)
+; moved serum to substance rather than experimental condition because it can be used to activate proteins
 
 (noun "setting" :super bio-context)
 (noun "trial" :super bio-context)

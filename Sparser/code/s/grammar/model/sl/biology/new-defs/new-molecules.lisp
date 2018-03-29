@@ -419,6 +419,8 @@
 (def-indiv-with-id molecule "AACOCF3" "CHEBI:2341" :name "AACOCF3")
 
 (def-indiv-with-id molecule "Glucose" "CHEBI:17234" :name "glucose") 
+(def-indiv-with-id molecule "Glucocorticoid" "CHEBI:24261" :name "glucocorticoid") 
+
 (def-indiv-with-id molecule "Hormone" "CHEBI:24621" :name "hormone") 
 (def-indiv-with-id molecule "NADPH" "CHEBI:16474" :name "NADPH") 
 (def-indiv-with-id molecule "antioxidant" "CHEBI:22586" :name "antioxidant") 
@@ -1591,8 +1593,13 @@
 (def-indiv-with-id molecule "triterpene" "CHEBI:35191" :name "triterpene") 
 (def-indiv-with-id molecule "triterpenoid" "CHEBI:36615" :name "triterpenoid") 
 (def-indiv-with-id molecule "Polynucleotide" "CHEBI:15986" :name "polynucleotide") 
-(def-indiv-with-id molecule "epoxomicin" "PCID:16760412") 
 (def-indiv-with-id molecule "PA" "CHEBI:16337" :name "phosphatidic acid") 
 (def-indiv-with-id molecule "VPA" "CHEBI:39867" :name "valproic acid") 
 (def-indiv-with-id molecule "Nonidet P-40" "CHEBI:78708" :name "Nonidet P-40") ;a lysis buffer
 (def-indiv-with-id molecule "DHT" "CHEBI:16330" :name "dihydrotestosterone") 
+
+(def-indiv-with-id lipid "DAG" "PCID:6026790" :name "diacylglycerol")
+(def-indiv-with-id lipid "Sphingosine" "PCID:5353955" :name "Sphingosine")
+(def-indiv-with-id phospholipid "PIP2" "PCID:5497157" :name "PIP2" :synonyms ("phosphatidylinositol 4,5-bisphosphate" "phosphatidylinositol-4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate"))
+(def-indiv-with-id phospholipid "PIP3" "PCID:101362114" :name "PIP3" :synonyms ("phosphatidylinositol 3,4,5-triphosphate" "phosphatidylinositol-3,4,5-trisphosphate"))
+(def-indiv-with-id phospholipid "IP3" "PCID:439456" :name "IP3" :synonyms ("inositol 1,4,5-triphosphate"))

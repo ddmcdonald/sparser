@@ -8,3 +8,5 @@
 ;; For items identified as substances from TRIPS
 
 (in-package :sparser)
+
+(noun ("serum" :plural "sera") :super substance)

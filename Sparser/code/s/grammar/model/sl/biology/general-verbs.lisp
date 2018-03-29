@@ -538,6 +538,7 @@
     (:verb "explain" 
            :noun "explanation" 
            :etf (svo-passive)))
+
 (define-category bio-fit :specializes bio-method
   :realization
   (:verb "fit"
@@ -557,12 +558,15 @@
 
 (define-category bio-form :specializes caused-bio-process
   :restrict ((object (:or cellular-location ;; such locations are structures that can be formed
-                          bio-entity cell-entity molecular-location measurement bio-scalar disease)))
+                          bio-entity cell-entity molecular-location
+                          measurement bio-scalar disease)))
   :realization
   (:verb "form"
          ;; "form" has never been seen as a verb in the corpus, but "forms" and "formed"
          ;; have been seen
          ;; NOW: "form" occurs in the Reactome comments
+         ;; occurs in articles too:
+         ;; "These results indicate that USP7, RING1 and HSCARG form a complex."
          :noun ("formation" "form")
          :etf (svo-passive) ))
 
