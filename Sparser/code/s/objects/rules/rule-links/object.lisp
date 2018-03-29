@@ -111,4 +111,9 @@
                       (incf words-with-pw-start))
                      (symbol
                       (incf words-with-fsa)))))))))))
-    (lsp-break "look at the local count variables")))
+    ;;(lsp-break "look at the local count variables")
+    (format t "~& ~a words-without-rs" words-without-rs)
+    (format t "~& ~a words-without-fsa-field" words-without-fsa-field)
+    (format t "~& ~a words-with-fsa" words-with-fsa)
+    (format t "~& ~a words-with-pw-start" words-with-pw-start)
+    :done))
