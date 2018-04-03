@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "syntax-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  June 2017
+;;;  Version:  April 2017
 
 ;; Simple function lifted from syntax-functions 8/30/16
 
@@ -22,6 +22,7 @@
 
 (defparameter *check-takes-adj?* nil)
 (defun takes-adj? (head adjective &optional verb-complement?)
+  (declare (special category::determiner))
   (and ;; had strange case with "some cases this" -- head was "this"
    ;; so rule out these cases
    (not (and (individual-p head) (itypep head category::determiner)))
@@ -130,21 +131,23 @@
             (memq 'ng (chunk-forms *current-chunk*))))))
        
 (defun can-fill-vp-object? (vp subj subj-edge &aux (left-edge (edge-to-its-left subj-edge)))
-  (and
-   ;; this is only called in the context of NP VP+ED -- so we prefer reduced relative clause
-   ;;  with the NP having an OBJECT reading
-   ;; vp has a bound subject -- NP can fill object
-   ;;(not (can-fill-vp-subject? vp subj))
-   ;; block relativization of "we realized", and of "that X VP+ED ..."
-   (not (and (edge-p subj-edge) (eq (cat-name (edge-category subj-edge)) 'pronoun/first/plural)))
-   (or (not (and (edge-p left-edge) (eq (cat-name (edge-category left-edge)) 'that)))
-       (and (edge-p (edge-to-its-right (right-edge-for-referent)))
-            (member (cat-name (edge-form (edge-to-its-right (right-edge-for-referent))))
-                    '(vp+ed vp))))
-   (not (intransitive? (itype-of vp)))
-   (subcategorized-variable vp :object subj)))
+  "This is only called in the context of NP VP+ED -- to arrange that we prefer 
+   reduced relative clause with the NP having an OBJECT reading: vp has a bound subject
+   and NP can fill object:  (not (can-fill-vp-subject? vp subj)).
+   Also block relativization of 'we realized', and of 'that X VP+ED ...'"
+  (let ((word-before-subj (word-just-to-the-left subj-edge)))
+    (and
+     (not (and (edge-p subj-edge)
+               (eq (cat-name (edge-category subj-edge)) 'pronoun/first/plural)))
+     (or (not (and word-before-subj
+                   (string= (pname word-before-subj) "that")))
+         (and (edge-p (edge-to-its-right (right-edge-for-referent)))
+              (member (cat-name (edge-form (edge-to-its-right (right-edge-for-referent))))
+                      '(vp+ed vp))))
+     (not (intransitive? (itype-of vp)))
+     (subcategorized-variable vp :object subj))))
 
-(defun is-intransitive? ())
+#+ignore(defun is-intransitive? ()) ;; no callers in R3 load
 
 ;; check to see if a verb is defined as intransitive
 (defun intransitive? (cat)
@@ -183,7 +186,7 @@
                        (edge-category previous-treetop))))
       (when (category-p prev-form)
         (or
-	 (member (cat-name prev-cat) '(that))
+         (member (cat-name prev-cat) '(that)) ;; e.g. (test-dec 3)
          (member (cat-name prev-form)
                  '(question-marker ;; what block
                    wh-pronoun ;; which (like 'that')

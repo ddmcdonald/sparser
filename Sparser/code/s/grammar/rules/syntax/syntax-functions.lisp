@@ -1634,16 +1634,17 @@ there was an edge for the qualifier (e.g., there is no edge for the
       (assimilate-subcat vp :subject subj)))
 
 (defun assimilate-subject-to-vp-ed (subj vp)
+  "We have to determine whether this is an s (which the rule
+   that's being invoked assumes) or actually a reduced relative,
+   where the criteria is whether the verb is in oblique or tensed
+   form. If it turned out to be a RR then we do fairly serious
+   surgery on the edge."
   (declare (special category::transitive-clause-without-object category::np))
   ;; (push-debug `(,subj ,vp)) (setq subj (car *) vp (cadr *))
   (let* ((vp-edge (right-edge-for-referent))
          (vp-form (edge-form vp-edge))
          result)
-    ;; We have to determine whether this is an s (which the rule
-    ;; that's being invoked assumes) or actually a reduced relative,
-    ;; where the criteria is whether the verb is in oblique or tensed
-    ;; form. If it turned out to be a RR then we do fairly serious
-    ;; surgery on the edge.
+    
     ;;(when (edge-p (edge-right-daughter vp-edge))
     ;; The other possibility is :single-term, which indicates
     ;; that we've just got a vg (one one form or another)
@@ -1656,45 +1657,37 @@ there was an edge for the qualifier (e.g., there is no edge for the
     
     (cond
       (*subcat-test*
-       (or (can-fill-vp-subject? vp subj) ;; case for S not reduced relative
-           (and (can-fill-vp-object? vp subj *left-edge-into-reference*)
+       (or (can-fill-vp-subject? vp subj) ;; evidence for S rather than reduced relative
+           (and (can-fill-vp-object? vp subj (left-edge-for-referent))
                 ;; make sure this is a non-trivial relative clause (not just the verb)
                 (loop for binding in (indiv-old-binds vp)
                       thereis (not (member (var-name (binding-variable binding))
                                            '(past raw-text)))))
-           (and 
-                (member(cat-name (edge-form vp-edge)) '(vg+ed verb+ed))
+           (and (member (cat-name (edge-form vp-edge)) '(vg+ed verb+ed))
                 (interpret-premod-to-verb subj vp))))
       
-      ((and (can-fill-vp-object? vp subj *left-edge-into-reference*)
+      ((and (can-fill-vp-object? vp subj (left-edge-for-referent))
             (not (verb-premod-sequence? (left-edge-for-referent)))
             (loop for binding in (indiv-old-binds vp)
                       thereis (not (member (var-name (binding-variable binding))
                                            '(past raw-text)))))
        ;; since this is applied to vp+ed, there is no syntactic object present
-       (setq vp
-             (create-predication-and-edge-by-binding-and-insert-edge
-              (subcategorized-variable vp :object subj) subj vp))       
-       ;; link the rc to the np
-       (setq  subj (bind-dli-variable 'predication vp subj))
+       (setq vp (create-predication-and-edge-by-binding-and-insert-edge
+                 (subcategorized-variable vp :object subj) subj vp))       
+       (setq subj (bind-dli-variable 'predication vp subj)) ;; link the rc to the np
        (revise-parent-edge :form category::np :category (itype-of subj))
        subj)
+      
       ((can-fill-vp-subject? vp subj)
        (when (transitive-vp-missing-object? vp)
-         #+ignore
-         (warn "assimilate-subject-to-vp-ed (~s ~s) revising the form of edge ~s to transitive-clause-without-object~%"
-               subj vp
-               (parent-edge-for-referent))
-         (revise-parent-edge :form category::transitive-clause-without-object))
-       ;;/// try using assimilate-subject
-
-       (assimilate-subcat vp :subject subj))
+         (revise-parent-edge :form category::transitive-clause-without-object)
+       (assimilate-subcat vp :subject subj)) ;;/// try using assimilate-subject
+      
       ((setq result (interpret-premod-to-verb subj vp))
        (revise-parent-edge :form category::vg+ed)
        result)
-      (t (warn "Error in sentence: ~s"
-               (current-string))
-         (error "How can this happen? Null referent produced in assimilate-subject-to-vp-ed~%" )))))
+      (t (warn "Error in sentence: ~s" (current-string))
+         (error "How can this happen? Null referent produced in assimilate-subject-to-vp-ed~%")))))
 
 
 ;;;---------
