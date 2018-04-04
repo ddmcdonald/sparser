@@ -9,4 +9,7 @@
 
 (in-package :sparser)
 
-(noun ("serum" :plural "sera") :super substance)
+(define-category serum :specializes experimental-condition
+ :mixins (substance)
+ :realization (:noun ("serum" :plural "sera")))
+
