@@ -140,7 +140,7 @@
      (not (and (edge-p subj-edge)
                (eq (cat-name (edge-category subj-edge)) 'pronoun/first/plural)))
      (or (not (and word-before-subj
-                   (string= (pname word-before-subj) "that")))
+                   (string-equal (pname word-before-subj) "that")))
          (and (edge-p (edge-to-its-right (right-edge-for-referent)))
               (member (cat-name (edge-form (edge-to-its-right (right-edge-for-referent))))
                       '(vp+ed vp))))
