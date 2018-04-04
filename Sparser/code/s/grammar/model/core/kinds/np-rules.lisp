@@ -12,6 +12,7 @@
 
 (in-package :sparser)
 
+#+ignore
 (define-realization  kind
   (:tree-family np-common-noun/definite  ;; "the rabbit"
     :mapping ((np . :self)
