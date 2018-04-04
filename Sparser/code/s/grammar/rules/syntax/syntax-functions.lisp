@@ -1680,7 +1680,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
       
       ((can-fill-vp-subject? vp subj)
        (when (transitive-vp-missing-object? vp)
-         (revise-parent-edge :form category::transitive-clause-without-object)
+         (revise-parent-edge :form category::transitive-clause-without-object))
        (assimilate-subcat vp :subject subj)) ;;/// try using assimilate-subject
       
       ((setq result (interpret-premod-to-verb subj vp))
