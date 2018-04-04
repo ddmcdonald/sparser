@@ -170,6 +170,15 @@
           (setq top-node (highest-edge (pos-ends-here start-pos))))
         top-node))))
 
+(defun edges-just-to-left-of (edge)
+  "Return the edge that is adjacent to the left of argument edge.
+   Caller should check that it exists, e.g. note-in-segment-adgacences"
+  (when (edge-p edge) ;; in incremental scan it can be a word
+    (let* ((start-pos (pos-edge-starts-at edge))
+           (top-node (top-edge-at/ending start-pos)))  
+      (when top-node
+        (ev-top-edges (pos-ends-here start-pos))))))
+
 (defun edge-just-to-right-of (edge)
   "Return the edge that is adjacent to the right of argument edge.
    Caller should check that it exists, e.g. note-in-segment-adgacences"
