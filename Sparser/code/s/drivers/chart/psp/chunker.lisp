@@ -848,14 +848,16 @@ than a bare "to".  |#
          unless (literal-edge? edge)
             collect edge))))
 
-(defun ev-top-edges (ev)
-  "all the edges on an edge-vector which are as long as the top edge"
+(defun ev-top-edges (ev &optional (no-literals nil))
+  "all the edges on an edge-vector which are as long as the top edge, possibly dropping literal edges"
   (when ev
     (let ((top-edge (top-edge-on-ev ev)))
       (loop for edge in (ev-edges ev)
             when (and
                   (eq (pos-edge-ends-at edge) (pos-edge-ends-at top-edge))
-                  (null (edge-used-in edge)))
+                  (null (edge-used-in edge))
+                  (or (not (literal-edge? edge))
+                      (not no-literals)))
             ;; the test above checks that the edge is as long as the top edge
             collect edge))))
 
@@ -1012,12 +1014,14 @@ than a bare "to".  |#
    (loop for edge in edges thereis
            (eq (cat-name (edge-form edge)) 'adverb))
    (loop for edge in edges thereis
-           (let ((left (edge-just-to-left-of edge)))
-             (and (edge-p left)
-                  (or
-                   (and (eq (cat-name (edge-form left))  'adverb)
-                        (ng-head? (edge-just-to-left-of left)))
-                   (ng-head? left)))))))
+           (loop for left in (edges-just-to-left-of edge)
+                 thereis
+                   (and (edge-p left)
+                        (or
+                         (and (eq (cat-name (edge-form left))  'adverb)
+                              (ng-head? (edge-just-to-left-of left)))
+                         (and (ng-head? left)
+                              (not (eq (cat-name (edge-category left)) 'that)))))))))
 
 
 (defun likely-verb+ed-clause (edge ev-list &aux (right (edge-just-to-right-of edge)))
