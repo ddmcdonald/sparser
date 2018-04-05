@@ -1093,8 +1093,6 @@ the process.
              (stringp (car (gethash (pname name) *uniprot-name-ht*))))
     (setq name (or (resolve (car (gethash (pname name) *uniprot-name-ht*)))
                    name)))
-           
-      
   (let ((rule (car (rs-single-term-rewrites (rule-set-for name)))))
     (if (cfr-p rule)
         (cfr-referent rule)

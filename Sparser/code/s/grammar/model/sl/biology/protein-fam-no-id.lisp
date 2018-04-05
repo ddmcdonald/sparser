@@ -42,14 +42,14 @@ the STAT1 transcription factor |#
 ;; to be verified
 
 (cond ((not *use-small-proteins*)
-       (def-family "FAK" :identifier "FA:03125" :synonyms ("FAK subfamily") :members ("PTK2" "PTK2B"))
+       (def-family-with-id "FAK" "FA:03125" :synonyms ("FAK subfamily") :members ("PTK2" "PTK2B"))
        ;;(def-family "p53" :identifier "FA:02632" :synonyms ("p-53" "p53"  "p53 family" "p53−") :members ("TP53" "TP63" "TP73"))
-       (def-family "beta-catenin" :identifier "FA:00361" :synonyms ( "beta-catenin family")
+       (def-family-with-id "beta-catenin" "FA:00361" :synonyms ( "beta-catenin family")
                    :members("CTNNB1" "CTNND1" "CTNND2" "JUP" "PKP1" "PKP2" "PKP3" "PKP4")))
       (t
-       (def-family "FAK" :identifier "FA:03125" :synonyms ("FAK subfamily"))
+       (def-family-with-id "FAK" "FA:03125" :synonyms ("FAK subfamily"))
        ;;(def-family "p53" :identifier "FA:02632" :synonyms ( "p53 family"))
-       (def-family "beta-catenin" :identifier "FA:00361" :synonyms ( "beta-catenin family"))))
+       (def-family-with-id "beta-catenin" "FA:00361" :synonyms ( "beta-catenin family"))))
 
 
 ;;(def-family "type 1" :members ("UP:P14778" "UP:P30556" "UP:P36897" "UP:Q02338" "UP:Q16878")) 

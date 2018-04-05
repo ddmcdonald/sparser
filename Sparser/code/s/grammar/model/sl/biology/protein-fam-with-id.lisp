@@ -1,5 +1,18 @@
 (in-package :sparser)
 
+;; to be verified
+
+(cond ((not *use-small-proteins*)
+       (def-family-with-id "FAK" "FA:03125" :synonyms ("FAK subfamily") :members ("PTK2" "PTK2B"))
+       ;;(def-family "p53" :identifier "FA:02632" :synonyms ("p-53" "p53"  "p53 family" "p53−") :members ("TP53" "TP63" "TP73"))
+       (def-family-with-id "beta-catenin" "FA:00361" :synonyms ( "beta-catenin family")
+                   :members("CTNNB1" "CTNND1" "CTNND2" "JUP" "PKP1" "PKP2" "PKP3" "PKP4")))
+      (t
+       (def-family-with-id "FAK" "FA:03125" :synonyms ("FAK subfamily"))
+       ;;(def-family "p53" :identifier "FA:02632" :synonyms ( "p53 family"))
+       (def-family-with-id "beta-catenin" "FA:00361" :synonyms ( "beta-catenin family"))))
+
+
 (def-family-with-id "4EBP" "FPLX:EIF4EBP" :name "EIF4EBP" :synonyms ("initiation factor 4E-binding protein" "Eukaryotic translation initiation factor 4E-binding protein" "4E-BP") :members ("UP:Q13541" "UP:Q13542" "UP:O60516")) 
 (def-family-with-id "ABCC" "FA:00048" :synonyms ("aBCC"))
 (def-family-with-id "ABL" "FPLX:ABL_family" :members ("UP:P00519" "UP:P42684"))
@@ -342,11 +355,12 @@
 (def-family-with-id "IL-12" "FPLX:IL12" :synonyms ("IL12" "il12" "interleukin-12" "interleukin 12" "IL-12p70" "IL12p70") :members ("UP:P29459" "UP:P29460"))
 (def-family-with-id "Jnk" "FPLX:JNK" :members ("JNK1" "JNK2" "JNK3A") :synonyms ("JNK" "JNK MAPK" "JUN kinase activity" "c-JNK" "c-Jun N-terminal kinase" "c-Jun N-terminal protein kinase" "c-Jun NH2-terminal kinase" "c-jun-NH2-terminal kinase")) 
 (def-family-with-id "Jumpy" "PR:000010735" :members ("UP:Q8NCE2")) 
-(def-family-with-id "MAP2K" "NCIT:C105947" :synonyms ("mitogen activated protein kinase kinase" "MAP kinase kinase" "MAPK kinase") :members ("MAP2K1" "MAP2K2" "MAP2K3" "MAP2K4" "MAP2K5" "MAP2K6" "MAP2K7")) 
+(def-family-with-id "MAP2K" "NCIT:C105947" :synonyms ("mitogen activated protein kinase kinase" "MAP kinase kinase" "MAPK kinase") :members ("UP:Q02750" "UP:P36507" "UP:P46734" "UP:P45985" "UP:Q13163" "UP:P52564" "UP:O14733"#|"MAP2K1" "MAP2K2" "MAP2K3" "MAP2K4" "MAP2K5" "MAP2K6" "MAP2K7"|#)) 
 (def-family-with-id "MAPK" "PR:000000019" :name "mitogen activated protein kinase" :synonyms ("mapk" "MAP kinase" "map kinase" "mitogen-activated protein kinase" "mitogen activated protein kinas" "mitogen-activated protein (MAP) kinase" "Mitogen Activated Protein Kinase" "mitogen -activated protein kinase" "mitogen- activated protein kinase" "mitogen-activated protein-kinase" "mitogen-activated-protein kinase" "mitogen-activated-protein-kinase" "mitogenactivated protein kinase") :members ("UP:O15264" "UP:P27361" "UP:P28482" "UP:P31152" "UP:P45983" "UP:P45984" "UP:P53778" "UP:P53779" "UP:Q13164" "UP:Q15759" "UP:Q16539" "UP:Q16659" "UP:Q8TD08")) 
 (def-family-with-id "MAT1" "XFAM:PF06391.11" :synonyms ("Mat1" "mat1") :members ("UP:P51948" "UP:Q15121")) 
 (def-family-with-id "MEK" "FPLX:MEK" :synonyms ("MEK1/2" "MAPKK" "mitogen activated ERK kinase" "mitogen activated protein kinase kinase" "mitogen-activated protein kinase kinase") :members ("MEK1" "MEK2"))
-(def-family-with-id "MAP3K" "GO:0004709" :synonyms ("MAP kinase kinase kinase" "MAPKKKs" "MEKK") :members ("MAP3K1" "MAP3K2" "MAP3K3" "MAP3K4" "MAP3K5" "MAP3K6" "MAP3K7" "MAP3K8" "MAP3K9" "MAP3K10" "MAP3K11" "MAP3K12" "MAP3K13" "MAP3K14" "MAP3K16" "MAP3K17" "MAP3K18" "RAF1" "ARAF" "BRAF" "ZAK"))
+;;(def-family-with-id "MAP3K" "GO:0004709" :synonyms ("MAP kinase kinase kinase" "MAPKKKs" "MEKK") :members ("MAP3K1" "MAP3K2" "MAP3K3" "MAP3K4" "MAP3K5" "MAP3K6" "MAP3K7" "MAP3K8" "MAP3K9" "MAP3K10" "MAP3K11" "MAP3K12" "MAP3K13" "MAP3K14" "MAP3K16" "MAP3K17" "MAP3K18" "RAF1" "ARAF" "BRAF" "ZAK"))
+(def-family-with-id "MAP3K" "FPLX:MAP3K" :name "MAP3K" :synonyms ("MEK1 kinase" "MAP kinase kinase kinase" "MAP2K kinase" "mitogen-activated protein kinase kinase kinase" "MEKK" "MAPKKK" "MAP kinase kinase kinase activity" "MAPK kinase kinase" "MAPKKK" "GO:0004709") :members ("UP:P04049" #|Raf1|# "UP:P41279" "UP:P57077" "UP:P80192" "UP:Q02779" "UP:Q12852" "UP:Q13233" "UP:Q16584" "UP:Q7L7X3" "UP:Q99558" "UP:Q99683" "UP:Q99759" "UP:Q9H2K8" "UP:Q9UL54" "UP:Q9Y2U5" "UP:Q9Y6R4" "UP:O43283" "UP:O43318" "UP:O95382")) 
 (def-family-with-id "Muscarinic acetylcholine receptor" "IPR000995" :synonyms ("muscarinic receptor") :members ("UP:P08172" "UP:P08173" "UP:P08912" "UP:P11229" "UP:P20309")) 
 (def-family-with-id "NFAT" "NCIT:C17903" :synonyms ("FPLX:NFAT" "NF-AT") :members ("UP:O94916" "UP:Q12968" "UP:Q13469"))
 (def-family-with-id "NF-kappaB" "FPLX:NFkappaB" :synonyms ("NCIT:C17380" "NF-kappabeta" "NFkappaB" "NF-kB" "NF-kappab" "NF-kb" "NF-κB" "NFK-B" "NFKB" "NF-kB" "NF-KB" "NFkB" "NFkappaB" "kB" "nfκ" "nfκb" "NFkappaB") :members ("UP:P19838" "UP:Q04206"))
@@ -384,7 +398,7 @@
 (def-family-with-id "hydrolase" "GO:0016787")
 ;(define-protein "GO:0016787" ("hydrolases" "hydrolase activity")) 
 (def-family-with-id "ICL" "GO:0004451" :members ("UP:P0A9G6" "UP:P28467") :synonyms ("isocitrate lyase")) 
-(def-family-with-id "methyltransferase" "GO:0008168" :synonyms ("methylase" "methyl-transferases" "methylases" "methyltransferase activity")) 
+(def-family-with-id "methyltransferase" "GO:0008168" :synonyms ("methylase" "methyl-transferase" "methyltransferase activity")) 
 
 (def-family-with-id "mucin" "NCIT:C16883" :members ("UP:P15941" "UP:Q02817"))
 (def-family-with-id "myosin heavy chain" "FPLX:MYH" :members ("UP:A7E2Y1" "UP:P11055" "UP:P12882" "UP:P12883" "UP:P13533" "UP:P13535" "UP:P35579" "UP:P35580" "UP:P35749" "UP:Q9UKX2" "UP:Q9UKX3" "UP:Q9Y2K3" "UP:Q9Y4I1" "UP:Q9Y623"))
@@ -392,7 +406,7 @@
 (def-family-with-id "neurotrophin" "PR:000021998" :members ("UP:P20783" "UP:P34130" "UP:Q9UBD9")) 
 (def-family-with-id "nudf" "FA:02562" :synonyms ("nudF" "nudF subfamily" "ADP-ribose pyrophosphatase" "ASPPase") :members ("UP:Q9BW91")) 
 (def-family-with-id "opioid receptor" "IPR001418" :members ("UP:P35372" "UP:P41143" "UP:P41145" "UP:P41146" "UP:Q14982"))
-(def-family-with-id "p38 mitogen activated protein kinase" "FPLX:p38" :synonyms ("p38 MAP kinase" "P38 MAP kinase" "p38 MAPK" "MAPK-p38" "p38-MAPK" "p38 mitogen-activated protein kinase" "p38 Mitogen-activated protein kinase" "p38" "p38" "p38 MAP kinases") :members ("UP:O15264" "UP:P46108" "UP:P53778" "UP:Q15759" "UP:Q16539"))
+(def-family-with-id "p38 mitogen activated protein kinase" "FPLX:p38" :synonyms ("p38 MAP kinase" "P38 MAP kinase" "p38 MAPK" "MAPK-p38" "p38-MAPK" "p38 mitogen-activated protein kinase" "p38 Mitogen-activated protein kinase" "p38" "p38") :members ("UP:O15264" "UP:P46108" "UP:P53778" "UP:Q15759" "UP:Q16539"))
 (def-family-with-id "p85" "FPLX:PI3K_p85" :members ("UP:O00459" "UP:O43439" "UP:Q14155")) 
 (def-family-with-id "phosphodiesterase" "FPLX:PDE" :members ("UP:O04147" "UP:O76074" "UP:P06776" "UP:P09543" "UP:P22434" "UP:Q13370")) 
 (def-family-with-id "phospholipase Cβ" "FPLX:PLCB" :synonyms ("phospholipase Cbeta" "phospholipase C-beta" "PLC-beta" "PLC-β" "PLCbeta" "PLCβ" "PLCB") :members ("UP:Q00722" "UP:Q01970" "UP:Q15147" "UP:Q9NQ66"))
@@ -834,7 +848,7 @@
 (def-family-with-id "tachykinin" "FA:03909" :name "tachykinin family") 
 (def-family-with-id "syntrophin" "FA:03905" :name "syntrophin family") 
 (def-family-with-id "synaptotagmin" "FA:03901" :name "synaptotagmin family") 
-(def-family-with-id "synaptojanins" "FA:03898" :name "synaptojanin family") 
+(def-family-with-id "synaptojanin" "FA:03898" :name "synaptojanin family" :members ("UP:O43426" "UP:O15056")) 
 ;(def-family-with-id "sterile" "XFAM:PF03015.17" :name "sterile") 
 (def-family-with-id "sirtuin" "FA:03623" :name "sirtuin family") 
 (def-family-with-id "siRas" "XFAM:PF10747.7" :name "SirA") 
@@ -895,7 +909,6 @@
 (def-family-with-id "GAM" "XFAM:PF06064.9" :name "gam") 
 (def-family-with-id "GPI-anchor" "UP:SL-9902" :name "GPI-anchor") 
 (def-family-with-id "HRM" "XFAM:PF02793.20" :name "HRM") 
-(def-family-with-id "MAP3Ks" "FPLX:MAP3K" :name "MAP3K" :synonyms ("MEK1 kinase" "MAP kinase kinase kinase" "MAP2K kinase" "mitogen-activated protein kinase kinase kinase" "MEKK" "MAPKKK" "MAP kinase kinase kinase activity" "MAPK kinase kinase" "MAPKKK" "GO:0004709") :members ("UP:P04049" #|Raf1|# "UP:P41279" "UP:P57077" "UP:P80192" "UP:Q02779" "UP:Q12852" "UP:Q13233" "UP:Q16584" "UP:Q7L7X3" "UP:Q99558" "UP:Q99683" "UP:Q99759" "UP:Q9H2K8" "UP:Q9UL54" "UP:Q9Y2U5" "UP:Q9Y6R4" "UP:O43283" "UP:O43318" "UP:O95382")) 
 (def-family-with-id "Neuropilin" "FA:02453" :name "neuropilin family") 
 (def-family-with-id "Nucleobindin" "FA:02541" :name "nucleobindin family") 
 (def-family-with-id "OmpA" "XFAM:PF00691.18" :name "OmpA") 
