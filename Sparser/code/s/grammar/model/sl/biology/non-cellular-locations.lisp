@@ -72,6 +72,8 @@
 (noun ("acinus" :plural "acini") :super tissue) ;; any cluster of cells that resembles a many-lobed "berry"
 (noun "vasculature" :super tissue) ; to replace erroneous protein definition
 (noun "sac" :super tissue) ; replace erroneous protein definition
+(noun "muscle" :super tissue)
+(noun "skeletal muscle" :super muscle)
 
 ;;;-------------
 ;;; tumor

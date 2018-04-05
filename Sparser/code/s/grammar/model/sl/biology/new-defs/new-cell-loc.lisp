@@ -101,7 +101,7 @@
 (def-indiv-with-id cellular-location "myofibril" "UP:SL-0312" :name "Myofibril") 
 (def-indiv-with-id cellular-location "myelin" "UP:SL-0176" :name "Myelin membrane") 
 (def-indiv-with-id cellular-location "mucus" "GO:0070701" :name "mucus layer" :synonyms ("mucous")) 
-(def-indiv-with-id cellular-location "mitochondrion" "UP:SL-0173" :name "Mitochondrion" :plural ("mitochondrions" "mitochondria") :synonyms ("GO:0005680")) 
+(def-indiv-with-id cellular-location "mitochondrion" "UP:SL-0173" :name "Mitochondrion" :plural ("mitochondrions" "mitochondria") :synonyms ("GO:0005680") :adj "mitochondrial") 
 (def-indiv-with-id cellular-location "midline" "GO:0031430" :name "M band") 
 (def-indiv-with-id cellular-location "microvesicle" "GO:1990742" :name "microvesicle") 
 (def-indiv-with-id cellular-location "microspike" "GO:0044393" :name "microspike") 

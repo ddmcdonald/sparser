@@ -21,7 +21,7 @@
 (def-indiv-with-id molecule "Tween 20" "PCID:86289077") 
 (def-indiv-with-id molecule "Triton X-100" "PCID:5590") 
 (def-indiv-with-id molecule "6-OHDA" "PCID:4624") 
-(def-indiv-with-id molecule "Cyclosporin A" "PCID:5284373") 
+;(def-indiv-with-id molecule "Cyclosporin A" "PCID:5284373") moved to drugs
 (def-indiv-with-id molecule "kappa-carrageenan" "PCID:11966249") 
 (def-indiv-with-id molecule "C646" "PCID:2871948") 
 (def-indiv-with-id molecule "lactic acid" "PCID:107689") 
@@ -71,7 +71,7 @@
 (def-indiv-with-id molecule "poly I : C" "PCID:32744" :name "polyinosinic-polycytidylic acid" :synonyms ("pIpC" "pI-pC" "Poly(I+C)" "Poly(I:C)")) 
 (def-indiv-with-id molecule "oroxylin A" "PCID:86289424") 
 (def-indiv-with-id molecule "oleic acid" "PCID:445639") 
-(def-indiv-with-id molecule "PD 98059" "PCID:4713") 
+;(def-indiv-with-id molecule "PD 98059" "PCID:4713") moved to drugs
 (def-indiv-with-id molecule "sodium sulfate" "PCID:24436") 
 (def-indiv-with-id molecule "rosmarinic acid" "PCID:5281792") 
 (def-indiv-with-id molecule "NU7441" "PCID:11327430") 
@@ -1003,7 +1003,7 @@
 (def-indiv-with-id molecule "SGPG" "CHEBI:60739" :name "3-O-SO3-beta-D-GlcA-(1->3)-beta-D-Gal-(1->4)-beta-D-GlcNAc-(1->3)-beta-D-Gal-(1->4)-beta-D-Glc-(1<->1')-Cer") 
 (def-indiv-with-id molecule "Sulfane" "CHEBI:16136" :name "hydrogen sulfide") 
 (def-indiv-with-id molecule "Suc" "CHEBI:37952" :name "succinyl group") 
-(def-indiv-with-id molecule "Sodium" "CHEBI:26708" :name "sodium atom") 
+(def-indiv-with-id molecule "Na" "CHEBI:26708" :name "sodium atom" :synonyms ("sodium") :maintain-case t) 
 (def-indiv-with-id molecule "Scn" "CHEBI:29426" :name "thiocyanato group") 
 (def-indiv-with-id molecule "TiO2" "CHEBI:32234" :name "titanium dioxide") 
 (def-indiv-with-id molecule "Teh" "CHEBI:30458" :name "tellanyl group") 
@@ -1523,7 +1523,7 @@
 (def-indiv-with-id molecule "DT3" "CHEBI:75041" :name "thymidylyl(3'-5')thymidylyl(3'-5')thymidine") 
 (def-indiv-with-id molecule "Lau" "CHEBI:32359" :name "dodecanoyl group") 
 (def-indiv-with-id molecule "chloramine" "CHEBI:82415" :name "Chloramine") 
-(def-indiv-with-id molecule "cyclosporine-A" "CHEBI:4031" :name "cyclosporin A") 
+;(def-indiv-with-id molecule "cyclosporine-A" "CHEBI:4031" :name "cyclosporin A") moved to drugs
 (def-indiv-with-id molecule "deoxycytosine" "CHEBI:27443" :name "4-amino-1,2-dihydropyrimidine") 
 (def-indiv-with-id molecule "free-radical" "CHEBI:26519" :name "radical") 
 (def-indiv-with-id molecule "lysyl" "CHEBI:37903" :name "lysyl group") 
@@ -1593,10 +1593,11 @@
 (def-indiv-with-id molecule "triterpene" "CHEBI:35191" :name "triterpene") 
 (def-indiv-with-id molecule "triterpenoid" "CHEBI:36615" :name "triterpenoid") 
 (def-indiv-with-id molecule "Polynucleotide" "CHEBI:15986" :name "polynucleotide") 
-(def-indiv-with-id molecule "PA" "CHEBI:16337" :name "phosphatidic acid") 
+(def-indiv-with-id molecule "PA" "CHEBI:16337" :name "phosphatidic acid" :maintain-case t) 
 (def-indiv-with-id molecule "VPA" "CHEBI:39867" :name "valproic acid") 
 (def-indiv-with-id molecule "Nonidet P-40" "CHEBI:78708" :name "Nonidet P-40") ;a lysis buffer
 (def-indiv-with-id molecule "DHT" "CHEBI:16330" :name "dihydrotestosterone") 
+(def-indiv-with-id molecule "Fuma-2/AM" "PCID:3364574" :name "Fuma-2-AM" :synonyms ("Fura-2-acetoxymethyl ester") :maintain-case t) 
 
 (def-indiv-with-id lipid "DAG" "PCID:6026790" :name "diacylglycerol")
 (def-indiv-with-id lipid "Sphingosine" "PCID:5353955" :name "Sphingosine")

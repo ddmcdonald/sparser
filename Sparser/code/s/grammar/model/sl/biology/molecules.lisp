@@ -47,7 +47,7 @@
 
 (def-indiv-with-id nucleotide "adenosine monophosphate" "PCID:6083" :synonyms ("AMP" "adenosine 3',5'-monophosphate" "adenosine monophosphate"))
 
-(def-indiv-with-id nucleotide "cyclic-AMP" "CHEBI:17489" :name "3',5'-cyclic AMP" :synonyms ("cAMP" "cyclic adenosine 3',5'-monophosphate" "cyclic adenosine monophosphate"))
+(def-indiv-with-id nucleotide "cyclic-AMP" "CHEBI:17489" :name "3',5'-cyclic AMP" :synonyms ("cAMP" "cyclic adenosine 3',5'-monophosphate" "cyclic adenosine monophosphate" "c-AMP"))
 (noun "dAMP" :super nucleotide)
 
 (def-indiv-with-id nucleotide "ATP"  "PCID:5957" :name "adenosine triphosphate")

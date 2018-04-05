@@ -117,7 +117,7 @@
 
 ;(define-protein "Ras-GDP" ()) ;; not really a "protein" but a complex, but for now...
 ;(define-protein "Ras-GTP" ()) ;; not really a "protein" but a complex, but for now...
-(define-protein "RasGEF" ("Ras-GEF" "Ras GEF")) 
+;(define-protein "RasGEF" ("Ras-GEF" "Ras GEF")) 
 (define-protein "ERK1-4" ())
 (define-protein "GST-ASPP2" ())
 (define-protein "Raf CAAX" ())

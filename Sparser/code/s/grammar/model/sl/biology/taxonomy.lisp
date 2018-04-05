@@ -864,6 +864,7 @@
   :lemma (:common-noun "lipid")
   :realization
     (:common-noun name))
+(def-synonym lipid (:noun "fat"))
 
 (define-category phospholipid :specializes lipid
   :instantiates :self
