@@ -619,13 +619,31 @@ uid binding, if there is one"
       (get-bio-synonyms (pname (value-of 'name indiv)))))
 
 (defun get-family-member-names (family)
+  (declare (special category::protein-family category::collection))
+  (assert (and (itypep family category::protein-family)
+               ;; collections with protein-families pass the first itypep
+               (not (itypep family category::collection)))) 
   (let ((fam-collection (or (value-of 'family-members family)
-                            (value-of 'family-members (gethash *uid-to-individual*
-                                                               (value-of 'uid family))))))
+                            (value-of 'family-members (gethash (value-of 'uid family)
+                                                               *uid-to-individual*)))))
     (when fam-collection
       (loop for protein in (value-of 'items fam-collection)
-              append (indiv-bio-synonyms protein)))))
+            append (indiv-bio-synonyms protein)))))
 
+(defun get-all-family-syns (family)
+  (append (indiv-bio-synonyms family)
+          (get-family-member-names family)))
+
+(defun sparser-indiv->synonyms-fam-members (indiv)
+  (declare (special category::protein-family category::collection))
+  (cond ((itypep indiv category::collection)
+         (loop for item in (value-of 'items indiv)
+               append (sparser-indiv->synonyms-fam-members item)))
+        ((itypep indiv category::protein-family)
+         (get-all-family-syns indiv))
+        (t
+         (indiv-bio-synonyms indiv))))
+    
 ;;;-----------------------
 ;;; bio-entity -> protein
 ;;;-----------------------
