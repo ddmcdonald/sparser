@@ -1357,7 +1357,7 @@
   :realization
     (:common-noun name))
 
-
+(noun "subfamily" :super protein-family)
 
 ;;----- aggregations
 

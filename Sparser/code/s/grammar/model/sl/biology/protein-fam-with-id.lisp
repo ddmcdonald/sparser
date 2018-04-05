@@ -3,15 +3,16 @@
 ;; to be verified
 
 (cond ((not *use-small-proteins*)
-       (def-family-with-id "FAK" "FA:03125" :synonyms ("FAK subfamily") :members ("PTK2" "PTK2B"))
+      ; (def-family-with-id "FAK" "FA:03125" :synonyms ("FAK subfamily") :members ("PTK2" "PTK2B")) fixed
        ;;(def-family "p53" :identifier "FA:02632" :synonyms ("p-53" "p53"  "p53 family" "p53−") :members ("TP53" "TP63" "TP73"))
        (def-family-with-id "beta-catenin" "FA:00361" :synonyms ( "beta-catenin family")
-                   :members("CTNNB1" "CTNND1" "CTNND2" "JUP" "PKP1" "PKP2" "PKP3" "PKP4")))
+                   :members("CTNNB1" "CTNND1" "CTNND2" "JUP" "PKP1" "PKP2" "PKP3" "PKP4"))) ;confusing -- only the first is beta-catenin, the rest are just catenin but fa/uniprot does claim the rest are members -- very confusing
       (t
-       (def-family-with-id "FAK" "FA:03125" :synonyms ("FAK subfamily"))
+      ; (def-family-with-id "FAK" "FA:03125" :synonyms ("FAK subfamily")) fixed
        ;;(def-family "p53" :identifier "FA:02632" :synonyms ( "p53 family"))
        (def-family-with-id "beta-catenin" "FA:00361" :synonyms ( "beta-catenin family"))))
 
+(def-family-with-id "FAK" "FA:03125" :synonyms ("FAK subfamily") :members ("UP:Q05397" "UP:Q14289"))
 
 (def-family-with-id "4EBP" "FPLX:EIF4EBP" :name "EIF4EBP" :synonyms ("initiation factor 4E-binding protein" "Eukaryotic translation initiation factor 4E-binding protein" "4E-BP") :members ("UP:Q13541" "UP:Q13542" "UP:O60516")) 
 (def-family-with-id "ABCC" "FA:00048" :synonyms ("aBCC"))
@@ -47,14 +48,14 @@
 (def-family-with-id "CD3" "NCIT:C38897" :synonyms ("CD3 complex"))
 (def-family-with-id "CD32" "FPLX:CD32" :members ("UP:P12318" "UP:P31994") :synonyms ("IGFR2")) 
 (def-family-with-id "CDC14" "XFAM:PF08045.9" :synonyms ("Cdc14")) 
-(def-family-with-id "CDK" "NCIT:C17767" :synonyms ("cyclin dependent kinase" "cyclin-dependent kinase" "Cdks" "CDKs")) 
+(def-family-with-id "CDK" "NCIT:C17767" :synonyms ("cyclin dependent kinase" "cyclin-dependent kinase" "Cdks" "cdk")) 
 (def-family-with-id "CEA" "FA:01836")
 (def-family-with-id "CEBP" "FPLX:CEBP" :synonyms ("C/EBP"  "c/EBP" "CCAAT/enhancer binding protein") :members ("UP:P49715" "UP:P49716"))
 (def-family-with-id "CK2" "FA:03101" :synonyms ("BE:CK2" "NCIT:C107559" "CKII" "casein kinase 2" "casein kinase II") :members ("UP:P67870" "UP:P19784" "UP:P68400")) 
 (def-family-with-id "CNC" "FA:00407") 
 (def-family-with-id "COX-3" "XFAM:PF00510.16" :synonyms ("COX3")) 
 (def-family-with-id "CP2" "FA:01658") 
-(def-family-with-id "CRLs" "XFAM:PF07417.10" :synonyms ("crl")) 
+(def-family-with-id "CRL" "XFAM:PF07417.10" :synonyms ("crl")) 
 (def-family-with-id "CTF8" "FA:00779" :synonyms ("ctf8")) 
 (def-family-with-id "CagA" "XFAM:PF03507.11") 
 (def-family-with-id "CoREST" "FA:00739") 
@@ -160,7 +161,7 @@
 (def-family-with-id "NPIP" "FA:02511") 
 (def-family-with-id "NPP" "XFAM:PF08384.8") 
 (def-family-with-id "NRAMP" "FA:02517" :synonyms ("nramp")) 
-(def-family-with-id "NUDF" "FA:02562" :synonyms ("NudF" "nudF")) 
+;(def-family-with-id "NUDF" "FA:02562" :synonyms ("NudF" "nudF")) 
 (def-family-with-id "Not3" "XFAM:PF04065.13" :synonyms ("not3")) 
 (def-family-with-id "OATP" "XFAM:PF03137.18") 
 (def-family-with-id "OKL38" "FA:02586") 
@@ -404,7 +405,7 @@
 (def-family-with-id "myosin heavy chain" "FPLX:MYH" :members ("UP:A7E2Y1" "UP:P11055" "UP:P12882" "UP:P12883" "UP:P13533" "UP:P13535" "UP:P35579" "UP:P35580" "UP:P35749" "UP:Q9UKX2" "UP:Q9UKX3" "UP:Q9Y2K3" "UP:Q9Y4I1" "UP:Q9Y623"))
 (def-family-with-id "myosin light chain" "FPLX:MYL" :synonyms ("MLC" "MyLC") :members ("UP:O14950" "UP:P05976" "UP:P10916" "UP:P12829" "UP:P19105" "UP:P24844" "UP:P60660" "UP:Q01449" "UP:Q02045"   "UP:Q12965" "UP:Q13402" "UP:Q96A32" "UP:Q9BUA6"))
 (def-family-with-id "neurotrophin" "PR:000021998" :members ("UP:P20783" "UP:P34130" "UP:Q9UBD9")) 
-(def-family-with-id "nudf" "FA:02562" :synonyms ("nudF" "nudF subfamily" "ADP-ribose pyrophosphatase" "ASPPase") :members ("UP:Q9BW91")) 
+;(def-family-with-id "nudf" "FA:02562" :synonyms ("nudF" "nudF subfamily" "ADP-ribose pyrophosphatase" "ASPPase") :members ("UP:Q9BW91")) 
 (def-family-with-id "opioid receptor" "IPR001418" :members ("UP:P35372" "UP:P41143" "UP:P41145" "UP:P41146" "UP:Q14982"))
 (def-family-with-id "p38 mitogen activated protein kinase" "FPLX:p38" :synonyms ("p38 MAP kinase" "P38 MAP kinase" "p38 MAPK" "MAPK-p38" "p38-MAPK" "p38 mitogen-activated protein kinase" "p38 Mitogen-activated protein kinase" "p38" "p38") :members ("UP:O15264" "UP:P46108" "UP:P53778" "UP:Q15759" "UP:Q16539"))
 (def-family-with-id "p85" "FPLX:PI3K_p85" :members ("UP:O00459" "UP:O43439" "UP:Q14155")) 
@@ -752,7 +753,7 @@
 (def-family-with-id "condensin" "XFAM:PF04079.14" :name "SMC ScpB") 
 (def-family-with-id "classII" "FA:04726" :name "class-II subfamily") 
 (def-family-with-id "class1" "FA:02983" :name "class-1 subfamily") 
-(def-family-with-id "cdks" "FPLX:CDK" :name "CDK") 
+;(def-family-with-id "cdks" "FPLX:CDK" :name "CDK") 
 (def-family-with-id "cathelicidin" "FA:00475" :name "cathelicidin family") 
 (def-family-with-id "calsarcin" "XFAM:PF05556.9" :name "calsarcin") 
 (def-family-with-id "cGMP" "FA:03061" :name "cGMP subfamily") 

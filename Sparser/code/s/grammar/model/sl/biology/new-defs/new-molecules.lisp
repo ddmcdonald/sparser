@@ -1597,7 +1597,7 @@
 (def-indiv-with-id molecule "VPA" "CHEBI:39867" :name "valproic acid") 
 (def-indiv-with-id molecule "Nonidet P-40" "CHEBI:78708" :name "Nonidet P-40") ;a lysis buffer
 (def-indiv-with-id molecule "DHT" "CHEBI:16330" :name "dihydrotestosterone") 
-(def-indiv-with-id molecule "Fuma-2/AM" "PCID:3364574" :name "Fuma-2-AM" :synonyms ("Fura-2-acetoxymethyl ester") :maintain-case t) 
+(def-indiv-with-id molecule "Fura-2/AM" "PCID:3364574" :name "Fura-2-AM" :synonyms ("Fura-2-acetoxymethyl ester") :maintain-case t) 
 
 (def-indiv-with-id lipid "DAG" "PCID:6026790" :name "diacylglycerol")
 (def-indiv-with-id lipid "Sphingosine" "PCID:5353955" :name "Sphingosine")
