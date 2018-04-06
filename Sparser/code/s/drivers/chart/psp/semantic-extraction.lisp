@@ -948,10 +948,13 @@ in cwc-integ/spire/interface/sparser.lisp
            ;; the HOWCOMP acts (erroneously) as a basic-collection
            (value-of 'items (base-description m)))
       (loop for dep-pair in (dependencies m)
-         do (if (eq 'items (pname (dependency-pair-variable dep-pair)))
-              (loop for v in (dependency-pair-value dep-pair)
-                 do (traverse-sem v fn))
-              (traverse-sem (dependency-pair-value dep-pair) fn)))
+              ;; happens in "Why  the NH 2 -terminal sequence can substitute for the β-catenin binding site is not clear, but this could be related to its  ability to bind to APC or its influence on the intracellular  localization of Axin."
+            unless (eq (dependency-pair-value dep-pair)
+                       m)
+            do (if (eq 'items (pname (dependency-pair-variable dep-pair)))
+                   (loop for v in (dependency-pair-value dep-pair)
+                         do (traverse-sem v fn))
+                   (traverse-sem (dependency-pair-value dep-pair) fn)))
       (loop for dep-pair in (dependencies m)
             do (traverse-sem (dependency-pair-value dep-pair) fn))))
 
