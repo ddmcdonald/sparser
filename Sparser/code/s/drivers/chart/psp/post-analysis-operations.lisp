@@ -37,6 +37,7 @@
   (setq *expand-interpretations-in-context* t)
   (setq *show-contextual-replacements* t))
 
+(defparameter *reinterpreted-mentions* nil)
 
 (defun interpret-treetops-in-context (treetops)
   "Called from sentence-processing-core after virtually every part of
@@ -54,8 +55,9 @@
                     (member (cat-name (edge-category tt))
                             ;; we don't interpret such quoted strings
                             '(quotation parentheses dash  square-brackets semicolon comma))))
-         do
-           (interpret-in-context (edge-mention tt))))))
+            do
+              (let ((*reinterpreted-mentions* nil))
+                (interpret-in-context (edge-mention tt)))))))
 
 #| #1  in "More detailed understanding of these various pathways will require careful analysis
  of BMMCs designed to be deficient in multiple adapters and signaling molecules."
@@ -90,7 +92,7 @@
 (defmethod interpret-in-context ((items cons))
   (loop for item in items collect (interpret-in-context item)))
 
-
+(defparameter *warn-circular-reinterpretation* nil)
 (defmethod interpret-in-context ((mention discourse-mention))
   (declare (special mention category::hyphenated-pair category::hyphenated-triple
                     category::two-part-label))
@@ -99,32 +101,39 @@
  Where possible, the values are themselves mentions.
  First recursively interpret the bound values, then rebuild the interpretation
  of the individual in the base-description from those reinterpreted bindings."
-  (if (slot-boundp mention 'ci)
-      ;; mention was already contextually interpreted --
-      ;;  this happens with conjunction distribution/expansion
-      ;;  (MAY NO LONGER BE TRUE)
-      (contextual-description mention)
+  (cond ((member mention *reinterpreted-mentions*)
+         (when *warn-circular-reinterpretation*
+           (warn "~%CIRCULAR REINTERPRETATION of mention ~s~%"
+               mention))
+         (or (and (slot-boundp mention 'ci) (contextual-description mention))
+             (base-description mention)))
+        (t (push mention *reinterpreted-mentions*)
+           (if (slot-boundp mention 'ci)
+               ;; mention was already contextually interpreted --
+               ;;  this happens with conjunction distribution/expansion
+               ;;  (MAY NO LONGER BE TRUE)
+               (contextual-description mention)
 
-      (let* ((base (base-description mention))
-             (re-interpretation
-              (cond
-                ((or (itypep base category::hyphenated-pair)
-                     (itypep base category::hyphenated-triple)
-                     (itypep base category::two-part-label))
-                 ;; not sure what to do for such things -- example ER-β is a hyphenated pair
-                 base)
-                ((is-basic-collection? base)
-                 ;; distribute conjunctions
-                 (reinterpret-collection-with-modifiers mention))
-                ((is-pronoun? base)
-                 (let ((interpretation (interpret-pronoun-in-context mention)))
-                   (or interpretation base)))
-                (t
-                 (reinterp-mention-using-bindings mention)))))
-        (when *expand-interpretations-in-context*
-          (expand-definite-references-in-context-if-needed mention))
-        (setf (contextual-description mention) re-interpretation)
-        re-interpretation)))
+               (let* ((base (base-description mention))
+                      (re-interpretation
+                       (cond
+                         ((or (itypep base category::hyphenated-pair)
+                              (itypep base category::hyphenated-triple)
+                              (itypep base category::two-part-label))
+                          ;; not sure what to do for such things -- example ER-β is a hyphenated pair
+                          base)
+                         ((is-basic-collection? base)
+                          ;; distribute conjunctions
+                          (reinterpret-collection-with-modifiers mention))
+                         ((is-pronoun? base)
+                          (let ((interpretation (interpret-pronoun-in-context mention)))
+                            (or interpretation base)))
+                         (t
+                          (reinterp-mention-using-bindings mention)))))
+                 (when *expand-interpretations-in-context*
+                   (expand-definite-references-in-context-if-needed mention))
+                 (setf (contextual-description mention) re-interpretation)
+                 re-interpretation)))))
 
 
 ;;--- Pronouns
