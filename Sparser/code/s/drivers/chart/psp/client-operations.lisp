@@ -268,9 +268,29 @@
                  (when containing-branches
                    (cons (car s) containing-branches))))))))
 
+
+(defun type-expressions-in (s type)
+  (when (consp s)
+    (case (car s)
+      (set (loop for ss in (cdr s)
+                 append (type-expressions-in ss type)))
+      (t
+       (if (and (symbolp (car s))
+                (category-named (car s))
+                (itypep (car s) type))
+           (list s)
+           (loop for branch in (cdr s)
+                 as contains? = (and (consp branch)
+                                     (consp (second branch))
+                                     (case (car branch)
+                                       (type nil)
+                                       (t (type-expressions-in (second branch) type))))
+                 when contains?
+                 append contains?))))))
+
 (defparameter *complex-var-ht* (make-hash-table :size 1000 :test #'equal))
-(defun complex->contains-type-ht (n)
-  (let ((complex-set (reach-collect-bio-processes n)))
+(defun complex->contains-type-ht (n &key (start 0))
+  (let ((complex-set (reach-collect-bio-processes n :start start)))
     (loop for statement in complex-set
           do (let ((sent (caar statement))
                    (complexes (second statement)))
@@ -284,15 +304,15 @@
   '(:or AFFINITY BINDING BIO-ACTIVITY BIO-ASSOCIATE BIO-COMPLEX
     COOPERATE DIMERIZE BIO-FORM HETERODIMERIZE INTERACT LIGATE OLIGOMERIZE RECRUIT))
 
-(defun reach-collect-bio-processes (n)
+(defun reach-collect-bio-processes (n &key (start 0))
   (unless (and (boundp '*complex-statements*)
                (consp *complex-statements*))
     (read-from-json-list))
-    (loop for *rcs* in *complex-statements*
-          as i from 1 to n
-          collect
-            (find-reach-bio-processes (car (find-reach-sentence *rcs*))
-                                      (second (find-reach-sentence *rcs*)))))
+  (loop for *rcs* in (nthcdr start *complex-statements*)
+        as i from 1 to n
+        collect
+          (find-reach-bio-processes (car (find-reach-sentence *rcs*))
+                                    (second (find-reach-sentence *rcs*)))))
 
 (defun find-reach-bio-processes (sent &optional other-data)
   (let ((*save-bio-processes* *reach-complex-processes*)
@@ -389,7 +409,7 @@
          '())
          ((c-itypep ref 'bio-form)
           '(agent object))
-         ((c-itype ref 'recruit)
+         ((c-itypep ref 'recruit)
           '(moving-object destination))
          
         ((or (c-itypep ref 'post-translational-modification)
