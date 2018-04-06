@@ -53,7 +53,9 @@
                                              (CURE-semantics-directory-pathname))))
   (declare (special *indra-post-process*))
   (setq *semantic-output-format* output-format)
-  (case *semantic-output-format* (:hms-json (setq *indra-post-process* (list t))))
+  (case *semantic-output-format*
+    (:hms-json (setq *indra-post-process* (list t))
+               (setq *save-bio-processes* *reach-complex-processes*)))
   (save-article-semantics dir))
 
 (defun save-article-semantics (&optional                                 
@@ -112,7 +114,8 @@
               (remove nil
                       (loop for form in
                               (loop for f in (cdr (reverse *indra-post-process*))
-                                    append (indra-form-for-sexpr f (get-pmid) nil))
+                                    append
+                                       (indra-form-for-sexpr f (get-pmid) nil))
                             when (cdr (assoc :type form))
                             collect
                               (if (member nil form)
@@ -241,9 +244,10 @@
 
 (defun write-sem-tree (ref stream)
   (setq ddm-util::*indentation* 0) ;; make sure indentation is restarted
-  (if *direct-from-sem*
-      (write-sem ref stream)
-      (print-sem-tree (spire-tree ref) stream)))
+  (cond ( *direct-from-sem*
+         (write-sem ref stream))
+        (t
+         (print-sem-tree (spire-tree ref) stream))))
 
 (defmethod write-combined-sentence-results ((s sentence) stream)
   (declare (special *show-syn-tree*))
@@ -443,7 +447,8 @@
 (defmethod print-binding-list ((i individual) stream &optional (newline t))
   (when newline (push-indentation))
   (loop for binding in (filter-bl i)
-     do (write-sem binding stream newline))
+        do
+          (write-sem binding stream newline))
   (when newline (pop-indentation)))
 
 
@@ -604,7 +609,12 @@
       
 (defun meaningful-binding? (v val)
   (and  (typep v 'lambda-variable)
-        (not (member (var-name v) '(ras2-model has-determiner)))))
+        (not (member (var-name v) '(ras2-model has-determiner)))
+        ;; months have a circular structure
+        (not (and (member (var-name v) '(next previous))
+                  (individual-p val)
+                  (or (itypep val 'month)
+                      (itypep val 'weekday))))))
 
 
 ;;;;;;;;;;;;;;
