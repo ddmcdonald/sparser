@@ -1838,7 +1838,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
    depending on which one is open."
   (declare (special category::wh-question category::subject-relative-clause))
   (if *subcat-test*
-    t
+   (not (itypep wh-obj category::wh-question)) ;; t
     (cond
       ((itypep wh-obj 'partitive-relativizer) ;; e.g. "one of which"
        ;; When the relative clause we are creating here is composed with
@@ -1849,6 +1849,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
        ;; composition do what it would otherwise normally do.
        predicate)
       
+      #+ignore
       ((itypep wh-obj category::wh-question)
        (let* ((wh (value-of 'wh wh-obj))
               (wh-name (cat-symbol wh))
@@ -1878,7 +1879,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
              (t (wh-vp-as-relative-clause wh-obj predicate))))
       
       (t (warn "New type of wh-obj in compose-wh-with-vp: ~a~
-                in~%~s" (itype-of wh-obj) (current-string))))))
+                in~%~s" (itype-of wh-obj) (current-string))
+         nil))))
 
 (defun wh-vp-as-relative-clause (wh-obj predicate)
   ;; Provides something to feed apply-subject-relative-clause by
