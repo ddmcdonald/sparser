@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2015-2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "march/seg"             ;; march back, parsing edges
 ;;;   Module:  "drivers;chart:psp:"    ;;  in a segment
-;;;  Version:  5.5 June 2015
+;;;  Version:  April 2018
 
 ;; 4.0 (5/7/93 v2.3) Bringing into sinc with the new word-level driver
 ;; 5.0 (3/15/94) Added dotted-rule hack
@@ -33,25 +33,17 @@
 ;;; initiator
 ;;;-----------
 
-(defvar category::protein)
-(defvar category::post-translational-modification)
-(defvar category::protein)
-(defvar category::depend)
-
 ;; (trace-parse-edges)
 
 (defun parse-at-the-segment-level (segment-end-pos)
+  "Called from pts when there is something available inside the
+   segment to parse (i.e. it's not already covered by an edge)."
   (declare (special *current-chunk* *big-mechanism-ngs*))
   (tr :parse-at-the-segment-level segment-end-pos)
   (setq *rightmost-active-position/segment* segment-end-pos)
-  ;;(break "about to parse ~a" *current-chunk*)
   (cond
    ((and *big-mechanism-ngs*
          (member (chunk-forms *current-chunk*) '((VG) (ADJG)) :test #'equal))
-    ;; no longer do VGs from left to right -- gets the wrong chunking
-    ;;  and doesn't distribute aspect, etc.
-    ;;  gets same results on compare-to-snapshots with this change 5 Feb 2016
-    ;;(interp-big-mech-chunk *current-chunk* nil)
     (interp-big-mech-chunk *current-chunk* t nil))
    ((use-specialized-ng-parser?)
     (interp-big-mech-chunk *current-chunk* t t))
@@ -113,10 +105,10 @@
   (when *save-chunk-edges*
     (add-chunk-edges-snapshot))
   ;; 1st look at all pairwise combinations
-  ;; 1. collect all rule-left-right triples
-  ;; 2. select the best one
-  ;; 3. spply it
-  ;; 4. repeat
+  ;; 2. collect all rule-left-right triples
+  ;; 3. select the best one
+  ;; 4. apply it
+  ;; 5. repeat
 
   (tr :interpeting-chunk chunk from-right)
 
@@ -141,7 +133,7 @@
        (when blocked-triples
 	 (setq triples (loop for tr in triples
 	          ;; not sure why we are seeing equal but not eq triples...
-			  unless (member tr blocked-triples :equal)
+			  unless (member tr blocked-triples :test #'equal)
 			  collect tr)))
        (setq triple (select-best-chunk-triple triples chunk))
        (when (null triple)
@@ -229,6 +221,8 @@
            )))
 
 (defun domain-priority-triple? (triple)
+  (declare (special category::protein category::post-translational-modification
+                    category::depend))
   (or
    (and (itypep (edge-referent (second triple)) category::protein)
         (itypep (edge-referent (third triple)) category::post-translational-modification))

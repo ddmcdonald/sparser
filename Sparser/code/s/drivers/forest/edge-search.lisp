@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "edge-search"
 ;;;   Module:  "drivers/forest/"
-;;;  version:  August 2017
+;;;  version:  AugustApril 2018
 
 ;; Broken out of analyzers/forest/treetops/ 7/21/16. Has all of the
 ;; code that implements the "whack a rule" search that's driven from
@@ -11,25 +11,83 @@
 
 (in-package :sparser)
 
+;;;---------
+;;; triples
+;;;---------
+
+;;/// seriously consider a resource of these
+(defun triple-rule (triple) (car triple))
+(defun left-edge-of-triple (triple) (cadr triple))
+(defun right-edge-of-triple (triple) (caddr triple))
+
+(defun make-edge-triple (left-edge right-edge rule)
+  (list rule left-edge right-edge))
+
+
+(defun execute-triple (triple)
+  ;; triple = rule, left-edge, right-edge
+  (make-completed-binary-edge (left-edge-of-triple triple)
+                              (right-edge-of-triple triple)
+                              (triple-rule triple)))
+
+;; This entry point only buys us dotted rules, which are OBE
+;;  (execute-one-one-rule (car triple) (second triple) (third triple))
+
+
+;;;-----------------------
+;;; "whack-a-rule" driver
+;;;-----------------------
+
+(defparameter *rules-for-pairs* (make-hash-table :test #'equal :size 200)
+  "Cache for rule lookup")
+
+(defvar *whack-a-rule-sentence* nil
+  "Dynamically bound to provide the correct boundaries,
+  usually within a particular sentence or chunk, without
+  needing to pass down the sentence as a parameter")
+
+
+;; (trace-whacking)
+
+(defun whack-a-rule-cycle (sentence)
+  "Major engine for post-chunk parsing. Called from run-island-checks
+ initially, and later by new-pass2 in conjunction with invoking
+ debris analysis rules.
+   Across the entire sentence, it collects all of the pairs of
+ adjacent edges where there is a rule that would compose them.
+ From this set of 'triples' it heuristically selects the best
+ one, applies it to create a new edge, and then repeats the process
+ again on the revised forest. Terminates when there are no more
+ triples to consider."
+  (let ((*whack-a-rule-sentence* sentence))
+    (declare (special *whack-a-rule-sentence*))
+    (let ( rule-and-edges  edge at-least-one-rule)
+      (clrhash *rules-for-pairs*)
+      (loop
+        (setq rule-and-edges (best-treetop-rule sentence))
+        (when (null rule-and-edges)
+          (return-from whack-a-rule-cycle at-least-one-rule))
+        (setq edge (execute-triple rule-and-edges))
+        (cond
+         (edge (setq at-least-one-rule edge))
+         (t (return-from whack-a-rule-cycle at-least-one-rule)))
+        (tr :whacking-triple rule-and-edges edge)))))
+
+
+;;--------------------------------------------------------
+
    
 (defun adjacent-tts (&optional (all-edges (all-tts)))
   "Loop over these treetop edges in order (which should be
    from left to right) and collect every pair of adjacent edges.
    The caller is responsible for the order of edges."
   (loop for edges on  all-edges 
-    ;; the set of edges no longer includes a dummy starting edge
     while (cdr edges) 
-    when (and 
-          (edge-p (car edges)) 
-          (edge-p (second edges))
-          (adjacent-edges? (car edges) (second edges)))
-    collect
-    (list (car edges) (second edges))))
+    when (and (edge-p (car edges)) 
+              (edge-p (second edges))
+              (adjacent-edges? (car edges) (second edges)))
+    collect (list (car edges) (second edges))))
 
-(defvar *whack-a-rule-sentence* nil
-  "Dynamically bound to provide the correct boundaries,
-  usually within a particular sentence or chunk, without
-  needing to pass down the sentence as a parameter")
 
 (defun all-tts (&optional starting-position stop-pos)
   ;; This was originally designed to operate on single 
@@ -188,12 +246,6 @@
     (let ((triple (filter-rules-by-local-competition triples)))
       (tr :filter-selected-triple triple)
       triple)))
-
-
-;;/// seriously consider a resource of these
-(defun triple-rule (triple) (car triple))
-(defun left-edge-of-triple (triple) (cadr triple))
-(defun right-edge-of-triple (triple) (caddr triple))
 
 (defun remove-surplus-literal-compositions (triples)
   ;; Is there is pair involving an edge based on a literal

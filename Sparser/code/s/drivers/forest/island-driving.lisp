@@ -58,6 +58,7 @@
   (when (or *trace-island-driving* 
             *parse-edges*
             *trace-whack-a-rule*)
+    (format t "~&Treetops at start of island-driven parsing")
     (tts))
   (let ((*allow-pure-syntax-rules* t)
         (*edges-from-referent-categories* *island-driven-efrc*))
@@ -115,36 +116,10 @@
       (try-spanning-conjunctions))))
 
 
-(defparameter *rules-for-pairs* (make-hash-table :test #'equal :size 200)
-  "Cache for rule lookup")
-
-(defun whack-a-rule-cycle (sentence)
-  (let ((*whack-a-rule-sentence* sentence))
-    (declare (special *whack-a-rule-sentence*))
-    (let ( rule-and-edges  edge at-least-one-rule)
-      (clrhash *rules-for-pairs*)
-      (loop
-        (setq rule-and-edges (best-treetop-rule sentence))
-        (when (null rule-and-edges)
-          (return-from whack-a-rule-cycle at-least-one-rule))
-        (setq edge (execute-triple rule-and-edges))
-        (cond
-         (edge (setq at-least-one-rule edge))
-         (t (return-from whack-a-rule-cycle at-least-one-rule)))
-        (tr :whacking-triple rule-and-edges edge)))))
-
-(defun execute-triple (triple)
-  ;; triple = rule, left-edge, right-edge
-  (execute-one-one-rule (car triple)
-                        (second triple)
-                        (third triple)))
-
-
     
 ;;;-------------
 ;;; second pass
 ;;;-------------
-
 
 (defun coverage-dispatch (start-pos end-pos)
   "Look at the new coverage. If we're not done then

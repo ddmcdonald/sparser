@@ -17,8 +17,6 @@
 ;;      execute-one-one-rule from check-one-one so it can be used independently
 
 (in-package :sparser)
-(defvar left-label)
-(defvar right-label)
 
 (defun check-one-one (left-edge right-edge)
   (let ((rule (multiply-edges left-edge right-edge)))
@@ -46,7 +44,7 @@
       (break "Unexpected condition: dotted-rule lookahead hit a ~
               case where there are multiple-completions:~
               ~%   left-edge: ~A~
-              ~%  right-edge: ~A" left-label right-label))
+              ~%  right-edge: ~A" left-edge right-edge))
     rule ))
 
 

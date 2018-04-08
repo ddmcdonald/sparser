@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "many-many"
 ;;;   Module:  "analyzers;psp:check:"
-;;;  Version:  1.1 October 1995
+;;;  Version:  April 2018
 
 ;; 0.0 (9/4/92 v2.3) broken out from drivers;chart:psp
 ;;     (5/14/93) renamed a routine
@@ -16,7 +16,6 @@
 
 (in-package :sparser)
 
-(defvar *BREAK-ON-UNEXPECTED-CASES*)
 
 (defun check-many-many (left-ending-vector right-ending-vector)
   (declare (special *break-on-unexpected-cases*))
@@ -26,20 +25,28 @@
         (right-count  (ev-number-of-edges right-ending-vector))
         (right-vector (ev-edge-vector     right-ending-vector))
         left-edge  right-edge  rule  single-edge  
-        already-have-a-rule  #|prefered-rule|#  )
-
-    (flet ((make-the-edge (rule)
-             (let ((edge (make-completed-binary-edge
-                         left-edge right-edge rule)))
-              (setq already-have-a-rule rule)
-              (setq single-edge edge))))
-
+        already-have-a-rule  #|prefered-rule|#
+        triples )
+    
     (dotimes (left-index left-count)
       (setq left-edge (aref left-vector left-index))
       (dotimes (right-index right-count)
         (setq right-edge (aref right-vector right-index))
         (setq rule (multiply-edges left-edge right-edge))
         (when rule
+          (push (make-edge-triple left-edge right-edge rule)
+                triples))))
+    (when triples
+      (execute-triple (filter-by-rule-strength triples)))))
+
+
+#|
+    (flet ((make-the-edge (rule)
+             (let ((edge (make-completed-binary-edge
+                         left-edge right-edge rule)))
+              (setq already-have-a-rule rule)
+              (setq single-edge edge))))
+    
           (if already-have-a-rule
             (if (or (dotted-rule rule)
                     (dotted-rule already-have-a-rule))
@@ -59,15 +66,7 @@
             ;; The first time we find a rule we make the
             ;; corresponding edge
             (make-the-edge rule)))))
-    single-edge )))
-
-;; hook to actually apply some smarts
-(defun select-between-two-rules (earlier later)
-  (declare (ignore earlier later))
-  (when *break-on-unexpected-cases*
-    ;; /// should we pick one as the default ??
-    (break "stub -- multiple toplevel completions")))
-
+    single-edge ))  
 
 
 (defun complete-non-dotted-rule-of-two (r1 r2
@@ -78,10 +77,15 @@
          (if (dotted-rule r1)
            r1
            r2)))
-
     (let ((edge (make-completed-binary-edge
                  left-edge right-edge rule)))
       edge )))
 
-  
 
+;; hook to actually apply some smarts
+(defun select-between-two-rules (earlier later)
+  (declare (ignore earlier later) (special *break-on-unexpected-cases*))
+  (when *break-on-unexpected-cases*
+    ;; /// should we pick one as the default ??
+    (break "stub -- multiple toplevel completions")))
+|#

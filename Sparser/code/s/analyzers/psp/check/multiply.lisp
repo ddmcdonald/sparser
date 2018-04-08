@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "multiply"
 ;;;   Module:  "analyzers;psp:check:"
-;;;  Version:  7.0 March 2015
+;;;  Version:  April 2018
 
 ;; 0.0 (9/4/92 v2.3) initiated.
 ;; 0.1 (10/12) pulled multiply-ids back to [chart;edges:multiplication],
@@ -60,12 +60,18 @@
 
 (in-package :sparser)
 
+;;;--------------------------
+;;; local control parameters
+;;;--------------------------
+
 (defparameter *check-chunk-forms* t
-  "This enables checking the form of the result of a semantic rule, as well as the form of the RHS, to reduce the mis-use
- of ETF derived rules for clauses that are applied when a participle modifies an NG")
+  "This enables checking the form of the result of a semantic rule, as
+ well as the form of the RHS, to reduce the mis-use of ETF derived
+ rules for clauses that are applied when a participle modifies an NG")
 
 (defparameter *check-semantic-applicability* t
-  "This enables checking the semantic applicability of syntactic rules and form rules, even when whack-a-rule is not running.")
+  "This enables checking the semantic applicability of syntactic rules
+ and form rules, even when whack-a-rule is not running.")
 
 (defparameter *check-forms* nil
   "When this is T, ensure that all rules are only applied to 
@@ -76,12 +82,12 @@
    the form information of a rule that wasn't derived from an 
    ETF's schema.")
 
-(defparameter *report-form-check-blocks* nil)
+(defparameter *report-form-check-blocks* nil) ;; see check-rule-form
 
 
-;;;------------------
-;;; access functions
-;;;------------------
+;;;---------------------
+;;; id access functions
+;;;---------------------
 
 (defun category-ids (edge direction field)
   ;; Every access goes through here. For debugging it can be called
@@ -124,6 +130,41 @@
 
 (defun form-multiplier (ids)
   (cdr ids))
+
+
+
+;;;-----------------
+;;; rule preference
+;;;-----------------
+
+(defun filter-by-rule-strength (list-of-triples)
+  "Called by check routines (e.g. check-many-one) when more than
+ one rule succeeded. Prefer semantic rules over form, either over
+ purely syntactic rules."
+  (if (null (cdr list-of-triples))
+    (car list-of-triples)
+    (let ((semantic-rule-triples
+           (loop for triple in list-of-triples
+              as rule = (triple-rule triple)
+              when (semantic-rule? rule)
+              collect triple)))
+      (if semantic-rule-triples
+        (car semantic-rule-triples) ;;/// replace with deliberation
+        (let ((form-rule-triples
+               (loop for triple in list-of-triples
+                  as rule = (triple-rule triple)
+                  when (form-rule? rule)
+                  collect triple)))
+          (if form-rule-triples
+            (car form-rule-triples)
+            (let ((syntactic-rule-triples
+                   (loop for triple in list-of-triples
+                      as rule = (triple-rule triple)
+                      when (syntactic-rule? rule)
+                      collect triple)))
+              (if syntactic-rule-triples
+                (car syntactic-rule-triples)))))))))
+        
 
 
 ;;;------------------------------
