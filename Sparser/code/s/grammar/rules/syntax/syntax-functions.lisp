@@ -1858,20 +1858,25 @@ there was an edge for the qualifier (e.g., there is no edge for the
          ;;(lsp-break "open-var?")
          (let ((q (extend-wh-object wh-obj :statement predicate)))
            (when open-var
+             ;; This is essentially what the compose method call below
+             ;; is doing in the wh-pronoun case
              (setq q (extend-wh-object q :variable open-var)))
-           ;; This is essentially what the compose method call below
-           ;; is doing in the wh-pronoun case
            (tr :wh-compose-wh-with-vp q)
-           (when (top-level-wh-question?)
-             (revise-parent-edge :form category::question))
+           (cond
+             #+ignore
+             ((not (preposed-aux?))
+              ;; On "Why the NH 2 terminal sequence can substitute" making this
+              ;; change blows out the stack, probably within reinterp-mention-using-bindings
+              (revise-left-edge-into-rule :form category::np))
+             ((top-level-wh-question?)
+              (revise-parent-edge :form category::question)))
            q)))
       
       ((itypep wh-obj 'wh-pronoun)
        ;; "which", "who", "where", ... See syntax/wh-word-semantic.lisp
        ;; which also has the relevant compose method.
        (cond ((top-level-wh-question?)
-              (compose wh-obj predicate) ;; k-methods in questions.lisp
-              )
+              (compose wh-obj predicate)) ;; k-methods in questions.lisp
              ((member (cat-name (edge-form (right-edge-for-referent)))
                       '(vp+passive vg+passive))
               (revise-parent-edge :form category::object-relative-clause)
@@ -1880,7 +1885,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
       
       (t (warn "New type of wh-obj in compose-wh-with-vp: ~a~
                 in~%~s" (itype-of wh-obj) (current-string))
-         nil))))
+         predicate))))
+
 
 (defun wh-vp-as-relative-clause (wh-obj predicate)
   ;; Provides something to feed apply-subject-relative-clause by
