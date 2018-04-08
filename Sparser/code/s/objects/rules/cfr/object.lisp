@@ -38,9 +38,22 @@
   (and (null (cfr-completion cfr))
        (= 2 (length (cfr-rhs cfr)))))
 
+(defgeneric semantic-rule? (rule)
+  (:documentation "A semantic rule is a binary rule with
+ no form labels on its righthand side.")
+  (:method ((cfr cfr))
+    (when (binary-rule? cfr)
+      (get-tag :semantic-rule cfr)))) ;; see construct-cfr
+
 (defun unary-rule? (cfr)
   (and (null (cfr-completion cfr))
        (= 1 (length (cfr-rhs cfr)))))
+
+(defgeneric lexical-rule? (rule)
+  (:documentation "Is this a unary rule over a word?")
+  (:method ((cfr cfr))
+    (when (unary-rule? cfr)
+      (word-p (car (cfr-rhs cfr))))))
 
 (defun polyword-rule? (cfr)
   (get-tag :polyword cfr))
@@ -151,9 +164,19 @@ This sorts out what to use as the category in the unusual cases."
     (find-unary-rules (rule-set-for c))))
 
 
-
 (defun form-of (word)
   (let ((cfr (find-single-unary-cfr word)))
     (when cfr
       (cfr-form cfr))))
 #| from <r3>/code/sparser-extensions/new-words.lisp |#
+
+
+(defgeneric find-rules-with-literal (word)
+  (:method ((pname string))
+    (find-rules-with-literal (resolve pname)))
+  (:method ((ignore null)) nil)
+  (:method ((w word))
+    (loop for cfr in *cfrs-defined*
+       as rhs = (cfr-rhs cfr)
+       when (memq w rhs) collect cfr)))
+    
