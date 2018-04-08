@@ -185,50 +185,6 @@
 
 
 
-;; move to util
-(defun remove-comma-from-number (s)
-  ;;/// make it recursive to remove all the commas in a long number
-  (let ((pos-comma (position #\, s)))
-    (if pos-comma
-      (let ((left (subseq s 0 pos-comma))
-            (right (subseq s (1+ pos-comma))))
-        (string-append left right))
-      s)))
-
-(defun insert-commas-into-number-string (s &aux ac)
-  ;;  created by "~4,1F", so it has a decimal point
-  (let ((decimal-point-pos (position #\. s)))
-    (unless decimal-point-pos (error "No decimal point in ~s" s))
-    (let* ((decimal-and-after (subseq s decimal-point-pos))
-           (before-point (subseq s 0 decimal-point-pos))
-           (triplets (subdivide-into-length-3-strings before-point)))
-      
-      (do ((digit-seq (car triplets) (car rest))
-           (rest (cdr triplets) (cdr rest)))
-          ((null rest) (push digit-seq ac))
-        (push digit-seq ac)
-        (push "," ac))
-      (push decimal-and-after ac)
-      (apply #'string-append (nreverse ac)))))
-
-
-(defun subdivide-into-length-3-strings (string)
-  (let ((remaining string)
-        (remaining-length (length string))
-        triplets )
-    (loop
-       (when (<= remaining-length 3)
-         (push remaining triplets)
-         (return))
-       (let ((index (- remaining-length 3)))
-         (push (subseq remaining index) triplets)
-         (setq remaining (subseq remaining 0 index))
-         (setq remaining-length (length remaining))))
-    triplets ))
-
-
-
-
 #+:coral
 (defun analyze-and-report-timing-data (trace-string)
   (multiple-value-bind (total-seconds
