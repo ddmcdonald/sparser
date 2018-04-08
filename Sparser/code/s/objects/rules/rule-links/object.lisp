@@ -17,8 +17,10 @@
 ;;;--------
 
 (defstruct (rule-set
-            (:conc-name #:rs-)
-            (:print-function print-rule-set-structure))
+             ;; (:include unit) -- will force a full recompile
+             ;; but would make for cleaner plist-for et al.
+             (:conc-name #:rs-)
+             (:print-function print-rule-set-structure))
 
   backpointer           ;; the object it's part of
   single-term-rewrites  ;; a list of rules

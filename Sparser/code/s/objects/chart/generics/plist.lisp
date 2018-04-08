@@ -26,13 +26,15 @@
   (etypecase obj
     (null)
     (symbol (symbol-plist obj))
-    (unit (unit-plist obj))))
+    (unit (unit-plist obj))
+    (rule-set (rs-plist obj))))
 
 (defun (setf plist-for) (plist obj)
   "Generic plist setter."
   (etypecase obj
     (symbol (setf (symbol-plist obj) plist))
-    (unit (setf (unit-plist obj) plist))))
+    (unit     (setf (unit-plist obj) plist))
+    (rule-set (setf (rs-plist obj) plist))))
 
 (defun get-tag (tag obj &optional default)
   "Return the value for TAG in the plist of OBJ.
