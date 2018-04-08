@@ -171,6 +171,18 @@ an automatic way of counting source lines in the Sparser codebase.")
                   (>= (file-write-date fasl-file)
                       (file-write-date lisp-file)))
            fasl-file
-           (compile-file lisp-file
-                         :output-file (ensure-directories-exist fasl-file)))
+           (multiple-value-bind (fasl-file warnings-p failure-p)
+               (compile-file lisp-file
+                             :output-file (ensure-directories-exist fasl-file))
+             (declare (ignore warnings-p))
+             (cond (failure-p
+                    (cerror "Skip loading the file."
+                            "Errors were detected compiling ~s."
+                            lisp-file)
+                    (return-from compile-&-load nil))
+                   (fasl-file)
+                   (t (cerror "Load the source file."
+                              "Could not create a compiled file for ~s."
+                              lisp-file)
+                      lisp-file))))
          args))
