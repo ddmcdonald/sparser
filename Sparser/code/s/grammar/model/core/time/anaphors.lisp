@@ -101,7 +101,7 @@
   :instantiates time
   :rule-label time
   :mixins (indexical)
-  :binds ((unit time))
+  :binds ((unit (:or time-unit time)))
   :index (:key unit :temporary)
   :documentation "Provides a descriptive form of the demonstrative
     plus time element construction whose principal meaning resides
@@ -116,13 +116,13 @@
      current month or year, etc. Assemble a proxil/distal-moment
      individual and compute the extension relative to 'today'.")
   (:method ((this (eql word::|this|)) (unit category::time-unit))
-    (let ((i (define-or-make-individual 'proxal-moment
+    (let ((i (define-or-find-individual 'proxal-moment
                  :unit unit))
           (j (value-of-current-time unit)))
       (when j (setq i (bind-variable 'extension j i)))
       i))
   (:method ((that (eql word::|that|)) (unit category::time-unit))
-    (let ((i (define-or-make-individual 'distal-moment
+    (let ((i (define-or-find-individual 'distal-moment
                  :unit unit))
           (j (value-of-current-time unit)))
       (when j (setq i (bind-variable 'extension j i)))
@@ -149,6 +149,7 @@
          (break "What's the right default for 'this ~a'" unit)))))
   (:method ((m category::month))
     ;; Lookup the month in this year
+    (break "this month")
     nil)
   (:method ((dow category::weekday))
     ;; lookup the day in the current week ///represent weeks

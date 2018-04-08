@@ -112,7 +112,7 @@
 
 
 (define-category  age-ago ;; "10 years ago"
-  :specializes quality
+  :specializes time
   :instantiates self
   :binds ((age-ago . amount-of-time))
   :index (:sequential-keys age-ago)

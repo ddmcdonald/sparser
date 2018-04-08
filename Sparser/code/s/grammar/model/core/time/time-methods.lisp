@@ -1,27 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "time-methods"
-;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   June 2014
+;;;    Module:   "grammar/model/core/time/"
+;;;   Version:   April 2018
 
 ;; created 6/1/14 to load preposition and sequencer methods after the dossiers
 ;; that load them. 
 
 (in-package :sparser)
-
-
-;;///////// Move this to some place it can be found again
-(defun category-of-time-unit (unit) ;; method on individual ?
-  (let* ((word (value-of 'name unit))
-         (symbol (when word (word-symbol word))))
-    (when symbol
-      (case symbol
-        (word::|month| category::month)
-        (otherwise
-         (push-debug `(,word ,unit))
-         (error "Don't yet have the category decoder for ~a"
-                symbol))))))
 
 
 ;; "before today"
@@ -37,12 +24,18 @@
       :ends-at date
       :modifier sequencer))
 
+
+
 (def-k-method modifier+noun ((next category::next-sequence)
                              (unit category::time-unit))
+  "For phrases like '(the) next day' or 'next month'. Time units
+   aren't naturally members of a sequence in the way that specific
+   months or days of the week are, so we have to first ground the
+   time unit against the current time and get a sequence from
+   there."
   (tr :next+month unit)
-  (push-debug `(,next ,unit))
-  
-  ;; Which type of time unit is this?
+
+
   (let ((c (etypecase unit
              (category unit)
              (individual (itype-of unit)))))
@@ -51,4 +44,4 @@
       (relative-time-value c :next) ;; Lookup the value
       
       ;; otherwise we make a relative time
-      (else (warn "make relative-time fails in ~s" (current-string)) nil))))
+      (make-a-relative-time next unit))))
