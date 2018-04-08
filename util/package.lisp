@@ -49,13 +49,15 @@
            #:s-intern
            #:*whitespace-chars*
            #:remove-leading-whitespace
-           #:remove-prefix
-           #:remove-suffix
            #:remove-trailing-whitespace
            #:trim-whitespace
            #:contains-whitespace
            #:spaced-string
            #:underscore-interleaved-string
+           #:remove-prefix
+           #:remove-suffix
+           #:remove-comma-from-number
+           #:insert-commas-into-number-string
 
            ;; hash-tables
            #:all-hash-keys

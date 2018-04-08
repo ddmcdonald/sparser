@@ -95,3 +95,43 @@
            (subseq str 0 rem-length))
           (t str))))
 
+(defun remove-comma-from-number (string)
+  (assert (stringp string))
+  (remove #\, string :test #'char=)) ; "3,000" -> "3000"
+
+(defgeneric insert-commas-into-number-string (number)
+  (:documentation "Returns a string for the number with commas
+ in the usual places every three digits.")
+  (:method ((n number)) ;;/// too broad?
+    (insert-commas-into-number-string (format nil "~a" n)))
+  (:method ((s string)  &aux ac)
+    (let* ((decimal-point-pos (position #\. s))
+           (decimal-and-after (when decimal-point-pos
+                                (subseq s decimal-point-pos)))
+           (before-point
+            (if decimal-point-pos (subseq s 0 decimal-point-pos) s))
+           (triplets (subdivide-into-length-3-strings before-point)))
+      (do ((digit-seq (car triplets) (car rest))
+           (rest (cdr triplets) (cdr rest)))
+          ((null rest) (push digit-seq ac))
+        (push digit-seq ac)
+        (push "," ac))
+      (when decimal-point-pos
+        (push decimal-and-after ac))
+      (apply #'string-append (nreverse ac)))))
+             
+(defun subdivide-into-length-3-strings (string)
+  "subroutine of insert-commas-into-number--string"
+  (let ((remaining string)
+        (remaining-length (length string))
+        triplets )
+    (loop
+       (when (<= remaining-length 3)
+         (push remaining triplets)
+         (return))
+       (let ((index (- remaining-length 3)))
+         (push (subseq remaining index) triplets)
+         (setq remaining (subseq remaining 0 index))
+         (setq remaining-length (length remaining))))
+    triplets ))
+
