@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1998,2011-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2011-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "construct"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   March 2017
+;;;   Version:   April 2018
 
 ;; broken out from [define] 9/6/92 v2.3
 ;; 1.0 (10/23) promulgated the fact that the rules for polywords are
@@ -43,15 +43,14 @@
                :schema (or schema-to-use
                            *schema-being-instantiated*))))
 
+    (setf (get-tag :semantic-rule cfr) t)
+
     (note-file-location cfr)
     (note-category-for-word cfr)
     (note-grammar-module cfr :source source)
 
     (knit-into-psg-tables cfr)
     (catalog/cfr cfr r-symbol)
-    #+ignore ;; tracking down redefinition of "being" from "beings"
-    (when (equal (pname (car rhs)) "being")
-      (lsp-break "redefining being"))
 
     cfr ))
 
