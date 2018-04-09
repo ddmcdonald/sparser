@@ -937,7 +937,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
                    '(verb verb+present verb+past verb+ed verb+ing
                      vg+ed vg vg+ing vp+ing infinitive))
            (if (member (cat-name (edge-form be-edge))
-                       '(that-comp thatcomp to-comp vp S subject-relative-clause
+                       '(that-comp thatcomp to-comp whethercomp
+                         vp S subject-relative-clause
                          subordinate-s subordinate-clause
                          object-relative-clause ;; "that PTEN protein levels are, in part, regulated by ..."
                          transitive-clause-without-object))
