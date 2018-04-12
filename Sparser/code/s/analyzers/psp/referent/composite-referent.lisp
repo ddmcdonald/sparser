@@ -36,12 +36,6 @@
 ;;; accessors (various entry points)
 ;;;----------------------------------
 
-(defun composite-referent-p (edge)
-  (let ((referent (edge-referent edge)))
-    (when (typep referent 'composite-referent)
-      referent)))
-
-
 (defun all-the-categories-in-a-composite (composite)
   (unless (typep composite 'composite-referent)
     (error "Threading error: ~a isn't a composite" composite))
