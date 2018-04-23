@@ -7,7 +7,7 @@
 
 ;; initiated 1/25/15
 ;; 1/28/2015 added methods to for building a regression test for sentence semantics
-;;  (one stepp beyond just the number of treetops)
+;;  (one step beyond just the number of treetops)
 ;; completed methods for semantic regression -- seems to work -- 
 ;; no comparison as yet.
 ;; 3/2/15 Finished compare-to-snapshot. 
@@ -21,10 +21,7 @@
 ;; 10/26/15 reverted *directory-for-tree-snapshots* to the local directory
 ;;   assuming that other systems know how to override it. 
 
-
 (in-package :sparser)
-(defvar *directory-for-tree-snapshots*
-  (asdf:system-relative-pathname :sparser ""))
 
 #| For R3 we have organized our different training and testing
 texts into files that consist of calls to 'p', one for each
@@ -34,26 +31,8 @@ in the analysis of a particular sentence and compares it to
 previous records of treetop-counts. 
 |#
 
-;;--- useful macro -- but what file should it really be in?
-
-(defmacro with-total-quiet (&body body)
-  `(let (;;(*readout-relations* nil)
-         (*readout-segments* nil)
-         (*readout-segments-inline-with-text* nil) ;; quiet
-         (*show-article-progress* nil) ;; document handling
-         ;; (*show-section-printouts* nil)
-         (*display-word-stream* nil)
-         (*trace-lexicon-unpacking* nil)
-         (*trace-morphology* nil)
-         (*workshop-window* t)) ;; block tts in p
-     (declare (special *readout-relations* *readout-segments*
-                       *show-article-progress* #|*show-section-printouts*|# 
-                       *readout-segments-inline-with-text*
-                       *display-word-stream*
-                       *trace-lexicon-unpacking* *trace-morphology*
-                       *workshop-window*))
-     ,@body))
-
+(defvar *directory-for-tree-snapshots*
+  (asdf:system-relative-pathname :sparser ""))
 
 ;;;---------
 ;;; classes
