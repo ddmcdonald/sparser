@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2013.2018  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "scan"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  3.3 July 2013
+;;;  Version:  April 2018
 
 ;; initiated 5/15/93 v2.3 on a few pieces of names:fsa:fsa8
 ;; 5/21 fixed a bug, 5/26 added traces
@@ -453,10 +453,8 @@
   ;; classification.
 
   (let ((next-position (chart-position-after position)))         
-    (case (pos-assessed? next-position)
-      (:scanned )
-      (:assessed )
-      (otherwise (scan-next-position)))
+    (unless (has-been-status? :scanned next-position)
+      (scan-next-position))
 
     (let ((next-word (pos-terminal next-position))
           (caps-state (pos-capitalization next-position)))
