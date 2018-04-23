@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2012-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012-2018  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "printers"
 ;;;    Module:   "analyzers;forest:"
-;;;   Version:   January 2014
+;;;   Version:   April 2018
 
 ;; initiated 11/90
 ;; 0.1 (6/30/91 v1.8.1) Revised TTs to appreciate the possibility of the
@@ -93,7 +93,24 @@
 
 
 
-;;--- driver
+;;--- Call from moment of synchronization (workbench)
+
+#| This scheme fails to printout the very last tag in the article,
+and it would miss any text that followed the last 'end tag' if
+there were ever to be any.  ///hook into final actions ??  |#
+
+(defun synchronize-with-segment-readout (start
+                                         &optional end-edge)
+  ;; called in Synchronize-with-workbench-views
+
+  (when *inline-treetop-readout*
+    (readout-the-next-portion-of-segments
+     (etypecase start
+       (edge (chart-position-before
+              (pos-edge-starts-at start)))
+       (position start))
+     end-edge)))
+
 
 (defun readout-the-next-portion-of-segments (position-to-end-at
                                              &optional end-edge)
@@ -123,25 +140,6 @@
 
   (setq *where-the-readout-left-off* position-to-end-at))
 
-
-
-;;--- Call from moment of synchronization
-
-#| This scheme fails to printout the very last tag in the article,
-and it would miss any text that followed the last 'end tag' if
-there were ever to be any.  ///hook into final actions ??  |#
-
-(defun synchronize-with-segment-readout (start
-                                         &optional end-edge)
-  ;; called in Synchronize-with-workbench-views
-
-  (when *inline-treetop-readout*
-    (readout-the-next-portion-of-segments
-     (etypecase start
-       (edge (chart-position-before
-              (pos-edge-starts-at start)))
-       (position start))
-     end-edge)))
 
 
 ;;;--------------------------------
@@ -265,8 +263,6 @@ there were ever to be any.  ///hook into final actions ??  |#
   (format stream "\"~20,4T\"~A\")"
           (string-for-stem-of-edges-referent edge)))
 
-
-
 (defun string-for-stem-of-edges-referent (edge)
   (let ((stem (stem-of-edges-referent edge))
         (head-word
@@ -289,8 +285,6 @@ there were ever to be any.  ///hook into final actions ??  |#
           (return-from stem-of-edges-referent nil)))
       (setq stem (value-of 'stem ref))
       stem )))
-
-
 
 
 (defun print-segment (starts-at ends-at
@@ -317,6 +311,15 @@ there were ever to be any.  ///hook into final actions ??  |#
 ; 
 (defun print-segment-and-pending-out-of-segment-words ;; new word-based version
     (start-pos end-pos &optional (stream *standard-output*))
+  "Called from pts when the *readout-segments-inline-with-text* flag
+ is up before any of the within-segment processing is done. Start and
+ end positions correspond to the two boundaries of the current segment.
+ Word are frequently not enclosed by a segment, particularly adverbs
+ and prepositions because the chunker only makes segments for noun groups,
+ verb groups and adjective groups. Any of these stranded words that
+ are pending to the left of the current segment are printed before
+ the segment's text is."
+  ;; Writers are in analyzers/chart-level/display.lisp
   (when (there-are-words-between-segments start-pos)
     (print-characters-between-segments start-pos stream))
   (format stream "[")
@@ -327,45 +330,10 @@ there were ever to be any.  ///hook into final actions ??  |#
 (defun there-are-words-between-segments (pos)
   (< *where-print-segment-left-off* (pos-token-index pos)))
 
-(defun write-words-between-positions (start-pos end-pos stream)
-  (do* ((position start-pos next-position)
-        (next-position (chart-position-after position)
-                       (chart-position-after position)))
-       ((eq position end-pos) :done)
-    (print-word-and-ws position stream)))
-
 (defun print-characters-between-segments (end-pos &optional (stream *standard-output*))
   (let ((start-pos (chart-position *where-print-segment-left-off*)))
     (write-characters-between-positions start-pos end-pos stream)))
 
-(defun print-words-between-segments (end-pos &optional (stream *standard-output*))
-  (do* ((position (chart-position *where-print-segment-left-off*)
-                  next-position)
-        (next-position (chart-position-after position)
-                       (chart-position-after position)))
-       ((eq position end-pos)
-        (print-preceding-whitespace end-pos stream))
-    (print-word-and-ws position stream)))
-
-(defun print-word-and-ws (position &optional (stream *standard-output*))
-  (let ((terminal (pos-terminal position)))
-    (print-preceding-whitespace position stream)
-    (when terminal ;; could there ever not be?
-      (typecase terminal
-        (word (format stream "~a" (word-pname terminal)))
-        (otherwise
-         (push-debug `(,terminal))
-         (break "New type of terminal: ~a" (type-of terminal)))))))
-
-(defun print-preceding-whitespace (position stream)
-  (let ((preceding-ws (pos-preceding-whitespace position)))
-    (when preceding-ws
-      (typecase preceding-ws
-        (word
-         (format stream "~a" (word-pname preceding-ws)))
-        (otherwise
-         (push-debug `(,preceding-ws))
-         (break "New type of preceding-ws: ~a" (type-of preceding-ws)))))))
 
 
 
