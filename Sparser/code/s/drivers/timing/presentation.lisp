@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2014-2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "presentation"
 ;;;   Module:  "drivers;timing:"
-;;;  Version:  December 2016
+;;;  Version:  April 2018
 
 ;; file created 2/91. Given content 1/6/95
 ;; Added Time decoded 1/23. 10/2/07 Extended and added Allegro variation.
@@ -13,31 +13,9 @@
 
 (in-package :sparser)
 
-
-;;--- Wrapper to minimize other operations
-
-(defmacro with-inessentials-turned-off (&body body)
-  `(let ((*display-word-stream* nil)
-         (*recognize-sections-within-articles* nil)
-         (*newline-delimits-paragraphs* nil)
-         (*do-strong-domain-modeling* nil)  ;; Have to turn all of these
-         (*reify-implicit-individuals* nil) ;; off explicitly given how
-         (*note-text-relations* nil)  ;; after-action-on-segments is pre-set
-         (*after-action-on-segments* 'normal-segment-finished-options)
-         (*debug* nil) ;; disables push-debug
-         )
-     (declare (special *display-word-stream*
-                       *recognize-sections-within-articles*
-                       *newline-delimits-paragraphs*
-                       *do-strong-domain-modeling*
-                       *reify-implicit-individuals*
-                       *note-text-relations*
-                       *after-action-on-segments*
-                       *debug*))
-     ,@body))
-
-
+;;;-------------------------------
 ;;; reporting timer elapsed times
+;;;-------------------------------
 
 (defun report-timer-value (symbol)
   "Returns the value of the timer symbol as a string"
@@ -49,6 +27,13 @@
   (let ((number-string (report-timer-value '*time-to-load-everything*)))
     (format stream "~&System loaded in ~a seconds~%"
             (trim-whitespace number-string))))
+
+
+(defun speed-of-last-run ()
+  (declare (special *time-at-chart-level*))
+  (let ((tps (/ *time-at-chart-level*
+                  *number-of-next-position*)))
+      (format t "~&speed: ~4,1F tokens/msec" (float tps))))
 
 
 
