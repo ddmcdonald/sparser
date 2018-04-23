@@ -279,10 +279,8 @@
   (:method ((w word) evlist)
     (declare (ignore w evlist))
     nil)
-
   (:method ((c referential-category) evlist) ;; for testing
     (ng-compatible? (cat-symbol c) evlist))
-
   (:method ((name symbol) edges)
     (declare (special category::all category::both ;;category::quantifier-of
                       category::pronoun
@@ -301,6 +299,12 @@
                   (eq (edge-category edge) category::all)
                   (eq (edge-category edge) category::both)))
       (eq name 'category::det)))))
+
+
+(defgeneric proper-noun? (edge)
+  (:documentation "Checks the form of the edge. Provides syntactic sugar")
+  (:method ((e edge))
+    (eq (cat-name (edge-form e)) 'proper-noun)))
 
 
 

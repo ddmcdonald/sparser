@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "chunker"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  March 2018
+;;;  version:  April 2018
 
 ;; Initiated 10/8/14
 ;; ddm: 10/16/14 Rewrote identify-chunks. Commented out lines anticipating 
@@ -418,7 +418,7 @@
         (eform (when (edge-p e) (cat-name (edge-form e))))
         (ecat (when (edge-p e) (cat-name (edge-category e))))
         preceding-noun-refs)
-    (declare (special edges eform ecat preceding-noun-refs))
+
     (cond
       ((let ((before (edges-before e)))
          (loop for ee in before
@@ -428,7 +428,7 @@
                       (loop for b-edge in (edges-before ee)
                             thereis
                               (eq (cat-name (edge-category b-edge)) 'between)))))
-       ;; when you have a simple conjunction follwoing a "between" as in
+       ;; when you have a simple conjunction following a "between" as in
        ;;  "any possible interaction between LRP and APOE revealed little evidence"
        ;;  don't extend the NG beyond the conjnction
        nil)
@@ -475,9 +475,11 @@
       
       (t
        (case eform
-         (following-adj (prev-noun-or-adj e))                       ;; FOLLOWING is treated as an adj
-         (adverb (not (eq ecat 'also)))                             ;; ADVERB
-         (verb+ing                                                  ;; VERB+ING
+         (following-adj (prev-noun-or-adj e))     ;; FOLLOWING is treated as an adj
+         (adverb (not (eq ecat 'also)))
+         (proper-noun ;; don't incorporate days of the week, names of months
+          (not (itypep (edge-referent e) 'time)))
+         (verb+ing
           ;;(lsp-break "check verb+ing in NG")
           (cond ((setq preceding-noun-refs (preceding-noun-refs edges))
                  ;; have a strange case where "Ra" is made into a bio-entity, and "Ras" is its plural

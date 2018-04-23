@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2017 David D. McDonald -- all rights reserved
+;;; copyright (c) 2014-2018 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  November 2017
+;;;  Version:  April 2018
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -438,16 +438,22 @@ val-pred-var (pred vs modifier - left or right?)
 (defun noun-noun-compound (qualifier head)
   ;; goes with (common-noun common-noun) syntactic rule
   ;; and {common-noun} → n-bar common-noun
+  ;; or {proper-noun} → np proper-noun>
+  
   (cond
     (*subcat-test*
-     (not (or (word-p head) ;; this happened with word = HYPHEN, "from FCS-treated cells"
-              ;; also happened with "nontargeting"
-              (null head) ;; happens when head is a bio-entity
-              (and (individual-p head)
-                   (itypep head 'determiner)))))
-    ((itypep head 'determiner)
-     ;; had strange case with "some cases this" -- head was "this"
-     nil) 
+     (let ((right-edge (right-edge-for-referent)))
+       (not (or (word-p head) ;; this happened with word = HYPHEN, "from FCS-treated cells"
+                ;; also happened with "nontargeting"
+                (null head) ;; happens when head is a bio-entity
+                (and (individual-p head)
+                     (itypep head 'determiner))
+                (and (proper-noun? right-edge) ;; "Saturday", "June"
+                     (itypep (edge-referent right-edge) 'time))
+                ))))
+    
+    ((itypep head 'determiner) ;; had strange case with "some cases this" -- head was "this"
+     nil)
     ((and qualifier head
 	  (not (or (category-p head)
 		   (individual-p head))))
@@ -462,18 +468,15 @@ val-pred-var (pred vs modifier - left or right?)
           (let ((result (compose qualifier head)))
             (tr :composed-qualifier-with-head qualifier head result)
             result)))
-
        ((and (not (eq script :biology))
              ;; w/o methods: "bottom" in "bottom block"
              (itypep qualifier 'object-dependent-location))
         (add-dependent-location qualifier head))
-        
        ((and
          (category-named 'knockout-pattern)
          (itypep head 'knockout-pattern)
          (itypep qualifier 'protein)
-         (setq qualifier (bind-variable 'cell-line ;; ???
-                                        head qualifier)))
+         (setq qualifier (bind-variable 'cell-line head qualifier)))
         qualifier)
        ;;/// There are a lot of knockout patterns. Enumerating them
        ;; like this is going to get old. Feels like motivation for
@@ -496,7 +499,7 @@ val-pred-var (pred vs modifier - left or right?)
                  (value-of 'name qualifier)))
         ;; intended as test for proper noun or other specific NP
         (revise-parent-edge :form category::proper-noun)
-	qualifier)             
+	qualifier)
        ((and (itypep qualifier (itype-of head))
              ;; "The concentration of BRAF-NRAS complex." comes out
              ;; as 'complex of complex of' if we fall through to
@@ -507,6 +510,7 @@ val-pred-var (pred vs modifier - left or right?)
        ((interpret-premod-to-np qualifier head))
        ;; subcat test is in here. If there's a :premod subcategorization
        ;; that's compapatible this gets it.
+
        (t
 	;; what's the right relationship? Systemics would say
 	;; they are qualifiers, so perhaps subtype?
