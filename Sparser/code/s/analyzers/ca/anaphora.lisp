@@ -897,8 +897,12 @@ saturated? is a good entry point. |#
           individual  last-mention  nearest-individual-so-far  )
 
       (dolist (dh candidates-entries)
-        (setq individual (first dh)
-              last-mention (car (second dh)))  ;; start-pos of its edge
+        (etypecase dh
+          (cons (setq individual (first dh)
+                      last-mention (car (second dh))))  ;; start-pos of its edge
+          (discourse-mention
+           (setq individual (base-description dh)
+                 last-mention (car (mentioned-where dh)))))
         ;(break "~a at ~a" individual last-mention)
 
         (unless (eq last-mention :display-index)
