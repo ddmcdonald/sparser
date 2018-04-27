@@ -936,14 +936,14 @@ in cwc-integ/spire/interface/sparser.lisp
     side-effects as there is no collection"))
 
 (defmethod traverse-sem ((s sentence) fn)
-  (traverse-sem (previous s) fn)
+  ;(traverse-sem (previous s) fn)
   (funcall fn s)
   (loop for tt in (all-tts (starts-at-pos s) (ends-at-pos s))
         do (when (edge-p tt) (traverse-sem (edge-mention tt) fn))))
 
 (defmethod traverse-sem ((m discourse-mention) fn)
   (funcall fn m)
-  (if (and (is-basic-collection? (base-description m))
+  (if (and (collection-or-sequence-p (base-description m))
            ;; how the Erk and p90RSK pathway phosphorylates and inactivates GSK-3beta.
            ;; the HOWCOMP acts (erroneously) as a basic-collection
            (value-of 'items (base-description m)))
