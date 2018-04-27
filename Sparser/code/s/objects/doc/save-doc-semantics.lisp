@@ -51,7 +51,8 @@
                                         (dir
                                          (or *default-article-semantics-path*
                                              (CURE-semantics-directory-pathname))))
-  (declare (special *indra-post-process*))
+  (declare (special *indra-post-process* *save-bio-processes*
+                    *reach-complex-processes*))
   (setq *semantic-output-format* output-format)
   (case *semantic-output-format*
     (:hms-json (setq *indra-post-process* (list t))
