@@ -623,9 +623,15 @@ uid binding, if there is one"
   (assert (and (itypep family category::protein-family)
                ;; collections with protein-families pass the first itypep
                (not (itypep family category::collection)))) 
-  (let ((fam-collection (or (value-of 'family-members family)
-                            (value-of 'family-members (gethash (value-of 'uid family)
-                                                               *uid-to-individual*)))))
+  (let* ((fam-uid (value-of 'uid family))
+         (fam-collection (or (value-of 'family-members family)
+                             (and fam-uid
+                                  ;; there are cases of generics like
+                                  ;; "family" or "enzyme" where a
+                                  ;; family has neither uid nor members
+                                 (value-of 'family-members
+                                           (gethash fam-uid
+                                                    *uid-to-individual*))))))
     (when fam-collection
       (loop for protein in (value-of 'items fam-collection)
             append (indiv-bio-synonyms protein)))))
