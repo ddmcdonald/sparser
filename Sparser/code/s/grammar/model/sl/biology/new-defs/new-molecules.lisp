@@ -356,7 +356,7 @@
 (def-indiv-with-id molecule "PDB" "NCIT:C44297" :name "1 4-dichlorobenzene") 
 (def-indiv-with-id molecule "PBN" "CHEBI:27889" :name "lead(0)") 
 (def-indiv-with-id molecule "Oleamide" "CHEBI:116314" :name "oleamide") 
-(def-indiv-with-id molecule "NP40" "CHEBI:63016" :name "nonyl phenoxypolyethoxylethanol") 
+(def-indiv-with-id molecule "NP40" "CHEBI:63016" :name "nonyl phenoxypolyethoxylethanol" :synonyms ("NP-40")) 
 (def-indiv-with-id molecule "NNK" "NCIT:C29801" :name "4-methylnitrosamino 1-3-pyridyl 1-butanone") 
 (def-indiv-with-id molecule "NADP+" "CHEBI:18009" :name "NADP(+)") 
 (def-indiv-with-id molecule "NADH" "CHEBI:16908" :name "NADH") 
@@ -1604,3 +1604,8 @@
 (def-indiv-with-id phospholipid "PIP2" "PCID:5497157" :name "PIP2" :synonyms ("phosphatidylinositol 4,5-bisphosphate" "phosphatidylinositol-4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate"))
 (def-indiv-with-id phospholipid "PIP3" "PCID:101362114" :name "PIP3" :synonyms ("phosphatidylinositol 3,4,5-triphosphate" "phosphatidylinositol-3,4,5-trisphosphate"))
 (def-indiv-with-id phospholipid "IP3" "PCID:439456" :name "IP3" :synonyms ("inositol 1,4,5-triphosphate"))
+(def-indiv-with-id molecule "Tris" "CHEBI:9754")
+(def-indiv-with-id molecule "HCl" "CHEBI:17883" :maintain-case t)
+(def-indiv-with-id molecule "NaCl" "CHEBI:26710" :name "sodium chloride" :maintain-case t :synonyms ("Na-Cl"))
+(def-indiv-with-id molecule "progesterone" "CHEBI:17026" :synonyms ("progesteron"))
+

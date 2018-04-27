@@ -823,7 +823,7 @@
 (noun "therapeutic strategy" :super medical-treatment)
 
 
-
+(noun "toxin" :super molecule)
 
 (define-category drug :specializes molecule
   :binds ((disease disease)

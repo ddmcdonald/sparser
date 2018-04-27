@@ -13,3 +13,8 @@
  :mixins (substance)
  :realization (:noun ("serum" :plural "sera")))
 
+(define-category buffer :specializes experimental-condition
+ :mixins (substance)
+ :realization (:noun "buffer")) ;maybe add verb?
+
+(noun ("HPB" "high phosphate buffer") :super buffer)

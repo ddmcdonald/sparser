@@ -110,8 +110,10 @@
 ;;;------------------------
 ;;; GTP, GDP, GEFs & GAPs
 ;;;------------------------
-(def-bio "GTP" nucleotide :identifier "CHEBI:15996" :mitre-link "PubChem:6830")
-(def-bio "GDP" nucleotide  :identifier "CHEBI:17552" :mitre-link "PubChem:8977")
+
+;; these same definitions exist in molecules
+;(def-bio "GTP" nucleotide :identifier "CHEBI:15996" :mitre-link "PubChem:6830")
+;(def-bio "GDP" nucleotide  :identifier "CHEBI:17552" :mitre-link "PubChem:8977")
 (noun ("GEF" "guanine nucleotide exchange factor" "guanyl-nucleotide-exchange factor") :super nucleotide-exchange-factor)
 (noun "growth factor" :super protein) ;; actually, either a protein or hormone, but occasionally some other molecule
 
