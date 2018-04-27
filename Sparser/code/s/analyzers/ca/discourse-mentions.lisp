@@ -420,7 +420,9 @@
         ;; remove mention from old edge
         (setf (edge-mention source-edge) t))
       (setf (mention-history (edge-referent source-edge))
-            (remove subsumed-mention (mention-history (edge-referent source-edge))))))
+            (remove subsumed-mention
+                    (mention-history
+                     (edge-referent source-edge))))))
   subsumed-mention)
 
 (defun embedded-statement? (edge)
