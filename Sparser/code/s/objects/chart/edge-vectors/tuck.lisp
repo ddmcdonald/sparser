@@ -120,10 +120,10 @@
       (t
        (set-edge-referent edge new-ref)
        (if (edge-mention edge)
-         (if (typep (edge-mention edge) 'discourse-mention)
-           (setf (base-description (edge-mention edge)) new-ref))
-         (warn "null edge-mention on edge ~s in ~%~s"
-               edge (current-string)))
+           (when (typep (edge-mention edge) 'discourse-mention)
+             (setf (base-description (edge-mention edge)) new-ref))
+           (warn "null edge-mention on edge ~s in ~%~s"
+                 edge (current-string)))
        (let ((parent (edge-used-in edge)))
          (cond
            ((edge-p parent)

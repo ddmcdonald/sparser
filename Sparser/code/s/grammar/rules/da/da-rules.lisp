@@ -99,7 +99,8 @@
                (make-edge-spec
                 :category (edge-category clause)
                 :form (edge-form clause)
-                :referent (bind-dli-variable 'circumstance pobj-referent clause-referent)
+                :referent (bind-dli-variable 'circumstance
+                                             pobj-referent clause-referent)
                 :target clause
                 :direction :left
                 :preposed pp)))
@@ -110,20 +111,25 @@
         ((is-basic-collection? clause-referent) ;; Dec #33 goes through here
          (setq *edge-spec*
                (or
-                (distribute-pp-to-conjoined-clauses pp clause prep-word pobj-referent clause-referent
+                (distribute-pp-to-conjoined-clauses pp clause prep-word
+                                                    pobj-referent
+                                                    clause-referent
                                                     'attach-leading-pp-to-clause)
-                (distribute-pp-to-first-conjoined-clause pp clause
-                                                         'attach-leading-pp-to-clause))))
+                (distribute-pp-to-first-conjoined-clause
+                 pp clause
+                 'attach-leading-pp-to-clause))))
         (t
          (let ((var-name
-                (or (subcategorized-variable clause-referent prep-word pobj-referent)
+                (or (subcategorized-variable clause-referent
+                                             prep-word pobj-referent)
                     (failed-pp-attachment pp clause-referent))) )
            (when var-name
              (setq *edge-spec*
                    (make-edge-spec
                     :category (edge-category clause)
                     :form (edge-form clause)
-                    :referent (bind-dli-variable var-name pobj-referent clause-referent)
+                    :referent (bind-dli-variable var-name
+                                                 pobj-referent clause-referent)
                     :target clause
                     :direction :left
                     :preposed pp))
