@@ -233,6 +233,7 @@
 
 (def-family-with-id "Rho" "FA:03668" :synonyms ("rho"))
 (def-family-with-id "Ric-8" "XFAM:PF10165.7" :synonyms ("ric-8" "ric8"))
+(def-family-with-id "RING" "XFAM:PF00097")
 (def-family-with-id "RNA polymerase 1" "FPLX:RNApo_I") 
 (def-family-with-id "RNA polymerase II" "FPLX:RNApo_II" :synonyms ("RPII" "RNAP II") :members ("UP:Q9Y5B0" "UP:P24928")) ; >1000 other human ones as well
 (def-family-with-id "RPA" "FPLX:RPA" :synonyms ("Replication protein A" "Replication-associated protein A" "REPA" "RepA" "replication-associated protein" "Replication factor A" "RP-A") :members ("UP:P27694" "UP:P15927" "UP:P35244" "UP:Q13156")) 
