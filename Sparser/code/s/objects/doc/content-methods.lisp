@@ -442,14 +442,61 @@
   
 
 (defparameter *mentions-in-sentence* (make-hash-table :size 10000))
+(defparameter *sentence-mismatch-mentions-ht* (make-hash-table :size 10000))
+(defparameter *break-on-sentence-mention-mismatches* nil)
+(defparameter *reset-sent-mentions* nil)
 
 (defmethod get-mentions ((s sentence))
   (gethash s *mentions-in-sentence*))
 
 (defmethod set-mentions ((s sentence))
-  (setf (gethash s *mentions-in-sentence*)
-        (find-all-mentions s)))
-  
+  (let ((s-toc-ind (toc-index s))
+        (init-mentions (find-all-mentions s)))
+    (setf (gethash s *mentions-in-sentence*)
+          (if (eq (search "NIL" s-toc-ind) 0) ; we're not in an article
+              init-mentions
+              (loop for mention in init-mentions
+                    collect (let ((ment-art-loc (car (mentioned-in-article-where mention))))
+                              (cond ((or (null ment-art-loc)
+                                  ;; if we're not in an article, this is unbound
+                                         (equal ment-art-loc s-toc-ind))
+                                     mention)
+                                    ((mention-in-sentence? mention s)
+                                     ;; check if in bounds of current
+                                     ;; sentence -- if so, then the
+                                     ;; mentioned-in-article-where is
+                                     ;; wrong and should be updated
+                                     (push mention *reset-sent-mentions*)
+                                     (setf (mentioned-in-article-where mention)
+                                           (cons s-toc-ind *current-paragraph*))
+                                     mention)
+                                    (t
+                                     (push mention
+                                           (gethash
+                                            s
+                                            *sentence-mismatch-mentions-ht*))
+                                     (if *break-on-sentence-mention-mismatches*
+                                         (lsp-break "bad mention sentence match for ~s ~s~%"
+                                                    mention s)
+                                       ;; this is problematic because
+                                       ;; there will be bad mentions
+                                       ;; in the table -- hopefully
+                                       ;; will find and fix all these
+                                       ;; cases
+                                         mention)))))))))
+
+(defun mention-in-sentence? (mention s)
+  (let* ((m-edge (mention-source mention))
+         (m-start-index
+          (pos-array-index (pos-edge-starts-at m-edge)))
+         (m-end-index
+          (pos-array-index (pos-edge-ends-at m-edge)))
+         (s-start-index
+          (pos-array-index (starts-at-pos s)))
+         (s-end-index
+          (pos-array-index (ends-at-pos s))))
+    (and (<= s-start-index m-start-index)
+         (>= s-end-index m-end-index))))
 
 ;;;----------------------------------------------
 ;;; functionally salient aspects of the sentence
