@@ -342,6 +342,8 @@
 (defun (setf mention-head) (edge mention)
   (setf (gethash mention *mention-heads*) edge))
 
+(defun mention-p (mention)
+  (typep mention 'discourse-mention))
 
 (defun make-mention (i source &optional category)
   "Individuals reside in a description lattice. Every new
@@ -542,13 +544,17 @@
          (loop for b in new-bindings
                collect
                  (let* ((value (binding-value b)))
-                   (if (or
-                        (referential-category-p value)
-                        (eq value **lambda-var**)
-                        (stringp value)
-                        (word-p value)
-                        (polyword-p value)
-                        (numberp value))
+                   (if (or (referential-category-p value)
+                           (eq value **lambda-var**)
+                           (stringp value)
+                           (word-p value)
+                           (polyword-p value)
+                           (numberp value)
+                           (eq 'COUNT
+                               ;; if we don't do this, it can end up
+                               ;; looking for a mention for the individual
+                               ;; that matches the number that's the count
+                               (pname (binding-variable b))))
                        `(,(binding-variable b) ,value)
                        (create-dependency-pair
                         b
@@ -838,8 +844,12 @@ so we return the edge for the POBJ"
           (encode-mention-location
            (if (consp source) (second source) source)))
     (when toc
-      ;; some mentions get created in MAKE-EDGE-FOR-POLYWORD
+      ;; some mentions get created in MAKE-EDGE-FOR-POLYWORD or other passes
       ;;  which occurs before sentences are delimited
+      #+ignore
+      (when (and *current-paragraph* (eq 0 (search "NIL" toc)))
+        (lsp-break "why don't we have a real toc?"))
+            
       (setf (mentioned-in-article-where m)
           (cons toc *current-paragraph*)))
    ))
