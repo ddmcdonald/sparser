@@ -544,21 +544,23 @@
          (loop for b in new-bindings
                collect
                  (let* ((value (binding-value b)))
-                   (if (or (referential-category-p value)
+                   (cond ((or (referential-category-p value)
                            (eq value **lambda-var**)
                            (stringp value)
                            (word-p value)
                            (polyword-p value)
-                           (numberp value)
-                           (eq 'COUNT
-                               ;; if we don't do this, it can end up
-                               ;; looking for a mention for the individual
-                               ;; that matches the number that's the count
-                               (pname (binding-variable b))))
-                       `(,(binding-variable b) ,value)
-                       (create-dependency-pair
-                        b
-                        (find-binding-dependency value edges top-edge b)))))))
+                           (numberp value))
+                          `(,(binding-variable b) ,value))
+                       ((eq 'COUNT
+                            ;; if we don't do this, the count value
+                            ;; ends up as a number individual instead
+                            ;; of a literal number which can cause problems
+                            (pname (binding-variable b)))
+                        `(,(binding-variable b) ,(value-of 'value value)))
+                       (t
+                        (create-dependency-pair
+                         b
+                         (find-binding-dependency value edges top-edge b))))))))
     (declare (special deps))
     #+ignore
     (when (eq 10 (edge-position-in-resource-array top-edge))
