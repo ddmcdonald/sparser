@@ -22593,7 +22593,7 @@
 (define-protein "UP:Q9JRN7" ("TLD")) 
 (define-protein "UP:Q9JRV8" ("acca2")) 
 (define-protein "UP:Q9JTK4" ("LBPA")) 
-(define-protein "UP:Q9K323" ("CEP")) 
+;(define-protein "UP:Q9K323" ("CEP")) 
 (define-protein "UP:Q9K5N0" ("soj")) 
 (define-protein "UP:Q9K801" ("HisK")) 
 (define-protein "UP:Q9K973" ("AHRC")) 

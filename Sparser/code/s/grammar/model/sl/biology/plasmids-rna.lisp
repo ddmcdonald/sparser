@@ -74,5 +74,6 @@
 (noun "GST-Med1-CRAF-BXB" :super plasmid)
 (noun "pCMV-ERK2-HA" :super plasmid)
 (noun "pCEP-ERK2" :super plasmid)
+(noun "pCEP" :super plasmid)
 (noun "pGL3B" :super plasmid) ; luciferase reporter plasmid
 (noun "pEGFP-N1" :super plasmid)
