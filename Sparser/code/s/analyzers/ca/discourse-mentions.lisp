@@ -551,11 +551,17 @@
                            (polyword-p value)
                            (numberp value))
                           `(,(binding-variable b) ,value))
-                       ((eq 'COUNT
+                       ((and (eq 'COUNT
                             ;; if we don't do this, the count value
                             ;; ends up as a number individual instead
                             ;; of a literal number which can cause problems
-                            (pname (binding-variable b)))
+                                 (pname (binding-variable b)))
+                             ;; making sure to only do this if the
+                             ;; value is an individual -- hopefully
+                             ;; all counts are now numbers so this
+                             ;; branch of the cond is moot, but I'm
+                             ;; not going to fully test that yet
+                             (individual-p value))
                         `(,(binding-variable b) ,(value-of 'value value)))
                        (t
                         (create-dependency-pair

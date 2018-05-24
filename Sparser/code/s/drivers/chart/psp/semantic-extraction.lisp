@@ -780,14 +780,19 @@ in cwc-integ/spire/interface/sparser.lisp
        (declare (special bindings desc))
        (append
         desc
-        (loop for b in bindings 
-              unless (or (null (binding-value b)) ;; sometimes we get null values for raw-text field
+        (loop for b in bindings
+              as value = (binding-value b)
+              unless (or (null value) ;; sometimes we get null values for raw-text field
                          (and (not (or *for-spire* *sentence-results-stream*))
                               (member (var-name (binding-variable b))
                                       '(members count ras2-model))))
            collect
              (list (var-name (binding-variable b))
-                   (collect-model-description (binding-value b)))))))
+                   (if (or (numberp value)
+                           (symbolp value)
+                           (stringp value))
+                       value
+                       (collect-model-description value)))))))
     
     ((collection-p i)
      (setf (gethash i *semtree-seen-individuals*) t)

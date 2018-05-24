@@ -1343,7 +1343,7 @@
   ;; :rule-label protein
   :binds ((type bio-entity) ;; a family of what?
           (family-members collection)
-          (count number))
+          (count :primitive integer))
   :rule-label protein
   :index (:permanent :key name)
   :lemma (:common-noun "family")

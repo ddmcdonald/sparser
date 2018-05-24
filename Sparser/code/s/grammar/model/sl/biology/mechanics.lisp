@@ -1492,7 +1492,7 @@ for this species"
           (break "Can't retrieve protein from the name ~s" name))
         (push protein proteins)))
     (let ((set-of-proteins (create-collection proteins 'protein))
-          (count (find-number (length members))))
+          (count (length members)));(find-number (length members))))
       (setq i (bind-dli-variable 'family-members set-of-proteins i))
       (setq i (bind-dli-variable 'count count i))
       ;; If we didn't use such a specific category these would matter.
