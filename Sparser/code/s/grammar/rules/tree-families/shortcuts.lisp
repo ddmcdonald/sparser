@@ -112,7 +112,9 @@ broadly speaking doing for you all the things you might do by hand.
          (i (or (gethash id *uid-to-individual*)
                 (setf (gethash id *uid-to-individual*)
                       (let ((ind (find-or-make-individual category :uid id)))
-                        (when (consp members) (setq ind (set-family-members ind members)))
+                        (when (consp members)
+                          (setq ind
+                                (set-family-members ind members)))
                         (if name
                             (bind-dli-variable :name name ind)
                             ind)))))

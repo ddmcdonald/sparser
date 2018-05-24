@@ -486,8 +486,8 @@
                                          mention)))))))))
 
 (defun mention-in-sentence? (mention s)
-  "Given a mention and a sentence, determine if the mentions bounds
-are within the sentence bounds"
+  "Given a mention and a sentence, determine if the mention's bounds
+are within the sentence's bounds"
   (let* ((m-edge (mention-source mention))
          (m-start-index
           (pos-array-index (pos-edge-starts-at m-edge)))

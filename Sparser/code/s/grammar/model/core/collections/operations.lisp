@@ -78,7 +78,8 @@
         (category (category-named category-specifier t)))
     (setq collection
           (bind-dli-variable 'items items 
-                         (bind-dli-variable 'number (length items) collection)))
+                             (bind-dli-variable 'number (length items)
+                                                collection)))
     (setq collection (bind-dli-variable 'type category collection))
     (index-collection collection)
     collection))
