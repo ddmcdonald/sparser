@@ -1887,6 +1887,11 @@ there was an edge for the qualifier (e.g., there is no edge for the
               (revise-parent-edge :form category::object-relative-clause)
               predicate)
              (t (wh-vp-as-relative-clause wh-obj predicate))))
+
+      ((eq (edge-rule (left-edge-for-referent)) 'who-subject-relative-clause-operation)
+       ;; the referent of the previous NP's been copied to the WH, so its category
+       ;; is unpredictable. Parent edge type is unchanged subj relative.
+       predicate)
       
       (t (warn "New type of wh-obj in compose-wh-with-vp: ~a~
                 in~%~s" (itype-of wh-obj) (current-string))
