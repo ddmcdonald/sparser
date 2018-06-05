@@ -62,6 +62,7 @@
 ;;; Numeric times
 ;;;------------
 
+#| From Charlie Greenbacker's analysis circa 2009
 (define-category numeric-time
   :instantiates  self
   :specializes  time-of-day
@@ -74,7 +75,43 @@
 (defmacro def-numeric-time (string) 
   (let ((word (define-word string))) ;; reuses any already defined word
     (define-individual 'numeric-time
-       :name word)))
+        :name word)))  |#
+
+
+;;;---------------------------------
+;;; post-modifying reference points
+;;;---------------------------------
+
+(define-category am-pm
+  :specializes temporal-index
+  :instantiates nil
+  :documentation "Common label for use in semantic rules")
+
+(define-category ante-meridian
+  :specializes am-pm
+  :instantiates self
+  :rule-label am-pm
+  :index (:permanent :key name)
+  :realization (:adjective ("am" "a.m.")))
+
+(define-category post-meridian
+  :specializes am-pm
+  :instantiates self
+  :rule-label am-pm
+  :index (:permanent :key name)
+  :realization (:adjective ("pm" "p.m.")))
+
+
+#| These are the synset of ont::event-time-rel in TRIPS
+
+after, afterward, afterwards, ago, anytime, as, as quick as possible,
+as soon as, as soon as possible, awhile, before, earlier, early,
+following, forthcoming, from, immediately, in progress, in the
+meantime, late, later, nowadays, once, one day, pending, previously,
+prior to, recently, right away, simultaneously, since, sometime, soon,
+then, til, till, to, today, tomorrow, tonight, underway, until,
+upcoming, when, whenever, while, yesterday, yet,  |#
+
 
 ;;;------------
 ;;; Time zones
@@ -134,4 +171,10 @@ timezone.  |#
 (def-cfr timezone ("GMT" hyphen number colon number))
 (def-cfr timezone ("GMT"))
 |#
+
+;;;------------
+;;; clock time 
+;;;------------
+;;  which will extend to timezone (with offsets) and seconds
+
 

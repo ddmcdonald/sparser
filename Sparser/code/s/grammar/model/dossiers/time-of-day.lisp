@@ -32,6 +32,7 @@
 ;;; old English 12h notation
 ;;;-----------------------
 
+;; 4/25/18 OBE AM-PM in time-of-day.lisp
 ; should be restricted to (1-12):(0-59):(0-60) for consistency
 (def-cfr numeric-time (numeric-time "am")) ;conflicts with verb 'to be'?
 (def-cfr numeric-time (numeric-time "a.m."))
