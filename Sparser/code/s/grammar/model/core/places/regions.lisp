@@ -78,12 +78,17 @@
   ;; which is awfully specialized. 
   :realization (:tree-family  kind-of-name ;; "strait of Hormous"
                 :mapping ((np . region-type)
-                          (complement . name) ;; including 'name-word' creates duplicate
+                          (complement . name-word)
                           (result-np . :self))))
+;; Something trick in setup-rdata creates duplicate rules if we include 'name'
+;; in the labels of the complement in the mapping
+(def-cfr typed-region (region-type of-name)
+  :form np
+  :referent (:function give-kind-its-name left-edge right-edge))
 
 (defun give-kind-its-name (region name) ;; left-referent and right-referent
   ;; The function called by kind-of-name ETF in of.lisp
-  (push-debug `(,region ,name)) ;;(break "cit of x")
+  (push-debug `(,region ,name)) (break "city of x")
   (let ((region-name (convert-to-canonical-name-form name))
         new-region )
     (cond

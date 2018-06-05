@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2018  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "person-company"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  October 2016
+;;;  version:  April 2018
 
 ;; Broken out of ref.lisp 10/4/16
 
@@ -41,6 +41,12 @@
   (tr :seek-person-for-pronoun pn-edge)
   (respan-pn-with-most-recent-person-anaphor pn-edge))
 
+(defparameter *safe-to-coerce-named-entities-to-people* nil
+  "If we're in a sublanguage where we have good coverage of NE that
+ aren't people -- mostly companies and the like -- then we can reasonably
+ assume that if there's a personal pronoun that has to be spanned then
+ we can coerce a close NE to a person.")
+
 (defun respan-pn-with-most-recent-person-anaphor (pn-edge)
   (let ((person-entries (discourse-entry (category-named 'person))))
     (let ((person
@@ -66,13 +72,12 @@
 
       (unless person
         (tr :no-discourse-entries-for-people)
-        (setq person (coerce-nearest-named-object-to-person pn-edge)))
-
-      (unless person
-        (when *debug-pronouns*
-          (push-debug `(,person-entries))
-          ;; (setq person-entries (car *))
-          (break "why couldn't it find a person?")))
+        (when *safe-to-coerce-named-entities-to-people*
+          (setq person (coerce-nearest-named-object-to-person pn-edge))
+          (unless person
+            (when *debug-pronouns*
+              (push-debug `(,person-entries))
+              (break "why couldn't it coerce and find a person?")))))
 
       (when person
         (tr :subverting-pn-edge pn-edge (category-named 'person) person)

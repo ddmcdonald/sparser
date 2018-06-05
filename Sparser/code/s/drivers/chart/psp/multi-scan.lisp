@@ -875,7 +875,7 @@
    chart (no-space-before-word?) then call check-for-pattern
    to initiate the process in collect-no-space-segment-into-word
    and manage the return value."
-  (declare (special *sentence-terminating-punctuation* *trace-sweep*))
+  (declare (special *sentence-terminating-punctuation* *trace-sweep* *trace-ns-sequences*))
   (tr :sweep-for-no-space-patterns)
   (let ((pos (starts-at-pos sentence))
         (sent-end-pos (ends-at-pos sentence))
@@ -886,15 +886,20 @@
                   (setq pos (start-of-ns-region pos sent-end-pos)))
        do
          (setq ns-end-pos (end-of-ns-region pos sent-end-pos))
-         (when *trace-sweep*
+         (when (or *trace-sweep* *trace-ns-sequences*)
            (format t "~&[no-space sweep] p~a ~a p~a~%"
                    (pos-token-index pos)
                    (pos-terminal pos)
                    (pos-token-index ns-end-pos)))
-         (setq ns-end-pos (collect-no-space-segment-into-word pos ns-end-pos))
-         (if (eq ns-end-pos sent-end-pos)
-           (setq pos nil)
-           (setq pos ns-end-pos)))
+         (if (eq next-pos (chart-position-after pos)) ;; one word long
+           (then
+             (break "One word between ~a and ~a" pos next-pos)
+             (setq pos next-pos))
+           (else
+             (setq ns-end-pos (collect-no-space-segment-into-word pos ns-end-pos))
+             (if (eq ns-end-pos sent-end-pos)
+               (setq pos nil)
+               (setq pos ns-end-pos)))))
 
     (loop for pos in (copy-list *positions-with-unhandled-unknown-words*)
           unless (position-precedes sent-end-pos pos)
@@ -936,7 +941,8 @@
                (word-never-in-ns-sequence
                 (or (left-treetop-at/only-edges next-pos)
                     (pos-terminal
-                     (chart-position-before next-pos)))))
+                     #+ignore(chart-position-before next-pos)
+                     next-pos ))))
            (setq pos next-pos))
           (t (return pos)))))
 
