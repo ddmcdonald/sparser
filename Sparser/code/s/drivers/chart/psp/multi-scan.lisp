@@ -891,15 +891,10 @@
                    (pos-token-index pos)
                    (pos-terminal pos)
                    (pos-token-index ns-end-pos)))
-         (if (eq next-pos (chart-position-after pos)) ;; one word long
-           (then
-             (break "One word between ~a and ~a" pos next-pos)
-             (setq pos next-pos))
-           (else
-             (setq ns-end-pos (collect-no-space-segment-into-word pos ns-end-pos))
-             (if (eq ns-end-pos sent-end-pos)
-               (setq pos nil)
-               (setq pos ns-end-pos)))))
+         (setq ns-end-pos (collect-no-space-segment-into-word pos ns-end-pos))
+         (if (eq ns-end-pos sent-end-pos)
+           (setq pos nil)
+           (setq pos ns-end-pos)))
 
     (loop for pos in (copy-list *positions-with-unhandled-unknown-words*)
           unless (position-precedes sent-end-pos pos)
