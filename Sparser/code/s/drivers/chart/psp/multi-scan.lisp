@@ -936,8 +936,13 @@
                (word-never-in-ns-sequence
                 (or (left-treetop-at/only-edges next-pos)
                     (pos-terminal
-                     #+ignore(chart-position-before next-pos)
-                     next-pos ))))
+                     ;; needs to be chart-position-before because
+                     ;; otherwise we end up with "(Figure 1b)"
+                     ;; resulting in a "(Figure" bioentity and leaving
+                     ;; the close-paren stranded 
+                     (chart-position-before next-pos)
+                     ;next-pos
+                     ))))
            (setq pos next-pos))
           (t (return pos)))))
 
