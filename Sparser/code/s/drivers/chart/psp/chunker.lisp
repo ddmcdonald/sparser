@@ -800,12 +800,14 @@ than a bare "to".  |#
                       (not (boundp '*chunk*)) ;; happens in looking at np-head? of first chunk
                       (not (chunk-ev-list *chunk*)))))
             ((plural-noun-and-present-verb? e)
-             ;; fix logic error -- if we hav a noun-verb ambiduity,
+             ;; fix logic error -- if we have a noun-verb ambiguity,
              ;; then we must check the following --
              ;; the only time we treat the word as a noun is if it immediately follows a det or prep
              ;; cf. "RAS results in" vs "the results..."
+             ;; or if it is followed by "of" e.g., "the activation states of ERK"
              (and (or (preceding-det-prep-poss-or-adj e edges-before)
-                      (followed-by-verb e (edges-after e)))
+                      (followed-by-verb e (edges-after e))
+                      (followed-by-of e (edges-after e)))
                   (ng-head? (edge-form e))))
             ((singular-noun-and-present-verb? e)
              (and (not (preceding-pronoun-or-which? e edges-before))
@@ -1200,4 +1202,7 @@ than a bare "to".  |#
      thereis
        (member (cat-name (edge-form ee)) '(adverb subordinate-conjunction))))
 
-
+(defun followed-by-of (e &optional (edges-after (edges-after e)))
+  (loop for ee in edges-after
+     thereis
+       (eq (cat-name (edge-form ee)) 'of)))
