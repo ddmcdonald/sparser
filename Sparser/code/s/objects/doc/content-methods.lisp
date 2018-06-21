@@ -453,7 +453,9 @@
   (let ((s-toc-ind (toc-index s))
         (init-mentions (find-all-mentions s)))
     (setf (gethash s *mentions-in-sentence*)
-          (if (eq (search "NIL" s-toc-ind) 0) ; we're not in an article
+          (if (eq (search "NIL" s-toc-ind :test #'equalp) 0)
+              ;; we're not in an article
+              ;; need to be case-insensitive for when "nil" is lowercase...
               init-mentions
               (loop for mention in init-mentions
                     collect (let ((ment-art-loc (car (mentioned-in-article-where mention))))
@@ -788,4 +790,3 @@ is a case in handle-any-anaphor
   (when *reading-populated-document*
     (let ((s (identify-current-sentence t)))
       (when s (toc-index s)))))
-
