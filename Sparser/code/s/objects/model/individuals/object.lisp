@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  March 2017
+;;;  version:  June 2017
 
 ;; initiated 7/16/92 v2.3
 ;; (6/8/93) added Indiv-typep
@@ -285,6 +285,14 @@ grammar/model/core/places/regions.lisp:      (unless (indiv-typep region categor
 grammar/model/core/names/fsa/name-creators.lisp:        (when (indiv-typep (cdr pair) 'inc-term)
 grammar/model/core/names/fsa/name-creators.lisp:               (indiv-typep item 'name-word))
 |#
+
+;;---- delayed method on categories
+
+(defmethod category-named ((i individual) &optional errorp)
+  (declare (ignore errorp))
+  (car (indiv-type i)))
+
+
 
 
 ;;;-----------------

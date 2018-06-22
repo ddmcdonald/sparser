@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005,2010-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2010-2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "lookup"
 ;;;   Module:  "objects;chart:categories:"
-;;;  Version:  1.9 April 2014
+;;;  Version:  June 2018
 
 (in-package :sparser)
 
@@ -141,14 +141,9 @@
 (defgeneric category-named (name &optional errorp)
   (:documentation "Look up a category by name."))
 
-(defparameter *cat-named* nil)
+
 (defmethod category-named ((name symbol) &optional errorp)
-  #|
-  (format t "~%~% category-named ~s~%" name)
-  (sb-debug::map-backtrace #'print :count 5 :start 0)
-  |#
   (declare (optimize (speed 3)(safety 0)))
-  (push name *cat-named*)
   (let ((c-symbol (if (eq (symbol-package name) *category-package*)
                     name
                     (find-symbol (symbol-name name) *category-package*))))
@@ -159,8 +154,7 @@
 
 
 (defmethod category-named ((c category) &optional errorp)
-  (declare (ignore errorp)
-           (optimize (speed 3)(safety 0)))
+  (declare (ignore errorp) (optimize (speed 3)(safety 0)))
   c)
 
 
