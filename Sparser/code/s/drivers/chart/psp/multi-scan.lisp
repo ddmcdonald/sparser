@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  December 2017
+;;;  version:  June 2018
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -280,7 +280,7 @@
   (tr :word-level-completion-sweep)
   (let* ((position-before start-pos)
          (ev (pos-starts-here start-pos))
-         (edge (ev-top-node ev))
+         (edge (top-edge-on-ev ev)) ;; (ev-top-node ev) can return :multiple-initial-edges
          (word (unless edge (pos-terminal start-pos)))
          (position-after (if edge
                            (pos-edge-ends-at edge)
@@ -305,7 +305,7 @@
 
        (setq position-before position-after
              ev (pos-starts-here position-after)
-             edge (ev-top-node ev)
+             edge (top-edge-on-ev ev)
              word (unless edge (pos-terminal position-after))
              position-after (if edge
                               (pos-edge-ends-at edge)
@@ -343,7 +343,7 @@
   ;; candidate to redo earlier loops -- used in terminal-edges-sweep below
   `(let* ((position-before start-pos)
           (ev (pos-starts-here position-before))
-          (edge (ev-top-node ev))
+          (edge (top-edge-on-ev ev))
           (word (unless edge (pos-terminal position-before)))
           (position-after (if edge
                             (pos-edge-ends-at edge)
@@ -354,7 +354,7 @@
           (return))
         (setq position-before position-after
               ev (pos-starts-here position-after)
-              edge (ev-top-node ev)
+              edge (top-edge-on-ev ev)
               word (unless edge (pos-terminal position-after))
               position-after (if edge
                                (pos-edge-ends-at edge)
