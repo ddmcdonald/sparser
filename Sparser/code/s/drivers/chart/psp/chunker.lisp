@@ -1205,4 +1205,4 @@ than a bare "to".  |#
 (defun followed-by-of (e &optional (edges-after (edges-after e)))
   (loop for ee in edges-after
      thereis
-       (eq (cat-name (edge-form ee)) 'of)))
+       (eq (cat-name (edge-category ee)) 'of)))
