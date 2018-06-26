@@ -13,7 +13,7 @@
   :specializes phrase-interpretation
   :binds ((prep :primitive category)
           (comp))
-  :documentation "Provides a scafolding to hold
+  :documentation "Provides a scaffolding to hold
    a generic to-comp as identified by
    the pp rules in grammar/rules/syntactic-rules.
    Primary consumer is the subcategorization checking
@@ -26,8 +26,8 @@
   :specializes phrase-interpretation
   :binds ((prep :primitive category)
           (comp))
-  :documentation "Provides a scafolding to hold
-   a generic to-comp as identified by
+  :documentation "Provides a scaffolding to hold
+   a generic as-comp as identified by
    the pp rules in grammar/rules/syntactic-rules.
    Primary consumer is the subcategorization checking
    code below. Note that if we make these with an
