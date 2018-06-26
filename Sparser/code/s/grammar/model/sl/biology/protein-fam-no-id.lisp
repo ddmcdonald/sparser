@@ -15,7 +15,7 @@
 (noun "receptor" :super protein)
 (noun "receptor protein" :super protein)
 (noun "receptor protein-tyrosine kinase" :super kinase)
-(noun "scaffold" :super protein)
+(noun ("scaffold" "scaffolding protein") :super protein)
 (noun "coactivator" :super protein)
 (noun "transporter" :super protein)
 

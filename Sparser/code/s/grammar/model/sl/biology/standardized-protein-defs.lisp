@@ -3272,7 +3272,7 @@
 (define-protein "UP:O88291" ("zfp326")) 
 (define-protein "UP:O88310" ("itlna")) 
 (define-protein "UP:O88312" ("gob4")) 
-(define-protein "UP:O88382" ("scaffolding molecule" "synaptic scaffolding molecule")) 
+(define-protein "UP:O88382" ("synaptic scaffolding molecule")) 
 (define-protein "UP:O88451" ("RDH7")) 
 (define-protein "UP:O88466" ("SIRM")) 
 (define-protein "UP:O88502" ("PDE8")) 
@@ -7194,7 +7194,7 @@
 (define-protein "UP:P26717" ("CD159c" "KLRC2" "NKG2-C" "NKG2-C type II integral membrane protein" "NKG2C" "NKG2C_HUMAN" "killer cell lectin like receptor C2" "killer cell lectin-like receptor subfamily C" "p26717")) 
 (define-protein "UP:P26718" ("CD314" "KLRK1" "NKG2D")) 
 (define-protein "UP:P26729" ("Bombyxin II")) 
-(define-protein "UP:P26748" ("p26748" "scaffolding protein")) 
+;(define-protein "UP:P26748" ("p26748" "scaffolding protein")) salmonella
 (define-protein "UP:P26755" ("RFA" "Replication factor A protein 3")) 
 (define-protein "UP:P26793" ("RTH1")) 
 (define-protein "UP:P26795" ("60S acidic ribosomal protein P2-B" "p2b")) 
@@ -10220,8 +10220,8 @@
 (define-protein "UP:P55210" ("Apoptotic protease Mch-3" "CASP-7" "CASP7" "CASP7(2-303)" "CASP7_HUMAN" "CMH-1" "ICE-LAP3" "ICE-like apoptotic protease 3" "MCH3" "casp-7" "caspase 7" "caspase-7" "caspase-7 precursor" "caspase7" "mch3" "p55210")) 
 (define-protein "UP:P55211" ("APAF-3" "Apoptotic protease Mch-6" "CASP-9" "CASP9" "CASP9_HUMAN" "ICE-LAP-6" "ICE-LAP6" "ICE-like apoptotic protease 6" "apaf-3" "apaf3" "apoptotic protease-activating factor 3" "casp9" "caspase 9" "caspase-9" "caspase9" "caspases-9" "mch6" "p55211" "procaspase3")) 
 (define-protein "UP:P55212" ("Apoptotic protease Mch-2" "CASP-6" "CASP6" "CASP6(24-179)" "CASP6_HUMAN" "MCH2" "caspase 6" "caspase-6" "caspase-6 subunit p18" "caspases-6" "mch2" "p55212")) 
-(define-protein "UP:P55241" ("SH2")) 
-(define-protein "UP:P55248" ("SH4")) 
+;(define-protein "UP:P55241" ("SH2")) maize and more properly a domain
+;(define-protein "UP:P55248" ("SH4"))  rat and more properly a domain
 (define-protein "UP:P55249" ("alox12e")) 
 (define-protein "UP:P55259" ("GP-2")) 
 (define-protein "UP:P55263" ("AK" "adenosine kinase" "adk" "ak")) 
@@ -13289,7 +13289,7 @@
 (define-protein "UP:Q15118" ("PDK-1" "Pdk1" "pdk-1" "phosphoinositide dependent kinase 1" "pyruvate dehydrogenase kinase 1" "q15118")) 
 (define-protein "UP:Q15119" ("PDH kinase 2" "PDHK2" "PDK-2" "PDK2" "PDK2_HUMAN" "PDK2s" "PDKII" "Pdk2" "[Pyruvate dehydrogenase (acetyl-transferring)] kinase isozyme 2, mitochondrial" "pyruvate dehydrogenase kinase 2" "pyruvate dehydrogenase kinase isoform 2" "q15119")) 
 (define-protein "UP:Q15120" ("PDK3" "pyruvate dehydrogenase kinase 3")) 
-(define-protein "UP:Q15121" ("15 kDa phosphoprotein enriched in astrocytes" "15kD" "Astrocytic phosphoprotein PEA-15" "HMAT1" "HUMMAT1H" "MAT1H" "PEA-15" "PEA15" "PEA15_HUMAN" "PED" "astrocytes" "astrocytic phosphoprotein PEA-15" "homolog of mouse MAT-1 oncogene" "pea-15" "phosphoprotein enriched in astrocytes" "phosphoprotein enriched in astrocytes 15" "phosphoprotein enriched in diabetes" "q15121")) 
+(define-protein "UP:Q15121" ("15 kDa phosphoprotein enriched in astrocytes" "15kD" "Astrocytic phosphoprotein PEA-15" "HMAT1" "HUMMAT1H" "MAT1H" "PEA-15" "PEA15" "PEA15_HUMAN" "PED" "astrocytic phosphoprotein PEA-15" "homolog of mouse MAT-1 oncogene" "pea-15" "phosphoprotein enriched in astrocytes" "phosphoprotein enriched in astrocytes 15" "phosphoprotein enriched in diabetes" "q15121")) 
 (define-protein "UP:Q15124" ("Aciculin" "aciculin")) 
 (define-protein "UP:Q15125" ("3-beta-hydroxysteroid-Delta(8),Delta(7)-isomerase" "Cholestenol Delta-isomerase" "D8-D7 sterol isomerase" "Delta(8)-Delta(7)sterol isomerase" "EBP_HUMAN" "EBPs" "emopamil binding protein" "emopamil binding protein (sterol isomerase)" "emopamil-binding protein" "q15125")) 
 (define-protein "UP:Q15126" ("HUMPMKI" "PMK" "PMKA" "PMKI" "PMVK" "PMVK_HUMAN" "phosphomevalonate kinase" "q15126")) 

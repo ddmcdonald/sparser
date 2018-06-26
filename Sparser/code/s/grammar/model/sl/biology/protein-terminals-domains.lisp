@@ -128,6 +128,7 @@ it is created from N-terminus to C-terminus.|#
 
 (noun ("SH2" "SH2 domain") :super protein-domain)
 (noun ("SH3" "SH3 domain") :super protein-domain)
+(noun ("SH4" "SH4 domain") :super protein-domain)
 (noun "PTB domain" :super protein-domain)
 
 (noun ("g1" "g1 domain") :super protein-domain)
