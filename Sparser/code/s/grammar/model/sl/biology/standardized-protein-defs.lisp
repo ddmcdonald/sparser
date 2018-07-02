@@ -19191,7 +19191,7 @@
 (define-protein "UP:Q8WWP7" ("GTPase, IMAP family member 1" "GiMAP1" "IMAP1" "gimap1" "imap38")) 
 (define-protein "UP:Q8WWQ0" ("PHIP" "PhIP" "pleckstrin homology domain interacting protein")) 
 (define-protein "UP:Q8WWQ2" ("HPA2" "HPR2" "HPSE2" "HPSE2(1-592)" "HPSE2_HUMAN" "Hpa2" "Q8WWQ2" "UFS" "heparanase 2" "heparanase 2 (inactive)" "heparanase-2" "urofacial syndrome")) 
-(define-protein "UP:Q8WWQ8" ("FEEL2" "HARE" "STAB2" "fell" "hyaluronan receptor for endocytosis" "stab2" "stabilin 2" "stabilin-2")) 
+(define-protein "UP:Q8WWQ8" ("FEEL2" "HARE" "STAB2" "FELL" "hyaluronan receptor for endocytosis" "stab2" "stabilin 2" "stabilin-2")) 
 (define-protein "UP:Q8WWR8" ("LP5125" "NEU4" "NEUR4_HUMAN" "Q8WWR8" "Q8WWR8-2" "neu4" "neuraminidase 4" "neuraminidase 4 (sialidase)" "sialidase 4" "sialidase-4")) 
 (define-protein "UP:Q8WWT9" ("NADC3" "NaDC3" "Q8WWT9" "S13A3_HUMAN" "SDCT2" "SLC13A3" "sodium/dicarboxylate co-transporter 3" "solute carrier family 13 member 3")) 
 (define-protein "UP:Q8WWV6" ("Fcamr")) 
