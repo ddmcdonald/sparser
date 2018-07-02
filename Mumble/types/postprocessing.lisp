@@ -42,7 +42,6 @@
 (defun postprocess-entire-system ()
   (declare (special *lattice-of-all-the-types*))
   (when *loading-whole-system*
-    (format t "~&Postprocessing the entire Mumble system.~%")
     (postprocess-whole-type-lattice  *lattice-of-all-the-types*)
     (alphabetize-catalogs)))
 
