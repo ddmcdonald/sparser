@@ -34,5 +34,18 @@
 (def-indiv-with-id micro-rna "miR-155" "MI0000681" :name "microRNA 155" :synonyms ("miR155"))
 (def-indiv-with-id micro-rna "miR-145" "MI0000461" :name "microRNA 145" :synonyms ("miR145"))
 (def-indiv-with-id micro-rna "miR-21" "MI0000077" :name "microRNA 21" :synonyms ("miR21"))
+;; added based on all-bioagents-capability-sentences
+(def-indiv-with-id micro-rna "miR-20b" "MI0001519" :name "microRNA 20b" :synonyms ("miR20b"))
+(def-indiv-with-id micro-rna "miR-20b-5p" "MIMAT0001413" :name "microRNA 20-5pm" :synonyms ("miR20b-5p"))
+(def-indiv-with-id micro-rna "miR-148a" "MI0001519" :name "microRNA 148a" :synonyms ("miR148a"))
+(def-indiv-with-id micro-rna "miR-148a-3p" "MIMAT0000243" :name "microRNA 148a-3p" :synonyms ("miR148a-3p"))
+(def-indiv-with-id micro-rna "miR-335" "MI0000816" :name "microRNA 335" :synonyms ("miR335"))
+(def-indiv-with-id micro-rna "miR-335-5p" "MIMAT0000765" :name "microRNA 335-5p" :synonyms ("miR335-5p"))
+(def-indiv-with-id micro-rna "miR-155" "MI0000681" :name "microRNA 155" :synonyms ("miR155"))
+(def-indiv-with-id micro-rna "miR-155-5p" "MIMAT0000646" :name "microRNA 155-5p" :synonyms ("miR155-5p"))
+(def-indiv-with-id micro-rna "miR-145" "MI0000461" :name "microRNA 145" :synonyms ("miR145"))
+(def-indiv-with-id micro-rna "miR-145-5p" "MIMAT0000437" :name "microRNA 145-5p" :synonyms ("miR145-5p"))
+
+
 
 (def-indiv-with-id plasmid "BAC" "NCIT:C1860" :name "Bacterial Artificial Chromosome") ; it's based on a plasmid, but isn't actually one itself

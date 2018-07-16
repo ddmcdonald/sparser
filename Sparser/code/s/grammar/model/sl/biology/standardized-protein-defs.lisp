@@ -5523,7 +5523,7 @@
 (define-protein "UP:P11766" ("ADH-3" "ADH5" "ADHX" "ADHX_HUMAN" "FDH" "GSNOR" "alcohol dehydrogenase 5 (class III)" "alcohol dehydrogenase class-3" "chi polypeptide" "formaldehyde dehydrogenase" "p11766" "s-nitrosoglutathione reductase")) 
 (define-protein "UP:P11792" ("sch9")) 
 (define-protein "UP:P11802" ("CDK-4" "CDK4" "CDK4_HUMAN" "Cyclin-Dependent Kinase 4" "PSK-J3" "cdk-4" "cdk4" "cdks4" "cyclin dependent kinase 4" "cyclin-dependent kinase 4" "cyclin-dependent kinase-4" "p11802")) 
-(define-protein "UP:P11831" ("P11831" "SRF" "serum  response factor" "serum response factor" "serum-response factor")) 
+(define-protein "UP:P11831" ("P11831" "SRF" "serum  response factor" "serum response factor" "serum-response factor" "srf")) 
 (define-protein "UP:P11836" ("MS4A1" "membrane spanning 4-domains A1")) 
 (define-protein "UP:P11837" ("NIMA")) 
 (define-protein "UP:P11880" ("MRA")) 
