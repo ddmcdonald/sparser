@@ -58,3 +58,9 @@
           (right number))
   :index (:sequential-keys left right))
 
+(define-category number-range
+  :specializes number
+  :binds ((value number)
+          (range number))
+  :index (:sequential-keys left right))
+

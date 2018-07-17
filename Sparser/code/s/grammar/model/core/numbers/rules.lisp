@@ -29,6 +29,18 @@ is easiest with a cs rule.  |#
     :referent (:daughter right-edge)))
 
 
+(def-cfr plus-minus-number ( plus-minus number )
+    :form plus-minus-number
+    :referent (:daughter right-edge))
+
+(def-cfr number-range (number plus-minus-number)
+  :form number
+    :referent (:instantiate-individual number-range
+                :with (value left-edge
+                             range right-edge)))
+
+
+
 ;;;---------------
 ;;;  "8 million"
 ;;;---------------

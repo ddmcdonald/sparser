@@ -714,15 +714,22 @@
   (declare (special *trace-early-rules-sweep*))
   (tr :starting-early-rules-sweep)
   (when *trace-early-rules-sweep* (tts))
-  (do-early-rules-sweep-between (starts-at-pos sent) (ends-at-pos sent)))
-
+  (let ((continue t))
+    (loop while continue
+          do
+            (setq continue
+                  (eq :new-edge
+                      (do-early-rules-sweep-between
+                          (starts-at-pos sent)
+                        (ends-at-pos sent)))))))
 ;; NEED TO FIND A WAY TO GENERALIZE THE TESTING OF EARLY RULES which is done
 ;;  in a one-off way below
 ;;  (not (and (itypep (edge-referent left-edge) 'amino-acid)
 ;;                             (itypep (edge-referent right-edge) 'number)))
 
 (defun do-early-rules-sweep-between (start end &aux left-edge mid-pos right-edve)
-  (declare (special left-edge mid-pos right-edge new-edge rule))
+  (declare (special left-edge mid-pos right-edge new-edge rule
+                    category::number))
   (tr :early-rule-check-at start)
   (loop
     (cond ((eq start end) (return-from do-early-rules-sweep-between nil))
@@ -734,27 +741,38 @@
     (setq mid-pos  (when (edge-p left-edge) (pos-edge-ends-at left-edge)))
     (setq right-edge (when (edge-p left-edge) (right-treetop-edge-at mid-pos)))
 
-    (if (and (edge-p left-edge)
-             (edge-p right-edge)
-             (or
-              (not (pos-preceding-whitespace mid-pos))
-              (and (eq script :biology)
-                   (itypep (edge-referent left-edge) 'amino-acid)
-                   (itypep (edge-referent right-edge) 'number))))
+    (if (or
+         (and (edge-p left-edge)
+              (edge-p right-edge)
+              (or (and
+                   (eq (edge-category left-edge) category::number)
+                   (eq (edge-form right-edge) category::plus-minus-number))
+                  (and
+                   (eq (edge-referent left-edge) *the-punctuation-plus-minus*)                   
+                   (eq (edge-category right-edge) category::number))))
+         (and (edge-p left-edge)
+              (edge-p right-edge)
+              (or
+               (not (pos-preceding-whitespace mid-pos))
+               (and (eq script :biology)
+                    (itypep (edge-referent left-edge) 'amino-acid)
+                    (itypep (edge-referent right-edge) 'number)))))
 
         (multiple-value-bind (new-edge rule)
             (apply-early-rule-at start mid-pos)
-          (setq start (if new-edge
-                          ;; edge at the beginning changed, so start at the
-                          ;;  same start, since the middle position has shifted
-                          (pos-edge-starts-at new-edge) ;; CS rules generate an edge
-                          mid-pos)))
+          (if new-edge
+              ;; edge at the beginning changed, so re-start at the
+              ;;  sentence-beginning
+              (return-from do-early-rules-sweep-between :new-edge)
+              
+              (setq start mid-pos)))
         (setq start (where-tt-ends left-edge start)))))
         
 (defun apply-early-rule-at (start middle-pos)
   (declare (optimize (debug 3)(speed 1)))
   (let* ((edges-ending-there (tt-edges-starting-at (pos-starts-here start)))
-         (edges-starting-there (all-edges-on (pos-starts-here middle-pos)))
+         ;; below was (all-edges-on ...)
+         (edges-starting-there (tt-edges-starting-at (pos-starts-here middle-pos)))
          (*allow-pure-syntax-rules* nil)
          (*allow-form-rules* nil)
          rule left right
