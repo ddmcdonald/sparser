@@ -729,7 +729,8 @@
 
 (defun do-early-rules-sweep-between (start end &aux left-edge mid-pos right-edve)
   (declare (special left-edge mid-pos right-edge new-edge rule
-                    category::number))
+                    category::number category::plus-minus-number
+                    *the-punctuation-plus-minus*))
   (tr :early-rule-check-at start)
   (loop
     (cond ((eq start end) (return-from do-early-rules-sweep-between nil))
