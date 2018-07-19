@@ -184,6 +184,10 @@ be biology specific, since they aren't. |#
   :realization 
     (:adj "common"
      :to theme))
+(adj "in-common" :super bio-relation
+  :adj "in common"
+  :realization (:to theme))
+;;/// add "with" adjunct ?
 
 (adj "critical" :super bio-relation
   :realization 
