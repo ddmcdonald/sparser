@@ -67,7 +67,7 @@
 
 
 (define-category typed-region  ;; "the Kurdish city of Sulaimaniya"
-  :specializes relation ;;/// probably more specific
+  ;;:specializes relation ;;/// probably more specific
   :rule-label region
   ;; This is a category that fits the way the information is packaged.
   ;; We're really identifying something about the region itself,

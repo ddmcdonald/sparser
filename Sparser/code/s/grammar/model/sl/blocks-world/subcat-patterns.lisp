@@ -28,7 +28,7 @@
 ;;;------------------
 ;;; location resouce
 
-(define-mixin-category with-specified-location   :specializes relation
+(define-mixin-category with-specified-location   ;;:specializes relation
   :binds ((supported-by physical)
           (next-to physical)
           (at-relative-location (:or location physical)) ;;relative-position)

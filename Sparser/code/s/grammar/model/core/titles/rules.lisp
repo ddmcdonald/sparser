@@ -113,7 +113,7 @@
 
 (define-category plays-role-for
   :instantiates self
-  :specializes relation ;;/// inadequate -- needs modeling
+  ;;:specializes relation ;;/// inadequate -- needs modeling
   ;; This should be the top of a set of generated categories
   ;; based on the the title. For now we just stash it and
   ;; index on it.  "college" needs two of these?

@@ -538,12 +538,12 @@
         (loop for vv in '((vg vp) (vg+ing vp+ing)
                           (vg+ed vp+past) ;; if there is a direct object, then mark the vg+ed as a past tense
                           (infinitive to-comp) (to-comp to-comp))
-    do
-    (eval 
-     `(def-syntax-rule (,(car vv) ,nb)
-          :head :left-edge
-          :form ,(second vv)
-          :referent (:function assimilate-np-to-v-as-object left-edge right-edge)))))
+              do
+                (eval 
+                 `(def-syntax-rule (,(car vv) ,nb)
+                      :head :left-edge
+                      :form ,(second vv)
+                      :referent (:function assimilate-np-to-v-as-object left-edge right-edge)))))
 
 
 
@@ -621,43 +621,49 @@
 ;; aspp 2 , aspp 2 ( s 827 a ) remains at the plasma membrane"
 
 (loop for vv in '((s s)(vp vp)(vp+ing vp+ing)
-                  (vp+ed vp+past)  ;; thatcomp and howcomp rule out passive (??)
+                  (vp+ed vp+past) ;; thatcomp and howcomp rule out passive (??)
                   (vg vp)(vg+ing vp+ing)
-                  (vg+ed vp+past)  ;; thatcomp and howcomp rule out passive (??)
+                  (vg+ed vp+past) ;; thatcomp and howcomp rule out passive (??)
                   (vg+passive vp+passive)(vp+passive vp+passive)
+                  (adjective adjg)
                   (infinitive to-comp))
-  ;; verb complements 
-  do
-  (eval
-   `(def-syntax-rule (,(car vv) thatcomp)
-        :head :left-edge
-        :form ,(second vv)
-        :referent (:function assimilate-thatcomp left-edge right-edge)))
-  (eval
-   `(def-syntax-rule (,(car vv) howcomp)
-        :head :left-edge
-        :form ,(second vv)
-        :referent (:function assimilate-howcomp left-edge right-edge)))
-  (eval
-   `(def-syntax-rule (,(car vv) s) ;; "I am certain (that) it is transient."
-        :head :left-edge
-        :form ,(second vv)
-        :referent (:function assimilate-thatcomp left-edge right-edge)))
-     (eval
-   `(def-syntax-rule (,(car vv) subj+verb) ;; "I am certain (that) there is."
-        :head :left-edge
-        :form ,(second vv)
-        :referent (:function assimilate-thatcomp left-edge right-edge)))
-  (eval
-   `(def-syntax-rule (,(car vv) whethercomp)
-        :head :left-edge
-        :form ,(second vv)
-        :referent (:function assimilate-whethercomp left-edge right-edge)))
-  (eval
-   `(def-syntax-rule (,(car vv) verbal-adjunct)
-        :head :left-edge
-        :form ,(second vv)
-        :referent (:function assimilate-whethercomp left-edge right-edge))))
+      ;; verb complements 
+      do
+        (eval
+         `(def-syntax-rule (,(car vv) thatcomp)
+              :head :left-edge
+              :form ,(second vv)
+              :referent (:function assimilate-thatcomp left-edge right-edge)))
+        (eval
+         `(def-syntax-rule (,(car vv) howcomp)
+              :head :left-edge
+              :form ,(second vv)
+              :referent (:function assimilate-howcomp left-edge right-edge)))
+        (eval
+         `(def-syntax-rule (,(car vv) s) ;; "I am certain (that) it is transient."
+              :head :left-edge
+              :form ,(second vv)
+              :referent (:function assimilate-thatcomp left-edge right-edge)))
+        (eval
+         `(def-syntax-rule (,(car vv) subj+verb) ;; "I am certain (that) there is."
+              :head :left-edge
+              :form ,(second vv)
+              :referent (:function assimilate-thatcomp left-edge right-edge)))
+        (eval
+         `(def-syntax-rule (,(car vv) s) ;; "I am certain (that) there is."
+              :head :left-edge
+              :form ,(second vv)
+              :referent (:function assimilate-thatcomp left-edge right-edge)))
+        (eval
+         `(def-syntax-rule (,(car vv) whethercomp)
+              :head :left-edge
+              :form ,(second vv)
+              :referent (:function assimilate-whethercomp left-edge right-edge)))
+        (eval
+         `(def-syntax-rule (,(car vv) verbal-adjunct)
+              :head :left-edge
+              :form ,(second vv)
+              :referent (:function assimilate-whethercomp left-edge right-edge))))
 
 
 

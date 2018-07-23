@@ -111,7 +111,7 @@ Should mirror the cases on the *single-words* ETF."
     :designator :during
     :following :for :from
     :ifcomp :howcomp
-    :i ; indirect object
+    :indirect-object ;;:i ; indirect object
     :in :into
     :like
     :l ; location
@@ -127,7 +127,8 @@ Should mirror the cases on the *single-words* ETF."
 
 (defparameter *subcat-aliases*
     '((:s . :subject)
-      (:o . :object))
+      (:o . :object)
+      (:i . :indirect-object))
   "An alist of aliases for subcategorization slot names.")
 
 (deftype subcat-relation-keyword ()

@@ -12,29 +12,29 @@
 (in-package :sparser)
 
 (define-mixin-category with-an-agent ;; deprecated in favor of 'agent'
-  :specializes relation
+  ;;:specializes relation
   :binds ((agent (:or pronoun physical-agent))))
 ;; Dolce has 'agency' as the union of physical and social agent
 
 ;;/// replaces with-an-agent
 (define-mixin-category agent
-  :specializes relation
+  ;;:specializes relation
   :binds ((agent))
   :documentation "Participant that intentionally initiates
     the action.")
 
 (define-mixin-category actor
-  :specializes relation
+  ;;:specializes relation
   :binds ((actor))
   :documentation "The entity that performs the action.
     No implied agency. No obvious specified type.")
 
 (define-mixin-category takes-adverb
-  :specializes relation
+  ;;:specializes relation
   :binds ((adverb)))
 
 (define-mixin-category with-attribute
-  :specializes relation
+  ;;:specializes relation
   :binds ((attribute))
   :documentation "Binds a property that is being attributed
     to another participant in the relation. Very closely
@@ -46,30 +46,30 @@
     its predication 'has-attribute'.")
 
 (define-mixin-category beneficiary
-  :specializes relation
+  ;;:specializes relation
   :binds ((beneficiary))
   :documentation "")
 
 (define-mixin-category experiencer
-  :specializes relation
+  ;;:specializes relation
   :binds ((experiencer))
   :documentation "Participant that is aware of something
     pertaining to the event.")
 
 (define-category has-location
-  :specializes relation
+  ;;:specializes relation
   :binds ((location location))
   :documentation "Said of something that must have a location
     Supplies a location variable whose value says where
     this thing is.")
 
 (define-mixin-category patient
-  :specializes relation
+  ;;:specializes relation
   :binds ((patient))
   :documentation "The participant that is affected by the action.")
 
 (define-mixin-category theme
-  :specializes relation
+  ;;:specializes relation
   :binds ((theme))
   :documentation "Often characterized as the thing that moves.
     Specialized (restricted) by move.")

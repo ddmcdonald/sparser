@@ -543,11 +543,21 @@
 (defun singular-det (e)
   (member (cat-name (edge-category e)) '(a that this)))
 
+(defun preceding-that-or-whether? (e)
+  (some-edge-satisfying?
+   (edges-before e)
+   #'(lambda (ee) (member (cat-name (edge-category ee)) '(that whether)))))
+                         
+
 (defun plural-noun-not-present-verb? (e &optional (edges-before (edges-before e)))
   (or
    (sentence-initial? e)
    (and (not (or (some-edge-satisfying? edges-before #'np-end-edge)
-                 (some-edge-satisfying? edges-before #'singular-det)))
+                 (some-edge-satisfying? edges-before #'singular-det)
+                 ;; "that 
+                 (and (not (preceding-determiner? e))
+                      (some-edge-satisfying? edges-before #'preceding-that-or-whether?))))
+                 
     (or
      (some-edge-satisfying? edges-before #'non-det-or-verb-ng-start?)
      (not (some-edge-satisfying? edges-before #'non-det-or-verb-ng-start?))))))

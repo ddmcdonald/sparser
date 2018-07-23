@@ -25,7 +25,7 @@
 ;; Split this out, because category::collection can also take these
 ;;  variables -- because collections can be collections of perdurants
 (define-mixin-category takes-tense-aspect-modal
-  :specializes relation
+    ;;:specializes relation
   :binds ((modal :primitive category)
           (present :primitive  category)
           (past :primitive  category)
@@ -42,7 +42,7 @@
 |#
 
 (define-mixin-category temporally-localized
-  :specializes relation
+  ;;:specializes relation
   :instantiates nil
   :index (:list)
   :binds ((certainty certainty) ;; originally from with-certainty

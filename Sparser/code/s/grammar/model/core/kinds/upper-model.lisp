@@ -187,7 +187,7 @@
 ;;;---------------------------------------
 
 (define-mixin-category has-UID
-  :specializes relation
+  ;;:specializes relation
   :binds ((uid))
   :documentation "UID is a field in many TRIPS objects")
 
@@ -221,7 +221,7 @@
 ;;;----------------------
 
 (define-mixin-category indexical
-  :specializes relation
+  ;;:specializes relation
   :binds ((extension))
   :documentation "Most all Sparser interpretations describe things
  rather than denote them. This mix-in provides an option for portions

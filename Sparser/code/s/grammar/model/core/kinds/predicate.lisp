@@ -15,14 +15,14 @@
 ;;;------------------------------------------------
 
 (define-category dependent-substrate
-   :specializes relation
+   ;;:specializes relation
    ;; See dependent-of ETF and paths (exit-turnpike)
    ;; Related to feature in things.lisp
    :binds ((dependent)
            (substrate)))
 
 (define-category partonomic
-  :specializes relation
+  ;;:specializes relation
   :binds ((parts)
           (part-type :primitive category)
           (has-part)

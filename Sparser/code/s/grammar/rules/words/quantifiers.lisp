@@ -70,7 +70,6 @@
   :binds ((word  :primitive word)))
 
 (define-mixin-category with-quantifier
-  :specializes relation
   :binds ((quantifier quantifier))
   :documentation "Was in bio taxonomy. May not make sense")
 

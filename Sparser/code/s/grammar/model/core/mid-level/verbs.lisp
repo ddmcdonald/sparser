@@ -202,7 +202,8 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
 |#
 (define-category tell
   :specializes process
-  :mixins (prop-attitude)
+  :mixins (prop-attitude directed-action)
+  :restrict ((beneficiary interlocutor))
   :realization (:verb ("tell" :past-tense "told")))
 ;; tell someone to do something
 ;; tell someone that <proposition>

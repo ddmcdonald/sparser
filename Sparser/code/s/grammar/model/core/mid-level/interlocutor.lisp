@@ -22,10 +22,10 @@
     direction has been set up.")
 
 (defvar *me*
-  (define-individual 'interlocutor :name "machine"))
+  (define-individual 'interlocutor :name "speaker"))
 
 (defvar *you*
-  (define-individual 'interlocutor :name "person"))
+  (define-individual 'interlocutor :name "hearer"))
 
 (defvar *us*
   (define-individual 'interlocutor :name "person-and-machine"))

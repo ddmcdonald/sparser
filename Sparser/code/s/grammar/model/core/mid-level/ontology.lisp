@@ -26,7 +26,7 @@ files once an area looks big enough to warrant it.  |#
  into its category.")
 
 (define-category has-an-orientation
-  :specializes relation
+  ;;:specializes relation
   :binds ((orientation orientation))
   :documentation "Use as a mixin to indicate that
  something has an orientation. Says nothing about

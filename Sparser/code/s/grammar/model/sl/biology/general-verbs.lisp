@@ -627,10 +627,14 @@
 
 (define-category indicate :specializes bio-rhetorical
     :mixins (bio-thatcomp)
+    :binds ((indication
+             (:or bio-entity molecule-state cellular-location)))
     :realization
     (:verb "indicate" ;; keyword: ENDS-IN-ING 
-	   :noun "indication"
-	   :etf (svo-passive)))
+           :noun "indication"
+           :etf (svo-passive)
+           :o statement
+           :o indication))
 
 (define-category influence :specializes bio-control
     :realization
@@ -844,13 +848,17 @@
 
 (define-category observe :specializes bio-rhetorical
     :mixins (bio-thatcomp)
-    :binds ((focused-on biological)
+    :binds ((observation
+             (:or bio-entity molecule-state molecular-location))
+            (focused-on biological)
             (method (:or bio-method result))
 	    (ingredient-condition bio-entity))
     :realization
     (:verb "observe" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
            :by method ;; can also be people..
+           :o observation
+           :o statement
            :for focused-on
            :under method
 	   :with method
@@ -1173,8 +1181,9 @@
 
 ;; can be both "<people> show ..." and "<molecule> shows <properties>"
 (define-category show :specializes bio-rhetorical
-  :mixins (bio-thatcomp raising-to-object)
-  :restrict ((theme (:or be biological predication)))
+  :mixins (bio-thatcomp raising-to-object directed-action)
+  :restrict ((theme (:or be biological predication))
+             (beneficiary interlocutor))
   ;; it was shown that
   :realization
   (:verb ("show" :past-tense "showed" :past-participle "shown")

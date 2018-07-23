@@ -60,7 +60,7 @@
 ;;; mixins
 ;;;--------
 
-(define-mixin-category type-marker :specializes relation
+(define-mixin-category type-marker ;;:specializes relation
   :documentation "This is mixed into selected classes
    like 'protein' or 'pathway or 'cell line' so that their
    lemmas can trigger a specific compose method
@@ -68,11 +68,11 @@
 
 ;;--- labels needed by various sources / exports
 
-(define-mixin-category reactome-category :specializes relation
+(define-mixin-category reactome-category ;;:specializes relation
   :binds ((displayname)
            (reactome-id)))
 
-(define-mixin-category in-ras2-model :specializes relation
+(define-mixin-category in-ras2-model ;;:specializes relation
   :binds ((ras2-model)))
 
 
@@ -84,7 +84,13 @@
   :specializes linguistic
   :binds ((statement (:or bio-process molecule-state be
                           bio-predication predication
-                          bio-method relation bio-rhetorical
+                          bio-method
+                          bio-chemical-entity
+                          event-relation
+                          copular-predication
+                          mechanism
+                          bio-relation
+                          relation bio-rhetorical
                           there-exists
 			  event-relation)))
   :documentation "Common parent to the other types of biological 
@@ -219,7 +225,7 @@
 ;;; measurements
 ;;;--------------
 
-(define-mixin-category with-measurement :specializes relation
+(define-mixin-category with-measurement ;;:specializes relation
   :binds ((at-measurement (:or bio-concentration measurement)) 
           (extent (:or amount measurement bio-scalar)))
   :realization
@@ -457,6 +463,7 @@
            with-measurement bio-howcomp)
   :restrict ((agent
               (:or
+               bio-chemical-entity
                bio-grouping ;; a group/set/subset...
                cell-entity
                organism ;; "these animals showed..."
@@ -980,7 +987,7 @@
 
 
 
-(define-category stoichiometry :specializes bio-abstract
+(define-category stoichiometry :specializes bio-relation
   ;; not sure this is the same stoichiometry as used in biopax
   :mixins (reactome-category)
   :binds ((physicalEntity (:or bio-complex small-molecule protein component))
@@ -1158,7 +1165,7 @@
      :m enzyme))
 
 
-(define-mixin-category with-specified-amino-acid :specializes relation
+(define-mixin-category with-specified-amino-acid ;;:specializes relation
    :binds ((amino-acid amino-acid)))
 
 (define-category post-translational-enzyme :specializes enzyme

@@ -12,10 +12,7 @@
 
 (in-package :sparser)
 
-(gload "kinds;processes")
-(gload "kinds;things")
-(gload "kinds;predicate")
-(gload "kinds;attribution")
-(gload "kinds;space")
-(gload "kinds;time")
-(gload "kinds;movement")
+(gload "kinds;upper-model")
+(gload "kinds;tense-aspect")
+(gload "kinds;roles") ;; before substantive categories
+(gload "kinds;adjuncts")

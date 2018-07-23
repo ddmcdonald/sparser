@@ -136,9 +136,11 @@
                                        index )
   
   (let ((specialized-category
-         (when specializes (etypecase specializes
+         (cond (specializes (etypecase specializes
                              (symbol (category-named specializes))
-                             (referential-category specializes))))
+                             (referential-category specializes)))
+               ((not (eq (cat-name category) 'top))
+                (category-named 'top))))
         (mixin-categories
          (when mixins
            (loop for symbol in mixins

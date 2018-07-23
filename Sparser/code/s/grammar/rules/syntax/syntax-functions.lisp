@@ -1710,13 +1710,24 @@ there was an edge for the qualifier (e.g., there is no edge for the
     (unless (and vg obj)
       (return-from assimilate-np-to-v-as-object nil))
     (when (is-non-anaphor-numeric? *right-edge-into-reference* obj)
-      (return-from assimilate-np-to-v-as-object nil)))
+      (return-from assimilate-np-to-v-as-object nil))
+    )
+      
                
-  (let ((result
-	 (if (and (typep *current-chunk* 'chunk)
-                  (member 'ng (chunk-forms *current-chunk*)))
-	     (verb-noun-compound vg obj)
-	     (assimilate-object vg obj))))
+  (let* ((indirect-object?
+          (and (itypep vg 'directed-action)
+               *right-edge-into-reference*
+               (loop for e in (edges-after *right-edge-into-reference*)
+                     thereis
+                       (member (cat-name (edge-form e)) *np-category-names*))))
+         (result
+          (cond ((and (typep *current-chunk* 'chunk)
+                      (member 'ng (chunk-forms *current-chunk*)))
+                 (verb-noun-compound vg obj))
+                (indirect-object?
+                 (subcategorized-variable vg :i obj))
+                (t
+                 (assimilate-object vg obj)))))
     (cond
       (*subcat-test* result)
       (result
@@ -1728,14 +1739,16 @@ there was an edge for the qualifier (e.g., there is no edge for the
 	   (revise-parent-edge :category (if (itype vg 'collection)
                                              (value-of 'type vg)
                                              (itype-of vg))
-			       :form (case (cat-name (edge-form (parent-edge-for-referent)))
-				       ((vg vp) category::vp)
-				       ((vp+ing vg+ing) category::vp+ing)
-				       ((vp+ed vg+ed vp+past) category::vp+past)
-                                       ((to-comp) category::to-comp)
-                                       (t (warn "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP? in ~s!"
-                                                (current-string))
-                                       category::n-bar))
+			       :form (if indirect-object?
+                                         category::vg
+                                         (case (cat-name (edge-form (parent-edge-for-referent)))
+                                           ((vg vp) category::vp)
+                                           ((vp+ing vg+ing) category::vp+ing)
+                                           ((vp+ed vg+ed vp+past) category::vp+past)
+                                           ((to-comp) category::to-comp)
+                                           (t (warn "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP? in ~s!"
+                                                    (current-string))
+                                              category::n-bar)))
 			       :referent result))
        result))))
 
