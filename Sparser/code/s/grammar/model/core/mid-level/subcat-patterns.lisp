@@ -102,7 +102,7 @@ a simplified realization for a verb are (5/17)
      :to-comp theme))
 
 
-(define-mixin-category directed-action ;; give, sell
+(define-mixin-category directed-action ;; give, sell, tell, send
   :specializes subcategorization-pattern
   :instantiates nil
   :mixins (agent beneficiary theme)
