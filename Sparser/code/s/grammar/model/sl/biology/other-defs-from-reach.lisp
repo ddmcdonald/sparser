@@ -573,8 +573,9 @@
 (def-indiv-with-id molecule "AZD-6244" "PCID:10127622") 
 (def-indiv-with-id molecule "AY" "PCID:92946") 
 (def-indiv-with-id molecule "ATRA" "PCID:44795") 
-(def-indiv-with-id molecule "APAP" "PCID:1983") 
-(def-indiv-with-id molecule "AP" "PCID:83525") 
+(def-indiv-with-id molecule "APAP" "PCID:1983")
+;; might sometimes be Alanylproline but we want it to be activating peptide
+;(def-indiv-with-id molecule "AP" "PCID:83525") 
 (def-indiv-with-id molecule "AMPK inhibitor" "PCID:11524144") 
 (def-indiv-with-id molecule "AMPC" "PCID:33613") 
 (def-indiv-with-id molecule "AITC" "PCID:5971") 

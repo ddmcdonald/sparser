@@ -1629,7 +1629,7 @@
 (define-protein "UP:O14645" ("DNALI1" "dynein" "dynein axonemal light intermediate chain 1")) 
 (define-protein "UP:O14646" ("CHD1" "chd1" "o14646")) 
 (define-protein "UP:O14647" ("CHD2" "chd2" "chromodomain helicase DNA binding protein 2")) 
-(define-protein "UP:O14649" ("KCNK3" "KCNK3_HUMAN" "Potassium channel subfamily K member 3 (TASK1)" "TASK-1" "TASK1" "k2p3.1" "o14649" "potassium two pore domain channel subfamily K member 3" "task")) 
+(define-protein "UP:O14649" ("KCNK3" "KCNK3_HUMAN" "Potassium channel subfamily K member 3 (TASK1)" "TASK-1" "TASK1" "k2p3.1" "o14649" "potassium two pore domain channel subfamily K member 3")) 
 (define-protein "UP:O14653" ("GOSR2" "GOSR2_HUMAN" "GS27" "membrin" "o14653")) 
 (define-protein "UP:O14654" ("160 kDa phosphotyrosine protein" "IRS 4" "IRS-4" "IRS4" "IRS4_HUMAN" "O14654" "Phosphoprotein of 160 kDa" "insulin receptor substrate 4" "insulin receptor substrate-4" "insulin-receptor substrate-4" "irs-4" "o14654" "p-Y-IRS4" "pY-IRS4" "pY160" "pp160" "py160" "substrate-4")) 
 (define-protein "UP:O14656" ("DQ2" "DYT1" "TOR1A" "TOR1A_HUMAN" "TORA" "Torsin-1A" "dystonia 1" "member A (torsin A)" "o14656" "ta" "tora" "torsin A" "torsin family 1" "torsin family 1 member A" "torsion (autosomal dominant; torsin A)")) 

@@ -90,7 +90,7 @@
 (def-synonym abeta (:noun "amyloid beta"))
 ;; to be reviewed -- from Localization
 (noun "D-peptide" :super peptide) ; d-enantiomers of peptides -- came up in article 3640864
-
+(noun ("AP" "activating peptide") :super peptide)
 ;;;-------------
 ;;; lipids
 ;;;-------------
