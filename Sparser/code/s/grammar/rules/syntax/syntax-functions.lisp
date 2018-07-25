@@ -446,6 +446,7 @@ val-pred-var (pred vs modifier - left or right?)
        (not (or (word-p head) ;; this happened with word = HYPHEN, "from FCS-treated cells"
                 ;; also happened with "nontargeting"
                 (null head) ;; happens when head is a bio-entity
+                (itypep head 'n-fold)
                 (and (individual-p head)
                      (itypep head 'determiner))
                 (and (proper-noun? right-edge) ;; "Saturday", "June"
