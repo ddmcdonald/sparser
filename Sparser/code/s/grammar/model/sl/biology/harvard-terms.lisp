@@ -228,6 +228,18 @@ by which this occurs.") |#
    :for theme
    :in theme
    :to level))
+   
+;; add explicit definition of vanish
+(define-category vanish
+  :specializes negative-bio-control
+  :binds ((theme biological)
+          (level (:or measurement bio-scalar)))
+  :realization
+  (:verb "vanish" 
+   :etf (svo-passive)
+   :for theme
+   :in theme
+   :to level))
 
 (define-category drop
   :specializes decrease
