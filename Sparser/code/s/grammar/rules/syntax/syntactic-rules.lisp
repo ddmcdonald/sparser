@@ -728,6 +728,14 @@
     :head :right-edge
     :referent (:function create-whethercomp left-edge right-edge))
 
+
+;; For the moment, treat clauses like "if STAT3 regulates MEK" in "Tell me if STAT3..."
+;;  as if they werre whethercomp clauses
+(def-form-rule (if s)
+    :form whethercomp
+    :head :right-edge
+    :referent (:function create-whethercomp left-edge right-edge))
+
 (def-form-rule (how s)
     :form howcomp  ;; was np, but create-howcomp will change it to this
     :head :right-edge
