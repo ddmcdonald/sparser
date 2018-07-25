@@ -613,20 +613,25 @@
   "special case for a noun preceding the verb where the noun is a verb-premod
    e.g. '... tyrosine phosphorylated'"
   (declare (special category::that word::comma))
-  (let ((right (edge-just-to-right-of e))
-        (left (edge-just-to-left-of e)))
-    (and (ng-head? e)
-         (not (preposition-edge? left))
-         (vg-head? right)
-         (verb-premod? (edge-referent e) (edge-referent right))
-         (or (not (edge-p left))
-             (and (not (eq (edge-category left) word::comma))
-                  (not (member (cat-name (edge-category left)) '(be do)))
-                  (or (ng-head? left)
-                      (member (cat-name (edge-category left))
-                              '(be have not)))
-                  (not (pronominal-or-deictic? left))
-                  (not (eq (edge-form left) category::det)))))))
+  (when (edge-p e)
+    (let ((right (edge-just-to-right-of e))
+          (left (edge-just-to-left-of e)))
+      (and (edge-p right)
+           ;; only do this for participles
+           (member (cat-name (edge-category right)) '(verb+ing verb+ed))
+           (ng-head? e)
+           (not (preposition-edge? left))
+           (vg-head? right)
+
+           (verb-premod? (edge-referent e) (edge-referent right))
+           (or (not (edge-p left))
+               (and (not (eq (edge-category left) word::comma))
+                    (not (member (cat-name (edge-category left)) '(be do)))
+                    (or (ng-head? left)
+                        (member (cat-name (edge-category left))
+                                '(be have not)))
+                    (not (pronominal-or-deictic? left))
+                    (not (eq (edge-form left) category::det))))))))
 
 (defun gross-infinitive-chunker-test (chunk)
   "Called from delimit-next-chunk when the chunk is finished.
@@ -775,69 +780,103 @@ than a bare "to".  |#
           ((ng-start? (edge-form e))
            t)))))
 
+(defun chunk-final-edge? (e chunk)
+  (eq (pos-edge-starts-at e) (ev-position (car (chunk-ev-list chunk)))))
+(defun proper-noun-reduced-relative? (e *chunk* &aux 
+                                                  (e-form-name
+                                                   (cat-name (edge-form e))))
+  (and (member e-form-name '(proper-name proper-noun))
+       (boundp '*chunk*)
+       (chunk-final-edge? e *chunk*)
+       (cdr (chunk-ev-list *chunk*))
+       (loop for ee in (ev-top-edges (cadr (chunk-ev-list *chunk*)))
+             thereis (and (edge-form ee)
+                          (member (cat-symbol (edge-form ee))
+                                  *noun-categories*)))
+       (loop for ee in (edges-after e)
+             thereis
+               (and (edge-form ee)
+                    (member (cat-name (edge-form ee))
+                            '(verb verb+present ))))))
 
 (defmethod ng-head? ((e edge))
   (declare (special e *chunk* word::comma)) 
   (let ((edges-before (edges-before e))
         (e-form-name  (cat-name (edge-form e))))
     (declare (special edges-before e-form-name))
-    
-    (or (and (eq e-form-name 'number)
-             (or (null edges-before)
-                 (loop for ee in edges-before
-                       thereis
-                         (or (eq (edge-category ee) word::comma)
-                             (member (cat-name (edge-form ee))
-                                     '(quantifier det adverb punctuation))))))
+    (and
+    ;;code to split "the genes STAT3 regulates"
+    ;;  into "the genes" "STAT3" "regulates"
+     (not (and (boundp '*chunk*)
+               (proper-noun-reduced-relative? e *chunk*)))
+     
+
+     (not (and (member (cat-name (edge-category e))
+                       '(n-fold))
+               (boundp '*chunk*)
+               (chunk-final-edge? e *chunk*)
+               (loop for ee in (ev-edges (cadr (chunk-ev-list *chunk*)))
+                     never (and (edge-form ee)
+                                  (member (cat-symbol (edge-form ee))
+                                          '(number))))))
+          
+     (or
+      (and (eq e-form-name 'number)
+           (or (null edges-before)
+               (loop for ee in edges-before
+                     thereis
+                       (or (eq (edge-category ee) word::comma)
+                           (member (cat-name (edge-form ee))
+                                   '(quantifier det adverb punctuation))))))
         
-        (unless (or (preceding-adverb e edges-before)
-                    (some-edge-satisfying? (all-edges-at e) #'preposition-edge?)
-                    (eq e-form-name 'verb+ed))
-          (cond
-            ((and (singular-noun-and-present-verb? e)
-                  (loop for c in *chunks*
-                          thereis 
-                          (and (car (chunk-edge-list c))
-                               (eq (cat-name (edge-category (car (chunk-edge-list c))))
-                                   'do))))
-             ;; e.g. "What proteins does vemurafenib target?"
-             ;; where the "does" makes the verb reading more likely
-             nil)
-            ((eq e-form-name 'quantifier)
-             (and (not (itypep (edge-referent e) 'not))
-                  (or (loop for ee in edges-before
-                            thereis (eq (cat-name (edge-form ee)) 'det))
-                      (not (boundp '*chunk*)) ;; happens in looking at np-head? of first chunk
-                      (not (chunk-ev-list *chunk*)))))
-            ((plural-noun-and-present-verb? e)
-             ;; fix logic error -- if we have a noun-verb ambiguity,
-             ;; then we must check the following --
-             ;; the only time we treat the word as a noun is if it immediately follows a det or prep
-             ;; cf. "RAS results in" vs "the results..."
-             ;; or if it is followed by "of" e.g., "the activation states of ERK"
-             (and (or (preceding-det-prep-poss-or-adj e edges-before)
-                      (followed-by-verb e (edges-after e))
-                      (followed-by-of e (edges-after e)))
-                  (ng-head? (edge-form e))))
-            ((singular-noun-and-present-verb? e)
-             (and (not (preceding-pronoun-or-which? e edges-before))
-                  (ng-head? (edge-form e))))
-            ((eq e-form-name 'VERB+ING) ;
-             (let ((end-pos (pos-edge-ends-at e))
-                   (prev-edge (left-treetop-at/edge (pos-edge-starts-at e))))
-               (declare (special end-pos prev-edge)) 
-               (not (or
-                     (itypep (edge-category e) 'state) ;; block resulting
-                     (and (edge-p prev-edge)(eq (cat-name (edge-form prev-edge)) 'adverb))
-                     (let ((next-edge (right-treetop-at/edge end-pos)))
-                       (and (edge-p next-edge)(eq (cat-name (edge-form next-edge )) 'det)))
-                     (memq 
-                      (word-symbol (pos-terminal (pos-edge-ends-at e)))
-                      '(WORD::|that| WORD::|which| WORD::|whose|))))))
-            ((ng-head? (edge-form e)) t)
-            ((and
-              (eq category::det (edge-form e))
-              (member (cat-name (edge-category e)) '(that this these those)))))))))
+      (unless (or (preceding-adverb e edges-before)
+                  (some-edge-satisfying? (all-edges-at e) #'preposition-edge?)
+                  (eq e-form-name 'verb+ed))
+        (cond
+          ((and (singular-noun-and-present-verb? e)
+                (loop for c in *chunks*
+                      thereis 
+                        (and (car (chunk-edge-list c))
+                             (eq (cat-name (edge-category (car (chunk-edge-list c))))
+                                 'do))))
+           ;; e.g. "What proteins does vemurafenib target?"
+           ;; where the "does" makes the verb reading more likely
+           nil)
+          ((eq e-form-name 'quantifier)
+           (and (not (itypep (edge-referent e) 'not))
+                (or (loop for ee in edges-before
+                          thereis (eq (cat-name (edge-form ee)) 'det))
+                    (not (boundp '*chunk*)) ;; happens in looking at np-head? of first chunk
+                    (not (chunk-ev-list *chunk*)))))
+          ((plural-noun-and-present-verb? e)
+           ;; fix logic error -- if we have a noun-verb ambiguity,
+           ;; then we must check the following --
+           ;; the only time we treat the word as a noun is if it immediately follows a det or prep
+           ;; cf. "RAS results in" vs "the results..."
+           ;; or if it is followed by "of" e.g., "the activation states of ERK"
+           (and (or (preceding-det-prep-poss-or-adj e edges-before)
+                    (followed-by-verb e (edges-after e))
+                    (followed-by-of e (edges-after e)))
+                (ng-head? (edge-form e))))
+          ((singular-noun-and-present-verb? e)
+           (and (not (preceding-pronoun-or-which? e edges-before))
+                (ng-head? (edge-form e))))
+          ((eq e-form-name 'VERB+ING)   ;
+           (let ((end-pos (pos-edge-ends-at e))
+                 (prev-edge (left-treetop-at/edge (pos-edge-starts-at e))))
+             (declare (special end-pos prev-edge)) 
+             (not (or
+                   (itypep (edge-category e) 'state) ;; block resulting
+                   (and (edge-p prev-edge)(eq (cat-name (edge-form prev-edge)) 'adverb))
+                   (let ((next-edge (right-treetop-at/edge end-pos)))
+                     (and (edge-p next-edge)(eq (cat-name (edge-form next-edge )) 'det)))
+                   (memq 
+                    (word-symbol (pos-terminal (pos-edge-ends-at e)))
+                    '(WORD::|that| WORD::|which| WORD::|whose|))))))
+          ((ng-head? (edge-form e)) t)
+          ((and
+            (eq category::det (edge-form e))
+            (member (cat-name (edge-category e)) '(that this these those))))))))))
 
 
 
