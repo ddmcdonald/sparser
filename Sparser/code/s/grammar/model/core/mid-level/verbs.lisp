@@ -106,9 +106,11 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
 (define-category give
   :specializes process
   :mixins (directed-action)
+  :restrict ((theme (:or endurant abstract)))
   :realization (:verb ("give" :past-tense "gave"
                        :past-participle "given"
-                       :present-participle "giving")))
+                       :present-participle "giving")
+                      :etf (svo-passive)))
  
 (define-category get
   :specializes accomplishment
@@ -200,6 +202,8 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
   ((:verb "suggest")
    (:mumble ("suggest" svscomp :s ? :o statement))))
 |#
+;; TELL is NOT a prop-attitude like belief
+#+ignore ;; we need to handle this in biology
 (define-category tell
   :specializes process
   :mixins (prop-attitude directed-action)
