@@ -92,14 +92,14 @@
   :instantiates self
   :rule-label am-pm
   :index (:permanent :key name)
-  :realization (:adjective ("am" "a.m.")))
+  :realization (:noun ("am" "a.m.")))
 
 (define-category post-meridian
   :specializes am-pm
   :instantiates self
   :rule-label am-pm
   :index (:permanent :key name)
-  :realization (:adjective ("pm" "p.m.")))
+  :realization (:noun ("pm" "p.m.")))
 
 
 #| These are the synset of ont::event-time-rel in TRIPS
