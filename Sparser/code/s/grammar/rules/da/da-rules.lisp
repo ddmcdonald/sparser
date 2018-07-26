@@ -1383,6 +1383,10 @@
   :pattern ( s "," subordinate-clause )
   :action (:function clause-comma-subordinate  first second third))
 
+(define-debris-analysis-rule clause-comma-ifcomp
+  :pattern ( s "," ifcomp )
+  :action (:function clause-comma-subordinate  first second third))
+
 (define-debris-analysis-rule clause-comma-subordinate-s
   :pattern ( s "," subordinate-s )
   :action (:function clause-comma-subordinate  first second third))
