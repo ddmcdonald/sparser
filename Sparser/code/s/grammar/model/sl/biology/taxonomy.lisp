@@ -407,6 +407,7 @@
                   measurement 
                   bio-scalar ;; "these data raised the possibility..."
                   protein-domain ;; not molecular-location -- that allows residues
+                  disease ;; to allow for "cancer targets SMAD3"
                   ))
             (object
              (:or bio-entity cell-entity molecular-location
