@@ -1016,7 +1016,7 @@
 ;; "X provides support for Y" and "X supports process Y"
 (define-category provide :specializes bio-relation
     :restrict ((participant (:or result biological))
-               (theme (:or insight argument-support biological bio-rhetorical)))
+               (theme (:or insight argument-support biological bio-rhetorical abstract)))
     :realization
     (:verb "provide"
 	   :noun "provision"
