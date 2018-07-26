@@ -182,10 +182,11 @@
         ((eq (edge-category (car edges)) category::there-exists)
          (sort-out-incompletely-parsed-there-is-q start-pos end-pos edges))
 
+        ;; three-edge copular cases
         ((and (= 3 (length edges))
               (edge-p (first edges))
-              (itypep (edge-referent (first edges)) 'be))
-
+              (itypep (edge-referent (first edges))
+                      'be))
          (cond ((member (cat-name (edge-form (third edges)))
                         '(adjp adjective comparative superlative
                           comparative-adjp superlative-adjp))
@@ -198,15 +199,23 @@
                 ;; <is> <something> <x-ing?
                 (make-polar-participle-question start-pos end-pos edges))
 
-               ((and (noun-category? (second edges))
+               ((and (or (noun-category? (second edges))
+                         (eq (cat-name (edge-form (second edges)))
+                             'pronoun))
                      (noun-category? (third edges)))
                 ;; "Is Selumetinib an inhibitor of MEK1?"
-                (make-polar-copular-question start-pos end-pos edges))                                     
+                (make-polar-copular-question start-pos end-pos edges))
 
+               ((and (noun-category? (second edges))
+                     (member (cat-name (edge-form (third edges)))
+                             '(vg+passive)))
+                ;; "Is MAPK1-bound MAP2K1 sustained?"
+                (make-polar-copular-question start-pos end-pos edges))
+                
                (t
                 (if *show-wh-problems*
-                  (lsp-break "unhandled 3 edge question: ~a" edges)
-                  (warn "unhandled 3 edge question: ~a" edges)))))
+                  (lsp-break "unhandled 3 edge polar-copular question: ~a" edges)
+                  (warn "unhandled 3 edge polar-copular question: ~a" edges)))))
 
         (wh-initial? ;; use assimilate-subject (subj vp) to refine the variable
          (cond
@@ -214,15 +223,16 @@
             (wh-initial-two-edges wh-initial? edges start-pos end-pos))
            
            ((and (and (= 3 (length edges))
-                      (edge-p (second edges))) ;; "How many blocks did you add to the row?"
-                 (edge-over-aux? (second edges)))
+                      (edge-p (second edges))))
             (wh-initial-three-edges wh-initial? edges start-pos end-pos))
            
            (t
             (if *show-wh-problems*
-              (lsp-break "Could not resolve edges into a WH question: ~a" edges)
+              (lsp-break "Could not resolve ~n edges into a WH question: ~a"
+                         (length edges) edges)
               (when *warn-when-can-not-formulate-question*
-                (warn "Could not resolve edges into a WH question: ~a" edges))))))
+                (warn "Could not resolve ~n edges into a WH question: ~a"
+                      (length edges) edges))))))
 
         (preposed?
          (if *show-wh-problems*
@@ -513,7 +523,108 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                         (make-wh-object wh-type :other attr)
                         (make-wh-object wh-type :attribute attr))
                       (make-wh-object wh-type))))
-              (cover-wh q next-pos))))))))
+             (cover-wh q next-pos))))))))
+
+
+;;;-----------------------------------------------------------------
+;;; wh-initial? dispatches from make-this-a-question-if-appropriate 
+;;;-----------------------------------------------------------------
+
+(defun wh-initial-two-edges (wh-initial? edges start-pos end-pos)
+  "One edge after the WH edge. Take it to be the statement."
+  (let* ((wh (edge-referent wh-initial?))
+         (complement (edge-referent (second edges)))
+         (q (compose wh complement)))
+    (tr :make-this-a-question q)
+    (unless q
+      (error "WH compose didn't work or doesn't exist"))
+    (make-edge-over-long-span
+     start-pos end-pos
+     (edge-category (second edges)) ;; ??
+     :rule 'make-this-a-question-if-appropriate
+     :form category::question
+     :referent q)))
+
+(defun wh-initial-three-edges (wh-edge edges start-pos end-pos)
+  "Dispatch over DA patterns where there are two edges after the WH edge."
+  (when (not (every #'edge-p edges))
+    (if *show-wh-problems*
+      (lsp-break "something in 'edges' isn't an edge")
+      (when *warn-when-can-not-formulate-question*
+         (warn "something in 'edges' isn't an edge: ~a" edges)))
+    (return-from wh-initial-three-edges nil))
+  
+  (let ((e2-form (cat-name (edge-form (second edges))))
+        (e3-form (cat-name (edge-form (third edges))))
+        (other (value-of 'other (edge-referent wh-edge))))
+    ;;(lsp-break "check values")
+    (cond
+      ((and (eq e2-form 'vp) ;; stranded preposition
+            (preposition-category? (third edges))
+            other)
+       ;; the question is who owns that preposition, which determines
+       ;; what the corresponding declarative form would be
+       (if *show-wh-problems*
+         (lsp-break "Figure out whether ~a needs reformulation" (second edges))
+         (when *warn-when-can-not-formulate-question*
+           (warn "Standed prepositino wh question case needs more work"))))
+      
+      ;; (and (eq e2-form vg+passive)
+      ;;      (and (eq e3-form pp)
+      ;;           == prep is 'by'
+
+      ((edge-over-aux? (second edges)) ;; "How many blocks did you add to the row?"
+       (wh-initial-followed-by-modal wh-edge edges start-pos end-pos))
+      
+      ((and (eq e2-form 'vg+passive)
+            (eq e3-form 'vp))
+       (wh-with-reduced-relative wh-edge edges start-pos end-pos))
+      
+      (t
+       (if *show-wh-problems*
+         (lsp-break "Could not resolve 3 edges into a WH question: ~a" edges)
+         (when *warn-when-can-not-formulate-question*
+           (warn "Could not resolve 3 edges into a WH question: ~a" edges)))))))
+
+
+;; (p "where should I put the block?")
+;;
+(defun wh-initial-followed-by-modal (wh-edge edges start-pos end-pos)
+  "The second argument is an aux or a modal that has to be
+   folded in to the statement (third edge) for its tense or
+   aspect contribution. Not bothering to explicitly hook
+   the aux edge into the tree."
+  (let ((wh (edge-referent wh-edge))
+        (aux (edge-referent (second edges)))
+        (stmt (edge-referent (third edges))))
+    (with-referent-edges (:l (second edges) :r (third edges))
+      (setq stmt (add-tense/aspect-info-to-head aux stmt)))
+    (let ((q (compose wh stmt)))
+      (make-edge-over-long-span
+       start-pos end-pos
+       (edge-category (third edges)) ;; ??
+       :rule 'make-this-a-question-if-appropriate
+       :form category::question
+       :referent q
+       :constituents edges))))
+
+;; "Which genes regulated by stat3 are kinases?"
+;;
+(defun wh-with-reduced-relative (wh-edge edges start-pos end-pos)
+  "The second edge is a reduced relative, so the wh-edge had better have
+   something to attach it to."
+  (let* ((wh-object (edge-referent wh-edge))
+         (head-np (value-of 'other wh-object))
+         (reduced-edge (second edges))
+         (main-verb-edge (third edges)))
+    (unless head-np (lsp-error "no 'other' in ~a" wh-object))
+    ;; compose the head & relative
+    ;; and compose that with the vp
+    (lsp-break "DA should do this")))
+
+;;;-------------------------
+;;; from other entry points
+;;;-------------------------
 
 (defun wh-is-declarative-heuristics (next-edge)
   "Called by delimit-and-label-initial-wh-term w/in its accumulation loop.
@@ -576,43 +687,6 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                         :referent q)
     (tr :wh+individual-method q)
     q))
-
-
-(defun wh-initial-two-edges (wh-initial? edges start-pos end-pos)
-  (let* ((wh (edge-referent wh-initial?))
-         (complement (edge-referent (second edges)))
-         (q (compose wh complement)))
-    (tr :make-this-a-question q)
-    (unless q
-      (error "WH compose didn't work or doesn't exist"))
-    (make-edge-over-long-span
-     start-pos end-pos
-     (edge-category (second edges)) ;; ??
-     :rule 'make-this-a-question-if-appropriate
-     :form category::question
-     :referent q)))
-
-;; (p "where should I put the block?")
-;;
-(defun wh-initial-three-edges (wh-edge edges start-pos end-pos)
-  "The second argument is an aux or a modal that has to be
-   folded in to the statement (third edge) for its tense or
-   aspect contribution. Not bothering to explicitly hook
-   the aux edge into the tree."
-  (let ((wh (edge-referent wh-edge))
-        (aux (edge-referent (second edges)))
-        (stmt (edge-referent (third edges))))
-    (with-referent-edges (:l (second edges) :r (third edges))
-      (setq stmt (add-tense/aspect-info-to-head aux stmt)))
-    (let ((q (compose wh stmt)))
-      (make-edge-over-long-span
-       start-pos end-pos
-       (edge-category (third edges)) ;; ??
-       :rule 'make-this-a-question-if-appropriate
-       :form category::question
-       :referent q
-       :constituents edges))))
-
 
 
 ;;;-------------------
