@@ -716,7 +716,8 @@
 
 (define-category involve :specializes bio-relation
   :realization
-  (:verb "involve" ;; keyword: ENDS-IN-ING 
+  (:verb "involve" ;; keyword: ENDS-IN-ING
+         :noun "involvement"
          :etf (svo)
          :o theme
          :in theme))
@@ -1197,6 +1198,7 @@
   :mixins (bio-thatcomp raising-to-object directed-action)
   :restrict ((beneficiary interlocutor))
   :realization (:verb ("tell" :past-tense "told")
+                      :about statement
                       :etf (svo-passive)))
 
 (define-category bio-make-statement :specializes bio-rhetorical
