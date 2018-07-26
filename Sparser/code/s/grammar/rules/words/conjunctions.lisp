@@ -142,6 +142,7 @@ syntactic properties of three types.
           "furthermore"
           "hence"
           "however"
+          "if"
           "i.e."
 	  "in contrast"
 	  ;; "in contrast to" probably a preposition
