@@ -211,7 +211,8 @@
                              '(vg+passive)))
                 ;; "Is MAPK1-bound MAP2K1 sustained?"
                 (make-polar-copular-question start-pos end-pos edges))
-                
+
+               
                (t
                 (if *show-wh-problems*
                   (lsp-break "unhandled 3 edge polar-copular question: ~a" edges)
@@ -620,7 +621,11 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
     (unless head-np (lsp-error "no 'other' in ~a" wh-object))
     ;; compose the head & relative
     ;; and compose that with the vp
-    (lsp-break "DA should do this")))
+    (if *show-wh-problems*
+      (lsp-break "DA should do this")
+      (when *warn-when-can-not-formulate-question*
+        (warn "DA should do question with reduced relative")))))
+
 
 ;;;-------------------------
 ;;; from other entry points
