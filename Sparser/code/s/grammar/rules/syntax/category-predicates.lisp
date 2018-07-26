@@ -471,6 +471,15 @@
                ;;category::det ;; for isolated "that"
                )))
 
+(defgeneric preposition-category? (label)
+  (:documentation "Any sort of preposition")
+  (:method ((e edge))
+    (preposition-category? (edge-form e)))
+  (:method ((c referential-category))
+    (preposition-category? (cat-symbol c)))
+  (:method ((name symbol))
+    (memq name *prep-forms*)))
+
 (defgeneric modifier-category? (label)
   (:documentation "Adjectives and their variants. Should be a single word"))
 (defmethod modifier-category? ((e edge))
