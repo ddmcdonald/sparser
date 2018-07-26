@@ -45,7 +45,14 @@
 (def-indiv-with-id micro-rna "miR-335-5p" "MIMAT0000765" :name "microRNA 335-5p" :synonyms ("miR335-5p"))
 (def-indiv-with-id micro-rna "miR-155-5p" "MIMAT0000646" :name "microRNA 155-5p" :synonyms ("miR155-5p"))
 (def-indiv-with-id micro-rna "miR-145-5p" "MIMAT0000437" :name "microRNA 145-5p" :synonyms ("miR145-5p"))
-
+(def-indiv-with-id micro-rna "miR-145-5p" "MIMAT0000437" :name "microRNA 145-5p" :synonyms ("miR145-5p"))
+;; these are bogus ids and names but needed for queries from bioagent testing
+(def-indiv-with-id micro-rna "miR-148a-3p" "MIMAmiR-148a-3p" :name "microRNA 148a-3p")
+(def-indiv-with-id micro-rna "miR-2000-5p" "MIMAmiR-2000-5p" :name "microRNA 2000-5p")
+(def-indiv-with-id micro-rna "miR-20b-5p" "MIMAmiR-20b-5p" :name "microRNA 20b-5p")
+(def-indiv-with-id micro-rna "miR-222-3p" "MIMAmiR-222-3p" :name "microRNA 222-3p")
+(def-indiv-with-id micro-rna "miR-335-5p" "MIMAmiR-335-5p" :name "microRNA 335-5p")
+(def-indiv-with-id micro-rna "miR-562" "MIMAmiR-562" :name "microRNA 562")
 
 
 (def-indiv-with-id plasmid "BAC" "NCIT:C1860" :name "Bacterial Artificial Chromosome") ; it's based on a plasmid, but isn't actually one itself
