@@ -1332,6 +1332,10 @@
   :pattern (subordinate-s "," subordinate-clause )
   :action (:function subordinate-comma-subordinate-clause first second third))
 
+(define-debris-analysis-rule subordinate-comma-ifcomp
+  :pattern (subordinate-s "," ifcomp )
+  :action (:function subordinate-comma-subordinate-clause first second third))
+
 (define-debris-analysis-rule subordinate-comma-subordinate-clause
   :pattern (subordinate-clause "," subordinate-s )
   :action (:function subordinate-comma-subordinate-clause first second third))
@@ -1402,6 +1406,10 @@
 
 (define-debris-analysis-rule clause-subordinate
   :pattern ( s subordinate-clause )
+  :action (:function clause-subordinate first second))
+
+(define-debris-analysis-rule clause-ifcomp
+  :pattern ( s ifcomp )
   :action (:function clause-subordinate first second))
 
 (define-debris-analysis-rule clause-subordinate-s
