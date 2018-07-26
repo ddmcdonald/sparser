@@ -1291,3 +1291,68 @@ applied to l, and values are values associated with that key example"
        (concatenate 'string
                     (eval (intern "*R3-TRUNK*" (find-package :r3)))
                     "corpus/2017-callisto-annotated-articles/results/"))))))
+
+
+;;;=======================================================
+;;; tools for iterating over arbitrary lists of sentences
+;;;=======================================================
+;;  Mostly biocuration queries / directives
+
+(defvar *list-of-bio-utterances* nil
+  "Reference global bound by test-bio-utterances 
+   and used by test-bio")
+
+(defun test-bio-utterances (sentence-list)
+  "Walk over the list and set the global -- edit to shift test fn"
+  (let ((count -1)) ;; because nth is zero based
+    (setq *list-of-bio-utterances* sentence-list)
+    (loop for s in sentence-list
+       do ;;(test-bio-utterance/split s (incf count) *standard-output*)
+         (test-bio-utterance s (incf count) *standard-output*))))
+
+(defun test-bio-utterance (s count &optional (stream *standard-output*))
+  "Designed for getting useful information for every sentence.
+ Includes the semantic interpretation if there was just one
+ edge over it."
+  (format stream "~%~%___________________~%~a: ~s~%" count s)
+  (pp s)
+  (format t "~&") (tts)
+  (let ((edges (all-tts)))
+    (when (null (cdr edges)) ;; single span
+      (format stream "~&~a" (semtree (car edges))))))
+
+(defun test-bio (n)
+  (let ((s (nth n *list-of-bio-utterances*)))
+    (p/s s)))
+  
+
+(defparameter *bio-utt-test-good* nil
+  "List of the numbers of sentences that get a single edge")
+(defparameter *bio-utt-test-bad* nil
+  "List of the numbers of sentences that get more one edge")
+
+(defun test-bio-utterance/split (s count &optional stream)
+  "Variant call from test-bio-utterances. Populate the two lists"
+  (pp s)
+  (let ((edges (all-tts)))
+    (if (null (cdr edges))
+      (push count *bio-utt-test-good*)
+      (push count *bio-utt-test-bad*))))
+
+(defun test-bio-utt-regressions (&optional (numbers *bio-utt-test-good*))
+  "For testing regression"
+  (loop for utt-number in *bio-utt-test-good*
+     as s = (nth utt-number *list-of-bio-utterances*)
+     do (with-total-quiet
+          (pp s)
+          (let ((edges (all-tts)))
+            (when (cdr edges)
+              (format t "~&~%~a: ~s" utt-number s)
+              (format t "~%failed: ~%") (tts))))))
+
+(defun test-bio-utt-show-bad ()
+  "Getting output on known failures"
+  (loop for index in *bio-utt-test-bad*
+     as s = (nth index *list-of-bio-utterances*)
+       do (test-bio-utterance s index)))
+
