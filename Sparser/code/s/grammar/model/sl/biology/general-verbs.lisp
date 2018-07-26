@@ -313,6 +313,10 @@
 	   :noun "demonstration"
 	   :etf (svo-passive)))
 
+(define-category evidenced :specializes demonstrate
+    :realization
+    (:verb ("evidenceXX" :past-tense "evidenced")
+	   :etf (svo-passive)))
 
 (define-category depend
   :specializes bio-relation
@@ -1182,12 +1186,18 @@
 ;; can be both "<people> show ..." and "<molecule> shows <properties>"
 (define-category show :specializes bio-rhetorical
   :mixins (bio-thatcomp raising-to-object directed-action)
-  :restrict ((theme (:or be biological predication))
+  :restrict ((theme (:or be biological predication abstract))
              (beneficiary interlocutor))
   ;; it was shown that
   :realization
   (:verb ("show" :past-tense "showed" :past-participle "shown")
          :etf (svo-passive)))
+
+(define-category tell :specializes bio-rhetorical
+  :mixins (bio-thatcomp raising-to-object directed-action)
+  :restrict ((beneficiary interlocutor))
+  :realization (:verb ("tell" :past-tense "told")
+                      :etf (svo-passive)))
 
 (define-category bio-make-statement :specializes bio-rhetorical
   :mixins (bio-thatcomp)
