@@ -414,6 +414,12 @@
    `(def-syntax-rule  (,(car vv) adverb)
         :head :left-edge
         :form ,(second vv)
+        :referent (:function interpret-adverb+verb right-edge left-edge)))
+
+   (eval
+   `(def-form-rule  (,(car vv) n-fold)
+        :head :left-edge
+        :form ,(second vv)
         :referent (:function interpret-adverb+verb right-edge left-edge))))
 
 
