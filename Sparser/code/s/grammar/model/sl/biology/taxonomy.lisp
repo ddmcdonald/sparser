@@ -81,7 +81,7 @@
 ;;;-------------------------------
 
 (define-mixin-category bio-complement
-  :specializes linguistic
+  :specializes abstract
   :binds ((statement (:or bio-process molecule-state be
                           bio-predication predication
                           bio-method
@@ -92,7 +92,8 @@
                           bio-relation
                           relation bio-rhetorical
                           there-exists
-			  event-relation)))
+			  event-relation
+                          perdurant)))
   :documentation "Common parent to the other types of biological 
     complements to share the same standard set of bindings.")
 
@@ -505,12 +506,10 @@
 
 
 
-(define-category evidence :specializes bio-rhetorical
+(define-category evidence :specializes bio-thatcomp
   :binds ((fact biological))
   :realization
-    (:verb ("evidenceXX" :past-tense "evidenced")
-     :noun "evidence"
-     :etf (svo-passive)
+    (:noun "evidence"
      :for fact))
 
 (define-category experiment-data :specializes evidence
