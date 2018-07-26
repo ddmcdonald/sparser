@@ -797,7 +797,10 @@ than a bare "to".  |#
              thereis
                (and (edge-form ee)
                     (member (cat-name (edge-form ee))
-                            '(verb verb+present ))))))
+                            '(verb verb+present ))
+                    ;; a bit less likely when the verb is "BE"
+                    ;; as in "Oncogenic mutations in the serine/threonine kinase B-RAF are found..."
+                    (not (eq (cat-name (edge-category ee)) 'be))))))
 
 (defmethod ng-head? ((e edge))
   (declare (special e *chunk* word::comma)) 
