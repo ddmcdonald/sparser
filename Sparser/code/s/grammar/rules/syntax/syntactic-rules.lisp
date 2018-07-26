@@ -308,7 +308,7 @@
               :form np
               :referent (:function interpret-pp-adjunct-to-np left-edge right-edge)))
      
-;;--- NP + sentential-complements (THATCOMP, WHETHERCOMP, HOWCOMP)
+;;--- NP + sentential-complements (THATCOMP, WHETHERCOMP, HOWCOMP, IFCOMP)
         (eval
          `(def-syntax-rule (,nb thatcomp)
               :head :left-edge
@@ -324,7 +324,11 @@
               :head :left-edge
               :form np
               :referent (:function assimilate-whethercomp left-edge right-edge)))
-     
+             (eval
+              `(def-syntax-rule (,nb ifcomp)
+                   :head :left-edge
+                   :form np
+                   :referent (:function assimilate-whethercomp left-edge right-edge)))
         (eval 
          `(def-syntax-rule (,nb to-comp)
               :head :left-edge
@@ -660,6 +664,11 @@
               :form ,(second vv)
               :referent (:function assimilate-whethercomp left-edge right-edge)))
         (eval
+         `(def-syntax-rule (,(car vv) ifcomp)
+              :head :left-edge
+              :form ,(second vv)
+              :referent (:function assimilate-whethercomp left-edge right-edge)))
+        (eval
          `(def-syntax-rule (,(car vv) verbal-adjunct)
               :head :left-edge
               :form ,(second vv)
@@ -734,7 +743,7 @@
 (def-form-rule (if s)
     :form whethercomp
     :head :right-edge
-    :referent (:function create-whethercomp left-edge right-edge))
+    :referent (:function create-ifcomp left-edge right-edge))
 
 (def-form-rule (how s)
     :form howcomp  ;; was np, but create-howcomp will change it to this
