@@ -625,6 +625,13 @@ is a case in handle-any-anaphor
     (let ((s (identify-current-sentence)))
       (setf (preposed-aux (contents s)) (cons e original-form)))))
 
+(defun mask-preposed-aux ()
+  "Some question operation has handled the preposed-aux but
+   did it on a just portion of the sentence so we have to
+   turn this flag off."
+  (let ((s (identify-current-sentence)))
+    (setf (preposed-aux (contents s)) nil)))
+    
 (defun preposed-aux? ()
   "If the delayed action record in the contents of the current sentence
    records a preposed auxiliary the return the contents of the
@@ -636,6 +643,7 @@ is a case in handle-any-anaphor
             (original-form (cdr preposed-aux-info)))
         (values edge
                 original-form)))))
+
 
 (defgeneric record-initial-wh (edge)
   (:documentation "Just set the field with the edge, which

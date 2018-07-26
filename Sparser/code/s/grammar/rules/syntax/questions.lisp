@@ -211,7 +211,6 @@
                              '(vg+passive)))
                 ;; "Is MAPK1-bound MAP2K1 sustained?"
                 (make-polar-copular-question start-pos end-pos edges))
-
                
                (t
                 (if *show-wh-problems*
@@ -317,6 +316,21 @@
               :referent q
               :constituents edges))) )
 
+(defun da/preposed+s (aux-edge s-edge)
+  ;;(break "aux = ~a, s = ~a" aux s)
+  "Goes with DA rule for [preposed-auxiliary s ifcomp] except that
+   we left off the ifcomp to be handled by separate rules."
+  (let* ((s-ref (edge-referent s-edge))
+         (q (make-polar-question s-ref))
+         (start-pos (pos-edge-starts-at aux-edge))
+         (end-pos (pos-edge-ends-at s-edge)))
+    (mask-preposed-aux)
+    (make-edge-over-long-span
+     start-pos end-pos
+     (itype-of s-ref)
+     :rule 'da/preposed+s
+     :form (edge-form s-edge) ;; category::question
+     :referent q)))
 
 
 

@@ -1852,7 +1852,10 @@
   :action (:function apply-question-marker first second third))
 ;; function is in syntax/questions.lisp
 
-
+(define-debris-analysis-rule is-s-under-condition
+    :pattern (preposed-auxiliary s ifcomp)
+    :action (:function da/preposed+s first second))
+   
 
 
 (define-debris-analysis-rule interjection-s
