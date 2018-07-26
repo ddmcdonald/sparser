@@ -92,8 +92,10 @@
                           bio-relation
                           relation bio-rhetorical
                           there-exists
-			  event-relation
-                          perdurant)))
+			              event-relation
+                          perdurant
+                          abstract ;; for information like "evidence"
+                          )))
   :documentation "Common parent to the other types of biological 
     complements to share the same standard set of bindings.")
 
