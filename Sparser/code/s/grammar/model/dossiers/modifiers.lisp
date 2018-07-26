@@ -584,6 +584,7 @@
 (define-adverb "perversely")
 (define-adverb "physically")
 (define-adverb "physiologically")
+(define-adverb "please") ;; not sure about this
 (define-adverb "poorly") ;; 
 (define-adverb "popularly")
 ;;(define-adverb "positively") moved to NFkappB to go with "positive"
