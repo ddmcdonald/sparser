@@ -1283,6 +1283,10 @@
   :pattern (subordinate-clause "," s )
   :action (:function subordinate-comma-clause first second third))
 
+(define-debris-analysis-rule ifcomp-comma-clause
+  :pattern (ifcomp "," s )
+  :action (:function subordinate-comma-clause first second third))
+
 (define-debris-analysis-rule whethercomp-comma-clause
   :pattern (whethercomp "," s )
   :action (:function subordinate-comma-clause first second third))
