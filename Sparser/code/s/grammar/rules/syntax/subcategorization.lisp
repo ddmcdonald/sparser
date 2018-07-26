@@ -240,6 +240,7 @@
     :ifcomp
     :l
     :m
+    :indirect-object
     :object
     :premod
     :subject

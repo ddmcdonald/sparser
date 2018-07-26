@@ -1720,13 +1720,14 @@ there was an edge for the qualifier (e.g., there is no edge for the
                *right-edge-into-reference*
                (loop for e in (edges-after *right-edge-into-reference*)
                      thereis
-                       (member (cat-name (edge-form e)) *np-category-names*))))
+                       (member (cat-name (edge-form e))
+                               *np-category-names*))))
          (result
           (cond ((and (typep *current-chunk* 'chunk)
                       (member 'ng (chunk-forms *current-chunk*)))
                  (verb-noun-compound vg obj))
                 (indirect-object?
-                 (subcategorized-variable vg :i obj))
+                 (assimilate-subcat vg :indirect-object obj))
                 (t
                  (assimilate-object vg obj)))))
     (cond
@@ -1792,6 +1793,16 @@ there was an edge for the qualifier (e.g., there is no edge for the
     (t (revise-parent-edge :form category::whethercomp)
        (let ((embedded? (not (top-level-wh-question?))))
          (make-wh-object (category-named 'whether)
+                         :statement s
+                         :embedded embedded?)))))
+
+(defun create-ifcomp (if s)
+  (declare (special category::ifcomp))
+  (cond
+    (*subcat-test* t)
+    (t (revise-parent-edge :form category::ifcomp)
+       (let ((embedded? (not (top-level-wh-question?))))
+         (make-wh-object (category-named 'if)
                          :statement s
                          :embedded embedded?)))))
 
