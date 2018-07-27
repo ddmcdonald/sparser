@@ -600,14 +600,37 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
        (if *show-wh-problems*
          (lsp-break "Figure out whether ~a needs reformulation" (second edges))
          (when *warn-when-can-not-formulate-question*
-           (warn "Standed prepositino wh question case needs more work"))))
+           (warn "Standed preposition wh question case needs more work"))))
+
+
+      ;; Reduced relative: could consider a DA rule here, but to do the 
+      ;; right thing we need to reach into the WH phrase
+      ;;//// test on attributes, test on compound (multi-word) other's
+      ((and other
+            (eq e2-form 'vp+ed)
+            (eq e3-form 'vp))
+       (let* ((other-edge (find-edge-for-wh-other wh-edge other))
+              (rule (multiply-edges other-edge (second edges))))
+         (when rule
+           (let ((new-edge (make-completed-binary-edge other-edge (second edges) rule))
+                 (old-wh (edge-referent wh-edge)))
+             ;; swap out the existing other-edge for this new one
+             (rebuild-wh-other-edge wh-edge other-edge new-edge)
+             ;; update the value of other
+             (let* ((new-ref (edge-referent new-edge))
+                    (new-wh-referent (bind-variable 'other new-ref old-wh)))
+               (setf (edge-referent wh-edge) new-wh-referent)
+               ;; at this point we have wh+vp so we dispatch to have it handled
+               (wh-initial-two-edges wh-edge (list wh-edge (third edges))
+                                     start-pos end-pos))))))
+      
+ 
+      ((edge-over-aux? (second edges)) ;; "How many blocks did you add to the row?"
+       (wh-initial-followed-by-modal wh-edge edges start-pos end-pos))
       
       ;; (and (eq e2-form vg+passive)
       ;;      (and (eq e3-form pp)
       ;;           == prep is 'by'
-
-      ((edge-over-aux? (second edges)) ;; "How many blocks did you add to the row?"
-       (wh-initial-followed-by-modal wh-edge edges start-pos end-pos))
       
       ((and (eq e2-form 'vg+passive)
             (eq e3-form 'vp))
@@ -765,96 +788,35 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
   (= 1 (pos-token-index (pos-edge-starts-at left-edge))))
 
 
+;;;---------
+;;; go-fers1
+;;;---------
+(defun find-edge-for-wh-other (wh-edge i-other)
+  "The WH edge is a long-span if it includes an 'other' or
+   an 'attribute' in it. So we have to grovel around to find
+   the desired edge -- see cover-wh flet in delimit-and-label-initial-wh-term"
+  (let* ((edge-list (edge-constituents wh-edge))
+         (final-edge (car (last edge-list))))
+    (if (eq (edge-referent final-edge) i-other)
+      final-edge
+      (break "Assumptions about 'other' and wh-edge are bad"))))
+    
+(defun rebuild-wh-other-edge (wh-edge old-other-edge new-other-edge)
+  "We just composed the other-edge with a constituent just to its right.
+   Exemplar is restricted relatives. So we have to rebuild the wh-edge
+   to now use this new edge."
+  ;; span the WH over it
+  (setf (edge-ends-at wh-edge) (edge-ends-at new-other-edge))
+  ;; update daughter & constituents info
+  (setf (edge-right-daughter wh-edge) new-other-edge)
+  (let ((constituents (edge-constituents wh-edge)))
+    (setf (edge-constituents wh-edge)
+          (reverse (cons new-other-edge (cdr (reverse constituents)))))
+    wh-edge))
 
-
-#|
-;;--- swallowing the inverted auxiliary into WH/be
-
-(def-cfr WH/be (wh-pronoun be) ;; gets all the WH pronouns
-  :form question-marker
-  :referent (:daughter left-edge))
-
-(def-cfr WH/be (wh-pronoun apostrophe-s) ;; gets all the WH pronouns
-  :form question-marker
-  :referent (:daughter left-edge))
-
-(def-cfr WH/be (wh-pronoun do) ;; "where did you come from"
-  :form question-marker
-  :referent (:daughter left-edge))  |#
-
-;(def-cfr WH/be (WH/be pronoun/second)
-;  :form question-marker ;; unless we want to strand the "you" ??
-;  :referent (:daughter left-edge
-;	          :bind (participant . right-edge)))
-
-;; "will"
-; CATEGORY           #<mixin WILL>
-; FORM               #<ref-category MODAL>
-; REFERENT           #<mixin FUTURE>
-
-
-;;--- Explicit cases motivated by the checkpoint domain
-;;  This almost certainly has a clean generalization that can be cast
-;; as a form rule, but I'm not certain yet what that would be. Need more
-;; cases
-#|
-(def-cfr event (WH/be location)
-  :form s
-  :referent (:instantiate-individual question
-             :with (type left-edge
-                    content right-edge)))
-
-(def-cfr event (WH/be individual)
-  :form s
-  :referent (:instantiate-individual question
-             :with (type left-edge
-		            content right-edge)))
-
-(def-form-rule (WH/be verb+ing)
-  :form s
-  :referent (:instantiate-individual question
-             :with (type left-edge
-		            content right-edge)))
-
-;; I think these next two need to be scrapped (cfg 13 Jul 09)
-
-(def-cfr event (WH/be "from")
-  :form s
-  :referent (:instantiate-individual question
-             :with (type left-edge
-		            content right-edge)))
-
-(def-cfr event (WH/be with-np)
-  :form s
-  :referent (:instantiate-individual question
-             :with (type left-edge
-		            content right-edge)))
-
-;; This is a rather important one right here...
-
-(def-cfr event (WH/be event)
-  :form s
-  :referent (:instantiate-individual question
-             :with (type left-edge
-		            content right-edge)))
-|#
-#|   Ignoring now (8/4/16) because it will likely succeed
-     and distort things before they're done.
-;; Handles commonly used (but not necessarily grammatical)
-;; examples like "where you going" etc.
-
-(def-form-rule (wh-pronoun verb+ing)
-  :form s
-  :referent (:instantiate-individual question
-             :with (type left-edge
-		            content right-edge)))
-
-;(def-cfr WH/be (wh-pronoun pronoun/second)
-;  :form question-marker
-;  :referent (:daughter left-edge
-;	     :bind (participant . right-edge)))
-|#
-
+;;;-------------------------------------------
+;;; fragment of the 2009 version of this file
+;;;-------------------------------------------
 
 #|   Harvest for patterns
 ;; For "why are you out today" -- really smacks into the
