@@ -236,7 +236,7 @@ by which this occurs.") |#
           (level (:or measurement bio-scalar)))
   :realization
   (:verb "vanish" 
-   :etf (svo-passive)
+   :etf (sv)
    :for theme
    :in theme
    :to level))

@@ -23,7 +23,8 @@
   :binds ((protein-sequence sequence)
           (pathwayComponent)
 	  (pathwayOrder))
-  :realization (:noun "pathway")
+  :realization (:noun "pathway"
+                      :with pathwayComponent)
   :documentation "Pathways are inhibited and activated
    which makes them more like entities than processes.
    They are named according to the sequence of proteins

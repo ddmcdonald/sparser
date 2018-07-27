@@ -1106,7 +1106,8 @@
 	  (site molecular-location)
           (variant-number number)
 	  (equilibrium-state equilibrium)
-	  (state bio-state))
+	  (state bio-state)
+          (in-pathway pathway))
   :mixins (  reactome-category  in-ras2-model )
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
@@ -1115,6 +1116,7 @@
      :in complex
      :in equilibrium-state
      :in state
+     :in in-pathway
      :m site))
 
 (define-category variant :specializes protein ;; not true, but the most common case
