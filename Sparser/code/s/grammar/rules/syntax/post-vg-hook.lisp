@@ -49,21 +49,23 @@
       
       ;; Reinstate the original form label for the aux
       (setf (edge-form aux-edge) aux-form) 
+      ;; hook it up
+      (compose-discontiuous-aux aux-edge vg-edge))))
 
-      ;; Look for a rule
-      (let ((rule (multiply-edges aux-edge vg-edge)))
-        (unless rule
-          (unless (plausibly-too-early-to-take-preposed-aux aux-edge vg-edge)
-            (when *error-if-no-rule-for-preposed-aux*
-              (push-debug `(,vg-edge ,aux-edge ,aux-form))
-              (error "Trying to fold in a preposed auxiliary ~
+(defun compose-discontiuous-aux (aux-edge vg-edge)
+  ;; Look for a rule
+  (let ((rule (multiply-edges aux-edge vg-edge)))
+    (unless rule
+      (unless (plausibly-too-early-to-take-preposed-aux aux-edge vg-edge)
+        (when *error-if-no-rule-for-preposed-aux*
+          (push-debug `(,vg-edge ,aux-edge))
+          (error "Trying to fold in a preposed auxiliary ~
                       but there is no rule that composes ~
                     ~%~a and ~a" aux-edge vg-edge))))
-
-        ;; Make a very peculiar edge (which may need
-        ;; more thought)
-        (when rule
-          (make-discontinuous-edge aux-edge vg-edge rule))))))
+    ;; Make a very peculiar edge (which may need
+    ;; more thought)
+    (when rule
+      (make-discontinuous-edge aux-edge vg-edge rule))))
 
 (defun plausibly-too-early-to-take-preposed-aux (aux-edge vg-edge)
   "The vg-finished hook has no larger perspective. The aux should compose
