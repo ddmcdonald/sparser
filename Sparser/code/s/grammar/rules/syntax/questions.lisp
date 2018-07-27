@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
-;;; copyright (c) 2011,2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011,2016-2018 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "questions"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  October 2017
+;;;  Version:  July 2018
 
 ;; Broken out from /grammar/model/sl/checkpoint/rules 6/17/09
 ;; Elaborated through 7/23/09. 9/28/11 removed spatial-orientation
@@ -12,9 +12,9 @@
 
 (in-package :sparser)
 
-;;;---------------------
-;;; question categories
-;;;---------------------
+;;;--------------------------------
+;;; debugging / display parameters
+;;;--------------------------------
 
 (defparameter *debug-questions* nil
   "Should only be set when debugging. Signals an error so we can
@@ -24,6 +24,14 @@
   "Break about problems in creating WH question and other types.
    Usually in an if statement with a warn as the alternative.")
 
+(defparameter *trace-wh-accumulation* nil
+  "Controls whether we show the succession of positions covered
+   when delimit-and-label-initial-wh-term runs.")
+
+
+;;;---------------------
+;;; question categories
+;;;---------------------
 
 (define-category question
   :specializes linguistic
@@ -182,6 +190,11 @@
         ((eq (edge-category (car edges)) category::there-exists)
          (sort-out-incompletely-parsed-there-is-q start-pos end-pos edges))
 
+        ((and preposed? ;; "does MEK phosphorylate ERK?"
+              (edge-p (first edges))
+              (itypep (edge-referent (first edges)) 'do))
+         (break "do"))
+
         ;; three-edge copular cases
         ((and (= 3 (length edges))
               (edge-p (first edges))
@@ -225,13 +238,17 @@
            ((and (and (= 3 (length edges))
                       (edge-p (second edges))))
             (wh-initial-three-edges wh-initial? edges start-pos end-pos))
+
+           ((and (= 4 (length edges))
+                 (itypep (edge-referent (second edges)) 'do))
+            (break "wh do"))
            
            (t
             (if *show-wh-problems*
-              (lsp-break "Could not resolve ~n edges into a WH question: ~a"
+              (lsp-break "Could not resolve ~a edges into a WH question: ~a"
                          (length edges) edges)
               (when *warn-when-can-not-formulate-question*
-                (warn "Could not resolve ~n edges into a WH question: ~a"
+                (warn "Could not resolve ~a edges into a WH question: ~a"
                       (length edges) edges))))))
 
         (preposed?
@@ -489,8 +506,8 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
          (cover-wh (make-wh-object wh-type) next-pos))
         (t
          (loop ;; search ahead for the aux/modal, then assess
-            (when *debug-questions*
-              (format t "~&~a word = ~a, edge = ~a" next-pos next-word next-edge))
+            (when *trace-wh-accumulation*
+              (format t "~&~a word = ~a, edge = ~a~%" next-pos next-word next-edge))
             (when (null next-edge) (return))
             (cond
               ((or (auxiliary-word? next-word)  ;; we've gone as far as we should
@@ -678,13 +695,39 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                           :referent i)))
                (tr :wh-apply-question-marker edge)
                edge)))
-           ;;((itypep vg 'do)
-           ;; (p/s "What proteins does PLX-4720 target?")
+           
+           ((itypep vg 'do)
+            ;; (p/s "What proteins does PLX-4720 target?")
+            (break "DA do -- two edges: ~a, ~a" vg-edge np-edge))
+
            (t
             (if *debug-questions*
               (lsp-break "Don't know how to formulate a wh question whose vg is ~a" vg)
               (warn "Don't know how to formulate a wh question whose vg is ~a" vg))))))
-             
+
+;; "What genes does lung cancer target?"
+(defun apply-question-displaced-vg (wh-edge vg1-edge np-edge vg2-edge)
+  "Goes with DA pattern [question-marker vg np vg] which is one consituent
+   longer than the pattern for apply-question-marker. The first vg
+   is very likely an inverted auxiliary, which should be applied to
+   the second vg that is the main verb.
+     To get this to parse we have to elevate the second vg to be a vp
+   for which there is a rule (no rule for ng+vg). We want this to get
+   handled by assimilate-subject, and there probably via the checks in
+   transitive-vp-missing-object?"
+  (declare (special category::vp))
+  (cond
+    ((itypep (edge-referent vg1-edge) 'do)
+     ;;(break "stranded vg do - ~a" vg2-edge)
+     ;; These cases don't set the preposed aux, so the vg segment-finished
+     ;; action will have taken up the tense from the do, but not connected the edge.
+     (let ((vg2-tweaked (compose-discontiuous-aux vg1-edge vg2-edge)))
+       ;; promote the edge to VP
+       (setf (edge-form vg2-tweaked) category::vp)
+       vg2-tweaked))
+    (t
+     (when *debug-questions*
+       (break "The 1st vg is of type ~a" (itype-of (edge-referent vg1-edge)))))))
 
 
 

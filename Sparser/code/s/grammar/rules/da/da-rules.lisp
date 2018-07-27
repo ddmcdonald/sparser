@@ -1860,6 +1860,11 @@
   :action (:function apply-question-marker first second third))
 ;; function is in syntax/questions.lisp
 
+(define-debris-analysis-rule wh-vg-np-vg ;; "What genes does lung cancer target?"
+    :pattern (question-marker vg np vg)
+    :action (:function apply-question-displaced-vg
+                       first second third fourth))
+
 (define-debris-analysis-rule is-s-under-condition
     :pattern (preposed-auxiliary s ifcomp)
     :action (:function da/preposed+s first second))
