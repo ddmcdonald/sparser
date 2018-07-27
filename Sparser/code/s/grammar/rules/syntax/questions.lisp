@@ -545,11 +545,12 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                (value-edge ;; "how big is the block?"
                 (let ((value-class (itype-of (edge-referent value-edge)))) ;; size-value
                   (when value-class (value-of 'attribute value-class))))
+               ((and other-edges
+                     (cdr other-edges)) ;; "Which apoptotic genes ..."
+                (let ((composite-other (try-to-compose-wh-other other-edges)))
+                  (values composite-other t)))
                (other-edges ;; "How important is ..."
-                (if (null (cdr other-edges))
-                  (values (edge-referent (car other-edges)) t)
-                  (when *debug-questions*
-                    (error "Multiple 'other edges' in ~s: ~a" (current-string) other-edges)))))
+                (values (edge-referent (car other-edges)) t)))
 
            (let ((q (if attr
                       (if other?
@@ -558,6 +559,23 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                       (make-wh-object wh-type))))
              (cover-wh q next-pos))))))))
 
+(defun try-to-compose-wh-other (other-edges)
+  "The words these edges cover is most likely a known phrase.
+   Do the composition and return the referent."
+  (flet ((punt ()
+           ;; return the referent of the edge on the right
+           (edge-referent (car other-edges))))
+    (let ((edges (reverse other-edges))) ;; shift to left-to-right order    
+      (cond
+        ((= 2 (length edges))
+         (let ((rule (multiply-edges (first edges) (second edges))))
+           (if rule
+             (let ((edge (make-completed-binary-edge (first edges) (second edges) rule)))
+               (edge-referent edge))
+             (punt))))
+        (t
+         ;;/// look up the right localized parser to use
+         (punt))))))
 
 ;;;-----------------------------------------------------------------
 ;;; wh-initial? dispatches from make-this-a-question-if-appropriate 
