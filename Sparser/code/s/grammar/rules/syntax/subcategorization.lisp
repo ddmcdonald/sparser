@@ -141,7 +141,12 @@
 (defun filter-patterns (item &optional label)
   (let ((patterns (subcat-patterns item)))
     (if label
-        (loop for pat in patterns when (eq (subcat-label pat) label)
+        (loop for pat in patterns
+              when (equalp (subcat-label pat)
+                           (if (keywordp label)
+                               label
+                               (resolve (string-downcase (pname label)))))
+                       
               collect pat)
         patterns)))
 
