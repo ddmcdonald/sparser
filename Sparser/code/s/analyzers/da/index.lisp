@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2013,2018  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "index"
 ;;;   Module:  "analyzers;DA:"
-;;;  Version:  July 2013
+;;;  Version:  August 2018
 
 ;; initiated 5/5/95.  Elaborated ..5/22.  5/30 added case to Find-word-in-tt-alist
 ;; 7/18/13 Patched around case of getting a list of edges.
@@ -174,7 +174,16 @@
       (when trie
         (let ((result
                (compare-trie-threading-with-pattern trie pattern)))
-
+          result )))))
+;; There's a serious missmatch what the match routine is doing
+;; and what the now-ignored code is doing with the result.
+;; SBCL noticed that you can't get a da-name off a keyword symbol.
+;; This is supposed to run for side-effects.
+;; /// needs systematic testing and sorting out what the compare
+;; routine should really return such that something ilke this
+;; would do the right thing, which is to announce the problem
+;; and then resuse the earlier da-rule if the user says that's ok.
+          #+ignore
           (if (eq result :identical)
             (then
               ;; This happens before the new rule object is interned,
@@ -184,15 +193,14 @@
               (if (eq (da-name result) (da-name rule))
                 nil
                 (else
-                  (break "The proposed pattern for the Debris Analysis ~
-                          rule ~A~%is the same as the one for ~A.~
-                          ~%~%Continue if you want the existing rule ~
-                          renamed.~%~%" rule result)
-
-                  (setf (da-name result)
-                        (da-name rule))
+                  (cerror "Continue if you want the existing rule ~
+                          renamed"
+                          "The proposed pattern for the Debris Analysis ~
+                           rule ~A~%is the same as the one for ~A.~
+                          ~%~%.~%~%" rule result)
+                  (setf (da-name result) (da-name rule))
                   rule )))
-            nil ))))))
+            nil )
 
 
 
