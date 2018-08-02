@@ -28,11 +28,7 @@
 (noun ("deubiquitinase" "deubiquitylase" "DUB") :super enzyme)
 (noun "isozyme" :super enzyme)
 
-#| several transcription factors, including CREB
-forkhead transcription factors
-transcription factors such as LEF-1 or Tcf4
-the STAT1 transcription factor |#
-(noun "transcription factor" :super protein)
+
 
 ;; likely figure numbers
 ;;(def-family "2B" :members ("UP:O94953" "UP:Q93097" "UP:Q9UQ03"))

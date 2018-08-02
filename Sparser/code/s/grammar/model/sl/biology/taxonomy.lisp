@@ -1190,7 +1190,21 @@
      :m residue
      :m amino-acid))
 
-(noun "phosphatase" :super post-translational-enzyme)
+(define-category transcription-factor :specializes protein ;; maybe another higher class?
+                 ;; a transcription-factor is a protein which somehow regulates the transcription of a gene
+  :binds ((controlled-gene gene))
+  :realization
+    (:noun "transcription factor"
+     :for controlled-gene))
+
+#| several transcription factors, including CREB
+forkhead transcription factors
+transcription factors such as LEF-1 or Tcf4
+the STAT1 transcription factor 
+(noun "transcription factor" :super protein)
+|#
+
+(Noun "phosphatase" :super post-translational-enzyme)
 
 (noun "ubiquitylase" :super post-translational-enzyme)
 
