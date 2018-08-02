@@ -135,3 +135,148 @@
          (setq remaining-length (length remaining))))
     triplets ))
 
+
+
+;;; ======================================================================
+;;; Below here taken from KM code under the GNU lesser GPL
+;;;   or from Peter Clark's personal utilities.
+
+;;; copied from Denys, and modified...
+(defun break-string-at (string break-char)
+  (loop
+    for start0 = 0 then end
+    and end = 0
+    while (setq start0 (position-if-not
+		       #'(lambda (char) (char= char break-char))
+		       string :start start0))
+    do    (setq end (position-if
+		     #'(lambda (char) (char= char break-char))
+		     string :start start0))
+    collecting (subseq string start0 end)
+    while end))
+
+
+;;; ======================================================================
+;;;		STRING-TO-LIST   
+;;; This nifty little utility breaks a string up into its word
+;;; and delimeter components. Always starts with delimeter:
+
+
+;;; (string-to-list '"the cat, sat on t-he m/at ")
+;;; ==> ("" "the" " " "cat" ", " "sat" " " "on" " " "t-he" " " "m/at" " ")
+
+;;; ======================================================================
+
+;;; (string-to-words "the cat on the mat") -> ("the" "cat" "on" "the" "mat")
+;;; (string-to-words "the cat_n1 is big" :wordchars '(not whitespace)) -> ("the" "cat_n1" "is" "big")
+(defun string-to-words (string &key (wordchars 'alphanum))
+  (remove-delimeters (string-to-list string :wordchars wordchars)))
+
+;;; USER(3): (string-to-list "the cat sat")
+;;; ("" "the" " " "cat" " " "sat")
+;;; [1] This is a special-purpose bit of code which makes sure "." within
+;;;     a string (eg. "Section 2.2.1") is *not* categorized as a delimeter.
+(defun string-to-list (string &key (wordchars 'alphanum))
+  (scan-to wordchars string 0 0 (length string)))
+
+(defun scan-to (delimeter string m n nmax)
+  (cond ((= n nmax) (list (subseq string m n)))		; reached the end.
+	(t (let ( (curr-char (char string n))
+		  (next-char (cond ((< (1+ n) nmax) (char string (1+ n)))
+				   (t #\ ))) )
+	     (cond ((and (is-type curr-char delimeter)
+			 (not (and (char= curr-char #\.) 	; [1]
+				   (alphanumericp next-char))))
+		    (cons (subseq string m n)
+			  (scan-to (invert-type delimeter) string n n nmax)))
+		   (t (scan-to delimeter string m (1+ n) nmax)))))))
+
+
+;;; ======================================================================
+;;; A bit more generic
+
+;;; (new-scan-to "c:dd>eee:f>" :delimeter-chars '(#\: #\>)) -> ("c" ":" "dd" ">" "eee" ":" "f" ">")
+(defun new-scan-to (string &key delimeter-chars)
+  (new-scan-to0 delimeter-chars string 0 0 (length string) 'positive))
+    
+(defun new-scan-to0 (delimeter-chars string m n nmax polarity)
+  (cond ((= n nmax) (list (subseq string m n)))		; reached the end.
+	(t (let ( (curr-char (char string n)) )
+	     (cond ((or (and (eq polarity 'positive) (member curr-char delimeter-chars :test #'char=))
+			(and (eq polarity 'negative) (not (member curr-char delimeter-chars :test #'char=))))
+		    (cons (subseq string m n)
+			  (new-scan-to0 delimeter-chars string n n nmax 
+					(cond ((eq polarity 'positive) 'negative) (t 'positive)))))
+		   (t (new-scan-to0 delimeter-chars string m (1+ n) nmax polarity)))))))
+
+
+;;; ======================================================================
+;;;	Break up a string into pieces, preserving quoted adjacencies
+;;; 	and trimming leading/ending white-space.
+;;; ======================================================================
+
+#| (break-up (string '|    aadsf a  " " "" "the cat" 1/2 a"b"c  de"f|))
+("aadsf" 
+ "a" 
+ " " 
+ "the cat" 
+ "1/2" 
+ "a" 
+ "b" 
+ "c" 
+ "de" 
+ "f")
+|#
+;;; NOTE: delim-chars MUSTN'T be a '"'
+(defun break-up (string &optional (delim-chars '(#\ )))
+  (break-up2 string 0 0 (length string) nil delim-chars))	  ; nil means "not in quotes"
+
+;;; n is the current character (0 = first character)
+;;; m is the start of the current 'word' still being read. If n = m then a word was just done.
+(defun break-up2 (string m n nmax quotep &optional (delim-chars '(#\ )))
+  (cond ((and (= n nmax) (= m n)) nil)			  ; ignore trailing white-space
+	((= n nmax) (list (subseq string m n)))		  ; reached the end.
+	(t (let ( (curr-char (char string n)) )
+	     (cond
+               ((and (not quotep)				  ; delimiter following start or a delimeter, so skip
+                     (member curr-char delim-chars :test #'char=)
+                     (= m n))
+                (break-up2 string (1+ n) (1+ n) nmax quotep delim-chars)) ; ... so ignore it
+               ((and (not quotep)				  ; found a delimiter
+                     (member curr-char delim-chars :test #'char=))
+                (cond ((= m n)				  ; nothing between delimeters...
+                       (break-up2 string (1+ n) (1+ n) nmax quotep delim-chars))    ; ... so ignore it
+                      (t (cons (subseq string m n)
+                               (break-up2 string (1+ n) (1+ n) nmax quotep delim-chars)))))
+               ((char= curr-char #\") 			  			; found a '"', so toggle quotep 
+                (break-up2 string m (1+ n) nmax (not quotep) delim-chars))
+               (t (break-up2 string m (1+ n) nmax quotep delim-chars)))))))
+
+;;; ======================================================================  
+#|
+(fold <string> <n>): Break a long string up after approximately <n> characters,
+preferring to break at a space if possible.
+
+(fold "the cat is on the mat in the park in the rainrainrainrainrainrainrain" 10)
+"the cat
+is on the
+mat in
+the park
+in the
+rainrainra
+inrainrain
+rainrain"
+|# 
+(defun fold (string0 n)
+  (let ((string (trim-whitespace string0)))
+    (cond 
+     ((<= (length string) n) string)  
+     (t (concat-list (insert-delimeter (fold0 string n) *newline-str*))))))
+  
+(defun fold0 (string n)
+  (cond 
+   ((<= (length string) n) (list string))
+   (t (let ((space-posn (or (position #\  string :end n :from-end t) n)))
+	(cons (subseq string 0 space-posn) 
+	      (fold0 (remove-leading-whitespace (subseq string space-posn (length string))) n))))))
+
