@@ -860,7 +860,6 @@ the buffer that is fed to find-word and becomes part of the word's pname.
   (format nil "~x" n))
 
 
-;;; temporarily ignore char reading problem.
 (defparameter *entries-for-out-of-band-characters* 
   `(
     (256 (:alphabetical . (:uppercase .,(code-char 256)))) ;; #\LATIN_CAPITAL_LETTER_A_WITH_MACRON
@@ -1693,9 +1692,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (119989 (:alphabetical .(:lowercase .,(code-char 119989)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_Z 
     (120594 (:alphabetical .(:lowercase .,(code-char 120594)))) ;; #\MATHEMATICAL_ITALIC_SMALL_CHI 
       
-    )
-  "If it's not a defparameter, CCL won't let us extend it
-   in a running lisp.")
+    ))
 
 
 (defparameter *cache-out-of-band-characters* t)
