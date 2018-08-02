@@ -1,11 +1,10 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:SPARSER
-;;; copyright (c) 1995-1996,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-1996,2011,2018  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;;
 ;;;     File:  "save"
 ;;;   module:  "interface;workbench:def rule:"
-;;;  Version:  1.0 August 2011
+;;;  Version:  August 2018
 
 ;; broken out of [define-rule] 4/27/95.  6/14 extended to have words in the 
 ;; mapping.  
@@ -112,11 +111,12 @@
       ;; in which case it's burned into the etf's cases
       (format stream "(~A . "
               (string-downcase (symbol-name symbol)))
-      
-      (if (stringp value)
-        (format stream "\"~A\"" value) ;; SBCL flagged (word-pname value))
-        
-        (format stream "~A)"
+
+      (etypecase value
+        (string
+         (format stream "\"~A\"" value)) ;; SBCL flagged (word-pname value))
+        (cons
+         (format stream "~A)"
                 (etypecase value
                   (lambda-variable
                    `(,(var-name value)
@@ -128,10 +128,11 @@
                   (word
                    (format nil "\"~A\"" (word-pname value)))
                   ((or referential-category mixin-category category)
-                   (string-downcase (cat-symbol value))))))
+                   (string-downcase (cat-symbol value)))))))
       
       (when one-ahead
         (format stream "~&~10,3T")))))
+
 
 
 (defun vivify-mapping-exp (mapping-expression)
