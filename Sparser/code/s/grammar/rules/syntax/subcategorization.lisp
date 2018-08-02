@@ -150,22 +150,25 @@
               collect pat)
         patterns)))
 
-(defmethod subcat-patterns ((sf null)) nil)
 
-(defmethod subcat-patterns ((sf symbol))
-  (subcat-patterns (category-named sf)))
+(defgeneric subcat-patterns (object)
+  (:documentation "Look up and return all of the subcategorization
+    frames associated with the object, if any.")
+  (:method ((sf null)) nil)
+  (:method ((sf symbol))
+    (subcat-patterns (category-named sf)))
+  (:method ((sf category))
+    (subcat-patterns (get-subcategorization sf)))
+  (:method ((i individual))
+    (subcat-patterns (get-subcategorization (itype-of i)))))
 
-(defmethod subcat-patterns ((sf category))
-  (subcat-patterns (get-subcategorization sf)))
-
-(defmethod subcat-patterns ((i individual))
-  (subcat-patterns (get-subcategorization (itype-of i))))
 
 (defun get-subcategorization (label)
   (gethash label *labels-to-their-subcategorization*))
 
 (defun (setf get-subcategorization) (sf label)
   (setf (gethash label *labels-to-their-subcategorization*) sf))
+
 
 (defgeneric get-ref-subcategorization (ref-object)
   (:method ((ref-object category))
@@ -329,43 +332,61 @@
 ;;--- query the record
 
 
+(defgeneric owns-preposition? (head preposition)
+  (:documentation "Does this head category have an entry
+    in its subcategorization from indicating its takes
+    a preposition (particle).")
+  (:method ((word word) (cat referential-category)) nil)
+  (:method ((e edge)(cat referential-category)) nil)
+
 ;; Strange case -- "treated with or without ..." in ASPP2
-(defmethod takes-preposition? ((word word) (cat referential-category))
-  nil)
 
-(defmethod takes-preposition? ((e edge)(cat referential-category))
-  nil)
+  (:method ((e edge) (prep word))
+    (let* ((label (edge-category e))
+           (sc (get-subcategorization label)))
+      (when sc
+        (owns-preposition? sc prep))))
+  (:method ((e edge) (prep polyword))
+    (let* ((label (edge-category e))
+           (sc (get-subcategorization label)))
+      (when sc
+        (owns-preposition? sc prep))))
+  (:method ((word word) (prep word))
+    (let ((sc (get-subcategorization word)))
+      (when sc
+        (owns-preposition? sc prep))))
+  (:method ((word word) (prep polyword))
+    (let ((sc (get-subcategorization word)))
+      (when sc
+        (owns-preposition? sc prep))))
 
-(defmethod takes-preposition? ((e edge) (prep word))
-  (let* ((label (edge-category e))
-         (sc (get-subcategorization label)))
-    (when sc
-      (takes-preposition? sc prep))))
+  (:method ((sc subcategorization-frame) (prep polyword))
+    (let ((preps (bound-prepositions sc)))
+      (when preps
+        (memq prep preps))))
+  (:method ((sc subcategorization-frame) (prep word))
+    (let ((preps (bound-prepositions sc)))
+      (when preps
+        (memq prep preps)))))
 
-(defmethod takes-preposition? ((e edge) (prep polyword))
-  (let* ((label (edge-category e))
-         (sc (get-subcategorization label)))
-    (when sc
-      (takes-preposition? sc prep))))
+;;;------------------
+;;; tailored queries
+;;;------------------
 
-(defmethod takes-preposition? ((word word) (prep word))
-  (let ((sc (get-subcategorization word)))
-    (when sc
-      (takes-preposition? sc prep))))
+(defgeneric takes-preposition? (head preposition)
+  (:documentation "Collect the subcat frames of the head for this
+    preposition and determine whether they fit the current context")
+  
+  (:method ((cat-name symbol) (pname string))
+    (takes-preposition? (category-named cat-name :error) pname))
+  
+  (:method ((c category) (pname string))
+    (filter-patterns c pname))
 
-(defmethod takes-preposition? ((word word) (prep polyword))
-  (let ((sc (get-subcategorization word)))
-    (when sc
-      (takes-preposition? sc prep))))
+  (:method ((c category) (w word)) )
 
-(defmethod takes-preposition? ((sc subcategorization-frame) (prep polyword))
-  (let ((preps (bound-prepositions sc)))
-    (when preps
-      (memq prep preps))))
-(defmethod takes-preposition? ((sc subcategorization-frame) (prep word))
-  (let ((preps (bound-prepositions sc)))
-    (when preps
-      (memq prep preps))))
+  )
+
 
 
 ;;;---------------------------------------------------

@@ -178,8 +178,8 @@
                ;(when (eq preposition (word-named "as")) ;; J3
                ;  (break "binder"))
                (unless (punctuation? head-word) ;; comma before "such as")
-                 (if (or (takes-preposition? head-word preposition)
-                         (takes-preposition? left-neighbor preposition))
+                 (if (or (owns-preposition? head-word preposition)
+                         (owns-preposition? left-neighbor preposition))
                      (let ((edge (check-one-one left-neighbor prep-edge)))
                        (if edge
                            (tr :took-preposition left-neighbor preposition edge)

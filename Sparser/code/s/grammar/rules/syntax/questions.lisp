@@ -613,8 +613,10 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
       ((and (eq e2-form 'vp) ;; stranded preposition
             (preposition-category? (third edges))
             other)
-       ;; the question is who owns that preposition, which determines
-       ;; what the corresponding declarative form would be
+       ;; The question is who takes that preposition, which determines
+       ;; what the corresponding declarative form would be.
+       ;; It could be any of the heads along the right spine of VP
+       ;; so it may well have been buried -- classic DA
        (if *show-wh-problems*
          (lsp-break "Figure out whether ~a needs reformulation" (second edges))
          (when *warn-when-can-not-formulate-question*
