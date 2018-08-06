@@ -120,6 +120,7 @@ Should mirror the cases on the *single-words* ETF."
     #|:next\ to|#
     :object :of :on :onto #|:on\ top\ of|# :over
     :premod
+    :s-comp
     :subject :such\ as
     :to :to-comp :thatcomp :through :throughout :toward :towards
     :under :unlike :upon
