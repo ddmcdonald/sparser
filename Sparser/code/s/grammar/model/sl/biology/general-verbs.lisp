@@ -788,6 +788,15 @@
   (:verb ("leave" :past-tense "left" :third-singular "leaves" :present-participle "leaving")
          :etf (svo)))
 
+(define-category let :specializes abstract ;; probably wrong
+  :mixins (scomp-verb)
+  :binds ((theme endurant)
+          (agent endurant))
+  :realization (:verb "let"
+                      :s agent
+                      :o theme
+                      :etf (svo)))
+
 (define-category limit :specializes negative-bio-control
   :realization
   (:verb ("limit" :past-tense "limited" :present-participle "limiting")
@@ -1194,8 +1203,16 @@
   (:verb ("show" :past-tense "showed" :past-participle "shown")
          :etf (svo-passive)))
 
+(define-category list :specializes perdurant
+  :mixins (agent directed-action theme)
+  :binds ((theme (:or be biological predication abstract)))
+  ;; it was shown that
+  :realization
+  (:verb ("list")
+         :etf (svo-passive)))
+
 (define-category tell :specializes bio-rhetorical
-  :mixins (bio-thatcomp raising-to-object directed-action)
+  :mixins (bio-thatcomp raising-to-object directed-action bio-howcomp)
   :restrict ((beneficiary interlocutor))
   :realization (:verb ("tell" :past-tense "told")
                       :about statement
