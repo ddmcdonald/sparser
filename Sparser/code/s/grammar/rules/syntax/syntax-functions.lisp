@@ -1720,8 +1720,12 @@ there was an edge for the qualifier (e.g., there is no edge for the
                *right-edge-into-reference*
                (loop for e in (edges-after *right-edge-into-reference*)
                      thereis
-                       (member (cat-name (edge-form e))
-                               *np-category-names*))))
+                       (or
+                        (member (cat-name (edge-form e))
+                                *np-category-names*)
+                        (eq (cat-name (edge-category e)) 'how)
+                        (member (cat-name (edge-form e))
+                                '(thatcomp howcomp ifcomp))))))
          (result
           (cond ((and (typep *current-chunk* 'chunk)
                       (member 'ng (chunk-forms *current-chunk*)))
@@ -1781,7 +1785,13 @@ there was an edge for the qualifier (e.g., there is no edge for the
   s)
 
 (defun assimilate-thatcomp (vg-or-np thatcomp)
-  (assimilate-subcat vg-or-np :thatcomp thatcomp))
+  (or
+   (assimilate-subcat vg-or-np :thatcomp thatcomp)
+   (and (itypep vg-or-np 'let) ;; or #| make help hear see |#))
+        (boundp '*right-edge-into-reference*)
+        (eq (edge-form *right-edge-into-reference*)
+            category::s)
+        (assimilate-subcat vg-or-np :s-comp thatcomp))))
 
 (defun assimilate-whethercomp (vg-or-np whethercomp)
   (assimilate-subcat vg-or-np :whethercomp whethercomp))
