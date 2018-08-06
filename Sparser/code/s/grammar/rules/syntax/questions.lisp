@@ -197,7 +197,9 @@
            (break "make-question: do")))
 
         ;; three-edge copular cases
-        ((and (= 3 (length edges))
+        ((and (or (= 3 (length edges))
+                  (and (> (length edges) 3)
+                       (eq (cat-name (edge-form (fourth edges))) 'ifcomp)))
               (edge-p (first edges))
               (itypep (edge-referent (first edges))
                       'be))
@@ -383,6 +385,8 @@
     (declare (special *left-edge-into-reference*))
     ;; this is bound since make-copular-adjective needs to know the edge for the "BE"
     ;; to check if it is an infinitive
+    (when (> (length (all-tts start-pos end-pos)) 3)
+      (setq end-pos (pos-edge-ends-at (third (all-tts start-pos end-pos)))))
     (when copular-statement
       (let ((q (make-polar-question copular-statement)))
         (make-edge-over-long-span
