@@ -404,6 +404,10 @@
   :pattern ( s vp+ing )
   :action (:function attach-trailing-participle-to-clause-or-object first second))
 
+(define-debris-analysis-rule attach-trailing-participle-to-vp
+  :pattern ( vp vp+ing ) ;; for cases like "Please find pathways involving SRF"
+  :action (:function attach-trailing-participle-to-clause-or-object first second))
+
 
 
 (define-debris-analysis-rule attach-trailing-participle-to-clause-with-comma
@@ -1410,6 +1414,10 @@
 
 (define-debris-analysis-rule clause-ifcomp
   :pattern ( s ifcomp )
+  :action (:function clause-subordinate first second))
+
+(define-debris-analysis-rule question-ifcomp
+  :pattern ( question ifcomp )
   :action (:function clause-subordinate first second))
 
 (define-debris-analysis-rule clause-subordinate-s
