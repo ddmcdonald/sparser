@@ -26,14 +26,15 @@
 
 (def-synonym cell-line (:noun "line"))
 (def-synonym cell-line (:noun "cell line"))
-(def-synonym cell-line (:noun "cell"))
-(def-synonym cell-line (:noun "cultured cell"))
-(def-synonym cell-line (:noun "cultured cell line"))
+;;(def-synonym cell-line (:noun "cell"))
+;;(def-synonym cell-line (:noun "cultured cell"))
+;;(def-synonym cell-line (:noun "cultured cell line"))
 
 (defun def-cell-line (line)
   (def-bio/expr line 'cell-line :takes-plurals nil))
 
 
+#+ignore
 (def-bio/expr "cancer cell" 'cell-line :takes-plurals t
               :synonyms '("cancer cell lines"))
 
