@@ -95,7 +95,7 @@ a simplified realization for a verb are (5/17)
   ;; need reference
   ;; "acts to ...", "fails to ..."
   :specializes subcategorization-pattern
-  :mixins (with-an-agent theme)
+  :mixins (agent theme)
   :restrict ((theme perdurant))
   :realization
     (:s agent
@@ -155,6 +155,16 @@ a simplified realization for a verb are (5/17)
    objects, particularly with 'in', may well want to be a
    separate category.")
 
+(define-mixin-category scomp-verb ;; "Let me know ...", "Make me ..." -- Quirk calls these object + bare-infinitive complements
+    :specializes subcategorization-pattern
+    :mixins (agent theme takes-tense-aspect-modal)
+    :binds ((complement perdurant))
+    :realization (:s-comp complement)
+    :documentation "Breaks out a complement argument that is
+   common to a small class of verbs, like LET, MAKE, HEAR, ...
+   that take an object and a bare-infinitive and (in Sparser)
+   treat that combination like an S")
+
 
 (define-mixin-category knowledge-verb
   :specializes subcategorization-pattern
@@ -168,7 +178,7 @@ a simplified realization for a verb are (5/17)
 (define-mixin-category raising-to-object
   ;;"allows X to ...", "consider X to ...", "enable X to ...", "know X to ...", "lead X to ...", "use X to ..."
   :specializes subcategorization-pattern
-  :mixins (with-an-agent)
+  :mixins (agent)
   :binds ((theme perdurant))
   :realization
     (:s agent
@@ -178,7 +188,7 @@ a simplified realization for a verb are (5/17)
 (define-mixin-category raising-to-subject
   ;; "X seems to ..."
   :specializes subcategorization-pattern
-  :mixins (with-an-agent theme)
+  :mixins (agent theme)
   :restrict ((theme perdurant))
   :realization
     (:s agent
