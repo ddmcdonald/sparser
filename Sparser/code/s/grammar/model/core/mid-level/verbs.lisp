@@ -179,7 +179,7 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
 #|
 (define-category propose
     :specializes achievement
-  :mixins (with-an-agent)
+  :mixins (agent)
   :binds ((statement  ))
   :realization
   ((:verb "propose")
