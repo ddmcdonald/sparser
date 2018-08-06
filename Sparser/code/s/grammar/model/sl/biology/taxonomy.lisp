@@ -1195,7 +1195,11 @@
   :binds ((controlled-gene gene))
   :realization
     (:noun "transcription factor"
-     :for controlled-gene))
+           :for controlled-gene))
+
+(def-synonym transcription-factor
+    (:noun "transcription-factor"
+           :for controlled-gene))
 
 #| several transcription factors, including CREB
 forkhead transcription factors
@@ -1300,17 +1304,14 @@ the STAT1 transcription factor
     (:with with-protein))
 
 (define-category cell-line :specializes cell-entity
-  :instantiates self
-  :index (:permanent :key name)
   :realization
-    (:common-noun name))
+    (:noun "cell-line"))
 
 (define-category cell-type :specializes cell-entity
-  :instantiates self
-  :index (:permanent :key name)
+  :binds ((associated-disease disease))                         
   :realization
-    (:common-noun name
-     :noun "cell type"))
+  (:noun "cell"
+         :m associated-disease))
 
 
 
