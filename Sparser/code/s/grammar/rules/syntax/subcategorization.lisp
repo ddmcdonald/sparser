@@ -248,11 +248,13 @@
     :ifcomp
     :l
     :m
+    :howcomp
     :indirect-object
     :object
     :premod
     :subject
     :thatcomp
+    :s-comp ;; for verbs like "Let (me know ...)", "Make John ride the bike"
     :to-comp
     :verb-premod
     :whethercomp
