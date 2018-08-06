@@ -359,6 +359,10 @@
           *all-sentences*))
   (save-missing-subcats)
   (make-this-a-question-if-appropriate sentence)
+  (let* ((start-pos (starts-at-pos sentence))
+         (end-pos (ends-at-pos sentence))
+         (treetops (all-tts start-pos end-pos)))
+    (da-rule-cycle start-pos end-pos treetops t))
   (when *do-discourse-relations*
     (establish-discourse-relations sentence)))
   
