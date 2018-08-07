@@ -18,6 +18,7 @@
 (def-indiv-with-id bio-organ "nape of neck" "UBERON:0012477") 
 (def-indiv-with-id bio-organ "cervical spinal cord" "UBERON:0002726")
 (def-indiv-with-id bio-organ "blood" "BTO:0000089" :name "blood")
+(def-indiv-with-id bio-organ "bladder" "BTO:0001418" :name "bladder")
 (def-indiv-with-id secretion "body fluid" "UBERON:0006314") 
 (def-indiv-with-id bio-organ "respiratory tract" "UBERON:0000065") 
 (def-indiv-with-id secretion "feces" "UBERON:0001988") 
