@@ -313,12 +313,19 @@
           (new-forest-driver sentence)))
         
       (repair-bad-composition sentence))
-
+    ;; handle questions (needs to be generalized)
+    (make-this-a-question-if-appropriate sentence)
+    ;; handle post-modifying subordinate conjunctions
+    ;;  after questions
+    (let* ((start-pos (starts-at-pos sentence))
+           (end-pos (ends-at-pos sentence))
+           (treetops (all-tts start-pos end-pos)))
+      (da-rule-cycle start-pos end-pos treetops t))
     (post-analysis-operations sentence)
 
     (when *interpret-in-context*
       (interpret-treetops-in-context (all-tts (starts-at-pos sentence)
-                                            (ends-at-pos sentence))))
+                                              (ends-at-pos sentence))))
     (record-sentence-model-data sentence)
   
     ;; EOS throws to a higher catch. If the next sentence
@@ -358,11 +365,14 @@
             ,(assess-relevance sentence))
           *all-sentences*))
   (save-missing-subcats)
+  #|
+  ;; Move to main loop -- should happen before anaphroa, etc.
   (make-this-a-question-if-appropriate sentence)
   (let* ((start-pos (starts-at-pos sentence))
          (end-pos (ends-at-pos sentence))
          (treetops (all-tts start-pos end-pos)))
     (da-rule-cycle start-pos end-pos treetops t))
+  |#
   (when *do-discourse-relations*
     (establish-discourse-relations sentence)))
   
