@@ -24,7 +24,8 @@
                     *indra-post-process* *callisto-compare*
                     *localization-interesting-heads-in-sentence*
                     *colorized-sentence* *localization-split-sentences*
-                    *save-bio-processes* ))
+                    *save-bio-processes*
+                    *clause-semantics-list*))
   (declaim (optimize (debug 3)))
   
   (when *save-bio-processes*
@@ -34,17 +35,22 @@
                  (streamp *sentence-results-stream*))
              (not (eq *semantic-output-format* :HMS-JSON)))
     ;;output sentence semantics, if desired, in format specified
-    ;; by *semantic-outut-format* -- code is in save-doc-semantics
+    ;; by *semantic-output-format* -- code is in save-doc-semantics
     
     (write-semantics sentence *sentence-results-stream*))
   
-  (when *indra-post-process*
-    (let ((mentions ;; sort, so that embedding edges for positive-bio-control come out first
-           (sort
-            (remove-collection-item-mentions
-             (mentions-in-sentence-edges sentence))
-            #'>
-            :key #'(lambda (m) (edge-position-in-resource-array (mention-source m))))))
+
+  (let ((mentions ;; sort, so that embedding edges for positive-bio-control come out first
+         (sort
+          (remove-collection-item-mentions
+           (mentions-in-sentence-edges sentence))
+          #'>
+          :key #'(lambda (m) (edge-position-in-resource-array (mention-source m))))))
+    (when *save-clause-semantics*
+      (setq *save-clause-semantics* (list (sentence-string *sentence-in-core*)))
+      (loop for m in mentions do (push (clause-semantics-for-mention m) *save-clause-semantics*))
+      (push (reverse *save-clause-semantics*) *clause-semantics-list*))
+    (when *indra-post-process*
       (indra-post-process mentions sentence *sentence-results-stream*)))
   
   (when *callisto-compare* (extract-callisto-data sentence))
@@ -53,6 +59,37 @@
     (let ((colorized-sentence (split-sentence-string-on-loc-heads)))
       (setf (gethash sentence *colorized-sentence*) colorized-sentence)
       (push colorized-sentence *localization-split-sentences*))))
+
+
+(defun clause-semantics-for-mention (mention)
+  (declare (special mention))
+  (let* ((desc (base-description mention))
+         (cs (list :isa (mention-uid mention) :var)))
+    (declare (special cs))
+    (push (cat-name (itype-of desc)) cs)
+    (loop for d in (dependencies mention)
+          do
+            (push (intern (pname (var-name (dependency-variable d))) :keyword) cs)
+            (push (make-clause-ref (dependency-value d)) cs))
+
+    (setq cs (reverse cs))
+    ))
+
+(defparameter *make-clause-ref* nil)
+
+(defun make-clause-ref (ref)
+  (let ((ref-id (typecase ref
+                  (individual (semtree ref))
+                  (discourse-mention (mention-uid ref))
+                  (referential-category (cat-name ref))
+                  (string ref)
+                  (word (pname ref))
+                  (polyword (pname ref))
+                  (symbol ref))))
+    (push (list ref ref-id)
+          *make-clause-ref*)
+    ref-id))
+
 
 
 ;;;----------------------------------
