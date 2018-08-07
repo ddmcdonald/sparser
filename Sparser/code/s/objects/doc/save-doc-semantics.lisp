@@ -30,6 +30,12 @@
 (defparameter *semantic-output-format* nil
   "can be :xml, :lisp, :hms-json or nil")
 
+(defparameter *save-clause-semantics* nil
+  "If (list t) then we push a semantic representation of each mention on the list")
+
+(defparameter *clause-semantics-list* nil
+  "List of all *save-clause-semantics* lists")
+
 (defun CURE-semantics-directory-pathname ()
   (when (find-package :r3)
     (let ((pathname
