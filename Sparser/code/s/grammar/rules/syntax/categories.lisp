@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER) -*-
-;;; copyright (c) 1992-1999,2011-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2016
+;;;  Version:  August 2018
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -205,7 +205,10 @@
 ;;; phrase level
 ;;;--------------
 
-(def-form-category  np)  
+(def-form-category  np)
+(def-form-category  qnp) ;; for WH-phrases where the WH is taken as a spec.
+(def-form-category  proper-name)
+
 (def-form-category  vp)
 (def-form-category  vp+ing)
 (def-form-category  vp+ed)
@@ -229,8 +232,6 @@
 (def-form-category  superlative-adjp)
 (def-form-category  adjg) ;; for consistency with ng and vg -- could have been adj-bar?
 (def-form-category  qp)
-
-(def-form-category  proper-name)
 
 (def-form-category  to-comp) ;; to + vp or to+vg
 (def-form-category  as-comp) ;; to + vp or to+vg
