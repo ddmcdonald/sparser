@@ -455,14 +455,16 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
 
 
 (defun handle-wh-of (wh-edge wh-type of-edge other-edges)
+  (declare (special *sentence-in-core*))
   ;; e.g. (p "Which of those are regulated by elk1")
   (when (> (length other-edges) 1)
     (when *debug-questions*
       (break "other-edges needs to be parsed")))
-  (let* ((other (edge-referent (car other-edges)))
-         (q (define-an-individual 'wh-question/attribute
+  (let* ((q (define-an-individual 'wh-question/attribute
                 :wh wh-type)))
-    (setq q (bind-variable 'set other q))
+    (when (and (edge-p (car other-edges))
+               (edge-referent (car other-edges)))
+      (setq q (bind-variable 'set (edge-referent (car other-edges)) q)))
     ;; should we also make the edge?
     q))
                
