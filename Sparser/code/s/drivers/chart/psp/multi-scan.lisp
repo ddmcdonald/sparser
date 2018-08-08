@@ -667,12 +667,12 @@
         (when form-label
           (case (cat-symbol form-label)
             ((category::verb category::verb+s category::verb+ed
-                             category::verb+ing category::verb+present category::verb+past)
+              category::verb+ing category::verb+present category::verb+past)
              (when (auxiliary-word? word)
                (when there? (handle-there-is edge))
                (store-preposed-aux edge)))
             (category::modal
-               (when there? (handle-there-is edge))
+             (when there? (handle-there-is edge))
              (store-preposed-aux edge))
             (category::wh-pronoun
              (delimit-and-label-initial-wh-term position-before edge))))))))
