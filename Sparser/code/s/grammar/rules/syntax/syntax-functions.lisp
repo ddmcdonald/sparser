@@ -699,7 +699,8 @@ val-pred-var (pred vs modifier - left or right?)
              (head-edge (right-edge-for-referent)))
         
 	(unless (or (definite-determiner? det-word)
-		    (indefinite-determiner? det-word))
+		    (indefinite-determiner? det-word)
+                    (wh-determiner? det-word))
 	  ;; There are a ton of categories that are defined to be
 	  ;; syntactic determiners that deserve their own careful
 	  ;; semantic treatment that might funnel through here
@@ -708,17 +709,15 @@ val-pred-var (pred vs modifier - left or right?)
 	  ;; modifiers dossier. 
 	  (pushnew determiner *dets-seen*))
         
-        ;;(push-debug `(,det-word ,determiner)) (lsp-break "det+noun")
-        
 	(setf (non-dli-mod-for head) (list 'determiner determiner))
-
         (when (definite-determiner? determiner)
-          (add-def-ref determiner parent-edge))        
-	(cond          
+          (add-def-ref determiner parent-edge))
+        
+	(cond
+          #+ignore
 	  ((when (use-methods) ;; ??? perhaps put in by reflex ??
              (let ((result (compose determiner head)))
                result)))
-          
           ((and *determiners-in-DL*
                 (or (individual-p head) (category-p head)))
            (setq head (bind-dli-variable 'has-determiner determiner head))
