@@ -18,6 +18,7 @@
   "Called by detect-early-information when there is a preposed auxillary
    followed by the word 'there'. We select the correct edge over the
    'there' and  form a there-exists constituent"
+  (tr :wh-walk "make-initial-there-is-edge")
   (let* ((start-pos (pos-edge-starts-at preposed-aux-edge))
          (there-pos (pos-edge-ends-at preposed-aux-edge))
          (ev (pos-starts-here there-pos))
@@ -31,13 +32,15 @@
       (let ((edge (make-completed-binary-edge preposed-aux-edge
                                                there-edge
                                                rule)))
+        ;;(format t "~&there-is edge: ~a~%" edge)
         ;; add trace
         edge))))
 
 
 
-(defun make-polar-question (statement)
+(defun make-polar-question (statement)  
   "Abstracted constructor so it will done the same way every time."
+  (tr :wh-walk "make-polar-question")
   (find-or-make-individual
    'polar-question :statement statement))
 
@@ -48,6 +51,7 @@
   "We have a complete parse as a there-exists statement. Throw another
    edge over it as a question -- same as fully-spanned case, which we don't
    get because of the check for pre-posed."
+  (tr :wh-walk "there-is-as-polar-question")
   (let* ((q (make-polar-question (edge-referent edge)))
          (respanning-edge
           (make-completed-unary-edge
@@ -79,6 +83,7 @@
   ;;(break "aux = ~a, s = ~a" aux s)
   "Goes with DA rule for [preposed-auxiliary s ifcomp] except that
    we left off the ifcomp to be handled by separate rules."
+  (tr :wh-walk "da/preposed+s")
   (let* ((s-ref (edge-referent s-edge))
          (q (make-polar-question s-ref))
          (start-pos (pos-edge-starts-at aux-edge))
@@ -92,11 +97,10 @@
      :referent q)))
 
 
-
-
 (defun make-polar-copular-question (start-pos end-pos edges)
   "Construct an instance of 'be' by directly invoking the rules"
   ;; (is) (Selumetinib) (an inhibitor of MEK1)
+  (tr :wh-walk "make-polar-copular-question")
   (let* ((be (edge-referent (first edges)))  ;; is
          (subj (edge-referent (second edges))) ;; Selumetinib
          (obj (edge-referent (third edges))) ;; an inhibitor of MEK1
@@ -114,6 +118,7 @@
 
     
 (defun make-polar-adjective-question (start-pos end-pos edges)
+  (tr :wh-walk "make-polar-adjective-question")
   (let* ((be (edge-referent (first edges)))  ;; is
          (np (edge-referent (second edges))) ;; the ball
          (adj (edge-referent (third edges))) ;; red
@@ -136,6 +141,7 @@
          :referent q)))))
 
 (defun make-polar-participle-question (start-pos end-pos edges)
+  (tr :wh-walk "make-polar-participle-question")
   (let* ((be (edge-referent (first edges)))  ;; is
          (np (edge-referent (second edges))) ;; the BRAF-NRAS complex
          (participle (edge-referent (third edges))) ;; sustained in time
@@ -164,22 +170,25 @@
 
 (defun wh-initial-two-edges (wh-initial? edges start-pos end-pos)
   "One edge after the WH edge. Take it to be the statement."
+  (tr :wh-walk "wh-initial-two-edges")
   (let* ((wh (edge-referent wh-initial?))
          (complement (edge-referent (second edges)))
-         (q (compose wh complement)))
-    (tr :make-this-a-question q)
-    (unless q
-      (warn-or-error "WH compose didn't work or doesn't exist in ~% ~s~%"
-            (sentence-string *sentence-in-core*)))
-    (make-edge-over-long-span
-     start-pos end-pos
-     (edge-category (second edges)) ;; ??
-     :rule 'make-this-a-question-if-appropriate
-     :form category::s ;;question
-     :referent q)))
+         (q (compose wh complement))) ;;//// do the fold manouver
+    ;; "Which pathways use these" -- though that ex has problems
+    (if (null q)
+      (when *show-wh-problems*
+        (error "Composition with ~a failed" complement))
+      (make-edge-over-long-span
+       start-pos end-pos
+       (edge-category (second edges)) ;; ??
+       :rule 'make-this-a-question-if-appropriate
+       :form category::s ;;question
+       :referent q))))
+
 
 (defun wh-initial-three-edges (wh-edge edges start-pos end-pos)
   "Dispatch over DA patterns where there are two edges after the WH edge."
+  (tr :wh-walk "wh-initial-three-edges")
   (when (not (every #'edge-p edges))
     (if *show-wh-problems*
       (lsp-break "something in 'edges' isn't an edge")
@@ -245,6 +254,23 @@
            (warn "Could not resolve 3 edges into a WH question: ~a" edges)))))))
 
 
+(defun wh-initial-four-edges/be (wh-edge edges start-pos end-pos)
+  (tr :wh-walk "wh-initial-four-edges/be")
+  (let ((e2-form (cat-name (edge-form (second edges))))
+        (e3-form (cat-name (edge-form (third edges))))
+        (e4-form (cat-name (edge-form (fourth edges)))))
+    (cond
+      ((and (eq e2-form 'preposed-auxiliary) ;; is
+            (eq e3-form 'np)                 ;; stat3 upstream
+            (eq e4-form 'preposition))       ;; from
+       (when *debug-questions*
+         (break "e3 is an np")))
+      (t
+       (when *debug-questions*
+         (break "new"))  ))))
+      
+
+  
 ;; (p "where should I put the block?")
 ;;
 (defun wh-initial-followed-by-modal (wh-edge edges start-pos end-pos)
@@ -252,25 +278,29 @@
    folded in to the statement (third edge) for its tense or
    aspect contribution. Not bothering to explicitly hook
    the aux edge into the tree."
+  (tr :wh-walk "wh-initial-followed-by-modal")
   (let ((wh (edge-referent wh-edge))
         (aux (edge-referent (second edges)))
         (stmt (edge-referent (third edges))))
     (with-referent-edges (:l (second edges) :r (third edges))
       (setq stmt (add-tense/aspect-info-to-head aux stmt)))
-    (let ((q (compose wh stmt)))
-      (make-edge-over-long-span
-       start-pos end-pos
-       (edge-category (third edges)) ;; ??
-       :rule 'make-this-a-question-if-appropriate
-       :form category::s ;;question
-       :referent q
-       :constituents edges))))
+    (let ((q (fold-wh-into-statement wh stmt wh-edge (third edges))))
+      (when q
+        (make-edge-over-long-span
+         start-pos end-pos
+         (edge-category (third edges)) ;; ??
+         :rule 'wh-initial-followed-by-modal
+         :form category::s ;;question
+         :referent q
+         :constituents edges)))))
+ 
 
 ;; "Which genes regulated by stat3 are kinases?"
 ;;
 (defun wh-with-reduced-relative (wh-edge edges start-pos end-pos)
   "The second edge is a reduced relative, so the wh-edge had better have
    something to attach it to."
+  (tr :wh-walk "wh-with-reduced-relative")
   (let* ((wh-object (edge-referent wh-edge))
          (head-np (value-of 'other wh-object))
          (reduced-edge (second edges))
@@ -304,6 +334,7 @@
   ;; meta-dot on compose-preposed-aux-into-predicate-adjp to get near
   ;; the right place in rules/DA/da-rules.lisp
   (declare (special category::copular-predicate category::s))
+  (tr :wh-walk "apply-question-marker")
   (let ((vg (edge-referent vg-edge))
         (np (edge-referent np-edge))
         (wh (edge-referent wh-edge)))
@@ -344,6 +375,7 @@
    handled by assimilate-subject, and there probably via the checks in
    transitive-vp-missing-object?"
   (declare (special category::vp))
+  (tr :wh-walk "apply-question-displaced-vg")
   (cond
     ((itypep (edge-referent vg1-edge) 'do)
      ;;(break "stranded vg do - ~a" vg2-edge)
@@ -365,9 +397,11 @@
 ;;   (p/s "What color is the block?")
 
 (def-k-method compose ((wh category::wh-question) (i individual))
+  (tr :wh-walk "compose wh-question + individual")
   (add-statement-to-wh-question wh i))
 
 (def-k-method compose ((wh category::wh-question/attribute) (i individual))
+  (tr :wh-walk "compose wh-question/attribute + individual")
   (add-statement-to-wh-question wh i))
 
 (defun add-statement-to-wh-question (wh stmt)

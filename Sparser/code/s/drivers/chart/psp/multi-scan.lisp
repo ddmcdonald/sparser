@@ -669,8 +669,12 @@
             ((category::verb category::verb+s category::verb+ed
               category::verb+ing category::verb+present category::verb+past)
              (when (auxiliary-word? word)
-               (when there? (handle-there-is edge))
-               (store-preposed-aux edge)))
+               (cond
+                 (there?
+                  (let ((there-is-edge (handle-there-is edge)))
+                    (store-preposed-aux edge)
+                    (specify-top-edge there-is-edge)))
+                 (t (store-preposed-aux edge)))))
             (category::modal
              (when there? (handle-there-is edge))
              (store-preposed-aux edge))
@@ -683,7 +687,8 @@
   (declare (special category::preposed-auxiliary))
   (let ((actual-form (edge-form aux-edge)))
     (setf (edge-form aux-edge) category::preposed-auxiliary)
-    (record-preposed-aux aux-edge actual-form)))
+    (record-preposed-aux aux-edge actual-form)
+    (specify-top-edge aux-edge)))
 
 
 ;;;-------------------------------------------------------

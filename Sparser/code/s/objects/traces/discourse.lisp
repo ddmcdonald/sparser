@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2015-2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "discourse"
 ;;;   Module:  "objects;traces:"
@@ -71,6 +71,10 @@
 (deftrace :wh-how (q)
   (when *trace-questions*
     (trace-msg "[wh] 'how' compose method: ~a" q)))
+
+(deftrace :wh-walk (fn-name)
+  (when *trace-questions*
+    (trace-msg "[wh] entering ~a" fn-name)))
 
 
 ;;;---------------------

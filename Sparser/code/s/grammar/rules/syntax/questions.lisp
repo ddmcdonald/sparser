@@ -84,6 +84,15 @@
  variable. For arbitrary, 'other', cases we have to dig around
  after we've finished the full parse.")
 
+(define-category wh-question/select
+  :specializes wh-question
+  :instantiates :self
+  :binds ((set))
+  :documentation "For formulations like 'which of <set>' or
+ 'how many of <set>'. Not clear as yet what generalization (v/r)
+  we can make about the set variable, but semantically we're directed
+  to make a selection from that set")
+
 ;;--- constructors
 
 (defun make-wh-object (wh &key variable statement attribute other embedded)
@@ -148,6 +157,7 @@
    how well we've parsed it.
      Runs for side-effects."
   (declare (special category::question *show-wh-problems*))
+  (tr :wh-walk "make-this-a-question-if-appropriate")
   (when (or (preposed-aux?)
             (initial-wh?))
     (let* ((preposed? (preposed-aux?)) ;; make them into local flags
@@ -164,7 +174,7 @@
       ;; In most cases, the proposed aux will have been accommodated by
       ;; the operations in the post-vg-hook, though that's just for explicit
       ;; auxiliaries.
-         
+
       ;; Look for heuristic ways we could get a full sentence
       ;; from a partial parse. The detection is in this cond.
       ;; The construction is mostly in the subroutines just below.
@@ -244,8 +254,14 @@
 
            ((and (= 4 (length edges))
                  (itypep (edge-referent (second edges)) 'do))
-            (break "wh do"))
+            (when *debug-questions*
+              (break "wh do")))
            
+           ((and (= 4 (length edges))
+                 (itypep (edge-referent (second edges)) 'be))
+            ;; "What genes is stat3 upstream from?"
+            (wh-initial-four-edges/be wh-initial? edges start-pos end-pos))
+
            (t
             (if *show-wh-problems*
               (lsp-break "Could not resolve ~a edges into a WH question: ~a"
@@ -274,6 +290,11 @@
 ;;;--------------
 ;;; WH questions
 ;;;--------------
+
+;; (p "What drug could I use?")
+;; (p "What apoptotic genes does stat3 regulate in the liver")
+
+
 #| (p "What color is the block?")
    (p/s "Is the block on the table?")
    (p "Could we put on one more?")
@@ -336,7 +357,7 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
    the WH information and populate the object while we're
    walking along the sentence prefix. Then we record the fact
    that we have the wh-edge in hand on the sentence context."
-  
+  (tr :wh-walk "delimit-and-label-initial-wh-term")
   (let* ((wh-type (edge-referent wh-edge)) ;; the category 
          (next-pos (chart-position-after pos-before))
          (next-word (pos-terminal next-pos))
@@ -345,6 +366,7 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
          attr-edge ;; attributes (color)
          value-edge  ;; attribute values (big)
          other-edges ;; everything else
+         of?
          )
 
     (flet ((cover-wh (q end-pos)
@@ -383,6 +405,8 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                    (verb-category? next-edge)) ;; Probably no explicit aux.
                (setq aux-edge next-edge)
                (return))
+              ((eq next-word (word-named "of"))
+               (setq of? next-edge))
               ((itypep (edge-referent next-edge) 'attribute) ;; e.g. color
                (setq attr-edge next-edge))
               ((itypep (edge-referent next-edge) 'attribute-value) ;; "big"
@@ -400,7 +424,9 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                   next-word (pos-terminal next-pos)
                   next-edge (highest-edge (pos-starts-here next-pos))))
 
-         (unless aux-edge
+ 
+         (if aux-edge
+           (store-preposed-aux aux-edge)
            (if *debug-questions*
              (error "No aux-edge with ~a" wh-type)
              (when *show-wh-problems*
@@ -416,12 +442,30 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                (other-edges ;; "How important is ..."
                 (values (edge-referent (car other-edges)) t)))
 
-           (let ((q (if attr
-                      (if other?
-                        (handle-wh-other wh-type other-edges next-pos wh-edge)
-                        (make-wh-object wh-type :attribute attr))
-                      (make-wh-object wh-type))))
+           (let ((q (cond
+                      (of? (handle-wh-of wh-edge wh-type of? other-edges))
+                      (attr
+                       (if other?
+                         (handle-wh-other wh-type other-edges next-pos wh-edge)
+                         (make-wh-object wh-type :attribute attr)))
+                      (t                      
+                       (make-wh-object wh-type)))))
+             
              (cover-wh q next-pos))))))))
+
+
+(defun handle-wh-of (wh-edge wh-type of-edge other-edges)
+  ;; e.g. (p "Which of those are regulated by elk1")
+  (when (> (length other-edges) 1)
+    (break "other-edges needs to be parsed"))
+  (let* ((other (edge-referent (car other-edges)))
+         (q (define-an-individual 'wh-question/attribute
+                :wh wh-type)))
+    (setq q (bind-variable 'set other q))
+    ;; should we also make the edge?
+    q))
+               
+
 
 (defparameter *wh+n-bar*
   (def-syntax-rule/expr '(wh-pronoun n-bar)
@@ -447,7 +491,7 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
   (flet ((make-full-np (wh-edge other-phrase)
            (let ((edge (make-completed-binary-edge
                         wh-edge other-phrase *wh+n-bar*)))
-             (format t "~&wh-other: ~a~%" edge)
+             ;;(format t "~&wh-other: ~a~%" edge)
              (edge-referent edge))))
     (let ((edge-count (length other-edges))
           (edges (reverse other-edges))) ;; shift to left-to-right order
@@ -463,6 +507,23 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                (parse-between-boundaries start-pos end-pos)
              (make-full-np wh-edge edge))))))))
 
+
+;;;----
+
+(defun fold-wh-into-statement (wh stmt wh-edge stmt-edge)
+  (let ((stmt-form (cat-name (edge-form stmt-edge))))
+    (case stmt-form
+      (transitive-clause-without-object
+       (let ((subj-var (subject-variable stmt)))
+         (bind-variable subj-var wh stmt)))
+      (vp+passive
+       ;; these (always?) have a by-phrase, so their agent is bound.
+       (let ((obj-var (object-variable stmt)))
+         (bind-variable obj-var wh stmt)))
+      (otherwise
+       (push-debug `(,wh ,stmt ,wh-edge ,stmt-edge))
+       (when *debug-questions*
+         (break "new folding confiburation: ~a" stmt-form))))))
 
 
 

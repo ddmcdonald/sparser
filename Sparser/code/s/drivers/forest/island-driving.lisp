@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "island-driving"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  March 2017
+;;;  Version:  August 2018
 
 ;; Initiated 8/30/14. Controls the forest-level parsing under the
 ;; new 'whole sentence at a time, start anywhere' protocol.
@@ -47,8 +47,10 @@
 ;; (trace-island-driving)
 
 (defun island-driven-forest-parse (sentence layout start-pos end-pos)
-  ;; called from new-forest-driver after it has called 
-  ;; sweep-sentence-treetops to create the layout
+  "Called from new-forest-driver after it has called 
+   sweep-sentence-treetops to create the layout. 
+   Runs in two passes over the chunks. DA rules are applied
+   in the second pass."
   (declare (special *allow-pure-syntax-rules*
                     *edges-from-referent-categories* ;; OBE or leave?
                     *trace-island-driving* *parse-edges* ;; trace flags
@@ -76,16 +78,14 @@
 ;;;------------
 
 (defun run-island-checks (sentence) ;;layout)
-  ;;(push-debug `(,layout))
-  ;; preposed adjuncts
-  
+  "Makes a couple of layout-mediated special checks before and
+   after its main operation of running the whack-a-rule-cycle
+   to walk through pairs of constituents."
   (when (there-are-parentheses?)
     (tr :handle-parentheses)
     (handle-parentheses))
   
- ;; #+ignore ;; These have already been done
-  ;; not quite true -- compare
-  ;;(Overnight 1 (P "Ras, like all GTPases, cycles between an inactive GDP-bound state and  an active GTP-bound state.")) 
+  ;;(Overnight 1 (p "Ras, like all GTPases, cycles between an inactive GDP-bound state and  an active GTP-bound state.")) 
   (when (there-are-conjunctions?)
     (tr :looking-for-short-conjuncts)
     (let ((*allow-form-conjunction-heuristic* nil))
@@ -97,9 +97,9 @@
     (look-for-prep-binders))
   
   (when (there-are-conjunctions?) 
-    ;; Originally inserted this call for conjunctions to merge conjoined NPs before creating PPs
-    ;; as in "as a tumor suppressor and an activator"
-    ;; Now only used for VG conjunctions
+    ;; Originally inserted this call for conjunctions to merge
+    ;; conjoined NPs before creating PPs as in "as a tumor suppressor
+    ;; and an activator" Now only used for VG conjunctions
     (tr :try-spanning-conjunctions)
     (let ((*allow-form-conjunction-heuristic* :vg))
       (declare (special *allow-form-conjunction-heuristic*))
@@ -109,7 +109,7 @@
     (whack-a-rule-cycle sentence)
     (older-island-driving-rest-of-pass-one))
 
-  (when (there-are-conjunctions?) ;; J3 doesn't parse
+  (when (there-are-conjunctions?)
     (tr :try-spanning-conjunctions)
     (let ((*allow-form-conjunction-heuristic* t))
       (declare (special *allow-form-conjunction-heuristic*))
@@ -143,7 +143,7 @@
   ;; in phase one, we could probably fold these two together into
   ;; one routine. It's a question of what sorts of hard boundaries
   ;; we have on regular rules (e.g. ";") that call for a shift to
-  ;; debris analysis. Also should mine the regular roueines for
+  ;; debris analysis. Also should mine the regular routines for
   ;; handling the forest level.
   ;;   We won't have gotten here unless the adjacency-driven rule
   ;; application has run out of cases, so we start with DA. We also
@@ -157,35 +157,36 @@
   (let* ((treetops (successive-treetops :from start-pos :to end-pos))
          (number-of-treetops (length treetops)))
     (tr :islands-pass-2 number-of-treetops)
+    (when *print-forest-after-doing-forest*
+      (format t "~&Just before 2d pass:~%")
+      (tts))
     (if *new-pass2*
       (new-pass2 sentence start-pos end-pos treetops)
       (old-pass2 sentence start-pos end-pos treetops number-of-treetops))))
 
 (defun new-pass2 (sentence start-pos end-pos treetops)
-  (when (there-are-conjunctions?) ;; J3 doesn't parse
-    (tr :try-spanning-conjunctions)
-    (let ((*allow-form-conjunction-heuristic* t))
-      (declare (special *allow-form-conjunction-heuristic*))
-      (try-spanning-conjunctions)))
-  (let (da-result)
-    (loop
-      (setq da-result (da-rule-cycle start-pos end-pos treetops t))
-      (cond
-       ((null da-result) ;; no DA rules executed -- nothing left to do
-        (tr :no-result-from-da) ; 
-        (return-from new-pass2 t))
-       ((eq (coverage-over-region start-pos end-pos) :one-edge-over-entire-segment)
-        (return-from new-pass2 t)))
-      (when (there-are-conjunctions?) ;; J3 doesn't parse
-        (tr :try-spanning-conjunctions)
-        (let ((*allow-form-conjunction-heuristic* t))
-          (declare (special *allow-form-conjunction-heuristic*))
-          (try-spanning-conjunctions)))
-      (unless (or (whack-a-rule-cycle sentence)
-                  da-result)
-        (return-from new-pass2 t))
-      ;;(when (there-are-conjunctions?) (lsp-break "conjunctions"))
-      (setq treetops (successive-treetops :from start-pos :to end-pos)))))
+  (flet ((conjunction-check ()
+           (when (there-are-conjunctions?)
+             (tr :try-spanning-conjunctions)
+             (let ((*allow-form-conjunction-heuristic* t))
+               (declare (special *allow-form-conjunction-heuristic*))
+               (try-spanning-conjunctions)))))
+    (let (da-result)
+      (conjunction-check)
+      (loop
+         (setq da-result (da-rule-cycle start-pos end-pos treetops t))
+         (cond
+           ((null da-result) ;; no DA rules executed -- nothing left to do
+            (tr :no-result-from-da)
+            (return-from new-pass2 t))
+           ((eq (coverage-over-region start-pos end-pos) :one-edge-over-entire-segment)
+            (return-from new-pass2 t)))
+         (conjunction-check)
+         (unless (or (whack-a-rule-cycle sentence)
+                     da-result)
+           (return-from new-pass2 t))
+         ;; reset the treetop list and go around the loop again
+         (setq treetops (successive-treetops :from start-pos :to end-pos)))  )))
 
 
 (defun da-rule-cycle (start-pos end-pos treetops &optional once-only?)
@@ -296,7 +297,6 @@
        (t
         (push-debug `(,result ,sentence ,start-pos ,end-pos))
         (error "Unanticipated type of result: ~a" (type-of result))))
-      
       
       ) ;; the loop
     ))
