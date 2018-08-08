@@ -169,7 +169,8 @@
          (q (compose wh complement)))
     (tr :make-this-a-question q)
     (unless q
-      (error "WH compose didn't work or doesn't exist"))
+      (warn-or-error "WH compose didn't work or doesn't exist in ~% ~s~%"
+            (sentence-string *sentence-in-core*)))
     (make-edge-over-long-span
      start-pos end-pos
      (edge-category (second edges)) ;; ??

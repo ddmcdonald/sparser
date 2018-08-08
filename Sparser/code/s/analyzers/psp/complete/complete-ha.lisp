@@ -269,8 +269,10 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
 (defun valid-referent? (edge)
   "Trap cases where an edge that should have a referent doesn't.
    And for the posibility of the referent being a cons"
-  (declare (special category::punctuation category::dash category::unknown-verb
-                    word::|is| word::|are| word::|am| ))
+  (declare (special category::punctuation category::dash
+                    category::unknown-verb
+                    word::|is| word::|are| word::|am|
+                    *sentence-in-core*))
   (when (null (edge-referent edge))
     ;; It doesn't have a referent. Is that ok?
     (unless (or (polyword-p (edge-category edge))
@@ -285,7 +287,8 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
                           ;; happened once, in "substrate like" and "regulatory"
                           :apostrophe-fsa)))
       (push-debug `(,edge))
-      (error "edge with null referent: ~a" edge)))
+      (warn-or-error "edge with null referent: ~a in ~% ~s~%"
+            edge (sentence-string *sentence-in-core*))))
     
   (when (and *diagnose-consp-referents*
              (consp (edge-referent edge)))

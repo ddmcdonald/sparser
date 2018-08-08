@@ -900,7 +900,7 @@
 (defun subcategorized-variable (head label item)
   "Returns the variable on the HEAD that is subcategorized for
    the ITEM when it has the grammatical relation LABEL to the head."
-  (declare (special *pobj-edge* *subcat-test*))
+  (declare (special *pobj-edge* *subcat-test* *sentence-in-core*))
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
@@ -910,7 +910,8 @@
      do (setq label (edge-left-daughter label)))
   (cond
     ((null head)
-     (break "~&null head in call to subcategorized-variable")
+     (warn-or-error "~&null head in call to subcategorized-variable in ~% ~s~%"
+            (sentence-string *sentence-in-core*))
      nil)
     ((null item)
      (cond
