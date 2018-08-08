@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2012-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012-2018  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2018
+;;;  Version:  August 2018
 
 ;; initiated 10/25/92 w/ mixin.  Given some content 5/17/95.  Added np cases
 ;; 4/1/05. Added common-noun 4/12/09. 10/14/12 Removed the 'that' rules 
@@ -44,10 +44,13 @@
 
 ;; See pattern in rules/syntax/categories
 ;; and consumer in record-any-determiner
+
 (defvar *indefinite-determiners* nil
   "Holds list of all the indefinite article words")
 (defvar *definite-determiners* nil
   "Holds list of all the definite article words")
+(defvar *wh-determiners* nil
+  "Holds list of all the wh-pronouns that can act as determiners")
 
 (defun populate-in/definite-articles ()
   (setq *indefinite-determiners*
@@ -57,33 +60,64 @@
         ;; a determiner vs. as a relative conjunction ?
         (mapcar #'word-named '("the" "this" "that" "these" "those"))))
 
+(defun populate-wh-determiners ()
+  (setq *wh-determiners*
+        (mapcar #'word-named '("what" "which" "whichever"
+                               "whose"))))
+
 (defun determiner? (word)
   (or (definite-determiner? word)
-      (indefinite-determiner? word)))
+      (indefinite-determiner? word)
+      (wh-determiner? word)))
 
-(defmethod indefinite-determiner? ((word word))
-  (unless *indefinite-determiners* (populate-in/definite-articles))
-  (memq word *indefinite-determiners*))
+(defgeneric indefinite-determiner? (item)
+  (:documentation "Does this item on the list of indefinite determiners?")
+  (:method ((word word))
+    (unless *indefinite-determiners* (populate-in/definite-articles))
+    (memq word *indefinite-determiners*))
+  (:method ((i individual))
+    (indefinite-determiner? (cat-name (itype-of i))))
+  (:method ((c category))
+    (indefinite-determiner? (cat-name c)))
+  (:method ((name symbol))
+    (memq name '(a an most some any)))
+  (:method ((e edge))
+    ;; it's a polyword like "at least", which is an approximatory.
+    nil))
 
-(defmethod indefinite-determiner? ((i individual))
-  (memq (cat-name (itype-of i)) '(a an most some any)))
+(defgeneric definite-determiner? (item)
+  (:documentation "Does this item on the list of definite determiners?")
+  (:method ((word word))
+    (unless *indefinite-determiners* (populate-in/definite-articles))
+    (memq word *definite-determiners*))
+  (:method ((i individual))
+    (definite-determiner? (cat-name (itype-of i))))
+  (:method ((c category))
+    (definite-determiner? (cat-name c)))
+  (:method ((name symbol))
+    (memq name '(the this that these those)))
+  (:method ((e edge))
+    ;; it's a polyword like "at least", which is an approximatory.
+    nil))
 
-(defmethod indefinite-determiner? ((e edge))
-  ;; it's a polyword like "at least", which is an approximatory.
-  nil)
+(defgeneric wh-determiner? (item)
+  (:documentation "Is this one of the listed wh words that can
+     function like an article.")
+  (:method ((word word))
+    (unless *wh-determiners* (populate-wh-determiners))
+    (memq word *wh-determiners*))
+  (:method ((i individual))
+    (wh-determiner? (cat-name (itype-of i))))
+  (:method ((c category))
+    (wh-determiner? (cat-name c)))
+  (:method ((name symbol))
+    (memq name '(what which whichever whose)))
+  (:method ((e edge))
+    ;; observed det-edge = #<36 an 38> and det-word = edge over hyphen
+    ;; in "- an observation" chunk of dec-test #49
+    nil))
 
-(defmethod definite-determiner? ((word word))
-  (unless *indefinite-determiners* (populate-in/definite-articles))
-  (memq word *definite-determiners*))
-
-(defmethod definite-determiner? ((i individual))
-  (memq (cat-name (itype-of i)) '(the this that these those)))
-
-(defmethod definite-determiner? ((e edge))
-  ;; it's a polyword like "at least", which is an approximatory.
-  nil)
-
-
+                              
 (defmethod definite-np? ((e edge))
   (or ;;(definite-np? (edge-mention e))
    ;; not being reset? ERROR -- FIX THIS
@@ -97,6 +131,7 @@
          thereis (and (eq (car ndli) 'determiner)
                       (definite-determiner? (second ndli))))
    (definite-np? (mention-source m))))
+
 
 (defmethod indefinite-np? ((e edge))
   (or (and (individual-p (edge-referent e))
