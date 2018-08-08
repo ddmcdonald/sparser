@@ -785,6 +785,7 @@ than a bare "to".  |#
 (defun proper-noun-reduced-relative? (e *chunk* &aux 
                                                   (e-form-name
                                                    (cat-name (edge-form e))))
+  (declare (special *noun-categories*))
   (and (member e-form-name '(proper-name proper-noun))
        (boundp '*chunk*)
        (chunk-final-edge? e *chunk*)
@@ -908,14 +909,21 @@ than a bare "to".  |#
   "all the edges on an edge-vector which are as long as the top edge, possibly dropping literal edges"
   (when ev
     (let ((top-edge (top-edge-on-ev ev)))
-      (loop for edge in (ev-edges ev)
-            when (and
-                  (eq (pos-edge-ends-at edge) (pos-edge-ends-at top-edge))
-                  (null (edge-used-in edge))
-                  (or (not (literal-edge? edge))
-                      (not no-literals)))
-            ;; the test above checks that the edge is as long as the top edge
-            collect edge))))
+      ;; MAJOR CHANGE HERE -- if there is a "chosen" top edge (in ev-top-node) then
+      ;;  don't create a list with other edges of the same length
+      ;; To make use of code in WH question routines that chooses an
+      ;;  edge from a group of ambiguous edges
+      (when (edge-p top-edge)
+        (if (eq top-edge (ev-top-node ev))
+            (list top-edge)
+            (loop for edge in (ev-edges ev)
+                  when (and
+                        (eq (pos-edge-ends-at edge) (pos-edge-ends-at top-edge))
+                        (null (edge-used-in edge))
+                        (or (not (literal-edge? edge))
+                            (not no-literals)))
+                  ;; the test above checks that the edge is as long as the top edge
+                  collect edge))))))
 
 #| Previous version. Its preference for top-node doesn't appreciate
  that some of these are created by an early-acting fsa (e.g. number)
