@@ -178,7 +178,8 @@
     (cond 
       ((itypep ref-object category::question)
        (let ((stmt (value-of 'statement ref-object)))
-         (get-ref-subcategorization stmt)))
+         (when stmt ;; this was intended for a full question
+           (get-ref-subcategorization stmt))))
       ;; question goes before collection -- aspp2 # 74
       ((collection-p ref-object)
        (let ((conj-type (value-of 'type ref-object)))
