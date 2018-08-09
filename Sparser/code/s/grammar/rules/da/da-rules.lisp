@@ -1538,12 +1538,7 @@
             category::event-relation
             `((relation ,conj)
               (event ,(value-of 'statement event))
-              (subordinated-event ,sub-event))))))          
-      `((relation ,conj)
-        (event ,event)
-        (subordinated-event ,sub-event))))
-
-  
+              (subordinated-event ,sub-event))))))
       (make-simple-individual ;; make-non-dli-individual
        category::event-relation
        `((relation ,conj) (event ,event) (subordinated-event ,sub-event)))))
