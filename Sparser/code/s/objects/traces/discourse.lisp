@@ -76,6 +76,17 @@
   (when *trace-questions*
     (trace-msg "[wh] entering ~a" fn-name)))
 
+(deftrace :wh-other-np (edge)
+  (when *trace-questions*
+    (trace-msg "[wh] wh-other: ~a" edge)))
+
+(deftrace :wh-flag-status (preposed? wh-initial? edges)
+  (when *trace-questions*
+    (trace-msg "[wh]   preposed? = ~a~
+              ~%       wh-initial? = ~a~
+              ~%       ~a edges"
+               preposed? wh-initial? (length edges))))
+
 
 ;;;---------------------
 ;;; discourse-structure

@@ -165,22 +165,20 @@
            (start-pos (starts-at-pos sentence))
            (end-pos (ends-at-pos sentence))
            (edge (span-covered-by-one-edge?
-                  (if preposed?
-                    ;; just past the preposed aux -- not reliable with WH
-                    (chart-position-after start-pos)
-                    start-pos)
+                  (cond ((and preposed? wh-initial?) start-pos)
+                        (preposed? (chart-position-after start-pos))
+                        (t start-pos))
                   end-pos))
            (edges (all-tts start-pos end-pos)))
-      ;; In most cases, the proposed aux will have been accommodated by
-      ;; the operations in the post-vg-hook, though that's just for explicit
-      ;; auxiliaries.
+
+      (tr :wh-flag-status preposed? wh-initial? edges)
 
       ;; Look for heuristic ways we could get a full sentence
       ;; from a partial parse. The detection is in this cond.
       ;; The construction is mostly in the subroutines just below.
       (cond
         ((edge-p edge)
-         (when preposed?
+         (when (and preposed? (null wh-initial?))
            ;; The wh-initial? case doesn't need further handling
            ;; when the sentence parsed completely.
            (let ((q (make-polar-question (edge-referent edge))))
@@ -192,6 +190,11 @@
                      :form category::s
                      :referent q)))
                spanning-edge))))
+        ;; In most cases, the proposed aux will have been accommodated by
+        ;; the operations in the post-vg-hook, though that's just for explicit
+        ;; auxiliaries.
+
+        ((and (edge-p edge) wh-initial?)) ;;/// Mark it? Wrap it?
 
         ((and (= 1 (length edges))
               (eq (edge-category (car edges)) category::there-exists))
@@ -372,18 +375,22 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
     (flet ((cover-wh (q end-pos)
              "Make a phrase over the whole span of WH edges
               up to but not including the aux"
-             (let ((edge
-                    (or (edge-between pos-before end-pos)
-                        (make-edge-over-long-span
-                         pos-before end-pos
-                         (edge-category wh-edge)
-                         :rule 'delimit-and-label-initial-wh-term
-                         :form category::np ;; qnp ;; question-marker
-                         :referent q
-                         :constituents (edges-between pos-before next-pos)))))
-               (record-initial-wh edge)
-               (tr :wh-initial-edge edge q)
-               edge)))
+             (when (null q)
+               (when *debug-questions*
+                 (break "q is nil")))
+             (when q
+               (let ((edge
+                      (or (edge-between pos-before end-pos)
+                          (make-edge-over-long-span
+                           pos-before end-pos
+                           (edge-category wh-edge)
+                           :rule 'delimit-and-label-initial-wh-term
+                           :form category::np ;; qnp ;; question-marker
+                           :referent q
+                           :constituents (edges-between pos-before next-pos)))))
+                 (record-initial-wh edge)
+                 (tr :wh-initial-edge edge q)
+                 edge))))
       (cond
         ((memq (cat-symbol wh-type) '(who why where when))
          ;; These won't (??) have extended wh phrases like the others.
@@ -494,16 +501,19 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
   (flet ((make-full-np (wh-edge other-phrase)
            (let ((edge (make-completed-binary-edge
                         wh-edge other-phrase *wh+n-bar*)))
-             ;;(format t "~&wh-other: ~a~%" edge)
+             (tr :wh-other-np edge)
              (edge-referent edge))))
     (let ((edge-count (length other-edges))
           (edges (reverse other-edges))) ;; shift to left-to-right order
       (case edge-count
         (1 (make-full-np wh-edge (car edges)))
         (2 (let ((rule (multiply-edges (first edges) (second edges))))
-             (when rule
+             (if rule
                (let ((edge (make-completed-binary-edge (first edges) (second edges) rule)))
-                 (make-full-np wh-edge edge)))))
+                 (make-full-np wh-edge edge))
+               (when *debug-questions*
+                 ;;(break "no rule") -- but return something
+                 (edge-referent (second edges))))))
         (otherwise
          (let ((start-pos (pos-edge-starts-at (first edges))))
            (multiple-value-bind (layout edge)
@@ -523,6 +533,13 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
        ;; these (always?) have a by-phrase, so their agent is bound.
        (let ((obj-var (object-variable stmt)))
          (bind-variable obj-var wh stmt)))
+      (vp
+       ;; "Which genes are involved in apoptosis?"
+       (let ((subj-var (subject-variable stmt)))
+         (bind-variable subj-var wh stmt)))
+      (np
+       ;; "Which of these are kinases"
+       stmt)
       (otherwise
        (push-debug `(,wh ,stmt ,wh-edge ,stmt-edge))
        (when *debug-questions*

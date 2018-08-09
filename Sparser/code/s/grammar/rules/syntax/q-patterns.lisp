@@ -246,6 +246,11 @@
       ((and (eq e2-form 'vg+passive)
             (eq e3-form 'vp))
        (wh-with-reduced-relative wh-edge edges start-pos end-pos))
+
+      ((and (eq e2-form 'preposed-auxiliary)
+            (eq e3-form 'np))
+       ;; "Which pathways use these"
+       (revert-preposed-aux))
       
       (t
        (if *show-wh-problems*
