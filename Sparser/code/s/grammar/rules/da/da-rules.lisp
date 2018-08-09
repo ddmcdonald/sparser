@@ -1530,9 +1530,23 @@
   (create-event-relation s event-relation (edge-referent sconj)))
 
 (defun make-event-relation (conj event sub-event)
-  (make-simple-individual ;; make-non-dli-individual
-   category::event-relation
-   `((relation ,conj) (event ,event) (subordinated-event ,sub-event))))
+  (if (itypep event 'polar-question)      
+      (make-simple-individual ;; make-non-dli-individual
+       category::polar-question
+       `((statement
+          ,(make-simple-individual
+            category::event-relation
+            `((relation ,conj)
+              (event ,(value-of 'statement event))
+              (subordinated-event ,sub-event))))))          
+      `((relation ,conj)
+        (event ,event)
+        (subordinated-event ,sub-event))))
+
+  
+      (make-simple-individual ;; make-non-dli-individual
+       category::event-relation
+       `((relation ,conj) (event ,event) (subordinated-event ,sub-event)))))
 
 
 (define-debris-analysis-rule np-conj-pp
