@@ -52,6 +52,11 @@
       ;; hook it up
       (compose-discontiuous-aux aux-edge vg-edge))))
 
+(defun revert-preposed-aux ()
+  (multiple-value-bind (aux-edge aux-form)
+      (preposed-aux?)
+    (setf (edge-form aux-edge) aux-form)))
+
 (defun compose-discontiuous-aux (aux-edge vg-edge)
   ;; Look for a rule
   (let ((rule (multiply-edges aux-edge vg-edge)))
