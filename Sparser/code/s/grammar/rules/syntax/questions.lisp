@@ -433,7 +433,8 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
 
  
          (if aux-edge
-           (store-preposed-aux aux-edge)
+           (when (edge-over-aux? aux-edge)
+             (store-preposed-aux aux-edge))
            (if *debug-questions*
              (error "No aux-edge with ~a" wh-type)
              (when *show-wh-problems*
