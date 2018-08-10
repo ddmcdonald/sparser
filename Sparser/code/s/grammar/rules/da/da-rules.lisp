@@ -1851,11 +1851,14 @@
 (loop for ap in '(adjp adjective comparative-adjective superlative-adjective
                   comparative superlative
                   comparative-adjp superlative-adjp)
-   do (let ((pattern `(preposed-auxiliary np ,ap))
-            (name (s-intern '#:aux-np- ap)))
-        (define-debris-analysis-rule/expr
-           name pattern
-          '(:function move-preposed-aux-before-adj first second third))))
+   do ;; needed for "What apoptotic genes is stat3 upstream of?"
+     ;; where 'stat3' is just a proper-noun
+     (loop for n in '(np proper-noun)
+        do (let ((pattern `(preposed-auxiliary ,n ,ap))
+                 (name (s-intern '#:aux-np- ap)))
+             (define-debris-analysis-rule/expr
+                 name pattern
+               '(:function move-preposed-aux-before-adj first second third)))))
              
 (defun move-preposed-aux-before-adj (aux-edge np-edge adjp-edge)
   (declare (ignore np-edge))
