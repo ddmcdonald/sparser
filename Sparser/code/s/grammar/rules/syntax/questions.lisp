@@ -478,7 +478,7 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
       (setq q (bind-variable 'set (edge-referent (car other-edges)) q)))
     ;; should we also make the edge?
     q))
-               
+
 
 
 (defparameter *wh+n-bar*
@@ -528,6 +528,11 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
 ;;;----
 
 (defun fold-wh-into-statement (wh stmt wh-edge stmt-edge)
+  "Used by wh-initial-followed-by-modal and any others that want to
+   incorporate the referent of the wh-edge ('wh') as a regular
+   bound participant of the statement ('stmt'). 
+   /// should return the variable to use in wrapping WH-question
+   instance."
   (let ((stmt-form (cat-name (edge-form stmt-edge))))
     (case stmt-form
       (transitive-clause-without-object
