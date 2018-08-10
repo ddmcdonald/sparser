@@ -420,7 +420,10 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                (setq value-edge next-edge))
               ((null (edge-referent next-edge)) ;; happens in cases like an edge over apostrophe-s
                (push next-edge other-edges))
+              #+ignore
               ((wh-is-declarative-heuristics next-edge)
+               ;; looking for a pronoun -- but that ok after 'of'
+               ;; "Which of them are regulated by elk1"
                (return))
               (t (push next-edge other-edges)))
             ;;(lsp-break "old next-pos = ~a" next-pos)

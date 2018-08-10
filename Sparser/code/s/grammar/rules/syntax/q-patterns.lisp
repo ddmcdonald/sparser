@@ -269,11 +269,31 @@
             (eq e3-form 'np)                 ;; stat3 upstream
             (eq e4-form 'preposition))       ;; from
        (when *debug-questions*
-         (break "e3 is an np")))
+         (wh-stranded-prep wh-edge (third edges) (fourth edges) start-pos end-pos)))
       (t
        (when *debug-questions*
-         (break "new"))  ))))
-      
+         (break "new 4 edge wh case"))  ))))
+
+(defun wh-stranded-prep (wh-edge main-edge prep-edge start-pos end-pos)
+  "Intended for use with every case of reasonably short questions
+ that end in a preposition. (Presumably not functioning as a particle
+ though we don't check that these days - 8/18.)"
+  (let* ((item (edge-referent wh-edge))
+         (preposition (edge-left-daughter prep-edge))
+         (head (takes-preposition? main-edge prep-edge)))
+    ;;/// in general we'll have to search down the right fringe
+    (when head
+      (let ((variable (subcategorized-variable head preposition item)))
+        (when variable ;; if not, should look for a lower head
+          ;; Replace the prep with a proper pp which wh-edge as its
+          ;; complement. (Ensure that the semantic-function doesn't
+          ;; get in the way of that.) Consider using the literal
+          ;; wh-edge. Attach the pp to the head, which will likely
+          ;; require a tuck.
+          ;; Formulate a question wrapper that incorporates the
+          ;; content of the wh-edge and uses the variable.
+          variable)))))
+
 
   
 ;; (p "where should I put the block?")

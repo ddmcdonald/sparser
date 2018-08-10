@@ -379,16 +379,18 @@
 (defgeneric takes-preposition? (head preposition)
   (:documentation "Collect the subcat frames of the head for this
     preposition and determine whether they fit the current context")
-  
   (:method ((cat-name symbol) (pname string))
     (takes-preposition? (category-named cat-name :error) pname))
-  
   (:method ((c category) (pname string))
     (filter-patterns c pname))
-
-  (:method ((c category) (w word)) )
-
-  )
+  (:method ((c category) (w word))
+    (filter-patterns c w))
+  (:method ((i individual) (w word))
+    (filter-patterns i w))
+  (:method ((head-edge edge) (prep-edge edge))
+    (assert (eq (edge-form prep-edge) category::preposition))
+    (let ((prep (edge-left-daughter prep-edge)))
+      (takes-preposition? (edge-referent head-edge) prep))))
 
 
 
