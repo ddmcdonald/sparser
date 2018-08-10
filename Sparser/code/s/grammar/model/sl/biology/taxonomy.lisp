@@ -707,7 +707,7 @@
   :documentation "used as a marker for adjectives which can follow nouns")
 
 (define-category pathway-direction :specializes bio-relation
-  :mixins (post-adj)
+;;  :mixins (post-adj)  messes up pred-adj reading of 'upstream'
   :binds ((relative-to (:or bio-process bio-entity pathway))
           (pathway pathway))
   :realization
