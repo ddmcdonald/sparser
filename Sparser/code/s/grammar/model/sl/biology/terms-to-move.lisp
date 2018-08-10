@@ -30,8 +30,12 @@ be biology specific, since they aren't. |#
 
 (adj "downstream" :super pathway-direction
   :realization (:adj "downstream"))
-(noun "upstream" :super pathway-direction
-   :realization (:noun "upstream"))
+(adj "upstream" :super pathway-direction
+     :realization (:adj "upstream"))
+
+(def-synonym downstream (:noun ("downstreams" :plural "downstreamsxxx")))
+(def-synonym upstream (:noun ("upstreams" :plural "upstreamsxxx")))
+
 
 (noun "route" :super bio-mechanism)
 
