@@ -346,6 +346,18 @@
 	   (error "Unexpected case in headline walk: ~s" daughter))))))
 
 
+(defun right-fringe (base)
+  "Accumulate and return the edges that lie on the right fringe
+   down from the input edge."
+  (let ((daughter (edge-right-daughter base)))
+    (etypecase daughter
+      (null)
+      (word (list base))
+      (symbol (list base)) ;;/// extend for long edges
+      (edge (cons base (right-fringe daughter))))))
+
+
+
 (defun find-copular-vp (vp-edges)
   (loop for edge in vp-edges
     when (copular-vp edge)
