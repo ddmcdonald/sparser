@@ -555,6 +555,16 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
          (break "new folding confiburation: ~a" stmt-form))))))
 
 
+;;;---
+
+(defun move-np-to-stranded-prep (prep-edge np-edge)
+  (when (edge-used-in prep-edge)
+    (error "preposition not independent"))
+  (when (edge-used-in np-edge)
+    (error "np not independent"))
+  (let ((rule (multiply-edges prep-edge np-edge)))
+    (unless rule (error "no rule for prep+np ??"))
+    (make-completed-binary-edge prep-edge np-edge rule)))
 
 
 ;;;-------------------

@@ -266,7 +266,7 @@
         (e4-form (cat-name (edge-form (fourth edges)))))
     (cond
       ((and (eq e2-form 'preposed-auxiliary) ;; is
-            (eq e3-form 'np)                 ;; stat3 upstream
+            (eq e3-form 's)                 ;; stat3 upstream
             (eq e4-form 'preposition))       ;; from
        (when *debug-questions*
          (wh-stranded-prep wh-edge (third edges) (fourth edges) start-pos end-pos)))
@@ -274,28 +274,48 @@
        (when *debug-questions*
          (break "new 4 edge wh case"))  ))))
 
+
 (defun wh-stranded-prep (wh-edge main-edge prep-edge start-pos end-pos)
   "Intended for use with every case of reasonably short questions
- that end in a preposition. (Presumably not functioning as a particle
- though we don't check that these days - 8/18.)"
-  (let* ((item (edge-referent wh-edge))
-         (preposition (edge-left-daughter prep-edge))
-         (head (takes-preposition? main-edge prep-edge)))
-    ;;/// in general we'll have to search down the right fringe
+   that end in a preposition. (Presumably not functioning as a particle
+   though we don't check that these days - 8/18.)"
+  (let* ((fringe-edges (right-fringe main-edge))
+         (head (loop for edge in fringe-edges
+                  when (takes-preposition? edge prep-edge)
+                  return edge)))
     (when head
-      (let ((variable (subcategorized-variable head preposition item)))
-        (when variable ;; if not, should look for a lower head
+      (let* ((item (edge-referent wh-edge))
+             (preposition (edge-left-daughter prep-edge))
+             (variable (subcategorized-variable
+                        (edge-referent head) preposition item)))
+        (when variable ;; if not, should perhaps look for a lower head
           ;; Replace the prep with a proper pp which wh-edge as its
-          ;; complement. (Ensure that the semantic-function doesn't
-          ;; get in the way of that.) Consider using the literal
-          ;; wh-edge. Attach the pp to the head, which will likely
-          ;; require a tuck.
-          ;; Formulate a question wrapper that incorporates the
-          ;; content of the wh-edge and uses the variable.
-          variable)))))
+          ;; complement. Consider using the literal wh-edge.
+          (let* ((pp-edge (move-np-to-stranded-prep prep-edge wh-edge))
+                 (subsumed-edge head))
+            (let ((rule (multiply-edges head pp-edge)))
+              (when rule
+                (let ((new-edge (make-completed-binary-edge
+                                 head pp-edge rule)))
+                  ;;/// Right now (8/12/18) this blows up the function
+                  ;; extract-string-from-char-buffers as called from
+                  ;; note-surface-string from complete because the
+                  ;; obvious character indicies are nonesense unless
+                  ;; we do something.
+                  (tuck-new-edge-under-already-knit
+                   subsumed-edge new-edge main-edge :right)
+                  (break "pieces?")
+
+                  ;; Attach the pp to the head, which will likely
+                  ;; require a tuck.
+                  ;; Formulate a question wrapper that incorporates the
+                  ;; content of the wh-edge and uses the variable.
+                  variable)))))))))
 
 
-  
+
+
+
 ;; (p "where should I put the block?")
 ;;
 (defun wh-initial-followed-by-modal (wh-edge edges start-pos end-pos)
