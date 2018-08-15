@@ -101,66 +101,119 @@
   "Construct an instance of 'be' by directly invoking the rules"
   ;; (is) (Selumetinib) (an inhibitor of MEK1)
   (tr :wh-walk "make-polar-copular-question")
-  (let* ((be (edge-referent (first edges)))  ;; is
+  (let* ((be (edge-referent (first edges)))    ;; is
          (subj (edge-referent (second edges))) ;; Selumetinib
-         (obj (edge-referent (third edges))) ;; an inhibitor of MEK1
+         (obj (edge-referent (third edges)))   ;; an inhibitor of MEK1
          ;; run the core of assimilate-np-to-v-as-object. Result in an instance of 'be'
-         (i (assimilate-object be obj)))
-    (setq i (bind-variable 'subject subj i))
-    (let ((q (make-polar-question i)))
-      (make-edge-over-long-span
-       start-pos end-pos
-       (itype-of i)
-       :rule 'make-polar-copular-question
-       :form category::s ;;question
-       :referent q))))
+         ;;(i (assimilate-object be obj))
+         (be+subj
+          (let ((*right-edge-into-reference* (first edges))
+                (*left-edge-into-reference* (second edges)))
+            (assimilate-subject subj be)))
+         (subj-vg-edge
+          (make-binary-edge/explicit-rule-components
+           (first edges) (second edges)
+           :rule-name 'polar-copula-question-subject
+           :form category::transitive-clause-without-object
+           :category category::be
+           :referent be+subj))
+         (copular-meaning 
+          (let ((*right-edge-into-reference* (third edges))
+                (*left-edge-into-reference* subj-vg-edge))
+            (assimilate-object (edge-referent subj-vg-edge) obj)))
+         (copula-edge
+          (when (and be+subj copular-meaning)
+            (make-binary-edge/explicit-rule-components
+             subj-vg-edge (third edges)
+             :rule-name 'polar-copula-question-object
+             :form category::s
+             :category category::be
+             :referent copular-meaning))))
+    (declare (special be subj obj subj-vg-edge copula-edge polar-edge))
+    ;;(setq i (bind-variable 'subject subj i))
+    (when copula-edge (make-polar-edge copula-edge))))
          
-
+(defun make-polar-edge (statement-edge)
+  (let* ((start-vec (edge-starts-at statement-edge))
+         (end-vec (edge-ends-at statement-edge))
+         (pred (edge-referent statement-edge))
+         (edge
+          (make-completed-unary-edge
+           start-vec end-vec
+           'make-polar-edge ;; rule
+           statement-edge
+           (itype-of (edge-referent statement-edge))
+           category::s ;; form
+           (make-polar-question (edge-referent statement-edge)))))
+    edge))
     
 (defun make-polar-adjective-question (start-pos end-pos edges)
   (tr :wh-walk "make-polar-adjective-question")
+  (when (> (length (all-tts start-pos end-pos)) 3)
+    (setq end-pos (pos-edge-ends-at (third (all-tts start-pos end-pos)))))
   (let* ((be (edge-referent (first edges)))  ;; is
          (np (edge-referent (second edges))) ;; the ball
          (adj (edge-referent (third edges))) ;; red
-         (*left-edge-into-reference* (first edges))
-         (copular-adj (make-copular-adjective be adj))
-         (copular-statement (when copular-adj
-                              (assimilate-subject np copular-adj nil))))
-    (declare (special *left-edge-into-reference*))
+         (copular-adj
+          (let ((*left-edge-into-reference* (first edges))
+                (*right-edge-into-reference* (third edges)))
+            (make-copular-adjective be adj)))
+         (copular-adj-edge
+          (when copular-adj
+            (make-edge-over-long-span
+             start-pos end-pos
+             (itype-of copular-adj)
+             :rule 'make-polar-adjective-question
+             :form category::adjg ;;question
+             :referent copular-adj)))
+         (copular-pred
+          (when copular-adj
+            (let ((*left-edge-into-reference* (first edges))
+                  (*right-edge-into-reference* copular-adj-edge))
+              (assimilate-subject np copular-adj nil))))
+         (copular-pred-edge
+          (when copular-pred
+            (make-edge-over-long-span
+             start-pos end-pos
+             (itype-of copular-pred)
+             :rule 'make-polar-adjective-question-internal
+             :form category::s
+             :referent copular-pred))))
     ;; this is bound since make-copular-adjective needs to know the edge for the "BE"
     ;; to check if it is an infinitive
-    (when (> (length (all-tts start-pos end-pos)) 3)
-      (setq end-pos (pos-edge-ends-at (third (all-tts start-pos end-pos)))))
-    (when copular-statement
-      (let ((q (make-polar-question copular-statement)))
-        (make-edge-over-long-span
-         start-pos end-pos
-         (itype-of copular-statement)
-         :rule 'make-polar-adjective-question
-         :form category::s ;;question
-         :referent q)))))
+    (make-polar-edge copular-pred-edge)))
 
 (defun make-polar-participle-question (start-pos end-pos edges)
   (tr :wh-walk "make-polar-participle-question")
   (let* ((be (edge-referent (first edges)))  ;; is
          (np (edge-referent (second edges))) ;; the BRAF-NRAS complex
          (participle (edge-referent (third edges))) ;; sustained in time
-         (*left-edge-into-reference* (first edges))
-         (participle-vp (check-passive-and-add-tense/aspect be participle))
-         (participle-statement
+         ;; Code to ensure that all introduced semantic individuals have corresponding edges
+         (participle-vp
+          (let ((*left-edge-into-reference* (first edges)))
+            (check-passive-and-add-tense/aspect be participle)))
+         (participle-vp-edge
           (when participle-vp
-            (assimilate-subject np participle-vp nil))))
-    (declare (special *left-edge-into-reference*))
-    ;; this is bound since make-copular-adjective needs to know the edge for the "BE"
-    ;; to check if it is an infinitive
-    (when participle-statement
-      (let ((q (make-polar-question participle-statement)))
-        (make-edge-over-long-span
-         start-pos end-pos
-         (itype-of participle-statement)
-         :rule 'make-polar-participle-question
-         :form category::s ;;question
-         :referent q)))))
+            (make-edge-over-long-span
+             start-pos end-pos
+             (itype-of participle-vp)
+             :rule 'make-polar-participle-question-2
+             :form category::vp ;;question
+             :referent participle-vp)))
+         ;; Code to ensure that all introduced semantic individuals have corresponding edges
+         (participle-statement
+          (when participle-vp (assimilate-subject np participle-vp nil)))
+         (participle-statement-edge
+          (when participle-statement
+            (make-edge-over-long-span
+             start-pos end-pos
+             (itype-of participle-statement)
+             :rule 'make-polar-participle-question
+             :form category::s ;;question
+             :referent participle-statement))))
+
+    (when participle-statement-edge
+      (make-polar-edge participle-statement-edge))))
 
 
 
@@ -196,8 +249,8 @@
          (warn "something in 'edges' isn't an edge: ~a" edges)))
     (return-from wh-initial-three-edges nil))
   
-  (let ((e2-form (cat-name (edge-form (second edges))))
-        (e3-form (cat-name (edge-form (third edges))))
+  (let ((e2-form (form-cat-name (second edges)))
+        (e3-form (form-cat-name (third edges)))
         (other (value-of 'other (edge-referent wh-edge))))
     ;;(lsp-break "check values")
     (cond
@@ -261,9 +314,9 @@
 
 (defun wh-initial-four-edges/be (wh-edge edges start-pos end-pos)
   (tr :wh-walk "wh-initial-four-edges/be")
-  (let ((e2-form (cat-name (edge-form (second edges))))
-        (e3-form (cat-name (edge-form (third edges))))
-        (e4-form (cat-name (edge-form (fourth edges)))))
+  (let ((e2-form (form-cat-name (second edges)))
+        (e3-form (form-cat-name (third edges)))
+        (e4-form (form-cat-name (fourth edges))))
     (cond
       ((and (eq e2-form 'preposed-auxiliary) ;; is
             (eq e3-form 's)                 ;; stat3 upstream
