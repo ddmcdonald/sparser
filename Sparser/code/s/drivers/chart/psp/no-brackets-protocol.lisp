@@ -416,7 +416,9 @@ individuals in a sentence to the mention(s) for those individual in that sentenc
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article*
                     *end-of-sentence-display-operation*
-                    *predication-links-ht* ))
+                    *predication-links-ht*
+                    *sentence-in-core*))
+  (setq *sentence-in-core* sentence)
   (set-discourse-history sentence (cleanup-lifo-instance-list))
   (when *end-of-sentence-display-operation*
     (funcall *end-of-sentence-display-operation* sentence))
