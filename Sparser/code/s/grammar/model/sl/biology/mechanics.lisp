@@ -736,7 +736,7 @@ uid binding, if there is one"
                ;; no longer calls make-phosphorylated-protein so we
                ;; can split off cases like this where there is no edge
                ;; since we're creating a word instead
-               (prot-pred (create-predication-by-binding-only
+               (prot-pred (create-predication-by-binding
                                  var protein
                                  (find-or-make-lattice-description-for-ref-category
                                   category::phosphorylate)))
@@ -1546,24 +1546,12 @@ e.g. 'phospho-'"
                        protein)))
     (bind-dli-variable
      'predication
-     (create-predication-by-binding-only ;; possibly change to sometimes make pred edge
+     (create-predication-and-edge-by-binding
+      ;; possibly change to sometimes make pred edge
       (subcategorized-variable  category::phosphorylate :object protein)
       new-prot
       (find-or-make-lattice-description-for-ref-category category::phosphorylate))
      new-prot)))
-
-#+ignore
-(defun def-phosphorylated-protein (word-string protein-edge
-                                   &aux (protein (edge-referent protein-edge)))
-  (declare (special category::phosphorylate))
-  (let ((i (make-phosphorylated-protein protein word-string)))
-    (let ((word (resolve/make word-string)))
-      (define-cfr (itype-of protein) `(,word)
-        :form (edge-form protein-edge)
-        :referent i))))
-
-
-
 
 
 ;;;-------------------
