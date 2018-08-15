@@ -333,7 +333,7 @@
    as a variable in the referent"
   (or
    (when (and *save-surface-text-as-variable*
-              (not (member (cat-name (edge-form edge))
+              (not (member (form-cat-name edge)
                            '(lambda-form)))
               (loop for st-class in *save-surface-text-classes*
                     thereis (itypep referent st-class)))
@@ -1017,7 +1017,8 @@ in cwc-integ/spire/interface/sparser.lisp
   (let ((*mentions* nil))
     (declare (special *mentions*))
     (loop for tt in (all-tts (starts-at-pos s) (ends-at-pos s))
-          when (edge-p tt)
+          when (and (edge-p tt)
+                    (not (eq (cat-name (edge-category tt)) 'bio-entity)))
           do
             (traverse-edges-below
              tt
