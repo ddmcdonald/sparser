@@ -387,7 +387,7 @@
 
 (defun apply-of-np-to-nominalization-of-transitive (verb-or-np of)
   (when (and
-         (eq (cat-name (edge-form (left-edge-for-referent verb-or-np)))
+         (eq (form-cat-name (left-edge-for-referent verb-or-np))
              'np)
          (find-object-vars verb-or-np))
     (lsp-break "apply-of-np-to-nominalization-of-transitive")))

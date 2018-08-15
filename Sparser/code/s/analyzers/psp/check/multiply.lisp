@@ -416,6 +416,10 @@
      (setf (gethash cat *cat-names*)
            (intern (symbol-name  (cat-symbol cat)) :sparser)))))
 
+(defun form-cat-name (edge)
+  (declare (optimize (speed 3)(safety 0)))
+  (when (edge-p edge)
+    (cat-name (edge-form edge))))
 
 ;;;-----------------------------------
 ;;; ringing the changes on composites

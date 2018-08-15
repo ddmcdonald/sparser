@@ -388,7 +388,7 @@
   (:method ((i individual) (w word))
     (filter-patterns i w))
   (:method ((head-edge edge) (prep-edge edge))
-    (assert (eq (edge-form prep-edge) category::preposition))
+    (assert (eq (form-cat-name prep-edge) 'preposition))
     (let ((prep (edge-left-daughter prep-edge)))
       (takes-preposition? (edge-referent head-edge) prep))))
 
@@ -954,7 +954,7 @@
          (of-object
           (and  (equalp (pname label) "of")
                 *left-edge-into-reference* ;; i.e. check that it's bound
-                (member (cat-name (edge-form *left-edge-into-reference*))
+                (member (form-cat-name *left-edge-into-reference*)
                         '(np ng vg+ing))
                 (loop for pat in subcat-patterns
                       when (and (equalp (pname (subcat-label pat)) "of")

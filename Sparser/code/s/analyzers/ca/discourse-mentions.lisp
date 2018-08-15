@@ -292,7 +292,7 @@
 
 (defun semantic-edges-under (edge)
   "Return the meaning-carrying edge(s) under this edge"
-  (unless (eq 'subject-relative-clause (cat-name (edge-form edge)))
+  (unless (eq 'subject-relative-clause (form-cat-name edge))
     (setq edge (un-embed-edge edge)))
   (remove-if #'(lambda(e) (not (edge-p e))) ;; filters out words
              (edges-under edge)))
@@ -316,12 +316,12 @@
    true, since we expect the semantic content of the edge to be 
    on one of this edge's daughters."
   (and ;;(not (is-basic-collection? (edge-referent edge)))
-       (or (member (cat-name (edge-form edge))
+       (or (member (form-cat-name edge)
                    '(subject-relative-clause thatcomp))
            ;; no longer correct for new han dling of there-exists...
            #+ignore
            (and (eq 'there-exists (cat-name (edge-category edge)))
-                (not (eq 'question (cat-name (edge-form edge))))))))
+                (not (eq 'question (form-cat-name edge)))))))
 
 (defun edges-under (edge)
   "Accommodates the variations of where the 'daughter' edge or edges
@@ -473,7 +473,7 @@
                    '(:conjunction/identical-form-labels
                      :conjunction/identical-adjacent-labels))
            (edge-mention edge))
-          ((member (cat-name (edge-form edge))
+          ((member (form-cat-name edge)
                    '(subject-relative-clause thatcomp))
            (safe-edge-mention (edge-right-daughter edge)))
           ((and (cfr-p (edge-rule edge))

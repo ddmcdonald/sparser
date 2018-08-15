@@ -490,7 +490,7 @@ for ambiguous words"
        (eq 'category::syntactic-there l-triple-left) ;; competing against a "there BE"
        (and
         (competition-against-clausal-object? l-triple-rhs)
-        (not (eq 'thatcomp (cat-name (edge-form r-triple-3))))
+        (not (eq 'thatcomp (form-cat-name r-triple-3)))
         
         ;; likely competition against a relative clause or a main clause
         ;;  accept r-triple as a winner if if is a rightward extension of and NP
@@ -503,11 +503,11 @@ for ambiguous words"
                   )))
         (or
 
-         (and (eq (cat-name (edge-form r-triple-3)) 'pp)
+         (and (eq (form-cat-name r-triple-3) 'pp)
               (member (edge-left-daughter (edge-left-daughter r-triple-3))
                       (get-tag :loc-pp-complement (itype-of (edge-referent (second l-triple)))))
               (not (some-edge-satisfying? (edges-after r-triple-3) #'pp?)))
-         (not (member (cat-name (edge-form r-triple-3))
+         (not (member (form-cat-name r-triple-3)
                       '(pp vg+ing ;;and prevent GTP loading"
                         ;; "To validate the use of an in vitro system to dissect the mechanism of Ras regulation.
                         to-comp where-relative-clause when-relative-clause
@@ -580,7 +580,7 @@ for ambiguous words"
   (and ;; need to generalize this for "high priority" NP post-modifiers
    (category-p (second r-triple-rhs))
    (or (member (cat-name (second r-triple-rhs)) '(in-vitro in-vivo))
-       (eq (cat-name (edge-form (third r-triple)))
+       (eq (form-cat-name (third r-triple))
            'object-relative-clause))))
 
 (defun pp-relative-clause? (r-triple &aux (r-triple-rhs (cfr-rhs (car r-triple))))
@@ -636,7 +636,7 @@ for ambiguous words"
 	  (not (and ;; need to generalize this for "high priority" NP post-modifiers
 		(category-p (second r-triple-rhs))
                 (or (member (cat-name (second r-triple-rhs)) '(in-vitro in-vivo))
-                    (eq (cat-name (edge-form r-triple-3)) 'object-relative-clause))))
+                    (eq (form-cat-name r-triple-3) 'object-relative-clause))))
 	(or
          
          ;;(eq 'category::infinitive l-triple-left)
@@ -651,11 +651,11 @@ for ambiguous words"
 	  ;;  accept r-triple as a winner if if is a rightward extension of and NP
 	  ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
           (or
-           (and (eq (cat-name (edge-form r-triple-3)) 'pp)
+           (and (eq (form-cat-name r-triple-3) 'pp)
                 (member (edge-left-daughter (edge-left-daughter r-triple-3))
                         (get-tag :loc-pp-complement (itype-of (edge-referent (second l-triple)))))
                 (not (some-edge-satisfying? (edges-after r-triple-3) #'pp?)))
-           (not (member (cat-name (edge-form r-triple-3))
+           (not (member (form-cat-name r-triple-3)
                         '(pp
                           ;; "To validate the use of an in vitro system to dissect the mechanism of Ras regulation.
                           to-comp where-relative-clause when-relative-clause

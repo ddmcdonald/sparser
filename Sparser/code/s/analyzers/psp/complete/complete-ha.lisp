@@ -139,7 +139,7 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
   (declare (special *name-realizations* *return-after-doing-forest-level*))
   (when (and *name-realizations*
              *return-after-doing-forest-level*
-             (member (cat-name (edge-form edge)) '(np proper-noun)))
+             (member (form-cat-name edge) '(np proper-noun)))
     (let* ((ref (edge-referent edge))
            (name (or (value-of 'name ref)
                      (cat-name (itype-of ref))))
@@ -194,11 +194,11 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
                    (when (edge-p e)
                      (cond
                        ((or
-                         (member (cat-name (edge-form e))
+                         (member (form-cat-name e)
                                  '(common-noun common-noun/plural proper-noun))
                          (and (<= (pos-token-index (pos-edge-ends-at e))
                                   (+ np-span (pos-token-index (pos-edge-starts-at e)))) ;; catch "histone 2B"
-                              (member (cat-name (edge-form e)) '(np))))
+                              (member (form-cat-name e) '(np))))
                         (return-from find-np-type-edge
                           (elt (ev-edge-vector ev) i)))
                        ((eq (edge-rule e) 'KNIT-PARENS-INTO-NEIGHBOR)

@@ -157,7 +157,7 @@
                                 (if (itypep left-ref 'no-space-prefix)
                                     category::verb+ed
                                     category::vp+ed))
-                               ((member (cat-name (edge-form right-edge))
+                               ((member (form-cat-name right-edge)
                                         '(common-noun common-noun/plural proper-noun
                                           n-bar ;; point-mutations are n-bar
                                           ))
@@ -165,7 +165,7 @@
                                #+ignore
                                ;; DAVID -- why does this not behave the same as an actual verb+ing edge
                                ;; in terms of chunking in "COT-expressing cancer cells"?
-                               ((eq (cat-name (edge-form right-edge)) 'verb+ing)
+                               ((eq (form-cat-name right-edge) 'verb+ing)
                                 category::verb+ing)
                                (t
                                 category::adjective))

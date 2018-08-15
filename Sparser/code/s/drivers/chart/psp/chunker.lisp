@@ -338,7 +338,7 @@
   (case form 
     (ng (if (sentential-adverb? edge)
             (loop for ee in (edges-before edge)
-                  thereis (member (cat-name (edge-form ee)) '(det possessive)))
+                  thereis (member (form-cat-name ee) '(det possessive)))
             (and (ng-compatible? edge ev-list)      
                  (or remaining-forms?
                      (not (likely-verb+ed-clause edge ev-list))))))
@@ -415,7 +415,7 @@
                     category::verb+ed
                     word::comma))
   (let ((edges (ev-top-edges (car evlist)))
-        (eform (when (edge-p e) (cat-name (edge-form e))))
+        (eform (when (edge-p e) (form-cat-name e)))
         (ecat (when (edge-p e) (cat-name (edge-category e))))
         preceding-noun-refs)
 
@@ -423,7 +423,7 @@
       ((let ((before (edges-before e)))
          (loop for ee in before
                thereis
-                 (and (member (cat-name (edge-form ee)) '(proper-noun np ng))
+                 (and (member (form-cat-name ee) '(proper-noun np ng))
                       (is-basic-collection? (edge-referent ee))
                       (loop for b-edge in (edges-before ee)
                             thereis
@@ -489,7 +489,7 @@
                     thereis (is-object-not-subject? ref e)))
                 
                 ((loop for edge in edges 
-                    thereis (member (cat-name (edge-form edge))
+                    thereis (member (form-cat-name edge)
                                     '(det quantifier adjective
                                       comparative-adjective superlative-adjective))))))
          (verb+ed                                                   ;; VERB+ED
@@ -534,10 +534,10 @@
 (defun non-det-or-verb-ng-start? (ee)
   (and (edge-p ee)
        (ng-start? ee)
-       (not (member (cat-name (edge-form ee)) '(det verb+ed verb+ing)))))
+       (not (member (form-cat-name ee) '(det verb+ed verb+ing)))))
 
 (defun np-end-edge (ee)
-  (member (cat-name (edge-form ee)) '(proper-noun pronoun)))
+  (member (form-cat-name ee) '(proper-noun pronoun)))
 
 
 (defun singular-det (e)
@@ -647,10 +647,10 @@
       (declare (special ev representative-edge))
       (when (and edges-before
                  (if (edge-p representative-edge)
-                     (eq (cat-name (edge-form representative-edge)) 'verb)
+                     (eq (form-cat-name representative-edge) 'verb)
                      (loop for e in (ev-edges ev)
                            thereis
-                             (eq (cat-name (edge-form e)) 'verb))))
+                             (eq (form-cat-name e) 'verb))))
                              
         (when (loop for ee in edges-before
                  thereis (eq (cat-name (edge-category ee)) 'to))
@@ -703,7 +703,7 @@ than a bare "to".  |#
                          (eq (cat-name (edge-category (edge-just-to-left-of e))) 'to)))))
           ((member ecn '(modal following-adj syntactic-there))
            nil)
-          ((member (cat-name (edge-form e)) '(vp+ed))
+          ((member (form-cat-name e) '(vp+ed))
            ;; this should only happen for NS words like GAP–mediate
            (not (preceding-adverb-or-subordinate-conjunction e)))
           ((eq category::verb+ed (edge-form e))
@@ -716,7 +716,7 @@ than a bare "to".  |#
              (and (not (preceding-adverb e))
                   (not (and (edge-p prev-edge)
                             (or (eq 'parentheses (cat-name (edge-category prev-edge)))
-                                (eq 'conjunction (cat-name (edge-form prev-edge))))))
+                                (eq 'conjunction (form-cat-name prev-edge)))))
                   (not (and
                         (car *chunks*)
                         (member 'ng (chunk-forms (car *chunks*)))
@@ -732,7 +732,7 @@ than a bare "to".  |#
            (or
             ;; this check is in there for cases like "there is little chance..."
             (and (edge-just-to-right-of e)
-                 (member (cat-name (edge-form (edge-just-to-right-of e)))
+                 (member (form-cat-name (edge-just-to-right-of e))
                          '(common-noun noun proper-noun)))
             (not (and (car *chunks*)
                       (member 'vg (chunk-forms (car *chunks*)))
@@ -755,7 +755,7 @@ than a bare "to".  |#
            (not (eq (edge-category e) category::also)))
           
           ((and (edge-form e)
-                (eq (cat-name (edge-form e)) 'wh-pronoun)
+                (eq (form-cat-name e) 'wh-pronoun)
                 (category-p (edge-referent e))
                 (member (cat-symbol (edge-referent e))
                         '(category::which category::whose category::what)))
@@ -784,7 +784,7 @@ than a bare "to".  |#
   (eq (pos-edge-starts-at e) (ev-position (car (chunk-ev-list chunk)))))
 (defun proper-noun-reduced-relative? (e *chunk* &aux 
                                                   (e-form-name
-                                                   (cat-name (edge-form e))))
+                                                   (form-cat-name e)))
   (declare (special *noun-categories*))
   (and (member e-form-name '(proper-name proper-noun))
        (boundp '*chunk*)
@@ -797,7 +797,7 @@ than a bare "to".  |#
        (loop for ee in (edges-after e)
              thereis
                (and (edge-form ee)
-                    (member (cat-name (edge-form ee))
+                    (member (form-cat-name ee)
                             '(verb verb+present ))
                     ;; a bit less likely when the verb is "BE"
                     ;; as in "Oncogenic mutations in the serine/threonine kinase B-RAF are found..."
@@ -806,7 +806,7 @@ than a bare "to".  |#
 (defmethod ng-head? ((e edge))
   (declare (special e *chunk* word::comma)) 
   (let ((edges-before (edges-before e))
-        (e-form-name  (cat-name (edge-form e))))
+        (e-form-name  (form-cat-name e)))
     (declare (special edges-before e-form-name))
     (and
     ;;code to split "the genes STAT3 regulates"
@@ -830,7 +830,7 @@ than a bare "to".  |#
                (loop for ee in edges-before
                      thereis
                        (or (eq (edge-category ee) word::comma)
-                           (member (cat-name (edge-form ee))
+                           (member (form-cat-name ee)
                                    '(quantifier det adverb punctuation))))))
         
       (unless (or (preceding-adverb e edges-before)
@@ -849,7 +849,7 @@ than a bare "to".  |#
           ((eq e-form-name 'quantifier)
            (and (not (itypep (edge-referent e) 'not))
                 (or (loop for ee in edges-before
-                          thereis (eq (cat-name (edge-form ee)) 'det))
+                          thereis (eq (form-cat-name ee) 'det))
                     (not (boundp '*chunk*)) ;; happens in looking at np-head? of first chunk
                     (not (chunk-ev-list *chunk*)))))
           ((plural-noun-and-present-verb? e)
@@ -871,9 +871,9 @@ than a bare "to".  |#
              (declare (special end-pos prev-edge)) 
              (not (or
                    (itypep (edge-category e) 'state) ;; block resulting
-                   (and (edge-p prev-edge)(eq (cat-name (edge-form prev-edge)) 'adverb))
+                   (and (edge-p prev-edge)(eq (form-cat-name prev-edge) 'adverb))
                    (let ((next-edge (right-treetop-at/edge end-pos)))
-                     (and (edge-p next-edge)(eq (cat-name (edge-form next-edge )) 'det)))
+                     (and (edge-p next-edge)(eq (form-cat-name next-edge) 'det)))
                    (memq 
                     (word-symbol (pos-terminal (pos-edge-ends-at e)))
                     '(WORD::|that| WORD::|which| WORD::|whose|))))))
@@ -1058,7 +1058,7 @@ than a bare "to".  |#
 
 (defun noun-like-ng-head? (edge)
   (and (ng-head? edge)
-       (not (member (cat-name (edge-form edge)) '(det quantifier)))))
+       (not (member (form-cat-name edge) '(det quantifier)))))
 
 (defun preceding-noun-refs (edges)
   (loop for edge in edges
@@ -1076,13 +1076,13 @@ than a bare "to".  |#
 (defun preceding-adverb-preceded-by-ng (edges)
   (and
    (loop for edge in edges thereis
-           (eq (cat-name (edge-form edge)) 'adverb))
+           (eq (form-cat-name edge) 'adverb))
    (loop for edge in edges thereis
            (loop for left in (edges-just-to-left-of edge)
                  thereis
                    (and (edge-p left)
                         (or
-                         (and (eq (cat-name (edge-form left))  'adverb)
+                         (and (eq (form-cat-name left)  'adverb)
                               (ng-head? (edge-just-to-left-of left)))
                          (and (ng-head? left)
                               (not (eq (cat-name (edge-category left)) 'that)))))))))
@@ -1091,9 +1091,9 @@ than a bare "to".  |#
 (defun likely-verb+ed-clause (edge ev-list &aux (right (edge-just-to-right-of edge)))
   (declare (special *np-category-names* edge ev-list)
            (optimize (debug 3)))
-  (when (and (eq 'adverb (cat-name (edge-form edge)))
+  (when (and (eq 'adverb (form-cat-name edge))
              (edge-p right)
-             (eq 'verb+ed (cat-name (edge-form right))))
+             (eq 'verb+ed (form-cat-name right)))
     (setq edge right))
   (let* ((e-form (edge-form edge))
          (edge-form-name (cat-name e-form)) ;; COMMA has no edge-form
@@ -1126,7 +1126,7 @@ than a bare "to".  |#
                  (and ;; e.g. "EGF strongly activated EGFR"
                   (cadr ev-list)
                   (loop for e in (ev-top-edges (car ev-list))
-                        thereis (eq (cat-name (edge-form e)) 'adverb))
+                        thereis (eq (form-cat-name e) 'adverb))
                   (likely-separated-subject? (cadr ev-list) e-ref))))
            (maybe-save-verb+ed-sents edge)
            t)
@@ -1136,7 +1136,7 @@ than a bare "to".  |#
   (declare (special *np-category-names*))
   (loop for e in (ev-top-edges ev)
         thereis
-          (and (memq (cat-name (edge-form e)) *np-category-names*)
+          (and (memq (form-cat-name e) *np-category-names*)
                (or (is-basic-collection? (edge-referent e))
                    (and (not (verb-premod? (edge-referent e) v))
                         (find-subcat-var (edge-referent e) :subject v))))))
@@ -1164,15 +1164,15 @@ than a bare "to".  |#
 
 
 (defun pronoun-or-wh-pronoun (edge)
-  (or (eq (cat-name (edge-form edge)) 'pronoun )
+  (or (eq (form-cat-name edge) 'pronoun )
       (member (cat-name (edge-category edge)) '(which what))))
 
 (defun preposition-edge? (edge)
   (when (edge-p edge)
-    (prep? (cat-name (edge-form edge)))))
+    (prep? (form-cat-name edge))))
 
 (defun pp? (edge)
-  (eq (cat-name (edge-form edge)) 'pp))
+  (eq (form-cat-name edge) 'pp))
 
 #+ignore
 (defun constrain-following (e)
@@ -1183,7 +1183,7 @@ than a bare "to".  |#
 (defun clear-np-start? (e)
   (or
    (member (cat-name (edge-category e)) '(which what))
-   (member (cat-name (edge-form e)) '(pronoun det))))
+   (member (form-cat-name e) '(pronoun det))))
 
 
 (defun prev-noun-or-adj (e &optional (edges-before (edges-before e)))
@@ -1191,7 +1191,7 @@ than a bare "to".  |#
         thereis
           (and
            (category-p (edge-form ee))
-           (member (cat-name (edge-form ee))
+           (member (form-cat-name ee)
                    '(adjective comparative-adjective superlative-adjective
                      common-noun proper-noun)))))
 
@@ -1219,7 +1219,7 @@ than a bare "to".  |#
      thereis (det-prep-poss-or-adj? ee)))
 
 (defun det-prep-poss-or-adj? (ee)
-  (or (member (cat-name (edge-form ee)) '(det possessive adjective
+  (or (member (form-cat-name ee) '(det possessive adjective
                                           comparative-adjective superlative-adjective
                                           number
                                           verb+ed verb+ing))
@@ -1240,27 +1240,27 @@ than a bare "to".  |#
        (or
         (eq (cat-name (edge-category ee)) 'which)
         (eq (cat-name (edge-category ee)) 'that)
-        (eq (cat-name (edge-form ee)) 'pronoun))))
+        (eq (form-cat-name ee) 'pronoun))))
 
 (defun preceding-determiner? (e &optional (edges (edges-before e)))
     (loop for ee in edges
      thereis
-         (eq (cat-name (edge-form ee)) 'det)))
+         (eq (form-cat-name ee) 'det)))
 
 (defun followed-by-verb (e &optional (edges-after (edges-after e)))
   (loop for ee in edges-after
      thereis
-       (member (cat-name (edge-form ee)) '(verb verb+ed verb+ing))))
+       (member (form-cat-name ee) '(verb verb+ed verb+ing))))
 
 (defun preceding-adverb (e &optional (edges (edges-before e)))
   (loop for ee in edges
      thereis
-       (eq (cat-name (edge-form ee)) 'adverb)))
+       (eq (form-cat-name ee) 'adverb)))
 
 (defun preceding-adverb-or-subordinate-conjunction (e &optional (edges (edges-before e)) )
   (loop for ee in edges
      thereis
-       (member (cat-name (edge-form ee)) '(adverb subordinate-conjunction))))
+       (member (form-cat-name ee) '(adverb subordinate-conjunction))))
 
 (defun followed-by-of (e &optional (edges-after (edges-after e)))
   (loop for ee in edges-after

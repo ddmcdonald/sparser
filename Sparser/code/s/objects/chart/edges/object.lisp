@@ -95,7 +95,7 @@
 (defun allowable-referential-edge? (edge value)
   "Should edges of this form that have categories for referents
    retain that referent (vs. have it converted to an individual)"
-  (or (member (cat-name (edge-form edge))
+  (or (member (form-cat-name edge)
               '(preposition spatial-preposition
                 comparative superlative
                 spatio-temporal-preposition))

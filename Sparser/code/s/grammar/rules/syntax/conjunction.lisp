@@ -539,8 +539,8 @@
                   (not (eq before after)))
              (and (category-p before)
                   (category-p after)
-                  (if (and (eq (cat-name (edge-form edge-before)) 'vg)
-                           (eq (cat-name (edge-form edge-after)) 'vg))
+                  (if (and (eq (form-cat-name edge-before) 'vg)
+                           (eq (form-cat-name edge-after) 'vg))
                    (not
                     (or (and (itypep before 'process)
                              (itypep after 'process))

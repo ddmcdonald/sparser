@@ -304,7 +304,7 @@
 (defgeneric proper-noun? (edge)
   (:documentation "Checks the form of the edge. Provides syntactic sugar")
   (:method ((e edge))
-    (eq (cat-name (edge-form e)) 'proper-noun)))
+    (eq (form-cat-name e) 'proper-noun)))
 
 
 

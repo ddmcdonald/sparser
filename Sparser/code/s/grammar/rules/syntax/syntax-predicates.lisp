@@ -118,7 +118,7 @@
    (subcategorized-variable vp :subject subj)
    (or (not (or (missing-object-vars vp)
                 (and (not (intransitive? (itype-of vp))) ;; for cases like "X resulted in Y"
-                     (eq (cat-name (edge-form (right-edge-for-referent))) 'vp+ed))))
+                     (eq (form-cat-name (right-edge-for-referent)) 'vp+ed))))
        ;; can't be a reduced relative, no available object-var
 
        ;; Unless we have reason to believe the object's been
@@ -142,7 +142,7 @@
      (or (not (and word-before-subj
                    (string-equal (pname word-before-subj) "that")))
          (and (edge-p (edge-to-its-right (right-edge-for-referent)))
-              (member (cat-name (edge-form (edge-to-its-right (right-edge-for-referent))))
+              (member (form-cat-name (edge-to-its-right (right-edge-for-referent)))
                       '(vp+ed vp))))
      (not (intransitive? (itype-of vp)))
      (subcategorized-variable vp :object subj))))
@@ -218,7 +218,7 @@
 (defun is-passive? (edge)
   (declare (special category::subordinate-clause category::vp+passive
                     category::vg+passive category::verb+passive))
-  (let ((form (cat-name (edge-form edge))))
+  (let ((form (form-cat-name edge)))
     (case form
       ((subordinate-clause subject-relative-clause)
        (cond
@@ -273,7 +273,7 @@
     (declare (special prep-edge left-daughter right-daughter))
     
     (flet ((prep-edge? (edge)
-             (memq (cat-name (edge-form edge))
+             (memq (form-cat-name edge)
                    '(preposition
                      spatio-temporal-preposition spatial-preposition))))
       (cond
@@ -352,7 +352,7 @@
     ;; e.g. in "about Myosin IIC ( xref ; xref )"
     (setq edge (edge-left-daughter edge)))
   (if (and (edge-p (edge-left-daughter edge))
-           (eq (cat-name (edge-form (edge-left-daughter edge))) 'adverb))
+           (eq (form-cat-name (edge-left-daughter edge)) 'adverb))
       (base-pp (edge-right-daughter edge))
       edge))
 

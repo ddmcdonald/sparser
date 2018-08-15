@@ -158,7 +158,7 @@ machinery. |#
              ;; case where there is no semantic predication established,
              ;; but there is a syntactic object
              ;; e.g. "was the result of defects in the developing embryo"
-             (not (member (cat-name (edge-form *left-edge-into-reference*))
+             (not (member (form-cat-name *left-edge-into-reference*)
 			  '(s vp thatcomp)))))
     (let* ((prep (value-of 'prep pp))
            (pobj (value-of 'pobj pp)))

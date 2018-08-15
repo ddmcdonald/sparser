@@ -230,7 +230,7 @@
                          (loop for e in
                                  (edges-after *right-edge-into-reference*)
                                thereis
-                                 (member (cat-name (edge-form e))
+                                 (member (form-cat-name e)
                                          '(vg vp vp+passive vp+past)))))
                    ))))) ;; need to generalize
              
