@@ -254,15 +254,13 @@
   (let* ((lambda-variable
           (loop for b in (indiv-binds old-lambda-pred)
                 when (eq **lambda-var** (binding-value b))
-                do (return (binding-variable b))))
-         (new-lambda-form
-          (when lambda-variable
-            (create-predication-by-binding-only
-             lambda-variable ;; var parameter
-             **lambda-var**  ;; val
-             new-pred-form   ;; pred
-             ))))
-    new-lambda-form))
+                do (return (binding-variable b)))))
+    (when lambda-variable
+      (create-predication-by-binding
+       lambda-variable      ;; var parameter
+       **lambda-var**       ;; val
+       new-pred-form        ;; pred
+       ))))
 
 
 ;;;---------------------------------
