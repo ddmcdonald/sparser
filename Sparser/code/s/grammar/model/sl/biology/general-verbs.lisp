@@ -333,7 +333,7 @@
 
 (defun assimilate-object-to-dependent (protein depend)
   (when (and (edge-p (right-edge-for-referent))
-             (eq (cat-name (edge-form (right-edge-for-referent))) 'adjective))
+             (eq (form-cat-name (right-edge-for-referent)) 'adjective))
     (assimilate-object protein depend)))
 
 #|
@@ -345,7 +345,7 @@
   (declare (special protein tagged))
   ;;(lsp-break  "tagged")
   (when (and (edge-p (right-edge-for-referent))
-             (member (print (cat-name (edge-form (right-edge-for-referent)))) '(adjective verb+ed vg+ed vp+past)))
+             (member (print (form-cat-name (right-edge-for-referent))) '(adjective verb+ed vg+ed vp+past)))
     (assimilate-subject protein tagged)))
 |#
 
