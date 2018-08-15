@@ -158,6 +158,7 @@
 (defparameter *lambda-var-warnings* nil)
 (defparameter *partitive-pp-warnings* nil)
 
+#|
 (defparameter *edge-not-created-by-c-p-b-b* nil)
 (defun push-info-to-edge-not-created-by-c-p-b-b (reason parent-edge pred)
   (declare (special *edge-not-created-by-c-p-b-b*))
@@ -176,13 +177,6 @@
                                                                     `(position ,(pos-token-index x)))
                                                                    (t (pname x))))
                                                 (cdr orig-call)))))
-    #+ignore(when (eq orig-caller 'UPDATE-EDGE-AS-LAMBDA-PREDICATE)
-              (lsp-break))
-    #+ignore(when (eq orig-caller 'POSTMODIFYING-ADJ)
-      (lsp-break))
-    ;(unless (eq orig-caller 'APPLY-LAMBDA-ABSTRACTION)
-    ;; we know apply-lambda-abstraction only happens when there already is an edge
-    ;(lsp-break)
       (push `(,reason
               :sentence ,(current-string)
               :called-by ,orig-call-surface-edges
@@ -193,8 +187,20 @@
                                 parent-edge)
               :pred ,(krisp->sexpr pred))
             *edge-not-created-by-c-p-b-b*)));)
+|#
 
-(defun create-predication-by-binding (var val pred) ;source &key (insert-edge t)) ;obsolete
+(defun create-predication-by-binding (var val pred)
+  ;; called by CREATE-PREDICATION-AND-EDGE-BY-BINDING-AND-INSERT-EDGE
+  ;;           CREATE-PREDICATION-AND-EDGE-BY-BINDING
+  ;;           CREATE-PREDICATION-BY-BINDING-ONLY
+  ;;../grammar/rules/da/da-rules.lisp
+  ;;           UPDATE-CONJUNCTIVE-EDGE-AS-LAMBDA-PREDICATE
+  ;;../biology/mechanics.lisp
+  ;;           LITTLE-P-HACK
+  ;;../analyzers/psp/referent/driver.lisp
+  ;;           APPLY-LAMBDA-ABSTRACTION
+  ;;../grammar/rules/da/nospace-categories.lisp
+  ;;           RESOLVE-PROTEIN-PREFIX
   "Given a variable (var), and two referents (val, pred), assert that
    the variable is abstracted out from the pred(icate)."
   (declare (special **lambda-var**))
@@ -213,44 +219,39 @@
     (cond (new-predication
            (setf (gethash new-predication *predication-links-ht*) val)
            new-predication)
-           #+ignore(cond ((and insert-edge (edge-p (parent-edge-for-referent)))
-                  (push-info-to-edge-not-created-by-c-p-b-b
-                   'edge-inserted *parent-edge-getting-reference* new-predication)
-                  (insert-predication-edge pred new-predication))
-                 (t (if insert-edge
-                        (push-info-to-edge-not-created-by-c-p-b-b
-                         'parent-edge-not-edge *parent-edge-getting-reference* new-predication)
-                        (push-info-to-edge-not-created-by-c-p-b-b
-                         'insert-edge-nil *parent-edge-getting-reference* new-predication))
-                    (values new-predication nil)))
-           (t
-            (push-info-to-edge-not-created-by-c-p-b-b
-             'new-pred-not-created *parent-edge-getting-reference* pred)
-            pred #+ignore(values pred nil)))))
-
-(defun create-predication-by-binding-only (var val pred)
-  (let ((new-pred (create-predication-by-binding var val pred)))
-    (push-info-to-edge-not-created-by-c-p-b-b
-     'no-edge-created *parent-edge-getting-reference* new-pred)
-    new-pred))
+          (t pred))))
 
 (defun create-predication-and-edge-by-binding (var val pred pre-pred-edge)
+  ;; called by
+  ;; ../da/da-rules.lisp
+  ;;     UPDATE-EDGE-AS-LAMBDA-PREDICATE
+  ;;     POSTMODIFYING-ADJ
+  ;; ../biology/mechanics.lisp
+  ;;     MAKE-PHOSPHORYLATED-PROTEIN
   (unless (and (edge-p pre-pred-edge)
                (matched-pred? pred pre-pred-edge))
     (lsp-break "create-predication-and-edge-by-binding invalid pre-pred-edge provided"))
   (let* ((new-pred (create-predication-by-binding var val pred))
          (new-edge (make-predication-edge pre-pred-edge new-pred)))
-    (push-info-to-edge-not-created-by-c-p-b-b
-     'edge-created *parent-edge-getting-reference* new-pred)
     (values new-pred new-edge)))
 
 (defun create-predication-and-edge-by-binding-and-insert-edge (var val pred)
+  ;;../syntax/subject-relatives.lisp
+  ;;  APPLY-OBJECT-RELATIVE-CLAUSE
+  ;;  APPLY-SUBJECT-RELATIVE-CLAUSE
+  ;;  APPLY-UPSTAIRS-NP-TO-SUBJECT-RELATIVE
+  ;;  APPLY-PP-RELATIVE-CLAUSE
+  ;;  APPLY-REDUCED-RELATIVE-CLAUSE
+  ;;../syntax/syntax-functions.lisp
+  ;;  INTERPRET-VERB-AS-PREDICATION
+  ;;  COMPARATIVE-ADJ-NOUN-COMPOUND
+  ;;  ADJ-NOUN-COMPOUND
+  ;;  ASSIMILATE-SUBJECT-TO-VP-ED
   (unless (edge-p (parent-edge-for-referent))
     (lsp-break "create-predication-and-edge-by-binding-and-insert-edge no valid parent edge"))
   (let ((new-pred (create-predication-by-binding var val pred)))
-    (push-info-to-edge-not-created-by-c-p-b-b
-     'edge-inserted *parent-edge-getting-reference* new-pred)
-    (insert-predication-edge pred new-pred)))
+    (insert-predication-edge (parent-edge-for-referent) pred new-pred)
+    new-pred))
 
 (defun get-lambda-ref-edge-from-pred-edge (pred-edge)
   "When you have an edge in hand that is a lambda expression, this
@@ -313,9 +314,9 @@ val-pred-var (pred vs modifier - left or right?)
 	  (t
            (values pred nil)))))
 
-(defun insert-predication-edge (pred new-predication)
-  (declare (special new-predication))
-  (let* ((parent (parent-edge-for-referent)) ;; e4 in rusty notation
+(defun insert-predication-edge (parent pred new-predication)
+  (declare (special new-predication parent))
+  (let* (;;(parent (parent-edge-for-referent)) ;; e4 in rusty notation
          (left-edge (edge-left-daughter parent))
          (right-edge (edge-right-daughter parent))
          (pred-edge
@@ -326,7 +327,7 @@ val-pred-var (pred vs modifier - left or right?)
                 (t nil)))
          (new-edge (when pred-edge
                      (make-predication-edge pred-edge new-predication))))
-    (declare (special new-edge left-edge right-edge pred-edge parent))
+    (declare (special new-edge left-edge right-edge pred-edge))
     (when (null pred-edge)
       (lsp-break
        "create-predication-by-binding, predicate not from left or right edge~%"))
@@ -355,18 +356,14 @@ val-pred-var (pred vs modifier - left or right?)
   "Span 'pre-pred-edge' with a new edge with the same end-points.
    The caller has provided 'predication' to be the referent of
    this new edge."
-  (let* ((start-vec (edge-starts-at pre-pred-edge))
-         (end-vec (edge-ends-at pre-pred-edge))
-         (pred (edge-referent pre-pred-edge))
-         (edge
-          (make-completed-unary-edge
-           start-vec end-vec
-           'make-predication-edge ;; rule
-           (maybe-extract-statement-edge pre-pred-edge) ;; daughter
-           category::lambda-expression ;; category
-           category::lambda-form ;; form
-           predication)))  ;; referent
-    edge))
+  (make-completed-unary-edge
+   (edge-starts-at pre-pred-edge)
+   (edge-ends-at pre-pred-edge)
+   'make-predication-edge                               ;; rule
+   (maybe-extract-statement-edge pre-pred-edge)         ;; daughter
+   category::lambda-expression                          ;; category
+   category::lambda-form                                ;; form
+   predication))
 
 (defun maybe-extract-statement-edge (pre-pred-edge)
   "Determines the daughter of the new spanning edge being created by
@@ -546,7 +543,7 @@ val-pred-var (pred vs modifier - left or right?)
 (defun interpret-premod-to-verb (premod head) ;; for things like "thymine phosphorylated"
   (when (and (not (pronominal-or-deictic? premod))
              (not (one-anaphor-item? premod))
-             (or (not (eq (cat-name (edge-form  (left-edge-for-referent))) 'np))
+             (or (not (eq (form-cat-name  (left-edge-for-referent)) 'np))
                  (not (value-of 'has-determiner premod)))
              (subcategorized-variable head :verb-premod premod))
     (push (list premod (value-of 'raw-text premod)
@@ -569,13 +566,13 @@ val-pred-var (pred vs modifier - left or right?)
 
 (defun test-premod-to-verb (premod head premod-edge)
   (when (and (not (pronominal-or-deictic? premod))
-             (or (not (eq (cat-name (edge-form premod-edge)) 'np))
+             (or (not (eq (form-cat-name premod-edge) 'np))
                  (not (value-of 'has-determiner premod))))
     ;; really want an n-bar type item here, but these get raised to NPs
     ;;  the check is to distinguish "serine" gets "raised" to an NP
     ;;  and "an event" 
     (or (subcategorized-variable head :verb-premod premod)
-        (ecase (cat-name (edge-form (right-edge-for-referent)))
+        (ecase (form-cat-name (right-edge-for-referent))
           (verb+ing (subcategorized-variable head :object premod))
           (verb+ed (subcategorized-variable head :subject premod))
           ((verb+present verb vg+ed) nil) ;;these are cases in a prenominal, so don't use these rules
@@ -937,10 +934,10 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (declare (special category::vg *parent-edge-getting-reference*))
   (let ((be-edge (left-edge-for-referent)))
     (when (or
-           (member (cat-name (edge-form be-edge))
+           (member (form-cat-name be-edge)
                    '(verb verb+present verb+past verb+ed verb+ing
                      vg+ed vg vg+ing vp+ing infinitive))
-           (if (member (cat-name (edge-form be-edge))
+           (if (member (form-cat-name be-edge)
                        '(that-comp thatcomp to-comp whethercomp
                          vp S subject-relative-clause
                          subordinate-s subordinate-clause
@@ -948,7 +945,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                          transitive-clause-without-object))
                nil
                (warn "check-passive-and-add-tense/aspect got ~s in ~s~%"
-                     (cat-name (edge-form be-edge))
+                     (form-cat-name be-edge)
                      (current-string))))
            
       (loop for vg-item
@@ -989,7 +986,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
         ;; this had to be added to handle the fact that IS became a VG
         ;; in (test-aspp2 81)
         ;;"The novel RAS/Raf/MAPK/ASPP2 pathway is thus involved in an important feedback loop..."
-        (eq 'vg (cat-name (edge-form (left-edge-for-referent)))))))
+        (eq 'vg (form-cat-name (left-edge-for-referent))))))
 
 (defun absorb-auxiliary (aux vg)
   (cond
@@ -1300,20 +1297,19 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 (defun interpret-to-comp-adjunct-to-np (np to-comp)
   (declare (special np to-comp))
-  (let* ((complement to-comp) ;;(value-of 'comp to-comp))
-         (variable-to-bind
-          ;; test if there is a known interpretation of the NP/PP combination
-          (subcategorized-variable np :to-comp complement)))
+  (let ((variable-to-bind
+         ;; test if there is a known interpretation of the NP/PP combination
+         (subcategorized-variable np :to-comp to-comp)))
     (cond
-     (*subcat-test* variable-to-bind)
-     (variable-to-bind
-      (if *collect-subcat-info*
-          (push (subcat-instance np 'to-comp variable-to-bind
-                                 to-comp)
-                *subcat-info*))
-      (setq np (individual-for-ref np))
-      (setq np (bind-dli-variable variable-to-bind to-comp np))
-      np))))
+      (*subcat-test* variable-to-bind)
+      (variable-to-bind
+       (if *collect-subcat-info*
+           (push (subcat-instance np 'to-comp variable-to-bind
+                                  to-comp)
+                 *subcat-info*))
+       (setq np (individual-for-ref np))
+       (setq np (bind-dli-variable variable-to-bind to-comp np))
+       np))))
 
 (defun interpret-to-comp-adjunct-to-s (s tocomp)
   ;; Tbese are very likely to be purpose clauses. A sufficient test
@@ -1321,29 +1317,27 @@ there was an edge for the qualifier (e.g., there is no edge for the
   ;; (aka perdurants). 
   #| (p "Mechanistically ASPP1 and ASPP2 bind RAS-GTP and potentiates RAS signalling 
   to enhance p53 mediated apoptosis [2].") |#
-  (let* ((complement tocomp)
-         (to-comp-var ;; e.g. for "acts to dampen..."
-          (subcategorized-variable s :to-comp complement)))
+  (let* ((to-comp-var ;; e.g. for "acts to dampen..."
+          (subcategorized-variable s :to-comp tocomp)))
     (cond
      (to-comp-var 
       (or *subcat-test*
-       (setq s (bind-dli-variable to-comp-var complement s))))
+       (setq s (bind-dli-variable to-comp-var tocomp s))))
      (t
-      (let ((ok? (and s (itypep s 'perdurant) (itypep complement 'perdurant))))
+      (let ((ok? (and s (itypep s 'perdurant) (itypep tocomp 'perdurant))))
         (cond
          (*subcat-test* ok?)
          (ok?
-          (setq s (bind-dli-variable 'purpose complement s))
+          (setq s (bind-dli-variable 'purpose tocomp s))
           s)))))))
 
 (defun interpret-for-to-comp (for-pp to-comp)
-  (let* ((complement to-comp) ;;(value-of 'comp to-comp))
-	 (for-subj (value-of 'pobj for-pp))
+  (let* ((for-subj (value-of 'pobj for-pp))
 	 (subj-var
-	  (subcategorized-variable complement :subject for-subj)))
+	  (subcategorized-variable to-comp :subject for-subj)))
     (if *subcat-test*
 	subj-var
-	(bind-dli-variable subj-var for-subj complement))))
+	(bind-dli-variable subj-var for-subj to-comp))))
 		
 	    
 ;;;---------
@@ -1493,20 +1487,11 @@ there was an edge for the qualifier (e.g., there is no edge for the
       (assimilate-subject subj vp)))
 
 (defun assimilate-subject (subj vp
-                           &optional (right-edge (right-edge-for-referent))
-                             dont-revise-parent-edge
-                           &aux (right-daughter
-                                 (when right-edge
-                                   (if (eq (edge-right-daughter right-edge) :long-span)
-                                       (if (edge-p (car (last (edge-constituents right-edge))))
-                                           (car (last (edge-constituents right-edge)))
-                                           (else (warn  "can't find right daughter in assimilate-subject -- ~s~%" (current-string))
-                                                 nil))
-                                       (edge-right-daughter right-edge)))))
-  (declare (special category::subordinate-clause category::copular-predication
-                    category::transitive-clause-without-object
+                           &optional (vp-edge (right-edge-for-referent))
+                             dont-revise-parent-edge )
+  (declare (special category::transitive-clause-without-object
                     subj vp *left-edge-into-reference*))
-  ;; right-edge is NIL when called from polar questions on adjectives
+  ;; vp-edge is NIL when called from polar questions on adjectives
   ;;  this may want to be fixed
   (unless (and subj vp) ;; have had cases of uninterpreted VPs
     (return-from assimilate-subject nil))
@@ -1519,18 +1504,79 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (cond
     ((itypep vp 'control-verb) ;; e.g. "want"
      (when *subcat-test* (return-from assimilate-subject t))
-     (let ((complement (value-of 'theme vp))
-           (object (value-of 'patient vp)))
-       (when complement ;; cf. "what do you want"
-         (let ((revised-complement
-                (if object
-                  ;; 'I want you to wash the dishes' vs 'I want to wash the dishes'
-                  (assimilate-subject object complement)
-                  (assimilate-subject subj complement))))
-           (setq vp (rebind-variable 'theme revised-complement vp))))
-       (assimilate-subcat vp :subject subj)))
-
+     (assimilate-subject-for-control-verb subj vp vp-edge))
     ((itypep vp 'copular-predication)
+     (assimilate-subject-for-copular-predication subj vp vp-edge))
+    ((transitive-vp-missing-object? vp vp-edge)
+
+     (unless *subcat-test*
+       ;; the edge isn't available and shouldn't be chaged during the test phase
+       (when *warn-about-optional-objects*
+         (warn "~%transitive verb without object: ~s~%"
+               (extract-string-spanned-by-edge vp-edge)))
+       (unless dont-revise-parent-edge
+         (revise-parent-edge :form category::transitive-clause-without-object)))
+     (assimilate-subcat vp :subject subj))
+
+    ((assimilate-subject-as-object? subj vp vp-edge)
+     (assimilate-subcat vp :object subj))
+    (t (assimilate-subcat vp :subject subj))))
+
+(defun assimilate-subject-for-control-verb (subj vp vp-edge)
+  (declare (special subj vp vp-edge))
+  (let* ((theme-comp (value-of 'theme vp))
+         (object (value-of 'patient vp))
+         (theme-comp-edge
+          (loop for e in (edges-under vp-edge)
+                when (eq (edge-referent e) theme-comp)
+                do (return e))))
+    (declare (special theme-comp object theme-comp-edge))
+    (when theme-comp ;; cf. "what do you want"
+      (let ((revised-theme-comp
+             (if object
+                 ;; 'I want you to wash the dishes' vs 'I want to wash the dishes'
+                 (assimilate-subject object theme-comp)
+                 (assimilate-subject subj theme-comp)))) 
+        (setq vp (rebind-variable 'theme revised-theme-comp vp))))
+    (assimilate-subcat vp :subject subj)))
+
+
+(defun assimilate-subject-as-object? (subj vp right-edge)
+  (when right-edge
+    (or
+     (and (member (form-cat-name right-edge) '(subordinate-clause vp+ed vg+ed))
+          (let ((vg-edge
+                 (cond ((member (form-cat-name right-edge) '(vp+ed vg+ed))
+                        right-edge)
+                       ((eq 's (form-cat-name (real-right-daughter right-edge)))
+                        ;; case where subordinate conjunction is attached above the S
+                        ;; "...since p130 CAS , paxillin, and FAK  are already hyperphosphorylated.
+                        (edge-right-daughter (real-right-daughter right-edge)))
+                       (t (real-right-daughter right-edge)))))
+            (when (edge-p vg-edge)
+              ;; vg-edge is :long-span for cases where the
+              ;;  subordinate clause is a conjunction
+              ;; HANDLE THESE CORRECTLY
+              (if (or (is-passive? vg-edge)
+                      (member (form-cat-name right-edge) '(vp+ed vg+ed)))
+                  (when 
+                      (and (object-variables vg-edge)
+                           (loop for v in (object-variables vg-edge)
+                                 never (value-of (object-variable vg-edge) vp)))
+                    (assimilate-subcat vp :object subj))
+                  (when (missing-subject-vars (edge-referent vg-edge))
+                    (assimilate-subcat vp :subject subj))))))
+     (is-passive? right-edge))))
+
+(defun real-right-daughter (right-edge)
+  (if (eq (edge-right-daughter right-edge) :long-span)
+      (if (edge-p (car (last (edge-constituents right-edge))))
+          (car (last (edge-constituents right-edge)))
+          (else (warn  "can't find right daughter in assimilate-subject -- ~s~%" (current-string))
+                nil))
+      (edge-right-daughter right-edge)))
+
+(defun assimilate-subject-for-copular-predication (subj vp vp-edge)
      (let* ((vp-val (value-of 'value vp))
             (control-vp (and (individual-p vp-val)
                              (or (itypep vp-val 'control-verb)
@@ -1540,7 +1586,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                  t
                  (interpret-control-copula subj vp
                                            (left-edge-for-referent)
-                                           (right-edge-for-referent)))))
+                                           vp-edge))))
        (declare (special controlled-val control-vp))
        
        (cond (*subcat-test* controlled-val)
@@ -1548,72 +1594,36 @@ there was an edge for the qualifier (e.g., there is no edge for the
               (apply-copula subj controlled-val)) ;; in syntax/copulars.lisp
              (t (and (null (value-of 'item vp))
                      (apply-copula subj vp))))))
-    
-    ((transitive-vp-missing-object? vp right-edge)
-     (unless *subcat-test*
-       ;; the edge isn't available and shouldn't be chaged during the test phase
-       (when *warn-about-optional-objects*
-         (warn "~%transitive verb without object: ~s~%"
-               (extract-string-spanned-by-edge (right-edge-for-referent))))
-       (unless dont-revise-parent-edge
-         (revise-parent-edge :form category::transitive-clause-without-object)))
-     (assimilate-subcat vp :subject subj))
-      
-    ((and right-edge
-          (member (cat-name (edge-form right-edge))
-                  '(subordinate-clause vp+ed vg+ed)))
-     (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
-            (vg-edge
-             (cond ((member (cat-name (edge-form right-edge)) '(vp+ed vg+ed))
-                    right-edge)
-                   ((eq 's (cat-name (edge-form right-daughter)))
-                    ;; case where subordinate conjunction is attached above the S
-                    ;; "...since p130 CAS , paxillin, and FAK  are already hyperphosphorylated.
-                    (edge-right-daughter right-daughter))
-                   (t right-daughter))))
-       (when (edge-p vg-edge)
-         ;; vg-edge is :long-span for cases where the
-         ;;  subordinate clause is a conjunction
-         ;; HANDLE THESE CORRECTLY
-         (if (or (is-passive? vg-edge)
-                 (member (cat-name (edge-form right-edge)) '(vp+ed vg+ed)))
-             (when 
-               (and (object-variables vg-edge)
-                        (loop for v in (object-variables vg-edge)
-                              never (value-of (object-variable vg-edge) svp)))
-               (assimilate-subcat svp :object subj))
-             (when (missing-subject-vars (edge-referent vg-edge))
-               (assimilate-subcat svp :subject subj))))))
-      
-    ((and right-edge (is-passive? right-edge))
-     (assimilate-subcat vp :object subj))
-      
-    (t (assimilate-subcat vp :subject subj))))
 
 (defun interpret-control-copula (subj copula subj-edge copula-edge)
-  (let* ((copula-value (value-of 'value copula)) ;; e.g. (ability ...)
-         (copula-adj-edge (edge-right-daughter copula-edge))
-         (right (and (edge-p copula-adj-edge)
-                     (edge-right-daughter copula-adj-edge)))
-         (right-val (and (edge-p right)
-                         (edge-referent right)
-                         (if (itypep (edge-referent right) 'prepositional-phrase)
-                             (value-of 'pobj (edge-referent right))
-                             (edge-referent right))))
-         (new-value
-          (and (edge-p right)
-               (loop for b in (indiv-old-binds copula-value)
-                       thereis (eq (binding-value b) right-val))
-               (eq (edge-referent copula-adj-edge) copula-value)
-               (assimilate-subject subj right-val right t))))
-    (declare (special copula-value copula-adj-edge right edge-right-daughter
-                      right-val new-value))
-    (cond (*subcat-test* new-value)
-          (new-value
-           (set-edge-referent right new-value)
-           (rebind-value copula-value
-                         (rebind-value right-val new-value copula-value)
-                         copula))
+  (declare (special subj copula subj-edge copula-edge))
+  (let* ((copula-val (value-of 'value copula)) ;; e.g. (ability ...)
+         (copula-val-edge (when 
+                                (eq (edge-referent (edge-right-daughter copula-edge))
+                                    copula-val)
+                              (edge-right-daughter copula-edge)))
+         (right (and (edge-p copula-val-edge)
+                     (edge-right-daughter copula-val-edge)))
+         (controlled-val-edge (and (edge-p right)
+                                   (edge-referent right)
+                                   (if (itypep (edge-referent right) 'prepositional-phrase)
+                                       (edge-right-daughter right)
+                                       right)))
+         (controlled-val (when (edge-p controlled-val-edge) (edge-referent controlled-val-edge)))
+         (new-controlled-val
+          (and controlled-val
+               (loop for b in (indiv-old-binds copula-val)
+                     thereis (eq (binding-value b) controlled-val))
+               (assimilate-subject subj controlled-val right t))))
+    (declare (special copula-val copula-val-edge right controlled-val-edge
+                      controlled-val new-controlled-val))
+    (cond (*subcat-test* new-controlled-val)
+          (new-controlled-val
+           (set-edge-referent controlled-val-edge new-controlled-val)
+           (set-edge-referent copula-val-edge (rebind-value controlled-val new-controlled-val copula-val))
+           (set-edge-referent copula-edge
+                              (rebind-value copula-val (edge-referent copula-val-edge) copula))
+           (edge-referent copula-edge))
           (t
            (warn  "interpret-control-copula fails with subj=~s, copula=~s in ~s~%"
                    subj copula
@@ -1668,7 +1678,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                 (loop for binding in (indiv-old-binds vp)
                       thereis (not (member (var-name (binding-variable binding))
                                            '(past raw-text)))))
-           (and (member (cat-name (edge-form vp-edge)) '(vg+ed verb+ed))
+           (and (member (form-cat-name vp-edge) '(vg+ed verb+ed))
                 (interpret-premod-to-verb subj vp))))
       
       ((and (can-fill-vp-object? vp subj (left-edge-for-referent))
@@ -1720,10 +1730,10 @@ there was an edge for the qualifier (e.g., there is no edge for the
                (loop for e in (edges-after *right-edge-into-reference*)
                      thereis
                        (or
-                        (member (cat-name (edge-form e))
+                        (member (form-cat-name e)
                                 *np-category-names*)
                         (eq (cat-name (edge-category e)) 'how)
-                        (member (cat-name (edge-form e))
+                        (member (form-cat-name e)
                                 '(thatcomp howcomp ifcomp))))))
          (result
           (cond ((and (typep *current-chunk* 'chunk)
@@ -1746,7 +1756,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                                              (itype-of vg))
 			       :form (if indirect-object?
                                          category::vg
-                                         (case (cat-name (edge-form (parent-edge-for-referent)))
+                                         (case (form-cat-name (parent-edge-for-referent))
                                            ((vg vp) category::vp)
                                            ((vp+ing vg+ing) category::vp+ing)
                                            ((vp+ed vg+ed vp+past) category::vp+past)
@@ -1841,7 +1851,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (declare (special category::pp conj clause))
   (if *subcat-test*
     ;; some subordinate conjunctions like SO cannot apply between subject and vp
-    (not (and (member (cat-name (edge-form (right-edge-for-referent)))
+    (not (and (member (form-cat-name (right-edge-for-referent))
                       '(vp+ed vg+ed vp vg))
               (member (cat-name (edge-category (left-edge-for-referent)))
                       '(so))))
@@ -1862,7 +1872,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                  *right-edge-into-reference*
                  (eq (edge-referent *right-edge-into-reference*)
                      clause)
-                 (member (cat-name (edge-form *right-edge-into-reference*))
+                 (member (form-cat-name *right-edge-into-reference*)
                          '(s subordinate-s)))
         (revise-parent-edge :form category::subordinate-s))
       cl)))
@@ -1916,7 +1926,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
        ;; which also has the relevant compose method.
        (cond ((top-level-wh-question?)
               (compose wh-obj predicate)) ;; k-methods in questions.lisp
-             ((member (cat-name (edge-form (right-edge-for-referent)))
+             ((member (form-cat-name (right-edge-for-referent))
                       '(vp+passive vg+passive))
               (revise-parent-edge :form category::object-relative-clause)
               predicate)
@@ -1954,7 +1964,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
       (not (itypep prep category::prepositional-phrase))
       (let* ((to-left (edge-to-its-left (left-edge-for-referent)))
              (left-quant (when (and (edge-p to-left)
-                                    (eq (cat-name (edge-form to-left)) 'quantifier))
+                                    (eq (form-cat-name to-left) 'quantifier))
                            to-left))
              (prep-word (identify-preposition (parent-edge-for-referent)))
              (wh-obj (cond ((itypep wh 'wh-pronoun) ;; which
@@ -2135,7 +2145,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun add-time-adjunct (time vp)
   ;; treat both "now" and "then" as subordinate conjunctions
   ;; rather than time
-  (if (member (cat-name (edge-form (left-edge-for-referent)))
+  (if (member (form-cat-name (left-edge-for-referent))
               '(adjunct subordinate-conjunction))
       (bind-dli-variable 'subordinate-conjunction time (individual-for-ref vp))
       (bind-dli-variable 'time time (individual-for-ref vp))))
