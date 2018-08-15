@@ -32,7 +32,7 @@
 
 (defun make-antibody (antibody protein)
   (when (and (edge-p (left-edge-for-referent))
-             (member (cat-name (edge-form (right-edge-for-referent)))
+             (member (form-cat-name (right-edge-for-referent))
                      '(np proper-noun))
              (equal (retrieve-surface-string (left-edge-for-referent))
                  "anti-"))
@@ -186,7 +186,9 @@
                    ;; want to get "S6"
                    (> (value-of 'value position) 5)))))
     (when (itypep amino-acid 'single-capitalized-letter)
-      (setq amino-acid (gethash amino-acid *single-letters-to-amino-acids*)))
+      (setq amino-acid (gethash amino-acid *single-letters-to-amino-acids*))
+      (setf (edge-category *left-edge-into-reference*) category::amino-acid)
+      (set-edge-referent *left-edge-into-reference* amino-acid))
     (when (itypep position 'year)
       (setq position (find-or-make-number (value-of 'value position))))
     (or *subcat-test*
@@ -253,6 +255,8 @@
                (gethash replacement-amino-acid *single-letters-to-amino-acids*)))
     (let ((original (value-of 'amino-acid residue))
           (residue-number (value-of 'position residue)))
+      (set-edge-referent *right-edge-into-reference* replacement-amino-acid)
+      (setf (edge-category *right-edge-into-reference*) (itype-of replacement-amino-acid))
       (make-point-mutation original replacement-amino-acid residue-number))))
 
 (def-cfr point-mutation (number single-capitalized-letter)
@@ -262,8 +266,11 @@
 (defun make-point-mutation-from-number-amino-acid (number replacement-amino-acid)
   (when (or
          (not (itypep replacement-amino-acid 'single-capitalized-letter))
-         (setq replacement-amino-acid
-               (gethash replacement-amino-acid *single-letters-to-amino-acids*)))
+         (when
+             (setq replacement-amino-acid
+                   (gethash replacement-amino-acid *single-letters-to-amino-acids*))
+           (setf (edge-category *right-edge-into-reference*) (itype-of replacement-amino-acid))
+           (set-edge-referent *right-edge-into-reference* replacement-amino-acid)))
     (make-point-mutation nil replacement-amino-acid number)))
 
 
