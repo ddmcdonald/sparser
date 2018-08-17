@@ -141,8 +141,8 @@
 (define-category knock-out  :specializes bio-method
   :realization
   (:noun ("knock-out" "knockout")
-         :of gene-or-protein
-         :m gene-or-protein))
+         :of object
+         :m object))
 
 
 ;;;-----------------------------------
