@@ -46,17 +46,22 @@
            (mentions-in-sentence-edges sentence))
           #'>
           :key #'(lambda (m) (edge-position-in-resource-array (mention-source m))))))
-    (when *save-clause-semantics*
-      (setq *save-clause-semantics* (list (sentence-string *sentence-in-core*)))
-      (loop for m in mentions
-            unless (and (individual-p (base-description m))
-                        (or (itypep (base-description m) 'prepositional-phrase)
-                            (itypep (base-description m) 'prep)
-                            (itypep (base-description m) 'copular-predication-of-pp)
-                            (itypep (base-description m) 'bio-pair)
-                            (itypep (base-description m) 'hyphenated-triple)))
-            do (push (clause-semantics-for-mention m) *save-clause-semantics*))
-      (push (reverse *save-clause-semantics*) *clause-semantics-list*))
+    (case *save-clause-semantics*
+      (:sentence-clauses
+       (push (cons (sentence-string *sentence-in-core*)
+                   (sentence-clauses))
+             *clause-semantics-list*))
+      (:mention-clauses
+       (setq *save-clause-semantics* (list (sentence-string *sentence-in-core*)))
+       (loop for m in mentions
+             unless (and (individual-p (base-description m))
+                         (itypep (base-description m)
+                                 '(:or prepositional-phrase prep
+                                   copular-predication-of-pp bio-pair
+                                   hyphenated-triple)))
+             do (push (clause-semantics-for-mention m) *save-clause-semantics*))
+       (push (reverse *save-clause-semantics*) *clause-semantics-list*)
+       (setq *save-clause-semantics* :mention-clauses)))
     (when *indra-post-process*
       (indra-post-process mentions sentence *sentence-results-stream*)))
   
@@ -86,8 +91,8 @@
 (defun mention-clause-tree (m)
   (typecase m 
     (discourse-mention
-     `(,(mention-uid m) :isa ,(cat-name (itype-of (edge-referent (mention-source m))))
-        ,@(loop for d in (dependencies m) collect
+     `(:var ,(mention-uid m) :isa ,(cat-name (itype-of (edge-referent (mention-source m))))
+        ,@(loop for d in (dependencies m) append
                   `(,(intern (pname (pname (dependency-variable d)))
                              :keyword)
                      ,(mention-clause-tree (dependency-value d))))))
@@ -97,9 +102,33 @@
   (let ((s-edge (car (all-tts))))
     (mention-clause-tree (edge-mention s-edge))))
 
+(defun sentence-clauses ()
+  (unwrap-clause-tree (sentence-clause-tree)))
+
+(defun unwrap-clause-tree (ct)
+  (cons (clause-tree->clause ct)
+        (loop for (key val) on (cddr ct) by #'cddr
+              when (and (consp val)
+                        (eq (car val) :var))
+              append (unwrap-clause-tree val))))
+
+(defun make-clause-var (n)
+  (intern (format nil "V-~s" n) :keyword))
+
+(defun clause-tree->clause (ct)
+  `(:var ,(make-clause-var (second ct))
+     ,@(loop for (key val) on (cddr ct) by #'cddr
+             append
+               `(,key ,(if (and (consp val)
+                                (eq (car val) :var))
+                           (make-clause-var (second val))
+                           (make-clause-ref key val))))))
+
 (defparameter *make-clause-ref* nil)
 (defparameter *det-refs* nil)
 (defparameter *non-mention-sents* nil)
+
+(defparameter *warn-individuals* nil)
 
 (defun make-clause-ref (key ref)
   (declare (special key ref))
@@ -126,23 +155,28 @@
                              (value-of 'value ref))
                             ((itypep ref 'event-relation)
                              (push (list 'event-relation (sentence-string *sentence-in-core*)) *non-mention-sents*)
-                             (warn "individual as mention ~s" 'event-relation))
+                             (when *warn-individuals*
+                               (warn "individual as mention ~s" 'event-relation)))
                             ((itypep ref 'protein-family)
-                             (lsp-break "protein-family"))
+                             (when *warn-individuals*
+                               (warn "protein-family")))
                             ((itypep ref 'comparative-attribution)
                              (push (list 'comparative-attribution (sentence-string *sentence-in-core*)) *non-mention-sents*)
-                             (warn "individual as mention ~s" 'comparative-attribution))
+                             (when *warn-individuals*
+                               (warn "individual as mention ~s" 'comparative-attribution)))
                             
                             (t
                              (push (list "individual as mention" (semtree ref)(sentence-string *sentence-in-core*)) *non-mention-sents*)
-                             (warn "individual as mention ~s in ~%-----  ~s" (semtree ref) (sentence-string *sentence-in-core*))
+                             (when *warn-individuals*
+                               (warn "individual as mention ~s in ~%-----  ~s" (semtree ref) (sentence-string *sentence-in-core*)))
                              (semtree ref))))
                      (discourse-mention (mention-uid ref))
                      (referential-category (cat-name ref))
                      (string ref)
                      (word (pname ref))
                      (polyword (pname ref))
-                     (symbol ref))))
+                     (symbol ref)
+                     (number ref))))
        (push (list ref ref-id)
              *make-clause-ref*)
        ref-id))))
