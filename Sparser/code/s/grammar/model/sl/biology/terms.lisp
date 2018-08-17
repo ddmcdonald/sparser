@@ -242,7 +242,13 @@
 
 (noun "detail" :super abstract)
 
+(adj "fail-proof" :super bio-predication
+     :realization 
+     (:adj "fail-proof"))
 
+(adj "reliable" :super bio-predication
+     :realization 
+     (:adj "reliable"))
 
 
 
