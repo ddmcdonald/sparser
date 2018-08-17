@@ -1378,13 +1378,16 @@
    (create-event-relation wc s))
 
 (defun create-event-relation (event-edge sub-clause-edge
-                              &optional (conj (value-of 'SUBORDINATE-CONJUNCTION (edge-referent sub-clause-edge))))
+                              &optional (conj (value-of 'subordinate-conjunction (edge-referent sub-clause-edge))))
   (make-edge-spec
    :category category::event-relation
    :form category::s
    :referent (make-event-relation
-               conj (edge-referent event-edge)
-               (edge-referent sub-clause-edge))))
+              conj
+              (edge-referent event-edge)
+              (edge-referent sub-clause-edge)
+              event-edge
+              sub-clause-edge)))
 
 
 (define-debris-analysis-rule clause-subordinate-relative-clause
@@ -1415,7 +1418,7 @@
        :category category::event-relation
        :form category::s
        :referent (make-event-relation
-                   conj s sub-event)))))
+                   conj s sub-event s)))))
 
 
 (define-debris-analysis-rule clause-comma-subordinate-np
@@ -1436,7 +1439,8 @@
       (make-edge-spec
        :category category::event-relation
        :form category::event-relation
-       :referent (make-event-relation conj event sub-event)))))
+       :referent (make-event-relation conj event sub-event
+                                      event-edge sub-np-edge)))))
 
 
 (define-debris-analysis-rule clause-comma-subordinate-event-relation
@@ -1447,19 +1451,29 @@
   (declare (ignore comma))
   (create-event-relation s event-relation (edge-referent sconj)))
 
-(defun make-event-relation (conj event sub-event)
-  (if (itypep event 'polar-question)      
-      (make-simple-individual ;; make-non-dli-individual
-       category::polar-question
-       `((statement
-          ,(make-simple-individual
-            category::event-relation
-            `((relation ,conj)
-              (event ,(value-of 'statement event))
-              (subordinated-event ,sub-event))))))
-      (make-simple-individual ;; make-non-dli-individual
-       category::event-relation
-       `((relation ,conj) (event ,event) (subordinated-event ,sub-event)))))
+(defun make-event-relation (conj event sub-event &optional event-edge sub-event-edge)
+  (cond ((itypep event 'polar-question)
+         (let ((event-relation (make-simple-individual
+               category::event-relation
+               `((relation ,conj)
+                 (event ,(value-of 'statement event))
+                 (subordinated-event ,sub-event)))))
+           (when sub-event-edge
+             (make-edge-over-long-span
+              (pos-edge-starts-at sub-event-edge)
+              (pos-edge-ends-at sub-event-edge)
+              category::event-relation
+              :rule 'make-event-relation
+              :form (edge-form sub-event-edge)
+              :referent event-relation))
+                     
+         (make-simple-individual ;; make-non-dli-individual
+          category::polar-question
+          `((statement , event-relation)))))
+        (t
+         (make-simple-individual ;; make-non-dli-individual
+          category::event-relation
+          `((relation ,conj) (event ,event) (subordinated-event ,sub-event))))))
 
 
 (define-debris-analysis-rule np-conj-pp
