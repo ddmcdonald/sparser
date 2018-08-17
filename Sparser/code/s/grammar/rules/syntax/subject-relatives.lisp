@@ -218,12 +218,10 @@
                        (current-string)))
               (and ref
                    ;; these previous items want a following clause
-                   (or (itypep ref 'that)
-                       (itypep ref 'whether)
+                   (or (itypep ref '(:or that whether))
                        (eq (edge-category e) category::do) ;; auxiliary --
                        ;; see "Does phosphorylated BRAF being high precede phosphorylated MAP2K1 reaching... level?"
-                       (itypep ref 'precede)
-                       (itypep ref 'follow))
+                       (itypep ref '(:or precede follow)))
                    ;;these items would allow an NP to make a clause
                    (not
                     (and *right-edge-into-reference*

@@ -117,9 +117,7 @@
                (let* ((base (base-description mention))
                       (re-interpretation
                        (cond
-                         ((or (itypep base category::hyphenated-pair)
-                              (itypep base category::hyphenated-triple)
-                              (itypep base category::two-part-label))
+                         ((itypep base '(:or hyphenated-pair hyphenated-triple two-part-label))
                           ;; not sure what to do for such things -- example ER-β is a hyphenated pair
                           base)
                          ((is-basic-collection? base)
