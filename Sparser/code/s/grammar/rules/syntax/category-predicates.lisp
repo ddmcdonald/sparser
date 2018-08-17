@@ -442,7 +442,9 @@
 
 (defmethod vp-category? ((c category))
   ;; motivated by find-verb
-  (memq c *vp-categories*))
+  (or (memq c *vp-categories*)
+      ;; this is from questions like "What genes are ..."
+      (eq (cat-name c) 'preposed-auxiliary)))
 (defmethod vp-category? ((ignore t))
   nil)
 
