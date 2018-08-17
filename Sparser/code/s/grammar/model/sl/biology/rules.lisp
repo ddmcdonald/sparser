@@ -110,8 +110,7 @@
 
 
 (defun interpret-in-vivo-vitro (bio vitro-vivo)
-  (when (or (itypep bio 'biological)
-            (itypep bio 'measurement))
+  (when (itypep bio '(:or biological measurement))
     (setq bio (individual-for-ref bio))
     (if (find-variable-for-category 'context (itype-of bio))
 	(setq bio (bind-dli-variable 'context vitro-vivo bio))

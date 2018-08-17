@@ -361,8 +361,7 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
   (let ((sem (semtree i nil)))
     (cond
       ((not (consp sem)) sem) ;; e.g. 50, for the tree from #<number "50">
-      ((or (itypep (car sem) category::prepositional-phrase)
-	   (itypep (car sem) category::copular-pp))
+      ((itypep (car sem) '(:or prepositional-phrase copular-pp))
        (semtree (value-of 'pobj (car sem))))
       ((itypep (car sem) category::to-comp)
        (semtree (value-of 'comp (car sem))))

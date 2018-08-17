@@ -97,8 +97,7 @@ brackets to take effect.  |#
          (sm (etypecase ref
                (section-marker ref)
                (individual
-                (unless (or (itypep ref 'section-object)
-                            (itypep ref 'paragraph))
+                (unless (itypep ref '(:or section-object paragraph))
                   (break "Assumption violation: Expected a section-object ~
                           but got a~%  ~A~%  ~A" (type-of ref) ref))
                 (value-of 'type ref))))

@@ -192,8 +192,7 @@
     (individual
      (cond
       ((itypep i 'bio-process) 'bio-processes)
-      ((or (itypep i 'protein)
-           (itypep i 'human-protein-family))
+      ((itypep i '(:or protein human-protein-family))
        'proteins)
       ((itypep i 'residue-on-protein) ;; or other regions
        'residues)

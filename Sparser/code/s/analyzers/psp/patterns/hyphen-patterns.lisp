@@ -354,12 +354,12 @@
          (make-bio-pair left right pos-before pos-after))
 
         ((and
-          (or (itypep left-ref category::protein) ;; includes bio-family
-              (itypep left-ref 'small-molecule)   ;; GTP-GDP ???
-              (itypep left-ref 'nucleotide))
-          (or (itypep right-ref category::protein) ;; includes bio-family
-              (itypep right-ref 'small-molecule)   ;; GTP-GDP ???
-              (itypep right-ref 'nucleotide)))
+          (itypep left-ref '(:or protein    ;; includes bio-family
+                             small-molecule ;; GTP-GDP ???
+                             nucleotide))
+          (itypep right-ref '(:or protein    ;; includes bio-family
+                              small-molecule ;; GTP-GDP ???
+                              nucleotide)))
          (make-protein-pair left right pos-before pos-after))
 
         ((itypep left-ref 'amino-acid)

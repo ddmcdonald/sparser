@@ -79,30 +79,29 @@
          (nucleotides nil))
                    
     (cond
-     ((loop for edge in edges
-        always
-        (let ((ref (edge-referent edge)))
-          (or
-           (when 
-               (individual-p ref) 
-             (cond ((itypep ref category::nucleotide)
-                    (when
-                        (null nucleotides) ;; only one nucleotide per complex -- not GDP:GTP
-                      (setq referent (bind-dli-variable 'component ref referent))
-                      (setq nucleotides ref)))
-                   ((or (itypep ref category::protein) (itypep ref category::protein-family)
-                              (itypep ref category::small-molecule) (itypep ref category::ion))
-                     (setq referent (bind-dli-variable 'component ref referent)))))
-           (when (word-p ref) t))))
-      (tr :making-a-bio-complex start-pos end-pos)
-      (make-ns-edge start-pos end-pos category::bio-complex
-                    :form category::n-bar
-                    :rule 'make-bio-complex
-                    :referent referent
-                    :constituents edges))
-     (t
-      (tr :conditions-for-bio-complex-failed start-pos end-pos)
-      nil))))
+      ((loop for edge in edges
+             always
+               (let ((ref (edge-referent edge)))
+                 (or
+                  (when 
+                      (individual-p ref) 
+                    (cond ((itypep ref category::nucleotide)
+                           (when
+                               (null nucleotides) ;; only one nucleotide per complex -- not GDP:GTP
+                             (setq referent (bind-dli-variable 'component ref referent))
+                             (setq nucleotides ref)))
+                          ((itypep ref '(:or protein protein-family small-molecule ion))
+                           (setq referent (bind-dli-variable 'component ref referent)))))
+                  (when (word-p ref) t))))
+       (tr :making-a-bio-complex start-pos end-pos)
+       (make-ns-edge start-pos end-pos category::bio-complex
+                     :form category::n-bar
+                     :rule 'make-bio-complex
+                     :referent referent
+                     :constituents edges))
+      (t
+       (tr :conditions-for-bio-complex-failed start-pos end-pos)
+       nil))))
 
 
 

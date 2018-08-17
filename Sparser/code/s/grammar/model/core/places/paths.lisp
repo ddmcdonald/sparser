@@ -42,7 +42,7 @@
      ((not (category-p type))
       (or (find/location-with-name location-name)
           (make/location-with-name location-name)))
-     ((or (itypep type 'path-type)) ;;(itypep type 'region-type))
+     ((itypep type 'path-type) ;;(itypep type 'region-type))
       (let ((symbol (cat-name type)))
         ;; doesn't seem to be a make with correct
         ;; factoring to take the category directly

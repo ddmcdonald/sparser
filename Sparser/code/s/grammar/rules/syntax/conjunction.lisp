@@ -533,27 +533,21 @@
   (let ((reject?
          (or (word-p before)
 	     (word-p after)
-	     (and (or (itypep before 'protein)
-                      (itypep before 'residue-on-protein)
-                      (itypep before 'fragment)) ;;??  other
+	     (and (itypep before '(:or protein residue-on-protein fragment)) ;;??  other
                   (not (eq before after)))
              (and (category-p before)
                   (category-p after)
                   (if (and (eq (form-cat-name edge-before) 'vg)
                            (eq (form-cat-name edge-after) 'vg))
-                   (not
-                    (or (and (itypep before 'process)
-                             (itypep after 'process))
-                        (and
-                         (itypep before 'bio-predication)
-                         (itypep after 'bio-predication))))
-                   (not
-                    (equal  (or (itypep before 'process)
-                                (itypep before 'bio-predication)
-                                (itypep before 'modifier))
-                            (or (itypep after 'process)
-                                (itypep after 'bio-predication)
-                                (itypep after 'modifier)))))))))
+                      (not
+                       (or (and (itypep before 'process)
+                                (itypep after 'process))
+                           (and
+                            (itypep before 'bio-predication)
+                            (itypep after 'bio-predication))))
+                      (not
+                       (equal  (itypep before '(:or process bio-predication modifier))
+                               (itypep after '(:or process bio-predication modifier)))))))))
     (cond
       (reject?
        (push (conj-info before after edge-before edge-after

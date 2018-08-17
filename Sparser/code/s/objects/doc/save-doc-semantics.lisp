@@ -620,8 +620,7 @@
         ;; months have a circular structure
         (not (and (member (var-name v) '(next previous))
                   (individual-p val)
-                  (or (itypep val 'month)
-                      (itypep val 'weekday))))))
+                  (itypep val '(:or month weekday))))))
 
 
 ;;;;;;;;;;;;;;
