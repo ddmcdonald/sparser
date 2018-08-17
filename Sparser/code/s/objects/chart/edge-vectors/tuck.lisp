@@ -198,33 +198,45 @@
    and fitting in to the parent where it did, replacing it
    as its parent's left or right daughter as appropriate."
   (let* ((parent (edge-used-in edge))
-         (side (cond ((eq edge (edge-left-daughter parent)) :left)
-                     ((eq edge (edge-right-daughter parent)) :right)))
+         (side (when parent
+                 (cond ((eq edge (edge-left-daughter parent)) :left)
+                       ((eq edge (edge-right-daughter parent)) :right))))
          (starting-vector (edge-starts-at edge))
          (ending-vector (edge-ends-at edge))
          (new-edge (next-edge-from-resource)))
-    (when (edge-p (edge-right-daughter edge))
-      ;; ignoring the possibility that the edge we're respanning
-      ;; might have an interesting right-daughter
-      (warn "Respan of ~a may be dropping its right daughter" edge))
+   
 
     ;; set the easy stuff
     (setf (edge-rule new-edge) (rule-being-interpreted))
     (setf (edge-left-daughter new-edge) edge)
-    (setf (edge-right-daughter new-edge) :single-term) ;; ?????
+    (setf (edge-right-daughter new-edge)
+          (if (edge-p (edge-right-daughter edge))
+              ;;NO LONGER
+              ;; ignoring the possibility that the edge we're respanning
+              ;; might have an interesting right-daughter
+              ;;(warn "Respan of ~a may be dropping its right daughter" edge))
+              (edge-right-daughter edge)
+
+              :single-term)) ;; ?????
 
     (setf (edge-category new-edge) (edge-category edge))
     (setf (edge-form new-edge) (edge-form edge))
     (set-edge-referent new-edge new-ref)
     
     (set-used-by edge new-edge)
-    (set-used-by new-edge parent)
-    (ecase side
-      (:left (setf (edge-left-daughter parent) new-edge))
-      (:right (setf (edge-right-daughter parent) new-edge)))
-
-    (insert-new-edge-between-daughter-and-parent
-     edge new-edge parent starting-vector ending-vector side)
+    
+    (cond (parent
+           (set-used-by new-edge parent)
+           (ecase side
+             (:left (setf (edge-left-daughter parent) new-edge))
+             (:right (setf (edge-right-daughter parent) new-edge)))
+           (insert-new-edge-between-daughter-and-parent
+            edge new-edge parent starting-vector ending-vector side))
+          (t (setf (edge-starts-at new-edge) starting-vector)
+             (setf (edge-ends-at new-edge) ending-vector)
+             (knit-edge-into-positions
+              new-edge starting-vector ending-vector)
+             ))
     (unless (edge-starts-at new-edge)
       (error "Insertion of new edge missed something.~
             ~%  edge being respanned: ~a~
