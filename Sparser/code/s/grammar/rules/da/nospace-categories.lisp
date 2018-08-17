@@ -617,11 +617,13 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
               (not (find-variable-for-category 'substrate (edge-referent prefix-edge)))))
       nil ;;(lsp-break "null string"))
       (let* ((predicate 
-              (create-predication-by-binding
+              (create-predication-and-edge-by-binding 
+               ;; create-predication-by-binding
                ;; possibly change to make pred edge
                'substrate
                (edge-referent protein-edge)
-               (edge-referent prefix-edge)))
+               (edge-referent prefix-edge)
+               prefix-edge))
              (i (bind-dli-variable 'predication predicate (edge-referent protein-edge)))
              (edge (make-ns-edge
                     start-pos end-pos category::protein
