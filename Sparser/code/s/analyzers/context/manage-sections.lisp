@@ -146,6 +146,7 @@
 
 ;; /// this won't be called until a style like DNJS is run
 (defun flesh-out-paragraph/sibling (pso ongoing)
+  (declare (special *break-on-unexpected-cases*))
   (let ((parent (value-of 'parent ongoing))
         (most-recent-sibling
          (first (value-of 'daughters ongoing))))

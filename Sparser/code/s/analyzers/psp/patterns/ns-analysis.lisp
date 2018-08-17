@@ -240,6 +240,7 @@ collected a set of ns-examples"
                                               prefix))
                                      (bio-entity-heads nil))
   "Save the collected biochemical-heads to a file"
+  (declare (special *bio-chemical-heads* *bio-entity-heads*))
   (when (and 
              (boundp '*bio-chemical-heads*)
              *bio-chemical-heads*)
