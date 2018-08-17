@@ -406,6 +406,7 @@
 
 
 (defun reason-to-not-span-ns (start-pos end-pos)
+  (declare (special word::|s|))
   (let* ((edges (treetops-between start-pos end-pos))
          (form-labels (loop for e in edges
                             when (edge-p e)
