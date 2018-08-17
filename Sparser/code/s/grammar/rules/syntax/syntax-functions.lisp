@@ -1536,8 +1536,10 @@ there was an edge for the qualifier (e.g., there is no edge for the
              (if object
                  ;; 'I want you to wash the dishes' vs 'I want to wash the dishes'
                  (assimilate-subject object theme-comp)
-                 (assimilate-subject subj theme-comp)))) 
-        (setq vp (rebind-variable 'theme revised-theme-comp vp))))
+                 (assimilate-subject subj theme-comp))))
+        (set-edge-referent theme-comp-edge revised-theme-comp)
+        (setq vp (rebind-variable 'theme revised-theme-comp vp))
+        (set-edge-referent vp-edge vp)))
     (assimilate-subcat vp :subject subj)))
 
 
@@ -1577,23 +1579,22 @@ there was an edge for the qualifier (e.g., there is no edge for the
       (edge-right-daughter right-edge)))
 
 (defun assimilate-subject-for-copular-predication (subj vp vp-edge)
-     (let* ((vp-val (value-of 'value vp))
-            (control-vp (and (individual-p vp-val)
-                             (or (itypep vp-val 'control-verb)
-                                 (itypep vp-val 'control-verb-intrans))))
-            (controlled-val
-             (if (not control-vp)
-                 t
-                 (interpret-control-copula subj vp
-                                           (left-edge-for-referent)
-                                           vp-edge))))
-       (declare (special controlled-val control-vp))
+  (let* ((vp-val (value-of 'value vp))
+         (control-vp (and (individual-p vp-val)
+                          (itypep vp-val '(:or control-verb control-verb-intrans))))
+         (controlled-val
+          (if (not control-vp)
+              t
+              (interpret-control-copula subj vp
+                                        (left-edge-for-referent)
+                                        vp-edge))))
+    (declare (special controlled-val control-vp))
        
-       (cond (*subcat-test* controlled-val)
-             ((individual-p controlled-val)
-              (apply-copula subj controlled-val)) ;; in syntax/copulars.lisp
-             (t (and (null (value-of 'item vp))
-                     (apply-copula subj vp))))))
+    (cond (*subcat-test* controlled-val)
+          ((individual-p controlled-val)
+           (apply-copula subj controlled-val)) ;; in syntax/copulars.lisp
+          (t (and (null (value-of 'item vp))
+                  (apply-copula subj vp))))))
 
 (defun interpret-control-copula (subj copula subj-edge copula-edge)
   (declare (special subj copula subj-edge copula-edge))
@@ -2100,7 +2101,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
          )))
 
 (defun test-and-apply-simple-copula-pp (np copular-pp)
-  (declare (special category::copular-predicate))
   (let* ((prep-indiv (value-of 'prep copular-pp))
          (prep (get-word-for-prep (unless (null prep-indiv) prep-indiv)))
          (pobj (value-of 'value copular-pp))
@@ -2115,10 +2115,20 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
        (setq np (individual-for-ref np))
        (revise-parent-edge :category category::copular-predicate)
-
+       ;; THIS IS WRONG -- DAVID -- DID YOU CHANGE THIS
+       #+ignore
        (let ((i copular-pp)) ;; renaming to reinforce the framing
          (setq i (bind-variable 'item np i))
-         i )))))
+         i )
+       (let* ((pp-edge (edge-right-daughter (right-edge-for-referent)))
+              (new-np (bind-variable var-to-bind pobj np))
+              (new-np-edge (respan-edge-for-new-referent pp-edge new-np))
+              (new-parent-edge
+               (respan-edge-for-new-referent
+                (parent-edge-for-referent)
+                (bind-variable 'item np
+                               (rebind-variable 'value new-np copular-pp)))))
+         (edge-referent new-parent-edge))))))
 
 
 
@@ -2336,6 +2346,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun allowable-post-quantifier? (n quant)
   ;; for "RSK1 and RSK2 both"
   (when (and (itypep n 'collection)
-             (or (itypep quant 'both) (itypep quant 'all)))
+             (itypep quant '(:or both all)))
     (or *subcat-test*
         (bind-dli-variable 'quantifier quant n))))
