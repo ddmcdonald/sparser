@@ -87,7 +87,8 @@ a simplified realization for a verb are (5/17)
   ;; https://en.wikipedia.org/wiki/Control_(linguistics)
   :specializes subcategorization-pattern
   :mixins (agent patient theme)
-  :restrict ((patient physical) ;; "I want a block"
+  :restrict ((agent top) ;; perduants in bio, not just physical-agent's
+             (patient physical) ;; "I want a block"
              (theme perdurant)) ;; "I want to go home"
                 ;; T: neutral, VN: theme
   :realization
