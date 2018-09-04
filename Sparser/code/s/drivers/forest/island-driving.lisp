@@ -59,7 +59,8 @@
   (tr :island-driven-forest-parse start-pos end-pos)
   (when (or *trace-island-driving* 
             *parse-edges*
-            *trace-whack-a-rule*)
+            *trace-whack-a-rule*
+            *print-forest-after-doing-forest*) ;; light weight
     (format t "~&Treetops at start of island-driven parsing")
     (tts))
   (let ((*allow-pure-syntax-rules* t)
