@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2018  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edge-vectors:"
-;;;  Version:  September 2017
+;;;  Version:  August 2018
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;;     (5/5/93) Added Preterminal-edges
@@ -340,3 +340,14 @@
       (tr :disambig-replacing-top-edge end-ev edge)
       (setf (ev-top-node end-ev) edge))))
 
+(defun stipulate-edge-position (start-pos end-pos edge)
+  "We're editing the chart, and we want to 'move' an edge
+ onto these new start and end positions, with the appropriate
+ adjustments to their to make it look like the edge was put
+ there by the usual parsing process."
+  (let ((start-vector (pos-starts-here start-pos))
+        (end-vector (pos-ends-here end-pos)))
+    (setf (edge-starts-at edge) start-vector)
+    (setf (edge-ends-at edge) end-vector)
+    (knit-edge-into-positions edge start-vector end-vector)
+    edge))
