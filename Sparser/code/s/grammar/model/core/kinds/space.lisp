@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2018 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "space"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  October 2017
+;;;  version:  September 2018
 
 ;; Broken out of container-and-suv 11/11/13. Moved to kinds 4/14/14 and
 ;; included container. 2/1/16 merging with the location in places.
@@ -51,7 +51,8 @@ so it's interpretation shouldn't be a location instance.
  of a book. Ontologically, a boundary is a Feature, dependent on the
  Region for its existence."
   :binds ((interior region)
-          (boundary)))
+          (boundary)
+          (containing-region region)))
 
 
 (define-category container
