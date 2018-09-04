@@ -510,3 +510,56 @@
     (tr :wh+individual-method q)
     q))
 
+
+;;;-----------------------
+;;; preposed-of questions
+;;;-----------------------
+
+(defun dig-for-embedded-which (spanning-edge)
+  "This depends on just what the rules that formed the edge have done.
+ Any change to the attach-leading-pp-to-clause DA function or to
+ compose-wh-with-vp that fends off the relative clause interpretation
+ could effect the heuristic walk done here."
+  (when (eq (edge-rule spanning-edge) 'attach-leading-pp-to-clause)
+    (let ((top-edges (edge-constituents spanning-edge)))
+      (when (= 3 (length top-edges))
+        (let* ((main-edge (third top-edges))
+               (wh-edge (edge-left-daughter main-edge)))
+          (when (eq (edge-form wh-edge) category::wh-pronoun)
+            ;; respan the edge, having moved the parts back together
+            (let* ((pp-edge (first top-edges))
+                   (p-obj-edge (edge-right-daughter pp-edge))
+                   (vp-edge (edge-right-daughter main-edge))
+                   (vp (edge-referent vp-edge))
+                   (open-var (open-core-variable vp))
+                   (rule (multiply-edges p-obj-edge vp-edge)))
+              ;; Open-core-variable returns the first 'subject' option
+              ;; that it encounters in the list, which happens to be
+              ;; wrong for "regulate"
+              (when rule
+                (let* ((edge (make-completed-binary-edge 
+                              p-obj-edge vp-edge rule))
+                       (i (edge-referent wh-edge))
+                       (new-subj-edge (edge-left-daughter edge))
+                       (j (edge-referent new-subj-edge)))
+                  ;; fold-in WH-element
+                  (let ((k (bind-variable 'has-determiner i j))
+                        (s (edge-referent edge)))
+                    (set-edge-referent new-subj-edge k)
+                    ;; k is the new value for the subject
+
+                    (let ((modified-s (rebind-value j k s)))
+                      (set-edge-referent edge modified-s)
+
+                      ;; We have stranded the initial 'of' and the
+                      ;; interior ',' but to make the downstream
+                      ;; per-sentence operations, often based on
+                      ;; all-tts, the start of the new edge has
+                      ;; to be the same as the start of the original
+                      ;; spanning-edge.
+                      (stipulate-edge-position (pos-edge-starts-at spanning-edge)
+                                               (pos-edge-ends-at edge)
+                                               edge)
+                      edge)))))))))))
+          
+
