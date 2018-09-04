@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  April 2018
+;;;  Version:  August 2018
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -1886,7 +1886,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun compose-wh-with-vp (wh-obj predicate)
   "Question the subject or the object of the predicate (the VP)
    depending on which one is open."
-  (declare (special category::wh-question category::subject-relative-clause))
+  (declare (special category::wh-question category::subject-relative-clause
+                    category::s))
   (if *subcat-test*
    (not (itypep wh-obj category::wh-question)) ;; t
     (cond
@@ -1927,6 +1928,11 @@ there was an edge for the qualifier (e.g., there is no edge for the
        ;; which also has the relevant compose method.
        (cond ((top-level-wh-question?)
               (compose wh-obj predicate)) ;; k-methods in questions.lisp
+             ((preposed-of?)
+              ;; "Of the genes involved in apoptosis, which are regulated by stat3?"
+              ;; We have to block the interpretation of this as a relative clause
+              (revise-parent-edge :form category::s)
+              predicate)
              ((member (form-cat-name (right-edge-for-referent))
                       '(vp+passive vg+passive))
               (revise-parent-edge :form category::object-relative-clause)
