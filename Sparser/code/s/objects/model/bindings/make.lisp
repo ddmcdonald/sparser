@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005,2013-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2013-2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  April 2016
+;;;  version:  August 2018
 
 ;; initiated 11/30/91 v2.1
 ;; 1.1 (7/20/92 v2.3) revised to fit new regime
@@ -387,66 +387,56 @@ returning a new one.
   (declare (special *description-lattice*))
   (let ((var (find-variable-for-category var/name individual)))
     (if (null var)
-        individual ;; can't rebind -- no variable
-    (if *description-lattice*
-      (let ((bindings (indiv-old-binds individual))
-            (new (make-dli-for-ref-category (itype-of individual)))
-            (rebound nil))
-        ;; We have to fit the individual into the description lattice
-        ;; at the same place as it had given the set of bindings that
-        ;; have specialized its description, so we move it down
-        ;; one binding at a time, either recreating the original binding
-        ;; or for the target variable using the new value
-        (loop for b in (reverse bindings)
-           do (setq new
-                    (if (eq (binding-variable b) var)
-                      (then ;; change this one
-                        (setq rebound t)
-                        (bind-dli-variable (binding-variable b) value new))
-                      (bind-dli-variable ;; keep the others
-                       (binding-variable b) (binding-value b) new))))
-        (unless rebound ;; must not have had an earlier value
-          (bind-dli-variable var value new))
-        new)
-      (else
-        (let ((b (binding-of-individual var individual)))
-          (setf (binding-value b) value)
-          ;; now it needs to be indexed, but that would entail
-          ;; refactoring some code and can wait for a bit (1/31/17)
-          individual))))))
+      individual ;; can't rebind -- no variable
+      (if *description-lattice*
+        (let ((bindings (indiv-old-binds individual))
+              (new (make-dli-for-ref-category (itype-of individual)))
+              (rebound nil))
+          ;; We have to fit the individual into the description lattice
+          ;; at the same place as it had given the set of bindings that
+          ;; have specialized its description, so we move it down
+          ;; one binding at a time, either recreating the original binding
+          ;; or for the target variable using the new value
+          (loop for b in (reverse bindings)
+             do (setq new
+                      (if (eq (binding-variable b) var)
+                        (then ;; change this one
+                          (setq rebound t)
+                          (bind-dli-variable (binding-variable b) value new))
+                        (bind-dli-variable ;; keep the others
+                         (binding-variable b) (binding-value b) new))))
+          (unless rebound ;; must not have had an earlier value
+            (setq new (bind-dli-variable var value new)))
+          new)
+        (else ;; old-style fixed individuals
+          (let ((b (binding-of-individual var individual)))
+            (setf (binding-value b) value)
+            ;; now it needs to be indexed, but that would entail
+            ;; refactoring some code and can wait for a bit (1/31/17)
+            individual))))))
 
 (defun rebind-value (val new-val individual)
-  "Create (or find) a variant of individual where the previous
-   value of the variable in its binding is replaced with this value."
-  (declare (special *description-lattice* val new-val individual))
-  (if *description-lattice*
-      (let ((bindings (indiv-old-binds individual))
-            (new (make-dli-for-ref-category (itype-of individual)))
-            (rebound nil))
-        ;; We have to fit the individual into the description lattice
-        ;; at the same place as it had given the set of bindings that
-        ;; have specialized its description, so we move it down
-        ;; one binding at a time, either recreating the original binding
-        ;; or for the target variable using the new value
-        (loop for b in (reverse bindings)
-              do (setq new
-                       (if (eq (binding-value b) val)
-                           (then ;; change this one
-                             (setq rebound t)
-                             (bind-dli-variable (binding-variable b) new-val new))
-                           (bind-dli-variable ;; keep the others
-                            (binding-variable b) (binding-value b) new))))
-        (if (not rebound)
-            (then (error "attempting to change a binding for ~s which does not exist in ~s~%"
-                         val
-                         (current-string))
-
-                  (let ((b (binding-of-individual val individual)))
-                    (setf (binding-value b) val)
-                    ;; now it needs to be indexed, but that would entail
-                    ;; refactoring some code and can wait for a bit (1/31/17)
-                    individual))
-            new))))
+  "Find the binding on the individual that currently has 'val' as
+ its value and recreate the individual ('new') where that binding's
+ variable is now bound to 'new-val'. Note that this version only
+ operates if the description lattice is in effect."
+  (declare (special *description-lattice*))
+  (when *description-lattice*
+    (let ((bindings (indiv-old-binds individual))
+          (new (make-dli-for-ref-category (itype-of individual)))
+          (rebound nil))
+      (loop for b in (reverse bindings)
+         do (setq new
+                  (if (eq (binding-value b) val)
+                    (then ;; change this one
+                      (setq rebound t)
+                      (bind-dli-variable (binding-variable b) new-val new))
+                    (bind-dli-variable ;; keep the others
+                     (binding-variable b) (binding-value b) new))))
+      (unless rebound
+        (error "attempting to change a binding for ~s which does not exist in ~s~%"
+               val (current-string)))
+      new)))
 
 
 (defun copy-indiv-minus-variable (i var/name)
