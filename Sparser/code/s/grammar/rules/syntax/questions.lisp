@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "questions"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  July 2018
+;;;  Version:  August 2018
 
 ;; Broken out from /grammar/model/sl/checkpoint/rules 6/17/09
 ;; Elaborated through 7/23/09. 9/28/11 removed spatial-orientation
@@ -159,7 +159,8 @@
   (declare (special category::question *show-wh-problems*))
   (tr :wh-walk "make-this-a-question-if-appropriate")
   (when (or (preposed-aux?)
-            (initial-wh?))
+            (initial-wh?)
+            (preposed-of?))
     (let* ((preposed? (preposed-aux?)) ;; make them into local flags
            (wh-initial? (initial-wh?))
            (start-pos (starts-at-pos sentence))
@@ -178,18 +179,22 @@
       ;; The construction is mostly in the subroutines just below.
       (cond
         ((edge-p edge)
-         (when (and preposed? (null wh-initial?))
-           ;; The wh-initial? case doesn't need further handling
-           ;; when the sentence parsed completely.
-           (let ((q (make-polar-question (edge-referent edge))))
-             (let ((spanning-edge
-                    (make-edge-over-long-span
-                     start-pos end-pos
-                     (edge-category edge)
-                     :rule 'make-this-a-question-if-appropriate
-                     :form category::s
-                     :referent q)))
-               spanning-edge))))
+         (cond
+           ((and preposed? (null wh-initial?))
+            ;; The wh-initial? case doesn't need further handling
+            ;; when the sentence parsed completely.
+            (let ((q (make-polar-question (edge-referent edge))))
+              (let ((spanning-edge
+                     (make-edge-over-long-span
+                      start-pos end-pos
+                      (edge-category edge)
+                      :rule 'make-this-a-question-if-appropriate
+                      :form category::s
+                      :referent q)))
+                spanning-edge)))
+           ((preposed-of?)
+            (dig-for-embedded-which edge))))
+           
         ;; In most cases, the proposed aux will have been accommodated by
         ;; the operations in the post-vg-hook, though that's just for explicit
         ;; auxiliaries.
