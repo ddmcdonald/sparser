@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "subcat-patterns"
 ;;;   Module:  "model;core:mid-level::"
-;;;  version:  December 2017
+;;;  version:  September 2017=8
 
 (in-package :sparser)
 
@@ -53,6 +53,16 @@ a simplified realization for a verb are (5/17)
   :documentation "For 'fail', 'find' etc. where there can be a
  to-complement argument as in 'I failed to find a block'")
 
+(define-mixin-category simple-action
+  :specializes subcategorization-pattern
+  :instantiates nil
+  :mixins (agent theme)
+  :restrict ((agent physical-agent)
+             (theme endurant))
+  :realization
+    (:s agent
+     :o theme
+     :mumble (svo :s agent :o theme)))
 
 (define-mixin-category attributing-verb
   :specializes subcategorization-pattern
@@ -76,7 +86,7 @@ a simplified realization for a verb are (5/17)
 (define-mixin-category control-verb
   ;; https://en.wikipedia.org/wiki/Control_(linguistics)
   :specializes subcategorization-pattern
-  :mixins (with-an-agent patient theme)
+  :mixins (agent patient theme)
   :restrict ((patient physical) ;; "I want a block"
              (theme perdurant)) ;; "I want to go home"
                 ;; T: neutral, VN: theme
