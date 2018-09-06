@@ -7184,7 +7184,7 @@
 (define-protein "UP:P26640" ("SYVC_HUMAN" "VARS" "VARS2" "Valyl-tRNA synthetase" "p26640" "valine tRNA ligase 1" "valyl-tRNA synthetase" "valyl-tRNA synthetase 2")) 
 (define-protein "UP:P26641" ("EEF1G" "EF-1 gamma" "EF-1-gamma" "EF-1gamma" "EF1G" "EF1G_HUMAN" "PRO1608" "eEF1B gamma" "eEF1Bgamma" "ef1gamma" "elongation factor 1-gamma" "eukaryotic translation elongation factor 1 gamma" "p26641")) 
 (define-protein "UP:P26651" ("G0/G1 switch regulatory protein 24" "G0S24" "Growth factor-inducible nuclear protein NUP475" "Protein TIS11A" "RNF162A" "TIS11" "TIS11A" "TTP_HUMAN" "ZFP36 ring finger protein" "nup475" "p26651" "tristetraprolin" "zfp-36" "zinc finger protein 36 homolog")) 
-(define-protein "UP:P26675" ("SOS" "son of sevenless" "son-of-sevenless")) 
+;(define-protein "UP:P26675" ("SOS" "son of sevenless" "son-of-sevenless")) drosophila -- it is a drosophila protein but we care about the homologs
 (define-protein "UP:P26678" ("PLN" "PPLA_HUMAN" "cardiac phospholamban" "p-S16-PLN" "p26678" "phospholamban" "pln")) 
 (define-protein "UP:P26686" ("serine-arginine protein 55")) 
 (define-protein "UP:P26688" ("CB-HE")) 
@@ -14530,7 +14530,7 @@
 (define-protein "UP:Q502W7" ("CCDC38" "Q502W7")) 
 (define-protein "UP:Q504Q3" ("KIAA0710" "PAN2 poly(A) specific ribonuclease subunit" "Q504Q3" "USP52" "pan2")) 
 (define-protein "UP:Q504Y2" ("SGK493")) 
-(define-protein "UP:Q50777" ("USPs" "Universal stress protein MTBMA_c15380")) 
+(define-protein "UP:Q50777" ("Universal stress protein MTBMA_c15380")) 
 (define-protein "UP:Q50925" ("hao" "hydroxylamine oxidoreductase")) 
 (define-protein "UP:Q50HR6" ("phnA")) 
 (define-protein "UP:Q50KA9" ("NM23A")) 
@@ -25793,7 +25793,7 @@
 (define-protein "UP:P12878" nil) 
 ;(define-protein "UP:P12951" nil) bacilllus
 (define-protein "UP:P12957" nil) 
-(define-protein "UP:P13368" nil) 
+;(define-protein "UP:P13368" nil)  drosophila
 (define-protein "UP:P14731" nil) 
 ;(define-protein "UP:P14907" nil) yeast
 (define-protein "UP:P15092" nil) 

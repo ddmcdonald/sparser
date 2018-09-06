@@ -70,7 +70,7 @@
 (def-family "endophilin") 
 (def-family "importin") 
 (def-family "karyopherin α" :synonyms ("karyopherin αs" "karyopherin alpha")) 
-(def-family "karyopherin β" :synonyms ("karyopherin βs" "karyopherin beta")) 
+(def-family "karyopherin β" :synonyms ("karyopherin βs" "karyopherin beta"))
 (def-family "tyrphostin") 
 
 
@@ -1768,8 +1768,8 @@
 ;(def-family "serine/threonine-protein phosphatase 4 regulatory subunit 2" :members ("UP:Q75D77" "UP:Q9NY27"))
 ;(define-protein "UP:Q75D77" ("PP4R2")) yeast
 
-(def-family "sev" :members ("UP:P07647" "UP:P13368")) 
-(def-family "sevenless" :members ("UP:P13368" "UP:P26675")) 
+;(def-family "sev" :members ("UP:P07647" "UP:P13368")) 
+;(def-family "sevenless" :members ("UP:P13368" "UP:P26675")) 
 (def-family "shi" :members ("UP:P19651" "UP:Q9XGX0")) 
 (def-family "shugoshin" :members ("UP:Q562F6" "UP:Q759Q5")) 
 (def-family "siah1a" :members ("UP:P61092" "UP:Q8IUQ4")) 

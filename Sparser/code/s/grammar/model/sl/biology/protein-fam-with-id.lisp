@@ -387,12 +387,12 @@
 (def-family-with-id "ERH" "PR:000007177" :members ("UP:P84089" "UP:P84090"))
 (def-family-with-id "ERK1/2" "FPLX:ERK" :synonyms ("ERK-1/2" "extracellular signal regulated kinase 1/2" "extracellular signal-regulated kinase 1/2" "extracellular signal regulated kinases 1 and 2" "extracellular signal–regulated kinases 1 and 2" "extracellular signal-regulated kinases 1 and 2" "ERK 1/2" "erk1/2" "Erk 1/2") :members ("UP:P27361" "UP:P28482")) 
 (def-family-with-id "FOXC1" "PR:000007607" :members ("UP:Q12948" "UP:Q61572"))
-(def-family-with-id "GPCR" "FPLX:GPCR" :synonyms ("G protein–coupled receptor")) 
+(def-family-with-id "GPCR" "FPLX:GPCR" :synonyms ("G protein–coupled receptor" "G protein-coupled receptor")) ;; hundreds of members
 (def-family-with-id "G12" "FPLX:G_12") 
 (def-family-with-id "G alphaq" "FPLX:G_q_alpha") 
 
-;(def-family-with-id "GSK3" "BE:GSK3" :members ("UP:P38615" "UP:P49840" "UP:Q9U2Q9")) bad -- only one juman
-(def-family-with-id "HSPA1" "NCIT:C103999" :synonyms ("HSPA1A" "HSP72" "hsp70-1" "hsp72"):members ("UP:P0DMV8" "UP:P48741")) 
+;(def-family-with-id "GSK3" "BE:GSK3" :members ("UP:P38615" "UP:P49840" "UP:Q9U2Q9")) bad -- only one human
+(def-family-with-id "HSPA1" "NCIT:C103999" :synonyms ("HSPA1A" "HSP72" "hsp70-1" "hsp72") :members ("UP:P0DMV8" "UP:P48741")) 
 
 (def-family-with-id "HSP90" "XFAM:PF02518" :synonyms ("FPLX:HSP90" "IPR001404" "Hsp-90" "HSPC" "HSP-90" "heat shock protein 90" "heat shock protein Hsp90") :members ("UP:P07900" "UP:P08238" "UP:P14625" "UP:P55737" "UP:Q14568" "UP:Q58FF7" "UP:Q58FF8" "UP:Q58FG1"))
 (def-family-with-id "IkappaB" "NCIT:C17583" :synonyms ("I-kappa-B" "I-kappa-B protein" "I-kappaB" "I-κBs" "IkappaBs" "IκB"  "I-kappa-B protein" "IkB" "Ikappa-B" "I-κB" "IKB" "iκB" "IκBs") :members ("UP:O14920" "UP:O15111" "UP:P25963" "UP:O00221" "UP:Q15653" "UP:Q8NI38" "UP:Q9BYH8" "UP:Q9Y6K9"))
@@ -409,7 +409,7 @@
 (def-family-with-id "MAP3K" "FPLX:MAP3K" :name "MAP3K" :synonyms ("MEK1 kinase" "MAP kinase kinase kinase" "MAP2K kinase" "mitogen-activated protein kinase kinase kinase" "MEKK" "MAPKKK" "MAP kinase kinase kinase activity" "MAPK kinase kinase" "MAPKKK" "GO:0004709") :members ("UP:P04049" #|Raf1|# "UP:P41279" "UP:P57077" "UP:P80192" "UP:Q02779" "UP:Q12852" "UP:Q13233" "UP:Q16584" "UP:Q7L7X3" "UP:Q99558" "UP:Q99683" "UP:Q99759" "UP:Q9H2K8" "UP:Q9UL54" "UP:Q9Y2U5" "UP:Q9Y6R4" "UP:O43283" "UP:O43318" "UP:O95382")) 
 (def-family-with-id "Muscarinic acetylcholine receptor" "IPR000995" :synonyms ("muscarinic receptor") :members ("UP:P08172" "UP:P08173" "UP:P08912" "UP:P11229" "UP:P20309")) 
 (def-family-with-id "NFAT" "NCIT:C17903" :synonyms ("FPLX:NFAT" "NF-AT") :members ("UP:O94916" "UP:Q12968" "UP:Q13469"))
-(def-family-with-id "NF-kappaB" "FPLX:NFkappaB" :synonyms ("NCIT:C17380" "NF-kappabeta" "NFkappaB" "NF-kB" "NF-kappab" "NF-kb" "NF-κB" "NFK-B" "NFKB" "NF-kB" "NF-KB" "NFkB" "NFkappaB" "kB" "nfκ" "nfκb" "NFkappaB" "nuclear factor kappa-b" "nuclear kappa B" "Nuclear factor-kappaB" "nuclear factor-kappaB" "NfkappaB" "NF- kappaB" "nuclear factor kappaB" "Nf-kappaB" "NFkappa-B" "NF-KappaB" "Relish" "REL1096") :members ("UP:P19838" "UP:Q04206"))
+(def-family-with-id "NF-kappaB" "FPLX:NFkappaB" :synonyms ("NCIT:C17380" "NF-kappabeta" "NFkappaB" "NF-kB" "NF-kappab" "NF-kb" "NF-κB" "NFK-B" "NFKB" "NF-kB" "NF-KB" "NFkB" "NFkappaB" "kB" "nfκ" "nfκb" "NFkappaB" "nuclear factor kappa-b" "nuclear kappa B" "Nuclear factor-kappaB" "nuclear factor-kappaB" "NfkappaB" "NF- kappaB" "nuclear factor kappaB" "Nf-kappaB" "NFkappa-B" "NF-KappaB" "Relish" "REL1096" "NFκB") :members ("UP:P19838" "UP:Q04206"))
 
 (def-family-with-id "NCOA" "FPLX:NCOA" :synonyms ("p160/SRC" "NcoA")) 
 
@@ -427,6 +427,8 @@
 (def-family-with-id "SAE2" "XFAM:PF08573.8" :synonyms ("sae2" "Sae2") :members ("UP:Q99708" "UP:Q9UBT2")) 
 (def-family-with-id "SGT1" "XFAM:PF07093.9" :synonyms ("Sgt1" "sgt1") :members ("UP:O43765" "UP:Q9Y2Z0")) 
 (def-family-with-id "SIP-1" "XFAM:PF04938.10" :synonyms ("sip-1" "SIP1") :members ("UP:O14893" "UP:Q15599"))
+(def-family-with-id "son of sevenless" "FPLX:SOS" :synonyms ("SOS" "son-of-sevenless" "sevenless" "sev") :members ("UP:Q07889" "UP:Q07890"))
+
 (def-family-with-id "TNC" "FPLX:Troponin_C" :synonyms ("TnC" "TN-C" "cTnC") :members ("UP:P24821" "UP:P63316")) 
 (def-family-with-id "troponin T" "FPLX:Troponin_T" :synonyms ("TPNT") :members ("UP:P45379")) 
 (def-family-with-id "troponin I" "FPLX:Troponin_I" :synonyms ("cTnI" "TPNI")) 

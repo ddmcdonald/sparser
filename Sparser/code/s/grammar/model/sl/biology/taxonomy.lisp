@@ -1208,7 +1208,7 @@ the STAT1 transcription factor
 (noun "transcription factor" :super protein)
 |#
 
-(Noun "phosphatase" :super post-translational-enzyme)
+(noun "phosphatase" :super post-translational-enzyme)
 
 (noun "ubiquitylase" :super post-translational-enzyme)
 
