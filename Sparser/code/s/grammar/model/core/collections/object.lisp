@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  March 2018
+;;;  version:  September 2018
 
 ;; initiated 6/7/93 v2.3, added Sequence 6/9.
 ;; 6/13/95 added searching routine: collection-of-type/dh
@@ -76,9 +76,9 @@ and not entangle the simple notion of a collection. |#
           (items :primitive list) ;; copied down while conjunction is bad
           (type :primitive category)
           (number :primitive integer))
-  :documentation "A sequence is a collection where the order matters
-.  You can't have partial information about a sequence, and I'm 
-   not even sure that you can extend them without creating a new object.")
+  :documentation "A sequence is a collection where the order matters.
+ You can't have partial information about a sequence, and I'm 
+ not even sure that you can extend them without creating a new object.")
 
 
 ;;;--------
@@ -89,6 +89,7 @@ and not entangle the simple notion of a collection. |#
   ;;  :lemma (:adjective "sequential") ;; defined in bio;terms.lisp
   :specializes sequence
   :binds ((sequence sequence)
+          (position ordinal)
           (previous sequential)
           (next sequential))
   :documentation "Augments the concept of a sequence by providing
