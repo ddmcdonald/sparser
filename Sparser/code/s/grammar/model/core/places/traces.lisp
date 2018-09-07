@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "traces"
 ;;;   Module:  "model;core:places:"
-;;;  version:  November 2017.
+;;;  version:  September 2018
 
 ;; For trace functions about location. Initially mostly the methods
 
@@ -48,7 +48,17 @@
 (deftrace :relative-location+object-dependent-location (operator place)
   (when *trace-methods*
     (trace-msg "Method: relative-location(~a) & object-dependent-location(~a)"
-                operator place)))
+               operator place)))
+
+(deftrace :number+part-of-a-sequence (index item)
+  (when *trace-methods*
+    (trace-msg "Method: compose number (~a) + part-of-sequence (~a)"
+               index item)))
+
+(deftrace :ordinal+part-of-a-sequence (index item)
+  (when *trace-methods*
+    (trace-msg "Method: compose ordinal (~a) + part-of-sequence (~a)"
+               index item)))
 
 
 
@@ -68,6 +78,9 @@
                (indiv-uid head) (indiv-uid ground))))
 
 
+
+
+
 ;;--- For related syntax-functions functions.
 
 (defparameter *trace-syntactic-composition* nil)
@@ -78,7 +91,12 @@
 
 (deftrace :np+pp/np-is-partonomic (np pobj) ;; "a row of two blocks"
   (when *trace-syntactic-composition*
-    (trace-msg "Compose: np is partonomic ~a + ~a" np pobj)))
+    (trace-msg "Compose: np a dependent location pobj is partonomic: ~a + ~a" np pobj)))
+
+(deftrace :np-pp-of-np-partonomic (np pobj)
+  (when *trace-syntactic-composition*
+    (trace-msg "Compose np+pp: The partomomic np ~a gets ~a as a part"  np pobj)))
+
 
 (deftrace :compose-other-of (np pobj result)
   (when *trace-syntactic-composition*
@@ -103,6 +121,8 @@
   (when *trace-syntactic-composition*
     (trace-msg "Compose: applied ~a and ~a to produce ~a"
                qualifier head result)))
+
+
 #|
 (deftrace : (np pobj)
   (when *trace-syntactic-composition*

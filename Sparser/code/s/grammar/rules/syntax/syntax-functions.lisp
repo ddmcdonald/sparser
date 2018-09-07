@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  August 2018
+;;;  Version:  September 2018
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -1371,61 +1371,68 @@ there was an edge for the qualifier (e.g., there is no edge for the
        
        (setq np (individual-for-ref np))
 
-       (or (when (use-methods)
-             ;; e.g. has-location + location : "the block at the left end of the row"
-             (when (most-specific-k-method 'compose (list np pp))
-               (let ((result (compose np pp)))
-                 (when result
-                   (tr :np-pp-composition np pp)
-                   result))))
+       (if *subcat-test*
+         (or variable-to-bind
+             (and (use-methods) (most-specific-k-method 'compose (list np pp)))
+             (and (eq prep-word of)
+                  (or (itypep np 'attribute)
+                      (and
+                       ;; (itypep np 'dependent-location)
+                       (itypep np 'object-dependent-location)
+                       (itypep pobj-referent 'partonomic))
+                      (and
+                       (itypep np 'partonomic)
+                       (compatible-with-specified-part-type pobj-referent np))
+                      (and (use-methods)
+                           (most-specific-k-method 'compose (list np pobj-referent))))))
 
-           (when (and (use-methods)
-                      (eq prep-word of))
-             (when (most-specific-k-method 'compose (list np pobj-referent))
-               (let ((result (compose np pobj-referent)))
-                 (when result
-                 (tr :compose-other-of np pobj-referent result)
-                 result))))
+         ;; This side runs when subcat test passed and we're really interpreting.
+         ;; Specific cases are ordered before looking for applicable methods
+         ;; of using a subcategorized variable.
+         (cond
+           ((and (eq prep-word of)
+                 (itypep np 'attribute)) ;; "color of the block"
+            (find-or-make-individual 'quality-predicate
+                                     :attribute (itype-of np) :item pobj-referent))
 
-           (cond
-             (*subcat-test*
-              (or variable-to-bind
-                  (and (eq prep-word of)
-                       (or (itypep np 'attribute)
-                           (and
-                            ;; (itypep np 'dependent-location)
-                            (itypep np 'object-dependent-location)
-                            (itypep pobj-referent 'partonomic))
-                           (and
-                            (itypep np 'partonomic)
-                            (compatible-with-specified-part-type pobj-referent np))))))
+           ((and (eq prep-word of)
+                 (itypep np 'object-dependent-location)
+                 (itypep pobj-referent 'partonomic)) ;; "bottom of the stack"
+            (tr :np+pp/np-is-partonomic np pobj-referent)
+            (make-object-dependent-location np pobj-referent))
 
-             ((and (eq prep-word of)
-                   (itypep np 'attribute)) ;; "color of the block"
-              (find-or-make-individual 'quality-predicate
-                                       :attribute (itype-of np) :item pobj-referent))
+           ((and (eq prep-word of)
+                 (itypep np 'partonomic) ;; "a row of two blocks"
+                 (compatible-with-specified-part-type pobj-referent np))
+            (tr :np-pp-of-np-partonomic np pobj-referent)
+            (setq np (bind-variable 'parts pobj-referent np)))
 
-             ((and (eq prep-word of)
-                   (itypep np 'object-dependent-location)
-                   (itypep pobj-referent 'partonomic)) ;; "bottom of the stack"
-              (tr :np+pp/np-is-partonomic np pobj-referent)
-              (make-object-dependent-location np pobj-referent))
+           ((when (and (use-methods)
+                       (most-specific-k-method 'compose (list np pp)))
+              ;; e.g. has-location + location : "the block at the left end of the row"
+              (let ((result (compose np pp)))
+                (when result
+                  (tr :np-pp-composition np pp)
+                  result))))
 
-             ((and (eq prep-word of)
-                   (itypep np 'partonomic) ;; "a row of two blocks"
-                   (compatible-with-specified-part-type pobj-referent np))
-              (setq np (bind-variable 'parts pobj-referent np)))
-
-             (variable-to-bind
-              (collect-subcat-statistics np prep-word variable-to-bind pp)
-              (setq np (bind-dli-variable variable-to-bind pobj-referent np))
-              np)
-             
-             (t
-              (when (current-script :blocks-world)
-                (if (eq prep-word of)
-                  (warn "No interpretation of ~a 'of' ~a" np pobj-referent)
-                  (warn "No interpretation of np ~a with pp ~a" np pp))))))))))
+           ((when (and (use-methods)
+                       (eq prep-word of)
+                       (most-specific-k-method 'compose (list np pobj-referent)))
+              (let ((result (compose np pobj-referent)))
+                (when result
+                  (tr :compose-other-of np pobj-referent result)
+                  result))))
+           
+           (variable-to-bind
+            (collect-subcat-statistics np prep-word variable-to-bind pp)
+            (setq np (bind-dli-variable variable-to-bind pobj-referent np))
+            np)
+           
+           (t ;;(break "fell through")
+            (when (current-script :blocks-world)
+              (if (eq prep-word of)
+                (warn "No interpretation of ~a 'of' ~a" np pobj-referent)
+                (warn "No interpretation of np ~a with pp ~a" np pp))))))))))
 
 
 
@@ -2044,7 +2051,14 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 
 (defun make-ordinal-item (ordinal item)
-  (bind-dli-variable 'ordinal ordinal item))
+  ;; Used with np+number and np+hyphenated-number.
+  ;; Compare to (merge with) rules in core/numbers/ordinals.lisp.
+  (if *subcat-test*
+    (and ordinal item)
+    (or (when (and (use-methods)
+                   (most-specific-k-method 'compose (list ordinal item)))
+          (compose ordinal item))
+        (bind-variable 'ordinal ordinal item))))
 
 
 
