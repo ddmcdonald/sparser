@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "lattice-operations"
-;;;    Module:   "analyzers;psp:edges:"
-;;;   Version:   May 2016
+;;;    Module:   "objects/model/lattice-points/
+;;;   Version:   September 2018
 
 ;; initiated in May 2015
 ;; Code to place referents in a description lattice to facilitate anaphora and other reasoning
@@ -33,7 +33,7 @@
 ;;; V+V
 ;;;-----
 
-;; NOTE -- dl-variable_value are UNIQUELY DEETERMINED by the variable and value
+;; NOTE -- dl-variable_value are UNIQUELY DETERMINED by the variable and value
 (defstruct (dl-variable+value
             (:include unit)
             (:conc-name #:dlvv-)
@@ -414,7 +414,8 @@
      (or
       (cond
 	((individual-p parent)
-	 (find-variable-from-individual Var/name parent))
+	 ;;(find-variable-from-individual Var/name parent) ;; depricated
+         (find-variable-for-category var/name parent)) ;; has case for individuals
 	((category-p parent)
 	 (find-variable-for-category var/name parent)))
       (lambda-variable-named var/name)))
