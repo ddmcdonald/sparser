@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "ordinals"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  January 2018
+;;;  Version:  September 2018
 
 ;; initiated [ordinals1] 9/18/93 v2.3 as completely new treatment
 ;; 1.0 (1/7/94) redesigned as specialized categories
@@ -67,7 +67,28 @@
   :specializes index
   :binds ((number . ordinal)
           (item)
-          (sequence . sequence)))
+          (sequence . sequence))
+  :documentation "Free-standing relation linking a sequence, one of
+ its elements ('item') and a ordinal that records the position of
+ the item in the sequence. Automatically instantiated as one of the
+ steps in indexing a sequence. Indirectly useful in modeling proper
+ names since they are a sequence of name-word instances.")
+
+(define-mixin-category part-of-a-sequence
+  :instantiates nil
+  :specializes index ;; ???
+  :binds ((position ordinal)
+          (sequence sequence))
+  :documentation "Folded into other objects to indicate that any
+ instance of the object with occupy a particular position in
+ a particular sequence. Compared with position-in-a-sequence, this
+ is not a free-standing relationship, just the addition of a few
+ properties. Should also compare to sequential, which adds variables
+ for previous and next and is principally used in calendar time.
+ If ordering doesn't matter, then partonomies are worth considering.")
+
+
+;;--- building a position-in-a-sequence without its sequence
 
 (defun compose-ordinal-to-head (ordinal head)
   "This approximates the treatment in the Krisp paper (pg. 31 & subseq)
@@ -96,43 +117,20 @@
     i))
 
 
-;; "the fifth attack"
-(def-form-rule (ordinal common-noun)
-  ;; possible ETF: designated-instance-of-set ("third quarter")
-  ;;  or modifier-creates-definite-individual ("last year")
-  ;; The point is to create the position-in-a-sequence while
-  ;; leaving the common-noun as the head. Those would be more
-  ;; generically reversible than the compose oridinal function  
-  :form n-bar
-  :head :right-edge
-  :referent (:function compose-ordinal-to-head left-edge right-edge))
 
-
-
+;;;--------------------------------------------
+;;; 'post' ordinal treatment of Roman numerals
+;;;--------------------------------------------
 
 (define-category  post-ordinal
   :instantiates self
   :specializes number
   :binds ((number number)
           (word  :primitive word)
-          (roman-numeral :primitive word)))
+          (roman-numeral :primitive word))
+  :documentation "Applies to romman numerals. Instantiated as part of
+    define-ordinal.")
 
-;; New rule for post ordinals
-(def-form-rule (common-noun post-ordinal)
-  :form n-bar
-  :head :left-edge
-  :referent (:head left-edge
-             :instantiate-individual position-in-a-sequence
-             :with (number right-edge
-                           item left-edge)))
-;; "sites I and II"
-(def-form-rule (common-noun/plural post-ordinal)  
-  :form n-bar
-  :head :left-edge
-  :referent (:head left-edge
-             :instantiate-individual position-in-a-sequence
-             :with (number right-edge
-                           item left-edge)))
 
 ;;;------
 ;;; form
@@ -167,30 +165,76 @@
             ordinal )))))
 
 
-
-;;;------------
-;;; operations
-;;;------------
-
-(defun get-ordinal-from-number (n)
-  (let ((number (find-individual 'number :value n)))
-    (unless number
-      (break "There no existing number with the lisp value ~a" n))
-    (find-individual 'ordinal :number number)))
-
-(defun nth-ordinal (n)
-  (let ((ordinal (get-ordinal-from-number n)))
-    (unless ordinal
-      (break "No ordinal has been defined for the lisp-number ~a" n))
-    ordinal))
+(defgeneric make-ordinal (number)
+  (:documentation "We only predefine a small number or ordinals
+    complete with their corresponding words and sometimes Roman 
+    numerals. But some models insist on ordinals for arbitrary
+    numbers. So even though we'll need a special routine to generate
+    the words by rule when generating, we make the minimal
+    ordinal individual based just on the number.")
+  (:method ((n number))
+    (let ((number (find-or-make-number n)))
+      (make-ordinal n)))
+  (:method ((i individual))
+    (assert (itypep i 'number))
+    (define-individual 'ordinal :number i)))
 
 
+;;;----------
+;;; accessor
+;;;----------
+
+(defgeneric nth-ordinal (n)
+  (:documentation "Given an integer or a number individual return
+    the corresponding ordinal")
+  (:method ((n integer))
+    (let ((i (find-or-make-number n)))
+      (nth-ordinal i)))
+  (:method ((i individual))
+    (unless (itypep i 'number)
+      (error "nth-ordinal only take number individuals"))
+    (or (find-individual 'ordinal :number i)
+        (make-ordinal i))))
 
 
 
 ;;;------------------------
 ;;; phrase structure rules
 ;;;------------------------
+
+#| N.b. There are syntactic rules for np+number and np+hyphenated-number
+that use the syntax function make-ordinal-item to form their interpretation.
+|#
+
+(def-form-rule (common-noun post-ordinal)
+  :form n-bar
+  :head :left-edge
+  :referent (:head left-edge
+             :instantiate-individual position-in-a-sequence
+             :with (number right-edge
+                    item left-edge)))
+
+;; "sites I and II"
+(def-form-rule (common-noun/plural post-ordinal)  
+  :form n-bar
+  :head :left-edge
+  :referent (:head left-edge
+             :instantiate-individual position-in-a-sequence
+             :with (number right-edge
+                           item left-edge)))
+
+;; "the fifth attack"
+(def-form-rule (ordinal common-noun)
+  ;; possible ETF: designated-instance-of-set ("third quarter")
+  ;;  or modifier-creates-definite-individual ("last year")
+  ;; The point is to create the position-in-a-sequence while
+  ;; leaving the common-noun as the head. Those would be more
+  ;; generically reversible than the compose oridinal function  
+  :form n-bar
+  :head :right-edge
+  :referent (:function compose-ordinal-to-head left-edge right-edge))
+
+
 
 (when t ;;/// these should get swallowed into reversible rdata  
 
