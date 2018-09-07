@@ -81,16 +81,27 @@ that reflects that. If the parameter is nil then we just add
 the new binding to the same individual and something else keeps
 track of recording that fact.
 
-   There are two entry points, which virtually the same thing.
-Once some odd cases for the description lattice are worked out
-we can merge them, until then, the "old-bind-variable" function
-can be used even if *description-lattice* is up to achieve the
-effect of adding bindings to one individual rather than always
-returning a new one. 
-|#
+There are three entry points
+  bind-variable looks at the value of *description-lattice* and calls
+  bind-dli-variable it is non-nil and calls
+  old-bind-variable if it is nil.
+
+I prefer bind-variable simply because it's shorter and emphasizes
+what happens rather than how it happens (ddm).  |#
 
 (defparameter *convert-category-values-to-individuals-when-binding* t
   "Gates the new policy in bind-dli-variable to facilitate debugging its fanout")
+
+
+(defun bind-variable (var/name value individual &optional category)
+  "Standard way of binding a variable on an individual. What actually
+   happens depends on the value of *description-lattice*, in both cases
+   we return the individual that has the new binding."
+  (declare (special *description-lattice*))
+  (if *description-lattice*
+    (bind-dli-variable var/name value individual category)
+    (old-bind-variable var/name value individual category)))
+
 
 (defun bind-dli-variable (var/name value individual &optional category)
   "Returns the resulting individual as its first (primary) value
@@ -132,24 +143,15 @@ returning a new one.
      (find-or-make-lattice-subordinate individual var/name value category))
     (t (old-bind-variable var/name value individual category))))
 
-(defun bind-variable (var/name value individual &optional category)
-  "Standard way of binding a variable on an individual. What actually
-   happens depends on the value of *description-lattice*, in both cases
-   we return the individual that has the new binding."
-  (declare (special *description-lattice*))
-  (if *description-lattice*
-    (bind-dli-variable var/name value individual category)
-    (old-bind-variable var/name value individual category)))
 
 
-
-(defun old-bind-variable (var/name value individual
-                          &optional category)
+(defun old-bind-variable (var/name value individual &optional category)
   "Create a binding object and link it to the individual. If this is
    called with the symbol that names a variable rather than an actual
    variable, then the optional category argument is most certain way to
    find the real variable, otherwise we try to get it from the
-   individual."
+   individual. N.b. called from find-or-make-lattice-subordinate to bind 
+   the variable onto the newly copied individual."
   (declare (special *legal-to-add-bindings-to-categories*
                     *break-on-pattern-outside-coverage?*))
     
@@ -170,6 +172,7 @@ returning a new one.
   
   (when (consp category) ;; new 6/19/09
     (setq category (car category)))
+  
   (cond
    ((and (typep var/name 'anonymous-variable)
          (null (find-variable-for-category 
@@ -177,6 +180,8 @@ returning a new one.
                 (if (individual-p individual)
                   (itype-of individual)
                   individual))))
+    (warn "Can't bind ~a to ~a because the variable is anonymous"
+          individual value var/name)
     (values individual nil))
    (t
     (let ((variable (variable-given-name-and-individual var/name individual category)))
