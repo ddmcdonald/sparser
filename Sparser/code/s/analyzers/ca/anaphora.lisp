@@ -609,7 +609,8 @@ saturated? is a good entry point. |#
       (clrhash *maximal-lattice-mentions-in-paragraph*)
       (setq *maximal-lattice-mentions-in-paragraph* (make-hash-table :size 1000)))
   (clrhash *objects-in-the-discourse*)
-  (clrhash *lattice-individuals-to-mentions*)
+  (unless (eq *save-clause-semantics* :mention-clauses)
+    (clrhash *lattice-individuals-to-mentions*))
   (clrhash *mention-source-form-categories*))
 
 
