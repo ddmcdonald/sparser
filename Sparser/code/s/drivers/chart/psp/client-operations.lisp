@@ -113,7 +113,7 @@
               append (unwrap-clause-tree val))))
 
 (defun make-clause-var (n)
-  (intern (format nil "V-~s" n) :keyword))
+  (intern (format nil "MV~s" n) :SP))
 
 (defun clause-tree->clause (ct)
   `(:var ,(make-clause-var (second ct))
@@ -123,6 +123,15 @@
                                 (eq (car val) :var))
                            (make-clause-var (second val))
                            (make-clause-ref key val))))))
+
+(defun clause-with-list (cl)
+  (loop for (KEY VAL) on cl by #'cddr
+        when (and
+              (not (member key
+                           '(:has-determiner :prepositional-phrase :prep
+                             :family-members :progressive)))
+              (consp val))
+        do (return (list key val))))
 
 (defparameter *make-clause-ref* nil)
 (defparameter *det-refs* nil)
@@ -170,7 +179,7 @@
                              (when *warn-individuals*
                                (warn "individual as mention ~s in ~%-----  ~s" (semtree ref) (sentence-string *sentence-in-core*)))
                              (semtree ref))))
-                     (discourse-mention (mention-uid ref))
+                     (discourse-mention (make-clause-var (mention-uid ref)))
                      (referential-category (cat-name ref))
                      (string ref)
                      (word (pname ref))
