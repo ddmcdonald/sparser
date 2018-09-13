@@ -57,6 +57,7 @@
              unless (and (individual-p (base-description m))
                          (itypep (base-description m)
                                  '(:or prepositional-phrase prep
+                                   prepositional ;; new? part of the meaning of category::in
                                    copular-predication-of-pp bio-pair
                                    hyphenated-triple)))
              do (push (clause-semantics-for-mention m) *save-clause-semantics*))
@@ -153,8 +154,11 @@
            collect `(protein ,@(when (value-of 'name i) `((:name ,(pname (value-of 'name i)))))
                              ,@(when (value-of 'uid i) `((:uid ,(value-of 'uid i)))))))
     (:modified-amino-acid
-     (push (list :modified-amino-acid (sentence-string *sentence-in-core*)) *non-mention-sents*)
-     (semtree ref))
+     (cond ((eq (type-of ref) 'discourse-mention)
+            (make-clause-var (mention-uid ref)))
+           (t
+            (push (list :modified-amino-acid (sentence-string *sentence-in-core*)) *non-mention-sents*)
+            (semtree ref))))
     (t
      (let ((ref-id (typecase ref
                      (individual
