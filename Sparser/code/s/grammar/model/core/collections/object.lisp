@@ -67,7 +67,7 @@ and not entangle the simple notion of a collection. |#
 ;;;-----------------
 
 (define-category  sequence
-  :instantiates collection
+  :instantiates self
   :specializes abstract  ;;collection -- waiting for conjunction that's not
   ;; also a tensed clause
   :lemma (:common-noun "sequence")
@@ -80,6 +80,35 @@ and not entangle the simple notion of a collection. |#
  You can't have partial information about a sequence, and I'm 
  not even sure that you can extend them without creating a new object.")
 
+
+(define-category subsequence
+  :instantiates self
+  :specializes sequence
+  :binds ((reference-sequence sequence)
+          (index ordinal))
+  :index (:permanent :sequential-keys index reference-sequence)
+  :documentation "Defines a portion  of a sequence
+ relative to the position of a designated index element.")
+
+(define-category subseq-up-to
+   :specializes subsequence
+   :documentation "A sort of closed-interval. Denotes all of
+ the items in the reference sequence from its beginning up to
+ but not including the element at the index.")
+
+(define-category subseq-after
+   :specializes subsequence
+   :documentation "A sort of closed-interval. Denotes all of
+ the items in the reference sequence from the index element
+ to the end of the sequence, excluding the index element..")
+
+(define-category subseq-both-ends
+  :specializes subsequence
+  :binds ((end-index ordinal))
+  :documentation "A region that is closed on both ends.
+ Denotes all the elements of the reference sequence that
+ are between the index position (start) and the end-index,
+ exclusing those elements.")
 
 ;;;--------
 ;;; mixins
