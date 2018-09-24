@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011,2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011,2017-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "binary/explicit all keys"
 ;;;    Module:   "analyzers:psp:edges:"
-;;;   Version:   April 2017
+;;;   Version:   September 2018
 
 ;; 2.0 (11/10/92 v2.3) Simplified the name, added :form
 ;; 2.1 (5/5/93) Added an alternative spelling Make-chart-edge that's easier
@@ -28,7 +28,8 @@
                              form
                              rule rule-name
                              referent
-                             do-not-knit )
+                             do-not-knit
+                             ignore-used-in )
   
   (make-edge/all-keys
    :left-edge           left-edge 
@@ -52,6 +53,7 @@
                               (when (cfr-p rule)
                                 (cfr-referent rule)))) 
    :do-not-knit         do-not-knit
+   :ignore-used-in      ignore-used-in
    ))
 
 
@@ -62,7 +64,8 @@
                                 form
                                 rule rule-name
                                 referent
-                                do-not-knit )
+                                do-not-knit
+                               ignore-used-in)
 
   (unless starting-position
     (unless left-edge
@@ -132,29 +135,32 @@
         (setf (edge-right-daughter edge) right-edge)
         (set-used-by right-edge edge)))
 
-    (cond
-     ((and (null left-daughter)
-           (null right-daughter)
-           (null left-edge)
-           (null right-edge))
-      ;; ?? would there ever be a reason to specify the right-daughter
-      ;; and not the left ??
-      (set-used-by/anonymous-daughters starting-position
-                                       ending-position
-                                       edge))
-     ((and (and left-edge right-edge)
-           (not (eq (pos-edge-ends-at left-edge)
-                    (pos-edge-starts-at right-edge))))
-      (set-used-by/anonymous-daughters (pos-edge-ends-at left-edge)
-                                       (pos-edge-starts-at right-edge)
-                                       edge))
-     ((and (and left-daughter right-daughter)
-           (and (edge-p left-daughter) (edge-p right-daughter))
-           (not (eq (pos-edge-ends-at left-daughter)
-                    (pos-edge-starts-at right-daughter))))
-      (set-used-by/anonymous-daughters (pos-edge-ends-at left-daughter)
-                                       (pos-edge-starts-at right-daughter)
-                                       edge)))
+    (unless ignore-used-in
+      ;; Used when the caller knows that the walk done by the
+      ;; anonymous daughters check will be incoherent
+      (cond
+        ((and (null left-daughter)
+              (null right-daughter)
+              (null left-edge)
+              (null right-edge))
+         ;; ?? would there ever be a reason to specify the right-daughter
+         ;; and not the left ??
+         (set-used-by/anonymous-daughters starting-position
+                                          ending-position
+                                          edge))
+        ((and (and left-edge right-edge)
+              (not (eq (pos-edge-ends-at left-edge)
+                       (pos-edge-starts-at right-edge))))
+         (set-used-by/anonymous-daughters (pos-edge-ends-at left-edge)
+                                          (pos-edge-starts-at right-edge)
+                                          edge))
+        ((and (and left-daughter right-daughter)
+              (and (edge-p left-daughter) (edge-p right-daughter))
+              (not (eq (pos-edge-ends-at left-daughter)
+                       (pos-edge-starts-at right-daughter))))
+         (set-used-by/anonymous-daughters (pos-edge-ends-at left-daughter)
+                                          (pos-edge-starts-at right-daughter)
+                                          edge))))
 
     (cond
       (referent ;; specified by the caller. Just set it.

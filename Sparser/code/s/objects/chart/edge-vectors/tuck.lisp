@@ -45,9 +45,10 @@
                  dominating-edge subsumed-edge))
         (setf (edge-constituents dominating-edge)
               (subst new-edge subsumed-edge (edge-constituents dominating-edge))))
-       ((eq direction :right)
+       
+       ((eq direction :right) ;;/// error here
         (unless (eq (edge-right-daughter dominating-edge) subsumed-edge)
-          (error t "~%in tuck-new-edge-under-already-knit for rule ~s:~
+          (error  "~%in tuck-new-edge-under-already-knit for rule ~s:~
                     ~%edge-right-daughter in dominating edge ~s ~
                     ~%is not subsumed-edge ~s in sentence:~%~s~%"
                  *current-da-rule* dominating-edge subsumed-edge

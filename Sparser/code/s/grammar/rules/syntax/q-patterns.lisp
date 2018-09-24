@@ -341,29 +341,57 @@
              (preposition (edge-left-daughter prep-edge))
              (variable (subcategorized-variable
                         (edge-referent head) preposition item)))
-        (when variable ;; if not, should perhaps look for a lower head
-          ;; Replace the prep with a proper pp which wh-edge as its
-          ;; complement. Consider using the literal wh-edge.
-          (let* ((pp-edge (move-np-to-stranded-prep prep-edge wh-edge))
-                 (subsumed-edge head))
-            (let ((rule (multiply-edges head pp-edge)))
-              (when rule
-                (let ((new-edge (make-completed-binary-edge
-                                 head pp-edge rule)))
-                  ;;/// Right now (8/12/18) this blows up the function
-                  ;; extract-string-from-char-buffers as called from
-                  ;; note-surface-string from complete because the
-                  ;; obvious character indicies are nonesense unless
-                  ;; we do something.
-                  (tuck-new-edge-under-already-knit
-                   subsumed-edge new-edge main-edge :right)
-                  (break "pieces?")
+        (when variable ;; if not, we should perhaps look for a lower head          
+          ;; We want to compose the moved 'item' with the preposition
+          ;; whose complement it would have been in the declarative form
+          ;; of the question. We can use the obvious means of composing
+          ;; the two edges because that scrambles the chart and messes up
+          ;; the mapping between edges and the character-level source.
+          ;; Instead we do the referent-level operation to get the
+          ;; referent we would have had by composing the edges,
+          ;; and make a new edge -- just over the preposition -- with
+          ;; that referent.
+          (let ((pp-rule (multiply-edges prep-edge wh-edge)))
+            (unless pp-rule (error "no rule for prep+np ??"))
+            (let* ((rule-category (cfr-category pp-rule))
+                   (category (etypecase rule-category
+                               (category rule-category)
+                               (symbol
+                                (if (eq :syntactic-form rule-category) ;; form rule
+                                  (cfr-form pp-rule)
+                                  (error "Category of ~a is unrecognized symbol" pp-rule)))))                               
+                   (pp-edge
+                    (make-chart-edge
+                     :category category
+                     :form (cfr-form pp-rule)
+                     :rule pp-rule
+                     :starting-position (pos-edge-starts-at prep-edge)
+                     :ending-position (pos-edge-ends-at prep-edge)
+                     :left-daughter prep-edge
+                     :right-daughter wh-edge
+                     :ignore-used-in t)))
+              ;;(break "new-edge = ~a" pp-edge)
 
+              ;; compose the head and the pp
+              (let ((rule (multiply-edges head pp-edge)))
+                (unless rule (error "No rule for ~a + ~a" head pp-edge))
+                (let* ((extended-head-edge
+                        (make-completed-binary-edge head pp-edge rule))
+                       (subsumed-edge head) ;; rename to make tuck cleared
+                       (new-edge extended-head-edge)
+                       (dominating-edge main-edge))
+
+                  (tuck-new-edge-under-already-knit
+                   subsumed-edge new-edge dominating-edge :right)
+                  (break "pieces?"))))))))))
+
+
+          #|
                   ;; Attach the pp to the head, which will likely
                   ;; require a tuck.
                   ;; Formulate a question wrapper that incorporates the
                   ;; content of the wh-edge and uses the variable.
-                  variable)))))))))
+                  variable))))) |#
 
 
 
