@@ -445,6 +445,10 @@
     :name "Hurricanes and the events they are part of"
     :parent *sublanguages*)
 
+(define-grammar-module *musica*
+    :name "For the Musica CwC program"
+    :parent *sublanguages*)
+
 (define-grammar-module *middle-east*
   :name "The Middle East"
   :parent *sublanguages*)

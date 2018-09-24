@@ -210,6 +210,9 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *hurricanes*
     (gload "hurricanes;loader"))
 
+  (gate-grammar *musica*
+    (gload "music;loader"))
+
   (gate-grammar *middle-east*
     (gload "mideast;loader"))
 

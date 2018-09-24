@@ -258,6 +258,7 @@
 (include-grammar-module  *disease*)
 ;(include-grammar-module  *biology*)
 (include-grammar-module  *hurricanes*)
+(include-grammar-module  *musica*)
 (include-grammar-module  *generic-military*)
 
 (include-grammar-module *middle-east*)
