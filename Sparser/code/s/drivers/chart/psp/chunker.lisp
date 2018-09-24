@@ -440,7 +440,7 @@
 
       ((eq ecat 'ordinal) t)                                        ;;ORDINAL
      
-      ((or (some-edge-satisfying? edges #'pronoun-or-wh-pronoun)    ;; BLOCK NG CONTINUATION after WH and pronouns
+      ((or (some-edge-satisfying? edges #'pronoun?)    ;; BLOCK NG CONTINUATION after WH and pronouns
            ;; this makes sense when we have very few questioned NPs like "which mutated proteins"
            (and (some-edge-satisfying? (all-edges-at e) #'preposition-edge?) 
                 (not (preceding-determiner? e))))
@@ -569,6 +569,15 @@
   (let ((edges-before (edges-before e)))
     ;;(push-debug `(,e ,edges-before)) (lsp-break "vg-start, e = ~a" e)
     (cond
+      ((and (sentence-initial? e)
+            (or (member (cat-name (edge-category e)) '(do be))
+                (eq (cat-name (edge-form e)) 'modal))
+            #+ignore
+            (some-edge-satisfying? (edges-after e)
+                                   #'(lambda(ee)
+                                       (member (cat-name (edge-form ee))
+                                               '(verb+ing verb+ed)))))
+       nil)
       ((plural-noun-and-present-verb? e)
        (and
         (or (some-edge-satisfying? (edges-before e) #'singular-det)
@@ -584,8 +593,9 @@
                           ;; allow for "to form GDP"
                           (not
                            (loop for ee in edges-before
-                              thereis (eq (cat-name (edge-category ee)) 'to)))))
-            (not (followed-by-verb e)))))
+                                 thereis (eq (cat-name (edge-category ee)) 'to)))))
+                (not (followed-by-verb e)))))
+
       
       (t (compatible-with-vg? e)))))
 
@@ -689,6 +699,9 @@ than a bare "to".  |#
             (ecn (cat-name (edge-category e))))
         (declare (special *ng-start-tests-in-progress*))
         (cond
+          ((and (sentence-initial? e)
+                (eq (cat-name (edge-form e)) 'wh-pronoun))
+           t)
           ((verb-premod-sequence? (edge-just-to-right-of e))
            nil)
           ((eq (cat-name (edge-category e)) 'not)
@@ -758,7 +771,8 @@ than a bare "to".  |#
                 (eq (form-cat-name e) 'wh-pronoun)
                 (category-p (edge-referent e))
                 (member (cat-symbol (edge-referent e))
-                        '(category::which category::whose category::what)))
+                        '(category::which category::whose category::what))
+                (not (preceding-preposition e)))
            t)
           
           ((eq category::verb+ing (edge-form e))
@@ -1167,6 +1181,9 @@ than a bare "to".  |#
   (or (eq (form-cat-name edge) 'pronoun )
       (member (cat-name (edge-category edge)) '(which what))))
 
+(defun pronoun? (edge)
+  (eq (form-cat-name edge) 'pronoun ))
+
 (defun preposition-edge? (edge)
   (when (edge-p edge)
     (prep? (form-cat-name edge))))
@@ -1255,7 +1272,12 @@ than a bare "to".  |#
 (defun preceding-adverb (e &optional (edges (edges-before e)))
   (loop for ee in edges
      thereis
-       (eq (form-cat-name ee) 'adverb)))
+          (eq (form-cat-name ee) 'adverb)))
+
+(defun preceding-preposition (e &optional (edges (edges-before e)))
+  (loop for ee in edges
+     thereis
+       (member (form-cat-name ee) '(preposition spatial-preposition))))
 
 (defun preceding-adverb-or-subordinate-conjunction (e &optional (edges (edges-before e)) )
   (loop for ee in edges
