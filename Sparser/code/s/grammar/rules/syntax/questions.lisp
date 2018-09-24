@@ -545,8 +545,8 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
   (let ((stmt-form (cat-name (edge-form stmt-edge))))
     (case stmt-form
       (transitive-clause-without-object
-       (let ((subj-var (subject-variable stmt)))
-         (bind-variable subj-var wh stmt)))
+       (let ((obj-var (object-variable stmt)))
+         (bind-variable obj-var wh stmt)))
       (vp+passive
        ;; these (always?) have a by-phrase, so their agent is bound.
        (let ((obj-var (object-variable stmt)))
