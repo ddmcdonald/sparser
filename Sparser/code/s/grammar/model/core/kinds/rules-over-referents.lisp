@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "rules-over-referents"
 ;;;   Module:  "model/core/kinds/"
-;;;  version:  February 2017
+;;;  version:  September 2018
 
 ;; initiated 3/18/13. Elaborated through 7/24/13, gradually moving out rules.
 
@@ -20,6 +20,9 @@
   ;; when np is partonymic and we're working with an of-pp
   (let* ((variable (find-variable-for-category 'part-type partonym))
          (type (var-value-restriction variable)))
+    (when (equal type '(:primitive category))
+      ;; bound on the category? ///n.b. only valid for one level up
+      (setq type (value-of 'part-type (itype-of partonym))))
     (if (itypep object 'collection)
       (let ((object-type (value-of 'type object)))
         (itypep object-type type))
