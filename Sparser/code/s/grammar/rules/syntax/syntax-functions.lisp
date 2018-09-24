@@ -1836,6 +1836,15 @@ there was an edge for the qualifier (e.g., there is no edge for the
                          :statement s
                          :embedded embedded?)))))
 
+(defun create-when-where-relative (wh s)
+  (cond
+    (*subcat-test* t)
+    (t (if
+        (itypep wh 'when)
+        (revise-parent-edge :form category::when-relative-clause)
+        (revise-parent-edge :form category::where-relative-clause))
+       s)))
+
 (defun create-ifcomp (if s)
   (declare (special category::ifcomp))
   (cond

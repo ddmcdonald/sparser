@@ -277,11 +277,7 @@
 
 
 
-;; 3/1/17 {when, where} + S  now calls make-subordinate-clause
-;;  Nothing explicitly calls this today
-#+ignore
 (defun apply-where-when-relative-clause (np-ref vp-ref)
-  (declare (special np-ref vp-ref))
    (setq np-ref (individual-for-ref np-ref))
    (let ((var (if (eq (edge-form (right-edge-for-referent)) 'category::where-relative-clause)
 		  :where
@@ -294,9 +290,7 @@
        ;; copy down the upstairs subject
        ;; Should we check if it was already bound to something?
        (setq vp-ref (create-predication-by-binding
-                     var np-ref vp-ref
-                     (list 'apply-where-when-relative-clause
-                           (parent-edge-for-referent))))
+                     var np-ref vp-ref))
        ;; link the rc to the np
        (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
        ;; referent of the combination is the np

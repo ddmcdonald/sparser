@@ -97,6 +97,11 @@
            :head :right-edge
            :form np
            :referent (:function determiner-noun left-edge right-edge)))
+     (eval
+      `(def-syntax-rule (wh-pronoun ,nb) 
+           :head :right-edge
+           :form np
+           :referent (:function determiner-noun left-edge right-edge)))
      
      (eval
       `(def-syntax-rule (possessive ,nb) 
@@ -463,7 +468,18 @@
       `(def-syntax-rule (,nb transitive-clause-without-object)
            :head :left-edge
            :form np
-           :referent (:function apply-object-relative-clause left-edge right-edge)))
+           :referent (:function apply-where-when-relative-clause left-edge right-edge)))
+     (eval
+      `(def-syntax-rule (,nb when-relative-clause)
+           :head :left-edge
+           :form np
+           :referent (:function apply-where-when-relative-clause left-edge right-edge)))
+
+     (eval
+      `(def-syntax-rule (,nb where-relative-clause)
+           :head :left-edge
+           :form np
+           :referent (:function apply-where-when-relative-clause left-edge right-edge)))
 
      (eval
       `(def-syntax-rule (,nb object-relative-clause)
@@ -722,11 +738,13 @@
 
 
 ;;--- Embedded questions
-(loop for wh in '(who what where when why) 
-     do  (def-form-rule/expr `(,wh s)
+
+(loop for wh in '(where when why) 
+      do  (eval
+           `(def-form-rule (,wh s)
              :head :right-edge
-             :form 's ;;/// probably should be embedded-question with a :wh subcat marker
-             :referent '(:function make-subordinate-clause left-edge right-edge)))
+             :form where-relative-clause
+             :referent (:function create-when-where-relative left-edge right-edge))))
 ;; No longer rewriting as where-relative-clause or when-relative-clause
 
 (def-form-rule (whether s)
