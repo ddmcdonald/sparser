@@ -160,6 +160,8 @@ with a special case just below. |#
   ;; behaviours will all be specific to the pronoun.
   ;; For the moment just making them instances so there's
   ;; something on the board to tally and see patterns on.
+  ;; Handler is just quantifier-noun-compount for now,
+  ;; with one rule combining them with a PP.
   (let ((word (resolve string))) ;; see words/pronouns.lisp
     (assert word (string)
             "There is no already defined word for ~a" string)
@@ -176,7 +178,7 @@ with a special case just below. |#
         (setf (cfr-form rule)
               (if (string-equal string "one") ;; special case. No
                 category::common-noun
-                category::pronoun))
+                category::indef-pronoun))
         (values i rule)))))
 
 

@@ -71,6 +71,16 @@
     (trace-msg "Method: direction(~a) & dependent-location(~a)"
                qualifier head)))
 
+(deftrace :part-of-a-sequence+partonomic (part whole)
+  (when *trace-methods*
+    (trace-msg "Method: part-of-a-sequence(~a) + partonomic(~a)"
+               part whole)))
+
+(deftrace :sequencer+part-of-a-sequence (er seq)
+  (when *trace-methods*
+    (trace-msg "Method: sequencer(~a) + part-of-a-sequence(~a)"
+               er seq)))
+
 
 (deftrace :direction+object (head ground)
   (when *trace-methods*

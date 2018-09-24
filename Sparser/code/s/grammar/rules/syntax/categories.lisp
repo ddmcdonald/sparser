@@ -294,6 +294,7 @@
 (def-form-category  proper-noun)
 (def-form-category  pronoun)
 (def-form-category  wh-pronoun)
+(def-form-category  indef-pronoun) ;; "everything"
 
 (def-form-category  noun/verb-ambiguous)
 
