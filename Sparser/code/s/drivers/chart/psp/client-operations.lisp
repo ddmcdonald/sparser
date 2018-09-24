@@ -77,7 +77,7 @@
 (defun clause-semantics-for-mention (mention)
   (declare (special mention))
   (let* ((desc (base-description mention))
-         (cs (list :isa (mention-uid mention) :var)))
+         (cs (list :isa (make-clause-var (mention-uid mention)) :var)))
     (declare (special cs))
     (push (cat-name (itype-of desc)) cs)
     (loop for d in (dependencies mention)
@@ -92,7 +92,7 @@
 (defun mention-clause-tree (m)
   (typecase m 
     (discourse-mention
-     `(:var ,(mention-uid m) :isa ,(cat-name (itype-of (edge-referent (mention-source m))))
+     `(:var ,(make-clause-var (mention-uid m)) :isa ,(cat-name (itype-of (edge-referent (mention-source m))))
         ,@(loop for d in (dependencies m) append
                   `(,(intern (pname (pname (dependency-variable d)))
                              :keyword)
