@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "syntactic rules"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  May 2017
+;;;  Version:  September 2018
 
 ;; Initiated 9/7/14 to collect the rules into one place. 10/25 flushed
 ;; the temporary vp+prep rules. 10/26/14 put in one for vg+pp
@@ -128,16 +128,8 @@
     :referent (:function quantifier-noun-compound left-edge right-edge))
 
 
-
-(loop for nb in `(,@*n-bar-categories*) ;; see core/adjuncts/sequence/object.lisp
-   do
-     (eval `(def-form-rule (sequencer ,nb)
-                :form np
-                :head :right-edge
-                :referent (:function determiner-noun left-edge right-edge))))
-
 (def-syntax-rule (proper-noun quantifier) 
-    :head :left-edge 
+  :head :left-edge 
   :form np
   :referent (:function allowable-post-quantifier? left-edge right-edge))
 
@@ -150,12 +142,6 @@
     :head :left-edge 
   :form np
   :referent (:function allowable-post-quantifier? left-edge right-edge))
-
-#+ignore ;;THIS ALLOWS FOR "during the process"
-;; RUSTY -- What was wrong with this rule? (Other than it being a method call)
-(def-form-rule (sequencer np)
-  :form np
-  :referent (:method determiner-noun left-edge right-edge))
 
 
 
@@ -267,6 +253,11 @@
     :form np
     :referent (:function quantifier-noun-compound left-edge right-edge))
 
+
+(def-syntax-rule (indef-pronoun pp) ;; "everything on the table"
+  :head :right-edge
+  :form np
+  :referent (:function indefinite-pn/np left-edge right-edge))
 
 
 
@@ -1233,6 +1224,10 @@ similar to an oncogenic RasG12V mutation (9)."))
     :head :left-edge
     :referent (:function make-ordinal-item right-edge left-edge))
 
+;;;-------------------------------------
+;;; rules involving semantic categories
+;;;-------------------------------------
+
 (def-syntax-rule (approximator number)
     :form number
     :head :right-edge
@@ -1240,9 +1235,21 @@ similar to an oncogenic RasG12V mutation (9)."))
 	       :bind (approximator left-edge)))
 
 
+(loop for nb in `(,@*n-bar-categories*) ;; see core/adjuncts/sequence/object.lisp
+   do (eval `(def-form-rule (sequencer ,nb)
+                :form np
+                :head :right-edge
+                :referent (:function determiner-noun left-edge right-edge))))
+
+(def-form-rule (sequencer np)
+  :head :left-edge
+  :form pp
+  :referent (:function make-pp left-edge right-edge))
 
 
 
+
+;;--------------------------------------
 ;;;;;; strange types of passives
 
 (def-form-rule (become verb+ed)

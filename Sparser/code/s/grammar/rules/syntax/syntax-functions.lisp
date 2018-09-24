@@ -749,6 +749,19 @@ val-pred-var (pred vs modifier - left or right?)
      head)))
 
 
+(defun indefinite-pn/np (indef-pn head)
+  "Tailored for indefinite pronouns ('everyone', 'anything') that act
+ semantically just like quantifiers. This uses quantifier-noun-compound
+ as a standin for something more tailored. It just stashes the quantifier
+ on the head via a binding defined for that purpose"
+  (if *subcat-test* ;; straight copy
+    (itypep head '(:or endurant perdurant abstract bio-abstract quality
+                   biological time-kind determiner))
+    (let ((head (quantifier-noun-compound indef-pn head)))
+      (revise-parent-edge :category ;; promulgated edge wrong on the rule/???///
+                          (edge-category (right-edge-for-referent)))
+      head)))
+
 (defun quantifier-det-compound (quantifier det)
   (warn "quantifier-det-compound got ~s ~s~%" quantifier det)
   nil)
@@ -2040,7 +2053,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun make-pp (prep pobj)
   (declare (special category::prepositional-phrase))
   (if *subcat-test*
-    (not (itypep prep category::prepositional-phrase))
+    (or (not (itypep prep category::prepositional-phrase))
+        (and (use-methods) (most-specific-k-method 'compose (list prep pobj))))
     (else
       (setq prep (individual-for-ref prep))
       (or (when (use-methods)
