@@ -423,6 +423,9 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                (setq attr-edge next-edge))
               ((itypep (edge-referent next-edge) 'attribute-value) ;; "big"
                (setq value-edge next-edge))
+              ((and other-edges
+                    (eq (edge-form next-edge) category::det))
+               (return))
               ((null (edge-referent next-edge)) ;; happens in cases like an edge over apostrophe-s
                (push next-edge other-edges))
               #+ignore
@@ -438,7 +441,6 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                              (chart-position-after next-edge))
                   next-word (pos-terminal next-pos)
                   next-edge (highest-edge (pos-starts-here next-pos))))
-
  
          (if aux-edge
            (when (edge-over-aux? aux-edge)
@@ -524,6 +526,8 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                  ;;(break "no rule") -- but return something
                  (edge-referent (second edges))))))
         (otherwise
+         (when *debug-questions*
+           (break "More than two 'other' edges"))
          (let ((start-pos (pos-edge-starts-at (first edges))))
            (multiple-value-bind (layout edge)
                (parse-between-boundaries start-pos end-pos)
