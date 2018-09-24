@@ -104,34 +104,36 @@
   (let* ((be (edge-referent (first edges)))    ;; is
          (subj (edge-referent (second edges))) ;; Selumetinib
          (obj (edge-referent (third edges)))   ;; an inhibitor of MEK1
-         ;; run the core of assimilate-np-to-v-as-object. Result in an instance of 'be'
-         ;;(i (assimilate-object be obj))
          (be+subj
           (let ((*right-edge-into-reference* (first edges))
                 (*left-edge-into-reference* (second edges)))
             (assimilate-subject subj be)))
+         ;;(push-debug `(,be ,subj ,obj ,be+subj)) (break "1")
          (subj-vg-edge
-          (make-binary-edge/explicit-rule-components
-           (first edges) (second edges)
-           :rule-name 'polar-copula-question-subject
-           :form category::transitive-clause-without-object
-           :category category::be
-           :referent be+subj))
-         (copular-meaning 
-          (let ((*right-edge-into-reference* (third edges))
-                (*left-edge-into-reference* subj-vg-edge))
-            (assimilate-object (edge-referent subj-vg-edge) obj)))
+          (when be+subj
+            ;; bad subj in "Is the first one a kinase"
+            (make-binary-edge/explicit-rule-components
+             (first edges) (second edges)
+             :rule-name 'polar-copula-question-subject
+             :form category::transitive-clause-without-object
+             :category category::be
+             :referent be+subj)))
+         (copular-meaning
+          (when subj-vg-edge
+            (let ((*right-edge-into-reference* (third edges))
+                  (*left-edge-into-reference* subj-vg-edge))
+              (assimilate-object (edge-referent subj-vg-edge) obj))))
          (copula-edge
-          (when (and be+subj copular-meaning)
+          (when (and subj-vg-edge copular-meaning)
             (make-binary-edge/explicit-rule-components
              subj-vg-edge (third edges)
              :rule-name 'polar-copula-question-object
              :form category::s
              :category category::be
              :referent copular-meaning))))
-    (declare (special be subj obj subj-vg-edge copula-edge polar-edge))
-    ;;(setq i (bind-variable 'subject subj i))
-    (when copula-edge (make-polar-edge copula-edge))))
+    ;;(push-debug `(,be ,subj ,obj ,subj-vg-edge ,copula-edge ,copular-meaning))
+    (when copula-edge
+      (make-polar-edge copula-edge))))
          
 (defun make-polar-edge (statement-edge)
   (let* ((start-vec (edge-starts-at statement-edge))
