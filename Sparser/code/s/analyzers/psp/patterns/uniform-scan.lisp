@@ -161,7 +161,10 @@
                              (subseq sur-str 2))))
          (pro-word? (when pro-string? (resolve pro-string?)))
          (pro-cfr? (when pro-word? (find-single-unary-cfr pro-word?)))
-         (pro? (when (and pro-cfr? (itypep (cfr-referent pro-cfr?) category::protein))
+         (pro? (when (and pro-cfr?
+                          (itypep (cfr-referent pro-cfr?) category::protein)
+                          ;; block things like "pAb" (polyclonal antibody) getting phosphorylated
+                          (not (category-p (cfr-referent pro-cfr?))))
                  (cfr-referent pro-cfr?))))
     (declare (special sur-str pro-string? pro-word? pro-cfr? pro?))
     ;;(lsp-break "is-pro")
