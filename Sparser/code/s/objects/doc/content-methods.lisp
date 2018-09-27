@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2018 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "content-methods"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  January 2018
+;;;  Version:  September 2018
 
 ;; Created 5/12/15 to hold the container mixings and such that need
 ;; to have the document model elements already defined so they can
@@ -488,18 +488,21 @@
 
 (defun mention-in-sentence? (mention s)
   "Given a mention and a sentence, determine if the mention's bounds
-are within the sentence's bounds"
-  (let* ((m-edge (mention-source mention))
-         (m-start-index
-          (pos-array-index (pos-edge-starts-at m-edge)))
-         (m-end-index
-          (pos-array-index (pos-edge-ends-at m-edge)))
-         (s-start-index
-          (pos-array-index (starts-at-pos s)))
-         (s-end-index
-          (pos-array-index (ends-at-pos s))))
-    (and (<= s-start-index m-start-index)
-         (>= s-end-index m-end-index))))
+   are within the sentence's bounds"
+  (when (mention-source mention)
+    ;; This can be nil when running in documents where the parsing
+    ;; context is just one paragraph long
+    (let* ((m-edge (mention-source mention))
+           (m-start-index
+            (pos-array-index (pos-edge-starts-at m-edge)))
+           (m-end-index
+            (pos-array-index (pos-edge-ends-at m-edge)))
+           (s-start-index
+            (pos-array-index (starts-at-pos s)))
+           (s-end-index
+            (pos-array-index (ends-at-pos s))))
+      (and (<= s-start-index m-start-index)
+           (>= s-end-index m-end-index)))))
 
 ;;;----------------------------------------------
 ;;; functionally salient aspects of the sentence
