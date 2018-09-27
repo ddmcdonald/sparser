@@ -424,6 +424,13 @@
                  name c))
         variable))))
 
+(defparameter *warn-non-binding-anonymous-var* nil
+  "The actual assembly of binding objects happens in the function
+ old-bind-variable and it requires us to have a real variable in
+ our hand, i.e. that we can determine the intended instance of
+ the variable with that name. If we can't, then no binding is
+ constructed. This gates a warning message about that, which
+ can be very noisy when running over a set of articles.")
 
 ;;;-------------------------------------------
 ;;; Juggling around the variables in bindings

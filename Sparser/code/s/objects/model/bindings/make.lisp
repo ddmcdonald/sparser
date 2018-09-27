@@ -153,7 +153,8 @@ what happens rather than how it happens (ddm).  |#
    individual. N.b. called from find-or-make-lattice-subordinate to bind 
    the variable onto the newly copied individual."
   (declare (special *legal-to-add-bindings-to-categories*
-                    *break-on-pattern-outside-coverage?*))
+                    *break-on-pattern-outside-coverage?*
+                    *warn-non-binding-anonymous-var*))
     
   (when (typep individual 'category)
     ;;/// this is debatable in principle, but it would be very
@@ -180,8 +181,9 @@ what happens rather than how it happens (ddm).  |#
                 (if (individual-p individual)
                   (itype-of individual)
                   individual))))
-    (warn "Can't bind ~a to ~a because the variable is anonymous"
-          individual value var/name)
+    (when *warn-non-binding-anonymous-var*
+      (warn "Can't bind ~a to ~a because the variable is anonymous"
+            individual value var/name))
     (values individual nil))
    (t
     (let ((variable (variable-given-name-and-individual var/name individual category)))
