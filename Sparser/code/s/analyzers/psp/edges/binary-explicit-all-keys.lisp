@@ -21,15 +21,20 @@
 (in-package :sparser)
 
 
-(defun make-chart-edge (&key left-edge right-edge
-                             starting-position ending-position
-                             left-daughter right-daughter
-                             category
-                             form
-                             rule rule-name
-                             referent
-                             do-not-knit
-                             ignore-used-in )
+(defun make-chart-edge (&key
+                          left-edge right-edge
+                          starting-position ending-position
+                          left-daughter right-daughter
+                          category
+                          form
+                          rule rule-name
+                          referent
+                          constituents
+                          words
+                          do-not-knit
+                          ignore-used-in )
+  "Just a pass-through with a short name to 
+"
   
   (make-edge/all-keys
    :left-edge           left-edge 
@@ -51,7 +56,9 @@
    :referent            (or referent
                             (when rule
                               (when (cfr-p rule)
-                                (cfr-referent rule)))) 
+                                (cfr-referent rule))))
+   :constituents        constituents
+   :words               words
    :do-not-knit         do-not-knit
    :ignore-used-in      ignore-used-in
    ))
@@ -63,7 +70,9 @@
                                 category
                                 form
                                 rule rule-name
-                                referent
+                             referent
+                             constituents
+                                 words
                                 do-not-knit
                                ignore-used-in)
 
@@ -86,11 +95,23 @@
               ~% Starting-position is a ~A"
              (type-of starting-position))))
 
+  (when ending-position
+    (unless (typep ending-position 'position)
+      (error "The positions must be objects of type position~
+              ~% Ending-position is a ~A"
+             (type-of ending-position))))
+
   (when left-edge
     (unless (typep left-edge 'edge)
       (error "The edges must be objects of type edge~
               ~%  Left-edge is a ~A"
              (type-of left-edge))))
+
+  (when right-edge
+    (unless (typep right-edge 'edge)
+      (error "The edges must be objects of type edge~
+              ~% Right-edge is a ~A"
+             (type-of right-edge))))
 
 
   (let ((edge (next-edge-from-resource))
@@ -161,6 +182,12 @@
          (set-used-by/anonymous-daughters (pos-edge-ends-at left-daughter)
                                           (pos-edge-starts-at right-daughter)
                                           edge))))
+
+    (when words
+      (setf (edge-spanned-words edge) words))
+
+    (when constituents
+      (setf (edge-constituents edge) constituents))
 
     (cond
       (referent ;; specified by the caller. Just set it.

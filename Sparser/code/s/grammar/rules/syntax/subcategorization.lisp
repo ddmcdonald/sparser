@@ -388,7 +388,8 @@
   (:method ((i individual) (w word))
     (filter-patterns i w))
   (:method ((head-edge edge) (prep-edge edge))
-    (assert (eq (form-cat-name prep-edge) 'preposition))
+    (assert (or (eq (form-cat-name prep-edge) 'preposition)
+                (eq (form-cat-name prep-edge) 'spatial-preposition)))
     (let ((prep (edge-left-daughter prep-edge)))
       (takes-preposition? (edge-referent head-edge) prep))))
 

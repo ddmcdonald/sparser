@@ -314,45 +314,53 @@
            (warn "Could not resolve 3 edges into a WH question: ~a" edges)))))))
 
 
+;; (p/s "What genes is stat3 upstream of?")
+;; (p/s "What tissues is STAT3 expressed in?") <== doesn't tuck
+;; 
 (defun wh-initial-four-edges/be (wh-edge edges start-pos end-pos)
   (tr :wh-walk "wh-initial-four-edges/be")
   (let ((e2-form (form-cat-name (second edges)))
         (e3-form (form-cat-name (third edges)))
         (e4-form (form-cat-name (fourth edges))))
     (cond
-      ((and (eq e2-form 'preposed-auxiliary) ;; is
-            (eq e3-form 's)                 ;; stat3 upstream
-            (eq e4-form 'preposition))       ;; from
-       (when *debug-questions*
-         (wh-stranded-prep wh-edge (third edges) (fourth edges) start-pos end-pos)))
+      ((and (or (eq e2-form 'preposed-auxiliary) ;; is
+                (eq e2-form 'verb+present))
+            (eq e3-form 's)                  ;; stat3 upstream
+            (or (eq e4-form 'preposition)           ;; from
+                (eq e4-form 'spatial-preposition))) ;; in
+       (wh-stranded-prep wh-edge (third edges) (fourth edges) start-pos end-pos))
       (t
        (when *debug-questions*
          (break "new 4 edge wh case"))  ))))
 
 
 (defun wh-stranded-prep (wh-edge main-edge prep-edge start-pos end-pos)
-  "Intended for use with every case of reasonably short questions
+  "Intended for use with every case of short questions
    that end in a preposition. (Presumably not functioning as a particle
    though we don't check that these days - 8/18.)"
+  ;; We want to compose the moved 'item' with the preposition
+  ;; whose complement it would have been in the declarative form
+  ;; of the question. We can't use the obvious means of composing
+  ;; the two edges because that scrambles the chart and messes up
+  ;; the mapping between edges and the character-level source.
+  ;; Instead we do the referent-level operation to get the
+  ;; referent we would have had by composing the edges,
+  ;; and make a new edge -- just over the preposition -- with
+  ;; that referent.
   (let* ((fringe-edges (right-fringe main-edge))
-         (head (loop for edge in fringe-edges
-                  when (takes-preposition? edge prep-edge)
-                  return edge)))
-    (when head
+         (head-edge (loop for edge in fringe-edges
+                       when (takes-preposition? edge prep-edge)
+                       return edge)))
+    (when head-edge
       (let* ((item (edge-referent wh-edge))
              (preposition (edge-left-daughter prep-edge))
+             (parent-of-head (edge-used-in head-edge))
              (variable (subcategorized-variable
-                        (edge-referent head) preposition item)))
-        (when variable ;; if not, we should perhaps look for a lower head          
-          ;; We want to compose the moved 'item' with the preposition
-          ;; whose complement it would have been in the declarative form
-          ;; of the question. We can use the obvious means of composing
-          ;; the two edges because that scrambles the chart and messes up
-          ;; the mapping between edges and the character-level source.
-          ;; Instead we do the referent-level operation to get the
-          ;; referent we would have had by composing the edges,
-          ;; and make a new edge -- just over the preposition -- with
-          ;; that referent.
+                        (edge-referent head-edge) preposition item)))
+        ;; If this is the correct head, the variable will have a value.
+        ;; /// Else keep moving downward
+        (when variable
+          ;; make the edge over the prep+item
           (let ((pp-rule (multiply-edges prep-edge wh-edge)))
             (unless pp-rule (error "no rule for prep+np ??"))
             (let* ((rule-category (cfr-category pp-rule))
@@ -362,40 +370,41 @@
                                 (if (eq :syntactic-form rule-category) ;; form rule
                                   (cfr-form pp-rule)
                                   (error "Category of ~a is unrecognized symbol" pp-rule)))))                               
-                   (pp-edge
-                    (make-chart-edge
-                     :category category
-                     :form (cfr-form pp-rule)
-                     :rule pp-rule
-                     :starting-position (pos-edge-starts-at prep-edge)
-                     :ending-position (pos-edge-ends-at prep-edge)
-                     :left-daughter prep-edge
-                     :right-daughter wh-edge
-                     :ignore-used-in t)))
-              ;;(break "new-edge = ~a" pp-edge)
-
-              ;; compose the head and the pp
-              (let ((rule (multiply-edges head pp-edge)))
-                (unless rule (error "No rule for ~a + ~a" head pp-edge))
+                   (pp-edge (make-chart-edge
+                             :category category
+                             :form (cfr-form pp-rule)
+                             :rule pp-rule
+                             :starting-position (pos-edge-starts-at prep-edge)
+                             :ending-position (pos-edge-ends-at prep-edge)
+                             :left-daughter prep-edge
+                             :right-daughter wh-edge
+                             :ignore-used-in t)))   
+              (let ((rule (multiply-edges head-edge pp-edge)))
+                ;; compose the head and the pp
+                (unless rule (error "No rule for ~a + ~a" head-edge pp-edge))
                 (let* ((extended-head-edge
-                        (make-completed-binary-edge head pp-edge rule))
-                       (subsumed-edge head) ;; rename to make tuck cleared
+                        (make-completed-binary-edge head-edge pp-edge rule))
+                       (subsumed-edge head-edge) ;; rename to make tuck clearer
                        (new-edge extended-head-edge)
-                       (dominating-edge main-edge))
-
-                  (tuck-new-edge-under-already-knit
-                   subsumed-edge new-edge dominating-edge :right)
-                  (break "pieces?"))))))))))
-
-
-          #|
-                  ;; Attach the pp to the head, which will likely
-                  ;; require a tuck.
-                  ;; Formulate a question wrapper that incorporates the
-                  ;; content of the wh-edge and uses the variable.
-                  variable))))) |#
-
-
+                       (dominating-edge parent-of-head))
+                  (when parent-of-head
+                    (tuck-new-edge-under-already-knit
+                     subsumed-edge new-edge dominating-edge :right))
+                  (if (= 3 (length (treetops-between start-pos end-pos)))
+                    ;; All the treetops are used in part of the main edge
+                    ;; but need an edge over it all
+                    (make-chart-edge
+                     :category (edge-category main-edge)
+                     :form category::s
+                     :rule 'wh-stranded-prep
+                     :starting-position start-pos
+                     :ending-position end-pos
+                     :referent (edge-referent main-edge)
+                     :constituents (treetops-between start-pos end-pos)
+                     :ignore-used-in t)
+                    (when *debug-questions*
+                      (push-debug `(,new-edge ,head-edge))
+                      (break "Wrong number of edges to cover"))))))))))))
 
 
 

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "tuck"
 ;;;   Module:  "objects/chart/edge vectors/"
-;;;  Version:  September 2017
+;;;  Version:  September 2018
 
 ;; Initiated 9/19/13 from code formerly in DA. 9/22/13 modifying it
 ;; to work in either direction. 9/29/14 fixed tuck-in-just-above to
@@ -31,9 +31,6 @@
      nil)
     (t
      (setf (edge-used-in subsumed-edge) new-edge)
-
-     ;; plug in top-edge in place of subsumed-edge
-     ;; this method creates lists of edges -- don't do that now
      (set-used-by new-edge dominating-edge)
 
      (cond
@@ -46,7 +43,7 @@
         (setf (edge-constituents dominating-edge)
               (subst new-edge subsumed-edge (edge-constituents dominating-edge))))
        
-       ((eq direction :right) ;;/// error here
+       ((eq direction :right)
         (unless (eq (edge-right-daughter dominating-edge) subsumed-edge)
           (error  "~%in tuck-new-edge-under-already-knit for rule ~s:~
                     ~%edge-right-daughter in dominating edge ~s ~
@@ -204,8 +201,7 @@
                        ((eq edge (edge-right-daughter parent)) :right))))
          (starting-vector (edge-starts-at edge))
          (ending-vector (edge-ends-at edge))
-         (new-edge (next-edge-from-resource)))
-   
+         (new-edge (next-edge-from-resource)))  
 
     ;; set the easy stuff
     (setf (edge-rule new-edge) (rule-being-interpreted))
