@@ -1546,7 +1546,7 @@ e.g. 'phospho-'"
                        protein)))
     (bind-dli-variable
      'predication
-     (create-predication-and-edge-by-binding
+     (create-predication-by-binding
       ;; possibly change to sometimes make pred edge
       (subcategorized-variable  category::phosphorylate :object protein)
       new-prot
