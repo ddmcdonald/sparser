@@ -326,11 +326,16 @@
 (defun edges-under (edge)
   "Accommodates the variations of where the 'daughter' edge or edges
    will be in different sorts of edges."
-  (if (not (edge-p (edge-right-daughter edge))) ;; e.g. unary or long-span
-    (or (edge-constituents edge)
-        (list (edge-left-daughter edge)))
-    (list (edge-left-daughter edge)
-          (edge-right-daughter edge))))
+  ;; Compare to semantic-edges-under that also filters for edges
+  ;; but does more tailored thinking.
+  (let ((list-of-edges
+         (if (not (edge-p (edge-right-daughter edge))) ;; e.g. unary or long-span
+           (or (edge-constituents edge)
+               (list (edge-left-daughter edge)))
+           (list (edge-left-daughter edge)
+                 (edge-right-daughter edge)))))
+    (remove-if #'(lambda(e) (not (edge-p e))) list-of-edges)))
+
 
 (defparameter *mention-individual* nil)
 (defparameter *mention-source* nil)
