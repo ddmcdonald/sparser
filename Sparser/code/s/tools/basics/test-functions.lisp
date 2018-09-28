@@ -1302,13 +1302,29 @@ applied to l, and values are values associated with that key example"
   "Reference global bound by test-bio-utterances 
    and used by test-bio")
 
-(defun test-bio-utterances (sentence-list)
+#| This assumes you've got a list of sentences and want to divided
+them out according to whether or not we get complete parses ('good')
+or a set of treetops ('bad'). 
+  First you call test-bio-utterances. That binds the sentence list 
+to *list-of-bio-utterances* -- you can test individual sentences 
+according to their index number in that list using test-bio.
+  If you call test-bio-utterances without its optional argument
+then you'll get a list of the parsing results for every sentence.
+For successful parses you get the interpretation of the sentence.
+For bad parses you get the treetops.
+  Calling it with the 'split' option runs through the list and
+divides it into good and bad. 
+|#
+
+
+(defun test-bio-utterances (sentence-list &optional split?)
   "Walk over the list and set the global -- edit to shift test fn"
   (let ((count -1)) ;; because nth is zero based
     (setq *list-of-bio-utterances* sentence-list)
     (loop for s in sentence-list
-       do ;;(test-bio-utterance/split s (incf count) *standard-output*)
-         (test-bio-utterance s (incf count) *standard-output*))))
+       do (if split?
+            (test-bio-utterance/split s (incf count) *standard-output*)
+            (test-bio-utterance s (incf count) *standard-output*)))))
 
 (defun test-bio-utterance (s count &optional (stream *standard-output*))
   "Designed for getting useful information for every sentence.
