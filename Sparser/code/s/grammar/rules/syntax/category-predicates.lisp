@@ -118,6 +118,7 @@
     CATEGORY::NP
     CATEGORY::TIME-UNIT
     CATEGORY::QUANTIFIER
+    CATEGORY::WH-PRONOUN
     ))
 
 (defparameter *n-bar-categories*
