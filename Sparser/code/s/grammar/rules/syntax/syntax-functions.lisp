@@ -137,9 +137,6 @@
 (define-lambda-variable 'has-determiner
     nil 'top)
 
-(define-lambda-variable 'is-plural
-    nil 'top)
-
 (define-lambda-variable 'approximator
     nil 'number)
 
@@ -685,19 +682,19 @@ val-pred-var (pred vs modifier - left or right?)
 
 (defparameter *dets-seen* nil)
 
+(define-lambda-variable 'is-plural
+    nil 'top)
+
 (defun determiner-noun (determiner head)
   "Depending on the value of *determiners-in-DL* either bind the determiner
    to a variable or stash it by calling add-def-ref and handle it later"
-  (push-debug `(,determiner ,head))
   (or *subcat-test*
       (let* ((parent-edge (parent-edge-for-referent))
 	     (det-edge (left-edge-for-referent))
 	     (det-word (edge-left-daughter det-edge))
              (head-edge (right-edge-for-referent)))
         
-	(unless (or (definite-determiner? det-word)
-		    (indefinite-determiner? det-word)
-                    (wh-determiner? det-word))
+	(unless (determiner? det-word)
 	  ;; There are a ton of categories that are defined to be
 	  ;; syntactic determiners that deserve their own careful
 	  ;; semantic treatment that might funnel through here
@@ -711,15 +708,11 @@ val-pred-var (pred vs modifier - left or right?)
           (add-def-ref determiner parent-edge))
         
 	(cond
-          #+ignore
-	  ((when (use-methods) ;; ??? perhaps put in by reflex ??
-             (let ((result (compose determiner head)))
-               result)))
           ((and *determiners-in-DL*
                 (or (individual-p head) (category-p head)))
            (setq head (bind-dli-variable 'has-determiner determiner head))
            (when (eq (edge-category head-edge) category::common-noun/plural)
-             (setq head (bind-dli-variable 'is-plural determiner head)))))
+             (setq head (bind-variable 'is-plural determiner head)))))
 
 	head)))
 
