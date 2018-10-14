@@ -109,6 +109,7 @@ Should mirror the cases on the *single-words* ETF."
     :about :above :across :after :against :among :as :as-comp :at
     :before :below :between :but\ not :by
     :designator :during
+    :down :up
     :following :for :from
     :ifcomp :howcomp
     :indirect-object ;;:i ; indirect object
