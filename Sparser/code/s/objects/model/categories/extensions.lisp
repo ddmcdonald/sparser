@@ -79,3 +79,21 @@
 
 (defun store-category-documentation (category documentation)
   (setf (get-tag :documentation category) documentation))
+
+
+;;;-------------------------
+;;; mixins added on the fly
+;;;-------------------------
+
+(defgeneric add-mixin (category mixin)
+  (:documentation "Add the mixin category to the list of mixins
+    on the category.")
+  (:method ((c referential-category) (name symbol))
+    (let ((mixin (category-named name)))
+      (unless mixin (error "There is no category named ~a" name))
+      (add-mixin c (category-named mixin))))
+  (:method ((c referential-category) (m model-category))
+    (remove-tag :super-categories c) ;; force reindexing of supercs
+    (pushnew m (cat-mix-ins c))))
+    
+
