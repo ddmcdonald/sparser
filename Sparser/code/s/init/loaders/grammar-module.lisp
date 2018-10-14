@@ -247,6 +247,9 @@ Partitions the list kept in *context-free-rules-defined*.")
 of defining something else (e.g. a category) in the list of cfrs.")
 
 (defun note-grammar-module (obj &key source)
+  "This function is called by every object-constructing routine
+ (e.g. construct-cfr or catalog/word) to update the information on
+ the currently active grammar module."
   (let ((gm *grammar-module-being-loaded*))
     (when gm
       (setf (get-tag :grammar-module obj) gm)
