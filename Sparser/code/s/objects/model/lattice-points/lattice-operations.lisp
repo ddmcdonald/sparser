@@ -33,7 +33,6 @@
 ;;; V+V
 ;;;-----
 
-;; NOTE -- dl-variable_value are UNIQUELY DETERMINED by the variable and value
 (defstruct (dl-variable+value
             (:include unit)
             (:conc-name #:dlvv-)
@@ -63,8 +62,7 @@
   (find-or-make-dlvv-from-var-val (binding-variable binding) (binding-value binding)))
 
 (defun all-dlvvs ()
-  (let
-      ((all-dlvvs nil))
+  (let ((all-dlvvs nil))
     (maphash #'(lambda(k v)
                  (declare (ignore k))
                  (maphash #'(lambda(kk vv)
@@ -89,9 +87,13 @@
                      (avar-name (dlvv-variable dl-vv)))))))
             (dlvv-value dl-vv))))
 
+
+;;--------- description-lattice individuals
+
 (defparameter *lattice-ht* (make-hash-table :size 600000 :test #'eq)
-  "This is the initial way that edge-referent's are linked to the structures that are in the lattice.
-   A bit slower than putting a field in the referent, but applicable to all referents, and does not change their structure.")
+  "This is the initial way that edge-referent's are linked to the structures
+   that are in the lattice. A bit slower than putting a field in the referent, 
+   but applicable to all referents, and does not change their structure.")
 
 (defparameter *lattice-ht-for-collections* (make-hash-table :size 3000 :test #'equal))
 (defparameter *source-ht* (make-hash-table :size 30000 :test #'eq)
@@ -113,14 +115,15 @@
 (defparameter *dl-lattice-top* nil)
 
 
-(defun place-referent-in-lattice (referent edge) ;; THIS IS NOW A NO-OP IN THE DESCRIPTION LATTICE CASE
+;; THIS IS NOW A NO-OP IN THE DESCRIPTION LATTICE CASE
+(defun place-referent-in-lattice (referent edge)
   (declare (special *prep-forms* referent edge))
   ;; N.b. if anyone revives this. Appreciate that some referents are words
-  referent
-  )
+  referent )
+
 
 (defun fom-lattice-description (base)
-  ;; Called with the category of the to-be-make individual
+  ;; Called with the category of the to-be-made individual
   ;; from make-simple-individual and from make-individual-for-dm&p
   (cond ((null base))
         ((get-dli base))
@@ -146,19 +149,19 @@
   (declare (special category::collection))
   (or (get-dli base)
       (if (memq category::collection (indiv-type base)) ;; likely a conjunction
-          (find-or-make-lattice-description-for-collection base) ;; not quite right -- ehat to do here?
-    (let* ((lattice-cat-entry (dli-ref-cat base))
-           (current-dli lattice-cat-entry)
-           ) ;;(dl-vvs nil))
-      (declare (special lattice-cat-entry current-dll #|dll-vvs|#))
-      ;; bindings = NIL can happen for VGs -- possibly because of the
-      ;; creation of an individual for the referent-category in the
-      ;; interpretation process
-      (loop for b in (filter-bindings (indiv-binds base)) 
-        do
-        (setq current-dli 
-              (find-or-make-lattice-subordinate current-dli (binding-variable b) (binding-value b))))
-      (set-dli base current-dli)))))
+        (find-or-make-lattice-description-for-collection base) ;; not quite right -- e=what to do here?
+        (let* ((lattice-cat-entry (dli-ref-cat base))
+               (current-dli lattice-cat-entry)
+               ) ;;(dl-vvs nil))
+          (declare (special lattice-cat-entry current-dll #|dll-vvs|#))
+          ;; bindings = NIL can happen for VGs -- possibly because of the
+          ;; creation of an individual for the referent-category in the
+          ;; interpretation process
+          (loop for b in (filter-bindings (indiv-binds base)) 
+             do
+               (setq current-dli 
+                     (find-or-make-lattice-subordinate current-dli (binding-variable b) (binding-value b))))
+          (set-dli base current-dli)))))
 
 
 
@@ -178,6 +181,7 @@
       new-dli)))
 
 (defun find-or-make-lattice-description-for-ref-category (base)
+  "Used by individual-for-ref where base is a category"
   (or (get-dli base)
       (let ((new-dli (make-dli-for-ref-category base)))
         (loop for c in (immediate-supers base)
@@ -190,9 +194,10 @@
                          (declare (ignore h))
                          (setf (gethash k supers) t))
 		     (indiv-all-supers ip))))
-            
         (setf (indiv-restrictions new-dli) (list base))
 	(set-dli base new-dli))))
+
+
 
 (defparameter *non-phrasal-classes* nil)
 (defparameter *non-phrasal-class-names*
@@ -281,7 +286,8 @@
   (declare (special bindings))
   #+ignore
   (loop for b in bindings
-    unless (memq (var-name (binding-variable b)) '(has-determiner value)) ;; value is bound in items of type number
+     unless (memq (var-name (binding-variable b)) '(has-determiner value))
+             ;; value is bound in items of type number
     collect b)
   bindings)
 
@@ -479,32 +485,30 @@
 (defun all-mentioned-specializations (c c-mention #+ignore containing-mentions)
   (declare (special *maximal-lattice-mentions-in-paragraph* c c-mention #+ignore containing-mentions))
   (unless (itypep c 'number)
-    (let* ((am-specs
-            (remove-duplicates
-             (loop for m in (gethash (itype-of c) *maximal-lattice-mentions-in-paragraph*)
-                   as ps = (contextual-interpretation m) ;; (base-description m)
-                   when (earlier? m c-mention)
-                   nconc
-                     (cond ((is-basic-collection? ps)
-                            (loop for item in (value-of 'items ps)
-                                  when (and  (not (eq item c))
-                                             (as-specific? item c))
-                                  collect item))
-                           ((and  (not (eq ps c))
-                                  (as-specific? ps c))
-                            (list ps)))))))
-      (declare (special am-specs))
-      am-specs)))
-
-(defun earlier? (poss-mention source-mention)
-  (cond
-    ((mention-source source-mention) ;; source-mention still has an edge
-     (or
-      (not (mention-source poss-mention))
-      (edge-precedes (mention-source poss-mention)
-		     (mention-source source-mention))))
-    (t nil)))
-    
+    (flet ((earlier? (poss-mention source-mention)
+             (cond
+               ((mention-source source-mention) ;; source-mention still has an edge
+                (or
+                 (not (mention-source poss-mention))
+                 (edge-precedes (mention-source poss-mention)
+                                (mention-source source-mention))))
+               (t nil))))
+      (let* ((am-specs
+              (remove-duplicates
+               (loop for m in (gethash (itype-of c) *maximal-lattice-mentions-in-paragraph*)
+                  as ps = (contextual-interpretation m) ;; (base-description m)
+                  when (earlier? m c-mention)
+                  nconc
+                    (cond ((is-basic-collection? ps)
+                           (loop for item in (value-of 'items ps)
+                              when (and  (not (eq item c))
+                                         (as-specific? item c))
+                              collect item))
+                          ((and  (not (eq ps c))
+                                 (as-specific? ps c))
+                           (list ps)))))))
+        (declare (special am-specs))
+        am-specs))))
 
 (defun hal (ht) (hashtable-to-alist ht))
 (defun sur-string (i)(retrieve-surface-string i))
