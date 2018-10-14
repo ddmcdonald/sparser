@@ -1,13 +1,20 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "tense-aspect"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  September 2016
+;;;  version:  October 2018
 
 ;; Broken out of rules/syntax/tense.lisp 8/23/16
 
 (in-package :sparser)
+
+;;--- plurality
+
+(define-mixin-category plural
+  :binds ((items :primitive list)
+          (number :primitive integer)))
+
 
 ;;--- negation
 
