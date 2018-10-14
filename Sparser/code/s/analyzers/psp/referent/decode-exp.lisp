@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2001,2011-2013.2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2001,2011-2013,2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "decode exp"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   March 2018
+;;;   Version:   October 2018
 
 ;; initiated 12/91
 ;; 1.1 (7/17/92 v2.3) Revising details to fit new representation scheme
@@ -45,6 +45,7 @@
     (list (decode-list-referent-expressions referent))
     (symbol (category-named referent t))
     (referential-category referent)
+    (mixin-category referent)
     (individual referent)))
 
 
