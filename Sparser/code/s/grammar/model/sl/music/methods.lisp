@@ -26,6 +26,7 @@
   (let ((result (bind-variable 'position index item)))
     result))
 
+;;--- "beats 1 and 2"
 (def-k-method compose ((index category::collection)
                        (item category::part-of-a-sequence))  
   (declare (special category::number))
@@ -64,7 +65,7 @@
       part)))
 
 
-;; "before "beat 2 of measure 1."
+;; "before beat 2 of measure 1."
 (def-k-method compose ((sequencer category::sequencer)
                        (seq category::part-of-a-sequence))
   ;; ///Should select the kind of subseq according what
@@ -83,6 +84,9 @@
         subseq))))
 
 
+
+;; (p "between beats 1 and 3")
+
 (def-k-method compose ((op category::between)
                        (bounds category::collection))
   (let ((count (value-of 'number bounds))
@@ -99,13 +103,24 @@
              (p2 (value-of 'position i2))
              (type (itype-of i1))
              (s (value-of 'sequence i1)))
-        (break "check values")
+        ;; Unless a reference sequence was given
+        ;; ("between beats 1 and 3 of measure 2")
+        ;; s will be nil. Can't bind things to nil
+        (unless s
+          (setq s (find-or-make-individual 'sequence :type type)))
         (define-or-find-individual 'subseq-both-ends
             :type type
             :reference-sequence s
             :index p1
             :end-index p2)))))
-        
+
+
+;; "quarter note"
+
+(def-k-method compose ((fraction category::fractional-term)
+                       (note category::abstract-note))
+  ;; called from the noun-noun-compound syntax function
+  (bind-variable 'duration fraction note))
 
 
 

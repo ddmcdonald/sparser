@@ -10,9 +10,19 @@
 
 (in-package :sparser)
 
-
+;; "Delete everything before beat 2 of measure 1"
+;;
 (define-category delete
   :specializes process
   :mixins (simple-action)
   :restrict ((theme (:or endurant sequence)))
   :realization (:verb "delete"))
+
+;; "transpose the C up 1 half step"
+;;
+(define-category transpose
+  :specializes process
+  :mixins (simple-action)
+  :binds ((amount step))
+  :realization (:verb "transpose"
+                :up amount))
