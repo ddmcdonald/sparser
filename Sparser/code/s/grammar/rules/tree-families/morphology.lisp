@@ -988,10 +988,14 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                 do (record-lemma i word :noun))
        (return rules)))
 
-
+(defparameter *temporary-new-plural-flag* nil
+  "Remove once this is settled")
 
 (defun make-cn-plural-rule (plural category referent)
   (assign-brackets-as-a-common-noun plural)
+  (when *temporary-new-plural-flag*
+    (add-mixin category 'plural))
+
   ;; This one is for categories where we expect sets: companies, people
   ;;                (define-cfr category (list plural)
   ;;                  :form  category::common-noun/plural
@@ -1005,6 +1009,10 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
     :schema (get-schematic-word-rule :common-noun)
     :referent (cond
                 (*external-referents* referent)
+                (*temporary-new-plural-flag*
+                 (resolve-referent-expression
+                  `(:head ,referent
+                    :subtype ,(category-named 'plural))))
                 ((category-named 'collection)
                  ;; Have we reached a point in the load where collection
                  ;; has been defined?
