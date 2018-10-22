@@ -106,13 +106,13 @@
 (defgeneric make-rules-for-head (pos word category referent &rest special-cases)
   (:documentation "Construct rules for a single word, multiple words,
  or a word with morphological special cases, e.g., :plural, :past-tense, etc.
-   May be invoked on explicit works in the realization fields of categories
+   May be invoked on explicit words in the realization fields of categories
  (e.g. table has :realization (:common-noun table)) in which case the referent
  with be the category itself (see make-rules-for-rdata), or it may be invoked
  on individuals who are substituting a word they supply for a variable in the
- rdata (e.g. block has :realization (:proper-noun name), instance of block supply
+ rdata (e.g. block has :realization (:proper-noun name), instances of block supply
  the word to use as the name) in which case the referent is the individual.
-   This block of methods handles the general dispatch ans generic cases.
+   This block of methods handles the general dispatch and generic cases.
  Irregulars are handled by methods for the particular part of speech cases
  that understand them.")
   (:argument-precedence-order word pos category referent)
@@ -988,13 +988,13 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                 do (record-lemma i word :noun))
        (return rules)))
 
-(defparameter *temporary-new-plural-flag* nil
+(defparameter *temporary-new-plural-flag* t
   "Remove once this is settled")
 
 (defun make-cn-plural-rule (plural category referent)
   (assign-brackets-as-a-common-noun plural)
-  (when *temporary-new-plural-flag*
-    (add-mixin category 'plural))
+  ;; (when *temporary-new-plural-flag*
+  ;;   (add-mixin category 'plural))
 
   ;; This one is for categories where we expect sets: companies, people
   ;;                (define-cfr category (list plural)

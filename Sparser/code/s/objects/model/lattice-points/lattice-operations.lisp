@@ -100,6 +100,7 @@
   "Inverse link to *lattice-ht*")
 
 (defun get-dli (ref)
+  "Retrieve the dl individual for ref from hash table"
   (declare (optimize (speed 3)(safety 0)(debug 0)))
   (or (gethash ref *lattice-ht*)
       ;; make get-dli idempotent
@@ -107,6 +108,7 @@
           ref)))
 
 (defun set-dli (ref dli)
+  "Add the dli for ref to the hash table"
   (declare (optimize (speed 3)(safety 0)))
   (push ref (gethash dli *source-ht*))
   (setf (gethash ref *lattice-ht*) dli))
@@ -121,64 +123,49 @@
   ;; N.b. if anyone revives this. Appreciate that some referents are words
   referent )
 
-
 (defun fom-lattice-description (base)
-  ;; Called with the category of the to-be-made individual
-  ;; from make-simple-individual and from make-individual-for-dm&p
+  "Given a category or categories ('base') find and return the corresponding
+ description lattice individual or make it if it doesn't already exist."
+  ;; Called by a slew of different functions. Locally by dli-ref-cat
+  ;; and find-or-make-lattice-description-for-collection.
+  ;; By find/individual, and in sdm%p scan by sdm-span-segment and
+  ;; convert-referent-to-individual. In defnp by dereference-defnp
+  ;; and it amino-acids by make-residue-on-protein, and also
+  ;; by make-simple-individual too.
   (cond ((null base))
-        ((get-dli base))
+        ((consp base)
+         (find-or-make-compound-type base))
+        ((get-dli base)) ;; eq hash
         ((referential-category-p base)
          (find-or-make-lattice-description-for-ref-category base))
         ((individual-p base)
          (if (indiv-binds base)
            (find-or-make-lattice-description-for-individual base)
-           (find-or-make-lattice-description-for-cat-list (indiv-type base))))
-        ((consp base) ;; a join of categories
-         (find-or-make-lattice-description-for-cat-list base))))
+           (find-or-make-lattice-description-for-cat-list (indiv-type base))))))
+
+
 
 (defun dli-ref-cat (c)
+  ;; called by find-or-make-lattice-subordinate, phrasal-dli-cat-refs,
+  ;; find-or-make-lattice-description-for-collection,
+  ;; find-or-make-lattice-description-for-individual,
+  ;; reinterp-mention-using-bindings
   (cond ((null c))
         ((individual-p c)
-         (find-or-make-lattice-description-for-cat-list (indiv-type c)))
+         (find-or-make-lattice-description-for-cat-list (indiv-type c))) ;; check
         ((category-p c)
          (fom-lattice-description c))
         ((symbolp c)
          (fom-lattice-description (category-named c)))))
-
-(defun find-or-make-lattice-description-for-individual (base)
-  (declare (special category::collection))
-  (or (get-dli base)
-      (if (memq category::collection (indiv-type base)) ;; likely a conjunction
-        (find-or-make-lattice-description-for-collection base) ;; not quite right -- e=what to do here?
-        (let* ((lattice-cat-entry (dli-ref-cat base))
-               (current-dli lattice-cat-entry)
-               ) ;;(dl-vvs nil))
-          (declare (special lattice-cat-entry current-dll #|dll-vvs|#))
-          ;; bindings = NIL can happen for VGs -- possibly because of the
-          ;; creation of an individual for the referent-category in the
-          ;; interpretation process
-          (loop for b in (filter-bindings (indiv-binds base)) 
-             do
-               (setq current-dli 
-                     (find-or-make-lattice-subordinate current-dli (binding-variable b) (binding-value b))))
-          (set-dli base current-dli)))))
-
-
-
-(defun make-dli-for-ref-category (category)
-  (let ((*index-under-permanent-instances* t))
-    (declare (special *index-under-permanent-instances*))
-    (make-category-indexed-individual category)))
-
-(defun make-dli-for-join (category-list)
-  (let ((*index-under-permanent-instances* t))
-    (declare (special *index-under-permanent-instances*))
-    (let ((new-dli (make-category-indexed-individual (car category-list))))
-      (setf (indiv-restrictions new-dli) (append category-list nil))
-      ;; copy the list in case it is in use elsewhere
-      (loop for c in (cdr category-list)
-         do (pushnew c (indiv-type new-dli) ))
-      new-dli)))
+                 
+(defun find-or-make-lattice-description-for-cat-list (cat-list)
+  ;; called from perform-local-variable-disambiguation and
+  ;; perform-over-ridden-varible-disambinuation during variable binding
+  ;; and by dli-ref-cat and fom-lattice-description locally.
+  (if (null (cdr cat-list))
+    (find-or-make-lattice-description-for-ref-category (car cat-list))
+    (or (get-compound-dli cat-list)
+        (set-compound-dli cat-list (find-or-make-compound-type cat-list)))))
 
 (defun find-or-make-lattice-description-for-ref-category (base)
   "Used by individual-for-ref where base is a category"
@@ -196,6 +183,93 @@
 		     (indiv-all-supers ip))))
         (setf (indiv-restrictions new-dli) (list base))
 	(set-dli base new-dli))))
+
+(defun find-or-make-lattice-description-for-individual (base)
+  ;; Called from fom-lattice-description when the individual (base)
+  ;; has bindings
+  (declare (special category::collection))
+  (or (get-dli base) ;;/// redundant given caller
+      (if (memq category::collection (indiv-type base)) ;; likely a conjunction
+        (find-or-make-lattice-description-for-collection base) ;; not quite right -- e=what to do here?
+        (let* ((lattice-cat-entry (dli-ref-cat base))
+               (current-dli lattice-cat-entry)
+               ) ;;(dl-vvs nil))
+          (declare (special lattice-cat-entry current-dll #|dll-vvs|#))
+          ;; bindings = NIL can happen for VGs -- possibly because of the
+          ;; creation of an individual for the referent-category in the
+          ;; interpretation process
+          (loop for b in (filter-bindings (indiv-binds base)) 
+             do
+               (setq current-dli 
+                     (find-or-make-lattice-subordinate
+                      current-dli (binding-variable b) (binding-value b))))
+          (set-dli base current-dli)))))
+
+(defun make-dli-for-ref-category (category)
+  (let ((*index-under-permanent-instances* t))
+    (declare (special *index-under-permanent-instances*))
+    (make-category-indexed-individual category)))
+
+
+;;--- compounds
+
+(defparameter *lattice-ht-for-compounds* (make-hash-table :size 3000 :test #'equal)
+  "From lists of categories to their base dli")
+
+(defun get-compound-dli (cat-list)
+  (gethash cat-list *lattice-ht-for-compounds*))
+
+(defun set-compound-dli (cat-list dli)
+  (setf (gethash cat-list *lattice-ht-for-compounds*) dli))
+
+(defun add-type-to-individual (i additional-category)
+  "Given an individual 'i', which is unlikely to have any bindings, 
+ lookup or return a new individual whose type extends the type of i
+ with this additional category."
+  (let* ((type-field-of-i (indiv-type i))
+         (type-field-copy (copy-list type-field-of-i))
+         (compound-type (tail-cons additional-category type-field-copy)))
+    (let ((k (find-or-make-compound-type compound-type)))
+      (when (indiv-binds i)
+        ;; copy these bindings to j, producing more derived j' along the way
+        (loop for b in (filter-bindings (indiv-binds i)) 
+           do (setq k (find-or-make-lattice-subordinate
+                       k (binding-variable b) (binding-value b)))))
+      k)))
+
+(defgeneric find-or-make-compound-type (cat-list)
+  (:documentation "Given a list of categories, lookup or make the corresponding
+ 'base' individual for the description lattice. Indivduals constructed on this
+  will take the first category in the list to be their primary type (e.g. as
+  returned by itype-of). That categories and all the others in the list will
+  contribute to the individuals' behavior, e.g. they are seen by itypep and
+  in k-method signatures.")
+  (:method ((list list))
+    (assert (every #'category-p list))
+    (or (get-compound-dli list)
+        (let ((j (make-a-permanent-individual)))
+          ;; Newly allocated individual has no type, bindings, or dl information
+          (setf (indiv-type j) list)
+          (setf (indiv-restrictions j) list)
+          ;; Rusty -- do we need to worry about managing the all-supers field
+          ;;  as in, e.g. find-or-make-lattice-subordinate ??
+          (set-compound-dli list j)
+          j))))
+
+
+;; older treatment of compounds -- presently not called
+(defun make-dli-for-join (category-list)
+  (let ((*index-under-permanent-instances* t))
+    (declare (special *index-under-permanent-instances*))
+    (let ((new-dli (make-category-indexed-individual (car category-list))))
+      (setf (indiv-restrictions new-dli) (append category-list nil))
+      ;; copy the list in case it is in use elsewhere
+      (loop for c in (cdr category-list)
+         do (pushnew c (indiv-type new-dli) ))
+      new-dli)))
+
+
+
 
 
 
@@ -247,12 +321,6 @@
   (push (cons up *super-vv*) (indiv-uplinks dli))
   (setf (gethash up (indiv-all-supers dli)) t)
   (push dli (gethash *super-vv* (indiv-downlinks up))))
-                 
-(defun find-or-make-lattice-description-for-cat-list (cat-list)
-  (if (null (cdr cat-list))
-   (find-or-make-lattice-description-for-ref-category (car cat-list))
-   (or (get-dli cat-list)
-       (set-dli cat-list (make-dli-for-join cat-list)))))
 
 (defun shared-supercs (c1 c2)
   (if (consp c2)
@@ -301,14 +369,14 @@
          (var (find-var-from-var/name var/name parent))
          (dl-vv (when var (find-or-make-dlvv-from-var-val var value)))
          (downlinks (indiv-downlinks parent)))
-    (declare (special parent var dl-vv downlinks))
     (when dl-vv
       (gethash dl-vv downlinks))))
 
-(defun find-or-make-lattice-subordinate (oparent var/name value &optional category)
-  ;; Called from bind-dli-variable and returns the new individual and 
-  ;; the new binding
-  (declare (special oparent var/name binding))
+(defun find-or-make-lattice-subordinate (oparent var/name value &optional category)  
+  ;; Called from bind-dli-variable and other functions that need to
+  ;; add bindings to individuals. Returns the new individual and the
+  ;; new binding. 'oparent' is the individual we are adding the
+  ;; binding to.
   (let* ((parent (if (referential-category-p oparent)
 		     (find-or-make-lattice-description-for-ref-category oparent)
 		     oparent))
@@ -319,9 +387,8 @@
          (downlinks (indiv-downlinks parent))
          ;; need to make sure copy-individual makes permanent ones
          (*index-under-permanent-instances* t))
-
-    (declare (special *index-under-permanent-instances*
-                      parent var dl-vv downlinks))
+    (declare (special *index-under-permanent-instances*))
+    
     (if (null var)
         (then (break "find-or-make-lattice-subordinate fails to find var ~s in ~s~%"
                     var/name (or category parent))

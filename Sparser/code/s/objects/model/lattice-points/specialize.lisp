@@ -38,39 +38,33 @@
 
 (defgeneric specialize-object (base specializer)
   (:documentation "Hook to provide room for changes in design.
-    Return an item that reflects the specialization of the
+    Called by ref/subtype when the *use-subtypes* flag is up.
+    Returns an item that reflects the specialization of the
     base item by the specializer.")
 
   (:method ((i individual) (c category)) ;; setup for eql case
     (specialize-object i (cat-symbol c)))
 
   (:method ((i individual) (c (eql 'category::collection)))
-    ;; See make-cn-plural-rule
+    ;; Earlier scheme used by make-cn-plural-rule
     (find-or-make-individual c :items nil :type (itype-of i)))
 
   (:method ((i individual) (mixin mixin-category))
-    ;; 1. Find the relevant subtyped category
-    ;; 2. Add the mixin to i's type field.
-    (setf (indiv-type i) (tail-cons mixin (indiv-type i)))
-    (break "1")
     (if *description-lattice*
-      (let ((j (fom-lattice-description i)))
-        (break "2")
+      (let ((j (add-type-to-individual i mixin)))
         j)
-      i)))
+      (else 
+        (setf (indiv-type i) (tail-cons mixin (indiv-type i)))
+        i ))))
 
+    ;; Original, using old type lattice
     ;; (let ((subtyped-category (find-subtype i mixin)))
     ;;   (unless subtyped-category
     ;;     (setq subtyped-category (make-subtype i mixin))
     ;;     (index-subcategory (itype-of i) mixin subtyped-category))
     ;;   i)
 
-#|  fom-lattice-description (base)
-       cons -> find-or-make-lattice-description-for-cat-list
 
-    make-dli-for-join (category-list)
-
-|#
 (defun find-subtype (i mixin)
   (let* ((base (itype-of i))
          (lp (cat-lattice-position base))

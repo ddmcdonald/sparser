@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; Package: sparser; -*-
-;;; Copyright (c) 2010-2017 David D. McDonald 
+;;; Copyright (c) 2010-2018 David D. McDonald 
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  June 2017
+;;;  version:  October 2018
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -34,24 +34,31 @@
 
 (in-package :sparser)
 
-
 ;;;------------------------------
 ;;;   the top of the lattice 
 ;;;------------------------------
 
-;; This is a formal top. Nothing should take 'top' as its value restriction
-;; (except for mechanical defaults) and we shouldn't position any variables
-;; here even though it is expedient
-;;  Its functional role is to provide a place for searches up the AKO tree
-;; to stop.
+;; This is supposed to be a formal top with just the functional role of
+;; providing a place for searches up the AKO tree to stop.
+;; However, there's no established way to say that 'this variable
+;; applies to every kind of thing' except to have it defined here,
+;; though we should keep it to a very minimal set.
 
 (define-category top
   :instantiates nil
   :specializes nil
-  :binds ((modifier)
-          (name :primitive word)
-          (negation)) ;; applies to both endurants and perdurants
-            ;; an c.f. negative on tense/modal -- need coordination
+  :binds ((name :primitive word) ;; more like a label than a name proper.
+          
+          (modifier)
+          
+          (negation) ;; applies to both endurants and perdurants
+          ;;/// but c.f. negative on tense/modal -- needs coordination
+
+          ;; Variables for plural
+          (number) ;; leave v/r open -- could be a #<number>, integer, quantifier etc.
+          (items :primitive list)
+          )
+          
   :documentation
   "This is a formal top. Nothing should take 'top' as its value restriction
    (except for mechanical defaults). Its functional role is to provide a place 
@@ -94,9 +101,9 @@
   :specializes top
   :documentation
  "Independent stuff that is not anchored in space or time or by
- association with something that is: Units of measure, regions of the
+ association with something that is: units of measure, regions of the
  color space, numbers, propositions, intentions and intensional
- descriptions, structures assembled out of symbols..")
+ descriptions, structures assembled out of symbols...")
 
 
 ;;;---------------------------
@@ -147,6 +154,7 @@
  Welty's distinctions in their 'A Formal Ontology of Properties' paper
  from 2000.")
 
+
 (define-category linguistic
   :instantiates nil
   :specializes abstract
@@ -158,7 +166,6 @@
   of the relations and organizing structures that were done with
   categories earlier are now being done with conventional structures
   like CLOS classes.")
-
 
 (define-category phrase-interpretation
   :instantiates nil

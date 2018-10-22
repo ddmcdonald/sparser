@@ -251,22 +251,14 @@ what happens rather than how it happens (ddm).  |#
 	 (ambig-var (binding-variable ambiguous-binding))
 	 (ambig-variables (dvar-variables ambig-var)))
     (loop for binding in (reverse (indiv-binds i))
-       ;; make/binding operates by a push operation
-       ;; on the indiv-binds list, so we must do this in reverse
-       ;; order to get the same list on the copy!!
-       ;; RJB discovered this error on 6/12/2016
-       do
-       ;; don't check binding-hook
-	 (setq new
-	       (bind-dli-variable
-		(disambiguated-variable binding ambiguous-binding ambig-variables var/name)
-		(binding-value binding)
-		new)))
+       do (setq new
+                (bind-dli-variable
+                 (disambiguated-variable binding ambiguous-binding ambig-variables var/name)
+                 (binding-value binding)
+                 new)))
     new))
 
 (defun make-maximal-projection (individual &optional edge)
-  "Called from bind-dli-variable, where it has to return the individual,
-   original or as modified to do any local disambiguation."
   (declare (special *contextual-interpretation*))
   (if *contextual-interpretation*
       ;; don't make maximal projections during contextual reinterpretation
@@ -302,12 +294,11 @@ what happens rather than how it happens (ddm).  |#
                  (or edge (constituent-edge-with-value individual)))))
         individual)))
 
-(defun current-constituent-edges ()
+(defun current-constituent-edges () ;; only called by constituent-edge-with-value
   (declare (special *da-constituent-edges* *left-edge-into-reference* *right-edge-into-reference*))
   `(,.(and *left-edge-into-reference* (list *left-edge-into-reference*))
       ,.(and *right-edge-into-reference* (list *right-edge-into-reference*))
       ,@ *da-constituent-edges*))
-    
 
 (defun constituent-edge-with-value (value)
   (let ((edges (current-constituent-edges)))
@@ -319,7 +310,6 @@ what happens rather than how it happens (ddm).  |#
 (defun perform-over-ridden-variable-disambiguation (over-ridden-binding var/name i edge)
   (declare (special *left-edge-into-reference*
                     *right-edge-into-reference* *sentence-in-core*))
-
   (let* ((new (find-or-make-lattice-description-for-cat-list (indiv-type i)))
 	 (over-ridden-var (binding-variable over-ridden-binding))
 	 (over-ridden-variables (dvar-variables over-ridden-var)))
@@ -340,7 +330,6 @@ what happens rather than how it happens (ddm).  |#
     new))
 
 (defun reinterpret-edge? (edge old-indiv new-indiv)
-  (declare (special edge old-indiv new-indiv))
   (set-edge-referent edge new-indiv))
 
 (defparameter *break-on-ambiguous-variable* nil)

@@ -145,7 +145,7 @@
 
 
 (defun find-by-apply-bindings (input-individual binding-instructions)
-  ;; Called from, e.g., make-simple-individual
+  ;; Called from find/individual just above. 
   (let ((individual input-individual)
          var  value )
     (dolist (instr binding-instructions)
@@ -156,6 +156,9 @@
        (multiple-value-bind (new-indiv binding) 
                             (find-lattice-subordinate individual var value)
          (declare (ignore binding))
+         ;; find-lattice-subordinate will return nil if there's no lattice
+         ;; node for the looked for binding. That will then be used to
+         ;; update the 'individual' variable here, which will fail the find.
          (setq individual new-indiv))))
     ;;(lsp-break "apply bindings")
     individual))
