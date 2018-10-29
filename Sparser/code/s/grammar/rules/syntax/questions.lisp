@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "questions"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2018
+;;;  Version:  October 2018
 
 ;; Broken out from /grammar/model/sl/checkpoint/rules 6/17/09
 ;; Elaborated through 7/23/09. 9/28/11 removed spatial-orientation
@@ -423,8 +423,8 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                (setq attr-edge next-edge))
               ((itypep (edge-referent next-edge) 'attribute-value) ;; "big"
                (setq value-edge next-edge))
-              ((and other-edges
-                    (eq (edge-form next-edge) category::det))
+              ((eq (edge-form next-edge) category::det) ;; "where the ball is"
+               ;;/// generalize to quantifiers, what else?
                (return))
               ((null (edge-referent next-edge)) ;; happens in cases like an edge over apostrophe-s
                (push next-edge other-edges))
