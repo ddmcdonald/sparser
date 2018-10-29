@@ -133,7 +133,7 @@ a simplified realization for a verb are (5/17)
   :instantiates nil
   :mixins (agent theme has-location)
   :restrict ((agent (:or physical-agent social-agent))
-(theme physical) ;; what moves
+             (theme physical) ;; what moves
              (location location)) ;; where it is moved to
   :realization
     (:s agent
