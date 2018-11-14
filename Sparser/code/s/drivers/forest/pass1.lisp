@@ -157,7 +157,7 @@
             (left-neighbor (left-treetop-at/edge prep-edge)))
         (when (and left-neighbor ;; could be sentence-initial
                    (not (word-p left-neighbor)))
-          ;; The 'not' is for when the actually is no left-neighbor
+          ;; The 'not' is for when there actually is no left-neighbor
           ;; because this preposition is at the beginning of the
           ;; sentence.
           ;;/// that deserves an independent check
@@ -172,19 +172,18 @@
                 prep-edge)))
            (let ((head-word (find-head-word left-neighbor)))
              (when (and head-word preposition)
-               (push-debug `(,prep-edge ,left-neighbor
-                                        ,preposition ,head-word))
+               (push-debug `(,prep-edge ,left-neighbor ,preposition ,head-word))
                ;; (setq prep-edge (car *) left-neighbor (cadr *) preposition (caddr *) head-word (cadddr *))
-               ;(when (eq preposition (word-named "as")) ;; J3
-               ;  (break "binder"))
+                                        ;(when (eq preposition (word-named "as")) ;; J3
+                                        ;  (break "binder"))
                (unless (punctuation? head-word) ;; comma before "such as")
                  (if (or (owns-preposition? head-word preposition)
                          (owns-preposition? left-neighbor preposition))
-                     (let ((edge (check-one-one left-neighbor prep-edge)))
-                       (if edge
-                           (tr :took-preposition left-neighbor preposition edge)
-                           (tr :does-not-take-preposition left-neighbor preposition)))
-                     (tr :does-not-take-preposition left-neighbor preposition)))))))))))
+                   (let ((edge (check-one-one left-neighbor prep-edge)))
+                     (if edge
+                       (tr :took-preposition left-neighbor preposition edge)
+                       (tr :does-not-take-preposition left-neighbor preposition)))
+                   (tr :does-not-take-preposition left-neighbor preposition)))))))))))
 
 
 ;;;-----------------------------------------------
