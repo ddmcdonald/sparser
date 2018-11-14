@@ -193,7 +193,7 @@
         forms  ev)
     (declare (special pos end forms ev))
     
-    (until (eq pos end)
+    (until (position/<= end pos)
         (reverse *chunks*) ;; this is the return value
 
       ;; prime the pump for the next call to delimit-next-chunk

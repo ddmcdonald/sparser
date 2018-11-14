@@ -119,25 +119,17 @@
 ;;  that had no edges like one starting with  � ,
 ;;  because adjacent-tt-pairs returned NIL in that case. We need to start from
 ;;  the first position that has an actual edge over it
-
-(defparameter *no-edge-pairs* nil)
-
+;;
 (defun first-position-with-edges (pos end)
-  (declare (special pos))
   (cond ((ev-top-node (pos-starts-here pos))
          pos)
         ((eq pos end) end)
         ((eq end (chart-position-after pos)) nil)
         ((position-precedes (chart-position-after pos) end)
-         #+ignore
-           (pushnew (list (pos-terminal pos) (current-string))
-                    *no-edge-pairs*
-                    :test #'equal)
          (first-position-with-edges (chart-position-after pos) end))
-        (t ;; somehow overshot end of sentence!!
-         (error "somehow overshot end of sentence")
+        ((position/<= end pos) ;; can happen with sentence-final abbreviations
          nil)
-        ))
+        (t (error "somehow overshot end of sentence"))))
          
 
 

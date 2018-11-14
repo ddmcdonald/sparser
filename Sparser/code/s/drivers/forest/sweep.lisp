@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "sweep"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  December 2017
+;;;  Version:  November 2018
 
 ;; Initiated 8/30/14. To hold the new class of containers to support
 ;; analysis and discourse structure to go with the new forest protocol
@@ -41,10 +41,11 @@
 ;; (trace-treetops-sweep)
 
 (defun sweep-sentence-treetops (sentence start-pos end-pos)
-  "Scan the treetops left to right"
+  "Scan the treetops left to right, notice their form, and stash
+   them into state variables that will be consulted during the
+   island-driven parsing that follows."
   (declare (special category::that word::comma word::|of|))
   (tr :sweep-sentence-treetops start-pos end-pos)
-  (push-debug `(,sentence ,start-pos ,end-pos))
   (clear-sweep-sentence-tt-state-vars)
   (let ((rightmost-pos start-pos)
         (layout (make-sentence-layout sentence))
@@ -59,7 +60,10 @@
 
       (unless (pos-assessed? pos-after)
         ;; catches bugs in the termination conditions
-        (error "Walked beyond the bounds of the sentence"))
+        (if (and prior-tt ;; abbreviation swallowed terminal period
+                 (edge-spans-position? prior-tt end-pos))
+          (return)
+          (error "Walked beyond the bounds of the sentence")))
 
       (when (and (word-p tt)
                  (eq tt *the-punctuation-period*))
@@ -80,7 +84,6 @@
         
         ;; Periods can get edges over them by accidentally
         ;; being given as a literal in a rule.
-        ;;/// ought to figure out a way to trap that.
         ;; This check also catches all kinds of punctuation
         (unless form
           (cond
