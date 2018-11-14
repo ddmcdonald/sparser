@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2018  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "traces"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  September 2016
+;;;  version:  November 2018
 
 ;; Broken out from driver 2/5/13. Added more cases 9/11/14. Imported
 ;; cases from traces/scan-patterns 7/21/15. 
@@ -20,7 +20,45 @@
   (setq *trace-ns-sequences* nil))
 
 
-;;-- lifted from scan-patterns
+(deftrace :find-ns-region-start (pos)
+  ;; Called from start-of-ns-region
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] Searching at p~a (~s) for the start of a no-space region"
+               (pos-token-index pos)
+               (pname (pos-terminal pos)))))
+
+(deftrace :ns-found-region-start (pos)
+  ;; Called from start-of-ns-region
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] p~a (~s) starts a no-space region"
+               (pos-token-index pos)
+               (pname (pos-terminal pos)))))
+
+(deftrace :ns-find-region-end (pos)
+  ;; called from end-of-ns-region
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] Searching for where the ns-region starting a p~a ends"
+               (pos-token-index pos))))
+
+(deftrace :ns-find-region-end/stops-at (pos)
+  ;; called from end-of-ns-region
+  (when *trace-ns-sequences*
+    (trace-msg "[ns]   sequence stops at p~a" (pos-token-index pos))))
+
+(deftrace :ns-find-region-end/includes (pos)
+  (when *trace-ns-sequences*
+    (trace-msg "[ns]   sequence includes p~a (~s)"
+               (pos-token-index pos)
+               (pname (pos-terminal pos)))))
+
+(deftrace :ns-identify-ns-pattern-between (start end)
+  ;; called from sweep-for-no-space-patterns
+  (when (or *trace-ns-sequences* *trace-sweep*)
+    (trace-msg "[ns]   Looking for pattern starting at p~a and ending at p~a"
+               (pos-token-index start) (pos-token-index end))))
+
+
+
 (deftrace :no-space-sequence-started-at (p)
   (when (or *trace-ns-sequences*)
     (trace-msg "[ns] simple no-space collector started at p~a"
