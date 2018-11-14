@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2012-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2012-2018  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edges:"
-;;;  Version:  March 2017
+;;;  Version:  November 2018
 
 ;; 3.0 (9/3/92 v2.3) flushed the fields used by earlier psp algorithms
 ;; 3.1 (5/14/93) Allowed Set-used-by to make a list to help redundancy checking
@@ -267,7 +267,13 @@ code is make-edge-over-abbreviation and its feeders. |#
     (nreverse edges)))
 
 
-
+(defgeneric edge-spans-position? (edge position)
+  (:documentation "Is the position located somewhere between the
+    endpoints of the edge (including the endpoints themselves)")
+  (:method ((e edge) (p position))
+    (position-is-at-or-between p (pos-edge-starts-at e) (pos-edge-ends-at e)))
+  (:method ((ev edge-vector) (p position)) nil)
+  (:method ((w word) (p position)) nil))
 
 
 (defun preterminal-edge-at? (pos-before)
