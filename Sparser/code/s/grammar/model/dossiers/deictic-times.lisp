@@ -13,6 +13,6 @@
 (define-calulated-time "now")
 (define-calculated-day "today" 'today)
 (define-calculated-day "tomorrow" 'tomorrow)
-(define-calculated-day "yesterday" 'yesteray)
+(define-calculated-day "yesterday" 'yesterday)
 
 
