@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edge-vectors:"
-;;;  Version:  August 2018
+;;;  Version:  November 2018
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;;     (5/5/93) Added Preterminal-edges
@@ -217,6 +217,15 @@
                  (push edge preterminals))))))
 
         preterminals ))))
+
+
+(defgeneric edge-spans-position? (edge position)
+  (:documentation "Is the position located somewhere between the
+    endpoints of the edge (including the endpoints themselves)")
+  (:method ((e edge) (p position))
+    (position-is-at-or-between p (pos-edge-starts-at e) (pos-edge-ends-at e)))
+  (:method ((ev edge-vector) (p position)) nil)
+  (:method ((w word) (p position)) nil))
 
 
 (defun highest-edge (ev)

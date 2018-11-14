@@ -267,14 +267,6 @@ code is make-edge-over-abbreviation and its feeders. |#
     (nreverse edges)))
 
 
-(defgeneric edge-spans-position? (edge position)
-  (:documentation "Is the position located somewhere between the
-    endpoints of the edge (including the endpoints themselves)")
-  (:method ((e edge) (p position))
-    (position-is-at-or-between p (pos-edge-starts-at e) (pos-edge-ends-at e)))
-  (:method ((ev edge-vector) (p position)) nil)
-  (:method ((w word) (p position)) nil))
-
 
 (defun preterminal-edge-at? (pos-before)
   ;; just a predicate. If there is any edge of any kind
