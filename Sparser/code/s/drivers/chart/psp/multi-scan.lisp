@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  June 2018
+;;;  version:  November 2018
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -246,6 +246,12 @@
                           (pnf? (apply-pnf)))))
                    (when where-fsa-ended
                      (tr :word-fsa-ended-at word where-fsa-ended)
+                     (when (memq 'abbreviation fsa)
+                       ;; Swallows the period after the abbreviated word
+                       (let ((pos-before (chart-position-before where-fsa-ended)))
+                         ;; if it succeeds it will make a new sentence
+                         ;; and throw to a document-level catch
+                         (period-check pos-before (pos-terminal pos-before))))
                      (setq position-after where-fsa-ended)
                      (unless (includes-state where-fsa-ended :scanned)
                        (scan-next-position))
@@ -738,41 +744,52 @@
                     *the-punctuation-plus-minus*))
   (tr :early-rule-check-at start)
   (loop
-    (cond ((eq start end) (return-from do-early-rules-sweep-between nil))
-          ((null start)
-           (error "do-early-rules-sweep-between start is nil in ~s"
-                  (current-string)))
-          ((not (position-p start)) (lsp-break "(position-p start-pos)")))
-    (setq left-edge (right-treetop-edge-at start))
-    (setq mid-pos  (when (edge-p left-edge) (pos-edge-ends-at left-edge)))
-    (setq right-edge (when (edge-p left-edge) (right-treetop-edge-at mid-pos)))
+     (cond ((eq start end) (return-from do-early-rules-sweep-between nil))
+           ;;(eq start *end-of-source*
+           ((null start)
+            (error "do-early-rules-sweep-between start is nil in ~s"
+                   (current-string)))
+           ((not (position-p start)) (lsp-break "(position-p start-pos)")))
+     (setq left-edge (right-treetop-edge-at start))
+     (setq mid-pos  (when (edge-p left-edge) (pos-edge-ends-at left-edge)))
+     (setq right-edge (when (edge-p left-edge) (right-treetop-edge-at mid-pos)))
+     (when *trace-early-rules-sweep*
+       (format t "~&left = ~a, mid-pos = ~a, right = ~a"
+               left-edge mid-pos right-edge))
+     (if (or (and (edge-p left-edge)
+                  (edge-p right-edge)
+                  (or (and
+                       (eq (edge-category left-edge) category::number)
+                       (eq (edge-form right-edge) category::plus-minus-number))
+                      (and
+                       (eq (edge-referent left-edge) *the-punctuation-plus-minus*)                   
+                       (eq (edge-category right-edge) category::number))))
+             (and (edge-p left-edge)
+                  (edge-p right-edge)
+                  (or
+                   (not (pos-preceding-whitespace mid-pos))
+                   (and (eq script :biology)
+                        (itypep (edge-referent left-edge) 'amino-acid)
+                        (itypep (edge-referent right-edge) 'number)))))
 
-    (if (or
-         (and (edge-p left-edge)
-              (edge-p right-edge)
-              (or (and
-                   (eq (edge-category left-edge) category::number)
-                   (eq (edge-form right-edge) category::plus-minus-number))
-                  (and
-                   (eq (edge-referent left-edge) *the-punctuation-plus-minus*)                   
-                   (eq (edge-category right-edge) category::number))))
-         (and (edge-p left-edge)
-              (edge-p right-edge)
-              (or
-               (not (pos-preceding-whitespace mid-pos))
-               (and (eq script :biology)
-                    (itypep (edge-referent left-edge) 'amino-acid)
-                    (itypep (edge-referent right-edge) 'number)))))
+       (multiple-value-bind (new-edge rule)
+           (apply-early-rule-at start mid-pos)
+         (if new-edge
+           ;; edge at the beginning changed, so re-start at the
+           ;;  sentence-beginning
+           (return-from do-early-rules-sweep-between :new-edge)
+           (setq start mid-pos)))
 
-        (multiple-value-bind (new-edge rule)
-            (apply-early-rule-at start mid-pos)
-          (if new-edge
-              ;; edge at the beginning changed, so re-start at the
-              ;;  sentence-beginning
-              (return-from do-early-rules-sweep-between :new-edge)
-              
-              (setq start mid-pos)))
-        (setq start (where-tt-ends left-edge start)))))
+       (else
+         (cond
+           ((and left-edge (edge-p left-edge)
+                 (position/<= end (pos-edge-ends-at left-edge)))
+            (return-from do-early-rules-sweep-between nil))
+           (t
+            (setq start (where-tt-ends left-edge start))
+            (when *trace-early-rules-sweep*
+              (format t "~&Looping. New 'start' = ~a" start)
+              (when (null start) (break "null start")))))))))
         
 (defun apply-early-rule-at (start middle-pos)
   (declare (optimize (debug 3)(speed 1)))
@@ -818,18 +835,15 @@
 
 ;; (trace-terminals-sweep)
 
-
-(defparameter *show-sent* nil)
 (defun pattern-sweep (sentence)
   "Scans the sentence treetop by treetop in a loop.
    Looks for patterns initiated by there being no space 
    between successive words."
-  (when *show-sent*
-    (print `(processing ,(current-string))))
-         
   (sweep-for-scan-patterns sentence)
   (sweep-for-no-space-patterns sentence))
 
+
+;;--- patterns
 
 (defun sweep-for-scan-patterns (sentence)
   "Handles patterns that are defined using define-no-space-pattern
@@ -893,42 +907,6 @@
         (return))
       (setq position-before position-after))))
 
-
-(defun sweep-for-no-space-patterns (sentence)
-  "If there is no-space between two successive words in the
-   chart (no-space-before-word?) then call check-for-pattern
-   to initiate the process in collect-no-space-segment-into-word
-   and manage the return value."
-  (declare (special *sentence-terminating-punctuation* *trace-sweep* *trace-ns-sequences*))
-  (tr :sweep-for-no-space-patterns)
-  (let ((pos (starts-at-pos sentence))
-        (sent-end-pos (ends-at-pos sentence))
-        ns-end-pos)
-        
-    (loop
-       while (and pos
-                  (setq pos (start-of-ns-region pos sent-end-pos)))
-       do
-         (setq ns-end-pos (end-of-ns-region pos sent-end-pos))
-         (when (or *trace-sweep* *trace-ns-sequences*)
-           (format t "~&[no-space sweep] p~a ~a p~a~%"
-                   (pos-token-index pos)
-                   (pos-terminal pos)
-                   (pos-token-index ns-end-pos)))
-         (setq ns-end-pos (collect-no-space-segment-into-word pos ns-end-pos))
-         (if (eq ns-end-pos sent-end-pos)
-           (setq pos nil)
-           (setq pos ns-end-pos)))
-
-    (loop for pos in (copy-list *positions-with-unhandled-unknown-words*)
-          unless (position-precedes sent-end-pos pos)
-          do (deal-with-unhandled-unknown-words-at pos))
-    (clean-unhandled-unknown-words sent-end-pos)))
-
-
-
-;;--- subroutines
-
 (defun check-for-pattern (position-after)  ;; (trace-scan-patterns)
   "Used by sweep-for-scan-patterns to hide the details from
    the structure of the loop."
@@ -949,8 +927,41 @@
         pos-reached))))
 
 
+;;--- no-space analysis
+
+(defun sweep-for-no-space-patterns (sentence)
+  ;; "If there is no-space between two successive words in the
+  ;;  chart (no-space-before-word?) then call check-for-pattern
+  ;;  to initiate the process in collect-no-space-segment-into-word
+  ;;  and manage the return value."
+  "Delimit the no-space region then call the ns pattern suite."
+  (declare (special *sentence-terminating-punctuation* *trace-sweep* *trace-ns-sequences*))
+  (tr :sweep-for-no-space-patterns)
+  (let ((pos (starts-at-pos sentence))
+        (sent-end-pos (ends-at-pos sentence))
+        ns-end-pos)
+    (loop
+       while (and pos (setq pos (start-of-ns-region pos sent-end-pos)))
+       ;; While there is a position, 'pos' that starts a no-space
+       ;; sequence. Find the end of that region ('ns-end-pos')
+       do
+         (setq ns-end-pos (end-of-ns-region pos sent-end-pos))
+         (tr :ns-identify-ns-pattern-between pos ns-end-pos)
+         (setq ns-end-pos (collect-no-space-segment-into-word pos ns-end-pos))
+         (if (position/<= sent-end-pos ns-end-pos)
+           (setq pos nil)
+           (setq pos ns-end-pos)))
+
+    (loop for pos in (copy-list *positions-with-unhandled-unknown-words*)
+          unless (position-precedes sent-end-pos pos)
+          do (deal-with-unhandled-unknown-words-at pos))
+    (clean-unhandled-unknown-words sent-end-pos)))
+
+
 (defun start-of-ns-region (pos &optional sent-end-pos &aux tt next-pos)
-  "Returns the pos just before a pos with without pos-preceding-whitespace"
+  "Starting at the position 'pos', walk over successive treetops.
+   Returns the pos just before a pos with without pos-preceding-whitespace"
+  (tr :find-ns-region-start pos)
   (loop
     (multiple-value-setq (tt next-pos)
       (next-treetop/rightward pos))
@@ -968,19 +979,30 @@
                      ;next-pos
                      ))))
            (setq pos next-pos))
-          (t (return pos)))))
+          (t (tr :ns-found-region-start pos)
+             (return pos)))))
 
-
-(defun end-of-ns-region (pos &optional sent-end-pos &aux tt next-pos)
+(defun end-of-ns-region (pos sent-end-pos &aux tt next-pos multiple?)
+  "The start-of-ns-region says that there's a no-space region starting
+   at position 'pos'
+   Loop over tree-tops starting there until we get reach a position
+   from which the regions can't continue."
+  (tr :ns-find-region-end pos)
   (loop
-    (multiple-value-setq (tt next-pos)
-      (next-treetop/rightward pos))
-    (if (or (eq next-pos sent-end-pos)
-            (pos-preceding-whitespace next-pos)
-            (when (pos-terminal next-pos)
-              (word-never-in-ns-sequence (pos-terminal next-pos))))
-        (return next-pos)
-        (setq pos next-pos))))
+     (multiple-value-setq (tt next-pos multiple?)
+       (next-treetop/rightward pos))
+     (when (or (eq next-pos sent-end-pos)
+               (edge-spans-position? tt sent-end-pos))
+       (tr :ns-find-region-end/stops-at next-pos)
+       (return next-pos))
+     (if (or (eq next-pos sent-end-pos)
+             (pos-preceding-whitespace next-pos)
+             (when (pos-terminal next-pos)
+               (word-never-in-ns-sequence (pos-terminal next-pos))))
+       (then (tr :ns-find-region-end/stops-at next-pos)
+             (return next-pos))
+       (else (tr :ns-find-region-end/includes next-pos)
+             (setq pos next-pos)))))
 
 
 ;;;-------------------------
@@ -1003,15 +1025,14 @@
     (dolist (position (remove-duplicates *pending-conjunction*))
       ;; lifted from look-for-short-obvious-conjunctions which will
       (let ((left-edge (next-treetop/leftward position))
-            (right-edge  (right-treetop-at/edge 
-                          (chart-position-after position)))
+            (right-edge (right-treetop-at/edge 
+                         (chart-position-after position)))
             (*allow-form-conjunction-heuristic* 
              *use-form-heuristic-in-conj-sweep*))
         (declare (special *allow-form-conjunction-heuristic*))
         ;;(break "short-conjunctions")
         ;; handle case of A, B, and C (i.e. comma before conjunction)
         (when (and
-               ;; caught by :SBCL
                (not (word-p left-edge)) ;; case such as ...cells (Figure 1B and 1C) and we...
                (eq word::comma 
                    (edge-category 
@@ -1036,7 +1057,7 @@
 		       (list right-edge)))
       (let ((heuristic (conjunction-heuristics left right)))
 	(if heuristic
-          ;; conjoin/2 looks for leftwards
+          ;; conjoin/2 looks for leftwards for more comma-separated conjuncts
           (let ((edge (conjoin/2 left right heuristic :pass 'short-conjunctions-sweep)))
             (tr :conjoined-edge edge)
             (return-from create-short-conjunction-edge-if-possible edge))
@@ -1091,7 +1112,7 @@
       ;; because the ns is greedy and moves the position, which can
       ;; cause the open to be missed.       
 
-      (when (eq position-after end-pos)
+      (when (position/<= end-pos position-after)
         (return))
       (unless (pos-assessed? position-after)
         (error "Pattern sweep walked beyond the bounds of the sentence"))
