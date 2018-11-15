@@ -57,7 +57,7 @@
    as needed for strings or reuses previously constructed sentences when reading
    from a document.  
       Loop stops at *end-of-source* and returns the position reached and the
-   current sentence. N.b. does not use the period-hook, though uses it's 'is-a-sentence'
+   current sentence. N.b. does not use the period-hook, though uses its 'is-a-sentence'
    checks."
   (declare (special *trace-sweep* *scanning-terminals* *sentence-terminating-punctuation*)
            (optimize debug))
@@ -109,6 +109,7 @@
                (tr :next-terminal-to-scan position-after next-word)
                (setq position position-after)
                (setq word next-word))))
+         
          (values position sentence))))
 
 
@@ -218,7 +219,7 @@
   (tr :word-level-fsa-sweep start-pos end-pos)      
   (let* ((position-before start-pos)
          (ev (pos-starts-here start-pos))
-         (edge (ev-top-node ev))
+         (edge (top-edge-on-ev ev))  ;;(ev-top-node ev)) 
          (word (unless edge (pos-terminal start-pos)))
          (position-after (if edge
                            (pos-edge-ends-at edge)
@@ -240,18 +241,17 @@
                       (apply-pnf () (pnf position-before)))
                  (let ((where-fsa-ended
                         (cond
-                          ((and fsa pnf?) (or (apply-pnf)
-                                              #+ignore(apply-fsa fsa)))
+                          ((and fsa pnf?) (apply-pnf))
                           (fsa (apply-fsa fsa))
                           (pnf? (apply-pnf)))))
                    (when where-fsa-ended
                      (tr :word-fsa-ended-at word where-fsa-ended)
                      (when (memq 'abbreviation fsa)
-                       ;; Swallows the period after the abbreviated word
-                       (let ((pos-before (chart-position-before where-fsa-ended)))
-                         ;; if it succeeds it will make a new sentence
-                         ;; and throw to a document-level catch
-                         (period-check pos-before (pos-terminal pos-before))))
+                       ;; Can swallow an <eos> period after the abbreviated word
+                       (let ((pos-before (chart-position-before where-fsa-ended))
+                             (sentence (identify-current-sentence)))
+                         (when (eq pos-before (ends-at-pos sentence))
+                           (return))))
                      (setq position-after where-fsa-ended)
                      (unless (includes-state where-fsa-ended :scanned)
                        (scan-next-position))
@@ -262,7 +262,7 @@
 
        (setq position-before position-after
              ev (pos-starts-here position-after)
-             edge (ev-top-node ev)
+             edge (top-edge-on-ev ev)
              word (unless edge (pos-terminal position-after))
              position-after (if edge
                               (pos-edge-ends-at edge)

@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "period-hook"
 ;;;    Module:  drivers/chart/psp  ;;"grammar;rules:DM&P:"
-;;;   version:  March 2018
+;;;   version:  November 2018
 
 ;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
 ;; hooked it into creating sentences. 2/10/14 Added period-hook-off.
@@ -108,7 +108,8 @@
               (if *scanning-terminals*
                   (case *scanning-terminals*
                     (:polywords (throw :pw-sweep position-before))
-                    (t (break ":COMPLETION-SWEEP fell through CASE expression")
+                    (:completion-sweep) ;; nothing to do
+                    (t (error "New case *scanning-terminals* = ~a" *scanning-terminals*)
                        nil))
                   (case (parsing-status s)
                     ;; this is the sentence that we're finishing
