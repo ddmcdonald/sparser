@@ -79,11 +79,17 @@
                   (return))
 
                  ((member word *sentence-terminating-punctuation*)
-                  (if (period-marks-sentence-end? (chart-position-after position))
-                    (then 
-                      (tr :scan-sentence-start (chart-position-after position))
-                      (start-sentence (chart-position-after position)))
-                    (post-non-eos-period-operations position))))
+                  (cond
+                    ((and (eq word *the-punctuation-period*)
+                          (isolated-potential-initial? position))
+                     (unless *pnf-routine* ;; let the proper name fsa do it
+                       (handle-period-as-initial position)))
+
+                    ((period-marks-sentence-end? (chart-position-after position))
+                     (tr :scan-sentence-start (chart-position-after position))
+                     (start-sentence (chart-position-after position)))
+
+                    (t (post-non-eos-period-operations position)))))
 
                  ;; ((and (member word *sentence-terminating-punctuation*)
                  ;;       (period-marks-sentence-end? (chart-position-after position)))
@@ -123,6 +129,15 @@
       (return-from eos-sweep-loop position))
     (setq position (chart-position-after position))
      (setq word (pos-terminal position))))
+
+
+(defun isolated-potential-initial? (position-of-period)
+  "Could the position before the period hold a initial? It has to
+   both be capitalized and separated by a space from other words."
+  (let ((pos-before (chart-position-before position-of-period)))
+    (when (eq :single-capitalized-letter (pos-capitalization pos-before))
+      (pos-preceding-whitespace pos-before))))
+
 
 
 ;;;------------------------------------
