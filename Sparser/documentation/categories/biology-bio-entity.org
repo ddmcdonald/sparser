@@ -1,0 +1,185 @@
+-*-org-*
+#+TITLE: Subcategory tree for the BIOLOGY configuration
+#+DATE: 11/20/18 13:56:22
+
+ + 0 bio-entity vars: {PRODUCED-BY}
+  + 1 bond 
+  + 1 binder 
+  + 1 lysate 
+  + 1 population vars: {ELEMENT}
+  + 1 phenotype 
+  + 1 bio-patient 
+  + 1 paradox 
+  + 1 open-reading-frame 
+  + 1 frame 
+  + 1 surface 
+  + 1 bio-preparation 
+    + 2 slice 
+  + 1 bio-reagent 
+    + 2 gel 
+  + 1 factor 
+  + 1 bio-agent vars: {CAUSES}
+    + 2 carcinogen 
+  + 1 bio-chemical-entity vars: {IN-EQUILIBRIUM-WITH}
+    + 2 substrate vars: {ENZYME}
+    + 2 ligand 
+    + 2 chemical-product 
+    + 2 regulator vars: {THEME}
+    + 2 bio-complex vars: {COMPONENT, COMPONENTSTOICHIOMETRY}
+      + 3 calcium-complex 
+        + 4 calcium-calmodulin-complex 
+      + 3 multimer 
+        + 4 homomultimer 
+        + 4 heteromultimer 
+      + 3 tetramer 
+        + 4 homotetramer 
+      + 3 trimer 
+        + 4 homotriamer 
+      + 3 dimer 
+        + 4 homo/heterodimer 
+        + 4 homodimer 
+        + 4 heterodimer 
+      + 3 monomer 
+      + 3 tricomplex 
+    + 2 mutant vars: {BASIS}
+    + 2 molecule vars: {MOLECULE-TYPE}
+      + 3 32p 
+      + 3 lactate 
+      + 3 mehg 
+      + 3 o2˙- 
+      + 3 mitogen 
+      + 3 derivative 
+      + 3 anchor 
+      + 3 agonist 
+      + 3 activator vars: {ACTIVATED}
+      + 3 amino-acid vars: {THREE-LETTER-CODE, ONE-LETTER-CODE}
+        + 4 phosphorylated-amino-acid vars: {MODIFIED-AMINO-ACID}
+      + 3 calcium 
+      + 3 protein-state vars: {PROTEIN, POST-TRANSLATIONAL-MOD}
+      + 3 peptide vars: {RESIDUE}
+        + 4 ap 
+        + 4 d-peptide 
+        + 4 aicar 
+        + 4 abeta 
+        + 4 bradykinin 
+        + 4 protein vars: {SPECIES, MUTATION, COMPLEX, FUNCTIONALLY-RELATED-TO, SITE, VARIANT-NUMBER, EQUILIBRIUM-STATE, STATE, IN-PATHWAY}
+          + 5 fragment vars: {WHOLE, MEASURE}
+          + 5 target-protein vars: {AGENT}
+          + 5 transporter 
+          + 5 coactivator 
+          + 5 scaffold 
+          + 5 receptor-protein 
+          + 5 receptor 
+          + 5 effector vars: {FOR-PROCESS}
+          + 5 antibody vars: {ANTIGEN}
+          + 5 point-mutated-protein 
+          + 5 growth-factor 
+          + 5 protein-family vars: {TYPE, FAMILY-MEMBERS, COUNT}
+            + 6 subfamily 
+            + 6 human-protein-family 
+          + 5 transcription-factor vars: {CONTROLLED-GENE}
+          + 5 enzyme vars: {ENZYME, REACTION, ENZYME-ACTIVITY}
+            + 6 isozyme 
+            + 6 deubiquitinase 
+            + 6 oxidase 
+            + 6 polymerase 
+            + 6 ubiquitinase 
+            + 6 ligase 
+            + 6 isomerase 
+            + 6 gtpase 
+            + 6 exchange-factor vars: {NUCLEOTIDE, ENZYME}
+              + 7 nucleotide-exchange-factor 
+                + 8 gef 
+            + 6 deubiquitylase 
+            + 6 post-translational-enzyme vars: {RESIDUE}
+              + 7 phosphatase 
+              + 7 ubiquitylase 
+              + 7 kinase 
+                + 8 receptor-protein-tyrosine-kinase 
+          + 5 slashed-protein-collection 
+          + 5 variant vars: {BASIS}
+            + 6 variety 
+            + 6 isoform 
+            + 6 analog 
+            + 6 allele 
+            + 6 type 
+            + 6 class 
+            + 6 homolog 
+            + 6 example 
+            + 6 bio-state vars: {STATEFUL-ITEM}
+      + 3 small-molecule vars: {ENTITY-REFERENCE}
+        + 4 orthophosphate 
+        + 4 nucleoside vars: {BASE}
+        + 4 nucleotide vars: {BASE}
+          + 5 (deoxy)uridine-monophosphate 
+          + 5 (deoxy)cytidine-monophosphate 
+          + 5 uridine-monophosphate 
+          + 5 cytidine-monophosphate 
+          + 5 tmp 
+          + 5 ump 
+          + 5 dump 
+          + 5 dcmp 
+          + 5 cmp 
+          + 5 dgmp 
+          + 5 udp 
+          + 5 dudp 
+          + 5 cdp 
+          + 5 dcdp 
+          + 5 dadp 
+          + 5 adp 
+          + 5 datp 
+          + 5 damp 
+          + 5 dgdp 
+          + 5 dgtp 
+        + 4 nucleobase 
+      + 3 polysaccharide 
+        + 4 dextran 
+      + 3 lipid 
+        + 4 phospholipid 
+          + 5 lpa 
+      + 3 rna 
+        + 4 sarna 
+        + 4 ce-rna 
+        + 4 micro-rna 
+          + 5 mir-26a1 
+          + 5 mir-26a2 
+          + 5 mir-26a 
+      + 3 drug vars: {DISEASE, TARGET}
+        + 4 therapeutics 
+        + 4 inhibitor vars: {PROCESS, PROTEIN}
+          + 5 negative-regulator 
+          + 5 suppressor 
+          + 5 repressor 
+      + 3 toxin 
+      + 3 component vars: {WHOLE}
+    + 2 substance 
+    + 2 ion vars: {MOLECULE}
+      + 3 calcium-ion vars: {MOLECULE}
+    + 2 rna-region 
+      + 3 utr 
+        + 4 5′-utr 
+        + 4 3′-utr 
+    + 2 dna-motif 
+      + 3 dna-response-element 
+        + 4 anti-oxidant-response-element 
+      + 3 promoter 
+    + 2 dna 
+      + 3 gene vars: {EXPRESSES}
+        + 4 oncogene 
+          + 5 proto-oncogene 
+  + 1 plasmid 
+    + 2 pegfp-n1 
+    + 2 pgl3b 
+    + 2 pcep 
+    + 2 pcep-erk2 
+    + 2 pcmv-erk2-ha 
+    + 2 gst-med1-craf-bxb 
+    + 2 gst-pimt-n 
+    + 2 3xppre-luc 
+    + 2 pcmv-pimt-flag 
+    + 2 pcdna3.1-pimt-n 
+    + 2 pcdna3.1-pimt 
+    + 2 pcmx-med1 
+    + 2 pcdna3.1-med1 
+    + 2 pcdna3.1-pparγ 
+  + 1 bio-grouping vars: {GROUP-MEMBERS}
