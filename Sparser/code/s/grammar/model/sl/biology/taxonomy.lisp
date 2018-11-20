@@ -1207,8 +1207,8 @@ transcription factors such as LEF-1 or Tcf4
 the STAT1 transcription factor 
 (noun "transcription factor" :super protein)
 |#
-
-(noun "phosphatase" :super post-translational-enzyme)
+;already defined below
+;(noun "phosphatase" :super post-translational-enzyme)
 
 (noun "ubiquitylase" :super post-translational-enzyme)
 
@@ -1269,7 +1269,7 @@ the STAT1 transcription factor
 
 
 
-(define-category phosphatase :specializes enzyme
+(define-category phosphatase :specializes post-translational-enzyme
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "phosphatase")

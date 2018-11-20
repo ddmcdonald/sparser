@@ -6932,7 +6932,7 @@
 (define-protein "UP:P23942" ("PRPH" "RDS" "Rds" "peripherin2" "prph2")) 
 (define-protein "UP:P23945" ("FSH receptor" "FSHR" "FSHr" "follicle stimulating hormone receptor" "follitropin receptor" "fshr" "p23945")) 
 (define-protein "UP:P23946" ("CMA1" "CMA1_HUMAN" "CYH" "CYM" "chymase" "chymase 1" "cma1" "mast cell protease I" "p23946")) 
-(define-protein "UP:P23975" ("NE transporter" "SC6A2_HUMAN" "SLC6A2" "net1" "noradrenaline" "norepinephrine transporter" "p23975" "sodium dependent noradrenaline transporter" "sodium-dependent noradrenaline transporter" "solute carrier family 6 member 2")) 
+(define-protein "UP:P23975" ("NE transporter" "SC6A2_HUMAN" "SLC6A2" "net1" "norepinephrine transporter" "p23975" "sodium dependent noradrenaline transporter" "sodium-dependent noradrenaline transporter" "solute carrier family 6 member 2")) 
 (define-protein "UP:P23988" ("PAG-C" "PagC")) 
 (define-protein "UP:P23996" ("MelA")) 
 (define-protein "UP:P24001" ("IL-32" "IL-32alpha" "IL-32beta" "IL32" "NK4" "Nk4" "interleukin-32" "tAIF")) 

@@ -75,8 +75,8 @@
 (define-cellular-location "trailing edge" "GO:0031254")
 (define-cellular-location "juxtamembrane" "GO:????");; corresponds to both the plasma membrane and a side of the plasma membrane, so can be any of 4 GO#s: GO:0005886, GO:0019897, GO:0009898, GO:0009897
 
-(noun "cell adhesive  structure" :super cellular-location)
-(noun "membrane" :super cellular-location)
+(noun "cell adhesive structure" :super cellular-location)
+;(noun "membrane" :super cellular-location)
 (noun "plasma" :super cellular-location)
 
 (define-category stress-granule :specializes cellular-location

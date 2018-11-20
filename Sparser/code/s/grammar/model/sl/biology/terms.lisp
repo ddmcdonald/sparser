@@ -81,7 +81,7 @@
 (define-adjective "epigenetic")
 (define-adjective "epithelial")
 (define-adjective "extracellular" :form 'spatial-adjective)
-(define-adjective "genetic")
+;(define-adjective "genetic")
 (define-adjective "genomic") ;genome
 (define-adjective "hematopoietic")
 (define-adjective "heterotypic")
@@ -210,7 +210,12 @@
          :to antigen
          :for antigen))
 
-
+;; note: monoclonal antibody and polyclonal antibody are currently
+;; defined as drugs, because they are frequently used for that
+;; purpose-- currently they are individuals despite the fact that we
+;; have several monoclonal antibodies defined that could be under a
+;; subcategory and possibly we should have a whole biological drug
+;; category that are both drugs and proteins
 
                 
 
