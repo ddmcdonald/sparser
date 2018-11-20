@@ -52,6 +52,7 @@
                (pname (pos-terminal pos)))))
 
 (deftrace :ns-identify-ns-pattern-between (start end)
+  (declare *trace-sweep*)
   ;; called from sweep-for-no-space-patterns
   (when (or *trace-ns-sequences* *trace-sweep*)
     (trace-msg "[ns]   Looking for pattern starting at p~a and ending at p~a"
