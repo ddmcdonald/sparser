@@ -669,8 +669,9 @@
 (def-family "EXT" :members ("UP:Q16394" "UP:Q39099")) 
 ;(def-family "Eukaryotic translation initiation factor 4E-binding protein 1" :members ("UP:Q0P5A7" "UP:Q13541")) 
 (def-family "FAA" :members ("UP:O15360" "UP:P16930")) 
-(def-family "FABP1" :members ("UP:P00505" "UP:P07148") :synonyms ("fabpl")) 
-(def-family "FACT" :members ("UP:Q9Y5B9" "UP:Q08945")) 
+(def-family "FABP1" :members ("UP:P00505" "UP:P07148") :synonyms ("fabpl"))
+;; this is a problematic definition, and shouldn't have been in here anyway
+;;(def-family "FACT" :members ("UP:Q9Y5B9" "UP:Q08945")) 
 (def-family "FAN1" :members ("UP:Q16658" "UP:Q9Y2M0")) 
 (def-family "FAS1" :members ("UP:P0C1Y9" "UP:P25445")) 
 ;(def-family "FAT" :members ("UP:P16671" )) 
