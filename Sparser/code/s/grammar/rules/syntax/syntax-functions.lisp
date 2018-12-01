@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  September 2018
+;;;  Version:  November 2018
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -186,6 +186,39 @@
             *edge-not-created-by-c-p-b-b*)));)
 |#
 
+(defun get-lambda-ref-edge-from-pred-edge (pred-edge)
+  "When you have an edge in hand that is a lambda expression, this
+   will retrieve the edge the lambda variable refers to"
+  (let* ((dom-edge (edge-used-in pred-edge))
+         (lower-edges (edges-under dom-edge))
+         (lamda-ref (gethash (edge-referent pred-edge) *predication-links-ht*)))
+    (loop for edge in lower-edges
+          when (eq (edge-referent edge) lamda-ref)
+          do (return edge))))
+
+(defun matched-pred? (pred edge &aux (ref (edge-referent edge)))
+  "Is 'pred' the referent ('ref') of this edge?"
+  (or (eq pred (get-dli ref))
+      (eq pred ref)
+      (and (individual-p ref)
+           ;; this is the case where the ref is a complement
+           ;; embedding item like a wh-question
+           (eq pred (value-of 'statement ref)))))
+
+(defun create-predication-and-edge-by-binding (var val pred pre-pred-edge)
+  ;; called by
+  ;; ../da/da-rules.lisp
+  ;;     UPDATE-EDGE-AS-LAMBDA-PREDICATE
+  ;;     POSTMODIFYING-ADJ
+  ;; ../biology/mechanics.lisp
+  ;;     MAKE-PHOSPHORYLATED-PROTEIN
+  (unless (and (edge-p pre-pred-edge)
+               (matched-pred? pred pre-pred-edge))
+    (lsp-break "create-predication-and-edge-by-binding invalid pre-pred-edge provided"))
+  (let* ((new-pred (create-predication-by-binding var val pred))
+         (new-edge (make-predication-edge pre-pred-edge new-pred)))
+    (values new-pred new-edge)))
+
 (defun create-predication-by-binding (var val pred)
   ;; called by CREATE-PREDICATION-AND-EDGE-BY-BINDING-AND-INSERT-EDGE
   ;;           CREATE-PREDICATION-AND-EDGE-BY-BINDING
@@ -203,11 +236,9 @@
   (declare (special **lambda-var**))
   (let ((new-predication (bind-dli-variable var **lambda-var** pred)))
     (declare (special new-predication))
-    ;; Rusty - how could the binding fail?  AKA, why the cond here.
     (when (and val (not (individual-p val))
-               (not (referential-category-p val))
-               ;; above happens for "when oncogenic RAS is induced in HKe3 ER:HRASV12 cells (Figure S3B) "
-               )
+               ;; below happens for "when oncogenic RAS is induced in HKe3 ER:HRASV12 cells (Figure S3B) "
+               (not (referential-category-p val)))
       (if (eq val '*lambda-var*)
           (when *lambda-var-warnings*
             (warn "still trying to bind *lambda-var* in predication, in ~s~%"
@@ -217,20 +248,6 @@
            (setf (gethash new-predication *predication-links-ht*) val)
            new-predication)
           (t pred))))
-
-(defun create-predication-and-edge-by-binding (var val pred pre-pred-edge)
-  ;; called by
-  ;; ../da/da-rules.lisp
-  ;;     UPDATE-EDGE-AS-LAMBDA-PREDICATE
-  ;;     POSTMODIFYING-ADJ
-  ;; ../biology/mechanics.lisp
-  ;;     MAKE-PHOSPHORYLATED-PROTEIN
-  (unless (and (edge-p pre-pred-edge)
-               (matched-pred? pred pre-pred-edge))
-    (lsp-break "create-predication-and-edge-by-binding invalid pre-pred-edge provided"))
-  (let* ((new-pred (create-predication-by-binding var val pred))
-         (new-edge (make-predication-edge pre-pred-edge new-pred)))
-    (values new-pred new-edge)))
 
 (defun create-predication-and-edge-by-binding-and-insert-edge (var val pred)
   ;;../syntax/subject-relatives.lisp
@@ -245,20 +262,104 @@
   ;;  ADJ-NOUN-COMPOUND
   ;;  ASSIMILATE-SUBJECT-TO-VP-ED
   (unless (edge-p (parent-edge-for-referent))
-    (lsp-break "create-predication-and-edge-by-binding-and-insert-edge no valid parent edge"))
-  (let ((new-pred (create-predication-by-binding var val pred)))
-    (insert-predication-edge (parent-edge-for-referent) pred new-pred)
-    new-pred))
+    (lsp-break "create-predication-and-edge-by-binding-and-insert-edge - no valid parent edge"))
+  (let ((new-predication (create-predication-by-binding var val pred)))
+    (insert-predication-edge (parent-edge-for-referent) pred new-predication)
+    new-predication))
 
-(defun get-lambda-ref-edge-from-pred-edge (pred-edge)
-  "When you have an edge in hand that is a lambda expression, this
-will retrieve the edge the lambda variable refers to"
-  (let* ((dom-edge (edge-used-in pred-edge))
-         (lower-edges (edges-under dom-edge))
-         (lamda-ref (gethash (edge-referent pred-edge) *predication-links-ht*)))
-    (loop for edge in lower-edges
-          when (eq (edge-referent edge) lamda-ref)
-          do (return edge))))
+(defun insert-predication-edge (parent pred new-predication)
+  (declare (special new-predication parent))
+  (let* ((left-edge (edge-left-daughter parent))
+         (right-edge (edge-right-daughter parent))
+         (predicated-edge
+          (cond ((matched-pred? pred left-edge) left-edge)
+                ((matched-pred? pred right-edge) right-edge)
+                (t nil))))
+    (unless predicated-edge
+      (lsp-break "create-predication-by-binding, predicate is not from left or right edge~%"))
+    (let ((lambda-edge (make-predication-edge predicated-edge new-predication)))
+      (sort-out-introduction-of-lambda-predication-edge
+       lambda-edge parent left-edge right-edge predicated-edge)
+      (values new-predication lambda-edge))))
+
+(defun sort-out-introduction-of-lambda-predication-edge (lambda-edge parent
+                                                         left-edge right-edge
+                                                         predicated-edge)
+  "The parent is a binary edge. We've just spanned one of its daughters
+   with the newly introduced lambda-edge so we need to update that information."
+  (let ((direction-of-lambda
+         (cond ((eq left-edge predicated-edge)
+                (setf (edge-left-daughter parent) lambda-edge)
+                :left)
+               ((eq right-edge predicated-edge)
+                (setf (edge-right-daughter parent) lambda-edge)
+                :right))))
+    
+    ;; We now know where the lambda edge goes, so hook in its uplink
+    (setf (edge-used-in lambda-edge) parent)
+
+    ;; The order of the edges in the vector that the parent and lambda-edge
+    ;; share is messed up. Edges are added to the edge-vectors of their
+    ;; start and end positions at the they are created. The parent edge was
+    ;; created before the lambda-edge. (It was created at the start of
+    ;; the rule-interpretation process. Right now we're in the middle
+    ;; of that process.) Anything that walks the vector will be confused
+    ;; because the parent edge is longer than the lambda edge. To correct
+    ;; this we swap their position in the relevant vector. 
+    (let ((ev (ecase direction-of-lambda
+                (:left (edge-starts-at parent))
+                (:right (edge-ends-at parent)))))
+      (unless (index-of-edge-in-vector lambda-edge ev)
+        (error "Lambda edge not in expected vector ~a" ev))
+      (swap-edges-in-vector parent lambda-edge ev)
+      (setf (ev-top-node ev) parent) ;; usually redundant with the swap  
+      ev)))
+
+
+(def-form-category lambda-form)
+(define-category lambda-expression :specializes predicate)
+
+(defun make-predication-edge (pre-pred-edge predication)
+  "Span 'pre-pred-edge' with a new edge with the same end-points.
+   The caller has provided 'predication' to be the referent of
+   this new edge."
+  (let* ((daughter (maybe-extract-statement-edge pre-pred-edge))
+         (left-ev (edge-starts-at pre-pred-edge))
+         (right-ev (edge-ends-at pre-pred-edge))
+         (lambda-edge
+          (make-completed-unary-edge
+           left-ev right-ev
+           'make-predication-edge        ;; rule
+           daughter                      ;; daughter
+           category::lambda-expression   ;; category
+           category::lambda-form         ;; form
+           predication)))                ;; referent
+    lambda-edge))
+
+(defun maybe-extract-statement-edge (pre-pred-edge)
+  "Determines the daughter of the new spanning edge being created by
+   make-predication-edge. "
+  (declare (special pre-pred-edge))
+  (let* ((ref (edge-referent pre-pred-edge))
+         (statement
+          (and (individual-p ref)
+;;; check to see that this is not a that-relative-clause
+               (not (that-relative-clause? ref))
+               (not (itypep ref 'bio-complement))
+               (value-of 'statement ref))))
+    (declare (special statement))
+    (if statement
+        (cond ((eq statement (edge-referent (edge-left-daughter pre-pred-edge)))
+               (edge-left-daughter pre-pred-edge))
+              ((eq statement (edge-referent (edge-right-daughter pre-pred-edge)))
+               (edge-right-daughter pre-pred-edge))
+              (t (warn "bad make-predication-edge in ~s~%" (current-string))
+                 nil))
+        pre-pred-edge)))
+
+(defun that-relative-clause? (ref)
+  (value-of 'that-rel ref))
+
 
 #+ignore(defun create-predication-by-binding-in-prog (val-edge pre-pred-edge parent-edge pred-pos)
   "Given the value edge, predicate edge, and the edge they should be
@@ -310,81 +411,6 @@ val-pred-var (pred vs modifier - left or right?)
                (values new-predication nil)))
 	  (t
            (values pred nil)))))
-
-(defun insert-predication-edge (parent pred new-predication)
-  (declare (special new-predication parent))
-  (let* (;;(parent (parent-edge-for-referent)) ;; e4 in rusty notation
-         (left-edge (edge-left-daughter parent))
-         (right-edge (edge-right-daughter parent))
-         (pred-edge
-          (cond ((matched-pred? pred left-edge)
-                 left-edge)
-                ((matched-pred? pred right-edge)
-                 right-edge)
-                (t nil)))
-         (new-edge (when pred-edge
-                     (make-predication-edge pred-edge new-predication))))
-    (declare (special new-edge left-edge right-edge pred-edge))
-    (when (null pred-edge)
-      (lsp-break
-       "create-predication-by-binding, predicate not from left or right edge~%"))
-    ;; can't have null pred-edge at this point
-    (cond ((eq left-edge pred-edge)
-           (setf (edge-left-daughter parent) new-edge))
-          ((eq right-edge pred-edge)
-           (setf (edge-right-daughter parent) new-edge)))
-    (setf (edge-used-in new-edge) parent)
-    (setf (ev-top-node (edge-starts-at parent)) parent)
-    ;;(lsp-break "create-predication-by-binding")
-    (values new-predication new-edge)))
-
-(defun matched-pred? (pred edge &aux (ref (edge-referent edge)))
-  (or (eq pred (get-dli ref))
-      (eq pred ref)
-      ;; this is the case where the ref is a complement
-      ;; embedding item like a wh-question
-      (and (individual-p ref)
-           (eq pred (value-of 'statement ref)))))
-
-(def-form-category lambda-form)
-(define-category lambda-expression :specializes predicate)
-
-(defun make-predication-edge (pre-pred-edge predication)
-  "Span 'pre-pred-edge' with a new edge with the same end-points.
-   The caller has provided 'predication' to be the referent of
-   this new edge."
-  (make-completed-unary-edge
-   (edge-starts-at pre-pred-edge)
-   (edge-ends-at pre-pred-edge)
-   'make-predication-edge                               ;; rule
-   (maybe-extract-statement-edge pre-pred-edge)         ;; daughter
-   category::lambda-expression                          ;; category
-   category::lambda-form                                ;; form
-   predication))
-
-(defun maybe-extract-statement-edge (pre-pred-edge)
-  "Determines the daughter of the new spanning edge being created by
-   make-predication-edge. "
-  (declare (special pre-pred-edge))
-  (let* ((ref (edge-referent pre-pred-edge))
-         (statement
-          (and (individual-p ref)
-;;; check to see that this is not a that-relative-clause
-               (not (that-relative-clause? ref))
-               (not (itypep ref 'bio-complement))
-               (value-of 'statement ref))))
-    (declare (special statement))
-    (if statement
-        (cond ((eq statement (edge-referent (edge-left-daughter pre-pred-edge)))
-               (edge-left-daughter pre-pred-edge))
-              ((eq statement (edge-referent (edge-right-daughter pre-pred-edge)))
-               (edge-right-daughter pre-pred-edge))
-              (t (warn "bad make-predication-edge in ~s~%" (current-string))
-                 nil))
-        pre-pred-edge)))
-
-(defun that-relative-clause? (ref)
-  (value-of 'that-rel ref))
 
 
 ;;;----------------------------
@@ -1435,10 +1461,14 @@ there was an edge for the qualifier (e.g., there is no edge for the
             np)
            
            (t ;;(break "fell through")
-            (when (current-script :blocks-world)
+            #+ignore(when (current-script :blocks-world)
               (if (eq prep-word of)
                 (warn "No interpretation of ~a 'of' ~a" np pobj-referent)
-                (warn "No interpretation of np ~a with pp ~a" np pp))))))))))
+                (warn "No interpretation of np ~a with pp ~a" np pp)))
+            ;; Needs an interpretation just to get through, so pretend
+            ;; we had *force-modifiers* on and take the weakest relationship
+            (setq np (bind-variable 'modifier pobj-referent np))
+            np )))))))
 
 
 
@@ -2120,9 +2150,10 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (when (itypep copular-pp 'subordinate-clause)
     ;; this may no longer work -- get an example and test it
     (setq copular-pp (value-of 'comp copular-pp)))
-  (when (itypep copular-pp category::wh-question)
+  (when (itypep copular-pp 'wh-question)
     ;; e.g. "cancer patients who may not have been at risk themselves"
     (setq copular-pp (value-of 'statement copular-pp)))
+  
   (cond ((null copular-pp)
       ;; happens in "This analysis identified a group of tumours with good prognosis, almost all of which were of low grade and metastasis-free up to 5 years ( xref )."
          nil)
@@ -2139,17 +2170,18 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun test-and-apply-simple-copula-pp (np copular-pp)
   (declare (special category::copular-predicate))
   (let* ((prep-indiv (value-of 'prep copular-pp))
-         (prep (get-word-for-prep (unless (null prep-indiv) prep-indiv)))
+         (prep (when prep-indiv (get-word-for-prep prep-indiv)))
          (pobj (value-of 'value copular-pp))
          (var-to-bind (when prep (subcategorized-variable np prep pobj))))
-    ;;(lsp-break "apply-copular-pp to ~a and ~a" np copular-pp)
     (cond
       (*subcat-test* var-to-bind)
-      (t
+      (var-to-bind
+       ;; Reinterpret-dominating-edges (e.g as the result of a tuck
+       ;; initiated by a DA rule) does not validate rules with the subcat-test,
+       ;; it just goes ahead and executes them. Hence this ostensibly redundant check
        (when *collect-subcat-info*
          (push (subcat-instance np prep var-to-bind copular-pp)
                *subcat-info*))
-
        (setq np (individual-for-ref np))
        (revise-parent-edge :category category::copular-predicate)
        ;; THIS IS WRONG -- DAVID -- DID YOU CHANGE THIS
