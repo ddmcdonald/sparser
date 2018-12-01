@@ -181,68 +181,133 @@
         
 
 (defun look-for-submerged-matching-conj-edge (edge-before edge-after)
-  ;; look leftward first
- (tr :submerged-check edge-before edge-after)
- (let ( matching-edge )
-   ;; look leftward first
-   (let ((ev (edge-ends-at edge-before))
-         (label (edge-category edge-after)))
-     (setq matching-edge (search-ev-for-edge ev label))
-     (if matching-edge 
-       (conjoin-and-rethread-edges matching-edge edge-after :left)
-       (else
-         ;; /// Look rightward
-         (push-debug `(,ev ,label)))))))
+  "Called from conjoin-adjacent-like-treetop and (recently 11/18) from
+ look-for-submerged-conjunct where there is reason to believe that
+ parsing activity after the early conjunction check has built an
+ edge over the true (leftward) conjunct of a pending 'and'.
+ We look at the edge-vector of the candidate edges (initially looking
+ leftwards) and scan for an edge with the same semantic category label
+ as the the edge on the right (i.e. we don't do any complex heuristics)."
+  (tr :submerged-check edge-before edge-after)
+  (let ( matching-edge )
+    (let ((ev (edge-ends-at edge-before)) ;; look leftward first
+          (label (edge-category edge-after)))
+      (setq matching-edge (search-ev-for-edge ev label))
+      (when matching-edge
+        ;;/// refactor so can easily run the same check on
+        ;; the right edge-vector
+        (conjoin-and-rethread-edges matching-edge edge-after :left)))))
+
+(defparameter *trace-conjoin-and-rethread* nil)
 
 (defun conjoin-and-rethread-edges (left-edge right-edge direction)
+  "We've just plucked an edge out from the fringe of one of these
+ edges and are about make a new edge that conjoins it with the
+ other edge. That will force a re-kniting of the links between
+ many of the edges.
+ In particular, the edge-ends-at of all the edges above the edge
+ that we lift have to be reset to go to the other end of the newly
+ created conjoined-edge (i.e. new-ev). "
+
   (let* ((heuristic (ecase direction
                       (:left :lifted-left-edge-of-conjunction)
                       (:right :lifted-right-edge-of-conjunction)))
          (lifted-edge (ecase direction
                         (:left left-edge)
                         (:right right-edge)))
-         (parent-edge (edge-used-in lifted-edge))
-         (conjoined-edge (conjoin-two-edges left-edge right-edge
-                                            heuristic 
-                                            :do-not-knit t
-                                            :pass 'conjoin-and-rethread-edges))
-         (new-ev (ecase direction
-                   (:left (edge-ends-at conjoined-edge))
-                   (:right (edge-starts-at conjoined-edge)))))
-    ;; Now all the edges above the parent (inclusive) need to get
-    ;; new end-positions (trashing the intermediate end edge-vectors
-    ;; but we won't be looking there again so it doesn't matter.
-    ;; Start with the new edge because we deliberatedly told the
-    ;; edge-maker not to do the knitting since it would have 
-    ;; messed up the 'top' edge information. 
-    (let* ((ev (ecase direction
-                 (:left (edge-ends-at lifted-edge))
-                 (:right (edge-starts-at lifted-edge))))
-           (edges-dominating-lifted
-            (edges-on-ev-above lifted-edge ev)))
+         (parent-edge (edge-used-in lifted-edge)))
 
-      (pop edges-dominating-lifted) ;; remove lifted edge
+    ;; Check the lifted -- If it's been respanned by an edge of the same
+    ;; span (like a lambda predication), then the parent is further up
+    (when parent-edge
+      (when (edges-have-same-span? lifted-edge parent-edge)
+        (setq parent-edge (edge-used-in parent-edge))))
+        
+    (when *trace-conjoin-and-rethread*
+        (format t "~&~%1st stagel:~
+                     ~&parent: ~a~
+                     ~&lifted: ~a~
+                     ~&left: ~a~
+                     ~%right: ~a~%"
+                parent-edge
+                lifted-edge left-edge right-edge)
+        (break "look at parent"))
 
-      (dolist (e (cons conjoined-edge edges-dominating-lifted))
-        (knit-edge-into-position e new-ev)
-        (ecase direction
-          (:left (setf (edge-ends-at e) new-ev))
-          (:right (setf (edge-starts-at e) new-ev))))
+    (let* ((conjoined-edge (conjoin-two-edges left-edge right-edge
+                                              heuristic 
+                                              :do-not-knit t
+                                              :pass 'conjoin-and-rethread-edges))
+           (new-ev (ecase direction
+                     (:left (edge-ends-at conjoined-edge))
+                     (:right (edge-starts-at conjoined-edge)))))
 
-      ;; The parent gets the new edge as its right-daughter (assuming
-      ;; we lifted from the left)
-      (ecase direction
-        (:left (setf (edge-right-daughter parent-edge) conjoined-edge))
-        (:right (setf (edge-left-daughter parent-edge) conjoined-edge)))
-      (setf (edge-used-in conjoined-edge) parent-edge)
+      (when *trace-conjoin-and-rethread*
+        (format t "~&~%2d stage:~
+                     ~&conjoined-edge: ~a~
+                     ~&parent: ~a~%"
+                conjoined-edge parent-edge)
+        (break "look at conjoined"))
 
-      (push-debug `(,conjoined-edge ,new-ev ,ev ,parent-edge))
+      ;; Now all the edges above the parent (inclusive) need to get
+      ;; new end-positions (trashing the intermediate end edge-vectors
+      ;; but we won't be looking there again so it doesn't matter.
+      ;; Start with the new edge because we deliberatedly told the
+      ;; edge-maker not to do the knitting since it would have 
+      ;; messed up the 'top' edge information.
+      (when parent-edge
+        ;; When this runs in sparsely understood texts there will
+        ;; often be cases where the edge we 'lifted' was in fact
+        ;; not part of a larger consituent, in which case there
+        ;; won't be any dominating edges that need rethreading.
+        (let* ((ev (ecase direction
+                     (:left (edge-ends-at lifted-edge))
+                     (:right (edge-starts-at lifted-edge))))
+               (edges-dominating-lifted
+                (edges-on-ev-above lifted-edge ev))
+               (constituents (edge-constituents conjoined-edge)))
+          
+          (when *trace-conjoin-and-rethread*
+            (format t "~&%About to lift:~
+                        ~&ev: ~a~
+                        ~&~%constituents: ~a~
+                        ~&~%dominating: ~a~%"
+                    ev constituents edges-dominating-lifted))
 
-      ;; Now move back to the forest-level in a reasonable way,
-      ;; though it's not obvious that we can improve on just returning
-      ;; back up through do-generic-actions-off-tree-top and the
-      ;; do-treetop-loop up to PPTT or move-to-forest-level
-      )))
+          ;; We have to remove from this edge the edges that are part
+          ;; of the conjunction, otherwise their end-points will be
+          ;; shifted and we get weird effects
+          (setq edges-dominating-lifted
+                (delete lifted-edge edges-dominating-lifted))
+          (loop for e in constituents
+             when (memq e edges-dominating-lifted)
+             do (setq edges-dominating-lifted
+                      (delete e edges-dominating-lifted)))
+          
+          (when *trace-conjoin-and-rethread*
+            (format t "~&~%edges to extend: ~a~%" edges-dominating-lifted)
+            (break "before loop"))
+
+          (dolist (e edges-dominating-lifted)
+            ;;(break "About to knit ~a" e)
+            (knit-edge-into-position e new-ev)
+            (ecase direction
+              (:left (setf (edge-ends-at e) new-ev))
+              (:right (setf (edge-starts-at e) new-ev))))
+
+          ;; The parent gets the new edge as its right-daughter (assuming
+          ;; we lifted from the left)
+          (ecase direction
+            (:left (setf (edge-right-daughter parent-edge) conjoined-edge))
+            (:right (setf (edge-left-daughter parent-edge) conjoined-edge)))
+          (setf (edge-used-in conjoined-edge) parent-edge)
+
+          (when *trace-conjoin-and-rethread* (break "dust settled"))
+
+          ;; Now move back to the forest-level in a reasonable way,
+          ;; though it's not obvious that we can improve on just returning
+          ;; back up through do-generic-actions-off-tree-top and the
+          ;; do-treetop-loop up to PPTT or move-to-forest-level
+          parent-edge)))))
       
                                            
  
