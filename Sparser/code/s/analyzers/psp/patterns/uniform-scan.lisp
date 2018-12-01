@@ -312,7 +312,7 @@
          (multiple-value-bind (category rule referent)
              (if *big-mechanism*
                  (reify-ns-name-as-bio-entity pos-before next-position)
-                 (reify-spelled-name (treetops-between pos-before next-position)))
+                 (reify-spelled-name (words-between pos-before next-position)))
            (tr :reified-ns-name referent pos-before next-position)
            (let ((edge
                   (make-edge-over-long-span
