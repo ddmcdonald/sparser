@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2011-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2011-2018 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   February 2017
+;;;   Version:   November 2018
 
 ;; broken out from all-in-one-file 11/28/91
 ;; 1.0 (8/28/92 v2.3) Added global referring to the referent returned.
@@ -237,12 +237,17 @@
         (t
          (let ((*current-chunk* 'dummy-chunk))
            ;; To fake out NP chunk rules that check to see that
-           ;; they are in a chunk e.g. funtion verb-noun-coumpount
-           (referent-from-rule
-            (edge-left-daughter edge)
-            (edge-right-daughter edge)
-            edge
-            (edge-rule edge))))))
+           ;; they are in a chunk e.g. function verb-noun-coumpound
+           (when (cfr-p (edge-rule edge))
+             ;; When reinterpreting an edge because of tuck induced by
+             ;; a DA function, we can get edges that were fashioned by
+             ;; hand rather than by rule, e.g. by make-hyphenated-structure
+             ;; e.g. "Tris-HCl, pH 7.5, and 150 mM NaCl".
+             (referent-from-rule
+              (edge-left-daughter edge)
+              (edge-right-daughter edge)
+              edge
+              (edge-rule edge)))))))
    
 (defun lambda-abstraction-edge? (edge)
   (declare (special category::lambda-form))
@@ -276,7 +281,7 @@
       (error "Right edge isn't bound now")))
 
 (defun parent-edge-for-referent ()
-  (when (deactivated? *parent-edge-getting-reference*)
+  #+ignore(when (deactivated? *parent-edge-getting-reference*)
     (lsp-break "parent-edge-for-referent is ~s~%" *parent-edge-getting-reference*))
   (or *parent-edge-getting-reference*
       (error "*parent-edge-getting-reference* isn't bound now")))
