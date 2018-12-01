@@ -516,6 +516,11 @@ code is make-edge-over-abbreviation and its feeders. |#
               (pos-token-index (pos-edge-ends-at lower-edge)))
       t )))
 
+(defun edges-have-same-span? (e1 e2)
+  "Do these two edges start and end at the same positions?"
+  (and (eq (edge-starts-at e1) (edge-starts-at e2))
+       (eq (edge-ends-at e1) (edge-ends-at e2))))
+
 
 (defun edge-length (edge)
   (- (pos-token-index (ev-position (edge-ends-at edge))) 

@@ -109,6 +109,20 @@
     (setf (aref vector index) edge)
     vector))
 
+(defun swap-edges-in-vector (above below ev)
+  "The two edges should be adjacent in the edge array of
+ edge-vector 'ev'. Swap their positions so that 'above' now
+ has a higher index than 'below'. If above is now the top
+ edge update that field."
+  (let ((index-for-above (index-of-edge-in-vector below ev))
+        (index-for-below (index-of-edge-in-vector above ev)))
+    (insert-edge-into-vector-at ev above index-for-above)
+    (insert-edge-into-vector-at ev below index-for-below)
+    (unless (aref (ev-edge-vector ev) (1+ index-for-above))
+      (setf (ev-top-node ev) above))
+    ev))
+
+
 
 (defun all-edges-on (ev)
   ;; Called by peek-rightward but may be useful in general
@@ -140,18 +154,15 @@
   ;; if there is one
   (let ((start-vector (pos-starts-here start))
         (end-vector (pos-ends-here end)))
-
-    ;; check the easy case
     (let ((start-top (ev-top-node start-vector))
           (end-top (ev-top-node end-vector)))
-
       (when start-top
         (when (eq start-top :multiple-initial-edges)
           (setq start-top (highest-edge start-vector)))
         (when end-top
           (when (eq end-top :multiple-initial-edges)
             (setq end-top (highest-edge end-vector)))
-          (if (eq start-top end-top)
+          (if (eq start-top end-top) ;; the easy case
             start-top
             (let ( start-edge end-edge )
               ;; sigh. there must be an easier way
@@ -173,7 +184,6 @@
       (when (> (ev-number-of-edges ev) 1)
         (elt (ev-edge-vector ev)
              (1- (ev-number-of-edges ev))))))
-
 
 (defun top-edge-at/ending (position)
   ;; returns the top-edge that ends at the position
@@ -274,7 +284,6 @@
          (count (ev-number-of-edges ev))
          (array (ev-edge-vector ev))
          (top-edge (ev-top-node ev)))
-
     (ecase *edge-vector-type*
       (:kcons-list
        (let ((length (length array)))
@@ -306,16 +315,14 @@
                   (aref array (1- i)))))))))))
 
 
-(defun index-of-edge-in-vector (edge ev
-                                &optional (count (ev-number-of-edges ev))
-                                          (vector (ev-edge-vector ev)))
-  (ecase *edge-vector-type*
-    (:kcons-list (break "Stub: write the kcons-list version"))
-    (:vector
-     (dotimes (i count (break "The edge ~A~%is not included in the ~
-                              edge vector ~A" edge ev))
-       (when (eq edge (elt vector i))
-         (return-from index-of-edge-in-vector i))))))
+(defun index-of-edge-in-vector (edge ev)
+  (let ((count (ev-number-of-edges ev))
+        (vector (ev-edge-vector ev)))
+    (loop for i from 0 to count
+       when (eq (aref vector i) edge)
+       return i
+       finally (return nil))))
+
 
 (defun vector-contains-edge-of-category (vector category)
   ;; called by CA search routines, e.g. for conjunctions
