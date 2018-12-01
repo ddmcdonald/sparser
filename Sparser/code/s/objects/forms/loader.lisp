@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1992,1993  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,1993, 2018  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "grammar;forms:"
-;;;   Version:   7.12 December 1993
+;;;   Version:   November 2018
 
 (in-package :sparser)
 
@@ -45,7 +45,6 @@
   (lload "forms;sectionizing")
   (lload "forms;header labels"))
 
-(unless (eq *loader-mode* :just-the-all-edges-parser)
-  (lload "forms;form rules")
-  (lload "forms;pair interiors"))
+(lload "forms;form rules")
+(lload "forms;pair interiors")
 

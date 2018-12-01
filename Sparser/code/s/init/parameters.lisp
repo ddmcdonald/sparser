@@ -1,19 +1,13 @@
 ;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: SPARSER -*-
-;;; Copyright (c) 2016-2017 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2018 SIFT LLC. All Rights Reserved.
 ;;;
 ;;;      File: "parameters"
 ;;;    Module: "init;"
-;;;   Version: August 2017
+;;;   Version: November 2018
 
 ;;;----------------------------
 ;;; parameterizing the loading
 ;;;----------------------------
-
-(defvar *loader-mode* :everything ;; :just-the-all-edges-parser
-  "Within the engine part of sparser (vs. the grammar used with it),
-there are several gross variations on what parts of it are needed
-with a given application, which this flag controls. This is analogous
-to the use of grammar-modules.")
 
 (defvar *load-the-grammar* t
   "The facilities for defining grammar rules are always loaded.

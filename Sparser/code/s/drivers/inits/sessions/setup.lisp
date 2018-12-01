@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1994,2016-2017 David D. McDonald -- all rights reserved
+;;; copyright (c) 1991-1994,2016-2018 David D. McDonald -- all rights reserved
 ;;; extensions copyright (c) 2009-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "setup"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  July 2017
+;;;  Version:  November 2018
 
 ;; 1.1  (1/17/91 v1.8)  Conditionalized the relevant intializations using
 ;;      the globals that control loading.
@@ -38,8 +38,7 @@
   (make-the-chart)
   (make-the-edge-resource)
   (initialize-cons-resource)
-  (unless (eq *loader-mode* :just-the-all-edges-parser)
-    (populate-stack-of-pending-left-openers)))
+  (populate-stack-of-pending-left-openers))
 
 
 (defun setup-session-globals/grammar ()
@@ -49,7 +48,7 @@
   ;; we don't particularly want taking up space in an image.
   (when *load-the-grammar*
     (cache-variable-lookup)
-    (when *paragraph-detection* ;; the module, i.e. the code in included
+    (when *paragraph-detection* ;; the module, i.e. the code is included
       (when *newline-delimits-paragraphs* ;; actually do it?
         (use-newline-fsa/paragraph)))))
 

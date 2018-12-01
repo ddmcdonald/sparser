@@ -1,10 +1,10 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2003,2010-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2003,2010-2018 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "master-loader"
 ;;;   module:  "init;loaders;"
-;;;  Version:   February 2017
+;;;  Version:   November 2018
 
 ;; 4/21  added loading of chart-drivers;new:loader
 ;; 4/25  split fsas into basics and model
@@ -128,8 +128,7 @@
 (lload "rule objs;rule-links;generic")
 (lload "pattern-objects;loader")
 (lload "chart;brackets;loader")
-(unless (eq *loader-mode* :just-the-all-edges-parser)
-  (lload "chart;stack;loader"))
+(lload "chart;stack;loader")
 
 (lload "objects;forms;loader")
 (lload "objects;chart;generics;loader")
@@ -258,8 +257,7 @@
 (lload "source-drivers;loader")
 (lload "traces;online hook")
 (lload "articles;loader")
-(unless (eq *loader-mode* :just-the-all-edges-parser)
-  (lload "sink-drivers;loader"))
+(lload "sink-drivers;loader")
 (lload "drivers;tokens;loader")
 (lload "chart-drivers;loader")
 (lload "chart-drivers;psp;loader")
