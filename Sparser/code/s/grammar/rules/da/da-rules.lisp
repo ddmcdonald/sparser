@@ -1491,7 +1491,7 @@
   (declare (special np-containing-edge pp-edge))
   (let* ((prep (identify-preposition pp-edge))
          (*pobj-edge* (edge-right-daughter pp-edge))
-         (pobj-referent (edge-referent *pobj-edge*)))
+         (pobj-referent (when (edge-p *pobj-edge*) (edge-referent *pobj-edge*))))
     (if (itypep (edge-category pp-edge) 'but-not)
         (make-edge-spec
          :category (itype-of (edge-referent np-containing-edge))
