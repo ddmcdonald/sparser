@@ -38,9 +38,9 @@
 ;; Dossier of region types and edge types is [location kinds]
 
 (define-category  geographical-region    
-  ;; e.g. New England, real places. Should be relatively large, 
-  ;; and not have a more specific characterization. 
-  ;; The notion of a named-location is similar and some consolidation
+  "E.g. New England, real places. Should be relatively large and
+   and not have a more specific characterization."
+  ;;/// The notion of a named-location is similar and some consolidation
   ;; is in order.
   :instantiates  location
   :specializes location
@@ -80,6 +80,7 @@
                 :mapping ((np . region-type)
                           (complement . name-word)
                           (result-np . :self))))
+
 ;; Something trick in setup-rdata creates duplicate rules if we include 'name'
 ;; in the labels of the complement in the mapping
 (def-cfr typed-region (region-type of-name)
@@ -168,9 +169,7 @@
   ;; Adapted from find-or-define-kind, where the analog of the
   ;; kind category is region-type
   ;; /// replace with define-type-category-constructor ?
-  (let* ((string-for-category #+mlisp string
-                              #-mlisp (string-upcase string))
-         (symbol (intern string-for-category *sparser-source-package*))
+  (let* ((symbol (name-to-use-for-category string))
          (word (define-word string))
          (category (category-named symbol))
          (new? (null category)))

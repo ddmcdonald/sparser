@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "examine"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  March 2018
+;;;  version:  November 2018
 
 ;; initiated 4/1/94 v2.3
 ;; 0.1 (4/23) fixed change of where :literal-in-a-rule is in Sort-out-multiple-
@@ -136,7 +136,7 @@
         name-state  edge-labeled-by-word multiple-treetops
         &-sign  initials?  person-version  inc-term?  of  and  the  slash
         generic-co co-activity koc?  ordinal  flush-suffix 
-        country  title  weekday month
+        country  title  weekday month  other
         location-head  location  hurricane)
     
     (flet
@@ -395,8 +395,13 @@
               (or (valid-name-category? tt-category)
                   (if *break-on-new-categories-in-cap-seq*
                     (break "New category in capitalized sequence: ~A" label)
-                    (kpush tt items))))))
-         ;; That was the end of check-cases,
+                    (else
+                      ;; Want to be able to provide these words with another
+                      ;; reading as a name-word. Record the treetop edge rather
+                      ;; than just the category so we can get the needed information.
+                      (setq other (cons count tt))))))))
+         
+         ;; That was the end of check-cases flet function,
 
          (label-for (tt)
            (typecase tt 
@@ -520,7 +525,8 @@
                                          name-state country title
                                          &-sign initials? person-version
                                          inc-term? of and the generic-co co-activity
-                                         koc? ordinal location-head hurricane)))
+                                         koc? ordinal location-head hurricane
+                                         other)))
           (if flush-suffix
             (then
              ;; Some item in the loop set this flag to the position where
@@ -537,7 +543,8 @@
                                  name-state country title
                                  &-sign initials? person-version
                                  inc-term? of and the generic-co co-activity
-                                 koc? ordinal location-head hurricane)
+                                 koc? ordinal location-head hurricane
+                                 other)
   (declare (special category::company-name category::person-name category::name
                     category::location)
            (ignore hurricane name-state country))
@@ -575,8 +582,7 @@
                   (generic-co category::company-name)
                   (koc? category::company-name)
                   (co-activity category::company-name)
-                  (ordinal 
-                   ;; this is weak evidence --> limited partnerships
+                  (ordinal ;; this is weak evidence --> limited partnerships
                    category::person-name )
                   (person-version category::person-name)
                   ;;////(hurricane category::hurricane) ;; sl dependent
@@ -588,6 +594,12 @@
       ;;   resumes this process starting with "U.N. ..." rather than the
       ;;   original that started eariler. 
       ;;--- Look for things that would restructure the elements of the name
+
+      (when other ;; "George K. Ball" -- where "ball" is an ordinary word
+        (let* ((item-index (car other))
+               (edge (cdr other))
+               (nw (find/make-silent-nw-for-word-under-edge edge)))
+          (setf (nth (1- item-index) items) nw)))
 
       (when ordinal  ;; e.g. "III", "Fourth"
         ;; a cons of the count and an ordinal unit

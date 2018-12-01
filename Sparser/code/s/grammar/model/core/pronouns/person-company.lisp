@@ -163,7 +163,10 @@
                (most-recently-mentioned company-entries))
 
              (if company-entries
-               (first (first company-entries))
+               (let ((first-entry (first company-entries))) ;; recency
+                 (etypecase first-entry
+                   (discourse-mention
+                    (base-description first-entry))))
 
                nil  ;; This will leave the pn un(re-)spanned, which will make
                     ;; it show up as a treetop we can tie a CA rule to  

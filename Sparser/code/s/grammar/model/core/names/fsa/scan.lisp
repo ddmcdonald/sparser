@@ -413,7 +413,8 @@
          (status (pos-assessed? next-position)))
     (if status
       (ecase status
-        (:brackets-from-word-introduced ))
+        (:brackets-from-word-introduced)
+        (:polywords-check))
       (scan-next-position))
 
     (if (capitalized-instance next-position)

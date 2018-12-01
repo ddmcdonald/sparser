@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2011-2016 David D. McDonald -- all rights reserved
+;;; copyright (c) 1993-1995,2011-2018 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "defNP"
 ;;;   Module:  "grammar;rules:CA:"
-;;;  Version:  April 2016
+;;;  Version:  November 2018
 
 ;; initiated 6/13/93 v2.3.  3/30/94 set the ignore flag to t as the default
 ;; 0.1 (4/19/95) stopped them from adding the 'not-in-discourse' category
@@ -29,14 +29,19 @@
 (defparameter *ignore-out-of-pattern-dereferencing* t)
 
 (defun dereference-DefNP (head)
-
-  ;; called to calculate the referent of an edge that has been built
-  ;; with a leading definite determiner
+  "Called to calculate the referent of an edge that has been built
+   with a leading definite determiner."
+  
+  (declare (special *subcat-test*))
+  (when *subcat-test*
+    ;; Can't event compute this w/o the parent-edge being defined
+    ;; and not really the sort of rule that applies contingently
+    (return-from dereference-DefNP t))
 
   (tr :decoding-definite-reference-to head)
 
   ;; [sfriedman:20151008.1354CST] Store the metadata.
-  (let ((sentence (previous-sentence))) ;; 3/6/16 ddm - why the previous sentence?
+  (let ((sentence (identify-current-sentence)))
     (when sentence
       (push (list :def-np-coref head (parent-edge-for-referent) *do-anaphora*)
             (metadata (contents sentence)))))
@@ -68,9 +73,15 @@
           ;; the first entry may be subsumed by the one we're doing
           (then
             (push-debug `(,discourse-entry))
-            (defnp/extract-referent-from-discourse-entry
-              discourse-entry (parent-edge-for-referent)
-              head category-to-look-for))
+            (let ((ref
+                   (defnp/extract-referent-from-discourse-entry
+                       discourse-entry (parent-edge-for-referent)
+                     head category-to-look-for)))
+              ;; 11/23/18 The discourse entry for 'the junction' in
+              ;; beartown is the head of that np rather than something
+              ;; earlier in the discourse. /// filter for that
+              (or ref
+                  head)))
 
           ;; Earlier ("normal") assumptions
           (let ((ref
