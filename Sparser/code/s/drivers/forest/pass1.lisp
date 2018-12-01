@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "pass1"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  March 2017
+;;;  Version:  November 2018
 
 ;; Broken out of island-driving 10/23/14.
 ;; RJB 12/14/2014 -- simple fix to prevent failure in simple-subject-verb when subject is a pronoun -- need to treat pronouns better <<DAVID>>
@@ -354,8 +354,7 @@
             (let ((*allow-form-conjunction-heuristic* allow-form-conjunction-heuristic))
               (declare (special *allow-form-conjunction-heuristic*))
               (let ((heuristic (conjunction-heuristics edge-to-the-left 
-                                                       edge-to-the-right
-                                                       )))
+                                                       edge-to-the-right)))
                 (if heuristic
                   (let ((edge 
                          (conjoin-two-edges edge-to-the-left edge-to-the-right heuristic
@@ -366,40 +365,25 @@
                    (tr :no-conjunction-heuristics-applied)
                    nil))))))))))
 
-(defparameter *short-obvious-conjunctions* nil)
-(defparameter *spanning-conjunctions* nil)
+(defun look-for-submerged-conjunct ()
+  "Called from run-island-checks after we've run the whack-a-rule cycle, 
+   which could have buried one of a pair of phrases that ought to have 
+   conjoined. The 'submerged' call presently only looks to the left of the
+   conjunction and only considers identical labels."
+  (let ((conjunction-edges (there-are-conjunctions?)))
+    (when conjunction-edges
+      (loop for conj-edge in conjunction-edges
+         do (let ((edge-before (left-treetop-at/only-edges conj-edge))
+                  (edge-after (right-treetop-at/only-edges conj-edge)))
+              ;; i.e. no words, and no punctuation ("..., and, thus ...")
+              (when (and (and edge-before edge-after)
+                         (category-p (edge-category edge-before))
+                         (category-p (edge-category edge-after)))
+                (look-for-submerged-matching-conj-edge edge-before edge-after)))))))
 
-#| This was a special case that came up in the Julie sentences. 
-   It would be better to make this part of the search that conjoin-two-edges
-   already does for comma-separated conjuncts.
-(count (length conjuncts))
-(when (= count 2)
-      ;; The question is how to determine what patterns of
-      ;; conjunction we have within this sentence. 
-      (let ((c1 (car conjuncts))
-            (c2 (cadr conjuncts)))
-        (let ((edge-to-the-right-of-c1 (next-treetop/rightward c1))
-              (edge-to-the-left-of-c1 (next-treetop/leftward c1))
-              (edge-to-the-right-of-c2 (next-treetop/rightward c2))
-              (edge-to-the-left-of-c2 (next-treetop/leftward c2)))
-          (push-debug `(,edge-to-the-left-of-c1 ,edge-to-the-left-of-c2
-                        ,edge-to-the-right-of-c1 ,edge-to-the-right-of-c2))
-          (cond
-           ((eq edge-to-the-left-of-c1 edge-to-the-right-of-c2)
-            ;; we have a sequence of conjoinable elements
-            (let ((h1 (conjunction-heuristics edge-to-the-left-of-c1
-                                              edge-to-the-right-of-c1))
-                  (h2 (conjunction-heuristics edge-to-the-left-of-c2
-                                              edge-to-the-right-of-c2)))
-              (if (and h1 h2)
-                (then
-                 (conjoin-multiple-edges ;;/// pre-build for comma-delimited list
-                  `(,edge-to-the-left-of-c2
-                    ,edge-to-the-left-of-c1
-                    ,edge-to-the-right-of-c1)))
-                (tr :two-conjuncts-not-consistent))))
-           (t (tr :different-two-conjunction-pattern))))))  |#
- 
+
+
+
 
 ;;;-------------
 ;;; parentheses

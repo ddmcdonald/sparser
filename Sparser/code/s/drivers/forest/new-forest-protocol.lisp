@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "new-forest-protocol"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  August 2016
+;;;  Version:  November 2018
 
 ;; Initiated 8/4/14. 8/9/14 Simple display version working.
 ;; Starting on sweeper 8/30/14. New arguments to island driver
@@ -17,41 +17,49 @@
 (defun new-forest-protocol? ()
   (eq *forest-level-protocol* :new-forest-protocol))
 ;; re-eval with each edit
-; (what-to-do-at-the-forest-level :new-forest-protocol)
-;
-(defmethod new-forest-driver ((rightmost-position position))
-  (tr :new-forest-driver rightmost-position)
-  (let ((sentence (sentence))
-        (pos-before (chart-position-before rightmost-position)))
-    (unless sentence
-      (error "Why isn't (sentence) returning one? Check settings."))
-    (unless (ends-at-pos sentence) ;; the normal situation
-      (setf (ends-at-pos sentence) pos-before))
-    (new-forest-driver sentence)))
+;; (what-to-do-at-the-forest-level :new-forest-protocol)
 
-(defmethod new-forest-driver ((sentence sentence))
-  (declare (special *return-after-doing-forest-level*))
-  (let ((start-pos (starts-at-pos sentence))
-        (end-pos (ends-at-pos sentence)))
-    (when *sweep-sentence-treetops*
-      (let ((layout
-             (sweep-sentence-treetops sentence start-pos end-pos)))
-        (setf (base-layout (contents sentence)) layout)
-        (when *island-driving*
-          (island-driven-forest-parse sentence layout start-pos end-pos))))
-    
-    (when *print-forest-after-doing-forest*
-      (format t "~&~%")
-      (print-flat-forest t start-pos end-pos)
-      (format t "~&"))
+(defgeneric new-forest-driver (sentence)
+  (:documentation "The 'old' driver was integrated into the scan
+ incremental protocol. This version is part of the successive
+ sweeps protocol and operates sentence by sentence and returns
+ to its caller rather than tail recursing into the right part of
+ the scan operations.")
+  
+  (:method ((rightmost-position position))
+    "Figure out which sentence we're doing"
+    (tr :new-forest-driver rightmost-position)
+    (let ((sentence (sentence))
+          (pos-before (chart-position-before rightmost-position)))
+      (unless sentence
+        (error "Why isn't (sentence) returning one? Check settings."))
+      (unless (ends-at-pos sentence) ;; the normal situation
+        (setf (ends-at-pos sentence) pos-before))
+      (new-forest-driver sentence)))
 
-    (let ((rightmost-position (chart-position-after end-pos)))
-      ;; That's just after the period
-      ;; Part of the normal closing cadence to resume scanning
-      (tr :forest-parse-returned rightmost-position)
-      (unless *return-after-doing-forest-level*
-        (setq *rightmost-quiescent-position* rightmost-position)
-        (adjudicate-after-new-forest-protocol rightmost-position)))))
+  (:method ((sentence sentence))
+    (declare (special *return-after-doing-forest-level*))
+    (let ((start-pos (starts-at-pos sentence))
+          (end-pos (ends-at-pos sentence)))
+      (when *sweep-sentence-treetops*
+        (let ((layout
+               (sweep-sentence-treetops sentence start-pos end-pos)))
+          (setf (base-layout (contents sentence)) layout)
+          (when *island-driving*
+            (island-driven-forest-parse sentence layout start-pos end-pos))))
+      
+      (when *print-forest-after-doing-forest*
+        (format t "~&~%")
+        (print-flat-forest t start-pos end-pos)
+        (format t "~&"))
+
+      (let ((rightmost-position (chart-position-after end-pos)))
+        ;; That's just after the period
+        ;; Part of the normal closing cadence to resume scanning
+        (tr :forest-parse-returned rightmost-position)
+        (unless *return-after-doing-forest-level*
+          (setq *rightmost-quiescent-position* rightmost-position)
+          (adjudicate-after-new-forest-protocol rightmost-position))))))
 
 #| Note on what call to make to leave this level.
 

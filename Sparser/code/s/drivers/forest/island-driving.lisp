@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "island-driving"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  August 2018
+;;;  Version:  November 2018
 
 ;; Initiated 8/30/14. Controls the forest-level parsing under the
 ;; new 'whole sentence at a time, start anywhere' protocol.
@@ -114,7 +114,8 @@
     (tr :try-spanning-conjunctions)
     (let ((*allow-form-conjunction-heuristic* t))
       (declare (special *allow-form-conjunction-heuristic*))
-      (try-spanning-conjunctions))))
+      (or (try-spanning-conjunctions)
+          (look-for-submerged-conjunct)))))
 
 
     
