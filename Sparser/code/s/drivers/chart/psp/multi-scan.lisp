@@ -136,7 +136,8 @@
    both be capitalized and separated by a space from other words."
   (let ((pos-before (chart-position-before position-of-period)))
     (when (eq :single-capitalized-letter (pos-capitalization pos-before))
-      (pos-preceding-whitespace pos-before))))
+      (or (pos-preceding-whitespace pos-before)
+          (= 1 (pos-token-index pos-before)))))) ;; burn into preceding ws ?
 
 
 
