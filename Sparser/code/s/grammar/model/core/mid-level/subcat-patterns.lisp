@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "subcat-patterns"
 ;;;   Module:  "model;core:mid-level::"
-;;;  version:  September 2017=8
+;;;  version:  December 2018
 
 (in-package :sparser)
 
@@ -25,10 +25,26 @@ a simplified realization for a verb are (5/17)
   svo-passive: s, v, o
   svcomp: s, v, c
 
+subcategorization-pattern is a daughter of linguistic, abstract
+
 |#
 
+(define-mixin-category comlex-verb
+  :specializes subcategorization-pattern
+  :instantiates nil
+  :documentation "Designed for use by setup-verb which is
+ used to provide a category for otherwise unknown words
+ that are introduced by the Comlex machinery."
+  :mixins (actor patient)
+  :restrict ((actor (:or pronoun endurant))
+             (patient endurant))
+   :realization
+    (:s actor
+     :o patient
+     :mumble (svo :s actor :o patient)))
+
 (define-mixin-category action-verb
-  :specializes subcategorization-pattern ;; daughter of linguistic, abstract
+  :specializes subcategorization-pattern
   :instantiates nil
   :mixins (actor patient)
   :restrict ((actor (:or pronoun endurant))

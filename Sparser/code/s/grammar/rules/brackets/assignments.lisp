@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2017 David D. McDonald all rights reserved
+;;; Copyright (c) 2010-2018 David D. McDonald all rights reserved
 ;;;
 ;;;     File: "assignments"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  August 2017
+;;;  Version:  December 2018
 
 ;; Extracted from diverse files 12/4/12. Added referent construction
 ;; 12/11/12. Revised those 'setup' constructors 2/23/13 to specialize
@@ -98,7 +98,9 @@
   (check-type word (or word polyword))
   (check-type pos keyword)
   (assign-brackets-to-word word
-                           (case pos
+                           (ecase pos
+                             (:word *standalone-brackets*)
+                             (:quantifier *comparative-brackets*)
                              (:verb *main-verb-brackets*)
                              (:common-noun *common-noun-brackets*)
                              (:proper-noun *proper-noun-brackets*)
@@ -183,14 +185,7 @@
 ;; the code in morphology just as its used by ETF.
 
 (defun setup-common-noun (word &optional comlex-clause ambiguous?)
-  (declare (special *break-on-pattern-outside-coverage?*))
-  #+ignore ;; this is for finding out where redefinition occurs
-  (when (and (rule-set-for word)
-             (rs-single-term-rewrites (rule-set-for word)))
-    (lsp-break "*** avoiding redefinition of already known word ~s~%"
-          word)
-    (return-from setup-common-noun nil))
-      
+  (declare (special *break-on-pattern-outside-coverage?*))      
   (let ((marked-plural
          (when comlex-clause (explicit-plurals comlex-clause)))
         (category-name (name-to-use-for-category word))
@@ -237,7 +232,6 @@
       (when *show-R3-new-verb-definitions*
         (format t "~&--------DEFINING NEW VERB ~s-- using svo/bio, ~
                  assuming ~s is a bio-verb~&" word (or *unknown-word* word)))
-      ;;(lsp-break "verb-def")
       ;; n.b. svo/bio/expr will check for already used categories
       ;; and specialize the category name accordingly
       (svo/bio/expr word))
@@ -253,7 +247,7 @@
           (setq category-name
                 (construct-disambiguating-category-name
                  category-name super-category)))
-        (let ((category 
+        (let ((category
                (if (category-named category-name)
                  (then
                    (when *break-on-pattern-outside-coverage?*
@@ -263,7 +257,10 @@
                    (category-named category-name))
                  (define-category/expr category-name
                      `(:specializes ,super-category
-                                    :instantiates :self)))))
+                       :instantiates :self
+                       :mixins (comlex-verb)
+                       :realization (:verb ,word) ;;///analyze special-cases
+                       )))))
           ;; Adds the rule to the category itself
           (apply #'define-main-verb (cat-symbol category)
                  :infinitive (word-pname word)
@@ -356,12 +353,10 @@
    routine to feed to a setup routine."
   (case pos
     (:noun
-     ;; c.f. model/core/kinds/object.lisp
      (category-named 'endurant))
     (:verb
-     (category-named 'process)) ;; see upper-model
+     (category-named 'perdurant))
     (:adjective
-     ;; c.f. mode/core/kinds/upper-model.lisp
      (category-named 'modifier))
     (:adverb
      (category-named 'adverbial))
@@ -390,11 +385,12 @@
 ;; Want it for the reification code in analyzers/SDM&P/reify-individuals
 ;; So that it generalizes correctly
 
-(defvar  *constructed-categories-to-supercategory* (make-hash-table)
+(defvar *constructed-categories-to-supercategory* (make-hash-table)
   "Takes a category that we created here in this file and maps
    it to its supercategory")
 
 (defun mark-as-constructed-category-for-word (category super-category)
+  (setf (get-tag :file-location category) :comlex)
   (setf (gethash category *constructed-categories-to-supercategory*)
         super-category))
 

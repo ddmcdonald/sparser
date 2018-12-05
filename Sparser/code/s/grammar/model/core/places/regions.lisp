@@ -37,8 +37,8 @@
 ;; Dossier of named regions is [regions]
 ;; Dossier of region types and edge types is [location kinds]
 
-(define-category  geographical-region    
-  "E.g. New England, real places. Should be relatively large and
+(define-category  geographical-region
+  :documentation "E.g. New England, real places. Should be relatively large 
    and not have a more specific characterization."
   ;;/// The notion of a named-location is similar and some consolidation
   ;; is in order.
