@@ -334,7 +334,16 @@ there were ever to be any.  ///hook into final actions ??  |#
   (let ((start-pos (chart-position *where-print-segment-left-off*)))
     (write-characters-between-positions start-pos end-pos stream)))
 
-
+(defun cleanup-segment-printing-if-necessary (sentence)
+  "The primary segment printer is is pts and is run with each chunk.
+   However, if there is any un-chunked text left over in the sentence
+   after the chunker is run, sentence-processing-core calls this
+   function to make sure we see it."
+  (when (and *readout-segments-inline-with-text*
+             (null *display-word-stream*))
+    (let ((end-pos (ends-at-pos sentence)))
+      (when (there-are-words-between-segments end-pos)
+        (print-characters-between-segments end-pos)))))
 
 
 

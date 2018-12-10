@@ -312,6 +312,7 @@
     (when *chunk-sentence-into-phrases*
       (tr :identifying-chunks-in sentence)
       (identify-chunks sentence) ;; calls PTS too
+      (cleanup-segment-printing-if-necessary sentence)
       (when *trace-island-driving* (tts))
 
       (when *parse-chunked-treetop-forest*
@@ -320,6 +321,7 @@
           (new-forest-driver sentence)))
         
       (repair-bad-composition sentence))
+    
     ;; handle questions (needs to be generalized)
     (make-this-a-question-if-appropriate sentence)
     ;; handle post-modifying subordinate conjunctions
@@ -328,6 +330,7 @@
            (end-pos (ends-at-pos sentence))
            (treetops (all-tts start-pos end-pos)))
       (da-rule-cycle start-pos end-pos treetops t))
+
     (post-analysis-operations sentence)
 
     (when *interpret-in-context*
@@ -340,6 +343,7 @@
     ;; start scanning terminals and it will throw
     ;; beyond this point. 
     (end-of-sentence-processing-cleanup sentence)))
+
 
 
 
