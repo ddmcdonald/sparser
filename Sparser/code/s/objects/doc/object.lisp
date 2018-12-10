@@ -548,6 +548,11 @@
  existing sentences.")
 (defun previous-sentence () *previous-sentence*)
 
+(defun current-sentence ()
+  "Heuristically samples global variables that track the sentence
+   that the parser is currently operating on"
+  (identify-current-sentence :no-break))
+
 (defun first-sentence ()
   "If there is a 'previous' sentence linked to the current
    sentence then walk back that chain to the end."
