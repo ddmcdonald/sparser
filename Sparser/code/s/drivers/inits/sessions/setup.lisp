@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "setup"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  November 2018
+;;;  Version:  December 2018
 
 ;; 1.1  (1/17/91 v1.8)  Conditionalized the relevant intializations using
 ;;      the globals that control loading.
@@ -49,6 +49,4 @@
   (when *load-the-grammar*
     (cache-variable-lookup)
     (when *paragraph-detection* ;; the module, i.e. the code is included
-      (when *newline-delimits-paragraphs* ;; actually do it?
-        (use-newline-fsa/paragraph)))))
-
+      (setq *prior-para-newline-pos* (position# 0)))))

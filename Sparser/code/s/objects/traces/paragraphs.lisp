@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "paragraphs"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  March 2018
+;;;  Version:  December 2018
 
 ;; initiated 1/5/94 v2.3. Added untrace fn. 5/20
 ;; (3/12/10) Added more traces to track the FSA
@@ -14,12 +14,14 @@
 (in-package :sparser)
 
 (defparameter *trace-paragraphs* nil)
+(defvar *trace-successive-paragraphs* nil)
 
 (defun trace-paragraphs ()   ;; for meta-point
-  (setq *trace-paragraphs* t))
-
+  (setq *trace-paragraphs* t
+        *trace-successive-paragraphs* t))
 (defun untrace-paragraphs ()
-  (setq *trace-paragraphs* nil))
+  (setq *trace-paragraphs* nil
+        *trace-successive-paragraphs* nil))
 
 (defparameter *trace-period-hook* nil)
 (defun trace-period-hook ()
@@ -33,6 +35,49 @@
 (defun untrace-eos-lookahead ()
   (setq *trace-period-eos-lookahead* nil))
 
+
+
+(deftrace :nl-finished-paragraph (p end-pos)
+  ;; called from new-ortho-paragraph
+  (when *trace-paragraphs*
+    (trace-msg "[P] Newline at p~a finished paragraph ~a from p~a to p~a"
+               (pos-token-index end-pos) (name p)
+               (pos-token-index (starts-at-pos p))
+               (pos-token-index (ends-at-pos p)))))
+
+(deftrace :sp-para-content (p)
+  ;; called from parse-successive-paragraphs
+  (when *trace-successive-paragraphs*
+    (trace-msg "About to parse ~a ~s" p (content-string p))))
+
+(deftrace :sp-eos-return ()
+  ;; called from parse-successive-paragraphs
+  (when *trace-successive-paragraphs*
+    (trace-msg "Terminate paragraph loop: Scan returned eos")))
+
+(deftrace :sp-null-next-return (p)
+  ;; called from parse-successive-paragraphs
+  (when *trace-successive-paragraphs*
+    (trace-msg "Terminate paragraph loop: no next after ~a" p)))
+
+
+(deftrace :scan-to-eos/start (pos word)
+  ;; in scan-sentences-and-pws-to-eos
+  (when *trace-successive-paragraphs*
+    (trace-msg "Scan starts at ~a, with ~a" pos word)))
+
+(deftrace :eos-sweep-returning (pos s)
+  ;; in scan-sentences-and-pws-to-eos 
+  (when *trace-successive-paragraphs*
+    (trace-msg "sweep to eos returning ~a and ~a" pos s)))
+
+(deftrace :para-when-initialzing-sentences (p)
+  ;; in initialize-sentences
+  (when *trace-successive-paragraphs*
+    (trace-msg "Initializing sentences. current-paragraph: ~a" p)))
+
+
+;;--- older protocol
 
 (deftrace :paragraph-start (p pos)
   (when *trace-paragraphs*
@@ -126,7 +171,6 @@
 (deftrace :eos-no-pnf-and-next-caps ()
   (when *trace-period-eos-lookahead*
     (trace-msg "[eos] Succeed: next word is capitalized not using pnf")))
-
 
 (deftrace :eos-following-lowercase ()
   (when *trace-period-eos-lookahead*

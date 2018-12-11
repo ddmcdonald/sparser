@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  November 2018
+;;;  version:  December 2018
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -42,13 +42,12 @@
 ;;; Scan the entire text into the chart and run the polyword check
 ;;;---------------------------------------------------------------
 
-;; (trace-period-hook)
-;; (setq *trace-scan-words-loop* t)
+;; (trace-network-flow)
+;; (trace-period-hook) ;; for sentences
+;; (trace-paragraphs) ;; for start/return traces
 
 (defun scan-sentences-and-pws-to-eos (position
-                                      &aux (word (pos-terminal position))
-                                        (sentence (sentence))
-                                        (*scanning-terminals* :polywords))
+                                      &aux (*scanning-terminals* :polywords))
   "First pass over the text that the successive-sweeps driver does.
    Called by initiate-successive-sweeps both when reading from a document
    and when reading from a string/file.
@@ -58,71 +57,93 @@
    from a document.  
       Loop stops at *end-of-source* and returns the position reached and the
    current sentence. N.b. does not use the period-hook, though uses its 'is-a-sentence'
-   checks."
-  (declare (special *trace-sweep* *scanning-terminals* *sentence-terminating-punctuation*)
+   checks.
+      When the token machinery is interpreting newlines as an orthographic
+   indication of a paragraph, then the newline word will be being introduced
+   into the chart and is interpreted here as a termination condition.
+   See parse-successive-paragraphs, which is sensitive to what we return."
+  
+  (declare (special *trace-sweep* *scanning-terminals* *sentence-terminating-punctuation*
+                    *newline*)
            (optimize debug))
-  (tr :polyword-sweep-loop)
-  (cond ((includes-state position :polywords-check)
-         (values (eos-sweep-loop position)
-                 (sentence)))
-        (t 
-         (loop
-           (cond ((eq word *end-of-source*)
-                  (if (eq (starts-at-pos (sentence)) position)
-                      ;;  there was a period just before the EOS
-                      (let ((prev (previous (sentence))))
-                        (when prev ;; can have paragraph with no text!
-                          ;;  see PMC1240052
-                          (setf (next prev) nil)))
-                      ;; sentence ends with EOS, not a period
-                      (tie-off-ongoing-sentence-at-eos position))
-                  (return))
 
-                 ((member word *sentence-terminating-punctuation*)
-                  (cond
-                    ((and (eq word *the-punctuation-period*)
-                          (isolated-potential-initial? position))
-                     (unless *pnf-routine* ;; let the proper name fsa do it
-                       (handle-period-as-initial position)))
+  (unless (includes-state position :scanned) ;; make sure there's a word
+    (scan-next-position))
+  
+  (let ((word (pos-terminal position))
+        (starting-position position)
+        eos-backoff  )
 
-                    ((period-marks-sentence-end? (chart-position-after position))
-                     (tr :scan-sentence-start (chart-position-after position))
-                     (start-sentence (chart-position-after position)))
+    (tr :scan-to-eos/start position word)
+    (tr :polyword-sweep-loop)
+    
+    (cond ((includes-state position :polywords-check)
+           (values (eos-sweep-loop position)
+                   (sentence)))
+          (t 
+           (loop
+              (cond ((eq word *end-of-source*)
+                     (if (eq (starts-at-pos (sentence)) position)
+                       ;; There was a period just before the EOS and we may have
+                       ;; just make a sentence with no text in it.
+                       (let ((prev (previous (sentence))))
+                         (when prev ;; disconnect this spurious sentence
+                           (setf (next prev) nil))
+                         (setq eos-backoff t)) ;; shift return values back one
+                       ;; text ends with EOS, not a period
+                       (tie-off-ongoing-sentence-at-eos position))
+                     (return))
 
-                    (t (post-non-eos-period-operations position)))))
+                    ((eq word *newline*)
+                     (unless (eq position starting-position)
+                       ;; Two newlines in a row would create extra paragraph
+                       (tie-off-ongoing-sentence-at-eos position)
+                       (return)))
 
-                 ;; ((and (member word *sentence-terminating-punctuation*)
-                 ;;       (period-marks-sentence-end? (chart-position-after position)))
-                 ;;  (tr :scan-sentence-start (chart-position-after position))
-                 ;;  (start-sentence (chart-position-after position)))
+                    ((member word *sentence-terminating-punctuation*)
+                     (cond
+                       ((and (eq word *the-punctuation-period*)
+                             (isolated-potential-initial? position))
+                        (unless *pnf-routine* ;; let the proper name fsa do it
+                          (handle-period-as-initial position)))
 
-           (let* ((where-pw-ended (polyword-check position word))
-                  (position-after (or where-pw-ended
-                                      (chart-position-after position))))
-             (when where-pw-ended
-               (tr :scanned-pw-ended-at word where-pw-ended)
-               (setq position where-pw-ended)
-               (unless (includes-state where-pw-ended :scanned)
-                 ;; PW can complete without thinking about the
-                 ;; word that follows it.
-                 (scan-next-position))
-               (setq word (pos-terminal where-pw-ended)))
-       
-             (unless (includes-state position-after :scanned)
-               (scan-next-position))
+                       ((period-marks-sentence-end? (chart-position-after position))
+                        (tr :scan-sentence-start (chart-position-after position))
+                        (start-sentence (chart-position-after position)))
 
-             (let ((next-word (pos-terminal position-after)))
-               (tr :next-terminal-to-scan position-after next-word)
-               (setq position position-after)
-               (setq word next-word))))
-         
-         (values position sentence))))
+                       (t (post-non-eos-period-operations position)))))
+
+              (let* ((where-pw-ended (polyword-check position word))
+                     (position-after (or where-pw-ended
+                                         (chart-position-after position))))
+                (when where-pw-ended
+                  (tr :scanned-pw-ended-at word where-pw-ended)
+                  (setq position where-pw-ended)
+                  (unless (includes-state where-pw-ended :scanned)
+                    ;; PW can complete without thinking about the
+                    ;; word that follows it.
+                    (scan-next-position))
+                  (setq word (pos-terminal where-pw-ended)))
+                
+                (unless (includes-state position-after :scanned)
+                  (scan-next-position))
+
+                (let ((next-word (pos-terminal position-after)))
+                  (tr :next-terminal-to-scan position-after next-word)
+                  (setq position position-after)
+                  (setq word next-word))))
+
+           (tr :eos-sweep-returning position (sentence))
+           (if eos-backoff
+             (values (chart-position-before position)
+                     (previous (sentence)))
+             (values position (sentence)))))))
 
 
 (defun eos-sweep-loop (position &aux (word (pos-terminal position)))
   "Subroutine of scan-sentences-and-pws-to-eos that applies if (when ?)
    we get a situation where the polyword check has already been done
-   but we want to return same values as the cases when we're doing
+   but we want to return  the same values as the case when we're doing
    the pw check."
   (loop
     (when (eq word *end-of-source*)

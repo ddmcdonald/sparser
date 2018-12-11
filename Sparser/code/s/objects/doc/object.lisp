@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  February 2018
+;;;  Version:  December 2018
 
 ;; Created 2/6/13 to solve the problem of keeping document/section context.
 ;; [sfriedman:20130206.2038CST] I'm writing this using /objects/chart/edges/object3.lisp as an analog.
@@ -443,8 +443,10 @@
 
 (defvar *previous-paragraph* nil
   "The paragraph just before the current one")
+
 (defvar *current-paragraph* nil
   "points to the paragraph whose text is being analyzed")
+
 (defun paragraph () *current-paragraph*)
 
 (defun initialize-paragraph-resource ()
@@ -453,9 +455,23 @@
   (setq *current-paragraph* nil
         *previous-paragraph* nil))
 
+(defmethod clear ((p paragraph))
+  (setf (content-string p) "")
+  (setf (name p) nil)
+  (setf (contents p) nil)
+  (setf (previous p) nil)
+  (setf (next p) nil)
+  (setf (children p) nil)
+  (setf (parent p) nil)
+  (setf (starts-at-pos p) nil)
+  (setf (ends-at-pos p) nil)
+  (setf (starts-at-char p) nil)
+  (setf (ends-at-char p) nil))
+
 (defun initialize-paragraphs ()
-  ;; Called from initialize-sections
-  (setq *current-paragraph* nil)
+  ;; Called from initialize-sections, which is usually
+  ;; called by begin-new-article
+  (initialize-paragraph-resource)
   (let ((p (begin-new-paragraph (position# 1)))
         (section *current-section*))
     (unless section
@@ -472,7 +488,9 @@
         (ongoing *current-paragraph*))
     (setf (name p) (next-indexical-name :paragraph))
     (setf (starts-at-pos p) start-pos)
-    (setf (starts-at-char p) (pos-character-index start-pos))
+    (if (pos-character-index start-pos)
+      (setf (starts-at-char p) (pos-character-index start-pos))
+      (setf (starts-at-char p) 1))
     (when ongoing
       (setf (previous p) ongoing)
       (setf (next ongoing) p)
@@ -489,17 +507,6 @@
     (setf *current-paragraph* p)
     p))
 
-(defun careful-begin-new-paragraph (start-pos)
-  ;; Called from sort-out-result-of-newline-analysis
-  (declare (special *current-paragraph*))
-  ;; We need this check because the newline handler isn't soaking up all
-  ;; the newlines internally, and as a result makes one call to
-  ;; this per newline character encountered.
-  (unless (and *current-paragraph*
-               (eql start-pos (starts-at-pos *current-paragraph*)))
-    ;;(warn "newline setting up paragraph at ~a" start-pos)
-    ;; Rejigger the parent of the current sentence
-    (begin-new-paragraph start-pos)))
 
 
 
@@ -592,12 +599,13 @@
   (setf (starts-at-char s) nil)
   (setf (ends-at-char s) nil))
 
-(defun initialize-sentences ()
+(defun initialize-sentences (&key start-pos)
   "Called from initialize-paragraphs or read-from-document,
    in which case it can be starting the first sentence of
    the next paragraph and had to do additional cleanup."
   (declare (special *current-paragraph*))
   (let ((p1 *current-paragraph*))
+    (tr :para-when-initialzing-sentences p1)
     (unless p1
       (error "Threading bug: no value for *current-paragraph"))
     (cond
@@ -606,7 +614,8 @@
       (setq *current-sentence* (children p1)))
      (t
       (setq *current-sentence* nil)
-      (let ((s1 (start-sentence (position# 1))))
+      (let ((s1 (start-sentence (or start-pos
+                                    (position# 1)))))
         (setf (children p1) s1)
         (setf (parent s1) p1)
         (set-document-index s1 1)
@@ -614,7 +623,7 @@
 
 (defun start-sentence (pos)
   "Called from initialize-sentences for the first one, then
-   from period-hook -- pos is the position after the period."
+   from period-hook -- 'pos' is the position after the period."
   (declare (special *reading-populated-document*
                     *sentence-terminating-punctuation*))
   (let ((s (if *reading-populated-document*
@@ -707,6 +716,7 @@
   (let ((s (sentence))) ;; *current-sentence*
     (unless (ends-at-pos s)
       (set-sentence-endpoints pos-with-eos s))
+    (tie-off-paragraph pos-with-eos)
     s))
 
 (defun set-sentence-endpoints (period-pos sentence)
@@ -733,6 +743,17 @@
                       (ends-at-char sentence))))
       (setf (sentence-string sentence) substring)
       sentence)))
+
+(defun tie-off-paragraph (pos-with-eos)
+  "If we're working with pre-built paragraphs from a document
+   this won't happen, but documents with incrementally created
+   paragraphs will usually have an unterminated final paragraph."
+  (let ((p *current-paragraph*))
+    (unless p (error "Why isn't there a current paragraph?"))
+    (unless (ends-at-pos p)
+      (setf (ends-at-pos p) pos-with-eos)
+      (setf (ends-at-char p) (pos-character-index pos-with-eos))
+      p)))
 
 
 

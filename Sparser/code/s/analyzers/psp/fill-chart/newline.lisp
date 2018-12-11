@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1996, 2010, 2016  David D. McDonald
+;;; copyright (c) 1992-1996, 2010, 2016-2018  David D. McDonald
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC.
 ;;;
 ;;;     File:  "newline"
 ;;;   Module:  "analyzers;psp:fill chart:"
-;;;  Version:  September 2016
+;;;  Version:  December 2018
 
 ;; initiated 8/91 v1.2
 ;; (11/1 v2.0.1) Reordered the clauses by their frequency of occurance
@@ -43,32 +43,35 @@
    this fsa are the source of the paragraph-start and sentence boundary 
    words checked here.   
       If *newline-is-a-word* is set then nothing happens and we call
-   bump-&-store-word, if that flag is nil then we use
-   fill-whitespace-and-loop to swallow the newline characters. Then,
-   if *newline-delimits-paragraphs* is set we call the code to
-   construct a new paragraph."
+   bump-&-store-word, if that flag is nil then we either use
+   fill-whitespace-and-loop to swallow the newline characters as
+   regular whitespace or if the *paragraphs-from-orthography* flag is
+   up we call the code to construct a new paragraph."
   
-  (declare (special *newline-is-a-word* *newline-delimits-paragraphs*
+  (declare (special *newline-is-a-word* *paragraphs-from-orthography*
                     word::paragraph-start *sentence-boundary*))
 
   ;(format t "~&NL FSA returned: ~a at p~a~%" word (pos-token-index position))
   (cond ((eq word *newline*)
-         (if *newline-is-a-word*
-           (bump-&-store-word position word)
-           (else
+         (cond
+           (*newline-is-a-word*
+            ;; Add the newline to the chart 
+            (bump-&-store-word position word))
+
+           (*paragraphs-from-orthography*
+            (bump-&-store-word position word)
+            (new-ortho-paragraph position))
+           
+           (t ;; the newline is ordinary whitespace
             (reset-display-line-chars-remaining-counter)
-            (fill-whitespace-and-loop position word :display-word t)
-            (when *newline-delimits-paragraphs*
-              (careful-begin-new-paragraph position)))))
+            (fill-whitespace-and-loop position word :display-word t))))
 
         ((eq word word::paragraph-start)
-         ;;(bump-&-store-word position word :display-word t)
          ;; Bump introduces the word into the chart, which takes you
          ;; to the completion action start-new-paragraph, which in turn
          ;; goes to establish-section-within-document which was the
-         ;; older way these things were done that OBE unless we need
-         ;; it for simple document setups in some setting. 
-         (careful-begin-new-paragraph position))
+         ;; older way these things were done  
+         (bump-&-store-word position word :display-word t))
 
         ((eq word *sentence-boundary*)
          (bump-&-store-word position word :display-word t))
@@ -90,7 +93,7 @@
    whether the newline word should be put into the chart as a
    terminal or treated as whitespace")
 
-(defparameter *newline-delimits-paragraphs* nil
+#+ignore(defparameter *newline-delimits-paragraphs* nil
   "A flag read in Sort-out-result-of-newline-analysis to determine
    whether the newline word delimits a paragraph (and does not get
    added to the chart)")

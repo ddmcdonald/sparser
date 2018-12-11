@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2013,2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "file"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   0.1 October 2013
+;;;  Version:   December 2018
 
 ;; initiated 2/91, added Analyze-text-from-file/at-filepos 12/14/94
 ;; 2/15/13 Folded in initializations from do-document-as-stream-of-files,
@@ -15,8 +15,7 @@
 
 (export 'analyze-text-from-file)
 
-
-(defun analyze-text-from-file (file)
+(defun analyze-text-from-file (file &key ((:paragraph make-orthographic-paragraphs) t))
   (declare (special *open-stream-of-source-characters*))
   (when *open-stream-of-source-characters*
     (close-character-source-file))
@@ -24,7 +23,9 @@
          (file-name (intern (pathname-name pathname))))
     (set-initial-state :name file-name :location pathname)
     (establish-character-source/file pathname)
-    (analysis-core)
+    (let ((*paragraphs-from-orthography* t))
+      (declare (special *paragraphs-from-orthography*))
+      (analysis-core))
     (when *open-stream-of-source-characters*
       (close-character-source-file))))
 

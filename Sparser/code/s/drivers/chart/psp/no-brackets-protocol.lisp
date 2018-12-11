@@ -200,6 +200,9 @@
                  (catch 'do-next-paragraph
                    (sweep-successive-sentences-from initial-sentence))
                  (terminate-chart-level-process)))))))
+    (*paragraphs-from-orthography*
+     (parse-successive-paragraphs)
+     (terminate-chart-level-process))
     (t
      ;; Default path, used for string sourcse.
      ;; N.b. this is the identical processing sequence as document case.
