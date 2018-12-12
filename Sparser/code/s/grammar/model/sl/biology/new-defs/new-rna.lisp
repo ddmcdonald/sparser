@@ -38,21 +38,29 @@
 (def-indiv-with-id micro-rna "miR-21" "MI0000077" :name "microRNA 21" :synonyms ("miR21"))
 ;; added based on all-bioagents-capability-sentences
 (def-indiv-with-id micro-rna "miR-20b" "MI0001519" :name "microRNA 20b" :synonyms ("miR20b"))
-(def-indiv-with-id micro-rna "miR-20b-5p" "MIMAT0001413" :name "microRNA 20-5pm" :synonyms ("miR20b-5p"))
+(def-indiv-with-id micro-rna "miR-20a-5p" "MIMAT0000075" :name "microRNA 20a-5pm" :synonyms ("miR20a-5p"))
+(def-indiv-with-id micro-rna "miR-20b-5p" "MIMAT0001413" :name "microRNA 20b-5pm" :synonyms ("miR20b-5p"))
+(def-indiv-with-id micro-rna "miR-29b-1-5p" "MIMAT0004514" :name "microRNA 29b-1-5pm" :synonyms ("miR29b-1-5p" "MIR-29B-1-5P"))
 (def-indiv-with-id micro-rna "miR-148a" "MI0001519" :name "microRNA 148a" :synonyms ("miR148a"))
 (def-indiv-with-id micro-rna "miR-148a-3p" "MIMAT0000243" :name "microRNA 148a-3p" :synonyms ("miR148a-3p"))
 (def-indiv-with-id micro-rna "miR-335" "MI0000816" :name "microRNA 335" :synonyms ("miR335"))
 (def-indiv-with-id micro-rna "miR-335-5p" "MIMAT0000765" :name "microRNA 335-5p" :synonyms ("miR335-5p"))
 (def-indiv-with-id micro-rna "miR-155-5p" "MIMAT0000646" :name "microRNA 155-5p" :synonyms ("miR155-5p"))
 (def-indiv-with-id micro-rna "miR-145-5p" "MIMAT0000437" :name "microRNA 145-5p" :synonyms ("miR145-5p"))
-(def-indiv-with-id micro-rna "miR-145-5p" "MIMAT0000437" :name "microRNA 145-5p" :synonyms ("miR145-5p"))
+(def-indiv-with-id micro-rna "miR-122-5p" "MIMAT0000421" :name "microRNA 122-5p" :synonyms ("miR122-5p" "mir-122-5p"))
+(def-indiv-with-id micro-rna "miR-222-3p" "MIMAT0000279" :name "microRNA 222-3p" :synonyms ("miR222-3p"))
+(def-indiv-with-id micro-rna "miR-562" "MI0003569" :name "microRNA 562")
+(def-indiv-with-id micro-rna "miR-124-3p" "MIMAT0000422" :name "microRNA 124-3p" :synonyms ("miR124-3p"))
+(def-indiv-with-id micro-rna "miR-200c-3p" "MIMAT0000617" :name "microRNA 200c-3p" :synonyms ("miR200c-3p"))
+
+
 ;; these are bogus ids and names but needed for queries from bioagent testing
-(def-indiv-with-id micro-rna "miR-148a-3p" "MIMAmiR-148a-3p" :name "microRNA 148a-3p")
+;; this is real and defined above (def-indiv-with-id micro-rna "miR-148a-3p" "MIMAmiR-148a-3p" :name "microRNA 148a-3p")
 (def-indiv-with-id micro-rna "miR-2000-5p" "MIMAmiR-2000-5p" :name "microRNA 2000-5p")
-(def-indiv-with-id micro-rna "miR-20b-5p" "MIMAmiR-20b-5p" :name "microRNA 20b-5p")
-(def-indiv-with-id micro-rna "miR-222-3p" "MIMAmiR-222-3p" :name "microRNA 222-3p")
-(def-indiv-with-id micro-rna "miR-335-5p" "MIMAmiR-335-5p" :name "microRNA 335-5p")
-(def-indiv-with-id micro-rna "miR-562" "MIMAmiR-562" :name "microRNA 562")
+;; this is real and defined above (def-indiv-with-id micro-rna "miR-20b-5p" "MIMAmiR-20b-5p" :name "microRNA 20b-5p")
+;; this is real and defined above (def-indiv-with-id micro-rna "miR-222-3p" "MIMAmiR-222-3p" :name "microRNA 222-3p")
+;; this is real and defined above (def-indiv-with-id micro-rna "miR-335-5p" "MIMAmiR-335-5p" :name "microRNA 335-5p")
+;; this has some evidence and defined above (def-indiv-with-id micro-rna "miR-562" "MIMAmiR-562" :name "microRNA 562")
 
 
 (def-indiv-with-id plasmid "BAC" "NCIT:C1860" :name "Bacterial Artificial Chromosome") ; it's based on a plasmid, but isn't actually one itself
