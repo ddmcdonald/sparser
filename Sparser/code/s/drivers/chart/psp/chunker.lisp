@@ -450,7 +450,8 @@
        (plural-noun-not-present-verb? e))
       ((singular-noun-and-present-verb? e)                          ;;SINGULAR-NOUN-AND-PRESENT-VERB?
        (and (not (preceding-pronoun-or-which? e))
-            (not (preposed-aux?)) ;; does not capture preposed-aux in "What proteins does vemurafenib target"
+            (not (and (not (preceding-determiner? e))
+                      (preposed-aux?))) ;; does not capture preposed-aux in "What proteins does vemurafenib target"
             (not (and
                   (car *chunks*) ;; there is a preceding chunk
                   (edge-p (car (chunk-edge-list (car *chunks*))))
