@@ -110,7 +110,7 @@
 ;;; Subcategories of abstract
 ;;;---------------------------
 
-(define-category region
+#+ignore(define-category region
   :instantiates nil
   :specializes abstract
   :documentation 

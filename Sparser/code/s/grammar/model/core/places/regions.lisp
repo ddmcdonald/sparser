@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1995,2011-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2011-2018  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "regions"
 ;;;   Module:  "model;core:places:"
-;;;  version:  December 2016
+;;;  version:  December 2018
 
 ;; initiated 4/4/94 v2.3.  Added string/region 10/5.  Added missing typecase
 ;; to String-for 6/22.  (9/12) tweeked the autodef
@@ -67,7 +67,7 @@
 
 
 (define-category typed-region  ;; "the Kurdish city of Sulaimaniya"
-  ;;:specializes relation ;;/// probably more specific
+  :specializes region
   :rule-label region
   ;; This is a category that fits the way the information is packaged.
   ;; We're really identifying something about the region itself,
@@ -80,72 +80,39 @@
                 :mapping ((np . region-type)
                           (complement . name-word)
                           (result-np . :self))))
-
 ;; Something trick in setup-rdata creates duplicate rules if we include 'name'
 ;; in the labels of the complement in the mapping
+
 (def-cfr typed-region (region-type of-name)
   :form np
   :referent (:function give-kind-its-name left-edge right-edge))
 
-(defun give-kind-its-name (region name) ;; left-referent and right-referent
-  ;; The function called by kind-of-name ETF in of.lisp
-  (push-debug `(,region ,name)) (break "city of x")
-  (let ((region-name (convert-to-canonical-name-form name))
-        new-region )
-    (cond
-     ((itypep region 'city)
-      ;;//// "the Kurdish city" leads to an -instance- of the city
-      ;;   category, not the category
-      ;; These parse to region-types, but the independent definition
-      ;; of the city category is the value that we get.
-      ;;/// But the city category doesn't believe in names and
-      ;; interpret-name-as-city is going to devolve it down to a word
-      (let ((name-edge (right-edge-for-referent)))
-        (convert-name-to-place-name name-edge) ;; changes label and referent
-        (let ((place (edge-referent name-edge)))
-          ;;/// see note next to named-location
-          ;; ?? set the type? or just move to instantiating them
-          (push-debug `(,place ,name-edge))
-          ;;//// make a typed-region instance and have some rule that
-          ;; copies over the information from the region to the place
-          (setq new-region place))))
 
-     ((category-p region)
-      (push-debug `(,region ,name))
-      (break "Another case of a category for the region: ~a" region))
+(defun give-kind-its-name (region name)
+  "Takes phrases like 'the village of Dolwyddelan' or 'strait of Hormous'
+   and creates instances of named-location from them, recording both the
+   name and the type of region."
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    (itypep region 'region-type)
 
-     ((individual-p region)
-      (unless (indiv-typep region category::location)
-        ;; Need to be sure that the variables are there for binding
-        (push-debug `(,region ,name))
-        (break "the 'region' individual is not a location"))
-      (push-debug `(,region-name)) (break "Does this path make sense?")
-      ;; Is the region the right sort of thing to be it's type??
-      ;; /// Loses the fact that the new-region is, e.g. a city
-      ;; => instantiate the typed-region
-      ;; /// look at convert-name-to-place-name for use here. 
-      (setq new-region (define-or-find-individual category::region
-                          :name region-name)))
-     (t
-      (push-debug `(,region ,name))
-      (error "New situation in give-kind-its-name.~
-            ~%  region = ~a~%  name = ~a" region name)))
+    (let* ((region-name (convert-to-canonical-name-form name))
+           #+ignore(name-edge (right-edge-for-referent))
+           (sequence (extract-name-sequence-from-name region-name))
+           (region-type (itype-of region)))
 
-    new-region))
+      (push-debug `(,region ,sequence))
 
-;; What about subsequent runs of "city of S" after s has this rule?
-;;  pattern becomes <region> of <region>, which is odd.
-    
+      (let ((loc-name (define-or-find-individual 'name-of-location
+                          :sequence sequence
+                          :type region-type)))
+        (push-debug `(,loc-name))
+        (let ((place
+               (define-or-find-individual 'named-location
+                   :type region-type
+                   :name loc-name)))
 
-;;/// move to name words or wherever fits the eventual generalizaton
-(defun remove-rules-from-word (word)
-  (let* ((rs (word-rule-set word))
-         (rules (rs-single-term-rewrites rs)))
-    (unless rules (error "Presumption violated"))
-    (loop for rule in rules do
-      (delete/cfr rule))))
-
-
+          place)))))
 
 
 

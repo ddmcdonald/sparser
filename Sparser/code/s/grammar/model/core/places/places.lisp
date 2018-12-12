@@ -53,8 +53,9 @@ by their type (pond, river, street, town, etc.)
     name))
 
 (defun convert-name-to-place-name (name-edge)
-  ;; Called from move+to+name DA rule in moving.lisp
-  ;; And (at least for the moment) by give-kind-its-name
+  "Called from move+to+name DA rule in moving.lisp
+   where it has to make over an existing edge already
+   in place."
   (let* ((name (edge-referent name-edge))
          (sequence
           (cond
@@ -77,6 +78,15 @@ by their type (pond, river, street, town, etc.)
       ;; where to continue from
       name-edge)))
 
+(defun extract-name-sequence-from-name (name)
+  (cond
+    ((itypep name 'uncategorized-name)
+     (value-of 'name/s name))
+    ((itypep name 'name-word)
+     (define-sequence `(,name)))
+    (t (push-debug `(,name name-edge))
+       (error "Unexpected type of name: ~a~%~a"
+              (itype-of name) name))))
 
 
 

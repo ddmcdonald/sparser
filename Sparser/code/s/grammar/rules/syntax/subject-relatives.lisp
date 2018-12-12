@@ -416,7 +416,6 @@
 |#
 
 (define-lambda-variable 'reduced-relative nil
-  (category-named 'kind)) ;;/// change when super-category-for-POS
-;; is and the top is rethreaded.
+  (category-named 'linguistic))
 
 
