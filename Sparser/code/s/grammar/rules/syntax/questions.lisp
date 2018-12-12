@@ -564,7 +564,7 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
       (otherwise
        (push-debug `(,wh ,stmt ,wh-edge ,stmt-edge))
        (when *debug-questions*
-         (break "new folding confiburation: ~a" stmt-form))
+         (break "new folding configuration: ~a" stmt-form))
        nil))))
 
 
