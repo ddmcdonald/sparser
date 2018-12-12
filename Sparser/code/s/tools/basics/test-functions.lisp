@@ -1317,14 +1317,30 @@ divides it into good and bad.
 |#
 
 
-(defun test-bio-utterances (sentence-list &optional split?)
+(defparameter *bio-utt-test-good* nil
+  "List of the numbers of sentences that get a single edge")
+(defparameter *bio-utt-test-bad* nil
+  "List of the numbers of sentences that get more one edge")
+
+(defun test-bio-utterances (sentence-list &optional split? &key list-of-lists (stream *standard-output*))
   "Walk over the list and set the global -- edit to shift test fn"
   (let ((count -1)) ;; because nth is zero based
-    (setq *list-of-bio-utterances* sentence-list)
-    (loop for s in sentence-list
+    (if list-of-lists
+        ;; the standard format from all-bioagent-capability-sentences
+        ;; is a list of lists, so it needs to be flattened first
+        (setq *list-of-bio-utterances*
+              (remove-duplicates
+               (loop for l in sentence-list
+                     append l)
+               :test #'equal))
+        (setq *list-of-bio-utterances* sentence-list))
+    ;; reset it so if it runs again it doesn't duplicate
+    (setq *bio-utt-test-good* nil
+          *bio-utt-test-bad* nil)
+    (loop for s in *list-of-bio-utterances*
        do (if split?
-            (test-bio-utterance/split s (incf count) *standard-output*)
-            (test-bio-utterance s (incf count) *standard-output*)))))
+            (test-bio-utterance/split s (incf count) stream)
+            (test-bio-utterance s (incf count) stream)))))
 
 (defun test-bio-utterance (s count &optional (stream *standard-output*))
   "Designed for getting useful information for every sentence.
@@ -1332,7 +1348,7 @@ divides it into good and bad.
  edge over it."
   (format stream "~%~%___________________~%~a: ~s~%" count s)
   (pp s)
-  (format t "~&") (tts)
+  (format stream "~&~%") (tts stream)
   (let ((edges (all-tts)))
     (when (null (cdr edges)) ;; single span
       (format stream "~&~a" (semtree (car edges))))))
@@ -1340,12 +1356,6 @@ divides it into good and bad.
 (defun test-bio (n)
   (let ((s (nth n *list-of-bio-utterances*)))
     (p/s s)))
-  
-
-(defparameter *bio-utt-test-good* nil
-  "List of the numbers of sentences that get a single edge")
-(defparameter *bio-utt-test-bad* nil
-  "List of the numbers of sentences that get more one edge")
 
 (defun test-bio-utterance/split (s count &optional stream)
   "Variant call from test-bio-utterances. Populate the two lists"
@@ -1366,9 +1376,9 @@ divides it into good and bad.
               (format t "~&~%~a: ~s" utt-number s)
               (format t "~%failed: ~%") (tts))))))
 
-(defun test-bio-utt-show-bad ()
+(defun test-bio-utt-show-bad (&optional (stream *standard-output*))
   "Getting output on known failures"
   (loop for index in *bio-utt-test-bad*
      as s = (nth index *list-of-bio-utterances*)
-       do (test-bio-utterance s index)))
+       do (test-bio-utterance s index stream)))
 
