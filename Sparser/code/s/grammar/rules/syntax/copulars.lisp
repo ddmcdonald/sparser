@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "copulars"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  February 2017
+;;;  Version:  December 2018
 
 (in-package :sparser)
 
@@ -14,7 +14,7 @@
 (define-category copular-predication
   :specializes predication
   :instantiates :self
-  :restrict ((predicate be))
+  :restrict ((predicate (:or be modality)))
   :binds ((item)
           (value))
   :index (:temporary :sequential-keys predicate value)
@@ -49,6 +49,33 @@
          :form 'vp
          :referent '(:function make-copular-adjective
                                left-edge right-edge)))
+
+
+;;;---------------
+;;; make function
+;;;---------------
+
+(defgeneric make-copular-predication (subject aux object)
+  (:documentation "The caller knows the semantic relationship between
+ these three items is some sort of copular relationship between the
+ subject and object such as equivalence or :isa.
+ Depending on the type of the aux, we instantiate either an instance
+ of 'be' or of the more general copular-predication.")
+  (:method ((s edge) (a edge) (o edge))
+    (let ((subj (edge-referent s))
+          (aux (edge-referent a))
+          (obj (edge-referent o)))
+      (if (itypep aux 'be)
+        (define-or-find-individual 'be
+            :subject subj
+            :predicate obj)
+        (define-or-find-individual 'copular-predication
+            :predicate aux
+            :item subj
+            :value obj)))))
+
+
+
 
 ;;;---------------------
 ;;; syntactic functions

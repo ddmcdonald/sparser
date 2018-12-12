@@ -536,7 +536,7 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
 
 ;;;----
 
-(defun fold-wh-into-statement (wh stmt wh-edge stmt-edge)
+(defun fold-wh-into-statement (wh stmt wh-edge aux-edge stmt-edge)
   "Used by wh-initial-followed-by-modal and any others that want to
    incorporate the referent of the wh-edge ('wh') as a regular
    bound participant of the statement ('stmt'). 
@@ -555,13 +555,17 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
        ;; "Which genes are involved in apoptosis?"
        (let ((subj-var (subject-variable stmt)))
          (bind-variable subj-var wh stmt)))
-      (np
+      ((np
+        proper-noun)
        ;; "Which of these are kinases"
-       stmt)
+       ;; Statement isn't a predicate so we have to make it here
+       (make-copular-predication wh-edge aux-edge stmt-edge))
+      
       (otherwise
        (push-debug `(,wh ,stmt ,wh-edge ,stmt-edge))
        (when *debug-questions*
-         (break "new folding confiburation: ~a" stmt-form))))))
+         (break "new folding confiburation: ~a" stmt-form))
+       nil))))
 
 
 ;;;---
@@ -590,8 +594,9 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
 
 
 ;;;---------
-;;; go-fers1
+;;; go-fers
 ;;;---------
+
 (defun find-edge-for-wh-other (wh-edge i-other)
   "The WH edge is a long-span if it includes an 'other' or
    an 'attribute' in it. So we have to grovel around to find

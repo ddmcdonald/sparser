@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "discourse"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  February 2015
+;;;  Version:  December 2018
 
 ;; initiated 7/92.  5/5/94 started removing flags to real files of TR traces.
 ;; 2/3/15 adding tr traces. 
@@ -76,15 +76,22 @@
   (when *trace-questions*
     (trace-msg "[wh] entering ~a" fn-name)))
 
+(deftrace :wh-3-edges (edges)
+  (when *trace-questions*
+    (trace-msg "[wh] form: ~a, ~a, ~a"
+               (edge-form (first edges))
+               (edge-form (second edges))
+               (edge-form (third edges)))))
+
 (deftrace :wh-other-np (edge)
   (when *trace-questions*
     (trace-msg "[wh] wh-other: ~a" edge)))
 
 (deftrace :wh-flag-status (preposed? wh-initial? edges)
   (when *trace-questions*
-    (trace-msg "[wh]   preposed? = ~a~
-              ~%       wh-initial? = ~a~
-              ~%       ~a edges"
+    (trace-msg "[wh] preposed? = ~a~
+              ~%     wh-initial? = ~a~
+              ~%     ~a edges"
                preposed? wh-initial? (length edges))))
 
 
@@ -195,10 +202,8 @@
 (defparameter *trace-discourse-heuristics* nil
   "Miscelaneous lag read in several spots within the grammar.")
 
-
 (defparameter *trace-conjunction* nil
   "Flag read in the CA search routines for conjunctions")
-
 
 (defparameter *trace-discourse-history* nil
   "Flag read as objects are entered into or accessed from the
@@ -210,12 +215,6 @@
 (defparameter *trace-individuals* nil
   "Flag read in subsequent and initial reference routines.")
 
-
-
 (defparameter *trace-parentheses* nil
   "Flag read in the parentheses traversal routines")
-
-(defparameter *trace-paragraphs* nil
-  "Flag read in the section-marker code that handles the
-   basic definition of paragraphs.")
 

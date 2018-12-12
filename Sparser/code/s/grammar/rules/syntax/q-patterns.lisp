@@ -244,13 +244,13 @@
 (defun wh-initial-three-edges (wh-edge edges start-pos end-pos)
   "Dispatch over DA patterns where there are two edges after the WH edge."
   (tr :wh-walk "wh-initial-three-edges")
+  (tr :wh-3-edges edges)
   (when (not (every #'edge-p edges))
     (if *show-wh-problems*
       (lsp-break "something in 'edges' isn't an edge")
       (when *warn-when-can-not-formulate-question*
          (warn "something in 'edges' isn't an edge: ~a" edges)))
     (return-from wh-initial-three-edges nil))
-  
   (let ((e2-form (form-cat-name (second edges)))
         (e3-form (form-cat-name (third edges)))
         (other (value-of 'other (edge-referent wh-edge))))
@@ -267,7 +267,6 @@
          (lsp-break "Figure out whether ~a needs reformulation" (second edges))
          (when *warn-when-can-not-formulate-question*
            (warn "Standed preposition wh question case needs more work"))))
-
 
       ;; Reduced relative: could consider a DA rule here, but to do the 
       ;; right thing we need to reach into the WH phrase
@@ -421,11 +420,11 @@
         (stmt (edge-referent (third edges))))
     (with-referent-edges (:l (second edges) :r (third edges))
       (setq stmt (add-tense/aspect-info-to-head aux stmt)))
-    (let ((q (fold-wh-into-statement wh stmt wh-edge (third edges))))
+    (let ((q (fold-wh-into-statement wh stmt wh-edge (second edges) (third edges))))
       (when q
         (make-edge-over-long-span
          start-pos end-pos
-         (edge-category (third edges)) ;; ??
+         (itype-of q) ;; category (third edges) ;; ??
          :rule 'wh-initial-followed-by-modal
          :form category::s ;;question
          :referent q

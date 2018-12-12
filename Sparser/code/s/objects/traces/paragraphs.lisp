@@ -13,7 +13,10 @@
 
 (in-package :sparser)
 
-(defparameter *trace-paragraphs* nil)
+(defparameter *trace-paragraphs* nil
+  "Flag read in the section-marker code that handles the
+   basic definition of paragraphs.")
+
 (defvar *trace-successive-paragraphs* nil)
 
 (defun trace-paragraphs ()   ;; for meta-point
