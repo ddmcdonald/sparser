@@ -36,6 +36,7 @@
 (noun "kidney" :super bio-organ)
 (noun "thyroid" :super bio-organ)
 (noun "parathyroid" :super bio-organ) ;; UBERON_0001132
+(noun "spleen" :super bio-organ)
 (define-category pancreas :specializes bio-organ
   :realization
   (:noun "pancreas" :adj "pancreatic"))

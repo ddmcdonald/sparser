@@ -268,8 +268,8 @@
 (def-family-with-id "Sema" "XFAM:PF01403.17" :synonyms ("sema")) 
 (def-family-with-id "Sld5" "XFAM:PF05916.9" :synonyms ("sld5")) 
 (def-family-with-id "Slp" "XFAM:PF03843.11" :synonyms ("slp"))
-(def-family-with-id "SMAD" "FPLX:SMAD" :synonyms ("smad") :members ("UP:P84022" "UP:Q13485" "UP:Q15796" "UP:Q15797" "UP:Q99717" "UP:O15105" "UP:O15198" "UP:O43541"))
-(def-family-with-id "Smad2/3-T220/T179" "FPLX:SMAD2_3" :name "SMAD-2/3" :synonyms ("Smad2/3" "Smad 2/3" "SMAD2/3" "SMAD 2/3" "smad2/3") :members ("UP:Q15796" "UP:P84022")) 
+(def-family-with-id "SMAD" "FPLX:SMAD" :synonyms ("smad" "mothers against decapentaplegic") :members ("UP:P84022" "UP:Q13485" "UP:Q15796" "UP:Q15797" "UP:Q99717" "UP:O15105" "UP:O15198" "UP:O43541"))
+(def-family-with-id "Smad2/3" "FPLX:SMAD2_3" :name "SMAD-2/3" :synonyms ("Smad2/3" "Smad 2/3" "SMAD2/3" "SMAD 2/3" "smad2/3") :members ("UP:Q15796" "UP:P84022")) ;; removed the phosphorylation residue 
 (def-family-with-id "Src-kinases" "FPLX:SRC")
 (def-family-with-id "STAT-5" "FPLX:STAT5" :synonyms ("STAT5" "Stat5" "stat5") :members ("UP:P42229" "UP:P51692")) 
 (def-family-with-id "Stearoyl-CoA desaturase" "FPLX:SCD") 
@@ -404,7 +404,7 @@
 (def-family-with-id "MAP2K" "NCIT:C105947" :synonyms ("mitogen activated protein kinase kinase" "MAP kinase kinase" "MAPK kinase") :members ("UP:Q02750" "UP:P36507" "UP:P46734" "UP:P45985" "UP:Q13163" "UP:P52564" "UP:O14733"#|"MAP2K1" "MAP2K2" "MAP2K3" "MAP2K4" "MAP2K5" "MAP2K6" "MAP2K7"|#)) 
 (def-family-with-id "MAPK" "PR:000000019" :name "mitogen activated protein kinase" :synonyms ("FPLX:MAPK" "mapk" "MAP kinase" "map kinase" "mitogen-activated protein kinase" "mitogen activated protein kinas" "mitogen-activated protein (MAP) kinase" "Mitogen Activated Protein Kinase" "mitogen -activated protein kinase" "mitogen- activated protein kinase" "mitogen-activated protein-kinase" "mitogen-activated-protein kinase" "mitogen-activated-protein-kinase" "mitogenactivated protein kinase" "mitogen-activated protein  kinase") :members ("UP:O15264" "UP:P27361" "UP:P28482" "UP:P31152" "UP:P45983" "UP:P45984" "UP:P53778" "UP:P53779" "UP:Q13164" "UP:Q15759" "UP:Q16539" "UP:Q16659" "UP:Q8TD08")) 
 (def-family-with-id "MAT1" "XFAM:PF06391.11" :synonyms ("Mat1" "mat1") :members ("UP:P51948" "UP:Q15121")) 
-(def-family-with-id "MEK" "FPLX:MEK" :synonyms ("MEK1/2" "MAPKK" "mitogen activated ERK kinase" "mitogen activated protein kinase kinase" "mitogen-activated protein kinase kinase" "Mek1/2" "Mek" "MeK1/2" "MEK-1/2" "Mek" "MEK 1/2" "MAP kinase kinase" "MAP Kinase Kinase") :members ("MEK1" "MEK2"))
+(def-family-with-id "MEK" "FPLX:MEK" :synonyms ("MEK1/2" "MAPKK" "mitogen activated ERK kinase" "mitogen activated protein kinase kinase" "mitogen-activated protein kinase kinase" "Mek1/2" "Mek" "MeK1/2" "MEK-1/2" "Mek" "MEK 1/2" "MAP kinase kinase" "MAP Kinase Kinase" "mek") :members ("MEK1" "MEK2"))
 ;;(def-family-with-id "MAP3K" "GO:0004709" :synonyms ("MAP kinase kinase kinase" "MAPKKKs" "MEKK") :members ("MAP3K1" "MAP3K2" "MAP3K3" "MAP3K4" "MAP3K5" "MAP3K6" "MAP3K7" "MAP3K8" "MAP3K9" "MAP3K10" "MAP3K11" "MAP3K12" "MAP3K13" "MAP3K14" "MAP3K16" "MAP3K17" "MAP3K18" "RAF1" "ARAF" "BRAF" "ZAK"))
 (def-family-with-id "MAP3K" "FPLX:MAP3K" :name "MAP3K" :synonyms ("MEK1 kinase" "MAP kinase kinase kinase" "MAP2K kinase" "mitogen-activated protein kinase kinase kinase" "MEKK" "MAPKKK" "MAP kinase kinase kinase activity" "MAPK kinase kinase" "MAPKKK" "GO:0004709") :members ("UP:P04049" #|Raf1|# "UP:P41279" "UP:P57077" "UP:P80192" "UP:Q02779" "UP:Q12852" "UP:Q13233" "UP:Q16584" "UP:Q7L7X3" "UP:Q99558" "UP:Q99683" "UP:Q99759" "UP:Q9H2K8" "UP:Q9UL54" "UP:Q9Y2U5" "UP:Q9Y6R4" "UP:O43283" "UP:O43318" "UP:O95382")) 
 (def-family-with-id "Muscarinic acetylcholine receptor" "IPR000995" :synonyms ("muscarinic receptor") :members ("UP:P08172" "UP:P08173" "UP:P08912" "UP:P11229" "UP:P20309")) 
@@ -422,6 +422,7 @@
 (def-family-with-id "Rac" "FA:03066" :synonyms ("FPLX:AKT" "Akt" "AKT" "AKt" "RAC subfamily" "NCIT:C41625" "protein kinase B" "pkba" "PR:000029189" "PKB" "RAC" "rac" "Protein Kinase B" "protein kinase b" "Protein kinase B") :members ("AKT1" "AKT2" "AKT3"))
 (def-family-with-id "Raf" "FA:03114" :synonyms ("RAF") :members ("ARaf" "BRaf" "CRaf")) 
 (def-family-with-id "Ras" "FA:03663" :synonyms ("RAS" "GO:0003930" "ras" "RasGTP" "FPLX:RAS" "Ras-family" "Ras family" "ras family" "Ras Family" "RAS family" "RAS family GTPases") :members ("HRas" "KRas" "NRas"))
+(def-family-with-id "relaxin" "IPR022421" :members ("UP:P04808" "UP:P04090" "UP:Q8WXF3"))
 (def-family-with-id "RNA polymerase" "NCIT:C20076" :synonyms ("RdRp"))
 
 (def-family-with-id "SAE2" "XFAM:PF08573.8" :synonyms ("sae2" "Sae2") :members ("UP:Q99708" "UP:Q9UBT2")) 
@@ -457,7 +458,9 @@
 ;(define-protein "GO:0016787" ("hydrolases" "hydrolase activity")) 
 (def-family-with-id "ICL" "GO:0004451" :members ("UP:P0A9G6" "UP:P28467") :synonyms ("isocitrate lyase")) 
 (def-family-with-id "methyltransferase" "GO:0008168" :synonyms ("methylase" "methyl-transferase" "methyltransferase activity")) 
-
+(def-family-with-id "histone methyltransferase" "GO:0042054" :synonyms ("histone methylase" "histone methyl-transferase" "histone methyltransferase activity")) 
+(def-family-with-id "demethylase" "GO:0032451") 
+(def-family-with-id "histone demethylase" "GO:0032452") 
 (def-family-with-id "mucin" "NCIT:C16883" :members ("UP:P15941" "UP:Q02817"))
 (def-family-with-id "myosin heavy chain" "FPLX:MYH" :members ("UP:A7E2Y1" "UP:P11055" "UP:P12882" "UP:P12883" "UP:P13533" "UP:P13535" "UP:P35579" "UP:P35580" "UP:P35749" "UP:Q9UKX2" "UP:Q9UKX3" "UP:Q9Y2K3" "UP:Q9Y4I1" "UP:Q9Y623"))
 (def-family-with-id "myosin light chain" "FPLX:MYL" :synonyms ("MLC" "MyLC" "Mlc") :members ("UP:O14950" "UP:P05976" "UP:P10916" "UP:P12829" "UP:P19105" "UP:P24844" "UP:P60660" "UP:Q01449" "UP:Q02045"   "UP:Q12965" "UP:Q13402" "UP:Q96A32" "UP:Q9BUA6"))

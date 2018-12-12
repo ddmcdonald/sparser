@@ -404,7 +404,7 @@
 ;(def-family "4EBP" :members ("UP:Q13541" "UP:Q98TT6"))
 ;(define-protein "UP:Q98TT6" ("4E-BP3" "Eukaryotic translation initiation factor 4E-binding protein 3-like" "initiation factor 4E-binding protein")) 
 
-(def-family "6-phosphogluconolactonase" :members ("UP:O95336" "UP:P52697")) 
+;(def-family "6-phosphogluconolactonase" :members ("UP:O95336" "UP:P52697")) 
 (def-family "AAP" :members ("UP:P08697" "UP:P22702")) 
 (def-family "AAT" :members ("UP:P01009" "UP:P07758")) 
 (def-family "AC1" :members ("UP:Q08828" "UP:Q99440")) 
@@ -1349,7 +1349,7 @@
 
 (def-family "bcl-x" :members ("UP:O95999" "UP:Q07817")) 
 (def-family "beta 4" :members ("UP:P16144" "UP:Q9ULH1")) 
-(def-family "brachyury protein" :members ("UP:O15178" "UP:P24781")) 
+;(def-family "brachyury protein" :members ("UP:O15178" "UP:P24781")) 
 (def-family "brn3a" :members ("UP:P55968" "UP:Q01851")) 
 (def-family "bsk" :members ("UP:P54756" "UP:Q922K9")) 
 (def-family "bst1" :members ("UP:Q10588" "UP:Q75T13")) 
