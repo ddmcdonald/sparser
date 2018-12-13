@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  October 2016
+;;;  version:  December 2018
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 7/20/14 Added lemmas and realizations as needed to hold the
@@ -60,23 +60,6 @@
   :documentation
   "Common parent to the physical subclasses.This is the level at
  which to state that every physical object has a real location.")
-
-
-
-#| kind and individual predate the move with C3 to have a proper
-   taxonomy. In an earlier design, instances or subclasses of kind
-   were intended as np heads, but that's been supplanted by using
-   categories there. These should fade away as there's a reason 
-   to rewrite that portion of the code. |#
-#+ignore(define-category  kind
-  :instantiates :self
-  :specializes physical
-  :binds ((name :primitive word)))
-
-#+ignore(define-category  individual ;; purely a placeholder like "kind"
-  ;; This is the default nominal restriction 
-  ;; on circa-2009 abbreviations
-  :specializes physical)
 
 
 (define-category physical-object 

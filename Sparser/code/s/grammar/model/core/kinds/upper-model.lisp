@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  October 2018
+;;;  version:  December 2018
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -109,29 +109,6 @@
 ;;;---------------------------
 ;;; Subcategories of abstract
 ;;;---------------------------
-
-#+ignore(define-category region
-  :instantiates nil
-  :specializes abstract
-  :documentation 
-   "Dolce defines a 'region' class as one of the immediate
-  daughters of 'abstract' (the others include 'fact' and 'set)
-  Region is then divided into 'temporal', 'physical' aka space,
-  and 'abstract'.
-     In general, 'region' is taken abstractly here using the notion of
- demarcation or setting boundaries over some domain to pick out a
- particular part of it. You can have a region of the number line, a
- region of a process (e.g. S-phase in cell division), a region of
- space. The emphasis on regions having interiors in which other things
- can be located.  The world itself is not cut up into nice parts. Any
- partitionings or identification of regions are arbitrary cognitive
- constructs, which makes them abstract: not situated in time or space.
-    An earlier version of this class had an 'applicable-domain' slot
- in it to identify 'The kind of stuff this regain demarcates: numbers, cytoplasm,
- curricula, geographical space, etc.', however it not been clear how to
- fill this slot with anything without going second order (i.e. using a
- class), and it's worth exploring that that would come to in some use-case.")
-
 
 ; We need an unmarked, equally weighted 'relation' for what holds
 ; among things like the members of a collection or between categories
