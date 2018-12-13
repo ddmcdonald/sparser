@@ -10,7 +10,8 @@
 (defparameter *prep-forms*
   `(CATEGORY::SPATIAL-PREPOSITION
     CATEGORY::PREPOSITION
-    category::spatio-temporal-preposition))
+    category::spatio-temporal-preposition
+    category::approximator))
 
 (defvar *adjg-word-categories*
   '(CATEGORY::ADVERB 
@@ -181,6 +182,14 @@
     )
   "All the form categories that cover verbs")
 
+(defparameter *v-bar-categories*
+  `(,category::s
+    ,category::subj+verb
+    ,category::transitive-clause-without-object
+    )
+  "Categories that could be on the head-line of a predicate")
+
+
 ;;; control parameters for collecting data
 (defparameter *verb+ed-sents* nil)
 (defparameter *suppressed-verb+ed* nil)
@@ -316,6 +325,16 @@
 	   (word-p (value-of 'name (edge-referent e)))
 	   (equal (word-pname (value-of 'name (edge-referent e))) "there"))))
 
+(defgeneric v-bar-compatible? (label)
+  (:documentation "A category that could be the top of the headline
+    of a predicate (as in subject+predicate), including variations
+    on s")
+  (:method ((w word)) nil)
+  (:method ((e edge))
+    (v-bar-compatible? (edge-form e)))
+  (:method ((c referential-category))
+    ;; n.b. the list holds categories, not symbols
+    (memq c *v-bar-categories*)))
 
 
 (defgeneric vg-compatible? (label)

@@ -389,7 +389,8 @@
     (filter-patterns i w))
   (:method ((head-edge edge) (prep-edge edge))
     (assert (or (eq (form-cat-name prep-edge) 'preposition)
-                (eq (form-cat-name prep-edge) 'spatial-preposition)))
+                (eq (form-cat-name prep-edge) 'spatial-preposition)
+                (eq (form-cat-name prep-edge) 'approximator)))
     (let ((prep (edge-left-daughter prep-edge)))
       (takes-preposition? (edge-referent head-edge) prep))))
 

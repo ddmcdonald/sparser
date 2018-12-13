@@ -173,10 +173,12 @@
            (edges (all-tts start-pos end-pos)))
 
       (tr :wh-flag-status preposed? wh-initial? edges)
+      (when *debug-questions* (push-debug `(,edges)))
 
       ;; Look for heuristic ways we could get a full sentence
       ;; from a partial parse. The detection is in this cond.
-      ;; The construction is mostly in the subroutines just below.
+      ;; The construction is mostly in the subroutines in the
+      ;; file q-patterns.lisp. 
       (cond
         ((edge-p edge)
          (cond
@@ -219,8 +221,9 @@
                   (and (> (length edges) 3)
                        (eq (cat-name (edge-form (fourth edges))) 'ifcomp)))
               (edge-p (first edges))
-              (itypep (edge-referent (first edges))
-                      'be))
+              (or (itypep (edge-referent (first edges)) 'be)
+                  (itypep (edge-referent (first edges)) 'modality))) ;; "can"
+         
          (cond ((member (cat-name (edge-form (third edges)))
                         '(adjp adjective comparative superlative
                           comparative-adjp superlative-adjp))
@@ -245,12 +248,17 @@
                              '(vg+passive)))
                 ;; "Is MAPK1-bound MAP2K1 sustained?"
                 (make-polar-copular-question start-pos end-pos edges))
+
+               ((and (v-bar-compatible? (second edges))
+                     (preposition-category? (third edges)))
+                (polar-stranded-preposition (first edges) (second edges) (third edges)))
                
                (t
                 (if *show-wh-problems*
                   (lsp-break "unhandled 3 edge polar-copular question: ~a" edges)
                   (warn "unhandled 3 edge polar-copular question: ~a" edges)))))
 
+        ;; Initial WH questions
         (wh-initial? ;; use assimilate-subject (subj vp) to refine the variable
          (cond
            ((= 2 (length edges)) ;; take the second as the statement
@@ -266,7 +274,8 @@
               (break "wh do")))
            
            ((and (= 4 (length edges))
-                 (itypep (edge-referent (second edges)) 'be))
+                 (or (itypep (edge-referent (second edges)) 'be)
+                     (itypep (edge-referent (second edges)) 'modality)))
             ;; "What genes is stat3 upstream from?"
             (wh-initial-four-edges/be wh-initial? edges start-pos end-pos))
 
@@ -295,45 +304,40 @@
                    edges preposed? wh-initial?))))))))
 
 
-;;;--------------
-;;; WH questions
-;;;--------------
+;;;------------
+;;; test suite
+;;;------------
 
-;; (p "What drug could I use?")
-;; (p "What apoptotic genes does stat3 regulate in the liver")
+(defparameter *biology-test-questions*
+  '("What is STAT3?"
+    "What transcription factors are regulators of SMURF2 in liver?"
+    "What are the targets of PLX-4720?"
+    "What are the targets of Selumetinib?"
+    "What is the target of Selumetinib?" ;; chunking problem on 'the'
+    "How does KRAS activate MAPK3?"
+    "How is stat3 involved in apoptotic regulation?"
+    "How might a STAT3 mutation affect breast cancer?"
+    "How many genes are in the MAPK signaling pathway?"
+    "Where does stat3 regulate cfos"
+    "What drug could I use?"
+    "What apoptotic genes does stat3 regulate in the liver"
+    "Tell me what you want to do now."
+    "We don't know how to do that."
+    "How important are Scc1 and SA2 phosphorylation in vivo?"
+    "Can you show me genes regulated by ELK1"
+    "are there any genes that are upstream of stat3?")
+    "What genes is stat3 upstream of?"
+    "What tissues can I ask about?" ;; doesn't take "about"    
+    "What tissues is STAT3 expressed in?" ;; doesn't tuck
+    "Are there any genes stat3 is upstream of?"
+    "Can you find any apoptotic pathways that stat3 is involved in?" ;; polar
+    ))
 
-
-#| (p "What color is the block?")
-   (p/s "Is the block on the table?")
-   (p "Could we put on one more?")
-   (p/s "Could we put on one more block?")
-   (p "did we make a three block stack?")
-   (p "How big is the stack?")
-   (p "How many blocks did you add to the row?")
-   (p "How many blocks are you adding to the row?") ;; "going to add"
-   (p "How many blocks will you add to the row?")
-
-;;-- embedded examples
-(p/s "Tell me what you want to do now.")
-(p "I couldn't find a place to put the block.") ;; purpose clause in wrong place
-(p "Who should do it?")
-(p "We don't know how to do that.") ;; bad infinitive
-
-
-;;-- Bio examples
-
-(p "How Important Are Scc1 and SA2 Phosphorylation In Vivo?.")
-e11   HOW           1 "How Important " 3
-e15   BE            3 "Are Scc1 and SA2 Phosphorylation In Vivo" 12
-
+#|
 (p "Consistent with the critical role of VEGF and VEGFR2 in BPD, 
   human infants who die of BPD have little or no VEGF in their 
   lung epithelium.")
 Error: New type of wh-obj passed in: #<ref-category INFANT>
-
-(p "Is the ibogaine congener 18-Methoxycoronaridine safer than ibogaine?.")
-;; was throwing an error because (third edges) was a word  #<word QUESTION-MARK>
-;; no replicable 10/17
 
 (p "Until now, it has been unclear how RAS could affect ASPP2 to enhance 
 p53 function") ;; dry-run $40
@@ -352,6 +356,26 @@ of PCP signaling, XDshΔDIX, also activates three effectors of Wnt–Ca 2+ signa
 "Active Ras (Ras-GTP) triggers a number of signaling cascades, among which is 
 the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
 |#
+
+(defparameter *blocks-world-test-questions*
+  '("What color is the block?"
+    "Is the block on the table?"
+    "Could we put on one more?"
+    "Could we put on one more block?"
+    "did we make a three block stack?"
+    "How big is the stack?"
+    "How many blocks did you add to the row?"
+    "How many blocks are you adding to the row?"
+    "How many blocks will you add to the row?"
+    "I couldn't find a place to put the block."
+    "Who should do it?"
+    ))
+
+
+
+;;;--------------
+;;; WH questions
+;;;--------------
 
 (defun delimit-and-label-initial-wh-term (pos-before wh-edge)
   "WH questions always also include inverting subject
@@ -468,157 +492,10 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                          (make-wh-object wh-type :attribute attr)))
                       (t                      
                        (make-wh-object wh-type)))))
-             
+
              (cover-wh q next-pos))))))))
 
 
-(defun handle-wh-of (wh-edge wh-type of-edge other-edges)
-  (declare (special *sentence-in-core*))
-  ;; e.g. (p "Which of those are regulated by elk1")
-  (when (> (length other-edges) 1)
-    (when *debug-questions*
-      (break "other-edges needs to be parsed")))
-  (let* ((q (define-an-individual 'wh-question/attribute
-                :wh wh-type)))
-    (when (and (edge-p (car other-edges))
-               (edge-referent (car other-edges)))
-      (setq q (bind-variable 'set (edge-referent (car other-edges)) q)))
-    ;; should we also make the edge?
-    q))
-
-
-
-(defparameter *wh+n-bar*
-  (def-syntax-rule/expr '(wh-pronoun n-bar)
-      :head :right-edge
-      :form 'np
-      :referent '(:function determiner-noun left-edge right-edge)))
-
-;; (p/s "What genes are regulated by FOS")
-;; (p/s "What apoptotic genes are regulated by FOS")
-;; (p/s "What three apoptotic genes are regulated by FOS")
-
-(defun handle-wh-other (wh-type other-edges end-pos wh-edge)
-  "There is an 'other' in the region the wh-phrase is going to span.
-   It could be one word, or it could include several prenominals
-   that are semantically part of the whole WH NP and should be parsed
-   if we can. Our job is to do that parsing and return the referent
-   to be the basis of the edge-referent ('q'). The edge that we're 
-   going to create is a side-effect sort of, that has to be appreciated
-   by the cover-wh that is going to use the q if we don't.
-   For 'what' and 'which' questions the simplest thing is to treat them
-   as though they were determiners."
-  (push-debug `(,wh-type ,other-edges ,end-pos ,wh-edge))
-  (flet ((make-full-np (wh-edge other-phrase)
-           (let ((edge (make-completed-binary-edge
-                        wh-edge other-phrase *wh+n-bar*)))
-             (tr :wh-other-np edge)
-             (edge-referent edge))))
-    (let ((edge-count (length other-edges))
-          (edges (reverse other-edges))) ;; shift to left-to-right order
-      (case edge-count
-        (1 (make-full-np wh-edge (car edges)))
-        (2 (let ((rule (multiply-edges (first edges) (second edges))))
-             (if rule
-               (let ((edge (make-completed-binary-edge (first edges) (second edges) rule)))
-                 (make-full-np wh-edge edge))
-               (when *debug-questions*
-                 ;;(break "no rule") -- but return something
-                 (edge-referent (second edges))))))
-        (otherwise
-         (when *debug-questions*
-           (break "More than two 'other' edges"))
-         (let ((start-pos (pos-edge-starts-at (first edges))))
-           (multiple-value-bind (layout edge)
-               (parse-between-boundaries start-pos end-pos)
-             (make-full-np wh-edge edge))))))))
-
-
-;;;----
-
-(defun fold-wh-into-statement (wh stmt wh-edge aux-edge stmt-edge)
-  "Used by wh-initial-followed-by-modal and any others that want to
-   incorporate the referent of the wh-edge ('wh') as a regular
-   bound participant of the statement ('stmt'). 
-   /// should return the variable to use in wrapping WH-question
-   instance."
-  (let ((stmt-form (cat-name (edge-form stmt-edge))))
-    (case stmt-form
-      (transitive-clause-without-object
-       (let ((obj-var (object-variable stmt)))
-         (bind-variable obj-var wh stmt)))
-      (vp+passive
-       ;; these (always?) have a by-phrase, so their agent is bound.
-       (let ((obj-var (object-variable stmt)))
-         (bind-variable obj-var wh stmt)))
-      (vp
-       ;; "Which genes are involved in apoptosis?"
-       (let ((subj-var (subject-variable stmt)))
-         (bind-variable subj-var wh stmt)))
-      ((np
-        proper-noun)
-       ;; "Which of these are kinases"
-       ;; Statement isn't a predicate so we have to make it here
-       (make-copular-predication wh-edge aux-edge stmt-edge))
-      
-      (otherwise
-       (push-debug `(,wh ,stmt ,wh-edge ,stmt-edge))
-       (when *debug-questions*
-         (break "new folding configuration: ~a" stmt-form))
-       nil))))
-
-
-;;;---
-
-(defun move-np-to-stranded-prep (prep-edge np-edge)
-  (when (edge-used-in prep-edge)
-    (error "preposition not independent"))
-  (when (edge-used-in np-edge)
-    (error "np not independent"))
-  (let ((rule (multiply-edges prep-edge np-edge)))
-    (unless rule (error "no rule for prep+np ??"))
-    (make-completed-binary-edge prep-edge np-edge rule)))
-
-
-;;;-------------------
-;;; context predicate
-;;;-------------------
-
-(defun top-level-wh-question? (&aux (left-edge (left-edge-for-referent)))
-  "Called from compose-wh-with-vp where we might be forming 
-   a question or this might be a relative clause. Of course there are
-   also embedded questions which function as if they were NPs where the
-   distinction turn on whether there is aux-inversion.
-      For now just a trivial test based on sentence position."
-  (= 1 (pos-token-index (pos-edge-starts-at left-edge))))
-
-
-;;;---------
-;;; go-fers
-;;;---------
-
-(defun find-edge-for-wh-other (wh-edge i-other)
-  "The WH edge is a long-span if it includes an 'other' or
-   an 'attribute' in it. So we have to grovel around to find
-   the desired edge -- see cover-wh flet in delimit-and-label-initial-wh-term"
-  (let* ((edge-list (edge-constituents wh-edge))
-         (final-edge (car (last edge-list))))
-    (if (eq (edge-referent final-edge) i-other)
-      final-edge
-      (break "Assumptions about 'other' and wh-edge are bad"))))
-    
-(defun rebuild-wh-other-edge (wh-edge old-other-edge new-other-edge)
-  "We just composed the other-edge with a constituent just to its right.
-   Exemplar is restricted relatives. So we have to rebuild the wh-edge
-   to now use this new edge."
-  ;; span the WH over it
-  (setf (edge-ends-at wh-edge) (edge-ends-at new-other-edge))
-  ;; update daughter & constituents info
-  (setf (edge-right-daughter wh-edge) new-other-edge)
-  (let ((constituents (edge-constituents wh-edge)))
-    (setf (edge-constituents wh-edge)
-          (reverse (cons new-other-edge (cdr (reverse constituents)))))
-    wh-edge))
 
 ;;;-------------------------------------------
 ;;; fragment of the 2009 version of this file

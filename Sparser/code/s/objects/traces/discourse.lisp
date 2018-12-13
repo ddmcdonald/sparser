@@ -44,6 +44,33 @@
     (trace-msg "[wh] apply-question-marker made e~a"
                (edge-position-in-resource-array edge))))
 
+(deftrace :wh-stranded/yes (head-edge preposition variable)
+  ;; called from wh-stranded-prep
+  (when *trace-questions*
+    (trace-msg "[wh]  E~a subcategorizes for ~s on ~a"
+               (edge-position-in-resource-array head-edge)
+               (pname preposition) variable)))
+
+(deftrace :wh-stranded/no-head (main-edge preposition)
+  ;; called from wh-stranded-prep
+  (when *trace-questions*
+    (trace-msg "[wh]  None of the edges on the fringe of e~a take ~s"
+               (edge-position-in-resource-array main-edge)
+               (pname preposition))))
+  
+(deftrace :wh-stranded/no (head-edge preposition)
+  ;; called from wh-stranded-prep
+  (when *trace-questions*
+    (trace-msg "[wh]  The head edge e~a does not subcategorize for ~s"
+               (edge-position-in-resource-array head-edge)
+               (pname preposition))))
+
+(deftrace :wh-fold-form (stmt stmt-form)
+  ;; called from fold-wh-into-statement
+  (when *trace-questions*
+    (trace-msg "[wh] Folding: the form of ~a is ~a" stmt stmt-form)))
+
+
 (deftrace :wh+individual-method (q)
   (when *trace-questions*
     (trace-msg "[wh] add-statement-to-wh-question ~a" q)))

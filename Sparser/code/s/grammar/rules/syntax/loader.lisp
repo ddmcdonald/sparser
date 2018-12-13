@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2018
+;;;  Version:  December 2018
 
 ;; 3.0 (10/11/92 v2.3) Bumped to shadow old versions from extensive
 ;;      changes involving form rules and the new semantics
@@ -74,7 +74,8 @@
 (gate-grammar *semantics-of-WH-words*
   (gload "syntax-comp;WH-word-semantics")
   (gload "syntax-comp;questions")
-  (gload "syntax-comp;q-patterns"))
+  (gload "syntax-comp;q-patterns")
+  (gload "syntax-comp;q-auxiliary"))
 
 (gate-grammar *relative-clauses* ;; references WH categories
   (gload "syntax-rel;subject relatives"))

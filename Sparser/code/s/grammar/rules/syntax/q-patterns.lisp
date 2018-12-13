@@ -218,6 +218,14 @@
       (make-polar-edge participle-statement-edge))))
 
 
+(defun polar-stranded-preposition (aux-edge main-edge prep-edge)
+  ;; "Can you find any apoptotic pathways that stat3 is involved in?"
+  (when *debug-questions*
+    (break "Substantial refactoring require to find equivalent of the 'item' ~
+      that wh-stranded-prep uses for its prepositional complement"))
+
+
+
 
 ;;;-----------------------------------------------------------------
 ;;; wh-initial? dispatches from make-this-a-question-if-appropriate 
@@ -321,16 +329,24 @@
   (let ((e2-form (form-cat-name (second edges)))
         (e3-form (form-cat-name (third edges)))
         (e4-form (form-cat-name (fourth edges))))
-    (cond
-      ((and (or (eq e2-form 'preposed-auxiliary) ;; is
-                (eq e2-form 'verb+present))
-            (eq e3-form 's)                  ;; stat3 upstream
-            (or (eq e4-form 'preposition)           ;; from
-                (eq e4-form 'spatial-preposition))) ;; in
-       (wh-stranded-prep wh-edge (third edges) (fourth edges) start-pos end-pos))
-      (t
-       (when *debug-questions*
-         (break "new 4 edge wh case"))  ))))
+    (flet ((ok-aux (form-name)
+             (member form-name
+                     '(preposed-auxiliary modal
+                       verb+present)))
+           (ok-main (form-name)
+             (member form-name
+               '(s transitive-clause-without-object)))
+           (ok-prep (form-name)
+             (member form-name ;; also add to takes-preposition?
+                     '(preposition spatial-preposition
+                       approximator)))) ;; about
+      (cond
+        ((and (ok-aux e2-form) (ok-main e3-form) (ok-prep e4-form))
+         (wh-stranded-prep wh-edge (third edges) (fourth edges) start-pos end-pos))
+        (t
+         (when *debug-questions*
+           (break "new 4 edge wh case~%e2: ~a e3: ~a e4: ~a"
+                  e2-form e3-form e4-form)) )))))
 
 
 (defun wh-stranded-prep (wh-edge main-edge prep-edge start-pos end-pos)
@@ -346,16 +362,22 @@
   ;; referent we would have had by composing the edges,
   ;; and make a new edge -- just over the preposition -- with
   ;; that referent.
+  (tr :wh-walk 'wh-stranded-prep)
   (let* ((fringe-edges (right-fringe main-edge))
          (head-edge (loop for edge in fringe-edges
                        when (takes-preposition? edge prep-edge)
                        return edge)))
+    (unless head-edge
+      (tr :wh-stranded/no-head main-edge (edge-left-daughter prep-edge)))
     (when head-edge
       (let* ((item (edge-referent wh-edge))
              (preposition (edge-left-daughter prep-edge))
              (parent-of-head (edge-used-in head-edge))
              (variable (subcategorized-variable
                         (edge-referent head-edge) preposition item)))
+        (if variable
+          (tr :wh-stranded/yes head-edge preposition variable)
+          (tr :wh-stranded/no head-edge preposition))
         ;; If this is the correct head, the variable will have a value.
         ;; /// Else keep moving downward
         (when variable
