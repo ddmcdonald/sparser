@@ -222,7 +222,7 @@
   ;; "Can you find any apoptotic pathways that stat3 is involved in?"
   (when *debug-questions*
     (break "Substantial refactoring require to find equivalent of the 'item' ~
-      that wh-stranded-prep uses for its prepositional complement"))
+      that wh-stranded-prep uses for its prepositional complement")))
 
 
 
