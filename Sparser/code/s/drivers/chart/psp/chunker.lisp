@@ -457,6 +457,7 @@
                   (edge-p (car (chunk-edge-list (car *chunks*))))
                   (eq (cat-name (edge-category (car (chunk-edge-list (car *chunks*)))))
                       'do)))
+            (not (preceding-plural-noun? e))
             ;; (not (preceding-do? e)) catches the "do" in
             ;;Although current methods do not allow for detection of nucleotide-free 
             ;;  GTPases in vivo, our BiFC results provide additional support for our model. "
@@ -590,6 +591,7 @@
       
       ((singular-noun-and-present-verb? e)
        (or (preceding-pronoun-or-which? e edges-before)
+           (preceding-plural-noun? e)
            (and (not (and (preceding-det-prep-poss-or-adj e edges-before)
                           ;; allow for "to form GDP"
                           (not
@@ -712,6 +714,7 @@ than a bare "to".  |#
           ((singular-noun-and-present-verb? e)
            (not (or (sentence-initial? e) ;; case of imperative verb like "DECREASE"
                     (preceding-pronoun-or-which? e)
+                    (preceding-plural-noun? e)
                     (preceding-do? e)
                     (and (edge-just-to-left-of e)
                          (eq (cat-name (edge-category (edge-just-to-left-of e))) 'to)))))
@@ -879,6 +882,7 @@ than a bare "to".  |#
                 (ng-head? (edge-form e))))
           ((singular-noun-and-present-verb? e)
            (and (not (preceding-pronoun-or-which? e edges-before))
+                (not (preceding-plural-noun? e))
                 (ng-head? (edge-form e))))
           ((eq e-form-name 'VERB+ING)   ;
            (let ((end-pos (pos-edge-ends-at e))
@@ -1259,6 +1263,17 @@ than a bare "to".  |#
         (eq (cat-name (edge-category ee)) 'which)
         (eq (cat-name (edge-category ee)) 'that)
         (eq (form-cat-name ee) 'pronoun))))
+
+(defun preceding-plural-noun? (e &optional (edges (edges-before e)))
+  (loop for ee in edges
+        thereis
+          (eq (cat-name (edge-form (noun-edge? ee))) 'common-noun/plural)))
+
+
+(defun noun-edge? (e)
+  (if (eq (cat-name (edge-form e)) 'np)
+      (car (last (edges-under e)))
+      e))
 
 (defun preceding-determiner? (e &optional (edges (edges-before e)))
     (loop for ee in edges
