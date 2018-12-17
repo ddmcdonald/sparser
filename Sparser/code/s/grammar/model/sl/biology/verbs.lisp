@@ -158,7 +158,10 @@
 
 (define-category derive :specializes caused-bio-process
   :realization 
-  (:verb "derive" :etf (svo-passive)))
+  (:verb "derive"
+         :etf (svo-passive)
+         ;; add :from
+         ))
 
 (define-category participate :specializes other-bio-process
   :realization 
@@ -1203,7 +1206,8 @@
   :binds ((theme biological))
   :realization
   (:noun "regulator"
-         :of theme))
+         :of theme
+         :for theme))
 
 
 (define-category inter-regulate

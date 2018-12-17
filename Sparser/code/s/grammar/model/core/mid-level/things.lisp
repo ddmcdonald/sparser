@@ -131,7 +131,8 @@ some subcategory of the category 'name'
   ;; :mixins ()
   :realization 
     (:noun "name"
-     :of item
+           :of item
+           :for item
 ))
      
      
