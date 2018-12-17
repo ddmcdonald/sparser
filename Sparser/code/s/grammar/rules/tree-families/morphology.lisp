@@ -182,7 +182,7 @@
 
 
 (deftype irregular-keyword ()
-  '(member :plural
+  '(member :plural :prep
            :nominalization :past-tense
            :present-participle :past-participle
            :third-singular :third-plural))
@@ -311,12 +311,14 @@
                          past-tense         ;; "they gave"
                          past-participle    ;; "they have given"
                          present-participle ;; "they are giving"
+                         prep
                          nominalization)
   "Standalone entry point developed in the early 1990s. Can be very lightweight
 because the referent can be trivial. Provides overrides to make-verb-rules."
   (add-rules (make-rules-for-head :verb (define-word/expr infinitive)
                                   category referent
                                   :nominalization nominalization
+                                  :prep prep
                                   :present-participle present-participle
                                   :past-participle past-participle
                                   :past-tense past-tense
@@ -324,8 +326,10 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                                   :third-plural (or tensed/plural infinitive))
              category))
 
-(defmethod make-rules-for-head ((pos (eql :verb)) word category referent &key
-                                nominalization
+(defmethod make-rules-for-head ((pos (eql :verb)) word category referent
+                                &key
+                                  nominalization
+                                  prep
                                 past-tense past-participle present-participle
                                 third-singular third-plural
                                 (s-form third-singular)
@@ -422,7 +426,10 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
             (rule-macro third-plural category::verb+present))
 
           (when past-participle
-            (rule-macro past-participle category::verb+ed))
+            (rule-macro past-participle category::verb+ed)) 
+
+          (when prep
+            (setup-owned-preposition prep category referent))
 
           (nreverse rules)))))))
 

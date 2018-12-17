@@ -63,3 +63,8 @@
                 :up amount))
 
 ;; "work on measures 1 and 2"
+ (define-category work-on
+  :specializes process
+  :mixins (simple-action)
+  :realization (:verb ("work" :prep "on")))
+

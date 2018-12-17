@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "subcategorization"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  April 2017
+;;;  Version:  December 2018
 
 ;; Initiated 9/11/14 to organize information about subcategorization patterns
 ;; Working on it through 9/15/14. 11/20/14 hacked up a treatment of multiple
@@ -312,56 +312,60 @@
 ;;;------------------------------------------------
 ;;; 'owned' prepositions that are part of the verb
 ;;;------------------------------------------------
-;; These are just part of the verb, e.g. "act as".
-;; They don't mark arguments
-
-;;--- create the record
-
-; (assign-preposition "responsible" "for")
-(defmethod assign-preposition ((word-pname string) (prep-pname string))
-  (let ((word (resolve/make word-pname))
-        (prep (word-named prep-pname)))
-    (unless prep (error "Undefined preposition: ~a" prep-pname))
-    (assign-preposition word prep)))
-
-#|
-(defmethod assign-preposition ((verb word) (prep word))
-  (assign-subcat/expr verb nil `(:prep ,prep)))
-
-(defmethod assign-preposition ((verb word) (prep polyword))
-  (assign-subcat/expr verb nil `(:prep ,prep)))
+#| These are just part of the verb, e.g. "act as".
+   They don't mark arguments.
+ Setup during morphological processing of a head verb by
+ adding a keyword argument analogous to the markers of irregular forms
+     :realization (:verb ("work" :prep "on") ...)
 |#
 
-;;--- query the record
+(defun setup-owned-preposition (prep verb-category referent)
+  "Add the preposition, referent pair to the subcat record
+   of the verb. Make a rewrite rule that composes them."
+  ;; Called from make-rules-for head when the verb has a :prep value,
+  ;; which should be a preposition.
+  ;;///  Could have a variant syntax that changes the category of
+  ;; the form where verb is followed by a particle that it can bind.
+  ;; by making the value of :prep be a cons of the preposition and
+  ;; the name of the category to use
+  (unless (word-p prep) (break "Prep isn't a word: ~a~%~a" prep (type-of prep)))
+  (let ((prep-label (cfr-category (find-single-unary-cfr prep)))
+        (sc (get-subcategorization verb-category)))
+    (unless sc (break "No subcat frame on ~a" verb-category))
+    (pushnew prep (bound-prepositions sc))
+    (let ((rule (define-cfr verb-category `(,verb-category ,prep-label)
+                 :form category::vg
+                 :referent referent)))
+      (add-rule rule verb-category)
+      sc )))
 
 
-(defgeneric owns-preposition? (head preposition)
+(defgeneric binds-preposition? (head preposition)
   (:documentation "Does this head category have an entry
     in its subcategorization from indicating its takes
-    a preposition (particle).")
+    a preposition (particle). The particle can be a word
+    or a polyword.")
   (:method ((word word) (cat referential-category)) nil)
   (:method ((e edge)(cat referential-category)) nil)
-
-;; Strange case -- "treated with or without ..." in ASPP2
 
   (:method ((e edge) (prep word))
     (let* ((label (edge-category e))
            (sc (get-subcategorization label)))
       (when sc
-        (owns-preposition? sc prep))))
+        (binds-preposition? sc prep))))
   (:method ((e edge) (prep polyword))
     (let* ((label (edge-category e))
            (sc (get-subcategorization label)))
       (when sc
-        (owns-preposition? sc prep))))
+        (binds-preposition? sc prep))))
   (:method ((word word) (prep word))
     (let ((sc (get-subcategorization word)))
       (when sc
-        (owns-preposition? sc prep))))
+        (binds-preposition? sc prep))))
   (:method ((word word) (prep polyword))
     (let ((sc (get-subcategorization word)))
       (when sc
-        (owns-preposition? sc prep))))
+        (binds-preposition? sc prep))))
 
   (:method ((sc subcategorization-frame) (prep polyword))
     (let ((preps (bound-prepositions sc)))
@@ -371,6 +375,8 @@
     (let ((preps (bound-prepositions sc)))
       (when preps
         (memq prep preps)))))
+
+;; Strange case -- "treated with or without ..." in ASPP2
 
 ;;;------------------
 ;;; tailored queries

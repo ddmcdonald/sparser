@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "pass1"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  November 2018
+;;;  Version:  December 2018
 
 ;; Broken out of island-driving 10/23/14.
 ;; RJB 12/14/2014 -- simple fix to prevent failure in simple-subject-verb when subject is a pronoun -- need to treat pronouns better <<DAVID>>
@@ -148,28 +148,39 @@
 ;;; prepositions that are extensions of the predicate
 ;;;---------------------------------------------------
 ;;This now also handle premodifiers for prepositions, as in "30 minutes after"
+
+;;(trace-island-driving)
+
 (defun look-for-prep-binders ()
-  (declare (special *rules-for-pairs*))
-  (clrhash *rules-for-pairs*) ;; avoid history from previous broken parses
+  "If there are any as-yet unused prepositions, consider the possibility that
+   they are bound by the verb adjacent to their left."
   (dolist (prep-edge (prepositions (layout)))
-    (unless (edge-used-in prep-edge)
+    (tr :trying-the-preposition prep-edge)
+    (unless (edge-used-in prep-edge) ;; already used in another composition
       (let ((preposition (find-preposition prep-edge))
             (left-neighbor (left-treetop-at/edge prep-edge)))
         (when (and left-neighbor ;; could be sentence-initial
-                   (not (word-p left-neighbor)))
-          ;; The 'not' is for when there actually is no left-neighbor
-          ;; because this preposition is at the beginning of the
-          ;; sentence.
-          ;;/// that deserves an independent check
+                   (not (word-p left-neighbor))) ;; treetop could be a word
+          ;;(push-debug `(,prep-edge ,left-neighbor ,preposition))
+          (if (binds-preposition? left-neighbor preposition)
+            (let* ((pair (list left-neighbor prep-edge))
+                   (rule (rule-for-edge-pair pair)))
+              (when rule
+                (let ((edge
+                       (make-completed-binary-edge
+                        left-neighbor
+                        prep-edge
+                        rule)))
+                  (tr :took-preposition left-neighbor preposition edge)
+                  edge)))
+            (else
+              (tr :does-not-take-preposition left-neighbor preposition)
+              nil)))))))
+
+
+#| Fragment from earlier version where property was on the head word
+   rather than the category of the adjacent verb edge
           (or
-           (let* ((pair (list left-neighbor prep-edge))
-                  (rule (rule-for-edge-pair pair)))
-             ;;(break "premodifier for prep ~a" preposition)
-             (when rule
-               (execute-one-one-rule
-                rule
-                left-neighbor
-                prep-edge)))
            (let ((head-word (find-head-word left-neighbor)))
              (when (and head-word preposition)
                (push-debug `(,prep-edge ,left-neighbor ,preposition ,head-word))
@@ -183,7 +194,7 @@
                      (if edge
                        (tr :took-preposition left-neighbor preposition edge)
                        (tr :does-not-take-preposition left-neighbor preposition)))
-                   (tr :does-not-take-preposition left-neighbor preposition)))))))))))
+                   (tr :does-not-take-preposition left-neighbor preposition)))))) |#
 
 
 ;;;-----------------------------------------------
