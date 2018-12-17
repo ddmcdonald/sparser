@@ -959,6 +959,17 @@
   :form pp
   :referent (:function make-pp left-referent right-referent))
 
+;;-------------------
+
+;; DAVID -- need to learn how to bind the amount-of-time to the spatio-temporal-preposition
+;;   e.g. 30 minutes after (treatment)
+(def-form-rule (amount-of-time spatio-temporal-preposition)
+    :head :right-edge
+    :referent (:head right-edge
+               :bind (amount-of-time left-edge))
+    :form spatio-temporal-preposition)
+
+
 
 
 ;;;----- Pied-piped wh-clauses 
@@ -1006,17 +1017,6 @@
         :head :left-edge
         :form pp-wh-pronoun
         :referent (:function make-relativized-pp left-referent right-referent))))
-
-;;-------------------
-
-;; DAVID -- need to learn how to bind the amount-of-time to the spatio-temporal-preposition
-;;   e.g. 30 minutes after (treatment)
-(def-form-rule (amount-of-time spatio-temporal-preposition)
-    :head :right-edge
-    :referent (:head right-edge
-                     :bind (amount-of-time left-edge))
-    :form spatio-temporal-preposition)
-
 
 
 

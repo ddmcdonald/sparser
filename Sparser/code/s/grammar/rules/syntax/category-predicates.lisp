@@ -325,48 +325,8 @@
 	   (word-p (value-of 'name (edge-referent e)))
 	   (equal (word-pname (value-of 'name (edge-referent e))) "there"))))
 
-(defgeneric v-bar-compatible? (label)
-  (:documentation "A category that could be the top of the headline
-    of a predicate (as in subject+predicate), including variations
-    on s")
-  (:method ((w word)) nil)
-  (:method ((e edge))
-    (v-bar-compatible? (edge-form e)))
-  (:method ((c referential-category))
-    ;; n.b. the list holds categories, not symbols
-    (memq c *v-bar-categories*)))
 
-
-(defgeneric vg-compatible? (label)
-  (:documentation "Is a category which can occur inside a VG")
-  (:method ((w word)) nil)
-  (:method ((c referential-category))
-    (vg-compatible? (cat-symbol c)))
-  (:method ((name symbol))
-    (memq name *vg-word-categories*)))
-
-(defgeneric vg-head? (label)
-  (:documentation "Is a category which can occur as the head of a VG")
-  (:method ((w word)) t)
-  (:method ((e edge))
-    (vg-head? (edge-form e)))
-  (:method ((c referential-category))
-    (vg-head? (cat-symbol c)))
-  (:method ((name symbol))
-    (memq name *vg-head-categories*))
-  (:method (item) nil))
-
-
-(defmethod copula-verb? ((c category))  
-  (memq (cat-symbol c)
-        `(category::be
-          category::become
-          category::remain
-          category::stay)))
-
-(defmethod copula-verb? ((x t))
-  nil)
-
+;;--- adjective groups
 
 (defgeneric adjg-compatible? (label)
   (:documentation "Is a category which can occur inside an ADJG")
@@ -418,6 +378,9 @@
 (defparameter *subordinating-adverbs*
   '(consequently))
 
+
+;;--- nouns and friends
+
 (defgeneric noun-category? (label)
   (:documentation "Nouns and their variants. Should be a single word"))
 (defmethod noun-category? ((e edge))
@@ -437,19 +400,74 @@
     (or (memq name *n-bar-categories*)
         (memq name *ng-head-categories*))))
 
+
+;;--- verbs and friends
+
+(defgeneric copula-verb? (category)
+  (:method ((c category)) 
+    (memq (cat-symbol c)
+          `(category::be
+            category::become
+            category::remain
+            category::stay)))
+  (:method ((x t)) nil))
+
+(defgeneric v-bar-compatible? (label)
+  (:documentation "A category that could be the top of the headline
+    of a predicate (as in subject+predicate), including variations
+    on s")
+  (:method ((w word)) nil)
+  (:method ((e edge))
+    (v-bar-compatible? (edge-form e)))
+  (:method ((c referential-category))
+    ;; n.b. the list holds categories, not symbols
+    (memq c *v-bar-categories*)))
+
+(defgeneric vg-compatible? (label)
+  (:documentation "Is a category which can occur inside a VG")
+  (:method ((w word)) nil)
+  (:method ((c referential-category))
+    (vg-compatible? (cat-symbol c)))
+  (:method ((name symbol))
+    (memq name *vg-word-categories*)))
+
+(defgeneric vg-head? (label)
+  (:documentation "Is a category which can occur as the head of a VG")
+  (:method ((w word)) t)
+  (:method ((e edge))
+    (vg-head? (edge-form e)))
+  (:method ((c referential-category))
+    (vg-head? (cat-symbol c)))
+  (:method ((name symbol))
+    (memq name *vg-head-categories*))
+  (:method (item) nil))
+
+(defgeneric vg-category? (label)
+  (:documentation "Is this one of the verb group categories,
+    which is any category that could be on the head line over
+    a verb until it first composes with an object (or subject
+    when intransitive) forming a VP.")
+  (:method ((w word)) nil)
+  (:method ((e edge))
+    (vg-category? (edge-form e)))
+  (:method ((c referential-category))
+    (vg-category? (cat-symbol c)))
+  (:method ((name symbol))
+    (memq name *vg-categories*)))
+
 (defgeneric verb-category? (label)
-  (:documentation "Verbs and their variants. Should be a single word"))
-(defmethod verb-category? ((e edge))
-  (verb-category? (edge-form e)))
-(defmethod verb-category? ((c referential-category))
-  (verb-category? (cat-symbol c)))
-(defmethod verb-category? ((name symbol))
-  (memq name '(category::verb
-               category::verb+present
-               category::verb-past
-               category::verb+s               
-               category::verb+ed
-               category::verb+ing)))
+  (:documentation "Verbs and their variants. Should be a single word")
+  (:method ((e edge))
+    (verb-category? (edge-form e)))
+  (:method ((c referential-category))
+    (verb-category? (cat-symbol c)))
+  (:method ((name symbol))
+    (memq name '(category::verb
+                 category::verb+present
+                 category::verb-past
+                 category::verb+s               
+                 category::verb+ed
+                 category::verb+ing))))
 
 (defmethod participle? ((s string))
   (participle? (word-named s)))

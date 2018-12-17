@@ -147,56 +147,52 @@
 ;;;---------------------------------------------------
 ;;; prepositions that are extensions of the predicate
 ;;;---------------------------------------------------
-;;This now also handle premodifiers for prepositions, as in "30 minutes after"
 
 ;;(trace-island-driving)
 
 (defun look-for-prep-binders ()
   "If there are any as-yet unused prepositions, consider the possibility that
-   they are bound by the verb adjacent to their left."
+   they are bound by the verb adjacent to their left. Alternatively, if the
+   left-neighbor is not a verb, look for any rule where the preposition
+   composes to its left."
   (dolist (prep-edge (prepositions (layout)))
     (tr :trying-the-preposition prep-edge)
     (unless (edge-used-in prep-edge) ;; already used in another composition
-      (let ((preposition (find-preposition prep-edge))
-            (left-neighbor (left-treetop-at/edge prep-edge)))
-        (when (and left-neighbor ;; could be sentence-initial
-                   (not (word-p left-neighbor))) ;; treetop could be a word
-          ;;(push-debug `(,prep-edge ,left-neighbor ,preposition))
-          (if (binds-preposition? left-neighbor preposition)
-            (let* ((pair (list left-neighbor prep-edge))
-                   (rule (rule-for-edge-pair pair)))
-              (when rule
-                (let ((edge
-                       (make-completed-binary-edge
-                        left-neighbor
-                        prep-edge
-                        rule)))
-                  (tr :took-preposition left-neighbor preposition edge)
-                  edge)))
-            (else
-              (tr :does-not-take-preposition left-neighbor preposition)
-              nil)))))))
+      (let* ((preposition (find-preposition prep-edge))
+             (left-neighbor (left-treetop-at/edge prep-edge))
+             (verb?
+              (when (and left-neighbor ;; could be sentence-initial
+                         (not (word-p left-neighbor))) ;; treetop could be a word
+                (vg-category? left-neighbor))))
+        ;;(push-debug `(,prep-edge ,left-neighbor ,preposition ,verb?)) (break "look at")
 
+        (if verb?
+          ;; The only possibility for a verb to compose with this
+          ;; preposition is if it's explicity subcategoried for it.
+          ;; See setup-owned-preposition for how that's done
+          (when (binds-preposition? left-neighbor preposition)
+            (let ((edge (check-one-one left-neighbor prep-edge)))
+              (if edge
+                (tr :took-preposition left-neighbor preposition edge)
+                (tr :does-not-take-preposition left-neighbor preposition))
+              edge))
 
-#| Fragment from earlier version where property was on the head word
-   rather than the category of the adjacent verb edge
-          (or
-           (let ((head-word (find-head-word left-neighbor)))
-             (when (and head-word preposition)
-               (push-debug `(,prep-edge ,left-neighbor ,preposition ,head-word))
-               ;; (setq prep-edge (car *) left-neighbor (cadr *) preposition (caddr *) head-word (cadddr *))
-                                        ;(when (eq preposition (word-named "as")) ;; J3
-                                        ;  (break "binder"))
-               (unless (punctuation? head-word) ;; comma before "such as")
-                 (if (or (owns-preposition? head-word preposition)
-                         (owns-preposition? left-neighbor preposition))
-                   (let ((edge (check-one-one left-neighbor prep-edge)))
-                     (if edge
-                       (tr :took-preposition left-neighbor preposition edge)
-                       (tr :does-not-take-preposition left-neighbor preposition)))
-                   (tr :does-not-take-preposition left-neighbor preposition)))))) |#
+          ;; Allow any left-neighbor + preposition rule to run,
+          ;; e.g. premodifiers for prepositions, as in "30 minutes after"
+          (when (edge-p left-neighbor)
+            ;; the 'neighbor' of a sentence-initial preposition is the source-start word
+            (let ((head-word (find-head-word left-neighbor)))
+              (unless (punctuation? head-word) ;; comma before "such as")
+                (let* ((pair (list left-neighbor prep-edge))
+                       (rule (rule-for-edge-pair pair)))
+                  (when rule
+                    (make-completed-binary-edge
+                     left-neighbor
+                     prep-edge
+                     rule)))))) )))))
+     
 
-
+ 
 ;;;-----------------------------------------------
 ;;; leading prepositional adjunct, p ossible comma
 ;;;-----------------------------------------------
