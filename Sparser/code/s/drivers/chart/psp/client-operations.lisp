@@ -92,11 +92,16 @@
 (defun mention-clause-tree (m)
   (typecase m 
     (discourse-mention
-     `(:var ,(make-clause-var (mention-uid m)) :isa ,(cat-name (itype-of (edge-referent (mention-source m))))
+     `(:var ,(make-clause-var (mention-uid m))
+            :isa ,(cat-name (itype-of (edge-referent (mention-source m))))
         ,@(loop for d in (dependencies m) append
                   `(,(intern (pname (pname (dependency-variable d)))
                              :keyword)
-                     ,(mention-clause-tree (dependency-value d))))))
+                     ,(if (eq (dependency-value d) '*lambda-var*)
+                          (let* ((lambda-edge (get-lambda-ref-edge-from-pred-edge (mention-source m)))
+                                 (lambda-ment (edge-mention lambda-edge)))
+                            (make-clause-var (mention-uid m)))
+                          (mention-clause-tree (dependency-value d)))))))
     (t m)))
 
 (defun sentence-clause-tree ()
@@ -117,12 +122,12 @@
   (intern (format nil "MV~s" n) :SP))
 
 (defun clause-tree->clause (ct)
-  `(:var ,(make-clause-var (second ct))
+  `(:var ,(second ct) ;; already is a clause-var
      ,@(loop for (key val) on (cddr ct) by #'cddr
              append
                `(,key ,(if (and (consp val)
                                 (eq (car val) :var))
-                           (make-clause-var (second val))
+                           (second val) ;; already is a clause-var
                            (make-clause-ref key val))))))
 
 (defun clause-with-list (cl)
@@ -136,6 +141,7 @@
 
 (defparameter *make-clause-ref* nil)
 (defparameter *det-refs* nil)
+(defparameter *prep-refs* nil)
 (defparameter *non-mention-sents* nil)
 
 (defparameter *warn-individuals* nil)
@@ -148,7 +154,16 @@
     (:has-determiner (cond ((individual-p ref)
                             (pushnew (semtree ref) *det-refs* :test #'equal)
                             (pname (itype-of (car (semtree ref)))))
+                           ((category-p ref)
+                            ;; so we don't get #<ref-category WHAT> in the output
+                            (pname ref))
                            (t ref)))
+    (:prep (cond ((individual-p ref)
+                  ;; so far these are all :PREP (#<in 86395>) from COPULAR-PREDICATION-OF-PP
+                  ;; we could decide to drop prep from the dependencies entirely instead
+                  (pushnew (semtree ref) *prep-refs* :test #'equal)
+                  (pname (itype-of (car (semtree ref)))))
+                 (t ref)))
     (:family-members
      (loop for i in (value-of 'items ref)
            collect `(protein ,@(when (value-of 'name i) `((:name ,(pname (value-of 'name i)))))
@@ -245,7 +260,7 @@
                       (unless (or (edge-subsumed-by-edge-in-list edge *sp-clsto-used-relation-edges*)
                                   (and (null dependencies)
                                        ;; we got a lot events for listings of p-values
-                                       (equal "p" (trim-whitespace (extract-string-spanned-by-edge edge))))
+                                       (equal "p" (trim-whitespace (extract-string-spanned-by-edge edge)))))
                         (push
                          `( ;;,mention
                            (:event (:full ,(get-edge-char-offsets-and-surface-string edge)))
@@ -267,7 +282,7 @@
                                               (:full ,(get-edge-char-offsets-and-surface-string
                                                        lambda-edge))))))
                          *sp-clsto-relations*)
-                        (push edge *sp-clsto-used-relation-edges*)))))))))
+                        (push edge *sp-clsto-used-relation-edges*))))))))
 
 (defun get-mention-items (dependencies)
   (loop for bb in dependencies

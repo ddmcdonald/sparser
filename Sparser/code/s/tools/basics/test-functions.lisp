@@ -1322,8 +1322,9 @@ divides it into good and bad.
 (defparameter *bio-utt-test-bad* nil
   "List of the numbers of sentences that get more one edge")
 
-(defun test-bio-utterances (sentence-list &optional split? &key list-of-lists (stream *standard-output*))
+(defun test-bio-utterances (sentence-list &optional split? &key list-of-lists (stream *standard-output*) clauses)
   "Walk over the list and set the global -- edit to shift test fn"
+  (declare (special *save-clause-semantics*))
   (let ((count -1)) ;; because nth is zero based
     (if list-of-lists
         ;; the standard format from all-bioagent-capability-sentences
@@ -1337,6 +1338,8 @@ divides it into good and bad.
     ;; reset it so if it runs again it doesn't duplicate
     (setq *bio-utt-test-good* nil
           *bio-utt-test-bad* nil)
+    (when clauses
+        (setq *save-clause-semantics* :sentence-clauses))
     (loop for s in *list-of-bio-utterances*
        do (if split?
             (test-bio-utterance/split s (incf count) stream)
@@ -1346,12 +1349,15 @@ divides it into good and bad.
   "Designed for getting useful information for every sentence.
  Includes the semantic interpretation if there was just one
  edge over it."
+  (declare (special *save-clause-semantics* *clause-semantics-list*))
   (format stream "~%~%___________________~%~a: ~s~%" count s)
   (pp s)
   (format stream "~&~%") (tts stream)
   (let ((edges (all-tts)))
     (when (null (cdr edges)) ;; single span
-      (format stream "~&~a" (semtree (car edges))))))
+      (if (eq *save-clause-semantics* :sentence-clauses)
+          (format stream "~&~s" (car *clause-semantics-list*))
+          (format stream "~&~s" (semtree (car edges)))))))
 
 (defun test-bio (n)
   (let ((s (nth n *list-of-bio-utterances*)))
@@ -1378,7 +1384,7 @@ divides it into good and bad.
 
 (defun test-bio-utt-show-bad (&optional (stream *standard-output*))
   "Getting output on known failures"
-  (loop for index in *bio-utt-test-bad*
+  (loop for index in (reverse *bio-utt-test-bad*)
      as s = (nth index *list-of-bio-utterances*)
        do (test-bio-utterance s index stream)))
 
