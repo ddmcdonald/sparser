@@ -1192,7 +1192,7 @@
 
 (define-category transcription-factor :specializes protein ;; maybe another higher class?
                  ;; a transcription-factor is a protein which somehow regulates the transcription of a gene
-  :binds ((controlled-gene gene))
+  :binds ((controlled-gene (:or gene protein)))
   :realization
     (:noun "transcription factor"
            :for controlled-gene))
