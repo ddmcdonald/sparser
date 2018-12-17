@@ -31,7 +31,7 @@
   "can be :xml, :lisp, :hms-json or nil")
 
 (defparameter *save-clause-semantics* nil
-  "If (list t) then we push a semantic representation of each mention on the list")
+  "If :mention-clauses then we push a semantic representation of each mention on the list *clause-semantics-list* and if set to :sentence-clauses we push the sentence and the semantic representation of its clauses in flattened form onto the *clause-semantics-list*")
 
 (defparameter *clause-semantics-list* nil
   "List of all *save-clause-semantics* lists")
