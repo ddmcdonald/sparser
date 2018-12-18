@@ -82,6 +82,10 @@
   "Makes a couple of layout-mediated special checks before and
    after its main operation of running the whack-a-rule-cycle
    to walk through pairs of constituents."
+
+
+  ;; This hash table must be cleared before we search for any rules over pairs of edges
+  (clrhash *rules-for-pairs*)
   (when (there-are-parentheses?)
     (tr :handle-parentheses)
     (handle-parentheses))
