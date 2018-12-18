@@ -45,6 +45,7 @@
    by the cover-wh that is going to use the q if we don't.
    For 'what' and 'which' questions the simplest thing is to treat them
    as though they were determiners."
+  (declare (special *wh+n-bar*))
   (push-debug `(,wh-type ,other-edges ,end-pos ,wh-edge))
   (flet ((make-full-np (wh-edge other-phrase)
            (let ((edge (make-completed-binary-edge

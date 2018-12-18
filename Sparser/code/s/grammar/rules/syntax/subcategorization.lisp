@@ -328,6 +328,7 @@
   ;; the form where verb is followed by a particle that it can bind.
   ;; by making the value of :prep be a cons of the preposition and
   ;; the name of the category to use
+  (declare (special category::vg))
   (unless (word-p prep) (break "Prep isn't a word: ~a~%~a" prep (type-of prep)))
   (let* ((prep-label (cfr-category (find-single-unary-cfr prep)))
          (sc (get-subcategorization verb-category)))

@@ -19,6 +19,7 @@
     (memq :dederived-from-text-relation (cat-plist category))))
 
 (defmethod reify-text-relation ((tr classifier-head-tr-instance))
+  (declare (special category::kind))
   (let* ((head-word (classified-head tr))
          (classifying-word (classifier-of-head tr))
          (string (string-append (pname classifying-word) "-" (pname head-word)))
