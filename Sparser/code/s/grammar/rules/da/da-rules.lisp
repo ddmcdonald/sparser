@@ -1795,7 +1795,8 @@
              
 (defun move-preposed-aux-before-adj (aux-edge np-edge adjp-edge)
   (declare (ignore np-edge))
-  (when (preposed-aux?)
+  (when (and (preposed-aux?)
+             (not (initial-wh (contents (identify-current-sentence)))))
     (let ((rule (multiply-edges aux-edge adjp-edge)))
       (when rule
         (compose-preposed-aux-into-predicate-adjp

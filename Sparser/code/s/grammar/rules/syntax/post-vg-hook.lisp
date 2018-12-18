@@ -42,10 +42,17 @@
   (when (preposed-aux?)
     (multiple-value-bind (aux-edge aux-form)
         (preposed-aux?)
-
+      (declare (special aux-edge))
       (when (edge-used-in aux-edge)
         ;; multiple toplevel VGs in the sentence, e.g. dynamic-model #42
         (return-from fold-in-preposed-auxiliary nil))
+
+      
+      (when (initial-wh (contents (identify-current-sentence)))
+        (unless (adjacent-edges? aux-edge vg-edge)
+          ;; adjacency happens in "what genes are involved in apoptosis"
+          ;; as compared to  "What are the genes regulated by STAT3
+          (return-from fold-in-preposed-auxiliary)))
       
       ;; Reinstate the original form label for the aux
       (setf (edge-form aux-edge) aux-form) 
