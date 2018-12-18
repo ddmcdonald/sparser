@@ -1278,7 +1278,7 @@ than a bare "to".  |#
 (defun preceding-determiner? (e &optional (edges (edges-before e)))
     (loop for ee in edges
      thereis
-         (eq (form-cat-name ee) 'det)))
+         (member (form-cat-name ee) '(det quantifier))))
 
 (defun followed-by-verb (e &optional (edges-after (edges-after e)))
   (loop for ee in edges-after
