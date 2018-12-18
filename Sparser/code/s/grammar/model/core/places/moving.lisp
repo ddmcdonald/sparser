@@ -101,22 +101,3 @@
       :pattern ( move "to" named-object )
       :action (:function convert-name-to-place-name third)))
 
-
-
-
-;;--- Cases (could go to a dossier)
-
-(define-movement-verb "cross")
-
-(define-movement-verb "drive")
-
-(define-movement-verb "follow")
-
-(define-movement-verb "travel")
-
-(unless (current-script :biology) ;; See sl/biology/verbs.lisp
-  (define-movement-verb "turn"))
-
-
-
-

@@ -166,26 +166,26 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
      :adjp-complement adj-comp 
      :mumble ("make" svo :a actor :o patient)))
 
+
 (define-category move-something-somewhere
   :specializes move
-  :mixins (agent)
+  :mixins (agent with-specified-location)
   :restrict ((agent physical-agent)
              (theme endurant))
   :documentation "Inherits variables from move (in kinds/movement.lisp).
- The theme is restricted there to 'can-change-location'. 
+ where the theme should be restricted to 'can-change-location' (but presently
+ that's too narrow for applications in biology). See also the large set
+ of adjuncts to movement verbs in places/moving.lisp. 
  Could have been named PTRANS. Intended as the common parent of push, 
- put, place, nudge, etc."
+ put, place, nudge, etc. by way of the subcat mixin category move-something-verb"
    :realization (:verb "move"
-                 :etf svol ;;(svo-passive)
+                 :etf svol
                  :s agent
                  :o theme
                  :l to-location
                  :from from-location
                  :to to-location
-                 :mumble ;;("move" svo :s agent :o theme)
-                   ("move" svo1o2 :o1 theme :o2 to-location)
-))
-
+                 :mumble ("move" svo1o2 :o1 theme :o2 to-location)))
 
 #|
 (define-category propose
@@ -227,6 +227,18 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
   :specializes state
   :mixins (control-verb)
   :realization (:verb "want"))
+
+;;------------------------ from places/moving.lisp ---------------
+
+(unless (current-script :biology)
+  (define-movement-verb "cross")
+  (define-movement-verb "drive")
+  (define-movement-verb "follow")
+  (define-movement-verb "travel")
+
+  (unless (current-script :biology) ;; See sl/biology/verbs.lisp
+    (define-movement-verb "turn")))
+
 
 
 
@@ -295,3 +307,96 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
 
 ;;------------------------------ blocks world ---------------
 
+(define-category add-to  ;; (p "Add another block to the row")
+  :specializes achievement
+  :mixins (move-something-verb with-specified-location)
+  :documentation "This is the 'add' where we're extending
+    a set that already exists. The 'to' that is picking out
+    the set is always present, even if it's been
+    omitted as obvious."
+  :realization
+    (:verb "add"
+     :etf (svol)
+     :s agent
+     :o theme
+     :loc-pp-complement (on
+                         at
+                         to) ;; "... to the row" via adjoin-pp-to-vg
+      :mumble ("add" svo1o2 :s agent :o1 theme :o2 location)))
+;;///replace with explicit preposition phrase
+;;///would be easier if the spatial operators -were- the relation
+
+(define-category hold-something
+  :specializes process
+  :mixins (action-verb)
+  :restrict ((patient object))
+  :realization (:verb ("hold" :past-tense "held"))
+  :documentation "Needs extension or a variant for variants
+    like 'hold it up' or (?) 'hold it higher'")
+
+
+(define-category pull
+    :specializes process
+    :mixins (with-an-agent with-specified-location)
+    :binds ((theme physical))
+    :realization (:verb "pull"
+                  :etf (svo-passive)
+                  :s agent
+                  :o theme
+                  :loc-pp-complement (to next\ to)
+                  :mumble ("pull" svo :s agent :o theme)))
+
+(define-category push
+    :specializes process
+    :mixins (with-an-agent with-specified-location)
+    :binds ((theme physical))
+    :documentation "The meaning of push depends largly
+    on what is pushed (= the type of the theme): block
+    wall, door, etc. If the specific action to take
+    is object (sort) specific then co-composition is
+    involved in the interpretation of the literal 
+    directive."
+    :realization (:verb "push"
+                  :etf (svo-passive)
+                  :s agent
+                  :o theme
+                  :loc-pp-complement (to next\ to)
+                  :mumble ("push" svo :s agent :o theme)))
+
+;; If push-together inherits from push, it will try to
+;; inherit the mdata on push, which leads to an odd clash
+;; that's not worth addressing yet (7/20/17)
+(define-category push-together
+  :specializes process
+  :mixins (with-an-agent theme)
+  :restrict ((theme object))
+  :binds ((items collection))
+  :realization (:verb "push together"
+                :etf (svo-passive)
+                :s agent
+                :o theme
+                :mumble ("push" svop :s agent :o theme :p "together")))
+
+
+(define-category put-something-somewhere
+  :specializes process
+  :mixins (move-something-verb)
+  :realization
+    (:verb "put"
+     :etf svol
+     :mumble ("put" svo1o2 :o1 theme :o2 location)))
+
+(define-category roll
+  :specializes process
+  :mixins (action-verb)
+  :realization (:verb "roll" :etf (svo-passive))
+  :documentation "Balls and cylinders roll. Blocks don't.
+    need a constraint model for that")
+
+(define-category rotate
+  :specializes process
+  :mixins (action-verb)
+  :realization (:verb "rotate" :etf (svo-passive))
+  :documentation "Need to indicate that the patient must
+    have an axis that it can rotate around")
+                      

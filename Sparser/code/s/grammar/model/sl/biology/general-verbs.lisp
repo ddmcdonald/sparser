@@ -1034,11 +1034,11 @@
 
 (define-category put-forward :specializes bio-rhetorical
    :realization
-   (:verb ("put"
+   (:verb ("put" (:prep put-forward)
 	   :third-singular "puts"
 	   :past-tense "put"
 	   :present-participle "putting")
-	  :etf (svo-passive)))
+    :etf (svo-passive)))
 
 
 (define-category query :specializes bio-method

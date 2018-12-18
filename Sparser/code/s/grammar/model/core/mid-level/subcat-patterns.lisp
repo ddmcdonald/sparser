@@ -220,3 +220,19 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :realization
     (:s agent
      :to-comp theme))
+
+
+;; Was in blocks/subcat-patterns.lisp
+;;
+(define-mixin-category with-specified-location
+  :specializes subcategorization-pattern
+  :binds ((supported-by physical)
+          (next-to physical)
+          (at-relative-location (:or location physical)) ;;relative-position)
+          (goal (:or location physical)))
+  :realization (;; :next\ to next-to ;;moved to regular prep's
+                :on supported-by
+                ;; :on\ top\ of supported-by
+                :at at-relative-location ;; at the end
+                :on at-relative-location ;; on the left
+                :to goal))
