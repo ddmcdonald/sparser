@@ -1,5 +1,12 @@
 (in-package :sparser)
 
+(defparameter *all-bio-capability-failures*
+  '(*BIO-ENTITY-FAILURES* *WHAT-FAILURES*  *PARTICLE-FAILURES*
+    *LET-FAILURES* *PP-FAILURES* *STRANDED-PREP-FAILURES*
+    *RELATIVIZER-FAILURES* *EVIDENCE-FAILURES*
+    *MISC-FAILURES*))
+
+
 (defparameter *BIO-ENTITY-FAILURES* 
 '("What genes does mir-128 regulate?" "What genes are regulated by SMDA2?"
   "Which of these are regulated by SMDA2?"
