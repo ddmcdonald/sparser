@@ -324,6 +324,8 @@
 
 
 
+;; (trace-whacking)
+
 (defun rule-for-edge-pair (pair)
   "Called from best-treetop-rule to determine whether there is
    a rule that composes the two edges in the pair and, where it
@@ -358,11 +360,14 @@
             (tr :no-rule-to-whack-pair)
             nil)))))
 
+;; (trace-subcat-rule)
+
 (defun test-subcat-rule (pair rule)
   ;; This simulates the context above normal rule-driven calls to
   ;; ref/function so that it's value can be used as test on
   ;; whether there is a subcategorization relationship between
-  ;; two adjacent edges. 
+  ;; two adjacent edges.
+  (declare (special *trace-test-subcat-rule*))
   (let* ((left-referent (edge-referent (car pair)))
          (right-referent (edge-referent (second pair)))
          (*rule-being-interpreted* rule)
@@ -374,8 +379,16 @@
     (let ((*subcat-test* t) 
           applicable )
       (declare (special *subcat-test* applicable))
-      ;; use ref/function as a predicate!!
-      (ref/function (cdr (cfr-referent rule))))))
+      (if *trace-test-subcat-rule*
+        (let* ((referent (cfr-referent rule))
+               (function (car (cdr referent))))
+          (tr :subcat-rule-setup rule left-referent right-referent function)
+          (let ((result (ref/function (cdr (cfr-referent rule)))))
+            (if result
+              (tr :subcat-text/yes)
+              (tr :subcat-text/no))
+            result))
+        (ref/function (cdr (cfr-referent rule)))))))
 
 (defparameter *losing-competitions* nil)
 

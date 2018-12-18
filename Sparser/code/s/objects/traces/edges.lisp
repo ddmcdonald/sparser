@@ -803,6 +803,8 @@
   (setq *report-form-check-blocks* t))
 
 
+
+
 (deftrace :rule-is-valid ()
   (when *trace-rules-source-and-validity*
     (trace-msg "   It's valid")))
@@ -842,5 +844,39 @@
 (deftrace :no-syntactic-rule ()
   (when *trace-rules-source-and-validity*
     (trace-msg " no syntactic rule")))
+
+
+(defvar *trace-test-subcat-rule* nil)
+
+(defun trace-subcat-rule ()
+  (setq *trace-test-subcat-rule* t))
+
+(defun untrace-subcat-rule ()
+  (setq *trace-test-subcat-rule* nil))
+
+(deftrace :subcat-rule-setup (rule left-referent right-referent function)
+  ;; called from test-subcat-rule
+  (when *trace-test-subcat-rule*
+    (trace-msg "[subcat-test] Does ~a, applying the function ~a ~
+               ~%     to ~a and ~a succeed?" 
+               (cfr-symbol rule) function left-referent right-referent)))
+
+(deftrace :subcat-text/yes ()
+  ;; called from test-subcat-rule
+  (when *trace-test-subcat-rule*
+    (trace-msg "[subcat-test]   yes")))
+
+(deftrace :subcat-text/no ()
+  ;; called from test-subcat-rule
+  (when *trace-test-subcat-rule*
+    (trace-msg "[subcat-test]   no")))
+
+(deftrace :failed-subcat-restriction (item sc-pattern)
+  ;; called from find-subcat-var
+  (when *trace-test-subcat-rule*
+    (trace-msg "[subcat-test]  ~a is not itypep ~a"
+               item (subcat-restriction sc-pattern))))
+
+
 
 

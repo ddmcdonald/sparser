@@ -329,8 +329,8 @@
   ;; by making the value of :prep be a cons of the preposition and
   ;; the name of the category to use
   (unless (word-p prep) (break "Prep isn't a word: ~a~%~a" prep (type-of prep)))
-  (let ((prep-label (cfr-category (find-single-unary-cfr prep)))
-        (sc (get-subcategorization verb-category)))
+  (let* ((prep-label (cfr-category (find-single-unary-cfr prep)))
+         (sc (get-subcategorization verb-category)))
     (unless sc (break "No subcat frame on ~a" verb-category))
     (pushnew prep (bound-prepositions sc))
     (let ((rule (define-cfr verb-category `(,verb-category ,prep-label)
@@ -1008,6 +1008,8 @@
               (setq variable (variable-from-pats item head label pats subcat-patterns)))
             (dolist (entry subcat-patterns)
               (when (eq label (subcat-label entry))
+                (unless (satisfies-subcat-restriction? item entry)
+                  (tr :failed-subcat-restriction item entry))
                 (when (satisfies-subcat-restriction? item entry)
                   (setq variable (subcat-variable entry))
                   (return)))))
