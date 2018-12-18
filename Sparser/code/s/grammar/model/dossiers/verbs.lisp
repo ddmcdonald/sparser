@@ -1,15 +1,18 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2018  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "verbs"
-;;;   Module:  "model;core:mid-level::"
-;;;  version:  March 2017
+;;;   Module:  "model;dossiers:"
+;;;  version:  December 2018
 
-;; broken out of relations 3/7/15
+;; Gathers verbs from diverse specific sources into one place.
+;; Tipping was the need to have access to prepositions now that we can
+;; specify them with verbs, but in any event it makes things easier
+;; to keep track of.
 
 (in-package :sparser)
 
-
+;;------------------------------------------ originally mid-level/verbs.lisp
 #| -----------  TO DO
 (define-main-verb 'break
     :infinitive "break"
@@ -166,18 +169,22 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
 (define-category move-something-somewhere
   :specializes move
   :mixins (agent)
-  :restrict ((agent physical-agent))
+  :restrict ((agent physical-agent)
+             (theme endurant))
   :documentation "Inherits variables from move (in kinds/movement.lisp).
  The theme is restricted there to 'can-change-location'. 
  Could have been named PTRANS. Intended as the common parent of push, 
  put, place, nudge, etc."
    :realization (:verb "move"
-                 :etf (svo-passive)
+                 :etf svol ;;(svo-passive)
                  :s agent
                  :o theme
+                 :l to-location
                  :from from-location
                  :to to-location
-                 :mumble ("move" svo :s agent :o theme)))
+                 :mumble ;;("move" svo :s agent :o theme)
+                   ("move" svo1o2 :o1 theme :o2 to-location)
+))
 
 
 #|
@@ -220,4 +227,71 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
   :specializes state
   :mixins (control-verb)
   :realization (:verb "want"))
-  
+
+
+
+;;------------------------------ music ---------------
+
+;; "Delete everything before beat 2 of measure 1"
+;;
+(define-category delete
+  :specializes process
+  :mixins (simple-action)
+  :restrict ((theme (:or endurant sequence)))
+  :realization (:verb "delete"))
+
+;; "insert a F4 whole note on beat 1 of measure 4"
+;;
+(define-category insert ;; something somewhere -- see "put"
+  :specializes process
+  :mixins (move-something-verb)
+  :realization (:verb "insert")
+  :documentation "The move mixin provides for a physical or
+ social agent as the subject. Something physical as the direct
+ object (theme), and location variable for where it moves.")
+
+;; "invert all the notes around G4"
+(define-category invert
+  :specializes process
+  :mixins (simple-action)
+  :realization (:verb "invert"))
+
+;; "Move all the notes in measure 2 down an octave
+;;    -- move their pitch, not their location.
+;;  Should fail the 'can-change-location' constraint on the theme
+;;  or the pitch interval will turn up odd for a location
+
+;; "put a C in the rest"
+;; "put a C where the rest is"
+;; "put a C on top of the E"
+
+;; "reverse the first and last notes"
+;; "reverse everything between the C in measure 1 and the E in measure 2"
+;;   feels like a single post-nominal argument, but it has a requirement
+;;   that there are two elements that are going to exchange places
+;;
+(define-category reverse
+  :specializes process
+  :mixins (simple-action)
+  :realization (:verb "reverse"))
+
+;; "transpose the C up 1 half step"
+;;
+(define-category transpose
+  :specializes process
+  :mixins (simple-action)
+  :binds ((amount step))
+  :realization (:verb "transpose"
+                :up amount))
+
+;; "work on measures 1 and 2"
+ (define-category work-on
+  :specializes process
+  :mixins (simple-action)
+  :realization (:verb ("work" :prep "on")))
+
+
+
+
+;;------------------------------ blocks world ---------------
+

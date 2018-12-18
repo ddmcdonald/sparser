@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2011-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2018  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  January 2017
+;;;  version:  December 2018
 
 ;; initiated in January 1991 v1.8
 ;; 0.1 (10/17/93 v2.3) started revampin to hold all the individuals
@@ -90,6 +90,8 @@
 (gate-grammar *adjectives*
   (gload "dossiers;new content words"))
 
+(gate-grammar *mid-level-ontology*
+  (gload "dossiers;verbs"))
 
 (gate-grammar *time*
   (gload "dossiers;time units")

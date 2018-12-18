@@ -46,7 +46,7 @@ from 'from ... to ..' and such
   :specializes accomplishment
   ;; realization -- "move" and "movement"
   :mixins (theme)
-  :restrict ((theme can-change-location))
+  :restrict ((theme endurant))  ;;can-change-location))
   :binds ((from-location location) ;; source - the theme's former location
           (to-location location) ;; goal - its new location
 

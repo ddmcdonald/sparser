@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  January 2018
+;;;  version:  December 2018
 
 ;; Initiated 12/3/15
 
@@ -21,7 +21,10 @@
 (gload "mid-level;relations")
 
 (gload "mid-level;subcat-patterns")
-(gload "mid-level;verbs")
+
+;; moved to dossiers/verbs.lisp
+#+ignore(gload "mid-level;verbs")
+
 (gload "mid-level;things")
 
 (gload "mid-level;cars")

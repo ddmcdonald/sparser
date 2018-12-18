@@ -1000,6 +1000,9 @@
          :etf (svo-passive)))
 
 
+(define-category knock-out :specializes negative-bio-control
+  :realization (:verb ("knock" :prep "out")))
+
 (define-category knockdown :specializes negative-bio-control
   :realization
   (:noun "knockdown" :of :object

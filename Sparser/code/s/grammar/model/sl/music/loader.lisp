@@ -10,5 +10,7 @@
 (in-package :sparser)
 
 (gload "music;objects")
-(gload "music;verbs")
 (gload "music;methods")
+
+;; moved to dossiers;verbs 12/17/18
+#+ignore(gload "music;verbs")
