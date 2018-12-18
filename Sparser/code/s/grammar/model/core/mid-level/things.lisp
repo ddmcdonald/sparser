@@ -173,8 +173,14 @@ Show sents:
   |#
 (define-category model
   :specializes container
-  :mixins (predication) ;; make "consistent"/bio-relation's theme v/r happy
-  :realization (:noun "model"))
+  :mixins (predication artifact) ;; make "consistent"/bio-relation's theme v/r happy
+  :binds ((process perdurant)
+          (object endurant))
+  :realization (:noun "model"
+                      :of process
+                      :of object
+                      :for process
+                      :for object))
 
 
 
