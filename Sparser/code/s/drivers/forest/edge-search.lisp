@@ -506,6 +506,9 @@ for ambiguous words"
               (or (eq (second (cfr-referent (car r-triple))) 'interpret-premod-to-verb)
                   ;;(eq (second (cfr-referent (car r-triple))) 'assimilate-subject-to-vp-ed)
                   )))
+        (not (and (member (cat-name (edge-category (second l-triple))) '(be have))
+                  (member (cat-name (edge-form r-triple-3)) '(vp+ed vp+ing))))
+                  
         (or
 
          (and (eq (form-cat-name r-triple-3) 'pp)
@@ -516,6 +519,7 @@ for ambiguous words"
                       '(pp vg+ing ;;and prevent GTP loading"
                         ;; "To validate the use of an in vitro system to dissect the mechanism of Ras regulation.
                         to-comp where-relative-clause when-relative-clause
+                        transitive-clause-without-object
                         subject-relative-clause comma-separated-subject-relative-clause)))))
        (losing-to-leftwards-pp? l-triple r-triple)
        ))))
