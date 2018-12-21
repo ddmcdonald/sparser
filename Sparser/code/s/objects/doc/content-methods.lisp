@@ -655,8 +655,16 @@ is a case in handle-any-anaphor
       (setf (initial-wh (contents s)) e))))
 
 (defun initial-wh? ()
-  (let ((s (identify-current-sentence)))
-    (initial-wh (contents s))))
+  (or
+   (let ((s (identify-current-sentence)))
+     (initial-wh (contents s)))
+   (let ((first-edge (car (all-tts))))
+     (when
+         (or (itypep (value-of 'has-determiner (edge-referent first-edge))
+                     '(:or what which how when why))
+             (itypep (value-of 'quantifier (edge-referent first-edge))
+                     '(:or what which how when why)))
+       first-edge))))
 
 
 
