@@ -42,7 +42,7 @@
 
   (let ((mentions ;; sort, so that embedding edges for positive-bio-control come out first
          (sort
-          (remove-collection-item-mentions
+          (remove-collection-item-mentions ;; why are we removing item-mentions?
            (mentions-in-sentence-edges sentence))
           #'>
           :key #'(lambda (m) (edge-position-in-resource-array (mention-source m))))))
@@ -97,11 +97,18 @@
         ,@(loop for d in (dependencies m) append
                   `(,(intern (pname (pname (dependency-variable d)))
                              :keyword)
-                     ,(if (eq (dependency-value d) '*lambda-var*)
-                          (let* ((lambda-edge (get-lambda-ref-edge-from-pred-edge (mention-source m)))
-                                 (lambda-ment (edge-mention lambda-edge)))
-                            (make-clause-var (mention-uid m)))
-                          (mention-clause-tree (dependency-value d)))))))
+                     ,(cond ((eq (dependency-value d) '*lambda-var*)
+                             (loop for mention in (all-mentions)
+                                   when (loop for d2 in (dependencies mention)
+                                              thereis (and (eq (var-name (dependency-variable d2))
+                                                               'PREDICATION)
+                                                           (eq (dependency-value d2)
+                                                               m)))
+                                   do (return (make-clause-var (mention-uid mention)))))
+                            ((consp (dependency-value d))
+                             (mapcar #'mention-clause-tree (dependency-value d)))
+                            (t
+                             (mention-clause-tree (dependency-value d))))))))
     (t m)))
 
 (defun sentence-clause-tree ()
@@ -114,9 +121,12 @@
 (defun unwrap-clause-tree (ct)
   (cons (clause-tree->clause ct)
         (loop for (key val) on (cddr ct) by #'cddr
-              when (and (consp val)
-                        (eq (car val) :var))
-              append (unwrap-clause-tree val))))
+              append (cond ((and (consp val)
+                                   (eq (car val) :var))
+                              (unwrap-clause-tree val))
+                             ((eq key :items)
+                              (loop for item in val
+                                      append (unwrap-clause-tree item)))))))
 
 (defun make-clause-var (n)
   (intern (format nil "MV~s" n) :SP))
@@ -135,13 +145,14 @@
         when (and
               (not (member key
                            '(:has-determiner :prepositional-phrase :prep
-                             :family-members :progressive)))
+                             :family-members :progressive :modal)))
               (consp val))
         do (return (list key val))))
 
 (defparameter *make-clause-ref* nil)
 (defparameter *det-refs* nil)
 (defparameter *prep-refs* nil)
+(defparameter *modal-refs* nil)
 (defparameter *non-mention-sents* nil)
 
 (defparameter *warn-individuals* nil)
@@ -164,10 +175,19 @@
                   (pushnew (semtree ref) *prep-refs* :test #'equal)
                   (pname (itype-of (car (semtree ref)))))
                  (t ref)))
+    ;; no need to have a separate clause for modals
+    (:modal (cond ((individual-p ref)
+                   (pushnew (semtree ref) *modal-refs* :test #'equal)
+                   (pname (itype-of (car (semtree ref)))))
+                  ((mention-p ref)
+                   (pname (base-description ref)))
+                  (t ref)))
     (:family-members
      (loop for i in (value-of 'items ref)
            collect `(protein ,@(when (value-of 'name i) `((:name ,(pname (value-of 'name i)))))
                              ,@(when (value-of 'uid i) `((:uid ,(value-of 'uid i)))))))
+    (:items
+     (mapcar #'second ref))
     (:modified-amino-acid
      (cond ((eq (type-of ref) 'discourse-mention)
             (make-clause-var (mention-uid ref)))
@@ -182,21 +202,26 @@
                                   (itypep ref 'number))
                              (value-of 'value ref))
                             ((itypep ref 'event-relation)
-                             (push (list 'event-relation (sentence-string *sentence-in-core*)) *non-mention-sents*)
+                             (push (list 'event-relation (sentence-string *sentence-in-core*))
+                                   *non-mention-sents*)
                              (when *warn-individuals*
                                (warn "individual as mention ~s" 'event-relation)))
                             ((itypep ref 'protein-family)
                              (when *warn-individuals*
                                (warn "protein-family")))
                             ((itypep ref 'comparative-attribution)
-                             (push (list 'comparative-attribution (sentence-string *sentence-in-core*)) *non-mention-sents*)
+                             (push (list 'comparative-attribution (sentence-string *sentence-in-core*))
+                                   *non-mention-sents*)
                              (when *warn-individuals*
                                (warn "individual as mention ~s" 'comparative-attribution)))
                             
                             (t
-                             (push (list "individual as mention" (semtree ref)(sentence-string *sentence-in-core*)) *non-mention-sents*)
+                             (push (list "individual as mention" (semtree ref)
+                                         (sentence-string *sentence-in-core*))
+                                   *non-mention-sents*)
                              (when *warn-individuals*
-                               (warn "individual as mention ~s in ~%-----  ~s" (semtree ref) (sentence-string *sentence-in-core*)))
+                               (warn "individual as mention ~s in ~%-----  ~s" (semtree ref)
+                                     (sentence-string *sentence-in-core*)))
                              (semtree ref))))
                      (discourse-mention (make-clause-var (mention-uid ref)))
                      (referential-category (cat-name ref))
