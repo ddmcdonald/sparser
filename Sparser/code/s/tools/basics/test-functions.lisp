@@ -1351,7 +1351,7 @@ divides it into good and bad.
  edge over it."
   (declare (special *save-clause-semantics* *clause-semantics-list*))
   (format stream "~%~%___________________~%~a: ~s~%" count s)
-  (pp s)
+  (qepp s)
   (format stream "~&~%") (tts stream)
   (let ((edges (all-tts)))
     (when (null (cdr edges)) ;; single span
@@ -1365,7 +1365,7 @@ divides it into good and bad.
 
 (defun test-bio-utterance/split (s count &optional stream)
   "Variant call from test-bio-utterances. Populate the two lists"
-  (pp s)
+  (qepp s)
   (let ((edges (all-tts)))
     (if (null (cdr edges))
       (push count *bio-utt-test-good*)
