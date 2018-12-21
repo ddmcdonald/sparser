@@ -187,6 +187,7 @@
 (def-form-category transitive-clause-without-object)
 (def-form-category where-relative-clause)
 (def-form-category when-relative-clause)
+(def-form-category why-relative-clause)
 (def-form-category comma-separated-subject-relative-clause)
 (def-form-category pp-relative-clause)
 (def-form-category thatcomp)
