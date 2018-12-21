@@ -38,9 +38,6 @@
 (define-category suppressor :specializes inhibitor
   :realization (:noun "suppressor"))
 
-(define-category negative-regulator :specializes inhibitor
-  :realization (:noun "negative regulator"))
-
 
 (noun "therapeutics" :super drug) ;; keyword: (ics N) 
 
