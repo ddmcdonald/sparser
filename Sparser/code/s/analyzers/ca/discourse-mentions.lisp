@@ -423,7 +423,7 @@
                                   i
                                   (edge-referent source-edge)))
       (unless *in-update-mention-dependencies*
-        ;; unless we are simply revising the existing e=dependency in place
+        ;; unless we are simply revising the existing dependency in place
         ;; remove mention from old edge
         (setf (edge-mention source-edge) t))
       (setf (mention-history (edge-referent source-edge))

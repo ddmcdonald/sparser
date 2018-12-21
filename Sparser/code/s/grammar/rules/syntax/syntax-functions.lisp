@@ -191,9 +191,9 @@
    will retrieve the edge the lambda variable refers to"
   (let* ((dom-edge (edge-used-in pred-edge))
          (lower-edges (edges-under dom-edge))
-         (lamda-ref (gethash (edge-referent pred-edge) *predication-links-ht*)))
+         (lambda-ref (gethash (edge-referent pred-edge) *predication-links-ht*)))
     (loop for edge in lower-edges
-          when (eq (edge-referent edge) lamda-ref)
+          when (eq (edge-referent edge) lambda-ref)
           do (return edge))))
 
 (defun matched-pred? (pred edge &aux (ref (edge-referent edge)))
