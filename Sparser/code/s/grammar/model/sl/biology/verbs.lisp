@@ -58,9 +58,11 @@
 ;;; definition of is-bio-entity. The call to FOM-SUBCATEGORIZATION ensures that
 ;;; the subcategorization frame exists for ASSIGN-SUBJECT.
 (assert (fom-subcategorization category::be))
+#+ignore
 (assign-subject category::be
                 category::biological
                 (variable/category 'subject category::be))
+#+ignore
 (assign-object category::be
                category::biological
                (variable/category 'predicate category::be))
@@ -1212,6 +1214,11 @@
          :of theme
          :for theme))
 
+(define-category negative-regulator :specializes inhibitor
+                 :realization (:noun "negative regulator"))
+
+(define-category positive-regulator :specializes regulator
+  :realization (:noun "positive regulator"))
 
 (define-category inter-regulate
   :specializes bio-control
