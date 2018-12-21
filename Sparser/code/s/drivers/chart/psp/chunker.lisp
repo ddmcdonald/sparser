@@ -750,7 +750,7 @@ than a bare "to".  |#
             ;; this check is in there for cases like "there is little chance..."
             (and (edge-just-to-right-of e)
                  (member (form-cat-name (edge-just-to-right-of e))
-                         '(common-noun noun proper-noun)))
+                         '(common-noun common-noun/plural noun proper-noun)))
             (not (and (car *chunks*)
                       (member 'vg (chunk-forms (car *chunks*)))
                       (loop for edge in (ev-top-edges (car (chunk-ev-list (car *chunks*))))
