@@ -678,6 +678,9 @@
 ;;; detecting polar and WH questions
 ;;;----------------------------------
 
+(defparameter *rusty-questions* nil)
+
+
 (defun detect-early-information (sentence)
   "Look at the first few edges in the chart. If they indicate
    that this sentence will be a question, revise their form labels
@@ -710,7 +713,7 @@
         (when form-label
           (case (cat-symbol form-label)
             ((category::verb category::verb+s category::verb+ed
-              category::verb+ing category::verb+present category::verb+past)
+                             category::verb+ing category::verb+present category::verb+past)
              (when (auxiliary-word? word)
                (cond
                  (there?
@@ -722,6 +725,7 @@
              (when there? (handle-there-is edge))
              (store-preposed-aux edge))
             (category::wh-pronoun
+             (push (sentence-string sentence) *rusty-questions*)
              (delimit-and-label-initial-wh-term position-before edge))))))))
 
 (defun store-preposed-aux (aux-edge)
