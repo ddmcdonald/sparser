@@ -22,10 +22,13 @@
   ;;:mixins (type-marker biological)
   :binds ((protein-sequence sequence)
           (pathwayComponent)
-	  (pathwayOrder))
+	  (pathwayOrder)
+          (common)
+          )
   :realization (:noun "pathway"
                       :with pathwayComponent
-                      :for pathwayComponent)
+                      :for pathwayComponent
+                      :m common)
   :documentation "Pathways are inhibited and activated
    which makes them more like entities than processes.
    They are named according to the sequence of proteins
@@ -44,11 +47,9 @@
                 :in pathway
                 :in process))
 
-(define-category signaling-pathway
-   :specializes pathway
-   :instantiates :self
+(define-category signaling-pathway :specializes pathway
    :realization
-  (:noun "signaling pathway"))
+   (:noun "signaling pathway" ))
 
 
 (defmacro def-pathway (&rest strings-naming-proteins)
