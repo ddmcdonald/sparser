@@ -185,7 +185,7 @@
   :instantiates nil
   :documentation "Functions as a selector by picking out
  one of some set or segence of things because they have
- this 'index'. Could be used for stree addresses, social 
+ this 'index'. Could be used for street addresses, social 
  security numbers, serial numbers, etc. Could be used for
  a 'cursor' that changes as we iterate over some sequence.
  Motivating case is position-in-a sequence in numbers/ordinals.lisp")
