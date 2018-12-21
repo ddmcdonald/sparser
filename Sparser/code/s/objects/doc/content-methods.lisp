@@ -675,7 +675,8 @@ is a case in handle-any-anaphor
   (declare (special *sentence-in-core*))
   (unless *sentence-in-core*
     (error "Threading bug. No value for *sentence-in-core*"))
-  (member edge (pending-definite-references *sentence-in-core*) :key #'second))
+  (or (member (cat-name (edge-category edge)) '(these those them pronoun/plural))
+      (member edge (pending-definite-references *sentence-in-core*) :key #'second)))
 
 (defun update-definite-determiner (edge)
   (declare (special *all-np-categories* *sentence-in-core*))
