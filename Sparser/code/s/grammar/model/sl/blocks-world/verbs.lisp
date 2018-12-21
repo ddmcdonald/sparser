@@ -8,7 +8,7 @@
 ;; Broken out of vocabulary 3/7/17. General verbs moved to dossier 12/18/18.
 
 (in-package :sparser)
-
+#|  --- move to dossiers once the check for 'build-out-of-bricks' being defined
 ;; (p "Add another block to the row")
 
 (define-category add-block-to
@@ -28,4 +28,4 @@
                          at
                          to) ;; "... to the row" via adjoin-pp-to-vg
       :mumble ("add" svo1o2 :s agent :o1 theme :o2 location)))
-
+|#
