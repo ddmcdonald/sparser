@@ -479,16 +479,26 @@
       `(def-syntax-rule (,nb where-relative-clause)
            :head :left-edge
            :form np
-           :referent (:function apply-where-when-relative-clause left-edge right-edge)))
+           :referent (:function apply-where-relative-clause left-edge right-edge)))
+     (eval
+      `(def-syntax-rule (,nb when-relative-clause)
+           :head :left-edge
+           :form np
+           :referent (:function apply-when-relative-clause left-edge right-edge)))
+     (eval
+      `(def-syntax-rule (,nb why-relative-clause)
+           :head :left-edge
+           :form np
+           :referent (:function apply-why-relative-clause left-edge right-edge)))
 
      (eval
-      `(def-syntax-rule (,nb object-relative-clause)
+      `(def-syntax-rule (,nb transitive-clause-without-object)
            :head :left-edge
            :form np
            :referent (:function apply-object-relative-clause left-edge right-edge))))
 
 
-(loop for n in `(np pronoun ,@*n-bar-categories*) ;; move vp+ing vg+ing to da-rules
+(loop for n in `(np wh-pronoun pronoun ,@*n-bar-categories*) ;; move vp+ing vg+ing to da-rules
   do
   (loop for v in '(vp vg vp+passive vg+passive vp+past vp+ed
                       ;; vg+ing ;; TO-DO see if this change improves or damages things
@@ -704,7 +714,7 @@
 
 (def-form-rule (that transitive-clause-without-object)
     :head :right-edge
-    :form object-relative-clause
+    :form transitive-clause-without-object
     :referent (:function compose-that-with-vp left-edge right-edge))
 
 
@@ -715,8 +725,8 @@
         (eval
          `(def-form-rule (,rel transitive-clause-without-object)
               :head :right-edge
-              :form object-relative-clause
-              :referent (:function compose-wh-with-vp left-edge right-edge)))
+              :form transitive-clause-without-object
+              :referent (:function compose-that-with-vp left-edge right-edge)))
         
         (loop for v in '(vp  vg vp+passive vg+passive)
               do
@@ -739,12 +749,15 @@
 
 ;;--- Embedded questions
 
-(loop for wh in '(where when why) 
+(loop for wh in '(where why when) 
       do  (eval
            `(def-form-rule (,wh s)
-             :head :right-edge
-             :form where-relative-clause
-             :referent (:function create-when-where-relative left-edge right-edge))))
+                :head :right-edge
+                :form ,(ecase wh
+                         (when 'when-relative-clause)
+                         (where 'where-relative-clause)
+                         (why 'why-relative-clause))
+                :referent (:function create-when-where-relative left-edge right-edge))))
 ;; No longer rewriting as where-relative-clause or when-relative-clause
 
 (def-form-rule (whether s)
@@ -752,6 +765,10 @@
     :head :right-edge
     :referent (:function create-whethercomp left-edge right-edge))
 
+(def-form-rule (why s)
+    :form whethercomp
+    :head :right-edge
+    :referent (:function create-whethercomp left-edge right-edge))
 
 ;; For the moment, treat clauses like "if STAT3 regulates MEK" in "Tell me if STAT3..."
 ;;  as if they werre whethercomp clauses
@@ -1197,6 +1214,10 @@ similar to an oncogenic RasG12V mutation (9)."))
 
 ;;---  partitives
 (def-cfr np (number of)
+  :form np
+  :referent (:function create-partitive-np left-edge right-edge))
+
+(def-cfr np (which of)
   :form np
   :referent (:function create-partitive-np left-edge right-edge))
 
