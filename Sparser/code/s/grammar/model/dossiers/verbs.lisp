@@ -230,14 +230,12 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
 
 ;;------------------------ from places/moving.lisp ---------------
 
-(unless (current-script :biology)
+(when (current-script :fire)
   (define-movement-verb "cross")
   (define-movement-verb "drive")
   (define-movement-verb "follow")
   (define-movement-verb "travel")
-
-  (unless (current-script :biology) ;; See sl/biology/verbs.lisp
-    (define-movement-verb "turn")))
+  (define-movement-verb "turn"))
 
 
 
