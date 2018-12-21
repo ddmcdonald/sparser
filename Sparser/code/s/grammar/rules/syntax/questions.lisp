@@ -378,6 +378,10 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
 ;;; WH questions
 ;;;--------------
 
+(defparameter *alternative-wh-question-strategy* T
+  "When this is T on, we don't use delimit-and-label-initial-wh-term to find initial wh terms --
+we just parse them'")
+
 (defun delimit-and-label-initial-wh-term (pos-before wh-edge)
   "WH questions always also include inverting subject
    and auxiliary, where the auxiliary will occur right after the
@@ -390,6 +394,9 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
    the WH information and populate the object while we're
    walking along the sentence prefix. Then we record the fact
    that we have the wh-edge in hand on the sentence context."
+  
+  (when *alternative-wh-question-strategy*
+    (return-from delimit-and-label-initial-wh-term nil))
   (tr :wh-walk "delimit-and-label-initial-wh-term")
   (let* ((wh-type (edge-referent wh-edge)) ;; the category 
          (next-pos (chart-position-after pos-before))
