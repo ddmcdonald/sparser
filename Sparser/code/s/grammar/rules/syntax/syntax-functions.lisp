@@ -1538,7 +1538,12 @@ there was an edge for the qualifier (e.g., there is no edge for the
   ;;  this may want to be fixed
   (unless (and subj vp) ;; have had cases of uninterpreted VPs
     (return-from assimilate-subject nil))
-  (when (is-non-anaphor-numeric? *left-edge-into-reference* subj)
+  (when (or (is-non-anaphor-numeric? *left-edge-into-reference* subj)
+            (itypep subj '(:or when how where why))
+            (and (itypep subj '(:or what where when how why))
+                 (itypep vp '(:or do would))))
+                 ;; block when, how, where, why as subjecgts, and WHAT as a subject of DO or WOULD
+                 ;; as part ofimproved treatment of questions
     (return-from assimilate-subject nil))
 
   (when (is-basic-collection? vp)
@@ -1716,14 +1721,21 @@ there was an edge for the qualifier (e.g., there is no edge for the
     
     (cond
       (*subcat-test*
-       (or (can-fill-vp-subject? vp subj) ;; evidence for S rather than reduced relative
-           (and (can-fill-vp-object? vp subj (left-edge-for-referent))
-                ;; make sure this is a non-trivial relative clause (not just the verb)
-                (loop for binding in (indiv-old-binds vp)
-                      thereis (not (member (var-name (binding-variable binding))
-                                           '(past raw-text)))))
-           (and (member (form-cat-name vp-edge) '(vg+ed verb+ed))
-                (interpret-premod-to-verb subj vp))))
+       (and (not
+             ;; aux inversion in question "is STAT3 involved in ..."
+             (let ((word-before (word-just-to-the-left (left-edge-for-referent))))
+               (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
+                    (member (pname word-before)
+                                 '("is" "was" "were" "are")
+                                 :test #'equal))))
+            (or (can-fill-vp-subject? vp subj) ;; evidence for S rather than reduced relative
+                (and (can-fill-vp-object? vp subj (left-edge-for-referent))
+                     ;; make sure this is a non-trivial relative clause (not just the verb)
+                     (loop for binding in (indiv-old-binds vp)
+                           thereis (not (member (var-name (binding-variable binding))
+                                                '(past raw-text)))))
+                (and (member (form-cat-name vp-edge) '(vg+ed verb+ed))
+                     (interpret-premod-to-verb subj vp)))))
       
       ((and (can-fill-vp-object? vp subj (left-edge-for-referent))
             (not (verb-premod-sequence? (left-edge-for-referent)))
@@ -1761,13 +1773,16 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (declare (special category::n-bar category::vp category::vp+ing
                     category::vp+ed category::to-comp category::n-bar))
   (when *subcat-test*
-    (unless (and vg obj)
-      (return-from assimilate-np-to-v-as-object nil))
-    (when (is-non-anaphor-numeric? *right-edge-into-reference* obj)
-      (return-from assimilate-np-to-v-as-object nil))
-    )
-      
-               
+    (unless (and vg obj
+    ;; block attaching NP to VP as object when we have evidence for aux inversion
+                 (not (and (itypep vg '(:or be have))
+                           *right-edge-into-reference*
+                           (edge-just-to-right-of (right-edge-for-referent))
+                           (member (cat-name (edge-form (edge-just-to-right-of (right-edge-for-referent))))
+                                   '(vg+ed vp+ed vg+ing vp+ing)))))
+      (return-from assimilate-np-to-v-as-object nil)))
+  (when (is-non-anaphor-numeric? *right-edge-into-reference* obj)
+    (return-from assimilate-np-to-v-as-object nil))
   (let* ((indirect-object?
           (and (itypep vg 'directed-action)
                *right-edge-into-reference*
@@ -1930,6 +1945,13 @@ there was an edge for the qualifier (e.g., there is no edge for the
         (revise-parent-edge :form category::subordinate-s))
       cl)))
 
+(defun first-sentence-constituent (edge &optional (sentence (current-sentence)))
+  (let* ((position-before (starts-at-pos sentence))
+         (first-item (next-treetop/rightward position-before)))
+    (eq edge first-item)))
+         
+
+
 
 ;; for v in (vp vp+passive vg+passive vg)
 ;; as rel in '(which who whom why that)
@@ -1941,7 +1963,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (declare (special category::wh-question category::subject-relative-clause
                     category::s))
   (if *subcat-test*
-   (not (itypep wh-obj category::wh-question)) ;; t
+      (and (not (first-sentence-constituent (left-edge-for-referent)))
+           (not (itypep wh-obj category::wh-question))) ;; t
     (cond
       ((itypep wh-obj 'partitive-relativizer) ;; e.g. "one of which"
        ;; When the relative clause we are creating here is composed with
