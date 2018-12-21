@@ -8,10 +8,10 @@
 ;; Predicates on synteactic form categories, mostly for the use of the chunker.
 
 (defparameter *prep-forms*
-  `(CATEGORY::SPATIAL-PREPOSITION
-    CATEGORY::PREPOSITION
-    category::spatio-temporal-preposition
-    category::approximator))
+  `(CSPATIAL-PREPOSITION
+    PREPOSITION
+    spatio-temporal-preposition
+    approximator))
 
 (defvar *adjg-word-categories*
   '(CATEGORY::ADVERB 
@@ -514,9 +514,9 @@
 (defgeneric preposition-category? (label)
   (:documentation "Any sort of preposition")
   (:method ((e edge))
-    (preposition-category? (edge-form e)))
+    (preposition-category? (form-cat-name e)))
   (:method ((c referential-category))
-    (preposition-category? (cat-symbol c)))
+    (preposition-category? (cat-name c)))
   (:method ((name symbol))
     (memq name *prep-forms*)))
 
