@@ -78,6 +78,18 @@
     (delete/cfr cfr)))
 
 
+(defun delete/cfr/rs (cfr rs)
+  "In addition to deleting the cfr from its own tables,
+   remove it from where its listed in the rule-set.
+   It only makes sense that its listed with the single
+   terms since we can't see any actual binary rules from a rule-set."
+  (let ((singles (rs-single-term-rewrites rs)))
+    (when (memq cfr singles)
+      (setf (rs-single-term-rewrites rs)
+            (remove cfr (rs-single-term-rewrites rs))))
+    (delete/cfr cfr)))
+      
+
 
 ;;;-------------------------------------------
 ;;; removing the rules from the runtime table
