@@ -279,7 +279,8 @@
 
 (defun apply-where-when-relative-clause (np-ref vp-ref)
    (setq np-ref (individual-for-ref np-ref))
-   (let ((var (if (eq (edge-form (right-edge-for-referent)) 'category::where-relative-clause)
+   (let ((var (if (eq (edge-form (right-edge-for-referent))
+                      'category::where-relative-clause)
 		  :where
 		  :when)))
     (cond
@@ -289,7 +290,7 @@
       (var
        ;; copy down the upstairs subject
        ;; Should we check if it was already bound to something?
-       (setq vp-ref (create-predication-by-binding
+       (setq vp-ref (create-predication-and-edge-by-binding-and-insert-edge
                      var np-ref vp-ref))
        ;; link the rc to the np
        (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
