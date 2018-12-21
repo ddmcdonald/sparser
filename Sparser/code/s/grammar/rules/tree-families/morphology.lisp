@@ -330,11 +330,12 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                                 &key
                                   nominalization
                                   prep
-                                past-tense past-participle present-participle
-                                third-singular third-plural
-                                (s-form third-singular)
-                                (ed-form past-tense)
-                                (ing-form present-participle))
+                                  past-tense past-participle present-participle
+                                  third-singular third-plural
+                                  (s-form third-singular)
+                                  (ed-form past-tense)
+                                  (ing-form present-participle)
+                                  &aux verb-already-done )
   "Define rules for a verb and its various inflections."
   (if s-form
     (make-irreg-mword word :verb :third-singular s-form)
@@ -429,7 +430,7 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
             (rule-macro past-participle category::verb+ed)) 
 
           (when prep
-            (setup-owned-preposition prep category referent))
+            (setup-bound-preposition prep category referent))
 
           (nreverse rules)))))))
 

@@ -382,7 +382,8 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
   :specializes process
   :mixins (move-something-verb)
   :realization
-    (:verb "put"
+    (:verb ("put" :third-singular "puts" :past-tense "put"
+	          :present-participle "putting")
      :etf svol
      :mumble ("put" svo1o2 :o1 theme :o2 location)))
 

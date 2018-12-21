@@ -310,35 +310,59 @@
 
 
 ;;;------------------------------------------------
-;;; 'owned' prepositions that are part of the verb
+;;; 'bound' prepositions that are part of the verb
 ;;;------------------------------------------------
 #| These are just part of the verb, e.g. "act as".
    They don't mark arguments.
- Setup during morphological processing of a head verb by
- adding a keyword argument analogous to the markers of irregular forms
+ They are setup during morphological processing of a head verb by
+ adding a keyword argument analogous to the markers of irregular verb forms
+
      :realization (:verb ("work" :prep "on") ...)
+ 
+ We implement the pair by recording the preposition on the subcategorization
+ frame for the category of the verb
+
+ That simple version is sufficient if the verb is uniquely used with
+ the preposition. If the verb has a different meaning when it's used
+ without the preposition (e.g. "put" vs. "put forward") then we need to
+ provide the setup routine with more information so that it can write the
+ correct rule and stash the sub-cat information correctly.
+
+   (define-category put-forward
+     ...
+     :realization (:verb ("put" :prep ("forward" "put" put-forward)) ...))
 |#
 
-(defun setup-owned-preposition (prep verb-category referent)
+(defun setup-bound-preposition (prep verb-category referent)
   "Add the preposition, referent pair to the subcat record
    of the verb. Make a rewrite rule that composes them."
   ;; Called from make-rules-for head when the verb has a :prep value,
-  ;; which should be a preposition.
-  ;;///  Could have a variant syntax that changes the category of
-  ;; the form where verb is followed by a particle that it can bind.
-  ;; by making the value of :prep be a cons of the preposition and
-  ;; the name of the category to use
+  ;; which should be a preposition or a list of the preposition, the verb,
+  ;; and the target category
   (declare (special category::vg))
-  (unless (word-p prep) (break "Prep isn't a word: ~a~%~a" prep (type-of prep)))
-  (let* ((prep-label (cfr-category (find-single-unary-cfr prep)))
-         (sc (get-subcategorization verb-category)))
-    (unless sc (break "No subcat frame on ~a" verb-category))
-    (pushnew prep (bound-prepositions sc))
-    (let ((rule (define-cfr verb-category `(,verb-category ,prep-label)
-                 :form category::vg
-                 :referent referent)))
-      (add-rule rule verb-category)
-      sc )))
+  (let ((verb-category-copy verb-category)
+        (target-category verb-category))  ;; put-forward
+    (when (consp prep)
+      (setq target-category (third prep)) ;; put-forward
+      (let* ((base-verb (second prep)) ;; #<word "put">
+             (rs (rule-set-for base-verb))
+             (bogus-rule (first (rs-single-term-rewrites rs)))
+             (good-rule (second (rs-single-term-rewrites rs))))
+        (setq verb-category (cfr-category good-rule))
+        ;;(push-debug `(,rs ,verb-category-copy ,verb-category))
+        (delete/cfr/rs bogus-rule rs))
+      (setq prep (first prep)))
+    (unless (word-p prep)
+      (error "Prep isn't a word: ~a~%~a" prep (type-of prep)))
+    (let* ((prep-label (cfr-category (find-single-unary-cfr prep)))         
+           (sc (get-subcategorization verb-category)))
+      (unless sc (error "No subcat frame on ~a" verb-category))
+      (pushnew prep (bound-prepositions sc))
+      (let ((rule (define-cfr target-category `(,verb-category ,prep-label)
+                    :form category::vg
+                    :referent referent)))
+        (add-rule rule target-category)
+        (values rule sc)))))
 
 
 (defgeneric binds-preposition? (head preposition)
@@ -395,9 +419,10 @@
   (:method ((i individual) (w word))
     (filter-patterns i w))
   (:method ((head-edge edge) (prep-edge edge))
-    (assert (or (eq (form-cat-name prep-edge) 'preposition)
-                (eq (form-cat-name prep-edge) 'spatial-preposition)
-                (eq (form-cat-name prep-edge) 'approximator)))
+    (assert (memq (form-cat-name prep-edge) *prep-forms*))
+    #+ignore(or (eq (form-cat-name prep-edge) 'preposition)
+        (eq (form-cat-name prep-edge) 'spatial-preposition)
+        (eq (form-cat-name prep-edge) 'approximator))
     (let ((prep (edge-left-daughter prep-edge)))
       (takes-preposition? (edge-referent head-edge) prep))))
 

@@ -422,9 +422,13 @@ Should mirror the cases on the *single-words* ETF."
     ((or word polyword keyword) word)
     (string (resolve-string-to-word/make word))
     (symbol (or (find-variable-for-category word category)
+                (when (string-equal (symbol-name word)
+                                    (symbol-name (cat-name category)))
+                  category)
                 (error "The symbol ~a does not correspond to a variable of ~a."
                        word category)))
-    (cons (mapcar (lambda (word) (deref-rdata-word word category)) word))))
+    (cons (mapcar (lambda (word) (deref-rdata-word word category))
+                  word))))
 
 (defun decode-rdata-heads (rdata category)
   "Return a plist of specified head words in the realization data."
