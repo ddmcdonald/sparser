@@ -124,12 +124,30 @@
               append (cond ((and (consp val)
                                    (eq (car val) :var))
                               (unwrap-clause-tree val))
-                             ((eq key :items)
-                              (loop for item in val
-                                      append (unwrap-clause-tree item)))))))
+                           ((and (eq key :items)
+                                 (consp (car val)))
+                            (loop for item in val
+                                        append (unwrap-clause-tree item)))))))
 
 (defun make-clause-var (n)
   (intern (format nil "MV~s" n) :SP))
+
+(defun make-pseudo-clause-for-prot-indiv (i)
+  (when (itypep i 'protein)
+    `(protein ,@(when (value-of 'name i) `((:name ,(pname (value-of 'name i)))))
+              ,@(when (value-of 'uid i) `((:uid ,(value-of 'uid i)))))))
+
+(defun make-pseudo-clause-for-indiv (i)
+  (if (itypep i 'protein)
+      (make-pseudo-clause-for-prot-indiv i)
+      (loop for binding in (indiv-binds i)
+              as val = (binding-value binding)
+            collect `(,(intern (pname (pname (binding-variable binding)))
+                               :keyword)
+                       ,(if (individual-p val)
+                            (make-pseudo-clause-for-indiv val)
+                            val)))))
+
 
 (defun clause-tree->clause (ct)
   `(:var ,(second ct) ;; already is a clause-var
@@ -184,10 +202,14 @@
                   (t ref)))
     (:family-members
      (loop for i in (value-of 'items ref)
-           collect `(protein ,@(when (value-of 'name i) `((:name ,(pname (value-of 'name i)))))
-                             ,@(when (value-of 'uid i) `((:uid ,(value-of 'uid i)))))))
+           collect (make-pseudo-clause-for-prot-indiv i)))
     (:items
-     (mapcar #'second ref))
+     (if (consp (car ref)) ;; are these already mentions? if not, it's a distributed conjunction
+         (mapcar #'second ref)
+         (loop for item in ref
+               collect (if (individual-p item)
+                           (make-pseudo-clause-for-indiv item)
+                           item))))
     (:modified-amino-acid
      (cond ((eq (type-of ref) 'discourse-mention)
             (make-clause-var (mention-uid ref)))
