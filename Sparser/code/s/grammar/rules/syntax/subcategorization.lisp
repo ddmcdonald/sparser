@@ -419,6 +419,7 @@
   (:method ((i individual) (w word))
     (filter-patterns i w))
   (:method ((head-edge edge) (prep-edge edge))
+    (declare (special *prep-forms*))
     (assert (memq (form-cat-name prep-edge) *prep-forms*))
     #+ignore(or (eq (form-cat-name prep-edge) 'preposition)
         (eq (form-cat-name prep-edge) 'spatial-preposition)
