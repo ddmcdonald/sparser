@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "lookup"
 ;;;   Module:  "objects;chart:categories:"
-;;;  Version:  June 2018
+;;;  Version:  December 2018
 
 (in-package :sparser)
 
@@ -47,9 +47,10 @@
      (let ((symbol (intern (hyphenated-string-for-pw item) :sparser)))
        (find-or-make-category-object symbol source)))))
 
+
 (defun find-or-make-category-object (symbol &optional (source :define-category) source-location)
-  ;; core routine used by all the various sources for categories to
-  ;; make the minimal object and have it cataloged.
+  "The core routine used by all the various sources for categories to
+   make the minimal object and have it cataloged."
   (declare (special *all-intra-category-relationships-noticed?* *dotted-categories*))
   (unless (if *include-model-facilities*
             (referential-category-p symbol) ;; can happen in generated code
@@ -139,23 +140,21 @@
 ;;;------
 
 (defgeneric category-named (name &optional errorp)
-  (:documentation "Look up a category by name."))
+  (:documentation "Look up a category by name.")
 
-
-(defmethod category-named ((name symbol) &optional errorp)
-  (declare (optimize (speed 3)(safety 0)))
-  (let ((c-symbol (if (eq (symbol-package name) *category-package*)
-                    name
-                    (find-symbol (symbol-name name) *category-package*))))
-    (if (and c-symbol (boundp c-symbol))
+  (:method ((name symbol) &optional errorp)
+    (declare (optimize (speed 3)(safety 0)))
+    (let ((c-symbol (if (eq (symbol-package name) *category-package*)
+                      name
+                      (find-symbol (symbol-name name) *category-package*))))
+      (if (and c-symbol (boundp c-symbol))
         (symbol-value c-symbol)
         (when errorp
           (error "There is no category named ~a." name)))))
 
-
-(defmethod category-named ((c category) &optional errorp)
-  (declare (ignore errorp) (optimize (speed 3)(safety 0)))
-  c)
+  (:method ((c category) &optional errorp)
+    (declare (ignore errorp) (optimize (speed 3)(safety 0)))
+    c)
 
 
 (defun referential-category-named (symbol)
@@ -172,6 +171,24 @@
                     (unless errorp
                       (return-from category-named/c-symbol nil)))))
     (symbol-value c-symbol)))
+
+
+;; speedup pointed out by SBCL profiling
+(defparameter *cat-names* (make-hash-table :size 5000))
+
+(defun cat-name (cat)
+  (declare (optimize (speed 3)(safety 0)))
+  (when (category-p cat) ;; words don't have edge-forms
+    (or
+     (gethash cat *cat-names*)
+     (setf (gethash cat *cat-names*)
+           (intern (symbol-name  (cat-symbol cat)) :sparser)))))
+
+(defun form-cat-name (edge)
+  (declare (optimize (speed 3)(safety 0)))
+  (when (edge-p edge)
+    (cat-name (edge-form edge))))
+
 
 
 ;;;--------
