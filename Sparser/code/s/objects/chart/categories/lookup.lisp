@@ -154,7 +154,7 @@
 
   (:method ((c category) &optional errorp)
     (declare (ignore errorp) (optimize (speed 3)(safety 0)))
-    c)
+    c))
 
 
 (defun referential-category-named (symbol)
