@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   November 2018
+;;;   Version:   December 2018
 
 ;; broken out from all-in-one-file 11/28/91
 ;; 1.0 (8/28/92 v2.3) Added global referring to the referent returned.
@@ -93,6 +93,8 @@
   (declare (special *c3*))
 
   (setq *referent* nil) ;; cleanup from last time
+
+  (record-rule rule)
 
   (cond
     ((or (eq rule :conjunction/identical-adjacent-labels)

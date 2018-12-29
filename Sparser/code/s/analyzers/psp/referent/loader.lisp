@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011,2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   3.3 September 2011
+;;;   Version:   December 2018
 
 ;; (11/17/91 v2.1) bumped referent to 1
 ;; (11/28) broke out the single file into a set of files
@@ -32,6 +31,7 @@
 (lload "referent;decode exp")
 (lload "referent;unary driver")
 (lload "referent;cases")
+(lload "referent;record")
 
 (when *include-model-facilities*
   (lload "referent;new decodings")

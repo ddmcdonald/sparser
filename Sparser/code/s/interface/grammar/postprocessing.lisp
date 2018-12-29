@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "postprocessing"
 ;;;    Module:  "interface;grammar:"
-;;;   version:  April 2018
+;;;   version:  December 2018
 
 #| Goes through the grammar modules after all the grammar has been loaded
    into an image and organizes them for display.  |#
@@ -46,6 +46,9 @@
     (when (gmod-sub-modules gm)
       (setf (gmod-sub-modules gm) (nreverse (gmod-sub-modules gm))))
     (post-process-grammar-module gm))
+  (collect-syntactic-function-usage)
+  (setq *syntactic-functions-in-use*
+        (sort (syntactic-functions-defined) #'alphabetize))
   (setq *summary-grammar-modules*  (nreverse *summary-grammar-modules*)
         *grammar-modules-in-image* (nreverse *grammar-modules-in-image*)
         *toplevel-grammar-modules* (nreverse *toplevel-grammar-modules*))
@@ -121,7 +124,7 @@
 
 ;;;-----------------
 ;;; grammar modules
-;;;-----------------
+ ;;;-----------------
 
 (defun post-process-grammar-module (gm)
   "Order/sort the objects in the various fields in ways that
