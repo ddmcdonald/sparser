@@ -213,8 +213,12 @@
         ((and preposed? ;; "does MEK phosphorylate ERK?"
               (edge-p (first edges))
               (itypep (edge-referent (first edges)) 'do))
-         (when *debug-questions*
-           (break "make-question: do")))
+         (cond
+           ((itypep (edge-form (second edges)) 's)
+            (da/preposed+s (first edges) (second edges)))
+           (t
+            (when *debug-questions*
+              (break "New case - make-question: do")))))
 
         ;; three-edge copular cases
         ((and (or (= 3 (length edges))
