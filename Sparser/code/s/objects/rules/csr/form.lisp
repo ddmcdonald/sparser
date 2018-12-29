@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2018 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "form"
 ;;;    Module:   "objects;rules:csr:"
-;;;   Version:   February 1992     
+;;;   Version:   December 2018
 
 ;; (2/20/92 v2.2) Changed the calls so that the "source"
 ;;     could be passed through to the grammar module registry.
@@ -17,9 +17,10 @@
                         form referent
                         source )
 
-  ;; This form takes only objects and does no translations.
-  ;; It is assumed to only be called internally to object-defining
-  ;; routines, rather than at toplevel.
+  "Called by def-csr/expr to build the rule. Structurally, context-sensitive
+   rules are the same as binary context free rules. The difference lies
+   in the information in the completion field of the rule.
+   See context-sensitive-rule-completion for the details."
 
   (unless source
     (setq source :define-csr))
@@ -39,6 +40,9 @@
                       (right-context :left-daughter))
                 parent))
 
+    (remove-tag :semantic-rule cfr) ;; put on by construct-cfr
+    (setf (get-tag :context-sensitive-rule cfr) t)
+
     cfr ))
 
 
@@ -46,7 +50,12 @@
 
 (defun def-csr/expr (lhs-label rhs-label
                      &key left-context right-context
-                          form-exp referent-exp )
+                       form-exp referent-exp )
+  
+  "Invoked from the def-csr macro in objects/forms/csrs.lisp.
+   Does data checks and sets up the call to define-csr with the
+   correct data given the direction of the context."
+  
   (when (and left-context
              right-context)
     (error "A context-sensitive phrase structure rule is only allowed ~

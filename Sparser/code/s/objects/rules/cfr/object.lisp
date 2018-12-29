@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "object"
 ;;;    Module:   "objects;rules:cfr:"   ;; "context free rules"
-;;;   Version:   March 2018
+;;;   Version:   December 2018
 
 ;; 1.1  (v1.5) added new fields to handle the new rule regime
 ;; 1.2  (1/29 v1.8) Moved in Binary-rule?
@@ -45,6 +45,14 @@
     (when (binary-rule? cfr)
       (get-tag :semantic-rule cfr)))) ;; see construct-cfr
 
+(defgeneric context-sensitive-rule? (rule)
+  (:documentation "A binary semantic rule where one of the
+ constituents serves as a context for the other, which is
+ relabeled according to the specification of the rule.")
+  (:method ((cfr cfr))
+    (when (binary-rule? cfr)
+      (get-tag :context-sensitive-rule cfr))))
+
 (defun unary-rule? (cfr)
   (and (null (cfr-completion cfr))
        (= 1 (length (cfr-rhs cfr)))))
@@ -63,6 +71,16 @@
 
 (defun syntactic-rule? (cfr)
   (get-tag :syntax-rule cfr))
+
+(defun referent-uses-function? (cfr)
+  (let ((ref (cfr-referent cfr)))
+    (when (and ref (consp ref))
+      (eq (car ref) :funcall))))
+
+(defun referent-uses-method? (cfr)
+  (let ((ref (cfr-referent cfr)))
+    (when (and ref (consp ref))
+      (eq (car ref) :method))))
 
 ;;;----------
 ;;; decoders
