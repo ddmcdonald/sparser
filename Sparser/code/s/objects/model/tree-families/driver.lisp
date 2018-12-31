@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2018 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  2.3 March 2015
+;;;  version:  December 2018
 
 ;; initiated 8/4/92, fleshed out 8/27, elaborated 8/31
 ;; fixed a bug in how lists of rules were accumulated 11/2
@@ -117,19 +117,21 @@
 ;;;-----------------
 
 (defun make-rules-for-rdata (category rdata)
-  (declare (special *head-rules-already-created*))
+  (declare (special *head-rules-already-created*
+                    *inhibit-construction-of-systematic-semantic-rules*))
   (check-type category category)
   (when rdata
     (check-type rdata realization-data)
     (flet ((add-rules (rules) (add-rules rules category)))
       (unless *head-rules-already-created*
         (add-rules (make-rules-for-head t rdata category category)))
-      (with-slots (etf mapping locals) rdata
-        (dolist (schema (and etf (filter-schemas (etf-cases etf))))
-          (add-rules (instantiate-rule-schema schema mapping category)))
-        (dolist (schema locals)
-          (add-rules (instantiate-rule-schema schema mapping category
-                                              :local-cases? category)))))))
+      (unless *inhibit-construction-of-systematic-semantic-rules*
+        (with-slots (etf mapping locals) rdata
+          (dolist (schema (and etf (filter-schemas (etf-cases etf))))
+            (add-rules (instantiate-rule-schema schema mapping category)))
+          (dolist (schema locals)
+            (add-rules (instantiate-rule-schema schema mapping category
+                                                :local-cases? category))))))))
 
 
 ;;;---------------------------

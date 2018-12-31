@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "parameters"
 ;;;    Module: "init;"
-;;;   Version: November 2018
+;;;   Version: December 2018
 
 ;;;----------------------------
 ;;; parameterizing the loading
@@ -52,8 +52,18 @@ including composite referents.")
 
 (defvar *allow-pure-syntax-rules* nil
   "Permits looking for combinations off the form labels of the two edges.
-Obviously this is dangerous, so the policy is to locally bind this flag
+Obviously this is dangerous without a thorough means of enforcing semantic
+value restrictions, so the policy is to locally bind this flag
 inside treetop functions with clear dynamic scopes.")
+
+(defvar *inhibit-construction-of-systematic-semantic-rules* nil
+  "In a system that relies primarily on syntactic rules and uses
+large omnibus categories with large realizations fields in order to
+be sure of having good subcategorization coverage of unforeseen
+adjuncts (such as the category 'biological' in the biology sublanguage)
+the usual machinery for interpreting variable restrictions as semantic
+rules can massively over-generate rules that will never execute.
+This switch turns that off.")
 
 (defvar *external-referents* nil
   "Usually the model-level referents to rules or other schema are objects
