@@ -259,8 +259,8 @@
                      `(:specializes ,super-category
                        :instantiates :self
                        :mixins (comlex-verb)
-                       :realization (:verb ,word) ;;///analyze special-cases
-                       )))))
+                       :realization (:verb ,word ;;///analyze special-cases
+                                     :etf svo) )))))
           ;; Adds the rule to the category itself
           (apply #'define-main-verb (cat-symbol category)
                  :infinitive (word-pname word)
