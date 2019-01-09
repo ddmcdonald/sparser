@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2019 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "prepositions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   October 2017
+;;;   Version:   January 2017=9
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 1/11/94 added "through"  7/14 added "up" & "down"  8/19 added "off"
@@ -45,7 +45,8 @@
   (let ((pos (get-tag :function-word word)))
     (when pos
       (or (eq pos category::preposition)
-          (eq pos category::spatial-preposition)))))
+          (eq pos category::spatial-preposition)
+          (eq pos category::spatio-temporal-preposition)))))
 
 
 (defun define-preposition (string &key brackets form super-category synonyms)
@@ -119,7 +120,7 @@ these are really prepositions, and should function as such
 (define-preposition "across" :form 'spatial-preposition) ;; spatial?
 (define-preposition "across from" :form 'spatial-preposition)
 (define-preposition "afore" :form 'spatio-temporal-preposition)
-(define-preposition "after" :form 'spatio-temporal-preposition)
+;;(define-preposition "after" :form 'spatio-temporal-preposition) => sequencer in modifiers
 (define-preposition "against" :form 'spatial-preposition) ;;what about non-spatial sense
 ;; Seems like an adverb (define-preposition "ahead" :form 'spatial-preposition)
 (define-preposition "ahead of" :form 'spatial-preposition)
@@ -149,7 +150,7 @@ these are really prepositions, and should function as such
 (define-preposition "away from")
 (define-preposition "bar")
 (define-preposition "barring")
-(define-preposition "before" :form 'spatio-temporal-preposition)
+;;(define-preposition "before" :form 'spatio-temporal-preposition) => sequencer in modifiers
 (define-preposition "behind" :form 'spatial-preposition)
 (define-preposition "below" :form 'spatial-preposition)
 (define-preposition "beneath" :form 'spatial-preposition)
@@ -169,7 +170,7 @@ these are really prepositions, and should function as such
 (define-preposition "devoid of")
 (define-preposition "down"  :form 'spatial-preposition) ;; as in, 'down the street' ?
 (define-preposition "due to")
-(define-preposition "during"  ) ;; THIS DOESN'T WORK defined as sequencer/prep in modifiers
+(define-preposition "during"  ) ;;///// THIS DOESN'T WORK defined as sequencer/prep in modifiers
 (define-preposition "except")
 (define-preposition "except for") 
 (define-preposition "exclusive of")
