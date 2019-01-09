@@ -120,8 +120,9 @@
        (if (edge-mention edge)
            (when (typep (edge-mention edge) 'discourse-mention)
              (setf (base-description (edge-mention edge)) new-ref))
-           (warn "null edge-mention on edge ~s in ~%~s"
-                 edge (current-string)))
+           (when *reinterpret-dominating-edges-warning*
+             (warn "null edge-mention on edge ~s in ~%~s"
+                   edge (current-string))))
        (let ((parent (edge-used-in edge)))
          (cond
            ((edge-p parent)
