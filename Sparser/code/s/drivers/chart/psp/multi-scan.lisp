@@ -971,6 +971,8 @@
 
 ;;--- no-space analysis
 
+;; (trace-ns-sequences) 
+
 (defun sweep-for-no-space-patterns (sentence)
   ;; "If there is no-space between two successive words in the
   ;;  chart (no-space-before-word?) then call check-for-pattern
@@ -989,7 +991,8 @@
        do
          (setq ns-end-pos (end-of-ns-region pos sent-end-pos))
          (tr :ns-identify-ns-pattern-between pos ns-end-pos)
-         (setq ns-end-pos (collect-no-space-segment-into-word pos ns-end-pos))
+         (unless (= 1 (length (words-between pos ns-end-pos))) ; "gneiss,"
+           (setq ns-end-pos (collect-no-space-segment-into-word pos ns-end-pos)))
          (if (position/<= sent-end-pos ns-end-pos)
            (setq pos nil)
            (setq pos ns-end-pos)))
@@ -1002,7 +1005,7 @@
 
 (defun start-of-ns-region (pos &optional sent-end-pos &aux tt next-pos)
   "Starting at the position 'pos', walk over successive treetops.
-   Returns the pos just before a pos with without pos-preceding-whitespace"
+   Returns the position just before a position without pos-preceding-whitespace"
   (tr :find-ns-region-start pos)
   (loop
     (multiple-value-setq (tt next-pos)
@@ -1017,9 +1020,7 @@
                      ;; otherwise we end up with "(Figure 1b)"
                      ;; resulting in a "(Figure" bioentity and leaving
                      ;; the close-paren stranded 
-                     (chart-position-before next-pos)
-                     ;next-pos
-                     ))))
+                     (chart-position-before next-pos)))))
            (setq pos next-pos))
           (t (tr :ns-found-region-start pos)
              (return pos)))))
