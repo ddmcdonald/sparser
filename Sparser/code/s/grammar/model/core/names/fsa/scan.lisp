@@ -460,8 +460,9 @@
     (let ((next-word (pos-terminal next-position))
           (caps-state (pos-capitalization next-position)))
 
-      (cond ((eq word::\s (pos-terminal next-position))
-             ;; leave the "'s" to be gotten later
+      (cond ((or (eq word::\s (pos-terminal next-position))
+                 (eq word::|ll| (pos-terminal next-position)))
+             ;; leave the "'s" to be gotten later as a concatenation
              position)
 
             ((memq next-word *lc-person-words*)

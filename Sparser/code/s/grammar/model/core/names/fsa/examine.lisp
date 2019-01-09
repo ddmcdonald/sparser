@@ -333,7 +333,7 @@
                 
              (category::compass-point   ;; "Southeast Bank"
               (kpush  `(,count . ,(edge-referent tt)) location))
-             (category::direction   ;; "Southeast Bank"
+             (category::direction
               (kpush  `(,count . ,(edge-referent tt)) location))
 
              (category::path-type
@@ -438,7 +438,7 @@
 
       (when *break-before-examining*
         (break "About to examine the capitalized span ~s"
-               (extract-string-from-char-buffers starting-position ending-position)))
+               (extract-characters-between-positions starting-position ending-position)))
         
       (loop
         ;; Loop over all the treetop constituents between the start and

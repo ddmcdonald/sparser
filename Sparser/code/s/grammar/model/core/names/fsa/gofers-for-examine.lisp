@@ -79,10 +79,13 @@
                (category::name-word
                 (value-of 'name item1)))))))
 
-    (case (cat-symbol label-on-prior-item)
-      (category::kind-of-subsidiary t )   ;; "Department"
-      (category::kind-of-company t)       ;; "Ministry"
-      (otherwise nil ))))
+    (etypecase label-on-prior-item
+      (word nil)
+      (category
+       (case (cat-symbol label-on-prior-item)
+         (category::kind-of-subsidiary t )   ;; "Department"
+         (category::kind-of-company t)       ;; "Ministry"
+         (otherwise nil))))))
         
 
 

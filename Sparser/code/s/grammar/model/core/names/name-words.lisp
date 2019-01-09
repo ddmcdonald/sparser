@@ -269,7 +269,7 @@
     (let* ((word-list (words-between (pos-edge-starts-at edge)
                                      (pos-edge-ends-at edge)))
            (string (polyword-multiword-string-for-list-of-words word-list))
-           (word (define-word/expr string)))
+           (word (resolve/make string))) ;; "of Gwynedd"
       (or (name-word-for-word word)
           (make-name-word-for/silent word (pos-edge-starts-at edge))))))
 
