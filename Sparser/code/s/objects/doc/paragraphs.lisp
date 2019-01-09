@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2018-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "paragraphs"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  December 2018
+;;;  Version:  January 2019
 
 #| Aggregates the special handling of paragraph objects that
 are found incrementally during the handling of large texts.
@@ -58,7 +58,9 @@ the original orthographic paragraph handling of the early 1990s
       this, including paragraph and sentence markup.
 |# 
 
-(defvar *prior-para-newline-pos* nil)
+(defvar *prior-para-newline-pos* nil
+  "The position of the previous instance of paragraph-marking
+   newline character. Used in setting the bounds of the paragraphs.")
 (define-per-run-init-form
     '(setq *prior-para-newline-pos* (position# 0)))
 
@@ -66,7 +68,10 @@ the original orthographic paragraph handling of the early 1990s
 
 (defun new-ortho-paragraph (end-pos)
   "Called from sort-out-result-of-newline-analysis when we
-   are getting our paragraphs from the orthography (versus markup)"
+   are getting our paragraphs from the orthography (versus markup).
+   Interprets multiple newlines as delimiting the ongoing paragraph.
+   'End-pos' is the position of the newline character and the end
+   position of the ongoing paragraph ('terminating')."
 
   (if (eq end-pos (chart-position-after *prior-para-newline-pos*))
     (then ;; two (or more) newlines in a row
@@ -97,8 +102,11 @@ the original orthographic paragraph handling of the early 1990s
                 (if terminating (starts-at-char terminating) 1))
                (end (pos-character-index end-pos))
                (string (extract-string-from-char-buffers start end)))
+          
           ;; remove the leading #\newline characters
           (setq string (remove-leading-whitespace string))
+          (setq string (remove-trailing-whitespace string))
+          ;;/// Replace newlines with paragraph section marker?
           (setf (content-string terminating) string)
           
           (tr :nl-finished-paragraph terminating end-pos)
@@ -106,38 +114,57 @@ the original orthographic paragraph handling of the early 1990s
 
 
 (defun parse-successive-paragraphs ()
+  "Called from the master driver, initiate-successive-sweeps when
+   the flag is up indicating that we're constructing paragraphs
+   on the basis of the orthography of the text (see new-ortho-paragraph).
+   Orchestrates the parsing of successive, incrementally created
+   paragraphs. Stops at eos or if there's no next paragraph.
+   Note that the sentence scan knows to treat newlines as paragraph
+   boundaries in this mode and doesn't cross them."
+  
+  (declare (special *tts-after-each-section*))
+  
   (let ((start-pos (position# 1))
         eos-pos  sentence  previous-paragraph )
-    (loop
-       (multiple-value-setq (eos-pos sentence)
-         (scan-sentences-and-pws-to-eos start-pos))
+    
+    (if (eq (pos-terminal start-pos) *end-of-source*) ; edge-case
+      (tr :sp-eos-return)
+      
+      (loop
+         (multiple-value-setq (eos-pos sentence)
+           (scan-sentences-and-pws-to-eos start-pos))
 
-       (when (eq (pos-terminal eos-pos) *end-of-source*)
-         (tr :sp-eos-return)
-         (return))
-
-       (let* ((paragraph (parent sentence))
-              (s1 (children paragraph)))
-        
-         (when (eq paragraph previous-paragraph)
-           (error "Bad threading. Going to loop on ~a" paragraph))
-         
-         (tr :sp-para-content paragraph)
-         (catch 'do-next-paragraph
-           (sweep-successive-sentences-from s1))
-          
-         (when (null (next paragraph))
-           (tr :sp-null-next-return paragraph)
+         (when (eq (pos-terminal eos-pos) *end-of-source*)
+           (tr :sp-eos-return)
            (return))
-         
-         ;;(push-debug `(,paragraph)) (break "After update: look around")
 
-         (setq previous-paragraph paragraph)
-         (setq start-pos (chart-position-after (ends-at-pos paragraph)))
-         
-         (setq *current-paragraph* (next paragraph))
-         ;; Parent of initialized sentences is the current paragraph
-         ;; so we update it before going around the loop
-         (initialize-sentences :start-pos start-pos)))))
+         (let* ((paragraph (parent sentence))
+                (s1 (children paragraph)))
+           
+           (when (eq paragraph previous-paragraph)
+             (error "Bad threading. Going to loop on ~a" paragraph))
+           
+           (tr :sp-para-content paragraph)
+           (catch 'do-next-paragraph
+             (sweep-successive-sentences-from s1))
+
+           (when *tts-after-each-section*
+             (format t "~^&~%")
+             (tts t (starts-at-pos paragraph) (ends-at-pos paragraph))
+             (format t "~^&~%"))
+           
+           (when (null (next paragraph))
+             (tr :sp-null-next-return paragraph)
+             (return))
+           
+           (setq previous-paragraph paragraph)
+           (setq start-pos (chart-position-after (ends-at-pos paragraph)))
+           ;;(push-debug `(,paragraph)) (break "After update: look around")
+           
+           (setq *current-paragraph* (next paragraph))
+           
+           ;; Parent of initialized sentences is the current paragraph
+           ;; so we update it before going around the loop
+           (initialize-sentences :start-pos start-pos))))))
 
 

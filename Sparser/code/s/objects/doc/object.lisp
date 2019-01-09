@@ -483,7 +483,6 @@
     p))
 
 (defun begin-new-paragraph (start-pos)
-  (declare (special *tts-after-each-section*))
   (let ((p (allocate-paragraph))
         (ongoing *current-paragraph*))
     (setf (name p) (next-indexical-name :paragraph))
@@ -498,12 +497,7 @@
       (setf (ends-at-char ongoing) (pos-character-index start-pos))
       (setf (parent p) (parent ongoing))
       (setq *previous-paragraph* ongoing)
-      (append-doc-element-to-children-of-parent p)
-      (when (and *tts-after-each-section*
-                 ongoing)
-        (format t "~^&~%")
-        (tts t (starts-at-pos ongoing) start-pos)
-        (format t "~^&~%")))
+      (append-doc-element-to-children-of-parent p))
     (setf *current-paragraph* p)
     p))
 
@@ -730,17 +724,16 @@
         (if (eq (pos-terminal period-pos) *end-of-source*)
           (pos-character-index period-pos)
           (1+ (pos-character-index period-pos))))
-  
   (let ((start (starts-at-char sentence))
         (end (ends-at-char sentence)))
     (unless (> start 0) (error "Sentence start is negative"))
     (unless (> end start) 
       (push-debug `(,sentence ,start ,end ,period-pos))
       (error "Sentence end (~a) less than start (~a)" end start))
-    
     (let ((substring (extract-string-from-char-buffers
                       (starts-at-char sentence)
                       (ends-at-char sentence))))
+      (setq substring (remove-leading-whitespace substring))
       (setf (sentence-string sentence) substring)
       sentence)))
 

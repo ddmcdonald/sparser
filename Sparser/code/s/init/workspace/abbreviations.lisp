@@ -407,15 +407,20 @@
   (tts))
 
 (defun f (pathname
-          &key time (initial-region :header) ((:paragraph make-orthographic-paragraphs)))
+          &key time (initial-region :header)
+            ((:paragraph make-orthographic-paragraphs) t)
+            ((:trace tts-after-para) t))
   (declare (ignore initial-region))
   (when *open-stream-of-source-characters*
     (close-character-source-file))
   (format t "~%analyzing ~A~%~%" pathname)
   (if time
-    (time (analyze-text-from-file pathname :paragraph make-orthographic-paragraphs))
+    (time (analyze-text-from-file pathname
+                                  :paragraph make-orthographic-paragraphs
+                                  :trace tts-after-para))
     (analyze-text-from-file pathname
-                            :paragraph make-orthographic-paragraphs)))
+                            :paragraph make-orthographic-paragraphs
+                            :trace tts-after-para)))
 
 
 ;;------------ generic, switched routine
