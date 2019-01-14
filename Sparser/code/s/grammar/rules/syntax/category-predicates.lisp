@@ -8,10 +8,11 @@
 ;; Predicates on synteactic form categories, mostly for the use of the chunker.
 
 (defparameter *prep-forms*
-  `(CSPATIAL-PREPOSITION
-    PREPOSITION
+  `(preposition
+    spatial-preposition
     spatio-temporal-preposition
-    approximator))
+    approximator
+    sequencer))
 
 (defvar *adjg-word-categories*
   '(CATEGORY::ADVERB 

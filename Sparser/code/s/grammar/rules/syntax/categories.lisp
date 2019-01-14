@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER) -*-
-;;; copyright (c) 1992-1999,2011-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2019 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2018
+;;;  Version:  January 2019
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -267,6 +267,7 @@
 (def-form-category  spatial-preposition)
 (def-form-category  temporal-preposition)
 (def-form-category  spatio-temporal-preposition)
+(def-form-category  sequencer)
 
 (def-form-category  verb)
 (def-form-category  verb+s)

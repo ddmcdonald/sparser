@@ -292,9 +292,7 @@
     (declare (special prep-edge left-daughter right-daughter))
     
     (flet ((prep-edge? (edge)
-             (memq (form-cat-name edge)
-                   '(preposition
-                     spatio-temporal-preposition spatial-preposition))))
+             (memq (form-cat-name edge) *prep-forms*)))
       (cond
         ((and
           (eq (edge-rule prep-edge) 'resolve-initial-stranded-hyphen)

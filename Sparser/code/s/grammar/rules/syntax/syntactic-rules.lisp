@@ -405,7 +405,7 @@
         :head :right-edge
         :form ,(second vv)
         :referent (:function interpret-adverb+verb left-edge right-edge)))
-  
+
   (eval
    `(def-syntax-rule  (,(car vv) adverb)
         :head :left-edge
@@ -842,10 +842,11 @@
                   (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive)
 		  (verb+present vg))
    do
-     (loop for prep in '(before after)
+     (loop for prep in '(before after) ;;/// 1/11/14 should work over sequencer
         do
           (eval
-           `(def-form-rule (,prep ,(car vv))
+           `(def-form-rule (,prep ,(car vv))  ;; before/after aren't syntactic categories
+            ;;(def-syntax-rule (,prep ,(car vv)) /// sequencer case
                 :head :right-edge
                 :form subordinate-clause
                 :referent (:function make-subordinate-clause left-edge right-edge))))
@@ -910,7 +911,7 @@
   :form to-comp
   :referent (:daughter right-edge))
 
-(loop for prep in '(preposition spatial-preposition spatio-temporal-preposition)
+(loop for prep in *prep-forms* ;;'(preposition spatial-preposition spatio-temporal-preposition)
       do
         (eval 
          `(def-syntax-rule (,prep vg+ing) ;; J3 hydrolysis maybe elevate?
@@ -1030,10 +1031,16 @@
         :form pp-wh-pronoun
         :referent (:function make-relativized-pp left-referent right-referent)))
   (eval
-   `(def-form-rule (spatio-temporal-preposition ,nb) ;;//// get rid of spatial-preposition!
+   `(def-form-rule (spatio-temporal-preposition ,nb)
         :head :left-edge
         :form pp-wh-pronoun
-        :referent (:function make-relativized-pp left-referent right-referent))))
+        :referent (:function make-relativized-pp left-referent right-referent)))
+  (eval
+   `(def-form-rule (sequencer ,nb) ;; "after which" /// 1/11/19 appears not to work??
+        :head :left-edge
+        :form pp-wh-pronoun
+        :referent (:function make-relativized-pp left-referent right-referent)))
+)
 
 
 
@@ -1275,12 +1282,12 @@ similar to an oncogenic RasG12V mutation (9)."))
 
 
 (loop for nb in `(,@*n-bar-categories*) ;; see core/adjuncts/sequence/object.lisp
-   do (eval `(def-form-rule (sequencer ,nb)
+   do (eval `(def-syntax-rule (sequencer ,nb)
                 :form np
                 :head :right-edge
                 :referent (:function determiner-noun left-edge right-edge))))
 
-(def-form-rule (sequencer np)
+(def-syntax-rule (sequencer np)
   :head :left-edge
   :form pp
   :referent (:function make-pp left-edge right-edge))

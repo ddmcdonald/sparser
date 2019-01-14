@@ -120,7 +120,8 @@ these are really prepositions, and should function as such
 (define-preposition "across" :form 'spatial-preposition) ;; spatial?
 (define-preposition "across from" :form 'spatial-preposition)
 (define-preposition "afore" :form 'spatio-temporal-preposition)
-;;(define-preposition "after" :form 'spatio-temporal-preposition) => sequencer in modifiers
+(when (current-script :biology)
+  (define-preposition "after" :form 'spatio-temporal-preposition)) ;; => sequencer in modifiers
 (define-preposition "against" :form 'spatial-preposition) ;;what about non-spatial sense
 ;; Seems like an adverb (define-preposition "ahead" :form 'spatial-preposition)
 (define-preposition "ahead of" :form 'spatial-preposition)
@@ -150,7 +151,8 @@ these are really prepositions, and should function as such
 (define-preposition "away from")
 (define-preposition "bar")
 (define-preposition "barring")
-;;(define-preposition "before" :form 'spatio-temporal-preposition) => sequencer in modifiers
+(when (current-script :biology)
+  (define-preposition "before" :form 'spatio-temporal-preposition)) ;; => sequencer in modifiers
 (define-preposition "behind" :form 'spatial-preposition)
 (define-preposition "below" :form 'spatial-preposition)
 (define-preposition "beneath" :form 'spatial-preposition)
