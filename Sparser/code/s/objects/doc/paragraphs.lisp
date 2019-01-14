@@ -127,12 +127,18 @@ the original orthographic paragraph handling of the early 1990s
   (let ((start-pos (position# 1))
         eos-pos  sentence  previous-paragraph )
     
-    (if (eq (pos-terminal start-pos) *end-of-source*) ; edge-case
+    (if (eq (pos-terminal start-pos) *end-of-source*)
+      ;;/// possibly spurious event while debugging
       (tr :sp-eos-return)
       
       (loop
-         (multiple-value-setq (eos-pos sentence)
+         (multiple-value-setq (eos-pos sentence) ;; eos = 'end of sentence'
            (scan-sentences-and-pws-to-eos start-pos))
+
+         (when (or (eq (pos-terminal eos-pos) *end-of-source*)
+                   (null sentence))
+           (tr :sp-eos-return)
+           (return))
 
          (when (eq (pos-terminal eos-pos) *end-of-source*)
            (tr :sp-eos-return)
