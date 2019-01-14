@@ -539,7 +539,7 @@
      ;;(break "stranded vg do - ~a" vg2-edge)
      ;; These cases don't set the preposed aux, so the vg segment-finished
      ;; action will have taken up the tense from the do, but not connected the edge.
-     (let ((vg2-tweaked (compose-discontiuous-aux vg1-edge vg2-edge)))
+     (let ((vg2-tweaked (compose-discontinuous-aux vg1-edge vg2-edge)))
        ;; promote the edge to VP
        (setf (edge-form vg2-tweaked) category::vp)
        vg2-tweaked))

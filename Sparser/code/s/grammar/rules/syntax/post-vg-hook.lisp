@@ -57,14 +57,14 @@
       ;; Reinstate the original form label for the aux
       (setf (edge-form aux-edge) aux-form) 
       ;; hook it up
-      (compose-discontiuous-aux aux-edge vg-edge))))
+      (compose-discontinuous-aux aux-edge vg-edge))))
 
 (defun revert-preposed-aux ()
   (multiple-value-bind (aux-edge aux-form)
       (preposed-aux?)
     (setf (edge-form aux-edge) aux-form)))
 
-(defun compose-discontiuous-aux (aux-edge vg-edge)
+(defun compose-discontinuous-aux (aux-edge vg-edge)
   ;; Look for a rule
   (let ((rule (multiply-edges aux-edge vg-edge)))
     (unless rule
