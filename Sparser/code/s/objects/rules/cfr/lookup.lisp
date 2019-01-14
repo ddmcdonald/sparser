@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "lookup"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   5.2 December 1994
+;;;   Version:   Jamuary 2019
 
 ;; 5.0 (9/3/92 v2.3) bumped the version to make changes that simplify
 ;;      the accounting. Revised most of the routines.
@@ -21,21 +21,32 @@
 ;;; looking up rules from expressions
 ;;;-----------------------------------
 
+(defun find-cfr (lhs-expression rhs-expressions)
+  ;;//// Not called internally
+  ;; intended for external use by users, filters for the lhs when
+  ;; there are multiple definitions
+
+  (when lhs-expression ;; i.e. allow it to be nil
+    (typecase lhs-expression
+      (symbol)
+      (string)
+      (otherwise (error "The input to find/cfr is just like that of ~
+                         Def-cfr~%  i.e. the labels should be given as ~
+                         symbols or strings."))))
+  (unless (listp rhs-expressions)
+    (error "The second argument to find/cfr, the labels for the ~
+            righthand side~%of the rule, must be a list"))
+  (multiple-value-bind (cfr/s lhs rhs)
+                       (lookup/cfr/expression lhs-expression
+                                              rhs-expressions)
+    (declare (ignore lhs rhs))
+    cfr/s ))
+
+
+
 (defun lookup/cfr/expression (lhs-symbol rhs)
-  
-  ;; called by Def-cfr/expr and similar macro intermediaries to check
-  ;; whether the rule expressions being passed in pick out an already
-  ;; existing cfr -- in which case we'll return it instead of making
-  ;; a new one.  Returns the decoded labels to avoid having to do
-  ;; them again.
-
-  ;; This routine does not check whether the lhs being passed in
-  ;; matches the lhs of the rule it finds, such duplication checks
-  ;; are done by the caller. (N.b. this doesn't apply to single
-  ;; words since they can have multiple definitions -- here the input
-  ;; lhs is used as the key to locate the correct cfr if it already
-  ;; exists.)
-
+  "Converts expressions (symbols, lists, strings) to labels
+   and calls lookup/cfr to do the actual lookup."
   (let ((lhs-label
          (resolve/make lhs-symbol :source :def-category))
         (rhs-list-of-labels
@@ -45,35 +56,8 @@
            (list (or (polyword-named (first rhs))
                      (define-polyword/expr (first rhs))))
            (mapcar #'resolve/make rhs))))
-
     (let ((cfr (lookup/cfr lhs-label rhs-list-of-labels)))
-
       (values cfr lhs-label rhs-list-of-labels))))
-
-
-
-(defun find-cfr (lhs-expression rhs-expressions)
-
-  ;; intended for external use by users, filters for the lhs when
-  ;; there are multiple definitions
-
-  (when lhs-expression ;; i.e. allow it to be nil
-    (typecase lhs-expression
-      (symbol )
-      (string )
-      (otherwise (error "The input to find/cfr is just like that of ~
-                         Def-cfr~%  i.e. the labels should be given as ~
-                         symbols or strings."))))
-  (unless (listp rhs-expressions)
-    (error "The second argument to find/cfr, the labels for the ~
-            righthand side~%of the rule, must be a list"))
-
-  (multiple-value-bind (cfr/s lhs rhs)
-                       (lookup/cfr/expression lhs-expression
-                                              rhs-expressions)
-    (declare (ignore lhs rhs))
-
-    cfr/s ))
 
 
 
@@ -82,23 +66,96 @@
 ;;; finding the rule that corresponds to a righthand side
 ;;;-------------------------------------------------------
 
-(defun lookup/cfr (lhs-label rhs-list-of-labels)
+(defun lookup/cfr (lhs-label rhs-labels)
+  "This routine emulates what will happen at runtime, returning
+   the cfr this rhs picks out if there is one.
+   If it's a binary rule, it's straight multiplication, though if
+   multiple lhs are allowed, a further check is made against the
+   list that the multiplication may send back.
+   If it's unary, we include the lhs label to pick out the right
+   one among the several meanings (cfrs) a word might have."
+  (if (null (cdr rhs-labels)) ;; length = 1
+    (lookup-unary-rule lhs-label rhs-labels)
+    (lookup-rule/rhs rhs-labels)))
 
-  ;; This routine emulates what will happen at runtime, returning
-  ;; the cfr this rhs picks out if there is one.
-  ;; If it's a binary rule, it's straight multiplication, though if
-  ;;  multiple lhs are allowed, a further check is made against the
-  ;;  list that the multiplication may send back.
-  ;; If it's n-ary, it's a cascade of multiplications.
-  ;; If it's unary, we include the lhs label to pick out the right
-  ;;  one among the several meanings (cfrs) a word might have, except
-  ;;  for the case of polywords, which we treat as n-ary rules since
-  ;;  that's how they're handled at runtime.
+(defun lookup-rule/rhs (rhs-labels)
+  "For a binary rule all that matters for rule identity is the
+   two labels (words, polywords, categories) on its righthand side.
+   We Look up the rule sets and indexes. If they are there then look at
+   the labels to distinguish among the three sorts of rules."
+  (let* ((left-label (first rhs-labels))
+         (right-label (second rhs-labels))
+         (left-rs (label-rule-set left-label))
+         (right-rs (label-rule-set right-label)))
+    (when (and left-rs right-rs)
+      (let ((left-ids (rs-right-looking-ids left-rs))
+            (right-ids (rs-left-looking-ids right-rs)))
+        (when (and left-ids right-ids)
+          (cond
+            ((and (get-tag :form-category left-label)
+                  (get-tag :form-category right-label))
+             (lookup-syntactic-rule left-ids right-ids))
+            ((or (get-tag :form-category left-label)
+                 (get-tag :form-category right-label))
+             (lookup-form-rule rhs-labels left-ids right-ids))
+            (t (lookup-semantic-rule left-ids right-ids))))))))
 
-  (if (null (cdr rhs-list-of-labels)) ;; length = 1
-    (lookup-unary-rule lhs-label rhs-list-of-labels)
-    (multiply-through-terms-of-rhs rhs-list-of-labels lhs-label)))
 
+;;;-------
+;;; cases
+;;;-------
+
+(defun lookup-semantic-rule (left-ids right-ids)
+  (let ((left-semantic-id (car left-ids))
+        (right-semantic-id (car right-ids)))
+    (when (and left-semantic-id right-semantic-id)
+      (multiply-ids left-semantic-id right-semantic-id))))
+
+
+(defun lookup-form-rule (rhs-labels left-ids right-ids)
+  (multiple-value-bind (edge-designator ;; or :left-edge :right-edge
+                        form-label regular-label)
+      (check-for-just-one-form-category rhs-labels)
+    (let ( form-id  regular-id )
+      (ecase edge-designator
+        (:left-edge
+         ;; the left (first) label of the pair in the rhs is the form category
+         (setq form-id (cdr left-ids)
+               regular-id (cdr right-ids)))
+        (:right-edge ;; right label is
+         (setq form-id (cdr right-ids)
+               regular-id (car left-ids))))
+      (when (and form-id regular-id)
+        (if (eq edge-designator :left-edge)
+          (multiply-ids form-id regular-id)
+          (multiply-ids regular-id form-id))))))
+
+
+(defun lookup-syntactic-rule (left-ids right-ids)
+  (let ((left-form-id (cdr left-ids))
+        (right-form-id (cdr right-ids)))
+    (when (and left-form-id right-form-id)
+      (multiply-ids left-form-id
+                    right-form-id))))
+
+
+(defun lookup-unary-rule (lhs rhs)
+  "Go through the unary rules for the word (or label) on the rhs
+   looking for one whose lhs is the same as the one passed in,
+   otherwise return nil."
+  (let* ((rule-set (rule-set-for (first rhs)))
+         (rules (when rule-set
+                  (rs-single-term-rewrites rule-set))))
+    (when rules
+      (dolist (cfr rules)
+        (when (eq (cfr-category cfr) lhs)
+          (return-from lookup-unary-rule cfr)))
+      nil )))
+
+
+
+#| OBE  Use a 'debris analysis' rule when you want more than two terms
+   on the rhs. 
 
 (defun multiply-through-terms-of-rhs (list-of-rhs-terms
                                       &optional lhs )
@@ -125,27 +182,6 @@
               cfr/s
               nil )))
         cfr/s ))))
-
-
-;;;-------
-;;; cases
-;;;-------
-
-(defun lookup-unary-rule (lhs rhs)
-  ;; go through the unary rules for the word (or label) on the rhs
-  ;; looking for one whose lhs is the same as the one passed in,
-  ;; otherwise return nil.
-  (let* ((rule-set (rule-set-for (first rhs)))
-         (rules (when rule-set
-                  (rs-single-term-rewrites rule-set))))
-
-    (when rules
-      (dolist (cfr rules)
-        (when (eq (cfr-category cfr) lhs)
-          (return-from lookup-unary-rule cfr)))
-      nil )))
-
-
 
 (defun multiply-through-nary-rhs (rhs-terms)
   (let ((rule
@@ -217,23 +253,4 @@
           (throw :nary-multiply nil))
         (else
           (throw :nary-multiply nil))))))
-
-
-
-
-(defun lookup-syntactic-rule (binary-rhs)
-  (let ((left-rs (label-rule-set (first binary-rhs)))
-        (right-rs (label-rule-set (second binary-rhs))))
-    (when (and left-rs right-rs)
-
-      (let ((left-ids (rs-right-looking-ids left-rs))
-            (right-ids (rs-left-looking-ids right-rs)))
-        (when (and left-ids right-ids)
-
-          (let ((left-form-id (cdr left-ids))
-                (right-form-id (cdr right-ids)))
-            (when (and left-form-id right-form-id)
-
-              (multiply-ids left-form-id
-                            right-form-id))))))))
-
+|#

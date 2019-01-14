@@ -88,7 +88,7 @@
 
     ;; 1st check whether there already a rule based on this rhs
     (let ((earlier-cfr
-           (lookup-syntactic-rule rhs)))
+           (lookup-rule/rhs rhs)))
       (if earlier-cfr
         (revise-cfr-ancilaries earlier-cfr form referent)
         (let ((cfr

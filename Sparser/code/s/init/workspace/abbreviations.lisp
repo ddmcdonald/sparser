@@ -270,12 +270,13 @@
         (e2 (edge# n2)))
     (multiply-edges e1 e2)))
 
-(defmacro ml (label-name1 label-name2) ;; only semantic labels
-  `(multiply-labels ,(resolve label-name1)
-                    ,(resolve label-name2)))
+(defmacro ml (label-name1 label-name2)
+  `(lookup-rule/rhs '(,(resolve label-name1) ,(resolve label-name2))))
+  #+ignore(multiply-labels ,(resolve label-name1) ;; just semantic rulse
+                    ,(resolve label-name2))
 
 (defmacro fsr (label-name1 label-name2) ;; find syntax rule
-  `(lookup-syntactic-rule
+  `(lookup-rule/rhs
     (list (resolve ',label-name1) (resolve ',label-name2))))
 
 

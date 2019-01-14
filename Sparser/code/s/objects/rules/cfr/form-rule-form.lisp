@@ -225,7 +225,6 @@
 
 
 (defun define-form-rule-from-schema (schr)
-  ;; Called from find-form-rule
   (let ((form (schr-lhs schr))
         (rhs (schr-rhs schr))
         (head-edge (cadr (memq :head-edge (schr-descriptors schr))))
@@ -233,15 +232,13 @@
         (*schema-being-instantiated* schr))
     (declare (special *schema-being-instantiated*))
     (let ((cfr (def-form-rule/expr rhs
-                                   :form form
+                 :form form
                  :head (intern (symbol-name head-edge)
                                (find-package :keyword))
                  :referent referent-exp
                  :schema schr)))
       cfr)))
                  
-
-
 
 ;;;----------
 ;;; builders
