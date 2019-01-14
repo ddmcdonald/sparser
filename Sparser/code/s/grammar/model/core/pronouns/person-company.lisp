@@ -232,8 +232,14 @@
     (when collections/dh
       (let ( type  collection  collections-of-people/dh  )
         (dolist (c/dh collections/dh)
-          (setq collection (first c/dh)
-                type (value-of 'type collection))
+          (if (typep c/dh 'discourse-mention) ;; new regime
+            (setq collection (base-description c/dh)
+                  type (itype-of collection))
+            (else ;; original regime
+              (break "discourse-entry returned ~a, which is a ~a"
+                     c/dh (type-of c/dh))                            
+              (setq  (first c/dh)
+                     type (value-of 'type collection))))
           (when (eq type (category-named 'person))
             (push c/dh collections-of-people/dh)))
 
