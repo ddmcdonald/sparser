@@ -634,17 +634,29 @@ is a case in handle-any-anaphor
   (let ((s (identify-current-sentence)))
     (setf (preposed-aux (contents s)) nil)))
     
-(defun preposed-aux? ()
+(defun preposed-aux? (&key in-vg? first-np-edge)
   "If the delayed action record in the contents of the current sentence
    records a preposed auxiliary the return the contents of the
    field, i.e. the edge over the auxiliary and its original form."
-  (let* ((s (identify-current-sentence))
-         (preposed-aux-info (preposed-aux (contents s))))
-    (when preposed-aux-info
-      (let ((edge (car preposed-aux-info))
-            (original-form (cdr preposed-aux-info)))
-        (values edge
-                original-form)))))
+  (if *alternative-wh-question-strategy*
+      (loop for e in
+              (cond ((or in-vg?
+                         (and (boundp '*chunk*)
+                              (member 'vg (chunk-forms *chunk*))))
+                     (edges-before-chunk (car (last *chunks*))))
+                    (first-np-edge (edges-before first-np-edge))
+                    (t (edges-before-chunk)))
+            when (member (cat-name (edge-form e))
+                         '(preposed-auxiliary))
+              do (return (values e (edge-form e))))
+        
+      (let* ((s (identify-current-sentence))
+             (preposed-aux-info (preposed-aux (contents s))))
+        (when preposed-aux-info
+          (let ((edge (car preposed-aux-info))
+                (original-form (cdr preposed-aux-info)))
+            (values edge
+                    original-form))))))
 
 
 (defgeneric record-initial-wh (edge)

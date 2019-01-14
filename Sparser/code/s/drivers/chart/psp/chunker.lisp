@@ -590,7 +590,8 @@
             (not (ng-head? e)))))
       
       ((singular-noun-and-present-verb? e)
-       (or (preceding-pronoun-or-which? e edges-before)
+       (or (preposed-aux? :in-vg? t)
+           (preceding-pronoun-or-which? e edges-before)
            (preceding-plural-noun? e)
            (and (not (and (preceding-det-prep-poss-or-adj e edges-before)
                           ;; allow for "to form GDP"
@@ -914,6 +915,15 @@ than a bare "to".  |#
 (defun edges-after (e)(ev-top-edges (pos-starts-here (pos-edge-ends-at e)) ))
 (defun edges-before (e)(ev-top-edges (pos-ends-here (pos-edge-starts-at e)) ))
 (defun all-edges-at (e)(ev-top-edges (pos-starts-here (pos-edge-starts-at e)) ))
+
+(defvar *chunk*)
+(defun edges-before-chunk (&optional (chunk (and (boundp '*chunk*)
+                                                 *chunk*)))
+  (and chunk
+       (edge-vector-p (car (chunk-ev-list chunk)))
+       (ev-top-edges
+        (pos-ends-here (ev-position (car (chunk-ev-list chunk)))))))
+             
 
 (defun ev-edges (ev)
   "Return a list of all the edges on this edge vector.

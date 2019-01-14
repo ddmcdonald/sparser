@@ -1734,6 +1734,10 @@
     :pattern (NP ADJECTIVE)
     :action (:function postmodifying-adj first second))
 
+(define-debris-analysis-rule YES-NO-NP-ADJP
+    :pattern (BE NP ADJP)
+    :action (:function yes-no-postmodifying-adj first second third))
+
 (define-debris-analysis-rule NP-ADJP
     :pattern (NP ADJP)
     :action (:function postmodifying-adj first second))
@@ -1759,8 +1763,31 @@
     :pattern (PP ADJP)
     :action (:function postmodifying-adj first second))
 
+(defun yes-no-postmodifying-adj (be-edge first-edge adjp-edge)
+  (when (preposed-aux? :first-np-edge first-edge) ;; if we have a preoposed-aux, this is a question
+    (warn "yes-no-postmodifying-adj -- DAVID LOOK HERE")
+    (when nil
+      (let* ((adjp (edge-referent adjp-edge))
+             (target
+              (find-target-satisfying
+               (right-fringe-of first-edge)
+               #'(lambda (e)
+                   (and (np-target? e)
+                        (subcategorized-variable adjp :subject (edge-referent e)))))))
+        (when target
+          (let ((pred
+                 (create-predication-and-edge-by-binding
+                  :subject (edge-referent target) adjp adjp-edge))) 
+            (make-edge-spec
+             :category (edge-category target)
+             :form (edge-form target)
+             :referent (bind-dli-variable 'predication pred (edge-referent target))
+             :target target
+             :direction :right)
+            ))))))
+
 (defun postmodifying-adj (first-edge adjp-edge) ; examples 
-  (when (not (preposed-aux?)) ;; if we have a preoposed-aux, this is a question
+  (when (not (preposed-aux? first-edge)) ;; if we have a preoposed-aux, this is a question
     (let* ((adjp (edge-referent adjp-edge))
            (target
             (find-target-satisfying
