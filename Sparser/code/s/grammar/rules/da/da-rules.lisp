@@ -1787,25 +1787,26 @@
             ))))))
 
 (defun postmodifying-adj (first-edge adjp-edge) ; examples 
-  (when (not (preposed-aux? first-edge)) ;; if we have a preoposed-aux, this is a question
-    (let* ((adjp (edge-referent adjp-edge))
-           (target
-            (find-target-satisfying
-             (right-fringe-of first-edge)
-             #'(lambda (e)
-                 (and (np-target? e)
-                      (subcategorized-variable adjp :subject (edge-referent e)))))))
-      (when target
-        (let ((pred
-               (create-predication-and-edge-by-binding
-                :subject (edge-referent target) adjp adjp-edge))) 
-          (make-edge-spec
-           :category (edge-category target)
-           :form (edge-form target)
-           :referent (bind-dli-variable 'predication pred (edge-referent target))
-           :target target
-           :direction :right)
-          )))))
+  ;; (when (not (preposed-aux?)) ;; if we have a preoposed-aux, this is a question
+  (let* ((adjp (edge-referent adjp-edge))
+         (target
+          (find-target-satisfying
+           (right-fringe-of first-edge)
+           #'(lambda (e)
+               (and (np-target? e)
+                    (subcategorized-variable adjp :subject (edge-referent e)))))))
+    (when target
+      (let ((pred
+             (create-predication-and-edge-by-binding
+              :subject (edge-referent target) adjp adjp-edge))) 
+        (make-edge-spec
+         :category (edge-category target)
+         :form (edge-form target)
+         :referent (bind-dli-variable 'predication pred (edge-referent target))
+         :target target
+         :direction :right)
+        ))))
+;;)
 
 
 (loop for ap in '(adjp adjective comparative-adjective superlative-adjective
