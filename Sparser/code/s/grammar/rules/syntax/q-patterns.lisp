@@ -13,6 +13,31 @@
 ;;;--------------------------
 ;;; polar questions (yes/no)
 ;;;--------------------------
+         
+(defun make-polar-edge (statement-edge)
+  "The pattern for doing a polar question is that the function
+   for the specific case does its work and makes an edge over the
+   its constituents. Then it calls this function to wrap their result
+   in a polar question."
+  (let* ((start-vec (edge-starts-at statement-edge))
+         (end-vec (edge-ends-at statement-edge))
+         (pred (edge-referent statement-edge))
+         (edge
+          (make-completed-unary-edge
+           start-vec end-vec
+           'make-polar-edge ;; rule
+           statement-edge
+           (itype-of (edge-referent statement-edge))
+           category::s ;; form
+           (make-polar-question (edge-referent statement-edge)))))
+    edge))
+
+(defun make-polar-question (statement)  
+  "Abstracted constructor so it will done the same way every time."
+  (tr :wh-walk "make-polar-question")
+  (find-or-make-individual
+   'polar-question :statement statement))
+
 
 (defun make-initial-there-is-edge (preposed-aux-edge)
   "Called by detect-early-information when there is a preposed auxillary
@@ -35,14 +60,6 @@
         ;;(format t "~&there-is edge: ~a~%" edge)
         ;; add trace
         edge))))
-
-
-
-(defun make-polar-question (statement)  
-  "Abstracted constructor so it will done the same way every time."
-  (tr :wh-walk "make-polar-question")
-  (find-or-make-individual
-   'polar-question :statement statement))
 
 
 ;;--- cases called from make-this-a-question-if-appropriate
@@ -134,20 +151,7 @@
     ;;(push-debug `(,be ,subj ,obj ,subj-vg-edge ,copula-edge ,copular-meaning))
     (when copula-edge
       (make-polar-edge copula-edge))))
-         
-(defun make-polar-edge (statement-edge)
-  (let* ((start-vec (edge-starts-at statement-edge))
-         (end-vec (edge-ends-at statement-edge))
-         (pred (edge-referent statement-edge))
-         (edge
-          (make-completed-unary-edge
-           start-vec end-vec
-           'make-polar-edge ;; rule
-           statement-edge
-           (itype-of (edge-referent statement-edge))
-           category::s ;; form
-           (make-polar-question (edge-referent statement-edge)))))
-    edge))
+
     
 (defun make-polar-adjective-question (start-pos end-pos edges)
   (tr :wh-walk "make-polar-adjective-question")
@@ -178,7 +182,7 @@
             (make-edge-over-long-span
              start-pos end-pos
              (itype-of copular-pred)
-             :rule 'make-polar-adjective-question-internal
+             :rule 'make-polar-adjective-question
              :form category::s
              :referent copular-pred))))
     ;; this is bound since make-copular-adjective needs to know the edge for the "BE"
@@ -223,6 +227,27 @@
   (when *debug-questions*
     (break "Substantial refactoring require to find equivalent of the 'item' ~
       that wh-stranded-prep uses for its prepositional complement")))
+
+
+;; Does phosphorylated MAP2K1 being high follow phosphorylated BRAF reaching a high value?"
+(defun polar-sentential-subject (aux-edge s-edge vp-edge start-pos end-pos)
+  "The main verb is in the vp and the s is its subject.
+   The s is invariably in an oblique aspect like the progressive (+ing)
+   which probably should be checked for."
+  (let* ((s-ref (edge-referent s-edge))
+         (vp-ref (edge-referent vp-edge))
+         (variable (open-core-variable vp-ref)))
+    (when variable
+      (let* ((q (bind-variable variable s-ref vp-ref))
+             (edge (make-edge-over-long-span
+                    start-pos end-pos
+                    (edge-category vp-edge)
+                    :rule 'polar-sentential-subject
+                    :form category::s
+                    :referent q)))
+        (make-polar-edge edge)))))
+  
+    
 
 
 
@@ -411,21 +436,28 @@
                   (when parent-of-head
                     (tuck-new-edge-under-already-knit
                      subsumed-edge new-edge dominating-edge :right))
-                  (if (= 3 (length (treetops-between start-pos end-pos)))
-                    ;; All the treetops are used in part of the main edge
-                    ;; but need an edge over it all
-                    (make-chart-edge
-                     :category (edge-category main-edge)
-                     :form category::s
-                     :rule 'wh-stranded-prep
-                     :starting-position start-pos
-                     :ending-position end-pos
-                     :referent (edge-referent main-edge)
-                     :constituents (treetops-between start-pos end-pos)
-                     :ignore-used-in t)
-                    (when *debug-questions*
-                      (push-debug `(,new-edge ,head-edge))
-                      (break "Wrong number of edges to cover"))))))))))))
+
+                  (let* ((final-tts (treetops-between start-pos end-pos))
+                         (edge-count (length final-tts)))
+                    (cond
+                      ((= 3 edge-count)
+                       ;; All the treetops are used in part of the main edge
+                       ;; but need an edge over it all
+                       (make-chart-edge
+                        :category (edge-category main-edge)
+                        :form category::s
+                        :rule 'wh-stranded-prep
+                        :starting-position start-pos
+                        :ending-position end-pos
+                        :referent (edge-referent main-edge)
+                        :constituents (treetops-between start-pos end-pos)
+                        :ignore-used-in t))
+                      ((= 1 edge-count)
+                       (car final-tts))
+                      (t
+                       (when *debug-questions*
+                         (push-debug `(,new-edge ,head-edge))
+                         (break "Wrong number of edges to cover"))))))))))))))
 
 
 

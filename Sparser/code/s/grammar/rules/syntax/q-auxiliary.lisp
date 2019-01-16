@@ -130,13 +130,20 @@
        (make-copular-predication wh-edge aux-edge stmt-edge))
 
       (s ;; "How does KRAS activate MAPK3?"
-       (let ((wh-pronoun? (itypep wh 'wh-pronoun)))
+       (let ((wh-pronoun? (itypep wh 'wh-pronoun))
+             (wh-category (wh-edge? wh-edge)))
          (cond
            ((and wh-pronoun?
                  (memq (cat-symbol (itype-of wh))
                        '(category::how category::why
                          category::where category::when)))
             (bind-wh-to-stmt-variable wh wh-edge stmt))
+           
+           (wh-category ;; "what drug" wh is a determiner
+            (let ((embedded-wh (value-of 'has-determiner wh)))
+              ;; value is a wh-pronoun category
+              (bind-wh-to-stmt-variable embedded-wh wh-edge stmt)))
+           
            ((not wh-pronoun?)
             (when *debug-questions*
               (break "WH is not a wh-pronoun: ~a" wh)))
@@ -156,9 +163,13 @@
   (unless (itypep stmt 'perdurant)
     (error "stmt is not a perdurant: ~a is a ~a"
            stmt (itype-of stmt)))
-  (unless (typep wh 'individual)
+  (unless (or (typep wh 'individual)
+              (and (typep wh 'category) (itypep wh 'wh-pronoun)))
+    (push-debug `(,wh ,wh-edge ,stmt))
     (break "WH argument isn't an individual: ~a" wh))
-  (let* ((wh-pronoun (itype-of wh))
+  (let* ((wh-pronoun (etypecase wh
+                       (individual (itype-of wh))
+                       (category wh)))
          (variable (value-of 'variable wh-pronoun)))
     (unless variable
       (error "No variable binding on ~a" wh-pronoun))
@@ -189,4 +200,24 @@
    distinction turn on whether there is aux-inversion.
       For now just a trivial test based on sentence position."
   (= 1 (pos-token-index (pos-edge-starts-at left-edge))))
+
+(defgeneric wh-edge? (edge)
+  (:documentation "Does this edge reflect the use of a WH question term?")
+  (:method ((e edge))
+    (wh-edge? (edge-referent e)))
+  (:method ((i individual))
+    (cond
+      ((itypep i 'wh-pronoun) i) ;; "What ..."
+      (t
+       (let ((value (value-of 'has-determiner i))) ;; "What genes ..."
+         (when value
+           (cond
+             ((itypep value 'demonstrative) ;; "these"
+              nil)
+             ((car (memq value `(,category::what
+                                 )))
+              t)
+             (t
+              (push-debug `(,value ,i))
+              (break "New determiner value: ~a" value)))))))))
 

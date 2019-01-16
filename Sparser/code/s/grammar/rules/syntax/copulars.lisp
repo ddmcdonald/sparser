@@ -14,7 +14,7 @@
 (define-category copular-predication
   :specializes predication
   :instantiates :self
-  :restrict ((predicate (:or be modality)))
+  :restrict ((predicate (:or do be modality)))
   :binds ((item)
           (value))
   :index (:temporary :sequential-keys predicate value)
@@ -83,11 +83,11 @@
 
 (defvar *sentences-going-through-copular-adjective* nil
   "For accumulating the unique set of sentences where the rule
-   applies. For the snapshots as o 8/28 there were 80.")
+   applies. For the snapshots as of 8/28/16 there were 80.")
 
 (defun make-copular-adjective (copula adjective)
                               ;; &optional (copula-edge (left-edge-for-referent)))
-  "Corresponds to the form rule for be+adjective (or + adjp) which
+  "Corresponds to the form rule for be+adjective (or +adjp) which
    composes them to create a VP with consituents for the verb group
    (e.g. 'should be') and the adjective or adjp. 
    This instantiates a three-place predication: copular-predication,

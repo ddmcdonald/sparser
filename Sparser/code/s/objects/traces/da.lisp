@@ -72,6 +72,10 @@
   (when *trace-DA-check*
     (trace-msg "[DA check]     The pattern didn't match")))
 
+(deftrace :da-pattern-matched (rule)
+  ;; Called from standardized-apply-da-function-action
+  (when *trace-DA-check*
+    (trace-msg "[DA] pattern matched ~a" rule)))
 
 ;;;---
 
@@ -146,8 +150,19 @@
     (trace-msg "[DA] executing rule on ~a" rule)))
 
 (deftrace :da-applying-fn-to-args (function args)
-  (when *trace-DA*
+  ;; Called from standardized-apply-da-function-action
+  (when (or *trace-DA-check* *trace-DA*)
     (trace-msg "[DA] applying ~a to ~a" function args)))
+
+(deftrace :da-fn-returned-edge (edge)
+  ;; Called from standardized-apply-da-function-action
+  (when (or *trace-DA-check* *trace-DA*)
+    (trace-msg "[DA]   It returned ~a" edge)))
+
+(deftrace :da-fn-failed ()
+  ;; Called from standardized-apply-da-function-action
+  (when (or *trace-DA-check* *trace-DA*)
+    (trace-msg "[DA]   but it returned nil")))
 
 
 ;;;----------------------

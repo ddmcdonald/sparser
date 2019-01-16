@@ -163,9 +163,12 @@
   (let* ((treetops (successive-treetops :from start-pos :to end-pos))
          (number-of-treetops (length treetops)))
     (tr :islands-pass-2 number-of-treetops)
-    (when *print-forest-after-doing-forest*
+    (when (or *print-forest-after-doing-forest* *trace-DA-check*)
       (format t "~&Just before 2d pass:~%")
-      (tts))
+      (tts)
+      (when *trace-DA-check*
+        (terpri)
+        (tts-form)))
     (if *new-pass2*
       (new-pass2 sentence start-pos end-pos treetops)
       (old-pass2 sentence start-pos end-pos treetops number-of-treetops))))

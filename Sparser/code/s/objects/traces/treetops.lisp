@@ -1156,16 +1156,16 @@
     (trace-msg "[pass2] ran out of treetops. Exiting")))
 
 (deftrace :trying-da-pattern-on (tt)
-  (when *trace-island-driving*
+  (when (or *trace-DA-check* *trace-island-driving*)
     (trace-msg "[pass2] Looking for debris pattern starting with e~a"
                (edge-position-in-resource-array tt))))
 
 (deftrace :no-result-from-da ()
-  (when *trace-island-driving*
+  (when (or *trace-DA-check* *trace-island-driving*)
     (trace-msg "[pass2]    It did not trigger a pattern")))
 
 (deftrace :p2-da-returned-edge (edge)
-  (when *trace-island-driving*
+  (when (or *trace-DA-check* *trace-island-driving*)
     (trace-msg "[pass2]    It created e~a"
                (edge-position-in-resource-array edge))))
 

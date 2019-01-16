@@ -1283,7 +1283,7 @@ similar to an oncogenic RasG12V mutation (9)."))
 
 (loop for nb in `(,@*n-bar-categories*) ;; see core/adjuncts/sequence/object.lisp
    do (eval `(def-syntax-rule (sequencer ,nb)
-                :form np
+                :form n-bar
                 :head :right-edge
                 :referent (:function determiner-noun left-edge right-edge))))
 

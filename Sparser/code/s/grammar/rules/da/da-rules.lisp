@@ -1,27 +1,35 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "da-rules"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  August 2016
+;;;  Version:  January 2019
 
 ;; initiated 9/18/15 for da patterns and interpreters that had been
 ;; stashed in biology. Small tweaks and additions of the same kind
 ;; through 11/22/15
 
-
-;; TRULY STUPID CHANGE
 (in-package :sparser)
-
-;;;-------------------------------------------------
-;;; debris analysis rules and their interpretations
-;;;-------------------------------------------------
 
 (defvar *show-failed-fronted-pp-attachment* nil)
 (defvar *show-failed-find-base-np-vp-edge* nil)
 
-(defstruct edge-spec category form referent target dominating direction preposed)
+(defparameter *warn-attach-leading-pp-to-clause* nil)
+(defparameter *warn-on-cant-find-corresponding-clauses* nil)
+(defparameter *show-finding-corresponding-clauses* nil)
+(defparameter *conjoined-s-failures* nil)
 
+
+(defstruct edge-spec
+  ;; a compact encoding of edge construction and handling
+  ;; decoded by standardized-apply-da-function-action the master
+  ;; action handler
+  category form referent target dominating direction preposed)
+
+
+;;;-------------------------------------------------
+;;; debris analysis rules and their interpretations
+;;;-------------------------------------------------
 
 ;;;----------------------
 ;;; rules centering on S
@@ -49,7 +57,13 @@
   :pattern ( pp "," s )
   :action (:function attach-leading-pp-to-clause first second third))
 
-(defparameter *warn-attach-leading-pp-to-clause* nil)
+(define-debris-analysis-rule attach-leading-pp-no-comma-to-clause
+  :pattern ( pp  s )
+  :action (:function attach-leading-pp-no-comma-to-clause first second))
+
+(defun attach-leading-pp-no-comma-to-clause (pp clause)
+  (attach-leading-pp-to-clause pp nil clause))
+
 (defun attach-leading-pp-to-clause (pp comma clause)
   (declare (ignore comma))
   (let* ((clause-referent (edge-referent clause))
@@ -114,22 +128,12 @@
       ;;(lsp-break "attach-leading-pp-to-clause 2")
       *edge-spec*)))
 
-
-(define-debris-analysis-rule attach-leading-pp-no-comma-to-clause
-  :pattern ( pp  s )
-  :action (:function attach-leading-pp-no-comma-to-clause first second))
-
-(defun attach-leading-pp-no-comma-to-clause (pp clause)
-  (attach-leading-pp-to-clause pp nil clause))
-
 (defun failed-pp-attachment (pp clause-referent)
   (when *show-failed-fronted-pp-attachment*
     (format t "~&~&<<<<<<<>>>>>> attaching leading PP ~s to clause ~s without defined variable~&"
 	    (retrieve-surface-string pp)
 	    (retrieve-surface-string clause-referent)))
   nil)
-(defparameter *warn-on-cant-find-corresponding-clauses* nil)
-(defparameter *show-finding-corresponding-clauses* nil)
 
 (defun distribute-pp-to-conjoined-clauses (pp clause prep-word pobj-referent clause-referent rule-name)
   (let* ((clauses (value-of 'items clause-referent))
@@ -207,6 +211,7 @@
        :preposed pp))))
 
 
+
 (define-debris-analysis-rule oblique-s-subject-to-vp
   :pattern (s vp)
   ;; fails if the subject isn't oblique
@@ -245,7 +250,7 @@
   :action (:function attach-comma-pp-comma-following-clause third first fourth))
 
 (defun attach-comma-pp-comma-following-clause (clause pp comma-2)
-  (declare (ignore comma-1))
+  (declare (ignore comma-2))
   (attach-pp-following-clause clause pp
                               (pos-edge-starts-at clause)
                               (pos-edge-ends-at comma-2)))
@@ -301,8 +306,6 @@
      the ability of GTP to dissociate the GEF-Ras complex in vitro [31], 
      and the assumption that there are no proteins in vivo that might stabilize 
      nucleotide-free Ras and prevent GTP loading. "
-
-(defparameter *conjoined-s-failures* nil)
 
 (defun conjoin-clause-and-vp (s-edge  and vp-edge)
   (conjoin-clause-vp s-edge vp-edge))
@@ -367,7 +370,7 @@
   :action (:function conjoin-clause-and-vp+passive first second third))
 
 (defun conjoin-clause-and-vp+passive (s-edge  and vp-edge)
-  (conjoin-clause-and-vp s-edge  and vp-edge))
+  (conjoin-clause-and-vp s-edge and vp-edge))
 
 
 (define-debris-analysis-rule attach-trailing-participle-to-clause-base
@@ -378,13 +381,9 @@
   :pattern ( vp vp+ing ) ;; for cases like "Please find pathways involving SRF"
   :action (:function attach-trailing-participle-to-clause-or-object first second))
 
-
-
 (define-debris-analysis-rule attach-trailing-participle-to-clause-with-comma
   :pattern ( s "," vp+ing )
   :action (:function attach-trailing-participle-to-clause-or-object-with-comma first third))
-
-
 
 (define-debris-analysis-rule attach-trailing-vp+ing-to-clause-with-conjunction-and
   :pattern ( s conjunction vp+ing )
@@ -409,7 +408,7 @@
 
 
 
-;;; subordinate clause
+;;; subordinate clauses
 
 (define-debris-analysis-rule attach-trailing-participle-to-subordinate-clause-base
   :pattern ( subordinate-clause vp+ing )
@@ -426,7 +425,6 @@
 (define-debris-analysis-rule attach-trailing-vp+ing-to-subordinate-s-with-conjunction-comma
   :pattern ( subordinate-s "," vp+ing )
   :action (:function attach-trailing-participle-to-clause-or-object-with-comma first third))
-
 
 (define-debris-analysis-rule attach-trailing-vp+ing-to-subordinate-clause-with-conjunction-and
   :pattern ( subordinate-clause and vp+ing )
@@ -451,46 +449,6 @@
 (define-debris-analysis-rule attach-trailing-vp+past-to-subordinate-s-with-conjunction-and
   :pattern ( subordinate-s and vp+past )
   :action (:function attach-trailing-participle-to-clause-or-object-with-comma first third))
-
-(defun get-subject-from-s-edge (s-edge)
-  (declare (special s-edge))
-  (let ((real-s-edge (find-base-np-vp-edge s-edge)))
-    (when (and (edge-p real-s-edge)
-               (edge-p (edge-left-daughter real-s-edge)))
-      (edge-referent (edge-left-daughter real-s-edge)))))
-
-(defun find-base-np-vp-edge (e)
-  (cond ((member (form-cat-name (edge-left-daughter e))
-                 '(np proper-noun proper-name
-                   common-noun common-noun/plural
-                   pronoun wh-pronoun
-                   vg+ing vp+ing))
-         e)
-        ((or (member (form-cat-name e) '(subordinate-s subordinate-clause))
-             (member (form-cat-name (edge-left-daughter e))
-                     '(adverb pp to-comp
-                       subordinate-clause)))
-         (find-base-np-vp-edge
-          (second (loop for ee in (edges-under e)
-                        unless (or (not (edge-p ee))
-                                   (word-p (edge-category ee)))
-                        collect ee))))
-        ((or (member (form-cat-name e)
-                     '(vp vg vp+past vp+ed))
-             (member (cat-name (edge-category (edge-left-daughter e)))
-                     '(vp vg vp+past vp+ed there-exists)))
-         nil)
-        ((member (form-cat-name (edge-left-daughter e))
-                 '(s subordinate-s)) ;; possible/likely conjunction
-         (find-base-np-vp-edge (edge-left-daughter e)))
-        
-        (t (when *show-failed-find-base-np-vp-edge*
-             (warn "find-base-np-vp-edge failed for ~s in ~s" e (current-string)))
-           nil)))
-      
-
-
-
 
 (define-debris-analysis-rule attach-preceding-participle-with-comma-to-clause
   :pattern ( vp+ing "," s )
@@ -523,48 +481,41 @@
                       vp+ing-ref
                       (edge-referent s-edge))))))))
 
-;;------------------- more s rules -------------------------------
+
+
+
 (define-debris-analysis-rule attach-comma-appositive-np-under-s
   :pattern ( s "," np)
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function
            attach-comma-appositive-np-under-s
            first second third))
 
 (define-debris-analysis-rule attach-comma-appositive-np-under-pp
   :pattern ( pp "," np)
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function
            attach-comma-appositive-np-under-s
            first second third))
 
-(defun attach-comma-appositive-np-under-s (s comma np)
-  (attach-appositive-np-under-s s comma np (pos-edge-ends-at np)))
-
 (define-debris-analysis-rule attach-comma-appositive-np-under-vp+ing
   :pattern ( vp+ing "," np)
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function
            attach-comma-appositive-np-under-s
            first second third))
 
 (define-debris-analysis-rule attach-comma-appositive-np-under-vp+ed
   :pattern ( vp+ed "," np)
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function
            attach-comma-appositive-np-under-s
            first second third))
 
 (define-debris-analysis-rule attach-comma-appositive-np-under-vp+past
   :pattern ( vp+past "," np)
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function
            attach-comma-appositive-np-under-s
            first second third))
 
 (define-debris-analysis-rule attach-comma-appositive-np-under-vp
   :pattern ( vp "," np)
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function
            attach-comma-appositive-np-under-s
            first second third))
@@ -576,31 +527,29 @@
            attach-comma-appositive-proper-noun-under-s
            first second third))
 
+;; via the tyrosine phosphorylation of an adapter protein, p130 CAS (XREF_BIBR).
 (define-debris-analysis-rule attach-comma-appositive-proper-noun-under-pp
-  :pattern ( pp "," proper-noun)  ; via the tyrosine phosphorylation of an adapter protein, p130 CAS (XREF_BIBR).
-  ;; The action can fail. Returning nil ought to suffice
+  :pattern ( pp "," proper-noun)
   :action (:function
            attach-comma-appositive-proper-noun-under-s
            first second third))
 
-(defun attach-comma-appositive-proper-noun-under-s (s comma np)
+
+(defun attach-comma-appositive-np-under-s (s comma np)
   (attach-appositive-np-under-s s comma np (pos-edge-ends-at np)))
 
-
+(defun attach-comma-appositive-proper-noun-under-s (s comma np)
+  (attach-appositive-np-under-s s comma np (pos-edge-ends-at np)))
 
 (defun attach-comma-appositive-np-comma-under-s (s comma-1 np comma-2)
   (attach-appositive-np-under-s s comma-1 np (pos-edge-ends-at comma-2)))
 
 (defun attach-appositive-np-under-s (s-edge comma-edge np-edge end-pos)
-  (push-debug `(,s-edge ,comma-edge ,np-edge))
-  ;; (setq s-edge (car *) comma-edge (cadr *) np-edge (caddr *))
   ;; Look up the right fridge of the s for a proper-noun
-    (when
-        (and (word-p (pos-terminal end-pos))
+  (when (and (word-p (pos-terminal end-pos))
              (member (pname (pos-terminal end-pos))
                      '("," "." ";" "?")
-                     :test #'equal))
-    
+                     :test #'equal))    
     (let ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?)))
       (when target
         (make-edge-spec 
@@ -626,19 +575,16 @@
   (attach-appositive-comma-np-endpos-under-pp pp-edge comma-1 np-edge (pos-edge-ends-at comma-2)))
 
 (defun attach-appositive-comma-np-endpos-under-pp (pp-edge comma-edge np-edge end-pos)
-  (push-debug `(,pp-edge ,comma-edge ,np-edge))
-  ;; (setq pp-edge (car *) comma-edge (cadr *) np-edge (caddr *))
   ;; Look up the right fridge of the s for a proper-noun
   (unless
-      ;; test if this is more likely to be a conjunction
-      ;;  there is an error condition when conjunctions are treated like
+      ;; test if this is more likely to be a conjunction.
+      ;;  There is an error condition when conjunctions are treated like
       ;;  appositives that causes an circular edge structure -- need to get to the bottom of
       ;;  it, but for now we are avoiding the problem
       (loop for e in (ev-edges (pos-starts-here end-pos))
          thereis (and (edge-p e) (eq (cat-name (edge-category e)) 'and)))
+    
     (let ((target (find-target-satisfying (right-fringe-of pp-edge) #'np-target?)))
-      ;; don't know why this is prinitng out -- remove it
-      ;;(format t "dominating-edge for ~s is ~s" target (edge-used-in target))
       (when target
         (make-edge-spec 
          :category (edge-category target)
@@ -651,7 +597,6 @@
 
 (define-debris-analysis-rule attach-appositive-comma-proper-noun-under-pp
   :pattern ( pp "," proper-noun ",")
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function
 	   attach-appositive-comma-proper-noun-under-pp
            first second third fourth))
@@ -673,6 +618,7 @@
 
 (defun attach-np-comma-np-comma-as-appositive (np1 comma-1 np2 comma-2)
   (attach-appositive-to-np np1 comma-1 np2 comma-2))
+
 
 (define-debris-analysis-rule attach-proper-noun-comma-np-comma-as-appositive
   :pattern ( proper-noun "," np ",")
@@ -707,15 +653,16 @@
   (attach-appositive-to-np np1 comma-1 np2 comma-2))
 
 (defun attach-appositive-to-np (base-np comma-edge np-edge trailing-comma)
-  (declare (special np-edge trailing-comma))
   (unless (and (edge-p (edge-just-to-right-of trailing-comma))
-               (member (cat-name (edge-category (edge-just-to-right-of trailing-comma))) '(and or)))
+               (member (cat-name (edge-category (edge-just-to-right-of trailing-comma)))
+                       '(and or)))
     (make-edge-spec 
      :category (edge-category base-np)
      :form (edge-form base-np)
      :referent
      (bind-dli-variable 'appositive-description (edge-referent np-edge) (edge-referent base-np))
      )))
+
 
 ;;------------------------- S -----------------------
 (define-debris-analysis-rule s-comma-subj-relative
@@ -751,7 +698,6 @@
                               (null t-pred)
                               (not (eq (form-cat-name s-edge) 'pp)))
                      (update-edge-as-lambda-predicate srel-edge s))))
-      (declare (special s-var t-var target))
       (cond (t-pred
              (make-edge-spec 
               :category (edge-category target)
@@ -782,9 +728,9 @@
 (defun s-comma-obj-relative (s-edge comma-edge srel-edge)
   (declare (ignore comma-edge)
            (optimize (debug 3)(speed 1)))
-  (when (edge-referent srel-edge) ;; can be null as in "which is consistent "
+  (when (edge-referent srel-edge)
     (let* ((s (edge-referent s-edge))
-           (s-rel (edge-referent srel-edge)) ;; can be null?!
+           (s-rel (edge-referent srel-edge))
            (target (when (and s-rel
                               (not (is-basic-collection? s-rel)))
                      (find-target-satisfying
@@ -800,7 +746,6 @@
                               (null t-pred)
                               (not (eq (form-cat-name s-edge) 'pp)))
                      (update-edge-as-lambda-predicate srel-edge s))))
-      (declare (special s-var t-var target))
       (cond (t-pred
              (make-edge-spec 
               :category (edge-category target)
@@ -855,7 +800,9 @@
                 :target target
                 :direction :right)))))))
 
+
 ;;--------------- NP
+
 (define-debris-analysis-rule np-comma-subj-relative
     :pattern (np "," subject-relative-clause)
     :action (:function np-comma-subj-relative first second third))
@@ -874,6 +821,7 @@
        :form (edge-form np-edge)
        :referent (bind-dli-variable 'predication s-pred np)))))
 
+
 (define-debris-analysis-rule np-comma-subj-relative-comma
     :pattern (np "," subject-relative-clause ",")
     :action (:function np-comma-subj-relative-comma first second third fourth))
@@ -891,6 +839,7 @@
        :category (edge-category np-edge)
        :form (edge-form np-edge)
        :referent (bind-dli-variable 'predication s-pred np)))))
+
 
 ;;  object relative NP
 
@@ -931,9 +880,6 @@
        :referent (bind-dli-variable 'predication s-pred np)))))
 
 
-
-
-
 (define-debris-analysis-rule np-comma-pp-comma
   :pattern ( np "," pp ",")
   ;; The action can fail. Returning nil ought to suffice
@@ -960,21 +906,19 @@
 	 (prep-edge (edge-left-daughter pp-edge))
 	 (prep-word (edge-left-daughter prep-edge))
 	 (var-name
-	  (subcategorized-variable np
-				   prep-word
-				   pobj-referent)))
+	  (subcategorized-variable np prep-word pobj-referent)))
     (cond
       (var-name
        (make-edge-spec 
 	:category (edge-category np-edge)
 	:form (edge-form np-edge)
 	:referent (bind-dli-variable var-name pobj-referent np)))
-      (t 
-       ;;(lsp-break "attach-pp-to-np-with-commas fails")
+      (t
        nil))))
 
 
 ;;------------------ PP -------------------
+
 (define-debris-analysis-rule pp-comma-pp-comma
   :pattern ( pp "," pp ",")
   ;; The action can fail. Returning nil ought to suffice
@@ -990,9 +934,7 @@
 	 (prep-2-edge (edge-left-daughter pp-2-edge))
 	 (prep-2-word (edge-left-daughter prep-2-edge))
 	 (var-name
-	  (subcategorized-variable np
-				   prep-2-word
-				   pobj-2-referent)))
+	  (subcategorized-variable np prep-2-word pobj-2-referent)))
     (cond
       (var-name
        (make-edge-spec 
@@ -1002,8 +944,7 @@
         :target np-edge
         :direction :right
         ))
-      (t 
-       ;;(lsp-break "attach-pp-to-np-with-commas fails")
+      (t
        nil))))
 
 
@@ -1012,7 +953,6 @@
   :action (:function ;; providing all edges should let the constituents
            ;; field keep them connected in the web graph
            proper-noun-comma-vg+ed-comma first second third fourth))
-
 
 (defun proper-noun-comma-vg+ed-comma (np intial-comma vp+ed final-comma)
   (declare (special category::np))
@@ -1023,6 +963,7 @@
        :form category::np
        :referent (bind-dli-variable 'modifier modified-vp-ref (edge-referent np))))))
 
+
 (define-debris-analysis-rule np-vp+ed
     :pattern (np vp+ed )
     :action (:function ;; providing all edges should let the constituents
@@ -1032,19 +973,16 @@
 ;; seems to be obviated by phrase-and-vg+ed
 (define-debris-analysis-rule pronoun-vp+ed
   :pattern (proper-noun vp+ed )
-  :action (:function ;; providing all edges should let the constituents
-           ;; field keep them connected in the web graph
+  :action (:function
            proper-noun-vp+ed first second))
 
 (defun proper-noun-vp+ed (proper-noun vp+ed)
-  ;;(np-vp+ed proper-noun vp+ed))
   (phrase-and-vg+ed proper-noun vp+ed))
 
 
 (define-debris-analysis-rule np-vg+ed
   :pattern (np vg+ed )
-  :action (:function ;; providing all edges should let the constituents
-           ;; field keep them connected in the web graph
+  :action (:function
            np-vg+ed first second))
 
 (defun np-vg+ed (np vg+ed)
@@ -1091,7 +1029,6 @@
              ;; field keep them connected in the web graph
              phrase-and-vg+ed first third))
 
-;; this is currently blocked by the NIL -- needs to be re-examined
 (defun phrase-and-vg+ed (phrase vp+ed)
   (declare (special category::np))
   (let* ((vp-ref (edge-referent vp+ed))
@@ -1100,13 +1037,10 @@
           (find-target-satisfying
            fringe
            #'(lambda (x)
-               (and
-                (np-target? x)
-                (edge-used-in x) ;; have two edges over Ras, one is not used
-                (subcategorized-variable vp-ref :object (edge-referent x)))))))
-    (declare (special fringe right-fringe-of-pp target target-ref))
-    (when
-      target
+               (and (np-target? x)
+                    (edge-used-in x) ;; have two edges over Ras, one is not used
+                    (subcategorized-variable vp-ref :object (edge-referent x)))))))
+    (when target
       (unless (edge-used-in target)
         (lsp-break "null dominating edge ~s" target))
       (make-edge-spec
@@ -1119,10 +1053,10 @@
        :target target
        :direction :right))))
 
+
 (define-debris-analysis-rule s-vp+ed
   :pattern (s vp+ed )
-  :action (:function ;; providing all edges should let the constituents
-           ;; field keep them connected in the web graph
+  :action (:function
            s-vp+ed first second))
 
 (define-debris-analysis-rule vp-vp+ed
@@ -1142,6 +1076,16 @@
   :action (:function ;; providing all edges should let the constituents
            ;; field keep them connected in the web graph
            s-vp+ed first second))
+
+(define-debris-analysis-rule s-comma-vp+ed
+  :pattern (s "," vp+ed )
+  :action (:function ;; providing all edges should let the constituents
+           ;; field keep them connected in the web graph
+           s-comma-vp+ed first second third))
+
+(defun s-comma-vp+ed (s comma vp+ed)
+  (declare (ignore comma))
+  (s-vp+ed s vp+ed))
 
 (defun s-vp+ed (s-edge vp+ed)
   (let* ((target
@@ -1163,16 +1107,6 @@
        :target target
        :direction :right))))
 
-(define-debris-analysis-rule s-comma-vp+ed
-  :pattern (s "," vp+ed )
-  :action (:function ;; providing all edges should let the constituents
-           ;; field keep them connected in the web graph
-           s-comma-vp+ed first second third))
-
-
-(defun s-comma-vp+ed (s comma vp+ed)
-  (declare (ignore comma))
-  (s-vp+ed s vp+ed))
 
 
 (define-debris-analysis-rule comma-adverb-comma
@@ -1197,6 +1131,7 @@
      :category (edge-category word-edge)
      :form (edge-form word-edge)
      :referent (edge-referent word-edge)))
+
 
 
 (define-debris-analysis-rule subordinate-comma-clause
@@ -1264,11 +1199,6 @@
   :pattern (subordinate-s "," subordinate-s )
   :action (:function subordinate-comma-subordinate-clause first second third))
 
-(defun subordinate-comma-subordinate-clause (sc comma sc-2)
-  (declare (ignore comma))
-  (create-event-relation sc-2 sc))
-
-
 (define-debris-analysis-rule subordinate-semicolon-subordinate-clause
   :pattern (subordinate-clause ";" subordinate-clause )
   :action (:function subordinate-comma-subordinate-clause first second third))
@@ -1289,6 +1219,10 @@
   :pattern (s ";" subordinate-s )
   :action (:function subordinate-comma-subordinate-clause first second third))
 
+(defun subordinate-comma-subordinate-clause (sc comma sc-2)
+  (declare (ignore comma))
+  (create-event-relation sc-2 sc))
+
 
 (define-debris-analysis-rule clause-and-subordinate
   :pattern ( s conjunction subordinate-clause  )
@@ -1298,9 +1232,16 @@
   :pattern ( s conjunction subordinate-s  )
   :action (:function clause-and-subordinate  first second third))
 
-
 (define-debris-analysis-rule transitive-clause-without-object-and-subordinate-s
   :pattern ( transitive-clause-without-object conjunction subordinate-s  )
+  :action (:function clause-and-subordinate  first second third))
+
+(define-debris-analysis-rule clause-and-clause
+  :pattern ( s conjunction s  )
+  :action (:function clause-and-subordinate  first second third))
+
+(define-debris-analysis-rule transitive-clause-without-object-and-clause
+  :pattern ( transitive-clause-without-object conjunction s  )
   :action (:function clause-and-subordinate  first second third))
 
 (defun clause-and-subordinate (s conjunction sc)
@@ -1344,13 +1285,7 @@
   (create-event-relation s sc))
 
 
-(define-debris-analysis-rule clause-and-clause
-  :pattern ( s conjunction s  )
-  :action (:function clause-and-subordinate  first second third))
 
-(define-debris-analysis-rule transitive-clause-without-object-and-clause
-  :pattern ( transitive-clause-without-object conjunction s  )
-  :action (:function clause-and-subordinate  first second third))
 
 (define-debris-analysis-rule when-relative-clause-comma
                :pattern (when-relative-clause "," s)
@@ -1377,18 +1312,6 @@
 (defun s-when-relative-clause (wc s)
    (create-event-relation wc s))
 
-(defun create-event-relation (event-edge sub-clause-edge
-                              &optional (conj (value-of 'subordinate-conjunction (edge-referent sub-clause-edge))))
-  (make-edge-spec
-   :category category::event-relation
-   :form category::s
-   :referent (make-event-relation
-              conj
-              (edge-referent event-edge)
-              (edge-referent sub-clause-edge)
-              event-edge
-              sub-clause-edge)))
-
 
 (define-debris-analysis-rule clause-subordinate-relative-clause
   :pattern ( s subordinate-relative-clause )
@@ -1406,7 +1329,7 @@
                (and (np-target? e)
                     (subcategorized-variable (edge-referent sub-clause-edge)
                                              :subject (edge-referent e))))))
-	 (conj (value-of 'SUBORDINATE-CONJUNCTION (edge-referent sub-clause-edge)))
+	 (conj (value-of 'subordinate-conjunction (edge-referent sub-clause-edge)))
 	 (event (edge-referent s))
 	 (sub-event
           (when target
@@ -1429,7 +1352,6 @@
   (declare (ignore comma))
   (create-event-np-relation s subordinate-conjunction np))
 
-
 (defun create-event-np-relation (event-edge sub-edge sub-np-edge)
   (let* ((conj (edge-referent sub-edge))
          (event (edge-referent event-edge))
@@ -1451,30 +1373,6 @@
   (declare (ignore comma))
   (create-event-relation s event-relation (edge-referent sconj)))
 
-(defun make-event-relation (conj event sub-event &optional event-edge sub-event-edge)
-  (cond ((itypep event 'polar-question)
-         (let ((event-relation (make-simple-individual
-               category::event-relation
-               `((relation ,conj)
-                 (event ,(value-of 'statement event))
-                 (subordinated-event ,sub-event)))))
-           (when sub-event-edge
-             (make-edge-over-long-span
-              (pos-edge-starts-at sub-event-edge)
-              (pos-edge-ends-at sub-event-edge)
-              category::event-relation
-              :rule 'make-event-relation
-              :form (edge-form sub-event-edge)
-              :referent event-relation))
-                     
-         (make-simple-individual ;; make-non-dli-individual
-          category::polar-question
-          `((statement , event-relation)))))
-        (t
-         (make-simple-individual ;; make-non-dli-individual
-          category::event-relation
-          `((relation ,conj) (event ,event) (subordinated-event ,sub-event))))))
-
 
 (define-debris-analysis-rule np-conj-pp
     ;; for the case where the rightmost NP in a conjunction can
@@ -1482,13 +1380,14 @@
     :pattern (np pp)
     :action (:function np-conj-pp first second))
 
-(defun np-conjunction-edge? (e)
-  (and (eq (form-cat-name e) 'np)
-       (individual-p (edge-referent e))
-       (is-basic-collection? (edge-referent e))))
+(define-debris-analysis-rule s-with-np-conj-pp
+    ;; for the case where the rightmost NP in a conjunction can
+    ;; take a PP, but was conjoined early
+    :pattern (s pp)
+    :action (:function np-conj-pp first second))
+
 
 (defun np-conj-pp (np-containing-edge pp-edge)
-  (declare (special np-containing-edge pp-edge))
   (let* ((prep (identify-preposition pp-edge))
          (*pobj-edge* (edge-right-daughter pp-edge))
          (pobj-referent (when (edge-p *pobj-edge*) (edge-referent *pobj-edge*))))
@@ -1503,7 +1402,6 @@
                (find-target-satisfying
                 (right-fringe-of np-containing-edge)
                 #'np-conjunction-edge?)))
-          (declare (special np-conj-edge))
           (when (and np-conj-edge
                      (not (eq np-conj-edge
                               (edge-left-daughter np-containing-edge))))
@@ -1528,7 +1426,6 @@
                               (eq (edge-referent (car (last (edge-constituents np-conj-edge))))
                                   last-np))
                          (car (last (edge-constituents np-conj-edge))))))))
-              (declare (special np-ref label last-np))
               (when (and var-to-bind target)
                 (make-edge-spec
                  :category (itype-of last-np)
@@ -1539,25 +1436,16 @@
                  ))))))))
 
 
-(define-debris-analysis-rule s-with-np-conj-pp
-    ;; for the case where the rightmost NP in a conjunction can
-    ;; take a PP, but was conjoined early
-    :pattern (s pp)
-    :action (:function np-conj-pp first second))
-
-
 
 #+ignore
 (define-debris-analysis-rule np-comma-np-comma-and-np
   :pattern ( np "," np "," and np)
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function
            np-comma-np-comma-and-np
            first second third fourth))
 
 (define-debris-analysis-rule s-comma-np-comma-and-np
   :pattern ( s "," np "," and np)  
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function
            s-comma-np-comma-and-np
            first second third fourth fifth sixth))
@@ -1600,51 +1488,43 @@
            :target target
            :direction :right))))))
 
+
 (define-debris-analysis-rule s-conjunction-np
   :pattern ( s conjunction np)  
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function s-conjunction-np
                      first second third))
 
 (define-debris-analysis-rule subordinate-clause-and-np
   :pattern ( subordinate-clause and np)  
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function s-conjunction-np
                      first second third))
 
 (define-debris-analysis-rule subordinate-s-and-np
   :pattern ( subordinate-s and np)  
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function s-conjunction-np
                      first second third))
 
 (define-debris-analysis-rule subordinate-clause-or-np
   :pattern ( subordinate-clause or np)  
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function s-conjunction-np
                      first second third))
 
 (define-debris-analysis-rule subordinate-s-or-np
   :pattern ( subordinate-s or np)  
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function s-conjunction-np
                      first second third))
 
 (define-debris-analysis-rule vp-and-np
   :pattern ( vp and np)  
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function s-conjunction-np
                      first second third))
 
 (define-debris-analysis-rule vp-or-np
   :pattern ( vp or np)  
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function s-conjunction-np
                      first second third))
 
-
 (defun s-conjunction-np ( s conjunction np)
-  (declare (special  s conjunction np))
   (let* ((target
           (find-target-satisfying
            (right-fringe-of s)
@@ -1676,7 +1556,8 @@
          :direction :right)))))
 
 
-;; low priority rules for treating present-participles as subjects -- try to get the subject of the participials first
+;; low priority rules for treating present-participles as subjects
+;; -- try to get the subject of the participials first
 
 (defun make-subj-vp-rule-pair (subj vp)
   (let ((rule-name (intern (format nil "~s-~s" subj vp))))
@@ -1728,66 +1609,37 @@
      (eval (make-subj-vp+ing-rule-pair subj)))
 
 
-;;;;; make it possible for ADJPs to post-modify NPs, when needed
+;;--- make it possible for ADJPs to post-modify NPs
 
-(define-debris-analysis-rule NP-ADJECTIVE
-    :pattern (NP ADJECTIVE)
+(define-debris-analysis-rule np-adjective
+    :pattern (np adjective)
     :action (:function postmodifying-adj first second))
 
-(define-debris-analysis-rule YES-NO-NP-ADJP
-    :pattern (BE NP ADJP)
-    :action (:function yes-no-postmodifying-adj first second third))
-
-(define-debris-analysis-rule NP-ADJP
-    :pattern (NP ADJP)
+(define-debris-analysis-rule np-adjp
+    :pattern (np adjp)
     :action (:function postmodifying-adj first second))
 
-(define-debris-analysis-rule S-ADJP
-    :pattern (S ADJP)
+(define-debris-analysis-rule s-adjp
+    :pattern (s adjp)
     :action (:function postmodifying-adj first second))
 
-(define-debris-analysis-rule WHETHERCOMP-ADJP
-    :pattern (WHETHERCOMP ADJP)
+(define-debris-analysis-rule whethercomp-adjp
+    :pattern (whethercomp adjp)
     :action (:function postmodifying-adj first second))
 
-(define-debris-analysis-rule SUBORDINATE-CLAUSE-ADJP
-    :pattern (SUBORDINATE-CLAUSE ADJP)
+(define-debris-analysis-rule subordinate-clause-adjp
+    :pattern (subordinate-clause adjp)
     :action (:function postmodifying-adj first second))
 
-
-(define-debris-analysis-rule VP-ADJP
-    :pattern (VP ADJP)
+(define-debris-analysis-rule vp-adjp
+    :pattern (vp adjp)
     :action (:function postmodifying-adj first second))
 
-(define-debris-analysis-rule PP-ADJP
-    :pattern (PP ADJP)
+(define-debris-analysis-rule pp-adjp
+    :pattern (pp adjp)
     :action (:function postmodifying-adj first second))
-
-(defun yes-no-postmodifying-adj (be-edge first-edge adjp-edge)
-  (when (preposed-aux? :first-np-edge first-edge) ;; if we have a preoposed-aux, this is a question
-    (warn "yes-no-postmodifying-adj -- DAVID LOOK HERE")
-    (when nil
-      (let* ((adjp (edge-referent adjp-edge))
-             (target
-              (find-target-satisfying
-               (right-fringe-of first-edge)
-               #'(lambda (e)
-                   (and (np-target? e)
-                        (subcategorized-variable adjp :subject (edge-referent e)))))))
-        (when target
-          (let ((pred
-                 (create-predication-and-edge-by-binding
-                  :subject (edge-referent target) adjp adjp-edge))) 
-            (make-edge-spec
-             :category (edge-category target)
-             :form (edge-form target)
-             :referent (bind-dli-variable 'predication pred (edge-referent target))
-             :target target
-             :direction :right)
-            ))))))
 
 (defun postmodifying-adj (first-edge adjp-edge) ; examples 
-  ;; (when (not (preposed-aux?)) ;; if we have a preoposed-aux, this is a question
   (let* ((adjp (edge-referent adjp-edge))
          (target
           (find-target-satisfying
@@ -1806,52 +1658,135 @@
          :target target
          :direction :right)
         ))))
-;;)
 
+
+;;;-----------
+;;; questions
+;;;-----------
+#| see q-patterns.lisp
+|#
 
 (loop for ap in '(adjp adjective comparative-adjective superlative-adjective
                   comparative superlative
-                  comparative-adjp superlative-adjp)
-   do ;; needed for "What apoptotic genes is stat3 upstream of?"
-     ;; where 'stat3' is just a proper-noun
-     (loop for n in '(np proper-noun)
+                  comparative-adjp superlative-adjp
+                  vp+ed)
+   do (loop for n in '(np proper-noun)
         do (let ((pattern `(preposed-auxiliary ,n ,ap))
                  (name (s-intern '#:aux-np- ap)))
-             (define-debris-analysis-rule/expr
-                 name pattern
-               '(:function move-preposed-aux-before-adj first second third)))))
-             
-(defun move-preposed-aux-before-adj (aux-edge np-edge adjp-edge)
-  (declare (ignore np-edge))
-  (when (and (preposed-aux?)
-             (not (initial-wh (contents (identify-current-sentence)))))
-    (let ((rule (multiply-edges aux-edge adjp-edge)))
-      (when rule
-        (compose-preposed-aux-into-predicate-adjp
-         aux-edge adjp-edge rule)))))
+             (define-debris-analysis-rule/expr name
+               pattern
+               '(:function polar-postmodifying-adj first second third)))))
 
-(defun compose-preposed-aux-into-predicate-adjp (aux-edge adjp-edge rule)
-  "Mimic fold-in-preposed-auxiliary and compose the main verb (which
-   came in a preposed auxiliary and no residual, in place, vg) with
-   the adjp, representing this as an edge respanning the adjp."
-  (make-discontinuous-edge aux-edge adjp-edge rule))
+(defun polar-postmodifying-adj (be-edge np-edge adjp-edge)
+  (declare (special *da-starting-position* *da-ending-position*))
+  (when (preposed-aux? :first-np-edge np-edge)
+    (let ((edges (list be-edge np-edge adjp-edge))
+          (end-pos (fix-da-ending-pos *da-ending-position*)))
+      (make-polar-adjective-question
+       *da-starting-position* end-pos edges))))
 
+
+(define-debris-analysis-rule aux-s
+    :pattern (preposed-auxiliary s)
+    :action (:function da/preposed+s first second))
+
+;; "Does phosphorylated MAP2K1 behave like phosphorylated MAPK1?"
+(define-debris-analysis-rule aux-transitive-without
+    :pattern (preposed-auxiliary transitive-clause-without-object)
+    :action (:function da/preposed+s first second))
+
+(define-debris-analysis-rule is-s-under-condition
+    :pattern (preposed-auxiliary s ifcomp) ;;/// this fn ignores the ifcomp
+    :action (:function da/preposed+s first second))
+
+;; Does phosphorylated MAP2K1 being high follow phosphorylated BRAF reaching a high value?"
+(define-debris-analysis-rule is-s-vp
+    :pattern (preposed-auxiliary s vp)
+    :action (:function da-is-s-vp first second third))
+
+(defun da-is-s-vp (aux-edge s-edge vp-edge)
+  ;;/// do open variable check here?
+  (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
+    (polar-sentential-subject aux-edge s-edge vp-edge
+                               *da-starting-position* end-pos)))
 
 (define-debris-analysis-rule wh-be-thing
   :pattern (question-marker vg np) ;; "what color is the block"
   :action (:function apply-question-marker first second third))
-;; function is in syntax/questions.lisp
 
-(define-debris-analysis-rule wh-vg-np-vg ;; "What genes does lung cancer target?"
-    :pattern (question-marker vg np vg)
+
+
+
+(define-debris-analysis-rule wh-vg-np-vg
+    :pattern (np vg np vg)
     :action (:function apply-question-displaced-vg
                        first second third fourth))
 
-(define-debris-analysis-rule is-s-under-condition
-    :pattern (preposed-auxiliary s ifcomp)
-    :action (:function da/preposed+s first second))
-   
+;; "What does ERBB regulate?"
 
+;;--- three-edge, wh-explicit question
+
+;; "What genes does lung cancer target?"
+(define-debris-analysis-rule wh-vg-transitive-no-object
+    :pattern (np vg transitive-clause-without-object) ;; np = "what genes"
+    :action (:function wh-three-edges first second third))
+
+;; "What drug could I use to target pancreatic cancer?"
+(define-debris-analysis-rule np-modal-transitive-no-object
+    :pattern (np modal s)
+    :action  (:function wh-three-edges first second third))
+
+;; "What does stat regulate"
+(define-debris-analysis-rule whpn-vg-transitive-no-object
+    :pattern (wh-pronoun vg transitive-clause-without-object)
+    :action (:function wh-three-edges first second third))
+
+;; "How does STAT3 affect c-fos"
+(define-debris-analysis-rule  whpn-vg-s
+    :pattern (wh-pronoun vg s)
+    :action (:function wh-three-edges first second third))
+
+(defun wh-three-edges (np vg open-vp)
+  (declare (special *da-starting-position* *da-ending-position*
+                    *da-constituent-edges*))
+  (when (wh-edge? np) ;; null return fails the DA rule
+    (let ((edges (if (= 3 (length *da-constituent-edges*))
+                   *da-constituent-edges*
+                   (list np vg open-vp)))
+          (end-pos (fix-da-ending-pos *da-ending-position*)))
+      (wh-initial-three-edges np edges  *da-starting-position* end-pos))))
+
+
+;;--- prep-stranding questions
+
+;; "What genes is stat3 upstream of?"
+(define-debris-analysis-rule s-plus-prep
+    :pattern (s preposition)
+    :action (:function s+prep first second))
+
+(defun s+prep (s-edge prep-edge &optional third)
+  ;; Want to feed wh-stranded-prep, so we need to identify
+  ;; the wh-edge, which is probably the subject of the s and on
+  ;; its left side
+  (declare (special *da-starting-position* *da-ending-position*))
+  (let ((subject (edge-left-daughter s-edge))
+        (predicate (edge-right-daughter s-edge))
+        (end-pos (fix-da-ending-pos *da-ending-position*)))
+    (when (wh-edge? subject)
+      (wh-stranded-prep subject ;; wh-edge
+                        predicate ;; main-edge
+                        prep-edge
+                        *da-starting-position* end-pos))))
+
+;;  (push-debug `(,first ,second ,third)) (break "test"))
+
+
+
+;;;-------------
+;;; stray cases
+;;;-------------
+
+;;--- interjections
 
 (define-debris-analysis-rule interjection-s
     :pattern (interjection S)
@@ -1874,6 +1809,9 @@
   (add-initial-interjection/no-comma interjection-edge s-edge))
 
 
+
+;;--- quantifiers
+
 (define-debris-analysis-rule quantifier-to-np
     :pattern (quantifier)
     :action (:function raise-quantifier-to-np first))
@@ -1885,138 +1823,8 @@
      :form category::np
      :referent (edge-referent quantifier))))
 
-;;;--------------------
-;;; Common subroutines
-;;;--------------------
 
-
-
-;; update-edge-as-lambda-predicate now returns NIL if there is
-;;  no available binding for the variable (s-var or t-var) on srel-edge
-
-(defun update-edge-as-lambda-predicate (vp-edge np
-                                        &optional (syntactic-label :subject)
-                                        &aux (vp-indiv (edge-referent vp-edge)))
-  (declare (special category::wh-question))
-  (cond ((null np)
-         (lsp-break "null np in update-edge-as-lambda-predicate")
-         (return-from update-edge-as-lambda-predicate nil))
-        ((edge-p np) (setq np (edge-referent np))))
-  (when (and (eq :subject syntactic-label)
-             (member (form-cat-name vp-edge) '(vp+passive object-relative-clause)))
-    ;; example "is mediated by caspase-3, which is also activated by GzmB"
-    (setq syntactic-label :object))
-  (cond ((itypep vp-indiv category::wh-question)
-         (update-wh-question-as-lambda-predicate vp-edge np syntactic-label))
-        ((is-basic-collection? vp-indiv)
-         (update-conjunctive-edge-as-lambda-predicate vp-edge np syntactic-label))
-        (t (let* ((svar (best-variable-for-syntactic-label vp-edge np syntactic-label)))
-             (cond 
-               ((null svar)
-                ;;(break "update-edge-as-lambda-predicate fails~
-                ;;to find a subject-variable for ~s~%" vp-edge)
-                ;; (edge-referent vp-edge)
-                nil)
-               ((null (value-of svar (edge-referent vp-edge)))
-                ;; now creates a new edge, so doesn't have to set
-                ;; the referent separately
-                (create-predication-and-edge-by-binding
-                 svar np (edge-referent vp-edge) vp-edge)))))))
-                 
-
-(defun ref-from-edge (ref)
-  (if (edge-p ref) (edge-referent ref) ref))
-
-(defun best-variable-for-syntactic-label (vp-item item syntactic-label)
-  (let ((vp (ref-from-edge vp-item))
-        (np (ref-from-edge item)))
-    (if (and np vp) ;; can get null vp for cases like "which might be more impressive"
-        (subcategorized-variable vp syntactic-label np)
-        (subject-variable vp))))
-
-
-(defun update-wh-question-as-lambda-predicate (vp-edge np syntactic-label)
-  (let ((new-pred (update-edge-as-lambda-predicate
-                   (edge-right-daughter vp-edge)
-                   np
-                   syntactic-label)))
-    ;(set-edge-referent vp-edge new-pred)
-    new-pred))
-
-(defun update-conjunctive-edge-as-lambda-predicate (vp-edge np syntactic-label)
-  (declare (special vp-edge))
-  ;;  (lsp-break "vp-edge")
-  (let ((conj-preds (value-of 'items (edge-referent vp-edge))))
-    (unless (loop for cpred in conj-preds
-                  always (best-variable-for-syntactic-label cpred np syntactic-label))
-      ;; BAIL unless all conjunctive clauses can be predicates on the np
-      (let* ((new-preds
-              (loop for cpred in conj-preds
-                    collect
-                      (create-predication-by-binding
-                       (best-variable-for-syntactic-label cpred np syntactic-label)
-                       np cpred)))
-             (new-conj (create-collection new-preds (itype-of (edge-referent vp-edge)))))
-        (make-predication-edge vp-edge new-conj) ;; make one predication edge over all
-        new-conj))))
-
-(defun conjunction-glue (e)
-  "conjunction or comma that glues a conjunction edge together"
-  (or
-   (eq (form-cat-name e) 'conjunction)
-   (eq (edge-category e) word::comma)))
-
-
-(defun find-target-satisfying (fringe pred)
-  (loop for edge in fringe
-     when (funcall pred edge)
-     return edge))
-
-(defun np-target? (edge)
-  (and
-   (member (form-cat-name edge) '(proper-noun np))
-   ;; test below is because of some strange cases where an item in the
-   ;;  fringe in not in the tree
-   (or (null (edge-used-in edge))
-       (and
-        ;; test below is to block finding of "FAK" below "phosphorylated FAK"
-        (not (np-target? (edge-used-in edge)))
-        (not (member (form-cat-name (edge-used-in edge))
-                     '(n-bar np)))))))
-
-(defun clause-target? (edge)
-   (member (form-cat-name edge) '(thatcomp s)))
-
-
-(defun right-fringe-of (edge)
-  (all-edges-on (pos-ends-here (pos-edge-ends-at edge))))
-
-(defun adverb-at? (position)
-  (declare (special category::adverb))
-  (loop for e in (all-edges-on (pos-starts-here position))
-     thereis (and (edge-p e) (eq (form-cat-name e) 'adverb))))
-
-(defun respan-edge-around-one-word (word-edge left-term right-term)
-  (let ((word-category (edge-category word-edge))
-        (word-form (edge-form word-edge))
-        (word-referent (edge-referent word-edge))
-        (new-start-pos (chart-position-before (pos-edge-starts-at word-edge)))
-        (new-end-pos (chart-position-after (pos-edge-ends-at word-edge))))
-    (let ((edge (make-completed-unary-edge
-                 ;; We're ignoring the commas in the edge structure
-                 ;;/// this is usually an interjection, how could we
-                 ;; indicate that
-                 (pos-starts-here new-start-pos) ;; the edge vector
-                 (pos-ends-here new-end-pos)
-                 :respan-edge-around-one-word ;; rule
-                 word-edge ;; daughter
-                 word-category 
-                 word-form
-                 word-referent)))
-      (setf (edge-constituents edge) `(,left-term ,word-edge ,right-term))
-      ;; (push-debug `(,edge)) (break "look at edge")
-      edge)))
-
+;;--- other 
 
 (define-debris-analysis-rule its-a-number
   :pattern (number)
@@ -2039,78 +1847,3 @@
         ;; (push-debug `(,edge)) (break "look at edge")
         edge))))
 
-
-;;; Functions for attaching trailing participles
-(defun attach-trailing-participle-to-clause-or-object (s-edge vp-edge)
-  (let* ((s (edge-referent s-edge))
-         (vp (edge-referent vp-edge))
-         (target
-          (find-target-satisfying
-           (right-fringe-of s-edge)
-           #'(lambda(x)
-               (and (np-target? x)
-                    (subcategorized-variable vp :subject (edge-referent x))))))
-         ;; update-edge-as-lambda-predicate now returns NIL if there is
-         ;;  no available binding for the variable (s-var or t-var) on vp-edge
-         (t-pred (when target
-                   (update-edge-as-lambda-predicate vp-edge target))))
-    (declare (special s-var t-var target))
-    (cond (t-pred
-           (make-edge-spec 
-            :category (edge-category target)
-            :form (edge-form target)
-            :referent (bind-dli-variable :predication t-pred (edge-referent target))
-            :target target
-            :direction :right))
-          ((let ((s-pred (update-edge-as-lambda-predicate vp-edge s)))
-             (when s-pred
-               (make-edge-spec 
-                :category (edge-category s-edge)
-                :form (edge-form s-edge)
-                :referent (bind-dli-variable 'predication s-pred s)
-                )))))))
-
-(defun attach-trailing-participle-to-clause-or-object-with-comma (s-edge vp-edge)
-  "the comma makes it more likely as a modifier of the s"
-  (let* ((s (edge-referent s-edge))
-         (vp (edge-referent vp-edge))
-         (s-pred
-          ;; update-edge-as-lambda-predicate now returns NIL
-          ;; if there is no available binding for the variable
-          ;; (s-var or t-var) on vp-edge
-          (update-edge-as-lambda-predicate vp-edge s)))
-    (declare (special target))
-    (if s-pred
-        (make-edge-spec 
-         :category (edge-category s-edge)
-         :form (edge-form s-edge)
-         :referent (bind-dli-variable 'predication s-pred s))
-        (let* ((target (find-target-satisfying
-                        (right-fringe-of s-edge)
-                        #'(lambda(x)
-                            (and (np-target? x)
-                                 (subcategorized-variable
-                                  vp
-                                  :subject (edge-referent x))))))
-
-               (t-pred
-                (when target
-                  (update-edge-as-lambda-predicate vp-edge target))))
-          (when t-pred
-            (make-edge-spec 
-             :category (edge-category target)
-             :form (edge-form target)
-             :referent (bind-dli-variable :predication t-pred (edge-referent target))
-             :target target
-             :direction :right))))))
-
-
-(defun attach-trailing-participle-to-clause-with-conjunction (s-edge conj vp-edge)
-  ;; The participle (vp+ing) is presumably missing it's subject,
-  ;; which we'll take to be the whole clause. 
-  ;;//// motivated by second sentence in figure-7 where the participle
-  ;; is a conjunction, as is the clause. Semantically that one reads
-  ;; as the entire clause being the cause of (each of) the elements of
-  ;; the participle. But this should be reconsidered if other cases
-  ;; have a different relationship.
-  (attach-trailing-participle-to-clause-or-object-with-comma s-edge vp-edge))
