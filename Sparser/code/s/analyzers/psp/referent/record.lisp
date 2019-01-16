@@ -86,6 +86,29 @@ use them in order to have tailored regression tests.
 
 ;;--- reports
 
+(defvar *sorted-rule-firing-data* nil
+  "A version of the rules that ever fired list, sorted form highest
+ firing frequency to lowest")
+
+(defun sort-rules-by-number-of-times-used ()
+  (labels ((sort-name (r)
+           (etypecase r
+             (cfr (string-for-rule r))
+             (da-rule (symbol-name (da-name r)))))
+           (sort-rule-data (r1 r2) ;;//// this is wrong !!
+             (cond ((> (cdr r2) (cdr r2)) t)
+                   ((< (cdr r2) (cdr r2)) nil)
+                   ((= (cdr r2) (cdr r2))
+                    (cond ((string< (sort-name (car r1)) (sort-name (car r2))) t)
+                          ((string> (sort-name (car r1)) (sort-name (car r2))) nil))))))
+    (let ((raw (loop for rule in *rules-ever-fired*
+                 as count = (gethash rule *rule-firing-counts*)
+                 collect (cons rule count))))
+      (let ((sorted (sort raw #'sort-rule-data)))
+        (setq *sorted-rule-firing-data* sorted)
+        (length sorted)))))
+
+
 (defvar *sorted-function-data* nil) ;; managed by assemble-function-report-data
 (defvar *raw-function-data* nil)
 
@@ -94,6 +117,7 @@ use them in order to have tailored regression tests.
   (flet ((sort-fn-data (d1 d2)
            (cond ((> (cadr d1) (cadr d2)) t) ; largest first
                  ((< (cadr d1) (cadr d2)) nil)
+                 ((= (cadr d1) (cadr d2))
                  ((string< (car d1) (car d2)) t)
                  ((string> (car d1) (car d2)) nil))))
     (let ((raw
