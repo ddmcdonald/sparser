@@ -639,16 +639,17 @@ is a case in handle-any-anaphor
    records a preposed auxiliary the return the contents of the
    field, i.e. the edge over the auxiliary and its original form."
   (if *alternative-wh-question-strategy*
-      (loop for e in
-              (cond ((or in-vg?
-                         (and (boundp '*chunk*)
-                              (member 'vg (chunk-forms *chunk*))))
-                     (edges-before-chunk (car (last *chunks*))))
-                    (first-np-edge (edges-before first-np-edge))
-                    (t (edges-before-chunk)))
-            when (member (cat-name (edge-form e))
-                         '(preposed-auxiliary))
-              do (return (values e (edge-form e))))
+    ;; Find it in the chart
+    (let ((edges (cond ((or in-vg?
+                            (and (boundp '*chunk*)
+                                 (member 'vg (chunk-forms *chunk*))))
+                        (edges-before-chunk (car (last *chunks*))))
+                       (first-np-edge (edges-before first-np-edge))
+                       (t (edges-before-chunk)))))
+      (loop for e in edges              
+         when (member (cat-name (edge-form e))
+                      '(preposed-auxiliary))
+         do (return (values e (edge-form e)))))
         
       (let* ((s (identify-current-sentence))
              (preposed-aux-info (preposed-aux (contents s))))
