@@ -95,18 +95,25 @@ use them in order to have tailored regression tests.
            (etypecase r
              (cfr (string-for-rule r))
              (da-rule (symbol-name (da-name r)))))
-           (sort-rule-data (r1 r2) ;;//// this is wrong !!
-             (cond ((> (cdr r2) (cdr r2)) t)
-                   ((< (cdr r2) (cdr r2)) nil)
-                   ((= (cdr r2) (cdr r2))
+           (sort-rule-data (r1 r2)
+             (cond ((> (cdr r1) (cdr r2)) t)
+                   ((< (cdr r1) (cdr r2)) nil)
+                   ((= (cdr r1) (cdr r2))
                     (cond ((string< (sort-name (car r1)) (sort-name (car r2))) t)
                           ((string> (sort-name (car r1)) (sort-name (car r2))) nil))))))
+
     (let ((raw (loop for rule in *rules-ever-fired*
                  as count = (gethash rule *rule-firing-counts*)
                  collect (cons rule count))))
       (let ((sorted (sort raw #'sort-rule-data)))
         (setq *sorted-rule-firing-data* sorted)
         (length sorted)))))
+
+(defun report-rules-by-count ()
+  (loop for pair in *sorted-rule-firing-data*
+     as rule = (car pair)
+     as count = (cdr pair)
+     do (format t "~&~a   ~a" count rule)))
 
 
 (defvar *sorted-function-data* nil) ;; managed by assemble-function-report-data
@@ -119,7 +126,7 @@ use them in order to have tailored regression tests.
                  ((< (cadr d1) (cadr d2)) nil)
                  ((= (cadr d1) (cadr d2))
                  ((string< (car d1) (car d2)) t)
-                 ((string> (car d1) (car d2)) nil))))
+                 ((string> (car d1) (car d2)) nil)))))
     (let ((raw
            (loop for fn-name in (syntactic-functions-defined)
               as d = (get-syntactic-function-data fn-name)
