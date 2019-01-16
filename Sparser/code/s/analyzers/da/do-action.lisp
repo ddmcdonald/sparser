@@ -1,19 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2011-2013,2019  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "do action"
 ;;;   Module:  "analyzers;DA:"
-;;;  Version:  July 2011
+;;;  Version:  January 2019
 
 ;; initiated 5/7/95. Debugging, refining ..5/12. 11/3/11 Extending
 ;; cases for schematic actions to :function. 7/29/13 Added more traces
 ;; and doc. 
 
 (in-package :sparser)
-
-(defvar *DA-STARTING-POSITION*)
-(defvar *DA-ENDING-POSITION*)
-(defvar *MATCHED-DA-RULE*)
 
 (defun execute-da-action (rule)
   ;; called from Accept-pattern
@@ -55,6 +51,8 @@
 ;;; cases
 
 (defun execute-edge-over-whole-span-exp (items)
+  (declare (special *da-starting-position* *da-ending-position*
+                    *matched-da-rule*))
   (let ((label (first items))
         (ref-exp (rest items)))
     (let ((edge
@@ -74,10 +72,8 @@
 (defun execute-da-referent-expressions (ref-exp)
   (let ((referent
          (do-da-ref-expression (first ref-exp))))
-
     (dolist (exp (rest ref-exp))
       (do-da-ref-expression exp))
-
     referent ))
 
 
@@ -111,7 +107,10 @@ SP> (stree 51)
       "binding domain"
 |#
 (defparameter *da-constituent-edges* nil
-  "This is used by make-maximal-projection to find the edge which corresponds to the maximal projection")
+  "This is used by make-maximal-projection to find the edge which
+  corresponds to the maximal projection")
+
+
 (defun standardized-apply-da-function-action (rule)
   (declare (special *current-da-rule* *da-constituent-edges*))
   (setq *current-da-rule* rule)
@@ -122,22 +121,25 @@ SP> (stree 51)
          (*da-constituent-edges* constituents) ;; see note above
          (*parent-edge-getting-reference* nil))
     (declare (special *parent-edge-getting-reference*))
-
+    (tr :da-pattern-matched rule)
     
     (when (symbolp fn)
       (unless (fboundp fn)
         (error "The function ~a is not defined" fn)))
-    
     (tr :da-applying-fn-to-args fn constituents)
 
     (let ((result (apply fn constituents)))
       (cond
         ((edge-p result)
+         (tr :da-fn-returned-edge result)
+         (record-rule rule)
          result)
         ((null result) ;; the rule failed
+         (tr :da-fn-failed)
          nil)
         ((typep result 'edge-spec)
          ;;(when (setq *edge-spec* (apply fn constituents))) ;; can be nil if rule fails
+         (record-rule rule)
          (let* ((*edge-spec* result)
                 (target (edge-spec-target *edge-spec*))
                 (dominating (and (edge-p target) (edge-used-in target)))

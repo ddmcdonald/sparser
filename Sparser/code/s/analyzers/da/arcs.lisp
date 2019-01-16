@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2015  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "arcs"
 ;;;   Module:  "analyzers;DA:"
 ;;;  Version:  May 1995
 
 ;; initiated 5/5/95. Elaborating ..5/22
-;; 3/25/2015 handle SBCL problem by making form-arc inherit from label-arc, instead of creating a duplicate definition for arc-lable
+;; 3/25/2015 handle SBCL problem by making form-arc inherit from label-arc,
+;;   instead of creating a duplicate definition for arc-lable
 
 (in-package :sparser)
 

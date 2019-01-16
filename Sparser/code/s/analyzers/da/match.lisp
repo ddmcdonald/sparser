@@ -51,7 +51,7 @@
 (defun arc-matches-tt? (arc tt)
   ;; called from Check-for-extension-from-vertex
   (tr :arc-matches-tt? arc tt)
-  (when *trace-DA*
+  #+ignore(when *trace-DA*
     (format t "   *edge-tt* = ~a~%   *word-tt* = ~a~
              ~%   *multiple-edges-over-word* = ~a~%   *boundary-tt* = ~a~
              ~%   The arc ~a is a ~a~
