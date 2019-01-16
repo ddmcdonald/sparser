@@ -132,7 +132,8 @@ use them in order to have tailored regression tests.
       (assert rule)
       (uses-syntactic-function rule)))
   (:method ((r cfr))
-    (gethash r *uses-syntactic-function*)))
+    (gethash r *uses-syntactic-function*))
+  (:method ((da da-rule)) nil))
 
 
 (defclass syntactic-function-data (named-object)
