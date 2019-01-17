@@ -238,8 +238,8 @@
             (else ;; original regime
               (break "discourse-entry returned ~a, which is a ~a"
                      c/dh (type-of c/dh))                            
-              (setq  (first c/dh)
-                     type (value-of 'type collection))))
+              (setq collection (first c/dh)
+                    type (value-of 'type collection))))
           (when (eq type (category-named 'person))
             (push c/dh collections-of-people/dh)))
 
