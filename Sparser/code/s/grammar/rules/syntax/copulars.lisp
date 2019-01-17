@@ -14,7 +14,7 @@
 (define-category copular-predication
   :specializes predication
   :instantiates :self
-  :restrict ((predicate (:or do be modality)))
+  :restrict ((predicate (:or be modality)))
   :binds ((item)
           (value))
   :index (:temporary :sequential-keys predicate value)
