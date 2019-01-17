@@ -125,12 +125,12 @@ use them in order to have tailored regression tests.
            (cond ((> (cadr d1) (cadr d2)) t) ; largest first
                  ((< (cadr d1) (cadr d2)) nil)
                  ((= (cadr d1) (cadr d2))
-                 ((string< (car d1) (car d2)) t)
-                 ((string> (car d1) (car d2)) nil)))))
+                  (cond ((string< (car d1) (car d2)) t)
+                        ((string> (car d1) (car d2)) nil))))))
     (let ((raw
            (loop for fn-name in (syntactic-functions-defined)
               as d = (get-syntactic-function-data fn-name)
-              collect `(,(name d) ,(callers d)))))
+              collect `(,(symbol-name (name d)) ,(callers d)))))
       (setq *raw-function-data* raw)
       (let ((sorted (sort raw #'sort-fn-data)))
         (setq *sorted-function-data* sorted)
