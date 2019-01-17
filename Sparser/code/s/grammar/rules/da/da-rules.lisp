@@ -1680,10 +1680,15 @@
 (defun polar-postmodifying-adj (be-edge np-edge adjp-edge)
   (declare (special *da-starting-position* *da-ending-position*))
   (when (preposed-aux? :first-np-edge np-edge)
-    (let ((edges (list be-edge np-edge adjp-edge))
-          (end-pos (fix-da-ending-pos *da-ending-position*)))
-      (make-polar-adjective-question
-       *da-starting-position* end-pos edges))))
+    (if (eq (cat-name (edge-category be-edge)) 'do)
+        ;; there should be a verb, not an adjp, so fail
+        ;;  possibly figure out whether the verb was swallowd by the np-edge
+        ;;  as in "does RAS rise faster ..." where "rise" is mistakenly treated as a noun
+        nil
+        (let ((edges (list be-edge np-edge adjp-edge))
+              (end-pos (fix-da-ending-pos *da-ending-position*)))
+          (make-polar-adjective-question
+           *da-starting-position* end-pos edges)))))
 
 
 (define-debris-analysis-rule aux-s
