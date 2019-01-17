@@ -314,6 +314,7 @@ what happens rather than how it happens (ddm).  |#
 	 (over-ridden-var (binding-variable over-ridden-binding))
 	 (over-ridden-variables (dvar-variables over-ridden-var)))
     (when (null edge)
+      #+ignore ;; this is noisy, and not clear what it is blocking
       (warn "null edge in perform-over-ridden-variable-disambiguation, for binding ~s in sentence ~s~%"
             over-ridden-binding (when *sentence-in-core* (current-string)))
       (return-from perform-over-ridden-variable-disambiguation i))
