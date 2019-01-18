@@ -311,18 +311,6 @@ where it regulates gene expression.") ;; no restriction on the 'it'
       (car interps)))
 
 
-(defun is-basic-collection? (i)
-  (and (individual-p i)
-       (collection-p i)
-       (not
-        (itypep i `(:or ;;word-colon-word
-                    ;; CHECK THIS OUT -- CAUSES PROBLEMS, BUT SHOULDN'T
-                    hyphenated-pair
-                    hyphenated-triple
-                    slashed-sequence
-                    two-part-label
-                    slashed-protein-collection
-                    )))))
 
 (defgeneric contextual-interpretation (item)
   (:documentation
