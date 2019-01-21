@@ -380,7 +380,7 @@
           *all-sentences*))
   (save-missing-subcats)
   #|
-  ;; Move to main loop -- should happen before anaphroa, etc.
+  ;; Move to main loop -- should happen before anaphora, etc.
   (make-this-a-question-if-appropriate sentence)
   (let* ((start-pos (starts-at-pos sentence))
          (end-pos (ends-at-pos sentence))
@@ -413,12 +413,10 @@
 ;;; final operations on sentence before moving to the next one
 ;;;------------------------------------------------------------
 
-;; This use of hash-tables is just to (temporarily) get around changing the
-;;  class definition of sentence, so that we don't make everyone recompile all
-;;  of Sparser
 (defparameter *article-sent-mentions* (make-hash-table)
   "Hash table mapping sentences in an article to hash tables that link
-individuals in a sentence to the mention(s) for those individual in that sentence.")
+   individuals in a sentence to the mention(s) for those individual
+   in that sentence.")
 
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article*
@@ -434,8 +432,7 @@ individuals in a sentence to the mention(s) for those individual in that sentenc
     (setf (gethash sentence *article-sent-mentions*)
           (let ((sent-entity-mention-ht (make-hash-table)))
             (loop for m in (mentions-in-sentence-edges sentence)
-                  do
-                    (push m (gethash (base-description m) sent-entity-mention-ht)))
+               do (push m (gethash (base-description m) sent-entity-mention-ht)))
             sent-entity-mention-ht)))
   (do-client-translations sentence)
   (clrhash *predication-links-ht*))

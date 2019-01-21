@@ -247,7 +247,13 @@
                     :referent q)))
         (make-polar-edge edge)))))
   
-    
+(defun polar-reduced-rel (aux-edge noun-edge vp+ed-edge adj-edge)
+  ;; Intermediaty function called from DA
+  (tr :wh-walk "polar-reduced-rel")
+  (push-debug `(,aux-edge ,noun-edge ,vp+ed-edge ,adj-edge))
+  ;; Want the reduced relative appreciated as such.
+  ;; The two edges don't have a rule
+  (break "need rule"))
 
 
 
@@ -345,6 +351,62 @@
          (when *warn-when-can-not-formulate-question*
            (warn "Could not resolve 3 edges into a WH question: ~a" edges)))))))
 
+
+(defun wh-initial-four-edges (wh-edge edges start-pos end-pos)
+  (tr :wh-walk "wh-initial-four-edges")
+  (let ((wh-type (edge-category wh-edge)))
+    (if (memq (cat-name wh-type) '(how why where when))
+      (wh-initial-four-edges/adjunct wh-edge edges start-pos end-pos)
+      (when *debug-questions*
+        (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
+        (break "new 4 edge case wh-type: ~a" wh-type)))))
+
+(defun wh-initial-four-edges/adjunct (wh-edge edges start-pos end-pos)
+  "The wh being asked is an adjunct, so the edges should make a clause"
+  (tr :wh-walk "wh-initial-four-edges/adjunct")
+  (let* ((e2 (first edges))
+         (e3 (second edges))
+         (e4 (third edges))
+         (e2-form (form-cat-name e2))
+         (e3-form (form-cat-name e3))
+         (e4-form (form-cat-name e4)))
+    (cond
+      ((and (edge-over-aux? e2)
+            (noun-category? e3))
+       (let ((rule (multiply-edges e2 e4)))
+         (if rule
+           (let* ((vp-edge (make-completed-binary-edge e2 e4 rule))
+                  (rule2 (multiply-edges e3 vp-edge)))
+             (if rule2
+               (let* ((edge-over-s
+                       (make-completed-binary-edge
+                        e3 vp-edge rule2)))  ;; where + s
+                 (fold-in-initial-wh-adjunct wh-edge edge-over-s
+                                             start-pos end-pos)) 
+               (when *debug-questions*
+                 (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
+                 (break "subj & predicate don't compose, ~a ~a"
+                        (second edges) vp-edge))))
+           (when *debug-questions*
+             (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
+             (break "vg and adjunct don't compose, ~a ~a"
+                    (first edges) (third edges))))))
+      (t (when *debug-questions*
+           (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
+           (break "New pattern for WH 4 edges/adjunct"))))))
+           
+(defun fold-in-initial-wh-adjunct (wh-edge edge-over-s start-pos end-pos)
+  (tr :wh-walk "fold-in-initial-wh-adjunct")
+  (let* ((stmt (edge-referent edge-over-s))
+         (wh (edge-referent wh-edge))
+         (j (bind-wh-variable wh stmt)))
+    ;;(set-edge-referent edge-over-s j)
+    (make-edge-over-long-span
+     start-pos end-pos
+     (edge-category edge-over-s)
+     :rule 'wh-initial-four-edges/adjunct
+     :form category::s ;;question
+     :referent j)))
 
 ;; (p/s "What genes is stat3 upstream of?")
 ;; (p/s "What tissues is STAT3 expressed in?") <== doesn't tuck

@@ -212,6 +212,7 @@
        (let ((value (value-of 'has-determiner i))) ;; "What genes ..."
          (when value
            (cond
+             ((itypep value 'wh-pronoun) t)
              ((itypep value 'demonstrative) ;; "these"
               nil)
              ((car (memq value `(,category::what

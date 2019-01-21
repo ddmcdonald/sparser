@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
-;;; copyright (c) 2011,2016-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011,2016-2019 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "questions"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  October 2018
+;;;  Version:  January 2019
 
 ;; Broken out from /grammar/model/sl/checkpoint/rules 6/17/09
 ;; Elaborated through 7/23/09. 9/28/11 removed spatial-orientation
@@ -15,6 +15,8 @@
 ;;;--------------------------------
 ;;; debugging / display parameters
 ;;;--------------------------------
+
+;; (trace-questions)
 
 (defparameter *debug-questions* nil
   "Should only be set when debugging. Signals an error so we can
@@ -27,6 +29,10 @@
 (defparameter *trace-wh-accumulation* nil
   "Controls whether we show the succession of positions covered
    when delimit-and-label-initial-wh-term runs.")
+
+(defparameter *warn-when-can-not-formulate-question* nil
+  "Turn on when debugging these. Otherwise it's presently noisy.")
+;; (setq *warn-when-can-not-formulate-question* t)
 
 
 ;;;---------------------
@@ -139,10 +145,6 @@
 ;;;------------------------------------
 ;;; call from post-analysis-operations
 ;;;------------------------------------
-
-(defparameter *warn-when-can-not-formulate-question* nil
-  "Turn on when debugging these. Otherwise it's presently noisy.")
-;; (setq *warn-when-can-not-formulate-question* t)
 
 (defun make-this-a-question-if-appropriate (sentence)
   "Called from post-analysis-operations after all parsing and
@@ -275,7 +277,7 @@
            ((and (= 4 (length edges))
                  (itypep (edge-referent (second edges)) 'do))
             (when *debug-questions*
-              (break "wh do")))
+              (break "wh do - four edges")))
            
            ((and (= 4 (length edges))
                  (or (itypep (edge-referent (second edges)) 'be)
@@ -336,6 +338,24 @@
     "Are there any genes stat3 is upstream of?"
     "Can you find any apoptotic pathways that stat3 is involved in?" ;; polar / refactor
     "Which of them are regulated by elk1"
+
+    ;; polar questions from Rusty 1/17/19
+    "Is STAT3 involved in apoptosis?"
+    "Is MAP2K1 bound to MAPK1 eventually high?"
+    "Is MAPK1 bound to MAP2K1 transient?"
+    "Is MAPK1-bound MAP2K1 sustained?"
+    "Is STAT3 involved in apoptotic regulation?"
+    "Is STAT3 involved in regulating apoptosis?"
+    "Is STAT3 involved in regulating apoptosis?"
+    "Is phosphorylated MAPK1 sustained?"
+    "Is stat3 involved in any apoptotic pathways?"
+    "Is stat3 involved in apoptotic regulation?"
+    "Is stat3 involved in regulating apoptosis?"
+    "Is stat3 involved in regulating apoptosis?"
+    "Is the MAP2K1-MAPK1 complex formed?"
+    "Is the amount of MAPK1 phosphorylated eventually high?"
+    "Is the amount of phosphorylated MAPK1 sustained?"
+
     ))
 
 #|
@@ -383,8 +403,9 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
 ;;;--------------
 
 (defparameter *alternative-wh-question-strategy* T
-  "When this is T on, we don't use delimit-and-label-initial-wh-term to find initial wh terms --
-we just parse them'")
+  "When this is T on, we don't use delimit-and-label-initial-wh-term 
+   to find initial wh terms -- we just parse them. 
+")
 
 (defun delimit-and-label-initial-wh-term (pos-before wh-edge)
   "WH questions always also include inverting subject

@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2013,2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013,2016-2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "WH-word-semantics"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2017
+;;;  Version:  January 2019
 
 ;; initiated 8/8/07. Added relatives 1/1/08
 ;; 0.1 Changed the names of the categories to just be the name of the pronoun.
@@ -89,6 +89,19 @@
 
 (define-wh-pronoun "whoever")
 ;; wherever, whenever
+
+
+(defun bind-wh-variable (wh statement)
+  (if (itypep statement 'perdurant)
+    (let ((wh-category (itype-of wh)))
+      (when wh-category
+        (let ((wh-var (value-of 'variable wh-category)))
+          (bind-variable wh-var wh statement))))
+    (else
+      (when *debug-questions*
+        (break "~a is a ~a, not a perdurant"
+               statement (itype-of statement)))
+      statement)))
 
 ;;;---------------------------------
 ;;; grammmar for embedded questions

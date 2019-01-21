@@ -986,7 +986,7 @@
            np-vg+ed first second))
 
 (defun np-vg+ed (np vg+ed)
-  (declare (special category::vg+ed))
+  (declare (special category::s category::vg+ed))
   (unless (adverb-at? (pos-edge-starts-at vg+ed))
     ;; this test is a heuristic, to block
     ;; "another MAPK inhibitor, PD 98059, also inhibited ASPP2 function"
@@ -995,10 +995,11 @@
            (interp (assimilate-subject (edge-referent np)
                                        (edge-referent vg+ed))))
       (declare (special *right-edge-into-reference* *left-edge-into-reference*))
+      ;; "Is MAPK1-bound MAP2K1 sustained?"
       (when interp
         (make-edge-spec
          :category (edge-category vg+ed)
-         :form category::vg+ed
+         :form category::s
          :referent interp
          )))))
 
@@ -1663,8 +1664,13 @@
 ;;;-----------
 ;;; questions
 ;;;-----------
-#| see q-patterns.lisp
-|#
+
+#| Most all of these question patterns are processed by functions
+that are in q-patterns.lisp. These patterns are not anchored to
+the beginning of the sentence as make-this-a-question-if-appropriate
+assumed. |#
+
+;;--- patterns starting with preposed-auxiliary
 
 (loop for ap in '(adjp adjective comparative-adjective superlative-adjective
                   comparative superlative
@@ -1690,24 +1696,28 @@
           (make-polar-adjective-question
            *da-starting-position* end-pos edges)))))
 
+(define-debris-analysis-rule aux-np-vp-adj
+    :pattern (preposed-auxiliary proper-noun vp+ed adjective)
+    :action (:function polar-reduced-rel first second third fourth))
 
 (define-debris-analysis-rule aux-s
     :pattern (preposed-auxiliary s)
     :action (:function da/preposed+s first second))
 
-;; "Does phosphorylated MAP2K1 behave like phosphorylated MAPK1?"
 (define-debris-analysis-rule aux-transitive-without
     :pattern (preposed-auxiliary transitive-clause-without-object)
     :action (:function da/preposed+s first second))
+;; "Does phosphorylated MAP2K1 behave like phosphorylated MAPK1?"
 
 (define-debris-analysis-rule is-s-under-condition
-    :pattern (preposed-auxiliary s ifcomp) ;;/// this fn ignores the ifcomp
-    :action (:function da/preposed+s first second))
+    :pattern (preposed-auxiliary s ifcomp)
+    :action (:function da/preposed+s first second)) ;;/// this fn ignores the ifcomp
 
-;; Does phosphorylated MAP2K1 being high follow phosphorylated BRAF reaching a high value?"
 (define-debris-analysis-rule is-s-vp
     :pattern (preposed-auxiliary s vp)
     :action (:function da-is-s-vp first second third))
+;; Does phosphorylated MAP2K1 being high follow phosphorylated BRAF reaching a high value?"
+
 
 (defun da-is-s-vp (aux-edge s-edge vp-edge)
   ;;/// do open variable check here?
@@ -1715,41 +1725,24 @@
     (polar-sentential-subject aux-edge s-edge vp-edge
                                *da-starting-position* end-pos)))
 
-(define-debris-analysis-rule wh-be-thing
-  :pattern (question-marker vg np) ;; "what color is the block"
-  :action (:function apply-question-marker first second third))
 
-
-
+;;--- patterns starting in np (covering a wh)
 
 (define-debris-analysis-rule wh-vg-np-vg
     :pattern (np vg np vg)
     :action (:function apply-question-displaced-vg
                        first second third fourth))
 
-;; "What does ERBB regulate?"
-
-;;--- three-edge, wh-explicit question
-
-;; "What genes does lung cancer target?"
 (define-debris-analysis-rule wh-vg-transitive-no-object
     :pattern (np vg transitive-clause-without-object) ;; np = "what genes"
+    ;; "What genes does lung cancer target?"
     :action (:function wh-three-edges first second third))
 
-;; "What drug could I use to target pancreatic cancer?"
 (define-debris-analysis-rule np-modal-transitive-no-object
     :pattern (np modal s)
-    :action  (:function wh-three-edges first second third))
+    ;; "What drug could I use to target pancreatic cancer?"
+    :action  (:function wh-initial-three-edges first second third))
 
-;; "What does stat regulate"
-(define-debris-analysis-rule whpn-vg-transitive-no-object
-    :pattern (wh-pronoun vg transitive-clause-without-object)
-    :action (:function wh-three-edges first second third))
-
-;; "How does STAT3 affect c-fos"
-(define-debris-analysis-rule  whpn-vg-s
-    :pattern (wh-pronoun vg s)
-    :action (:function wh-three-edges first second third))
 
 (defun wh-three-edges (np vg open-vp)
   (declare (special *da-starting-position* *da-ending-position*
@@ -1759,7 +1752,51 @@
                    *da-constituent-edges*
                    (list np vg open-vp)))
           (end-pos (fix-da-ending-pos *da-ending-position*)))
-      (wh-initial-three-edges np edges  *da-starting-position* end-pos))))
+      (wh-initial-three-edges np edges *da-starting-position* end-pos))))
+
+
+(define-debris-analysis-rule wh-be-thing
+  :pattern (question-marker vg np) ;; "what color is the block"
+  :action (:function apply-question-marker first second third))
+
+
+(define-debris-analysis-rule wh-vp
+    :pattern (wh-pronoun vp)
+    ;; (p "How does knocking out p53 cause cancer via its effect on miRNAs?")
+    :action (:function wh-vp-edge first second))
+
+
+(define-debris-analysis-rule whpn-vg-transitive-no-object
+    :pattern (wh-pronoun vg transitive-clause-without-object)
+    ;; "What does stat regulate"
+    :action (:function wh-three-edges first second third))
+
+(define-debris-analysis-rule  whpn-vg-s
+    :pattern (wh-pronoun vg s)
+    ;; "How does STAT3 affect c-fos"  "What does ERBB regulate?"
+    :action (:function wh-three-edges first second third))
+
+;; "How might a STAT3 mutation affect breast cancer?")
+;; (wh-pronoun modal s)
+
+(define-debris-analysis-rule whpn-vp-noun-vg+ed
+    :pattern (wh-pronoun vg proper-noun vg+ed)
+    ;; "Where is STAT3 expressed?"
+    :action (:function wh-four-edges  first second third fourth))
+
+(define-debris-analysis-rule whpn-vp-noun-vp+ed
+    :pattern (wh-pronoun vg proper-noun vp+ed)
+    ;; "How is stat3 involved in apoptotic regulation?"
+    :action (:function wh-four-edges  first second third fourth))
+
+(defun wh-four-edges (wh vg noun adjp)
+  (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
+    (wh-initial-four-edges wh (list vg noun adjp) *da-starting-position* end-pos)))
+
+(defun wh-vp (wh vp)
+  (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
+    (break "wh-vp")))
+
 
 
 ;;--- prep-stranding questions

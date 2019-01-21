@@ -41,23 +41,23 @@
 (defun fold-in-preposed-auxiliary (vg-edge)
   (when (preposed-aux?)
     (multiple-value-bind (aux-edge aux-form)
-        (preposed-aux?)
+        (original-form-of-preposed-aux)
       (declare (special aux-edge))
       (when (edge-used-in aux-edge)
         ;; multiple toplevel VGs in the sentence, e.g. dynamic-model #42
         (return-from fold-in-preposed-auxiliary nil))
 
-      
       (when (initial-wh (contents (identify-current-sentence)))
         (unless (adjacent-edges? aux-edge vg-edge)
           ;; adjacency happens in "what genes are involved in apoptosis"
           ;; as compared to  "What are the genes regulated by STAT3
           (return-from fold-in-preposed-auxiliary)))
-      
-      ;; Reinstate the original form label for the aux
-      (setf (edge-form aux-edge) aux-form) 
-      ;; hook it up
-      (compose-discontinuous-aux aux-edge vg-edge))))
+      ;;(break "aux: ~a  vg: ~a" aux-edge vg-edge)
+      (unless (plausibly-too-early-to-take-preposed-aux aux-edge vg-edge)
+        ;; Reinstate the original form label for the aux
+        (setf (edge-form aux-edge) aux-form) 
+        ;; hook it up
+        (compose-discontinuous-aux aux-edge vg-edge)))))
 
 (defun revert-preposed-aux ()
   (multiple-value-bind (aux-edge aux-form)
@@ -74,22 +74,25 @@
           (error "Trying to fold in a preposed auxiliary ~
                       but there is no rule that composes ~
                     ~%~a and ~a" aux-edge vg-edge))))
-    ;; Make a very peculiar edge (which may need
-    ;; more thought)
+    ;; Make a very peculiar edge (which may need more thought)
     (when rule
       (make-discontinuous-edge aux-edge vg-edge rule))))
 
 (defun plausibly-too-early-to-take-preposed-aux (aux-edge vg-edge)
-  "The vg-finished hook has no larger perspective. The aux should compose
+  "The vg-finished hook has a narrow perspective. The aux should compose
    with the 'main' verb of the sentence but VG with other functions can
    precede it. In dynamic-model #43 we have a reduced relative on the
    subject: 'Does phosphoylated BRAF being high preceded ...'
    If this routine returns non-nil, the effect will be to wait for
    the next VG and try to compose the aux there."
-  (declare (special category::do category::vg+ing category::vg+ed))
-  (when (eq category::do (edge-category aux-edge))
-    (memq (edge-form vg-edge)
-          `(,category::vg+ing ,category::vg+ed))))
+  ;; Nothing special about the 'do'
+  ;;   "Is MAP2K1 bound to MAPK1 eventually high?"
+  (declare (special category::do category::vg+ing category::vg+ed)
+           (ignore aux-edge))
+  (and (one-word-long? vg-edge) ;; heuristic for reduced relative
+       (memq (edge-form vg-edge)
+             `(,category::vg+ing ,category::vg+ed))))
+
 
 
 ;;;--------------

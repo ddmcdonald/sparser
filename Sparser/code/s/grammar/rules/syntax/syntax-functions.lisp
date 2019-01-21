@@ -964,19 +964,22 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 (defun check-passive-and-add-tense/aspect (aux vg)
   (declare (special category::vg *parent-edge-getting-reference*))
-  (let ((be-edge (left-edge-for-referent)))
+  (let* ((be-edge (left-edge-for-referent))
+         (be-form (form-cat-name be-edge))
+         (vg-edge (right-edge-for-referent)))
     (when (or
-           (member (form-cat-name be-edge)
+           (member be-form
                    '(verb verb+present verb+past verb+ed verb+ing
-                     vg+ed vg vg+ing vp+ing infinitive))
-           (if (member (form-cat-name be-edge)
+                     vg+ed vg vg+ing vp+ing infinitive
+                     preposed-auxiliary))
+           (if (member be-form
                        '(that-comp thatcomp to-comp whethercomp
                          vp S subject-relative-clause
                          subordinate-s subordinate-clause
                          object-relative-clause ;; "that PTEN protein levels are, in part, regulated by ..."
                          transitive-clause-without-object))
                nil
-               (warn "check-passive-and-add-tense/aspect got ~s in ~s~%"
+               (break "check-passive-and-add-tense/aspect got ~s in ~s~%"
                      (form-cat-name be-edge)
                      (current-string))))
            
@@ -991,7 +994,13 @@ there was an edge for the qualifier (e.g., there is no edge for the
                   (when *parent-edge-getting-reference*
                     ;; this is now (12/23/2016) used in polar questions, so there is no edge yet
                     (revise-parent-edge :form category::vg)))))
-      (add-tense/aspect aux vg))))
+     
+      (if (eq be-form 'preposed-auxiliary)
+        (then
+          (break "aux: ~a  vg: ~a" be-edge vg-edge) ;; test the plausibility check
+          (unless (plausibly-too-early-to-take-preposed-aux be-edge vg-edge)
+            (add-tense/aspect aux vg)))
+        (add-tense/aspect aux vg)))))
 
 (defgeneric add-tense/aspect-to-subordinate-clause (aux sc)
   (:method ((aux category) (sc category))
