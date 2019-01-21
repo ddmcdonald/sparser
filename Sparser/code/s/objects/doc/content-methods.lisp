@@ -627,6 +627,18 @@ is a case in handle-any-anaphor
     (let ((s (identify-current-sentence)))
       (setf (preposed-aux (contents s)) (cons e original-form)))))
 
+(defun original-form-of-preposed-aux ()
+  "If the delayed action record in the contents of the current sentence
+   records a preposed auxiliary, then return the contents of the
+   field, i.e. the edge over the auxiliary and its original form."
+  (let* ((s (identify-current-sentence))
+         (preposed-aux-info (preposed-aux (contents s))))
+    (when preposed-aux-info
+      (let ((edge (car preposed-aux-info))
+            (original-form (cdr preposed-aux-info)))
+        (values edge
+                original-form)))))
+
 (defun mask-preposed-aux ()
   "Some question operation has handled the preposed-aux but
    did it on a just portion of the sentence so we have to
@@ -635,11 +647,8 @@ is a case in handle-any-anaphor
     (setf (preposed-aux (contents s)) nil)))
     
 (defun preposed-aux? (&key in-vg? first-np-edge)
-  "If the delayed action record in the contents of the current sentence
-   records a preposed auxiliary the return the contents of the
-   field, i.e. the edge over the auxiliary and its original form."
   (if *alternative-wh-question-strategy*
-    ;; Find it in the chart
+    ;; Find it in the chart just to the left of current chunk
     (let ((edges (cond ((or in-vg?
                             (and (boundp '*chunk*)
                                  (member 'vg (chunk-forms *chunk*))))
@@ -650,14 +659,9 @@ is a case in handle-any-anaphor
          when (member (cat-name (edge-form e))
                       '(preposed-auxiliary))
          do (return (values e (edge-form e)))))
+
+    (original-form-of-preposed-aux)))
         
-      (let* ((s (identify-current-sentence))
-             (preposed-aux-info (preposed-aux (contents s))))
-        (when preposed-aux-info
-          (let ((edge (car preposed-aux-info))
-                (original-form (cdr preposed-aux-info)))
-            (values edge
-                    original-form))))))
 
 
 (defgeneric record-initial-wh (edge)
