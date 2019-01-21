@@ -365,15 +365,15 @@ there were ever to be any.  ///hook into final actions ??  |#
     (tts stream start-pos stop-pos))
   (terpri stream)(terpri stream))
 
-(defun tts-form ()
+(defun tts-form (&optional (stream *standard-output*))
   (let ((*treetop-label-to-use* :form))
     (declare (special *treetop-label-to-use*))
-    (tts)))
+    (tts stream)))
 
-(defun tts-ref ()
+(defun tts-ref (&optional (stream *standard-output*))
   (let ((*treetop-label-to-use* :referent))
     (declare (special *treetop-label-to-use*))
-    (tts)))
+    (tts stream)))
 
 (defun tts (&optional
             (stream *standard-output*)

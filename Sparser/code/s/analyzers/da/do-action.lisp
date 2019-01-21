@@ -138,7 +138,6 @@ SP> (stree 51)
          (tr :da-fn-failed)
          nil)
         ((typep result 'edge-spec)
-         ;;(when (setq *edge-spec* (apply fn constituents))) ;; can be nil if rule fails
          (record-rule rule)
          (let* ((*edge-spec* result)
                 (target (edge-spec-target *edge-spec*))
@@ -166,6 +165,8 @@ SP> (stree 51)
                   :referent (edge-spec-referent *edge-spec*)
                   :rule (da-name rule)
                   :constituents new-constituents))
+           (tr :da-fn-returned-edge *new-edge*)
+
            (cond (dominating
                   (tuck-new-edge-under-already-knit
                    target

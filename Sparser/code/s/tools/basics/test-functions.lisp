@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015 Rusty Bobrow  -- all rights reserved
+;;; copyright (c) 2015-2019 Rusty Bobrow  -- all rights reserved
 ;;;
 ;;;      File:   "test-functions"
 ;;;    Module:   "tools:basics"
-;;;   Version:   September 2015
+;;;   Version:   January 2019
 
 ;; utilities for testing in R3. Made format-item prettier 1/10/15.
 ;; 2/8/15 Turning off anaphora on sentence calls. 
@@ -1296,11 +1296,20 @@ applied to l, and values are values associated with that key example"
 ;;;=======================================================
 ;;; tools for iterating over arbitrary lists of sentences
 ;;;=======================================================
-;;  Mostly biocuration queries / directives
+;;  Motivated by biocuration queries / directives
 
 (defvar *list-of-bio-utterances* nil
   "Reference global bound by test-bio-utterances 
    and used by test-bio")
+
+(defparameter *bio-utt-test-good* nil
+  "List of the numbers of sentences that get a single edge")
+(defparameter *bio-utt-test-bad* nil
+  "List of the numbers of sentences that get more one edge")
+
+(defparameter *bio-utt-test-show-form* t
+  "Has the test bio functions include the treetop form edges as well
+   as the semantic edges when the parse isn't complete")
 
 #| This assumes you've got a list of sentences and want to divided
 them out according to whether or not we get complete parses ('good')
@@ -1313,14 +1322,7 @@ then you'll get a list of the parsing results for every sentence.
 For successful parses you get the interpretation of the sentence.
 For bad parses you get the treetops.
   Calling it with the 'split' option runs through the list and
-divides it into good and bad. 
-|#
-
-
-(defparameter *bio-utt-test-good* nil
-  "List of the numbers of sentences that get a single edge")
-(defparameter *bio-utt-test-bad* nil
-  "List of the numbers of sentences that get more one edge")
+divides it into good and bad. |#
 
 (defun test-bio-utterances (sentence-list &optional split? &key list-of-lists (stream *standard-output*) clauses)
   "Walk over the list and set the global -- edit to shift test fn"
@@ -1343,7 +1345,12 @@ divides it into good and bad.
     (loop for s in *list-of-bio-utterances*
        do (if split?
             (test-bio-utterance/split s (incf count) stream)
-            (test-bio-utterance s (incf count) stream)))))
+            (test-bio-utterance s (incf count) stream)))
+    (format stream "~&~a sentences in *list-of-bio-utterances*~%" count)
+    (when split?
+      (format stream "~&  ~a good~
+                      ~%  ~a bad~%"
+              (length *bio-utt-test-good*) (length *bio-utt-test-bad*)))))
 
 (defun test-bio-utterance (s count &optional (stream *standard-output*))
   "Designed for getting useful information for every sentence.
@@ -1354,14 +1361,19 @@ divides it into good and bad.
   (qepp s)
   (format stream "~&~%") (tts stream)
   (let ((edges (all-tts)))
-    (when (null (cdr edges)) ;; single span
-      (if (eq *save-clause-semantics* :sentence-clauses)
-          (format stream "~&~s" (car *clause-semantics-list*))
-          (format stream "~&~s" (semtree (car edges)))))))
+    (cond
+      ((null (cdr edges)) ;; single span
+       (if (eq *save-clause-semantics* :sentence-clauses)
+         (format stream "~&~s" (car *clause-semantics-list*))
+         (format stream "~&~s" (semtree (car edges)))))
+      (*bio-utt-test-show-form* ;; multiple edges - fix could involve DA
+       (terpri) (tts-form stream)))))
+    
 
 (defun test-bio (n)
   (let ((s (nth n *list-of-bio-utterances*)))
-    (p/s s)))
+    ;;(p/s s)
+    (test-bio-utterance s n)))
 
 (defun test-bio-utterance/split (s count &optional stream)
   "Variant call from test-bio-utterances. Populate the two lists"
