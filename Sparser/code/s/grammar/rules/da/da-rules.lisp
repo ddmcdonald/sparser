@@ -1700,6 +1700,12 @@ assumed. |#
     :pattern (preposed-auxiliary proper-noun vp+ed adjective)
     :action (:function polar-reduced-rel first second third fourth))
 
+(defun polar-reduced-rel (aux-edge noun-edge vp+ed-edge adj-edge)
+  (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
+    (polar-reduced-relative aux-edge noun-edge vp+ed-edge adj-edge
+                            *da-starting-position* end-pos)))
+
+
 (define-debris-analysis-rule aux-s
     :pattern (preposed-auxiliary s)
     :action (:function da/preposed+s first second))
@@ -1741,7 +1747,7 @@ assumed. |#
 (define-debris-analysis-rule np-modal-transitive-no-object
     :pattern (np modal s)
     ;; "What drug could I use to target pancreatic cancer?"
-    :action  (:function wh-initial-three-edges first second third))
+    :action  (:function wh-three-edges first second third))
 
 
 (defun wh-three-edges (np vg open-vp)
@@ -1760,10 +1766,18 @@ assumed. |#
   :action (:function apply-question-marker first second third))
 
 
+
 (define-debris-analysis-rule wh-vp
     :pattern (wh-pronoun vp)
     ;; (p "How does knocking out p53 cause cancer via its effect on miRNAs?")
     :action (:function wh-vp-edge first second))
+
+(defun wh-vp-edge (whpn vp)
+  (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
+    ;; can we tease out the aux at the beginning of the vp?
+    (when *debug-questions*
+      (push-debug `(,whpn ,vp))
+      (break "wh-vp-edge not finished"))))
 
 
 (define-debris-analysis-rule whpn-vg-transitive-no-object
@@ -1776,8 +1790,10 @@ assumed. |#
     ;; "How does STAT3 affect c-fos"  "What does ERBB regulate?"
     :action (:function wh-three-edges first second third))
 
-;; "How might a STAT3 mutation affect breast cancer?")
-;; (wh-pronoun modal s)
+(define-debris-analysis-rule wh-modal-s
+    :pattern (wh-pronoun modal s)
+    ;; "How might a STAT3 mutation affect breast cancer?"
+    :action (:function wh-three-edges first second third))
 
 (define-debris-analysis-rule whpn-vp-noun-vg+ed
     :pattern (wh-pronoun vg proper-noun vg+ed)
@@ -1795,7 +1811,9 @@ assumed. |#
 
 (defun wh-vp (wh vp)
   (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
-    (break "wh-vp")))
+    (when *debug-questions*
+      (push-debug `(,wh ,vp))
+      (break "wh-vp"))))
 
 
 
@@ -1820,7 +1838,6 @@ assumed. |#
                         prep-edge
                         *da-starting-position* end-pos))))
 
-;;  (push-debug `(,first ,second ,third)) (break "test"))
 
 
 

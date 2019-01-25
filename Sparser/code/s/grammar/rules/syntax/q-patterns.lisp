@@ -247,13 +247,13 @@
                     :referent q)))
         (make-polar-edge edge)))))
   
-(defun polar-reduced-rel (aux-edge noun-edge vp+ed-edge adj-edge)
-  ;; Intermediaty function called from DA
-  (tr :wh-walk "polar-reduced-rel")
-  (push-debug `(,aux-edge ,noun-edge ,vp+ed-edge ,adj-edge))
-  ;; Want the reduced relative appreciated as such.
-  ;; The two edges don't have a rule
-  (break "need rule"))
+(defun polar-reduced-relative (aux-edge noun-edge vp+ed-edge adj-edge start-pos end-pos)
+  (tr :wh-walk "polar-reduced-relative")
+  (when *debug-questions*
+    (push-debug `(,aux-edge ,noun-edge ,vp+ed-edge ,adj-edge))
+    ;; Want the reduced relative appreciated as such.
+    ;; Ub "Is MAP2K1 bound to MAPK1 eventually high?" the two edges don't have a rule
+    (break "finish polar-reduced-relative")))
 
 
 

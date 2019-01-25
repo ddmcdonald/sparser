@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2011,2019  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "DA"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  November 2011
+;;;  Version:  January 2019
 
 ;; initiated 5/5/95.  Elaborated ..5/19. 11/3/11 added missing trace.
 
@@ -16,6 +16,15 @@
 
 (defun untrace-da-hook ()
   (setq *trace-DA-check* nil))
+
+;; useful combination
+(defun da-traces ()
+  (trace-da-hook) (trace-questions) (setq *debug-questions* t))
+(defun da-traces-off ()
+  (untrace-da-hook) (untrace-questions) (setq *debug-questions* nil))
+
+
+
 
 (deftrace :beginning-da (starting-point)
   ;; called from consider-debris-analysis
