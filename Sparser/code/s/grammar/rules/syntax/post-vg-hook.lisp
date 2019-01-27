@@ -55,7 +55,9 @@
       ;;(break "aux: ~a  vg: ~a" aux-edge vg-edge)
       (unless (plausibly-too-early-to-take-preposed-aux aux-edge vg-edge)
         ;; Reinstate the original form label for the aux
-        (setf (edge-form aux-edge) aux-form) 
+        ;; DAVID -- HELP NEEDED HERE
+        ;; don't want to remove the preposed-aux marker in a bunch of cases
+        ;;(setf (edge-form aux-edge) aux-form) 
         ;; hook it up
         (compose-discontinuous-aux aux-edge vg-edge)))))
 
