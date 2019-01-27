@@ -20,7 +20,8 @@
 
 (define-category bio-control :specializes process-control-process
   ;; increase in rate vs increase in RAS activity
-  :binds ((multiplier (:or n-fold unit-of-measure)))
+                 :binds ((multiplier (:or n-fold unit-of-measure))
+                         (context (:or model database)))
   :mixins (protein-verb-premod)
   :realization
   (:verb ("control" :present-participle "controlling"
@@ -28,6 +29,7 @@
          :etf (svo-passive)
          :by multiplier
          :m multiplier
+         :in context
          ))
                     
 
