@@ -892,7 +892,10 @@
                ((itypep item category)) ;; handles conjunctions
                (t (eq category override-category)))))
       (cond
-        ((pronominal-or-deictic? item) t)
+        ((or (pronominal-or-deictic? item)
+             (and (eq 'bio-entity (cat-name (itype-of item)))
+                  (subcat-itypep 'bio-chemical-entity restriction)))
+         t)
         ((and (one-anaphor-item? item)
               (not *in-collect-no-space-segment-into-word*)
               (not (member pat-or-v/r
