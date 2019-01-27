@@ -27,6 +27,7 @@
   :realization (:noun "pathway"
                       :with pathwayComponent
                       :for pathwayComponent
+                      :between pathwayComponent
                       )
   :documentation "Pathways are inhibited and activated
    which makes them more like entities than processes.
