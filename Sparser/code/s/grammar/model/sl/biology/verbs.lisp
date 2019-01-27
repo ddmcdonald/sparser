@@ -192,7 +192,12 @@
 
 (define-category learning :specializes bio-rhetorical
   :realization
-  (:verb "learn" :etf (sv)))
+  (:verb "learn" :etf (svo-passive)))
+
+(define-category find-out :specializes learning
+  :realization
+  (:verb ("find" :prep "out")
+         :etf (svo-passive)))
 
 (define-category isolate :specializes bio-method
   :binds ((background biological))
