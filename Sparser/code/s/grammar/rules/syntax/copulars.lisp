@@ -173,6 +173,14 @@ machinery. |#
   ;; that call apply-copular-pp to create copular-predicate objects
   :referent (:function make-copular-pp left-edge right-edge))
 
+(def-form-rule (exist pp) ;; "what pathways exist betwee MEK and ERK"
+  :form vp
+  :new-category copular-pp
+  ;; copular-pp is a label in a syntatic-rule where it's folded
+  ;; in with all the NP sources and gerundive vps to form rules
+  ;; that call apply-copular-pp to create copular-predicate objects
+  :referent (:function make-copular-pp left-edge right-edge))
+
 (defun make-copular-pp (be-ref pp)
   (declare (special category::copular-predication-of-pp *left-edge-into-reference*))
   (when (and
