@@ -266,7 +266,8 @@ be biology specific, since they aren't. |#
 (define-category significance :specializes bio-rhetorical
   :realization
     (:noun "significance"
-     :adj "significant"))
+           :adj "significant"
+           :of agent))
 
 (define-category possibility :specializes bio-rhetorical
   :mixins (bio-thatcomp)
