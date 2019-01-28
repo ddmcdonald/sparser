@@ -121,33 +121,29 @@
   (let* ((be (edge-referent (first edges)))    ;; is
          (subj (edge-referent (second edges))) ;; Selumetinib
          (obj (edge-referent (third edges)))   ;; an inhibitor of MEK1
+         ;; re-order creation of edges and referents to be consistent with normal "X is Y"
+         ;;  create the VP first, by adding an object, and then create the S by adding the subject
+         (copular-meaning
+          (assimilate-object be obj))
+         (copula-edge
+          (when copular-meaning
+            (make-binary-edge/explicit-rule-components
+             (first edges)
+             (third edges)
+             :rule-name 'polar-copula-question-object
+             :form category::s
+             :category category::be
+             :referent copular-meaning)))
          (be+subj
-          (let ((*right-edge-into-reference* (first edges))
-                (*left-edge-into-reference* (second edges)))
-            (assimilate-subject subj be)))
+            (assimilate-subject subj copular-meaning copula-edge))
          ;;(push-debug `(,be ,subj ,obj ,be+subj)) (break "1")
          (subj-vg-edge
-          (when be+subj
-            ;; bad subj in "Is the first one a kinase"
             (make-binary-edge/explicit-rule-components
-             (first edges) (second edges)
+             (first edges) copula-edge
              :rule-name 'polar-copula-question-subject
              :form category::transitive-clause-without-object
              :category category::be
              :referent be+subj)))
-         (copular-meaning
-          (when subj-vg-edge
-            (let ((*right-edge-into-reference* (third edges))
-                  (*left-edge-into-reference* subj-vg-edge))
-              (assimilate-object (edge-referent subj-vg-edge) obj))))
-         (copula-edge
-          (when (and subj-vg-edge copular-meaning)
-            (make-binary-edge/explicit-rule-components
-             subj-vg-edge (third edges)
-             :rule-name 'polar-copula-question-object
-             :form category::s
-             :category category::be
-             :referent copular-meaning))))
     ;;(push-debug `(,be ,subj ,obj ,subj-vg-edge ,copula-edge ,copular-meaning))
     (when copula-edge
       (make-polar-edge copula-edge))))
@@ -196,7 +192,8 @@
          (participle (edge-referent (third edges))) ;; sustained in time
          ;; Code to ensure that all introduced semantic individuals have corresponding edges
          (participle-vp
-          (let ((*left-edge-into-reference* (first edges)))
+          (let ((*left-edge-into-reference* (first edges))
+                (*right-edge-into-reference* (third edges)))
             (check-passive-and-add-tense/aspect be participle)))
          (participle-vp-edge
           (when participle-vp
