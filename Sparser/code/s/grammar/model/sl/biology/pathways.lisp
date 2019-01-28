@@ -34,6 +34,35 @@
    They are named according to the sequence of proteins
    (protein families) in the causal chain.")
 
+
+(define-category pathway-segment :specializes pathway
+   :realization (:of pathwayComponent))
+
+(define-category downstream :specializes pathway-direction
+                 :realization (:adj "downstream"))
+(define-category downstream-segment :specializes pathway-segment
+    :realization
+  (:noun "downstream"))
+
+(define-category upstream :specializes pathway-direction
+     :realization (:adj "upstream"))
+
+(define-category upstream-segment :specializes pathway-segment
+    :realization
+  (:noun "upstream"))
+
+;;(def-synonym downstream (:noun ("downstreams" :plural "downstreamsxxx")))
+;;(def-synonym upstream (:noun ("upstreams" :plural "upstreamsxxx")))
+
+(define-category pathway-direction :specializes bio-relation
+;;  :mixins (post-adj)  messes up pred-adj reading of 'upstream'
+  :binds ((relative-to (:or bio-process bio-entity pathway))
+          (pathway pathway))
+  :realization
+    (:of relative-to
+     :from relative-to
+     :in pathway))
+
 (define-category PathwayStep :specializes bio-process
   :binds ((pathway pathway)                       
           (process bio-process)
