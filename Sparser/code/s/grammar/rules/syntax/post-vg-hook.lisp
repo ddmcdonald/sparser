@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "post-vg-hook"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2017
+;;;  Version:  January 2019
 
 ;; Initiated 8/9/16
 
@@ -46,39 +46,31 @@
       (when (edge-used-in aux-edge)
         ;; multiple toplevel VGs in the sentence, e.g. dynamic-model #42
         (return-from fold-in-preposed-auxiliary nil))
-
       (when (initial-wh (contents (identify-current-sentence)))
         (unless (adjacent-edges? aux-edge vg-edge)
           ;; adjacency happens in "what genes are involved in apoptosis"
-          ;; as compared to  "What are the genes regulated by STAT3
+          ;; as compared to "What are the genes regulated by STAT3
           (return-from fold-in-preposed-auxiliary)))
-      ;;(break "aux: ~a  vg: ~a" aux-edge vg-edge)
       (unless (plausibly-too-early-to-take-preposed-aux aux-edge vg-edge)
-        ;; Reinstate the original form label for the aux
-        ;; DAVID -- HELP NEEDED HERE
-        ;; don't want to remove the preposed-aux marker in a bunch of cases
-        ;;(setf (edge-form aux-edge) aux-form) 
-        ;; hook it up
-        (compose-discontinuous-aux aux-edge vg-edge)))))
+        (compose-discontinuous-aux aux-edge vg-edge aux-form)))))
 
-(defun revert-preposed-aux ()
-  (multiple-value-bind (aux-edge aux-form)
-      (preposed-aux?)
-    (setf (edge-form aux-edge) aux-form)))
-
-(defun compose-discontinuous-aux (aux-edge vg-edge)
-  ;; Look for a rule
+(defun compose-discontinuous-aux (aux-edge vg-edge aux-form)
+  "Make a copy of the aux-edge, but with the original form the aux had
+   before we marked it as preposed-auxiliary to better control what
+   rules would do with it. Use the discontinuous edge code to position it
+   next to the vg-edge."
   (let ((rule (multiply-edges aux-edge vg-edge)))
+    (when rule
+      (let ((new-aux-edge (make-copy-of-edge aux-edge
+                           :form aux-form)))
+        (make-discontinuous-edge new-aux-edge vg-edge rule)))
     (unless rule
       (unless (plausibly-too-early-to-take-preposed-aux aux-edge vg-edge)
         (when *error-if-no-rule-for-preposed-aux*
           (push-debug `(,vg-edge ,aux-edge))
           (error "Trying to fold in a preposed auxiliary ~
                       but there is no rule that composes ~
-                    ~%~a and ~a" aux-edge vg-edge))))
-    ;; Make a very peculiar edge (which may need more thought)
-    (when rule
-      (make-discontinuous-edge aux-edge vg-edge rule))))
+                    ~%~a and ~a" aux-edge vg-edge))))))
 
 (defun plausibly-too-early-to-take-preposed-aux (aux-edge vg-edge)
   "The vg-finished hook has a narrow perspective. The aux should compose
@@ -94,6 +86,12 @@
   (and (one-word-long? vg-edge) ;; heuristic for reduced relative
        (memq (edge-form vg-edge)
              `(,category::vg+ing ,category::vg+ed))))
+
+(defun revert-preposed-aux ()
+  ;; called by wh-initial-three-edges
+  (multiple-value-bind (aux-edge aux-form)
+      (preposed-aux?)
+    (setf (edge-form aux-edge) aux-form)))
 
 
 

@@ -1,41 +1,41 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "discontinuous"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  February 2017
+;;;  Version:  January 2019
 
 (in-package :sparser)
 
 (defun make-discontinuous-edge (left-edge right-edge rule)
-  "The left and right edges are not adjacent. The paradigm case
-   is the preposed auxiliary and the verb group it was 'moved'
-   from when forming a question.
-   We make a copy of the left edge.
-   We make it the left-daughter of the new edge as the right
-   edge becomes the right daughter.
-   The new edge has the same start/end positions as the right edge.
-   Otherwise we do the normal things, evaluating the referent
-   gien the rule and passing the edge to complete and assess."
-  ;; N.b. so far only used to move a preposed-aux, so the
+  "The left and right edges are not adjacent. For preposed auxiliaries,
+   the left-edge that is passed in is an unconnected new edge.
+   If the left edge is already in the chart then this code will
+   have the odd (but usually harmless) effect of having the identical
+   edge object appear in two places simultaneously. 
+   We make a new edge. We make the left-edge the left-daughter of the
+   new edge as the right-edge becomes the right daughter of the new
+   edge. The new edge has the same start/end positions as the right
+   edge. Otherwise we do the normal things, evaluating the referent
+   given the rule and passing the edge to complete and assess."
+  ;; N.b. so far only used this to move a preposed-aux, so the
   ;; head is tacitly the right-edge.
 
   (let* ((edge (next-edge-from-resource))
          (starting-vector (edge-starts-at right-edge))
-         (ending-vector (edge-ends-at right-edge))
-
-         ;; If the manipulations we make over the left edge
-         ;; get complicated, one remedy could be to make
-         ;; a new version of the left edge with the requisite
-         ;; properties changed. But so far (8/12/16), stree
-         ;; and tts seem to be fine.
-         #+ignore(left-copy (make-copy-of-edge
-                     left-edge)))
+         (ending-vector (edge-ends-at right-edge)))
 
     ;; new edge goes directly over the right-edge
     (knit-edge-into-positions edge starting-vector ending-vector)
     (setf (edge-starts-at edge) starting-vector)
     (setf (edge-ends-at edge) ending-vector)
+
+    ;; the aux-edge takes the starting/ending positions
+    ;; of the right-edge.
+    (setf (edge-starts-at left-edge)
+          (edge-starts-at right-edge))
+    (setf (edge-ends-at left-edge)
+          (edge-ends-at right-edge))
 
     (setf (edge-left-daughter edge) left-edge)
     (setf (edge-right-daughter edge) right-edge)
@@ -73,23 +73,18 @@
 
 (defun make-copy-of-edge (edge
                           &key category form
-                               rule referent
-                               starts-at ends-at)
+                               rule referent)
   "Get a new edge from the resource and give the
    values of the edge that's to be copied, or the 
    alternative values specified by the keyword arguments.
    The edge will -NOT- have been knit int the chart yet,
-   because that is the responsibility of the caller.
+   and not have start or end edge vectors because
+   those are the responsibility of the caller.
    Except for that this is any ordinary edge like
    any other. In particular, it will be recyled when
    we get to it's position in the edge resource."
   (let ((new-edge (next-edge-from-resource)))
-    
-    (setf (edge-starts-at new-edge)
-          (or starts-at (edge-starts-at edge)))
-    (setf (edge-ends-at new-edge)
-          (or ends-at (edge-ends-at edge)))
-    
+
     (setf (edge-category new-edge)
           (or category (edge-category edge)))
     (setf (edge-form new-edge)
