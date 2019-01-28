@@ -1675,8 +1675,8 @@ assumed. |#
 (loop for ap in '(adjp adjective comparative-adjective superlative-adjective
                   comparative superlative
                   comparative-adjp superlative-adjp
-                  vp+ed)
-   do (loop for n in '(np proper-noun)
+                  )
+   do (loop for n in '(np proper-noun common-noun)
         do (let ((pattern `(preposed-auxiliary ,n ,ap))
                  (name (s-intern '#:aux-np- ap)))
              (define-debris-analysis-rule/expr name
@@ -1694,6 +1694,45 @@ assumed. |#
         (let ((edges (list be-edge np-edge adjp-edge))
               (end-pos (fix-da-ending-pos *da-ending-position*)))
           (make-polar-adjective-question
+           *da-starting-position* end-pos edges)))))
+
+(loop for n in '(np proper-noun common-noun)
+        do (let ((pattern `(preposed-auxiliary ,n vp+ed))
+                 (name (s-intern '#:aux-np-vp+ed)))
+             (define-debris-analysis-rule/expr name
+               pattern
+               '(:function polar-postmodifying-vp+ed first second third))))
+
+
+(defun polar-postmodifying-vp+ed (be-edge np-edge vp+ed-edge)
+  (declare (special *da-starting-position* *da-ending-position*))
+  (when (preposed-aux? :first-np-edge np-edge)
+    (when
+        (eq (cat-name (edge-category be-edge)) 'be)
+      ;; there should be a verb, not an adjp, so fail
+      ;;  possibly figure out whether the verb was swallowd by the np-edge
+      ;;  as in "does RAS rise faster ..." where "rise" is mistakenly treated as a noun
+      (let ((edges (list be-edge np-edge vp+ed-edge))
+            (end-pos (fix-da-ending-pos *da-ending-position*)))
+        (make-polar-participle-question
+         *da-starting-position* end-pos edges)))))
+
+(loop for second-np in '(np proper-noun common-noun)
+   do (loop for n in '(np proper-noun common-noun)
+        do (let ((pattern `(preposed-auxiliary ,n ,second-np))
+                 (name (s-intern '#:aux-np- second-np)))
+             (define-debris-analysis-rule/expr name
+               pattern
+               '(:function polar-copular-np first second third)))))
+
+(defun polar-copular-np (be-edge np-edge second-np-edge)
+  (declare (special *da-starting-position* *da-ending-position*))
+  (when (preposed-aux? :first-np-edge np-edge)
+    (if (not (eq (cat-name (edge-category be-edge)) 'be))
+        nil
+        (let ((edges (list be-edge np-edge second-np-edge))
+              (end-pos (fix-da-ending-pos *da-ending-position*)))
+          (make-polar-copular-question
            *da-starting-position* end-pos edges)))))
 
 (define-debris-analysis-rule aux-np-vp-adj
