@@ -1735,13 +1735,38 @@ there was an edge for the qualifier (e.g., there is no edge for the
     
     (cond
       (*subcat-test*
-       (and (not
-             ;; aux inversion in question "is STAT3 involved in ..."
-             (let ((word-before (word-just-to-the-left (left-edge-for-referent))))
-               (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
-                    (member (pname word-before)
-                                 '("is" "was" "were" "are")
-                                 :test #'equal))))
+       (and 
+        #| allows these to succeed
+        ("Is MAP2K1 bound to MAPK1 eventually high?" "Is MAPK1 bound to MAP2K1 transient?"
+        "What are the genes regulated by STAT3?")
+
+        causes these to fail
+        ("How is stat3 involved in apoptotic regulation?"
+        "How is stat3 involved in apoptotis regulation in the liver?"
+        "How is stat3 involved in regulating apoptosis?" "How is stat3 used to regulate apoptosis?"
+        "Is MEK2 inhibited by Selumetinib?" "Is STAT3 involved in apoptosis?"
+        "Is STAT3 involved in apoptotic regulation?" "Is STAT3 involved in regulating apoptosis?"
+        "Is STAT3 regulated by c-fos?" "Is stat3 exclusively expressed in liver?"
+        "Is stat3 expressed exclusively in liver?" "Is stat3 expressed in liver?"
+        "Is stat3 expressed in spleen?" "Is stat3 involved in any apoptotic pathways?"
+        "Is stat3 involved in apoptotic regulation?" "Is stat3 involved in regulating apoptosis?"
+        "Is the amount of phosphorylated MAPK1 sustained at a high level?")
+        (not
+             ;; aux inversion in question "is STAT3 involved in ..." ; ;
+        (let ((word-before (word-just-to-the-left (left-edge-for-referent))))
+        (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
+        (member (pname word-before)
+        '("is" "was" "were" "are")
+        :test #'equal))))
+
+        |#
+        (not
+             ;; aux inversion in question "is STAT3 involved in ..." ; ;
+        (let ((word-before (word-just-to-the-left (left-edge-for-referent))))
+        (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
+        (member (pname word-before)
+        '("is" "was" "were" "are")
+        :test #'equal))))
             (or (can-fill-vp-subject? vp subj) ;; evidence for S rather than reduced relative
                 (and (can-fill-vp-object? vp subj (left-edge-for-referent))
                      ;; make sure this is a non-trivial relative clause (not just the verb)
