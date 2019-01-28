@@ -735,6 +735,10 @@ than a bare "to".  |#
                   (not (and (edge-p prev-edge)
                             (or (eq 'parentheses (cat-name (edge-category prev-edge)))
                                 (eq 'conjunction (form-cat-name prev-edge)))))
+                  (not (and (edge-p prev-edge)
+                  ;; proposal-marker is for "Let's", which makes it highly likely that the nex
+                  ;;  word is a verb, not a part of the NG (e.g. "Let's put ERK")
+                            (eq 'proposal-marker (cat-name (edge-category prev-edge)))))
                   (not (and
                         (car *chunks*)
                         (member 'ng (chunk-forms (car *chunks*)))
