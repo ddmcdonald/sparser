@@ -706,14 +706,7 @@
 (define-category post-adj :specializes linguistic 
   :documentation "used as a marker for adjectives which can follow nouns")
 
-(define-category pathway-direction :specializes bio-relation
-;;  :mixins (post-adj)  messes up pred-adj reading of 'upstream'
-  :binds ((relative-to (:or bio-process bio-entity pathway))
-          (pathway pathway))
-  :realization
-    (:of relative-to
-     :from relative-to
-     :in pathway))
+
 
 
 (define-category equilibrium :specializes bio-relation
@@ -1308,10 +1301,12 @@ the STAT1 transcription factor
     (:noun "cell-line"))
 
 (define-category cell-type :specializes cell-entity
-  :binds ((associated-disease disease))                         
+                 :binds ((associated-disease disease)
+                         (mutation (:or mutation alter)))
   :realization
   (:noun "cell"
-         :m associated-disease))
+         :m associated-disease
+         :with mutation))
 
 
 
