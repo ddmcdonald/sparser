@@ -89,6 +89,7 @@
 (gload "bio;switches")
 (gload "bio;rules")
 
+
 ;;(gload "bio;UCD-proteins")
 ;(gload "bio;protein-families")
 (gload "bio;protein-fam-no-id")
@@ -119,5 +120,6 @@
 (gload "bio;examples.lisp") ;; no definitions in here
 (gload "bio;talking-about-a-model.lisp");; no definitions in here
 (gload "bio;get-reactome-hgnc-names.lisp")
+(gload "bio;visualization.lisp")
 
 
