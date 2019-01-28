@@ -116,6 +116,11 @@ increasing amounts of recombinant XRCC1.
 (dynamic-model 54 "Double the amount of total BRAF.")
 |#
 
+
+(define-category frequency :specializes bio-scalar
+  :realization
+  (:noun "frequency"))
+
 (define-category peak
   :specializes bio-scalar
   :realization (:noun "peak"
