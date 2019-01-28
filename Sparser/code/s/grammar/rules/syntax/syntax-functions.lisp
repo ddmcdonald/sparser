@@ -997,7 +997,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
      
       (if (eq be-form 'preposed-auxiliary)
         (then
-          (break "aux: ~a  vg: ~a" be-edge vg-edge) ;; test the plausibility check
+         ;; (break "aux: ~a  vg: ~a" be-edge vg-edge) ;; test the plausibility check
           (unless (plausibly-too-early-to-take-preposed-aux be-edge vg-edge)
             (add-tense/aspect aux vg)))
         (add-tense/aspect aux vg)))))
