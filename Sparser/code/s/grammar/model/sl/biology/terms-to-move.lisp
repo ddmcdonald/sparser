@@ -28,15 +28,6 @@ be biology specific, since they aren't. |#
 (define-adverb "pretty" :super-category 'intensifier)
 
 
-(adj "downstream" :super pathway-direction
-  :realization (:adj "downstream"))
-(adj "upstream" :super pathway-direction
-     :realization (:adj "upstream"))
-
-(def-synonym downstream (:noun ("downstreams" :plural "downstreamsxxx")))
-(def-synonym upstream (:noun ("upstreams" :plural "upstreamsxxx")))
-
-
 (noun "route" :super bio-mechanism)
 
 (adj "also known as" :super bio-relation)
