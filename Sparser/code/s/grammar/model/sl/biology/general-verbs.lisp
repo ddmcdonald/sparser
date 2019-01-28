@@ -1180,6 +1180,7 @@
 
 (def-synonym seem (:verb "appear" :etf (svo)))
 (make-copular-def "appear")
+(make-copular-def "exist")
 
 
 (define-category set-value :specializes caused-bio-process
