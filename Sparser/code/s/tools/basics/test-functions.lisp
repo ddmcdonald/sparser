@@ -1400,3 +1400,11 @@ divides it into good and bad. |#
      as s = (nth index *list-of-bio-utterances*)
        do (test-bio-utterance s index stream)))
 
+
+(defun collect-bio-bad-utterances (&optional (stream *standard-output*))
+  "Getting output on known failures"
+  (sort
+   (loop for index in (reverse *bio-utt-test-bad*)
+         as s = (nth index *list-of-bio-utterances*)
+         collect s)
+   #'string<))
