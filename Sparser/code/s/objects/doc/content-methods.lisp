@@ -676,11 +676,11 @@ is a case in handle-any-anaphor
    (let ((s (identify-current-sentence)))
      (initial-wh (contents s)))
    (let ((first-edge (car (all-tts))))
-     (when
-         (or (itypep (value-of 'has-determiner (edge-referent first-edge))
-                     '(:or what which how when why))
-             (itypep (value-of 'quantifier (edge-referent first-edge))
-                     '(:or what which how when why)))
+     (when (and (edge-p first-edge)
+                (or (itypep (value-of 'has-determiner (edge-referent first-edge))
+                            '(:or what which how when why))
+                    (itypep (value-of 'quantifier (edge-referent first-edge))
+                            '(:or what which how when why))))
        first-edge))))
 
 
