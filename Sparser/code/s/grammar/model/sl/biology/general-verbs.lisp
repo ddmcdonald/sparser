@@ -718,7 +718,7 @@
   :realization
   (:verb "involve" ;; keyword: ENDS-IN-ING
          :noun "involvement"
-         :etf (svo)
+         :etf (svo-passive)
          :o theme
          :in theme))
 
