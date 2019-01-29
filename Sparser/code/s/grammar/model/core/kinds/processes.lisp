@@ -102,7 +102,7 @@
  which they happen)." )
 
 
-(define-category  event
+#+ignore(define-category  event
   :instantiates self
   :specializes  perdurant
   :binds ()

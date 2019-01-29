@@ -35,23 +35,11 @@
   :instantiates nil
   :specializes endurant
   :documentation 
-   "Dolce defines a 'region' class as one of the immediate
-  daughters of 'abstract' (the others include 'fact' and 'set)
-  Region is then divided into 'temporal', 'physical' aka space,
-  and 'abstract'.
-     In general, 'region' is taken abstractly here using the notion of
- demarcation or setting boundaries over some domain to pick out a
- particular part of it. You can have a region of the number line, a
- region of a process (e.g. S-phase in cell division), a region of
- space. The emphasis on regions having interiors in which other things
- can be located.  The world itself is not cut up into nice parts. Any
- partitionings or identification of regions are arbitrary cognitive
- constructs, which makes them abstract: not situated in time or space.
-    An earlier version of this class had an 'applicable-domain' slot
- in it to identify 'The kind of stuff this regain demarcates: numbers, cytoplasm,
- curricula, geographical space, etc.', however it not been clear how to
- fill this slot with anything without going second order (i.e. using a
- class), and it's worth exploring that that would come to in some use-case.")
+   "Fundamentally, this is the same concept as the 'abstract-region'
+ in upper-model.lisp. It demarcates, sets a boundary around a portion
+ of some stuff. But because 'regions' are central to the geography
+ of space, where using the simple name 'region' here as a type of
+ endurant.")
 
 
 (define-category physical
