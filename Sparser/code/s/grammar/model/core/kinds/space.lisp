@@ -15,7 +15,7 @@
 (define-category location
   :instantiates self
   :specializes region
-  :restrict ((name  name-of-location)) ;;/// try including names module 
+  ;; :restrict ((name  name-of-location)) ;;/// try including names module 
   :documentation "The most general notion of a location, as a place
  where something can be.
    'My wedding ring is on my (left ring) finger'

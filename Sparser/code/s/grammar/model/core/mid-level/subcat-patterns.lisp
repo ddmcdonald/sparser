@@ -235,4 +235,5 @@ subcategorization-pattern is a daughter of linguistic, abstract
                 ;; :on\ top\ of supported-by
                 :at at-relative-location ;; at the end
                 :on at-relative-location ;; on the left
+                :into at-relative-location
                 :to goal))

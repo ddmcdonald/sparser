@@ -766,7 +766,7 @@
 ;;; bio-location
 ;;;--------------
 
-(define-category bio-location  :specializes endurant
+(define-category bio-location  :specializes location
   :mixins (has-UID biological)
   :instantiates self
   :index (:permanent :key name))
