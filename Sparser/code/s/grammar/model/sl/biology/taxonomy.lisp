@@ -82,20 +82,31 @@
 
 (define-mixin-category bio-complement
   :specializes abstract
-  :binds ((statement (:or bio-process molecule-state be
-                          bio-predication predication
-                          bio-method
-                          bio-chemical-entity
-                          event-relation
-                          copular-predication
-                          mechanism
-                          bio-relation
-                          relation bio-rhetorical
-                          there-exists
-			              event-relation
-                          perdurant
-                          abstract ;; for information like "evidence"
-                          )))
+  :binds ((statement (:or
+                      #| these are not statement-like items
+                      -- they should be handled differently
+                         (LEAVE THIS TIL A BIT LATER)
+                      |#
+
+                      bio-chemical-entity
+                      molecule-state
+                      bio-process
+                      bio-method
+                      mechanism
+                      
+                           be
+                           bio-predication
+                           predication
+                           event-relation
+                           copular-predication
+                           bio-relation
+                           relation
+                           bio-rhetorical
+                           there-exists
+                           event-relation
+                           perdurant
+                           abstract ;; for information like "evidence"
+                           )))
   :documentation "Common parent to the other types of biological 
     complements to share the same standard set of bindings.")
 
@@ -136,6 +147,7 @@
   :binds ((context (:or bio-context
                         bio-mechanism ;; for pathways -- they are context, not manner
                         experiment-data))
+          (info-context (:or model database))
           (cell-line cell-line)
           (cell-type cell-type)
           (organ bio-organ)
@@ -158,6 +170,7 @@
      :in cell-type
      :in cellular-location
      :in context
+     :in info-context
      :in non-cellular-location
      :in organ
      :in preparation
