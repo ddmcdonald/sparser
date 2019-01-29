@@ -20,11 +20,6 @@
 ;;;-------
 ;;; state
 ;;;-------
-;; Need documentation here -- DAVID
-(defvar *left-segment-boundary*)
-(defvar *right-segment-boundary*)
-(defvar *DEBUG-SEGMENT-HANDLING*) ;; needed to quiet the compiler
-
 
 (defvar *segment-position-just-left-of-head* nil
   "Points to the chart-position-before the right-segment-boundary
@@ -32,6 +27,7 @@
    in Grok mode implies that the segment ended in a polyword.")
 
 (defun initialize-segment-state-variables ()
+  (declare (special *segment-position-just-left-of-head*))
   (setq *segment-position-just-left-of-head*
         (or (position-before-segment-final-multi-word-edge)
             (chart-position-before *right-segment-boundary*))))
@@ -47,6 +43,7 @@
   (not (edge-over-segment-head)))
 
 (defun edge-over-segment ()
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
   (edge-between *left-segment-boundary* *right-segment-boundary*))
 
 
@@ -58,6 +55,7 @@
   ;; over it. But it can also happen that the segment ends with
   ;; a polyword. We check for that, and return the position
   ;; where the polyword starts.  /// extend to edges?
+  (declare (special *right-segment-boundary*))
   (let* ((ends-here (pos-ends-here *right-segment-boundary*))
          (e0 (aref (ev-edge-vector ends-here) 0)))
     (when e0 ;; a few known words don't have preterminals yet
@@ -68,6 +66,8 @@
           pos-e0-starts-at)))))
 
 (defun segment-ends-in-multi-word-edge? ()
+  (declare (special *segment-position-just-left-of-head*
+                    *right-segment-boundary*))
   (not (eq *segment-position-just-left-of-head*
            (chart-position-before *right-segment-boundary*))))
 
@@ -80,10 +80,12 @@
       (eq (edge-category edge) category::apostrophe-s))))
 
 (defun segment-ends-with-single-quote ()
+  (declare (special *right-segment-boundary* word::single-quote))
   (let ((p (chart-position-before *right-segment-boundary*)))
     (eq (pos-terminal p) word::single-quote)))
 
 (defun segment-spanned-by-multi-word-edge? ()
+  (declare (special *left-segment-boundary*))
   (let ((start-pos (position-before-segment-final-multi-word-edge)))
     (when start-pos
       (eq start-pos *left-segment-boundary*))))
@@ -94,6 +96,8 @@
 ;;--- about the end of the segment
 
 (defun edge-over-last-word-of-segment ()
+  (declare (special *segment-position-just-left-of-head*
+                    *right-segment-boundary*))
   (if (or (segment-ends-with-single-quote)
           (segment-ends-with-appostrope-s?))
     ;; take the edge just to the left
@@ -105,17 +109,23 @@
   "The edge over just the word in head position (rightmost in
    the segment. Doesn't notice if there's a bigger edge that
    goes over it."
+  (declare (special *segment-position-just-left-of-head*
+                    *right-segment-boundary*))
   (edge-between *segment-position-just-left-of-head*
                 *right-segment-boundary*))
 
 (defun edge-over-segment-head ()
   "Is there an edge, of any length, that ends at the
    right boundary of the segment?"
+  (declare (special *right-segment-boundary*))
   (let ((ev (pos-ends-here *right-segment-boundary*)))
     (ev-top-node ev)))
   
 
 (defun head-word-of-segment ()
+  (declare (special *debug-segment-handling*
+                    *segment-position-just-left-of-head*
+                    *right-segment-boundary*))
   (let ((word
          (if (segment-ends-in-multi-word-edge?)
            (let* ((ev (pos-starts-here *segment-position-just-left-of-head*))
@@ -138,6 +148,7 @@
             *right-segment-boundary*)))
 
 (defun edge-starts-at-left-boundary? (edge)
+  (declare (special *left-segment-boundary*))
   (eq (pos-edge-starts-at edge)
       *left-segment-boundary*))
   
@@ -146,11 +157,13 @@
 
 
 (defun word-to-left-of-head ()
+  (declare (special *segment-position-just-left-of-head*))
   ;; caller has made sure the segment is long enough for this to make sense
   (let ((end-minus-2 (chart-position-before *segment-position-just-left-of-head*)))
     (pos-terminal end-minus-2)))
 
 (defun edge-to-left-of-head ()
+  (declare (special *segment-position-just-left-of-head*))
   (let* ((ends-here-vector (pos-ends-here *segment-position-just-left-of-head*))
          (top-node (ev-top-node ends-here-vector)))
     (when (eq top-node :multiple-initial-edges)
@@ -202,6 +215,7 @@
 
 (defun treetops-in-current-segment ()
   ;; see code in forest/printers
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
   (loop for ev in
     (treetops-in-segment *left-segment-boundary*
                          *right-segment-boundary*)
@@ -214,6 +228,7 @@
            (1- (ev-number-of-edges ev)))))))
 
 (defun print-treetop-labels-in-current-segment (&optional (stream *standard-output*))
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
   (print-treetop-labels-in-segment stream
                                    *left-segment-boundary*
                                    *right-segment-boundary*))
@@ -221,6 +236,7 @@
 
 
 (defun edge-starts-at-segment-boundary (edge)
+  (declare (special *left-segment-boundary*))
   (eq (pos-edge-starts-at edge)
       *left-segment-boundary*))
 
@@ -228,6 +244,7 @@
 ;;---- below here not vetted for segment ending in polyword
 
 (defun edge-over-segment-suffix ()
+  (declare (special *right-segment-boundary*))
   (let* ((right-ev (pos-ends-here *right-segment-boundary*))
          (top-node (ev-top-node right-ev)))
     (when (eq top-node :multiple-initial-edges)
@@ -244,10 +261,12 @@
 
 
 (defun first-word-in-segment ()
+  (declare (special *left-segment-boundary*))
   (values (pos-terminal *left-segment-boundary*)
           (segment-length)))
 
 (defun edge-over-segment-prefix ()
+  (declare (special *left-segment-boundary*))
   (let* ((left-pos-start (pos-starts-here *left-segment-boundary*))
          (top-node (ev-top-node left-pos-start)))
     (when (eq top-node :multiple-initial-edges)
@@ -270,6 +289,7 @@
         (error "no left edge recorded in edge vector ~a" ev))))
 
 (defun where-prefix-edge-ends ()
+  (declare (special *left-segment-boundary*))
   (let* ((left-pos-start (pos-starts-here *left-segment-boundary*))
          (top-edge (ev-top-node left-pos-start)))
     (if (eq top-edge :multiple-initial-edges)
@@ -278,6 +298,7 @@
       (ev-position (edge-ends-at top-edge)))))
 
 (defun words-in-segment-after-prefix ()
+  (declare (special *right-segment-boundary*))
   (let ((left-pos (where-prefix-edge-ends)))
     (words-between left-pos *right-segment-boundary*)))
 
@@ -295,11 +316,13 @@
 
 
 (defun segment-length ()
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
   (- (pos-token-index *right-segment-boundary*)
      (pos-token-index *left-segment-boundary*)))
 
 
 (defun words-in-segment ()
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
   (words-between *left-segment-boundary* *right-segment-boundary*))
 
 (defun format-words-in-segment (&optional (stream *standard-output*))

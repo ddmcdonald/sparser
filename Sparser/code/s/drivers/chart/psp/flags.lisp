@@ -45,10 +45,12 @@
 
 
 (defvar *left-segment-boundary* nil
-  "Value is a position. Set by scan, read by pts and above.")
+  "Value is a position. Set by scan or by the chunker.
+   Read by pts and above.")
 
 (defvar *right-segment-boundary* nil
-  "Value is a position. Set by scan, read by pts and above.")
+  "Value is a position. Set by scan or by the chunker.
+   Read by pts and above.")
 
 
 (defvar *where-the-last-segment-ended* nil

@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2013-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2010  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File: "scan"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: August 2016
+;;;   Version: January 2019
 
 ;; Initiated 2/9/07. Completely redone starting 1/21/13. Adding a 
 ;; simpler variation 4/1/13. Which uses make-individual-for-dm&p 4/4
@@ -37,6 +37,9 @@ drivers/chart/psp/pts[#].lisp after it has invoked the parser
 to make any semantic or form edges that the grammar dictates. 
 
 |#
+
+(defparameter *debug-segment-handling* nil
+  "Guards breaks for unhandled cases")
 
 ;;;-----------
 ;;; dispatch
@@ -101,11 +104,12 @@ to make any semantic or form edges that the grammar dictates.
        (reify-segment-head-as-a-category))
      ;; That makes an individual referent. Ok?
      ;; /// And it doesn't set up the noun as such.
-     (let ((edge (propagate-suffix-to-segment)))
-       (generalize-segment-edge-form-if-needed edge)
-       (convert-referent-to-individual edge)
-       (when *note-text-relations*
-         (record-any-determiner edge))))
+     (unless (chunker-overreached)
+       (let ((edge (propagate-suffix-to-segment)))
+         (generalize-segment-edge-form-if-needed edge)
+         (convert-referent-to-individual edge)
+         (when *note-text-relations*
+           (record-any-determiner edge)))) )
 
     (:no-edges ;; "burnt" or any other word not in Comlex
      (cond
@@ -129,6 +133,26 @@ to make any semantic or form edges that the grammar dictates.
   (setq coverage (segment-coverage)) ;; update
   (continue-from-sdm/analyze-segment coverage))
 
+
+
+(defun chunker-overreached ()
+  "In biology, with the heavy use of syntactic rules, it's unusual
+   for a segment (chunk) not to parse completely. It one doesn't we
+   should consider the possibility that the segment has the wrong
+   bounds and consequently we shouldn't span it just for the sake of
+   having a span (edge over the chunk)."
+  ;; "How [does knocking] out p53 ..."
+  ;; Add more cases as we encounter them
+  (declare (special *current-chunk*))
+  (when *current-chunk*
+    (when (memq 'vg (chunk-forms *current-chunk*))
+      ;; The verb group grammar is very robust. If there is
+      ;; an unparsed auxiliary here then it's not supposed
+      ;; to be parsed
+      ;;   (edge-over-segment-prefix)
+      (auxiliary-word? (first-word-in-segment)))))
+      
+    
 
 (defun propagate-suffix-to-segment ()
   ;; Look up the edge on the suffix, use its data to
