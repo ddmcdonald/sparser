@@ -1562,7 +1562,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
     ((itypep vp 'control-verb) ;; e.g. "want"
      (when *subcat-test* (return-from assimilate-subject t))
      (assimilate-subject-for-control-verb subj vp vp-edge))
-    ((or (and (itypep vp 'be) ;; block "what are" as a transitive-clause-without-object
+    ((or (and (eq (cat-name (itype-of  vp)) 'be) ;; was itypep, but REMAIN (and other pseudo copulars) are subcategories of BE
+              ;; block "what are" as a transitive-clause-without-object
               (null (value-of 'predicate vp)))
          (itypep vp 'do) ;; block "what does" as a transitive-clause-without-object
          )
