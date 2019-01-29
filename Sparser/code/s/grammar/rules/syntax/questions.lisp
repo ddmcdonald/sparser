@@ -12,6 +12,13 @@
 
 (in-package :sparser)
 
+(defparameter *alternative-wh-question-strategy* t
+  "When this is T on, we don't use delimit-and-label-initial-wh-term 
+   to find initial wh terms -- we just parse them. This should permit
+   better handling of other forms of WH clauses and contructions
+   such as embedded questions acting as clause participants
+   ('I want o know where you are').")
+
 ;;;--------------------------------
 ;;; debugging / display parameters
 ;;;--------------------------------
@@ -455,11 +462,6 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
 ;;; WH questions
 ;;;--------------
 
-(defparameter *alternative-wh-question-strategy* T
-  "When this is T on, we don't use delimit-and-label-initial-wh-term 
-   to find initial wh terms -- we just parse them. 
-")
-
 (defun delimit-and-label-initial-wh-term (pos-before wh-edge)
   "WH questions always also include inverting subject
    and auxiliary, where the auxiliary will occur right after the
@@ -474,7 +476,9 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
    that we have the wh-edge in hand on the sentence context."
   
   (when *alternative-wh-question-strategy*
+    (record-initial-wh wh-edge)
     (return-from delimit-and-label-initial-wh-term nil))
+  
   (tr :wh-walk "delimit-and-label-initial-wh-term")
   (let* ((wh-type (edge-referent wh-edge)) ;; the category 
          (next-pos (chart-position-after pos-before))
@@ -484,8 +488,7 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
          attr-edge ;; attributes (color)
          value-edge  ;; attribute values (big)
          other-edges ;; everything else
-         of?
-         )
+         of? )
 
     (flet ((cover-wh (q end-pos)
              "Make a phrase over the whole span of WH edges
