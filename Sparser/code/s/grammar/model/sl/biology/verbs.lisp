@@ -471,14 +471,39 @@
 
 
 ;; DAVID -- not sure about the relation of basis to base
-(define-category base :specializes bio-rhetorical
-    :binds ((cause (:or biological bio-rhetorical measurement bio-scalar)))
+(define-category base :specializes perdurant ;; DAVID -- need a better parent
+   ;;bio-rhetorical -- it doesn't ake a bunch of the modifiers of bio-rhetorical
+   :binds ((cause (:or biological bio-rhetorical measurement bio-scalar))
+           (object
+            (:or
+             bio-chemical-entity
+             bio-grouping ;; a group/set/subset...
+             cell-entity
+             organism ;; "these animals showed..."
+             these
+             ;; bio-entity too general -- leads to problems with created semantic rules
+             bio-chemical-entity
+             bio-location ;; "the Y561 site displayed no difference..."
+             evidence
+             article-figure
+             bio-quality
+             bio-rhetorical
+             bio-process ;; the B-RAFV600E mutation predicts
+             bio-method ;; high-throughput functional screens may inform
+             bio-mechanism     ;; "this pathway describes ..."
+             bio-predication ;; the success of raf and mek inhibitors
+             measurement     ;; these data
+             visual-representation))
+           (agent interlocutor))
+            
     :realization
-    (:verb "base" ;; keyword: ENDS-IN-ED 
-	   :noun "basis"
-	   :etf (svo-passive)
-           :on cause
-           :upon cause))
+           (:verb "base" ;; keyword: ENDS-IN-ED
+                  :s agent
+                  :o object      
+                  :noun "basis"
+                  :etf (svo-passive)
+                  :on cause
+                  :upon cause))
 
 
 
