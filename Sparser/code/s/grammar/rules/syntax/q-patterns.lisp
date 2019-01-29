@@ -96,6 +96,22 @@
               :referent q
               :constituents edges))) )
 
+(defun there-question/stranded-prep (is-there-edge s-edge prep-edge start-pos end-pos)
+  ;; "Are there any genes stat3 is upstream of?"
+  (tr :wh-walk "there-question/stranded-prep")
+  (when *debug-questions*
+    (push-debug `(,is-there-edge ,s-edge ,prep-edge))
+    (break "stranded there")))
+         
+         
+(defun polar-stranded-preposition (aux-edge main-edge prep-edge)
+  ;; "Can you find any apoptotic pathways that stat3 is involved in?"
+  (when *debug-questions*
+    (break "Substantial refactoring require to find equivalent of the 'item' ~
+      that wh-stranded-prep uses for its prepositional complement")))
+
+
+
 (defun da/preposed+s (aux-edge s-edge)
   ;;(break "aux = ~a, s = ~a" aux s)
   "Goes with DA rule for [preposed-auxiliary s ifcomp] except that
@@ -217,13 +233,6 @@
 
     (when participle-statement-edge
       (make-polar-edge participle-statement-edge))))
-
-
-(defun polar-stranded-preposition (aux-edge main-edge prep-edge)
-  ;; "Can you find any apoptotic pathways that stat3 is involved in?"
-  (when *debug-questions*
-    (break "Substantial refactoring require to find equivalent of the 'item' ~
-      that wh-stranded-prep uses for its prepositional complement")))
 
 
 ;; Does phosphorylated MAP2K1 being high follow phosphorylated BRAF reaching a high value?"

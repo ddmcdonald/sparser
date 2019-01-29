@@ -1674,8 +1674,7 @@ assumed. |#
 
 (loop for ap in '(adjp adjective comparative-adjective superlative-adjective
                   comparative superlative
-                  comparative-adjp superlative-adjp
-                  )
+                  comparative-adjp superlative-adjp)
    do (loop for n in '(np proper-noun common-noun)
         do (let ((pattern `(preposed-auxiliary ,n ,ap))
                  (name (s-intern '#:aux-np- ap)))
@@ -1688,7 +1687,7 @@ assumed. |#
   (when (preposed-aux? :first-np-edge np-edge)
     (if (eq (cat-name (edge-category be-edge)) 'do)
         ;; there should be a verb, not an adjp, so fail
-        ;;  possibly figure out whether the verb was swallowd by the np-edge
+        ;;  possibly figure out whether the verb was swallowed by the np-edge
         ;;  as in "does RAS rise faster ..." where "rise" is mistakenly treated as a noun
         nil
         (let ((edges (list be-edge np-edge adjp-edge))
@@ -1751,8 +1750,8 @@ assumed. |#
 
 (define-debris-analysis-rule aux-transitive-without
     :pattern (preposed-auxiliary transitive-clause-without-object)
+    ;; "Does phosphorylated MAP2K1 behave like phosphorylated MAPK1?"
     :action (:function da/preposed+s first second))
-;; "Does phosphorylated MAP2K1 behave like phosphorylated MAPK1?"
 
 (define-debris-analysis-rule is-s-under-condition
     :pattern (preposed-auxiliary s ifcomp)
@@ -1760,8 +1759,8 @@ assumed. |#
 
 (define-debris-analysis-rule is-s-vp
     :pattern (preposed-auxiliary s vp)
+    ;; Does phosphorylated MAP2K1 being high follow phosphorylated BRAF reaching a high value?"
     :action (:function da-is-s-vp first second third))
-;; Does phosphorylated MAP2K1 being high follow phosphorylated BRAF reaching a high value?"
 
 
 (defun da-is-s-vp (aux-edge s-edge vp-edge)
@@ -1837,7 +1836,7 @@ assumed. |#
 (define-debris-analysis-rule whpn-vp-noun-vg+ed
     :pattern (wh-pronoun vg proper-noun vg+ed)
     ;; "Where is STAT3 expressed?"
-    :action (:function wh-four-edges  first second third fourth))
+    :action (:function wh-four-edges first second third fourth))
 
 (define-debris-analysis-rule whpn-vp-noun-vp+ed
     :pattern (wh-pronoun vg proper-noun vp+ed)
@@ -1881,6 +1880,18 @@ assumed. |#
                         prep-edge
                         *da-starting-position* end-pos))))
 
+
+;;--- there questions
+
+(define-debris-analysis-rule there-s-prep
+    :pattern (there-exists s preposition)
+    ;; "Are there any genes stat3 is upstream of?"
+    :action (:function there-s-prep first second third))
+
+(defun there-s-prep (is-there s prep)
+  (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
+    (there-question/stranded-prep is-there s prep
+                                  *da-starting-position* end-pos)))
 
 
 
