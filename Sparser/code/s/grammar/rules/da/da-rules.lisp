@@ -1717,8 +1717,8 @@ assumed. |#
         (make-polar-participle-question
          *da-starting-position* end-pos edges)))))
 
-(loop for second-np in '(np proper-noun common-noun)
-   do (loop for n in '(np proper-noun common-noun)
+(loop for second-np in '(np proper-noun common-noun pronoun)
+   do (loop for n in '(np proper-noun common-noun pronoun)
         do (let ((pattern `(preposed-auxiliary ,n ,second-np))
                  (name (s-intern '#:aux-np- second-np)))
              (define-debris-analysis-rule/expr name
@@ -1861,6 +1861,10 @@ assumed. |#
 ;; "What genes is stat3 upstream of?"
 (define-debris-analysis-rule s-plus-prep
     :pattern (s preposition)
+    :action (:function s+prep first second))
+
+(define-debris-analysis-rule s-plus-prep
+    :pattern (transitive-clause-without-object preposition)
     :action (:function s+prep first second))
 
 (defun s+prep (s-edge prep-edge &optional third)
