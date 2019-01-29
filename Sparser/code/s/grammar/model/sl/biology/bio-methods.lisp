@@ -138,11 +138,13 @@
              :of process))
 (noun "work" :super bio-method)
 
-(define-category knock-out  :specializes bio-method
+;; Note that in the verbs file we have the verb "knock out"
+;; with the category knock-out
+(define-category knockout  :specializes bio-method
   :realization
   (:noun ("knock-out" "knockout")
-         :of object
-         :m object))
+   :of object
+   :m object))
 
 
 ;;;-----------------------------------
