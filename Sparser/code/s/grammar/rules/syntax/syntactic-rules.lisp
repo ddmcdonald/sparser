@@ -495,6 +495,11 @@
       `(def-syntax-rule (,nb transitive-clause-without-object)
            :head :left-edge
            :form np
+           :referent (:function apply-object-relative-clause left-edge right-edge)))
+     (eval
+      `(def-syntax-rule (,nb object-relative-clause) 
+           :head :left-edge
+           :form np
            :referent (:function apply-object-relative-clause left-edge right-edge))))
 
 
