@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997,2012-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2012-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "stubs"
 ;;;   Module:  "init;loaders;"
-;;;  version:  November 2018
+;;;  version:  January 2019
 ;;;
 ;;; Provide definitions for functions we know (given the configuration)
 ;;; don't have definitions.
@@ -47,8 +47,10 @@
     (declare (ignore sentence)))
   (defun note-biological (referent) (declare (ignore referent)))
   (defun assess-relevance (sentence)
-    (declare (ignore sentence))))
-
+    (declare (ignore sentence)))
+  (defun reify-residue-and-make-edge (start-pos end-pos)
+    (declare (ignore start-pos end-pos))
+    nil))
 
 
 (unless *companies*
