@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2011-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "quantifiers"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   January 2017
+;;;   Version:   January 2019
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/13/94
 ;; 0.1 (7/25) revised "many" and "several" to be like the others rather than
@@ -152,7 +152,9 @@
              (let* ((word (resolve string))
                     (category (category-named cat-name :error))
                     (rule (find-form-cfr word category)))
-               (setf (cfr-form rule) category::comparative))))
+               ;; This was comparative, but the grammar works better
+               ;; if we treat is as adverbial (1/19)
+               (setf (cfr-form rule) category::adverb))))
       (let* ((q (when base
                   (define-quantifier base)))
              (comparative
@@ -207,29 +209,9 @@
 (define-quantifier "various")
 
 
-  
-
 (define-quantifier "no") 
 
 (define-quantifier "not"  :brackets '( ].verb .[modal ))
 
 (define-quantifier "none" :brackets '( ].quantifier  phrase.[ ))
-
-
-;;;----------
-;;; quantity
-;;;----------
-#|  A "quantity", like a number, is the answer to "how many"
-    Quantities distribute exactly like numbers, including their composition
-    to form measurements and their capacity as determiners.  |#
-
-
-;; NOW TREATING SOME OF THESE QUANTITIES ad QUANTIFIERS -- since they can play a role in partitives
-;;  MAYBE THIS SHOULD BE REVIEWED
-
-;;(define-quantity "multiple")
-;;(define-quantity "numerous")
-;;(define-quantity "several")
-;;(define-quantity "unlimited")
-;;(define-quantity "various")
 
