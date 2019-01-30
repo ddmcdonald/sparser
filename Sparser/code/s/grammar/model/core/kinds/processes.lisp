@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "processes"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  December 2018
+;;;  version:  January 2019
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 9/24/14 Moved event above perdurant as a hack to ensure that
@@ -100,16 +100,6 @@
  participate in them. They have temporal extents (duration), temporal
  bounds (begin, end), and usually a spatial extent (the region in
  which they happen)." )
-
-
-#+ignore(define-category  event
-  :instantiates self
-  :specializes  perdurant
-  :binds ()
-  :documentation
- "This was the original (circa '89) superclass of all clausal verbs.
-  It's threaded into a substantial part of the model, requiring too
-  much time now (9/14) to rework.")
 
 
 
