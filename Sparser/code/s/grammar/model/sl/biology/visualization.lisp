@@ -20,3 +20,10 @@
                        :to end))
 
 
+(define-category highlight :specializes perdurant
+   :binds ((theme biological)
+           (agent interlocutor))
+   :realization (:verb "highlight"
+                       :o theme
+                       :s agent))
+
