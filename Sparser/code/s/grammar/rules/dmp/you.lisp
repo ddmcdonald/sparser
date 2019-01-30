@@ -14,7 +14,7 @@
 ;;;---------
 
 (define-category  you-do
-  :specializes event
+  :specializes process
   :instantiates self
   :binds ((action))
   :index (:key action))

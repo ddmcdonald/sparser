@@ -19,7 +19,7 @@
 ;;;------------
 
 (define-category contract
-  :specializes event
+  :specializes process
   :instantiates self)
                 
 (defun define-contract-disease (string)
@@ -27,7 +27,7 @@
                 (concatenate 'string (string-upcase string) "-DISEASE")))
 	 (form
 	  `(define-category ,name
-             :specializes event
+             :specializes process
              :instantiates self
              :binds ((who)
                      (pathogen pathogen)
