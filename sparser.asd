@@ -1,7 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; -*-
 ;;; Copyright (c) 2016-2019 SIFT LLC. All Rights Reserved.
 
-(defparameter cl-user::script :default)
+(defvar cl-user::script :default
+  "Specifies a set of Sparser parameters, switch values, grammar files, etc.
+This variable must be set before loading Sparser to have the correct effect.")
 
 (defsystem :sparser
   :depends-on (:ddm-util :mumble)
@@ -10,9 +12,13 @@
   :in-order-to ((test-op (test-op :sparser/tests))))
 
 (macrolet ((define-sparser-system (script)
-             `(defsystem ,(format nil "~(sparser/~a~)" script)
-                :perform (prepare-op :before (o c) (setq cl-user::script ,script))
-                :depends-on (:sparser))))
+             (let ((script-system (format nil "sparser/script/~(~a~)" script))
+                   (sparser-system (format nil "sparser/~(~a~)" script)))
+               `(progn
+                  (defsystem ,script-system
+                    :perform (load-op (o c) (setq cl-user::script ,script)))
+                  (defsystem ,sparser-system
+                    :depends-on (,script-system :sparser))))))
   (define-sparser-system :fire)
   (define-sparser-system :biology)
   (define-sparser-system :blocks-world)
