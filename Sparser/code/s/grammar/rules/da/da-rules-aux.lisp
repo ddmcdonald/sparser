@@ -20,6 +20,7 @@
       (edge-referent (edge-left-daughter real-s-edge)))))
 
 (defun find-base-np-vp-edge (e)
+  (declare (special *show-failed-find-base-np-vp-edge*))
   (cond ((member (form-cat-name (edge-left-daughter e))
                  '(np proper-noun proper-name
                    common-noun common-noun/plural

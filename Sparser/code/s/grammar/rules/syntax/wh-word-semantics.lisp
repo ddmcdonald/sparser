@@ -92,6 +92,7 @@
 
 
 (defun bind-wh-variable (wh statement)
+  (declare (special *debug-questions*))
   (if (itypep statement 'perdurant)
     (let ((wh-category (itype-of wh)))
       (when wh-category

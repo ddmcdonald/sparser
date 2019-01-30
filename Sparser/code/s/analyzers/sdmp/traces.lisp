@@ -18,6 +18,7 @@
   (setq *trace-sdm&p* nil))
 
 (deftrace :calling-sdm/analyze-segment (coverage)
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
   (when *trace-sdm&p*
     (trace-msg "[SDM] top -- coverage = ~a~
               ~%[SDM]   over \"~a\"" 
@@ -27,6 +28,7 @@
 
 
 (deftrace :sdm-no-edges ()
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
   (when *trace-sdm&p*
     (trace-msg "[SDM] no edges over p~a to p~a - \"~a\""
       (when *left-segment-boundary*
@@ -38,6 +40,7 @@
 				 *right-segment-boundary*)))))
 
 (deftrace :sdm-discontinuous-edges ()
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
   (when *trace-sdm&p*
     (trace-msg "[SDM] discontinuous edges over p~a to p~a - \"~a\""
       (when *left-segment-boundary*
@@ -48,6 +51,7 @@
 	(string-of-words-between *left-segment-boundary* 
 				 *right-segment-boundary*)))))
 (deftrace :sdm-some-adjacent-edges ()
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
   (when *trace-sdm&p*
     (trace-msg "[SDM] some adjacent edges over p~a to p~a - \"~a\""
       (when *left-segment-boundary*
@@ -59,6 +63,7 @@
 				 *right-segment-boundary*)))))
 
 (deftrace :sdm-all-contiguous-edges ()
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
   (when *trace-sdm&p*
     (trace-msg "[SDM] contiguous edges over p~a to p~a - \"~a\""
       (when *left-segment-boundary*
