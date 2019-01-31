@@ -221,6 +221,13 @@ subcategorization-pattern is a daughter of linguistic, abstract
     (:s agent
      :to-comp theme))
 
+(define-mixin-category nominal-attribute
+  :specializes subcategorization-pattern
+  :mixins (theme)
+  :documentation "This mixin is for the attribute,
+    which is being attributed of the theme"
+  :realization (:of theme)) ;; and possessive
+
 
 ;; Was in blocks/subcat-patterns.lisp
 ;;

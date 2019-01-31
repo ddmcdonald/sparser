@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2019 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "space"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  September 2018
+;;;  version:  January 2019
 
 ;; Broken out of container-and-suv 11/11/13. Moved to kinds 4/14/14 and
 ;; included container. 2/1/16 merging with the location in places.
@@ -15,7 +15,8 @@
 (define-category location
   :instantiates self
   :specializes region
-  ;; :restrict ((name  name-of-location)) ;;/// try including names module 
+  ;; :restrict ((name  name-of-location))
+  :index (:key name)
   :documentation "The most general notion of a location, as a place
  where something can be.
    'My wedding ring is on my (left ring) finger'
@@ -23,18 +24,15 @@
  The pants pocket is the place. To express the relation of
       [ David's-cell-phone.location = pocket of his jeans ]
   we need to say 'is in', where the choice of preposition is
-  idiosyncratically dependent on the category of location"
-  :index (:key name))
+  idiosyncratically dependent on the category of location
+    Note that this category is for location as a place where
+  something is. From the perspective of that something,
+  its location is one of its attributes and will be
+  represented by a variable, confusingly named 'location'.
+  For parsing purposes, we have the relation 'location-of'
+  to mediate the process, it is also were the word 'location'
+  is defined.")
 
-(let ((*inhibit-constructing-comparatives* t))
-  (declare (special *inhibit-constructing-comparatives*))
-#| This isn't right. 'space' is a generic/mass kind of stuff
-so it's interpretation shouldn't be a location instance.
-/// So redesign it all in a bit. This gets the vocabulary in. |#
-(define-realization location
-    :noun ("space" "location")
-    :adj ("spatial" "spatio"))
-) ;; close let -- other use of this is 'time'
 
 (define-category bounded-region
   :specializes region

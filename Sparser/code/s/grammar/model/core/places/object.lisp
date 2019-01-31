@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:places:"
-;;;  version:  March 2017
+;;;  version:  January 2019
 
 ;; initiated in 10/12/92 v2.3. Added 'kind of location' 1/17/94.  Added location-
 ;; phrase 11/16/95. Added relative-location 11/99. 11/25 Moved in spatial-
@@ -28,10 +28,35 @@
 
 (in-package :sparser)
 
-;;--- general words -- could have been lemmas on the category
+;;--- general words
 
-(def-synonym location (:common-noun "location"))
+;; "location" is in location-of
 (def-synonym location (:common-noun "place"))
+
+;; This isn't right. 'space' is a generic/mass kind of stuff
+;; so it's interpretation shouldn't be a location instance.
+(def-synonym location (:common-noun "space"))
+(without-comparatives
+  (def-synonym location (:adjective ("spatial" "spatio"))))
+
+#|
+(let ((*inhibit-constructing-comparatives* t))
+  (declare (special *inhibit-constructing-comparatives*))
+#| This isn't right. 'space' is a generic/mass kind of stuff
+so it's interpretation shouldn't be a location instance.
+/// So redesign it all in a bit. This gets the vocabulary in. |#
+(define-realization location
+    :noun ("space" "location")
+    :adj ("spatial" "spatio"))
+) ;; close let -- other use of this is 'time'
+|#
+
+;;--- The relation of being at a location
+
+(define-category location-of
+  :specializes attribute
+  :mixins (nominal-attribute)
+  :realization (:noun "location"))
 
 ;;;------------------------------------------------
 ;;; Deictics  -- needs a story about dereferencing
