@@ -41,7 +41,6 @@ from 'from ... to ..' and such
   "Can only be ascribed to objects of type 'physical'.
    How could we say that?")
 
-
 (define-category move
   :specializes accomplishment
   ;; realization -- "move" and "movement"
@@ -51,7 +50,10 @@ from 'from ... to ..' and such
           (to-location location) ;; goal - its new location
 
           ;; moved here from define-movement-verb
-          ;; Note that some of these restrictions don't exist yet
+          ;; Note that some of these restrictions don't exist
+          ;; at the timw this is executed so they will star out
+          ;; as simple categories and get expanded once
+          ;; their actual definitions are reached
           (via-path . path)
           (for-distance . measurement) ;; distance?
           (in-direction . direction)

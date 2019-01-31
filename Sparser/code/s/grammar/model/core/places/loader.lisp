@@ -30,10 +30,9 @@
 (gate-grammar *locations-core*
   (gload "places;relational")
   (gload "places;directions") ;; uses relative-location
-  ;; (gload "places;methods") moved to load-the-grammar
+  ;; (gload "places;methods") moved to late in load-the-grammar
   (gload "places;compass points")
-  (gload "places;traces")
-)
+  (gload "places;traces"))
 
 (gate-grammar *countries*
   (gload "countries;loader"))
