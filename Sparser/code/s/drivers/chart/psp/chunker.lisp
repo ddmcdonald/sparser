@@ -385,10 +385,20 @@
          (head-compatible-edges
           (when multi-edges
             (compatible-head-edges? forms head-ev))))
-    (declare (special head-ev multi-edges top-node head-compatible-edges))
-    (when (and (not (equal forms '(adjg)))
-               ;; ADJG has confusions for NEXT and FOLLOWING which are non-chunked items
-               multi-edges ;; the head started as ambiguous
+    (declare (special head-ev multi-edges top-node head-compatible-edges
+                      *vg-head-categories*))
+    (when (and multi-edges ;; the head started as ambiguous
+               (or
+                (not (equal forms '(adjg)))
+                ;; ADJG has confusions for NEXT and FOLLOWING which are non-chunked items
+                (loop for e in multi-edges ;; but "present" is ADJ/V ambiguous
+                      thereis
+                        (member (cat-symbol (edge-form e))
+                                *vg-head-categories*)))
+
+               (not (loop for edge in multi-edges
+                          thereis (memq (cat-name (edge-form edge))
+                                        '(subordinate-conjunction))))                                 
                (car head-compatible-edges)
                ;; but is disambiguated by the chunking
                (null (cdr head-compatible-edges)))
@@ -925,8 +935,7 @@ than a bare "to".  |#
                                                  *chunk*)))
   (and chunk
        (edge-vector-p (car (chunk-ev-list chunk)))
-       (ev-top-edges
-        (pos-ends-here (ev-position (car (chunk-ev-list chunk)))))))
+       (ev-top-edges (pos-ends-here (chunk-start-pos chunk)))))
              
 
 (defun ev-edges (ev)
@@ -1029,12 +1038,16 @@ than a bare "to".  |#
    Compare the end position of the edge vectors to that of the chunk. Return a
    list of ev that has only ev within the span of the chunk."
   (when (chunk-forms chunk)
-    (let ((end-pos (chunk-end-pos chunk))
-          (ev-list (chunk-ev-list chunk)))
-      (loop for ev in ev-list
-         as ev-pos = (ev-position ev)
-         when (position/< ev-pos end-pos)
-         collect ev))))
+    (let* ((end-pos (chunk-end-pos chunk))
+           (ev-list (chunk-ev-list chunk))
+           (revised-ev-list
+            (loop for ev in ev-list
+                  as ev-pos = (ev-position ev)
+                  when (position/< ev-pos end-pos)
+                  collect ev)))
+      (when (not (eq (car revised-ev-list) (car ev-list))) ;; ev-list was trimmed
+        (setf (chunk-ev-list chunk) revised-ev-list))
+      (chunk-ev-list chunk))))
 
 (defun suppress-extra-head-edges-if-necessary (chunk head-edge)
   "If there are multiple edges on this position (or if the wrong one is said
