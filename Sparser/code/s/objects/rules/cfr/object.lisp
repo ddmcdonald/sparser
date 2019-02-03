@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2013-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2019  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "object"
 ;;;    Module:   "objects;rules:cfr:"   ;; "context free rules"
-;;;   Version:   December 2018
+;;;   Version:   February 2019
 
 ;; 1.1  (v1.5) added new fields to handle the new rule regime
 ;; 1.2  (1/29 v1.8) Moved in Binary-rule?
@@ -50,8 +50,7 @@
  constituents serves as a context for the other, which is
  relabeled according to the specification of the rule.")
   (:method ((cfr cfr))
-    (when (binary-rule? cfr)
-      (get-tag :context-sensitive-rule cfr))))
+    (get-tag :context-sensitive-rule cfr)))
 
 (defun unary-rule? (cfr)
   (and (null (cfr-completion cfr))
@@ -72,6 +71,18 @@
 (defun syntactic-rule? (cfr)
   (get-tag :syntax-rule cfr))
 
+(defun rule-type (cfr)
+  "Return a keyword indicating what type of rule this is"
+  (cond
+    ((get-tag :semantic-rule cfr) :semantic)
+    ((get-tag :context-sensitive-rule cfr) :context-sensitive)
+    ((get-tag :form-rule cfr) :form)
+    ((get-tag :syntax-rule cfr) :syntactic)
+    ((lexical-rule? cfr) :lexical)
+    ((get-tag :polyword cfr) :polyword)
+    (t :unknown-rule-type)))
+
+
 (defun referent-uses-function? (cfr)
   (let ((ref (cfr-referent cfr)))
     (when (and ref (consp ref))
@@ -81,6 +92,104 @@
   (let ((ref (cfr-referent cfr)))
     (when (and ref (consp ref))
       (eq (car ref) :method))))
+
+
+;;;------------------------------------------
+;;; examine the whole grammar for a property
+;;;------------------------------------------
+
+(defgeneric rules-using-label (label)
+  (:documentation "Collect all the rules that include this
+   label in any of their field. Walks over the master list
+   maintained by catalog/cfr rather than one of the sublists
+   organized by rule type.")
+  (:method ((name symbol))
+    (rules-using-label (category-named name t)))
+  (:method ((label category))
+    (declare (special *context-free-rules-defined*))
+    (loop for cfr in *context-free-rules-defined*
+       as lhs = (cfr-category cfr)
+       as rhs = (cfr-rhs cfr)
+       as form = (cfr-form cfr)
+       when (or (and (category-p lhs) (eq lhs label))
+                (memq label rhs)
+                (and (category-p form) (eq form label)))
+       collect cfr)))
+
+(defgeneric rules-with-lhs (label)
+  (:documentation "Collect all the rules that have this 
+    labels as their left-hand side.")
+  (:method ((name symbol))
+    (rules-using-label (category-named name t)))
+  (:method ((label category))
+    (declare (special *context-free-rules-defined*))
+    (loop for cfr in *context-free-rules-defined*
+       as lhs = (rule-lhs cfr)
+       when (eq lhs label)
+       collect cfr)))
+           
+(defun rule-lhs (cfr)
+  "Return the label that is the lefthand side of the rule.
+   Requires a dispatch by type since the label is often not
+   where you'd expect because the category field is being 
+   used as an encoding cue in conjunction with some other field."
+  (cond
+    ((syntactic-rule? cfr)
+     (lhs-of-syntactic-rule cfr))
+    ((form-rule? cfr)
+     (lhs-of-form-rule cfr))
+    ((context-sensitive-rule? cfr)
+     (lhs-of-csr cfr))
+    (t (cfr-category cfr))))
+
+(defun lhs-of-syntactic-rule (cfr)
+  (cfr-form cfr))
+
+(defun lhs-of-form-rule (cfr)
+  (ecase (cfr-completion cfr)
+    (:left-edge (first (cfr-rhs-cfr)))
+    (:right-edge (second (cfr-rhs cfr)))))
+
+(defun lhs-of-csr (cfr)
+  (cfr-category cfr))
+
+
+
+  
+
+;;--- collect rules by type
+    
+(defun collect-lexical-rules () ;; 2,805 in Fire
+  (loop for r in *cfrs-defined*
+     when (lexical-rule? r) collect r))
+
+(defun collect-semantic-cfrs () ;; 910 in Fire
+  "The syntactic, context-sensitive, and form rules were distinguished
+ when note-grammar-model was compiling the lists. That leaves rules that
+ were created by def-cfr and define-cfr (ignoring the distinction 
+ between rules written by hand and those written as part of expanding
+ the realization specification of a category)."
+  (loop for r in *cfrs-defined*
+     unless (lexical-rule? r) collect r))
+
+;; (measure-fsa-facts)
+(defun words-without-rule-sets () ;; 843 in Fire
+  (loop for word in *words-defined*
+     unless (rule-set-for word) collect word))
+
+(defun non-digits-without-rule-sets () ;; 832 in Fire (blocks-world?)
+  (loop for word in *words-defined*
+     unless (or (rule-set-for word) (eq (word-capitalization word) :digits))
+     collect word))
+;; Sampling show this includes US-states, military-ranks & units, countries,
+;; at least some conjunctions, mideast/named-entities
+;; The def function for us-states looks odd. Might be source of problem
+
+(defun number-of-DA-rules ()
+  ;; See objects/rules/da/object.lisp for the machinery
+  ;; Most of the rules are in grammar/rules/da/da-rules.lisp
+  (hash-table-count *debris-analysis-rules*))
+
 
 ;;;----------
 ;;; decoders

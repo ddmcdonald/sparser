@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1998,2012-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2012-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "printers"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   1.5 May 2014
+;;;   Version:   February 2019
 
 ;; 1.1 (5/2/92 v2.2) Added short-forms
 ;; 1.2 (9/3 v2.3) added cases for referential categories and (9/7) for
@@ -34,6 +34,22 @@
 ;;;---------------
 
 (defun princ-rewrite-rule (cfr stream)
+  (cond
+    ((syntactic-rule? cfr)
+     (princ-syntactic-cfr cfr stream))
+    ((form-rule? cfr)
+     (princ-form-rule cfr stream))
+    ((context-sensitive-rule? cfr)
+     (princ-csr cfr stream))
+    ((polyword-rule? cfr)
+     (princ-polyword-cfr cfr stream))
+    ((semantic-rule? cfr)
+     (princ-cfr cfr stream))
+    (t (princ (format nil "unexpected type of rule: ~a"
+                      (cfr-symbol cfr))
+              stream))))
+   
+#|  original -- notice protocol on the completion field
   (cond ((cfr-completion cfr)
          (let ((completion-field (cfr-completion cfr)))
            (etypecase completion-field
@@ -47,9 +63,7 @@
              (keyword (princ-form-rule cfr stream)))))
         ((member :polyword (cfr-plist cfr))
          (princ-polyword-cfr cfr stream))
-        ((nary-rule cfr)
-         (princ-nary-cfr cfr stream))
-        (t (princ-cfr cfr stream))))
+        (t (princ-cfr cfr stream)))  |#
 
 
 ;;;--------------------
@@ -59,6 +73,7 @@
 ;;------ vanila
 
 (defun princ-cfr (cfr stream)
+  "No type-specific orthographic marking"
   (etypecase (cfr-category cfr)
     (category (princ-category (cfr-category cfr) stream))
     (word     (princ-word   (cfr-category cfr) stream))
@@ -102,19 +117,6 @@
     (write-char #\" stream)))
 
 
-
-;;------ n-ary
-
-(defun princ-nary-cfr (cfr stream)
-  ;; copied from Princ-cfr except for where the rhs comes form
-  (princ-rule-term (cfr-category cfr) stream)
-  (write-string " →" stream)
-  (dolist (item (original-rhs-of-nary-rule cfr))
-    (write-string " " stream)
-    (princ-rule-term item stream)))
-
-
-
 ;;------- csr
 
 (defun princ-csr (csr stream)
@@ -152,6 +154,16 @@
     (write-string " " stream)
     (princ-rule-term (second (cfr-rhs cfr)) stream)))
 
+
+;;-------- syntactic rule
+
+(defun princ-syntactic-cfr (cfr stream)
+  (princ-rule-term (cfr-form cfr) stream)
+  (write-string " → {" stream)
+  (princ-rule-term (first (cfr-rhs cfr)) stream)
+  (write-string " " stream)
+  (princ-rule-term (second (cfr-rhs cfr)) stream)
+  (write-string "}" stream))
 
 
 ;;;---------------------------------------

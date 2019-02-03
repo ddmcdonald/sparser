@@ -138,38 +138,3 @@
   (setf (gmod-files gm)         (nreverse (gmod-files gm)))
   gm )
 
-
-;;;-------------
-;;; rule detail
-;;;-------------
-
-(defun collect-lexical-rules () ;; 2,805 in Fire
-  (loop for r in *cfrs-defined*
-     when (lexical-rule? r) collect r))
-
-(defun collect-semantic-cfrs () ;; 910 in Fire
-  "The syntactic, context-sensitive, and form rules were distinguished
- when note-grammar-model was compiling the lists. That leaves rules that
- were created by def-cfr and define-cfr (ignoring the distinction 
- between rules written by hand and those written as part of expanding
- the realization specification of a category)."
-  (loop for r in *cfrs-defined*
-     unless (lexical-rule? r) collect r))
-
-;; (measure-fsa-facts)
-(defun words-without-rule-sets () ;; 843 in Fire
-  (loop for word in *words-defined*
-     unless (rule-set-for word) collect word))
-
-(defun non-digits-without-rule-sets () ;; 832 in Fire (blocks-world?)
-  (loop for word in *words-defined*
-     unless (or (rule-set-for word) (eq (word-capitalization word) :digits))
-     collect word))
-;; Sampling show this includes US-states, military-ranks & units, countries,
-;; at least some conjunctions, mideast/named-entities
-;; The def function for us-states looks odd. Might be source of problem
-
-(defun number-of-DA-rules ()
-  ;; See objects/rules/da/object.lisp for the machinery
-  ;; Most of the rules are in grammar/rules/da/da-rules.lisp
-  (hash-table-count *debris-analysis-rules*))
