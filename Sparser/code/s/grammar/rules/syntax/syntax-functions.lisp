@@ -624,7 +624,6 @@ val-pred-var (pred vs modifier - left or right?)
        (setq head (bind-dli-variable 'predication predicate head))
        head))))
 
-(defparameter *create-sdm-span-segment-semantics* t)
 (defun adj-noun-compound (adjective head &optional adj-edge)
   (when (category-p head) (setq head (individual-for-ref head)))
   (cond
@@ -643,10 +642,11 @@ val-pred-var (pred vs modifier - left or right?)
               ((and (not (is-basic-collection? adjective))
                     (find-variable-for-category :subject (itype-of adjective)))
                (create-predication-and-edge-by-binding-and-insert-edge
-                :subject head adjective))              
-              (*create-sdm-span-segment-semantics*
-               (individual-for-ref adjective))
-              (t (individual-for-ref adjective)))))
+                :subject head adjective))           
+              (t ;; we don't know what they actual relationship is,
+               ;; but including the adjective/adjp is better than
+               ;; dropping it on the floor
+               (individual-for-ref adjective)))))
        (setq head (bind-dli-variable 'predication predicate head))
        head))))
 
@@ -1434,7 +1434,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
            ((and (eq prep-word of)
                  (itypep np 'attribute)) ;; "color of the block"
             (find-or-make-individual 'quality-predicate
-                                     :attribute (itype-of np) :item pobj-referent))
+                                     ;;:attribute (itype-of np) :item pobj-referent
+                                     :attribute np
+                                     :item pobj-referent));;
 
            ((and (eq prep-word of)
                  (itypep np 'object-dependent-location)

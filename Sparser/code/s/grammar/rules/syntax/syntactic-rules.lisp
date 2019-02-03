@@ -110,6 +110,7 @@
            :referent (:function possessive-np left-edge right-edge))))
 
 ;;--- Partitive NPs
+
 (def-form-rule (quantifier of)
     :form np
     :head :left-edge
@@ -151,6 +152,8 @@
 
 
 
+
+
 ;;;-------------
 ;;; N-BAR rules
 ;;;-------------
@@ -166,18 +169,9 @@
            :head :right-edge
            :form n-bar
            :referent (:function adj-noun-compound left-edge right-edge)))
-     (eval
-      `(def-syntax-rule (comparative-adjective ,nb) ;; "blacker suv"
-           :head :right-edge
-           :form n-bar
-           :referent (:function adj-noun-compound left-edge right-edge)))
-     (eval
-      `(def-syntax-rule (superlative-adjective ,nb) ;; "blackest suv"
-           :head :right-edge
-           :form n-bar
-           :referent (:function adj-noun-compound left-edge right-edge)))
+     ;; duplicated comparative/superlative-adjective rules were here
      (eval 
-      `(def-syntax-rule (adjg ,nb) ;; "black suv"
+      `(def-syntax-rule (adjg ,nb) ;; "very black suv"
            :head :right-edge
            :form n-bar
            :referent (:function adj-noun-compound left-edge right-edge)))
@@ -207,16 +201,13 @@
            :head :right-edge
            :form n-bar 
            :referent (:function verb+ing-noun-compound left-edge right-edge)))
-        
      (eval
       ;; transitive-clause-without-object comes from "PEDF activated" in
       ;; "PEDF activated kinases"
       `(def-syntax-rule (transitive-clause-without-object ,nb)
            :head :right-edge
            :form n-bar 
-           :referent (:function verb-noun-compound left-edge right-edge)))
-
-        
+           :referent (:function verb-noun-compound left-edge right-edge)))        
      (eval
       `(def-syntax-rule (quantifier ,nb)
            :head :right-edge
@@ -1160,7 +1151,7 @@ similar to an oncogenic RasG12V mutation (9)."))
 
 (def-syntax-rule (comparative adjective)
     :head :right-edge
-    :form comparative-adjp  ;;adjective ;;comparative
+    :form adjp ;;comparative-adjp  ;;adjective ;;comparative
     :referent (:head right-edge
                      :bind (comparative left-edge)))
 
@@ -1175,10 +1166,11 @@ similar to an oncogenic RasG12V mutation (9)."))
     :form comparative-adjp  ;;adjective ;;comparative
     :referent (:head right-edge
                :bind (comparative left-edge)))
-
+;; ddm 2/1/19: these are adjective phrases because their heads
+;; are adjectives rather than compartives. 
 (def-syntax-rule (superlative adjective)
     :head :right-edge
-    :form superlative-adjp ;; adjective ;;superlative
+    :form adjp ;;superlative-adjp ;; adjective ;;superlative
     :referent (:head right-edge
                :bind (comparative left-edge)))
 
