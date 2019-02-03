@@ -112,7 +112,7 @@ be added to attribute so it knows how to handle the individuals.
  that branch) and the value of some attribute."
   :instantiates :self
   :binds ((item)
-          (attribute :primitive category)
+          (attribute attribute) ;;:primitive category)
           (value attribute-value))
   :index (:sequential-keys attribute item value))
 
@@ -123,7 +123,7 @@ be added to attribute so it knows how to handle the individuals.
 
 (define-category quality-predicate
   :specializes predicate
-  :binds ((attribute :primitive category)
+  :binds ((attribute attribute) ;; :primitive category)
           (item))
   :documentation "Represents that there is a particular
  attribute on a particular thing without concern for what
@@ -146,7 +146,7 @@ be added to attribute so it knows how to handle the individuals.
  could have the same color, be of the same height, etc. 
  They should all make referent to the same attribute-value
  instance."  
-  :binds ((attribute :primitive category)
+  :binds ((attribute attribute) ;; :primitive category)
           (value attribute-value))
   :index (:permanent :sequential-keys attribute value))
 

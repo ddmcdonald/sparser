@@ -39,17 +39,6 @@
 (without-comparatives
   (def-synonym location (:adjective ("spatial" "spatio"))))
 
-#|
-(let ((*inhibit-constructing-comparatives* t))
-  (declare (special *inhibit-constructing-comparatives*))
-#| This isn't right. 'space' is a generic/mass kind of stuff
-so it's interpretation shouldn't be a location instance.
-/// So redesign it all in a bit. This gets the vocabulary in. |#
-(define-realization location
-    :noun ("space" "location")
-    :adj ("spatial" "spatio"))
-) ;; close let -- other use of this is 'time'
-|#
 
 ;;--- The relation of being at a location
 

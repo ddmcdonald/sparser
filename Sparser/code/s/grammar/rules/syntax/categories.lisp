@@ -208,6 +208,7 @@
 
 (def-form-category  np)
 (def-form-category  qnp) ;; for WH-phrases where the WH is taken as a spec.
+(def-form-category  qp)
 (def-form-category  proper-name)
 
 (def-form-category  vp)
@@ -225,14 +226,15 @@
 
 (def-form-category  pp)
 (def-form-category  pp-wh-pronoun)
+
 (def-form-category  advp)
 (def-form-category  comparative-advp)
 (def-form-category  superlative-advp)
+g))
 (def-form-category  adjp)
 (def-form-category  comparative-adjp)
 (def-form-category  superlative-adjp)
-(def-form-category  adjg) ;; for consistency with ng and vg -- could have been adj-bar?
-(def-form-category  qp)
+(def-form-category  adjg) ;; for minimal phrases, usually from chunker
 
 (def-form-category  to-comp) ;; to + vp or to+vg
 (def-form-category  as-comp) ;; to + vp or to+vg
