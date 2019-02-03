@@ -1162,6 +1162,18 @@ similar to an oncogenic RasG12V mutation (9)."))
     :head :right-edge
     :form comparative-adjp  ;;adjective ;;comparative
     :referent (:head right-edge
+                     :bind (comparative left-edge)))
+
+(def-form-rule (less adjective)
+    :head :right-edge
+    :form comparative-adjp  ;;adjective ;;comparative
+    :referent (:head right-edge
+                     :bind (comparative left-edge)))
+
+(def-form-rule (more adjective)
+    :head :right-edge
+    :form comparative-adjp  ;;adjective ;;comparative
+    :referent (:head right-edge
                :bind (comparative left-edge)))
 
 (def-syntax-rule (superlative adjective)
