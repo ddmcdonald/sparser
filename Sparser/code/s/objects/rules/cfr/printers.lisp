@@ -34,19 +34,19 @@
 ;;;---------------
 
 (defun princ-rewrite-rule (cfr stream)
-  (cond
-    ((syntactic-rule? cfr)
+  (case (rule-type cfr)
+    (:syntactic
      (princ-syntactic-cfr cfr stream))
-    ((form-rule? cfr)
+    (:form
      (princ-form-rule cfr stream))
-    ((context-sensitive-rule? cfr)
+    (:context-sensitive
      (princ-csr cfr stream))
-    ((polyword-rule? cfr)
+    (:polyword
      (princ-polyword-cfr cfr stream))
-    ((semantic-rule? cfr)
+    (:semantic
      (princ-cfr cfr stream))
     (t (princ (format nil "unexpected type of rule: ~a"
-                      (cfr-symbol cfr))
+                      (rule-type cfr))
               stream))))
    
 #|  original -- notice protocol on the completion field
