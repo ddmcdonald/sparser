@@ -1143,31 +1143,22 @@ similar to an oncogenic RasG12V mutation (9)."))
     :head :left-edge
     :form superlative-adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
+
 (def-syntax-rule (superlative-adjp pp)
     :head :left-edge
     :form superlative-adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
 
-
 (def-syntax-rule (comparative adjective)
     :head :right-edge
-    :form adjp ;;comparative-adjp  ;;adjective ;;comparative
+    :form comparative-adjp  ;;adjp adjective ;;comparative
     :referent (:head right-edge
                      :bind (comparative left-edge)))
+;; 2/4/19 We need to carry the 'comparative' up to the phrase
+;; level to make contact with the "than-np" rules just below
+;; /// After this 'signally' label is discharged, we should elevate
+;; the form to adjp, which is the most accurate label grammatically.
 
-(def-form-rule (less adjective)
-    :head :right-edge
-    :form comparative-adjp  ;;adjective ;;comparative
-    :referent (:head right-edge
-                     :bind (comparative left-edge)))
-
-(def-form-rule (more adjective)
-    :head :right-edge
-    :form comparative-adjp  ;;adjective ;;comparative
-    :referent (:head right-edge
-               :bind (comparative left-edge)))
-;; ddm 2/1/19: these are adjective phrases because their heads
-;; are adjectives rather than compartives. 
 (def-syntax-rule (superlative adjective)
     :head :right-edge
     :form adjp ;;superlative-adjp ;; adjective ;;superlative
