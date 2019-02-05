@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "quantifiers"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   January 2019
+;;;   Version:   February 2019
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/13/94
 ;; 0.1 (7/25) revised "many" and "several" to be like the others rather than
@@ -127,6 +127,13 @@
   :index (:permanent :key name)
   :realization (:adjective name))
 
+;;/// there's also direction -- see specialize-direction
+;; And we could refine the referent like setup-comparatives
+;; does, but it would be best to see some inferential consequence
+;; before we go too far down that road
+;;/// These all relate back to the base quantifier. Should we record
+;; the other direction as well? Say on q's plist
+
 (define-category superlative-quantifier
   :specializes comparative-quantifier
   :rule-label superlative
@@ -139,22 +146,16 @@
    notion of a scale or attribute (attr) along with the
    term they quantify varies relative to some reference set.
    They pattern like adjectival comparatives."
-  ;;/// there's also direction -- see specialize-direction
-  ;; And we could refine the referent like setup-comparatives
-  ;; does, but it would be best to see some inferential consequence
-  ;; before we go too far down that road
-  ;;/// These all relate back to the base quantifier. Should we record
-  ;; the other direction as well? Say on q's plist
   (let ((*inhibit-constructing-comparatives* t))
-    (declare (special *inhibit-constructing-comparatives*
-                      category::comparative))
-    (flet ((switch-form (string cat-name)
+    (declare (special *inhibit-constructing-comparatives*))
+    (flet ((switch-form (string old-cat-name new-cat-name)
              (let* ((word (resolve string))
-                    (category (category-named cat-name :error))
+                    (category (category-named old-cat-name :error))
+                    (replacement (category-named new-cat-name :error))
                     (rule (find-form-cfr word category)))
-               ;; This was comparative, but the grammar works better
-               ;; if we treat is as adverbial (1/19)
-               (setf (cfr-form rule) category::adverb))))
+               (unless rule
+                 (error "Expected a rule on ~a with form ~a" category old-cat-name))
+               (setf (cfr-form rule) replacement))))
       (let* ((q (when base
                   (define-quantifier base)))
              (comparative
@@ -165,10 +166,14 @@
               (when est
                 (define-or-find-individual 'superlative-quantifier
                     :name est :quantifier q))))
-
-        (when base (switch-form base 'quantifier))
-        (when er (switch-form er 'adjective))
-        (when est (switch-form est 'adjective))
+        ;; The :er and :est individuals are created with rewrite rules
+        ;; with the form 'adjective because that's the realization
+        ;; specified on their categories. These swap that form category
+        ;; for another one, which is useful for experimenting while
+        ;; we sort out what we really want.
+        (when base (switch-form base 'quantifier 'comparative)) ;;???
+        (when er (switch-form er 'adjective 'comparative))
+        (when est (switch-form est 'adjective 'adverb))
         (values q comparative superlative)))))
 
 
