@@ -73,6 +73,8 @@
 (define-qualitative-age "old" :er "older" :est "oldest")
 
 ;; "10 years old"
+;; n.b. this rule is only seen if *ignore-literal-edges* is nil
+;;
 (def-cfr age (amount-of-time "old")
   :form np
   :referent (:instantiate-individual age
