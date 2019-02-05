@@ -230,11 +230,11 @@
 (def-form-category  advp)
 (def-form-category  comparative-advp)
 (def-form-category  superlative-advp)
-g))
-(def-form-category  adjp)
+
+(def-form-category  adjg) ;; for minimal phrases, usually from chunker
+(def-form-category  adjp) ;; adjg plus complements
 (def-form-category  comparative-adjp)
 (def-form-category  superlative-adjp)
-(def-form-category  adjg) ;; for minimal phrases, usually from chunker
 
 (def-form-category  to-comp) ;; to + vp or to+vg
 (def-form-category  as-comp) ;; to + vp or to+vg
