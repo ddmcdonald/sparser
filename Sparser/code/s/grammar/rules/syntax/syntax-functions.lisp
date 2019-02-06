@@ -628,8 +628,7 @@ val-pred-var (pred vs modifier - left or right?)
   (when (category-p head) (setq head (individual-for-ref head)))
   (cond
     (*subcat-test*
-     (or (takes-adj? head adjective))
-     *create-sdm-span-segment-semantics*)
+     (takes-adj? head adjective))
     ((when (use-methods) ;; "the Ras protein", where 'protein' is a type-marker
        (compose adjective head)))
     ((itypep adjective 'attribute-value) ;; "red block"
@@ -642,7 +641,7 @@ val-pred-var (pred vs modifier - left or right?)
               ((and (not (is-basic-collection? adjective))
                     (find-variable-for-category :subject (itype-of adjective)))
                (create-predication-and-edge-by-binding-and-insert-edge
-                :subject head adjective))           
+                :subject head adjective))
               (t ;; we don't know what they actual relationship is,
                ;; but including the adjective/adjp is better than
                ;; dropping it on the floor
@@ -2377,9 +2376,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
 ;;; comparatives
 ;;;---------------
 
-(define-lambda-variable 'superlative-predication
-    nil 'top)
-
 (define-lambda-variable 'comparative-predication
     nil 'top)
 
@@ -2388,10 +2384,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 (define-lambda-variable 'compared-to
     nil 'top)
-
-(define-lambda-variable 'superlative-from-set
-    nil 'top)
-
 
 ;; "bigger than that block"
 (defun make-comparative-adjp-with-np (comparative than-np)
@@ -2429,13 +2421,13 @@ there was an edge for the qualifier (e.g., there is no edge for the
                 (bind-variable 'reference-set than-np attribution)))
            (multiple-value-bind (edge-over-comparative)
                (search-tree-for-referent (left-edge-for-referent) edge-value)
+             ;; Insert a new edge over the comparative edge
+             ;; of the np with the completed-attribution as its value.
              (unless edge-over-comparative
                (warn "Could not locate edge over ~a under ~a in ~s~%"
                      attribution (left-edge-for-referent)
                      (current-string))
                (return-from maybe-extend-comparative-with-than-np nil))
-             ;; Insert a new edge over the comparative edge
-             ;; of the np with the completed-attribution as its value.
              (respan-edge-for-new-referent edge-over-comparative
                                            complete-attribution)
              (setq i (rebind-variable variable complete-attribution i))
