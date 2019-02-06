@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2014-2019 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  December 2017
+;;;  version:  February 2019
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -64,6 +64,32 @@
 ;; 8/11/16 Revised and simplified. Use realization-data class exlusively.
 
 (in-package :sparser)
+
+;;;----------------------
+;;; Standalone def forms
+;;;----------------------
+
+(defmacro define-marker-category (category-name &key realization)
+  "This amounts to reversible syntactic sugar for the light, 'glue'
+   categories that don't add any content (variables) but indicate
+   a context for a complement (folded into the realization by name)
+   that controls how it's incorporated into larger phrases.
+     The category that's created is just the minimal form of
+   simple syntactic categories. For something substantive use
+   full arguments with define-category."
+  `(setup-rdata (find-or-make-category ',category-name) ',realization))
+
+(defmacro define-realization (category-name &body realization)
+  `(setup-rdata (category-named ',category-name t) ',realization :delete nil))
+
+(defmacro define-additional-realization (category &body realization)
+  `(let ((*deliberate-duplication* t))
+    (declare (special *deliberate-duplication*))
+    (define-realization ,category ,@realization)))
+
+(defmacro def-synonym (category (&rest realization))
+  `(define-additional-realization ,category ,@realization))
+
 
 ;;;-------------
 ;;; Data checks
@@ -155,31 +181,6 @@ Should mirror the cases on the *single-words* ETF."
         finally (return (values (nreverse args)
                                 (nreverse slots)
                                 (nreverse relations)))))
-
-;;;----------------------
-;;; Standalone def forms
-;;;----------------------
-
-(defmacro define-marker-category (category-name &key realization)
-  "This amounts to reversible syntactic sugar for the light, 'glue'
-   categories that don't add any content (variables) but indicate
-   a context for a complement (folded into the realization by name)
-   that controls how it's incorporated into larger phrases.
-     The category that's created is just the minimal form of
-   simple syntactic categories. For something substantive use
-   full arguments with define-category."
-  `(setup-rdata (find-or-make-category ',category-name) ',realization))
-
-(defmacro define-realization (category-name &body realization)
-  `(setup-rdata (category-named ',category-name t) ',realization :delete nil))
-
-(defmacro define-additional-realization (category &body realization)
-  `(let ((*deliberate-duplication* t))
-    (declare (special *deliberate-duplication*))
-    (define-realization ,category ,@realization)))
-
-(defmacro def-synonym (category (&rest realization))
-  `(define-additional-realization ,category ,@realization))
 
 ;;;-----------------------------------------------------------
 ;;; Entry point from the definition of a referential category
@@ -274,6 +275,21 @@ Should mirror the cases on the *single-words* ETF."
           (format stream "realization for ~a: ~s ~a"
                   (cat-name (rdata-for rdata)) (pname word) pos))
         (format stream "realization for ~a" (cat-name (rdata-for rdata)))))))
+
+(defgeneric pprint-rdata (rdata stream)
+  (:documentation "Compactly print the important filled fields")
+  (:method ((rdata realization-data) stream)
+    (with-slots (etf mapping heads) rdata
+      (when etf (format stream "~&  etf: ~a" etf))
+      (when heads
+        (format stream "~&  heads: (~a ~s" (car heads) (cadr heads))
+        (loop for (pos word) on (cddr heads) by #'cddr
+           do (format stream "~&          ~a ~s" pos (pname word)))
+        (format stream ")"))
+      (when mapping
+        (format stream "~&  mapping: (~a" (first mapping))
+        (loop for m in (cdr mapping)
+           do (format stream "~&            ~a" m))))))
 
 (defvar *during-rdata-initialization* nil
   "Flag controlling timing in mdata construction")

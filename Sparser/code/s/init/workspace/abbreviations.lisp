@@ -188,6 +188,22 @@
   (:method ((c category))
     (file-location c)))
 
+(defgeneric r-of (category)
+  (:documentation "Look up the realization (or realizations) of
+   a category and apply describe.")
+  (:method ((name symbol))
+    (realization-of (category-named name t))) ;; error flag
+  (:method ((c category))
+    (let ((realizations (cat-realization c)))
+      (cond
+        ((null realizations)
+         (format nil "There are no realizations for ~a" (cat-name c)))
+        ((null (cdr realizations))
+         (pprint-rdata (car realizations) t))
+        (t (loop for real in realizations
+              do (pprint-rdata real t) (terpri))))
+      c)))
+
 #+:mumble
 (defgeneric realize (individual)
   (:documentation "Packages frequent idiom when working with Mumble tests")
