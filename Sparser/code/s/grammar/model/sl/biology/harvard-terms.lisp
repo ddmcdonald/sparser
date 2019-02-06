@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2017 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2017-2019 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "harvard-terms"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: September 2017
+;;; version: February 2019
 
 ;; Isolating terms, etc. that are specific to handling the texts
 ;; from HMS.
@@ -14,47 +14,39 @@
 ;;; certainty -- target for generalizing
 ;;;--------------------------------------
 
-;;--- adjective perspective
-
 (define-category certain
+  :documentation "This is largely an attitude of the speaker
+   toward the complement (when in adjective form). When in
+   nominal form the holder of the attitude will be more explicit.
+   ///Needs a notion of polarity, since many of these have
+   'un' forms: 'uncertain', 'unlikely'. If we used a mixin for
+   this we could have a method on 'not' that flips the polarity."
   :specializes bio-rhetorical
   ;; inherits 'statement' from bio-complement > bio-thancomp
   ;;  > bio-rhetorical. Should we restrict it
   :mixins (qualifiable) ;; "quite certain", "entirely certain"
            ;;adj-complement)
-  :documentation "Using just the adjective reading goes with
-    the reading of the canonical category that it's an
-    attitude of the speaker."
   :realization (:adj "certain"
-                :mumble ("certain" adj-that-comp :c statement)))
-#| Dropping "certainty" (noun) and "certainly" (adv) on the floor
-to not muddy NLG story on the adjective. ddm 9/12/17
-;; ... :noun "certainty" |#
+                :mumble ("certain" adj-that-comp :c statement)
+                :adverb "certainly"))
+;;/// merge in the noun form if it patterns the same way
 
-(adj "confident" :super certain
+(adj "confident"
+ :super certain
  :realization (:adj "confident" :mumble ("confident" adj-that-comp :c statement)))
-(adj "sure" :super certain
-     :realization (:adj "sure" :mumble ("sure" adj-that-comp :c statement)))
-(adj "uncertain" :super certain
-     :realization (:adj "uncertain" :mumble ("uncertain" adj-that-comp :c statement)))
+(adj "sure"
+ :super certain
+ :realization (:adj "sure" :mumble ("sure" adj-that-comp :c statement)))
+(adj "uncertain"
+ :super certain
+ :realization (:adj "uncertain" :mumble ("uncertain" adj-that-comp :c statement)))
 
-;; Need a notion of polarity on certainty.
-;; If it's via a mixin, we can have a method on "not" that
-;; flips the polarity (!!)
-
-;;(define-adverb "certainly" :super-category category::certainty) 
-;; can't seem to get this to work -- DAVID??
-;; n.b. "certainly" is an adverb in modifiers - default superc  
 
 
 ;;--- nominal perspective
-#| Wasn't a good way to determine desired POS if we included
-noun or adverb reading on certain, as before. But there's the
-other framing that's based on nouns. Hacking up an equivalent 
-of 'certain'. Not particularly thought through |#
-;; copies original except for nlg
+
 (define-category certainty
-  :specializes bio-rhetorical
+  :specializes certain
   :realization (:noun "certainty")
   :documentation "The word 'certainty' doesn't pattern like
      'likelyhood' or 'probability' but this probably does
@@ -64,17 +56,15 @@ of 'certain'. Not particularly thought through |#
 (noun "likelihood" :super certainty)
 (noun "probability" :super certainty)
 
-;; modifiers -- likelihood adverbs (where "likely" was)
+
+;; modifiers -- likelihood adverbs
 ;; make sense here too. 
-
-
-
 ;; is likely to be mediated by
 ;; is likely that this possible feedback
 ;; will likely be useful
 (define-category likely
   :mixins (raising-to-subject)
-  :specializes certainty ;; bio-relation
+  :specializes certainty
   :realization
     (:adj "likely"
      :adverb "likely" ;;want likely to ambiguously be an adjective or adverb
@@ -83,11 +73,11 @@ of 'certain'. Not particularly thought through |#
 ;; on their value restrictions. 
 
 (define-category unlikely
-  :mixins (raising-to-subject)
-  :specializes certainty ;;bio-relation
+  :mixins (raising-to-subject) ;; to-comp
+  :specializes certainty
   :realization
     (:adj "unlikely"
-          :thatcomp theme))
+     :thatcomp theme))
 ;; almost never an adverb in our texts
 ;; need a good way to distinguish the cases
 ;; "is likely to ..." vs "is likely due..."

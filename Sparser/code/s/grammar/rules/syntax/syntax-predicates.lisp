@@ -31,6 +31,7 @@
    ;; Positive reasons to assume we can compose
    (when
        (or (subcategorized-variable head :m adjective)
+           (itypep adjective 'certain)
            (and
             (not verb-complement?)
             (subcategorized-variable adjective :subject head))
