@@ -60,8 +60,27 @@
   
 
 #|  N.b. if one of these verbs is also used in biology, there should
-be an entry for it in bio;overrides.lisp that expunges it. |#
+be an entry for it in bio;overrides.lisp that expunges it, 
+or alternatively an entry in (e.g.) bio;verbs.lisp that specializes it
+and provides biology-specific restrictions on its varibles. |#
 
+(define-category ask
+  :specializes process ;; ECI communicate
+  :mixins (ask/tell)
+  :realization (:verb "ask"))
+#|sp> (comlex-entry "ask")
+((verb
+  (:subc
+   ((where-when-s) (pp-how-to-inf :pval1 *none*) (p-np-to-inf-oc :pval ("for"))
+    (part-np-pp :adval ("up" "over" "out") :pval ("to"))
+    (part-np :adval ("in" "out" "over" "up")) (p-possing :pval ("about"))
+    (p-np-ing :pval ("about")) (p-wh-s :pval ("about"))
+    (np-p-wh-s :pval ("about")) (np-p-np-ing :pval ("about"))
+    (pp :pval ("after" "about" "for"))
+    (np-pp :pval ("into" "to" "about" "for" "of")) (pp-pp :pval ("from" "for"))
+    (s-subjunct) (to-inf-sc) (wh-s) (np-wh-s) (for-to-inf) (np-to-inf-vc) (np)
+    (np-np))
+   :features ((np-vsay) (pp-vsay :pval1 ("of")) (vsay))))) |#
 
 (define-category believe ;; in P, that P, J
   :specializes state
@@ -214,6 +233,8 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
    (:mumble ("suggest" svscomp :s ? :o statement))))
 |#
 ;; TELL is NOT a prop-attitude like belief
+;;sp> (comlex-entry "tell")
+;;((verb (:tensed/singular "tells" :infinitive "tell" :past-tense "told")
 #+ignore ;; we need to handle this in biology
 (define-category tell
   :specializes process

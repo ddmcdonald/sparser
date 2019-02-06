@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "subcat-patterns"
 ;;;   Module:  "model;core:mid-level::"
-;;;  version:  December 2018
+;;;  version:  February 2019
 
 (in-package :sparser)
 
@@ -244,3 +244,24 @@ subcategorization-pattern is a daughter of linguistic, abstract
                 :on at-relative-location ;; on the left
                 :into at-relative-location
                 :to goal))
+
+(define-mixin-category ask/tell
+  :specializes subcategorization-pattern
+  :documentation "These have a large set of options.
+    May turn out easier to break them out into groups"
+  :mixins (agent actor theme beneficiary)
+  :restrict ((agent (:or physical-agent social-agent)) ; does the asking
+             (actor (:or physical-agent social-agent)) ; ask them to do something
+             (theme top)  ; the something -- or the other complements
+             (beneficiary (:or physical-agent social-agent))) ; who you're asking
+  :realization (:s agent
+                :about theme
+                :i beneficiary
+                :for beneficiary
+                :o beneficiary
+                :to-comp theme
+                :thatcomp theme
+                :whethercomp theme
+                :mumble ((svscomp :s agent :c theme)
+                         (svo :s agent :o beneficiary)
+                         (svoscomp :s agent  :o beneficiary :c theme))))
