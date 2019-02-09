@@ -106,16 +106,16 @@
   (:method ((word word))
     (unless *wh-determiners* (populate-wh-determiners))
     (memq word *wh-determiners*))
+  (:method ((e edge))
+    ;; observed det-edge = #<36 an 38> and det-word = edge over hyphen
+    ;; in "- an observation" chunk of dec-test #49
+    (wh-determiner? (edge-category e)))
   (:method ((i individual))
     (wh-determiner? (cat-name (itype-of i))))
   (:method ((c category))
     (wh-determiner? (cat-name c)))
   (:method ((name symbol))
-    (memq name '(what which whichever whose)))
-  (:method ((e edge))
-    ;; observed det-edge = #<36 an 38> and det-word = edge over hyphen
-    ;; in "- an observation" chunk of dec-test #49
-    nil))
+    (memq name '(what which whichever whose))))
 
                               
 (defmethod definite-np? ((e edge))
