@@ -1,11 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
-;;; copyright (c) 2016-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "category-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2018
+;;;  Version:  February 2019
 
-;; Predicates on synteactic form categories, mostly for the use of the chunker.
+;; Predicates on syntactic form categories,
+;; mostly for the use of the chunker.
 
 (defparameter *prep-forms*
   `(preposition
@@ -257,7 +258,11 @@
    ))
 
 
+;;;------------
 ;;; predicates
+;;;------------
+
+;; ng-start? is also in the chunker
 
 (defgeneric ng-start? (label)
   (:documentation "Is a category which can occur inside a NG?"))
@@ -284,11 +289,10 @@
 
 
 (defgeneric ng-compatible? (label evlist)
-  (:documentation "Is a category which can occur inside a NG.
+  (:documentation "Is this a category which can occur inside a NG.
     Used by the chunker to extend (or not) a noun group chunk.
     Return nil if not compabible. Usually fed edge form labels.
     Standard call is from the ng-compatible? method in the chunker.")
-
   (:method ((w word) evlist)
     (declare (ignore w evlist))
     nil)
@@ -504,16 +508,6 @@
 (defmethod vp-category? ((ignore t))
   nil)
 
-(defgeneric aux/modal-category? (label)
-  (:documentation "modals, auxiliary forms of have and be, do"))
-(defmethod aux/modal-category? ((e edge))
-  (aux/modal-category? (edge-form e)))
-(defmethod aux/modal-category? ((c referential-category))
-  (aux/modal-category? (cat-symbol c)))
-(defmethod aux/modal-category? ((name symbol))
-  (memq name '(category::modal 
-               category::adverb)))
-
 
 (defgeneric pronoun-category? (label)
   (:documentation "Pronouns and their variants. Should be a single word"))
@@ -564,14 +558,27 @@
 
 ;;--- aux
 
-(defvar *verbal-auxiliaries* nil
-  "Holds a list of all the auxiliary words, as words")
+(defgeneric aux/modal-category? (label)
+  (:documentation "modals, auxiliary forms of have and be, do"))
+(defmethod aux/modal-category? ((e edge))
+  (aux/modal-category? (edge-form e)))
+(defmethod aux/modal-category? ((c referential-category))
+  (aux/modal-category? (cat-symbol c)))
+(defmethod aux/modal-category? ((name symbol))
+  (memq name '(category::modal 
+               category::adverb)))
+
 
 (defun edge-over-aux? (edge)
+  ;; called by wh question operations
   (when (word-p (edge-left-daughter edge))
     (auxiliary-word? (edge-left-daughter edge))))
 
+(defvar *verbal-auxiliaries* nil
+  "Holds a list of all the auxiliary words, as words")
+
 (defun auxiliary-word? (word)
+  ;; called by substantial set of functoins
   (unless *verbal-auxiliaries*
     (populate-verbal-auxiliaries))
   (memq word *verbal-auxiliaries*))
