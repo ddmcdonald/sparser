@@ -349,11 +349,8 @@
   (let* ((start-ev (edge-starts-at edge))
          (end-ev (edge-ends-at edge)))
     (when (not (eq (ev-top-node start-ev) edge))
-      (tr :disambig-replacing-top-edge start-ev edge)
       (setf (ev-top-node start-ev) edge))
-
     (when (not (eq (ev-top-node end-ev) edge))
-      (tr :disambig-replacing-top-edge end-ev edge)
       (setf (ev-top-node end-ev) edge))))
 
 (defun stipulate-edge-position (start-pos end-pos edge)

@@ -1534,9 +1534,20 @@
 (defun trace-chunker () (setq *trace-chunker* t))
 (defun untrace-chunker () (setq *trace-chunker* nil))
 
-(deftrace :chunk-loop-next-edge (edge)
+(deftrace :delimit-chunk-start (ev forms)
+  ;; called from find-chunks
   (when *trace-chunker*
-    (trace-msg "Next edge in the loop: ~a" edge)))
+    (let ((position (ev-position ev)))
+      (trace-msg "Start chunk p~a ~s: ~a edges, forms: ~a"
+                 (pos-token-index position)
+                 (pname (pos-terminal position))
+                 (ev-number-of-edges ev)
+                 forms))))
+
+(deftrace :chunk-loop-next-edge (ev forms)
+  (when *trace-chunker*
+    (trace-msg "Remaining forms ~a~
+              ~%   Next edges: ~a" forms ev)))
 
 (deftrace :delimited-chunk (chunk)
   (when (or *trace-chunker* *trace-segments*)
@@ -1546,10 +1557,15 @@
   (when (or *trace-chunker* *trace-segments*)
     (trace-msg "Delimited chunk without a head: ~a" chunk)))
 
-(deftrace :disambig-replacing-top-edge (ev edge)
+
+(deftrace :disambig-replacing-top-edge (head-compatible edge)
+  ;; Called from disambiguate-head-of-chunk just before
+  ;; it calls specify-top-edge to make the change
   (when (or *trace-chunker* *trace-segments*)
-    (trace-msg "Disambiguating word at p~a to be ~a"
-               (pos-token-index (ev-position ev)) edge)))
+    (trace-msg "From head-compatible-edges ~a~
+              ~%   selecting e~a"
+               head-compatible
+               (edge-position-in-resource-array edge))))
 
 
 ;;---- sanity checks working with a pre-populated document
