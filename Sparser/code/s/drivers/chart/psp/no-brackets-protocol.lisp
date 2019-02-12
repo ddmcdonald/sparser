@@ -321,25 +321,25 @@
       (when *parse-chunked-treetop-forest*
         (let ((*return-after-doing-forest-level* t))
           (declare (special *return-after-doing-forest-level*))
-          (new-forest-driver sentence)))
+          (new-forest-driver sentence))
         
-      (repair-bad-composition sentence))
+        (repair-bad-composition sentence)
     
-    ;; handle questions (needs to be generalized)
-    (make-this-a-question-if-appropriate sentence)
-    ;; handle post-modifying subordinate conjunctions
-    ;;  after questions
-    (let* ((start-pos (starts-at-pos sentence))
-           (end-pos (ends-at-pos sentence))
-           (treetops (all-tts start-pos end-pos)))
-      (da-rule-cycle start-pos end-pos treetops t))
+        ;; handle questions (needs to be generalized)
+        (make-this-a-question-if-appropriate sentence)
+        ;; handle post-modifying subordinate conjunctions
+        ;;  after questions
+        (let* ((start-pos (starts-at-pos sentence))
+               (end-pos (ends-at-pos sentence))
+               (treetops (all-tts start-pos end-pos)))
+          (da-rule-cycle start-pos end-pos treetops t))
 
-    (post-analysis-operations sentence)
+        (post-analysis-operations sentence)
 
-    (when *interpret-in-context*
-      (interpret-treetops-in-context (all-tts (starts-at-pos sentence)
-                                              (ends-at-pos sentence))))
-    (record-sentence-model-data sentence)
+        (when *interpret-in-context*
+          (interpret-treetops-in-context (all-tts (starts-at-pos sentence)
+                                                  (ends-at-pos sentence))))
+        (record-sentence-model-data sentence)))
   
     ;; EOS throws to a higher catch. If the next sentence
     ;; is empty we will hit the end of source as we
