@@ -314,18 +314,19 @@
 (defun compatible-heads (forms ev next-pos)
   "Called in the delimit-next-chunk loop to see whether we can
    extend the current chunk. This is the 'step' function."
-  (flet ((compatible-head? (form ev)
-           "The type of this chunk is 'form'. Checks whether any of 
-            the edges on this edge vector are suitable heads for that type."
-           (loop for edge in (ev-top-edges ev)
-              thereis (ecase form
-                        (ng (ng-head? edge))
-                        (vg (vg-head? edge))
-                        (adjg (adjg-head? edge))))))
     (loop for form in forms
        when (compatible-head? form ev)
-       collect (list form next-pos))))
+          collect (list form next-pos)))
 
+;; this function is only used in compatible-heads
+(defun compatible-head? (form ev)
+  "The type of this chunk is 'form'. Checks whether any of 
+            the edges on this edge vector are suitable heads for that type."
+  (loop for edge in (ev-top-edges ev)
+        thereis (ecase form
+                  (ng (ng-head? edge))
+                  (vg (vg-head? edge))
+                  (adjg (adjg-head? edge)))))
 
 (defun best-head (forms possible-heads)
   "Called from delimit-next-chunk. Forms is a list of one or more symbols
@@ -394,15 +395,16 @@
   "Used by the loop in find-chunks to determine whether any of the edges
    on this start vector are chunk-starters. Return all of the
    possible forms."
-  (flet ((can-start? (form edge)
-           (case form
-             (ng (ng-start? edge))
-             (vg (vg-start? edge))
-             (adjg (adjg-compatible? edge)))))
-    (loop for form in forms
-       when (loop for edge in (ev-top-edges ev)
-               thereis (can-start? form  edge))
-       collect form)))
+  (loop for form in forms
+        when (loop for edge in (ev-top-edges ev)
+                   thereis (can-start? form  edge))
+        collect form))
+;;This function is only used in starting-forms
+(defun can-start? (form edge)
+  (case form
+    (ng (ng-start? edge))
+    (vg (vg-start? edge))
+    (adjg (adjg-compatible? edge))))
 
 
 ;;--- at chunk end
