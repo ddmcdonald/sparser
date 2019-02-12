@@ -430,33 +430,6 @@
     ;; n.b. the list holds categories, not symbols
     (memq c *v-bar-categories*)))
 
-(defgeneric vg-compatible? (label)
-  (:documentation "Is a category which can occur inside a VG")
-  (:method ((w word)) nil)
-  (:method ((c referential-category))
-    (vg-compatible? (cat-symbol c)))
-  (:method ((name symbol))
-    (memq name *vg-word-categories*)))
-
-(defgeneric vg-head? (label)
-  (:documentation "Is a category which can occur as the head of a VG")
-  (:method ((w word)) t)
-  (:method ((e edge))
-    (and
-     (not (copula-v-adjective-ambiguity e))
-     (vg-head? (edge-form e))))
-  (:method ((c referential-category))
-    (vg-head? (cat-symbol c)))
-  (:method ((name symbol))
-    (or (member name '(category::verb+ed category::verb+ing))
-        (and (memq name *vg-head-categories*)
-             (or (not (boundp '*chunk*))
-                 (null (cdr (chunk-ev-list *chunk*)))
-                 (not (loop for ev in (cdr (chunk-ev-list *chunk*))
-                            thereis (loop for edge in (ev-top-edges ev)
-                                          thereis (eq 'be (cat-name (edge-category edge))))))))))
-  (:method (item) nil))
-
 (defun  copula-v-adjective-ambiguity (e) ;; preceding copula, and V/ADJECTIVE ambiguity
   (declare (special category::adjective category::be))
   (and (loop for edge in (all-edges-at e)

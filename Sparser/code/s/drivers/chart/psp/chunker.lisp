@@ -309,30 +309,50 @@
            (find-consistent-edges *chunk*)))))
 
 
-;;--- loop subroutines
+;;--- compatible heads
 
 (defun compatible-heads (forms ev next-pos)
   "Called in the delimit-next-chunk loop to see whether we can
-   extend the current chunk. This is the 'step' function."
+   extend the current chunk. This is the 'step' function. 
+   It returns a list of form-ev pairs where the call to compatible-head?
+   established that at least one of the edges at this position ('ev')
+   is consistent with that form label. Return value is pushed onto
+   possible-heads local in delimit-next-chunk."
     (loop for form in forms
        when (compatible-head? form ev)
           collect (list form next-pos)))
 
-;; this function is only used in compatible-heads
 (defun compatible-head? (form ev)
   "The type of this chunk is 'form'. Checks whether any of 
-            the edges on this edge vector are suitable heads for that type."
+   the edges on this edge vector are suitable heads for that type."
   (loop for edge in (ev-top-edges ev)
         thereis (ecase form
                   (ng (ng-head? edge))
                   (vg (vg-head? edge))
                   (adjg (adjg-head? edge)))))
 
+
+(defun compatible-head-edges? (forms ev)
+  "Like compatible-head? except that it returns the edge (or edges)
+   that are compatible with the (one of) the form(s)."
+  ;; called by find-consistent-edgs and disambiguate-head-of-chunk
+  (loop for edge in (ev-top-edges ev)
+        when (loop for form in forms
+                   thereis (ecase form
+                             (ng (ng-head? edge))
+                             (vg (vg-head? edge))
+                             (adjg (adjg-head? edge))))
+        collect edge))
+
+
+;;--- best head
+
 (defun best-head (forms possible-heads)
-  "Called from delimit-next-chunk. Forms is a list of one or more symbols
- naming chunk types (e.g. ng). Possible-heads is a list of pairs of chunk type
- and the position it ends at. If there is more than one chunk, select the one
- whose end position is to the right of the others. "
+  "Called from delimit-next-chunk to select the 'head' (form-ev pair)
+   to use.  Forms is a list of one or more symbols naming chunk
+   types (e.g. ng). Possible-heads is a list of pairs of chunk type
+   and the position it ends at. If there is more than one pair,
+   select the one whose end position is to the right of the others."
   (let (furthest)
     (loop for p in possible-heads ;; e.g. (ng #<position 4 "on">)
        when (and (member (car p) forms)
@@ -342,16 +362,6 @@
        do (setq furthest p))
     furthest))
 
-(defun compatible-head-edges? (forms ev)
-  "Like compatible-head? except that it returns the edge (or edges)
-   that are compatible with the (one of) the form(s)."
-  (loop for edge in (ev-top-edges ev)
-        when (loop for form in forms
-                   thereis (ecase form
-                             (ng (ng-head? edge))
-                             (vg (vg-head? edge))
-                             (adjg (adjg-head? edge))))
-        collect edge))
 
 
 ;;--- continue chunks
@@ -366,9 +376,11 @@
         collect form))
 
 (defun compatible-edge-form? (edge form ev-list remaining-forms?)
-  "Dispatch point for continuing (or not) a chunk of a particular form
-   with this edge. Called by compatible-edge? and remaining-forms"
-  (case form 
+  "Dispatch by form for continuing (or not) a chunk of a particular form
+   with this edge. The edge-vector (ev) list is a record of the positions
+   already in this chunk. 
+   Called by compatible-edge? and remaining-forms"
+  (ecase form 
     (ng (if (sentential-adverb? edge)
             (loop for ee in (edges-before edge)
                   thereis (member (form-cat-name ee) '(det possessive)))
@@ -399,9 +411,9 @@
         when (loop for edge in (ev-top-edges ev)
                    thereis (can-start? form  edge))
         collect form))
-;;This function is only used in starting-forms
+
 (defun can-start? (form edge)
-  (case form
+  (ecase form
     (ng (ng-start? edge))
     (vg (vg-start? edge))
     (adjg (adjg-compatible? edge))))
@@ -443,122 +455,9 @@
 
 
 
-
-;;;----------------
-;;; ng-compatible?
-;;;----------------
-
-(defmethod ng-compatible? ((e edge) evlist)
-  "Is this edge a compatible part of a noun group?
-   Return nil if this edge is not compatible.
-   'evlist' is the list of edge-vectors on the ongoing chunk."
-  ;; n.b. all the companion methods are in syntax/category-predicates.lisp
-  (declare (special e category::adverb category::also category::be category::have
-                    category::modal
-                    category::common-noun category::det category::ordinal
-                    category::parentheses category::pronoun
-                    category::syntactic-there category::verb+ing
-                    category::what category::which
-                    category::quantifier
-                    category::verb+ed
-                    word::comma))
-  (let ((edges (ev-top-edges (car evlist)))
-        (eform (when (edge-p e) (form-cat-name e)))
-        (ecat (when (edge-p e) (cat-name (edge-category e))))
-        preceding-noun-refs)
-
-    (cond
-      ((let ((before (edges-before e)))
-         ;; when you have a simple conjunction following a "between" as in
-         ;;  "any possible interaction between LRP and APOE revealed little evidence"
-         ;;  don't extend the NG beyond the conjunction
-         (loop for ee in before
-            thereis
-                 (and (member (form-cat-name ee) '(proper-noun np ng))
-                      (is-basic-collection? (edge-referent ee))
-                      (loop for b-edge in (edges-before ee)
-                            thereis
-                              (eq (cat-name (edge-category b-edge)) 'between)))))
-       nil)
-      
-      ((or (member ecat '(modal syntactic-there))
-           (some-edge-satisfying?
-            edges #'(lambda(e) (eq (cat-name (edge-category e)) 'syntactic-there))))
-       nil)
-
-      ((eq ecat 'ordinal) t) 
-     
-      ((or (some-edge-satisfying? edges #'pronoun?)
-           ;; Block ng continuation after WH and pronouns
-           ;; this makes sense when we have very few questioned NPs like "which mutated proteins"
-           (and (some-edge-satisfying? (all-edges-at e) #'preposition-edge?) 
-                (not (preceding-determiner? e))))
-       nil)
-      
-      ((plural-noun-and-present-verb? e)
-       (plural-noun-not-present-verb? e))
-
-      ((singular-noun-and-present-verb? e)
-       (and (not (preceding-pronoun-or-which? e))
-            (not (and (not (preceding-determiner? e))
-                      (preposed-aux?))) ;; does not capture preposed-aux in "What proteins does vemurafenib target"
-            (not (and
-                  (car *chunks*) ;; there is a preceding chunk
-                  (edge-p (car (chunk-edge-list (car *chunks*))))
-                  (eq (cat-name (edge-category (car (chunk-edge-list (car *chunks*)))))
-                      'do)))
-            (not (preceding-plural-noun? e))
-            ;; (not (preceding-do? e)) catches the "do" in
-            ;; "Although current methods do not allow for detection of nucleotide-free 
-            ;;  GTPases in vivo, our BiFC results provide additional support for our model. "
-            (not (sentence-initial? e)))) ;; this is a case of an imperative
-      
-      ((comma? e)
-       ;;comma can come in the middle of an NP chunk
-       ;; as in "active, GTP-bound Ras"
-       ;; BUT THIS IS NOT AS COMMON AS OTHER USES OF COMMA -- DROP IT FOR NOW
-       nil)
-      
-      ((member ecat '(have be)) nil)
-      
-      ((and (member eform '(verb+ing verb+ed))
-            ;; no participles after a paren
-            ;; don't allow a verb form after a parenthetical -- most likely a relative clause or a main clause
-            (loop for edge in edges thereis (is-parenthesis? edge)))
-       nil)
-      
-      (t
-       (case eform
-         (following-adj ;; FOLLOWING is treated as an adj
-          (prev-noun-or-adj e))
-         (adverb
-          (not (eq ecat 'also)))
-         (proper-noun ;; don't incorporate days of the week, names of months
-          (not (itypep (edge-referent e) 'time)))
-         (verb+ing
-          ;;(lsp-break "check verb+ing in NG")
-          (cond ((setq preceding-noun-refs (preceding-noun-refs edges))
-                 ;; have a strange case where "Ra" is made into a bio-entity, and "Ras" is its plural
-                 ;; check to block splitting up "the p53 binding ability"
-                 (loop for ref in preceding-noun-refs
-                    ;; tighter check for cases like "Ras expressing cells"
-                    thereis (is-object-not-subject? ref e)))
-                
-                ((loop for edge in edges 
-                    thereis (member (form-cat-name edge)
-                                    '(det quantifier adjective
-                                      comparative-adjective superlative-adjective))))))
-         (verb+ed
-          ;;"RNA interference (RNAi) blocked MEK/ERK activation."
-          (not (preceding-adverb-preceded-by-ng edges))
-          ;; too tight, but probably OK
-          ;; blocks "interaction eventually influencing ecm - driven cell motility"
-          )
-         (t (if (preceding-adverb-preceded-by-ng edges)
-                nil
-                (and (not (verb-premod-sequence? (edge-just-to-right-of e)))
-                     (ng-compatible? (edge-form e) edges)))))))))
-
+;;;-------------------
+;;; Condition testers
+;;;-------------------
 
 (defun plural-noun-and-present-verb? (e)
   "Checks for a word being ambiguous between a plural noun and 
@@ -575,6 +474,22 @@
             when (eq (edge-form ee) category::common-noun/plural)
             do (return ee)))))
 
+(defun plural-noun-not-present-verb? (e &optional (edges-before (edges-before e)))
+  "Return non-nil if this edge has a plural-noun reading that is consistent
+   with the present context.."
+  ;;(push-debug `(,edges-before)) (break "plural-noun-not-present-verb? ~a" e)
+  (or
+   (sentence-initial? e)
+   (between-wh-and-modal e edges-before)
+   (and (not (or (some-edge-satisfying? edges-before #'np-end-edge)
+                 (some-edge-satisfying? edges-before #'singular-det)
+                 ;; "that 
+                 (and (not (preceding-determiner? e))
+                      (some-edge-satisfying? edges-before #'preceding-that-or-whether?))))
+        (or
+         (some-edge-satisfying? edges-before #'non-det-or-verb-ng-start?)
+         (not (some-edge-satisfying? edges-before #'non-det-or-verb-ng-start?))))))
+                                   
 (defun singular-noun-and-present-verb? (e)
   (declare (special category::common-noun
                     category::verb category::verb+present))
@@ -607,27 +522,44 @@
    #'(lambda (ee) (member (cat-name (edge-category ee)) '(that whether)))))
                          
 
-(defun plural-noun-not-present-verb? (e &optional (edges-before (edges-before e)))
-  "Return non-nil if this edge has a plural-noun reading and a present-verb
-   reading doesn't make sense in this context."
-  ;;(push-debug `(,edges-before)) (break "plural-noun-not-present-verb? ~a" e)
-  (or
-   (sentence-initial? e)
-   (between-wh-and-modal e edges-before)
-   (and (not (or (some-edge-satisfying? edges-before #'np-end-edge)
-                 (some-edge-satisfying? edges-before #'singular-det)
-                 ;; "that 
-                 (and (not (preceding-determiner? e))
-                      (some-edge-satisfying? edges-before #'preceding-that-or-whether?))))
-                 
-        (or
-         (some-edge-satisfying? edges-before #'non-det-or-verb-ng-start?)
-         (not (some-edge-satisfying? edges-before #'non-det-or-verb-ng-start?))))))
-                                   
 
-;;;-----------
-;;; vg-start?
-;;;-----------
+;;;--------------------
+;;; Verb Group methods
+;;;--------------------
+
+;;--- vg-head?
+
+(defgeneric vg-head? (label)
+  (:documentation "Is a category which can occur as the head of a VG")
+  (:method (item) nil)
+  (:method ((w word)) t)
+  (:method ((e edge))
+    (and
+     (not (copula-v-adjective-ambiguity e))
+     (vg-head? (edge-form e))))
+  (:method ((c referential-category))
+    (vg-head? (cat-symbol c)))
+  (:method ((name symbol))
+    (or (member name '(category::verb+ed category::verb+ing))
+        (and (memq name *vg-head-categories*)
+             (or (not (boundp '*chunk*))
+                 (null (cdr (chunk-ev-list *chunk*)))
+                 (not (loop for ev in (cdr (chunk-ev-list *chunk*))
+                            thereis (loop for edge in (ev-top-edges ev)
+                                          thereis (eq 'be (cat-name (edge-category edge)))))))))))
+
+;;--- vg-compatible?
+
+(defgeneric vg-compatible? (label)
+  (:documentation "Is a category which can occur inside a VG")
+  (:method ((w word)) nil)
+  (:method ((c referential-category))
+    (vg-compatible? (cat-symbol c)))
+  (:method ((name symbol))
+    (memq name *vg-word-categories*)))
+
+
+;;--- vg-start?
 
 (defmethod vg-start? ((e edge))
   (declare (special category::to))
@@ -680,6 +612,7 @@
       (and (eq category::time (edge-category e))
            (not (loop for ee in (all-edges-at e)
                    thereis (eq category::subordinate-conjunction (edge-form ee)))))))
+
 
 (defun verb-premod? (n v)
   (and (not (is-basic-collection? n))
@@ -747,9 +680,11 @@ than a bare "to".  |#
 
 
 
-;;;-----------
-;;; ng-start?
-;;;-----------
+;;;--------------------
+;;; Noun group methods
+;;;--------------------
+
+;;--- ng-start?
 
 (defparameter *ng-start-tests-in-progress* nil
   "to prevent looping?")
@@ -872,26 +807,6 @@ than a bare "to".  |#
            t)))))
 
 
-(defun proper-noun-reduced-relative? (e *chunk* &aux (e-form-name (form-cat-name e)))
-  (declare (special *noun-categories*))
-  (and (member e-form-name '(proper-name proper-noun))
-       (boundp '*chunk*)
-       (chunk-final-edge? e *chunk*)
-       (cdr (chunk-ev-list *chunk*))
-       (loop for ee in (ev-top-edges (cadr (chunk-ev-list *chunk*)))
-             thereis (and (edge-form ee)
-                          (member (cat-symbol (edge-form ee))
-                                  *noun-categories*)))
-       (loop for ee in (edges-after e)
-             thereis
-               (and (edge-form ee)
-                    (member (form-cat-name ee)
-                            '(verb verb+present ))
-                    ;; a bit less likely when the verb is "BE"
-                    ;; as in "Oncogenic mutations in the serine/threonine kinase B-RAF are found..."
-                    (not (eq (cat-name (edge-category ee)) 'be))))))
-
-
 ;;--- ng-head?
 
 (defmethod ng-head? ((e edge))
@@ -906,17 +821,14 @@ than a bare "to".  |#
      (not (and (boundp '*chunk*)
                (proper-noun-reduced-relative? e *chunk*)))
 
-     (not (and (member (cat-name (edge-category e))
-                       '(n-fold))
+     (not (and (member (cat-name (edge-category e)) '(n-fold))
                (boundp '*chunk*)
                (chunk-final-edge? e *chunk*)
                (loop for ee in (ev-edges (cadr (chunk-ev-list *chunk*)))
-                     never (and (edge-form ee)
-                                  (member (cat-symbol (edge-form ee))
-                                          '(number))))))
-     
+                  never (and (edge-form ee)
+                             (member (cat-symbol (edge-form ee))
+                                     '(number))))))
      (or
-      
       (and (eq e-form-name 'number)
            (or (null edges-before)
                (loop for ee in edges-before
@@ -953,7 +865,9 @@ than a bare "to".  |#
            ;; immediately follows a det or prep
            ;; cf. "RAS results in" vs "the results..."
            ;; or if it is followed by "of" e.g., "the activation states of ERK"
+           ;;(break "e = ~a" e)
            (and (or (preceding-det-prep-poss-or-adj e edges-before)
+                    (between-wh-and-modal e edges-before)
                     (followed-by-verb e (edges-after e))
                     (followed-by-of e (edges-after e)))
                 (ng-head? (edge-form e))))
@@ -969,12 +883,12 @@ than a bare "to".  |#
              (declare (special end-pos prev-edge)) 
              (not (or
                    (itypep (edge-category e) 'state) ;; block resulting
-                   (and (edge-p prev-edge)(eq (form-cat-name prev-edge) 'adverb))
+                   (and (edge-p prev-edge) (eq (form-cat-name prev-edge) 'adverb))
                    (let ((next-edge (right-treetop-at/edge end-pos)))
                      (and (edge-p next-edge) (eq (form-cat-name next-edge) 'det)))
                    (memq 
                     (word-symbol (pos-terminal (pos-edge-ends-at e)))
-                    '(WORD::|that| WORD::|which| WORD::|whose|))))))
+                    '(word::|that| word::|which| word::|whose|))))))
           
           ((ng-head? (edge-form e)) t)
           
@@ -982,6 +896,141 @@ than a bare "to".  |#
             (eq category::det (edge-form e))
             (member (cat-name (edge-category e)) '(that this these those))))))))))
 
+
+
+;;--- ng-compatible?
+
+(defmethod ng-compatible? ((e edge) evlist)
+  "Is this edge a compatible part of a noun group?
+   Return nil if this edge is not compatible.
+   'evlist' is the list of edge-vectors on the ongoing chunk."
+  ;; n.b. all the companion methods are in syntax/category-predicates.lisp
+  (declare (special e category::adverb category::also category::be category::have
+                    category::modal
+                    category::common-noun category::det category::ordinal
+                    category::parentheses category::pronoun
+                    category::syntactic-there category::verb+ing
+                    category::what category::which
+                    category::quantifier
+                    category::verb+ed
+                    word::comma))
+  (let ((edges (ev-top-edges (car evlist)))
+        (eform (when (edge-p e) (form-cat-name e)))
+        (ecat (when (edge-p e) (cat-name (edge-category e))))
+        preceding-noun-refs)
+
+    (cond
+      ((let ((before (edges-before e)))
+         ;; when you have a simple conjunction following a "between" as in
+         ;;  "any possible interaction between LRP and APOE revealed little evidence"
+         ;;  don't extend the NG beyond the conjunction
+         (loop for ee in before
+            thereis
+                 (and (member (form-cat-name ee) '(proper-noun np ng))
+                      (is-basic-collection? (edge-referent ee))
+                      (loop for b-edge in (edges-before ee)
+                            thereis
+                              (eq (cat-name (edge-category b-edge)) 'between)))))
+       nil)
+      
+      ((or (member ecat '(modal syntactic-there))
+           (some-edge-satisfying?
+            edges #'(lambda(e) (eq (cat-name (edge-category e)) 'syntactic-there))))
+       nil)
+
+      ((eq ecat 'ordinal) t) 
+     
+      ((or (some-edge-satisfying? edges #'pronoun?)
+           ;; Block ng continuation after WH and pronouns
+           ;; this makes sense when we have very few questioned NPs like "which mutated proteins"
+           (and (some-edge-satisfying? (all-edges-at e) #'preposition-edge?) 
+                (not (preceding-determiner? e))))
+       nil)
+      
+      ((plural-noun-and-present-verb? e)
+       (plural-noun-not-present-verb? e))
+
+      ((singular-noun-and-present-verb? e)
+       (and (not (preceding-pronoun-or-which? e))
+            (not (and (not (preceding-determiner? e))
+                      (preposed-aux?))) ;; does not capture preposed-aux in "What proteins does vemurafenib target"
+            (not (and
+                  (car *chunks*) ;; there is a preceding chunk
+                  (edge-p (car (chunk-edge-list (car *chunks*))))
+                  (eq (cat-name (edge-category (car (chunk-edge-list (car *chunks*)))))
+                      'do)))
+            (not (preceding-plural-noun? e))
+            ;; (not (preceding-do? e)) catches the "do" in
+            ;; "Although current methods do not allow for detection of nucleotide-free 
+            ;;  GTPases in vivo, our BiFC results provide additional support for our model. "
+            (not (sentence-initial? e)))) ;; this is a case of an imperative
+      
+      ((comma? e)
+       ;;comma can come in the middle of an NP chunk
+       ;; as in "active, GTP-bound Ras"
+       ;; BUT THIS IS NOT AS COMMON AS OTHER USES OF COMMA -- DROP IT FOR NOW
+       nil)
+      
+      ((member ecat '(have be)) nil)
+      
+      ((and (member eform '(verb+ing verb+ed))
+            ;; no participles after a paren
+            ;; don't allow a verb form after a parenthetical -- most likely a relative clause or a main clause
+            (loop for edge in edges thereis (is-parenthesis? edge)))
+       nil)
+      
+      (t
+       (case eform
+         (following-adj ;; FOLLOWING is treated as an adj
+          (prev-noun-or-adj e))
+         (adverb
+          (not (eq ecat 'also)))
+         (proper-noun ;; don't incorporate days of the week, names of months
+          (not (itypep (edge-referent e) 'time)))
+         (verb+ing
+          ;;(lsp-break "check verb+ing in NG")
+          (cond ((setq preceding-noun-refs (preceding-noun-refs edges))
+                 ;; have a strange case where "Ra" is made into a bio-entity, and "Ras" is its plural
+                 ;; check to block splitting up "the p53 binding ability"
+                 (loop for ref in preceding-noun-refs
+                    ;; tighter check for cases like "Ras expressing cells"
+                    thereis (is-object-not-subject? ref e)))
+                
+                ((loop for edge in edges 
+                    thereis (member (form-cat-name edge)
+                                    '(det quantifier adjective
+                                      comparative-adjective superlative-adjective))))))
+         (verb+ed
+          ;;"RNA interference (RNAi) blocked MEK/ERK activation."
+          (not (preceding-adverb-preceded-by-ng edges))
+          ;; too tight, but probably OK
+          ;; blocks "interaction eventually influencing ecm - driven cell motility"
+          )
+         (t (if (preceding-adverb-preceded-by-ng edges)
+                nil
+                (and (not (verb-premod-sequence? (edge-just-to-right-of e)))
+                     (ng-compatible? (edge-form e) edges)))))))))
+
+
+
+(defun proper-noun-reduced-relative? (e *chunk* &aux (e-form-name (form-cat-name e)))
+  (declare (special *noun-categories*))
+  (and (member e-form-name '(proper-name proper-noun))
+       (boundp '*chunk*)
+       (chunk-final-edge? e *chunk*)
+       (cdr (chunk-ev-list *chunk*))
+       (loop for ee in (ev-top-edges (cadr (chunk-ev-list *chunk*)))
+             thereis (and (edge-form ee)
+                          (member (cat-symbol (edge-form ee))
+                                  *noun-categories*)))
+       (loop for ee in (edges-after e)
+             thereis
+               (and (edge-form ee)
+                    (member (form-cat-name ee)
+                            '(verb verb+present ))
+                    ;; a bit less likely when the verb is "BE"
+                    ;; as in "Oncogenic mutations in the serine/threonine kinase B-RAF are found..."
+                    (not (eq (cat-name (edge-category ee)) 'be))))))
 
 
 ;;;---------------------
@@ -1342,6 +1391,7 @@ than a bare "to".  |#
        thereis (eq :thatcomp (subcat-label pat)))))
 
 (defun preceding-det-prep-poss-or-adj (e &optional (edges (edges-before e)))
+  ;; called by vg-start? and np-head?
   (loop for ee in edges
      thereis (det-prep-poss-or-adj? ee)))
 
@@ -1381,9 +1431,9 @@ than a bare "to".  |#
       e))
 
 (defun preceding-determiner? (e &optional (edges (edges-before e)))
-    (loop for ee in edges
-     thereis
-         (member (form-cat-name ee) '(det quantifier))))
+  (loop for ee in edges
+     thereis (or (member (form-cat-name ee) '(det quantifier))
+                 (wh-determiner? ee))))
 
 (defun followed-by-verb (e &optional (edges-after (edges-after e)))
   (loop for ee in edges-after
