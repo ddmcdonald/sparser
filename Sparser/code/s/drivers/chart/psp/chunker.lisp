@@ -120,10 +120,35 @@
 (defun show-chunk-edges (&optional (ces *all-chunk-edges*))
   (loop for c in (reverse ces)
     do (format t "~&___________________~&")
-    (np c)))
+       (np c)))
 
 (defun np (l &optional (stream t))
   (loop for ll in l do (print ll stream)))
+
+
+(defparameter *record-chunks-for-regression-test* nil
+  "Produce the s-exp format for comparing chunking results between runs")
+
+(defun record-chunks-for-regression-test (chunks)
+  (declare (special *chunking-result*))
+  (labels ((string-inside-chunk (chunk)
+             (string-of-words-between (chunk-start-pos chunk)
+                                      (chunk-end-pos chunk)))
+           (format-chunk (c)
+             (let* ((forms (chunk-forms c))
+                    (text (string-inside-chunk c))
+                    (form-token
+                     (cond
+                       ((null forms) :nil)
+                       ((null (cdr forms))
+                        (intern (symbol-name (car forms))
+                                (find-package :keyword)))
+                       (t (reintern-symbols forms (find-package :keyword))))))              
+               `(,form-token ,text) )))
+    (let ((sexp (loop for chunk in chunks
+                   collect (format-chunk chunk))))
+      (setq *chunking-result* sexp))))
+
 
 
 ;;;--------
@@ -137,6 +162,8 @@
   (declare (special *parse-edges* *parse-chunk-interior-online*))
   (when *parse-edges* (tts)) ;; when tracing
   (let ((chunks (find-chunks sentence)))
+    (when *record-chunks-for-regression-test*
+      (record-chunks-for-regression-test chunks))
     (when *parse-chunk-interior-online*
       (dolist (*chunk* chunks)
         (declare (special *chunk*))
@@ -180,6 +207,8 @@
 (defvar *next-chunk* nil)
 (defvar *chunks* nil)
 
+;; (trace-chunker)
+
 (defun find-chunks (&optional (sentence (sentence)))
   "Walk through the sentence delimiting successive chunks and accumulating
   them on *chunks*. Loops over successive positions but uses their starting
@@ -194,12 +223,13 @@
     (until (position/<= end pos)
         (reverse *chunks*) ;; this is the return value
 
-      ;; prime the pump for the next call to delimit-next-chunk
+      ;; set up the next call to delimit-next-chunk
       (setq ev (pos-starts-here pos))
       (setq forms (starting-forms ev *chunk-forms*))
       
       (cond
         (forms ;; at least one of the edges can start a chunk
+         (tr :delimit-chunk-start ev forms)
          (setq *next-chunk* (delimit-next-chunk ev forms end))
          (push *next-chunk* *chunks*)
          (disambiguate-head-of-chunk *next-chunk*)
@@ -227,7 +257,6 @@
    examined and checked for consistency with those forms. Chunks are
    closed off when the edges on the next position are not consistent
    with the remaining form."
-  (declare (special ev sentence-end forms))
   (let* ((start (ev-position ev))
          (*chunk* (make-instance 'chunk :forms forms
                                  :start start
@@ -236,7 +265,6 @@
                                  :ev-list nil))
          (pos start)
          possible-heads)
-    
     (declare (special *chunk*))
     
     (loop until (or (chunk-end-pos *chunk*)
@@ -273,9 +301,9 @@
            
            (else ;; loop around.
              (setq ev (pos-starts-here pos))
-             (tr :chunk-loop-next-edge ev)
              (setq forms ;; This call is where we extend the chunk.                
-                   (remaining-forms ev *chunk*))))
+                   (remaining-forms ev *chunk*))
+             (tr :chunk-loop-next-edge ev forms)))
        finally
          (return 
            (find-consistent-edges *chunk*)))))
@@ -379,7 +407,9 @@
 
 ;;--- at chunk end
 
-(defun disambiguate-head-of-chunk (chunk) ;; called by find-chunks ///review
+(defun disambiguate-head-of-chunk (chunk)
+  ;; called by find-chunks and from suppress-extra-head-edges-if-necessary
+  ;; in find-consistent
   (let* ((head-ev (car (chunk-ev-list chunk)))
          (top-node (ev-top-node head-ev))
          (multi-edges
@@ -389,23 +419,24 @@
          (head-compatible-edges
           (when multi-edges
             (compatible-head-edges? forms head-ev))))
-    (declare (special head-ev multi-edges top-node head-compatible-edges
+    (declare (special ;;head-ev multi-edges top-node head-compatible-edges
                       *vg-head-categories*))
     (when (and multi-edges ;; the head started as ambiguous
                (or
                 (not (equal forms '(adjg)))
                 ;; ADJG has confusions for NEXT and FOLLOWING which are non-chunked items
                 (loop for e in multi-edges ;; but "present" is ADJ/V ambiguous
-                      thereis
-                        (member (cat-symbol (edge-form e))
-                                *vg-head-categories*)))
+                   thereis (member (cat-symbol (edge-form e))
+                                   *vg-head-categories*)))
 
                (not (loop for edge in multi-edges
-                          thereis (memq (cat-name (edge-form edge))
-                                        '(subordinate-conjunction))))                                 
+                       thereis (memq (cat-name (edge-form edge))
+                                     '(subordinate-conjunction))))                             
                (car head-compatible-edges)
-               ;; but is disambiguated by the chunking
+               ;; but was disambiguated by the chunking
                (null (cdr head-compatible-edges)))
+      (tr :disambig-replacing-top-edge
+          multi-edges (car head-compatible-edges))
       (specify-top-edge (car head-compatible-edges)))))
 
 
@@ -533,6 +564,7 @@
    Value is a boolean. Follow up is done by plural-noun-not-present-verb?
    in the ng-compatible? case"
   (declare (special category::common-noun/plural category::verb+present))
+  ;;(break "pnpv: ~a" e)
   (cond ((eq (edge-form e) category::common-noun/plural)
          (loop for ee in (all-edges-at e)
             thereis (eq (edge-form ee) category::verb+present)))

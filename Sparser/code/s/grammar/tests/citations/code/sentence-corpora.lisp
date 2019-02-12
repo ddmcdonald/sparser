@@ -468,3 +468,132 @@ previous records of treetop-counts.
 
 (defun find-corpus-sents(str)
   (find-corpus-instances str))
+
+;;;---------------------------------
+;;; regression testing for chunking
+;;;---------------------------------
+
+(defparameter *chunking-results-directory*
+  (asdf:system-relative-pathname
+   :sparser "Sparser/code/s/grammar/tests/citations/cases/")
+  "Where we write chunking results to")
+
+(defvar *chunking-result* nil
+  "This writer works asyncronously with the parsing. There's no direct
+ connection to the chunker and parser-output that's worth the effort to
+ create it. Instead, the chunker stores the description of its chunks
+ on this variable, and we pick it up here as part of writing process.")
+
+;; (write-chunking-results-to-file *chunking-text-strings*)
+
+(defun write-chunking-results-to-file (sentence-list &key label)
+  (unless label (setq label 'chunk-results))
+  (let* ((parameter-name (string-append "*" label "*"))
+         (file-name (string-append (string-downcase (symbol-name label)) ".lisp"))
+         (pathname (merge-pathnames file-name *chunking-results-directory*))
+         (*parse-chunked-treetop-forest* nil) ; stop with the chunker & pts
+         (*record-chunks-for-regression-test* t) ; record the pattern of chunks
+         (index -1))
+    (declare (special *parse-chunked-treetop-forest*
+                      *record-chunks-for-regression-test*
+                      *chunking-result*))
+    (with-open-file (stream pathname
+                            :direction :output :if-exists :supersede)
+      (format stream ";;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-~
+                    ~%;;; Chunking reference results for ~a~
+                    ~%;;; ~a~%~%(in-package :sparser)~%~%"
+              label (date-&-time-as-formatted-string))
+      (format stream "~&(defparameter ~a~%  '(" parameter-name)
+      (loop for sentence in sentence-list
+         do (analyze-text-from-string sentence)
+           (unless *chunking-result* (error "chunk record didn't run?"))
+           (format stream "~&(~s ;; #~a"
+                   sentence (incf index))
+           (format stream "~&  ~s)~%~%" *chunking-result*))
+      (format stream "))"))))
+
+
+;;/// How do we most usefully report the results?
+;; The index of the sentence? The sentence? Single fallbacks vs.
+;; massive ...
+(defun test-for-chunking-regressions (label)
+  (let* ((parameter-name (string-append "*" label "*"))
+         (file-name (string-append (string-downcase (symbol-name label)) ".lisp"))
+         (pathname (merge-pathnames file-name *chunking-results-directory*)))
+    (load pathname)
+    (unless (boundp parameter-name) (error "parameter unbound?"))
+    (let ((pair-list (eval parameter-name)))
+      (loop for pair in pair-list
+         as sentence = (car pair)
+         as reference = (cadr pair)
+         do (compare-chunking sentence reference)))))
+
+(defun compare-chunking (sentence reference)
+  "Parse the sentence with chunk recording on. Compare the result now
+   with the reference result. Returning nil means the reference and
+   present chunking are not identical."
+  (declare (special *chunking-result*))
+  (let ((*record-chunks-for-regression-test* t))
+    (declare (special *record-chunks-for-regression-test*))
+    (analyze-text-from-string sentence)
+    (let ((result *chunking-result*))
+      (equal result reference))))
+
+
+;; These are the sentences in the snapshots that hit on the new heuristic
+;; for handling noun/verb ambiguity
+(defparameter *chunking-text-strings*
+  '(;; dec 22
+    "We propose that when BRAF is  inhibited, it escapes this auto-inhibited fate and is recruited to the plasma membrane by RAS, where it forms a stable complex with CRAF."
+    ;; dec 28
+    "Based on these results, we hypothesized that COT and C-RAF drive resistance to RAF inhibition predominantly through re-activation of MAPK signaling."
+    ;; dec 9
+    "Similarly, all four drugs inhibited ERK in SkMel24, SkMel28, D25, and WM266.4 cells, another four lines that express mutant BRAF (Figure S1G)."
+    ;; overnight 4
+    "However, our results provide the first direct evidence for a protein that 
+ may stabilize nucleotide-free Ras in vivo."
+    ;; dec 51
+    "Identification of resistance mechanisms in a manner that elucidates alternative ‘druggable’ targets may inform effective long-term treatment strategies [12]."
+    ;; dec 57
+    "Together, these results provide new insights into resistance mechanisms involving the MAPK pathway and articulate an integrative approach through which high-throughput functional screens may inform the development of novel therapeutic strategies."
+    ;; dry run 6
+    "We obtained similar results using K–Ras, indicating that the effects
+of monoubiquitination on Ras are not isoform–specific."
+    ;; dry 13
+    "These data support our in vitro findings that monoubiquitination
+increases the population of active, GTP–bound Ras through a defect in
+sensitivity to GAP–mediated regulation."
+    ;; dry 14
+    "It was established recently that monoubiquitination increases the
+proportion of Ras that is in the activated (GTP–bound) state, that
+monoubiquitination enhances association with the downstream effectors
+Raf and PI3–Kinase, and that mutation of the primary site of
+monoubiquitination impairs oncogenic Ras–mediated tumorigenesis."
+    ;; 19
+    "Our modeling and NMR analyses indicated that Ubiquitin dynamically
+samples a broad surface area of Ras that alters switch region
+dynamics."
+    ;; 20
+    "These results led us to examine the effect of monoubiquitination on
+the interaction of Ras with its cognate GEF and GAPs, which also
+target the switch domains."
+    ;; 44
+    "We show here that ASPP2 is phosphorylated by the RAS/Raf/MAPK pathway
+and that this phosphorylation leads to its increased translocation to
+the cytosol/nucleus and increased binding to p53, providing an
+explanation of how RAS can activate p53 pro-apoptotic functions."
+    ;; aspp2 30
+    "Raf CAAX increases Bax-luciferase levels by 2.5 fold over the baseline of p53 and ASPP2 alone."
+    ;; 39
+    "These results suggest that MAPK phosphorylation of ASPP2 Ser827 is necessary for Raf CAAX to stimulate the full transcriptional activity of p53 via ASPP2."
+    ;; 50
+    "It has recently been shown that activation of RAS results in ASPP2 translocation from the plasma membrane to the cytosol and nucleus [2]."
+    ;; 69
+    "We show here that ASPP2 is phosphorylated by the RAS/Raf/MAPK pathway and that this phosphorylation leads to its increased translocation to the cytosol/nucleus and increased binding to p53, providing an explanation of how RAS can activate p53 pro-apoptotic functions (Figure 5)."
+    ;; 79
+    "The ability of oncogenic RAS to stimulate apoptosis allows the cell to have a fail-proof mechanism: mutated RAS signals to p53 via ASPP2 to induce apoptosis instead of uncontrolled proliferation."
+    ;; 83
+    "Wild-type ASPP2, but not mutant ASPP2 (S827A), translocates to the cytosol and nucleus upon oncogenic RAS activation and this results in an increased interaction with p53."
+    ;; erk 10
+    "These results indicate that the differential shuttling behavior of the mutant is a consequence of delayed phosphorylation of ERK by MEK rather than dimerization."
+    ))
