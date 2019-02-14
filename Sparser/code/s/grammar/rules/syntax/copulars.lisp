@@ -251,11 +251,9 @@ phosphorylated by Src."
 ;; not sure what to do beyond this
 
 (defun make-copular-def (word-string)
-  (let ((verb (intern (string-upcase word-string))))
-    ;; Original design made a category for the word that specialized
-    ;; copula. Now we just make the rules, and the use a function form
-    ;; of the rule definer so we don't need anything evaled.
-       
+  "Given an already defined verb, give it the set of form rules
+   it needs to fit in the copular paradigm."
+  (let ((verb (intern (string-upcase word-string))))       
     (loop for aa in '(adjective adjp
                       comparative comparative-adjp
                       superlative superlative-adjp)
@@ -264,6 +262,26 @@ phosphorylated by Src."
                   :referent '(:function make-copular-adjective
                               left-edge right-edge))) ))
 
-#+ignore ;; do this in the biology/verbs.lisp file for now
-("seem" "appear" "remain" "become" "stay")
+
+;;("seem" "appear" "remain"  "stay")
  
+;;--------- pulled from bio;harvard-terms
+
+
+;; became very pronounced by 9 h.
+;; which became strongly tyrosine phosphorylated by 9 h of calcium treatment
+;; The Ras-related protein, RAL becomes activated once GDP is replaced by GTP.")
+;; "Does phosphorylated BRAF become high before phosphorylated MAP2K1 becomes high?"
+;; the ability of the mutant Gab1 proteins to become tyrosine phosphorylated in response to EGF."
+
+;; If "become" is followed by a verb ("activated") it's parsed as a passive
+;; and largely disappears from the interpretation. 
+(define-category become :specializes be
+  :realization
+    (:verb ("become" :third-singular "becomes" :past-tense "became"
+		     :present-participle "becoming")
+     :etf (svo)))
+(make-copular-def "become")
+
+
+

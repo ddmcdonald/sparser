@@ -134,27 +134,6 @@ increasing amounts of recombinant XRCC1.
 (adj "transient" :super scalar-variation)
 
 
-;;;---------
-;;; move !!
-;;;---------
-
-;; became very pronounced by 9 h.
-;; which became strongly tyrosine phosphorylated by 9 h of calcium treatment
-;; The Ras-related protein, RAL becomes activated once GDP is replaced by GTP.")
-;; "Does phosphorylated BRAF become high before phosphorylated MAP2K1 becomes high?"
-;; the ability of the mutant Gab1 proteins to become tyrosine phosphorylated in response to EGF."
-
-;; If "become" is followed by a verb ("activated") it's parsed as a passive
-;; and largely disappears from the interpretation. 
-(define-category become :specializes be
- ;; :mixins (bio-rhetorical)
-  :realization
-    (:verb ("become" :third-singular "becomes" :past-tense "became"
-		     :present-participle "becoming")
-     :etf (svo)))
-(make-copular-def "become")
-
-
 ;;;---------------------------------------
 ;;; verbs particular to Harvard sentences
 ;;;---------------------------------------
