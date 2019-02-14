@@ -1,9 +1,9 @@
 ;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: SPARSER -*-
-;;; Copyright (c) 2016-2018 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2019 SIFT LLC. All Rights Reserved.
 ;;;
 ;;;      File: "scripts"
 ;;;    Module: "init;loaders;"
-;;;   Version: February 2018
+;;;   Version: February 2019
 
 (in-package :sparser)
 
@@ -117,11 +117,12 @@ in conjunction with an early version of Hark. Notable for using the
    (*index-bindings-to-variables* t))
   (:switches c3-setting))
 
-(defscript default ()
+(defscript default () ;; converted to 'fire' settings 2/13/19
   (:grammar-configuration "full grammar")
   (:parameters
+   (*description-lattice* t)
    (*index-bindings-to-variables* t))
-  (:switches use-default-settings))
+  (:switches neo-fire-setting))
 
 (defscript ern ()
   "Loads Sparser in the right configuration for completing the ERN grammar
@@ -129,7 +130,7 @@ and setting up to do style work by collecting statistics."
   (:grammar-configuration "full grammar")
   (:parameters
    (*index-bindings-to-variables* t))
-  (:switches top-edges-setting/ddm))
+  (:switches top-edges-setting/ddm)) ;; use-default-settings ??
 
 (defscript fire ()
   "FIRE stands for 'Free-text Information and Relation Extraction'.
