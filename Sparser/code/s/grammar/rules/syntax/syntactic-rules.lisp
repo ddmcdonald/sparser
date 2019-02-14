@@ -1139,6 +1139,7 @@ similar to an oncogenic RasG12V mutation (9)."))
     :head :left-edge
     :form comparative-adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
+
 (def-syntax-rule (comparative-adjp pp)
     :head :left-edge
     :form comparative-adjp
@@ -1154,14 +1155,15 @@ similar to an oncogenic RasG12V mutation (9)."))
     :form superlative-adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
 
+
 (def-syntax-rule (comparative adjective)
     :head :right-edge
     :form comparative-adjp  ;;adjp adjective ;;comparative
     :referent (:head right-edge
-                     :bind (comparative left-edge)))
+               :bind (comparative left-edge)))
 ;; 2/4/19 We need to carry the 'comparative' up to the phrase
 ;; level to make contact with the "than-np" rules just below
-;; /// After this 'signally' label is discharged, we should elevate
+;; /// After this 'signaling' label is discharged, we should elevate
 ;; the form to adjp, which is the most accurate label grammatically.
 
 (def-syntax-rule (superlative adjective)
