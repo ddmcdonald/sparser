@@ -177,17 +177,14 @@
 (defparameter *cat-names* (make-hash-table :size 5000))
 
 (defun cat-name (cat)
+  "Category symbols are in the package :category.
+   This provides it in the :sparser package"
   (declare (optimize (speed 3)(safety 0)))
   (when (category-p cat) ;; words don't have edge-forms
     (or
      (gethash cat *cat-names*)
      (setf (gethash cat *cat-names*)
            (intern (symbol-name  (cat-symbol cat)) :sparser)))))
-
-(defun form-cat-name (edge)
-  (declare (optimize (speed 3)(safety 0)))
-  (when (edge-p edge)
-    (cat-name (edge-form edge))))
 
 
 
