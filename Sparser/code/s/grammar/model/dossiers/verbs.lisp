@@ -20,10 +20,12 @@ and provides biology-specific restrictions on its varibles. |#
 (define-category answer
   :specializes process
   :mixins (simple-action) ;; agent & theme
-  :realization (:verb "answer"
+  :realization (:verb ("answer" :past-tense "answered"
+                                :present-participle "answering"
+                                :past-participle "answered")
                 :etf svo ;; or intransitive
                 :about theme
-                :noun "anwser"))
+                :noun "answer"))
 #| "To answer this question ..."
 dm #79 "a more precise answer"
 "answer for your crimes", "__ to a higher authority"
