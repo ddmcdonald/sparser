@@ -529,6 +529,14 @@
          :etf (sv)
 	 :of measurement
          :of theme))
+(make-copular-def "exist")
+#| "should exist for longer periods" ; overnight #9
+"All isoforms exist as homodimers"
+"may also exist in the epidermis of these mice"
+"STAT1 activation could exist in cells."
+"mutants not found in existing cancer-derived cell lines."
+"it exists in the nucleotide-free state for extended periods in vivo"
+|#
 
 (define-category expect :specializes bio-rhetorical
     :realization
@@ -1177,10 +1185,25 @@
   (:verb "seem"
          :etf (svo)))
 (make-copular-def "seem")
+#| "it seems likely that at least two RAS proteins are needed" dec #24
+"γ-catenins would seem likely to contribute to suppression  of keratinocyte cell adhesion."
+"it did not seem to depend simply on the phosphorylation state"
+|# 
 
 (def-synonym seem (:verb "appear" :etf (svo)))
 (make-copular-def "appear")
-(make-copular-def "exist")
+#| "does not appear to alter the GTPase-activating function" -- process
+"mice appears normal"  "appears essentially normal"
+"appears to be important"
+"γ-catenin also appears to be increasingly tyrosine phosphorylated"
+"these molecules appear to play a  negative suppressive function"
+"appears to be more robust"  appears to be weaker
+"did not appear to vary significantly over time"
+" which appeared only in the calcium-treated sample"
+"with cells at the  border between spinosum and granular layers appearing  as the most affected."
+"the ability to activate STAT1 appears restricted to the K650M and K650E-FGFR3 mutants"
+|#
+
 
 
 (define-category set-value :specializes caused-bio-process
@@ -1210,12 +1233,13 @@
   (:verb ("list")
          :etf (svo-passive)))
 
+#| recreated in dossiers/verbs.lisp
 (define-category tell :specializes bio-rhetorical
   :mixins (bio-thatcomp raising-to-object directed-action bio-howcomp)
   :restrict ((beneficiary interlocutor))
   :realization (:verb ("tell" :past-tense "told")
                       :about statement
-                      :etf (svo-passive)))
+                      :etf (svo-passive)))  |#
 
 (define-category bio-make-statement :specializes bio-rhetorical
   :mixins (bio-thatcomp)
