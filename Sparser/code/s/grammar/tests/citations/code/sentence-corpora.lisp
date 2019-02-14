@@ -487,15 +487,19 @@ previous records of treetop-counts.
 ;; (write-chunking-results-to-file *chunking-text-strings*)
 
 (defun write-chunking-results-to-file (sentence-list &key label)
+  "Walk through the sentence list parsing them only up to chunking,
+   and write a pairs of sentence and chunking pattern to a file"
   (unless label (setq label 'chunk-results))
   (let* ((parameter-name (string-append "*" label "*"))
          (file-name (string-append (string-downcase (symbol-name label)) ".lisp"))
          (pathname (merge-pathnames file-name *chunking-results-directory*))
          (*parse-chunked-treetop-forest* nil) ; stop with the chunker & pts
          (*record-chunks-for-regression-test* t) ; record the pattern of chunks
+         (*readout-segments-inline-with-text* nil)
          (index -1))
     (declare (special *parse-chunked-treetop-forest*
                       *record-chunks-for-regression-test*
+                      *readout-segments-inline-with-text*
                       *chunking-result*))
     (with-open-file (stream pathname
                             :direction :output :if-exists :supersede)
