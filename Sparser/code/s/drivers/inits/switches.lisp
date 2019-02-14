@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2011-2019 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  February 2018
+;;;  Version:  February 2019
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -389,59 +389,36 @@
   (grok-setting)
   ;; except for
   (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
-  (setq *uniformly-scan-all-no-space-token-sequences* nil) ;; bad PNF interation
+  (setq *uniformly-scan-all-no-space-token-sequences* nil) ;; bad interaction w/ PNF
   (setq *load-ad-hoc-rules* t)
   (setq *switch-setting* :tuned-grok))
-
-
-(defun strider-setting ()
-  (declare (special *arabic-names*))
-  (blocks-world-setting)
-  ;; except
-  (include-comlex)
-  (setq *ignore-capitalization* nil)
-  ;; Note in earlier version says PNF is interferring with polywords
-  ;; and set this to T. But that turns off proper name recognition.
-
-  (setq *description-lattice* nil) ;; use base means of indexing
-  (setq *use-subtypes* nil) ;; plurals as collections needs more thought
-  (setq *sweep-for-patterns* nil) ;; most patterns are for biology
-  
-  ;; from (tuned-grok)
-  (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
-  (setq *uniformly-scan-all-no-space-token-sequences* nil) ;; bad PNF interation
-  (setq *load-ad-hoc-rules* t)
-
-  ;; plus
-  (setq *arabic-names* t)
-  (setq *allow-da-to-look-under-edges* nil)
-  ;;   /// arc-matches-tt? needs to adjust the next tt
-  
-  (setq *peek-rightward* nil) ;; see drivers/chart/psp/tuck-right.lisp
-  ;; Should be t, but that exposes a stub in march-peeking-rightward
-  ;; that has to be deal with first.
-
-  (setq *switch-setting* :strider))
 
 
 (defun fire-setting ()
   "Goes with the 'fire' configuration. Intended as eventual
    replacement for all general settings, particularly for 
    Strider-like applications."
-  (declare (special *treat-single-capitalized-words-as-names*))
+  (declare (special *treat-single-capitalized-words-as-names*
+                    *arabic-names*))
   (tuned-grok)
-  (setq *note-text-relations* nil) ;; 3/6/16 overly complicated just now
-  (designate-sentence-container :complex) ;;// overkill - separate doc vs sentence
-  (setq *do-strong-domain-modeling* t
-        *treat-single-capitalized-words-as-names* t)
+  ;; from strider
+  (setq *arabic-names* t) ;; British too
+
+  (setq *treat-single-capitalized-words-as-names* t)
+
+  (setq *ignore-literal-edges* nil) ;; default, but need when switching
   (period-hook-on)
-  (setq *check-forms* nil) ;; turn off validity check in multiply-edges'
+  (setq *check-forms* nil) ;; turn off validity check in multiply-edges
+  
   (setq *allow-pure-syntax-rules* nil ;; turn these on selectively in
         *edges-from-referent-categories* nil) ;; dynamic contexts
-  (setq *new-segment-coverage* :trivial)
+
   (setq *after-action-on-segments* 'sdm/analyze-segment)
-  ;; Have to set after-action explicitly to be sure it takes
-  ;;  when switching modes a lot. 
+  (setq *note-text-relations* nil) ;; 3/6/16 overly complicated just now
+  (designate-sentence-container :complex) ;;// overkill - separate doc vs sentence
+  (setq *do-strong-domain-modeling* t)
+  (setq *new-segment-coverage* :trivial)
+
   (setq *switch-setting* :fire))
 
 
@@ -568,7 +545,8 @@
 (defun neo-fire-setting ()
   "Adapting ideas from R3 document parsing and C3"
   (declare (special *treat-single-capitalized-words-as-names*
-                    *pnf-scan-respects-segment-boundaries*))
+                    *pnf-scan-respects-segment-boundaries*
+                    *arabic-names*))
   (revert-to-error-break)
   (uncontroversial-settings)
   (top-edges-setting)
@@ -587,6 +565,8 @@
         *sweep-for-early-information* t ;; questions
         *sweep-for-conjunctions* t
         *sweep-for-parentheses* t
+
+        *ignore-literal-edges* nil ;; default, but need when switching
         
         *chunk-sentence-into-phrases* t
         ;;  *big-mechanism-ngs* t  /// check details
@@ -600,7 +580,7 @@
         )
   (setq *edges-from-referent-categories* nil
         *allow-pure-syntax-rules* t
-        *check-forms* t) ;; see multiply-edges
+        *check-forms* t) ;; turn off validity check in multiply-edges
   (whack-a-rule t)
 
   (use-unknown-words)
@@ -627,7 +607,8 @@
   (setq *treat-single-capitalized-words-as-names* t)
   (unless *proper-names* (error "Proper name module not loaded"))
   (establish-pnf-routine :scan-classify-record)
-
+  (setq *arabic-names* t) ;; British too
+  
   (setq *use-subtypes* t) ;; plurals as collections
 
   (setq *do-strong-domain-modeling* t)
@@ -733,6 +714,37 @@
 
 
 ;;--- Older, unused switch sets, no reason to assume they're consistent
+
+
+(defun strider-setting ()
+  (declare (special *arabic-names*))
+  (blocks-world-setting)
+  ;; except
+  (include-comlex)
+  (setq *ignore-capitalization* nil)
+  ;; Note in earlier version says PNF is interferring with polywords
+  ;; and set this to T. But that turns off proper name recognition.
+
+  (setq *description-lattice* nil) ;; use base means of indexing
+  (setq *use-subtypes* nil) ;; plurals as collections needs more thought
+  (setq *sweep-for-patterns* nil) ;; most patterns are for biology
+  
+  ;; from (tuned-grok)
+  (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
+  (setq *uniformly-scan-all-no-space-token-sequences* nil) ;; bad PNF interation
+  (setq *load-ad-hoc-rules* t)
+
+  ;; plus
+  (setq *arabic-names* t)
+  (setq *allow-da-to-look-under-edges* nil)
+  ;;   /// arc-matches-tt? needs to adjust the next tt
+  
+  (setq *peek-rightward* nil) ;; see drivers/chart/psp/tuck-right.lisp
+  ;; Should be t, but that exposes a stub in march-peeking-rightward
+  ;; that has to be dealt with first.
+
+  (setq *switch-setting* :strider))
+
 
 (defun ambush-setting ()
   (declare (special *keep-number-sequence-raw* *speech*))
