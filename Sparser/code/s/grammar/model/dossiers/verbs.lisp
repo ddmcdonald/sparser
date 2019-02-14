@@ -10,7 +10,26 @@
 ;; specify them with verbs, but in any event it makes things easier
 ;; to keep track of.
 
+#|  N.b. if one of these verbs is also used in biology, there should
+be an entry for it in bio;overrides.lisp that expunges it, 
+or alternatively an entry in (e.g.) bio;verbs.lisp that specializes it
+and provides biology-specific restrictions on its varibles. |#
+
 (in-package :sparser)
+
+(define-category answer
+  :specializes process
+  :mixins (simple-action) ;; agent & theme
+  :realization (:verb "answer"
+                :etf svo ;; or intransitive
+                :about theme
+                :noun "anwser"))
+#| "To answer this question ..."
+dm #79 "a more precise answer"
+"answer for your crimes", "__ to a higher authority"
+"answer your question", "answer whether P" ???
+|#
+
 
 ;;------------------------------------------ originally mid-level/verbs.lisp
 #| -----------  TO DO
@@ -58,11 +77,6 @@
 
 |#
   
-
-#|  N.b. if one of these verbs is also used in biology, there should
-be an entry for it in bio;overrides.lisp that expunges it, 
-or alternatively an entry in (e.g.) bio;verbs.lisp that specializes it
-and provides biology-specific restrictions on its varibles. |#
 
 (define-category ask
   :specializes process ;; ECI communicate
@@ -232,17 +246,25 @@ and provides biology-specific restrictions on its varibles. |#
   ((:verb "suggest")
    (:mumble ("suggest" svscomp :s ? :o statement))))
 |#
-;; TELL is NOT a prop-attitude like belief
+
 ;;sp> (comlex-entry "tell")
 ;;((verb (:tensed/singular "tells" :infinitive "tell" :past-tense "told")
-#+ignore ;; we need to handle this in biology
+
 (define-category tell
   :specializes process
-  :mixins (prop-attitude directed-action)
+  :mixins (ask/tell) ;;prop-attitude directed-action)
   :restrict ((beneficiary interlocutor))
   :realization (:verb ("tell" :past-tense "told")))
 ;; tell someone to do something
 ;; tell someone that <proposition>
+#| ;; version is biology/general-verbs
+(define-category tell :specializes bio-rhetorical
+  :mixins (bio-thatcomp raising-to-object directed-action bio-howcomp)
+  :restrict ((beneficiary interlocutor))
+  :realization (:verb ("tell" :past-tense "told")
+                      :about statement
+                      :etf (svo-passive))) |#
+
 
 (define-category want ;; -something -to-do-something
   :specializes state
