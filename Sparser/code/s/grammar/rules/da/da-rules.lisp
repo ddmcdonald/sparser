@@ -1838,6 +1838,11 @@ assumed. |#
     ;; "Where is STAT3 expressed?"
     :action (:function wh-four-edges first second third fourth))
 
+(define-debris-analysis-rule whpn-vg-np-vp+ed
+    :pattern (wh-pronoun vg np vp+ed)
+    ;; "What are the genes regulated by STAT3?
+    :action (:function wh-four-edges/vp  first second third fourth))
+
 (define-debris-analysis-rule whpn-vp-noun-vp+ed
     :pattern (wh-pronoun vg proper-noun vp+ed)
     ;; "How is stat3 involved in apoptotic regulation?"
@@ -1846,6 +1851,11 @@ assumed. |#
 (defun wh-four-edges (wh vg noun adjp)
   (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
     (wh-initial-four-edges wh (list vg noun adjp) *da-starting-position* end-pos)))
+
+(defun wh-four-edges/vp (wh vg np vp-ed)
+  (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
+    (wh-initial-four-edges/vp+ed wh vg np vp-ed
+                                 *da-starting-position* end-pos)))
 
 (defun wh-vp (wh vp)
   (let ((end-pos (fix-da-ending-pos *da-ending-position*)))

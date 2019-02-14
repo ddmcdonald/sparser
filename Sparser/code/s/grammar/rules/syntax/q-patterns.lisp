@@ -97,16 +97,24 @@
               :constituents edges))) )
 
 (defun there-question/stranded-prep (is-there-edge s-edge prep-edge start-pos end-pos)
+  "The there-exists instance is already in place on the is-there edge.
+   Putting the complement of the preposition back together is an
+   independent problem. That whole expression becomes the 'value'
+   of the there-exists."
   ;; "Are there any genes stat3 is upstream of?"
   (tr :wh-walk "there-question/stranded-prep")
+  ;; the constituent we need to move to the prep is buried in
+  ;; the s-edge. Assume it's the first on, and check that the vp after it
+  ;; is a copula. though that should generalize.
   (when *debug-questions*
     (push-debug `(,is-there-edge ,s-edge ,prep-edge))
-    (break "stranded there")))
+    (break "Figure out how to properly factor out the moving part")))
          
          
 (defun polar-stranded-preposition (aux-edge main-edge prep-edge)
   ;; "Can you find any apoptotic pathways that stat3 is involved in?"
   (when *debug-questions*
+    (push-debug `(,aux-edge ,main-edge ,prep-edge))
     (break "Substantial refactoring require to find equivalent of the 'item' ~
       that wh-stranded-prep uses for its prepositional complement")))
 
@@ -268,6 +276,16 @@
 ;;; wh-initial? dispatches from make-this-a-question-if-appropriate 
 ;;;-----------------------------------------------------------------
 
+(defun make-edge-over-wh-question (rule-label i head start-pos end-pos)
+  (make-chart-edge
+   :category (edge-category head)
+   :form category::s
+   :referent i
+   :rule rule-label
+   :starting-position start-pos
+   :ending-position end-pos
+   :constituents (treetops-between start-pos end-pos)))
+
 (defun wh-initial-two-edges (wh-initial? edges start-pos end-pos)
   "One edge after the WH edge. Take it to be the statement."
   (tr :wh-walk "wh-initial-two-edges")
@@ -400,6 +418,34 @@
       (t (when *debug-questions*
            (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
            (break "New pattern for WH 4 edges/adjunct"))))))
+
+(defun wh-initial-four-edges/vp+ed (wh-edge vg-edge np-edge vp+ed-edge
+                                    start-pos end-pos)
+  (tr :wh-walk "wh-initial-four-edges/vp+ed")
+  (unless (edge-over-aux? vg-edge)
+    (when *debug-questions*
+      (break "Expected ~a to be an aux" vg-edge))
+    (return-from wh-initial-four-edges/vp+ed nil))
+  (let (;; add the wh as a determiner to the np-edge
+        (i (bind-variable 'has-determiner (edge-referent wh-edge)
+                          (edge-referent np-edge)))
+        (vp-ref (edge-referent vp+ed-edge)))
+    (cond
+      ((open-core-variable vp-ref)
+       (cond ((is-passive? vp+ed-edge)
+              ;; open in object since there's a by-phrase
+              (unless (missing-object-vars vp-ref)
+                (error "Why isn't passive open in its object?"))
+              (let ((j (bind-variable (object-variable vp-ref)
+                                      i vp-ref)))
+                (make-edge-over-wh-question
+                 'wh-initial-four-edges/vp+ed
+                 j vp+ed-edge start-pos end-pos)))
+             (t (when *debug-questions*
+                  (break "~a is open in something, but not object"
+                         vp-ref)))))
+      (t (when *debug-questions*
+           (break "New case for the vp+ed"))))))
            
 (defun fold-in-initial-wh-adjunct (wh-edge edge-over-s start-pos end-pos)
   (tr :wh-walk "fold-in-initial-wh-adjunct")
@@ -438,7 +484,7 @@
          (wh-stranded-prep wh-edge (third edges) (fourth edges) start-pos end-pos))
         (t
          (when *debug-questions*
-           (break "new 4 edge wh case~%e2: ~a e3: ~a e4: ~a"
+           (break "new 4-edge wh case~%e2: ~a  e3: ~a  e4: ~a"
                   e2-form e3-form e4-form)) )))))
 
 

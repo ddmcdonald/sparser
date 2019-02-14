@@ -231,19 +231,23 @@
 (defun is-passive? (edge)
   (declare (special category::subordinate-clause category::vp+passive
                     category::vg+passive category::verb+passive))
-  (let ((form (form-cat-name edge)))
+  (let ((form (form-cat-name edge))
+        (right-side (edge-right-daughter edge)))
     (case form
       ((subordinate-clause subject-relative-clause)
        (cond
-         ((edge-p (edge-right-daughter edge))
+         ((edge-p right-side)
           ;; if the subordinate or relative clause was extended by a DA rule, then
           ;; the right edge is :long-span
           ;; e.g. in
           ;; "has the ability to inhibit the phosphorylation of both Smad2 and Smad3 but it only slightly inhibits the activation of Akt, ERK, JNK and p38 MAPK, suggesting that it down-regulates Snail expression via a Smad dependent pathway"
-          (is-passive? (edge-right-daughter edge)))
+          (is-passive? right-side))
          ((edge-p (edge-left-daughter edge))
           (is-passive? (edge-left-daughter edge)))))
       ((vp+passive vg+passive verb+passive) t)
+      (vp+ed
+       (and (pp? right-side) ;; by-phrase?
+            (eq 'by (edge-cat-name (edge-left-daughter right-side)))))
       (t nil))))
 
 
