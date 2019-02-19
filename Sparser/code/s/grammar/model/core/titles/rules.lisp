@@ -102,6 +102,11 @@
           (revise-right-edge-into-rule :referent title-mod)))
       (setq title (bind-dli-variable 'locale possessive title)))
 
+     ((itypep possessive 'interlocutor) ;; "our professors"
+      ;; What's worth doing? -- dropping the possessive.
+      ;; /// See if it's relatively easy to get it deferenced
+      title)
+
      (t (when *break-on-unexpected-cases*
           (push-debug `(,possessive ,title))
           (error "New type for possessive: ~a~%  ~a"
