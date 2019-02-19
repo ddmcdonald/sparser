@@ -173,6 +173,20 @@
         (ref-index (pos-token-index reference-pos)))
     (< text-index ref-index)))
 
+(defun position/> (test-pos reference-pos)
+  "The the position of the test position is greater
+   than the position of the reference position."
+  (let ((text-index (pos-token-index test-pos))
+        (ref-index (pos-token-index reference-pos)))
+    (> text-index ref-index)))
+
+(defun position/>= (test-pos reference-pos)
+  "The the position of the test position equal to or greate
+   than the position of the reference position."
+  (let ((text-index (pos-token-index test-pos))
+        (ref-index (pos-token-index reference-pos)))
+    (>= text-index ref-index)))
+
 (defun number-of-terminals-between (p1 p2)
   "Return an integer corresponding to the number of words
    between those two positions"
