@@ -172,6 +172,7 @@
 
 
 (defun polyword-multiword-string-for-list-of-words (list-of-words)
+  "Introduce spaces between the words for uniformity"
   (let ((s ""))
     (dolist (w list-of-words)
       (setq s (concatenate 'string
