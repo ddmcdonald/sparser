@@ -66,6 +66,10 @@ Does not handle circular lists."
     (setq list (list item)))
   list)
 
+(defun all-but-last-item! (list)  ;; "!" because of the nreverse
+  (nreverse (cdr (nreverse list))))
+
+
 (define-modify-macro appendf (&rest args) append "Append to list in a place.")
 (define-modify-macro nconcf (&rest args) nconc "Destructively append to list.")
 

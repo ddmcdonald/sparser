@@ -356,12 +356,6 @@
 ;;; subroutines
 ;;;-------------
 
-;;///////// move this
-(defun all-but-last-item! (list)
-  (nreverse (cdr (nreverse list))))
-
-
-
 (defun pnf-treetop-at (position)
   (let ((top-node-field (ev-top-node (pos-starts-here position))))
     (let ((tt (cond

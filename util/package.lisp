@@ -1,5 +1,5 @@
 ;;; -*- Mode: Lisp; Syntax: COMMON-LISP; -*-
-;;; Copyright (c) 2011-2017 David D. McDonald. All Rights Reserved.
+;;; Copyright (c) 2011-2019 David D. McDonald. All Rights Reserved.
 
 ;; initiated 3/8/11. Pulled in file-local exports 10/6/14 in effort
 ;; to accommodate changes in MCL 10.0
@@ -31,6 +31,7 @@
            #:pl
            #:list-length*
            #:tail-cons
+           #:all-but-last-item!
            #:appendf #:nconcf
            #:quote-every-other-one
            #:assq #:memq #:memq/assq
