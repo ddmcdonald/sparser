@@ -1925,3 +1925,4 @@
 (def-indiv-with-id drug "PD 98059" "PCID:4713" :synonyms ("PD98059") :maintain-case t)
 (def-indiv-with-id drug "wortmannin" "PCID:312145")
 (def-indiv-with-id drug "SB-525334" "PCID:9967941" :synonyms("SB525334"))
+(def-indiv-with-id drug "TAPI-1" "PCID:10458621" :synonyms("TAPI 1" "TAPI1"))

@@ -497,4 +497,6 @@
 ;; overnight
 ;;(define-drug "nct01143753raf")
 ;;(define-drug "raf265")
+(define-drug "GGTI")
+(define-drug "Geranylgeranyl transferase 1 inhibitor")
 

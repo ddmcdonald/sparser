@@ -2746,3 +2746,4 @@
 (def-indiv-with-id cell-type "keratinocyte" "BTO:0000667" :name "keratinocyte") 
 (def-indiv-with-id cell-type "neuron" "CO:0000540" :name "neuron" :synonyms ("neurone")) 
 (def-indiv-with-id cell-type "meiocyte" "BTO:0000845" :name "meiotic cell") 
+(def-indiv-with-id cell-line "HBZY-1" "CVCL:7213" :name "HBZY1" :no-plural t) 

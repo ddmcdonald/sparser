@@ -1608,4 +1608,5 @@
 (def-indiv-with-id molecule "HCl" "CHEBI:17883" :maintain-case t)
 (def-indiv-with-id molecule "NaCl" "CHEBI:26710" :name "sodium chloride" :maintain-case t :synonyms ("Na-Cl"))
 (def-indiv-with-id molecule "progesterone" "CHEBI:17026" :synonyms ("progesteron"))
+(def-indiv-with-id molecule "carboxylic acid" "CHEBI:33575" :synonyms ("COOH"))
 

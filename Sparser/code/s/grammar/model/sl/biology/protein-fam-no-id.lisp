@@ -175,7 +175,7 @@
 (def-family "IFN-γ" :members ("UP:P01579" "UP:P15260"))
 ;(def-family "IL-1" :synonyms ("interleukin 1" "interleukin-1"  "IL1") :members ("UP:P01583" "UP:P01584")) merged with ided fam
 (def-family "IL13R" :members ("UP:P78552" "UP:Q14627")) 
-(def-family "INPP4B" :members ("UP:O15327" "UP:Q9BS68")) 
+;(def-family "INPP4B" :members ("UP:O15327" "UP:Q9BS68")) 
 (def-family "IQGAP" :members ("IQGAP1" "IQGAP2" "IQGAP3")) 
 (def-family "IgG" :members ("UP:P12314" "UP:P31994" "UP:P55899"))
 (def-family "ISM" :synonyms ("isthmin") :members ("UP:B1AKI9" "UP:Q6H9L7"))
@@ -1008,7 +1008,7 @@
 (def-family "PFK2" :members ("UP:Q16875" "UP:Q9FIK0")) 
 (def-family "PGC-1" :members ("UP:Q86YN6" "UP:Q9UBK2") :synonyms ("PPARGC1")) 
 (def-family "PGDH" :members ("UP:O04130" "UP:P52209")) 
-(def-family "PGGT1B" :members ("UP:P03657" "UP:P53609")) 
+;(def-family "PGGT1B" :members ("UP:P03657" "UP:P53609")) 
 (def-family "PGL1" :members ("UP:O14521" "UP:P47180")) 
 (def-family "PGS2" :members ("UP:P07585" "UP:Q68CL5")) 
 (def-family "PGs" :members ("UP:O66076" "UP:Q9LW07")) 
