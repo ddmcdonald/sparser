@@ -252,4 +252,5 @@
     ((or comparative superlative) :adjective)
     ((or det approximator sequencer) :determiner)
     ((or conjunction subordinate-conjunction) :word) ;; i.e. ignore
+    (preposition :preposition) ;; for the sequencer "before"
     (standalone :word)))
