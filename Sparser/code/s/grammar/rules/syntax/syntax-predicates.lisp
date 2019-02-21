@@ -305,9 +305,7 @@
                                   (second (edge-constituents prep-edge)))
                                  ((edge-p (edge-right-daughter prep-edge))
                                   (edge-right-daughter prep-edge))
-                                 (t nil)))))
-    (declare (special prep-edge left-daughter right-daughter))
-    
+                                 (t nil)))))    
     (flet ((prep-edge? (edge)
              (memq (form-cat-name edge) *prep-forms*)))
       (cond
