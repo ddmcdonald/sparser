@@ -677,6 +677,7 @@ is a case in handle-any-anaphor
      (initial-wh (contents s)))
    (let ((first-edge (car (all-tts))))
      (when (and (edge-p first-edge)
+                (edge-referent first-edge) ;; "in order to" -- pw w/o referent
                 (or (itypep (value-of 'has-determiner (edge-referent first-edge))
                             '(:or what which how when why))
                     (itypep (value-of 'quantifier (edge-referent first-edge))
