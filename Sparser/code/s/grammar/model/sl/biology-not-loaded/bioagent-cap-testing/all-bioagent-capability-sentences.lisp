@@ -3,9 +3,9 @@
   '(
 
     ;; sentences which cause a hang in the canary
-    ("What genes does mir-128 regulate?") ;; NIL
+    ("What genes does mir-128 regulate?")                  ;; NIL
     ("what transcription factors does miR-200c regulate?") ;; KB::FIND-TF-MIRNA
-    ("Tell me about stat3's involvement in apoptosis") ;; NIL
+    ("Tell me about stat3's involvement in apoptosis")     ;; NIL
     ("What are the genes that have strong evidence of being regulated by mir-122-5p?") ;; NO-CAPS-FOR
     ("What is stat3's involvement in apoptosis?")     ;; NO-CAPS-FOR
     ("What is stat3's role in apoptosis?")            ;; NO-CAPS-FOR
@@ -129,6 +129,7 @@
      "DUSP6 dephosphorylates ERK2 that is not bound to SOS1." ;; KB::ADD-TO-MODEL
      "BRAF V600E that is not bound to Vemurafenib phosphorylates MAP2K1." ;; KB::ADD-TO-MODEL
      "Phosphorylated MAPK1 is active."
+     "How does BRAF affect MAP2K1?" ;;find-qca-paths
 
      ;; from Tonia
      "Let's highlight the downstream of AKT1." 
@@ -365,9 +366,9 @@
      )
 
     ("What does miR-20b-5p target") ;; KB::FIND-TARGET-MIRNA
-    ("What does p53 regulate?")  ;; KB::FIND-TARGET
-    ("What does rb1 regulate")   ;; KB::FIND-TARGET
-    ("What does smad2 regulate") ;; KB::FIND-TARGET
+    ("What does p53 regulate?")     ;; KB::FIND-TARGET
+    ("What does rb1 regulate")      ;; KB::FIND-TARGET
+    ("What does smad2 regulate")    ;; KB::FIND-TARGET
     ("What does stat regulate")  ;; KB::FIND-RELATIONS-FROM-LITERATURE
     ("What downregulates fzd8?") ;; KB::FIND-REGULATION
     ("What drug could I use to target pancreatic cancer?") ;; NO-CAPS-FOR
@@ -899,6 +900,91 @@
      "TNF activates NFkappaB"
      "I want to find out how tofacitinib decreases IL2"
      "I want to find out how Selumetinib decreases FOS in BT20 cells"
-     "I want to find out how ERBB3 activates JUN in SKBR3 cells")
+     "I want to find out how ERBB3 activates JUN in SKBR3 cells"
+
+
+     "Does MEK phosphorylate ERK?"
+     "Does STAT3 inhibit the c-fos gene?"
+     "Does STAT3 stimulate the c-fos gene?"
+     "I want to find out how Selumetinib decreases FOS in SKMEL-133 melanoma cells."
+     "Is ERK a transcription factor?"
+     "List all the genes regulated by elk1 and srf."
+     "List some of the genes regulated by elk1 and srf."
+     "Show me the  mutations of TP53 and BRAF in ovarian cancer."
+     "What are the mutations of TP53 and BRAF in ovarian cancer?"
+     "What are the mutually exclusive genes with CDH1 for breast cancer?"
+     "What are the mutually exclusive genes with CDH1 in breast cancer?"
+     "What downregulates it?"
+     "What genes have strong evidence of being regulated by mir-122-5p?"
+     "What increases the amount of myc"
+     "What inhibits fzd8?"
+     "What is the most likely cellular location of AKT1, BRAF and MAPK1?"
+     "What is the most likely cellular location of AKT1?"
+     "What is the mutation significance of TP53 in lung cancer?"
+     "Which of those are regulated by tp53?"
+     )
+
+    ;; new sentences from capabilities files
+    ("Is there an inhibitor of ERK1?")     ;;find-target-drug
+    ("Name some drugs that inhibit AKT1.") ;;find-target-drug
+    ("Are there any Map2K1 inhibitors?")   ;;find-target-drug
+    ("Are there targets of Selumetinib?")  ;;find-drug-targets
+    ("What does Selumetinib inhibit?")     ;;find-drug-targets
+    ("What does Selumetinib target?")      ;;find-drug-targets
+    ("Does Vemurafenib target BRAF?")      ;;is-drug-target
+    ("What are some targets for treating pancreatic cancer?") ;;find-disease-targets
+    ("What are some targets for pancreatic cancer?") ;;find-disease-targets
+    ("What targets could lead to the development of pancreatic cancer?") ;;find-disease-targets
+    ("What proteins could lead to the development of pancreatic cancer?") ;;find-disease-targets
+    ("What mutated genes could lead to pancreatic cancer?") ;;find-disease-targets
+    ("What is the top gene mutation that leads to pancreatic cancer?") ;;find-disease-targets
+    ("I would like to find a treatement for pancreatic cancer.") ;;find-treatement
+    ("What drug could I use to treat pancreatic cancer?") ;;find-treatement
+    ("What are some drugs for treating pancreatic cancer?") ;;find-treatement
+    ("I'd like to find a treatement for pancreatic cancer.") ;;find-treatement
+    ("How can i treat pancreatic cancer?") ;;find-treatement
+    ("Does MEK act on ERK?") ;;confirm-relation-from-literature
+    ("Mek activates MAPK3"   ;;add-to-model
+     "HRAS activates RAF."   ;; KB::ADD-TO-MODEL
+     "Remove the fact that hras activates ras" ;;model-remove-mechanism
+     "Can you tell me what is in the model?"   ;;describe-model
+     "Summarize the model."                    ;;describe-model
+     "Summarize the current model."            ;;describe-model
+     "What phosphorylates BRAF?" ;;find-relations-from-literature
+
+     "Vemurafenib binds BRAF."             ;; KB::ADD-TO-MODEL
+     "Phosphorylated MAP2K1 is activated." ;; KB::ADD-TO-MODEL
+     "PP2A-alpha dephosphorylates MAP2K1 that is not bound to ERK2." ;; KB::ADD-TO-MODEL
+     "Active MAP2K1 that is not bound to PP2A-alpha phosphorylates ERK2." ;; KB::ADD-TO-MODEL
+     "Phosphorylated ERK2 is activated." ;; KB::ADD-TO-MODEL
+     "DUSP6 dephosphorylates ERK2 that is not bound to SOS1." ;; KB::ADD-TO-MODEL
+     "BRAF V600E that is not bound to Vemurafenib phosphorylates MAP2K1." ;; KB::ADD-TO-MODEL
+     "Phosphorylated MAPK1 is active."
+     "PDK1 phosphorylates AKT1."                 ;; KB::ADD-TO-MODEL
+     "Let's move phosphorylated AKT1 to the top" ;;move-gene
+     "Let's move phosphorylated AKT1 on top"     ;;move-gene
+     "show AKT1 on top"                          ;;move-gene
+     "Let's highlight upstream of AKT1"        ;;highlight-gene-stream
+     "Let's move nucleus elements to the top") ;;move-compartment
+
+    ("What are the common downstreams of AKT1 and  BRAF?") ;;find-common-streams
+    ("Are there common upstreams of AKT1, BRAF and MAPK1?") ;;find-common-streams
+    ("What are the common upstream regulators of FN1, MMP3, and SERPINE1?") ;;find-common-streams
+    ("What are common downstream regulators of MMP3 and SERPINE1?") ;;find-common-streams
+    ("What are common upstream transcriptional regulators of FN1, MMP3, and SERPINE1?") ;;find-common-streams
+    ("What are the mutations of PTEN, TP53 and BRAF in ovarian cancer?") ;;show-mutation-data
+    ("What is the mutation frequency of TP53 in ovarian cancer?") ;;find-mutation-frequency
+    ("Which genes are mutually exclusive with CDH1 for breast cancer?") ;;find-mutex
+    ("Which genes are mutually exclusive with CDH1 in breast cancer?") ;;find-mutex
+    ("What is the cellular location of akt1?") ;;find-cellular-location
+
+
+    ("How does MAPK regulate BRAF?")        ;;find-qca-paths
+    ("What is BRAF?")                       ;;choose-sense
+    ("Is BRAF a member of the RAF family?") ;;choose-sense-is-member
+    ("What genes are in RAS?")              ;;choose-sense-what-member
+    ("What genes are in the RAF family?")   ;;choose-sense-what-member
+    ("What are some other names for BRAF?") ;;get-synonyms
+    ("What are synonyms for ERK?")          ;;get-synonyms
 
     ))
