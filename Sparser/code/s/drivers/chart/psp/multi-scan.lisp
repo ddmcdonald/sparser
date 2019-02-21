@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  December 2018
+;;;  version:  February 2019
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -201,24 +201,25 @@
 
 (defun scan-terminals-loop (position-before word end-pos)
   "Carries out the first layer of analysis by checking for and
-   applying word-level rules. It is the core routine regardless
-   of whether source is a document or just a string. 
-     Structured as a succession of passes ('sweeps') over
+   applying word-level rules. 
+   -- Structured as a succession of passes ('sweeps') over
    a sentence-worth of text, though the start and end positions
    or the sentence are used, which could provide flexibility later.
-     Follows the scanning of the entire
-   text into the chart and detection of any polywords.
-
-   1st. Sweep over the treetops in the sentence to
-     handle any word-level fsas. 
-   2d. Apply word-level completion hook to each word that
-     isn't covered by an edge.
-   3d. Introduce the terminal edges for every unspanned word
-     and run any associated category-fsas such as the number fsa
-
-   We return by throwing to :end-of-sentence, which is
+   (sentence-processing-core orchestrates the sweeps done after this 
+    one)
+    -- Follows the scanning of the entire text into the chart and 
+    detection of any polywords.
+      1st. Sweep over the treetops in the sentence to
+          handle any word-level fsas. 
+       2d. Apply word-level completion hook to each word that
+          isn't covered by an edge.
+       3d. Introduce the terminal edges for every unspanned word
+         and run any associated category-fsas such as the number fsa
+   -- We return by throwing to :end-of-sentence, which is
    what period-hook does if it's called conventionally."
-
+  
+  ;; This is called from scan-terminals-of-sentence, which is called
+  ;; from scan-terminals-and-do-core
   (declare (special end-pos  *sweep-for-polywords* *sweep-for-word-level-fsas*
                     *sweep-for-terminal-edges*)
            (optimize debug))
@@ -970,27 +971,35 @@
 ;; (trace-ns-sequences) 
 
 (defun sweep-for-no-space-patterns (sentence)
-  ;; "If there is no-space between two successive words in the
-  ;;  chart (no-space-before-word?) then call check-for-pattern
-  ;;  to initiate the process in collect-no-space-segment-into-word
-  ;;  and manage the return value."
-  "Delimit the no-space region then call the ns pattern suite."
-  (declare (special *sentence-terminating-punctuation* *trace-sweep* *trace-ns-sequences*))
+  "Identify successive positions as which a no-space region could
+   start, and if it's valid (i.e. not already covered by an
+   edge) then find where the region ends and call the ns pattern suite."
   (tr :sweep-for-no-space-patterns)
   (let ((pos (starts-at-pos sentence))
         (sent-end-pos (ends-at-pos sentence))
         ns-end-pos)
+    (when (eq *newline* (pos-terminal pos)) ;; paragraph debris
+      (setq pos (chart-position-after pos)))
     (loop
        while (and pos (setq pos (start-of-ns-region pos sent-end-pos)))
-       ;; While there is a position, 'pos' that starts a no-space
-       ;; sequence. Find the end of that region ('ns-end-pos')
+       ;; While there is a position, 'pos', that starts a no-space
+       ;; sequence, find the end of that region ('ns-end-pos')
        do
-         (setq ns-end-pos (end-of-ns-region pos sent-end-pos))
-         (tr :ns-identify-ns-pattern-between pos ns-end-pos)
-         (unless (= 1 (length (words-between pos ns-end-pos))) ; "gneiss,"
-           (setq ns-end-pos (collect-no-space-segment-into-word pos ns-end-pos)))
+         (if (and (top-edge-at/starting pos)
+                  (not (one-word-long? (top-edge-at/starting pos))))
+           (then ;; already covered - move ahead of it
+             (let* ((edge (top-edge-at/starting pos))
+                    (edge-end-pos (pos-edge-ends-at edge)))
+               (tr :ns-move-over-edge edge)
+               (setq ns-end-pos edge-end-pos)))             
+           (else ;; delimit the span and apply ns
+             (setq ns-end-pos (end-of-ns-region pos sent-end-pos))
+             (tr :ns-identify-ns-pattern-between pos ns-end-pos)
+             (unless (= 1 (length (words-between pos ns-end-pos))) ; "gneiss,"
+               (setq ns-end-pos (collect-no-space-segment-into-word pos ns-end-pos)))))
+
          (if (position/<= sent-end-pos ns-end-pos)
-           (setq pos nil)
+           (setq pos nil) ;; fall out of loop
            (setq pos ns-end-pos)))
 
     (loop for pos in (copy-list *positions-with-unhandled-unknown-words*)
@@ -1004,22 +1013,23 @@
    Returns the position just before a position without pos-preceding-whitespace"
   (tr :find-ns-region-start pos)
   (loop
-    (multiple-value-setq (tt next-pos)
-      (next-treetop/rightward pos))
-    (cond ((eq next-pos sent-end-pos)
-           (return nil))
-          ((or (pos-preceding-whitespace next-pos)
-               (word-never-in-ns-sequence
-                (or (left-treetop-at/only-edges next-pos)
-                    (pos-terminal
-                     ;; needs to be chart-position-before because
-                     ;; otherwise we end up with "(Figure 1b)"
-                     ;; resulting in a "(Figure" bioentity and leaving
-                     ;; the close-paren stranded 
-                     (chart-position-before next-pos)))))
-           (setq pos next-pos))
-          (t (tr :ns-found-region-start pos)
-             (return pos)))))
+     (multiple-value-setq (tt next-pos)
+       (next-treetop/rightward pos))
+     (tr :ns-start-tt-pos pos tt next-pos)
+     (cond ((eq next-pos sent-end-pos)
+            (return nil))
+           ((or (pos-preceding-whitespace next-pos)
+                (word-never-in-ns-sequence
+                 (or (left-treetop-at/only-edges next-pos)
+                     (pos-terminal
+                      ;; needs to be chart-position-before because
+                      ;; otherwise we end up with "(Figure 1b)"
+                      ;; resulting in a "(Figure" bioentity and leaving
+                      ;; the close-paren stranded 
+                      (chart-position-before next-pos)))))
+            (setq pos next-pos))
+           (t (tr :ns-found-region-start pos)
+              (return pos)))))
 
 (defun end-of-ns-region (pos sent-end-pos &aux tt next-pos multiple?)
   "The start-of-ns-region says that there's a no-space region starting
