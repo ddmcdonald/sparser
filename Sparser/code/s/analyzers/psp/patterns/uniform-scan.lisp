@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2019 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  September 2016
+;;;  version:  February 2019
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -298,7 +298,6 @@
             the position before is EQ to the position after")
          nil)
         (t
-
          (let ((reason (reason-to-not-span-ns pos-before next-position)))
            (tr :not-reifying-because-there-was-a-reason)
            (when reason
@@ -312,7 +311,7 @@
          (multiple-value-bind (category rule referent)
              (if *big-mechanism*
                  (reify-ns-name-as-bio-entity pos-before next-position)
-                 (reify-spelled-name (words-between pos-before next-position)))
+                 (reify-spelled-name pos-before next-position))
            (tr :reified-ns-name referent pos-before next-position)
            (let ((edge
                   (make-edge-over-long-span
@@ -434,7 +433,7 @@
         (loop for symbol in form-symbols
               thereis (or (memq symbol
                                 '(category::pronoun category::modal
-                                  PRONOUN/FEMALE APOSTROPHE-S WORD::SINGLE-QUOTE)))))))
+                                  pronoun/female apostrophe-s word::single-quote)))))))
          
    
     

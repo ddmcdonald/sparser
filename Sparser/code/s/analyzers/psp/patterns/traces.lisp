@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2019  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "traces"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  November 2018
+;;;  version:  February 2019
 
 ;; Broken out from driver 2/5/13. Added more cases 9/11/14. Imported
 ;; cases from traces/scan-patterns 7/21/15. 
@@ -27,12 +27,23 @@
                (pos-token-index pos)
                (pname (pos-terminal pos)))))
 
+(deftrace :ns-move-over-edge (edge)
+  ;; called from loop in sweep-for-no-space-patterns
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] moving sweep over ~a" edge)))
+
 (deftrace :ns-found-region-start (pos)
   ;; Called from start-of-ns-region
   (when *trace-ns-sequences*
     (trace-msg "[ns] p~a (~s) starts a no-space region"
                (pos-token-index pos)
                (pname (pos-terminal pos)))))
+
+(deftrace :ns-start-tt-pos (pos tt next-pos)
+  ;; Called from start-of-ns-region
+  (when *trace-ns-sequences*
+    (trace-msg "[ns]  At p~a: tt: ~a, next-pos p~a"
+               (pos-token-index pos) tt (pos-token-index next-pos))))
 
 (deftrace :ns-find-region-end (pos)
   ;; called from end-of-ns-region
