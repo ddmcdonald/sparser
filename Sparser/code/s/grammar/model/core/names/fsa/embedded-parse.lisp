@@ -104,7 +104,8 @@
 
 (defun intro-edges-fwpnf (word pos-before next-pos final-pos)
   (install-terminal-edges word pos-before next-pos)
-  (if (eq next-pos final-pos)
+  (if (or (eq next-pos final-pos)
+          (eq word *newline*)) ;; shows up when doing paragraph marking by newlines
     :done
     (pfwpnf next-pos final-pos)))
 
@@ -117,7 +118,7 @@
   ;; Called from pfwpnf -- return the preferred edge if there are
   ;; several to choose from. Note that this is coming right after
   ;; a call to look for FSAs (e.g. polywords) starting at this
-  ;; position, and they may have let to some edges. 
+  ;; position, and they may have left some edges. 
   (let* ((ev (pos-starts-here position))
          (top-node (ev-top-node ev)))
     (when top-node

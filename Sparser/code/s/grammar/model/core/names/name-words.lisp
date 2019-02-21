@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2019  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "name words"
 ;;;   Module:  "model;core:names:"
-;;;  version:  0.7 June 2013
+;;;  version:  February 2019
 
 ;; [object] initiated 5/28/93 v2.3
 ;; 0.1 (12/30) allowed the case of the name-word maker being passes an already
@@ -32,8 +32,6 @@
 ;;      as a name-word, so generalized the predicates plist functions.
 
 (in-package :sparser)
-(defvar *BREAK-ON-PATTERN-OUTSIDE-COVERAGE?*)
-
 
 ;;;--------
 ;;; object
@@ -127,7 +125,7 @@
   ;; /// this depends on a systematic appreciation of how words can be
   ;; bound, which has yet to be developed. It's been initiated to
   ;; handle "Alexander & Alexander"
-  (let ((plist (plist-for word)))
+  (let ((plist (plist-for word))) ;; if it's not first there are other properties
     (eq (first plist) :name-word)))
 
 
@@ -156,25 +154,21 @@
 
 (defun make-name-word-for-unknown-word-in-name (lc-word
                                                 &optional position)
-
   ;; called from Examine-capitalized-sequence when the word is part
   ;; of a capitalized sequence and hasn't already been defined as
   ;; a name word and thence been spanned by an edge
-
   (declare (special *lc-person-words*))
 
   (unless (word-p lc-word)
     (if (and (individual-p lc-word)
-             (indiv-typep lc-word 'name-word))
+             (itypep lc-word 'name-word))
       ;; it was already converted
       (return-from make-name-word-for-unknown-word-in-name lc-word)
       (break "Threading bug: should have been passed a word but ~
               got:~%  ~A~%which is a ~A" lc-word (type-of lc-word))))
-
   (unless position
     (break "New caller -- see if it can be modified to also pass ~
             in the position~%where the word occurred."))
-
 
   (let* ((actual-word (or (car (memq lc-word *lc-person-words*))
                           (find-or-make/capitalized-word-to-fit-position
@@ -215,6 +209,21 @@
       nw )))
 
 
+(defgeneric define-name-word/actual (word)
+  (:documentation "Find or make a name-word for the specific
+    capitalization in this word, which the caller has worked out.
+    Only makes the individual, not the potentially associated rule.")
+  (:method ((pname string))
+    (let ((word (resolve/make pname)))
+      (when (polyword-p word)
+        (error "This function is only for words.~%The string ~a ~
+                returned a polyword" pname))
+      (define-name-word/actual word)))
+  (:method ((w word))
+    (or (get-tag :name-word w)
+        (let ((nw (define-individual category::name-word
+                      :name w)))
+          (setf (get-tag :name-word w) nw)))))
 
 
 (defun make-name-word-for/silent (lc-word
@@ -252,26 +261,31 @@
     name ))
 
 
-
 (defun find/make-silent-nw-for-word-under-edge (edge)
-  ;; called from Referents-of-list-of-edges when the referent of the
-  ;; edge is a category.  Assuming that this edge covers only one
-  ;; word (////) then we look up that word and find/make a silent
-  ;; nw for it.
+  "Called from categorize-and-form-name when it has an uncategorized
+   name that includes a known category (the 'other' case). This makes
+   a name-word object for what might otherwise be a normal word
+   (e.g. the 'ball' in 'George K. Ball')"
   (if (eq (pos-edge-ends-at edge)
           (chart-position-after (pos-edge-starts-at edge)))
-
+    
+    ;; one word
     (let ((word (edge-left-daughter edge)))
       (or (name-word-for-word word)
           (make-name-word-for/silent word (pos-edge-starts-at edge))))
 
-    ;; the edge spans more than one word (e.g. "Per Share")
-    (let* ((word-list (words-between (pos-edge-starts-at edge)
-                                     (pos-edge-ends-at edge)))
-           (string (polyword-multiword-string-for-list-of-words word-list))
-           (word (resolve/make string))) ;; "of Gwynedd"
-      (or (name-word-for-word word)
-          (make-name-word-for/silent word (pos-edge-starts-at edge))))))
+    ;; more than one word (e.g. "Per Share")
+    (let* ((pw-string (polyword-multiword-string-for-list-of-words
+                       (words-between (pos-edge-starts-at edge)
+                                      (pos-edge-ends-at edge))))
+           (word (resolve/make pw-string))) ;; "of Gwynedd"
+      (etypecase word
+        #+ignore(word
+         (or (name-word-for-word word)
+             (make-name-word-for/silent word (pos-edge-starts-at edge))))
+        (polyword
+         (error "How did we already get a polyword under ~a" edge))))))
+
 
 
 
@@ -312,7 +326,8 @@
 
 
 (defun reclaim/name-word (nw table name-word-category)
-  (declare (ignore name-word-category))
+  (declare (ignore name-word-category)
+           (special *break-on-pattern-outside-coverage?*))
   (unless (permanent-individual? nw)
     (let ((word (value-of 'name nw))
           (cfr (get-tag :rule nw)))
@@ -395,12 +410,3 @@
     (nreverse names)))
 
 
-
-;;;-------
-;;; stubs
-;;;-------
-
-(defun make-pw-for-name-elements (elements
-                                  &key category referent)
-  (push-debug `(,elements ,category ,referent))
-  (break "stub"))

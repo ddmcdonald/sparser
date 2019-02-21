@@ -560,13 +560,20 @@
               (word ;(or (name-word-for-word item)
                ;    (make-name-word-for/silent item))
                (let ((nw (name-word-for-word item)))
-                 (unless nw
-                   (break "Unexpected threading: the word \"~A\" ~
+                 (cond
+                   (nw nw)
+                   ((and (= 1 (length (pname item))) ;;/// reify
+                         *arabic-names*)
+                    ;;/// at this leve we've lost the actual
+                    ;; edge it seems, so can't reconstruct the
+                    ;; capitalization correctly
+                    (define-name-word/actual item))
+                   (t
+                    (break "Unexpected threading: the word \"~A\" ~
                            was passed in.~%Expected that it would ~
                            have already been redone as a name-word."
-                          item))
-                 nw ))
-
+                           item)))))
+              
 	      (otherwise
                (push-debug `(,item ,reversed-list-of-edges))
 	       (break "Unexpected type of item in list of 'edges' ~

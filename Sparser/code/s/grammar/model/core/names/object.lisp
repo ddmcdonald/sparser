@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:names:"
-;;;  version:  April 2016
+;;;  version:  February 2019
 
 ;; initiated 5/28/93 v2.3. Broke name word routines out to their own file 4/20/95. 
 ;; 0.1 (5/2) added an explicit name-creator to hack "and".   5/12 remodularized
@@ -24,7 +24,6 @@
 
 
 (in-package :sparser)
-
 
 ;;;-----------------------------------------------
 ;;; common super-class for things that have names
@@ -356,7 +355,8 @@ when you say them. In other respects they are normal, sequence-based
 names. Protypical examples are H5N1 (virus) or M1A1 (Abrams tank).
 Those do not have corresponding spelled out forms, as compared with
 a reasonable subtype of this category -- Acronyms -- such as ACLU or
-WHO. 
+WHO. Given issues in the no-space handler we can also get here
+with sequences we'd prefer that PNF handled directly.
 |#
 
 ;; Use-case in analysers/psp/patterns/uniform-scan.lisp
@@ -368,42 +368,49 @@ WHO.
   :index (:special-case))
 
 
-(defun reify-spelled-name (words)
-  ;; This part is take from make/uncategorized-name
-  ;; Return value designed to feed edge creation in 
-  ;; reify-ns-name-and-make-edge
-  (let ((sequence (define-sequence words))
-        (name (make-unindexed-individual category::spelled-name)))
-    (setq name (bind-dli-variable :name/s sequence name category::spelled-name))
+(defun reify-spelled-name (pos-before pos-after)
+  "Presently only called from reify-ns-name-and-make-edge when no specific
+   pattern has been found for this set of tokens (and we're -not- in big-
+   mechanism mode which has a comparable call).
+   For any name we need a sequence of name-words. Spelled names will always
+   have no spaces between the words so we use the polyword machinery to
+   get words with the correct capitalization "
+  (let* ((words (words-between pos-before pos-after))
+         (string (extract-characters-between-positions pos-before pos-after))
+         (pnames (actual-strings-for-list-of-words words string))
+         (name-words (loop for p in pnames
+                        collect (define-name-word/actual p))))
+    (push-debug `(,words ,string ,name-words))
 
-    ;; This code is frightfully low-level in its choice of operations.
-    ;; //// We need to find other uses for this pattern. 
-    (let* ((words-string (apply #'string-append (mapcar #'word-pname words)))
-           (polyword (define-polyword words-string))
-           (concatenated-name
-            (intern words-string *category-package*))
-           (category (find-or-make-category-object
-                      concatenated-name :referential))
-           (rule (define-cfr category `(,polyword)
-                   :form category::proper-name
-                   :referent name
-                   ;; If we include a :source we can assign it
-                   ;; to a particular grammar module, but default
-                   ;; is ok.
-                   :schema (get-schematic-word-rule :proper-noun))))
-      (values category rule name))))
+    (let ((sequence (define-sequence name-words))
+          (name (make-unindexed-individual category::spelled-name)))
+      (setq name (bind-variable :name/s sequence name category::spelled-name))
 
-
-
-
-      
-
-
-
-
-
-
-
+      ;; This part is taken from make/uncategorized-name
+      ;; Return value designed to feed edge creation in 
+      ;; reify-ns-name-and-make-edge
+      (let* ((polyword (resolve/make string))
+             (concatenated-name
+              (intern string *category-package*))
+             (category (find-or-make-category-object
+                        concatenated-name :referential))
+             (rule (define-cfr category `(,polyword)
+                     :form category::proper-name
+                     :referent name
+                     ;; If we include a :source we can assign it
+                     ;; to a particular grammar module, but default
+                     ;; is ok.
+                     :schema (get-schematic-word-rule :proper-noun))))
+        (values category rule name)))))
 
 
-
+(defun actual-strings-for-list-of-words (words string)
+  "Return a list of substring of the string, one for each word"
+  (let ((start 0)
+        (pnames nil))
+    (dolist (word words)
+      (push (subseq string start (+ start (length (pname word))))
+            pnames)
+      (setq start (+ start (length (pname word)))))
+    (nreverse pnames)))
+ 

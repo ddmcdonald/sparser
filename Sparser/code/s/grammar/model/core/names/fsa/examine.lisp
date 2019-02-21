@@ -1,10 +1,10 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996,2011-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2011-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "examine"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  November 2018
+;;;  version:  February 2019
 
 ;; initiated 4/1/94 v2.3
 ;; 0.1 (4/23) fixed change of where :literal-in-a-rule is in Sort-out-multiple-
@@ -441,45 +441,46 @@
                (extract-characters-between-positions starting-position ending-position)))
         
       (loop
-        ;; Loop over all the treetop constituents between the start and
-        ;; end positions of this capitalized sequence that the scan phase
-        ;; delimited. 
-        (if (eq position ending-position)
-          (return)
-          (incf count))
-          
-        (setq tt (pnf-treetop-at position))
-          
-        (setq label (label-for tt)) ;; 2d flet definition above
-          
-        (tr :examining label tt)          
-        ;; Look at the tt and set flags (indicators of the type of name)
-        (if multiple-treetops
-          (dolist (mtt multiple-treetops)
-            ;; collect evidence from each of the cases
-            (check-cases mtt (label-for mtt))) ;; 1st flet above
-          (check-cases tt label))
-          
-        ;; Add to the items list
-        (if already-pushed?
-          (if multiple-treetops
-            (break "Interaction between already-pushed? and multiple-treetops")
-            (setq already-pushed? nil))
-          (if multiple-treetops
-            (let ((backoff-tt (backoff-multiple-treetops-for-pnf multiple-treetops)))
-              ;; pick which one of the tt to use
-              (kpush backoff-tt items))
-            (kpush tt items)))
-          
-        (setq next-position
-              (if multiple-treetops
-                (pos-edge-ends-at (first multiple-treetops))
-                (etypecase tt
-                  (edge (pos-edge-ends-at tt))
-                  (word (chart-position-after position)))))
-          
-        (setq position next-position)
-        (setq multiple-treetops (cdr multiple-treetops))) ;; end of loop
+         ;; Loop over all the treetop constituents between the start and
+         ;; end positions of this capitalized sequence that the scan phase
+         ;; delimited. 
+         (if (position/>=  position ending-position)
+           (return)
+           (incf count))
+         
+         (setq tt (pnf-treetop-at position))
+         (when (eq tt *newline*) (return))
+         
+         (setq label (label-for tt)) ;; 2d flet definition above
+         
+         (tr :examining label tt)          
+         ;; Look at the tt and set flags (indicators of the type of name)
+         (if multiple-treetops
+           (dolist (mtt multiple-treetops)
+             ;; collect evidence from each of the cases
+             (check-cases mtt (label-for mtt))) ;; 1st flet above
+           (check-cases tt label))
+         
+         ;; Add to the items list
+         (if already-pushed?
+           (if multiple-treetops
+             (break "Interaction between already-pushed? and multiple-treetops")
+             (setq already-pushed? nil))
+           (if multiple-treetops
+             (let ((backoff-tt (backoff-multiple-treetops-for-pnf multiple-treetops)))
+               ;; pick which one of the tt to use
+               (kpush backoff-tt items))
+             (kpush tt items)))
+         
+         (setq next-position
+               (if multiple-treetops
+                 (pos-edge-ends-at (first multiple-treetops))
+                 (etypecase tt
+                   (edge (pos-edge-ends-at tt))
+                   (word (chart-position-after position)))))
+         
+         (setq position next-position)
+         (setq multiple-treetops (cdr multiple-treetops))) ;; end of loop
         
 
       ;; Now clean up a bit, then call categorize-and-form-name
@@ -596,6 +597,7 @@
       ;;--- Look for things that would restructure the elements of the name
 
       (when other ;; "George K. Ball" -- where "ball" is an ordinary word
+        ;;(break "other = ~a" other)
         (let* ((item-index (car other))
                (edge (cdr other))
                (nw (find/make-silent-nw-for-word-under-edge edge)))

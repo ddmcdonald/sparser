@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993-1997,2012-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1997,2012-2019  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  0.8 July 2013
+;;;  Version:  February 2019
 
 ;; initiated 5/15/93 v2.3, added traces 5/26
 ;; 0.1 (12/9) Added pre-emptive state variable
