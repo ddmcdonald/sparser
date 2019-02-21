@@ -173,7 +173,9 @@
 (defun title-is-plural? ()
   ;; other things to consider adopting are in make-cn-rules/aux
   (let ((word (head-word-of-segment)))
-    (eq (word-morphology word) :ends-in-s)))
+    (etypecase word
+      (word (eq (word-morphology word) :ends-in-s))
+      (polyword nil))))
 
 
 
