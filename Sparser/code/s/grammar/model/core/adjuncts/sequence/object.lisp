@@ -50,16 +50,24 @@
     :tree-families '(generic-np-premodifier)))
 
 
-;; Define-function-term would normally make the needed
-;; function rules, but when we make we use a generalizing rule-label
-;; like this it would make the same rhs for all of these, which
-;; would raise a flag and muddy the waters.
-;; 10/11/16 moved rules to syntax/syntactic-rules.lisp 
+;; 10/11/16 moved rules to syntax/syntactic-rules.lisp
+;; for "before", "after" as bare categorize
 
 ;;--- prepositions
 
 (defun define-sequencer/preposition (string)
-  (let ((word (resolve-string-to-word/make string))
+  (define-function-term string 'preposition
+    :super-category 'sequencer
+    :rule-label 'sequencer
+    :discriminator 'sequence
+    :brackets (list  ].preposition preposition]. preposition.[ )
+    ;; :tree-families '(transparent-pp) none of them are quite right
+    ))
+
+;; This version doesn't set the part of speech -- comes out as 'content-word'
+;; Note that "before" and "after" are marked in prepositions for bio-specfic
+;; handling
+#+ignore  (let ((word (resolve-string-to-word/make string))
         sequencer )
     (if (setq sequencer
               (find-individual 'sequencer :name word))
@@ -69,7 +77,7 @@
                             :name word))
 
         (assign-brackets/expr word (list  ].preposition preposition]. preposition.[ ))
-        sequencer ))))
+        sequencer )))
 
 
 ;;;----------
