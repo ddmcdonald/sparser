@@ -1408,3 +1408,44 @@ divides it into good and bad. |#
          as s = (nth index *list-of-bio-utterances*)
          collect s)
    #'string<))
+
+(defun load-bio-test-sentences (&optional (file "all-bioagent-capability-sentences.lisp"))
+  "load a file from bio-not-loaded;bioagent-cap-testing -- default 
+all-bioagent-capability-sentences.lisp"
+  (load (concatenate 'string
+                     "sparser:bio-not-loaded;bioagent-cap-testing;"
+                     file)))
+
+(defun test-bio-utts->file (&optional (file "all-bioagent-capability-test-results.lisp")
+                              (get-cat-roles t))
+  "loads all-bioagent-capability-sentences.lisp which should be the
+  current sentence list and outputs the result of test-bio-utterances
+  to a file, and by default also populates *test-utt-unique-cats* and
+  *test-utt-unique-roles* with the unique categories and roles found
+  in the clauses from those sentences"
+  (load-bio-test-sentences)
+  (with-open-file (stream
+                   (concatenate 'string
+                                "sparser:bio-not-loaded;bioagent-cap-testing;"
+                                file)
+                          :direction :output :if-exists :supersede 
+                             :if-does-not-exist :create
+                             :external-format :UTF-8)
+    (test-bio-utterances *list-of-utt-lists* nil :list-of-lists t
+                         :stream stream :clauses t))
+    (when get-cat-roles
+      (clauses->unique-cats)
+      (clauses->unique-roles)))
+
+(defparameter *test-utt-unique-cats* nil)
+(defun clauses->unique-cats ()
+  (loop for clauses in (mapcar #'cdr *clause-semantics-list*)
+        do (loop for clause in clauses
+                 do (pushnew (getf clause :isa) *test-utt-unique-cats*))))
+(defparameter *test-utt-unique-roles* nil)
+(defun clauses->unique-roles ()
+  (loop for clauses in (mapcar #'cdr *clause-semantics-list*)
+        do (loop for clause in clauses
+                 do (loop for i from 0 to (length clause)
+                          when (evenp i)
+                          do (pushnew (nth i clause) *test-utt-unique-roles*)))))
