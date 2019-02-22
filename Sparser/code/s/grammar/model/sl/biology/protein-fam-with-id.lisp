@@ -137,7 +137,7 @@
 
 (def-family-with-id "histone" "NCIT:C16687")
 (def-family-with-id "histone H3" "FPLX:Histone_H3") 
-(def-family-with-id "inhibin" "NCIT:C2276")
+(def-family-with-id "inhibin" "NCIT:C2276" :members("UP:P05111" "UP:P08476" "UP:P09529"))
 
 (def-family-with-id "interferon alpha"  "NCIT:C20494" :synonyms ("FPLX:IFNA" "IFN-alpha" "IFN-α" "IFNA" "IFNalpha" "IFNα" "IFN-a") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571"))
 (def-family-with-id "IL" "NCIT:C20497" :name "interleukin" :synonyms ("interleukine") :members ("UP:P01583" "UP:P01584" "UP:P05231" "UP:P08700" "UP:P10145" "UP:P13232" "UP:P60568")) 
