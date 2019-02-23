@@ -74,10 +74,10 @@
 (define-approximator/determiner "roughly")
 (define-approximator/determiner "somewhat")
 
-(define-approximator/adverbial  "fairly")
+(define-approximator/adverbial "fairly")
 (define-approximator/adverbial "hardly")
 (define-approximator/adverbial "mostly")
-(define-approximator/adverbial  "only") ;; "only two" "this can only occur if.."
+(define-approximator/adverbial "only") ;; "only two" "this can only occur if.."
 
 
 
