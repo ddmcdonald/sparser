@@ -50,25 +50,6 @@
 (defvar *n-bar-categories*)
 (defvar *n-bar-category-names*)
 
-;;; to review and fix or remove
-#+ignore
-(def-form-rule (comma subject-relative-clause)
-               :head :right-edge
-  :form comma-separated-subject-relative-clause
-  :referent (:daughter right-edge))
-
-
-
-
-#+ignore
-(def-syntax-rule (preposition s) ;;//// "GTP loading" or subj+verb
-                 :head :left-edge
-  :form pp
-  :referent (:function apply-preposition-to-complement left-edge right-edge))
-
-
-
-;; TO-DO make a debris rule for NP VP+ING which happens "late"
 
 
 ;;---- Nouns's and their pre-modifiers
@@ -342,9 +323,9 @@
 
 
 
-;;;------------------------
-;;; Rules for VG, VP and S
-;;;------------------------
+;;;-------------
+;;; Rules for S
+;;;-------------
 
 (def-syntax-rule (s pp)
   :head :left-edge
@@ -357,8 +338,10 @@
   :form s
   :referent (:function make-comparative-adjp-with-np left-edge right-edge))
 
+
 ;;;--------
-;;; VG -- Rules for constructing VGs (and some hangers on for adverbials and deictic locations on S as a whole)
+;;; VG -- Rules for constructing VGs (and some hangers on
+;;;    for adverbials and deictic locations on S as a whole)
 ;;;--------
 
 (loop for vv in '((verb+ed vg+ed)
@@ -835,10 +818,12 @@
   :referent (:daughter left-edge))
 
 
+;;                  in rule             form of result
 (loop for vv in '((subordinate-clause subordinate-clause)
                   (subordinate-s subordinate-s)
-                  ;; as in "Thus, although genetic alterations that engender C-RAF activation..."
-		  (s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed)(vp+past vp+past)
+		  (s s)
+                  (transitive-clause-without-object transitive-clause-without-object)
+                  (vp vp)(vp+ing vp+ing)(vp+ed vp+ed)(vp+past vp+past)
                   (vg vp)(vg+ing vp+ing)
                   (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive)
 		  (verb+present vg))
@@ -856,6 +841,8 @@
                 :head :right-edge
                 :form subordinate-clause
                 :referent (:function make-subordinate-clause left-edge right-edge))))
+
+
 
 
 
@@ -1036,8 +1023,9 @@
         :head :left-edge
         :form pp-wh-pronoun
         :referent (:function make-relativized-pp left-referent right-referent)))
+
   (eval
-   `(def-form-rule (sequencer ,nb) ;; "after which" /// 1/11/19 appears not to work??
+   `(def-form-rule (sequencer ,nb) ;; "after which" 
         :head :left-edge
         :form pp-wh-pronoun
         :referent (:function make-relativized-pp left-referent right-referent)))
