@@ -1435,7 +1435,8 @@ all-bioagent-capability-sentences.lisp"
                          :stream stream :clauses t))
     (when get-cat-roles
       (clauses->unique-cats)
-      (clauses->unique-roles)))
+      (clauses->unique-roles)
+      (sents->sent-cats)))
 
 (defparameter *test-utt-unique-cats* nil)
 (defun clauses->unique-cats ()
@@ -1449,3 +1450,11 @@ all-bioagent-capability-sentences.lisp"
                  do (loop for i from 0 to (length clause)
                           when (evenp i)
                           do (pushnew (nth i clause) *test-utt-unique-roles*)))))
+
+(defparameter *test-utt-sent-cats* nil)
+(defun sents->sent-cats ()
+  (declare (special *clause-semantics-list* *test-utt-sent-cats*))
+  (loop for sent in *clause-semantics-list*
+        do (push `(,(car sent)
+                    ,(mapcar #'(lambda(x) (getf x :isa)) (cdr sent)))
+                 *test-utt-sent-cats*)))
