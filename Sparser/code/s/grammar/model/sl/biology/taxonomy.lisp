@@ -85,7 +85,7 @@
   :binds ((statement (:or
                       #| these are not statement-like items
                       -- they should be handled differently
-                         (LEAVE THIS TIL A BIT LATER)
+                      (LEAVE THIS TIL A BIT LATER)
                       |#
 
                       bio-chemical-entity
@@ -100,12 +100,13 @@
                            event-relation
                            copular-predication
                            bio-relation
-                           relation
                            bio-rhetorical
                            there-exists
                            event-relation
                            perdurant
-                           abstract ;; for information like "evidence"
+                           ;; not sure either of these is needed
+                           relation
+                            abstract ;; for information like "evidence"
                            )))
   :documentation "Common parent to the other types of biological 
     complements to share the same standard set of bindings.")
@@ -526,7 +527,8 @@
   :binds ((fact biological))
   :realization
     (:noun "evidence"
-     :for fact))
+           :for fact
+           :of fact))
 
 (define-category experiment-data :specializes evidence
   :realization
@@ -674,6 +676,18 @@
     (:verb "measure"
      :etf (svo-passive)
      :noun "measurement"
+     :m measured-item
+     :of :object
+     :by method
+     :with method))
+
+(define-category correlation :specializes bio-method
+  :binds ((method bio-method)
+          (measured-item (:or bio-entity bio-process)))
+  :realization 
+    (:verb "correlate"
+     :etf (svo-passive)
+     :noun "correlation"
      :m measured-item
      :of :object
      :by method
@@ -1208,11 +1222,11 @@
            :for controlled-gene))
 
 #| several transcription factors, including CREB
-forkhead transcription factors
-transcription factors such as LEF-1 or Tcf4
-the STAT1 transcription factor 
-(noun "transcription factor" :super protein)
-|#
+                      forkhead transcription factors
+                      transcription factors such as LEF-1 or Tcf4
+                      the STAT1 transcription factor 
+                      (noun "transcription factor" :super protein)
+                      |#
 ;already defined below
 ;(noun "phosphatase" :super post-translational-enzyme)
 
@@ -1400,8 +1414,8 @@ the STAT1 transcription factor
   ;; notion before we promote that behavior to the upper str.
   :mixins (sequence bio-entity))
 #| This would be a good level at which to site a method that
-meditated whether or not we distributed the components of
-the aggregate across the predicate it's in. |#
+                      meditated whether or not we distributed the components of
+                      the aggregate across the predicate it's in. |#
 
 (define-category bio-pair :specializes bio-aggregate 
   :binds ((left)
