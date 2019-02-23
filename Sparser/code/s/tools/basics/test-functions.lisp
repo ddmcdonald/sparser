@@ -1423,6 +1423,7 @@ all-bioagent-capability-sentences.lisp"
   to a file, and by default also populates *test-utt-unique-cats* and
   *test-utt-unique-roles* with the unique categories and roles found
   in the clauses from those sentences"
+  (declare (special *list-of-utt-lists*))
   (load-bio-test-sentences)
   (with-open-file (stream
                    (concatenate 'string
