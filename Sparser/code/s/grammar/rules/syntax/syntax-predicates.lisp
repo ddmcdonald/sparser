@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "syntax-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2018
+;;;  Version:  February 2019
 
 ;; Simple function lifted from syntax-functions 8/30/16
 
@@ -21,6 +21,7 @@
      (cat-symbol prep-val)))))
 
 (defparameter *check-takes-adj?* nil)
+
 (defun takes-adj? (head adjective &optional verb-complement?)
   (declare (special category::determiner))
   (and ;; had strange case with "some cases this" -- head was "this"
@@ -46,7 +47,6 @@
        (warn "takes-adj? with ~s and ~s~%" head adjective))
      t)))
 
-
 (defun adjective-phrase? (e)
   (declare (special category::adjective))
   (let ((re (and (edge-p e)
@@ -54,6 +54,9 @@
     (and (edge-p re)
          (eq category::adjective (edge-form re)))))
 
+
+(defun that-relative-clause? (ref)
+  (value-of 'that-rel ref))
 
 (defun has-adverb-variable? (vg-or-adjg vg-or-adjg-phrase adverb)
   (cond
