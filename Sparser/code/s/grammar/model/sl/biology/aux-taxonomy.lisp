@@ -28,6 +28,7 @@
          :etf (svo-passive)
          :by multiplier
          :m multiplier
+         :at pathway-segment ;; should-be generalized
          ))
                     
 
