@@ -357,9 +357,6 @@
                  nil))
         pre-pred-edge)))
 
-(defun that-relative-clause? (ref)
-  (value-of 'that-rel ref))
-
 
 #+ignore(defun create-predication-by-binding-in-prog (val-edge pre-pred-edge parent-edge pred-pos)
   "Given the value edge, predicate edge, and the edge they should be
@@ -1128,7 +1125,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
               nil)))
           (variable-to-bind
            (bind-dli-variable variable-to-bind adverb vg))
-          ((member (cat-name adverb) *subordinating-adverbs*)
+          ((member (cat-name adverb) *subordinating-adverbs*) ;; "consequently"
            (bind-dli-variable 'subordinate-conjunction adverb vg))
           ((is-basic-collection? vg)
            (bind-dli-variable
@@ -1529,7 +1526,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defparameter *warn-about-optional-objects* nil
   "Set to T to show cases where we have a parse in which a supposed transitive verb has no parsed object.")
 
-
+;;////// adapt to encountering a subordinate-clause individual
+;;  instead of a variable binding
 (defun assimilate-subject-to-subordinate-clause (subj vp)
   ;;(print `(subordinate-conjunction it ,(value-of 'subordinate-conjunction vp)))
   (if (or (null  (value-of 'subordinate-conjunction vp))
@@ -1966,18 +1964,16 @@ there was an edge for the qualifier (e.g., there is no edge for the
     ;; some subordinate conjunctions like SO cannot apply between subject and vp
     (not (and (member (form-cat-name (right-edge-for-referent))
                       '(vp+ed vg+ed vp vg))
-              (member (cat-name (edge-category (left-edge-for-referent)))
+              (member (edge-cat-name (left-edge-for-referent))
                       '(so))))
-    (let ((cl
+    (let ((cl ;; deal with the subordinating conjunction ('conj')
+           ;; in this clause, and determine what we return
            (or
             (when (use-methods)
               (compose conj clause))
-            (unless (eq (edge-form (left-edge-for-referent)) ;; 'conj' argument
-                        category::pp)
-              (bind-dli-variable 'subordinate-conjunction conj clause))
-            ;; as a final resort drop the 'conj'
-            clause)))
-      ;; (lsp-break "make-subordinate-clause")
+            (let ((sc (define-or-find-individual 'subordinate-clause
+                          :conj conj  :comp clause)))
+              sc))))
       (when (and cl
                  (not (and (category-p conj)
                            (member (cat-name conj)
@@ -1990,6 +1986,16 @@ there was an edge for the qualifier (e.g., there is no edge for the
         (revise-parent-edge :form category::subordinate-s))
       cl)))
 
+#| Original content of 'cl' calculation 
+   before using the subordinate=clause category
+            (unless (eq (edge-cat-form (left-edge-for-referent)) 'pp)
+              ;; bind the subordinate-conjunction unless the 'conjunction'
+              ;; is a prepositional phrase
+              (bind-dli-variable 'subordinate-conjunction conj clause))
+            ;; as a final resort drop the 'conj'
+            clause |#
+
+            
 (defun first-sentence-constituent (edge &optional (sentence (current-sentence)))
   (let* ((position-before (starts-at-pos sentence))
          (first-item (next-treetop/rightward position-before)))
@@ -2079,7 +2085,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (revise-parent-edge :form category::subject-relative-clause)
   predicate)
 
-;; for 'after which', 'in which' and such
+;; for 'after which', 'in which' and such XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 (defun make-relativized-pp (prep wh)
   "The syntactic rules preposition + {who which whom} come here,
    to create a phrase with form pp-wh-pronoun.
@@ -2319,7 +2325,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
   "Post-verb Adverbial and adjectival complements can be predicating
    something of any of the elements of the clause: verb, subject, or
    object. This code is only looks for the object case"
-  
   (cond
     (*subcat-test*
      (takes-adj? vp adjp t))
@@ -2353,8 +2358,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 
 
-
+;;;------------------------------------------
 ;;; intensifier for an ADJECTIVE -- 95% sure
+;;;------------------------------------------
 
 (define-lambda-variable 'intensity
     nil 'top) ;; for percentage in "95% sure"
@@ -2364,6 +2370,10 @@ there was an edge for the qualifier (e.g., there is no edge for the
       t
       (bind-dli-variable :intensity intensifier adjective)))
 
+
+;;;------------
+;;; add adverb
+;;;------------
 
 (defparameter *show-adverb-attachment-to-PPs* nil)
 
