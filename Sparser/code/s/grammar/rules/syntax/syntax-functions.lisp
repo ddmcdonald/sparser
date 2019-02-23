@@ -2084,7 +2084,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
    preposition."
   (declare (special category::prepositional-phrase))
   (if *subcat-test*
-      (not (itypep prep category::prepositional-phrase))
+      (and (not (itypep prep category::prepositional-phrase))
+           (not (itypep prep category::sequencer)))
       (let* ((to-left (edge-to-its-left (left-edge-for-referent)))
              (left-quant (when (and (edge-p to-left)
                                     (eq (form-cat-name to-left) 'quantifier))
