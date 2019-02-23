@@ -181,6 +181,22 @@ dm #79 "a more precise answer"
 ;; know Spencer to be a good cat
 ;; know that Spencer is a good cat
 
+(define-category like
+  :specializes state
+  :mixins (control-verb)
+  :realization (:verb "like"))
+;; the preposition reading will have run first.
+;;/// really need to integrate them
+#| (comlex-entry  "like")
+((verb
+  (:subc
+   ((np-pp :pval ("for")) (np) (to-inf-sc) (np-to-inf) (ing-sc) (np-adjp-pred)
+    (np-advp-pred) (np-ven-np-omit) (how-s) (for-to-inf :mod t))))
+ (noun (:features ((countable))))
+ (sconj)
+ (prep)
+ (adjective (:features ((gradable)))))  |#
+
 (define-category look-up
   :specializes process
   :mixins (action-verb)
