@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "processes"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  January 2019
+;;;  version:  February 2019
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 9/24/14 Moved event above perdurant as a hack to ensure that
@@ -31,19 +31,12 @@
           (progressive  category)
           (perfect  category)))
 
-#| ;; this used to be defined, but it causes circularity
-;; -- merged it with temporally-localized
-(define-category with-certainty
-  :specializes event-relation
-  :binds ((certainty certainty))
-  :realization
-    (:with certainty))   |#
-
 (define-mixin-category temporally-localized
   :instantiates nil
-  :index (:list)
+  :documentation "Supplies a set of bindings and subcategorization
+   specifications for temporal and other adjuncts that acrue to
+   clauses that denote perdurants and perdurant-like categories."
   :binds ((certainty certainty) ;; originally from with-certainty
-          
           (following process)
           (preceding process)
           (during process)
@@ -53,7 +46,7 @@
           (before (:or time-unit time amount-of-time))
           (timeperiod (:or time-unit time amount-of-time)))
   :realization
-  (:with certainty   ;; originally from with-certainty
+    (:with certainty   ;; originally from with-certainty
      :after following
      :after after
      :at timeperiod
@@ -83,12 +76,13 @@
           (circumstance)
           (manner)
           (occurs-at-moment) ;; future, past
+          (relative-position) ;; w.r.t. other eventualities
           )
 
   :documentation
   "Perdurants could otherwise be called events, processes, or phenomena,
  but those terms are heavily burdened by prior work and lose their
- intuitive value.  There's a lot of literature and KIF behind the term
+ intuitive value. There's a lot of literature and KIF behind the term
  perdurant, but the subclasses for more content/distinctions, which are 
  largely drawn from the linguists' vocabulary for  classifying verbs.
     The next level decomposition is derived from Pustejovsky's 1991 Cognition
