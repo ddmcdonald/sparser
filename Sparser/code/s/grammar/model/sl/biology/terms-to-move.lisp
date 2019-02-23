@@ -199,6 +199,13 @@ be biology specific, since they aren't. |#
      :adj "exclusive"
      :with alternative))
 
+(define-category mutual-exclusivity :specializes bio-relation 
+  ;; this is actually a lot more general
+  :binds ((alternative biological))
+  :realization
+    (:adj "mutually exclusive"
+     :with alternative))
+
 
 (define-category positive :specializes bio-relation
   :realization
