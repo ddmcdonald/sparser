@@ -2191,7 +2191,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
      ;; If this starts to make a lot of preposition-specific
      ;; distinctions then we need to refactor and move the
      ;; cond up.
-     (revise-parent-edge :form category::prepositional-phrase)	 
+     ;; don't want to use category::prepositional-phrase as a syntactic category
+     ;;(revise-parent-edge :form category::prepositional-phrase)
+     (revise-parent-edge :form category::pp)	 
      (make-simple-individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       category::prepositional-phrase
       `((prep ,prep) (comp ,complement))))))
