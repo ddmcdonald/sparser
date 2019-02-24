@@ -167,9 +167,11 @@
      Runs for side-effects."
   (declare (special category::question *show-wh-problems*))
   (tr :wh-walk "make-this-a-question-if-appropriate")
-  (when (or (preposed-aux?)
-            (initial-wh?)
-            (preposed-of?))
+  (when (and nil
+  	;; TURN OFF make-this-a-question which seems to be dropping semantics,
+             (or (preposed-aux?)
+                 (initial-wh?)
+                 (preposed-of?)))
     (let* ((preposed? (preposed-aux?)) ;; make them into local flags
            (wh-initial? (initial-wh?))
            (start-pos (starts-at-pos sentence))
