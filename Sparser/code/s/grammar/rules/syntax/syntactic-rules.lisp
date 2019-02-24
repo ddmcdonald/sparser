@@ -1197,19 +1197,21 @@ similar to an oncogenic RasG12V mutation (9)."))
                   (vp+ing vp+ing)
                   (vg+ed vg+ed)
                   (vp+ed vp+ed))
-     do
-     (eval
-      `(def-syntax-rule  (comparative ,(car vv))
-           :head :right-edge
-           :form comparative-adjp
-           :referent (:head right-edge
-                      :bind (comparative left-edge))))
-     (eval
-      `(def-syntax-rule  (superlative ,(car vv))
-           :head :right-edge
-           :form superlative-adjp
-           :referent (:head right-edge
-                      :bind (comparative left-edge)))))
+      do
+      ;; CHANGE!!
+      ;; these produce verb forms not adjective forms
+        (eval
+         `(def-syntax-rule  (comparative ,(car vv))
+              :head :right-edge
+              :form ,(second vv)
+              :referent (:head right-edge
+                               :bind (comparative left-edge))))
+        (eval
+         `(def-syntax-rule  (superlative ,(car vv))
+              :head :right-edge
+              :form ,(second vv)
+              :referent (:head right-edge
+                               :bind (superlative left-edge)))))
 
 
 ;;--- than-np
