@@ -249,7 +249,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :specializes subcategorization-pattern
   :documentation "These have a large set of options.
     May turn out easier to break them out into groups"
-  :mixins (agent actor theme beneficiary)
+  :mixins (agent actor theme beneficiary directed-action)
   :restrict ((agent (:or physical-agent social-agent)) ; does the asking
              (actor (:or physical-agent social-agent)) ; ask them to do something
              (theme top)  ; the something -- or the other complements
@@ -258,7 +258,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
                 :about theme
                 :i beneficiary
                 :for beneficiary
-                :o beneficiary
+                :o theme
                 :to-comp theme
                 :thatcomp theme
                 :whethercomp theme
