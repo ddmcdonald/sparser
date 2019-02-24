@@ -749,16 +749,16 @@ than a bare "to".  |#
                             (pos-edge-starts-at e)))))))
           
           ((or (eq category::modifier (edge-category e))
-               (eq category::adjective (edge-form e))
-               (eq category::comparative-adjective (edge-form e))
-               (eq category::superlative-adjective (edge-form e)))
+               (member (form-cat-name e)
+                       '(adjective comparative-adjective superlative-adjective)))
            ;; when the previous chunk was a copula verb (just check for BE at this time)
            ;; and this is an adjective
            (or
             ;; this check is in there for cases like "there is little chance..."
+            ;; and "what are common downstream regulators..."
             (and (edge-just-to-right-of e)
                  (member (form-cat-name (edge-just-to-right-of e))
-                         '(common-noun common-noun/plural noun proper-noun)))
+                         '(common-noun common-noun/plural noun proper-noun adjective)))
             (not (and (car *chunks*)
                       (member 'vg (chunk-forms (car *chunks*)))
                       (loop for edge in (ev-top-edges (car (chunk-ev-list (car *chunks*))))
