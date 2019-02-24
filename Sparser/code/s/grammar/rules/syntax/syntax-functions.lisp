@@ -1809,13 +1809,27 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun assimilate-object (vg obj)
   (assimilate-subcat vg :object obj))
 
+(defun assimilate-indirect-object (vg obj)
+  (assimilate-subcat vg :indirect-object obj))
+
+
+(defun possible-indirect-object? (vg)
+  (and (itypep vg 'directed-action)
+       *right-edge-into-reference*
+       (loop for e in (edges-after *right-edge-into-reference*)
+             thereis
+               (or
+                (member (form-cat-name e) *np-category-names*)
+                (eq (cat-name (edge-category e)) 'how)
+                (member (form-cat-name e)
+                        '(thatcomp howcomp ifcomp))))))
 
 (defun assimilate-np-to-v-as-object (vg obj)
   (declare (special category::n-bar category::vp category::vp+ing
                     category::vp+ed category::to-comp category::n-bar))
   (when *subcat-test*
     (unless (and vg obj
-    ;; block attaching NP to VP as object when we have evidence for aux inversion
+                 ;; block attaching NP to VP as object when we have evidence for aux inversion
                  (not (and (itypep vg '(:or be have))
                            *right-edge-into-reference*
                            (edge-just-to-right-of (right-edge-for-referent))
@@ -1824,23 +1838,13 @@ there was an edge for the qualifier (e.g., there is no edge for the
       (return-from assimilate-np-to-v-as-object nil)))
   (when (is-non-anaphor-numeric? *right-edge-into-reference* obj)
     (return-from assimilate-np-to-v-as-object nil))
-  (let* ((indirect-object?
-          (and (itypep vg 'directed-action)
-               *right-edge-into-reference*
-               (loop for e in (edges-after *right-edge-into-reference*)
-                     thereis
-                       (or
-                        (member (form-cat-name e)
-                                *np-category-names*)
-                        (eq (cat-name (edge-category e)) 'how)
-                        (member (form-cat-name e)
-                                '(thatcomp howcomp ifcomp))))))
+  (let* ((indirect-object? (possible-indirect-object? vg))           
          (result
           (cond ((and (typep *current-chunk* 'chunk)
                       (member 'ng (chunk-forms *current-chunk*)))
                  (verb-noun-compound vg obj))
                 (indirect-object?
-                 (assimilate-subcat vg :indirect-object obj))
+                 (assimilate-indirect-object vg obj))
                 (t
                  (assimilate-object vg obj)))))
     (cond
