@@ -108,6 +108,7 @@
      :etf (sv)
      :noun "response"
      :of beneficiary
+     :on beneficiary ;; "response on cells with TP53 alternations"
      :to cause))
 
 (define-category cellular-process
