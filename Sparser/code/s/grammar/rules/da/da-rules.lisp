@@ -1030,6 +1030,11 @@
              ;; field keep them connected in the web graph
              phrase-and-vg+ed first third))
 
+(defun object-target? (x vp-ref)
+  (and (np-target? x)
+       ;;(edge-used-in x) ;; have two edges over Ras, one is not used
+       (subcategorized-variable vp-ref :object (edge-referent x))))
+
 (defun phrase-and-vg+ed (phrase vp+ed)
   (declare (special category::np))
   (let* ((vp-ref (edge-referent vp+ed))
@@ -1038,10 +1043,9 @@
           (find-target-satisfying
            fringe
            #'(lambda (x)
-               (and (np-target? x)
-                    (edge-used-in x) ;; have two edges over Ras, one is not used
-                    (subcategorized-variable vp-ref :object (edge-referent x)))))))
+               (object-target? x vp-ref)))))
     (when target
+      #+ignore
       (unless (edge-used-in target)
         (lsp-break "null dominating edge ~s" target))
       (make-edge-spec
