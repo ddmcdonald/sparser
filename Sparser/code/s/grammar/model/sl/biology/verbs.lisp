@@ -1427,9 +1427,11 @@
 (define-category target-protein :specializes protein
   :mixins (with-an-agent)
   :restrict ((agent (:or protein gene drug)))
+  :binds ((disease disease))               
   :realization
   (:noun "target"
-         :of agent))
+         :of agent
+         :for disease))
 
 
 (define-category term :specializes bio-rhetorical
