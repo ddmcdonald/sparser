@@ -418,6 +418,14 @@
    individuals in a sentence to the mention(s) for those individual
    in that sentence.")
 
+(defparameter *sentence-semantic-mentions* nil)
+;; collect the non-trivial mentions in a sentence, to allow for checking if the sentence
+;; semantics drops pieces of meaning
+(defun semantic-mentions-in-current-sentence ()
+  (loop for m in (mentions-in-sentence-edges (current-sentence))
+        unless (member (cat-name (edge-form (mention-source m)) )'(pp preposition s))
+        collect m))
+
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article*
                     *end-of-sentence-display-operation*
@@ -435,5 +443,7 @@
                do (push m (gethash (base-description m) sent-entity-mention-ht)))
             sent-entity-mention-ht)))
   (do-client-translations sentence)
+  (when *sentence-semantic-mentions*
+    (setq *sentence-semantic-mentions* (semantic-mentions-in-current-sentence)))
   (clrhash *predication-links-ht*))
 
