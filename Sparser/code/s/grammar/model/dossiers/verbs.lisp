@@ -273,6 +273,11 @@ dm #79 "a more precise answer"
   :mixins (control-verb)
   :realization (:verb "want"))
 
+(define-category like ;; -something -to-do-something
+  :specializes state
+  :mixins (control-verb)
+  :realization (:verb "like"))
+
 ;;------------------------ from places/moving.lisp ---------------
 
 (when (current-script :fire)
