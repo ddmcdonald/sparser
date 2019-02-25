@@ -566,6 +566,9 @@
   (let ((edges-before (edges-before e)))
     ;;(push-debug `(,e ,edges-before)) (lsp-break "vg-start, e = ~a" e)
     (cond
+      ((loop for ee in (all-edges-at e)
+             thereis (eq 'preposition (form-cat-name ee)))
+       nil)
       ((and (sentence-initial? e)
             (or (member (cat-name (edge-category e)) '(do be))
                 (eq (cat-name (edge-form e)) 'modal))
