@@ -1,13 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2012,2019  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "contractions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   November 1994
+;;;   Version:   February 2019
 
 ;; redone from scratch 7/25/94.  Added "ve" 8/16.  'm' 9/6
 ;; 11/21 added comment about timing. 12/7/12 Commented out
-;; the ].phrase in front of apostrophe-s because it complicate
+;; the ].phrase in front of apostrophe-s because it complicates things
 
 (in-package :sparser)
 
@@ -31,6 +31,9 @@
 
 ;; 'will'
 (define-function-word "ll")
+
+;; 'would'
+(define-function-word "d")
 
 
 ;;;----------------------------------------------------

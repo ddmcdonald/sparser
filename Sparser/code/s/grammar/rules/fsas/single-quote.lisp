@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1995,2012-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2012-2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "single quote"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  August 2016
+;;;  Version:  February 2019
 
 ;; initiated 4/23/91 v1.8.4, tweeked 4/24,25, Comment added 1/3/92
 ;; 1.0 (11/24/92 v2.3) Flushed the old use of fake names as referents
@@ -22,6 +22,7 @@
 (define-category apostrophe-re)   ;; 'are'
 (define-category apostrophe-ve)   ;; 'have'
 (define-category apostrophe-ll)   ;; 'will'
+(define-category apostrophe-d)    ;; 'would'
 
 #| the bracket assignments are in [rules;words:contractions] |#
 
@@ -31,7 +32,8 @@
     ,category::apostrophe-t
     ,category::apostrophe-re
     ,category::apostrophe-ve
-    ,category::apostrophe-ll))
+    ,category::apostrophe-ll
+    ,category::apostrophe-d))
     
 ;;;-----------------------------
 ;;; linking the word to the fsa
@@ -61,7 +63,7 @@
   ;; without any interveening space.
   (declare (ignore single-quote)
            (special category::verb category::modal category::verb+present
-                    word::|s| word::|t| word::|re|
+                    word::|s| word::|t| word::|re| word::|d|
                     word::|ve| word::|ll| word::|m| ))
   (when *trace-fsas*
     (format t "~&Starting FSA for |'s_or't| at p~A~%"
@@ -92,6 +94,10 @@
              (setq spanning-category category::apostrophe-ll
                    form category::modal
                    referent (category-named 'will)))
+            ((eq word word::|d|)
+             (setq spanning-category category::apostrophe-d
+                   form category::modal
+                   referent (category-named 'would)))
             ((eq word word::|m|)
              (setq spanning-category category::apostrophe-m
                    form category::verb+present
