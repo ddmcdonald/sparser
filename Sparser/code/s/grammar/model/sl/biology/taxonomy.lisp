@@ -167,7 +167,9 @@
     (:adj "biological"
      :at cellular-location
      :from cell-line
-     :from cell-type         
+     :from cell-type
+     :for cell-type
+     :for cell-line
      :in cell-line
      :in cell-type
      :in cellular-location
@@ -215,7 +217,7 @@
   ;; Aspect was annotated with "will likely be useful"
   :binds ((as-comp as-comp)
           (certainty certainty))
-  :restrict ((participant (:or biological visual-representation)))
+  :restrict ((participant (:or biological visual-representation evidence)))
   :realization
   (:s participant
       :as-comp as-comp
@@ -717,10 +719,11 @@
 (define-category bio-relation :specializes bio-predication
   :mixins (has-UID biological)
   :documentation "as in  'constitute, contains etc"               
-  :binds ((theme (:or biological predication))) ;; this probably belongs higher
+  :binds ((theme (:or biological predication evidence))) ;; this probably belongs higher
   :realization
     (:for timeperiod
-      :o theme))
+      :o participant
+      :s theme))
  
 
 (define-category bio-event-relation :specializes bio-relation
@@ -858,12 +861,14 @@
 (noun "toxin" :super molecule)
 
 (define-category drug :specializes molecule
-  :binds ((disease disease)
-          (target protein))
+                 :binds ((disease disease)
+                         (treatment treatment)
+                         (target protein))
   :realization
      (:noun "drug"
-      :for disease
-      :for target))
+            :for disease
+            :for treatment
+            :for target))
 
 
 (define-category rna :specializes molecule
