@@ -217,7 +217,7 @@
   ;; Aspect was annotated with "will likely be useful"
   :binds ((as-comp as-comp)
           (certainty certainty))
-  :restrict ((participant (:or biological visual-representation evidence)))
+  :restrict ((participant (:or biological visual-representation)))
   :realization
   (:s participant
       :as-comp as-comp
@@ -719,10 +719,11 @@
 (define-category bio-relation :specializes bio-predication
   :mixins (has-UID biological)
   :documentation "as in  'constitute, contains etc"               
-  :binds ((theme (:or biological predication evidence))) ;; this probably belongs higher
+  :binds ((theme (:or biological predication abstract))
+          (patient (:or biological predication abstract))) ;; this probably belongs higher
   :realization
     (:for timeperiod
-      :o participant
+      :o patient
       :s theme))
  
 
