@@ -251,7 +251,7 @@
 
 (def-syntax-rule (quantifier number) ;; "all three" (should be red)
     :head :right-edge
-    :form np
+    :form n-bar
     :referent (:function quantifier-noun-compound left-edge right-edge))
 
 
