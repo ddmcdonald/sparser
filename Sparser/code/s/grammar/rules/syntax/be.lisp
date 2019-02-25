@@ -230,6 +230,19 @@ assess-edge-label, which rewrites the word as the category BE.
 ;; Overgenerates since this expansion only applies to
 ;; nominative ('subject') pronouns
 
+;; (def-csr apostrophe-d "would"
+;;   :left-context "I")
+
+
+(defparameter *lefthand-side-CW-words*
+  `(,word::|is| ,word::|are| ,word::|am| ,word::|would|)
+  "This is a hack. At the point when the CS rule introduces it
+   the rewrite rules has a word in its category slot. 
+   That's usually not what we do, though it does make sense
+   when we are expanding a contraction, just as it does when
+   expanding an abbreviation.
+   This is an explicit list of these words.")
+
 
 ;;;--------------------------
 ;;; contractions -- "...n't"
