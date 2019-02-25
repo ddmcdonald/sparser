@@ -334,8 +334,8 @@ have with phosphorylated as a preposed modifier.) |#
 
 (define-category reach
   :specializes bio-relation
-  :restrict ((participant (:or scalar-quality biological))
-             (theme (:or scalar-quality measurement)))
+  :restrict ((participant (:or scalar-quality measurement biological))
+             (theme (:or scalar-quality measurement biological)))
   :realization
       (:verb "reach"
        :etf (svo)))
