@@ -234,7 +234,7 @@ these are really prepositions, and should function as such
 ;;(define-preposition "instead of") make it a conjunction like "but not"
 (define-preposition "into" :form 'spatial-preposition)
 (define-preposition "irrespective of")
-(define-preposition "like")
+;;(define-preposition "like") ;; merged into verb definition in dossiers;verbs.lisp
 (define-preposition "minus")
 (define-preposition "near" :form 'spatial-preposition)
 (define-preposition "near to" :form 'spatial-preposition)

@@ -184,7 +184,8 @@ dm #79 "a more precise answer"
 (define-category like
   :specializes state
   :mixins (control-verb)
-  :realization (:verb "like"))
+  :realization (:verb "like"
+                :preposition "like"))
 ;; the preposition reading will have run first.
 ;;/// really need to integrate them
 #| (comlex-entry  "like")
