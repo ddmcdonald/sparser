@@ -1969,10 +1969,15 @@ there was an edge for the qualifier (e.g., there is no edge for the
     (let ((cl ;; deal with the subordinating conjunction ('conj')
            ;; in this clause, and determine what we return
            (or
-            (when (use-methods)
-              (compose conj clause))
-            (let ((sc (define-or-find-individual 'subordinate-clause
-                          :conj conj  :comp clause)))
+            (when (use-methods) (compose conj clause))
+            ;;in the case without methods, we simply want to put the
+            ;; subordinate conjunction in a well-defined slot
+            ;; without changing the remaining semantics of the clause
+            ;; because we may end up adding a subject and then
+            ;; we want ready access to the semanics
+            (bind-variable 'subordinate-conjunction conj clause)
+            #+ignore(let ((sc (define-or-find-individual 'subordinate-clause
+                          :subordinate-conjunction conj  :comp clause)))
               sc))))
       (when (and cl
                  (not (and (category-p conj)
