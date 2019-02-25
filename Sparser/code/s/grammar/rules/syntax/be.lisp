@@ -222,7 +222,10 @@ assess-edge-label, which rewrites the word as the category BE.
   :left-context "I")
 
 
-(def-csr apostrophe-d would
+;;--- "I'd" -> "I would"
+;; (belongs elsewhere, but not clear where)
+
+(def-csr apostrophe-d "would"
   :left-context pronoun)
 ;; Overgenerates since this expansion only applies to
 ;; nominative ('subject') pronouns
