@@ -278,8 +278,9 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
     (unless (or (polyword-p (edge-category edge))
                 (eq (edge-form edge) category::punctuation)
                 (memq (edge-category edge) ;; for CS rules in be.lisp
-                      `(,word::|is| ,word::|are| ,word::|am|
-                        ,category::dash ,category::unknown-verb))
+                      *lefthand-side-CW-words*)
+                (memq (edge-category edge)
+                      `(,category::dash ,category::unknown-verb))
                 (member (edge-rule edge)
                         '(:default-edge-over-paired-punctuation
                           :conjunction/identical-adjacent-labels
