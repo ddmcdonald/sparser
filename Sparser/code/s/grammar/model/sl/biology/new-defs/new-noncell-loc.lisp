@@ -1,7 +1,7 @@
 (in-package :sparser)
 
 
-
+(def-indiv-with-id bio-organ "soft tissue" "NCIT:C12471" :name "soft tissue")
 (def-indiv-with-id organism "nude mice" "TI:10090") 
 (def-indiv-with-id organism "Wistar rat" "TI:10116") 
 (def-indiv-with-id organism "transgenic mice" "TI:10090") 
