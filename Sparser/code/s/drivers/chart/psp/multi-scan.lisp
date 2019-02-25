@@ -985,23 +985,17 @@
        ;; While there is a position, 'pos', that starts a no-space
        ;; sequence, find the end of that region ('ns-end-pos')
        do
-         (if (and (top-edge-at/starting pos)
-                  (not (one-word-long? (top-edge-at/starting pos))))
-           (then ;; already covered - move ahead of it
-             (let* ((edge (top-edge-at/starting pos))
-                    (edge-end-pos (pos-edge-ends-at edge)))
-               (tr :ns-move-over-edge edge)
-               (setq ns-end-pos edge-end-pos)))             
-           (else ;; delimit the span and apply ns
-             (setq ns-end-pos (end-of-ns-region pos sent-end-pos))
-             (tr :ns-identify-ns-pattern-between pos ns-end-pos)
-             (unless (= 1 (length (words-between pos ns-end-pos))) ; "gneiss,"
-               (setq ns-end-pos (collect-no-space-segment-into-word pos ns-end-pos)))))
-
+         (setq ns-end-pos (end-of-ns-region pos sent-end-pos))
+         (unless (edge-between pos ns-end-pos)
+           ;; some other process has covered the regoin
+           (setq ns-end-pos (end-of-ns-region pos sent-end-pos))
+           (tr :ns-identify-ns-pattern-between pos ns-end-pos)
+           (unless (= 1 (length (words-between pos ns-end-pos))) ; "gneiss,"
+             (setq ns-end-pos
+                   (collect-no-space-segment-into-word pos ns-end-pos))))
          (if (position/<= sent-end-pos ns-end-pos)
            (setq pos nil) ;; fall out of loop
            (setq pos ns-end-pos)))
-
     (loop for pos in (copy-list *positions-with-unhandled-unknown-words*)
           unless (position-precedes sent-end-pos pos)
           do (deal-with-unhandled-unknown-words-at pos))
