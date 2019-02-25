@@ -224,7 +224,9 @@
 ;;(noun "condition" :super experimental-condition) OBE -- i taxonomy
 
 
-
+(adj "current" :super bio-relation
+  :realization
+    (:adj "current"))
 
 
 
@@ -387,7 +389,10 @@
      :realization
      (:to theme))
 
-
+(adj "strong" :super bio-relation
+  :realization 
+  (:adj "strong"
+        :noun "strength"))
 
 
 (define-category responsive :specializes bio-relation
