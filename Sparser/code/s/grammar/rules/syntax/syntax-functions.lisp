@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2018 David D. McDonald -- all rights reserved
+;;; copyright (c) 2014-2019 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  November 2018
+;;;  Version:  February 2019
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -120,7 +120,12 @@
     nil 'top)
 
 (define-lambda-variable 'subordinate-conjunction
+#| Used to mark the suborinatating conjunction when we are making 
+a subordinate clause. Added to the interpretation of the clause or
+vp that it subordinates. Deemed to be overkill to use a scafolding class
+like prepositional-phase (see syntax/syntactic-classes.lisp) |#
     nil 'top)
+
 
 #+ignore(define-lambda-variable 'purpose
     nil 'top) ;; use the one on perdurant instead
@@ -1920,8 +1925,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun create-when-where-relative (wh s)
   (cond
     (*subcat-test* t)
-    (t (if
-        (itypep wh 'when)
+    (t (if (itypep wh 'when)
         (revise-parent-edge :form category::when-relative-clause)
         (revise-parent-edge :form category::where-relative-clause))
        s)))
@@ -1966,19 +1970,16 @@ there was an edge for the qualifier (e.g., there is no edge for the
                       '(vp+ed vg+ed vp vg))
               (member (edge-cat-name (left-edge-for-referent))
                       '(so))))
-    (let ((cl ;; deal with the subordinating conjunction ('conj')
-           ;; in this clause, and determine what we return
+    (let ((cl
            (or
             (when (use-methods) (compose conj clause))
+           
             ;;in the case without methods, we simply want to put the
             ;; subordinate conjunction in a well-defined slot
-            ;; without changing the remaining semantics of the clause
-            ;; because we may end up adding a subject and then
-            ;; we want ready access to the semanics
-            (bind-variable 'subordinate-conjunction conj clause)
-            #+ignore(let ((sc (define-or-find-individual 'subordinate-clause
-                          :subordinate-conjunction conj  :comp clause)))
-              sc))))
+            ;; without modifying semantics of the clause
+            ;; because we may end up adding a subject and don't need
+            ;; another layer to get in the way.
+            (bind-variable 'subordinate-conjunction conj clause))))
       (when (and cl
                  (not (and (category-p conj)
                            (member (cat-name conj)
@@ -1991,14 +1992,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
         (revise-parent-edge :form category::subordinate-s))
       cl)))
 
-#| Original content of 'cl' calculation 
-   before using the subordinate=clause category
-            (unless (eq (edge-cat-form (left-edge-for-referent)) 'pp)
-              ;; bind the subordinate-conjunction unless the 'conjunction'
-              ;; is a prepositional phrase
-              (bind-dli-variable 'subordinate-conjunction conj clause))
-            ;; as a final resort drop the 'conj'
-            clause |#
+
 
             
 (defun first-sentence-constituent (edge &optional (sentence (current-sentence)))
@@ -2158,6 +2152,20 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 
 
+;;--- "after-which" as clause-connector
+(defun make-relative-subordinator (sequencer wh-pronoun)
+  "Kind of like a partitive-relativizer ('all of which') in that it's
+ a combination of a subordinator (preposition, adverb, ..) and a
+ simple wh-pronoun that is going to refer to an earlier event."
+  (or *subcat-test*
+      (make-scafold-individual 'relativized-prepositional-phrase
+                               :prep sequencer :pobj wh-pronoun)))
+
+(defun compose-relative-subordinator (sub clause)
+  (if *subcat-test*
+    (itype clause 'perdurant) ;; therefore it will have the varible
+    (bind-variable 'relative-position sub clause)))
+
 ;;;----------------------
 ;;; Prepositional phrase
 ;;;----------------------
@@ -2171,7 +2179,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
       (setq prep (individual-for-ref prep))
       (or (when (use-methods)
             (compose prep pobj))
-          (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<
+          (make-simple-individual
            category::prepositional-phrase
            `((prep ,prep) (pobj ,pobj)))))))
 
@@ -2210,7 +2218,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
      ;; don't want to use category::prepositional-phrase as a syntactic category
      ;;(revise-parent-edge :form category::prepositional-phrase)
      (revise-parent-edge :form category::pp)	 
-     (make-simple-individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+     (make-simple-individual
       category::prepositional-phrase
       `((prep ,prep) (comp ,complement))))))
 
