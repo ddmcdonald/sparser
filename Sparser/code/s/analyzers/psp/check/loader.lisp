@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2015-2019 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "analyzers;psp:check:"
-;;;  Version:  1.3 March 2015
+;;;  Version:  February 2019
 
 ;; 0.0 (9/4/92 v2.3) initiated.
 ;; 0.1 (5/14/93) bumped all the organizers to take out their right-
@@ -20,7 +20,7 @@
 (in-package :sparser)
 
 (lload "check;multiply")
-(lload "check;boundaries")
+(lload "check;multiply-aux")
 (lload "check;one-one")
 (lload "check;many-one")
 (lload "check;one-many")

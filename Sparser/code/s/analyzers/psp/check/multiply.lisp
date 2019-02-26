@@ -84,22 +84,26 @@
 
 (defparameter *report-form-check-blocks* nil) ;; see check-rule-form
 
+(defparameter *use-trie-multiply* nil
+  "An alternative organization of the rule set that can be searched
+   faster (though it is not yet instrumented to report its results)")
+
 
 ;;;---------------------
-;;; id access functions
+;;; ID access functions
 ;;;---------------------
 
 (defun category-ids (edge direction field)
-  ;; Every access goes through here. For debugging it can be called
-  ;; with a category rather than an edge.
+  "Given a edge and the direction it is gooing to compose
+   (to its right or two its left), return the appropriate
+   multiplication ids. The 'field' dictates whether we get
+   the ids from a label's category field or its form field. "
   (declare (optimize (speed 3)(safety 0)))
   (let ((label (cond
-                ((category-p edge) edge)
-                (t (case field
-                     (:category (edge-category edge))
-                     (:form (edge-form edge))
-                     (otherwise
-                      (error "wrong spelling for the field argument: ~a" field)))))))
+                 ((category-p edge) edge) ;; Convenient when debugging
+                 (t (ecase field
+                      (:category (edge-category edge))
+                      (:form (edge-form edge)))))))
     (when (and label
 	       (not (symbolp label)))
       (let ((rs (rule-set-for label)))
@@ -132,132 +136,48 @@
   (cdr ids))
 
 
-
-;;;-----------------
-;;; rule preference
-;;;-----------------
-
-(defun filter-by-rule-strength (list-of-triples)
-  "Called by check routines (e.g. check-many-one) when more than
- one rule succeeded. Prefer semantic rules over form, either over
- purely syntactic rules."
-  (if (null (cdr list-of-triples))
-    (car list-of-triples)
-    (let ((semantic-rule-triples
-           (loop for triple in list-of-triples
-              as rule = (triple-rule triple)
-              when (semantic-rule? rule)
-              collect triple)))
-      (if semantic-rule-triples
-        (car semantic-rule-triples) ;;/// replace with deliberation
-        (let ((form-rule-triples
-               (loop for triple in list-of-triples
-                  as rule = (triple-rule triple)
-                  when (form-rule? rule)
-                  collect triple)))
-          (if form-rule-triples
-            (car form-rule-triples)
-            (let ((syntactic-rule-triples
-                   (loop for triple in list-of-triples
-                      as rule = (triple-rule triple)
-                      when (syntactic-rule? rule)
-                      collect triple)))
-              (if syntactic-rule-triples
-                (car syntactic-rule-triples)))))))))
-        
-
-
 ;;;------------------------------
 ;;; call from the check routines
 ;;;------------------------------
 
 ;; (trace-rule-source)
 
-;; to be turned on after January? -- works better than current multiply-edges
-(defparameter *use-trie-multiply* nil)
-(defparameter *use-semantic-rules* nil)
-
-;; This is part of an experiment to see which semantic rules, other than
-;;  etf rules for NPs and non-etf semantic rules are actually needed in biology,
-;;  given the subcat-frame mechanism
-;; When this parameter is set, the only semantic rules actually applied are those for
-;; NPs, and special purpose rules
-(defparameter *no-etf-rules* nil)
-;; when *no-etf-rules* is set, *semantic-rules-used* collects the actual set of
-;; semantic rules used in processing the snapshot corpora
-(defparameter *semantic-rules-used* nil)
-;; The total set of such rules is:
-#|
-#<PSR45391  modal ->  modal then> 
-#<PSR45413  protein ->  protein point-mutation> 
-#<PSR949  comma-number ->  COMMA number> 
-#<PSR45411  residue-on-protein ->  protein residue-on-protein> 
-#<PSR658  be ->  be not> 
-#<PSR1088  measurement ->  number unit-of-measure> 
-#<PSR1123  comma-year ->  COMMA year> 
-#<PSR45407  residue-on-protein ->  amino-acid number> 
-#<PSR1153  amount-of-time ->  number time-unit> 
-#<PSR942  percent ->  number PERCENT-SIGN> 
-#<PSR44964  article-figure ->  article-figure two-part-label> 
-#<PSR45409  residue-on-protein ->  residue-on-protein number> 
-#<PSR624  do ->  do not> 
-#<PSR44965  article-figure ->  article-figure number> 
-#<PSR952  ordinal ->  "the" ordinal> 
-#<PSR666  there-exists ->  syntactic-there be> 
-|#
-
 
 (defun multiply-edges (left-edge right-edge &optional chunk)
-  ;; Called from the check routines, e.g. check-one-one
-  ;; Looks for any possibility of composition for these edges first,
-  ;; i.e. whether there are the right direction indexes for these,
-  ;; and then whether there is a category combination or, barring
-  ;; that, a form combination.
-  ;; Returns a rule or nil to indicate the edges don't combine.
+  "Called from the check routines, e.g. check-one-one
+   Looks for any possibility of composition for these edges first,
+   i.e. whether there are the right direction indexes for these,
+   and then whether there is a category combination or, barring
+   that, a form combination or syntactic combination
+   Returns a rule or nil to indicate the edges don't combine."
   (declare (special *edges-from-referent-categories*
+                    *allow-form-rules*
                     *allow-pure-syntax-rules*))
-
-  (tr :multiply-edges left-edge right-edge)
-  ;;"[Multiply] Checking (e~A+e~A)  ~A + ~A"
 
   (when (or (word-p left-edge)
             (word-p right-edge))
     ;;/// trace  We don't multiply words, only edges
+    ;; A literal edge (category is a word) would work fine
     (return-from multiply-edges nil))
-  
-  (cond
-   ((edge-of-dotted-intermediary right-edge)
-    ;; dotted rules only combine to their right, never to their left
-    ;; "   but the right edge, e~A, is dotted and can't possibly combine"
-    (tr :right-edge-is-dotted right-edge)
-    nil)
-   (*use-trie-multiply*
-    (trie-multiply-edges left-edge right-edge chunk))
-   (t
+
+  (if *use-trie-multiply*
+    (trie-multiply-edges left-edge right-edge chunk)
+
     (let* ((left-category-ids (category-ids/rightward left-edge))
            (right-category-ids (category-ids/leftward right-edge))
            (rule (multiply-categories left-category-ids 
                                       right-category-ids
                                       left-edge right-edge
 				      chunk)))
-      
-     (when (and rule
-		 (or (and *no-etf-rules*
-                          (cfr-schema rule)
-                          (not (member (schr-lhs (cfr-schema rule)) '(np))))
-                     (eq :syntactic-form (cfr-category rule))))
-	(setq rule nil))
-
-      ;; Look at possible sourcs of rules from what is likely to be
+ 
+      ;; Look at possible sources of rules from what is likely to be
       ;; the most precise (certainly in terms of referents) to the
       ;; most general. As soon as one of these sources returns
-      ;; a valid rule we stop looking at other sourcs.
+      ;; a valid rule we stop looking at other sources.
      
       (if rule ;; from the let statement, multiply-categories
           (then
             (tr :found-semantic-rule rule)
-	    (when *no-etf-rules*
-	      (pushnew rule *semantic-rules-used*))
             (if (valid-rule? rule left-edge right-edge chunk)
                 (then 
                   (tr :rule-is-valid))
@@ -267,39 +187,22 @@
           (else
             (tr :no-semantic-rule)))
 
-      (unless rule ;; check for form rule
-        (setq rule (mult/ids-on-form-label left-edge right-edge))
-        (if rule
+      (unless rule
+        (when *allow-form-rules*
+          (setq rule (mult/ids-on-form-label left-edge right-edge))
+          (if rule
             (then
               (tr :found-rule-of-form rule)
               (if (valid-rule? rule left-edge right-edge chunk)
-                  (tr :rule-is-valid)
-                  (else 
-                    (tr :rule-is-invalid)
-                    (setq rule nil))))
+                (tr :rule-is-valid)
+                (else 
+                  (tr :rule-is-invalid)
+                  (setq rule nil))))
             (else
-              (tr :no-rule-of-form))))
-      
-      (unless rule ;; fell through
-        (when *edges-from-referent-categories*
-          ;; Look for a rule in the cross-product 
-          ;; of the categories the edges category labels inherit from
-          (setq rule (multiply-referents left-edge right-edge))
-          (if rule
-              (then
-                (tr :found-rule-from-referent rule)
-                (if (valid-rule? rule left-edge right-edge chunk)
-                    (tr :rule-is-valid)
-                    (else 
-                      (tr :rule-is-invalid)
-                      (setq rule nil))))
-              (else 
-                (tr :no-rule-from-referent)))))
-      
+              (tr :no-rule-of-form)))))
+
       (unless rule
         (when *allow-pure-syntax-rules*       
-          ;; then look for a rule mentioning the form label
-          ;; on the two rules
           (setq rule (check-form-form left-edge right-edge))
           (if rule
               (then
@@ -311,221 +214,15 @@
                       (setq rule nil))))
               (else
                 (tr :no-syntactic-rule)))))
-      
-      ;;This code is to test if the new trie-multiply produces identical results to multiply-edges
-      #+ignore
-      (let ((trie-rule (trie-multiply-edges left-edge right-edge chunk)))
-        (declare (special trie-rule))
-        (when (not (eq trie-rule rule)) 
-          (setq left left-edge)
-          (setq right right-edge)
-          (lsp-break "multiply-edges -- trie-rule and rule don't agree")))
-
-      rule))))
-
-
-
-
-;;;--------------------------------------------------
-;;; restrict rule application to compatible contexts
-;;;--------------------------------------------------
-
-(defun valid-rule? (rule left-edge right-edge chunk)
-  (when rule
-    ;; The form of the rule has to match the context,
-    ;; and, if there's a chunk argument and the *check-chunk-forms*
-    ;; flag is up, does the chunk form test pass.
-    (when (and (check-rule-form rule left-edge right-edge) 
-               (or (null chunk)
-                   (not *check-chunk-forms*)
-                   (check-rule-result-form-against-chunk rule right-edge chunk))
-               (or (not *check-semantic-applicability*)
-                   (test-semantic-applicability rule left-edge right-edge)))
-      rule)
-    ))
-
-(defun test-semantic-applicability (rule left-edge right-edge)
-  (or (not (and (consp (cfr-referent rule))
-                (eq (car (cfr-referent rule)) :funcall)))
-      (test-subcat-rule (list left-edge right-edge) rule)))
-
-(defun check-rule-form (rule left-edge right-edge) 
-  ;; only accept rules that are compatible with their context
-  ;;  this check can be turned off for particular ETFs by calling
-  ;;  dont-check-rule-form-for-etf-named with the name of the family
-  (if (not *check-forms*) ;; controlling switch
-    rule
-    (let ((rf (rule-forms rule))) ;; recorded at rule-creation time
-      (cond
-       ((or
-         (null rf)
-         (and
-             (compatible-form (first rf) left-edge)
-             (compatible-form (second rf) right-edge)))
-        rule)
-       (t
-        (when *report-form-check-blocks*
-          (format t "~&***------>> blocking ~a~
-                     ~%   ~a applied to~
-                     ~%   (~a, ~a)~
-                     ~%   (~a, ~a)~%"
-                  rule (rule-forms rule)
-                  (edge-form left-edge) left-edge
-                  (edge-form right-edge) right-edge)
-          nil))))))
  
-(defun check-rule-result-form-against-chunk (rule right-edge chunk)
-  (cond
-   ((chunk-head? right-edge chunk) 
-    ;; is the right-edge the head of the chunk?
-    (case (car (chunk-forms chunk))
-      (NG (memq (rule-lhs-form rule) ;; the symbol of the lhs category
-                '(N-BAR NG NP COMMON-NOUN COMMON-NOUN/PLURAL 
-                  np-head PRONOUN PROPER-NAME PROPER-NOUN)))
-      (VG t)
-      (ADJG t)))
-   ;; If right-edge isn't the head of the chunk
-   ;; then it's always ok.
-   (t t)))
-
-;;--- aux functions
-
-(defun chunk-head? (edge chunk)
-  ;; do the chunk and the edge end at the same position?
-  (eq (chunk-end-pos chunk)
-      (pos-edge-ends-at edge)))
-
-(defun rule-forms (rule)
-  ;; This field is set by set-schema-and-rhs-forms which is called by instantiate-rule-schema
-  ;; It is used to check that ETF rules are only applied in cased which match the expected
-  ;;  syntactic form of the constuents
-  (when (cfr-p rule) (cfr-rhs-forms rule)))
-
-(defun rule-lhs-form (rule)
-  (when (cfr-p rule)
-    (cat-name (cfr-form rule))))
-
-;;;-----------------------------------
-;;; ringing the changes on composites
-;;;-----------------------------------
-
-#| If the category labels on the edges don't have a rule, then look
-   for a rule over the categories in their referents. |#
-
-(defun multiply-referents (left-edge right-edge)
-  (tr :multiplying-referent-categories)
-  (let ((left-referent (edge-referent left-edge))
-        (right-referent (edge-referent right-edge)))
-
-    ;; rule out edges with no referent or referents that wouldn't apply
-    (if (and left-referent right-referent
-             (legal-type-for-multiplying-referents left-referent)
-             (legal-type-for-multiplying-referents right-referent))
-        ;; modified to allow for form rules to work with inherited categories of the referents
-        (let ((left-categories 
-               (cons (edge-category left-edge)
-                     (multiple-referent-categories left-referent)))
-              (right-categories 
-               (cons
-                (edge-category right-edge)
-                (multiple-referent-categories right-referent))))
-          (tr :referent-categories-to-check left-categories right-categories)
-          ;; try all semantic rules first
-          (dolist (right-category right-categories)
-            (dolist (left-category left-categories)
-              ;; Add traces for these cases, or do the regular trace-edges ones
-              ;; suffice?
-              (let ((rule (multiply-referent-categories left-edge left-category 
-                                                        right-edge right-category)))
-                (when (and
-                       rule
-                       (check-rule-form rule left-edge right-edge))
-                  (return-from multiply-referents rule)))))
-          (dolist (right-category right-categories)
-            (let ((rule (multiply-referent-categories left-edge (edge-form left-edge)
-                                                      right-edge right-category)))
-              (when (and
-                     rule
-                     (check-rule-form rule left-edge right-edge))
-                (return-from multiply-referents rule))))
-          (dolist (left-category left-categories)
-            (let ((rule (multiply-referent-categories left-edge left-category
-                                                      right-edge (edge-form right-edge))))
-              (when (and
-                     rule
-                     (check-rule-form rule left-edge right-edge))
-                (return-from multiply-referents rule)))))
-          
-      (else (tr :referents-unsuitable-for-multiplying
-                left-edge right-edge left-referent right-referent)
-            nil))))
-
-(defun legal-type-for-multiplying-referents (obj)
-  ;; Perhaps better as an flet on multiply-referents since it has 
-  ;; no other use. Tracks multiple-referent-categories
-  (typecase obj
-    ((or individual referential-category) t)
-    (otherwise nil)))
-
-(defun multiple-referent-categories (referent)
-  ;; Consult the supercategory links to return a list of the categories
-  ;; to which the referent belongs, from the most specific to the
-  ;; most general. Feeds this list to multiply-referents
-  (let ((base-category
-         (typecase referent
-           (individual (indiv-type referent))
-           (referential-category referent)
-           (otherwise
-            (push-debug `(,referent))
-            (error "Unexpected type: ~a" (type-of referent))))))
-    (cond
-     ((category-p base-category)
-      (super-categories-of base-category))
-     ((consp base-category)
-      (cond
-       ((null (cdr base-category))
-        (setq base-category (car base-category))
-        (super-categories-of base-category))
-
-       ((= 2 (length base-category)) ;; (#<model> ##<collection>)
-        (let* ((base (car base-category))
-               (mixin (cadr base-category))
-               (base-cats (super-categories-of base))
-               (mixin-cats (super-categories-of mixin)))
-          (let ((total (append base-cats mixin-cats)))
-            (remove-duplicates total :test #'eq))))
-
-       (t ;; Look at supercategory collection scheme as another
-        ;; way to approach this
-        (push-debug `(,base-category ,referent))
-        (break "stub - more than two categories: ~a.~%This would be ~
-                a good time to start using subtype." base-category)))))))
-
-
-(defun multiply-referent-categories (left-edge left-category 
-                                     right-edge right-category)
-  (let* ((left-rs (rule-set-for left-category))
-         (left-ids (when left-rs
-                     (rs-right-looking-ids left-rs)))
-         (right-rs (rule-set-for right-category))
-         (right-ids (when right-rs
-                      (rs-left-looking-ids right-rs))))
-
-    (tr :multiply-edges-by-referent-category 
-        left-category right-category left-edge right-edge)
-        
-    ;; (multiply-ids-dispatch -- see multiply5
-    (multiply-categories ;; what it seemed to have morphed into
-     left-ids right-ids 
-     left-edge right-edge)))
-    
+      rule)))
 
 
 
 
-;;;---------------------------------------------------------
-;;;  The primary dispatch -- category and form combinations
-;;;---------------------------------------------------------
+;;;-----------------
+;;;  Semantic rules
+;;;-----------------
 
 ;; We come here from the Multiply-edge entry point.
 ;; Nothing has been checked or ruled out yet, so we start with
@@ -536,14 +233,20 @@
 ;; Remove the form rule operations here -- make this a pure semantic rule play
 (defun multiply-categories (left-category-ids right-category-ids
 			    left-edge right-edge &optional chunk)
+    
+  (tr :multiply-edges left-edge right-edge)
+  ;;"[Multiply] Checking (e~A+e~A)  ~A + ~A"
+
   (tr :muliply-categories)
   ;; "[Multiply threading] Called muliply-categories"
+  
   (if (and left-category-ids right-category-ids)
     (then
       (tr :both-have-category-ids)
       ;; [Multiply]    both labels have category ids"
       (let ((left-label-id (category-multiplier left-category-ids))
 	    (right-label-id (category-multiplier right-category-ids)))
+
 	(if (and left-label-id right-label-id)
 	  (then
 	    (tr :both-right-and-left-label-ids)
@@ -559,60 +262,47 @@
 		(else
                  (tr :multiply-failed left-edge right-edge)
                  ;; "   which do not combine"
-                 ;;(mult/ids-on-form-label left-edge right-edge)
 		 nil
 		 ))))
 	  (else 
-	    ;;(mult/ids-on-form-label left-edge right-edge)
 	    nil))))
     (else
       (tr :only-L/R-has-category-ids left-category-ids right-category-ids)
       nil)))
 
-;; 3/10/15 removed follow-on form check and elevated it to 
-;; the toplevel dispatch
-;    (else
-;      (tr :only-L/R-has-category-ids left-category-ids right-category-ids)
-;      (mult/ids-on-form-label left-edge right-edge))
 
 
 
-
-;;;------------------------------------------------------
-;;; rule edge checks, but looking at form labels too
-;;;------------------------------------------------------
+;;;------------
+;;; Form rules
+;;;------------
 
 (defun mult/ids-on-form-label (left-edge right-edge)
+  "Look for rules based on one the form label on one of the edges and
+   the category label on the other"
   (tr :mult/ids-on-form-label)
-  (when *allow-form-rules*
-    (let* ((left-form-ids (form-ids/rightward left-edge)) ;; form field
-           (right-form-ids (form-ids/leftward right-edge)))
-      
-      ;; We're looking for a rule based on the category (vs. form) numbers,
-      ;; but we're looking at a combination of the label in the category
-      ;; field of one of the edges, and the label from the form field of
-      ;; the other. 
-      (if (or left-form-ids right-form-ids)
-          (then
-            (tr :checking-form-label-category-rules)
-            (or (and right-form-ids ;; e.g. on np-head, which is a form label
-                     (try-mult/left-category-right-form_category-id
-                      right-form-ids left-edge right-edge))
-                (and left-form-ids
-                     (mult/right-category-left-form_category-id
-                      left-form-ids left-edge right-edge))
-                (mult/check-form-options left-edge right-edge)))
-          (else
-            (tr :neither-has-category-on-form-ids)
-            (mult/check-form-options left-edge right-edge))))))
+  
+  (let* ((left-form-ids (form-ids/rightward left-edge)) ;; form field
+         (right-form-ids (form-ids/leftward right-edge)))
+    (if (or left-form-ids right-form-ids)
+      (then
+        (tr :checking-form-label-category-rules)
+        (or (and right-form-ids ;; e.g. on np-head, which is a form label
+                 (try-mult/left-category-right-form_category-id
+                  right-form-ids left-edge right-edge))
+            (and left-form-ids
+                 (mult/right-category-left-form_category-id
+                  left-form-ids left-edge right-edge))
+            (mult/check-form-options left-edge right-edge)))
+      (else
+        (tr :neither-has-category-on-form-ids)
+        (mult/check-form-options left-edge right-edge)))))
 
 
 (defun try-mult/left-category-right-form_category-id (right-form-ids
 						      left-edge right-edge)
-  ;; first look for a category rule (cfr or csr) that involves the
-  ;; category label on the left looking rightwards to the form label
-  ;; on the right. If there isn't a rule for this pair, return nil
-  ;; and let the caller go on to the next case
+  "Look for a rule that combines a category label on the left and
+   a form label on the right."
   (tr :try-mult/left-category-right-form_category-id)
   (tr :cat-ids-on-right-form-label left-edge right-edge)
   (let* ((right-label-id (category-multiplier right-form-ids))
@@ -631,9 +321,8 @@
 
 (defun mult/right-category-left-form_category-id (left-form-ids
 						  left-edge right-edge)
-  ;; we've checked the left-category against the right form label at the
-  ;; category level, now check the other way: left form against right category. 
-  ;; Return nil to move on to the form rule checks.
+  "Look for a rule combining a form label on the left and a category
+   label on the right."
   (tr :mult/right-category-left-form_category-id)
   (tr :cat-ids-on-left-form-label left-edge right-edge)
   (let* ((left-label-id (category-multiplier left-form-ids))
@@ -649,6 +338,38 @@
 		  nil))))
       (else
 	nil))))
+
+
+
+;;;----------------------------------------
+;;; multiplies for form-rule possibilities
+;;;----------------------------------------
+
+(defun look-left-for-form-rule (left-edge right-edge
+                                 left-form-id
+                                 right-label-id)
+  "Does the multiply of left-form + right-category"
+  (let ((rule (multiply-ids left-form-id right-label-id)))
+    (if rule
+      (then (tr :right-form-id-succeeded rule left-edge right-edge)
+            rule)
+      (else (tr :right-form-id-failed left-edge right-edge)
+            nil))))
+
+
+
+(defun look-right-for-form-rule (left-edge right-edge
+                                  left-label-id
+                                  right-form-id)
+  "Does the multiply of left-category + right-form"
+  (let ((rule (multiply-ids left-label-id right-form-id)))
+    (if rule
+      (then (tr :right-form-id-succeeded rule left-edge right-edge)
+            rule)
+      (else (tr :right-form-id-failed left-edge right-edge)
+            nil))))
+
+
 
 
 ;;;----------------------------------------
@@ -694,7 +415,7 @@
 	 (left-form-id (form-multiplier left-form-ids)))
     (tr :left-form-id left-edge right-edge)
     (if (and left-form-id right-label-id)
-      (check-left-for-form-rule left-edge right-edge
+      (look-left-for-form-rule left-edge right-edge
 				left-form-id right-label-id)
       (else (tr :right-form-id-failed left-edge right-edge)
 	    nil ))))
@@ -710,42 +431,13 @@
 	 (right-form-id (form-multiplier right-form-ids)))
     (tr :right-form-id left-edge right-edge)
     (if (and left-label-id right-form-id)
-      (check-right-for-form-rule left-edge right-edge
+      (look-right-for-form-rule left-edge right-edge
 				 left-label-id right-form-id)
       (else (tr :right-form-id-failed left-edge right-edge)
 	    nil ))))
 
       
 
-
-
-;;;----------------------------------
-;;; checking form-rule possibilities
-;;;----------------------------------
-
-(defun check-left-for-form-rule (left-edge right-edge
-                                 left-form-id
-                                 right-label-id)
-
-  (let ((rule (multiply-ids left-form-id right-label-id)))
-    (if rule
-      (then (tr :right-form-id-succeeded rule left-edge right-edge)
-            rule)
-      (else (tr :right-form-id-failed left-edge right-edge)
-            nil))))
-
-
-
-(defun check-right-for-form-rule (left-edge right-edge
-                                  left-label-id
-                                  right-form-id)
-
-  (let ((rule (multiply-ids left-label-id right-form-id)))
-    (if rule
-      (then (tr :right-form-id-succeeded rule left-edge right-edge)
-            rule)
-      (else (tr :right-form-id-failed left-edge right-edge)
-            nil))))
 
 
 
@@ -755,115 +447,53 @@
 ;;;------------------------------
 
 (defun check-form-form (left-edge right-edge)
-  (if *allow-pure-syntax-rules*
-    (then
-      (tr :looking-for-syntactic-combination)
-      (let ((left-form-label (edge-form left-edge))
-            (right-form-label (edge-form right-edge)))
-        (when (eq left-form-label :dotted-intermediary)
-          ;; it's a stranded partially complete polyword.
-          (return-from check-form-form nil))
-
-        (cond
-         ((and left-form-label right-form-label)
-          (let ((left-form-rs (label-rule-set left-form-label))
-                (right-form-rs (label-rule-set right-form-label)))
-            (cond
+  (when *allow-pure-syntax-rules*
+    (tr :looking-for-syntactic-combination)
+    (let ((left-form-label (edge-form left-edge))
+          (right-form-label (edge-form right-edge)))
+      (cond
+        ((and left-form-label right-form-label)
+         (let ((left-form-rs (label-rule-set left-form-label))
+               (right-form-rs (label-rule-set right-form-label)))
+           (cond
              ((and left-form-rs right-form-rs)
               (let ((left-form-id
                      (cdr (rs-right-looking-ids left-form-rs)))
                     (right-form-id
                      (cdr (rs-left-looking-ids right-form-rs))))
                 (cond
-                 ((and left-form-id right-form-id)
-                  (tr :both-form-labels-have-ids)
-                  (let ((rule (multiply-ids left-form-id
-                                            right-form-id)))
-                    (if rule
-                      (then (tr :syntactic-combination-succeeded rule)
-                            rule )
-                      (else (tr :syntactic-combination-failed)
-                            nil ))))
-                 
-                 (left-form-id
-                  (tr :no-form-id-on-right-form-label)
-                  nil)
-                 (right-form-id
-                  (tr :no-form-id-on-left-form-label)
-                  nil)
-                 (t (tr :neither-form-label-has-form-ids)
-                    nil))))
+                  ((and left-form-id right-form-id)
+                   (tr :both-form-labels-have-ids)
+                   (let ((rule (multiply-ids left-form-id
+                                             right-form-id)))
+                     (if rule
+                       (then (tr :syntactic-combination-succeeded rule)
+                             rule )
+                       (else (tr :syntactic-combination-failed)
+                             nil ))))
+                  
+                  (left-form-id
+                   (tr :no-form-id-on-right-form-label)
+                   nil)
+                  (right-form-id
+                   (tr :no-form-id-on-left-form-label)
+                   nil)
+                  (t (tr :neither-form-label-has-form-ids)
+                     nil))))
 
-              (left-form-rs
-               (tr :no-rules-mention-right-form-label right-form-label)
-               nil)
-              (right-form-rs
-               (tr :no-rules-mention-left-form-label left-form-label)
-               nil))))
+             (left-form-rs
+              (tr :no-rules-mention-right-form-label right-form-label)
+              nil)
+             (right-form-rs
+              (tr :no-rules-mention-left-form-label left-form-label)
+              nil))))
 
-         (left-form-label
-          (tr :no-form-label-on-right-edge right-edge)
-          nil)
-         (right-form-label
-          (tr :no-form-label-on-left-edge right-edge)
-          nil))))
-      nil ))
-
-
-(defparameter *form-maps*
-  '(
-    (ADJECTIVE (ADJECTIVE)) 
-    (ADVERB (COMPARATIVE ADVERB)) 
-    (BIO-PROCESS (NP)) ;; not  VG
-    (BIOLOGICAL (PROPER-NOUN NP)) ;; not S PP VG
-    (COMMON-NOUN (COMMON-NOUN)) 
-    (COMMON-NOUN/PLURAL (COMMON-NOUN/PLURAL)) 
-    (ENZYME (NP)) ;; NOT PP
-    (IS-BIO-ENTITY (VP)) ;;  not PP VG RELATIVE-CLAUSE S VG 
-    (MODAL (MODAL)) 
-    (MODIFIER (ADJECTIVE NUMBER PROPER-NOUN NP COMMON-NOUN  COMMON-NOUN/PLURAL))  ;; not VP -- this is for the pre-mod rule
-    (N-BAR (N-BAR)) 
-    (NP (NP)) 
-    (NP-HEAD (COMMON-NOUN common-noun/plural)) 
-    (NP/OBJECT  (N-BAR COMMON-NOUN COMMON-NOUN/PLURAL NP PRONOUN PROPER-NAME PROPER-NOUN))  ;; not VG PP RELATIVE-CLAUSE  S VP VERB+ED
-    (NP/SUBJECT (N-BAR COMMON-NOUN COMMON-NOUN/PLURAL NP PRONOUN PROPER-NAME PROPER-NOUN)) ;; not VERB+ED VP  VG
-    (NUMBER (NUMBER NP)) 
-    (POST-ORDINAL (POST-ORDINAL)) 
-    (PP (PP)) 
-    (PREPOSITION (PREPOSITION)) 
-    (PROPER-NOUN (PROPER-NOUN)) 
-    (PROTEIN (NP PROPER-NOUN)) 
-    (RELATIVE-CLAUSE (RELATIVE-CLAUSE)) 
-    (S (S)) 
-    (SEQUENCER (DET)) 
-    (SPATIAL-PREPOSITION (SPATIAL-PREPOSITION)) 
-    (VERB (VERB)) 
-    (VERB+ED (VERB+ED)) 
-    (VERB+ING (VERB+ING)) 
-    (VERB+PRESENT (VERB+PRESENT)) 
-    (VG (VERB+ING VP VERB+ED  VG )) ;; not COMMON-NOUN
-    (VP (VERB+ING  VG  S VP VERB+ED)) ;; not N-BAR COMMON-NOUN COMMON-NOUN/PLURAL PP NP RELATIVE-CLAUSE
-    (WH-PRONOUN (WH-PRONOUN)) 
-    ;;(BE (VERB VG VP VERB+ED)) 
-    ;;(COMMA (NIL)) 
-    ;;(DO (VERB)) 
-    ;;(HAVE (VERB VERB+S)) 
-    ;;(OF (PREPOSITION)) 
-    ;;(THAT (NP DET)) 
-    ;;(THE (DET)) 
-    ;;(YEAR (COMMON-NOUN)) 
-    ;;(\a (DET)) 
-    ;;(|an| (DET)) 
-    ;;(|not| (QUANTIFIER)) 
-    ;;(|these| (DET)) 
-    ;;(|the| (DET)) 
-    ;;(|this| (DET)) 
-    ))
-
-(defun compatible-form (rule-form edge)
-  (let ((compatible-forms (second (assq rule-form *form-maps*))))
-    (or (null compatible-forms) ;; the rule-form is not taken to constrain anything
-        (memq (cat-name (edge-form edge)) compatible-forms))))
+        (left-form-label
+         (tr :no-form-label-on-right-edge right-edge)
+         nil)
+        (right-form-label
+         (tr :no-form-label-on-left-edge right-edge)
+         nil)))))
 
 
   
