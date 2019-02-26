@@ -320,6 +320,15 @@
 
       individual )))
 
+(defun make-scafold-individual (category &rest binding-plist)
+  "Specifically intended for grammar scafolds like prepositional phrases
+   where there is not find and they are never permanent"
+  (when (symbolp category) (setq category (category-named category :break)))
+  (let ((binding-instructions
+         (decode-category-specific-binding-instr-exps
+          category binding-plist)))
+    (make-simple-individual category binding-instructions)))
+  
 
 
 (defun make-throw-away-individual (category)
