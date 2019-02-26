@@ -64,10 +64,32 @@
     :referent (:function add-time-to-event left-edge right-edge))
 
 (defun add-time-to-event (event time)
-  (let ((var (find-variable-for-category 'time event)))
-    (cond (*subcat-test* var)
-          (var 
-           (bind-dli-variable 'var time event)))))
+  (unless (itypep event 'be)
+    (let ((var (find-variable-for-category 'time event)))
+      (cond (*subcat-test* var)
+            (var 
+             (bind-dli-variable var time event))))))
+
+(defun add-manner-to-event (event manner)
+  (unless (itypep event 'be)
+    (let ((var (find-variable-for-category 'manner event)))
+      (cond (*subcat-test* var)
+            (var 
+             (bind-dli-variable var manner event))))))
+
+(defun add-location-to-event (event location)
+  (unless (itypep event 'be)
+    (let ((var (find-variable-for-category 'location event)))
+      (cond (*subcat-test* var)
+            (var 
+             (bind-dli-variable var location event))))))
+
+(defun add-purpose-to-event (event purpose)
+  (unless (itypep event 'be)
+    (let ((var (find-variable-for-category 'purpose event)))
+      (cond (*subcat-test* var)
+            (var 
+             (bind-dli-variable var purpose event))))))
 
 
 ;;;----------
