@@ -1037,27 +1037,29 @@
 
 (defun phrase-and-vg+ed (phrase vp+ed)
   (declare (special category::np))
-  (let* ((vp-ref (edge-referent vp+ed))
-         (fringe (right-fringe-of phrase)) 
-         (target
-          (find-target-satisfying
-           fringe
-           #'(lambda (x)
-               (object-target? x vp-ref)))))
-    (when target
-      #+ignore
-      (unless (edge-used-in target)
-        (lsp-break "null dominating edge ~s" target))
-      (make-edge-spec
-       :category (edge-category target)
-       :referent (bind-dli-variable
-                  'predication
-                  (update-edge-as-lambda-predicate vp+ed target :object)
-                  (edge-referent target))
-       :form (edge-form target)
-       :target target
-       :direction :right))))
-
+  (unless ;; "is X Vp+ed"
+      (loop for e in (edges-before phrase)
+                thereis (eq (edge-cat-name e) 'be))
+    (let* ((vp-ref (edge-referent vp+ed))
+           (fringe (right-fringe-of phrase)) 
+           (target
+            (find-target-satisfying
+             fringe
+             #'(lambda (x)
+                 (object-target? x vp-ref)))))
+      (when target
+        #+ignore
+        (unless (edge-used-in target)
+          (lsp-break "null dominating edge ~s" target))
+        (make-edge-spec
+         :category (edge-category target)
+         :referent (bind-dli-variable
+                    'predication
+                    (update-edge-as-lambda-predicate vp+ed target :object)
+                    (edge-referent target))
+         :form (edge-form target)
+         :target target
+         :direction :right)))))
 
 (define-debris-analysis-rule s-vp+ed
   :pattern (s vp+ed )
@@ -1834,6 +1836,21 @@ assumed. |#
 
 (define-debris-analysis-rule wh-modal-s
     :pattern (wh-pronoun modal s)
+    ;; "How might a STAT3 mutation affect breast cancer?"
+    :action (:function wh-three-edges first second third))
+
+(define-debris-analysis-rule wh-modal-s
+    :pattern (wh-pronoun modal s)
+    ;; "How might a STAT3 mutation affect breast cancer?"
+    :action (:function wh-three-edges first second third))
+
+(define-debris-analysis-rule wh-modal-transitive-clause-without-object
+    :pattern (wh-pronoun modal transitive-clause-without-object)
+    ;; "What could I use?"
+    :action (:function wh-three-edges first second third))
+
+(define-debris-analysis-rule wh-modal-transitive-clause-without-object
+    :pattern (np modal transitive-clause-without-object)
     ;; "How might a STAT3 mutation affect breast cancer?"
     :action (:function wh-three-edges first second third))
 
