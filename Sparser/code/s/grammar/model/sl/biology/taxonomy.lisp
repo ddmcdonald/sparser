@@ -155,6 +155,7 @@
           (organ bio-organ)
           (preparation preparation)
           (cellular-location cellular-location)
+          (cellular-process cellular-process)
           (organism organism) ;; human? mouse?
           (non-cellular-location non-cellular-location)
           (examples biological)
@@ -185,9 +186,9 @@
      :m cell-line
      :m context
      :m organism
+     :m cellular-process
+     :for cellular-process
      ;;:of variant
-     :for disease
-     :in disease
      :on cellular-location
      :such\ as examples
      :but\ not excluding
@@ -394,11 +395,13 @@
 ;; perhaps this is related to being a quality of the agent
 (define-category bio-activity
     :specializes other-bio-process
-    :binds ((theme biological))                 
+    :binds ((theme biological)
+            (process process))
     :realization
     (:noun "activity"
           :towards theme
-          :on theme))
+          :on theme
+          :m process))
 
 (define-category named-bio-process
   :specializes other-bio-process
@@ -957,7 +960,10 @@
   :binds ((expresses  protein))
   :realization
   (:noun "gene"
-         :m expresses))
+         :m expresses
+         :for disease
+         :in disease
+))
 
 (define-category oncogene :specializes gene 
   :instantiates :self
