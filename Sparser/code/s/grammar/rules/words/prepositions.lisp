@@ -120,8 +120,10 @@ these are really prepositions, and should function as such
 (define-preposition "across" :form 'spatial-preposition) ;; spatial?
 (define-preposition "across from" :form 'spatial-preposition)
 (define-preposition "afore" :form 'spatio-temporal-preposition)
-(when (current-script :biology)
+
+(when nil ;;current-script :biology)
   (define-preposition "after" :form 'spatio-temporal-preposition)) ;; => sequencer in modifiers
+
 (define-preposition "against" :form 'spatial-preposition) ;;what about non-spatial sense
 ;; Seems like an adverb (define-preposition "ahead" :form 'spatial-preposition)
 (define-preposition "ahead of" :form 'spatial-preposition)
@@ -151,8 +153,10 @@ these are really prepositions, and should function as such
 (define-preposition "away from")
 (define-preposition "bar")
 (define-preposition "barring")
-(when (current-script :biology)
+
+(when nil ;;(current-script :biology)
   (define-preposition "before" :form 'spatio-temporal-preposition)) ;; => sequencer in modifiers
+
 (define-preposition "behind" :form 'spatial-preposition)
 (define-preposition "below" :form 'spatial-preposition)
 (define-preposition "beneath" :form 'spatial-preposition)
@@ -172,7 +176,10 @@ these are really prepositions, and should function as such
 (define-preposition "devoid of")
 (define-preposition "down"  :form 'spatial-preposition) ;; as in, 'down the street' ?
 (define-preposition "due to")
-(define-preposition "during"  ) ;;///// THIS DOESN'T WORK defined as sequencer/prep in modifiers
+
+(when nil
+  (define-preposition "during")) ;;///// THIS DOESN'T WORK defined as sequencer/prep in modifiers
+
 (define-preposition "except")
 (define-preposition "except for") 
 (define-preposition "exclusive of")

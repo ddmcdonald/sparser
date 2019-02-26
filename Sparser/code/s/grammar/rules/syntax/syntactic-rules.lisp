@@ -718,8 +718,8 @@
                  `(def-form-rule (,rel ,v) 
                       :head :right-edge
                       :form subject-relative-clause
-                      :referent (:function compose-wh-with-vp left-edge right-edge))))
-        )
+                      :referent (:function compose-wh-with-vp left-edge right-edge)))))
+
 
 (loop for rel in '(which who whom)
    do
@@ -1022,16 +1022,20 @@
    `(def-form-rule (spatio-temporal-preposition ,nb)
         :head :left-edge
         :form pp-wh-pronoun
-        :referent (:function make-relativized-pp left-referent right-referent)))
-
-  (eval
-   `(def-form-rule (sequencer ,nb) ;; "after which" 
-        :head :left-edge
-        :form pp-wh-pronoun
-        :referent (:function make-relativized-pp left-referent right-referent)))
-)
+        :referent (:function make-relativized-pp left-referent right-referent))))
 
 
+;;--- "after-which" as clause-connector
+
+(def-form-rule (sequencer which)  ;; "after which" 
+  :head :left-edge
+  :form relative-subordinator
+  :referent (:function make-relative-subordinator left-referent right-referent))
+
+(def-syntax-rule (relative-subordinator s)
+  :head :right-edge
+  :form subordinate-s
+  :referent (:function compose-relative-subordinator left-referent right-referent))
 
 
 ;;;----------------------------

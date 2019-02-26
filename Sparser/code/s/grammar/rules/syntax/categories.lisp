@@ -226,6 +226,7 @@
 
 (def-form-category  pp)
 (def-form-category  pp-wh-pronoun)
+(def-form-category  relative-subordinator) ;; "after which" + S
 
 (def-form-category  advp)
 (def-form-category  comparative-advp)
@@ -403,7 +404,6 @@
 ;;;--------------------------------------------------------------------------
 ;;; methods for testing whether a form category is one of a particular group
 ;;;--------------------------------------------------------------------------
-
 
 ;; Large-scale distinctions
 
