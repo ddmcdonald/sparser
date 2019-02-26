@@ -675,20 +675,25 @@
   "We're in the middle of processing an interpretation. We have a value
    in our hand (so to speak) -- 'ref' -- and we want to know which
    edge is is the referent of."
-  (let* ((left-edge (left-edge-for-referent))
-         (left-ref (edge-referent left-edge))
-         (right-edge (right-edge-for-referent))
-         (right-ref (edge-referent right-edge)))
+  (let* ((left-edge (when (boundp '*left-edge-into-reference*)
+                      (left-edge-for-referent)))
+         (left-ref (when (edge-p left-edge) (edge-referent left-edge)))
+         (right-edge (when (boundp '*right-edge-into-reference*)
+                       (right-edge-for-referent)))
+         (right-ref (when (edge-p right-edge)
+                      (edge-referent right-edge))))
     (cond
-      ((or (eq ref left-ref)
+      ((when left-ref
+         (or (eq ref left-ref)
            (eq ref (value-of 'comp left-ref))
            (and (category-p left-ref)
-                (itypep ref left-ref))) ;; (eq ref (individual-for-ref left-ref))
+                (itypep ref left-ref)))) ;; (eq ref (individual-for-ref left-ref))
        left-edge)
-      ((or (eq ref right-ref)
+      ((when right-ref
+         (or (eq ref right-ref)
            (eq ref (value-of 'comp right-ref))
            (and (category-p right-ref) ;; (eq ref (individual-for-ref right-ref))
-                (itypep ref right-ref)))
+                (itypep ref right-ref))))
        right-edge)
       (t
        (break "edge-for-referent - new case?")))))
