@@ -127,8 +127,6 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
     nil 'top)
 
 
-#+ignore(define-lambda-variable 'purpose
-    nil 'top) ;; use the one on perdurant instead
 
 (define-lambda-variable 'quantifier
     nil 'top)
@@ -603,29 +601,6 @@ val-pred-var (pred vs modifier - left or right?)
           ((verb+present verb vg+ed) nil) ;;these are cases in a prenominal, so don't use these rules
           ))))
         
-#+ignore
-(defun adj-noun-compound (adjective head &optional adj-edge)
-  (when (category-p head) (setq head (individual-for-ref head)))
-  (cond
-    (*subcat-test*
-     (takes-adj? head adjective))
-    ((when (use-methods) ;; "the Ras protein", where 'protein' is a type-marker
-       (compose adjective head)))
-    ((itypep adjective 'attribute-value) ;; "red block"
-     (handle-attribute-of-head adjective head))
-    ((interpret-premod-to-np adjective head)) ;; normal subcategorization
-    (t ;; Dec#2 has "low nM" which requires coercing 'low'
-     ;; into a number. Right now just falls through
-     (let ((predicate 
-	     (if (and (not (is-basic-collection? adjective))
-                      (find-variable-for-category :subject (itype-of adjective)))
-		 (create-predication-by-binding
-                  :subject head adjective
-                  (list 'adj-noun-compound (or adj-edge (left-edge-for-referent))))
-		 (individual-for-ref adjective))))
-       (setq head (bind-dli-variable 'predication predicate head))
-       head))))
-
 (defun adj-noun-compound (adjective head &optional adj-edge)
   (when (category-p head) (setq head (individual-for-ref head)))
   (cond
@@ -1264,19 +1239,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
     ;; It's not a collection. Compare handlers in interpret-pp-adjunct-to-np
     (or (when (use-methods)
           (compose vg pp))
-        (let* ((pp-edge (base-pp (right-edge-for-referent)))
-               (prep-word (identify-preposition pp-edge))
-               (*pobj-edge* (edge-right-daughter pp-edge))
-               (pobj-referent (identify-pobj pp-edge))
-               (variable-to-bind
-                (when prep-word
-                  ;; test if there is a known interpretation of the VG/PP combination
-                  (or (subcategorized-variable vg prep-word pobj-referent)
-                      (and (itypep pp 'upon-condition)
-                           (find-variable-for-category 'context (itype-of vg))) ;; circumstance)
-                      ;; or if we are making a last ditch effore
-                      (and *force-modifiers*
-                           'modifier)))))
+        (multiple-value-bind (variable-to-bind  pobj-referent prep-word *pobj-edge*)
+            (variable-to-bind-pp-to-head (right-edge-for-referent) vg)
           (declare (special *pobj-edge*))
           (cond
             (*subcat-test* variable-to-bind)
@@ -1287,8 +1251,24 @@ there was an edge for the qualifier (e.g., there is no edge for the
              (setq vg (individual-for-ref vg))
              (setq pobj-referent (individual-for-ref pobj-referent))
              (setq vg (bind-dli-variable variable-to-bind pobj-referent vg))
-           vg))))))
+             vg))))))
 
+(defun variable-to-bind-pp-to-head (base-pp-edge head)
+  (let* ((pp-edge (base-pp base-pp-edge))
+         (prep-word (identify-preposition pp-edge))
+         (*pobj-edge* (edge-right-daughter pp-edge))
+         (pobj-referent (identify-pobj pp-edge))
+         (variable-to-bind
+          (when prep-word
+            ;; test if there is a known interpretation of the HEAD/PP combination
+            (or (subcategorized-variable head prep-word pobj-referent)
+                (and (itypep (edge-referent pp-edge) 'upon-condition)
+                     (find-variable-for-category 'context (itype-of head)))
+                ;; circumstance)
+                ;; or if we are making a last ditch effore
+                (when *force-modifiers* 'modifier)))))
+    (values variable-to-bind (individual-for-ref pobj-referent)
+            prep-word *pobj-edge*)))
 
 (defun adjoin-prepcomp-to-vg (vg prep-comp) ;; "by binding..."
   (let* ((comp-edge (right-edge-for-referent))
@@ -1398,89 +1378,85 @@ there was an edge for the qualifier (e.g., there is no edge for the
     ((itypep pp 'collection) ;;(lsp-break "pp collection")
      nil)
     ((and np pp)
-     (let* ((pp-edge (right-edge-for-referent))
-            (prep-word (identify-preposition pp-edge))
-            (pobj-referent (identify-pobj pp-edge))
-            (of (word-named "of"))
-            (variable-to-bind
-             (or (subcategorized-variable np prep-word pobj-referent)
-                 (and (eq prep-word of)
-                      (itypep np 'attribute))
-                 (and *force-modifiers*
-                      'modifier)))
-            (*in-scope-of-np+pp* prep-word))
-       (declare (special *in-scope-of-np+pp*))
+     (multiple-value-bind (variable-to-bind  pobj-referent prep-word *pobj-edge*)
+         (variable-to-bind-pp-to-head (right-edge-for-referent) np)
+       (let* ((of (word-named "of"))
+              (*in-scope-of-np+pp* prep-word))
+         (declare (special *in-scope-of-np+pp*))
        
-       (setq np (individual-for-ref np))
+         (setq np (individual-for-ref np))
 
-       (if *subcat-test*
-         (or variable-to-bind
-             (and (use-methods) (most-specific-k-method 'compose (list np pp)))
-             (and (eq prep-word of)
-                  (or (itypep np 'attribute)
-                      (and
-                       ;; (itypep np 'dependent-location)
-                       (itypep np 'object-dependent-location)
-                       (itypep pobj-referent 'partonomic))
-                      (and
-                       (itypep np 'partonomic)
-                       (compatible-with-specified-part-type pobj-referent np))
-                      (and (use-methods)
-                           (most-specific-k-method 'compose (list np pobj-referent))))))
+         (if *subcat-test*
+             (or variable-to-bind
+                 (maybe-extend-premod-adjective-with-pp np pp)
+                 (and *force-modifiers* 'modifier)
+                 (and (use-methods) (most-specific-k-method 'compose (list np pp)))
+                 (and (eq prep-word of)
+                      (or (itypep np 'attribute)
+                          (and
+                           ;; (itypep np 'dependent-location)
+                           (itypep np 'object-dependent-location)
+                           (itypep pobj-referent 'partonomic))
+                          (and
+                           (itypep np 'partonomic)
+                           (compatible-with-specified-part-type pobj-referent np))
+                          (and (use-methods)
+                               (most-specific-k-method 'compose (list np pobj-referent)))))
+                 )
 
-         ;; This side runs when subcat test passed and we're really interpreting.
-         ;; Specific cases are ordered before looking for applicable methods
-         ;; of using a subcategorized variable.
-         (cond
-           ((and (eq prep-word of)
-                 (itypep np 'attribute)) ;; "color of the block"
-            (find-or-make-individual 'quality-predicate
-                                     ;;:attribute (itype-of np) :item pobj-referent
-                                     :attribute np
-                                     :item pobj-referent));;
+             ;; This side runs when subcat test passed and we're really interpreting.
+             ;; Specific cases are ordered before looking for applicable methods
+             ;; of using a subcategorized variable.
+             (cond
+               ((and (eq prep-word of)
+                     (itypep np 'attribute)) ;; "color of the block"
+                (find-or-make-individual 'quality-predicate
+                                         ;;:attribute (itype-of np) :item pobj-referent
+                                         :attribute np
+                                         :item pobj-referent)) ;;
 
-           ((and (eq prep-word of)
-                 (itypep np 'object-dependent-location)
-                 (itypep pobj-referent 'partonomic)) ;; "bottom of the stack"
-            (tr :np+pp/np-is-partonomic np pobj-referent)
-            (make-object-dependent-location np pobj-referent))
+               ((and (eq prep-word of)
+                     (itypep np 'object-dependent-location)
+                     (itypep pobj-referent 'partonomic)) ;; "bottom of the stack"
+                (tr :np+pp/np-is-partonomic np pobj-referent)
+                (make-object-dependent-location np pobj-referent))
 
-           ((and (eq prep-word of)
-                 (itypep np 'partonomic) ;; "a row of two blocks"
-                 (compatible-with-specified-part-type pobj-referent np))
-            (tr :np-pp-of-np-partonomic np pobj-referent)
-            (setq np (bind-variable 'parts pobj-referent np)))
+               ((and (eq prep-word of)
+                     (itypep np 'partonomic) ;; "a row of two blocks"
+                     (compatible-with-specified-part-type pobj-referent np))
+                (tr :np-pp-of-np-partonomic np pobj-referent)
+                (setq np (bind-variable 'parts pobj-referent np)))
 
-           ((when (and (use-methods)
-                       (most-specific-k-method 'compose (list np pp)))
-              ;; e.g. has-location + location : "the block at the left end of the row"
-              (let ((result (compose np pp)))
-                (when result
-                  (tr :np-pp-composition np pp)
-                  result))))
+               ((when (and (use-methods)
+                           (most-specific-k-method 'compose (list np pp)))
+                  ;; e.g. has-location + location : "the block at the left end of the row"
+                  (let ((result (compose np pp)))
+                    (when result
+                      (tr :np-pp-composition np pp)
+                      result))))
 
-           ((when (and (use-methods)
-                       (eq prep-word of)
-                       (most-specific-k-method 'compose (list np pobj-referent)))
-              (let ((result (compose np pobj-referent)))
-                (when result
-                  (tr :compose-other-of np pobj-referent result)
-                  result))))
+               ((when (and (use-methods)
+                           (eq prep-word of)
+                           (most-specific-k-method 'compose (list np pobj-referent)))
+                  (let ((result (compose np pobj-referent)))
+                    (when result
+                      (tr :compose-other-of np pobj-referent result)
+                      result))))
            
-           (variable-to-bind
-            (collect-subcat-statistics np prep-word variable-to-bind pp)
-            (setq np (bind-dli-variable variable-to-bind pobj-referent np))
-            np)
-           
-           (t ;;(break "fell through")
-            #+ignore(when (current-script :blocks-world)
-              (if (eq prep-word of)
-                (warn "No interpretation of ~a 'of' ~a" np pobj-referent)
-                (warn "No interpretation of np ~a with pp ~a" np pp)))
-            ;; Needs an interpretation just to get through, so pretend
-            ;; we had *force-modifiers* on and take the weakest relationship
-            (setq np (bind-variable 'modifier pobj-referent np))
-            np )))))))
+               (variable-to-bind
+                (collect-subcat-statistics np prep-word variable-to-bind pp)
+                (setq np (bind-dli-variable variable-to-bind pobj-referent np))
+                np)
+               ((maybe-extend-premod-adjective-with-pp np pp))
+                          (t ;;(break "fell through")
+                #+ignore(when (current-script :blocks-world)
+                          (if (eq prep-word of)
+                              (warn "No interpretation of ~a 'of' ~a" np pobj-referent)
+                              (warn "No interpretation of np ~a with pp ~a" np pp)))
+                ;; Needs an interpretation just to get through, so pretend
+                ;; we had *force-modifiers* on and take the weakest relationship
+                (setq np (bind-variable 'modifier pobj-referent np))
+                np ))))))))
 
 
 
@@ -1552,7 +1528,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (unless (and subj vp) ;; have had cases of uninterpreted VPs
     (return-from assimilate-subject nil))
   (when (or (is-non-anaphor-numeric? *left-edge-into-reference* subj)
-            (itypep subj '(:or when how where why))
+            ;;(itypep subj '(:or when how where why))
             (and (itypep subj '(:or what where when how why))
                  (itypep vp '(:or do would))))
                  ;; block when, how, where, why as subjecgts, and WHAT as a subject of DO or WOULD
@@ -1563,6 +1539,15 @@ there was an edge for the qualifier (e.g., there is no edge for the
     (revise-parent-edge :category (value-of 'type vp)))
     
   (cond
+    ((itypep subj 'when)
+      (add-time-to-event vp subj))
+    ((itypep subj 'how)
+     (add-manner-to-event vp subj))
+    ((itypep subj 'where)
+     (add-location-to-event vp subj))
+    ((itypep subj 'why)
+     (add-purpose-to-event vp subj))
+     
     ((itypep vp 'control-verb) ;; e.g. "want"
      (when *subcat-test* (return-from assimilate-subject t))
      (assimilate-subject-for-control-verb subj vp vp-edge))
@@ -2084,7 +2069,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (revise-parent-edge :form category::subject-relative-clause)
   predicate)
 
-;; for 'after which', 'in which' and such XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+;; for 'after which', 'in which' and such 
 (defun make-relativized-pp (prep wh)
   "The syntactic rules preposition + {who which whom} come here,
    to create a phrase with form pp-wh-pronoun.
@@ -2433,7 +2418,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
   "For 'a bigger block than that one'"
   (let ((open-attribution (loop for b in (indiv-binds np)
                              as value = (binding-value b)
-                             when (itypep value 'comparative-attribution)
+                                when (or
+                                      (itypep value 'comparative-attribution)
+                                      (value-of 'comparative value))
                              return b)))
     (cond
       (*subcat-test*
@@ -2466,6 +2453,42 @@ there was an edge for the qualifier (e.g., there is no edge for the
           'comparative-predication
           (bind-dli-variable 'compared-to than-np (value-of 'comparative-predication np))
           np)))))
+
+;; "the mutually exclusive genes with ASPP2"
+
+(defun maybe-extend-premod-adjective-with-pp (np pp)
+  "For 'a bigger block than that one'"
+  (let* ((premod-binding
+          (loop for b in (indiv-binds np)
+                as value = (when (binding-p b) (binding-value b))
+                when
+                  (and (individual-p value)
+                       (multiple-value-bind (variable-to-bind pobj-referent prep-word *pobj-edge*)
+                           (variable-to-bind-pp-to-head (right-edge-for-referent) value)
+                         variable-to-bind))
+                do (return b)))
+         (premod-takes-pp (when (binding-p premod-binding)
+                            (binding-value premod-binding)))
+         (premod-var (when (binding-p premod-binding)
+                       (binding-variable premod-binding))))
+    (cond
+      (*subcat-test* premod-binding)
+      (premod-takes-pp
+       (multiple-value-bind (variable-to-bind pobj-referent prep-word *pobj-edge*)
+           (variable-to-bind-pp-to-head (right-edge-for-referent) premod-takes-pp)
+         (let ((extended-premod
+                (bind-variable variable-to-bind pobj-referent premod-takes-pp)))
+           (multiple-value-bind (edge-over-premod)
+               (search-tree-for-referent (left-edge-for-referent) premod-takes-pp)
+             ;; Insert a new edge over the comparative edge
+             ;; of the np with the completed-attribution as its value.
+             (unless edge-over-premod
+               (warn "Could not locate edge over ~a under ~a in ~s~%"
+                     premod-takes-pp (left-edge-for-referent)
+                     (current-string))
+               (return-from maybe-extend-premod-adjective-with-pp nil))
+             (respan-edge-for-new-referent edge-over-premod extended-premod)
+             (rebind-variable premod-var extended-premod np))))))))
 
 
 ;; "a bigger block"
