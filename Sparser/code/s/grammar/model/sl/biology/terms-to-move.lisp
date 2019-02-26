@@ -89,9 +89,17 @@ be biology specific, since they aren't. |#
 ;;  on the attribute height, but it would be better
 ;;  to see if (in the dynamic-model texts) they could be
 ;;  coerced to states in place (which is what bio-predication does)
-(adj "high" :super bio-predication)
-(adj "low" :super bio-predication)
+(define-category high :specializes predication
+  :restrict ((participant (:or scalar measurement)))
+  :realization
+  (:adj "high"
+        :s participant))
 
+(define-category low :specializes predication
+  :restrict ((participant (:or scalar measurement)))
+  :realization
+  (:adj "low"
+        :s participant))
 
 ;; should be bio-level, because it restricts the argument
 ;;  but I don't want to impact parsing and Spire
@@ -204,7 +212,9 @@ be biology specific, since they aren't. |#
   :binds ((alternative biological))
   :realization
     (:adj "mutually exclusive"
-     :with alternative))
+          :with alternative
+          :for disease
+          :in disease))
 
 
 (define-category positive :specializes bio-relation
