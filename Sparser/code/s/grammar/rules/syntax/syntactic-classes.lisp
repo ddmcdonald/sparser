@@ -19,8 +19,7 @@
    Primary consumer is the subcategorization checking
    code below. Note that if we make these with an
    unindexed individual (in make-pp) then the index
-   information doesn't come into play"
-  :index (:temporary :sequential-keys prep comp))
+   information doesn't come into play")
 
 (define-category as-comp
   :specializes phrase-interpretation
@@ -28,12 +27,7 @@
           (comp))
   :documentation "Provides a scaffolding to hold
    a generic as-comp as identified by
-   the pp rules in grammar/rules/syntactic-rules.
-   Primary consumer is the subcategorization checking
-   code below. Note that if we make these with an
-   unindexed individual (in make-pp) then the index
-   information doesn't come into play"
-  :index (:temporary :sequential-keys prep comp))
+   the pp rules in grammar/rules/syntactic-rules.")
 
 (define-category prepositional-phrase
   :specializes phrase-interpretation
@@ -41,14 +35,8 @@
           (pobj))
   :documentation "Provides a scafolding to hold
   a generic prepositional phrase as identified by
-  the pp rules in grammar/rules/syntactic-rules.
-  Primary consumer is the subcategorization checking
-  code below. Note that if we make these with an
-  unindexed individual (in make-pp) then the index
-  information doesn't come into play"
-  :index (:temporary :sequential-keys prep pobj))
+  the pp rules in grammar/rules/syntactic-rules.")
 (mark-as-form-category category::prepositional-phrase)
-
 
 (define-category prep-comp
   :specializes phrase-interpretation
@@ -57,8 +45,7 @@
   :documentation "If to-comp picks up infinitive complements
   this picks up all the rest, e.g. 'by being phosphorylated'
   though the head decides what to do with it based on the
-  composition. Same design as pps."
-  :index (:temporary :sequential-keys prep comp)) 
+  composition")
 
 (define-category subordinate-clause
   :specializes phrase-interpretation
@@ -66,8 +53,7 @@
           (comp))
   :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
   though the head decides what to do with it based on the
-  composition. Same design as pps."
-  :index (:temporary :sequential-keys conj comp))
+  composition.")
 (mark-as-form-category category::subordinate-clause)
 
 (define-category subordinate-s
@@ -93,12 +79,7 @@
           (clause))
   :documentation "Provides a scafolding to hold
   a generic pp-relative clause such as 'in which ERK is phosphorylated
-  in grammar/rules/syntactic-rules.
-  Primary consumer is the subcategorization checking
-  code below. Note that if we make these with an
-  unindexed individual (in make-pp) then the index
-  information doesn't come into play"
-  :index (:temporary :sequential-keys prep pobj))
+  in grammar/rules/syntactic-rules.")
 
 (define-category partitive-relativizer
   :specializes phrase-interpretation
