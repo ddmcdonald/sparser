@@ -27,7 +27,7 @@
       (spell-add l))))
 	
 (defun spell-check (word)
-	(gethash word *dictionary*))	
+  (gethash word *dictionary*))	
  
 (defun remove-at (pos seq)
   (concatenate
@@ -42,10 +42,10 @@
                (subseq str pos (length str))))
 
 (defun replace-at (ch pos seq)
-	(concatenate 'string
-		(subseq seq 0 pos)
-		(list ch)
-		(subseq seq (+ pos 1) (length seq))))
+  (concatenate 'string
+               (subseq seq 0 pos)
+               (list ch)
+               (subseq seq (+ pos 1) (length seq))))
 
 (defun transpose-at (pos1 pos2 seq)
   (let ((word (coerce seq 'list)))
@@ -74,11 +74,11 @@
     replaces))
 
 (defun gen-transposes (word)
-	(let ((transposes))
-		(loop for i from 0 to (- (length word) 2) do
-			(loop for j from (+ i 1) to (- (length word) 1) do
-				(push (transpose-at i j word) transposes)))
-		transposes))
+  (let ((transposes))
+    (loop for i from 0 to (- (length word) 2) do
+            (loop for j from (+ i 1) to (- (length word) 1) do
+                    (push (transpose-at i j word) transposes)))
+    transposes))
 
 (defun build-misspellings ()
   (flet ((build-for-word (word b)
@@ -94,10 +94,10 @@
     deletes))
 		
 (defun suggest (word)
-	(if (spell-check word)
-		nil
-		(let* ((deletes (get-ed2-deletes word))
-				(sugs (mapcar (lambda (del)
-								(gethash del *misspellings*))
-						deletes)))
-			(remove-duplicates (apply #'append sugs) :test #'equal ))))
+  (if (spell-check word)
+      nil
+      (let* ((deletes (get-ed2-deletes word))
+             (sugs (mapcar (lambda (del)
+                             (gethash del *misspellings*))
+                           deletes)))
+        (remove-duplicates (apply #'append sugs) :test #'equal ))))
