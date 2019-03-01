@@ -82,6 +82,7 @@
 (def-indiv-with-id cancer "MZL" "EFO:1000630" :name "marginal zone B-cell lymphoma") 
 (def-indiv-with-id cancer "NHL" "NCIT:C3423" :name "Non-Hodgkin Lymphoma")
 (def-indiv-with-id cancer "NLPHL" "NCIT:C7258" :name "nodular lymphocyte predominant hodgkin s lymphoma")
+(def-indiv-with-id cancer "ovarian cancer" "NCIT:C4908" :name "ovarian carcinoma")
 (def-indiv-with-id cancer "ovarian serous cystadenocarcinoma" "NCIT:C7978"  :name "ovarian serous cystadenocarcinoma" )
 (def-indiv-with-id cancer "NSHL" "NCIT:C3518" :name "nodular sclerosis hodgkin s lymphoma") 
 (def-indiv-with-id cancer "PCNSL" "NCIT:C9301" :name "central nervous system lymphoma") 
