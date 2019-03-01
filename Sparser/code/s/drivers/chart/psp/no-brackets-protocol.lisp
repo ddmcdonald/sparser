@@ -83,6 +83,11 @@
    and we want to se the entire sentence context")
 
 (defparameter *warn-or-error-choice* :error)
+
+(defparameter *smart-frequency-count* nil
+ "When true, we just update the frequency of various words")
+
+
 (defun warn-or-error (datum &rest arguments)
   (case *warn-or-error-choice*
     (:error (apply #'error (cons datum arguments)))
@@ -258,12 +263,36 @@
        (setq sentence next-sentence))))
 
 
+
 (defun scan-terminals-and-do-core (sentence)
   "Do the remaining processing of the terminals followed
    by all the sentence-level parsing"
   (setq *sentence-in-core* sentence) ;; note 1
   (scan-terminals-of-sentence sentence) ;; (tr :scanning-done)
-  (sentence-processing-core sentence))  ;; (tr :sweep-core-done)
+  (if *smart-frequency-count*
+      (do-smart-frequency-count sentence)
+      (sentence-processing-core sentence)))  ;; (tr :sweep-core-done)
+
+(defun do-smart-frequency-count (sentence)
+  (loop for e in
+          (all-tts (starts-at-pos sentence)
+                   (ends-at-pos sentence))
+        when (edge-p e)
+        do
+          (record-word-frequency
+           (word-from-edge e)
+           (pos-edge-starts-at e))))
+
+(defun word-from-edge (e)
+  (cond ((eq :single-term (edge-right-daughter e))
+         (if (edge-p (edge-left-daughter e))
+             ;; happens with things like the protein over MEK1
+             (word-from-edge (edge-left-daughter e))
+             (edge-left-daughter e)))
+        (t
+         ;;(warn "no word at ~s" e)
+         nil)))
+
 
 (defun error-trapped-scan-and-core (sentence)
   "Wrapped scan-terminals-and-do-core inside an error catch"
