@@ -126,7 +126,11 @@
 (defmethod frequency-table-entry ((word word))
   (gethash word *word-frequency-table*
            :no-entry))  ;; the value returned if the word isn't in the table
-           
+
+(defmethod frequency-table-entry ((word polyword))
+  (gethash word *word-frequency-table*
+           :no-entry))  ;; the value returned if the word isn't in the table
+
 (defmethod frequency-table-entry ((s symbol))
   (let ((word (word-named (string-downcase (symbol-name s)))))
     (frequency-table-entry word)))
@@ -181,9 +185,10 @@
   the function look-at-terminal is setf'd to this function, which is
   passed every word in the document in successive calls (see the driver
   look-at-next-terminal/shell)."
-  (incf *words-in-run*) ;; running total of document length
-  (let ((classification (classify-word-for-frequency word position)))
-    (record-word-frequency/over-all word classification)))
+  (when word ;; can be nil in cases where there isn't a word
+    (incf *words-in-run*) ;; running total of document length
+    (let ((classification (classify-word-for-frequency word position)))
+      (record-word-frequency/over-all word classification))))
 
 (defun record-word-frequency/over-all (word classification)
   (let ((entry
@@ -722,26 +727,29 @@
   "Unclear that capitalization is meaningful unless we can distinguish 
    sentence-internal from initial and get the initial proper names 
    via a workable heuristic."
-  (if (get-tag :function-word word)
-    (if *include-function-words-in-frequency-counts*
-      word
-      (else (pushnew word *function-words-seen-in-run*)
-	    *function-word*))
-    (ecase (pos-capitalization position)
-      (:lower-case word) 
-      (:punctuation
-       (if *include-punctuation-in-frequency-counts*
-         word
-	 (else (pushnew word *punctuation-seen-in-run*)
-	       *punctuation-word*)))
-      (:digits *number-word*)
-      ;;/// Need to include the number word (ordinals and cardinals)
-      ;; in this generalization
-      ((or :initial-letter-capitalized
-           :all-caps
-           :mixed-case
-           :single-capitalized-letter)
-       word ))))
+  (cond ((polyword-p word)
+         word)
+        ((get-tag :function-word word)
+         (if *include-function-words-in-frequency-counts*
+             word
+             (else (pushnew word *function-words-seen-in-run*)
+                   *function-word*)))
+        (t
+         (ecase (pos-capitalization position)
+           (:lower-case word) 
+           (:punctuation
+            (if *include-punctuation-in-frequency-counts*
+                word
+                (else (pushnew word *punctuation-seen-in-run*)
+                      *punctuation-word*)))
+           (:digits *number-word*)
+           ;;/// Need to include the number word (ordinals and cardinals)
+           ;; in this generalization
+           ((or :initial-letter-capitalized
+                :all-caps
+                :mixed-case
+                :single-capitalized-letter)
+            word )))))
 
 #| (establish-word-frequency-classification :ignore-capitalization
                                             'wf-classification/ignore-caps)  |#
