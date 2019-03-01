@@ -655,6 +655,43 @@
    :ignore-capitalization 'wf-classification/ignore-caps)
   (setq *switch-setting* :word-frequency))
 
+(defun word-frequency-setting-caps ()
+  "Turned on by hand. No corresponding configuration"
+  (turn-off-c3)
+  (ignore-comlex)
+  (establish-character-translation-protocol :no-changes)
+  (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
+  (setq *make-edges-for-unknown-words-from-their-properties* t
+        *do-forest-level* nil
+        *do-conceptual-analysis* nil
+        *do-heuristic-boundary-detection* nil
+	*do-heuristic-segment-analysis* nil
+	*do-domain-modeling-and-population* nil
+	*do-strong-domain-modeling* nil
+        *recognize-sections-within-articles* nil
+        *newline-delimits-paragraphs* nil
+        *do-completion-actions* nil
+        *after-action-on-segments* 'normal-segment-finished-options)
+  (period-hook-off)
+  (establish-version-of-next-terminal-to-use :pass-through-all-tokens)
+  (establish-kind-of-chart-processing-to-do :just-do-terminals)
+  (establish-version-of-look-at-terminal :record-word-frequency)
+  (establish-version-of-complete :ca/ha)
+  (setq *count-input-lines* nil)
+  (establish-word-frequency-classification
+   :standard 'wf-classification/ignore-caps/known
+  ;;:Ignore-capitalization 'wf-classification/ignore-caps
+  )
+  (setq *switch-setting* :word-frequency))
+
+
+(defun dictionary/morphology-frequency-counts ()
+	(setq *smart-frequency-count* t)
+	(establish-word-frequency-classification
+	   :standard 'wf-classification/ignore-caps/known)
+	(setq *include-function-words-in-frequency-counts* t)
+	(setq *stem-words-for-frequency-counts* nil))
+
 (defun just-bracketing-setting ()
   "Goes with the 'no-grammar' option"
   (declare (special category::number *no-segment-level-operations*
