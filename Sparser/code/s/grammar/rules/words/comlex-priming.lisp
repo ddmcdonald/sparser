@@ -29,10 +29,10 @@
 (defvar *comlex-words-primed* nil
   "Flag that indicates that the priming has been done")
 
-(defparameter *primed-words* (make-hash-table :size 56000 ;; 56k
+(defparameter *primed-words* (make-hash-table :size 70000 ;; 56k
                                               :rehash-size 5000
                                               :test #'equal)
-  ;; After first full run came to 52,745
+  ;; After first full run came to 65,713
   "Holds priming data for all the words we know something about
    but don't want to load as part of the regular system.")
 
