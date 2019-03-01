@@ -52,3 +52,12 @@
     w))
 
 
+(defmethod incf-word-count ((w polyword) (o word-frequency))
+  (let* ((table (words-to-count o))
+	 (count (gethash w table)))
+    (unless count
+      (push w (words o))
+      (setf (gethash w table) 0))
+    (incf (token-count o))
+    (incf (gethash w table))
+    w))
