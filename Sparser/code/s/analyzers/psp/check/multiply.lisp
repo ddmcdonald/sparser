@@ -66,12 +66,12 @@
 
 (defparameter *check-chunk-forms* t
   "This enables checking the form of the result of a semantic rule, as
- well as the form of the RHS, to reduce the mis-use of ETF derived
- rules for clauses that are applied when a participle modifies an NG")
+   well as the form of the RHS, to reduce the mis-use of ETF derived
+   rules for clauses that are applied when a participle modifies an NG")
 
 (defparameter *check-semantic-applicability* t
   "This enables checking the semantic applicability of syntactic rules
- and form rules, even when whack-a-rule is not running.")
+   and form rules (any rule with a :function based realization).")
 
 (defparameter *check-forms* nil
   "When this is T, ensure that all rules are only applied to 
@@ -82,7 +82,10 @@
    the form information of a rule that wasn't derived from an 
    ETF's schema.")
 
-(defparameter *report-form-check-blocks* nil) ;; see check-rule-form
+(defparameter *report-form-check-blocks* nil
+  "If the form of the rule is bad (see validate-rule-form) and
+   this flag is up, we report the problem. Turned on/off by
+   the trace function (un)report-form-check-blocks")
 
 (defparameter *use-trie-multiply* nil
   "An alternative organization of the rule set that can be searched
@@ -142,7 +145,6 @@
 
 ;; (trace-rule-source)
 
-
 (defun multiply-edges (left-edge right-edge &optional chunk)
   "Called from the check routines, e.g. check-one-one
    Looks for any possibility of composition for these edges first,
@@ -160,6 +162,8 @@
     ;; A literal edge (category is a word) would work fine
     (return-from multiply-edges nil))
 
+  (tr :multiply-edges left-edge right-edge)
+  
   (if *use-trie-multiply*
     (trie-multiply-edges left-edge right-edge chunk)
 
@@ -189,7 +193,7 @@
 
       (unless rule
         (when *allow-form-rules*
-          (setq rule (mult/ids-on-form-label left-edge right-edge))
+          (setq rule (multiply-form-category left-edge right-edge))
           (if rule
             (then
               (tr :found-rule-of-form rule)
@@ -203,7 +207,7 @@
 
       (unless rule
         (when *allow-pure-syntax-rules*       
-          (setq rule (check-form-form left-edge right-edge))
+          (setq rule (multiply-form-form left-edge right-edge))
           (if rule
               (then
                 (tr :found-syntactic-rule rule)
@@ -224,47 +228,35 @@
 ;;;  Semantic rules
 ;;;-----------------
 
-;; We come here from the Multiply-edge entry point.
-;; Nothing has been checked or ruled out yet, so we start with
-;; the most semantic case for cfr and csr rules -- do the labels
-;; in the category field of the edges combine.
-;;
-
-;; Remove the form rule operations here -- make this a pure semantic rule play
 (defun multiply-categories (left-category-ids right-category-ids
 			    left-edge right-edge &optional chunk)
-    
-  (tr :multiply-edges left-edge right-edge)
-  ;;"[Multiply] Checking (e~A+e~A)  ~A + ~A"
-
+  "We come here from the Multiply-edge entry point.
+   Nothing has been checked or ruled out yet, so we start with
+   the most semantic case for cfr and csr rules -- do the labels
+   in the category field of the edges combine."
   (tr :muliply-categories)
-  ;; "[Multiply threading] Called muliply-categories"
   
   (if (and left-category-ids right-category-ids)
     (then
       (tr :both-have-category-ids)
-      ;; [Multiply]    both labels have category ids"
       (let ((left-label-id (category-multiplier left-category-ids))
 	    (right-label-id (category-multiplier right-category-ids)))
-
+        
 	(if (and left-label-id right-label-id)
 	  (then
 	    (tr :both-right-and-left-label-ids)
-            ;; "[Multiply]    both edges have category combinations"
 	    (let ((rule (multiply-ids left-label-id
 				      right-label-id)))
-	     
 	      (if rule
 		(then
                  (tr :multiply-succeeded rule left-edge right-edge)
-                 ;; "[Multiply]    They succeeded ~A"
                  rule)
 		(else
                  (tr :multiply-failed left-edge right-edge)
-                 ;; "   which do not combine"
-		 nil
-		 ))))
-	  (else 
+		 nil))))
+	  (else
+            (tr :one-or-both/does-not-have-category-multiplier
+                left-label-id right-label-id)
 	    nil))))
     (else
       (tr :only-L/R-has-category-ids left-category-ids right-category-ids)
@@ -277,91 +269,115 @@
 ;;; Form rules
 ;;;------------
 
-(defun mult/ids-on-form-label (left-edge right-edge)
+(defun multiply-form-category (left-edge right-edge)
   "Look for rules based on one the form label on one of the edges and
    the category label on the other"
-  (tr :mult/ids-on-form-label)
-  
+  (tr :mult/ids-on-form-label) ;; threading
   (let* ((left-form-ids (form-ids/rightward left-edge)) ;; form field
          (right-form-ids (form-ids/leftward right-edge)))
+    (tr :multiply-form left-edge right-edge)
     (if (or left-form-ids right-form-ids)
       (then
         (tr :checking-form-label-category-rules)
-        (or (and right-form-ids ;; e.g. on np-head, which is a form label
-                 (try-mult/left-category-right-form_category-id
-                  right-form-ids left-edge right-edge))
-            (and left-form-ids
-                 (mult/right-category-left-form_category-id
-                  left-form-ids left-edge right-edge))
-            (mult/check-form-options left-edge right-edge)))
+        (let ((rule
+               (mult/check-form-options left-edge right-edge
+                                        left-form-ids right-form-ids)))
+          rule))
       (else
-        (tr :neither-has-category-on-form-ids)
-        (mult/check-form-options left-edge right-edge)))))
+        (tr :neither-has-category-id)
+        nil))))
 
 
-(defun try-mult/left-category-right-form_category-id (right-form-ids
-						      left-edge right-edge)
-  "Look for a rule that combines a category label on the left and
-   a form label on the right."
-  (tr :try-mult/left-category-right-form_category-id)
-  (tr :cat-ids-on-right-form-label left-edge right-edge)
-  (let* ((right-label-id (category-multiplier right-form-ids))
-	 (left-category-ids (category-ids/rightward left-edge))
-	 (left-label-id (category-multiplier left-category-ids)))
-    (if (and left-label-id right-label-id)
-      (then
-	(let ((rule (multiply-ids left-label-id right-label-id)))
-	  (if rule
-	    (then (tr :multiply-succeeded rule left-edge right-edge)
-		  rule)
-	    (else (tr :multiply-failed left-edge right-edge)
-		  nil))))
-      (else
-	nil))))
-
-(defun mult/right-category-left-form_category-id (left-form-ids
-						  left-edge right-edge)
-  "Look for a rule combining a form label on the left and a category
-   label on the right."
-  (tr :mult/right-category-left-form_category-id)
-  (tr :cat-ids-on-left-form-label left-edge right-edge)
-  (let* ((left-label-id (category-multiplier left-form-ids))
-	 (right-category-ids (category-ids/leftward right-edge))
-	 (right-label-id (category-multiplier right-category-ids)))
-    (if (and left-label-id right-label-id)
-      (then
-	(let ((rule (multiply-ids left-label-id right-label-id)))
-	  (if rule
-	    (then (tr :multiply-succeeded rule left-edge right-edge)
-		  rule)
-	    (else (tr :multiply-failed left-edge right-edge)
-		  nil))))
-      (else
-	nil))))
+(defun mult/check-form-options (left-edge right-edge
+                                left-form-ids right-form-ids)
+  "Dispatch depending on which label(s) have rule form ids"
+  (tr :mult/check-form-options)
+  (cond
+    ((and left-form-ids right-form-ids)
+     (look-for-either-form-rule left-edge right-edge
+                                 left-form-ids right-form-ids))
+    (left-form-ids
+     (mult/form-label-looking-right  left-form-ids left-edge right-edge))
+    (right-form-ids
+     (mult/form-label-looking-left right-form-ids left-edge right-edge))
+    (t nil)))
 
 
+;;--- form label on both sides
 
-;;;----------------------------------------
-;;; multiplies for form-rule possibilities
-;;;----------------------------------------
+(defun look-for-either-form-rule (left-edge right-edge
+                                  left-form-ids right-form-ids)
+  "Both edges have form IDs. Explore whether one or both multiplies
+   with a category label ID to retrieve a rule."
+  (tr :check-for-either-form-rule)
+  (let ((rule-for-left-form/right-category
+         (mult/form-label-looking-right left-form-ids left-edge right-edge))
+        (rule-for-right-form/left-category
+         (mult/form-label-looking-left right-form-ids left-edge right-edge)))
+    (cond
+      ((and rule-for-left-form/right-category
+            rule-for-right-form/left-category)
+       (choose-between-form-rules rule-for-left-form/right-category
+                                  rule-for-right-form/left-category
+                                  left-edge right-edge))
+      (rule-for-left-form/right-category
+       (tr :left-form/right-category-succeeded rule-for-left-form/right-category)
+       rule-for-left-form/right-category)
+      (rule-for-right-form/left-category
+       (tr :right-form/left-category-succeeded rule-for-right-form/left-category)
+       rule-for-right-form/left-category)
+      (t
+       (tr :form-multiply-failed left-edge right-edge)
+       nil ))))
+
+
+;;--- form label on the left
+  
+(defun mult/form-label-looking-right (left-form-ids
+				      left-edge right-edge)
+  "We know we have a form rule id on the left. Is there a form-rule id 
+   on the category on the right"
+  (tr :mult/just-Left-ids)
+  (let* ((right-label-ids (category-ids/leftward right-edge))
+	 (right-label-id (form-multiplier right-label-ids))
+	 (left-form-id (form-multiplier left-form-ids)))
+    (if (and left-form-id right-label-id)
+      (look-left-for-form-rule left-edge right-edge
+                               left-form-id right-label-id)
+      (else nil))))
 
 (defun look-left-for-form-rule (left-edge right-edge
-                                 left-form-id
-                                 right-label-id)
-  "Does the multiply of left-form + right-category"
+                                left-form-id right-label-id)
+  "Does the multiply of left-form + right-category work?"
+  (tr :left-form-id left-edge right-edge)
   (let ((rule (multiply-ids left-form-id right-label-id)))
     (if rule
-      (then (tr :right-form-id-succeeded rule left-edge right-edge)
+      (then (tr :left-form-id-succeeded rule left-edge right-edge)
             rule)
-      (else (tr :right-form-id-failed left-edge right-edge)
+      (else (tr :left-form-id-failed left-edge right-edge)
             nil))))
 
 
+;;--- form label on the right
+
+(defun mult/form-label-looking-left (right-form-ids
+				     left-edge right-edge)
+  "We know we have a form rule id on the right edge. Is there a
+   corresponding form-rule id on the category on the left?"
+  (tr :mult/just-Right-ids)
+  (let* ((left-label-ids (category-ids/rightward ;; looking rightward
+			  left-edge))
+	 (left-label-id (form-multiplier left-label-ids))
+	 (right-form-id (form-multiplier right-form-ids)))
+    (if (and left-label-id right-form-id)
+      (look-right-for-form-rule left-edge right-edge
+				 left-label-id right-form-id)
+      (else nil))))
 
 (defun look-right-for-form-rule (left-edge right-edge
-                                  left-label-id
-                                  right-form-id)
+                                 left-label-id right-form-id)
   "Does the multiply of left-category + right-form"
+  (tr :right-form-id left-edge right-edge)
   (let ((rule (multiply-ids left-label-id right-form-id)))
     (if rule
       (then (tr :right-form-id-succeeded rule left-edge right-edge)
@@ -371,129 +387,58 @@
 
 
 
-
-;;;----------------------------------------
-;;; setting up for checking for form-rules
-;;;----------------------------------------
-
-;; We've exhausted the options with the labels in the category field,
-;; so we look for combinations with the labels from one category field
-;; and one form field
-;;
-(defun mult/check-form-options (left-edge right-edge)
-  (tr :mult/check-form-options)
-  (let ((left-form-ids (form-ids/rightward left-edge))
-	(right-form-ids (form-ids/leftward right-edge)))
-    (cond
-      ((and left-form-ids right-form-ids)
-       (tr :neither-category-id)
-       (check-for-either-form-rule left-edge right-edge
-				   left-form-ids right-form-ids))
-      (left-form-ids
-       (mult/form-label-looking-right  left-form-ids left-edge right-edge))
-      (right-form-ids
-       (mult/form-label-looking-left right-form-ids left-edge right-edge))
-      (t nil))))
-
-
-(defun check-for-either-form-rule (left-edge right-edge
-                                   left-form-ids right-form-ids)
-  (tr :check-for-either-form-rule)
-  (or (mult/form-label-looking-right left-form-ids left-edge right-edge)
-      (mult/form-label-looking-left right-form-ids left-edge right-edge)
-      (else
-       (tr :multiply-failed left-edge right-edge)
-       nil )))
-
-
-(defun mult/form-label-looking-right (left-form-ids
-				      left-edge right-edge)
-  ;; a form id on the left, a category id on the right
-  (tr :mult/just-Left-ids)
-  (let* ((right-label-ids (category-ids/leftward right-edge))
-	 (right-label-id (form-multiplier right-label-ids))
-	 (left-form-id (form-multiplier left-form-ids)))
-    (tr :left-form-id left-edge right-edge)
-    (if (and left-form-id right-label-id)
-      (look-left-for-form-rule left-edge right-edge
-				left-form-id right-label-id)
-      (else (tr :right-form-id-failed left-edge right-edge)
-	    nil ))))
-
-
-(defun mult/form-label-looking-left (right-form-ids
-				     left-edge right-edge)
-  ;; form category id on the left, form id on the right
-  (tr :mult/just-Right-ids)
-  (let* ((left-label-ids (category-ids/rightward ;; looking rightward
-			  left-edge))
-	 (left-label-id (form-multiplier left-label-ids))
-	 (right-form-id (form-multiplier right-form-ids)))
-    (tr :right-form-id left-edge right-edge)
-    (if (and left-label-id right-form-id)
-      (look-right-for-form-rule left-edge right-edge
-				 left-label-id right-form-id)
-      (else (tr :right-form-id-failed left-edge right-edge)
-	    nil ))))
-
-      
-
-
-
-
-
 ;;;------------------------------
 ;;; check purely syntactic rules
 ;;;------------------------------
 
-(defun check-form-form (left-edge right-edge)
-  (when *allow-pure-syntax-rules*
-    (tr :looking-for-syntactic-combination)
-    (let ((left-form-label (edge-form left-edge))
-          (right-form-label (edge-form right-edge)))
-      (cond
-        ((and left-form-label right-form-label)
-         (let ((left-form-rs (label-rule-set left-form-label))
-               (right-form-rs (label-rule-set right-form-label)))
-           (cond
-             ((and left-form-rs right-form-rs)
-              (let ((left-form-id
-                     (cdr (rs-right-looking-ids left-form-rs)))
-                    (right-form-id
-                     (cdr (rs-left-looking-ids right-form-rs))))
-                (cond
-                  ((and left-form-id right-form-id)
-                   (tr :both-form-labels-have-ids)
-                   (let ((rule (multiply-ids left-form-id
-                                             right-form-id)))
-                     (if rule
-                       (then (tr :syntactic-combination-succeeded rule)
-                             rule )
-                       (else (tr :syntactic-combination-failed)
-                             nil ))))
-                  
-                  (left-form-id
-                   (tr :no-form-id-on-right-form-label)
-                   nil)
+(defun multiply-form-form (left-edge right-edge)
+  "Look for a rule based on the form labels on the two edges"
+  (tr :looking-for-syntactic-combination)
+  (let ((left-form-label (edge-form left-edge))
+        (right-form-label (edge-form right-edge)))
+    (cond
+      ((and left-form-label right-form-label)
+       (let ((left-form-rs (label-rule-set left-form-label))
+             (right-form-rs (label-rule-set right-form-label)))
+         (cond
+           ((and left-form-rs right-form-rs)
+            (let ((left-form-id
+                   (cdr (rs-right-looking-ids left-form-rs)))
                   (right-form-id
-                   (tr :no-form-id-on-left-form-label)
-                   nil)
-                  (t (tr :neither-form-label-has-form-ids)
-                     nil))))
+                   (cdr (rs-left-looking-ids right-form-rs))))
+              (cond
+                ((and left-form-id right-form-id)
+                 (tr :both-form-labels-have-ids left-form-label right-form-label)
+                 (let ((rule (multiply-ids left-form-id
+                                           right-form-id)))
+                   (if rule
+                     (then (tr :syntactic-combination-succeeded rule)
+                           rule )
+                     (else (tr :syntactic-combination-failed)
+                           nil ))))
+                
+                (left-form-id
+                 (tr :no-form-id-on-right-form-label)
+                 nil)
+                (right-form-id
+                 (tr :no-form-id-on-left-form-label)
+                 nil)
+                (t (tr :neither-form-label-has-form-ids)
+                   nil))))
 
-             (left-form-rs
-              (tr :no-rules-mention-right-form-label right-form-label)
-              nil)
-             (right-form-rs
-              (tr :no-rules-mention-left-form-label left-form-label)
-              nil))))
+           (left-form-rs
+            (tr :no-rules-mention-right-form-label right-form-label)
+            nil)
+           (right-form-rs
+            (tr :no-rules-mention-left-form-label left-form-label)
+            nil))))
 
-        (left-form-label
-         (tr :no-form-label-on-right-edge right-edge)
-         nil)
-        (right-form-label
-         (tr :no-form-label-on-left-edge right-edge)
-         nil)))))
+      (left-form-label
+       (tr :no-form-label-on-right-edge right-edge)
+       nil)
+      (right-form-label
+       (tr :no-form-label-on-left-edge right-edge)
+       nil))))
 
 
   
