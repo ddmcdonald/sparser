@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1990-2005,2013-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-2005,2013-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "edges"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  September 2016
+;;;  Version:  March 2019
 
 ;; initiated 8/90
 ;; 10/30/91 added *trace-paired-punctuation*. 6/18/92 added *trace-terminal-edges*
@@ -25,7 +25,19 @@
 
 (in-package :sparser)
 
-(defun trace-edges ()             ;; for meta-point
+;; Candidate replacement for trace-edges that focuses on
+;; what rules are being offered up
+(defun trace-multiply ()
+  (trace-rules)
+  (trace-rule-source)
+  (trace-rules-validity))
+(defun untrace-multiply ()
+  (untrace-rules)
+  (untrace-rule-source)
+  (untrace-rules-validity))
+
+
+(defun trace-edges ()
   (setq *trace-check-edges* t
         *trace-do-edge* t 
         *trace-edge-creation* t
@@ -42,11 +54,14 @@
 (defun untrace-parse-edges ()
   (setq *parse-edges* nil))
 
-(defun trace-rule-source ()
-  (setq *trace-rules-source-and-validity* t))
-(defun untrace-rule-source ()
-  (setq *trace-rules-source-and-validity* nil))
 
+
+(defvar *trace-rules* nil
+  "For the muliplications threading labels to rules")
+(defun trace-rules ()
+  (setq *trace-rules* t))
+(defun untrace-rules ()
+  (setq *trace-rules* nil))
 
 
 ;;;-----------------------------------------------------------
@@ -77,27 +92,25 @@
 ;;;---------------------------------------------------
 
 (defparameter *trace-edge-multiplication* nil)
-
 (defun trace-edge-multiplication ()
   (setq *trace-edge-multiplication* t))
-
 (defun untrace-edge-multiplication ()
   (setq *trace-edge-multiplication* nil))
-
-
 
 ;;--- w/in Multiply-edges
 
 (deftrace :multiply-edges (left-edge right-edge)
-  ;; called at the top of Multiply-edges before the check
-  (when (or *trace-check-edges*
+  ;; called at the top of Multiply-categories
+  (when (or *trace-rule-source*
+            *trace-check-edges* *trace-edge-multiplication*
             *trace-rules-source-and-validity*)
     (let ((left# (edge-position-in-resource-array left-edge))
           (right# (edge-position-in-resource-array right-edge))
           (left-label (edge-category left-edge))
           (right-label (edge-category right-edge)))
-      (trace-msg "[Multiply] Checking (e~A+e~A)  ~A + ~A"
-                 left# right# left-label right-label))))
+      (trace-msg "Checking (e~A+e~A)  ~A + ~A"
+                 left# right#
+                 (pname left-label) (pname right-label)))))
 
 
 (deftrace :right-side-is-composite ()
@@ -118,25 +131,6 @@
     (trace-msg "    trying ~a" category)))
 
 
-
-(deftrace :right-edge-is-dotted (right-edge)
-  ;; called from Multiply-edges for this special case
-  (when *trace-check-edges*
-    (trace-msg "   but the right edge, e~A, is dotted and can't possibly combine"
-               (edge-position-in-resource-array right-edge))))
-
-(deftrace :both-have-category-ids ()
-  ;; called from Multiply-categories
-  (when *trace-check-edges*
-    (trace-msg "[Multiply]    both labels have category ids")))
-
-(deftrace :only-L/R-has-category-ids (left-category-ids right-category-ids)
-  (declare (ignore right-category-ids))
-  ;; called from Multiply-categories
-  (when *trace-check-edges*
-    (if left-category-ids
-      (trace-msg "[Multiply]    only the left has category ids")
-      (trace-msg "[Multiply]    only the right has category ids"))))
 
 
 (deftrace :only-left-category-has-ids ()
@@ -162,6 +156,239 @@
 
 
 
+;;--- multiply-categories
+
+(deftrace :both-have-category-ids ()
+  ;; called from Multiply-categories
+  (when *trace-rules*
+    (trace-msg "[category] both labels have category ids")))
+
+(deftrace :both-right-and-left-label-ids ()
+  (when *trace-rules*
+    (trace-msg "[category] the labels have category combinations")))
+
+(deftrace :multiply-succeeded (rule left-edge right-edge)
+  ;; called from Multiply-categories
+  (declare (ignore left-edge right-edge))
+  (when *trace-rules*
+    ;; Was code here that considered the possibility that multply
+    ;; returned a list, but it wrote to the trace stream directly
+    ;; and in CCL anyway that's not coming through
+    (when (listp rule) ;; so ignoring it
+      (setq rule (car rule)))
+    (trace-msg "[category]  They succeeded ~A"
+               (symbol-name (cfr-symbol rule)))))
+
+(deftrace :multiply-failed (left-edge right-edge)
+  ;; called from multiply-categories
+  (when *trace-rules*
+    (let ((left# (edge-position-in-resource-array left-edge))
+          (right# (edge-position-in-resource-array right-edge)))
+      (declare (ignore left# right#))
+      (trace-msg "[category]  which do not combine"))))
+
+(deftrace :one-or-both/does-not-have-category-multiplier (left-label-id right-label-id)
+  ;; called from multiply-categories
+  (when *trace-rules*
+    (let ((statement
+           (cond ((and (null left-label-id) (null right-label-id))
+                  "neither has a rule id")
+                 ((null left-label-id)
+                  "the left label doesn't have a category multiplication id")
+                 ((null right-label-id)
+                  "the right label doesn't have a category multiplication id")
+                 (t (error "shouldn't get here")))))
+      (trace-msg "[category] ~a" statement))))
+    
+(deftrace :only-L/R-has-category-ids (left-category-ids right-category-ids)
+  (declare (ignore right-category-ids))
+  ;; called from Multiply-categories
+  (when *trace-rules*
+    (if left-category-ids
+      (trace-msg "[category]    only the left has category ids")
+      (trace-msg "[category]    only the right has category ids"))))
+
+
+
+;;--- form rules
+
+(deftrace :multiply-form (left-edge right-edge)
+  ;; called from multiply-form-category
+  (when *trace-rules*
+    (trace-msg "[form] Looking for form rules to compose e~a with e~a"
+               (edge-position-in-resource-array left-edge)
+               (edge-position-in-resource-array right-edge))))
+
+(deftrace :checking-form-label-category-rules ()
+  ;; called from multiply-form-category
+  (when *trace-rules*
+    (trace-msg "[form] at least one of the edges' form labels composes with category-labels")))
+    
+(deftrace :neither-has-category-id ()
+  ;; called from multiply-form-category
+  (when *trace-rules*
+    (trace-msg "[form] neither form label has a category combination")))
+
+
+(deftrace :left-form/right-category-succeeded (rule)
+  ;; called from look-for-either-form-rule
+  (when *trace-rules*
+    (trace-msg "[form] ~a returned by multiplying the left form against the right category"
+               rule)))
+
+(deftrace :right-form/left-category-succeeded (rule)
+  ;; called from look-for-either-form-rule
+  (when *trace-rules*
+    (trace-msg "[form] ~a returned by multiplying the right form against the left category"
+               rule)))
+
+(deftrace :form-multiply-failed (left-edge right-edge)
+  ;; called from look-for-either-form-rule
+  (when *trace-rules*
+    (trace-msg "[form] there is no form rule that combines e~a and e~a"
+               (edge-position-in-resource-array left-edge)
+               (edge-position-in-resource-array right-edge))))
+
+
+
+(deftrace :left-form-id (left-edge right-edge)
+  ;; called from look-left-for-form-rule
+  (when *trace-rules*
+    (let ((left# (edge-position-in-resource-array left-edge))
+          (right# (edge-position-in-resource-array right-edge))
+          (left-form-label (edge-form left-edge))
+          (right-label (edge-category right-edge)))
+      (trace-msg "[form] form label ~a looking rightward ~
+                 for a rule combining it with ~a (e~A+e~A)"
+                 left-form-label right-label left# right#))))
+
+(deftrace :left-form-id-succeeded (rule left-edge right-edge)
+  ;; called from look-left-for-form-rule
+  (when *trace-rules*
+    (let ((left# (edge-position-in-resource-array left-edge))
+          (right# (edge-position-in-resource-array right-edge)))
+      (trace-msg "[form] form rule ~a returned for e~a + e~a"
+                 rule left# right#))))
+
+(deftrace :left-form-id-failed (left-edge right-edge)
+  ;; called from look-left-for-form-rule
+  (when *trace-rules*
+    (let ((left-form-label (edge-form left-edge))
+          (right-label (edge-category right-edge)))
+      (trace-msg "[form] no form rule combines ~a with ~a"
+                 left-form-label right-label))))
+
+
+
+
+(deftrace :right-form-id (left-edge right-edge)
+  ;; called from look-right-for-form-rule when the right edge has a form id
+  (when *trace-rules*
+    (let ((left# (edge-position-in-resource-array left-edge))
+          (right# (edge-position-in-resource-array right-edge))
+          (right-form-label (edge-form right-edge))
+          (left-label (edge-category left-edge)))
+      (trace-msg "[form] form label ~a looking leftward ~
+                  for rule combining it with ~a (e~A+e~A)"
+                 right-form-label left-label left# right#))))
+
+(deftrace :right-form-id-succeeded (rule left-edge right-edge)
+  ;; called from look-right-for-form-rule
+  (when *trace-rules*
+    (let ((left# (edge-position-in-resource-array left-edge))
+          (right# (edge-position-in-resource-array right-edge)))
+      (trace-msg "[form] form rule ~a returned for e~a + e~a"
+                 rule left# right#))))
+
+(deftrace :right-form-id-failed (left-edge right-edge)
+  (when *trace-rules*
+    (let ((left# (edge-position-in-resource-array left-edge))
+          (right# (edge-position-in-resource-array right-edge)))
+      (trace-msg "[form] no form rule combines e~a with e~a"
+                  left# right#))))
+
+
+;;--- Syntactic rules
+
+(deftrace :looking-for-syntactic-combination ()
+  ;; called from multiply-form-form
+  (when *trace-rules*
+    (trace-msg "[syn] Looking for purely syntactic combinations")))
+
+(deftrace :both-form-labels-have-ids (left-form-label right-form-label)
+  ;; called from multiply-form-form
+  (when *trace-rules*
+    (trace-msg "[syn] Both form labels (~a ~a) have form ids"
+               (cat-symbol left-form-label)
+               (cat-symbol right-form-label))))
+
+(deftrace :syntactic-combination-succeeded (rule)
+  ;; called from multiply-form-form
+  (when *trace-rules*
+    (trace-msg "[syn] which compose (~A)"
+               (cfr-symbol rule))))
+
+(deftrace :syntactic-combination-failed ()
+  ;; called from multiply-form-form
+  (when *trace-rules*
+    (trace-msg "[syn] which do not compose")))
+
+
+(deftrace :no-form-id-on-right-form-label ()
+  ;; called from multiply-form-form
+  (when *trace-rules*
+    (trace-msg "[syn] but the form label on the right edge ~
+                has no form id")))
+
+(deftrace :no-form-id-on-left-form-label ()
+  ;; called from multiply-form-form
+  (when *trace-rules*
+    (trace-msg "[syn]  but the form label on the left edge ~
+                has no form id")))
+
+(deftrace :neither-form-label-has-form-ids ()
+  ;; called from multiply-form-form
+  (when *trace-rules*
+    (trace-msg "[syn] but the form labels on both edge ~
+                do not have form ids")))
+
+
+(deftrace :no-rules-mention-right-form-label (label)
+  ;; called from multiply-form-form
+  (when *trace-rules*
+    (trace-msg "[syn] but the right form label (~A)~
+              ~%    has no left-looking rules"
+               (cat-symbol label))))
+
+(deftrace :no-rules-mention-left-form-label (label)
+  ;; called from multiply-form-form
+  (when *trace-rules*
+    (trace-msg "[syn] but the left form label (~A)~
+              ~%     has no right-looking rules"
+               (cat-symbol label))))
+
+
+(deftrace :no-form-label-on-right-edge (e)
+  ;; called from multiply-form-form
+  (when *trace-rules*
+    (trace-msg "[syn] but the right edge (e~A)~
+              ~%    has no form label"
+              (edge-position-in-resource-array e))))
+
+(deftrace :no-form-label-on-left-edge (e)
+  ;; called from multiply-form-form
+  (when *trace-rules*
+    (trace-msg "[syn] but the left edge (e~A)~
+              ~%     has no form label"
+              (edge-position-in-resource-array e))))
+               
+
+
+;;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+
+
+    
 (deftrace :no-ids-on-either-edge ()
   ;; called from Multiply-edges in its dispatch
   (when *trace-check-edges*
@@ -169,41 +396,7 @@
 
 
 
-;;--- for multiplying referent categories
 
-(deftrace :multiplying-referent-categories ()
-  (when *trace-check-edges*
-    (trace-msg "Edge labels did not complete, so looking at referents")))
-
-(deftrace :referent-categories-to-check (left-categories right-categories)
-  (when *trace-check-edges*
-    (trace-msg "  The left referent has the categories: ~a~
-              ~%  The right has ~a" left-categories right-categories)))
-
-(deftrace :multiply-edges-by-referent-category (left-category right-category
-                                                left-edge right-edge)
-  (when *trace-check-edges*
-    (let ((left# (edge-position-in-resource-array left-edge))
-          (right# (edge-position-in-resource-array right-edge)))
-      (trace-msg "Checking (e~a+e~a)  ~a + ~a"
-                 left# right# left-category right-category))))
-
-(deftrace :referents-unsuitable-for-multiplying (left-edge right-edge
-                                                 left-referent right-referent)
-  (when *trace-check-edges*
-    (let ((left# (edge-position-in-resource-array left-edge))
-          (right# (edge-position-in-resource-array right-edge)))
-      (trace-msg "Can't try multiplying these referents~
-                ~%  ~a  ~a~
-                ~%  ~a  ~a" left# left-referent right# right-referent))))
-
-
-
-;;--- Checks on form labels
-
-(deftrace :checking-form-label-category-rules ()
-    (when *trace-check-edges*
-      (trace-msg "[Multiply] one of the edges' form labels has category ids")))
 
 (deftrace :cat-ids-on-right-form-label (left-edge right-edge)
   (when *trace-check-edges*
@@ -223,52 +416,12 @@
       (trace-msg "[Multiply] Checking (e~A+e~A)  ~A + ~A"
 		 left# right# left-label right-label))))
 
-(deftrace :neither-has-category-on-form-ids ()
-  (when *trace-check-edges*
-    (trace-msg "[Multiply] neither of the edges' form labels has category ids")))
-
 
 
 
 
 ;;--- elsewhere
 
-(deftrace :multiply-succeeded (rule left-edge right-edge)
-  ;; called inside Multiply-edges on the succeed side
-  (declare (ignore left-edge right-edge))
-  (when *trace-check-edges*
-    ;; Was code here that considered the possibility that multply
-    ;; returned a list, but it wrote to the trace stream directly
-    ;; and in CCL anyway that's not coming through
-    (when (listp rule) ;; so ignoring it
-      (setq rule (car rule)))
-    (trace-msg "[Multiply]    They succeeded ~A"
-               (symbol-name (cfr-symbol rule)))))
-        
-
-
-(deftrace :multiply-failed (left-edge right-edge)
-  ;; called from check-for-form-rule when neither edge has
-  ;; a form id
-  (when *trace-check-edges*
-    (let ((left# (edge-position-in-resource-array left-edge))
-          (right# (edge-position-in-resource-array right-edge)))
-      (declare (ignore left# right#))
-      (trace-msg "   which do not combine"))))
-
-
-
-(deftrace :both-right-and-left-label-ids ()
-  (when *trace-check-edges*
-    (trace-msg "[Multiply]    both edges have category combinations")))
-
-(deftrace :neither-category-id ()
-  (when *trace-check-edges*
-    (trace-msg "   neither edge has a category combination")))
-
-(deftrace :neither-form-id ()
-  (when *trace-check-edges*
-    (trace-msg "   neither edge has a form combination")))
 
 
 (deftrace :no-right-category-id ()
@@ -292,27 +445,8 @@
 
 
 
-(deftrace :left-form-id (left-edge right-edge)
-  ;; called from check-for-form-rule when the left edge has a form id
-  (when *trace-check-edges*
-    (let ((left# (edge-position-in-resource-array left-edge))
-          (right# (edge-position-in-resource-array right-edge))
-          (left-form-label (edge-form left-edge))
-          (right-label (edge-category right-edge)))
-      (trace-msg "Trying ~A (form) + ~A   (e~A+e~A)"
-                 left-form-label right-label left# right#))))
 
 
-
-(deftrace :right-form-id (left-edge right-edge)
-  ;; called from check-for-form-rule when the right edge has a form id
-  (when *trace-check-edges*
-    (let ((left# (edge-position-in-resource-array left-edge))
-          (right# (edge-position-in-resource-array right-edge))
-          (right-form-label (edge-form right-edge))
-          (left-label (edge-category left-edge)))
-      (trace-msg "Trying ~A + ~A (form)   (e~A+e~A)"
-                 left-label right-form-label left# right#))))
 
 
 
@@ -325,14 +459,6 @@
       (declare (ignore left# right#))
       (trace-msg "   which succeeded (~A)" new-label))))
 
-
-(deftrace :right-form-id-succeeded (rule left-edge right-edge)
-  (when *trace-check-edges*
-    (let ((left# (edge-position-in-resource-array left-edge))
-          (right# (edge-position-in-resource-array right-edge))
-          (new-label (cfr-category rule)))
-      (declare (ignore left# right#))
-      (trace-msg "   which succeeded (~A)" new-label))))
 
 
 (deftrace :left-form-id-failed (left-edge right-edge)
@@ -351,81 +477,7 @@
       (trace-msg "   which do not compose"))))
 
 
-;;--- pure syntax checks
 
-(deftrace :looking-for-syntactic-combination ()
-  ;; called from Check-form-form
-  (when *trace-check-edges*
-    (trace-msg "   Looking for purely syntactic combinations")))
-
-
-(deftrace :both-form-labels-have-ids ()
-  ;; called from Check-form-form
-  (when *trace-check-edges*
-    (trace-msg "     The form labels on both edges have ids")))
-
-
-(deftrace :syntactic-combination-succeeded (rule)
-  ;; called from Check-form-form
-  (when *trace-check-edges*
-    (trace-msg "        which succeeded (~A)"
-               (cfr-symbol rule))))
-
-(deftrace :syntactic-combination-failed ()
-  ;; called from Check-form-form
-  (when *trace-check-edges*
-    (trace-msg "        which do not compose")))
-
-
-
-(deftrace :no-form-id-on-right-form-label ()
-  ;; called from Check-form-form
-  (when *trace-check-edges*
-    (trace-msg "     but the form label on the right edge ~
-                has no form id")))
-
-(deftrace :no-form-id-on-left-form-label ()
-  ;; called from Check-form-form
-  (when *trace-check-edges*
-    (trace-msg "     but the form label on the left edge ~
-                has no form id")))
-
-(deftrace :neither-form-label-has-form-ids ()
-  ;; called from Check-form-form
-  (when *trace-check-edges*
-    (trace-msg "     but the form labels on both edge ~
-                do not have form ids")))
-
-
-(deftrace :no-rules-mention-right-form-label (label)
-  ;; called from Check-form-form
-  (when *trace-check-edges*
-    (trace-msg "     but the right form label (~A)~
-              ~%       has no left-looking rules"
-               (cat-symbol label))))
-
-(deftrace :no-rules-mention-left-form-label (label)
-  ;; called from Check-form-form
-  (when *trace-check-edges*
-    (trace-msg "     but the left form label (~A)~
-              ~%       has no right-looking rules"
-               (cat-symbol label))))
-
-
-(deftrace :no-form-label-on-right-edge (e)
-  ;; called from Check-form-form
-  (when *trace-check-edges*
-    (trace-msg "     but the right edge (e~A)~
-              ~%       has no form label"
-              (edge-position-in-resource-array e))))
-
-(deftrace :no-form-label-on-left-edge (e)
-  ;; called from Check-form-form
-  (when *trace-check-edges*
-    (trace-msg "     but the left edge (e~A)~
-              ~%       has no form label"
-              (edge-position-in-resource-array e))))
-               
 
 
 
@@ -700,39 +752,44 @@
 ;;; threading of the calls within the multiply operation
 ;;;------------------------------------------------------
 
-;; :multiply-edges (near the top) is the entry point
+(defvar *trace-multiply-threading* nil
+  "Matches the function calls")
+(defun trace-multiply-threading ()
+  (setq *trace-multiply-threading* t))
+(defun untrace-multiply-threading ()
+  (setq *trace-multiply-threading* nil))
+
 
 (deftrace :muliply-categories ()
-  (when *trace-edge-multiplication*
+  (when *trace-multiply-threading*
     (trace-msg "[Multiply threading] Called muliply-categories")))
 
 (deftrace :mult/ids-on-form-label ()
-  (when *trace-edge-multiplication*
+  (when *trace-multiply-threading*
     (trace-msg "[Multiply threading] Called mult/ids-on-form-label")))
 
 (deftrace :try-mult/left-category-right-form_category-id ()
-  (when *trace-edge-multiplication*
+  (when *trace-multiply-threading*
     (trace-msg "[Multiply threading] Called try-mult/left-category-right-form_category-id")))
 
 (deftrace :mult/right-category-left-form_category-id ()
-  (when *trace-edge-multiplication*
+  (when *trace-multiply-threading*
     (trace-msg "[Multiply threading] Called try-mult/right-category-left-form_category-id")))
   
-
 (deftrace :mult/check-form-options ()
-  (when *trace-edge-multiplication*
+  (when *trace-multiply-threading*
     (trace-msg "[Multiply threading] Called mult/check-form-options")))
 
 (deftrace :check-for-either-form-rule ()
-  (when *trace-edge-multiplication*
-    (trace-msg "[Multiply threading] Called check-for-either-form-rule")))
+  (when *trace-multiply-threading*
+    (trace-msg "[Multiply threading] Calling look-for-either-form-rule")))
 
 (deftrace :mult/just-Left-ids ()
-  (when *trace-edge-multiplication*
+  (when *trace-multiply-threading*
     (trace-msg "[Multiply threading] Called mult/just-Left-ids")))
 
 (deftrace :mult/just-Right-ids ()
-  (when *trace-edge-multiplication*
+  (when *trace-multiply-threading*
     (trace-msg "[Multiply threading] Called mult/just-Right-ids")))
 
 
@@ -790,76 +847,89 @@
 ;;; inside multiply-edges
 ;;;-----------------------
 
-(defun trace-rules-source-and-validity ()
-  (setq *trace-rules-source-and-validity* t))
+;;--- toplevel divide by rule-type
 
-(defun untrace-rules-source-and-validity ()
-  (setq *trace-rules-source-and-validity* nil))
+(defvar *trace-rule-source* nil
+  "What kind of rule was found")
 
+(defun trace-rule-source ()
+  (setq *trace-rule-source* t))
+(defun untrace-rule-source ()
+  (setq *trace-rule-source* nil))
+
+(deftrace :found-semantic-rule (rule)
+  (when *trace-rule-source*
+    (trace-msg "Found semantic rule ~a" rule)))
+
+(deftrace :no-semantic-rule ()
+  (when *trace-rule-source*
+    (trace-msg "No rule based on semantic labels")))
+
+(deftrace :found-rule-of-form (rule)
+  (when *trace-rule-source*
+    (trace-msg "Found form rule ~a" rule)))
+
+(deftrace :no-rule-of-form ()
+  (when *trace-rule-source*
+    (trace-msg "No form rule")))
+
+(deftrace :found-syntactic-rule (rule)
+  (when *trace-rule-source*
+    (trace-msg " Found syntactic rule ~a" rule)))
+
+(deftrace :no-syntactic-rule ()
+  (when *trace-rule-source*
+    (trace-msg "No syntactic rule")))
+
+
+
+;;--- rule validity ---
+
+(defvar *trace-rule-validity* nil
+  "Goes with the 'validity' check on identified rules")
+
+(defun trace-rules-validity ()
+  (setq *trace-rule-validity* t)
+  (report-form-check-blocks)
+  (trace-subcat-rule))
+
+(defun untrace-rules-validity ()
+  (setq *trace-rule-validity* nil)
+  (unreport-form-check-blocks)
+  (untrace-subcat-rule))
+
+
+;;-- the report in multiply-edges
+(deftrace :rule-is-valid ()
+  (when *trace-rule-validity*
+    (trace-msg " and it's valid")))
+
+(deftrace :rule-is-invalid ()
+  (when *trace-rule-validity*
+    (trace-msg " it's not valid")))
+
+
+;;-- appropriate form check by validate-rule-form
 (defun report-form-check-blocks ()
   (setq *report-form-check-blocks* t))
-
 (defun unreport-form-check-blocks ()
   (setq *report-form-check-blocks* t))
 
 
-
-
-(deftrace :rule-is-valid ()
-  (when *trace-rules-source-and-validity*
-    (trace-msg "   It's valid")))
-
-(deftrace :rule-is-invalid ()
-  (when *trace-rules-source-and-validity*
-    (trace-msg "   but it's not valid")))
-
-(deftrace :found-semantic-rule (rule)
-  (when *trace-rules-source-and-validity*
-    (trace-msg " Found semantic rule ~a" rule)))
-
-(deftrace :no-semantic-rule ()
-  (when *trace-rules-source-and-validity*
-    (trace-msg " No rule based on semantic labels")))
-
-(deftrace :found-rule-of-form (rule)
-  (when *trace-rules-source-and-validity*
-    (trace-msg "Found form rule ~a" rule)))
-
-(deftrace :no-rule-of-form ()
-  (when *trace-rules-source-and-validity*
-    (trace-msg " No form rule")))
-
-(deftrace :found-rule-from-referent (rule)
-  (when *trace-rules-source-and-validity*
-    (trace-msg " Found referent rule ~a" rule)))
-
-(deftrace :no-rule-from-referent ()
-  (when *trace-rules-source-and-validity*
-    (trace-msg " no referent rule")))
-
-(deftrace :found-syntactic-rule (rule)
-  (when *trace-rules-source-and-validity*
-    (trace-msg " Found syntactic rule ~a" rule)))
-
-(deftrace :no-syntactic-rule ()
-  (when *trace-rules-source-and-validity*
-    (trace-msg " no syntactic rule")))
-
-
+;;-- methods say the rule applies
 (defvar *trace-test-subcat-rule* nil)
-
 (defun trace-subcat-rule ()
   (setq *trace-test-subcat-rule* t))
-
 (defun untrace-subcat-rule ()
   (setq *trace-test-subcat-rule* nil))
 
 (deftrace :subcat-rule-setup (rule left-referent right-referent function)
   ;; called from test-subcat-rule
   (when *trace-test-subcat-rule*
-    (trace-msg "[subcat-test] Does ~a, applying the function ~a ~
-               ~%     to ~a and ~a succeed?" 
-               (cfr-symbol rule) function left-referent right-referent)))
+    (trace-msg "[subcat-test] Does ~a pass the subcat-test in ~a~
+              ~%     with arguments  ~a and ~a ?"
+               (cfr-symbol rule) function
+               left-referent right-referent)))
 
 (deftrace :subcat-text/yes ()
   ;; called from test-subcat-rule
@@ -876,7 +946,4 @@
   (when *trace-test-subcat-rule*
     (trace-msg "[subcat-test]  ~a is not itypep ~a"
                item (subcat-restriction sc-pattern))))
-
-
-
 
