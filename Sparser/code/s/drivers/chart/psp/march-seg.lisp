@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2015-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2015-2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "march/seg"             ;; march back, parsing edges
 ;;;   Module:  "drivers;chart:psp:"    ;;  in a segment
-;;;  Version:  April 2018
+;;;  Version:  March 2019
 
 ;; 4.0 (5/7/93 v2.3) Bringing into sinc with the new word-level driver
 ;; 5.0 (3/15/94) Added dotted-rule hack
@@ -29,6 +29,12 @@
 
 (in-package :sparser)
 
+(defparameter *save-chunk-edges* nil
+  "only turn on to review NG chunking")
+
+(defvar *chunk-edges* nil)
+(defvar *all-chunk-edges* nil)
+
 ;;;-----------
 ;;; initiator
 ;;;-----------
@@ -37,75 +43,80 @@
 
 (defun parse-at-the-segment-level (segment-end-pos)
   "Called from pts when there is something available inside the
-   segment to parse (i.e. it's not already covered by an edge)."
+   segment to parse (i.e. it's not already covered by an edge).
+   We have two different protocols. The 'new' one was written
+   for big-mechanism and follows the same style as used by the
+   whack-a-rule-cycle to parse at the treetop level. We also
+   have the original 'march back' protocol that was tries very
+   hard not to miss any cases."
   (declare (special *current-chunk* *big-mechanism-ngs*))
   (tr :parse-at-the-segment-level segment-end-pos)
   (setq *rightmost-active-position/segment* segment-end-pos)
-  (cond
-   ((and *big-mechanism-ngs*
-         (member (chunk-forms *current-chunk*) '((VG) (ADJG)) :test #'equal))
-    (interp-big-mech-chunk *current-chunk* t nil))
-   ((use-specialized-ng-parser?)
-    (interp-big-mech-chunk *current-chunk* t t))
-   ((use-specialized-vg-parser?)
-    (interp-big-mech-chunk *current-chunk* nil nil))
-   (t (march-back-from-the-right/segment))))
+  (if *big-mechanism-ngs*
+    (cond
+      ((member (chunk-forms *current-chunk*) '((VG) (ADJG)) :test #'equal)
+       (interp-big-mech-chunk *current-chunk* t nil))
+      ((use-specialized-ng-parser?)
+       (interp-big-mech-chunk *current-chunk* t t))
+      ((use-specialized-vg-parser?)
+       (interp-big-mech-chunk *current-chunk* nil nil)))
+
+    (march-back-from-the-right/segment)))
 
 
-;;;------------------------
-;;; specialized NP parsing
-;;;------------------------
 
-(defparameter *save-chunk-edges* nil
-  "only turn on to review NG chunking")
-
-(defvar *chunk-edges* nil)
-(defvar *all-chunk-edges* nil)
-
-
+;;;----------------------------
+;;; specific phrase type tests
+;;;----------------------------
 
 (defun use-specialized-ng-parser? ()
-  ;; Predicate used by parse-at-the-segment-level to determine
-  ;; whether to use the specialized big-mech segment parser
-  (declare (special *big-mechanism-ngs* *current-chunk*
+  "If the segment is for a noun phrase its head will be at
+   the right end and should start the scan there."
+  (declare (special *current-chunk*
                     category::det category::quantifier))
-  (and *big-mechanism-ngs*
-       (or
-        (equal (chunk-forms *current-chunk*) '(NG))
-        (and
-         (eq 'NG (car (chunk-forms *current-chunk*)))
-         (let ((edges (treetops-in-current-chunk)))
-           (and (cdr edges) ;; more than one edge
-                (or (cddr edges) ;; more than two
-                    (not
-                     (or (eq (edge-form (car edges)) category::det)
-                         (eq (edge-form (car edges)) category::quantifier))))))))))
+  (or
+   (equal (chunk-forms *current-chunk*) '(ng))
+   (and
+    (eq 'ng (car (chunk-forms *current-chunk*)))
+    (let ((edges (treetops-in-current-chunk))) ;; n.b. this is very shallow
+      (and (cdr edges) ;; more than one edge
+           (or (cddr edges) ;; more than two
+               (not
+                (or (eq (edge-form (car edges)) category::det)
+                    (eq (edge-form (car edges)) category::quantifier)))))))))
 
 (defun use-specialized-vg-parser? ()
-  ;; Predicate used by parse-at-the-segment-level to determine
-  ;; whether to use the specialized big-mech segment parser
-  (declare (special *big-mechanism-ngs* *current-chunk*
+  "If the segment is for a verb group ////
+its head will be at
+   the right end and should start the scan there."
+  (declare (special *current-chunk*
                     category::det category::quantifier))
-  (and *big-mechanism-ngs*
-       (or
-        (member (chunk-forms *current-chunk*) '((VG) (ADJG)))
-        (and
-         (memq (car (chunk-forms *current-chunk*)) '(VG ADJG))
-         (let ((edges (treetops-in-current-chunk)))
-           (and (cdr edges) ;; more than one edge
-                (or (cddr edges) ;; more than two
-                    (not
-                     (or (eq (edge-form (car edges)) category::det)
-                         (eq (edge-form (car edges)) category::quantifier))))))))))
+  (or
+   (member (chunk-forms *current-chunk*) '((vg) (adjg)))
+   (and
+    (memq (car (chunk-forms *current-chunk*)) '(vg adjg))
+    (let ((edges (treetops-in-current-chunk)))
+      (and (cdr edges) ;; more than one edge
+           (or (cddr edges) ;; more than two
+               (not
+                (or (eq (edge-form (car edges)) category::det)
+                    (eq (edge-form (car edges)) category::quantifier)))))))))
 
+
+;;;--------------------------
+;;; big-mech tailored driver
+;;;--------------------------
+
+(defparameter *debug-cases-of-triple-failure* nil
+  "Gates a break when the triple doesn't succeed")
 
 (defun interp-big-mech-chunk (chunk from-right ng? &aux tt)
-  (declare (special *rules-for-pairs*))
+  (declare (special *rules-for-pairs* *parse-edges*))
   ;;(push-debug `(,chunk)) (break "interp chunk: ~a" chunk)
   (when *save-chunk-edges*
     (add-chunk-edges-snapshot))
   ;; 1st look at all pairwise combinations
-  ;; 2. collect all rule-left-right triples
+  ;; 2. collect all rule-left-right edge triples
   ;; 3. select the best one
   ;; 4. apply it
   ;; 5. repeat
@@ -119,18 +130,18 @@
                                  (eq (cat-name (edge-category tt)) 'parentheses))
                        do (return ttl))))
     ;;handle internal parens as in
-    ;; "a class ii ( inactive conformation binder ) drug"
+    ;; "a class ii (inactive conformation binder) drug"
     (when paren-pair
       (knit-parens-into-neighbor (car paren-pair) (second paren-pair))))
   
-  (let ( triple  edge blocked-triples triples)
+  (let ( triple  edge  blocked-triples  triples)
     (clrhash *rules-for-pairs*)
     (loop
        (setq triples
 	     (if from-right
 		 (collect-triples-in-segment chunk)
 		 (reverse (collect-triples-in-segment chunk))))
-       (when blocked-triples
+       (when blocked-triples ;; triple that multiply-edges declared invalid
 	 (setq triples (loop for tr in triples
 	          ;; not sure why we are seeing equal but not eq triples...
 			  unless (member tr blocked-triples :test #'equal)
@@ -140,16 +151,19 @@
 	 (return))
        (setq edge (execute-triple triple))
        (cond
-	 ((null edge) 
+	 ((null edge) ;; rule failed (invalid) on those edges
 	  (push triple blocked-triples)
-	  (push-debug `(,triple))
-	  ;;(lsp-break "triple did not produce an edge")
-	  )
+          (when *debug-cases-of-triple-failure*
+            (push-debug `(,triple))
+            (lsp-break "triple did not produce an edge")))
 	 (edge 
-	  (tr :triple-led-to-edge edge))))
+	  (tr :triple-led-to-edge edge)
+          (when *parse-edges* (tts)))))
+    
     (if (eq (segment-coverage) :one-edge-over-entire-segment)
         (segment-parsed1)
-        ;; else, then mop up anything else that that couldn't
+        ;; Otherwise mop up anything else that that couldn't be parsed
+        ;; by applying the default protocol 
         (march-back-from-the-right/segment))))
 
 (defun select-best-chunk-triple (triples chunk)
@@ -230,53 +244,6 @@
         (itypep (edge-referent (third triple)) category::depend))))
                
 
-#+ignore
-(defun select-best-triple (triples chunk)
-  ;; decision-making goes here, e.g. the types of edges involved,
-  ;; their position within the segment, their probablility of
-  ;; being correct given priors, the kind of rule being used.
-  (when triples
-    (push-debug `(,triples)) ;;(lsp-break "triple")
-    (tr :n-triples-apply triples)
-    
-    (let ((non-syntactic-triples
-           (loop for triple in triples
-	      as rule = (car triple)
-	      unless (syntactic-rule? rule)
-	      collect triple))
-          (priority-triples
-           (loop for triple in triples
-              as rule = (car triple)
-              when (priority-rule? rule)
-              collect triple)))
-      
-      (when nil
-        (break "non-syntactic-triples = ~a~
-              ~%prority-triples = ~a"
-               non-syntactic-triples
-               priority-triples))
-
-      (cond
-	(priority-triples ;; "was rapidly phosphorylated"
-         (tr :n-priority-triples priority-triples)
-	 (let ((selected (car (last priority-triples))))
-	   (tr :selected-best-triple selected)
-	   selected))
-        ((memq 'adjg (chunk-forms chunk))
-         ;; The verb or aux is on the left, take the first rule
-         ;; "has been unclear"
-         (tr :selecting-first-for-adjg)
-         (let ((leftmost (car triples)))
-           (tr :selected-best-triple leftmost)
-           leftmost))
-	(t
-	 ;; this default amounts to selecting the rightmost pair
-	 ;; that has a rule
-         (tr :n-default-triples triples)
-	 (let ((rightmost (car (last triples))))
-	   (tr :selected-best-triple rightmost)
-	   rightmost))))))
-
 (defun priority-rule? (rule)
   (and (cfr-p rule)
        (category-p (car (cfr-rhs rule)))
@@ -290,8 +257,10 @@
 (defun collect-triples-in-segment (chunk)
   ;; Executed multiple times because it's recalculated with
   ;; every rule execution
-  (let ((pairs (adjacent-tts (treetops-in-current-chunk)))
+  (let ((pairs ;;(adjacent-tts (treetops-in-current-chunk)))
+         (adjacent-edges-in-current-chunk))
         rule )
+    (tr :pairs-in-segment pairs)
     ;;(push-debug `(,pairs)) (lsp-break "pairs = ~a" pairs)
     (loop for pair in pairs
       when (setq rule (segment-rule-check pair chunk))
@@ -299,24 +268,23 @@
 
 
 (defun segment-rule-check (pair chunk)
+  "Syntactic sugar and tracing for the choice of rule test
+   to make. Could start with just simple rules and then
+   extend to semantic and then syntactic on successive passes"
   (declare (special *vp-categories* *rules-for-pairs*))
-  ;; syntactic sugar and tracing for the choice of rule test
-  ;; to make. Could start with just simple rules and then
-  ;; extend to semantic and then syntactic on successive passes
   (let ((left-edge (car pair))
         (right-edge (cadr pair)))
     (tr :find-rule-for-edge-pair left-edge right-edge)
-    (multiple-value-bind (cached-rule pair-seen)
+    (multiple-value-bind (cached-rule pair-seen?)
 	(gethash pair *rules-for-pairs*)
-      (let ((rule 
-             (if pair-seen
-		 cached-rule
-		 (setf (gethash pair *rules-for-pairs*)
-		       (multiply-edges left-edge right-edge chunk)))))
+      (let ((rule (if pair-seen?
+                    cached-rule
+                    (setf (gethash pair *rules-for-pairs*)
+                          (multiply-edges left-edge right-edge chunk)))))
 
         ;; criteria for not using that rule
         (when (and rule
-                   (equal (chunk-forms chunk) '(NG))
+                   (equal (chunk-forms chunk) '(ng))
                    (chunk-head? (second pair) chunk) ;; only if combining with head
                    ;; When we're parsing an NP,
                    ;; rule out rules for verb-like things
@@ -346,7 +314,7 @@
 (defun treetops-in-current-chunk ()
   "Treetops-in-segment (in analyzers/forest/printers.lisp) guarentees
    that the treetops will be ordered left to right. It relies on
-   next-treetop/rightward to do its walk, so some of the values it
+   next-treetop/rightward to do its walk, so some of the values itssub
    returns will be edge-vectors rather than edges."
   (declare (special *current-chunk*))
   ;; like  treetops-in-current-segment  but takes into account the chunk forms
@@ -358,7 +326,50 @@
           ((edge-vector-p ev)
            (loop for e in (ev-edges ev)
              when (compatible-with-chunk e *current-chunk*)
-             do (return e))))))
+              do (return e))))))
+
+
+;;======================================================================
+
+;; Alternative to treetops-in-current-chunk that digs deeper when
+;; there are multple edges on a position
+(defun adjacent-edges-in-current-chunk ()
+  "Collect all pairs of adjacent edges within the chunk, paying attendion
+   to the likelyhood of an edge-vector holding multiple edges that the
+   chunker did not need to prune to a single edge. 
+   Accumulates edge pairs by moving through the segment from right to left
+"
+  (declare (special *current-chunk* *left-segment-boundary* *right-segment-boundary*))
+  (let* ((start-pos *left-segment-boundary*)
+         (end-pos *right-segment-boundary*)
+         (length ;;(number-of-terminals-between start-pos end-pos)
+          (number-of-treetops-between start-pos end-pos)))
+          
+    (unless (= length 1)
+      ;; if the whole segment has been spanned (or it's just one word lone)
+      ;; then we should return nil
+      (let* ((suffix-edge (edge-over-segment-suffix)) ;; see analyzers/sdmp/gophers.lisp
+             (pos (pos-edge-starts-at suffix-edge))
+             position-pairs  all-pairs next-pos )
+         (loop
+            (setq position-pairs (adjacent-edges-at pos))
+            (setq all-pairs (append position-pairs all-pairs))
+            ;;(push-debug `(,position-pairs)) (break "check pairs")
+            (let ((left-edge-of-pair (car (car position-pairs))))
+              (setq next-pos (pos-edge-starts-at left-edge-of-pair))
+              (if (eq next-pos start-pos)
+                (return)
+                (setq pos next-pos))))
+         all-pairs))))
+
+
+(defun adjacent-edges-at (p)
+  (let ( pairs )
+    (loop for left in (edges-ending-at p)
+       do (loop for right in (edges-starting-at p)
+             do (push (list left right) pairs)))
+    pairs))
+
 
 (defun compatible-with-chunk (edge chunk)
   (declare (special *vg-word-categories*))
@@ -380,9 +391,9 @@
         *all-chunk-edges*))
 
 
-;;;--------
-;;; driver
-;;;--------
+;;;--------------------------------------------------
+;;; driver for the original segment parsing protocol
+;;;--------------------------------------------------
 
 (defun march-back-from-the-right/segment ()
   ;; this is the primary recursion point.
