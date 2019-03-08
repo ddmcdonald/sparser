@@ -260,9 +260,9 @@
 ;;;------------
 
 (defun treetop-between (start end)
+  "Returns a single edge if there is one that covers the span"
   (let ((treetop-at-start (right-treetop-at/edge start))
         (treetop-at-end   (left-treetop-at/edge  end)))
-
     (when (eq treetop-at-start treetop-at-end)
       treetop-at-start )))
 
