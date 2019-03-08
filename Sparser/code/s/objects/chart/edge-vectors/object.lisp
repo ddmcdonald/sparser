@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2019  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edge-vectors:"
-;;;  Version:  November 2018
+;;;  Version:  March 2019
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;;     (5/5/93) Added Preterminal-edges
@@ -138,7 +138,7 @@
    We include them when either we  have multiple-initial-edges or
    the top edge is just one word long (which handles cases like 'can't'
    where the 'can' both participates in the rule for the contraction
-   and means something by itself."
+   and means something by itself)."
   (let* ((top-edge (ev-top-node start-ev)))
     (when top-edge ;; seem to be able to get a NIL in all positions of 
       ;; the edge vector when we look at the end of sentence in an article
@@ -147,6 +147,36 @@
               )
         (all-edges-on start-ev)
         `(,top-edge)))))
+
+(defgeneric edges-starting-at (position)
+  (:documentation "Return all of the edges that start at
+   this position. If one of the edges on the vector is larger
+   that the others, return just that edge. Also if there is
+   a designated top-edge return that edge and ignore the other
+   edges below it on the vector.")
+  (:method ((n integer))
+    (edges-starting-at (position# n)))
+  (:method ((p position ))
+    (edges-starting-at (pos-starts-here p)))
+  (:method ((ev edge-vector))
+    (cond
+      ((edge-p (ev-top-node ev)) (list (ev-top-node ev)))
+      (t (all-edges-on ev)))))
+;;//// add the 'longest edges' case
+(defgeneric edges-ending-at (position)
+  (:documentation "Return all of the edges that end at
+   this position. If one of the edges on the vector is larger
+   that the others, return just that edge. Also if there is
+   a designated top-edge return that edge and ignore the other
+   edges below it on the vector.")
+  (:method ((n integer))
+    (edges-ending-at (position# n)))
+  (:method ((p position ))
+    (edges-ending-at (pos-ends-here p)))
+  (:method ((ev edge-vector))
+    (cond
+      ((edge-p (ev-top-node ev)) (list (ev-top-node ev)))
+      (t (all-edges-on ev)))))
 
 
 (defun span-covered-by-one-edge? (start end)
