@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "ordinals"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  September 2018
+;;;  Version:  March 2019
 
 ;; initiated [ordinals1] 9/18/93 v2.3 as completely new treatment
 ;; 1.0 (1/7/94) redesigned as specialized categories
@@ -34,12 +34,13 @@
 ;;;---------
 
 #| It's called 'ordinal' because that's the natural term for the words
-   that realize them: "first", "second", etc.  But it's function is more
-   complex (/// is this the right thing?), which follows from its previous
-   name, position-in-a-sequence, where we are defining a relationship between
-   a position, the ordinal proper, and an item, and the sequence in which it
-   is the 'ordinal-th' position.  The idea being that when you hear "first"
-   you automatically know that there's an item and a sequence.  |#
+   that realize them: "first", "second", etc.  But it's function is
+   more complex and which follows from its previous name,
+   position-in-a-sequence, where we are defining a relationship
+   between a position (the ordinal proper), an item, and the sequence
+   in which the item is the 'ordinal-th' element in the sequence.  The
+   idea being that when you hear "first" you automatically know that
+   there's an item and a sequence.  |#
 
 (define-category  ordinal
   :instantiates self
@@ -55,7 +56,6 @@
   (let ((number (value-of 'number category))
         (*print-short* t))
     (format nil "~A" number)))
-
 
 
 ;;;-----------------------
@@ -88,36 +88,6 @@
  If ordering doesn't matter, then partonomies are worth considering.")
 
 
-;;--- building a position-in-a-sequence without its sequence
-
-(defun compose-ordinal-to-head (ordinal head)
-  "This approximates the treatment in the Krisp paper (pg. 31 & subseq)
-   that would make a subtype of the head that gives it the slots
-   it would have if it was a position in a sequence (the same effect 
-   as using a mixin would achieve provided we bound its item slot
-   to the head."
-  ;; Strictly speaking there should be FoM to get a version of
-  ;; the head category where the position-in-sequence mixin has
-  ;; applied, then for this individual we'd bind (FoM actually)
-  ;; the item variable. Approximating that my using ad-hoc lambda 
-  ;; variable manipulation
-  (let ((num-var (find-variable-for-category 'number 'position-in-a-sequence))
-        (item-var (find-variable-for-category 'item 'position-in-a-sequence))
-        (head-category (etypecase head
-                         (category head)
-                         (individual (itype-of head))))
-        (i (individual-for-ref head)))
-    ;; how do we indicate that the individual is open in the sequence?
-    
-    ;;(setq i (bind-variable item-var head-category i))
-    ;; Alex doesn't want it (muddies the NLG waters).
-    ;; Reconsider later when reproducing Krisp paper example
-
-    (setq i (bind-variable num-var ordinal i))
-    i))
-
-
-
 ;;;--------------------------------------------
 ;;; 'post' ordinal treatment of Roman numerals
 ;;;--------------------------------------------
@@ -135,6 +105,7 @@
 ;;;------
 ;;; form
 ;;;------
+;; See model/dossiers/ordinals.lisp
 
 (defun define-ordinal (string        ;; e.g. "third"
                        lisp-number
@@ -206,6 +177,7 @@
 that use the syntax function make-ordinal-item to form their interpretation.
 |#
 
+;; "site I"
 (def-form-rule (common-noun post-ordinal)
   :form n-bar
   :head :left-edge
@@ -235,6 +207,22 @@ that use the syntax function make-ordinal-item to form their interpretation.
   :referent (:function compose-ordinal-to-head left-edge right-edge))
 
 
+;;--- "the first two" 
+(def-cfr sequence (ordinal number)
+  :form n-bar
+  :referent (:function made-subsequence-up-to left-edge right-edge))
+
+(defun made-subsequence-up-to (ordinal number)
+  (if *subcat-test* t
+      (let ((i (find-or-make-individual 'subseq-up-to
+                                        :index ordinal
+                                        :number number)))
+        i)))
+
+;;--- "the first"
+
+;;--- "first"
+
 
 (when t ;;/// these should get swallowed into reversible rdata  
 
@@ -254,4 +242,36 @@ that use the syntax function make-ordinal-item to form their interpretation.
     :form det
     :referent (:instantiate-individual position-in-a-sequence
                :with (number left-edge)))
-   )
+  )
+
+;;;------------------------
+;;; phrase interpretations
+;;;------------------------
+
+;;--- building a position-in-a-sequence without its sequence
+
+;; "the third protein"
+(defun compose-ordinal-to-head (ordinal head)
+  "This approximates the treatment in the Krisp paper (pg. 31 & subseq)
+   which would make a subtype of the head so that it gets the slots
+   it would have if it was a position in a sequence (the same effect 
+   as using a mixin would achieve provided we bound its item slot
+   to the head."
+  ;; Strictly speaking there should be FoM to get a version of
+  ;; the head category where the position-in-sequence mixin has
+  ;; applied, then for this individual we'd bind (FoM actually)
+  ;; the item variable. Approximating that my using ad-hoc lambda 
+  ;; variable manipulation
+  (let ((num-var (find-variable-for-category 'number 'position-in-a-sequence))
+        (item-var (find-variable-for-category 'item 'position-in-a-sequence))
+        (head-category (etypecase head
+                         (category head)
+                         (individual (itype-of head))))
+        (i (individual-for-ref head)))
+    ;; how do we signal that the individual is open in the sequence?
+    
+    ;; (setq i (bind-variable item-var head-category i))
+    ;; Is this the best represention of the 'item', 
+
+    (setq i (bind-variable num-var ordinal i))
+    i))

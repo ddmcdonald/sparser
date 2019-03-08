@@ -48,7 +48,7 @@ is easiest with a cs rule.  |#
 ;; Made obsolete by the rspec on illion
 ;(def-cfr number  ( number multiplier ) 
 ;  )
-
+#|
 
 ;;;-------------------------
 ;;; ordinal prefixes to NPs
@@ -69,12 +69,7 @@ is easiest with a cs rule.  |#
 (def-cfr ordinal (single-capitalized-letter ordinal)
   :form adjective
   :referent  (:daughter right-edge))
+|#
 
 
-
-;;--- "the first two"  ;; outside the semantics !!! -- just for DM&P
-
-(def-cfr ordinal (ordinal number)
-  :form adjective
-  :referent  (:daughter right-edge))
 

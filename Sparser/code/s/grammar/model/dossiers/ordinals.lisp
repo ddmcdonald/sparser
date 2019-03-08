@@ -12,7 +12,7 @@
 
 (define-with-all-instances-permanent
   (define-ordinal "first"  1  :roman-numeral "I") ;; note ambiguity with pronoun
-  (define-ordinal "second" 2  :roman-numeral "II")
+  (define-ordinal "second" 2  :roman-numeral "II") ;; ambigous with unit of time
   (define-ordinal "third"  3  :roman-numeral "III")
   (define-ordinal "fourth" 4  :roman-numeral "IV")
   (define-ordinal "fifth"  5)
