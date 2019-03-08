@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2000,2013-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2000,2013-2019 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "years"
 ;;;   Module:  "model;core:time:"
-;;;  version:  February 2018
+;;;  version:  March 2019
 
 ;; initiated in February 1991
 ;; 0.1 (4/9 v1.8.2)  Added the years from 1959 to 1979
@@ -99,12 +99,17 @@
   :form np
   ;; n.b. context-sensitive rules are effectively binary,
   ;; so the number will be  under the right-edge
-  :referent (:function make-year-from-constituent right-edge))
+  :referent (:function make-year-from-constituent left-edge right-edge))
 
-(defun make-year-from-constituent (number)
-  (let ((string (string/number number)))
-    (when string 
-      (define-year string (number-value number)))))
+(defun make-year-from-constituent (time-unit number)
+  (declare (special *subcat-test*))
+  (cond
+    (*subcat-test* ;; rule out "second" and such
+     (itypep time-unit 'year))
+    (t
+     (let ((string (string/number number)))
+       (when string 
+         (define-year string (number-value number)))))))
 
 
 ;;;---------------
