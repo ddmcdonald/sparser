@@ -105,14 +105,11 @@
             *trace-check-edges* *trace-edge-multiplication*
             *trace-rules-source-and-validity*)
     (let ((left# (edge-position-in-resource-array left-edge))
-          (right# (edge-position-in-resource-array right-edge))
-          (left-label (edge-category left-edge))
-          (right-label (edge-category right-edge)))
-      (trace-msg "Checking (e~A+e~A)  ~A + ~A"
-                 left# right#
-                 (pname left-label) (pname right-label)))))
+          (right# (edge-position-in-resource-array right-edge)))
+      (trace-msg "Checking e~A+e~A"
+                 left# right#))))
 
-
+#|
 (deftrace :right-side-is-composite ()
   ;; called from Multiply-edges for this special case
   (when *trace-check-edges*
@@ -129,10 +126,9 @@
   ;; called from mult/right-composite
   (when *trace-check-edges*
     (trace-msg "    trying ~a" category)))
+|#
 
-
-
-
+#|
 (deftrace :only-left-category-has-ids ()
   ;; called from Multiply-edges in its dispatch
   (when *trace-check-edges*
@@ -153,23 +149,19 @@
   (when *trace-check-edges*
     (trace-msg "   but it doesn't have a form id~
               ~%      so we can't look at the left form label")))
-
+|#
 
 
 ;;--- multiply-categories
 
-(deftrace :both-have-category-ids ()
-  ;; called from Multiply-categories
+(deftrace :try-category-labels (left-label right-label)
+  ;; called from try-these-labels-for-a-semantic-rule
   (when *trace-rules*
-    (trace-msg "[category] both labels have category ids")))
+    (trace-msg "[category] trying ~a + ~a"
+               (pname left-label) (pname right-label))))
 
-(deftrace :both-right-and-left-label-ids ()
-  (when *trace-rules*
-    (trace-msg "[category] the labels have category combinations")))
-
-(deftrace :multiply-succeeded (rule left-edge right-edge)
-  ;; called from Multiply-categories
-  (declare (ignore left-edge right-edge))
+(deftrace :multiply-succeeded (rule)
+  ;; called from lookup-semantic-rule-given-ids
   (when *trace-rules*
     ;; Was code here that considered the possibility that multply
     ;; returned a list, but it wrote to the trace stream directly
@@ -179,13 +171,10 @@
     (trace-msg "[category]  They succeeded ~A"
                (symbol-name (cfr-symbol rule)))))
 
-(deftrace :multiply-failed (left-edge right-edge)
-  ;; called from multiply-categories
+(deftrace :multiply-failed ()
+  ;; called from lookup-semantic-rule-given-ids
   (when *trace-rules*
-    (let ((left# (edge-position-in-resource-array left-edge))
-          (right# (edge-position-in-resource-array right-edge)))
-      (declare (ignore left# right#))
-      (trace-msg "[category]  which do not combine"))))
+    (trace-msg "[category]  which do not combine")))
 
 (deftrace :one-or-both/does-not-have-category-multiplier (left-label-id right-label-id)
   ;; called from multiply-categories
@@ -564,6 +553,11 @@
                (if from-right? "from the right"
                    "from the left"))))
 
+(deftrace :pairs-in-segment (pairs)
+  ;; called from collect-triples-in-segment
+  (when *parse-edges*
+    (trace-msg "The segment has ~a edge-pairs" (length pairs))))
+
 (deftrace :find-rule-for-edge-pair (left right)
   ;; called from segment-rule-check
   (when *parse-edges*
@@ -574,7 +568,7 @@
 (deftrace :not-using-rule/verb-in-np-context (rule)
   ;; called from segment-rule-check
   (when *parse-edges*
-    (trace-msg "  NP context. Ruling out rule ~a" rule)))
+    (trace-msg "  NP context. Ruling out verb-centric rule ~a" rule)))
 
 (deftrace :found-rule-for-pair (rule)
   ;; called from segment-rule-check

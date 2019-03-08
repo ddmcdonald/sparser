@@ -92,53 +92,6 @@
    faster (though it is not yet instrumented to report its results)")
 
 
-;;;---------------------
-;;; ID access functions
-;;;---------------------
-
-(defun category-ids (edge direction field)
-  "Given a edge and the direction it is gooing to compose
-   (to its right or two its left), return the appropriate
-   multiplication ids. The 'field' dictates whether we get
-   the ids from a label's category field or its form field. "
-  (declare (optimize (speed 3)(safety 0)))
-  (let ((label (cond
-                 ((category-p edge) edge) ;; Convenient when debugging
-                 (t (ecase field
-                      (:category (edge-category edge))
-                      (:form (edge-form edge)))))))
-    (when (and label
-	       (not (symbolp label)))
-      (let ((rs (rule-set-for label)))
-	(when rs
-	  (case direction
-	    (:right-looking ;; the left edge, looking to its right for a combination
-	     (rs-right-looking-ids rs))
-	    (:left-looking ;; invariably taken from the edge on the right
-	     (rs-left-looking-ids rs))
-	    (otherwise
-	     (error "Wrong spelling for the direction argument: ~a" direction))))))))
-
-(defun category-ids/rightward (left-edge)
-  (category-ids left-edge :right-looking :category))
-
-(defun category-ids/leftward (right-edge)
-  (category-ids right-edge :left-looking :category))
-
-(defun form-ids/rightward (left-edge)
-  (category-ids left-edge :right-looking :form))
-
-(defun form-ids/leftward (right-edge)
-  (category-ids right-edge :left-looking :form))
-
-
-(defun category-multiplier (ids)
-  (car ids))
-
-(defun form-multiplier (ids)
-  (cdr ids))
-
-
 ;;;------------------------------
 ;;; call from the check routines
 ;;;------------------------------
@@ -152,8 +105,7 @@
    and then whether there is a category combination or, barring
    that, a form combination or syntactic combination
    Returns a rule or nil to indicate the edges don't combine."
-  (declare (special *edges-from-referent-categories*
-                    *allow-form-rules*
+  (declare (special *allow-form-rules*
                     *allow-pure-syntax-rules*))
 
   (when (or (word-p left-edge)
@@ -167,12 +119,7 @@
   (if *use-trie-multiply*
     (trie-multiply-edges left-edge right-edge chunk)
 
-    (let* ((left-category-ids (category-ids/rightward left-edge))
-           (right-category-ids (category-ids/leftward right-edge))
-           (rule (multiply-categories left-category-ids 
-                                      right-category-ids
-                                      left-edge right-edge
-				      chunk)))
+    (let* ((rule (multiply-semantic-categories left-edge right-edge)))
  
       ;; Look at possible sources of rules from what is likely to be
       ;; the most precise (certainly in terms of referents) to the
@@ -180,16 +127,16 @@
       ;; a valid rule we stop looking at other sources.
      
       (if rule ;; from the let statement, multiply-categories
-          (then
-            (tr :found-semantic-rule rule)
-            (if (valid-rule? rule left-edge right-edge chunk)
-                (then 
-                  (tr :rule-is-valid))
-                (else 
-                  (tr :rule-is-invalid)
-                  (setq rule nil))))
-          (else
-            (tr :no-semantic-rule)))
+        (then
+          (tr :found-semantic-rule rule)
+          (if (valid-rule? rule left-edge right-edge chunk)
+            (then 
+              (tr :rule-is-valid))
+            (else 
+              (tr :rule-is-invalid)
+              (setq rule nil))))
+        (else
+          (tr :no-semantic-rule)))
 
       (unless rule
         (when *allow-form-rules*
@@ -209,59 +156,73 @@
         (when *allow-pure-syntax-rules*       
           (setq rule (multiply-form-form left-edge right-edge))
           (if rule
-              (then
-                (tr :found-syntactic-rule rule)
-                (if (valid-rule? rule left-edge right-edge chunk)
-                    (tr :rule-is-valid)
-                    (else 
-                      (tr :rule-is-invalid)
-                      (setq rule nil))))
-              (else
-                (tr :no-syntactic-rule)))))
+            (then
+              (tr :found-syntactic-rule rule)
+              (if (valid-rule? rule left-edge right-edge chunk)
+                (tr :rule-is-valid)
+                (else 
+                  (tr :rule-is-invalid)
+                  (setq rule nil))))
+            (else
+              (tr :no-syntactic-rule)))))
  
       rule)))
 
 
 
 
-;;;-----------------
-;;;  Semantic rules
-;;;-----------------
+;;;----------------
+;;; Semantic rules
+;;;----------------
 
-(defun multiply-categories (left-category-ids right-category-ids
-			    left-edge right-edge &optional chunk)
-  "We come here from the Multiply-edge entry point.
-   Nothing has been checked or ruled out yet, so we start with
-   the most semantic case for cfr and csr rules -- do the labels
-   in the category field of the edges combine."
-  (tr :muliply-categories)
-  
-  (if (and left-category-ids right-category-ids)
-    (then
-      (tr :both-have-category-ids)
-      (let ((left-label-id (category-multiplier left-category-ids))
-	    (right-label-id (category-multiplier right-category-ids)))
-        
-	(if (and left-label-id right-label-id)
-	  (then
-	    (tr :both-right-and-left-label-ids)
-	    (let ((rule (multiply-ids left-label-id
-				      right-label-id)))
-	      (if rule
-		(then
-                 (tr :multiply-succeeded rule left-edge right-edge)
-                 rule)
-		(else
-                 (tr :multiply-failed left-edge right-edge)
-		 nil))))
-	  (else
-            (tr :one-or-both/does-not-have-category-multiplier
-                left-label-id right-label-id)
-	    nil))))
-    (else
-      (tr :only-L/R-has-category-ids left-category-ids right-category-ids)
-      nil)))
+(defun multiply-semantic-categories (left-edge right-edge)
+  "There can be a category rule id on either the category field or the
+   form field of the edge. Systematically try all the combinations
+   until one succeeds."
+  (let* ((left-category-label (edge-category left-edge))
+         (right-category-label (edge-category right-edge))
+         (left-form-label (edge-form left-edge))
+         (right-form-label (edge-form right-edge)))
+    (or
+     
+     (when (and (right-looking-category-ids left-category-label)
+                (left-looking-category-ids right-category-label))
+       (try-these-labels-for-a-semantic-rule left-category-label right-category-label))
 
+     (when (and (right-looking-category-ids left-category-label)
+                (null (left-looking-category-ids right-category-label))
+                (left-looking-category-ids right-form-label))
+       (try-these-labels-for-a-semantic-rule left-category-label right-form-label))
+
+     (when (and (null (right-looking-category-ids left-category-label))
+                (right-looking-category-ids left-form-label)
+                (left-looking-category-ids right-category-label))
+       (try-these-labels-for-a-semantic-rule left-form-label right-category-label))
+     
+     (when (and (null (right-looking-category-ids left-category-label))
+                (null (left-looking-category-ids right-category-label))
+                (right-looking-category-ids left-form-label)
+                (left-looking-category-ids right-form-label))
+       (try-these-labels-for-a-semantic-rule left-form-label right-form-label)))))
+
+(defun try-these-labels-for-a-semantic-rule (left-label right-label)
+  "Provides a place for a labels-based trace and the change-over from
+   labels to specific id numbers"
+  (tr :try-category-labels left-label right-label)
+  (let ((left-label-id (right-looking-category-id left-label))
+        (right-label-id (left-looking-category-id right-label)))
+    (lookup-semantic-rule-given-ids left-label-id right-label-id)))
+    
+(defun lookup-semantic-rule-given-ids (left-label-id right-label-id)
+  "Given the ids, do the multiplication and see if there's a rule"
+  (let ((rule (multiply-ids left-label-id right-label-id)))
+    (if rule
+      (then
+        (tr :multiply-succeeded rule)
+        rule)
+      (else
+        (tr :multiply-failed)
+        nil))))
 
 
 

@@ -365,3 +365,45 @@
 
       
 
+
+
+;;------- mid-term formulation
+;;;-----------------
+;;;  Semantic rules
+;;;-----------------
+
+(defun multiply-semantic-categories (left-edge right-edge)
+  "We come here from the Multiply-edge entry point.
+   Nothing has been checked or ruled out yet, so we start with
+   the most semantic case for cfr and csr rules -- do the labels
+   in the category field of the edges combine."
+  (tr :muliply-categories)
+  (let* ((left-category-label (edge-category left-edge))
+         (right-category-label (edge-category right-edge))
+         (left-category-ids (category-ids/rightward left-edge))
+         (right-category-ids (category-ids/leftward right-edge)))
+  (if (and left-category-ids right-category-ids)
+    (then
+      (tr :both-have-category-ids)
+      (let ((left-label-id (category-multiplier left-category-ids))
+	    (right-label-id (category-multiplier right-category-ids)))
+	(if (and left-label-id right-label-id)
+	  (then
+	    (tr :both-right-and-left-label-ids)
+	    (let ((rule (multiply-ids left-label-id
+				      right-label-id)))
+	      (if rule
+		(then
+                 (tr :multiply-succeeded rule left-edge right-edge)
+                 rule)
+		(else
+                 (tr :multiply-failed left-edge right-edge)
+		 nil))))
+	  (else
+            (tr :one-or-both/does-not-have-category-multiplier
+                left-label-id right-label-id)
+	    nil))))
+    (else
+      (tr :only-L/R-has-category-ids left-category-ids right-category-ids)
+      nil)))
+

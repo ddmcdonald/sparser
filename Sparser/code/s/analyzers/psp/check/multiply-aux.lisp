@@ -9,6 +9,110 @@
 
 (in-package :sparser)
 
+
+;;;---------------------
+;;; ID access functions
+;;;---------------------
+
+(defun category-ids (edge direction field)
+  "Given a edge and the direction it is gooing to compose
+   (to its right or two its left), return the appropriate
+   multiplication ids. The 'field' dictates whether we get
+   the ids from a label's category field or its form field. "
+  (declare (optimize (speed 3)(safety 0)))
+  (let ((label (cond
+                 ((category-p edge) edge) ;; Convenient when debugging
+                 (t (ecase field
+                      (:category (edge-category edge))
+                      (:form (edge-form edge)))))))
+    (when (and label
+	       (not (symbolp label)))
+      (let ((rs (rule-set-for label)))
+	(when rs
+	  (case direction
+	    (:right-looking ;; the left edge, looking to its right for a combination
+	     (rs-right-looking-ids rs))
+	    (:left-looking ;; invariably taken from the edge on the right
+	     (rs-left-looking-ids rs))
+	    (otherwise
+	     (error "Wrong spelling for the direction argument: ~a" direction))))))))
+
+#|
+   <edge on the left>  ---  <edge on the right>
+     |                                     |
+   look rightward ->          <- look leftward
+|#
+(defun right-looking-category-ids (label)
+  (when label
+    (let* ((rs (rule-set-for label))
+           (ids (when rs (rs-right-looking-ids rs))))
+      (when ids
+        (when (car ids)
+          ids)))))
+
+(defun right-looking-category-id (label)
+  (let* ((rs (rule-set-for label))
+         (ids (when rs (rs-right-looking-ids rs))))
+    (car ids)))
+
+(defun left-looking-category-ids (label)
+  (when label
+    (let* ((rs (rule-set-for label))
+           (ids (when rs (rs-left-looking-ids rs))))
+      (when ids
+        (when (car ids) ;; semantic field
+          ids)))))
+
+(defun left-looking-category-id (label)
+  (let* ((rs (rule-set-for label))
+         (ids (when rs (rs-left-looking-ids rs))))
+    (car ids)))
+
+
+
+(defun category-ids/rightward (left-edge)
+  (category-ids left-edge :right-looking :category))
+
+(defun category-ids/leftward (right-edge)
+  (category-ids right-edge :left-looking :category))
+
+(defun form-ids/rightward (left-edge)
+  (category-ids left-edge :right-looking :form))
+
+(defun form-ids/leftward (right-edge)
+  (category-ids right-edge :left-looking :form))
+
+
+(defun category-multiplier (ids)
+  (car ids))
+
+(defun form-multiplier (ids)
+  (cdr ids))
+
+
+(defgeneric describe-rule-ids (label)
+  (:documentation "Compactly print out the set of ids
+    that govern the participation of this label in rules.
+    Intended to help in debugging.")
+  (:method ((name symbol))
+    (describe-rule-ids (rule-set-for (category-named name :errorp))))
+  (:method ((pname string))
+    (assert (resolve pname)) ;; known words/polywords only
+    (describe-rule-ids (rule-set-for (resolve pname))))
+  (:method ((c category))
+    (describe-rule-ids (rule-set-for c)))
+  (:method ((rs rule-set))
+    (let ((rightward (rs-right-looking-ids rs)) ;; ( label-id . form-id )
+          (leftward (rs-left-looking-ids rs))
+          (label (rs-backpointer rs)))
+      (format t "~&rule labels for ~a~
+                 ~%  right-looking-ids: ~a~
+                 ~%  left-looking-ids:  ~a~%"
+              (pname label) rightward leftward))))
+
+
+
+
 ;;;-----------------
 ;;; rule preference
 ;;;-----------------
