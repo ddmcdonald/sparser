@@ -73,21 +73,22 @@ registry so that ASDF can find Sparser's .asd file.  We recommend that
 you include something like this in your Lisp init file. This example
 assumes that your local copy of Sparser is at toplevel in your home
 directory (i.e. ~/sparser/).
-
+```
 (require :asdf)
-
+```
+```
 (asdf:initialize-source-registry
  '(:source-registry
     (:tree (:home "sparser"))
     :inherit-configuration))
-
+```
 ## Configurations and Loading
 
 In a running Lisp, with the ASDF registry configured, you load Sparser
 by executing this in your REPL.
-
+```
   (asdf:load-system :sparser)
-
+```
 That will load the default configuration of Sparser. At the moment
 there are eight different Sparser asdf systems defined.  Each one has
 an associated script that sets up its own configuration of grammar
@@ -137,15 +138,16 @@ semantic structure of the results what you intended.
 
 We can illustrate this with this short example, interpreting the
 string "it is almost Wednesday". 
-
+```
 sp> (p "it is almost Wednesday")
 [it ][is ]almost [Wednesday]
-
+```
+```
                     source-start
 e7    BE            1 "it is almost Wednesday" 5
                     end-of-source
 :done-printing
-
+```
 The function 'p' is one of the many abbreviations we use to cut down
 on typing time. P combines the step of running the parsing engine on
 the string and printing out a view of the chart after the analysis was
@@ -169,7 +171,7 @@ function 'stree' for "syntactic tree". Constituency is given by
 indentation. Each edge show its index, its category and syntactic
 labels, the chart positions at which it begins and ends, and the
 number (or name) of the rule that created it.
-
+```
 sp> (stree 7)
  e7 be/s                      p1 - p5   rule 689
   e2 top/grammatical-subject    p1 - p2   condition-anaphor-edge
@@ -182,26 +184,25 @@ sp> (stree 7)
         "almost"
       e0 weekday/proper-noun    p4 - p5   rule 2772
         "Wednesday"
-#<edge7 1 be 5>
-
+```
 The top edge is syntactically an 'S'. It is the result of applying a
 syntactic rule combining that took the subject np (e2) and assimilated
 it into the verb phrase predicate (e6).
-
+```
 sp> (irr 689)
 referent: (funcall assimilate-subject left-referent right-referent)
 #<PSR-689 s → {pronoun vp}>
-
+```
 Semantically the result is a dependency tree. These are displayed as a
 set of nested expressions.
-
+```
 sp> (semtree 7)
 (#<be 2328>
    (subject (#<top  105>))
    (predicate
       (#<weekday "Wednesday" 1175> (name "Wednesday")))
    (present #<ref-category PRESENT>))
-
+```
 This show an instance of the category representing 'be', whose index
 is 2328. And it shows what is wrong with this interpretation and will
 need sooner or later to be fixed: There is now appreciation that the
