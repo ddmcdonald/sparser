@@ -79,6 +79,30 @@
           (lsp-break "multiply-edges -- trie-rule and rule don't agree")))
 
 
+;;--- initial cut at more label options in form  ruls
+(defun multiply-form-category (left-edge right-edge)
+  "Look for rules based on one the form label on one of the edges and
+   the category label on the other"
+  (tr :mult/ids-on-form-label) ;; threading
+  (let* ((left-form-ids (form-ids/rightward left-edge)) ;; form field
+         (right-form-ids (form-ids/leftward right-edge)))
+    (tr :multiply-form left-edge right-edge)
+    (cond
+      ((or left-form-ids right-form-ids)
+       (tr :checking-form-label-category-rules)
+       (mult/check-form-options left-edge right-edge
+                                left-form-ids right-form-ids))
+      
+      ((and (right-looking-form-id (edge-category left-edge))
+            (left-looking-form-id (edge-category right-edge)))
+       ;; If the labels in the form fields of the two edges don't
+       ;; compose then maybe the labels on the category fields do.
+       (let ((rule (multiply-ids (right-looking-form-id (edge-category left-edge))
+                                 (left-looking-form-id (edge-category right-edge)))))
+         rule))
+      (t
+        (tr :neither-has-category-id)
+        nil))))
 
 
 

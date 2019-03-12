@@ -37,11 +37,34 @@
 	    (otherwise
 	     (error "Wrong spelling for the direction argument: ~a" direction))))))))
 
+(defun category-ids/rightward (left-edge)
+  (category-ids left-edge :right-looking :category))
+
+(defun category-ids/leftward (right-edge)
+  (category-ids right-edge :left-looking :category))
+
+(defun form-ids/rightward (left-edge)
+  (category-ids left-edge :right-looking :form))
+
+(defun form-ids/leftward (right-edge)
+  (category-ids right-edge :left-looking :form))
+
+
+(defun category-multiplier (ids)
+  (car ids))
+
+(defun form-multiplier (ids)
+  (cdr ids))
+
+
 #|
    <edge on the left>  ---  <edge on the right>
      |                                     |
    look rightward ->          <- look leftward
 |#
+
+;;--- category
+
 (defun right-looking-category-ids (label)
   (when label
     (let* ((rs (rule-set-for label))
@@ -69,25 +92,19 @@
     (car ids)))
 
 
+;;--- form
 
-(defun category-ids/rightward (left-edge)
-  (category-ids left-edge :right-looking :category))
+(defun right-looking-form-id (label)
+  (when label
+    (let* ((rs (rule-set-for label))
+           (ids (when rs (rs-right-looking-ids rs))))
+      (cdr ids))))
 
-(defun category-ids/leftward (right-edge)
-  (category-ids right-edge :left-looking :category))
-
-(defun form-ids/rightward (left-edge)
-  (category-ids left-edge :right-looking :form))
-
-(defun form-ids/leftward (right-edge)
-  (category-ids right-edge :left-looking :form))
-
-
-(defun category-multiplier (ids)
-  (car ids))
-
-(defun form-multiplier (ids)
-  (cdr ids))
+(defun left-looking-form-id (label)
+  (when label
+    (let* ((rs (rule-set-for label))
+           (ids (when rs (rs-left-looking-ids rs))))
+      (cdr ids))))
 
 
 (defgeneric describe-rule-ids (label)

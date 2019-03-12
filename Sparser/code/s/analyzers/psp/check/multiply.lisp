@@ -237,13 +237,21 @@
   (let* ((left-form-ids (form-ids/rightward left-edge)) ;; form field
          (right-form-ids (form-ids/leftward right-edge)))
     (tr :multiply-form left-edge right-edge)
-    (if (or left-form-ids right-form-ids)
-      (then
-        (tr :checking-form-label-category-rules)
-        (let ((rule
-               (mult/check-form-options left-edge right-edge
-                                        left-form-ids right-form-ids)))
+    (or
+     
+      (when (and (right-looking-form-id (edge-category left-edge))
+                 (left-looking-form-id (edge-category right-edge)))
+        ;; If the labels in the form fields of the two edges don't
+        ;; compose then maybe the labels on the category fields do.
+        (let ((rule (multiply-ids (right-looking-form-id (edge-category left-edge))
+                                  (left-looking-form-id (edge-category right-edge)))))
           rule))
+
+      (when (or left-form-ids right-form-ids)
+        (tr :checking-form-label-category-rules)
+        (mult/check-form-options left-edge right-edge
+                                 left-form-ids right-form-ids))
+
       (else
         (tr :neither-has-category-id)
         nil))))
