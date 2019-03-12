@@ -39,7 +39,10 @@
                                           day-of-the-month month-of-the-year))))))
                            
 
-
+(def-form-rule (approximator weekday)
+    :form np
+    :head :right-edge
+    :referent (:daughter right-edge))
 
 ;;;-----------------------------
 ;;; stray case to think through
