@@ -1027,10 +1027,12 @@
 
 ;;--- "after-which" as clause-connector
 
-(def-form-rule (sequencer which)  ;; "after which" 
-  :head :left-edge
-  :form relative-subordinator
-  :referent (:function make-relative-subordinator left-referent right-referent))
+(loop for sequencer in '(after before during)
+   do (eval
+       `(def-cfr subordinator (,sequencer which)  ;; "after which"
+          ;; /// subordinator is not a particularly information semantic label
+          :form relative-subordinator
+          :referent (:function make-relative-subordinator left-referent right-referent))))
 
 (def-syntax-rule (relative-subordinator s)
   :head :right-edge
@@ -1288,10 +1290,12 @@ similar to an oncogenic RasG12V mutation (9)."))
                 :head :right-edge
                 :referent (:function determiner-noun left-edge right-edge))))
 
-(def-syntax-rule (sequencer np)
-  :head :left-edge
-  :form pp
-  :referent (:function make-pp left-edge right-edge))
+(loop for sequencer in '(after before during)
+   do (eval
+       `(def-form-rule (,sequencer np)
+            :head :left-edge
+            :form pp
+            :referent (:function make-pp left-edge right-edge))))
 
 
 

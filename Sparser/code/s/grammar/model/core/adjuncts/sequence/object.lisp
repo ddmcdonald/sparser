@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995,2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2013-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "grammar;model:core:adjuncts:sequence:"
-;;;  version:  Octoberswi 20146
+;;;  version:  March 2019
 
 ;; initiated 4/9/91 v1.8.2
 ;; 0.1 (12/15/92 v2.3) setting up for new semantics
@@ -27,7 +27,7 @@
 (define-category sequencer
   :instantiates  modifier
   :specializes modifier
-  :binds ((name :primitive word)
+  :binds ((word :primitive word)
           (relation :primitive word)) ;;added this variable in for interval relationships
   :index (:key name :permanent)
   :realization (:word name))
@@ -51,33 +51,37 @@
 
 
 ;; 10/11/16 moved rules to syntax/syntactic-rules.lisp
-;; for "before", "after" as bare categorize
+;; for "before", "after" as bare categories
 
 ;;--- prepositions
 
 (defun define-sequencer/preposition (string)
-  (define-function-term string 'preposition
-    :super-category 'sequencer
-    :rule-label 'sequencer
-    :discriminator 'sequence
-    :brackets (list  ].preposition preposition]. preposition.[ )
-    ;; :tree-families '(transparent-pp) none of them are quite right
-    ))
-
-;; This version doesn't set the part of speech -- comes out as 'content-word'
-;; Note that "before" and "after" are marked in prepositions for bio-specfic
-;; handling
-#+ignore  (let ((word (resolve-string-to-word/make string))
-        sequencer )
-    (if (setq sequencer
-              (find-individual 'sequencer :name word))
-      sequencer
-      (else
-        (setq sequencer (define-individual 'sequencer
-                            :name word))
-
-        (assign-brackets/expr word (list  ].preposition preposition]. preposition.[ ))
-        sequencer )))
+  "Define a specialization of sequencer for this case. But just
+   define the string as a vanilla preposition. The and individual
+   for the specialization of sequencer is the referent -- the same
+   pattern as we use with quantifiers."
+  (declare (special *prepositional-brackets*))
+  (let* ((word (or (resolve string)
+                   (define-function-word string
+                       :brackets *prepositional-brackets*)))
+         (category-name (name-to-use-for-category string)))
+    
+    (let* ((form `(define-category ,category-name
+                    :specializes ,category::sequencer
+                    :instantiates :self
+                    :index (:permanent :key word)
+                    :bindings (word ,word)))
+           (category (eval form)))
+      
+      (let* ((object
+              (or (find-individual category-name :word word)
+                  (make-an-individual category-name :word word)))
+             (cfr (def-cfr/expr category (list word)
+                    :form 'preposition
+                    :referent object)))
+        (make-corresponding-mumble-resource word :preposition object)
+        (add-rule cfr object)
+        object ))))
 
 
 ;;;----------
