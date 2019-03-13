@@ -75,6 +75,7 @@
   (:method ((word word))
     (unless *indefinite-determiners* (populate-in/definite-articles))
     (memq word *indefinite-determiners*))
+  (:method ((pw polyword)) nil)
   (:method ((i individual))
     (indefinite-determiner? (cat-name (itype-of i))))
   (:method ((c category))
@@ -82,7 +83,8 @@
   (:method ((name symbol))
     (memq name '(a an most some any)))
   (:method ((e edge))
-    ;; it's a polyword like "at least", which is an approximatory.
+    ;; it's a polyword like "at least", which is an approximator.
+    ;; These are determiners, not one of the standard set
     nil))
 
 (defgeneric definite-determiner? (item)
@@ -90,6 +92,7 @@
   (:method ((word word))
     (unless *indefinite-determiners* (populate-in/definite-articles))
     (memq word *definite-determiners*))
+  (:method ((pw polyword)) nil)
   (:method ((i individual))
     (definite-determiner? (cat-name (itype-of i))))
   (:method ((c category))
@@ -97,7 +100,7 @@
   (:method ((name symbol))
     (memq name '(the this that these those)))
   (:method ((e edge))
-    ;; it's a polyword like "at least", which is an approximatory.
+    ;; it's a polyword like "at least", which is an approximator.
     nil))
 
 (defgeneric wh-determiner? (item)
@@ -106,6 +109,7 @@
   (:method ((word word))
     (unless *wh-determiners* (populate-wh-determiners))
     (memq word *wh-determiners*))
+  (:method ((pw polyword)) nil)
   (:method ((e edge))
     ;; observed det-edge = #<36 an 38> and det-word = edge over hyphen
     ;; in "- an observation" chunk of dec-test #49
@@ -115,7 +119,9 @@
   (:method ((c category))
     (wh-determiner? (cat-name c)))
   (:method ((name symbol))
-    (memq name '(what which whichever whose))))
+    (memq name '(what which whichever whose)))
+  (:method ((e edge))
+    nil))
 
                               
 (defmethod definite-np? ((e edge))
