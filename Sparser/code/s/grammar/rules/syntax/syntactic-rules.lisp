@@ -1277,13 +1277,14 @@ similar to an oncogenic RasG12V mutation (9)."))
 ;;; rules involving semantic categories
 ;;;-------------------------------------
 
+#+ignore  
 (def-syntax-rule (approximator number)
     :form number
     :head :right-edge
     :referent (:daughter right-edge
 	       :bind (approximator left-edge)))
 
-
+#+ignore
 (loop for nb in `(,@*n-bar-categories*) ;; see core/adjuncts/sequence/object.lisp
    do (eval `(def-syntax-rule (sequencer ,nb)
                 :form n-bar

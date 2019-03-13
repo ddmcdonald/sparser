@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1995,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2011-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:adjuncts:approx:"
-;;;  version:  0.3 May 2013
+;;;  version:  March 2019
 
 ;; initiated 4/9/91 v1.8.2
 ;; 0.1 (12/7/92 v2.3) redone in the new semantics. 9/21/93 moved to [adjuncts]
@@ -35,24 +35,28 @@
 ;;; defining forms
 ;;;----------------
 
-#| To get the brackets right we have to distinguish determiners
-   from adverbs. |#
-
-
-(defun define-approximator/determiner (string &key tree-families)
-  (unless tree-families
-    (setq tree-families '(generic-np-premodifier)))
-  (define-function-term string 'approximator
-    ;;:super-category 'approximator
-    :tree-families tree-families))
-
+(defun define-approximator/determiner (string)
+  (define-function-term string 'det
+    :super-category 'approximator
+    :rule-label 'approximator
+    :word-variable 'name
+    :tree-families '(generic-np-premodifier)))
 
 (defun define-approximator/adverbial (string)
   (define-adverb string :super-category 'approximator))
 
 
+;;;-------
+;;; rules
+;;;-------
 
-;;--- Autodef
+(def-cfr number (approximator number)
+  :form number
+  :referent (:function determiner-noun left-edge right-edge))
+
+;;;---------
+;;; Autodef
+;;;---------
 
 (define-category approximator/determiner)
 (define-category approximator/adverbial)
