@@ -59,8 +59,10 @@
 (define-approximator/determiner "or less")
 
 (define-approximator/determiner "almost")
-(define-approximator/determiner "about")
-(define-preposition "about")
+
+;; (define-approximator/determiner "about") ;; this is subtle
+(define-preposition "about") ;; but not point in having two edges here
+
 (define-approximator/determiner "around")
 
 (define-approximator/determiner "approximately")
