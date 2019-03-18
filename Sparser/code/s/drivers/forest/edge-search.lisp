@@ -29,9 +29,22 @@
   (make-completed-binary-edge (left-edge-of-triple triple)
                               (right-edge-of-triple triple)
                               (triple-rule triple)))
-
 ;; This entry point only buys us dotted rules, which are OBE
 ;;  (execute-one-one-rule (car triple) (second triple) (third triple))
+
+
+;;--- these return strings since motivating cases is trace functions
+
+(defun format-edge-pair (pair)
+  (format nil "e~a+e~a"
+          (edge-position-in-resource-array (car pair))
+          (edge-position-in-resource-array (cadr pair))))
+
+(defun format-triple (triple)
+  (format nil "e~a+e~a  ~a"
+          (edge-position-in-resource-array (left-edge-of-triple triple))
+          (edge-position-in-resource-array (right-edge-of-triple triple))
+          (triple-rule triple)))
 
 
 ;;;-----------------------
