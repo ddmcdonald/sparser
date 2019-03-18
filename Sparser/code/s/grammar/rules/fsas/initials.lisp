@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2018-2019  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "initials"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  February 2018
+;;;  Version:  March 2019
 
 ;; 2.0 (11/9 v2.3) Threw out the old version as capitalization trigger changed
 ;; 2.1 (12/29/93) Added a check against polywords that start with the letter.
@@ -38,10 +38,7 @@
             new-position)
 
 
-          (let* ((capital
-                  (if (eq (word-capitalization letter) :single-capitalized-letter)
-                      letter
-                      (car (word-capitalization-variants letter))))
+          (let* ((capital (car (word-capitalization-variants letter)))
                  (initial (find-individual 'initial :word capital)))
             
             (unless initial
