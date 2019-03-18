@@ -747,7 +747,6 @@ there were ever to be any.  ///hook into final actions ??  |#
           (multiple-value-bind (tt end multiple?)
                                (next-treetop/rightward start)
             (if multiple?
-              ;;(push (pos-terminal start) tts)
               (push (pos-starts-here start) tts) ;; the edge vector
               (push tt tts))
 
@@ -755,8 +754,8 @@ there were ever to be any.  ///hook into final actions ??  |#
                    (return))
                   ((> (pos-token-index end)
                       (pos-token-index ending-position))
-                   (break/debug "Treetops-in-segment: the last edge ~
-                                 overshoots the ending-position"))
+                   (error "Treetops-in-segment: the last edge ~
+                           overshoots the ending-position"))
                   (t (setq start end)))))
 
         (nreverse tts)))))
