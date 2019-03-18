@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "fn word routine"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   June 2017
+;;;   Version:   March 2019
 
 ;; 0.1 (12/17/92 v2.3) redid the routine so it was caps insensitive and handled
 ;;      bracketing.
@@ -38,7 +38,9 @@
 
 (defun define-function-word (string
                              &key ((:brackets bracket-symbols))
-                                  ((:form name-of-form-category)))
+                               ((:form name-of-form-category)))
+  "Defines the word, notes its grammatical form, and assigns
+   its brackets. Does not create any rules for it."
   (let ((word (etypecase string
                 ((or word polyword) string)
                 (string (resolve-string-to-word/make string))))
@@ -52,8 +54,9 @@
     word))
 
 (defun define-isolated-function-word (string &key form)
+  "Used by unambiguous-comlex-primed-decoder for subordinate 
+   conjunctions and quantifiers"
   (unless form
-    ;; Had been used for the conjunctions
     (setq form 'subordinate-conjunction))
   (define-function-word string
     ;; Keep brackets here and in assign-brackets-to-standalone-word
@@ -108,6 +111,7 @@
                              &key  brackets super-category
                                    rule-label discriminator
                                    tree-families subcat-info
+                                   word-variable
                                    documentation)
   "Does for deliberately defined modifiers the same thing as is done for
    Comlex or morphologically identified nouns or verbs in grammar/rules/
@@ -127,11 +131,11 @@
      Rule-label has the same impact as it does in the definition of an
    ordinary category. It determines the label on the generated rules, which
    will otherwise be the generated category.
-     For getting subcategorization information fromo Comlex the :subcat-info
+     For getting subcategorization information from Comlex the :subcat-info
    argument dictates which POS entry to use. Legal values are noun, verb, 
    adjective, and adverb."
-  (unless form
-    (setq form 'standalone)) ;; seems safest
+  (unless form (setq form 'standalone)) ;; seems safest
+  (unless word-variable (setq word-variable 'name))
   (unless brackets
     (setq brackets
           (case form ;; match with values in rules/brackets/assignments (!!)
@@ -161,28 +165,34 @@
               (intern (string-append base-name "-" discriminator)
                       (find-package :sparser))
               base-name)))
+
       (when (category-named category-name)
         (when *ignore-redefine-warning*
           (cerror "Ignore and keep going"
                   "We're about to redefine the category ~a" category-name)))
 
-      (let ((category ;; for the function word
-             (define-category/expr category-name  ;; e.g. 'only'
-               `(:specializes ,super-category
-                 :instantiates :self ;;?? super-category ??
-                 :rule-label ,(or rule-label
-                                  super-category)
-                 :bindings (name ,word)
-                 :documentation ,documentation))))
+      (let* ((effective-rule-label (or rule-label category-name))
+             (category ;; for the function word
+              (define-category/expr category-name  ;; e.g. 'only'
+                  `(:specializes ,super-category
+                    :instantiates nil
+                    :rule-label ,effective-rule-label
+                    :bindings (,word-variable ,word)
+                    :documentation ,documentation))))
 
-        (let ((rule
-               ;; Create the single-term rule that rewrites the word
-               ;; as the category we've created for it
-               (define-cfr (or rule-label
-                               category)
-                           (list word)
-                 :form (category-named form)
-                 :referent category)))
+        (let* ((word-key (intern (symbol-name word-variable) (find-package :keyword)))
+               (instance-form `(define-individual ',category-name
+                                   ,word-key ,word))
+               i)
+          (setq i (eval instance-form))
+
+          (let ((rule ;; Create the single-term rule that rewrites the word
+                 (define-cfr (or rule-label
+                                 category)
+                             (list word)
+                   :form (category-named form)
+                   :referent i)))
+            
           (add-rule rule category)
 
           (when tree-families
@@ -210,7 +220,8 @@
              category word subcat-info))
  
           (values category
-                  rule))))))
+                  i
+                  rule)))))))
 
 
 
