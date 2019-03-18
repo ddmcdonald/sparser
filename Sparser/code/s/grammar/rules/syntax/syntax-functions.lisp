@@ -2400,6 +2400,37 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (define-lambda-variable 'compared-to
     nil 'top)
 
+;; "a bigger block"
+(defun comparative-adj-noun-compound (comparative head)
+  "For syntax rules comparative + <all n-bar categories>, as in
+   'the bigger red block'. We look up the attribute that is associated
+   with the comparative ('size' in the case of 'bigger') to tell us
+   what variable to bind. We make an instance of the comparative is
+   is open in its reference set, which we signal by ????"
+  (let ((var (variable-for-attribute comparative)))
+    (cond 
+      (*subcat-test*
+       (or var
+           (takes-adj? head comparative)))
+      (var
+       (when (category-p head) (setq head (individual-for-ref head)))
+       (let ((i (define-or-find-individual 'comparative-attribution
+                  :value comparative))) ;; n.b. open in reference-set
+         (setq head (bind-variable var i head))
+         head))
+      (t (let ((predicate
+                (if (and (not (is-basic-collection? comparative))
+                         (find-variable-for-category :subject (itype-of comparative)))
+                  (create-predication-and-edge-by-binding-and-insert-edge
+                   :subject head comparative)
+                  (individual-for-ref comparative))))
+           (setq head (bind-variable 'predication predicate head))
+           head)))))
+
+(defun superlative-adj-noun-compound (superlative head)
+  ;;/// Superlatives don't take than complements, so could have its own treatment
+  (comparative-adj-noun-compound superlative head))
+
 ;; "bigger than that block"
 (defun make-comparative-adjp-with-np (comparative than-np)
   "Goes with comparative + than-np. This is the simple case where
@@ -2418,9 +2449,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
   "For 'a bigger block than that one'"
   (let ((open-attribution (loop for b in (indiv-binds np)
                              as value = (binding-value b)
-                                when (or
-                                      (itypep value 'comparative-attribution)
-                                      (value-of 'comparative value))
+                             when (or
+                                   (itypep value 'comparative-attribution)
+                                   (value-of 'comparative value))
                              return b)))
     (cond
       (*subcat-test*
@@ -2457,7 +2488,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
 ;; "the mutually exclusive genes with ASPP2"
 
 (defun maybe-extend-premod-adjective-with-pp (np pp)
-  "For 'a bigger block than that one'"
   (let* ((premod-binding
           (loop for b in (indiv-binds np)
                 as value = (when (binding-p b) (binding-value b))
@@ -2490,36 +2520,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
              (respan-edge-for-new-referent edge-over-premod extended-premod)
              (rebind-variable premod-var extended-premod np))))))))
 
-
-;; "a bigger block"
-(defun comparative-adj-noun-compound (comparative head)
-  "For syntax rules comparative + <all n-bar categories>, as in
-   'the bigger red block'. We look up the attribute that is associated
-   with the comparative ('size' in the case of 'bigger') to tell us
-   what variable to bind. We make an instance of the comparative is
-   is open in its reference set, which we signal by ????"
-  (let ((var (variable-for-attribute comparative)))
-    (cond 
-      (*subcat-test*
-       (or var
-           (takes-adj? head comparative)))
-      (var
-       (when (category-p head) (setq head (individual-for-ref head)))
-       (let ((i (define-or-find-individual 'comparative-attribution
-                  :value comparative))) ;; n.b. open in reference-set
-         (setq head (bind-variable var i head))
-         head))
-      (t (let ((predicate
-                (if (and (not (is-basic-collection? comparative))
-                         (find-variable-for-category :subject (itype-of comparative)))
-                  (create-predication-and-edge-by-binding-and-insert-edge
-                   :subject head comparative)
-                  (individual-for-ref comparative))))
-           (setq head (bind-variable 'predication predicate head))
-           head)))))
-
-(defun superlative-adj-noun-compound (superlative head)
-  (comparative-adj-noun-compound superlative head))
 
 
 (defun allowable-post-quantifier? (n quant)
