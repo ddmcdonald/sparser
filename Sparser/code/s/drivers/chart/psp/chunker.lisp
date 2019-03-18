@@ -1048,17 +1048,6 @@ than a bare "to".  |#
 (defun edges-before (e)(ev-top-edges (pos-ends-here (pos-edge-starts-at e)) ))
 (defun all-edges-at (e)(ev-top-edges (pos-starts-here (pos-edge-starts-at e)) ))
 
-(defun edge-cat-name (edge)
-  (declare (optimize (speed 3)(safety 0)))
-  (when (edge-p edge)
-    (cat-name (edge-category edge))))
-
-(defun form-cat-name (edge)
-  (declare (optimize (speed 3)(safety 0)))
-  (when (edge-p edge)
-    (cat-name (edge-form edge))))
-
-
 (defvar *chunk*)
 (defun edges-before-chunk (&optional (chunk (and (boundp '*chunk*) *chunk*)))
   (and chunk
