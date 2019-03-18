@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2012-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2018
+;;;  Version:  March 2019
 
 ;; initiated 10/25/92 w/ mixin.  Given some content 5/17/95.  Added np cases
 ;; 4/1/05. Added common-noun 4/12/09. 10/14/12 Removed the 'that' rules 
@@ -42,7 +42,7 @@
 
 ;;---- Predicates
 
-;; See pattern in rules/syntax/categories
+;; See pattern in rules/syntax/category-predicates.lisp
 ;; and consumer in record-any-determiner
 
 (defvar *indefinite-determiners* nil
@@ -65,10 +65,39 @@
         (mapcar #'word-named '("what" "which" "whichever"
                                "whose"))))
 
-(defun determiner? (word)
-  (or (definite-determiner? word)
-      (indefinite-determiner? word)
-      (wh-determiner? word)))
+
+(defgeneric np-specifier? (item)
+  (:documentation "Is the item the sort of thing that can act as
+    the specifier of an np. Referent point is Jackendoff's 1977 book onn
+    X-bar Syntax.")
+  (:method ((triple list))
+    (assert (= 3 (length triple)) (triple)
+            "The list that was passed to np-specifier? was not a triple")
+    (np-specifier? (triple-rule triple)))
+  (:method ((rule cfr))
+    (np-specifier? (cfr-form rule)))
+  (:method ((c category))
+    (or (determiner? c)
+        (memq (cat-name c) ;; what else?
+              '(number quantifier)))))
+
+
+(defgeneric determiner? (label)
+  (:documentation "Is the label a determiner?
+    Notes that label is the super type of both words
+    and categories.")
+  (:method ((w word))
+    (declare (special category::det))
+    (eq (get-tag :function-word w) category::det))
+  (:method ((e edge))
+    (cond ((edge-form e) (determiner? (edge-form e)))
+          ((polyword-p (edge-category e)) nil)
+          (t ;;(format t "~&Determiner? new cases of an edge: ~a~%" e)
+             nil ))) ;; e.g. an edge over a hyphen
+  (:method ((c category))
+    (or (definite-determiner? c)
+        (indefinite-determiner? c)
+        (wh-determiner? c))))
 
 (defgeneric indefinite-determiner? (item)
   (:documentation "Does this item on the list of indefinite determiners?")
@@ -119,9 +148,7 @@
   (:method ((c category))
     (wh-determiner? (cat-name c)))
   (:method ((name symbol))
-    (memq name '(what which whichever whose)))
-  (:method ((e edge))
-    nil))
+    (memq name '(what which whichever whose))))
 
                               
 (defmethod definite-np? ((e edge))

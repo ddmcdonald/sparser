@@ -226,7 +226,7 @@
 ;;;-------------
 ;;; determiners
 ;;;-------------
-
+ #|  Simpler version in the generic function in rules/syntax/articles.lisp
 (defun determiner? (word)
   ;; ///need to revise their definitions in rules:words; so this
   ;; is easier to compute
@@ -237,7 +237,7 @@
              (brackets (when rs (rs-phrase-boundary rs)))
              (.[ (when brackets (ba-begins-before brackets))))
         (eq .[ .[np))))
-
+|#
 
 ;;;---------
 ;;; adverbs
