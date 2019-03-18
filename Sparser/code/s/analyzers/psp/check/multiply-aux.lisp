@@ -198,22 +198,6 @@
                    (test-semantic-applicability rule left-edge right-edge)))
       rule)))
 
-(defun test-semantic-applicability (rule left-edge right-edge)
-  "If this rule invokes a syntactic-method or the equivalent function
-   that function will make a quick check to determine whether
-   it's valid to apply it.  Rules with explicit references or
-   references constructed in ways that don't involve syntactic
-   methods invoked by :function are automatically valid."
-  (declare (special *check-semantic-applicability*))
-  (if *check-semantic-applicability*
-    (if (and (consp (cfr-referent rule))
-             (eq (car (cfr-referent rule)) :funcall))
-      (test-subcat-rule (list left-edge right-edge) rule)
-      t)
-    t))
-
-
-
 
 ;;;-----------------------------
 ;;; compatible form information
@@ -305,15 +289,40 @@
    then chunk we're in, then check that the rule will give the 
    new edge a compatible form label."
   (cond
-   ((chunk-head? right-edge chunk) 
-    ;; is the right-edge the head of the chunk?
-    (case (car (chunk-forms chunk))
-      (ng (memq (rule-lhs-form rule) ;; the symbol of the lhs category
-                '(n-bar ng np common-noun common-noun/plural 
-                  np-head pronoun proper-name proper-noun)))
-      (vg t)
-      (adjg t)))
+    ((chunk-head? right-edge chunk)
+     (tr :consistent-with-chunk chunk)
+     ;;(push-debug `(,chunk ,right-edge)) (break "chunk head")
+     (let ((result
+            (case (car (chunk-forms chunk))
+              (ng (memq (rule-lhs-form rule) ;; the symbol of the lhs category
+                        '(n-bar ng np common-noun common-noun/plural
+                          ;;/// rewrite to use *ng-head-categories*
+                          np-head pronoun proper-name proper-noun)))
+              (vg t)
+              (adjg t))))
+       (if result
+         (tr :is-consistent-with-chunk right-edge)
+         (tr :is-not-consistent-with-chunk right-edge))
+       result))
    (t t)))
+
+
+(defun test-semantic-applicability (rule left-edge right-edge)
+  "If this rule invokes a syntactic-method or the equivalent function
+   that function will make a quick check to determine whether
+   it's valid to apply it.  Rules with explicit references or
+   references constructed in ways that don't involve syntactic
+   methods invoked by :function are automatically valid."
+  (declare (special *check-semantic-applicability*))
+  (if *check-semantic-applicability*
+    (if (and (consp (cfr-referent rule))
+             (eq (car (cfr-referent rule)) :funcall))
+      (test-subcat-rule (list left-edge right-edge) rule)
+      t)
+    t))
+
+
+
 
 
 ;;;---------------------

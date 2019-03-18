@@ -54,14 +54,13 @@
 (defun untrace-parse-edges ()
   (setq *parse-edges* nil))
 
-
-
 (defvar *trace-rules* nil
   "For the muliplications threading labels to rules")
 (defun trace-rules ()
   (setq *trace-rules* t))
 (defun untrace-rules ()
   (setq *trace-rules* nil))
+
 
 
 ;;;-----------------------------------------------------------
@@ -556,7 +555,18 @@
 (deftrace :pairs-in-segment (pairs)
   ;; called from collect-triples-in-segment
   (when *parse-edges*
-    (trace-msg "The segment has ~a edge-pairs" (length pairs))))
+    (let ((length (length pairs)))
+      (case length
+        (0 
+         (trace-msg "The segment has no edge-pairs"))
+        (1
+         (trace-msg "The segment has 1 edge-pair: ~a"
+                    (format-edge-pair (car pairs))))
+        (otherwise
+         (trace-msg "The segment has ~a edge-pairs:~{ ~a~}"
+                    length
+                    (loop for p in pairs
+                       collect (format-edge-pair p))))))))
 
 (deftrace :find-rule-for-edge-pair (left right)
   ;; called from segment-rule-check
@@ -580,11 +590,37 @@
   (when *parse-edges*
     (trace-msg "  no rule found")))
 
+(deftrace :segment-starts-with-NP-specifier (triple)
+  ;; called from collect-triples-in-segment
+  (when *parse-edges*
+    (trace-msg "NP segment starts with specifier: ~a"
+               (format-triple triple))))
+
 (deftrace :n-triples-apply (triples)
   ;; called from select-best-triple
   (when *parse-edges*
-    (trace-msg "There are ~a triples to choose from:~{~&  ~a~}"
-               (length triples) triples)))
+    (let ((length (length triples)))
+      (case length
+        (0
+         (trace-msg "There are no triples to choose from"))
+        (1
+         (trace-msg "There is 1 triple: ~a"
+                    (format-triple (car triples))))
+        (otherwise
+         (trace-msg "There are ~a triples to choose from:~{~&  ~a~}"
+                    length
+                    (loop for tr in triples
+                       collect (format-triple tr))))))))
+
+(deftrace :non-syntactic-rules-used? (list-of-triples)
+  ;; called from select-best-triple
+  (when *parse-edges*
+    (let ((length (length list-of-triples)))
+      (case length
+        (0
+         (trace-msg "All use syntactic rules"))
+        (otherwise
+         (trace-msg "Some use non-syntactic rules"))))))
 
 (deftrace :n-priority-triples (triples)
   ;; called from select-best-triple
@@ -609,10 +645,13 @@
     (let ((rule (car triple))
           (left (cadr triple))
           (right (caddr triple)))
-    (trace-msg "Applying ~a to compose e~a and e~a"
+      (trace-msg "Selecting ~a" (format-triple triple)))))
+                 
+#|
+Applying ~a to compose e~a and e~a"
                (rule-number-string rule)
                (edge-position-in-resource-array left)
-               (edge-position-in-resource-array right)))))
+               (edge-position-in-resource-array right) |#
 
 (deftrace :triple-led-to-edge (edge)
   (when *parse-edges*
@@ -902,13 +941,28 @@
   (when *trace-rule-validity*
     (trace-msg " it's not valid")))
 
-
 ;;-- appropriate form check by validate-rule-form
 (defun report-form-check-blocks ()
   (setq *report-form-check-blocks* t))
 (defun unreport-form-check-blocks ()
   (setq *report-form-check-blocks* t))
 
+
+(deftrace :consistent-with-chunk (chunk)
+  ;; Called from validate-rule-result-form-against-chunk
+  (when *trace-rule-validity*
+    (trace-msg "Checking against chunk ~a" chunk)))
+
+(deftrace :is-consistent-with-chunk (right-edge)
+  ;; Called from validate-rule-result-form-against-chunk
+  (when *trace-rule-validity*
+    (trace-msg " e~a is consistent"
+               (edge-position-in-resource-array right-edge))))
+
+(deftrace :is-not-consistent-with-chunk (right-edge)
+  (when *trace-rule-validity*
+    (trace-msg " e~a is not consistent"
+               (edge-position-in-resource-array right-edge))))
 
 ;;-- methods say the rule applies
 (defvar *trace-test-subcat-rule* nil)
@@ -928,12 +982,12 @@
 (deftrace :subcat-text/yes ()
   ;; called from test-subcat-rule
   (when *trace-test-subcat-rule*
-    (trace-msg "[subcat-test]   yes")))
+    (trace-msg "[subcat-test]  yes")))
 
 (deftrace :subcat-text/no ()
   ;; called from test-subcat-rule
   (when *trace-test-subcat-rule*
-    (trace-msg "[subcat-test]   no")))
+    (trace-msg "[subcat-test]  no")))
 
 (deftrace :failed-subcat-restriction (item sc-pattern)
   ;; called from find-subcat-var
