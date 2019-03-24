@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  August 2017
+;;;  version:  March 2019
 
 ;; Initiated 8/15/17 to hold general noun-like stuff, oarticularly the
 ;; vocabulary need for the fixed texts in generate.lisp
@@ -27,7 +27,7 @@ invites this reply: "What (else) do you need to know?"
 |#
 
 (define-category information
-  :specializes abstract ;; non-physical < endurant ??
+  :specializes non-physical
   :mixins (scalar)
   :instantiates self
   :lemma (:common-noun "information")
@@ -39,9 +39,9 @@ invites this reply: "What (else) do you need to know?"
   without being more specific than that. It's just a primitive that's
   not analyzed further.
   Notes:
-     Information can be described or characterized, and it can be
+    Information can be described or characterized, and it can be
   embodied in a medium that acts as a container for the information.
-     Information must be distinguished from the the medium that carries
+    Information must be distinguished from the the medium that carries
   it (bitstream, music score, book). The same information can be
   carried by different media and in different instances,
   i.e. information can be copied without losing its identity (which
@@ -50,8 +50,10 @@ invites this reply: "What (else) do you need to know?"
   singing the Star Spangled Banner at ball games) but poor copies are
   still copies of the same information.")
 
-
-
+(define-category answer/info ;; ugh
+  :specializes information
+  :instantiates self
+  :lemma (:common-noun "answer"))
 #|
 "intent" is the 'result' of having an intention
    It's an 'intent' to do something

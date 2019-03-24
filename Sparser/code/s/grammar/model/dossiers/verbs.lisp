@@ -24,13 +24,13 @@ and provides biology-specific restrictions on its varibles. |#
                                 :present-participle "answering"
                                 :past-participle "answered")
                 :etf svo ;; or intransitive
-                :about theme
-                :noun "answer"))
+                :about theme))
 #| "To answer this question ..."
-dm #79 "a more precise answer"
+dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
 "answer for your crimes", "__ to a higher authority"
 "answer your question", "answer whether P" ???
 |#
+
 
 
 ;;------------------------------------------ originally mid-level/verbs.lisp
