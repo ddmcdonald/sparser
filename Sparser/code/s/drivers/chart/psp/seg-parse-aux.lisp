@@ -89,6 +89,21 @@
 	       '(adverb comparative superlative))))
 
 
+(defun rightmost-triple (list-of-triples)
+  (if (null (cdr list-of-triples))
+    (car list-of-triples)
+    (let ((rightmost (first list-of-triples)))
+      (loop for triple in (cdr list-of-triples)
+         when (to-the-right-of triple rightmost)
+         do (setq rightmost triple))
+      rightmost)))
+
+(defun triple-length (triple)
+  "How many words (= chart positions) does it span"
+  (number-of-terminals-between
+   (pos-edge-starts-at (left-edge-of-triple triple))
+   (pos-edge-ends-at (right-edge-of-triple triple))))
+
 
 
 ;;------------------

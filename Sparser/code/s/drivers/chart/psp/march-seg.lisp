@@ -219,10 +219,8 @@ its head will be at
            (tr :selected-best-triple leftmost)
            leftmost))
 	(t
-	 ;; this default amounts to selecting the rightmost pair
-	 ;; that has a rule
-         ;;(tr :n-default-triples triples)
-	 (let ((rightmost (car (last triples))))
+         ;;(push-debug `(,triples)) (break "default")
+	 (let ((rightmost (rightmost-triple triples)))
 	   (tr :selected-best-triple rightmost)
 	   rightmost))))))
 

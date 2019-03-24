@@ -32,6 +32,14 @@
 ;; This entry point only buys us dotted rules, which are OBE
 ;;  (execute-one-one-rule (car triple) (second triple) (third triple))
 
+(defgeneric triple-p (item)
+  (:documentation "Does this item represent a triple?")
+  (:method ((item list))
+    (and (= 3 (length item))
+         (cfr-p (first item))
+         (edge-p (second item))
+         (edge-p (third item)))))
+
 
 ;;--- these return strings since motivating cases is trace functions
 
