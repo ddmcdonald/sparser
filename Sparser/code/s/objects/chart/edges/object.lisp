@@ -496,6 +496,10 @@ code is make-edge-over-abbreviation and its feeders. |#
 	     t)
 	    (t nil)))))
 
+(defmethod to-the-right-of ((e1 edge) (e2 edge))
+  ;; methods for other signatures in positions/positions.lisp
+  (to-the-right-of (pos-edge-ends-at e1) (pos-edge-ends-at e2)))
+
 
 ;; (sort <list of edges> #'edge-sort)
 (defun edge-sort (e1 e2)

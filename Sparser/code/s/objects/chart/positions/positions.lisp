@@ -210,14 +210,27 @@
 
 (defgeneric rightmost (p1 p2)
   (:documentation "Which of the positions in the chart of the
-    two items is the furthest to the right. Return the position
-    of that item (end position if item is an edge).")
+    two items is the furthest to the right. Return the argument
+    (p1 or p2) with is to the right of the other argument.")
   (:method ((p1 position) (p2 position))
     (let ((i1 (pos-token-index p1))
           (i2 (pos-token-index p2)))
       (cond ((= i1 i2) p1)
             ((> i1 i2) p1)
             ((< i1 i2) p2)))))
+
+(defgeneric to-the-right-of (item1 item2)
+  (:documentation "Similar to rightmost, but structured as a predicate
+    so can be used in sorting. Devolves down to one of the position
+    comparison predicates, but as a generic can also work with edges
+    or triples. Test whether the position of item1 is to the right
+    of item2 (higher number chart position). Returns nil both when
+    item1 is to the left of item2 and when they are at the same position")
+  (:method ((p1 position) (p2 position))
+    (position/> p1 p2))
+  (:method ((t1 list) (t2 list))
+    (assert (and (triple-p t1) (triple-p t2)) () "Lists aren't triples")
+    (to-the-right-of (right-edge-of-triple t1) (right-edge-of-triple t2))))
 
 
 ;;;------------------------
