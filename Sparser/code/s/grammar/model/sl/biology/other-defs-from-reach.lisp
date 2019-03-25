@@ -1037,7 +1037,7 @@
 (def-indiv-with-id molecule "NI" "PCID:934") 
 (def-indiv-with-id molecule "NH125" "PCID:10436839") 
 (def-indiv-with-id molecule "NFB" "PCID:1004") 
-(def-indiv-with-id molecule "ND" "PCID:25145403") 
+;;(def-indiv-with-id molecule "ND" "PCID:25145403") conflicts with ordinal suffix
 (def-indiv-with-id molecule "N-methyl-N'-nitro-N-nitrosoguanidine" "PCID:9562060") 
 (def-indiv-with-id molecule "N-acetyllactosamine" "PCID:119547") 
 (def-indiv-with-id molecule "N-acetylcysteine" "PCID:12035") 
