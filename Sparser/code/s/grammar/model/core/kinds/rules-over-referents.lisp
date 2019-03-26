@@ -33,7 +33,8 @@
   "Answers the question of what variable to use
    for binding a particular attribute-value (e.g. 'red') to the
    individual it's an attribute of. "
-  (declare (special category::collection category::attribute-value))
+  (declare (special category::collection category::attribute-value
+                    category::qualified-attribute category::top))
   (cond
     ((itypep av category::collection)
      (let ((type (value-of 'type av)))
@@ -41,14 +42,21 @@
         (let ((attribute (value-of 'attribute type)))
           (when attribute
             (value-of 'var attribute))))))
+    
+    ((itypep av category::qualified-attribute) ;; "more x"
+     ;; n.b. these are also attribute-values, but without attributes
+     (find-variable-in-category 'modifier category::top))
+    
     ((itypep av category::attribute-value)
      (let ((attribute (value-of 'attribute (itype-of av))))
        (when attribute
          (value-of 'var attribute))))
+    
     ((itypep av category::attribute) ;; e.g. color
      (let ((type (itype-of av)))
        (when type
          (value-of 'var type))))
+    
     (t
      nil)))
 
