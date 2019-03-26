@@ -297,7 +297,6 @@ This sorts out what to use as the category in the unusual cases."
       (cfr-form cfr))))
 #| from <r3>/code/sparser-extensions/new-words.lisp |#
 
-
 (defgeneric find-rules-with-literal (word)
   (:method ((pname string))
     (find-rules-with-literal (resolve pname)))
@@ -307,3 +306,30 @@ This sorts out what to use as the category in the unusual cases."
        as rhs = (cfr-rhs cfr)
        when (memq w rhs) collect cfr)))
     
+
+
+(defvar *words-to-deleted-rules* (make-hash-table :test #'eq))
+
+(defgeneric strip-single-term-rules (label)
+  (:documentation "Remove every single-term rewrite rule from
+    the word. Presumably because we want to define something else
+    with it that the other rules are presently irrelevant.
+    Motivating case is the single-capitalized-letter 'E' which 
+    besides being a single-capitalized-letter (e.g. to use with
+    a person's initials) it is also the short form of the
+    direction 'east'.")
+  (:method ((pname string))
+    (strip-single-term-rules (word-named pname)))
+  (:method ((ignore null)) ;; one of the transforms returned nil
+    nil)
+  (:method ((w word))
+    (strip-single-term-rules (rule-set-for w)))
+  (:method ((pw polyword))
+    (strip-single-term-rules (rule-set-for pw)))
+  (:method ((rs rule-set))
+    (let ((rules (rs-single-term-rewrites rs))
+          (word (rs-backpointer rs)))
+      (when rules
+        (setf (get-tag :deleted-rules word) rules)
+        (setf (gethash word *words-to-deleted-rules*) rules)
+        (loop for r in rules do (delete/cfr r))))))

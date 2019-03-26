@@ -79,7 +79,6 @@ of how they compose with other terms.
   (let* ((letter-list '("A" "B" "C" "D" "E" "F"))
          (words (loop for l in letter-list collect (resolve l))))
     (loop for l in letter-list do (strip-single-term-rules l))
-    (break "words ?")
 
     ;; Notes per se
     (let* (;;(words (loop for l in letter-list collect (resolve/make l)))
@@ -121,31 +120,4 @@ of how they compose with other terms.
 (eval-when (#|:compile-toplevel|# :load-toplevel :execute)
   (setup-note-lengths))
 |#
-
-
-(defvar *words-to-deleted-rules* (make-hash-table :test #'eq))
-
-(defgeneric strip-single-term-rules (label)
-  (:documentation "Remove every single-term rewrite rule from
-    the word. Presumably because we want to define something else
-    with it that the other rules are presently irrelevant.
-    Motivating case is the single-capitalized-letter 'E' which 
-    besides being a single-capitalized-letter (e.g. to use with
-    a person's initials) it is also the short form of the
-    direction 'east'.")
-  (:method ((pname string))
-    (strip-single-term-rules (word-named pname)))
-  (:method ((ignore null)) ;; one of the transforms returned nil
-    nil)
-  (:method ((w word))
-    (strip-single-term-rules (rule-set-for w)))
-  (:method ((pw polyword))
-    (strip-single-term-rules (rule-set-for pw)))
-  (:method ((rs rule-set))
-    (let ((rules (rs-single-term-rewrites rs))
-          (word (rs-backpointer rs)))
-      (when rules
-        (setf (get-tag :deleted-rules word) rules)
-        (setf (gethash word *words-to-deleted-rules*) rules)
-        (loop for r in rules do (delete/cfr r))))))
 
