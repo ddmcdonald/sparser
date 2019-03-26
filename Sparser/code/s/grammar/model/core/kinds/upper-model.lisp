@@ -50,6 +50,7 @@
   :binds ((name :primitive word) ;; more like a label than a name proper.
           
           (modifier)
+          (qualifier) ;; a modifier that changes somethings type: 'toy gun'
           
           (negation) ;; applies to both endurants and perdurants
           ;;/// but c.f. negative on tense/modal -- needs coordination

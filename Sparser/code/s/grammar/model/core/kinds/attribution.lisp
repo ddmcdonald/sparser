@@ -43,7 +43,7 @@ But we can't just use the attribute value for this, since
 we need to be able to represent, e.g. "are never tall.",
 so the representation of this predicate needs the right hooks.
 
--- If think about predicates then we naturally think about
+-- If we think about predicates then we naturally think about
 the predications that arise from applying the predicate to
 a 'subject', e.g. "southern Chinese girls are never tall"
 
