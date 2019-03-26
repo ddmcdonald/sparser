@@ -605,7 +605,7 @@ val-pred-var (pred vs modifier - left or right?)
   (when (category-p head) (setq head (individual-for-ref head)))
   (cond
     (*subcat-test*
-     (takes-adj? head adjective))
+     t) ;;(takes-adj? head adjective) precludes all the other legal cases
     ((when (use-methods) ;; "the Ras protein", where 'protein' is a type-marker
        (compose adjective head)))
     ((itypep adjective 'attribute-value) ;; "red block"
@@ -2399,6 +2399,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 (define-lambda-variable 'compared-to
     nil 'top)
+
 
 ;; "a bigger block"
 (defun comparative-adj-noun-compound (comparative head)
