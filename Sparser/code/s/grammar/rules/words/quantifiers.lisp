@@ -63,6 +63,10 @@
 
 |#
 
+;;;--------------------
+;;; simple quantifiers
+;;;--------------------
+
 (define-category  quantifier
   :specializes predicate
   :instantiates nil
@@ -110,6 +114,45 @@
       object )))
 
 
+(define-quantifier "additional")
+(define-quantifier "all")
+(define-quantifier "any")
+(define-quantifier "another")
+(define-quantifier "both")
+(define-quantifier "each")
+(define-quantifier "either")
+(define-quantifier "enough")
+(define-quantifier "every")
+
+(define-quantifier "much") ;; mass 
+(define-quantifier "many") ;; count
+
+(define-quantifier "neither")
+(define-quantifier "numerous")
+(define-quantifier "a number")
+(define-quantifier "other")
+(define-quantifier "others")
+(define-quantifier "several")
+(define-quantifier "some")
+(define-quantifier "such")
+
+;; not sure if this is a quantifier, but it is similar 
+(define-quantifier "such a"    )
+
+(define-quantifier "various")
+
+
+(define-quantifier "no") 
+
+(define-quantifier "not"  :brackets '( ].verb .[modal ))
+
+(define-quantifier "none" :brackets '( ].quantifier  phrase.[ ))
+
+
+;;;-------------------------------------
+;;; scalar / comparative quantification
+;;;-------------------------------------
+
 (define-category comparative-quantification
   :specializes scalar-attribute
   :bindings (var (find-variable-for-category 'quantifier 'endurant))
@@ -148,6 +191,7 @@
    They pattern like adjectival comparatives."
   (let ((*inhibit-constructing-comparatives* t))
     (declare (special *inhibit-constructing-comparatives*))
+    
     (flet ((switch-form (string old-cat-name new-cat-name)
              (let* ((word (resolve string))
                     (category (category-named old-cat-name :error))
@@ -156,10 +200,11 @@
                (unless rule
                  (error "Expected a rule on ~a with form ~a" category old-cat-name))
                (setf (cfr-form rule) replacement))))
+      
       (let* ((q (when base
                   (define-quantifier base)))
              (comparative
-              (when er
+              (when er ;;/// shouldn't we be making subtypes? of the quantifier?
                 (define-or-find-individual 'comparative-quantifier
                     :name er :quantifier q)))
              (superlative
@@ -169,24 +214,12 @@
         ;; The :er and :est individuals are created with rewrite rules
         ;; with the form 'adjective because that's the realization
         ;; specified on their categories. These swap that form category
-        ;; for another one, which is useful for experimenting while
-        ;; we sort out what we really want.
+        ;; on the rule for another one, which is also useful for experimenting
+        ;; while we sort out what we really want.
         (when base (switch-form base 'quantifier 'comparative)) ;;???
         (when er (switch-form er 'adjective 'comparative))
         (when est (switch-form est 'adjective 'adverb))
         (values q comparative superlative)))))
-
-
-
-(define-quantifier "additional")
-(define-quantifier "all")
-(define-quantifier "any")
-(define-quantifier "another")
-(define-quantifier "both")
-(define-quantifier "each")
-(define-quantifier "either")
-(define-quantifier "enough")
-(define-quantifier "every")
 
 ;; count
 (define-scalar-quantifier :base "few" :er "fewer" :est "fewest")
@@ -194,29 +227,5 @@
 ;; mass
 (define-scalar-quantifier :base "less" :er "lesser" :est "least") ;;/// "at least N"
 
-(define-quantifier "much") ;; mass 
-(define-quantifier "many") ;; count
-
 (define-scalar-quantifier :er "more" :est "most") ;;/// "most of all, ..."
-
-(define-quantifier "neither")
-(define-quantifier "numerous")
-(define-quantifier "a number")
-(define-quantifier "other")
-(define-quantifier "others")
-(define-quantifier "several")
-(define-quantifier "some")
-(define-quantifier "such")
-
-;; not sure if this is a quantifier, but it is similar 
-(define-quantifier "such a"    )
-
-(define-quantifier "various")
-
-
-(define-quantifier "no") 
-
-(define-quantifier "not"  :brackets '( ].verb .[modal ))
-
-(define-quantifier "none" :brackets '( ].quantifier  phrase.[ ))
 

@@ -107,6 +107,19 @@ is seen.
   use 'figure' where we're using (for the moment) item.")
 
 
+(define-category qualified-attribute ;; "more precise"
+  :specializes quality-value-predicate
+  :mixins (comparative)
+  :binds ((attribute)
+          (comparative comparative))
+  :documentation "Provides an envelop for compound comparatives
+  formed with 'more', 'less', or any other comparative quantifier.
+  Provides the hook that's needed to link 'than' complements to
+  the quantifier (value of the 'comparative' variable). These are
+  formed directly by application of the rule that composes a
+  comparative with an an adjective.")
+
+
 ;;;-------------------------------
 ;;; derived-category constructors
 ;;;-------------------------------
