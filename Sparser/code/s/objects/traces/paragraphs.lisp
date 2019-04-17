@@ -48,10 +48,15 @@
                (pos-token-index (starts-at-pos p))
                (pos-token-index (ends-at-pos p)))))
 
+(deftrace  :nl-immediate-newline (end-pos)
+  ;; called from new-ortho-paragraph
+  (when *trace-paragraphs*
+    (trace-msg "[P] immediate NL, resetting prior-pos to ~a" end-pos)))
+
 (deftrace :sp-para-content (p)
   ;; called from parse-successive-paragraphs
   (when *trace-successive-paragraphs*
-    (trace-msg "About to parse ~a ~s" p (content-string p))))
+    (trace-msg "About to parse ~a" p #+ignore(content-string p))))
 
 (deftrace :sp-eos-return ()
   ;; called from parse-successive-paragraphs
@@ -63,6 +68,10 @@
   (when *trace-successive-paragraphs*
     (trace-msg "Terminate paragraph loop: no next after ~a" p)))
 
+(deftrace :sp-empty-paragraph ()
+  ;; called from parse-successive-paragraphs
+  (when *trace-successive-paragraphs*
+    (trace-msg "Terminate paragraph loop: next paragraph has null string")))
 
 (deftrace :scan-to-eos/start (pos word)
   ;; in scan-sentences-and-pws-to-eos
