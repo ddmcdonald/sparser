@@ -27,10 +27,9 @@
    the tokenizer should take the next character from. Incremented
    each time it is used, hence it's initialization to minus one.")
 
-
-(defvar *length-of-character-input-buffer*)
 (unless (boundp '*length-of-character-input-buffer*)
-  (defparameter *length-of-character-input-buffer*  200000 ;; 1000 -- THIS HAS TO BE LARGE TO READ THE ARTICLES IN CALLISTO -- Rusty
+  (defparameter *length-of-character-input-buffer*  200000 ;; 200,000 characters
+    ;; formerly 1000 -- Has to be large to read the articles in CALLISTO -- Rusty
     "A performance variable.  Should be adjusted to tradeoff between
      the size of the stored image and the overhead of sucessively
      opening the source to fill it."))

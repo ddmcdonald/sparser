@@ -20,9 +20,12 @@
 
 (defun analyze-text-from-string (string)
   (declare (special *trap-error-skip-sentence*
-                    *string-from-analyze-text-from-string*))
+                    *string-from-analyze-text-from-string*
+                    *prescan-character-input-buffer*))
   (setq *string-from-analyze-text-from-string* string)
   (establish-character-source/string string)
+  (when *prescan-character-input-buffer*
+    (scan-and-swap-character-buffer))
   (cond
     (*trap-error-skip-sentence*
       (handler-case
