@@ -230,6 +230,7 @@ that use the syntax function make-ordinal-item to form their interpretation.
 
 (defun make-ordinal-pronoun-reading (ordinal number)
   ;; First retrieve the pronoun that should be there
+  (declare (special category::indefinite-pronoun))
   (let* ((right-edge (right-edge-for-referent))
          (ev (edge-starts-at right-edge))
          (pn-edge

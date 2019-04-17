@@ -61,6 +61,13 @@
 (defun untrace-rules ()
   (setq *trace-rules* nil))
 
+(defvar *trace-rule-source* nil
+  "What kind of rule was found")
+(defun trace-rule-source ()
+  (setq *trace-rule-source* t))
+(defun untrace-rule-source ()
+  (setq *trace-rule-source* nil))
+
 
 
 ;;;-----------------------------------------------------------
@@ -881,14 +888,6 @@ Applying ~a to compose e~a and e~a"
 ;;;-----------------------
 
 ;;--- toplevel divide by rule-type
-
-(defvar *trace-rule-source* nil
-  "What kind of rule was found")
-
-(defun trace-rule-source ()
-  (setq *trace-rule-source* t))
-(defun untrace-rule-source ()
-  (setq *trace-rule-source* nil))
 
 (deftrace :found-semantic-rule (rule)
   (when *trace-rule-source*
