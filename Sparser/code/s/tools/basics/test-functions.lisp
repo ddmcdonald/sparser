@@ -1346,7 +1346,7 @@ divides it into good and bad. |#
        do (if split?
             (test-bio-utterance/split s (incf count) stream)
             (test-bio-utterance s (incf count) stream)))
-    (format stream "~&~a sentences in *list-of-bio-utterances*~%" count)
+    (format stream "~&~a sentences in *list-of-bio-utterances*~%" (+ 1 count))
     (when split?
       (format stream "~&  ~a good~
                       ~%  ~a bad~%"
@@ -1416,8 +1416,8 @@ all-bioagent-capability-sentences.lisp"
                      "sparser:bio-not-loaded;bioagent-cap-testing;"
                      file)))
 
-(defun test-bio-utts->file (&optional (file "all-bioagent-capability-test-results.lisp")
-                              (get-cat-roles t))
+(defun test-bio-utts->file (&optional (get-cat-roles t)
+                              (file "all-bioagent-capability-test-results.lisp"))
   "loads all-bioagent-capability-sentences.lisp which should be the
   current sentence list and outputs the result of test-bio-utterances
   to a file, and by default also populates *test-utt-unique-cats* and
