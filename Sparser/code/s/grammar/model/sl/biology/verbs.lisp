@@ -793,10 +793,11 @@
 	   :etf (svo-passive)))
 
 ;; as in "genes express proteins" or "cell (lines) express proteins" and not the abstract sense
+;; tissues also express proteins "what tissues express stat3?"
 (define-category gene-transcript-express :specializes caused-bio-process
     :binds ((location bio-location)
             (from biological))
-    :restrict ((agent cell-entity)
+    :restrict ((agent (:or cell-entity non-cellular-location))
                (object (:or gene peptide rna mutant))
                (using blocked-category))  ;; better handling of "comparison of p-ERK expression WITH ..."
     :realization
