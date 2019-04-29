@@ -9,17 +9,6 @@
 
 (in-package :sparser)
 
-(defun get-word-for-prep (prep-val)
-  (when (individual-p prep-val)
-    ;; happens in "1 hour after EGF stimulation"
-    ;; when the preposition absorbs the temporal interval
-    (setq prep-val (itype-of prep-val)))
-  
-  (resolve/make ;; needs to be a word for the subcat frame!
-   (string-downcase
-    (symbol-name
-     (cat-symbol prep-val)))))
-
 (defparameter *check-takes-adj?* nil)
 
 (defun takes-adj? (head adjective &optional verb-complement?)
@@ -276,6 +265,18 @@
 ;;;---------------------------------------------
 ;;; finding the parts of a prepositional phrase
 ;;;---------------------------------------------
+
+(defgeneric get-word-for-prep (prep-val)
+  (:documentation "Written to return the word object for the preposition
+    given a value that's pointing to it or a wrapper around it.")
+  (:method ((i individual)) ;; #<to 589>
+    (get-word-for-prep (itype-of i)))
+  (:method ((c category)) ;; category::to
+    (value-of 'word c))
+  (:method ((cat-name symbol))
+    (resolve/make (string-downcase (symbol-name cat-name)))))
+
+
 
 (defun decompose-prepositional-phrase (pp-edge)
   "Abstract out the usual operations. Return the preposition
