@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2018 SIFT, LLC.
+;;; copyright (c) 2018-2019 SIFT, LLC.
 ;;;
 ;;;     File:  "methods"
 ;;;   Module:  "grammar/model/sl/music/"
-;;;  version:  September 2018
+;;;  version:  April 2019
 
 ;; Initiated 9/3/18 for composition methods used in Museci sentences
 ;; to avoid any gratuitous clash with bio. 
@@ -14,10 +14,12 @@
 
 (def-k-method compose ((index category::number)
                        (item category::part-of-a-sequence))
+  ;; Called from make-ordinal-item
   (tr :number+part-of-a-sequence index item)
   (let ((ordinal (nth-ordinal index)))
     (unless ordinal
-      (push-debug `(,index)) (break "No ordinal"))
+      (push-debug `(,index))
+      (error "no ordinal defined for ~a ??" index))
     (compose ordinal item)))
 
 (def-k-method compose ((index category::ordinal)
@@ -27,30 +29,28 @@
     result))
 
 ;;--- "beats 1 and 2"
-(def-k-method compose ((index category::collection)
-                       (item category::part-of-a-sequence))  
+(def-k-method compose ((index category::collection) ;; "1 and 2"
+                       (item category::part-of-a-sequence)) ;; "beats"
+  ;; same pattern, so called by make-ordinal-item
   (declare (special category::number))
-  ;; have to do our own check                       
-  (when (eq (value-of 'type index) category::number)
-    ;; if the index is a collection then the item
-    ;; is probably plural, which for the moment makes
-    ;; it a collection.
-    (let ((item-is-a-collection? (itypep item 'collection)))
-      (let ((new-items
-             (if item-is-a-collection?
-               (let ((items-type (value-of 'type item)))
-                 (loop for n in (value-of 'items index)
-                    as i = (make/individual items-type nil)
-                    collect (compose n i)))               
-               (loop for n in (value-of 'items index)
-                  collect (compose n item)))))
-        ;;(push-debug `(,new-items))
-        (let ((new-collection
-               (define-or-find-individual 'collection
-                   :items new-items
-                   :number (length new-items)
-                   :type category::number)))
-          new-collection)))))
+  (tr :collection+items index item)
+
+  (unless (itypep item 'plural) ;; "beats"
+    (error "Expected item (i~a) to be plural" (indiv-uid item)))
+  ;; distribute the head across the collection
+  ;; N.b. in this form it's a general procedure
+  (let ((items-type (itype-of item)))
+    (let ((new-items
+           (loop for n in (value-of 'items index)
+              as i = (make/individual items-type nil)
+              collect (compose n i))))
+      ;;(break "new items ~a" new-items)
+      (let ((new-collection
+             (define-or-find-individual 'collection
+                 :items new-items
+                 :number (length new-items)
+                 :type items-type)))
+          new-collection))))
 
 
 
@@ -66,16 +66,16 @@
 
 
 ;; "before beat 2 of measure 1."
-(def-k-method compose ((sequencer category::sequencer)
+(def-k-method compose ((sequencer category::before)
                        (seq category::part-of-a-sequence))
-  ;; ///Should select the kind of subseq according what
-  ;; preposition is used, but they're not elevated
-  ;; to the choice of sequence category they go with.
+  ;; called from make-pp
+  ;;/// find a nice parameterization so we have a common core
+  ;; for the other sequencers -- else dispatch inside here
+  ;; and make the signature on sequencer
   (let ((s (value-of 'sequence seq))
         (index-pos (value-of 'position seq)))
     (tr :sequencer+part-of-a-sequence sequencer seq)
     (when s ;; returning nil will fail this option
-      ;;(break "type of subseq?")
       (let ((subseq
              (define-or-find-individual 'subseq-up-to
                  :type (itype-of seq)
@@ -84,14 +84,19 @@
         subseq))))
 
 
+;; "below C4"
+
+
+
 
 ;; (p "between beats 1 and 3")
 
 (def-k-method compose ((op category::between)
                        (bounds category::collection))
+  ;; called from make-pp
+  (tr :between+collection op bounds)
   (let ((count (value-of 'number bounds))
         (items (value-of 'items bounds)))
-    ;;/// type on the collection is 'number', which is weird
     (when (and (= count 2)
                (itypep (car items)
                        category::part-of-a-sequence))
@@ -120,6 +125,7 @@
 (def-k-method compose ((fraction category::fractional-term)
                        (note category::abstract-note))
   ;; called from the noun-noun-compound syntax function
+  (tr :fraction+note fraction note)
   (bind-variable 'duration fraction note))
 
 
