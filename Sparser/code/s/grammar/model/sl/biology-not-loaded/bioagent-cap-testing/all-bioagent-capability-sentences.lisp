@@ -476,7 +476,8 @@
     ("What transcription factors regulate genes in the mapk signaling pathwya") ;; KB::FIND-TF
     ("What transcription factors regulated frizzled8?") ;; KB::FIND-TF
     ("What transcription factors transcribe SMURF2?")   ;; KB::FIND-TF
-    ("What upregulates fzd8?")               ;; KB::FIND-REGULATION
+    ("What upregulates fzd8?"
+     "What downregulates it?")               ;; KB::FIND-REGULATION
     ("Where is STAT3 expressed?")            ;; KB::FIND-TISSUE
     ("Which KEGG pathways involve SRF?")     ;; KB::FIND-PATHWAY
     ("Which KEGG pathways use SRF?")         ;; KB::FIND-PATHWAY
@@ -924,6 +925,28 @@
      "Which of those are regulated by tp53?"
      )
 
+    ;; new sentences from spg-bio-reference
+    ("What genes does STAT3 regulate?"
+     "Which of those are regulated by tp53?"
+     "Which of those genes are in the MAPK signaling pathway?")
+
+    ("What genes does STAT3 regulate?"
+     "Which of these are kinases?"
+     "Which of these are in the il-12 pathway?")
+
+    ("What genes does STAT3 regulate?"
+     "Which of them are expressed in liver?"
+     "Which of them are most frequently regulated by miR-335-5p and miR-155-5p?")
+
+    ("What transcription factors target SMURF2?"
+     "Which of those target frizzled8?")
+
+    ("What is Selumetinib?"
+     "What does it target?")
+
+    ("What is MAPK3?"
+     "What does it do?")
+    
     ;; new sentences from capabilities files
     ("Is there an inhibitor of ERK1?")     ;;find-target-drug
     ("Name some drugs that inhibit AKT1.") ;;find-target-drug
@@ -944,7 +967,8 @@
     ("I'd like to find a treatement for pancreatic cancer.") ;;find-treatement
     ("How can i treat pancreatic cancer?") ;;find-treatement
     ("Does MEK act on ERK?") ;;confirm-relation-from-literature
-    ("Mek activates MAPK3"   ;;add-to-model
+    ("Let's build a model"
+     "Mek activates MAPK3"   ;;add-to-model
      "HRAS activates RAF."   ;; KB::ADD-TO-MODEL
      "Remove the fact that hras activates ras" ;;model-remove-mechanism
      "Can you tell me what is in the model?"   ;;describe-model
@@ -987,4 +1011,161 @@
     ("What are some other names for BRAF?") ;;get-synonyms
     ("What are synonyms for ERK?")          ;;get-synonyms
 
+    ("What transcription factors are shared by CXCL8, CXCL10, and IL2?")
+    ("What are the paths between BRAF and AKT1?")
+    ("Is SMAD2 a transcription factor?")
+    ("Let's build a model."
+     "Active MEK activates ERK"
+     "Remove the fact that active MEK activates ERK from the model.") ;; (I added the fact before removing it.)
+    ("Let's build a model."
+     "Active MEK activates ERK"
+     "What is in the model?") ;; (Used the fact active MEK activates ERK.)
+    ("Let's build a model."
+     "Active MEK phosphorylates ERK"
+     "Is the amount of phosphorylated ERK ever high?") ;; (Used the fact \"Active MEK phosphorylates ERK\".)
+    ("What genes are mutually exclusive with PTEN for prostate cancer?")
+    ("What signaling pathways are shared by SMAD2 and CXCL8?")
+    ("What miRNAs most frequently regulate FN1, MMP3, and SERPINE1?")
+    ("What is the most likely cellular location of PTEN?")
+    ("Is BRAF a kinase?")
+    ("Can you tell me whether BRAF is a kinase?")
+    ("I want to know if BRAF is a kinase.")
+    ("What does BRAF do?")
+    ("What type of protein is BRAF?")
+    ("Let's build a model."
+     "Active MEK phosphorylates ERK"
+     ;;"How does the amount of phosphorylated ERK change if we increase the amount of MEK by ten fold?" ;; fails in the canary -- "can you rephrase that please"
+     )
+    ("What is the activity of the BRAF protein?")
+    ("Is BRAF a kinase or a transcription factor?")
+    ("What proteins are targeted by NG25?")
+    ("Name transcription factors shared by FN1, MMP3, and SERPINE1.")
+    ("Tell me if STAT3 is a transcription factor")
+    ("Show me signaling pathways shared by MAP3K7 and CXCL8.")
+    ("Give me signaling pathways shared by MAP3K7 and CXCL8")
+    ("Let's build a model."
+     "Active MEK phosphorylates ERK"
+     "Is the amount of phosphorylated ERK ever high if we increase the amount of MEK by ten fold?")
+    ("Let's build a model."
+     "Active MEK phosphorylates ERK"
+     "Is the amount of phosphorylated ERK ever high if we increase the amount of MEK ten fold?")
+    ("What are some pathways that affect BRAF?")
+    ("What are the pathways that affect BRAF")
+    ("What genes are regulated by miR-20b-5p, and miR-145-5p?")
+    ("What are some genes that are regulated by ELK1?")
+    ("What pathways contain CXCL8 and CXCL10?")
+    ("Let's build a model."
+     "IL10 activates STAT3"
+     "Remove the fact that IL10 activates STAT3 in the model") ;; (Added fact before removal)
+    ("Let's build a model."
+     "IL10 activates STAT3"
+     "Remove active IL10 activates STAT3 from the model")
+    ("What are some paths between BRAF and AKT1?")
+    ;; ("Dos  MEK1 activate ERK2?") fails in Canary -- "Sorry, I didn't catch that. Can you rephrase please?"
+    ("Does MEK1 activate ERK2") ;; (missing question mark)
+    ("What drugs tagret BRAF?")
+    ("Which kinases are in the MAPK signalling pathway?")
+    ("What drugs drugs target BRAF?")
+    ("What rgulates ELLK1?")
+    ("Does STAT3 increase expression of c-fos in liver?")
+    ("Does STAT3 affect c-fos expression in liver?")
+    ("Does STAT3 alter c-fos expression?")
+    ("Is STAT3 a transcriptional regulator of c-fos?")
+    ("Which drugs inhibit BRAF?")
+    ("Let's build a model."
+     "STAT3 upregulates ELK1.") ;; (in model building mode)
+    ("What does STAT3 transcribe?  ")
+    ("What is PI3K?")
+    ("What is MEK?")
+    ("What phosphorylates ERK?")
+    ("What drugs target AKT?")
+    ("What regulates ELLK1?")
+    ("What regulates ELK1?")
+    ("Does miR-20b-5pp target STAT3?")
+    ("What are the mutations of PTEEN in prostate cancer?")
+    ("What does selumitinibib target?")
+    ("Is ELLK1 a kinase?")
+    ("What regulates ELK12?")
+    ("What does sleumiitibbb target?")
+    ("What is the evidence that MEK1 phosphorylates ERK1?")
+    ("Let's build a model."
+     "IL10 activates STAT3"
+     "Remove STAT3 from the model.")
+    ("Let's build a model."
+     "IL10 activates STAT3"
+     "Remove the last interaction from the model.")
+    ("Let's build a model."
+     "IL10 activates STAT3"
+     "How many interactions are in the model?")
+    ("Does tofacitinib decrease the amount of phosphorylated MAP2K2?")
+    ("What kinases does ERK1 activate?")
+    ("What kinases does MEK1 activate?")
+    ("What does ERK1 activate?")
+    ("What does JAK1 phosphorylate?")
+    ("What kinases does STAT3 regulate?")
+    ("What pathways involve SRF and what does SRF bind?")
+    ("What pathways involve SRF?")
+    ("What does SRF bind?")
+    ("What pathways involve SRF and is SRF a kinase?")
+    ("Does MAP2K1 phosphorylate and activate MAPK1?")
+    ("Does MAP2K1 phosphorylate MAPK3?")
+    ("Which kinases activate MEK2?")
+    ("Which drugs target upstreams of CXCL8 and CXCL10?")
+    ("Which drugs target CXCL8?")
+    ("Which drugs target Jak3?")
+    ("What transcription factors are shared by CXCL8 and CXCL10?")
+    ("What drugs target transcription factors shared by CXCL8 and CXCL10?")
+    ("What kinases does miR-20a-5p target?")
+    ("What transcription factors does miR-20a-5p target?")
+    ("What kinases are mutually exclusive with CDH1 for breast cancer?")
+    ("What drugs target fakeprotein?")
+    ("Which kinases are in the FAKE signaling pathway?")
+    ("What are the mutations of PTEN in fictional cancer?")
+    ("What are the mutations of PTEN in liver cancer?")
+    ("Let's build a model."
+     "ELK1 transcribes FOS"
+     "Remove the fact that ELk1 transcribes FAKE in the model.") ;;  (Where have built a model, but it does not contain FAKE).
+    ("Let's build a model."
+     "ELK1 transcribes FOS"
+     "Remove the fact that ELK1 transcribes FOS in the model.")
+    ("What transcription factors are shared by CXCL8 and FAKE10?")
+    ("What transcription factors are shared by CXCL8 and CXCL10?")
+    ("What databases do you use?")
+    ("What is the MSA?")
+    ("What tissues can I ask about?")
+    ("What cancers can I ask about?")
+    ("What mechanisms can I ask about?")
+    ("What does STAT3 regulate?" "Which of these are kinases?")
+    ("What pathways is ERK1 in?" "Which of these is AKT1 in?")
+    ("What pathways are ERK1 and AKT1 in?")
+    ("What microRNAs target STAT3?" "Which of these target SMAD2?")
+    ("What regulates STAT3?"  "Do any of these regulate IL2?")
+    ("What regulates STAT3?"  "What pathways involve these?")
+    ("What are the targets of NG25?"  "What is their most likely cellular location?")
+    ("Is ERK1 a transcription factor?"  "Is it a kinase?")
+    ("What is PLX-4720?"  "What does it target?")
+    ("What genes does STAT3 regulate?"  "What pathways is it in?")
+    ("What are the targets of PLX-4720?" "Does it target BRAF?")
+    ("Let's build a model."
+     "Tofacitinib inhibits JAK1 and active STAT3 transcribes IL2."
+     "JAK1 activates STAT3") ;; Build model, purposely miss an activated form and see if makes suggestions
+    ("I want to find out how Jak1 activates IL2")
+    ("I want to find out how ERBB3 activates JUN in SKBR3 cells.")
+    ("Let's build a model."
+     "Mek phosphorylates MAPK; MapK phosphorylates RSK")
+    ("What kinases regulate IL2?")
+    ("What positively regulates IL2?")
+    ("What can have the effect of activation on STAT3? ")
+    ("Are there any drugs for IL10?")
+    ("Which tissues express STAT3?")
+    ("How does MEK1 regulate ERK1?")
+    ("What are transcription factors that bind the IL15 and IL2 genes?")
+    ("What kinases regulate the IL15 and IL2?")
+    ("What factors from the literature regulate IL15 and IL2?")
+    ("What relations in the literature match tofacitinib inhibits IL15?")
+    ("What is MAP3K7?"  "Is MAP3K7 a protein?")
+    ("What does SMAD2 transcribe?")
+    ("Are there drugs for IL10?")
+    ("What relations in the literature match tofacitinib?")
+    ("What relations in the literature match STAT3 regulates IL15 ?")
     ))

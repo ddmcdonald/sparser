@@ -1,617 +1,500 @@
 
 
 ___________________
-1: "What genes does mir-128 regulate?" ;; bio-entity causes failure
+12: "What are synonyms for BRAF?"
 
                     SOURCE-START
-e6    GENE          1 "What genes " 3
-e4    DO            3 "does " 4
-e1    BIO-ENTITY    4 "mir-128 " 7
-e7    REGULATE      7 "regulate" 8
+e8    BE            1 "What are synonyms " 4
+e6    FOR           4 "for BRAF" 6
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e8    S             1 "What are synonyms " 4
+e6    PP            4 "for BRAF" 6
                     QUESTION-MARK
                     END-OF-SOURCE
 
 
 ___________________
-7: "What are the genes that have strong evidence of being regulated by mir-122-5p?" ;;  fixed evidence definition to allow of, although for
-also doesn't work and after of was fixed it still didn't work either
-
-                    SOURCE-START
-e2    WHAT          1 "What " 2
-e3    BE            2 "are " 3
-e27   GENE          3 "the genes that have strong evidence " 9
-e24   OF            9 "of being regulated by mir-122-5p" 19
-                    QUESTION-MARK
-                    END-OF-SOURCE
-
-
-___________________
-28: "What is another name for BRAF?" ;; for some reason "another name for BRAF" isn't composing to "has-name" and "what is" isn't attaching
-
-                    SOURCE-START
-e0    WHAT          1 "What " 2
-e1    BE            2 "is " 3
-e10   NAME          3 "another name " 5
-e9    FOR           5 "for BRAF" 7
-                    QUESTION-MARK
-                    END-OF-SOURCE
-
-
-___________________
-29: "What is another name for MAP2K1?" ;; for some reason "another name for BRAF" isn't composing to "has-name" and "what is" isn't attaching
-
-                    SOURCE-START
-e2    WHAT          1 "What " 2
-e3    BE            2 "is " 3
-e11   NAME          3 "another name " 5
-e10   FOR           5 "for MAP2K1" 10
-                    QUESTION-MARK
-                    END-OF-SOURCE
-
-
-___________________
-45: "What genes are regulated by SMDA2?" ;; bio-entity causes failure
-
-                    SOURCE-START
-e12   REGULATE      1 "What genes are regulated " 5
-e10   BY            5 "by SMDA2" 8
-                    QUESTION-MARK
-                    END-OF-SOURCE
-
-
-___________________
-49: "Which of these are regulated by SMDA2?" ;; bio-entity causes failure
-
-                    SOURCE-START
-e10   WHICH         1 "Which of " 3
-e13   REGULATE      3 "these are regulated " 6
-e12   BY            6 "by SMDA2" 9
-                    QUESTION-MARK
-                    END-OF-SOURCE
-
-
-___________________
-70: "What STAT3 regulated genes are involved in aptosis" ;; bio-entity causes failure
+63: "What STAT3 regulated genes are involved in aptosis"
 
                     SOURCE-START
 e16   INVOLVE       1 "What STAT3 regulated genes are involved " 8
 e15   IN            8 "in aptosis" 10
                     END-OF-SOURCE
+                    SOURCE-START
+e16   S             1 "What STAT3 regulated genes are involved " 8
+e15   PP            8 "in aptosis" 10
+                    END-OF-SOURCE
 
 
 ___________________
-73: "Look up which genes targeted by stat3 are involved in apoptosis" ;; particle problem
+66: "Look up which genes targeted by stat3 are involved in apoptosis"
 
                     SOURCE-START
-e2    LOOK          1 "Look " 2
-e24   UP            2 "up which " 4
+e16   LOOK-UP       1 "Look up " 3
+e5    WHICH         3 "which " 4
 e23   INVOLVE       4 "genes targeted by stat3 are involved in apoptosis" 13
                     END-OF-SOURCE
-
-
-___________________
-82: "What processes involve srf" ;; not sure why this doesn't compose
-
                     SOURCE-START
-e5    PROCESS       1 "What processes " 3
-e6    INVOLVE       3 "involve srf" 5
+e16   VG            1 "Look up " 3
+e5    WH-PRONOUN    3 "which " 4
+e23   S             4 "genes targeted by stat3 are involved in apoptosis" 13
                     END-OF-SOURCE
 
 
 ___________________
-85: "Which stat3-regulated genes are involved in apoptosis?" ;; not sure why this doesn't compose when "which genes are involved in apoptosis" works fine
+67: "Tell me how stat3 is involved in apoptosis"
 
                     SOURCE-START
-e14   GENE          1 "Which stat3-regulated genes " 7
-e6    BE            7 "are " 8
-e17   INVOLVE       8 "involved in apoptosis" 11
-                    QUESTION-MARK
+e15   TELL          1 "Tell me " 3
+e14   INVOLVE       3 "how stat3 is involved in apoptosis" 10
+                    END-OF-SOURCE
+                    SOURCE-START
+e15   VG            1 "Tell me " 3
+e14   HOWCOMP       3 "how stat3 is involved in apoptosis" 10
                     END-OF-SOURCE
 
 
 ___________________
-89: "revert that" ;; not sure why this doesn't compose
+85: "revert that"
 
                     SOURCE-START
 e0    REVERT        1 "revert " 2
 e2    THAT          2 "that" 3
                     END-OF-SOURCE
+                    SOURCE-START
+e0    VG            1 "revert " 2
+e2    DET           2 "that" 3
+                    END-OF-SOURCE
 
 
 ___________________
-93: "undo that" ;; not sure why this doesn't compose
+88: "undo that"
 
                     SOURCE-START
 e0    UNDO          1 "undo " 2
 e2    THAT          2 "that" 3
                     END-OF-SOURCE
-
-
-___________________
-106: "Let's highlight the downstream of AKT1." ;; let's problem and probably downstream
-
                     SOURCE-START
-e1    PROPOSAL-MARKER 1 "Let's " 4
-e5    HIGHLIGHT-ENDURANT  4 "highlight " 5
-e7    THE           5 "the " 6
-e12   DOWNSTREAM    6 "downstream of AKT1" 10
-                    PERIOD
+e0    VG            1 "undo " 2
+e2    DET           2 "that" 3
                     END-OF-SOURCE
 
 
 ___________________
-107: "Let's move phosphorylated MAPK1 to the bottom." ;; let's problem also "to the bottom"
+97: "Let's put AKT1, MAPK1 into mitochondrion."
 
                     SOURCE-START
-e1    PROPOSAL-MARKER 1 "Let's " 4
-e4    MOVE-SOMETHING-SOMEWHERE  4 "move " 5
-e11   PROTEIN       5 "phosphorylated MAPK1 " 8
-e14   TO            8 "to the bottom" 11
-                    PERIOD
-                    END-OF-SOURCE
-
-
-___________________
-108: "Let's put AKT1, MAPK1 into mitochondrion." ;; let's problem
-
-                    SOURCE-START
-e1    PROPOSAL-MARKER 1 "Let's " 4
-e11   PROTEIN       4 "put AKT1" 7
+e13   EXPLICIT-SUGGESTION 1 "Let's put AKT1" 7
 e8                  "COMMA"
 e5    PROTEIN       8 "MAPK1 " 10
-e13   INTO          10 "into mitochondrion" 12
+e11   INTO          10 "into mitochondrion" 12
+                    PERIOD
+                    END-OF-SOURCE
+                    SOURCE-START
+e13   S             1 "Let's put AKT1" 7
+e8                  "COMMA"
+e5    PROPER-NOUN   8 "MAPK1 " 10
+e11   PP            10 "into mitochondrion" 12
                     PERIOD
                     END-OF-SOURCE
 
 
 ___________________
-109: "Let's show AKT1 on the top." ;; preposition/model problem
+107: "Is MAP2K1 bound to MAPK1 eventually high?"
 
                     SOURCE-START
-e14   EXPLICIT-SUGGESTION 1 "Let's show AKT1 " 7
-e12   ON            7 "on the top" 10
-                    PERIOD
+e4    BE            1 "Is " 2
+e1    PROTEIN       2 "MAP2K1 " 6
+e12   BINDING       6 "bound to MAPK1 " 10
+e10   HIGH          10 "eventually high" 12
+                    QUESTION-MARK
                     END-OF-SOURCE
-
-
-___________________
-110: "Does ELK1 decrease FOS in the model?" ;; this works without "in the model"
-
                     SOURCE-START
-e2    DO            1 "Does " 2
-e15   DECREASE      2 "ELK1 decrease FOS " 6
-e13   IN            6 "in the model" 9
+e4    PREPOSED-AUXILIARY  1 "Is " 2
+e1    PROPER-NOUN   2 "MAP2K1 " 6
+e12   VP+ED         6 "bound to MAPK1 " 10
+e10   ADJECTIVE     10 "eventually high" 12
                     QUESTION-MARK
                     END-OF-SOURCE
 
 
 ___________________
-111: "Does ELK1 decrease the amount of FOS in the model?" ;; this works without "in the model"
+108: "Is MAPK1 bound to MAP2K1 transient?"
 
                     SOURCE-START
-e2    DO            1 "Does " 2
-e23   DECREASE      2 "ELK1 decrease the amount of FOS " 9
-e19   IN            9 "in the model" 12
+e4    BE            1 "Is " 2
+e1    PROTEIN       2 "MAPK1 " 4
+e10   BINDING       4 "bound to MAP2K1 " 10
+e8    TRANSIENT     10 "transient" 11
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e4    PREPOSED-AUXILIARY  1 "Is " 2
+e1    PROPER-NOUN   2 "MAPK1 " 4
+e10   VP+ED         4 "bound to MAP2K1 " 10
+e8    ADJECTIVE     10 "transient" 11
                     QUESTION-MARK
                     END-OF-SOURCE
 
 
 ___________________
-112: "Does FOS decrease ELK1 in the model?" ;; this works without "in the model"
+113: "Is phosphorylated MAPK1 high at the end?"
 
                     SOURCE-START
-e2    DO            1 "Does " 2
-e15   DECREASE      2 "FOS decrease ELK1 " 6
-e13   IN            6 "in the model" 9
-                    QUESTION-MARK
-                    END-OF-SOURCE
-
-
-___________________
-124: "Is phosphorylated MAPK1 high at the end?" ;; this works without "at the end"
-
-                    SOURCE-START
-e2    BE            1 "Is " 2
-e15   COPULAR-PREDICATION 2 "phosphorylated MAPK1 high " 6
+e16   COPULAR-PREDICATION 1 "Is phosphorylated MAPK1 high " 6
 e13   AT            6 "at the end" 9
                     QUESTION-MARK
                     END-OF-SOURCE
-
-
-___________________
-135: "Is the amount of MAPK1 phosphorylated eventually high?" ;; this feels garden-pathy to me
-
                     SOURCE-START
-e2    BE            1 "Is " 2
-e15   BIO-AMOUNT    2 "the amount of MAPK1 " 7
-e12   PHOSPHORYLATE 7 "phosphorylated " 8
-e13   HIGH          8 "eventually high" 10
+e16   S             1 "Is phosphorylated MAPK1 high " 6
+e13   PP            6 "at the end" 9
                     QUESTION-MARK
                     END-OF-SOURCE
 
 
 ___________________
-149: "Create a model where LCK phosphorylates CD3E" ;; create doesn't work
+124: "Is the amount of MAPK1 phosphorylated eventually high?"
+
+                    SOURCE-START
+e16   PHOSPHORYLATE 1 "Is the amount of MAPK1 phosphorylated " 8
+e12   HIGH          8 "eventually high" 10
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e16   S             1 "Is the amount of MAPK1 phosphorylated " 8
+e12   ADJECTIVE     8 "eventually high" 10
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+157: "What is its relationship with BRAF?"
+
+                    SOURCE-START
+e9    BE            1 "What is its relationship " 5
+e7    WITH          5 "with BRAF" 7
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e9    S             1 "What is its relationship " 5
+e7    PP            5 "with BRAF" 7
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+158: "What is its relationship with PTPN1?"
+
+                    SOURCE-START
+e10   BE            1 "What is its relationship " 5
+e8    WITH          5 "with PTPN1" 8
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e10   S             1 "What is its relationship " 5
+e8    PP            5 "with PTPN1" 8
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+160: "What is the next correlation of AKT1?"
+
+                    SOURCE-START
+e2    WHAT          1 "What " 2
+e3    BE            2 "is " 3
+e5    THE           3 "the " 4
+e6 e7               "next" :: NEXT, SEQUENCER
+e12   CORRELATION   5 "correlation of AKT1" 9
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e2    WH-PRONOUN    1 "What " 2
+e3    VG            2 "is " 3
+e5    DET           3 "the " 4
+e6 e7               "next" :: NEXT, SEQUENCER
+e12   NP            5 "correlation of AKT1" 9
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+161: "Let's stop learning about AKT1."
+
+                    SOURCE-START
+e1    PROPOSAL-MARKER 1 "Let's " 4
+e5    STOP-ENDURANT 4 "stop " 5
+e9    LEARNING      5 "learning about AKT1" 9
+                    PERIOD
+                    END-OF-SOURCE
+                    SOURCE-START
+e1    INTERJECTION  1 "Let's " 4
+e5    NP            4 "stop " 5
+e9    VP+ING        5 "learning about AKT1" 9
+                    PERIOD
+                    END-OF-SOURCE
+
+
+___________________
+191: "Create a model where LCK phosphorylates CD3E"
 
                     SOURCE-START
 e2    CREATE        1 "Create " 2
 e13   MODEL         2 "a model where LCK phosphorylates CD3E" 10
                     END-OF-SOURCE
-
-
-___________________
-187: "Is the first one a kinase" ;; fails because of "first one" -- also fails for "that" but works for is "MAPK"
-
                     SOURCE-START
-e0    BE            1 "Is " 2
-e11   NUMBER        2 "the first one " 5
-e12   KINASE        5 "a kinase" 7
+e2    VG            1 "Create " 2
+e13   NP            2 "a model where LCK phosphorylates CD3E" 10
                     END-OF-SOURCE
 
 
 ___________________
-192: "Let me know which genes stat3 regulates" ;; not sure of the problem -- can't really get any variant of this to work -- "let me know if" questions work, but I think the problem is that which is getting treated as a complementizer instead of a determiner here
+247: "Please find pathways involving SRF"
 
                     SOURCE-START
-e12   LET           1 "Let me know which genes " 6
-e9    REGULATE      6 "stat3 regulates" 9
+e8    BIO-FIND      1 "Please find pathways " 4
+e7    INVOLVE       4 "involving SRF" 6
+                    END-OF-SOURCE
+                    SOURCE-START
+e8    VP            1 "Please find pathways " 4
+e7    VP+ING        4 "involving SRF" 6
                     END-OF-SOURCE
 
 
 ___________________
-208: "Let's build a model" ;; let problem
+262: "Tell me how stat3 regulates apoptosis"
 
                     SOURCE-START
-e1    PROPOSAL-MARKER 1 "Let's " 4
-e2    BUILD         4 "build " 5
-e6    MODEL         5 "a model" 7
+e10   TELL          1 "Tell me " 3
+e9    REGULATE      3 "how stat3 regulates apoptosis" 8
+                    END-OF-SOURCE
+                    SOURCE-START
+e10   VG            1 "Tell me " 3
+e9    HOWCOMP       3 "how stat3 regulates apoptosis" 8
                     END-OF-SOURCE
 
 
 ___________________
-241: "What are the regulators of mapk14 in bladeeer" ;; bio-entity causes failure
+284: "What are the regulators of mapk14 in bladeeer"
 
                     SOURCE-START
-e2    WHAT          1 "What " 2
-e3    BE            2 "are " 3
-e15   REGULATOR     3 "the regulators of mapk14 " 8
+e17   BE            1 "What are the regulators of mapk14 " 8
 e13   IN            8 "in bladeeer" 10
                     END-OF-SOURCE
+                    SOURCE-START
+e17   S             1 "What are the regulators of mapk14 " 8
+e13   PP            8 "in bladeeer" 10
+                    END-OF-SOURCE
 
 
 ___________________
-244: "What are the transcription factors in common to the SRF, HRAS, and elk1 genes?" ;; what be copular-pred doesn't work
+336: "What genes is stat3 upstream from?"
 
                     SOURCE-START
-e6    WHAT          1 "What " 2
-e7    BE            2 "are " 3
-e27   COPULAR-PREDICATION 3 "the transcription factors in common to the SRF, HRAS, and elk1 genes" 18
+e11   BE            1 "What genes is stat3 upstream " 7
+e7    FROM          7 "from" 8
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e11   S             1 "What genes is stat3 upstream " 7
+e7    PREPOSITION   7 "from" 8
                     QUESTION-MARK
                     END-OF-SOURCE
 
 
 ___________________
-257: "What drug could I use to target pancreatic cancer?" ;; modal problem?
-
-                    SOURCE-START
-e15   DRUG          1 "What drug " 3
-e4    MODAL         3 "could " 4
-e20   BIO-USE       4 "I use to target pancreatic cancer" 10
-                    QUESTION-MARK
-                    END-OF-SOURCE
-
-
-___________________
-272: "What genes are regulated by FAKEPRTN" ;; bio-entity
-
-                    SOURCE-START
-e11   REGULATE      1 "What genes are regulated " 5
-e9    BY            5 "by FAKEPRTN" 7
-                    END-OF-SOURCE
-
-
-___________________
-274: "What genes are regulated by smda2" ;; bio-entity
-
-                    SOURCE-START
-e12   REGULATE      1 "What genes are regulated " 5
-e10   BY            5 "by smda2" 8
-                    END-OF-SOURCE
-
-
-___________________
-286: "What genes in the liver does stat3 regulate?" ;; in the liver causes problem
-
-                    SOURCE-START
-e15   GENE          1 "What genes in the liver " 6
-e9    DO            6 "does " 7
-e13   REGULATE      7 "stat3 regulate" 10
-                    QUESTION-MARK
-                    END-OF-SOURCE
-
-
-___________________
-317: "What pathways utilize srf and is srf a kinase" ;; complicated dual question
+364: "What pathways utilize srf and is srf a kinase"
 
                     SOURCE-START
 e15   UTILIZE       1 "What pathways utilize srf and is srf " 8
 e11   KINASE        8 "a kinase" 10
                     END-OF-SOURCE
-
-
-___________________
-355: "Which also regulate srf" ;; lack of noun for which causes problem ("which genes" or "which of these" works
-
                     SOURCE-START
-e5    ALSO          1 "Which also " 3
-e6    REGULATE      3 "regulate srf" 5
+e15   S             1 "What pathways utilize srf and is srf " 8
+e11   NP            8 "a kinase" 10
                     END-OF-SOURCE
 
 
 ___________________
-372: "Which of these are regulated by fakeprotein" ;; bio-entity
+379: "What tissues is STAT3 expressed in?"
 
                     SOURCE-START
-e9    WHICH         1 "Which of " 3
-e12   REGULATE      3 "these are regulated " 6
-e11   BY            6 "by fakeprotein" 8
+e8    TISSUE        1 "What tissues " 3
+e4    BE            3 "is " 4
+e1    PROTEIN       4 "STAT3 " 6
+e5    GENE-TRANSCRIPT-EXPRESS 6 "expressed " 7
+e7    IN            7 "in" 8
+                    QUESTION-MARK
                     END-OF-SOURCE
-
-
-___________________
-387: "Let's move AKT1 on top." ;; let and on top
-
                     SOURCE-START
-e1    PROPOSAL-MARKER 1 "Let's " 4
-e4    MOVE-SOMETHING-SOMEWHERE  4 "move " 5
-e3    PROTEIN       5 "AKT1 " 7
-e9    ON            7 "on top" 9
-                    PERIOD
-                    END-OF-SOURCE
-
-
-___________________
-388: "Let's show the phosphorylated AKT1 on top." ;; on top causes problem
-
-                    SOURCE-START
-e17   EXPLICIT-SUGGESTION 1 "Let's show the phosphorylated AKT1 " 9
-e15   ON            9 "on top" 11
-                    PERIOD
-                    END-OF-SOURCE
-
-
-___________________
-393: "Show phosphorylated akt1 on top.";; on top causes problem
-
-                    SOURCE-START
-e11   SHOW          1 "Show phosphorylated akt1 " 5
-e10   ON            5 "on top" 7
-                    PERIOD
-                    END-OF-SOURCE
-
-
-___________________
-396: "What is the path from RAF to MEK?" ;; needing to define path
-
-                    SOURCE-START
-e0    WHAT          1 "What " 2
-e1    BE            2 "is " 3
-e10   PATH          3 "the path " 5
-e12   FROM          5 "from RAF " 7
-e11   TO            7 "to MEK" 9
+e8    NP            1 "What tissues " 3
+e4    VG            3 "is " 4
+e1    PROPER-NOUN   4 "STAT3 " 6
+e5    VG+ED         6 "expressed " 7
+e7    SPATIAL-PREPOSITION 7 "in" 8
                     QUESTION-MARK
                     END-OF-SOURCE
 
 
 ___________________
-397: "What tissues can I ask about?" ;; about conflict
+451: "Are there any genes stat3 is upstream of?"
 
                     SOURCE-START
-e10   TISSUE        1 "What tissues " 3
-e2    MODAL         3 "can " 4
-e12   ASK           4 "I ask " 6
-e8 e9               "about" :: ABOUT, ABOUT
+e13   THERE-EXISTS  1 "Are there " 3
+e17   BE            3 "any genes stat3 is upstream " 9
+e12   OF            9 "of" 10
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e13   SUBJ+VERB     1 "Are there " 3
+e17   S             3 "any genes stat3 is upstream " 9
+e12   PREPOSITION   9 "of" 10
                     QUESTION-MARK
                     END-OF-SOURCE
 
 
 ___________________
-398: "let's show phosphorylated akt1 on top." ;; on top problem
+454: "Can you find any apoptotic pathways stat3 is involved in?"
 
                     SOURCE-START
-e14   EXPLICIT-SUGGESTION 1 "let's show phosphorylated akt1 " 8
-e12   ON            8 "on top" 10
-                    PERIOD
+e24   BIO-FIND      1 "Can you find any apoptotic pathways stat3 " 9
+e21   INVOLVE       9 "is involved " 11
+e13   IN            11 "in" 12
+                    QUESTION-MARK
                     END-OF-SOURCE
-
-
-___________________
-406: "Are there any genes stat3 is upstream of?" ;; stranded prep
-
                     SOURCE-START
-e12   THERE-EXISTS  1 "Are there " 3
-e16   COPULAR-PREDICATION 3 "any genes stat3 is upstream " 9
-e11   OF            9 "of" 10
+e24   S             1 "Can you find any apoptotic pathways stat3 " 9
+e21   VG+PASSIVE    9 "is involved " 11
+e13   SPATIAL-PREPOSITION 11 "in" 12
                     QUESTION-MARK
                     END-OF-SOURCE
 
 
 ___________________
-409: "Can you find any apoptotic pathways stat3 is involved in?" ;; stranded prep
+455: "Can you find any apoptotic pathways that stat3 is involved in?"
 
                     SOURCE-START
-e2    MODAL         1 "Can " 2
-e19   BIO-FIND      2 "you find any apoptotic pathways stat3 " 9
-e17   INVOLVE       9 "is involved " 11
-e12   IN            11 "in" 12
+e28   BIO-FIND      1 "Can you find any apoptotic pathways that stat3 is involved " 12
+e15   IN            12 "in" 13
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e28   S             1 "Can you find any apoptotic pathways that stat3 is involved " 12
+e15   SPATIAL-PREPOSITION 12 "in" 13
                     QUESTION-MARK
                     END-OF-SOURCE
 
 
 ___________________
-410: "Can you find any apoptotic pathways that stat3 is involved in?" ;;stranded prep
+456: "Can you look up which genes targeted by stat3 are involved in apoptosis?"
 
                     SOURCE-START
-e2    MODAL         1 "Can " 2
-e24   BIO-FIND      2 "you find any apoptotic pathways that stat3 is involved " 12
-e14   IN            12 "in" 13
+e31   LOOK-UP       1 "Can you look up " 5
+e7    WHICH         5 "which " 6
+e29   INVOLVE       6 "genes targeted by stat3 are involved in apoptosis" 15
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e31   TRANSITIVE-CLAUSE-WITHOUT-OBJECT  1 "Can you look up " 5
+e7    WH-PRONOUN    5 "which " 6
+e29   S             6 "genes targeted by stat3 are involved in apoptosis" 15
                     QUESTION-MARK
                     END-OF-SOURCE
 
 
 ___________________
-411: "Can you look up which genes targeted by stat3 are involved in apoptosis?" ;; "up" particle plus unhandled polar-copular question
-
-                    SOURCE-START
-e2    MODAL         1 "Can " 2
-e28   LOOK          2 "you look " 4
-e27   UP            4 "up which " 6
-e26   INVOLVE       6 "genes targeted by stat3 are involved in apoptosis" 15
-                    QUESTION-MARK
-                    END-OF-SOURCE
-
-
-___________________
-435: "How does knocking out p53 cause cancer via its effect on miRNAs?" ;; particle for knocking out, plus how problem
+480: "How does knocking out p53 cause cancer via its effect on miRNAs?"
 
                     SOURCE-START
 e2    HOW           1 "How " 2
 e3    DO            2 "does " 3
-e4    KNOCK         3 "knocking " 4
-e20   OUT           4 "out p53 " 7
-e19   CAUSE         7 "cause cancer " 9
-e9    VIA           9 "via " 10
-e10   PRONOUN/INANIMATE 10 "its " 11
-e18   EFFECT        11 "effect on miRNAs" 14
+e25   KNOCK-OUT     3 "knocking out p53 cause cancer via its effect on miRNAs" 14
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e2    WH-PRONOUN    1 "How " 2
+e3    VERB+PRESENT  2 "does " 3
+e25   VP            3 "knocking out p53 cause cancer via its effect on miRNAs" 14
                     QUESTION-MARK
                     END-OF-SOURCE
 
 
 ___________________
-458: "List the genes STAT3 regulates" ;; lack of that kills this
+531: "What pathways are they in?"
 
                     SOURCE-START
-e9    LIST          1 "List the genes " 4
-e8    REGULATE      4 "STAT3 regulates" 7
-                    END-OF-SOURCE
-
-
-___________________
-460: "List the genes which STAT3 regulates" ;; lack of that kills this
-
-                    SOURCE-START
-e11   LIST          1 "List the genes " 4
-e10   REGULATE      4 "which STAT3 regulates" 8
-                    END-OF-SOURCE
-
-
-___________________
-480: "What are the genes regulated by STAT3?" ;; for some reason "the genes regulated by STAT3" is being taken as a regulate instead of a gene, even though "the genes regulated by STAT3" parsed alone is an np
-
-                    SOURCE-START
-e2    WHAT          1 "What " 2
-e3    BE            2 "are " 3
-e14   REGULATE      3 "the genes regulated by STAT3" 9
-                    QUESTION-MARK
-                    END-OF-SOURCE
-
-
-___________________
-486: "What pathways are they in?" ;; stranded preposition
-
-                    SOURCE-START
-e6    PATHWAY       1 "What pathways " 3
-e2    BE            3 "are " 4
-e3    PRONOUN/PLURAL  4 "they " 5
+e8    BE            1 "What pathways are they " 5
 e5    IN            5 "in" 6
                     QUESTION-MARK
                     END-OF-SOURCE
+                    SOURCE-START
+e8    S             1 "What pathways are they " 5
+e5    SPATIAL-PREPOSITION 5 "in" 6
+                    QUESTION-MARK
+                    END-OF-SOURCE
 
 
 ___________________
-487: "What pathways involve SOARING?" ;; why is this in failures? it should fail, but still
+532: "What pathways involve SOARING?"
 
                     SOURCE-START
 e6    INVOLVE       1 "What pathways involve SOARING" 5
                     QUESTION-MARK
                     END-OF-SOURCE
 ("What pathways involve SOARING?"
- (:VAR MV5926 :ISA INVOLVE :PARTICIPANT MV5925 :THEME MV5927 :PRESENT
-  "PRESENT")
- (:VAR MV5925 :ISA PATHWAY :HAS-DETERMINER "WHAT" :RAW-TEXT "pathways")
- (:VAR MV5927 :ISA SOAR :PROGRESSIVE "PROGRESSIVE" :RAW-TEXT "SOARING"))
+ (:VAR MV8174 :ISA INVOLVE :THEME MV8173 :THEME MV8175 :PRESENT "PRESENT")
+ (:VAR MV8173 :ISA PATHWAY :HAS-DETERMINER "WHAT" :RAW-TEXT "pathways")
+ (:VAR MV8175 :ISA SOAR :PROGRESSIVE "PROGRESSIVE" :RAW-TEXT "SOARING"))
 
 ___________________
-491: "What questions can you answer about microRNAs?" ;; modal and more?
-
-                    SOURCE-START
-e0    WHAT          1 "What " 2
-e2    BIO-QUESTION  2 "questions " 3
-e3    MODAL         3 "can " 4
-e11   ANSWER        4 "you answer " 6
-e10   ABOUT         6 "about microRNAs" 8
-                    QUESTION-MARK
-                    END-OF-SOURCE
-
-
-___________________
-507: "Let's build a model of the KRAS neighborhood." ;; let problem
-
-                    SOURCE-START
-e1    PROPOSAL-MARKER 1 "Let's " 4
-e2    BUILD         4 "build " 5
-e12   MODEL         5 "a model " 7
-e15   OF            7 "of the KRAS neighborhood" 11
-                    PERIOD
-                    END-OF-SOURCE
-
-
-___________________
-509: "Let's build a model." ;; let problem
-
-                    SOURCE-START
-e1    PROPOSAL-MARKER 1 "Let's " 4
-e2    BUILD         4 "build " 5
-e6    MODEL         5 "a model" 7
-                    PERIOD
-                    END-OF-SOURCE
-
-
-___________________
-527: "What transcription factors are in the calcium regulated pathways?" ;; problem with calcium regulated vs. calcium-regulated
+571: "What transcription factors are in the calcium regulated pathways?"
 
                     SOURCE-START
 e16   COPULAR-PREDICATION 1 "What transcription factors are in the calcium " 8
-e13   REGULATE      8 "regulated " 9
-e10   PATHWAY       9 "pathways" 10
+e13   REGULATE      8 "regulated pathways" 10
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e16   S             1 "What transcription factors are in the calcium " 8
+e13   VP+PAST       8 "regulated pathways" 10
                     QUESTION-MARK
                     END-OF-SOURCE
 
 
 ___________________
-565: "What regulates GLUL from the literature?" ;; evidence problem
+609: "What regulates GLUL from the literature?"
 
                     SOURCE-START
-e0    WHAT          1 "What " 2
-e9    REGULATE      2 "regulates GLUL " 4
+e10   REGULATE      1 "What regulates GLUL " 4
 e8    FROM          4 "from the literature" 7
                     QUESTION-MARK
                     END-OF-SOURCE
-
-
-___________________
-566: "What regulates GLUL from the GEO RNAi database?" ;; evidence problem
-
                     SOURCE-START
-e0    WHAT          1 "What " 2
-e13   REGULATE      2 "regulates GLUL " 4
-e12   FROM          4 "from the GEO RNAi database" 9
+e10   S             1 "What regulates GLUL " 4
+e8    PP            4 "from the literature" 7
                     QUESTION-MARK
                     END-OF-SOURCE
 
 
 ___________________
-572: "Show me the evidence that KRAS decreasse the amount of FZD8." ;; bio-entity
+610: "What regulates GLUL from the GEO RNAi database?"
+
+                    SOURCE-START
+e14   REGULATE      1 "What regulates GLUL " 4
+e12   FROM          4 "from the GEO RNAi database" 9
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e14   S             1 "What regulates GLUL " 4
+e12   PP            4 "from the GEO RNAi database" 9
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+616: "Show me the evidence that KRAS decreasse the amount of FZD8."
 
                     SOURCE-START
 e22   SHOW          1 "Show me the evidence " 5
@@ -619,4 +502,380 @@ e8    THAT          5 "that " 6
 e17   BIO-ENTITY    6 "KRAS decreasse " 8
 e20   BIO-AMOUNT    8 "the amount of FZD8" 13
                     PERIOD
+                    END-OF-SOURCE
+                    SOURCE-START
+e22   VP            1 "Show me the evidence " 5
+e8    DET           5 "that " 6
+e17   NP            6 "KRAS decreasse " 8
+e20   NP            8 "the amount of FZD8" 13
+                    PERIOD
+                    END-OF-SOURCE
+
+
+___________________
+693: "What does it do?"
+
+                    SOURCE-START
+e0    WHAT          1 "What " 2
+e1    DO            2 "does " 3
+e5    DO            3 "it do" 5
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e0    WH-PRONOUN    1 "What " 2
+e1    VG            2 "does " 3
+e5    S             3 "it do" 5
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+707: "I would like to find a treatement for pancreatic cancer."
+
+                    SOURCE-START
+e22   LIKE          1 "I would like " 4
+e21   FIND-OUT      4 "to find " 6
+e19   TREATEMENT    6 "a treatement " 8
+e20   FOR           8 "for pancreatic cancer" 11
+                    PERIOD
+                    END-OF-SOURCE
+                    SOURCE-START
+e22   S             1 "I would like " 4
+e21   INFINITIVE    4 "to find " 6
+e19   NP            6 "a treatement " 8
+e20   PP            8 "for pancreatic cancer" 11
+                    PERIOD
+                    END-OF-SOURCE
+
+
+___________________
+710: "I'd like to find a treatement for pancreatic cancer."
+
+                    SOURCE-START
+e24   LIKE          1 "I'd like " 5
+e23   FIND-OUT      5 "to find " 7
+e21   TREATEMENT    7 "a treatement " 9
+e22   FOR           9 "for pancreatic cancer" 12
+                    PERIOD
+                    END-OF-SOURCE
+                    SOURCE-START
+e24   S             1 "I'd like " 5
+e23   INFINITIVE    5 "to find " 7
+e21   NP            7 "a treatement " 9
+e22   PP            9 "for pancreatic cancer" 12
+                    PERIOD
+                    END-OF-SOURCE
+
+
+___________________
+711: "How can i treat pancreatic cancer?"
+
+                    SOURCE-START
+e2    HOW           1 "How " 2
+e3    MODAL         2 "can " 3
+                    "i"
+e5    TREATMENT     4 "treat pancreatic cancer" 7
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e2    WH-PRONOUN    1 "How " 2
+e3    MODAL         2 "can " 3
+                    "i"
+e5    VP            4 "treat pancreatic cancer" 7
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+751: "What are synonyms for ERK?"
+
+                    SOURCE-START
+e8    BE            1 "What are synonyms " 4
+e6    FOR           4 "for ERK" 6
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e8    S             1 "What are synonyms " 4
+e6    PP            4 "for ERK" 6
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+755: "Remove the fact that active MEK activates ERK from the model."
+
+                    SOURCE-START
+e22   REMOVE        1 "Remove the fact that active MEK activates ERK " 9
+e17   FROM          9 "from the model" 12
+                    PERIOD
+                    END-OF-SOURCE
+                    SOURCE-START
+e22   VP            1 "Remove the fact that active MEK activates ERK " 9
+e17   PP            9 "from the model" 12
+                    PERIOD
+                    END-OF-SOURCE
+
+
+___________________
+766: "What does BRAF do?"
+
+                    SOURCE-START
+e0    WHAT          1 "What " 2
+e1    DO            2 "does " 3
+e2    PROTEIN       3 "BRAF " 4
+e3    DO            4 "do" 5
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e0    WH-PRONOUN    1 "What " 2
+e1    VG            2 "does " 3
+e2    PROPER-NOUN   3 "BRAF " 4
+e3    VG            4 "do" 5
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+784: "Remove active IL10 activates STAT3 from the model"
+
+                    SOURCE-START
+e15   REMOVE        1 "Remove active IL10 " 5
+e14   BIO-ACTIVATE  5 "activates STAT3 " 8
+e13   FROM          8 "from the model" 11
+                    END-OF-SOURCE
+                    SOURCE-START
+e15   VP            1 "Remove active IL10 " 5
+e14   VP            5 "activates STAT3 " 8
+e13   PP            8 "from the model" 11
+                    END-OF-SOURCE
+
+
+___________________
+805: "What are the mutations of PTEEN in prostate cancer?"
+
+                    SOURCE-START
+e17   BE            1 "What are the mutations " 5
+e15   OF            5 "of PTEEN in prostate cancer" 10
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e17   S             1 "What are the mutations " 5
+e15   PP            5 "of PTEEN in prostate cancer" 10
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+811: "Remove STAT3 from the model."
+
+                    SOURCE-START
+e9    REMOVE        1 "Remove STAT3 " 4
+e8    FROM          4 "from the model" 7
+                    PERIOD
+                    END-OF-SOURCE
+                    SOURCE-START
+e9    VP            1 "Remove STAT3 " 4
+e8    PP            4 "from the model" 7
+                    PERIOD
+                    END-OF-SOURCE
+
+
+___________________
+812: "Remove the last interaction from the model."
+
+                    SOURCE-START
+e13   REMOVE        1 "Remove the last interaction " 5
+e12   FROM          5 "from the model" 8
+                    PERIOD
+                    END-OF-SOURCE
+                    SOURCE-START
+e13   VP            1 "Remove the last interaction " 5
+e12   PP            5 "from the model" 8
+                    PERIOD
+                    END-OF-SOURCE
+
+
+___________________
+824: "What pathways involve SRF and is SRF a kinase?"
+
+                    SOURCE-START
+e15   INVOLVE       1 "What pathways involve SRF and is SRF " 8
+e11   KINASE        8 "a kinase" 10
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e15   S             1 "What pathways involve SRF and is SRF " 8
+e11   NP            8 "a kinase" 10
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+851: "What pathways is ERK1 in?"
+
+                    SOURCE-START
+e9    BE            1 "What pathways is ERK1 " 6
+e6    IN            6 "in" 7
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e9    S             1 "What pathways is ERK1 " 6
+e6    SPATIAL-PREPOSITION 6 "in" 7
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+852: "Which of these is AKT1 in?"
+
+                    SOURCE-START
+e12   BE            1 "Which of these is AKT1 " 7
+e8    IN            7 "in" 8
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e12   S             1 "Which of these is AKT1 " 7
+e8    SPATIAL-PREPOSITION 7 "in" 8
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+853: "What pathways are ERK1 and AKT1 in?"
+
+                    SOURCE-START
+e13   BE            1 "What pathways are ERK1 and AKT1 " 9
+e9    IN            9 "in" 10
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e13   S             1 "What pathways are ERK1 and AKT1 " 9
+e9    SPATIAL-PREPOSITION 9 "in" 10
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+859: "What are the targets of NG25?"
+
+                    SOURCE-START
+e13   BE            1 "What are the targets " 5
+e11   OF            5 "of NG25" 8
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e13   S             1 "What are the targets " 5
+e11   PP            5 "of NG25" 8
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+866: "What pathways is it in?"
+
+                    SOURCE-START
+e9    BE            1 "What pathways is it " 5
+e6    IN            5 "in" 6
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e9    S             1 "What pathways is it " 5
+e6    SPATIAL-PREPOSITION 5 "in" 6
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+869: "Tofacitinib inhibits JAK1 and active STAT3 transcribes IL2."
+
+                    SOURCE-START
+e15   INHIBIT       1 "Tofacitinib inhibits JAK1 and active STAT3 " 9
+e13   TRANSCRIBE    9 "transcribes IL2" 12
+                    PERIOD
+                    END-OF-SOURCE
+                    SOURCE-START
+e15   S             1 "Tofacitinib inhibits JAK1 and active STAT3 " 9
+e13   VP            9 "transcribes IL2" 12
+                    PERIOD
+                    END-OF-SOURCE
+
+
+___________________
+874: "Mek phosphorylates MAPK; MapK phosphorylates RSK"
+
+                    SOURCE-START
+e10   PHOSPHORYLATE 1 "Mek phosphorylates MAPK" 4
+e3    SEMICOLON     4 "; " 5
+e8    PHOSPHORYLATE 5 "MapK phosphorylates RSK" 8
+                    END-OF-SOURCE
+                    SOURCE-START
+e10   S             1 "Mek phosphorylates MAPK" 4
+e3    PUNCTUATION   4 "; " 5
+e8    S             5 "MapK phosphorylates RSK" 8
+                    END-OF-SOURCE
+
+
+___________________
+883: "What factors from the literature regulate IL15 and IL2?"
+
+                    SOURCE-START
+e13   FACTOR        1 "What factors " 3
+e16   FROM          3 "from the literature " 6
+e15   REGULATE      6 "regulate IL15 and IL2" 12
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e13   NP            1 "What factors " 3
+e16   PP            3 "from the literature " 6
+e15   VP            6 "regulate IL15 and IL2" 12
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+884: "What relations in the literature match tofacitinib inhibits IL15?"
+
+                    SOURCE-START
+e13   RELATION      1 "What relations " 3
+e18   IN            3 "in the literature match " 7
+e17   INHIBIT       7 "tofacitinib inhibits IL15" 11
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e13   NP            1 "What relations " 3
+e18   PP            3 "in the literature match " 7
+e17   S             7 "tofacitinib inhibits IL15" 11
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+889: "What relations in the literature match tofacitinib?"
+
+                    SOURCE-START
+e10   RELATION      1 "What relations " 3
+e14   IN            3 "in the literature match tofacitinib" 8
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e10   NP            1 "What relations " 3
+e14   PP            3 "in the literature match tofacitinib" 8
+                    QUESTION-MARK
+                    END-OF-SOURCE
+
+
+___________________
+890: "What relations in the literature match STAT3 regulates IL15 ?"
+
+                    SOURCE-START
+e14   RELATION      1 "What relations " 3
+e19   IN            3 "in the literature match " 7
+e18   REGULATE      7 "STAT3 regulates IL15 " 12
+                    QUESTION-MARK
+                    END-OF-SOURCE
+                    SOURCE-START
+e14   NP            1 "What relations " 3
+e19   PP            3 "in the literature match " 7
+e18   S             7 "STAT3 regulates IL15 " 12
+                    QUESTION-MARK
                     END-OF-SOURCE
