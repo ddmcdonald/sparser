@@ -302,9 +302,11 @@ omitted and then run (perhaps) after the image has been launched."
 
   (gate-grammar *locations-core*
      (gload "places;methods"))
+  (gate-grammar *musica*
+     (gload "music;methods"))
 
   (gate-grammar *time*
-    (late-time-files)
+    (late-time-files) ;; time-methods
     (make-temporal-sequences))
 
   (when *incorporate-generic-lexicon*

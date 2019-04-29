@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "prepositions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   January 2017=9
+;;;   Version:   April 2019
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 1/11/94 added "through"  7/14 added "up" & "down"  8/19 added "off"
@@ -51,11 +51,14 @@
 
 (defun define-preposition (string &key brackets form super-category synonyms)
   "Define the category and rule for the preposition whose pname is 'string'.
-   The form argument is used to determine how this preposition slots into 
-   the model."
-  ;; e.g. (define-preposition "at" :form 'spatial-preposition) ;;what about "at 5PM"
-  (unless brackets  ;; v.s. ].treetop  treetop.[ 
-    (setq brackets *preposition-brackets*))
+   The form argument is one of preposition, spatial-preposition, or spatio-temporal-preposition
+   and dictates the form label on the rule and the default choice for the super-category
+   (either prepositional-operator or relative-location). The super-category
+   keyword argument can override that choice. Synonyms should be a list of strings.
+   Uses define-function-term to form the preposition-specific category instance, and rule."
+  ;; e.g. (define-preposition "at" :form 'spatial-preposition)
+  (unless brackets
+    (setq brackets *preposition-brackets*)) ;; v.s. ].treetop  treetop.[ 
   (unless form
     (setq form 'preposition))
   (unless super-category
@@ -67,39 +70,25 @@
               (preposition 'prepositional-operator))
             'prepositional-operator)))
 
-  (let* ((word (define-function-word string
-                   :brackets brackets
-                   :form form))
-         (category-name (name-to-use-for-category string))
-         (expr
-          `(define-category ,category-name
-             :specializes ,super-category
-             :mixins (linguistic) ;; supplies 'word' variable
-             :instantiates :self
-             :index (:permanent :list)
-             :lemma (:preposition ,word)))
-         (category (eval expr)))
-    
-    ;; The lemma on the category made a rule, but it used a generic
-    ;; form for the preposition. We have to fix it to be the
-    ;; specified form. 
-    ;; The category processing has made the Mumble resources.
-    (let ((cfr (find-form-cfr word :preposition)))
-      (unless cfr (error "no cfr on the preposition ~s ?" string))
-      (setf (cfr-form cfr) (category-named form)))
+  (multiple-value-bind (category instance rule)
+      (define-function-term string 'preposition ;;form
+          :super-category super-category
+          :word-variable 'word)
 
     (when synonyms
-      (flet ((prep-synonym (syn-string referent name-of-form)
-               (let* ((syn-word (resolve-string-to-word/make syn-string))
+      (flet ((prep-synonym (synonym-string referent name-of-form)
+               (let* ((syn-word (resolve-string-to-word/make synonym-string))
                       (rule (define-cfr category `(,syn-word)
                               :form (resolve-form-category name-of-form)
                               :schema (get-schematic-word-rule :preposition)
                               :referent referent)))
                  (add-rule rule category))))
-         (loop for s in synonyms
-            do (prep-synonym s category form))))
+        (loop for s in synonyms
+           do (prep-synonym s instance form))))
       
-    category ))
+    (values category instance rule)))
+
+
 #|
 these are really prepositions, and should function as such
 (define-reflection-on "despite")
@@ -110,24 +99,10 @@ these are really prepositions, and should function as such
 
 ;; "to" and "of" may warrant special treatment
 
-(define-preposition "abaft" :form 'spatial-preposition)
-(define-preposition "abeam" :form 'spatial-preposition)
-(define-preposition "aboard" :form 'spatial-preposition)
 ;; See modifiers.lisp (define-preposition "about")
-(define-preposition "above" :form 'spatial-preposition)
 (define-preposition "abreast of") ;; reference?
 (define-preposition "according to") ;; reference?
-(define-preposition "across" :form 'spatial-preposition) ;; spatial?
-(define-preposition "across from" :form 'spatial-preposition)
-(define-preposition "afore" :form 'spatio-temporal-preposition)
 
-(when nil ;;current-script :biology)
-  (define-preposition "after" :form 'spatio-temporal-preposition)) ;; => sequencer in modifiers
-
-(define-preposition "against" :form 'spatial-preposition) ;;what about non-spatial sense
-;; Seems like an adverb (define-preposition "ahead" :form 'spatial-preposition)
-(define-preposition "ahead of" :form 'spatial-preposition)
-(define-preposition "along" :form 'spatial-preposition)
 (define-preposition "along with") ;;??
 (define-preposition "amid" :synonyms '("amidst")) ;;spatiotemporal?
 (define-preposition "among" :synonyms '("amongst")) 
@@ -142,39 +117,24 @@ these are really prepositions, and should function as such
 (define-preposition "as per")
 (define-preposition "as to")
 (define-preposition "aside from")
-(define-preposition "at" :form 'spatial-preposition) ;;what about "at 5PM"
-(define-preposition "at or above")
-(define-preposition "at or below")
 (define-preposition "at the expense of") 
 (define-preposition "at the hands of")
 (define-preposition "at variance with")
-(define-preposition "atop" :form 'spatial-preposition)
 (define-preposition "away")
 (define-preposition "away from")
 (define-preposition "bar")
 (define-preposition "barring")
 
-(when nil ;;(current-script :biology)
-  (define-preposition "before" :form 'spatio-temporal-preposition)) ;; => sequencer in modifiers
-
-(define-preposition "behind" :form 'spatial-preposition)
-(define-preposition "below" :form 'spatial-preposition)
-(define-preposition "beneath" :form 'spatial-preposition)
-(define-preposition "beside" :form 'spatial-preposition)
 (define-preposition "besides")
-(define-preposition "between" :form 'spatial-preposition)
-(define-preposition "beyond" :form 'spatial-preposition)
 (define-preposition "but not" )
 (define-preposition "by" )
 (define-preposition "by means of")
 (define-preposition "by virtue of")
 (define-preposition "by way of")
 (define-preposition "circa" :synonyms '("ca.")) 
-(define-preposition "close to" :form 'spatial-preposition) ;;can also be temporal, even an approximator?
 (define-preposition "contrary to")
 (define-preposition "despite") ;;in modifiers as a reflection-on
 (define-preposition "devoid of")
-(define-preposition "down"  :form 'spatial-preposition) ;; as in, 'down the street' ?
 (define-preposition "due to")
 
 (when nil
@@ -191,16 +151,11 @@ these are really prepositions, and should function as such
 (define-preposition "for want of")
 (define-preposition "from" )
 (define-preposition "from want of")
-(define-preposition "in"  :form 'spatial-preposition)
 (define-preposition "including")
 (define-preposition "in accordance with")
 (define-preposition "in addition")
 (define-preposition "in addition to")
 (define-preposition "in aid of")
-
-(define-preposition "in back of" :form 'spatial-preposition)
-(define-preposition "in between" :form 'spatial-preposition) ;;also adverb "..and everything in between"
-
 (define-preposition "in case of")
 (define-preposition "in common with")
 (define-preposition "in comparison with")
@@ -215,7 +170,6 @@ these are really prepositions, and should function as such
 (define-preposition "in exchange for")
 (define-preposition "in face of")
 (define-preposition "in favor of")
-(define-preposition "in front of" :form 'spatial-preposition)
 (define-preposition "in lieu of")
 (define-preposition "in light of")
 (define-preposition "in line with")
@@ -236,23 +190,14 @@ these are really prepositions, and should function as such
 (define-preposition "in the light of")
 ;;(define-preposition "in the process of") ;; this is a meaningful NP in biology
 (define-preposition "in view of")
-(define-preposition "inside" :form 'spatial-preposition)
-(define-preposition "inside of" :form 'spatial-preposition)
 ;;(define-preposition "instead of") make it a conjunction like "but not"
-(define-preposition "into" :form 'spatial-preposition)
 (define-preposition "irrespective of")
 ;;(define-preposition "like") ;; merged into verb definition in dossiers;verbs.lisp
 (define-preposition "minus")
-(define-preposition "near" :form 'spatial-preposition)
-(define-preposition "near to" :form 'spatial-preposition)
-(define-preposition "nearer" :form 'spatial-preposition) ;;comparative
-(define-preposition "nearer to" :form 'spatial-preposition) ;;comparative
-(define-preposition "next to" :form 'spatial-preposition)
 (define-preposition "notwithstanding")
 (define-preposition "of" )
 (define-preposition "off" )
 (define-preposition "off of")
-(define-preposition "on" :form 'spatial-preposition)
 (define-preposition "on account of")
 (define-preposition "on behalf of")
 (define-preposition "on ground of")
@@ -261,15 +206,9 @@ these are really prepositions, and should function as such
 (define-preposition "on the matter of")
 (define-preposition "on the part of")
 (define-preposition "on the strength of")
-;; (define-preposition "on top of" :form 'spatial-preposition) ;; doing it compositionally
-(define-preposition "onto" :form 'spatial-preposition)
 (define-preposition "out" )
 (define-preposition "out of" )
-(define-preposition "outside" :form 'spatial-preposition)
-(define-preposition "outside of" :form 'spatial-preposition)
-(define-preposition "over" :form 'spatial-preposition )
 (define-preposition "owing to")
-(define-preposition "past" :form 'spatial-preposition)
 (define-preposition "pending")
 (define-preposition "per")
 (define-preposition "plus")
@@ -285,20 +224,13 @@ these are really prepositions, and should function as such
 (define-preposition "subsequent to")
 (define-preposition "such as")
 (define-preposition "thanks to")
-(define-preposition "through" :form 'spatial-preposition)
 (define-preposition "throughout")
 (define-preposition "till")
 (define-preposition "to" )
 (define-preposition "together with")
-(define-preposition "toward")
-(define-preposition "towards")
-(define-preposition "under" :form 'spatial-preposition)
 (define-preposition "unlike")
 (define-preposition "until")
 (define-preposition "unto")
-(define-preposition "up" )
-(define-preposition "up against")
-(define-preposition "up to")
 (define-preposition "upon")
 (define-preposition "upwards of")
 (define-preposition "versus" :synonyms '("vs" "vs.")) 
@@ -309,7 +241,6 @@ these are really prepositions, and should function as such
 (define-preposition "with regard to")
 (define-preposition "with respect to" :synonyms '("w.r.t."))
 (define-preposition "with the exception of")
-(define-preposition "within" :form 'spatial-preposition)
 (define-preposition "without" :synonyms '("w/o"))
 (define-preposition "worth")
 

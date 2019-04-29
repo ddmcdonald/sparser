@@ -1,14 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "traces"
 ;;;   Module:  "model;core:places:"
-;;;  version:  September 2018
+;;;  version:  April 2019
 
 ;; For trace functions about location. Initially mostly the methods
 
 (in-package :sparser)
-
 
 ;;;---------------------------------------
 ;;; traces of when a method is being used
@@ -87,8 +86,20 @@
     (trace-msg "Method: direction (i~a) & object (i~a)"
                (indiv-uid head) (indiv-uid ground))))
 
+(deftrace :collection+items (index item)
+   (when *trace-methods*
+     (trace-msg "Method: index (i~a) & item (i~a)"
+                (indiv-uid index) (indiv-uid item))))
 
+(deftrace :between+collection (op bounds)
+  (when *trace-methods*
+    (trace-msg "Method: operator (i~a) + collection (i~a)"
+               (indiv-uid op) (indiv-uid bounds))))
 
+(deftrace :fraction+note (fraction note)
+   (when *trace-methods*
+     (trace-msg "Method: fraction (i~a) & note (i~a)"
+                (indiv-uid fraction) (indiv-uid note))))
 
 
 ;;--- For related syntax-functions functions.

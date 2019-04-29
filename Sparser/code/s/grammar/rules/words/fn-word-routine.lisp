@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "fn word routine"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   March 2019
+;;;   Version:   April 2019
 
 ;; 0.1 (12/17/92 v2.3) redid the routine so it was caps insensitive and handled
 ;;      bracketing.
@@ -121,6 +121,9 @@
    name is the same as one that's already been defined, it will signal
    an error unless the *ignore-redefine-warnings* has been dynamically
    bound to non-nil. 
+     To facilitate the possibility of lexically-specific k-methods,
+   we create one individual of this category and make that the
+   referent of the unary rule that's created.
      The supercategory of the to-be-created category can be
    specified by the 'super-category' argument. It defaults to 'adverbial'.
      The argument names the category that will be the form on the
@@ -131,6 +134,12 @@
      Rule-label has the same impact as it does in the definition of an
    ordinary category. It determines the label on the generated rules, which
    will otherwise be the generated category.
+     Word-variable is the name of the variable to use to associate
+   the word with the category in its bindings field. It defaults to
+   'name', but that default assumes that variable is in fact defined
+   on the supercategory. This pattern does not use the 'lemma' to hold
+   the word that refers to the category since these 'categories' are
+   single-purpose and only instantiated once. 
      For getting subcategorization information from Comlex the :subcat-info
    argument dictates which POS entry to use. Legal values are noun, verb, 
    adjective, and adverb."
@@ -145,6 +154,9 @@
             ((adjective spatial-adjective temporal-adjective) *adjective-brackets*)
             ((det approximator sequencer) *default-determiner-brackets*)
             (standalone *standalone-brackets*)
+            ((preposition #|spatial-preposition spatio-temporal-preposition|#)
+             *preposition-brackets*)
+            (noun *common-noun-brackets*)
             (otherwise
              (break "Need brackets for another syntactic form: ~a" form)))))
   (unless documentation (setq documentation ""))
@@ -161,7 +173,7 @@
                   :form form))))
     (let* ((base-name (name-to-use-for-category string))
            (category-name 
-            (if discriminator ;;/// check mlisp version
+            (if discriminator
               (intern (string-append base-name "-" discriminator)
                       (find-package :sparser))
               base-name)))
@@ -180,7 +192,8 @@
                     :bindings (,word-variable ,word)
                     :documentation ,documentation))))
 
-        (let* ((word-key (intern (symbol-name word-variable) (find-package :keyword)))
+        (let* ((word-key (intern (symbol-name word-variable)
+                                 (find-package :keyword)))
                (instance-form `(define-individual ',category-name
                                    ,word-key ,word))
                i)
@@ -263,5 +276,6 @@
     ((or comparative superlative) :adjective)
     ((or det approximator sequencer) :determiner)
     ((or conjunction subordinate-conjunction) :word) ;; i.e. ignore
-    (preposition :preposition) ;; for the sequencer "before"
+    (preposition :preposition)
+    (noun :common-noun)
     (standalone :word)))

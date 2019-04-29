@@ -2185,27 +2185,22 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun make-prep-comp (prep complement)
   ;; Called for the pattern 
   ;; preposition + (vg vg+ing vg+ed vg+passive vp+passive & vp)
-  (declare (special category::to category::to-comp category::prepositional-phrase))
-  ;;(push-debug `(,prep ,complement)) (break "where prep?") 
-  (cond
-    ((subordinate-conjunction? (left-edge-for-referent))
-     nil)
-    (*subcat-test*
-     (and prep complement))
-    ((or (eq prep category::to)
-         (eq prep (get-dli category::to)))
-     (revise-parent-edge :form category::to-comp)
-     complement)
-    (t
-     ;; If this starts to make a lot of preposition-specific
-     ;; distinctions then we need to refactor and move the
-     ;; cond up.
-     ;; don't want to use category::prepositional-phrase as a syntactic category
-     ;;(revise-parent-edge :form category::prepositional-phrase)
-     (revise-parent-edge :form category::pp)	 
-     (make-simple-individual
-      category::prepositional-phrase
-      `((prep ,prep) (comp ,complement))))))
+  (declare (special category::to-comp category::pp))
+  (let ((preposition (get-word-for-prep prep))) 
+    ;;(push-debug `(,prep ,complement)) (break "where prep?")
+    (cond
+      ((subordinate-conjunction? (left-edge-for-referent))
+       nil)
+      (*subcat-test*
+       (and prep complement))
+      ((eq preposition (word-named "to"))
+       (revise-parent-edge :form category::to-comp)
+       complement)
+      (t
+       (revise-parent-edge :form category::pp)	 
+       (make-simple-individual
+        category::prepositional-phrase
+        `((prep ,prep) (comp ,complement)))))))
 
 
 
@@ -2259,11 +2254,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
                *subcat-info*))
        (setq np (individual-for-ref np))
        (revise-parent-edge :category category::copular-predicate)
-       ;; THIS IS WRONG -- DAVID -- DID YOU CHANGE THIS
-       #+ignore
-       (let ((i copular-pp)) ;; renaming to reinforce the framing
-         (setq i (bind-variable 'item np i))
-         i )
        (let* ((pp-edge (edge-right-daughter (right-edge-for-referent)))
               (new-np (bind-variable var-to-bind pobj np))
               (new-np-edge (respan-edge-for-new-referent pp-edge new-np))

@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2011-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  December 2018
+;;;  version:  April 2019
 
 ;; initiated in January 1991 v1.8
 ;; 0.1 (10/17/93 v2.3) started revampin to hold all the individuals
@@ -90,9 +90,6 @@
 (gate-grammar *adjectives*
   (gload "dossiers;new content words"))
 
-(gate-grammar *mid-level-ontology*
-  (gload "dossiers;verbs"))
-
 (gate-grammar *time*
   (gload "dossiers;time units")
   (gload "dossiers;deictic times")
@@ -105,20 +102,6 @@
   (gload "dossiers;timezones"))
 
 
-(gate-grammar *standard-adjuncts*
-  (gload "dossiers;modifiers"))
-#| ;; all these moved to modifiers
-  (gate-grammar *comparatives*
-    (gload "dossiers;comparatives")
-    (gload "dossiers;rules comparatives"))
-  (gate-grammar *approximators*
-    (gload "dossiers;approximations")
-    (gload "dossiers;approximator rules"))
-  (gate-grammar *frequency*
-    (gload "dossiers;frequency adverbs"))
-  (ate-grammar *sequencers*
-    (gload "dossiers;sequencers")))  |#
-
 
 (gate-grammar *kinds*
   (gload "dossiers;kinds"))
@@ -128,7 +111,7 @@
     (gload "dossiers;dependent-locations")
     (gload "dossiers;directions")
     (gload "dossiers;compass points")
-    (gload "dossiers;spatial prepositions")) ;; moved to words/prepositions
+    (gload "dossiers;spatial prepositions"))
     
   (gate-grammar *countries*
     (gload "dossiers;countries"))
@@ -151,6 +134,24 @@
 (when *locations-core*
   (gload "dossiers;qualities")) ;;  has to follow directions
 
+(gate-grammar *mid-level-ontology*
+  (gload "dossiers;verbs")) ;; verbs can refer to prepositions
+
+
+(gate-grammar *standard-adjuncts*
+  (gload "dossiers;modifiers"))
+#| ;; all these moved to modifiers
+  (gate-grammar *comparatives*
+    (gload "dossiers;comparatives")
+    (gload "dossiers;rules comparatives"))
+  (gate-grammar *approximators*
+    (gload "dossiers;approximations")
+    (gload "dossiers;approximator rules"))
+  (gate-grammar *frequency*
+    (gload "dossiers;frequency adverbs"))
+  (ate-grammar *sequencers*
+    (gload "dossiers;sequencers")))  |#
+
 
 (gate-grammar *amounts*
   ;; has to follow 'directions' because they're referenced
@@ -160,9 +161,9 @@
   (gload "dossiers;attributes")
 
 ;;/////////////// left off here. March 2005 ///////////////
-
   ;(gload "dossiers;change-in-amount verbs")
   )
+
 
 
 (gate-grammar *reports*
