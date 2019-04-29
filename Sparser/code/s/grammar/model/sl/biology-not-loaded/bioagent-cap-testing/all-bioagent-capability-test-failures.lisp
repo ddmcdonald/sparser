@@ -32,14 +32,12 @@ ___________________
 66: "Look up which genes targeted by stat3 are involved in apoptosis"
 
                     SOURCE-START
-e16   LOOK-UP       1 "Look up " 3
-e5    WHICH         3 "which " 4
-e23   INVOLVE       4 "genes targeted by stat3 are involved in apoptosis" 13
+e24   LOOK-UP       1 "Look up which " 4
+e22   INVOLVE       4 "genes targeted by stat3 are involved in apoptosis" 13
                     END-OF-SOURCE
                     SOURCE-START
-e16   VG            1 "Look up " 3
-e5    WH-PRONOUN    3 "which " 4
-e23   S             4 "genes targeted by stat3 are involved in apoptosis" 13
+e24   VG            1 "Look up which " 4
+e22   S             4 "genes targeted by stat3 are involved in apoptosis" 13
                     END-OF-SOURCE
 
 
@@ -333,7 +331,7 @@ e8    NP            1 "What tissues " 3
 e4    VG            3 "is " 4
 e1    PROPER-NOUN   4 "STAT3 " 6
 e5    VG+ED         6 "expressed " 7
-e7    SPATIAL-PREPOSITION 7 "in" 8
+e7    PREPOSITION   7 "in" 8
                     QUESTION-MARK
                     END-OF-SOURCE
 
@@ -367,7 +365,7 @@ e13   IN            11 "in" 12
                     SOURCE-START
 e24   S             1 "Can you find any apoptotic pathways stat3 " 9
 e21   VG+PASSIVE    9 "is involved " 11
-e13   SPATIAL-PREPOSITION 11 "in" 12
+e13   PREPOSITION   11 "in" 12
                     QUESTION-MARK
                     END-OF-SOURCE
 
@@ -382,7 +380,7 @@ e15   IN            12 "in" 13
                     END-OF-SOURCE
                     SOURCE-START
 e28   S             1 "Can you find any apoptotic pathways that stat3 is involved " 12
-e15   SPATIAL-PREPOSITION 12 "in" 13
+e15   PREPOSITION   12 "in" 13
                     QUESTION-MARK
                     END-OF-SOURCE
 
@@ -391,15 +389,13 @@ ___________________
 456: "Can you look up which genes targeted by stat3 are involved in apoptosis?"
 
                     SOURCE-START
-e31   LOOK-UP       1 "Can you look up " 5
-e7    WHICH         5 "which " 6
-e29   INVOLVE       6 "genes targeted by stat3 are involved in apoptosis" 15
+e32   LOOK-UP       1 "Can you look up which " 6
+e28   INVOLVE       6 "genes targeted by stat3 are involved in apoptosis" 15
                     QUESTION-MARK
                     END-OF-SOURCE
                     SOURCE-START
-e31   TRANSITIVE-CLAUSE-WITHOUT-OBJECT  1 "Can you look up " 5
-e7    WH-PRONOUN    5 "which " 6
-e29   S             6 "genes targeted by stat3 are involved in apoptosis" 15
+e32   TRANSITIVE-CLAUSE-WITHOUT-OBJECT  1 "Can you look up which " 6
+e28   S             6 "genes targeted by stat3 are involved in apoptosis" 15
                     QUESTION-MARK
                     END-OF-SOURCE
 
@@ -431,7 +427,7 @@ e5    IN            5 "in" 6
                     END-OF-SOURCE
                     SOURCE-START
 e8    S             1 "What pathways are they " 5
-e5    SPATIAL-PREPOSITION 5 "in" 6
+e5    PREPOSITION   5 "in" 6
                     QUESTION-MARK
                     END-OF-SOURCE
 
@@ -444,9 +440,9 @@ e6    INVOLVE       1 "What pathways involve SOARING" 5
                     QUESTION-MARK
                     END-OF-SOURCE
 ("What pathways involve SOARING?"
- (:VAR MV8174 :ISA INVOLVE :THEME MV8173 :THEME MV8175 :PRESENT "PRESENT")
- (:VAR MV8173 :ISA PATHWAY :HAS-DETERMINER "WHAT" :RAW-TEXT "pathways")
- (:VAR MV8175 :ISA SOAR :PROGRESSIVE "PROGRESSIVE" :RAW-TEXT "SOARING"))
+ (:VAR MV8178 :ISA INVOLVE :THEME MV8177 :THEME MV8179 :PRESENT "PRESENT")
+ (:VAR MV8177 :ISA PATHWAY :HAS-DETERMINER "WHAT" :RAW-TEXT "pathways")
+ (:VAR MV8179 :ISA SOAR :PROGRESSIVE "PROGRESSIVE" :RAW-TEXT "SOARING"))
 
 ___________________
 571: "What transcription factors are in the calcium regulated pathways?"
@@ -720,7 +716,7 @@ e6    IN            6 "in" 7
                     END-OF-SOURCE
                     SOURCE-START
 e9    S             1 "What pathways is ERK1 " 6
-e6    SPATIAL-PREPOSITION 6 "in" 7
+e6    PREPOSITION   6 "in" 7
                     QUESTION-MARK
                     END-OF-SOURCE
 
@@ -735,7 +731,7 @@ e8    IN            7 "in" 8
                     END-OF-SOURCE
                     SOURCE-START
 e12   S             1 "Which of these is AKT1 " 7
-e8    SPATIAL-PREPOSITION 7 "in" 8
+e8    PREPOSITION   7 "in" 8
                     QUESTION-MARK
                     END-OF-SOURCE
 
@@ -750,7 +746,7 @@ e9    IN            9 "in" 10
                     END-OF-SOURCE
                     SOURCE-START
 e13   S             1 "What pathways are ERK1 and AKT1 " 9
-e9    SPATIAL-PREPOSITION 9 "in" 10
+e9    PREPOSITION   9 "in" 10
                     QUESTION-MARK
                     END-OF-SOURCE
 
@@ -780,7 +776,7 @@ e6    IN            5 "in" 6
                     END-OF-SOURCE
                     SOURCE-START
 e9    S             1 "What pathways is it " 5
-e6    SPATIAL-PREPOSITION 5 "in" 6
+e6    PREPOSITION   5 "in" 6
                     QUESTION-MARK
                     END-OF-SOURCE
 
