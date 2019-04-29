@@ -127,7 +127,11 @@
       (reify-ns-name-and-make-edge start-pos end-pos))
 
      ((equal pattern '(:single-cap :single-digit)) ;; "in Figure S1,"
-      (reify-two-part-label start-pos end-pos :cap-first))
+      (let ((left-edge (top-edge-at/starting start-pos)))
+        (if (eq (edge-cat-name left-edge) 'note) ;; "the C4 quarter note"
+          (let ((edges (treetops-between start-pos end-pos)))
+            (create-pitch-class (first edges) (second edges) start-pos end-pos))
+          (reify-two-part-label start-pos end-pos :cap-first))))
 
      ((or (equal pattern '(:single-digit :single-lower)) ;; (Fig. 4c, 4d) in Dec. 42 
           (equal pattern '(:single-digit :single-cap))) ;; "3C" "Histone 2B phosphorylated by..." in Jan 34.
