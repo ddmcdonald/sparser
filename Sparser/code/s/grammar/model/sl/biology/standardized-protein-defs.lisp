@@ -20273,7 +20273,7 @@
 (define-protein "UP:Q96JC9" ("EAF1" "Q96JC9" "eaf-1")) 
 (define-protein "UP:Q96JD6" ("testis specific protein")) 
 (define-protein "UP:Q96JE7" ("KIAA1928" "LZTR2" "PGPR-p117" "Q96JE7" "RGPR" "SC16B_HUMAN" "SEC16 homolog B" "SEC16 homolog B (S. cerevisiae)" "SEC16B" "SEC16S" "Sec16B" "Sec16S" "leucine zipper transcription regulator 2" "regucalcin gene promotor region related protein")) 
-(define-protein "UP:Q96JE9" ("MAP6" "stop")) 
+(define-protein "UP:Q96JE9" ("MAP6")) 
 (define-protein "UP:Q96JF0" ("KIAA1877" "Q96JF0" "SIAT2" "SIAT2_HUMAN" "ST6 beta-galactosamide alpha-2,6-sialyltranferase 2" "ST6 beta-galactoside alpha-2,6-sialyltransferase 2" "ST6GAL2" "St6GalII" "beta-galactoside alpha-2,6-sialyltransferase 2" "sialyltransferase 2 (monosialoganglioside sialyltransferase)" "st6gal2")) 
 (define-protein "UP:Q96JG9" ("ZNF469" "zinc finger protein 469")) 
 (define-protein "UP:Q96JH7" ("VCIP135" "deubiquitinating protein" "vcpip1")) 

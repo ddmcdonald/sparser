@@ -260,7 +260,7 @@
 (def-family-with-id "SSF" "XFAM:PF00474.15") 
 (def-family-with-id "SSX" "FA:03840") 
 (def-family-with-id "STE20" "FA:03111" :synonyms ("Ste-20")) 
-(def-family-with-id "STOP" "FA:03855" :synonyms ("sTOP") :maintain-case t) 
+(def-family-with-id "STOP" "FA:03855" :synonyms ("sTOP") :maintain-case t :members("UP:Q96JE9")) 
 (def-family-with-id "SUI1" "FA:03871") 
 (def-family-with-id "SWR1" "FA:03708" :synonyms ("Swr1")) 
 (def-family-with-id "SYD" "XFAM:PF07348.10" :synonyms ("syd")) 
