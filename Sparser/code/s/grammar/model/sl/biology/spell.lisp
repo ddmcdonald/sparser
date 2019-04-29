@@ -115,6 +115,7 @@
 ;; distance of 2
 
 (defun edit-distance (s1 s2)
+  "Implementation of the Damerau–Levenshtein distance for spelling comparison"
   (declare (optimize (speed 1)))
   (let ((m (length s1))
         (n (length s2)))
