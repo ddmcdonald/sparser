@@ -72,7 +72,14 @@
  from dependent directions like 'bottom' or 'side'. They get
  their 'ground' variable from relative-location.")
 
+
 (defun define-standalone-direction (string)
+  (define-function-term string 'noun ;; adverb ??
+    :super-category 'relative-direction
+    :rule-label 'direction
+    :brackets '( .[np )))
+
+#+ignore(defun define-standalone-direction (string)
   ;; following pattern in define-dependent-location, define-preposition
   ;; where all the mumble resources are developed during the
   ;; handling of the lemma
