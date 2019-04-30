@@ -294,7 +294,8 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
 
 ;;------------------------ from places/moving.lisp ---------------
 
-(unless (current-script :biology)
+(unless (or (current-script :biology)
+            (current-script :blocks-world))
   (define-movement-verb "cross")
   (define-movement-verb "drive")
   (define-movement-verb "follow")
