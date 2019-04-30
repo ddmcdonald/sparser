@@ -159,7 +159,8 @@
              :category category::be
              :referent copular-meaning)))
          (be+subj
-            (assimilate-subject subj copular-meaning copula-edge))
+          (with-referent-edges (:l (second edges) :r copula-edge)
+            (assimilate-subject subj copular-meaning copula-edge)))
          ;;(push-debug `(,be ,subj ,obj ,be+subj)) (break "1")
          (subj-vg-edge
             (make-binary-edge/explicit-rule-components

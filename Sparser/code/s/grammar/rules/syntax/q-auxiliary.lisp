@@ -136,7 +136,8 @@
            ((and wh-pronoun?
                  (memq (cat-symbol (itype-of wh))
                        '(category::how category::why
-                         category::where category::when)))
+                         category::where category::when
+                         category::what))) ;; "What does it do?"
             (bind-wh-to-stmt-variable wh wh-edge stmt))
            
            (wh-category ;; "what drug" wh is a determiner
@@ -160,6 +161,7 @@
   "Lookup the variable associated with this WH pronoun
  and bind the referent of the wh-edge to that variable
  on the statement, which is expected to be a perdurant."
+  (unless wh (error "WH argument is nil"))
   (unless (itypep stmt 'perdurant)
     (error "stmt is not a perdurant: ~a is a ~a"
            stmt (itype-of stmt)))
