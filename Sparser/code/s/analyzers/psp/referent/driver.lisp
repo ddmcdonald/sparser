@@ -292,7 +292,7 @@
   (or *rule-being-interpreted*
       (error "*rule-being-interpreted* isn't bound now")))
 
-#| Example from wh-initial-three-edges, which operates outside
+#| Example from wh-initial-followed-by-modal, which operates outside
 of the context of applying a specific rules, and therefore not
 in the scope of referent-from-rule.
     (with-referent-edges (:l (second edges) :r (third edges))
