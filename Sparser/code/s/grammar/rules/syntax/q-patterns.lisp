@@ -163,15 +163,17 @@
             (assimilate-subject subj copular-meaning copula-edge)))
          ;;(push-debug `(,be ,subj ,obj ,be+subj)) (break "1")
          (subj-vg-edge
+          (when be+subj
             (make-binary-edge/explicit-rule-components
              (first edges) copula-edge
              :rule-name 'polar-copula-question-subject
              :form category::transitive-clause-without-object
              :category category::be
-             :referent be+subj)))
+             :referent be+subj))))
     ;;(push-debug `(,be ,subj ,obj ,subj-vg-edge ,copula-edge ,copular-meaning))
-    (when copula-edge
-      (make-polar-edge copula-edge))))
+    ;;(break "copular")
+    (make-polar-edge (or subj-vg-edge
+                         copula-edge))))
 
     
 (defun make-polar-adjective-question (start-pos end-pos edges)
