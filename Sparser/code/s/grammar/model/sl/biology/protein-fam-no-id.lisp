@@ -1831,8 +1831,8 @@
 ;;(define-protein "UP:P25049" ("tyrosine-protein kinase-interacting protein")) hpv
 
 ;;(def-family "topo" :members ("UP:K1TY43" "UP:Q9YC75"))
-(def-family "TOP" :synonyms ("topoisomerase" "topo") :members ("UP:P11387" "UP:Q969P6" "UP:P11388" "UP:Q02880"))
-(def-family "topoisomerase I" :synonyms ("DNA topoisomerase 1" "topoisomerase 1" "Topo-I" "TopoI" "topoI" "Top-I") :members ("UP:P11387" "UP:Q969P6"))
+
+
 ;;(def-family "DNA topoisomerase 1" :members ("UP:O17966" "UP:P11387") :synonyms ("topoisomerase 1"))
 ;;(def-family "Topoisomerase I" :members ("UP:P11387" "UP:Q969P6"))
 ;(def-family "topoisomerase II" :members ("UP:O16140" "UP:P11388")) 

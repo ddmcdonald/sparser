@@ -5216,7 +5216,7 @@
 (define-protein "UP:P0CG34" ("TMSB15A" "TMSL8" "tb15")) 
 (define-protein "UP:P0CG37" ("CFC1" "CFC1_HUMAN" "CRYPTIC" "FRL-1" "HTX2" "N-aspartyl-glycosylphosphatidylinositolethanolamine-CFC1" "P0CG37" "cryptic" "cryptic family 1" "cryptic protein" "heterotaxy 2 (autosomal dominant)")) 
 (define-protein "UP:P0CG40" ("sp9" "sp9 transcription factor")) 
-(define-protein "UP:P0CG47" ("UBIQ" "ub" "ubb")) 
+(define-protein "UP:P0CG47" ("UBIQ" "ubb")) 
 (define-protein "UP:P0CG48" ("P0CG48" "UBC" "UBC_HUMAN" "poly-ubiquitin" "polyubiquitin-C" "ubc")) 
 (define-protein "UP:P0CG63" ("P0CG63" "polyUb" "ubi4")) 
 (define-protein "UP:P0CG70" ("UBI" "poly-Ubi")) 
