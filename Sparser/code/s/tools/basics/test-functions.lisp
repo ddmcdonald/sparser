@@ -1324,7 +1324,7 @@ For bad parses you get the treetops.
   Calling it with the 'split' option runs through the list and
 divides it into good and bad. |#
 
-(defun test-bio-utterances (sentence-list &optional split? &key list-of-lists (stream *standard-output*) clauses)
+(defun test-bio-utterances (sentence-list &optional split? &key list-of-lists (stream *standard-output*) clauses (quiet t))
   "Walk over the list and set the global -- edit to shift test fn"
   (declare (special *save-clause-semantics*))
   (let ((count -1)) ;; because nth is zero based
@@ -1352,13 +1352,15 @@ divides it into good and bad. |#
                       ~%  ~a bad~%"
               (length *bio-utt-test-good*) (length *bio-utt-test-bad*)))))
 
-(defun test-bio-utterance (s count &optional (stream *standard-output*))
+(defun test-bio-utterance (s count &optional (stream *standard-output*) (quiet t))
   "Designed for getting useful information for every sentence.
  Includes the semantic interpretation if there was just one
  edge over it."
   (declare (special *save-clause-semantics* *clause-semantics-list*))
   (format stream "~%~%___________________~%~a: ~s~%" count s)
-  (qepp s)
+  (if quiet
+      (qepp s)
+      (pp s))
   (format stream "~&~%") (tts stream)
   (let ((edges (all-tts)))
     (cond
@@ -1441,11 +1443,13 @@ all-bioagent-capability-sentences.lisp"
 
 (defparameter *test-utt-unique-cats* nil)
 (defun clauses->unique-cats ()
+  (declare (special *clause-semantics-list* *test-utt-unique-cats*))
   (loop for clauses in (mapcar #'cdr *clause-semantics-list*)
         do (loop for clause in clauses
                  do (pushnew (getf clause :isa) *test-utt-unique-cats*))))
 (defparameter *test-utt-unique-roles* nil)
 (defun clauses->unique-roles ()
+  (declare (special *clause-semantics-list* *test-utt-unique-roles*))
   (loop for clauses in (mapcar #'cdr *clause-semantics-list*)
         do (loop for clause in clauses
                  do (loop for i from 0 to (length clause)
@@ -1459,3 +1463,4 @@ all-bioagent-capability-sentences.lisp"
         do (push `(,(car sent)
                     ,(mapcar #'(lambda(x) (getf x :isa)) (cdr sent)))
                  *test-utt-sent-cats*)))
+
