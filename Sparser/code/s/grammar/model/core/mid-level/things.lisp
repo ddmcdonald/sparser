@@ -5,7 +5,7 @@
 ;;;   Module:  "model;core:mid-level:"
 ;;;  version:  March 2019
 
-;; Initiated 8/15/17 to hold general noun-like stuff, oarticularly the
+;; Initiated 8/15/17 to hold general noun-like stuff, particularly the
 ;; vocabulary need for the fixed texts in generate.lisp
 
 (in-package :sparser)
@@ -54,6 +54,22 @@ invites this reply: "What (else) do you need to know?"
   :specializes information
   :instantiates self
   :lemma (:common-noun "answer"))
+
+(define-category literature
+    ;; from biocuration questions e.g.,
+    ;; "What factors from the literature regulate IL15 and IL2?"
+    :specializes information
+    :instantiates self
+    :lemma (:common-noun "literature"))
+
+(define-category database
+    ;; from biocuration questions e.g.,
+    ;; "What regulates GLUL from the GEO RNAi database?"
+    :specializes information
+    :mixins (has-UID) ;; because of how we're defining the individuals
+    :instantiates self
+    :lemma (:common-noun "database"))
+
 #|
 "intent" is the 'result' of having an intention
    It's an 'intent' to do something

@@ -85,6 +85,7 @@
 (gload "bio;harvard-terms")
 
 (gload "bio;rhetoric")
+(gload "bio;evidence-sources") ;; database names like reactome
 (gload "bio;doc-structure")
 (gload "bio;switches")
 (gload "bio;rules")
