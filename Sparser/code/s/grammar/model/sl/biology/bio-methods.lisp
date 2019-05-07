@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2017 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2019 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "bio-methods-processes"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: April 2017
+;;; version: May 2019
 
 ;; Broken out from terms 4/27/17
 ;;; Sections: bio-methods, bio-methods with IDs, knock-out types,
@@ -85,7 +85,7 @@
 (noun "isoelectric focussing" :super bio-method)
 (noun "liquid chromatography" :super bio-method)
 (noun "mass-spectrometry" :super bio-method)
-(def-synonym mass-spectrometry (:noun "mass spectrometry"))
+(def-synonym mass-spectrometry (:noun ("mass spectrometry" "MS")))
 (noun "IP-MS" :super bio-method) ;; added to get rid of erroneous TRIPS def that was plural of "IPM"
 (def-synonym ip-ms (:noun "immunoprecipitation mass spectrometry"))
 

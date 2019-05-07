@@ -10,7 +10,7 @@
 (def-indiv-with-id cell-type "pancreatic epithelial cell" "CO:0000083") 
 (def-indiv-with-id cell-type "acinar cell" "CO:0000622") 
 (def-indiv-with-id cell-type "hematopoietic cell" "CO:0000988") 
-(def-indiv-with-id cell-type "stem cell" "CO:0000034") 
+(def-indiv-with-id cell-type "stem cell" "CO:0000034" :synonyms ("SC")) 
 (def-indiv-with-id cell-type "crypt cell" "CO:0000849") 
 (def-indiv-with-id cell-type "intestinal epithelial cell" "CO:0002563") 
 (def-indiv-with-id cell-type "eukaryotic cell" "CO:0000255") 

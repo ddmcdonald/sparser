@@ -567,7 +567,7 @@
 (def-indiv-with-id molecule "Na3VO4" "CHEBI:35607" :name "trisodium vanadate") 
 (def-indiv-with-id molecule "Na+" "CHEBI:29101" :name "sodium(1+)") 
 (def-indiv-with-id molecule "NTA" "CHEBI:39054" :name "NTA") 
-(def-indiv-with-id molecule "NSAIDS" "CHEBI:35475" :name "non-steroidal anti-inflammatory drug") 
+(def-indiv-with-id molecule "NSAID" "CHEBI:35475" :name "non-steroidal anti-inflammatory drug") 
 (def-indiv-with-id molecule "NONOate" "CHEBI:32361" :name "nonanoate") 
 (def-indiv-with-id molecule "NOB" "CHEBI:27986" :name "nitrosobenzene") 
 (def-indiv-with-id molecule "NMP" "CHEBI:7307" :name "N-methylpyrrolidin-2-one") 

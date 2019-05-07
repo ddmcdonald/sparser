@@ -65,6 +65,7 @@ it is created from N-terminus to C-terminus.|#
           "n-termini"
           "amino terminus"
           "NtA") ;; n-terminal acidic
+        :adj "n-terminally"
         :premod context ;; NEEDS TO BE CHANGED -- only here because need :etf (pre-mod), to get synonyms
          ))
 
