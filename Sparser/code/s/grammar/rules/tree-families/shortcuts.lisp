@@ -117,7 +117,9 @@ broadly speaking doing for you all the things you might do by hand.
                                 (set-family-members ind members)))
                         (if name
                             (bind-dli-variable :name name ind)
-                            ind)))))
+                            ;ind
+                            (bind-dli-variable :name base-word ind)
+                            )))))
          (word-list `(,base-word ,word ,.(when name `(,name))
                                  ,.(when synonyms `(,synonyms)))))
     (add-rules-cond-plural base-word category i :plural plural :no-plural no-plural)
