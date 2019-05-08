@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "questions"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  January 2019
+;;;  Version:  May 2019
 
 ;; Broken out from /grammar/model/sl/checkpoint/rules 6/17/09
 ;; Elaborated through 7/23/09. 9/28/11 removed spatial-orientation
@@ -17,7 +17,7 @@
    to find initial wh terms -- we just parse them. This should permit
    better handling of other forms of WH clauses and contructions
    such as embedded questions acting as clause participants
-   ('I want o know where you are').")
+   ('I want to know where you are').")
 
 ;;;--------------------------------
 ;;; debugging / display parameters
@@ -167,11 +167,9 @@
      Runs for side-effects."
   (declare (special category::question *show-wh-problems*))
   (tr :wh-walk "make-this-a-question-if-appropriate")
-  (when (and nil
-  	;; TURN OFF make-this-a-question which seems to be dropping semantics,
-             (or (preposed-aux?)
-                 (initial-wh?)
-                 (preposed-of?)))
+  (when (or (preposed-aux?)
+            (initial-wh?)
+            (preposed-of?))
     (let* ((preposed? (preposed-aux?)) ;; make them into local flags
            (wh-initial? (initial-wh?))
            (start-pos (starts-at-pos sentence))
@@ -189,13 +187,16 @@
       ;; Look for heuristic ways we could get a full sentence
       ;; from a partial parse. The detection is in this cond.
       ;; The construction is mostly in the subroutines in the
-      ;; file q-patterns.lisp. 
+      ;; file q-patterns.lisp.
+      ;; N.b. the multi-edge cases are usually easier to handle
+      ;; through a pattern in a DA rule. See the question section in
+      ;; grammmar/rules/DA/da-rules.lisp
       (cond
         ((edge-p edge)
          (cond
            ((and preposed? (null wh-initial?))
             ;; The wh-initial? case doesn't need further handling
-            ;; when the sentence parsed completely.
+            ;; when the sentence is parsed completely.
             (let ((q (make-polar-question (edge-referent edge))))
               (let ((spanning-edge
                      (make-edge-over-long-span
@@ -206,13 +207,15 @@
                       :referent q)))
                 spanning-edge)))
            ((preposed-of?)
-            (dig-for-embedded-which edge))))
-           
+            (dig-for-embedded-which edge))
+           (wh-initial? ;;/// Mark it? Wrap it?
+            (when *debug-questions*
+              (break "We have an edge (~a) and the wh-initial? flag is up~
+                    ~%What should we do?" edge)))))
+
         ;; In most cases, the proposed aux will have been accommodated by
         ;; the operations in the post-vg-hook, though that's just for explicit
-        ;; auxiliaries.
-
-        ((and (edge-p edge) wh-initial?)) ;;/// Mark it? Wrap it?
+        ;; auxiliaries.         
 
         ((and (= 1 (length edges))
               (eq (edge-category (car edges)) category::there-exists))
@@ -248,7 +251,7 @@
                ((member (cat-name (edge-form (third edges)))
                         '(vp+ed vp+ing vg+ed vg+ing
                           vp+passive))
-                ;; <is> <something> <x-ing?
+                ;; <is> <something> <x-ing>?
                 (make-polar-participle-question start-pos end-pos edges))
 
                ((and (or (noun-category? (second edges))

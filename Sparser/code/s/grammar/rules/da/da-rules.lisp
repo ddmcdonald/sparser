@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "da-rules"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  January 2019
+;;;  Version:  May 2019
 
 ;; initiated 9/18/15 for da patterns and interpreters that had been
 ;; stashed in biology. Small tweaks and additions of the same kind
@@ -1690,7 +1690,7 @@ assumed. |#
 
 (defun polar-postmodifying-adj (be-edge np-edge adjp-edge)
   (declare (special *da-starting-position* *da-ending-position*))
-  (when (preposed-aux? :first-np-edge np-edge)
+  (when (aux-before-np? :first-np-edge np-edge)
     (if (eq (cat-name (edge-category be-edge)) 'do)
         ;; there should be a verb, not an adjp, so fail
         ;;  possibly figure out whether the verb was swallowed by the np-edge
@@ -1711,7 +1711,7 @@ assumed. |#
 
 (defun polar-postmodifying-vp+ed (be-edge np-edge vp+ed-edge)
   (declare (special *da-starting-position* *da-ending-position*))
-  (when (preposed-aux? :first-np-edge np-edge)
+  (when (aux-before-np? :first-np-edge np-edge)
     (when
         (eq (cat-name (edge-category be-edge)) 'be)
       ;; there should be a verb, not an adjp, so fail
@@ -1732,7 +1732,7 @@ assumed. |#
 
 (defun polar-copular-np (be-edge np-edge second-np-edge)
   (declare (special *da-starting-position* *da-ending-position*))
-  (when (preposed-aux? :first-np-edge np-edge)
+  (when (aux-before-np? :first-np-edge np-edge)
     (if (not (eq (cat-name (edge-category be-edge)) 'be))
         nil
         (let ((edges (list be-edge np-edge second-np-edge))
@@ -1773,7 +1773,7 @@ assumed. |#
   ;;/// do open variable check here?
   (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
     (polar-sentential-subject aux-edge s-edge vp-edge
-                               *da-starting-position* end-pos)))
+                              *da-starting-position* end-pos)))
 
 
 ;;--- patterns starting in np (covering a wh)

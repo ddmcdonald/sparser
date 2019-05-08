@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "chunker"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  April 2018
+;;;  version:  May 2018
 
 ;; Initiated 10/8/14
 ;; ddm: 10/16/14 Rewrote identify-chunks. Commented out lines anticipating 
@@ -598,7 +598,7 @@
             (not (ng-head? e)))))
       
       ((singular-noun-and-present-verb? e)
-       (or (preposed-aux? :in-vg? t)
+       (or (aux-before-np? :in-vg? t)
            (preceding-pronoun-or-which? e edges-before)
            (preceding-plural-noun? e)
            (and (not (and (preceding-det-prep-poss-or-adj e edges-before)
@@ -986,7 +986,7 @@ than a bare "to".  |#
       ((singular-noun-and-present-verb? e)
        (and (not (preceding-pronoun-or-which? e))
             (not (and (not (preceding-determiner? e))
-                      (preposed-aux?))) ;; does not capture preposed-aux in "What proteins does vemurafenib target"
+                      (aux-before-np?)))
             (not (and
                   (car *chunks*) ;; there is a preceding chunk
                   (edge-p (car (chunk-edge-list (car *chunks*))))

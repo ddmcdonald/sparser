@@ -647,20 +647,24 @@ is a case in handle-any-anaphor
     (setf (preposed-aux (contents s)) nil)))
     
 (defun preposed-aux? (&key in-vg? first-np-edge)
-  (if *alternative-wh-question-strategy*
-    ;; Find it in the chart just to the left of current chunk
-    (let ((edges (cond ((or in-vg?
-                            (and (boundp '*chunk*)
-                                 (member 'vg (chunk-forms *chunk*))))
-                        (edges-before-chunk (car (last *chunks*))))
-                       (first-np-edge (edges-before first-np-edge))
-                       (t (edges-before-chunk)))))
-      (loop for e in edges              
-         when (member (cat-name (edge-form e))
-                      '(preposed-auxiliary))
-         do (return (values e (edge-form e)))))
+  (original-form-of-preposed-aux))
 
-    (original-form-of-preposed-aux)))
+
+(defun aux-before-np? (&key in-vg? first-np-edge)
+  "Look in the chart just to the left of current chunk"
+  ;; called by chunker methods ng-compatible? and vg-start?
+  (let ((edges (cond ((or in-vg?
+                          (and (boundp '*chunk*)
+                               (member 'vg (chunk-forms *chunk*))))
+                      (edges-before-chunk (car (last *chunks*))))
+                     (first-np-edge (edges-before first-np-edge))
+                     (t (edges-before-chunk)))))
+    (loop for e in edges              
+       when (member (cat-name (edge-form e))
+                    '(preposed-auxiliary))
+       do (return (values e (edge-form e))))))
+
+    
         
 
 
