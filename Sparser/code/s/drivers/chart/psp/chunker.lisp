@@ -395,7 +395,7 @@
                       thereis
                         (and
                          (vg-head? e)
-                         (not (member (cat-name (edge-category e))
+                         (not (member (edge-cat-name e)
                                       '(be have do modal)))))))))
     (adjg (adjg-compatible? edge))))
 
@@ -444,7 +444,7 @@
                                    *vg-head-categories*)))
 
                (not (loop for edge in multi-edges
-                       thereis (memq (cat-name (edge-form edge))
+                       thereis (memq (form-cat-name edge)
                                      '(subordinate-conjunction))))                             
                (car head-compatible-edges)
                ;; but was disambiguated by the chunking
@@ -501,7 +501,16 @@
         ((or (eq (edge-form e) category::verb)
              (eq (edge-form e) category::verb+present))
          (loop for ee in (all-edges-at e)
-            thereis (eq (edge-form ee) category::common-noun)))))
+               thereis (eq (edge-form ee) category::common-noun)))))
+
+(defun get-verb-edge (e)
+  (declare (special category::common-noun
+                    category::verb category::verb+present))
+  (loop for ee in (all-edges-at e)
+        when
+          (or (eq (edge-form ee) category::verb)
+              (eq (edge-form ee) category::verb+present))
+        do (return ee)))
 
 
 (defun non-det-or-verb-ng-start? (ee)
@@ -514,12 +523,12 @@
 
 
 (defun singular-det (e)
-  (member (cat-name (edge-category e)) '(a that this)))
+  (member (edge-cat-name e) '(a that this)))
 
 (defun preceding-that-or-whether? (e)
   (some-edge-satisfying?
    (edges-before e)
-   #'(lambda (ee) (member (cat-name (edge-category ee)) '(that whether)))))
+   #'(lambda (ee) (member (edge-cat-name ee) '(that whether)))))
                          
 
 
@@ -546,7 +555,7 @@
                  (null (cdr (chunk-ev-list *chunk*)))
                  (not (loop for ev in (cdr (chunk-ev-list *chunk*))
                             thereis (loop for edge in (ev-top-edges ev)
-                                          thereis (eq 'be (cat-name (edge-category edge)))))))))))
+                                          thereis (eq 'be (edge-cat-name edge))))))))))
 
 ;;--- vg-compatible?
 
@@ -570,8 +579,8 @@
              thereis (eq 'preposition (form-cat-name ee)))
        nil)
       ((and (sentence-initial? e)
-            (or (member (cat-name (edge-category e)) '(do be))
-                (eq (cat-name (edge-form e)) 'modal))
+            (or (member (edge-cat-name e) '(do be))
+                (eq (form-cat-name e) 'modal))
             #+ignore
             (some-edge-satisfying? (edges-after e)
                                    #'(lambda(ee)
@@ -596,7 +605,7 @@
                           ;; allow for "to form GDP"
                           (not
                            (loop for ee in edges-before
-                                 thereis (eq (cat-name (edge-category ee)) 'to)))))
+                                 thereis (eq (edge-cat-name ee) 'to)))))
                 (not (followed-by-verb e)))))
 
       (t (compatible-with-vg? e)))))
@@ -632,16 +641,16 @@
           (left (edge-just-to-left-of e)))
       (and (edge-p right)
            ;; only do this for participles
-           (member (cat-name (edge-category right)) '(verb+ing verb+ed))
+           (member (edge-cat-name right) '(verb+ing verb+ed))
            (ng-head? e)
            (not (preposition-edge? left))
            (vg-head? right)
            (verb-premod? (edge-referent e) (edge-referent right))
            (or (not (edge-p left))
                (and (not (eq (edge-category left) word::comma))
-                    (not (member (cat-name (edge-category left)) '(be do)))
+                    (not (member (edge-cat-name left) '(be do)))
                     (or (ng-head? left)
-                        (member (cat-name (edge-category left))
+                        (member (edge-cat-name left)
                                 '(be have not)))
                     (not (pronominal-or-deictic? left))
                     (not (eq (edge-form left) category::det))))))))
@@ -665,7 +674,7 @@
                            thereis
                              (eq (form-cat-name e) 'verb))))
         (when (loop for ee in edges-before
-                 thereis (eq (cat-name (edge-category ee)) 'to))
+                 thereis (eq (edge-cat-name ee) 'to))
           (let* ((current-start (chunk-start-pos chunk))
                  (new-start (chart-position-before current-start)))
             #+ignore
@@ -705,25 +714,29 @@ than a bare "to".  |#
   (if (member e *ng-start-tests-in-progress*)
       nil
       (let ((*ng-start-tests-in-progress* (cons e *ng-start-tests-in-progress*))
-            (ecn (cat-name (edge-category e))))
+            (ecn (edge-cat-name e)))
         (declare (special *ng-start-tests-in-progress*))
         (cond
           ((and (sentence-initial? e)
-                (eq (cat-name (edge-form e)) 'wh-pronoun))
+                (eq (form-cat-name e) 'wh-pronoun))
            t)
           ((verb-premod-sequence? (edge-just-to-right-of e))
            nil)
-          ((eq (cat-name (edge-category e)) 'not)
+          ((eq (edge-cat-name e) 'not)
            nil)
           ((plural-noun-and-present-verb? e)
            (plural-noun-not-present-verb? e))
           ((singular-noun-and-present-verb? e)
-           (not (or (sentence-initial? e) ;; case of imperative verb like "DECREASE"
+           (cond ((or (sentence-initial? e) ;; case of imperative verb like "DECREASE"
                     (preceding-pronoun-or-which? e)
+                    (preceding-plural-deictic? e)
                     (preceding-plural-noun? e)
                     (preceding-do? e)
                     (and (edge-just-to-left-of e)
-                         (eq (cat-name (edge-category (edge-just-to-left-of e))) 'to)))))
+                         (eq (edge-cat-name (edge-just-to-left-of e)) 'to)))
+                  (remove-noun-edge e)
+                  nil)
+                 (t t)))
           ((member ecn '(modal following-adj syntactic-there))
            nil)
           ((member (form-cat-name e) '(vp+ed))
@@ -738,13 +751,13 @@ than a bare "to".  |#
            (let ((prev-edge (edge-just-to-left-of e)))
              (and (not (preceding-adverb e))
                   (not (and (edge-p prev-edge)
-                            (or (eq 'parentheses (cat-name (edge-category prev-edge)))
+                            (or (eq 'parentheses (edge-cat-name prev-edge))
                                 (eq 'conjunction (form-cat-name prev-edge)))))
                   (not (and (edge-p prev-edge)
                             ;; proposal-marker is for "Let's", which makes it highly likely
                             ;; that the next word is a verb, not a part of the NG
                             ;; (e.g. "Let's put ERK")
-                            (eq 'proposal-marker (cat-name (edge-category prev-edge)))))
+                            (eq 'proposal-marker (edge-cat-name prev-edge))))
                   (not (and
                         (car *chunks*)
                         (member 'ng (chunk-forms (car *chunks*)))
@@ -767,7 +780,7 @@ than a bare "to".  |#
                       (loop for edge in (ev-top-edges (car (chunk-ev-list (car *chunks*))))
                          thereis (copula-verb? (edge-category edge)))))))
           
-          ((and (eq 'that (cat-name (edge-category e)))
+          ((and (eq 'that (edge-cat-name e))
                 (not (sentence-initial? e))) ;; don't treat as relative clause marker when sentence initial
            ;; it is almost never the case that THAT is a determiner, 
            ;; it is usually a relative clause marker or a thatcomp marker
@@ -812,11 +825,27 @@ than a bare "to".  |#
 
 ;;--- ng-head?
 
+(defun chunk-has-plural-det? ()
+  (let* ((det-ev? (when (boundp '*chunk*)
+                    (car (last (chunk-ev-list *chunk*)))))
+         (det (when (and (eq (type-of det-ev?) 'edge-vector)
+                        (eq 'det
+                            (form-cat-name
+                             (car (ev-edges det-ev?)))))
+                (car (ev-edges det-ev?)))))
+    (member (edge-cat-name det)
+            '(these those))))
+
+
+
 (defmethod ng-head? ((e edge))
   ;; methods over words and categories in category-predicates.lisp
   (declare (special e *chunk* word::comma)) 
   (let ((edges-before (edges-before e))
-        (e-form-name  (form-cat-name e)))
+        (e-form-name  (form-cat-name e))
+        (plural-det? (chunk-has-plural-det?)))
+       
+               
     (declare (special edges-before e-form-name))
     (and
      ;;code to split "the genes STAT3 regulates"
@@ -824,13 +853,14 @@ than a bare "to".  |#
      (not (and (boundp '*chunk*)
                (proper-noun-reduced-relative? e *chunk*)))
 
-     (not (and (member (cat-name (edge-category e)) '(n-fold))
+     (not (and (member (edge-cat-name e) '(n-fold))
                (boundp '*chunk*)
                (chunk-final-edge? e *chunk*)
                (loop for ee in (ev-edges (cadr (chunk-ev-list *chunk*)))
-                  never (and (edge-form ee)
-                             (member (cat-symbol (edge-form ee))
-                                     '(number))))))
+                     never (member (form-cat-name ee) '(number)))))
+     (not (and plural-det?
+               (member (form-cat-name e) '(common-noun proper-noun))))
+               
      (or
       (and (eq e-form-name 'number)
            (or (null edges-before)
@@ -848,7 +878,7 @@ than a bare "to".  |#
                 (loop for c in *chunks*
                       thereis 
                         (and (car (chunk-edge-list c))
-                             (eq (cat-name (edge-category (car (chunk-edge-list c))))
+                             (eq (edge-cat-name (car (chunk-edge-list c)))
                                  'do))))
            ;; e.g. "What proteins does vemurafenib target?"
            ;; where the "does" makes the verb reading more likely
@@ -897,7 +927,7 @@ than a bare "to".  |#
           
           ((and
             (eq category::det (edge-form e))
-            (member (cat-name (edge-category e)) '(that this these those))))))))))
+            (member (edge-cat-name e) '(that this these those))))))))))
 
 
 
@@ -919,7 +949,7 @@ than a bare "to".  |#
                     word::comma))
   (let ((edges (ev-top-edges (car evlist)))
         (eform (when (edge-p e) (form-cat-name e)))
-        (ecat (when (edge-p e) (cat-name (edge-category e))))
+        (ecat (when (edge-p e) (edge-cat-name e)))
         preceding-noun-refs)
 
     (cond
@@ -933,12 +963,12 @@ than a bare "to".  |#
                       (is-basic-collection? (edge-referent ee))
                       (loop for b-edge in (edges-before ee)
                             thereis
-                              (eq (cat-name (edge-category b-edge)) 'between)))))
+                              (eq (edge-cat-name b-edge) 'between)))))
        nil)
       
       ((or (member ecat '(modal syntactic-there))
            (some-edge-satisfying?
-            edges #'(lambda(e) (eq (cat-name (edge-category e)) 'syntactic-there))))
+            edges #'(lambda(e) (eq (edge-cat-name e) 'syntactic-there))))
        nil)
 
       ((eq ecat 'ordinal) t) 
@@ -960,7 +990,7 @@ than a bare "to".  |#
             (not (and
                   (car *chunks*) ;; there is a preceding chunk
                   (edge-p (car (chunk-edge-list (car *chunks*))))
-                  (eq (cat-name (edge-category (car (chunk-edge-list (car *chunks*)))))
+                  (eq (edge-cat-name (car (chunk-edge-list (car *chunks*))))
                       'do)))
             (not (preceding-plural-noun? e))
             ;; (not (preceding-do? e)) catches the "do" in
@@ -1033,7 +1063,7 @@ than a bare "to".  |#
                             '(verb verb+present ))
                     ;; a bit less likely when the verb is "BE"
                     ;; as in "Oncogenic mutations in the serine/threonine kinase B-RAF are found..."
-                    (not (eq (cat-name (edge-category ee)) 'be))))))
+                    (not (eq (edge-cat-name ee) 'be))))))
 
 
 ;;;---------------------
@@ -1210,13 +1240,13 @@ than a bare "to".  |#
   (or (loop for c in *chunks*
             thereis
                (and (car (chunk-edge-list c))
-                    (eq (cat-name (edge-category (car (chunk-edge-list c))))
+                    (eq (edge-cat-name (car (chunk-edge-list c)))
                         'do)))
       (loop for ee in (all-tts)
             thereis
               (and (edge-p ee)
                    (edge-precedes ee e)
-                   (eq (cat-name (edge-category ee)) 'do)))))
+                   (eq (edge-cat-name ee) 'do)))))
 
 (defun comma? (e) (eq word::comma (edge-category e)))
 
@@ -1251,7 +1281,7 @@ than a bare "to".  |#
                          (and (eq (form-cat-name left)  'adverb)
                               (ng-head? (edge-just-to-left-of left)))
                          (and (ng-head? left)
-                              (not (eq (cat-name (edge-category left)) 'that)))))))))
+                              (not (eq (edge-cat-name left) 'that)))))))))
 
 
 (defun likely-verb+ed-clause (edge ev-list &aux (right (edge-just-to-right-of edge)))
@@ -1342,12 +1372,12 @@ than a bare "to".  |#
 #+ignore
 (defun constrain-following (e)
   (and (category-p (edge-category e))
-       (eq (cat-name (edge-category e)) 'following-adj)
+       (eq (edge-cat-name e) 'following-adj)
        (prev-noun-or-adj e)))
 
 (defun clear-np-start? (e)
   (or
-   (member (cat-name (edge-category e)) '(which what))
+   (member (edge-cat-name e) '(which what))
    (member (form-cat-name e) '(pronoun det))))
 
 
@@ -1426,6 +1456,11 @@ than a bare "to".  |#
   (loop for ee in edges
         thereis
           (eq (cat-name (edge-form (noun-edge? ee))) 'common-noun/plural)))
+
+(defun preceding-plural-deictic? (e &aux (edges (edges-before e)))
+  (loop for ee in edges
+        thereis
+          (member (edge-cat-name ee) '(these those))))
 
 
 (defun noun-edge? (e)
