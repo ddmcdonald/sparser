@@ -16,9 +16,9 @@
 ;;;---------
 
 ;;/// seriously consider a resource of these
-(defun triple-rule (triple) (car triple))
-(defun left-edge-of-triple (triple) (cadr triple))
-(defun right-edge-of-triple (triple) (caddr triple))
+(defun triple-rule (triple) (car triple)) ;; first
+(defun left-edge-of-triple (triple) (cadr triple)) ;; second
+(defun right-edge-of-triple (triple) (caddr triple)) ;; third
 
 (defun make-edge-triple (left-edge right-edge rule)
   (list rule left-edge right-edge))
@@ -38,7 +38,8 @@
     (and (= 3 (length item))
          (cfr-p (first item))
          (edge-p (second item))
-         (edge-p (third item)))))
+         (edge-p (third item))))
+  (:method ((ignore t)) nil))
 
 
 ;;--- these return strings since motivating cases is trace functions
@@ -229,13 +230,12 @@
 
 
 (defun best-treetop-rule (sentence)
-  ;; feeder routine in whack-a-rule-cycle that identifies
-  ;; all of the treetop edges that are pairwise adjacent
-  ;; using adjacent-tts and winnows that list down using
-  ;; filter-rules-by-local-competition
+  "Feeder routine in whack-a-rule-cycle that identifies
+   all of the treetop edges that are pairwise adjacent
+   by using adjacent-tts. Then winnows that list down using
+   filter-rules-by-local-competition"
   (let ((pairs (adjacent-tt-pairs sentence))
         rule  triples grouped-triples)
-    ;;(push-debug `(,pairs))
     (tr :pairs-to-consider-whacking pairs)
     (loop for pair in pairs 
       when (setq rule (rule-for-edge-pair pair))
@@ -261,10 +261,10 @@
       triple)))
 
 (defun remove-surplus-literal-compositions (triples)
-  ;; Is there is pair involving an edge based on a literal
-  ;; and another pair, employing the same rule, that applies
-  ;; to a semantic label (e.g. "to" and TO), prefer the one
-  ;; with the regular label. Happens with prepositional phrases.
+  "Is there is pair involving an edge based on a literal
+   and another pair, employing the same rule, that applies
+   to a semantic label (e.g. 'to' and TO). Prefer the one
+   with the regular label (the category). Happens with prepositional phrases."
   (if (cdr triples) ;; more than one
       (let ((edges-over-one-word
 	     (collect-triples-with-edges-over-one-word triples)))
@@ -367,7 +367,7 @@
           (when (cond
                   ((not (consp (cfr-referent rule))))
                   ((eq :funcall (car (cfr-referent rule)))
-                   (or *check-semantic-applicability* ;; we are running semantic checks in the multiply operation
+                   (or *check-semantic-applicability* ;; semantic checks done in the multiply operation
                        (test-subcat-rule pair rule)))
                   (t ;; most rules have referent slots which are cons cells, 
                    ;; but which are not :funcalls, e.g.
@@ -384,10 +384,17 @@
 ;; (trace-subcat-rule)
 
 (defun test-subcat-rule (pair rule)
-  ;; This simulates the context above normal rule-driven calls to
-  ;; ref/function so that it's value can be used as test on
-  ;; whether there is a subcategorization relationship between
-  ;; two adjacent edges.
+  "This simulates the context above normal rule-driven calls to
+   ref/function so that it's value can be used as test on
+   whether there is a subcategorization relationship between
+   two adjacent edges.
+      These function are called the first time is via this
+   function with the flag *subcat-test* dynamically bound to t.
+   That pass should evaluate any criteria that must be true
+   for the semantic restrictions on the rule to be satisfied,
+   such as the head having a designated variable at which to
+   attach the complement. Side-effects such as relabeling edges
+   or binding variables should be restricted to the 2d pass."
   (declare (special *trace-test-subcat-rule*))
   (let* ((left-referent (edge-referent (car pair)))
          (right-referent (edge-referent (second pair)))
@@ -397,9 +404,8 @@
     (declare (special left-referent right-referent 
                       *rule-being-interpreted* 
                       *right-edge-into-reference*))
-    (let ((*subcat-test* t) 
-          applicable )
-      (declare (special *subcat-test* applicable))
+    (let ((*subcat-test* t))
+      (declare (special *subcat-test*))
       (if *trace-test-subcat-rule*
         (let* ((referent (cfr-referent rule))
                (function (car (cdr referent))))
@@ -411,105 +417,94 @@
             result))
         (ref/function (cdr (cfr-referent rule)))))))
 
-(defparameter *losing-competitions* nil)
 
+;;--- select between overlapping triples
 
-;; Major change to coding of filter-rules-by-local-competition
-;;  much more readable, and that has allowed a revision to handle ambiguous edges correctly
 (defun filter-rules-by-local-competition (triples)
-  "triples consist of pairs of adjacent edges, headed by a rule that is syntactically and semantically appropriate to the pair of edges. Triples are ordered right-to-left, with possible duplicating edge spans due to ambiguous definitions. Default is to take the rightmost triple, unless there is some evidence that the second edge should be left-extended as part of a NP or a VP"
-
-  (multiple-value-bind (first-group second-group)
+  "triples consist of pairs of adjacent edges, headed by a rule
+   that is syntactically and semantically appropriate to the pair of edges.
+   Triples are ordered right-to-left, with possible duplicating edge spans
+   where the right edge of one triple is identical to the left edge of
+   another.
+   The default is to take the rightmost triple, unless there is some
+   evidence that an edge on the left should be right-extended as part of a
+   NP or a VP so that we create the largest possible constituents.
+   Called from best-treetop-rule as the last step in the triple-selection
+   process. The triple this returns is the one that
+   is executed on that cycle. Note that if the left triple of an adjacent
+   pair doesn't 'win' then we take the first of the remaining triples."
+  (multiple-value-bind (right-group left-group)
       (first-two-groups triples)
-    (or (left-winner? first-group second-group)
-        (car first-group))))
+    (or (left-winner? right-group left-group)
+        (car right-group))))
 
-(defun left-winner? (first-group second-group)
-  (when second-group
-    (loop for first-triple in first-group
-          do
-            (loop for second-triple in second-group
-                  when (losing-competition? second-triple first-triple)
-                  do
-                    ;;#+ignore ;; used only to check where losing-competition? succeeds
-                    (push (list (car second-triple)
-                                (car first-triple)
-                                (current-string))
-                          *losing-competitions*)
-                    (return-from left-winner? second-triple)))))
+
+(defparameter *losing-competitions* nil
+  "Collect cases that lose the competition")
+
+(defun left-winner? (right-group left-group)
+  "Organizes the competition. Does a douple loop through the
+   two groups of triples. Will cycle through all the triples
+   unless we get a case where the left-side triple is preferred
+   over the one on the right."
+  (when left-group
+    (loop for right-triple in right-group
+       do (loop for left-triple in left-group
+             when (losing-competition? left-triple right-triple)
+             do
+               (when *losing-competitions*
+                 (push (list (triple-rule left-triple)
+                             (triple-rule right-triple)
+                             (current-string))
+                       *losing-competitions*))
+               (return-from left-winner? left-triple)))))
 
 
 (defun first-two-groups (triples)
+  "Called to prime the pump and group together edges with the same span"
   (multiple-value-bind (first-group rest)
-      (group-first-triples-by-span triples)
+      (group-triples-by-span triples)
     (values first-group
             (when rest
-              (group-first-triples-by-span rest)))))
+              (group-triples-by-span rest)))))
 
-(defun group-first-triples-by-span (triples)
+(defun group-triples-by-span (triples)
   "create a list of all initial triples which cover the same span -- only happens
-for ambiguous words"
+   for ambiguous interpretations (presently just words)"
   (let ((group (if (consp (caar triples))
-                   (car triples)
+                   (break "Unusual triple structure")  ;; (car triples)
                    (list (car triples))))
         (rest (cdr triples)))
     (loop while (and
                  rest
-                 (eq (edge-starting-position (second (car group)))
-                     (edge-starting-position (second (car rest))))
-                 (eq (edge-ending-position (third (car group)))
-                     (edge-ending-position (third (car rest)))))
+                 (eq (edge-starting-position (left-edge-of-triple (car group)))
+                     (edge-starting-position (left-edge-of-triple (car rest))))
+                 (eq (edge-ending-position (right-edge-of-triple (car group)))
+                     (edge-ending-position (right-edge-of-triple (car rest)))))
           do
-            (setq group `(,.group ,(car rest)))
+            (setq group `(,.group ,(car rest))) ;; nconc
             (setq rest (cdr rest)))
     (values group rest)))
 
-(defparameter *l-triple-tests* nil)
-(defun l-triple-tests ()
-  (declare (special category::as category::infinitive
-                    category::syntactic-there category::vg
-                    category::vg+ing category::vg+ed category::np
-                    category::adjective category::n-bar
-                    *n-bar-categories*))
-  (or *l-triple-tests*
-      (setq *l-triple-tests*
-            (loop for v in '(category::vg category::vg+ing category::infinitive
-                             category::vg+ed category::vg+ing
-                             )
-                 append
-                    (loop for n in (cons category::np *n-bar-categories*)
-                          collect (list (eval v) (eval n)))))))
-#|
-            `((,category::vg  ,category::np)
-              (,category::vg  ,category::n-bar)
-              ;; have to allow for participles such as
-              ;; "RAF1 proteins containing mutations persist"
-              (,category::vg+ing  ,category::np)
-              (,category::vg+ing  ,category::n-bar)
-              ;; with the new "infinitive" edge for verbs
-              ;; of form "to stimulate", we need to allow
-              ;; them to compete for objects
-              (,category::infinitive  ,category::np)
-              (,category::infinitive  ,category::n-bar)))))
-|#
 
-(defparameter *rule-with-non-category* nil)
 
 (defun losing-competition? (l-triple r-triple)
   (declare (special r-triple l-triple category::as
-                    category::adjective*NG-HEAD-CATEGORIES*
-                    *ADJG-HEAD-CATEGORIES* *VG-HEAD-CATEGORIES*))
-  ;; goal here is to put off subject attachment until the subject 
-  ;; is as large as possible.
+                    category::adjective *ng-head-categories*
+                    *adjg-head-categories* *vg-head-categories*))
+  "The goal here is to put off subject attachment until the subject 
+   is as large as possible.
+"
   ;; Don't do right-to-left activation for the subj+verb rules
-  ;;(print `(dropping rule ,r-triple))
-  ;;(print `(in *p-sent* ,*p-sent* dropping rule ,r-triple compared to ,l-triple))
-  (when (and (eq (second r-triple) (third l-triple))
+  
+  (when (and (eq (left-edge-of-triple r-triple) (right-edge-of-triple l-triple))
              (not (high-priority-postmod? r-triple)))
     ;; there is an edge which is being competed for
-    (let* ((l-triple-rhs (cfr-rhs (car l-triple)))
+
+
+    (let* ((l-triple-rhs (cfr-rhs (triple-rule l-triple)))
            (l-triple-left (and (category-p l-triple-rhs) (cat-symbol (car l-triple-rhs))))
-           (r-triple-3 (third r-triple)))
+           (r-triple-3 (right-edge-of-triple r-triple)))
       (declare (special l-triple-rhs l-triple-left triple-1-rhs r-triple-3))
       ;;(lsp-break "compete")
       (or
@@ -523,18 +518,19 @@ for ambiguous words"
         ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
         (not
          ;; the rule for NP + VP+ED (in case of "is serine phosphorylated by ERK")
-         (and (consp (cfr-referent (car r-triple)))
-              (or (eq (second (cfr-referent (car r-triple))) 'interpret-premod-to-verb)
+         (and (consp (cfr-referent (triple-rule r-triple)))
+              (or (eq (second (cfr-referent (triple-rule r-triple))) 'interpret-premod-to-verb)
                   ;;(eq (second (cfr-referent (car r-triple))) 'assimilate-subject-to-vp-ed)
                   )))
-        (not (and (member (cat-name (edge-category (second l-triple))) '(be have))
-                  (member (cat-name (edge-form r-triple-3)) '(vp+ed vp+ing))))
+        
+        (not (and (member (edge-cat-name (left-edge-of-triple l-triple)) '(be have))
+                  (member (form-cat-name r-triple-3) '(vp+ed vp+ing))))
                   
         (or
-
          (and (eq (form-cat-name r-triple-3) 'pp)
               (member (edge-left-daughter (edge-left-daughter r-triple-3))
-                      (get-tag :loc-pp-complement (itype-of (edge-referent (second l-triple)))))
+                      (get-tag :loc-pp-complement
+                               (itype-of (edge-referent (left-edge-of-triple l-triple)))))
               (not (some-edge-satisfying? (edges-after r-triple-3) #'pp?)))
          (not (member (form-cat-name r-triple-3)
                       '(pp vg+ing ;;and prevent GTP loading"
@@ -542,32 +538,65 @@ for ambiguous words"
                         to-comp where-relative-clause when-relative-clause
                         transitive-clause-without-object
                         subject-relative-clause comma-separated-subject-relative-clause)))))
+       
        (losing-to-leftwards-pp? l-triple r-triple)
        ))))
+
+(defparameter *l-triple-tests* nil
+  "Holds the list of category pairs that should have every vp-forming rules
+   (syntactic) righthand side. Populated on first call to l-triple-tests")
+#| This is roughtly what the list is -- but there's no guarentee
+   that these categories will have values before runtime when everthing has loaded
+            `((,category::vg  ,category::np)
+              (,category::vg  ,category::n-bar)
+              ;; have to allow for participles such as
+              ;; "RAF1 proteins containing mutations persist"
+              (,category::vg+ing  ,category::np)
+              (,category::vg+ing  ,category::n-bar)
+              ;; with the new "infinitive" edge for verbs
+              ;; of form "to stimulate", we need to allow
+              ;; them to compete for objects
+              (,category::infinitive  ,category::np)
+              (,category::infinitive  ,category::n-bar)))))
+|#
+(defun l-triple-tests ()
+  (declare (special category::as category::infinitive
+                    category::syntactic-there category::vg
+                    category::vg+ing category::vg+ed category::np
+                    category::adjective category::n-bar *n-bar-categories*))
+  (or *l-triple-tests*
+      (setq *l-triple-tests* ;; simple transitive VP-forming patterns
+            (loop for v in '(category::vg category::vg+ing category::infinitive
+                             category::vg+ed category::vg+ing)
+                 append
+                    (loop for n in (cons category::np *n-bar-categories*)
+                          collect (list (eval v) (eval n)))))))
 
 (defun competition-against-clausal-object? (l-triple-rhs)
   (member l-triple-rhs (l-triple-tests) :test #'equal))
 
+
 (defun losing-to-leftwards-pp? (l-triple r-triple)
+  "Continuation of losing-competition?"
   (declare (special category::adjective category::as))
-  (let ((r-triple-rhs (cfr-rhs (car r-triple))))
+  (let ((r-triple-rhs (cfr-rhs (triple-rule r-triple))))
     (and
-     (prep? (cat-name (car (cfr-rhs (car l-triple))))) ;;l-triple-left
-     (not (subordinate-conjunction? (second l-triple)))
+     (prep? (cat-name (car (cfr-rhs (triple-rule l-triple))))) ;;l-triple-left
+     (not (subordinate-conjunction? (left-edge-of-triple l-triple)))
      (or (not (possible-spatio-temporal-prep? l-triple))
-         (itypep (edge-referent (third l-triple)) 'process))
+         (itypep (edge-referent (right-edge-of-triple l-triple)) 'process))
      ;; "until" is both a preposition and a subordinate conjunction
      ;; causes problems with "Does the amount of phosphorylated MAP2K1 remain low until phosphorylated BRAF reaches a high value?"
-     (not (eq (edge-category (second l-triple)) category::as))
+     (not (eq (edge-category (left-edge-of-triple l-triple)) category::as))
      ;; almost always a use of "as" as a subordinate conjunction
   
      (not
-      (and (edge-p (edge-left-daughter (third r-triple)))
+      (and (edge-p (edge-left-daughter (right-edge-of-triple r-triple)))
            (eq category::adjective 
-               (edge-form (edge-left-daughter (third r-triple))))))
+               (edge-form (edge-left-daughter (right-edge-of-triple r-triple))))))
      (or
       (pp-relative-clause? r-triple)    
-      (memq (cat-symbol (second r-triple-rhs))
+      (memq (cat-symbol (left-edge-of-triple r-triple-rhs))
             '(category::vg category::vp category::vg+ed category::vp+ed
               category::vp+past
               category::vg+passive category::vp+passive
@@ -576,17 +605,18 @@ for ambiguous words"
               ))
       ;; this is needed because the schema based rules generate rules in terms of 
       ;;  semantics and not syntax, so we have phosphorylate+ed and not vp/+ed
-      (memq (second (cfr-rhs-forms (car r-triple)))
+      (memq (second (cfr-rhs-forms (triple-rule r-triple)))
             '(vg vp vg+ed vg+ed vp+ed vp+past vg+passive vp+passive
               vg/+ed vg/+ed vp/+ed vg/+passive vp/+passive
               ;;comma-separated-subject-relative-clause
               )))
 
-     (pp-absorbing-edge? (edge-just-to-left-of (second l-triple))))))
+     (pp-absorbing-edge? (edge-just-to-left-of (left-edge-of-triple l-triple))))))
+
 
 (defun pp-absorbing-edge? (preceding-edge)
-  ;; there must be a constituent which can absorb the result of
-  ;; the left competing rule
+  "There must be a constituent which can absorb the result of
+   the left competing rule"
   (declare (special *ng-head-categories* *vg-head-categories* *adjg-head-categories*))
   (let ((sym (safe-edge-form preceding-edge)))
     (or
@@ -600,20 +630,20 @@ for ambiguous words"
                category::vg+passive category::vp+passive
                category::adverb)))))
 
-
 (defun safe-edge-form (edge? &aux (ef (and (edge-p edge?)
                                            (edge-form edge?))))
   ;; got a case with COMMA as a literal edge
   (when ef (cat-symbol ef)))
 
-(defun high-priority-postmod? (r-triple &aux (r-triple-rhs (cfr-rhs (car r-triple))))
+
+(defun high-priority-postmod? (r-triple &aux (r-triple-rhs (cfr-rhs (triple-rule r-triple))))
   (and ;; need to generalize this for "high priority" NP post-modifiers
    (category-p (second r-triple-rhs))
-   (or (member (cat-name (second r-triple-rhs)) '(in-vitro in-vivo))
-       (eq (form-cat-name (third r-triple))
+   (or (member (cat-name (left-edge-of-triple r-triple-rhs)) '(in-vitro in-vivo))
+       (eq (form-cat-name (right-edge-of-triple r-triple))
            'object-relative-clause))))
 
-(defun pp-relative-clause? (r-triple &aux (r-triple-rhs (cfr-rhs (car r-triple))))
+(defun pp-relative-clause? (r-triple &aux (r-triple-rhs (cfr-rhs (triple-rule r-triple))))
   ;; pp starting a relative clause -- "in which"
   (and 
    (memq (cat-symbol (car r-triple-rhs))
@@ -625,7 +655,7 @@ for ambiguous words"
 
 (defun possible-spatio-temporal-prep? (l-triple)
   (declare (special category::spatio-temporal-preposition))
-  (loop for e in (all-edges-at (second l-triple))
+  (loop for e in (all-edges-at (left-edge-of-triple l-triple))
      thereis
        (eq (edge-form e) category::spatio-temporal-preposition)))
 
