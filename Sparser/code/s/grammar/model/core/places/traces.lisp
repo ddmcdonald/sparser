@@ -101,6 +101,11 @@
      (trace-msg "Method: fraction (i~a) & note (i~a)"
                 (indiv-uid fraction) (indiv-uid note))))
 
+(deftrace :fraction+note (below note)
+   (when *trace-methods*
+     (trace-msg "Method: below (i~a) & note (i~a)"
+                (indiv-uid below) (indiv-uid note))))
+
 
 ;;--- For related syntax-functions functions.
 

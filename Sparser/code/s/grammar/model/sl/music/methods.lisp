@@ -85,7 +85,12 @@
 
 
 ;; "below C4"
-
+(def-k-method compose ((op category::below)
+                       (note category::abstract-note))
+  ;; called from make-pp -- compare method over relative-location
+  ;; and has-location in core/places/methods.lisp
+  (tr :below+note op note)
+  )
 
 
 
