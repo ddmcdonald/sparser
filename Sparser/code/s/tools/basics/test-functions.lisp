@@ -1419,7 +1419,7 @@ all-bioagent-capability-sentences.lisp"
                      file)))
 
 (defun test-bio-utts->file (&optional (get-cat-roles t)
-                              (file "all-bioagent-capability-test-results.lisp"))
+                              &key (file "all-bioagent-capability-test-results.lisp"))
   "loads all-bioagent-capability-sentences.lisp which should be the
   current sentence list and outputs the result of test-bio-utterances
   to a file, and by default also populates *test-utt-unique-cats* and
@@ -1464,3 +1464,136 @@ all-bioagent-capability-sentences.lisp"
                     ,(mapcar #'(lambda(x) (getf x :isa)) (cdr sent)))
                  *test-utt-sent-cats*)))
 
+(defun clause-sem->file (&optional (file "bioagent-cap-sp-clause-sem"))
+  (with-open-file  (stream
+                    (concatenate 'string
+                                 "sparser:bio-not-loaded;bioagent-cap-testing;"
+                                 file ".lisp")
+                          :direction :output :if-exists :supersede 
+                             :if-does-not-exist :create
+                             :external-format :UTF-8)
+    ;; in cl-user to facilitate loading in :clic
+      (format stream "(in-package :cl-user)~%(defparameter *clause-semantics-list*~%'~s)"
+              (reverse *clause-semantics-list*))))
+  
+
+;; this will probably be in clic eventually, but for now:
+
+(defparameter *missing-wh-cases* nil)
+(defparameter *polar-question-cases* nil)
+
+(defun sparser-clauses->ici-like (sent-clauses)
+  (let* ((sent (when (stringp (car sent-clauses))
+                 (car sent-clauses)))
+         (clauses (if sent
+                      (cdr sent-clauses)
+                      sent-clauses))
+        spec-vars wh-var non-wh wh-cat-var rest classes)
+    (loop for clause in clauses
+          do (let ((var (getf clause :var))
+                   (cat (getf clause :isa))
+                   (uid (getf clause :uid))
+                   (det (getf clause :has-determiner)))
+               (cond ((member cat '(POLAR-QUESTION EXPLICIT-SUGGESTION
+                                    MOVE-SOMETHING-SOMEWHERE REMOVE
+                                    SUMMARIZE
+                                    ) ;THERE-EXISTS) 
+                              )
+                      (push var non-wh)
+                      (push (get-category clause) classes)
+                      (when (eq cat 'POLAR-QUESTION)
+                        (push sent-clauses *polar-question-cases*)))
+                     ((member cat '(WHAT WHICH WHERE))
+                      (push var wh-cat-var)
+                      (setq rest (append rest `(,clause))))
+                     (uid
+                      (push var spec-vars)
+                      (push `(,(get-category clause) :spec) classes))
+                     ((member det '("WHAT" "WHICH") :test #'equal)
+                      (push var wh-var)
+                      (push `(,(get-category clause) :wh) classes))
+                     (t
+                      (setq rest (append rest `(,clause)))))))
+    (unless (or wh-var non-wh)
+      (let ((wh-clause (find-wh-clause rest spec-vars wh-cat-var)))
+        (cond ((null wh-clause)
+               (push sent-clauses *missing-wh-cases*))
+               ;(break "can't find wh-clause in:~%~s" clauses))
+              ((consp wh-clause) ;; if it's not a cons, that means there was no wh
+               (push `(,(get-category wh-clause) :wh) classes)
+               (setq rest (remove wh-clause rest))))))
+    (loop for clause in rest
+          do (push (get-category clause) classes)
+          finally (return `(,sent ,classes)))))
+
+(defun find-wh-clause (clauses spec-vars wh-cat-var)
+  (let* ((main-clause (first clauses))
+         (cat (getf main-clause :isa))
+         (rest-clauses (cdr clauses)))
+    (cond ((eq cat 'THERE-EXISTS) ;; temporary until david pushes his fix
+           (when (eq 'SYNTACTIC-THERE
+                   (getf (clause-from-var
+                          (getf main-clause :predicate)
+                          rest-clauses)
+                         :isa))
+               (clause-from-var (getf main-clause :value) rest-clauses)))
+          ((member cat '(GIVE TELL LIST))
+           (clause-from-var (getf main-clause :theme) rest-clauses))
+          ((eq cat 'SHOW)
+           (let ((theme (getf main-clause :statement-or-theme)))
+             (if (member theme spec-vars)
+                 "this is a statement"
+                 (clause-from-var theme rest-clauses))))
+          ((eq cat 'NAME-SOMETHING)
+           (clause-from-var (getf main-clause :patient) rest-clauses))
+          ((eq cat 'COPULAR-PREDICATION-OF-PP)
+           (clause-from-var (getf main-clause :item) rest-clauses))
+          ((eq cat 'BE)
+           (let ((pred (getf main-clause :predicate)))
+             (cond ((member pred spec-vars)
+                    (clause-from-var (getf main-clause :subject) rest-clauses))
+                   ((eq (getf (clause-from-var pred rest-clauses) :isa) 'QUALITY-PREDICATE)
+                    (clause-from-var (getf (clause-from-var pred rest-clauses) :attribute)
+                                     rest-clauses))
+                   (t
+                    (clause-from-var pred rest-clauses)))))
+          ((getf main-clause :manner)
+           (clause-from-var (getf main-clause :manner) rest-clauses))
+          ((getf main-clause :location)
+           (clause-from-var (getf main-clause :location) rest-clauses))
+          ((getf main-clause :possessor) ;; have
+           (clause-from-var (getf main-clause :possessor) rest-clauses))
+          (t
+           (let ((obj (or (getf main-clause :object)
+                          (getf main-clause :direct-bindee)
+                          (getf main-clause :item) ;; copular-predication non-polar
+                          (getf main-clause :substrate)))
+                 (agent (or (getf main-clause :agent)
+                            (getf main-clause :agent-or-cause)
+                            (getf main-clause :binder))))
+             ;(break "hit obj/agent case")
+             (cond ((and obj (not (member obj spec-vars)))
+                    (clause-from-var obj rest-clauses))
+                   ((and agent (not (member agent spec-vars)))
+                    (clause-from-var agent rest-clauses))
+                   (wh-cat-var
+                    (if (cdr wh-cat-var)
+                        (break "multiple wh-cat-vars? vars: ~s" wh-cat-var)
+                        (clause-from-var (car wh-cat-var) rest-clauses)))
+                   ((or obj agent)
+                    "this is a statement")
+                   #+ignore
+                   (t
+                    (break "can't find wh-clause in:~%~s" clauses))
+                   ))))))
+
+(defun clause-from-var (var clauses)
+  (loop for clause in clauses
+          when (eq (getf clause :var) var)
+        do (return clause)))
+
+(defun get-category (clause)
+;  (krisp->eci-category
+   (getf clause :isa))
+;   )
+ 
