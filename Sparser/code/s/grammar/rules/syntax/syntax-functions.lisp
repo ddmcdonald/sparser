@@ -1531,7 +1531,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
             ;;(itypep subj '(:or when how where why))
             (and (itypep subj '(:or what where when how why))
                  (itypep vp '(:or do would))))
-                 ;; block when, how, where, why as subjecgts, and WHAT as a subject of DO or WOULD
+                 ;; block when, how, where, why as subjects, and WHAT as a subject of DO or WOULD
                  ;; as part ofimproved treatment of questions
     (return-from assimilate-subject nil))
 
@@ -1551,16 +1551,19 @@ there was an edge for the qualifier (e.g., there is no edge for the
     ((itypep vp 'control-verb) ;; e.g. "want"
      (when *subcat-test* (return-from assimilate-subject t))
      (assimilate-subject-for-control-verb subj vp vp-edge))
-    ((or (and (eq (cat-name (itype-of  vp)) 'be) ;; was itypep, but REMAIN (and other pseudo copulars) are subcategories of BE
+    
+    ((or (and (eq (cat-name (itype-of  vp)) 'be)
+              ;; was itypep, but REMAIN (and other pseudo copulars) are subcategories of BE
               ;; block "what are" as a transitive-clause-without-object
               (null (value-of 'predicate vp)))
          (itypep vp 'do) ;; block "what does" as a transitive-clause-without-object
          )
-     (return-from assimilate-subject nil))     
+     (return-from assimilate-subject nil))
+    
     ((itypep vp 'copular-predication)
      (assimilate-subject-for-copular-predication subj vp vp-edge))
+    
     ((transitive-vp-missing-object? vp vp-edge)
-
      (unless *subcat-test*
        ;; the edge isn't available and shouldn't be chaged during the test phase
        (when *warn-about-optional-objects*
@@ -1569,10 +1572,13 @@ there was an edge for the qualifier (e.g., there is no edge for the
        (unless dont-revise-parent-edge
          (revise-parent-edge :form category::transitive-clause-without-object)))
      (assimilate-subcat vp :subject subj))
-
+    
     ((assimilate-subject-as-object? subj vp vp-edge)
      (assimilate-subcat vp :object subj))
+    
     (t (assimilate-subcat vp :subject subj))))
+
+
 
 (defun assimilate-subject-for-control-verb (subj vp vp-edge)
   (declare (special subj vp vp-edge))
@@ -1752,6 +1758,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
         |#
         (not
          ;; aux inversion in question "is STAT3 involved in ..." ; ;
+<<<<<<< HEAD
          (let ((word-before (word-just-to-the-left (left-edge-for-referent)))
                (edges-before (edges-just-to-left-of (left-edge-for-referent))))
            (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
@@ -1771,6 +1778,21 @@ there was an edge for the qualifier (e.g., there is no edge for the
                                             '(past raw-text)))))
             (and (member (form-cat-name vp-edge) '(vg+ed verb+ed))
                  (interpret-premod-to-verb subj vp)))))
+=======
+         (let ((word-before (word-just-to-the-left (left-edge-for-referent))))
+           (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
+                (member (pname word-before)
+                        '("is" "was" "were" "are")
+                        :test #'equal))))
+            (or (can-fill-vp-subject? vp subj) ;; evidence for S rather than reduced relative
+                (and (can-fill-vp-object? vp subj (left-edge-for-referent))
+                     ;; make sure this is a non-trivial relative clause (not just the verb)
+                     (loop for binding in (indiv-old-binds vp)
+                           thereis (not (member (var-name (binding-variable binding))
+                                                '(past raw-text)))))
+                (and (member (form-cat-name vp-edge) '(vg+ed verb+ed))
+                     (interpret-premod-to-verb subj vp)))))
+>>>>>>> Added check for WH pronoun. In the subcat lookup it prevents the machinery from imagining that "what" is an anaphoric pronoun and should instead be treated as a regular term.
       
       ((and (can-fill-vp-object? vp subj (left-edge-for-referent))
             (not (verb-premod-sequence? (left-edge-for-referent)))

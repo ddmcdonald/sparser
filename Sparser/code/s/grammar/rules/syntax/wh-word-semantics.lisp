@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "WH-word-semantics"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  January 2019
+;;;  Version:  May 2019
 
 ;; initiated 8/8/07. Added relatives 1/1/08
 ;; 0.1 Changed the names of the categories to just be the name of the pronoun.
@@ -24,6 +24,21 @@
   :specializes pronoun
   :binds ((variable :primitive lambda-variable))
   :documentation "")
+
+(defgeneric is-wh-pronoun? (item)
+  (:documentation "Does the item inherit from wh-pronoun. Note that it
+    will also inherit from pronoun, so we have to distinguish them
+    to select only WH pronouns by checking for WH pronouns first.")
+  (:method ((c category))
+    (declare (special category::wh-pronoun))
+    (category-inherits-type? c category::wh-pronoun))
+  (:method ((i individual))
+    (is-wh-pronoun? (itype-of i)))
+  (:method ((e edge))
+    (is-wh-pronoun? (edge-referent e)))
+  (:method ((ignore t))
+    nil))
+  
 
 ;;;---------------
 ;;; defining form

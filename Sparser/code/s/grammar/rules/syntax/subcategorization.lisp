@@ -798,14 +798,12 @@
            (collect-subcat-statistics head subcat-label variable-to-bind item)
            (setq head (individual-for-ref head))
            (when (is-pronoun? item)
-             (tr :conditioning-anaphor-edge item variable-to-bind head)
-             (setq item
-                   (condition-anaphor-edge
-                    head
-                    item
-                    subcat-label
-                    variable-to-bind)))
-           (setq head (bind-dli-variable variable-to-bind item head))
+             (unless (is-wh-pronoun? item)
+               (tr :conditioning-anaphor-edge item variable-to-bind head)
+               (setq item
+                     (condition-anaphor-edge
+                      head item subcat-label variable-to-bind))))
+           (setq head (bind-variable variable-to-bind item head))
            head)))))
 
 
