@@ -212,39 +212,36 @@
     ;; to check if it is an infinitive
     (make-polar-edge copular-pred-edge)))
 
+
 (defun make-polar-participle-question (start-pos end-pos edges)
   (tr :wh-walk "make-polar-participle-question")
-  (let* ((be (edge-referent (first edges)))  ;; is
-         (np (edge-referent (second edges))) ;; the BRAF-NRAS complex
-         (participle (edge-referent (third edges))) ;; sustained in time
-         ;; Code to ensure that all introduced semantic individuals have corresponding edges
-         (participle-vp
-          (let ((*left-edge-into-reference* (first edges))
-                (*right-edge-into-reference* (third edges)))
-            (check-passive-and-add-tense/aspect be participle)))
-         (participle-vp-edge
-          (when participle-vp
-            (make-edge-over-long-span
-             start-pos end-pos
-             (itype-of participle-vp)
-             :rule 'make-polar-participle-question-2
-             :form category::vp ;;question
-             :referent participle-vp)))
-         ;; Code to ensure that all introduced semantic individuals have corresponding edges
-         (participle-statement
-          (when participle-vp (assimilate-subject np participle-vp nil)))
-         (participle-statement-edge
-          (when participle-statement
-            (make-edge-over-long-span
-             start-pos end-pos
-             (itype-of participle-statement)
-             :rule 'make-polar-participle-question
-             :form category::s ;;question
-             :referent participle-statement))))
-
-    (when participle-statement-edge
-      (make-polar-edge participle-statement-edge))))
-
+  (let* ((be-edge (first edges))  ;; is
+         (be (edge-referent be-edge))
+         (np-edge (second edges)) ;; the BRAF-NRAS complex
+         (np (edge-referent np-edge))
+         (vp+ed-edge (third edges)) ;; sustained in time
+         (predicate (edge-referent vp+ed-edge))
+         (passive? (is-passive? vp+ed-edge)))
+    (let* ((i ;; add the tense information to the predicate
+            (with-referent-edges (:l be-edge) 
+              (if (eq (form-cat-name be-edge) 'preposed-auxiliary)
+                (if (plausibly-too-early-to-take-preposed-aux be-edge vp+ed-edge)
+                  predicate                                 
+                  (add-tense/aspect be predicate))
+                (add-tense/aspect be predicate))))
+           (j ;; fold the np into the correct position
+            (if passive?
+              (assimilate-object i np)
+              (assimilate-subject np i nil))))
+      (let ((edge 
+             (make-edge-over-long-span
+              start-pos end-pos
+              (itype-of predicate) ;; category
+              :rule 'make-polar-participle-question
+             :form category::s
+             :referent j)))
+        (make-polar-edge edge)))))
+      
 
 ;; Does phosphorylated MAP2K1 being high follow phosphorylated BRAF reaching a high value?"
 (defun polar-sentential-subject (aux-edge s-edge vp-edge start-pos end-pos)
