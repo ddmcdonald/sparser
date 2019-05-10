@@ -1758,7 +1758,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
         |#
         (not
          ;; aux inversion in question "is STAT3 involved in ..." ; ;
-<<<<<<< HEAD
          (let ((word-before (word-just-to-the-left (left-edge-for-referent)))
                (edges-before (edges-just-to-left-of (left-edge-for-referent))))
            (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
@@ -1778,22 +1777,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                                             '(past raw-text)))))
             (and (member (form-cat-name vp-edge) '(vg+ed verb+ed))
                  (interpret-premod-to-verb subj vp)))))
-=======
-         (let ((word-before (word-just-to-the-left (left-edge-for-referent))))
-           (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
-                (member (pname word-before)
-                        '("is" "was" "were" "are")
-                        :test #'equal))))
-            (or (can-fill-vp-subject? vp subj) ;; evidence for S rather than reduced relative
-                (and (can-fill-vp-object? vp subj (left-edge-for-referent))
-                     ;; make sure this is a non-trivial relative clause (not just the verb)
-                     (loop for binding in (indiv-old-binds vp)
-                           thereis (not (member (var-name (binding-variable binding))
-                                                '(past raw-text)))))
-                (and (member (form-cat-name vp-edge) '(vg+ed verb+ed))
-                     (interpret-premod-to-verb subj vp)))))
->>>>>>> Added check for WH pronoun. In the subcat lookup it prevents the machinery from imagining that "what" is an anaphoric pronoun and should instead be treated as a regular term.
-      
+     
       ((and (can-fill-vp-object? vp subj (left-edge-for-referent))
             (not (verb-premod-sequence? (left-edge-for-referent)))
             (loop for binding in (indiv-old-binds vp)
