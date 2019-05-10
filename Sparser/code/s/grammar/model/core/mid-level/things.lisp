@@ -149,19 +149,8 @@ some subcategory of the category 'name'
   ;; :mixins ()
   :realization 
     (:noun "name"
-           :of item
-           :for item
-           ))
-
-(define-category has-synonym
-  :specializes has-attribute ;; vars: item, attribute, value
-  ;; :mixins ()
-  :realization 
-    (:noun "synonym"
-           :of item
-           :for item
-))
-     
+     :of item
+     :for item))     
      
 (define-category name-something
   :specializes achievement
@@ -173,6 +162,16 @@ some subcategory of the category 'name'
     and with particular names ('RAS', 'David') as the
     values of the attribute."
   :realization  (:verb "name")) ;; "we[s] named him[o] Daniel[a]
+
+
+(define-category has-synonym
+  :specializes has-attribute
+  :realization
+    (:noun "synonym"
+     :of item
+     :for item))
+;; (p/s "what are synonyms for BRAF?")
+
 
 #|
 ;; In biology examples (show-sents) "call" is invariably a reduced relative, e.g.
@@ -228,3 +227,13 @@ e7    CONTAIN       1 "the model contains MEK" 5
 ;;--- "contruct" is also in general-verbs as a bio-method
 probably to get the noun reading
 |#
+
+(define-category relationship
+  :specializes state ;;?? maybe relation
+  :binds ((agent) (patient)) ;;/// yeuch! Wrong meaning.
+  :realization (:noun "relationship"
+                :m agent
+                :with patient))
+;; "What is its relationship with BRAF?"
+
+
