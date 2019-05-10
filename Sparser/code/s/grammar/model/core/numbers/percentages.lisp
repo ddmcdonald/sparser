@@ -63,6 +63,7 @@
                           (result-type . :self)
                           (item . number))))
 
+#+ignore
 (define-category n-fold :specializes multiplier
   :binds ((number number))
   :realization
