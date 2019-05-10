@@ -1405,7 +1405,7 @@
     (trace-msg "[scan] entered sweep-to-span-parentheses")))
 
 (deftrace :starting-early-rules-sweep ()
-  (when *trace-network-flow*
+  (when (or *trace-network-flow* *trace-early-rules-sweep*)
     (trace-msg "[scan] entered early-rules sweep")))
 #|
 
@@ -1500,8 +1500,13 @@
 
 (deftrace :early-rule-check-at (start)
   (when (or *trace-sweep* *trace-early-rules-sweep*)
-    (trace-msg "[early] checking at p~a"
+    (trace-msg "[early] Looking for early rule at p~a"
                (pos-token-index start))))
+
+(deftrace :early-left-mid-right (left-edge mid-pos right-edge)
+  (when (or *trace-sweep* *trace-early-rules-sweep*)
+    (trace-msg "[early] left = ~a, mid-pos = ~a, right = ~a"
+               left-edge mid-pos right-edge)))
 
 (deftrace :early-rules-checking (left right)
   (when (or *trace-sweep* *trace-early-rules-sweep*)

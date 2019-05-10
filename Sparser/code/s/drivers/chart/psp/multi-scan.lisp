@@ -776,7 +776,9 @@
 ;;  (not (and (itypep (edge-referent left-edge) 'amino-acid)
 ;;                             (itypep (edge-referent right-edge) 'number)))
 
-(defun do-early-rules-sweep-between (start end &aux left-edge mid-pos right-edve)
+(defun do-early-rules-sweep-between (start end &aux left-edge mid-pos right-edge)
+  "Walk from start to end. 
+"
   (declare (special left-edge mid-pos right-edge new-edge rule
                     category::number category::plus-minus-number
                     *the-punctuation-plus-minus*
@@ -784,17 +786,15 @@
   (tr :early-rule-check-at start)
   (loop
      (cond ((eq start end) (return-from do-early-rules-sweep-between nil))
-           ;;(eq start *end-of-source*
            ((null start)
-            (error "do-early-rules-sweep-between start is nil in ~s"
-                   (current-string)))
-           ((not (position-p start)) (lsp-break "(position-p start-pos)")))
+            (error "do-early-rules-sweep-between start is nil in ~s" (current-string)))
+           ((not (position-p start)) (lsp-break "Early-sweep: (position-p start-pos)")))
+     
      (setq left-edge (right-treetop-edge-at start))
      (setq mid-pos  (when (edge-p left-edge) (pos-edge-ends-at left-edge)))
      (setq right-edge (when (edge-p left-edge) (right-treetop-edge-at mid-pos)))
-     (when *trace-early-rules-sweep*
-       (format t "~&left = ~a, mid-pos = ~a, right = ~a"
-               left-edge mid-pos right-edge))
+     (tr :early-left-mid-right left-edge mid-pos right-edge)
+     
      (if (or (and (edge-p left-edge)
                   (edge-p right-edge)
                   (or (and
@@ -829,6 +829,7 @@
             (when *trace-early-rules-sweep*
               (format t "~&Looping. New 'start' = ~a" start)
               (when (null start) (break "null start")))))))))
+
         
 (defun apply-early-rule-at (start middle-pos)
   (declare (optimize (debug 3)(speed 1)))
