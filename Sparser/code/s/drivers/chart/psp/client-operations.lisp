@@ -118,12 +118,19 @@
 (defun sentence-clauses ()
   (unwrap-clause-tree (sentence-clause-tree)))
 
+(defparameter *sentence-clause-var-ht* (make-hash-table))
+
 (defun unwrap-clause-tree (ct)
   (cons (clause-tree->clause ct)
         (loop for (key val) on (cddr ct) by #'cddr
               append (cond ((and (consp val)
-                                   (eq (car val) :var))
-                              (unwrap-clause-tree val))
+                                 (eq (car val) :var)
+                                 (null (gethash (second val)
+                                                *sentence-clause-var-ht*)))
+                            (setf (gethash (second val)
+                                           *sentence-clause-var-ht*)
+                                  val)
+                            (unwrap-clause-tree val))
                            ((and (eq key :items)
                                  (consp (car val)))
                             (loop for item in val
