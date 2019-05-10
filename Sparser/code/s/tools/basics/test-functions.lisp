@@ -1366,8 +1366,11 @@ divides it into good and bad. |#
     (cond
       ((null (cdr edges)) ;; single span
        (if (eq *save-clause-semantics* :sentence-clauses)
-         (format stream "~&~s" (car *clause-semantics-list*))
-         (format stream "~&~s" (semtree (car edges)))))
+           (if (equal (string-trim " " s)
+                      (caar *clause-semantics-list*))
+               (format stream "~&~s" (car *clause-semantics-list*))
+               (format stream "ERROR -- encountered failure during parse"))
+           (format stream "~&~s" (semtree (car edges)))))
       (*bio-utt-test-show-form* ;; multiple edges - fix could involve DA
        (terpri) (tts-form stream)))))
     
