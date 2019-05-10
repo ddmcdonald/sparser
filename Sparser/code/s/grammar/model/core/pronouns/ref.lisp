@@ -88,11 +88,13 @@
 (defun ignore-this-type-of-pronoun (label)
   "If we're ignoring personal pronouns then is the label on
    this edge we're looking at (it's category) one of the
-   proscribed cases"
-  (and *ignore-personal-pronouns*
-       (memq (cat-name label)
-             '(pronoun/first/plural pronoun/first/singular
-               pronoun/second which how))))
+   proscribed cases. We're also ignoring WH pronouns because
+   they should be handled by different mechanisms than anaphora."
+  (or (is-wh-pronoun? label)
+      (and *ignore-personal-pronouns*
+           (memq (cat-name label)
+                 '(pronoun/first/plural pronoun/first/singular
+                   pronoun/second which how)))))
 
 
 (defun subject-of-previous-sentence (sentence)

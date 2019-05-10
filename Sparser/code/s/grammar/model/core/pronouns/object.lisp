@@ -29,16 +29,16 @@
    that meaning. However, if that information can not be computed
    immediately, then we need some placeholder.")
 
-(defmethod is-pronoun? ((ref individual))
-  (declare (special category::pronoun))
-  (when (individual-p ref)
-    (itypep ref category::pronoun)))
-
-(defmethod is-pronoun? ((e edge))
-  (is-pronoun? (edge-referent e)))
-
-(defmethod is-pronoun? ((e t))
-  nil)
+(defgeneric is-pronoun? (item)
+  (:documentation "Does the item inherit from pronoun?")
+  (:method ((ref individual))
+    (declare (special category::pronoun))
+    (when (individual-p ref)
+      (itypep ref category::pronoun)))
+  (:method ((e edge))
+    (is-pronoun? (edge-referent e)))
+  (:method ((e t))
+    nil))
 
 
 #| The category will be the basis of the referent.  Most syntactic properties

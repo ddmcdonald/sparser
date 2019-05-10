@@ -41,12 +41,11 @@
 (defun fold-in-preposed-auxiliary (vg-edge)
   (when (preposed-aux?)
     (multiple-value-bind (aux-edge aux-form)
-        (original-form-of-preposed-aux)
-      (declare (special aux-edge))
+        (preposed-aux?)
       (when (edge-used-in aux-edge)
         ;; multiple toplevel VGs in the sentence, e.g. dynamic-model #42
         (return-from fold-in-preposed-auxiliary nil))
-      (when (initial-wh (contents (identify-current-sentence)))
+      (when (initial-wh (contents (identify-current-sentence))) ;;/// distribute initial-wh?
         (unless (adjacent-edges? aux-edge vg-edge)
           ;; adjacency happens in "what genes are involved in apoptosis"
           ;; as compared to "What are the genes regulated by STAT3
@@ -144,7 +143,7 @@
                 (assign-tense left))
                (t
                 (assign-tense right))))
-            
+
             (t 
              (push-debug `(,left ,right))
              (warn "new configuration of daughters ~
