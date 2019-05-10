@@ -151,6 +151,15 @@ some subcategory of the category 'name'
     (:noun "name"
            :of item
            :for item
+           ))
+
+(define-category has-synonym
+  :specializes has-attribute ;; vars: item, attribute, value
+  ;; :mixins ()
+  :realization 
+    (:noun "synonym"
+           :of item
+           :for item
 ))
      
      
