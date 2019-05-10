@@ -1742,29 +1742,35 @@ there was an edge for the qualifier (e.g., there is no edge for the
         "Is stat3 involved in apoptotic regulation?" "Is stat3 involved in regulating apoptosis?"
         "Is the amount of phosphorylated MAPK1 sustained at a high level?")
         (not
-             ;; aux inversion in question "is STAT3 involved in ..." ; ;
-        (let ((word-before (word-just-to-the-left (left-edge-for-referent))))
-        (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
-        (member (pname word-before)
-        '("is" "was" "were" "are")
-        :test #'equal))))
+             ;; aux inversion in question "is STAT3 involved in ..." ; ; ; ; ; ;
+         (let ((word-before (word-just-to-the-left (left-edge-for-referent))))
+           (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
+                (member (pname word-before)
+                        '("is" "was" "were" "are")
+                        :test #'equal))))
 
         |#
         (not
-             ;; aux inversion in question "is STAT3 involved in ..." ; ;
-        (let ((word-before (word-just-to-the-left (left-edge-for-referent))))
-        (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
-        (member (pname word-before)
-        '("is" "was" "were" "are")
-        :test #'equal))))
-            (or (can-fill-vp-subject? vp subj) ;; evidence for S rather than reduced relative
-                (and (can-fill-vp-object? vp subj (left-edge-for-referent))
-                     ;; make sure this is a non-trivial relative clause (not just the verb)
-                     (loop for binding in (indiv-old-binds vp)
-                           thereis (not (member (var-name (binding-variable binding))
-                                                '(past raw-text)))))
-                (and (member (form-cat-name vp-edge) '(vg+ed verb+ed))
-                     (interpret-premod-to-verb subj vp)))))
+         ;; aux inversion in question "is STAT3 involved in ..." ; ;
+         (let ((word-before (word-just-to-the-left (left-edge-for-referent)))
+               (edges-before (edges-just-to-left-of (left-edge-for-referent))))
+           (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
+                (member (pname word-before)
+                        '("is" "was" "were" "are")
+                        :test #'equal)
+                (not (initial-wh?)) ;; used instead of
+                ;;(eq (pos-array-index (pos-edge-starts-at (car edges-before))) 1)
+                 ;; nothing preceding the aux
+                ;; so that we don't have "what are the genes mutated by ..."
+                )))
+        (or (can-fill-vp-subject? vp subj) ;; evidence for S rather than reduced relative
+            (and (can-fill-vp-object? vp subj (left-edge-for-referent))
+                 ;; make sure this is a non-trivial relative clause (not just the verb)
+                 (loop for binding in (indiv-old-binds vp)
+                       thereis (not (member (var-name (binding-variable binding))
+                                            '(past raw-text)))))
+            (and (member (form-cat-name vp-edge) '(vg+ed verb+ed))
+                 (interpret-premod-to-verb subj vp)))))
       
       ((and (can-fill-vp-object? vp subj (left-edge-for-referent))
             (not (verb-premod-sequence? (left-edge-for-referent)))
