@@ -1465,6 +1465,7 @@ all-bioagent-capability-sentences.lisp"
                  *test-utt-sent-cats*)))
 
 (defun clause-sem->file (&optional (file "bioagent-cap-sp-clause-sem"))
+  (declare (special *clause-semantics-list*))
   (with-open-file  (stream
                     (concatenate 'string
                                  "sparser:bio-not-loaded;bioagent-cap-testing;"

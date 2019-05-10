@@ -549,6 +549,7 @@
   (:method ((c referential-category))
     (vg-head? (cat-symbol c)))
   (:method ((name symbol))
+    (declare (special *vg-head-categories* *chunk*))
     (or (member name '(category::verb+ed category::verb+ing))
         (and (memq name *vg-head-categories*)
              (or (not (boundp '*chunk*))
@@ -565,6 +566,7 @@
   (:method ((c referential-category))
     (vg-compatible? (cat-symbol c)))
   (:method ((name symbol))
+    (declare (special *vg-word-categories*))
     (memq name *vg-word-categories*)))
 
 
@@ -826,6 +828,7 @@ than a bare "to".  |#
 ;;--- ng-head?
 
 (defun chunk-has-plural-det? ()
+  (declare (special *chunk*)) 
   (let* ((det-ev? (when (boundp '*chunk*)
                     (car (last (chunk-ev-list *chunk*)))))
          (det (when (and (eq (type-of det-ev?) 'edge-vector)
@@ -856,6 +859,7 @@ than a bare "to".  |#
      (not (and (member (edge-cat-name e) '(n-fold))
                (boundp '*chunk*)
                (chunk-final-edge? e *chunk*)
+               ;(lsp-break "pre number check")
                (loop for ee in (ev-edges (cadr (chunk-ev-list *chunk*)))
                      never (member (form-cat-name ee) '(number)))))
      (not (and plural-det?
