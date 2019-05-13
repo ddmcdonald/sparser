@@ -5117,10 +5117,11 @@
   ("What pathways are they in?"
    (:VAR MV4978 :ISA WH-QUESTION :STATEMENT MV4977 :VAR NIL :WH WHAT)
    (:VAR MV4977 :ISA IN :WORD "in"))
+  #|
   ("What pathways involve SOARING?"
-   (:VAR MV4982 :ISA WH-QUESTION ;:STATEMENT
-    ;(#<soar 93540> (PRESENT #<ref-category PRESENT>))
-    :VAR NIL :WH WHAT))
+   (:VAR MV4982 :ISA WH-QUESTION :STATEMENT
+    (#<soar 93540> (PRESENT #<ref-category PRESENT>)) :VAR NIL :WH WHAT))
+  |#
   ("What proteins are in the first pathway"
    (:VAR MV4993 :ISA COPULAR-PREDICATION-OF-PP :ITEM MV4984 :VALUE MV4992 :PREP
     "IN" :PREDICATE MV4985)
