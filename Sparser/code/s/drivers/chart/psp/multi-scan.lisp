@@ -760,28 +760,33 @@
 ;; (trace-early-rules)
 
 (defun do-early-rules-sweep (sent)
+  "Look for semantic rules that can be conveniently run here.
+   Should simplify the situation that the chunker will have to deal with."
   (declare (special *trace-early-rules-sweep*))
   (tr :starting-early-rules-sweep)
   (when *trace-early-rules-sweep* (tts))
-  (let ((continue t))
-    (loop while continue
-          do
-            (setq continue
-                  (eq :new-edge
-                      (do-early-rules-sweep-between
-                          (starts-at-pos sent)
-                        (ends-at-pos sent)))))))
-;; NEED TO FIND A WAY TO GENERALIZE THE TESTING OF EARLY RULES which is done
-;;  in a one-off way below
-;;  (not (and (itypep (edge-referent left-edge) 'amino-acid)
-;;                             (itypep (edge-referent right-edge) 'number)))
+  (let ((*allow-pure-syntax-rules* nil)
+        (*allow-form-rules* nil))
+    (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
+    (let ((continue t))
+      ;; The effect of this loop is to restart the sweep from
+      ;; the beginning whenever it creates an edge.
+      (loop while continue
+         do
+           (setq continue
+                 (eq :new-edge
+                     (do-early-rules-sweep-between
+                         (starts-at-pos sent)
+                       (ends-at-pos sent))))))
+    (when *trace-early-rules-sweep*
+      (break "finished early sweep"))))
 
 (defun do-early-rules-sweep-between (start end &aux left-edge mid-pos right-edge)
-  "Walk from start to end. 
-"
+  "Walk from start to end. Successively setting a left and right edge, taking care
+   that the right edge starts after the left one ends.
+   If very specific criteria are met, look for a rule that will compose the two edges
+   and create their edge."
   (declare (special left-edge mid-pos right-edge new-edge rule
-                    category::number category::plus-minus-number
-                    *the-punctuation-plus-minus*
                     *trace-early-rules-sweep*))
   (tr :early-rule-check-at start)
   (loop
@@ -795,7 +800,104 @@
      (setq right-edge (when (edge-p left-edge) (right-treetop-edge-at mid-pos)))
      (tr :early-left-mid-right left-edge mid-pos right-edge)
      
-     (if (or (and (edge-p left-edge)
+     (if (early-rule-criteria left-edge mid-pos right-edge)
+       (multiple-value-bind (new-edge rule)
+           (apply-early-rule-at start mid-pos)
+         (if new-edge
+           (then
+             (tr :early-back-to-start new-edge)
+             ;; The edge at the beginning changed, so return to the
+             ;; continue loop and re-start at the sentence-beginning
+             (return-from do-early-rules-sweep-between :new-edge))
+           (setq start mid-pos)))
+       (else
+         (tr :early-criteria-failed)
+         (cond
+           ((and left-edge (edge-p left-edge)
+                 (position/<= end (pos-edge-ends-at left-edge)))
+            (return-from do-early-rules-sweep-between nil))
+           (t
+            (setq start (where-tt-ends left-edge start))
+            (tr :early-sweep-looping start)
+            (when *trace-early-rules-sweep*
+              (format t "~&Looping. New 'start' = ~a" start)
+              (when (null start) (break "null start")))))))))
+
+(defun apply-early-rule-at (start middle-pos)
+  (declare (optimize (debug 3)(speed 1)))
+  (let* ((edges-ending-there (tt-edges-starting-at (pos-starts-here start)))
+         ;; below was (all-edges-on ...)
+         (edges-starting-there (tt-edges-starting-at (pos-starts-here middle-pos)))         
+         rule left right )
+    (let ((new-edge         
+           (catch :succeeded
+             (dolist (left-edge edges-ending-there)
+               (dolist (right-edge edges-starting-there)
+                 (tr :early-rules-checking left-edge right-edge)
+                 (if (setq rule (multiply-edges left-edge right-edge))
+                   (then
+                     (tr :early-succeeded rule)
+                     (setq left left-edge
+                           right right-edge)
+                     (throw :succeeded
+                       (make-completed-binary-edge left right rule)))
+                   (tr :early-failed)))))))
+      (show-early-rule? rule left right)
+      (values new-edge rule))))
+
+        
+(defun show-early-rule? (rule left-edge right-edge)
+  (when (and rule
+             *show-early-rules*
+             (not (eq (cat-name (car (cfr-rhs rule))) 'subordinate-conjunction)))
+    (format t "~%**early rule: ~s on \"~a~a\""
+            rule
+            (retrieve-surface-string left-edge)
+            (retrieve-surface-string right-edge))))
+
+
+;; NEED TO FIND A WAY TO GENERALIZE THE TESTING OF EARLY RULES which is done
+;;  in a one-off way below
+;;  (not (and (itypep (edge-referent left-edge) 'amino-acid)
+;;            (itypep (edge-referent right-edge) 'number)))
+
+;; -- ddm this function is an example of that (and belons in edge-vectors/object.lisp
+(defgeneric includes-edge-over-literal? (position)
+  (:documentation "Are any of the edge starting a this position
+    edges over a literal?")
+  (:method ((e edge))
+    (includes-edge-over-literal? (edge-starts-at e)))
+  (:method ((p position))
+    (includes-edge-over-literal? (pos-starts-here p)))
+  (:method ((ev edge-vector))
+    (loop for edge in (all-edges-on ev)
+       when (literal-edge? edge)
+       return t
+       finally (return nil))))
+
+(defun early-rule-criteria (left-edge mid-pos right-edge)
+  "If these criteria a met then we'll look for a rule that combines
+   the two edges."
+  (declare (special category::number category::plus-minus-number
+                    *the-punctuation-plus-minus*))
+  (and (and (edge-p left-edge)
+            (edge-p right-edge))
+       (or 
+        (includes-edge-over-literal? mid-pos)
+        (and
+         (eq (edge-category left-edge) category::number)
+         (eq (edge-form right-edge) category::plus-minus-number))
+        (and
+         (eq (edge-referent left-edge) *the-punctuation-plus-minus*)                   
+         (eq (edge-category right-edge) category::number))
+
+        (not (pos-preceding-whitespace mid-pos))
+        (and (eq script :biology)
+             (itypep (edge-referent left-edge) 'amino-acid)
+             (itypep (edge-referent right-edge) 'number)))))
+
+#| original form of the criterion before 5/10/19
+    (if (or (and (edge-p left-edge)
                   (edge-p right-edge)
                   (or (and
                        (eq (edge-category left-edge) category::number)
@@ -809,61 +911,15 @@
                    (not (pos-preceding-whitespace mid-pos))
                    (and (eq script :biology)
                         (itypep (edge-referent left-edge) 'amino-acid)
-                        (itypep (edge-referent right-edge) 'number)))))
-
-       (multiple-value-bind (new-edge rule)
-           (apply-early-rule-at start mid-pos)
-         (if new-edge
-           ;; edge at the beginning changed, so re-start at the
-           ;;  sentence-beginning
-           (return-from do-early-rules-sweep-between :new-edge)
-           (setq start mid-pos)))
-
-       (else
-         (cond
-           ((and left-edge (edge-p left-edge)
-                 (position/<= end (pos-edge-ends-at left-edge)))
-            (return-from do-early-rules-sweep-between nil))
-           (t
-            (setq start (where-tt-ends left-edge start))
-            (when *trace-early-rules-sweep*
-              (format t "~&Looping. New 'start' = ~a" start)
-              (when (null start) (break "null start")))))))))
-
-        
-(defun apply-early-rule-at (start middle-pos)
-  (declare (optimize (debug 3)(speed 1)))
-  (let* ((edges-ending-there (tt-edges-starting-at (pos-starts-here start)))
-         ;; below was (all-edges-on ...)
-         (edges-starting-there (tt-edges-starting-at (pos-starts-here middle-pos)))
-         (*allow-pure-syntax-rules* nil)
-         (*allow-form-rules* nil)
-         rule left right
-         (new-edge         
-          (catch :succeeded
-            (dolist (left-edge edges-ending-there)
-              (dolist (right-edge edges-starting-there)
-                (tr :early-rules-checking left-edge right-edge)
-                (if (setq rule (multiply-edges left-edge right-edge))
-                  (then
-                    (tr :early-succeeded rule)
-                    (setq left left-edge
-                          right right-edge)
-                    (throw :succeeded
-                      (make-completed-binary-edge left right rule)))
-                  (tr :early-failed)))))))
-    (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
-    (show-early-rule? rule left right)
-    (values new-edge rule)))
-
-(defun show-early-rule? (rule left-edge right-edge)
-  (when (and rule
-             *show-early-rules*
-             (not (eq (cat-name (car (cfr-rhs rule))) 'subordinate-conjunction)))
-    (format t "~%**early rule: ~s on \"~a~a\""
-            rule
-            (retrieve-surface-string left-edge)
-            (retrieve-surface-string right-edge))))
+                        (itypep (edge-referent right-edge) 'number))))) |#
+#| Even earlier version ~3/5/18
+    (if (and (edge-p left-edge)
+             (edge-p right-edge)
+             (or
+              (not (pos-preceding-whitespace mid-pos))
+              (and (eq script :biology)
+                   (itypep (edge-referent left-edge) 'amino-acid)
+                   (itypep (edge-referent right-edge) 'number))))  |#
 
 ;;;------------------------------
 ;;; 2d pass -- no-space patterns
