@@ -943,14 +943,13 @@
 
 (defun subcategorized-variable (head label item)
   "Returns the variable on the HEAD that is subcategorized for
-   the ITEM when it has the grammatical relation LABEL to the head."
+   the ITEM when it has the grammatical relation LABEL to the head
+   and the ITEM satisfies the value restriction on that variable."
+  ;; This layer just checks that the query is well-formed.
+  ;; It calls find-subcat-var to do real work.
   (declare (special *pobj-edge* *subcat-test* *sentence-in-core*))
-  ;; included in the subcategorization patterns of the head.
-  ;; If so, check the value restriction and if it's satisfied
-  ;; make the specified binding
-
-             
-  (loop while (edge-p label) ;; can happen for edges over polywords like "such as"
+  (loop while (edge-p label)
+     ;; can happen for edges over polywords like "such as"
      do (setq label (edge-left-daughter label)))
   (cond
     ((null head)
@@ -983,18 +982,20 @@
        (warn "what are you doing passing a CONS as an item, ~s~&" item))
      nil)
     (t
-     ;; (when (itypep item 'to-comp) (setq item (value-of 'comp item)))
-     ;;/// prep-comp, etc.
      (find-subcat-var item label head))))
 
 (defun find-subcat-var (item label head)
+  "Looks up the subcategorizations defined on this head.
+   Considers special situations when the label is 'of' but should
+   really be :object. Sorts out ambiguous variables
+"
   (declare (special item label head *subcat-test* *subcat-use*
                     *left-edge-into-reference* ))
   (let* ((category (itype-of head))
          (subcat-patterns (known-subcategorization? head))
          (of-object
           (and  (equalp (pname label) "of")
-                *left-edge-into-reference* ;; i.e. check that it's bound
+                *left-edge-into-reference* ;; it has a value
                 (member (form-cat-name *left-edge-into-reference*)
                         '(np ng vg+ing))
                 (loop for pat in subcat-patterns
@@ -1002,8 +1003,7 @@
                                 (eq (pname (subcat-variable pat)) 'object)
                                 ;; n.b. look at "panel"
                                 (not (itypep (subcat-restriction pat) 'over-ridden))
-                                (not (itypep (subcat-restriction pat) 'blocked-category))
-                                )
+                                (not (itypep (subcat-restriction pat) 'blocked-category)))
                       return pat)))
          (ambiguous-of-object
           (when of-object
@@ -1024,9 +1024,10 @@
                 (warn "ambiguous-of-object for ~s attaching to ~s in ~s"
                       item head (current-string))))
           (setq label :object)))
+    
     (when subcat-patterns
-      (setq *label* label)
-      (setq *head* head)
+      (setq *label* label ;; global scope to aid debugging
+            *head* head)
       (let ((*trivial-subcat-test* nil)
             variable  over-ridden)
         (if (and *ambiguous-variables* (not *subcat-test*))
@@ -1039,6 +1040,7 @@
               (setq over-ridden (check-overridden-vars pats item head))
               (setq pats (loop for p in pats unless (member p over-ridden) collect p))
               (setq variable (variable-from-pats item head label pats subcat-patterns)))
+            
             (dolist (entry subcat-patterns)
               (when (eq label (subcat-label entry))
                 (unless (satisfies-subcat-restriction? item entry)
@@ -1046,6 +1048,7 @@
                 (when (satisfies-subcat-restriction? item entry)
                   (setq variable (subcat-variable entry))
                   (return)))))
+        
         (when (and *ambiguous-variables*
                    (consp variable))
           (setq variable
@@ -1139,12 +1142,10 @@
   (compare-to-snapshots)
   (display-subcat-ambiguities))
 
-
 (defun display-subcat-ambiguities ()
   (np (setq *dups*
             (sort *ambiguous-variables* #'string<
                   :key #'(lambda(x)(if (individual-p (car x))(cat-name (itype-of (car x))) "")))))
-  
   (loop for pat in
        (sort
 	(loop for pat in 
@@ -1159,7 +1160,6 @@
 		(polyword (pw-pname key))
 		(symbol key)))))
      do (terpri)(print pat)))
-
 
 (defun announce-over-ridden-ambiguities (item head label variable)
   (when *show-over-ridden-ambiguities*
@@ -1299,7 +1299,6 @@
 ;;; debugging tools
 ;;;-----------------
 
-
 (defun applicable-sc-patterns (head label)
   "From the subcategization of the head individual return the patterns
    that are for this label"
@@ -1311,11 +1310,11 @@
       
 (defun sc-pat-matching-label (label subcat-patterns)
   "Given a label and a list of subcategorization patterns, return the
-  patterns that go with that label. Good for feeding alternative
-  list of patterns directly."
+   patterns that go with that label. Good for feeding alternative
+   list of patterns directly."
   (let ((matched (loop for pat in subcat-patterns
-                         when (eq label (subcat-label pat))
-                         collect pat)))
+                    when (eq label (subcat-label pat))
+                    collect pat)))
     matched))
 
 (defun satisfies-sc-pattern (pat label item)
@@ -1325,3 +1324,19 @@
     (when (satisfies-subcat-restriction? item pat)
       (subcat-variable pat))))
 
+(defun assess-possible-subcat-options (head label item)
+  "For debugging the simple case. Looks at each subcategorization pattern
+   on this head for this label, and reports whether the variable restrictions
+   are met."
+  (let ((subcat-patterns (known-subcategorization? head)))
+    (if (null subcat-patterns)
+      (format t "~&~a has no subcategorization patterns" head)
+      (let ((matched-patterns (applicable-sc-patterns head label)))
+        (if (null matched-patterns)
+          (format t "~&~a does not subcategorize for ~a" head label)
+          (dolist (pat matched-patterns)
+            (if (satisfies-subcat-restriction? item pat)
+              (format t "~&~a satisfied v/r on ~a"
+                      item (subcat-variable pat))
+              (format t "~&~a did not fit v/r on ~a:~%  ~a"
+                      item (subcat-variable pat) (subcat-restriction pat)))))))))
