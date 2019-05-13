@@ -230,8 +230,7 @@
        (cond
          ((edge-p right-side)
           ;; if the subordinate or relative clause was extended by a DA rule, then
-          ;; the right edge is :long-span
-          ;; e.g. in
+          ;; the right edge is :long-span, e.g. in
           ;; "has the ability to inhibit the phosphorylation of both Smad2 and Smad3 but it only slightly inhibits the activation of Akt, ERK, JNK and p38 MAPK, suggesting that it down-regulates Snail expression via a Smad dependent pathway"
           (is-passive? right-side))
          ((edge-p (edge-left-daughter edge))

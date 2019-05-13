@@ -1556,8 +1556,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
               ;; was itypep, but REMAIN (and other pseudo copulars) are subcategories of BE
               ;; block "what are" as a transitive-clause-without-object
               (null (value-of 'predicate vp)))
-         (itypep vp 'do) ;; block "what does" as a transitive-clause-without-object
-         )
+         (itypep vp 'do)) ;; block "what does" as a transitive-clause-without-object         
      (return-from assimilate-subject nil))
     
     ((itypep vp 'copular-predication)
