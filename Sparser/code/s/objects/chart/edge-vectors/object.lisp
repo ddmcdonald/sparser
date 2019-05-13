@@ -162,6 +162,7 @@
     (cond
       ((edge-p (ev-top-node ev)) (list (ev-top-node ev)))
       (t (all-edges-on ev)))))
+
 ;;//// add the 'longest edges' case
 (defgeneric edges-ending-at (position)
   (:documentation "Return all of the edges that end at
@@ -209,6 +210,8 @@
                               
 
 (defun top-edge-on-ev (ev)
+  "If the top-node field holds an edge, return it. Otherwise
+   return the final edge in the array."
   (if (edge-p (ev-top-node ev))
       (ev-top-node ev)
       (when (> (ev-number-of-edges ev) 1)

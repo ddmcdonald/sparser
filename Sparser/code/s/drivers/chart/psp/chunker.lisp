@@ -157,7 +157,7 @@
 
 (defun identify-chunks (sentence)
   "Called from sentence-sweep-loop after the short sweeps over 
-   the sentence have finished. If the  *parse-chunk-interior-online*
+   the sentence have finished. If the *parse-chunk-interior-online*
    parameter is up it parses the interior of every chunk."
   (declare (special *parse-edges* *parse-chunk-interior-online*))
   (when *parse-edges* (tts)) ;; when tracing
@@ -213,6 +213,7 @@
   "Walk through the sentence delimiting successive chunks and accumulating
   them on *chunks*. Loops over successive positions but uses their starting
   edge vectors as its real loop variable. delimit-next-chunk does the real work."
+  (declare (special *trace-chunker*))
   (setq *next-chunk* nil)
   (setq *chunks* nil)
   (let ((pos (starts-at-pos sentence))
@@ -226,6 +227,8 @@
       ;; set up the next call to delimit-next-chunk
       (setq ev (pos-starts-here pos))
       (setq forms (starting-forms ev *chunk-forms*))
+      (when *trace-chunker* ;; tree of remaining part of chart
+        (terpri)(tts t pos))
       
       (cond
         (forms ;; at least one of the edges can start a chunk
@@ -279,7 +282,7 @@
               do (push compatible-head possible-heads)))
 
          (if (or (null forms) ;; syntactic category of edge is inconsistent
-                 ;; with the possible forms for the ongiong chunk
+                 ;; with the possible forms for the ongoing chunk
                  (eq pos sentence-end)) ;; chunk must end at or before this pos-before
            
            (let ((head (best-head (chunk-forms *chunk*) possible-heads)))
@@ -289,7 +292,7 @@
              (cond
                (head
                 ;; the chunk has a head for at least one of the consistent forms
-                ;; complete this chunk -- signaling end of until loop
+                ;; complete this chunk -- signaling end of the until loop
                 (setf (chunk-end-pos *chunk*) (second head))
                 (setf (chunk-forms *chunk*) (list (first head)))
                 (gross-infinitive-chunker-test *chunk*) ;; as much fall-back as improvement see note w/ fn.
@@ -300,10 +303,12 @@
                 (tr :delimited-ill-formed-chunk *chunk*))))
            
            (else ;; loop around.
+             (tr :chunker-moving-to pos)
              (setq ev (pos-starts-here pos))
+             (tr :chunker-next-edges ev)
              (setq forms ;; This call is where we extend the chunk.                
                    (remaining-forms ev *chunk*))
-             (tr :chunk-loop-next-edge ev forms)))
+             (tr :chunk-loop-next-edge forms)))
        finally
          (return 
            (find-consistent-edges *chunk*)))))
@@ -847,8 +852,6 @@ than a bare "to".  |#
   (let ((edges-before (edges-before e))
         (e-form-name  (form-cat-name e))
         (plural-det? (chunk-has-plural-det?)))
-       
-               
     (declare (special edges-before e-form-name))
     (and
      ;;code to split "the genes STAT3 regulates"
@@ -1110,13 +1113,21 @@ than a bare "to".  |#
       (when (edge-p top-edge)
         (if (eq top-edge (ev-top-node ev))
             (list top-edge)
-            (loop for edge in (ev-edges ev)
-                  when (and
-                        (eq (pos-edge-ends-at edge) (pos-edge-ends-at top-edge))
-                        (null (edge-used-in edge))
-                        (or (not (literal-edge? edge))
-                            (not no-literals)))
-                  ;; the test above checks that the edge is as long as the top edge
+            (loop for edge in (all-edges-on ev)
+               ;; Shouldn't loop over these (ev-edges ev) because we want
+               ;; the option of including literal edges.
+               when (and
+                     ;; is this edge as long as the top edge?
+                     (eq (pos-edge-ends-at edge) (pos-edge-ends-at top-edge))
+
+                     ;; It's still an independent edge. 
+                     (null (edge-used-in edge))
+
+                     ;; Either the edge isn't a literal or
+                     ;; no-literals flag wasn't raised
+                     (or (not (literal-edge? edge))
+                         (not no-literals)))
+
                   collect edge))))))
 
 #| Previous version. Its preference for top-node doesn't appreciate
@@ -1127,7 +1138,7 @@ than a bare "to".  |#
           edge)
       (if (eq top :multiple-initial-edges)
         (loop for i from 0 to (- (ev-number-of-edges ev) 1)
-          when (not (literal-edge? (setq edge (aref (ev-edge-vector ev) i))))
+          unless (literal-edge? (setq edge (aref (ev-edge-vector ev) i)))
           collect edge)
         (when top ;; managed to get an ev with NIL top node
           (list top))))  |#

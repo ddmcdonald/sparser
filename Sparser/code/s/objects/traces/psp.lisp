@@ -37,6 +37,10 @@
 ;;; packages
 ;;;----------
 
+(defparameter *trace-chunker* nil)
+(defun trace-chunker () (setq *trace-chunker* t))
+(defun untrace-chunker () (setq *trace-chunker* nil))
+
 (defun trace-network ()
   (setq *trace-network* t))
 
@@ -1306,7 +1310,7 @@
 
 (deftrace :identifying-chunks-in (sentence)
   ;; called from sentence-sweep-loop
-  (when (or *trace-network* *trace-segments*)
+  (when (or *trace-network* *trace-segments* *trace-chunker*)
     (trace-msg "Identifying the chunks in ~a" sentence)))
 
 (deftrace :parsing-chunk-interior-of (chunk)
@@ -1404,9 +1408,6 @@
   (when *trace-network-flow*
     (trace-msg "[scan] entered sweep-to-span-parentheses")))
 
-(deftrace :starting-early-rules-sweep ()
-  (when (or *trace-network-flow* *trace-early-rules-sweep*)
-    (trace-msg "[scan] entered early-rules sweep")))
 #|
 
 (deftrace : ()
@@ -1498,6 +1499,10 @@
 (defun untrace-early-rules ()
   (setq *trace-early-rules-sweep* nil))
 
+(deftrace :starting-early-rules-sweep ()
+  (when (or *trace-network-flow* *trace-early-rules-sweep*)
+    (trace-msg "[scan] entered early-rules sweep")))
+
 (deftrace :early-rule-check-at (start)
   (when (or *trace-sweep* *trace-early-rules-sweep*)
     (trace-msg "[early] Looking for early rule at p~a"
@@ -1507,6 +1512,19 @@
   (when (or *trace-sweep* *trace-early-rules-sweep*)
     (trace-msg "[early] left = ~a, mid-pos = ~a, right = ~a"
                left-edge mid-pos right-edge)))
+
+(deftrace :early-criteria-failed ()
+  (when (or *trace-sweep* *trace-early-rules-sweep*)
+     (trace-msg "[early] early-rule-criteria returned nil")))
+
+(deftrace :early-back-to-start (edge)
+  (when (or *trace-sweep* *trace-early-rules-sweep*)
+    (trace-msg "[early] Created e~a. Restart from beginning"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :early-sweep-looping (start)
+  (when (or *trace-sweep* *trace-early-rules-sweep*)
+    (trace-msg "[early] Moving to next position, ~a" start)))
 
 (deftrace :early-rules-checking (left right)
   (when (or *trace-sweep* *trace-early-rules-sweep*)
@@ -1535,10 +1553,6 @@
 
 ;;--- details of the chunker's operation
 
-(defparameter *trace-chunker* nil)
-(defun trace-chunker () (setq *trace-chunker* t))
-(defun untrace-chunker () (setq *trace-chunker* nil))
-
 (deftrace :delimit-chunk-start (ev forms)
   ;; called from find-chunks
   (when *trace-chunker*
@@ -1549,10 +1563,35 @@
                  (ev-number-of-edges ev)
                  forms))))
 
-(deftrace :chunk-loop-next-edge (ev forms)
+(deftrace :chunker-moving-to (pos)
+  ;; called from delimit-next-chunk
   (when *trace-chunker*
-    (trace-msg "Remaining forms ~a~
-              ~%   Next edges: ~a" forms ev)))
+    (trace-msg "Moving on to p~a ~s"
+               (pos-token-index pos)
+               (pname (pos-terminal pos)))))
+
+(deftrace :chunker-next-edges (ev)
+  ;; called from delimit-next-chunk. The next step is a
+  ;; call to remaining-forms, so we want to know what
+  ;; it's going to look at, so we anticipate what
+  ;; edges its going to get -- use the routine it does.
+  (when *trace-chunker*
+    (let* ((edges (ev-top-edges ev))
+           (count (length edges)))
+      (case count
+        (1 (trace-msg "Its vector has 1 edge: ~a"
+                      (car edges)))
+        (otherwise
+         (trace-msg "Its vector has ~a edges:~{ ~a~}"
+                    count edges))))))
+               
+(deftrace :chunk-loop-next-edge (forms)
+  ;; called from delimit-next-chunk
+  (when *trace-chunker*
+    (if forms
+      (trace-msg "Remaining forms ~a" forms)
+      (trace-msg "No remaining forms"))))
+
 
 (deftrace :delimited-chunk (chunk)
   (when (or *trace-chunker* *trace-segments*)
