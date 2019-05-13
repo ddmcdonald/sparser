@@ -213,6 +213,8 @@
     (make-polar-edge copular-pred-edge)))
 
 
+;; (p/s "Is stat3 expressed in liver?")
+;; (p/s "is the BRAF-NRAS complex sustained in time?")
 (defun make-polar-participle-question (start-pos end-pos edges)
   (tr :wh-walk "make-polar-participle-question")
   (let* ((be-edge (first edges))  ;; is
@@ -220,27 +222,31 @@
          (np-edge (second edges)) ;; the BRAF-NRAS complex
          (np (edge-referent np-edge))
          (vp+ed-edge (third edges)) ;; sustained in time
-         (predicate (edge-referent vp+ed-edge))
-         (passive? (is-passive? vp+ed-edge)))
-    (let* ((i ;; add the tense information to the predicate
-            (with-referent-edges (:l be-edge) 
+         (predicate (edge-referent vp+ed-edge)))
+    
+    ;; This doesn't work in the question case
+    ;; (is-passive? vp+ed-edge)
+
+    (with-referent-edges (:l be-edge :r vp+ed-edge)
+      (let* ((i ;; add the tense information to the predicate
               (if (eq (form-cat-name be-edge) 'preposed-auxiliary)
                 (if (plausibly-too-early-to-take-preposed-aux be-edge vp+ed-edge)
                   predicate                                 
                   (add-tense/aspect be predicate))
-                (add-tense/aspect be predicate))))
-           (j ;; fold the np into the correct position
-            (if passive?
-              (assimilate-object i np)
-              (assimilate-subject np i nil))))
-      (let ((edge 
-             (make-edge-over-long-span
-              start-pos end-pos
-              (itype-of predicate) ;; category
-              :rule 'make-polar-participle-question
-             :form category::s
-             :referent j)))
-        (make-polar-edge edge)))))
+                (add-tense/aspect be predicate)))
+
+             ;; We know this a passive clause because of the
+             ;; triggering pattern
+             (j (assimilate-object i np)))
+                 
+        (let ((edge 
+               (make-edge-over-long-span
+                start-pos end-pos
+                (itype-of predicate) ;; category
+                :rule 'make-polar-participle-question
+                :form category::s
+                :referent (or j i))))
+          (make-polar-edge edge))))))
       
 
 ;; Does phosphorylated MAP2K1 being high follow phosphorylated BRAF reaching a high value?"

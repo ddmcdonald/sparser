@@ -1712,8 +1712,7 @@ assumed. |#
 (defun polar-postmodifying-vp+ed (be-edge np-edge vp+ed-edge)
   (declare (special *da-starting-position* *da-ending-position*))
   (when (aux-before-np? :first-np-edge np-edge)
-    (when
-        (eq (cat-name (edge-category be-edge)) 'be)
+    (when (eq (cat-name (edge-category be-edge)) 'be)
       ;; there should be a verb, not an adjp, so fail
       ;;  possibly figure out whether the verb was swallowd by the np-edge
       ;;  as in "does RAS rise faster ..." where "rise" is mistakenly treated as a noun
