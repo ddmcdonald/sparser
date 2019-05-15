@@ -18,3 +18,5 @@
  :realization (:noun "buffer")) ;maybe add verb?
 
 (noun ("HPB" "high phosphate buffer") :super buffer)
+
+(noun "air" :super substance) ;; could be better but replaces the spurious definition where it was a name for a random chemical

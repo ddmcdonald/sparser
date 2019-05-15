@@ -169,6 +169,8 @@
 ;;; miscellaneous
 ;;;-------------
 
+(noun "acid" :super molecule) ;; could be in more of a hierarchy and have things under it, but at least this replaces the spurious defintion we previously had where we had it as just a synonym "acotinic acid"
+
 (noun "dextran" :super polysaccharide)
 
 #-allegro (noun "O2˙-" :super molecule) ;; :synonyms ("superoxide anion")

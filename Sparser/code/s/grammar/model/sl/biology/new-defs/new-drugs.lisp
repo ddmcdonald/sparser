@@ -1926,7 +1926,8 @@
 (def-indiv-with-id drug "wortmannin" "PCID:312145")
 (def-indiv-with-id drug "SB-525334" "PCID:9967941" :synonyms ("SB525334"))
 (def-indiv-with-id drug "TAPI-1" "PCID:10458621" :synonyms("TAPI 1" "TAPI1"))
-(def-indiv-with-id drug "selumetinib" "PCID:10127622" :name "selumetinib" :synonyms ("selumitinib")) ; synonym actually a misspelling
+(def-indiv-with-id drug "selumetinib" "PCID:10127622" :name "selumetinib" :synonyms ("selumitinib" "AZD-6244" "AZD 6244" "ARRY142886")) ; first synonym actually a misspelling
 (def-indiv-with-id drug "tofacitinib" "NCIT:C95800" :name "tofacitinib")
 (def-indiv-with-id drug "vemurafenib" "PCID:42611257" :name "vemurafenib" :synonyms ("vemurafe-nib" "vemurafemib" "vemurafenib" "vemurafinib" "vermurafenib")) ; synonyms actually misspellings
 (def-indiv-with-id drug "NG25" "PCID:53340664" :name "NG-25")
+(def-indiv-with-id drug "PLX-4720" "PCID:24180719" :name "PLX 4720") 

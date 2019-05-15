@@ -80,7 +80,7 @@
 
 (define-category signaling-pathway :specializes pathway
    :realization
-   (:noun "signaling pathway" ))
+   (:noun ("signaling pathway" "signalling pathway" "signalling cascade" "signaling cascade")))
 
 
 (defmacro def-pathway (&rest strings-naming-proteins)
