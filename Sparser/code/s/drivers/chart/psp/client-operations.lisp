@@ -53,14 +53,19 @@
              *clause-semantics-list*))
       (:mention-clauses
        (setq *save-clause-semantics* (list (sentence-string *sentence-in-core*)))
-       (loop for m in mentions
-             unless (and (individual-p (base-description m))
-                         (itypep (base-description m)
-                                 '(:or prepositional-phrase prep
-                                   prepositional ;; new? part of the meaning of category::in
-                                   copular-predication-of-pp bio-pair
-                                   hyphenated-triple)))
-             do (push (clause-semantics-for-mention m) *save-clause-semantics*))
+       (setq
+        *save-clause-semantics*
+        (append
+         (do-clic-clause-rewrites
+             (loop for m in mentions
+                   unless (and (individual-p (base-description m))
+                               (itypep (base-description m)
+                                       '(:or prepositional-phrase prep
+                                         prepositional ;; new? part of the meaning of category::in
+                                         copular-predication-of-pp bio-pair
+                                         hyphenated-triple)))
+                   collect (clause-semantics-for-mention m)))
+         *save-clause-semantics*))
        (push (reverse *save-clause-semantics*) *clause-semantics-list*)
        (setq *save-clause-semantics* :mention-clauses)))
     (when *indra-post-process*
@@ -73,6 +78,51 @@
       (setf (gethash sentence *colorized-sentence*) colorized-sentence)
       (push colorized-sentence *localization-split-sentences*))))
 
+(defun clic-clauses (s)
+  (declare (special *save-clause-semantics* *clause-semantics-list*))
+  (setq *save-clause-semantics* :sentence-clauses)
+  (qepp s)
+  (when (null (cdr (all-tts)))
+    `(,(caar *clause-semantics-list*)
+       ,@(do-clic-clause-rewrites
+             (cdar *clause-semantics-list*)))))
+
+(defun isa? (cat supercat)
+  (etypecase supercat
+    (cons (ecase (car supercat)
+            (:or (loop for sc in (cdr supercat) thereis (isa? cat sc)))
+            (:eval (isa? cat (eval (second supercat))))
+            (:exactly (eq cat (second supercat)))))
+    (symbol
+     (if (eq supercat (intern "REFERENTIAL-SEM" (find-package :ont))) ;; we keep missing these cases. Hardwire it. 
+         (eq cat supercat)
+         (funcall (intern "SAME-OR-SUPERCATEGORY-P" (find-package :spire))
+                  supercat cat)))))
+
+(defun simple-clause-match (clause pattern)
+  (loop for (key val)on pattern by #'cddr
+        always
+          (let ((cval (getf clause key)))
+            (when cval
+              (cond ((eq key :isa)
+                     (isa? cval val))
+                    ((equal cval val)))))))
+
+(defun find-clause-by-match (clauses pattern)
+  (loop for cl in clauses when (simple-clause-match cl pattern)
+          do (return cl)))
+
+(defun remove-can-you (clauses)
+  (let ((speaker-clause (find-clause-by-match clauses '(:isa sp::interlocutor :name "speaker")))
+        (can-clause (find-clause-by-match clauses '(:isa sp::can)))
+        (pq-clause (find-clause-by-match clauses '(:isa sparser::polar-question))))
+    (when (and speaker-clause can-clause pq-clause)
+      (setq clauses (remove can-clause (remove pq-clause clauses))))
+    clauses))
+
+(defun do-clic-clause-rewrites (clauses)
+  (setq clauses (remove-can-you clauses))
+  clauses)
 
 (defun clause-semantics-for-mention (mention)
   (declare (special mention))
