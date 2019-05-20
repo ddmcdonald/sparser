@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "file"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   April 2019
+;;;  Version:   May 2019
 
 ;; initiated 2/91, added Analyze-text-from-file/at-filepos 12/14/94
 ;; 2/15/13 Folded in initializations from do-document-as-stream-of-files,
@@ -15,25 +15,35 @@
 
 (export 'analyze-text-from-file)
 
-(defun analyze-text-from-file (file &key ((:paragraph make-orthographic-paragraphs)
-                                          *paragraphs-from-orthography*)
+(defun analyze-text-from-file (file &key
+                                      ((:paragraph make-orthographic-paragraphs)
+                                       *paragraphs-from-orthography*)
+                                      ((:prescan prescan-buffer?)
+                                       *prescan-character-input-buffer*)
                                       trace)
   (declare (special *open-stream-of-source-characters* *paragraphs-from-orthography*
                     *prescan-character-input-buffer*))
   (when *open-stream-of-source-characters*
     (close-character-source-file))
+
   (let* ((pathname (decode-file-expression/pathname file))
          (file-name (intern (pathname-name pathname))))
     (set-initial-state :name file-name :location pathname)
+
     (establish-character-source/file pathname)
-    (when *prescan-character-input-buffer*
+
+    (when prescan-buffer?  ;; *prescan-character-input-buffer*
       (scan-and-swap-character-buffer))
+
     (let ((*paragraphs-from-orthography* make-orthographic-paragraphs)
           (*tts-after-each-section* trace))
       (declare (special *paragraphs-from-orthography* *tts-after-each-section*))
+
       (analysis-core))
+
     (when *open-stream-of-source-characters*
       (close-character-source-file))))
+
 
 
 ;; N.b. hasn't been run since the early 1990s

@@ -47,7 +47,10 @@ scan-name-position -> add-terminal-to-chart
 
 (defparameter *prescan-character-input-buffer* nil
   "Used as a flag read by analyze-text-from-file for whether or not we do the
-   buffer switch and prescan.")
+   buffer switch and prescan. Read in both analyze-text-from-file, where we
+   need it to run in order to rationalize the sequences of newline characters
+   used to delimit paragraphs, and in analyze-text-from-string, where it
+   only does the prescan if this flag is up.")
 
 ;;--- testing jig
 
@@ -61,7 +64,7 @@ scan-name-position -> add-terminal-to-chart
 
 ;;--- driver
 
-(defun scan-and-swap-character-buffer (&key (echo t))
+(defun scan-and-swap-character-buffer (&key (echo nil))
   "Character-level preprocessor -- Called by one of the text staging
  functions (analyze-text-from-file or analyze-text-from-string) when
  the flag *prescan-character-input-buffer* is up. Copies the just-populated

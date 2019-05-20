@@ -431,13 +431,15 @@
   (when *open-stream-of-source-characters*
     (close-character-source-file))
   (format t "~%analyzing ~A~%~%" pathname)
-  (if time
-    (time (analyze-text-from-file pathname
-                                  :paragraph make-orthographic-paragraphs
-                                  :trace tts-after-para))
-    (analyze-text-from-file pathname
-                            :paragraph make-orthographic-paragraphs
-                            :trace tts-after-para)))
+  (let ((*prescan-character-input-buffer* t))
+    (declare (special *prescan-character-input-buffer*))
+    (if time
+      (time (analyze-text-from-file pathname
+                                    :paragraph make-orthographic-paragraphs
+                                    :trace tts-after-para))
+      (analyze-text-from-file pathname
+                              :paragraph make-orthographic-paragraphs
+                              :trace tts-after-para))))
 
 
 ;;------------ generic, switched routine
