@@ -32,6 +32,7 @@
 ;;; cases
 ;;;-------
 
+(define-title-modifier "adjunct")
 (define-title-modifier "administrative")
 (define-title-modifier "advertising")
 (define-title-modifier "assistant")
