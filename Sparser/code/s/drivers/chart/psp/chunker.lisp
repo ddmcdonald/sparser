@@ -219,7 +219,6 @@
   (let ((pos (starts-at-pos sentence))
         (end (ends-at-pos sentence))
         forms  ev)
-    (declare (special pos end forms ev))
     
     (until (position/<= end pos)
         (reverse *chunks*) ;; this is the return value
@@ -229,7 +228,7 @@
       (setq forms (starting-forms ev *chunk-forms*))
       (when *trace-chunker* ;; tree of remaining part of chart
         (terpri)(tts t pos))
-      
+
       (cond
         (forms ;; at least one of the edges can start a chunk
          (tr :delimit-chunk-start ev forms)
@@ -859,13 +858,15 @@ than a bare "to".  |#
      (not (and (boundp '*chunk*)
                (proper-noun-reduced-relative? e *chunk*)))
 
-     (not (and (member (edge-cat-name e) '(n-fold))
+     (not (and (member (edge-cat-name e) '(measurement #|n-fold|#))
                (boundp '*chunk*)
                (chunk-final-edge? e *chunk*)
                ;(lsp-break "pre number check")
                (loop for ee in (ev-edges (cadr (chunk-ev-list *chunk*)))
                      never (member (form-cat-name ee) '(number)))))
+
      (not (eq (form-cat-name e) 'np))
+     
      (not (and plural-det?
                (member (form-cat-name e) '(common-noun proper-noun))))
                
