@@ -865,6 +865,7 @@ than a bare "to".  |#
                ;(lsp-break "pre number check")
                (loop for ee in (ev-edges (cadr (chunk-ev-list *chunk*)))
                      never (member (form-cat-name ee) '(number)))))
+     (not (eq (form-cat-name e) 'np))
      (not (and plural-det?
                (member (form-cat-name e) '(common-noun proper-noun))))
                
