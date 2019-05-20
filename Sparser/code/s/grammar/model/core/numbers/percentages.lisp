@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1998,2014-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2014-2019  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "percentages"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  October 2017
+;;;  Version:  May 2019
 
 ;; 1.1 (7/16/92 v2.3) pilot instances of the new representation regime
 ;; 1.2 (1/10/94) stubbed measurement to get around load-order paradox
@@ -63,12 +63,6 @@
                           (result-type . :self)
                           (item . number))))
 
-#+ignore
-(define-category n-fold :specializes multiplier
-  :binds ((number number))
-  :realization
-    (:noun "fold" ;; ///plural "folds" does act the same
-     :m number))
 
 
 
