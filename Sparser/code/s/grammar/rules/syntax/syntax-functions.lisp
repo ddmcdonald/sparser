@@ -2379,13 +2379,13 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun maybe-attach-adverb-to-pp (adverb pp)
   ;; Don't accept (adverb comma) edges as premodifiers for PPs
   ;; e.g. block ""Notably, of the nine candidate ORFs..."
-  (cond (*subcat-test*  (not (eq (edge-rule (left-edge-for-referent)) 'adverb-comma)) )
+  (cond (*subcat-test* (not (eq (edge-rule (left-edge-for-referent)) 'adverb-comma)) )
         (t (when *show-adverb-attachment-to-PPs*
              (warn "after ~s attaching adverb ~s to PP ~s~%"
                    (retrieve-surface-string (edge-just-to-left-of (left-edge-for-referent)))
                    (retrieve-surface-string adverb)
                    (retrieve-surface-string pp)))
-           (bind-dli-variable 'modifier adverb (individual-for-ref pp)))))
+           (bind-variable 'modifier adverb pp))))
 
 
 ;;;---------------
