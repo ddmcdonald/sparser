@@ -291,7 +291,8 @@ have with phosphorylated as a preposed modifier.) |#
 ;; e.g. displayed sustained ERK phosphorylation
 (define-category sustained
    :specializes scalar-variation
-   :binds ((theme (:or process scalar-quality))
+   :binds ((theme (:or process scalar-quality
+                       bio-chemical-entity)) ;; see note
            (level scalar-quality)
            (above-level scalar-quality))
    :realization
@@ -301,7 +302,17 @@ have with phosphorylated as a preposed modifier.) |#
        :o theme
        :at level
        :above above-level))
-
+#| Note -- When we say "Is ERK1 sustained at a high level"
+ We really mean is 'the amount of ERK1' at a high level
+ because the only kind of thing that can be at some level
+ is a scalar, or better a scalar amount to reflect the
+ fact that under other conditions it would be a some other
+ level. In a world with more time (this is May 2019), we
+ could work up a procedure for coercing the protein into
+ an amount of protein. Or in general, coerce the object
+ (e.g. 'the pitch of a note over time', 'the livelyhood of
+ the American middle class') to whatever its  natural 
+ scalar variant is. |#
 
 
 ;;--- positive-bio-control
