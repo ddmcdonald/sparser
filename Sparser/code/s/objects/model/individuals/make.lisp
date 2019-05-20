@@ -385,7 +385,7 @@
   "Standard individual-creating call from syntax functions.
    They will often be working with a head consitituent whose
    referent will be a category. To provide a binding site for
-   modifiers we need to replace it with categories with individuals."
+   modifiers we need to replace categories with individuals."
   (etypecase head
     (null)
     (individual
