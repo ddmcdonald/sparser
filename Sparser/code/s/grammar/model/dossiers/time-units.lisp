@@ -16,8 +16,8 @@
 (define-individual 'time-unit :name "month")
 (define-individual 'time-unit :name "year")
 
-;;new time units 
-(define-individual 'time-unit :name "second")
+;;new time units
+(define-named-individual-with-synonyms time-unit ("second" "sec"))
 (define-named-individual-with-synonyms time-unit ("minute" "min"))
 (define-named-individual-with-synonyms time-unit ("hour" "hr"))
 
