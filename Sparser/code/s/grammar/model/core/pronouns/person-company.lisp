@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2016-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2010  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "person-company"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  April 2018
+;;;  version:  May 2019
 
 ;; Broken out of ref.lisp 10/4/16
 
@@ -50,12 +50,11 @@
 (defun respan-pn-with-most-recent-person-anaphor (pn-edge)
   (let ((person-entries (discourse-entry (category-named 'person))))
     (let ((person
-           (if (cdr person-entries) ;; more than one?
-             (most-recently-mentioned person-entries)
-
-             (if person-entries  ;; only one
-               (first (first person-entries))
-
+           (if person-entries
+             (if (cdr person-entries) ;; more than one?
+               (most-recently-mentioned person-entries)
+               (car person-entries))
+             (else
                nil  ;; //could be clever here and put in a placeholder that
                     ;; could be noticed in the dh later.
                     ;; Alternatively we could look now for some uncategorized
@@ -82,10 +81,13 @@
       (when person
         (tr :subverting-pn-edge pn-edge (category-named 'person) person)
         ;; we have the edge in our hand, we just change the category
-        ;; and referent
-        (setf (edge-category pn-edge) (category-named 'person))
-        ;; keep the form, it could be 'possessive', which is useful
-        (set-edge-referent pn-edge person))
+        ;; and referent of this edge
+        (unless (typep person 'discourse-mention)
+          (break "Expected discourse references now to be mentions: ~a" person))
+        (let ((person-ref (base-description person)))
+          (setf (edge-category pn-edge) (category-named 'person))
+          ;; keep the form, it could be 'possessive', which is useful
+          (set-edge-referent pn-edge person-ref)))
 
       pn-edge)))
 
