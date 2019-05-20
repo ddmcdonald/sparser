@@ -215,6 +215,7 @@
 
 ;; (p/s "Is stat3 expressed in liver?")
 ;; (p/s "is the BRAF-NRAS complex sustained in time?")
+;; (p "Is phosphorylated MAPK1 sustained at a high level?")
 (defun make-polar-participle-question (start-pos end-pos edges)
   (tr :wh-walk "make-polar-participle-question")
   (let* ((be-edge (first edges))  ;; is
@@ -238,7 +239,11 @@
              ;; We know this a passive clause because of the
              ;; triggering pattern
              (j (assimilate-object i np)))
-                 
+
+        (unless j
+          (when *debug-questions*
+            (break "assimilate-object of ~a and ~a failed" i np)))
+
         (let ((edge 
                (make-edge-over-long-span
                 start-pos end-pos
