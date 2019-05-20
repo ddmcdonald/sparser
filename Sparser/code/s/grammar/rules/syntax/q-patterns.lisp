@@ -305,7 +305,8 @@
          (q (compose wh complement))) ;;//// do the fold manouver
     ;; "Which pathways use these" -- though that ex has problems
     (if (null q)
-      (when *show-wh-problems*
+      (when *debug-questions*
+        (push-debug `(,wh ,complement ,edges))
         (error "Composition with ~a failed" complement))
       (make-edge-over-long-span
        start-pos end-pos

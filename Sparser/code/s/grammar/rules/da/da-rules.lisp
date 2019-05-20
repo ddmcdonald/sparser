@@ -1818,9 +1818,7 @@ assumed. |#
 (defun wh-vp-edge (whpn vp)
   (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
     ;; can we tease out the aux at the beginning of the vp?
-    (when *debug-questions*
-      (push-debug `(,whpn ,vp))
-      (break "wh-vp-edge not finished"))))
+    (wh-initial-two-edges whpn (list whpn vp) *da-starting-position* end-pos)))
 
 
 (define-debris-analysis-rule whpn-vg-transitive-no-object
