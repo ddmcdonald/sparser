@@ -1028,7 +1028,9 @@ than a bare "to".  |#
          (adverb
           (not (eq ecat 'also)))
          (proper-noun ;; don't incorporate days of the week, names of months
-          (not (itypep (edge-referent e) 'time)))
+          (if (itypep (edge-referent e) 'time)
+            evlist ;; unless they're being modified: "last Tuesday" 
+            t)) ;; otherwise do incorporate proper names
          (verb+ing
           ;;(lsp-break "check verb+ing in NG")
           (cond ((setq preceding-noun-refs (preceding-noun-refs edges))
