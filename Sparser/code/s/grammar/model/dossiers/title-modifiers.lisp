@@ -13,6 +13,7 @@
 
 ;;--- relative status
 
+(define-title-modifier "adjunct")
 (define-title-modifier "assistant")
 (define-title-modifier "associate")
 (define-title-modifier "chief")
