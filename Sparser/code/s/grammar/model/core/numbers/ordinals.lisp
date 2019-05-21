@@ -248,6 +248,7 @@ that use the syntax function make-ordinal-item to form their interpretation.
         
 
 ;;--- "the first"
+#+ignore
 (def-form-rule (det ordinal)
   :form quantifier
   :head :left-edge ;; form edge is always the 'head'
@@ -276,6 +277,7 @@ plurality appears out of date - variables no on top.)|#
   ;; applied, then for this individual we'd bind (FoM actually)
   ;; the item variable. Approximating that my using ad-hoc lambda 
   ;; variable manipulation
+  #+ignore
   (let ((num-var (find-variable-for-category 'number 'position-in-a-sequence))
         (item-var (find-variable-for-category 'item 'position-in-a-sequence))
         (head-category (etypecase head
@@ -288,7 +290,9 @@ plurality appears out of date - variables no on top.)|#
     ;; Is this the best represention of the 'item', 
 
     (setq i (bind-variable num-var ordinal i))
-    i))
+    i)
+  (bind-variable 'ordinal (value-of 'number ordinal) head)
+  )
 
 
 (when t ;;/// these should get swallowed into reversible rdata  

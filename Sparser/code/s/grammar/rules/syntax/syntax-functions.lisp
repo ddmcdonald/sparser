@@ -110,7 +110,7 @@
 (define-lambda-variable 'predication
     nil 'top) ;needed for interpretation of "more effective"
 
-(define-lambda-variable 'ordinal
+(define-lambda-variable 'ordinal ;; used for "third" in "the third gene"
     nil 'top)
 
 (define-lambda-variable 'appositive-description
