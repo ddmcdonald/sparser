@@ -723,11 +723,14 @@
 
 
 (define-category involve :specializes bio-relation
+  :binds ((object protein))
+  :restrict ((theme (:or bio-process bio-mechanism)))
   :realization
   (:verb "involve" ;; keyword: ENDS-IN-ING
          :noun "involvement"
          :etf (svo-passive)
-         :o theme
+         :s theme
+         :o object
          :in theme))
 
 (define-category keep :specializes bio-relation
