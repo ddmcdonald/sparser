@@ -56,7 +56,6 @@
        (setq
         *save-clause-semantics*
         (append
-         (do-clic-clause-rewrites
              (loop for m in mentions
                    unless (and (individual-p (base-description m))
                                (itypep (base-description m)
@@ -64,7 +63,7 @@
                                          prepositional ;; new? part of the meaning of category::in
                                          copular-predication-of-pp bio-pair
                                          hyphenated-triple)))
-                   collect (clause-semantics-for-mention m)))
+                   collect (clause-semantics-for-mention m))
          *save-clause-semantics*))
        (push (reverse *save-clause-semantics*) *clause-semantics-list*)
        (setq *save-clause-semantics* :mention-clauses)))
