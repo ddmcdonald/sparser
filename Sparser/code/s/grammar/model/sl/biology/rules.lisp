@@ -151,17 +151,17 @@
 
 ;; Gly33
 (def-cfr residue-on-protein (amino-acid number)
-  :form np
+  :form n-bar
   :referent (:function create-residue-from-amino-acid-position left-edge right-edge))
 
 (def-cfr residue-on-protein (single-capitalized-letter number)
-  :form np
+  :form n-bar
   :referent (:function create-residue-from-amino-acid-position left-edge right-edge))
 
 ;; "1980" is treated as a YEAR, not a number
 ;;  so "S1980" was not recognized as a residue
 (def-cfr residue-on-protein (single-capitalized-letter year)
-  :form np
+  :form n-bar
   :referent (:function create-residue-from-amino-acid-position left-edge right-edge))
 
 
@@ -204,16 +204,16 @@
 
 ;; "Lys residues"
 (def-cfr residue-on-protein (amino-acid residue-on-protein)
-  :form np
+  :form n-bar
   :referent (:function bind-amino-acid left-edge right-edge))
 
 (def-cfr residue-on-protein (single-capitalized-letter residue-on-protein)
-  :form np
+  :form n-bar
   :referent (:function bind-amino-acid left-edge right-edge))
 
 ;; "Lys residues"
 (def-cfr residue-on-protein (single-capitalized-letter residue-on-protein)
-  :form np
+  :form n-bar
   :referent (:function bind-amino-acid left-edge right-edge))
 
 (defun bind-amino-acid (amino-acid residue-on-protein)
@@ -228,7 +228,7 @@
   (create-residue-on-protein residue-on-protein nil position nil))
 
 (def-cfr residue-on-protein (protein residue-on-protein)
-  :form np
+  :form n-bar
   :referent (:function bind-substrate-for-residue left-edge right-edge))
 
 (defun bind-substrate-for-residue (protein residue)
@@ -291,19 +291,19 @@
 ; "the EGFR T669A mutant"
 
 (def-cfr protein (protein point-mutation)
-  :form NP
+  :form n-bar
   :referent (:function bind-protein-mutation right-edge left-edge))
 
 (defun bind-protein-mutation (mutation protein)
   (bind-dli-variable 'mutation mutation protein))
 
 (def-cfr protein (point-mutation protein)
-  :form NP
+  :form n-bar
   :referent (:function bind-protein-mutation left-edge right-edge))
 
 ;; MUST DEAL WITH CONFLICT WITH "Ras17N"
 (def-cfr protein (protein number)
-  :form NP
+  :form n-bar
   :referent (:function make-protein-variant left-edge right-edge))
 
 (defun make-protein-variant (protein number)
