@@ -1,109 +1,108 @@
 (in-package :cl-user)
 (defparameter *clause-semantics-list*
 '(("What genes does mir-128 regulate?"
-   (:var mv36 :isa regulate :object mv33 :agent mv37 :present "PRESENT" :raw-text "regulate")
-   (:var mv33 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv37 :isa bio-entity :name "mir-128"))
+   (:var mv5 :isa regulate :object mv2 :agent mv6 :present "PRESENT" :raw-text "regulate")
+   (:var mv2 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv6 :isa bio-entity :name "mir-128"))
   ("what transcription factors does miR-200c regulate?"
-   (:var mv42 :isa regulate :object mv38 :agent mv39 :present "PRESENT" :raw-text "regulate")
-   (:var mv38 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv39 :isa micro-rna :raw-text "miR-200c" :name "MIR200C" :uid "NCIT:C82157"))
+   (:var mv11 :isa regulate :object mv7 :agent mv8 :present "PRESENT" :raw-text "regulate")
+   (:var mv7 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv8 :isa micro-rna :raw-text "miR-200c" :name "MIR200C" :uid "NCIT:C82157"))
   ("Tell me about stat3's involvement in apoptosis"
-   (:var mv44 :isa tell :theme mv48 :theme mv45 :present "PRESENT")
-   (:var mv48 :isa involve :theme mv50 :participant mv47)
-   (:var mv50 :isa apoptosis :raw-text "apoptosis")
-   (:var mv47 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv45 :isa interlocutor :name "speaker"))
+   (:var mv13 :isa tell :theme mv17 :theme mv14 :present "PRESENT")
+   (:var mv17 :isa involve :theme mv19 :participant mv16)
+   (:var mv19 :isa apoptosis :raw-text "apoptosis")
+   (:var mv16 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv14 :isa interlocutor :name "speaker"))
   ("What are the genes that have strong evidence of being regulated by mir-122-5p?"
-   (:var mv55 :isa be :subject mv54 :predicate mv57 :present "PRESENT") (:var mv54 :isa what)
-   (:var mv57 :isa gene :predication mv59 :has-determiner "THE" :raw-text "genes")
-   (:var mv59 :isa have :possessor mv57 :that-rel t :thing-possessed mv61 :present "PRESENT")
-   (:var mv61 :isa evidence :fact mv64 :predication mv60)
-   (:var mv64 :isa regulate :agent mv53 :progressive mv63 :raw-text "regulated")
-   (:var mv53 :isa micro-rna :raw-text "mir-122-5p" :name "microRNA 122-5p" :uid "MIMAT0000421")
-   (:var mv63 :isa be) (:var mv60 :isa strong))
+   (:var mv24 :isa be :subject mv23 :predicate mv26 :present "PRESENT") (:var mv23 :isa what)
+   (:var mv26 :isa gene :predication mv28 :has-determiner "THE" :raw-text "genes")
+   (:var mv28 :isa have :possessor mv26 :that-rel t :thing-possessed mv30 :present "PRESENT")
+   (:var mv30 :isa evidence :fact mv33 :predication mv29)
+   (:var mv33 :isa regulate :agent mv22 :progressive mv32 :raw-text "regulated")
+   (:var mv22 :isa micro-rna :raw-text "mir-122-5p" :name "microRNA 122-5p" :uid "MIMAT0000421")
+   (:var mv32 :isa be) (:var mv29 :isa strong))
   ("What is stat3's involvement in apoptosis?"
-   (:var mv70 :isa be :subject mv69 :predicate mv72 :present "PRESENT") (:var mv69 :isa what)
-   (:var mv72 :isa involve :theme mv74 :participant mv71)
-   (:var mv74 :isa apoptosis :raw-text "apoptosis")
-   (:var mv71 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv39 :isa be :subject mv38 :predicate mv41 :present "PRESENT") (:var mv38 :isa what)
+   (:var mv41 :isa involve :theme mv43 :participant mv40)
+   (:var mv43 :isa apoptosis :raw-text "apoptosis")
+   (:var mv40 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What is stat3's role in apoptosis?"
-   (:var mv78 :isa be :subject mv77 :predicate mv80 :present "PRESENT") (:var mv77 :isa what)
-   (:var mv80 :isa role :process mv82 :participant mv79)
-   (:var mv82 :isa apoptosis :raw-text "apoptosis")
-   (:var mv79 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv47 :isa be :subject mv46 :predicate mv49 :present "PRESENT") (:var mv46 :isa what)
+   (:var mv49 :isa role :process mv51 :participant mv48)
+   (:var mv51 :isa apoptosis :raw-text "apoptosis")
+   (:var mv48 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What is stat3's role in apoptotic regulation?"
-   (:var mv86 :isa be :subject mv85 :predicate mv88 :present "PRESENT") (:var mv85 :isa what)
-   (:var mv88 :isa role :process mv92 :participant mv87)
-   (:var mv92 :isa regulate :|cellular-process-OR-agent| mv90 :raw-text "regulation")
-   (:var mv90 :isa apoptosis :raw-text "apoptotic")
-   (:var mv87 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv55 :isa be :subject mv54 :predicate mv57 :present "PRESENT") (:var mv54 :isa what)
+   (:var mv57 :isa role :process mv61 :participant mv56)
+   (:var mv61 :isa regulate :|cellular-process-OR-agent| mv59 :raw-text "regulation")
+   (:var mv59 :isa apoptosis :raw-text "apoptotic")
+   (:var mv56 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What is the evidence that miR-148a-3p targets DNMT1?"
-   (:var mv97 :isa be :subject mv96 :predicate mv103 :present "PRESENT") (:var mv96 :isa what)
-   (:var mv103 :isa evidence :statement mv102 :has-determiner "THE")
-   (:var mv102 :isa target :agent mv94 :object mv95 :present "PRESENT" :raw-text "targets")
-   (:var mv94 :isa micro-rna :raw-text "miR-148a-3p" :name "microRNA 148a-3p" :uid "MIMAT0000243")
-   (:var mv95 :isa protein :raw-text "DNMT1" :uid "UP:P26358" :name "DNMT1_HUMAN"))
+   (:var mv66 :isa be :subject mv65 :predicate mv72 :present "PRESENT") (:var mv65 :isa what)
+   (:var mv72 :isa evidence :statement mv71 :has-determiner "THE")
+   (:var mv71 :isa target :agent mv63 :object mv64 :present "PRESENT" :raw-text "targets")
+   (:var mv63 :isa micro-rna :raw-text "miR-148a-3p" :name "microRNA 148a-3p" :uid "MIMAT0000243")
+   (:var mv64 :isa protein :raw-text "DNMT1" :uid "UP:P26358" :name "DNMT1_HUMAN"))
   ("what transcription factors does miR-124-3p regulate?"
-   (:var mv108 :isa regulate :object mv104 :agent mv105 :present "PRESENT" :raw-text "regulate")
-   (:var mv104 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv105 :isa micro-rna :raw-text "miR-124-3p" :name "microRNA 124-3p" :uid "MIMAT0000422"))
+   (:var mv77 :isa regulate :object mv73 :agent mv74 :present "PRESENT" :raw-text "regulate")
+   (:var mv73 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv74 :isa micro-rna :raw-text "miR-124-3p" :name "microRNA 124-3p" :uid "MIMAT0000422"))
   ("what transcription factors does miR-200c-3p regulate?"
-   (:var mv113 :isa regulate :object mv109 :agent mv110 :present "PRESENT" :raw-text "regulate")
-   (:var mv109 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv110 :isa micro-rna :raw-text "miR-200c-3p" :name "microRNA 200c-3p" :uid
-    "MIMAT0000617"))
+   (:var mv82 :isa regulate :object mv78 :agent mv79 :present "PRESENT" :raw-text "regulate")
+   (:var mv78 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv79 :isa micro-rna :raw-text "miR-200c-3p" :name "microRNA 200c-3p" :uid "MIMAT0000617"))
   ("What is the mutation significance of TP53 in ovarian cancer?"
-   (:var mv117 :isa be :subject mv116 :predicate mv120 :present "PRESENT") (:var mv116 :isa what)
-   (:var mv120 :isa significance :agent mv114 :has-determiner "THE" :modifier mv119)
-   (:var mv114 :isa protein :context mv115 :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
-   (:var mv115 :isa cancer :name "ovarian cancer" :uid "TS-1223")
-   (:var mv119 :isa mutation :raw-text "mutation"))
+   (:var mv86 :isa be :subject mv85 :predicate mv89 :present "PRESENT") (:var mv85 :isa what)
+   (:var mv89 :isa significance :agent mv83 :has-determiner "THE" :modifier mv88)
+   (:var mv83 :isa protein :context mv84 :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
+   (:var mv84 :isa cancer :name "ovarian cancer" :uid "TS-1223")
+   (:var mv88 :isa mutation :raw-text "mutation"))
   ("What is the mutation significance of TP53 for ovarian cancer?"
-   (:var mv128 :isa be :subject mv127 :predicate mv131 :present "PRESENT") (:var mv127 :isa what)
-   (:var mv131 :isa significance :result mv126 :agent mv125 :has-determiner "THE" :modifier mv130)
-   (:var mv126 :isa cancer :name "ovarian cancer" :uid "TS-1223")
-   (:var mv125 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
-   (:var mv130 :isa mutation :raw-text "mutation"))
+   (:var mv97 :isa be :subject mv96 :predicate mv100 :present "PRESENT") (:var mv96 :isa what)
+   (:var mv100 :isa significance :result mv95 :agent mv94 :has-determiner "THE" :modifier mv99)
+   (:var mv95 :isa cancer :name "ovarian cancer" :uid "TS-1223")
+   (:var mv94 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
+   (:var mv99 :isa mutation :raw-text "mutation"))
   ("What are synonyms for BRAF?"
-   (:var mv137 :isa be :subject mv136 :predicate mv138 :present "PRESENT") (:var mv136 :isa what)
-   (:var mv138 :isa has-synonym :item mv140)
-   (:var mv140 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv106 :isa be :subject mv105 :predicate mv107 :present "PRESENT") (:var mv105 :isa what)
+   (:var mv107 :isa has-synonym :item mv109)
+   (:var mv109 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("What are some genes that are mutated in breast cancer?"
-   (:var mv144 :isa be :subject mv143 :predicate mv146 :present "PRESENT") (:var mv143 :isa what)
-   (:var mv146 :isa gene :predication mv151 :quantifier mv145 :raw-text "genes")
-   (:var mv151 :isa mutation :object mv146 :that-rel t :context mv142 :present "PRESENT" :raw-text
+   (:var mv113 :isa be :subject mv112 :predicate mv115 :present "PRESENT") (:var mv112 :isa what)
+   (:var mv115 :isa gene :predication mv120 :quantifier mv114 :raw-text "genes")
+   (:var mv120 :isa mutation :object mv115 :that-rel t :context mv111 :present "PRESENT" :raw-text
     "mutated")
-   (:var mv142 :isa cancer :name "breast cancer" :uid "TS-0591")
-   (:var mv145 :isa some :word "some"))
+   (:var mv111 :isa cancer :name "breast cancer" :uid "TS-0591")
+   (:var mv114 :isa some :word "some"))
   ("what genes are mutated in breast cancer?"
-   (:var mv159 :isa mutation :object mv155 :context mv153 :present "PRESENT" :raw-text "mutated")
-   (:var mv155 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv153 :isa cancer :name "breast cancer" :uid "TS-0591"))
+   (:var mv128 :isa mutation :object mv124 :context mv122 :present "PRESENT" :raw-text "mutated")
+   (:var mv124 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv122 :isa cancer :name "breast cancer" :uid "TS-0591"))
   ("Does phosphorylation at S221 activate MAP2K2?"
-   (:var mv172 :isa polar-question :statement mv170)
-   (:var mv170 :isa bio-activate :agent mv163 :object mv161 :raw-text "activate")
-   (:var mv163 :isa phosphorylate :site mv169 :raw-text "phosphorylation")
-   (:var mv169 :isa residue-on-protein :raw-text "S221" :position mv167 :amino-acid mv166)
-   (:var mv167 :isa number :value 221) (:var mv166 :isa amino-acid :name "serine" :letter "S")
-   (:var mv161 :isa protein :raw-text "MAP2K2" :uid "UP:P36507" :name "MP2K2_HUMAN"))
+   (:var mv141 :isa polar-question :statement mv139)
+   (:var mv139 :isa bio-activate :agent mv132 :object mv130 :raw-text "activate")
+   (:var mv132 :isa phosphorylate :site mv138 :raw-text "phosphorylation")
+   (:var mv138 :isa residue-on-protein :raw-text "S221" :position mv136 :amino-acid mv135)
+   (:var mv136 :isa number :value 221) (:var mv135 :isa amino-acid :name "serine" :letter "S")
+   (:var mv130 :isa protein :raw-text "MAP2K2" :uid "UP:P36507" :name "MP2K2_HUMAN"))
   ("Does phosphorylation at S222 activate MAP2K1?"
-   (:var mv184 :isa polar-question :statement mv182)
-   (:var mv182 :isa bio-activate :agent mv175 :object mv173 :raw-text "activate")
-   (:var mv175 :isa phosphorylate :site mv181 :raw-text "phosphorylation")
-   (:var mv181 :isa residue-on-protein :raw-text "S222" :position mv179 :amino-acid mv178)
-   (:var mv179 :isa number :value 222) (:var mv178 :isa amino-acid :name "serine" :letter "S")
-   (:var mv173 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
+   (:var mv153 :isa polar-question :statement mv151)
+   (:var mv151 :isa bio-activate :agent mv144 :object mv142 :raw-text "activate")
+   (:var mv144 :isa phosphorylate :site mv150 :raw-text "phosphorylation")
+   (:var mv150 :isa residue-on-protein :raw-text "S222" :position mv148 :amino-acid mv147)
+   (:var mv148 :isa number :value 222) (:var mv147 :isa amino-acid :name "serine" :letter "S")
+   (:var mv142 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
   ("Simulate the MAP2K1-MAPK1 complex"
-   (:var mv187 :isa simulate :object mv191 :present "PRESENT" :raw-text "Simulate")
-   (:var mv191 :isa bio-complex :has-determiner "THE" :raw-text "MAP2K1-MAPK1" :component mv186
-    :component mv185)
-   (:var mv186 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
-   (:var mv185 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
+   (:var mv156 :isa simulate :object mv160 :present "PRESENT" :raw-text "Simulate")
+   (:var mv160 :isa bio-complex :has-determiner "THE" :raw-text "MAP2K1-MAPK1" :component mv155
+    :component mv154)
+   (:var mv155 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
+   (:var mv154 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
   ("What are the members of ERK?"
-   (:var mv193 :isa be :subject mv192 :predicate mv195 :present "PRESENT") (:var mv192 :isa what)
-   (:var mv195 :isa member :set mv197 :has-determiner "THE")
-   (:var mv197 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv162 :isa be :subject mv161 :predicate mv164 :present "PRESENT") (:var mv161 :isa what)
+   (:var mv164 :isa member :set mv166 :has-determiner "THE")
+   (:var mv166 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -113,1117 +112,1117 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("What are the members of MEK?"
-   (:var mv200 :isa be :subject mv199 :predicate mv202 :present "PRESENT") (:var mv199 :isa what)
-   (:var mv202 :isa member :set mv204 :has-determiner "THE")
-   (:var mv204 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv169 :isa be :subject mv168 :predicate mv171 :present "PRESENT") (:var mv168 :isa what)
+   (:var mv171 :isa member :set mv173 :has-determiner "THE")
+   (:var mv173 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK"))
   ("What are the members of RAF?"
-   (:var mv207 :isa be :subject mv206 :predicate mv209 :present "PRESENT") (:var mv206 :isa what)
-   (:var mv209 :isa member :set mv211 :has-determiner "THE")
-   (:var mv211 :isa protein-family :raw-text "RAF" :name "Raf" :count 3 :family-members
+   (:var mv176 :isa be :subject mv175 :predicate mv178 :present "PRESENT") (:var mv175 :isa what)
+   (:var mv178 :isa member :set mv180 :has-determiner "THE")
+   (:var mv180 :isa protein-family :raw-text "RAF" :name "Raf" :count 3 :family-members
     ((protein (:name "RAF1_HUMAN") (:uid "UP:P04049"))
      (protein (:name "BRAF_HUMAN") (:uid "UP:P15056"))
      (protein (:name "ARAF_HUMAN") (:uid "UP:P10398")))
     :uid "FA:03114"))
   ("What are the members of the RAF family?"
-   (:var mv214 :isa be :subject mv213 :predicate mv216 :present "PRESENT") (:var mv213 :isa what)
-   (:var mv216 :isa member :set mv222 :has-determiner "THE")
-   (:var mv222 :isa protein-family :has-determiner "THE" :raw-text "RAF" :name "Raf" :count 3
+   (:var mv183 :isa be :subject mv182 :predicate mv185 :present "PRESENT") (:var mv182 :isa what)
+   (:var mv185 :isa member :set mv191 :has-determiner "THE")
+   (:var mv191 :isa protein-family :has-determiner "THE" :raw-text "RAF" :name "Raf" :count 3
     :family-members
     ((protein (:name "RAF1_HUMAN") (:uid "UP:P04049"))
      (protein (:name "BRAF_HUMAN") (:uid "UP:P15056"))
      (protein (:name "ARAF_HUMAN") (:uid "UP:P10398")))
     :uid "FA:03114"))
   ("What are the members of the RAS family?"
-   (:var mv226 :isa be :subject mv225 :predicate mv228 :present "PRESENT") (:var mv225 :isa what)
-   (:var mv228 :isa member :set mv224 :has-determiner "THE")
-   (:var mv224 :isa protein-family :has-determiner "THE" :raw-text "RAS family" :name "Ras" :count
+   (:var mv195 :isa be :subject mv194 :predicate mv197 :present "PRESENT") (:var mv194 :isa what)
+   (:var mv197 :isa member :set mv193 :has-determiner "THE")
+   (:var mv193 :isa protein-family :has-determiner "THE" :raw-text "RAS family" :name "Ras" :count
     3 :family-members
     ((protein (:name "RASN_HUMAN") (:uid "UP:P01111"))
      (protein (:name "RASK_HUMAN") (:uid "UP:P01116"))
      (protein (:name "RASH_HUMAN") (:uid "UP:P01112")))
     :uid "FA:03663"))
   ("What is another name for BRAF?"
-   (:var mv233 :isa be :subject mv232 :predicate mv236 :present "PRESENT") (:var mv232 :isa what)
-   (:var mv236 :isa has-name :item mv239 :quantifier mv234)
-   (:var mv239 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv234 :isa another :word "another"))
+   (:var mv202 :isa be :subject mv201 :predicate mv205 :present "PRESENT") (:var mv201 :isa what)
+   (:var mv205 :isa has-name :item mv208 :quantifier mv203)
+   (:var mv208 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv203 :isa another :word "another"))
   ("What is another name for MAP2K1?"
-   (:var mv243 :isa be :subject mv242 :predicate mv246 :present "PRESENT") (:var mv242 :isa what)
-   (:var mv246 :isa has-name :item mv241 :quantifier mv244)
-   (:var mv241 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
-   (:var mv244 :isa another :word "another"))
+   (:var mv212 :isa be :subject mv211 :predicate mv215 :present "PRESENT") (:var mv211 :isa what)
+   (:var mv215 :isa has-name :item mv210 :quantifier mv213)
+   (:var mv210 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
+   (:var mv213 :isa another :word "another"))
   ("How does STAT3 affect c-fos"
-   (:var mv254 :isa affect :manner mv252 :agent mv250 :object mv251 :present "PRESENT" :raw-text
+   (:var mv223 :isa affect :manner mv221 :agent mv219 :object mv220 :present "PRESENT" :raw-text
     "affect")
-   (:var mv252 :isa how)
-   (:var mv250 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv251 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("List some genes regulated by elk1" (:var mv256 :isa list :theme mv258 :present "PRESENT")
-   (:var mv258 :isa gene :predication mv259 :quantifier mv257 :raw-text "genes")
-   (:var mv259 :isa regulate :object mv258 :agent mv255 :past "PAST" :raw-text "regulated")
-   (:var mv255 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv257 :isa some :word "some"))
+   (:var mv221 :isa how)
+   (:var mv219 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv220 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("List some genes regulated by elk1" (:var mv225 :isa list :theme mv227 :present "PRESENT")
+   (:var mv227 :isa gene :predication mv228 :quantifier mv226 :raw-text "genes")
+   (:var mv228 :isa regulate :object mv227 :agent mv224 :past "PAST" :raw-text "regulated")
+   (:var mv224 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv226 :isa some :word "some"))
   ("List some of the genes regulated by elk1"
-   (:var mv263 :isa list :theme mv267 :present "PRESENT")
-   (:var mv267 :isa gene :predication mv268 :quantifier mv264 :has-determiner "THE" :raw-text
+   (:var mv232 :isa list :theme mv236 :present "PRESENT")
+   (:var mv236 :isa gene :predication mv237 :quantifier mv233 :has-determiner "THE" :raw-text
     "genes")
-   (:var mv268 :isa regulate :object mv267 :agent mv262 :past "PAST" :raw-text "regulated")
-   (:var mv262 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv264 :isa some :word "some"))
-  ("List the genes regulated by elk1" (:var mv274 :isa list :theme mv276 :present "PRESENT")
-   (:var mv276 :isa gene :predication mv277 :has-determiner "THE" :raw-text "genes")
-   (:var mv277 :isa regulate :object mv276 :agent mv273 :past "PAST" :raw-text "regulated")
-   (:var mv273 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+   (:var mv237 :isa regulate :object mv236 :agent mv231 :past "PAST" :raw-text "regulated")
+   (:var mv231 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv233 :isa some :word "some"))
+  ("List the genes regulated by elk1" (:var mv243 :isa list :theme mv245 :present "PRESENT")
+   (:var mv245 :isa gene :predication mv246 :has-determiner "THE" :raw-text "genes")
+   (:var mv246 :isa regulate :object mv245 :agent mv242 :past "PAST" :raw-text "regulated")
+   (:var mv242 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
   ("What are the common upstream regulators of AKT1 and BRAF?"
-   (:var mv282 :isa be :subject mv281 :predicate mv287 :present "PRESENT") (:var mv281 :isa what)
-   (:var mv287 :isa regulator :theme mv291 :has-determiner "THE" :predication mv284 :context mv285
+   (:var mv251 :isa be :subject mv250 :predicate mv256 :present "PRESENT") (:var mv250 :isa what)
+   (:var mv256 :isa regulator :theme mv260 :has-determiner "THE" :predication mv253 :context mv254
     :raw-text "regulators")
-   (:var mv291 :isa collection :raw-text "AKT1 and BRAF" :type protein :number 2 :items
-    (mv280 mv290))
-   (:var mv280 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv290 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv284 :isa common) (:var mv285 :isa upstream-segment :raw-text "upstream"))
+   (:var mv260 :isa collection :raw-text "AKT1 and BRAF" :type protein :number 2 :items
+    (mv249 mv259))
+   (:var mv249 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv259 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv253 :isa common) (:var mv254 :isa upstream-segment :raw-text "upstream"))
   ("What are the common upstreams of AKT and BRAF?"
-   (:var mv294 :isa be :subject mv293 :predicate mv297 :present "PRESENT") (:var mv293 :isa what)
-   (:var mv297 :isa upstream-segment :pathwaycomponent mv302 :has-determiner "THE" :predication
-    mv296 :raw-text "upstreams")
-   (:var mv302 :isa collection :raw-text "AKT and BRAF" :type protein-family :number 2 :items
-    (mv299 mv301))
-   (:var mv299 :isa protein-family :raw-text "AKT" :name "Rac" :count 3 :family-members
+   (:var mv263 :isa be :subject mv262 :predicate mv266 :present "PRESENT") (:var mv262 :isa what)
+   (:var mv266 :isa upstream-segment :pathwaycomponent mv271 :has-determiner "THE" :predication
+    mv265 :raw-text "upstreams")
+   (:var mv271 :isa collection :raw-text "AKT and BRAF" :type protein-family :number 2 :items
+    (mv268 mv270))
+   (:var mv268 :isa protein-family :raw-text "AKT" :name "Rac" :count 3 :family-members
     ((protein (:name "AKT3_HUMAN") (:uid "UP:Q9Y243"))
      (protein (:name "AKT2_HUMAN") (:uid "UP:P31751"))
      (protein (:name "AKT1_HUMAN") (:uid "UP:P31749")))
     :uid "FA:03066")
-   (:var mv301 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv296 :isa common))
+   (:var mv270 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv265 :isa common))
   ("What are the common upstreams of AKT1 and BRAF?"
-   (:var mv306 :isa be :subject mv305 :predicate mv309 :present "PRESENT") (:var mv305 :isa what)
-   (:var mv309 :isa upstream-segment :pathwaycomponent mv313 :has-determiner "THE" :predication
-    mv308 :raw-text "upstreams")
-   (:var mv313 :isa collection :raw-text "AKT1 and BRAF" :type protein :number 2 :items
-    (mv304 mv312))
-   (:var mv304 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv312 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv308 :isa common))
+   (:var mv275 :isa be :subject mv274 :predicate mv278 :present "PRESENT") (:var mv274 :isa what)
+   (:var mv278 :isa upstream-segment :pathwaycomponent mv282 :has-determiner "THE" :predication
+    mv277 :raw-text "upstreams")
+   (:var mv282 :isa collection :raw-text "AKT1 and BRAF" :type protein :number 2 :items
+    (mv273 mv281))
+   (:var mv273 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv281 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv277 :isa common))
   ("What are the genes that smad2 regulates?"
-   (:var mv317 :isa be :subject mv316 :predicate mv319 :present "PRESENT") (:var mv316 :isa what)
-   (:var mv319 :isa gene :predication mv321 :has-determiner "THE" :raw-text "genes")
-   (:var mv321 :isa regulate :object mv319 :that-rel t :agent mv315 :present "PRESENT" :raw-text
+   (:var mv286 :isa be :subject mv285 :predicate mv288 :present "PRESENT") (:var mv285 :isa what)
+   (:var mv288 :isa gene :predication mv290 :has-determiner "THE" :raw-text "genes")
+   (:var mv290 :isa regulate :object mv288 :that-rel t :agent mv284 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv315 :isa protein :raw-text "smad2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
+   (:var mv284 :isa protein :raw-text "smad2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
   ("What are the miRNAs that regulate EGFR, SRF, STAT3, JAK2 and SMAD3?"
-   (:var mv326 :isa be :subject mv325 :predicate mv328 :present "PRESENT") (:var mv325 :isa what)
-   (:var mv328 :isa micro-rna :predication mv330 :has-determiner "THE" :raw-text "miRNAs")
-   (:var mv330 :isa regulate :agent mv328 :that-rel t :object mv334 :present "PRESENT" :raw-text
+   (:var mv295 :isa be :subject mv294 :predicate mv297 :present "PRESENT") (:var mv294 :isa what)
+   (:var mv297 :isa micro-rna :predication mv299 :has-determiner "THE" :raw-text "miRNAs")
+   (:var mv299 :isa regulate :agent mv297 :that-rel t :object mv303 :present "PRESENT" :raw-text
     "regulate")
-   (:var mv334 :isa collection :raw-text "EGFR, SRF, STAT3, JAK2 and SMAD3" :type protein :number 5
-    :items (mv331 mv332 mv322 mv323 mv324))
-   (:var mv331 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
-   (:var mv332 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv322 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv323 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
-   (:var mv324 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN"))
+   (:var mv303 :isa collection :raw-text "EGFR, SRF, STAT3, JAK2 and SMAD3" :type protein :number 5
+    :items (mv300 mv301 mv291 mv292 mv293))
+   (:var mv300 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
+   (:var mv301 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv291 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv292 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
+   (:var mv293 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN"))
   ("What are the miRNAs that regulate EGFR, SRF, and STAT3"
-   (:var mv337 :isa be :subject mv336 :predicate mv339 :present "PRESENT") (:var mv336 :isa what)
-   (:var mv339 :isa micro-rna :predication mv341 :has-determiner "THE" :raw-text "miRNAs")
-   (:var mv341 :isa regulate :agent mv339 :that-rel t :object mv345 :present "PRESENT" :raw-text
+   (:var mv306 :isa be :subject mv305 :predicate mv308 :present "PRESENT") (:var mv305 :isa what)
+   (:var mv308 :isa micro-rna :predication mv310 :has-determiner "THE" :raw-text "miRNAs")
+   (:var mv310 :isa regulate :agent mv308 :that-rel t :object mv314 :present "PRESENT" :raw-text
     "regulate")
-   (:var mv345 :isa collection :raw-text "EGFR, SRF, and STAT3" :type protein :number 3 :items
-    (mv342 mv343 mv335))
-   (:var mv342 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
-   (:var mv343 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv335 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv314 :isa collection :raw-text "EGFR, SRF, and STAT3" :type protein :number 3 :items
+    (mv311 mv312 mv304))
+   (:var mv311 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
+   (:var mv312 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv304 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What are the regulators of SRF?"
-   (:var mv347 :isa be :subject mv346 :predicate mv349 :present "PRESENT") (:var mv346 :isa what)
-   (:var mv349 :isa regulator :theme mv351 :has-determiner "THE" :raw-text "regulators")
-   (:var mv351 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv316 :isa be :subject mv315 :predicate mv318 :present "PRESENT") (:var mv315 :isa what)
+   (:var mv318 :isa regulator :theme mv320 :has-determiner "THE" :raw-text "regulators")
+   (:var mv320 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("What does STAT3 regulate in the liver?"
-   (:var mv356 :isa regulate :object mv354 :agent mv353 :organ mv359 :present "PRESENT" :raw-text
+   (:var mv325 :isa regulate :object mv323 :agent mv322 :organ mv328 :present "PRESENT" :raw-text
     "regulate")
-   (:var mv354 :isa what)
-   (:var mv353 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv359 :isa liver :has-determiner "THE"))
+   (:var mv323 :isa what)
+   (:var mv322 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv328 :isa liver :has-determiner "THE"))
   ("What does it regulate in the liver?"
-   (:var mv364 :isa regulate :object mv361 :|agent-OR-cause| mv363 :organ mv367 :present "PRESENT"
+   (:var mv333 :isa regulate :object mv330 :|agent-OR-cause| mv332 :organ mv336 :present "PRESENT"
     :raw-text "regulate")
-   (:var mv361 :isa what) (:var mv363 :isa pronoun/inanimate :word "it")
-   (:var mv367 :isa liver :has-determiner "THE"))
+   (:var mv330 :isa what) (:var mv332 :isa pronoun/inanimate :word "it")
+   (:var mv336 :isa liver :has-determiner "THE"))
   ("What genes are regulated by SMAD2?"
-   (:var mv375 :isa regulate :object mv371 :agent mv369 :present "PRESENT" :raw-text "regulated")
-   (:var mv371 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv369 :isa protein :raw-text "SMAD2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
+   (:var mv344 :isa regulate :object mv340 :agent mv338 :present "PRESENT" :raw-text "regulated")
+   (:var mv340 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv338 :isa protein :raw-text "SMAD2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
   ("What genes are regulated by SMDA2?"
-   (:var mv385 :isa regulate :object mv378 :agent mv384 :present "PRESENT" :raw-text "regulated")
-   (:var mv378 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv384 :isa bio-entity :name "SMDA2"))
+   (:var mv354 :isa regulate :object mv347 :agent mv353 :present "PRESENT" :raw-text "regulated")
+   (:var mv347 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv353 :isa bio-entity :name "SMDA2"))
   ("What genes are regulated by SRF?"
-   (:var mv393 :isa regulate :object mv388 :agent mv392 :present "PRESENT" :raw-text "regulated")
-   (:var mv388 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv392 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv362 :isa regulate :object mv357 :agent mv361 :present "PRESENT" :raw-text "regulated")
+   (:var mv357 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv361 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("Which of these are regulated by SMAD2?"
-   (:var mv402 :isa regulate :|affected-process-OR-object| mv398 :agent mv395 :present "PRESENT"
+   (:var mv371 :isa regulate :|affected-process-OR-object| mv367 :agent mv364 :present "PRESENT"
     :raw-text "regulated")
-   (:var mv398 :isa these :quantifier mv396 :word "these") (:var mv396 :isa which)
-   (:var mv395 :isa protein :raw-text "SMAD2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
+   (:var mv367 :isa these :quantifier mv365 :word "these") (:var mv365 :isa which)
+   (:var mv364 :isa protein :raw-text "SMAD2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
   ("Which of these are regulated by SMDA2?"
-   (:var mv412 :isa regulate :|affected-process-OR-object| mv408 :agent mv405 :present "PRESENT"
+   (:var mv381 :isa regulate :|affected-process-OR-object| mv377 :agent mv374 :present "PRESENT"
     :raw-text "regulated")
-   (:var mv408 :isa these :quantifier mv406 :word "these") (:var mv406 :isa which)
-   (:var mv405 :isa bio-entity :name "SMDA2"))
+   (:var mv377 :isa these :quantifier mv375 :word "these") (:var mv375 :isa which)
+   (:var mv374 :isa bio-entity :name "SMDA2"))
   ("Which pathways use these?"
-   (:var mv418 :isa bio-use :agent mv416 :object mv419 :present "PRESENT" :raw-text "use")
-   (:var mv416 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
-   (:var mv419 :isa these :word "these"))
+   (:var mv387 :isa bio-use :agent mv385 :object mv388 :present "PRESENT" :raw-text "use")
+   (:var mv385 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
+   (:var mv388 :isa these :word "these"))
   ("Where does STAT3 regulate the expression of c-fos?"
-   (:var mv424 :isa regulate :location mv422 :agent mv420 :affected-process mv426 :present
+   (:var mv393 :isa regulate :location mv391 :agent mv389 :affected-process mv395 :present
     "PRESENT" :raw-text "regulate")
-   (:var mv422 :isa where)
-   (:var mv420 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv426 :isa gene-transcript-express :object mv421 :has-determiner "THE" :raw-text
+   (:var mv391 :isa where)
+   (:var mv389 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv395 :isa gene-transcript-express :object mv390 :has-determiner "THE" :raw-text
     "expression")
-   (:var mv421 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv390 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("can you tell me all the transcription factors that are shared by elk1 and srf"
-   (:var mv446 :isa polar-question :statement mv433)
-   (:var mv433 :isa tell :agent mv432 :theme mv429 :beneficiary mv434 :modal "CAN")
-   (:var mv432 :isa interlocutor :name "hearer")
-   (:var mv429 :isa transcription-factor :predication mv444 :quantifier mv435 :has-determiner "THE"
+   (:var mv415 :isa polar-question :statement mv402)
+   (:var mv402 :isa tell :agent mv401 :theme mv398 :beneficiary mv403 :modal "CAN")
+   (:var mv401 :isa interlocutor :name "hearer")
+   (:var mv398 :isa transcription-factor :predication mv413 :quantifier mv404 :has-determiner "THE"
     :raw-text "transcription factors")
-   (:var mv444 :isa share :object mv429 :that-rel t :participant mv443 :modal "CAN" :raw-text
+   (:var mv413 :isa share :object mv398 :that-rel t :participant mv412 :modal "CAN" :raw-text
     "shared")
-   (:var mv443 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv430 mv442))
-   (:var mv430 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv442 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv435 :isa all :word "all") (:var mv434 :isa interlocutor :name "speaker"))
+   (:var mv412 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv399 mv411))
+   (:var mv399 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv411 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv404 :isa all :word "all") (:var mv403 :isa interlocutor :name "speaker"))
   ("can you tell me which transcription factors are shared by elk1 and srf"
-   (:var mv462 :isa polar-question :statement mv451)
-   (:var mv451 :isa tell :agent mv450 :theme mv460 :theme mv452 :modal "CAN")
-   (:var mv450 :isa interlocutor :name "hearer")
-   (:var mv460 :isa share :object mv447 :participant mv459 :modal "CAN" :raw-text "shared")
-   (:var mv447 :isa transcription-factor :has-determiner "WHICH" :raw-text "transcription factors")
-   (:var mv459 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv448 mv458))
-   (:var mv448 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv458 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv452 :isa interlocutor :name "speaker"))
+   (:var mv431 :isa polar-question :statement mv420)
+   (:var mv420 :isa tell :agent mv419 :theme mv429 :theme mv421 :modal "CAN")
+   (:var mv419 :isa interlocutor :name "hearer")
+   (:var mv429 :isa share :object mv416 :participant mv428 :modal "CAN" :raw-text "shared")
+   (:var mv416 :isa transcription-factor :has-determiner "WHICH" :raw-text "transcription factors")
+   (:var mv428 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv417 mv427))
+   (:var mv417 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv427 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv421 :isa interlocutor :name "speaker"))
   ("what are the regulators of SRF?"
-   (:var mv464 :isa be :subject mv463 :predicate mv466 :present "PRESENT") (:var mv463 :isa what)
-   (:var mv466 :isa regulator :theme mv468 :has-determiner "THE" :raw-text "regulators")
-   (:var mv468 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv433 :isa be :subject mv432 :predicate mv435 :present "PRESENT") (:var mv432 :isa what)
+   (:var mv435 :isa regulator :theme mv437 :has-determiner "THE" :raw-text "regulators")
+   (:var mv437 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("what does stat regulate"
-   (:var mv473 :isa regulate :object mv470 :agent mv472 :present "PRESENT" :raw-text "regulate")
-   (:var mv470 :isa what)
-   (:var mv472 :isa protein :raw-text "stat" :uid "UP:P35610" :name "SOAT1_HUMAN"))
-  ("what is erbb?" (:var mv475 :isa be :subject mv474 :predicate mv476 :present "PRESENT")
-   (:var mv474 :isa what)
-   (:var mv476 :isa protein :raw-text "erbb" :uid "UP:P00533" :name "EGFR_HUMAN"))
-  ("Is STAT3 involved in apoptosis?" (:var mv483 :isa polar-question :statement mv479)
-   (:var mv479 :isa involve :object mv477 :theme mv481 :past "PAST")
-   (:var mv477 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv481 :isa apoptosis :raw-text "apoptosis"))
-  ("Is STAT3 involved in apoptotic regulation?" (:var mv492 :isa polar-question :statement mv486)
-   (:var mv486 :isa involve :object mv484 :theme mv490 :past "PAST")
-   (:var mv484 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv490 :isa regulate :|cellular-process-OR-agent| mv488 :raw-text "regulation")
-   (:var mv488 :isa apoptosis :raw-text "apoptotic"))
-  ("Is STAT3 involved in regulating apoptosis?" (:var mv500 :isa polar-question :statement mv495)
-   (:var mv495 :isa involve :object mv493 :theme mv497 :past "PAST")
-   (:var mv493 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv497 :isa regulate :affected-process mv498 :progressive "PROGRESSIVE" :raw-text
+   (:var mv442 :isa regulate :object mv439 :agent mv441 :present "PRESENT" :raw-text "regulate")
+   (:var mv439 :isa what)
+   (:var mv441 :isa protein :raw-text "stat" :uid "UP:P35610" :name "SOAT1_HUMAN"))
+  ("what is erbb?" (:var mv444 :isa be :subject mv443 :predicate mv445 :present "PRESENT")
+   (:var mv443 :isa what)
+   (:var mv445 :isa protein :raw-text "erbb" :uid "UP:P00533" :name "EGFR_HUMAN"))
+  ("Is STAT3 involved in apoptosis?" (:var mv452 :isa polar-question :statement mv448)
+   (:var mv448 :isa involve :object mv446 :theme mv450 :past "PAST")
+   (:var mv446 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv450 :isa apoptosis :raw-text "apoptosis"))
+  ("Is STAT3 involved in apoptotic regulation?" (:var mv461 :isa polar-question :statement mv455)
+   (:var mv455 :isa involve :object mv453 :theme mv459 :past "PAST")
+   (:var mv453 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv459 :isa regulate :|cellular-process-OR-agent| mv457 :raw-text "regulation")
+   (:var mv457 :isa apoptosis :raw-text "apoptotic"))
+  ("Is STAT3 involved in regulating apoptosis?" (:var mv469 :isa polar-question :statement mv464)
+   (:var mv464 :isa involve :object mv462 :theme mv466 :past "PAST")
+   (:var mv462 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv466 :isa regulate :affected-process mv467 :progressive "PROGRESSIVE" :raw-text
     "regulating")
-   (:var mv498 :isa apoptosis :raw-text "apoptosis"))
+   (:var mv467 :isa apoptosis :raw-text "apoptosis"))
   ("What apoptotic genes are regulated by STAT3"
-   (:var mv509 :isa regulate :object mv505 :agent mv501 :present "PRESENT" :raw-text "regulated")
-   (:var mv505 :isa gene :has-determiner "WHAT" :cellular-process mv503 :raw-text "genes")
-   (:var mv503 :isa apoptosis :raw-text "apoptotic")
-   (:var mv501 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
-  ("List the apoptotic genes" (:var mv511 :isa list :theme mv515 :present "PRESENT")
-   (:var mv515 :isa gene :has-determiner "THE" :cellular-process mv513 :raw-text "genes")
-   (:var mv513 :isa apoptosis :raw-text "apoptotic"))
+   (:var mv478 :isa regulate :object mv474 :agent mv470 :present "PRESENT" :raw-text "regulated")
+   (:var mv474 :isa gene :has-determiner "WHAT" :cellular-process mv472 :raw-text "genes")
+   (:var mv472 :isa apoptosis :raw-text "apoptotic")
+   (:var mv470 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+  ("List the apoptotic genes" (:var mv480 :isa list :theme mv484 :present "PRESENT")
+   (:var mv484 :isa gene :has-determiner "THE" :cellular-process mv482 :raw-text "genes")
+   (:var mv482 :isa apoptosis :raw-text "apoptotic"))
   ("What genes regulated by STAT3 are involved in apoptosis?"
-   (:var mv525 :isa involve :object mv518 :theme mv524 :present "PRESENT")
-   (:var mv518 :isa gene :predication mv519 :has-determiner "WHAT" :raw-text "genes")
-   (:var mv519 :isa regulate :object mv518 :agent mv516 :past "PAST" :raw-text "regulated")
-   (:var mv516 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv524 :isa apoptosis :raw-text "apoptosis"))
-  ("List genes regulated by STAT3" (:var mv529 :isa list :theme mv530 :present "PRESENT")
-   (:var mv530 :isa gene :predication mv531 :raw-text "genes")
-   (:var mv531 :isa regulate :object mv530 :agent mv528 :past "PAST" :raw-text "regulated")
-   (:var mv528 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv494 :isa involve :object mv487 :theme mv493 :present "PRESENT")
+   (:var mv487 :isa gene :predication mv488 :has-determiner "WHAT" :raw-text "genes")
+   (:var mv488 :isa regulate :object mv487 :agent mv485 :past "PAST" :raw-text "regulated")
+   (:var mv485 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv493 :isa apoptosis :raw-text "apoptosis"))
+  ("List genes regulated by STAT3" (:var mv498 :isa list :theme mv499 :present "PRESENT")
+   (:var mv499 :isa gene :predication mv500 :raw-text "genes")
+   (:var mv500 :isa regulate :object mv499 :agent mv497 :past "PAST" :raw-text "regulated")
+   (:var mv497 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What genes are involved in apoptosis?"
-   (:var mv540 :isa involve :object mv535 :theme mv539 :present "PRESENT")
-   (:var mv535 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv539 :isa apoptosis :raw-text "apoptosis"))
+   (:var mv509 :isa involve :object mv504 :theme mv508 :present "PRESENT")
+   (:var mv504 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv508 :isa apoptosis :raw-text "apoptosis"))
   ("What genes that STAT3 regulates are involved in apoptosis?"
-   (:var mv551 :isa involve :object mv544 :theme mv550 :present "PRESENT")
-   (:var mv544 :isa gene :predication mv546 :has-determiner "WHAT" :raw-text "genes")
-   (:var mv546 :isa regulate :object mv544 :that-rel t :agent mv542 :present "PRESENT" :raw-text
+   (:var mv520 :isa involve :object mv513 :theme mv519 :present "PRESENT")
+   (:var mv513 :isa gene :predication mv515 :has-determiner "WHAT" :raw-text "genes")
+   (:var mv515 :isa regulate :object mv513 :that-rel t :agent mv511 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv542 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv550 :isa apoptosis :raw-text "apoptosis"))
-  ("List the genes regulated by STAT3" (:var mv554 :isa list :theme mv556 :present "PRESENT")
-   (:var mv556 :isa gene :predication mv557 :has-determiner "THE" :raw-text "genes")
-   (:var mv557 :isa regulate :object mv556 :agent mv553 :past "PAST" :raw-text "regulated")
-   (:var mv553 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
-  ("List the STAT3 regulated genes" (:var mv561 :isa list :theme mv564 :present "PRESENT")
-   (:var mv564 :isa gene :has-determiner "THE" :predication mv563 :raw-text "genes")
-   (:var mv563 :isa regulate :object mv564 :agent mv560 :raw-text "regulated")
-   (:var mv560 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv511 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv519 :isa apoptosis :raw-text "apoptosis"))
+  ("List the genes regulated by STAT3" (:var mv523 :isa list :theme mv525 :present "PRESENT")
+   (:var mv525 :isa gene :predication mv526 :has-determiner "THE" :raw-text "genes")
+   (:var mv526 :isa regulate :object mv525 :agent mv522 :past "PAST" :raw-text "regulated")
+   (:var mv522 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+  ("List the STAT3 regulated genes" (:var mv530 :isa list :theme mv533 :present "PRESENT")
+   (:var mv533 :isa gene :has-determiner "THE" :predication mv532 :raw-text "genes")
+   (:var mv532 :isa regulate :object mv533 :agent mv529 :raw-text "regulated")
+   (:var mv529 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What kinases are regulated by STAT3?"
-   (:var mv571 :isa regulate :object mv567 :agent mv565 :present "PRESENT" :raw-text "regulated")
-   (:var mv567 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
-   (:var mv565 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv540 :isa regulate :object mv536 :agent mv534 :present "PRESENT" :raw-text "regulated")
+   (:var mv536 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
+   (:var mv534 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What kinases are involved in apoptosis?"
-   (:var mv579 :isa involve :object mv574 :theme mv578 :present "PRESENT")
-   (:var mv574 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
-   (:var mv578 :isa apoptosis :raw-text "apoptosis"))
+   (:var mv548 :isa involve :object mv543 :theme mv547 :present "PRESENT")
+   (:var mv543 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
+   (:var mv547 :isa apoptosis :raw-text "apoptosis"))
   ("What STAT3 regulated genes are involved in aptosis"
-   (:var mv591 :isa wh-question :statement mv590 :var nil :wh what)
-   (:var mv590 :isa prepositional-phrase :pobj mv588 :prep "IN") (:var mv588 :isa aptosis))
+   (:var mv560 :isa wh-question :statement mv559 :var nil :wh what)
+   (:var mv559 :isa prepositional-phrase :pobj mv557 :prep "IN") (:var mv557 :isa aptosis))
   ("Let me know if any of the genes stat3 regulates are involved in apoptosis"
-   (:var mv593 :isa let :complement mv610 :present "PRESENT")
-   (:var mv610 :isa know :agent mv594 :statement mv609 :present "PRESENT")
-   (:var mv594 :isa interlocutor :name "speaker")
-   (:var mv609 :isa wh-question :statement mv606 :wh if)
-   (:var mv606 :isa involve :object mv600 :theme mv605 :present "PRESENT")
-   (:var mv600 :isa gene :quantifier mv597 :predication mv601 :has-determiner "THE" :raw-text
+   (:var mv562 :isa let :complement mv579 :present "PRESENT")
+   (:var mv579 :isa know :agent mv563 :statement mv578 :present "PRESENT")
+   (:var mv563 :isa interlocutor :name "speaker")
+   (:var mv578 :isa wh-question :statement mv575 :wh if)
+   (:var mv575 :isa involve :object mv569 :theme mv574 :present "PRESENT")
+   (:var mv569 :isa gene :quantifier mv566 :predication mv570 :has-determiner "THE" :raw-text
     "genes")
-   (:var mv597 :isa any :word "any")
-   (:var mv601 :isa regulate :object mv600 :agent mv592 :present "PRESENT" :raw-text "regulates")
-   (:var mv592 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv605 :isa apoptosis :raw-text "apoptosis"))
+   (:var mv566 :isa any :word "any")
+   (:var mv570 :isa regulate :object mv569 :agent mv561 :present "PRESENT" :raw-text "regulates")
+   (:var mv561 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv574 :isa apoptosis :raw-text "apoptosis"))
   ("Let me know whether any of the genes stat3 regulates are involved in apoptosis"
-   (:var mv612 :isa let :complement mv630 :present "PRESENT")
-   (:var mv630 :isa know :agent mv613 :statement mv629 :present "PRESENT")
-   (:var mv613 :isa interlocutor :name "speaker")
-   (:var mv629 :isa wh-question :statement mv626 :wh whether)
-   (:var mv626 :isa involve :object mv620 :theme mv625 :present "PRESENT")
-   (:var mv620 :isa gene :quantifier mv617 :predication mv621 :has-determiner "THE" :raw-text
+   (:var mv581 :isa let :complement mv599 :present "PRESENT")
+   (:var mv599 :isa know :agent mv582 :statement mv598 :present "PRESENT")
+   (:var mv582 :isa interlocutor :name "speaker")
+   (:var mv598 :isa wh-question :statement mv595 :wh whether)
+   (:var mv595 :isa involve :object mv589 :theme mv594 :present "PRESENT")
+   (:var mv589 :isa gene :quantifier mv586 :predication mv590 :has-determiner "THE" :raw-text
     "genes")
-   (:var mv617 :isa any :word "any")
-   (:var mv621 :isa regulate :object mv620 :agent mv611 :present "PRESENT" :raw-text "regulates")
-   (:var mv611 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv625 :isa apoptosis :raw-text "apoptosis"))
-  ("Look up which genes targeted by stat3 are involved in apoptosis" (:var mv647 :isa look-up))
+   (:var mv586 :isa any :word "any")
+   (:var mv590 :isa regulate :object mv589 :agent mv580 :present "PRESENT" :raw-text "regulates")
+   (:var mv580 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv594 :isa apoptosis :raw-text "apoptosis"))
+  ("Look up which genes targeted by stat3 are involved in apoptosis" (:var mv616 :isa look-up))
   ("Tell me how stat3 is involved in apoptosis"
-   (:var mv649 :isa tell :beneficiary mv650 :present "PRESENT")
-   (:var mv650 :isa interlocutor :name "speaker"))
+   (:var mv618 :isa tell :beneficiary mv619 :present "PRESENT")
+   (:var mv619 :isa interlocutor :name "speaker"))
   ("Tell me if stat3 is involved in apoptosis"
-   (:var mv660 :isa tell :theme mv669 :beneficiary mv661 :present "PRESENT")
-   (:var mv669 :isa wh-question :statement mv667 :wh if)
-   (:var mv667 :isa involve :object mv659 :theme mv666 :present "PRESENT")
-   (:var mv659 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv666 :isa apoptosis :raw-text "apoptosis")
-   (:var mv661 :isa interlocutor :name "speaker"))
+   (:var mv629 :isa tell :theme mv638 :beneficiary mv630 :present "PRESENT")
+   (:var mv638 :isa wh-question :statement mv636 :wh if)
+   (:var mv636 :isa involve :object mv628 :theme mv635 :present "PRESENT")
+   (:var mv628 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv635 :isa apoptosis :raw-text "apoptosis")
+   (:var mv630 :isa interlocutor :name "speaker"))
   ("Tell me whether stat3 is involved in apoptosis"
-   (:var mv671 :isa tell :theme mv681 :theme mv672 :present "PRESENT")
-   (:var mv681 :isa wh-question :statement mv679 :wh whether)
-   (:var mv679 :isa involve :object mv670 :theme mv678 :present "PRESENT")
-   (:var mv670 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv678 :isa apoptosis :raw-text "apoptosis")
-   (:var mv672 :isa interlocutor :name "speaker"))
+   (:var mv640 :isa tell :theme mv650 :theme mv641 :present "PRESENT")
+   (:var mv650 :isa wh-question :statement mv648 :wh whether)
+   (:var mv648 :isa involve :object mv639 :theme mv647 :present "PRESENT")
+   (:var mv639 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv647 :isa apoptosis :raw-text "apoptosis")
+   (:var mv641 :isa interlocutor :name "speaker"))
   ("What are STAT3 regulated genes that are involved in apoptosis."
-   (:var mv684 :isa be :subject mv683 :predicate mv686 :present "PRESENT") (:var mv683 :isa what)
-   (:var mv686 :isa gene :predication mv692 :predication mv685 :raw-text "genes")
-   (:var mv692 :isa involve :object mv686 :that-rel t :theme mv691 :present "PRESENT")
-   (:var mv691 :isa apoptosis :raw-text "apoptosis")
-   (:var mv685 :isa regulate :object mv686 :agent mv682 :raw-text "regulated")
-   (:var mv682 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv653 :isa be :subject mv652 :predicate mv655 :present "PRESENT") (:var mv652 :isa what)
+   (:var mv655 :isa gene :predication mv661 :predication mv654 :raw-text "genes")
+   (:var mv661 :isa involve :object mv655 :that-rel t :theme mv660 :present "PRESENT")
+   (:var mv660 :isa apoptosis :raw-text "apoptosis")
+   (:var mv654 :isa regulate :object mv655 :agent mv651 :raw-text "regulated")
+   (:var mv651 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What are STAT3 regulated genes that are involved in apoptosis?"
-   (:var mv696 :isa be :subject mv695 :predicate mv698 :present "PRESENT") (:var mv695 :isa what)
-   (:var mv698 :isa gene :predication mv704 :predication mv697 :raw-text "genes")
-   (:var mv704 :isa involve :object mv698 :that-rel t :theme mv703 :present "PRESENT")
-   (:var mv703 :isa apoptosis :raw-text "apoptosis")
-   (:var mv697 :isa regulate :object mv698 :agent mv694 :raw-text "regulated")
-   (:var mv694 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv665 :isa be :subject mv664 :predicate mv667 :present "PRESENT") (:var mv664 :isa what)
+   (:var mv667 :isa gene :predication mv673 :predication mv666 :raw-text "genes")
+   (:var mv673 :isa involve :object mv667 :that-rel t :theme mv672 :present "PRESENT")
+   (:var mv672 :isa apoptosis :raw-text "apoptosis")
+   (:var mv666 :isa regulate :object mv667 :agent mv663 :raw-text "regulated")
+   (:var mv663 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What genes downstream of stat3 are involved in apoptosis?"
-   (:var mv719 :isa wh-question :statement mv716 :var nil :wh what)
-   (:var mv716 :isa involve :theme mv715 :present "PRESENT")
-   (:var mv715 :isa apoptosis :raw-text "apoptosis"))
+   (:var mv688 :isa wh-question :statement mv685 :var nil :wh what)
+   (:var mv685 :isa involve :theme mv684 :present "PRESENT")
+   (:var mv684 :isa apoptosis :raw-text "apoptosis"))
   ("What is the involvement of stat3 in apoptotic regulation?"
-   (:var mv722 :isa be :subject mv721 :predicate mv724 :present "PRESENT") (:var mv721 :isa what)
-   (:var mv724 :isa involve :theme mv729 :participant mv720 :has-determiner "THE")
-   (:var mv729 :isa regulate :|cellular-process-OR-agent| mv727 :raw-text "regulation")
-   (:var mv727 :isa apoptosis :raw-text "apoptotic")
-   (:var mv720 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv691 :isa be :subject mv690 :predicate mv693 :present "PRESENT") (:var mv690 :isa what)
+   (:var mv693 :isa involve :theme mv698 :participant mv689 :has-determiner "THE")
+   (:var mv698 :isa regulate :|cellular-process-OR-agent| mv696 :raw-text "regulation")
+   (:var mv696 :isa apoptosis :raw-text "apoptotic")
+   (:var mv689 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What pathways involve calcium?"
-   (:var mv734 :isa involve :theme mv733 :object mv735 :present "PRESENT")
-   (:var mv733 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv735 :isa calcium :raw-text "calcium"))
+   (:var mv703 :isa involve :theme mv702 :object mv704 :present "PRESENT")
+   (:var mv702 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv704 :isa calcium :raw-text "calcium"))
   ("What processes involve srf"
-   (:var mv739 :isa involve :theme mv737 :object mv740 :present "PRESENT")
-   (:var mv737 :isa bio-process :has-determiner "WHAT" :raw-text "processes")
-   (:var mv740 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv708 :isa involve :theme mv706 :object mv709 :present "PRESENT")
+   (:var mv706 :isa bio-process :has-determiner "WHAT" :raw-text "processes")
+   (:var mv709 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("Which stat3 regulated genes are involved in apoptosis?"
-   (:var mv749 :isa involve :object mv744 :theme mv748 :present "PRESENT")
-   (:var mv744 :isa gene :has-determiner "WHICH" :predication mv743 :raw-text "genes")
-   (:var mv743 :isa regulate :object mv744 :agent mv741 :raw-text "regulated")
-   (:var mv741 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv748 :isa apoptosis :raw-text "apoptosis"))
+   (:var mv718 :isa involve :object mv713 :theme mv717 :present "PRESENT")
+   (:var mv713 :isa gene :has-determiner "WHICH" :predication mv712 :raw-text "genes")
+   (:var mv712 :isa regulate :object mv713 :agent mv710 :raw-text "regulated")
+   (:var mv710 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv717 :isa apoptosis :raw-text "apoptosis"))
   ("Which stat3 regulated genes in the liver are involved in apoptosis?"
-   (:var mv762 :isa involve :object mv754 :theme mv761 :present "PRESENT")
-   (:var mv754 :isa gene :organ mv757 :has-determiner "WHICH" :predication mv753 :raw-text "genes")
-   (:var mv757 :isa liver :has-determiner "THE")
-   (:var mv753 :isa regulate :object mv754 :agent mv751 :raw-text "regulated")
-   (:var mv751 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv761 :isa apoptosis :raw-text "apoptosis"))
+   (:var mv731 :isa involve :object mv723 :theme mv730 :present "PRESENT")
+   (:var mv723 :isa gene :organ mv726 :has-determiner "WHICH" :predication mv722 :raw-text "genes")
+   (:var mv726 :isa liver :has-determiner "THE")
+   (:var mv722 :isa regulate :object mv723 :agent mv720 :raw-text "regulated")
+   (:var mv720 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv730 :isa apoptosis :raw-text "apoptosis"))
   ("Which stat3-regulated genes are involved in apoptosis?"
-   (:var mv773 :isa involve :object mv768 :theme mv772 :present "PRESENT")
-   (:var mv768 :isa gene :has-determiner "WHICH" :predication mv767 :raw-text "genes")
-   (:var mv767 :isa regulate :object mv768 :agent mv765 :raw-text "regulated")
-   (:var mv765 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv772 :isa apoptosis :raw-text "apoptosis"))
+   (:var mv742 :isa involve :object mv737 :theme mv741 :present "PRESENT")
+   (:var mv737 :isa gene :has-determiner "WHICH" :predication mv736 :raw-text "genes")
+   (:var mv736 :isa regulate :object mv737 :agent mv734 :raw-text "regulated")
+   (:var mv734 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv741 :isa apoptosis :raw-text "apoptosis"))
   ("Mek activates MAPK1."
-   (:var mv777 :isa bio-activate :agent mv776 :object mv775 :present "PRESENT" :raw-text
+   (:var mv746 :isa bio-activate :agent mv745 :object mv744 :present "PRESENT" :raw-text
     "activates")
-   (:var mv776 :isa protein-family :raw-text "Mek" :name "MEK" :count 2 :family-members
+   (:var mv745 :isa protein-family :raw-text "Mek" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv775 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
+   (:var mv744 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
   ("NRAS activates RAF."
-   (:var mv779 :isa bio-activate :agent mv778 :object mv780 :present "PRESENT" :raw-text
+   (:var mv748 :isa bio-activate :agent mv747 :object mv749 :present "PRESENT" :raw-text
     "activates")
-   (:var mv778 :isa protein :raw-text "NRAS" :uid "UP:P01111" :name "RASN_HUMAN")
-   (:var mv780 :isa protein-family :raw-text "RAF" :name "Raf" :count 3 :family-members
+   (:var mv747 :isa protein :raw-text "NRAS" :uid "UP:P01111" :name "RASN_HUMAN")
+   (:var mv749 :isa protein-family :raw-text "RAF" :name "Raf" :count 3 :family-members
     ((protein (:name "RAF1_HUMAN") (:uid "UP:P04049"))
      (protein (:name "BRAF_HUMAN") (:uid "UP:P15056"))
      (protein (:name "ARAF_HUMAN") (:uid "UP:P10398")))
     :uid "FA:03114"))
   ("MAPK1 phosphorylates ELK1"
-   (:var mv783 :isa phosphorylate :agent mv781 :substrate mv782 :present "PRESENT" :raw-text
+   (:var mv752 :isa phosphorylate :agent mv750 :substrate mv751 :present "PRESENT" :raw-text
     "phosphorylates")
-   (:var mv781 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
-   (:var mv782 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+   (:var mv750 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
+   (:var mv751 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
   ("DUSP6 dephosphorylates MAPK1"
-   (:var mv786 :isa dephosphorylate :agent mv784 :substrate mv785 :present "PRESENT" :raw-text
+   (:var mv755 :isa dephosphorylate :agent mv753 :substrate mv754 :present "PRESENT" :raw-text
     "dephosphorylates")
-   (:var mv784 :isa protein :raw-text "DUSP6" :uid "UP:Q16828" :name "DUS6_HUMAN")
-   (:var mv785 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
+   (:var mv753 :isa protein :raw-text "DUSP6" :uid "UP:Q16828" :name "DUS6_HUMAN")
+   (:var mv754 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
   ("ELK1 positively regulates FOS."
-   (:var mv788 :isa upregulate :agent mv787 :object mv789 :present "PRESENT" :raw-text
+   (:var mv757 :isa upregulate :agent mv756 :object mv758 :present "PRESENT" :raw-text
     "positively regulates")
-   (:var mv787 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv789 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv756 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv758 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("EGFR binds the growth factor ligand EGF."
-   (:var mv793 :isa binding :binder mv792 :direct-bindee mv796 :present "PRESENT" :raw-text
+   (:var mv762 :isa binding :binder mv761 :direct-bindee mv765 :present "PRESENT" :raw-text
     "binds")
-   (:var mv792 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
-   (:var mv796 :isa protein :has-determiner "THE" :modifier mv791 :modifier mv795 :raw-text "EGF"
+   (:var mv761 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
+   (:var mv765 :isa protein :has-determiner "THE" :modifier mv760 :modifier mv764 :raw-text "EGF"
     :uid "UP:P01133" :name "EGF_HUMAN")
-   (:var mv791 :isa growth-factor :raw-text "growth factor")
-   (:var mv795 :isa ligand :raw-text "ligand"))
-  ("revert that" (:var mv797 :isa revert :present "PRESENT" :raw-text "revert"))
+   (:var mv760 :isa growth-factor :raw-text "growth factor")
+   (:var mv764 :isa ligand :raw-text "ligand"))
+  ("revert that" (:var mv766 :isa revert :present "PRESENT" :raw-text "revert"))
   ("The EGFR-EGF complex binds another EGFR-EGF complex."
-   (:var mv803 :isa binding :binder mv810 :direct-bindee mv811 :present "PRESENT" :raw-text
+   (:var mv772 :isa binding :binder mv779 :direct-bindee mv780 :present "PRESENT" :raw-text
     "binds")
-   (:var mv810 :isa bio-complex :has-determiner "THE" :raw-text "EGFR-EGF" :component mv801
-    :component mv800)
-   (:var mv801 :isa protein :raw-text "EGF" :uid "UP:P01133" :name "EGF_HUMAN")
-   (:var mv800 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
-   (:var mv811 :isa bio-complex :quantifier mv804 :raw-text "EGFR-EGF" :component mv806 :component
-    mv805)
-   (:var mv804 :isa another :word "another")
-   (:var mv806 :isa protein :raw-text "EGF" :uid "UP:P01133" :name "EGF_HUMAN")
-   (:var mv805 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN"))
+   (:var mv779 :isa bio-complex :has-determiner "THE" :raw-text "EGFR-EGF" :component mv770
+    :component mv769)
+   (:var mv770 :isa protein :raw-text "EGF" :uid "UP:P01133" :name "EGF_HUMAN")
+   (:var mv769 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
+   (:var mv780 :isa bio-complex :quantifier mv773 :raw-text "EGFR-EGF" :component mv775 :component
+    mv774)
+   (:var mv773 :isa another :word "another")
+   (:var mv775 :isa protein :raw-text "EGF" :uid "UP:P01133" :name "EGF_HUMAN")
+   (:var mv774 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN"))
   ("The EGFR-EGFR complex binds GRB2."
-   (:var mv817 :isa binding :binder mv819 :direct-bindee mv812 :present "PRESENT" :raw-text
+   (:var mv786 :isa binding :binder mv788 :direct-bindee mv781 :present "PRESENT" :raw-text
     "binds")
-   (:var mv819 :isa bio-complex :has-determiner "THE" :raw-text "EGFR-EGFR" :component mv814
-    :component mv814)
-   (:var mv814 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
-   (:var mv812 :isa protein :raw-text "GRB2" :uid "UP:P62993" :name "GRB2_HUMAN"))
-  ("undo that" (:var mv820 :isa undo :present "PRESENT" :raw-text "undo"))
+   (:var mv788 :isa bio-complex :has-determiner "THE" :raw-text "EGFR-EGFR" :component mv783
+    :component mv783)
+   (:var mv783 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
+   (:var mv781 :isa protein :raw-text "GRB2" :uid "UP:P62993" :name "GRB2_HUMAN"))
+  ("undo that" (:var mv789 :isa undo :present "PRESENT" :raw-text "undo"))
   ("EGFR-bound GRB2 binds SOS1."
-   (:var mv826 :isa binding :binder mv822 :direct-bindee mv823 :present "PRESENT" :raw-text
+   (:var mv795 :isa binding :binder mv791 :direct-bindee mv792 :present "PRESENT" :raw-text
     "binds")
-   (:var mv822 :isa protein :predication mv825 :raw-text "GRB2" :uid "UP:P62993" :name
+   (:var mv791 :isa protein :predication mv794 :raw-text "GRB2" :uid "UP:P62993" :name
     "GRB2_HUMAN")
-   (:var mv825 :isa binding :direct-bindee mv822 :binder mv824 :raw-text "bound")
-   (:var mv824 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
-   (:var mv823 :isa protein :raw-text "SOS1" :uid "UP:Q07889" :name "SOS1_HUMAN"))
+   (:var mv794 :isa binding :direct-bindee mv791 :binder mv793 :raw-text "bound")
+   (:var mv793 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
+   (:var mv792 :isa protein :raw-text "SOS1" :uid "UP:Q07889" :name "SOS1_HUMAN"))
   ("GRB2-bound SOS1 binds NRAS that is not bound to BRAF."
-   (:var mv830 :isa binding :binder mv828 :direct-bindee mv831 :present "PRESENT" :raw-text
+   (:var mv799 :isa binding :binder mv797 :direct-bindee mv800 :present "PRESENT" :raw-text
     "binds")
-   (:var mv828 :isa protein :predication mv829 :raw-text "SOS1" :uid "UP:Q07889" :name
+   (:var mv797 :isa protein :predication mv798 :raw-text "SOS1" :uid "UP:Q07889" :name
     "SOS1_HUMAN")
-   (:var mv829 :isa binding :direct-bindee mv828 :binder mv827 :raw-text "bound")
-   (:var mv827 :isa protein :raw-text "GRB2" :uid "UP:P62993" :name "GRB2_HUMAN")
-   (:var mv831 :isa protein :predication mv838 :raw-text "NRAS" :uid "UP:P01111" :name
+   (:var mv798 :isa binding :direct-bindee mv797 :binder mv796 :raw-text "bound")
+   (:var mv796 :isa protein :raw-text "GRB2" :uid "UP:P62993" :name "GRB2_HUMAN")
+   (:var mv800 :isa protein :predication mv807 :raw-text "NRAS" :uid "UP:P01111" :name
     "RASN_HUMAN")
-   (:var mv838 :isa binding :direct-bindee mv831 :that-rel t :bindee mv837 :present "PRESENT"
-    :negation mv834 :raw-text "bound")
-   (:var mv837 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv834 :isa not :word "not"))
+   (:var mv807 :isa binding :direct-bindee mv800 :that-rel t :bindee mv806 :present "PRESENT"
+    :negation mv803 :raw-text "bound")
+   (:var mv806 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv803 :isa not :word "not"))
   ("SOS1-bound NRAS binds GTP."
-   (:var mv843 :isa binding :binder mv842 :direct-bindee mv844 :present "PRESENT" :raw-text
+   (:var mv812 :isa binding :binder mv811 :direct-bindee mv813 :present "PRESENT" :raw-text
     "binds")
-   (:var mv842 :isa protein :predication mv841 :raw-text "NRAS" :uid "UP:P01111" :name
+   (:var mv811 :isa protein :predication mv810 :raw-text "NRAS" :uid "UP:P01111" :name
     "RASN_HUMAN")
-   (:var mv841 :isa binding :direct-bindee mv842 :binder mv840 :raw-text "bound")
-   (:var mv840 :isa protein :raw-text "SOS1" :uid "UP:Q07889" :name "SOS1_HUMAN")
-   (:var mv844 :isa nucleotide :raw-text "GTP" :uid "CHEBI:15996" :name "GTP"))
+   (:var mv810 :isa binding :direct-bindee mv811 :binder mv809 :raw-text "bound")
+   (:var mv809 :isa protein :raw-text "SOS1" :uid "UP:Q07889" :name "SOS1_HUMAN")
+   (:var mv813 :isa nucleotide :raw-text "GTP" :uid "CHEBI:15996" :name "GTP"))
   ("GTP-bound NRAS that is not bound to SOS1 binds BRAF."
-   (:var mv854 :isa binding :binder mv848 :direct-bindee mv855 :present "PRESENT" :raw-text
+   (:var mv823 :isa binding :binder mv817 :direct-bindee mv824 :present "PRESENT" :raw-text
     "binds")
-   (:var mv848 :isa protein :predication mv856 :predication mv847 :raw-text "NRAS" :uid "UP:P01111"
+   (:var mv817 :isa protein :predication mv825 :predication mv816 :raw-text "NRAS" :uid "UP:P01111"
     :name "RASN_HUMAN")
-   (:var mv856 :isa binding :direct-bindee mv848 :that-rel t :bindee mv845 :present "PRESENT"
-    :negation mv851 :raw-text "bound")
-   (:var mv845 :isa protein :raw-text "SOS1" :uid "UP:Q07889" :name "SOS1_HUMAN")
-   (:var mv851 :isa not :word "not")
-   (:var mv847 :isa binding :direct-bindee mv848 :binder mv846 :raw-text "bound")
-   (:var mv846 :isa nucleotide :raw-text "GTP" :uid "CHEBI:15996" :name "GTP")
-   (:var mv855 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
-  ("Undo" (:var mv858 :isa undo :present "PRESENT" :raw-text "Undo"))
+   (:var mv825 :isa binding :direct-bindee mv817 :that-rel t :bindee mv814 :present "PRESENT"
+    :negation mv820 :raw-text "bound")
+   (:var mv814 :isa protein :raw-text "SOS1" :uid "UP:Q07889" :name "SOS1_HUMAN")
+   (:var mv820 :isa not :word "not")
+   (:var mv816 :isa binding :direct-bindee mv817 :binder mv815 :raw-text "bound")
+   (:var mv815 :isa nucleotide :raw-text "GTP" :uid "CHEBI:15996" :name "GTP")
+   (:var mv824 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+  ("Undo" (:var mv827 :isa undo :present "PRESENT" :raw-text "Undo"))
   ("How does BRAF affect MAP2K1?"
-   (:var mv863 :isa affect :manner mv860 :agent mv862 :object mv859 :present "PRESENT" :raw-text
+   (:var mv832 :isa affect :manner mv829 :agent mv831 :object mv828 :present "PRESENT" :raw-text
     "affect")
-   (:var mv860 :isa how)
-   (:var mv862 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv859 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
+   (:var mv829 :isa how)
+   (:var mv831 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv828 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
   ("Let's highlight the downstream of AKT1."
-   (:var mv872 :isa explicit-suggestion :suggestion mv866 :marker let-as-directive)
-   (:var mv866 :isa highlight :theme mv868 :present "PRESENT")
-   (:var mv868 :isa downstream-segment :pathwaycomponent mv865 :has-determiner "THE" :raw-text
+   (:var mv841 :isa explicit-suggestion :suggestion mv835 :marker let-as-directive)
+   (:var mv835 :isa highlight :theme mv837 :present "PRESENT")
+   (:var mv837 :isa downstream-segment :pathwaycomponent mv834 :has-determiner "THE" :raw-text
     "downstream")
-   (:var mv865 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
+   (:var mv834 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
   ("Let's move phosphorylated MAPK1 to the bottom."
-   (:var mv881 :isa explicit-suggestion :suggestion mv875 :marker let-as-directive)
-   (:var mv875 :isa move-something-somewhere :goal mv879 :theme mv874 :present "PRESENT")
-   (:var mv879 :isa bottom :has-determiner "THE")
-   (:var mv874 :isa protein :predication mv876 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv850 :isa explicit-suggestion :suggestion mv844 :marker let-as-directive)
+   (:var mv844 :isa move-something-somewhere :goal mv848 :theme mv843 :present "PRESENT")
+   (:var mv848 :isa bottom :has-determiner "THE")
+   (:var mv843 :isa protein :predication mv845 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv876 :isa phosphorylate :substrate mv874 :raw-text "phosphorylated"))
+   (:var mv845 :isa phosphorylate :substrate mv843 :raw-text "phosphorylated"))
   ("Let's put AKT1, MAPK1 into mitochondrion."
-   (:var mv890 :isa explicit-suggestion :suggestion mv886 :marker let-as-directive)
-   (:var mv886 :isa put-something-somewhere :theme mv883 :present "PRESENT")
-   (:var mv883 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
+   (:var mv859 :isa explicit-suggestion :suggestion mv855 :marker let-as-directive)
+   (:var mv855 :isa put-something-somewhere :theme mv852 :present "PRESENT")
+   (:var mv852 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
   ("Let's show AKT1 on the top."
-   (:var mv898 :isa explicit-suggestion :suggestion mv893 :marker let-as-directive)
-   (:var mv893 :isa show :at-relative-location mv896 :|statement-OR-theme| mv892 :present
+   (:var mv867 :isa explicit-suggestion :suggestion mv862 :marker let-as-directive)
+   (:var mv862 :isa show :at-relative-location mv865 :|statement-OR-theme| mv861 :present
     "PRESENT")
-   (:var mv896 :isa top-qua-location :has-determiner "THE")
-   (:var mv892 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
-  ("Does ELK1 decrease FOS in the model?" (:var mv909 :isa polar-question :statement mv907)
-   (:var mv907 :isa decrease :agent mv899 :object mv903 :raw-text "decrease")
-   (:var mv899 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv903 :isa protein :info-context mv906 :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv906 :isa model :has-determiner "THE"))
+   (:var mv865 :isa top-qua-location :has-determiner "THE")
+   (:var mv861 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
+  ("Does ELK1 decrease FOS in the model?" (:var mv878 :isa polar-question :statement mv876)
+   (:var mv876 :isa decrease :agent mv868 :object mv872 :raw-text "decrease")
+   (:var mv868 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv872 :isa protein :info-context mv875 :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv875 :isa model :has-determiner "THE"))
   ("Does ELK1 decrease the amount of FOS in the model?"
-   (:var mv924 :isa polar-question :statement mv921)
-   (:var mv921 :isa decrease :agent mv910 :|affected-process-OR-object| mv915 :raw-text "decrease")
-   (:var mv910 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv915 :isa bio-amount :measured-item mv917 :has-determiner "THE" :raw-text "amount")
-   (:var mv917 :isa protein :info-context mv920 :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv920 :isa model :has-determiner "THE"))
-  ("Does FOS decrease ELK1 in the model?" (:var mv935 :isa polar-question :statement mv933)
-   (:var mv933 :isa decrease :agent mv927 :object mv925 :raw-text "decrease")
-   (:var mv927 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv925 :isa protein :info-context mv932 :raw-text "ELK1" :uid "UP:P19419" :name
+   (:var mv893 :isa polar-question :statement mv890)
+   (:var mv890 :isa decrease :agent mv879 :|affected-process-OR-object| mv884 :raw-text "decrease")
+   (:var mv879 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv884 :isa bio-amount :measured-item mv886 :has-determiner "THE" :raw-text "amount")
+   (:var mv886 :isa protein :info-context mv889 :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv889 :isa model :has-determiner "THE"))
+  ("Does FOS decrease ELK1 in the model?" (:var mv904 :isa polar-question :statement mv902)
+   (:var mv902 :isa decrease :agent mv896 :object mv894 :raw-text "decrease")
+   (:var mv896 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv894 :isa protein :info-context mv901 :raw-text "ELK1" :uid "UP:P19419" :name
     "ELK1_HUMAN")
-   (:var mv932 :isa model :has-determiner "THE"))
+   (:var mv901 :isa model :has-determiner "THE"))
   ("Does FOS vanish if we increase the amount of ELK1 10 fold?"
-   (:var mv958 :isa polar-question :statement mv957)
-   (:var mv957 :isa event-relation :subordinated-event mv955 :event mv952)
-   (:var mv955 :isa wh-question :statement mv953 :wh if)
-   (:var mv953 :isa increase :|agent-OR-cause| mv941 :|affected-process-OR-object| mv945 :raw-text
+   (:var mv927 :isa polar-question :statement mv926)
+   (:var mv926 :isa event-relation :subordinated-event mv924 :event mv921)
+   (:var mv924 :isa wh-question :statement mv922 :wh if)
+   (:var mv922 :isa increase :|agent-OR-cause| mv910 :|affected-process-OR-object| mv914 :raw-text
     "increase")
-   (:var mv941 :isa interlocutor :name "person-and-machine")
-   (:var mv945 :isa bio-amount :measured-item mv936 :has-determiner "THE" :raw-text "amount")
-   (:var mv936 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv952 :isa vanish :agent mv938 :raw-text "vanish")
-   (:var mv938 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv910 :isa interlocutor :name "person-and-machine")
+   (:var mv914 :isa bio-amount :measured-item mv905 :has-determiner "THE" :raw-text "amount")
+   (:var mv905 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv921 :isa vanish :agent mv907 :raw-text "vanish")
+   (:var mv907 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("Does FOS vanish if we increase the amount of ELK1 by 10 fold?"
-   (:var mv983 :isa polar-question :statement mv982)
-   (:var mv982 :isa event-relation :subordinated-event mv980 :event mv976)
-   (:var mv980 :isa wh-question :statement mv977 :wh if)
-   (:var mv977 :isa increase :|agent-OR-cause| mv964 :|multiplier-OR-cause| mv975
-    :|affected-process-OR-object| mv968 :raw-text "increase")
-   (:var mv964 :isa interlocutor :name "person-and-machine")
-   (:var mv975 :isa measurement :number mv972) (:var mv972 :isa number :value 10)
-   (:var mv968 :isa bio-amount :measured-item mv959 :has-determiner "THE" :raw-text "amount")
-   (:var mv959 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv976 :isa vanish :agent mv961 :raw-text "vanish")
-   (:var mv961 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv952 :isa polar-question :statement mv951)
+   (:var mv951 :isa event-relation :subordinated-event mv949 :event mv945)
+   (:var mv949 :isa wh-question :statement mv946 :wh if)
+   (:var mv946 :isa increase :|agent-OR-cause| mv933 :|multiplier-OR-cause| mv944
+    :|affected-process-OR-object| mv937 :raw-text "increase")
+   (:var mv933 :isa interlocutor :name "person-and-machine")
+   (:var mv944 :isa measurement :number mv941) (:var mv941 :isa number :value 10)
+   (:var mv937 :isa bio-amount :measured-item mv928 :has-determiner "THE" :raw-text "amount")
+   (:var mv928 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv945 :isa vanish :agent mv930 :raw-text "vanish")
+   (:var mv930 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("Does phosphorylated MAPK1 vanish if we increase DUSP6 by 10 fold?"
-   (:var mv1005 :isa polar-question :statement mv1004)
-   (:var mv1004 :isa event-relation :subordinated-event mv1002 :event mv999)
-   (:var mv1002 :isa wh-question :statement mv1000 :wh if)
-   (:var mv1000 :isa increase :|agent-OR-cause| mv990 :|multiplier-OR-cause| mv998 :object mv985
+   (:var mv974 :isa polar-question :statement mv973)
+   (:var mv973 :isa event-relation :subordinated-event mv971 :event mv968)
+   (:var mv971 :isa wh-question :statement mv969 :wh if)
+   (:var mv969 :isa increase :|agent-OR-cause| mv959 :|multiplier-OR-cause| mv967 :object mv954
     :raw-text "increase")
-   (:var mv990 :isa interlocutor :name "person-and-machine")
-   (:var mv998 :isa measurement :number mv995) (:var mv995 :isa number :value 10)
-   (:var mv985 :isa protein :raw-text "DUSP6" :uid "UP:Q16828" :name "DUS6_HUMAN")
-   (:var mv999 :isa vanish :agent mv984 :raw-text "vanish")
-   (:var mv984 :isa protein :predication mv987 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv959 :isa interlocutor :name "person-and-machine")
+   (:var mv967 :isa measurement :number mv964) (:var mv964 :isa number :value 10)
+   (:var mv954 :isa protein :raw-text "DUSP6" :uid "UP:Q16828" :name "DUS6_HUMAN")
+   (:var mv968 :isa vanish :agent mv953 :raw-text "vanish")
+   (:var mv953 :isa protein :predication mv956 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv987 :isa phosphorylate :substrate mv984 :raw-text "phosphorylated"))
+   (:var mv956 :isa phosphorylate :substrate mv953 :raw-text "phosphorylated"))
   ("Does phosphorylated MAPK1 vanish if we increase the amount of DUSP6 by 10 fold?"
-   (:var mv1031 :isa polar-question :statement mv1030)
-   (:var mv1030 :isa event-relation :subordinated-event mv1028 :event mv1024)
-   (:var mv1028 :isa wh-question :statement mv1025 :wh if)
-   (:var mv1025 :isa increase :|agent-OR-cause| mv1012 :|multiplier-OR-cause| mv1023
-    :|affected-process-OR-object| mv1016 :raw-text "increase")
-   (:var mv1012 :isa interlocutor :name "person-and-machine")
-   (:var mv1023 :isa measurement :number mv1020) (:var mv1020 :isa number :value 10)
-   (:var mv1016 :isa bio-amount :measured-item mv1007 :has-determiner "THE" :raw-text "amount")
-   (:var mv1007 :isa protein :raw-text "DUSP6" :uid "UP:Q16828" :name "DUS6_HUMAN")
-   (:var mv1024 :isa vanish :agent mv1006 :raw-text "vanish")
-   (:var mv1006 :isa protein :predication mv1009 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1000 :isa polar-question :statement mv999)
+   (:var mv999 :isa event-relation :subordinated-event mv997 :event mv993)
+   (:var mv997 :isa wh-question :statement mv994 :wh if)
+   (:var mv994 :isa increase :|agent-OR-cause| mv981 :|multiplier-OR-cause| mv992
+    :|affected-process-OR-object| mv985 :raw-text "increase")
+   (:var mv981 :isa interlocutor :name "person-and-machine")
+   (:var mv992 :isa measurement :number mv989) (:var mv989 :isa number :value 10)
+   (:var mv985 :isa bio-amount :measured-item mv976 :has-determiner "THE" :raw-text "amount")
+   (:var mv976 :isa protein :raw-text "DUSP6" :uid "UP:Q16828" :name "DUS6_HUMAN")
+   (:var mv993 :isa vanish :agent mv975 :raw-text "vanish")
+   (:var mv975 :isa protein :predication mv978 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1009 :isa phosphorylate :substrate mv1006 :raw-text "phosphorylated"))
+   (:var mv978 :isa phosphorylate :substrate mv975 :raw-text "phosphorylated"))
   ("Does the amount of phosphorylated MAPK1 ever increase?"
-   (:var mv1043 :isa polar-question :statement mv1041)
-   (:var mv1041 :isa increase :cause mv1035 :adverb mv1038 :raw-text "increase")
-   (:var mv1035 :isa bio-amount :measured-item mv1032 :has-determiner "THE" :raw-text "amount")
-   (:var mv1032 :isa protein :predication mv1037 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1012 :isa polar-question :statement mv1010)
+   (:var mv1010 :isa increase :cause mv1004 :adverb mv1007 :raw-text "increase")
+   (:var mv1004 :isa bio-amount :measured-item mv1001 :has-determiner "THE" :raw-text "amount")
+   (:var mv1001 :isa protein :predication mv1006 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1037 :isa phosphorylate :substrate mv1032 :raw-text "phosphorylated")
-   (:var mv1038 :isa ever :name "ever"))
-  ("Is MAP2K1 bound to MAPK1 eventually high?" (:var mv1046 :isa be))
-  ("Is MAPK1 bound to MAP2K1 transient?" (:var mv1054 :isa be))
-  ("Is MAPK1-bound MAP2K1 sustained?" (:var mv1065 :isa polar-question :statement mv1064)
-   (:var mv1064 :isa sustained :participant mv1060 :past "PAST")
-   (:var mv1060 :isa protein :predication mv1062 :raw-text "MAP2K1" :uid "UP:Q02750" :name
+   (:var mv1006 :isa phosphorylate :substrate mv1001 :raw-text "phosphorylated")
+   (:var mv1007 :isa ever :name "ever"))
+  ("Is MAP2K1 bound to MAPK1 eventually high?" (:var mv1015 :isa be))
+  ("Is MAPK1 bound to MAP2K1 transient?" (:var mv1023 :isa be))
+  ("Is MAPK1-bound MAP2K1 sustained?" (:var mv1034 :isa polar-question :statement mv1033)
+   (:var mv1033 :isa sustained :participant mv1029 :past "PAST")
+   (:var mv1029 :isa protein :predication mv1031 :raw-text "MAP2K1" :uid "UP:Q02750" :name
     "MP2K1_HUMAN")
-   (:var mv1062 :isa binding :direct-bindee mv1060 :binder mv1059 :raw-text "bound")
-   (:var mv1059 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
-  ("Is phosphorylated MAPK1 always high?" (:var mv1072 :isa polar-question :statement mv1071)
-   (:var mv1071 :isa copular-predication :item mv1066 :value mv1070 :predicate mv1067)
+   (:var mv1031 :isa binding :direct-bindee mv1029 :binder mv1028 :raw-text "bound")
+   (:var mv1028 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
+  ("Is phosphorylated MAPK1 always high?" (:var mv1041 :isa polar-question :statement mv1040)
+   (:var mv1040 :isa copular-predication :item mv1035 :value mv1039 :predicate mv1036)
+   (:var mv1035 :isa protein :predication mv1037 :raw-text "MAPK1" :uid "UP:P28482" :name
+    "MK01_HUMAN")
+   (:var mv1037 :isa phosphorylate :substrate mv1035 :raw-text "phosphorylated")
+   (:var mv1039 :isa high :adverb mv1038) (:var mv1038 :isa always :name "always")
+   (:var mv1036 :isa be))
+  ("Is phosphorylated MAPK1 eventually high?" (:var mv1048 :isa polar-question :statement mv1047)
+   (:var mv1047 :isa copular-predication :item mv1042 :value mv1046 :predicate mv1043)
+   (:var mv1042 :isa protein :predication mv1044 :raw-text "MAPK1" :uid "UP:P28482" :name
+    "MK01_HUMAN")
+   (:var mv1044 :isa phosphorylate :substrate mv1042 :raw-text "phosphorylated")
+   (:var mv1046 :isa high :adverb mv1045) (:var mv1045 :isa eventually :name "eventually")
+   (:var mv1043 :isa be))
+  ("Is phosphorylated MAPK1 ever high?" (:var mv1055 :isa polar-question :statement mv1054)
+   (:var mv1054 :isa copular-predication :item mv1049 :value mv1053 :predicate mv1050)
+   (:var mv1049 :isa protein :predication mv1051 :raw-text "MAPK1" :uid "UP:P28482" :name
+    "MK01_HUMAN")
+   (:var mv1051 :isa phosphorylate :substrate mv1049 :raw-text "phosphorylated")
+   (:var mv1053 :isa high :adverb mv1052) (:var mv1052 :isa ever :name "ever")
+   (:var mv1050 :isa be))
+  ("Is phosphorylated MAPK1 high at the end?" (:var mv1065 :isa polar-question :statement mv1064)
+   (:var mv1064 :isa copular-predication :item mv1056 :value mv1059 :predicate mv1057)
+   (:var mv1056 :isa protein :predication mv1058 :raw-text "MAPK1" :uid "UP:P28482" :name
+    "MK01_HUMAN")
+   (:var mv1058 :isa phosphorylate :substrate mv1056 :raw-text "phosphorylated")
+   (:var mv1059 :isa high) (:var mv1057 :isa be))
+  ("Is phosphorylated MAPK1 high?" (:var mv1071 :isa polar-question :statement mv1070)
+   (:var mv1070 :isa copular-predication :item mv1066 :value mv1069 :predicate mv1067)
    (:var mv1066 :isa protein :predication mv1068 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
    (:var mv1068 :isa phosphorylate :substrate mv1066 :raw-text "phosphorylated")
-   (:var mv1070 :isa high :adverb mv1069) (:var mv1069 :isa always :name "always")
-   (:var mv1067 :isa be))
-  ("Is phosphorylated MAPK1 eventually high?" (:var mv1079 :isa polar-question :statement mv1078)
-   (:var mv1078 :isa copular-predication :item mv1073 :value mv1077 :predicate mv1074)
-   (:var mv1073 :isa protein :predication mv1075 :raw-text "MAPK1" :uid "UP:P28482" :name
-    "MK01_HUMAN")
-   (:var mv1075 :isa phosphorylate :substrate mv1073 :raw-text "phosphorylated")
-   (:var mv1077 :isa high :adverb mv1076) (:var mv1076 :isa eventually :name "eventually")
-   (:var mv1074 :isa be))
-  ("Is phosphorylated MAPK1 ever high?" (:var mv1086 :isa polar-question :statement mv1085)
-   (:var mv1085 :isa copular-predication :item mv1080 :value mv1084 :predicate mv1081)
-   (:var mv1080 :isa protein :predication mv1082 :raw-text "MAPK1" :uid "UP:P28482" :name
-    "MK01_HUMAN")
-   (:var mv1082 :isa phosphorylate :substrate mv1080 :raw-text "phosphorylated")
-   (:var mv1084 :isa high :adverb mv1083) (:var mv1083 :isa ever :name "ever")
-   (:var mv1081 :isa be))
-  ("Is phosphorylated MAPK1 high at the end?" (:var mv1096 :isa polar-question :statement mv1095)
-   (:var mv1095 :isa copular-predication :item mv1087 :value mv1090 :predicate mv1088)
-   (:var mv1087 :isa protein :predication mv1089 :raw-text "MAPK1" :uid "UP:P28482" :name
-    "MK01_HUMAN")
-   (:var mv1089 :isa phosphorylate :substrate mv1087 :raw-text "phosphorylated")
-   (:var mv1090 :isa high) (:var mv1088 :isa be))
-  ("Is phosphorylated MAPK1 high?" (:var mv1102 :isa polar-question :statement mv1101)
-   (:var mv1101 :isa copular-predication :item mv1097 :value mv1100 :predicate mv1098)
-   (:var mv1097 :isa protein :predication mv1099 :raw-text "MAPK1" :uid "UP:P28482" :name
-    "MK01_HUMAN")
-   (:var mv1099 :isa phosphorylate :substrate mv1097 :raw-text "phosphorylated")
-   (:var mv1100 :isa high) (:var mv1098 :isa be))
+   (:var mv1069 :isa high) (:var mv1067 :isa be))
   ("Is phosphorylated MAPK1 sustained at a high level?"
-   (:var mv1113 :isa polar-question :statement mv1107)
-   (:var mv1107 :isa sustained :theme mv1103 :level mv1111 :past "PAST")
-   (:var mv1103 :isa protein :predication mv1105 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1082 :isa polar-question :statement mv1076)
+   (:var mv1076 :isa sustained :theme mv1072 :level mv1080 :past "PAST")
+   (:var mv1072 :isa protein :predication mv1074 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1105 :isa phosphorylate :substrate mv1103 :raw-text "phosphorylated")
-   (:var mv1111 :isa level :has-determiner "A" :predication mv1110 :raw-text "level")
-   (:var mv1110 :isa high))
-  ("Is phosphorylated MAPK1 sustained?" (:var mv1119 :isa polar-question :statement mv1118)
-   (:var mv1118 :isa sustained :participant mv1114 :past "PAST")
-   (:var mv1114 :isa protein :predication mv1116 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1074 :isa phosphorylate :substrate mv1072 :raw-text "phosphorylated")
+   (:var mv1080 :isa level :has-determiner "A" :predication mv1079 :raw-text "level")
+   (:var mv1079 :isa high))
+  ("Is phosphorylated MAPK1 sustained?" (:var mv1088 :isa polar-question :statement mv1087)
+   (:var mv1087 :isa sustained :participant mv1083 :past "PAST")
+   (:var mv1083 :isa protein :predication mv1085 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1116 :isa phosphorylate :substrate mv1114 :raw-text "phosphorylated"))
-  ("Is phosphorylated MAPK1 transient?" (:var mv1125 :isa polar-question :statement mv1124)
-   (:var mv1124 :isa copular-predication :item mv1120 :value mv1123 :predicate mv1121)
-   (:var mv1120 :isa protein :predication mv1122 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1085 :isa phosphorylate :substrate mv1083 :raw-text "phosphorylated"))
+  ("Is phosphorylated MAPK1 transient?" (:var mv1094 :isa polar-question :statement mv1093)
+   (:var mv1093 :isa copular-predication :item mv1089 :value mv1092 :predicate mv1090)
+   (:var mv1089 :isa protein :predication mv1091 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1122 :isa phosphorylate :substrate mv1120 :raw-text "phosphorylated")
-   (:var mv1123 :isa transient) (:var mv1121 :isa be))
-  ("Is the MAP2K1-MAPK1 complex ever high?" (:var mv1136 :isa polar-question :statement mv1135)
-   (:var mv1135 :isa copular-predication :item mv1134 :value mv1132 :predicate mv1128)
-   (:var mv1134 :isa bio-complex :has-determiner "THE" :raw-text "MAP2K1-MAPK1" :component mv1127
-    :component mv1126)
-   (:var mv1127 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
-   (:var mv1126 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
-   (:var mv1132 :isa high :adverb mv1131) (:var mv1131 :isa ever :name "ever")
-   (:var mv1128 :isa be))
-  ("Is the MAP2K1-MAPK1 complex formed?" (:var mv1145 :isa polar-question :statement mv1142)
-   (:var mv1142 :isa bio-form :agent mv1144 :past "PAST" :raw-text "formed")
-   (:var mv1144 :isa bio-complex :has-determiner "THE" :raw-text "MAP2K1-MAPK1" :component mv1138
-    :component mv1137)
-   (:var mv1138 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
-   (:var mv1137 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
+   (:var mv1091 :isa phosphorylate :substrate mv1089 :raw-text "phosphorylated")
+   (:var mv1092 :isa transient) (:var mv1090 :isa be))
+  ("Is the MAP2K1-MAPK1 complex ever high?" (:var mv1105 :isa polar-question :statement mv1104)
+   (:var mv1104 :isa copular-predication :item mv1103 :value mv1101 :predicate mv1097)
+   (:var mv1103 :isa bio-complex :has-determiner "THE" :raw-text "MAP2K1-MAPK1" :component mv1096
+    :component mv1095)
+   (:var mv1096 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
+   (:var mv1095 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
+   (:var mv1101 :isa high :adverb mv1100) (:var mv1100 :isa ever :name "ever")
+   (:var mv1097 :isa be))
+  ("Is the MAP2K1-MAPK1 complex formed?" (:var mv1114 :isa polar-question :statement mv1111)
+   (:var mv1111 :isa bio-form :agent mv1113 :past "PAST" :raw-text "formed")
+   (:var mv1113 :isa bio-complex :has-determiner "THE" :raw-text "MAP2K1-MAPK1" :component mv1107
+    :component mv1106)
+   (:var mv1107 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
+   (:var mv1106 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
   ("Is the amount of FOS always low if we increase ELK1 10 fold?"
-   (:var mv1168 :isa polar-question :statement mv1167)
-   (:var mv1167 :isa event-relation :subordinated-event mv1163 :event mv1165)
-   (:var mv1163 :isa wh-question :statement mv1157 :wh if)
-   (:var mv1157 :isa increase :|agent-OR-cause| mv1155 :object mv1146 :present "PRESENT" :raw-text
+   (:var mv1137 :isa polar-question :statement mv1136)
+   (:var mv1136 :isa event-relation :subordinated-event mv1132 :event mv1134)
+   (:var mv1132 :isa wh-question :statement mv1126 :wh if)
+   (:var mv1126 :isa increase :|agent-OR-cause| mv1124 :object mv1115 :present "PRESENT" :raw-text
     "increase")
-   (:var mv1155 :isa interlocutor :name "person-and-machine")
-   (:var mv1146 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv1165 :isa copular-predication :item mv1149 :value mv1153 :predicate mv1147)
-   (:var mv1149 :isa bio-amount :measured-item mv1151 :has-determiner "THE" :raw-text "amount")
-   (:var mv1151 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv1153 :isa low :adverb mv1152) (:var mv1152 :isa always :name "always")
-   (:var mv1147 :isa be))
+   (:var mv1124 :isa interlocutor :name "person-and-machine")
+   (:var mv1115 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv1134 :isa copular-predication :item mv1118 :value mv1122 :predicate mv1116)
+   (:var mv1118 :isa bio-amount :measured-item mv1120 :has-determiner "THE" :raw-text "amount")
+   (:var mv1120 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv1122 :isa low :adverb mv1121) (:var mv1121 :isa always :name "always")
+   (:var mv1116 :isa be))
   ("Is the amount of FOS always low if we increase ELK1 by 100 fold?"
-   (:var mv1193 :isa polar-question :statement mv1192)
-   (:var mv1192 :isa event-relation :subordinated-event mv1188 :event mv1190)
-   (:var mv1188 :isa wh-question :statement mv1180 :wh if)
-   (:var mv1180 :isa increase :|agent-OR-cause| mv1178 :|multiplier-OR-cause| mv1186 :object mv1169
+   (:var mv1162 :isa polar-question :statement mv1161)
+   (:var mv1161 :isa event-relation :subordinated-event mv1157 :event mv1159)
+   (:var mv1157 :isa wh-question :statement mv1149 :wh if)
+   (:var mv1149 :isa increase :|agent-OR-cause| mv1147 :|multiplier-OR-cause| mv1155 :object mv1138
     :present "PRESENT" :raw-text "increase")
-   (:var mv1178 :isa interlocutor :name "person-and-machine")
-   (:var mv1186 :isa measurement :number mv1183) (:var mv1183 :isa number :value 100)
-   (:var mv1169 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv1190 :isa copular-predication :item mv1172 :value mv1176 :predicate mv1170)
-   (:var mv1172 :isa bio-amount :measured-item mv1174 :has-determiner "THE" :raw-text "amount")
-   (:var mv1174 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv1176 :isa low :adverb mv1175) (:var mv1175 :isa always :name "always")
-   (:var mv1170 :isa be))
+   (:var mv1147 :isa interlocutor :name "person-and-machine")
+   (:var mv1155 :isa measurement :number mv1152) (:var mv1152 :isa number :value 100)
+   (:var mv1138 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv1159 :isa copular-predication :item mv1141 :value mv1145 :predicate mv1139)
+   (:var mv1141 :isa bio-amount :measured-item mv1143 :has-determiner "THE" :raw-text "amount")
+   (:var mv1143 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv1145 :isa low :adverb mv1144) (:var mv1144 :isa always :name "always")
+   (:var mv1139 :isa be))
   ("Is the amount of FOS ever high if we increase the amount of ELK1 100 fold?"
-   (:var mv1220 :isa polar-question :statement mv1219)
-   (:var mv1219 :isa event-relation :subordinated-event mv1215 :event mv1217)
-   (:var mv1215 :isa wh-question :statement mv1205 :wh if)
-   (:var mv1205 :isa increase :|agent-OR-cause| mv1203 :|affected-process-OR-object| mv1207
+   (:var mv1189 :isa polar-question :statement mv1188)
+   (:var mv1188 :isa event-relation :subordinated-event mv1184 :event mv1186)
+   (:var mv1184 :isa wh-question :statement mv1174 :wh if)
+   (:var mv1174 :isa increase :|agent-OR-cause| mv1172 :|affected-process-OR-object| mv1176
     :present "PRESENT" :raw-text "increase")
-   (:var mv1203 :isa interlocutor :name "person-and-machine")
-   (:var mv1207 :isa bio-amount :measured-item mv1194 :has-determiner "THE" :raw-text "amount")
-   (:var mv1194 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv1217 :isa copular-predication :item mv1197 :value mv1201 :predicate mv1195)
-   (:var mv1197 :isa bio-amount :measured-item mv1199 :has-determiner "THE" :raw-text "amount")
-   (:var mv1199 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv1201 :isa high :adverb mv1200) (:var mv1200 :isa ever :name "ever")
-   (:var mv1195 :isa be))
+   (:var mv1172 :isa interlocutor :name "person-and-machine")
+   (:var mv1176 :isa bio-amount :measured-item mv1163 :has-determiner "THE" :raw-text "amount")
+   (:var mv1163 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv1186 :isa copular-predication :item mv1166 :value mv1170 :predicate mv1164)
+   (:var mv1166 :isa bio-amount :measured-item mv1168 :has-determiner "THE" :raw-text "amount")
+   (:var mv1168 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv1170 :isa high :adverb mv1169) (:var mv1169 :isa ever :name "ever")
+   (:var mv1164 :isa be))
   ("Is the amount of FOS ever high if we increase the amount of ELK1 by 100 fold?"
-   (:var mv1249 :isa polar-question :statement mv1248)
-   (:var mv1248 :isa event-relation :subordinated-event mv1244 :event mv1246)
-   (:var mv1244 :isa wh-question :statement mv1232 :wh if)
-   (:var mv1232 :isa increase :|agent-OR-cause| mv1230 :|multiplier-OR-cause| mv1241
-    :|affected-process-OR-object| mv1234 :present "PRESENT" :raw-text "increase")
-   (:var mv1230 :isa interlocutor :name "person-and-machine")
-   (:var mv1241 :isa measurement :number mv1238) (:var mv1238 :isa number :value 100)
-   (:var mv1234 :isa bio-amount :measured-item mv1221 :has-determiner "THE" :raw-text "amount")
-   (:var mv1221 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv1246 :isa copular-predication :item mv1224 :value mv1228 :predicate mv1222)
-   (:var mv1224 :isa bio-amount :measured-item mv1226 :has-determiner "THE" :raw-text "amount")
-   (:var mv1226 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv1228 :isa high :adverb mv1227) (:var mv1227 :isa ever :name "ever")
-   (:var mv1222 :isa be))
+   (:var mv1218 :isa polar-question :statement mv1217)
+   (:var mv1217 :isa event-relation :subordinated-event mv1213 :event mv1215)
+   (:var mv1213 :isa wh-question :statement mv1201 :wh if)
+   (:var mv1201 :isa increase :|agent-OR-cause| mv1199 :|multiplier-OR-cause| mv1210
+    :|affected-process-OR-object| mv1203 :present "PRESENT" :raw-text "increase")
+   (:var mv1199 :isa interlocutor :name "person-and-machine")
+   (:var mv1210 :isa measurement :number mv1207) (:var mv1207 :isa number :value 100)
+   (:var mv1203 :isa bio-amount :measured-item mv1190 :has-determiner "THE" :raw-text "amount")
+   (:var mv1190 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv1215 :isa copular-predication :item mv1193 :value mv1197 :predicate mv1191)
+   (:var mv1193 :isa bio-amount :measured-item mv1195 :has-determiner "THE" :raw-text "amount")
+   (:var mv1195 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv1197 :isa high :adverb mv1196) (:var mv1196 :isa ever :name "ever")
+   (:var mv1191 :isa be))
   ("Is the amount of MAPK1 phosphorylated eventually high?"
-   (:var mv1259 :isa polar-question :statement mv1255)
-   (:var mv1255 :isa phosphorylate :cause mv1253 :past "PAST" :raw-text "phosphorylated")
-   (:var mv1253 :isa bio-amount :measured-item mv1250 :has-determiner "THE" :raw-text "amount")
-   (:var mv1250 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
+   (:var mv1228 :isa polar-question :statement mv1224)
+   (:var mv1224 :isa phosphorylate :cause mv1222 :past "PAST" :raw-text "phosphorylated")
+   (:var mv1222 :isa bio-amount :measured-item mv1219 :has-determiner "THE" :raw-text "amount")
+   (:var mv1219 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
   ("Is the amount of phosphorylated MAPK1 eventually high?"
-   (:var mv1270 :isa polar-question :statement mv1269)
-   (:var mv1269 :isa copular-predication :item mv1263 :value mv1267 :predicate mv1261)
-   (:var mv1263 :isa bio-amount :measured-item mv1260 :has-determiner "THE" :raw-text "amount")
-   (:var mv1260 :isa protein :predication mv1265 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1239 :isa polar-question :statement mv1238)
+   (:var mv1238 :isa copular-predication :item mv1232 :value mv1236 :predicate mv1230)
+   (:var mv1232 :isa bio-amount :measured-item mv1229 :has-determiner "THE" :raw-text "amount")
+   (:var mv1229 :isa protein :predication mv1234 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1265 :isa phosphorylate :substrate mv1260 :raw-text "phosphorylated")
-   (:var mv1267 :isa high :adverb mv1266) (:var mv1266 :isa eventually :name "eventually")
-   (:var mv1261 :isa be))
+   (:var mv1234 :isa phosphorylate :substrate mv1229 :raw-text "phosphorylated")
+   (:var mv1236 :isa high :adverb mv1235) (:var mv1235 :isa eventually :name "eventually")
+   (:var mv1230 :isa be))
   ("Is the amount of phosphorylated MAPK1 ever high?"
-   (:var mv1281 :isa polar-question :statement mv1280)
-   (:var mv1280 :isa copular-predication :item mv1274 :value mv1278 :predicate mv1272)
-   (:var mv1274 :isa bio-amount :measured-item mv1271 :has-determiner "THE" :raw-text "amount")
-   (:var mv1271 :isa protein :predication mv1276 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1250 :isa polar-question :statement mv1249)
+   (:var mv1249 :isa copular-predication :item mv1243 :value mv1247 :predicate mv1241)
+   (:var mv1243 :isa bio-amount :measured-item mv1240 :has-determiner "THE" :raw-text "amount")
+   (:var mv1240 :isa protein :predication mv1245 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1276 :isa phosphorylate :substrate mv1271 :raw-text "phosphorylated")
-   (:var mv1278 :isa high :adverb mv1277) (:var mv1277 :isa ever :name "ever")
-   (:var mv1272 :isa be))
+   (:var mv1245 :isa phosphorylate :substrate mv1240 :raw-text "phosphorylated")
+   (:var mv1247 :isa high :adverb mv1246) (:var mv1246 :isa ever :name "ever")
+   (:var mv1241 :isa be))
   ("Is the amount of phosphorylated MAPK1 ever increasing?"
-   (:var mv1292 :isa polar-question :statement mv1290)
-   (:var mv1290 :isa increase :cause mv1285 :adverb mv1288 :raw-text "increasing")
-   (:var mv1285 :isa bio-amount :measured-item mv1282 :has-determiner "THE" :raw-text "amount")
-   (:var mv1282 :isa protein :predication mv1287 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1261 :isa polar-question :statement mv1259)
+   (:var mv1259 :isa increase :cause mv1254 :adverb mv1257 :raw-text "increasing")
+   (:var mv1254 :isa bio-amount :measured-item mv1251 :has-determiner "THE" :raw-text "amount")
+   (:var mv1251 :isa protein :predication mv1256 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1287 :isa phosphorylate :substrate mv1282 :raw-text "phosphorylated")
-   (:var mv1288 :isa ever :name "ever"))
+   (:var mv1256 :isa phosphorylate :substrate mv1251 :raw-text "phosphorylated")
+   (:var mv1257 :isa ever :name "ever"))
   ("Is the amount of phosphorylated MAPK1 high?"
-   (:var mv1302 :isa polar-question :statement mv1301)
-   (:var mv1301 :isa copular-predication :item mv1296 :value mv1299 :predicate mv1294)
-   (:var mv1296 :isa bio-amount :measured-item mv1293 :has-determiner "THE" :raw-text "amount")
-   (:var mv1293 :isa protein :predication mv1298 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1271 :isa polar-question :statement mv1270)
+   (:var mv1270 :isa copular-predication :item mv1265 :value mv1268 :predicate mv1263)
+   (:var mv1265 :isa bio-amount :measured-item mv1262 :has-determiner "THE" :raw-text "amount")
+   (:var mv1262 :isa protein :predication mv1267 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1298 :isa phosphorylate :substrate mv1293 :raw-text "phosphorylated")
-   (:var mv1299 :isa high) (:var mv1294 :isa be))
+   (:var mv1267 :isa phosphorylate :substrate mv1262 :raw-text "phosphorylated")
+   (:var mv1268 :isa high) (:var mv1263 :isa be))
   ("Is the amount of phosphorylated MAPK1 sometimes high?"
-   (:var mv1313 :isa polar-question :statement mv1312)
-   (:var mv1312 :isa copular-predication :item mv1306 :value mv1310 :predicate mv1304)
-   (:var mv1306 :isa bio-amount :measured-item mv1303 :has-determiner "THE" :raw-text "amount")
-   (:var mv1303 :isa protein :predication mv1308 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1282 :isa polar-question :statement mv1281)
+   (:var mv1281 :isa copular-predication :item mv1275 :value mv1279 :predicate mv1273)
+   (:var mv1275 :isa bio-amount :measured-item mv1272 :has-determiner "THE" :raw-text "amount")
+   (:var mv1272 :isa protein :predication mv1277 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1308 :isa phosphorylate :substrate mv1303 :raw-text "phosphorylated")
-   (:var mv1310 :isa high :adverb mv1309) (:var mv1309 :isa sometimes) (:var mv1304 :isa be))
+   (:var mv1277 :isa phosphorylate :substrate mv1272 :raw-text "phosphorylated")
+   (:var mv1279 :isa high :adverb mv1278) (:var mv1278 :isa sometimes) (:var mv1273 :isa be))
   ("Is the amount of phosphorylated MAPK1 sustained at a high level?"
-   (:var mv1328 :isa polar-question :statement mv1321)
-   (:var mv1321 :isa sustained :theme mv1317 :level mv1325 :past "PAST")
-   (:var mv1317 :isa bio-amount :measured-item mv1314 :has-determiner "THE" :raw-text "amount")
-   (:var mv1314 :isa protein :predication mv1319 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1297 :isa polar-question :statement mv1290)
+   (:var mv1290 :isa sustained :theme mv1286 :level mv1294 :past "PAST")
+   (:var mv1286 :isa bio-amount :measured-item mv1283 :has-determiner "THE" :raw-text "amount")
+   (:var mv1283 :isa protein :predication mv1288 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1319 :isa phosphorylate :substrate mv1314 :raw-text "phosphorylated")
-   (:var mv1325 :isa level :has-determiner "A" :predication mv1324 :raw-text "level")
-   (:var mv1324 :isa high))
+   (:var mv1288 :isa phosphorylate :substrate mv1283 :raw-text "phosphorylated")
+   (:var mv1294 :isa level :has-determiner "A" :predication mv1293 :raw-text "level")
+   (:var mv1293 :isa high))
   ("Is the amount of phosphorylated MAPK1 sustained?"
-   (:var mv1338 :isa polar-question :statement mv1336)
-   (:var mv1336 :isa sustained :participant mv1332 :past "PAST")
-   (:var mv1332 :isa bio-amount :measured-item mv1329 :has-determiner "THE" :raw-text "amount")
-   (:var mv1329 :isa protein :predication mv1334 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1307 :isa polar-question :statement mv1305)
+   (:var mv1305 :isa sustained :participant mv1301 :past "PAST")
+   (:var mv1301 :isa bio-amount :measured-item mv1298 :has-determiner "THE" :raw-text "amount")
+   (:var mv1298 :isa protein :predication mv1303 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1334 :isa phosphorylate :substrate mv1329 :raw-text "phosphorylated"))
+   (:var mv1303 :isa phosphorylate :substrate mv1298 :raw-text "phosphorylated"))
   ("Is the amount of phosphorylated MAPK1 transient?"
-   (:var mv1348 :isa polar-question :statement mv1347)
-   (:var mv1347 :isa copular-predication :item mv1342 :value mv1345 :predicate mv1340)
-   (:var mv1342 :isa bio-amount :measured-item mv1339 :has-determiner "THE" :raw-text "amount")
-   (:var mv1339 :isa protein :predication mv1344 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1317 :isa polar-question :statement mv1316)
+   (:var mv1316 :isa copular-predication :item mv1311 :value mv1314 :predicate mv1309)
+   (:var mv1311 :isa bio-amount :measured-item mv1308 :has-determiner "THE" :raw-text "amount")
+   (:var mv1308 :isa protein :predication mv1313 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1344 :isa phosphorylate :substrate mv1339 :raw-text "phosphorylated")
-   (:var mv1345 :isa transient) (:var mv1340 :isa be))
+   (:var mv1313 :isa phosphorylate :substrate mv1308 :raw-text "phosphorylated")
+   (:var mv1314 :isa transient) (:var mv1309 :isa be))
   ("Will the amount of phosphorylated MAPK1 be high?"
-   (:var mv1359 :isa polar-question :statement mv1357)
-   (:var mv1357 :isa copular-predication :item mv1352 :value mv1356 :predicate mv1355)
-   (:var mv1352 :isa bio-amount :measured-item mv1349 :has-determiner "THE" :raw-text "amount")
-   (:var mv1349 :isa protein :predication mv1354 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1328 :isa polar-question :statement mv1326)
+   (:var mv1326 :isa copular-predication :item mv1321 :value mv1325 :predicate mv1324)
+   (:var mv1321 :isa bio-amount :measured-item mv1318 :has-determiner "THE" :raw-text "amount")
+   (:var mv1318 :isa protein :predication mv1323 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1354 :isa phosphorylate :substrate mv1349 :raw-text "phosphorylated")
-   (:var mv1356 :isa high) (:var mv1355 :isa be :modal "WILL"))
+   (:var mv1323 :isa phosphorylate :substrate mv1318 :raw-text "phosphorylated")
+   (:var mv1325 :isa high) (:var mv1324 :isa be :modal "WILL"))
   ("is TGFBR1 eventually low if we increase the amount of SB525334 100 fold?"
-   (:var mv1382 :isa polar-question :statement mv1381)
-   (:var mv1381 :isa event-relation :subordinated-event mv1378 :event mv1379)
-   (:var mv1378 :isa wh-question :statement mv1368 :wh if)
-   (:var mv1368 :isa increase :|agent-OR-cause| mv1366 :|affected-process-OR-object| mv1370
+   (:var mv1351 :isa polar-question :statement mv1350)
+   (:var mv1350 :isa event-relation :subordinated-event mv1347 :event mv1348)
+   (:var mv1347 :isa wh-question :statement mv1337 :wh if)
+   (:var mv1337 :isa increase :|agent-OR-cause| mv1335 :|affected-process-OR-object| mv1339
     :present "PRESENT" :raw-text "increase")
-   (:var mv1366 :isa interlocutor :name "person-and-machine")
-   (:var mv1370 :isa bio-amount :measured-item mv1361 :has-determiner "THE" :raw-text "amount")
-   (:var mv1361 :isa molecule :raw-text "SB525334" :name "sb525334" :uid "PCID:9967941")
-   (:var mv1379 :isa copular-predication :item mv1360 :value mv1364 :predicate mv1362)
-   (:var mv1360 :isa protein :raw-text "TGFBR1" :uid "UP:P36897" :name "TGFR1_HUMAN")
-   (:var mv1364 :isa low :adverb mv1363) (:var mv1363 :isa eventually :name "eventually")
-   (:var mv1362 :isa be))
+   (:var mv1335 :isa interlocutor :name "person-and-machine")
+   (:var mv1339 :isa bio-amount :measured-item mv1330 :has-determiner "THE" :raw-text "amount")
+   (:var mv1330 :isa molecule :raw-text "SB525334" :name "sb525334" :uid "PCID:9967941")
+   (:var mv1348 :isa copular-predication :item mv1329 :value mv1333 :predicate mv1331)
+   (:var mv1329 :isa protein :raw-text "TGFBR1" :uid "UP:P36897" :name "TGFR1_HUMAN")
+   (:var mv1333 :isa low :adverb mv1332) (:var mv1332 :isa eventually :name "eventually")
+   (:var mv1331 :isa be))
   ("is active TGFBR1 eventually low if the amount of SB525334 is increased by 100 fold?"
-   (:var mv1409 :isa polar-question :statement mv1408)
-   (:var mv1408 :isa event-relation :subordinated-event mv1405 :event mv1406)
-   (:var mv1405 :isa wh-question :statement mv1402 :wh if)
-   (:var mv1402 :isa increase :|affected-process-OR-object| mv1391 :|multiplier-OR-cause| mv1400
+   (:var mv1378 :isa polar-question :statement mv1377)
+   (:var mv1377 :isa event-relation :subordinated-event mv1374 :event mv1375)
+   (:var mv1374 :isa wh-question :statement mv1371 :wh if)
+   (:var mv1371 :isa increase :|affected-process-OR-object| mv1360 :|multiplier-OR-cause| mv1369
     :raw-text "increased")
-   (:var mv1391 :isa bio-amount :measured-item mv1384 :has-determiner "THE" :raw-text "amount")
-   (:var mv1384 :isa molecule :raw-text "SB525334" :name "sb525334" :uid "PCID:9967941")
-   (:var mv1400 :isa measurement :number mv1397) (:var mv1397 :isa number :value 100)
-   (:var mv1406 :isa copular-predication :item mv1383 :value mv1388 :predicate mv1385)
-   (:var mv1383 :isa protein :predication mv1386 :raw-text "TGFBR1" :uid "UP:P36897" :name
+   (:var mv1360 :isa bio-amount :measured-item mv1353 :has-determiner "THE" :raw-text "amount")
+   (:var mv1353 :isa molecule :raw-text "SB525334" :name "sb525334" :uid "PCID:9967941")
+   (:var mv1369 :isa measurement :number mv1366) (:var mv1366 :isa number :value 100)
+   (:var mv1375 :isa copular-predication :item mv1352 :value mv1357 :predicate mv1354)
+   (:var mv1352 :isa protein :predication mv1355 :raw-text "TGFBR1" :uid "UP:P36897" :name
     "TGFR1_HUMAN")
-   (:var mv1386 :isa active) (:var mv1388 :isa low :adverb mv1387)
-   (:var mv1387 :isa eventually :name "eventually") (:var mv1385 :isa be))
+   (:var mv1355 :isa active) (:var mv1357 :isa low :adverb mv1356)
+   (:var mv1356 :isa eventually :name "eventually") (:var mv1354 :isa be))
   ("is the amount of TGFBR1 eventually low if we increase the amount of SB525334 100 fold?"
-   (:var mv1436 :isa polar-question :statement mv1435)
-   (:var mv1435 :isa event-relation :subordinated-event mv1431 :event mv1433)
-   (:var mv1431 :isa wh-question :statement mv1421 :wh if)
-   (:var mv1421 :isa increase :|agent-OR-cause| mv1419 :|affected-process-OR-object| mv1423
+   (:var mv1405 :isa polar-question :statement mv1404)
+   (:var mv1404 :isa event-relation :subordinated-event mv1400 :event mv1402)
+   (:var mv1400 :isa wh-question :statement mv1390 :wh if)
+   (:var mv1390 :isa increase :|agent-OR-cause| mv1388 :|affected-process-OR-object| mv1392
     :present "PRESENT" :raw-text "increase")
-   (:var mv1419 :isa interlocutor :name "person-and-machine")
-   (:var mv1423 :isa bio-amount :measured-item mv1411 :has-determiner "THE" :raw-text "amount")
-   (:var mv1411 :isa molecule :raw-text "SB525334" :name "sb525334" :uid "PCID:9967941")
-   (:var mv1433 :isa copular-predication :item mv1414 :value mv1417 :predicate mv1412)
-   (:var mv1414 :isa bio-amount :measured-item mv1410 :has-determiner "THE" :raw-text "amount")
-   (:var mv1410 :isa protein :raw-text "TGFBR1" :uid "UP:P36897" :name "TGFR1_HUMAN")
-   (:var mv1417 :isa low :adverb mv1416) (:var mv1416 :isa eventually :name "eventually")
-   (:var mv1412 :isa be))
+   (:var mv1388 :isa interlocutor :name "person-and-machine")
+   (:var mv1392 :isa bio-amount :measured-item mv1380 :has-determiner "THE" :raw-text "amount")
+   (:var mv1380 :isa molecule :raw-text "SB525334" :name "sb525334" :uid "PCID:9967941")
+   (:var mv1402 :isa copular-predication :item mv1383 :value mv1386 :predicate mv1381)
+   (:var mv1383 :isa bio-amount :measured-item mv1379 :has-determiner "THE" :raw-text "amount")
+   (:var mv1379 :isa protein :raw-text "TGFBR1" :uid "UP:P36897" :name "TGFR1_HUMAN")
+   (:var mv1386 :isa low :adverb mv1385) (:var mv1385 :isa eventually :name "eventually")
+   (:var mv1381 :isa be))
   ("is the amount of active TGFBR1 always low if we increase the amount of SB-525334 100 fold"
-   (:var mv1464 :isa polar-question :statement mv1463)
-   (:var mv1463 :isa event-relation :subordinated-event mv1459 :event mv1461)
-   (:var mv1459 :isa wh-question :statement mv1449 :wh if)
-   (:var mv1449 :isa increase :|agent-OR-cause| mv1447 :|affected-process-OR-object| mv1451
+   (:var mv1433 :isa polar-question :statement mv1432)
+   (:var mv1432 :isa event-relation :subordinated-event mv1428 :event mv1430)
+   (:var mv1428 :isa wh-question :statement mv1418 :wh if)
+   (:var mv1418 :isa increase :|agent-OR-cause| mv1416 :|affected-process-OR-object| mv1420
     :present "PRESENT" :raw-text "increase")
-   (:var mv1447 :isa interlocutor :name "person-and-machine")
-   (:var mv1451 :isa bio-amount :measured-item mv1438 :has-determiner "THE" :raw-text "amount")
-   (:var mv1438 :isa molecule :raw-text "SB-525334" :name "sb525334" :uid "PCID:9967941")
-   (:var mv1461 :isa copular-predication :item mv1441 :value mv1445 :predicate mv1439)
-   (:var mv1441 :isa bio-amount :measured-item mv1437 :has-determiner "THE" :raw-text "amount")
-   (:var mv1437 :isa protein :predication mv1443 :raw-text "TGFBR1" :uid "UP:P36897" :name
+   (:var mv1416 :isa interlocutor :name "person-and-machine")
+   (:var mv1420 :isa bio-amount :measured-item mv1407 :has-determiner "THE" :raw-text "amount")
+   (:var mv1407 :isa molecule :raw-text "SB-525334" :name "sb525334" :uid "PCID:9967941")
+   (:var mv1430 :isa copular-predication :item mv1410 :value mv1414 :predicate mv1408)
+   (:var mv1410 :isa bio-amount :measured-item mv1406 :has-determiner "THE" :raw-text "amount")
+   (:var mv1406 :isa protein :predication mv1412 :raw-text "TGFBR1" :uid "UP:P36897" :name
     "TGFR1_HUMAN")
-   (:var mv1443 :isa active) (:var mv1445 :isa low :adverb mv1444)
-   (:var mv1444 :isa always :name "always") (:var mv1439 :isa be))
+   (:var mv1412 :isa active) (:var mv1414 :isa low :adverb mv1413)
+   (:var mv1413 :isa always :name "always") (:var mv1408 :isa be))
   ("Let's move AKT1 and MAPK1 into mitochondrion."
-   (:var mv1474 :isa explicit-suggestion :suggestion mv1468 :marker let-as-directive)
-   (:var mv1468 :isa move-something-somewhere :at-relative-location mv1471 :theme mv1472 :present
+   (:var mv1443 :isa explicit-suggestion :suggestion mv1437 :marker let-as-directive)
+   (:var mv1437 :isa move-something-somewhere :at-relative-location mv1440 :theme mv1441 :present
     "PRESENT")
-   (:var mv1471 :isa cellular-location :raw-text "mitochondrion" :name "Mitochondrion" :uid
+   (:var mv1440 :isa cellular-location :raw-text "mitochondrion" :name "Mitochondrion" :uid
     "UP:SL-0173")
-   (:var mv1472 :isa collection :raw-text "AKT1 and MAPK1" :type protein :number 2 :items
-    (mv1466 mv1467))
-   (:var mv1466 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv1467 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
+   (:var mv1441 :isa collection :raw-text "AKT1 and MAPK1" :type protein :number 2 :items
+    (mv1435 mv1436))
+   (:var mv1435 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv1436 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
   ("FEN1 phosphorylates AKT1."
-   (:var mv1477 :isa phosphorylate :agent mv1475 :substrate mv1476 :present "PRESENT" :raw-text
+   (:var mv1446 :isa phosphorylate :agent mv1444 :substrate mv1445 :present "PRESENT" :raw-text
     "phosphorylates")
-   (:var mv1475 :isa protein :raw-text "FEN1" :uid "UP:P39748" :name "FEN1_HUMAN")
-   (:var mv1476 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
+   (:var mv1444 :isa protein :raw-text "FEN1" :uid "UP:P39748" :name "FEN1_HUMAN")
+   (:var mv1445 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
   ("Move all into mitochondrion."
-   (:var mv1478 :isa move-something-somewhere :at-relative-location mv1481 :theme mv1483 :present
+   (:var mv1447 :isa move-something-somewhere :at-relative-location mv1450 :theme mv1452 :present
     "PRESENT")
-   (:var mv1481 :isa cellular-location :raw-text "mitochondrion" :name "Mitochondrion" :uid
+   (:var mv1450 :isa cellular-location :raw-text "mitochondrion" :name "Mitochondrion" :uid
     "UP:SL-0173")
-   (:var mv1483 :isa all :word "all"))
+   (:var mv1452 :isa all :word "all"))
   ("AKT1 phosphorylates MAPK1."
-   (:var mv1486 :isa phosphorylate :agent mv1484 :substrate mv1485 :present "PRESENT" :raw-text
+   (:var mv1455 :isa phosphorylate :agent mv1453 :substrate mv1454 :present "PRESENT" :raw-text
     "phosphorylates")
-   (:var mv1484 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv1485 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
+   (:var mv1453 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv1454 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
   ("Let's highlight the upstream of phosphorylated MAPK1."
-   (:var mv1496 :isa explicit-suggestion :suggestion mv1489 :marker let-as-directive)
-   (:var mv1489 :isa highlight :theme mv1491 :present "PRESENT")
-   (:var mv1491 :isa upstream-segment :pathwaycomponent mv1488 :has-determiner "THE" :raw-text
+   (:var mv1465 :isa explicit-suggestion :suggestion mv1458 :marker let-as-directive)
+   (:var mv1458 :isa highlight :theme mv1460 :present "PRESENT")
+   (:var mv1460 :isa upstream-segment :pathwaycomponent mv1457 :has-determiner "THE" :raw-text
     "upstream")
-   (:var mv1488 :isa protein :predication mv1494 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1457 :isa protein :predication mv1463 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1494 :isa phosphorylate :substrate mv1488 :raw-text "phosphorylated"))
+   (:var mv1463 :isa phosphorylate :substrate mv1457 :raw-text "phosphorylated"))
   ("Let's show phosphorylated MAPK1 on the top."
-   (:var mv1505 :isa explicit-suggestion :suggestion mv1499 :marker let-as-directive)
-   (:var mv1499 :isa show :at-relative-location mv1503 :|statement-OR-theme| mv1498 :present
+   (:var mv1474 :isa explicit-suggestion :suggestion mv1468 :marker let-as-directive)
+   (:var mv1468 :isa show :at-relative-location mv1472 :|statement-OR-theme| mv1467 :present
     "PRESENT")
-   (:var mv1503 :isa top-qua-location :has-determiner "THE")
-   (:var mv1498 :isa protein :predication mv1500 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1472 :isa top-qua-location :has-determiner "THE")
+   (:var mv1467 :isa protein :predication mv1469 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1500 :isa phosphorylate :substrate mv1498 :raw-text "phosphorylated"))
+   (:var mv1469 :isa phosphorylate :substrate mv1467 :raw-text "phosphorylated"))
   ("Let's show the downstream of AKT1 on the top."
-   (:var mv1518 :isa explicit-suggestion :suggestion mv1508 :marker let-as-directive)
-   (:var mv1508 :isa show :at-relative-location mv1515 :|statement-OR-theme| mv1510 :present
+   (:var mv1487 :isa explicit-suggestion :suggestion mv1477 :marker let-as-directive)
+   (:var mv1477 :isa show :at-relative-location mv1484 :|statement-OR-theme| mv1479 :present
     "PRESENT")
-   (:var mv1515 :isa top-qua-location :has-determiner "THE")
-   (:var mv1510 :isa downstream-segment :pathwaycomponent mv1507 :has-determiner "THE" :raw-text
+   (:var mv1484 :isa top-qua-location :has-determiner "THE")
+   (:var mv1479 :isa downstream-segment :pathwaycomponent mv1476 :has-determiner "THE" :raw-text
     "downstream")
-   (:var mv1507 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
+   (:var mv1476 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
   ("Let's move mitochondrion elements to the top."
-   (:var mv1527 :isa explicit-suggestion :suggestion mv1520 :marker let-as-directive)
-   (:var mv1520 :isa move-something-somewhere :goal mv1525 :theme mv1522 :present "PRESENT")
-   (:var mv1525 :isa top-qua-location :has-determiner "THE")
-   (:var mv1522 :isa element :modifier mv1521)
-   (:var mv1521 :isa cellular-location :raw-text "mitochondrion" :name "Mitochondrion" :uid
+   (:var mv1496 :isa explicit-suggestion :suggestion mv1489 :marker let-as-directive)
+   (:var mv1489 :isa move-something-somewhere :goal mv1494 :theme mv1491 :present "PRESENT")
+   (:var mv1494 :isa top-qua-location :has-determiner "THE")
+   (:var mv1491 :isa element :modifier mv1490)
+   (:var mv1490 :isa cellular-location :raw-text "mitochondrion" :name "Mitochondrion" :uid
     "UP:SL-0173"))
   ("How does BRAF affect MAPK1?"
-   (:var mv1532 :isa affect :manner mv1529 :agent mv1531 :object mv1528 :present "PRESENT"
+   (:var mv1501 :isa affect :manner mv1498 :agent mv1500 :object mv1497 :present "PRESENT"
     :raw-text "affect")
-   (:var mv1529 :isa how)
-   (:var mv1531 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv1528 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
+   (:var mv1498 :isa how)
+   (:var mv1500 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv1497 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
   ("How does MAPK1 affect BRAF?"
-   (:var mv1536 :isa affect :manner mv1534 :agent mv1533 :object mv1537 :present "PRESENT"
+   (:var mv1505 :isa affect :manner mv1503 :agent mv1502 :object mv1506 :present "PRESENT"
     :raw-text "affect")
-   (:var mv1534 :isa how)
-   (:var mv1533 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
-   (:var mv1537 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv1503 :isa how)
+   (:var mv1502 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
+   (:var mv1506 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("What is the path between BRAF and MAPK1?"
-   (:var mv1540 :isa be :subject mv1539 :predicate mv1542 :present "PRESENT")
-   (:var mv1539 :isa what) (:var mv1542 :isa path :endpoints mv1546 :has-determiner "THE")
-   (:var mv1546 :isa collection :raw-text "BRAF and MAPK1" :type protein :number 2 :items
-    (mv1544 mv1538))
-   (:var mv1544 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv1538 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
+   (:var mv1509 :isa be :subject mv1508 :predicate mv1511 :present "PRESENT")
+   (:var mv1508 :isa what) (:var mv1511 :isa path :endpoints mv1515 :has-determiner "THE")
+   (:var mv1515 :isa collection :raw-text "BRAF and MAPK1" :type protein :number 2 :items
+    (mv1513 mv1507))
+   (:var mv1513 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv1507 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
   ("How does MAPK1 affect JUND?"
-   (:var mv1551 :isa affect :manner mv1549 :agent mv1548 :object mv1552 :present "PRESENT"
+   (:var mv1520 :isa affect :manner mv1518 :agent mv1517 :object mv1521 :present "PRESENT"
     :raw-text "affect")
-   (:var mv1549 :isa how)
-   (:var mv1548 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
-   (:var mv1552 :isa protein :raw-text "JUND" :uid "UP:P17535" :name "JUND_HUMAN"))
+   (:var mv1518 :isa how)
+   (:var mv1517 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
+   (:var mv1521 :isa protein :raw-text "JUND" :uid "UP:P17535" :name "JUND_HUMAN"))
   ("How does SETDB1 affect ADAM17?"
-   (:var mv1557 :isa affect :manner mv1555 :agent mv1553 :object mv1554 :present "PRESENT"
+   (:var mv1526 :isa affect :manner mv1524 :agent mv1522 :object mv1523 :present "PRESENT"
     :raw-text "affect")
-   (:var mv1555 :isa how)
-   (:var mv1553 :isa protein :raw-text "SETDB1" :uid "UP:Q15047" :name "SETB1_HUMAN")
-   (:var mv1554 :isa protein :raw-text "ADAM17" :uid "UP:P78536" :name "ADA17_HUMAN"))
+   (:var mv1524 :isa how)
+   (:var mv1522 :isa protein :raw-text "SETDB1" :uid "UP:Q15047" :name "SETB1_HUMAN")
+   (:var mv1523 :isa protein :raw-text "ADAM17" :uid "UP:P78536" :name "ADA17_HUMAN"))
   ("How does KRAS affect MAPK3?"
-   (:var mv1562 :isa affect :manner mv1559 :agent mv1561 :object mv1558 :present "PRESENT"
+   (:var mv1531 :isa affect :manner mv1528 :agent mv1530 :object mv1527 :present "PRESENT"
     :raw-text "affect")
-   (:var mv1559 :isa how)
-   (:var mv1561 :isa protein :raw-text "KRAS" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv1558 :isa protein :raw-text "MAPK3" :uid "UP:P27361" :name "MK03_HUMAN"))
+   (:var mv1528 :isa how)
+   (:var mv1530 :isa protein :raw-text "KRAS" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv1527 :isa protein :raw-text "MAPK3" :uid "UP:P27361" :name "MK03_HUMAN"))
   ("How does  ITGAV affect ILK?"
-   (:var mv1566 :isa affect :manner mv1563 :agent mv1565 :object mv1567 :present "PRESENT"
+   (:var mv1535 :isa affect :manner mv1532 :agent mv1534 :object mv1536 :present "PRESENT"
     :raw-text "affect")
-   (:var mv1563 :isa how)
-   (:var mv1565 :isa protein :raw-text "ITGAV" :uid "UP:P06756" :name "ITAV_HUMAN")
-   (:var mv1567 :isa protein :raw-text "ILK" :uid "UP:Q13418" :name "ILK_HUMAN"))
+   (:var mv1532 :isa how)
+   (:var mv1534 :isa protein :raw-text "ITGAV" :uid "UP:P06756" :name "ITAV_HUMAN")
+   (:var mv1536 :isa protein :raw-text "ILK" :uid "UP:Q13418" :name "ILK_HUMAN"))
   ("What genes does MAPK1 phosphorylate?"
-   (:var mv1572 :isa phosphorylate :amino-acid mv1570 :agent mv1568 :present "PRESENT" :raw-text
+   (:var mv1541 :isa phosphorylate :amino-acid mv1539 :agent mv1537 :present "PRESENT" :raw-text
     "phosphorylate")
-   (:var mv1570 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv1568 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
+   (:var mv1539 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv1537 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
   ("What pathways affect BRAF?"
-   (:var mv1575 :isa affect :agent mv1574 :object mv1576 :present "PRESENT" :raw-text "affect")
-   (:var mv1574 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv1576 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv1544 :isa affect :agent mv1543 :object mv1545 :present "PRESENT" :raw-text "affect")
+   (:var mv1543 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv1545 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("What genes activate ILK?"
-   (:var mv1579 :isa bio-activate :agent mv1578 :object mv1580 :present "PRESENT" :raw-text
+   (:var mv1548 :isa bio-activate :agent mv1547 :object mv1549 :present "PRESENT" :raw-text
     "activate")
-   (:var mv1578 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv1580 :isa protein :raw-text "ILK" :uid "UP:Q13418" :name "ILK_HUMAN"))
+   (:var mv1547 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv1549 :isa protein :raw-text "ILK" :uid "UP:Q13418" :name "ILK_HUMAN"))
   ("Let's learn about AKT1 in ovarian cancer."
-   (:var mv1589 :isa explicit-suggestion :suggestion mv1584 :marker let-as-directive)
-   (:var mv1584 :isa learning :statement mv1582 :present "PRESENT")
-   (:var mv1582 :isa protein :context mv1583 :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv1583 :isa cancer :name "ovarian cancer" :uid "TS-1223"))
+   (:var mv1558 :isa explicit-suggestion :suggestion mv1553 :marker let-as-directive)
+   (:var mv1553 :isa learning :statement mv1551 :present "PRESENT")
+   (:var mv1551 :isa protein :context mv1552 :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv1552 :isa cancer :name "ovarian cancer" :uid "TS-1223"))
   ("What is its relationship with BRAF?"
-   (:var mv1591 :isa be :subject mv1590 :predicate mv1593 :present "PRESENT")
-   (:var mv1590 :isa what) (:var mv1593 :isa relationship :patient mv1595 :modifier mv1592)
-   (:var mv1595 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv1592 :isa pronoun/inanimate :word "its"))
+   (:var mv1560 :isa be :subject mv1559 :predicate mv1562 :present "PRESENT")
+   (:var mv1559 :isa what) (:var mv1562 :isa relationship :patient mv1564 :modifier mv1561)
+   (:var mv1564 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv1561 :isa pronoun/inanimate :word "its"))
   ("What is its relationship with PTPN1?"
-   (:var mv1599 :isa be :subject mv1598 :predicate mv1601 :present "PRESENT")
-   (:var mv1598 :isa what) (:var mv1601 :isa relationship :patient mv1597 :modifier mv1600)
-   (:var mv1597 :isa protein :raw-text "PTPN1" :uid "UP:P18031" :name "PTN1_HUMAN")
-   (:var mv1600 :isa pronoun/inanimate :word "its"))
+   (:var mv1568 :isa be :subject mv1567 :predicate mv1570 :present "PRESENT")
+   (:var mv1567 :isa what) (:var mv1570 :isa relationship :patient mv1566 :modifier mv1569)
+   (:var mv1566 :isa protein :raw-text "PTPN1" :uid "UP:P18031" :name "PTN1_HUMAN")
+   (:var mv1569 :isa pronoun/inanimate :word "its"))
   ("AKT1 phosphorylates IFT140."
-   (:var mv1606 :isa phosphorylate :agent mv1604 :substrate mv1605 :present "PRESENT" :raw-text
+   (:var mv1575 :isa phosphorylate :agent mv1573 :substrate mv1574 :present "PRESENT" :raw-text
     "phosphorylates")
-   (:var mv1604 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv1605 :isa protein :raw-text "IFT140" :uid "UP:Q96RY7" :name "IF140_HUMAN"))
-  ("What is the next correlation of AKT1?" (:var mv1608 :isa what))
-  ("Let's stop learning about AKT1." (:var mv1616 :isa let-as-directive))
+   (:var mv1573 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv1574 :isa protein :raw-text "IFT140" :uid "UP:Q96RY7" :name "IF140_HUMAN"))
+  ("What is the next correlation of AKT1?" (:var mv1577 :isa what))
+  ("Let's stop learning about AKT1." (:var mv1585 :isa let-as-directive))
   ("What is the drug response on cells with TP53 alterations?"
-   (:var mv1625 :isa be :subject mv1624 :predicate mv1628 :present "PRESENT")
-   (:var mv1624 :isa what)
-   (:var mv1628 :isa response :beneficiary mv1630 :has-determiner "THE" :modifier mv1627 :raw-text
+   (:var mv1594 :isa be :subject mv1593 :predicate mv1597 :present "PRESENT")
+   (:var mv1593 :isa what)
+   (:var mv1597 :isa response :beneficiary mv1599 :has-determiner "THE" :modifier mv1596 :raw-text
     "response")
-   (:var mv1630 :isa cell-type :mutation mv1632)
-   (:var mv1632 :isa alter :|agent-OR-object| mv1623 :raw-text "alterations")
-   (:var mv1623 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
-   (:var mv1627 :isa drug :raw-text "drug"))
+   (:var mv1599 :isa cell-type :mutation mv1601)
+   (:var mv1601 :isa alter :|agent-OR-object| mv1592 :raw-text "alterations")
+   (:var mv1592 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
+   (:var mv1596 :isa drug :raw-text "drug"))
   ("What is the drug response for cells with TP53 alterations?"
-   (:var mv1637 :isa be :subject mv1636 :predicate mv1640 :present "PRESENT")
-   (:var mv1636 :isa what)
-   (:var mv1640 :isa response :cell-type mv1642 :has-determiner "THE" :modifier mv1639 :raw-text
+   (:var mv1606 :isa be :subject mv1605 :predicate mv1609 :present "PRESENT")
+   (:var mv1605 :isa what)
+   (:var mv1609 :isa response :cell-type mv1611 :has-determiner "THE" :modifier mv1608 :raw-text
     "response")
-   (:var mv1642 :isa cell-type :mutation mv1644)
-   (:var mv1644 :isa alter :|agent-OR-object| mv1635 :raw-text "alterations")
-   (:var mv1635 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
-   (:var mv1639 :isa drug :raw-text "drug"))
+   (:var mv1611 :isa cell-type :mutation mv1613)
+   (:var mv1613 :isa alter :|agent-OR-object| mv1604 :raw-text "alterations")
+   (:var mv1604 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
+   (:var mv1608 :isa drug :raw-text "drug"))
   ("What is the mutation frequency of EGFR in glioblastoma?"
-   (:var mv1648 :isa be :subject mv1647 :predicate mv1651 :present "PRESENT")
-   (:var mv1647 :isa what)
-   (:var mv1651 :isa frequency :measured-item mv1653 :has-determiner "THE" :measured-item mv1650
+   (:var mv1617 :isa be :subject mv1616 :predicate mv1620 :present "PRESENT")
+   (:var mv1616 :isa what)
+   (:var mv1620 :isa frequency :measured-item mv1622 :has-determiner "THE" :measured-item mv1619
     :raw-text "frequency")
-   (:var mv1653 :isa protein :context mv1655 :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
-   (:var mv1655 :isa glioblastoma) (:var mv1650 :isa mutation :raw-text "mutation"))
+   (:var mv1622 :isa protein :context mv1624 :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
+   (:var mv1624 :isa glioblastoma) (:var mv1619 :isa mutation :raw-text "mutation"))
   ("What is the mutation frequency of TP53 in ovarian serous cystadenocarcinoma?"
-   (:var mv1661 :isa be :subject mv1660 :predicate mv1664 :present "PRESENT")
-   (:var mv1660 :isa what)
-   (:var mv1664 :isa frequency :measured-item mv1658 :has-determiner "THE" :measured-item mv1663
+   (:var mv1630 :isa be :subject mv1629 :predicate mv1633 :present "PRESENT")
+   (:var mv1629 :isa what)
+   (:var mv1633 :isa frequency :measured-item mv1627 :has-determiner "THE" :measured-item mv1632
     :raw-text "frequency")
-   (:var mv1658 :isa protein :context mv1659 :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
-   (:var mv1659 :isa cancer :name "ovarian serous cystadenocarcinoma" :uid "NCIT:C7978")
-   (:var mv1663 :isa mutation :raw-text "mutation"))
+   (:var mv1627 :isa protein :context mv1628 :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
+   (:var mv1628 :isa cancer :name "ovarian serous cystadenocarcinoma" :uid "NCIT:C7978")
+   (:var mv1632 :isa mutation :raw-text "mutation"))
   ("Show me the mutations of PTEN and BRAF in ovarian cancer."
-   (:var mv1670 :isa show :|statement-OR-theme| mv1673 :beneficiary mv1671 :present "PRESENT")
-   (:var mv1673 :isa mutation :object mv1679 :has-determiner "THE" :raw-text "mutations")
-   (:var mv1679 :isa collection :context mv1669 :raw-text "PTEN and BRAF" :type protein :number 2
-    :items (mv1675 mv1677))
-   (:var mv1669 :isa cancer :name "ovarian cancer" :uid "TS-1223")
-   (:var mv1675 :isa protein :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
-   (:var mv1677 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv1671 :isa interlocutor :name "speaker"))
+   (:var mv1639 :isa show :|statement-OR-theme| mv1642 :beneficiary mv1640 :present "PRESENT")
+   (:var mv1642 :isa mutation :object mv1648 :has-determiner "THE" :raw-text "mutations")
+   (:var mv1648 :isa collection :context mv1638 :raw-text "PTEN and BRAF" :type protein :number 2
+    :items (mv1644 mv1646))
+   (:var mv1638 :isa cancer :name "ovarian cancer" :uid "TS-1223")
+   (:var mv1644 :isa protein :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
+   (:var mv1646 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv1640 :isa interlocutor :name "speaker"))
   ("Show me the mutations of PTEN in ovarian cancer."
-   (:var mv1683 :isa show :|statement-OR-theme| mv1686 :beneficiary mv1684 :present "PRESENT")
-   (:var mv1686 :isa mutation :object mv1688 :has-determiner "THE" :raw-text "mutations")
-   (:var mv1688 :isa protein :context mv1682 :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
-   (:var mv1682 :isa cancer :name "ovarian cancer" :uid "TS-1223")
-   (:var mv1684 :isa interlocutor :name "speaker"))
+   (:var mv1652 :isa show :|statement-OR-theme| mv1655 :beneficiary mv1653 :present "PRESENT")
+   (:var mv1655 :isa mutation :object mv1657 :has-determiner "THE" :raw-text "mutations")
+   (:var mv1657 :isa protein :context mv1651 :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
+   (:var mv1651 :isa cancer :name "ovarian cancer" :uid "TS-1223")
+   (:var mv1653 :isa interlocutor :name "speaker"))
   ("What are the mutations of PTEN in ovarian cancer?"
-   (:var mv1694 :isa be :subject mv1693 :predicate mv1696 :present "PRESENT")
-   (:var mv1693 :isa what)
-   (:var mv1696 :isa mutation :object mv1698 :has-determiner "THE" :raw-text "mutations")
-   (:var mv1698 :isa protein :context mv1692 :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
-   (:var mv1692 :isa cancer :name "ovarian cancer" :uid "TS-1223"))
+   (:var mv1663 :isa be :subject mv1662 :predicate mv1665 :present "PRESENT")
+   (:var mv1662 :isa what)
+   (:var mv1665 :isa mutation :object mv1667 :has-determiner "THE" :raw-text "mutations")
+   (:var mv1667 :isa protein :context mv1661 :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
+   (:var mv1661 :isa cancer :name "ovarian cancer" :uid "TS-1223"))
   ("What is the most likely cellular location of AKT1 and BRAF?"
-   (:var mv1704 :isa be :subject mv1703 :predicate mv1716 :present "PRESENT")
-   (:var mv1703 :isa what) (:var mv1716 :isa quality-predicate :item mv1714 :attribute mv1710)
-   (:var mv1714 :isa collection :raw-text "AKT1 and BRAF" :type protein :number 2 :items
-    (mv1702 mv1713))
-   (:var mv1702 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv1713 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv1710 :isa location-of :has-determiner "THE" :predication mv1708 :modifier mv1709)
-   (:var mv1708 :isa likely :comparative mv1706)
-   (:var mv1706 :isa superlative-quantifier :name "most")
-   (:var mv1709 :isa cellular :name "cellular"))
+   (:var mv1673 :isa be :subject mv1672 :predicate mv1685 :present "PRESENT")
+   (:var mv1672 :isa what) (:var mv1685 :isa quality-predicate :item mv1683 :attribute mv1679)
+   (:var mv1683 :isa collection :raw-text "AKT1 and BRAF" :type protein :number 2 :items
+    (mv1671 mv1682))
+   (:var mv1671 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv1682 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv1679 :isa location-of :has-determiner "THE" :predication mv1677 :modifier mv1678)
+   (:var mv1677 :isa likely :comparative mv1675)
+   (:var mv1675 :isa superlative-quantifier :name "most")
+   (:var mv1678 :isa cellular :name "cellular"))
   ("Are there common upstreams of AKT1 and BRAF?"
-   (:var mv1729 :isa polar-question :statement mv1726)
-   (:var mv1726 :isa there-exists :value mv1722 :predicate mv1719)
-   (:var mv1722 :isa upstream-segment :pathwaycomponent mv1727 :predication mv1721 :raw-text
+   (:var mv1698 :isa polar-question :statement mv1695)
+   (:var mv1695 :isa there-exists :value mv1691 :predicate mv1688)
+   (:var mv1691 :isa upstream-segment :pathwaycomponent mv1696 :predication mv1690 :raw-text
     "upstreams")
-   (:var mv1727 :isa collection :raw-text "AKT1 and BRAF" :type protein :number 2 :items
-    (mv1717 mv1725))
-   (:var mv1717 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv1725 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv1721 :isa common) (:var mv1719 :isa syntactic-there))
+   (:var mv1696 :isa collection :raw-text "AKT1 and BRAF" :type protein :number 2 :items
+    (mv1686 mv1694))
+   (:var mv1686 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv1694 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv1690 :isa common) (:var mv1688 :isa syntactic-there))
   ("What are the common upstreams of AKT1, BRAF and MAPK1?"
-   (:var mv1733 :isa be :subject mv1732 :predicate mv1736 :present "PRESENT")
-   (:var mv1732 :isa what)
-   (:var mv1736 :isa upstream-segment :pathwaycomponent mv1740 :has-determiner "THE" :predication
-    mv1735 :raw-text "upstreams")
-   (:var mv1740 :isa collection :raw-text "AKT1, BRAF and MAPK1" :type protein :number 3 :items
-    (mv1730 mv1738 mv1731))
-   (:var mv1730 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv1738 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv1731 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
-   (:var mv1735 :isa common))
+   (:var mv1702 :isa be :subject mv1701 :predicate mv1705 :present "PRESENT")
+   (:var mv1701 :isa what)
+   (:var mv1705 :isa upstream-segment :pathwaycomponent mv1709 :has-determiner "THE" :predication
+    mv1704 :raw-text "upstreams")
+   (:var mv1709 :isa collection :raw-text "AKT1, BRAF and MAPK1" :type protein :number 3 :items
+    (mv1699 mv1707 mv1700))
+   (:var mv1699 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv1707 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv1700 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
+   (:var mv1704 :isa common))
   ("What genes are mutually exclusive with CDH1 for breast cancer?"
-   (:var mv1752 :isa copular-predication :item mv1746 :value mv1742 :predicate mv1747)
-   (:var mv1746 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv1742 :isa mutual-exclusivity :disease mv1744 :alternative mv1743)
-   (:var mv1744 :isa cancer :name "breast cancer" :uid "TS-0591")
-   (:var mv1743 :isa protein :raw-text "CDH1" :uid "UP:P12830" :name "CADH1_HUMAN")
-   (:var mv1747 :isa be :present "PRESENT"))
+   (:var mv1721 :isa copular-predication :item mv1715 :value mv1711 :predicate mv1716)
+   (:var mv1715 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv1711 :isa mutual-exclusivity :disease mv1713 :alternative mv1712)
+   (:var mv1713 :isa cancer :name "breast cancer" :uid "TS-0591")
+   (:var mv1712 :isa protein :raw-text "CDH1" :uid "UP:P12830" :name "CADH1_HUMAN")
+   (:var mv1716 :isa be :present "PRESENT"))
   ("What are the mutually exclusive genes with TP53 for breast cancer?"
-   (:var mv1757 :isa be :subject mv1756 :predicate mv1764 :present "PRESENT")
-   (:var mv1756 :isa what)
-   (:var mv1764 :isa gene :disease mv1755 :has-determiner "THE" :predication mv1753 :raw-text
+   (:var mv1726 :isa be :subject mv1725 :predicate mv1733 :present "PRESENT")
+   (:var mv1725 :isa what)
+   (:var mv1733 :isa gene :disease mv1724 :has-determiner "THE" :predication mv1722 :raw-text
     "genes")
-   (:var mv1755 :isa cancer :name "breast cancer" :uid "TS-0591")
-   (:var mv1753 :isa mutual-exclusivity :alternative mv1754)
-   (:var mv1754 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN"))
+   (:var mv1724 :isa cancer :name "breast cancer" :uid "TS-0591")
+   (:var mv1722 :isa mutual-exclusivity :alternative mv1723)
+   (:var mv1723 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN"))
   ("What is the mutation significance of TP53 for lung cancer?"
-   (:var mv1768 :isa be :subject mv1767 :predicate mv1771 :present "PRESENT")
-   (:var mv1767 :isa what)
-   (:var mv1771 :isa significance :result mv1766 :agent mv1765 :has-determiner "THE" :modifier
-    mv1770)
-   (:var mv1766 :isa cancer :name "lung cancer" :uid "TS-0571")
-   (:var mv1765 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
-   (:var mv1770 :isa mutation :raw-text "mutation"))
+   (:var mv1737 :isa be :subject mv1736 :predicate mv1740 :present "PRESENT")
+   (:var mv1736 :isa what)
+   (:var mv1740 :isa significance :result mv1735 :agent mv1734 :has-determiner "THE" :modifier
+    mv1739)
+   (:var mv1735 :isa cancer :name "lung cancer" :uid "TS-0571")
+   (:var mv1734 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
+   (:var mv1739 :isa mutation :raw-text "mutation"))
   ("What is the mutation significance of TP53 in ovarian serous cystadenocarcinoma?"
-   (:var mv1779 :isa be :subject mv1778 :predicate mv1782 :present "PRESENT")
-   (:var mv1778 :isa what)
-   (:var mv1782 :isa significance :agent mv1776 :has-determiner "THE" :modifier mv1781)
-   (:var mv1776 :isa protein :context mv1777 :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
-   (:var mv1777 :isa cancer :name "ovarian serous cystadenocarcinoma" :uid "NCIT:C7978")
-   (:var mv1781 :isa mutation :raw-text "mutation"))
+   (:var mv1748 :isa be :subject mv1747 :predicate mv1751 :present "PRESENT")
+   (:var mv1747 :isa what)
+   (:var mv1751 :isa significance :agent mv1745 :has-determiner "THE" :modifier mv1750)
+   (:var mv1745 :isa protein :context mv1746 :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
+   (:var mv1746 :isa cancer :name "ovarian serous cystadenocarcinoma" :uid "NCIT:C7978")
+   (:var mv1750 :isa mutation :raw-text "mutation"))
   ("What is the mutation significance of PTEN in pancreatic adenocarcinoma?"
-   (:var mv1788 :isa be :subject mv1787 :predicate mv1791 :present "PRESENT")
-   (:var mv1787 :isa what)
-   (:var mv1791 :isa significance :agent mv1793 :has-determiner "THE" :modifier mv1790)
-   (:var mv1793 :isa protein :context mv1796 :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
-   (:var mv1796 :isa cancer :organ mv1795 :name "adenocarcinoma" :uid "EFO:0000228")
-   (:var mv1795 :isa pancreas) (:var mv1790 :isa mutation :raw-text "mutation"))
+   (:var mv1757 :isa be :subject mv1756 :predicate mv1760 :present "PRESENT")
+   (:var mv1756 :isa what)
+   (:var mv1760 :isa significance :agent mv1762 :has-determiner "THE" :modifier mv1759)
+   (:var mv1762 :isa protein :context mv1765 :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
+   (:var mv1765 :isa cancer :organ mv1764 :name "adenocarcinoma" :uid "EFO:0000228")
+   (:var mv1764 :isa pancreas) (:var mv1759 :isa mutation :raw-text "mutation"))
   ("What is the mutation significance of BRAF in prostatic adenocarcinoma?"
-   (:var mv1800 :isa be :subject mv1799 :predicate mv1803 :present "PRESENT")
-   (:var mv1799 :isa what)
-   (:var mv1803 :isa significance :agent mv1805 :has-determiner "THE" :modifier mv1802)
-   (:var mv1805 :isa protein :context mv1808 :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv1808 :isa cancer :modifier mv1807 :name "adenocarcinoma" :uid "EFO:0000228")
-   (:var mv1807 :isa protein :raw-text "prostatic" :uid "UP:P20151" :name "KLK2_HUMAN")
-   (:var mv1802 :isa mutation :raw-text "mutation"))
+   (:var mv1769 :isa be :subject mv1768 :predicate mv1772 :present "PRESENT")
+   (:var mv1768 :isa what)
+   (:var mv1772 :isa significance :agent mv1774 :has-determiner "THE" :modifier mv1771)
+   (:var mv1774 :isa protein :context mv1777 :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv1777 :isa cancer :modifier mv1776 :name "adenocarcinoma" :uid "EFO:0000228")
+   (:var mv1776 :isa protein :raw-text "prostatic" :uid "UP:P20151" :name "KLK2_HUMAN")
+   (:var mv1771 :isa mutation :raw-text "mutation"))
   ("MEK phosphorylates ERK."
-   (:var mv1812 :isa phosphorylate :agent mv1811 :substrate mv1813 :present "PRESENT" :raw-text
+   (:var mv1781 :isa phosphorylate :agent mv1780 :substrate mv1782 :present "PRESENT" :raw-text
     "phosphorylates")
-   (:var mv1811 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv1780 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv1813 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv1782 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -1233,21 +1232,21 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("EGF binds EGFR."
-   (:var mv1815 :isa binding :binder mv1814 :direct-bindee mv1816 :present "PRESENT" :raw-text
+   (:var mv1784 :isa binding :binder mv1783 :direct-bindee mv1785 :present "PRESENT" :raw-text
     "binds")
-   (:var mv1814 :isa protein :raw-text "EGF" :uid "UP:P01133" :name "EGF_HUMAN")
-   (:var mv1816 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN"))
+   (:var mv1783 :isa protein :raw-text "EGF" :uid "UP:P01133" :name "EGF_HUMAN")
+   (:var mv1785 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN"))
   ("EGFR bound to EGF binds GRB2."
-   (:var mv1822 :isa binding :binder mv1818 :direct-bindee mv1817 :present "PRESENT" :raw-text
+   (:var mv1791 :isa binding :binder mv1787 :direct-bindee mv1786 :present "PRESENT" :raw-text
     "binds")
-   (:var mv1818 :isa protein :predication mv1819 :raw-text "EGFR" :uid "UP:P00533" :name
+   (:var mv1787 :isa protein :predication mv1788 :raw-text "EGFR" :uid "UP:P00533" :name
     "EGFR_HUMAN")
-   (:var mv1819 :isa binding :direct-bindee mv1818 :bindee mv1821 :past "PAST" :raw-text "bound")
-   (:var mv1821 :isa protein :raw-text "EGF" :uid "UP:P01133" :name "EGF_HUMAN")
-   (:var mv1817 :isa protein :raw-text "GRB2" :uid "UP:P62993" :name "GRB2_HUMAN"))
+   (:var mv1788 :isa binding :direct-bindee mv1787 :bindee mv1790 :past "PAST" :raw-text "bound")
+   (:var mv1790 :isa protein :raw-text "EGF" :uid "UP:P01133" :name "EGF_HUMAN")
+   (:var mv1786 :isa protein :raw-text "GRB2" :uid "UP:P62993" :name "GRB2_HUMAN"))
   ("Phosphorylated ERK is active."
-   (:var mv1828 :isa copular-predication :item mv1825 :value mv1827 :predicate mv1826)
-   (:var mv1825 :isa protein-family :predication mv1824 :raw-text "ERK" :name "ERK" :count 7
+   (:var mv1797 :isa copular-predication :item mv1794 :value mv1796 :predicate mv1795)
+   (:var mv1794 :isa protein-family :predication mv1793 :raw-text "ERK" :name "ERK" :count 7
     :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -1257,45 +1256,45 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360")
-   (:var mv1824 :isa phosphorylate :substrate mv1825 :raw-text "Phosphorylated")
-   (:var mv1827 :isa active) (:var mv1826 :isa be :present "PRESENT"))
+   (:var mv1793 :isa phosphorylate :substrate mv1794 :raw-text "Phosphorylated")
+   (:var mv1796 :isa active) (:var mv1795 :isa be :present "PRESENT"))
   ("MAP2K1 phosphorylated at S220 phosphoryates MAPK1."
-   (:var mv1829 :isa protein :predication mv1831 :raw-text "MAP2K1" :uid "UP:Q02750" :name
+   (:var mv1798 :isa protein :predication mv1800 :raw-text "MAP2K1" :uid "UP:Q02750" :name
     "MP2K1_HUMAN")
-   (:var mv1831 :isa phosphorylate :substrate mv1829 :target mv1830 :past "PAST" :raw-text
+   (:var mv1800 :isa phosphorylate :substrate mv1798 :target mv1799 :past "PAST" :raw-text
     "phosphorylated")
-   (:var mv1830 :isa protein :site mv1836 :modifier mv1837 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv1799 :isa protein :site mv1805 :modifier mv1806 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv1836 :isa residue-on-protein :raw-text "S220" :position mv1835 :amino-acid mv1834)
-   (:var mv1835 :isa number :value 220) (:var mv1834 :isa amino-acid :name "serine" :letter "S")
-   (:var mv1837 :isa bio-entity :name "phosphoryates"))
+   (:var mv1805 :isa residue-on-protein :raw-text "S220" :position mv1804 :amino-acid mv1803)
+   (:var mv1804 :isa number :value 220) (:var mv1803 :isa amino-acid :name "serine" :letter "S")
+   (:var mv1806 :isa bio-entity :name "phosphoryates"))
   ("Active TP53 transcribes MDM2."
-   (:var mv1842 :isa transcribe :agent mv1839 :object mv1840 :present "PRESENT" :raw-text
+   (:var mv1811 :isa transcribe :agent mv1808 :object mv1809 :present "PRESENT" :raw-text
     "transcribes")
-   (:var mv1839 :isa protein :predication mv1841 :raw-text "TP53" :uid "UP:P04637" :name
+   (:var mv1808 :isa protein :predication mv1810 :raw-text "TP53" :uid "UP:P04637" :name
     "P53_HUMAN")
-   (:var mv1841 :isa active)
-   (:var mv1840 :isa protein :raw-text "MDM2" :uid "UP:Q00987" :name "MDM2_HUMAN"))
+   (:var mv1810 :isa active)
+   (:var mv1809 :isa protein :raw-text "MDM2" :uid "UP:Q00987" :name "MDM2_HUMAN"))
   ("Is the amount of FOS ever high if we increase the amount of ELK1 by 10 fold?"
-   (:var mv1871 :isa polar-question :statement mv1870)
-   (:var mv1870 :isa event-relation :subordinated-event mv1866 :event mv1868)
-   (:var mv1866 :isa wh-question :statement mv1854 :wh if)
-   (:var mv1854 :isa increase :|agent-OR-cause| mv1852 :|multiplier-OR-cause| mv1863
-    :|affected-process-OR-object| mv1856 :present "PRESENT" :raw-text "increase")
-   (:var mv1852 :isa interlocutor :name "person-and-machine")
-   (:var mv1863 :isa measurement :number mv1860) (:var mv1860 :isa number :value 10)
-   (:var mv1856 :isa bio-amount :measured-item mv1843 :has-determiner "THE" :raw-text "amount")
-   (:var mv1843 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv1868 :isa copular-predication :item mv1846 :value mv1850 :predicate mv1844)
-   (:var mv1846 :isa bio-amount :measured-item mv1848 :has-determiner "THE" :raw-text "amount")
-   (:var mv1848 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv1850 :isa high :adverb mv1849) (:var mv1849 :isa ever :name "ever")
-   (:var mv1844 :isa be))
+   (:var mv1840 :isa polar-question :statement mv1839)
+   (:var mv1839 :isa event-relation :subordinated-event mv1835 :event mv1837)
+   (:var mv1835 :isa wh-question :statement mv1823 :wh if)
+   (:var mv1823 :isa increase :|agent-OR-cause| mv1821 :|multiplier-OR-cause| mv1832
+    :|affected-process-OR-object| mv1825 :present "PRESENT" :raw-text "increase")
+   (:var mv1821 :isa interlocutor :name "person-and-machine")
+   (:var mv1832 :isa measurement :number mv1829) (:var mv1829 :isa number :value 10)
+   (:var mv1825 :isa bio-amount :measured-item mv1812 :has-determiner "THE" :raw-text "amount")
+   (:var mv1812 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv1837 :isa copular-predication :item mv1815 :value mv1819 :predicate mv1813)
+   (:var mv1815 :isa bio-amount :measured-item mv1817 :has-determiner "THE" :raw-text "amount")
+   (:var mv1817 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv1819 :isa high :adverb mv1818) (:var mv1818 :isa ever :name "ever")
+   (:var mv1813 :isa be))
   ("Does Vemurafenib decrease phosphorylated ERK in the model?"
-   (:var mv1883 :isa polar-question :statement mv1881)
-   (:var mv1881 :isa decrease :agent mv1873 :object mv1877 :raw-text "decrease")
-   (:var mv1873 :isa drug :raw-text "Vemurafenib" :name "vemurafenib" :uid "PCID:42611257")
-   (:var mv1877 :isa protein-family :info-context mv1880 :predication mv1876 :raw-text "ERK" :name
+   (:var mv1852 :isa polar-question :statement mv1850)
+   (:var mv1850 :isa decrease :agent mv1842 :object mv1846 :raw-text "decrease")
+   (:var mv1842 :isa drug :raw-text "Vemurafenib" :name "vemurafenib" :uid "PCID:42611257")
+   (:var mv1846 :isa protein-family :info-context mv1849 :predication mv1845 :raw-text "ERK" :name
     "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -1305,443 +1304,443 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360")
-   (:var mv1880 :isa model :has-determiner "THE")
-   (:var mv1876 :isa phosphorylate :substrate mv1877 :raw-text "phosphorylated"))
+   (:var mv1849 :isa model :has-determiner "THE")
+   (:var mv1845 :isa phosphorylate :substrate mv1846 :raw-text "phosphorylated"))
   ("Does Selumetinib decrease JUN in the model?"
-   (:var mv1894 :isa polar-question :statement mv1892)
-   (:var mv1892 :isa decrease :agent mv1885 :object mv1888 :raw-text "decrease")
-   (:var mv1885 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622")
-   (:var mv1888 :isa protein :info-context mv1891 :raw-text "JUN" :uid "UP:P05412" :name
+   (:var mv1863 :isa polar-question :statement mv1861)
+   (:var mv1861 :isa decrease :agent mv1854 :object mv1857 :raw-text "decrease")
+   (:var mv1854 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622")
+   (:var mv1857 :isa protein :info-context mv1860 :raw-text "JUN" :uid "UP:P05412" :name
     "JUN_HUMAN")
-   (:var mv1891 :isa model :has-determiner "THE"))
+   (:var mv1860 :isa model :has-determiner "THE"))
   ("How does KRAS regulate MAP2K1?"
-   (:var mv1899 :isa regulate :manner mv1896 :agent mv1898 :object mv1895 :present "PRESENT"
+   (:var mv1868 :isa regulate :manner mv1865 :agent mv1867 :object mv1864 :present "PRESENT"
     :raw-text "regulate")
-   (:var mv1896 :isa how)
-   (:var mv1898 :isa protein :raw-text "KRAS" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv1895 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
+   (:var mv1865 :isa how)
+   (:var mv1867 :isa protein :raw-text "KRAS" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv1864 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
   ("How does HRAS activate MAPK3?"
-   (:var mv1904 :isa bio-activate :manner mv1901 :agent mv1903 :object mv1900 :present "PRESENT"
+   (:var mv1873 :isa bio-activate :manner mv1870 :agent mv1872 :object mv1869 :present "PRESENT"
     :raw-text "activate")
-   (:var mv1901 :isa how)
-   (:var mv1903 :isa protein :raw-text "HRAS" :uid "UP:P01112" :name "RASH_HUMAN")
-   (:var mv1900 :isa protein :raw-text "MAPK3" :uid "UP:P27361" :name "MK03_HUMAN"))
-  ("Does Vemurafenib inhibit BRAF?" (:var mv1910 :isa polar-question :statement mv1909)
-   (:var mv1909 :isa inhibit :agent mv1906 :object mv1908 :raw-text "inhibit")
-   (:var mv1906 :isa drug :raw-text "Vemurafenib" :name "vemurafenib" :uid "PCID:42611257")
-   (:var mv1908 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv1870 :isa how)
+   (:var mv1872 :isa protein :raw-text "HRAS" :uid "UP:P01112" :name "RASH_HUMAN")
+   (:var mv1869 :isa protein :raw-text "MAPK3" :uid "UP:P27361" :name "MK03_HUMAN"))
+  ("Does Vemurafenib inhibit BRAF?" (:var mv1879 :isa polar-question :statement mv1878)
+   (:var mv1878 :isa inhibit :agent mv1875 :object mv1877 :raw-text "inhibit")
+   (:var mv1875 :isa drug :raw-text "Vemurafenib" :name "vemurafenib" :uid "PCID:42611257")
+   (:var mv1877 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("What transcription factors are shared by SRF, HRAS, and ELK1?"
-   (:var mv1921 :isa share :object mv1911 :participant mv1920 :present "PRESENT" :raw-text
+   (:var mv1890 :isa share :object mv1880 :participant mv1889 :present "PRESENT" :raw-text
     "shared")
-   (:var mv1911 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv1920 :isa collection :raw-text "SRF, HRAS, and ELK1" :type protein :number 3 :items
-    (mv1917 mv1918 mv1912))
-   (:var mv1917 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv1918 :isa protein :raw-text "HRAS" :uid "UP:P01112" :name "RASH_HUMAN")
-   (:var mv1912 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+   (:var mv1880 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv1889 :isa collection :raw-text "SRF, HRAS, and ELK1" :type protein :number 3 :items
+    (mv1886 mv1887 mv1881))
+   (:var mv1886 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv1887 :isa protein :raw-text "HRAS" :uid "UP:P01112" :name "RASH_HUMAN")
+   (:var mv1881 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
   ("Create a model where LCK phosphorylates CD3E"
-   (:var mv1924 :isa create :present "PRESENT" :raw-text "Create"))
+   (:var mv1893 :isa create :present "PRESENT" :raw-text "Create"))
   ("What is upstream of CD3E?"
-   (:var mv1933 :isa be :subject mv1932 :predicate mv1934 :present "PRESENT")
-   (:var mv1932 :isa what)
-   (:var mv1934 :isa upstream-segment :pathwaycomponent mv1931 :raw-text "upstream")
-   (:var mv1931 :isa protein :raw-text "CD3E" :uid "UP:P07766" :name "CD3E_HUMAN"))
+   (:var mv1902 :isa be :subject mv1901 :predicate mv1903 :present "PRESENT")
+   (:var mv1901 :isa what)
+   (:var mv1903 :isa upstream-segment :pathwaycomponent mv1900 :raw-text "upstream")
+   (:var mv1900 :isa protein :raw-text "CD3E" :uid "UP:P07766" :name "CD3E_HUMAN"))
   ("I want to find a treatment for pancreatic cancer."
-   (:var mv1942 :isa want :agent mv1939 :theme mv1950 :present "PRESENT")
-   (:var mv1939 :isa interlocutor :name "speaker")
-   (:var mv1950 :isa bio-find :agent mv1939 :object mv1947 :present "PRESENT" :raw-text "find")
-   (:var mv1947 :isa treatment :disease mv1938 :has-determiner "A" :raw-text "treatment")
-   (:var mv1938 :isa cancer :name "pancreatic cancer" :uid "TS-0739"))
+   (:var mv1911 :isa want :agent mv1908 :theme mv1919 :present "PRESENT")
+   (:var mv1908 :isa interlocutor :name "speaker")
+   (:var mv1919 :isa bio-find :agent mv1908 :object mv1916 :present "PRESENT" :raw-text "find")
+   (:var mv1916 :isa treatment :disease mv1907 :has-determiner "A" :raw-text "treatment")
+   (:var mv1907 :isa cancer :name "pancreatic cancer" :uid "TS-0739"))
   ("What drug could I use?"
-   (:var mv1959 :isa bio-use :object mv1952 :modal mv1953 :agent mv1954 :present "PRESENT"
+   (:var mv1928 :isa bio-use :object mv1921 :modal mv1922 :agent mv1923 :present "PRESENT"
     :raw-text "use")
-   (:var mv1952 :isa drug :has-determiner "WHAT" :raw-text "drug") (:var mv1953 :isa could)
-   (:var mv1954 :isa interlocutor :name "speaker"))
-  ("Are there any drugs for BRAF?" (:var mv1969 :isa polar-question :statement mv1967)
-   (:var mv1967 :isa there-exists :value mv1964 :predicate mv1961)
-   (:var mv1964 :isa drug :target mv1966 :quantifier mv1963 :raw-text "drugs")
-   (:var mv1966 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv1963 :isa any :word "any") (:var mv1961 :isa syntactic-there))
-  ("Are they kinases?" (:var mv1973 :isa polar-question :statement mv1970)
-   (:var mv1970 :isa be :subject mv1971 :predicate mv1972)
-   (:var mv1971 :isa pronoun/plural :word "they") (:var mv1972 :isa kinase :raw-text "kinases"))
-  ("Can you find a drug for BRAF?" (:var mv1983 :isa polar-question :statement mv1977)
-   (:var mv1977 :isa bio-find :agent mv1975 :object mv1979 :modal "CAN" :raw-text "find")
-   (:var mv1975 :isa interlocutor :name "hearer")
-   (:var mv1979 :isa drug :target mv1981 :has-determiner "A" :raw-text "drug")
-   (:var mv1981 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv1921 :isa drug :has-determiner "WHAT" :raw-text "drug") (:var mv1922 :isa could)
+   (:var mv1923 :isa interlocutor :name "speaker"))
+  ("Are there any drugs for BRAF?" (:var mv1938 :isa polar-question :statement mv1936)
+   (:var mv1936 :isa there-exists :value mv1933 :predicate mv1930)
+   (:var mv1933 :isa drug :target mv1935 :quantifier mv1932 :raw-text "drugs")
+   (:var mv1935 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv1932 :isa any :word "any") (:var mv1930 :isa syntactic-there))
+  ("Are they kinases?" (:var mv1942 :isa polar-question :statement mv1939)
+   (:var mv1939 :isa be :subject mv1940 :predicate mv1941)
+   (:var mv1940 :isa pronoun/plural :word "they") (:var mv1941 :isa kinase :raw-text "kinases"))
+  ("Can you find a drug for BRAF?" (:var mv1952 :isa polar-question :statement mv1946)
+   (:var mv1946 :isa bio-find :agent mv1944 :object mv1948 :modal "CAN" :raw-text "find")
+   (:var mv1944 :isa interlocutor :name "hearer")
+   (:var mv1948 :isa drug :target mv1950 :has-determiner "A" :raw-text "drug")
+   (:var mv1950 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("Can you tell me all the transcription factors that are shared by elk1 and srf?"
-   (:var mv2001 :isa polar-question :statement mv1988)
-   (:var mv1988 :isa tell :agent mv1987 :theme mv1984 :beneficiary mv1989 :modal "CAN")
-   (:var mv1987 :isa interlocutor :name "hearer")
-   (:var mv1984 :isa transcription-factor :predication mv1999 :quantifier mv1990 :has-determiner
+   (:var mv1970 :isa polar-question :statement mv1957)
+   (:var mv1957 :isa tell :agent mv1956 :theme mv1953 :beneficiary mv1958 :modal "CAN")
+   (:var mv1956 :isa interlocutor :name "hearer")
+   (:var mv1953 :isa transcription-factor :predication mv1968 :quantifier mv1959 :has-determiner
     "THE" :raw-text "transcription factors")
-   (:var mv1999 :isa share :object mv1984 :that-rel t :participant mv1998 :modal "CAN" :raw-text
+   (:var mv1968 :isa share :object mv1953 :that-rel t :participant mv1967 :modal "CAN" :raw-text
     "shared")
-   (:var mv1998 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv1985 mv1997))
-   (:var mv1985 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv1997 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv1990 :isa all :word "all") (:var mv1989 :isa interlocutor :name "speaker"))
+   (:var mv1967 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv1954 mv1966))
+   (:var mv1954 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv1966 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv1959 :isa all :word "all") (:var mv1958 :isa interlocutor :name "speaker"))
   ("Can you tell me what transcription factors are shared by elk1 and srf?"
-   (:var mv2017 :isa polar-question :statement mv2006)
-   (:var mv2006 :isa tell :agent mv2005 :theme mv2015 :theme mv2007 :modal "CAN")
-   (:var mv2005 :isa interlocutor :name "hearer")
-   (:var mv2015 :isa share :object mv2002 :participant mv2014 :modal "CAN" :raw-text "shared")
-   (:var mv2002 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv2014 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv2003 mv2013))
-   (:var mv2003 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv2013 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv2007 :isa interlocutor :name "speaker"))
-  ("Do you know any drugs for BRAF?" (:var mv2028 :isa polar-question :statement mv2027)
-   (:var mv2027 :isa know :agent mv2019 :statement mv2022)
-   (:var mv2019 :isa interlocutor :name "hearer")
-   (:var mv2022 :isa drug :target mv2024 :quantifier mv2021 :raw-text "drugs")
-   (:var mv2024 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv2021 :isa any :word "any"))
+   (:var mv1986 :isa polar-question :statement mv1975)
+   (:var mv1975 :isa tell :agent mv1974 :theme mv1984 :theme mv1976 :modal "CAN")
+   (:var mv1974 :isa interlocutor :name "hearer")
+   (:var mv1984 :isa share :object mv1971 :participant mv1983 :modal "CAN" :raw-text "shared")
+   (:var mv1971 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv1983 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv1972 mv1982))
+   (:var mv1972 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv1982 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv1976 :isa interlocutor :name "speaker"))
+  ("Do you know any drugs for BRAF?" (:var mv1997 :isa polar-question :statement mv1996)
+   (:var mv1996 :isa know :agent mv1988 :statement mv1991)
+   (:var mv1988 :isa interlocutor :name "hearer")
+   (:var mv1991 :isa drug :target mv1993 :quantifier mv1990 :raw-text "drugs")
+   (:var mv1993 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv1990 :isa any :word "any"))
   ("Does STAT3 regulate the JUN gene in the lung?"
+   (:var mv2009 :isa polar-question :statement mv2007)
+   (:var mv2007 :isa regulate :agent mv1998 :object mv2003 :raw-text "regulate")
+   (:var mv1998 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2003 :isa gene :organ mv2006 :has-determiner "THE" :expresses mv2002 :raw-text "gene")
+   (:var mv2006 :isa lung :has-determiner "THE")
+   (:var mv2002 :isa protein :raw-text "JUN" :uid "UP:P05412" :name "JUN_HUMAN"))
+  ("Does STAT3 regulate the c-fos gene in liver?"
+   (:var mv2020 :isa polar-question :statement mv2018)
+   (:var mv2018 :isa regulate :agent mv2010 :object mv2015 :raw-text "regulate")
+   (:var mv2010 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2015 :isa gene :organ mv2017 :has-determiner "THE" :expresses mv2011 :raw-text "gene")
+   (:var mv2017 :isa liver)
+   (:var mv2011 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Does STAT3 regulate the c-fos gene?" (:var mv2028 :isa polar-question :statement mv2027)
+   (:var mv2027 :isa regulate :agent mv2021 :object mv2026 :raw-text "regulate")
+   (:var mv2021 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2026 :isa gene :has-determiner "THE" :expresses mv2022 :raw-text "gene")
+   (:var mv2022 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Does STAT3 regulate the cfos gene in the lung?"
    (:var mv2040 :isa polar-question :statement mv2038)
    (:var mv2038 :isa regulate :agent mv2029 :object mv2034 :raw-text "regulate")
    (:var mv2029 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
    (:var mv2034 :isa gene :organ mv2037 :has-determiner "THE" :expresses mv2033 :raw-text "gene")
    (:var mv2037 :isa lung :has-determiner "THE")
-   (:var mv2033 :isa protein :raw-text "JUN" :uid "UP:P05412" :name "JUN_HUMAN"))
-  ("Does STAT3 regulate the c-fos gene in liver?"
-   (:var mv2051 :isa polar-question :statement mv2049)
-   (:var mv2049 :isa regulate :agent mv2041 :object mv2046 :raw-text "regulate")
-   (:var mv2041 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2046 :isa gene :organ mv2048 :has-determiner "THE" :expresses mv2042 :raw-text "gene")
-   (:var mv2048 :isa liver)
-   (:var mv2042 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("Does STAT3 regulate the c-fos gene?" (:var mv2059 :isa polar-question :statement mv2058)
-   (:var mv2058 :isa regulate :agent mv2052 :object mv2057 :raw-text "regulate")
-   (:var mv2052 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2057 :isa gene :has-determiner "THE" :expresses mv2053 :raw-text "gene")
-   (:var mv2053 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("Does STAT3 regulate the cfos gene in the lung?"
-   (:var mv2071 :isa polar-question :statement mv2069)
-   (:var mv2069 :isa regulate :agent mv2060 :object mv2065 :raw-text "regulate")
-   (:var mv2060 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2065 :isa gene :organ mv2068 :has-determiner "THE" :expresses mv2064 :raw-text "gene")
-   (:var mv2068 :isa lung :has-determiner "THE")
-   (:var mv2064 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("Does TP53 target MDM2?" (:var mv2078 :isa polar-question :statement mv2077)
-   (:var mv2077 :isa target :agent mv2072 :object mv2073 :raw-text "target")
-   (:var mv2072 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
-   (:var mv2073 :isa protein :raw-text "MDM2" :uid "UP:Q00987" :name "MDM2_HUMAN"))
-  ("Does miR-2000-5p target stat3" (:var mv2085 :isa polar-question :statement mv2084)
-   (:var mv2084 :isa target :agent mv2079 :object mv2080 :raw-text "target")
-   (:var mv2079 :isa micro-rna :raw-text "miR-2000-5p" :name "microRNA 2000-5p" :uid
+   (:var mv2033 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Does TP53 target MDM2?" (:var mv2047 :isa polar-question :statement mv2046)
+   (:var mv2046 :isa target :agent mv2041 :object mv2042 :raw-text "target")
+   (:var mv2041 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
+   (:var mv2042 :isa protein :raw-text "MDM2" :uid "UP:Q00987" :name "MDM2_HUMAN"))
+  ("Does miR-2000-5p target stat3" (:var mv2054 :isa polar-question :statement mv2053)
+   (:var mv2053 :isa target :agent mv2048 :object mv2049 :raw-text "target")
+   (:var mv2048 :isa micro-rna :raw-text "miR-2000-5p" :name "microRNA 2000-5p" :uid
     "MIMAmiR-2000-5p")
-   (:var mv2080 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
-  ("Does miR-20b-5p target STAT3?" (:var mv2092 :isa polar-question :statement mv2091)
-   (:var mv2091 :isa target :agent mv2086 :object mv2087 :raw-text "target")
-   (:var mv2086 :isa micro-rna :raw-text "miR-20b-5p" :name "microRNA 20b-5pm" :uid "MIMAT0001413")
-   (:var mv2087 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
-  ("Does miR-222-3p target STAT3?" (:var mv2099 :isa polar-question :statement mv2098)
-   (:var mv2098 :isa target :agent mv2093 :object mv2094 :raw-text "target")
-   (:var mv2093 :isa micro-rna :raw-text "miR-222-3p" :name "microRNA 222-3p" :uid "MIMAT0000279")
-   (:var mv2094 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
-  ("Does stat3 regulate cfors in liver" (:var mv2108 :isa polar-question :statement mv2106)
-   (:var mv2106 :isa regulate :agent mv2100 :object mv2105 :raw-text "regulate")
-   (:var mv2100 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2105 :isa bio-entity :organ mv2104 :name "cfors") (:var mv2104 :isa liver))
-  ("Does stat3 regulate cfos in liver" (:var mv2117 :isa polar-question :statement mv2115)
-   (:var mv2115 :isa regulate :agent mv2109 :object mv2112 :raw-text "regulate")
-   (:var mv2109 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2112 :isa protein :organ mv2114 :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv2114 :isa liver))
-  ("Does it regulate cfos in brain" (:var mv2126 :isa polar-question :statement mv2124)
-   (:var mv2124 :isa regulate :|agent-OR-cause| mv2119 :object mv2121 :raw-text "regulate")
-   (:var mv2119 :isa pronoun/inanimate :word "it")
-   (:var mv2121 :isa protein :organ mv2123 :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv2123 :isa brain))
-  ("Does stat3 regulate cfos?" (:var mv2132 :isa polar-question :statement mv2131)
-   (:var mv2131 :isa regulate :agent mv2127 :object mv2130 :raw-text "regulate")
-   (:var mv2127 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2130 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv2049 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+  ("Does miR-20b-5p target STAT3?" (:var mv2061 :isa polar-question :statement mv2060)
+   (:var mv2060 :isa target :agent mv2055 :object mv2056 :raw-text "target")
+   (:var mv2055 :isa micro-rna :raw-text "miR-20b-5p" :name "microRNA 20b-5pm" :uid "MIMAT0001413")
+   (:var mv2056 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+  ("Does miR-222-3p target STAT3?" (:var mv2068 :isa polar-question :statement mv2067)
+   (:var mv2067 :isa target :agent mv2062 :object mv2063 :raw-text "target")
+   (:var mv2062 :isa micro-rna :raw-text "miR-222-3p" :name "microRNA 222-3p" :uid "MIMAT0000279")
+   (:var mv2063 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+  ("Does stat3 regulate cfors in liver" (:var mv2077 :isa polar-question :statement mv2075)
+   (:var mv2075 :isa regulate :agent mv2069 :object mv2074 :raw-text "regulate")
+   (:var mv2069 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2074 :isa bio-entity :organ mv2073 :name "cfors") (:var mv2073 :isa liver))
+  ("Does stat3 regulate cfos in liver" (:var mv2086 :isa polar-question :statement mv2084)
+   (:var mv2084 :isa regulate :agent mv2078 :object mv2081 :raw-text "regulate")
+   (:var mv2078 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2081 :isa protein :organ mv2083 :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv2083 :isa liver))
+  ("Does it regulate cfos in brain" (:var mv2095 :isa polar-question :statement mv2093)
+   (:var mv2093 :isa regulate :|agent-OR-cause| mv2088 :object mv2090 :raw-text "regulate")
+   (:var mv2088 :isa pronoun/inanimate :word "it")
+   (:var mv2090 :isa protein :organ mv2092 :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv2092 :isa brain))
+  ("Does stat3 regulate cfos?" (:var mv2101 :isa polar-question :statement mv2100)
+   (:var mv2100 :isa regulate :agent mv2096 :object mv2099 :raw-text "regulate")
+   (:var mv2096 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2099 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("Does stat3 regulate the cfos gene in blood cells"
-   (:var mv2144 :isa polar-question :statement mv2142)
-   (:var mv2142 :isa regulate :agent mv2133 :object mv2138 :raw-text "regulate")
-   (:var mv2133 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2138 :isa gene :cell-type mv2141 :has-determiner "THE" :expresses mv2137 :raw-text
+   (:var mv2113 :isa polar-question :statement mv2111)
+   (:var mv2111 :isa regulate :agent mv2102 :object mv2107 :raw-text "regulate")
+   (:var mv2102 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2107 :isa gene :cell-type mv2110 :has-determiner "THE" :expresses mv2106 :raw-text
     "gene")
-   (:var mv2141 :isa cell-type :non-cellular-location mv2140)
-   (:var mv2140 :isa bio-organ :name "blood" :uid "BTO:0000089")
-   (:var mv2137 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("Does the il-12 pathway utilize SGK1?" (:var mv2154 :isa polar-question :statement mv2153)
-   (:var mv2153 :isa utilize :participant mv2150 :object mv2145 :raw-text "utilize")
-   (:var mv2150 :isa pathway :has-determiner "THE" :modifier mv2152 :raw-text "pathway")
-   (:var mv2152 :isa protein-family :raw-text "il-12" :name "IL-12" :count 2 :family-members
+   (:var mv2110 :isa cell-type :non-cellular-location mv2109)
+   (:var mv2109 :isa bio-organ :name "blood" :uid "BTO:0000089")
+   (:var mv2106 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Does the il-12 pathway utilize SGK1?" (:var mv2123 :isa polar-question :statement mv2122)
+   (:var mv2122 :isa utilize :participant mv2119 :object mv2114 :raw-text "utilize")
+   (:var mv2119 :isa pathway :has-determiner "THE" :modifier mv2121 :raw-text "pathway")
+   (:var mv2121 :isa protein-family :raw-text "il-12" :name "IL-12" :count 2 :family-members
     ((protein (:name "IL12B_HUMAN") (:uid "UP:P29460"))
      (protein (:name "IL12A_HUMAN") (:uid "UP:P29459")))
     :uid "FPLX:IL12")
-   (:var mv2145 :isa protein :raw-text "SGK1" :uid "UP:O00141" :name "SGK1_HUMAN"))
-  ("Does the mTor pathway utilize SGK1?" (:var mv2164 :isa polar-question :statement mv2163)
-   (:var mv2163 :isa utilize :participant mv2161 :object mv2155 :raw-text "utilize")
-   (:var mv2161 :isa pathway :has-determiner "THE" :modifier mv2158 :raw-text "pathway")
-   (:var mv2158 :isa protein :raw-text "mTor" :uid "UP:P42345" :name "MTOR_HUMAN")
-   (:var mv2155 :isa protein :raw-text "SGK1" :uid "UP:O00141" :name "SGK1_HUMAN"))
+   (:var mv2114 :isa protein :raw-text "SGK1" :uid "UP:O00141" :name "SGK1_HUMAN"))
+  ("Does the mTor pathway utilize SGK1?" (:var mv2133 :isa polar-question :statement mv2132)
+   (:var mv2132 :isa utilize :participant mv2130 :object mv2124 :raw-text "utilize")
+   (:var mv2130 :isa pathway :has-determiner "THE" :modifier mv2127 :raw-text "pathway")
+   (:var mv2127 :isa protein :raw-text "mTor" :uid "UP:P42345" :name "MTOR_HUMAN")
+   (:var mv2124 :isa protein :raw-text "SGK1" :uid "UP:O00141" :name "SGK1_HUMAN"))
   ("Give me the evidence that kras decreases frizzled8."
-   (:var mv2166 :isa give :theme mv2173 :beneficiary mv2167 :present "PRESENT")
-   (:var mv2173 :isa evidence :statement mv2172 :has-determiner "THE")
-   (:var mv2172 :isa decrease :agent mv2171 :object mv2165 :present "PRESENT" :raw-text
+   (:var mv2135 :isa give :theme mv2142 :beneficiary mv2136 :present "PRESENT")
+   (:var mv2142 :isa evidence :statement mv2141 :has-determiner "THE")
+   (:var mv2141 :isa decrease :agent mv2140 :object mv2134 :present "PRESENT" :raw-text
     "decreases")
-   (:var mv2171 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv2165 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN")
-   (:var mv2167 :isa interlocutor :name "speaker"))
+   (:var mv2140 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv2134 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN")
+   (:var mv2136 :isa interlocutor :name "speaker"))
   ("Give me the evidence that kras regulates frizzled8."
-   (:var mv2175 :isa give :theme mv2182 :beneficiary mv2176 :present "PRESENT")
-   (:var mv2182 :isa evidence :statement mv2181 :has-determiner "THE")
-   (:var mv2181 :isa regulate :agent mv2180 :object mv2174 :present "PRESENT" :raw-text
+   (:var mv2144 :isa give :theme mv2151 :beneficiary mv2145 :present "PRESENT")
+   (:var mv2151 :isa evidence :statement mv2150 :has-determiner "THE")
+   (:var mv2150 :isa regulate :agent mv2149 :object mv2143 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv2180 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv2174 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN")
-   (:var mv2176 :isa interlocutor :name "speaker"))
-  ("Is MEK a kinase?" (:var mv2187 :isa polar-question :statement mv2183)
-   (:var mv2183 :isa be :subject mv2184 :predicate mv2186)
-   (:var mv2184 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv2149 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv2143 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN")
+   (:var mv2145 :isa interlocutor :name "speaker"))
+  ("Is MEK a kinase?" (:var mv2156 :isa polar-question :statement mv2152)
+   (:var mv2152 :isa be :subject mv2153 :predicate mv2155)
+   (:var mv2153 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv2186 :isa kinase :has-determiner "A" :raw-text "kinase"))
-  ("Is MEK2 inhibited by Selumetinib?" (:var mv2194 :isa polar-question :statement mv2190)
-   (:var mv2190 :isa inhibit :object mv2188 :agent mv2192 :past "PAST" :raw-text "inhibited")
-   (:var mv2188 :isa protein :raw-text "MEK2" :uid "UP:P36507" :name "MP2K2_HUMAN")
-   (:var mv2192 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622"))
+   (:var mv2155 :isa kinase :has-determiner "A" :raw-text "kinase"))
+  ("Is MEK2 inhibited by Selumetinib?" (:var mv2163 :isa polar-question :statement mv2159)
+   (:var mv2159 :isa inhibit :object mv2157 :agent mv2161 :past "PAST" :raw-text "inhibited")
+   (:var mv2157 :isa protein :raw-text "MEK2" :uid "UP:P36507" :name "MP2K2_HUMAN")
+   (:var mv2161 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622"))
   ("Is STAT3 a transcription factor for c-fos gene?"
-   (:var mv2203 :isa polar-question :statement mv2198)
-   (:var mv2198 :isa be :subject mv2195 :predicate mv2196)
-   (:var mv2195 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2196 :isa transcription-factor :controlled-gene mv2201 :has-determiner "A" :raw-text
+   (:var mv2172 :isa polar-question :statement mv2167)
+   (:var mv2167 :isa be :subject mv2164 :predicate mv2165)
+   (:var mv2164 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2165 :isa transcription-factor :controlled-gene mv2170 :has-determiner "A" :raw-text
     "transcription factor")
-   (:var mv2201 :isa gene :expresses mv2197 :raw-text "gene")
-   (:var mv2197 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv2170 :isa gene :expresses mv2166 :raw-text "gene")
+   (:var mv2166 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("Is STAT3 one of the regulators of the c-fos gene?"
-   (:var mv2218 :isa polar-question :statement mv2206)
-   (:var mv2206 :isa be :subject mv2204 :predicate mv2212)
-   (:var mv2204 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2212 :isa regulator :quantifier mv2209 :theme mv2215 :has-determiner "THE" :raw-text
+   (:var mv2187 :isa polar-question :statement mv2175)
+   (:var mv2175 :isa be :subject mv2173 :predicate mv2181)
+   (:var mv2173 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2181 :isa regulator :quantifier mv2178 :theme mv2184 :has-determiner "THE" :raw-text
     "regulators")
-   (:var mv2209 :isa number :value 1)
-   (:var mv2215 :isa gene :has-determiner "THE" :expresses mv2205 :raw-text "gene")
-   (:var mv2205 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("Is Selumetinib an inhibitor of MEK1?" (:var mv2226 :isa polar-question :statement mv2220)
-   (:var mv2220 :isa be :subject mv2221 :predicate mv2223)
-   (:var mv2221 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622")
-   (:var mv2223 :isa inhibitor :protein mv2219 :has-determiner "AN" :raw-text "inhibitor")
-   (:var mv2219 :isa protein :raw-text "MEK1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
-  ("Is Vemurafenib an inhibitor for BRAF?" (:var mv2234 :isa polar-question :statement mv2227)
-   (:var mv2227 :isa be :subject mv2228 :predicate mv2230)
-   (:var mv2228 :isa drug :raw-text "Vemurafenib" :name "vemurafenib" :uid "PCID:42611257")
-   (:var mv2230 :isa inhibitor :|target-OR-protein| mv2232 :has-determiner "AN" :raw-text
+   (:var mv2178 :isa number :value 1)
+   (:var mv2184 :isa gene :has-determiner "THE" :expresses mv2174 :raw-text "gene")
+   (:var mv2174 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Is Selumetinib an inhibitor of MEK1?" (:var mv2195 :isa polar-question :statement mv2189)
+   (:var mv2189 :isa be :subject mv2190 :predicate mv2192)
+   (:var mv2190 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622")
+   (:var mv2192 :isa inhibitor :protein mv2188 :has-determiner "AN" :raw-text "inhibitor")
+   (:var mv2188 :isa protein :raw-text "MEK1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
+  ("Is Vemurafenib an inhibitor for BRAF?" (:var mv2203 :isa polar-question :statement mv2196)
+   (:var mv2196 :isa be :subject mv2197 :predicate mv2199)
+   (:var mv2197 :isa drug :raw-text "Vemurafenib" :name "vemurafenib" :uid "PCID:42611257")
+   (:var mv2199 :isa inhibitor :|target-OR-protein| mv2201 :has-determiner "AN" :raw-text
     "inhibitor")
-   (:var mv2232 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
-  ("Is fakeprotein a kinase" (:var mv2239 :isa polar-question :statement mv2235)
-   (:var mv2235 :isa be :subject mv2238 :predicate mv2237)
-   (:var mv2238 :isa bio-entity :name "fakeprotein")
-   (:var mv2237 :isa kinase :has-determiner "A" :raw-text "kinase"))
-  ("Is hmga2 a kinase" (:var mv2244 :isa polar-question :statement mv2241)
-   (:var mv2241 :isa be :subject mv2240 :predicate mv2243)
-   (:var mv2240 :isa protein :raw-text "hmga2" :uid "UP:P52926" :name "HMGA2_HUMAN")
-   (:var mv2243 :isa kinase :has-determiner "A" :raw-text "kinase"))
-  ("Is stat3 an apoptotic regulator?" (:var mv2251 :isa polar-question :statement mv2246)
-   (:var mv2246 :isa be :subject mv2245 :predicate mv2250)
-   (:var mv2245 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2250 :isa regulator :has-determiner "AN" :cellular-process mv2248 :raw-text "regulator")
-   (:var mv2248 :isa apoptosis :raw-text "apoptotic"))
+   (:var mv2201 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+  ("Is fakeprotein a kinase" (:var mv2208 :isa polar-question :statement mv2204)
+   (:var mv2204 :isa be :subject mv2207 :predicate mv2206)
+   (:var mv2207 :isa bio-entity :name "fakeprotein")
+   (:var mv2206 :isa kinase :has-determiner "A" :raw-text "kinase"))
+  ("Is hmga2 a kinase" (:var mv2213 :isa polar-question :statement mv2210)
+   (:var mv2210 :isa be :subject mv2209 :predicate mv2212)
+   (:var mv2209 :isa protein :raw-text "hmga2" :uid "UP:P52926" :name "HMGA2_HUMAN")
+   (:var mv2212 :isa kinase :has-determiner "A" :raw-text "kinase"))
+  ("Is stat3 an apoptotic regulator?" (:var mv2220 :isa polar-question :statement mv2215)
+   (:var mv2215 :isa be :subject mv2214 :predicate mv2219)
+   (:var mv2214 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2219 :isa regulator :has-determiner "AN" :cellular-process mv2217 :raw-text "regulator")
+   (:var mv2217 :isa apoptosis :raw-text "apoptotic"))
   ("Is stat3 involved in any apoptotic pathways?"
-   (:var mv2261 :isa polar-question :statement mv2254)
-   (:var mv2254 :isa involve :object mv2252 :|context-OR-theme| mv2259 :past "PAST")
-   (:var mv2252 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2259 :isa pathway :quantifier mv2256 :cellular-process mv2257 :raw-text "pathways")
-   (:var mv2256 :isa any :word "any") (:var mv2257 :isa apoptosis :raw-text "apoptotic"))
-  ("Is stat3 involved in apoptotic regulation?" (:var mv2270 :isa polar-question :statement mv2264)
-   (:var mv2264 :isa involve :object mv2262 :theme mv2268 :past "PAST")
-   (:var mv2262 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2268 :isa regulate :|cellular-process-OR-agent| mv2266 :raw-text "regulation")
-   (:var mv2266 :isa apoptosis :raw-text "apoptotic"))
-  ("Is stat3 involved in regulating apoptosis?" (:var mv2278 :isa polar-question :statement mv2273)
-   (:var mv2273 :isa involve :object mv2271 :theme mv2275 :past "PAST")
-   (:var mv2271 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2275 :isa regulate :affected-process mv2276 :progressive "PROGRESSIVE" :raw-text
+   (:var mv2230 :isa polar-question :statement mv2223)
+   (:var mv2223 :isa involve :object mv2221 :|context-OR-theme| mv2228 :past "PAST")
+   (:var mv2221 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2228 :isa pathway :quantifier mv2225 :cellular-process mv2226 :raw-text "pathways")
+   (:var mv2225 :isa any :word "any") (:var mv2226 :isa apoptosis :raw-text "apoptotic"))
+  ("Is stat3 involved in apoptotic regulation?" (:var mv2239 :isa polar-question :statement mv2233)
+   (:var mv2233 :isa involve :object mv2231 :theme mv2237 :past "PAST")
+   (:var mv2231 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2237 :isa regulate :|cellular-process-OR-agent| mv2235 :raw-text "regulation")
+   (:var mv2235 :isa apoptosis :raw-text "apoptotic"))
+  ("Is stat3 involved in regulating apoptosis?" (:var mv2247 :isa polar-question :statement mv2242)
+   (:var mv2242 :isa involve :object mv2240 :theme mv2244 :past "PAST")
+   (:var mv2240 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2244 :isa regulate :affected-process mv2245 :progressive "PROGRESSIVE" :raw-text
     "regulating")
-   (:var mv2276 :isa apoptosis :raw-text "apoptosis"))
+   (:var mv2245 :isa apoptosis :raw-text "apoptosis"))
   ("What proteins does MEK phosphorylate?"
-   (:var mv2283 :isa phosphorylate :amino-acid mv2280 :agent mv2282 :present "PRESENT" :raw-text
+   (:var mv2252 :isa phosphorylate :amino-acid mv2249 :agent mv2251 :present "PRESENT" :raw-text
     "phosphorylate")
-   (:var mv2280 :isa protein :has-determiner "WHAT" :raw-text "proteins")
-   (:var mv2282 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv2249 :isa protein :has-determiner "WHAT" :raw-text "proteins")
+   (:var mv2251 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK"))
-  ("Is the first one a kinase" (:var mv2292 :isa polar-question :statement mv2284)
-   (:var mv2284 :isa be :subject mv2289 :predicate mv2291)
-   (:var mv2289 :isa number :quantifier mv2286 :value 1)
-   (:var mv2286 :isa ordinal :has-determiner "THE" :word "first" :number 1)
-   (:var mv2291 :isa kinase :has-determiner "A" :raw-text "kinase"))
-  ("Is there a drug that targets BRAF?" (:var mv2303 :isa polar-question :statement mv2302)
-   (:var mv2302 :isa there-exists :value mv2297 :predicate mv2294)
-   (:var mv2297 :isa drug :predication mv2300 :has-determiner "A" :raw-text "drug")
-   (:var mv2300 :isa target :agent mv2297 :that-rel t :object mv2301 :present "PRESENT" :raw-text
+  ("Is the first one a kinase" (:var mv2262 :isa polar-question :statement mv2253)
+   (:var mv2253 :isa be :subject mv2261 :predicate mv2260)
+   (:var mv2261 :isa indefinite-pronoun :has-determiner "THE" :ordinal mv2258 :word "one")
+   (:var mv2258 :isa number :value 1)
+   (:var mv2260 :isa kinase :has-determiner "A" :raw-text "kinase"))
+  ("Is there a drug that targets BRAF?" (:var mv2273 :isa polar-question :statement mv2272)
+   (:var mv2272 :isa there-exists :value mv2267 :predicate mv2264)
+   (:var mv2267 :isa drug :predication mv2270 :has-determiner "A" :raw-text "drug")
+   (:var mv2270 :isa target :agent mv2267 :that-rel t :object mv2271 :present "PRESENT" :raw-text
     "targets")
-   (:var mv2301 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv2294 :isa syntactic-there))
+   (:var mv2271 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv2264 :isa syntactic-there))
   ("Is there an apoptotic pathway regulated by stat3?"
-   (:var mv2316 :isa polar-question :statement mv2314)
-   (:var mv2314 :isa there-exists :value mv2311 :predicate mv2306)
-   (:var mv2311 :isa pathway :predication mv2312 :has-determiner "AN" :cellular-process mv2309
+   (:var mv2286 :isa polar-question :statement mv2284)
+   (:var mv2284 :isa there-exists :value mv2281 :predicate mv2276)
+   (:var mv2281 :isa pathway :predication mv2282 :has-determiner "AN" :cellular-process mv2279
     :raw-text "pathway")
-   (:var mv2312 :isa regulate :affected-process mv2311 :agent mv2304 :past "PAST" :raw-text
+   (:var mv2282 :isa regulate :affected-process mv2281 :agent mv2274 :past "PAST" :raw-text
     "regulated")
-   (:var mv2304 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2309 :isa apoptosis :raw-text "apoptotic") (:var mv2306 :isa syntactic-there))
+   (:var mv2274 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2279 :isa apoptosis :raw-text "apoptotic") (:var mv2276 :isa syntactic-there))
   ("Is there an apoptotic pathway that is regulated by stat3?"
-   (:var mv2332 :isa polar-question :statement mv2329)
-   (:var mv2329 :isa there-exists :value mv2324 :predicate mv2319)
-   (:var mv2324 :isa pathway :predication mv2330 :has-determiner "AN" :cellular-process mv2322
+   (:var mv2302 :isa polar-question :statement mv2299)
+   (:var mv2299 :isa there-exists :value mv2294 :predicate mv2289)
+   (:var mv2294 :isa pathway :predication mv2300 :has-determiner "AN" :cellular-process mv2292
     :raw-text "pathway")
-   (:var mv2330 :isa regulate :affected-process mv2324 :that-rel t :agent mv2317 :present "PRESENT"
+   (:var mv2300 :isa regulate :affected-process mv2294 :that-rel t :agent mv2287 :present "PRESENT"
     :raw-text "regulated")
-   (:var mv2317 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2322 :isa apoptosis :raw-text "apoptotic") (:var mv2319 :isa syntactic-there))
+   (:var mv2287 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2292 :isa apoptosis :raw-text "apoptotic") (:var mv2289 :isa syntactic-there))
   ("Let me know if there are any apoptotic genes stat3 regulates"
-   (:var mv2334 :isa let :complement mv2348 :present "PRESENT")
-   (:var mv2348 :isa know :agent mv2335 :statement mv2347 :present "PRESENT")
-   (:var mv2335 :isa interlocutor :name "speaker")
-   (:var mv2347 :isa wh-question :statement mv2346 :wh if)
-   (:var mv2346 :isa there-exists :value mv2344 :predicate mv2340)
-   (:var mv2344 :isa gene :predication mv2345 :quantifier mv2341 :cellular-process mv2342 :raw-text
+   (:var mv2304 :isa let :complement mv2318 :present "PRESENT")
+   (:var mv2318 :isa know :agent mv2305 :statement mv2317 :present "PRESENT")
+   (:var mv2305 :isa interlocutor :name "speaker")
+   (:var mv2317 :isa wh-question :statement mv2316 :wh if)
+   (:var mv2316 :isa there-exists :value mv2314 :predicate mv2310)
+   (:var mv2314 :isa gene :predication mv2315 :quantifier mv2311 :cellular-process mv2312 :raw-text
     "genes")
-   (:var mv2345 :isa regulate :object mv2344 :agent mv2333 :present "PRESENT" :raw-text
+   (:var mv2315 :isa regulate :object mv2314 :agent mv2303 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv2333 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2341 :isa any :word "any") (:var mv2342 :isa apoptosis :raw-text "apoptotic")
-   (:var mv2340 :isa be))
+   (:var mv2303 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2311 :isa any :word "any") (:var mv2312 :isa apoptosis :raw-text "apoptotic")
+   (:var mv2310 :isa be))
   ("Let me know which genes stat3 regulates"
-   (:var mv2350 :isa let :complement mv2356 :present "PRESENT")
-   (:var mv2356 :isa know :agent mv2351 :statement mv2354 :present "PRESENT")
-   (:var mv2351 :isa interlocutor :name "speaker")
-   (:var mv2354 :isa gene :predication mv2355 :has-determiner "WHICH" :raw-text "genes")
-   (:var mv2355 :isa regulate :object mv2354 :agent mv2349 :present "PRESENT" :raw-text
+   (:var mv2320 :isa let :complement mv2326 :present "PRESENT")
+   (:var mv2326 :isa know :agent mv2321 :statement mv2324 :present "PRESENT")
+   (:var mv2321 :isa interlocutor :name "speaker")
+   (:var mv2324 :isa gene :predication mv2325 :has-determiner "WHICH" :raw-text "genes")
+   (:var mv2325 :isa regulate :object mv2324 :agent mv2319 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv2349 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv2319 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("List all the genes regulated by elk1 and srf?"
-   (:var mv2358 :isa list :theme mv2361 :present "PRESENT")
-   (:var mv2361 :isa gene :predication mv2362 :quantifier mv2359 :has-determiner "THE" :raw-text
+   (:var mv2328 :isa list :theme mv2331 :present "PRESENT")
+   (:var mv2331 :isa gene :predication mv2332 :quantifier mv2329 :has-determiner "THE" :raw-text
     "genes")
-   (:var mv2362 :isa regulate :object mv2361 :agent mv2366 :past "PAST" :raw-text "regulated")
-   (:var mv2366 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv2357 mv2365))
-   (:var mv2357 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv2365 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv2359 :isa all :word "all"))
-  ("List genes regulated by elk1 and srf" (:var mv2369 :isa list :theme mv2370 :present "PRESENT")
-   (:var mv2370 :isa gene :predication mv2371 :raw-text "genes")
-   (:var mv2371 :isa regulate :object mv2370 :agent mv2375 :past "PAST" :raw-text "regulated")
-   (:var mv2375 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv2368 mv2374))
-   (:var mv2368 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv2374 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv2332 :isa regulate :object mv2331 :agent mv2336 :past "PAST" :raw-text "regulated")
+   (:var mv2336 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv2327 mv2335))
+   (:var mv2327 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv2335 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv2329 :isa all :word "all"))
+  ("List genes regulated by elk1 and srf" (:var mv2339 :isa list :theme mv2340 :present "PRESENT")
+   (:var mv2340 :isa gene :predication mv2341 :raw-text "genes")
+   (:var mv2341 :isa regulate :object mv2340 :agent mv2345 :past "PAST" :raw-text "regulated")
+   (:var mv2345 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv2338 mv2344))
+   (:var mv2338 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv2344 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("List some genes that are regulated by elk1 and srf"
-   (:var mv2378 :isa list :theme mv2380 :present "PRESENT")
-   (:var mv2380 :isa gene :predication mv2388 :quantifier mv2379 :raw-text "genes")
-   (:var mv2388 :isa regulate :object mv2380 :that-rel t :agent mv2387 :present "PRESENT" :raw-text
+   (:var mv2348 :isa list :theme mv2350 :present "PRESENT")
+   (:var mv2350 :isa gene :predication mv2358 :quantifier mv2349 :raw-text "genes")
+   (:var mv2358 :isa regulate :object mv2350 :that-rel t :agent mv2357 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv2387 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv2377 mv2386))
-   (:var mv2377 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv2386 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv2379 :isa some :word "some"))
+   (:var mv2357 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv2347 mv2356))
+   (:var mv2347 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv2356 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv2349 :isa some :word "some"))
   ("List the evidence that kras decreases frizzled8."
-   (:var mv2391 :isa list :theme mv2397 :present "PRESENT")
-   (:var mv2397 :isa evidence :statement mv2396 :has-determiner "THE")
-   (:var mv2396 :isa decrease :agent mv2395 :object mv2390 :present "PRESENT" :raw-text
+   (:var mv2361 :isa list :theme mv2367 :present "PRESENT")
+   (:var mv2367 :isa evidence :statement mv2366 :has-determiner "THE")
+   (:var mv2366 :isa decrease :agent mv2365 :object mv2360 :present "PRESENT" :raw-text
     "decreases")
-   (:var mv2395 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv2390 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
+   (:var mv2365 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv2360 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
   ("Name genes regulated by elk1 and srf"
-   (:var mv2399 :isa name-something :patient mv2402 :present "PRESENT")
-   (:var mv2402 :isa gene :predication mv2403 :raw-text "genes")
-   (:var mv2403 :isa regulate :object mv2402 :agent mv2407 :past "PAST" :raw-text "regulated")
-   (:var mv2407 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv2398 mv2406))
-   (:var mv2398 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv2406 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv2369 :isa name-something :patient mv2372 :present "PRESENT")
+   (:var mv2372 :isa gene :predication mv2373 :raw-text "genes")
+   (:var mv2373 :isa regulate :object mv2372 :agent mv2377 :past "PAST" :raw-text "regulated")
+   (:var mv2377 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv2368 mv2376))
+   (:var mv2368 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv2376 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("Of the apoptotic genes regulated by stat3, which are active in the liver?"
-   (:var mv2424 :isa copular-predication :item mv2414 :value mv2419 :predicate mv2418)
-   (:var mv2414 :isa gene :has-determiner "WHICH" :predication mv2415 :has-determiner "THE"
-    :cellular-process mv2412 :raw-text "genes")
-   (:var mv2415 :isa regulate :object mv2414 :agent mv2409 :past "PAST" :raw-text "regulated")
-   (:var mv2409 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2412 :isa apoptosis :raw-text "apoptotic") (:var mv2419 :isa active :organ mv2422)
-   (:var mv2422 :isa liver :has-determiner "THE") (:var mv2418 :isa be :present "PRESENT"))
+   (:var mv2394 :isa copular-predication :item mv2384 :value mv2389 :predicate mv2388)
+   (:var mv2384 :isa gene :has-determiner "WHICH" :predication mv2385 :has-determiner "THE"
+    :cellular-process mv2382 :raw-text "genes")
+   (:var mv2385 :isa regulate :object mv2384 :agent mv2379 :past "PAST" :raw-text "regulated")
+   (:var mv2379 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2382 :isa apoptosis :raw-text "apoptotic") (:var mv2389 :isa active :organ mv2392)
+   (:var mv2392 :isa liver :has-determiner "THE") (:var mv2388 :isa be :present "PRESENT"))
   ("Of the apoptotic genes stat3 regulates, which are active in the liver?"
-   (:var mv2442 :isa copular-predication :item mv2433 :value mv2437 :predicate mv2436)
-   (:var mv2433 :isa gene :has-determiner "WHICH" :predication mv2434 :has-determiner "THE"
-    :cellular-process mv2431 :raw-text "genes")
-   (:var mv2434 :isa regulate :object mv2433 :agent mv2428 :present "PRESENT" :raw-text
+   (:var mv2412 :isa copular-predication :item mv2403 :value mv2407 :predicate mv2406)
+   (:var mv2403 :isa gene :has-determiner "WHICH" :predication mv2404 :has-determiner "THE"
+    :cellular-process mv2401 :raw-text "genes")
+   (:var mv2404 :isa regulate :object mv2403 :agent mv2398 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv2428 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2431 :isa apoptosis :raw-text "apoptotic") (:var mv2437 :isa active :organ mv2440)
-   (:var mv2440 :isa liver :has-determiner "THE") (:var mv2436 :isa be :present "PRESENT"))
+   (:var mv2398 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2401 :isa apoptosis :raw-text "apoptotic") (:var mv2407 :isa active :organ mv2410)
+   (:var mv2410 :isa liver :has-determiner "THE") (:var mv2406 :isa be :present "PRESENT"))
   ("Of the genes stat3 regulates in the liver, which are apoptotic?"
-   (:var mv2457 :isa copular-predication :item mv2448 :value mv2455 :predicate mv2454)
-   (:var mv2448 :isa gene :has-determiner "WHICH" :predication mv2449 :has-determiner "THE"
+   (:var mv2427 :isa copular-predication :item mv2418 :value mv2425 :predicate mv2424)
+   (:var mv2418 :isa gene :has-determiner "WHICH" :predication mv2419 :has-determiner "THE"
     :raw-text "genes")
-   (:var mv2449 :isa regulate :object mv2448 :agent mv2445 :organ mv2452 :present "PRESENT"
+   (:var mv2419 :isa regulate :object mv2418 :agent mv2415 :organ mv2422 :present "PRESENT"
     :raw-text "regulates")
-   (:var mv2445 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2452 :isa liver :has-determiner "THE")
-   (:var mv2455 :isa apoptosis :raw-text "apoptotic") (:var mv2454 :isa be :present "PRESENT"))
+   (:var mv2415 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2422 :isa liver :has-determiner "THE")
+   (:var mv2425 :isa apoptosis :raw-text "apoptotic") (:var mv2424 :isa be :present "PRESENT"))
   ("Of the hepatic genes stat3 regulates, which are apoptotic?"
-   (:var mv2471 :isa copular-predication :item mv2465 :value mv2469 :predicate mv2468)
-   (:var mv2465 :isa gene :has-determiner "WHICH" :predication mv2466 :has-determiner "THE"
-    :non-cellular-location mv2464 :raw-text "genes")
-   (:var mv2466 :isa regulate :object mv2465 :agent mv2461 :present "PRESENT" :raw-text
+   (:var mv2441 :isa copular-predication :item mv2435 :value mv2439 :predicate mv2438)
+   (:var mv2435 :isa gene :has-determiner "WHICH" :predication mv2436 :has-determiner "THE"
+    :non-cellular-location mv2434 :raw-text "genes")
+   (:var mv2436 :isa regulate :object mv2435 :agent mv2431 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv2461 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2464 :isa liver) (:var mv2469 :isa apoptosis :raw-text "apoptotic")
-   (:var mv2468 :isa be :present "PRESENT"))
+   (:var mv2431 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2434 :isa liver) (:var mv2439 :isa apoptosis :raw-text "apoptotic")
+   (:var mv2438 :isa be :present "PRESENT"))
   ("Of the liver genes stat3 regulates, which are apoptotic?"
-   (:var mv2484 :isa copular-predication :item mv2478 :value mv2482 :predicate mv2481)
-   (:var mv2478 :isa gene :has-determiner "WHICH" :predication mv2479 :has-determiner "THE"
-    :non-cellular-location mv2477 :raw-text "genes")
-   (:var mv2479 :isa regulate :object mv2478 :agent mv2474 :present "PRESENT" :raw-text
+   (:var mv2454 :isa copular-predication :item mv2448 :value mv2452 :predicate mv2451)
+   (:var mv2448 :isa gene :has-determiner "WHICH" :predication mv2449 :has-determiner "THE"
+    :non-cellular-location mv2447 :raw-text "genes")
+   (:var mv2449 :isa regulate :object mv2448 :agent mv2444 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv2474 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2477 :isa liver) (:var mv2482 :isa apoptosis :raw-text "apoptotic")
-   (:var mv2481 :isa be :present "PRESENT"))
+   (:var mv2444 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2447 :isa liver) (:var mv2452 :isa apoptosis :raw-text "apoptotic")
+   (:var mv2451 :isa be :present "PRESENT"))
   ("Please find pathways involving SRF"
-   (:var mv2489 :isa bio-find :object mv2490 :present "PRESENT" :adverb mv2487 :raw-text "find")
-   (:var mv2490 :isa pathway :predication mv2491 :raw-text "pathways")
-   (:var mv2491 :isa involve :theme mv2490 :object mv2492 :progressive "PROGRESSIVE")
-   (:var mv2492 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv2487 :isa please :name "please"))
+   (:var mv2459 :isa bio-find :object mv2460 :present "PRESENT" :adverb mv2457 :raw-text "find")
+   (:var mv2460 :isa pathway :predication mv2461 :raw-text "pathways")
+   (:var mv2461 :isa involve :theme mv2460 :object mv2462 :progressive "PROGRESSIVE")
+   (:var mv2462 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv2457 :isa please :name "please"))
   ("Please show me KEGG pathways involving SRF"
-   (:var mv2494 :isa show :|statement-OR-theme| mv2497 :beneficiary mv2495 :present "PRESENT"
-    :adverb mv2493)
-   (:var mv2497 :isa pathway :predication mv2498 :modifier mv2496 :raw-text "pathways")
-   (:var mv2498 :isa involve :theme mv2497 :object mv2499 :progressive "PROGRESSIVE")
-   (:var mv2499 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv2496 :isa database :name "KEGG" :uid "KEGG")
-   (:var mv2495 :isa interlocutor :name "speaker") (:var mv2493 :isa please :name "please"))
+   (:var mv2464 :isa show :|statement-OR-theme| mv2467 :beneficiary mv2465 :present "PRESENT"
+    :adverb mv2463)
+   (:var mv2467 :isa pathway :predication mv2468 :modifier mv2466 :raw-text "pathways")
+   (:var mv2468 :isa involve :theme mv2467 :object mv2469 :progressive "PROGRESSIVE")
+   (:var mv2469 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv2466 :isa database :name "KEGG" :uid "KEGG")
+   (:var mv2465 :isa interlocutor :name "speaker") (:var mv2463 :isa please :name "please"))
   ("Please show me pathways involving SRF"
-   (:var mv2501 :isa show :|statement-OR-theme| mv2503 :beneficiary mv2502 :present "PRESENT"
-    :adverb mv2500)
-   (:var mv2503 :isa pathway :predication mv2504 :raw-text "pathways")
-   (:var mv2504 :isa involve :theme mv2503 :object mv2505 :progressive "PROGRESSIVE")
-   (:var mv2505 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv2502 :isa interlocutor :name "speaker") (:var mv2500 :isa please :name "please"))
+   (:var mv2471 :isa show :|statement-OR-theme| mv2473 :beneficiary mv2472 :present "PRESENT"
+    :adverb mv2470)
+   (:var mv2473 :isa pathway :predication mv2474 :raw-text "pathways")
+   (:var mv2474 :isa involve :theme mv2473 :object mv2475 :progressive "PROGRESSIVE")
+   (:var mv2475 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv2472 :isa interlocutor :name "speaker") (:var mv2470 :isa please :name "please"))
   ("MEK activates ERK"
-   (:var mv2507 :isa bio-activate :agent mv2506 :object mv2508 :present "PRESENT" :raw-text
+   (:var mv2477 :isa bio-activate :agent mv2476 :object mv2478 :present "PRESENT" :raw-text
     "activates")
-   (:var mv2506 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv2476 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv2508 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv2478 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -1751,15 +1750,15 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("Remove the fact that MEK activates ERK"
-   (:var mv2509 :isa remove :object mv2516 :present "PRESENT" :raw-text "Remove")
-   (:var mv2516 :isa fact :statement mv2514 :has-determiner "THE")
-   (:var mv2514 :isa bio-activate :agent mv2513 :object mv2515 :present "PRESENT" :raw-text
+   (:var mv2479 :isa remove :object mv2486 :present "PRESENT" :raw-text "Remove")
+   (:var mv2486 :isa fact :statement mv2484 :has-determiner "THE")
+   (:var mv2484 :isa bio-activate :agent mv2483 :object mv2485 :present "PRESENT" :raw-text
     "activates")
-   (:var mv2513 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv2483 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv2515 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv2485 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -1769,15 +1768,15 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("Inactive MEK activates ERK"
-   (:var mv2519 :isa bio-activate :agent mv2518 :object mv2520 :present "PRESENT" :raw-text
+   (:var mv2489 :isa bio-activate :agent mv2488 :object mv2490 :present "PRESENT" :raw-text
     "activates")
-   (:var mv2518 :isa protein-family :predication mv2517 :raw-text "MEK" :name "MEK" :count 2
+   (:var mv2488 :isa protein-family :predication mv2487 :raw-text "MEK" :name "MEK" :count 2
     :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv2517 :isa inactive)
-   (:var mv2520 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv2487 :isa inactive)
+   (:var mv2490 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -1787,17 +1786,17 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("Remove the fact that inactive MEK activates ERK"
-   (:var mv2521 :isa remove :object mv2529 :present "PRESENT" :raw-text "Remove")
-   (:var mv2529 :isa fact :statement mv2527 :has-determiner "THE")
-   (:var mv2527 :isa bio-activate :agent mv2526 :object mv2528 :present "PRESENT" :raw-text
+   (:var mv2491 :isa remove :object mv2499 :present "PRESENT" :raw-text "Remove")
+   (:var mv2499 :isa fact :statement mv2497 :has-determiner "THE")
+   (:var mv2497 :isa bio-activate :agent mv2496 :object mv2498 :present "PRESENT" :raw-text
     "activates")
-   (:var mv2526 :isa protein-family :predication mv2525 :raw-text "MEK" :name "MEK" :count 2
+   (:var mv2496 :isa protein-family :predication mv2495 :raw-text "MEK" :name "MEK" :count 2
     :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv2525 :isa inactive)
-   (:var mv2528 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv2495 :isa inactive)
+   (:var mv2498 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -1807,98 +1806,98 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("Show immune system pathways"
-   (:var mv2531 :isa show :|statement-OR-theme| mv2532 :present "PRESENT")
-   (:var mv2532 :isa pathway :non-cellular-location mv2530 :raw-text "pathways")
-   (:var mv2530 :isa bio-organ :name "immune system" :uid "UBERON:0002405"))
+   (:var mv2501 :isa show :|statement-OR-theme| mv2502 :present "PRESENT")
+   (:var mv2502 :isa pathway :non-cellular-location mv2500 :raw-text "pathways")
+   (:var mv2500 :isa bio-organ :name "immune system" :uid "UBERON:0002405"))
   ("Show me pathways involving SRF"
-   (:var mv2533 :isa show :|statement-OR-theme| mv2535 :beneficiary mv2534 :present "PRESENT")
-   (:var mv2535 :isa pathway :predication mv2536 :raw-text "pathways")
-   (:var mv2536 :isa involve :theme mv2535 :object mv2537 :progressive "PROGRESSIVE")
-   (:var mv2537 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv2534 :isa interlocutor :name "speaker"))
+   (:var mv2503 :isa show :|statement-OR-theme| mv2505 :beneficiary mv2504 :present "PRESENT")
+   (:var mv2505 :isa pathway :predication mv2506 :raw-text "pathways")
+   (:var mv2506 :isa involve :theme mv2505 :object mv2507 :progressive "PROGRESSIVE")
+   (:var mv2507 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv2504 :isa interlocutor :name "speaker"))
   ("Show me pathways with SRF in them"
-   (:var mv2538 :isa show :|statement-OR-theme| mv2540 :beneficiary mv2539 :present "PRESENT")
-   (:var mv2540 :isa pathway :pathwaycomponent mv2542 :raw-text "pathways")
-   (:var mv2542 :isa protein
+   (:var mv2508 :isa show :|statement-OR-theme| mv2510 :beneficiary mv2509 :present "PRESENT")
+   (:var mv2510 :isa pathway :pathwaycomponent mv2512 :raw-text "pathways")
+   (:var mv2512 :isa protein
     :|cell-line-OR-cell-type-OR-cellular-location-OR-context-OR-info-context-OR-organ-OR-preparation-OR-organism-OR-in-equilibrium-with-OR-complex-OR-equilibrium-state-OR-state-OR-in-pathway|
-    mv2544 :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv2544 :isa pronoun/plural :word "them") (:var mv2539 :isa interlocutor :name "speaker"))
+    mv2514 :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv2514 :isa pronoun/plural :word "them") (:var mv2509 :isa interlocutor :name "speaker"))
   ("Show me pathways with SRF"
-   (:var mv2547 :isa show :|statement-OR-theme| mv2549 :beneficiary mv2548 :present "PRESENT")
-   (:var mv2549 :isa pathway :pathwaycomponent mv2551 :raw-text "pathways")
-   (:var mv2551 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv2548 :isa interlocutor :name "speaker"))
+   (:var mv2517 :isa show :|statement-OR-theme| mv2519 :beneficiary mv2518 :present "PRESENT")
+   (:var mv2519 :isa pathway :pathwaycomponent mv2521 :raw-text "pathways")
+   (:var mv2521 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv2518 :isa interlocutor :name "speaker"))
   ("Show me the evidence that kras decreases frizzled8."
-   (:var mv2554 :isa show :|statement-OR-theme| mv2561 :beneficiary mv2555 :present "PRESENT")
-   (:var mv2561 :isa evidence :statement mv2560 :has-determiner "THE")
-   (:var mv2560 :isa decrease :agent mv2559 :object mv2553 :present "PRESENT" :raw-text
+   (:var mv2524 :isa show :|statement-OR-theme| mv2531 :beneficiary mv2525 :present "PRESENT")
+   (:var mv2531 :isa evidence :statement mv2530 :has-determiner "THE")
+   (:var mv2530 :isa decrease :agent mv2529 :object mv2523 :present "PRESENT" :raw-text
     "decreases")
-   (:var mv2559 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv2553 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN")
-   (:var mv2555 :isa interlocutor :name "speaker"))
+   (:var mv2529 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv2523 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN")
+   (:var mv2525 :isa interlocutor :name "speaker"))
   ("Show me the evidence that kras decreases the amount of frizzled8?"
-   (:var mv2563 :isa show :|statement-OR-theme| mv2574 :beneficiary mv2564 :present "PRESENT")
-   (:var mv2574 :isa evidence :statement mv2569 :has-determiner "THE")
-   (:var mv2569 :isa decrease :agent mv2568 :|affected-process-OR-object| mv2571 :present "PRESENT"
+   (:var mv2533 :isa show :|statement-OR-theme| mv2544 :beneficiary mv2534 :present "PRESENT")
+   (:var mv2544 :isa evidence :statement mv2539 :has-determiner "THE")
+   (:var mv2539 :isa decrease :agent mv2538 :|affected-process-OR-object| mv2541 :present "PRESENT"
     :raw-text "decreases")
-   (:var mv2568 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv2571 :isa bio-amount :measured-item mv2562 :has-determiner "THE" :raw-text "amount")
-   (:var mv2562 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN")
-   (:var mv2564 :isa interlocutor :name "speaker"))
+   (:var mv2538 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv2541 :isa bio-amount :measured-item mv2532 :has-determiner "THE" :raw-text "amount")
+   (:var mv2532 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN")
+   (:var mv2534 :isa interlocutor :name "speaker"))
   ("Show me the evidence that kras regulates frizzled8?"
-   (:var mv2576 :isa show :|statement-OR-theme| mv2583 :beneficiary mv2577 :present "PRESENT")
-   (:var mv2583 :isa evidence :statement mv2582 :has-determiner "THE")
-   (:var mv2582 :isa regulate :agent mv2581 :object mv2575 :present "PRESENT" :raw-text
+   (:var mv2546 :isa show :|statement-OR-theme| mv2553 :beneficiary mv2547 :present "PRESENT")
+   (:var mv2553 :isa evidence :statement mv2552 :has-determiner "THE")
+   (:var mv2552 :isa regulate :agent mv2551 :object mv2545 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv2581 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv2575 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN")
-   (:var mv2577 :isa interlocutor :name "speaker"))
+   (:var mv2551 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv2545 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN")
+   (:var mv2547 :isa interlocutor :name "speaker"))
   ("Show transcription factors shared by elk1 and srf"
-   (:var mv2586 :isa show :|statement-OR-theme| mv2584 :present "PRESENT")
-   (:var mv2584 :isa transcription-factor :predication mv2587 :raw-text "transcription factors")
-   (:var mv2587 :isa share :object mv2584 :participant mv2591 :past "PAST" :raw-text "shared")
-   (:var mv2591 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv2585 mv2590))
-   (:var mv2585 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv2590 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv2556 :isa show :|statement-OR-theme| mv2554 :present "PRESENT")
+   (:var mv2554 :isa transcription-factor :predication mv2557 :raw-text "transcription factors")
+   (:var mv2557 :isa share :object mv2554 :participant mv2561 :past "PAST" :raw-text "shared")
+   (:var mv2561 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv2555 mv2560))
+   (:var mv2555 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv2560 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("Tell me how stat3 regulates apoptosis"
-   (:var mv2594 :isa tell :beneficiary mv2595 :present "PRESENT")
-   (:var mv2595 :isa interlocutor :name "speaker"))
+   (:var mv2564 :isa tell :beneficiary mv2565 :present "PRESENT")
+   (:var mv2565 :isa interlocutor :name "speaker"))
   ("Tell me what apoptotic pathways are regulated by stat3 in the liver"
-   (:var mv2601 :isa tell :theme mv2613 :theme mv2602 :present "PRESENT")
-   (:var mv2613 :isa regulate :affected-process mv2606 :agent mv2600 :present "PRESENT" :raw-text
+   (:var mv2571 :isa tell :theme mv2583 :theme mv2572 :present "PRESENT")
+   (:var mv2583 :isa regulate :affected-process mv2576 :agent mv2570 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv2606 :isa pathway :has-determiner "WHAT" :cellular-process mv2604 :raw-text "pathways")
-   (:var mv2604 :isa apoptosis :raw-text "apoptotic")
-   (:var mv2600 :isa protein :organ mv2612 :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2612 :isa liver :has-determiner "THE") (:var mv2602 :isa interlocutor :name "speaker"))
+   (:var mv2576 :isa pathway :has-determiner "WHAT" :cellular-process mv2574 :raw-text "pathways")
+   (:var mv2574 :isa apoptosis :raw-text "apoptotic")
+   (:var mv2570 :isa protein :organ mv2582 :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2582 :isa liver :has-determiner "THE") (:var mv2572 :isa interlocutor :name "speaker"))
   ("Tell me what genes elk1 and srf regulate"
-   (:var mv2617 :isa tell :theme mv2620 :beneficiary mv2618 :present "PRESENT")
-   (:var mv2620 :isa gene :predication mv2623 :has-determiner "WHAT" :raw-text "genes")
-   (:var mv2623 :isa regulate :object mv2620 :agent mv2624 :present "PRESENT" :raw-text "regulate")
-   (:var mv2624 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv2616 mv2622))
-   (:var mv2616 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv2622 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv2618 :isa interlocutor :name "speaker"))
+   (:var mv2587 :isa tell :theme mv2590 :beneficiary mv2588 :present "PRESENT")
+   (:var mv2590 :isa gene :predication mv2593 :has-determiner "WHAT" :raw-text "genes")
+   (:var mv2593 :isa regulate :object mv2590 :agent mv2594 :present "PRESENT" :raw-text "regulate")
+   (:var mv2594 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv2586 mv2592))
+   (:var mv2586 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv2592 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv2588 :isa interlocutor :name "speaker"))
   ("Tell me what pathways are regulated by stat3 in the liver"
-   (:var mv2626 :isa tell :theme mv2636 :theme mv2627 :present "PRESENT")
-   (:var mv2636 :isa regulate :affected-process mv2629 :agent mv2625 :present "PRESENT" :raw-text
+   (:var mv2596 :isa tell :theme mv2606 :theme mv2597 :present "PRESENT")
+   (:var mv2606 :isa regulate :affected-process mv2599 :agent mv2595 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv2629 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv2625 :isa protein :organ mv2635 :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2635 :isa liver :has-determiner "THE") (:var mv2627 :isa interlocutor :name "speaker"))
+   (:var mv2599 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv2595 :isa protein :organ mv2605 :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2605 :isa liver :has-determiner "THE") (:var mv2597 :isa interlocutor :name "speaker"))
   ("What KEGG pathways involve immune signaling?"
-   (:var mv2642 :isa involve :theme mv2641 :object mv2644 :present "PRESENT")
-   (:var mv2641 :isa pathway :has-determiner "WHAT" :modifier mv2640 :raw-text "pathways")
-   (:var mv2640 :isa database :name "KEGG" :uid "KEGG")
-   (:var mv2644 :isa signal :modifier mv2643 :raw-text "signaling")
-   (:var mv2643 :isa immune :name "immune"))
+   (:var mv2612 :isa involve :theme mv2611 :object mv2614 :present "PRESENT")
+   (:var mv2611 :isa pathway :has-determiner "WHAT" :modifier mv2610 :raw-text "pathways")
+   (:var mv2610 :isa database :name "KEGG" :uid "KEGG")
+   (:var mv2614 :isa signal :modifier mv2613 :raw-text "signaling")
+   (:var mv2613 :isa immune :name "immune"))
   ("What MAP kinase phosphatases are regulated by ELK1?"
-   (:var mv2652 :isa regulate :object mv2648 :agent mv2646 :present "PRESENT" :raw-text
+   (:var mv2622 :isa regulate :object mv2618 :agent mv2616 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv2648 :isa phosphatase :has-determiner "WHAT" :enzyme mv2645 :raw-text "phosphatases")
-   (:var mv2645 :isa protein-family :raw-text "MAP kinase" :name "mitogen activated protein kinase"
+   (:var mv2618 :isa phosphatase :has-determiner "WHAT" :enzyme mv2615 :raw-text "phosphatases")
+   (:var mv2615 :isa protein-family :raw-text "MAP kinase" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -1914,62 +1913,62 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv2646 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+   (:var mv2616 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
   ("What apoptotic genes are downstream of stat3?"
-   (:var mv2659 :isa be :subject mv2658 :predicate mv2660 :present "PRESENT")
-   (:var mv2658 :isa gene :has-determiner "WHAT" :cellular-process mv2656 :raw-text "genes")
-   (:var mv2656 :isa apoptosis :raw-text "apoptotic")
-   (:var mv2660 :isa downstream-segment :pathwaycomponent mv2654 :raw-text "downstream")
-   (:var mv2654 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv2629 :isa be :subject mv2628 :predicate mv2630 :present "PRESENT")
+   (:var mv2628 :isa gene :has-determiner "WHAT" :cellular-process mv2626 :raw-text "genes")
+   (:var mv2626 :isa apoptosis :raw-text "apoptotic")
+   (:var mv2630 :isa downstream-segment :pathwaycomponent mv2624 :raw-text "downstream")
+   (:var mv2624 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What apoptotic genes does stat3 regulate in the liver?"
-   (:var mv2670 :isa regulate :object mv2668 :agent mv2664 :organ mv2673 :present "PRESENT"
+   (:var mv2640 :isa regulate :object mv2638 :agent mv2634 :organ mv2643 :present "PRESENT"
     :raw-text "regulate")
-   (:var mv2668 :isa gene :has-determiner "WHAT" :cellular-process mv2666 :raw-text "genes")
-   (:var mv2666 :isa apoptosis :raw-text "apoptotic")
-   (:var mv2664 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2673 :isa liver :has-determiner "THE"))
+   (:var mv2638 :isa gene :has-determiner "WHAT" :cellular-process mv2636 :raw-text "genes")
+   (:var mv2636 :isa apoptosis :raw-text "apoptotic")
+   (:var mv2634 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2643 :isa liver :has-determiner "THE"))
   ("What apoptotic genes does stat3 regulate?"
-   (:var mv2681 :isa regulate :object mv2679 :agent mv2675 :present "PRESENT" :raw-text "regulate")
-   (:var mv2679 :isa gene :has-determiner "WHAT" :cellular-process mv2677 :raw-text "genes")
-   (:var mv2677 :isa apoptosis :raw-text "apoptotic")
-   (:var mv2675 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv2651 :isa regulate :object mv2649 :agent mv2645 :present "PRESENT" :raw-text "regulate")
+   (:var mv2649 :isa gene :has-determiner "WHAT" :cellular-process mv2647 :raw-text "genes")
+   (:var mv2647 :isa apoptosis :raw-text "apoptotic")
+   (:var mv2645 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What apoptotic genes is stat3 upstream of?"
-   (:var mv2687 :isa be :subject mv2686 :predicate mv2688 :present "PRESENT")
-   (:var mv2686 :isa gene :has-determiner "WHAT" :cellular-process mv2684 :raw-text "genes")
-   (:var mv2684 :isa apoptosis :raw-text "apoptotic")
-   (:var mv2688 :isa upstream-segment :pathwaycomponent mv2686 :modifier mv2682 :raw-text
+   (:var mv2657 :isa be :subject mv2656 :predicate mv2658 :present "PRESENT")
+   (:var mv2656 :isa gene :has-determiner "WHAT" :cellular-process mv2654 :raw-text "genes")
+   (:var mv2654 :isa apoptosis :raw-text "apoptotic")
+   (:var mv2658 :isa upstream-segment :pathwaycomponent mv2656 :modifier mv2652 :raw-text
     "upstream")
-   (:var mv2682 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv2652 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What apoptotic pathways involve stat3?"
-   (:var mv2696 :isa involve :theme mv2695 :object mv2691 :present "PRESENT")
-   (:var mv2695 :isa pathway :has-determiner "WHAT" :cellular-process mv2693 :raw-text "pathways")
-   (:var mv2693 :isa apoptosis :raw-text "apoptotic")
-   (:var mv2691 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv2666 :isa involve :theme mv2665 :object mv2661 :present "PRESENT")
+   (:var mv2665 :isa pathway :has-determiner "WHAT" :cellular-process mv2663 :raw-text "pathways")
+   (:var mv2663 :isa apoptosis :raw-text "apoptotic")
+   (:var mv2661 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What are Selumetinib's targets?"
-   (:var mv2698 :isa be :subject mv2697 :predicate mv2701 :present "PRESENT")
-   (:var mv2697 :isa what) (:var mv2701 :isa target-protein :agent mv2700 :raw-text "targets")
-   (:var mv2700 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622"))
+   (:var mv2668 :isa be :subject mv2667 :predicate mv2671 :present "PRESENT")
+   (:var mv2667 :isa what) (:var mv2671 :isa target-protein :agent mv2670 :raw-text "targets")
+   (:var mv2670 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622"))
   ("What are some JAK1 inhibitors?"
-   (:var mv2705 :isa be :subject mv2704 :predicate mv2707 :present "PRESENT")
-   (:var mv2704 :isa what)
-   (:var mv2707 :isa inhibitor :quantifier mv2706 :protein mv2703 :raw-text "inhibitors")
-   (:var mv2706 :isa some :word "some")
-   (:var mv2703 :isa protein :raw-text "JAK1" :uid "UP:P23458" :name "JAK1_HUMAN"))
+   (:var mv2675 :isa be :subject mv2674 :predicate mv2677 :present "PRESENT")
+   (:var mv2674 :isa what)
+   (:var mv2677 :isa inhibitor :quantifier mv2676 :protein mv2673 :raw-text "inhibitors")
+   (:var mv2676 :isa some :word "some")
+   (:var mv2673 :isa protein :raw-text "JAK1" :uid "UP:P23458" :name "JAK1_HUMAN"))
   ("What are some drugs that inhibit BRAF?"
-   (:var mv2709 :isa be :subject mv2708 :predicate mv2711 :present "PRESENT")
-   (:var mv2708 :isa what)
-   (:var mv2711 :isa drug :predication mv2713 :quantifier mv2710 :raw-text "drugs")
-   (:var mv2713 :isa inhibit :agent mv2711 :that-rel t :object mv2714 :present "PRESENT" :raw-text
+   (:var mv2679 :isa be :subject mv2678 :predicate mv2681 :present "PRESENT")
+   (:var mv2678 :isa what)
+   (:var mv2681 :isa drug :predication mv2683 :quantifier mv2680 :raw-text "drugs")
+   (:var mv2683 :isa inhibit :agent mv2681 :that-rel t :object mv2684 :present "PRESENT" :raw-text
     "inhibit")
-   (:var mv2714 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv2710 :isa some :word "some"))
+   (:var mv2684 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv2680 :isa some :word "some"))
   ("What are some genes in the MAPK signaling pathway?"
-   (:var mv2717 :isa be :subject mv2716 :predicate mv2719 :present "PRESENT")
-   (:var mv2716 :isa what)
-   (:var mv2719 :isa gene :context mv2715 :quantifier mv2718 :raw-text "genes")
-   (:var mv2715 :isa signaling-pathway :has-determiner "THE" :modifier mv2722 :raw-text
+   (:var mv2687 :isa be :subject mv2686 :predicate mv2689 :present "PRESENT")
+   (:var mv2686 :isa what)
+   (:var mv2689 :isa gene :context mv2685 :quantifier mv2688 :raw-text "genes")
+   (:var mv2685 :isa signaling-pathway :has-determiner "THE" :modifier mv2692 :raw-text
     "signaling pathway")
-   (:var mv2722 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
+   (:var mv2692 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -1985,15 +1984,15 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv2718 :isa some :word "some"))
+   (:var mv2688 :isa some :word "some"))
   ("What are some proteins in the MAPK signaling pathway?"
-   (:var mv2726 :isa be :subject mv2725 :predicate mv2728 :present "PRESENT")
-   (:var mv2725 :isa what)
-   (:var mv2728 :isa protein :|context-OR-in-pathway| mv2724 :quantifier mv2727 :raw-text
+   (:var mv2696 :isa be :subject mv2695 :predicate mv2698 :present "PRESENT")
+   (:var mv2695 :isa what)
+   (:var mv2698 :isa protein :|context-OR-in-pathway| mv2694 :quantifier mv2697 :raw-text
     "proteins")
-   (:var mv2724 :isa signaling-pathway :has-determiner "THE" :modifier mv2731 :raw-text
+   (:var mv2694 :isa signaling-pathway :has-determiner "THE" :modifier mv2701 :raw-text
     "signaling pathway")
-   (:var mv2731 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
+   (:var mv2701 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -2009,206 +2008,206 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv2727 :isa some :word "some"))
+   (:var mv2697 :isa some :word "some"))
   ("What are the members of RAS?"
-   (:var mv2734 :isa be :subject mv2733 :predicate mv2736 :present "PRESENT")
-   (:var mv2733 :isa what) (:var mv2736 :isa member :set mv2738 :has-determiner "THE")
-   (:var mv2738 :isa protein-family :raw-text "RAS" :name "Ras" :count 3 :family-members
+   (:var mv2704 :isa be :subject mv2703 :predicate mv2706 :present "PRESENT")
+   (:var mv2703 :isa what) (:var mv2706 :isa member :set mv2708 :has-determiner "THE")
+   (:var mv2708 :isa protein-family :raw-text "RAS" :name "Ras" :count 3 :family-members
     ((protein (:name "RASN_HUMAN") (:uid "UP:P01111"))
      (protein (:name "RASK_HUMAN") (:uid "UP:P01116"))
      (protein (:name "RASH_HUMAN") (:uid "UP:P01112")))
     :uid "FA:03663"))
   ("What are the miRNAS that regulate EGFR, SRF, STAT3, JAK2, and SMAD3?"
-   (:var mv2744 :isa be :subject mv2743 :predicate mv2746 :present "PRESENT")
-   (:var mv2743 :isa what)
-   (:var mv2746 :isa micro-rna :predication mv2748 :has-determiner "THE" :raw-text "miRNAS")
-   (:var mv2748 :isa regulate :agent mv2746 :that-rel t :object mv2752 :present "PRESENT" :raw-text
+   (:var mv2714 :isa be :subject mv2713 :predicate mv2716 :present "PRESENT")
+   (:var mv2713 :isa what)
+   (:var mv2716 :isa micro-rna :predication mv2718 :has-determiner "THE" :raw-text "miRNAS")
+   (:var mv2718 :isa regulate :agent mv2716 :that-rel t :object mv2722 :present "PRESENT" :raw-text
     "regulate")
-   (:var mv2752 :isa collection :raw-text "EGFR, SRF, STAT3, JAK2, and SMAD3" :type protein :number
-    5 :items (mv2749 mv2750 mv2740 mv2741 mv2742))
-   (:var mv2749 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
-   (:var mv2750 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv2740 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2741 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
-   (:var mv2742 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN"))
+   (:var mv2722 :isa collection :raw-text "EGFR, SRF, STAT3, JAK2, and SMAD3" :type protein :number
+    5 :items (mv2719 mv2720 mv2710 mv2711 mv2712))
+   (:var mv2719 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
+   (:var mv2720 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv2710 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2711 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
+   (:var mv2712 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN"))
   ("What are the regulators of MAPPK14 in bladder"
+   (:var mv2724 :isa be :subject mv2723 :predicate mv2726 :present "PRESENT")
+   (:var mv2723 :isa what)
+   (:var mv2726 :isa regulator :theme mv2732 :has-determiner "THE" :raw-text "regulators")
+   (:var mv2732 :isa bio-entity :organ mv2731 :name "MAPPK14")
+   (:var mv2731 :isa bio-organ :name "bladder" :uid "BTO:0001418"))
+  ("What are the regulators of SMURF2 in liver?"
+   (:var mv2737 :isa be :subject mv2736 :predicate mv2739 :present "PRESENT")
+   (:var mv2736 :isa what)
+   (:var mv2739 :isa regulator :theme mv2735 :has-determiner "THE" :raw-text "regulators")
+   (:var mv2735 :isa protein :organ mv2742 :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN")
+   (:var mv2742 :isa liver))
+  ("What are the regulators of SMURF2?"
+   (:var mv2747 :isa be :subject mv2746 :predicate mv2749 :present "PRESENT")
+   (:var mv2746 :isa what)
+   (:var mv2749 :isa regulator :theme mv2745 :has-determiner "THE" :raw-text "regulators")
+   (:var mv2745 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
+  ("What are the regulators of c-fos in lung?"
    (:var mv2754 :isa be :subject mv2753 :predicate mv2756 :present "PRESENT")
    (:var mv2753 :isa what)
-   (:var mv2756 :isa regulator :theme mv2762 :has-determiner "THE" :raw-text "regulators")
-   (:var mv2762 :isa bio-entity :organ mv2761 :name "MAPPK14")
-   (:var mv2761 :isa bio-organ :name "bladder" :uid "BTO:0001418"))
-  ("What are the regulators of SMURF2 in liver?"
-   (:var mv2767 :isa be :subject mv2766 :predicate mv2769 :present "PRESENT")
-   (:var mv2766 :isa what)
-   (:var mv2769 :isa regulator :theme mv2765 :has-determiner "THE" :raw-text "regulators")
-   (:var mv2765 :isa protein :organ mv2772 :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN")
-   (:var mv2772 :isa liver))
-  ("What are the regulators of SMURF2?"
-   (:var mv2777 :isa be :subject mv2776 :predicate mv2779 :present "PRESENT")
-   (:var mv2776 :isa what)
-   (:var mv2779 :isa regulator :theme mv2775 :has-determiner "THE" :raw-text "regulators")
-   (:var mv2775 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
-  ("What are the regulators of c-fos in lung?"
-   (:var mv2784 :isa be :subject mv2783 :predicate mv2786 :present "PRESENT")
-   (:var mv2783 :isa what)
-   (:var mv2786 :isa regulator :theme mv2782 :has-determiner "THE" :raw-text "regulators")
-   (:var mv2782 :isa protein :organ mv2789 :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv2789 :isa lung))
+   (:var mv2756 :isa regulator :theme mv2752 :has-determiner "THE" :raw-text "regulators")
+   (:var mv2752 :isa protein :organ mv2759 :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv2759 :isa lung))
   ("What are the regulators of mapk14 in bladeeer"
-   (:var mv2805 :isa wh-question :statement mv2803 :wh what)
-   (:var mv2803 :isa prepositional-phrase :pobj mv2802 :prep "IN")
-   (:var mv2802 :isa bio-entity :name "bladeeer"))
+   (:var mv2775 :isa wh-question :statement mv2773 :wh what)
+   (:var mv2773 :isa prepositional-phrase :pobj mv2772 :prep "IN")
+   (:var mv2772 :isa bio-entity :name "bladeeer"))
   ("What are the regulators of mapk14"
-   (:var mv2808 :isa be :subject mv2807 :predicate mv2810 :present "PRESENT")
-   (:var mv2807 :isa what)
-   (:var mv2810 :isa regulator :theme mv2806 :has-determiner "THE" :raw-text "regulators")
-   (:var mv2806 :isa protein :raw-text "mapk14" :uid "UP:Q16539" :name "MK14_HUMAN"))
+   (:var mv2778 :isa be :subject mv2777 :predicate mv2780 :present "PRESENT")
+   (:var mv2777 :isa what)
+   (:var mv2780 :isa regulator :theme mv2776 :has-determiner "THE" :raw-text "regulators")
+   (:var mv2776 :isa protein :raw-text "mapk14" :uid "UP:Q16539" :name "MK14_HUMAN"))
   ("What are the transcription factors in common to the SRF, HRAS, and elk1 genes?"
-   (:var mv2827 :isa copular-predication :item mv2816 :value mv2814 :predicate mv2817)
-   (:var mv2816 :isa what) (:var mv2814 :isa in-common :theme mv2824)
-   (:var mv2824 :isa gene :has-determiner "THE" :expresses mv2825 :raw-text "genes")
-   (:var mv2825 :isa collection :raw-text "SRF, HRAS, and elk1" :type protein :number 3 :items
-    (mv2821 mv2822 mv2815))
-   (:var mv2821 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv2822 :isa protein :raw-text "HRAS" :uid "UP:P01112" :name "RASH_HUMAN")
-   (:var mv2815 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv2817 :isa be :predicate mv2813 :present "PRESENT")
-   (:var mv2813 :isa transcription-factor :has-determiner "THE" :raw-text "transcription factors"))
+   (:var mv2797 :isa copular-predication :item mv2786 :value mv2784 :predicate mv2787)
+   (:var mv2786 :isa what) (:var mv2784 :isa in-common :theme mv2794)
+   (:var mv2794 :isa gene :has-determiner "THE" :expresses mv2795 :raw-text "genes")
+   (:var mv2795 :isa collection :raw-text "SRF, HRAS, and elk1" :type protein :number 3 :items
+    (mv2791 mv2792 mv2785))
+   (:var mv2791 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv2792 :isa protein :raw-text "HRAS" :uid "UP:P01112" :name "RASH_HUMAN")
+   (:var mv2785 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv2787 :isa be :predicate mv2783 :present "PRESENT")
+   (:var mv2783 :isa transcription-factor :has-determiner "THE" :raw-text "transcription factors"))
   ("What are the transcription factors that regulate EELK1 and SRF?"
-   (:var mv2830 :isa be :subject mv2829 :predicate mv2828 :present "PRESENT")
-   (:var mv2829 :isa what)
-   (:var mv2828 :isa transcription-factor :predication mv2833 :has-determiner "THE" :raw-text
+   (:var mv2800 :isa be :subject mv2799 :predicate mv2798 :present "PRESENT")
+   (:var mv2799 :isa what)
+   (:var mv2798 :isa transcription-factor :predication mv2803 :has-determiner "THE" :raw-text
     "transcription factors")
-   (:var mv2833 :isa regulate :agent mv2828 :that-rel t :object mv2839 :present "PRESENT" :raw-text
+   (:var mv2803 :isa regulate :agent mv2798 :that-rel t :object mv2809 :present "PRESENT" :raw-text
     "regulate")
-   (:var mv2839 :isa collection :raw-text "EELK1 and SRF" :type protein :number 2 :items
-    (mv2838 mv2837))
-   (:var mv2838 :isa bio-entity :name "EELK1")
-   (:var mv2837 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv2809 :isa collection :raw-text "EELK1 and SRF" :type protein :number 2 :items
+    (mv2808 mv2807))
+   (:var mv2808 :isa bio-entity :name "EELK1")
+   (:var mv2807 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("What are the transcription factors that regulate EGFR, SRF, STAAT3, JAK2, and SMAD3?"
-   (:var mv2844 :isa be :subject mv2843 :predicate mv2840 :present "PRESENT")
-   (:var mv2843 :isa what)
-   (:var mv2840 :isa transcription-factor :predication mv2847 :has-determiner "THE" :raw-text
+   (:var mv2814 :isa be :subject mv2813 :predicate mv2810 :present "PRESENT")
+   (:var mv2813 :isa what)
+   (:var mv2810 :isa transcription-factor :predication mv2817 :has-determiner "THE" :raw-text
     "transcription factors")
-   (:var mv2847 :isa regulate :agent mv2840 :that-rel t :object mv2854 :present "PRESENT" :raw-text
+   (:var mv2817 :isa regulate :agent mv2810 :that-rel t :object mv2824 :present "PRESENT" :raw-text
     "regulate")
-   (:var mv2854 :isa collection :raw-text "EGFR, SRF, STAAT3, JAK2, and SMAD3" :type protein
-    :number 5 :items (mv2848 mv2849 mv2853 mv2841 mv2842))
-   (:var mv2848 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
-   (:var mv2849 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv2853 :isa bio-entity :name "STAAT3")
-   (:var mv2841 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
-   (:var mv2842 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN"))
+   (:var mv2824 :isa collection :raw-text "EGFR, SRF, STAAT3, JAK2, and SMAD3" :type protein
+    :number 5 :items (mv2818 mv2819 mv2823 mv2811 mv2812))
+   (:var mv2818 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
+   (:var mv2819 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv2823 :isa bio-entity :name "STAAT3")
+   (:var mv2811 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
+   (:var mv2812 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN"))
   ("What are the transcription factors that regulate EGFR, SRF, STAT3, JAK2, and SMAD3?"
-   (:var mv2860 :isa be :subject mv2859 :predicate mv2855 :present "PRESENT")
-   (:var mv2859 :isa what)
-   (:var mv2855 :isa transcription-factor :predication mv2863 :has-determiner "THE" :raw-text
+   (:var mv2830 :isa be :subject mv2829 :predicate mv2825 :present "PRESENT")
+   (:var mv2829 :isa what)
+   (:var mv2825 :isa transcription-factor :predication mv2833 :has-determiner "THE" :raw-text
     "transcription factors")
-   (:var mv2863 :isa regulate :agent mv2855 :that-rel t :object mv2867 :present "PRESENT" :raw-text
+   (:var mv2833 :isa regulate :agent mv2825 :that-rel t :object mv2837 :present "PRESENT" :raw-text
     "regulate")
-   (:var mv2867 :isa collection :raw-text "EGFR, SRF, STAT3, JAK2, and SMAD3" :type protein :number
-    5 :items (mv2864 mv2865 mv2856 mv2857 mv2858))
-   (:var mv2864 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
-   (:var mv2865 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv2856 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv2857 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
-   (:var mv2858 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN"))
+   (:var mv2837 :isa collection :raw-text "EGFR, SRF, STAT3, JAK2, and SMAD3" :type protein :number
+    5 :items (mv2834 mv2835 mv2826 mv2827 mv2828))
+   (:var mv2834 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
+   (:var mv2835 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv2826 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv2827 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
+   (:var mv2828 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN"))
   ("What are the upstream regulators of CCND1, FOXM1, DHFR, and KLF4?"
-   (:var mv2872 :isa be :subject mv2871 :predicate mv2876 :present "PRESENT")
-   (:var mv2871 :isa what)
-   (:var mv2876 :isa regulator :theme mv2880 :has-determiner "THE" :context mv2874 :raw-text
+   (:var mv2842 :isa be :subject mv2841 :predicate mv2846 :present "PRESENT")
+   (:var mv2841 :isa what)
+   (:var mv2846 :isa regulator :theme mv2850 :has-determiner "THE" :context mv2844 :raw-text
     "regulators")
-   (:var mv2880 :isa collection :raw-text "CCND1, FOXM1, DHFR, and KLF4" :type protein :number 4
-    :items (mv2868 mv2869 mv2878 mv2870))
-   (:var mv2868 :isa protein :raw-text "CCND1" :uid "UP:P24385" :name "CCND1_HUMAN")
-   (:var mv2869 :isa protein :raw-text "FOXM1" :uid "UP:Q08050" :name "FOXM1_HUMAN")
-   (:var mv2878 :isa protein :raw-text "DHFR" :uid "UP:P00374" :name "DYR_HUMAN")
-   (:var mv2870 :isa protein :raw-text "KLF4" :uid "UP:O43474" :name "KLF4_HUMAN")
-   (:var mv2874 :isa upstream-segment :raw-text "upstream"))
+   (:var mv2850 :isa collection :raw-text "CCND1, FOXM1, DHFR, and KLF4" :type protein :number 4
+    :items (mv2838 mv2839 mv2848 mv2840))
+   (:var mv2838 :isa protein :raw-text "CCND1" :uid "UP:P24385" :name "CCND1_HUMAN")
+   (:var mv2839 :isa protein :raw-text "FOXM1" :uid "UP:Q08050" :name "FOXM1_HUMAN")
+   (:var mv2848 :isa protein :raw-text "DHFR" :uid "UP:P00374" :name "DYR_HUMAN")
+   (:var mv2840 :isa protein :raw-text "KLF4" :uid "UP:O43474" :name "KLF4_HUMAN")
+   (:var mv2844 :isa upstream-segment :raw-text "upstream"))
   ("What cell cycle genes are regulated by FOS?"
-   (:var mv2889 :isa regulate :object mv2884 :agent mv2888 :present "PRESENT" :raw-text
+   (:var mv2859 :isa regulate :object mv2854 :agent mv2858 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv2884 :isa gene :has-determiner "WHAT" :cellular-process mv2882 :raw-text "genes")
-   (:var mv2882 :isa cellular-process :raw-text "cell cycle" :name "cell cycle" :uid "GO:0007049")
-   (:var mv2888 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv2854 :isa gene :has-determiner "WHAT" :cellular-process mv2852 :raw-text "genes")
+   (:var mv2852 :isa cellular-process :raw-text "cell cycle" :name "cell cycle" :uid "GO:0007049")
+   (:var mv2858 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("What does ERBB regulate?"
-   (:var mv2894 :isa regulate :object mv2891 :agent mv2893 :present "PRESENT" :raw-text "regulate")
-   (:var mv2891 :isa what)
-   (:var mv2893 :isa protein :raw-text "ERBB" :uid "UP:P00533" :name "EGFR_HUMAN"))
+   (:var mv2864 :isa regulate :object mv2861 :agent mv2863 :present "PRESENT" :raw-text "regulate")
+   (:var mv2861 :isa what)
+   (:var mv2863 :isa protein :raw-text "ERBB" :uid "UP:P00533" :name "EGFR_HUMAN"))
   ("What does it regulate in liver"
-   (:var mv2898 :isa regulate :object mv2895 :|agent-OR-cause| mv2897 :organ mv2900 :present
+   (:var mv2868 :isa regulate :object mv2865 :|agent-OR-cause| mv2867 :organ mv2870 :present
     "PRESENT" :raw-text "regulate")
-   (:var mv2895 :isa what) (:var mv2897 :isa pronoun/inanimate :word "it")
-   (:var mv2900 :isa liver))
+   (:var mv2865 :isa what) (:var mv2867 :isa pronoun/inanimate :word "it")
+   (:var mv2870 :isa liver))
   ("What does miR-20b-5p target"
-   (:var mv2906 :isa target :object mv2903 :agent mv2902 :present "PRESENT" :raw-text "target")
-   (:var mv2903 :isa what)
-   (:var mv2902 :isa micro-rna :raw-text "miR-20b-5p" :name "microRNA 20b-5pm" :uid
+   (:var mv2876 :isa target :object mv2873 :agent mv2872 :present "PRESENT" :raw-text "target")
+   (:var mv2873 :isa what)
+   (:var mv2872 :isa micro-rna :raw-text "miR-20b-5p" :name "microRNA 20b-5pm" :uid
     "MIMAT0001413"))
   ("What does p53 regulate?"
-   (:var mv2910 :isa regulate :object mv2908 :agent mv2907 :present "PRESENT" :raw-text "regulate")
-   (:var mv2908 :isa what)
-   (:var mv2907 :isa protein :raw-text "p53" :uid "UP:P04637" :name "P53_HUMAN"))
+   (:var mv2880 :isa regulate :object mv2878 :agent mv2877 :present "PRESENT" :raw-text "regulate")
+   (:var mv2878 :isa what)
+   (:var mv2877 :isa protein :raw-text "p53" :uid "UP:P04637" :name "P53_HUMAN"))
   ("What does rb1 regulate"
-   (:var mv2914 :isa regulate :object mv2912 :agent mv2911 :present "PRESENT" :raw-text "regulate")
-   (:var mv2912 :isa what)
-   (:var mv2911 :isa protein :raw-text "rb1" :uid "UP:P06400" :name "RB_HUMAN"))
+   (:var mv2884 :isa regulate :object mv2882 :agent mv2881 :present "PRESENT" :raw-text "regulate")
+   (:var mv2882 :isa what)
+   (:var mv2881 :isa protein :raw-text "rb1" :uid "UP:P06400" :name "RB_HUMAN"))
   ("What does smad2 regulate"
-   (:var mv2918 :isa regulate :object mv2916 :agent mv2915 :present "PRESENT" :raw-text "regulate")
-   (:var mv2916 :isa what)
-   (:var mv2915 :isa protein :raw-text "smad2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
+   (:var mv2888 :isa regulate :object mv2886 :agent mv2885 :present "PRESENT" :raw-text "regulate")
+   (:var mv2886 :isa what)
+   (:var mv2885 :isa protein :raw-text "smad2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
   ("What does stat regulate"
-   (:var mv2922 :isa regulate :object mv2919 :agent mv2921 :present "PRESENT" :raw-text "regulate")
-   (:var mv2919 :isa what)
-   (:var mv2921 :isa protein :raw-text "stat" :uid "UP:P35610" :name "SOAT1_HUMAN"))
+   (:var mv2892 :isa regulate :object mv2889 :agent mv2891 :present "PRESENT" :raw-text "regulate")
+   (:var mv2889 :isa what)
+   (:var mv2891 :isa protein :raw-text "stat" :uid "UP:P35610" :name "SOAT1_HUMAN"))
   ("What downregulates fzd8?"
-   (:var mv2925 :isa downregulate :|agent-OR-cause| mv2924 :object mv2923 :present "PRESENT"
+   (:var mv2895 :isa downregulate :|agent-OR-cause| mv2894 :object mv2893 :present "PRESENT"
     :raw-text "downregulates")
-   (:var mv2924 :isa what)
-   (:var mv2923 :isa protein :raw-text "fzd8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
+   (:var mv2894 :isa what)
+   (:var mv2893 :isa protein :raw-text "fzd8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
   ("What drug could I use to target pancreatic cancer?"
-   (:var mv2939 :isa bio-use :patient mv2928 :modal mv2929 :agent mv2930 :theme mv2938 :present
+   (:var mv2909 :isa bio-use :patient mv2898 :modal mv2899 :agent mv2900 :theme mv2908 :present
     "PRESENT" :raw-text "use")
-   (:var mv2928 :isa drug :has-determiner "WHAT" :raw-text "drug") (:var mv2929 :isa could)
-   (:var mv2930 :isa interlocutor :name "speaker")
-   (:var mv2938 :isa target :object mv2926 :raw-text "target")
-   (:var mv2926 :isa cancer :name "pancreatic cancer" :uid "TS-0739"))
+   (:var mv2898 :isa drug :has-determiner "WHAT" :raw-text "drug") (:var mv2899 :isa could)
+   (:var mv2900 :isa interlocutor :name "speaker")
+   (:var mv2908 :isa target :object mv2896 :raw-text "target")
+   (:var mv2896 :isa cancer :name "pancreatic cancer" :uid "TS-0739"))
   ("What drug should I use for pancreatic cancer?"
-   (:var mv2951 :isa bio-use :object mv2942 :modal mv2943 :agent mv2944 :disease mv2940 :present
+   (:var mv2921 :isa bio-use :object mv2912 :modal mv2913 :agent mv2914 :disease mv2910 :present
     "PRESENT" :raw-text "use")
-   (:var mv2942 :isa drug :has-determiner "WHAT" :raw-text "drug") (:var mv2943 :isa should)
-   (:var mv2944 :isa interlocutor :name "speaker")
-   (:var mv2940 :isa cancer :name "pancreatic cancer" :uid "TS-0739"))
+   (:var mv2912 :isa drug :has-determiner "WHAT" :raw-text "drug") (:var mv2913 :isa should)
+   (:var mv2914 :isa interlocutor :name "speaker")
+   (:var mv2910 :isa cancer :name "pancreatic cancer" :uid "TS-0739"))
   ("What drugs are inhibitors of GRB2?"
-   (:var mv2955 :isa be :subject mv2954 :predicate mv2956 :present "PRESENT")
-   (:var mv2954 :isa drug :has-determiner "WHAT" :raw-text "drugs")
-   (:var mv2956 :isa inhibitor :protein mv2952 :raw-text "inhibitors")
-   (:var mv2952 :isa protein :raw-text "GRB2" :uid "UP:P62993" :name "GRB2_HUMAN"))
+   (:var mv2925 :isa be :subject mv2924 :predicate mv2926 :present "PRESENT")
+   (:var mv2924 :isa drug :has-determiner "WHAT" :raw-text "drugs")
+   (:var mv2926 :isa inhibitor :protein mv2922 :raw-text "inhibitors")
+   (:var mv2922 :isa protein :raw-text "GRB2" :uid "UP:P62993" :name "GRB2_HUMAN"))
   ("What drugs inhibit MAP2K1?"
-   (:var mv2962 :isa inhibit :agent mv2961 :object mv2959 :present "PRESENT" :raw-text "inhibit")
-   (:var mv2961 :isa drug :has-determiner "WHAT" :raw-text "drugs")
-   (:var mv2959 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
+   (:var mv2932 :isa inhibit :agent mv2931 :object mv2929 :present "PRESENT" :raw-text "inhibit")
+   (:var mv2931 :isa drug :has-determiner "WHAT" :raw-text "drugs")
+   (:var mv2929 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
   ("What drugs regulate BRAF?"
-   (:var mv2965 :isa regulate :agent mv2964 :object mv2966 :present "PRESENT" :raw-text "regulate")
-   (:var mv2964 :isa drug :has-determiner "WHAT" :raw-text "drugs")
-   (:var mv2966 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv2935 :isa regulate :agent mv2934 :object mv2936 :present "PRESENT" :raw-text "regulate")
+   (:var mv2934 :isa drug :has-determiner "WHAT" :raw-text "drugs")
+   (:var mv2936 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("What drugs target BRAF?"
-   (:var mv2970 :isa target :agent mv2968 :object mv2971 :present "PRESENT" :raw-text "target")
-   (:var mv2968 :isa drug :has-determiner "WHAT" :raw-text "drugs")
-   (:var mv2971 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv2940 :isa target :agent mv2938 :object mv2941 :present "PRESENT" :raw-text "target")
+   (:var mv2938 :isa drug :has-determiner "WHAT" :raw-text "drugs")
+   (:var mv2941 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("What genes are downstream of stat3?"
-   (:var mv2975 :isa be :subject mv2974 :predicate mv2976 :present "PRESENT")
-   (:var mv2974 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv2976 :isa downstream-segment :pathwaycomponent mv2972 :raw-text "downstream")
-   (:var mv2972 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv2945 :isa be :subject mv2944 :predicate mv2946 :present "PRESENT")
+   (:var mv2944 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv2946 :isa downstream-segment :pathwaycomponent mv2942 :raw-text "downstream")
+   (:var mv2942 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What genes are in the MAPK signaling pathway?"
-   (:var mv2990 :isa copular-predication-of-pp :item mv2982 :value mv2989 :prep "IN" :predicate
-    mv2983)
-   (:var mv2982 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv2989 :isa gene :context mv2980 :has-determiner "WHAT" :raw-text "genes")
-   (:var mv2980 :isa signaling-pathway :has-determiner "THE" :modifier mv2986 :raw-text
+   (:var mv2960 :isa copular-predication-of-pp :item mv2952 :value mv2959 :prep "IN" :predicate
+    mv2953)
+   (:var mv2952 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv2959 :isa gene :context mv2950 :has-determiner "WHAT" :raw-text "genes")
+   (:var mv2950 :isa signaling-pathway :has-determiner "THE" :modifier mv2956 :raw-text
     "signaling pathway")
-   (:var mv2986 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
+   (:var mv2956 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -2224,15 +2223,15 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv2983 :isa be :present "PRESENT"))
+   (:var mv2953 :isa be :present "PRESENT"))
   ("What genes are in the MAPK signaling pathways?"
-   (:var mv3002 :isa copular-predication-of-pp :item mv2994 :value mv3001 :prep "IN" :predicate
-    mv2995)
-   (:var mv2994 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3001 :isa gene :context mv2992 :has-determiner "WHAT" :raw-text "genes")
-   (:var mv2992 :isa signaling-pathway :has-determiner "THE" :modifier mv2998 :raw-text
+   (:var mv2972 :isa copular-predication-of-pp :item mv2964 :value mv2971 :prep "IN" :predicate
+    mv2965)
+   (:var mv2964 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv2971 :isa gene :context mv2962 :has-determiner "WHAT" :raw-text "genes")
+   (:var mv2962 :isa signaling-pathway :has-determiner "THE" :modifier mv2968 :raw-text
     "signaling pathways")
-   (:var mv2998 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
+   (:var mv2968 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -2248,136 +2247,136 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv2995 :isa be :present "PRESENT"))
+   (:var mv2965 :isa be :present "PRESENT"))
   ("What genes are in the immune system pathway?"
-   (:var mv3014 :isa copular-predication-of-pp :item mv3006 :value mv3013 :prep "IN" :predicate
-    mv3007)
-   (:var mv3006 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3013 :isa gene :context mv3010 :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3010 :isa pathway :has-determiner "THE" :non-cellular-location mv3004 :raw-text
+   (:var mv2984 :isa copular-predication-of-pp :item mv2976 :value mv2983 :prep "IN" :predicate
+    mv2977)
+   (:var mv2976 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv2983 :isa gene :context mv2980 :has-determiner "WHAT" :raw-text "genes")
+   (:var mv2980 :isa pathway :has-determiner "THE" :non-cellular-location mv2974 :raw-text
     "pathway")
-   (:var mv3004 :isa bio-organ :name "immune system" :uid "UBERON:0002405")
-   (:var mv3007 :isa be :present "PRESENT"))
+   (:var mv2974 :isa bio-organ :name "immune system" :uid "UBERON:0002405")
+   (:var mv2977 :isa be :present "PRESENT"))
   ("What genes are in the prolactin signaling pathway?"
-   (:var mv3026 :isa copular-predication-of-pp :item mv3018 :value mv3025 :prep "IN" :predicate
-    mv3019)
-   (:var mv3018 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3025 :isa gene :context mv3016 :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3016 :isa signaling-pathway :has-determiner "THE" :modifier mv3022 :raw-text
+   (:var mv2996 :isa copular-predication-of-pp :item mv2988 :value mv2995 :prep "IN" :predicate
+    mv2989)
+   (:var mv2988 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv2995 :isa gene :context mv2986 :has-determiner "WHAT" :raw-text "genes")
+   (:var mv2986 :isa signaling-pathway :has-determiner "THE" :modifier mv2992 :raw-text
     "signaling pathway")
-   (:var mv3022 :isa protein :raw-text "prolactin" :uid "UP:P01236" :name "PRL_HUMAN")
-   (:var mv3019 :isa be :present "PRESENT"))
+   (:var mv2992 :isa protein :raw-text "prolactin" :uid "UP:P01236" :name "PRL_HUMAN")
+   (:var mv2989 :isa be :present "PRESENT"))
   ("What genes are involved in the IL-12 pathway?"
-   (:var mv3037 :isa involve :object mv3031 :|context-OR-theme| mv3036 :present "PRESENT")
-   (:var mv3031 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3036 :isa pathway :has-determiner "THE" :modifier mv3029 :raw-text "pathway")
-   (:var mv3029 :isa protein :raw-text "IL-12" :uid "NCIT:C20514" :name "NCIT:C20514"))
+   (:var mv3007 :isa involve :object mv3001 :|context-OR-theme| mv3006 :present "PRESENT")
+   (:var mv3001 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3006 :isa pathway :has-determiner "THE" :modifier mv2999 :raw-text "pathway")
+   (:var mv2999 :isa protein :raw-text "IL-12" :uid "NCIT:C20514" :name "NCIT:C20514"))
   ("What genes are involved in the Prolactin pathway?"
-   (:var mv3047 :isa involve :object mv3040 :|context-OR-theme| mv3046 :present "PRESENT")
-   (:var mv3040 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3046 :isa pathway :has-determiner "THE" :modifier mv3045 :raw-text "pathway")
-   (:var mv3045 :isa protein :raw-text "Prolactin" :uid "UP:P01236" :name "PRL_HUMAN"))
+   (:var mv3017 :isa involve :object mv3010 :|context-OR-theme| mv3016 :present "PRESENT")
+   (:var mv3010 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3016 :isa pathway :has-determiner "THE" :modifier mv3015 :raw-text "pathway")
+   (:var mv3015 :isa protein :raw-text "Prolactin" :uid "UP:P01236" :name "PRL_HUMAN"))
   ("What genes are involved in the il-12 pathway?"
-   (:var mv3057 :isa involve :object mv3051 :|context-OR-theme| mv3056 :present "PRESENT")
-   (:var mv3051 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3056 :isa pathway :has-determiner "THE" :modifier mv3049 :raw-text "pathway")
-   (:var mv3049 :isa protein-family :raw-text "il-12" :name "IL-12" :count 2 :family-members
+   (:var mv3027 :isa involve :object mv3021 :|context-OR-theme| mv3026 :present "PRESENT")
+   (:var mv3021 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3026 :isa pathway :has-determiner "THE" :modifier mv3019 :raw-text "pathway")
+   (:var mv3019 :isa protein-family :raw-text "il-12" :name "IL-12" :count 2 :family-members
     ((protein (:name "IL12B_HUMAN") (:uid "UP:P29460"))
      (protein (:name "IL12A_HUMAN") (:uid "UP:P29459")))
     :uid "FPLX:IL12"))
   ("What genes are involved in the immune system pathway?"
-   (:var mv3067 :isa involve :object mv3061 :|context-OR-theme| mv3066 :present "PRESENT")
-   (:var mv3061 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3066 :isa pathway :has-determiner "THE" :non-cellular-location mv3059 :raw-text
+   (:var mv3037 :isa involve :object mv3031 :|context-OR-theme| mv3036 :present "PRESENT")
+   (:var mv3031 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3036 :isa pathway :has-determiner "THE" :non-cellular-location mv3029 :raw-text
     "pathway")
-   (:var mv3059 :isa bio-organ :name "immune system" :uid "UBERON:0002405"))
+   (:var mv3029 :isa bio-organ :name "immune system" :uid "UBERON:0002405"))
   ("What genes are most frequently regulated by miR-335-5p, miR-155-5p and miR-145-5p?"
+   (:var mv3051 :isa regulate :object mv3043 :agent mv3050 :present "PRESENT" :superlative mv3045
+    :adverb mv3046 :raw-text "regulated")
+   (:var mv3043 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3050 :isa collection :raw-text "miR-335-5p, miR-155-5p and miR-145-5p" :type micro-rna
+    :number 3 :items (mv3039 mv3040 mv3041))
+   (:var mv3039 :isa micro-rna :raw-text "miR-335-5p" :name "microRNA 335-5p" :uid "MIMAT0000765")
+   (:var mv3040 :isa micro-rna :raw-text "miR-155-5p" :name "microRNA 155-5p" :uid "MIMAT0000646")
+   (:var mv3041 :isa micro-rna :raw-text "miR-145-5p" :name "microRNA 145-5p" :uid "MIMAT0000437")
+   (:var mv3045 :isa superlative-quantifier :name "most")
+   (:var mv3046 :isa frequently :name "frequently"))
+  ("What genes are most frequently regulated by miR-335-5p, miR-155-5p, miR-145-5p and miR-20a-5p?"
+   (:var mv3066 :isa regulate :object mv3058 :agent mv3065 :present "PRESENT" :superlative mv3060
+    :adverb mv3061 :raw-text "regulated")
+   (:var mv3058 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3065 :isa collection :raw-text "miR-335-5p, miR-155-5p, miR-145-5p and miR-20a-5p" :type
+    micro-rna :number 4 :items (mv3053 mv3054 mv3055 mv3056))
+   (:var mv3053 :isa micro-rna :raw-text "miR-335-5p" :name "microRNA 335-5p" :uid "MIMAT0000765")
+   (:var mv3054 :isa micro-rna :raw-text "miR-155-5p" :name "microRNA 155-5p" :uid "MIMAT0000646")
+   (:var mv3055 :isa micro-rna :raw-text "miR-145-5p" :name "microRNA 145-5p" :uid "MIMAT0000437")
+   (:var mv3056 :isa micro-rna :raw-text "miR-20a-5p" :name "microRNA 20a-5pm" :uid "MIMAT0000075")
+   (:var mv3060 :isa superlative-quantifier :name "most")
+   (:var mv3061 :isa frequently :name "frequently"))
+  ("What genes are most frequently regulated by miR-335-5p, miR-155-5p, miR-145-5p, and miR-20a-5p?"
    (:var mv3081 :isa regulate :object mv3073 :agent mv3080 :present "PRESENT" :superlative mv3075
     :adverb mv3076 :raw-text "regulated")
    (:var mv3073 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3080 :isa collection :raw-text "miR-335-5p, miR-155-5p and miR-145-5p" :type micro-rna
-    :number 3 :items (mv3069 mv3070 mv3071))
-   (:var mv3069 :isa micro-rna :raw-text "miR-335-5p" :name "microRNA 335-5p" :uid "MIMAT0000765")
-   (:var mv3070 :isa micro-rna :raw-text "miR-155-5p" :name "microRNA 155-5p" :uid "MIMAT0000646")
-   (:var mv3071 :isa micro-rna :raw-text "miR-145-5p" :name "microRNA 145-5p" :uid "MIMAT0000437")
+   (:var mv3080 :isa collection :raw-text "miR-335-5p, miR-155-5p, miR-145-5p, and miR-20a-5p"
+    :type micro-rna :number 4 :items (mv3068 mv3069 mv3070 mv3071))
+   (:var mv3068 :isa micro-rna :raw-text "miR-335-5p" :name "microRNA 335-5p" :uid "MIMAT0000765")
+   (:var mv3069 :isa micro-rna :raw-text "miR-155-5p" :name "microRNA 155-5p" :uid "MIMAT0000646")
+   (:var mv3070 :isa micro-rna :raw-text "miR-145-5p" :name "microRNA 145-5p" :uid "MIMAT0000437")
+   (:var mv3071 :isa micro-rna :raw-text "miR-20a-5p" :name "microRNA 20a-5pm" :uid "MIMAT0000075")
    (:var mv3075 :isa superlative-quantifier :name "most")
    (:var mv3076 :isa frequently :name "frequently"))
-  ("What genes are most frequently regulated by miR-335-5p, miR-155-5p, miR-145-5p and miR-20a-5p?"
-   (:var mv3096 :isa regulate :object mv3088 :agent mv3095 :present "PRESENT" :superlative mv3090
-    :adverb mv3091 :raw-text "regulated")
-   (:var mv3088 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3095 :isa collection :raw-text "miR-335-5p, miR-155-5p, miR-145-5p and miR-20a-5p" :type
-    micro-rna :number 4 :items (mv3083 mv3084 mv3085 mv3086))
-   (:var mv3083 :isa micro-rna :raw-text "miR-335-5p" :name "microRNA 335-5p" :uid "MIMAT0000765")
-   (:var mv3084 :isa micro-rna :raw-text "miR-155-5p" :name "microRNA 155-5p" :uid "MIMAT0000646")
-   (:var mv3085 :isa micro-rna :raw-text "miR-145-5p" :name "microRNA 145-5p" :uid "MIMAT0000437")
-   (:var mv3086 :isa micro-rna :raw-text "miR-20a-5p" :name "microRNA 20a-5pm" :uid "MIMAT0000075")
-   (:var mv3090 :isa superlative-quantifier :name "most")
-   (:var mv3091 :isa frequently :name "frequently"))
-  ("What genes are most frequently regulated by miR-335-5p, miR-155-5p, miR-145-5p, and miR-20a-5p?"
-   (:var mv3111 :isa regulate :object mv3103 :agent mv3110 :present "PRESENT" :superlative mv3105
-    :adverb mv3106 :raw-text "regulated")
-   (:var mv3103 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3110 :isa collection :raw-text "miR-335-5p, miR-155-5p, miR-145-5p, and miR-20a-5p"
-    :type micro-rna :number 4 :items (mv3098 mv3099 mv3100 mv3101))
-   (:var mv3098 :isa micro-rna :raw-text "miR-335-5p" :name "microRNA 335-5p" :uid "MIMAT0000765")
-   (:var mv3099 :isa micro-rna :raw-text "miR-155-5p" :name "microRNA 155-5p" :uid "MIMAT0000646")
-   (:var mv3100 :isa micro-rna :raw-text "miR-145-5p" :name "microRNA 145-5p" :uid "MIMAT0000437")
-   (:var mv3101 :isa micro-rna :raw-text "miR-20a-5p" :name "microRNA 20a-5pm" :uid "MIMAT0000075")
-   (:var mv3105 :isa superlative-quantifier :name "most")
-   (:var mv3106 :isa frequently :name "frequently"))
   ("What genes are regulated by FAKEPRTN"
-   (:var mv3119 :isa regulate :object mv3114 :agent mv3118 :present "PRESENT" :raw-text
+   (:var mv3089 :isa regulate :object mv3084 :agent mv3088 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv3114 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3118 :isa bio-entity :name "FAKEPRTN"))
+   (:var mv3084 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3088 :isa bio-entity :name "FAKEPRTN"))
   ("What genes are regulated by elk1 and srf?"
-   (:var mv3130 :isa regulate :object mv3123 :agent mv3129 :present "PRESENT" :raw-text
+   (:var mv3100 :isa regulate :object mv3093 :agent mv3099 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv3123 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3129 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv3121 mv3128))
-   (:var mv3121 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv3128 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv3093 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3099 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv3091 mv3098))
+   (:var mv3091 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv3098 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("What genes are regulated by miR-20b-5p and MIR-29B-1-5P?"
-   (:var mv3141 :isa regulate :object mv3135 :agent mv3140 :present "PRESENT" :raw-text
+   (:var mv3111 :isa regulate :object mv3105 :agent mv3110 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv3135 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3140 :isa collection :raw-text "miR-20b-5p and MIR-29B-1-5P" :type micro-rna :number 2
-    :items (mv3132 mv3133))
-   (:var mv3132 :isa micro-rna :raw-text "miR-20b-5p" :name "microRNA 20b-5pm" :uid "MIMAT0001413")
-   (:var mv3133 :isa micro-rna :raw-text "MIR-29B-1-5P" :name "microRNA 29b-1-5pm" :uid
+   (:var mv3105 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3110 :isa collection :raw-text "miR-20b-5p and MIR-29B-1-5P" :type micro-rna :number 2
+    :items (mv3102 mv3103))
+   (:var mv3102 :isa micro-rna :raw-text "miR-20b-5p" :name "microRNA 20b-5pm" :uid "MIMAT0001413")
+   (:var mv3103 :isa micro-rna :raw-text "MIR-29B-1-5P" :name "microRNA 29b-1-5pm" :uid
     "MIMAT0004514"))
   ("What genes are regulated by smda2"
-   (:var mv3151 :isa regulate :object mv3144 :agent mv3150 :present "PRESENT" :raw-text
+   (:var mv3121 :isa regulate :object mv3114 :agent mv3120 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv3144 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3150 :isa bio-entity :name "SMDA2"))
+   (:var mv3114 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3120 :isa bio-entity :name "SMDA2"))
   ("What genes are regulated by srf"
-   (:var mv3159 :isa regulate :object mv3154 :agent mv3158 :present "PRESENT" :raw-text
+   (:var mv3129 :isa regulate :object mv3124 :agent mv3128 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv3154 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3158 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv3124 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3128 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("What genes are regulated by stat3 and srf"
-   (:var mv3170 :isa regulate :object mv3163 :agent mv3169 :present "PRESENT" :raw-text
+   (:var mv3140 :isa regulate :object mv3133 :agent mv3139 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv3163 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3169 :isa collection :raw-text "stat3 and srf" :type protein :number 2 :items
-    (mv3161 mv3168))
-   (:var mv3161 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3168 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv3133 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3139 :isa collection :raw-text "stat3 and srf" :type protein :number 2 :items
+    (mv3131 mv3138))
+   (:var mv3131 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3138 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("What genes are targeted by lung cancer?"
-   (:var mv3178 :isa target :object mv3174 :cause mv3172 :present "PRESENT" :raw-text "targeted")
-   (:var mv3174 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3172 :isa cancer :name "lung cancer" :uid "TS-0571"))
+   (:var mv3148 :isa target :object mv3144 :cause mv3142 :present "PRESENT" :raw-text "targeted")
+   (:var mv3144 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3142 :isa cancer :name "lung cancer" :uid "TS-0571"))
   ("What genes are there in the MAPK signaling pathway?"
-   (:var mv3192 :isa copular-predication-of-pp :item mv3182 :value mv3191 :prep "IN" :predicate
-    mv3183)
-   (:var mv3182 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3191 :isa gene :context mv3180 :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3180 :isa signaling-pathway :has-determiner "THE" :modifier mv3188 :raw-text
+   (:var mv3162 :isa copular-predication-of-pp :item mv3152 :value mv3161 :prep "IN" :predicate
+    mv3153)
+   (:var mv3152 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3161 :isa gene :context mv3150 :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3150 :isa signaling-pathway :has-determiner "THE" :modifier mv3158 :raw-text
     "signaling pathway")
-   (:var mv3188 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
+   (:var mv3158 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -2393,13 +2392,13 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv3183 :isa be :present "PRESENT"))
+   (:var mv3153 :isa be :present "PRESENT"))
   ("What genes are used in the MAPK signaling pathway?"
-   (:var mv3202 :isa bio-use :object mv3196 :context mv3194 :present "PRESENT" :raw-text "used")
-   (:var mv3196 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3194 :isa signaling-pathway :has-determiner "THE" :modifier mv3201 :raw-text
+   (:var mv3172 :isa bio-use :object mv3166 :context mv3164 :present "PRESENT" :raw-text "used")
+   (:var mv3166 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3164 :isa signaling-pathway :has-determiner "THE" :modifier mv3171 :raw-text
     "signaling pathway")
-   (:var mv3201 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
+   (:var mv3171 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -2416,185 +2415,185 @@
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019"))
   ("What genes does lung cancer target?"
-   (:var mv3209 :isa target :object mv3206 :cause mv3204 :present "PRESENT" :raw-text "target")
-   (:var mv3206 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3204 :isa cancer :name "lung cancer" :uid "TS-0571"))
+   (:var mv3179 :isa target :object mv3176 :cause mv3174 :present "PRESENT" :raw-text "target")
+   (:var mv3176 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3174 :isa cancer :name "lung cancer" :uid "TS-0571"))
   ("What genes does miR-20b-5p target?"
-   (:var mv3215 :isa target :object mv3212 :agent mv3210 :present "PRESENT" :raw-text "target")
-   (:var mv3212 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3210 :isa micro-rna :raw-text "miR-20b-5p" :name "microRNA 20b-5pm" :uid
+   (:var mv3185 :isa target :object mv3182 :agent mv3180 :present "PRESENT" :raw-text "target")
+   (:var mv3182 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3180 :isa micro-rna :raw-text "miR-20b-5p" :name "microRNA 20b-5pm" :uid
     "MIMAT0001413"))
   ("What genes does miR-562 target?"
-   (:var mv3221 :isa target :object mv3218 :agent mv3216 :present "PRESENT" :raw-text "target")
-   (:var mv3218 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3216 :isa micro-rna :raw-text "miR-562" :name "microRNA 562" :uid "MI0003569"))
+   (:var mv3191 :isa target :object mv3188 :agent mv3186 :present "PRESENT" :raw-text "target")
+   (:var mv3188 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3186 :isa micro-rna :raw-text "miR-562" :name "microRNA 562" :uid "MI0003569"))
   ("What genes does smad2 upregulate?"
-   (:var mv3226 :isa upregulate :object mv3224 :agent mv3222 :present "PRESENT" :raw-text
+   (:var mv3196 :isa upregulate :object mv3194 :agent mv3192 :present "PRESENT" :raw-text
     "upregulate")
-   (:var mv3224 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3222 :isa protein :raw-text "smad2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
+   (:var mv3194 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3192 :isa protein :raw-text "smad2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
   ("What genes does stat3 regulate in liver cells?"
-   (:var mv3231 :isa regulate :object mv3229 :agent mv3227 :cell-type mv3234 :present "PRESENT"
+   (:var mv3201 :isa regulate :object mv3199 :agent mv3197 :cell-type mv3204 :present "PRESENT"
     :raw-text "regulate")
-   (:var mv3229 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3227 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3234 :isa cell-type :non-cellular-location mv3233) (:var mv3233 :isa liver))
+   (:var mv3199 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3197 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3204 :isa cell-type :non-cellular-location mv3203) (:var mv3203 :isa liver))
   ("What genes does stat3 regulate in liver?"
-   (:var mv3240 :isa regulate :object mv3238 :agent mv3236 :organ mv3242 :present "PRESENT"
+   (:var mv3210 :isa regulate :object mv3208 :agent mv3206 :organ mv3212 :present "PRESENT"
     :raw-text "regulate")
-   (:var mv3238 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3236 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3242 :isa liver))
+   (:var mv3208 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3206 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3212 :isa liver))
   ("What genes does stat3 regulate in lung?"
-   (:var mv3248 :isa regulate :object mv3246 :agent mv3244 :organ mv3250 :present "PRESENT"
+   (:var mv3218 :isa regulate :object mv3216 :agent mv3214 :organ mv3220 :present "PRESENT"
     :raw-text "regulate")
-   (:var mv3246 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3244 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3250 :isa lung))
+   (:var mv3216 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3214 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3220 :isa lung))
   ("What genes does stat3 regulate"
-   (:var mv3256 :isa regulate :object mv3254 :agent mv3252 :present "PRESENT" :raw-text "regulate")
-   (:var mv3254 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3252 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv3226 :isa regulate :object mv3224 :agent mv3222 :present "PRESENT" :raw-text "regulate")
+   (:var mv3224 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3222 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What genes in the liver does stat3 regulate?"
-   (:var mv3264 :isa regulate :object mv3259 :agent mv3257 :present "PRESENT" :raw-text "regulate")
-   (:var mv3259 :isa gene :organ mv3262 :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3262 :isa liver :has-determiner "THE")
-   (:var mv3257 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv3234 :isa regulate :object mv3229 :agent mv3227 :present "PRESENT" :raw-text "regulate")
+   (:var mv3229 :isa gene :organ mv3232 :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3232 :isa liver :has-determiner "THE")
+   (:var mv3227 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What genes is stat3 upstream from?"
-   (:var mv3273 :isa wh-question :statement mv3272 :var nil :wh what)
-   (:var mv3272 :isa from :word "from"))
+   (:var mv3243 :isa wh-question :statement mv3242 :var nil :wh what)
+   (:var mv3242 :isa from :word "from"))
   ("What genes is stat3 upstream of?"
-   (:var mv3277 :isa be :subject mv3276 :predicate mv3278 :present "PRESENT")
-   (:var mv3276 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3278 :isa upstream-segment :pathwaycomponent mv3276 :modifier mv3274 :raw-text
+   (:var mv3247 :isa be :subject mv3246 :predicate mv3248 :present "PRESENT")
+   (:var mv3246 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3248 :isa upstream-segment :pathwaycomponent mv3246 :modifier mv3244 :raw-text
     "upstream")
-   (:var mv3274 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv3244 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What genes regulated by FOS are kinases?"
-   (:var mv3286 :isa be :subject mv3282 :predicate mv3287 :present "PRESENT")
-   (:var mv3282 :isa gene :predication mv3283 :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3283 :isa regulate :object mv3282 :agent mv3285 :past "PAST" :raw-text "regulated")
-   (:var mv3285 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv3287 :isa kinase :raw-text "kinases"))
+   (:var mv3256 :isa be :subject mv3252 :predicate mv3257 :present "PRESENT")
+   (:var mv3252 :isa gene :predication mv3253 :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3253 :isa regulate :object mv3252 :agent mv3255 :past "PAST" :raw-text "regulated")
+   (:var mv3255 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv3257 :isa kinase :raw-text "kinases"))
   ("What genes regulated by stat3 are kinases?"
-   (:var mv3294 :isa be :subject mv3291 :predicate mv3295 :present "PRESENT")
-   (:var mv3291 :isa gene :predication mv3292 :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3292 :isa regulate :object mv3291 :agent mv3289 :past "PAST" :raw-text "regulated")
-   (:var mv3289 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3295 :isa kinase :raw-text "kinases"))
+   (:var mv3264 :isa be :subject mv3261 :predicate mv3265 :present "PRESENT")
+   (:var mv3261 :isa gene :predication mv3262 :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3262 :isa regulate :object mv3261 :agent mv3259 :past "PAST" :raw-text "regulated")
+   (:var mv3259 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3265 :isa kinase :raw-text "kinases"))
   ("What immune pathways involve KRAS and ELK1?"
-   (:var mv3301 :isa involve :theme mv3300 :object mv3304 :present "PRESENT")
-   (:var mv3300 :isa pathway :has-determiner "WHAT" :modifier mv3299 :raw-text "pathways")
-   (:var mv3299 :isa immune :name "immune")
-   (:var mv3304 :isa collection :raw-text "KRAS and ELK1" :type protein :number 2 :items
-    (mv3302 mv3297))
-   (:var mv3302 :isa protein :raw-text "KRAS" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv3297 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+   (:var mv3271 :isa involve :theme mv3270 :object mv3274 :present "PRESENT")
+   (:var mv3270 :isa pathway :has-determiner "WHAT" :modifier mv3269 :raw-text "pathways")
+   (:var mv3269 :isa immune :name "immune")
+   (:var mv3274 :isa collection :raw-text "KRAS and ELK1" :type protein :number 2 :items
+    (mv3272 mv3267))
+   (:var mv3272 :isa protein :raw-text "KRAS" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv3267 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
   ("What immune pathways involve SRF?"
-   (:var mv3308 :isa involve :theme mv3307 :object mv3309 :present "PRESENT")
-   (:var mv3307 :isa pathway :has-determiner "WHAT" :modifier mv3306 :raw-text "pathways")
-   (:var mv3306 :isa immune :name "immune")
-   (:var mv3309 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv3278 :isa involve :theme mv3277 :object mv3279 :present "PRESENT")
+   (:var mv3277 :isa pathway :has-determiner "WHAT" :modifier mv3276 :raw-text "pathways")
+   (:var mv3276 :isa immune :name "immune")
+   (:var mv3279 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("What immune pathways involve kras and elk1?"
-   (:var mv3314 :isa involve :theme mv3313 :object mv3317 :present "PRESENT")
-   (:var mv3313 :isa pathway :has-determiner "WHAT" :modifier mv3312 :raw-text "pathways")
-   (:var mv3312 :isa immune :name "immune")
-   (:var mv3317 :isa collection :raw-text "kras and elk1" :type protein :number 2 :items
-    (mv3315 mv3310))
-   (:var mv3315 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv3310 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+   (:var mv3284 :isa involve :theme mv3283 :object mv3287 :present "PRESENT")
+   (:var mv3283 :isa pathway :has-determiner "WHAT" :modifier mv3282 :raw-text "pathways")
+   (:var mv3282 :isa immune :name "immune")
+   (:var mv3287 :isa collection :raw-text "kras and elk1" :type protein :number 2 :items
+    (mv3285 mv3280))
+   (:var mv3285 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv3280 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
   ("What immune pathways involve tap1 and jak1?"
-   (:var mv3321 :isa involve :theme mv3320 :object mv3331 :present "PRESENT")
-   (:var mv3320 :isa pathway :has-determiner "WHAT" :modifier mv3319 :raw-text "pathways")
-   (:var mv3319 :isa immune :name "immune")
-   (:var mv3331 :isa collection :raw-text "tap1 and jak1" :type protein :number 2 :items
-    (mv3329 mv3330))
-   (:var mv3329 :isa protein :raw-text "tap1" :uid "UP:Q03518" :name "TAP1_HUMAN")
-   (:var mv3330 :isa protein :raw-text "jak1" :uid "UP:P23458" :name "JAK1_HUMAN"))
+   (:var mv3291 :isa involve :theme mv3290 :object mv3301 :present "PRESENT")
+   (:var mv3290 :isa pathway :has-determiner "WHAT" :modifier mv3289 :raw-text "pathways")
+   (:var mv3289 :isa immune :name "immune")
+   (:var mv3301 :isa collection :raw-text "tap1 and jak1" :type protein :number 2 :items
+    (mv3299 mv3300))
+   (:var mv3299 :isa protein :raw-text "tap1" :uid "UP:Q03518" :name "TAP1_HUMAN")
+   (:var mv3300 :isa protein :raw-text "jak1" :uid "UP:P23458" :name "JAK1_HUMAN"))
   ("What inhibits BRAF?"
-   (:var mv3333 :isa inhibit :|agent-OR-cause| mv3332 :object mv3334 :present "PRESENT" :raw-text
+   (:var mv3303 :isa inhibit :|agent-OR-cause| mv3302 :object mv3304 :present "PRESENT" :raw-text
     "inhibits")
-   (:var mv3332 :isa what)
-   (:var mv3334 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
-  ("What is STAT3?" (:var mv3337 :isa be :subject mv3336 :predicate mv3335 :present "PRESENT")
-   (:var mv3336 :isa what)
-   (:var mv3335 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
-  ("What is STAT?" (:var mv3339 :isa be :subject mv3338 :predicate mv3340 :present "PRESENT")
-   (:var mv3338 :isa what)
-   (:var mv3340 :isa protein :raw-text "STAT" :uid "UP:P35610" :name "SOAT1_HUMAN"))
+   (:var mv3302 :isa what)
+   (:var mv3304 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+  ("What is STAT3?" (:var mv3307 :isa be :subject mv3306 :predicate mv3305 :present "PRESENT")
+   (:var mv3306 :isa what)
+   (:var mv3305 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+  ("What is STAT?" (:var mv3309 :isa be :subject mv3308 :predicate mv3310 :present "PRESENT")
+   (:var mv3308 :isa what)
+   (:var mv3310 :isa protein :raw-text "STAT" :uid "UP:P35610" :name "SOAT1_HUMAN"))
   ("What is downstream of stat3?"
-   (:var mv3343 :isa be :subject mv3342 :predicate mv3344 :present "PRESENT")
-   (:var mv3342 :isa what)
-   (:var mv3344 :isa downstream-segment :pathwaycomponent mv3341 :raw-text "downstream")
-   (:var mv3341 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
-  ("What is erbb?" (:var mv3349 :isa be :subject mv3348 :predicate mv3350 :present "PRESENT")
-   (:var mv3348 :isa what)
-   (:var mv3350 :isa protein :raw-text "erbb" :uid "UP:P00533" :name "EGFR_HUMAN"))
-  ("What is errb?" (:var mv3352 :isa be :subject mv3351 :predicate mv3353 :present "PRESENT")
-   (:var mv3351 :isa what) (:var mv3353 :isa bio-entity :name "errb"))
+   (:var mv3313 :isa be :subject mv3312 :predicate mv3314 :present "PRESENT")
+   (:var mv3312 :isa what)
+   (:var mv3314 :isa downstream-segment :pathwaycomponent mv3311 :raw-text "downstream")
+   (:var mv3311 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+  ("What is erbb?" (:var mv3319 :isa be :subject mv3318 :predicate mv3320 :present "PRESENT")
+   (:var mv3318 :isa what)
+   (:var mv3320 :isa protein :raw-text "erbb" :uid "UP:P00533" :name "EGFR_HUMAN"))
+  ("What is errb?" (:var mv3322 :isa be :subject mv3321 :predicate mv3323 :present "PRESENT")
+   (:var mv3321 :isa what) (:var mv3323 :isa bio-entity :name "errb"))
   ("What is regulated by elk1"
-   (:var mv3359 :isa regulate :|affected-process-OR-object| mv3355 :agent mv3354 :present "PRESENT"
+   (:var mv3329 :isa regulate :|affected-process-OR-object| mv3325 :agent mv3324 :present "PRESENT"
     :raw-text "regulated")
-   (:var mv3355 :isa what)
-   (:var mv3354 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+   (:var mv3325 :isa what)
+   (:var mv3324 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
   ("What is the evidence that kras decreases frizzled8?"
-   (:var mv3363 :isa be :subject mv3362 :predicate mv3369 :present "PRESENT")
-   (:var mv3362 :isa what) (:var mv3369 :isa evidence :statement mv3368 :has-determiner "THE")
-   (:var mv3368 :isa decrease :agent mv3367 :object mv3361 :present "PRESENT" :raw-text
+   (:var mv3333 :isa be :subject mv3332 :predicate mv3339 :present "PRESENT")
+   (:var mv3332 :isa what) (:var mv3339 :isa evidence :statement mv3338 :has-determiner "THE")
+   (:var mv3338 :isa decrease :agent mv3337 :object mv3331 :present "PRESENT" :raw-text
     "decreases")
-   (:var mv3367 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv3361 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
+   (:var mv3337 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv3331 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
   ("What is the evidence that kras decreases the amount of frizzled8?"
-   (:var mv3372 :isa be :subject mv3371 :predicate mv3382 :present "PRESENT")
-   (:var mv3371 :isa what) (:var mv3382 :isa evidence :statement mv3377 :has-determiner "THE")
-   (:var mv3377 :isa decrease :agent mv3376 :|affected-process-OR-object| mv3379 :present "PRESENT"
+   (:var mv3342 :isa be :subject mv3341 :predicate mv3352 :present "PRESENT")
+   (:var mv3341 :isa what) (:var mv3352 :isa evidence :statement mv3347 :has-determiner "THE")
+   (:var mv3347 :isa decrease :agent mv3346 :|affected-process-OR-object| mv3349 :present "PRESENT"
     :raw-text "decreases")
-   (:var mv3376 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv3379 :isa bio-amount :measured-item mv3370 :has-determiner "THE" :raw-text "amount")
-   (:var mv3370 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
+   (:var mv3346 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv3349 :isa bio-amount :measured-item mv3340 :has-determiner "THE" :raw-text "amount")
+   (:var mv3340 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
   ("What is the target of Selumetinib?"
-   (:var mv3384 :isa be :subject mv3383 :predicate mv3386 :present "PRESENT")
-   (:var mv3383 :isa what)
-   (:var mv3386 :isa target-protein :agent mv3389 :has-determiner "THE" :raw-text "target")
-   (:var mv3389 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622"))
+   (:var mv3354 :isa be :subject mv3353 :predicate mv3356 :present "PRESENT")
+   (:var mv3353 :isa what)
+   (:var mv3356 :isa target-protein :agent mv3359 :has-determiner "THE" :raw-text "target")
+   (:var mv3359 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622"))
   ("What kinases does smad2 regulate"
-   (:var mv3395 :isa regulate :object mv3393 :agent mv3391 :present "PRESENT" :raw-text "regulate")
-   (:var mv3393 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
-   (:var mv3391 :isa protein :raw-text "smad2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
+   (:var mv3365 :isa regulate :object mv3363 :agent mv3361 :present "PRESENT" :raw-text "regulate")
+   (:var mv3363 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
+   (:var mv3361 :isa protein :raw-text "smad2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
   ("What miRNAs most frequently regulate EGFR, SRF, STAT3, JAK2, and SMAD3?"
-   (:var mv3403 :isa regulate :agent mv3400 :object mv3407 :present "PRESENT" :adverb mv3401
-    :adverb mv3402 :raw-text "regulate")
-   (:var mv3400 :isa micro-rna :has-determiner "WHAT" :raw-text "miRNAs")
-   (:var mv3407 :isa collection :raw-text "EGFR, SRF, STAT3, JAK2, and SMAD3" :type protein :number
-    5 :items (mv3404 mv3405 mv3396 mv3397 mv3398))
-   (:var mv3404 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
-   (:var mv3405 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv3396 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3397 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
-   (:var mv3398 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN")
-   (:var mv3401 :isa superlative-quantifier :name "most")
-   (:var mv3402 :isa frequently :name "frequently"))
+   (:var mv3373 :isa regulate :agent mv3370 :object mv3377 :present "PRESENT" :adverb mv3371
+    :adverb mv3372 :raw-text "regulate")
+   (:var mv3370 :isa micro-rna :has-determiner "WHAT" :raw-text "miRNAs")
+   (:var mv3377 :isa collection :raw-text "EGFR, SRF, STAT3, JAK2, and SMAD3" :type protein :number
+    5 :items (mv3374 mv3375 mv3366 mv3367 mv3368))
+   (:var mv3374 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
+   (:var mv3375 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv3366 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3367 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
+   (:var mv3368 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN")
+   (:var mv3371 :isa superlative-quantifier :name "most")
+   (:var mv3372 :isa frequently :name "frequently"))
   ("What miRNAs regulate EGFR, SRF, STAT3, JAK2, and SMAD3?"
-   (:var mv3413 :isa regulate :agent mv3412 :object mv3417 :present "PRESENT" :raw-text "regulate")
-   (:var mv3412 :isa micro-rna :has-determiner "WHAT" :raw-text "miRNAs")
-   (:var mv3417 :isa collection :raw-text "EGFR, SRF, STAT3, JAK2, and SMAD3" :type protein :number
-    5 :items (mv3414 mv3415 mv3408 mv3409 mv3410))
-   (:var mv3414 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
-   (:var mv3415 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv3408 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3409 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
-   (:var mv3410 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN"))
+   (:var mv3383 :isa regulate :agent mv3382 :object mv3387 :present "PRESENT" :raw-text "regulate")
+   (:var mv3382 :isa micro-rna :has-determiner "WHAT" :raw-text "miRNAs")
+   (:var mv3387 :isa collection :raw-text "EGFR, SRF, STAT3, JAK2, and SMAD3" :type protein :number
+    5 :items (mv3384 mv3385 mv3378 mv3379 mv3380))
+   (:var mv3384 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
+   (:var mv3385 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv3378 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3379 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
+   (:var mv3380 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN"))
   ("What micrornas are regulated by p53?"
-   (:var mv3424 :isa regulate :object mv3420 :agent mv3418 :present "PRESENT" :raw-text
+   (:var mv3394 :isa regulate :object mv3390 :agent mv3388 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv3420 :isa micro-rna :has-determiner "WHAT" :raw-text "micrornas")
-   (:var mv3418 :isa protein :raw-text "p53" :uid "UP:P04637" :name "P53_HUMAN"))
+   (:var mv3390 :isa micro-rna :has-determiner "WHAT" :raw-text "micrornas")
+   (:var mv3388 :isa protein :raw-text "p53" :uid "UP:P04637" :name "P53_HUMAN"))
   ("What micrornas regulate genes in the mapk signaling pathways"
-   (:var mv3429 :isa regulate :agent mv3428 :object mv3430 :present "PRESENT" :raw-text "regulate")
-   (:var mv3428 :isa micro-rna :has-determiner "WHAT" :raw-text "micrornas")
-   (:var mv3430 :isa gene :context mv3426 :raw-text "genes")
-   (:var mv3426 :isa signaling-pathway :has-determiner "THE" :modifier mv3433 :raw-text
+   (:var mv3399 :isa regulate :agent mv3398 :object mv3400 :present "PRESENT" :raw-text "regulate")
+   (:var mv3398 :isa micro-rna :has-determiner "WHAT" :raw-text "micrornas")
+   (:var mv3400 :isa gene :context mv3396 :raw-text "genes")
+   (:var mv3396 :isa signaling-pathway :has-determiner "THE" :modifier mv3403 :raw-text
     "signaling pathways")
-   (:var mv3433 :isa protein-family :raw-text "mapk" :name "mitogen activated protein kinase"
+   (:var mv3403 :isa protein-family :raw-text "mapk" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -2610,43 +2609,43 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019"))
-  ("What pahtways involve SRF?" (:var mv3439 :isa wh-question :statement mv3436 :var nil :wh what)
-   (:var mv3436 :isa involve :object mv3437 :present "PRESENT")
-   (:var mv3437 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+  ("What pahtways involve SRF?" (:var mv3409 :isa wh-question :statement mv3406 :var nil :wh what)
+   (:var mv3406 :isa involve :object mv3407 :present "PRESENT")
+   (:var mv3407 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("What pathways are common to STAT3 and SRF?"
-   (:var mv3450 :isa copular-predication :item mv3442 :value mv3444 :predicate mv3443)
-   (:var mv3442 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv3444 :isa common :theme mv3448)
-   (:var mv3448 :isa collection :raw-text "STAT3 and SRF" :type protein :number 2 :items
-    (mv3440 mv3447))
-   (:var mv3440 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3447 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv3443 :isa be :present "PRESENT"))
+   (:var mv3420 :isa copular-predication :item mv3412 :value mv3414 :predicate mv3413)
+   (:var mv3412 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv3414 :isa common :theme mv3418)
+   (:var mv3418 :isa collection :raw-text "STAT3 and SRF" :type protein :number 2 :items
+    (mv3410 mv3417))
+   (:var mv3410 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3417 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv3413 :isa be :present "PRESENT"))
   ("What pathways involve cfos?"
-   (:var mv3453 :isa involve :theme mv3452 :object mv3454 :present "PRESENT")
-   (:var mv3452 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv3454 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv3423 :isa involve :theme mv3422 :object mv3424 :present "PRESENT")
+   (:var mv3422 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv3424 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("What pathways involve kras and elk1?"
-   (:var mv3458 :isa involve :theme mv3457 :object mv3461 :present "PRESENT")
-   (:var mv3457 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv3461 :isa collection :raw-text "kras and elk1" :type protein :number 2 :items
-    (mv3459 mv3455))
-   (:var mv3459 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv3455 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+   (:var mv3428 :isa involve :theme mv3427 :object mv3431 :present "PRESENT")
+   (:var mv3427 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv3431 :isa collection :raw-text "kras and elk1" :type protein :number 2 :items
+    (mv3429 mv3425))
+   (:var mv3429 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv3425 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
   ("What pathways involve the SRF transcription factor?"
-   (:var mv3465 :isa involve :theme mv3464 :object mv3462 :present "PRESENT")
-   (:var mv3464 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv3462 :isa transcription-factor :has-determiner "THE" :modifier mv3467 :raw-text
+   (:var mv3435 :isa involve :theme mv3434 :object mv3432 :present "PRESENT")
+   (:var mv3434 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv3432 :isa transcription-factor :has-determiner "THE" :modifier mv3437 :raw-text
     "transcription factor")
-   (:var mv3467 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv3437 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("What pathways utilize srf and is srf a kinase"
-   (:var mv3478 :isa wh-question :statement mv3476 :var nil :wh what)
-   (:var mv3476 :isa kinase :has-determiner "A" :raw-text "kinase"))
+   (:var mv3448 :isa wh-question :statement mv3446 :var nil :wh what)
+   (:var mv3446 :isa kinase :has-determiner "A" :raw-text "kinase"))
   ("What proteins are in the MAPK family?"
-   (:var mv3489 :isa copular-predication-of-pp :item mv3480 :value mv3487 :prep mv3482 :predicate
-    mv3481)
-   (:var mv3480 :isa protein :has-determiner "WHAT" :raw-text "proteins")
-   (:var mv3487 :isa protein-family :has-determiner "THE" :raw-text "MAPK" :name
+   (:var mv3459 :isa copular-predication-of-pp :item mv3450 :value mv3457 :prep mv3452 :predicate
+    mv3451)
+   (:var mv3450 :isa protein :has-determiner "WHAT" :raw-text "proteins")
+   (:var mv3457 :isa protein-family :has-determiner "THE" :raw-text "MAPK" :name
     "mitogen activated protein kinase" :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -2662,183 +2661,183 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv3482 :isa in :word "in") (:var mv3481 :isa be :present "PRESENT"))
+   (:var mv3452 :isa in :word "in") (:var mv3451 :isa be :present "PRESENT"))
   ("What proteins are targeted by lung cancer?"
-   (:var mv3496 :isa target :object mv3492 :cause mv3490 :present "PRESENT" :raw-text "targeted")
-   (:var mv3492 :isa protein :has-determiner "WHAT" :raw-text "proteins")
-   (:var mv3490 :isa cancer :name "lung cancer" :uid "TS-0571"))
+   (:var mv3466 :isa target :object mv3462 :cause mv3460 :present "PRESENT" :raw-text "targeted")
+   (:var mv3462 :isa protein :has-determiner "WHAT" :raw-text "proteins")
+   (:var mv3460 :isa cancer :name "lung cancer" :uid "TS-0571"))
   ("What proteins does PLX-4720 target?"
-   (:var mv3503 :isa target :object mv3500 :agent mv3498 :present "PRESENT" :raw-text "target")
-   (:var mv3500 :isa protein :has-determiner "WHAT" :raw-text "proteins")
-   (:var mv3498 :isa drug :raw-text "PLX-4720" :name "PLX 4720" :uid "PCID:24180719"))
+   (:var mv3473 :isa target :object mv3470 :agent mv3468 :present "PRESENT" :raw-text "target")
+   (:var mv3470 :isa protein :has-determiner "WHAT" :raw-text "proteins")
+   (:var mv3468 :isa drug :raw-text "PLX-4720" :name "PLX 4720" :uid "PCID:24180719"))
   ("What proteins does lung cancer target?"
-   (:var mv3509 :isa target :object mv3506 :cause mv3504 :present "PRESENT" :raw-text "target")
-   (:var mv3506 :isa protein :has-determiner "WHAT" :raw-text "proteins")
-   (:var mv3504 :isa cancer :name "lung cancer" :uid "TS-0571"))
+   (:var mv3479 :isa target :object mv3476 :cause mv3474 :present "PRESENT" :raw-text "target")
+   (:var mv3476 :isa protein :has-determiner "WHAT" :raw-text "proteins")
+   (:var mv3474 :isa cancer :name "lung cancer" :uid "TS-0571"))
   ("What proteins does vemurafenib target?"
-   (:var mv3515 :isa target :object mv3511 :agent mv3513 :present "PRESENT" :raw-text "target")
-   (:var mv3511 :isa protein :has-determiner "WHAT" :raw-text "proteins")
-   (:var mv3513 :isa drug :raw-text "vemurafenib" :name "vemurafenib" :uid "PCID:42611257"))
+   (:var mv3485 :isa target :object mv3481 :agent mv3483 :present "PRESENT" :raw-text "target")
+   (:var mv3481 :isa protein :has-determiner "WHAT" :raw-text "proteins")
+   (:var mv3483 :isa drug :raw-text "vemurafenib" :name "vemurafenib" :uid "PCID:42611257"))
   ("What proteins might lead to the development of lung cancer?"
-   (:var mv3520 :isa lead :agent mv3518 :theme mv3523 :modal mv3519 :raw-text "lead")
-   (:var mv3518 :isa protein :has-determiner "WHAT" :raw-text "proteins")
-   (:var mv3523 :isa development :disease mv3516 :has-determiner "THE" :raw-text "development")
-   (:var mv3516 :isa cancer :name "lung cancer" :uid "TS-0571") (:var mv3519 :isa might))
+   (:var mv3490 :isa lead :agent mv3488 :theme mv3493 :modal mv3489 :raw-text "lead")
+   (:var mv3488 :isa protein :has-determiner "WHAT" :raw-text "proteins")
+   (:var mv3493 :isa development :disease mv3486 :has-determiner "THE" :raw-text "development")
+   (:var mv3486 :isa cancer :name "lung cancer" :uid "TS-0571") (:var mv3489 :isa might))
   ("What proteins might lead to the development of pancreatic cancer."
-   (:var mv3531 :isa lead :agent mv3529 :theme mv3534 :modal mv3530 :raw-text "lead")
-   (:var mv3529 :isa protein :has-determiner "WHAT" :raw-text "proteins")
-   (:var mv3534 :isa development :disease mv3527 :has-determiner "THE" :raw-text "development")
-   (:var mv3527 :isa cancer :name "pancreatic cancer" :uid "TS-0739") (:var mv3530 :isa might))
+   (:var mv3501 :isa lead :agent mv3499 :theme mv3504 :modal mv3500 :raw-text "lead")
+   (:var mv3499 :isa protein :has-determiner "WHAT" :raw-text "proteins")
+   (:var mv3504 :isa development :disease mv3497 :has-determiner "THE" :raw-text "development")
+   (:var mv3497 :isa cancer :name "pancreatic cancer" :uid "TS-0739") (:var mv3500 :isa might))
   ("What reactome pathways involve immune signaling?"
-   (:var mv3541 :isa involve :theme mv3540 :object mv3543 :present "PRESENT")
-   (:var mv3540 :isa pathway :has-determiner "WHAT" :modifier mv3539 :raw-text "pathways")
-   (:var mv3539 :isa database :name "Reactome" :uid "Reactome")
-   (:var mv3543 :isa signal :modifier mv3542 :raw-text "signaling")
-   (:var mv3542 :isa immune :name "immune"))
+   (:var mv3511 :isa involve :theme mv3510 :object mv3513 :present "PRESENT")
+   (:var mv3510 :isa pathway :has-determiner "WHAT" :modifier mv3509 :raw-text "pathways")
+   (:var mv3509 :isa database :name "Reactome" :uid "Reactome")
+   (:var mv3513 :isa signal :modifier mv3512 :raw-text "signaling")
+   (:var mv3512 :isa immune :name "immune"))
   ("What regulates HGF?"
-   (:var mv3545 :isa regulate :|agent-OR-cause| mv3544 :object mv3546 :present "PRESENT" :raw-text
+   (:var mv3515 :isa regulate :|agent-OR-cause| mv3514 :object mv3516 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv3544 :isa what)
-   (:var mv3546 :isa protein :raw-text "HGF" :uid "UP:P14210" :name "HGF_HUMAN"))
+   (:var mv3514 :isa what)
+   (:var mv3516 :isa protein :raw-text "HGF" :uid "UP:P14210" :name "HGF_HUMAN"))
   ("What regulates SMURF2?"
-   (:var mv3549 :isa regulate :|agent-OR-cause| mv3548 :object mv3547 :present "PRESENT" :raw-text
+   (:var mv3519 :isa regulate :|agent-OR-cause| mv3518 :object mv3517 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv3548 :isa what)
-   (:var mv3547 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
+   (:var mv3518 :isa what)
+   (:var mv3517 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
   ("What regulates smurf2 in liver"
-   (:var mv3552 :isa regulate :|agent-OR-cause| mv3551 :object mv3550 :present "PRESENT" :raw-text
+   (:var mv3522 :isa regulate :|agent-OR-cause| mv3521 :object mv3520 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv3551 :isa what)
-   (:var mv3550 :isa protein :organ mv3554 :raw-text "smurf2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN")
-   (:var mv3554 :isa liver))
+   (:var mv3521 :isa what)
+   (:var mv3520 :isa protein :organ mv3524 :raw-text "smurf2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN")
+   (:var mv3524 :isa liver))
   ("What signaling pathways are shared by RELA and ELK1?"
-   (:var mv3565 :isa share :object mv3556 :participant mv3564 :present "PRESENT" :raw-text
+   (:var mv3535 :isa share :object mv3526 :participant mv3534 :present "PRESENT" :raw-text
     "shared")
-   (:var mv3556 :isa signaling-pathway :has-determiner "WHAT" :raw-text "signaling pathways")
-   (:var mv3564 :isa collection :raw-text "RELA and ELK1" :type protein :number 2 :items
-    (mv3562 mv3557))
-   (:var mv3562 :isa protein :raw-text "RELA" :uid "UP:Q04206" :name "TF65_HUMAN")
-   (:var mv3557 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+   (:var mv3526 :isa signaling-pathway :has-determiner "WHAT" :raw-text "signaling pathways")
+   (:var mv3534 :isa collection :raw-text "RELA and ELK1" :type protein :number 2 :items
+    (mv3532 mv3527))
+   (:var mv3532 :isa protein :raw-text "RELA" :uid "UP:Q04206" :name "TF65_HUMAN")
+   (:var mv3527 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
   ("What signaling pathways are shared by STAT3 and SRF?"
-   (:var mv3576 :isa share :object mv3567 :participant mv3575 :present "PRESENT" :raw-text
+   (:var mv3546 :isa share :object mv3537 :participant mv3545 :present "PRESENT" :raw-text
     "shared")
-   (:var mv3567 :isa signaling-pathway :has-determiner "WHAT" :raw-text "signaling pathways")
-   (:var mv3575 :isa collection :raw-text "STAT3 and SRF" :type protein :number 2 :items
-    (mv3568 mv3574))
-   (:var mv3568 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3574 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv3537 :isa signaling-pathway :has-determiner "WHAT" :raw-text "signaling pathways")
+   (:var mv3545 :isa collection :raw-text "STAT3 and SRF" :type protein :number 2 :items
+    (mv3538 mv3544))
+   (:var mv3538 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3544 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("What signaling pathways are shared by STAT3, SOCS3 and SRF?"
-   (:var mv3588 :isa share :object mv3578 :participant mv3587 :present "PRESENT" :raw-text
+   (:var mv3558 :isa share :object mv3548 :participant mv3557 :present "PRESENT" :raw-text
     "shared")
-   (:var mv3578 :isa signaling-pathway :has-determiner "WHAT" :raw-text "signaling pathways")
-   (:var mv3587 :isa collection :raw-text "STAT3, SOCS3 and SRF" :type protein :number 3 :items
-    (mv3579 mv3580 mv3586))
-   (:var mv3579 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3580 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
-   (:var mv3586 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
-  ("What tissues is STAT3 expressed in?" (:var mv3592 :isa tissue :has-determiner "WHAT"))
+   (:var mv3548 :isa signaling-pathway :has-determiner "WHAT" :raw-text "signaling pathways")
+   (:var mv3557 :isa collection :raw-text "STAT3, SOCS3 and SRF" :type protein :number 3 :items
+    (mv3549 mv3550 mv3556))
+   (:var mv3549 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3550 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
+   (:var mv3556 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+  ("What tissues is STAT3 expressed in?" (:var mv3562 :isa tissue :has-determiner "WHAT"))
   ("What transcription factor produces SMURF2?"
-   (:var mv3599 :isa bio-produce :agent mv3596 :object mv3597 :present "PRESENT" :raw-text
+   (:var mv3569 :isa bio-produce :agent mv3566 :object mv3567 :present "PRESENT" :raw-text
     "produces")
-   (:var mv3596 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factor")
-   (:var mv3597 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
+   (:var mv3566 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factor")
+   (:var mv3567 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
   ("What transcription factor transcribes SMURF2?"
-   (:var mv3603 :isa transcribe :agent mv3600 :object mv3601 :present "PRESENT" :raw-text
+   (:var mv3573 :isa transcribe :agent mv3570 :object mv3571 :present "PRESENT" :raw-text
     "transcribes")
-   (:var mv3600 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factor")
-   (:var mv3601 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
+   (:var mv3570 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factor")
+   (:var mv3571 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
   ("What transcription factors are common to the STAT3, SOCS3, IFNG, FOXO3, and CREB5 genes?"
-   (:var mv3619 :isa copular-predication :item mv3604 :value mv3611 :predicate mv3610)
-   (:var mv3604 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv3611 :isa common :theme mv3616)
-   (:var mv3616 :isa gene :has-determiner "THE" :expresses mv3617 :raw-text "genes")
-   (:var mv3617 :isa collection :raw-text "STAT3, SOCS3, IFNG, FOXO3, and CREB5" :type protein
-    :number 5 :items (mv3605 mv3606 mv3614 mv3607 mv3608))
-   (:var mv3605 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3606 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
-   (:var mv3614 :isa protein :raw-text "IFNG" :uid "UP:P01579" :name "IFNG_HUMAN")
-   (:var mv3607 :isa protein :raw-text "FOXO3" :uid "UP:O43524" :name "FOXO3_HUMAN")
-   (:var mv3608 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN")
-   (:var mv3610 :isa be :present "PRESENT"))
+   (:var mv3589 :isa copular-predication :item mv3574 :value mv3581 :predicate mv3580)
+   (:var mv3574 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv3581 :isa common :theme mv3586)
+   (:var mv3586 :isa gene :has-determiner "THE" :expresses mv3587 :raw-text "genes")
+   (:var mv3587 :isa collection :raw-text "STAT3, SOCS3, IFNG, FOXO3, and CREB5" :type protein
+    :number 5 :items (mv3575 mv3576 mv3584 mv3577 mv3578))
+   (:var mv3575 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3576 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
+   (:var mv3584 :isa protein :raw-text "IFNG" :uid "UP:P01579" :name "IFNG_HUMAN")
+   (:var mv3577 :isa protein :raw-text "FOXO3" :uid "UP:O43524" :name "FOXO3_HUMAN")
+   (:var mv3578 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN")
+   (:var mv3580 :isa be :present "PRESENT"))
   ("What transcription factors are common to the STAT3, SOCS3, and CREB5 genes?"
-   (:var mv3633 :isa copular-predication :item mv3620 :value mv3626 :predicate mv3625)
-   (:var mv3620 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv3626 :isa common :theme mv3630)
+   (:var mv3603 :isa copular-predication :item mv3590 :value mv3596 :predicate mv3595)
+   (:var mv3590 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv3596 :isa common :theme mv3600)
+   (:var mv3600 :isa gene :has-determiner "THE" :expresses mv3601 :raw-text "genes")
+   (:var mv3601 :isa collection :raw-text "STAT3, SOCS3, and CREB5" :type protein :number 3 :items
+    (mv3591 mv3592 mv3593))
+   (:var mv3591 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3592 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
+   (:var mv3593 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN")
+   (:var mv3595 :isa be :present "PRESENT"))
+  ("What genes does stat3 regulate?"
+   (:var mv3608 :isa regulate :object mv3606 :agent mv3604 :present "PRESENT" :raw-text "regulate")
+   (:var mv3606 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv3604 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+  ("What transcription factors are common to these genes?"
+   (:var mv3617 :isa copular-predication :item mv3609 :value mv3612 :predicate mv3611)
+   (:var mv3609 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv3612 :isa common :theme mv3615)
+   (:var mv3615 :isa gene :has-determiner "THESE" :raw-text "genes")
+   (:var mv3611 :isa be :present "PRESENT"))
+  ("What transcription factors are in common to the STAT3, SOCS3, IFNG, FOXO3, and CREB5 genes?"
+   (:var mv3633 :isa copular-predication :item mv3618 :value mv3619 :predicate mv3625)
+   (:var mv3618 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv3619 :isa in-common :theme mv3630)
    (:var mv3630 :isa gene :has-determiner "THE" :expresses mv3631 :raw-text "genes")
-   (:var mv3631 :isa collection :raw-text "STAT3, SOCS3, and CREB5" :type protein :number 3 :items
-    (mv3621 mv3622 mv3623))
-   (:var mv3621 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3622 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
+   (:var mv3631 :isa collection :raw-text "STAT3, SOCS3, IFNG, FOXO3, and CREB5" :type protein
+    :number 5 :items (mv3620 mv3621 mv3628 mv3622 mv3623))
+   (:var mv3620 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3621 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
+   (:var mv3628 :isa protein :raw-text "IFNG" :uid "UP:P01579" :name "IFNG_HUMAN")
+   (:var mv3622 :isa protein :raw-text "FOXO3" :uid "UP:O43524" :name "FOXO3_HUMAN")
    (:var mv3623 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN")
    (:var mv3625 :isa be :present "PRESENT"))
-  ("What genes does stat3 regulate?"
-   (:var mv3638 :isa regulate :object mv3636 :agent mv3634 :present "PRESENT" :raw-text "regulate")
-   (:var mv3636 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv3634 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
-  ("What transcription factors are common to these genes?"
-   (:var mv3647 :isa copular-predication :item mv3639 :value mv3642 :predicate mv3641)
-   (:var mv3639 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv3642 :isa common :theme mv3645)
-   (:var mv3645 :isa gene :has-determiner "THESE" :raw-text "genes")
-   (:var mv3641 :isa be :present "PRESENT"))
-  ("What transcription factors are in common to the STAT3, SOCS3, IFNG, FOXO3, and CREB5 genes?"
-   (:var mv3663 :isa copular-predication :item mv3648 :value mv3649 :predicate mv3655)
-   (:var mv3648 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv3649 :isa in-common :theme mv3660)
-   (:var mv3660 :isa gene :has-determiner "THE" :expresses mv3661 :raw-text "genes")
-   (:var mv3661 :isa collection :raw-text "STAT3, SOCS3, IFNG, FOXO3, and CREB5" :type protein
-    :number 5 :items (mv3650 mv3651 mv3658 mv3652 mv3653))
-   (:var mv3650 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3651 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
-   (:var mv3658 :isa protein :raw-text "IFNG" :uid "UP:P01579" :name "IFNG_HUMAN")
-   (:var mv3652 :isa protein :raw-text "FOXO3" :uid "UP:O43524" :name "FOXO3_HUMAN")
-   (:var mv3653 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN")
-   (:var mv3655 :isa be :present "PRESENT"))
   ("What transcription factors are in common to the STAT3, SOCS3, and CREB5 genes?"
-   (:var mv3677 :isa copular-predication :item mv3664 :value mv3665 :predicate mv3670)
-   (:var mv3664 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv3665 :isa in-common :theme mv3674)
-   (:var mv3674 :isa gene :has-determiner "THE" :expresses mv3675 :raw-text "genes")
-   (:var mv3675 :isa collection :raw-text "STAT3, SOCS3, and CREB5" :type protein :number 3 :items
-    (mv3666 mv3667 mv3668))
-   (:var mv3666 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3667 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
-   (:var mv3668 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN")
-   (:var mv3670 :isa be :present "PRESENT"))
+   (:var mv3647 :isa copular-predication :item mv3634 :value mv3635 :predicate mv3640)
+   (:var mv3634 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv3635 :isa in-common :theme mv3644)
+   (:var mv3644 :isa gene :has-determiner "THE" :expresses mv3645 :raw-text "genes")
+   (:var mv3645 :isa collection :raw-text "STAT3, SOCS3, and CREB5" :type protein :number 3 :items
+    (mv3636 mv3637 mv3638))
+   (:var mv3636 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3637 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
+   (:var mv3638 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN")
+   (:var mv3640 :isa be :present "PRESENT"))
   ("What transcription factors are regulators of SMURF2 in liver?"
-   (:var mv3681 :isa be :subject mv3678 :predicate mv3682 :present "PRESENT")
-   (:var mv3678 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv3682 :isa regulator :theme mv3679 :raw-text "regulators")
-   (:var mv3679 :isa protein :organ mv3685 :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN")
-   (:var mv3685 :isa liver))
+   (:var mv3651 :isa be :subject mv3648 :predicate mv3652 :present "PRESENT")
+   (:var mv3648 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv3652 :isa regulator :theme mv3649 :raw-text "regulators")
+   (:var mv3649 :isa protein :organ mv3655 :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN")
+   (:var mv3655 :isa liver))
   ("What transcription factors are regulators of SMURF2?"
-   (:var mv3691 :isa be :subject mv3688 :predicate mv3692 :present "PRESENT")
-   (:var mv3688 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv3692 :isa regulator :theme mv3689 :raw-text "regulators")
-   (:var mv3689 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
+   (:var mv3661 :isa be :subject mv3658 :predicate mv3662 :present "PRESENT")
+   (:var mv3658 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv3662 :isa regulator :theme mv3659 :raw-text "regulators")
+   (:var mv3659 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
   ("What transcription factors are shared by the SRF, HRAS, and elk1 genes?"
-   (:var mv3707 :isa share :object mv3695 :participant mv3705 :present "PRESENT" :raw-text
+   (:var mv3677 :isa share :object mv3665 :participant mv3675 :present "PRESENT" :raw-text
     "shared")
-   (:var mv3695 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv3705 :isa gene :has-determiner "THE" :expresses mv3706 :raw-text "genes")
-   (:var mv3706 :isa collection :raw-text "SRF, HRAS, and elk1" :type protein :number 3 :items
-    (mv3702 mv3703 mv3696))
-   (:var mv3702 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv3703 :isa protein :raw-text "HRAS" :uid "UP:P01112" :name "RASH_HUMAN")
-   (:var mv3696 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+   (:var mv3665 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv3675 :isa gene :has-determiner "THE" :expresses mv3676 :raw-text "genes")
+   (:var mv3676 :isa collection :raw-text "SRF, HRAS, and elk1" :type protein :number 3 :items
+    (mv3672 mv3673 mv3666))
+   (:var mv3672 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv3673 :isa protein :raw-text "HRAS" :uid "UP:P01112" :name "RASH_HUMAN")
+   (:var mv3666 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
   ("What transcription factors regulate SMURF2 in liver?"
-   (:var mv3712 :isa regulate :agent mv3709 :object mv3710 :present "PRESENT" :raw-text "regulate")
-   (:var mv3709 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv3710 :isa protein :organ mv3714 :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN")
-   (:var mv3714 :isa liver))
+   (:var mv3682 :isa regulate :agent mv3679 :object mv3680 :present "PRESENT" :raw-text "regulate")
+   (:var mv3679 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv3680 :isa protein :organ mv3684 :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN")
+   (:var mv3684 :isa liver))
   ("What transcription factors regulate ZEB1?"
-   (:var mv3719 :isa regulate :agent mv3716 :object mv3717 :present "PRESENT" :raw-text "regulate")
-   (:var mv3716 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv3717 :isa protein :raw-text "ZEB1" :uid "UP:P37275" :name "ZEB1_HUMAN"))
+   (:var mv3689 :isa regulate :agent mv3686 :object mv3687 :present "PRESENT" :raw-text "regulate")
+   (:var mv3686 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv3687 :isa protein :raw-text "ZEB1" :uid "UP:P37275" :name "ZEB1_HUMAN"))
   ("What transcription factors regulate erk"
-   (:var mv3722 :isa regulate :agent mv3720 :object mv3723 :present "PRESENT" :raw-text "regulate")
-   (:var mv3720 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv3723 :isa protein-family :raw-text "erk" :name "ERK" :count 7 :family-members
+   (:var mv3692 :isa regulate :agent mv3690 :object mv3693 :present "PRESENT" :raw-text "regulate")
+   (:var mv3690 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv3693 :isa protein-family :raw-text "erk" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -2848,12 +2847,12 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("What transcription factors regulate genes in the mapk signaling pathwya"
-   (:var mv3726 :isa regulate :agent mv3724 :theme mv3732 :object mv3727 :present "PRESENT"
+   (:var mv3696 :isa regulate :agent mv3694 :theme mv3702 :object mv3697 :present "PRESENT"
     :raw-text "regulate")
-   (:var mv3724 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv3732 :isa bio-entity :has-determiner "THE" :modifier mv3730 :cellular-process mv3731
+   (:var mv3694 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv3702 :isa bio-entity :has-determiner "THE" :modifier mv3700 :cellular-process mv3701
     :name "pathwya")
-   (:var mv3730 :isa protein-family :raw-text "mapk" :name "mitogen activated protein kinase"
+   (:var mv3700 :isa protein-family :raw-text "mapk" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -2869,240 +2868,240 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv3731 :isa signal :raw-text "signaling") (:var mv3727 :isa gene :raw-text "genes"))
+   (:var mv3701 :isa signal :raw-text "signaling") (:var mv3697 :isa gene :raw-text "genes"))
   ("What transcription factors regulated frizzled8?"
-   (:var mv3735 :isa protein :has-determiner "WHAT" :predication mv3737 :raw-text "frizzled8" :uid
+   (:var mv3705 :isa protein :has-determiner "WHAT" :predication mv3707 :raw-text "frizzled8" :uid
     "UP:Q9H461" :name "FZD8_HUMAN")
-   (:var mv3737 :isa regulate :object mv3735 :agent mv3734 :raw-text "regulated")
-   (:var mv3734 :isa transcription-factor :raw-text "transcription factors"))
+   (:var mv3707 :isa regulate :object mv3705 :agent mv3704 :raw-text "regulated")
+   (:var mv3704 :isa transcription-factor :raw-text "transcription factors"))
   ("What transcription factors transcribe SMURF2?"
-   (:var mv3741 :isa transcribe :agent mv3738 :object mv3739 :present "PRESENT" :raw-text
+   (:var mv3711 :isa transcribe :agent mv3708 :object mv3709 :present "PRESENT" :raw-text
     "transcribe")
-   (:var mv3738 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv3739 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
+   (:var mv3708 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv3709 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
   ("What upregulates fzd8?"
-   (:var mv3744 :isa upregulate :|agent-OR-cause| mv3743 :object mv3742 :present "PRESENT"
+   (:var mv3714 :isa upregulate :|agent-OR-cause| mv3713 :object mv3712 :present "PRESENT"
     :raw-text "upregulates")
-   (:var mv3743 :isa what)
-   (:var mv3742 :isa protein :raw-text "fzd8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
+   (:var mv3713 :isa what)
+   (:var mv3712 :isa protein :raw-text "fzd8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
   ("Where is STAT3 expressed?"
-   (:var mv3750 :isa gene-transcript-express :location mv3746 :object mv3745 :past "PAST" :raw-text
+   (:var mv3720 :isa gene-transcript-express :location mv3716 :object mv3715 :past "PAST" :raw-text
     "expressed")
-   (:var mv3746 :isa where)
-   (:var mv3745 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv3716 :isa where)
+   (:var mv3715 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("Which KEGG pathways involve SRF?"
-   (:var mv3754 :isa involve :theme mv3753 :object mv3755 :present "PRESENT")
-   (:var mv3753 :isa pathway :has-determiner "WHICH" :modifier mv3752 :raw-text "pathways")
-   (:var mv3752 :isa database :name "KEGG" :uid "KEGG")
-   (:var mv3755 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv3724 :isa involve :theme mv3723 :object mv3725 :present "PRESENT")
+   (:var mv3723 :isa pathway :has-determiner "WHICH" :modifier mv3722 :raw-text "pathways")
+   (:var mv3722 :isa database :name "KEGG" :uid "KEGG")
+   (:var mv3725 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("Which KEGG pathways use SRF?"
-   (:var mv3760 :isa bio-use :agent mv3758 :object mv3761 :present "PRESENT" :raw-text "use")
-   (:var mv3758 :isa pathway :has-determiner "WHICH" :modifier mv3757 :raw-text "pathways")
-   (:var mv3757 :isa database :name "KEGG" :uid "KEGG")
-   (:var mv3761 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv3730 :isa bio-use :agent mv3728 :object mv3731 :present "PRESENT" :raw-text "use")
+   (:var mv3728 :isa pathway :has-determiner "WHICH" :modifier mv3727 :raw-text "pathways")
+   (:var mv3727 :isa database :name "KEGG" :uid "KEGG")
+   (:var mv3731 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("What transcription factors regulate frizzled8?"
-   (:var mv3765 :isa regulate :agent mv3762 :object mv3763 :present "PRESENT" :raw-text "regulate")
-   (:var mv3762 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv3763 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
+   (:var mv3735 :isa regulate :agent mv3732 :object mv3733 :present "PRESENT" :raw-text "regulate")
+   (:var mv3732 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv3733 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
   ("Which also regulate srf"
-   (:var mv3769 :isa regulate :|agent-OR-cause| mv3766 :object mv3770 :present "PRESENT" :adverb
-    mv3767 :raw-text "regulate")
-   (:var mv3766 :isa which)
-   (:var mv3770 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv3767 :isa also :name "also"))
+   (:var mv3739 :isa regulate :|agent-OR-cause| mv3736 :object mv3740 :present "PRESENT" :adverb
+    mv3737 :raw-text "regulate")
+   (:var mv3736 :isa which)
+   (:var mv3740 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv3737 :isa also :name "also"))
   ("Which apoptotic genes are regulated by stat3?"
-   (:var mv3779 :isa regulate :object mv3775 :agent mv3771 :present "PRESENT" :raw-text
+   (:var mv3749 :isa regulate :object mv3745 :agent mv3741 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv3775 :isa gene :has-determiner "WHICH" :cellular-process mv3773 :raw-text "genes")
-   (:var mv3773 :isa apoptosis :raw-text "apoptotic")
-   (:var mv3771 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv3745 :isa gene :has-determiner "WHICH" :cellular-process mv3743 :raw-text "genes")
+   (:var mv3743 :isa apoptosis :raw-text "apoptotic")
+   (:var mv3741 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("Which apoptotic genes is stat3 upstream of?"
-   (:var mv3786 :isa be :subject mv3785 :predicate mv3787 :present "PRESENT")
-   (:var mv3785 :isa gene :has-determiner "WHICH" :cellular-process mv3783 :raw-text "genes")
-   (:var mv3783 :isa apoptosis :raw-text "apoptotic")
-   (:var mv3787 :isa upstream-segment :pathwaycomponent mv3785 :modifier mv3781 :raw-text
+   (:var mv3756 :isa be :subject mv3755 :predicate mv3757 :present "PRESENT")
+   (:var mv3755 :isa gene :has-determiner "WHICH" :cellular-process mv3753 :raw-text "genes")
+   (:var mv3753 :isa apoptosis :raw-text "apoptotic")
+   (:var mv3757 :isa upstream-segment :pathwaycomponent mv3755 :modifier mv3751 :raw-text
     "upstream")
-   (:var mv3781 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv3751 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("Which genes are targeted by STAT3?"
-   (:var mv3796 :isa target :object mv3792 :agent mv3790 :present "PRESENT" :raw-text "targeted")
-   (:var mv3792 :isa gene :has-determiner "WHICH" :raw-text "genes")
-   (:var mv3790 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv3766 :isa target :object mv3762 :agent mv3760 :present "PRESENT" :raw-text "targeted")
+   (:var mv3762 :isa gene :has-determiner "WHICH" :raw-text "genes")
+   (:var mv3760 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("Which genes regulated by stat3 are kinases?"
-   (:var mv3803 :isa be :subject mv3800 :predicate mv3804 :present "PRESENT")
-   (:var mv3800 :isa gene :predication mv3801 :has-determiner "WHICH" :raw-text "genes")
-   (:var mv3801 :isa regulate :object mv3800 :agent mv3798 :past "PAST" :raw-text "regulated")
-   (:var mv3798 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3804 :isa kinase :raw-text "kinases"))
+   (:var mv3773 :isa be :subject mv3770 :predicate mv3774 :present "PRESENT")
+   (:var mv3770 :isa gene :predication mv3771 :has-determiner "WHICH" :raw-text "genes")
+   (:var mv3771 :isa regulate :object mv3770 :agent mv3768 :past "PAST" :raw-text "regulated")
+   (:var mv3768 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3774 :isa kinase :raw-text "kinases"))
   ("Which immune pathways are shared by STAT3, SOCS3, IFNG, FOXO3, and CREB5 genes?"
-   (:var mv3820 :isa share :object mv3812 :participant mv3818 :present "PRESENT" :raw-text
+   (:var mv3790 :isa share :object mv3782 :participant mv3788 :present "PRESENT" :raw-text
     "shared")
-   (:var mv3812 :isa pathway :has-determiner "WHICH" :modifier mv3811 :raw-text "pathways")
-   (:var mv3811 :isa immune :name "immune")
-   (:var mv3818 :isa gene :expresses mv3819 :raw-text "genes")
-   (:var mv3819 :isa collection :raw-text "STAT3, SOCS3, IFNG, FOXO3, and CREB5" :type protein
-    :number 5 :items (mv3806 mv3807 mv3816 mv3808 mv3809))
-   (:var mv3806 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3807 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
-   (:var mv3816 :isa protein :raw-text "IFNG" :uid "UP:P01579" :name "IFNG_HUMAN")
-   (:var mv3808 :isa protein :raw-text "FOXO3" :uid "UP:O43524" :name "FOXO3_HUMAN")
-   (:var mv3809 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN"))
+   (:var mv3782 :isa pathway :has-determiner "WHICH" :modifier mv3781 :raw-text "pathways")
+   (:var mv3781 :isa immune :name "immune")
+   (:var mv3788 :isa gene :expresses mv3789 :raw-text "genes")
+   (:var mv3789 :isa collection :raw-text "STAT3, SOCS3, IFNG, FOXO3, and CREB5" :type protein
+    :number 5 :items (mv3776 mv3777 mv3786 mv3778 mv3779))
+   (:var mv3776 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3777 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
+   (:var mv3786 :isa protein :raw-text "IFNG" :uid "UP:P01579" :name "IFNG_HUMAN")
+   (:var mv3778 :isa protein :raw-text "FOXO3" :uid "UP:O43524" :name "FOXO3_HUMAN")
+   (:var mv3779 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN"))
   ("Which immune pathways are shared by the STAT3, SOCS3, and CREB5 genes?"
-   (:var mv3835 :isa share :object mv3827 :participant mv3833 :present "PRESENT" :raw-text
+   (:var mv3805 :isa share :object mv3797 :participant mv3803 :present "PRESENT" :raw-text
     "shared")
-   (:var mv3827 :isa pathway :has-determiner "WHICH" :modifier mv3826 :raw-text "pathways")
-   (:var mv3826 :isa immune :name "immune")
-   (:var mv3833 :isa gene :has-determiner "THE" :expresses mv3834 :raw-text "genes")
-   (:var mv3834 :isa collection :raw-text "STAT3, SOCS3, and CREB5" :type protein :number 3 :items
-    (mv3822 mv3823 mv3824))
-   (:var mv3822 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3823 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
-   (:var mv3824 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN"))
+   (:var mv3797 :isa pathway :has-determiner "WHICH" :modifier mv3796 :raw-text "pathways")
+   (:var mv3796 :isa immune :name "immune")
+   (:var mv3803 :isa gene :has-determiner "THE" :expresses mv3804 :raw-text "genes")
+   (:var mv3804 :isa collection :raw-text "STAT3, SOCS3, and CREB5" :type protein :number 3 :items
+    (mv3792 mv3793 mv3794))
+   (:var mv3792 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3793 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
+   (:var mv3794 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN"))
   ("Which kegg pathways utilize genes regulated by smad2"
-   (:var mv3841 :isa utilize :participant mv3840 :object mv3842 :present "PRESENT" :raw-text
+   (:var mv3811 :isa utilize :participant mv3810 :object mv3812 :present "PRESENT" :raw-text
     "utilize")
-   (:var mv3840 :isa pathway :has-determiner "WHICH" :modifier mv3839 :raw-text "pathways")
-   (:var mv3839 :isa database :name "KEGG" :uid "KEGG")
-   (:var mv3842 :isa gene :predication mv3843 :raw-text "genes")
-   (:var mv3843 :isa regulate :object mv3842 :agent mv3837 :past "PAST" :raw-text "regulated")
-   (:var mv3837 :isa protein :raw-text "smad2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
+   (:var mv3810 :isa pathway :has-determiner "WHICH" :modifier mv3809 :raw-text "pathways")
+   (:var mv3809 :isa database :name "KEGG" :uid "KEGG")
+   (:var mv3812 :isa gene :predication mv3813 :raw-text "genes")
+   (:var mv3813 :isa regulate :object mv3812 :agent mv3807 :past "PAST" :raw-text "regulated")
+   (:var mv3807 :isa protein :raw-text "smad2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
   ("Which Reactome pathways utilize SRF?"
-   (:var mv3849 :isa utilize :participant mv3848 :object mv3850 :present "PRESENT" :raw-text
+   (:var mv3819 :isa utilize :participant mv3818 :object mv3820 :present "PRESENT" :raw-text
     "utilize")
-   (:var mv3848 :isa pathway :has-determiner "WHICH" :modifier mv3847 :raw-text "pathways")
-   (:var mv3847 :isa database :name "Reactome" :uid "Reactome")
-   (:var mv3850 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv3818 :isa pathway :has-determiner "WHICH" :modifier mv3817 :raw-text "pathways")
+   (:var mv3817 :isa database :name "Reactome" :uid "Reactome")
+   (:var mv3820 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("Which kegg pathways utilize it"
-   (:var mv3854 :isa utilize :participant mv3853 :object mv3855 :present "PRESENT" :raw-text
+   (:var mv3824 :isa utilize :participant mv3823 :object mv3825 :present "PRESENT" :raw-text
     "utilize")
-   (:var mv3853 :isa pathway :has-determiner "WHICH" :modifier mv3852 :raw-text "pathways")
-   (:var mv3852 :isa database :name "KEGG" :uid "KEGG")
-   (:var mv3855 :isa pronoun/inanimate :word "it"))
+   (:var mv3823 :isa pathway :has-determiner "WHICH" :modifier mv3822 :raw-text "pathways")
+   (:var mv3822 :isa database :name "KEGG" :uid "KEGG")
+   (:var mv3825 :isa pronoun/inanimate :word "it"))
   ("Which of them are regulated by elk1"
-   (:var mv3863 :isa regulate :|affected-process-OR-object| mv3859 :agent mv3856 :present "PRESENT"
+   (:var mv3833 :isa regulate :|affected-process-OR-object| mv3829 :agent mv3826 :present "PRESENT"
     :raw-text "regulated")
-   (:var mv3859 :isa pronoun/plural :quantifier mv3857 :word "them") (:var mv3857 :isa which)
-   (:var mv3856 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+   (:var mv3829 :isa pronoun/plural :quantifier mv3827 :word "them") (:var mv3827 :isa which)
+   (:var mv3826 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
   ("Which of these are expressed in liver"
-   (:var mv3873 :isa gene-transcript-express :object mv3868 :organ mv3872 :present "PRESENT"
+   (:var mv3843 :isa gene-transcript-express :object mv3838 :organ mv3842 :present "PRESENT"
     :raw-text "expressed")
-   (:var mv3868 :isa these :quantifier mv3866 :word "these") (:var mv3866 :isa which)
-   (:var mv3872 :isa liver))
+   (:var mv3838 :isa these :quantifier mv3836 :word "these") (:var mv3836 :isa which)
+   (:var mv3842 :isa liver))
   ("Which of these are in immune pathways"
-   (:var mv3884 :isa copular-predication-of-pp :item mv3878 :value mv3882 :prep mv3880 :predicate
-    mv3879)
-   (:var mv3878 :isa these :quantifier mv3876 :word "these") (:var mv3876 :isa which)
-   (:var mv3882 :isa pathway :modifier mv3881 :raw-text "pathways")
-   (:var mv3881 :isa immune :name "immune") (:var mv3880 :isa in :word "in")
-   (:var mv3879 :isa be :present "PRESENT"))
+   (:var mv3854 :isa copular-predication-of-pp :item mv3848 :value mv3852 :prep mv3850 :predicate
+    mv3849)
+   (:var mv3848 :isa these :quantifier mv3846 :word "these") (:var mv3846 :isa which)
+   (:var mv3852 :isa pathway :modifier mv3851 :raw-text "pathways")
+   (:var mv3851 :isa immune :name "immune") (:var mv3850 :isa in :word "in")
+   (:var mv3849 :isa be :present "PRESENT"))
   ("what proteins does MEK phosphorylate?"
-   (:var mv3890 :isa phosphorylate :amino-acid mv3887 :agent mv3889 :present "PRESENT" :raw-text
+   (:var mv3860 :isa phosphorylate :amino-acid mv3857 :agent mv3859 :present "PRESENT" :raw-text
     "phosphorylate")
-   (:var mv3887 :isa protein :has-determiner "WHAT" :raw-text "proteins")
-   (:var mv3889 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv3857 :isa protein :has-determiner "WHAT" :raw-text "proteins")
+   (:var mv3859 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK"))
   ("Which of these are kinases"
-   (:var mv3894 :isa be :subject mv3893 :predicate mv3895 :present "PRESENT")
-   (:var mv3893 :isa these :quantifier mv3891 :word "these") (:var mv3891 :isa which)
-   (:var mv3895 :isa kinase :raw-text "kinases"))
+   (:var mv3864 :isa be :subject mv3863 :predicate mv3865 :present "PRESENT")
+   (:var mv3863 :isa these :quantifier mv3861 :word "these") (:var mv3861 :isa which)
+   (:var mv3865 :isa kinase :raw-text "kinases"))
   ("Which of those are regulated by elk1"
-   (:var mv3904 :isa regulate :|affected-process-OR-object| mv3900 :agent mv3897 :present "PRESENT"
+   (:var mv3874 :isa regulate :|affected-process-OR-object| mv3870 :agent mv3867 :present "PRESENT"
     :raw-text "regulated")
-   (:var mv3900 :isa those :quantifier mv3898 :word "those") (:var mv3898 :isa which)
-   (:var mv3897 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+   (:var mv3870 :isa those :quantifier mv3868 :word "those") (:var mv3868 :isa which)
+   (:var mv3867 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
   ("Which of these are regulated by elk1"
-   (:var mv3914 :isa regulate :|affected-process-OR-object| mv3910 :agent mv3907 :present "PRESENT"
+   (:var mv3884 :isa regulate :|affected-process-OR-object| mv3880 :agent mv3877 :present "PRESENT"
     :raw-text "regulated")
-   (:var mv3910 :isa these :quantifier mv3908 :word "these") (:var mv3908 :isa which)
-   (:var mv3907 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+   (:var mv3880 :isa these :quantifier mv3878 :word "these") (:var mv3878 :isa which)
+   (:var mv3877 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN"))
   ("Which of these are regulated by fakeprotein"
-   (:var mv3924 :isa regulate :|affected-process-OR-object| mv3919 :agent mv3923 :present "PRESENT"
+   (:var mv3894 :isa regulate :|affected-process-OR-object| mv3889 :agent mv3893 :present "PRESENT"
     :raw-text "regulated")
-   (:var mv3919 :isa these :quantifier mv3917 :word "these") (:var mv3917 :isa which)
-   (:var mv3923 :isa bio-entity :name "fakeprotein"))
+   (:var mv3889 :isa these :quantifier mv3887 :word "these") (:var mv3887 :isa which)
+   (:var mv3893 :isa bio-entity :name "fakeprotein"))
   ("Which pathways are shared by STAT3, SOCS3, IFNG, FOXO3, and CREB5 genes?"
-   (:var mv3940 :isa share :object mv3932 :participant mv3938 :present "PRESENT" :raw-text
+   (:var mv3910 :isa share :object mv3902 :participant mv3908 :present "PRESENT" :raw-text
     "shared")
-   (:var mv3932 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
-   (:var mv3938 :isa gene :expresses mv3939 :raw-text "genes")
-   (:var mv3939 :isa collection :raw-text "STAT3, SOCS3, IFNG, FOXO3, and CREB5" :type protein
-    :number 5 :items (mv3927 mv3928 mv3936 mv3929 mv3930))
-   (:var mv3927 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3928 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
-   (:var mv3936 :isa protein :raw-text "IFNG" :uid "UP:P01579" :name "IFNG_HUMAN")
-   (:var mv3929 :isa protein :raw-text "FOXO3" :uid "UP:O43524" :name "FOXO3_HUMAN")
-   (:var mv3930 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN"))
+   (:var mv3902 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
+   (:var mv3908 :isa gene :expresses mv3909 :raw-text "genes")
+   (:var mv3909 :isa collection :raw-text "STAT3, SOCS3, IFNG, FOXO3, and CREB5" :type protein
+    :number 5 :items (mv3897 mv3898 mv3906 mv3899 mv3900))
+   (:var mv3897 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3898 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
+   (:var mv3906 :isa protein :raw-text "IFNG" :uid "UP:P01579" :name "IFNG_HUMAN")
+   (:var mv3899 :isa protein :raw-text "FOXO3" :uid "UP:O43524" :name "FOXO3_HUMAN")
+   (:var mv3900 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN"))
   ("Which pathways are shared by stat3, socs3, and creb5"
-   (:var mv3954 :isa share :object mv3945 :participant mv3953 :present "PRESENT" :raw-text
+   (:var mv3924 :isa share :object mv3915 :participant mv3923 :present "PRESENT" :raw-text
     "shared")
-   (:var mv3945 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
-   (:var mv3953 :isa collection :raw-text "stat3, socs3, and creb5" :type protein :number 3 :items
-    (mv3942 mv3943 mv3952))
-   (:var mv3942 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3943 :isa protein :raw-text "socs3" :uid "UP:O14543" :name "SOCS3_HUMAN")
-   (:var mv3952 :isa protein :raw-text "creb5" :uid "UP:Q02930" :name "CREB5_HUMAN"))
+   (:var mv3915 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
+   (:var mv3923 :isa collection :raw-text "stat3, socs3, and creb5" :type protein :number 3 :items
+    (mv3912 mv3913 mv3922))
+   (:var mv3912 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3913 :isa protein :raw-text "socs3" :uid "UP:O14543" :name "SOCS3_HUMAN")
+   (:var mv3922 :isa protein :raw-text "creb5" :uid "UP:Q02930" :name "CREB5_HUMAN"))
   ("Which pathways are shared by the STAT3, SOCS3, IFNG, FOXO3, and CREB5 genes?"
-   (:var mv3970 :isa share :object mv3961 :participant mv3968 :present "PRESENT" :raw-text
+   (:var mv3940 :isa share :object mv3931 :participant mv3938 :present "PRESENT" :raw-text
     "shared")
-   (:var mv3961 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
-   (:var mv3968 :isa gene :has-determiner "THE" :expresses mv3969 :raw-text "genes")
-   (:var mv3969 :isa collection :raw-text "STAT3, SOCS3, IFNG, FOXO3, and CREB5" :type protein
-    :number 5 :items (mv3956 mv3957 mv3966 mv3958 mv3959))
-   (:var mv3956 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv3957 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
-   (:var mv3966 :isa protein :raw-text "IFNG" :uid "UP:P01579" :name "IFNG_HUMAN")
-   (:var mv3958 :isa protein :raw-text "FOXO3" :uid "UP:O43524" :name "FOXO3_HUMAN")
-   (:var mv3959 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN"))
+   (:var mv3931 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
+   (:var mv3938 :isa gene :has-determiner "THE" :expresses mv3939 :raw-text "genes")
+   (:var mv3939 :isa collection :raw-text "STAT3, SOCS3, IFNG, FOXO3, and CREB5" :type protein
+    :number 5 :items (mv3926 mv3927 mv3936 mv3928 mv3929))
+   (:var mv3926 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv3927 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
+   (:var mv3936 :isa protein :raw-text "IFNG" :uid "UP:P01579" :name "IFNG_HUMAN")
+   (:var mv3928 :isa protein :raw-text "FOXO3" :uid "UP:O43524" :name "FOXO3_HUMAN")
+   (:var mv3929 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN"))
   ("Which pathways involve TAP1 and JAK1?"
-   (:var mv3976 :isa involve :theme mv3975 :object mv3978 :present "PRESENT")
-   (:var mv3975 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
-   (:var mv3978 :isa collection :raw-text "TAP1 and JAK1" :type protein :number 2 :items
-    (mv3972 mv3973))
-   (:var mv3972 :isa protein :raw-text "TAP1" :uid "UP:Q03518" :name "TAP1_HUMAN")
-   (:var mv3973 :isa protein :raw-text "JAK1" :uid "UP:P23458" :name "JAK1_HUMAN"))
+   (:var mv3946 :isa involve :theme mv3945 :object mv3948 :present "PRESENT")
+   (:var mv3945 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
+   (:var mv3948 :isa collection :raw-text "TAP1 and JAK1" :type protein :number 2 :items
+    (mv3942 mv3943))
+   (:var mv3942 :isa protein :raw-text "TAP1" :uid "UP:Q03518" :name "TAP1_HUMAN")
+   (:var mv3943 :isa protein :raw-text "JAK1" :uid "UP:P23458" :name "JAK1_HUMAN"))
   ("Which pathways involve calcium?"
-   (:var mv3981 :isa involve :theme mv3980 :object mv3982 :present "PRESENT")
-   (:var mv3980 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
-   (:var mv3982 :isa calcium :raw-text "calcium"))
+   (:var mv3951 :isa involve :theme mv3950 :object mv3952 :present "PRESENT")
+   (:var mv3950 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
+   (:var mv3952 :isa calcium :raw-text "calcium"))
   ("Which pathways use SRF?"
-   (:var mv3986 :isa bio-use :agent mv3984 :object mv3987 :present "PRESENT" :raw-text "use")
-   (:var mv3984 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
-   (:var mv3987 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv3956 :isa bio-use :agent mv3954 :object mv3957 :present "PRESENT" :raw-text "use")
+   (:var mv3954 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
+   (:var mv3957 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("Which pathways use these"
-   (:var mv3991 :isa bio-use :agent mv3989 :object mv3992 :present "PRESENT" :raw-text "use")
-   (:var mv3989 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
-   (:var mv3992 :isa these :word "these"))
+   (:var mv3961 :isa bio-use :agent mv3959 :object mv3962 :present "PRESENT" :raw-text "use")
+   (:var mv3959 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
+   (:var mv3962 :isa these :word "these"))
   ("Which pathways utilize SRF?"
-   (:var mv3995 :isa utilize :participant mv3994 :object mv3996 :present "PRESENT" :raw-text
+   (:var mv3965 :isa utilize :participant mv3964 :object mv3966 :present "PRESENT" :raw-text
     "utilize")
-   (:var mv3994 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
-   (:var mv3996 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv3964 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
+   (:var mv3966 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("Which pathways utilize these genes"
-   (:var mv3999 :isa utilize :participant mv3998 :object mv4001 :present "PRESENT" :raw-text
+   (:var mv3969 :isa utilize :participant mv3968 :object mv3971 :present "PRESENT" :raw-text
     "utilize")
-   (:var mv3998 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
-   (:var mv4001 :isa gene :has-determiner "THESE" :raw-text "genes"))
+   (:var mv3968 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
+   (:var mv3971 :isa gene :has-determiner "THESE" :raw-text "genes"))
   ("Which proteins are targeted by STAT3?"
-   (:var mv4008 :isa target :object mv4004 :agent mv4002 :present "PRESENT" :raw-text "targeted")
-   (:var mv4004 :isa protein :has-determiner "WHICH" :raw-text "proteins")
-   (:var mv4002 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv3978 :isa target :object mv3974 :agent mv3972 :present "PRESENT" :raw-text "targeted")
+   (:var mv3974 :isa protein :has-determiner "WHICH" :raw-text "proteins")
+   (:var mv3972 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("Which reactome pathways utilize srf"
-   (:var mv4013 :isa utilize :participant mv4012 :object mv4014 :present "PRESENT" :raw-text
+   (:var mv3983 :isa utilize :participant mv3982 :object mv3984 :present "PRESENT" :raw-text
     "utilize")
-   (:var mv4012 :isa pathway :has-determiner "WHICH" :modifier mv4011 :raw-text "pathways")
-   (:var mv4011 :isa database :name "Reactome" :uid "Reactome")
-   (:var mv4014 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv3982 :isa pathway :has-determiner "WHICH" :modifier mv3981 :raw-text "pathways")
+   (:var mv3981 :isa database :name "Reactome" :uid "Reactome")
+   (:var mv3984 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("Which transcription factors are in the MAPK signaling pathway?"
-   (:var mv4025 :isa copular-predication-of-pp :item mv4015 :value mv4024 :prep "IN" :predicate
-    mv4018)
-   (:var mv4015 :isa transcription-factor :has-determiner "WHICH" :raw-text
+   (:var mv3995 :isa copular-predication-of-pp :item mv3985 :value mv3994 :prep "IN" :predicate
+    mv3988)
+   (:var mv3985 :isa transcription-factor :has-determiner "WHICH" :raw-text
     "transcription factors")
-   (:var mv4024 :isa transcription-factor :|context-OR-in-pathway| mv4016 :has-determiner "WHICH"
+   (:var mv3994 :isa transcription-factor :|context-OR-in-pathway| mv3986 :has-determiner "WHICH"
     :raw-text "transcription factors")
-   (:var mv4016 :isa signaling-pathway :has-determiner "THE" :modifier mv4021 :raw-text
+   (:var mv3986 :isa signaling-pathway :has-determiner "THE" :modifier mv3991 :raw-text
     "signaling pathway")
-   (:var mv4021 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
+   (:var mv3991 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -3118,90 +3117,90 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv4018 :isa be :present "PRESENT"))
+   (:var mv3988 :isa be :present "PRESENT"))
   ("Which transcription factors regulate frizzled8 in the liver?"
-   (:var mv4030 :isa regulate :agent mv4027 :object mv4028 :present "PRESENT" :raw-text "regulate")
-   (:var mv4027 :isa transcription-factor :has-determiner "WHICH" :raw-text
+   (:var mv4000 :isa regulate :agent mv3997 :object mv3998 :present "PRESENT" :raw-text "regulate")
+   (:var mv3997 :isa transcription-factor :has-determiner "WHICH" :raw-text
     "transcription factors")
-   (:var mv4028 :isa protein :organ mv4033 :raw-text "frizzled8" :uid "UP:Q9H461" :name
+   (:var mv3998 :isa protein :organ mv4003 :raw-text "frizzled8" :uid "UP:Q9H461" :name
     "FZD8_HUMAN")
-   (:var mv4033 :isa liver :has-determiner "THE"))
+   (:var mv4003 :isa liver :has-determiner "THE"))
   ("Which transcription factors regulate frizzled8?"
-   (:var mv4038 :isa regulate :agent mv4035 :object mv4036 :present "PRESENT" :raw-text "regulate")
-   (:var mv4035 :isa transcription-factor :has-determiner "WHICH" :raw-text
+   (:var mv4008 :isa regulate :agent mv4005 :object mv4006 :present "PRESENT" :raw-text "regulate")
+   (:var mv4005 :isa transcription-factor :has-determiner "WHICH" :raw-text
     "transcription factors")
-   (:var mv4036 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
+   (:var mv4006 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
   ("Let's move AKT1 on top."
-   (:var mv4045 :isa explicit-suggestion :suggestion mv4041 :marker let-as-directive)
-   (:var mv4041 :isa move-something-somewhere :at-relative-location mv4043 :theme mv4040 :present
+   (:var mv4015 :isa explicit-suggestion :suggestion mv4011 :marker let-as-directive)
+   (:var mv4011 :isa move-something-somewhere :at-relative-location mv4013 :theme mv4010 :present
     "PRESENT")
-   (:var mv4043 :isa top-qua-location)
-   (:var mv4040 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
+   (:var mv4013 :isa top-qua-location)
+   (:var mv4010 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
   ("Let's show the phosphorylated AKT1 on top."
-   (:var mv4054 :isa explicit-suggestion :suggestion mv4048 :marker let-as-directive)
-   (:var mv4048 :isa show :at-relative-location mv4052 :|statement-OR-theme| mv4047 :present
+   (:var mv4024 :isa explicit-suggestion :suggestion mv4018 :marker let-as-directive)
+   (:var mv4018 :isa show :at-relative-location mv4022 :|statement-OR-theme| mv4017 :present
     "PRESENT")
-   (:var mv4052 :isa top-qua-location)
-   (:var mv4047 :isa protein :has-determiner "THE" :predication mv4050 :raw-text "AKT1" :uid
+   (:var mv4022 :isa top-qua-location)
+   (:var mv4017 :isa protein :has-determiner "THE" :predication mv4020 :raw-text "AKT1" :uid
     "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv4050 :isa phosphorylate :substrate mv4047 :raw-text "phosphorylated"))
+   (:var mv4020 :isa phosphorylate :substrate mv4017 :raw-text "phosphorylated"))
   ("What are the common upstreams of AKT1 and  BRAF?"
-   (:var mv4057 :isa be :subject mv4056 :predicate mv4060 :present "PRESENT")
-   (:var mv4056 :isa what)
-   (:var mv4060 :isa upstream-segment :pathwaycomponent mv4064 :has-determiner "THE" :predication
-    mv4059 :raw-text "upstreams")
-   (:var mv4064 :isa collection :raw-text "AKT1 and  BRAF" :type protein :number 2 :items
-    (mv4055 mv4063))
-   (:var mv4055 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv4063 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv4059 :isa common))
-  ("Is stat3 expressed exclusively in liver?" (:var mv4073 :isa polar-question :statement mv4068)
-   (:var mv4068 :isa gene-transcript-express :object mv4066 :organ mv4071 :past "PAST" :raw-text
+   (:var mv4027 :isa be :subject mv4026 :predicate mv4030 :present "PRESENT")
+   (:var mv4026 :isa what)
+   (:var mv4030 :isa upstream-segment :pathwaycomponent mv4034 :has-determiner "THE" :predication
+    mv4029 :raw-text "upstreams")
+   (:var mv4034 :isa collection :raw-text "AKT1 and  BRAF" :type protein :number 2 :items
+    (mv4025 mv4033))
+   (:var mv4025 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv4033 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv4029 :isa common))
+  ("Is stat3 expressed exclusively in liver?" (:var mv4043 :isa polar-question :statement mv4038)
+   (:var mv4038 :isa gene-transcript-express :object mv4036 :organ mv4041 :past "PAST" :raw-text
     "expressed")
-   (:var mv4066 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4071 :isa liver))
-  ("Is stat3 expressed in spleen?" (:var mv4080 :isa polar-question :statement mv4076)
-   (:var mv4076 :isa gene-transcript-express :object mv4074 :organ mv4078 :past "PAST" :raw-text
+   (:var mv4036 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4041 :isa liver))
+  ("Is stat3 expressed in spleen?" (:var mv4050 :isa polar-question :statement mv4046)
+   (:var mv4046 :isa gene-transcript-express :object mv4044 :organ mv4048 :past "PAST" :raw-text
     "expressed")
-   (:var mv4074 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4078 :isa spleen))
+   (:var mv4044 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4048 :isa spleen))
   ("Show phosphorylated akt1 on top."
-   (:var mv4082 :isa show :at-relative-location mv4085 :|statement-OR-theme| mv4081 :present
+   (:var mv4052 :isa show :at-relative-location mv4055 :|statement-OR-theme| mv4051 :present
     "PRESENT")
-   (:var mv4085 :isa top-qua-location)
-   (:var mv4081 :isa protein :predication mv4083 :raw-text "akt1" :uid "UP:P31749" :name
+   (:var mv4055 :isa top-qua-location)
+   (:var mv4051 :isa protein :predication mv4053 :raw-text "akt1" :uid "UP:P31749" :name
     "AKT1_HUMAN")
-   (:var mv4083 :isa phosphorylate :substrate mv4081 :raw-text "phosphorylated"))
+   (:var mv4053 :isa phosphorylate :substrate mv4051 :raw-text "phosphorylated"))
   ("What are the common upstreams of AKT1 and  BRA?"
-   (:var mv4089 :isa be :subject mv4088 :predicate mv4092 :present "PRESENT")
-   (:var mv4088 :isa what)
-   (:var mv4092 :isa upstream-segment :pathwaycomponent mv4096 :has-determiner "THE" :predication
-    mv4091 :raw-text "upstreams")
-   (:var mv4096 :isa collection :raw-text "AKT1 and  BRA" :type protein :number 2 :items
-    (mv4087 mv4095))
-   (:var mv4087 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv4095 :isa bio-entity :name "BRA") (:var mv4091 :isa common))
+   (:var mv4059 :isa be :subject mv4058 :predicate mv4062 :present "PRESENT")
+   (:var mv4058 :isa what)
+   (:var mv4062 :isa upstream-segment :pathwaycomponent mv4066 :has-determiner "THE" :predication
+    mv4061 :raw-text "upstreams")
+   (:var mv4066 :isa collection :raw-text "AKT1 and  BRA" :type protein :number 2 :items
+    (mv4057 mv4065))
+   (:var mv4057 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv4065 :isa bio-entity :name "BRA") (:var mv4061 :isa common))
   ("RAF activates MEK and MEK activates ERK."
-   (:var mv4105 :isa collection :raw-text "RAF activates MEK and MEK activates ERK" :type
-    bio-activate :number 2 :items (mv4099 mv4103))
-   (:var mv4099 :isa bio-activate :agent mv4098 :object mv4100 :present "PRESENT" :raw-text
+   (:var mv4075 :isa collection :raw-text "RAF activates MEK and MEK activates ERK" :type
+    bio-activate :number 2 :items (mv4069 mv4073))
+   (:var mv4069 :isa bio-activate :agent mv4068 :object mv4070 :present "PRESENT" :raw-text
     "activates")
-   (:var mv4098 :isa protein-family :raw-text "RAF" :name "Raf" :count 3 :family-members
+   (:var mv4068 :isa protein-family :raw-text "RAF" :name "Raf" :count 3 :family-members
     ((protein (:name "RAF1_HUMAN") (:uid "UP:P04049"))
      (protein (:name "BRAF_HUMAN") (:uid "UP:P15056"))
      (protein (:name "ARAF_HUMAN") (:uid "UP:P10398")))
     :uid "FA:03114")
-   (:var mv4100 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv4070 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv4103 :isa bio-activate :agent mv4102 :object mv4104 :present "PRESENT" :raw-text
+   (:var mv4073 :isa bio-activate :agent mv4072 :object mv4074 :present "PRESENT" :raw-text
     "activates")
-   (:var mv4102 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv4072 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv4104 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv4074 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -3211,27 +3210,27 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("What is the path from RAF to MEK?"
-   (:var mv4107 :isa be :subject mv4106 :predicate mv4109 :present "PRESENT")
-   (:var mv4106 :isa what) (:var mv4109 :isa path :end mv4113 :start mv4111 :has-determiner "THE")
-   (:var mv4113 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv4077 :isa be :subject mv4076 :predicate mv4079 :present "PRESENT")
+   (:var mv4076 :isa what) (:var mv4079 :isa path :end mv4083 :start mv4081 :has-determiner "THE")
+   (:var mv4083 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv4111 :isa protein-family :raw-text "RAF" :name "Raf" :count 3 :family-members
+   (:var mv4081 :isa protein-family :raw-text "RAF" :name "Raf" :count 3 :family-members
     ((protein (:name "RAF1_HUMAN") (:uid "UP:P04049"))
      (protein (:name "BRAF_HUMAN") (:uid "UP:P15056"))
      (protein (:name "ARAF_HUMAN") (:uid "UP:P10398")))
     :uid "FA:03114"))
   ("remove the fact that mek activates erk"
-   (:var mv4116 :isa remove :object mv4123 :present "PRESENT" :raw-text "remove")
-   (:var mv4123 :isa fact :statement mv4121 :has-determiner "THE")
-   (:var mv4121 :isa bio-activate :agent mv4120 :object mv4122 :present "PRESENT" :raw-text
+   (:var mv4086 :isa remove :object mv4093 :present "PRESENT" :raw-text "remove")
+   (:var mv4093 :isa fact :statement mv4091 :has-determiner "THE")
+   (:var mv4091 :isa bio-activate :agent mv4090 :object mv4092 :present "PRESENT" :raw-text
     "activates")
-   (:var mv4120 :isa protein-family :raw-text "mek" :name "MEK" :count 2 :family-members
+   (:var mv4090 :isa protein-family :raw-text "mek" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv4122 :isa protein-family :raw-text "erk" :name "ERK" :count 7 :family-members
+   (:var mv4092 :isa protein-family :raw-text "erk" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -3241,341 +3240,341 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("let's show phosphorylated akt1 on top."
-   (:var mv4131 :isa explicit-suggestion :suggestion mv4126 :marker let-as-directive)
-   (:var mv4126 :isa show :at-relative-location mv4129 :|statement-OR-theme| mv4125 :present
+   (:var mv4101 :isa explicit-suggestion :suggestion mv4096 :marker let-as-directive)
+   (:var mv4096 :isa show :at-relative-location mv4099 :|statement-OR-theme| mv4095 :present
     "PRESENT")
-   (:var mv4129 :isa top-qua-location)
-   (:var mv4125 :isa protein :predication mv4127 :raw-text "akt1" :uid "UP:P31749" :name
+   (:var mv4099 :isa top-qua-location)
+   (:var mv4095 :isa protein :predication mv4097 :raw-text "akt1" :uid "UP:P31749" :name
     "AKT1_HUMAN")
-   (:var mv4127 :isa phosphorylate :substrate mv4125 :raw-text "phosphorylated"))
+   (:var mv4097 :isa phosphorylate :substrate mv4095 :raw-text "phosphorylated"))
   ("what are positive regulators of the cfos gene?"
-   (:var mv4134 :isa be :subject mv4133 :predicate mv4132 :present "PRESENT")
-   (:var mv4133 :isa what)
-   (:var mv4132 :isa positive-regulator :theme mv4138 :raw-text "positive regulators")
-   (:var mv4138 :isa gene :has-determiner "THE" :expresses mv4137 :raw-text "gene")
-   (:var mv4137 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv4104 :isa be :subject mv4103 :predicate mv4102 :present "PRESENT")
+   (:var mv4103 :isa what)
+   (:var mv4102 :isa positive-regulator :theme mv4108 :raw-text "positive regulators")
+   (:var mv4108 :isa gene :has-determiner "THE" :expresses mv4107 :raw-text "gene")
+   (:var mv4107 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("what transcription factors regulate FOS in soft tissue?"
-   (:var mv4143 :isa regulate :agent mv4140 :object mv4144 :present "PRESENT" :raw-text "regulate")
-   (:var mv4140 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv4144 :isa protein :organ mv4141 :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv4141 :isa bio-organ :name "soft tissue" :uid "NCIT:C12471"))
-  ("Are there any drugs inhibiting MEK?" (:var mv4155 :isa polar-question :statement mv4154)
-   (:var mv4154 :isa there-exists :value mv4151 :predicate mv4148)
-   (:var mv4151 :isa drug :predication mv4152 :quantifier mv4150 :raw-text "drugs")
-   (:var mv4152 :isa inhibit :agent mv4151 :object mv4153 :progressive "PROGRESSIVE" :raw-text
+   (:var mv4113 :isa regulate :agent mv4110 :object mv4114 :present "PRESENT" :raw-text "regulate")
+   (:var mv4110 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv4114 :isa protein :organ mv4111 :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv4111 :isa bio-organ :name "soft tissue" :uid "NCIT:C12471"))
+  ("Are there any drugs inhibiting MEK?" (:var mv4125 :isa polar-question :statement mv4124)
+   (:var mv4124 :isa there-exists :value mv4121 :predicate mv4118)
+   (:var mv4121 :isa drug :predication mv4122 :quantifier mv4120 :raw-text "drugs")
+   (:var mv4122 :isa inhibit :agent mv4121 :object mv4123 :progressive "PROGRESSIVE" :raw-text
     "inhibiting")
-   (:var mv4153 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv4123 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv4150 :isa any :word "any") (:var mv4148 :isa syntactic-there))
-  ("Are there any drugs targeting KRAS?" (:var mv4164 :isa polar-question :statement mv4163)
-   (:var mv4163 :isa there-exists :value mv4160 :predicate mv4157)
-   (:var mv4160 :isa drug :predication mv4161 :quantifier mv4159 :raw-text "drugs")
-   (:var mv4161 :isa target :agent mv4160 :object mv4162 :progressive "PROGRESSIVE" :raw-text
+   (:var mv4120 :isa any :word "any") (:var mv4118 :isa syntactic-there))
+  ("Are there any drugs targeting KRAS?" (:var mv4134 :isa polar-question :statement mv4133)
+   (:var mv4133 :isa there-exists :value mv4130 :predicate mv4127)
+   (:var mv4130 :isa drug :predication mv4131 :quantifier mv4129 :raw-text "drugs")
+   (:var mv4131 :isa target :agent mv4130 :object mv4132 :progressive "PROGRESSIVE" :raw-text
     "targeting")
-   (:var mv4162 :isa protein :raw-text "KRAS" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv4159 :isa any :word "any") (:var mv4157 :isa syntactic-there))
+   (:var mv4132 :isa protein :raw-text "KRAS" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv4129 :isa any :word "any") (:var mv4127 :isa syntactic-there))
   ("Are there any genes in the liver that are regulated by stat3?"
-   (:var mv4182 :isa polar-question :statement mv4178)
-   (:var mv4178 :isa there-exists :value mv4170 :predicate mv4167)
-   (:var mv4170 :isa gene :predication mv4179 :organ mv4173 :quantifier mv4169 :raw-text "genes")
-   (:var mv4179 :isa regulate :object mv4170 :that-rel t :agent mv4165 :present "PRESENT" :raw-text
+   (:var mv4152 :isa polar-question :statement mv4148)
+   (:var mv4148 :isa there-exists :value mv4140 :predicate mv4137)
+   (:var mv4140 :isa gene :predication mv4149 :organ mv4143 :quantifier mv4139 :raw-text "genes")
+   (:var mv4149 :isa regulate :object mv4140 :that-rel t :agent mv4135 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv4165 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4173 :isa liver :has-determiner "THE") (:var mv4169 :isa any :word "any")
-   (:var mv4167 :isa syntactic-there))
+   (:var mv4135 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4143 :isa liver :has-determiner "THE") (:var mv4139 :isa any :word "any")
+   (:var mv4137 :isa syntactic-there))
   ("Are there any genes involved in apoptosis that are regulated by stat3?"
-   (:var mv4200 :isa polar-question :statement mv4196)
-   (:var mv4196 :isa there-exists :value mv4188 :predicate mv4185)
-   (:var mv4188 :isa gene :predication mv4189 :quantifier mv4187 :raw-text "genes")
-   (:var mv4189 :isa involve :object mv4188 :theme mv4191 :past "PAST")
-   (:var mv4191 :isa apoptosis :predication mv4197 :raw-text "apoptosis")
-   (:var mv4197 :isa regulate :affected-process mv4191 :that-rel t :agent mv4183 :present "PRESENT"
+   (:var mv4170 :isa polar-question :statement mv4166)
+   (:var mv4166 :isa there-exists :value mv4158 :predicate mv4155)
+   (:var mv4158 :isa gene :predication mv4159 :quantifier mv4157 :raw-text "genes")
+   (:var mv4159 :isa involve :object mv4158 :theme mv4161 :past "PAST")
+   (:var mv4161 :isa apoptosis :predication mv4167 :raw-text "apoptosis")
+   (:var mv4167 :isa regulate :affected-process mv4161 :that-rel t :agent mv4153 :present "PRESENT"
     :raw-text "regulated")
-   (:var mv4183 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4187 :isa any :word "any") (:var mv4185 :isa syntactic-there))
-  ("Are there any genes stat3 is upstream of?" (:var mv4211 :isa there-exists :predicate mv4203)
-   (:var mv4203 :isa syntactic-there))
-  ("Are there any inhibitors for JAK1?" (:var mv4221 :isa polar-question :statement mv4219)
-   (:var mv4219 :isa there-exists :value mv4217 :predicate mv4214)
-   (:var mv4217 :isa inhibitor :|target-OR-protein| mv4212 :quantifier mv4216 :raw-text
+   (:var mv4153 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4157 :isa any :word "any") (:var mv4155 :isa syntactic-there))
+  ("Are there any genes stat3 is upstream of?" (:var mv4181 :isa there-exists :predicate mv4173)
+   (:var mv4173 :isa syntactic-there))
+  ("Are there any inhibitors for JAK1?" (:var mv4191 :isa polar-question :statement mv4189)
+   (:var mv4189 :isa there-exists :value mv4187 :predicate mv4184)
+   (:var mv4187 :isa inhibitor :|target-OR-protein| mv4182 :quantifier mv4186 :raw-text
     "inhibitors")
-   (:var mv4212 :isa protein :raw-text "JAK1" :uid "UP:P23458" :name "JAK1_HUMAN")
-   (:var mv4216 :isa any :word "any") (:var mv4214 :isa syntactic-there))
-  ("Are there genes regulated by elk1 and srf" (:var mv4234 :isa polar-question :statement mv4231)
-   (:var mv4231 :isa there-exists :value mv4226 :predicate mv4224)
-   (:var mv4226 :isa gene :predication mv4227 :raw-text "genes")
-   (:var mv4227 :isa regulate :object mv4226 :agent mv4232 :past "PAST" :raw-text "regulated")
-   (:var mv4232 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv4222 mv4230))
-   (:var mv4222 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv4230 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv4224 :isa syntactic-there))
+   (:var mv4182 :isa protein :raw-text "JAK1" :uid "UP:P23458" :name "JAK1_HUMAN")
+   (:var mv4186 :isa any :word "any") (:var mv4184 :isa syntactic-there))
+  ("Are there genes regulated by elk1 and srf" (:var mv4204 :isa polar-question :statement mv4201)
+   (:var mv4201 :isa there-exists :value mv4196 :predicate mv4194)
+   (:var mv4196 :isa gene :predication mv4197 :raw-text "genes")
+   (:var mv4197 :isa regulate :object mv4196 :agent mv4202 :past "PAST" :raw-text "regulated")
+   (:var mv4202 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv4192 mv4200))
+   (:var mv4192 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv4200 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv4194 :isa syntactic-there))
   ("Can you find any apoptotic pathways stat3 is involved in?"
-   (:var mv4248 :isa polar-question :statement mv4239)
-   (:var mv4239 :isa bio-find :agent mv4237 :object mv4235 :modal "CAN" :raw-text "find")
-   (:var mv4237 :isa interlocutor :name "hearer")
-   (:var mv4235 :isa protein :quantifier mv4240 :cellular-process mv4241 :context mv4243 :raw-text
+   (:var mv4218 :isa polar-question :statement mv4209)
+   (:var mv4209 :isa bio-find :agent mv4207 :object mv4205 :modal "CAN" :raw-text "find")
+   (:var mv4207 :isa interlocutor :name "hearer")
+   (:var mv4205 :isa protein :quantifier mv4210 :cellular-process mv4211 :context mv4213 :raw-text
     "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4240 :isa any :word "any") (:var mv4241 :isa apoptosis :raw-text "apoptotic")
-   (:var mv4243 :isa pathway :raw-text "pathways"))
+   (:var mv4210 :isa any :word "any") (:var mv4211 :isa apoptosis :raw-text "apoptotic")
+   (:var mv4213 :isa pathway :raw-text "pathways"))
   ("Can you find any apoptotic pathways that stat3 is involved in?"
-   (:var mv4264 :isa polar-question :statement mv4263)
-   (:var mv4263 :isa bio-find :agent mv4251 :statement mv4262 :object mv4257 :modal mv4250
+   (:var mv4234 :isa polar-question :statement mv4233)
+   (:var mv4233 :isa bio-find :agent mv4221 :statement mv4232 :object mv4227 :modal mv4220
     :raw-text "find")
-   (:var mv4251 :isa interlocutor :name "hearer")
-   (:var mv4262 :isa involve :object mv4249 :modal "CAN")
-   (:var mv4249 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4257 :isa pathway :quantifier mv4254 :cellular-process mv4255 :raw-text "pathways")
-   (:var mv4254 :isa any :word "any") (:var mv4255 :isa apoptosis :raw-text "apoptotic")
-   (:var mv4250 :isa can))
+   (:var mv4221 :isa interlocutor :name "hearer")
+   (:var mv4232 :isa involve :object mv4219 :modal "CAN")
+   (:var mv4219 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4227 :isa pathway :quantifier mv4224 :cellular-process mv4225 :raw-text "pathways")
+   (:var mv4224 :isa any :word "any") (:var mv4225 :isa apoptosis :raw-text "apoptotic")
+   (:var mv4220 :isa can))
   ("Can you look up which genes targeted by stat3 are involved in apoptosis?"
-   (:var mv4284 :isa polar-question :statement mv4283) (:var mv4283 :isa look-up :actor mv4267)
-   (:var mv4267 :isa interlocutor :name "hearer"))
-  ("Can you show me genes regulated by ELK1" (:var mv4294 :isa polar-question :statement mv4288)
-   (:var mv4288 :isa show :agent mv4287 :|statement-OR-theme| mv4290 :beneficiary mv4289 :modal
+   (:var mv4254 :isa polar-question :statement mv4253) (:var mv4253 :isa look-up :actor mv4237)
+   (:var mv4237 :isa interlocutor :name "hearer"))
+  ("Can you show me genes regulated by ELK1" (:var mv4264 :isa polar-question :statement mv4258)
+   (:var mv4258 :isa show :agent mv4257 :|statement-OR-theme| mv4260 :beneficiary mv4259 :modal
     "CAN")
-   (:var mv4287 :isa interlocutor :name "hearer")
-   (:var mv4290 :isa gene :predication mv4291 :raw-text "genes")
-   (:var mv4291 :isa regulate :object mv4290 :agent mv4285 :past "PAST" :raw-text "regulated")
-   (:var mv4285 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv4289 :isa interlocutor :name "speaker"))
+   (:var mv4257 :isa interlocutor :name "hearer")
+   (:var mv4260 :isa gene :predication mv4261 :raw-text "genes")
+   (:var mv4261 :isa regulate :object mv4260 :agent mv4255 :past "PAST" :raw-text "regulated")
+   (:var mv4255 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv4259 :isa interlocutor :name "speaker"))
   ("Can you show me genes that are regulated by ELK1"
-   (:var mv4307 :isa polar-question :statement mv4298)
-   (:var mv4298 :isa show :agent mv4297 :|statement-OR-theme| mv4300 :beneficiary mv4299 :modal
+   (:var mv4277 :isa polar-question :statement mv4268)
+   (:var mv4268 :isa show :agent mv4267 :|statement-OR-theme| mv4270 :beneficiary mv4269 :modal
     "CAN")
-   (:var mv4297 :isa interlocutor :name "hearer")
-   (:var mv4300 :isa gene :predication mv4305 :raw-text "genes")
-   (:var mv4305 :isa regulate :object mv4300 :that-rel t :agent mv4295 :modal "CAN" :raw-text
+   (:var mv4267 :isa interlocutor :name "hearer")
+   (:var mv4270 :isa gene :predication mv4275 :raw-text "genes")
+   (:var mv4275 :isa regulate :object mv4270 :that-rel t :agent mv4265 :modal "CAN" :raw-text
     "regulated")
-   (:var mv4295 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv4299 :isa interlocutor :name "speaker"))
+   (:var mv4265 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv4269 :isa interlocutor :name "speaker"))
   ("Can you show me the pahtways that involve SRF"
-   (:var mv4317 :isa polar-question :statement mv4310)
-   (:var mv4310 :isa show :agent mv4309 :|statement-OR-theme| mv4313 :beneficiary mv4311 :modal
+   (:var mv4287 :isa polar-question :statement mv4280)
+   (:var mv4280 :isa show :agent mv4279 :|statement-OR-theme| mv4283 :beneficiary mv4281 :modal
     "CAN")
-   (:var mv4309 :isa interlocutor :name "hearer")
-   (:var mv4313 :isa bio-entity :has-determiner "THE" :name "pahtways")
-   (:var mv4311 :isa interlocutor :name "speaker"))
+   (:var mv4279 :isa interlocutor :name "hearer")
+   (:var mv4283 :isa bio-entity :has-determiner "THE" :name "pahtways")
+   (:var mv4281 :isa interlocutor :name "speaker"))
   ("Can you tell me the genes regulated by STAT3"
-   (:var mv4328 :isa polar-question :statement mv4321)
-   (:var mv4321 :isa tell :agent mv4320 :theme mv4324 :beneficiary mv4322 :modal "CAN")
-   (:var mv4320 :isa interlocutor :name "hearer")
-   (:var mv4324 :isa gene :predication mv4325 :has-determiner "THE" :raw-text "genes")
-   (:var mv4325 :isa regulate :object mv4324 :agent mv4318 :past "PAST" :raw-text "regulated")
-   (:var mv4318 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4322 :isa interlocutor :name "speaker"))
+   (:var mv4298 :isa polar-question :statement mv4291)
+   (:var mv4291 :isa tell :agent mv4290 :theme mv4294 :beneficiary mv4292 :modal "CAN")
+   (:var mv4290 :isa interlocutor :name "hearer")
+   (:var mv4294 :isa gene :predication mv4295 :has-determiner "THE" :raw-text "genes")
+   (:var mv4295 :isa regulate :object mv4294 :agent mv4288 :past "PAST" :raw-text "regulated")
+   (:var mv4288 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4292 :isa interlocutor :name "speaker"))
   ("Can you tell me the genes that STAT3 regulates"
-   (:var mv4338 :isa polar-question :statement mv4332)
-   (:var mv4332 :isa tell :agent mv4331 :theme mv4335 :beneficiary mv4333 :modal "CAN")
-   (:var mv4331 :isa interlocutor :name "hearer")
-   (:var mv4335 :isa gene :predication mv4337 :has-determiner "THE" :raw-text "genes")
-   (:var mv4337 :isa regulate :object mv4335 :that-rel t :agent mv4329 :present "PRESENT" :raw-text
+   (:var mv4308 :isa polar-question :statement mv4302)
+   (:var mv4302 :isa tell :agent mv4301 :theme mv4305 :beneficiary mv4303 :modal "CAN")
+   (:var mv4301 :isa interlocutor :name "hearer")
+   (:var mv4305 :isa gene :predication mv4307 :has-determiner "THE" :raw-text "genes")
+   (:var mv4307 :isa regulate :object mv4305 :that-rel t :agent mv4299 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv4329 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4333 :isa interlocutor :name "speaker"))
+   (:var mv4299 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4303 :isa interlocutor :name "speaker"))
   ("Can you tell me the genes that are regulated by STAT3"
-   (:var mv4352 :isa polar-question :statement mv4342)
-   (:var mv4342 :isa tell :agent mv4341 :theme mv4345 :beneficiary mv4343 :modal "CAN")
-   (:var mv4341 :isa interlocutor :name "hearer")
-   (:var mv4345 :isa gene :predication mv4350 :has-determiner "THE" :raw-text "genes")
-   (:var mv4350 :isa regulate :object mv4345 :that-rel t :agent mv4339 :modal "CAN" :raw-text
+   (:var mv4322 :isa polar-question :statement mv4312)
+   (:var mv4312 :isa tell :agent mv4311 :theme mv4315 :beneficiary mv4313 :modal "CAN")
+   (:var mv4311 :isa interlocutor :name "hearer")
+   (:var mv4315 :isa gene :predication mv4320 :has-determiner "THE" :raw-text "genes")
+   (:var mv4320 :isa regulate :object mv4315 :that-rel t :agent mv4309 :modal "CAN" :raw-text
     "regulated")
-   (:var mv4339 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4343 :isa interlocutor :name "speaker"))
+   (:var mv4309 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4313 :isa interlocutor :name "speaker"))
   ("Can you tell me the genes which are regulated by STAT3"
-   (:var mv4367 :isa polar-question :statement mv4356)
-   (:var mv4356 :isa tell :agent mv4355 :theme mv4359 :beneficiary mv4357 :modal "CAN")
-   (:var mv4355 :isa interlocutor :name "hearer")
-   (:var mv4359 :isa gene :predication mv4366 :has-determiner "THE" :raw-text "genes")
-   (:var mv4366 :isa regulate :object mv4359 :agent mv4353 :modal mv4354 :raw-text "regulated")
-   (:var mv4353 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4354 :isa can) (:var mv4357 :isa interlocutor :name "speaker"))
+   (:var mv4337 :isa polar-question :statement mv4326)
+   (:var mv4326 :isa tell :agent mv4325 :theme mv4329 :beneficiary mv4327 :modal "CAN")
+   (:var mv4325 :isa interlocutor :name "hearer")
+   (:var mv4329 :isa gene :predication mv4336 :has-determiner "THE" :raw-text "genes")
+   (:var mv4336 :isa regulate :object mv4329 :agent mv4323 :modal mv4324 :raw-text "regulated")
+   (:var mv4323 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4324 :isa can) (:var mv4327 :isa interlocutor :name "speaker"))
   ("Can you tell me what transcription factors are shared by elk1 and srf"
-   (:var mv4383 :isa polar-question :statement mv4372)
-   (:var mv4372 :isa tell :agent mv4371 :theme mv4381 :theme mv4373 :modal "CAN")
-   (:var mv4371 :isa interlocutor :name "hearer")
-   (:var mv4381 :isa share :object mv4368 :participant mv4380 :modal "CAN" :raw-text "shared")
-   (:var mv4368 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv4380 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv4369 mv4379))
-   (:var mv4369 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv4379 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv4373 :isa interlocutor :name "speaker"))
+   (:var mv4353 :isa polar-question :statement mv4342)
+   (:var mv4342 :isa tell :agent mv4341 :theme mv4351 :theme mv4343 :modal "CAN")
+   (:var mv4341 :isa interlocutor :name "hearer")
+   (:var mv4351 :isa share :object mv4338 :participant mv4350 :modal "CAN" :raw-text "shared")
+   (:var mv4338 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv4350 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv4339 mv4349))
+   (:var mv4339 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv4349 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv4343 :isa interlocutor :name "speaker"))
   ("Can you tell me which genes are regulated by STAT3"
-   (:var mv4396 :isa polar-question :statement mv4387)
-   (:var mv4387 :isa tell :agent mv4386 :theme mv4394 :theme mv4388 :modal "CAN")
-   (:var mv4386 :isa interlocutor :name "hearer")
-   (:var mv4394 :isa regulate :object mv4390 :agent mv4384 :modal "CAN" :raw-text "regulated")
-   (:var mv4390 :isa gene :has-determiner "WHICH" :raw-text "genes")
-   (:var mv4384 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4388 :isa interlocutor :name "speaker"))
+   (:var mv4366 :isa polar-question :statement mv4357)
+   (:var mv4357 :isa tell :agent mv4356 :theme mv4364 :theme mv4358 :modal "CAN")
+   (:var mv4356 :isa interlocutor :name "hearer")
+   (:var mv4364 :isa regulate :object mv4360 :agent mv4354 :modal "CAN" :raw-text "regulated")
+   (:var mv4360 :isa gene :has-determiner "WHICH" :raw-text "genes")
+   (:var mv4354 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4358 :isa interlocutor :name "speaker"))
   ("Can you tell me which genes in the liver are regulated by stat3?"
-   (:var mv4413 :isa polar-question :statement mv4400)
-   (:var mv4400 :isa tell :agent mv4399 :theme mv4410 :theme mv4401 :modal "CAN")
-   (:var mv4399 :isa interlocutor :name "hearer")
-   (:var mv4410 :isa regulate :object mv4403 :agent mv4397 :modal "CAN" :raw-text "regulated")
-   (:var mv4403 :isa gene :organ mv4406 :has-determiner "WHICH" :raw-text "genes")
-   (:var mv4406 :isa liver :has-determiner "THE")
-   (:var mv4397 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4401 :isa interlocutor :name "speaker"))
+   (:var mv4383 :isa polar-question :statement mv4370)
+   (:var mv4370 :isa tell :agent mv4369 :theme mv4380 :theme mv4371 :modal "CAN")
+   (:var mv4369 :isa interlocutor :name "hearer")
+   (:var mv4380 :isa regulate :object mv4373 :agent mv4367 :modal "CAN" :raw-text "regulated")
+   (:var mv4373 :isa gene :organ mv4376 :has-determiner "WHICH" :raw-text "genes")
+   (:var mv4376 :isa liver :has-determiner "THE")
+   (:var mv4367 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4371 :isa interlocutor :name "speaker"))
   ("Can you tell me which genes stat3 regulates?"
-   (:var mv4422 :isa polar-question :statement mv4417)
-   (:var mv4417 :isa tell :agent mv4416 :theme mv4420 :beneficiary mv4418 :modal "CAN")
-   (:var mv4416 :isa interlocutor :name "hearer")
-   (:var mv4420 :isa gene :predication mv4421 :has-determiner "WHICH" :raw-text "genes")
-   (:var mv4421 :isa regulate :object mv4420 :agent mv4414 :present "PRESENT" :raw-text
+   (:var mv4392 :isa polar-question :statement mv4387)
+   (:var mv4387 :isa tell :agent mv4386 :theme mv4390 :beneficiary mv4388 :modal "CAN")
+   (:var mv4386 :isa interlocutor :name "hearer")
+   (:var mv4390 :isa gene :predication mv4391 :has-determiner "WHICH" :raw-text "genes")
+   (:var mv4391 :isa regulate :object mv4390 :agent mv4384 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv4414 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4418 :isa interlocutor :name "speaker"))
-  ("Does STAT3 affect the expression of c-fos?" (:var mv4432 :isa polar-question :statement mv4430)
-   (:var mv4430 :isa affect :agent mv4423 :affected-process mv4428 :raw-text "affect")
-   (:var mv4423 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4428 :isa gene-transcript-express :object mv4424 :has-determiner "THE" :raw-text
+   (:var mv4384 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4388 :isa interlocutor :name "speaker"))
+  ("Does STAT3 affect the expression of c-fos?" (:var mv4402 :isa polar-question :statement mv4400)
+   (:var mv4400 :isa affect :agent mv4393 :affected-process mv4398 :raw-text "affect")
+   (:var mv4393 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4398 :isa gene-transcript-express :object mv4394 :has-determiner "THE" :raw-text
     "expression")
-   (:var mv4424 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv4394 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("Does STAT3 affect the expression of the c-fos gene?"
-   (:var mv4444 :isa polar-question :statement mv4442)
-   (:var mv4442 :isa affect :agent mv4433 :affected-process mv4438 :raw-text "affect")
-   (:var mv4433 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4438 :isa gene-transcript-express :object mv4441 :has-determiner "THE" :raw-text
+   (:var mv4414 :isa polar-question :statement mv4412)
+   (:var mv4412 :isa affect :agent mv4403 :affected-process mv4408 :raw-text "affect")
+   (:var mv4403 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4408 :isa gene-transcript-express :object mv4411 :has-determiner "THE" :raw-text
     "expression")
-   (:var mv4441 :isa gene :has-determiner "THE" :expresses mv4434 :raw-text "gene")
-   (:var mv4434 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv4411 :isa gene :has-determiner "THE" :expresses mv4404 :raw-text "gene")
+   (:var mv4404 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("Does STAT3 increase the expression of the c-fos gene?"
-   (:var mv4457 :isa polar-question :statement mv4455)
-   (:var mv4455 :isa increase :agent mv4445 :affected-process mv4451 :raw-text "increase")
-   (:var mv4445 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4451 :isa gene-transcript-express :object mv4454 :has-determiner "THE" :raw-text
+   (:var mv4427 :isa polar-question :statement mv4425)
+   (:var mv4425 :isa increase :agent mv4415 :affected-process mv4421 :raw-text "increase")
+   (:var mv4415 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4421 :isa gene-transcript-express :object mv4424 :has-determiner "THE" :raw-text
     "expression")
-   (:var mv4454 :isa gene :has-determiner "THE" :expresses mv4446 :raw-text "gene")
-   (:var mv4446 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv4424 :isa gene :has-determiner "THE" :expresses mv4416 :raw-text "gene")
+   (:var mv4416 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("Does STAT3 increase transcription of the c-fos gene?"
-   (:var mv4469 :isa polar-question :statement mv4467)
-   (:var mv4467 :isa increase :agent mv4458 :affected-process mv4463 :raw-text "increase")
-   (:var mv4458 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4463 :isa transcribe :object mv4466 :raw-text "transcription")
-   (:var mv4466 :isa gene :has-determiner "THE" :expresses mv4459 :raw-text "gene")
-   (:var mv4459 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("Does stat3 affect the expression of cfos?" (:var mv4479 :isa polar-question :statement mv4477)
-   (:var mv4477 :isa affect :agent mv4470 :affected-process mv4474 :raw-text "affect")
-   (:var mv4470 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4474 :isa gene-transcript-express :object mv4476 :has-determiner "THE" :raw-text
+   (:var mv4439 :isa polar-question :statement mv4437)
+   (:var mv4437 :isa increase :agent mv4428 :affected-process mv4433 :raw-text "increase")
+   (:var mv4428 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4433 :isa transcribe :object mv4436 :raw-text "transcription")
+   (:var mv4436 :isa gene :has-determiner "THE" :expresses mv4429 :raw-text "gene")
+   (:var mv4429 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Does stat3 affect the expression of cfos?" (:var mv4449 :isa polar-question :statement mv4447)
+   (:var mv4447 :isa affect :agent mv4440 :affected-process mv4444 :raw-text "affect")
+   (:var mv4440 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4444 :isa gene-transcript-express :object mv4446 :has-determiner "THE" :raw-text
     "expression")
-   (:var mv4476 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("Does the mTor pathway contain SGK1?" (:var mv4489 :isa polar-question :statement mv4488)
-   (:var mv4488 :isa contain :theme mv4486 :patient mv4480)
-   (:var mv4486 :isa pathway :has-determiner "THE" :modifier mv4483 :raw-text "pathway")
-   (:var mv4483 :isa protein :raw-text "mTor" :uid "UP:P42345" :name "MTOR_HUMAN")
-   (:var mv4480 :isa protein :raw-text "SGK1" :uid "UP:O00141" :name "SGK1_HUMAN"))
+   (:var mv4446 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Does the mTor pathway contain SGK1?" (:var mv4459 :isa polar-question :statement mv4458)
+   (:var mv4458 :isa contain :theme mv4456 :patient mv4450)
+   (:var mv4456 :isa pathway :has-determiner "THE" :modifier mv4453 :raw-text "pathway")
+   (:var mv4453 :isa protein :raw-text "mTor" :uid "UP:P42345" :name "MTOR_HUMAN")
+   (:var mv4450 :isa protein :raw-text "SGK1" :uid "UP:O00141" :name "SGK1_HUMAN"))
   ("Find a treatment for pancreatic cancer."
-   (:var mv4492 :isa bio-find :object mv4494 :present "PRESENT" :raw-text "Find")
-   (:var mv4494 :isa treatment :disease mv4490 :has-determiner "A" :raw-text "treatment")
-   (:var mv4490 :isa cancer :name "pancreatic cancer" :uid "TS-0739"))
+   (:var mv4462 :isa bio-find :object mv4464 :present "PRESENT" :raw-text "Find")
+   (:var mv4464 :isa treatment :disease mv4460 :has-determiner "A" :raw-text "treatment")
+   (:var mv4460 :isa cancer :name "pancreatic cancer" :uid "TS-0739"))
   ("Find genes in the liver regulated by stat3"
-   (:var mv4499 :isa bio-find :object mv4500 :present "PRESENT" :raw-text "Find")
-   (:var mv4500 :isa gene :predication mv4504 :organ mv4503 :raw-text "genes")
-   (:var mv4504 :isa regulate :object mv4500 :agent mv4497 :past "PAST" :raw-text "regulated")
-   (:var mv4497 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4503 :isa liver :has-determiner "THE"))
+   (:var mv4469 :isa bio-find :object mv4470 :present "PRESENT" :raw-text "Find")
+   (:var mv4470 :isa gene :predication mv4474 :organ mv4473 :raw-text "genes")
+   (:var mv4474 :isa regulate :object mv4470 :agent mv4467 :past "PAST" :raw-text "regulated")
+   (:var mv4467 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4473 :isa liver :has-determiner "THE"))
   ("Find genes that stat3 regulates"
-   (:var mv4510 :isa bio-find :object mv4511 :present "PRESENT" :raw-text "Find")
-   (:var mv4511 :isa gene :predication mv4513 :raw-text "genes")
-   (:var mv4513 :isa regulate :object mv4511 :that-rel t :agent mv4508 :present "PRESENT" :raw-text
+   (:var mv4480 :isa bio-find :object mv4481 :present "PRESENT" :raw-text "Find")
+   (:var mv4481 :isa gene :predication mv4483 :raw-text "genes")
+   (:var mv4483 :isa regulate :object mv4481 :that-rel t :agent mv4478 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv4508 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv4478 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("Find transcription factors shared by elk1 and srf"
-   (:var mv4517 :isa bio-find :object mv4514 :present "PRESENT" :raw-text "Find")
-   (:var mv4514 :isa transcription-factor :predication mv4518 :raw-text "transcription factors")
-   (:var mv4518 :isa share :object mv4514 :participant mv4522 :past "PAST" :raw-text "shared")
-   (:var mv4522 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv4515 mv4521))
-   (:var mv4515 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv4521 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv4487 :isa bio-find :object mv4484 :present "PRESENT" :raw-text "Find")
+   (:var mv4484 :isa transcription-factor :predication mv4488 :raw-text "transcription factors")
+   (:var mv4488 :isa share :object mv4484 :participant mv4492 :past "PAST" :raw-text "shared")
+   (:var mv4492 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv4485 mv4491))
+   (:var mv4485 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv4491 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("How does KRAS activate MAPK3?"
-   (:var mv4528 :isa bio-activate :manner mv4525 :agent mv4527 :object mv4524 :present "PRESENT"
+   (:var mv4498 :isa bio-activate :manner mv4495 :agent mv4497 :object mv4494 :present "PRESENT"
     :raw-text "activate")
-   (:var mv4525 :isa how)
-   (:var mv4527 :isa protein :raw-text "KRAS" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv4524 :isa protein :raw-text "MAPK3" :uid "UP:P27361" :name "MK03_HUMAN"))
+   (:var mv4495 :isa how)
+   (:var mv4497 :isa protein :raw-text "KRAS" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv4494 :isa protein :raw-text "MAPK3" :uid "UP:P27361" :name "MK03_HUMAN"))
   ("How does STAT3 regulate the c-fos gene?"
-   (:var mv4533 :isa regulate :manner mv4531 :agent mv4529 :object mv4535 :present "PRESENT"
+   (:var mv4503 :isa regulate :manner mv4501 :agent mv4499 :object mv4505 :present "PRESENT"
     :raw-text "regulate")
-   (:var mv4531 :isa how)
-   (:var mv4529 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4535 :isa gene :has-determiner "THE" :expresses mv4530 :raw-text "gene")
-   (:var mv4530 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv4501 :isa how)
+   (:var mv4499 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4505 :isa gene :has-determiner "THE" :expresses mv4500 :raw-text "gene")
+   (:var mv4500 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("How does knocking out p53 cause cancer via its effect on miRNAs?"
-   (:var mv4550 :isa knock-out :raw-text "knocking out" :cause mv4537 :object mv4554)
-   (:var mv4537 :isa how) (:var mv4554 :isa cancer :modifier mv4541 :modifier mv4541)
-   (:var mv4541 :isa cause :by-means-of mv4552 :raw-text "cause")
-   (:var mv4552 :isa effect :object mv4549 :participant mv4545 :raw-text "effect")
-   (:var mv4549 :isa micro-rna :raw-text "miRNAs")
-   (:var mv4545 :isa pronoun/inanimate :word "its"))
+   (:var mv4520 :isa knock-out :raw-text "knocking out" :cause mv4507 :object mv4524)
+   (:var mv4507 :isa how) (:var mv4524 :isa cancer :modifier mv4511 :modifier mv4511)
+   (:var mv4511 :isa cause :by-means-of mv4522 :raw-text "cause")
+   (:var mv4522 :isa effect :object mv4519 :participant mv4515 :raw-text "effect")
+   (:var mv4519 :isa micro-rna :raw-text "miRNAs")
+   (:var mv4515 :isa pronoun/inanimate :word "its"))
   ("How does stat3 regulate apoptosis in the liver?"
-   (:var mv4558 :isa regulate :manner mv4556 :agent mv4555 :affected-process mv4559 :present
+   (:var mv4528 :isa regulate :manner mv4526 :agent mv4525 :affected-process mv4529 :present
     "PRESENT" :raw-text "regulate")
-   (:var mv4556 :isa how)
-   (:var mv4555 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4559 :isa apoptosis :organ mv4562 :raw-text "apoptosis")
-   (:var mv4562 :isa liver :has-determiner "THE"))
+   (:var mv4526 :isa how)
+   (:var mv4525 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4529 :isa apoptosis :organ mv4532 :raw-text "apoptosis")
+   (:var mv4532 :isa liver :has-determiner "THE"))
   ("How does stat3 regulate apoptosis?"
-   (:var mv4567 :isa regulate :manner mv4565 :agent mv4564 :affected-process mv4568 :present
+   (:var mv4537 :isa regulate :manner mv4535 :agent mv4534 :affected-process mv4538 :present
     "PRESENT" :raw-text "regulate")
-   (:var mv4565 :isa how)
-   (:var mv4564 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4568 :isa apoptosis :raw-text "apoptosis"))
+   (:var mv4535 :isa how)
+   (:var mv4534 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4538 :isa apoptosis :raw-text "apoptosis"))
   ("How does stat3 regulate apoptotic genes?"
-   (:var mv4572 :isa regulate :manner mv4570 :agent mv4569 :object mv4575 :present "PRESENT"
+   (:var mv4542 :isa regulate :manner mv4540 :agent mv4539 :object mv4545 :present "PRESENT"
     :raw-text "regulate")
-   (:var mv4570 :isa how)
-   (:var mv4569 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4575 :isa gene :cellular-process mv4573 :raw-text "genes")
-   (:var mv4573 :isa apoptosis :raw-text "apoptotic"))
+   (:var mv4540 :isa how)
+   (:var mv4539 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4545 :isa gene :cellular-process mv4543 :raw-text "genes")
+   (:var mv4543 :isa apoptosis :raw-text "apoptotic"))
   ("How is stat3 involved in apoptotic regulation?"
-   (:var mv4585 :isa wh-question :statement mv4578 :wh how)
-   (:var mv4578 :isa be :predicate mv4576 :present "PRESENT")
-   (:var mv4576 :isa protein :predication mv4579 :raw-text "stat3" :uid "UP:P40763" :name
+   (:var mv4555 :isa wh-question :statement mv4548 :wh how)
+   (:var mv4548 :isa be :predicate mv4546 :present "PRESENT")
+   (:var mv4546 :isa protein :predication mv4549 :raw-text "stat3" :uid "UP:P40763" :name
     "STAT3_HUMAN")
-   (:var mv4579 :isa involve :object mv4576 :theme mv4583 :past "PAST")
-   (:var mv4583 :isa regulate :|cellular-process-OR-agent| mv4581 :raw-text "regulation")
-   (:var mv4581 :isa apoptosis :raw-text "apoptotic"))
+   (:var mv4549 :isa involve :object mv4546 :theme mv4553 :past "PAST")
+   (:var mv4553 :isa regulate :|cellular-process-OR-agent| mv4551 :raw-text "regulation")
+   (:var mv4551 :isa apoptosis :raw-text "apoptotic"))
   ("How is stat3 involved in apoptotis regulation in the liver?"
-   (:var mv4598 :isa wh-question :statement mv4588 :wh how)
-   (:var mv4588 :isa be :predicate mv4586 :present "PRESENT")
-   (:var mv4586 :isa protein :predication mv4589 :raw-text "stat3" :uid "UP:P40763" :name
+   (:var mv4568 :isa wh-question :statement mv4558 :wh how)
+   (:var mv4558 :isa be :predicate mv4556 :present "PRESENT")
+   (:var mv4556 :isa protein :predication mv4559 :raw-text "stat3" :uid "UP:P40763" :name
     "STAT3_HUMAN")
-   (:var mv4589 :isa involve :object mv4586 :theme mv4591 :past "PAST")
-   (:var mv4591 :isa regulate :organ mv4594 :|agent-OR-object| mv4595 :raw-text "regulation")
-   (:var mv4594 :isa liver :has-determiner "THE") (:var mv4595 :isa bio-entity :name "apoptotis"))
+   (:var mv4559 :isa involve :object mv4556 :theme mv4561 :past "PAST")
+   (:var mv4561 :isa regulate :organ mv4564 :|agent-OR-object| mv4565 :raw-text "regulation")
+   (:var mv4564 :isa liver :has-determiner "THE") (:var mv4565 :isa bio-entity :name "apoptotis"))
   ("How is stat3 involved in regulating apoptosis?"
-   (:var mv4607 :isa wh-question :statement mv4601 :wh how)
-   (:var mv4601 :isa be :predicate mv4599 :present "PRESENT")
-   (:var mv4599 :isa protein :predication mv4602 :raw-text "stat3" :uid "UP:P40763" :name
+   (:var mv4577 :isa wh-question :statement mv4571 :wh how)
+   (:var mv4571 :isa be :predicate mv4569 :present "PRESENT")
+   (:var mv4569 :isa protein :predication mv4572 :raw-text "stat3" :uid "UP:P40763" :name
     "STAT3_HUMAN")
-   (:var mv4602 :isa involve :object mv4599 :theme mv4604 :past "PAST")
-   (:var mv4604 :isa regulate :affected-process mv4605 :progressive "PROGRESSIVE" :raw-text
+   (:var mv4572 :isa involve :object mv4569 :theme mv4574 :past "PAST")
+   (:var mv4574 :isa regulate :affected-process mv4575 :progressive "PROGRESSIVE" :raw-text
     "regulating")
-   (:var mv4605 :isa apoptosis :raw-text "apoptosis"))
+   (:var mv4575 :isa apoptosis :raw-text "apoptosis"))
   ("How is stat3 used to regulate apoptosis?"
-   (:var mv4616 :isa wh-question :statement mv4610 :wh how)
-   (:var mv4610 :isa be :predicate mv4608 :present "PRESENT")
-   (:var mv4608 :isa protein :predication mv4611 :raw-text "stat3" :uid "UP:P40763" :name
+   (:var mv4586 :isa wh-question :statement mv4580 :wh how)
+   (:var mv4580 :isa be :predicate mv4578 :present "PRESENT")
+   (:var mv4578 :isa protein :predication mv4581 :raw-text "stat3" :uid "UP:P40763" :name
     "STAT3_HUMAN")
-   (:var mv4611 :isa bio-use :object mv4608 :theme mv4615 :past "PAST" :raw-text "used")
-   (:var mv4615 :isa regulate :affected-process mv4614 :raw-text "regulate")
-   (:var mv4614 :isa apoptosis :raw-text "apoptosis"))
+   (:var mv4581 :isa bio-use :object mv4578 :theme mv4585 :past "PAST" :raw-text "used")
+   (:var mv4585 :isa regulate :affected-process mv4584 :raw-text "regulate")
+   (:var mv4584 :isa apoptosis :raw-text "apoptosis"))
   ("How many genes are in the MAPK signaling pathway?"
-   (:var mv4628 :isa copular-predication-of-pp :item mv4620 :value mv4627 :prep "IN" :predicate
-    mv4621)
-   (:var mv4620 :isa gene :has-determiner "HOW" :quantifier mv4619 :raw-text "genes")
-   (:var mv4619 :isa many :word "many")
-   (:var mv4627 :isa gene :context mv4617 :has-determiner "HOW" :quantifier mv4619 :raw-text
+   (:var mv4598 :isa copular-predication-of-pp :item mv4590 :value mv4597 :prep "IN" :predicate
+    mv4591)
+   (:var mv4590 :isa gene :has-determiner "HOW" :quantifier mv4589 :raw-text "genes")
+   (:var mv4589 :isa many :word "many")
+   (:var mv4597 :isa gene :context mv4587 :has-determiner "HOW" :quantifier mv4589 :raw-text
     "genes")
-   (:var mv4617 :isa signaling-pathway :has-determiner "THE" :modifier mv4624 :raw-text
+   (:var mv4587 :isa signaling-pathway :has-determiner "THE" :modifier mv4594 :raw-text
     "signaling pathway")
-   (:var mv4624 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
+   (:var mv4594 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -3591,339 +3590,335 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv4621 :isa be :present "PRESENT"))
+   (:var mv4591 :isa be :present "PRESENT"))
   ("How might a STAT3 mutation affect breast cancer?"
-   (:var mv4637 :isa affect :manner mv4632 :modal mv4633 :agent mv4635 :object mv4631 :present
+   (:var mv4607 :isa affect :manner mv4602 :modal mv4603 :agent mv4605 :object mv4601 :present
     "PRESENT" :raw-text "affect")
-   (:var mv4632 :isa how) (:var mv4633 :isa might)
-   (:var mv4635 :isa mutation :has-determiner "A" :|agent-OR-object| mv4630 :raw-text "mutation")
-   (:var mv4630 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4631 :isa cancer :name "breast cancer" :uid "TS-0591"))
-  ("Is STAT3 a regulator for c-fos?" (:var mv4645 :isa polar-question :statement mv4640)
-   (:var mv4640 :isa be :subject mv4638 :predicate mv4642)
-   (:var mv4638 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4642 :isa regulator :theme mv4639 :has-determiner "A" :raw-text "regulator")
-   (:var mv4639 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("Is STAT3 a regulator of c-fos" (:var mv4653 :isa polar-question :statement mv4648)
-   (:var mv4648 :isa be :subject mv4646 :predicate mv4650)
-   (:var mv4646 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4650 :isa regulator :theme mv4647 :has-determiner "A" :raw-text "regulator")
-   (:var mv4647 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("Is STAT3 a regulator of the c-fos gene" (:var mv4663 :isa polar-question :statement mv4656)
-   (:var mv4656 :isa be :subject mv4654 :predicate mv4658)
-   (:var mv4654 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4658 :isa regulator :theme mv4661 :has-determiner "A" :raw-text "regulator")
-   (:var mv4661 :isa gene :has-determiner "THE" :expresses mv4655 :raw-text "gene")
-   (:var mv4655 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("Is STAT3 a regulator of the c-fos gene?" (:var mv4673 :isa polar-question :statement mv4666)
-   (:var mv4666 :isa be :subject mv4664 :predicate mv4668)
-   (:var mv4664 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4668 :isa regulator :theme mv4671 :has-determiner "A" :raw-text "regulator")
-   (:var mv4671 :isa gene :has-determiner "THE" :expresses mv4665 :raw-text "gene")
-   (:var mv4665 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv4602 :isa how) (:var mv4603 :isa might)
+   (:var mv4605 :isa mutation :has-determiner "A" :|agent-OR-object| mv4600 :raw-text "mutation")
+   (:var mv4600 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4601 :isa cancer :name "breast cancer" :uid "TS-0591"))
+  ("Is STAT3 a regulator for c-fos?" (:var mv4615 :isa polar-question :statement mv4610)
+   (:var mv4610 :isa be :subject mv4608 :predicate mv4612)
+   (:var mv4608 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4612 :isa regulator :theme mv4609 :has-determiner "A" :raw-text "regulator")
+   (:var mv4609 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Is STAT3 a regulator of c-fos" (:var mv4623 :isa polar-question :statement mv4618)
+   (:var mv4618 :isa be :subject mv4616 :predicate mv4620)
+   (:var mv4616 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4620 :isa regulator :theme mv4617 :has-determiner "A" :raw-text "regulator")
+   (:var mv4617 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Is STAT3 a regulator of the c-fos gene" (:var mv4633 :isa polar-question :statement mv4626)
+   (:var mv4626 :isa be :subject mv4624 :predicate mv4628)
+   (:var mv4624 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4628 :isa regulator :theme mv4631 :has-determiner "A" :raw-text "regulator")
+   (:var mv4631 :isa gene :has-determiner "THE" :expresses mv4625 :raw-text "gene")
+   (:var mv4625 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Is STAT3 a regulator of the c-fos gene?" (:var mv4643 :isa polar-question :statement mv4636)
+   (:var mv4636 :isa be :subject mv4634 :predicate mv4638)
+   (:var mv4634 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4638 :isa regulator :theme mv4641 :has-determiner "A" :raw-text "regulator")
+   (:var mv4641 :isa gene :has-determiner "THE" :expresses mv4635 :raw-text "gene")
+   (:var mv4635 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("Is STAT3 a transcription factor for c-fos gene"
-   (:var mv4682 :isa polar-question :statement mv4677)
-   (:var mv4677 :isa be :subject mv4674 :predicate mv4675)
-   (:var mv4674 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4675 :isa transcription-factor :controlled-gene mv4680 :has-determiner "A" :raw-text
+   (:var mv4652 :isa polar-question :statement mv4647)
+   (:var mv4647 :isa be :subject mv4644 :predicate mv4645)
+   (:var mv4644 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4645 :isa transcription-factor :controlled-gene mv4650 :has-determiner "A" :raw-text
     "transcription factor")
-   (:var mv4680 :isa gene :expresses mv4676 :raw-text "gene")
-   (:var mv4676 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("Is STAT3 a transcription factor for c-fos" (:var mv4690 :isa polar-question :statement mv4686)
-   (:var mv4686 :isa be :subject mv4683 :predicate mv4684)
-   (:var mv4683 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4684 :isa transcription-factor :controlled-gene mv4685 :has-determiner "A" :raw-text
+   (:var mv4650 :isa gene :expresses mv4646 :raw-text "gene")
+   (:var mv4646 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Is STAT3 a transcription factor for c-fos" (:var mv4660 :isa polar-question :statement mv4656)
+   (:var mv4656 :isa be :subject mv4653 :predicate mv4654)
+   (:var mv4653 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4654 :isa transcription-factor :controlled-gene mv4655 :has-determiner "A" :raw-text
     "transcription factor")
-   (:var mv4685 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("Is STAT3 a transcription factor for c-fos?" (:var mv4698 :isa polar-question :statement mv4694)
-   (:var mv4694 :isa be :subject mv4691 :predicate mv4692)
-   (:var mv4691 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4692 :isa transcription-factor :controlled-gene mv4693 :has-determiner "A" :raw-text
+   (:var mv4655 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Is STAT3 a transcription factor for c-fos?" (:var mv4668 :isa polar-question :statement mv4664)
+   (:var mv4664 :isa be :subject mv4661 :predicate mv4662)
+   (:var mv4661 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4662 :isa transcription-factor :controlled-gene mv4663 :has-determiner "A" :raw-text
     "transcription factor")
-   (:var mv4693 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv4663 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("Is STAT3 a transcription factor for the c-fos gene?"
-   (:var mv4708 :isa polar-question :statement mv4702)
-   (:var mv4702 :isa be :subject mv4699 :predicate mv4700)
-   (:var mv4699 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4700 :isa transcription-factor :controlled-gene mv4706 :has-determiner "A" :raw-text
+   (:var mv4678 :isa polar-question :statement mv4672)
+   (:var mv4672 :isa be :subject mv4669 :predicate mv4670)
+   (:var mv4669 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4670 :isa transcription-factor :controlled-gene mv4676 :has-determiner "A" :raw-text
     "transcription factor")
-   (:var mv4706 :isa gene :has-determiner "THE" :expresses mv4701 :raw-text "gene")
-   (:var mv4701 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("Is STAT3 regulated by c-fos?" (:var mv4715 :isa polar-question :statement mv4712)
-   (:var mv4712 :isa regulate :object mv4709 :agent mv4710 :past "PAST" :raw-text "regulated")
-   (:var mv4709 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4710 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv4676 :isa gene :has-determiner "THE" :expresses mv4671 :raw-text "gene")
+   (:var mv4671 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Is STAT3 regulated by c-fos?" (:var mv4685 :isa polar-question :statement mv4682)
+   (:var mv4682 :isa regulate :object mv4679 :agent mv4680 :past "PAST" :raw-text "regulated")
+   (:var mv4679 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4680 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("Is Stat3 a transcription factor for the c-fos gene"
-   (:var mv4725 :isa polar-question :statement mv4719)
-   (:var mv4719 :isa be :subject mv4716 :predicate mv4717)
-   (:var mv4716 :isa protein :raw-text "Stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4717 :isa transcription-factor :controlled-gene mv4723 :has-determiner "A" :raw-text
+   (:var mv4695 :isa polar-question :statement mv4689)
+   (:var mv4689 :isa be :subject mv4686 :predicate mv4687)
+   (:var mv4686 :isa protein :raw-text "Stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4687 :isa transcription-factor :controlled-gene mv4693 :has-determiner "A" :raw-text
     "transcription factor")
-   (:var mv4723 :isa gene :has-determiner "THE" :expresses mv4718 :raw-text "gene")
-   (:var mv4718 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("List genes regulated by ELK1" (:var mv4727 :isa list :theme mv4728 :present "PRESENT")
-   (:var mv4728 :isa gene :predication mv4729 :raw-text "genes")
-   (:var mv4729 :isa regulate :object mv4728 :agent mv4726 :past "PAST" :raw-text "regulated")
-   (:var mv4726 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
-  ("List genes that are regulated by ELK1" (:var mv4733 :isa list :theme mv4734 :present "PRESENT")
-   (:var mv4734 :isa gene :predication mv4739 :raw-text "genes")
-   (:var mv4739 :isa regulate :object mv4734 :that-rel t :agent mv4732 :present "PRESENT" :raw-text
+   (:var mv4693 :isa gene :has-determiner "THE" :expresses mv4688 :raw-text "gene")
+   (:var mv4688 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("List genes regulated by ELK1" (:var mv4697 :isa list :theme mv4698 :present "PRESENT")
+   (:var mv4698 :isa gene :predication mv4699 :raw-text "genes")
+   (:var mv4699 :isa regulate :object mv4698 :agent mv4696 :past "PAST" :raw-text "regulated")
+   (:var mv4696 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+  ("List genes that are regulated by ELK1" (:var mv4703 :isa list :theme mv4704 :present "PRESENT")
+   (:var mv4704 :isa gene :predication mv4709 :raw-text "genes")
+   (:var mv4709 :isa regulate :object mv4704 :that-rel t :agent mv4702 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv4732 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
-  ("List some genes that stat3 regulates" (:var mv4742 :isa list :theme mv4744 :present "PRESENT")
-   (:var mv4744 :isa gene :predication mv4746 :quantifier mv4743 :raw-text "genes")
-   (:var mv4746 :isa regulate :object mv4744 :that-rel t :agent mv4741 :present "PRESENT" :raw-text
+   (:var mv4702 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+  ("List some genes that stat3 regulates" (:var mv4712 :isa list :theme mv4714 :present "PRESENT")
+   (:var mv4714 :isa gene :predication mv4716 :quantifier mv4713 :raw-text "genes")
+   (:var mv4716 :isa regulate :object mv4714 :that-rel t :agent mv4711 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv4741 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4743 :isa some :word "some"))
-  ("List the genes STAT3 regulates" (:var mv4748 :isa list :theme mv4750 :present "PRESENT")
-   (:var mv4750 :isa gene :predication mv4751 :has-determiner "THE" :raw-text "genes")
-   (:var mv4751 :isa regulate :object mv4750 :agent mv4747 :present "PRESENT" :raw-text
+   (:var mv4711 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4713 :isa some :word "some"))
+  ("List the genes STAT3 regulates" (:var mv4718 :isa list :theme mv4720 :present "PRESENT")
+   (:var mv4720 :isa gene :predication mv4721 :has-determiner "THE" :raw-text "genes")
+   (:var mv4721 :isa regulate :object mv4720 :agent mv4717 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv4747 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv4717 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("List the genes that are regulated by STAT3"
-   (:var mv4753 :isa list :theme mv4755 :present "PRESENT")
-   (:var mv4755 :isa gene :predication mv4760 :has-determiner "THE" :raw-text "genes")
-   (:var mv4760 :isa regulate :object mv4755 :that-rel t :agent mv4752 :present "PRESENT" :raw-text
+   (:var mv4723 :isa list :theme mv4725 :present "PRESENT")
+   (:var mv4725 :isa gene :predication mv4730 :has-determiner "THE" :raw-text "genes")
+   (:var mv4730 :isa regulate :object mv4725 :that-rel t :agent mv4722 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv4752 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
-  ("List the genes which STAT3 regulates" (:var mv4763 :isa list :theme mv4765 :present "PRESENT")
-   (:var mv4765 :isa gene :predication mv4767 :has-determiner "THE" :raw-text "genes")
-   (:var mv4767 :isa regulate :object mv4765 :agent mv4762 :present "PRESENT" :raw-text
+   (:var mv4722 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+  ("List the genes which STAT3 regulates" (:var mv4733 :isa list :theme mv4735 :present "PRESENT")
+   (:var mv4735 :isa gene :predication mv4737 :has-determiner "THE" :raw-text "genes")
+   (:var mv4737 :isa regulate :object mv4735 :agent mv4732 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv4762 :isa protein :has-determiner "WHICH" :raw-text "STAT3" :uid "UP:P40763" :name
+   (:var mv4732 :isa protein :has-determiner "WHICH" :raw-text "STAT3" :uid "UP:P40763" :name
     "STAT3_HUMAN"))
-  ("List the pahtways that involve SRF" (:var mv4768 :isa list :theme mv4770 :present "PRESENT")
-   (:var mv4770 :isa bio-entity :has-determiner "THE" :name "pahtways"))
+  ("List the pahtways that involve SRF" (:var mv4738 :isa list :theme mv4740 :present "PRESENT")
+   (:var mv4740 :isa bio-entity :has-determiner "THE" :name "pahtways"))
   ("Show me genes regulated by ELK1"
-   (:var mv4775 :isa show :|statement-OR-theme| mv4777 :beneficiary mv4776 :present "PRESENT")
-   (:var mv4777 :isa gene :predication mv4778 :raw-text "genes")
-   (:var mv4778 :isa regulate :object mv4777 :agent mv4774 :past "PAST" :raw-text "regulated")
-   (:var mv4774 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv4776 :isa interlocutor :name "speaker"))
+   (:var mv4745 :isa show :|statement-OR-theme| mv4747 :beneficiary mv4746 :present "PRESENT")
+   (:var mv4747 :isa gene :predication mv4748 :raw-text "genes")
+   (:var mv4748 :isa regulate :object mv4747 :agent mv4744 :past "PAST" :raw-text "regulated")
+   (:var mv4744 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv4746 :isa interlocutor :name "speaker"))
   ("Show me genes that are regulated by ELK1"
-   (:var mv4782 :isa show :|statement-OR-theme| mv4784 :beneficiary mv4783 :present "PRESENT")
-   (:var mv4784 :isa gene :predication mv4789 :raw-text "genes")
-   (:var mv4789 :isa regulate :object mv4784 :that-rel t :agent mv4781 :present "PRESENT" :raw-text
+   (:var mv4752 :isa show :|statement-OR-theme| mv4754 :beneficiary mv4753 :present "PRESENT")
+   (:var mv4754 :isa gene :predication mv4759 :raw-text "genes")
+   (:var mv4759 :isa regulate :object mv4754 :that-rel t :agent mv4751 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv4781 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv4783 :isa interlocutor :name "speaker"))
+   (:var mv4751 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv4753 :isa interlocutor :name "speaker"))
   ("Show me genes that stat3 regulates"
-   (:var mv4792 :isa show :|statement-OR-theme| mv4794 :beneficiary mv4793 :present "PRESENT")
-   (:var mv4794 :isa gene :predication mv4796 :raw-text "genes")
-   (:var mv4796 :isa regulate :object mv4794 :that-rel t :agent mv4791 :present "PRESENT" :raw-text
+   (:var mv4762 :isa show :|statement-OR-theme| mv4764 :beneficiary mv4763 :present "PRESENT")
+   (:var mv4764 :isa gene :predication mv4766 :raw-text "genes")
+   (:var mv4766 :isa regulate :object mv4764 :that-rel t :agent mv4761 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv4791 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4793 :isa interlocutor :name "speaker"))
+   (:var mv4761 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4763 :isa interlocutor :name "speaker"))
   ("Show me the pahtways that involve SRF"
-   (:var mv4797 :isa show :|statement-OR-theme| mv4800 :beneficiary mv4798 :present "PRESENT")
-   (:var mv4800 :isa bio-entity :has-determiner "THE" :name "pahtways")
-   (:var mv4798 :isa interlocutor :name "speaker"))
+   (:var mv4767 :isa show :|statement-OR-theme| mv4770 :beneficiary mv4768 :present "PRESENT")
+   (:var mv4770 :isa bio-entity :has-determiner "THE" :name "pahtways")
+   (:var mv4768 :isa interlocutor :name "speaker"))
   ("Show me what transcription factors are shared by elk1 and srf"
-   (:var mv4817 :isa show :statement mv4815 :theme mv4807 :present "PRESENT")
-   (:var mv4815 :isa share :object mv4804 :participant mv4814 :present "PRESENT" :raw-text
+   (:var mv4787 :isa show :statement mv4785 :theme mv4777 :present "PRESENT")
+   (:var mv4785 :isa share :object mv4774 :participant mv4784 :present "PRESENT" :raw-text
     "shared")
-   (:var mv4804 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv4814 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv4805 mv4813))
-   (:var mv4805 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv4813 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv4807 :isa interlocutor :name "speaker"))
+   (:var mv4774 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv4784 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv4775 mv4783))
+   (:var mv4775 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv4783 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv4777 :isa interlocutor :name "speaker"))
   ("Show me which genes are regulated by STAT3"
-   (:var mv4828 :isa show :statement mv4826 :theme mv4820 :present "PRESENT")
-   (:var mv4826 :isa regulate :object mv4822 :agent mv4818 :present "PRESENT" :raw-text
+   (:var mv4798 :isa show :statement mv4796 :theme mv4790 :present "PRESENT")
+   (:var mv4796 :isa regulate :object mv4792 :agent mv4788 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv4822 :isa gene :has-determiner "WHICH" :raw-text "genes")
-   (:var mv4818 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4820 :isa interlocutor :name "speaker"))
+   (:var mv4792 :isa gene :has-determiner "WHICH" :raw-text "genes")
+   (:var mv4788 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4790 :isa interlocutor :name "speaker"))
   ("Show the genes which STAT3 regulates"
-   (:var mv4830 :isa show :|statement-OR-theme| mv4832 :present "PRESENT")
-   (:var mv4832 :isa gene :predication mv4834 :has-determiner "THE" :raw-text "genes")
-   (:var mv4834 :isa regulate :object mv4832 :agent mv4829 :present "PRESENT" :raw-text
+   (:var mv4800 :isa show :|statement-OR-theme| mv4802 :present "PRESENT")
+   (:var mv4802 :isa gene :predication mv4804 :has-determiner "THE" :raw-text "genes")
+   (:var mv4804 :isa regulate :object mv4802 :agent mv4799 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv4829 :isa protein :has-determiner "WHICH" :raw-text "STAT3" :uid "UP:P40763" :name
+   (:var mv4799 :isa protein :has-determiner "WHICH" :raw-text "STAT3" :uid "UP:P40763" :name
     "STAT3_HUMAN"))
   ("Show the pahtways that involve SRF"
-   (:var mv4835 :isa show :|statement-OR-theme| mv4837 :present "PRESENT")
-   (:var mv4837 :isa bio-entity :has-determiner "THE" :name "pahtways"))
+   (:var mv4805 :isa show :|statement-OR-theme| mv4807 :present "PRESENT")
+   (:var mv4807 :isa bio-entity :has-determiner "THE" :name "pahtways"))
   ("Show transcription factors that are shared by elk1 and srf"
-   (:var mv4843 :isa show :|statement-OR-theme| mv4841 :present "PRESENT")
-   (:var mv4841 :isa transcription-factor :predication mv4851 :raw-text "transcription factors")
-   (:var mv4851 :isa share :object mv4841 :that-rel t :participant mv4850 :present "PRESENT"
+   (:var mv4813 :isa show :|statement-OR-theme| mv4811 :present "PRESENT")
+   (:var mv4811 :isa transcription-factor :predication mv4821 :raw-text "transcription factors")
+   (:var mv4821 :isa share :object mv4811 :that-rel t :participant mv4820 :present "PRESENT"
     :raw-text "shared")
-   (:var mv4850 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv4842 mv4849))
-   (:var mv4842 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv4849 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv4820 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv4812 mv4819))
+   (:var mv4812 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv4819 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("Tell me the genes which are regulated by STAT3"
-   (:var mv4854 :isa tell :theme mv4857 :beneficiary mv4855 :present "PRESENT")
-   (:var mv4857 :isa gene :predication mv4864 :has-determiner "THE" :raw-text "genes")
-   (:var mv4864 :isa regulate :object mv4857 :agent mv4853 :present "PRESENT" :raw-text
+   (:var mv4824 :isa tell :theme mv4827 :beneficiary mv4825 :present "PRESENT")
+   (:var mv4827 :isa gene :predication mv4834 :has-determiner "THE" :raw-text "genes")
+   (:var mv4834 :isa regulate :object mv4827 :agent mv4823 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv4853 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4855 :isa interlocutor :name "speaker"))
+   (:var mv4823 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4825 :isa interlocutor :name "speaker"))
   ("Tell me what genes are regulated by elk1 and srf"
-   (:var mv4866 :isa tell :theme mv4876 :theme mv4867 :present "PRESENT")
-   (:var mv4876 :isa regulate :object mv4869 :agent mv4875 :present "PRESENT" :raw-text
+   (:var mv4836 :isa tell :theme mv4846 :theme mv4837 :present "PRESENT")
+   (:var mv4846 :isa regulate :object mv4839 :agent mv4845 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv4869 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv4875 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv4865 mv4874))
-   (:var mv4865 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv4874 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv4867 :isa interlocutor :name "speaker"))
+   (:var mv4839 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv4845 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv4835 mv4844))
+   (:var mv4835 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv4844 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv4837 :isa interlocutor :name "speaker"))
   ("Tell me which genes are regulated by STAT3"
-   (:var mv4879 :isa tell :theme mv4886 :theme mv4880 :present "PRESENT")
-   (:var mv4886 :isa regulate :object mv4882 :agent mv4878 :present "PRESENT" :raw-text
+   (:var mv4849 :isa tell :theme mv4856 :theme mv4850 :present "PRESENT")
+   (:var mv4856 :isa regulate :object mv4852 :agent mv4848 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv4882 :isa gene :has-determiner "WHICH" :raw-text "genes")
-   (:var mv4878 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4880 :isa interlocutor :name "speaker"))
+   (:var mv4852 :isa gene :has-determiner "WHICH" :raw-text "genes")
+   (:var mv4848 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4850 :isa interlocutor :name "speaker"))
   ("What are positive regulators of cfos?"
-   (:var mv4890 :isa be :subject mv4889 :predicate mv4888 :present "PRESENT")
-   (:var mv4889 :isa what)
-   (:var mv4888 :isa positive-regulator :theme mv4892 :raw-text "positive regulators")
-   (:var mv4892 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv4860 :isa be :subject mv4859 :predicate mv4858 :present "PRESENT")
+   (:var mv4859 :isa what)
+   (:var mv4858 :isa positive-regulator :theme mv4862 :raw-text "positive regulators")
+   (:var mv4862 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("What are some regulators of SMURF2?"
-   (:var mv4896 :isa be :subject mv4895 :predicate mv4898 :present "PRESENT")
-   (:var mv4895 :isa what)
-   (:var mv4898 :isa regulator :theme mv4894 :quantifier mv4897 :raw-text "regulators")
-   (:var mv4894 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN")
-   (:var mv4897 :isa some :word "some"))
+   (:var mv4866 :isa be :subject mv4865 :predicate mv4868 :present "PRESENT")
+   (:var mv4865 :isa what)
+   (:var mv4868 :isa regulator :theme mv4864 :quantifier mv4867 :raw-text "regulators")
+   (:var mv4864 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN")
+   (:var mv4867 :isa some :word "some"))
   ("What are the common regulators of ABI2, ABL1, ACADSB, ADGRL1, ADRM1, and AGAP1?"
-   (:var mv4907 :isa be :subject mv4906 :predicate mv4910 :present "PRESENT")
-   (:var mv4906 :isa what)
-   (:var mv4910 :isa regulator :theme mv4914 :has-determiner "THE" :predication mv4909 :raw-text
+   (:var mv4877 :isa be :subject mv4876 :predicate mv4880 :present "PRESENT")
+   (:var mv4876 :isa what)
+   (:var mv4880 :isa regulator :theme mv4884 :has-determiner "THE" :predication mv4879 :raw-text
     "regulators")
-   (:var mv4914 :isa collection :raw-text "ABI2, ABL1, ACADSB, ADGRL1, ADRM1, and AGAP1" :type
-    protein :number 6 :items (mv4901 mv4902 mv4912 mv4903 mv4904 mv4905))
-   (:var mv4901 :isa protein :raw-text "ABI2" :uid "UP:Q9NYB9" :name "ABI2_HUMAN")
-   (:var mv4902 :isa protein :raw-text "ABL1" :uid "UP:P00519" :name "ABL1_HUMAN")
-   (:var mv4912 :isa protein :raw-text "ACADSB" :uid "UP:P45954" :name "ACDSB_HUMAN")
-   (:var mv4903 :isa protein :raw-text "ADGRL1" :uid "UP:O94910" :name "AGRL1_HUMAN")
-   (:var mv4904 :isa protein :raw-text "ADRM1" :uid "UP:Q16186" :name "ADRM1_HUMAN")
-   (:var mv4905 :isa protein :raw-text "AGAP1" :uid "UP:Q9UPQ3" :name "AGAP1_HUMAN")
-   (:var mv4909 :isa common))
+   (:var mv4884 :isa collection :raw-text "ABI2, ABL1, ACADSB, ADGRL1, ADRM1, and AGAP1" :type
+    protein :number 6 :items (mv4871 mv4872 mv4882 mv4873 mv4874 mv4875))
+   (:var mv4871 :isa protein :raw-text "ABI2" :uid "UP:Q9NYB9" :name "ABI2_HUMAN")
+   (:var mv4872 :isa protein :raw-text "ABL1" :uid "UP:P00519" :name "ABL1_HUMAN")
+   (:var mv4882 :isa protein :raw-text "ACADSB" :uid "UP:P45954" :name "ACDSB_HUMAN")
+   (:var mv4873 :isa protein :raw-text "ADGRL1" :uid "UP:O94910" :name "AGRL1_HUMAN")
+   (:var mv4874 :isa protein :raw-text "ADRM1" :uid "UP:Q16186" :name "ADRM1_HUMAN")
+   (:var mv4875 :isa protein :raw-text "AGAP1" :uid "UP:Q9UPQ3" :name "AGAP1_HUMAN")
+   (:var mv4879 :isa common))
   ("What are the common regulators of elk1 and srf"
-   (:var mv4918 :isa be :subject mv4917 :predicate mv4921 :present "PRESENT")
-   (:var mv4917 :isa what)
-   (:var mv4921 :isa regulator :theme mv4925 :has-determiner "THE" :predication mv4920 :raw-text
+   (:var mv4888 :isa be :subject mv4887 :predicate mv4891 :present "PRESENT")
+   (:var mv4887 :isa what)
+   (:var mv4891 :isa regulator :theme mv4895 :has-determiner "THE" :predication mv4890 :raw-text
     "regulators")
-   (:var mv4925 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv4916 mv4924))
-   (:var mv4916 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv4924 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv4920 :isa common))
+   (:var mv4895 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv4886 mv4894))
+   (:var mv4886 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv4894 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv4890 :isa common))
   ("What are the common regulators of elk1 and srg"
-   (:var mv4929 :isa be :subject mv4928 :predicate mv4932 :present "PRESENT")
-   (:var mv4928 :isa what)
-   (:var mv4932 :isa regulator :theme mv4936 :has-determiner "THE" :predication mv4931 :raw-text
+   (:var mv4899 :isa be :subject mv4898 :predicate mv4902 :present "PRESENT")
+   (:var mv4898 :isa what)
+   (:var mv4902 :isa regulator :theme mv4906 :has-determiner "THE" :predication mv4901 :raw-text
     "regulators")
-   (:var mv4936 :isa collection :raw-text "elk1 and srg" :type protein :number 2 :items
-    (mv4927 mv4935))
-   (:var mv4927 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv4935 :isa bio-entity :name "srg") (:var mv4931 :isa common))
+   (:var mv4906 :isa collection :raw-text "elk1 and srg" :type protein :number 2 :items
+    (mv4897 mv4905))
+   (:var mv4897 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv4905 :isa bio-entity :name "srg") (:var mv4901 :isa common))
   ("What are the common regulators of those genes"
-   (:var mv4939 :isa be :subject mv4938 :predicate mv4942 :present "PRESENT")
-   (:var mv4938 :isa what)
-   (:var mv4942 :isa regulator :theme mv4945 :has-determiner "THE" :predication mv4941 :raw-text
+   (:var mv4909 :isa be :subject mv4908 :predicate mv4912 :present "PRESENT")
+   (:var mv4908 :isa what)
+   (:var mv4912 :isa regulator :theme mv4915 :has-determiner "THE" :predication mv4911 :raw-text
     "regulators")
-   (:var mv4945 :isa gene :has-determiner "THOSE" :raw-text "genes") (:var mv4941 :isa common))
+   (:var mv4915 :isa gene :has-determiner "THOSE" :raw-text "genes") (:var mv4911 :isa common))
   ("What are the genes regulated by STAT3?"
-   (:var mv4949 :isa be :subject mv4948 :predicate mv4951 :present "PRESENT")
-   (:var mv4948 :isa what)
-   (:var mv4951 :isa gene :predication mv4952 :has-determiner "THE" :raw-text "genes")
-   (:var mv4952 :isa regulate :object mv4951 :agent mv4947 :past "PAST" :raw-text "regulated")
-   (:var mv4947 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv4919 :isa be :subject mv4918 :predicate mv4921 :present "PRESENT")
+   (:var mv4918 :isa what)
+   (:var mv4921 :isa gene :predication mv4922 :has-determiner "THE" :raw-text "genes")
+   (:var mv4922 :isa regulate :object mv4921 :agent mv4917 :past "PAST" :raw-text "regulated")
+   (:var mv4917 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What are the genes which STAT3 regulates?"
-   (:var mv4957 :isa be :subject mv4956 :predicate mv4959 :present "PRESENT")
-   (:var mv4956 :isa what)
-   (:var mv4959 :isa gene :predication mv4961 :has-determiner "THE" :raw-text "genes")
-   (:var mv4961 :isa regulate :object mv4959 :agent mv4955 :present "PRESENT" :raw-text
+   (:var mv4927 :isa be :subject mv4926 :predicate mv4929 :present "PRESENT")
+   (:var mv4926 :isa what)
+   (:var mv4929 :isa gene :predication mv4931 :has-determiner "THE" :raw-text "genes")
+   (:var mv4931 :isa regulate :object mv4929 :agent mv4925 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv4955 :isa protein :has-determiner "WHICH" :raw-text "STAT3" :uid "UP:P40763" :name
+   (:var mv4925 :isa protein :has-determiner "WHICH" :raw-text "STAT3" :uid "UP:P40763" :name
     "STAT3_HUMAN"))
   ("What are the most frequent regulators of EGFR, SRF, STAT3, JAK2, and SMAD3?"
-   (:var mv4966 :isa be :subject mv4965 :predicate mv4970 :present "PRESENT")
-   (:var mv4965 :isa what)
-   (:var mv4970 :isa regulator :theme mv4975 :has-determiner "THE" :modifier mv4969 :raw-text
+   (:var mv4936 :isa be :subject mv4935 :predicate mv4940 :present "PRESENT")
+   (:var mv4935 :isa what)
+   (:var mv4940 :isa regulator :theme mv4945 :has-determiner "THE" :modifier mv4939 :raw-text
     "regulators")
-   (:var mv4975 :isa collection :raw-text "EGFR, SRF, STAT3, JAK2, and SMAD3" :type protein :number
-    5 :items (mv4972 mv4973 mv4962 mv4963 mv4964))
-   (:var mv4972 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
-   (:var mv4973 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv4962 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4963 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
-   (:var mv4964 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN")
-   (:var mv4969 :isa frequent :comparative mv4968 :name "frequent")
-   (:var mv4968 :isa superlative-quantifier :name "most"))
+   (:var mv4945 :isa collection :raw-text "EGFR, SRF, STAT3, JAK2, and SMAD3" :type protein :number
+    5 :items (mv4942 mv4943 mv4932 mv4933 mv4934))
+   (:var mv4942 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
+   (:var mv4943 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv4932 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4933 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
+   (:var mv4934 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN")
+   (:var mv4939 :isa frequent :comparative mv4938 :name "frequent")
+   (:var mv4938 :isa superlative-quantifier :name "most"))
   ("What are the transcription factors that regulate EGFR, SRF, STAT3, JAK2 and SMAD3?"
-   (:var mv4982 :isa be :subject mv4981 :predicate mv4977 :present "PRESENT")
-   (:var mv4981 :isa what)
-   (:var mv4977 :isa transcription-factor :predication mv4985 :has-determiner "THE" :raw-text
+   (:var mv4952 :isa be :subject mv4951 :predicate mv4947 :present "PRESENT")
+   (:var mv4951 :isa what)
+   (:var mv4947 :isa transcription-factor :predication mv4955 :has-determiner "THE" :raw-text
     "transcription factors")
-   (:var mv4985 :isa regulate :agent mv4977 :that-rel t :object mv4989 :present "PRESENT" :raw-text
+   (:var mv4955 :isa regulate :agent mv4947 :that-rel t :object mv4959 :present "PRESENT" :raw-text
     "regulate")
-   (:var mv4989 :isa collection :raw-text "EGFR, SRF, STAT3, JAK2 and SMAD3" :type protein :number
-    5 :items (mv4986 mv4987 mv4978 mv4979 mv4980))
-   (:var mv4986 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
-   (:var mv4987 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv4978 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv4979 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
-   (:var mv4980 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN"))
+   (:var mv4959 :isa collection :raw-text "EGFR, SRF, STAT3, JAK2 and SMAD3" :type protein :number
+    5 :items (mv4956 mv4957 mv4948 mv4949 mv4950))
+   (:var mv4956 :isa protein :raw-text "EGFR" :uid "UP:P00533" :name "EGFR_HUMAN")
+   (:var mv4957 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv4948 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv4949 :isa protein :raw-text "JAK2" :uid "UP:O60674" :name "JAK2_HUMAN")
+   (:var mv4950 :isa protein :raw-text "SMAD3" :uid "UP:P84022" :name "SMAD3_HUMAN"))
   ("What other genes are in the first pathway?"
-   (:var mv5001 :isa copular-predication-of-pp :item mv4992 :value mv5000 :prep "IN" :predicate
-    mv4993)
-   (:var mv4992 :isa gene :has-determiner "WHAT" :quantifier mv4991 :raw-text "genes")
-   (:var mv4991 :isa other :word "other")
-   (:var mv5000 :isa gene :context mv4997 :has-determiner "WHAT" :quantifier mv4991 :raw-text
+   (:var mv4971 :isa copular-predication-of-pp :item mv4962 :value mv4970 :prep "IN" :predicate
+    mv4963)
+   (:var mv4962 :isa gene :has-determiner "WHAT" :modifier mv4961 :raw-text "genes")
+   (:var mv4961 :isa other :name "other")
+   (:var mv4970 :isa gene :context mv4967 :has-determiner "WHAT" :modifier mv4961 :raw-text
     "genes")
-   (:var mv4997 :isa pathway :quantifier mv4996 :raw-text "pathway")
-   (:var mv4996 :isa ordinal :has-determiner "THE" :word "first" :number 1)
-   (:var mv4993 :isa be :present "PRESENT"))
+   (:var mv4967 :isa pathway :has-determiner "THE" :ordinal 1 :raw-text "pathway")
+   (:var mv4963 :isa be :present "PRESENT"))
   ("What other proteins are in the first pathway?"
-   (:var mv5014 :isa copular-predication-of-pp :item mv5005 :value mv5013 :prep "IN" :predicate
-    mv5006)
-   (:var mv5005 :isa protein :has-determiner "WHAT" :quantifier mv5004 :raw-text "proteins")
-   (:var mv5004 :isa other :word "other")
-   (:var mv5013 :isa protein :|context-OR-in-pathway| mv5010 :has-determiner "WHAT" :quantifier
-    mv5004 :raw-text "proteins")
-   (:var mv5010 :isa pathway :quantifier mv5009 :raw-text "pathway")
-   (:var mv5009 :isa ordinal :has-determiner "THE" :word "first" :number 1)
-   (:var mv5006 :isa be :present "PRESENT"))
-  ("What pathways are they in?" (:var mv5021 :isa wh-question :statement mv5020 :var nil :wh what)
-   (:var mv5020 :isa in :word "in"))
+   (:var mv4984 :isa copular-predication-of-pp :item mv4975 :value mv4983 :prep "IN" :predicate
+    mv4976)
+   (:var mv4975 :isa protein :has-determiner "WHAT" :modifier mv4974 :raw-text "proteins")
+   (:var mv4974 :isa other :name "other")
+   (:var mv4983 :isa protein :|context-OR-in-pathway| mv4980 :has-determiner "WHAT" :modifier
+    mv4974 :raw-text "proteins")
+   (:var mv4980 :isa pathway :has-determiner "THE" :ordinal 1 :raw-text "pathway")
+   (:var mv4976 :isa be :present "PRESENT"))
+  ("What pathways are they in?" (:var mv4991 :isa wh-question :statement mv4990 :var nil :wh what)
+   (:var mv4990 :isa in :word "in"))
   ("What proteins are in the first pathway"
-   (:var mv5036 :isa copular-predication-of-pp :item mv5027 :value mv5035 :prep "IN" :predicate
-    mv5028)
-   (:var mv5027 :isa protein :has-determiner "WHAT" :raw-text "proteins")
-   (:var mv5035 :isa protein :|context-OR-in-pathway| mv5032 :has-determiner "WHAT" :raw-text
+   (:var mv5006 :isa copular-predication-of-pp :item mv4997 :value mv5005 :prep "IN" :predicate
+    mv4998)
+   (:var mv4997 :isa protein :has-determiner "WHAT" :raw-text "proteins")
+   (:var mv5005 :isa protein :|context-OR-in-pathway| mv5002 :has-determiner "WHAT" :raw-text
     "proteins")
-   (:var mv5032 :isa pathway :quantifier mv5031 :raw-text "pathway")
-   (:var mv5031 :isa ordinal :has-determiner "THE" :word "first" :number 1)
-   (:var mv5028 :isa be :present "PRESENT"))
+   (:var mv5002 :isa pathway :has-determiner "THE" :ordinal 1 :raw-text "pathway")
+   (:var mv4998 :isa be :present "PRESENT"))
   ("What pathways involve frizzled8?"
-   (:var mv5041 :isa involve :theme mv5040 :object mv5038 :present "PRESENT")
-   (:var mv5040 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv5038 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
+   (:var mv5011 :isa involve :theme mv5010 :object mv5008 :present "PRESENT")
+   (:var mv5010 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv5008 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
   ("What genes are in the first pathway"
-   (:var mv5052 :isa copular-predication-of-pp :item mv5043 :value mv5051 :prep "IN" :predicate
-    mv5044)
-   (:var mv5043 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv5051 :isa gene :context mv5048 :has-determiner "WHAT" :raw-text "genes")
-   (:var mv5048 :isa pathway :quantifier mv5047 :raw-text "pathway")
-   (:var mv5047 :isa ordinal :has-determiner "THE" :word "first" :number 1)
-   (:var mv5044 :isa be :present "PRESENT"))
+   (:var mv5022 :isa copular-predication-of-pp :item mv5013 :value mv5021 :prep "IN" :predicate
+    mv5014)
+   (:var mv5013 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv5021 :isa gene :context mv5018 :has-determiner "WHAT" :raw-text "genes")
+   (:var mv5018 :isa pathway :has-determiner "THE" :ordinal 1 :raw-text "pathway")
+   (:var mv5014 :isa be :present "PRESENT"))
   ("What questions can you answer about microRNAs?"
-   (:var mv5064 :isa answer :patient mv5055 :modal mv5057 :agent mv5058 :theme mv5062 :present
+   (:var mv5034 :isa answer :patient mv5025 :modal mv5027 :agent mv5028 :theme mv5032 :present
     "PRESENT")
-   (:var mv5055 :isa bio-question :has-determiner "WHAT") (:var mv5057 :isa can)
-   (:var mv5058 :isa interlocutor :name "hearer")
-   (:var mv5062 :isa micro-rna :raw-text "microRNAs"))
+   (:var mv5025 :isa bio-question :has-determiner "WHAT") (:var mv5027 :isa can)
+   (:var mv5028 :isa interlocutor :name "hearer")
+   (:var mv5032 :isa micro-rna :raw-text "microRNAs"))
   ("What transcription factors regulate mothers against decapentaplegic?"
-   (:var mv5068 :isa regulate :agent mv5065 :object mv5066 :present "PRESENT" :raw-text "regulate")
-   (:var mv5065 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv5066 :isa protein-family :raw-text "mothers against decapentaplegic" :name "SMAD" :count
+   (:var mv5038 :isa regulate :agent mv5035 :object mv5036 :present "PRESENT" :raw-text "regulate")
+   (:var mv5035 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv5036 :isa protein-family :raw-text "mothers against decapentaplegic" :name "SMAD" :count
     8 :family-members
     ((protein (:name "SMAD6_HUMAN") (:uid "UP:O43541"))
      (protein (:name "SMAD9_HUMAN") (:uid "UP:O15198"))
@@ -3935,25 +3930,25 @@
      (protein (:name "SMAD3_HUMAN") (:uid "UP:P84022")))
     :uid "FPLX:SMAD"))
   ("Where does stat3 regulate cfos"
-   (:var mv5072 :isa regulate :location mv5070 :agent mv5069 :object mv5073 :present "PRESENT"
+   (:var mv5042 :isa regulate :location mv5040 :agent mv5039 :object mv5043 :present "PRESENT"
     :raw-text "regulate")
-   (:var mv5070 :isa where)
-   (:var mv5069 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv5073 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv5040 :isa where)
+   (:var mv5039 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv5043 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("Which KEGG pathways involve ATP?"
-   (:var mv5077 :isa involve :theme mv5076 :object mv5078 :present "PRESENT")
-   (:var mv5076 :isa pathway :has-determiner "WHICH" :modifier mv5075 :raw-text "pathways")
-   (:var mv5075 :isa database :name "KEGG" :uid "KEGG")
-   (:var mv5078 :isa nucleotide :raw-text "ATP" :name "adenosine 5'-triphosphate" :uid
+   (:var mv5047 :isa involve :theme mv5046 :object mv5048 :present "PRESENT")
+   (:var mv5046 :isa pathway :has-determiner "WHICH" :modifier mv5045 :raw-text "pathways")
+   (:var mv5045 :isa database :name "KEGG" :uid "KEGG")
+   (:var mv5048 :isa nucleotide :raw-text "ATP" :name "adenosine 5'-triphosphate" :uid
     "PCID:5957"))
   ("Which genes are in the MAPK signaling pathway?"
-   (:var mv5089 :isa copular-predication-of-pp :item mv5081 :value mv5088 :prep "IN" :predicate
-    mv5082)
-   (:var mv5081 :isa gene :has-determiner "WHICH" :raw-text "genes")
-   (:var mv5088 :isa gene :context mv5079 :has-determiner "WHICH" :raw-text "genes")
-   (:var mv5079 :isa signaling-pathway :has-determiner "THE" :modifier mv5085 :raw-text
+   (:var mv5059 :isa copular-predication-of-pp :item mv5051 :value mv5058 :prep "IN" :predicate
+    mv5052)
+   (:var mv5051 :isa gene :has-determiner "WHICH" :raw-text "genes")
+   (:var mv5058 :isa gene :context mv5049 :has-determiner "WHICH" :raw-text "genes")
+   (:var mv5049 :isa signaling-pathway :has-determiner "THE" :modifier mv5055 :raw-text
     "signaling pathway")
-   (:var mv5085 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
+   (:var mv5055 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -3969,14 +3964,14 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv5082 :isa be :present "PRESENT"))
+   (:var mv5052 :isa be :present "PRESENT"))
   ("Which genes are involved in the oncogenic MAPK signaling pathway?"
-   (:var mv5100 :isa involve :object mv5093 :|context-OR-theme| mv5091 :present "PRESENT")
-   (:var mv5093 :isa gene :has-determiner "WHICH" :raw-text "genes")
-   (:var mv5091 :isa signaling-pathway :has-determiner "THE" :predication mv5098 :modifier mv5099
+   (:var mv5070 :isa involve :object mv5063 :|context-OR-theme| mv5061 :present "PRESENT")
+   (:var mv5063 :isa gene :has-determiner "WHICH" :raw-text "genes")
+   (:var mv5061 :isa signaling-pathway :has-determiner "THE" :predication mv5068 :modifier mv5069
     :raw-text "signaling pathway")
-   (:var mv5098 :isa oncogenic)
-   (:var mv5099 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
+   (:var mv5068 :isa oncogenic)
+   (:var mv5069 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -3993,100 +3988,100 @@
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019"))
   ("Which kinases regulate x?"
-   (:var mv5104 :isa regulate :agent mv5103 :object mv5105 :present "PRESENT" :raw-text "regulate")
-   (:var mv5103 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
-   (:var mv5105 :isa bio-entity :name "x"))
+   (:var mv5074 :isa regulate :agent mv5073 :object mv5075 :present "PRESENT" :raw-text "regulate")
+   (:var mv5073 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
+   (:var mv5075 :isa bio-entity :name "x"))
   ("Which kinases negatively regulate x?"
-   (:var mv5106 :isa downregulate :agent mv5108 :object mv5109 :present "PRESENT" :raw-text
+   (:var mv5076 :isa downregulate :agent mv5078 :object mv5079 :present "PRESENT" :raw-text
     "negatively regulate")
-   (:var mv5108 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
-   (:var mv5109 :isa bio-entity :name "x"))
+   (:var mv5078 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
+   (:var mv5079 :isa bio-entity :name "x"))
   ("Which kinases positively regulate x?"
-   (:var mv5110 :isa upregulate :agent mv5112 :object mv5113 :present "PRESENT" :raw-text
+   (:var mv5080 :isa upregulate :agent mv5082 :object mv5083 :present "PRESENT" :raw-text
     "positively regulate")
-   (:var mv5112 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
-   (:var mv5113 :isa bio-entity :name "x"))
+   (:var mv5082 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
+   (:var mv5083 :isa bio-entity :name "x"))
   ("Which of these are in immune pathways?"
-   (:var mv5122 :isa copular-predication-of-pp :item mv5116 :value mv5120 :prep mv5118 :predicate
-    mv5117)
-   (:var mv5116 :isa these :quantifier mv5114 :word "these") (:var mv5114 :isa which)
-   (:var mv5120 :isa pathway :modifier mv5119 :raw-text "pathways")
-   (:var mv5119 :isa immune :name "immune") (:var mv5118 :isa in :word "in")
-   (:var mv5117 :isa be :present "PRESENT"))
+   (:var mv5092 :isa copular-predication-of-pp :item mv5086 :value mv5090 :prep mv5088 :predicate
+    mv5087)
+   (:var mv5086 :isa these :quantifier mv5084 :word "these") (:var mv5084 :isa which)
+   (:var mv5090 :isa pathway :modifier mv5089 :raw-text "pathways")
+   (:var mv5089 :isa immune :name "immune") (:var mv5088 :isa in :word "in")
+   (:var mv5087 :isa be :present "PRESENT"))
   ("Which of these are in immune system pathways?"
-   (:var mv5132 :isa copular-predication-of-pp :item mv5127 :value mv5130 :prep mv5129 :predicate
-    mv5128)
-   (:var mv5127 :isa these :quantifier mv5125 :word "these") (:var mv5125 :isa which)
-   (:var mv5130 :isa pathway :non-cellular-location mv5124 :raw-text "pathways")
-   (:var mv5124 :isa bio-organ :name "immune system" :uid "UBERON:0002405")
-   (:var mv5129 :isa in :word "in") (:var mv5128 :isa be :present "PRESENT"))
+   (:var mv5102 :isa copular-predication-of-pp :item mv5097 :value mv5100 :prep mv5099 :predicate
+    mv5098)
+   (:var mv5097 :isa these :quantifier mv5095 :word "these") (:var mv5095 :isa which)
+   (:var mv5100 :isa pathway :non-cellular-location mv5094 :raw-text "pathways")
+   (:var mv5094 :isa bio-organ :name "immune system" :uid "UBERON:0002405")
+   (:var mv5099 :isa in :word "in") (:var mv5098 :isa be :present "PRESENT"))
   ("What are the genes STAT3 regulates?"
-   (:var mv5136 :isa be :subject mv5135 :predicate mv5138 :present "PRESENT")
-   (:var mv5135 :isa what)
-   (:var mv5138 :isa gene :predication mv5139 :has-determiner "THE" :raw-text "genes")
-   (:var mv5139 :isa regulate :object mv5138 :agent mv5134 :present "PRESENT" :raw-text
+   (:var mv5106 :isa be :subject mv5105 :predicate mv5108 :present "PRESENT")
+   (:var mv5105 :isa what)
+   (:var mv5108 :isa gene :predication mv5109 :has-determiner "THE" :raw-text "genes")
+   (:var mv5109 :isa regulate :object mv5108 :agent mv5104 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv5134 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv5104 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("Which of those are in the immune pathway?"
-   (:var mv5149 :isa copular-predication-of-pp :item mv5142 :value mv5147 :prep mv5144 :predicate
-    mv5143)
-   (:var mv5142 :isa those :quantifier mv5140 :word "those") (:var mv5140 :isa which)
-   (:var mv5147 :isa pathway :has-determiner "THE" :modifier mv5146 :raw-text "pathway")
-   (:var mv5146 :isa immune :name "immune") (:var mv5144 :isa in :word "in")
-   (:var mv5143 :isa be :present "PRESENT"))
+   (:var mv5119 :isa copular-predication-of-pp :item mv5112 :value mv5117 :prep mv5114 :predicate
+    mv5113)
+   (:var mv5112 :isa those :quantifier mv5110 :word "those") (:var mv5110 :isa which)
+   (:var mv5117 :isa pathway :has-determiner "THE" :modifier mv5116 :raw-text "pathway")
+   (:var mv5116 :isa immune :name "immune") (:var mv5114 :isa in :word "in")
+   (:var mv5113 :isa be :present "PRESENT"))
   ("Which pathways involve p53?"
-   (:var mv5154 :isa involve :theme mv5153 :object mv5151 :present "PRESENT")
-   (:var mv5153 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
-   (:var mv5151 :isa protein :raw-text "p53" :uid "UP:P04637" :name "P53_HUMAN"))
+   (:var mv5124 :isa involve :theme mv5123 :object mv5121 :present "PRESENT")
+   (:var mv5123 :isa pathway :has-determiner "WHICH" :raw-text "pathways")
+   (:var mv5121 :isa protein :raw-text "p53" :uid "UP:P04637" :name "P53_HUMAN"))
   ("can you show me the pahtways that involve SRF"
-   (:var mv5164 :isa polar-question :statement mv5157)
-   (:var mv5157 :isa show :agent mv5156 :|statement-OR-theme| mv5160 :beneficiary mv5158 :modal
+   (:var mv5134 :isa polar-question :statement mv5127)
+   (:var mv5127 :isa show :agent mv5126 :|statement-OR-theme| mv5130 :beneficiary mv5128 :modal
     "CAN")
-   (:var mv5156 :isa interlocutor :name "hearer")
-   (:var mv5160 :isa bio-entity :has-determiner "THE" :name "pahtways")
-   (:var mv5158 :isa interlocutor :name "speaker"))
-  ("Does Selumetinib inhibit MAP2K1?" (:var mv5170 :isa polar-question :statement mv5169)
-   (:var mv5169 :isa inhibit :agent mv5167 :object mv5165 :raw-text "inhibit")
-   (:var mv5167 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622")
-   (:var mv5165 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
+   (:var mv5126 :isa interlocutor :name "hearer")
+   (:var mv5130 :isa bio-entity :has-determiner "THE" :name "pahtways")
+   (:var mv5128 :isa interlocutor :name "speaker"))
+  ("Does Selumetinib inhibit MAP2K1?" (:var mv5140 :isa polar-question :statement mv5139)
+   (:var mv5139 :isa inhibit :agent mv5137 :object mv5135 :raw-text "inhibit")
+   (:var mv5137 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622")
+   (:var mv5135 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
   ("Let's build a model of the KRAS neighborhood."
-   (:var mv5180 :isa explicit-suggestion :suggestion mv5172 :marker let-as-directive)
-   (:var mv5172 :isa build :artifact mv5174 :present "PRESENT")
-   (:var mv5174 :isa model :object mv5178 :has-determiner "A")
-   (:var mv5178 :isa neighborhood :has-determiner "THE" :modifier mv5177)
-   (:var mv5177 :isa protein :raw-text "KRAS" :uid "UP:P01116" :name "RASK_HUMAN"))
+   (:var mv5150 :isa explicit-suggestion :suggestion mv5142 :marker let-as-directive)
+   (:var mv5142 :isa build :artifact mv5144 :present "PRESENT")
+   (:var mv5144 :isa model :object mv5148 :has-determiner "A")
+   (:var mv5148 :isa neighborhood :has-determiner "THE" :modifier mv5147)
+   (:var mv5147 :isa protein :raw-text "KRAS" :uid "UP:P01116" :name "RASK_HUMAN"))
   ("I know that KRAS activates Raf, Raf activates Mek and Mek activates Erk."
-   (:var mv5198 :isa collection :type know :number 2 :items (mv5196 mv5197))
-   (:var mv5196 :isa know :agent mv5181 :statement mv5187 :present "PRESENT")
-   (:var mv5181 :isa interlocutor :name "speaker")
-   (:var mv5187 :isa bio-activate :agent mv5186 :object mv5188 :present "PRESENT" :raw-text
+   (:var mv5168 :isa collection :type know :number 2 :items (mv5166 mv5167))
+   (:var mv5166 :isa know :agent mv5151 :statement mv5157 :present "PRESENT")
+   (:var mv5151 :isa interlocutor :name "speaker")
+   (:var mv5157 :isa bio-activate :agent mv5156 :object mv5158 :present "PRESENT" :raw-text
     "activates")
-   (:var mv5186 :isa protein :raw-text "KRAS" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv5188 :isa protein-family :raw-text "Raf" :name "Raf" :count 3 :family-members
+   (:var mv5156 :isa protein :raw-text "KRAS" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv5158 :isa protein-family :raw-text "Raf" :name "Raf" :count 3 :family-members
     ((protein (:name "RAF1_HUMAN") (:uid "UP:P04049"))
      (protein (:name "BRAF_HUMAN") (:uid "UP:P15056"))
      (protein (:name "ARAF_HUMAN") (:uid "UP:P10398")))
     :uid "FA:03114")
-   (:var mv5197 :isa collection :raw-text "Raf activates Mek and Mek activates Erk" :type
-    bio-activate :number 2 :items (mv5190 mv5194))
-   (:var mv5190 :isa bio-activate :agent mv5189 :object mv5191 :present "PRESENT" :raw-text
+   (:var mv5167 :isa collection :raw-text "Raf activates Mek and Mek activates Erk" :type
+    bio-activate :number 2 :items (mv5160 mv5164))
+   (:var mv5160 :isa bio-activate :agent mv5159 :object mv5161 :present "PRESENT" :raw-text
     "activates")
-   (:var mv5189 :isa protein-family :raw-text "Raf" :name "Raf" :count 3 :family-members
+   (:var mv5159 :isa protein-family :raw-text "Raf" :name "Raf" :count 3 :family-members
     ((protein (:name "RAF1_HUMAN") (:uid "UP:P04049"))
      (protein (:name "BRAF_HUMAN") (:uid "UP:P15056"))
      (protein (:name "ARAF_HUMAN") (:uid "UP:P10398")))
     :uid "FA:03114")
-   (:var mv5191 :isa protein-family :raw-text "Mek" :name "MEK" :count 2 :family-members
+   (:var mv5161 :isa protein-family :raw-text "Mek" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv5194 :isa bio-activate :agent mv5193 :object mv5195 :present "PRESENT" :raw-text
+   (:var mv5164 :isa bio-activate :agent mv5163 :object mv5165 :present "PRESENT" :raw-text
     "activates")
-   (:var mv5193 :isa protein-family :raw-text "Mek" :name "MEK" :count 2 :family-members
+   (:var mv5163 :isa protein-family :raw-text "Mek" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv5195 :isa protein-family :raw-text "Erk" :name "ERK" :count 7 :family-members
+   (:var mv5165 :isa protein-family :raw-text "Erk" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4096,83 +4091,83 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("MAP2K1 phosphorylates MAPK1."
-   (:var mv5201 :isa phosphorylate :agent mv5199 :substrate mv5200 :present "PRESENT" :raw-text
+   (:var mv5171 :isa phosphorylate :agent mv5169 :substrate mv5170 :present "PRESENT" :raw-text
     "phosphorylates")
-   (:var mv5199 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
-   (:var mv5200 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
+   (:var mv5169 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
+   (:var mv5170 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
   ("DUSP6 dephosphorylates MAPK1."
-   (:var mv5204 :isa dephosphorylate :agent mv5202 :substrate mv5203 :present "PRESENT" :raw-text
+   (:var mv5174 :isa dephosphorylate :agent mv5172 :substrate mv5173 :present "PRESENT" :raw-text
     "dephosphorylates")
-   (:var mv5202 :isa protein :raw-text "DUSP6" :uid "UP:Q16828" :name "DUS6_HUMAN")
-   (:var mv5203 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
+   (:var mv5172 :isa protein :raw-text "DUSP6" :uid "UP:Q16828" :name "DUS6_HUMAN")
+   (:var mv5173 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN"))
   ("Is the amount of phosphorylated MAPK1 always high?"
-   (:var mv5215 :isa polar-question :statement mv5214)
-   (:var mv5214 :isa copular-predication :item mv5208 :value mv5212 :predicate mv5206)
-   (:var mv5208 :isa bio-amount :measured-item mv5205 :has-determiner "THE" :raw-text "amount")
-   (:var mv5205 :isa protein :predication mv5210 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv5185 :isa polar-question :statement mv5184)
+   (:var mv5184 :isa copular-predication :item mv5178 :value mv5182 :predicate mv5176)
+   (:var mv5178 :isa bio-amount :measured-item mv5175 :has-determiner "THE" :raw-text "amount")
+   (:var mv5175 :isa protein :predication mv5180 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv5210 :isa phosphorylate :substrate mv5205 :raw-text "phosphorylated")
-   (:var mv5212 :isa high :adverb mv5211) (:var mv5211 :isa always :name "always")
-   (:var mv5206 :isa be))
+   (:var mv5180 :isa phosphorylate :substrate mv5175 :raw-text "phosphorylated")
+   (:var mv5182 :isa high :adverb mv5181) (:var mv5181 :isa always :name "always")
+   (:var mv5176 :isa be))
   ("Is the amount of phosphorylated MAPK1 always low?"
-   (:var mv5226 :isa polar-question :statement mv5225)
-   (:var mv5225 :isa copular-predication :item mv5219 :value mv5223 :predicate mv5217)
-   (:var mv5219 :isa bio-amount :measured-item mv5216 :has-determiner "THE" :raw-text "amount")
-   (:var mv5216 :isa protein :predication mv5221 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv5196 :isa polar-question :statement mv5195)
+   (:var mv5195 :isa copular-predication :item mv5189 :value mv5193 :predicate mv5187)
+   (:var mv5189 :isa bio-amount :measured-item mv5186 :has-determiner "THE" :raw-text "amount")
+   (:var mv5186 :isa protein :predication mv5191 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv5221 :isa phosphorylate :substrate mv5216 :raw-text "phosphorylated")
-   (:var mv5223 :isa low :adverb mv5222) (:var mv5222 :isa always :name "always")
-   (:var mv5217 :isa be))
-  ("Does the MAP2K1-MAPK1 complex vanish?" (:var mv5236 :isa polar-question :statement mv5235)
-   (:var mv5235 :isa vanish :agent mv5234 :raw-text "vanish")
-   (:var mv5234 :isa bio-complex :has-determiner "THE" :raw-text "MAP2K1-MAPK1" :component mv5228
-    :component mv5227)
-   (:var mv5228 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
-   (:var mv5227 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
-  ("Does the DUSP6-MAPK1 complex vanish?" (:var mv5246 :isa polar-question :statement mv5245)
-   (:var mv5245 :isa vanish :agent mv5244 :raw-text "vanish")
-   (:var mv5244 :isa bio-complex :has-determiner "THE" :raw-text "DUSP6-MAPK1" :component mv5238
-    :component mv5237)
-   (:var mv5238 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
-   (:var mv5237 :isa protein :raw-text "DUSP6" :uid "UP:Q16828" :name "DUS6_HUMAN"))
+   (:var mv5191 :isa phosphorylate :substrate mv5186 :raw-text "phosphorylated")
+   (:var mv5193 :isa low :adverb mv5192) (:var mv5192 :isa always :name "always")
+   (:var mv5187 :isa be))
+  ("Does the MAP2K1-MAPK1 complex vanish?" (:var mv5206 :isa polar-question :statement mv5205)
+   (:var mv5205 :isa vanish :agent mv5204 :raw-text "vanish")
+   (:var mv5204 :isa bio-complex :has-determiner "THE" :raw-text "MAP2K1-MAPK1" :component mv5198
+    :component mv5197)
+   (:var mv5198 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
+   (:var mv5197 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
+  ("Does the DUSP6-MAPK1 complex vanish?" (:var mv5216 :isa polar-question :statement mv5215)
+   (:var mv5215 :isa vanish :agent mv5214 :raw-text "vanish")
+   (:var mv5214 :isa bio-complex :has-determiner "THE" :raw-text "DUSP6-MAPK1" :component mv5208
+    :component mv5207)
+   (:var mv5208 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
+   (:var mv5207 :isa protein :raw-text "DUSP6" :uid "UP:Q16828" :name "DUS6_HUMAN"))
   ("Does the amount of phosphorylated MAPK1 vanish if we increase the amount of DUSP6 by 10 fold?"
-   (:var mv5276 :isa polar-question :statement mv5275)
-   (:var mv5275 :isa event-relation :subordinated-event mv5272 :event mv5268)
-   (:var mv5272 :isa wh-question :statement mv5269 :wh if)
-   (:var mv5269 :isa increase :|agent-OR-cause| mv5256 :|multiplier-OR-cause| mv5267
-    :|affected-process-OR-object| mv5260 :raw-text "increase")
-   (:var mv5256 :isa interlocutor :name "person-and-machine")
-   (:var mv5267 :isa measurement :number mv5264) (:var mv5264 :isa number :value 10)
-   (:var mv5260 :isa bio-amount :measured-item mv5248 :has-determiner "THE" :raw-text "amount")
-   (:var mv5248 :isa protein :raw-text "DUSP6" :uid "UP:Q16828" :name "DUS6_HUMAN")
-   (:var mv5268 :isa vanish :cause mv5251 :raw-text "vanish")
-   (:var mv5251 :isa bio-amount :measured-item mv5247 :has-determiner "THE" :raw-text "amount")
-   (:var mv5247 :isa protein :predication mv5253 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv5246 :isa polar-question :statement mv5245)
+   (:var mv5245 :isa event-relation :subordinated-event mv5242 :event mv5238)
+   (:var mv5242 :isa wh-question :statement mv5239 :wh if)
+   (:var mv5239 :isa increase :|agent-OR-cause| mv5226 :|multiplier-OR-cause| mv5237
+    :|affected-process-OR-object| mv5230 :raw-text "increase")
+   (:var mv5226 :isa interlocutor :name "person-and-machine")
+   (:var mv5237 :isa measurement :number mv5234) (:var mv5234 :isa number :value 10)
+   (:var mv5230 :isa bio-amount :measured-item mv5218 :has-determiner "THE" :raw-text "amount")
+   (:var mv5218 :isa protein :raw-text "DUSP6" :uid "UP:Q16828" :name "DUS6_HUMAN")
+   (:var mv5238 :isa vanish :cause mv5221 :raw-text "vanish")
+   (:var mv5221 :isa bio-amount :measured-item mv5217 :has-determiner "THE" :raw-text "amount")
+   (:var mv5217 :isa protein :predication mv5223 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv5253 :isa phosphorylate :substrate mv5247 :raw-text "phosphorylated"))
+   (:var mv5223 :isa phosphorylate :substrate mv5217 :raw-text "phosphorylated"))
   ("Show me the evidence that kras regulates fzd8."
-   (:var mv5278 :isa show :|statement-OR-theme| mv5285 :beneficiary mv5279 :present "PRESENT")
-   (:var mv5285 :isa evidence :statement mv5284 :has-determiner "THE")
-   (:var mv5284 :isa regulate :agent mv5283 :object mv5277 :present "PRESENT" :raw-text
+   (:var mv5248 :isa show :|statement-OR-theme| mv5255 :beneficiary mv5249 :present "PRESENT")
+   (:var mv5255 :isa evidence :statement mv5254 :has-determiner "THE")
+   (:var mv5254 :isa regulate :agent mv5253 :object mv5247 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv5283 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv5277 :isa protein :raw-text "fzd8" :uid "UP:Q9H461" :name "FZD8_HUMAN")
-   (:var mv5279 :isa interlocutor :name "speaker"))
+   (:var mv5253 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv5247 :isa protein :raw-text "fzd8" :uid "UP:Q9H461" :name "FZD8_HUMAN")
+   (:var mv5249 :isa interlocutor :name "speaker"))
   ("What increases the amount of fzd8?"
-   (:var mv5289 :isa increase :|agent-OR-cause| mv5287 :|affected-process-OR-object| mv5291
+   (:var mv5259 :isa increase :|agent-OR-cause| mv5257 :|affected-process-OR-object| mv5261
     :present "PRESENT" :raw-text "increases")
-   (:var mv5287 :isa what)
-   (:var mv5291 :isa bio-amount :measured-item mv5286 :has-determiner "THE" :raw-text "amount")
-   (:var mv5286 :isa protein :raw-text "fzd8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
+   (:var mv5257 :isa what)
+   (:var mv5261 :isa bio-amount :measured-item mv5256 :has-determiner "THE" :raw-text "amount")
+   (:var mv5256 :isa protein :raw-text "fzd8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
   ("Which kinases are in the MAPK signaling pathway?"
-   (:var mv5304 :isa copular-predication-of-pp :item mv5296 :value mv5303 :prep "IN" :predicate
-    mv5297)
-   (:var mv5296 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
-   (:var mv5303 :isa kinase :|context-OR-in-pathway| mv5294 :has-determiner "WHICH" :raw-text
+   (:var mv5274 :isa copular-predication-of-pp :item mv5266 :value mv5273 :prep "IN" :predicate
+    mv5267)
+   (:var mv5266 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
+   (:var mv5273 :isa kinase :|context-OR-in-pathway| mv5264 :has-determiner "WHICH" :raw-text
     "kinases")
-   (:var mv5294 :isa signaling-pathway :has-determiner "THE" :modifier mv5300 :raw-text
+   (:var mv5264 :isa signaling-pathway :has-determiner "THE" :modifier mv5270 :raw-text
     "signaling pathway")
-   (:var mv5300 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
+   (:var mv5270 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -4188,94 +4183,94 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv5297 :isa be :present "PRESENT"))
+   (:var mv5267 :isa be :present "PRESENT"))
   ("Does STAT3 regulate the c-fos gene in the liver?"
-   (:var mv5317 :isa polar-question :statement mv5315)
-   (:var mv5315 :isa regulate :agent mv5306 :object mv5311 :raw-text "regulate")
-   (:var mv5306 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv5311 :isa gene :organ mv5314 :has-determiner "THE" :expresses mv5307 :raw-text "gene")
-   (:var mv5314 :isa liver :has-determiner "THE")
-   (:var mv5307 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv5287 :isa polar-question :statement mv5285)
+   (:var mv5285 :isa regulate :agent mv5276 :object mv5281 :raw-text "regulate")
+   (:var mv5276 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv5281 :isa gene :organ mv5284 :has-determiner "THE" :expresses mv5277 :raw-text "gene")
+   (:var mv5284 :isa liver :has-determiner "THE")
+   (:var mv5277 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("what genes are regulated by smad2?"
-   (:var mv5324 :isa regulate :object mv5320 :agent mv5318 :present "PRESENT" :raw-text
+   (:var mv5294 :isa regulate :object mv5290 :agent mv5288 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv5320 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv5318 :isa protein :raw-text "smad2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
+   (:var mv5290 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv5288 :isa protein :raw-text "smad2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
   ("Which of these are regulated by smad2?"
-   (:var mv5333 :isa regulate :|affected-process-OR-object| mv5329 :agent mv5326 :present "PRESENT"
+   (:var mv5303 :isa regulate :|affected-process-OR-object| mv5299 :agent mv5296 :present "PRESENT"
     :raw-text "regulated")
-   (:var mv5329 :isa these :quantifier mv5327 :word "these") (:var mv5327 :isa which)
-   (:var mv5326 :isa protein :raw-text "smad2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
+   (:var mv5299 :isa these :quantifier mv5297 :word "these") (:var mv5297 :isa which)
+   (:var mv5296 :isa protein :raw-text "smad2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
   ("Which of these also regulate cfos?"
-   (:var mv5341 :isa regulate :|agent-OR-cause| mv5338 :object mv5342 :present "PRESENT" :adverb
-    mv5339 :raw-text "regulate")
-   (:var mv5338 :isa these :quantifier mv5336 :word "these") (:var mv5336 :isa which)
-   (:var mv5342 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv5339 :isa also :name "also"))
+   (:var mv5311 :isa regulate :|agent-OR-cause| mv5308 :object mv5312 :present "PRESENT" :adverb
+    mv5309 :raw-text "regulate")
+   (:var mv5308 :isa these :quantifier mv5306 :word "these") (:var mv5306 :isa which)
+   (:var mv5312 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv5309 :isa also :name "also"))
   ("what transcription factors transcribe SMURF2?"
-   (:var mv5347 :isa transcribe :agent mv5344 :object mv5345 :present "PRESENT" :raw-text
+   (:var mv5317 :isa transcribe :agent mv5314 :object mv5315 :present "PRESENT" :raw-text
     "transcribe")
-   (:var mv5344 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv5345 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
+   (:var mv5314 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv5315 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
   ("what transcription factor transcribes SMURF2?"
-   (:var mv5351 :isa transcribe :agent mv5348 :object mv5349 :present "PRESENT" :raw-text
+   (:var mv5321 :isa transcribe :agent mv5318 :object mv5319 :present "PRESENT" :raw-text
     "transcribes")
-   (:var mv5348 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factor")
-   (:var mv5349 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
+   (:var mv5318 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factor")
+   (:var mv5319 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
   ("Which KEGG pathways utilize SRF?"
-   (:var mv5355 :isa utilize :participant mv5354 :object mv5356 :present "PRESENT" :raw-text
+   (:var mv5325 :isa utilize :participant mv5324 :object mv5326 :present "PRESENT" :raw-text
     "utilize")
-   (:var mv5354 :isa pathway :has-determiner "WHICH" :modifier mv5353 :raw-text "pathways")
-   (:var mv5353 :isa database :name "KEGG" :uid "KEGG")
-   (:var mv5356 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv5324 :isa pathway :has-determiner "WHICH" :modifier mv5323 :raw-text "pathways")
+   (:var mv5323 :isa database :name "KEGG" :uid "KEGG")
+   (:var mv5326 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("What transcription factors are in the calcium regulated pathways?"
-   (:var mv5367 :isa wh-question :statement mv5363 :var nil :wh what)
-   (:var mv5363 :isa regulate :affected-process mv5364 :past "PAST" :raw-text "regulated")
-   (:var mv5364 :isa pathway :raw-text "pathways"))
+   (:var mv5337 :isa wh-question :statement mv5333 :var nil :wh what)
+   (:var mv5333 :isa regulate :affected-process mv5334 :past "PAST" :raw-text "regulated")
+   (:var mv5334 :isa pathway :raw-text "pathways"))
   ("What pathways involve the immune system?"
-   (:var mv5371 :isa involve :theme mv5370 :object mv5368 :present "PRESENT")
-   (:var mv5370 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv5368 :isa bio-organ :has-determiner "THE" :name "immune system" :uid "UBERON:0002405"))
+   (:var mv5341 :isa involve :theme mv5340 :object mv5338 :present "PRESENT")
+   (:var mv5340 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv5338 :isa bio-organ :has-determiner "THE" :name "immune system" :uid "UBERON:0002405"))
   ("What KEGG pathways involve ERBB2, JUN, and MAPK8?"
-   (:var mv5378 :isa involve :theme mv5377 :object mv5381 :present "PRESENT")
-   (:var mv5377 :isa pathway :has-determiner "WHAT" :modifier mv5376 :raw-text "pathways")
-   (:var mv5376 :isa database :name "KEGG" :uid "KEGG")
-   (:var mv5381 :isa collection :raw-text "ERBB2, JUN, and MAPK8" :type protein :number 3 :items
-    (mv5373 mv5379 mv5374))
-   (:var mv5373 :isa protein :raw-text "ERBB2" :uid "UP:P04626" :name "ERBB2_HUMAN")
-   (:var mv5379 :isa protein :raw-text "JUN" :uid "UP:P05412" :name "JUN_HUMAN")
-   (:var mv5374 :isa protein :raw-text "MAPK8" :uid "UP:P45983" :name "MK08_HUMAN"))
+   (:var mv5348 :isa involve :theme mv5347 :object mv5351 :present "PRESENT")
+   (:var mv5347 :isa pathway :has-determiner "WHAT" :modifier mv5346 :raw-text "pathways")
+   (:var mv5346 :isa database :name "KEGG" :uid "KEGG")
+   (:var mv5351 :isa collection :raw-text "ERBB2, JUN, and MAPK8" :type protein :number 3 :items
+    (mv5343 mv5349 mv5344))
+   (:var mv5343 :isa protein :raw-text "ERBB2" :uid "UP:P04626" :name "ERBB2_HUMAN")
+   (:var mv5349 :isa protein :raw-text "JUN" :uid "UP:P05412" :name "JUN_HUMAN")
+   (:var mv5344 :isa protein :raw-text "MAPK8" :uid "UP:P45983" :name "MK08_HUMAN"))
   ("What pathways are shared by these genes?"
-   (:var mv5389 :isa share :object mv5383 :participant mv5388 :present "PRESENT" :raw-text
+   (:var mv5359 :isa share :object mv5353 :participant mv5358 :present "PRESENT" :raw-text
     "shared")
-   (:var mv5383 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv5388 :isa gene :has-determiner "THESE" :raw-text "genes"))
+   (:var mv5353 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv5358 :isa gene :has-determiner "THESE" :raw-text "genes"))
   ("what genes are regulated by srf?"
-   (:var mv5397 :isa regulate :object mv5392 :agent mv5396 :present "PRESENT" :raw-text
+   (:var mv5367 :isa regulate :object mv5362 :agent mv5366 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv5392 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv5396 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv5362 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv5366 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("What are common pathways for these genes?"
-   (:var mv5400 :isa be :subject mv5399 :predicate mv5402 :present "PRESENT")
-   (:var mv5399 :isa what)
-   (:var mv5402 :isa pathway :pathwaycomponent mv5405 :predication mv5401 :raw-text "pathways")
-   (:var mv5405 :isa gene :has-determiner "THESE" :raw-text "genes") (:var mv5401 :isa common))
+   (:var mv5370 :isa be :subject mv5369 :predicate mv5372 :present "PRESENT")
+   (:var mv5369 :isa what)
+   (:var mv5372 :isa pathway :pathwaycomponent mv5375 :predication mv5371 :raw-text "pathways")
+   (:var mv5375 :isa gene :has-determiner "THESE" :raw-text "genes") (:var mv5371 :isa common))
   ("Which immune pathways are shared by STAT3, SOCS3, and CREB5 genes?"
-   (:var mv5419 :isa share :object mv5412 :participant mv5417 :present "PRESENT" :raw-text
+   (:var mv5389 :isa share :object mv5382 :participant mv5387 :present "PRESENT" :raw-text
     "shared")
-   (:var mv5412 :isa pathway :has-determiner "WHICH" :modifier mv5411 :raw-text "pathways")
-   (:var mv5411 :isa immune :name "immune")
-   (:var mv5417 :isa gene :expresses mv5418 :raw-text "genes")
-   (:var mv5418 :isa collection :raw-text "STAT3, SOCS3, and CREB5" :type protein :number 3 :items
-    (mv5407 mv5408 mv5409))
-   (:var mv5407 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv5408 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
-   (:var mv5409 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN"))
+   (:var mv5382 :isa pathway :has-determiner "WHICH" :modifier mv5381 :raw-text "pathways")
+   (:var mv5381 :isa immune :name "immune")
+   (:var mv5387 :isa gene :expresses mv5388 :raw-text "genes")
+   (:var mv5388 :isa collection :raw-text "STAT3, SOCS3, and CREB5" :type protein :number 3 :items
+    (mv5377 mv5378 mv5379))
+   (:var mv5377 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv5378 :isa protein :raw-text "SOCS3" :uid "UP:O14543" :name "SOCS3_HUMAN")
+   (:var mv5379 :isa protein :raw-text "CREB5" :uid "UP:Q02930" :name "CREB5_HUMAN"))
   ("What MAP kinase phosphatase are regulated by ELK1?"
-   (:var mv5428 :isa regulate :object mv5424 :agent mv5422 :present "PRESENT" :raw-text
+   (:var mv5398 :isa regulate :object mv5394 :agent mv5392 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv5424 :isa phosphatase :has-determiner "WHAT" :enzyme mv5421 :raw-text "phosphatase")
-   (:var mv5421 :isa protein-family :raw-text "MAP kinase" :name "mitogen activated protein kinase"
+   (:var mv5394 :isa phosphatase :has-determiner "WHAT" :enzyme mv5391 :raw-text "phosphatase")
+   (:var mv5391 :isa protein-family :raw-text "MAP kinase" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -4291,250 +4286,250 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv5422 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+   (:var mv5392 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
   ("What reactome pathways involve immune system?"
-   (:var mv5434 :isa involve :theme mv5433 :object mv5430 :present "PRESENT")
-   (:var mv5433 :isa pathway :has-determiner "WHAT" :modifier mv5432 :raw-text "pathways")
-   (:var mv5432 :isa database :name "Reactome" :uid "Reactome")
-   (:var mv5430 :isa bio-organ :name "immune system" :uid "UBERON:0002405"))
-  ("Is stat3 a kinase?" (:var mv5439 :isa polar-question :statement mv5436)
-   (:var mv5436 :isa be :subject mv5435 :predicate mv5438)
-   (:var mv5435 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv5438 :isa kinase :has-determiner "A" :raw-text "kinase"))
-  ("Is STAT3 a transcription factor?" (:var mv5444 :isa polar-question :statement mv5442)
-   (:var mv5442 :isa be :subject mv5440 :predicate mv5441)
-   (:var mv5440 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv5441 :isa transcription-factor :has-determiner "A" :raw-text "transcription factor"))
+   (:var mv5404 :isa involve :theme mv5403 :object mv5400 :present "PRESENT")
+   (:var mv5403 :isa pathway :has-determiner "WHAT" :modifier mv5402 :raw-text "pathways")
+   (:var mv5402 :isa database :name "Reactome" :uid "Reactome")
+   (:var mv5400 :isa bio-organ :name "immune system" :uid "UBERON:0002405"))
+  ("Is stat3 a kinase?" (:var mv5409 :isa polar-question :statement mv5406)
+   (:var mv5406 :isa be :subject mv5405 :predicate mv5408)
+   (:var mv5405 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv5408 :isa kinase :has-determiner "A" :raw-text "kinase"))
+  ("Is STAT3 a transcription factor?" (:var mv5414 :isa polar-question :statement mv5412)
+   (:var mv5412 :isa be :subject mv5410 :predicate mv5411)
+   (:var mv5410 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv5411 :isa transcription-factor :has-determiner "A" :raw-text "transcription factor"))
   ("Which of these are protein kinases?"
-   (:var mv5448 :isa be :subject mv5447 :predicate mv5450 :present "PRESENT")
-   (:var mv5447 :isa these :quantifier mv5445 :word "these") (:var mv5445 :isa which)
-   (:var mv5450 :isa kinase :enzyme mv5449 :raw-text "kinases")
-   (:var mv5449 :isa protein :raw-text "protein"))
+   (:var mv5418 :isa be :subject mv5417 :predicate mv5420 :present "PRESENT")
+   (:var mv5417 :isa these :quantifier mv5415 :word "these") (:var mv5415 :isa which)
+   (:var mv5420 :isa kinase :enzyme mv5419 :raw-text "kinases")
+   (:var mv5419 :isa protein :raw-text "protein"))
   ("Which of these are tyrosine kinases?"
-   (:var mv5456 :isa be :subject mv5455 :predicate mv5452 :present "PRESENT")
-   (:var mv5455 :isa these :quantifier mv5453 :word "these") (:var mv5453 :isa which)
-   (:var mv5452 :isa protein-family :raw-text "tyrosine kinases" :name "protein tyrosine kinase"
+   (:var mv5426 :isa be :subject mv5425 :predicate mv5422 :present "PRESENT")
+   (:var mv5425 :isa these :quantifier mv5423 :word "these") (:var mv5423 :isa which)
+   (:var mv5422 :isa protein-family :raw-text "tyrosine kinases" :name "protein tyrosine kinase"
     :uid "NCIT:C17020"))
   ("Which of these are serine/threonine kinases?"
-   (:var mv5461 :isa be :subject mv5460 :predicate mv5464 :present "PRESENT")
-   (:var mv5460 :isa these :quantifier mv5458 :word "these") (:var mv5458 :isa which)
-   (:var mv5464 :isa kinase :amino-acid mv5465 :raw-text "kinases")
-   (:var mv5465 :isa collection :raw-text "serine/threonine" :type amino-acid :items
-    (mv5462 mv5463))
-   (:var mv5462 :isa amino-acid :raw-text "serine" :name "serine")
-   (:var mv5463 :isa amino-acid :raw-text "threonine" :name "threonine"))
+   (:var mv5431 :isa be :subject mv5430 :predicate mv5434 :present "PRESENT")
+   (:var mv5430 :isa these :quantifier mv5428 :word "these") (:var mv5428 :isa which)
+   (:var mv5434 :isa kinase :amino-acid mv5435 :raw-text "kinases")
+   (:var mv5435 :isa collection :raw-text "serine/threonine" :type amino-acid :items
+    (mv5432 mv5433))
+   (:var mv5432 :isa amino-acid :raw-text "serine" :name "serine")
+   (:var mv5433 :isa amino-acid :raw-text "threonine" :name "threonine"))
   ("Which of these are phosphatases?"
-   (:var mv5470 :isa be :subject mv5469 :predicate mv5471 :present "PRESENT")
-   (:var mv5469 :isa these :quantifier mv5467 :word "these") (:var mv5467 :isa which)
-   (:var mv5471 :isa phosphatase :raw-text "phosphatases"))
+   (:var mv5440 :isa be :subject mv5439 :predicate mv5441 :present "PRESENT")
+   (:var mv5439 :isa these :quantifier mv5437 :word "these") (:var mv5437 :isa which)
+   (:var mv5441 :isa phosphatase :raw-text "phosphatases"))
   ("Which of these are proteases?"
-   (:var mv5476 :isa be :subject mv5475 :predicate mv5477 :present "PRESENT")
-   (:var mv5475 :isa these :quantifier mv5473 :word "these") (:var mv5473 :isa which)
-   (:var mv5477 :isa protein :raw-text "proteases" :uid "UP:P63127" :name "VPK9_HUMAN"))
+   (:var mv5446 :isa be :subject mv5445 :predicate mv5447 :present "PRESENT")
+   (:var mv5445 :isa these :quantifier mv5443 :word "these") (:var mv5443 :isa which)
+   (:var mv5447 :isa protein :raw-text "proteases" :uid "UP:P63127" :name "VPK9_HUMAN"))
   ("Which of these are receptors?"
-   (:var mv5482 :isa be :subject mv5481 :predicate mv5483 :present "PRESENT")
-   (:var mv5481 :isa these :quantifier mv5479 :word "these") (:var mv5479 :isa which)
-   (:var mv5483 :isa receptor :raw-text "receptors"))
+   (:var mv5452 :isa be :subject mv5451 :predicate mv5453 :present "PRESENT")
+   (:var mv5451 :isa these :quantifier mv5449 :word "these") (:var mv5449 :isa which)
+   (:var mv5453 :isa receptor :raw-text "receptors"))
   ("Which of these are tyrosine kinase receptors?"
-   (:var mv5489 :isa be :subject mv5488 :predicate mv5490 :present "PRESENT")
-   (:var mv5488 :isa these :quantifier mv5486 :word "these") (:var mv5486 :isa which)
-   (:var mv5490 :isa receptor :modifier mv5485 :raw-text "receptors")
-   (:var mv5485 :isa protein-family :raw-text "tyrosine kinase" :name "protein tyrosine kinase"
+   (:var mv5459 :isa be :subject mv5458 :predicate mv5460 :present "PRESENT")
+   (:var mv5458 :isa these :quantifier mv5456 :word "these") (:var mv5456 :isa which)
+   (:var mv5460 :isa receptor :modifier mv5455 :raw-text "receptors")
+   (:var mv5455 :isa protein-family :raw-text "tyrosine kinase" :name "protein tyrosine kinase"
     :uid "NCIT:C17020"))
   ("Which of these are histone demethylases?"
-   (:var mv5496 :isa be :subject mv5495 :predicate mv5492 :present "PRESENT")
-   (:var mv5495 :isa these :quantifier mv5493 :word "these") (:var mv5493 :isa which)
-   (:var mv5492 :isa protein-family :raw-text "histone demethylases" :name "histone demethylase"
+   (:var mv5466 :isa be :subject mv5465 :predicate mv5462 :present "PRESENT")
+   (:var mv5465 :isa these :quantifier mv5463 :word "these") (:var mv5463 :isa which)
+   (:var mv5462 :isa protein-family :raw-text "histone demethylases" :name "histone demethylase"
     :uid "GO:0032452"))
   ("Which of these are histone methylases?"
-   (:var mv5502 :isa be :subject mv5501 :predicate mv5498 :present "PRESENT")
-   (:var mv5501 :isa these :quantifier mv5499 :word "these") (:var mv5499 :isa which)
-   (:var mv5498 :isa protein-family :raw-text "histone methylases" :name
+   (:var mv5472 :isa be :subject mv5471 :predicate mv5468 :present "PRESENT")
+   (:var mv5471 :isa these :quantifier mv5469 :word "these") (:var mv5469 :isa which)
+   (:var mv5468 :isa protein-family :raw-text "histone methylases" :name
     "histone methyltransferase" :uid "GO:0042054"))
   ("Which of these are histone methyltransferases?"
-   (:var mv5508 :isa be :subject mv5507 :predicate mv5504 :present "PRESENT")
-   (:var mv5507 :isa these :quantifier mv5505 :word "these") (:var mv5505 :isa which)
-   (:var mv5504 :isa protein-family :raw-text "histone methyltransferases" :name
+   (:var mv5478 :isa be :subject mv5477 :predicate mv5474 :present "PRESENT")
+   (:var mv5477 :isa these :quantifier mv5475 :word "these") (:var mv5475 :isa which)
+   (:var mv5474 :isa protein-family :raw-text "histone methyltransferases" :name
     "histone methyltransferase" :uid "GO:0042054"))
   ("Which of these are demethylases?"
-   (:var mv5513 :isa be :subject mv5512 :predicate mv5514 :present "PRESENT")
-   (:var mv5512 :isa these :quantifier mv5510 :word "these") (:var mv5510 :isa which)
-   (:var mv5514 :isa protein-family :raw-text "demethylases" :name "demethylase" :uid
+   (:var mv5483 :isa be :subject mv5482 :predicate mv5484 :present "PRESENT")
+   (:var mv5482 :isa these :quantifier mv5480 :word "these") (:var mv5480 :isa which)
+   (:var mv5484 :isa protein-family :raw-text "demethylases" :name "demethylase" :uid
     "GO:0032451"))
   ("Which of these are methylases?"
-   (:var mv5519 :isa be :subject mv5518 :predicate mv5520 :present "PRESENT")
-   (:var mv5518 :isa these :quantifier mv5516 :word "these") (:var mv5516 :isa which)
-   (:var mv5520 :isa protein-family :raw-text "methylases" :name "methyltransferase" :uid
+   (:var mv5489 :isa be :subject mv5488 :predicate mv5490 :present "PRESENT")
+   (:var mv5488 :isa these :quantifier mv5486 :word "these") (:var mv5486 :isa which)
+   (:var mv5490 :isa protein-family :raw-text "methylases" :name "methyltransferase" :uid
     "GO:0008168"))
   ("Which of these are methyltransferases?"
-   (:var mv5525 :isa be :subject mv5524 :predicate mv5526 :present "PRESENT")
-   (:var mv5524 :isa these :quantifier mv5522 :word "these") (:var mv5522 :isa which)
-   (:var mv5526 :isa protein-family :raw-text "methyltransferases" :name "methyltransferase" :uid
+   (:var mv5495 :isa be :subject mv5494 :predicate mv5496 :present "PRESENT")
+   (:var mv5494 :isa these :quantifier mv5492 :word "these") (:var mv5492 :isa which)
+   (:var mv5496 :isa protein-family :raw-text "methyltransferases" :name "methyltransferase" :uid
     "GO:0008168"))
   ("Which of these are steroid receptors?"
-   (:var mv5531 :isa be :subject mv5530 :predicate mv5533 :present "PRESENT")
-   (:var mv5530 :isa these :quantifier mv5528 :word "these") (:var mv5528 :isa which)
-   (:var mv5533 :isa receptor :modifier mv5532 :raw-text "receptors")
-   (:var mv5532 :isa molecule :raw-text "steroid" :name "steroid" :uid "CHEBI:35341"))
+   (:var mv5501 :isa be :subject mv5500 :predicate mv5503 :present "PRESENT")
+   (:var mv5500 :isa these :quantifier mv5498 :word "these") (:var mv5498 :isa which)
+   (:var mv5503 :isa receptor :modifier mv5502 :raw-text "receptors")
+   (:var mv5502 :isa molecule :raw-text "steroid" :name "steroid" :uid "CHEBI:35341"))
   ("Which of these are receptor tyrosine kinases?"
-   (:var mv5539 :isa be :subject mv5538 :predicate mv5535 :present "PRESENT")
-   (:var mv5538 :isa these :quantifier mv5536 :word "these") (:var mv5536 :isa which)
-   (:var mv5535 :isa protein-family :raw-text "receptor tyrosine kinases" :name
+   (:var mv5509 :isa be :subject mv5508 :predicate mv5505 :present "PRESENT")
+   (:var mv5508 :isa these :quantifier mv5506 :word "these") (:var mv5506 :isa which)
+   (:var mv5505 :isa protein-family :raw-text "receptor tyrosine kinases" :name
     "receptor tyrosine kinase" :count 2 :family-members
     ((protein (:name "TKTL1_HUMAN") (:uid "UP:P51854"))
      (protein (:name "NTRK1_HUMAN") (:uid "UP:P04629")))
     :uid "NCIT:C17660"))
   ("Which of these are transcription factors?"
-   (:var mv5545 :isa be :subject mv5544 :predicate mv5541 :present "PRESENT")
-   (:var mv5544 :isa these :quantifier mv5542 :word "these") (:var mv5542 :isa which)
-   (:var mv5541 :isa transcription-factor :raw-text "transcription factors"))
+   (:var mv5515 :isa be :subject mv5514 :predicate mv5511 :present "PRESENT")
+   (:var mv5514 :isa these :quantifier mv5512 :word "these") (:var mv5512 :isa which)
+   (:var mv5511 :isa transcription-factor :raw-text "transcription factors"))
   ("Which of these are DNA binding proteins?"
-   (:var mv5551 :isa be :subject mv5550 :predicate mv5552 :present "PRESENT")
-   (:var mv5550 :isa these :quantifier mv5548 :word "these") (:var mv5548 :isa which)
-   (:var mv5552 :isa protein :modifier mv5547 :raw-text "proteins")
-   (:var mv5547 :isa dna-binding :raw-text "DNA binding"))
+   (:var mv5521 :isa be :subject mv5520 :predicate mv5522 :present "PRESENT")
+   (:var mv5520 :isa these :quantifier mv5518 :word "these") (:var mv5518 :isa which)
+   (:var mv5522 :isa protein :modifier mv5517 :raw-text "proteins")
+   (:var mv5517 :isa dna-binding :raw-text "DNA binding"))
   ("Which of these are serine/threonine phosphatases?"
-   (:var mv5557 :isa be :subject mv5556 :predicate mv5560 :present "PRESENT")
-   (:var mv5556 :isa these :quantifier mv5554 :word "these") (:var mv5554 :isa which)
-   (:var mv5560 :isa phosphatase :modifier mv5561 :raw-text "phosphatases")
-   (:var mv5561 :isa collection :raw-text "serine/threonine" :type amino-acid :items
-    (mv5558 mv5559))
-   (:var mv5558 :isa amino-acid :raw-text "serine" :name "serine")
-   (:var mv5559 :isa amino-acid :raw-text "threonine" :name "threonine"))
+   (:var mv5527 :isa be :subject mv5526 :predicate mv5530 :present "PRESENT")
+   (:var mv5526 :isa these :quantifier mv5524 :word "these") (:var mv5524 :isa which)
+   (:var mv5530 :isa phosphatase :modifier mv5531 :raw-text "phosphatases")
+   (:var mv5531 :isa collection :raw-text "serine/threonine" :type amino-acid :items
+    (mv5528 mv5529))
+   (:var mv5528 :isa amino-acid :raw-text "serine" :name "serine")
+   (:var mv5529 :isa amino-acid :raw-text "threonine" :name "threonine"))
   ("Which of these are tyrosine phosphatases?"
-   (:var mv5566 :isa be :subject mv5565 :predicate mv5568 :present "PRESENT")
-   (:var mv5565 :isa these :quantifier mv5563 :word "these") (:var mv5563 :isa which)
-   (:var mv5568 :isa phosphatase :modifier mv5567 :raw-text "phosphatases")
-   (:var mv5567 :isa amino-acid :raw-text "tyrosine" :name "tyrosine"))
+   (:var mv5536 :isa be :subject mv5535 :predicate mv5538 :present "PRESENT")
+   (:var mv5535 :isa these :quantifier mv5533 :word "these") (:var mv5533 :isa which)
+   (:var mv5538 :isa phosphatase :modifier mv5537 :raw-text "phosphatases")
+   (:var mv5537 :isa amino-acid :raw-text "tyrosine" :name "tyrosine"))
   ("What does MEK phosphorylate?"
-   (:var mv5573 :isa phosphorylate :amino-acid mv5570 :agent mv5572 :present "PRESENT" :raw-text
+   (:var mv5543 :isa phosphorylate :amino-acid mv5540 :agent mv5542 :present "PRESENT" :raw-text
     "phosphorylate")
-   (:var mv5570 :isa what)
-   (:var mv5572 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv5540 :isa what)
+   (:var mv5542 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK"))
   ("which of these are exclusively expressed in liver?"
-   (:var mv5582 :isa gene-transcript-express :object mv5576 :organ mv5581 :present "PRESENT"
-    :adverb mv5578 :raw-text "expressed")
-   (:var mv5576 :isa these :quantifier mv5574 :word "these") (:var mv5574 :isa which)
-   (:var mv5581 :isa liver) (:var mv5578 :isa exclusively :name "exclusively"))
+   (:var mv5552 :isa gene-transcript-express :object mv5546 :organ mv5551 :present "PRESENT"
+    :adverb mv5548 :raw-text "expressed")
+   (:var mv5546 :isa these :quantifier mv5544 :word "these") (:var mv5544 :isa which)
+   (:var mv5551 :isa liver) (:var mv5548 :isa exclusively :name "exclusively"))
   ("What regulates frizzled8?"
-   (:var mv5587 :isa regulate :|agent-OR-cause| mv5586 :object mv5585 :present "PRESENT" :raw-text
+   (:var mv5557 :isa regulate :|agent-OR-cause| mv5556 :object mv5555 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv5586 :isa what)
-   (:var mv5585 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
+   (:var mv5556 :isa what)
+   (:var mv5555 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
   ("What increases the amount of myc?"
-   (:var mv5590 :isa increase :|agent-OR-cause| mv5588 :|affected-process-OR-object| mv5592
+   (:var mv5560 :isa increase :|agent-OR-cause| mv5558 :|affected-process-OR-object| mv5562
     :present "PRESENT" :raw-text "increases")
-   (:var mv5588 :isa what)
-   (:var mv5592 :isa bio-amount :measured-item mv5594 :has-determiner "THE" :raw-text "amount")
-   (:var mv5594 :isa protein :raw-text "myc" :uid "UP:P01106" :name "MYC_HUMAN"))
+   (:var mv5558 :isa what)
+   (:var mv5562 :isa bio-amount :measured-item mv5564 :has-determiner "THE" :raw-text "amount")
+   (:var mv5564 :isa protein :raw-text "myc" :uid "UP:P01106" :name "MYC_HUMAN"))
   ("What upregulates myc?"
-   (:var mv5597 :isa upregulate :|agent-OR-cause| mv5596 :object mv5598 :present "PRESENT"
+   (:var mv5567 :isa upregulate :|agent-OR-cause| mv5566 :object mv5568 :present "PRESENT"
     :raw-text "upregulates")
-   (:var mv5596 :isa what)
-   (:var mv5598 :isa protein :raw-text "myc" :uid "UP:P01106" :name "MYC_HUMAN"))
+   (:var mv5566 :isa what)
+   (:var mv5568 :isa protein :raw-text "myc" :uid "UP:P01106" :name "MYC_HUMAN"))
   ("What downregulates myc?"
-   (:var mv5600 :isa downregulate :|agent-OR-cause| mv5599 :object mv5601 :present "PRESENT"
+   (:var mv5570 :isa downregulate :|agent-OR-cause| mv5569 :object mv5571 :present "PRESENT"
     :raw-text "downregulates")
-   (:var mv5599 :isa what)
-   (:var mv5601 :isa protein :raw-text "myc" :uid "UP:P01106" :name "MYC_HUMAN"))
+   (:var mv5569 :isa what)
+   (:var mv5571 :isa protein :raw-text "myc" :uid "UP:P01106" :name "MYC_HUMAN"))
   ("What decreases the amount of GFAP?"
-   (:var mv5603 :isa decrease :|agent-OR-cause| mv5602 :|affected-process-OR-object| mv5605
+   (:var mv5573 :isa decrease :|agent-OR-cause| mv5572 :|affected-process-OR-object| mv5575
     :present "PRESENT" :raw-text "decreases")
-   (:var mv5602 :isa what)
-   (:var mv5605 :isa bio-amount :measured-item mv5607 :has-determiner "THE" :raw-text "amount")
-   (:var mv5607 :isa protein :raw-text "GFAP" :uid "UP:P14136" :name "GFAP_HUMAN"))
+   (:var mv5572 :isa what)
+   (:var mv5575 :isa bio-amount :measured-item mv5577 :has-determiner "THE" :raw-text "amount")
+   (:var mv5577 :isa protein :raw-text "GFAP" :uid "UP:P14136" :name "GFAP_HUMAN"))
   ("What regulates GLUL?"
-   (:var mv5610 :isa regulate :|agent-OR-cause| mv5609 :object mv5611 :present "PRESENT" :raw-text
+   (:var mv5580 :isa regulate :|agent-OR-cause| mv5579 :object mv5581 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv5609 :isa what)
-   (:var mv5611 :isa protein :raw-text "GLUL" :uid "UP:P15104" :name "GLNA_HUMAN"))
+   (:var mv5579 :isa what)
+   (:var mv5581 :isa protein :raw-text "GLUL" :uid "UP:P15104" :name "GLNA_HUMAN"))
   ("What regulates GLUL from the literature?"
-   (:var mv5619 :isa wh-question :statement mv5618 :wh what)
-   (:var mv5618 :isa prepositional-phrase :pobj mv5617 :prep "FROM")
-   (:var mv5617 :isa literature :has-determiner "THE"))
+   (:var mv5589 :isa wh-question :statement mv5588 :wh what)
+   (:var mv5588 :isa prepositional-phrase :pobj mv5587 :prep "FROM")
+   (:var mv5587 :isa literature :has-determiner "THE"))
   ("What regulates GLUL from the GEO RNAi database?"
-   (:var mv5627 :isa wh-question :statement mv5626 :wh what)
-   (:var mv5626 :isa prepositional-phrase :pobj mv5620 :prep "FROM")
-   (:var mv5620 :isa database :has-determiner "THE" :name "GEO RNAi database" :uid "GEO-RNAi"))
+   (:var mv5597 :isa wh-question :statement mv5596 :wh what)
+   (:var mv5596 :isa prepositional-phrase :pobj mv5590 :prep "FROM")
+   (:var mv5590 :isa database :has-determiner "THE" :name "GEO RNAi database" :uid "GEO-RNAi"))
   ("Which kinases regulate the cfos gene?"
-   (:var mv5630 :isa regulate :agent mv5629 :object mv5633 :present "PRESENT" :raw-text "regulate")
-   (:var mv5629 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
-   (:var mv5633 :isa gene :has-determiner "THE" :expresses mv5632 :raw-text "gene")
-   (:var mv5632 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv5600 :isa regulate :agent mv5599 :object mv5603 :present "PRESENT" :raw-text "regulate")
+   (:var mv5599 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
+   (:var mv5603 :isa gene :has-determiner "THE" :expresses mv5602 :raw-text "gene")
+   (:var mv5602 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("Which kinases negatively regulate the cfos gene?"
-   (:var mv5634 :isa downregulate :agent mv5636 :object mv5639 :present "PRESENT" :raw-text
+   (:var mv5604 :isa downregulate :agent mv5606 :object mv5609 :present "PRESENT" :raw-text
     "negatively regulate")
-   (:var mv5636 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
-   (:var mv5639 :isa gene :has-determiner "THE" :expresses mv5638 :raw-text "gene")
-   (:var mv5638 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv5606 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
+   (:var mv5609 :isa gene :has-determiner "THE" :expresses mv5608 :raw-text "gene")
+   (:var mv5608 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("What are positive regulators of the cfos gene?"
-   (:var mv5642 :isa be :subject mv5641 :predicate mv5640 :present "PRESENT")
-   (:var mv5641 :isa what)
-   (:var mv5640 :isa positive-regulator :theme mv5646 :raw-text "positive regulators")
-   (:var mv5646 :isa gene :has-determiner "THE" :expresses mv5645 :raw-text "gene")
-   (:var mv5645 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv5612 :isa be :subject mv5611 :predicate mv5610 :present "PRESENT")
+   (:var mv5611 :isa what)
+   (:var mv5610 :isa positive-regulator :theme mv5616 :raw-text "positive regulators")
+   (:var mv5616 :isa gene :has-determiner "THE" :expresses mv5615 :raw-text "gene")
+   (:var mv5615 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("What transcribes ZEB1?"
-   (:var mv5650 :isa transcribe :|agent-OR-cause| mv5649 :object mv5648 :present "PRESENT"
+   (:var mv5620 :isa transcribe :|agent-OR-cause| mv5619 :object mv5618 :present "PRESENT"
     :raw-text "transcribes")
-   (:var mv5649 :isa what)
-   (:var mv5648 :isa protein :raw-text "ZEB1" :uid "UP:P37275" :name "ZEB1_HUMAN"))
+   (:var mv5619 :isa what)
+   (:var mv5618 :isa protein :raw-text "ZEB1" :uid "UP:P37275" :name "ZEB1_HUMAN"))
   ("Show me the evidence that IL6 increases the amount of SOCS1."
-   (:var mv5653 :isa show :|statement-OR-theme| mv5664 :beneficiary mv5654 :present "PRESENT")
-   (:var mv5664 :isa evidence :statement mv5659 :has-determiner "THE")
-   (:var mv5659 :isa increase :agent mv5651 :|affected-process-OR-object| mv5661 :present "PRESENT"
+   (:var mv5623 :isa show :|statement-OR-theme| mv5634 :beneficiary mv5624 :present "PRESENT")
+   (:var mv5634 :isa evidence :statement mv5629 :has-determiner "THE")
+   (:var mv5629 :isa increase :agent mv5621 :|affected-process-OR-object| mv5631 :present "PRESENT"
     :raw-text "increases")
-   (:var mv5651 :isa protein :raw-text "IL6" :uid "UP:P05231" :name "IL6_HUMAN")
-   (:var mv5661 :isa bio-amount :measured-item mv5652 :has-determiner "THE" :raw-text "amount")
-   (:var mv5652 :isa protein :raw-text "SOCS1" :uid "UP:O15524" :name "SOCS1_HUMAN")
-   (:var mv5654 :isa interlocutor :name "speaker"))
+   (:var mv5621 :isa protein :raw-text "IL6" :uid "UP:P05231" :name "IL6_HUMAN")
+   (:var mv5631 :isa bio-amount :measured-item mv5622 :has-determiner "THE" :raw-text "amount")
+   (:var mv5622 :isa protein :raw-text "SOCS1" :uid "UP:O15524" :name "SOCS1_HUMAN")
+   (:var mv5624 :isa interlocutor :name "speaker"))
   ("Show me the evidence that KRAS decreasse the amount of FZD8."
-   (:var mv5666 :isa show :|statement-OR-theme| mv5669 :beneficiary mv5667 :present "PRESENT")
-   (:var mv5669 :isa evidence :has-determiner "THE")
-   (:var mv5667 :isa interlocutor :name "speaker"))
+   (:var mv5636 :isa show :|statement-OR-theme| mv5639 :beneficiary mv5637 :present "PRESENT")
+   (:var mv5639 :isa evidence :has-determiner "THE")
+   (:var mv5637 :isa interlocutor :name "speaker"))
   ("What is the evidence that kras regulates frizzled8?"
-   (:var mv5679 :isa be :subject mv5678 :predicate mv5685 :present "PRESENT")
-   (:var mv5678 :isa what) (:var mv5685 :isa evidence :statement mv5684 :has-determiner "THE")
-   (:var mv5684 :isa regulate :agent mv5683 :object mv5677 :present "PRESENT" :raw-text
+   (:var mv5649 :isa be :subject mv5648 :predicate mv5655 :present "PRESENT")
+   (:var mv5648 :isa what) (:var mv5655 :isa evidence :statement mv5654 :has-determiner "THE")
+   (:var mv5654 :isa regulate :agent mv5653 :object mv5647 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv5683 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
-   (:var mv5677 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
+   (:var mv5653 :isa protein :raw-text "kras" :uid "UP:P01116" :name "RASK_HUMAN")
+   (:var mv5647 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
   ("What is the evidence that SRF binds the cfos gene?"
-   (:var mv5687 :isa be :subject mv5686 :predicate mv5696 :present "PRESENT")
-   (:var mv5686 :isa what) (:var mv5696 :isa evidence :statement mv5692 :has-determiner "THE")
-   (:var mv5692 :isa binding :binder mv5691 :direct-bindee mv5695 :present "PRESENT" :raw-text
+   (:var mv5657 :isa be :subject mv5656 :predicate mv5666 :present "PRESENT")
+   (:var mv5656 :isa what) (:var mv5666 :isa evidence :statement mv5662 :has-determiner "THE")
+   (:var mv5662 :isa binding :binder mv5661 :direct-bindee mv5665 :present "PRESENT" :raw-text
     "binds")
-   (:var mv5691 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv5695 :isa gene :has-determiner "THE" :expresses mv5694 :raw-text "gene")
-   (:var mv5694 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv5661 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv5665 :isa gene :has-determiner "THE" :expresses mv5664 :raw-text "gene")
+   (:var mv5664 :isa protein :raw-text "cfos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("what genes are exclusively expressed in liver?"
-   (:var mv5704 :isa gene-transcript-express :object mv5698 :organ mv5703 :present "PRESENT"
-    :adverb mv5700 :raw-text "expressed")
-   (:var mv5698 :isa gene :has-determiner "WHAT" :raw-text "genes") (:var mv5703 :isa liver)
-   (:var mv5700 :isa exclusively :name "exclusively"))
-  ("Is stat3 expressed in liver?" (:var mv5712 :isa polar-question :statement mv5708)
-   (:var mv5708 :isa gene-transcript-express :object mv5706 :organ mv5710 :past "PAST" :raw-text
+   (:var mv5674 :isa gene-transcript-express :object mv5668 :organ mv5673 :present "PRESENT"
+    :adverb mv5670 :raw-text "expressed")
+   (:var mv5668 :isa gene :has-determiner "WHAT" :raw-text "genes") (:var mv5673 :isa liver)
+   (:var mv5670 :isa exclusively :name "exclusively"))
+  ("Is stat3 expressed in liver?" (:var mv5682 :isa polar-question :statement mv5678)
+   (:var mv5678 :isa gene-transcript-express :object mv5676 :organ mv5680 :past "PAST" :raw-text
     "expressed")
-   (:var mv5706 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv5710 :isa liver))
-  ("Is stat3 exclusively expressed in liver?" (:var mv5721 :isa polar-question :statement mv5719)
-   (:var mv5719 :isa gene-transcript-express :object mv5713 :organ mv5718 :adverb mv5715 :raw-text
+   (:var mv5676 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv5680 :isa liver))
+  ("Is stat3 exclusively expressed in liver?" (:var mv5691 :isa polar-question :statement mv5689)
+   (:var mv5689 :isa gene-transcript-express :object mv5683 :organ mv5688 :adverb mv5685 :raw-text
     "expressed")
-   (:var mv5713 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv5718 :isa liver) (:var mv5715 :isa exclusively :name "exclusively"))
+   (:var mv5683 :isa protein :raw-text "stat3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv5688 :isa liver) (:var mv5685 :isa exclusively :name "exclusively"))
   ("How does MAP4K2 affect CXCL8?"
-   (:var mv5726 :isa affect :manner mv5724 :agent mv5722 :object mv5723 :present "PRESENT"
+   (:var mv5696 :isa affect :manner mv5694 :agent mv5692 :object mv5693 :present "PRESENT"
     :raw-text "affect")
-   (:var mv5724 :isa how)
-   (:var mv5722 :isa protein :raw-text "MAP4K2" :uid "UP:Q12851" :name "M4K2_HUMAN")
-   (:var mv5723 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
+   (:var mv5694 :isa how)
+   (:var mv5692 :isa protein :raw-text "MAP4K2" :uid "UP:Q12851" :name "M4K2_HUMAN")
+   (:var mv5693 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
   ("How does ERK affect CXCL8?"
-   (:var mv5731 :isa affect :manner mv5728 :agent mv5730 :object mv5727 :present "PRESENT"
+   (:var mv5701 :isa affect :manner mv5698 :agent mv5700 :object mv5697 :present "PRESENT"
     :raw-text "affect")
-   (:var mv5728 :isa how)
-   (:var mv5730 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv5698 :isa how)
+   (:var mv5700 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4543,80 +4538,80 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360")
-   (:var mv5727 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
+   (:var mv5697 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
   ("What are the common upstream regulators of CXCL8 and CXCL10?"
-   (:var mv5735 :isa be :subject mv5734 :predicate mv5740 :present "PRESENT")
-   (:var mv5734 :isa what)
-   (:var mv5740 :isa regulator :theme mv5743 :has-determiner "THE" :predication mv5737 :context
-    mv5738 :raw-text "regulators")
-   (:var mv5743 :isa collection :raw-text "CXCL8 and CXCL10" :type protein :number 2 :items
-    (mv5732 mv5733))
-   (:var mv5732 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
-   (:var mv5733 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN")
-   (:var mv5737 :isa common) (:var mv5738 :isa upstream-segment :raw-text "upstream"))
+   (:var mv5705 :isa be :subject mv5704 :predicate mv5710 :present "PRESENT")
+   (:var mv5704 :isa what)
+   (:var mv5710 :isa regulator :theme mv5713 :has-determiner "THE" :predication mv5707 :context
+    mv5708 :raw-text "regulators")
+   (:var mv5713 :isa collection :raw-text "CXCL8 and CXCL10" :type protein :number 2 :items
+    (mv5702 mv5703))
+   (:var mv5702 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
+   (:var mv5703 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN")
+   (:var mv5707 :isa common) (:var mv5708 :isa upstream-segment :raw-text "upstream"))
   ("What are the paths between MAP3K7 and CXCL8?"
-   (:var mv5748 :isa be :subject mv5747 :predicate mv5750 :present "PRESENT")
-   (:var mv5747 :isa what) (:var mv5750 :isa path :endpoints mv5753 :has-determiner "THE")
-   (:var mv5753 :isa collection :raw-text "MAP3K7 and CXCL8" :type protein :number 2 :items
-    (mv5745 mv5746))
-   (:var mv5745 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
-   (:var mv5746 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
-  ("Does MAP3K7 affect IKK?" (:var mv5760 :isa polar-question :statement mv5759)
-   (:var mv5759 :isa affect :agent mv5755 :object mv5758 :raw-text "affect")
-   (:var mv5755 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
-   (:var mv5758 :isa protein-family :raw-text "IKK" :name "IKK" :count 3 :family-members
+   (:var mv5718 :isa be :subject mv5717 :predicate mv5720 :present "PRESENT")
+   (:var mv5717 :isa what) (:var mv5720 :isa path :endpoints mv5723 :has-determiner "THE")
+   (:var mv5723 :isa collection :raw-text "MAP3K7 and CXCL8" :type protein :number 2 :items
+    (mv5715 mv5716))
+   (:var mv5715 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
+   (:var mv5716 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
+  ("Does MAP3K7 affect IKK?" (:var mv5730 :isa polar-question :statement mv5729)
+   (:var mv5729 :isa affect :agent mv5725 :object mv5728 :raw-text "affect")
+   (:var mv5725 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
+   (:var mv5728 :isa protein-family :raw-text "IKK" :name "IKK" :count 3 :family-members
     ((protein (:name "IKKE_HUMAN") (:uid "UP:Q14164"))
      (protein (:name "IKKB_HUMAN") (:uid "UP:O14920"))
      (protein (:name "IKKA_HUMAN") (:uid "UP:O15111")))
     :uid "NCIT:C104199"))
   ("MAP3K7 regulates IKK"
-   (:var mv5762 :isa regulate :agent mv5761 :object mv5763 :present "PRESENT" :raw-text
+   (:var mv5732 :isa regulate :agent mv5731 :object mv5733 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv5761 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
-   (:var mv5763 :isa protein-family :raw-text "IKK" :name "IKK" :count 3 :family-members
+   (:var mv5731 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
+   (:var mv5733 :isa protein-family :raw-text "IKK" :name "IKK" :count 3 :family-members
     ((protein (:name "IKKE_HUMAN") (:uid "UP:Q14164"))
      (protein (:name "IKKB_HUMAN") (:uid "UP:O14920"))
      (protein (:name "IKKA_HUMAN") (:uid "UP:O15111")))
     :uid "NCIT:C104199"))
   ("MAP3K7 positively regulates IKK"
-   (:var mv5765 :isa upregulate :agent mv5764 :object mv5766 :present "PRESENT" :raw-text
+   (:var mv5735 :isa upregulate :agent mv5734 :object mv5736 :present "PRESENT" :raw-text
     "positively regulates")
-   (:var mv5764 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
-   (:var mv5766 :isa protein-family :raw-text "IKK" :name "IKK" :count 3 :family-members
+   (:var mv5734 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
+   (:var mv5736 :isa protein-family :raw-text "IKK" :name "IKK" :count 3 :family-members
     ((protein (:name "IKKE_HUMAN") (:uid "UP:Q14164"))
      (protein (:name "IKKB_HUMAN") (:uid "UP:O14920"))
      (protein (:name "IKKA_HUMAN") (:uid "UP:O15111")))
     :uid "NCIT:C104199"))
   ("NFkappaB positively regulates CXCL8."
-   (:var mv5767 :isa upregulate :agent mv5769 :object mv5768 :present "PRESENT" :raw-text
+   (:var mv5737 :isa upregulate :agent mv5739 :object mv5738 :present "PRESENT" :raw-text
     "positively regulates")
-   (:var mv5769 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
+   (:var mv5739 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
     ((protein (:name "TF65_HUMAN") (:uid "UP:Q04206"))
      (protein (:name "NFKB1_HUMAN") (:uid "UP:P19838")))
     :uid "FPLX:NFkappaB")
-   (:var mv5768 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
-  ("Does NFkappaB regulate the CXCL8 gene?" (:var mv5779 :isa polar-question :statement mv5778)
-   (:var mv5778 :isa regulate :agent mv5773 :object mv5777 :raw-text "regulate")
-   (:var mv5773 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
+   (:var mv5738 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
+  ("Does NFkappaB regulate the CXCL8 gene?" (:var mv5749 :isa polar-question :statement mv5748)
+   (:var mv5748 :isa regulate :agent mv5743 :object mv5747 :raw-text "regulate")
+   (:var mv5743 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
     ((protein (:name "TF65_HUMAN") (:uid "UP:Q04206"))
      (protein (:name "NFKB1_HUMAN") (:uid "UP:P19838")))
     :uid "FPLX:NFkappaB")
-   (:var mv5777 :isa gene :has-determiner "THE" :expresses mv5771 :raw-text "gene")
-   (:var mv5771 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
+   (:var mv5747 :isa gene :has-determiner "THE" :expresses mv5741 :raw-text "gene")
+   (:var mv5741 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
   ("Show me the evidence that NFkappaB regulates CXCL8"
-   (:var mv5781 :isa show :|statement-OR-theme| mv5789 :beneficiary mv5782 :present "PRESENT")
-   (:var mv5789 :isa evidence :statement mv5788 :has-determiner "THE")
-   (:var mv5788 :isa regulate :agent mv5786 :object mv5780 :present "PRESENT" :raw-text
+   (:var mv5751 :isa show :|statement-OR-theme| mv5759 :beneficiary mv5752 :present "PRESENT")
+   (:var mv5759 :isa evidence :statement mv5758 :has-determiner "THE")
+   (:var mv5758 :isa regulate :agent mv5756 :object mv5750 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv5786 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
+   (:var mv5756 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
     ((protein (:name "TF65_HUMAN") (:uid "UP:Q04206"))
      (protein (:name "NFKB1_HUMAN") (:uid "UP:P19838")))
     :uid "FPLX:NFkappaB")
-   (:var mv5780 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
-   (:var mv5782 :isa interlocutor :name "speaker"))
-  ("Does ERK regulate the CXCL8 gene?" (:var mv5797 :isa polar-question :statement mv5796)
-   (:var mv5796 :isa regulate :agent mv5792 :object mv5795 :raw-text "regulate")
-   (:var mv5792 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv5750 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
+   (:var mv5752 :isa interlocutor :name "speaker"))
+  ("Does ERK regulate the CXCL8 gene?" (:var mv5767 :isa polar-question :statement mv5766)
+   (:var mv5766 :isa regulate :agent mv5762 :object mv5765 :raw-text "regulate")
+   (:var mv5762 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4625,12 +4620,12 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360")
-   (:var mv5795 :isa gene :has-determiner "THE" :expresses mv5790 :raw-text "gene")
-   (:var mv5790 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
+   (:var mv5765 :isa gene :has-determiner "THE" :expresses mv5760 :raw-text "gene")
+   (:var mv5760 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
   ("ERK decreases the amount of CXCL8"
-   (:var mv5800 :isa decrease :agent mv5799 :|affected-process-OR-object| mv5802 :present "PRESENT"
+   (:var mv5770 :isa decrease :agent mv5769 :|affected-process-OR-object| mv5772 :present "PRESENT"
     :raw-text "decreases")
-   (:var mv5799 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv5769 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4639,12 +4634,12 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360")
-   (:var mv5802 :isa bio-amount :measured-item mv5798 :has-determiner "THE" :raw-text "amount")
-   (:var mv5798 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
-  ("Does TNG regulate ERK?" (:var mv5810 :isa polar-question :statement mv5809)
-   (:var mv5809 :isa regulate :agent mv5808 :object mv5807 :raw-text "regulate")
-   (:var mv5808 :isa bio-entity :name "TNG")
-   (:var mv5807 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv5772 :isa bio-amount :measured-item mv5768 :has-determiner "THE" :raw-text "amount")
+   (:var mv5768 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
+  ("Does TNG regulate ERK?" (:var mv5780 :isa polar-question :statement mv5779)
+   (:var mv5779 :isa regulate :agent mv5778 :object mv5777 :raw-text "regulate")
+   (:var mv5778 :isa bio-entity :name "TNG")
+   (:var mv5777 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4653,11 +4648,11 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
-  ("Does TNF regulate the ERK gene?" (:var mv5818 :isa polar-question :statement mv5817)
-   (:var mv5817 :isa regulate :agent mv5812 :object mv5816 :raw-text "regulate")
-   (:var mv5812 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN")
-   (:var mv5816 :isa gene :has-determiner "THE" :expresses mv5815 :raw-text "gene")
-   (:var mv5815 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+  ("Does TNF regulate the ERK gene?" (:var mv5788 :isa polar-question :statement mv5787)
+   (:var mv5787 :isa regulate :agent mv5782 :object mv5786 :raw-text "regulate")
+   (:var mv5782 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN")
+   (:var mv5786 :isa gene :has-determiner "THE" :expresses mv5785 :raw-text "gene")
+   (:var mv5785 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4667,13 +4662,13 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("What are the pathways between TNG and ERK?"
-   (:var mv5820 :isa be :subject mv5819 :predicate mv5822 :present "PRESENT")
-   (:var mv5819 :isa what)
-   (:var mv5822 :isa pathway :pathwaycomponent mv5827 :has-determiner "THE" :raw-text "pathways")
-   (:var mv5827 :isa collection :raw-text "TNG and ERK" :type protein-family :number 2 :items
-    (mv5824 mv5826))
-   (:var mv5824 :isa bio-entity :name "TNG")
-   (:var mv5826 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv5790 :isa be :subject mv5789 :predicate mv5792 :present "PRESENT")
+   (:var mv5789 :isa what)
+   (:var mv5792 :isa pathway :pathwaycomponent mv5797 :has-determiner "THE" :raw-text "pathways")
+   (:var mv5797 :isa collection :raw-text "TNG and ERK" :type protein-family :number 2 :items
+    (mv5794 mv5796))
+   (:var mv5794 :isa bio-entity :name "TNG")
+   (:var mv5796 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4683,13 +4678,13 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("What are the pathways between TNF and ERK?"
-   (:var mv5830 :isa be :subject mv5829 :predicate mv5832 :present "PRESENT")
-   (:var mv5829 :isa what)
-   (:var mv5832 :isa pathway :pathwaycomponent mv5837 :has-determiner "THE" :raw-text "pathways")
-   (:var mv5837 :isa collection :raw-text "TNF and ERK" :type protein :number 2 :items
-    (mv5834 mv5836))
-   (:var mv5834 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN")
-   (:var mv5836 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv5800 :isa be :subject mv5799 :predicate mv5802 :present "PRESENT")
+   (:var mv5799 :isa what)
+   (:var mv5802 :isa pathway :pathwaycomponent mv5807 :has-determiner "THE" :raw-text "pathways")
+   (:var mv5807 :isa collection :raw-text "TNF and ERK" :type protein :number 2 :items
+    (mv5804 mv5806))
+   (:var mv5804 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN")
+   (:var mv5806 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4698,13 +4693,13 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
-  ("Does NFkappaB regulate ERK?" (:var mv5845 :isa polar-question :statement mv5844)
-   (:var mv5844 :isa regulate :agent mv5840 :object mv5843 :raw-text "regulate")
-   (:var mv5840 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
+  ("Does NFkappaB regulate ERK?" (:var mv5815 :isa polar-question :statement mv5814)
+   (:var mv5814 :isa regulate :agent mv5810 :object mv5813 :raw-text "regulate")
+   (:var mv5810 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
     ((protein (:name "TF65_HUMAN") (:uid "UP:Q04206"))
      (protein (:name "NFKB1_HUMAN") (:uid "UP:P19838")))
     :uid "FPLX:NFkappaB")
-   (:var mv5843 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv5813 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4713,14 +4708,14 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
-  ("Does NFkappaB regulate the ERK gene?" (:var mv5854 :isa polar-question :statement mv5853)
-   (:var mv5853 :isa regulate :agent mv5847 :object mv5852 :raw-text "regulate")
-   (:var mv5847 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
+  ("Does NFkappaB regulate the ERK gene?" (:var mv5824 :isa polar-question :statement mv5823)
+   (:var mv5823 :isa regulate :agent mv5817 :object mv5822 :raw-text "regulate")
+   (:var mv5817 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
     ((protein (:name "TF65_HUMAN") (:uid "UP:Q04206"))
      (protein (:name "NFKB1_HUMAN") (:uid "UP:P19838")))
     :uid "FPLX:NFkappaB")
-   (:var mv5852 :isa gene :has-determiner "THE" :expresses mv5851 :raw-text "gene")
-   (:var mv5851 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv5822 :isa gene :has-determiner "THE" :expresses mv5821 :raw-text "gene")
+   (:var mv5821 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4730,17 +4725,17 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("What pathways exist between NFkappaB and ERK?"
-   (:var mv5867 :isa copular-predication-of-pp :item mv5856 :value mv5866 :prep "BETWEEN"
-    :predicate mv5857)
-   (:var mv5856 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv5866 :isa pathway :pathwaycomponent mv5863 :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv5863 :isa collection :raw-text "NFkappaB and ERK" :type protein-family :number 2 :items
-    (mv5860 mv5862))
-   (:var mv5860 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
+   (:var mv5837 :isa copular-predication-of-pp :item mv5826 :value mv5836 :prep "BETWEEN"
+    :predicate mv5827)
+   (:var mv5826 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv5836 :isa pathway :pathwaycomponent mv5833 :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv5833 :isa collection :raw-text "NFkappaB and ERK" :type protein-family :number 2 :items
+    (mv5830 mv5832))
+   (:var mv5830 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
     ((protein (:name "TF65_HUMAN") (:uid "UP:Q04206"))
      (protein (:name "NFKB1_HUMAN") (:uid "UP:P19838")))
     :uid "FPLX:NFkappaB")
-   (:var mv5862 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv5832 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4749,16 +4744,16 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360")
-   (:var mv5857 :isa exist :present "PRESENT"))
+   (:var mv5827 :isa exist :present "PRESENT"))
   ("How does NFkappaB affect ERK?"
-   (:var mv5873 :isa affect :manner mv5869 :agent mv5871 :object mv5874 :present "PRESENT"
+   (:var mv5843 :isa affect :manner mv5839 :agent mv5841 :object mv5844 :present "PRESENT"
     :raw-text "affect")
-   (:var mv5869 :isa how)
-   (:var mv5871 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
+   (:var mv5839 :isa how)
+   (:var mv5841 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
     ((protein (:name "TF65_HUMAN") (:uid "UP:Q04206"))
      (protein (:name "NFKB1_HUMAN") (:uid "UP:P19838")))
     :uid "FPLX:NFkappaB")
-   (:var mv5874 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv5844 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4768,30 +4763,30 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("MAP3K7 activates IKK"
-   (:var mv5876 :isa bio-activate :agent mv5875 :object mv5877 :present "PRESENT" :raw-text
+   (:var mv5846 :isa bio-activate :agent mv5845 :object mv5847 :present "PRESENT" :raw-text
     "activates")
-   (:var mv5875 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
-   (:var mv5877 :isa protein-family :raw-text "IKK" :name "IKK" :count 3 :family-members
+   (:var mv5845 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
+   (:var mv5847 :isa protein-family :raw-text "IKK" :name "IKK" :count 3 :family-members
     ((protein (:name "IKKE_HUMAN") (:uid "UP:Q14164"))
      (protein (:name "IKKB_HUMAN") (:uid "UP:O14920"))
      (protein (:name "IKKA_HUMAN") (:uid "UP:O15111")))
     :uid "NCIT:C104199"))
   ("IKK activates TNF"
-   (:var mv5879 :isa bio-activate :agent mv5878 :object mv5880 :present "PRESENT" :raw-text
+   (:var mv5849 :isa bio-activate :agent mv5848 :object mv5850 :present "PRESENT" :raw-text
     "activates")
-   (:var mv5878 :isa protein-family :raw-text "IKK" :name "IKK" :count 3 :family-members
+   (:var mv5848 :isa protein-family :raw-text "IKK" :name "IKK" :count 3 :family-members
     ((protein (:name "IKKE_HUMAN") (:uid "UP:Q14164"))
      (protein (:name "IKKB_HUMAN") (:uid "UP:O14920"))
      (protein (:name "IKKA_HUMAN") (:uid "UP:O15111")))
     :uid "NCIT:C104199")
-   (:var mv5880 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN"))
+   (:var mv5850 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN"))
   ("What are the paths between TNF and ERK?"
-   (:var mv5882 :isa be :subject mv5881 :predicate mv5884 :present "PRESENT")
-   (:var mv5881 :isa what) (:var mv5884 :isa path :endpoints mv5889 :has-determiner "THE")
-   (:var mv5889 :isa collection :raw-text "TNF and ERK" :type protein :number 2 :items
-    (mv5886 mv5888))
-   (:var mv5886 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN")
-   (:var mv5888 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv5852 :isa be :subject mv5851 :predicate mv5854 :present "PRESENT")
+   (:var mv5851 :isa what) (:var mv5854 :isa path :endpoints mv5859 :has-determiner "THE")
+   (:var mv5859 :isa collection :raw-text "TNF and ERK" :type protein :number 2 :items
+    (mv5856 mv5858))
+   (:var mv5856 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN")
+   (:var mv5858 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4800,10 +4795,10 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
-  ("Does TNF regulate ERK?" (:var mv5896 :isa polar-question :statement mv5895)
-   (:var mv5895 :isa regulate :agent mv5892 :object mv5894 :raw-text "regulate")
-   (:var mv5892 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN")
-   (:var mv5894 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+  ("Does TNF regulate ERK?" (:var mv5866 :isa polar-question :statement mv5865)
+   (:var mv5865 :isa regulate :agent mv5862 :object mv5864 :raw-text "regulate")
+   (:var mv5862 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN")
+   (:var mv5864 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4813,16 +4808,16 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("How does MAP3K7 affect CXCL8?"
-   (:var mv5901 :isa affect :manner mv5899 :agent mv5897 :object mv5898 :present "PRESENT"
+   (:var mv5871 :isa affect :manner mv5869 :agent mv5867 :object mv5868 :present "PRESENT"
     :raw-text "affect")
-   (:var mv5899 :isa how)
-   (:var mv5897 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
-   (:var mv5898 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
+   (:var mv5869 :isa how)
+   (:var mv5867 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
+   (:var mv5868 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
   ("TNF activates ERK"
-   (:var mv5903 :isa bio-activate :agent mv5902 :object mv5904 :present "PRESENT" :raw-text
+   (:var mv5873 :isa bio-activate :agent mv5872 :object mv5874 :present "PRESENT" :raw-text
     "activates")
-   (:var mv5902 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN")
-   (:var mv5904 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv5872 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN")
+   (:var mv5874 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4832,9 +4827,9 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("Active ERK decreases the amount of CXCL8"
-   (:var mv5908 :isa decrease :agent mv5907 :|affected-process-OR-object| mv5910 :present "PRESENT"
+   (:var mv5878 :isa decrease :agent mv5877 :|affected-process-OR-object| mv5880 :present "PRESENT"
     :raw-text "decreases")
-   (:var mv5907 :isa protein-family :predication mv5906 :raw-text "ERK" :name "ERK" :count 7
+   (:var mv5877 :isa protein-family :predication mv5876 :raw-text "ERK" :name "ERK" :count 7
     :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -4844,51 +4839,51 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360")
-   (:var mv5906 :isa active)
-   (:var mv5910 :isa bio-amount :measured-item mv5905 :has-determiner "THE" :raw-text "amount")
-   (:var mv5905 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
+   (:var mv5876 :isa active)
+   (:var mv5880 :isa bio-amount :measured-item mv5875 :has-determiner "THE" :raw-text "amount")
+   (:var mv5875 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
   ("What are the common upstreams of CXCL8 and CXCL10?"
-   (:var mv5916 :isa be :subject mv5915 :predicate mv5919 :present "PRESENT")
-   (:var mv5915 :isa what)
-   (:var mv5919 :isa upstream-segment :pathwaycomponent mv5922 :has-determiner "THE" :predication
-    mv5918 :raw-text "upstreams")
-   (:var mv5922 :isa collection :raw-text "CXCL8 and CXCL10" :type protein :number 2 :items
-    (mv5913 mv5914))
-   (:var mv5913 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
-   (:var mv5914 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN")
-   (:var mv5918 :isa common))
+   (:var mv5886 :isa be :subject mv5885 :predicate mv5889 :present "PRESENT")
+   (:var mv5885 :isa what)
+   (:var mv5889 :isa upstream-segment :pathwaycomponent mv5892 :has-determiner "THE" :predication
+    mv5888 :raw-text "upstreams")
+   (:var mv5892 :isa collection :raw-text "CXCL8 and CXCL10" :type protein :number 2 :items
+    (mv5883 mv5884))
+   (:var mv5883 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
+   (:var mv5884 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN")
+   (:var mv5888 :isa common))
   ("How does CXCL8 affect CXCL8?"
-   (:var mv5928 :isa affect :manner mv5926 :agent mv5924 :object mv5925 :present "PRESENT"
+   (:var mv5898 :isa affect :manner mv5896 :agent mv5894 :object mv5895 :present "PRESENT"
     :raw-text "affect")
-   (:var mv5926 :isa how)
-   (:var mv5924 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
-   (:var mv5925 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
-  ("Does CXCL8 regulate CXCL10?" (:var mv5934 :isa polar-question :statement mv5933)
-   (:var mv5933 :isa regulate :agent mv5929 :object mv5930 :raw-text "regulate")
-   (:var mv5929 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
-   (:var mv5930 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
-  ("Does CXCL8 regulate the CXCL10 gene?" (:var mv5942 :isa polar-question :statement mv5941)
-   (:var mv5941 :isa regulate :agent mv5935 :object mv5940 :raw-text "regulate")
-   (:var mv5935 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
-   (:var mv5940 :isa gene :has-determiner "THE" :expresses mv5936 :raw-text "gene")
-   (:var mv5936 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
+   (:var mv5896 :isa how)
+   (:var mv5894 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
+   (:var mv5895 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
+  ("Does CXCL8 regulate CXCL10?" (:var mv5904 :isa polar-question :statement mv5903)
+   (:var mv5903 :isa regulate :agent mv5899 :object mv5900 :raw-text "regulate")
+   (:var mv5899 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
+   (:var mv5900 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
+  ("Does CXCL8 regulate the CXCL10 gene?" (:var mv5912 :isa polar-question :statement mv5911)
+   (:var mv5911 :isa regulate :agent mv5905 :object mv5910 :raw-text "regulate")
+   (:var mv5905 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
+   (:var mv5910 :isa gene :has-determiner "THE" :expresses mv5906 :raw-text "gene")
+   (:var mv5906 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
   ("How does MAP3k7 affect CXCL10?"
-   (:var mv5947 :isa affect :manner mv5945 :agent mv5943 :object mv5944 :present "PRESENT"
+   (:var mv5917 :isa affect :manner mv5915 :agent mv5913 :object mv5914 :present "PRESENT"
     :raw-text "affect")
-   (:var mv5945 :isa how)
-   (:var mv5943 :isa protein :raw-text "MAP3k7" :uid "UP:O43318" :name "M3K7_HUMAN")
-   (:var mv5944 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
+   (:var mv5915 :isa how)
+   (:var mv5913 :isa protein :raw-text "MAP3k7" :uid "UP:O43318" :name "M3K7_HUMAN")
+   (:var mv5914 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
   ("What are the paths between TNF and CXCL10?"
-   (:var mv5950 :isa be :subject mv5949 :predicate mv5952 :present "PRESENT")
-   (:var mv5949 :isa what) (:var mv5952 :isa path :endpoints mv5956 :has-determiner "THE")
-   (:var mv5956 :isa collection :raw-text "TNF and CXCL10" :type protein :number 2 :items
-    (mv5954 mv5948))
-   (:var mv5954 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN")
-   (:var mv5948 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
+   (:var mv5920 :isa be :subject mv5919 :predicate mv5922 :present "PRESENT")
+   (:var mv5919 :isa what) (:var mv5922 :isa path :endpoints mv5926 :has-determiner "THE")
+   (:var mv5926 :isa collection :raw-text "TNF and CXCL10" :type protein :number 2 :items
+    (mv5924 mv5918))
+   (:var mv5924 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN")
+   (:var mv5918 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
   ("Does ERK regulate the expression of CXCL10?"
-   (:var mv5967 :isa polar-question :statement mv5965)
-   (:var mv5965 :isa regulate :agent mv5960 :affected-process mv5963 :raw-text "regulate")
-   (:var mv5960 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv5937 :isa polar-question :statement mv5935)
+   (:var mv5935 :isa regulate :agent mv5930 :affected-process mv5933 :raw-text "regulate")
+   (:var mv5930 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -4897,13 +4892,13 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360")
-   (:var mv5963 :isa gene-transcript-express :object mv5958 :has-determiner "THE" :raw-text
+   (:var mv5933 :isa gene-transcript-express :object mv5928 :has-determiner "THE" :raw-text
     "expression")
-   (:var mv5958 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
+   (:var mv5928 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
   ("active ERK decreases the expression of CXCL10"
-   (:var mv5971 :isa decrease :agent mv5970 :affected-process mv5973 :present "PRESENT" :raw-text
+   (:var mv5941 :isa decrease :agent mv5940 :affected-process mv5943 :present "PRESENT" :raw-text
     "decreases")
-   (:var mv5970 :isa protein-family :predication mv5969 :raw-text "ERK" :name "ERK" :count 7
+   (:var mv5940 :isa protein-family :predication mv5939 :raw-text "ERK" :name "ERK" :count 7
     :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -4913,14 +4908,14 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360")
-   (:var mv5969 :isa active)
-   (:var mv5973 :isa gene-transcript-express :object mv5968 :has-determiner "THE" :raw-text
+   (:var mv5939 :isa active)
+   (:var mv5943 :isa gene-transcript-express :object mv5938 :has-determiner "THE" :raw-text
     "expression")
-   (:var mv5968 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
+   (:var mv5938 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
   ("active ERK decreases the amount of CXCL8"
-   (:var mv5979 :isa decrease :agent mv5978 :|affected-process-OR-object| mv5981 :present "PRESENT"
+   (:var mv5949 :isa decrease :agent mv5948 :|affected-process-OR-object| mv5951 :present "PRESENT"
     :raw-text "decreases")
-   (:var mv5978 :isa protein-family :predication mv5977 :raw-text "ERK" :name "ERK" :count 7
+   (:var mv5948 :isa protein-family :predication mv5947 :raw-text "ERK" :name "ERK" :count 7
     :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -4930,13 +4925,13 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360")
-   (:var mv5977 :isa active)
-   (:var mv5981 :isa bio-amount :measured-item mv5976 :has-determiner "THE" :raw-text "amount")
-   (:var mv5976 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
+   (:var mv5947 :isa active)
+   (:var mv5951 :isa bio-amount :measured-item mv5946 :has-determiner "THE" :raw-text "amount")
+   (:var mv5946 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
   ("Active ERK decreases the amount of CXCL10"
-   (:var mv5987 :isa decrease :agent mv5986 :|affected-process-OR-object| mv5989 :present "PRESENT"
+   (:var mv5957 :isa decrease :agent mv5956 :|affected-process-OR-object| mv5959 :present "PRESENT"
     :raw-text "decreases")
-   (:var mv5986 :isa protein-family :predication mv5985 :raw-text "ERK" :name "ERK" :count 7
+   (:var mv5956 :isa protein-family :predication mv5955 :raw-text "ERK" :name "ERK" :count 7
     :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -4946,73 +4941,73 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360")
-   (:var mv5985 :isa active)
-   (:var mv5989 :isa bio-amount :measured-item mv5984 :has-determiner "THE" :raw-text "amount")
-   (:var mv5984 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
+   (:var mv5955 :isa active)
+   (:var mv5959 :isa bio-amount :measured-item mv5954 :has-determiner "THE" :raw-text "amount")
+   (:var mv5954 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
   ("NG25 inhibits the activity of MAP3K7"
-   (:var mv5994 :isa inhibit :agent mv5992 :affected-process mv5996 :present "PRESENT" :raw-text
+   (:var mv5964 :isa inhibit :agent mv5962 :affected-process mv5966 :present "PRESENT" :raw-text
     "inhibits")
-   (:var mv5992 :isa drug :raw-text "NG25" :name "NG-25" :uid "PCID:53340664")
-   (:var mv5996 :isa bio-activity :participant mv5993 :has-determiner "THE" :raw-text "activity")
-   (:var mv5993 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN"))
-  ("Does NG25 decrease the CXCL8 in the model?" (:var mv6010 :isa polar-question :statement mv6008)
-   (:var mv6008 :isa decrease :agent mv5999 :object mv6000 :raw-text "decrease")
-   (:var mv5999 :isa drug :raw-text "NG25" :name "NG-25" :uid "PCID:53340664")
-   (:var mv6000 :isa protein :info-context mv6007 :has-determiner "THE" :raw-text "CXCL8" :uid
+   (:var mv5962 :isa drug :raw-text "NG25" :name "NG-25" :uid "PCID:53340664")
+   (:var mv5966 :isa bio-activity :participant mv5963 :has-determiner "THE" :raw-text "activity")
+   (:var mv5963 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN"))
+  ("Does NG25 decrease the CXCL8 in the model?" (:var mv5980 :isa polar-question :statement mv5978)
+   (:var mv5978 :isa decrease :agent mv5969 :object mv5970 :raw-text "decrease")
+   (:var mv5969 :isa drug :raw-text "NG25" :name "NG-25" :uid "PCID:53340664")
+   (:var mv5970 :isa protein :info-context mv5977 :has-determiner "THE" :raw-text "CXCL8" :uid
     "UP:P10145" :name "IL8_HUMAN")
-   (:var mv6007 :isa model :has-determiner "THE"))
-  ("Does NG25 decrease CXCL10 in the model?" (:var mv6021 :isa polar-question :statement mv6019)
-   (:var mv6019 :isa decrease :agent mv6011 :object mv6012 :raw-text "decrease")
-   (:var mv6011 :isa drug :raw-text "NG25" :name "NG-25" :uid "PCID:53340664")
-   (:var mv6012 :isa protein :info-context mv6018 :raw-text "CXCL10" :uid "UP:P02778" :name
+   (:var mv5977 :isa model :has-determiner "THE"))
+  ("Does NG25 decrease CXCL10 in the model?" (:var mv5991 :isa polar-question :statement mv5989)
+   (:var mv5989 :isa decrease :agent mv5981 :object mv5982 :raw-text "decrease")
+   (:var mv5981 :isa drug :raw-text "NG25" :name "NG-25" :uid "PCID:53340664")
+   (:var mv5982 :isa protein :info-context mv5988 :raw-text "CXCL10" :uid "UP:P02778" :name
     "CXL10_HUMAN")
-   (:var mv6018 :isa model :has-determiner "THE"))
+   (:var mv5988 :isa model :has-determiner "THE"))
   ("TNF activates NFkappaB"
-   (:var mv6023 :isa bio-activate :agent mv6022 :object mv6024 :present "PRESENT" :raw-text
+   (:var mv5993 :isa bio-activate :agent mv5992 :object mv5994 :present "PRESENT" :raw-text
     "activates")
-   (:var mv6022 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN")
-   (:var mv6024 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
+   (:var mv5992 :isa protein :raw-text "TNF" :uid "UP:P01375" :name "TNFA_HUMAN")
+   (:var mv5994 :isa protein-family :raw-text "NFkappaB" :name "NF-kappaB" :count 2 :family-members
     ((protein (:name "TF65_HUMAN") (:uid "UP:Q04206"))
      (protein (:name "NFKB1_HUMAN") (:uid "UP:P19838")))
     :uid "FPLX:NFkappaB"))
   ("I want to find out how tofacitinib decreases IL2"
-   (:var mv6030 :isa want :agent mv6027 :theme mv6041 :present "PRESENT")
-   (:var mv6027 :isa interlocutor :name "speaker")
-   (:var mv6041 :isa find-out :agent mv6027 :statement mv6038)
-   (:var mv6038 :isa wh-question :statement mv6037 :var nil :wh how)
-   (:var mv6037 :isa decrease :agent mv6036 :object mv6026 :present "PRESENT" :raw-text
+   (:var mv6000 :isa want :agent mv5997 :theme mv6011 :present "PRESENT")
+   (:var mv5997 :isa interlocutor :name "speaker")
+   (:var mv6011 :isa find-out :agent mv5997 :statement mv6008)
+   (:var mv6008 :isa wh-question :statement mv6007 :var nil :wh how)
+   (:var mv6007 :isa decrease :agent mv6006 :object mv5996 :present "PRESENT" :raw-text
     "decreases")
-   (:var mv6036 :isa drug :raw-text "tofacitinib" :name "tasocitinib" :uid "NCIT:C95800")
-   (:var mv6026 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
+   (:var mv6006 :isa drug :raw-text "tofacitinib" :name "tasocitinib" :uid "NCIT:C95800")
+   (:var mv5996 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
   ("I want to find out how Selumetinib decreases FOS in BT20 cells"
-   (:var mv6046 :isa want :agent mv6043 :theme mv6061 :present "PRESENT")
-   (:var mv6043 :isa interlocutor :name "speaker")
-   (:var mv6061 :isa find-out :agent mv6043 :statement mv6058)
-   (:var mv6058 :isa wh-question :statement mv6053 :var nil :wh how)
-   (:var mv6053 :isa decrease :agent mv6052 :object mv6054 :present "PRESENT" :raw-text
+   (:var mv6016 :isa want :agent mv6013 :theme mv6031 :present "PRESENT")
+   (:var mv6013 :isa interlocutor :name "speaker")
+   (:var mv6031 :isa find-out :agent mv6013 :statement mv6028)
+   (:var mv6028 :isa wh-question :statement mv6023 :var nil :wh how)
+   (:var mv6023 :isa decrease :agent mv6022 :object mv6024 :present "PRESENT" :raw-text
     "decreases")
-   (:var mv6052 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622")
-   (:var mv6054 :isa protein :cell-type mv6056 :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv6056 :isa cell-type :cell-line mv6042)
-   (:var mv6042 :isa cell-line :name "BT-20" :uid "CVCL:0178"))
+   (:var mv6022 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622")
+   (:var mv6024 :isa protein :cell-type mv6026 :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv6026 :isa cell-type :cell-line mv6012)
+   (:var mv6012 :isa cell-line :name "BT-20" :uid "CVCL:0178"))
   ("I want to find out how ERBB3 activates JUN in SKBR3 cells"
-   (:var mv6067 :isa want :agent mv6064 :theme mv6081 :present "PRESENT")
-   (:var mv6064 :isa interlocutor :name "speaker")
-   (:var mv6081 :isa find-out :agent mv6064 :statement mv6078)
-   (:var mv6078 :isa wh-question :statement mv6073 :var nil :wh how)
-   (:var mv6073 :isa bio-activate :agent mv6062 :object mv6074 :present "PRESENT" :raw-text
+   (:var mv6037 :isa want :agent mv6034 :theme mv6051 :present "PRESENT")
+   (:var mv6034 :isa interlocutor :name "speaker")
+   (:var mv6051 :isa find-out :agent mv6034 :statement mv6048)
+   (:var mv6048 :isa wh-question :statement mv6043 :var nil :wh how)
+   (:var mv6043 :isa bio-activate :agent mv6032 :object mv6044 :present "PRESENT" :raw-text
     "activates")
-   (:var mv6062 :isa protein :raw-text "ERBB3" :uid "UP:P21860" :name "ERBB3_HUMAN")
-   (:var mv6074 :isa protein :cell-type mv6076 :raw-text "JUN" :uid "UP:P05412" :name "JUN_HUMAN")
-   (:var mv6076 :isa cell-type :cell-line mv6063)
-   (:var mv6063 :isa cell-line :name "SKBR3" :uid "EFO:0001236"))
-  ("Does MEK phosphorylate ERK?" (:var mv6087 :isa polar-question :statement mv6086)
-   (:var mv6086 :isa phosphorylate :agent mv6083 :substrate mv6085 :raw-text "phosphorylate")
-   (:var mv6083 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv6032 :isa protein :raw-text "ERBB3" :uid "UP:P21860" :name "ERBB3_HUMAN")
+   (:var mv6044 :isa protein :cell-type mv6046 :raw-text "JUN" :uid "UP:P05412" :name "JUN_HUMAN")
+   (:var mv6046 :isa cell-type :cell-line mv6033)
+   (:var mv6033 :isa cell-line :name "SKBR3" :uid "EFO:0001236"))
+  ("Does MEK phosphorylate ERK?" (:var mv6057 :isa polar-question :statement mv6056)
+   (:var mv6056 :isa phosphorylate :agent mv6053 :substrate mv6055 :raw-text "phosphorylate")
+   (:var mv6053 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv6085 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv6055 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -5021,30 +5016,30 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
-  ("Does STAT3 inhibit the c-fos gene?" (:var mv6095 :isa polar-question :statement mv6094)
-   (:var mv6094 :isa inhibit :agent mv6088 :object mv6093 :raw-text "inhibit")
-   (:var mv6088 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv6093 :isa gene :has-determiner "THE" :expresses mv6089 :raw-text "gene")
-   (:var mv6089 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("Does STAT3 stimulate the c-fos gene?" (:var mv6103 :isa polar-question :statement mv6102)
-   (:var mv6102 :isa stimulate :agent mv6096 :object mv6101 :raw-text "stimulate")
-   (:var mv6096 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv6101 :isa gene :has-determiner "THE" :expresses mv6097 :raw-text "gene")
-   (:var mv6097 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Does STAT3 inhibit the c-fos gene?" (:var mv6065 :isa polar-question :statement mv6064)
+   (:var mv6064 :isa inhibit :agent mv6058 :object mv6063 :raw-text "inhibit")
+   (:var mv6058 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv6063 :isa gene :has-determiner "THE" :expresses mv6059 :raw-text "gene")
+   (:var mv6059 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Does STAT3 stimulate the c-fos gene?" (:var mv6073 :isa polar-question :statement mv6072)
+   (:var mv6072 :isa stimulate :agent mv6066 :object mv6071 :raw-text "stimulate")
+   (:var mv6066 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv6071 :isa gene :has-determiner "THE" :expresses mv6067 :raw-text "gene")
+   (:var mv6067 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("I want to find out how Selumetinib decreases FOS in SKMEL-133 melanoma cells."
-   (:var mv6108 :isa want :agent mv6105 :theme mv6124 :present "PRESENT")
-   (:var mv6105 :isa interlocutor :name "speaker")
-   (:var mv6124 :isa find-out :agent mv6105 :statement mv6121)
-   (:var mv6121 :isa wh-question :statement mv6115 :var nil :wh how)
-   (:var mv6115 :isa decrease :agent mv6114 :object mv6116 :present "PRESENT" :raw-text
+   (:var mv6078 :isa want :agent mv6075 :theme mv6094 :present "PRESENT")
+   (:var mv6075 :isa interlocutor :name "speaker")
+   (:var mv6094 :isa find-out :agent mv6075 :statement mv6091)
+   (:var mv6091 :isa wh-question :statement mv6085 :var nil :wh how)
+   (:var mv6085 :isa decrease :agent mv6084 :object mv6086 :present "PRESENT" :raw-text
     "decreases")
-   (:var mv6114 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622")
-   (:var mv6116 :isa protein :cell-type mv6119 :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv6119 :isa cell-type :cell-line mv6104 :|context-OR-associated-disease| mv6118)
-   (:var mv6104 :isa cell-line :name "SK-MEL-133" :uid "CVCL:6082") (:var mv6118 :isa melanoma))
-  ("Is ERK a transcription factor?" (:var mv6129 :isa polar-question :statement mv6126)
-   (:var mv6126 :isa be :subject mv6127 :predicate mv6125)
-   (:var mv6127 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv6084 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622")
+   (:var mv6086 :isa protein :cell-type mv6089 :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv6089 :isa cell-type :cell-line mv6074 :|context-OR-associated-disease| mv6088)
+   (:var mv6074 :isa cell-line :name "SK-MEL-133" :uid "CVCL:6082") (:var mv6088 :isa melanoma))
+  ("Is ERK a transcription factor?" (:var mv6099 :isa polar-question :statement mv6096)
+   (:var mv6096 :isa be :subject mv6097 :predicate mv6095)
+   (:var mv6097 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -5053,124 +5048,124 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360")
-   (:var mv6125 :isa transcription-factor :has-determiner "A" :raw-text "transcription factor"))
+   (:var mv6095 :isa transcription-factor :has-determiner "A" :raw-text "transcription factor"))
   ("List all the genes regulated by elk1 and srf."
-   (:var mv6131 :isa list :theme mv6134 :present "PRESENT")
-   (:var mv6134 :isa gene :predication mv6135 :quantifier mv6132 :has-determiner "THE" :raw-text
+   (:var mv6101 :isa list :theme mv6104 :present "PRESENT")
+   (:var mv6104 :isa gene :predication mv6105 :quantifier mv6102 :has-determiner "THE" :raw-text
     "genes")
-   (:var mv6135 :isa regulate :object mv6134 :agent mv6139 :past "PAST" :raw-text "regulated")
-   (:var mv6139 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv6130 mv6138))
-   (:var mv6130 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv6138 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv6132 :isa all :word "all"))
+   (:var mv6105 :isa regulate :object mv6104 :agent mv6109 :past "PAST" :raw-text "regulated")
+   (:var mv6109 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv6100 mv6108))
+   (:var mv6100 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv6108 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv6102 :isa all :word "all"))
   ("List some of the genes regulated by elk1 and srf."
-   (:var mv6142 :isa list :theme mv6146 :present "PRESENT")
-   (:var mv6146 :isa gene :predication mv6147 :quantifier mv6143 :has-determiner "THE" :raw-text
+   (:var mv6112 :isa list :theme mv6116 :present "PRESENT")
+   (:var mv6116 :isa gene :predication mv6117 :quantifier mv6113 :has-determiner "THE" :raw-text
     "genes")
-   (:var mv6147 :isa regulate :object mv6146 :agent mv6151 :past "PAST" :raw-text "regulated")
-   (:var mv6151 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
-    (mv6141 mv6150))
-   (:var mv6141 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv6150 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv6143 :isa some :word "some"))
+   (:var mv6117 :isa regulate :object mv6116 :agent mv6121 :past "PAST" :raw-text "regulated")
+   (:var mv6121 :isa collection :raw-text "elk1 and srf" :type protein :number 2 :items
+    (mv6111 mv6120))
+   (:var mv6111 :isa protein :raw-text "elk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv6120 :isa protein :raw-text "srf" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv6113 :isa some :word "some"))
   ("Show me the  mutations of TP53 and BRAF in ovarian cancer."
-   (:var mv6157 :isa show :|statement-OR-theme| mv6160 :beneficiary mv6158 :present "PRESENT")
-   (:var mv6160 :isa mutation :object mv6165 :has-determiner "THE" :raw-text "mutations")
-   (:var mv6165 :isa collection :context mv6156 :raw-text "TP53 and BRAF" :type protein :number 2
-    :items (mv6155 mv6163))
-   (:var mv6156 :isa cancer :name "ovarian cancer" :uid "TS-1223")
-   (:var mv6155 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
-   (:var mv6163 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv6158 :isa interlocutor :name "speaker"))
+   (:var mv6127 :isa show :|statement-OR-theme| mv6130 :beneficiary mv6128 :present "PRESENT")
+   (:var mv6130 :isa mutation :object mv6135 :has-determiner "THE" :raw-text "mutations")
+   (:var mv6135 :isa collection :context mv6126 :raw-text "TP53 and BRAF" :type protein :number 2
+    :items (mv6125 mv6133))
+   (:var mv6126 :isa cancer :name "ovarian cancer" :uid "TS-1223")
+   (:var mv6125 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
+   (:var mv6133 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv6128 :isa interlocutor :name "speaker"))
   ("What are the mutations of TP53 and BRAF in ovarian cancer?"
-   (:var mv6171 :isa be :subject mv6170 :predicate mv6173 :present "PRESENT")
-   (:var mv6170 :isa what)
-   (:var mv6173 :isa mutation :object mv6178 :has-determiner "THE" :raw-text "mutations")
-   (:var mv6178 :isa collection :context mv6169 :raw-text "TP53 and BRAF" :type protein :number 2
-    :items (mv6168 mv6176))
-   (:var mv6169 :isa cancer :name "ovarian cancer" :uid "TS-1223")
-   (:var mv6168 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
-   (:var mv6176 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv6141 :isa be :subject mv6140 :predicate mv6143 :present "PRESENT")
+   (:var mv6140 :isa what)
+   (:var mv6143 :isa mutation :object mv6148 :has-determiner "THE" :raw-text "mutations")
+   (:var mv6148 :isa collection :context mv6139 :raw-text "TP53 and BRAF" :type protein :number 2
+    :items (mv6138 mv6146))
+   (:var mv6139 :isa cancer :name "ovarian cancer" :uid "TS-1223")
+   (:var mv6138 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
+   (:var mv6146 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("What are the mutually exclusive genes with CDH1 for breast cancer?"
-   (:var mv6185 :isa be :subject mv6184 :predicate mv6192 :present "PRESENT")
-   (:var mv6184 :isa what)
-   (:var mv6192 :isa gene :disease mv6183 :has-determiner "THE" :predication mv6181 :raw-text
+   (:var mv6155 :isa be :subject mv6154 :predicate mv6162 :present "PRESENT")
+   (:var mv6154 :isa what)
+   (:var mv6162 :isa gene :disease mv6153 :has-determiner "THE" :predication mv6151 :raw-text
     "genes")
-   (:var mv6183 :isa cancer :name "breast cancer" :uid "TS-0591")
-   (:var mv6181 :isa mutual-exclusivity :alternative mv6182)
-   (:var mv6182 :isa protein :raw-text "CDH1" :uid "UP:P12830" :name "CADH1_HUMAN"))
+   (:var mv6153 :isa cancer :name "breast cancer" :uid "TS-0591")
+   (:var mv6151 :isa mutual-exclusivity :alternative mv6152)
+   (:var mv6152 :isa protein :raw-text "CDH1" :uid "UP:P12830" :name "CADH1_HUMAN"))
   ("What are the mutually exclusive genes with CDH1 in breast cancer?"
-   (:var mv6197 :isa be :subject mv6196 :predicate mv6204 :present "PRESENT")
-   (:var mv6196 :isa what)
-   (:var mv6204 :isa gene :has-determiner "THE" :predication mv6193 :raw-text "genes")
-   (:var mv6193 :isa mutual-exclusivity :alternative mv6194)
-   (:var mv6194 :isa protein :context mv6195 :raw-text "CDH1" :uid "UP:P12830" :name "CADH1_HUMAN")
-   (:var mv6195 :isa cancer :name "breast cancer" :uid "TS-0591"))
+   (:var mv6167 :isa be :subject mv6166 :predicate mv6174 :present "PRESENT")
+   (:var mv6166 :isa what)
+   (:var mv6174 :isa gene :has-determiner "THE" :predication mv6163 :raw-text "genes")
+   (:var mv6163 :isa mutual-exclusivity :alternative mv6164)
+   (:var mv6164 :isa protein :context mv6165 :raw-text "CDH1" :uid "UP:P12830" :name "CADH1_HUMAN")
+   (:var mv6165 :isa cancer :name "breast cancer" :uid "TS-0591"))
   ("What downregulates it?"
-   (:var mv6206 :isa downregulate :|agent-OR-cause| mv6205 :|affected-process-OR-object| mv6207
+   (:var mv6176 :isa downregulate :|agent-OR-cause| mv6175 :|affected-process-OR-object| mv6177
     :present "PRESENT" :raw-text "downregulates")
-   (:var mv6205 :isa what) (:var mv6207 :isa pronoun/inanimate :word "it"))
+   (:var mv6175 :isa what) (:var mv6177 :isa pronoun/inanimate :word "it"))
   ("What genes have strong evidence of being regulated by mir-122-5p?"
-   (:var mv6211 :isa have :possessor mv6210 :thing-possessed mv6213 :present "PRESENT")
-   (:var mv6210 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv6213 :isa evidence :fact mv6216 :predication mv6212)
-   (:var mv6216 :isa regulate :agent mv6208 :progressive mv6215 :raw-text "regulated")
-   (:var mv6208 :isa micro-rna :raw-text "mir-122-5p" :name "microRNA 122-5p" :uid "MIMAT0000421")
-   (:var mv6215 :isa be) (:var mv6212 :isa strong))
+   (:var mv6181 :isa have :possessor mv6180 :thing-possessed mv6183 :present "PRESENT")
+   (:var mv6180 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv6183 :isa evidence :fact mv6186 :predication mv6182)
+   (:var mv6186 :isa regulate :agent mv6178 :progressive mv6185 :raw-text "regulated")
+   (:var mv6178 :isa micro-rna :raw-text "mir-122-5p" :name "microRNA 122-5p" :uid "MIMAT0000421")
+   (:var mv6185 :isa be) (:var mv6182 :isa strong))
   ("What increases the amount of myc"
-   (:var mv6222 :isa increase :|agent-OR-cause| mv6220 :|affected-process-OR-object| mv6224
+   (:var mv6192 :isa increase :|agent-OR-cause| mv6190 :|affected-process-OR-object| mv6194
     :present "PRESENT" :raw-text "increases")
-   (:var mv6220 :isa what)
-   (:var mv6224 :isa bio-amount :measured-item mv6226 :has-determiner "THE" :raw-text "amount")
-   (:var mv6226 :isa protein :raw-text "myc" :uid "UP:P01106" :name "MYC_HUMAN"))
+   (:var mv6190 :isa what)
+   (:var mv6194 :isa bio-amount :measured-item mv6196 :has-determiner "THE" :raw-text "amount")
+   (:var mv6196 :isa protein :raw-text "myc" :uid "UP:P01106" :name "MYC_HUMAN"))
   ("What inhibits fzd8?"
-   (:var mv6230 :isa inhibit :|agent-OR-cause| mv6229 :object mv6228 :present "PRESENT" :raw-text
+   (:var mv6200 :isa inhibit :|agent-OR-cause| mv6199 :object mv6198 :present "PRESENT" :raw-text
     "inhibits")
-   (:var mv6229 :isa what)
-   (:var mv6228 :isa protein :raw-text "fzd8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
+   (:var mv6199 :isa what)
+   (:var mv6198 :isa protein :raw-text "fzd8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
   ("What is the most likely cellular location of AKT1, BRAF and MAPK1?"
-   (:var mv6234 :isa be :subject mv6233 :predicate mv6246 :present "PRESENT")
-   (:var mv6233 :isa what) (:var mv6246 :isa quality-predicate :item mv6244 :attribute mv6240)
-   (:var mv6244 :isa collection :raw-text "AKT1, BRAF and MAPK1" :type protein :number 3 :items
-    (mv6231 mv6242 mv6232))
-   (:var mv6231 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv6242 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv6232 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
-   (:var mv6240 :isa location-of :has-determiner "THE" :predication mv6238 :modifier mv6239)
-   (:var mv6238 :isa likely :comparative mv6236)
-   (:var mv6236 :isa superlative-quantifier :name "most")
-   (:var mv6239 :isa cellular :name "cellular"))
+   (:var mv6204 :isa be :subject mv6203 :predicate mv6216 :present "PRESENT")
+   (:var mv6203 :isa what) (:var mv6216 :isa quality-predicate :item mv6214 :attribute mv6210)
+   (:var mv6214 :isa collection :raw-text "AKT1, BRAF and MAPK1" :type protein :number 3 :items
+    (mv6201 mv6212 mv6202))
+   (:var mv6201 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv6212 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv6202 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
+   (:var mv6210 :isa location-of :has-determiner "THE" :predication mv6208 :modifier mv6209)
+   (:var mv6208 :isa likely :comparative mv6206)
+   (:var mv6206 :isa superlative-quantifier :name "most")
+   (:var mv6209 :isa cellular :name "cellular"))
   ("What is the most likely cellular location of AKT1?"
-   (:var mv6249 :isa be :subject mv6248 :predicate mv6258 :present "PRESENT")
-   (:var mv6248 :isa what) (:var mv6258 :isa quality-predicate :item mv6247 :attribute mv6255)
-   (:var mv6247 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv6255 :isa location-of :has-determiner "THE" :predication mv6253 :modifier mv6254)
-   (:var mv6253 :isa likely :comparative mv6251)
-   (:var mv6251 :isa superlative-quantifier :name "most")
-   (:var mv6254 :isa cellular :name "cellular"))
+   (:var mv6219 :isa be :subject mv6218 :predicate mv6228 :present "PRESENT")
+   (:var mv6218 :isa what) (:var mv6228 :isa quality-predicate :item mv6217 :attribute mv6225)
+   (:var mv6217 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv6225 :isa location-of :has-determiner "THE" :predication mv6223 :modifier mv6224)
+   (:var mv6223 :isa likely :comparative mv6221)
+   (:var mv6221 :isa superlative-quantifier :name "most")
+   (:var mv6224 :isa cellular :name "cellular"))
   ("What is the mutation significance of TP53 in lung cancer?"
-   (:var mv6262 :isa be :subject mv6261 :predicate mv6265 :present "PRESENT")
-   (:var mv6261 :isa what)
-   (:var mv6265 :isa significance :agent mv6259 :has-determiner "THE" :modifier mv6264)
-   (:var mv6259 :isa protein :context mv6260 :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
-   (:var mv6260 :isa cancer :name "lung cancer" :uid "TS-0571")
-   (:var mv6264 :isa mutation :raw-text "mutation"))
+   (:var mv6232 :isa be :subject mv6231 :predicate mv6235 :present "PRESENT")
+   (:var mv6231 :isa what)
+   (:var mv6235 :isa significance :agent mv6229 :has-determiner "THE" :modifier mv6234)
+   (:var mv6229 :isa protein :context mv6230 :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
+   (:var mv6230 :isa cancer :name "lung cancer" :uid "TS-0571")
+   (:var mv6234 :isa mutation :raw-text "mutation"))
   ("Which of those are regulated by tp53?"
-   (:var mv6277 :isa regulate :|affected-process-OR-object| mv6273 :agent mv6270 :present "PRESENT"
+   (:var mv6247 :isa regulate :|affected-process-OR-object| mv6243 :agent mv6240 :present "PRESENT"
     :raw-text "regulated")
-   (:var mv6273 :isa those :quantifier mv6271 :word "those") (:var mv6271 :isa which)
-   (:var mv6270 :isa protein :raw-text "tp53" :uid "UP:P04637" :name "P53_HUMAN"))
+   (:var mv6243 :isa those :quantifier mv6241 :word "those") (:var mv6241 :isa which)
+   (:var mv6240 :isa protein :raw-text "tp53" :uid "UP:P04637" :name "P53_HUMAN"))
   ("Which of those genes are in the MAPK signaling pathway?"
-   (:var mv6293 :isa copular-predication-of-pp :item mv6284 :value mv6292 :prep "IN" :predicate
-    mv6285)
-   (:var mv6284 :isa gene :quantifier mv6281 :has-determiner "THOSE" :raw-text "genes")
-   (:var mv6281 :isa which)
-   (:var mv6292 :isa gene :context mv6280 :quantifier mv6281 :has-determiner "THOSE" :raw-text
+   (:var mv6263 :isa copular-predication-of-pp :item mv6254 :value mv6262 :prep "IN" :predicate
+    mv6255)
+   (:var mv6254 :isa gene :quantifier mv6251 :has-determiner "THOSE" :raw-text "genes")
+   (:var mv6251 :isa which)
+   (:var mv6262 :isa gene :context mv6250 :quantifier mv6251 :has-determiner "THOSE" :raw-text
     "genes")
-   (:var mv6280 :isa signaling-pathway :has-determiner "THE" :modifier mv6288 :raw-text
+   (:var mv6250 :isa signaling-pathway :has-determiner "THE" :modifier mv6258 :raw-text
     "signaling pathway")
-   (:var mv6288 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
+   (:var mv6258 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -5186,150 +5181,150 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv6285 :isa be :present "PRESENT"))
+   (:var mv6255 :isa be :present "PRESENT"))
   ("Which of these are in the il-12 pathway?"
-   (:var mv6304 :isa copular-predication-of-pp :item mv6298 :value mv6302 :prep mv6300 :predicate
-    mv6299)
-   (:var mv6298 :isa these :quantifier mv6296 :word "these") (:var mv6296 :isa which)
-   (:var mv6302 :isa pathway :has-determiner "THE" :modifier mv6295 :raw-text "pathway")
-   (:var mv6295 :isa protein-family :raw-text "il-12" :name "IL-12" :count 2 :family-members
+   (:var mv6274 :isa copular-predication-of-pp :item mv6268 :value mv6272 :prep mv6270 :predicate
+    mv6269)
+   (:var mv6268 :isa these :quantifier mv6266 :word "these") (:var mv6266 :isa which)
+   (:var mv6272 :isa pathway :has-determiner "THE" :modifier mv6265 :raw-text "pathway")
+   (:var mv6265 :isa protein-family :raw-text "il-12" :name "IL-12" :count 2 :family-members
     ((protein (:name "IL12B_HUMAN") (:uid "UP:P29460"))
      (protein (:name "IL12A_HUMAN") (:uid "UP:P29459")))
     :uid "FPLX:IL12")
-   (:var mv6300 :isa in :word "in") (:var mv6299 :isa be :present "PRESENT"))
+   (:var mv6270 :isa in :word "in") (:var mv6269 :isa be :present "PRESENT"))
   ("Which of them are expressed in liver?"
-   (:var mv6313 :isa gene-transcript-express :object mv6308 :organ mv6312 :present "PRESENT"
+   (:var mv6283 :isa gene-transcript-express :object mv6278 :organ mv6282 :present "PRESENT"
     :raw-text "expressed")
-   (:var mv6308 :isa pronoun/plural :quantifier mv6306 :word "them") (:var mv6306 :isa which)
-   (:var mv6312 :isa liver))
+   (:var mv6278 :isa pronoun/plural :quantifier mv6276 :word "them") (:var mv6276 :isa which)
+   (:var mv6282 :isa liver))
   ("Which of them are most frequently regulated by miR-335-5p and miR-155-5p?"
-   (:var mv6328 :isa regulate :|affected-process-OR-object| mv6320 :agent mv6327 :present "PRESENT"
-    :superlative mv6322 :adverb mv6323 :raw-text "regulated")
-   (:var mv6320 :isa pronoun/plural :quantifier mv6318 :word "them") (:var mv6318 :isa which)
-   (:var mv6327 :isa collection :raw-text "miR-335-5p and miR-155-5p" :type micro-rna :number 2
-    :items (mv6316 mv6317))
-   (:var mv6316 :isa micro-rna :raw-text "miR-335-5p" :name "microRNA 335-5p" :uid "MIMAT0000765")
-   (:var mv6317 :isa micro-rna :raw-text "miR-155-5p" :name "microRNA 155-5p" :uid "MIMAT0000646")
-   (:var mv6322 :isa superlative-quantifier :name "most")
-   (:var mv6323 :isa frequently :name "frequently"))
+   (:var mv6298 :isa regulate :|affected-process-OR-object| mv6290 :agent mv6297 :present "PRESENT"
+    :superlative mv6292 :adverb mv6293 :raw-text "regulated")
+   (:var mv6290 :isa pronoun/plural :quantifier mv6288 :word "them") (:var mv6288 :isa which)
+   (:var mv6297 :isa collection :raw-text "miR-335-5p and miR-155-5p" :type micro-rna :number 2
+    :items (mv6286 mv6287))
+   (:var mv6286 :isa micro-rna :raw-text "miR-335-5p" :name "microRNA 335-5p" :uid "MIMAT0000765")
+   (:var mv6287 :isa micro-rna :raw-text "miR-155-5p" :name "microRNA 155-5p" :uid "MIMAT0000646")
+   (:var mv6292 :isa superlative-quantifier :name "most")
+   (:var mv6293 :isa frequently :name "frequently"))
   ("What transcription factors target SMURF2?"
-   (:var mv6335 :isa target :agent mv6331 :object mv6332 :present "PRESENT" :raw-text "target")
-   (:var mv6331 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv6332 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
+   (:var mv6305 :isa target :agent mv6301 :object mv6302 :present "PRESENT" :raw-text "target")
+   (:var mv6301 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv6302 :isa protein :raw-text "SMURF2" :uid "UP:Q9HAU4" :name "SMUF2_HUMAN"))
   ("Which of those target frizzled8?"
-   (:var mv6341 :isa target :|agent-OR-cause| mv6339 :object mv6336 :present "PRESENT" :raw-text
+   (:var mv6311 :isa target :|agent-OR-cause| mv6309 :object mv6306 :present "PRESENT" :raw-text
     "target")
-   (:var mv6339 :isa those :quantifier mv6337 :word "those") (:var mv6337 :isa which)
-   (:var mv6336 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
+   (:var mv6309 :isa those :quantifier mv6307 :word "those") (:var mv6307 :isa which)
+   (:var mv6306 :isa protein :raw-text "frizzled8" :uid "UP:Q9H461" :name "FZD8_HUMAN"))
   ("What is Selumetinib?"
-   (:var mv6344 :isa be :subject mv6343 :predicate mv6345 :present "PRESENT")
-   (:var mv6343 :isa what)
-   (:var mv6345 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622"))
-  ("What is MAPK3?" (:var mv6348 :isa be :subject mv6347 :predicate mv6346 :present "PRESENT")
-   (:var mv6347 :isa what)
-   (:var mv6346 :isa protein :raw-text "MAPK3" :uid "UP:P27361" :name "MK03_HUMAN"))
-  ("What does it do?" (:var mv6354 :isa do :patient mv6349 :present "PRESENT")
-   (:var mv6349 :isa what))
-  ("Is there an inhibitor of ERK1?" (:var mv6364 :isa polar-question :statement mv6362)
-   (:var mv6362 :isa there-exists :value mv6360 :predicate mv6357)
-   (:var mv6360 :isa inhibitor :protein mv6355 :has-determiner "AN" :raw-text "inhibitor")
-   (:var mv6355 :isa protein :raw-text "ERK1" :uid "UP:P27361" :name "MK03_HUMAN")
-   (:var mv6357 :isa syntactic-there))
+   (:var mv6314 :isa be :subject mv6313 :predicate mv6315 :present "PRESENT")
+   (:var mv6313 :isa what)
+   (:var mv6315 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622"))
+  ("What is MAPK3?" (:var mv6318 :isa be :subject mv6317 :predicate mv6316 :present "PRESENT")
+   (:var mv6317 :isa what)
+   (:var mv6316 :isa protein :raw-text "MAPK3" :uid "UP:P27361" :name "MK03_HUMAN"))
+  ("What does it do?" (:var mv6324 :isa do :patient mv6319 :present "PRESENT")
+   (:var mv6319 :isa what))
+  ("Is there an inhibitor of ERK1?" (:var mv6334 :isa polar-question :statement mv6332)
+   (:var mv6332 :isa there-exists :value mv6330 :predicate mv6327)
+   (:var mv6330 :isa inhibitor :protein mv6325 :has-determiner "AN" :raw-text "inhibitor")
+   (:var mv6325 :isa protein :raw-text "ERK1" :uid "UP:P27361" :name "MK03_HUMAN")
+   (:var mv6327 :isa syntactic-there))
   ("Name some drugs that inhibit AKT1."
-   (:var mv6366 :isa name-something :patient mv6370 :present "PRESENT")
-   (:var mv6370 :isa drug :predication mv6372 :quantifier mv6369 :raw-text "drugs")
-   (:var mv6372 :isa inhibit :agent mv6370 :that-rel t :object mv6365 :present "PRESENT" :raw-text
+   (:var mv6336 :isa name-something :patient mv6340 :present "PRESENT")
+   (:var mv6340 :isa drug :predication mv6342 :quantifier mv6339 :raw-text "drugs")
+   (:var mv6342 :isa inhibit :agent mv6340 :that-rel t :object mv6335 :present "PRESENT" :raw-text
     "inhibit")
-   (:var mv6365 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv6369 :isa some :word "some"))
-  ("Are there any Map2K1 inhibitors?" (:var mv6384 :isa polar-question :statement mv6383)
-   (:var mv6383 :isa there-exists :value mv6381 :predicate mv6375)
-   (:var mv6381 :isa inhibitor :quantifier mv6377 :protein mv6382 :raw-text "inhibitors")
-   (:var mv6377 :isa any :word "any")
-   (:var mv6382 :isa protein :raw-text "Map2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
-   (:var mv6375 :isa syntactic-there))
-  ("Are there targets of Selumetinib?" (:var mv6394 :isa polar-question :statement mv6392)
-   (:var mv6392 :isa there-exists :value mv6388 :predicate mv6386)
-   (:var mv6388 :isa target-protein :agent mv6391 :raw-text "targets")
-   (:var mv6391 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622")
-   (:var mv6386 :isa syntactic-there))
+   (:var mv6335 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv6339 :isa some :word "some"))
+  ("Are there any Map2K1 inhibitors?" (:var mv6354 :isa polar-question :statement mv6353)
+   (:var mv6353 :isa there-exists :value mv6351 :predicate mv6345)
+   (:var mv6351 :isa inhibitor :quantifier mv6347 :protein mv6352 :raw-text "inhibitors")
+   (:var mv6347 :isa any :word "any")
+   (:var mv6352 :isa protein :raw-text "Map2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
+   (:var mv6345 :isa syntactic-there))
+  ("Are there targets of Selumetinib?" (:var mv6364 :isa polar-question :statement mv6362)
+   (:var mv6362 :isa there-exists :value mv6358 :predicate mv6356)
+   (:var mv6358 :isa target-protein :agent mv6361 :raw-text "targets")
+   (:var mv6361 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622")
+   (:var mv6356 :isa syntactic-there))
   ("What does Selumetinib inhibit?"
-   (:var mv6398 :isa inhibit :object mv6395 :agent mv6397 :present "PRESENT" :raw-text "inhibit")
-   (:var mv6395 :isa what)
-   (:var mv6397 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622"))
+   (:var mv6368 :isa inhibit :object mv6365 :agent mv6367 :present "PRESENT" :raw-text "inhibit")
+   (:var mv6365 :isa what)
+   (:var mv6367 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622"))
   ("What does Selumetinib target?"
-   (:var mv6403 :isa target :object mv6399 :agent mv6401 :present "PRESENT" :raw-text "target")
-   (:var mv6399 :isa what)
-   (:var mv6401 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622"))
-  ("Does Vemurafenib target BRAF?" (:var mv6410 :isa polar-question :statement mv6409)
-   (:var mv6409 :isa target :agent mv6405 :object mv6408 :raw-text "target")
-   (:var mv6405 :isa drug :raw-text "Vemurafenib" :name "vemurafenib" :uid "PCID:42611257")
-   (:var mv6408 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv6373 :isa target :object mv6369 :agent mv6371 :present "PRESENT" :raw-text "target")
+   (:var mv6369 :isa what)
+   (:var mv6371 :isa drug :raw-text "Selumetinib" :name "selumetinib" :uid "PCID:10127622"))
+  ("Does Vemurafenib target BRAF?" (:var mv6380 :isa polar-question :statement mv6379)
+   (:var mv6379 :isa target :agent mv6375 :object mv6378 :raw-text "target")
+   (:var mv6375 :isa drug :raw-text "Vemurafenib" :name "vemurafenib" :uid "PCID:42611257")
+   (:var mv6378 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("What are some targets for treating pancreatic cancer?"
-   (:var mv6413 :isa be :subject mv6412 :predicate mv6415 :present "PRESENT")
-   (:var mv6412 :isa what)
-   (:var mv6415 :isa target-protein :quantifier mv6414 :treatment mv6418 :raw-text "targets")
-   (:var mv6414 :isa some :word "some")
-   (:var mv6418 :isa treatment :disease mv6411 :progressive "PROGRESSIVE" :raw-text "treating")
-   (:var mv6411 :isa cancer :name "pancreatic cancer" :uid "TS-0739"))
+   (:var mv6383 :isa be :subject mv6382 :predicate mv6385 :present "PRESENT")
+   (:var mv6382 :isa what)
+   (:var mv6385 :isa target-protein :quantifier mv6384 :treatment mv6388 :raw-text "targets")
+   (:var mv6384 :isa some :word "some")
+   (:var mv6388 :isa treatment :disease mv6381 :progressive "PROGRESSIVE" :raw-text "treating")
+   (:var mv6381 :isa cancer :name "pancreatic cancer" :uid "TS-0739"))
   ("What are some targets for pancreatic cancer?"
-   (:var mv6422 :isa be :subject mv6421 :predicate mv6424 :present "PRESENT")
-   (:var mv6421 :isa what)
-   (:var mv6424 :isa target-protein :quantifier mv6423 :disease mv6420 :raw-text "targets")
-   (:var mv6423 :isa some :word "some")
-   (:var mv6420 :isa cancer :name "pancreatic cancer" :uid "TS-0739"))
+   (:var mv6392 :isa be :subject mv6391 :predicate mv6394 :present "PRESENT")
+   (:var mv6391 :isa what)
+   (:var mv6394 :isa target-protein :quantifier mv6393 :disease mv6390 :raw-text "targets")
+   (:var mv6393 :isa some :word "some")
+   (:var mv6390 :isa cancer :name "pancreatic cancer" :uid "TS-0739"))
   ("What targets could lead to the development of pancreatic cancer?"
-   (:var mv6433 :isa lead :agent mv6430 :theme mv6436 :modal mv6432 :raw-text "lead")
-   (:var mv6430 :isa target-protein :has-determiner "WHAT" :raw-text "targets")
-   (:var mv6436 :isa development :disease mv6428 :has-determiner "THE" :raw-text "development")
-   (:var mv6428 :isa cancer :name "pancreatic cancer" :uid "TS-0739") (:var mv6432 :isa could))
+   (:var mv6403 :isa lead :agent mv6400 :theme mv6406 :modal mv6402 :raw-text "lead")
+   (:var mv6400 :isa target-protein :has-determiner "WHAT" :raw-text "targets")
+   (:var mv6406 :isa development :disease mv6398 :has-determiner "THE" :raw-text "development")
+   (:var mv6398 :isa cancer :name "pancreatic cancer" :uid "TS-0739") (:var mv6402 :isa could))
   ("What proteins could lead to the development of pancreatic cancer?"
-   (:var mv6444 :isa lead :agent mv6442 :theme mv6447 :modal mv6443 :raw-text "lead")
-   (:var mv6442 :isa protein :has-determiner "WHAT" :raw-text "proteins")
-   (:var mv6447 :isa development :disease mv6440 :has-determiner "THE" :raw-text "development")
-   (:var mv6440 :isa cancer :name "pancreatic cancer" :uid "TS-0739") (:var mv6443 :isa could))
+   (:var mv6414 :isa lead :agent mv6412 :theme mv6417 :modal mv6413 :raw-text "lead")
+   (:var mv6412 :isa protein :has-determiner "WHAT" :raw-text "proteins")
+   (:var mv6417 :isa development :disease mv6410 :has-determiner "THE" :raw-text "development")
+   (:var mv6410 :isa cancer :name "pancreatic cancer" :uid "TS-0739") (:var mv6413 :isa could))
   ("What mutated genes could lead to pancreatic cancer?"
-   (:var mv6456 :isa lead :agent mv6454 :theme mv6451 :modal mv6455 :raw-text "lead")
-   (:var mv6454 :isa gene :has-determiner "WHAT" :predication mv6453 :raw-text "genes")
-   (:var mv6453 :isa mutation :object mv6454 :raw-text "mutated")
-   (:var mv6451 :isa cancer :name "pancreatic cancer" :uid "TS-0739") (:var mv6455 :isa could))
+   (:var mv6426 :isa lead :agent mv6424 :theme mv6421 :modal mv6425 :raw-text "lead")
+   (:var mv6424 :isa gene :has-determiner "WHAT" :predication mv6423 :raw-text "genes")
+   (:var mv6423 :isa mutation :object mv6424 :raw-text "mutated")
+   (:var mv6421 :isa cancer :name "pancreatic cancer" :uid "TS-0739") (:var mv6425 :isa could))
   ("What is the top gene mutation that leads to pancreatic cancer?"
-   (:var mv6461 :isa be :subject mv6460 :predicate mv6465 :present "PRESENT")
-   (:var mv6460 :isa what)
-   (:var mv6465 :isa mutation :predication mv6467 :has-determiner "THE" :modifier mv6463
-    :|agent-OR-object| mv6464 :raw-text "mutation")
-   (:var mv6467 :isa lead :agent mv6465 :that-rel t :theme mv6459 :present "PRESENT" :raw-text
+   (:var mv6431 :isa be :subject mv6430 :predicate mv6435 :present "PRESENT")
+   (:var mv6430 :isa what)
+   (:var mv6435 :isa mutation :predication mv6437 :has-determiner "THE" :modifier mv6433
+    :|agent-OR-object| mv6434 :raw-text "mutation")
+   (:var mv6437 :isa lead :agent mv6435 :that-rel t :theme mv6429 :present "PRESENT" :raw-text
     "leads")
-   (:var mv6459 :isa cancer :name "pancreatic cancer" :uid "TS-0739")
-   (:var mv6463 :isa top-qua-location) (:var mv6464 :isa gene :raw-text "gene"))
+   (:var mv6429 :isa cancer :name "pancreatic cancer" :uid "TS-0739")
+   (:var mv6433 :isa top-qua-location) (:var mv6434 :isa gene :raw-text "gene"))
   ("I would like to find a treatement for pancreatic cancer."
-   (:var mv6476 :isa like :agent mv6471 :modal mv6474)
-   (:var mv6471 :isa interlocutor :name "speaker") (:var mv6474 :isa would))
+   (:var mv6446 :isa like :agent mv6441 :modal mv6444)
+   (:var mv6441 :isa interlocutor :name "speaker") (:var mv6444 :isa would))
   ("What drug could I use to treat pancreatic cancer?"
-   (:var mv6497 :isa bio-use :patient mv6487 :modal mv6488 :agent mv6489 :theme mv6496 :present
+   (:var mv6467 :isa bio-use :patient mv6457 :modal mv6458 :agent mv6459 :theme mv6466 :present
     "PRESENT" :raw-text "use")
-   (:var mv6487 :isa drug :has-determiner "WHAT" :raw-text "drug") (:var mv6488 :isa could)
-   (:var mv6489 :isa interlocutor :name "speaker")
-   (:var mv6496 :isa treatment :disease mv6485 :raw-text "treat")
-   (:var mv6485 :isa cancer :name "pancreatic cancer" :uid "TS-0739"))
+   (:var mv6457 :isa drug :has-determiner "WHAT" :raw-text "drug") (:var mv6458 :isa could)
+   (:var mv6459 :isa interlocutor :name "speaker")
+   (:var mv6466 :isa treatment :disease mv6455 :raw-text "treat")
+   (:var mv6455 :isa cancer :name "pancreatic cancer" :uid "TS-0739"))
   ("What are some drugs for treating pancreatic cancer?"
-   (:var mv6500 :isa be :subject mv6499 :predicate mv6502 :present "PRESENT")
-   (:var mv6499 :isa what)
-   (:var mv6502 :isa drug :treatment mv6504 :quantifier mv6501 :raw-text "drugs")
-   (:var mv6504 :isa treatment :disease mv6498 :progressive "PROGRESSIVE" :raw-text "treating")
-   (:var mv6498 :isa cancer :name "pancreatic cancer" :uid "TS-0739")
-   (:var mv6501 :isa some :word "some"))
+   (:var mv6470 :isa be :subject mv6469 :predicate mv6472 :present "PRESENT")
+   (:var mv6469 :isa what)
+   (:var mv6472 :isa drug :treatment mv6474 :quantifier mv6471 :raw-text "drugs")
+   (:var mv6474 :isa treatment :disease mv6468 :progressive "PROGRESSIVE" :raw-text "treating")
+   (:var mv6468 :isa cancer :name "pancreatic cancer" :uid "TS-0739")
+   (:var mv6471 :isa some :word "some"))
   ("I'd like to find a treatement for pancreatic cancer."
-   (:var mv6512 :isa like :agent mv6508 :modal mv6519)
-   (:var mv6508 :isa interlocutor :name "speaker") (:var mv6519 :isa would))
-  ("How can i treat pancreatic cancer?" (:var mv6523 :isa how))
-  ("Does MEK act on ERK?" (:var mv6533 :isa polar-question :statement mv6531)
-   (:var mv6531 :isa bio-act :agent mv6527 :acted-on mv6530 :raw-text "act")
-   (:var mv6527 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv6482 :isa like :agent mv6478 :modal mv6489)
+   (:var mv6478 :isa interlocutor :name "speaker") (:var mv6489 :isa would))
+  ("How can i treat pancreatic cancer?" (:var mv6493 :isa how))
+  ("Does MEK act on ERK?" (:var mv6503 :isa polar-question :statement mv6501)
+   (:var mv6501 :isa bio-act :agent mv6497 :acted-on mv6500 :raw-text "act")
+   (:var mv6497 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv6530 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv6500 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -5339,251 +5334,251 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("Let's build a model"
-   (:var mv6538 :isa explicit-suggestion :suggestion mv6535 :marker let-as-directive)
-   (:var mv6535 :isa build :artifact mv6537 :present "PRESENT")
-   (:var mv6537 :isa model :has-determiner "A"))
+   (:var mv6508 :isa explicit-suggestion :suggestion mv6505 :marker let-as-directive)
+   (:var mv6505 :isa build :artifact mv6507 :present "PRESENT")
+   (:var mv6507 :isa model :has-determiner "A"))
   ("Mek activates MAPK3"
-   (:var mv6541 :isa bio-activate :agent mv6540 :object mv6539 :present "PRESENT" :raw-text
+   (:var mv6511 :isa bio-activate :agent mv6510 :object mv6509 :present "PRESENT" :raw-text
     "activates")
-   (:var mv6540 :isa protein-family :raw-text "Mek" :name "MEK" :count 2 :family-members
+   (:var mv6510 :isa protein-family :raw-text "Mek" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv6539 :isa protein :raw-text "MAPK3" :uid "UP:P27361" :name "MK03_HUMAN"))
+   (:var mv6509 :isa protein :raw-text "MAPK3" :uid "UP:P27361" :name "MK03_HUMAN"))
   ("HRAS activates RAF."
-   (:var mv6543 :isa bio-activate :agent mv6542 :object mv6544 :present "PRESENT" :raw-text
+   (:var mv6513 :isa bio-activate :agent mv6512 :object mv6514 :present "PRESENT" :raw-text
     "activates")
-   (:var mv6542 :isa protein :raw-text "HRAS" :uid "UP:P01112" :name "RASH_HUMAN")
-   (:var mv6544 :isa protein-family :raw-text "RAF" :name "Raf" :count 3 :family-members
+   (:var mv6512 :isa protein :raw-text "HRAS" :uid "UP:P01112" :name "RASH_HUMAN")
+   (:var mv6514 :isa protein-family :raw-text "RAF" :name "Raf" :count 3 :family-members
     ((protein (:name "RAF1_HUMAN") (:uid "UP:P04049"))
      (protein (:name "BRAF_HUMAN") (:uid "UP:P15056"))
      (protein (:name "ARAF_HUMAN") (:uid "UP:P10398")))
     :uid "FA:03114"))
   ("Remove the fact that hras activates ras"
-   (:var mv6545 :isa remove :object mv6552 :present "PRESENT" :raw-text "Remove")
-   (:var mv6552 :isa fact :statement mv6550 :has-determiner "THE")
-   (:var mv6550 :isa bio-activate :agent mv6549 :object mv6551 :present "PRESENT" :raw-text
+   (:var mv6515 :isa remove :object mv6522 :present "PRESENT" :raw-text "Remove")
+   (:var mv6522 :isa fact :statement mv6520 :has-determiner "THE")
+   (:var mv6520 :isa bio-activate :agent mv6519 :object mv6521 :present "PRESENT" :raw-text
     "activates")
-   (:var mv6549 :isa protein :raw-text "hras" :uid "UP:P01112" :name "RASH_HUMAN")
-   (:var mv6551 :isa protein-family :raw-text "ras" :name "Ras" :count 3 :family-members
+   (:var mv6519 :isa protein :raw-text "hras" :uid "UP:P01112" :name "RASH_HUMAN")
+   (:var mv6521 :isa protein-family :raw-text "ras" :name "Ras" :count 3 :family-members
     ((protein (:name "RASN_HUMAN") (:uid "UP:P01111"))
      (protein (:name "RASK_HUMAN") (:uid "UP:P01116"))
      (protein (:name "RASH_HUMAN") (:uid "UP:P01112")))
     :uid "FA:03663"))
-  ("Can you tell me what is in the model?" (:var mv6564 :isa polar-question :statement mv6555)
-   (:var mv6555 :isa tell :agent mv6554 :theme mv6563 :theme mv6556 :modal "CAN")
-   (:var mv6554 :isa interlocutor :name "hearer")
-   (:var mv6563 :isa copular-predication-of-pp :item mv6557 :value mv6561 :prep mv6559 :predicate
-    mv6558)
-   (:var mv6557 :isa what) (:var mv6561 :isa model :has-determiner "THE")
-   (:var mv6559 :isa in :word "in") (:var mv6558 :isa be :modal "CAN")
-   (:var mv6556 :isa interlocutor :name "speaker"))
-  ("Summarize the model." (:var mv6568 :isa summarize :statement mv6567 :present "PRESENT")
-   (:var mv6567 :isa model :has-determiner "THE"))
-  ("Summarize the current model." (:var mv6573 :isa summarize :statement mv6572 :present "PRESENT")
-   (:var mv6572 :isa model :has-determiner "THE" :predication mv6571) (:var mv6571 :isa current))
+  ("Can you tell me what is in the model?" (:var mv6534 :isa polar-question :statement mv6525)
+   (:var mv6525 :isa tell :agent mv6524 :theme mv6533 :theme mv6526 :modal "CAN")
+   (:var mv6524 :isa interlocutor :name "hearer")
+   (:var mv6533 :isa copular-predication-of-pp :item mv6527 :value mv6531 :prep mv6529 :predicate
+    mv6528)
+   (:var mv6527 :isa what) (:var mv6531 :isa model :has-determiner "THE")
+   (:var mv6529 :isa in :word "in") (:var mv6528 :isa be :modal "CAN")
+   (:var mv6526 :isa interlocutor :name "speaker"))
+  ("Summarize the model." (:var mv6538 :isa summarize :statement mv6537 :present "PRESENT")
+   (:var mv6537 :isa model :has-determiner "THE"))
+  ("Summarize the current model." (:var mv6543 :isa summarize :statement mv6542 :present "PRESENT")
+   (:var mv6542 :isa model :has-determiner "THE" :predication mv6541) (:var mv6541 :isa current))
   ("What phosphorylates BRAF?"
-   (:var mv6575 :isa phosphorylate :|agent-OR-cause| mv6574 :substrate mv6576 :present "PRESENT"
+   (:var mv6545 :isa phosphorylate :|agent-OR-cause| mv6544 :substrate mv6546 :present "PRESENT"
     :raw-text "phosphorylates")
-   (:var mv6574 :isa what)
-   (:var mv6576 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv6544 :isa what)
+   (:var mv6546 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("Vemurafenib binds BRAF."
-   (:var mv6578 :isa binding :binder mv6577 :direct-bindee mv6579 :present "PRESENT" :raw-text
+   (:var mv6548 :isa binding :binder mv6547 :direct-bindee mv6549 :present "PRESENT" :raw-text
     "binds")
-   (:var mv6577 :isa drug :raw-text "Vemurafenib" :name "vemurafenib" :uid "PCID:42611257")
-   (:var mv6579 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv6547 :isa drug :raw-text "Vemurafenib" :name "vemurafenib" :uid "PCID:42611257")
+   (:var mv6549 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("Phosphorylated MAP2K1 is activated."
-   (:var mv6584 :isa bio-activate :object mv6580 :present "PRESENT" :raw-text "activated")
-   (:var mv6580 :isa protein :predication mv6581 :raw-text "MAP2K1" :uid "UP:Q02750" :name
+   (:var mv6554 :isa bio-activate :object mv6550 :present "PRESENT" :raw-text "activated")
+   (:var mv6550 :isa protein :predication mv6551 :raw-text "MAP2K1" :uid "UP:Q02750" :name
     "MP2K1_HUMAN")
-   (:var mv6581 :isa phosphorylate :substrate mv6580 :raw-text "Phosphorylated"))
+   (:var mv6551 :isa phosphorylate :substrate mv6550 :raw-text "Phosphorylated"))
   ("PP2A-alpha dephosphorylates MAP2K1 that is not bound to ERK2."
-   (:var mv6588 :isa dephosphorylate :agent mv6585 :substrate mv6586 :present "PRESENT" :raw-text
+   (:var mv6558 :isa dephosphorylate :agent mv6555 :substrate mv6556 :present "PRESENT" :raw-text
     "dephosphorylates")
-   (:var mv6585 :isa protein :raw-text "PP2A-alpha" :uid "UP:P67775" :name "PP2AA_HUMAN")
-   (:var mv6586 :isa protein :predication mv6594 :raw-text "MAP2K1" :uid "UP:Q02750" :name
+   (:var mv6555 :isa protein :raw-text "PP2A-alpha" :uid "UP:P67775" :name "PP2AA_HUMAN")
+   (:var mv6556 :isa protein :predication mv6564 :raw-text "MAP2K1" :uid "UP:Q02750" :name
     "MP2K1_HUMAN")
-   (:var mv6594 :isa binding :direct-bindee mv6586 :that-rel t :bindee mv6587 :present "PRESENT"
-    :negation mv6591 :raw-text "bound")
-   (:var mv6587 :isa protein :raw-text "ERK2" :uid "UP:P28482" :name "MK01_HUMAN")
-   (:var mv6591 :isa not :word "not"))
+   (:var mv6564 :isa binding :direct-bindee mv6556 :that-rel t :bindee mv6557 :present "PRESENT"
+    :negation mv6561 :raw-text "bound")
+   (:var mv6557 :isa protein :raw-text "ERK2" :uid "UP:P28482" :name "MK01_HUMAN")
+   (:var mv6561 :isa not :word "not"))
   ("Active MAP2K1 that is not bound to PP2A-alpha phosphorylates ERK2."
-   (:var mv6605 :isa phosphorylate :agent mv6596 :substrate mv6598 :present "PRESENT" :raw-text
+   (:var mv6575 :isa phosphorylate :agent mv6566 :substrate mv6568 :present "PRESENT" :raw-text
     "phosphorylates")
-   (:var mv6596 :isa protein :predication mv6606 :predication mv6599 :raw-text "MAP2K1" :uid
+   (:var mv6566 :isa protein :predication mv6576 :predication mv6569 :raw-text "MAP2K1" :uid
     "UP:Q02750" :name "MP2K1_HUMAN")
-   (:var mv6606 :isa binding :direct-bindee mv6596 :that-rel t :bindee mv6597 :present "PRESENT"
-    :negation mv6602 :raw-text "bound")
-   (:var mv6597 :isa protein :raw-text "PP2A-alpha" :uid "UP:P67775" :name "PP2AA_HUMAN")
-   (:var mv6602 :isa not :word "not") (:var mv6599 :isa active)
-   (:var mv6598 :isa protein :raw-text "ERK2" :uid "UP:P28482" :name "MK01_HUMAN"))
+   (:var mv6576 :isa binding :direct-bindee mv6566 :that-rel t :bindee mv6567 :present "PRESENT"
+    :negation mv6572 :raw-text "bound")
+   (:var mv6567 :isa protein :raw-text "PP2A-alpha" :uid "UP:P67775" :name "PP2AA_HUMAN")
+   (:var mv6572 :isa not :word "not") (:var mv6569 :isa active)
+   (:var mv6568 :isa protein :raw-text "ERK2" :uid "UP:P28482" :name "MK01_HUMAN"))
   ("Phosphorylated ERK2 is activated."
-   (:var mv6612 :isa bio-activate :object mv6608 :present "PRESENT" :raw-text "activated")
-   (:var mv6608 :isa protein :predication mv6609 :raw-text "ERK2" :uid "UP:P28482" :name
+   (:var mv6582 :isa bio-activate :object mv6578 :present "PRESENT" :raw-text "activated")
+   (:var mv6578 :isa protein :predication mv6579 :raw-text "ERK2" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv6609 :isa phosphorylate :substrate mv6608 :raw-text "Phosphorylated"))
+   (:var mv6579 :isa phosphorylate :substrate mv6578 :raw-text "Phosphorylated"))
   ("DUSP6 dephosphorylates ERK2 that is not bound to SOS1."
-   (:var mv6616 :isa dephosphorylate :agent mv6613 :substrate mv6614 :present "PRESENT" :raw-text
+   (:var mv6586 :isa dephosphorylate :agent mv6583 :substrate mv6584 :present "PRESENT" :raw-text
     "dephosphorylates")
-   (:var mv6613 :isa protein :raw-text "DUSP6" :uid "UP:Q16828" :name "DUS6_HUMAN")
-   (:var mv6614 :isa protein :predication mv6622 :raw-text "ERK2" :uid "UP:P28482" :name
+   (:var mv6583 :isa protein :raw-text "DUSP6" :uid "UP:Q16828" :name "DUS6_HUMAN")
+   (:var mv6584 :isa protein :predication mv6592 :raw-text "ERK2" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv6622 :isa binding :direct-bindee mv6614 :that-rel t :bindee mv6615 :present "PRESENT"
-    :negation mv6619 :raw-text "bound")
-   (:var mv6615 :isa protein :raw-text "SOS1" :uid "UP:Q07889" :name "SOS1_HUMAN")
-   (:var mv6619 :isa not :word "not"))
+   (:var mv6592 :isa binding :direct-bindee mv6584 :that-rel t :bindee mv6585 :present "PRESENT"
+    :negation mv6589 :raw-text "bound")
+   (:var mv6585 :isa protein :raw-text "SOS1" :uid "UP:Q07889" :name "SOS1_HUMAN")
+   (:var mv6589 :isa not :word "not"))
   ("BRAF V600E that is not bound to Vemurafenib phosphorylates MAP2K1."
-   (:var mv6636 :isa phosphorylate :agent mv6625 :substrate mv6624 :present "PRESENT" :raw-text
+   (:var mv6606 :isa phosphorylate :agent mv6595 :substrate mv6594 :present "PRESENT" :raw-text
     "phosphorylates")
-   (:var mv6625 :isa protein :predication mv6639 :mutation mv6638 :raw-text "BRAF" :uid "UP:P15056"
+   (:var mv6595 :isa protein :predication mv6609 :mutation mv6608 :raw-text "BRAF" :uid "UP:P15056"
     :name "BRAF_HUMAN")
-   (:var mv6639 :isa binding :direct-bindee mv6625 :that-rel t :bindee mv6635 :present "PRESENT"
-    :negation mv6632 :raw-text "bound")
-   (:var mv6635 :isa drug :raw-text "Vemurafenib" :name "vemurafenib" :uid "PCID:42611257")
-   (:var mv6632 :isa not :word "not")
-   (:var mv6638 :isa point-mutated-protein :position mv6627 :new-amino-acid mv6629
-    :original-amino-acid mv6626)
-   (:var mv6627 :isa number :value 600)
-   (:var mv6629 :isa amino-acid :name "glutamic acid" :letter "E")
-   (:var mv6626 :isa amino-acid :name "valine" :letter "V")
-   (:var mv6624 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
+   (:var mv6609 :isa binding :direct-bindee mv6595 :that-rel t :bindee mv6605 :present "PRESENT"
+    :negation mv6602 :raw-text "bound")
+   (:var mv6605 :isa drug :raw-text "Vemurafenib" :name "vemurafenib" :uid "PCID:42611257")
+   (:var mv6602 :isa not :word "not")
+   (:var mv6608 :isa point-mutated-protein :position mv6597 :new-amino-acid mv6599
+    :original-amino-acid mv6596)
+   (:var mv6597 :isa number :value 600)
+   (:var mv6599 :isa amino-acid :name "glutamic acid" :letter "E")
+   (:var mv6596 :isa amino-acid :name "valine" :letter "V")
+   (:var mv6594 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
   ("Phosphorylated MAPK1 is active."
-   (:var mv6645 :isa copular-predication :item mv6641 :value mv6644 :predicate mv6643)
-   (:var mv6641 :isa protein :predication mv6642 :raw-text "MAPK1" :uid "UP:P28482" :name
+   (:var mv6615 :isa copular-predication :item mv6611 :value mv6614 :predicate mv6613)
+   (:var mv6611 :isa protein :predication mv6612 :raw-text "MAPK1" :uid "UP:P28482" :name
     "MK01_HUMAN")
-   (:var mv6642 :isa phosphorylate :substrate mv6641 :raw-text "Phosphorylated")
-   (:var mv6644 :isa active) (:var mv6643 :isa be :present "PRESENT"))
+   (:var mv6612 :isa phosphorylate :substrate mv6611 :raw-text "Phosphorylated")
+   (:var mv6614 :isa active) (:var mv6613 :isa be :present "PRESENT"))
   ("PDK1 phosphorylates AKT1."
-   (:var mv6648 :isa phosphorylate :agent mv6646 :substrate mv6647 :present "PRESENT" :raw-text
+   (:var mv6618 :isa phosphorylate :agent mv6616 :substrate mv6617 :present "PRESENT" :raw-text
     "phosphorylates")
-   (:var mv6646 :isa protein :raw-text "PDK1" :uid "UP:O15530" :name "PDPK1_HUMAN")
-   (:var mv6647 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
+   (:var mv6616 :isa protein :raw-text "PDK1" :uid "UP:O15530" :name "PDPK1_HUMAN")
+   (:var mv6617 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
   ("Let's move phosphorylated AKT1 to the top"
-   (:var mv6657 :isa explicit-suggestion :suggestion mv6651 :marker let-as-directive)
-   (:var mv6651 :isa move-something-somewhere :goal mv6655 :theme mv6650 :present "PRESENT")
-   (:var mv6655 :isa top-qua-location :has-determiner "THE")
-   (:var mv6650 :isa protein :predication mv6652 :raw-text "AKT1" :uid "UP:P31749" :name
+   (:var mv6627 :isa explicit-suggestion :suggestion mv6621 :marker let-as-directive)
+   (:var mv6621 :isa move-something-somewhere :goal mv6625 :theme mv6620 :present "PRESENT")
+   (:var mv6625 :isa top-qua-location :has-determiner "THE")
+   (:var mv6620 :isa protein :predication mv6622 :raw-text "AKT1" :uid "UP:P31749" :name
     "AKT1_HUMAN")
-   (:var mv6652 :isa phosphorylate :substrate mv6650 :raw-text "phosphorylated"))
+   (:var mv6622 :isa phosphorylate :substrate mv6620 :raw-text "phosphorylated"))
   ("Let's move phosphorylated AKT1 on top"
-   (:var mv6665 :isa explicit-suggestion :suggestion mv6660 :marker let-as-directive)
-   (:var mv6660 :isa move-something-somewhere :at-relative-location mv6663 :theme mv6659 :present
+   (:var mv6635 :isa explicit-suggestion :suggestion mv6630 :marker let-as-directive)
+   (:var mv6630 :isa move-something-somewhere :at-relative-location mv6633 :theme mv6629 :present
     "PRESENT")
-   (:var mv6663 :isa top-qua-location)
-   (:var mv6659 :isa protein :predication mv6661 :raw-text "AKT1" :uid "UP:P31749" :name
+   (:var mv6633 :isa top-qua-location)
+   (:var mv6629 :isa protein :predication mv6631 :raw-text "AKT1" :uid "UP:P31749" :name
     "AKT1_HUMAN")
-   (:var mv6661 :isa phosphorylate :substrate mv6659 :raw-text "phosphorylated"))
+   (:var mv6631 :isa phosphorylate :substrate mv6629 :raw-text "phosphorylated"))
   ("show AKT1 on top"
-   (:var mv6667 :isa show :at-relative-location mv6669 :|statement-OR-theme| mv6666 :present
+   (:var mv6637 :isa show :at-relative-location mv6639 :|statement-OR-theme| mv6636 :present
     "PRESENT")
-   (:var mv6669 :isa top-qua-location)
-   (:var mv6666 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
+   (:var mv6639 :isa top-qua-location)
+   (:var mv6636 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
   ("Let's highlight upstream of AKT1"
-   (:var mv6678 :isa explicit-suggestion :suggestion mv6673 :marker let-as-directive)
-   (:var mv6673 :isa highlight :theme mv6674 :present "PRESENT")
-   (:var mv6674 :isa upstream-segment :pathwaycomponent mv6672 :raw-text "upstream")
-   (:var mv6672 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
+   (:var mv6648 :isa explicit-suggestion :suggestion mv6643 :marker let-as-directive)
+   (:var mv6643 :isa highlight :theme mv6644 :present "PRESENT")
+   (:var mv6644 :isa upstream-segment :pathwaycomponent mv6642 :raw-text "upstream")
+   (:var mv6642 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
   ("Let's move nucleus elements to the top"
-   (:var mv6687 :isa explicit-suggestion :suggestion mv6680 :marker let-as-directive)
-   (:var mv6680 :isa move-something-somewhere :goal mv6685 :theme mv6682 :present "PRESENT")
-   (:var mv6685 :isa top-qua-location :has-determiner "THE")
-   (:var mv6682 :isa element :modifier mv6681) (:var mv6681 :isa nucleus :raw-text "nucleus"))
+   (:var mv6657 :isa explicit-suggestion :suggestion mv6650 :marker let-as-directive)
+   (:var mv6650 :isa move-something-somewhere :goal mv6655 :theme mv6652 :present "PRESENT")
+   (:var mv6655 :isa top-qua-location :has-determiner "THE")
+   (:var mv6652 :isa element :modifier mv6651) (:var mv6651 :isa nucleus :raw-text "nucleus"))
   ("What are the common downstreams of AKT1 and  BRAF?"
-   (:var mv6690 :isa be :subject mv6689 :predicate mv6693 :present "PRESENT")
-   (:var mv6689 :isa what)
-   (:var mv6693 :isa downstream-segment :pathwaycomponent mv6697 :has-determiner "THE" :predication
-    mv6692 :raw-text "downstreams")
-   (:var mv6697 :isa collection :raw-text "AKT1 and  BRAF" :type protein :number 2 :items
-    (mv6688 mv6696))
-   (:var mv6688 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv6696 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv6692 :isa common))
+   (:var mv6660 :isa be :subject mv6659 :predicate mv6663 :present "PRESENT")
+   (:var mv6659 :isa what)
+   (:var mv6663 :isa downstream-segment :pathwaycomponent mv6667 :has-determiner "THE" :predication
+    mv6662 :raw-text "downstreams")
+   (:var mv6667 :isa collection :raw-text "AKT1 and  BRAF" :type protein :number 2 :items
+    (mv6658 mv6666))
+   (:var mv6658 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv6666 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv6662 :isa common))
   ("Are there common upstreams of AKT1, BRAF and MAPK1?"
-   (:var mv6712 :isa polar-question :statement mv6709)
-   (:var mv6709 :isa there-exists :value mv6705 :predicate mv6702)
-   (:var mv6705 :isa upstream-segment :pathwaycomponent mv6710 :predication mv6704 :raw-text
+   (:var mv6682 :isa polar-question :statement mv6679)
+   (:var mv6679 :isa there-exists :value mv6675 :predicate mv6672)
+   (:var mv6675 :isa upstream-segment :pathwaycomponent mv6680 :predication mv6674 :raw-text
     "upstreams")
-   (:var mv6710 :isa collection :raw-text "AKT1, BRAF and MAPK1" :type protein :number 3 :items
-    (mv6699 mv6707 mv6700))
-   (:var mv6699 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv6707 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv6700 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
-   (:var mv6704 :isa common) (:var mv6702 :isa syntactic-there))
+   (:var mv6680 :isa collection :raw-text "AKT1, BRAF and MAPK1" :type protein :number 3 :items
+    (mv6669 mv6677 mv6670))
+   (:var mv6669 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv6677 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv6670 :isa protein :raw-text "MAPK1" :uid "UP:P28482" :name "MK01_HUMAN")
+   (:var mv6674 :isa common) (:var mv6672 :isa syntactic-there))
   ("What are the common upstream regulators of FN1, MMP3, and SERPINE1?"
-   (:var mv6717 :isa be :subject mv6716 :predicate mv6722 :present "PRESENT")
-   (:var mv6716 :isa what)
-   (:var mv6722 :isa regulator :theme mv6725 :has-determiner "THE" :predication mv6719 :context
-    mv6720 :raw-text "regulators")
-   (:var mv6725 :isa collection :raw-text "FN1, MMP3, and SERPINE1" :type protein :number 3 :items
-    (mv6713 mv6714 mv6715))
-   (:var mv6713 :isa protein :raw-text "FN1" :uid "UP:P02751" :name "FINC_HUMAN")
-   (:var mv6714 :isa protein :raw-text "MMP3" :uid "UP:P08254" :name "MMP3_HUMAN")
-   (:var mv6715 :isa protein :raw-text "SERPINE1" :uid "UP:P05121" :name "PAI1_HUMAN")
-   (:var mv6719 :isa common) (:var mv6720 :isa upstream-segment :raw-text "upstream"))
+   (:var mv6687 :isa be :subject mv6686 :predicate mv6692 :present "PRESENT")
+   (:var mv6686 :isa what)
+   (:var mv6692 :isa regulator :theme mv6695 :has-determiner "THE" :predication mv6689 :context
+    mv6690 :raw-text "regulators")
+   (:var mv6695 :isa collection :raw-text "FN1, MMP3, and SERPINE1" :type protein :number 3 :items
+    (mv6683 mv6684 mv6685))
+   (:var mv6683 :isa protein :raw-text "FN1" :uid "UP:P02751" :name "FINC_HUMAN")
+   (:var mv6684 :isa protein :raw-text "MMP3" :uid "UP:P08254" :name "MMP3_HUMAN")
+   (:var mv6685 :isa protein :raw-text "SERPINE1" :uid "UP:P05121" :name "PAI1_HUMAN")
+   (:var mv6689 :isa common) (:var mv6690 :isa upstream-segment :raw-text "upstream"))
   ("What are common downstream regulators of MMP3 and SERPINE1?"
-   (:var mv6730 :isa be :subject mv6729 :predicate mv6734 :present "PRESENT")
-   (:var mv6729 :isa what)
-   (:var mv6734 :isa regulator :theme mv6737 :predication mv6731 :context mv6732 :raw-text
+   (:var mv6700 :isa be :subject mv6699 :predicate mv6704 :present "PRESENT")
+   (:var mv6699 :isa what)
+   (:var mv6704 :isa regulator :theme mv6707 :predication mv6701 :context mv6702 :raw-text
     "regulators")
-   (:var mv6737 :isa collection :raw-text "MMP3 and SERPINE1" :type protein :number 2 :items
-    (mv6727 mv6728))
-   (:var mv6727 :isa protein :raw-text "MMP3" :uid "UP:P08254" :name "MMP3_HUMAN")
-   (:var mv6728 :isa protein :raw-text "SERPINE1" :uid "UP:P05121" :name "PAI1_HUMAN")
-   (:var mv6731 :isa common) (:var mv6732 :isa downstream-segment :raw-text "downstream"))
+   (:var mv6707 :isa collection :raw-text "MMP3 and SERPINE1" :type protein :number 2 :items
+    (mv6697 mv6698))
+   (:var mv6697 :isa protein :raw-text "MMP3" :uid "UP:P08254" :name "MMP3_HUMAN")
+   (:var mv6698 :isa protein :raw-text "SERPINE1" :uid "UP:P05121" :name "PAI1_HUMAN")
+   (:var mv6701 :isa common) (:var mv6702 :isa downstream-segment :raw-text "downstream"))
   ("What are common upstream transcriptional regulators of FN1, MMP3, and SERPINE1?"
-   (:var mv6744 :isa be :subject mv6743 :predicate mv6739 :present "PRESENT")
-   (:var mv6743 :isa what)
-   (:var mv6739 :isa protein-family :molecule-type mv6750 :predication mv6745 :context mv6746
+   (:var mv6714 :isa be :subject mv6713 :predicate mv6709 :present "PRESENT")
+   (:var mv6713 :isa what)
+   (:var mv6709 :isa protein-family :molecule-type mv6720 :predication mv6715 :context mv6716
     :raw-text "transcriptional regulators" :name "transcriptional regulator" :uid "XFAM:PF02082")
-   (:var mv6750 :isa collection :raw-text "FN1, MMP3, and SERPINE1" :type protein :number 3 :items
-    (mv6740 mv6741 mv6742))
-   (:var mv6740 :isa protein :raw-text "FN1" :uid "UP:P02751" :name "FINC_HUMAN")
-   (:var mv6741 :isa protein :raw-text "MMP3" :uid "UP:P08254" :name "MMP3_HUMAN")
-   (:var mv6742 :isa protein :raw-text "SERPINE1" :uid "UP:P05121" :name "PAI1_HUMAN")
-   (:var mv6745 :isa common) (:var mv6746 :isa upstream-segment :raw-text "upstream"))
+   (:var mv6720 :isa collection :raw-text "FN1, MMP3, and SERPINE1" :type protein :number 3 :items
+    (mv6710 mv6711 mv6712))
+   (:var mv6710 :isa protein :raw-text "FN1" :uid "UP:P02751" :name "FINC_HUMAN")
+   (:var mv6711 :isa protein :raw-text "MMP3" :uid "UP:P08254" :name "MMP3_HUMAN")
+   (:var mv6712 :isa protein :raw-text "SERPINE1" :uid "UP:P05121" :name "PAI1_HUMAN")
+   (:var mv6715 :isa common) (:var mv6716 :isa upstream-segment :raw-text "upstream"))
   ("What are the mutations of PTEN, TP53 and BRAF in ovarian cancer?"
-   (:var mv6755 :isa be :subject mv6754 :predicate mv6757 :present "PRESENT")
-   (:var mv6754 :isa what)
-   (:var mv6757 :isa mutation :object mv6763 :has-determiner "THE" :raw-text "mutations")
-   (:var mv6763 :isa collection :context mv6753 :raw-text "PTEN, TP53 and BRAF" :type protein
-    :number 3 :items (mv6759 mv6752 mv6761))
-   (:var mv6753 :isa cancer :name "ovarian cancer" :uid "TS-1223")
-   (:var mv6759 :isa protein :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
-   (:var mv6752 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
-   (:var mv6761 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv6725 :isa be :subject mv6724 :predicate mv6727 :present "PRESENT")
+   (:var mv6724 :isa what)
+   (:var mv6727 :isa mutation :object mv6733 :has-determiner "THE" :raw-text "mutations")
+   (:var mv6733 :isa collection :context mv6723 :raw-text "PTEN, TP53 and BRAF" :type protein
+    :number 3 :items (mv6729 mv6722 mv6731))
+   (:var mv6723 :isa cancer :name "ovarian cancer" :uid "TS-1223")
+   (:var mv6729 :isa protein :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
+   (:var mv6722 :isa protein :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
+   (:var mv6731 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("What is the mutation frequency of TP53 in ovarian cancer?"
-   (:var mv6769 :isa be :subject mv6768 :predicate mv6772 :present "PRESENT")
-   (:var mv6768 :isa what)
-   (:var mv6772 :isa frequency :measured-item mv6766 :has-determiner "THE" :measured-item mv6771
+   (:var mv6739 :isa be :subject mv6738 :predicate mv6742 :present "PRESENT")
+   (:var mv6738 :isa what)
+   (:var mv6742 :isa frequency :measured-item mv6736 :has-determiner "THE" :measured-item mv6741
     :raw-text "frequency")
-   (:var mv6766 :isa protein :context mv6767 :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
-   (:var mv6767 :isa cancer :name "ovarian cancer" :uid "TS-1223")
-   (:var mv6771 :isa mutation :raw-text "mutation"))
+   (:var mv6736 :isa protein :context mv6737 :raw-text "TP53" :uid "UP:P04637" :name "P53_HUMAN")
+   (:var mv6737 :isa cancer :name "ovarian cancer" :uid "TS-1223")
+   (:var mv6741 :isa mutation :raw-text "mutation"))
   ("Which genes are mutually exclusive with CDH1 for breast cancer?"
-   (:var mv6787 :isa copular-predication :item mv6781 :value mv6777 :predicate mv6782)
-   (:var mv6781 :isa gene :has-determiner "WHICH" :raw-text "genes")
-   (:var mv6777 :isa mutual-exclusivity :disease mv6779 :alternative mv6778)
-   (:var mv6779 :isa cancer :name "breast cancer" :uid "TS-0591")
-   (:var mv6778 :isa protein :raw-text "CDH1" :uid "UP:P12830" :name "CADH1_HUMAN")
-   (:var mv6782 :isa be :present "PRESENT"))
+   (:var mv6757 :isa copular-predication :item mv6751 :value mv6747 :predicate mv6752)
+   (:var mv6751 :isa gene :has-determiner "WHICH" :raw-text "genes")
+   (:var mv6747 :isa mutual-exclusivity :disease mv6749 :alternative mv6748)
+   (:var mv6749 :isa cancer :name "breast cancer" :uid "TS-0591")
+   (:var mv6748 :isa protein :raw-text "CDH1" :uid "UP:P12830" :name "CADH1_HUMAN")
+   (:var mv6752 :isa be :present "PRESENT"))
   ("Which genes are mutually exclusive with CDH1 in breast cancer?"
-   (:var mv6798 :isa copular-predication :item mv6792 :value mv6788 :predicate mv6793)
-   (:var mv6792 :isa gene :has-determiner "WHICH" :raw-text "genes")
-   (:var mv6788 :isa mutual-exclusivity :alternative mv6789)
-   (:var mv6789 :isa protein :context mv6790 :raw-text "CDH1" :uid "UP:P12830" :name "CADH1_HUMAN")
-   (:var mv6790 :isa cancer :name "breast cancer" :uid "TS-0591")
-   (:var mv6793 :isa be :present "PRESENT"))
+   (:var mv6768 :isa copular-predication :item mv6762 :value mv6758 :predicate mv6763)
+   (:var mv6762 :isa gene :has-determiner "WHICH" :raw-text "genes")
+   (:var mv6758 :isa mutual-exclusivity :alternative mv6759)
+   (:var mv6759 :isa protein :context mv6760 :raw-text "CDH1" :uid "UP:P12830" :name "CADH1_HUMAN")
+   (:var mv6760 :isa cancer :name "breast cancer" :uid "TS-0591")
+   (:var mv6763 :isa be :present "PRESENT"))
   ("What is the cellular location of akt1?"
-   (:var mv6801 :isa be :subject mv6800 :predicate mv6807 :present "PRESENT")
-   (:var mv6800 :isa what) (:var mv6807 :isa quality-predicate :item mv6799 :attribute mv6804)
-   (:var mv6799 :isa protein :raw-text "akt1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv6804 :isa location-of :has-determiner "THE" :modifier mv6803)
-   (:var mv6803 :isa cellular :name "cellular"))
+   (:var mv6771 :isa be :subject mv6770 :predicate mv6777 :present "PRESENT")
+   (:var mv6770 :isa what) (:var mv6777 :isa quality-predicate :item mv6769 :attribute mv6774)
+   (:var mv6769 :isa protein :raw-text "akt1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv6774 :isa location-of :has-determiner "THE" :modifier mv6773)
+   (:var mv6773 :isa cellular :name "cellular"))
   ("How does MAPK regulate BRAF?"
-   (:var mv6811 :isa regulate :manner mv6808 :agent mv6810 :object mv6812 :present "PRESENT"
+   (:var mv6781 :isa regulate :manner mv6778 :agent mv6780 :object mv6782 :present "PRESENT"
     :raw-text "regulate")
-   (:var mv6808 :isa how)
-   (:var mv6810 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
+   (:var mv6778 :isa how)
+   (:var mv6780 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -5599,51 +5594,51 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv6812 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
-  ("What is BRAF?" (:var mv6814 :isa be :subject mv6813 :predicate mv6815 :present "PRESENT")
-   (:var mv6813 :isa what)
-   (:var mv6815 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
-  ("Is BRAF a member of the RAF family?" (:var mv6827 :isa polar-question :statement mv6816)
-   (:var mv6816 :isa be :subject mv6817 :predicate mv6819)
-   (:var mv6817 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv6819 :isa member :set mv6825 :has-determiner "A")
-   (:var mv6825 :isa protein-family :has-determiner "THE" :raw-text "RAF" :name "Raf" :count 3
+   (:var mv6782 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+  ("What is BRAF?" (:var mv6784 :isa be :subject mv6783 :predicate mv6785 :present "PRESENT")
+   (:var mv6783 :isa what)
+   (:var mv6785 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+  ("Is BRAF a member of the RAF family?" (:var mv6797 :isa polar-question :statement mv6786)
+   (:var mv6786 :isa be :subject mv6787 :predicate mv6789)
+   (:var mv6787 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv6789 :isa member :set mv6795 :has-determiner "A")
+   (:var mv6795 :isa protein-family :has-determiner "THE" :raw-text "RAF" :name "Raf" :count 3
     :family-members
     ((protein (:name "RAF1_HUMAN") (:uid "UP:P04049"))
      (protein (:name "BRAF_HUMAN") (:uid "UP:P15056"))
      (protein (:name "ARAF_HUMAN") (:uid "UP:P10398")))
     :uid "FA:03114"))
   ("What genes are in RAS?"
-   (:var mv6834 :isa copular-predication-of-pp :item mv6829 :value mv6832 :prep mv6831 :predicate
-    mv6830)
-   (:var mv6829 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv6832 :isa protein-family :raw-text "RAS" :name "Ras" :count 3 :family-members
+   (:var mv6804 :isa copular-predication-of-pp :item mv6799 :value mv6802 :prep mv6801 :predicate
+    mv6800)
+   (:var mv6799 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv6802 :isa protein-family :raw-text "RAS" :name "Ras" :count 3 :family-members
     ((protein (:name "RASN_HUMAN") (:uid "UP:P01111"))
      (protein (:name "RASK_HUMAN") (:uid "UP:P01116"))
      (protein (:name "RASH_HUMAN") (:uid "UP:P01112")))
     :uid "FA:03663")
-   (:var mv6831 :isa in :word "in") (:var mv6830 :isa be :present "PRESENT"))
+   (:var mv6801 :isa in :word "in") (:var mv6800 :isa be :present "PRESENT"))
   ("What genes are in the RAF family?"
-   (:var mv6845 :isa copular-predication-of-pp :item mv6836 :value mv6843 :prep mv6838 :predicate
-    mv6837)
-   (:var mv6836 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv6843 :isa protein-family :has-determiner "THE" :raw-text "RAF" :name "Raf" :count 3
+   (:var mv6815 :isa copular-predication-of-pp :item mv6806 :value mv6813 :prep mv6808 :predicate
+    mv6807)
+   (:var mv6806 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv6813 :isa protein-family :has-determiner "THE" :raw-text "RAF" :name "Raf" :count 3
     :family-members
     ((protein (:name "RAF1_HUMAN") (:uid "UP:P04049"))
      (protein (:name "BRAF_HUMAN") (:uid "UP:P15056"))
      (protein (:name "ARAF_HUMAN") (:uid "UP:P10398")))
     :uid "FA:03114")
-   (:var mv6838 :isa in :word "in") (:var mv6837 :isa be :present "PRESENT"))
+   (:var mv6808 :isa in :word "in") (:var mv6807 :isa be :present "PRESENT"))
   ("What are some other names for BRAF?"
-   (:var mv6847 :isa be :subject mv6846 :predicate mv6851 :present "PRESENT")
-   (:var mv6846 :isa what)
-   (:var mv6851 :isa has-name :quantifier mv6848 :quantifier mv6849 :item mv6854)
-   (:var mv6848 :isa some :word "some") (:var mv6849 :isa other :word "other")
-   (:var mv6854 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv6817 :isa be :subject mv6816 :predicate mv6821 :present "PRESENT")
+   (:var mv6816 :isa what)
+   (:var mv6821 :isa has-name :item mv6824 :quantifier mv6818 :modifier mv6819)
+   (:var mv6824 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv6818 :isa some :word "some") (:var mv6819 :isa other :name "other"))
   ("What are synonyms for ERK?"
-   (:var mv6857 :isa be :subject mv6856 :predicate mv6858 :present "PRESENT")
-   (:var mv6856 :isa what) (:var mv6858 :isa has-synonym :item mv6860)
-   (:var mv6860 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv6827 :isa be :subject mv6826 :predicate mv6828 :present "PRESENT")
+   (:var mv6826 :isa what) (:var mv6828 :isa has-synonym :item mv6830)
+   (:var mv6830 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -5653,37 +5648,37 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("What transcription factors are shared by CXCL8, CXCL10, and IL2?"
-   (:var mv6872 :isa share :object mv6862 :participant mv6871 :present "PRESENT" :raw-text
+   (:var mv6842 :isa share :object mv6832 :participant mv6841 :present "PRESENT" :raw-text
     "shared")
-   (:var mv6862 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv6871 :isa collection :raw-text "CXCL8, CXCL10, and IL2" :type protein :number 3 :items
-    (mv6863 mv6864 mv6865))
-   (:var mv6863 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
-   (:var mv6864 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN")
-   (:var mv6865 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
+   (:var mv6832 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv6841 :isa collection :raw-text "CXCL8, CXCL10, and IL2" :type protein :number 3 :items
+    (mv6833 mv6834 mv6835))
+   (:var mv6833 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
+   (:var mv6834 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN")
+   (:var mv6835 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
   ("What are the paths between BRAF and AKT1?"
-   (:var mv6876 :isa be :subject mv6875 :predicate mv6878 :present "PRESENT")
-   (:var mv6875 :isa what) (:var mv6878 :isa path :endpoints mv6882 :has-determiner "THE")
-   (:var mv6882 :isa collection :raw-text "BRAF and AKT1" :type protein :number 2 :items
-    (mv6880 mv6874))
-   (:var mv6880 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv6874 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
-  ("Is SMAD2 a transcription factor?" (:var mv6888 :isa polar-question :statement mv6886)
-   (:var mv6886 :isa be :subject mv6884 :predicate mv6885)
-   (:var mv6884 :isa protein :raw-text "SMAD2" :uid "UP:Q15796" :name "SMAD2_HUMAN")
-   (:var mv6885 :isa transcription-factor :has-determiner "A" :raw-text "transcription factor"))
+   (:var mv6846 :isa be :subject mv6845 :predicate mv6848 :present "PRESENT")
+   (:var mv6845 :isa what) (:var mv6848 :isa path :endpoints mv6852 :has-determiner "THE")
+   (:var mv6852 :isa collection :raw-text "BRAF and AKT1" :type protein :number 2 :items
+    (mv6850 mv6844))
+   (:var mv6850 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv6844 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN"))
+  ("Is SMAD2 a transcription factor?" (:var mv6858 :isa polar-question :statement mv6856)
+   (:var mv6856 :isa be :subject mv6854 :predicate mv6855)
+   (:var mv6854 :isa protein :raw-text "SMAD2" :uid "UP:Q15796" :name "SMAD2_HUMAN")
+   (:var mv6855 :isa transcription-factor :has-determiner "A" :raw-text "transcription factor"))
   ("Remove the fact that active MEK activates ERK from the model."
-   (:var mv6889 :isa remove :object mv6901 :present "PRESENT" :raw-text "Remove")
-   (:var mv6901 :isa fact :statement mv6895 :has-determiner "THE")
-   (:var mv6895 :isa bio-activate :agent mv6894 :object mv6896 :present "PRESENT" :raw-text
+   (:var mv6859 :isa remove :object mv6871 :present "PRESENT" :raw-text "Remove")
+   (:var mv6871 :isa fact :statement mv6865 :has-determiner "THE")
+   (:var mv6865 :isa bio-activate :agent mv6864 :object mv6866 :present "PRESENT" :raw-text
     "activates")
-   (:var mv6894 :isa protein-family :predication mv6893 :raw-text "MEK" :name "MEK" :count 2
+   (:var mv6864 :isa protein-family :predication mv6863 :raw-text "MEK" :name "MEK" :count 2
     :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv6893 :isa active)
-   (:var mv6896 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv6863 :isa active)
+   (:var mv6866 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -5693,15 +5688,15 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("Active MEK activates ERK"
-   (:var mv6904 :isa bio-activate :agent mv6903 :object mv6905 :present "PRESENT" :raw-text
+   (:var mv6874 :isa bio-activate :agent mv6873 :object mv6875 :present "PRESENT" :raw-text
     "activates")
-   (:var mv6903 :isa protein-family :predication mv6902 :raw-text "MEK" :name "MEK" :count 2
+   (:var mv6873 :isa protein-family :predication mv6872 :raw-text "MEK" :name "MEK" :count 2
     :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv6902 :isa active)
-   (:var mv6905 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv6872 :isa active)
+   (:var mv6875 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -5711,15 +5706,15 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("What is in the model?"
-   (:var mv6912 :isa copular-predication-of-pp :item mv6906 :value mv6910 :prep mv6908 :predicate
-    mv6907)
-   (:var mv6906 :isa what) (:var mv6910 :isa model :has-determiner "THE")
-   (:var mv6908 :isa in :word "in") (:var mv6907 :isa be :present "PRESENT"))
+   (:var mv6882 :isa copular-predication-of-pp :item mv6876 :value mv6880 :prep mv6878 :predicate
+    mv6877)
+   (:var mv6876 :isa what) (:var mv6880 :isa model :has-determiner "THE")
+   (:var mv6878 :isa in :word "in") (:var mv6877 :isa be :present "PRESENT"))
   ("Is the amount of phosphorylated ERK ever high?"
-   (:var mv6923 :isa polar-question :statement mv6922)
-   (:var mv6922 :isa copular-predication :item mv6915 :value mv6920 :predicate mv6913)
-   (:var mv6915 :isa bio-amount :measured-item mv6918 :has-determiner "THE" :raw-text "amount")
-   (:var mv6918 :isa protein-family :predication mv6917 :raw-text "ERK" :name "ERK" :count 7
+   (:var mv6893 :isa polar-question :statement mv6892)
+   (:var mv6892 :isa copular-predication :item mv6885 :value mv6890 :predicate mv6883)
+   (:var mv6885 :isa bio-amount :measured-item mv6888 :has-determiner "THE" :raw-text "amount")
+   (:var mv6888 :isa protein-family :predication mv6887 :raw-text "ERK" :name "ERK" :count 7
     :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -5729,137 +5724,137 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360")
-   (:var mv6917 :isa phosphorylate :substrate mv6918 :raw-text "phosphorylated")
-   (:var mv6920 :isa high :adverb mv6919) (:var mv6919 :isa ever :name "ever")
-   (:var mv6913 :isa be))
+   (:var mv6887 :isa phosphorylate :substrate mv6888 :raw-text "phosphorylated")
+   (:var mv6890 :isa high :adverb mv6889) (:var mv6889 :isa ever :name "ever")
+   (:var mv6883 :isa be))
   ("What genes are mutually exclusive with PTEN for prostate cancer?"
-   (:var mv6934 :isa copular-predication :item mv6927 :value mv6924 :predicate mv6928)
-   (:var mv6927 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv6924 :isa mutual-exclusivity :disease mv6925 :alternative mv6930)
-   (:var mv6925 :isa cancer :name "prostate cancer" :uid "TS-1224")
-   (:var mv6930 :isa protein :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
-   (:var mv6928 :isa be :present "PRESENT"))
+   (:var mv6904 :isa copular-predication :item mv6897 :value mv6894 :predicate mv6898)
+   (:var mv6897 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv6894 :isa mutual-exclusivity :disease mv6895 :alternative mv6900)
+   (:var mv6895 :isa cancer :name "prostate cancer" :uid "TS-1224")
+   (:var mv6900 :isa protein :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
+   (:var mv6898 :isa be :present "PRESENT"))
   ("What signaling pathways are shared by SMAD2 and CXCL8?"
-   (:var mv6944 :isa share :object mv6935 :participant mv6943 :present "PRESENT" :raw-text
+   (:var mv6914 :isa share :object mv6905 :participant mv6913 :present "PRESENT" :raw-text
     "shared")
-   (:var mv6935 :isa signaling-pathway :has-determiner "WHAT" :raw-text "signaling pathways")
-   (:var mv6943 :isa collection :raw-text "SMAD2 and CXCL8" :type protein :number 2 :items
-    (mv6936 mv6937))
-   (:var mv6936 :isa protein :raw-text "SMAD2" :uid "UP:Q15796" :name "SMAD2_HUMAN")
-   (:var mv6937 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
+   (:var mv6905 :isa signaling-pathway :has-determiner "WHAT" :raw-text "signaling pathways")
+   (:var mv6913 :isa collection :raw-text "SMAD2 and CXCL8" :type protein :number 2 :items
+    (mv6906 mv6907))
+   (:var mv6906 :isa protein :raw-text "SMAD2" :uid "UP:Q15796" :name "SMAD2_HUMAN")
+   (:var mv6907 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
   ("What miRNAs most frequently regulate FN1, MMP3, and SERPINE1?"
-   (:var mv6953 :isa regulate :agent mv6950 :object mv6955 :present "PRESENT" :adverb mv6951
-    :adverb mv6952 :raw-text "regulate")
-   (:var mv6950 :isa micro-rna :has-determiner "WHAT" :raw-text "miRNAs")
-   (:var mv6955 :isa collection :raw-text "FN1, MMP3, and SERPINE1" :type protein :number 3 :items
-    (mv6946 mv6947 mv6948))
-   (:var mv6946 :isa protein :raw-text "FN1" :uid "UP:P02751" :name "FINC_HUMAN")
-   (:var mv6947 :isa protein :raw-text "MMP3" :uid "UP:P08254" :name "MMP3_HUMAN")
-   (:var mv6948 :isa protein :raw-text "SERPINE1" :uid "UP:P05121" :name "PAI1_HUMAN")
-   (:var mv6951 :isa superlative-quantifier :name "most")
-   (:var mv6952 :isa frequently :name "frequently"))
+   (:var mv6923 :isa regulate :agent mv6920 :object mv6925 :present "PRESENT" :adverb mv6921
+    :adverb mv6922 :raw-text "regulate")
+   (:var mv6920 :isa micro-rna :has-determiner "WHAT" :raw-text "miRNAs")
+   (:var mv6925 :isa collection :raw-text "FN1, MMP3, and SERPINE1" :type protein :number 3 :items
+    (mv6916 mv6917 mv6918))
+   (:var mv6916 :isa protein :raw-text "FN1" :uid "UP:P02751" :name "FINC_HUMAN")
+   (:var mv6917 :isa protein :raw-text "MMP3" :uid "UP:P08254" :name "MMP3_HUMAN")
+   (:var mv6918 :isa protein :raw-text "SERPINE1" :uid "UP:P05121" :name "PAI1_HUMAN")
+   (:var mv6921 :isa superlative-quantifier :name "most")
+   (:var mv6922 :isa frequently :name "frequently"))
   ("What is the most likely cellular location of PTEN?"
-   (:var mv6957 :isa be :subject mv6956 :predicate mv6967 :present "PRESENT")
-   (:var mv6956 :isa what) (:var mv6967 :isa quality-predicate :item mv6965 :attribute mv6963)
-   (:var mv6965 :isa protein :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
-   (:var mv6963 :isa location-of :has-determiner "THE" :predication mv6961 :modifier mv6962)
-   (:var mv6961 :isa likely :comparative mv6959)
-   (:var mv6959 :isa superlative-quantifier :name "most")
-   (:var mv6962 :isa cellular :name "cellular"))
-  ("Is BRAF a kinase?" (:var mv6972 :isa polar-question :statement mv6968)
-   (:var mv6968 :isa be :subject mv6969 :predicate mv6971)
-   (:var mv6969 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv6971 :isa kinase :has-determiner "A" :raw-text "kinase"))
-  ("Can you tell me whether BRAF is a kinase?" (:var mv6984 :isa polar-question :statement mv6975)
-   (:var mv6975 :isa tell :agent mv6974 :theme mv6983 :theme mv6976 :modal "CAN")
-   (:var mv6974 :isa interlocutor :name "hearer")
-   (:var mv6983 :isa wh-question :statement mv6980 :wh whether)
-   (:var mv6980 :isa be :subject mv6979 :predicate mv6982 :modal "CAN")
-   (:var mv6979 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv6982 :isa kinase :has-determiner "A" :raw-text "kinase")
-   (:var mv6976 :isa interlocutor :name "speaker"))
+   (:var mv6927 :isa be :subject mv6926 :predicate mv6937 :present "PRESENT")
+   (:var mv6926 :isa what) (:var mv6937 :isa quality-predicate :item mv6935 :attribute mv6933)
+   (:var mv6935 :isa protein :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
+   (:var mv6933 :isa location-of :has-determiner "THE" :predication mv6931 :modifier mv6932)
+   (:var mv6931 :isa likely :comparative mv6929)
+   (:var mv6929 :isa superlative-quantifier :name "most")
+   (:var mv6932 :isa cellular :name "cellular"))
+  ("Is BRAF a kinase?" (:var mv6942 :isa polar-question :statement mv6938)
+   (:var mv6938 :isa be :subject mv6939 :predicate mv6941)
+   (:var mv6939 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv6941 :isa kinase :has-determiner "A" :raw-text "kinase"))
+  ("Can you tell me whether BRAF is a kinase?" (:var mv6954 :isa polar-question :statement mv6945)
+   (:var mv6945 :isa tell :agent mv6944 :theme mv6953 :theme mv6946 :modal "CAN")
+   (:var mv6944 :isa interlocutor :name "hearer")
+   (:var mv6953 :isa wh-question :statement mv6950 :wh whether)
+   (:var mv6950 :isa be :subject mv6949 :predicate mv6952 :modal "CAN")
+   (:var mv6949 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv6952 :isa kinase :has-determiner "A" :raw-text "kinase")
+   (:var mv6946 :isa interlocutor :name "speaker"))
   ("I want to know if BRAF is a kinase."
-   (:var mv6988 :isa want :agent mv6985 :theme mv6998 :present "PRESENT")
-   (:var mv6985 :isa interlocutor :name "speaker")
-   (:var mv6998 :isa know :agent mv6985 :statement mv6997)
-   (:var mv6997 :isa wh-question :statement mv6993 :wh if)
-   (:var mv6993 :isa be :subject mv6992 :predicate mv6995 :present "PRESENT")
-   (:var mv6992 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv6995 :isa kinase :has-determiner "A" :raw-text "kinase"))
-  ("What does BRAF do?" (:var mv6999 :isa what))
+   (:var mv6958 :isa want :agent mv6955 :theme mv6968 :present "PRESENT")
+   (:var mv6955 :isa interlocutor :name "speaker")
+   (:var mv6968 :isa know :agent mv6955 :statement mv6967)
+   (:var mv6967 :isa wh-question :statement mv6963 :wh if)
+   (:var mv6963 :isa be :subject mv6962 :predicate mv6965 :present "PRESENT")
+   (:var mv6962 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv6965 :isa kinase :has-determiner "A" :raw-text "kinase"))
+  ("What does BRAF do?" (:var mv6969 :isa what))
   ("What type of protein is BRAF?"
-   (:var mv7007 :isa be :subject mv7004 :predicate mv7008 :present "PRESENT")
-   (:var mv7004 :isa type :molecule-type mv7006 :has-determiner "WHAT" :raw-text "type")
-   (:var mv7006 :isa protein :raw-text "protein")
-   (:var mv7008 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv6977 :isa be :subject mv6974 :predicate mv6978 :present "PRESENT")
+   (:var mv6974 :isa type :molecule-type mv6976 :has-determiner "WHAT" :raw-text "type")
+   (:var mv6976 :isa protein :raw-text "protein")
+   (:var mv6978 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("What is the activity of the BRAF protein?"
-   (:var mv7011 :isa be :subject mv7010 :predicate mv7013 :present "PRESENT")
-   (:var mv7010 :isa what)
-   (:var mv7013 :isa bio-activity :participant mv7018 :has-determiner "THE" :raw-text "activity")
-   (:var mv7018 :isa protein :has-determiner "THE" :raw-text "BRAF" :uid "UP:P15056" :name
+   (:var mv6981 :isa be :subject mv6980 :predicate mv6983 :present "PRESENT")
+   (:var mv6980 :isa what)
+   (:var mv6983 :isa bio-activity :participant mv6988 :has-determiner "THE" :raw-text "activity")
+   (:var mv6988 :isa protein :has-determiner "THE" :raw-text "BRAF" :uid "UP:P15056" :name
     "BRAF_HUMAN"))
   ("Is BRAF a kinase or a transcription factor?"
-   (:var mv7028 :isa polar-question :statement mv7021)
-   (:var mv7021 :isa be :subject mv7022 :predicate mv7027)
-   (:var mv7022 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv7027 :isa collection :raw-text "a kinase or a transcription factor" :type kinase :number
-    2 :items (mv7024 mv7020))
-   (:var mv7024 :isa kinase :has-determiner "A" :raw-text "kinase")
-   (:var mv7020 :isa transcription-factor :has-determiner "A" :raw-text "transcription factor"))
+   (:var mv6998 :isa polar-question :statement mv6991)
+   (:var mv6991 :isa be :subject mv6992 :predicate mv6997)
+   (:var mv6992 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv6997 :isa collection :raw-text "a kinase or a transcription factor" :type kinase :number
+    2 :items (mv6994 mv6990))
+   (:var mv6994 :isa kinase :has-determiner "A" :raw-text "kinase")
+   (:var mv6990 :isa transcription-factor :has-determiner "A" :raw-text "transcription factor"))
   ("What proteins are targeted by NG25?"
-   (:var mv7035 :isa target :object mv7031 :agent mv7029 :present "PRESENT" :raw-text "targeted")
-   (:var mv7031 :isa protein :has-determiner "WHAT" :raw-text "proteins")
-   (:var mv7029 :isa drug :raw-text "NG25" :name "NG-25" :uid "PCID:53340664"))
+   (:var mv7005 :isa target :object mv7001 :agent mv6999 :present "PRESENT" :raw-text "targeted")
+   (:var mv7001 :isa protein :has-determiner "WHAT" :raw-text "proteins")
+   (:var mv6999 :isa drug :raw-text "NG25" :name "NG-25" :uid "PCID:53340664"))
   ("Name transcription factors shared by FN1, MMP3, and SERPINE1."
-   (:var mv7041 :isa name-something :patient mv7037 :present "PRESENT")
-   (:var mv7037 :isa transcription-factor :predication mv7044 :raw-text "transcription factors")
-   (:var mv7044 :isa share :object mv7037 :participant mv7047 :past "PAST" :raw-text "shared")
-   (:var mv7047 :isa collection :raw-text "FN1, MMP3, and SERPINE1" :type protein :number 3 :items
-    (mv7038 mv7039 mv7040))
-   (:var mv7038 :isa protein :raw-text "FN1" :uid "UP:P02751" :name "FINC_HUMAN")
-   (:var mv7039 :isa protein :raw-text "MMP3" :uid "UP:P08254" :name "MMP3_HUMAN")
-   (:var mv7040 :isa protein :raw-text "SERPINE1" :uid "UP:P05121" :name "PAI1_HUMAN"))
+   (:var mv7011 :isa name-something :patient mv7007 :present "PRESENT")
+   (:var mv7007 :isa transcription-factor :predication mv7014 :raw-text "transcription factors")
+   (:var mv7014 :isa share :object mv7007 :participant mv7017 :past "PAST" :raw-text "shared")
+   (:var mv7017 :isa collection :raw-text "FN1, MMP3, and SERPINE1" :type protein :number 3 :items
+    (mv7008 mv7009 mv7010))
+   (:var mv7008 :isa protein :raw-text "FN1" :uid "UP:P02751" :name "FINC_HUMAN")
+   (:var mv7009 :isa protein :raw-text "MMP3" :uid "UP:P08254" :name "MMP3_HUMAN")
+   (:var mv7010 :isa protein :raw-text "SERPINE1" :uid "UP:P05121" :name "PAI1_HUMAN"))
   ("Tell me if STAT3 is a transcription factor"
-   (:var mv7051 :isa tell :theme mv7056 :beneficiary mv7052 :present "PRESENT")
-   (:var mv7056 :isa wh-question :statement mv7054 :wh if)
-   (:var mv7054 :isa be :subject mv7049 :predicate mv7050 :present "PRESENT")
-   (:var mv7049 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv7050 :isa transcription-factor :has-determiner "A" :raw-text "transcription factor")
-   (:var mv7052 :isa interlocutor :name "speaker"))
+   (:var mv7021 :isa tell :theme mv7026 :beneficiary mv7022 :present "PRESENT")
+   (:var mv7026 :isa wh-question :statement mv7024 :wh if)
+   (:var mv7024 :isa be :subject mv7019 :predicate mv7020 :present "PRESENT")
+   (:var mv7019 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv7020 :isa transcription-factor :has-determiner "A" :raw-text "transcription factor")
+   (:var mv7022 :isa interlocutor :name "speaker"))
   ("Show me signaling pathways shared by MAP3K7 and CXCL8."
-   (:var mv7060 :isa show :|statement-OR-theme| mv7057 :beneficiary mv7061 :present "PRESENT")
-   (:var mv7057 :isa signaling-pathway :predication mv7062 :raw-text "signaling pathways")
-   (:var mv7062 :isa share :object mv7057 :participant mv7065 :past "PAST" :raw-text "shared")
-   (:var mv7065 :isa collection :raw-text "MAP3K7 and CXCL8" :type protein :number 2 :items
-    (mv7058 mv7059))
-   (:var mv7058 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
-   (:var mv7059 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
-   (:var mv7061 :isa interlocutor :name "speaker"))
+   (:var mv7030 :isa show :|statement-OR-theme| mv7027 :beneficiary mv7031 :present "PRESENT")
+   (:var mv7027 :isa signaling-pathway :predication mv7032 :raw-text "signaling pathways")
+   (:var mv7032 :isa share :object mv7027 :participant mv7035 :past "PAST" :raw-text "shared")
+   (:var mv7035 :isa collection :raw-text "MAP3K7 and CXCL8" :type protein :number 2 :items
+    (mv7028 mv7029))
+   (:var mv7028 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
+   (:var mv7029 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
+   (:var mv7031 :isa interlocutor :name "speaker"))
   ("Give me signaling pathways shared by MAP3K7 and CXCL8"
-   (:var mv7070 :isa give :theme mv7067 :beneficiary mv7071 :present "PRESENT")
-   (:var mv7067 :isa signaling-pathway :predication mv7072 :raw-text "signaling pathways")
-   (:var mv7072 :isa share :object mv7067 :participant mv7075 :past "PAST" :raw-text "shared")
-   (:var mv7075 :isa collection :raw-text "MAP3K7 and CXCL8" :type protein :number 2 :items
-    (mv7068 mv7069))
-   (:var mv7068 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
-   (:var mv7069 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
-   (:var mv7071 :isa interlocutor :name "speaker"))
+   (:var mv7040 :isa give :theme mv7037 :beneficiary mv7041 :present "PRESENT")
+   (:var mv7037 :isa signaling-pathway :predication mv7042 :raw-text "signaling pathways")
+   (:var mv7042 :isa share :object mv7037 :participant mv7045 :past "PAST" :raw-text "shared")
+   (:var mv7045 :isa collection :raw-text "MAP3K7 and CXCL8" :type protein :number 2 :items
+    (mv7038 mv7039))
+   (:var mv7038 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
+   (:var mv7039 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
+   (:var mv7041 :isa interlocutor :name "speaker"))
   ("Is the amount of phosphorylated ERK ever high if we increase the amount of MEK by ten fold?"
-   (:var mv7106 :isa polar-question :statement mv7105)
-   (:var mv7105 :isa event-relation :subordinated-event mv7101 :event mv7103)
-   (:var mv7101 :isa wh-question :statement mv7088 :wh if)
-   (:var mv7088 :isa increase :|agent-OR-cause| mv7086 :|multiplier-OR-cause| mv7098
-    :|affected-process-OR-object| mv7090 :present "PRESENT" :raw-text "increase")
-   (:var mv7086 :isa interlocutor :name "person-and-machine")
-   (:var mv7098 :isa measurement :number mv7095) (:var mv7095 :isa number :value 10)
-   (:var mv7090 :isa bio-amount :measured-item mv7092 :has-determiner "THE" :raw-text "amount")
-   (:var mv7092 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv7076 :isa polar-question :statement mv7075)
+   (:var mv7075 :isa event-relation :subordinated-event mv7071 :event mv7073)
+   (:var mv7071 :isa wh-question :statement mv7058 :wh if)
+   (:var mv7058 :isa increase :|agent-OR-cause| mv7056 :|multiplier-OR-cause| mv7068
+    :|affected-process-OR-object| mv7060 :present "PRESENT" :raw-text "increase")
+   (:var mv7056 :isa interlocutor :name "person-and-machine")
+   (:var mv7068 :isa measurement :number mv7065) (:var mv7065 :isa number :value 10)
+   (:var mv7060 :isa bio-amount :measured-item mv7062 :has-determiner "THE" :raw-text "amount")
+   (:var mv7062 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv7103 :isa copular-predication :item mv7079 :value mv7084 :predicate mv7077)
-   (:var mv7079 :isa bio-amount :measured-item mv7082 :has-determiner "THE" :raw-text "amount")
-   (:var mv7082 :isa protein-family :predication mv7081 :raw-text "ERK" :name "ERK" :count 7
+   (:var mv7073 :isa copular-predication :item mv7049 :value mv7054 :predicate mv7047)
+   (:var mv7049 :isa bio-amount :measured-item mv7052 :has-determiner "THE" :raw-text "amount")
+   (:var mv7052 :isa protein-family :predication mv7051 :raw-text "ERK" :name "ERK" :count 7
     :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -5869,19 +5864,19 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360")
-   (:var mv7081 :isa phosphorylate :substrate mv7082 :raw-text "phosphorylated")
-   (:var mv7084 :isa high :adverb mv7083) (:var mv7083 :isa ever :name "ever")
-   (:var mv7077 :isa be))
+   (:var mv7051 :isa phosphorylate :substrate mv7052 :raw-text "phosphorylated")
+   (:var mv7054 :isa high :adverb mv7053) (:var mv7053 :isa ever :name "ever")
+   (:var mv7047 :isa be))
   ("Active MEK phosphorylates ERK"
-   (:var mv7109 :isa phosphorylate :agent mv7108 :substrate mv7110 :present "PRESENT" :raw-text
+   (:var mv7079 :isa phosphorylate :agent mv7078 :substrate mv7080 :present "PRESENT" :raw-text
     "phosphorylates")
-   (:var mv7108 :isa protein-family :predication mv7107 :raw-text "MEK" :name "MEK" :count 2
+   (:var mv7078 :isa protein-family :predication mv7077 :raw-text "MEK" :name "MEK" :count 2
     :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv7107 :isa active)
-   (:var mv7110 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv7077 :isa active)
+   (:var mv7080 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -5891,20 +5886,20 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("Is the amount of phosphorylated ERK ever high if we increase the amount of MEK ten fold?"
-   (:var mv7138 :isa polar-question :statement mv7137)
-   (:var mv7137 :isa event-relation :subordinated-event mv7133 :event mv7135)
-   (:var mv7133 :isa wh-question :statement mv7122 :wh if)
-   (:var mv7122 :isa increase :|agent-OR-cause| mv7120 :|affected-process-OR-object| mv7124
+   (:var mv7108 :isa polar-question :statement mv7107)
+   (:var mv7107 :isa event-relation :subordinated-event mv7103 :event mv7105)
+   (:var mv7103 :isa wh-question :statement mv7092 :wh if)
+   (:var mv7092 :isa increase :|agent-OR-cause| mv7090 :|affected-process-OR-object| mv7094
     :present "PRESENT" :raw-text "increase")
-   (:var mv7120 :isa interlocutor :name "person-and-machine")
-   (:var mv7124 :isa bio-amount :measured-item mv7126 :has-determiner "THE" :raw-text "amount")
-   (:var mv7126 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+   (:var mv7090 :isa interlocutor :name "person-and-machine")
+   (:var mv7094 :isa bio-amount :measured-item mv7096 :has-determiner "THE" :raw-text "amount")
+   (:var mv7096 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv7135 :isa copular-predication :item mv7113 :value mv7118 :predicate mv7111)
-   (:var mv7113 :isa bio-amount :measured-item mv7116 :has-determiner "THE" :raw-text "amount")
-   (:var mv7116 :isa protein-family :predication mv7115 :raw-text "ERK" :name "ERK" :count 7
+   (:var mv7105 :isa copular-predication :item mv7083 :value mv7088 :predicate mv7081)
+   (:var mv7083 :isa bio-amount :measured-item mv7086 :has-determiner "THE" :raw-text "amount")
+   (:var mv7086 :isa protein-family :predication mv7085 :raw-text "ERK" :name "ERK" :count 7
     :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -5914,86 +5909,86 @@
      (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360")
-   (:var mv7115 :isa phosphorylate :substrate mv7116 :raw-text "phosphorylated")
-   (:var mv7118 :isa high :adverb mv7117) (:var mv7117 :isa ever :name "ever")
-   (:var mv7111 :isa be))
+   (:var mv7085 :isa phosphorylate :substrate mv7086 :raw-text "phosphorylated")
+   (:var mv7088 :isa high :adverb mv7087) (:var mv7087 :isa ever :name "ever")
+   (:var mv7081 :isa be))
   ("What are some pathways that affect BRAF?"
-   (:var mv7140 :isa be :subject mv7139 :predicate mv7142 :present "PRESENT")
-   (:var mv7139 :isa what)
-   (:var mv7142 :isa pathway :predication mv7144 :quantifier mv7141 :raw-text "pathways")
-   (:var mv7144 :isa affect :agent mv7142 :that-rel t :object mv7145 :present "PRESENT" :raw-text
+   (:var mv7110 :isa be :subject mv7109 :predicate mv7112 :present "PRESENT")
+   (:var mv7109 :isa what)
+   (:var mv7112 :isa pathway :predication mv7114 :quantifier mv7111 :raw-text "pathways")
+   (:var mv7114 :isa affect :agent mv7112 :that-rel t :object mv7115 :present "PRESENT" :raw-text
     "affect")
-   (:var mv7145 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv7141 :isa some :word "some"))
+   (:var mv7115 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv7111 :isa some :word "some"))
   ("What are the pathways that affect BRAF"
-   (:var mv7147 :isa be :subject mv7146 :predicate mv7149 :present "PRESENT")
-   (:var mv7146 :isa what)
-   (:var mv7149 :isa pathway :predication mv7151 :has-determiner "THE" :raw-text "pathways")
-   (:var mv7151 :isa affect :agent mv7149 :that-rel t :object mv7152 :present "PRESENT" :raw-text
+   (:var mv7117 :isa be :subject mv7116 :predicate mv7119 :present "PRESENT")
+   (:var mv7116 :isa what)
+   (:var mv7119 :isa pathway :predication mv7121 :has-determiner "THE" :raw-text "pathways")
+   (:var mv7121 :isa affect :agent mv7119 :that-rel t :object mv7122 :present "PRESENT" :raw-text
     "affect")
-   (:var mv7152 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv7122 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("What genes are regulated by miR-20b-5p, and miR-145-5p?"
-   (:var mv7162 :isa regulate :object mv7156 :agent mv7161 :present "PRESENT" :raw-text
+   (:var mv7132 :isa regulate :object mv7126 :agent mv7131 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv7156 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv7161 :isa collection :raw-text "miR-20b-5p, and miR-145-5p" :type micro-rna :number 2
-    :items (mv7153 mv7154))
-   (:var mv7153 :isa micro-rna :raw-text "miR-20b-5p" :name "microRNA 20b-5pm" :uid "MIMAT0001413")
-   (:var mv7154 :isa micro-rna :raw-text "miR-145-5p" :name "microRNA 145-5p" :uid "MIMAT0000437"))
+   (:var mv7126 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv7131 :isa collection :raw-text "miR-20b-5p, and miR-145-5p" :type micro-rna :number 2
+    :items (mv7123 mv7124))
+   (:var mv7123 :isa micro-rna :raw-text "miR-20b-5p" :name "microRNA 20b-5pm" :uid "MIMAT0001413")
+   (:var mv7124 :isa micro-rna :raw-text "miR-145-5p" :name "microRNA 145-5p" :uid "MIMAT0000437"))
   ("What are some genes that are regulated by ELK1?"
-   (:var mv7166 :isa be :subject mv7165 :predicate mv7168 :present "PRESENT")
-   (:var mv7165 :isa what)
-   (:var mv7168 :isa gene :predication mv7173 :quantifier mv7167 :raw-text "genes")
-   (:var mv7173 :isa regulate :object mv7168 :that-rel t :agent mv7164 :present "PRESENT" :raw-text
+   (:var mv7136 :isa be :subject mv7135 :predicate mv7138 :present "PRESENT")
+   (:var mv7135 :isa what)
+   (:var mv7138 :isa gene :predication mv7143 :quantifier mv7137 :raw-text "genes")
+   (:var mv7143 :isa regulate :object mv7138 :that-rel t :agent mv7134 :present "PRESENT" :raw-text
     "regulated")
-   (:var mv7164 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv7167 :isa some :word "some"))
+   (:var mv7134 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv7137 :isa some :word "some"))
   ("What pathways contain CXCL8 and CXCL10?"
-   (:var mv7179 :isa contain :theme mv7178 :patient mv7181 :present "PRESENT")
-   (:var mv7178 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv7181 :isa collection :raw-text "CXCL8 and CXCL10" :type protein :number 2 :items
-    (mv7175 mv7176))
-   (:var mv7175 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
-   (:var mv7176 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
+   (:var mv7149 :isa contain :theme mv7148 :patient mv7151 :present "PRESENT")
+   (:var mv7148 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv7151 :isa collection :raw-text "CXCL8 and CXCL10" :type protein :number 2 :items
+    (mv7145 mv7146))
+   (:var mv7145 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
+   (:var mv7146 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
   ("Remove the fact that IL10 activates STAT3 in the model"
-   (:var mv7184 :isa remove :object mv7193 :present "PRESENT" :raw-text "Remove")
-   (:var mv7193 :isa fact :statement mv7188 :has-determiner "THE")
-   (:var mv7188 :isa bio-activate :agent mv7182 :object mv7183 :present "PRESENT" :raw-text
+   (:var mv7154 :isa remove :object mv7163 :present "PRESENT" :raw-text "Remove")
+   (:var mv7163 :isa fact :statement mv7158 :has-determiner "THE")
+   (:var mv7158 :isa bio-activate :agent mv7152 :object mv7153 :present "PRESENT" :raw-text
     "activates")
-   (:var mv7182 :isa protein :raw-text "IL10" :uid "UP:P22301" :name "IL10_HUMAN")
-   (:var mv7183 :isa protein :info-context mv7191 :raw-text "STAT3" :uid "UP:P40763" :name
+   (:var mv7152 :isa protein :raw-text "IL10" :uid "UP:P22301" :name "IL10_HUMAN")
+   (:var mv7153 :isa protein :info-context mv7161 :raw-text "STAT3" :uid "UP:P40763" :name
     "STAT3_HUMAN")
-   (:var mv7191 :isa model :has-determiner "THE"))
+   (:var mv7161 :isa model :has-determiner "THE"))
   ("Remove active IL10 activates STAT3 from the model"
-   (:var mv7196 :isa remove :object mv7194 :present "PRESENT" :raw-text "Remove")
-   (:var mv7194 :isa protein :predication mv7197 :raw-text "IL10" :uid "UP:P22301" :name
+   (:var mv7166 :isa remove :object mv7164 :present "PRESENT" :raw-text "Remove")
+   (:var mv7164 :isa protein :predication mv7167 :raw-text "IL10" :uid "UP:P22301" :name
     "IL10_HUMAN")
-   (:var mv7197 :isa active))
+   (:var mv7167 :isa active))
   ("What are some paths between BRAF and AKT1?"
-   (:var mv7205 :isa be :subject mv7204 :predicate mv7207 :present "PRESENT")
-   (:var mv7204 :isa what) (:var mv7207 :isa path :endpoints mv7211 :quantifier mv7206)
-   (:var mv7211 :isa collection :raw-text "BRAF and AKT1" :type protein :number 2 :items
-    (mv7209 mv7203))
-   (:var mv7209 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv7203 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
-   (:var mv7206 :isa some :word "some"))
-  ("Does MEK1 activate ERK2" (:var mv7218 :isa polar-question :statement mv7217)
-   (:var mv7217 :isa bio-activate :agent mv7213 :object mv7214 :raw-text "activate")
-   (:var mv7213 :isa protein :raw-text "MEK1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
-   (:var mv7214 :isa protein :raw-text "ERK2" :uid "UP:P28482" :name "MK01_HUMAN"))
+   (:var mv7175 :isa be :subject mv7174 :predicate mv7177 :present "PRESENT")
+   (:var mv7174 :isa what) (:var mv7177 :isa path :endpoints mv7181 :quantifier mv7176)
+   (:var mv7181 :isa collection :raw-text "BRAF and AKT1" :type protein :number 2 :items
+    (mv7179 mv7173))
+   (:var mv7179 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
+   (:var mv7173 :isa protein :raw-text "AKT1" :uid "UP:P31749" :name "AKT1_HUMAN")
+   (:var mv7176 :isa some :word "some"))
+  ("Does MEK1 activate ERK2" (:var mv7188 :isa polar-question :statement mv7187)
+   (:var mv7187 :isa bio-activate :agent mv7183 :object mv7184 :raw-text "activate")
+   (:var mv7183 :isa protein :raw-text "MEK1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
+   (:var mv7184 :isa protein :raw-text "ERK2" :uid "UP:P28482" :name "MK01_HUMAN"))
   ("What drugs tagret BRAF?"
-   (:var mv7221 :isa protein :has-determiner "WHAT" :modifier mv7220 :modifier mv7222 :raw-text
+   (:var mv7191 :isa protein :has-determiner "WHAT" :modifier mv7190 :modifier mv7192 :raw-text
     "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN")
-   (:var mv7220 :isa drug :raw-text "drugs") (:var mv7222 :isa bio-entity :name "tagret"))
+   (:var mv7190 :isa drug :raw-text "drugs") (:var mv7192 :isa bio-entity :name "tagret"))
   ("Which kinases are in the MAPK signalling pathway?"
-   (:var mv7233 :isa copular-predication-of-pp :item mv7225 :value mv7232 :prep "IN" :predicate
-    mv7226)
-   (:var mv7225 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
-   (:var mv7232 :isa kinase :|context-OR-in-pathway| mv7223 :has-determiner "WHICH" :raw-text
+   (:var mv7203 :isa copular-predication-of-pp :item mv7195 :value mv7202 :prep "IN" :predicate
+    mv7196)
+   (:var mv7195 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
+   (:var mv7202 :isa kinase :|context-OR-in-pathway| mv7193 :has-determiner "WHICH" :raw-text
     "kinases")
-   (:var mv7223 :isa signaling-pathway :has-determiner "THE" :modifier mv7229 :raw-text
+   (:var mv7193 :isa signaling-pathway :has-determiner "THE" :modifier mv7199 :raw-text
     "signalling pathway")
-   (:var mv7229 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
+   (:var mv7199 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -6009,73 +6004,73 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361"))
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019")
-   (:var mv7226 :isa be :present "PRESENT"))
+   (:var mv7196 :isa be :present "PRESENT"))
   ("What drugs drugs target BRAF?"
-   (:var mv7239 :isa target :agent mv7241 :object mv7240 :present "PRESENT" :raw-text "target")
-   (:var mv7241 :isa drug :has-determiner "WHAT" :raw-text "drugs")
-   (:var mv7240 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv7209 :isa target :agent mv7211 :object mv7210 :present "PRESENT" :raw-text "target")
+   (:var mv7211 :isa drug :has-determiner "WHAT" :raw-text "drugs")
+   (:var mv7210 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("What rgulates ELLK1?"
-   (:var mv7245 :isa bio-entity :has-determiner "WHAT" :modifier mv7246 :name "ELLK1")
-   (:var mv7246 :isa bio-entity :name "rgulates"))
+   (:var mv7215 :isa bio-entity :has-determiner "WHAT" :modifier mv7216 :name "ELLK1")
+   (:var mv7216 :isa bio-entity :name "rgulates"))
   ("Does STAT3 increase expression of c-fos in liver?"
-   (:var mv7259 :isa polar-question :statement mv7256)
-   (:var mv7256 :isa increase :agent mv7247 :affected-process mv7252 :raw-text "increase")
-   (:var mv7247 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv7252 :isa gene-transcript-express :object mv7248 :raw-text "expression")
-   (:var mv7248 :isa protein :organ mv7255 :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN")
-   (:var mv7255 :isa liver))
+   (:var mv7229 :isa polar-question :statement mv7226)
+   (:var mv7226 :isa increase :agent mv7217 :affected-process mv7222 :raw-text "increase")
+   (:var mv7217 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv7222 :isa gene-transcript-express :object mv7218 :raw-text "expression")
+   (:var mv7218 :isa protein :organ mv7225 :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN")
+   (:var mv7225 :isa liver))
   ("Does STAT3 affect c-fos expression in liver?"
-   (:var mv7269 :isa polar-question :statement mv7267)
-   (:var mv7267 :isa affect :agent mv7260 :affected-process mv7264 :raw-text "affect")
-   (:var mv7260 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv7264 :isa gene-transcript-express :organ mv7266 :object mv7261 :raw-text "expression")
-   (:var mv7266 :isa liver)
-   (:var mv7261 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
-  ("Does STAT3 alter c-fos expression?" (:var mv7276 :isa polar-question :statement mv7275)
-   (:var mv7275 :isa alter :agent mv7270 :affected-process mv7274 :raw-text "alter")
-   (:var mv7270 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv7274 :isa gene-transcript-express :object mv7271 :raw-text "expression")
-   (:var mv7271 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv7239 :isa polar-question :statement mv7237)
+   (:var mv7237 :isa affect :agent mv7230 :affected-process mv7234 :raw-text "affect")
+   (:var mv7230 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv7234 :isa gene-transcript-express :organ mv7236 :object mv7231 :raw-text "expression")
+   (:var mv7236 :isa liver)
+   (:var mv7231 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+  ("Does STAT3 alter c-fos expression?" (:var mv7246 :isa polar-question :statement mv7245)
+   (:var mv7245 :isa alter :agent mv7240 :affected-process mv7244 :raw-text "alter")
+   (:var mv7240 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv7244 :isa gene-transcript-express :object mv7241 :raw-text "expression")
+   (:var mv7241 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("Is STAT3 a transcriptional regulator of c-fos?"
-   (:var mv7284 :isa polar-question :statement mv7280)
-   (:var mv7280 :isa be :subject mv7277 :predicate mv7278)
-   (:var mv7277 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv7278 :isa protein-family :molecule-type mv7279 :has-determiner "A" :raw-text
+   (:var mv7254 :isa polar-question :statement mv7250)
+   (:var mv7250 :isa be :subject mv7247 :predicate mv7248)
+   (:var mv7247 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv7248 :isa protein-family :molecule-type mv7249 :has-determiner "A" :raw-text
     "transcriptional regulator" :name "transcriptional regulator" :uid "XFAM:PF02082")
-   (:var mv7279 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv7249 :isa protein :raw-text "c-fos" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("Which drugs inhibit BRAF?"
-   (:var mv7287 :isa inhibit :agent mv7286 :object mv7288 :present "PRESENT" :raw-text "inhibit")
-   (:var mv7286 :isa drug :has-determiner "WHICH" :raw-text "drugs")
-   (:var mv7288 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv7257 :isa inhibit :agent mv7256 :object mv7258 :present "PRESENT" :raw-text "inhibit")
+   (:var mv7256 :isa drug :has-determiner "WHICH" :raw-text "drugs")
+   (:var mv7258 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("STAT3 upregulates ELK1."
-   (:var mv7291 :isa upregulate :agent mv7289 :object mv7290 :present "PRESENT" :raw-text
+   (:var mv7261 :isa upregulate :agent mv7259 :object mv7260 :present "PRESENT" :raw-text
     "upregulates")
-   (:var mv7289 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv7290 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+   (:var mv7259 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv7260 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
   ("What does STAT3 transcribe?"
-   (:var mv7295 :isa transcribe :object mv7293 :agent mv7292 :present "PRESENT" :raw-text
+   (:var mv7265 :isa transcribe :object mv7263 :agent mv7262 :present "PRESENT" :raw-text
     "transcribe")
-   (:var mv7293 :isa what)
-   (:var mv7292 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
-  ("What is PI3K?" (:var mv7298 :isa be :subject mv7297 :predicate mv7296 :present "PRESENT")
-   (:var mv7297 :isa what)
-   (:var mv7296 :isa protein-family :raw-text "PI3K" :name "PI3-kinase" :count 4 :family-members
+   (:var mv7263 :isa what)
+   (:var mv7262 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+  ("What is PI3K?" (:var mv7268 :isa be :subject mv7267 :predicate mv7266 :present "PRESENT")
+   (:var mv7267 :isa what)
+   (:var mv7266 :isa protein-family :raw-text "PI3K" :name "PI3-kinase" :count 4 :family-members
     ((protein (:name "PI3R5_HUMAN") (:uid "UP:Q8WYR1"))
      (protein (:name "PK3C3_HUMAN") (:uid "UP:Q8NEB9"))
      (protein (:name "PK3CA_HUMAN") (:uid "UP:P42336"))
      (protein (:name "P3C2G_HUMAN") (:uid "UP:O75747")))
     :uid "XFAM:PF00454"))
-  ("What is MEK?" (:var mv7300 :isa be :subject mv7299 :predicate mv7301 :present "PRESENT")
-   (:var mv7299 :isa what)
-   (:var mv7301 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
+  ("What is MEK?" (:var mv7270 :isa be :subject mv7269 :predicate mv7271 :present "PRESENT")
+   (:var mv7269 :isa what)
+   (:var mv7271 :isa protein-family :raw-text "MEK" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK"))
   ("What phosphorylates ERK?"
-   (:var mv7303 :isa phosphorylate :|agent-OR-cause| mv7302 :substrate mv7304 :present "PRESENT"
+   (:var mv7273 :isa phosphorylate :|agent-OR-cause| mv7272 :substrate mv7274 :present "PRESENT"
     :raw-text "phosphorylates")
-   (:var mv7302 :isa what)
-   (:var mv7304 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
+   (:var mv7272 :isa what)
+   (:var mv7274 :isa protein-family :raw-text "ERK" :name "ERK" :count 7 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
      (protein (:name "MK07_HUMAN") (:uid "UP:Q13164"))
@@ -6085,397 +6080,397 @@
      (protein (:name "MK03_HUMAN") (:uid "UP:P27361")))
     :uid "NCIT:C26360"))
   ("What drugs target AKT?"
-   (:var mv7308 :isa target :agent mv7306 :object mv7309 :present "PRESENT" :raw-text "target")
-   (:var mv7306 :isa drug :has-determiner "WHAT" :raw-text "drugs")
-   (:var mv7309 :isa protein-family :raw-text "AKT" :name "Rac" :count 3 :family-members
+   (:var mv7278 :isa target :agent mv7276 :object mv7279 :present "PRESENT" :raw-text "target")
+   (:var mv7276 :isa drug :has-determiner "WHAT" :raw-text "drugs")
+   (:var mv7279 :isa protein-family :raw-text "AKT" :name "Rac" :count 3 :family-members
     ((protein (:name "AKT3_HUMAN") (:uid "UP:Q9Y243"))
      (protein (:name "AKT2_HUMAN") (:uid "UP:P31751"))
      (protein (:name "AKT1_HUMAN") (:uid "UP:P31749")))
     :uid "FA:03066"))
   ("What regulates ELLK1?"
-   (:var mv7312 :isa regulate :|agent-OR-cause| mv7311 :object mv7310 :present "PRESENT" :raw-text
+   (:var mv7282 :isa regulate :|agent-OR-cause| mv7281 :object mv7280 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv7311 :isa what) (:var mv7310 :isa bio-entity :name "ELLK1"))
+   (:var mv7281 :isa what) (:var mv7280 :isa bio-entity :name "ELLK1"))
   ("What regulates ELK1?"
-   (:var mv7315 :isa regulate :|agent-OR-cause| mv7314 :object mv7313 :present "PRESENT" :raw-text
+   (:var mv7285 :isa regulate :|agent-OR-cause| mv7284 :object mv7283 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv7314 :isa what)
-   (:var mv7313 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
-  ("Does miR-20b-5pp target STAT3?" (:var mv7326 :isa polar-question :statement mv7325)
-   (:var mv7325 :isa target :agent mv7324 :object mv7317 :raw-text "target")
-   (:var mv7324 :isa bio-entity :name "miR-20b-5pp")
-   (:var mv7317 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv7284 :isa what)
+   (:var mv7283 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN"))
+  ("Does miR-20b-5pp target STAT3?" (:var mv7296 :isa polar-question :statement mv7295)
+   (:var mv7295 :isa target :agent mv7294 :object mv7287 :raw-text "target")
+   (:var mv7294 :isa bio-entity :name "miR-20b-5pp")
+   (:var mv7287 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What are the mutations of PTEEN in prostate cancer?"
-   (:var mv7337 :isa wh-question :statement mv7336 :wh what)
-   (:var mv7336 :isa prepositional-phrase :pobj mv7334 :prep "OF")
-   (:var mv7334 :isa bio-entity :context mv7327 :name "PTEEN")
-   (:var mv7327 :isa cancer :name "prostate cancer" :uid "TS-1224"))
+   (:var mv7307 :isa wh-question :statement mv7306 :wh what)
+   (:var mv7306 :isa prepositional-phrase :pobj mv7304 :prep "OF")
+   (:var mv7304 :isa bio-entity :context mv7297 :name "PTEEN")
+   (:var mv7297 :isa cancer :name "prostate cancer" :uid "TS-1224"))
   ("What does selumitinibib target?"
-   (:var mv7341 :isa target :object mv7338 :agent mv7342 :present "PRESENT" :raw-text "target")
-   (:var mv7338 :isa what) (:var mv7342 :isa bio-entity :name "selumitinibib"))
-  ("Is ELLK1 a kinase?" (:var mv7347 :isa polar-question :statement mv7344)
-   (:var mv7344 :isa be :subject mv7343 :predicate mv7346)
-   (:var mv7343 :isa bio-entity :name "ELLK1")
-   (:var mv7346 :isa kinase :has-determiner "A" :raw-text "kinase"))
+   (:var mv7311 :isa target :object mv7308 :agent mv7312 :present "PRESENT" :raw-text "target")
+   (:var mv7308 :isa what) (:var mv7312 :isa bio-entity :name "selumitinibib"))
+  ("Is ELLK1 a kinase?" (:var mv7317 :isa polar-question :statement mv7314)
+   (:var mv7314 :isa be :subject mv7313 :predicate mv7316)
+   (:var mv7313 :isa bio-entity :name "ELLK1")
+   (:var mv7316 :isa kinase :has-determiner "A" :raw-text "kinase"))
   ("What regulates ELK12?"
-   (:var mv7349 :isa regulate :|agent-OR-cause| mv7348 :object mv7350 :present "PRESENT" :raw-text
+   (:var mv7319 :isa regulate :|agent-OR-cause| mv7318 :object mv7320 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv7348 :isa what)
-   (:var mv7350 :isa protein :variant-number mv7352 :raw-text "ELK" :uid "UP:P54762" :name
+   (:var mv7318 :isa what)
+   (:var mv7320 :isa protein :variant-number mv7322 :raw-text "ELK" :uid "UP:P54762" :name
     "EPHB1_HUMAN")
-   (:var mv7352 :isa number :value 12))
+   (:var mv7322 :isa number :value 12))
   ("What does sleumiitibbb target?"
-   (:var mv7356 :isa target :object mv7353 :agent mv7357 :present "PRESENT" :raw-text "target")
-   (:var mv7353 :isa what) (:var mv7357 :isa bio-entity :name "sleumiitibbb"))
+   (:var mv7326 :isa target :object mv7323 :agent mv7327 :present "PRESENT" :raw-text "target")
+   (:var mv7323 :isa what) (:var mv7327 :isa bio-entity :name "sleumiitibbb"))
   ("What is the evidence that MEK1 phosphorylates ERK1?"
-   (:var mv7361 :isa be :subject mv7360 :predicate mv7366 :present "PRESENT")
-   (:var mv7360 :isa what) (:var mv7366 :isa evidence :statement mv7365 :has-determiner "THE")
-   (:var mv7365 :isa phosphorylate :agent mv7358 :substrate mv7359 :present "PRESENT" :raw-text
+   (:var mv7331 :isa be :subject mv7330 :predicate mv7336 :present "PRESENT")
+   (:var mv7330 :isa what) (:var mv7336 :isa evidence :statement mv7335 :has-determiner "THE")
+   (:var mv7335 :isa phosphorylate :agent mv7328 :substrate mv7329 :present "PRESENT" :raw-text
     "phosphorylates")
-   (:var mv7358 :isa protein :raw-text "MEK1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
-   (:var mv7359 :isa protein :raw-text "ERK1" :uid "UP:P27361" :name "MK03_HUMAN"))
+   (:var mv7328 :isa protein :raw-text "MEK1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
+   (:var mv7329 :isa protein :raw-text "ERK1" :uid "UP:P27361" :name "MK03_HUMAN"))
   ("Remove STAT3 from the model."
-   (:var mv7368 :isa remove :object mv7367 :present "PRESENT" :raw-text "Remove")
-   (:var mv7367 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv7338 :isa remove :object mv7337 :present "PRESENT" :raw-text "Remove")
+   (:var mv7337 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("Remove the last interaction from the model."
-   (:var mv7373 :isa remove :object mv7376 :present "PRESENT" :raw-text "Remove")
-   (:var mv7376 :isa interact :has-determiner "THE" :predication mv7375 :raw-text "interaction")
-   (:var mv7375 :isa last-sequence :name "last"))
+   (:var mv7343 :isa remove :object mv7346 :present "PRESENT" :raw-text "Remove")
+   (:var mv7346 :isa interact :has-determiner "THE" :predication mv7345 :raw-text "interaction")
+   (:var mv7345 :isa last-sequence :name "last"))
   ("IL10 activates STAT3"
-   (:var mv7383 :isa bio-activate :agent mv7381 :object mv7382 :present "PRESENT" :raw-text
+   (:var mv7353 :isa bio-activate :agent mv7351 :object mv7352 :present "PRESENT" :raw-text
     "activates")
-   (:var mv7381 :isa protein :raw-text "IL10" :uid "UP:P22301" :name "IL10_HUMAN")
-   (:var mv7382 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv7351 :isa protein :raw-text "IL10" :uid "UP:P22301" :name "IL10_HUMAN")
+   (:var mv7352 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("How many interactions are in the model?"
-   (:var mv7394 :isa copular-predication-of-pp :item mv7386 :value mv7393 :prep "IN" :predicate
-    mv7387)
-   (:var mv7386 :isa interact :has-determiner "HOW" :quantifier mv7385 :raw-text "interactions")
-   (:var mv7385 :isa many :word "many")
-   (:var mv7393 :isa interact :info-context mv7390 :has-determiner "HOW" :quantifier mv7385
+   (:var mv7364 :isa copular-predication-of-pp :item mv7356 :value mv7363 :prep "IN" :predicate
+    mv7357)
+   (:var mv7356 :isa interact :has-determiner "HOW" :quantifier mv7355 :raw-text "interactions")
+   (:var mv7355 :isa many :word "many")
+   (:var mv7363 :isa interact :info-context mv7360 :has-determiner "HOW" :quantifier mv7355
     :raw-text "interactions")
-   (:var mv7390 :isa model :has-determiner "THE") (:var mv7387 :isa be :present "PRESENT"))
+   (:var mv7360 :isa model :has-determiner "THE") (:var mv7357 :isa be :present "PRESENT"))
   ("Does tofacitinib decrease the amount of phosphorylated MAP2K2?"
-   (:var mv7407 :isa polar-question :statement mv7405)
-   (:var mv7405 :isa decrease :agent mv7398 :|affected-process-OR-object| mv7402 :raw-text
+   (:var mv7377 :isa polar-question :statement mv7375)
+   (:var mv7375 :isa decrease :agent mv7368 :|affected-process-OR-object| mv7372 :raw-text
     "decrease")
-   (:var mv7398 :isa drug :raw-text "tofacitinib" :name "tasocitinib" :uid "NCIT:C95800")
-   (:var mv7402 :isa bio-amount :measured-item mv7396 :has-determiner "THE" :raw-text "amount")
-   (:var mv7396 :isa protein :predication mv7404 :raw-text "MAP2K2" :uid "UP:P36507" :name
+   (:var mv7368 :isa drug :raw-text "tofacitinib" :name "tasocitinib" :uid "NCIT:C95800")
+   (:var mv7372 :isa bio-amount :measured-item mv7366 :has-determiner "THE" :raw-text "amount")
+   (:var mv7366 :isa protein :predication mv7374 :raw-text "MAP2K2" :uid "UP:P36507" :name
     "MP2K2_HUMAN")
-   (:var mv7404 :isa phosphorylate :substrate mv7396 :raw-text "phosphorylated"))
+   (:var mv7374 :isa phosphorylate :substrate mv7366 :raw-text "phosphorylated"))
   ("What kinases does ERK1 activate?"
-   (:var mv7412 :isa bio-activate :object mv7410 :agent mv7408 :present "PRESENT" :raw-text
+   (:var mv7382 :isa bio-activate :object mv7380 :agent mv7378 :present "PRESENT" :raw-text
     "activate")
-   (:var mv7410 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
-   (:var mv7408 :isa protein :raw-text "ERK1" :uid "UP:P27361" :name "MK03_HUMAN"))
+   (:var mv7380 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
+   (:var mv7378 :isa protein :raw-text "ERK1" :uid "UP:P27361" :name "MK03_HUMAN"))
   ("What kinases does MEK1 activate?"
-   (:var mv7417 :isa bio-activate :object mv7415 :agent mv7413 :present "PRESENT" :raw-text
+   (:var mv7387 :isa bio-activate :object mv7385 :agent mv7383 :present "PRESENT" :raw-text
     "activate")
-   (:var mv7415 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
-   (:var mv7413 :isa protein :raw-text "MEK1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
+   (:var mv7385 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
+   (:var mv7383 :isa protein :raw-text "MEK1" :uid "UP:Q02750" :name "MP2K1_HUMAN"))
   ("What does ERK1 activate?"
-   (:var mv7421 :isa bio-activate :object mv7419 :agent mv7418 :present "PRESENT" :raw-text
+   (:var mv7391 :isa bio-activate :object mv7389 :agent mv7388 :present "PRESENT" :raw-text
     "activate")
-   (:var mv7419 :isa what)
-   (:var mv7418 :isa protein :raw-text "ERK1" :uid "UP:P27361" :name "MK03_HUMAN"))
+   (:var mv7389 :isa what)
+   (:var mv7388 :isa protein :raw-text "ERK1" :uid "UP:P27361" :name "MK03_HUMAN"))
   ("What does JAK1 phosphorylate?"
-   (:var mv7425 :isa phosphorylate :amino-acid mv7423 :agent mv7422 :present "PRESENT" :raw-text
+   (:var mv7395 :isa phosphorylate :amino-acid mv7393 :agent mv7392 :present "PRESENT" :raw-text
     "phosphorylate")
-   (:var mv7423 :isa what)
-   (:var mv7422 :isa protein :raw-text "JAK1" :uid "UP:P23458" :name "JAK1_HUMAN"))
+   (:var mv7393 :isa what)
+   (:var mv7392 :isa protein :raw-text "JAK1" :uid "UP:P23458" :name "JAK1_HUMAN"))
   ("What kinases does STAT3 regulate?"
-   (:var mv7430 :isa regulate :object mv7428 :agent mv7426 :present "PRESENT" :raw-text "regulate")
-   (:var mv7428 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
-   (:var mv7426 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv7400 :isa regulate :object mv7398 :agent mv7396 :present "PRESENT" :raw-text "regulate")
+   (:var mv7398 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
+   (:var mv7396 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What pathways involve SRF and what does SRF bind?"
-   (:var mv7440 :isa collection :type involve :number 2 :items (mv7433 mv7439))
-   (:var mv7433 :isa involve :theme mv7432 :object mv7434 :present "PRESENT")
-   (:var mv7432 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv7434 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
-   (:var mv7439 :isa binding :direct-bindee mv7436 :binder mv7438 :present "PRESENT" :raw-text
+   (:var mv7410 :isa collection :type involve :number 2 :items (mv7403 mv7409))
+   (:var mv7403 :isa involve :theme mv7402 :object mv7404 :present "PRESENT")
+   (:var mv7402 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv7404 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN")
+   (:var mv7409 :isa binding :direct-bindee mv7406 :binder mv7408 :present "PRESENT" :raw-text
     "bind")
-   (:var mv7436 :isa what)
-   (:var mv7438 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv7406 :isa what)
+   (:var mv7408 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("What pathways involve SRF?"
-   (:var mv7443 :isa involve :theme mv7442 :object mv7444 :present "PRESENT")
-   (:var mv7442 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv7444 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv7413 :isa involve :theme mv7412 :object mv7414 :present "PRESENT")
+   (:var mv7412 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv7414 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("What does SRF bind?"
-   (:var mv7448 :isa binding :direct-bindee mv7445 :binder mv7447 :present "PRESENT" :raw-text
+   (:var mv7418 :isa binding :direct-bindee mv7415 :binder mv7417 :present "PRESENT" :raw-text
     "bind")
-   (:var mv7445 :isa what)
-   (:var mv7447 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
+   (:var mv7415 :isa what)
+   (:var mv7417 :isa protein :raw-text "SRF" :uid "UP:P11831" :name "SRF_HUMAN"))
   ("What pathways involve SRF and is SRF a kinase?"
-   (:var mv7459 :isa wh-question :statement mv7457 :var nil :wh what)
-   (:var mv7457 :isa kinase :has-determiner "A" :raw-text "kinase"))
+   (:var mv7429 :isa wh-question :statement mv7427 :var nil :wh what)
+   (:var mv7427 :isa kinase :has-determiner "A" :raw-text "kinase"))
   ("Does MAP2K1 phosphorylate and activate MAPK1?"
-   (:var mv7470 :isa polar-question :statement mv7469)
-   (:var mv7469 :isa collection :type phosphorylate :items
+   (:var mv7440 :isa polar-question :statement mv7439)
+   (:var mv7439 :isa collection :type phosphorylate :items
     (((:agent (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
       (:substrate (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))) (:raw-text "phosphorylate"))
      ((:agent (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
       (:object (protein (:name "MK01_HUMAN") (:uid "UP:P28482"))) (:raw-text "activate")))
     :number 2))
-  ("Does MAP2K1 phosphorylate MAPK3?" (:var mv7476 :isa polar-question :statement mv7475)
-   (:var mv7475 :isa phosphorylate :agent mv7471 :substrate mv7472 :raw-text "phosphorylate")
-   (:var mv7471 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
-   (:var mv7472 :isa protein :raw-text "MAPK3" :uid "UP:P27361" :name "MK03_HUMAN"))
+  ("Does MAP2K1 phosphorylate MAPK3?" (:var mv7446 :isa polar-question :statement mv7445)
+   (:var mv7445 :isa phosphorylate :agent mv7441 :substrate mv7442 :raw-text "phosphorylate")
+   (:var mv7441 :isa protein :raw-text "MAP2K1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
+   (:var mv7442 :isa protein :raw-text "MAPK3" :uid "UP:P27361" :name "MK03_HUMAN"))
   ("Which kinases activate MEK2?"
-   (:var mv7480 :isa bio-activate :agent mv7479 :object mv7477 :present "PRESENT" :raw-text
+   (:var mv7450 :isa bio-activate :agent mv7449 :object mv7447 :present "PRESENT" :raw-text
     "activate")
-   (:var mv7479 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
-   (:var mv7477 :isa protein :raw-text "MEK2" :uid "UP:P36507" :name "MP2K2_HUMAN"))
+   (:var mv7449 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
+   (:var mv7447 :isa protein :raw-text "MEK2" :uid "UP:P36507" :name "MP2K2_HUMAN"))
   ("Which drugs target upstreams of CXCL8 and CXCL10?"
-   (:var mv7486 :isa target :agent mv7484 :affected-process mv7487 :present "PRESENT" :raw-text
+   (:var mv7456 :isa target :agent mv7454 :affected-process mv7457 :present "PRESENT" :raw-text
     "target")
-   (:var mv7484 :isa drug :has-determiner "WHICH" :raw-text "drugs")
-   (:var mv7487 :isa upstream-segment :pathwaycomponent mv7490 :raw-text "upstreams")
-   (:var mv7490 :isa collection :raw-text "CXCL8 and CXCL10" :type protein :number 2 :items
-    (mv7481 mv7482))
-   (:var mv7481 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
-   (:var mv7482 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
+   (:var mv7454 :isa drug :has-determiner "WHICH" :raw-text "drugs")
+   (:var mv7457 :isa upstream-segment :pathwaycomponent mv7460 :raw-text "upstreams")
+   (:var mv7460 :isa collection :raw-text "CXCL8 and CXCL10" :type protein :number 2 :items
+    (mv7451 mv7452))
+   (:var mv7451 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
+   (:var mv7452 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
   ("Which drugs target CXCL8?"
-   (:var mv7496 :isa target :agent mv7494 :object mv7492 :present "PRESENT" :raw-text "target")
-   (:var mv7494 :isa drug :has-determiner "WHICH" :raw-text "drugs")
-   (:var mv7492 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
+   (:var mv7466 :isa target :agent mv7464 :object mv7462 :present "PRESENT" :raw-text "target")
+   (:var mv7464 :isa drug :has-determiner "WHICH" :raw-text "drugs")
+   (:var mv7462 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN"))
   ("Which drugs target Jak3?"
-   (:var mv7501 :isa target :agent mv7499 :object mv7497 :present "PRESENT" :raw-text "target")
-   (:var mv7499 :isa drug :has-determiner "WHICH" :raw-text "drugs")
-   (:var mv7497 :isa protein :raw-text "Jak3" :uid "UP:P52333" :name "JAK3_HUMAN"))
+   (:var mv7471 :isa target :agent mv7469 :object mv7467 :present "PRESENT" :raw-text "target")
+   (:var mv7469 :isa drug :has-determiner "WHICH" :raw-text "drugs")
+   (:var mv7467 :isa protein :raw-text "Jak3" :uid "UP:P52333" :name "JAK3_HUMAN"))
   ("What drugs target transcription factors shared by CXCL8 and CXCL10?"
-   (:var mv7508 :isa target :agent mv7506 :object mv7502 :present "PRESENT" :raw-text "target")
-   (:var mv7506 :isa drug :has-determiner "WHAT" :raw-text "drugs")
-   (:var mv7502 :isa transcription-factor :predication mv7509 :raw-text "transcription factors")
-   (:var mv7509 :isa share :object mv7502 :participant mv7512 :past "PAST" :raw-text "shared")
-   (:var mv7512 :isa collection :raw-text "CXCL8 and CXCL10" :type protein :number 2 :items
-    (mv7503 mv7504))
-   (:var mv7503 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
-   (:var mv7504 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
+   (:var mv7478 :isa target :agent mv7476 :object mv7472 :present "PRESENT" :raw-text "target")
+   (:var mv7476 :isa drug :has-determiner "WHAT" :raw-text "drugs")
+   (:var mv7472 :isa transcription-factor :predication mv7479 :raw-text "transcription factors")
+   (:var mv7479 :isa share :object mv7472 :participant mv7482 :past "PAST" :raw-text "shared")
+   (:var mv7482 :isa collection :raw-text "CXCL8 and CXCL10" :type protein :number 2 :items
+    (mv7473 mv7474))
+   (:var mv7473 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
+   (:var mv7474 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
   ("What kinases does miR-20a-5p target?"
-   (:var mv7519 :isa target :object mv7516 :agent mv7514 :present "PRESENT" :raw-text "target")
-   (:var mv7516 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
-   (:var mv7514 :isa micro-rna :raw-text "miR-20a-5p" :name "microRNA 20a-5pm" :uid
+   (:var mv7489 :isa target :object mv7486 :agent mv7484 :present "PRESENT" :raw-text "target")
+   (:var mv7486 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
+   (:var mv7484 :isa micro-rna :raw-text "miR-20a-5p" :name "microRNA 20a-5pm" :uid
     "MIMAT0000075"))
   ("What transcription factors does miR-20a-5p target?"
-   (:var mv7525 :isa target :object mv7520 :agent mv7521 :present "PRESENT" :raw-text "target")
-   (:var mv7520 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv7521 :isa micro-rna :raw-text "miR-20a-5p" :name "microRNA 20a-5pm" :uid
+   (:var mv7495 :isa target :object mv7490 :agent mv7491 :present "PRESENT" :raw-text "target")
+   (:var mv7490 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv7491 :isa micro-rna :raw-text "miR-20a-5p" :name "microRNA 20a-5pm" :uid
     "MIMAT0000075"))
   ("What kinases are mutually exclusive with CDH1 for breast cancer?"
-   (:var mv7536 :isa copular-predication :item mv7530 :value mv7526 :predicate mv7531)
-   (:var mv7530 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
-   (:var mv7526 :isa mutual-exclusivity :disease mv7528 :alternative mv7527)
-   (:var mv7528 :isa cancer :name "breast cancer" :uid "TS-0591")
-   (:var mv7527 :isa protein :raw-text "CDH1" :uid "UP:P12830" :name "CADH1_HUMAN")
-   (:var mv7531 :isa be :present "PRESENT"))
+   (:var mv7506 :isa copular-predication :item mv7500 :value mv7496 :predicate mv7501)
+   (:var mv7500 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
+   (:var mv7496 :isa mutual-exclusivity :disease mv7498 :alternative mv7497)
+   (:var mv7498 :isa cancer :name "breast cancer" :uid "TS-0591")
+   (:var mv7497 :isa protein :raw-text "CDH1" :uid "UP:P12830" :name "CADH1_HUMAN")
+   (:var mv7501 :isa be :present "PRESENT"))
   ("What drugs target fakeprotein?"
-   (:var mv7540 :isa target :agent mv7538 :object mv7541 :present "PRESENT" :raw-text "target")
-   (:var mv7538 :isa drug :has-determiner "WHAT" :raw-text "drugs")
-   (:var mv7541 :isa bio-entity :name "fakeprotein"))
+   (:var mv7510 :isa target :agent mv7508 :object mv7511 :present "PRESENT" :raw-text "target")
+   (:var mv7508 :isa drug :has-determiner "WHAT" :raw-text "drugs")
+   (:var mv7511 :isa bio-entity :name "fakeprotein"))
   ("Which kinases are in the FAKE signaling pathway?"
-   (:var mv7552 :isa copular-predication-of-pp :item mv7544 :value mv7551 :prep "IN" :predicate
-    mv7545)
-   (:var mv7544 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
-   (:var mv7551 :isa kinase :|context-OR-in-pathway| mv7542 :has-determiner "WHICH" :raw-text
+   (:var mv7522 :isa copular-predication-of-pp :item mv7514 :value mv7521 :prep "IN" :predicate
+    mv7515)
+   (:var mv7514 :isa kinase :has-determiner "WHICH" :raw-text "kinases")
+   (:var mv7521 :isa kinase :|context-OR-in-pathway| mv7512 :has-determiner "WHICH" :raw-text
     "kinases")
-   (:var mv7542 :isa signaling-pathway :has-determiner "THE" :modifier mv7548 :raw-text
+   (:var mv7512 :isa signaling-pathway :has-determiner "THE" :modifier mv7518 :raw-text
     "signaling pathway")
-   (:var mv7548 :isa bio-entity :name "FAKE") (:var mv7545 :isa be :present "PRESENT"))
+   (:var mv7518 :isa bio-entity :name "FAKE") (:var mv7515 :isa be :present "PRESENT"))
   ("What are the mutations of PTEN in fictional cancer?"
-   (:var mv7555 :isa be :subject mv7554 :predicate mv7557 :present "PRESENT")
-   (:var mv7554 :isa what)
-   (:var mv7557 :isa mutation :object mv7559 :has-determiner "THE" :raw-text "mutations")
-   (:var mv7559 :isa protein :context mv7562 :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
-   (:var mv7562 :isa cancer :predication mv7561) (:var mv7561 :isa fictional))
+   (:var mv7525 :isa be :subject mv7524 :predicate mv7527 :present "PRESENT")
+   (:var mv7524 :isa what)
+   (:var mv7527 :isa mutation :object mv7529 :has-determiner "THE" :raw-text "mutations")
+   (:var mv7529 :isa protein :context mv7532 :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
+   (:var mv7532 :isa cancer :predication mv7531) (:var mv7531 :isa fictional))
   ("What are the mutations of PTEN in liver cancer?"
-   (:var mv7566 :isa be :subject mv7565 :predicate mv7568 :present "PRESENT")
-   (:var mv7565 :isa what)
-   (:var mv7568 :isa mutation :object mv7570 :has-determiner "THE" :raw-text "mutations")
-   (:var mv7570 :isa protein :context mv7573 :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
-   (:var mv7573 :isa cancer :organ mv7572) (:var mv7572 :isa liver))
+   (:var mv7536 :isa be :subject mv7535 :predicate mv7538 :present "PRESENT")
+   (:var mv7535 :isa what)
+   (:var mv7538 :isa mutation :object mv7540 :has-determiner "THE" :raw-text "mutations")
+   (:var mv7540 :isa protein :context mv7543 :raw-text "PTEN" :uid "UP:P60484" :name "PTEN_HUMAN")
+   (:var mv7543 :isa cancer :organ mv7542) (:var mv7542 :isa liver))
   ("Remove the fact that ELk1 transcribes FAKE in the model."
-   (:var mv7577 :isa remove :object mv7587 :present "PRESENT" :raw-text "Remove")
-   (:var mv7587 :isa fact :statement mv7581 :has-determiner "THE")
-   (:var mv7581 :isa transcribe :agent mv7576 :object mv7582 :present "PRESENT" :raw-text
+   (:var mv7547 :isa remove :object mv7557 :present "PRESENT" :raw-text "Remove")
+   (:var mv7557 :isa fact :statement mv7551 :has-determiner "THE")
+   (:var mv7551 :isa transcribe :agent mv7546 :object mv7552 :present "PRESENT" :raw-text
     "transcribes")
-   (:var mv7576 :isa protein :raw-text "ELk1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv7582 :isa bio-entity :info-context mv7585 :name "FAKE")
-   (:var mv7585 :isa model :has-determiner "THE"))
+   (:var mv7546 :isa protein :raw-text "ELk1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv7552 :isa bio-entity :info-context mv7555 :name "FAKE")
+   (:var mv7555 :isa model :has-determiner "THE"))
   ("ELK1 transcribes FOS"
-   (:var mv7589 :isa transcribe :agent mv7588 :object mv7590 :present "PRESENT" :raw-text
+   (:var mv7559 :isa transcribe :agent mv7558 :object mv7560 :present "PRESENT" :raw-text
     "transcribes")
-   (:var mv7588 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv7590 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN"))
+   (:var mv7558 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv7560 :isa protein :raw-text "FOS" :uid "UP:P01100" :name "FOS_HUMAN"))
   ("Remove the fact that ELK1 transcribes FOS in the model."
-   (:var mv7592 :isa remove :object mv7602 :present "PRESENT" :raw-text "Remove")
-   (:var mv7602 :isa fact :statement mv7596 :has-determiner "THE")
-   (:var mv7596 :isa transcribe :agent mv7591 :object mv7597 :present "PRESENT" :raw-text
+   (:var mv7562 :isa remove :object mv7572 :present "PRESENT" :raw-text "Remove")
+   (:var mv7572 :isa fact :statement mv7566 :has-determiner "THE")
+   (:var mv7566 :isa transcribe :agent mv7561 :object mv7567 :present "PRESENT" :raw-text
     "transcribes")
-   (:var mv7591 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
-   (:var mv7597 :isa protein :info-context mv7600 :raw-text "FOS" :uid "UP:P01100" :name
+   (:var mv7561 :isa protein :raw-text "ELK1" :uid "UP:P19419" :name "ELK1_HUMAN")
+   (:var mv7567 :isa protein :info-context mv7570 :raw-text "FOS" :uid "UP:P01100" :name
     "FOS_HUMAN")
-   (:var mv7600 :isa model :has-determiner "THE"))
+   (:var mv7570 :isa model :has-determiner "THE"))
   ("What transcription factors are shared by CXCL8 and FAKE10?"
-   (:var mv7615 :isa share :object mv7603 :participant mv7614 :present "PRESENT" :raw-text
+   (:var mv7585 :isa share :object mv7573 :participant mv7584 :present "PRESENT" :raw-text
     "shared")
-   (:var mv7603 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv7614 :isa collection :raw-text "CXCL8 and FAKE10" :type protein :number 2 :items
-    (mv7604 mv7613))
-   (:var mv7604 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
-   (:var mv7613 :isa bio-entity :name "FAKE10"))
+   (:var mv7573 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv7584 :isa collection :raw-text "CXCL8 and FAKE10" :type protein :number 2 :items
+    (mv7574 mv7583))
+   (:var mv7574 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
+   (:var mv7583 :isa bio-entity :name "FAKE10"))
   ("What transcription factors are shared by CXCL8 and CXCL10?"
-   (:var mv7626 :isa share :object mv7617 :participant mv7625 :present "PRESENT" :raw-text
+   (:var mv7596 :isa share :object mv7587 :participant mv7595 :present "PRESENT" :raw-text
     "shared")
-   (:var mv7617 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
-   (:var mv7625 :isa collection :raw-text "CXCL8 and CXCL10" :type protein :number 2 :items
-    (mv7618 mv7619))
-   (:var mv7618 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
-   (:var mv7619 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
+   (:var mv7587 :isa transcription-factor :has-determiner "WHAT" :raw-text "transcription factors")
+   (:var mv7595 :isa collection :raw-text "CXCL8 and CXCL10" :type protein :number 2 :items
+    (mv7588 mv7589))
+   (:var mv7588 :isa protein :raw-text "CXCL8" :uid "UP:P10145" :name "IL8_HUMAN")
+   (:var mv7589 :isa protein :raw-text "CXCL10" :uid "UP:P02778" :name "CXL10_HUMAN"))
   ("What databases do you use?"
-   (:var mv7633 :isa bio-use :object mv7629 :agent mv7631 :present "PRESENT" :raw-text "use")
-   (:var mv7629 :isa database :has-determiner "WHAT")
-   (:var mv7631 :isa interlocutor :name "hearer"))
-  ("What is the MSA?" (:var mv7635 :isa be :subject mv7634 :predicate mv7637 :present "PRESENT")
-   (:var mv7634 :isa what)
-   (:var mv7637 :isa protein :has-determiner "THE" :raw-text "MSA" :uid "UP:Q9FIB6" :name
+   (:var mv7603 :isa bio-use :object mv7599 :agent mv7601 :present "PRESENT" :raw-text "use")
+   (:var mv7599 :isa database :has-determiner "WHAT")
+   (:var mv7601 :isa interlocutor :name "hearer"))
+  ("What is the MSA?" (:var mv7605 :isa be :subject mv7604 :predicate mv7607 :present "PRESENT")
+   (:var mv7604 :isa what)
+   (:var mv7607 :isa protein :has-determiner "THE" :raw-text "MSA" :uid "UP:Q9FIB6" :name
     "PS12A_ARATH"))
   ("What tissues can I ask about?"
-   (:var mv7646 :isa ask :patient mv7639 :modal mv7640 :agent mv7641 :present "PRESENT")
-   (:var mv7639 :isa tissue :has-determiner "WHAT") (:var mv7640 :isa can)
-   (:var mv7641 :isa interlocutor :name "speaker"))
+   (:var mv7616 :isa ask :patient mv7609 :modal mv7610 :agent mv7611 :present "PRESENT")
+   (:var mv7609 :isa tissue :has-determiner "WHAT") (:var mv7610 :isa can)
+   (:var mv7611 :isa interlocutor :name "speaker"))
   ("What cancers can I ask about?"
-   (:var mv7655 :isa ask :patient mv7648 :modal mv7649 :agent mv7650 :present "PRESENT")
-   (:var mv7648 :isa cancer :has-determiner "WHAT") (:var mv7649 :isa can)
-   (:var mv7650 :isa interlocutor :name "speaker"))
+   (:var mv7625 :isa ask :patient mv7618 :modal mv7619 :agent mv7620 :present "PRESENT")
+   (:var mv7618 :isa cancer :has-determiner "WHAT") (:var mv7619 :isa can)
+   (:var mv7620 :isa interlocutor :name "speaker"))
   ("What mechanisms can I ask about?"
-   (:var mv7664 :isa ask :patient mv7657 :modal mv7658 :agent mv7659 :present "PRESENT")
-   (:var mv7657 :isa bio-mechanism :has-determiner "WHAT") (:var mv7658 :isa can)
-   (:var mv7659 :isa interlocutor :name "speaker"))
+   (:var mv7634 :isa ask :patient mv7627 :modal mv7628 :agent mv7629 :present "PRESENT")
+   (:var mv7627 :isa bio-mechanism :has-determiner "WHAT") (:var mv7628 :isa can)
+   (:var mv7629 :isa interlocutor :name "speaker"))
   ("What does STAT3 regulate?"
-   (:var mv7668 :isa regulate :object mv7666 :agent mv7665 :present "PRESENT" :raw-text "regulate")
-   (:var mv7666 :isa what)
-   (:var mv7665 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv7638 :isa regulate :object mv7636 :agent mv7635 :present "PRESENT" :raw-text "regulate")
+   (:var mv7636 :isa what)
+   (:var mv7635 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("Which of these are kinases?"
-   (:var mv7672 :isa be :subject mv7671 :predicate mv7673 :present "PRESENT")
-   (:var mv7671 :isa these :quantifier mv7669 :word "these") (:var mv7669 :isa which)
-   (:var mv7673 :isa kinase :raw-text "kinases"))
-  ("What pathways is ERK1 in?" (:var mv7680 :isa wh-question :statement mv7679 :var nil :wh what)
-   (:var mv7679 :isa in :word "in"))
-  ("Which of these is AKT1 in?" (:var mv7688 :isa wh-question :statement mv7686 :wh which)
-   (:var mv7686 :isa in :word "in"))
+   (:var mv7642 :isa be :subject mv7641 :predicate mv7643 :present "PRESENT")
+   (:var mv7641 :isa these :quantifier mv7639 :word "these") (:var mv7639 :isa which)
+   (:var mv7643 :isa kinase :raw-text "kinases"))
+  ("What pathways is ERK1 in?" (:var mv7650 :isa wh-question :statement mv7649 :var nil :wh what)
+   (:var mv7649 :isa in :word "in"))
+  ("Which of these is AKT1 in?" (:var mv7658 :isa wh-question :statement mv7656 :wh which)
+   (:var mv7656 :isa in :word "in"))
   ("What pathways are ERK1 and AKT1 in?"
-   (:var mv7697 :isa wh-question :statement mv7695 :var nil :wh what)
-   (:var mv7695 :isa in :word "in"))
+   (:var mv7667 :isa wh-question :statement mv7665 :var nil :wh what)
+   (:var mv7665 :isa in :word "in"))
   ("What microRNAs target STAT3?"
-   (:var mv7702 :isa target :agent mv7700 :object mv7698 :present "PRESENT" :raw-text "target")
-   (:var mv7700 :isa micro-rna :has-determiner "WHAT" :raw-text "microRNAs")
-   (:var mv7698 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv7672 :isa target :agent mv7670 :object mv7668 :present "PRESENT" :raw-text "target")
+   (:var mv7670 :isa micro-rna :has-determiner "WHAT" :raw-text "microRNAs")
+   (:var mv7668 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("Which of these target SMAD2?"
-   (:var mv7708 :isa target :|agent-OR-cause| mv7706 :object mv7703 :present "PRESENT" :raw-text
+   (:var mv7678 :isa target :|agent-OR-cause| mv7676 :object mv7673 :present "PRESENT" :raw-text
     "target")
-   (:var mv7706 :isa these :quantifier mv7704 :word "these") (:var mv7704 :isa which)
-   (:var mv7703 :isa protein :raw-text "SMAD2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
-  ("Do any of these regulate IL2?" (:var mv7718 :isa polar-question :statement mv7716)
-   (:var mv7716 :isa regulate :|agent-OR-cause| mv7714 :object mv7710 :raw-text "regulate")
-   (:var mv7714 :isa these :quantifier mv7712 :word "these") (:var mv7712 :isa any :word "any")
-   (:var mv7710 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
+   (:var mv7676 :isa these :quantifier mv7674 :word "these") (:var mv7674 :isa which)
+   (:var mv7673 :isa protein :raw-text "SMAD2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
+  ("Do any of these regulate IL2?" (:var mv7688 :isa polar-question :statement mv7686)
+   (:var mv7686 :isa regulate :|agent-OR-cause| mv7684 :object mv7680 :raw-text "regulate")
+   (:var mv7684 :isa these :quantifier mv7682 :word "these") (:var mv7682 :isa any :word "any")
+   (:var mv7680 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
   ("What regulates STAT3?"
-   (:var mv7721 :isa regulate :|agent-OR-cause| mv7720 :object mv7719 :present "PRESENT" :raw-text
+   (:var mv7691 :isa regulate :|agent-OR-cause| mv7690 :object mv7689 :present "PRESENT" :raw-text
     "regulates")
-   (:var mv7720 :isa what)
-   (:var mv7719 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv7690 :isa what)
+   (:var mv7689 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("What pathways involve these?"
-   (:var mv7724 :isa involve :theme mv7723 :object mv7725 :present "PRESENT")
-   (:var mv7723 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
-   (:var mv7725 :isa these :word "these"))
+   (:var mv7694 :isa involve :theme mv7693 :object mv7695 :present "PRESENT")
+   (:var mv7693 :isa pathway :has-determiner "WHAT" :raw-text "pathways")
+   (:var mv7695 :isa these :word "these"))
   ("What are the targets of NG25?"
-   (:var mv7728 :isa be :subject mv7727 :predicate mv7730 :present "PRESENT")
-   (:var mv7727 :isa what)
-   (:var mv7730 :isa target-protein :agent mv7726 :has-determiner "THE" :raw-text "targets")
-   (:var mv7726 :isa drug :raw-text "NG25" :name "NG-25" :uid "PCID:53340664"))
+   (:var mv7698 :isa be :subject mv7697 :predicate mv7700 :present "PRESENT")
+   (:var mv7697 :isa what)
+   (:var mv7700 :isa target-protein :agent mv7696 :has-determiner "THE" :raw-text "targets")
+   (:var mv7696 :isa drug :raw-text "NG25" :name "NG-25" :uid "PCID:53340664"))
   ("What is their most likely cellular location?"
-   (:var mv7735 :isa be :subject mv7734 :predicate mv7741 :present "PRESENT")
-   (:var mv7734 :isa what)
-   (:var mv7741 :isa location-of :theme mv7736 :predication mv7739 :modifier mv7740)
-   (:var mv7736 :isa pronoun/plural :word "their") (:var mv7739 :isa likely :comparative mv7737)
-   (:var mv7737 :isa superlative-quantifier :name "most")
-   (:var mv7740 :isa cellular :name "cellular"))
-  ("Is ERK1 a transcription factor?" (:var mv7746 :isa polar-question :statement mv7744)
-   (:var mv7744 :isa be :subject mv7742 :predicate mv7743)
-   (:var mv7742 :isa protein :raw-text "ERK1" :uid "UP:P27361" :name "MK03_HUMAN")
-   (:var mv7743 :isa transcription-factor :has-determiner "A" :raw-text "transcription factor"))
-  ("Is it a kinase?" (:var mv7751 :isa polar-question :statement mv7747)
-   (:var mv7747 :isa be :subject mv7748 :predicate mv7750)
-   (:var mv7748 :isa pronoun/inanimate :word "it")
-   (:var mv7750 :isa kinase :has-determiner "A" :raw-text "kinase"))
-  ("What is PLX-4720?" (:var mv7754 :isa be :subject mv7753 :predicate mv7752 :present "PRESENT")
-   (:var mv7753 :isa what)
-   (:var mv7752 :isa drug :raw-text "PLX-4720" :name "PLX 4720" :uid "PCID:24180719"))
+   (:var mv7705 :isa be :subject mv7704 :predicate mv7711 :present "PRESENT")
+   (:var mv7704 :isa what)
+   (:var mv7711 :isa location-of :theme mv7706 :predication mv7709 :modifier mv7710)
+   (:var mv7706 :isa pronoun/plural :word "their") (:var mv7709 :isa likely :comparative mv7707)
+   (:var mv7707 :isa superlative-quantifier :name "most")
+   (:var mv7710 :isa cellular :name "cellular"))
+  ("Is ERK1 a transcription factor?" (:var mv7716 :isa polar-question :statement mv7714)
+   (:var mv7714 :isa be :subject mv7712 :predicate mv7713)
+   (:var mv7712 :isa protein :raw-text "ERK1" :uid "UP:P27361" :name "MK03_HUMAN")
+   (:var mv7713 :isa transcription-factor :has-determiner "A" :raw-text "transcription factor"))
+  ("Is it a kinase?" (:var mv7721 :isa polar-question :statement mv7717)
+   (:var mv7717 :isa be :subject mv7718 :predicate mv7720)
+   (:var mv7718 :isa pronoun/inanimate :word "it")
+   (:var mv7720 :isa kinase :has-determiner "A" :raw-text "kinase"))
+  ("What is PLX-4720?" (:var mv7724 :isa be :subject mv7723 :predicate mv7722 :present "PRESENT")
+   (:var mv7723 :isa what)
+   (:var mv7722 :isa drug :raw-text "PLX-4720" :name "PLX 4720" :uid "PCID:24180719"))
   ("What does it target?"
-   (:var mv7759 :isa target :object mv7755 :|agent-OR-cause| mv7757 :present "PRESENT" :raw-text
+   (:var mv7729 :isa target :object mv7725 :|agent-OR-cause| mv7727 :present "PRESENT" :raw-text
     "target")
-   (:var mv7755 :isa what) (:var mv7757 :isa pronoun/inanimate :word "it"))
+   (:var mv7725 :isa what) (:var mv7727 :isa pronoun/inanimate :word "it"))
   ("What genes does STAT3 regulate?"
-   (:var mv7764 :isa regulate :object mv7762 :agent mv7760 :present "PRESENT" :raw-text "regulate")
-   (:var mv7762 :isa gene :has-determiner "WHAT" :raw-text "genes")
-   (:var mv7760 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
-  ("What pathways is it in?" (:var mv7770 :isa wh-question :statement mv7769 :var nil :wh what)
-   (:var mv7769 :isa in :word "in"))
+   (:var mv7734 :isa regulate :object mv7732 :agent mv7730 :present "PRESENT" :raw-text "regulate")
+   (:var mv7732 :isa gene :has-determiner "WHAT" :raw-text "genes")
+   (:var mv7730 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+  ("What pathways is it in?" (:var mv7740 :isa wh-question :statement mv7739 :var nil :wh what)
+   (:var mv7739 :isa in :word "in"))
   ("What are the targets of PLX-4720?"
-   (:var mv7773 :isa be :subject mv7772 :predicate mv7775 :present "PRESENT")
-   (:var mv7772 :isa what)
-   (:var mv7775 :isa target-protein :agent mv7771 :has-determiner "THE" :raw-text "targets")
-   (:var mv7771 :isa drug :raw-text "PLX-4720" :name "PLX 4720" :uid "PCID:24180719"))
-  ("Does it target BRAF?" (:var mv7785 :isa polar-question :statement mv7784)
-   (:var mv7784 :isa target :|agent-OR-cause| mv7780 :object mv7783 :raw-text "target")
-   (:var mv7780 :isa pronoun/inanimate :word "it")
-   (:var mv7783 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
+   (:var mv7743 :isa be :subject mv7742 :predicate mv7745 :present "PRESENT")
+   (:var mv7742 :isa what)
+   (:var mv7745 :isa target-protein :agent mv7741 :has-determiner "THE" :raw-text "targets")
+   (:var mv7741 :isa drug :raw-text "PLX-4720" :name "PLX 4720" :uid "PCID:24180719"))
+  ("Does it target BRAF?" (:var mv7755 :isa polar-question :statement mv7754)
+   (:var mv7754 :isa target :|agent-OR-cause| mv7750 :object mv7753 :raw-text "target")
+   (:var mv7750 :isa pronoun/inanimate :word "it")
+   (:var mv7753 :isa protein :raw-text "BRAF" :uid "UP:P15056" :name "BRAF_HUMAN"))
   ("Tofacitinib inhibits JAK1 and active STAT3 transcribes IL2."
-   (:var mv7790 :isa inhibit :agent mv7789 :object mv7794 :present "PRESENT" :raw-text "inhibits")
-   (:var mv7789 :isa drug :raw-text "Tofacitinib" :name "tasocitinib" :uid "NCIT:C95800")
-   (:var mv7794 :isa collection :raw-text "JAK1 and active STAT3" :type protein :number 2 :items
-    (mv7786 mv7787))
-   (:var mv7786 :isa protein :raw-text "JAK1" :uid "UP:P23458" :name "JAK1_HUMAN")
-   (:var mv7787 :isa protein :predication mv7792 :raw-text "STAT3" :uid "UP:P40763" :name
+   (:var mv7760 :isa inhibit :agent mv7759 :object mv7764 :present "PRESENT" :raw-text "inhibits")
+   (:var mv7759 :isa drug :raw-text "Tofacitinib" :name "tasocitinib" :uid "NCIT:C95800")
+   (:var mv7764 :isa collection :raw-text "JAK1 and active STAT3" :type protein :number 2 :items
+    (mv7756 mv7757))
+   (:var mv7756 :isa protein :raw-text "JAK1" :uid "UP:P23458" :name "JAK1_HUMAN")
+   (:var mv7757 :isa protein :predication mv7762 :raw-text "STAT3" :uid "UP:P40763" :name
     "STAT3_HUMAN")
-   (:var mv7792 :isa active))
+   (:var mv7762 :isa active))
   ("JAK1 activates STAT3"
-   (:var mv7797 :isa bio-activate :agent mv7795 :object mv7796 :present "PRESENT" :raw-text
+   (:var mv7767 :isa bio-activate :agent mv7765 :object mv7766 :present "PRESENT" :raw-text
     "activates")
-   (:var mv7795 :isa protein :raw-text "JAK1" :uid "UP:P23458" :name "JAK1_HUMAN")
-   (:var mv7796 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv7765 :isa protein :raw-text "JAK1" :uid "UP:P23458" :name "JAK1_HUMAN")
+   (:var mv7766 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("I want to find out how Jak1 activates IL2"
-   (:var mv7803 :isa want :agent mv7800 :theme mv7813 :present "PRESENT")
-   (:var mv7800 :isa interlocutor :name "speaker")
-   (:var mv7813 :isa find-out :agent mv7800 :statement mv7810)
-   (:var mv7810 :isa wh-question :statement mv7809 :var nil :wh how)
-   (:var mv7809 :isa bio-activate :agent mv7798 :object mv7799 :present "PRESENT" :raw-text
+   (:var mv7773 :isa want :agent mv7770 :theme mv7783 :present "PRESENT")
+   (:var mv7770 :isa interlocutor :name "speaker")
+   (:var mv7783 :isa find-out :agent mv7770 :statement mv7780)
+   (:var mv7780 :isa wh-question :statement mv7779 :var nil :wh how)
+   (:var mv7779 :isa bio-activate :agent mv7768 :object mv7769 :present "PRESENT" :raw-text
     "activates")
-   (:var mv7798 :isa protein :raw-text "Jak1" :uid "UP:P23458" :name "JAK1_HUMAN")
-   (:var mv7799 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
+   (:var mv7768 :isa protein :raw-text "Jak1" :uid "UP:P23458" :name "JAK1_HUMAN")
+   (:var mv7769 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
   ("I want to find out how ERBB3 activates JUN in SKBR3 cells."
-   (:var mv7819 :isa want :agent mv7816 :theme mv7833 :present "PRESENT")
-   (:var mv7816 :isa interlocutor :name "speaker")
-   (:var mv7833 :isa find-out :agent mv7816 :statement mv7830)
-   (:var mv7830 :isa wh-question :statement mv7825 :var nil :wh how)
-   (:var mv7825 :isa bio-activate :agent mv7814 :object mv7826 :present "PRESENT" :raw-text
+   (:var mv7789 :isa want :agent mv7786 :theme mv7803 :present "PRESENT")
+   (:var mv7786 :isa interlocutor :name "speaker")
+   (:var mv7803 :isa find-out :agent mv7786 :statement mv7800)
+   (:var mv7800 :isa wh-question :statement mv7795 :var nil :wh how)
+   (:var mv7795 :isa bio-activate :agent mv7784 :object mv7796 :present "PRESENT" :raw-text
     "activates")
-   (:var mv7814 :isa protein :raw-text "ERBB3" :uid "UP:P21860" :name "ERBB3_HUMAN")
-   (:var mv7826 :isa protein :cell-type mv7828 :raw-text "JUN" :uid "UP:P05412" :name "JUN_HUMAN")
-   (:var mv7828 :isa cell-type :cell-line mv7815)
-   (:var mv7815 :isa cell-line :name "SKBR3" :uid "EFO:0001236"))
+   (:var mv7784 :isa protein :raw-text "ERBB3" :uid "UP:P21860" :name "ERBB3_HUMAN")
+   (:var mv7796 :isa protein :cell-type mv7798 :raw-text "JUN" :uid "UP:P05412" :name "JUN_HUMAN")
+   (:var mv7798 :isa cell-type :cell-line mv7785)
+   (:var mv7785 :isa cell-line :name "SKBR3" :uid "EFO:0001236"))
   ("Let's build a model."
-   (:var mv7838 :isa explicit-suggestion :suggestion mv7835 :marker let-as-directive)
-   (:var mv7835 :isa build :artifact mv7837 :present "PRESENT")
-   (:var mv7837 :isa model :has-determiner "A"))
+   (:var mv7808 :isa explicit-suggestion :suggestion mv7805 :marker let-as-directive)
+   (:var mv7805 :isa build :artifact mv7807 :present "PRESENT")
+   (:var mv7807 :isa model :has-determiner "A"))
   ("Mek phosphorylates MAPK; MapK phosphorylates RSK"
-   (:var mv7840 :isa phosphorylate :agent mv7839 :substrate mv7841 :present "PRESENT" :raw-text
+   (:var mv7810 :isa phosphorylate :agent mv7809 :substrate mv7811 :present "PRESENT" :raw-text
     "phosphorylates")
-   (:var mv7839 :isa protein-family :raw-text "Mek" :name "MEK" :count 2 :family-members
+   (:var mv7809 :isa protein-family :raw-text "Mek" :name "MEK" :count 2 :family-members
     ((protein (:name "MP2K2_HUMAN") (:uid "UP:P36507"))
      (protein (:name "MP2K1_HUMAN") (:uid "UP:Q02750")))
     :uid "FPLX:MEK")
-   (:var mv7841 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
+   (:var mv7811 :isa protein-family :raw-text "MAPK" :name "mitogen activated protein kinase"
     :count 13 :family-members
     ((protein (:name "MK15_HUMAN") (:uid "UP:Q8TD08"))
      (protein (:name "MK06_HUMAN") (:uid "UP:Q16659"))
@@ -6492,81 +6487,81 @@
      (protein (:name "MK13_HUMAN") (:uid "UP:O15264")))
     :uid "PR:000000019"))
   ("What kinases regulate IL2?"
-   (:var mv7848 :isa regulate :agent mv7847 :object mv7845 :present "PRESENT" :raw-text "regulate")
-   (:var mv7847 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
-   (:var mv7845 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
+   (:var mv7818 :isa regulate :agent mv7817 :object mv7815 :present "PRESENT" :raw-text "regulate")
+   (:var mv7817 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
+   (:var mv7815 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
   ("What positively regulates IL2?"
-   (:var mv7849 :isa upregulate :|agent-OR-cause| mv7851 :object mv7850 :present "PRESENT"
+   (:var mv7819 :isa upregulate :|agent-OR-cause| mv7821 :object mv7820 :present "PRESENT"
     :raw-text "positively regulates")
-   (:var mv7851 :isa what)
-   (:var mv7850 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
+   (:var mv7821 :isa what)
+   (:var mv7820 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
   ("What can have the effect of activation on STAT3?"
-   (:var mv7855 :isa have :possessor mv7853 :thing-possessed mv7857 :modal mv7854)
-   (:var mv7853 :isa what)
-   (:var mv7857 :isa effect :object mv7852 :affected-process mv7860 :has-determiner "THE" :raw-text
+   (:var mv7825 :isa have :possessor mv7823 :thing-possessed mv7827 :modal mv7824)
+   (:var mv7823 :isa what)
+   (:var mv7827 :isa effect :object mv7822 :affected-process mv7830 :has-determiner "THE" :raw-text
     "effect")
-   (:var mv7852 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
-   (:var mv7860 :isa bio-activate :raw-text "activation") (:var mv7854 :isa can))
-  ("Are there any drugs for IL10?" (:var mv7873 :isa polar-question :statement mv7871)
-   (:var mv7871 :isa there-exists :value mv7869 :predicate mv7866)
-   (:var mv7869 :isa drug :target mv7864 :quantifier mv7868 :raw-text "drugs")
-   (:var mv7864 :isa protein :raw-text "IL10" :uid "UP:P22301" :name "IL10_HUMAN")
-   (:var mv7868 :isa any :word "any") (:var mv7866 :isa syntactic-there))
+   (:var mv7822 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN")
+   (:var mv7830 :isa bio-activate :raw-text "activation") (:var mv7824 :isa can))
+  ("Are there any drugs for IL10?" (:var mv7843 :isa polar-question :statement mv7841)
+   (:var mv7841 :isa there-exists :value mv7839 :predicate mv7836)
+   (:var mv7839 :isa drug :target mv7834 :quantifier mv7838 :raw-text "drugs")
+   (:var mv7834 :isa protein :raw-text "IL10" :uid "UP:P22301" :name "IL10_HUMAN")
+   (:var mv7838 :isa any :word "any") (:var mv7836 :isa syntactic-there))
   ("Which tissues express STAT3?"
-   (:var mv7877 :isa gene-transcript-express :agent mv7876 :object mv7874 :present "PRESENT"
+   (:var mv7847 :isa gene-transcript-express :agent mv7846 :object mv7844 :present "PRESENT"
     :raw-text "express")
-   (:var mv7876 :isa tissue :has-determiner "WHICH")
-   (:var mv7874 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
+   (:var mv7846 :isa tissue :has-determiner "WHICH")
+   (:var mv7844 :isa protein :raw-text "STAT3" :uid "UP:P40763" :name "STAT3_HUMAN"))
   ("How does MEK1 regulate ERK1?"
-   (:var mv7882 :isa regulate :manner mv7880 :agent mv7878 :object mv7879 :present "PRESENT"
+   (:var mv7852 :isa regulate :manner mv7850 :agent mv7848 :object mv7849 :present "PRESENT"
     :raw-text "regulate")
-   (:var mv7880 :isa how)
-   (:var mv7878 :isa protein :raw-text "MEK1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
-   (:var mv7879 :isa protein :raw-text "ERK1" :uid "UP:P27361" :name "MK03_HUMAN"))
+   (:var mv7850 :isa how)
+   (:var mv7848 :isa protein :raw-text "MEK1" :uid "UP:Q02750" :name "MP2K1_HUMAN")
+   (:var mv7849 :isa protein :raw-text "ERK1" :uid "UP:P27361" :name "MK03_HUMAN"))
   ("What are transcription factors that bind the IL15 and IL2 genes?"
-   (:var mv7887 :isa be :subject mv7886 :predicate mv7883 :present "PRESENT")
-   (:var mv7886 :isa what)
-   (:var mv7883 :isa transcription-factor :predication mv7889 :raw-text "transcription factors")
-   (:var mv7889 :isa binding :binder mv7883 :that-rel t :direct-bindee mv7892 :present "PRESENT"
+   (:var mv7857 :isa be :subject mv7856 :predicate mv7853 :present "PRESENT")
+   (:var mv7856 :isa what)
+   (:var mv7853 :isa transcription-factor :predication mv7859 :raw-text "transcription factors")
+   (:var mv7859 :isa binding :binder mv7853 :that-rel t :direct-bindee mv7862 :present "PRESENT"
     :raw-text "bind")
-   (:var mv7892 :isa gene :has-determiner "THE" :expresses mv7893 :raw-text "genes")
-   (:var mv7893 :isa collection :raw-text "IL15 and IL2" :type protein :number 2 :items
-    (mv7884 mv7885))
-   (:var mv7884 :isa protein :raw-text "IL15" :uid "UP:P40933" :name "IL15_HUMAN")
-   (:var mv7885 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
+   (:var mv7862 :isa gene :has-determiner "THE" :expresses mv7863 :raw-text "genes")
+   (:var mv7863 :isa collection :raw-text "IL15 and IL2" :type protein :number 2 :items
+    (mv7854 mv7855))
+   (:var mv7854 :isa protein :raw-text "IL15" :uid "UP:P40933" :name "IL15_HUMAN")
+   (:var mv7855 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
   ("What kinases regulate the IL15 and IL2?"
-   (:var mv7898 :isa regulate :agent mv7897 :object mv7901 :present "PRESENT" :raw-text "regulate")
-   (:var mv7897 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
-   (:var mv7901 :isa collection :has-determiner "THE" :raw-text "IL15 and IL2" :type protein
-    :number 2 :items (mv7894 mv7895))
-   (:var mv7894 :isa protein :raw-text "IL15" :uid "UP:P40933" :name "IL15_HUMAN")
-   (:var mv7895 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
+   (:var mv7868 :isa regulate :agent mv7867 :object mv7871 :present "PRESENT" :raw-text "regulate")
+   (:var mv7867 :isa kinase :has-determiner "WHAT" :raw-text "kinases")
+   (:var mv7871 :isa collection :has-determiner "THE" :raw-text "IL15 and IL2" :type protein
+    :number 2 :items (mv7864 mv7865))
+   (:var mv7864 :isa protein :raw-text "IL15" :uid "UP:P40933" :name "IL15_HUMAN")
+   (:var mv7865 :isa protein :raw-text "IL2" :uid "UP:P60568" :name "IL2_HUMAN"))
   ("What factors from the literature regulate IL15 and IL2?"
-   (:var mv7905 :isa factor :has-determiner "WHAT"))
+   (:var mv7875 :isa factor :has-determiner "WHAT"))
   ("What relations in the literature match tofacitinib inhibits IL15?"
-   (:var mv7915 :isa relation :has-determiner "WHAT"))
-  ("What is MAP3K7?" (:var mv7926 :isa be :subject mv7925 :predicate mv7924 :present "PRESENT")
-   (:var mv7925 :isa what)
-   (:var mv7924 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN"))
-  ("Is MAP3K7 a protein?" (:var mv7931 :isa polar-question :statement mv7928)
-   (:var mv7928 :isa be :subject mv7927 :predicate mv7930)
-   (:var mv7927 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
-   (:var mv7930 :isa protein :has-determiner "A" :raw-text "protein"))
+   (:var mv7885 :isa relation :has-determiner "WHAT"))
+  ("What is MAP3K7?" (:var mv7896 :isa be :subject mv7895 :predicate mv7894 :present "PRESENT")
+   (:var mv7895 :isa what)
+   (:var mv7894 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN"))
+  ("Is MAP3K7 a protein?" (:var mv7901 :isa polar-question :statement mv7898)
+   (:var mv7898 :isa be :subject mv7897 :predicate mv7900)
+   (:var mv7897 :isa protein :raw-text "MAP3K7" :uid "UP:O43318" :name "M3K7_HUMAN")
+   (:var mv7900 :isa protein :has-determiner "A" :raw-text "protein"))
   ("What does SMAD2 transcribe?"
-   (:var mv7935 :isa transcribe :object mv7933 :agent mv7932 :present "PRESENT" :raw-text
+   (:var mv7905 :isa transcribe :object mv7903 :agent mv7902 :present "PRESENT" :raw-text
     "transcribe")
-   (:var mv7933 :isa what)
-   (:var mv7932 :isa protein :raw-text "SMAD2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
-  ("Are there drugs for IL10?" (:var mv7944 :isa polar-question :statement mv7942)
-   (:var mv7942 :isa there-exists :value mv7940 :predicate mv7938)
-   (:var mv7940 :isa drug :target mv7936 :raw-text "drugs")
-   (:var mv7936 :isa protein :raw-text "IL10" :uid "UP:P22301" :name "IL10_HUMAN")
-   (:var mv7938 :isa syntactic-there))
+   (:var mv7903 :isa what)
+   (:var mv7902 :isa protein :raw-text "SMAD2" :uid "UP:Q15796" :name "SMAD2_HUMAN"))
+  ("Are there drugs for IL10?" (:var mv7914 :isa polar-question :statement mv7912)
+   (:var mv7912 :isa there-exists :value mv7910 :predicate mv7908)
+   (:var mv7910 :isa drug :target mv7906 :raw-text "drugs")
+   (:var mv7906 :isa protein :raw-text "IL10" :uid "UP:P22301" :name "IL10_HUMAN")
+   (:var mv7908 :isa syntactic-there))
   ("What relations in the literature match tofacitinib?"
-   (:var mv7954 :isa wh-question :statement mv7953 :var nil :wh what)
-   (:var mv7953 :isa prepositional-phrase :pobj mv7952 :prep "IN")
-   (:var mv7952 :isa drug :has-determiner "THE" :modifier mv7949 :modifier mv7951 :raw-text
+   (:var mv7924 :isa wh-question :statement mv7923 :var nil :wh what)
+   (:var mv7923 :isa prepositional-phrase :pobj mv7922 :prep "IN")
+   (:var mv7922 :isa drug :has-determiner "THE" :modifier mv7919 :modifier mv7921 :raw-text
     "tofacitinib" :name "tasocitinib" :uid "NCIT:C95800")
-   (:var mv7949 :isa literature) (:var mv7951 :isa match-endurant))
+   (:var mv7919 :isa literature) (:var mv7921 :isa match-endurant))
   ("What relations in the literature match STAT3 regulates IL15 ?"
-   (:var mv7958 :isa relation :has-determiner "WHAT"))))
+   (:var mv7928 :isa relation :has-determiner "WHAT"))))
