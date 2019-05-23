@@ -1767,6 +1767,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
                 ;;(eq (pos-array-index (pos-edge-starts-at (car edges-before))) 1)
                  ;; nothing preceding the aux
                 ;; so that we don't have "what are the genes mutated by ..."
+                (not (loop for e in  (edges-after (right-edge-for-referent))
+                             thereis '(vg+ed vp+ed verb+ed adjective)))
                 )))
         (or (can-fill-vp-subject? vp subj) ;; evidence for S rather than reduced relative
             (and (can-fill-vp-object? vp subj (left-edge-for-referent))
