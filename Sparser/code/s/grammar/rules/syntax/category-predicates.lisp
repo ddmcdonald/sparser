@@ -195,8 +195,9 @@
 
 
 ;;; control parameters for collecting data
-(defparameter *verb+ed-sents* nil)
-(defparameter *suppressed-verb+ed* nil)
+(defparameter *verb+ed-sents* (list :save))
+(defparameter *suppressed-verb+ed* (list :save))
+
 
 (defvar *vg-word-categories*
   '(CATEGORY::ADVERB 
