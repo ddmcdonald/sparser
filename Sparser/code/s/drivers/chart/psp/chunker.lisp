@@ -388,19 +388,17 @@
     (ng (if (sentential-adverb? edge)
             (loop for ee in (edges-before edge)
                   thereis (member (form-cat-name ee) '(det possessive)))
-            (and (ng-compatible? edge ev-list)      
-                 (or remaining-forms?
-                     (not (likely-verb+ed-clause edge ev-list))))))
+            (ng-compatible? edge ev-list)))
     (vg (and
          (compatible-with-vg? edge)
          (not (loop for ev in ev-list
-                 thereis
-                   (loop for e in (ev-top-edges ev)
-                      thereis
-                        (and
-                         (vg-head? e)
-                         (not (member (edge-cat-name e)
-                                      '(be have do modal)))))))))
+                    thereis
+                      (loop for e in (ev-top-edges ev)
+                            thereis
+                              (and
+                               (vg-head? e)
+                               (not (member (edge-cat-name e)
+                                            '(be have do modal)))))))))
     (adjg (adjg-compatible? edge))))
 
 
@@ -1046,7 +1044,8 @@ than a bare "to".  |#
                                       comparative-adjective superlative-adjective))))))
          (verb+ed
           ;;"RNA interference (RNAi) blocked MEK/ERK activation."
-          (not (preceding-adverb-preceded-by-ng edges))
+          ;;(and (not (preceding-adverb-preceded-by-ng edges))
+          (pastpart-is-likely-ng-internal? e)
           ;; too tight, but probably OK
           ;; blocks "interaction eventually influencing ecm - driven cell motility"
           )
@@ -1303,59 +1302,67 @@ than a bare "to".  |#
                               (not (eq (edge-cat-name left) 'that)))))))))
 
 
-(defun likely-verb+ed-clause (edge ev-list &aux (right (edge-just-to-right-of edge)))
+(defun pastpart-is-likely-ng-internal? (edge &optional (ev-list (chunk-ev-list *chunk*))
+                                        &aux (right (edge-just-to-right-of edge)))
   (declare (special *np-category-names* edge ev-list)
            (optimize (debug 3)))
   (when (and (eq 'adverb (form-cat-name edge))
              (edge-p right)
              (eq 'verb+ed (form-cat-name right)))
     (setq edge right))
-  (let* ((e-form (edge-form edge))
-         (edge-form-name (cat-name e-form)) ;; COMMA has no edge-form
-         (e-ref (edge-referent edge)))
-    (cond ((and (edge-form edge)
-                (not (eq (cat-name (edge-category edge)) 'have))
-                (eq edge-form-name 'verb+ed)
-                (not (and (individual-p e-ref) ;; e.g. COT-mediated
-                          (eq (cat-name (car (indiv-type e-ref))) 'hyphenated-pair)))
+  (cond ((or (hyphenated-verb+ed? edge) ;;  'COT-mediated' is not a main verb
+             (prev-edge-says-unlikely-clause? edge ev-list)
+             (not
+              ;; new code -- don't accept a past participle immediately following a noun 
+              ;; -- most likely to be a main verb or a reduced relative in this case
+              (or
+               (likely-separated-subject? (car ev-list) nil
+                                          (edge-referent edge))
+               (and ;; e.g. "EGF strongly activated EGFR"
+                (cadr ev-list)
+                (likely-separated-subject? (cadr ev-list) (car ev-list)
+                                           (edge-referent edge))))))
+         (maybe-save-verb+ed-sents edge)
+         t)
+        (t nil)))
 
-                (let* ((ev-edge (when (car ev-list)(car (ev-top-edges (car ev-list)))))
-                       (ev-edge-form (when ev-edge  (edge-form ev-edge)))
-                       (prev-edge (when ev-edge (edge-just-to-left-of ev-edge)))
-                       (prev-edge-form (when (edge-p prev-edge) (edge-form prev-edge)))
-                       (p-edge-form-name (cat-name prev-edge-form)))
-                  (declare (special ev-edge ev-edge-form prev-edge p-edge-form-name))
-                  ;;(lsp-break "bah")
-                  (cond ((null prev-edge-form) t)
-                        ((or (memq p-edge-form-name '(verb verb+ed))
-                             (and (preposition-edge? prev-edge)
-                                  (memq (cat-name ev-edge-form) *np-category-names*)))
-                         (maybe-save-suppressed-verb+ed prev-edge ev-edge e-form e-ref)
-                         nil)
-                        (t t)))
-                ;; new code -- don't accept a past participle immediately following a noun 
-                ;; -- most likely to be a main verb or a reduced relative in this case
-                (or
-                 (likely-separated-subject? (car ev-list) e-ref)
-                 (and ;; e.g. "EGF strongly activated EGFR"
-                  (cadr ev-list)
-                  (loop for e in (ev-top-edges (car ev-list))
-                        thereis (eq (form-cat-name e) 'adverb))
-                  (likely-separated-subject? (cadr ev-list) e-ref))))
-           (maybe-save-verb+ed-sents edge)
+(defun hyphenated-verb+ed? (edge)
+  (and (edge-form edge) ;; COMMA has no edge-form
+       (not (eq (edge-cat-name edge) 'have))
+       (eq (form-cat-name edge) 'verb+ed)
+       (and (individual-p (edge-referent edge)) ;; e.g. COT-mediated
+            (eq (cat-name (car (indiv-type (edge-referent edge)))) 'hyphenated-pair))))
+
+(defun prev-edge-says-unlikely-clause? (edge ev-list)
+  (let* ((ev-edge (car (ev-top-edges (car ev-list))))
+         (prev-edge (when ev-edge (edge-just-to-left-of ev-edge)))
+         (prev-edges (edges-before-chunk)))
+    (declare (special ev-edge prev-edge prev-edges))
+    ;;(lsp-break "bah")
+    (cond ((null prev-edge) nil)
+          ((or (memq (form-cat-name prev-edge) '(verb verb+ed))
+               (loop for pe in prev-edges
+                     thereis (preposition-edge? pe)))
+           (maybe-save-suppressed-verb+ed prev-edge
+                                          ev-edge (edge-form edge)
+                                          (edge-referent edge))
            t)
           (t nil))))
 
-(defun likely-separated-subject? (ev v)
+(defun likely-separated-subject? (ev intervening-ev v)
   (declare (special *np-category-names*))
-  (loop for e in (ev-top-edges ev)
-        thereis
-          (and (memq (form-cat-name e) *np-category-names*)
-               (or (is-basic-collection? (edge-referent e))
-                   (and (not (verb-premod? (edge-referent e) v))
-                        (find-subcat-var (edge-referent e) :subject v))))))
+  (and
+   (or (null intervening-ev) ;; no intervening edge
+       (loop for e in (ev-top-edges intervening-ev) ;; intervening adverb
+             thereis (eq (form-cat-name e) 'adverb)))
+   ;;then test for a valid subject
+   (loop for e in (ev-top-edges ev)
+         thereis
+           (and (memq (form-cat-name e) *np-category-names*)
+                (or (is-basic-collection? (edge-referent e))
+                    (and (not (verb-premod? (edge-referent e) v))
+                         (find-subcat-var (edge-referent e) :subject v)))))))
 
-(defparameter *suppressed-verb+ed* nil)
 
 (defun maybe-save-suppressed-verb+ed (prev-edge ev-edge e-form e-ref)
   (declare (special *suppressed-verb+ed*))
