@@ -279,11 +279,12 @@
         ;; Initial WH questions
         (wh-initial? ;; use assimilate-subject (subj vp) to refine the variable
          (cond
-           ((= 2 (length edges)) ;; take the second as the statement
+           #+ignore((= 2 (length edges)) ;; take the second as the statement
             (wh-initial-two-edges wh-initial? edges start-pos end-pos))
            
            ((and (and (= 3 (length edges))
                       (edge-p (second edges))))
+            ;; major dispatch point depending on what it finds
             (wh-initial-three-edges wh-initial? edges start-pos end-pos))
 
            ((and (= 4 (length edges))

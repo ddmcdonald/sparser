@@ -100,6 +100,13 @@
           (reverse (cons new-other-edge (cdr (reverse constituents)))))
     wh-edge))
 
+(defun wh-is-declarative-heuristics (next-edge)
+  "Called by delimit-and-label-initial-wh-term w/in its accumulation loop.
+   Strictly speaking we should probably scan ahead to see if there's an
+   aux before we get to a main verb, or something else that would
+   signal that we're not in a question."
+  (is-pronoun? next-edge)) 
+
 
 ;;;-----------------------------------
 ;;; subroutines for forming questions
@@ -215,10 +222,8 @@
          (when value
            (cond
              ((itypep value 'wh-pronoun) t)
-             ((itypep value 'demonstrative) ;; "these"
-              nil)
-             ((car (memq value `(,category::what
-                                 )))
+             ((itypep value 'demonstrative) nil) ;; "these"
+             ((car (memq value `(,category::what)))
               t)
              (t
               (push-debug `(,value ,i))

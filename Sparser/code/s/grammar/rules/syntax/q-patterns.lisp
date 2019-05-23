@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
-;;; copyright (c) 2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2018-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "q-patterns"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2018
+;;;  Version:  May 2019
 
 ;; Broken out from questions.lisp 8/7/18 to have all the formulation
 ;; heuristics in one place irrespective of what invokes them.
@@ -299,6 +299,7 @@
 
 (defun wh-initial-two-edges (wh-initial? edges start-pos end-pos)
   "One edge after the WH edge. Take it to be the statement."
+  ;; called from DA wh-vp-edge
   (tr :wh-walk "wh-initial-two-edges")
   (let* ((wh (edge-referent wh-initial?))
          (complement (edge-referent (second edges)))
@@ -318,10 +319,12 @@
 
 (defun wh-initial-three-edges (wh-edge edges start-pos end-pos)
   "Dispatch over DA patterns where there are two edges after the WH edge."
+  ;; called from wh-three-edges DA rule and the 3 edge count in
+  ;; make-this-a-question-if-appropriate
   (tr :wh-walk "wh-initial-three-edges")
   (tr :wh-3-edges edges)
   (when (not (every #'edge-p edges))
-    (if *show-wh-problems*
+    (if *debug-questions*
       (lsp-break "something in 'edges' isn't an edge")
       (when *warn-when-can-not-formulate-question*
          (warn "something in 'edges' isn't an edge: ~a" edges)))
@@ -338,7 +341,7 @@
        ;; what the corresponding declarative form would be.
        ;; It could be any of the heads along the right spine of VP
        ;; so it may well have been buried -- classic DA
-       (if *show-wh-problems*
+       (if *debug-questions*
          (lsp-break "Figure out whether ~a needs reformulation" (second edges))
          (when *warn-when-can-not-formulate-question*
            (warn "Standed preposition wh question case needs more work"))))
@@ -382,13 +385,14 @@
        (revert-preposed-aux))
       
       (t
-       (if *show-wh-problems*
+       (if *debug-questions*
          (lsp-break "Could not resolve 3 edges into a WH question: ~a" edges)
          (when *warn-when-can-not-formulate-question*
            (warn "Could not resolve 3 edges into a WH question: ~a" edges)))))))
 
 
 (defun wh-initial-four-edges (wh-edge edges start-pos end-pos)
+  ;; called by wh-four-edges DA rule
   (tr :wh-walk "wh-initial-four-edges")
   (let ((wh-type (edge-category wh-edge)))
     (if (memq (cat-name wh-type) '(how why where when))
@@ -431,8 +435,10 @@
            (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
            (break "New pattern for WH 4 edges/adjunct"))))))
 
+
 (defun wh-initial-four-edges/vp+ed (wh-edge vg-edge np-edge vp+ed-edge
                                     start-pos end-pos)
+  ;; from wh-four-edges/vp in DA
   (tr :wh-walk "wh-initial-four-edges/vp+ed")
   (unless (edge-over-aux? vg-edge)
     (when *debug-questions*
@@ -460,6 +466,7 @@
            (break "New case for the vp+ed"))))))
            
 (defun fold-in-initial-wh-adjunct (wh-edge edge-over-s start-pos end-pos)
+  ;; continuation of wh-initial-four-edges/adjunct
   (tr :wh-walk "fold-in-initial-wh-adjunct")
   (let* ((stmt (edge-referent edge-over-s))
          (wh (edge-referent wh-edge))
@@ -476,6 +483,8 @@
 ;; (p/s "What tissues is STAT3 expressed in?") <== doesn't tuck
 ;; 
 (defun wh-initial-four-edges/be (wh-edge edges start-pos end-pos)
+  ;; called from make-this-a-question-if-appropriate with 2d edge
+  ;; known to be 'be' or 'modal'
   (tr :wh-walk "wh-initial-four-edges/be")
   (let ((e2-form (form-cat-name (second edges)))
         (e3-form (form-cat-name (third edges)))
@@ -503,7 +512,8 @@
 (defun wh-stranded-prep (wh-edge main-edge prep-edge start-pos end-pos)
   "Intended for use with every case of short questions
    that end in a preposition. (Presumably not functioning as a particle
-   though we don't check that these days - 8/18.)"
+   though we don't check that these days - 8/2018.)"
+  ;; called from four-edges/be just above and from s+prep DA rule
   ;; We want to compose the moved 'item' with the preposition
   ;; whose complement it would have been in the declarative form
   ;; of the question. We can't use the obvious means of composing
@@ -594,6 +604,7 @@
    folded in to the statement (third edge) for its tense or
    aspect contribution. Not bothering to explicitly hook
    the aux edge into the tree."
+  ;; continuation from wh-initial-three-edges
   (tr :wh-walk "wh-initial-followed-by-modal")
   (let ((wh (edge-referent wh-edge))
         (aux (edge-referent (second edges)))
@@ -616,6 +627,7 @@
 (defun wh-with-reduced-relative (wh-edge edges start-pos end-pos)
   "The second edge is a reduced relative, so the wh-edge had better have
    something to attach it to."
+  ;; continuation from wh-initial-three-edges
   (tr :wh-walk "wh-with-reduced-relative")
   (let* ((wh-object (edge-referent wh-edge))
          (head-np (value-of 'other wh-object))
@@ -634,14 +646,7 @@
 ;;; from other entry points
 ;;;-------------------------
 
-(defun wh-is-declarative-heuristics (next-edge)
-  "Called by delimit-and-label-initial-wh-term w/in its accumulation loop.
-   Strictly speaking we should probably scan ahead to see if there's an
-   aux before we get to a main verb, or something else that would
-   signal that we're not in a question."
-  (is-pronoun? next-edge)) 
-
-
+;;--- no callers 5/23/19
 ;; (p/s "What color is the block?")
 (defun apply-question-marker (wh-edge vg-edge np-edge)
   "Called by DA rule, wh-be-thing, since parsing is going to be stymied by
@@ -679,7 +684,7 @@
               (lsp-break "Don't know how to formulate a wh question whose vg is ~a" vg)
               (warn "Don't know how to formulate a wh question whose vg is ~a" vg))))))
 
-
+;;--- no callers 5/23/19
 ;; "What genes does lung cancer target?"
 (defun apply-question-displaced-vg (wh-edge vg1-edge np-edge vg2-edge)
   "Goes with DA pattern [question-marker vg np vg] which is one consituent
@@ -706,6 +711,8 @@
        (break "The 1st vg is of type ~a" (itype-of (edge-referent vg1-edge)))))))
 
 
+
+;;------- compose methods on WH-question
 
 ;; This is the second time around after we're assembled
 ;; the pieces of the question. We can now set it up.
