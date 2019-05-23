@@ -61,11 +61,22 @@
   :pattern ( pp  s )
   :action (:function attach-leading-pp-no-comma-to-clause first second))
 
+#| This rule exposes a bug in threading a new pattern into the
+   trie whether you evaluate it incrementally or as part of
+   a complete reload.
+     Entry point is thread-pattern-into-existing-trie, which looks
+   for the point where the trie diverges, then the make-arc routine
+   gets fed a nil. FWIW, the rule that the extend routine had in
+   its hand at that  point was s-with-np-conj-pp
+(define-debris-analysis-rule attach-trailing-pp-to-clause
+  :pattern ( s pp )
+  :action (:function attach-leading-pp-no-comma-to-clause second first))  |#
+
 (defun attach-leading-pp-no-comma-to-clause (pp clause)
   (attach-leading-pp-to-clause pp nil clause))
 
 (defun attach-leading-pp-to-clause (pp comma clause)
-  (declare (ignore comma))
+  (declare (ignore comma) (special *debug-questions*))
   (let* ((clause-referent (edge-referent clause))
 	 (pobj-edge (edge-right-daughter pp))
 	 (pobj-referent
@@ -114,18 +125,28 @@
                 (or (subcategorized-variable clause-referent
                                              prep-word pobj-referent)
                     (failed-pp-attachment pp clause-referent))) )
-           (when var-name
-             (setq *edge-spec*
-                   (make-edge-spec
-                    :category (edge-category clause)
-                    :form (edge-form clause)
-                    :referent (bind-dli-variable var-name
-                                                 pobj-referent clause-referent)
-                    :target clause
-                    :direction :left
-                    :preposed pp))
-             (tr :comma-3tt-pattern *edge-spec*)))))
-      ;;(lsp-break "attach-leading-pp-to-clause 2")
+           (if var-name
+             (then
+               (setq *edge-spec*
+                     (make-edge-spec
+                      :category (edge-category clause)
+                      :form (edge-form clause)
+                      :referent (bind-dli-variable var-name
+                                                   pobj-referent clause-referent)
+                      :target clause
+                      :direction :left
+                      :preposed pp))
+               (tr :comma-3tt-pattern *edge-spec*))
+             (else
+               ;; If the span of the two constitents is the entire
+               ;; sentence, then this pp should be interpreted as applying
+               ;; to the entire S rather than be subcategorized as its
+               ;; head. /// but we need a representation for that
+               ;; so until we get one we'll just fail.
+               (when *debug-questions*
+                 (format t "~&~%PP + S -- likely sentential adjunct~%~%"))
+               nil)))))
+
       *edge-spec*)))
 
 (defun failed-pp-attachment (pp clause-referent)
