@@ -193,6 +193,12 @@
     (cat-name (edge-category edge))))
 
 (defun form-cat-name (edge)
+  ;; change to a more memorable name
+  (edge-form-name edge))
+
+
+
+(defun edge-form-name (edge)
   "Return the form label of the edge as a symbol in :sparser"
   (declare (optimize (speed 3)(safety 0)))
   (when (edge-p edge)
