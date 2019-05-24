@@ -189,7 +189,7 @@
        ;; No edges.
        ;; The word is capitalized, so the question is whether it's a
        ;; function word (and then maybe we also check whether we're
-       ;; function beginning of the sentence).  If it is, we return
+       ;; at beginning of the sentence).  If it is, we return
        ;; function to the fsa driver that we're rejecting this one
        ;; as a name and the regular processing should get a crack at it.
        (tr :pnf/no-edges-over-word word)
