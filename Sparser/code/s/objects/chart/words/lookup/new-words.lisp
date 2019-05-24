@@ -77,6 +77,8 @@
            (setq morph-keyword (affix-checker (word-pname word))))
          (setf (word-morphology word) morph-keyword)
 
+         (tr :make-word/entry-and-properties morph-keyword entry)
+
          (if *introduce-brackets-for-unknown-words-from-their-suffixes*
            (cond
             ((and *big-mechanism*
@@ -99,7 +101,7 @@
             (*big-mechanism*
              (store-word-and-handle-it-later word))
             (t
-             (setup-unknown-word-by-default word)))
+             (setup-unknown-word-by-default word))) ;; noun
 
            (else
              (if entry
@@ -115,15 +117,10 @@
        (setup-unknown-word-by-default word))
       (:hiragana
        ;; Get here when there are two (or more) hiragana characteris in a row.
-       ;; This call makes a noun
-       ;; and also gives them a category. But it's better than falling
-       ;; through the ecase and we can do something more tailored later.
+       ;; This call makes a noun and also gives them a category.
        (setup-unknown-word-by-default word))
       (:katakana
        ;; Get here when there are two (or more) katakana characteris in a row.
-       ;; This call makes a noun
-       ;; and also gives them a category. But it's better than falling
-       ;; through the ecase and we can do something more tailored later.
        (setup-unknown-word-by-default word)))
       
     word ))
@@ -138,23 +135,26 @@
    word is capitalized we don't do the Comlex lookup because many name
    elements correspond to ordinary words and that just confuses things."
   (declare (special *capitalization-of-current-token* 
-                    *primed-words*))
+                    *primed-words* *show-word-defs*))
   
   (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
          (word (or existing-word ;; see find-word
                    (make-word :symbol symbol
                               :pname  (symbol-name symbol)))))
+    (when *show-word-defs*
+      (format t "~&*** defining new word ~s~&" word))
+
     (catalog/word word symbol)
 
     (ecase character-type
       (:number
        (establish-properties-of-new-digit-sequence word))
       (:alphabetical
-       (let ((entry (gethash (symbol-name symbol) *primed-words*)))         
-         (if (and entry
-                  (eq *capitalization-of-current-token*
-                      :lower-case))
-           (unpack-primed-word word symbol entry)
+       (let ((entry (gethash (symbol-name symbol) *primed-words*)))
+         (if entry ;; used to only do it for :lower-case instances
+           (then
+             (tr :make-word/entry entry)
+             (unpack-primed-word word symbol entry))
            (make-word/all-properties character-type word)))))
     word))
 ;(what-to-do-with-unknown-words :check-for-primed)
@@ -164,13 +164,15 @@
   "Called from Find-word as one of the  possible values for the function
    Establish-unknown-word, or from look-for-primed-word-else-all-properties
    if the word didn't have a Comlex entry."
-  (declare (special *capitalization-of-current-token*
+  (declare (special *capitalization-of-current-token* *show-word-defs*
                     *introduce-brackets-for-unknown-words-from-their-suffixes*))
-
-  (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
+  (let* ((symbol (make-word-symbol))
          (word (or existing-word
                    (make-word :symbol symbol
                               :pname (symbol-name symbol)))))
+    (unless existing-word
+      (when *show-word-defs*
+        (format t "~&*** defining new word ~s~&" word)))
 
     (catalog/word word symbol)
 
@@ -179,11 +181,15 @@
       (:alphabetical
        (setf (word-capitalization word)
              *capitalization-of-current-token*)
-       (let ((morph-keyword (calculate-morphology-of-word/in-buffer)))
-         (unless morph-keyword
-           ;; Do a more precise check of POS-indicating affixes
+       (let ((morph-keyword (or (when existing-word
+                                  (word-morphology existing-word))
+                                (calculate-morphology-of-word/in-buffer))))
+         (unless morph-keyword ;;  more precise check of POS-indicating affixes
            (setq morph-keyword (affix-checker (word-pname word))))
          (setf (word-morphology word) morph-keyword)
+
+         (tr ::make-word/properties morph-keyword)
+
          (when *introduce-brackets-for-unknown-words-from-their-suffixes*
            (when morph-keyword
              (assign-morph-brackets-to-unknown-word

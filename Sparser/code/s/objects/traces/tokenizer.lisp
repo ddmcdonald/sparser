@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1990  Content Technologies Inc.
-;;; copyright (c) 1992,2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2014-2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "tokenizer"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  September 2016
+;;;  Version:  May 2019
 
 ;; Initiated 11/90 (v1.5)
 ;; 11/12/14 Adding traces for giving unknown words light content because of
@@ -31,7 +31,21 @@
 (defun trace-delay-unknown-judgment ()
   (setq *trace-delay-unknown-judgment* t))
 (defun untrace-delay-unknown-judgment ()
-   (setq *trace-delay-unknown-judgment* nil))
+  (setq *trace-delay-unknown-judgment* nil))
+
+(defun trace-unknown-words ()
+  (setq *show-word-defs* t))
+(defun untrace-unknown-words ()
+  (setq *show-word-defs* nil))
+
+(defun trace-unknowns ()
+  (trace-morphology)
+  (trace-find-word)
+  (trace-unknown-words))
+(defun untrace-unknowns ()
+  (untrace-morphology)
+  (untrace-find-word)
+  (untrace-unknown-words))
 
 (deftrace :fw-no-rule-set (word)
   ;; in find-word
@@ -133,6 +147,25 @@
   ;; called from deal-with-unhandled-unknown-words-at
   (when *trace-delay-unknown-judgment*
     (trace-msg "[unknown]   Some edge covers it.")))
+
+
+(deftrace :make-word/entry-and-properties (morph-keyword entry)
+  ;; called from make-word/all-properties/or-primed
+  (when *show-word-defs*
+    (trace-msg "[unknown] morph-keyword: ~a~
+              ~%   Comlex-entry: ~a"
+               morph-keyword entry)))
+
+(deftrace :make-word/entry (entry)
+  ;; called from look-for-primed-word-else-all-properties
+  (when *show-word-defs*
+    (trace-msg "[unknown] Comlex-entry: ~a" entry)))
+
+(deftrace :make-word/properties (morph-keyword)
+  ;; called from make-word/all-properties
+  (when *show-word-defs*
+    (trace-msg "[unknown] morph-keyword: ~a" morph-keyword)))
+
 
 (deftrace :unknown-word-to-bio-entity (word)
   ;; called from handle-unknown-word-as-bio-entity

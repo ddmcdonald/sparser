@@ -54,7 +54,7 @@
 (defparameter *show-verbification* nil "Accounce them")
 (defparameter *verbified-nouns* nil "Accumulates a list of them")
 
-;; (trace-morpphology)
+;; (trace-morphology)
 
 (defun assign-morph-brackets-to-unknown-word (word morph-keyword)
   "Called from make-word/all-properties, which is itself called
