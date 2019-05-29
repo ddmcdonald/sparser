@@ -107,7 +107,6 @@
    signal that we're not in a question."
   (is-pronoun? next-edge)) 
 
-
 ;;;-----------------------------------
 ;;; subroutines for forming questions
 ;;;-----------------------------------
@@ -120,21 +119,25 @@
     (tr :wh-fold-form stmt stmt-form)
     (case stmt-form
       (transitive-clause-without-object
-       (let ((obj-var (object-variable stmt)))
-         (bind-variable obj-var wh stmt)))
+       (let ((obj-var (find-subcat-var wh :object stmt)))
+         (when obj-var
+           (bind-variable obj-var wh stmt))))
       (vp+passive
        ;; these (always?) have a by-phrase, so their agent is bound.
-       (let ((obj-var (object-variable stmt)))
-         (bind-variable obj-var wh stmt)))
+       (let ((obj-var (find-subcat-var wh :object stmt)))
+         (when obj-var
+           (bind-variable obj-var wh stmt))))
       (vp
        ;; "Which genes are involved in apoptosis?"
-       (let ((subj-var (subject-variable stmt)))
-         (bind-variable subj-var wh stmt)))
+       (let ((subj-var (find-subcat-var wh :subject stmt)))
+         (when subj-var
+           (bind-variable subj-var wh stmt))))
       ((np
         proper-noun)
        ;; "Which of these are kinases"
        ;; Statement isn't a predicate so we have to make it here
        (make-copular-predication wh-edge aux-edge stmt-edge))
+
 
       (s ;; "How does KRAS activate MAPK3?"
        (let ((wh-pronoun? (itypep wh 'wh-pronoun))

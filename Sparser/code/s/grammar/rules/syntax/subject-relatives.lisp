@@ -339,8 +339,9 @@
    (*subcat-test* 
     (subcategorized-variable vp-ref :object np-ref)) ;; this rule has no semantic restrictions as of now
    (t
-    (let ((object-var (object-variable vp-ref)))
-      (setq np-ref (individual-for-ref np-ref))
+    (setq np-ref (individual-for-ref np-ref))
+    (let ((object-var (find-subcat-var np-ref :object vp-ref)))
+
       (if object-var
           ;; copy down the upstairs subject
           ;; Should we check if it was already bound to something?

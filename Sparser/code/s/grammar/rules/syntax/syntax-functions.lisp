@@ -1621,7 +1621,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                   (when 
                       (and (object-variables vg-edge)
                            (loop for v in (object-variables vg-edge)
-                                 never (value-of (object-variable vg-edge) vp)))
+                                 never (value-of v vp)))
                     (assimilate-subcat vp :object subj))
                   (when (missing-subject-vars (edge-referent vg-edge))
                     (assimilate-subcat vp :subject subj))))))

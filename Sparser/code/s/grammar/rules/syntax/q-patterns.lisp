@@ -454,7 +454,7 @@
               ;; open in object since there's a by-phrase
               (unless (missing-object-vars vp-ref)
                 (error "Why isn't passive open in its object?"))
-              (let ((j (bind-variable (object-variable vp-ref)
+              (let ((j (bind-variable (find-subcat-var  i :object vp-ref)
                                       i vp-ref)))
                 (make-edge-over-wh-question
                  'wh-initial-four-edges/vp+ed

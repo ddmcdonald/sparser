@@ -282,10 +282,11 @@
            #+ignore((= 2 (length edges)) ;; take the second as the statement
             (wh-initial-two-edges wh-initial? edges start-pos end-pos))
            
-           ((and (and (= 3 (length edges))
-                      (edge-p (second edges))))
+           ((and (= 3 (length edges))
+                 (edge-p (second edges)))
+            (unless (edge-used-in wh-initial?)
             ;; major dispatch point depending on what it finds
-            (wh-initial-three-edges wh-initial? edges start-pos end-pos))
+              (wh-initial-three-edges wh-initial? edges start-pos end-pos)))
 
            ((and (= 4 (length edges))
                  (itypep (edge-referent (second edges)) 'do))
