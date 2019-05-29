@@ -1170,6 +1170,16 @@
 
 (defun variable-from-pats (item head label pats subcat-patterns)
   (declare (special category::number))
+  (when (and (not (itypep item 'pronoun))
+             (loop for pat in pats
+                   thereis
+                     (not (consp (subcat-restriction pat)))))
+      (setq pats
+            (loop for pat in pats
+                  when
+                    (not (consp (subcat-restriction pat)))
+                    collect pat)))
+      
   (let ( variable )
     (cond
       ((cdr pats)
