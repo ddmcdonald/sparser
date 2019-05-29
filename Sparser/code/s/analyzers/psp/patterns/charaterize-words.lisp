@@ -250,7 +250,7 @@
                         (pos-edge-starts-at tt)
                         (pos-edge-ends-at tt)))
                   (pos-terminal (pos-edge-starts-at tt))
-                  (resolve
+                  (resolve/make ;; "Wise Men's"
                    (trim-whitespace
                     (extract-characters-between-positions
                      (pos-edge-starts-at tt)
