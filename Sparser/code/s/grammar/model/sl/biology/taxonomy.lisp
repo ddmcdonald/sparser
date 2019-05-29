@@ -149,7 +149,6 @@
                         bio-mechanism ;; for pathways -- they are context, not manner
                         experiment-data))
           (disease disease)
-          (info-context (:or model database))
           (cell-line cell-line)
           (cell-type cell-type)
           (organ bio-organ)

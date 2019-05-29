@@ -22,7 +22,9 @@
   :specializes process-control-process
   ;; increase in rate vs increase in RAS activity
   :binds ((multiplier (:or #|n-fold|# measurement
-                       unit-of-measure)))
+                                      unit-of-measure))
+          (info-context (:or model database))
+          )
   :mixins (protein-verb-premod)
   :realization
   (:verb ("control" :present-participle "controlling"
