@@ -73,10 +73,29 @@ dm #79 "a more precise answer" --> see answer/info in mid-level/things.lisp
  promise --status of raised 'object' and complement
  persuade   requires consulting the verb 
 
- go  come    
+ go  
  going to X / gonna
 
-
+come
+ come here/home/(with me) to the Casbah/to bed
+ came from Philly
+ coming for grass under the bed/breakfast
+ Comlex-entry: (comlex come (adjective)
+                         (noun (features ((countable))))
+                         (verb
+                          (tensed/singular comes infinitive come past-tense
+                           came)
+                          (features ((vmotion)) subc
+                           ((advp) (pp-pred-rs pval (to)) (adjp-pred)
+                            (p-ing-sc pval (into)) (pp-pp pval (from to))
+                            (to-inf-sc)
+                            (pp pval
+                                (after off out of to under from into of with))
+                            (part-pp adval (down in around back over up on)
+                             pval (for from on to with))
+                            (part adval
+                             (along in about around back over out to up))
+                            (intrans)))))
 |#
   
 
