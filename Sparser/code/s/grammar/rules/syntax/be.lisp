@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1994,2013-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2013-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "be"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  October 2017
+;;;  Version:  May 2019
 
 ;; redesigned from scratch 5/12/93 v2.3, completed category's realization
 ;; data 5/27. Added "there's" -> "there is", and negative contractions 1/11/94
@@ -47,8 +47,8 @@
   :binds ((subject top)
           (predicate top))
   :index (:temporary :list)
-  :realization (:verb "be" ;; see [note]
-                :etf svo
+  :realization (:verb ("be" :ed-form "was" :s-form "is" :ing-form "being")
+                :etf svo ;; see [note]
                 :s subject
                 :o predicate
                 :mumble ("be" SVBeComp :s subject :c predicate))   
