@@ -1310,18 +1310,20 @@ than a bare "to".  |#
              (edge-p right)
              (eq 'verb+ed (form-cat-name right)))
     (setq edge right))
-  (cond ((or (hyphenated-verb+ed? edge) ;;  'COT-mediated' is not a main verb
-             (prev-edge-says-unlikely-clause? edge ev-list)
-             (not
-              ;; new code -- don't accept a past participle immediately following a noun 
-              ;; -- most likely to be a main verb or a reduced relative in this case
-              (or
-               (likely-separated-subject? (car ev-list) nil
-                                          (edge-referent edge))
-               (and ;; e.g. "EGF strongly activated EGFR"
-                (cadr ev-list)
-                (likely-separated-subject? (cadr ev-list) (car ev-list)
-                                           (edge-referent edge))))))
+  (cond ((and (not (memq (form-cat-name (edge-just-to-left-of edge))
+                         '(common-noun/plural)))
+              (or (hyphenated-verb+ed? edge) ;;  'COT-mediated' is not a main verb
+                  (prev-edge-says-unlikely-clause? edge ev-list)
+                  (not
+                   ;; new code -- don't accept a past participle immediately following a noun 
+                   ;; -- most likely to be a main verb or a reduced relative in this case
+                   (or
+                    (likely-separated-subject? (car ev-list) nil
+                                               (edge-referent edge))
+                    (and ;; e.g. "EGF strongly activated EGFR"
+                     (cadr ev-list)
+                     (likely-separated-subject? (cadr ev-list) (car ev-list)
+                                                (edge-referent edge)))))))
          (maybe-save-verb+ed-sents edge)
          t)
         (t nil)))
