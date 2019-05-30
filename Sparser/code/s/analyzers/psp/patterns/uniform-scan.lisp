@@ -242,7 +242,7 @@
       ((member :colon pattern)
        (tr :ns-looking-at-colon-patterns)
        (or (resolve-colon-pattern pattern start-pos end-pos)
-           (reify-ns-name-and-make-edge start-pos end-pos)))
+             (reify-ns-name-and-make-edge start-pos end-pos)))
      
       ((member :hyphen pattern)
        (tr :ns-looking-at-hyphen-patterns)

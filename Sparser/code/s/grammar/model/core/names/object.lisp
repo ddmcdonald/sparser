@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:names:"
-;;;  version:  February 2019
+;;;  version:  May 2019
 
 ;; initiated 5/28/93 v2.3. Broke name word routines out to their own file 4/20/95. 
 ;; 0.1 (5/2) added an explicit name-creator to hack "and".   5/12 remodularized
@@ -374,38 +374,54 @@ with sequences we'd prefer that PNF handled directly.
    mechanism mode which has a comparable call).
    For any name we need a sequence of name-words. Spelled names will always
    have no spaces between the words so we use the polyword machinery to
-   get words with the correct capitalization "
+   get words with the correct capitalization. 
+   There are some pathological cases that the no-space machinery
+   gets (e.g. 'Wise Men's/King') where a smarter ns handler would have
+   rejected the sequence deliberated, but instead we end up here. This
+   example involves treetop edge over 'Wise Men's' that was created by
+   PNF and yields a polyword. This function operates at the word level
+   so it misses the polyword (or any other sort of mulit-word edge).
+   We look for evidence that a polyword is involved."
   (let* ((words (words-between pos-before pos-after))
-         (string (extract-characters-between-positions pos-before pos-after))
-         (pnames (actual-strings-for-list-of-words words string))
-         (name-words (loop for p in pnames
-                        collect (define-name-word/actual p))))
-    (push-debug `(,words ,string ,name-words))
+         (string (extract-characters-between-positions pos-before pos-after)))
 
-    (let ((sequence (define-sequence name-words))
-          (name (make-unindexed-individual category::spelled-name)))
-      (setq name (bind-variable :name/s sequence name category::spelled-name))
+    (when (position #\space string) ;; hit a polyword
+      ;; The catch is in collect-no-space-segment-into-word
+      (throw :punt-on-nospace-without-resolution nil))
 
-      ;; This part is taken from make/uncategorized-name
-      ;; Return value designed to feed edge creation in 
-      ;; reify-ns-name-and-make-edge
-      (let* ((polyword (resolve/make string))
-             (concatenated-name
-              (intern string *category-package*))
-             (category (find-or-make-category-object
-                        concatenated-name :referential))
-             (rule (define-cfr category `(,polyword)
-                     :form category::proper-name
-                     :referent name
-                     ;; If we include a :source we can assign it
-                     ;; to a particular grammar module, but default
-                     ;; is ok.
-                     :schema (get-schematic-word-rule :proper-noun))))
-        (values category rule name)))))
+    (let* ((pnames (actual-strings-for-list-of-words words string))
+           (name-words (loop for p in pnames
+                          collect (define-name-word/actual p))))
+      (push-debug `(,words ,string ,pnames ,name-words))
+
+      (let ((sequence (define-sequence name-words))
+            (name (make-unindexed-individual category::spelled-name)))
+        (setq name (bind-variable :name/s sequence name category::spelled-name))
+
+        ;; This part is taken from make/uncategorized-name
+        ;; Return value designed to feed edge creation in 
+        ;; reify-ns-name-and-make-edge
+        (let* ((polyword (resolve/make string))
+               (concatenated-name
+                (intern string *category-package*))
+               (category (find-or-make-category-object
+                          concatenated-name :referential))
+               (rule (define-cfr category `(,polyword)
+                       :form category::proper-name
+                       :referent name
+                       ;; If we include a :source we can assign it
+                       ;; to a particular grammar module, but default
+                       ;; is ok.
+                       :schema (get-schematic-word-rule :proper-noun))))
+          (values category rule name))))))
 
 
 (defun actual-strings-for-list-of-words (words string)
   "Return a list of substring of the string, one for each word"
+  ;; This assumes simple words with no odd characters.
+  ;; If words = (#<word "wise"> #<word "men"> #<word SINGLE-QUOTE> #<word "s"> #<word FORWARD-SLASH> #<word "kings">)
+  ;; on the string "Wise Men's/Kings "
+  ;; the result is ("Wise" " Me" "n" "'" "s" "/King")
   (let ((start 0)
         (pnames nil))
     (dolist (word words)
