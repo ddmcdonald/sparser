@@ -20,7 +20,7 @@
 
 (define-category endurant 
   :specializes top
-  :binds ((number)
+  :binds ((number) ;; could also be amount -- handle count vs mass distinction better
           (quantifier))
   :documentation
   "Endurants (aka objects, things) have an identity that doesn't depend

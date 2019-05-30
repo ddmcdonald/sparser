@@ -44,7 +44,7 @@
 ;;; defining form
 ;;;---------------
 
-(defun define-wh-pronoun (string &key ((:variable var-name)) on)
+(defun define-wh-pronoun (string &key ((:variable var-name)) on form)
   (let* ((word (define-function-word string
                  :brackets `( ].phrase .[np  np].  phrase.[ )
                  :form category::wh-pronoun))
@@ -63,7 +63,7 @@
            (category (eval expr))
            (word-rule 
             (define-cfr category `(,word)
-              :form category::wh-pronoun
+              :form (or form category::wh-pronoun)
               :schema (get-schematic-word-rule :word) ;;/// make schema for wh ??
               :referent category)))
       (add-rule word-rule category)
@@ -93,6 +93,8 @@
 ;; 'purpose' is more like an attribute
 
 (define-wh-pronoun "how" :variable 'manner :on 'perdurant)
+(define-wh-pronoun "how many" :variable 'number :on 'endurant :form category::quantifier)
+(define-wh-pronoun "how much" :variable 'number :on 'endurant :form category::quantifier) ;; should be amount?
 ;; not really manner, more 'method'
 
 (define-wh-pronoun "whose") ;; possession
