@@ -80,6 +80,21 @@ subcategorization-pattern is a daughter of linguistic, abstract
      :o theme
      :mumble (svo :s agent :o theme)))
 
+(define-mixin-category directed-action ;; give, sell, tell, send
+  :specializes subcategorization-pattern
+  :instantiates nil
+  :mixins (agent beneficiary theme)
+  :restrict ((agent physical-agent)
+             (beneficiary endurant)
+             (theme endurant))
+  :realization
+    (:s agent
+     :i beneficiary
+     :to beneficiary
+     :o theme
+     :mumble (s-v-io-do :s agent :do theme :io beneficiary)))
+
+
 (define-mixin-category attributing-verb
   :specializes subcategorization-pattern
   :instantiates nil
@@ -128,20 +143,24 @@ subcategorization-pattern is a daughter of linguistic, abstract
     (:s agent
      :to-comp theme))
 
-
-(define-mixin-category directed-action ;; give, sell, tell, send
+(define-mixin-category raising-to-object
+  ;;"allows X to ...", "consider X to ...", "enable X to ...", "know X to ...", "lead X to ...", "use X to ..."
   :specializes subcategorization-pattern
-  :instantiates nil
-  :mixins (agent beneficiary theme)
-  :restrict ((agent physical-agent)
-             (beneficiary endurant)
-             (theme endurant))
+  :mixins (agent)
+  :binds ((theme perdurant))
   :realization
     (:s agent
-     :i beneficiary
-     :to beneficiary
-     :o theme
-     :mumble (s-v-io-do :s agent :do theme :io beneficiary)))
+     :o patient
+     :to-comp theme))
+
+(define-mixin-category raising-to-subject
+  ;; "X seems to ..."
+  :specializes subcategorization-pattern
+  :mixins (agent theme)
+  :restrict ((theme perdurant))
+  :realization
+    (:s agent
+     :to-comp theme))
 
 
 (define-mixin-category move-something-verb
@@ -202,24 +221,6 @@ subcategorization-pattern is a daughter of linguistic, abstract
      :mumble (svscomp :s experiencer :c theme))) ;; I know that roses are red
 
 
-(define-mixin-category raising-to-object
-  ;;"allows X to ...", "consider X to ...", "enable X to ...", "know X to ...", "lead X to ...", "use X to ..."
-  :specializes subcategorization-pattern
-  :mixins (agent)
-  :binds ((theme perdurant))
-  :realization
-    (:s agent
-     :o patient
-     :to-comp theme))
-
-(define-mixin-category raising-to-subject
-  ;; "X seems to ..."
-  :specializes subcategorization-pattern
-  :mixins (agent theme)
-  :restrict ((theme perdurant))
-  :realization
-    (:s agent
-     :to-comp theme))
 
 (define-mixin-category nominal-attribute
   :specializes subcategorization-pattern
@@ -228,22 +229,6 @@ subcategorization-pattern is a daughter of linguistic, abstract
     which is being attributed of the theme"
   :realization (:of theme)) ;; and possessive
 
-
-;; Was in blocks/subcat-patterns.lisp
-;;
-(define-mixin-category with-specified-location
-  :specializes subcategorization-pattern
-  :binds ((supported-by physical)
-          (next-to physical)
-          (at-relative-location (:or location physical)) ;;relative-position)
-          (goal (:or location physical)))
-  :realization (;; :next\ to next-to ;;moved to regular prep's
-                :on supported-by
-                ;; :on\ top\ of supported-by
-                :at at-relative-location ;; at the end
-                :on at-relative-location ;; on the left
-                :into at-relative-location
-                :to goal))
 
 (define-mixin-category ask/tell
   :specializes subcategorization-pattern
@@ -265,3 +250,21 @@ subcategorization-pattern is a daughter of linguistic, abstract
                 :mumble ((svscomp :s agent :c theme)
                          (svo :s agent :o beneficiary)
                          (svoscomp :s agent  :o beneficiary :c theme))))
+
+
+;; Was in blocks/subcat-patterns.lisp
+;;
+(define-mixin-category with-specified-location
+  :specializes subcategorization-pattern
+  :binds ((supported-by physical)
+          (next-to physical)
+          (at-relative-location (:or location physical)) ;;relative-position)
+          (goal (:or location physical)))
+  :realization (;; :next\ to next-to ;;moved to regular prep's
+                :on supported-by
+                ;; :on\ top\ of supported-by
+                :at at-relative-location ;; at the end
+                :on at-relative-location ;; on the left
+                :into at-relative-location
+                :to goal)
+  )
