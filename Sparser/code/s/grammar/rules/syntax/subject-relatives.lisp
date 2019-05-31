@@ -261,15 +261,15 @@
 	     (eq (edge-form (right-edge-for-referent)) category::VP+ED))
     (return-from apply-pp-relative-clause nil))
   (setq np-ref (individual-for-ref np-ref))
-  ;;(lsp-break "foo")
-  (let ((var (subcategorized-variable pp-vp-ref :object np-ref)))
+  (let* ((prep (value-of 'relative-prep pp-vp-ref))
+         (var (find-subcat-var np-ref prep pp-vp-ref)))
     (cond
       (*subcat-test* var)
       (var
        ;; copy down the upstairs subject
        ;; Should we check if it was already bound to something?
        (setq pp-vp-ref (create-predication-and-edge-by-binding-and-insert-edge
-                     var np-ref pp-vp-ref))
+                        var np-ref pp-vp-ref))
        ;; link the rc to the np
        (setq np-ref (bind-dli-variable 'predication pp-vp-ref np-ref))
        ;; referent of the combination is the np

@@ -110,6 +110,9 @@
 (define-lambda-variable 'predication
     nil 'top) ;needed for interpretation of "more effective"
 
+(define-lambda-variable 'relative-prep
+    nil 'top) ;; holds the relative PP for cases like "the X in which Y is placed"
+
 (define-lambda-variable 'ordinal ;; used for "third" in "the third gene"
     nil 'top)
 
@@ -2128,25 +2131,23 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (declare (special wh-pp vp))
   (if *subcat-test*
       (and wh-pp vp
+           (variable-to-bind-pp-to-head (left-edge-for-referent) vp)
+           (find-subcat-var (value-of 'wh (value-of 'pobj wh-pp))
+                            (value-of 'prep wh-pp)
+                            vp)
            (or (not (edge-p (edge-to-its-left left)))
                (not
                 (member (cat-name (edge-category (edge-to-its-left left)))
                         '(number quantifier all some each both many most)))))
-    (let* ((preposition (value-of 'prep wh-pp))
-           (wh-obj (value-of 'pobj wh-pp))
-           (var (car (find-subcat-vars preposition vp))))
+      (let* ((pp-edge (left-edge-for-referent))
+             (var (variable-to-bind-pp-to-head pp-edge vp)))
       (declare (special preposition wh-obj var))
       ;; while debugging -- what's a reasonable default?
       (unless var
         (when *partitive-pp-warnings*
           (warn "no variable for ~a on ~a in~%~s" preposition vp (current-string)))
         (return-from make-pp-relative-clause nil))
-
-      (let ((q (extend-wh-object wh-obj
-                                 :variable var
-                                 :statement vp)))
-        (tr :wh-make-pp-relative-clause q)
-        q))))
+      (bind-variable 'relative-prep (value-of 'prep wh-pp) vp))))
 
 
 

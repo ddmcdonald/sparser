@@ -980,13 +980,13 @@
 
 ;;;----- Pied-piped wh-clauses 
 
-#+ignore ;; not yet ready
+
 (def-syntax-rule (np pp-relative-clause)
     :head :left-edge
     :form np
     :referent (:function apply-pp-relative-clause left-edge right-edge))
 
-(loop for v in '(vp vp+passive vg+passive vg)
+(loop for v in '(vp vp+passive vg+passive vg s)
    do
      (eval
       `(def-syntax-rule (pp-wh-pronoun ,v) 
