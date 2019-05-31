@@ -246,7 +246,7 @@ and/or by which subcategorized arguments the individual binds.
       resources)))
 
 
-(defgeneric incluldes-suggestive-variables (i pos)
+(defgeneric includes-suggestive-variables (i pos)
   (:documentation "Does this individual bind particular variables that
     a frequently present when an interpretation is for a particular
     part of speech. Noun vs. verb is pretty clear, others less so.")

@@ -212,7 +212,7 @@
 
       (loop for m-pos in possible-pos
          as key-pos = (intern (symbol-name m-pos) (find-package :keyword))
-         when (sp::incluldes-suggestive-variables i key-pos)
+         when (sp::includes-suggestive-variables i key-pos)
          do (return-from determine-pos m-pos))
 
       (let ((remainder
