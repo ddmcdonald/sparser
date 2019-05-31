@@ -257,6 +257,7 @@
     :thatcomp
     :s-comp ;; for verbs like "Let (me know ...)", "Make John ride the bike"
     :to-comp
+    :oc ; object-complement
     :verb-premod
     :whethercomp
     ))

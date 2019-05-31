@@ -146,6 +146,7 @@ Should mirror the cases on the *single-words* ETF."
     :verb-premod
     #|:next\ to|#
     :object :of :on :onto #|:on\ top\ of|# :over
+    :oc ; object complement
     :premod
     :s-comp
     :subject :such\ as

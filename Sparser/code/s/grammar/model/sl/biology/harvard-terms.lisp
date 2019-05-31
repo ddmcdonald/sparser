@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "harvard-terms"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: February 2019
+;;; version: May 2019
 
 ;; Isolating terms, etc. that are specific to handling the texts
 ;; from HMS.
@@ -201,20 +201,16 @@ by which this occurs.") |#
    :etf (svo-passive)
    :for theme
    :in theme
+   :oc level ;; 'object complement'
    :to level))
-   
-;; add explicit definition of vanish
-(define-category vanish
-  :specializes negative-bio-control
-  :binds ((theme biological)
-          (level (:or measurement bio-scalar)))
-  :realization
-  (:verb "vanish" 
-   :etf (sv)
-   :for theme
-   :in theme
-   :to level))
+;; Potentially problematic since the plural will misparse
+;; "monoubiquitination decreases". Committing horrible hack
+;; of putting in a dummy plural to circumvent that.
+;; When we finally encounter are legitimate use of the
+;; plural noun form we'll have to reconsider all this.
+(def-synonym decrease (:noun ("decrease" :plural "ddddecrease")))
 
+   
 (define-category drop
   :specializes decrease
   :realization (:verb "drop" :etf (svo-passive)))
@@ -224,18 +220,24 @@ by which this occurs.") |#
                               :past-tense "taper off")
                :etf (sv)))
 
+(define-category vanish
+  :specializes negative-bio-control
+  :binds ((theme biological)
+          (level (:or measurement bio-scalar)))
+  :realization
+  (:verb "vanish" 
+   :etf (sv)
+   :for theme
+   :in theme
+   :oc level
+   :to level))
 
   
-;; Potentially problematic since the plural will misparse
-;; "monoubiquitination decreases". Committing horrible hack
-;; of putting in a dummy plural to circumvent that.
-;; When we finally encounter are legitimate use of the
-;; plural noun form we'll have to reconsider all this.
-(def-synonym decrease (:noun ("decrease" :plural "ddddecrease")))
-
-
+;;//// why such different slots from 'decrease' ??
+;; added 'level' 5/31/19 ddm
 (define-category increase
   :specializes positive-bio-control
+  :binds ((level (:or measurement bio-scalar)))
   :restrict ((object (:or ;;bio-chemical-entity
                       bio-entity ;; allows for "population"
                       scalar-quality)))
@@ -247,6 +249,7 @@ by which this occurs.") |#
      :in object
      :in affected-process
      :of object
+     :oc level
      :optional-object t))
 ;; DAVID -- why can't I put this in the previous definition -- the NOUN form gets clobbered
 (def-synonym increase

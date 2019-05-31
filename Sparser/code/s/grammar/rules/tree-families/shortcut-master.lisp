@@ -34,9 +34,9 @@
 ;;; Decoder that actually does the work
 ;;;-------------------------------------
 
-(defun decode-shortcut-rdata (category &rest rdata &key
-                              etf adj noun verb c prep mumble &aux
-                              (etf (ensure-list etf)))
+(defun decode-shortcut-rdata (category &rest rdata
+                              &key etf adj noun verb c prep mumble
+                              &aux (etf (ensure-list etf)))
   "Decoder for the shortcut form of define-category, def-synonym, etc.
    Exactly one ETF is allowed, but for compatibility we assume a list.
    Called by setup-rdata to convert the shortcut version of realization
