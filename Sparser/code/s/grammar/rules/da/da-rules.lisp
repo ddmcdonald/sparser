@@ -1779,6 +1779,18 @@ assumed. |#
     ;; "Does phosphorylated MAP2K1 behave like phosphorylated MAPK1?"
     :action (:function da/preposed+s first second))
 
+(define-debris-analysis-rule aux-s-prep
+    :pattern (preposed-auxiliary s preposition)
+    ;; (p "Can you find any apoptotic pathways that stat3 is involved in?")
+    :action (:function da/preposed+s/prep first second third))
+
+(defun da/preposed+s/prep (aux-edge s-edge prep-edge)
+  (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
+    (polar-aux-s-stranded-prep aux-edge s-edge prep-edge
+                               *da-starting-position* end-pos)))
+  
+
+
 (define-debris-analysis-rule is-s-under-condition
     :pattern (preposed-auxiliary s ifcomp)
     :action (:function da/preposed+s first second)) ;;/// this fn ignores the ifcomp

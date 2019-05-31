@@ -508,6 +508,13 @@
            (break "new 4-edge wh case~%e2: ~a  e3: ~a  e4: ~a"
                   e2-form e3-form e4-form)) )))))
 
+(defun polar-aux-s-stranded-prep (aux-edge s-edge prep-edge start-pos end-pos)
+  ;; 1. Identify what the complement of the preposition is
+  ;;   and fold them into a new edge
+  ;; 2. Fold the preposed-aux into the s/head
+  ;; 3. Figure out where in the fringe of the s the pp goes and put it there
+  ;; 4. Make an edge to cover the whole span
+  (push-debug `(,aux-edge ,s-edge ,prep-edge)) (break "got there"))
 
 (defun wh-stranded-prep (wh-edge main-edge prep-edge start-pos end-pos)
   "Intended for use with every case of short questions
