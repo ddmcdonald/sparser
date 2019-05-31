@@ -537,6 +537,7 @@
                         ;; "To validate the use of an in vitro system to dissect the mechanism of Ras regulation.
                         to-comp where-relative-clause when-relative-clause
                         transitive-clause-without-object
+                        pp-relative-clause
                         subject-relative-clause comma-separated-subject-relative-clause)))))
        
        (losing-to-leftwards-pp? l-triple r-triple)
