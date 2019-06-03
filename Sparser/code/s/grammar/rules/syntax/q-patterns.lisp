@@ -514,7 +514,9 @@
   ;; 2. Fold the preposed-aux into the s/head
   ;; 3. Figure out where in the fringe of the s the pp goes and put it there
   ;; 4. Make an edge to cover the whole span
-  (push-debug `(,aux-edge ,s-edge ,prep-edge)) (break "got there"))
+  (when *debug-questions*
+    (push-debug `(,aux-edge ,s-edge ,prep-edge))
+    (break "got there")))
 
 (defun wh-stranded-prep (wh-edge main-edge prep-edge start-pos end-pos)
   "Intended for use with every case of short questions
