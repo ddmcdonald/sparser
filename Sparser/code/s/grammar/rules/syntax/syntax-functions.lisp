@@ -1816,6 +1816,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun assimilate-indirect-object (vg obj)
   (assimilate-subcat vg :indirect-object obj))
 
+(defun assimilate-object-comp (vp obj)
+  (assimilate-subcat vp :oc obj))
 
 (defun possible-indirect-object? (vg)
   (and (itypep vg 'directed-action)
@@ -1827,6 +1829,32 @@ there was an edge for the qualifier (e.g., there is no edge for the
                 (eq (cat-name (edge-category e)) 'how)
                 (member (form-cat-name e)
                         '(thatcomp howcomp ifcomp))))))
+
+(defun takes-object-complement? (vg)
+  "Are there any variables for object complement in the subcat
+   information on this verb"
+  (find-subcat-vars :oc vg))
+
+(defun obj-complement-follows? (vg)
+  "If the head can take an object complement, and the next constituent
+   would satisfy the constrains on that complement, then 'reset' the label
+   on the edge we are creating (make it a vg rather than the vp that the
+   rule indicates) so we can use the rule again to collect the complement"
+  (when *right-edge-into-reference*
+    (loop for e in (edges-after *right-edge-into-reference*)
+       as item = (edge-referent e)
+       thereis (valid-object-complement vg item))))
+
+(defun valid-object-complement? (vg obj)
+  "Is the type of this candidate complement consistent with constraints
+   on the EC variable for this head."
+  (let ((variables (takes-object-complement? vg)))
+    (when variables
+      (when (cdr variables)
+        (error "Multiple object-complement variables on ~a: (~a)~
+              ~%Don't know what to do." vg variables))
+      (satisfies-variable-restriction? obj (car variables)))))
+
 
 (defun assimilate-np-to-v-as-object (vg obj)
   (declare (special category::n-bar category::vp category::vp+ing
@@ -1840,17 +1868,22 @@ there was an edge for the qualifier (e.g., there is no edge for the
                            (member (cat-name (edge-form (edge-just-to-right-of (right-edge-for-referent))))
                                    '(vg+ed vp+ed vg+ing vp+ing)))))
       (return-from assimilate-np-to-v-as-object nil)))
+  
   (when (is-non-anaphor-numeric? *right-edge-into-reference* obj)
     (return-from assimilate-np-to-v-as-object nil))
-  (let* ((indirect-object? (possible-indirect-object? vg))           
+  
+  (let* ((indirect-object? (possible-indirect-object? vg))
+         (ec-follows (obj-complement-follows? vg))
+         (obj-is-ec (valid-object-complement? vg obj))
          (result
           (cond ((and (typep *current-chunk* 'chunk)
                       (member 'ng (chunk-forms *current-chunk*)))
                  (verb-noun-compound vg obj))
                 (indirect-object?
                  (assimilate-indirect-object vg obj))
-                (t
-                 (assimilate-object vg obj)))))
+                (t (if obj-is-ec
+                     (assimilate-object-comp vg obj)
+                     (assimilate-object vg obj))))))
     (cond
       (*subcat-test* result)
       (result
@@ -1862,7 +1895,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
 	   (revise-parent-edge :category (if (itype vg 'collection)
                                              (value-of 'type vg)
                                              (itype-of vg))
-			       :form (if indirect-object?
+			       :form (if (or indirect-object? ec-follows)
                                          category::vg
                                          (case (form-cat-name (parent-edge-for-referent))
                                            ((vg vp) category::vp)
