@@ -336,7 +336,7 @@
 
 
 (define-category accumulation :specializes bio-self-movement
-  :binds ((amount scalar-quality))
+  :binds ((amount bio-scalar))
   :restrict ((origin blocked-category))               
   :realization
   (:verb "accumulate" :noun "accumulation"
@@ -1340,7 +1340,7 @@
 
 (define-category revert :specializes bio-process
  :binds ((state bio-state)
-         (scalar scalar-quality))
+         (scalar bio-scalar))
  :realization
  (:verb "revert"
   :etf (sv)

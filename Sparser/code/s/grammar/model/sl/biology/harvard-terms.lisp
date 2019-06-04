@@ -240,7 +240,7 @@ by which this occurs.") |#
   :binds ((level measurement))
   :restrict ((object (:or ;;bio-chemical-entity
                       bio-entity ;; allows for "population"
-                      scalar-quality)))
+                      bio-scalar)))
   :realization
     (:verb ("increase" :third-singular "increases"  :past-tense "increased"
             :present-participle "increasing")
@@ -294,10 +294,10 @@ have with phosphorylated as a preposed modifier.) |#
 ;; e.g. displayed sustained ERK phosphorylation
 (define-category sustained
    :specializes scalar-variation
-   :binds ((theme (:or process scalar-quality
+   :binds ((theme (:or process bio-scalar
                        bio-chemical-entity)) ;; see note
-           (level scalar-quality)
-           (above-level scalar-quality))
+           (level bio-scalar)
+           (above-level bio-scalar))
    :realization
       (:verb "sustain"
        :etf (svo-passive)
@@ -322,7 +322,7 @@ have with phosphorylated as a preposed modifier.) |#
 
 (define-category make-double
   :specializes positive-bio-control
-  :restrict ((object (:or biological scalar-quality)))
+  :restrict ((object (:or biological bio-scalar)))
   :binds ((theme biological)
           (level (:or measurement bio-scalar)))
   :realization
@@ -348,8 +348,8 @@ have with phosphorylated as a preposed modifier.) |#
 
 (define-category reach
   :specializes bio-relation
-  :restrict ((participant (:or scalar-quality measurement biological))
-             (theme (:or scalar-quality measurement biological)))
+  :restrict ((participant (:or bio-scalar measurement biological))
+             (theme (:or bio-scalar measurement biological)))
   :realization
       (:verb "reach"
        :etf (svo)))

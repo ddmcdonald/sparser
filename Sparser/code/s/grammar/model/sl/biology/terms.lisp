@@ -385,7 +385,7 @@
 
 
 (adj "relative" :super bio-relation
-     :restrict ((participant scalar-quality))
+     :restrict ((participant bio-scalar))
      :realization
      (:to theme))
 

@@ -157,7 +157,7 @@
 
 
 (define-category change :specializes bio-control
-      :binds ((scale scalar-quality)
+      :binds ((scale bio-scalar)
               (original (:or bio-entity))
               (resulting (:or bio-entity))
               ) 
@@ -386,7 +386,7 @@
 ;; DTDA: "What proteins might lead to the development of lung cancer?"
 
 (define-category diminish :specializes negative-bio-control
-  :restrict ((object (:or biological scalar-quality)))
+  :restrict ((object (:or biological bio-scalar)))
   :realization
   (:verb ("diminish"  :third-singular "diminishes"  :past-tense "diminished"
           :present-participle "diminishing")
@@ -1147,7 +1147,7 @@
 
 (define-category return :specializes caused-bio-process
  :binds ((state bio-state)
-         (scalar scalar-quality))
+         (scalar bio-scalar))
  :realization
  (:verb "return"
   :etf (sv)
@@ -1210,7 +1210,7 @@
 
 
 (define-category set-value :specializes caused-bio-process
-  :binds ((value (:or number measurement unit-of-measure scalar-quality)))
+  :binds ((value (:or number measurement unit-of-measure bio-scalar)))
   :realization
   (:verb "set"
          :etf (svo-passive)

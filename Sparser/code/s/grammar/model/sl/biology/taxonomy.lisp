@@ -232,10 +232,10 @@
   :mixins (biological))
 
 (define-category bio-scalar
-  :specializes scalar-quality ;; deprecated
+  :specializes scalar
   :mixins (bio-quality)
   :documentation "Provides a generalization over 
-    biological and scalar-quality"
+    biological and scalar"
   :restrict ((participant blocked-category))
   :binds ((measured-item biological))
   :realization
