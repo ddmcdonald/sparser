@@ -106,6 +106,8 @@
     (discourse-mention
      `(:var ,(make-clause-var (mention-uid m))
             :isa ,(cat-name (itype-of (edge-referent (mention-source m))))
+            ,.(when (itypep (edge-referent (mention-source m)) 'plural)
+                (list :plural t))
         ,@(loop for d in (dependencies m) append
                   `(,(intern (pname (pname (dependency-variable d)))
                              :keyword)
