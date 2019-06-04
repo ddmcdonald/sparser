@@ -1229,7 +1229,8 @@
   :binds ((controlled-gene (:or gene protein)))
   :realization
     (:noun "transcription factor"
-           :for controlled-gene))
+           :for controlled-gene
+           :m controlled-gene))
 
 (def-synonym transcription-factor
     (:noun "transcription-factor"
