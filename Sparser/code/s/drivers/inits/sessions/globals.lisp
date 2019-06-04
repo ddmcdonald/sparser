@@ -420,7 +420,7 @@
   "Flag examined in Do-treetop-triggers. Controls whether conceptual
    analysis or generic actions are done on treetops.")
 
-(defparameter *use-subtypes* nil
+(defparameter *use-subtypes* t ;; this is a TEST
   "Flag read in dispatch-on-unary-ref-actions and similar places to govern
    the use of mixin categories that induce subtypes of the head category.
    Right now (9/09) it's not clear what the operational story should be
