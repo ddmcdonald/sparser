@@ -90,7 +90,22 @@
   ;; called from make-pp -- compare method over relative-location
   ;; and has-location in core/places/methods.lisp
   (tr :below+note op note)
-  )
+#| 'below' is already defined as a relative location. As such we
+ can add what it is relative to (its 'ground', as in figure/ground).
+ The extended individual is now a saturated description of a relative
+ location.
+   If we want to be concrete and say that this refers to a set of notes,
+ i.e. all those notes in the contextually salient staff/measures that are
+ lower in pitch than this note -- which is the whole point of the
+ reference sentence "delete everything below C4' and we want to get
+ the 'delete-note' reading of delete -- then we have to model the
+ staff as a kind of region that contains notes. The 'below C4' would
+ act as a reference point to pick out that portion of the region.
+   Doing that gives us a description of a set of notes: those notes
+ that are lower in pitch than C4. (And have to model 'lower' and 'higher'
+ pitch too. Look in mid-level/attributes.lisp for suggestions. |#
+  (let ((i (bind-variable 'ground note op)))
+    i))
 
 
 

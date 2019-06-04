@@ -29,19 +29,62 @@ e17   DELETE        1 "Delete everything before beat 2 of measure 1" 9
 
 ___________________
 1: "Delete everything below C4."
+[Delete ]everything below [C4]
+Method: below (i1930) & note (i4171)
 
                     source-start
-e0    DELETE        1 "Delete " 2
-e8    BELOW         2 "everything below C4" 6
+e9    DELETE        1 "Delete everything below C4" 6
                     period
                     end-of-source
+:done-printing
+sp> (semtree 9)
+(#<delete 4176>
+ (theme
+  (#<below 4175>
+   (quantifier (#<indefinite-pronoun "everything" 927> (word "everything")))
+   (ground
+    (#<pitch-class 4171> (number 4) (note (#<note "C" 4147> (name "C")))))
+   (word "below")))
+ (present #<ref-category PRESENT>))
+sp> (stree 9)
+ e9 delete/vp                 p1 - p6   rule 793
+  e0 delete/vg                p1 - p2   rule 3517
+    "delete"
+  e8 below/np                 p2 - p6   rule 448
+    e2 indefinite-pronoun/indef-pronoun   p2 - p3   rule 2028
+      "everything"
+    e7 below/pp               p3 - p6   rule 1103
+      e3 below/preposition    p3 - p4   rule 2834
+        "below"
+      e6 pitch-class/np       p4 - p6   create-pitch-class
+        e1 note/common-noun   p4 - p5   rule 4848
+          "C"
+        e5 number/number      p5 - p6   number-fsa
+          e4 digit-sequence/number    p5 - p6   rule 1586
+            "4"
 
-                    source-start
-e0    VG            1 "Delete " 2
-e8    NP            2 "everything below C4" 6
-                    period
-                    end-of-source
+If we want a set of notes (see the 'below' method), then we
+should also work up the "everything" in a serious way.
 
+sp> (irr 448)
+referent: (funcall indefinite-pn/np left-referent right-referent)
+#<PSR-448 np → {indef-pronoun pp}>
+The principal handling of 'everything' is in quantifier-noun-compound
+where the present move is to treat the pronoun/quantifier as though it
+was a determiner and stash it like we have here.
+
+sp> (de 2)
+category: #<ref-category INDEFINITE-PRONOUN>
+form: #<ref-category INDEF-PRONOUN>
+rule: #<PSR-2028 indefinite-pronoun → "everything">
+referent: #<indefinite-pronoun "everything" 927>
+
+Looks like indefinite pronouns are individuals rather than classes
+like the preposition are, so we can't write methods on them directly.
+Changing that is a SMOP ('simple matter of programming') though,
+provided we were careful about chasing down the fanout.
+They should fall into super-classes ('everything' vs. 'nothing')
+that could be interesting to model.
 
 ___________________
 2: "Delete everything between beats 1 and 3"
