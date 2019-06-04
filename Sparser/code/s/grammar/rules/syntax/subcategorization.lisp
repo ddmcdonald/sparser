@@ -910,9 +910,8 @@
            (format t "~%one anaphora ~s in ~s~%"
                    (list item pat-or-v/r)
                    (current-string)))
-
-         t ;; this was done to handle one anaphora, but should be revisited
-         )
+         t) ;; this was done to handle one anaphora, but should be revisited
+         
         ((consp restriction)
          (cond
            ((eq (car restriction) :or)
@@ -933,6 +932,24 @@
         (t (error "Unexpected type of subcat restriction: ~a"
                   restriction))))))
 
+(defgeneric satisfies-variable-restriction? (item v/r)
+  (:documentation "Simpest case. Caller is sure that they have a simple
+ value for 'item' such as a individual and an uncomplicated basis for
+ the value restriction such as a disambiguated variable")
+  ;; This is roughly the last few cases in satisfies-subcat-restriction?, which
+  ;; has too many contextual assumptions to use here.
+  ;; Compare this to decode-exp-as-ref-category which does best job with primitives
+  (:method ((i individual) (var lambda-variable))
+    (let ((restriction (var-value-restriction var)))
+      (etypecase restriction
+        (NULL t)
+        (category (itypep i restriction))
+        (list
+         (unless (eq (car restriction) :or)
+           (error "list-restriction on ~a does not start with :or" var))
+         (loop for type in (cdr restriction)
+            thereis (itypep i type)))))))
+           
 
 
 (defparameter *label* nil)
