@@ -948,7 +948,9 @@
          (unless (eq (car restriction) :or)
            (error "list-restriction on ~a does not start with :or" var))
          (loop for type in (cdr restriction)
-            thereis (itypep i type)))))))
+            thereis (itypep i type))))))
+  (:method ((w word) (var lambda-variable)) nil)
+  (:method ((pw polyword) (var lambda-variable)) nil))
            
 
 
