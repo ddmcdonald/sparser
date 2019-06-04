@@ -1,0 +1,1731 @@
+-*-org-*
+#+TITLE: Subcategory tree for the fire configuration
+#+DATE: 6/4/19 12:39:55
+
+ + 0 top vars: {name, modifier, qualifier, negation, number, items, predicate, predication, relative-prep, ordinal, appositive-description, comp, subordinate-conjunction, quantifier, has-determiner, event-relation, amount-of-time, is-plural, intensity, comparative-predication, comparative, compared-to, that-rel, category}
+  + 1 pathogen-type vars: {name}
+  + 1 pathogen vars: {name, pathogen-type}
+    + 2 avian-flu vars: {h-number, n-number}
+  + 1 financial-datum-value-verb vars: {name}
+  + 1 plays-role-for vars: {role, for}
+  + 1 company-descriptor vars: {head, kind-of-company, activity, location}
+  + 1 person-version vars: {name}
+  + 1 person-prefix vars: {name}
+  + 1 fiscal 
+  + 1 end-date vars: {thing-ended, date}
+  + 1 has-age vars: {age}
+  + 1 spatio-temporal 
+  + 1 measurement vars: {units, quantity}
+    + 2 ordinal-fraction vars: {selector, unit}
+    + 2 rate-of-process vars: {process, value}
+    + 2 rate vars: {units, quantity}
+      + 3 qualitative-rate 
+    + 2 proportional-measurement vars: {units, quantity}
+      + 3 amount-per-share vars: {quantity, shares-in-a-company}
+    + 2 named-measure vars: {name}
+  + 1 with-quantifier vars: {quantifier}
+  + 1 generalized-possession vars: {possessor, possessed}
+  + 1 copular-predicate 
+  + 1 speech-act 
+    + 2 discourse-adverbial 
+      + 3 anyway 
+    + 2 sa-propose 
+      + 3 explicit-suggestion vars: {marker, suggestion}
+    + 2 apology 
+    + 2 greeting 
+    + 2 acknowledgement vars: {name}
+  + 1 has-an-orientation vars: {orientation}
+  + 1 can-change-location vars: {former-location, present-location}
+  + 1 partonomic vars: {parts, part-type, has-part, part-of}
+  + 1 dependent-substrate vars: {dependent, substrate}
+    + 2 exit-on-throughway vars: {exit, throughway}
+  + 1 endurant vars: {number, quantifier}
+    + 2 named-object vars: {name}
+      + 3 company vars: {name, aliases, description, location}
+        + 4 authority vars: {name}
+          + 5 service vars: {name}
+          + 5 agency vars: {name}
+          + 5 command vars: {name}
+        + 4 subsidiary-company vars: {type, company}
+        + 4 subsidiary-type vars: {type, parent-company, location}
+        + 4 kind-of-subsidiary vars: {name}
+          + 5 subsidiary 
+          + 5 department 
+          + 5 unit 
+          + 5 division 
+        + 4 co-activity-nominal/er vars: {patient, word}
+          + 5 broker 
+          + 5 specialist 
+          + 5 provider 
+          + 5 operator 
+          + 5 marketer 
+          + 5 maker 
+          + 5 manufacturer 
+          + 5 insurer 
+          + 5 developer 
+          + 5 contractor 
+      + 3 person vars: {name, age, position, nationality, has-rank}
+        + 4 role-based-person vars: {role}
+    + 2 non-physical 
+      + 3 symbolic 
+        + 4 abstract-note vars: {duration, pitch, accidental}
+          + 5 pitch-class vars: {note, number}
+          + 5 rest 
+          + 5 note 
+            + 6 note-length 
+            + 6 accidental 
+              + 7 flat 
+              + 7 sharp 
+        + 4 step vars: {part-of}
+        + 4 measure 
+        + 4 beat 
+      + 3 information 
+        + 4 database 
+        + 4 literature 
+        + 4 answer/info 
+      + 3 social-object 
+        + 4 social-nonagentivive 
+        + 4 social-agent 
+          + 5 military-unit vars: {type, force}
+          + 5 military-force vars: {name, abbrev, country}
+            + 6 insurgent 
+            + 6 coalition-forces 
+            + 6 armed-forces 
+      + 3 mental-object 
+    + 2 physical vars: {location}
+      + 3 aggregate 
+      + 3 feature 
+      + 3 physical-object 
+        + 4 object 
+          + 5 box 
+          + 5 ball 
+          + 5 artifact vars: {made-by}
+            + 6 built-out-of-blocks vars: {part-type}
+              + 7 row 
+              + 7 tower 
+              + 7 stack 
+              + 7 staircase vars: {part-type}
+            + 6 motor-vehicle vars: {made-by}
+              + 7 truck 
+              + 7 wagon 
+              + 7 van 
+              + 7 motorcycle 
+              + 7 boat 
+              + 7 bicycle 
+              + 7 automobile 
+              + 7 bus 
+              + 7 jeep 
+              + 7 car 
+            + 6 structure 
+          + 5 rectangular-solid vars: {part-type}
+            + 6 shelf 
+            + 6 table 
+            + 6 block 
+              + 7 step vars: {part-of} **  already diplayed #<ref-category STEP>
+          + 5 object-face 
+        + 4 physical-agent 
+          + 5 interlocutor 
+          + 5 maker-of-artifacts 
+            + 6 car-manufacturer vars: {product}
+    + 2 region 
+      + 3 typed-region vars: {type, region}
+      + 3 time 
+        + 4 fiscal-quarter vars: {year, position-in-year, end-date, company}
+        + 4 calculated-time vars: {name}
+          + 5 proxal-moment vars: {unit}
+            + 6 distal-moment 
+          + 5 calculated-day vars: {name, calculator}
+        + 4 prep-time vars: {prep, time}
+        + 4 age-ago vars: {age-ago}
+        + 4 relative-time vars: {relativizer, reference-time}
+        + 4 relative-time-adverb vars: {name}
+        + 4 season-year vars: {season, year}
+        + 4 season vars: {name, abbreviation, position-in-year}
+        + 4 date vars: {day, month, year, weekday}
+        + 4 month-of-the-year vars: {month, year}
+        + 4 day-of-the-month vars: {month, number, day-of-the-week}
+        + 4 timezone vars: {name}
+        + 4 year vars: {year-of-century}
+        + 4 month vars: {name, abbreviation, position-in-year, number-of-days}
+        + 4 weekday vars: {name, abbreviation, position-in-week}
+        + 4 time-interval 
+          + 5 anchor-amount vars: {sequencer, amount-of-time}
+          + 5 anchor-date vars: {sequencer, date}
+          + 5 time-of-day vars: {name}
+            + 6 meal-time vars: {name}
+          + 5 phase-of-day vars: {name}
+          + 5 closed-interval/end vars: {ends-at, modifier}
+      + 3 bounded-region vars: {interior, boundary, containing-region}
+        + 4 container vars: {contents}
+          + 5 village 
+          + 5 model vars: {process, object}
+      + 3 location 
+        + 4 waypoint vars: {type}
+          + 5 target-waypoint 
+          + 5 entry-waypoint 
+        + 4 location-description vars: {name}
+          + 5 location-phrase vars: {place}
+        + 4 border vars: {type, region}
+        + 4 border-type vars: {name}
+          + 5 coast vars: {name}
+          + 5 boundary vars: {name}
+        + 4 region-type vars: {name}
+          + 5 ward 
+          + 5 town 
+          + 5 pond 
+          + 5 parish 
+          + 5 province 
+          + 5 ledge 
+          + 5 lake 
+          + 5 gulley 
+          + 5 forest 
+          + 5 exit 
+        + 4 geographical-region vars: {name, aliases, type, containing-region}
+        + 4 path-configuration vars: {paths}
+          + 5 fork 
+          + 5 junction 
+        + 4 throughway-exit vars: {throughway}
+        + 4 highway vars: {authority, number}
+        + 4 path 
+          + 5 path-type vars: {name}
+            + 6 turnpike vars: {name}
+            + 6 trail vars: {name}
+            + 6 street vars: {name}
+            + 6 stream vars: {name}
+            + 6 river vars: {name}
+            + 6 road vars: {name}
+        + 4 named-location vars: {type, name}
+        + 4 us-state vars: {name, adjective-form, abbreviations, aliases}
+        + 4 city vars: {name, aliases, country, state}
+        + 4 country vars: {name, adjective-form, aliases}
+        + 4 direction vars: {name}
+          + 5 compass-point vars: {name}
+          + 5 relative-direction vars: {ground}
+            + 6 rear 
+            + 6 back 
+            + 6 front 
+            + 6 down 
+            + 6 up 
+            + 6 right 
+            + 6 left 
+        + 4 relative-location vars: {ground}
+          + 5 within 
+          + 5 under 
+          + 5 through 
+          + 5 past 
+          + 5 over 
+          + 5 outside-of 
+          + 5 outside 
+          + 5 onto 
+          + 5 on 
+          + 5 next-to 
+          + 5 nearer-to 
+          + 5 nearer 
+          + 5 near-to 
+          + 5 near 
+          + 5 into 
+          + 5 inside-of 
+          + 5 inside 
+          + 5 in-front-of 
+          + 5 in-between 
+          + 5 in-back-of 
+          + 5 in 
+          + 5 down  **  already diplayed #<ref-category DOWN>
+          + 5 close-to 
+          + 5 beyond 
+          + 5 between 
+          + 5 beside 
+          + 5 beneath 
+          + 5 below 
+          + 5 behind 
+          + 5 atop 
+          + 5 at 
+          + 5 along 
+          + 5 ahead-of 
+          + 5 against 
+          + 5 afore 
+          + 5 across-from 
+          + 5 across 
+          + 5 above 
+          + 5 aboard 
+          + 5 abeam 
+          + 5 abaft 
+          + 5 orientation-dependent-location vars: {ground}
+          + 5 object-dependent-location vars: {ground}
+            + 6 surface 
+            + 6 middle 
+            + 6 bottom 
+            + 6 multi-dependent-location vars: {qualifier}
+              + 7 edge 
+              + 7 corner 
+              + 7 side 
+              + 7 end 
+              + 7 top-qua-location 
+        + 4 deictic-location vars: {name}
+  + 1 perdurant vars: {participant, time, purpose, reason, circumstance, manner, occurs-at-moment, relative-position}
+    + 2 storm 
+      + 3 hurricane vars: {name, year, snapshots}
+    + 2 outbreak-of-disease 
+      + 3 outbreak-pathogen vars: {pathogen, outbreak}
+    + 2 be vars: {subject, predicate}
+      + 3 become 
+    + 2 process 
+      + 3 rotate 
+      + 3 roll 
+      + 3 put-something-somewhere 
+      + 3 push-together vars: {items, theme}
+      + 3 push vars: {theme}
+      + 3 pull vars: {theme}
+      + 3 hold-something vars: {patient}
+      + 3 work-on 
+      + 3 transpose vars: {amount}
+      + 3 reverse 
+      + 3 invert 
+      + 3 insert 
+      + 3 delete vars: {theme}
+      + 3 tell vars: {beneficiary}
+      + 3 make vars: {adj-comp, actor, patient}
+      + 3 look-up 
+      + 3 know 
+      + 3 give vars: {theme}
+      + 3 find vars: {patient}
+      + 3 fail 
+      + 3 build vars: {artifact, agent}
+      + 3 ask 
+      + 3 answer 
+      + 3 you-do vars: {action}
+      + 3 contract-disease vars: {who, pathogen, source}
+      + 3 catch-disease vars: {who, pathogen, source}
+      + 3 contract 
+      + 3 report-verb vars: {name}
+      + 3 do vars: {agent, predicate}
+      + 3 make-artifacts vars: {procedure, product, type-of-product}
+      + 3 transition 
+        + 4 job-event vars: {person, position, title, company}
+          + 5 succeed-to-job vars: {person-leaving, person-arriving}
+          + 5 retain-position 
+            + 6 remain-in-job vars: {person, position}
+          + 5 leave-position 
+            + 6 resign-position vars: {person, position}
+            + 6 retire-from-position vars: {person, position}
+          + 5 get-position 
+            + 6 join-company vars: {person, position, title, company}
+            + 6 name-to-position vars: {person, position, title, company}
+            + 6 appoint-to-position vars: {person, position, title, company}
+            + 6 confirm-as-job vars: {agent, person, position}
+        + 4 changed-in-direction vars: {direction}
+        + 4 change-by-amount vars: {amount, direction}
+        + 4 change-in-amount-noun vars: {name, direction}
+        + 4 change-in-amount-verb vars: {name, direction}
+          + 5 change-in-amount-verb/down 
+          + 5 change-in-amount-verb/up 
+        + 4 achievement 
+          + 5 add-to 
+          + 5 martyred vars: {who, what}
+          + 5 kill vars: {who, by-whom}
+            + 6 assassinate vars: {who, by-whom}
+          + 5 name-something vars: {attribute}
+        + 4 accomplishment 
+          + 5 get vars: {actor, patient}
+          + 5 die vars: {who, of-what}
+          + 5 move vars: {from-location, to-location, via-path, for-distance, in-direction, when-done, landmark, theme}
+            + 6 turn 
+            + 6 travel 
+            + 6 follow 
+            + 6 drive 
+            + 6 cross 
+            + 6 move-something-somewhere vars: {agent, theme}
+            + 6 dismount 
+            + 6 enter vars: {to-location}
+    + 2 event-relation vars: {relation, event, subordinated-event}
+    + 2 state 
+      + 3 want 
+      + 3 like 
+      + 3 intend 
+      + 3 expect 
+      + 3 believe 
+      + 3 martyrdom 
+      + 3 cases 
+        + 4 cases-pathogen vars: {pathogen, cases}
+      + 3 in-predicate vars: {head, who, of-what, np-item}
+        + 4 in-lieu 
+        + 4 in-place 
+        + 4 in-the-field-of 
+        + 4 in-control 
+        + 4 in-command 
+        + 4 in-charge 
+      + 3 modality vars: {name}
+        + 4 would 
+        + 4 will 
+        + 4 should 
+        + 4 shall 
+        + 4 must 
+        + 4 might 
+        + 4 may 
+        + 4 could 
+        + 4 can 
+      + 3 have vars: {possessor, thing-possessed}
+      + 3 relationship vars: {agent, patient}
+      + 3 predication vars: {predicate}
+        + 4 quantified vars: {quantifier, body}
+        + 4 copular-predication vars: {item, value, predicate}
+          + 5 copular-predication-of-pp vars: {prep}
+        + 4 there-exists vars: {predicate, value}
+        + 4 upon-condition vars: {condition}
+        + 4 has-attribute vars: {item, attribute, value}
+          + 5 has-synonym 
+          + 5 has-name 
+          + 5 comparative-predication 
+  + 1 temporally-localized vars: {certainty, following, preceding, during, after, before, timeperiod}
+  + 1 takes-tense-aspect-modal vars: {modal, present, past, progressive, perfect}
+  + 1 possessive 
+  + 1 definite vars: {definite}
+  + 1 indefinite vars: {indefinite}
+  + 1 theme vars: {theme}
+  + 1 patient vars: {patient}
+  + 1 has-location vars: {location}
+    + 2 has-spatial-location 
+  + 1 experiencer vars: {experiencer}
+  + 1 beneficiary vars: {beneficiary}
+  + 1 with-attribute vars: {attribute}
+  + 1 takes-adverb vars: {adverb}
+  + 1 actor vars: {actor}
+  + 1 agent vars: {agent}
+  + 1 with-an-agent vars: {agent}
+  + 1 takes-neg vars: {negation}
+  + 1 plural vars: {items, number}
+  + 1 indexical vars: {extension}
+  + 1 has-uid vars: {uid}
+  + 1 abstract 
+    + 2 amount vars: {measurement, stuff, alternative-amount, time-period}
+      + 3 financial-datum vars: {name}
+        + 4 target 
+          + 5 stock-price-target vars: {value, target}
+          + 5 target-at-time vars: {target, time}
+      + 3 financial-datum vars: {name} **  already diplayed #<ref-category FINANCIAL-DATUM>
+      + 3 money vars: {number, currency}
+        + 4 money/per-share vars: {money, amount-per-share}
+      + 3 amount-of-time vars: {units, quantity}
+        + 4 fraction-of-amount-of-time vars: {selector, portion}
+      + 3 amount-at-time vars: {amount, time}
+      + 3 vague-amount vars: {name}
+    + 2 measurement vars: {units, quantity} **  already diplayed #<ref-category MEASUREMENT>
+    + 2 quantity vars: {name}
+    + 2 unit-of-measure vars: {name}
+      + 3 share-of-stock vars: {company}
+        + 4 corporate-stock 
+      + 3 currency vars: {denomination, country}
+      + 3 time-unit vars: {name}
+      + 3 fractional-term 
+        + 4 half vars: {name}
+        + 4 quarter vars: {name}
+      + 3 unit-of-rate-of-change vars: {distance-measure, time-measure, name}
+    + 2 takes-numerical-value vars: {value}
+    + 2 number vars: {value}
+      + 3 fraction vars: {numerator, denominator}
+      + 3 post-ordinal vars: {number, word, roman-numeral}
+      + 3 ordinal vars: {number, word, roman-numeral}
+      + 3 number-range vars: {value, range}
+      + 3 hyphenated-number vars: {left, right}
+      + 3 multiplier 
+        + 4 order-of-magnitude 
+        + 4 n-fold vars: {number}
+    + 2 sequence vars: {item, items, type, number}
+      + 3 two-part-label vars: {part-one, part-two}
+      + 3 slashed-sequence 
+      + 3 slashed-pair vars: {left, right}
+      + 3 word-colon-word vars: {left, right}
+      + 3 number-colon-number vars: {left, right}
+      + 3 sequence-of-numbers vars: {numbers}
+      + 3 sequential vars: {sequence, position, previous, next}
+        + 4 cyclic vars: {cycle-length}
+      + 3 subsequence vars: {reference-sequence, index}
+        + 4 subseq-both-ends vars: {end-index}
+        + 4 subseq-after 
+        + 4 subseq-up-to 
+    + 2 collection vars: {items, type, number}
+      + 3 hyphenated-triple vars: {left, middle, right}
+      + 3 qualifying-pair vars: {head, qualifier}
+      + 3 hyphenated-pair vars: {left, right}
+    + 2 linguistic vars: {word, reduced-relative}
+      + 3 original-document-structure 
+        + 4 html-markup-element 
+          + 5 html-tag vars: {attributes, start-index, end-index, interior-start}
+            + 6 empty-html-tag vars: {action}
+            + 6 paired-html-tag vars: {contents, interior-end, start-action, end-action}
+              + 7 html/html vars: {start-index}
+          + 5 html-attribute vars: {attribute-value, tag}
+        + 4 sgml-label 
+        + 4 sgml-tag/end 
+        + 4 sgml-tag/start 
+        + 4 section-marker 
+        + 4 text-under-analysis vars: {uid, file}
+          + 5 djns-article vars: {an}
+        + 4 section-object vars: {type, parent, daughters, prior-sibling, following-sibling, title, count, token-index}
+      + 3 text-relationship 
+        + 4 subsequent-reference 
+        + 4 unanalyzed-compound vars: {terms}
+        + 4 infinitive-relation vars: {verb}
+        + 4 paired-in-long-segment vars: {pmt/first, pmt/second}
+        + 4 adverb-verb vars: {verb, adverb}
+        + 4 verb-object vars: {verb, object}
+        + 4 subject-verb vars: {subject, verb}
+        + 4 of-phrase 
+        + 4 genitive vars: {owner, owned}
+        + 4 segment vars: {form, ends-at, starts-at, terms, single-term, contains, head, classifier, pre-classifier, prefix, discourse-status}
+          + 5 no-analysis 
+          + 5 section-segment 
+          + 5 verb+object-segment 
+          + 5 subj+vp-segment 
+          + 5 subj+verb-segment 
+          + 5 capitalized-segment 
+          + 5 adverb-segment 
+          + 5 infinitive-segment 
+          + 5 past-tense-verb-segment 
+          + 5 participle-segment 
+          + 5 verb-segment 
+          + 5 n/v-segment 
+          + 5 np-segment 
+          + 5 multi-word-segment 
+          + 5 two-word-segment 
+          + 5 one-word-segment 
+        + 4 text-term vars: {word, rewrite-rule, category, classifies, adjacent/precedes, adjacent/follows, instance}
+          + 5 pair-term vars: {head, other}
+      + 3 no-space-prefix vars: {word}
+      + 3 known-in-discourse 
+      + 3 question vars: {statement}
+        + 4 wh-question vars: {wh, var}
+          + 5 wh-question/select vars: {set}
+          + 5 wh-question/attribute vars: {attribute, other}
+        + 4 polar-question 
+      + 3 proposal-marker 
+        + 4 what-if-as-directive 
+        + 4 suppose-as-directive 
+        + 4 how-about-as-directive 
+        + 4 let-as-directive 
+      + 3 demonstrative 
+        + 4 those 
+        + 4 these 
+        + 4 this 
+        + 4 that 
+      + 3 determiner vars: {word, det-quantifier}
+        + 4 a 
+        + 4 a  **  already diplayed #<ref-category A>
+        + 4 an 
+        + 4 the 
+      + 3 prepositional 
+        + 4 prepositional-operator 
+          + 5 about 
+          + 5 up-to 
+          + 5 up-against 
+          + 5 up  **  already diplayed #<ref-category UP>
+          + 5 towards 
+          + 5 toward 
+          + 5 at-or-below 
+          + 5 at-or-above 
+          + 5 worth 
+          + 5 without 
+          + 5 with-the-exception-of 
+          + 5 with-respect-to 
+          + 5 with-regard-to 
+          + 5 with-reference-to 
+          + 5 with 
+          + 5 void-of 
+          + 5 via 
+          + 5 versus 
+          + 5 upwards-of 
+          + 5 upon 
+          + 5 unto 
+          + 5 until 
+          + 5 unlike 
+          + 5 together-with 
+          + 5 to 
+          + 5 till 
+          + 5 throughout 
+          + 5 thanks-to 
+          + 5 such-as 
+          + 5 subsequent-to 
+          + 5 since 
+          + 5 short-of 
+          + 5 regardless-of 
+          + 5 regarding 
+          + 5 pursuant-to 
+          + 5 prior-to 
+          + 5 previous-to 
+          + 5 preparatory-to 
+          + 5 preliminary-to 
+          + 5 plus 
+          + 5 per 
+          + 5 pending 
+          + 5 owing-to 
+          + 5 out-of 
+          + 5 out 
+          + 5 on-the-strength-of 
+          + 5 on-the-part-of 
+          + 5 on-the-matter-of 
+          + 5 on-the-grounds-of 
+          + 5 on-pain-of 
+          + 5 on-ground-of 
+          + 5 on-behalf-of 
+          + 5 on-account-of 
+          + 5 off-of 
+          + 5 off 
+          + 5 of 
+          + 5 notwithstanding 
+          + 5 minus 
+          + 5 irrespective-of 
+          + 5 in-view-of 
+          + 5 in-the-light-of 
+          + 5 in-the-face-of 
+          + 5 in-terms-of 
+          + 5 in-spite-of 
+          + 5 in-search-of 
+          + 5 in-return-for 
+          + 5 in-respect-to 
+          + 5 in-respect-of 
+          + 5 in-relation-to 
+          + 5 in-regard-to 
+          + 5 in-reference-to 
+          + 5 in-quest-of 
+          + 5 in-process-of 
+          + 5 in-place-of 
+          + 5 in-need-of 
+          + 5 in-line-with 
+          + 5 in-light-of 
+          + 5 in-lieu-of 
+          + 5 in-favor-of 
+          + 5 in-face-of 
+          + 5 in-exchange-for 
+          + 5 in-addition-to 
+          + 5 in-contrast-with 
+          + 5 in-contrast-to 
+          + 5 in-contact-with 
+          + 5 in-consequence-of 
+          + 5 in-connection-with 
+          + 5 in-conformity-with 
+          + 5 in-compliance-with 
+          + 5 in-comparison-with 
+          + 5 in-common-with 
+          + 5 in-case-of 
+          + 5 in-aid-of 
+          + 5 in-addition-to  **  already diplayed #<ref-category IN-ADDITION-TO>
+          + 5 in-addition 
+          + 5 in-accordance-with 
+          + 5 including 
+          + 5 from-want-of 
+          + 5 from 
+          + 5 for-want-of 
+          + 5 for-the-sake-of 
+          + 5 for-sake-of 
+          + 5 for 
+          + 5 following 
+          + 5 exclusive-of 
+          + 5 except-for 
+          + 5 except 
+          + 5 due-to 
+          + 5 devoid-of 
+          + 5 despite 
+          + 5 contrary-to 
+          + 5 circa 
+          + 5 by-way-of 
+          + 5 by-virtue-of 
+          + 5 by-means-of 
+          + 5 by 
+          + 5 but-not 
+          + 5 besides 
+          + 5 barring 
+          + 5 bar 
+          + 5 away-from 
+          + 5 away 
+          + 5 at-variance-with 
+          + 5 at-the-hands-of 
+          + 5 at-the-expense-of 
+          + 5 aside-from 
+          + 5 as-to 
+          + 5 as-per 
+          + 5 as-of 
+          + 5 as-from 
+          + 5 as-for 
+          + 5 as-far-as 
+          + 5 as-a-result-of 
+          + 5 as 
+          + 5 apart-from 
+          + 5 among 
+          + 5 amid 
+          + 5 along-with 
+          + 5 according-to 
+          + 5 abreast-of 
+        + 4 spatial-operator 
+      + 3 tense/aspect 
+        + 4 perfect 
+        + 4 progressive 
+        + 4 present 
+        + 4 past  **  already diplayed #<ref-category PAST>
+        + 4 future 
+      + 3 negative 
+      + 3 subcategorization-pattern 
+        + 4 with-specified-location vars: {supported-by, next-to, at-relative-location, goal}
+        + 4 ask/tell vars: {agent, actor, theme, beneficiary}
+        + 4 nominal-attribute 
+        + 4 knowledge-verb vars: {experiencer}
+        + 4 scomp-verb vars: {complement}
+        + 4 prop-attitude vars: {agent, patient, theme}
+        + 4 move-something-verb vars: {agent, theme, location}
+        + 4 raising-to-subject vars: {theme}
+        + 4 raising-to-object vars: {theme}
+        + 4 control-verb-intrans vars: {theme}
+        + 4 control-verb vars: {agent, patient, theme}
+        + 4 attributing-verb vars: {actor, patient, attribute}
+        + 4 directed-action vars: {agent, beneficiary, theme}
+        + 4 simple-action vars: {agent, theme}
+        + 4 action-on-eventuality vars: {actor, theme}
+        + 4 action-verb vars: {actor, patient}
+        + 4 comlex-verb vars: {actor, patient}
+      + 3 phrase-interpretation 
+        + 4 pronoun 
+          + 5 indefinite-pronoun vars: {word}
+          + 5 pronoun/plural vars: {word}
+          + 5 pronoun/inanimate vars: {word}
+          + 5 pronoun/female vars: {word}
+          + 5 pronoun/male vars: {word}
+          + 5 pronoun/second vars: {word}
+          + 5 pronoun/first/plural vars: {word}
+          + 5 pronoun/first/singular vars: {word}
+        + 4 syntactic-there 
+        + 4 copular-pp-rel-clause vars: {copular-pp}
+        + 4 partitive-relativizer vars: {quantifier, relativizer}
+        + 4 pp-relative-clause vars: {pp, clause}
+        + 4 subordinate-clause vars: {conj, comp}
+          + 5 subordinate-s 
+        + 4 prep-comp vars: {prep, comp}
+        + 4 prepositional-phrase vars: {prep, pobj}
+          + 5 relativized-prepositional-phrase vars: {prep, pobj}
+        + 4 as-comp vars: {prep, comp}
+        + 4 to-comp vars: {prep, comp}
+    + 2 relation vars: {adverb}
+      + 3 employed-as vars: {person, position}
+      + 3 subsidiary/parent vars: {parent, subsidiary}
+      + 3 has-rate-of-change vars: {rate-of-change}
+      + 3 has-amount-as-level vars: {amount-as-level}
+      + 3 has-length vars: {length}
+      + 3 has-width vars: {width}
+      + 3 has-height vars: {height}
+      + 3 has-size vars: {size}
+      + 3 has-color vars: {color}
+      + 3 subordinate-conjunction vars: {word}
+        + 4 whether 
+        + 4 when 
+        + 4 whatever 
+        + 4 upon  **  already diplayed #<ref-category UPON>
+        + 4 until  **  already diplayed #<ref-category UNTIL>
+        + 4 unless 
+        + 4 whilst 
+        + 4 while 
+        + 4 whereas 
+        + 4 until-now 
+        + 4 until  **  already diplayed #<ref-category UNTIL>
+        + 4 unexpectedly 
+        + 4 to-this-end 
+        + 4 thus 
+        + 4 thereby 
+        + 4 till  **  already diplayed #<ref-category TILL>
+        + 4 though 
+        + 4 therefore 
+        + 4 than 
+        + 4 surprisingly 
+        + 4 such-that 
+        + 4 so 
+        + 4 since  **  already diplayed #<ref-category SINCE>
+        + 4 rather-than 
+        + 4 prior-to  **  already diplayed #<ref-category PRIOR-TO>
+        + 4 otherwise 
+        + 4 once 
+        + 4 on-the-grounds-that 
+        + 4 on-grounds-that 
+        + 4 nevertheless 
+        + 4 moreover 
+        + 4 lest 
+        + 4 inasmuch-as 
+        + 4 instead 
+        + 4 in-contrast 
+        + 4 i.e. 
+        + 4 if 
+        + 4 however 
+        + 4 hence 
+        + 4 furthermore 
+        + 4 for-example 
+        + 4 finally 
+        + 4 except-that 
+        + 4 except  **  already diplayed #<ref-category EXCEPT>
+        + 4 even-if 
+        + 4 even 
+        + 4 e.g. 
+        + 4 by-contrast 
+        + 4 but-rather 
+        + 4 but 
+        + 4 besides  **  already diplayed #<ref-category BESIDES>
+        + 4 because 
+        + 4 as-though 
+        + 4 as-a-consequence 
+        + 4 as-soon-as 
+        + 4 as-if 
+        + 4 as-far-as  **  already diplayed #<ref-category AS-FAR-AS>
+        + 4 as-a-result 
+        + 4 as-expected 
+        + 4 as  **  already diplayed #<ref-category AS>
+        + 4 among  **  already diplayed #<ref-category AMONG>
+        + 4 although 
+        + 4 also 
+        + 4 albeit 
+        + 4 according-as 
+        + 4 then 
+        + 4 if  **  already diplayed #<ref-category IF>
+        + 4 neither 
+      + 3 conjunction vars: {word}
+        + 4 nor 
+        + 4 as-well-as 
+        + 4 instead-of 
+        + 4 and/or 
+        + 4 or 
+        + 4 and 
+      + 3 modifies vars: {modifier, modified}
+        + 4 associated-with-country vars: {country, item}
+          + 5 nationality vars: {country, person}
+          + 5 located-in vars: {country, region}
+      + 3 predicate 
+        + 4 quantifier vars: {word}
+          + 5 less 
+          + 5 few 
+          + 5 none 
+          + 5 not 
+          + 5 no 
+          + 5 various 
+          + 5 such-a 
+          + 5 such 
+          + 5 some 
+          + 5 several 
+          + 5 others 
+          + 5 a-number 
+          + 5 numerous 
+          + 5 neither  **  already diplayed #<ref-category NEITHER>
+          + 5 many 
+          + 5 much 
+          + 5 every 
+          + 5 enough 
+          + 5 either 
+          + 5 each 
+          + 5 both 
+          + 5 another 
+          + 5 any 
+          + 5 all 
+          + 5 additional 
+        + 4 lambda-expression 
+        + 4 quality-value-predicate vars: {attribute, value}
+          + 5 qualified-attribute vars: {attribute, comparative}
+          + 5 comparative-attribution vars: {reference-set, value}
+        + 4 quality-predicate vars: {attribute, item}
+        + 4 modifier 
+          + 5 wrong 
+          + 5 widespread 
+          + 5 vigorous 
+          + 5 viable 
+          + 5 versatile 
+          + 5 vast 
+          + 5 variable 
+          + 5 useful 
+          + 5 useable 
+          + 5 upper 
+          + 5 unstable 
+          + 5 unresolved 
+          + 5 unexpected 
+          + 5 undirected 
+          + 5 uncontrolled 
+          + 5 unbalanced 
+          + 5 unanticipated 
+          + 5 two-dimensional 
+          + 5 transitory 
+          + 5 transitive 
+          + 5 transformative 
+          + 5 systematic 
+          + 5 susceptible 
+          + 5 surgical 
+          + 5 supportive 
+          + 5 sufficient 
+          + 5 successive 
+          + 5 successful 
+          + 5 substantial 
+          + 5 suboptimal 
+          + 5 subcritical 
+          + 5 structural 
+          + 5 stable 
+          + 5 spontaneous 
+          + 5 specific 
+          + 5 solid 
+          + 5 small 
+          + 5 simple 
+          + 5 similar 
+          + 5 silent 
+          + 5 significant 
+          + 5 short 
+          + 5 senescent 
+          + 5 selective 
+          + 5 reversible 
+          + 5 remarkable 
+          + 5 related 
+          + 5 regulatory 
+          + 5 regular 
+          + 5 redundant 
+          + 5 reciprocal 
+          + 5 recessive 
+          + 5 receptive 
+          + 5 recent 
+          + 5 reactive 
+          + 5 raw 
+          + 5 rare 
+          + 5 rapid 
+          + 5 random 
+          + 5 quiescent 
+          + 5 prototypical 
+          + 5 protective 
+          + 5 prospective 
+          + 5 proper 
+          + 5 prominent 
+          + 5 professional 
+          + 5 primary 
+          + 5 prevalent 
+          + 5 preeminent 
+          + 5 powerful 
+          + 5 potent 
+          + 5 poor 
+          + 5 persistent 
+          + 5 perpendicular 
+          + 5 permissive 
+          + 5 passive 
+          + 5 particular 
+          + 5 paradoxical 
+          + 5 own 
+          + 5 overt 
+          + 5 outer 
+          + 5 orthogonal 
+          + 5 original 
+          + 5 organismic 
+          + 5 ongoing 
+          + 5 obscure 
+          + 5 null 
+          + 5 notable 
+          + 5 normal 
+          + 5 nominal 
+          + 5 new 
+          + 5 neighboring 
+          + 5 necessary 
+          + 5 nearby 
+          + 5 natural 
+          + 5 national 
+          + 5 nascent 
+          + 5 multistep 
+          + 5 morphological 
+          + 5 mechanistic 
+          + 5 maximal 
+          + 5 malignant 
+          + 5 major 
+          + 5 logical 
+          + 5 local 
+          + 5 lineal 
+          + 5 latent 
+          + 5 large 
+          + 5 known 
+          + 5 key 
+          + 5 karyotypic 
+          + 5 irreversible 
+          + 5 irreparable 
+          + 5 invisible 
+          + 5 intrinsic 
+          + 5 interconnected 
+          + 5 integral 
+          + 5 intact 
+          + 5 insular 
+          + 5 insufficient 
+          + 5 instrumental 
+          + 5 innocuous 
+          + 5 inner 
+          + 5 innate 
+          + 5 informative 
+          + 5 inflammatory 
+          + 5 individual 
+          + 5 incomplete 
+          + 5 incipient 
+          + 5 inappropriate 
+          + 5 inadequate 
+          + 5 inactivated 
+          + 5 impressive 
+          + 5 important 
+          + 5 implicit 
+          + 5 ill 
+          + 5 hypoxic 
+          + 5 hyperresponsive 
+          + 5 hyperactive 
+          + 5 hybrid 
+          + 5 heritable 
+          + 5 heavy 
+          + 5 harmful 
+          + 5 gross 
+          + 5 gradual 
+          + 5 good 
+          + 5 given 
+          + 5 genuine 
+          + 5 fundamental 
+          + 5 functional 
+          + 5 full-blown 
+          + 5 frequent 
+          + 5 free 
+          + 5 foreign 
+          + 5 feasible 
+          + 5 fascinating 
+          + 5 familiar 
+          + 5 extrinsic 
+          + 5 extreme 
+          + 5 extraordinary 
+          + 5 extensive 
+          + 5 experimental 
+          + 5 excessive 
+          + 5 eventual 
+          + 5 evasive 
+          + 5 environmental 
+          + 5 entire 
+          + 5 elaborate 
+          + 5 efficient 
+          + 5 economical 
+          + 5 dysfunctional 
+          + 5 dynamic 
+          + 5 druggable 
+          + 5 dormant 
+          + 5 dominant 
+          + 5 diverse 
+          + 5 distinctive 
+          + 5 distinct 
+          + 5 distant 
+          + 5 discrete 
+          + 5 direct 
+          + 5 difficult 
+          + 5 differential 
+          + 5 different 
+          + 5 dichotomous 
+          + 5 detailed 
+          + 5 derivative 
+          + 5 demonstrable 
+          + 5 deleterious 
+          + 5 defective 
+          + 5 decisive 
+          + 5 cytotoxic 
+          + 5 crucial 
+          + 5 critical 
+          + 5 counterintuitive 
+          + 5 continuous 
+          + 5 continual 
+          + 5 constitutive 
+          + 5 consistent 
+          + 5 confluent 
+          + 5 conceptual 
+          + 5 complex 
+          + 5 complete 
+          + 5 complementary 
+          + 5 clonal 
+          + 5 clear 
+          + 5 circumstantial 
+          + 5 chronic 
+          + 5 chimeric 
+          + 5 central 
+          + 5 cellular 
+          + 5 causal 
+          + 5 capable 
+          + 5 canonical 
+          + 5 broad 
+          + 5 bona-fide 
+          + 5 beneficial 
+          + 5 basal 
+          + 5 avian 
+          + 5 autocrine 
+          + 5 appropriate 
+          + 5 apoptotic 
+          + 5 antitumoral 
+          + 5 antiapoptotic 
+          + 5 anomalous 
+          + 5 ancillary 
+          + 5 analogous 
+          + 5 anaerobic 
+          + 5 alternative 
+          + 5 aerobic 
+          + 5 advantageous 
+          + 5 adjacent 
+          + 5 adhesive 
+          + 5 adaptive 
+          + 5 active 
+          + 5 accurate 
+          + 5 abundant 
+          + 5 abnormal 
+          + 5 able 
+          + 5 aberrant 
+          + 5 novel 
+          + 5 aforementioned 
+          + 5 severe 
+          + 5 operational 
+          + 5 obvious 
+          + 5 unlikely 
+          + 5 likely 
+          + 5 possible 
+          + 5 financial-qualifier vars: {name}
+          + 5 financial-qualifier vars: {name} **  already diplayed #<ref-category FINANCIAL-QUALIFIER>
+          + 5 someone-reports vars: {reporter}
+          + 5 title-status vars: {name}
+          + 5 title-modifier vars: {name}
+          + 5 title vars: {name}
+            + 6 academic-degree vars: {name}
+            + 6 military-rank vars: {name, abbreviations}
+              + 7 commander vars: {unit}
+              + 7 modified-military-rank vars: {base-rank, modifier, status, country}
+            + 6 position-at-co vars: {title, company}
+            + 6 board-of-directors vars: {company}
+            + 6 head-of vars: {company}
+            + 6 chief-of vars: {company}
+            + 6 age+title vars: {title, age}
+            + 6 abbreviated-title vars: {abbreviation, full-form}
+            + 6 qualified-title vars: {title, qualifier}
+            + 6 modified-title vars: {base-title, modifier, locale, area-of-responsibility, time}
+            + 6 generic-title 
+          + 5 other 
+          + 5 sequencer vars: {word, relation}
+            + 6 during 
+            + 6 before 
+            + 6 after 
+            + 6 following-sequence 
+            + 6 subsequent-sequence 
+            + 6 next-sequence 
+            + 6 previous-sequence 
+            + 6 last-sequence 
+          + 5 approximator vars: {name}
+            + 6 only 
+            + 6 mostly 
+            + 6 hardly 
+            + 6 fairly 
+            + 6 somewhat 
+            + 6 roughly 
+            + 6 precisely 
+            + 6 nearly 
+            + 6 just 
+            + 6 exactly 
+            + 6 barely 
+            + 6 at-most 
+            + 6 at-least 
+            + 6 approximately 
+            + 6 around 
+            + 6 almost 
+            + 6 or-less 
+            + 6 or-fewer 
+            + 6 or-more 
+          + 5 adverbial 
+            + 6 widely 
+            + 6 well 
+            + 6 weakly 
+            + 6 visually 
+            + 6 variously 
+            + 6 unsurprisingly 
+            + 6 unrealistically 
+            + 6 unnaturally 
+            + 6 unintentionally 
+            + 6 uniformly 
+            + 6 ungainly 
+            + 6 typically 
+            + 6 transitively 
+            + 6 transiently 
+            + 6 transcriptionally 
+            + 6 traditionally 
+            + 6 topically 
+            + 6 together 
+            + 6 tightly 
+            + 6 thus-far 
+            + 6 thoroughly 
+            + 6 thinly 
+            + 6 thermodynamically 
+            + 6 theoretically 
+            + 6 terminally 
+            + 6 temporarily 
+            + 6 temporally 
+            + 6 technologically 
+            + 6 technically 
+            + 6 synthetically 
+            + 6 symptomatically 
+            + 6 symbiotically 
+            + 6 swiftly 
+            + 6 superfluously 
+            + 6 surprisingly  **  already diplayed #<ref-category SURPRISINGLY>
+            + 6 surely 
+            + 6 sufficiently 
+            + 6 suddenly 
+            + 6 successfully 
+            + 6 subtly 
+            + 6 substantially 
+            + 6 structurally 
+            + 6 stochastically 
+            + 6 steadily 
+            + 6 statistically 
+            + 6 starkly 
+            + 6 stably 
+            + 6 spontaneously 
+            + 6 specifically 
+            + 6 specially 
+            + 6 spatially 
+            + 6 somehow 
+            + 6 solely 
+            + 6 socially 
+            + 6 so-far 
+            + 6 slowly 
+            + 6 slightly 
+            + 6 singly 
+            + 6 simultaneously 
+            + 6 simply 
+            + 6 similarly 
+            + 6 shortly 
+            + 6 sexually 
+            + 6 seriously 
+            + 6 selectively 
+            + 6 seemingly 
+            + 6 scientifically 
+            + 6 schematically 
+            + 6 safely 
+            + 6 sadly 
+            + 6 routinely 
+            + 6 robustly 
+            + 6 rhythmically 
+            + 6 reversibly 
+            + 6 respectively 
+            + 6 reproductively 
+            + 6 remarkably 
+            + 6 reliably 
+            + 6 relatively 
+            + 6 regularly 
+            + 6 regionally 
+            + 6 redundantly 
+            + 6 reciprocally 
+            + 6 reasonably 
+            + 6 realistically 
+            + 6 readily 
+            + 6 rather 
+            + 6 rapidly 
+            + 6 randomly 
+            + 6 radially 
+            + 6 quietly 
+            + 6 quiescently 
+            + 6 quickly 
+            + 6 questionably 
+            + 6 quantitatively 
+            + 6 qualitatively 
+            + 6 purposefully 
+            + 6 purely 
+            + 6 publicly 
+            + 6 properly 
+            + 6 progressively 
+            + 6 privately 
+            + 6 previously 
+            + 6 presumably 
+            + 6 prematurely 
+            + 6 preferentially 
+            + 6 predominantly 
+            + 6 predictably 
+            + 6 precipitously 
+            + 6 practically 
+            + 6 powerfully 
+            + 6 potently 
+            + 6 popularly 
+            + 6 poorly 
+            + 6 please 
+            + 6 physiologically 
+            + 6 physically 
+            + 6 perversely 
+            + 6 pervasively 
+            + 6 persistently 
+            + 6 permanently 
+            + 6 perfectly 
+            + 6 passively 
+            + 6 partly 
+            + 6 particularly 
+            + 6 partially 
+            + 6 paradoxically 
+            + 6 painstakingly 
+            + 6 painfully 
+            + 6 otherwise  **  already diplayed #<ref-category OTHERWISE>
+            + 6 ostensibly 
+            + 6 osmotically 
+            + 6 originally 
+            + 6 organically 
+            + 6 openly 
+            + 6 oddly 
+            + 6 occasionally 
+            + 6 noticeably 
+            + 6 notably 
+            + 6 normally 
+            + 6 noninvasively 
+            + 6 nominally 
+            + 6 newly 
+            + 6 necessarily 
+            + 6 naturally 
+            + 6 natively 
+            + 6 nationally 
+            + 6 mutually 
+            + 6 morphologically 
+            + 6 morbidly 
+            + 6 modestly 
+            + 6 minimally 
+            + 6 mildly 
+            + 6 metaphorically 
+            + 6 medically 
+            + 6 measurably 
+            + 6 maximally 
+            + 6 mathematically 
+            + 6 logically 
+            + 6 locally 
+            + 6 literally 
+            + 6 linearly 
+            + 6 lightly 
+            + 6 legally 
+            + 6 largely 
+            + 6 kinetically 
+            + 6 jointly 
+            + 6 irreparably 
+            + 6 ionically 
+            + 6 invasively 
+            + 6 invariably 
+            + 6 intrinsically 
+            + 6 intimately 
+            + 6 internally 
+            + 6 interestingly 
+            + 6 intentionally 
+            + 6 intensely 
+            + 6 integrally 
+            + 6 insufficiently 
+            + 6 instead  **  already diplayed #<ref-category INSTEAD>
+            + 6 innately 
+            + 6 inherently 
+            + 6 infrequently 
+            + 6 informally 
+            + 6 inexpensively 
+            + 6 inevitably 
+            + 6 industrially 
+            + 6 indoors 
+            + 6 individually 
+            + 6 indirectly 
+            + 6 independently 
+            + 6 indeed 
+            + 6 incrementally 
+            + 6 increasingly 
+            + 6 incorrectly 
+            + 6 incompletely 
+            + 6 incidentally 
+            + 6 inadvertently 
+            + 6 inaccurately 
+            + 6 in-turn 
+            + 6 in-one-way-or-another 
+            + 6 in-large-part 
+            + 6 in-general 
+            + 6 in-fact 
+            + 6 in-stark-contrast 
+            + 6 in-contrast  **  already diplayed #<ref-category IN-CONTRAST>
+            + 6 in-concert 
+            + 6 importantly 
+            + 6 implicitly 
+            + 6 illustratively 
+            + 6 identifiably 
+            + 6 ideally 
+            + 6 hypothetically 
+            + 6 hugely 
+            + 6 hitherto 
+            + 6 historically 
+            + 6 highly 
+            + 6 heavily 
+            + 6 heartedly 
+            + 6 greatly 
+            + 6 graphically 
+            + 6 gradually 
+            + 6 globally 
+            + 6 geologically 
+            + 6 geographically 
+            + 6 genuinely 
+            + 6 gently 
+            + 6 genetically 
+            + 6 generically 
+            + 6 generally 
+            + 6 fundamentally 
+            + 6 functionally 
+            + 6 frustratingly 
+            + 6 freely 
+            + 6 frankly 
+            + 6 fortunately 
+            + 6 formally 
+            + 6 forcefully 
+            + 6 for-instance 
+            + 6 for-example  **  already diplayed #<ref-category FOR-EXAMPLE>
+            + 6 firmly 
+            + 6 finely 
+            + 6 figuratively 
+            + 6 federally 
+            + 6 famously 
+            + 6 familiarly 
+            + 6 externally 
+            + 6 experimentally 
+            + 6 exclusively 
+            + 6 evolutionarily 
+            + 6 evocatively 
+            + 6 evidently 
+            + 6 evenly 
+            + 6 ethically 
+            + 6 essentially 
+            + 6 erroneously 
+            + 6 equivalently 
+            + 6 equally 
+            + 6 enzymatically 
+            + 6 environmentally 
+            + 6 entirely 
+            + 6 energetically 
+            + 6 electrically 
+            + 6 efficiently 
+            + 6 effectively 
+            + 6 easily 
+            + 6 e.-g. 
+            + 6 e.g.  **  already diplayed #<ref-category E.G.>
+            + 6 dynamically 
+            + 6 distributionally 
+            + 6 discretely 
+            + 6 discreetly 
+            + 6 directly 
+            + 6 differently 
+            + 6 developmentally 
+            + 6 densely 
+            + 6 demonstrably 
+            + 6 deeply 
+            + 6 dangerously 
+            + 6 cytologically 
+            + 6 currently 
+            + 6 crucially 
+            + 6 critically 
+            + 6 covalently 
+            + 6 correspondingly 
+            + 6 cooperatively 
+            + 6 convincingly 
+            + 6 conversely 
+            + 6 conventionally 
+            + 6 continuously 
+            + 6 consistently 
+            + 6 considerably 
+            + 6 consequently 
+            + 6 confidently 
+            + 6 conditionally 
+            + 6 concordantly 
+            + 6 concomitantly 
+            + 6 conclusively 
+            + 6 conceptually 
+            + 6 computationally 
+            + 6 comprehensively 
+            + 6 completely 
+            + 6 comparatively 
+            + 6 compactly 
+            + 6 commonly 
+            + 6 commercially 
+            + 6 colloquially 
+            + 6 collectively 
+            + 6 coherently 
+            + 6 closely 
+            + 6 clonally 
+            + 6 clinically 
+            + 6 clearly 
+            + 6 circularly 
+            + 6 chronologically 
+            + 6 cheaply 
+            + 6 characteristically 
+            + 6 certainly 
+            + 6 centrally 
+            + 6 causally 
+            + 6 categorically 
+            + 6 casually 
+            + 6 carefully 
+            + 6 by-necessity 
+            + 6 broadly 
+            + 6 briefly 
+            + 6 bilaterally 
+            + 6 beautifully 
+            + 6 basically 
+            + 6 badly 
+            + 6 at-once 
+            + 6 asymmetrically 
+            + 6 asexually 
+            + 6 arguably 
+            + 6 architecturally 
+            + 6 arbitrarily 
+            + 6 aptly 
+            + 6 appropriately 
+            + 6 apparently 
+            + 6 analytically 
+            + 6 anatomically 
+            + 6 amply 
+            + 6 alternatively 
+            + 6 alone 
+            + 6 all-the-way 
+            + 6 alarmingly 
+            + 6 agriculturally 
+            + 6 again 
+            + 6 admittedly 
+            + 6 admirably 
+            + 6 adequately 
+            + 6 additionally 
+            + 6 actually 
+            + 6 actively 
+            + 6 accurately 
+            + 6 accordingly 
+            + 6 perpendicularly 
+            + 6 orthogonally 
+            + 6 laterally 
+            + 6 diagonally 
+            + 6 later 
+            + 6 earlier 
+            + 6 sooner 
+            + 6 also  **  already diplayed #<ref-category ALSO>
+            + 6 ultimately 
+            + 6 subsequently 
+            + 6 initially 
+            + 6 finally  **  already diplayed #<ref-category FINALLY>
+            + 6 eventually 
+            + 6 potentially 
+            + 6 definitely 
+            + 6 probably 
+            + 6 as-well 
+            + 6 no-longer 
+            + 6 frequency-of-event vars: {name}
+              + 7 yearly 
+              + 7 usually 
+              + 7 seldom 
+              + 7 rarely 
+              + 7 often 
+              + 7 never 
+              + 7 monthly 
+              + 7 indefinitely 
+              + 7 hourly 
+              + 7 frequently 
+              + 7 forever 
+              + 7 ever 
+              + 7 daily 
+              + 7 constantly 
+              + 7 chronically 
+              + 7 always 
+            + 6 intensifier 
+              + 7 very 
+              + 7 wonderfully 
+              + 7 vaguely 
+              + 7 unusually 
+              + 7 unmistakably 
+              + 7 unfortunately 
+              + 7 unexpectedly  **  already diplayed #<ref-category UNEXPECTEDLY>
+              + 7 undoubtedly 
+              + 7 understandably 
+              + 7 undeniably 
+              + 7 uncharacteristically 
+              + 7 truly 
+              + 7 tremendously 
+              + 7 totally 
+              + 7 strongly 
+              + 7 strikingly 
+              + 7 strictly 
+              + 7 straightforwardly 
+              + 7 sparsely 
+              + 7 sparingly 
+              + 7 somewhat  **  already diplayed #<ref-category SOMEWHAT>
+              + 7 significantly 
+              + 7 sharply 
+              + 7 really 
+              + 7 radically 
+              + 7 quite 
+              + 7 too 
+              + 7 nicely 
+              + 7 moderately 
+              + 7 merely 
+              + 7 meaningfully 
+              + 7 markedly 
+              + 7 marginally 
+              + 7 mainly 
+              + 7 loosely 
+              + 7 immensely 
+              + 7 fully 
+              + 7 extremely 
+              + 7 extraordinarily 
+              + 7 extensively 
+              + 7 excessively 
+              + 7 especially 
+              + 7 drastically 
+              + 7 dramatically 
+              + 7 astoundingly 
+              + 7 amazingly 
+              + 7 acutely 
+              + 7 absolutely 
+              + 7 abnormally 
+    + 2 abstract-region 
+      + 3 attribute-value vars: {attribute}
+        + 4 qualitative-age 
+        + 4 comparative-quantifier vars: {quantifier}
+          + 5 superlative-quantifier 
+        + 4 rate-of-change-value 
+        + 4 amount-as-level-value 
+        + 4 length-value 
+        + 4 width-value 
+        + 4 height-value 
+        + 4 size-value 
+        + 4 color-value 
+        + 4 superlative-modifier 
+        + 4 comparative-modifier 
+        + 4 comparative vars: {more, less}
+          + 5 rate-of-change-comparative 
+          + 5 length-comparative 
+          + 5 width-comparative 
+          + 5 height-comparative 
+          + 5 size-comparative 
+          + 5 color-comparative 
+          + 5 direction-of-comparison 
+            + 6 less-than 
+              + 7 rate-of-change-superlative-less 
+              + 7 rate-of-change-comparative-less 
+              + 7 length-superlative-less 
+              + 7 length-comparative-less 
+              + 7 width-superlative-less 
+              + 7 width-comparative-less 
+              + 7 height-superlative-less 
+              + 7 height-comparative-less 
+              + 7 size-superlative-less 
+              + 7 size-comparative-less 
+              + 7 color-superlative-less 
+              + 7 color-comparative-less 
+            + 6 more-than 
+              + 7 rate-of-change-superlative-more 
+              + 7 rate-of-change-comparative-more 
+              + 7 length-superlative-more 
+              + 7 length-comparative-more 
+              + 7 width-superlative-more 
+              + 7 width-comparative-more 
+              + 7 height-superlative-more 
+              + 7 height-comparative-more 
+              + 7 size-superlative-more 
+              + 7 size-comparative-more 
+              + 7 color-superlative-more 
+              + 7 color-comparative-more 
+          + 5 superlative 
+            + 6 rate-of-change-superlative 
+            + 6 length-superlative 
+            + 6 width-superlative 
+            + 6 height-superlative 
+            + 6 size-superlative 
+            + 6 color-superlative 
+  + 1 quality 
+    + 2 physical-surface 
+    + 2 company-financial 
+      + 3 ern vars: {company, financial, reporting-period, value, esp}
+    + 2 attribute vars: {var}
+      + 3 location-of 
+      + 3 dimension 
+        + 4 two-dimensional  **  already diplayed #<ref-category TWO-DIMENSIONAL>
+        + 4 three-dimensional 
+      + 3 orientation 
+      + 3 name 
+        + 4 name-of-hurricane vars: {sequence}
+        + 4 denomination/money vars: {name}
+          + 5 fractional-denomination/money vars: {name, reference-denomination, fraction}
+        + 4 inc-term vars: {name}
+        + 4 company-name vars: {sequence, first-word, prefix, rest, inc-term, the}
+        + 4 person-name vars: {sequence, last-name}
+          + 5 person-name/first-last vars: {first-name, standard-prefix, version}
+        + 4 name-of-location vars: {sequence, type}
+        + 4 initial vars: {word}
+        + 4 name-word vars: {name, name-of}
+          + 5 generic-co-word vars: {word}
+          + 5 company-activity-word vars: {word}
+          + 5 heuristic-company-word vars: {word}
+        + 4 greek-letter vars: {letter}
+        + 4 single-capitalized-letter vars: {letter}
+        + 4 uncategorized-name vars: {name/s}
+          + 5 spelled-name vars: {name/s}
+      + 3 scalar-attribute vars: {comparative, superlative}
+        + 4 age vars: {age}
+        + 4 comparative-quantification 
+        + 4 rate-of-change 
+        + 4 amount-as-level 
+        + 4 length 
+        + 4 width 
+        + 4 height 
+        + 4 size 
+        + 4 color 
+        + 4 comparative-modification 
+    + 2 qualifiable vars: {qualifier}
+    + 2 scalar 
+      + 3 scalar-quality 
+    + 2 designator 
+      + 3 class-of-numbers 
+        + 4 ones-number 
+        + 4 teens-number 
+        + 4 tens-number 
+      + 3 named-type vars: {type-of}
+        + 4 type-of-military-unit vars: {name, abbreviations}
+        + 4 kind-of-company/phrase vars: {base, modifier}
+        + 4 kind-of-company 
+          + 5 journal 
+          + 5 service 
+          + 5 corps 
+          + 5 administration 
+          + 5 bureau 
+          + 5 group 
+          + 5 laboratories 
+          + 5 chamber 
+          + 5 council 
+          + 5 ministry 
+          + 5 army 
+          + 5 consortium 
+          + 5 university 
+          + 5 store 
+          + 5 shop 
+          + 5 school 
+          + 5 retailer 
+          + 5 office 
+          + 5 newspaper 
+          + 5 magazine 
+          + 5 league 
+          + 5 institute 
+          + 5 foundation 
+          + 5 exchange 
+          + 5 conglomerate 
+          + 5 commission 
+          + 5 college 
+          + 5 chain 
+          + 5 center 
+          + 5 bank 
+          + 5 authority 
+          + 5 agency 
+        + 4 person-type 
+          + 5 uncle 
+          + 5 aunt 
+          + 5 sibling 
+          + 5 brother 
+          + 5 sister 
+          + 5 daughter 
+          + 5 son 
+          + 5 parent 
+          + 5 mother 
+          + 5 father 
+          + 5 child 
+          + 5 people 
+          + 5 woman 
+          + 5 man 
+          + 5 boy 
+          + 5 girl 
+        + 4 car-type 
+      + 3 index 
+        + 4 assession-number vars: {date, index-number}
+        + 4 temporal-index 
+          + 5 am-pm 
+            + 6 post-meridian 
+            + 6 ante-meridian 
+        + 4 part-of-a-sequence vars: {position, sequence}
+        + 4 position-in-a-sequence vars: {number, item, sequence}
+        + 4 illions-distribution vars: {number, illion, value}
