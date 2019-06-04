@@ -1843,7 +1843,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (when *right-edge-into-reference*
     (loop for e in (edges-after *right-edge-into-reference*)
        as item = (edge-referent e)
-       thereis (valid-object-complement vg item))))
+       thereis (valid-object-complement? vg item))))
 
 (defun valid-object-complement? (vg obj)
   "Is the type of this candidate complement consistent with constraints
