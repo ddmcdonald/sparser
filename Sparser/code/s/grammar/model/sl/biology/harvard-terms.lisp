@@ -195,7 +195,7 @@ by which this occurs.") |#
 (define-category decrease
   :specializes negative-bio-control
   :binds ((theme biological)
-          (level (:or measurement bio-scalar)))
+          (level measurement))
   :realization
   (:verb "decrease" 
    :etf (svo-passive)
@@ -223,7 +223,7 @@ by which this occurs.") |#
 (define-category vanish
   :specializes negative-bio-control
   :binds ((theme biological)
-          (level (:or measurement bio-scalar)))
+          (level measurement))
   :realization
   (:verb "vanish" 
    :etf (sv)
@@ -237,7 +237,7 @@ by which this occurs.") |#
 ;; added 'level' 5/31/19 ddm
 (define-category increase
   :specializes positive-bio-control
-  :binds ((level (:or measurement bio-scalar)))
+  :binds ((level measurement))
   :restrict ((object (:or ;;bio-chemical-entity
                       bio-entity ;; allows for "population"
                       scalar-quality)))
