@@ -86,7 +86,7 @@ of how they compose with other terms.
           (number number)))
 
 (defun setup-musical-notes ()
-  (let* ((letter-list '("A" "B" "C" "D" "E" "F"))
+  (let* ((letter-list '("A" "B" "C" "D" "E" "F" "G"))
          (words (loop for l in letter-list collect (resolve l))))
     (loop for l in letter-list do (strip-single-term-rules l))
     
