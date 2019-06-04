@@ -271,6 +271,7 @@
 ;;/// might be worth distinguishing approximation from
 ;; intensity
 
+#+ignore
 (define-category scalar-quality
   :specializes scalar
   :documentation "There are a substantial number of references to
