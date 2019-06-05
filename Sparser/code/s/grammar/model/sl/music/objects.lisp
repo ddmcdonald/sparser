@@ -23,18 +23,18 @@
 (defparameter *note-names* '("A" "B" "C" "D" "E" "F" "G"))
 
 
-(defun get-note (name)
+(defun get-mus-note (name)
   (if *description-lattice*
-    (get-by-name category::note name)
-    (find-individual 'note :name name)))
+    (get-by-name category::mus-note name)
+    (find-individual 'mus-note :name name)))
 
 (defun make-note-sequence ()
   (let* ((the-notes
-          (mapcar #'(lambda (string) (get-note string))
+          (mapcar #'(lambda (string) (get-mus-note string))
                   *note-names*))
          (sequence (create-sequence the-notes)))
-    (old-bind-variable 'sequence sequence category::note)
-    (old-bind-variable 'cycle-length 7 category::note)
+    (old-bind-variable 'sequence sequence category::mus-note)
+    (old-bind-variable 'cycle-length 7 category::mus-note)
     (thread-sequence sequence)))
 
 
@@ -46,7 +46,7 @@
 
 ;;--- pitch as a region
 
-(define-category pitch
+(define-category mus-pitch
   :instantiates nil
   :specializes region
   :realization (:common-noun "pitch")
@@ -56,14 +56,14 @@
 
 ;;--- Music things
 
-(define-category key
+(define-category mus-key
   :specializes symbolic
   :index (:permanent :key name :get)
-  :binds ((note note)
-          (accidental accidental)))
+  :binds ((note mus-note)
+          (accidental mus-accidental)))
 
 
-(define-category beat
+(define-category mus-beat
   :specializes time-unit
   :mixins (part-of-a-sequence)
   :realization (:common-noun "beat"))
@@ -71,28 +71,32 @@
 #| "everything before beat 2 of measure 1"
 |# "between beats 1 and 3"
 
-(Define-category measure
+(Define-category mus-measure
   :specializes symbolic
   :mixins (container ;; of note stuff
            partonomic ;; comprised of parts
            part-of-a-sequence ;; fits into a larger sequence
            sequence ;;// alternative to partonomic
            )
-  :bindings (part-type 'beat)
+  :bindings (part-type 'mus-beat)
   ;;:restrict ((part-type beat))
   :realization (:common-noun "measure"))
 
 ;;--- intervals, tones, ...
 ;;--- Should these be units of measure? Seem like abstract units of measure within a "pitch" region, but I'm not sure.
 
-(define-category step
+(define-category mus-step
   :specializes unit-of-measure
   :realization (:common-noun "step"))
 
+(define-category mus-half-step
+  :specializes unit-of-measure
+  :realization (:common-noun "half-step"))
+
 (define-category octave
   :specializes unit-of-measure
-  :mixins (sequence partonomic)
-  :bindings (part-type 'step)
+  :mixins (partonomic)
+  :bindings (part-type 'mus-note)
   :realization (:common-noun "octave"))
 
 ;;--- notes
@@ -101,8 +105,8 @@
   :specializes symbolic
   :mixins (part-of-a-sequence) ;; "the fifth note" // but: "eigth", "sixteenth"
   :binds ((duration factional-term)
-          (pitch (:or note pitch-class))
-          (accidental accidental)))
+          (pitch (:or mus-note pitch-class))
+          (accidental mus-accidental)))
 
 #| "the C4 quarter note"
    "the quarter note"
@@ -114,29 +118,29 @@ Treat notes, rests, and pitch classes all the same in terms
 of how they compose with other terms. 
 |#
 
-(define-category note
+(define-category mus-note
   :specializes abstract-note
   :mixins (cyclic part-of-a-sequence)
   :lemma (:common-noun "note")
   :index (:permanent :key name :get)
   :realization (:common-noun name))
 
-(define-category accidental
-  :specializes note)
-(define-category sharp
-  :specializes accidental
+(define-category mus-accidental
+  :specializes mus-note)
+(define-category mus-sharp
+  :specializes mus-accidental
   :realization (:common-noun name))
-(define-category flat
-  :specializes accidental
+(define-category mus-flat
+  :specializes mus-accidental
   :realization (:common-noun name))
 
-(define-category rest
+(define-category mus-rest
   :specializes abstract-note
   :realization (:common-noun "rest"))
 
 (define-category pitch-class
   :specializes abstract-note
-  :binds ((note note)
+  :binds ((note mus-note)
           (number number)))
 
 (defun setup-musical-notes ()
@@ -146,7 +150,7 @@ of how they compose with other terms.
     
     ;; Notes per se
     (let* ((notes (loop for w in words
-                     collect (define-individual 'note :name w))))
+                     collect (define-individual 'mus-note :name w))))
       
       ;; accidentals
       (let ((sharp-strings (loop for l in letter-list
@@ -155,10 +159,10 @@ of how they compose with other terms.
                              collect (string-append l "b"))))
         (loop for string in sharp-strings
            as word = (resolve/make string)
-           collect (define-individual 'sharp :name word))
+           collect (define-individual 'mus-sharp :name word))
         (loop for string in flat-strings
            as word = (resolve/make string)
-           collect (define-individual 'flat :name word)))
+           collect (define-individual 'mus-flat :name word)))
 
       ;; selected pitch classes
       
@@ -167,7 +171,7 @@ of how they compose with other terms.
 
 
 (define-category note-length
-  :specializes note
+  :specializes mus-note
   :realization (:common-noun name))
 
 (defun setup-note-lengths ()
@@ -200,7 +204,7 @@ of how they compose with other terms.
     ;; than the application of a phrase structure rule, we have to
     ;; make the edge ourselves.
     (let* ((i (define-or-find-individual 'pitch-class
-                  :note note :number number))
+                  :note mus-note :number number))
            (edge
             (make-binary-edge/explicit-rule-components
              note-edge
