@@ -83,6 +83,7 @@
   :realization (:common-noun "measure"))
 
 ;;--- intervals, tones, ...
+;;--- Should these be units of measure? Seem like abstract units of measure within a "pitch" region, but I'm not sure.
 
 (define-category step
   :specializes unit-of-measure
@@ -90,8 +91,9 @@
 
 (define-category octave
   :specializes unit-of-measure
-  :mixins (partonomic)
-  :realization (:common-noun "step"))
+  :mixins (sequence partonomic)
+  :bindings (part-type 'step)
+  :realization (:common-noun "octave"))
 
 ;;--- notes
 
@@ -114,7 +116,7 @@ of how they compose with other terms.
 
 (define-category note
   :specializes abstract-note
-  :mixins (cyclic)
+  :mixins (cyclic part-of-a-sequence)
   :lemma (:common-noun "note")
   :index (:permanent :key name :get)
   :realization (:common-noun name))
@@ -138,7 +140,7 @@ of how they compose with other terms.
           (number number)))
 
 (defun setup-musical-notes ()
-  (let* ((letter-list '("A" "B" "C" "D" "E" "F" "G"))
+  (let* ((letter-list *note-names*)
          (words (loop for l in letter-list collect (resolve l))))
     (loop for l in letter-list do (strip-single-term-rules l))
     
