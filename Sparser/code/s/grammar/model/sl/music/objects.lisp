@@ -7,7 +7,35 @@
 
 ;; Initiated 8/30/18
 
+;; Molly 6/5/19
+;; Notes now form a cyclic sequence.
+;; Beats now specializes time-unit.
+;; Defined step and octave, which specialize unit-of-measure
+;; Defined pitch, which specializes region, so that we can support "moving" within it and incorporate its units of measure, octave and step.
+;; Note sequence is always the same, but where you start changes depending upon key. Need to set key as a kind of loadable configuration where the 
+;; starting note is set (like make-temporal-sequence grounds us using (today))
+
+;; Call setup-musical-notes, make-note-sequence.
+
 (in-package :sparser)
+
+
+(defparameter *note-names* '("A" "B" "C" "D" "E" "F" "G"))
+
+
+(defun get-note (name)
+  (if *description-lattice*
+    (get-by-name category::note name)
+    (find-individual 'note :name name)))
+
+(defun make-note-sequence ()
+  (let* ((the-notes
+          (mapcar #'(lambda (string) (get-note string))
+                  *note-names*))
+         (sequence (create-sequence the-notes)))
+    (old-bind-variable 'sequence sequence category::note)
+    (old-bind-variable 'cycle-length 7 category::note)
+    (thread-sequence sequence)))
 
 
 ;;--- goes in upper-model
@@ -16,10 +44,27 @@
   :specializes non-physical)
 
 
+;;--- pitch as a region
+
+(define-category pitch
+  :instantiates nil
+  :specializes region
+  :realization (:common-noun "pitch")
+  :documentation "Instantiating pitch as an abstract region, so that we can talk about moving 'up' or 'down' in pitch
+  and make sense of its various intervals/units of measure - step, half-step, octave, etc.")
+
+
 ;;--- Music things
 
-(define-category beat
+(define-category key
   :specializes symbolic
+  :index (:permanent :key name :get)
+  :binds ((note note)
+          (accidental accidental)))
+
+
+(define-category beat
+  :specializes time-unit
   :mixins (part-of-a-sequence)
   :realization (:common-noun "beat"))
 
@@ -40,7 +85,12 @@
 ;;--- intervals, tones, ...
 
 (define-category step
-  :specializes symbolic
+  :specializes unit-of-measure
+  :realization (:common-noun "step"))
+
+(define-category octave
+  :specializes unit-of-measure
+  :mixins (partonomic)
   :realization (:common-noun "step"))
 
 ;;--- notes
@@ -64,7 +114,9 @@ of how they compose with other terms.
 
 (define-category note
   :specializes abstract-note
+  :mixins (cyclic)
   :lemma (:common-noun "note")
+  :index (:permanent :key name :get)
   :realization (:common-noun name))
 
 (define-category accidental
