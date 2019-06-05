@@ -723,7 +723,7 @@
 
 
 (define-category involve :specializes bio-relation
-  :binds ((object (:or bio-chemical-entity bio-organ bio-process)))
+  :binds ((object (:or bio-chemical-entity bio-organ bio-process bio-mechanism)))
   :restrict ((theme (:or bio-process bio-mechanism)))
   :realization
   (:verb "involve" ;; keyword: ENDS-IN-ING
