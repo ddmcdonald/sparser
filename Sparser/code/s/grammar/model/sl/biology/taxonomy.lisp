@@ -1142,6 +1142,8 @@
 	  (equilibrium-state equilibrium)
 	  (state bio-state)
           (in-pathway pathway))
+  :restrict ((context (:or bio-mechanism ;; for pathways -- they are context, not manner
+                           experiment-data)))
   :mixins (  reactome-category  in-ras2-model )
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
