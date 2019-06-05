@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2003,2011-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2003,2011-2019 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "fsa digits"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  January 2017
+;;;  Version:  June 2019
 
 ;; 5.0 (10/5 v2.3) rephrased the scan step to get subtler steps
 ;; 5.1 (9/14/93) updated the scanning calls, finished 9/16
@@ -218,7 +218,27 @@ the fsa would be identified at the word level rather than the category level.
                             :category category::hyphenated-number
                             :form category::number
                             :referent  i
-                            :rule 'digit-fsa)))))
+                            :rule 'digit-fsa))))
+      ;; These two drop the middle words on the floor ("-", "through")
+      ;; They're not plausible :constituent in the edges because there
+      ;; aren't edge over them, though that could be accommodated.
+      ;; Anything wandering into one of these edges might be puzzled.
+      (:through-range
+       ;; Construct the range, put a edge over the whole span
+       (let* ((edge-1 (aref *digit-position-array* 0))
+              (edge-2 (aref *digit-position-array* 1))
+              (i (define-or-find-individual 'range
+                     :from (edge-referent edge-1)
+                     :to (edge-referent edge-2))))
+         (make-chart-edge :starting-position starting-position
+                          :ending-position ending-position
+                          :category category::range
+                          :form category::number ;; ??
+                          :referent i
+                          :left-daughter edge-1
+                          :right-daughter edge-2
+                          :rule 'digit-fsa))))
+    
     ending-position ))
 
   
@@ -249,36 +269,45 @@ the fsa would be identified at the word level rather than the category level.
     (tr :digit-fsa-scanned (pos-terminal next-position)
         'expect-digit-delimiter-as-next-treetop)
         
-    (if (null (pos-preceding-whitespace next-position))
+    (let ((word-at-next-position (pos-terminal next-position)))
+      (if (null (pos-preceding-whitespace next-position))
         ;; rule out cases like "47 -", as well as what would probably
         ;; be misspellings: "47 ,000"
-            
-      (let ((word-at-next-position (pos-terminal next-position)))
+        
         (cond ((eq word-at-next-position *the-punctuation-comma*)
                (continue-digit-sequence-after-comma
                 next-cell array next-position))
-                    
+              
               ((eq word-at-next-position *the-punctuation-period*)
                (record-period-in-digit-sequence)
                (continue-digit-sequence-after-period
                 next-cell array next-position))
-                    
+              
               ((eq word-at-next-position *the-punctuation-hyphen*)
                (setq *interpretation-of-digit-sequence* :hypenated-numbers)
                (continue-digit-sequence-after-hyphen
                 next-cell array next-position))
-                    
+
+              ((eq word-at-next-position (word-named "through"))
+               (setq *interpretation-of-digit-sequence* :through-range)
+               (continue-digit-sequence-after ))
+              
               (t (tr :digit-fsa-returning :unanticipated-character
                      'expect-digit-delimiter-as-next-treetop)
-                 (values next-position next-cell))))
+                 (values next-position next-cell)))
 
-      (else
-        (tr :digit-fsa-returning :preceding-whitespace
-            'expect-digit-delimiter-as-next-treetop)        
-        (values next-position  ;; the position at the end of the seq.
-                next-cell ;; the count on the number of cells filled.
-                )))))
-
+        (else ;; cases that want a space between the digits
+          (cond
+            ((eq word-at-next-position (word-named "through"))
+             (setq *interpretation-of-digit-sequence* :through-range)
+             (continue-digit-sequence-after-through next-position
+                                                    next-cell array))
+            (t
+             (tr :digit-fsa-returning :preceding-whitespace
+                 'expect-digit-delimiter-as-next-treetop)        
+             (values next-position  ;; the position at the end of the seq.
+                     next-cell ;; the count on the number of cells filled.
+                     ))))))))
 
 
 ;;;-------------------------
@@ -629,6 +658,40 @@ unknown---in any event, we're taking the first edge that is installed.
     ;; Make-edge-over-unknown-digit-sequence will have an integer as
     ;; its referent
     (read-from-string (format nil ".~A" (edge-referent edge)))))
+
+
+;;;--------
+;;; ranges
+;;;--------
+
+(defun continue-digit-sequence-after-through (position-of-through
+                                              next-cell array)
+  "We've seen a digit and the word 'through'. We expect to now see another
+   digit, at which point we will have a completed the target pattern
+   an will return back from the initiating call in digit-fsa, which
+   wants to see the ending position and the number of segments."
+  (let* ((pos-after-through (chart-position-after position-of-through))
+         (status (pos-assessed? pos-after-through))) ;; anything in that field?
+    (unless status
+      (scan-next-position))
+    (tr :digit-fsa-scanned (pos-terminal pos-after-through)
+        'continue-digit-sequence-after-through)
+
+    (if (eq :digits (pos-capitalization pos-after-through))
+      ;; We're done. Create the edge. Put it in the next cell.
+      ;; Set up the return values.
+      (let ((digits-edge
+             (car (install-terminal-edges
+                     (pos-terminal pos-after-through)
+                     pos-after-through
+                     (chart-position-after pos-after-through)))))
+        ;;(break "digits-edge = ~a" digits-edge)
+        (setf (aref array next-cell) digits-edge)
+        (values (chart-position-after pos-after-through)
+                2))
+      (else ;; we didn't find the target pattern
+        ;; I don't think this case is anticipated. 
+        nil))))
 
 
 
