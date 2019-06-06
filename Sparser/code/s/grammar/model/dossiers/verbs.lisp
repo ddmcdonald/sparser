@@ -237,6 +237,18 @@ come
      :adjp-complement adj-comp 
      :mumble ("make" svo :a actor :o patient)))
 
+(define-category change-to 
+  :specializes move
+  :mixins (agent goal theme with-specified-location)
+  :restrict ((agent physical-agent) (theme endurant) (goal endurant))
+  :realization (:verb "change" 
+                :etf svol
+                :s agent
+                :o theme
+                :l goal
+                :loc-pp-complement (to)
+                :mumble ("change" svo1o2 :o1 theme :o2 goal)))
+
 
 (define-category move-to
   :specializes move
