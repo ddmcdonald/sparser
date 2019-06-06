@@ -238,11 +238,30 @@ come
      :mumble ("make" svo :a actor :o patient)))
 
 
+(define-category move-to
+  :specializes move
+  :mixins (agent theme with-specified-location)
+  :restrict ((agent physical-agent)
+             (theme endurant)
+             (to-location (:or physical location)))
+  :documentation "This allows proper chunking of a locative complements to 'move' verbs (more than just 'to'), where previously these
+  locative complements were swalowed up by the theme np. It seems that move is a complex category with lots of working
+  parts, so this may just be a temporary hack."
+   :realization (:verb "move"
+                 :etf (svol)
+                 :s agent
+                 :o theme
+                 :l location
+                 :loc-pp-complement (on
+                         to from)
+                 :mumble ("move" svo1o2 :o1 theme :o2 to-location)))
+
 (define-category move-something-somewhere
   :specializes move
   :mixins (agent with-specified-location)
   :restrict ((agent physical-agent)
-             (theme endurant))
+             (theme endurant)
+             (to-location (:or physical location)))
   :documentation "Inherits variables from move (in kinds/movement.lisp).
  where the theme should be restricted to 'can-change-location' (but presently
  that's too narrow for applications in biology). See also the large set
@@ -254,8 +273,6 @@ come
                  :s agent
                  :o theme
                  :l to-location
-                 :from from-location
-                 :to to-location
                  :mumble ("move" svo1o2 :o1 theme :o2 to-location)))
 
 #|
