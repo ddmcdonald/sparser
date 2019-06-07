@@ -353,11 +353,12 @@ come
 
 (define-category transpose
   :specializes move
-  :mixins (simple-action goal)
+  :mixins (simple-action goal with-specified-location)
   :binds ((theme endurant) (goal measurement))
   :realization (:verb "transpose"
                 :etf svol
                 :s agent
+                :o theme
                 :l goal
                 :loc-pp-complement (down up)
                 :mumble ("transpose" svo1o2 :s agent :o theme :o2 goal)))
@@ -396,7 +397,7 @@ come
                  :s agent
                  :o theme
                  :l goal
-                 :loc-pp-complement (to from up down)
+                 :loc-pp-complement (to from onto on into)
                  :mumble ("move" svo1o2 :s agent :o1 theme :o2 goal)))
 
 (define-category move-something-somewhere
