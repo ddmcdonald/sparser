@@ -71,7 +71,7 @@
 #| "everything before beat 2 of measure 1"
 |# "between beats 1 and 3"
 
-(Define-category mus-measure
+(define-category mus-measure
   :specializes symbolic
   :mixins (container ;; of note stuff
            partonomic ;; comprised of parts
@@ -82,6 +82,15 @@
   ;;:restrict ((part-type beat))
   :realization (:common-noun "measure"))
 
+(define-category mus-bar
+  :specializes symbolic
+  :mixins (container 
+           partonomic
+           part-of-a-sequence
+           sequence)
+  :bindings (part-type 'mus-beat)
+  :realization (:common-noun "bar"))
+
 ;;--- intervals, tones, ...
 ;;--- Should these be units of measure? Seem like abstract units of measure within a "pitch" region, but I'm not sure.
 
@@ -91,7 +100,7 @@
 
 (define-category mus-half-step
   :specializes unit-of-measure
-  :realization (:common-noun "half-step"))
+  :realization (:common-noun "half-step" :common-noun "1/2 step"))
 
 (define-category octave
   :specializes unit-of-measure
@@ -104,7 +113,7 @@
 (define-category abstract-note
   :specializes symbolic
   :mixins (part-of-a-sequence) ;; "the fifth note" // but: "eigth", "sixteenth"
-  :binds ((duration factional-term)
+  :binds ((duration fractional-term)
           (pitch (:or mus-note pitch-class))
           (accidental mus-accidental)))
 
@@ -177,7 +186,7 @@ of how they compose with other terms.
 (defun setup-note-lengths ()
   (let* ((pw-strings
           (loop for s in '("whole" "half" "quarter"
-                           "eight" "sixteenth")
+                           "eighth" "sixteenth")
              collect (string-append s " note")))
          (polywords
           (loop for s in pw-strings collect (resolve/make s))))
