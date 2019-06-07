@@ -7,6 +7,8 @@
 
 (in-package :sparser)
 
+(defun define-subcat-patterns ()) ;; just for meta-dot retrieval
+
 #| The purpose of these mixins is to pre-package compositional
 options for parsing and phrasal patterns and options for generation
 into natural classes.

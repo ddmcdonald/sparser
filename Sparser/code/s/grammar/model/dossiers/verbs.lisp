@@ -1,9 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2018-2019  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "verbs"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  December 2018
+;;;  version:  June 2019
+
+(in-package :sparser)
+
+(defun define-standard-verbs ()) ;; for retrieving this file
 
 ;; Gathers verbs from diverse specific sources into one place.
 ;; Tipping was the need to have access to prepositions now that we can
@@ -15,7 +19,6 @@ be an entry for it in bio;overrides.lisp that expunges it,
 or alternatively an entry in (e.g.) bio;verbs.lisp that specializes it
 and provides biology-specific restrictions on its varibles. |#
 
-(in-package :sparser)
 
 (define-category answer
   :specializes process
