@@ -140,7 +140,8 @@ subcategorization-pattern is a daughter of linguistic, abstract
   ;; "acts to ...", "fails to ..."
   :specializes subcategorization-pattern
   :mixins (agent theme)
-  :restrict ((theme perdurant))
+  :restrict ((agent (:or pronoun physical-agent))
+             (theme perdurant))
   :realization
     (:s agent
      :to-comp theme))
@@ -149,6 +150,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
   ;;"allows X to ...", "consider X to ...", "enable X to ...", "know X to ...", "lead X to ...", "use X to ..."
   :specializes subcategorization-pattern
   :mixins (agent)
+  :restrict ((agent (:or pronoun physical-agent)))
   :binds ((theme perdurant))
   :realization
     (:s agent
@@ -159,7 +161,8 @@ subcategorization-pattern is a daughter of linguistic, abstract
   ;; "X seems to ..."
   :specializes subcategorization-pattern
   :mixins (agent theme)
-  :restrict ((theme perdurant))
+  :restrict ((agent (:or pronoun physical-agent))
+             (theme perdurant))
   :realization
     (:s agent
      :to-comp theme))
@@ -206,6 +209,8 @@ subcategorization-pattern is a daughter of linguistic, abstract
 (define-mixin-category scomp-verb ;; "Let me know ...", "Make me ..." -- Quirk calls these object + bare-infinitive complements
     :specializes subcategorization-pattern
     :mixins (agent theme takes-tense-aspect-modal)
+    :restrict ((agent (:or physical-agent social-agent))
+               (theme perdurant))
     :binds ((complement perdurant))
     :realization (:s-comp complement)
     :documentation "Breaks out a complement argument that is
@@ -227,6 +232,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 (define-mixin-category nominal-attribute
   :specializes subcategorization-pattern
   :mixins (theme)
+  :restrict ((theme endurant))
   :documentation "This mixin is for the attribute,
     which is being attributed of the theme"
   :realization (:of theme)) ;; and possessive

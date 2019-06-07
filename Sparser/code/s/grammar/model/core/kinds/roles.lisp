@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "predicate"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  December 2017
+;;;  version:  June 2019
 
 ;; To move all the standard thematic roles up to a place that
 ;; loads early so they're available for restriction as lower levels
@@ -13,7 +13,7 @@
 
 (define-mixin-category with-an-agent ;; deprecated in favor of 'agent'
   ;;:specializes relation
-  :binds ((agent (:or pronoun physical-agent))))
+  :binds ((agent))) ;; (:or pronoun physical-agent)
 ;; Dolce has 'agency' as the union of physical and social agent
 
 ;;/// replaces with-an-agent

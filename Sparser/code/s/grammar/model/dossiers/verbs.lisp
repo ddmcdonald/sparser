@@ -473,8 +473,9 @@ come
 
 (define-category pull
     :specializes process
-    :mixins (with-an-agent with-specified-location)
-    :binds ((theme physical))
+    :mixins (agent with-specified-location)
+    :binds ((agent (:or pronoun physical-agent))
+            (theme physical))
     :realization (:verb "pull"
                   :etf (svo-passive)
                   :s agent
@@ -484,8 +485,9 @@ come
 
 (define-category push
     :specializes process
-    :mixins (with-an-agent with-specified-location)
-    :binds ((theme physical))
+    :mixins (agent with-specified-location)
+    :binds ((agent (:or pronoun physical-agent))
+            (theme physical))
     :documentation "The meaning of push depends largly
     on what is pushed (= the type of the theme): block
     wall, door, etc. If the specific action to take
@@ -504,8 +506,9 @@ come
 ;; that's not worth addressing yet (7/20/17)
 (define-category push-together
   :specializes process
-  :mixins (with-an-agent theme)
-  :restrict ((theme object))
+  :mixins (agent theme)
+  :restrict ((agent (:or pronoun physical-agent))
+             (theme object))
   :binds ((items collection))
   :realization (:verb "push together"
                 :etf (svo-passive)
