@@ -171,14 +171,17 @@ bird flu.
                            (np . :self))
                  :verb "die")))
 
-This is build using the substitution rule schema of our Tree Adjoining
-Grammar. It defines three different constituent patterns, employing
-three specific 'exploded tree families', each with a set of syntactic
-and semantic substitution variables and a 'mapping' expression that
-pairs them with the appropriate categories. The mechanics of this
-process and the particular flavor of TAG grammar it uses are throughly
-described in several papers. These work well, providing a means of
-creating a syntactically disciplined semantic grammar.
+This is build using the substitution-rule schema of our Tree Adjoining
+Grammar. The realization specification defines three different
+constituent patterns, employing three specific 'exploded tree
+families' (:tree-family field) each with a :mapping that pairs
+the syntactic and semantic substitution variables of the tree family
+with the appropriate categories.
+
+(The mechanics of this process and the particular flavor of TAG
+grammar it uses are throughly described in several papers. These work
+well, providing an effective means of creating a syntactically
+disciplined semantic grammar.)
 
 sp> (get-rules 'die)
 (#<PSR-2122 die → "die"> #<PSR-2123 die → "dies"> #<PSR-2124 die → "died">
@@ -189,29 +192,29 @@ sp> (get-rules 'die)
 
 Classic realizations do, however, take a long time to write down,
 which led to the development of a system of 'shortcut' notation that
-let you get the same effects as a classic realization, but with far
-fewer keystrokes. Of course, as more defaults are used, the semantic
-constraints get weaker because more general categories are used and
-the grammar rules they produce are presently unreasonable as the basis
-of a semantic grammar. It is no coincidence that about the same time
-as we started speeding up the grammar-writing process we put more and
-more weight onto syntactic analysis and moved the semantic checks to
-as set of functions that are responsible for the semantic
-interpretation of the constituents the syntactic rule wants to
-compose.
+let us get the same effects as a classic realization, but with far
+fewer keystrokes. Of course, as more defaults are used in these
+shortcuts, the semantic constraints on composition get weaker because
+more general categories are used. The grammar rules they produce
+are presently unreasonable as the basis of a semantic grammar. It is 
+thus no coincidence that about the same time as we started speeding up 
+the grammar-writing process we put more and more weight onto syntactic
+analysis and moved the semantic checks to as set of functions that are
+responsible for the semantic interpretation of the constituents the
+syntactic rule wants to compose.
 
 If you wander through shortcuts.lisp (in rules/tree-families, though
-it should be moved elsewhere), you'll see a diverse set of functions
+the fule should be moved elsewhere), you'll see a diverse set of functions
 that assemble classic realization specifications for various sorts of
 clause subcategorization patterns, and simple treatments of nouns
 and adjectives or adverbs. However, because the prose in molecular biology
 articles is dominated by optional prepositional adjuncts, we stopped
-using these pre-build classic realizations and moved to the very
+using most of these pre-build classic realizations and moved to a very
 lightweight style where most definitions are just mapping prepositions
-to the appropriate variables and clause subcategorization patterns
-are an afterthought.
+to the appropriate variables and the clause subcategorization patterns
+are not emphasized.
 
-Now we have a quite compact way to provide the same content and
+We do though have a quite compact way to provide the same content and
 range of expression as a classic definition via the keyword :etf,
 where this definition shows most of its moving parts.
 
@@ -234,15 +237,109 @@ where this definition shows most of its moving parts.
                  :loc-pp-complement (on to from)
                  :mumble ("move" svo1o2 :o1 theme :o2 to-location)))
 
-When the realization expression includes ':etf' we take a different
+When the realization expression includes ':etf', we take a different
 route within setup-rdata and pass the arguments of the realization
 expression to the function decode-shortcut-rdata (in tree-families/
-shortcut-master.lisp). What this file does is construct a classic-
-style of mapping dynamically, follow the instructions provided by
-the value of :etf -- svol. 
+shortcut-master.lisp). We end up in the same place, the call to
+make-rules-for-rdata,but the classic-style mapping we supply to
+instantiate the rule schema there is assembled dynamically, following
+the instructions provided by the :etf -- svol -- which is the name of
+a 'realization-schema'.
 
+The realization schema and the machinery that instantiates them are
+all in the file grammar/rules/tree-families/families.lisp. In essence
+they are shrunken versions of the full tree-families they
+reference. In this case svol is 'shrinking' the tree family
+transitive-loc-complement, shown here in its full form. Notice the
+substitution variables in its :binding-parameters and :labels fields.
 
+(define-exploded-tree-family  transitive-loc-comp
+  :description "Two post-verb arguments, a direct object and constituent
+      describing a location, e.g., 'I put the block in the box'"
+  :binding-parameters ( agent patient location )
+  :labels ( s vp vg np/subject np/object loc )
+  :cases
+     ((:subject (s (np/subject vp)
+                  :head right-edge
+                  :binds (agent left-edge)))
+      (:direct-object (vp (vg np/object)
+                        :head left-edge
+                        :binds (patient right-edge)))
+      ;; Note that we pick up the first (direct) object
+      ;; on the vg, but the second (location) object
+      ;; is on the vp, which is a crude but workable way
+      ;; to enforce consituent order.
+      (:location (vp (vp loc)
+                   :head left-edge
+                   :binds (location right-edge)))))
 
+The realization-scheme in families.lisp mirrors the binding parameters
+(the variables) and the labels (for providing semantic labels to the
+syntactic categories) for the full ETF in a map to information
+(e.g. subj-slot) that is supplied by decode-shortcut-label.
 
+(define-realization-scheme svol transitive-loc-comp
+  :head :verb
+  :phrase (SVO1O2 (s . subj-slot) (v . :self) 
+                  (o1 . theme-slot) (o2 . loc-slot))
+  :mapping ((agent . subj-slot)
+            (patient . theme-slot)
+            (location . loc-slot)
+            (s . :self)
+            (vp . :self)
+            (vg . :self)
+            (np/subject . subj-v/r)
+            (np/object . theme-v/r)
+            (loc . loc-v/r)))
 
+Decode-shortcut-label unpacks the realization-scheme and assembles
+a 'substitution map' by retrieving information from the category's
+subcategorization-frames. Given the timing of the actions in
+setup-rdata, we can trust that this subcategorization information
+is in place. A typical clause in the function looks like this.
 
+      (let ((obj-pat (find-subcat-pattern :object subcat-frame)))
+        (when obj-pat
+          (let ((o-var (subcat-variable obj-pat))
+                (o-v/r (subcat-restriction obj-pat)))
+            (push `(theme-slot . ,o-var) substitution-map)
+            (push `(theme-v/r . ,o-v/r) substitution-map))))
+
+Any time that another directly subcategorized clause complement
+is added to the grammar (like :s :o or :l) we have to add another
+clause to decode-shortcut-rdata to handle it, and we will likely
+have also had to add one or more realization-schemes (and look up
+the correct phrase in the Mumble language realization system,
+where the trees of our Tree Adjoining Grammar are represented
+explicitly as tree, unlike the slices of immediate constituent
+structure we use in parsing).
+
+(There are presently a great many more tree families in the grammar
+than there are corresponding realization schemes, largely just because
+of limited development time, and partly because we are not presently
+trying to take advantage of the semantic nuances that many of the
+alternate tree families try to reflect. The set of families in the
+file np-adjuncts is a good illustration.)
+
+The final step of decode-shortcut-rdata is to apply the substitution-
+map is has accumulated to render it into the form a classic
+realization expects and make-rules-for-rdata knows how to apply.
+The application of the map is done by make-schema-mapping, in the
+file rules/tree-families/shortcut-expansion.lisp.
+
+sp> (get-rules 'move-to)
+(#<PSR-3440 move-to → "move">
+ #<PSR-3441 move-to → "moves">
+ #<PSR-3442 move-to → "moved">
+ #<PSR-3443 move-to → "moving">
+ #<PSR-3444 move-to → physical-agent move-to>
+ #<PSR-3445 move-to → move-to endurant>
+ #<PSR-3446 move-to → move-to location>)
+
+To summarize, if an :etf argument is include in a  modern compact
+realization specifications then this process will create rules
+that reflect the type restrictions on the variables in the category.
+The only exception (applied across the board for the biology grammar)
+is it the flag *inhibit-construction-of-systematic-semantic-rules* is
+up, in which case only the rules for the lexical heads will be
+instantiated.
