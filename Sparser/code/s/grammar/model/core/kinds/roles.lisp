@@ -50,6 +50,36 @@
   :binds ((beneficiary))
   :documentation "")
 
+(define-mixin-category cause
+  ;;:specializes relation
+  :binds ((cause))
+  :documentation "")
+
+(define-mixin-category destination
+  ;;:specializes relation
+  :binds ((destination))
+  :documentation "")
+
+(define-mixin-category extent
+  ;;:specializes relation
+  :binds ((extent))
+  :documentation "")
+
+(define-mixin-category source
+  ;;:specializes relation
+  :binds ((source))
+  :documentation "")
+
+(define-mixin-category material
+  ;;:specializes relation
+  :binds ((material))
+  :documentation "")
+
+(define-mixin-category product
+  ;;:specializes relation
+  :binds ((product))
+  :documentation "")
+
 (define-mixin-category experiencer
   ;;:specializes relation
   :binds ((experiencer))
@@ -74,3 +104,30 @@
   :documentation "Often characterized as the thing that moves.
     Specialized (restricted) by move.")
 
+(define-mixin-category instrument
+  ;;:specializes relation
+  :binds ((instrument))
+  :documentation "")
+
+(define-mixin-category goal
+  ;;:specializes relation
+  :binds ((goal))
+  :documentation "")
+
+(define-mixin-category recipient
+  ;;:specializes relation
+  :binds ((recipient))
+  :documentation "")
+
+(define-mixin-category asset
+  ;;:specializes relation
+  :binds ((asset))
+  :documentation "")
+
+(define-mixin-category topic
+  :binds ((topic))
+  :documentation "")
+
+(define-mixin-category stimulus
+  :binds ((stimulus))
+  :documentation "")
