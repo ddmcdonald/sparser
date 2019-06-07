@@ -237,56 +237,6 @@ come
      :adjp-complement adj-comp 
      :mumble ("make" svo :a actor :o patient)))
 
-(define-category change-to 
-  :specializes move
-  :mixins (agent goal theme with-specified-location)
-  :restrict ((agent physical-agent) (theme endurant) (goal endurant))
-  :realization (:verb "change" 
-                :etf svol
-                :s agent
-                :o theme
-                :l goal
-                :loc-pp-complement (to)
-                :mumble ("change" svo1o2 :o1 theme :o2 goal)))
-
-
-(define-category move-to
-  :specializes move
-  :mixins (agent theme with-specified-location)
-  :restrict ((agent physical-agent)
-             (theme endurant)
-             (to-location (:or physical location)))
-  :documentation "This allows proper chunking of a locative complements to 'move' verbs (more than just 'to'), where previously these
-  locative complements were swalowed up by the theme np. It seems that move is a complex category with lots of working
-  parts, so this may just be a temporary hack."
-   :realization (:verb "move"
-                 :etf (svol)
-                 :s agent
-                 :o theme
-                 :l location
-                 :loc-pp-complement (on
-                         to from)
-                 :mumble ("move" svo1o2 :o1 theme :o2 to-location)))
-
-(define-category move-something-somewhere
-  :specializes move
-  :mixins (agent with-specified-location)
-  :restrict ((agent physical-agent)
-             (theme endurant)
-             (to-location (:or physical location)))
-  :documentation "Inherits variables from move (in kinds/movement.lisp).
- where the theme should be restricted to 'can-change-location' (but presently
- that's too narrow for applications in biology). See also the large set
- of adjuncts to movement verbs in places/moving.lisp. 
- Could have been named PTRANS. Intended as the common parent of push, 
- put, place, nudge, etc. by way of the subcat mixin category move-something-verb"
-   :realization (:verb "move"
-                 :etf svol
-                 :s agent
-                 :o theme
-                 :l to-location
-                 :mumble ("move" svo1o2 :o1 theme :o2 to-location)))
-
 #|
 (define-category propose
     :specializes achievement
@@ -400,18 +350,73 @@ come
 
 ;; "transpose the C up 1 half step"
 ;;
+
 (define-category transpose
-  :specializes process
-  :mixins (simple-action)
-  :binds ((amount step))
+  :specializes move
+  :mixins (simple-action goal)
+  :binds ((theme endurant) (goal measurement))
   :realization (:verb "transpose"
-                :up amount))
+                :etf svol
+                :s agent
+                :l goal
+                :loc-pp-complement (down up)
+                :mumble ("transpose" svo1o2 :s agent :o theme :o2 goal)))
 
 ;; "work on measures 1 and 2"
  (define-category work-on
   :specializes process
   :mixins (simple-action)
   :realization (:verb ("work" :prep "on")))
+
+(define-category change-to 
+  :specializes move
+  :mixins (agent goal theme with-specified-location)
+  :restrict ((agent physical-agent) (theme endurant))
+  :binds ((goal endurant))
+  :realization (:verb "change" 
+                :etf (svol)
+                :s agent
+                :o theme
+                :l goal
+                :loc-pp-complement (to into)
+                :mumble ("change" svo1o2 :o1 theme :o2 goal)))
+
+
+(define-category move-to
+  :specializes move
+  :mixins (agent goal theme with-specified-location)
+  :restrict ((agent physical-agent)
+             (theme endurant)
+             (goal (:or physical location)))
+  :documentation "This allows proper chunking of a locative complements to 'move' verbs (more than just 'to'), where previously these
+  locative complements were swalowed up by the theme np. It seems that move is a complex category with lots of working
+  parts, so this may just be a temporary hack."
+   :realization (:verb "move"
+                 :etf (svol)
+                 :s agent
+                 :o theme
+                 :l goal
+                 :loc-pp-complement (to from up down)
+                 :mumble ("move" svo1o2 :s agent :o1 theme :o2 goal)))
+
+(define-category move-something-somewhere
+  :specializes move
+  :mixins (agent with-specified-location)
+  :restrict ((agent physical-agent)
+             (theme endurant)
+             (to-location (:or physical location)))
+  :documentation "Inherits variables from move (in kinds/movement.lisp).
+ where the theme should be restricted to 'can-change-location' (but presently
+ that's too narrow for applications in biology). See also the large set
+ of adjuncts to movement verbs in places/moving.lisp. 
+ Could have been named PTRANS. Intended as the common parent of push, 
+ put, place, nudge, etc. by way of the subcat mixin category move-something-verb"
+   :realization (:verb "move"
+                 :etf svol
+                 :s agent
+                 :o theme
+                 :l to-location
+                 :mumble ("move" svo1o2 :o1 theme :o2 to-location)))
 
 
 
