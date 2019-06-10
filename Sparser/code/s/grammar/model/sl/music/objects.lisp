@@ -23,21 +23,6 @@
 (defparameter *note-names* '("A" "B" "C" "D" "E" "F" "G"))
 
 
-(defun get-music-note (name)
-  (if *description-lattice*
-    (get-by-name category::music-note name)
-    (find-individual 'music-note :name name)))
-
-(defun make-note-sequence ()
-  (let* ((the-notes
-          (mapcar #'(lambda (string) (get-music-note string))
-                  *note-names*))
-         (sequence (create-sequence the-notes)))
-    (old-bind-variable 'sequence sequence category::music-note)
-    (old-bind-variable 'cycle-length 7 category::music-note)
-    (thread-sequence sequence)))
-
-
 ;;--- goes in upper-model
 
 (define-category symbolic
@@ -151,6 +136,23 @@ of how they compose with other terms.
   :specializes abstract-note
   :binds ((note music-note)
           (number number)))
+
+;;;---Setup
+
+(defun get-music-note (name)
+  (if *description-lattice*
+    (get-by-name category::music-note name)
+    (find-individual 'music-note :name name)))
+
+(defun make-note-sequence ()
+  (let* ((the-notes
+          (mapcar #'(lambda (string) (get-music-note string))
+                  *note-names*))
+         (sequence (create-sequence the-notes)))
+    (old-bind-variable 'sequence sequence category::music-note)
+    (old-bind-variable 'cycle-length 7 category::music-note)
+    (thread-sequence sequence)))
+    
 
 (defun setup-musical-notes ()
   (let* ((letter-list *note-names*)
