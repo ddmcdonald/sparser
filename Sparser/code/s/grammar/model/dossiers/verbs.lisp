@@ -320,8 +320,18 @@ come
 ;;
 (define-category insert ;; something somewhere -- see "put"
   :specializes process
-  :mixins (move-something-verb)
-  :realization (:verb "insert")
+  :mixins (simple-action goal)
+  :binds ((theme endurant) (goal endurant))
+  :realization (:verb "insert"
+                :etf svol
+                :s agent
+                :o theme
+                :l goal
+                :on goal 
+                :in goal
+                :at goal
+                :loc-pp-complement (on in at)
+                :mumble ("insert" svo1o2 :s agent :o theme :o2 goal))
   :documentation "The move mixin provides for a physical or
  social agent as the subject. Something physical as the direct
  object (theme), and location variable for where it moves.")
@@ -356,13 +366,15 @@ come
 
 (define-category transpose
   :specializes move
-  :mixins (simple-action goal with-specified-location)
+  :mixins (simple-action goal with-specified-location move-something-verb)
   :binds ((theme endurant) (goal measurement))
   :realization (:verb "transpose"
                 :etf svol
                 :s agent
                 :o theme
                 :l goal
+                :down goal
+                :up goal
                 :loc-pp-complement (down up)
                 :mumble ("transpose" svo1o2 :s agent :o theme :o2 goal)))
 
@@ -374,7 +386,7 @@ come
 
 (define-category change-to 
   :specializes move
-  :mixins (agent goal theme with-specified-location)
+  :mixins (agent goal theme)
   :restrict ((agent physical-agent) (theme endurant))
   :binds ((goal endurant))
   :realization (:verb "change" 
@@ -388,10 +400,10 @@ come
 
 (define-category move-to
   :specializes move
-  :mixins (agent goal theme with-specified-location)
+  :mixins (agent goal theme with-specified-location move-something-verb)
   :restrict ((agent physical-agent)
              (theme endurant)
-             (goal (:or physical location)))
+             (goal (:or endurant direction)))
   :documentation "This allows proper chunking of a locative complements to 'move' verbs (more than just 'to'), where previously these
   locative complements were swalowed up by the theme np. It seems that move is a complex category with lots of working
   parts, so this may just be a temporary hack."
@@ -400,6 +412,10 @@ come
                  :s agent
                  :o theme
                  :l goal
+                 :to goal
+                 :onto goal
+                 :on goal
+                 :into goal
                  :loc-pp-complement (to from onto on into)
                  :mumble ("move" svo1o2 :s agent :o1 theme :o2 goal)))
 
