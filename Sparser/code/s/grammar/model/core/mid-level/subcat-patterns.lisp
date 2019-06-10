@@ -37,7 +37,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :documentation "Designed for use by setup-verb which is
  used to provide a category for otherwise unknown words
  that are introduced by the Comlex machinery."
-  :mixins (actor patient)
+  :mixins (with-actor with-patient)
   :restrict ((actor (:or pronoun endurant))
              (patient endurant))
    :realization
@@ -48,7 +48,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 (define-mixin-category action-verb
   :specializes subcategorization-pattern
   :instantiates nil
-  :mixins (actor patient)
+  :mixins (with-actor with-patient)
   :restrict ((actor (:or pronoun endurant))
              (patient physical))       
   :realization
@@ -60,7 +60,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 (define-mixin-category action-on-eventuality
   :specializes subcategorization-pattern
   :instantiates nil
-  :mixins (actor theme)
+  :mixins (with-actor with-theme)
   :restrict ((actor endurant)
              (theme perdurant))
   :realization
@@ -74,7 +74,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 (define-mixin-category simple-action
   :specializes subcategorization-pattern
   :instantiates nil
-  :mixins (agent theme)
+  :mixins (with-agent with-theme)
   :restrict ((agent physical-agent)
              (theme endurant))
   :realization
@@ -85,7 +85,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 (define-mixin-category directed-action ;; give, sell, tell, send
   :specializes subcategorization-pattern
   :instantiates nil
-  :mixins (agent beneficiary theme)
+  :mixins (with-agent with-beneficiary with-theme)
   :restrict ((agent physical-agent)
              (beneficiary endurant)
              (theme endurant))
@@ -100,7 +100,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 (define-mixin-category attributing-verb
   :specializes subcategorization-pattern
   :instantiates nil
-  :mixins (actor patient with-attribute)
+  :mixins (with-actor with-patient with-attribute)
   :restrict ((actor endurant)
              (patient physical)
              (attribute attribute))
@@ -119,7 +119,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 (define-mixin-category control-verb
   ;; https://en.wikipedia.org/wiki/Control_(linguistics)
   :specializes subcategorization-pattern
-  :mixins (agent patient theme)
+  :mixins (with-agent with-patient with-theme)
   :restrict ((agent top) ;; perduants in bio, not just physical-agent's
              (patient physical) ;; "I want a block"
              (theme perdurant)) ;; "I want to go home"
@@ -139,7 +139,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
   ;; need reference
   ;; "acts to ...", "fails to ..."
   :specializes subcategorization-pattern
-  :mixins (agent theme)
+  :mixins (with-agent with-theme)
   :restrict ((agent (:or pronoun physical-agent))
              (theme perdurant))
   :realization
@@ -149,7 +149,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 (define-mixin-category raising-to-object
   ;;"allows X to ...", "consider X to ...", "enable X to ...", "know X to ...", "lead X to ...", "use X to ..."
   :specializes subcategorization-pattern
-  :mixins (agent)
+  :mixins (with-agent)
   :restrict ((agent (:or pronoun physical-agent)))
   :binds ((theme perdurant))
   :realization
@@ -160,7 +160,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 (define-mixin-category raising-to-subject
   ;; "X seems to ..."
   :specializes subcategorization-pattern
-  :mixins (agent theme)
+  :mixins (with-agent with-theme)
   :restrict ((agent (:or pronoun physical-agent))
              (theme perdurant))
   :realization
@@ -171,7 +171,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 (define-mixin-category move-something-verb
   :specializes subcategorization-pattern
   :instantiates nil
-  :mixins (agent theme has-location)
+  :mixins (with-agent with-theme has-location)
   :restrict ((agent (:or physical-agent social-agent))
              (theme physical) ;; what moves
              (location location)) ;; where it is moved to
@@ -188,7 +188,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 
 (define-mixin-category prop-attitude ;; "believe that"
   :specializes subcategorization-pattern
-  :mixins (agent patient theme)
+  :mixins (with-agent with-patient with-theme)
   :restrict ((agent physical-agent)
              (patient physical)
              (theme perdurant))
@@ -208,7 +208,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 
 (define-mixin-category scomp-verb ;; "Let me know ...", "Make me ..." -- Quirk calls these object + bare-infinitive complements
     :specializes subcategorization-pattern
-    :mixins (agent theme takes-tense-aspect-modal)
+    :mixins (with-agent with-theme takes-tense-aspect-modal)
     :restrict ((agent (:or physical-agent social-agent))
                (theme perdurant))
     :binds ((complement perdurant))
@@ -221,7 +221,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 
 (define-mixin-category knowledge-verb
   :specializes subcategorization-pattern
-  :mixins (prop-attitude experiencer)
+  :mixins (prop-attitude with-experiencer)
   :restrict ((experiencer (:or pronoun physical-agent))) ;; "I"
   :realization
     (:s experiencer
@@ -231,7 +231,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 
 (define-mixin-category nominal-attribute
   :specializes subcategorization-pattern
-  :mixins (theme)
+  :mixins (with-theme)
   :restrict ((theme endurant))
   :documentation "This mixin is for the attribute,
     which is being attributed of the theme"
@@ -242,7 +242,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :specializes subcategorization-pattern
   :documentation "These have a large set of options.
     May turn out easier to break them out into groups"
-  :mixins (agent actor theme beneficiary directed-action)
+  :mixins (with-actor directed-action)
   :restrict ((agent (:or physical-agent social-agent)) ; does the asking
              (actor (:or physical-agent social-agent)) ; ask them to do something
              (theme top)  ; the something -- or the other complements

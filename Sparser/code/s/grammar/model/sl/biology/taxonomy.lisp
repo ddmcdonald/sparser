@@ -509,6 +509,7 @@
   :binds ((ratio-condition ratio)
 	  (fig article-figure)
 	  (method bio-method)
+          (context bio-context)
           (result biological)
 	  (by-means-of (:or bio-process mechanism bio-method)))
   :realization
@@ -525,6 +526,7 @@
      :via method
      :with method
      :at ratio-condition
+     :for context
      :for result))
 
 
