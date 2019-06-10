@@ -134,10 +134,17 @@ of how they compose with other terms.
 
 (define-category pitch-class
   :specializes abstract-note
-  :binds ((note music-note)
-          (number number)))
+  :binds ((music-note music-note)
+          (number number))
+  :realization (:common-noun name))
+
+
+(define-category note-length
+  :specializes music-note
+  :realization (:common-noun name))
 
 ;;;---Setup
+
 
 (defun get-music-note (name)
   (if *description-lattice*
@@ -153,7 +160,6 @@ of how they compose with other terms.
     (old-bind-variable 'cycle-length 7 category::music-note)
     (thread-sequence sequence)))
     
-
 (defun setup-musical-notes ()
   (let* ((letter-list *note-names*)
          (words (loop for l in letter-list collect (resolve l))))
@@ -179,12 +185,6 @@ of how they compose with other terms.
       
  )))
 
-
-
-(define-category note-length
-  :specializes music-note
-  :realization (:common-noun name))
-
 (defun setup-note-lengths ()
   (let* ((pw-strings
           (loop for s in '("whole" "half" "quarter"
@@ -198,10 +198,6 @@ of how they compose with other terms.
     (loop for pw in polywords
        collect (define-individual 'note-length
                    :name pw))))
-#|
-(eval-when (#|:compile-toplevel|# :load-toplevel :execute)
-  (setup-note-lengths))
-|#
 
 
 (defun create-pitch-class (note-edge number-edge start-pos end-pos)
@@ -209,13 +205,13 @@ of how they compose with other terms.
    (:single-cap :single-digit) and the first edge is labeled
    'note'. As in the string 'C3'. We construct the individual
    here as though it had been parsed and formed compositionally."
-  (let ((note (edge-referent note-edge))
+  (let ((music-note (edge-referent note-edge))
         (number (edge-referent number-edge)))
     ;; Because we're called from the no-space machinery rather
     ;; than the application of a phrase structure rule, we have to
     ;; make the edge ourselves.
     (let* ((i (define-or-find-individual 'pitch-class
-                  :note music-note :number number))
+                  :music-note music-note :number number))
            (edge
             (make-binary-edge/explicit-rule-components
              note-edge
