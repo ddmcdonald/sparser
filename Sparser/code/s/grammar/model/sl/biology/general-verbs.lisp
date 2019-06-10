@@ -1229,7 +1229,7 @@
          :etf (svo-passive)))
 
 (define-category list :specializes perdurant
-  :mixins (agent directed-action theme)
+  :mixins (directed-action)
   :binds ((theme (:or be biological predication abstract)))
   ;; it was shown that
   :realization

@@ -132,7 +132,7 @@ come
     :specializes process
     ;; we're going through the steps of constucting the
     ;; staircase. With "lets'" we haven't even started
-    :mixins (agent)
+    :mixins (with-agent)
     :binds ((artifact artifact)) ;; what they build
     :restrict ((agent physical-agent))
     :realization (:verb ("build" :past-tense "built")
@@ -320,7 +320,7 @@ come
 ;;
 (define-category insert ;; something somewhere -- see "put"
   :specializes process
-  :mixins (simple-action goal)
+  :mixins (simple-action with-goal)
   :binds ((theme endurant) (goal endurant))
   :realization (:verb "insert"
                 :etf svol
@@ -366,7 +366,7 @@ come
 
 (define-category transpose
   :specializes move
-  :mixins (simple-action goal with-specified-location move-something-verb)
+  :mixins (simple-action with-goal with-theme with-specified-location move-something-verb)
   :binds ((theme endurant) (goal measurement))
   :realization (:verb "transpose"
                 :etf svol
@@ -386,7 +386,7 @@ come
 
 (define-category change-to 
   :specializes move
-  :mixins (agent goal theme)
+  :mixins (with-agent with-goal with-theme)
   :restrict ((agent physical-agent) (theme endurant))
   :binds ((goal endurant))
   :realization (:verb "change" 
@@ -400,7 +400,7 @@ come
 
 (define-category move-to
   :specializes move
-  :mixins (agent goal theme with-specified-location move-something-verb)
+  :mixins (with-agent with-goal with-theme with-specified-location move-something-verb)
   :restrict ((agent physical-agent)
              (theme endurant)
              (goal (:or endurant direction)))
@@ -421,9 +421,8 @@ come
 
 (define-category move-something-somewhere
   :specializes move
-  :mixins (agent with-specified-location)
+  :mixins (with-agent with-theme with-specified-location)
   :restrict ((agent physical-agent)
-             (theme endurant)
              (to-location (:or physical location)))
   :documentation "Inherits variables from move (in kinds/movement.lisp).
  where the theme should be restricted to 'can-change-location' (but presently
@@ -473,7 +472,7 @@ come
 
 (define-category pull
     :specializes process
-    :mixins (agent with-specified-location)
+    :mixins (with-agent with-specified-location)
     :binds ((agent (:or pronoun physical-agent))
             (theme physical))
     :realization (:verb "pull"
@@ -485,7 +484,7 @@ come
 
 (define-category push
     :specializes process
-    :mixins (agent with-specified-location)
+    :mixins (with-agent with-specified-location)
     :binds ((agent (:or pronoun physical-agent))
             (theme physical))
     :documentation "The meaning of push depends largly
@@ -506,7 +505,7 @@ come
 ;; that's not worth addressing yet (7/20/17)
 (define-category push-together
   :specializes process
-  :mixins (agent theme)
+  :mixins (with-agent with-theme)
   :restrict ((agent (:or pronoun physical-agent))
              (theme object))
   :binds ((items collection))

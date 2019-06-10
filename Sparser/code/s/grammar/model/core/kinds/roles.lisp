@@ -17,13 +17,13 @@
 ;; Dolce has 'agency' as the union of physical and social agent
 
 ;;/// replaces with-an-agent
-(define-mixin-category agent
+(define-mixin-category with-agent
   ;;:specializes relation
   :binds ((agent))
   :documentation "Participant that intentionally initiates
     the action.")
 
-(define-mixin-category actor
+(define-mixin-category with-actor
   ;;:specializes relation
   :binds ((actor))
   :documentation "The entity that performs the action.
@@ -45,42 +45,42 @@
     Named chosen to deconfict with this other 'attribute' and
     its predication 'has-attribute'.")
 
-(define-mixin-category beneficiary
+(define-mixin-category with-beneficiary
   ;;:specializes relation
   :binds ((beneficiary))
   :documentation "")
 
-(define-mixin-category cause
+(define-mixin-category with-cause
   ;;:specializes relation
   :binds ((cause))
   :documentation "")
 
-(define-mixin-category destination
+(define-mixin-category with-destination
   ;;:specializes relation
   :binds ((destination))
   :documentation "")
 
-(define-mixin-category extent
+(define-mixin-category with-extent
   ;;:specializes relation
   :binds ((extent))
   :documentation "")
 
-(define-mixin-category source
+(define-mixin-category with-source
   ;;:specializes relation
   :binds ((source))
   :documentation "")
 
-(define-mixin-category material
+(define-mixin-category with-material
   ;;:specializes relation
   :binds ((material))
   :documentation "")
 
-(define-mixin-category product
+(define-mixin-category with-product
   ;;:specializes relation
   :binds ((product))
   :documentation "")
 
-(define-mixin-category experiencer
+(define-mixin-category with-experiencer
   ;;:specializes relation
   :binds ((experiencer))
   :documentation "Participant that is aware of something
@@ -93,41 +93,41 @@
     Supplies a location variable whose value says where
     this thing is.")
 
-(define-mixin-category patient
+(define-mixin-category with-patient
   ;;:specializes relation
   :binds ((patient))
   :documentation "The participant that is affected by the action.")
 
-(define-mixin-category theme
+(define-mixin-category with-theme
   ;;:specializes relation
   :binds ((theme))
   :documentation "Often characterized as the thing that moves.
     Specialized (restricted) by move.")
 
-(define-mixin-category instrument
+(define-mixin-category with-instrument
   ;;:specializes relation
   :binds ((instrument))
   :documentation "")
 
-(define-mixin-category goal
+(define-mixin-category with-goal
   ;;:specializes relation
   :binds ((goal))
   :documentation "")
 
-(define-mixin-category recipient
+(define-mixin-category with-recipient
   ;;:specializes relation
   :binds ((recipient))
   :documentation "")
 
-(define-mixin-category asset
+(define-mixin-category with-asset
   ;;:specializes relation
   :binds ((asset))
   :documentation "")
 
-(define-mixin-category topic
+(define-mixin-category with-topic
   :binds ((topic))
   :documentation "")
 
-(define-mixin-category stimulus
+(define-mixin-category with-stimulus
   :binds ((stimulus))
   :documentation "")

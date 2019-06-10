@@ -44,7 +44,7 @@ from 'from ... to ..' and such
 (define-category move
   :specializes accomplishment
   ;; realization -- "move" and "movement"
-  :mixins (theme)
+  :mixins (with-theme)
   :restrict ((theme endurant))  ;;can-change-location))
   :binds ((from-location location) ;; source - the theme's former location
           (to-location location) ;; goal - its new location
