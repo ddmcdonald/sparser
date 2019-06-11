@@ -128,7 +128,7 @@
 
      ((equal pattern '(:single-cap :single-digit)) ;; "in Figure S1,"
       (let ((left-edge (top-edge-at/starting start-pos)))
-        (if (eq (edge-cat-name left-edge) 'note) ;; "the C4 quarter note"
+        (if (eq (edge-cat-name left-edge) 'music-note) ;; "the C4 quarter note"
           (let ((edges (treetops-between start-pos end-pos)))
             (create-pitch-class (first edges) (second edges) start-pos end-pos))
           (reify-two-part-label start-pos end-pos :cap-first))))
