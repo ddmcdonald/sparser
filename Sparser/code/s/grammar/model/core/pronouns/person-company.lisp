@@ -52,7 +52,7 @@
     (let ((person
            (if person-entries
              (if (cdr person-entries) ;; more than one?
-               (most-recently-mentioned person-entries)
+               (most-recently-mentioned person-entries) ;; drops the mention wrapper
                (car person-entries))
              (else
                nil  ;; //could be clever here and put in a placeholder that
@@ -82,9 +82,10 @@
         (tr :subverting-pn-edge pn-edge (category-named 'person) person)
         ;; we have the edge in our hand, we just change the category
         ;; and referent of this edge
-        (unless (typep person 'discourse-mention)
-          (break "Expected discourse references now to be mentions: ~a" person))
-        (let ((person-ref (base-description person)))
+        (let ((person-ref
+               (etypecase person
+                 (individual person)
+                 (discourse-mention (base-description person)))))
           (setf (edge-category pn-edge) (category-named 'person))
           ;; keep the form, it could be 'possessive', which is useful
           (set-edge-referent pn-edge person-ref)))
