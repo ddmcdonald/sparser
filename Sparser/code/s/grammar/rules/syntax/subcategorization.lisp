@@ -786,11 +786,17 @@
 ;;;-----------------------------------------------------------
 
 (defun assimilate-subcat (head subcat-label item)
+  "Entry point from syntactic functions. We want to bind the item to the
+   appropriate variable on the head as determined by the subcat-label.
+   The head and item will be individuals, the subcat-label is a keyword symbol.
+   At this level we're distinguishing collections from other types of
+   heads. The heavy lifting is done by subcategorized-variable and its
+   subroutines."
   (declare (special *subcat-test*))
   (if (is-basic-collection? head)
       (assimilate-subcat-to-collection head subcat-label item)
       (let ((variable-to-bind
-             ;; test if there is a known interpretation of the combination
+             ;; Is there a known interpretation of this combination
              ;; using that label
              (subcategorized-variable head subcat-label item)))
         (cond
@@ -964,9 +970,9 @@
 (defun subcategorized-variable (head label item)
   "Returns the variable on the HEAD that is subcategorized for
    the ITEM when it has the grammatical relation LABEL to the head
-   and the ITEM satisfies the value restriction on that variable."
-  ;; This layer just checks that the query is well-formed.
-  ;; It calls find-subcat-var to do real work.
+   and the ITEM satisfies the value restriction on that variable.
+   This layer just checks that the query is well-formed.
+   It calls find-subcat-var to do the real work."
   (declare (special *pobj-edge* *subcat-test* *sentence-in-core*))
   (loop while (edge-p label)
      ;; can happen for edges over polywords like "such as"
@@ -1007,8 +1013,10 @@
 (defun find-subcat-var (item label head)
   "Looks up the subcategorizations defined on this head.
    Considers special situations when the label is 'of' but should
-   really be :object. Sorts out ambiguous variables
-"
+   really be :object. Sorts out ambiguous variables and then looks
+   through the subcat-patterns on this head. It looks for a pattern
+   that uses this label, and invokes satisfies-subcat-restriction? to
+   check that the v/r of that pattern is satisfied"
   (declare (special item label head *subcat-test* *subcat-use*
                     *left-edge-into-reference* ))
   (let* ((category (itype-of head))
