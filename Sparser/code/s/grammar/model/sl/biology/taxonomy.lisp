@@ -958,12 +958,14 @@
 
 
 (define-category gene :specializes dna
-  :binds ((expresses  protein))
+  :binds ((expresses  protein)
+          (in-family protein-family))
   :realization
   (:noun "gene"
          :m expresses
          :for disease
          :in disease
+         :in in-family
 ))
 
 (define-category oncogene :specializes gene 
@@ -1143,7 +1145,8 @@
           (variant-number number)
 	  (equilibrium-state equilibrium)
 	  (state bio-state)
-          (in-pathway pathway))
+          (in-pathway pathway)
+          (in-family protein-family))
   :restrict ((context (:or bio-mechanism ;; for pathways -- they are context, not manner
                            experiment-data)))
   :mixins (  reactome-category  in-ras2-model )
@@ -1155,6 +1158,7 @@
      :in equilibrium-state
      :in state
      :in in-pathway
+     :in in-family
      :m site))
 
 (define-category variant :specializes protein ;; not true, but the most common case
