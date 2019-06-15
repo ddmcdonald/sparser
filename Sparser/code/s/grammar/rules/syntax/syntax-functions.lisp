@@ -1828,7 +1828,20 @@ there was an edge for the qualifier (e.g., there is no edge for the
                 (member (form-cat-name e) *np-category-names*)
                 (eq (cat-name (edge-category e)) 'how)
                 (member (form-cat-name e)
-                        '(thatcomp howcomp ifcomp))))))
+                        '(thatcomp howcomp ifcomp))
+                (and (eq 's (form-cat-name e))
+                     (or (is-in-p category::what
+                                  (semtree (edge-referent e)))
+                         (is-in-p category::which
+                                  (semtree (edge-referent e)))))))))
+
+(defun is-in-p (item tree)
+  (cond ((and (consp tree) (listp (cdr tree))) ;; not a dotted pair
+         (loop for i in tree thereis (is-in-p item i)))
+        ((consp tree)
+         (eq item (car tree)))
+        (t
+         (eq item tree))))
 
 (defun takes-object-complement? (vg)
   "Are there any variables for object complement in the subcat
