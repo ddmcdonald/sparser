@@ -755,6 +755,7 @@
     :referent (:function create-whethercomp left-edge right-edge))
 
 ;; For the moment, treat clauses like "if STAT3 regulates MEK" in "Tell me if STAT3..."
+;;  creates bad parses for subordinated conjunction use of "if"
 ;;  as if they werre whethercomp clauses
 (def-form-rule (if s)
     :form whethercomp
