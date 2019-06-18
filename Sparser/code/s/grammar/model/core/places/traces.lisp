@@ -3,9 +3,10 @@
 ;;;
 ;;;     File:  "traces"
 ;;;   Module:  "model;core:places:"
-;;;  version:  April 2019
+;;;  version:  June 2019
 
-;; For trace functions about location. Initially mostly the methods
+;; For trace functions about location. Initially mostly the methods.
+;; N.b. now holds other methods traces so they can be in the same file.
 
 (in-package :sparser)
 
@@ -80,7 +81,6 @@
     (trace-msg "Method: sequencer(~a) + part-of-a-sequence(~a)"
                er seq)))
 
-
 (deftrace :direction+object (head ground)
   (when *trace-methods*
     (trace-msg "Method: direction (i~a) & object (i~a)"
@@ -105,6 +105,34 @@
    (when *trace-methods*
      (trace-msg "Method: below (i~a) & note (i~a)"
                 (indiv-uid below) (indiv-uid note))))
+
+
+;;--- originally in objects/traces/edges.lisp
+
+;;--- Adverb
+(deftrace :modified_modifier+t ()
+  (when *trace-referent-creation*
+    (trace-msg "modified: modifier+t")))
+
+;;--- Preposition
+(deftrace :analyze-pp_t+t ()
+  (when *trace-referent-creation*
+    (trace-msg "analyze-pp: t+t")))
+
+;;--- Adjective
+(deftrace :modifier+noun_t+t ()
+  (when *trace-referent-creation*
+    (trace-msg "modifier+noun: t+t")))
+
+(deftrace :modifier+noun_modifier+t ()
+  (when *trace-referent-creation*
+    (trace-msg "modifier+noun: modifier+t")))
+
+;;--- time/time-methods.lisp modifier+noun
+(deftrace :next+month (month)
+  (when *trace-referent-creation*
+    (trace-msg "Method call: next + ~a" month)))
+
 
 
 ;;--- For related syntax-functions functions.
@@ -147,7 +175,6 @@
   (when *trace-syntactic-composition*
     (trace-msg "Compose: applied ~a and ~a to produce ~a"
                qualifier head result)))
-
 
 #|
 (deftrace : (np pobj)
