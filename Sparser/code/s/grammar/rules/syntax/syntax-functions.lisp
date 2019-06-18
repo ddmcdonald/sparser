@@ -1820,6 +1820,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (assimilate-subcat vp :oc obj))
 
 (defun possible-indirect-object? (vg)
+  (declare (special category::what category::which))
   (and (itypep vg 'directed-action)
        *right-edge-into-reference*
        (loop for e in (edges-after *right-edge-into-reference*)
