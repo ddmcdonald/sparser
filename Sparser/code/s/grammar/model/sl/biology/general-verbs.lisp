@@ -1373,11 +1373,29 @@
   :restrict ((theme
               (:or bio-event bio-predication bio-process bio-method bio-rhetorical)))
   :binds ((used-to biological)
-          (disease disease))
+          (disease disease)
+          (object (:or bio-chemical-entity bio-organ bio-process bio-mechanism))
+          (agent (:or bio-chemical bio-process bio-mechanism)))
   :realization ;; (p/s "use KRAS to treat pancreatic cancer")
-  (:verb ("use" :past-tense "used" :present-participle "using")
+  (:verb "use"
          :noun "use"
          :etf (svo-passive)
          :to used-to
          :for disease ;; (p/s "what drug should I use for pancreatic cancer?")
+         ))
+
+(define-category bio-utilize :specializes bio-method
+  :mixins (raising-to-object)
+  :restrict ((theme
+              (:or bio-event bio-predication bio-process bio-method bio-rhetorical)))
+  :binds ((used-to biological)
+          (disease disease)
+          (object (:or bio-chemical-entity bio-organ bio-process bio-mechanism))
+          (agent (:or bio-chemical bio-process bio-mechanism)))
+  :realization ;; (p/s "utilize KRAS to treat pancreatic cancer")
+  (:verb "utilize"
+         :noun "utilization"
+         :etf (svo-passive)
+         :to used-to
+         :for disease ;; (p/s "what drug should I utilize for pancreatic cancer?")
          ))
