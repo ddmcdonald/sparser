@@ -20,7 +20,7 @@
 (in-package :sparser)
 
 
-(defparameter *note-names* '("A" "B" "C" "D" "E" "F" "G"))
+(defparameter *the-notes* '("A" "B" "C" "D" "E" "F" "G"))
 
 
 ;;--- goes in upper-model
@@ -33,7 +33,7 @@
 
 (define-category music-pitch
   :instantiates nil
-  :specializes region
+  :specializes abstract-region
   :realization (:common-noun "pitch")
   :documentation "Instantiating pitch as an abstract region, so that we can talk about moving 'up' or 'down' in pitch
   and make sense of its various intervals/units of measure - step, half-step, octave, etc.")
@@ -45,7 +45,8 @@
   :specializes symbolic
   :index (:permanent :key name :get)
   :binds ((note music-note)
-          (accidental music-accidental)))
+          (accidental music-accidental)
+          (in-region music-pitch) ))
 
 
 (define-category music-beat
@@ -58,10 +59,10 @@
 
 (define-category music-measure
   :specializes symbolic
-  :mixins (container ;; of note stuff
-           partonomic ;; comprised of parts
-           part-of-a-sequence ;; fits into a larger sequence
-           sequence ;;// alternative to partonomic
+  :mixins (part-of-a-sequence  ;; fits into a larger sequence
+            container ;; of note stuff 
+            partonomic ;; comprised of parts 
+            sequence ;;// alternative to partonomic
            )
   :bindings (part-type 'music-beat)
   ;;:restrict ((part-type beat))
@@ -81,16 +82,17 @@
 
 (define-category music-step
   :specializes unit-of-measure
+  :binds ((in-region music-pitch))
   :realization (:common-noun "step"))
 
 (define-category music-half-step
   :specializes unit-of-measure
+  :binds ((in-region music-pitch))
   :realization (:common-noun "half-step" :common-noun "1/2 step"))
 
 (define-category octave
   :specializes unit-of-measure
-  :mixins (partonomic)
-  :bindings (part-type 'music-note)
+  :binds ((in-region music-pitch))
   :realization (:common-noun "octave"))
 
 ;;--- notes
@@ -99,8 +101,8 @@
   :specializes symbolic
   :mixins (part-of-a-sequence) ;; "the fifth note" // but: "eigth", "sixteenth"
   :binds ((duration fractional-term)
-          (pitch (:or music-note pitch-class))
-          (accidental music-accidental)))
+          (accidental music-accidental)
+          (in-region music-pitch)))
 
 #| "the C4 quarter note"
    "the quarter note"
@@ -117,15 +119,27 @@ of how they compose with other terms.
   :mixins (cyclic part-of-a-sequence)
   :lemma (:common-noun "note")
   :index (:permanent :key name :get)
+  :realization (:common-noun name)
+  :binds ((moves-in music-pitch) (flat music-flat) (sharp music-sharp)))
+
+(define-category note-sequence 
+  :specializes symbolic
+  :mixins (sequence partonomic)
+  :binds ((moves-in music-pitch))
+  :bindings (part-type 'music-note)
   :realization (:common-noun name))
 
 (define-category music-accidental
-  :specializes music-note)
+  :specializes music-note
+  :binds ((base-note music-note)))
+
 (define-category music-sharp
   :specializes music-accidental
+  :restrict ((base-note music-note))
   :realization (:common-noun name))
 (define-category music-flat
   :specializes music-accidental
+  :restrict ((base-note music-note))
   :realization (:common-noun name))
 
 (define-category music-rest
@@ -148,42 +162,30 @@ of how they compose with other terms.
 
 (defun get-music-note (name)
   (if *description-lattice*
-    (get-by-name category::music-note name)
+     (get-by-name category::music-note name)
     (find-individual 'music-note :name name)))
+
+
 
 (defun make-note-sequence ()
   (let* ((the-notes
           (mapcar #'(lambda (string) (get-music-note string))
-                  *note-names*))
+                  *the-notes*))
          (sequence (create-sequence the-notes)))
     (old-bind-variable 'sequence sequence category::music-note)
     (old-bind-variable 'cycle-length 7 category::music-note)
     (thread-sequence sequence)))
     
 (defun setup-musical-notes ()
-  (let* ((letter-list *note-names*)
-         (words (loop for l in letter-list collect (resolve l))))
+  (let* ((letter-list *the-notes*))
     (loop for l in letter-list do (strip-single-term-rules l))
-    
-    ;; Notes per se
-    (let* ((notes (loop for w in words
-                     collect (define-individual 'music-note :name w))))
-      
-      ;; accidentals
-      (let ((sharp-strings (loop for l in letter-list
-                              collect (string-append l "#")))
-            (flat-strings (loop for l in letter-list
-                             collect (string-append l "b"))))
-        (loop for string in sharp-strings
-           as word = (resolve/make string)
-           collect (define-individual 'music-sharp :name word))
-        (loop for string in flat-strings
-           as word = (resolve/make string)
-           collect (define-individual 'music-flat :name word)))
+    (loop for l in letter-list
+          as note = (define-individual 'music-note :name (resolve l))
+          as flat = (define-individual 'music-flat :name (string-append l "b") :base-note note)
+          as sharp = (define-individual 'music-sharp :name (string-append l "#") :base-note note)
+          do(bind-variable 'flat flat note)
+          do(bind-variable 'sharp sharp note))))
 
-      ;; selected pitch classes
-      
- )))
 
 (defun setup-note-lengths ()
   (let* ((pw-strings
@@ -221,4 +223,5 @@ of how they compose with other terms.
              :form (category-named 'n-bar)
              :referent i)))
       edge)))
+
              
