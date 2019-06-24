@@ -136,7 +136,7 @@
         name-state  edge-labeled-by-word multiple-treetops
         &-sign  initials?  person-version  inc-term?  of  and  the  slash
         generic-co co-activity koc?  ordinal  flush-suffix 
-        country  title  weekday month  other
+        country  title  weekday music-note month  other
         location-head  location  hurricane)
     
     (flet
@@ -388,6 +388,9 @@
              (category::weekday
               (setq weekday (cons count (edge-referent tt))))
 
+             (category::music-note
+              (setq music-note (cons count (edge-referent tt))))
+
              (category::month
               (setq month (cons count (edge-referent tt))))
                
@@ -520,6 +523,12 @@
           (throw :abort-examination-not-a-name
             `(:not-a-name ,ending-position)))
 
+         (when music-note
+          ;; "Ruby Tuesday", "April Wednesday" in PNF paper and such
+          ;; have to be coerced by external evidence.
+          (throw :abort-examination-not-a-name
+            `(:not-a-name ,ending-position)))
+
 
         (let ((name
                (categorize-and-form-name (referents-of-list-of-edges items)
@@ -545,7 +554,7 @@
                                  &-sign initials? person-version
                                  inc-term? of and the generic-co co-activity
                                  koc? ordinal location-head hurricane
-                                 other)
+                                 other )
   (declare (special category::company-name category::person-name category::name
                     category::location)
            (ignore hurricane name-state country))
