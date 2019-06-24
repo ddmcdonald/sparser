@@ -3,11 +3,71 @@
 ;;;
 ;;;     File:  "syntax-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  February 2019
+;;;  Version:  June 2019
 
 ;; Simple function lifted from syntax-functions 8/30/16
 
 (in-package :sparser)
+
+
+;;--- object complements
+
+(defun takes-object-complement? (vg)
+  "Are there any variables for object complement in the subcat
+   information on this verb"
+  (find-subcat-vars :oc vg))
+
+(defun obj-complement-follows? (vg)
+  "If the head can take an object complement, and the next constituent
+   would satisfy the constrains on that complement, then 'reset' the label
+   on the edge we are creating (make it a vg rather than the vp that the
+   rule indicates) so we can use the rule again to collect the complement"
+  (when *right-edge-into-reference*
+    (loop for e in (edges-after *right-edge-into-reference*)
+       as item = (edge-referent e)
+       thereis (valid-object-complement? vg item))))
+
+(defun valid-object-complement? (vg obj)
+  "Is the type of this candidate complement consistent with constraints
+   on the EC variable for this head."
+  (let ((variables (takes-object-complement? vg)))
+    (when variables
+      (when (cdr variables)
+        (error "Multiple object-complement variables on ~a: (~a)~
+              ~%Don't know what to do." vg variables))
+      (satisfies-variable-restriction? obj (car variables)))))
+
+
+;;--- indirect objects
+
+(defun possible-indirect-object? (vg)
+  (declare (special category::what category::which))
+  (and (itypep vg 'directed-action)
+       *right-edge-into-reference*
+       (loop for e in (edges-after *right-edge-into-reference*)
+             thereis
+               (or
+                (member (form-cat-name e) *np-category-names*)
+                (eq (cat-name (edge-category e)) 'how)
+                (member (form-cat-name e)
+                        '(thatcomp howcomp ifcomp))
+                (and (eq 's (form-cat-name e))
+                     (or (is-in-p category::what
+                                  (semtree (edge-referent e)))
+                         (is-in-p category::which
+                                  (semtree (edge-referent e)))))))))
+
+(defun is-in-p (item tree)
+  (cond ((and (consp tree) (listp (cdr tree))) ;; not a dotted pair
+         (loop for i in tree thereis (is-in-p item i)))
+        ((consp tree)
+         (eq item (car tree)))
+        (t
+         (eq item tree))))
+
+
+
+;;--- adjectives
 
 (defparameter *check-takes-adj?* nil)
 
