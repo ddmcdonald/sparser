@@ -377,6 +377,7 @@
   ;; add bindings to individuals. Returns the new individual and the
   ;; new binding. 'oparent' is the individual we are adding the
   ;; binding to.
+  (declare (special *sparser-loaded*))
   (let* ((parent (if (referential-category-p oparent)
 		     (find-or-make-lattice-description-for-ref-category oparent)
 		     oparent))
@@ -390,7 +391,7 @@
     (declare (special *index-under-permanent-instances*))
     
     (if (null var)
-        (then (break "find-or-make-lattice-subordinate fails to find var ~s in ~s~%"
+        (then (break "find-or-make-lattice-subordinate failed to find var ~s in ~s~%"
                     var/name (or category parent))
               (return-from find-or-make-lattice-subordinate (values parent nil)))
         (let* ((result
@@ -406,11 +407,12 @@
 		      (set-dli new-child new-child)
 		      new-child)))
 	       (res-supers (indiv-all-supers result)))
-         
+
 	  (setf (gethash parent res-supers) t)
 	  (loop for key being each hash-key of (indiv-all-supers parent)
 	       do (setf (gethash key res-supers) t))
-	  
+	  (when *sparser-loaded*
+            (index-binding-if-needed var result value))
 	  (values
 	   result
 	   (get-binding-of var result value))))))

@@ -53,7 +53,8 @@
   (dolist (c *referential-categories*)
     (declare-category-instances-permanent c))
   (setq *1st-permanent-individual/all-categories* (first *active-individuals*)
-        *rule-count-at-make-permanent* *next-number-for-phrase-structure-rule*))
+        *rule-count-at-make-permanent* *next-number-for-phrase-structure-rule*)
+  (initialize-bound-in-reclaimation))
 
 
 (defun declare-category-instances-permanent (category)
@@ -191,6 +192,40 @@ e.g. when anaphora is turned off."
         (format t "~&Tentatively reclaiming ~a~%" i))
       (pushnew (itype-of i) augmented-list))
     augmented-list ))
+
+
+;;;-------------------------------------
+;;; tailored zeroing of bound-in fields
+;;;-------------------------------------
+
+(defvar *do-not-zero-bound-in* (make-hash-table :size 10000 :test #'eq)
+  "Populated by initialize-bound-in-reclaimation at startup")
+
+(defvar *individuals-bound-onto* nil
+  "Used by push-binding-onto-bound-in-field to keep track of every
+   individual that 
+Used by reclaim operation")
+
+(defun initialize-bound-in-reclaimation ()
+  "called by declare-all-existing-individuals-permanent which is called
+   at the end of loading the grammar. Used to set the initial conditions
+   for tracking the bound-in operation so we can maintain an accurate
+   list. Go through the list accumulated during loading and push them
+   into a hash table so we don't clear them."
+  (loop for i in *individuals-bound-onto*
+     do (setf (gethash i *do-not-zero-bound-in*) t))
+  (setq *individuals-bound-onto* nil))
+
+
+(defun zero-bound-in-fields ()
+  "Called from clean-out-history-and-temp-objects with each call to
+   per-article initialization. Cleans out the bound-in field of every
+   individual that's been recorded as having one."
+  (declare (special *individuals-bound-onto*))
+  (loop for i in *individuals-bound-onto*
+     unless (gethash i *do-not-zero-bound-in*)
+     do (setf (indiv-bound-in i) nil))
+  (setq *individuals-bound-onto* nil))
 
 
 ;;;--------------------------

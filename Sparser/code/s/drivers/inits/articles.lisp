@@ -125,6 +125,7 @@ set in. This initialization manages them.|#
   ;; because it uses the discourse history to tell it
   ;; what to reap
   (reclaim-temporary-individuals)
+  (zero-bound-in-fields)
   (initialize-discourse-history))
 
 

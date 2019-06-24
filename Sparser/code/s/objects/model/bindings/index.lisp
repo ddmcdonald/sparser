@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  January 2017
+;;;  version:  June 2019
 
 ;; initiated 7/20/92 v2.3
 ;; (6/4/93) tweeked the checks for valid values in Index/binding
@@ -148,7 +148,7 @@
       ;; the variable might not have a restriction in which case it's
       ;; ok if the value is a word, but otherwise we check it out
       ;; in detail.
-      (push-binding-onto-bind-in-field binding value))
+      (push-binding-onto-bound-in-field binding value))
 
     ;; index it on the variable -- this is where it is
     ;; looked up from
@@ -156,6 +156,23 @@
 
     binding ))
 
+(defun index-binding-if-needed (var i value)
+  "Called from find-or-make-lattice-subordinate after it has
+  constructed a new binding (via old-bind-variable) or has
+  retrieved the binding-specialized individual from the v+v
+  When it retrieves we don't automatically get the indexing
+  of the binding (particularly the bound-in information we
+  need), so we do that here."
+  (let ((b (has-binding i :variable var :value value))
+        (bound-in-field (indiv-bound-in i)))
+    ;;(unless b (break "Why no binding of ~a on ~a" var i))
+    ;;  first case was the list of variables
+    (when b
+      (unless (member b bound-in-field :test #'eq)
+        (when (individual-p value)
+          (push-binding-onto-bound-in-field b value))))))
+      
+    
 
 
 (defun unindex/binding (b  &optional (body (binding-body b)) )
@@ -200,11 +217,12 @@
      (setf (cat-binds i) (delete b (cat-binds i) :test #'eq)))))
 
 
-
-(defun push-binding-onto-bind-in-field (binding individual)
+(defun push-binding-onto-bound-in-field (binding individual)
+  (declare (special *individuals-bound-onto*))
   (let ((existing-bindings (indiv-bound-in individual)))
     (setf (indiv-bound-in individual)
           (cons binding existing-bindings))
+    (push individual *individuals-bound-onto*)
     binding ))
 
 (defun remove-binding-from-bound-in-field (b i)

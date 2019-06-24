@@ -9,6 +9,102 @@
 
 (in-package :sparser)
 
+;; move into wh-word-semantics when done
+;;;--------------------
+;;; WH nominal clauses
+;;;--------------------
+
+;; (p/s "Tell me what proteins are phosphorylated by MEK")
+
+(define-completion-action (category-named 's) :track-wh-information
+  'track-clause-wh-information)
+
+(defun track-clause-wh-information (edge)
+  "If this clause starts with a wh-pronoun, ///
+Introduce path and wh variables "
+  ;; 2do: suppose there's a leading pp on this clause
+  (when (and (starts-with-wh-pronoun? edge)
+             (not (memq (form-cat-name edge)
+                        '(when-relative-clause))))
+    (tr :wh-nominal-processing edge)
+    ;; find the path between the head and the wh-element
+    (multiple-value-bind (head path element)
+        (trace-out-path-to-wh-element edge)
+      (when head ;; could have been failed during the search
+        (let ((i (specialize-object head (category-named 'wh-nominal :error))))
+          (let ((k (bind-variable 'wh-element
+                                  element
+                                  (bind-variable 'wh-path path i))))
+            (tr :wh-nominal-interpretation k)
+            (set-edge-referent edge k) ;; crucial side-effect
+            (values edge k)))))) ;; for when we trace this function
+  ;;// convert to if with trace/error in else clause
+  )
+
+(defun trace-out-path-to-wh-element (edge)
+  "Given a clause ('s') edge that is known to start with a wh-pronoun,
+   Confirm our starting conditions then trace up the bound-in bindings
+   back to the head, accumulating the variables for the path.
+"
+  (let* ((head (edge-referent edge))
+         (start-pos (pos-edge-starts-at edge))
+         (ev (pos-starts-here start-pos))
+         (edges (all-edges-on ev))
+         (bottom-edge (car edges)) ;;(lowest-edge ev))
+         (bottom-ref (edge-referent bottom-edge))
+         (remaining-parents (cdr edges)))
+    (assert (is-wh-pronoun? bottom-ref))
+    
+    (let* ((parent (car remaining-parents))
+           (parent-ref (edge-referent parent))
+           (det-binding (binds-variable parent-ref 'has-determiner)))
+      ;;(assert det-binding)
+      (when det-binding
+        ;; in (p "Can you tell me what is in the model?")
+        ;; there not a phrase binding the wh, 
+
+        ;; walk up the bound-in links until we hit the top
+        ;; accumulating variables as we go
+        (let ((path (walk-up-bound-in-to-indiv parent-ref head)))
+          (values head path parent-ref))))))
+
+(defun walk-up-bound-in-to-indiv (i-start i-end)
+  (assert (every #'individual-p `(,i-start ,i-end)))
+  (let* ((i i-start)
+         (variables))
+    (loop
+       (let* ((bound-in (indiv-bound-in i))
+              (b (car bound-in)))
+         (assert bound-in (i) "Null bound-in field on ~a" i)
+         (assert b)
+         (let ((var (binding-variable b))
+               (j (binding-body b)))
+           (format t "~&walk up: v: ~a j: ~a~%" var j)
+           (push var variables)
+           (when (eq j i-end) (return))
+           (setq i j)
+           (break "looping ok?: i = ~a  j = ~a" i j))))
+    (nreverse variables)))
+
+(defgeneric starts-with-wh-pronoun? (place)
+  (:documentation "Is this starting location in the chart
+    contain a wh-pronoun?")
+  (:method ((e edge))
+    (let ((p (pos-edge-starts-at e)))      
+      (is-wh-pronoun? (pos-terminal p)))))
+
+
+(defun lift-wh-element-from-nominal (predicate)
+  "Identify and return the wh-element. Additionally add a binding
+   to the wh-element linking it back to the predicate"
+  (assert (itypep predicate 'wh-nominal))
+  (let* ((wh (value-of 'wh-element predicate)))
+    (let ((j (bind-variable 'source  predicate wh category::lifted)))
+      ;;(break "j = ~a" j)
+      j)))
+
+
+
 ;;;-------------------------------
 ;;; auxiliaries for WH delimiting
 ;;;-------------------------------
