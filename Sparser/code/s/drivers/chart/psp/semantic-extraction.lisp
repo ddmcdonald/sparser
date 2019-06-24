@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "semantic-extraction"
 ;;;   Module:  "drivers/chart/psp/"
@@ -733,6 +733,10 @@ in cwc-integ/spire/interface/sparser.lisp
   `(collection :members 
                (,@(loop for l in cal 
                      collect (collect-model-description l)))))
+
+(defmethod collect-model-description ((v lambda-variable))
+  ;;/// needs sentence-results and for-spire variants.
+  (var-name v))
 
 
 (defun indiv-or-type (i)
