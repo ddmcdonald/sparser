@@ -130,7 +130,7 @@
       (let ((left-edge (top-edge-at/starting start-pos)))
         (if (eq (edge-cat-name left-edge) 'music-note) ;; "the C4 quarter note"
           (let ((edges (treetops-between start-pos end-pos)))
-            (create-music-pitch (first edges) (second edges) start-pos end-pos))
+            (create-pitches (first edges) (second edges) start-pos end-pos))
           (reify-two-part-label start-pos end-pos :cap-first))))
 
      ((or (equal pattern '(:single-digit :single-lower)) ;; (Fig. 4c, 4d) in Dec. 42 
