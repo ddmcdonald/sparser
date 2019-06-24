@@ -115,10 +115,14 @@ Treat notes, rests, and pitch classes all the same in terms
 of how they compose with other terms. 
 |#
 
+(defun bind-enharmonics (note1 note2)
+  (bind-variable 'enharmonic note1 note2)
+  (bind-variable 'enharmonic note2 note1))
+
 (define-category music-note
   :specializes abstract-note
   :mixins (cyclic part-of-a-sequence)
-  :binds ((moves-in pitch-region) (flat music-flat) (sharp music-sharp))
+  :binds ((moves-in pitch-region) (flat music-flat) (sharp music-sharp) (enharmonic (:or music-note music-accidental)))
   :lemma (:common-noun "note")
   :index (:permanent :key name :get)
   :realization (:common-noun name))
@@ -132,16 +136,17 @@ of how they compose with other terms.
 
 (define-category music-accidental
   :specializes music-note
+   :index (:permanent :key name :get)
   :binds ((base-note music-note)))
 
 (define-category music-sharp
   :specializes music-accidental
-  :restrict ((base-note music-note))
+  :binds ((base-note music-note))
   :realization (:common-noun name))
 
 (define-category music-flat
   :specializes music-accidental
-  :restrict ((base-note music-note))
+  :binds ((base-note music-note))
   :realization (:common-noun name))
 
 (define-category music-rest
@@ -181,8 +186,8 @@ of how they compose with other terms.
           as flat = (define-individual 'music-flat :name (string-append l "b"))
           as sharp = (define-individual 'music-sharp :name (string-append l "#"))
           as note = (define-individual 'music-note :name (resolve l) :flat flat :sharp sharp)
-          do(bind-variable 'base-note note flat)
-          do(bind-variable 'base-note note flat)
+          do (bind-variable 'base-note note flat)
+          do (bind-variable 'base-note note sharp)
           do (push flat all-notes)
           do (push note all-notes)
           do (push sharp all-notes))
