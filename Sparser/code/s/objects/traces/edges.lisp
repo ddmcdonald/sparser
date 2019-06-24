@@ -115,47 +115,6 @@
       (trace-msg "Checking e~A+e~A"
                  left# right#))))
 
-#|
-(deftrace :right-side-is-composite ()
-  ;; called from Multiply-edges for this special case
-  (when *trace-check-edges*
-    (trace-msg "   The right edge has a composite-referent.")))
-
-(deftrace :using-ids-of-left-referent (left-edge left-ref-category)
-  ;; called from mult/right-composite
-  (when *trace-check-edges*
-    (trace-msg "  No right-looking ids on ~a,~
-              ~%  but there are on the category of its referent: ~a"
-               (edge-category left-edge) left-ref-category)))
-
-(deftrace :trying-category-in-composite (category)
-  ;; called from mult/right-composite
-  (when *trace-check-edges*
-    (trace-msg "    trying ~a" category)))
-|#
-
-#|
-(deftrace :only-left-category-has-ids ()
-  ;; called from Multiply-edges in its dispatch
-  (when *trace-check-edges*
-    (trace-msg "   only the left label has any ids")))
-
-(deftrace :but-left-has-no-form-id ()
-  (when *trace-check-edges*
-    (trace-msg "   but it doesn't have a form id~
-              ~%      so we can't look at the right form label")))
-
-
-(deftrace :only-right-category-has-ids ()
-  ;; called from Multiply-edges in its dispatch
-  (when *trace-check-edges*
-    (trace-msg "   only the right label has any ids")))
-
-(deftrace :but-right-has-no-form-id ()
-  (when *trace-check-edges*
-    (trace-msg "   but it doesn't have a form id~
-              ~%      so we can't look at the left form label")))
-|#
 
 
 ;;--- multiply-categories
@@ -169,7 +128,7 @@
 (deftrace :multiply-succeeded (rule)
   ;; called from lookup-semantic-rule-given-ids
   (when *trace-rules*
-    ;; Was code here that considered the possibility that multply
+    ;; Was code here that considered the possibility that multiply
     ;; returned a list, but it wrote to the trace stream directly
     ;; and in CCL anyway that's not coming through
     (when (listp rule) ;; so ignoring it

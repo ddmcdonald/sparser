@@ -15,7 +15,6 @@
 ;; Adding island-driving traces through 9/18/15
 
 (in-package :sparser)
-(defvar *TRACE-FOREST-TRANSITIONS*)
 (defvar *TRACE-DA-CHECK*)
 (defvar *TRACE-DA*)
 
@@ -211,6 +210,7 @@
 
 (deftrace :tt/caught-up ()
   ;; called from do-treetop-triggers
+  (declare (special *trace-forest-transitions*))
   (when (or *trace-treetops* *trace-forest-transitions* *trace-network*)
     (trace-msg "Treetop walk caught up with the right boundary ~
                 of the forest-level parse~%  at p~A"
@@ -225,6 +225,7 @@
                (pos-token-index forest-right-boundary))))
 
 (deftrace :tt/resume-forest-parse-from-DA (edge)
+  (declare (special *trace-DA-check*))
   (when (or *trace-treetops* *trace-network* *trace-DA-check*)
     (trace-msg "Resuming the forest parse from DA level to deal with~
               ~%    ~A" edge)))
@@ -277,6 +278,7 @@
 
 (deftrace :beginning-DA (start-pos)
   ;; called from Consider-debris-analysis
+  (declare (special *trace-DA-check* *trace-da*))
   (when (or *trace-forest-transitions* *trace-network*
             *trace-DA-check* *trace-da*)
     (trace-msg "~%-- Commencing Debris Analysis from p~A"
@@ -285,6 +287,7 @@
 
 (deftrace :moving-to-do-treetops ()
   ;; called from Walk-pending-treetops-for-debris-analysis
+  (declare (special trace-DA-check*))
   (when (or *trace-forest-transitions* *trace-network*
             *trace-DA-check*)
     (trace-msg "Moving to Do-treetops")))
@@ -585,7 +588,7 @@
 
 (deftrace :whacking-triple (rule-and-edges edge)
   ;; called from whack-a-rule-cycle
-  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
+  (when (or *trace-island-driving* *trace-whack-a-rule*)
     (let ((rule (car rule-and-edges))
           (left-edge (cadr rule-and-edges))
           (right-edge (caddr rule-and-edges)))
@@ -594,51 +597,51 @@
                  (edge-position-in-resource-array edge)))))
 
 (deftrace :pairs-to-consider-whacking (pairs)
-  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
+  (when (or *trace-island-driving* *trace-whack-a-rule*)
     (trace-msg "~%[whack] ~a pairs: ~{~& ~a~}" 
                (length pairs) pairs)))
 
 (deftrace :can-we-whack-pair (pair)
-  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
+  (when (or *trace-island-driving* *trace-whack-a-rule*)
     (trace-msg "[whack] Is there a rule to compose e~a and e~a ?"
                (edge-position-in-resource-array (car pair))
                (edge-position-in-resource-array (cadr pair)))))
 
 (deftrace :whack-pair-with-rule (rule)
-  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
+  (when (or *trace-island-driving* *trace-whack-a-rule*)
     (trace-msg "[whack]   yes: ~a" rule)))
 
 (deftrace :no-rule-to-whack-pair ()
-  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
+  (when (or *trace-island-driving* *trace-whack-a-rule*)
     (trace-msg "[whack]   no")))
 
 (deftrace :filter-choose-between-two-triples (left)
-   (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
+   (when (or *trace-island-driving* *trace-whack-a-rule*)
      (trace-msg "[whack] two triples share ~a"
                 (left-edge-of-triple left))))
 
 (deftrace :filter-takes-left (triple)
-  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
+  (when (or *trace-island-driving* *trace-whack-a-rule*)
     (trace-msg "[whack]   using left triple: ~a"
                (triple-rule triple))))
 
 (deftrace :filter-takes-right (triple)
-  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
+  (when (or *trace-island-driving* *trace-whack-a-rule*)
     (trace-msg "[whack]   using right triple: ~a"
                (triple-rule triple))))
 
 (deftrace :filter-taking-right-most-triple (triple)
-  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
+  (when (or *trace-island-driving* *trace-whack-a-rule*)
     (trace-msg "[whack] Selecting the rightmost triple: ~a"
                (triple-rule triple))))
 
 (deftrace :filter-selected-triple (triple)
-  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
+  (when (or *trace-island-driving* *trace-whack-a-rule*)
     (if triple
       (let ((rule (car triple))
             (left-edge (cadr triple))
             (right-edge (caddr triple)))
-        (trace-msg "[whack] best choice is rule ~a on e~a and e~a"
+        (trace-msg "[whack] taking rule ~a on e~a and e~a"
                    (rule-number-string rule)
                    (edge-position-in-resource-array left-edge)
                    (edge-position-in-resource-array right-edge)))
@@ -959,7 +962,7 @@
                (edge-position-in-resource-array edge))))
 
 
-;;--- subcagtegorization
+;;--- subcategorization
 
 (deftrace :trying-subcat-pattern (tt tt-sequence)
   ;; called from try-to-compose-of-complements
@@ -1156,15 +1159,18 @@
     (trace-msg "[pass2] ran out of treetops. Exiting")))
 
 (deftrace :trying-da-pattern-on (tt)
+  (declare (special *trace-DA-check*))
   (when (or *trace-DA-check* *trace-island-driving*)
     (trace-msg "[pass2] Looking for debris pattern starting with e~a"
                (edge-position-in-resource-array tt))))
 
 (deftrace :no-result-from-da ()
+  (declare (special *trace-DA-check*))
   (when (or *trace-DA-check* *trace-island-driving*)
     (trace-msg "[pass2]    It did not trigger a pattern")))
 
 (deftrace :p2-da-returned-edge (edge)
+  (declare (special *trace-DA-check*))
   (when (or *trace-DA-check* *trace-island-driving*)
     (trace-msg "[pass2]    It created e~a"
                (edge-position-in-resource-array edge))))

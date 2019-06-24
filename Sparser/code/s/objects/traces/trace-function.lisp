@@ -54,7 +54,24 @@
     (let ((key #+mlisp (intern (string-downcase (symbol-name keyword))
                                (find-package :keyword))
                #-mlisp keyword))
-         (setf (gethash key *trace-keyword-to-function*) fn))))
+      (setf (gethash key *trace-keyword-to-function*) fn))))
+
+#|
+(defmacro deftrace (keyword arguments &body body)
+  (let ((key #+mlisp (intern (string-downcase (symbol-name keyword))
+                               (find-package :keyword))
+             #-mlisp keyword)
+        (fn-name (intern (concatenate 'string
+                                      (symbol-name '#:trace)
+                                      "-"
+                                      (symbol-name keyword)) ;; drops colon
+                         (find-package :sparser))))
+    `(defun ,fn-name ,arguments
+       ,@body)))
+But how to you get this version of the function definition
+associated with the keyword on the table?  Or modify the call in
+tr/expr to find it
+|#
 
 
 ;;;------------------------
@@ -69,7 +86,7 @@
 (defparameter *allow-tr-tracing* t
   "Master switch allowing all trace code to be ignored.")
 
-(defun tr/expr (keyword  &rest arguments)
+(defun tr/expr (keyword &rest arguments)
   (declare (special *trace-the-trace-calls*)
            (optimize (speed 3)(safety 0)))
   (when *allow-tr-tracing*

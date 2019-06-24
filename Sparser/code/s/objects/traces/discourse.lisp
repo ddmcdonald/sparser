@@ -121,6 +121,18 @@
               ~%     ~a edges"
                preposed? wh-initial? (length edges))))
 
+;;---- WH-comp
+
+(deftrace :wh-nominal-processing (edge)
+  ;; called from track-clause-wh-information, which is on
+  ;; a completion hook for clauses
+  (when *trace-questions*
+    (trace-msg "[wh] Applying wh-info tracking to ~a" edge)))
+
+(deftrace :wh-nominal-interpretation (i)
+  ;; called from track-clause-wh-information
+  (when *trace-questions*
+    (trace-msg "[wh] the revised interpretation is ~a" i)))
 
 ;;;---------------------
 ;;; discourse-structure
