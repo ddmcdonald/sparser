@@ -96,7 +96,7 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
   (unless (subsumption-check/complete edge)
     ;;(push-debug `(,edge)) (lsp-break "~a passed the check" edge)
     (check-for-completion-actions/category (edge-category edge)
-                                           edge))
+                                           edge))          
 
   (valid-referent? edge) ;; error if null
 

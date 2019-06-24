@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990  Content Technologies Inc.
-;;; copyright (c) 1992-1993,2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2015,2019  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "trigger"
 ;;;   Module:  "drivers;actions:"
-;;;  Version:  2.2 June 2015
+;;;  Version:  June 2019
 
 ;; initiated 6/90
 ;; 1.1 (10/21/91 v2.0) Completely revamped.  10/27 fixed typos. 10/30 ditto.
@@ -19,21 +19,25 @@
 
 
 (defun check-for-completion-actions/category (category edge)
-  (declare (special *trace-completion-hook*))
-  (when *trace-completion-hook*
-    (format t "~&Checking for completion actions associated with ~
-               the category ~A~%" category))
-  (let ((rule-set (rule-set-for category)))
-    (if rule-set
-      (let ((actions (rs-completion-actions rule-set)))
-        (if actions
-          (let ((pos-before (pos-edge-starts-at edge))
-                (pos-after (pos-edge-ends-at edge)))
-            (carry-out-actions actions edge pos-before pos-after))
-          (when *trace-completion-hook*
-            (format t "~&  There aren't any -- empty action field~%"))))
-      (when *trace-completion-hook*
-        (format t "~&  There aren't -- it has no rule set~%")))))
+  (flet ((search-label-for-completion-action (label)
+           (declare (special *trace-completion-hook*))
+           (when *trace-completion-hook*
+             (format t "~&Checking for completion actions associated with ~
+               the category ~A~%" label))
+           (let ((rule-set (rule-set-for label)))
+             (if rule-set
+               (let ((actions (rs-completion-actions rule-set)))
+                 (if actions
+                   (let ((pos-before (pos-edge-starts-at edge))
+                         (pos-after (pos-edge-ends-at edge)))
+                     (carry-out-actions actions edge pos-before pos-after))
+                   (when *trace-completion-hook*
+                     (format t "~&  There aren't any -- empty action field~%"))))
+               (when *trace-completion-hook*
+                 (format t "~&  There aren't -- it has no rule set~%"))))))
+    (or (search-label-for-completion-action (edge-category edge))
+        (when (edge-form edge)
+          (search-label-for-completion-action (edge-form edge))))))
 
 
 (defun check-for-completion-actions/word (word
