@@ -21,6 +21,7 @@
 
 
 (defparameter *the-notes* '("A" "B" "C" "D" "E" "F" "G"))
+(defparameter *note-sequence* '())
 
 
 ;;--- goes in upper-model
@@ -31,7 +32,7 @@
 
 ;;--- pitch as a region
 
-(define-category music-pitch
+(define-category pitch-region
   :instantiates nil
   :specializes abstract-region
   :realization (:common-noun "pitch")
@@ -46,7 +47,7 @@
   :index (:permanent :key name :get)
   :binds ((note music-note)
           (accidental music-accidental)
-          (in-region music-pitch) ))
+          (in-region pitch-region)))
 
 
 (define-category music-beat
@@ -82,17 +83,17 @@
 
 (define-category music-step
   :specializes unit-of-measure
-  :binds ((in-region music-pitch))
+  :binds ((in-region pitch-region))
   :realization (:common-noun "step"))
 
 (define-category music-half-step
   :specializes unit-of-measure
-  :binds ((in-region music-pitch))
+  :binds ((in-region pitch-region))
   :realization (:common-noun "half-step" :common-noun "1/2 step"))
 
 (define-category octave
   :specializes unit-of-measure
-  :binds ((in-region music-pitch))
+  :binds ((in-region pitch-region))
   :realization (:common-noun "octave"))
 
 ;;--- notes
@@ -102,7 +103,7 @@
   :mixins (part-of-a-sequence) ;; "the fifth note" // but: "eigth", "sixteenth"
   :binds ((duration fractional-term)
           (accidental music-accidental)
-          (in-region music-pitch)))
+          (in-region pitch-region)))
 
 #| "the C4 quarter note"
    "the quarter note"
@@ -117,15 +118,15 @@ of how they compose with other terms.
 (define-category music-note
   :specializes abstract-note
   :mixins (cyclic part-of-a-sequence)
+  :binds ((moves-in pitch-region) (flat music-flat) (sharp music-sharp))
   :lemma (:common-noun "note")
   :index (:permanent :key name :get)
-  :realization (:common-noun name)
-  :binds ((moves-in music-pitch) (flat music-flat) (sharp music-sharp)))
+  :realization (:common-noun name))
 
 (define-category note-sequence 
   :specializes symbolic
   :mixins (sequence partonomic)
-  :binds ((moves-in music-pitch))
+  :binds ((moves-in pitch-region))
   :bindings (part-type 'music-note)
   :realization (:common-noun name))
 
@@ -137,6 +138,7 @@ of how they compose with other terms.
   :specializes music-accidental
   :restrict ((base-note music-note))
   :realization (:common-noun name))
+
 (define-category music-flat
   :specializes music-accidental
   :restrict ((base-note music-note))
@@ -146,10 +148,10 @@ of how they compose with other terms.
   :specializes abstract-note
   :realization (:common-noun "rest"))
 
-(define-category pitch-class
+(define-category music-pitch
   :specializes abstract-note
   :binds ((music-note music-note)
-          (number number))
+          (register number))
   :realization (:common-noun name))
 
 
@@ -166,25 +168,25 @@ of how they compose with other terms.
     (find-individual 'music-note :name name)))
 
 
-
 (defun make-note-sequence ()
-  (let* ((the-notes
-          (mapcar #'(lambda (string) (get-music-note string))
-                  *the-notes*))
-         (sequence (create-sequence the-notes)))
-    (old-bind-variable 'sequence sequence category::music-note)
-    (old-bind-variable 'cycle-length 7 category::music-note)
-    (thread-sequence sequence)))
+  (let ((*sequence* (create-sequence *note-sequence*)))
+  (old-bind-variable 'sequence *sequence* category::music-note)
+  (old-bind-variable 'cycle-length 14 category::music-note)
+  (thread-sequence *sequence*)))
     
 (defun setup-musical-notes ()
-  (let* ((letter-list *the-notes*))
+  (let* ((letter-list *the-notes*) (all-notes '()))
     (loop for l in letter-list do (strip-single-term-rules l))
     (loop for l in letter-list
-          as note = (define-individual 'music-note :name (resolve l))
-          as flat = (define-individual 'music-flat :name (string-append l "b") :base-note note)
-          as sharp = (define-individual 'music-sharp :name (string-append l "#") :base-note note)
-          do(bind-variable 'flat flat note)
-          do(bind-variable 'sharp sharp note))))
+          as flat = (define-individual 'music-flat :name (string-append l "b"))
+          as sharp = (define-individual 'music-sharp :name (string-append l "#"))
+          as note = (define-individual 'music-note :name (resolve l) :flat flat :sharp sharp)
+          do(bind-variable 'base-note note flat)
+          do(bind-variable 'base-note note flat)
+          do (push flat all-notes)
+          do (push note all-notes)
+          do (push sharp all-notes))
+    (setq *note-sequence* (reverse all-notes))))
 
 
 (defun setup-note-lengths ()
@@ -202,24 +204,24 @@ of how they compose with other terms.
                    :name pw))))
 
 
-(defun create-pitch-class (note-edge number-edge start-pos end-pos)
+(defun create-pitches (note-edge number-edge start-pos end-pos)
   "Called from resolve-ns-pattern when we get the pattern
    (:single-cap :single-digit) and the first edge is labeled
    'note'. As in the string 'C3'. We construct the individual
    here as though it had been parsed and formed compositionally."
   (let ((music-note (edge-referent note-edge))
-        (number (edge-referent number-edge)))
+        (register (edge-referent number-edge)))
     ;; Because we're called from the no-space machinery rather
     ;; than the application of a phrase structure rule, we have to
     ;; make the edge ourselves.
-    (let* ((i (define-or-find-individual 'pitch-class
-                  :music-note music-note :number number))
+    (let* ((i (define-or-find-individual 'music-pitch
+                  :music-note music-note :register register))
            (edge
             (make-binary-edge/explicit-rule-components
              note-edge
              number-edge
-             :category (category-named 'pitch-class t)
-             :rule-name 'create-pitch-class
+             :category (category-named 'music-pitch t)
+             :rule-name 'create-music-pitch
              :form (category-named 'n-bar)
              :referent i)))
       edge)))
