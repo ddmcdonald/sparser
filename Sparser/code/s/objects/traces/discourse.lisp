@@ -129,10 +129,30 @@
   (when *trace-questions*
     (trace-msg "[wh] Applying wh-info tracking to ~a" edge)))
 
+(deftrace :clause-without-wh-element (edge)
+  ;; called from track-clause-wh-information
+  (when *trace-questions*
+    (trace-msg "[wh] no wh element in ~a" edge)))
+
 (deftrace :wh-nominal-interpretation (i)
   ;; called from track-clause-wh-information
   (when *trace-questions*
-    (trace-msg "[wh] the revised interpretation is ~a" i)))
+    (trace-msg "[wh] specialized the predicate: ~a" i)))
+
+(deftrace :walking-up-binding (var j)
+  ;; called from walk-up-bound-in-to-indiv
+  (when *trace-questions*
+    (trace-msg "[wh] walking up via ~a to reach ~a" var j)))
+
+(deftrace :lifting-wh-element (i)
+  ;; called from lift-wh-element-from-nominal
+  (when *trace-questions*
+    (trace-msg "[lifting] wh-element: ~a" i)))
+
+(deftrace :lifting-wh-element-returns (j)
+  ;; called from lift-wh-element-from-nominal
+  (when *trace-questions*
+    (trace-msg "[lifting] returning ~a to replace predicate" j)))
 
 ;;;---------------------
 ;;; discourse-structure
