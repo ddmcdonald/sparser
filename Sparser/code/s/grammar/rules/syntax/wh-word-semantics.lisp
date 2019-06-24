@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "WH-word-semantics"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  May 2019
+;;;  Version:  June 2019
 
 ;; initiated 8/8/07. Added relatives 1/1/08
 ;; 0.1 Changed the names of the categories to just be the name of the pronoun.
@@ -30,12 +30,13 @@
     will also inherit from pronoun, so we have to distinguish them
     to select only WH pronouns by checking for WH pronouns first.")
   (:method ((c category))
-    (declare (special category::wh-pronoun))
     (category-inherits-type? c category::wh-pronoun))
   (:method ((i individual))
     (is-wh-pronoun? (itype-of i)))
   (:method ((e edge))
     (is-wh-pronoun? (edge-referent e)))
+  (:method ((w word))
+    (eq (get-tag :function-word w) category::wh-pronoun))
   (:method ((ignore t))
     nil))
   
@@ -120,6 +121,35 @@
         (break "~a is a ~a, not a perdurant"
                statement (itype-of statement)))
       statement)))
+
+
+;;;--------------------
+;;; WH nominal clauses
+;;;--------------------
+
+(define-mixin-category wh-nominal
+  :specializes linguistic
+  :binds ((wh-path :primitive list)
+          (wh-element))
+  :documentation "When we have identified a the referent of
+ a clause as being an wh-nominal //or a wh-question, we subype it
+ to include this mixin and bind the variables")
+
+(define-mixin-category lifted
+  :specializes linguistic
+  :binds ((source))
+  :documentation "When we pull out the wh-phrase from an
+ embedded nominal clause, we mix this into the element 
+ we've pulled out and bind the variable to the root of
+ the individual it was pulled from")
+
+(defgeneric takes-wh-nominals? (i)
+  (:documentation "Do things of this type take embedded WH
+ clauses are arguments? Provides syntactic sugar while we
+ sort out what type (mixin category) to use consistently")
+  (:method ((i individual))
+    (itypep i 'ask/tell)))
+
 
 ;;;---------------------------------
 ;;; grammmar for embedded questions
