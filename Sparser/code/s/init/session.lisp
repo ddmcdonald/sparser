@@ -29,6 +29,9 @@
 (when cl-user::location-of-text-corpora
   (push :full-corpus *features*))
 
+(eval-when (:load-toplevel :execute)
+  (setq *sparser-loaded* t))
+
 ;; Finally, print a salutation.
 (format t "~%Welcome to the Sparser natural language analysis system.~
            ~%Copyright (c) David D. McDonald 1991-2005,2010-2019.~

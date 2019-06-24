@@ -1,9 +1,9 @@
 ;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: SPARSER -*-
-;;; Copyright (c) 2016-2018 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2019 SIFT LLC. All Rights Reserved.
 ;;;
 ;;;      File: "parameters"
 ;;;    Module: "init;"
-;;;   Version: December 2018
+;;;   Version: June 2019
 
 ;;;----------------------------
 ;;; parameterizing the loading
@@ -15,6 +15,11 @@ This flag governs whether the instance objects and rules defined
 by the load file for the grammar are also loaded. Precisely which
 modules of the grammar are loaded is further specialized by the
 flags in the grammar configuration file.")
+
+(defvar *sparser-loaded* nil
+  "Useful when operations need to be changed from while the system
+ and grammar are loading and after than when we are doing analyses.
+ Set in session.lisp")
 
 (defvar *pre-load-hooks* nil
   "A list of functions run at the start of \"loaders;master-loader\".")
