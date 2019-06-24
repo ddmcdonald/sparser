@@ -1220,7 +1220,7 @@
 ;; can be both "<people> show ..." and "<molecule> shows <properties>"
 (define-category show :specializes bio-rhetorical
    :mixins (bio-thatcomp raising-to-object directed-action
-            with-specified-location)           
+            with-specified-location takes-wh-nominals)           
   :restrict ((theme (:or be biological predication abstract))
              (beneficiary interlocutor))
   ;; it was shown that

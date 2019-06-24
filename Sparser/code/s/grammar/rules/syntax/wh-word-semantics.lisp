@@ -143,12 +143,20 @@
  we've pulled out and bind the variable to the root of
  the individual it was pulled from")
 
+(define-mixin-category takes-wh-nominals
+  :specializes linguistic  
+  :documentation "Provides an indicator that a predicate
+ should be understood as taking wh-nominal arguments.
+ Useful for cases that don't fall into a family of
+ nominal-taking predicates")
+
 (defgeneric takes-wh-nominals? (i)
   (:documentation "Do things of this type take embedded WH
  clauses are arguments? Provides syntactic sugar while we
  sort out what type (mixin category) to use consistently")
   (:method ((i individual))
-    (itypep i 'ask/tell)))
+    (or (itypep i 'ask/tell)
+        (itypep i 'takes-wh-nominals))))
 
 
 ;;;---------------------------------
