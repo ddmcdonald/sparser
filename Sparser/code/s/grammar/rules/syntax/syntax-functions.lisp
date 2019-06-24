@@ -685,10 +685,9 @@ val-pred-var (pred vs modifier - left or right?)
         i)))
     
 
-(defparameter *dets-seen* nil)
+(defparameter *dets-seen* nil "Keep track of what kinds of new 'determiners' we get")
 
-(define-lambda-variable 'is-plural
-    nil 'top)
+(define-lambda-variable 'is-plural nil 'top)
 
 (defun determiner-noun (determiner head)
   "Depending on the value of *determiners-in-DL* either bind the determiner
@@ -698,19 +697,22 @@ val-pred-var (pred vs modifier - left or right?)
 	     (det-edge (left-edge-for-referent))
 	     (det-word (edge-left-daughter det-edge))
              (head-edge (right-edge-for-referent)))
-        
-	(unless (determiner? det-word)
-	  ;; There are a ton of categories that are defined to be
-	  ;; syntactic determiners that deserve their own careful
-	  ;; semantic treatment that might funnel through here
-	  ;; We can dispatch of the type of the determner:
-	  ;; quantity, approximator, etc. Pull them out of the
-	  ;; modifiers dossier. 
+
+        ;; There are a ton of categories that are defined to be
+        ;; syntactic determiners that deserve their own careful
+        ;; semantic treatment that might funnel through here
+        ;; We can dispatch of the type of the determner:
+        ;; quantity, approximator, etc. Pull them out of the
+        ;; modifiers dossier. 
+
+	(unless (determiner? det-word) ;; anticipated cases
 	  (pushnew determiner *dets-seen*))
         
 	(setf (non-dli-mod-for head) (list 'determiner determiner))
         (when (definite-determiner? determiner)
           (add-def-ref determiner parent-edge))
+
+        ;;(when (wh-determiner? determiner) (break "wh det"))
         
 	(cond
           ((and *determiners-in-DL*
@@ -1819,58 +1821,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun assimilate-object-comp (vp obj)
   (assimilate-subcat vp :oc obj))
 
-(defun possible-indirect-object? (vg)
-  (declare (special category::what category::which))
-  (and (itypep vg 'directed-action)
-       *right-edge-into-reference*
-       (loop for e in (edges-after *right-edge-into-reference*)
-             thereis
-               (or
-                (member (form-cat-name e) *np-category-names*)
-                (eq (cat-name (edge-category e)) 'how)
-                (member (form-cat-name e)
-                        '(thatcomp howcomp ifcomp))
-                (and (eq 's (form-cat-name e))
-                     (or (is-in-p category::what
-                                  (semtree (edge-referent e)))
-                         (is-in-p category::which
-                                  (semtree (edge-referent e)))))))))
-
-(defun is-in-p (item tree)
-  (cond ((and (consp tree) (listp (cdr tree))) ;; not a dotted pair
-         (loop for i in tree thereis (is-in-p item i)))
-        ((consp tree)
-         (eq item (car tree)))
-        (t
-         (eq item tree))))
-
-(defun takes-object-complement? (vg)
-  "Are there any variables for object complement in the subcat
-   information on this verb"
-  (find-subcat-vars :oc vg))
-
-(defun obj-complement-follows? (vg)
-  "If the head can take an object complement, and the next constituent
-   would satisfy the constrains on that complement, then 'reset' the label
-   on the edge we are creating (make it a vg rather than the vp that the
-   rule indicates) so we can use the rule again to collect the complement"
-  (when *right-edge-into-reference*
-    (loop for e in (edges-after *right-edge-into-reference*)
-       as item = (edge-referent e)
-       thereis (valid-object-complement? vg item))))
-
-(defun valid-object-complement? (vg obj)
-  "Is the type of this candidate complement consistent with constraints
-   on the EC variable for this head."
-  (let ((variables (takes-object-complement? vg)))
-    (when variables
-      (when (cdr variables)
-        (error "Multiple object-complement variables on ~a: (~a)~
-              ~%Don't know what to do." vg variables))
-      (satisfies-variable-restriction? obj (car variables)))))
-
-
 (defun assimilate-np-to-v-as-object (vg obj)
+  "Sort out whether the 'obj' is a direct object, indirect object, or
+   object complement, while ruling out spurious cases."
   (declare (special category::n-bar category::vp category::vp+ing
                     category::vp+ed category::to-comp category::n-bar))
   (when *subcat-test*
@@ -1879,7 +1832,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
                  (not (and (itypep vg '(:or be have))
                            *right-edge-into-reference*
                            (edge-just-to-right-of (right-edge-for-referent))
-                           (member (cat-name (edge-form (edge-just-to-right-of (right-edge-for-referent))))
+                           (member (cat-name
+                                    (edge-form
+                                     (edge-just-to-right-of (right-edge-for-referent))))
                                    '(vg+ed vp+ed vg+ing vp+ing)))))
       (return-from assimilate-np-to-v-as-object nil)))
   
@@ -1887,20 +1842,21 @@ there was an edge for the qualifier (e.g., there is no edge for the
     (return-from assimilate-np-to-v-as-object nil))
   
   (let* ((indirect-object? (possible-indirect-object? vg))
-         (ec-follows (obj-complement-follows? vg))
-         (obj-is-ec (valid-object-complement? vg obj))
-         (result
+         (oc-follows (obj-complement-follows? vg))
+         (obj-is-oc (valid-object-complement? vg obj))
+         (result ;; do the appropriate assimilation
           (cond ((and (typep *current-chunk* 'chunk)
                       (member 'ng (chunk-forms *current-chunk*)))
                  (verb-noun-compound vg obj))
                 (indirect-object?
                  (assimilate-indirect-object vg obj))
-                (t (if obj-is-ec
+                (t (if obj-is-oc
                      (assimilate-object-comp vg obj)
                      (assimilate-object vg obj))))))
     (cond
       (*subcat-test* result)
       (result
+       ;; Revise the parent edges to reflect what we've observed
        (if (and (typep *current-chunk* 'chunk)
                 (member 'ng (chunk-forms *current-chunk*)))
 	   (revise-parent-edge :category (itype-of obj)
@@ -1909,7 +1865,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
 	   (revise-parent-edge :category (if (itype vg 'collection)
                                              (value-of 'type vg)
                                              (itype-of vg))
-			       :form (if (or indirect-object? ec-follows)
+			       :form (if (or indirect-object? oc-follows)
                                          category::vg
                                          (case (form-cat-name (parent-edge-for-referent))
                                            ((vg vp) category::vp)
@@ -1949,7 +1905,12 @@ there was an edge for the qualifier (e.g., there is no edge for the
   s)
 
 (defun assimilate-thatcomp (vg-or-np thatcomp)
+  ;;(push-debug `(,vg-or-np ,thatcomp)) (break "what's what?")
   (or
+   (when (and (takes-wh-nominals? vg-or-np)
+              (itypep thatcomp 'wh-nominal))
+     (let ((wh (lift-wh-element-from-nominal thatcomp)))
+       (assimilate-subcat vg-or-np :thatcomp wh)))
    (assimilate-subcat vg-or-np :thatcomp thatcomp)
    (and (itypep vg-or-np 'let) ;; or #| make help hear see |#))
         (boundp '*right-edge-into-reference*)
