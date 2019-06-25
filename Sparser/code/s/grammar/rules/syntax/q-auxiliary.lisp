@@ -106,7 +106,7 @@
   (assert (itypep predicate 'wh-nominal))
   (let* ((wh (value-of 'wh-element predicate)))
     (tr :lifting-wh-element wh)
-    (let ((j (bind-variable 'source  predicate wh category::lifted)))
+    (let ((j (bind-variable 'predication  predicate wh category::lifted)))
       (tr :lifting-wh-element-returns j)
       j)))
 
