@@ -125,21 +125,20 @@ of how they compose with other terms.
   :binds ((moves-in pitch-region) (flat music-flat) (sharp music-sharp) (enharmonic (:or music-note music-accidental)))
   :lemma (:common-noun "note")
   :index (:permanent :key name :get)
-  :realization (:common-noun name 
-                :proper-noun name))
+  :realization (:common-noun name))
 
 (define-category note-sequence 
   :specializes symbolic
-  :mixins (sequence partonomic)
-  :binds ((moves-in pitch-region) (note1 :or note-sequence music-note) (note2 :or note-sequence music-note))
+  :mixins (sequence partonomic part-of-a-sequence)
+  :binds ((moves-in pitch-region) (part1 :or note-sequence music-note) (part2 :or note-sequence music-note))
   :bindings (part-type 'music-note)
   :realization (:tree-family pair-instantiates-category
                 :mapping ((result-type . :self)
                           (np . :self)
-                          (first . (note1 :or note-sequence music-note))
-                          (second . (note2 :or note-sequence music-note))
-                          (item1 . note1)
-                          (item2 . note2))))
+                          (first . (part1 :or note-sequence music-note))
+                          (second . (part2 :or note-sequence music-note))
+                          (item1 . part1)
+                          (item2 . part2))))
 
 (define-category music-accidental
   :specializes music-note
