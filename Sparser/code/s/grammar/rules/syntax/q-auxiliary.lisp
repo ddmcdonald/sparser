@@ -75,7 +75,10 @@
     (loop
        (let* ((bound-in (indiv-bound-in i))
               (b (car bound-in)))
-         (assert bound-in (i) "Null bound-in field on ~a" i)
+         (unless bound-in
+           (warn "Null bound-in field on ~a" i)
+           (return))
+         ;;(assert bound-in (i) "Null bound-in field on ~a" i)
          (let ((var (binding-variable b))
                (j (binding-body b)))
            (tr :walking-up-binding var j)   
