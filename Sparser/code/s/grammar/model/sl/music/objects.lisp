@@ -30,6 +30,19 @@
   :specializes non-physical)
 
 
+(define-category trajectory
+  :instantiates nil
+  :binds ((direction (:or up down) ) (extent (:or music-step music-half-step octave)) )
+  :realization (:tree-family pair-instantiates-category
+                :mapping ((result-type . :self)
+                          (np . :self)
+                          (first . (direction :or up down))
+                          (second . (extent :or music-step music-half-step octave))
+                          (item1 . direction)
+                          (item2 . extent))))
+
+
+
 ;;--- pitch as a region
 
 (define-category pitch-region
