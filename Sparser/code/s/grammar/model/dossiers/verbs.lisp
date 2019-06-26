@@ -9,6 +9,7 @@
 
 (defun define-standard-verbs ()) ;; for retrieving this file
 
+
 ;; Gathers verbs from diverse specific sources into one place.
 ;; Tipping was the need to have access to prepositions now that we can
 ;; specify them with verbs, but in any event it makes things easier
@@ -225,6 +226,7 @@ come
   :mixins (action-verb)
   :realization (:verb ("look" :prep "up")))
 
+
 (define-category make
   :specializes process
   :mixins (action-verb)
@@ -308,6 +310,25 @@ come
 
 ;;------------------------------ music ---------------
 
+;(define-category make-ditrans
+  ;:specializes process
+  ;:mixins (action-verb with-goal)
+  ;:restrict ((actor physical-agent)
+             ;(patient symbolic))
+  ;:binds ((goal symbolic))
+  ;:documentation "The :adjp-complement is seen by the syntax fn
+ ;assimilate-adj-complement to deal with the 'green' when it 
+ ;composes with 'make the stack'."
+  ;:realization
+    ;(:verb ("make" :past-tense "made")
+     ;:etf svoa 
+     ;:s actor
+     ;:o patient
+     ;:a goal
+     ;:mumble ("make" svoa :s actor :o patient :a goal)))
+
+
+
 ;; "Delete everything before beat 2 of measure 1"
 ;;
 (define-category delete
@@ -331,16 +352,23 @@ come
                 :in goal
                 :at goal
                 :loc-pp-complement (on in at)
-                :mumble ("insert" svo1o2 :s agent :o theme :o2 goal))
-  :documentation "The move mixin provides for a physical or
- social agent as the subject. Something physical as the direct
- object (theme), and location variable for where it moves.")
+                :mumble ("insert" svo1o2 :s agent :o theme :o2 goal)))
+
 
 ;; "invert all the notes around G4"
+;; Restricting to "on" for now, as "around" is currently an approximator.
 (define-category invert
   :specializes process
-  :mixins (simple-action)
-  :realization (:verb "invert"))
+  :mixins (simple-action with-instrument)
+  :binds ((instrument on))
+  :realization (:verb "invert"
+                :etf svol
+                :s agent
+                :o theme
+                :l instrument
+                :on instrument
+                :loc-pp-complement  (on)
+                :mumble ("insert" svo1o2 :s agent :o theme :o2 instrument)))
 
 ;; "Move all the notes in measure 2 down an octave
 ;;    -- move their pitch, not their location.
@@ -362,21 +390,40 @@ come
   :realization (:verb "reverse"))
 
 ;; "transpose the C up 1 half step"
-;;
+;; Modeling "raise" and "lower" after this
 
 (define-category transpose
   :specializes move
-  :mixins (simple-action with-goal with-theme with-specified-location move-something-verb)
-  :binds ((theme endurant) (goal measurement))
-  :realization (:verb "transpose"
-                :etf svol
-                :s agent
-                :o theme
-                :l goal
-                :down goal
-                :up goal
-                :loc-pp-complement (down up)
-                :mumble ("transpose" svo1o2 :s agent :o theme :o2 goal)))
+  :mixins (with-agent with-theme with-extent move-something-verb)
+  :binds ((agent physical-agent) (theme (:or abstract-note music note music-measure)) (extent trajectory))
+  :realization (:verb "transpose" :tree-family vp+adjunct
+    :mapping ((vg . :self)
+              (vp . move)
+              (adjunct . trajectory)
+              (slot . extent))))
+
+
+(define-category raise-note
+  :specializes move
+  :mixins (with-agent with-theme with-extent move-something-verb)
+  :binds ((agent physical-agent) (theme (:or abstract-note music note music-measure)) (extent trajectory))
+  :realization (:verb "raise" :tree-family vp+adjunct
+    :mapping ((vg . :self)
+              (vp . move)
+              (adjunct . trajectory)
+              (slot . extent))))
+
+
+(define-category lower-note
+  :specializes move
+  :mixins (with-agent with-theme with-extent move-something-verb)
+  :binds ((agent physical-agent) (theme (:or abstract-note music note music-measure)) (extent trajectory))
+  :realization (:verb "lower" :tree-family vp+adjunct
+    :mapping ((vg . :self)
+              (vp . move)
+              (adjunct . trajectory)
+              (slot . extent))))
+
 
 ;; "work on measures 1 and 2"
  (define-category work-on
@@ -386,24 +433,25 @@ come
 
 (define-category change-to 
   :specializes move
-  :mixins (with-agent with-goal with-theme)
-  :restrict ((agent physical-agent) (theme endurant))
-  :binds ((goal endurant))
+  :mixins (with-agent with-goal with-theme move-something-verb)
+  :restrict ((agent physical-agent) (theme (:or music-note note-sequence music-measure)) (goal (:or music-note note-sequence)))
   :realization (:verb "change" 
                 :etf (svol)
                 :s agent
                 :o theme
                 :l goal
+                :to goal
+                :into goal
                 :loc-pp-complement (to into)
                 :mumble ("change" svo1o2 :o1 theme :o2 goal)))
 
 
 (define-category move-to
   :specializes move
-  :mixins (with-agent with-goal with-theme with-specified-location move-something-verb)
+  :mixins (with-agent with-goal with-theme with-extent with-specified-location move-something-verb)
   :restrict ((agent physical-agent)
              (theme endurant)
-             (goal (:or endurant direction)))
+             (goal (:or endurant direction)) (extent measurement))
   :documentation "This allows proper chunking of a locative complements to 'move' verbs (more than just 'to'), where previously these
   locative complements were swalowed up by the theme np. It seems that move is a complex category with lots of working
   parts, so this may just be a temporary hack."
@@ -412,6 +460,7 @@ come
                  :s agent
                  :o theme
                  :l goal
+                 :l extent
                  :to goal
                  :onto goal
                  :on goal
