@@ -148,6 +148,11 @@
   (tr :fraction+note fraction note)
   (bind-variable 'duration fraction note))
 
+(def-k-method compose ((pitch category::music-note)
+                       (note category::abstract-note))
+  ;; called from the noun-noun-compound syntax function
+  (bind-variable 'pitch pitch note))
+
 
 
 
