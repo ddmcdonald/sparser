@@ -103,7 +103,9 @@
   :mixins (part-of-a-sequence) ;; "the fifth note" // but: "eigth", "sixteenth"
   :binds ((duration fractional-term)
           (accidental music-accidental)
-          (in-region pitch-region)))
+          (in-region pitch-region)
+          (pitch music-note))
+  :realization (:common-noun "note"))
 
 #| "the C4 quarter note"
    "the quarter note"
@@ -123,7 +125,6 @@ of how they compose with other terms.
   :specializes abstract-note
   :mixins (cyclic part-of-a-sequence)
   :binds ((moves-in pitch-region) (flat music-flat) (sharp music-sharp) (enharmonic (:or music-note music-accidental)))
-  :lemma (:common-noun "note")
   :index (:permanent :key name :get)
   :realization (:common-noun name))
 
@@ -144,6 +145,7 @@ of how they compose with other terms.
   :specializes music-note
    :index (:permanent :key name :get)
   :binds ((base-note music-note)))
+
 
 (define-category music-sharp
   :specializes music-accidental
