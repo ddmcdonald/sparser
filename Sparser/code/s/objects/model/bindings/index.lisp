@@ -156,24 +156,6 @@
 
     binding ))
 
-(defun index-binding-if-needed (var i value)
-  "Called from find-or-make-lattice-subordinate after it has
-  constructed a new binding (via old-bind-variable) or has
-  retrieved the binding-specialized individual from the v+v
-  When it retrieves we don't automatically get the indexing
-  of the binding (particularly the bound-in information we
-  need), so we do that here."
-  (let ((b (has-binding i :variable var :value value))
-        (bound-in-field (indiv-bound-in i)))
-    ;;(unless b (break "Why no binding of ~a on ~a" var i))
-    ;;  first case was the list of variables
-    (when b
-      (unless (member b bound-in-field :test #'eq)
-        (when (individual-p value)
-          (push-binding-onto-bound-in-field b value))))))
-      
-    
-
 
 (defun unindex/binding (b  &optional (body (binding-body b)) )
   (let ((value (binding-value b)))
@@ -188,6 +170,23 @@
     (unindex-binding b (binding-variable b) value)
 
     b ))
+      
+
+(defun index-binding-if-needed (var i value)
+  "Called from find-or-make-lattice-subordinate after it has
+  constructed a new binding (via old-bind-variable) or has
+  retrieved a binding-specialized individual using v+v indexes.
+  When it retrieves an individual we don't automatically get the
+  automatic indexing of the binding (particularly the bound-in information
+  we need), so we do that here."
+  (let ((b (has-binding i :variable var :value value))
+        (bound-in-field (indiv-bound-in i)))
+    ;;(unless b (break "Why no binding of ~a on ~a" var i))
+    ;;  first case was the list of variables
+    (when (and b ;; occasionally could be a category (?)
+               (individual-p value))
+      (unless (member b bound-in-field :test #'eq) ;; push-new
+        (push-binding-onto-bound-in-field b value)))))
     
 
 
@@ -222,7 +221,7 @@
   (let ((existing-bindings (indiv-bound-in individual)))
     (setf (indiv-bound-in individual)
           (cons binding existing-bindings))
-    (push individual *individuals-bound-onto*)
+    (push individual *individuals-bound-onto*) ;; see zero-bound-in-fields
     binding ))
 
 (defun remove-binding-from-bound-in-field (b i)
