@@ -321,6 +321,42 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
       (setf (ev-top-node ev) parent) ;; usually redundant with the swap  
       ev)))
 
+(defun create-wh-nominal-and-edge-by-binding-and-insert-edge (var val pred)
+  (unless (edge-p (parent-edge-for-referent))
+    (lsp-break "create-wh-nominal-and-edge-by-binding-and-insert-edge - no valid parent edge"))
+  (let ((wh-nominal-ref (create-wh-nominal-by-binding var val pred)))
+    (insert-wh-nominal-edge (parent-edge-for-referent) wh-nominal-ref)
+    wh-nominal-ref))
+
+(defun insert-wh-nominal-edge (parent wh-nominal-ref)
+  (declare (special wh-nominal-ref parent))
+  (let ((wh-nominal-edge
+         (make-wh-nominal-edge (right-edge-for-referent)
+                               wh-nominal-ref)))
+    (sort-out-introduction-of-wh-np-edge wh-nominal-edge parent)
+    (values wh-nominal-ref wh-nominal-edge)))
+
+
+(defun sort-out-introduction-of-wh-nominal-edge (wh-nominal-edge parent)
+  "The parent is a binary edge. We've just spanned one of its daughters
+   with the newly introduced wh-np-edge so we need to update that information."
+  (setf (edge-used-in wh-nominal-edge) parent)
+
+  ;; The order of the edges in the vector that the parent and lambda-edge
+  ;; share is messed up. Edges are added to the edge-vectors of their
+  ;; start and end positions at the they are created. The parent edge was
+  ;; created before the lambda-edge. (It was created at the start of
+  ;; the rule-interpretation process. Right now we're in the middle
+  ;; of that process.) Anything that walks the vector will be confused
+  ;; because the parent edge is longer than the lambda edge. To correct
+  ;; this we swap their position in the relevant vector. 
+  (let ((ev (edge-ends-at parent)))
+    (unless (index-of-edge-in-vector wh-nominal-edge ev)
+      (error "Lambda edge not in expected vector ~a" ev))
+    (swap-edges-in-vector parent wh-nominal-edge ev)
+    (setf (ev-top-node ev) parent) ;; usually redundant with the swap  
+    ev))
+
 
 (def-form-category lambda-form)
 (define-category lambda-expression :specializes predicate)
@@ -340,6 +376,23 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
            category::lambda-expression   ;; category
            category::lambda-form         ;; form
            predication)))                ;; referent
+    lambda-edge))
+
+(defun make-wh-nominal-edge (wh-clause-edge wh-np)
+  "Span 'wh-clause-edge' with a new edge with the same end-points.
+   The caller has provided 'predication' to be the referent of
+   this new edge."
+  (let* ((daughter (maybe-extract-statement-edge wh-clause-edge))
+         (left-ev (edge-starts-at wh-clause-edge))
+         (right-ev (edge-ends-at wh-clause-edge))
+         (lambda-edge
+          (make-completed-unary-edge
+           left-ev right-ev
+           'make-wh-nominal-edge        ;; rule
+           daughter                      ;; daughter
+           (itype-of wh-np)   ;; category
+           category::np         ;; form
+           wh-np)))                ;; referent
     lambda-edge))
 
 (defun maybe-extract-statement-edge (pre-pred-edge)
@@ -1909,7 +1962,13 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (or
    (when (and (takes-wh-nominals? vg-or-np)
               (itypep thatcomp 'wh-nominal))
-     (let ((wh (lift-wh-element-from-nominal thatcomp)))
+     (let ((wh
+            (insert-wh-nominal-edge
+             (parent-edge-for-referent)
+             (lift-wh-element-from-nominal
+              thatcomp
+              (when (boundp '*right-edge-into-reference*)
+                (right-edge-for-referent))))))
        (assimilate-subcat vg-or-np :thatcomp wh)))
    (assimilate-subcat vg-or-np :thatcomp thatcomp)
    (and (itypep vg-or-np 'let) ;; or #| make help hear see |#))

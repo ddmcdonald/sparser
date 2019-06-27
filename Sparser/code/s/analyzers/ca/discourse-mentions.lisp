@@ -632,6 +632,12 @@
          ;; NEED TO WORK WITH DAVID HERE
          ;; "Only in conditions where RAS is constitutively active "
          nil)
+        ((lambda-variable-p value)
+         nil)
+        ((eq (pname (binding-variable b)) 'wh-element)
+         (let ((wh-mention (find-mention-for-wh-element value top-edge)))
+           (when (typep wh-mention 'discourse-mention)
+             (mention-source wh-mention))))
         (t
          (or (loop for edge in edges
                    as ref-edge = (find-dependent-edge edge)
@@ -650,6 +656,22 @@
                    do (when ee (return ee)))
              (when b
                (check-plausible-missing-edge-for-dependency b top-edge))))))
+
+
+(defun find-mention-for-wh-element (*wh-element* top-edge)
+  (declare (special *wh-element*))
+  (let (*dep-mention*)
+    (declare (special *dep-mention*))
+    (traverse-edges-below
+     top-edge
+     #'(lambda(edge)
+         (declare (special *wh-element* *dep-mention*))
+         (when (and (edge-mention edge)
+                    (typep (edge-mention edge) 'discourse-mention)
+                    (eq (base-description (edge-mention edge))
+                        *wh-element*))
+           (setq *dep-mention* (edge-mention edge)))))
+    *dep-mention*))
 
 (defun find-binding-dependencies-for-items (items edges top-edge)
   (loop for item-sem in items collect
