@@ -1324,7 +1324,9 @@ For bad parses you get the treetops.
   Calling it with the 'split' option runs through the list and
 divides it into good and bad. |#
 
-(defun test-bio-utterances (sentence-list &optional split? &key list-of-lists (stream *standard-output*) clauses (quiet t))
+(defun test-bio-utterances (sentence-list &optional split?
+                            &key list-of-lists (stream *standard-output*)
+                                  clauses (quiet t))
   "Walk over the list and set the global -- edit to shift test fn"
   (declare (special *save-clause-semantics*))
   (let ((count -1)) ;; because nth is zero based
@@ -1344,8 +1346,8 @@ divides it into good and bad. |#
         (setq *save-clause-semantics* :sentence-clauses))
     (loop for s in *list-of-bio-utterances*
        do (if split?
-            (test-bio-utterance/split s (incf count) stream)
-            (test-bio-utterance s (incf count) stream)))
+            (test-bio-utterance/split s (incf count) stream quiet)
+            (test-bio-utterance s (incf count) stream quiet)))
     (format stream "~&~a sentences in *list-of-bio-utterances*~%" (+ 1 count))
     (when split?
       (format stream "~&  ~a good~
@@ -1422,7 +1424,8 @@ all-bioagent-capability-sentences.lisp"
                      file)))
 
 (defun test-bio-utts->file (&optional (get-cat-roles t)
-                              &key (file "all-bioagent-capability-test-results.lisp"))
+                            &key (file "all-bioagent-capability-test-results.lisp")
+                                 (quiet t))
   "loads all-bioagent-capability-sentences.lisp which should be the
   current sentence list and outputs the result of test-bio-utterances
   to a file, and by default also populates *test-utt-unique-cats* and
@@ -1438,7 +1441,7 @@ all-bioagent-capability-sentences.lisp"
                              :if-does-not-exist :create
                              :external-format :UTF-8)
     (test-bio-utterances *list-of-utt-lists* nil :list-of-lists t
-                         :stream stream :clauses t))
+                         :stream stream :clauses t :quiet quiet))
     (when get-cat-roles
       (clauses->unique-cats)
       (clauses->unique-roles)
