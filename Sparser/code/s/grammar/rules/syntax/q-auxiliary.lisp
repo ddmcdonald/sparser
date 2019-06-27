@@ -25,22 +25,26 @@
    the referent of the edge to be a wh-nominal and
    introduce path and wh variables."
   ;; 2do: suppose there's a leading pp on this clause
-  (if (and (starts-with-wh-pronoun? edge)
-             (not (memq (form-cat-name edge)
-                        '(when-relative-clause))))
+  (if (and (> (pos-token-index (pos-edge-starts-at edge)) ;;// idiom somewhere?
+              1) ;; not sentence intial, which will be a question in our corpus
+           (starts-with-wh-pronoun? edge)
+           (not (memq (form-cat-name edge)
+                      '(when-relative-clause))))
     (then 
       (tr :wh-nominal-processing edge)
       ;; find the path between the head and the wh-element
       (multiple-value-bind (head path element)
           (trace-out-path-to-wh-element edge)
-        (when head ;; could have been failed during the search
+        (when (and head ;; could have been failed during the search
+                   path) ;; ditto
           (let ((i (specialize-object head (category-named 'wh-nominal :error))))
             (let ((k (bind-variable 'wh-element
                                     element
                                     (bind-variable 'wh-path path i))))
               (tr :wh-nominal-interpretation k)
-              (set-edge-referent edge k) ;; crucial side-effect
+              (set-edge-referent edge k) ;; the key side-effect so ref. changes
               (values edge k)))))) ;; for when we trace this function
+    ;;/// revise given more complex enabling conditions
     (tr :clause-without-wh-element edge)))
 
 (defun trace-out-path-to-wh-element (edge)
@@ -59,10 +63,9 @@
     (let* ((parent (car remaining-parents))
            (parent-ref (edge-referent parent))
            (det-binding (binds-variable parent-ref 'has-determiner)))
-      ;;(assert det-binding)
       (when det-binding
         ;; in (p "Can you tell me what is in the model?")
-        ;;    there's not a phrase binding the wh, 
+        ;;    there's no phrase binding the wh, 
         ;; Walk up the bound-in links until we hit the top
         ;; accumulating variables as we go
         (let ((path (walk-up-bound-in-to-indiv parent-ref head)))
@@ -76,9 +79,9 @@
        (let* ((bound-in (indiv-bound-in i))
               (b (car bound-in)))
          (unless bound-in
+           ;;(cerror "keep going" "Null bound-in field on ~a" i)
            (warn "Null bound-in field on ~a" i)
            (return))
-         ;;(assert bound-in (i) "Null bound-in field on ~a" i)
          (let ((var (binding-variable b))
                (j (binding-body b)))
            (tr :walking-up-binding var j)   
