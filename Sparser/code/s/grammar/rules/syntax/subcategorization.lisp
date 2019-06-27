@@ -194,13 +194,55 @@
            (get-subcategorization conj-type))))
       (t (get-subcategorization (itype-of ref-object))))))
 
+(defparameter *all-subcat-frames* nil)
+(defparameter *all-subcat-patterns* (make-hash-table))
+(defun all-subcat-patterns ()
+  (unless (> (hash-table-count *all-subcat-patterns*) 0)
+    (loop for var-group
+        in
+          (group-by  (remove-duplicates
+                      (loop for sc in *all-subcat-frames* append (subcat-patterns sc))
+                      :test #'equalp)
+                     #'subcat-label)
+        do
+          (setf (gethash (car var-group)
+                         *all-prep-subcats*)
+                (group-by (second var-group)
+                          #'subcat-restriction
+                          #'(lambda(sc)(list (subcat-source sc) (subcat-variable sc)))))))
+  *all-subcat-patterns*)
+
+(defun find-plausible-subcat-patterns (label val)
+  (let ((subcat-patterns (gethash label (all-subcat-patterns))))
+    (or #+ignore(loop for sp in subcat-patterns
+              when
+                (is-in-p (itype-of val) (car sp))
+              collect sp)
+        (loop for stype
+              in
+                (super-categories-of
+                 (itype-of val))
+              thereis
+                (loop for sp in subcat-patterns
+                      when (is-in-p stype (car sp))
+                       collect sp))
+        (loop for sp in subcat-patterns
+              when
+                (satisfies-subcat-restriction? val (car sp))
+              collect sp))))
+        
+
+
 (defun make-subcategorization (category slots)
   "Make and install a subcategorization frame for a category."
   (setf (get-subcategorization category)
-        (make-instance 'subcategorization-frame
-                       :category category
-                       :slots slots
-                       :patterns (make-subcat-patterns category slots))))
+        (car
+         (push
+          (make-instance 'subcategorization-frame
+                         :category category
+                         :slots slots
+                         :patterns (make-subcat-patterns category slots))
+          *all-subcat-frames*))))
 
 (defun fom-subcategorization (category &rest slots)
   "Find, make, or override a subcategorization frame for the given category."
