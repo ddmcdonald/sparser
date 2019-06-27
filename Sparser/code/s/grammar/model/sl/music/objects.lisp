@@ -29,6 +29,7 @@
 (define-category symbolic
   :specializes non-physical)
 
+;; various syntactic adjuncts to handle movement
 
 (define-category trajectory
   :instantiates nil
@@ -42,6 +43,16 @@
                           (item2 . extent))))
 
 
+(define-category to-note
+  :instantiates nil
+  :binds ((to to) (goal (:or music-note abstract-note note-sequence)) )
+  :realization (:tree-family pair-instantiates-category
+                :mapping ((result-type . :self)
+                          (np . :self)
+                          (first . (prep to))
+                          (second . (note :or music-note abstract-note note-sequence))
+                          (item1 . to)
+                          (item2 . goal))))
 
 ;;--- pitch as a region
 

@@ -405,24 +405,24 @@ come
 
 (define-category raise-note
   :specializes move
-  :mixins (with-agent with-theme with-extent move-something-verb)
-  :binds ((agent physical-agent) (theme (:or abstract-note music note music-measure)) (extent trajectory))
+  :mixins (with-agent with-theme with-goal move-something-verb)
+  :binds ((agent physical-agent) (theme (:or abstract-note music note music-measure)) (goal to-note))
   :realization (:verb "raise" :tree-family vp+adjunct
     :mapping ((vg . :self)
               (vp . move)
-              (adjunct . trajectory)
-              (slot . extent))))
+              (adjunct . to-note)
+              (slot . goal))))
 
 
 (define-category lower-note
   :specializes move
-  :mixins (with-agent with-theme with-extent move-something-verb)
-  :binds ((agent physical-agent) (theme (:or abstract-note music note music-measure)) (extent trajectory))
+  :mixins (with-agent with-theme with-goal move-something-verb)
+  :binds ((agent physical-agent) (theme (:or abstract-note music note music-measure)) (goal to-note))
   :realization (:verb "lower" :tree-family vp+adjunct
     :mapping ((vg . :self)
               (vp . move)
-              (adjunct . trajectory)
-              (slot . extent))))
+              (adjunct . to-note)
+              (slot . goal))))
 
 
 ;; "work on measures 1 and 2"

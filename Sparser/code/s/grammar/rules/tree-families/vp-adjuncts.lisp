@@ -12,7 +12,7 @@
 (define-exploded-tree-family  vp+adjunct
   :description "See examples with 'move'"
   :binding-parameters ( slot ) ;; which slot does the adjunct go in
-  :labels ( vg vp adjunct )
+  :labels ( vg vp adjunct)
   :cases ((:adjunction (vp (vg adjunct)
                          :head left-edge
                          :binds (slot right-edge)))

@@ -274,6 +274,7 @@
 
 (loop for nb in `(np ,@*n-bar-categories*)
       do
+        (unless (eq nb 'music-note))
       ;;--- NP + PP -- postmodifiers
         (eval 
          `(def-syntax-rule (,nb pp)

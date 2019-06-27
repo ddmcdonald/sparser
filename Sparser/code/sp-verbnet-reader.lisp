@@ -15,11 +15,6 @@ XML from *vn-path* (see vn-dir) and writes the file of forms to *defverb-out-pat
 
 
 ||#
-(asdf:load-system :xmls)
-(asdf:load-system :sqlite)
-(asdf:load-system :cl-ppcre)
-(asdf:load-system :sparser)
-(asdf:load-system :clic)
 
 (in-package :sparser)
 
