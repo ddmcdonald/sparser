@@ -16,6 +16,13 @@ XML from *vn-path* (see vn-dir) and writes the file of forms to *defverb-out-pat
 
 ||#
 
+(asdf:load-system :xmls)
+(asdf:load-system :sqlite)
+(asdf:load-system :cl-ppcre)
+(asdf:load-system :sparser)
+(asdf:load-system :clic)
+
+
 (in-package :sparser)
 
 (ql:quickload "split-sequence")
@@ -202,17 +209,18 @@ root of all of the individual VerbNet xml files. |#
 
 (defgeneric create-mixin-category (name)
   (:method ((name symbol))
-    (let* ((rolenames (vn-role-names name)) (frames (vn-frames name) ) (roles (loop for role in rolenames collect (concatenate 'string "with-" role))))
+    (let* ((rolenames (vn-role-names name)) (frames (vn-frames name) ) (roles (loop for role in rolenames collect (read-from-string (concatenate 'string "with-" role)) )))
      (setq patterns nil)
     (loop for frame in frames
       as pattern = (collect-syntax frame)
       do (push pattern patterns))
     (loop for pattern in patterns 
       do (setf (car (nth 0 pattern)) ':s)
+      do (if (cadr (nth 0 pattern)) (setf (cadr (nth 0 pattern)) (read-from-string (cadr (nth 0 pattern)))))
       do (if (nth 2 pattern) (if (eq (car (nth 2 pattern)) ':np) (setf (car (nth 2 pattern)) ':o)))
       do (if (nth 3 pattern) (if (eq (car (nth 3 pattern)) ':np) (setf (car (nth 3 pattern)) ':io)))
       do (if (nth 4 pattern) (if (eq (car (nth 4 pattern)) ':np) (setf (car (nth 4 pattern)) ':io))))
-    (list `(define-mixin-category ,name :specializes subcategorization-pattern :mixins ,roles :realization ,patterns)))))
+    (list `(define-mixin-category ,name :specializes subcategorization-pattern :binds ,(vn-role-restrs name) :mixins ,roles :realization ,patterns)))))
     
   
   (defgeneric convert-frames (class)
@@ -776,7 +784,6 @@ forms:
         collect (cons (car trm) selr)))
 
 
-
 #|
     <FRAMES>
         <FRAME>
@@ -1131,6 +1138,17 @@ forms:
     (let ((role-forms (vn-roles name)))
       (loop for form in role-forms
          collect (get-vn-path form :type)))))
+
+(defgeneric vn-role-restrs (class)
+  (:method ((name symbol))
+    (setf restrictions '())
+    (let ((role-forms (vn-roles name)))
+      (loop for role in role-forms
+         as type = (read-from-string (get-vn-path role :type))
+         as restrs =  (remove-if #'null (list (cform-pchain role '(:selrestrs :value)) (cform-pchain role '(:selrestrs :type))))
+         do (if restrs (push (list type (loop for trm in restrs collect (read-from-string trm))) restrictions))
+         ))
+  restrictions))
 
 (defgeneric vn-subcat-patterns (class)
   (:method ((name symbol))
