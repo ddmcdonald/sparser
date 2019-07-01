@@ -350,31 +350,34 @@
   mixins those are traversed independently."
   (when (null category) (error "Illegal null category."))
   (if (eq category reference-category)
-    t
-    (let* ((lp (cat-lattice-position category))
-           (super-category
-            ;; SBCL caught application of lp-super-category to non lattice point --
-            ;;  form categories are not in a lattice...
-            (when (lattice-point-p lp)
-              (lp-super-category lp)))
-           (mixins (cat-mix-ins category)))
-      (or
-       (when super-category
-        (when (eq category super-category)
-          (format t "~%~%The category ~a  has itself as a supercategory.~
-                     ~%Probably clobbered by an imported word with that spelling~%~%"
-                  category)
-          (return-from category-inherits-type? nil))
-         (if (eq super-category reference-category)
-           t
-           (category-inherits-type? super-category reference-category)))
+      t
 
-       (when mixins
-         (or (memq reference-category mixins)
-             (loop for m in mixins
-               when (category-inherits-type? m reference-category)
-               return m
-               finally (return nil))))))))
+      (not (null (memq reference-category (super-categories-of category))))
+      #+ignore
+      (let* ((lp (cat-lattice-position category))
+             (super-category
+              ;; SBCL caught application of lp-super-category to non lattice point --
+              ;;  form categories are not in a lattice...
+              (when (lattice-point-p lp)
+                (lp-super-category lp)))
+             (mixins (cat-mix-ins category)))
+        (or
+         (when super-category
+           (when (eq category super-category)
+             (format t "~%~%The category ~a  has itself as a supercategory.~
+                     ~%Probably clobbered by an imported word with that spelling~%~%"
+                     category)
+             (return-from category-inherits-type? nil))
+           (if (eq super-category reference-category)
+               t
+               (category-inherits-type? super-category reference-category)))
+
+         (when mixins
+           (or (memq reference-category mixins)
+               (loop for m in mixins
+                     when (category-inherits-type? m reference-category)
+                     return m
+                     finally (return nil))))))))
 
 
 ;;;--------------------------------------------

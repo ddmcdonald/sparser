@@ -171,6 +171,9 @@ grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorize
        (individual
         (indiv-typep i c/s))
        (category
+        (when (category-named c/s)
+          (not (null (memq (category-named c/s) (super-categories-of i)))))
+        #+ignore
         (category-inherits-type? i (or (category-named c/s)
                                        (return-from itypep nil))))
        (word
