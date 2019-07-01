@@ -106,10 +106,12 @@
 (define-category response
   :specializes bio-process
   :binds ((beneficiary biological)
-          (cause biological))
+          (cause biological)
+          (drug drug))
   :realization
     (:verb "respond"
      :etf (sv)
+     :m drug
      :noun "response"
      :of beneficiary
      :on beneficiary ;; "response on cells with TP53 alternations"
