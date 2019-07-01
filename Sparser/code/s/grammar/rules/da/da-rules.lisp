@@ -1008,7 +1008,8 @@
 
 (defun np-vg+ed (np vg+ed)
   (declare (special category::s category::vg+ed))
-  (unless (adverb-at? (pos-edge-starts-at vg+ed))
+  (unless (or (adverb-at? (pos-edge-starts-at vg+ed))
+              (to-be-at? (pos-edge-starts-at np)))
     ;; this test is a heuristic, to block
     ;; "another MAPK inhibitor, PD 98059, also inhibited ASPP2 function"
     (let* ((*right-edge-into-reference* vg+ed)

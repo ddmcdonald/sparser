@@ -1907,7 +1907,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
 ;;;---------
 
 (defun assimilate-object (vg obj)
-  (assimilate-subcat vg :object obj))
+  (assimilate-np-to-v-as-object vg obj)
+  ;;(assimilate-subcat vg :object obj)
+  )
 
 (defun assimilate-indirect-object (vg obj)
   (assimilate-subcat vg :indirect-object obj))
@@ -1923,7 +1925,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (when *subcat-test*
     (unless (and vg obj
                  ;; block attaching NP to VP as object when we have evidence for aux inversion
-                 (not (and (itypep vg '(:or be have))
+                 (not (and (or (itypep vg 'be)
+                               (itypep vg 'have))
                            *right-edge-into-reference*
                            (edge-just-to-right-of (right-edge-for-referent))
                            (member (cat-name
@@ -1946,30 +1949,34 @@ there was an edge for the qualifier (e.g., there is no edge for the
                  (assimilate-indirect-object vg obj))
                 (t (if obj-is-oc
                      (assimilate-object-comp vg obj)
-                     (assimilate-object vg obj))))))
+                     (assimilate-subcat vg :object obj)
+                     ;;(assimilate-object vg obj)
+                     )))))
     (cond
       (*subcat-test* result)
       (result
-       ;; Revise the parent edges to reflect what we've observed
-       (if (and (typep *current-chunk* 'chunk)
-                (member 'ng (chunk-forms *current-chunk*)))
-	   (revise-parent-edge :category (itype-of obj)
-			       :form category::n-bar
-			       :referent result)
-	   (revise-parent-edge :category (if (itype vg 'collection)
-                                             (value-of 'type vg)
-                                             (itype-of vg))
-			       :form (if (or indirect-object? oc-follows)
-                                         category::vg
-                                         (case (form-cat-name (parent-edge-for-referent))
-                                           ((vg vp) category::vp)
-                                           ((vp+ing vg+ing) category::vp+ing)
-                                           ((vp+ed vg+ed vp+past) category::vp+past)
-                                           ((to-comp) category::to-comp)
-                                           (t (warn "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP? in ~s!"
-                                                    (current-string))
-                                              category::n-bar)))
-			       :referent result))
+       (when (and (boundp '*parent-edge-getting-reference*)
+                  *parent-edge-getting-reference*)
+         ;; Revise the parent edges to reflect what we've observed
+         (if (and (typep *current-chunk* 'chunk)
+                  (member 'ng (chunk-forms *current-chunk*)))
+             (revise-parent-edge :category (itype-of obj)
+                                 :form category::n-bar
+                                 :referent result)
+             (revise-parent-edge :category (if (itype vg 'collection)
+                                               (value-of 'type vg)
+                                               (itype-of vg))
+                                 :form (if (or indirect-object? oc-follows)
+                                           category::vg
+                                           (case (form-cat-name (parent-edge-for-referent))
+                                             ((vg vp) category::vp)
+                                             ((vp+ing vg+ing) category::vp+ing)
+                                             ((vp+ed vg+ed vp+past) category::vp+past)
+                                             ((to-comp) category::to-comp)
+                                             (t (warn "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP? in ~s!"
+                                                      (current-string))
+                                                category::n-bar)))
+                                 :referent result)))
        result))))
 
 
@@ -2009,7 +2016,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
        (let ((wh (insert-wh-nominal-edge
                   (parent-edge-for-referent)
                   (lift-wh-element-from-nominal thatcomp))))
-         (assimilate-subcat vg-or-np :thatcomp wh))))
+         (assimilate-subcat vg-or-np :object wh))))
    (assimilate-subcat vg-or-np :thatcomp thatcomp)
    (and (itypep vg-or-np 'let) ;; or #| make help hear see |#))
         *right-edge-into-reference*

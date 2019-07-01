@@ -209,7 +209,11 @@
 (defun adverb-at? (position)
   (declare (special category::adverb))
   (loop for e in (all-edges-on (pos-starts-here position))
-     thereis (and (edge-p e) (eq (form-cat-name e) 'adverb))))
+        thereis (and (edge-p e) (eq (form-cat-name e) 'adverb))))
+
+(defun to-be-at? (position)
+  (loop for e in (ev-top-edges (pos-ends-here position))
+     thereis (and (edge-p e) (eq (edge-cat-name e) 'be))))
 
 (defun respan-edge-around-one-word (word-edge left-term right-term)
   (let ((word-category (edge-category word-edge))
