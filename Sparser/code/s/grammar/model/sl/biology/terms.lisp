@@ -484,7 +484,8 @@
    :specializes document-part) ;; to allow "et al." to be easily ignored
 
 (define-category article-table
-   :specializes document-part) ;; to allow "et al." to be easily ignored
+    :specializes document-part
+    :mixins (bio-abstract)) ;; to allow "et al." to be easily ignored
 
 (noun "et al." :super bib-reference)
 (noun "et al.," :super bib-reference)
@@ -529,7 +530,7 @@
 
 (noun "table" :super article-table)
 
-
+#+ignore
 (define-category article-table
   :specializes bio-abstract)
 
