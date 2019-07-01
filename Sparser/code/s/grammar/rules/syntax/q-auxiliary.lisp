@@ -55,23 +55,31 @@
   (let* ((head (edge-referent edge))
          (start-pos (pos-edge-starts-at edge))
          (ev (pos-starts-here start-pos))
-         (edges (all-edges-on ev))
-         (bottom-edge (car edges)) ;;(lowest-edge ev))
+         (ev-edges (all-edges-on ev))
+         (bottom-edge (car ev-edges)) ;;(lowest-edge ev))
          (bottom-ref (edge-referent bottom-edge))
-         (remaining-parents (cdr edges)))
+         (remaining-parents (cdr ev-edges)))
     (assert (is-wh-pronoun? bottom-ref))
     (let* ((parent (car remaining-parents))
+           (grandparent (cadr remaining-parents))
            (parent-ref (edge-referent parent))
            (det-binding (binds-variable parent-ref 'has-determiner)))
       (when det-binding
         ;; in (p "Can you tell me what is in the model?")
         ;;    there's no phrase binding the wh, 
-        ;; Walk up the bound-in links until we hit the top
-        ;; accumulating variables as we go
+        (when (and grandparent
+                   (eq (edge-category parent) (edge-category grandparent)))
+          ;; When there's Chomsky-adjunction on the wh-element's edge
+          ;; for some reason (///) the bound-in bindings move up with
+          ;; the addition of the binding of the adjunct
+          (setq parent-ref (edge-referent grandparent)))
         (let ((path (walk-up-bound-in-to-indiv parent-ref head)))
           (values head path parent-ref))))))
 
 (defun walk-up-bound-in-to-indiv (i-start i-end)
+  ;; Walk up the bound-in links until we hit the top
+  ;; accumulating variables as we go
+  (declare (special *debug-questions*))
   (assert (every #'individual-p `(,i-start ,i-end)))
   (let* ((i i-start)
          (variables))
@@ -79,8 +87,9 @@
        (let* ((bound-in (indiv-bound-in i))
               (b (car bound-in)))
          (unless bound-in
-           ;;(cerror "keep going" "Null bound-in field on ~a" i)
-           (warn "Null bound-in field on ~a" i)
+           (if  *debug-questions*
+             (cerror "keep going" "Null bound-in field on ~a" i)
+             (warn "Null bound-in field on ~a" i))
            (return))
          (let ((var (binding-variable b))
                (j (binding-body b)))
