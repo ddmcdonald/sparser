@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  February 2019
+;;;  Version:  July 2019
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -333,7 +333,7 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
   (let ((wh-nominal-edge
          (make-wh-nominal-edge (right-edge-for-referent)
                                wh-nominal-ref)))
-    (sort-out-introduction-of-wh-np-edge wh-nominal-edge parent)
+    (sort-out-introduction-of-wh-nominal-edge wh-nominal-edge parent)
     (values wh-nominal-ref wh-nominal-edge)))
 
 
@@ -1999,21 +1999,20 @@ there was an edge for the qualifier (e.g., there is no edge for the
   s)
 
 (defun assimilate-thatcomp (vg-or-np thatcomp)
+  (declare (special *right-edge-into-reference*))
   ;;(push-debug `(,vg-or-np ,thatcomp)) (break "what's what?")
   (or
    (when (and (takes-wh-nominals? vg-or-np)
               (itypep thatcomp 'wh-nominal))
-     (let ((wh
-            (insert-wh-nominal-edge
-             (parent-edge-for-referent)
-             (lift-wh-element-from-nominal
-              thatcomp
-              (when (boundp '*right-edge-into-reference*)
-                (right-edge-for-referent))))))
-       (assimilate-subcat vg-or-np :thatcomp wh)))
+     (if *subcat-test*
+       t
+       (let ((wh (insert-wh-nominal-edge
+                  (parent-edge-for-referent)
+                  (lift-wh-element-from-nominal thatcomp))))
+         (assimilate-subcat vg-or-np :thatcomp wh))))
    (assimilate-subcat vg-or-np :thatcomp thatcomp)
    (and (itypep vg-or-np 'let) ;; or #| make help hear see |#))
-        (boundp '*right-edge-into-reference*)
+        *right-edge-into-reference*
         (eq (edge-form *right-edge-into-reference*)
             category::s)
         (assimilate-subcat vg-or-np :s-comp thatcomp))))
