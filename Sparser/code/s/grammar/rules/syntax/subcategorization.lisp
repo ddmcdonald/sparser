@@ -205,8 +205,7 @@
                       :test #'equalp)
                      #'subcat-label)
         do
-          (setf (gethash (car var-group)
-                         *all-prep-subcats*)
+          (setf (gethash (car var-group) *all-subcat-patterns*)
                 (group-by (second var-group)
                           #'subcat-restriction
                           #'(lambda(sc)(list (subcat-source sc) (subcat-variable sc)))))))
