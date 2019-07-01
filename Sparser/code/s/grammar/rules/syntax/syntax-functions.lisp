@@ -284,40 +284,40 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
     (unless predicated-edge
       (lsp-break "create-predication-by-binding, predicate is not from left or right edge~%"))
     (let ((lambda-edge (make-predication-edge predicated-edge new-predication)))
-      (sort-out-introduction-of-lambda-predication-edge
+      (sort-out-introduction-of-inserted-edge
        lambda-edge parent left-edge right-edge predicated-edge)
       (values new-predication lambda-edge))))
 
-(defun sort-out-introduction-of-lambda-predication-edge (lambda-edge parent
+(defun sort-out-introduction-of-inserted-edge (inserted-edge parent
                                                          left-edge right-edge
-                                                         predicated-edge)
+                                                         base-edge)
   "The parent is a binary edge. We've just spanned one of its daughters
    with the newly introduced lambda-edge so we need to update that information."
-  (let ((direction-of-lambda
-         (cond ((eq left-edge predicated-edge)
-                (setf (edge-left-daughter parent) lambda-edge)
+  (let ((direction-of-inserted-edge
+         (cond ((eq left-edge base-edge)
+                (setf (edge-left-daughter parent) inserted-edge)
                 :left)
-               ((eq right-edge predicated-edge)
-                (setf (edge-right-daughter parent) lambda-edge)
+               ((eq right-edge base-edge)
+                (setf (edge-right-daughter parent) inserted-edge)
                 :right))))
     
-    ;; We now know where the lambda edge goes, so hook in its uplink
-    (setf (edge-used-in lambda-edge) parent)
+    ;; We now know where the inserted edge goes, so hook in its uplink
+    (setf (edge-used-in inserted-edge) parent)
 
-    ;; The order of the edges in the vector that the parent and lambda-edge
+    ;; The order of the edges in the vector that the parent and inserted-edge
     ;; share is messed up. Edges are added to the edge-vectors of their
     ;; start and end positions at the they are created. The parent edge was
-    ;; created before the lambda-edge. (It was created at the start of
+    ;; created before the inserted-edge. (It was created at the start of
     ;; the rule-interpretation process. Right now we're in the middle
     ;; of that process.) Anything that walks the vector will be confused
-    ;; because the parent edge is longer than the lambda edge. To correct
+    ;; because the parent edge is longer than the inserted edge. To correct
     ;; this we swap their position in the relevant vector. 
-    (let ((ev (ecase direction-of-lambda
+    (let ((ev (ecase direction-of-inserted-edge
                 (:left (edge-starts-at parent))
                 (:right (edge-ends-at parent)))))
-      (unless (index-of-edge-in-vector lambda-edge ev)
-        (error "Lambda edge not in expected vector ~a" ev))
-      (swap-edges-in-vector parent lambda-edge ev)
+      (unless (index-of-edge-in-vector inserted-edge ev)
+        (error "inserted edge not in expected vector ~a" ev))
+      (swap-edges-in-vector parent inserted-edge ev)
       (setf (ev-top-node ev) parent) ;; usually redundant with the swap  
       ev)))
 
@@ -394,6 +394,21 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
            category::np         ;; form
            wh-np)))                ;; referent
     lambda-edge))
+
+(defun make-to-comp-with-subject-edge (to-comp-edge expanded-to-comp)
+  "Span 'wh-clause-edge' with a new edge with the same end-points.
+   The caller has provided 'predication' to be the referent of
+   this new edge."
+  (let* ((left-ev (edge-starts-at to-comp-edge))
+         (right-ev (edge-ends-at to-comp-edge)))
+    (make-completed-unary-edge
+     left-ev right-ev
+     'make-to-comp-with-subject-edge ;; rule
+     to-comp-edge                    ;; daughter
+     (itype-of expanded-to-comp)     ;; category
+     (edge-form to-comp-edge)        ;; form
+     expanded-to-comp)               ;; referent
+    ))
 
 (defun maybe-extract-statement-edge (pre-pred-edge)
   "Determines the daughter of the new spanning edge being created by
@@ -1350,9 +1365,35 @@ there was an edge for the qualifier (e.g., there is no edge for the
 ;;; to complements
 ;;;----------------
 
-(defun adjoin-tocomp-to-vg (vg tocomp)
-  (assimilate-subcat vg :to-comp tocomp)) ;;(value-of 'comp tocomp)
-		     
+(defun adjoin-tocomp-to-vg (vg tocomp &aux vg-object)
+  (when  (itypep vg 'raising-to-object)
+    (when
+        (setq vg-object (value-of (object-variable vg) vg))
+      (cond (*subcat-test*
+             (unless (assimilate-subject vg-object tocomp)
+               (return-from adjoin-tocomp-to-vg nil)))
+            (t (setq tocomp
+                     (insert-object-raised-tocomp
+                      (parent-edge-for-referent)
+                      tocomp
+                      (assimilate-subject vg-object tocomp)))))))
+  (assimilate-subcat vg :to-comp tocomp))
+ ;;(value-of 'comp tocomp)
+		    
+(defun insert-object-raised-tocomp (parent to-comp to-comp-with-subject)
+  "make an edge for the result of inserting the object of the rasing-to-object verb as the subject of the to-comp"
+  (let* ((to-comp-edge (edge-right-daughter parent)))
+    (unless to-comp-edge
+      (lsp-break "insert-object-raised-tocomp predicate is not from right edge~%"))
+    (let ((expanded-to-comp-edge
+           (make-to-comp-with-subject-edge (right-edge-for-referent) to-comp-with-subject)))
+      (sort-out-introduction-of-inserted-edge expanded-to-comp-edge
+                                              (parent-edge-for-referent)
+                                              (left-edge-for-referent)
+                                              (right-edge-for-referent)
+                                              to-comp-edge)
+      (values to-comp-with-subject expanded-to-comp-edge))))
+ 
 (defun passive-is-covert-tocomp (vg passive-vg)
   ;; Aspp2 #30: "remains" + "to be investigated"
   ;; (push-debug `(,vg ,passive-vg)) (lsp-break "covert"))
