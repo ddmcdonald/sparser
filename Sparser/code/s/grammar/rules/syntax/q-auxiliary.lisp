@@ -24,28 +24,38 @@
    Identify the wh-element it is part of and specialize 
    the referent of the edge to be a wh-nominal and
    introduce path and wh variables."
-  ;; 2do: suppose there's a leading pp on this clause
-  (if (and (> (pos-token-index (pos-edge-starts-at edge)) ;;// idiom somewhere?
-              1) ;; not sentence intial, which will be a question in our corpus
-           (starts-with-wh-pronoun? edge)
-           (not (memq (form-cat-name edge)
-                      '(when-relative-clause))))
-    (then 
-      (tr :wh-nominal-processing edge)
-      ;; find the path between the head and the wh-element
-      (multiple-value-bind (head path element)
-          (trace-out-path-to-wh-element edge)
-        (when (and head ;; could have been failed during the search
-                   path) ;; ditto
-          (let ((i (specialize-object head (category-named 'wh-nominal :error))))
-            (let ((k (bind-variable 'wh-element
-                                    element
-                                    (bind-variable 'wh-path path i))))
-              (tr :wh-nominal-interpretation k)
-              (set-edge-referent edge k) ;; the key side-effect so ref. changes
-              (values edge k)))))) ;; for when we trace this function
-    ;;/// revise given more complex enabling conditions
-    (tr :clause-without-wh-element edge)))
+
+  (flet ((left-daughter-is-wh-nominal (edge)
+           (let ((daughter (edge-left-daughter edge)))
+             (when (edge-p daughter) ; vs. :long-span
+               (let ((ref (edge-referent daughter)))
+                 (itypep ref 'wh-nominal))))))
+
+    ;; 2do: suppose there's a leading pp on this clause
+    (if (and (> (pos-token-index (pos-edge-starts-at edge)) ;;// idiom somewhere?
+                1) ;; not sentence intial, which will be a question in our corpus
+             (starts-with-wh-pronoun? edge)
+             (not (memq (form-cat-name edge)
+                        '(when-relative-clause))))
+      (then
+        (when (left-daughter-is-wh-nominal edge)
+          (return-from track-clause-wh-information nil))
+
+        (tr :wh-nominal-processing edge)
+        ;; find the path between the head and the wh-element
+        (multiple-value-bind (head path element)
+            (trace-out-path-to-wh-element edge)
+          (when (and head ;; could have been failed during the search
+                     path) ;; ditto
+            (let ((i (specialize-object head (category-named 'wh-nominal :error))))
+              (let ((k (bind-variable 'wh-element
+                                      element
+                                      (bind-variable 'wh-path path i))))
+                (tr :wh-nominal-interpretation k)
+                (set-edge-referent edge k) ;; the key side-effect so ref. changes
+                (values edge k)))))) ;; for when we trace this function
+      ;;/// revise given more complex enabling conditions
+      (tr :clause-without-wh-element edge))))
 
 (defun trace-out-path-to-wh-element (edge)
   "Given a clause ('s') edge that is known to start with a wh-pronoun,
@@ -59,22 +69,24 @@
          (bottom-edge (car ev-edges)) ;;(lowest-edge ev))
          (bottom-ref (edge-referent bottom-edge))
          (remaining-parents (cdr ev-edges)))
-    (assert (is-wh-pronoun? bottom-ref))
-    (let* ((parent (car remaining-parents))
-           (grandparent (cadr remaining-parents))
-           (parent-ref (edge-referent parent))
-           (det-binding (binds-variable parent-ref 'has-determiner)))
-      (when det-binding
-        ;; in (p "Can you tell me what is in the model?")
-        ;;    there's no phrase binding the wh, 
-        (when (and grandparent
-                   (eq (edge-category parent) (edge-category grandparent)))
-          ;; When there's Chomsky-adjunction on the wh-element's edge
-          ;; for some reason (///) the bound-in bindings move up with
-          ;; the addition of the binding of the adjunct
-          (setq parent-ref (edge-referent grandparent)))
-        (let ((path (walk-up-bound-in-to-indiv parent-ref head)))
-          (values head path parent-ref))))))
+    (when bottom-ref
+      ;; "what if" is a polyword in mid-level/discourse.lisp and needs fixing
+      (assert (is-wh-pronoun? bottom-ref))
+      (let* ((parent (car remaining-parents))
+             (grandparent (cadr remaining-parents))
+             (parent-ref (edge-referent parent))
+             (det-binding (binds-variable parent-ref 'has-determiner)))
+        (when det-binding
+          ;; in (p "Can you tell me what is in the model?")
+          ;;    there's no phrase binding the wh, 
+          (when (and grandparent
+                     (eq (edge-category parent) (edge-category grandparent)))
+            ;; When there's Chomsky-adjunction on the wh-element's edge
+            ;; for some reason (///) the bound-in bindings move up with
+            ;; the addition of the binding of the adjunct
+            (setq parent-ref (edge-referent grandparent)))
+          (let ((path (walk-up-bound-in-to-indiv parent-ref head)))
+            (values head path parent-ref)))))))
 
 (defun walk-up-bound-in-to-indiv (i-start i-end)
   ;; Walk up the bound-in links until we hit the top
