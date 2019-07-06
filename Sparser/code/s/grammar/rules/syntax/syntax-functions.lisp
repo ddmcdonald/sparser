@@ -1316,7 +1316,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
             (variable-to-bind-pp-to-head (right-edge-for-referent) vg)
           (declare (special *pobj-edge*))
           (cond
-            (*subcat-test* variable-to-bind)
+            (*subcat-test* (or variable-to-bind
+                               (is-domain-adjunctive-pp? vg (right-edge-for-referent))))
             (variable-to-bind
              (when *collect-subcat-info*
                (push (subcat-instance vg prep-word variable-to-bind pp)
@@ -1324,7 +1325,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
              (setq vg (individual-for-ref vg))
              (setq pobj-referent (individual-for-ref pobj-referent))
              (setq vg (bind-dli-variable variable-to-bind pobj-referent vg))
-             vg))))))
+             vg)
+            ((maybe-add-domain-adjunctive-predicate-to-phrase
+              vg (right-edge-for-referent))))))))
 
 (defun variable-to-bind-pp-to-head (base-pp-edge head)
   (let* ((pp-edge (base-pp base-pp-edge))
@@ -1490,6 +1493,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                  (maybe-extend-premod-adjective-with-pp np pp)
                  (and *force-modifiers* 'modifier)
                  (and (use-methods) (most-specific-k-method 'compose (list np pp)))
+                 (is-domain-adjunctive-pp? np (right-edge-for-referent))
                  (and (eq prep-word of)
                       (or (itypep np 'attribute)
                           (and
@@ -1546,6 +1550,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                 (collect-subcat-statistics np prep-word variable-to-bind pp)
                 (setq np (bind-dli-variable variable-to-bind pobj-referent np))
                 np)
+               ((maybe-add-domain-adjunctive-predicate-to-phrase np (right-edge-for-referent)))
                ((maybe-extend-premod-adjective-with-pp np pp))
                           (t ;;(break "fell through")
                 #+ignore(when (current-script :blocks-world)
@@ -1558,9 +1563,33 @@ there was an edge for the qualifier (e.g., there is no edge for the
                 np ))))))))
 
 
+;; hash table keyed on prepositions, with values being triples of POBJ-type, NP-head-type and construction-function
+;;  this might want to be done by k-methods -- DAVID -- let's review this
+;; The current implementation is a standin
 
-                    
+(defparameter *domain-adjunctive-pp-tests* (make-hash-table :test #'equal))
+(defun add-domain-adjunctive-pp-rule (prep pobj-type np-head-type interpretation-function)
+  (push (list pobj-type np-head-type interpretation-function)
+        (gethash (pname prep) *domain-adjunctive-pp-tests*)))
 
+(defun is-domain-adjunctive-pp? (np pp-edge)
+  "Test for PPs like 'in the literature' which may be used as modifiers for certain classes of general 
+  (mid-level model) NPs, but are domain specific -- e.g. 'the relations in the literature'"
+
+  (loop for triple in (gethash (pname (identify-preposition pp-edge))
+                               *domain-adjunctive-pp-tests*)
+        when
+          
+          (and (itypep (identify-pobj pp-edge) (car triple))
+               (itypep np (second triple)))
+        collect (third triple)))
+
+(defun maybe-add-domain-adjunctive-predicate-to-phrase (np pp-edge)
+  (let ((domain-adjunct-functions (is-domain-adjunctive-pp? np pp-edge))
+        result)
+    (loop for fn in domain-adjunct-functions
+          when (setq result (funcall fn np pp-edge))
+            do (return result))))
 
 
 
@@ -2006,23 +2035,28 @@ there was an edge for the qualifier (e.g., there is no edge for the
   s)
 
 (defun assimilate-thatcomp (vg-or-np thatcomp)
+  (assimilate-clausal-comp vg-or-np thatcomp :thatcomp))
+
+(defun assimilate-clausal-comp (vg-or-np s-comp &optional (role :thatcomp))
   (declare (special *right-edge-into-reference*))
-  ;;(push-debug `(,vg-or-np ,thatcomp)) (break "what's what?")
+  ;;(push-debug `(,vg-or-np ,s-comp)) (break "what's what?")
   (or
    (when (and (takes-wh-nominals? vg-or-np)
-              (itypep thatcomp 'wh-nominal))
+              (or (itypep s-comp 'wh-nominal)
+                  (member (edge-form-name (right-edge-for-referent))
+                      '(wh-question howcomp))))
      (if *subcat-test*
        t
        (let ((wh (insert-wh-nominal-edge
                   (parent-edge-for-referent)
-                  (lift-wh-element-from-nominal thatcomp))))
+                  (lift-wh-element-from-nominal s-comp))))
          (assimilate-subcat vg-or-np :object wh))))
-   (assimilate-subcat vg-or-np :thatcomp thatcomp)
+   (assimilate-subcat vg-or-np :s-comp s-comp)
    (and (itypep vg-or-np 'let) ;; or #| make help hear see |#))
         *right-edge-into-reference*
         (eq (edge-form *right-edge-into-reference*)
             category::s)
-        (assimilate-subcat vg-or-np :s-comp thatcomp))))
+        (assimilate-subcat vg-or-np :s-comp s-comp))))
 
 (defun assimilate-whethercomp (vg-or-np whethercomp)
   (assimilate-subcat vg-or-np :whethercomp whethercomp))
@@ -2069,7 +2103,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                           :embedded embedded?)))))
 
 (defun assimilate-howcomp (vg-or-np thatcomp)
-  (assimilate-subcat vg-or-np :howcomp thatcomp))
+  (assimilate-clausal-comp vg-or-np thatcomp :howcomp))
 
 (defun assimilate-pp-subcat (head prep pobj)
   (assimilate-subcat head (subcategorized-variable head prep pobj) pobj))
