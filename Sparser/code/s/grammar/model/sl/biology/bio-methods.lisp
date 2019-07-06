@@ -233,7 +233,6 @@ with something else
 ;;; miscellaneous
 ;;;------------------------
 
-(noun "factor" :super bio-entity) ;; keyword: (or N)
 
 (define-category bio-reagent :specializes bio-entity) ;; not really
 (noun "gel" :super bio-reagent)

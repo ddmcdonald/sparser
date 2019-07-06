@@ -1244,6 +1244,10 @@
     (:noun "transcription-factor"
            :for controlled-gene))
 
+(def-synonym transcription-factor
+    (:noun "factor"))
+
+
 #| several transcription factors, including CREB
                       forkhead transcription factors
                       transcription factors such as LEF-1 or Tcf4
