@@ -271,8 +271,10 @@
 
 (define-category fact :specializes bio-rhetorical
       :mixins (bio-thatcomp)
+      :binds ((info-context (:or model database)))
       :realization
-      (:noun "fact"))
+      (:noun "fact"
+             :in info-context))
 
 
 

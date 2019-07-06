@@ -32,6 +32,7 @@
          :etf (svo-passive)
          :by multiplier
          :m multiplier
+         :in info-context
          :at pathway-segment ;; should-be generalized
          ))
                     
@@ -124,3 +125,9 @@
     :realization
     (:common-noun name
                   :noun "cellular process"))
+
+
+(define-category match :specializes process
+   :mixins (ask/tell)
+   :realization (:verb "match"
+                       :thatcomp theme))
