@@ -492,7 +492,7 @@
   (declare (special r-triple l-triple category::as
                     category::adjective *ng-head-categories*
                     *adjg-head-categories* *vg-head-categories*))
-  "The goal here is to put off subject attachment until the subject 
+  "The goal here is to put off object attachment until the object 
    is as large as possible.
 "
   ;; Don't do right-to-left activation for the subj+verb rules
@@ -509,39 +509,45 @@
       ;;(lsp-break "compete")
       (or
        (eq 'category::syntactic-there l-triple-left) ;; competing against a "there BE"
-       (and
-        (competition-against-clausal-object? l-triple-rhs)
-        (not (eq 'thatcomp (form-cat-name r-triple-3)))
-        
-        ;; likely competition against a relative clause or a main clause
-        ;;  accept r-triple as a winner if if is a rightward extension of and NP
-        ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
-        (not
-         ;; the rule for NP + VP+ED (in case of "is serine phosphorylated by ERK")
-         (and (consp (cfr-referent (triple-rule r-triple)))
-              (or (eq (second (cfr-referent (triple-rule r-triple))) 'interpret-premod-to-verb)
-                  ;;(eq (second (cfr-referent (car r-triple))) 'assimilate-subject-to-vp-ed)
-                  )))
-        
-        (not (and (member (edge-cat-name (left-edge-of-triple l-triple)) '(be have))
-                  (member (form-cat-name r-triple-3) '(vp+ed vp+ing))))
-                  
-        (or
-         (and (eq (form-cat-name r-triple-3) 'pp)
-              (member (edge-left-daughter (edge-left-daughter r-triple-3))
-                      (get-tag :loc-pp-complement
-                               (itype-of (edge-referent (left-edge-of-triple l-triple)))))
-              (not (some-edge-satisfying? (edges-after r-triple-3) #'pp?)))
-         (not (member (form-cat-name r-triple-3)
-                      '(pp vg+ing ;;and prevent GTP loading"
-                        ;; "To validate the use of an in vitro system to dissect the mechanism of Ras regulation.
-                        to-comp where-relative-clause when-relative-clause
-                        transitive-clause-without-object
-                        pp-relative-clause
-                        subject-relative-clause comma-separated-subject-relative-clause)))))
-       
        (losing-to-leftwards-pp? l-triple r-triple)
-       ))))
+       (and (competition-against-clausal-object? l-triple-rhs)
+            ;; special case for "matches MEK inhibits ERK" --
+            ;;  where we want the embedded sentence created
+            (let ((r-triple-rhs (cfr-rhs (triple-rule r-triple))))
+              (not
+               (and (member (cat-name (car r-triple-rhs)) '(np))
+                    (member (cat-name (second r-triple-rhs)) '(vp))
+                    (thatcomp-verb (second l-triple)))))
+            (not (eq 'thatcomp (form-cat-name r-triple-3)))
+        
+            ;; likely competition against a relative clause or a main clause
+            ;;  accept r-triple as a winner if if is a rightward extension of and NP
+            ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
+            (not
+             ;; the rule for NP + VP+ED (in case of "is serine phosphorylated by ERK")
+             (and (consp (cfr-referent (triple-rule r-triple)))
+                  (or (eq (second (cfr-referent (triple-rule r-triple))) 'interpret-premod-to-verb)
+                      ;;(eq (second (cfr-referent (car r-triple))) 'assimilate-subject-to-vp-ed)
+                      )))
+        
+            (not (and (member (edge-cat-name (left-edge-of-triple l-triple)) '(be have))
+                      (member (form-cat-name r-triple-3) '(vp+ed vp+ing))))
+                  
+            (or
+             (and (eq (form-cat-name r-triple-3) 'pp)
+                  (member (edge-left-daughter (edge-left-daughter r-triple-3))
+                          (get-tag :loc-pp-complement
+                                   (itype-of (edge-referent (left-edge-of-triple l-triple)))))
+                  (not (some-edge-satisfying? (edges-after r-triple-3) #'pp?)))
+             (not (member (form-cat-name r-triple-3)
+                          '(pp vg+ing ;;and prevent GTP loading"
+                            ;; "To validate the use of an in vitro system to dissect the mechanism of Ras regulation.
+                            to-comp where-relative-clause when-relative-clause
+                            transitive-clause-without-object
+                            pp-relative-clause
+                            subject-relative-clause comma-separated-subject-relative-clause))))))
+       
+       )))
 
 (defparameter *l-triple-tests* nil
   "Holds the list of category pairs that should have every vp-forming rules
@@ -640,6 +646,7 @@
 (defun high-priority-postmod? (r-triple &aux (r-triple-rhs (cfr-rhs (triple-rule r-triple))))
   (and ;; need to generalize this for "high priority" NP post-modifiers
    (category-p (second r-triple-rhs))
+   ;; this is for the case where an S can be formed on the right
    (or (member (cat-name (left-edge-of-triple r-triple-rhs)) '(in-vitro in-vivo))
        (eq (form-cat-name (right-edge-of-triple r-triple))
            'object-relative-clause))))
