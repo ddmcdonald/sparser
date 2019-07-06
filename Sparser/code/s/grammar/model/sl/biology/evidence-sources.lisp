@@ -24,3 +24,25 @@
 ;; not sure which was meant
 (def-indiv-with-id database "GEO RNAi" "GEO-RNAi" :name "GEO RNAi database")
 
+
+;;; Functions to allow for "domain adjunct" PPs -- PPs which can attach to
+;;   general (non-domain) NPs, but which only make sense in some domain
+;; e.g. "any relations in the literature" where "relation" is a general NP
+;;  but "in the literature" (only?} makes sense in the context of bio-curation, etc.
+
+
+(define-category in-the-literature :specializes bio-predication)
+
+(add-domain-adjunctive-pp-rule "in" 'literature '(:or relation factor
+                                                  bio-process bio-entity)
+                               'add-literature-adjunct)
+(add-domain-adjunctive-pp-rule "from" 'literature '(:or relation factor
+                                                    bio-process bio-entity)
+                               'add-literature-adjunct)
+(define-lambda-variable 'in-the-literature
+    nil 'top)
+
+(defun add-literature-adjunct (head pp-edge)
+  (bind-variable 'in-the-literature (identify-pobj pp-edge)
+                 head))
+                 
