@@ -2052,6 +2052,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                   (lift-wh-element-from-nominal s-comp))))
          (assimilate-subcat vg-or-np :object wh))))
    (assimilate-subcat vg-or-np :s-comp s-comp)
+   (assimilate-subcat vg-or-np :thatcomp s-comp)
    (and (itypep vg-or-np 'let) ;; or #| make help hear see |#))
         *right-edge-into-reference*
         (eq (edge-form *right-edge-into-reference*)
