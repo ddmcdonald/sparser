@@ -128,6 +128,15 @@
 
 
 (define-category match :specializes process
-   :mixins (ask/tell)
+   :mixins (with-patient with-theme)
+   :binds ((item (:or relation perdurant))
+           (patient physical)
+           (theme perdurant))
    :realization (:verb "match"
-                       :thatcomp theme))
+                       :s item
+                       :o patient
+                       :in patient ;; "believe in dragons" only NPs?
+                       :thatcomp theme
+                       :whethercomp theme))
+
+  
