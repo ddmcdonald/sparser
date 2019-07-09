@@ -348,7 +348,8 @@
     (cond
       ((itypep i 'wh-pronoun) i) ;; "What ..."
       (t
-       (let ((value (value-of 'has-determiner i))) ;; "What genes ..."
+       (let ((value (or (value-of 'has-determiner i) ;; "What genes ..."
+                        (value-of 'quantifier i)))) ;; "Which of these"
          (when value
            (cond
              ((itypep value 'wh-pronoun) t)
