@@ -21,6 +21,7 @@ or alternatively an entry in (e.g.) bio;verbs.lisp that specializes it
 and provides biology-specific restrictions on its varibles. |#
 
 
+
 (define-category answer
   :specializes process
   :mixins (simple-action) ;; agent & theme
@@ -395,7 +396,7 @@ come
 (define-category transpose
   :specializes move
   :mixins (with-agent with-theme with-extent move-something-verb)
-  :binds ((agent physical-agent) (theme (:or abstract-note music note music-measure)) (extent trajectory))
+  :binds ((agent physical-agent) (theme musical) (extent trajectory))
   :realization (:verb "transpose" :tree-family vp+adjunct
     :mapping ((vg . :self)
               (vp . move)
@@ -406,7 +407,7 @@ come
 (define-category raise-note
   :specializes move
   :mixins (with-agent with-theme with-goal move-something-verb)
-  :binds ((agent physical-agent) (theme (:or abstract-note music note music-measure)) (goal to-note))
+  :binds ((agent physical-agent) (theme musical) (goal to-note))
   :realization (:verb "raise" :tree-family vp+adjunct
     :mapping ((vg . :self)
               (vp . move)
@@ -417,7 +418,7 @@ come
 (define-category lower-note
   :specializes move
   :mixins (with-agent with-theme with-goal move-something-verb)
-  :binds ((agent physical-agent) (theme (:or abstract-note music note music-measure)) (goal to-note))
+  :binds ((agent physical-agent) (theme musical) (goal to-note))
   :realization (:verb "lower" :tree-family vp+adjunct
     :mapping ((vg . :self)
               (vp . move)
@@ -434,7 +435,7 @@ come
 (define-category change-to 
   :specializes move
   :mixins (with-agent with-goal with-theme move-something-verb)
-  :restrict ((agent physical-agent) (theme (:or music-note note-sequence music-measure)) (goal (:or music-note note-sequence)))
+  :restrict ((agent physical-agent) (theme musical) (goal (:or music-note note-sequence)))
   :realization (:verb "change" 
                 :etf (svol)
                 :s agent
