@@ -29,6 +29,10 @@
 (define-category symbolic
   :specializes non-physical)
 
+(define-category musical
+  :specializes symbolic)
+
+
 ;; various syntactic adjuncts to handle movement
 
 (define-category trajectory
@@ -83,7 +87,7 @@
 |# "between beats 1 and 3" 
 
 (define-category music-measure
-  :specializes symbolic
+  :specializes musical
   :mixins (part-of-a-sequence  ;; fits into a larger sequence
             container ;; of note stuff 
             partonomic ;; comprised of parts 
@@ -94,7 +98,7 @@
   :realization (:common-noun "measure"))
 
 (define-category music-bar
-  :specializes symbolic
+  :specializes musical
   :mixins (container 
            partonomic
            part-of-a-sequence
@@ -123,7 +127,7 @@
 ;;--- notes
 
 (define-category abstract-note
-  :specializes symbolic
+  :specializes musical
   :mixins (part-of-a-sequence) ;; "the fifth note" // but: "eigth", "sixteenth"
   :binds ((duration fractional-term)
           (accidental music-accidental)
@@ -153,7 +157,7 @@ of how they compose with other terms.
   :realization (:common-noun name))
 
 (define-category note-sequence 
-  :specializes symbolic
+  :specializes musical
   :mixins (sequence partonomic part-of-a-sequence)
   :binds ((moves-in pitch-region) (part1 :or note-sequence music-note) (part2 :or note-sequence music-note))
   :bindings (part-type 'music-note)
