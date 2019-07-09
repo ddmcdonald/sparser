@@ -183,9 +183,10 @@ machinery. |#
 
 (defun make-copular-pp (be-ref pp)
   (declare (special category::copular-predication-of-pp *left-edge-into-reference*))
-  (when (and
+  (when t
+    #+ignore(and
          be-ref
-         (null (value-of 'predicate be-ref))
+         ;;(null (value-of 'predicate be-ref))
          ;; we changed the variable to be predicate so as to
          ;; block "to be a required step in the process of EGFR transactivation"
          ;; If this is not already a copular predicate ("is a drug")     
