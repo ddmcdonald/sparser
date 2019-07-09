@@ -522,7 +522,7 @@
   "Intended for use with every case of short questions
    that end in a preposition. (Presumably not functioning as a particle
    though we don't check that these days - 8/2018.)"
-  ;; called from four-edges/be just above and from s+prep DA rule
+  ;; called from four-edges/be just above, and from s+prep DA rule
   ;; We want to compose the moved 'item' with the preposition
   ;; whose complement it would have been in the declarative form
   ;; of the question. We can't use the obvious means of composing
@@ -541,13 +541,17 @@
       (tr :wh-stranded/no-head main-edge (edge-left-daughter prep-edge)))
     (when head-edge
       (let* ((item (edge-referent wh-edge))
+             (predicate (edge-referent head-edge))
              (preposition (edge-left-daughter prep-edge))
              (parent-of-head (edge-used-in head-edge))
              (variable (subcategorized-variable
-                        (edge-referent head-edge) preposition item)))
+                         predicate preposition item)))
         (if variable
           (tr :wh-stranded/yes head-edge preposition variable)
-          (tr :wh-stranded/no head-edge preposition))
+          (if (itypep predicate 'be) ;;// broader?
+            (setq variable (find-variable-for-category 'subject 'be))
+            (tr :wh-stranded/no head-edge preposition)))
+        
         ;; If this is the correct head, the variable will have a value.
         ;; /// Else keep moving downward
         (when variable
@@ -560,16 +564,19 @@
                                (symbol
                                 (if (eq :syntactic-form rule-category) ;; form rule
                                   (cfr-form pp-rule)
-                                  (error "Category of ~a is unrecognized symbol" pp-rule)))))                               
+                                  (error "Category of ~a is unrecognized symbol" pp-rule)))))
+                   (pp-ref (make-pp (edge-referent prep-edge) item))
                    (pp-edge (make-chart-edge
                              :category category
                              :form (cfr-form pp-rule)
                              :rule pp-rule
+                             :referent pp-ref
                              :starting-position (pos-edge-starts-at prep-edge)
                              :ending-position (pos-edge-ends-at prep-edge)
                              :left-daughter prep-edge
                              :right-daughter wh-edge
-                             :ignore-used-in t)))   
+                             :ignore-used-in t)))
+
               (let ((rule (multiply-edges head-edge pp-edge)))
                 ;; compose the head and the pp
                 (unless rule (error "No rule for ~a + ~a" head-edge pp-edge))
