@@ -1323,10 +1323,11 @@ For successful parses you get the interpretation of the sentence.
 For bad parses you get the treetops.
   Calling it with the 'split' option runs through the list and
 divides it into good and bad. |#
-
+(defparameter *break-on-parse-error* nil)
 (defun test-bio-utterances (sentence-list &optional split?
                             &key list-of-lists (stream *standard-output*)
-                                  clauses (quiet t))
+                              clauses (quiet t)
+                              (with-breaks *break-on-parse-error*))
   "Walk over the list and set the global -- edit to shift test fn"
   (declare (special *save-clause-semantics*))
   (let ((count -1)) ;; because nth is zero based
@@ -1346,22 +1347,24 @@ divides it into good and bad. |#
         (setq *save-clause-semantics* :sentence-clauses))
     (loop for s in *list-of-bio-utterances*
        do (if split?
-            (test-bio-utterance/split s (incf count) stream quiet)
-            (test-bio-utterance s (incf count) stream quiet)))
+            (test-bio-utterance/split s (incf count) stream quiet with-breaks)
+            (test-bio-utterance s (incf count) stream quiet with-breaks)))
     (format stream "~&~a sentences in *list-of-bio-utterances*~%" (+ 1 count))
     (when split?
       (format stream "~&  ~a good~
                       ~%  ~a bad~%"
               (length *bio-utt-test-good*) (length *bio-utt-test-bad*)))))
 
-(defun test-bio-utterance (s count &optional (stream *standard-output*) (quiet t))
+(defun test-bio-utterance (s count &optional (stream *standard-output*) (quiet t)(with-breaks *break-on-parse-error*))
   "Designed for getting useful information for every sentence.
  Includes the semantic interpretation if there was just one
  edge over it."
   (declare (special *save-clause-semantics* *clause-semantics-list*))
   (format stream "~%~%___________________~%~a: ~s~%" count s)
   (if quiet
-      (qepp s)
+      (if with-breaks
+          (qpp s)
+          (qepp s))
       (pp s))
   (format stream "~&~%") (tts stream)
   (let ((edges (all-tts)))
