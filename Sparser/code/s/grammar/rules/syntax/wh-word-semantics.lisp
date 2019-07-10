@@ -135,6 +135,7 @@
  a clause as being an wh-nominal //or a wh-question, we subype it
  to include this mixin and bind the variables")
 
+#+ignore ;; Rusty prefers 'predication' for the relation 6/25/19
 (define-mixin-category lifted
   :specializes linguistic
   :binds ((source))
