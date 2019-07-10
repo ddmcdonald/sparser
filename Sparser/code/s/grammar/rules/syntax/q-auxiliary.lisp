@@ -127,10 +127,17 @@
   "Identify and return the wh-element. Additionally add a binding
    to the wh-element linking it back to the predicate. Invoked by
    assimilate-thatcomp given a suitable operator."
-  (assert (itypep predicate 'wh-nominal))
-  (let* ((wh (value-of 'wh-element predicate)))
+  (assert (or (itypep predicate 'wh-nominal)
+               (itypep predicate 'wh-question)))
+  (let* ((wh (if (itypep predicate 'wh-nominal)
+                 (value-of 'wh-element predicate)
+                 (if (category-p (value-of 'wh predicate))
+                     (find-or-make-lattice-description-for-ref-category
+                      (value-of 'wh predicate))
+                     (value-of 'wh predicate)))))
+
     (tr :lifting-wh-element wh)
-    (let ((j (bind-variable 'predication  predicate wh category::lifted)))
+    (let ((j (bind-variable 'predication  predicate wh)))
       (tr :lifting-wh-element-returns j)
       j)))
 
