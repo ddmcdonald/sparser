@@ -855,6 +855,8 @@ than a bare "to".  |#
      ;;  into "the genes" "STAT3" "regulates"
      (not (and (boundp '*chunk*)
                (proper-noun-reduced-relative? e *chunk*)))
+     (not (and (boundp '*chunk*)
+               (proper-noun-plural-modifier? e *chunk*)))
 
      (not (and (member (edge-cat-name e) '(measurement #|n-fold|#))
                (boundp '*chunk*)
@@ -1074,6 +1076,22 @@ than a bare "to".  |#
                     ;; a bit less likely when the verb is "BE"
                     ;; as in "Oncogenic mutations in the serine/threonine kinase B-RAF are found..."
                     (not (eq (edge-cat-name ee) 'be))))))
+
+(defparameter *proper-noun-plural-modifiers* nil)
+
+(defun proper-noun-plural-modifier? (e *chunk* &aux (e-form-name (form-cat-name e)))
+  (declare (special *noun-categories*))
+  (when
+      (and (member e-form-name '(proper-name proper-noun))
+           (boundp '*chunk*)
+           (chunk-final-edge? e *chunk*)
+           (cdr (chunk-ev-list *chunk*))
+           (loop for ee in (ev-top-edges (cadr (chunk-ev-list *chunk*)))
+                 thereis (and (edge-form ee)
+                              (member (cat-name (edge-form ee))
+                                      '(common-noun/plural)))))
+    (push (sentence-string (current-sentence))
+          *proper-noun-plural-modifiers*)))
 
 
 ;;;---------------------
