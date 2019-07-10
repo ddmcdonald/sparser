@@ -357,6 +357,7 @@
              ((car (memq value `(,category::what)))
               t)
              (t
-              (push-debug `(,value ,i))
-              (break "New determiner value: ~a" value)))))))))
+              (when *debug-questions*
+                (push-debug `(,value ,i))
+                (break "New determiner value: ~a" value))))))))))
 
