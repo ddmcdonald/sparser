@@ -2044,7 +2044,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
    (when (and (takes-wh-nominals? vg-or-np)
               (or (itypep s-comp 'wh-nominal)
                   (member (edge-form-name (right-edge-for-referent))
-                      '(wh-question howcomp))))
+                          '(wh-question
+                            howcomp ; "Tell me how stat3 regulates apoptosis"
+                            ))))
      (if *subcat-test*
        t
        (let ((wh (insert-wh-nominal-edge
@@ -2098,10 +2100,10 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (cond
     (*subcat-test* t)
     (t (revise-parent-edge :form category::howcomp)
-        (let ((embedded? (not (top-level-wh-question?))))
-          (make-wh-object (category-named 'how)
-                          :statement s
-                          :embedded embedded?)))))
+       (let ((embedded? (not (top-level-wh-question?))))
+         (make-wh-object (category-named 'how)
+                         :statement s
+                         :embedded embedded?)))))
 
 (defun assimilate-howcomp (vg-or-np thatcomp)
   (assimilate-clausal-comp vg-or-np thatcomp :howcomp))
