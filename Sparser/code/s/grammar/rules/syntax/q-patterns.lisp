@@ -508,6 +508,7 @@
            (break "new 4-edge wh case~%e2: ~a  e3: ~a  e4: ~a"
                   e2-form e3-form e4-form)) )))))
 
+;; (p "Can you find any apoptotic pathways that stat3 is involved in?")
 (defun polar-aux-s-stranded-prep (aux-edge s-edge prep-edge start-pos end-pos)
   ;; 1. Identify what the complement of the preposition is
   ;;   and fold them into a new edge
@@ -518,6 +519,12 @@
     (push-debug `(,aux-edge ,s-edge ,prep-edge))
     (break "got there")))
 
+#|
+(p/s "What tissues can I ask about?") ;; da: wh-three-edges ?? /////
+"Are there any genes stat3 is upstream of?"
+
+(p "What genes is stat3 upstream of?") ;; via s+prep
+|#
 (defun wh-stranded-prep (wh-edge main-edge prep-edge start-pos end-pos)
   "Intended for use with every case of short questions
    that end in a preposition. (Presumably not functioning as a particle
@@ -533,83 +540,152 @@
   ;; and make a new edge -- just over the preposition -- with
   ;; that referent.
   (tr :wh-walk 'wh-stranded-prep)
-  (let* ((fringe-edges (right-fringe main-edge))
-         (head-edge (loop for edge in fringe-edges
-                       when (takes-preposition? edge prep-edge)
-                       return edge)))
-    (unless head-edge
-      (tr :wh-stranded/no-head main-edge (edge-left-daughter prep-edge)))
-    (when head-edge
-      (let* ((item (edge-referent wh-edge))
-             (predicate (edge-referent head-edge))
-             (preposition (edge-left-daughter prep-edge))
-             (parent-of-head (edge-used-in head-edge))
-             (variable (subcategorized-variable
-                         predicate preposition item)))
-        (if variable
-          (tr :wh-stranded/yes head-edge preposition variable)
-          (if (itypep predicate 'be) ;;// broader?
-            (setq variable (find-variable-for-category 'subject 'be))
-            (tr :wh-stranded/no head-edge preposition)))
-        
-        ;; If this is the correct head, the variable will have a value.
-        ;; /// Else keep moving downward
-        (when variable
-          ;; make the edge over the prep+item
-          (let ((pp-rule (multiply-edges prep-edge wh-edge)))
-            (unless pp-rule (error "no rule for prep+np ??"))
-            (let* ((rule-category (cfr-category pp-rule))
-                   (category (etypecase rule-category
-                               (category rule-category)
-                               (symbol
-                                (if (eq :syntactic-form rule-category) ;; form rule
-                                  (cfr-form pp-rule)
-                                  (error "Category of ~a is unrecognized symbol" pp-rule)))))
-                   (pp-ref (make-pp (edge-referent prep-edge) item))
-                   (pp-edge (make-chart-edge
-                             :category category
-                             :form (cfr-form pp-rule)
-                             :rule pp-rule
-                             :referent pp-ref
-                             :starting-position (pos-edge-starts-at prep-edge)
-                             :ending-position (pos-edge-ends-at prep-edge)
-                             :left-daughter prep-edge
-                             :right-daughter wh-edge
-                             :ignore-used-in t)))
+  
+  ;; make the edge over the prep+item
+  (let ((pp-rule (multiply-edges prep-edge wh-edge)))
+    (unless pp-rule (error "no rule for prep+np~
+                         ~%  ~a  +  ~a"  prep-edge wh-edge))
+    (let* ((wh-item (edge-referent wh-edge))
+           (pp-rule-category (cfr-category pp-rule))
+           (pp-category (etypecase pp-rule-category
+                          (category pp-rule-category)
+                          (symbol
+                           (if (eq :syntactic-form pp-rule-category) ;; form rule
+                             (cfr-form pp-rule)
+                             (error "Category of ~a is an unrecognized symbol" pp-rule)))))
+           (preposition (edge-left-daughter prep-edge))
+           (pp-ref (make-pp (edge-referent prep-edge) wh-item))
+           (pp-edge (make-chart-edge
+                     :category pp-category
+                     :form (cfr-form pp-rule)
+                     :rule pp-rule
+                     :referent pp-ref
+                     :starting-position (pos-edge-starts-at prep-edge)
+                     :ending-position (pos-edge-ends-at prep-edge)
+                     :left-daughter prep-edge
+                     :right-daughter wh-edge
+                     :ignore-used-in t)))
 
-              (let ((rule (multiply-edges head-edge pp-edge)))
-                ;; compose the head and the pp
-                (unless rule (error "No rule for ~a + ~a" head-edge pp-edge))
-                (let* ((extended-head-edge
-                        (make-completed-binary-edge head-edge pp-edge rule))
-                       (subsumed-edge head-edge) ;; rename to make tuck clearer
-                       (new-edge extended-head-edge)
-                       (dominating-edge parent-of-head))
-                  (when parent-of-head
-                    (tuck-new-edge-under-already-knit
-                     subsumed-edge new-edge dominating-edge :right))
+      ;; two cases -- regular subcategorization by a head and copulas
+      (let* ((main-ref (edge-referent main-edge))
+             (fringe-edges (right-fringe main-edge)) ;; largest to smallest
+             (head-edge (loop for edge in fringe-edges
+                           when (takes-preposition? edge prep-edge)
+                           return edge))
+             (predicate (when head-edge (edge-referent head-edge)))
+             (variable (when head-edge (subcategorized-variable
+                                        predicate preposition wh-item))))      
+        (cond
+          ((itypep main-ref 'be) ;;// broader?
+           (wh-copula-stranded-prep main-edge pp-edge start-pos end-pos))
+          ((null head-edge)
+           ;; If we have the correct head, the variable will have a value.
+           ;; /// Else keep moving downward
+           (tr :wh-stranded/no-head main-edge (edge-left-daughter prep-edge))
+           nil) ;; fail
+          ((null variable)
+           (tr :wh-stranded/no head-edge preposition)
+           nil)
+          (variable
+           (tr :wh-stranded/yes head-edge preposition variable)
+           (wh-subcat-stranded-prep main-edge head-edge pp-edge  start-pos end-pos))
+          (t (when *debug-questions*
+               (error "Fell through cond in wh-stranded-prep"))))))))
 
-                  (let* ((final-tts (treetops-between start-pos end-pos))
-                         (edge-count (length final-tts)))
-                    (cond
-                      ((= 3 edge-count)
-                       ;; All the treetops are used in part of the main edge
-                       ;; but need an edge over it all
-                       (make-chart-edge
-                        :category (edge-category main-edge)
-                        :form category::s
-                        :rule 'wh-stranded-prep
-                        :starting-position start-pos
-                        :ending-position end-pos
-                        :referent (edge-referent main-edge)
-                        :constituents (treetops-between start-pos end-pos)
-                        :ignore-used-in t))
-                      ((= 1 edge-count)
-                       (car final-tts))
-                      (t
-                       (when *debug-questions*
-                         (push-debug `(,new-edge ,head-edge))
-                         (break "Wrong number of edges to cover"))))))))))))))
+(defun wh-subcat-stranded-prep (main-edge head-edge pp-edge start-pos end-pos)
+  (tr :wh-walk 'wh-subcat-stranded-prep)
+  (let ((parent-of-head (edge-used-in head-edge))
+        (rule (multiply-edges head-edge pp-edge)))
+    ;; compose the head and the pp
+    (unless rule
+      (error "No rule for ~a + ~a" head-edge pp-edge))
+    (let* ((extended-head-edge
+            (make-completed-binary-edge head-edge pp-edge rule))
+           (subsumed-edge head-edge) ;; rename to make tuck operation clear
+           (new-edge extended-head-edge)
+           (dominating-edge parent-of-head))
+
+      (when parent-of-head
+        (tuck-new-edge-under-already-knit
+         subsumed-edge new-edge dominating-edge :right))
+
+      (let* ((final-tts (treetops-between start-pos end-pos))
+             (edge-count (length final-tts)))
+        (cond
+          ((= 3 edge-count)
+           ;; All the treetops are used in part of the main edge
+           ;; but need an edge over it all
+           (make-chart-edge
+            :category (edge-category main-edge)
+            :form category::s
+            :rule 'wh-stranded-prep
+            :starting-position start-pos
+            :ending-position end-pos
+            :referent (edge-referent main-edge)
+            :constituents (treetops-between start-pos end-pos)
+            :ignore-used-in t))
+          ((= 1 edge-count)
+           (car final-tts))
+          (t
+           (when *debug-questions*
+             (push-debug `(,new-edge ,head-edge))
+             (break "Wrong number of edges to cover"))))))))
+
+;; (p "what pathways is ERK1 in?")
+(defun wh-copula-stranded-prep (main-edge pp-edge start-pos end-pos)
+  "Separate out the main edge (just after the wh-element and ending before
+   the preposition) to get a predicate and a focused item for the copular
+   predication. We know the main-edge is copular because that was the gate
+   that got us here."
+  (tr :wh-walk 'wh-copula-stranded-prep)
+  (let* ((vg-edge (edge-left-daughter main-edge))
+         (focal-np-edge (edge-right-daughter main-edge))
+         (np (edge-referent focal-np-edge))
+         (pp-ref (edge-referent pp-edge))
+         (prep (get-word-for-prep (value-of 'prep pp-ref)))
+         (pobj (value-of 'pobj pp-ref)))
+    
+    (unless (and (vg-category? vg-edge)
+                 (np-category? focal-np-edge))
+      (when *debug-questions*
+        (break "New case in copula-stranded-prep: vg = ~a~%np = ~a"
+               vg-edge focal-np-edge))
+      (return-from wh-copula-stranded-prep nil))
+
+    (flet ((vanilla ()
+             (make-copular-predication-of-pp
+              np vg-edge pp-edge (value-of 'prep pp-ref))))
+                                      
+      (let* ((copular-pp-rule (multiply-edges vg-edge pp-edge))
+             (referent
+              (cond
+                (copular-pp-rule
+                 (let ((copular-pp-edge (make-completed-binary-edge
+                                         vg-edge pp-edge copular-pp-rule))
+                       (var (subcategorized-variable np prep pobj)))
+                   ;; open-coding test-and-apply-simple-copula-pp since 
+                   ;; we're not in a normal rule-application content
+                   (cond
+                     (var ;; value, prep, and predicate are bound
+                      (let* ((copular-pp (edge-referent copular-pp-edge))
+                             (new-np (bind-variable var pobj np))
+                             (i (rebind-variable 'value new-np copular-pp))
+                             (j (bind-variable 'item np i)))
+                        (tr :stranded-copular-pp j)
+                        j))
+                     (t (tr :stranded-copular/no-var np prep pobj)
+                        (vanilla)))))
+                (t (tr :stranded-copular/no-rule vg-edge pp-edge)
+                   (vanilla)))))
+        (make-chart-edge
+         :category (edge-category main-edge)
+         :form category::s
+         :rule 'wh-copula-stranded-prep
+         :starting-position start-pos
+         :ending-position end-pos
+         :referent referent
+         :constituents (treetops-between start-pos end-pos)
+         :ignore-used-in t)))))
 
 
 

@@ -65,6 +65,22 @@
                (edge-position-in-resource-array head-edge)
                (pname preposition))))
 
+(deftrace :stranded-copular-pp (j)
+  ;; called from wh-copula-stranded-prep
+  (when *trace-questions*
+    (trace-msg "[wh]  applied copular-pp and made ~a" j)))
+
+(deftrace :stranded-copular/no-var (np prep pobj)
+  ;; called from wh-copula-stranded-prep
+  (when *trace-questions*
+    (trace-msg "[wh]  ~a doesn't subcategorize on ~a with ~a~%Making vanilla"
+               np prep pobj)))
+
+(deftrace :stranded-copular/no-rule (left right)
+  ;; called from wh-copula-stranded-prep
+  (when *trace-questions*
+    (trace-msg "[wh]  no rule combines ~a and ~a" left right)))
+
 (deftrace :wh-fold-form (stmt stmt-form)
   ;; called from fold-wh-into-statement
   (when *trace-questions*
