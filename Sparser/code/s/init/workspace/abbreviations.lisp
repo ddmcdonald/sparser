@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2013-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2013-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "init;workspace:"
-;;;  version:  September 2017
+;;;  version:  July 2019
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -112,9 +112,12 @@
     (format t "~&category: ~a~
                ~%form: ~a~
                ~%rule: ~a~
-               ~%referent: ~a~%"
+               ~%referent: ~a~
+               ~%left: ~a~
+               ~%right: ~a"
             (edge-category e) (edge-form e) 
-            (edge-rule e) (edge-referent e))
+            (edge-rule e) (edge-referent e)
+            (edge-left-daughter e) (edge-right-daughter e))
     e))
 
 (defun ier (number-of-edge) ;; inspect edge referent
