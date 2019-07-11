@@ -1821,11 +1821,10 @@ assumed. |#
     ;; "What genes does lung cancer target?"
     :action (:function wh-three-edges first second third))
 
-(define-debris-analysis-rule np-modal-transitive-no-object
+(define-debris-analysis-rule np-modal-s
     :pattern (np modal s)
     ;; "What drug could I use to target pancreatic cancer?"
     :action  (:function wh-three-edges first second third))
-
 
 (defun wh-three-edges (np vg open-vp)
   (declare (special *da-starting-position* *da-ending-position*
@@ -1837,6 +1836,17 @@ assumed. |#
           (end-pos (fix-da-ending-pos *da-ending-position*)))
       (wh-initial-three-edges np edges *da-starting-position* end-pos))))
 
+#|
+(define-debris-analysis-rule np-modal-s-prep
+    :pattern (np modal s preposition)
+    ;; "What tissues can I ask about?"
+    :action  (:function wh-three-edges+prep first second third fourth))
+(defun wh-three-edges+prep (np modal s prep)
+  (when (wh-edge? np)
+    (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
+      (XXXXX np modal s prep *da-starting-position* end-pos))))
+(defun XXXXX (wh-edge modal-edge s-edge prep-edge start-pos end-pos))
+|#
 
 (define-debris-analysis-rule wh-be-thing
   :pattern (question-marker vg np) ;; "what color is the block"
@@ -1853,6 +1863,12 @@ assumed. |#
   (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
     ;; can we tease out the aux at the beginning of the vp?
     (wh-initial-two-edges whpn (list whpn vp) *da-starting-position* end-pos)))
+;;XXX
+(defun wh-vp (wh vp)
+  (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
+    (when *debug-questions*
+      (push-debug `(,wh ,vp))
+      (break "wh-vp"))))
 
 
 (define-debris-analysis-rule whpn-vg-transitive-no-object
@@ -1908,12 +1924,6 @@ assumed. |#
   (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
     (wh-initial-four-edges/vp+ed wh vg np vp-ed
                                  *da-starting-position* end-pos)))
-
-(defun wh-vp (wh vp)
-  (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
-    (when *debug-questions*
-      (push-debug `(,wh ,vp))
-      (break "wh-vp"))))
 
 
 
