@@ -25,6 +25,8 @@
 
 ;; (trace-questions)
 
+;; (da-traces) (da-traces-off
+
 (defparameter *debug-questions* nil
   "Should only be set when debugging. Signals an error so we can
    see what's going on. Usually paired with a warn.")
@@ -209,6 +211,7 @@
            ((preposed-of?)
             (dig-for-embedded-which edge))
            (wh-initial? ;;/// Mark it? Wrap it?
+            #+ignore ;; putting the question off 'till later
             (when *debug-questions*
               (break "We have an edge (~a) and the wh-initial? flag is up~
                     ~%What should we do?" edge)))))
