@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "copulars"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  December 2018
+;;;  Version:  July 2019
 
 (in-package :sparser)
 
@@ -73,6 +73,18 @@
             :predicate aux
             :item subj
             :value obj)))))
+
+(defgeneric make-copular-predication-of-pp (subject aux value prep)
+  (:method ((subj individual) (vg edge) (o edge) (prep individual))
+    ;; tailored for call in wh-copula-stranded-prep
+    (let ((aux (edge-referent vg))
+          (obj (edge-referent o))
+          (p (itype-of prep)))
+      (define-or-find-individual 'copular-predication-of-pp
+          :item subj
+          :predicate aux
+          :value obj
+          :prep p))))
 
 
 
