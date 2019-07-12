@@ -96,6 +96,7 @@
               :referent q
               :constituents edges))) )
 
+;; DA: there-s-prep
 (defun there-question/stranded-prep (is-there-edge s-edge prep-edge start-pos end-pos)
   "The there-exists instance is already in place on the is-there edge.
    Putting the complement of the preposition back together is an
@@ -103,12 +104,18 @@
    of the there-exists."
   ;; "Are there any genes stat3 is upstream of?"
   (tr :wh-walk "there-question/stranded-prep")
+  #|chunking:  are there [any genes ][stat3 ][is ][upstream ]of
+|#
   ;; the constituent we need to move to the prep is buried in
   ;; the s-edge. Assume it's the first on, and check that the vp after it
   ;; is a copula. though that should generalize.
-  (when *debug-questions*
-    (push-debug `(,is-there-edge ,s-edge ,prep-edge))
-    (break "Figure out how to properly factor out the moving part")))
+  (let* ((there-ref (edge-referent is-there-edge))
+         (s-ref (edge-referent s-edge))
+         
+         (focus (value-of 'value there-ref)) ; "any genes"
+;;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx
+
+)))
          
          
 (defun polar-stranded-preposition (aux-edge main-edge prep-edge)
@@ -652,32 +659,44 @@
                vg-edge focal-np-edge))
       (return-from wh-copula-stranded-prep nil))
 
+    (let* ((copular-pp-rule (multiply-edges main-edge pp-edge)))
+      (cond
+        (copular-pp-rule
+         (let ((copular-pp-edge (make-completed-binary-edge
+                                 main-edge pp-edge copular-pp-rule))
+               (var (subcategorized-variable np prep pobj)))
+           ;; open-coding test-and-apply-simple-copula-pp since 
+           ;; we're not in a normal rule-application content
+           (cond
+             (var ;; value, prep, and predicate are bound
+              (let* ((copular-pp (edge-referent copular-pp-edge))
+                     (new-np (bind-variable var pobj np))
+                     (i (rebind-variable 'value new-np copular-pp))
+                     (j (bind-variable 'item np i)))
+                (tr :stranded-copular-pp j)
+                (respan-top-edge copular-pp-edge j
+                                 :start-pos start-pos
+                                 ;; end-pos is ok?
+                                 :form category::s)))
+             
+             (t ;; we could make the copular-pp edge but the focal np
+              ;; doesn't take the preposition so we make a simpler
+              ;; predication object without the cross-threading
+              (tr :stranded-copular/no-var np prep pobj)
+              #+ignore(vanilla)))))
+        
+        (t ;; the main edge and pp-edge can't compose
+         (tr :stranded-copular/no-rule vg-edge pp-edge)
+         #+ignore(vanilla))))))
+
+#| Should we do something for the other two cases?
     (flet ((vanilla ()
-             (make-copular-predication-of-pp
-              np vg-edge pp-edge (value-of 'prep pp-ref))))
-                                      
-      (let* ((copular-pp-rule (multiply-edges vg-edge pp-edge))
-             (referent
-              (cond
-                (copular-pp-rule
-                 (let ((copular-pp-edge (make-completed-binary-edge
-                                         vg-edge pp-edge copular-pp-rule))
-                       (var (subcategorized-variable np prep pobj)))
-                   ;; open-coding test-and-apply-simple-copula-pp since 
-                   ;; we're not in a normal rule-application content
-                   (cond
-                     (var ;; value, prep, and predicate are bound
-                      (let* ((copular-pp (edge-referent copular-pp-edge))
-                             (new-np (bind-variable var pobj np))
-                             (i (rebind-variable 'value new-np copular-pp))
-                             (j (bind-variable 'item np i)))
-                        (tr :stranded-copular-pp j)
-                        j))
-                     (t (tr :stranded-copular/no-var np prep pobj)
-                        (vanilla)))))
-                (t (tr :stranded-copular/no-rule vg-edge pp-edge)
-                   (vanilla)))))
-        (make-chart-edge
+             ;; We're being called from debris analysis so we have
+             ;; to return an edge. This is the escape path for the
+             ;; two cases we don't (yet) have a better analysis for.
+             (let ((ref (make-copular-predication-of-pp
+                         np vg-edge pp-edge (value-of 'prep pp-ref))))
+               (make-chart-edge
          :category (edge-category main-edge)
          :form category::s
          :rule 'wh-copula-stranded-prep
@@ -685,9 +704,7 @@
          :ending-position end-pos
          :referent referent
          :constituents (treetops-between start-pos end-pos)
-         :ignore-used-in t)))))
-
-
+         :ignore-used-in t)))) |#
 
 ;; (p "where should I put the block?")
 ;;
