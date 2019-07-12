@@ -81,7 +81,6 @@
 ;; (right-edge-for-referent)
 ;; (parent-edge-for-referent)
 
-
 ;; used all over
 (defvar *left-edge-into-reference*)
 (defvar *right-edge-into-reference*)
@@ -128,7 +127,6 @@ a subordinate clause. Added to the interpretation of the clause or
 vp that it subordinates. Deemed to be overkill to use a scafolding class
 like prepositional-phase (see syntax/syntactic-classes.lisp) |#
     nil 'top)
-
 
 
 (define-lambda-variable 'quantifier
@@ -225,6 +223,24 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
          (new-edge (make-predication-edge pre-pred-edge new-pred)))
     (values new-pred new-edge)))
 
+(defun create-predication-and-edge-by-binding-and-insert-edge (var val pred)
+  ;;../syntax/subject-relatives.lisp
+  ;;  APPLY-OBJECT-RELATIVE-CLAUSE
+  ;;  APPLY-SUBJECT-RELATIVE-CLAUSE
+  ;;  APPLY-UPSTAIRS-NP-TO-SUBJECT-RELATIVE
+  ;;  APPLY-PP-RELATIVE-CLAUSE
+  ;;  APPLY-REDUCED-RELATIVE-CLAUSE
+  ;;../syntax/syntax-functions.lisp
+  ;;  INTERPRET-VERB-AS-PREDICATION
+  ;;  COMPARATIVE-ADJ-NOUN-COMPOUND
+  ;;  ADJ-NOUN-COMPOUND
+  ;;  ASSIMILATE-SUBJECT-TO-VP-ED
+  (unless (edge-p (parent-edge-for-referent))
+    (lsp-break "create-predication-and-edge-by-binding-and-insert-edge - no valid parent edge"))
+  (let ((new-predication (create-predication-by-binding var val pred)))
+    (insert-predication-edge (parent-edge-for-referent) pred new-predication)
+    new-predication))
+
 (defun create-predication-by-binding (var val pred)
   ;; called by CREATE-PREDICATION-AND-EDGE-BY-BINDING-AND-INSERT-EDGE
   ;;           CREATE-PREDICATION-AND-EDGE-BY-BINDING
@@ -255,24 +271,6 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
            new-predication)
           (t pred))))
 
-(defun create-predication-and-edge-by-binding-and-insert-edge (var val pred)
-  ;;../syntax/subject-relatives.lisp
-  ;;  APPLY-OBJECT-RELATIVE-CLAUSE
-  ;;  APPLY-SUBJECT-RELATIVE-CLAUSE
-  ;;  APPLY-UPSTAIRS-NP-TO-SUBJECT-RELATIVE
-  ;;  APPLY-PP-RELATIVE-CLAUSE
-  ;;  APPLY-REDUCED-RELATIVE-CLAUSE
-  ;;../syntax/syntax-functions.lisp
-  ;;  INTERPRET-VERB-AS-PREDICATION
-  ;;  COMPARATIVE-ADJ-NOUN-COMPOUND
-  ;;  ADJ-NOUN-COMPOUND
-  ;;  ASSIMILATE-SUBJECT-TO-VP-ED
-  (unless (edge-p (parent-edge-for-referent))
-    (lsp-break "create-predication-and-edge-by-binding-and-insert-edge - no valid parent edge"))
-  (let ((new-predication (create-predication-by-binding var val pred)))
-    (insert-predication-edge (parent-edge-for-referent) pred new-predication)
-    new-predication))
-
 (defun insert-predication-edge (parent pred new-predication)
   (declare (special new-predication parent))
   (let* ((left-edge (edge-left-daughter parent))
@@ -289,8 +287,8 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
       (values new-predication lambda-edge))))
 
 (defun sort-out-introduction-of-inserted-edge (inserted-edge parent
-                                                         left-edge right-edge
-                                                         base-edge)
+                                               left-edge right-edge
+                                               base-edge)
   "The parent is a binary edge. We've just spanned one of its daughters
    with the newly introduced lambda-edge so we need to update that information."
   (let ((direction-of-inserted-edge
@@ -321,6 +319,16 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
       (setf (ev-top-node ev) parent) ;; usually redundant with the swap  
       ev)))
 
+(defun sort-out-introduction-of-wh-nominal-edge (wh-nominal-edge parent)
+  (setf (edge-used-in wh-nominal-edge) parent)
+  (let ((ev (edge-ends-at parent)))
+    (unless (index-of-edge-in-vector wh-nominal-edge ev)
+      (error "Lambda edge not in expected vector ~a" ev))
+    (swap-edges-in-vector parent wh-nominal-edge ev)
+    (setf (ev-top-node ev) parent) ;; usually redundant with the swap  
+    ev))
+
+
 (defun create-wh-nominal-and-edge-by-binding-and-insert-edge (var val pred)
   (unless (edge-p (parent-edge-for-referent))
     (lsp-break "create-wh-nominal-and-edge-by-binding-and-insert-edge - no valid parent edge"))
@@ -336,26 +344,6 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
     (sort-out-introduction-of-wh-nominal-edge wh-nominal-edge parent)
     (values wh-nominal-ref wh-nominal-edge)))
 
-
-(defun sort-out-introduction-of-wh-nominal-edge (wh-nominal-edge parent)
-  "The parent is a binary edge. We've just spanned one of its daughters
-   with the newly introduced wh-np-edge so we need to update that information."
-  (setf (edge-used-in wh-nominal-edge) parent)
-
-  ;; The order of the edges in the vector that the parent and lambda-edge
-  ;; share is messed up. Edges are added to the edge-vectors of their
-  ;; start and end positions at the they are created. The parent edge was
-  ;; created before the lambda-edge. (It was created at the start of
-  ;; the rule-interpretation process. Right now we're in the middle
-  ;; of that process.) Anything that walks the vector will be confused
-  ;; because the parent edge is longer than the lambda edge. To correct
-  ;; this we swap their position in the relevant vector. 
-  (let ((ev (edge-ends-at parent)))
-    (unless (index-of-edge-in-vector wh-nominal-edge ev)
-      (error "Lambda edge not in expected vector ~a" ev))
-    (swap-edges-in-vector parent wh-nominal-edge ev)
-    (setf (ev-top-node ev) parent) ;; usually redundant with the swap  
-    ev))
 
 
 (def-form-category lambda-form)
@@ -380,7 +368,7 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
 
 (defun make-wh-nominal-edge (wh-clause-edge wh-np)
   "Span 'wh-clause-edge' with a new edge with the same end-points.
-   The caller has provided 'predication' to be the referent of
+   The caller has provided 'wh-np' to be the referent of
    this new edge."
   (let* ((daughter (maybe-extract-statement-edge wh-clause-edge))
          (left-ev (edge-starts-at wh-clause-edge))
@@ -388,17 +376,14 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
          (lambda-edge
           (make-completed-unary-edge
            left-ev right-ev
-           'make-wh-nominal-edge        ;; rule
-           daughter                      ;; daughter
-           (itype-of wh-np)   ;; category
-           category::np         ;; form
-           wh-np)))                ;; referent
+           'make-wh-nominal-edge ;; rule
+           daughter              ;; daughter
+           (itype-of wh-np)      ;; category
+           category::np          ;; form
+           wh-np)))              ;; referent
     lambda-edge))
 
 (defun make-to-comp-with-subject-edge (to-comp-edge expanded-to-comp)
-  "Span 'wh-clause-edge' with a new edge with the same end-points.
-   The caller has provided 'predication' to be the referent of
-   this new edge."
   (let* ((left-ev (edge-starts-at to-comp-edge))
          (right-ev (edge-ends-at to-comp-edge)))
     (make-completed-unary-edge
@@ -409,6 +394,8 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
      (edge-form to-comp-edge)        ;; form
      expanded-to-comp)               ;; referent
     ))
+
+
 
 (defun maybe-extract-statement-edge (pre-pred-edge)
   "Determines the daughter of the new spanning edge being created by
