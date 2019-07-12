@@ -857,6 +857,10 @@ than a bare "to".  |#
                (proper-noun-reduced-relative? e *chunk*)))
      (not (and (boundp '*chunk*)
                (proper-noun-plural-modifier? e *chunk*)))
+     #+ignore ;; this rule is not quite right
+     ;; since we can get "cancer" and "phosphorylation"
+     (not (and (boundp '*chunk*)
+               (singular-common-noun-no-determiner? e *chunk*)))
 
      (not (and (member (edge-cat-name e) '(measurement #|n-fold|#))
                (boundp '*chunk*)
@@ -1092,6 +1096,23 @@ than a bare "to".  |#
                                       '(common-noun/plural)))))
     (push (sentence-string (current-sentence))
           *proper-noun-plural-modifiers*)))
+
+(defparameter *singular-common-noun-no-determiners* nil)
+
+(defun singular-common-noun-no-determiner? (e *chunk* &aux (e-form-name (form-cat-name e)))
+  (declare (special *noun-categories*))
+  (when
+      (and (boundp '*chunk*)
+           (chunk-final-edge? e *chunk*)
+           (member e-form-name '(common-noun))
+           (cdr (chunk-ev-list *chunk*))
+           (not
+            (some-edge-satisfying?
+             (loop for ev in (cdr (chunk-ev-list *chunk*))
+                   append (ev-top-edges ev))
+             #'singular-det)))
+    (push (sentence-string (current-sentence))
+          *singular-common-noun-no-determiners*)))
 
 
 ;;;---------------------
