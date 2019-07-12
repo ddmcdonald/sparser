@@ -79,10 +79,12 @@
 
 ;;;;;; Utility function for getting Sparser clauses, parsing from scratch
 
-(defun sp-clauses (s)
+(defun sp-clauses (s &optional (with-breaks nil))
   (declare (special *save-clause-semantics* *clause-semantics-list*))
   (setq *save-clause-semantics* :sentence-clauses)
-  (qepp s)
+  (if with-breaks
+      (qpp s)
+      (qepp s))
   (when (null (cdr (all-tts)))
     (car *clause-semantics-list*)))
 
