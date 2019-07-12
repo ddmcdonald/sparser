@@ -3,28 +3,38 @@
 ;;; 
 ;;;     File:  "DA"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  January 2019
+;;;  Version:  July 2019
 
 ;; initiated 5/5/95.  Elaborated ..5/19. 11/3/11 added missing trace.
 
 (in-package :sparser)
 
-(defparameter *trace-DA-check* nil)
-
+(defparameter *trace-DA-check* nil) ;; does anything apply?
 (defun trace-da-hook ()
   (setq *trace-DA-check* t))
-
 (defun untrace-da-hook ()
   (setq *trace-DA-check* nil))
 
 ;; useful combination
-(defun da-traces ()
+(defun trace-da-question ()
   (trace-da-hook) (trace-questions) (setq *debug-questions* t))
-(defun da-traces-off ()
+(defun untrace-da-question ()
   (untrace-da-hook) (untrace-questions) (setq *debug-questions* nil))
 
+(defparameter *trace-DA* nil) ;; walking through the trie
+(defun trace-da ()
+  (setq *trace-DA* t))
+(defun untrace-da ()
+  (setq *trace-DA* nil))
+
+(defvar *da-execution* nil) ;; tracking the result
+(defun trace-da-execution ()
+  (setq *da-execution* t))
+(defun untrace-da-execution ()
+  (setq *da-execution* nil))
 
 
+;;---- checking whether pattern applies
 
 (deftrace :beginning-da (starting-point)
   ;; called from consider-debris-analysis
@@ -45,8 +55,6 @@
                (pos-token-index start-pos)
                (pos-token-index end-pos))))
 
-
-
 (deftrace :DA-dispatch (pos-before tt)
   ;; called from Look-for-and-execute-any-DA-pattern
   (when *trace-DA-check*
@@ -58,7 +66,6 @@
   (when *trace-DA-check*
     (trace-msg "[DA check] Resuming treetop walk at p~A"
                (pos-token-index next-pos-to-check))))
-
 
 (deftrace :no-da-pattern-started-by (tt)
   ;; called from Look-for-DA-patterns
@@ -86,16 +93,8 @@
   (when *trace-DA-check*
     (trace-msg "[DA] pattern matched ~a" rule)))
 
-;;;---
 
-(defparameter *trace-DA* nil)
-
-(defun trace-da ()
-  (setq *trace-DA* t))
-
-(defun untrace-da ()
-  (setq *trace-DA* nil))
-
+;;;--- Tracing the walk through the trie
 
 (deftrace :checking-extension-from (vertex tt)
   ;; called from check-for-extension-from-vertex
@@ -112,12 +111,10 @@
     (trace-msg "      It does: ~d match/s"
                (length matches))))
 
-
 (deftrace :da-didnt-match-any-arc ()
   ;; called from Check-for-extension-from-vertex
   (when *trace-DA*
     (trace-msg "      no match against any of the arcs")))
-
 
 (deftrace :next-da-vertex (vertex)
   ;; called from Follow-out-matched-arc
@@ -154,23 +151,25 @@
     (trace-msg "[DA]       They don't match")))
 
 
+;;----- action application
+
 (deftrace :da-executing-action (rule)
-  (when *trace-DA*
+  (when *da-execution*
     (trace-msg "[DA] executing rule on ~a" rule)))
 
 (deftrace :da-applying-fn-to-args (function args)
   ;; Called from standardized-apply-da-function-action
-  (when (or *trace-DA-check* *trace-DA*)
+  (when *da-execution*
     (trace-msg "[DA] applying ~a to ~a" function args)))
 
 (deftrace :da-fn-returned-edge (edge)
   ;; Called from standardized-apply-da-function-action
-  (when (or *trace-DA-check* *trace-DA*)
+  (when *da-execution*
     (trace-msg "[DA]   It returned ~a" edge)))
 
 (deftrace :da-fn-failed ()
   ;; Called from standardized-apply-da-function-action
-  (when (or *trace-DA-check* *trace-DA*)
+  (when *da-execution*
     (trace-msg "[DA]   but it returned nil")))
 
 
@@ -182,7 +181,6 @@
   ;; called from Redefine-da-rule
   (when *trace-DA*
     (trace-msg "[defDA] redefining ~A" rule)))
-
 
 
 (deftrace :rule-varies-known-trie (rule vertex-0)
