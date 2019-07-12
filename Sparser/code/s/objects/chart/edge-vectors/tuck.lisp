@@ -187,6 +187,44 @@
 ;;; respan
 ;;;--------
 
+(defun respan-top-edge (edge new-ref
+                        &key start-pos end-pos category form)
+  "We have just modified the referent of 'edge' and have to
+   create a new edge to carry the mention of this modified
+   referent ('new-ref'). This edge is a topmost edge, so we are
+   just adding a new edge without needing to adjust the threading
+   of daughters as done by respan-edge-for-new-referent.
+      This is similar to what make-predication-edge and its
+   similar functions does except that this is a straight copy
+   of the edge except for its referent"
+  (when (edge-used-in edge)
+    (error "This is not a topmost edge ~a~
+          ~%Use a different tuck function" edge))
+  
+  (let ((start-ev (if start-pos
+                    (pos-starts-here start-pos)
+                    (edge-starts-at edge)))
+        (end-ev (if end-pos
+                  (pos-ends-here end-pos)
+                  (edge-ends-at edge)))
+        (cat-label (if category
+                    category
+                    (edge-category edge)))
+        (form-label (if form
+                      form
+                      (edge-form edge))))
+
+    (make-completed-unary-edge
+     start-ev ; starting-vector
+     end-ev   ; ending-vector
+     'respan-top-edge      ; rule
+     edge                  ; daughter
+     cat-label  ; category
+     form-label ; form
+     new-ref)))         ; referent
+   
+ 
+
 (defun respan-edge-for-new-referent (edge new-ref)
   "We have just modified the referent of one of the edges 
    somewhere inside an already complete edge. This happens
