@@ -1035,7 +1035,9 @@ in cwc-integ/spire/interface/sparser.lisp
                                    thereis (not (member (var-name (car dep))
                                                         '(raw-text items type number))))))
                    (push (edge-mention e) *mentions*)))))
-    *mentions*))
+    (setq *mentions*
+          (append (created-mentions s)
+                  *mentions*))))
 
 (defun remove-collection-item-mentions (mentions)
   (let ((item-refs nil))
