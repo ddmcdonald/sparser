@@ -186,9 +186,10 @@
 ;;;--------
 ;;; respan
 ;;;--------
-
+(defparameter *respan-internal* nil)
 (defun respan-top-edge (edge new-ref
-                        &key start-pos end-pos category form)
+                        &key start-pos end-pos category form
+                             internal)
   "We have just modified the referent of 'edge' and have to
    create a new edge to carry the mention of this modified
    referent ('new-ref'). This edge is a topmost edge, so we are
@@ -198,8 +199,9 @@
    similar functions does except that this is a straight copy
    of the edge except for its referent"
   (when (edge-used-in edge)
-    (error "This is not a topmost edge ~a~
-          ~%Use a different tuck function" edge))
+    (unless internal
+      (error "This is not a topmost edge ~a~
+            ~%Use a different tuck function" edge)))
   
   (let ((start-ev (if start-pos
                     (pos-starts-here start-pos)
@@ -212,8 +214,10 @@
                     (edge-category edge)))
         (form-label (if form
                       form
-                      (edge-form edge))))
-
+                      (edge-form edge)))
+        (*respan-internal* internal))
+    (declare (special  *respan-internal*))
+    ;; This SPECIAL is to turn off resetting the mention on the subsumed edge
     (make-completed-unary-edge
      start-ev ; starting-vector
      end-ev   ; ending-vector
