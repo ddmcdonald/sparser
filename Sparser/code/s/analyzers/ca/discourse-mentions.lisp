@@ -402,12 +402,16 @@
         (setf (non-dli-mod-for i) nil))
       (unless (eq (edge-form source) category::prepositional-phrase)
         (pushnew m (gethash category *maximal-lattice-mentions-in-paragraph*))))
+    (when (current-sentence)
+      (setf (sentence-mentions (contents (current-sentence)))
+            (cons m (sentence-mentions (contents (current-sentence))))))
     m))
 
 (defparameter *dont-check-dependencies* nil)
 
 (defun update-subsumed-mention (subsumed-mention i edge
                                 &optional dont-check-dependencies)
+  (declare (special *respan-internal*))
   (let* ((*dont-check-dependencies* dont-check-dependencies)
          (source-edge (mention-source subsumed-mention))
          ;; Q. why do we ignore the source-edge?
@@ -422,7 +426,8 @@
                                   non-source-edges
                                   i
                                   (edge-referent source-edge)))
-      (unless *in-update-mention-dependencies*
+      (unless (or *in-update-mention-dependencies*
+                  *respan-internal*)
         ;; unless we are simply revising the existing dependency in place
         ;; remove mention from old edge
         (setf (edge-mention source-edge) t))
@@ -613,24 +618,22 @@
   (declare (special top-edge category::prepositional-phrase category::protein-family))
   (cond ((and b (eq (pname (binding-variable b)) 'items))
          (find-binding-dependencies-for-items value edges top-edge))
+        ((and b (eq (pname (binding-variable b)) 'has-determiner))
+         value)
         ((and (individual-p top-ref)
-              (current-script :biology)
-              (itypep top-ref category::protein-family)
-              b
-              (member (pname (binding-variable b))
-                      '(family-members uid name count)))
-         nil)
-        ((and (individual-p top-ref)
-              (itypep top-ref 'relativized-prepositional-phrase))
-         nil)
-        ((and (individual-p value) ;; guard against that-rel = t binding
-              (itypep value 'comparative-attribution))
-         ;; e.g. "longer periods" -- the comparative is constructed whole cloth -- DAVID
-         nil)
-        ((and (individual-p value)
-              (itypep value category::prepositional-phrase))
-         ;; NEED TO WORK WITH DAVID HERE
-         ;; "Only in conditions where RAS is constitutively active "
+              (or
+               (and (current-script :biology)
+                    (itypep top-ref category::protein-family)
+                    b
+                    (member (pname (binding-variable b))
+                            '(family-members uid name count)))
+               (itypep top-ref 'relativized-prepositional-phrase))
+              ;; guard against that-rel = t binding
+              (itypep value 'comparative-attribution)
+              ;; e.g. "longer periods" -- the comparative is constructed whole cloth -- DAVID
+              (itypep value category::prepositional-phrase)
+              ;; "Only in conditions where RAS is constitutively active "
+              ) ;; NEED TO WORK WITH DAVID HERE
          nil)
         ((lambda-variable-p value)
          nil)
@@ -639,23 +642,39 @@
            (when (typep wh-mention 'discourse-mention)
              (mention-source wh-mention))))
         (t
-         (or (loop for edge in edges
-                   as ref-edge = (find-dependent-edge edge)
-                   as ref = (when ref-edge (edge-referent ref-edge))
-                   when (and ref (dli-eq? ref value))
-                   do (return ref-edge))
-             ;; last-ditch effort caused by change in interpretation of
-             ;;  a previously ambiguous variable, which causes the
-             ;;  subsumed-mention to be missed
-             (loop for edge in edges
-                   as ee = (and (typep (edge-mention edge) 'discourse-mention)
-                                (loop for d in (dependencies (edge-mention edge))
-                                      when (and (typep (second d) 'discourse-mention)
-                                                (dli-eq? value (base-description (second d))))
-                                      do (return (mention-source (second d)))))
-                   do (when ee (return ee)))
-             (when b
-               (check-plausible-missing-edge-for-dependency b top-edge))))))
+         ;;new code
+         (or
+          (find-binding-dependency-in-sentence-mentions value)
+          
+                                           
+          (loop for edge in edges
+                as ref-edge = (find-dependent-edge edge)
+                as ref = (when ref-edge (edge-referent ref-edge))
+                when (and ref (dli-eq? ref value))
+                do (return ref-edge))
+          ;; last-ditch effort caused by change in interpretation of
+          ;;  a previously ambiguous variable, which causes the
+          ;;  subsumed-mention to be missed
+          (loop for edge in edges
+                as ee = (and (typep (edge-mention edge) 'discourse-mention)
+                             (loop for d in (dependencies (edge-mention edge))
+                                   when (and (typep (second d) 'discourse-mention)
+                                             (dli-eq? value (base-description (second d))))
+                                   do (return (mention-source (second d)))))
+                do (when ee (return ee)))
+          (when b
+            (check-plausible-missing-edge-for-dependency b top-edge))))))
+
+(defun find-binding-dependency-in-sentence-mentions (value)
+  (loop for m in (sentence-mentions (current-sentence))
+        ;; we sometimes create referents that do not correspond to combining
+        ;;  contiguous edges in the chart, and for which it is difficult to
+        ;;  create a meaningful edge (e.g. for questions and for
+        ;;  PPs created from null NPs in relative clauses)
+        ;; All mentions are now recorded in the sentence, whether or not
+        ;;  they have edges, and thus can be found in this fashion.
+        when (eq value (base-description m))
+        do (return m)))
 
 
 (defun find-mention-for-wh-element (*wh-element* top-edge)
@@ -715,7 +734,8 @@ so we return the edge for the POBJ"
  ;;sp-break "cdp")
   `(,(binding-variable b) ;; dependency-pair-variable
      ;; dependency-pair-value
-     ,(cond ((consp e) e)
+     ,(cond ((typep e 'discourse-mention) e)
+            ((consp e) e)
             ((or (null e)
                  (member (pname (binding-variable b))
                          '(has-determiner
