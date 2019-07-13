@@ -82,49 +82,47 @@
     respanning-edge))
 
 
-;;/// need an exemplar
+;; Called from make-this-a-question-if-appropriate
 (defun sort-out-incompletely-parsed-there-is-q (start-pos end-pos edges)
-  (if *debug-questions*
-    (error "incomplete there-is question: ~a" edges)
-    (warn "Incomplete there-is question: ~s"
-          (string-of-words-between start-pos end-pos))))
-   #+ignore (let ((e (make-edge-over-long-span
-              start-pos end-pos
-              (itype-of i)
-              :rule 'make-polar-there-question
-              :form category::s ;;question
-              :referent q
-              :constituents edges))) )
+  (tr :wh-walk 'sort-out-incompletely-parsed-there-is-q)
+  (let ((labels (loop for e in edges collect (edge-cat-name e))))
+    (cond
+      ((equal labels '(there-exists-copular-pp))
+       ;; "Are there any genes stat3 is upstream of?", where make-copular-pp
+       ;; sorts everything out ///given it's expunged gate.
+       (when *debug-questions*       
+         (break "how do we make long edge?")))
+      (t
+       (if *debug-questions*
+         (error "incomplete there-is question. Labels = ~a" labels)
+         (warn "Incomplete there-is question: ~s"
+               (string-of-words-between start-pos end-pos)))))))
 
-;; DA: there-s-prep
+
+
+;;//// actually pattern is [ s s preposition ]
+;; DA: there-s-prep  "Are there any genes stat3 is upstream of?"
+;;         chunking:  are there [any genes ][stat3 ][is ][upstream ]of
 (defun there-question/stranded-prep (is-there-edge s-edge prep-edge start-pos end-pos)
   "The there-exists instance is already in place on the is-there edge.
    Putting the complement of the preposition back together is an
    independent problem. That whole expression becomes the 'value'
    of the there-exists."
-  ;; "Are there any genes stat3 is upstream of?"
   (tr :wh-walk "there-question/stranded-prep")
-  #|chunking:  are there [any genes ][stat3 ][is ][upstream ]of
-|#
-  ;; the constituent we need to move to the prep is buried in
-  ;; the s-edge. Assume it's the first on, and check that the vp after it
-  ;; is a copula. though that should generalize.
   (let* ((there-ref (edge-referent is-there-edge))
          (s-ref (edge-referent s-edge))
+         (focus-edge (edge-right-daughter is-there-edge)) ;;/// check
+         (focus (value-of 'value there-ref)) ;; "any genes"
+         (pp-edge (flesh-out-stranded-prep prep-edge focus-edge)))
+    
+    (let ((rule (multiply-edges s-edge pp-edge))) ; e.g. be+pp for copular pp
+      ;;/// looking at the type of the s-ref might guide us to the choice of rule.
+      (when rule
+        (let ((statement-edge (make-completed-binary-edge
+                               s-edge pp-edge rule)))
+          ;;///  Now wrap in a question
+          statement-edge)))))
          
-         (focus (value-of 'value there-ref)) ; "any genes"
-;;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx
-
-)))
-         
-         
-(defun polar-stranded-preposition (aux-edge main-edge prep-edge)
-  ;; "Can you find any apoptotic pathways that stat3 is involved in?"
-  (when *debug-questions*
-    (push-debug `(,aux-edge ,main-edge ,prep-edge))
-    (break "Substantial refactoring require to find equivalent of the 'item' ~
-      that wh-stranded-prep uses for its prepositional complement")))
-
 
 
 (defun da/preposed+s (aux-edge s-edge)
@@ -527,9 +525,48 @@
   ;; 2. Fold the preposed-aux into the s/head
   ;; 3. Figure out where in the fringe of the s the pp goes and put it there
   ;; 4. Make an edge to cover the whole span
-  (when *debug-questions*
+  (when *debug-questions* ;; aux: 2 s: 27 p: 15
     (push-debug `(,aux-edge ,s-edge ,prep-edge))
     (break "got there")))
+
+;;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+(defun polar-stranded-preposition (aux-edge main-edge prep-edge)
+  ;; "Can you find any apoptotic pathways that stat3 is involved in?"
+  (when *debug-questions*
+    (push-debug `(,aux-edge ,main-edge ,prep-edge))
+    (break "Substantial refactoring require to find equivalent of the 'item' ~
+      that wh-stranded-prep uses for its prepositional complement")))
+
+
+
+(defun flesh-out-stranded-prep (prep-edge displaced-pobj-edge)
+  "Makes a pp when we have a stranded preposition but have determined what 
+   np complement it should have"
+  (let ((pp-rule (multiply-edges prep-edge displaced-pobj-edge)))
+    (unless pp-rule
+      (warn "no rule for prep+np~%  ~a  +  ~a"  prep-edge displaced-pobj-edge)
+      nil)
+    (when pp-rule
+      (let* ((displaced-pobj (edge-referent displaced-pobj-edge))
+             (pp-rule-category (cfr-category pp-rule))
+             (pp-category (etypecase pp-rule-category
+                            (category pp-rule-category)
+                            (symbol
+                             (if (eq :syntactic-form pp-rule-category) ;; form rule
+                               (cfr-form pp-rule)
+                               (error "Category of ~a is an unrecognized symbol" pp-rule)))))
+             (preposition (edge-left-daughter prep-edge))
+             (pp-ref (make-pp (edge-referent prep-edge) displaced-pobj)))
+        (make-chart-edge
+         :category pp-category
+         :form (cfr-form pp-rule)
+         :rule pp-rule
+         :referent pp-ref
+         :starting-position (pos-edge-starts-at prep-edge)
+         :ending-position (pos-edge-ends-at prep-edge)
+         :left-daughter prep-edge
+         :right-daughter displaced-pobj-edge
+         :ignore-used-in t)))))
 
 #|
 (p/s "What tissues can I ask about?") ;; da: wh-three-edges ?? /////
@@ -554,30 +591,9 @@
   (tr :wh-walk 'wh-stranded-prep)
   
   ;; make the edge over the prep+item
-  (let ((pp-rule (multiply-edges prep-edge wh-edge)))
-    (unless pp-rule (error "no rule for prep+np~
-                         ~%  ~a  +  ~a"  prep-edge wh-edge))
-    (let* ((wh-item (edge-referent wh-edge))
-           (pp-rule-category (cfr-category pp-rule))
-           (pp-category (etypecase pp-rule-category
-                          (category pp-rule-category)
-                          (symbol
-                           (if (eq :syntactic-form pp-rule-category) ;; form rule
-                             (cfr-form pp-rule)
-                             (error "Category of ~a is an unrecognized symbol" pp-rule)))))
-           (preposition (edge-left-daughter prep-edge))
-           (pp-ref (make-pp (edge-referent prep-edge) wh-item))
-           (pp-edge (make-chart-edge
-                     :category pp-category
-                     :form (cfr-form pp-rule)
-                     :rule pp-rule
-                     :referent pp-ref
-                     :starting-position (pos-edge-starts-at prep-edge)
-                     :ending-position (pos-edge-ends-at prep-edge)
-                     :left-daughter prep-edge
-                     :right-daughter wh-edge
-                     :ignore-used-in t)))
 
+  (let ((pp-edge (flesh-out-stranded-prep prep-edge wh-edge)))
+    (when pp-edge
       ;; two cases -- regular subcategorization by a head and copulas
       (let* ((main-ref (edge-referent main-edge))
              (fringe-edges (right-fringe main-edge)) ;; largest to smallest
@@ -585,6 +601,8 @@
                            when (takes-preposition? edge prep-edge)
                            return edge))
              (predicate (when head-edge (edge-referent head-edge)))
+             (preposition (get-word-for-prep (value-of 'prep (edge-referent pp-edge))))
+             (wh-item (value-of 'pobj (edge-referent pp-edge)))
              (variable (when head-edge (subcategorized-variable
                                         predicate preposition wh-item))))      
         (cond
@@ -603,6 +621,7 @@
            (wh-subcat-stranded-prep main-edge head-edge pp-edge  start-pos end-pos))
           (t (when *debug-questions*
                (error "Fell through cond in wh-stranded-prep"))))))))
+
 
 (defun wh-subcat-stranded-prep (main-edge head-edge pp-edge start-pos end-pos)
   (tr :wh-walk 'wh-subcat-stranded-prep)
@@ -741,6 +760,13 @@
                      (i (rebind-variable 'value new-np copular-pp))
                      (j (bind-variable 'item np i)))
                 (tr :stranded-copular-pp j)
+
+                ;; This makes the edge for the revised referent but
+                ;; it's not in the tree. An alternative could be to do the work
+                ;; to put it in the tree as grammatical subject just to the left
+                ;; of the vp.
+                (respan-top-edge focal-np-edge new-np :internal t)
+
                 (respan-top-edge copular-pp-edge j
                                  :start-pos start-pos
                                  ;; end-pos is ok?
