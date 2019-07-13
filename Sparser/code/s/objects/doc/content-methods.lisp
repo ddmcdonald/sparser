@@ -611,8 +611,8 @@ is a case in handle-any-anaphor
    (initial-wh :initform nil :accessor initial-wh
     :documentation "Records instances of the edge over a 'wh-marker'
       that's done during WH questions.")
-   (created-mentions :initform nil :accessor created-mentions
-    :documentation "Records instances mentions that are created without edges, e.g. for preposed POBJs"))
+   (sentence-mentions :initform nil :accessor sentence-mentions
+    :documentation "all mentions created within the sentence"))
   
   (:documentation "Each field is a kind of phenomena that
     we can't make a decision about. The simplest thing to
@@ -730,8 +730,8 @@ is a case in handle-any-anaphor
 (defmethod pending-partitives ((s sentence))
   (pending-partitive-references (contents s)))
 
-(defmethod created-mentions ((s sentence))
-  (created-mentions (contents s)))
+(defmethod sentence-mentions ((s sentence))
+  (sentence-mentions (contents s)))
 
 ;;;-------------------
 ;;; table of contents
