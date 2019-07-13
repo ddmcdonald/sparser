@@ -144,6 +144,11 @@
      :form (edge-form s-edge) ;; category::question
      :referent q)))
 
+(defun polar-copula-question-object ()
+  "A dummy so that we can find thefunction that creates an edge with that rule-name")
+
+(defun polar-copula-question-subject ()
+  "A dummy so that we can find thefunction that creates an edge with that rule-name")
 
 (defun make-polar-copular-question (start-pos end-pos edges)
   "Construct an instance of 'be' by directly invoking the rules"
@@ -659,11 +664,73 @@
                vg-edge focal-np-edge))
       (return-from wh-copula-stranded-prep nil))
 
-    (let* ((copular-pp-rule (multiply-edges main-edge pp-edge)))
+    (let* ((copular-pp-rule (multiply-edges vg-edge pp-edge)))
+      ;; N.b. resulting edge will -not- include the focal-np. It was parsed
+      ;; as a direct object even though in a question like this is subject
       (cond
         (copular-pp-rule
          (let ((copular-pp-edge (make-completed-binary-edge
-                                 main-edge pp-edge copular-pp-rule))
+                                 vg-edge pp-edge copular-pp-rule))
+               (var (subcategorized-variable np prep pobj)))
+           ;; open-coding test-and-apply-simple-copula-pp since 
+           ;; we're not in a normal rule-application content
+           (cond
+             (var ;; value, prep, and predicate are bound
+              (let* ((copular-pp (edge-referent copular-pp-edge))
+                     (new-np (bind-variable var pobj np))
+                     (i (rebind-variable 'value new-np copular-pp))
+                     (j (bind-variable 'item np i)))
+                (tr :stranded-copular-pp j)
+
+                ;; This makes the edge for the revised referent but
+                ;; it's not in the tree. An alternative could be to do the work
+                ;; to put it in the tree as grammatical subject just to the left
+                ;; of the vp.
+                (respan-top-edge focal-np-edge new-np :internal t)
+                (respan-top-edge copular-pp-edge j
+                                 :start-pos start-pos
+                                 ;; end-pos is ok?
+                                 :form category::s)))
+             
+             (t ;; we could make the copular-pp edge but the focal np
+              ;; doesn't take the preposition so we make a simpler
+              ;; predication object without the cross-threading
+              (tr :stranded-copular/no-var np prep pobj)
+              nil
+              #+ignore(vanilla)))))
+        
+        (t ;; the main edge and pp-edge can't compose
+         (tr :stranded-copular/no-rule vg-edge pp-edge)
+         nil
+         #+ignore(vanilla))))))
+
+
+#+ignore
+(defun wh-copula-stranded-prep (main-edge pp-edge start-pos end-pos)
+  "Separate out the main edge (just after the wh-element and ending before
+   the preposition) to get a predicate and a focused item for the copular
+   predication. We know the main-edge is copular because that was the gate
+   that got us here."
+  (tr :wh-walk 'wh-copula-stranded-prep)
+  (let* ((vg-edge (edge-left-daughter main-edge))
+         (focal-np-edge (edge-right-daughter main-edge))
+         (np (edge-referent focal-np-edge))
+         (pp-ref (edge-referent pp-edge))
+         (prep (get-word-for-prep (value-of 'prep pp-ref)))
+         (pobj (value-of 'pobj pp-ref)))
+    
+    (unless (and (vg-category? vg-edge)
+                 (np-category? focal-np-edge))
+      (when *debug-questions*
+        (break "New case in copula-stranded-prep: vg = ~a~%np = ~a"
+               vg-edge focal-np-edge))
+      (return-from wh-copula-stranded-prep nil))
+
+    (let* ((copular-pp-rule (multiply-edges vg-edge pp-edge)))
+      (cond
+        (copular-pp-rule
+         (let ((copular-pp-edge (make-completed-binary-edge
+                                 vg-edge pp-edge copular-pp-rule))
                (var (subcategorized-variable np prep pobj)))
            ;; open-coding test-and-apply-simple-copula-pp since 
            ;; we're not in a normal rule-application content
@@ -683,10 +750,12 @@
               ;; doesn't take the preposition so we make a simpler
               ;; predication object without the cross-threading
               (tr :stranded-copular/no-var np prep pobj)
+              nil
               #+ignore(vanilla)))))
         
         (t ;; the main edge and pp-edge can't compose
          (tr :stranded-copular/no-rule vg-edge pp-edge)
+         nil
          #+ignore(vanilla))))))
 
 #| Should we do something for the other two cases?
