@@ -1017,6 +1017,14 @@ in cwc-integ/spire/interface/sparser.lisp
           do (traverse-edges-below ee fn))))
 
 
+(defun get-mentions (&optional (s (current-sentence)))
+  (sort (remove-duplicates
+         (or (sentence-mentions s)
+            (mentions-in-sentence-edges s)))
+        #'>
+        :key #'mention-uid))
+        
+  
 (defun mentions-in-sentence-edges (s)
   (let ((*mentions* nil))
     (declare (special *mentions*))
@@ -1036,8 +1044,12 @@ in cwc-integ/spire/interface/sparser.lisp
                                                         '(raw-text items type number))))))
                    (push (edge-mention e) *mentions*)))))
     (setq *mentions*
-          (append (created-mentions s)
-                  *mentions*))))
+          (sort
+           (remove-duplicates
+            (append (sentence-mentions s)
+                    *mentions*))
+           #'>
+           :key #'mention-uid))))
 
 (defun remove-collection-item-mentions (mentions)
   (let ((item-refs nil))
