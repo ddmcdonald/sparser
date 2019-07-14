@@ -434,7 +434,7 @@
       ;; (format t "sentence: ~a~%  ~a treetops" sentence tt-count)
       (set-entities sentence entities)
       (set-relations sentence relations)
-      (set-mentions sentence)
+      ;;(set-mentions sentence)
       (set-tt-count sentence tt-count))))
 
 
@@ -451,9 +451,7 @@
 ;; collect the non-trivial mentions in a sentence, to allow for checking if the sentence
 ;; semantics drops pieces of meaning
 (defun semantic-mentions-in-current-sentence ()
-  (loop for m in (mentions-in-sentence-edges (current-sentence))
-        unless (member (cat-name (edge-form (mention-source m)) )'(pp preposition s))
-        collect m))
+  (sentence-mentions (current-sentence)))
 
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article*

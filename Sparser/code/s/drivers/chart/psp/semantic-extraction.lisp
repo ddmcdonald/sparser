@@ -1018,38 +1018,13 @@ in cwc-integ/spire/interface/sparser.lisp
 
 
 (defun get-mentions (&optional (s (current-sentence)))
-  (sort (remove-duplicates
-         (or (sentence-mentions s)
-            (mentions-in-sentence-edges s)))
+  (sort (remove-duplicates (sentence-mentions s))
         #'>
         :key #'mention-uid))
         
   
 (defun mentions-in-sentence-edges (s)
-  (let ((*mentions* nil))
-    (declare (special *mentions*))
-    (loop for tt in (all-tts (starts-at-pos s) (ends-at-pos s))
-          when (and (edge-p tt)
-                    (not (eq (cat-name (edge-category tt)) 'bio-entity)))
-          do
-            (traverse-edges-below
-             tt
-             #'(lambda (e)
-                 (when (and (edge-p e)
-                            (typep (edge-mention e) 'discourse-mention)
-                            (or
-                             (not (itypep (edge-mention e) 'collection))
-                             (loop for dep in (dependencies (edge-mention e))
-                                   thereis (not (member (var-name (car dep))
-                                                        '(raw-text items type number))))))
-                   (push (edge-mention e) *mentions*)))))
-    (setq *mentions*
-          (sort
-           (remove-duplicates
-            (append (sentence-mentions s)
-                    *mentions*))
-           #'>
-           :key #'mention-uid))))
+  (sentence-mentions s))
 
 (defun remove-collection-item-mentions (mentions)
   (let ((item-refs nil))
