@@ -12,6 +12,7 @@
 ;;--- plurality
 
 (define-mixin-category plural
+  :specializes linguistic
   :binds ((items :primitive list)
           (number :primitive integer)))
 
