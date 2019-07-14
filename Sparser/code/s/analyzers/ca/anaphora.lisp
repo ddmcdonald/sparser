@@ -123,7 +123,9 @@
 	      (update-discourse-history instantiates
 					obj edge)
 	      (dolist (category other-categories)
-		(when category
+		(when (and category
+                           (not (and (mixin-category-p category)
+                                     (itypep category 'linguistic)))) ;; e.g. plural
 		  ;; there's a Nil in the list sometimes
 		  (update-category-discourse-history 
 		   category obj edge))))
