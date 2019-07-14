@@ -159,11 +159,7 @@
         (definite-determiner? (value-of 'has-determiner (edge-referent e))))))
 
 (defmethod definite-np? ((m discourse-mention))
-  (or
-   (loop for ndli in (mention-non-dli-modifiers m)
-         thereis (and (eq (car ndli) 'determiner)
-                      (definite-determiner? (second ndli))))
-   (definite-np? (mention-source m))))
+   (definite-np? (mention-source m)))
 
 
 (defmethod indefinite-np? ((e edge))
@@ -172,11 +168,7 @@
            (indefinite-determiner? (value-of 'has-determiner (edge-referent e))))))
 
 (defmethod indefinite-np? ((m discourse-mention))
-  (or
-   (loop for ndli in (mention-non-dli-modifiers m)
-         thereis (and (eq (car ndli) 'determiner)
-                      (indefinite-determiner? (second ndli))))
-   (indefinite-np? (mention-source m))))
+   (indefinite-np? (mention-source m)))
 
 
                      
