@@ -81,11 +81,7 @@
    (ci :accessor contextual-description
        :documentation "Backpointer to the individual which is the contextually revised description")
    (restriction :accessor mention-restriction)
-   (non-dli-modifiers :accessor mention-non-dli-modifiers :initform nil
-       :documentation "the determiner of a NP -- not included in the interpretation 
-               of the NP when discourse-mentions are used")
    (source :accessor mention-source)
-   (maximal :accessor maximal? :initform :unknown)
    (dependencies :initform nil :accessor dependencies)
    (location-in-paragraph :accessor mentioned-where
                           :documentation "An encoding of the location at which
@@ -98,13 +94,7 @@
      as an article, this encodes the location of the sentence that
      the mention is part of in the style of table-of-contents label.
      6/8/16 changed value to a cons of the ToC string and the current
-     paragraph. See make-mention")
-   (subsumes :initform nil :accessor subsumes-mention
-             :documentation "If the edge for this mention extends
-     the edge of the previous mention (i.e. we're walking
-     up a head line), then this points to that mention.")
-   (subsumed-by :initform nil :accessor subsumed-by-mention
-                :documentation "Inverse of subsumes"))
+     paragraph. See make-mention"))
   (:documentation "Records a location in the text where 
    a particular description lattice individuals has been
    mentioned. Each different location corresponds to a
@@ -166,7 +156,7 @@
   (loop for h in *hal*
         collect
           `(,(car h)
-             ,@(loop for m in (cdr h) when (is-maximal? m)
+             ,@(loop for m in (cdr h) 
                      collect (show-mention m)))))
 
 
@@ -397,12 +387,10 @@
     (when (edge-p source)
       (pushnew m *lattice-individuals-mentioned-in-paragraph*)
       (when category (pushnew m (discourse-entry category)))
-      (when (non-dli-mod-for i)
-        (pushnew (non-dli-mod-for i) (mention-non-dli-modifiers m))
-        (setf (non-dli-mod-for i) nil))
       (unless (eq (edge-form source) category::prepositional-phrase)
         (pushnew m (gethash category *maximal-lattice-mentions-in-paragraph*))))
-    (when (current-sentence)
+    (when (and (current-sentence)
+               (not (member m (sentence-mentions (contents (current-sentence))))))
       (setf (sentence-mentions (contents (current-sentence)))
             (cons m (sentence-mentions (contents (current-sentence))))))
     m))
@@ -910,18 +898,6 @@ so we return the edge for the POBJ"
    ))
 
 
-
-
-(defun update-non-dli-modifiers (m subsumed-mention i)
-  "For the description lattice, some modifiers like determiners and quantifiers are not stored as variables on the individual, but are stored on the mention"
-  (setf (mention-non-dli-modifiers m)
-	(mention-non-dli-modifiers subsumed-mention))
-  (when (non-dli-mod-for i)
-    (pushnew (non-dli-mod-for i) (mention-non-dli-modifiers m))
-    (setf (non-dli-mod-for i) nil)))
-
-
-
 (defmethod encode-mention-location (edge)
   "Encodes the location of a mention in terms of the two positions
    that span the individual, i.e. the ends of the edge that added it."
@@ -965,26 +941,6 @@ so we return the edge for the POBJ"
     (loop for m in mentions
           when (eq (start-pos m) start-pos) return m)))
 
-;;; About to be OBE
-;; since we are now (in the process of)
-;;  only maintaining mentions for maximal projections. Still a work in progress as of 12/30/2016,
-;; But soon will be done.
-(defmethod is-maximal? ((m discourse-mention))
-  (when (and (eq (maximal? m) :unknown)
-	     (mention-source m))
-    (setf (maximal? m)
-	  (cond
-	    ((cat-mention? m 'thatcomp)
-	     nil)
-	    ((cat-mention? m 's)
-	     ;; don't want to get ssuper-maximal S edges that include relative clauses or premodifying contextual
-	     ;; PPs as in
-	     ;; "In untreated cells, EGFR is phosphorylated at T669 by MEK/ERK, which inhibits activation of EGFR and ERBB3"
-	     ;; just want EGFR is phosphorylated at T669 by MEK/ERK
-	     (or (not (subsumes-mention m))
-		 (not (cat-mention? (subsumes-mention m) 's))))
-	    (t (max-edge? (mention-source m))))))
-  (maximal? m))
 
 (defun max-edge? (source)
   (declare (special source *all-np-categories* *vp-categories*))
