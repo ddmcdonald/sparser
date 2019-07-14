@@ -79,7 +79,9 @@
 
 ;;;;;; Utility function for getting Sparser clauses, parsing from scratch
 
-(defun sp-clauses (s &optional (with-breaks nil))
+(defparameter *break-in-sp-clauses* nil)
+
+(defun sp-clauses (s &optional (with-breaks *break-in-sp-clauses*))
   (declare (special *save-clause-semantics* *clause-semantics-list*))
   (setq *save-clause-semantics* :sentence-clauses)
   (if with-breaks
@@ -103,7 +105,7 @@
     (setq cs (reverse cs))
     ))
 
-(defun mention-clause-tree (m)
+(defun mention-clause-tree (m &optional parent-mention)
   (typecase m 
     (discourse-mention
      `(:var ,(make-clause-var (mention-uid m))
@@ -114,17 +116,18 @@
                   `(,(intern (pname (pname (dependency-variable d)))
                              :keyword)
                      ,(cond ((eq (dependency-value d) '*lambda-var*)
-                             (loop for mention in (all-mentions)
-                                   when (loop for d2 in (dependencies mention)
-                                              thereis (and (eq (var-name (dependency-variable d2))
-                                                               'PREDICATION)
-                                                           (eq (dependency-value d2)
-                                                               m)))
-                                   do (return (make-clause-var (mention-uid mention)))))
+                             (if parent-mention
+                                 (make-clause-var (mention-uid parent-mention))
+                                 (loop for mention in (all-mentions)
+                                       when (loop for d2 in (dependencies mention)
+                                                  thereis (and (eq (var-name (dependency-variable d2))
+                                                                   'PREDICATION)
+                                                               (eq (dependency-value d2) m)))
+                                       do (return (make-clause-var (mention-uid mention))))))
                             ((consp (dependency-value d))
-                             (mapcar #'mention-clause-tree (dependency-value d)))
+                             (mapcar #'mention-clause-tree (dependency-value d) ))
                             (t
-                             (mention-clause-tree (dependency-value d))))))))
+                             (mention-clause-tree (dependency-value d) m)))))))
     (t m)))
 
 (defun sentence-clause-tree ()
