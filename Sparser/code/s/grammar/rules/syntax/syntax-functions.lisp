@@ -481,20 +481,6 @@ val-pred-var (pred vs modifier - left or right?)
 ;;; see operations in create-discourse-mention and extend-discourse-mention
 
 
-(defparameter *determiners-in-DL* t
-  "put the determiner in the description, not in the mention")
-
-(defparameter *non-dli-mod-ht* (make-hash-table)
-  "Holds determiners for NPs until they are put in
-   the discourse mention")
-
-(defun non-dli-mod-for (i)
-  (gethash i *non-dli-mod-ht*))
-
-(defun (setf non-dli-mod-for) (det i)
-  (setf (gethash i *non-dli-mod-ht*) det))
-
-
 ;;;-----------------------------
 ;;; enabling k-methods (or not)
 ;;;-----------------------------
@@ -719,10 +705,7 @@ val-pred-var (pred vs modifier - left or right?)
             (let ((pobj-ref
                    (individual-for-ref (edge-referent right-daughter))))
               (revise-parent-edge :category (itype-of pobj-ref))
-              (if *determiners-in-DL* 
-                (setq pobj-ref (bind-variable 'quantifier quantifier pobj-ref))
-                (add-pending-partitive quantifier (parent-edge-for-referent)
-                                       *sentence-in-core*))
+              (setq pobj-ref (bind-variable 'quantifier quantifier pobj-ref))
               pobj-ref))))))))
 
 (defun create-partitive-wh-relativizer (quantifier of-pp)
@@ -745,8 +728,7 @@ val-pred-var (pred vs modifier - left or right?)
 (define-lambda-variable 'is-plural nil 'top)
 
 (defun determiner-noun (determiner head)
-  "Depending on the value of *determiners-in-DL* either bind the determiner
-   to a variable or stash it by calling add-def-ref and handle it later"
+  "bind the determiner to a variable (no longer stash it in mention)"
   (or *subcat-test*
       (let* ((parent-edge (parent-edge-for-referent))
 	     (det-edge (left-edge-for-referent))
@@ -763,15 +745,11 @@ val-pred-var (pred vs modifier - left or right?)
 	(unless (determiner? det-word) ;; anticipated cases
 	  (pushnew determiner *dets-seen*))
         
-	(setf (non-dli-mod-for head) (list 'determiner determiner))
         (when (definite-determiner? determiner)
           (add-def-ref determiner parent-edge))
-
-        ;;(when (wh-determiner? determiner) (break "wh det"))
         
 	(cond
-          ((and *determiners-in-DL*
-                (or (individual-p head) (category-p head)))
+          ((or (individual-p head) (category-p head))
            (setq head (bind-dli-variable 'has-determiner determiner head))
            (when (eq (edge-category head-edge) category::common-noun/plural)
              (setq head (bind-variable 'is-plural determiner head)))))
@@ -839,9 +817,6 @@ val-pred-var (pred vs modifier - left or right?)
                     biological time-kind determiner)))
     (t
      (setq head (individual-for-ref head))
-     #+ignore(when (and *determiners-in-DL*
-                (or (individual-p head) (category-p head)))
-       (setq head (bind-dli-variable 'quantifier quantifier head)))
      (cond
        ((itypep quantifier 'no) ;; special handling for negation
         (setq head (bind-dli-variable 'negation quantifier head)))
@@ -853,9 +828,7 @@ val-pred-var (pred vs modifier - left or right?)
          (itypep head 'quality) ;; we quantify qualities "some level"
          (itypep head 'biological) ;; we quantify things like "such models"
          (itypep head 'time-kind)) ;; we quanitfy things like "some time"
-        (if *determiners-in-DL*
-          (setq head (bind-dli-variable 'quantifier quantifier head))
-          (setf  (non-dli-mod-for head) (list 'quantifier quantifier))))
+        (setq head (bind-dli-variable 'quantifier quantifier head)))
        ((itypep head 'determiner) ;; "all these" (via syntactic rule)
         (setq head (bind-dli-variable 'quantifier quantifier head)))
        (t
@@ -879,10 +852,7 @@ val-pred-var (pred vs modifier - left or right?)
                         (not (itypep head 'year)))) ;; "December 4 2017"
     (t
      (setq head (individual-for-ref head))
-     (when (itypep head 'endurant) ;; ~600 kinase
-       (setf (non-dli-mod-for head) (list 'number number)))
-     (when (and *determiners-in-DL*
-                (or (individual-p head )(category-p head)))
+     (when (or (individual-p head )(category-p head))
        (setq head (bind-dli-variable 'number number head)))
      head)))
 
