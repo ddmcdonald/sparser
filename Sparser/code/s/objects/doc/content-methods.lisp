@@ -446,7 +446,7 @@
 (defparameter *reset-sent-mentions* nil)
 
 (defmethod get-mentions ((s sentence))
-  (gethash s *mentions-in-sentence*))
+  (sentence-mentions s))
 
 (defmethod set-mentions ((s sentence))
   (let ((s-toc-ind (toc-index s))
