@@ -1148,7 +1148,8 @@
           (in-pathway pathway)
           (in-family protein-family))
   :restrict ((context (:or bio-mechanism ;; for pathways -- they are context, not manner
-                           experiment-data)))
+                           experiment-data
+                           experimental-system)))
   :mixins (  reactome-category  in-ras2-model )
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
