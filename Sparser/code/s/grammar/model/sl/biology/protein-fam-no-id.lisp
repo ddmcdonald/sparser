@@ -377,7 +377,7 @@
 ;(def-family "phosphoinositide-3-kinase" :members ("UP:O75747" "UP:P42336" "UP:Q8NEB9" "UP:Q8WYR1")) 
 (def-family "pol protein" :members ("UP:A4ZJ37" "UP:B7TEU4" "UP:B7TEZ7" "UP:G3FA30" "UP:G3FA67" "UP:G3GCR0" "UP:G3GCV8" "UP:Q5G4B7" "UP:Q9WJJ2")) 
 (def-family "poly(ADP–ribose)" :members ("PARP1_HUMAN" "PARP2_HUMAN" "PARP3_HUMAN")) 
-(def-family "polyubiquitin" :members ("UP:P0CG72" "UP:P0CG83")) 
+(def-family "polyubiquitin" :synonyms ("polyUb" "UBI" "poly-Ubi") :members ("UP:P0CG47" "UP:P0CG48")) 
 (def-family "pop3" :members ("UP:Q9BVC4" "UP:Q9HBV1")) 
 (def-family "protein 1" :members ("UP:O60894" "UP:O95388" "UP:P05412" "UP:P18887" "UP:P31948" "UP:Q13009" "UP:Q13794" "UP:Q16531" "UP:Q8IXJ9" "UP:Q8TB36" "UP:Q9UQF2")) 
 (def-family "protein phosphatase" :members ("UP:O00743" "UP:O14829" "UP:O15297" "UP:O15355" "UP:O60346" "UP:O60729" "UP:O75688" "UP:O95476" "UP:P28562" "UP:P62136" "UP:P62140" "UP:P62714" "UP:P67775" "UP:Q9P2J9")) 

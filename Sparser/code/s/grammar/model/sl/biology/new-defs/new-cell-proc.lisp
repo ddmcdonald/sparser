@@ -9,7 +9,7 @@
 ;(def-indiv-with-id cellular-process "signalling cascade" "GO:0007165") 
 ;(def-indiv-with-id cellular-process "signalling pathway" "GO:0007165") added to definition for "signaling pathway"
 (def-indiv-with-id cellular-process "signal transduction" "GO:0007165")
-(def-indiv-with-id cellular-process "signal transduction pathways" "GO:0007165")
+(def-indiv-with-id cellular-process "signal transduction pathway" "GO:0007165")
 (def-indiv-with-id cellular-process "cell viability" "MESH:D002470") 
 (def-indiv-with-id cellular-process "immune response" "GO:0006955") 
 (def-indiv-with-id cellular-process "inflammation" "GO:0006954" :name "inflammatory response") 
