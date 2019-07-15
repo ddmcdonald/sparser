@@ -186,10 +186,14 @@
 ;;;--------
 ;;; respan
 ;;;--------
-(defparameter *respan-internal* nil)
+
+(defparameter *respan-internal* nil
+  "When doing respan-to-edge on an 'internal' edge, this signals
+   to not reset the mention")
+
 (defun respan-top-edge (edge new-ref
                         &key start-pos end-pos category form
-                             internal)
+                          internal)
   "We have just modified the referent of 'edge' and have to
    create a new edge to carry the mention of this modified
    referent ('new-ref'). This edge is a topmost edge, so we are
@@ -202,7 +206,7 @@
     (unless internal
       (error "This is not a topmost edge ~a~
             ~%Use a different tuck function" edge)))
-  
+
   (let ((start-ev (if start-pos
                     (pos-starts-here start-pos)
                     (edge-starts-at edge)))
@@ -210,14 +214,14 @@
                   (pos-ends-here end-pos)
                   (edge-ends-at edge)))
         (cat-label (if category
-                    category
-                    (edge-category edge)))
+                     category
+                     (edge-category edge)))
         (form-label (if form
                       form
                       (edge-form edge)))
         (*respan-internal* internal))
     (declare (special  *respan-internal*))
-    ;; This SPECIAL is to turn off resetting the mention on the subsumed edge
+
     (make-completed-unary-edge
      start-ev ; starting-vector
      end-ev   ; ending-vector
@@ -225,9 +229,9 @@
      edge                  ; daughter
      cat-label  ; category
      form-label ; form
-     new-ref)))         ; referent
-   
- 
+     new-ref)))
+
+
 
 (defun respan-edge-for-new-referent (edge new-ref)
   "We have just modified the referent of one of the edges 
@@ -251,13 +255,8 @@
     (setf (edge-left-daughter new-edge) edge)
     (setf (edge-right-daughter new-edge)
           (if (edge-p (edge-right-daughter edge))
-              ;;NO LONGER
-              ;; ignoring the possibility that the edge we're respanning
-              ;; might have an interesting right-daughter
-              ;;(warn "Respan of ~a may be dropping its right daughter" edge))
               (edge-right-daughter edge)
-
-              :single-term)) ;; ?????
+              :single-term)) ;; alternatives?
 
     (setf (edge-category new-edge) (edge-category edge))
     (setf (edge-form new-edge) (edge-form edge))
@@ -331,3 +330,18 @@
           (edge-ends-at new-edge) ending-vector)))
 
 
+
+(defun stipulate-a-subject-edge (np-edge vp-edge)
+  "The caller, probably on of the WH question routines, knows that this
+   NP is the subject of this VP, so we create the edge without checking
+   whether. The NP is moving."
+  ;; This version will not work unless the displaced subject in fact
+  ;; is subcategorized for by the predicate, which doesn't have to be the case.
+  ;; Putting the edge in by brute force as in the respan above would
+  ;; circumvent the issue
+  (let* ((np+vp (lookup-rule/rhs ;; abbreviated to the macro fsr
+                 (list (category-named 'np) (category-named 'vp))))
+         (s-edge (make-default-binary-edge
+                  np-edge vp-edge np+vp)))
+    (break "s-edge = ~a" s-edge)
+    s-edge))

@@ -589,9 +589,6 @@
   ;; and make a new edge -- just over the preposition -- with
   ;; that referent.
   (tr :wh-walk 'wh-stranded-prep)
-  
-  ;; make the edge over the prep+item
-
   (let ((pp-edge (flesh-out-stranded-prep prep-edge wh-edge)))
     (when pp-edge
       ;; two cases -- regular subcategorization by a head and copulas
@@ -635,11 +632,9 @@
            (subsumed-edge head-edge) ;; rename to make tuck operation clear
            (new-edge extended-head-edge)
            (dominating-edge parent-of-head))
-
       (when parent-of-head
         (tuck-new-edge-under-already-knit
          subsumed-edge new-edge dominating-edge :right))
-
       (let* ((final-tts (treetops-between start-pos end-pos))
              (edge-count (length final-tts)))
         (cond
@@ -700,16 +695,26 @@
                      (i (rebind-variable 'value new-np copular-pp))
                      (j (bind-variable 'item np i)))
                 (tr :stranded-copular-pp j)
-
-                ;; This makes the edge for the revised referent but
-                ;; it's not in the tree. An alternative could be to do the work
-                ;; to put it in the tree as grammatical subject just to the left
-                ;; of the vp.
-                (respan-top-edge focal-np-edge new-np :internal t)
-                (respan-top-edge copular-pp-edge j
-                                 :start-pos start-pos
-                                 ;; end-pos is ok?
-                                 :form category::s)))
+                (if t
+                  (then   ;; earlier version           
+                    ;; This makes the edge for the revised referent but
+                    ;; it's not in the tree. An alternative could be to do the work
+                    ;; to put it in the tree as grammatical subject just to the left
+                    ;; of the vp.
+                    (respan-top-edge focal-np-edge new-np :internal t)
+                    (respan-top-edge
+                     copular-pp-edge j
+                     :start-pos start-pos ;; goes to start of sentence
+                     :form category::s))
+                  (else ;; grammatical subject route - needs work
+                    (let* ((respanned-vp (respan-top-edge
+                                          copular-pp-edge j
+                                          ;;:start-pos start-pos
+                                          :form category::vp))
+                           (s-edge (stipulate-a-subject-edge focal-np-edge
+                                                             respanned-vp)))
+                      (break "edge = ~a" s-edge)
+                      s-edge)))))
              
              (t ;; we could make the copular-pp edge but the focal np
               ;; doesn't take the preposition so we make a simpler
