@@ -17,9 +17,11 @@
 
 ;; useful combination
 (defun trace-da-question ()
-  (trace-da-hook) (trace-questions) (setq *debug-questions* t))
+  (trace-da-hook) (trace-da-execution)
+  (trace-questions) (setq *debug-questions* t))
 (defun untrace-da-question ()
-  (untrace-da-hook) (untrace-questions) (setq *debug-questions* nil))
+  (untrace-da-hook) (untrace-da-execution)
+  (untrace-questions) (setq *debug-questions* nil))
 
 (defparameter *trace-DA* nil) ;; walking through the trie
 (defun trace-da ()
