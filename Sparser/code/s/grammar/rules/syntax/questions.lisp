@@ -178,11 +178,7 @@
            (wh-initial? (initial-wh?))
            (start-pos (starts-at-pos sentence))
            (end-pos (ends-at-pos sentence))
-           (edge (span-covered-by-one-edge?
-                  (cond ((and preposed? wh-initial?) start-pos)
-                        (preposed? (chart-position-after start-pos))
-                        (t start-pos))
-                  end-pos))
+           (edge (span-covered-by-one-edge? start-pos end-pos))
            (edges (all-tts start-pos end-pos)))
 
       (tr :wh-flag-status preposed? wh-initial? edges)
@@ -201,15 +197,20 @@
            ((and preposed? (null wh-initial?))
             ;; The wh-initial? case doesn't need further handling
             ;; when the sentence is parsed completely.
-            (let ((q (make-polar-question (edge-referent edge))))
-              (let ((spanning-edge
-                     (make-edge-over-long-span
-                      start-pos end-pos
-                      (edge-category edge)
-                      :rule 'make-this-a-question-if-appropriate
-                      :form category::s
-                      :referent q)))
-                spanning-edge)))
+            (when (not (itypep (edge-referent edge) 'polar-question))
+              (break "This one needs to be made a polar question: ~a" edge))
+
+            (unless (itypep (edge-referent edge) 'polar-question)
+              (let ((q (make-polar-question (edge-referent edge))))
+                (let ((spanning-edge
+                       (make-edge-over-long-span
+                        start-pos end-pos
+                        (edge-category edge)
+                        :rule 'make-this-a-question-if-appropriate
+                        :form category::s
+                        :referent q)))
+                  spanning-edge))))
+           
            ((preposed-of?)
             (dig-for-embedded-which edge))
            (wh-initial? ;;/// Mark it? Wrap it?
