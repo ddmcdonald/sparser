@@ -170,7 +170,10 @@
   (tr :wh-walk "make-this-a-question-if-appropriate")
   (when (or (preposed-aux?)
             (initial-wh?)
-            (preposed-of?))
+            (preposed-of?)
+            ;; make sure it hasn't already been parsed by a DA rule
+            (cdr (all-tts))
+            )
     (let* ((preposed? (preposed-aux?)) ;; make them into local flags
            (wh-initial? (initial-wh?))
            (start-pos (starts-at-pos sentence))
@@ -307,7 +310,7 @@
 
         (preposed?
          (if *show-wh-problems*
-           (lsp-break "Could not resolve edges into a polar question: ~a" edges)
+           (lsp-break "~%Could not resolve edges into a polar question: ~s~%" (current-string))
            (when *warn-when-can-not-formulate-question*
              (warn "Could not resolve edges into a polar question: ~a" edges))))
 
