@@ -3,12 +3,44 @@
 ;;;
 ;;;     File:  "q-patterns"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  May 2019
+;;;  Version:  July 2019
 
 ;; Broken out from questions.lisp 8/7/18 to have all the formulation
 ;; heuristics in one place irrespective of what invokes them.
 
 (in-package :sparser)
+
+
+(defun make-question-and-edge (statement start-pos end-pos
+                               &key ((:head head-edge)) wh rule)
+  "Wrap the referent in an instance of a wh-question as its statement.
+   Make an edge over the whole span, using whatever pieces the callers
+   have supplied."
+  (let* ((wh-base (cond ((and wh (itypep wh 'wh-pronoun))
+                         wh)))
+         (q (make-wh-object wh-base :statement statement)))
+ 
+    (let ((edge (make-edge-over-long-span
+                 start-pos end-pos
+                 (edge-category head-edge) ;; category
+                 :form category::s ; question?
+                 :referent q
+                 :rule (or rule 'make-question-and-edge)
+                 :constituents (list head-edge)
+                 )))
+      edge)))
+
+(defgeneric find-wh-element (loc)
+  (:documentation "Caller belives there is a wh-pronoun to be found at this
+    location, so we look for it. We're looking for a wh-category since that's
+    what's expected as the base of a wh-question variable.")
+  (:method ((e edge))
+    (let* ((left (edge-left-daughter e))
+           (left-ref (when (edge-p left) (edge-referent left))))
+      (cond ((itypep left-ref 'wh-pronoun)
+             left-ref)
+            (t nil)))))
+                  
 
 ;;;--------------------------
 ;;; polar questions (yes/no)
@@ -479,15 +511,13 @@
   ;; continuation of wh-initial-four-edges/adjunct
   (tr :wh-walk "fold-in-initial-wh-adjunct")
   (let* ((stmt (edge-referent edge-over-s))
-         (wh (edge-referent wh-edge))
-         (j (bind-wh-variable wh stmt)))
+         (wh (edge-referent wh-edge)))
     ;;(set-edge-referent edge-over-s j)
-    (make-edge-over-long-span
-     start-pos end-pos
-     (edge-category edge-over-s)
-     :rule 'wh-initial-four-edges/adjunct
-     :form category::s ;;question
-     :referent j)))
+    (make-question-and-edge stmt start-pos end-pos
+                            :head edge-over-s :wh wh
+                            :rule 'wh-initial-four-edges/adjunct)))
+
+
 
 ;; (p/s "What genes is stat3 upstream of?")
 ;; (p/s "What tissues is STAT3 expressed in?") <== doesn't tuck
@@ -528,14 +558,6 @@
   (when *debug-questions* ;; aux: 2 s: 27 p: 15
     (push-debug `(,aux-edge ,s-edge ,prep-edge))
     (break "got there")))
-
-;;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
-(defun polar-stranded-preposition (aux-edge main-edge prep-edge)
-  ;; "Can you find any apoptotic pathways that stat3 is involved in?"
-  (when *debug-questions*
-    (push-debug `(,aux-edge ,main-edge ,prep-edge))
-    (break "Substantial refactoring require to find equivalent of the 'item' ~
-      that wh-stranded-prep uses for its prepositional complement")))
 
 
 
@@ -579,20 +601,12 @@
    that end in a preposition. (Presumably not functioning as a particle
    though we don't check that these days - 8/2018.)"
   ;; called from four-edges/be just above, and from s+prep DA rule
-  ;; We want to compose the moved 'item' with the preposition
-  ;; whose complement it would have been in the declarative form
-  ;; of the question. We can't use the obvious means of composing
-  ;; the two edges because that scrambles the chart and messes up
-  ;; the mapping between edges and the character-level source.
-  ;; Instead we do the referent-level operation to get the
-  ;; referent we would have had by composing the edges,
-  ;; and make a new edge -- just over the preposition -- with
-  ;; that referent.
   (tr :wh-walk 'wh-stranded-prep)
   (let ((pp-edge (flesh-out-stranded-prep prep-edge wh-edge)))
     (when pp-edge
       ;; two cases -- regular subcategorization by a head and copulas
       (let* ((main-ref (edge-referent main-edge))
+             (wh (find-wh-element wh-edge))
              (fringe-edges (right-fringe main-edge)) ;; largest to smallest
              (head-edge (loop for edge in fringe-edges
                            when (takes-preposition? edge prep-edge)
@@ -604,7 +618,7 @@
                                         predicate preposition wh-item))))      
         (cond
           ((itypep main-ref 'be) ;;// broader?
-           (wh-copula-stranded-prep main-edge pp-edge start-pos end-pos))
+           (wh-copula-stranded-prep wh main-edge pp-edge start-pos end-pos))
           ((null head-edge)
            ;; If we have the correct head, the variable will have a value.
            ;; /// Else keep moving downward
@@ -658,7 +672,7 @@
              (break "Wrong number of edges to cover"))))))))
 
 ;; (p "what pathways is ERK1 in?")
-(defun wh-copula-stranded-prep (main-edge pp-edge start-pos end-pos)
+(defun wh-copula-stranded-prep (wh main-edge pp-edge start-pos end-pos)
   "Separate out the main edge (just after the wh-element and ending before
    the preposition) to get a predicate and a focused item for the copular
    predication. We know the main-edge is copular because that was the gate
@@ -680,7 +694,7 @@
 
     (let* ((copular-pp-rule (multiply-edges vg-edge pp-edge)))
       ;; N.b. resulting edge will -not- include the focal-np. It was parsed
-      ;; as a direct object even though in a question like this is subject
+      ;; as a direct object even though in a question like this it is subject
       (cond
         (copular-pp-rule
          (let ((copular-pp-edge (make-completed-binary-edge
@@ -692,29 +706,18 @@
              (var ;; value, prep, and predicate are bound
               (let* ((copular-pp (edge-referent copular-pp-edge))
                      (new-np (bind-variable var pobj np))
-                     (i (rebind-variable 'value new-np copular-pp))
-                     (j (bind-variable 'item np i)))
-                (tr :stranded-copular-pp j)
-                (if t
-                  (then   ;; earlier version           
-                    ;; This makes the edge for the revised referent but
-                    ;; it's not in the tree. An alternative could be to do the work
-                    ;; to put it in the tree as grammatical subject just to the left
-                    ;; of the vp.
-                    (respan-top-edge focal-np-edge new-np :internal t)
-                    (respan-top-edge
-                     copular-pp-edge j
-                     :start-pos start-pos ;; goes to start of sentence
-                     :form category::s))
-                  (else ;; grammatical subject route - needs work
-                    (let* ((respanned-vp (respan-top-edge
-                                          copular-pp-edge j
-                                          ;;:start-pos start-pos
-                                          :form category::vp))
-                           (s-edge (stipulate-a-subject-edge focal-np-edge
-                                                             respanned-vp)))
-                      (break "edge = ~a" s-edge)
-                      s-edge)))))
+                     (i (rebind-variable 'value new-np copular-pp)))
+                (tr :stranded-copular-pp i)
+                (let* ((respanned-vp (respan-top-edge
+                                      copular-pp-edge i
+                                      :form category::vp))
+                       (s-edge (stipulate-subject-edge focal-np-edge
+                                                       respanned-vp)))
+                  ;;(break "edge = ~a" s-edge)
+                  (make-question-and-edge (edge-referent s-edge)
+                                          start-pos end-pos
+                                          :wh wh :head s-edge
+                                          :rule 'wh-copula-stranded-prep))))
              
              (t ;; we could make the copular-pp edge but the focal np
               ;; doesn't take the preposition so we make a simpler
@@ -728,67 +731,17 @@
          nil
          #+ignore(vanilla))))))
 
-
-#+ignore
-(defun wh-copula-stranded-prep (main-edge pp-edge start-pos end-pos)
-  "Separate out the main edge (just after the wh-element and ending before
-   the preposition) to get a predicate and a focused item for the copular
-   predication. We know the main-edge is copular because that was the gate
-   that got us here."
-  (tr :wh-walk 'wh-copula-stranded-prep)
-  (let* ((vg-edge (edge-left-daughter main-edge))
-         (focal-np-edge (edge-right-daughter main-edge))
-         (np (edge-referent focal-np-edge))
-         (pp-ref (edge-referent pp-edge))
-         (prep (get-word-for-prep (value-of 'prep pp-ref)))
-         (pobj (value-of 'pobj pp-ref)))
-    
-    (unless (and (vg-category? vg-edge)
-                 (np-category? focal-np-edge))
-      (when *debug-questions*
-        (break "New case in copula-stranded-prep: vg = ~a~%np = ~a"
-               vg-edge focal-np-edge))
-      (return-from wh-copula-stranded-prep nil))
-
-    (let* ((copular-pp-rule (multiply-edges vg-edge pp-edge)))
-      (cond
-        (copular-pp-rule
-         (let ((copular-pp-edge (make-completed-binary-edge
-                                 vg-edge pp-edge copular-pp-rule))
-               (var (subcategorized-variable np prep pobj)))
-           ;; open-coding test-and-apply-simple-copula-pp since 
-           ;; we're not in a normal rule-application content
-           (cond
-             (var ;; value, prep, and predicate are bound
-              (let* ((copular-pp (edge-referent copular-pp-edge))
-                     (new-np (bind-variable var pobj np))
-                     (i (rebind-variable 'value new-np copular-pp))
-                     (j (bind-variable 'item np i)))
-                (tr :stranded-copular-pp j)
-
+#| safe, but no explicit subject
                 ;; This makes the edge for the revised referent but
-                ;; it's not in the tree. An alternative could be to do the work
-                ;; to put it in the tree as grammatical subject just to the left
-                ;; of the vp.
-                (respan-top-edge focal-np-edge new-np :internal t)
-
-                (respan-top-edge copular-pp-edge j
-                                 :start-pos start-pos
-                                 ;; end-pos is ok?
-                                 :form category::s)))
-             
-             (t ;; we could make the copular-pp edge but the focal np
-              ;; doesn't take the preposition so we make a simpler
-              ;; predication object without the cross-threading
-              (tr :stranded-copular/no-var np prep pobj)
-              nil
-              #+ignore(vanilla)))))
-        
-        (t ;; the main edge and pp-edge can't compose
-         (tr :stranded-copular/no-rule vg-edge pp-edge)
-         nil
-         #+ignore(vanilla))))))
-
+                ;; it's not in the tree. 
+                    (let ((j (bind-variable 'item np i)))
+                      (respan-top-edge focal-np-edge new-np :internal t)
+                      (respan-top-edge
+                       copular-pp-edge j
+                       :start-pos start-pos ;; goes to start of sentence
+                       :form category::s))  |#
+ 
+  
 #| Should we do something for the other two cases?
     (flet ((vanilla ()
              ;; We're being called from debris analysis so we have
@@ -806,7 +759,10 @@
          :constituents (treetops-between start-pos end-pos)
          :ignore-used-in t)))) |#
 
-;; (p "where should I put the block?")
+
+
+
+;; (p "where should I put the block?") <-- won't parse if 'block' is only a verb
 ;;
 (defun wh-initial-followed-by-modal (wh-edge edges start-pos end-pos)
   "The second argument is an aux or a modal that has to be

@@ -24,8 +24,7 @@
 ;;;--------------------------------
 
 ;; (trace-questions)
-
-;; (da-traces) (da-traces-off
+;; or (trace-da-question) to also see application of DA hooks
 
 (defparameter *debug-questions* nil
   "Should only be set when debugging. Signals an error so we can
@@ -269,10 +268,6 @@
                              '(vg+passive)))
                 ;; "Is MAPK1-bound MAP2K1 sustained?"
                 (make-polar-copular-question start-pos end-pos edges))
-
-               ((and (v-bar-compatible? (second edges))
-                     (preposition-category? (third edges)))
-                (polar-stranded-preposition (first edges) (second edges) (third edges)))
                
                (t
                 (if *show-wh-problems*
