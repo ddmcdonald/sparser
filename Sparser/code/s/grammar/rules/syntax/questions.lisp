@@ -194,38 +194,18 @@
       (cond
         ((edge-p edge)
          (cond
-           ((and preposed? (null wh-initial?))
+           ((and preposed? (null wh-initial?)
+                 (itypep (edge-referent edge) 'there-exists))
             ;; The wh-initial? case doesn't need further handling
             ;; when the sentence is parsed completely.
-            (when (not (itypep (edge-referent edge) 'polar-question))
-              (break "This one needs to be made a polar question: ~a" edge))
-
-            (unless (itypep (edge-referent edge) 'polar-question)
-              (let ((q (make-polar-question (edge-referent edge))))
-                (let ((spanning-edge
-                       (make-edge-over-long-span
-                        start-pos end-pos
-                        (edge-category edge)
-                        :rule 'make-this-a-question-if-appropriate
-                        :form category::s
-                        :referent q)))
-                  spanning-edge))))
+            (make-polar-edge edge))
            
            ((preposed-of?)
-            (dig-for-embedded-which edge))
-           (wh-initial? ;;/// Mark it? Wrap it?
-            #+ignore ;; putting the question off 'till later
-            (when *debug-questions*
-              (break "We have an edge (~a) and the wh-initial? flag is up~
-                    ~%What should we do?" edge)))))
+            (dig-for-embedded-which edge))))
 
         ;; In most cases, the proposed aux will have been accommodated by
         ;; the operations in the post-vg-hook, though that's just for explicit
         ;; auxiliaries.         
-
-        ((and (= 1 (length edges))
-              (eq (edge-category (car edges)) category::there-exists))
-         (there-is-as-polar-question (car edges)))
 
         ((eq (edge-category (car edges)) category::there-exists)
          (sort-out-incompletely-parsed-there-is-q start-pos end-pos edges))
@@ -234,7 +214,8 @@
               (edge-p (first edges))
               (itypep (edge-referent (first edges)) 'do))
          (cond
-           ((itypep (edge-form (second edges)) 's)
+           ((and (itypep (edge-form (second edges)) 's)
+                 (= 2 (length edges)))
             (da/preposed+s (first edges) (second edges)))
            (t
             (when *debug-questions*
@@ -279,11 +260,9 @@
                   (warn "unhandled 3 edge polar-copular question: ~a" edges)))))
 
         ;; Initial WH questions
-        (wh-initial? ;; use assimilate-subject (subj vp) to refine the variable
+        (wh-initial?
+         ;; use assimilate-subject (subj vp) to refine the variable
          (cond
-           #+ignore((= 2 (length edges)) ;; take the second as the statement
-            (wh-initial-two-edges wh-initial? edges start-pos end-pos))
-           
            ((and (= 3 (length edges))
                  (edge-p (second edges)))
             (unless (edge-used-in wh-initial?)
@@ -306,14 +285,16 @@
               (lsp-break "Could not resolve ~a edges into a WH question: ~a"
                          (length edges) edges)
               (when *warn-when-can-not-formulate-question*
-                (warn "Could not resolve ~a edges into a WH question: ~a"
-                      (length edges) edges))))))
+                (warn "Could not resolve ~a edges into a WH question: ~a~% ~s"
+                      (length edges) edges (current-string)))))))
 
         (preposed?
          (if *show-wh-problems*
-           (lsp-break "~%Could not resolve edges into a polar question: ~s~%" (current-string))
+           (lsp-break "~%Could not resolve edges into a polar question: ~s~%"
+                      (current-string))
            (when *warn-when-can-not-formulate-question*
-             (warn "Could not resolve edges into a polar question: ~a" edges))))
+             (warn "Could not resolve edges into a polar question: ~a~%  ~s"
+                   edges (current-string)))))
 
         (t
          (if *show-wh-problems*

@@ -51,6 +51,7 @@
    for the specific case does its work and makes an edge over the
    its constituents. Then it calls this function to wrap their result
    in a polar question."
+  (tr :wh-walk 'make-polar-edge)
   (let* ((start-vec (edge-starts-at statement-edge))
          (end-vec (edge-ends-at statement-edge))
          (pred (edge-referent statement-edge))
@@ -69,6 +70,18 @@
   (tr :wh-walk "make-polar-question")
   (find-or-make-individual
    'polar-question :statement statement))
+
+#| version of that used in make-this-a-question-if-appropriate
+   before switched it to make-polar-edge
+             (let ((q (make-polar-question (edge-referent edge))))
+                (let ((spanning-edge
+                       (make-edge-over-long-span
+                        start-pos end-pos
+                        (edge-category edge)
+                        :rule 'make-this-a-question-if-appropriate
+                        :form category::s
+                        :referent q)))
+                  spanning-edge)) |#
 
 
 (defun make-initial-there-is-edge (preposed-aux-edge)
@@ -94,24 +107,6 @@
         edge))))
 
 
-;;--- cases called from make-this-a-question-if-appropriate
-
-(defun there-is-as-polar-question (edge)
-  "We have a complete parse as a there-exists statement. Throw another
-   edge over it as a question -- same as fully-spanned case, which we don't
-   get because of the check for pre-posed."
-  (tr :wh-walk "there-is-as-polar-question")
-  (let* ((q (make-polar-question (edge-referent edge)))
-         (respanning-edge
-          (make-completed-unary-edge
-           (edge-starts-at edge) ; starting-vector
-           (edge-ends-at edge)   ; ending-vector
-           'there-is-as-polar-question ; rule
-           edge ; daughter
-           (edge-category edge) ; category
-           category::s ;; question ; form
-           q))) ; referent
-    respanning-edge))
 
 
 ;; Called from make-this-a-question-if-appropriate
@@ -180,6 +175,7 @@
 (defun polar-copula-question-subject ()
   "A dummy so that we can find thefunction that creates an edge with that rule-name")
 
+;; ;; called from make-this-a-question-if-appropriate
 (defun make-polar-copular-question (start-pos end-pos edges)
   "Construct an instance of 'be' by directly invoking the rules"
   ;; (is) (Selumetinib) (an inhibitor of MEK1)
@@ -217,7 +213,7 @@
     (make-polar-edge (or subj-vg-edge
                          copula-edge))))
 
-    
+;; called from make-this-a-question-if-appropriate
 (defun make-polar-adjective-question (start-pos end-pos edges)
   (tr :wh-walk "make-polar-adjective-question")
   (when (> (length (all-tts start-pos end-pos)) 3)
@@ -258,6 +254,7 @@
 ;; (p/s "Is stat3 expressed in liver?")
 ;; (p/s "is the BRAF-NRAS complex sustained in time?")
 ;; (p "Is phosphorylated MAPK1 sustained at a high level?")
+;; called from make-this-a-question-if-appropriate
 (defun make-polar-participle-question (start-pos end-pos edges)
   (tr :wh-walk "make-polar-participle-question")
   (let* ((be-edge (first edges))  ;; is
