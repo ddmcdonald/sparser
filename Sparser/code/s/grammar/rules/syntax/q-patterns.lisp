@@ -705,8 +705,14 @@
            (cond
              (var ;; value, prep, and predicate are bound
               (let* ((copular-pp (edge-referent copular-pp-edge))
-                     (new-np (bind-variable var pobj np))
-                     (i (rebind-variable 'value new-np copular-pp)))
+                     (new-np (bind-variable var pobj np)))
+                ;; create an edge for the new (extended)np
+                ;;  and thereby create a mention (for clausal form)
+                (respan-top-edge focal-np-edge
+                                 new-np
+                                 :form (category-named 'np)
+                                 :internal t)
+                (let ((i (rebind-variable 'value new-np copular-pp)))
                 (tr :stranded-copular-pp i)
                 (let* ((respanned-vp (respan-top-edge
                                       copular-pp-edge i
@@ -717,7 +723,7 @@
                   (make-question-and-edge (edge-referent s-edge)
                                           start-pos end-pos
                                           :wh wh :head s-edge
-                                          :rule 'wh-copula-stranded-prep))))
+                                          :rule 'wh-copula-stranded-prep)))))
              
              (t ;; we could make the copular-pp edge but the focal np
               ;; doesn't take the preposition so we make a simpler
