@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "discontinuous"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  January 2019
+;;;  Version:  July 2019
 
 (in-package :sparser)
 
@@ -77,7 +77,7 @@
   "Get a new edge from the resource and give the
    values of the edge that's to be copied, or the 
    alternative values specified by the keyword arguments.
-   The edge will -NOT- have been knit int the chart yet,
+   The edge will -NOT- have been knit into the chart yet,
    and not have start or end edge vectors because
    those are the responsibility of the caller.
    Except for that this is any ordinary edge like
@@ -102,4 +102,24 @@
     new-edge))
 
 
+
+(defun stipulate-subject-edge (np-edge vp-edge)
+  "The caller, probably one of the WH question routines, knows that this
+   NP is the subject of this VP, so we create the edge without bothering
+   to go through its rule, just its test. Npte that the NP is moving
+   so it could be a funny looking edge."
+  (with-referent-edges (:l np-edge :r vp-edge)
+    (let* ((subj (edge-referent np-edge))
+           (pred (edge-referent vp-edge))
+           (i (assimilate-subject subj pred)))
+      (unless i
+        (push-debug `(,subj ,pred))
+        (break "fail: assimilate-subject of ~a + ~a" subj pred))
+      (let ((s-edge (make-chart-edge
+                     :left-edge np-edge
+                     :right-edge vp-edge
+                     :category (edge-category vp-edge)
+                     :form category::s
+                     :referent i)))
+        s-edge))))
 

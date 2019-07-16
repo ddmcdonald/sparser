@@ -329,19 +329,3 @@
     (setf (edge-starts-at new-edge) starting-vector
           (edge-ends-at new-edge) ending-vector)))
 
-
-
-(defun stipulate-a-subject-edge (np-edge vp-edge)
-  "The caller, probably on of the WH question routines, knows that this
-   NP is the subject of this VP, so we create the edge without checking
-   whether. The NP is moving."
-  ;; This version will not work unless the displaced subject in fact
-  ;; is subcategorized for by the predicate, which doesn't have to be the case.
-  ;; Putting the edge in by brute force as in the respan above would
-  ;; circumvent the issue
-  (let* ((np+vp (lookup-rule/rhs ;; abbreviated to the macro fsr
-                 (list (category-named 'np) (category-named 'vp))))
-         (s-edge (make-default-binary-edge
-                  np-edge vp-edge np+vp)))
-    (break "s-edge = ~a" s-edge)
-    s-edge))

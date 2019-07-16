@@ -1,10 +1,10 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2003,2010-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2003,2010-2019 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "master-loader"
 ;;;   module:  "init;loaders;"
-;;;  Version:   November 2018
+;;;  Version:   July 2019
 
 ;; 4/21  added loading of chart-drivers;new:loader
 ;; 4/25  split fsas into basics and model
@@ -181,9 +181,9 @@
 (lload "check;loader")
 (lload "analyzers;psp;threading;loader")
 ;; (lload "march;loader") directory & load-file empty so flushed 9/22/11
-(lload "kinds of edges;loader")
 (lload "complete;loader")
 (lload "referent;loader")
+(lload "kinds of edges;loader") ;; use with-referent-edges macro
 
 (lload "analyzers;psp;terminate")
 (lload "forest;loader")
