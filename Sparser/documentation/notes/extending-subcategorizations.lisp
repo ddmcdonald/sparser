@@ -10,7 +10,7 @@ carry out the mapping.
 
 Subcategorization information comes down to the set of labels we have
 defined, and how they're processed by the complex of operations done
-by setup-rdata ino objects/model/tree-families/rdata.lisp. This function
+by setup-rdata in objects/model/tree-families/rdata.lisp. This function
 is run whenever a category with a realization is defined or redefined.
 
 The first step in setup-rdata is to take all the elements in the
