@@ -134,8 +134,12 @@
 
 (define-mixin-category with-manner
   :binds ((manner))
-  :documentation "")
+  :documentation "A role of adverbial complements.")
 
 (define-mixin-category with-result-role
   :binds ((result-role))
-  :documentation "")
+  :documentation "The direct result of an action performed - often an adjp, as in a resultative - 'She wiped the car clean.'")
+
+(define-mixin-category with-expletive
+  :binds ((expletive))
+  :documentation "For raising verbs that take expletive subjects.")

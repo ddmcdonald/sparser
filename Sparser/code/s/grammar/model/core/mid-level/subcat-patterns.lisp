@@ -94,7 +94,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
      :i beneficiary
      :o theme
      :mumble ((s-v-io-do :s agent :do theme :io beneficiary)
-     	      (svo1po2 :s agent :o1 theme :p "to" :o2 beneficiary))))
+     	      (S-V-DO-ToIO  :s agent :do theme :p "to" :io beneficiary))))
 
 
 (define-mixin-category attributing-verb
@@ -158,14 +158,26 @@ subcategorization-pattern is a daughter of linguistic, abstract
      :to-comp theme))
 
 (define-mixin-category raising-to-subject
-  ;; "X seems to ..."
+  ;; "X seems to...
   :specializes subcategorization-pattern
   :mixins (with-agent with-theme)
-  :restrict ((agent (:or pronoun physical-agent))
+  :restrict ((agent (:or pronoun-animate physical-agent))
              (theme perdurant))
   :realization
-    (:s agent
-     :to-comp theme))
+    ((:s agent
+     :to-comp theme)))
+
+(define-mixin-category raising-expletive-subject
+	;; "It seems that/like ...
+	;;  For now, includes unused "experiencer" role so that we can later account for "It seems to me that..."
+	:specializes subcategorization-pattern
+	:mixins (with-theme with-experiencer with-expletive)
+	:restrict ((expletive pronoun-inanimate) (experiencer physical-agent) (theme perdurant))
+	:realization (:s expletive
+	 :thatcomp theme
+	 :s-comp theme
+	 :mumble (svscomp :s expletive :c theme)))
+
 
 
 (define-mixin-category move-something-verb

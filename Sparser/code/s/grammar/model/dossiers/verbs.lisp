@@ -588,4 +588,11 @@ come
   :realization (:verb "rotate" :etf (svo-passive))
   :documentation "Need to indicate that the patient must
     have an axis that it can rotate around")
+
+;;Experimenting
+
+(define-category seem
+  :specializes state
+  :mixins (raising-expletive-subject raising-to-subject)
+  :realization (:verb "seem"))
                       
