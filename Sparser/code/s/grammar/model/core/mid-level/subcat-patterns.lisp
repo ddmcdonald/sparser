@@ -168,15 +168,15 @@ subcategorization-pattern is a daughter of linguistic, abstract
      :to-comp theme)))
 
 (define-mixin-category raising-expletive-subject
-	;; "It seems that/like ...
-	;;  For now, includes unused "experiencer" role so that we can later account for "It seems to me that..."
-	:specializes subcategorization-pattern
-	:mixins (with-theme with-experiencer with-expletive)
-	:restrict ((expletive pronoun-inanimate) (experiencer physical-agent) (theme perdurant))
-	:realization (:s expletive
-	 :thatcomp theme
-	 :s-comp theme
-	 :mumble (svscomp :s expletive :c theme)))
+  ;; "It seems that/like ...
+  ;;  For now, includes unused "experiencer" role so that we can later account for "It seems to me that..."
+  :specializes subcategorization-pattern
+  :mixins (with-theme with-experiencer with-expletive)
+  :restrict ((expletive pronoun-inanimate) (experiencer physical-agent) (theme perdurant))
+  :realization (:s expletive
+  :thatcomp theme
+  :s-comp theme
+  :mumble (svscomp :s expletive :c theme)))
 
 
 
@@ -292,25 +292,30 @@ subcategorization-pattern is a daughter of linguistic, abstract
 ;; VerbNet additions
 
 (define-mixin-category middle-construction
-	:specializes subcategorization-pattern
-	:documentation " 'The car drives well.'
-	Can also include a co-patient, as in 'The egg whites and egg yolks separate easily.'
+  :specializes subcategorization-pattern
+  :documentation " 'The car drives well.'
+  Can also include a co-patient, as in 'The egg whites and egg yolks separate easily.'
 	
-	Ultimately need a way to distinguish these from traditional SVADV where the subject is an agent, i.e.
-	'She drives well', since I can't think of any verbs that involve middle constructions as their main
-	realization. Maybe solved via additional selectional restrictions on verbs, or attributes of nouns."
-	:mixins (with-patient takes-adverb with-manner)
-	:binds ((patient endurant) (manner adverb))
-	:realization (:s patient :a manner
-				  :mumble (SVADV :s patient :a manner)))
+  Ultimately need a way to distinguish these from traditional SVADV where the subject is an agent, i.e.
+  'She drives well', since I can't think of any verbs that involve middle constructions as their main
+  realization. Maybe solved via additional selectional restrictions on verbs, or attributes of nouns."
+  :mixins (with-patient takes-adverb with-manner)
+  :binds ((patient endurant) (manner adverb))
+  :realization (:s patient :a manner
+  :mumble (SVADV :s patient :a manner)))
 
 ;; Still under construction
 
 (define-mixin-category resultative
-	:specializes subcategorization-pattern
-	:documentation "'I waltzed her dizzy.' "
-	:mixins (with-patient with-result-role)
-	:binds ((agent physical-agent) (patient top) (result-role adjective))
-	:realization (:s agent :o patient :adjp-complement result-role :mumble (svo-adj :s agent :o patient :adj result-role)))
+  :specializes subcategorization-pattern
+  :documentation "'I waltzed her dizzy.' "
+  :mixins (with-patient with-result-role)
+  :binds ((agent physical-agent) (patient top) (result-role adjective))
+  :realization (:s agent :o patient :adjp-complement result-role :mumble (svo-adj :s agent :o patient :adj result-role)))
 
-
+(define-mixin-category from-to
+  :specializes subcategorization-pattern
+  :documentation "Needs a better name, perhaps. Verbs that have explicit roles for an initial state and a final state.
+  Usually in the form of a 'from' and a 'to' pp-adjunct. Might involve movement or change-of-state."
+  :mixins (with-patient with-agent)
+  :binds ( initial-state 
