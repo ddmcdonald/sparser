@@ -312,10 +312,3 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :mixins (with-patient with-result-role)
   :binds ((agent physical-agent) (patient top) (result-role adjective))
   :realization (:s agent :o patient :adjp-complement result-role :mumble (svo-adj :s agent :o patient :adj result-role)))
-
-(define-mixin-category from-to
-  :specializes subcategorization-pattern
-  :documentation "Needs a better name, perhaps. Verbs that have explicit roles for an initial state and a final state.
-  Usually in the form of a 'from' and a 'to' pp-adjunct. Might involve movement or change-of-state."
-  :mixins (with-patient with-agent)
-  :binds ( initial-state 
