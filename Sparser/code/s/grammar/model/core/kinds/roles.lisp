@@ -131,3 +131,11 @@
 (define-mixin-category with-stimulus
   :binds ((stimulus))
   :documentation "")
+
+(define-mixin-category with-manner
+  :binds ((manner))
+  :documentation "")
+
+(define-mixin-category with-result-role
+  :binds ((result-role))
+  :documentation "")

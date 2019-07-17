@@ -87,14 +87,14 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :instantiates nil
   :mixins (with-agent with-beneficiary with-theme)
   :restrict ((agent physical-agent)
-             (beneficiary endurant)
+             (beneficiary top)
              (theme endurant))
   :realization
     (:s agent
      :i beneficiary
-     :to beneficiary
      :o theme
-     :mumble (s-v-io-do :s agent :do theme :io beneficiary)))
+     :mumble ((s-v-io-do :s agent :do theme :io beneficiary)
+     	      (svo1po2 :s agent :o1 theme :p "to" :o2 beneficiary))))
 
 
 (define-mixin-category attributing-verb
@@ -276,3 +276,29 @@ subcategorization-pattern is a daughter of linguistic, abstract
                 :into at-relative-location
                 :to goal)
   )
+
+;; VerbNet additions
+
+(define-mixin-category middle-construction
+	:specializes subcategorization-pattern
+	:documentation " 'The car drives well.'
+	Can also include a co-patient, as in 'The egg whites and egg yolks separate easily.'
+	
+	Ultimately need a way to distinguish these from traditional SVADV where the subject is an agent, i.e.
+	'She drives well', since I can't think of any verbs that involve middle constructions as their main
+	realization. Maybe solved via additional selectional restrictions on verbs, or attributes of nouns."
+	:mixins (with-patient takes-adverb with-manner)
+	:binds ((patient endurant) (manner adverb))
+	:realization (:s patient :a manner
+				  :mumble (SVADV :s patient :a manner)))
+
+;; Still under construction
+
+(define-mixin-category resultative
+	:specializes subcategorization-pattern
+	:documentation "'I waltzed her dizzy.' "
+	:mixins (with-patient with-result-role)
+	:binds ((agent physical-agent) (patient top) (result-role adjective))
+	:realization (:s agent :o patient :adjp-complement result-role :mumble (svo-adj :s agent :o patient :adj result-role)))
+
+
