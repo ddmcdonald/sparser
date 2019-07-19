@@ -167,17 +167,23 @@ subcategorization-pattern is a daughter of linguistic, abstract
     ((:s agent
      :to-comp theme)))
 
-(define-mixin-category raising-expletive-subject
+(define-mixin-category expletive-subject
+  ;; seem, appear
   ;; "It seems that/like ...
-  ;;  For now, includes unused "experiencer" role so that we can later account for "It seems to me that..."
+  ;;  With experiencer - "It seems to me that/like..."
   :specializes subcategorization-pattern
   :mixins (with-theme with-experiencer with-expletive)
-  :restrict ((expletive pronoun-inanimate) (experiencer physical-agent) (theme perdurant))
+  :restrict ((expletive pronoun-inanimate) (experiencer (:or pronoun physical-agent)))
   :realization (:s expletive
+  :to experiencer
   :thatcomp theme
   :s-comp theme
-  :mumble (svscomp :s expletive :c theme)))
-
+  :mumble ((svscomp :s expletive :c theme)
+  (svpcomp :s expletive :c theme)
+  (svo1o2 :s expletive :o1 experiencer :o2 theme)
+  (svo1o2 :s expletive :o1 experiencer :o2 theme)
+  
+  )))
 
 
 (define-mixin-category move-something-verb
@@ -295,10 +301,10 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :specializes subcategorization-pattern
   :documentation " 'The car drives well.'
   Can also include a co-patient, as in 'The egg whites and egg yolks separate easily.'
-	
-  Ultimately need a way to distinguish these from traditional SVADV where the subject is an agent, i.e.
-  'She drives well', since I can't think of any verbs that involve middle constructions as their main
-  realization. Maybe solved via additional selectional restrictions on verbs, or attributes of nouns."
+  Ultimately need a way to distinguish these from traditional SVADV where the subject is 
+  an agent, i.e. 'She drives well', since I can't think of any verbs that involve middle 
+  constructions as their main realization. Maybe solved via additional selectional restrictions
+  on verbs, or attributes of nouns."
   :mixins (with-patient takes-adverb with-manner)
   :binds ((patient endurant) (manner adverb))
   :realization (:s patient :a manner
@@ -311,4 +317,5 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :documentation "'I waltzed her dizzy.' "
   :mixins (with-patient with-result-role)
   :binds ((agent physical-agent) (patient top) (result-role adjective))
-  :realization (:s agent :o patient :adjp-complement result-role :mumble (svo-adj :s agent :o patient :adj result-role)))
+  :realization (:s agent :o patient :adjp-complement result-role
+                :mumble (svo-adj :s agent :o patient :adj result-role)))

@@ -593,12 +593,12 @@ come
 
 (define-category seem
   :specializes state
-  :mixins (raising-expletive-subject raising-to-subject with-expletive)
+  :mixins (expletive-subject raising-to-subject with-expletive)
   :realization (:verb "seem"))
 
 (define-category appear
   :specializes state
-  :mixins (raising-expletive-subject raising-to-subject with-expletive)
+  :mixins (expletive-subject raising-to-subject with-expletive)
   :realization (:verb "appear"))
                       
                       
