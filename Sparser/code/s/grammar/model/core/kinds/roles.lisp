@@ -48,37 +48,41 @@
 (define-mixin-category with-beneficiary
   ;;:specializes relation
   :binds ((beneficiary))
-  :documentation "")
+  :documentation "Entity benefiting from the event, ")
 
 (define-mixin-category with-cause
   ;;:specializes relation
   :binds ((cause))
-  :documentation "")
+  :documentation "That which causes an event to occur.")
 
 (define-mixin-category with-destination
   ;;:specializes relation
   :binds ((destination))
-  :documentation "")
+  :documentation "The final location of a movement.")
 
 (define-mixin-category with-extent
   ;;:specializes relation
   :binds ((extent))
-  :documentation "")
+  :documentation "The degree to which an event is carried out -
+  length, duration, or some other verb-specific measure
+  of completion. Extension along some dimension.")
 
 (define-mixin-category with-source
   ;;:specializes relation
   :binds ((source))
-  :documentation "")
+  :documentation "The location or entity from which an event
+  originates; usually involves movement.")
 
 (define-mixin-category with-material
   ;;:specializes relation
   :binds ((material))
-  :documentation "")
+  :documentation "The source from which a product is created (always
+  co-occurs with a Product role.)")
 
 (define-mixin-category with-product
   ;;:specializes relation
   :binds ((product))
-  :documentation "")
+  :documentation "Entity created as a direct result of an event.")
 
 (define-mixin-category with-experiencer
   ;;:specializes relation
@@ -107,39 +111,38 @@
 (define-mixin-category with-instrument
   ;;:specializes relation
   :binds ((instrument))
-  :documentation "")
+  :documentation "Thing or medium by which an action is carried out.")
 
 (define-mixin-category with-goal
   ;;:specializes relation
   :binds ((goal))
-  :documentation "")
+  :documentation "Location, entity, direction, or state toward which
+  something moves.")
 
 (define-mixin-category with-recipient
   ;;:specializes relation
   :binds ((recipient))
-  :documentation "")
-
-(define-mixin-category with-asset
-  ;;:specializes relation
-  :binds ((asset))
-  :documentation "")
+  :documentation "That which receives some participant in the event.")
 
 (define-mixin-category with-topic
   :binds ((topic))
-  :documentation "")
+  :documentation "The subject or theme of a communicative event.")
 
 (define-mixin-category with-stimulus
   :binds ((stimulus))
-  :documentation "")
+  :documentation "That which serves as the prompt for a state or experience.")
 
 (define-mixin-category with-manner
   :binds ((manner))
-  :documentation "A role of adverbial complements.")
+  :documentation "A description of the style in which an action 
+  is carried out. A role for adverbial complements.")
 
 (define-mixin-category with-result-role
   :binds ((result-role))
-  :documentation "The direct result of an action performed - often an adjp, as in a resultative - 'She wiped the car clean.'")
+  :documentation "The result of an action performed. Qualifies the
+  predicate's effect on the theme.")
 
 (define-mixin-category with-expletive
   :binds ((expletive))
-  :documentation "For raising verbs that take expletive subjects.")
+  :documentation "'Empty' subject 'it', seen in raising verbs and 
+  certain weather verbs.")
