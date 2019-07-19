@@ -92,9 +92,10 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :realization
     (:s agent
      :i beneficiary
+     :to beneficiary
      :o theme
      :mumble ((s-v-io-do :s agent :do theme :io beneficiary)
-     	      (S-V-DO-ToIO  :s agent :do theme :p "to" :io beneficiary))))
+     	      (S-V-DO-ToIO  :s agent :do theme :io beneficiary))))
 
 
 (define-mixin-category attributing-verb
@@ -319,3 +320,16 @@ subcategorization-pattern is a daughter of linguistic, abstract
   :binds ((agent physical-agent) (patient top) (result-role adjective))
   :realization (:s agent :o patient :adjp-complement result-role
                 :mumble (svo-adj :s agent :o patient :adj result-role)))
+
+(define-mixin-category explicit-change-of-state
+  :specializes subcategorization-pattern
+  :documentation "Perhaps needs a better name.
+  Any verb that represents an explicit change of state for a patient. 
+  Rise, fall, change etc. Binds source and goal.
+  'The company went from a failure to a success.'
+  'Gas prices rose from $1.00 to $3.00.'
+  "
+  :mixins (with-source with-goal with-patient)
+  :realization (:s patient :from source :to goal
+  :mumble ((svo1o2 :s patient :o1 source :o2 goal)
+                        (svo :s patient :o goal))))

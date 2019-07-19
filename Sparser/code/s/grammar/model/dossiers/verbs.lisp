@@ -434,17 +434,17 @@ come
 
 (define-category change-to 
   :specializes move
-  :mixins (with-agent with-goal with-theme move-something-verb)
-  :restrict ((agent physical-agent) (theme musical) (goal (:or music-note note-sequence)))
+  :mixins (with-agent with-goal with-patient)
+  :restrict ((agent physical-agent))
   :realization (:verb "change" 
-                :etf (svol)
                 :s agent
-                :o theme
-                :l goal
+                :s patient
+                :o patient
                 :to goal
                 :into goal
-                :loc-pp-complement (to into)
-                :mumble ("change" svo1o2 :o1 theme :o2 goal)))
+                :mumble ((svo1o2 :s agent :o1 patient :o2 goal)
+                        (svo :s patient :o goal))
+                ))
 
 
 (define-category move-to
