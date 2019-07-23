@@ -422,7 +422,7 @@
     (trace-msg "PNF: found the uncategories named ~a~
               ~%    given the sequence ~a" name sequence)))
 
-(deftrace :no-uncategoried-name-for (sequence)
+(deftrace :no-uncategorized-name-for (sequence)
   ;; called from find/uncategorized-name
   (when *trace-pnf*
     (trace-msg "PNF: no uncategorized name for the sequence~

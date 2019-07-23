@@ -312,7 +312,7 @@
       (let ((i (name-based-on-sequence/uncategorized sequence)))
         (if i
           (tr :found-uncategoried-name i sequence)
-          (tr :no-uncategoried-cname-for sequence))
+          (tr :no-uncategorized-name-for sequence))
         i)
       (else
        (tr :no-sequence-for-nws list-of-name-words)
@@ -340,9 +340,12 @@
       (if (null (cdr links-to-name-objects))
         (let ((name (binding-body (car links-to-name-objects))))
           name )
-        (break "The sequence ~A~%is part of more than one ~
-                uncategorized name:~%~A"
-               seq links-to-name-objects)))))
+        (else
+          (when *debug-pnf*
+            (break "The sequence ~A~%is part of more than one ~
+                    uncategorized name:~%~A"
+                   seq links-to-name-objects))
+          (binding-body (car links-to-name-objects)))))))
 
 
 
