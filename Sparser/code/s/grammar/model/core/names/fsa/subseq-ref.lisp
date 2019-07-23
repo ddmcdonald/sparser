@@ -338,16 +338,18 @@
     (if sequence
       (let ((names (names-based-on-sequence sequence)))
         (unless names
-          (push-debug `(,sequence ,items))
-          (error "Expected at least one name to be associated ~
-                  with this sequence:~%~a" sequence))
+          (when *debug-pnf*
+            (push-debug `(,sequence ,items))
+            (break "Expected at least one name to be associated ~
+                    with this sequence:~%~a" sequence))
+          (return-from known-sequence nil))
 
         (let ((entities (entities-with-names names)))
           (or entities
               (setq entities (shorter-from-longer-name names))
               (else
                (push-debug `(,names ,sequence ,items))
-               (error "No named entity associated with the name ~
+               (break "No named entity associated with the name ~
                      ~%~a" names)))
           (if (null (cdr entities))
             (throw :already-decoded-name (car entities))

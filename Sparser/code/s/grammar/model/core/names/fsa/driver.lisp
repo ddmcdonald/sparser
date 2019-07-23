@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  February 2019
+;;;  Version:  July 2019
 
 ;; initiated 5/15/93 v2.3, added traces 5/26
 ;; 0.1 (12/9) Added pre-emptive state variable
@@ -29,9 +29,8 @@
 ;;;---------
 ;;; globals
 ;;;---------
-(defvar *POS-POSSIBLE-NEXT-LETTER*)
 
-(defparameter *debug-pnf* t
+(defparameter *debug-pnf* nil
   "Flag used to control whether we go into a breakpoint on oddities
    or alternatively take some heuristic default")
 
@@ -161,6 +160,7 @@
 (defun pnf/scan/ignore-boundaries (starting-position)
   ;; designed for dm&p where there are lots of names but they aren't
   ;; the names of people or companies
+  (declare (special *pos-possible-next-letter*))
   (tr :initiating-pnf starting-position)
   (set-status :pnf-checked starting-position)
   (if *capitalization-is-uninformative*
@@ -198,6 +198,7 @@
 
 (defun pnf/scan/ignore-boundaries/initials-ok (starting-position)
   ;; Identical to the driver above except for the initials flag
+  (declare (special *pos-possible-next-letter*))
   (tr :initiating-pnf starting-position)
   (set-status :pnf-checked starting-position)
   (if *capitalization-is-uninformative*

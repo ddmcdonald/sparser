@@ -150,7 +150,7 @@
                 ;; the setq of tt in label-for isn't having any effect here
                 (setq tt (edge-category tt)))
 
-              (case (word-symbol tt)
+              (case (label-symbol tt)
                 (word::and-sign  
                  (setq &-sign items))
                   
@@ -409,7 +409,8 @@
          (label-for (tt)
            (typecase tt 
              (edge
-              (if (word-p (edge-category tt))
+              (if (or (word-p (edge-category tt))
+                      (polyword-p (edge-category tt)))
                 (then (setq edge-labeled-by-word tt
                             tt (edge-category tt))
                       ;;/// this set'ing of tt doesn't have any effect
