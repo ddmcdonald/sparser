@@ -182,6 +182,12 @@
            (edges (all-tts start-pos end-pos)))
 
       (tr :wh-flag-status preposed? wh-initial? edges)
+
+      (when (> (length edges) 5)
+        ;; The patterns reachable from here are all shorter than that
+        (return-from make-this-a-question-if-appropriate nil))
+
+
       (when *debug-questions* (push-debug `(,edges)))
 
       ;; Look for heuristic ways we could get a full sentence
