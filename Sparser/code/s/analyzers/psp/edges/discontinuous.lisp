@@ -108,6 +108,7 @@
    NP is the subject of this VP, so we create the edge without bothering
    to go through its rule, just its test. Npte that the NP is moving
    so it could be a funny looking edge."
+  (declare (special category::s))
   (with-referent-edges (:l np-edge :r vp-edge)
     (let* ((subj (edge-referent np-edge))
            (pred (edge-referent vp-edge))
