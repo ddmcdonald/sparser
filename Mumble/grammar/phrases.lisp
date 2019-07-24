@@ -840,6 +840,19 @@
                      second-object o2 :additional-labels (objective))))
 
 
+;--- S V O1 and O2 "swap the Donald Duck and the Archie" "reverse note 3 and note 5"
+;; Reserved for a special set of verbs where two separate roles are separated by a conjunction,
+;; usually co-agents or co-patients.
+
+(define-phrase SVO1CO2 (s v o1 conj o2)
+  (clause :set-state (:aux-state initial)
+	  subject s :additional-labels (nominative)
+	  predicate (vp
+                     verb v
+                     direct-object o1 :additional-labels (objective)
+                     conjunction conj
+                     second-object o2 :additional-labels (objective))))
+
 
 
 
@@ -2004,6 +2017,7 @@
 ;;; conjunctions
 ;;;--------------
 
+
 (define-phrase conjunct (conj)
   (conjunction
    conjunct conj))
@@ -2012,6 +2026,11 @@
   (conjunction
    item one
    item two :additional-labels (and)))
+
+(define-phrase second-half-of-conjunction (conj one)
+  (conjunction
+  	conjunction conj :additional-labels (and)
+   item one ))
 
 ;; /// clean up the name -- too long/presumptive
 (define-phrase two-item-conjunction-with-conjunction (one conj two)

@@ -387,8 +387,9 @@ come
 ;;
 (define-category reverse
   :specializes process
-  :mixins (simple-action)
-  :realization (:verb "reverse"))
+  :mixins (simple-action with-co-patient with-patient)
+  :binds ((patient (:or sequence endurant)) (co-patient (:or sequence endurant)))
+  :realization (:verb "reverse" :s agent :o patient :i co-patient))
 
 ;; "transpose the C up 1 half step"
 ;; Modeling "raise" and "lower" after this
@@ -407,11 +408,11 @@ come
 (define-category raise-note
   :specializes move
   :mixins (with-agent with-theme with-goal move-something-verb)
-  :binds ((agent physical-agent) (theme musical) (goal to-note))
+  :binds ((agent physical-agent) (theme musical) (goal musical))
   :realization (:verb "raise" :tree-family vp+adjunct
     :mapping ((vg . :self)
               (vp . move)
-              (adjunct . to-note)
+              (adjunct . to-dative)
               (slot . goal))))
 
 

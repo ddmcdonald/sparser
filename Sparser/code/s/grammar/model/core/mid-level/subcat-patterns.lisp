@@ -316,7 +316,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
 (define-mixin-category resultative
   :specializes subcategorization-pattern
   :documentation "'I waltzed her dizzy.' "
-  :mixins (with-patient with-result-role)
+  :mixins (with-patient with-result)
   :binds ((agent physical-agent) (patient top) (result-role adjective))
   :realization (:s agent :o patient :adjp-complement result-role
                 :mumble (svo-adj :s agent :o patient :adj result-role)))

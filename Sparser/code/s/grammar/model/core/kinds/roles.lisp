@@ -19,7 +19,7 @@
 ;;/// replaces with-an-agent
 (define-mixin-category with-agent
   ;;:specializes relation
-  :binds ((agent))
+  :binds ((agent (:or pronoun physical-agent)))
   :documentation "Participant that intentionally initiates
     the action.")
 
@@ -48,7 +48,7 @@
 (define-mixin-category with-beneficiary
   ;;:specializes relation
   :binds ((beneficiary))
-  :documentation "Entity benefiting from the event, ")
+  :documentation "Entity benefiting from the event. ")
 
 (define-mixin-category with-cause
   ;;:specializes relation
@@ -75,7 +75,7 @@
 
 (define-mixin-category with-material
   ;;:specializes relation
-  :binds ((material))
+  :binds ((material physical))
   :documentation "The source from which a product is created (always
   co-occurs with a Product role.)")
 
@@ -86,7 +86,7 @@
 
 (define-mixin-category with-experiencer
   ;;:specializes relation
-  :binds ((experiencer))
+  :binds ((experiencer physical-agent))
   :documentation "Participant that is aware of something
     pertaining to the event.")
 
@@ -110,7 +110,7 @@
 
 (define-mixin-category with-instrument
   ;;:specializes relation
-  :binds ((instrument))
+  :binds ((instrument object))
   :documentation "Thing or medium by which an action is carried out.")
 
 (define-mixin-category with-goal
@@ -133,16 +133,21 @@
   :documentation "That which serves as the prompt for a state or experience.")
 
 (define-mixin-category with-manner
-  :binds ((manner))
+  :binds ((manner adverb))
   :documentation "A description of the style in which an action 
   is carried out. A role for adverbial complements.")
 
-(define-mixin-category with-result-role
+(define-mixin-category with-result
   :binds ((result-role))
   :documentation "The result of an action performed. Qualifies the
   predicate's effect on the theme.")
 
 (define-mixin-category with-expletive
-  :binds ((expletive))
-  :documentation "'Empty' subject 'it', seen in raising verbs and 
+  :binds ((expletive (:or pronoun-inanimate syntactic-there)))
+  :documentation "'Empty' subject 'it' or 'there', seen in raising verbs and 
   certain weather verbs.")
+
+(define-mixin-category with-co-patient
+  :binds ((co-patient))
+  :documentation "")
+
