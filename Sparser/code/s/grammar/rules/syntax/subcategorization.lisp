@@ -910,6 +910,10 @@
        (not (itypep item 'ordinal ))))
 
 (defun satisfies-subcat-restriction? (item pat-or-v/r)
+  "Does the individual 'item' satisfy the type restriction specified in this
+   subcat pattern. There are some general cases (e.g. pronouns) where we ignore
+   the typecheck because we don't locally have enough information and the
+   actual referent won't be known until later."
   (declare (special *trivial-subcat-test* *subcat-test*
                     *in-collect-no-space-segment-into-word*
                     category::pronoun/first/plural category::quantifier
