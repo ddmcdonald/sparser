@@ -149,5 +149,14 @@
 
 (define-mixin-category with-co-patient
   :binds ((co-patient))
-  :documentation "")
+  :documentation "Used for verbs that involve two participants, both patients, such as 
+  'swap', 'reverse', etc.")
 
+(define-mixin-category with-path 
+  :binds ((path))
+  :documentation "The direction or trajectory of movement.")
+
+(define-mixin-category reflexive
+  :binds ((pronoun pronoun))
+  :documentation "Used for reflexive verbs, in which the subject and object refer
+  to the same entity.")
