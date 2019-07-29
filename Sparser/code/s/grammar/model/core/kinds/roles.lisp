@@ -143,7 +143,7 @@
   predicate's effect on the theme.")
 
 (define-mixin-category with-expletive
-  :binds ((expletive (:or pronoun-inanimate syntactic-there)))
+  :binds ((expletive pronoun-inanimate))
   :documentation "'Empty' subject 'it' or 'there', seen in raising verbs and 
   certain weather verbs.")
 
