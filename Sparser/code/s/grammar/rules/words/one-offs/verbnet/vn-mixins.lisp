@@ -1,3236 +1,3889 @@
-;; Written 15:42:57 7/29/2019
+;; Written 16:11:1 7/30/2019
 
 (in-package :sparser)
 
 
-((DEFINE-MIXIN-CATEGORY ABSORB-39.8 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-GOAL WITH-THEME WITH-SOURCE) :BINDS NIL :REALIZATION
-  (((:S "Goal") (:VERB) (:O "Theme") (:PREP "from") (:IO "Source"))
-   ((:S "Goal") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY ACCEPT-77.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY ACCOMPANY-51.7 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-DESTINATION) :BINDS
-  ((THEME PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "spatial")
-    (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY ACQUIESCE-95.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-AGENT WITH-THEME) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "to") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Co-Agent")))))
-((DEFINE-MIXIN-CATEGORY ACQUIESCE-95.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY ACT-114 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT PREDICATION) :BINDS
-  ((PREDICATE "PREDICATE") (AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Predicate")))))
-((DEFINE-MIXIN-CATEGORY ACT-114-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY ACT-114-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Predicate"))
-   ((:S "Agent") (:VERB) (:PREP "on") (:IO "Predicate")))))
-((DEFINE-MIXIN-CATEGORY ADDICT-96 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-STIMULUS) :BINDS
-  ((PATIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "to") (:IO "Stimulus"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to") (:IO "Stimulus")))))
-((DEFINE-MIXIN-CATEGORY ADJUST-26.9 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-GOAL WITH-SOURCE) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "to") (:IO "Goal"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Goal"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to") (:IO "Goal"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to") (:IO "Goal"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY ADMIRE-31.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-STIMULUS WITH-EXPERIENCER WITH-ATTRIBUTE) :BINDS
-  ((EXPERIENCER PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus") (:PREP "for") (:IO "Attribute"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus")))))
-((DEFINE-MIXIN-CATEGORY ADMIRE-31.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Experiencer") (:VERB) (:O "Stimulus")))))
-((DEFINE-MIXIN-CATEGORY ADMIT-64.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-CAUSE) :BINDS
-  ((AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:IO "Location")))))
-((DEFINE-MIXIN-CATEGORY ADMIT-64.3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Location")))))
-((DEFINE-MIXIN-CATEGORY ADOPT-93 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY ADVISE-37.9 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-TOPIC WITH-RECIPIENT) :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (TOPIC SPEECH-ACT)
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Recipient") (:PREP "of") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient")
-    (:PREP "against about concerning on regarding respecting") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient")))))
-((DEFINE-MIXIN-CATEGORY ADVISE-37.9-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB)
-    (:PREP "against about concerning on regarding respecting") (:IO "Topic")))))
-((DEFINE-MIXIN-CATEGORY ALLOW-64.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-BENEFICIARY WITH-THEME) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Beneficiary")))))
-((DEFINE-MIXIN-CATEGORY ALLOW-64.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Beneficiary") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY AMALGAMATE-22.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT))) :REALIZATION
-  (((:S "Patient") (:VERB) (:ADV))
-   ((:S "Patient") (:VERB) (:ADV) (:PREP "with") (:IO "Co-Patient")))))
-((DEFINE-MIXIN-CATEGORY AMALGAMATE-22.2-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-PATIENT WITH-CO-PATIENT) :BINDS
-  ((CO-PATIENT PHYSICAL) (PATIENT PHYSICAL)) :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "with") (:IO "Co-Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "into to with")
-    (:IO "Co-Patient")))))
-((DEFINE-MIXIN-CATEGORY AMALGAMATE-22.2-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY AMALGAMATE-22.2-2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-PATIENT WITH-CO-PATIENT WITH-AGENT)
-  :BINDS
-  ((AGENT (OR PHYSICAL-AGENT ABSTRACT))
-   (CO-PATIENT (OR PHYSICAL-AGENT ABSTRACT)) (PATIENT PHYSICAL))
-  :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "with") (:IO "Co-Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Co-Patient")))))
-((DEFINE-MIXIN-CATEGORY AMALGAMATE-22.2-2-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY AMALGAMATE-22.2-3 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY AMALGAMATE-22.2-3-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "to") (:IO "Co-Patient")))))
-((DEFINE-MIXIN-CATEGORY AMALGAMATE-22.2-3-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
-  :BINDS
-  ((CO-PATIENT PHYSICAL-AGENT) (PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :REALIZATION (((:S "Patient") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY AMALGAMATE-22.2-3-2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
-  :BINDS
-  ((CO-PATIENT PHYSICAL) (PATIENT PHYSICAL)
-   (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :REALIZATION (((:S "Patient") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY AMUSE-31.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXPERIENCER WITH-STIMULUS WITH-RESULT) :BINDS
-  ((EXPERIENCER PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Stimulus") (:VERB) (:O "Experiencer") (:IO "Result"))
-   ((:S "Stimulus") (:LEX "'s") (:VERB) (:IO "Experiencer"))
-   ((:S "Stimulus") (:VERB)) ((:S "Experiencer") (:VERB) (:ADV))
-   ((:S "Stimulus") (:VERB) (:O "Experiencer")))))
-((DEFINE-MIXIN-CATEGORY ANIMAL_SOUNDS-38 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-RECIPIENT WITH-CAUSE) :BINDS
-  ((AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Location") (:VERB) (:PREP "with") (:IO "Agent"))
-   ((:S "Agent") (:VERB) (:O "Location")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "+" "dest_dir") (:IO "Recipient"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY APPEAL-31.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-STIMULUS WITH-EXPERIENCER) :BINDS
-  ((EXPERIENCER PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Stimulus") (:VERB) (:PREP "to") (:IO "Experiencer")))))
-((DEFINE-MIXIN-CATEGORY APPEAL-31.4-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Stimulus") (:VERB) (:PREP "at") (:IO "Experiencer")))))
-((DEFINE-MIXIN-CATEGORY APPEAL-31.4-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Stimulus") (:VERB) (:PREP "on") (:IO "Experiencer")))))
-((DEFINE-MIXIN-CATEGORY APPEAL-31.4-3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Stimulus") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY APPEAR-48.1.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-CAUSE) :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Location"))
-   ((:S "+" "loc") (:NP "Location") (:VERB) (:IO "Theme"))
-   ((:S "there") (:VERB) (:O "Theme") (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Theme") (:VERB) (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY APPOINT-29.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-RESULT) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:LEX "to") (:LEX "be") (:NP "Result"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:LEX "as") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY ASSESSMENT-34.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-ATTRIBUTE) :BINDS
-  ((AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:LEX "'s") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "for") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY ASSUMING_POSITION-50 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-CAUSE) :BINDS
-  ((CAUSE (AND/OR LOCATION REGION)) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY ATTACK-60.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT) :BINDS
-  ((AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY ATTACK-60.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT) :BINDS
-  ((AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY ATTEND-107.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-GOAL) :BINDS NIL :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY ATTEND-107.4-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Theme") (:VERB) (:O "Goal")))))
-((DEFINE-MIXIN-CATEGORY ATTEND-107.4-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:PREP) (:IO "Goal")))))
-((DEFINE-MIXIN-CATEGORY AVOID-52 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-CAUSE WITH-THEME) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Location")))))
-((DEFINE-MIXIN-CATEGORY BANISH-10.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
-   (THEME PHYSICAL-AGENT) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY BASE-97.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "on") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "on") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "on") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "on") (:IO "Source")))))
-((DEFINE-MIXIN-CATEGORY BATTLE-36.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-AGENT WITH-THEME) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "about | over ") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "about | over") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "about | over") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "about | over") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "about | over") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "about | over") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "about | over")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "about | over")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "about | over")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "about | over")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "about | over")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent")))))
-((DEFINE-MIXIN-CATEGORY BATTLE-36.4-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Co-Agent") (:PREP "about | over") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Co-Agent") (:PREP "about | over") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Co-Agent") (:PREP "about | over") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Co-Agent") (:PREP "about | over") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Co-Agent") (:PREP "about | over") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Co-Agent")))))
-((DEFINE-MIXIN-CATEGORY BECOME-109.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-PATIENT WITH-RESULT) :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB) (:O "Result")))))
-((DEFINE-MIXIN-CATEGORY BECOME-109.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "in | into") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY BECOME-109.1-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Patient") (:VERB) (:O "Result")))))
-((DEFINE-MIXIN-CATEGORY BEG-58.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-PATIENT WITH-RESULT) :BINDS
-  ((PATIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Result")) ((:S "Agent") (:VERB) (:O "Result")))))
-((DEFINE-MIXIN-CATEGORY BEG-58.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "for") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY BEG-58.2-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "for") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY BEGIN-55.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-INSTRUMENT) :BINDS
-  ((INSTRUMENT "OBJECT") (AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY BEGIN-55.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY BEGIN-55.1-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Instrument") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "with") (:IO "Instrument"))
-   ((:S "Theme") (:VERB) (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Theme")) ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY BEING_DRESSED-41.3.3 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-THEME) :BINDS
-  ((AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "in") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY BEND-45.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT) :BINDS
-  ((INSTRUMENT SOLID) (PATIENT SOLID)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state") (:PREP "with") (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:IO "Result"))
-   ((:S "Instrument") (:VERB) (:O "Patient")) ((:S "Patient") (:VERB) (:ADV))
-   ((:S "Patient") (:VERB))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY BENEFIT-72.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-CAUSE WITH-BENEFICIARY) :BINDS NIL :REALIZATION
-  (((:S "Beneficiary") (:VERB) (:PREP "from by") (:IO "Causer"))
-   ((:S "Beneficiary") (:VERB)) ((:S "Causer") (:VERB) (:O "Beneficiary")))))
-((DEFINE-MIXIN-CATEGORY BERRY-13.7 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT) :BINDS ((AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB)) ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY BILL-54.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-EXTENT WITH-RECIPIENT) :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (EXTENT CURRENCY)
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Recipient") (:IO "Asset"))
-   ((:S "Agent") (:VERB) (:O "Recipient")))))
-((DEFINE-MIXIN-CATEGORY BIRTH-28.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT) :BINDS
-  ((PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY BIRTH-28.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY BODY_INTERNAL_MOTION-49.1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-PATIENT) :BINDS
-  ((PATIENT PRONOUN) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY BODY_INTERNAL_STATES-40.6 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-EXPERIENCER WITH-STIMULUS) :BINDS
-  ((EXPERIENCER PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Experiencer") (:VERB) (:PREP "from at") (:IO "Stimulus"))
-   ((:S "Experiencer") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY BODY_MOTION-49.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-GOAL WITH-PATH) :BINDS
-  ((AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Path") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Path")))))
-((DEFINE-MIXIN-CATEGORY BODY_MOTION-49.2-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Path") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "+" "dir") (:IO "Path"))
-   ((:S "Agent") (:VERB) (:O "Goal"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Goal")))))
-((DEFINE-MIXIN-CATEGORY BODY_MOTION-49.2-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY BRAID-41.2.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY BREAK-45.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT) :BINDS
-  ((INSTRUMENT SOLID) (PATIENT SOLID)) :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "to into") (:IO "Result" "+" "state"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state") (:PREP "with") (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:IO "Result") (:PREP "with")
-    (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:IO "Result"))
-   ((:S "Instrument") (:VERB) (:O "Patient")) ((:S "Patient") (:VERB) (:ADV))
-   ((:S "Patient") (:VERB))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY BREAK_DOWN-45.8 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-PATIENT) :BINDS NIL :REALIZATION (((:S "Patient") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY BREATHE-40.1.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-DESTINATION) :BINDS
-  ((AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "on onto") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "on onto") (:IO "Destination"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY BREATHE-40.1.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY BRING-11.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-INSTRUMENT)
-  :BINDS
-  ((INSTRUMENT "OBJECT") (DESTINATION (OR PHYSICAL-AGENT LOCATION REGION))
-   (SOURCE LOCATION) (THEME PHYSICAL))
-  :REALIZATION
-  (((:S "Instrument") (:VERB) (:O "Theme") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location") (:PREP "to") (:NP "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location"))
-   ((:S "Agent") (:VERB) (:PREP "against before into on to onto")
-    (:IO "Destination") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "against before into on to onto")
-    (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY BRING-11.3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-DESTINATION) :BINDS ((DESTINATION PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:LEX "together"))
-   ((:S "Agent") (:VERB) (:O "Destination") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY BUILD-26.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-MATERIAL WITH-PRODUCT WITH-BENEFICIARY WITH-EXTENT)
-  :BINDS
-  ((EXTENT CURRENCY) (BENEFICIARY (OR PHYSICAL-AGENT COMPANY))
-   (MATERIAL PHYSICAL) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Product") (:PREP "from out_of") (:IO "Material")
-    (:PREP "for") (:NP "Asset"))
-   ((:S "Agent") (:VERB) (:O "Beneficiary") (:IO "Product") (:PREP "for")
-    (:NP "Asset"))
-   ((:S "Material") (:VERB) (:O "Product"))
-   ((:S "Agent") (:VERB) (:O "Material") (:PREP "into") (:IO "Product")
-    (:PREP "for") (:NP "Beneficiary"))
-   ((:S "Agent") (:VERB) (:O "Material") (:PREP "for") (:IO "Beneficiary"))
-   ((:S "Agent") (:VERB) (:O "Product") (:PREP "from out_of") (:IO "Material")
-    (:PREP "for") (:NP "Beneficiary"))
-   ((:S "Agent") (:VERB) (:O "Beneficiary") (:IO "Product")
-    (:PREP "from out_of") (:NP "Material"))
-   ((:S "Agent") (:VERB) (:O "Product") (:PREP "for") (:IO "Beneficiary"))
-   ((:S "Agent") (:VERB) (:O "Material") (:PREP "into") (:IO "Product"))
-   ((:S "Agent") (:VERB) (:O "Product") (:PREP "from out_of") (:IO "Material"))
-   ((:S "Agent") (:VERB)) ((:S "Agent") (:VERB) (:O "Product")))))
-((DEFINE-MIXIN-CATEGORY BUILD-26.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Asset") (:VERB) (:O "Beneficiary") (:IO "Product")
-    (:PREP "from out_of") (:NP "Material"))
-   ((:S "Asset") (:VERB) (:O "Product") (:PREP "from out_of") (:IO "Material"))
-   ((:S "Asset") (:VERB) (:O "Beneficiary") (:IO "Product"))
-   ((:S "Asset") (:VERB) (:O "Product"))
-   ((:S "Agent") (:VERB) (:O "Product") (:PREP "for") (:IO "Asset")))))
-((DEFINE-MIXIN-CATEGORY BULGE-47.5.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-CAUSE WITH-THEME) :BINDS ((CAUSE PHYSICAL)) :REALIZATION
-  (((:S "Location") (:VERB))
-   ((:S "Location") (:VERB) (:PREP "with") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY BULLY-59.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-RESULT) :BINDS
-  ((PATIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "into") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "into") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY BUMP-18.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-CAUSE WITH-THEME) :BINDS ((THEME PHYSICAL) (CAUSE PHYSICAL))
-  :REALIZATION
-  (((:S "Theme") (:VERB) (:PREP "against into onto") (:IO "Location")))))
-((DEFINE-MIXIN-CATEGORY BUMP-18.4-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:LEX "together")))))
-((DEFINE-MIXIN-CATEGORY BUTTER-9.9 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION) (THEME PHYSICAL)
-   (AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Destination") (:PREP "with") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Destination")))))
-((DEFINE-MIXIN-CATEGORY CALIBRATABLE_COS-45.6.1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-PATIENT WITH-ATTRIBUTE) :BINDS NIL
-  :REALIZATION
-  (((:S "Patient") (:VERB))
-   ((:S "Patient") (:VERB) (:PREP "in") (:IO "Attribute"))
-   ((:S "Attribute") (:LEX "of") (:O "Patient") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY CALIBRATABLE_COS-45.6.1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-EXTENT WITH-SOURCE WITH-RESULT)
-  :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "in") (:IO "Attribute") (:PREP "?by")
-    (:NP "?Extent") (:PREP "?from") (:NP "?Initial_State") (:PREP "?to")
-    (:NP "?Result"))
-   ((:S "Patient") (:VERB) (:PREP "in") (:IO "Attribute") (:IO "?Extent")
-    (:PREP "?from") (:NP "?Initial_State") (:PREP "?to") (:NP "?Result"))
-   ((:S "Attribute") (:PREP "of") (:O "Patient") (:VERB) (:PREP "by")
-    (:NP "Extent") (:PREP "?from") (:NP "?Initial_State") (:PREP "?to")
-    (:NP "?Result"))
-   ((:S "Attribute") (:PREP "of") (:O "Patient") (:VERB) (:IO "Extent")
-    (:PREP "?from") (:NP "?Initial_State") (:PREP "?to") (:NP "?Result"))
-   ((:S "Patient") (:VERB) (:PREP "by") (:IO "Extent") (:PREP "?from")
-    (:NP "?Initial_State") (:PREP "?to") (:NP "?Result"))
-   ((:S "Patient") (:VERB) (:O "Extent") (:PREP "?from") (:IO "?Initial_State")
-    (:PREP "?to") (:NP "?Result")))))
-((DEFINE-MIXIN-CATEGORY CALVE-28.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT) :BINDS
-  ((PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY CAPTAIN-29.8 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-BENEFICIARY) :BINDS
-  ((BENEFICIARY PHYSICAL) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "for") (:IO "Beneficiary")))))
-((DEFINE-MIXIN-CATEGORY CAPTAIN-29.8-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Beneficiary")))))
-((DEFINE-MIXIN-CATEGORY CAPTAIN-29.8-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Beneficiary") (:VERB) (:O "Agent")))))
-((DEFINE-MIXIN-CATEGORY CARE-88.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXPERIENCER WITH-STIMULUS) :BINDS
-  ((EXPERIENCER (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus")) ((:S "Experiencer") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY CARE-88.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Experiencer") (:VERB) (:PREP "about") (:IO "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:PREP "about") (:IO "Stimulus")))))
-((DEFINE-MIXIN-CATEGORY CARING-75.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY CARING-75.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CARING-75.2-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "to") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY CARING-75.2-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "for") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY CARRY-11.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((SOURCE LOCATION) (THEME PHYSICAL)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "to towards") (:IO "Destination")
-    (:PREP "+" "src") (:NP "Initial_Location"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location") (:PREP "to towards") (:NP "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "to towards") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CARRY-11.4-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "to towards") (:IO "Destination")
-    (:PREP "+" "src") (:NP "Initial_Location"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location") (:PREP "to towards") (:NP "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "to towards") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CARRY-11.4-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-DESTINATION) :BINDS ((DESTINATION PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Destination") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY CARVE-21.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT) :BINDS
-  ((INSTRUMENT PHYSICAL) (PATIENT PHYSICAL)) :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY CARVE-21.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Instrument") (:VERB) (:ADV))
-   ((:S "Instrument") (:VERB) (:O "Patient")) ((:S "Patient") (:VERB) (:ADV))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY CARVE-21.2-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Instrument") (:VERB) (:ADV))
-   ((:S "Instrument") (:VERB) (:O "Patient")) ((:S "Patient") (:VERB) (:ADV))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY CAUSED_CALIBRATABLE_COS-45.6.2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-CAUSE WITH-PATIENT WITH-EXTENT WITH-SOURCE WITH-GOAL WITH-ATTRIBUTE)
-  :BINDS NIL :REALIZATION
-  (((:S "Causer") (:VERB) (:O "Patient") (:IO "?Extent") (:IO "?Source")
-    (:NP "?Goal"))
-   ((:S "Causer") (:VERB) (:O "Patient") (:IO "?Extent") (:IO "?Source")
-    (:NP "?Goal")))))
-((DEFINE-MIXIN-CATEGORY CAUSED_CALIBRATABLE_COS-45.6.2-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-ATTRIBUTE) :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "in") (:IO "Attribute") (:PREP "?by")
-    (:NP "?Extent") (:PREP "?from") (:NP "?Source") (:PREP "?to")
-    (:NP "?Goal"))
-   ((:S "Patient") (:VERB) (:PREP "in") (:IO "Attribute") (:IO "?Extent")
-    (:PREP "?from") (:NP "?Source") (:PREP "?to") (:NP "?Goal"))
-   ((:S "Attribute") (:PREP "of") (:O "Patient") (:VERB) (:PREP "by")
-    (:NP "Extent") (:PREP "?from") (:NP "?Source") (:PREP "?to") (:NP "?Goal"))
-   ((:S "Attribute") (:PREP "of") (:O "Patient") (:VERB) (:IO "?Extent")
-    (:PREP "?from") (:NP "?Source") (:PREP "?to") (:NP "?Goal"))
-   ((:S "Patient") (:VERB) (:PREP "?by") (:IO "?Extent") (:PREP "?from")
-    (:NP "?Source") (:PREP "?to") (:NP "?Goal"))
-   ((:S "Patient") (:VERB) (:O "Extent") (:PREP "?from") (:IO "?Source")
-    (:PREP "?to") (:NP "?Goal")))))
-((DEFINE-MIXIN-CATEGORY CHANGE_BODILY_STATE-40.8.4 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-EXPERIENCER WITH-STIMULUS) :BINDS
-  ((EXPERIENCER PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Experiencer") (:VERB) (:PREP "from at") (:IO "Stimulus"))
-   ((:S "Experiencer") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY CHARACTERIZE-29.2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
-  :BINDS ((THEME (OR PHYSICAL COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "as") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:LEX "to be") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:LEX "as") (:IO "Attribute")))))
-((DEFINE-MIXIN-CATEGORY CHARACTERIZE-29.2-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CHARACTERIZE-29.2-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CHARACTERIZE-29.2-1-2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CHASE-51.6 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-PATH) :BINDS
-  ((THEME PHYSICAL) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "after") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "spatial") (:IO "Trajectory"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CHEAT-10.6.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-GOAL) :BINDS
-  ((SOURCE (OR PHYSICAL-AGENT LOCATION REGION))
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Source") (:PREP "out_of") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Source")))))
-((DEFINE-MIXIN-CATEGORY CHEAT-10.6.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Source") (:PREP "for") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY CHEAT-10.6.1-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "from") (:IO "Source")))))
-((DEFINE-MIXIN-CATEGORY CHEW-39.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY CHEW-39.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-PATIENT) :BINDS ((PATIENT (AND/OR NIL SOLID))) :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "on") (:IO "Patient"))
-   ((:S "Agent") (:VERB) (:PREP "at") (:IO "Patient")) ((:S "Agent") (:VERB))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY CHEW-39.2-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-PATIENT) :BINDS ((PATIENT (AND/OR NIL SOLID))) :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "from") (:IO "Patient")) ((:S "Agent") (:VERB))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY CHIT_CHAT-37.6 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-AGENT WITH-TOPIC) :BINDS
-  ((TOPIC SPEECH-ACT) (AGENT (OR PHYSICAL-AGENT COMPANY))
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic") (:PREP "with")
-    (:NP "Co-Agent"))
-   ((:S "Agent") (:VERB))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "about")
-    (:NP "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY CHIT_CHAT-37.6-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Topic") (:PREP "with") (:IO "Co-Agent"))
-   ((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic")))))
-((DEFINE-MIXIN-CATEGORY CLASSIFY-29.10 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-GOAL) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "in") (:IO "Goal"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "as") (:IO "Goal"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CLEAR-10.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION LOCATION) (SOURCE LOCATION) (THEME PHYSICAL)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Source") (:PREP "of") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:O "Source")))))
-((DEFINE-MIXIN-CATEGORY CLEAR-10.3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:PREP "+" "src") (:IO "Source"))
-   ((:S "Source") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY CLING-22.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-THEME) :BINDS ((THEME PHYSICAL) (THEME PHYSICAL))
-  :REALIZATION
-  (((:S "Theme") (:VERB) (:LEX "together"))
-   ((:S "Theme") (:VERB) (:PREP "to with") (:IO "Co-Theme")))))
-((DEFINE-MIXIN-CATEGORY COGNIZE-85 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXPERIENCER WITH-STIMULUS) :BINDS
-  ((EXPERIENCER PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:PREP "about") (:IO "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:PREP "of") (:IO "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus")))))
-((DEFINE-MIXIN-CATEGORY COIL-9.6 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION LOCATION) (SOURCE LOCATION) (THEME (AND/OR NIL NIL)))
-  :REALIZATION
-  (((:S "Theme") (:VERB) (:ADV) (:PREP "+" "path") (:IO "Destination"))
-   ((:S "Theme") (:VERB) (:PREP "+" "path") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "path") (:IO "Destination")))))
-((DEFINE-MIXIN-CATEGORY COIL-9.6-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Theme") (:VERB) (:ADV)))))
-((DEFINE-MIXIN-CATEGORY COLORING-24 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-RESULT) :BINDS ((PATIENT PHYSICAL))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY COMPEL-59.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT PREDICATION) :BINDS
-  ((PREDICATE "PREDICATE") (PATIENT (OR PHYSICAL-AGENT COMPANY))
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:IO "Predicate"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "into") (:IO "Predicate"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "into") (:IO "Predicate"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY COMPLAIN-37.8 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-TOPIC WITH-RECIPIENT) :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (TOPIC SPEECH-ACT)
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:PREP "about")
-    (:NP "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic") (:PREP "to")
-    (:NP "Recipient"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY COMPLETE-55.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY COMPLETE-55.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY COMPREHEND-87.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXPERIENCER WITH-ATTRIBUTE WITH-STIMULUS) :BINDS
-  ((EXPERIENCER (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus") (:PREP "as") (:IO "Attribute"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus")))))
-((DEFINE-MIXIN-CATEGORY COMPREHEND-87.2-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus")))))
-((DEFINE-MIXIN-CATEGORY COMPREHEND-87.2-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Experiencer") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY COMPREHEND-87.2-1-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Experiencer") (:VERB) (:O "Stimulus") (:PREP "about"))
-   ((:S "Experiencer") (:VERB) (:PREP "about | of") (:IO "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:PREP "about | of") (:IO "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:PREP "about | of") (:IO "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:PREP "about | of") (:IO "Stimulus")))))
-((DEFINE-MIXIN-CATEGORY COMPRISE-107.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-ATTRIBUTE) :BINDS NIL :REALIZATION
-  (((:S "Attribute") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY COMPRISE-107.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Attribute")))))
-((DEFINE-MIXIN-CATEGORY CONCEALMENT-16 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-BENEFICIARY WITH-PATIENT WITH-CAUSE) :BINDS
-  ((BENEFICIARY PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "from") (:IO "Beneficiary")))))
-((DEFINE-MIXIN-CATEGORY CONCEALMENT-16-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Agent") (:VERB) (:PREP "from") (:IO "Beneficiary"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY CONDUCT-111.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-BENEFICIARY) :BINDS
-  ((AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:IO "Beneficiary"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CONFESS-37.10 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-RECIPIENT WITH-TOPIC) :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient"))
-   ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic") (:PREP "to") (:IO "Recipient"))
-   ((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic")))))
-((DEFINE-MIXIN-CATEGORY CONFINE-92 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-DESTINATION) :BINDS
-  ((DESTINATION LOCATION) (AGENT (AND/OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CONFINE-92-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Destination")))))
-((DEFINE-MIXIN-CATEGORY CONFRONT-98 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-INSTRUMENT) :BINDS
-  ((INSTRUMENT "OBJECT") (AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CONJECTURE-29.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME PREDICATION) :BINDS
-  ((PREDICATE "PREDICATE") (AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:LEX "to") (:LEX "be")
-    (:NP "Predicate")))))
-((DEFINE-MIXIN-CATEGORY CONJECTURE-29.5-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CONJECTURE-29.5-2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "like | as if | as though") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY CONSIDER-29.9 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-ATTRIBUTE) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CONSIDER-29.9-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Attribute")))))
-((DEFINE-MIXIN-CATEGORY CONSIDER-29.9-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Attribute")))))
-((DEFINE-MIXIN-CATEGORY CONSIDER-29.9-1-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "for") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CONSIDER-29.9-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Attribute")))))
-((DEFINE-MIXIN-CATEGORY CONSPIRE-71 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-AGENT WITH-THEME WITH-BENEFICIARY) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "against") (:IO "Beneficiary"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY CONSUME-66 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-EXTENT WITH-GOAL) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Asset") (:IO "Goal"))
-   ((:S "Agent") (:VERB) (:O "Asset")))))
-((DEFINE-MIXIN-CATEGORY CONSUME-66-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Asset") (:PREP "on") (:IO "Goal"))
-   ((:S "Agent") (:VERB) (:O "Asset") (:PREP "on") (:IO "Goal")))))
-((DEFINE-MIXIN-CATEGORY CONTAIN-15.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-INSTRUMENT WITH-THEME) :BINDS ((INSTRUMENT "OBJECT"))
-  :REALIZATION (((:S "Pivot") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CONTIGUOUS_LOCATION-47.8 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-THEME WITH-THEME) :BINDS
-  ((THEME PHYSICAL) (THEME PHYSICAL)) :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Co-Theme")))))
-((DEFINE-MIXIN-CATEGORY CONTIGUOUS_LOCATION-47.8-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:LEX "and") (:O "Co-Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY CONTIGUOUS_LOCATION-47.8-2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY CONTINUE-55.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME TEMPORALLY-LOCALIZED) :BINDS
-  ((CERTAINTY TIME) (AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "until") (:IO "Time"))
-   ((:S "Theme") (:VERB) (:PREP "until") (:IO "Time")) ((:S "Agent") (:VERB))
-   ((:S "Theme") (:VERB)) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CONTRIBUTE-13.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-RECIPIENT) :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Recipient")))))
-((DEFINE-MIXIN-CATEGORY CONTRIBUTE-13.2-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "among") (:IO "Recipient"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient")))))
-((DEFINE-MIXIN-CATEGORY CONTRIBUTE-13.2-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY CONTRIBUTE-13.2-2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Recipient") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY CONTRIBUTE-13.2-2-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Recipient")))))
-((DEFINE-MIXIN-CATEGORY CONVERT-26.6.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-PATIENT WITH-RESULT WITH-SOURCE) :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "to") (:IO "Result"))
-   ((:S "Patient") (:VERB) (:PREP "to") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY CONVERT-26.6.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "from") (:IO "Initial_State") (:PREP "to")
-    (:NP "Result")))))
-((DEFINE-MIXIN-CATEGORY CONVERT-26.6.2-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT) :BINDS
-  ((AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "to") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Patient")) ((:S "Patient") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY COOKING-45.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT) :BINDS
-  ((INSTRUMENT SOLID) (PATIENT PHYSICAL) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "to into") (:IO "Result" "+" "state")
-    (:PREP "in on with") (:NP "Instrument"))
-   ((:S "Patient") (:VERB) (:PREP "to into") (:IO "Result" "+" "state"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state") (:PREP "in on with") (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state"))
-   ((:S "Instrument") (:VERB) (:O "Patient")) ((:S "Patient") (:VERB) (:ADV))
-   ((:S "Patient") (:VERB))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "in on with")
-    (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY COOPERATE-73.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-AGENT WITH-THEME) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY COOPERATE-73.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "in") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "in")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "in") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "on")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "on") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY COOPERATE-73.1-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "in") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "in") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY COOPERATE-73.1-3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "at")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "at") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "on")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "on") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY COPE-83 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:PREP "with") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY COPE-83-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY COPE-83-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY CORRELATE-86.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-THEME) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "with") (:IO "Co-Theme"))
-   ((:S "Theme") (:VERB) (:PREP "with") (:IO "Co-Theme")))))
-((DEFINE-MIXIN-CATEGORY CORRESPOND-36.1.1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-AGENT WITH-TOPIC) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "about")
-    (:NP "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "about")
-    (:NP "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "about")
-    (:NP "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "about")
-    (:NP "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "about")
-    (:NP "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY CORRESPOND-36.1.1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:IO "Topic")))))
-((DEFINE-MIXIN-CATEGORY CORRESPOND-36.1.1-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic")))))
-((DEFINE-MIXIN-CATEGORY COST-54.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-PATH WITH-BENEFICIARY) :BINDS
-  ((BENEFICIARY (OR PHYSICAL-AGENT COMPANY)) (THEME PHYSICAL)) :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Beneficiary") (:IO "Value"))
-   ((:S "Theme") (:VERB) (:O "Value")))))
-((DEFINE-MIXIN-CATEGORY CRANE-40.3.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-TOPIC WITH-RECIPIENT) :BINDS
-  ((RECIPIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "+" "dest_dir")
-    (:IO "Recipient") (:PREP "in") (:NP "Topic"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "+" "dest_dir")
-    (:IO "Recipient"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY CREATE-26.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS
-  (WITH-AGENT WITH-RESULT WITH-MATERIAL WITH-BENEFICIARY WITH-ATTRIBUTE) :BINDS
-  ((BENEFICIARY PHYSICAL-AGENT) (MATERIAL "PHYSICAL")
-   (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Result") (:LEX "as") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Result") (:PREP "for") (:IO "Beneficiary"))
-   ((:S "Agent") (:VERB) (:O "Result") (:PREP "from out_of") (:IO "Material"))
-   ((:S "Agent") (:VERB) (:O "Result")))))
-((DEFINE-MIXIN-CATEGORY CREATE-26.4-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY CREATE-26.4-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Beneficiary") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY CURTSEY-40.3.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-RECIPIENT WITH-TOPIC) :BINDS
-  ((RECIPIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Topic") (:PREP "to") (:IO "Recipient"))
-   ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "+" "dest_dir") (:IO "Recipient"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY CUT-21.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-SOURCE WITH-RESULT) :BINDS
-  ((INSTRUMENT PHYSICAL) (PATIENT PHYSICAL)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "from") (:IO "Source")
-    (:PREP "with") (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "from") (:IO "Source"))
-   ((:S "Instrument") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state"))
-   ((:S "Instrument") (:VERB) (:O "Patient") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state") (:PREP "with") (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:IO "Result") (:PREP "with")
-    (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:IO "Result"))
-   ((:S "Instrument") (:VERB) (:ADV))
-   ((:S "Instrument") (:VERB) (:O "Patient")) ((:S "Patient") (:VERB) (:ADV))
-   ((:S "Agent") (:VERB) (:LEX "at") (:IO "Patient") (:PREP "with")
-    (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:PREP "through|into") (:IO "Patient"))
-   ((:S "Agent") (:VERB) (:LEX "at") (:IO "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY CUT-21.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-PATIENT) :BINDS ((PATIENT (OR NIL PRONOUN))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY DEBONE-10.8 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION PHYSICAL) (SOURCE PHYSICAL)
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Source")))))
-((DEFINE-MIXIN-CATEGORY DECLARE-29.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-RESULT) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY DECLARE-29.4-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "as") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY DECLARE-29.4-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY DECLARE-29.4-1-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY DECLARE-29.4-1-1-2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY DECLARE-29.4-1-1-3 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY DECLARE-29.4-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY DEDICATE-79 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-GOAL) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Goal"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Goal")))))
-((DEFINE-MIXIN-CATEGORY DEDUCE-97.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "from") (:IO "Theme") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "from") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY DEFEND-72.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-BENEFICIARY WITH-THEME) :BINDS
-  ((BENEFICIARY (OR PHYSICAL-AGENT COMPANY))
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Beneficiary"))
-   ((:S "Agent") (:VERB) (:O "Beneficiary"))
-   ((:S "Agent") (:VERB) (:O "Beneficiary") (:PREP "against") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Beneficiary")))))
-((DEFINE-MIXIN-CATEGORY DEPRIVE-10.6.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-GOAL) :BINDS
-  ((SOURCE (OR PHYSICAL-AGENT LOCATION REGION))
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Source") (:PREP "of") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Source")))))
-((DEFINE-MIXIN-CATEGORY DESTROY-44 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT) :BINDS
-  ((INSTRUMENT PHYSICAL) (PATIENT PHYSICAL)) :REALIZATION
-  (((:S "Instrument") (:VERB) (:O "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY DEVOUR-39.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT) :BINDS
-  ((PATIENT PATHOGEN) (AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY DIE-42.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-PATIENT WITH-CAUSE) :BINDS ((PATIENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Patient") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY DIE-42.4-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "of | from") (:IO "Causer")))))
-((DEFINE-MIXIN-CATEGORY DIFFER-23.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-THEME) :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB))
-   ((:S "Theme") (:VERB) (:PREP "from with") (:IO "Co-Theme")))))
-((DEFINE-MIXIN-CATEGORY DINE-39.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "on") (:IO "Patient")) ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY DISAPPEARANCE-48.2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-PATIENT WITH-SOURCE) :BINDS NIL
-  :REALIZATION (((:S "Patient") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY DISAPPEARANCE-48.2-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "from") (:IO "Initial_Location")))))
-((DEFINE-MIXIN-CATEGORY DISASSEMBLE-23.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT) :BINDS
-  ((CO-PATIENT PHYSICAL) (PATIENT PHYSICAL)
-   (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :REALIZATION
-  (((:S "Patient") (:VERB) (:ADV))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "from") (:IO "Co-Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY DISCOVER-84 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY DISCOVER-84-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "from") (:IO "Source") (:PREP "about")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "from") (:IO "Source") (:PREP "about")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "from") (:IO "Source") (:PREP "about")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "from") (:IO "Source") (:PREP "about")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "from") (:IO "Source") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "from") (:IO "Source") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY DISCOVER-84-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "about") (:IO "Theme") (:PREP "from")
-    (:NP "Source"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Theme"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY DISFUNCTION-105.2.2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-THEME) :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY DISTINGUISH-23.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-INSTRUMENT WITH-THEME WITH-THEME) :BINDS
-  ((INSTRUMENT "OBJECT") (AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY DISTINGUISH-23.5-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "between") (:IO "Theme") (:IO "Co-Theme"))
-   ((:S "Instrument") (:VERB) (:O "Theme") (:PREP "from") (:IO "Co-Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY DRESS-41.1.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT) :BINDS
-  ((PATIENT (OR PHYSICAL-AGENT PRONOUN)) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient")) ((:S "Agent") (:VERB) (:O "Patient"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY DRESSING_WELL-41.3.2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-PATIENT) :BINDS
-  ((PATIENT PRONOUN) (AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:LEX "up") (:IO "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:LEX "up")))))
-((DEFINE-MIXIN-CATEGORY DRIVE-11.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION (OR PHYSICAL-AGENT LOCATION REGION)) (SOURCE LOCATION)
-   (THEME PHYSICAL) (AGENT (OR PHYSICAL-AGENT MOTOR-VEHICLE)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Destination")
-    (:PREP "+" "src") (:NP "Initial_Location"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location") (:PREP "to towards") (:NP "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "to towards") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY DRIVE-11.5-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Destination")
-    (:PREP "+" "src") (:NP "Initial_Location"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location") (:PREP "to") (:NP "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY DUB-29.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME WITH-RESULT) :BINDS
-  ((THEME (OR PHYSICAL COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY EARN-54.6 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-EXTENT) :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Asset")))))
-((DEFINE-MIXIN-CATEGORY EAT-39.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-CAUSE) :BINDS ((AGENT PHYSICAL-AGENT)) :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY EAT-39.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-PATIENT) :BINDS ((PATIENT (AND/OR PATHOGEN SOLID)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "+" "src") (:IO "Source"))
-   ((:S "Agent") (:VERB)) ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY EAT-39.1-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-PATIENT) :BINDS ((PATIENT (AND/OR PATHOGEN SOLID)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "+" "src") (:IO "Source"))
-   ((:S "Agent") (:VERB)) ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY EAT-39.1-3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-PATIENT) :BINDS ((PATIENT PATHOGEN)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient")) ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY EMPATHIZE-88.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXPERIENCER WITH-STIMULUS) :BINDS
-  ((EXPERIENCER (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Experiencer") (:VERB) (:PREP "with") (:IO "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:PREP "with") (:IO "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:PREP "with") (:IO "Stimulus"))
-   ((:S "Experiencer") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY EMPLOYMENT-95.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-AGENT WITH-THEME WITH-ATTRIBUTE) :BINDS
-  ((AGENT ("PRONOUN" "PHYSICAL-AGENT")) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Attribute") (:IO "Co-Agent"))
-   ((:S "Agent") (:VERB) (:PREP "on") (:IO "Theme") (:IO "Co-Agent"))
-   ((:S "Agent") (:VERB) (:PREP "on | in | at") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Co-Agent")) ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY ENCOUNTER-30.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXPERIENCER WITH-STIMULUS) :BINDS
-  ((EXPERIENCER "PHYSICAL-AGENT")) :REALIZATION
-  (((:S "Experiencer") (:VERB) (:O "Stimulus")))))
-((DEFINE-MIXIN-CATEGORY ENFORCE-63 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS
-  ((AGENT (AND/OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY ENGENDER-27.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-CAUSE WITH-THEME) :BINDS ((THEME ABSTRACT)) :REALIZATION
-  (((:S "Causer") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY ENGENDER-27.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Causer") (:VERB) (:O "Theme") (:IO "Predicate")))))
-((DEFINE-MIXIN-CATEGORY ENSURE-99 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (PREDICATION WITH-THEME WITH-BENEFICIARY) :BINDS
-  ((PREDICATE "PREDICATE")) :REALIZATION
-  (((:S "Precondition") (:VERB) (:O "Theme"))
-   ((:S "Precondition") (:VERB) (:O "Theme") (:PREP "for") (:IO "Beneficiary"))
-   ((:S "Precondition") (:VERB) (:O "Beneficiary") (:IO "Theme"))
-   ((:S "Precondition") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY ENTITY_SPECIFIC_COS-45.5 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-PATIENT) :BINDS ((PATIENT PHYSICAL))
-  :REALIZATION (((:S "Patient") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY ENTITY_SPECIFIC_MODES_BEING-47.2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-THEME WITH-CAUSE) :BINDS
-  ((CAUSE (AND/OR LOCATION REGION))) :REALIZATION
-  (((:S "Location") (:VERB) (:PREP "with") (:IO "Theme"))
-   ((:S "+" "loc") (:NP "Location") (:VERB) (:IO "Theme"))
-   ((:S "there") (:VERB) (:O "Theme"))
-   ((:S "Theme") (:VERB) (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY EQUIP-13.4.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-RECIPIENT) :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Recipient") (:PREP "with") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY EQUIP-13.4.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Recipient")))))
-((DEFINE-MIXIN-CATEGORY EQUIP-13.4.2-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Recipient")))))
-((DEFINE-MIXIN-CATEGORY ESCAPE-51.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-PATH) :BINDS
-  ((PATH PHYSICAL) (DESTINATION PHYSICAL) (SOURCE PHYSICAL) (THEME PHYSICAL))
-  :REALIZATION
-  (((:S "Theme") (:VERB) (:PREP "+" "path") (:IO "Initial_Location")
-    (:PREP "+" "path") (:NP "Destination"))
-   ((:S "Theme") (:VERB) (:PREP "+" "path") (:IO "Trajectory"))
-   ((:S "Theme") (:VERB) (:PREP "+" "path") (:IO "Destination")))))
-((DEFINE-MIXIN-CATEGORY ESCAPE-51.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:PREP "+" "path") (:IO "Initial_Location"))
-   ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY ESCAPE-51.1-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Initial_Location")))))
-((DEFINE-MIXIN-CATEGORY ESCAPE-51.1-1-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Destination")))))
-((DEFINE-MIXIN-CATEGORY ESCAPE-51.1-1-3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Trajectory")))))
-((DEFINE-MIXIN-CATEGORY ESTABLISH-55.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY ESTABLISH-55.5-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-INSTRUMENT) :BINDS ((INSTRUMENT "OBJECT")) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "with") (:IO "Instrument")))))
-((DEFINE-MIXIN-CATEGORY ESTIMATE-34.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-PATH) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "at") (:IO "Value")))))
-((DEFINE-MIXIN-CATEGORY ESTIMATE-34.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Value"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY EXCEED-90 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-THEME WITH-ATTRIBUTE) :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Co-Theme") (:PREP "in") (:IO "Attribute"))
-   ((:S "Theme") (:VERB) (:O "Co-Theme")))))
-((DEFINE-MIXIN-CATEGORY EXCHANGE-13.6.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-THEME WITH-AGENT) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "with") (:IO "Co-Agent"))
-   ((:S "Agent") (:VERB) (:PREP "+" "loc") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "for") (:IO "Co-Theme")))))
-((DEFINE-MIXIN-CATEGORY EXCLUDE-107.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-GOAL) :BINDS
-  ((THEME (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "from") (:IO "Goal")))))
-((DEFINE-MIXIN-CATEGORY EXCLUDE-107.3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "from") (:IO "Goal")))))
-((DEFINE-MIXIN-CATEGORY EXHALE-40.1.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-INSTRUMENT WITH-THEME) :BINDS ((INSTRUMENT PHYSICAL-AGENT))
-  :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY EXHALE-40.1.3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Pivot") (:VERB) (:O "Theme")) ((:S "Pivot") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY EXHALE-40.1.3-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Pivot") (:VERB) (:O "Theme")) ((:S "Pivot") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY EXIST-47.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-CAUSE) :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY EXIST-47.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-INSTRUMENT WITH-MANNER) :BINDS
-  ((MANNER "ADVERB") (INSTRUMENT "OBJECT")) :REALIZATION
-  (((:S "Theme") (:VERB) (:PREP) (:IO "Manner"))
-   ((:S "Theme") (:VERB) (:PREP) (:IO "Pivot"))
-   ((:S "Theme") (:VERB) (:O "Pivot")))))
-((DEFINE-MIXIN-CATEGORY FEEDING-39.7 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-RECIPIENT) :BINDS
-  ((RECIPIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Recipient") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Recipient"))
-   ((:S "Agent") (:VERB) (:O "Recipient")))))
-((DEFINE-MIXIN-CATEGORY FERRET-35.6 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-SOURCE WITH-THEME) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "dir") (:IO "Source")))))
-((DEFINE-MIXIN-CATEGORY FILL-9.8 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION) (THEME PHYSICAL)
-   (AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Destination"))
-   ((:S "Theme") (:VERB) (:O "Destination"))
-   ((:S "Agent") (:VERB) (:O "Destination") (:PREP "with") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY FILL-9.8-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Destination") (:PREP "in") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY FIRE-10.10 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-GOAL WITH-ATTRIBUTE) :BINDS
-  ((SOURCE COMPANY) (THEME (OR PHYSICAL-AGENT COMPANY))
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "as") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "from") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY FIT-54.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-PATH WITH-CAUSE) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Value") (:PREP "in") (:IO "Location"))
-   ((:S "Location") (:VERB) (:O "Value")))))
-((DEFINE-MIXIN-CATEGORY FLINCH-40.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXPERIENCER WITH-STIMULUS) :BINDS
-  ((EXPERIENCER PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Experiencer") (:VERB) (:PREP "at from") (:IO "Stimulus"))
-   ((:S "Experiencer") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY FLOSS-41.2.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT) :BINDS
-  ((INSTRUMENT "OBJECT") (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB)) ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY FOCUS-87.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-TOPIC) :BINDS ((AGENT (OR PHYSICAL-AGENT)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "on") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "on") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "on") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "on") (:IO "Topic")))))
-((DEFINE-MIXIN-CATEGORY FOCUS-87.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY FORBID-64.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-BENEFICIARY) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Beneficiary") (:PREP "from") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY FORBID-64.4-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY FREE-10.6.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-CAUSE WITH-SOURCE WITH-THEME) :BINDS
-  ((SOURCE (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Causer") (:VERB) (:O "Source") (:PREP "of") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY FREE-10.6.3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Causer") (:VERB) (:O "Source") (:PREP "of") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY FREE-10.6.3-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Causer") (:VERB) (:O "Source") (:PREP "from") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY FREE-80 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-CAUSE WITH-SOURCE WITH-THEME) :BINDS
-  ((SOURCE (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Causer") (:VERB) (:O "Source") (:PREP "of") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY FREE-80-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Causer") (:VERB) (:O "Source") (:PREP "of") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY FREE-80-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Causer") (:VERB) (:O "Source") (:PREP "from") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY FULFILLING-13.4.1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-THEME WITH-RECIPIENT)
-  :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:PREP "with") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "to | for") (:IO "Recipient")))))
-((DEFINE-MIXIN-CATEGORY FULFILLING-13.4.1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Recipient")))))
-((DEFINE-MIXIN-CATEGORY FULFILLING-13.4.1-2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-RECIPIENT WITH-AGENT) :BINDS
-  ((AGENT (OR ABSTRACT PHYSICAL-AGENT))
-   (RECIPIENT (OR ABSTRACT PHYSICAL-AGENT)))
-  :REALIZATION (((:S "Agent") (:VERB) (:PREP "for") (:IO "Recipient")))))
-((DEFINE-MIXIN-CATEGORY FUNCTION-105.2.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME) :BINDS NIL :REALIZATION (((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY FUNCTION-105.2.1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (PREDICATION) :BINDS
-  ((PREDICATE "PREDICATE")) :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Predicate")))))
-((DEFINE-MIXIN-CATEGORY FUNNEL-9.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION) (THEME PHYSICAL)
-   (AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "dest_conf")
-    (:IO "Destination")))))
-((DEFINE-MIXIN-CATEGORY FUNNEL-9.3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "between in_between")
-    (:IO "Destination")))))
-((DEFINE-MIXIN-CATEGORY FUNNEL-9.3-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:PREP "into") (:IO "Destination")))))
-((DEFINE-MIXIN-CATEGORY FUTURE_HAVING-13.3 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME WITH-BENEFICIARY WITH-GOAL) :BINDS
-  ((AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:IO "Beneficiary") (:IO "Goal"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "for") (:IO "Goal"))
-   ((:S "Agent") (:VERB) (:O "Goal") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Goal")))))
-((DEFINE-MIXIN-CATEGORY FUTURE_HAVING-13.3-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Beneficiary") (:IO "Theme") (:IO "Goal")))))
-((DEFINE-MIXIN-CATEGORY GET-13.5.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-BENEFICIARY WITH-EXTENT)
-  :BINDS
-  ((EXTENT (AND/OR LOCATION REGION)) (BENEFICIARY (OR PHYSICAL-AGENT COMPANY))
-   (SOURCE PHYSICAL) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "from") (:IO "Source")
-    (:PREP "at for") (:NP "Asset"))
-   ((:S "Asset") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "for") (:IO "Asset"))
-   ((:S "Agent") (:VERB) (:O "Beneficiary") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "for") (:IO "Beneficiary"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "from") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY GET-13.5.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-SOURCE) :BINDS ((SOURCE ABSTRACT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "from for on") (:IO "Source")))))
-((DEFINE-MIXIN-CATEGORY GIVE-13.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-RECIPIENT) :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient"))
-   ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Recipient")))))
-((DEFINE-MIXIN-CATEGORY GIVE-13.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXTENT) :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Recipient") (:IO "Theme") (:PREP "at for on")
-    (:NP "Asset"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Recipient")
-    (:PREP "at for on") (:NP "Asset"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "for at") (:IO "Asset")))))
-((DEFINE-MIXIN-CATEGORY GOBBLE-39.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT) :BINDS ((AGENT PHYSICAL-AGENT)) :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY GOBBLE-39.3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-PATIENT) :BINDS ((PATIENT (AND/OR NIL SOLID))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:LEX "down"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:LEX "up"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY GOBBLE-39.3-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-PATIENT) :BINDS ((PATIENT (AND/OR NIL SOLID))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:LEX "down"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY GORGE-39.6 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION (((:S "Agent") (:VERB) (:PREP "on") (:IO "Patient")))))
-((DEFINE-MIXIN-CATEGORY GROOM-41.1.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT) :BINDS
-  ((PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY GROW-26.2.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-PRODUCT) :BINDS
-  ((PRODUCT PHYSICAL) (PATIENT PHYSICAL) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "into") (:IO "Product"))
-   ((:S "Agent") (:VERB) (:O "Product") (:PREP "from out_of") (:IO "Patient"))
-   ((:S "Product") (:VERB) (:PREP "from out_of") (:IO "Patient"))
-   ((:S "Patient") (:VERB) (:PREP "into") (:IO "Product")))))
-((DEFINE-MIXIN-CATEGORY HARMONIZE-22.6 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-THEME) :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB)) ((:S "Theme") (:VERB) (:ADV) (:IO "Co-Theme"))
-   ((:S "Theme") (:VERB) (:O "Co-Theme")) ((:S "Theme") (:VERB) (:ADV)))))
-((DEFINE-MIXIN-CATEGORY HELP-72.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-BENEFICIARY WITH-THEME) :BINDS
-  ((BENEFICIARY (OR PHYSICAL-AGENT COMPANY))
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY HELP-72.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "with") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Beneficiary") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Beneficiary") (:PREP "with") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Beneficiary") (:PREP "with") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Beneficiary")))))
-((DEFINE-MIXIN-CATEGORY HELP-72.1-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "with") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY HELP-72.1-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "with | for") (:IO "Beneficiary"))
-   ((:S "Agent") (:VERB) (:PREP "with | for") (:IO "Beneficiary")))))
-((DEFINE-MIXIN-CATEGORY HERD-47.5.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS
-  ((THEME (AND/OR PHYSICAL COLLECTION)) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:LEX "together"))
-   ((:S "Agent") (:VERB) (:O "Theme")) ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY HICCUP-40.1.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT) :BINDS ((AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY HIRE-13.5.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-ATTRIBUTE) :BINDS
-  ((THEME (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "as") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY HIT-18.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT) :BINDS
-  ((INSTRUMENT PHYSICAL) (PATIENT PHYSICAL)) :REALIZATION
-  (((:S "Instrument") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state"))
-   ((:S "Instrument") (:VERB) (:O "Patient") (:IO "Result"))
-   ((:S "Instrument") (:VERB) (:O "Patient"))
-   ((:S "Agent") (:VERB) (:O "Instrument") (:PREP "against on")
-    (:IO "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state") (:PREP "with") (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:IO "Result") (:PREP "with")
-    (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:LEX "together"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY HIT-18.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-INSTRUMENT) :BINDS ((INSTRUMENT (OR NIL PRONOUN))) :REALIZATION
-  (((:S "Agent") (:VERB) (:LEX "at") (:IO "Patient") (:PREP "with")
-    (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:LEX "at") (:IO "Patient")))))
-((DEFINE-MIXIN-CATEGORY HOLD-15.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS
-  ((THEME (OR NIL PHYSICAL)) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY HUNT-35.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-CAUSE WITH-THEME) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB)) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Agent") (:VERB) (:PREP "+" "loc") (:IO "Location") (:PREP "for")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "for") (:IO "Theme") (:PREP "+" "loc")
-    (:NP "Location"))
-   ((:S "Agent") (:VERB) (:O "Location") (:PREP "for") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY HURT-40.8.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXPERIENCER) :BINDS ((EXPERIENCER PHYSICAL-AGENT)) :REALIZATION
-  NIL))
-((DEFINE-MIXIN-CATEGORY HURT-40.8.3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-PATIENT) :BINDS NIL :REALIZATION
-  (((:S "Experiencer") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY HURT-40.8.3-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Patient") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY HURT-40.8.3-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Experiencer") (:VERB) (:O "Patient"))
-   ((:S "Experiencer") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY ILLUSTRATE-25.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-DESTINATION) :BINDS
-  ((DESTINATION PHYSICAL) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Destination") (:PREP "with") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Destination")))))
-((DEFINE-MIXIN-CATEGORY IMAGE_IMPRESSION-25.1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-THEME WITH-DESTINATION)
-  :BINDS ((DESTINATION PHYSICAL)) :REALIZATION
-  (((:S "Agent") (:VERB)) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Destination"))
-   ((:S "Agent") (:VERB) (:O "Destination") (:PREP "with") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP) (:IO "Destination")))))
-((DEFINE-MIXIN-CATEGORY INDICATE-78 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-RECIPIENT WITH-CAUSE WITH-TOPIC) :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Causer") (:VERB) (:O "Topic")) ((:S "Causer") (:VERB) (:O "Topic"))
-   ((:S "Causer") (:VERB) (:O "Topic")) ((:S "Causer") (:VERB) (:O "Topic"))
-   ((:S "Causer") (:VERB) (:O "Topic")))))
-((DEFINE-MIXIN-CATEGORY INDICATE-78-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Causer") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Causer") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Causer") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Causer") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic")))))
-((DEFINE-MIXIN-CATEGORY INDICATE-78-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Causer") (:VERB) (:O "Topic")))))
-((DEFINE-MIXIN-CATEGORY INITIATE_COMMUNICATION-37.4.2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-RECIPIENT) :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Recipient")))))
-((DEFINE-MIXIN-CATEGORY INITIATE_COMMUNICATION-37.4.2-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY INQUIRE-37.1.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-RECIPIENT WITH-TOPIC) :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "of") (:IO "Recipient") (:PREP "about")
-    (:NP "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "of") (:IO "Recipient") (:PREP "about")
-    (:NP "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "of") (:IO "Recipient") (:PREP "about")
-    (:NP "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "of") (:IO "Recipient") (:PREP "about")
-    (:NP "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "of") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "of") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Recipient"))
-   ((:S "Agent") (:VERB)) ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic")))))
-((DEFINE-MIXIN-CATEGORY INSTR_COMMUNICATION-37.4.1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-TOPIC WITH-RECIPIENT)
-  :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (TOPIC SPEECH-ACT)
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "for") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic") (:PREP "to") (:IO "Recipient"))
-   ((:S "Agent") (:VERB) (:O "Recipient"))
-   ((:S "Agent") (:VERB) (:O "Topic")))))
-((DEFINE-MIXIN-CATEGORY INTEND-61.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-TOPIC WITH-ATTRIBUTE) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Topic") (:PREP "as") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Topic")))))
-((DEFINE-MIXIN-CATEGORY INTEND-61.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic")))))
-((DEFINE-MIXIN-CATEGORY INTEND-61.2-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Topic")))))
-((DEFINE-MIXIN-CATEGORY INTERACT-36.6 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-AGENT) :BINDS
-  ((AGENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent"))
-   ((:S "Agent") (:VERB)) ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY INTERROGATE-37.1.3 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-RECIPIENT WITH-TOPIC WITH-ATTRIBUTE) :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Recipient") (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:PREP "as") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Recipient")))))
-((DEFINE-MIXIN-CATEGORY INVEST-13.5.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-EXTENT WITH-GOAL) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Goal")))))
-((DEFINE-MIXIN-CATEGORY INVEST-13.5.4-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Asset") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Asset") (:IO "Goal")))))
-((DEFINE-MIXIN-CATEGORY INVESTIGATE-35.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-CAUSE WITH-THEME) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Location"))
-   ((:S "Agent") (:VERB) (:O "Location") (:PREP "for") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY INVOLVE-107.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-GOAL) :BINDS
-  ((THEME (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "in") (:IO "Goal"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY JUDGMENT-33.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-ATTRIBUTE) :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "for") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY JUDGMENT-33.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "as") (:IO "Attribute")))))
-((DEFINE-MIXIN-CATEGORY JUDGMENT-33.1-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:IO "Attribute")))))
-((DEFINE-MIXIN-CATEGORY KEEP-15.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-CAUSE) :BINDS
-  ((CAUSE (AND/OR LOCATION REGION)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "loc") (:IO "Location")))))
-((DEFINE-MIXIN-CATEGORY KNEAD-26.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PRODUCT WITH-MATERIAL) :BINDS
-  ((MATERIAL "PHYSICAL") (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Material"))
-   ((:S "Agent") (:VERB) (:O "Material") (:PREP "into") (:IO "Product"))
-   ((:S "Material") (:VERB) (:PREP "into") (:IO "Product")))))
-((DEFINE-MIXIN-CATEGORY LEARN-14 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-TOPIC WITH-SOURCE) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "from") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:O "Topic") (:PREP "from") (:IO "Source")))))
-((DEFINE-MIXIN-CATEGORY LEARN-14-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY LEARN-14-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "from") (:IO "Source") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "from") (:IO "Source") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic")))))
-((DEFINE-MIXIN-CATEGORY LEARN-14-2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "of about") (:IO "Topic")))))
-((DEFINE-MIXIN-CATEGORY LEAVE-51.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-SOURCE WITH-GOAL) :BINDS
-  ((SOURCE PHYSICAL-AGENT) (THEME PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Source")))))
-((DEFINE-MIXIN-CATEGORY LEAVE-51.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY LECTURE-37.11 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-TOPIC WITH-RECIPIENT) :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic")))))
-((DEFINE-MIXIN-CATEGORY LECTURE-37.11-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:PREP "about")
-    (:NP "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY LECTURE-37.11-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic")))))
-((DEFINE-MIXIN-CATEGORY LECTURE-37.11-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "on") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic")))))
-((DEFINE-MIXIN-CATEGORY LET-64.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-BENEFICIARY WITH-THEME) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Beneficiary") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY LIGHT_EMISSION-43.1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-THEME WITH-CAUSE WITH-AGENT) :BINDS
-  ((AGENT ("PRONOUN" "PHYSICAL-AGENT")) (THEME PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "+" "loc") (:NP "Location") (:LEX "there") (:VERB) (:IO "Theme"))
-   ((:S "there") (:VERB) (:O "Theme") (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Location") (:VERB) (:PREP "with") (:IO "Theme"))
-   ((:S "Theme") (:VERB) (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY LIMIT-76 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-CAUSE WITH-PATIENT WITH-GOAL) :BINDS
-  ((PATIENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Causer") (:VERB) (:O "Patient") (:IO "Goal"))
-   ((:S "Causer") (:VERB) (:O "Patient") (:PREP "to") (:IO "Goal"))
-   ((:S "Causer") (:VERB) (:O "Patient") (:PREP "to") (:IO "Goal"))
-   ((:S "Causer") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY LINGER-53.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-CAUSE WITH-THEME) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "over") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "+" "loc") (:IO "Location")))))
-((DEFINE-MIXIN-CATEGORY LINGER-53.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY LODGE-46 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-THEME WITH-CAUSE) :BINDS ((THEME PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Location"))
-   ((:S "Theme") (:VERB) (:PREP "at in with") (:IO "Location")))))
-((DEFINE-MIXIN-CATEGORY LONG-32.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-INSTRUMENT WITH-THEME) :BINDS ((INSTRUMENT "OBJECT"))
-  :REALIZATION (((:S "Pivot") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY LONG-32.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Pivot") (:VERB) (:PREP "for") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY LONG-32.2-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Pivot") (:VERB) (:PREP "after") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY LURE-59.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT PREDICATION) :BINDS
-  ((PREDICATE "PREDICATE") (PATIENT (OR PHYSICAL-AGENT COMPANY))
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "into to") (:IO "Predicate"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "into") (:IO "Predicate"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY MANNER_SPEAKING-37.3 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-TOPIC WITH-RECIPIENT)
-  :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (TOPIC SPEECH-ACT)
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "+" "dest_dir") (:IO "Recipient")
-    (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "for") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "+" "dest_dir") (:IO "Recipient")
-    (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "+" "dest_dir") (:IO "Recipient")
-    (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "+" "dest_dir") (:IO "Recipient")
-    (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic") (:PREP "+" "dest_dir") (:IO "Recipient"))
-   ((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "+" "dest_dir") (:IO "Recipient"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY MARRY-36.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-AGENT) :BINDS
-  ((AGENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Co-Agent")) ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY MARVEL-31.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXPERIENCER WITH-STIMULUS) :BINDS
-  ((EXPERIENCER PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Experiencer") (:VERB) (:PREP) (:IO "Stimulus"))
-   ((:S "Experiencer") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY MASQUERADE-29.6 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-ATTRIBUTE) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION (((:S "Agent") (:VERB) (:LEX "as") (:IO "Attribute")))))
-((DEFINE-MIXIN-CATEGORY MASQUERADE-29.6-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:LEX "like") (:IO "Attribute")))))
-((DEFINE-MIXIN-CATEGORY MASQUERADE-29.6-2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "in") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Attribute")))))
-((DEFINE-MIXIN-CATEGORY MATTER-91 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXPERIENCER WITH-STIMULUS) :BINDS
-  ((EXPERIENCER (AND/OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Stimulus") (:VERB)) ((:S "it") (:VERB) (:O "Stimulus"))
-   ((:S "it") (:VERB) (:PREP "to") (:IO "Experiencer") (:IO "Stimulus"))
-   ((:S "Stimulus") (:VERB) (:PREP "to") (:IO "Experiencer"))
-   ((:S "Stimulus") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY MEANDER-47.7 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-CAUSE WITH-THEME) :BINDS ((CAUSE PHYSICAL)) :REALIZATION
-  (((:S "there") (:VERB) (:O "Theme") (:PREP "+" "path") (:IO "Location"))
-   ((:S "there") (:VERB) (:PREP "+" "path") (:IO "Location") (:IO "Theme"))
-   ((:S "+" "path") (:NP "Location") (:VERB) (:IO "Theme"))
-   ((:S "Theme") (:VERB) (:PREP "+" "path") (:IO "Location")))))
-((DEFINE-MIXIN-CATEGORY MEANDER-47.7-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY MEET-36.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-AGENT) :BINDS
-  ((AGENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY MEET-36.3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB)) ((:S "Agent") (:VERB) (:O "Co-Agent"))
-   ((:S "Agent") (:VERB))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent")))))
-((DEFINE-MIXIN-CATEGORY MEET-36.3-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB)) ((:S "Agent") (:VERB) (:O "Co-Agent"))
-   ((:S "Agent") (:VERB))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent")))))
-((DEFINE-MIXIN-CATEGORY MINE-10.9 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION LOCATION) (SOURCE LOCATION) (THEME PHYSICAL)
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY MIX-22.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT) :BINDS
-  ((CO-PATIENT PHYSICAL) (PATIENT PHYSICAL)) :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY MIX-22.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB) (:ADV) (:LEX "together"))
-   ((:S "Patient") (:VERB) (:ADV))
-   ((:S "Patient") (:VERB) (:ADV) (:PREP "with into to") (:IO "Co-Patient"))
-   ((:S "Patient") (:VERB) (:PREP "with into to") (:IO "Co-Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:LEX "together"))
-   ((:S "Agent") (:VERB) (:O "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with into to")
-    (:IO "Co-Patient")))))
-((DEFINE-MIXIN-CATEGORY MIX-22.1-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB) (:LEX "together")) ((:S "Patient") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY MIX-22.1-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB) (:ADV) (:LEX "together"))
-   ((:S "Patient") (:VERB) (:ADV))
-   ((:S "Patient") (:VERB) (:ADV) (:PREP "with into to") (:IO "Co-Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:LEX "together"))
-   ((:S "Agent") (:VERB) (:O "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with into to")
-    (:IO "Co-Patient")))))
-((DEFINE-MIXIN-CATEGORY MIX-22.1-2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB) (:LEX "together")) ((:S "Patient") (:VERB))
-   ((:S "Patient") (:VERB) (:PREP "with into to") (:IO "Co-Patient")))))
-((DEFINE-MIXIN-CATEGORY MODES_OF_BEING_WITH_MOTION-47.3 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-THEME WITH-CAUSE) :BINDS
-  ((CAUSE (AND/OR LOCATION REGION)) (THEME PHYSICAL)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "+" "loc") (:NP "Location") (:VERB) (:IO "Theme"))
-   ((:S "there") (:VERB) (:O "Theme"))
-   ((:S "Theme") (:VERB) (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY MULTIPLY-108 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-THEME) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY MULTIPLY-108-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "by") (:IO "Co-Theme")))))
-((DEFINE-MIXIN-CATEGORY MULTIPLY-108-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "from") (:IO "Co-Theme")))))
-((DEFINE-MIXIN-CATEGORY MULTIPLY-108-3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "over") (:IO "Co-Theme")))))
-((DEFINE-MIXIN-CATEGORY MURDER-42.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT) :BINDS
-  ((INSTRUMENT "OBJECT") (PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY MURDER-42.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-INSTRUMENT) :BINDS ((INSTRUMENT PHYSICAL)) :REALIZATION
-  (((:S "Instrument") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY NEGLECT-75.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY NEGLECT-75.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY NONVEHICLE-51.4.2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-THEME WITH-PATH) :BINDS
-  ((PATH PHYSICAL) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Trajectory")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "path") (:IO "Trajectory"))
-   ((:S "Agent") (:VERB) (:PREP "+" "path") (:IO "Trajectory"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY NONVEHICLE-51.4.2-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Trajectory")))))
-((DEFINE-MIXIN-CATEGORY NONVERBAL_EXPRESSION-40.2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-THEME WITH-RECIPIENT)
-  :BINDS ((RECIPIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "+" "dest_dir") (:IO "Recipient"))
-   ((:S "Agent") (:VERB) (:PREP "in") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY OBTAIN-13.5.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE) :BINDS
-  ((SOURCE PHYSICAL) (AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "from") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY OBTAIN-13.5.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXTENT) :BINDS ((EXTENT CURRENCY)) :REALIZATION
-  (((:S "Asset") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "for") (:IO "Asset")))))
-((DEFINE-MIXIN-CATEGORY OCCUR-48.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-CAUSE) :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:PREP "" "+" "loc") (:IO "Location"))
-   ((:S "there") (:VERB) (:O "Theme")) ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY OCCUR-48.3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "it") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY OCCUR-48.3-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY ORBIT-51.9.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-INSTRUMENT) :BINDS ((INSTRUMENT "OBJECT"))
-  :REALIZATION (((:S "Theme") (:VERB) (:PREP "+" "path") (:IO "Axis")))))
-((DEFINE-MIXIN-CATEGORY ORDER-58.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-RESULT) :BINDS
-  ((PATIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Result")) ((:S "Agent") (:VERB) (:O "Result")))))
-((DEFINE-MIXIN-CATEGORY ORDER-58.3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY ORPHAN-29.7 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY OTHER_COS-45.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT) :BINDS
-  ((INSTRUMENT "OBJECT")) :REALIZATION
-  (((:S "Instrument") (:VERB) (:O "Patient")) ((:S "Patient") (:VERB) (:ADV))
-   ((:S "Patient") (:VERB))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY OTHER_COS-45.4-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Patient") (:VERB) (:O "Result")))))
-((DEFINE-MIXIN-CATEGORY OVERSTATE-37.12 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY OWN-100.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-INSTRUMENT WITH-THEME) :BINDS
-  ((INSTRUMENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Pivot") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY PAIN-40.8.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXPERIENCER WITH-PATIENT WITH-STIMULUS) :BINDS
-  ((EXPERIENCER PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "from") (:IO "Stimulus"))
-   ((:S "Patient") (:VERB) (:O "Experiencer")) ((:S "Patient") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY PATENT-101 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY PAY-68 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-EXTENT WITH-THEME) :BINDS
-  ((EXTENT CURRENCY) (AGENT (AND/OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Asset"))
-   ((:S "Agent") (:VERB) (:O "Asset") (:PREP "for") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY PAY-68-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-RECIPIENT) :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Recipient") (:IO "Asset"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Asset") (:PREP "for")
-    (:NP "Theme")))))
-((DEFINE-MIXIN-CATEGORY PEER-30.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "+" "spatial") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY PELT-17.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION PHYSICAL) (SOURCE PHYSICAL) (THEME PHYSICAL)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Destination"))
-   ((:S "Agent") (:VERB) (:O "Destination") (:PREP "with") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY PERFORMANCE-26.7 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-BENEFICIARY) :BINDS
-  ((BENEFICIARY PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "for") (:IO "Beneficiary"))
-   ((:S "Agent") (:VERB)) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY PERFORMANCE-26.7-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Beneficiary") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY PIT-10.7 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION PHYSICAL) (SOURCE PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Source")))))
-((DEFINE-MIXIN-CATEGORY PLAY-114.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-AGENT) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY PLAY-114.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME) :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "with") (:IO "Co-Agent"))
-   ((:S "Agent") (:VERB) (:O "Co-Agent"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY POCKET-9.10 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION PHYSICAL) (SOURCE PHYSICAL) (THEME PHYSICAL)
-   (AGENT (OR NIL COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "in on under")
-    (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY POCKET-9.10-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Destination")) ((:S "Theme") (:VERB))
-   ((:S "Theme") (:VERB) (:PREP "in on under") (:IO "Destination")))))
-((DEFINE-MIXIN-CATEGORY POISON-42.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT) :BINDS
-  ((INSTRUMENT "OBJECT") (PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY POKE-19 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT) :BINDS
-  ((PATIENT PHYSICAL) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT))) :REALIZATION
-  (((:S "Instrument") (:VERB) (:O "Patient"))
-   ((:S "Agent") (:VERB) (:LEX "at") (:IO "Patient") (:PREP "with")
-    (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:LEX "at") (:IO "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Instrument") (:PREP "through into")
-    (:IO "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY POUR-9.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME WITH-DESTINATION WITH-SOURCE) :BINDS
-  ((SOURCE (AND/OR LOCATION REGION)) (DESTINATION (AND/OR LOCATION REGION))
-   (THEME (OR NIL PHYSICAL COLLECTION)) (AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Theme") (:VERB) (:PREP "+" "src") (:IO "Initial_Location")
-    (:PREP "+" "dest_conf") (:NP "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location") (:PREP "+" "dest_conf") (:NP "Destination"))
-   ((:S "Theme") (:VERB) (:PREP "+" "path") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "path") (:IO "Destination")))))
-((DEFINE-MIXIN-CATEGORY PREPARING-26.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-BENEFICIARY) :BINDS
-  ((BENEFICIARY PHYSICAL-AGENT) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY PREPARING-26.3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-PRODUCT) :BINDS ((PRODUCT PHYSICAL)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Product") (:PREP "for") (:IO "Beneficiary"))
-   ((:S "Agent") (:VERB) (:O "Beneficiary") (:IO "Product"))
-   ((:S "Agent") (:VERB) (:O "Product")))))
-((DEFINE-MIXIN-CATEGORY PREPARING-26.3-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-PATIENT) :BINDS ((PATIENT PHYSICAL)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "for") (:IO "Beneficiary"))
-   ((:S "Agent") (:VERB) (:O "Beneficiary") (:IO "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY PRICE-54.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-PATH) :BINDS
-  ((PATH CURRENCY) (THEME PHYSICAL) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "at") (:IO "Value"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY PROMISE-37.13 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-RECIPIENT WITH-TOPIC) :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic")))))
-((DEFINE-MIXIN-CATEGORY PROMOTE-102 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY PRONOUNCE-29.3.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-ATTRIBUTE) :BINDS
-  ((AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "with in") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Attribute")))))
-((DEFINE-MIXIN-CATEGORY PROSECUTE-33.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-THEME) :BINDS
-  ((AGENT (OR NIL COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "for") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY PROSECUTE-33.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-ATTRIBUTE) :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "as") (:IO "Attribute")
-    (:PREP "for") (:NP "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "as") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "as") (:IO "Attribute")))))
-((DEFINE-MIXIN-CATEGORY PUSH-12 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME WITH-PATH WITH-RESULT) :BINDS
-  ((THEME PHYSICAL) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY PUSH-12-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "at against on") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY PUSH-12-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "+" "dir") (:IO "Trajectory"))
-   ((:S "Agent") (:VERB) (:PREP "+" "dir")))))
-((DEFINE-MIXIN-CATEGORY PUT-9.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION) (THEME PHYSICAL)
-   (AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "loc") (:IO "Destination")))))
-((DEFINE-MIXIN-CATEGORY PUT-9.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY PUT-9.1-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME) :BINDS ((THEME ABSTRACT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "on upon") (:IO "Destination") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY PUT_DIRECTION-9.4 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION) (THEME PHYSICAL)
-   (AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "spatial")
-    (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY PUT_SPATIAL-9.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION) (THEME PHYSICAL)
-   (AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "loc") (:IO "Destination")))))
-((DEFINE-MIXIN-CATEGORY PUT_SPATIAL-9.2-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Destination"))
-   ((:S "Theme") (:VERB) (:PREP "+" "loc") (:IO "Destination")))))
-((DEFINE-MIXIN-CATEGORY REACH-51.8 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-GOAL) :BINDS ((THEME (AND/OR PHYSICAL COMPANY)))
-  :REALIZATION (((:S "Theme") (:VERB) (:O "Goal")))))
-((DEFINE-MIXIN-CATEGORY REAR-26.2.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PRODUCT) :BINDS
-  ((AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY REAR-26.2.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-MATERIAL) :BINDS ((MATERIAL "PHYSICAL")) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Material") (:IO "Product")))))
-((DEFINE-MIXIN-CATEGORY RECIPROCATE-112 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME PREDICATION) :BINDS
-  ((PREDICATE "PREDICATE") (AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:IO "Predicate"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY RECIPROCATE-112-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Predicate")) ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY REFLEXIVE_APPEARANCE-48.1.2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-THEME WITH-AGENT WITH-RECIPIENT REFLEXIVE) :BINDS
-  ((PRONOUN "PRONOUN") (RECIPIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Reflexive" "+" "refl"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Recipient"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY REFRAIN-69 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "from") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "from") (:IO "Theme")) ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY REGISTER-54.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-PATH) :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:PREP "at | to") (:IO "Value")))))
-((DEFINE-MIXIN-CATEGORY REGISTER-54.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-ATTRIBUTE) :BINDS
-  ((AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Attribute") (:PREP "at") (:IO "Value"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "at") (:IO "Value"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY REGISTER-54.1-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Value")))))
-((DEFINE-MIXIN-CATEGORY REHEARSE-26.8 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY REHEARSE-26.8-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY REJECT-77.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY REJECT-77.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY RELATE-86.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-THEME) :BINDS NIL :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY RELATE-86.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Theme") (:VERB) (:O "Co-Theme")))))
-((DEFINE-MIXIN-CATEGORY RELATE-86.2-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:PREP "to") (:IO "Co-Theme")))))
-((DEFINE-MIXIN-CATEGORY RELY-70 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "on") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "on") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "on") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "on") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "on") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY REMEDY-45.7 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT) :BINDS
-  ((INSTRUMENT "OBJECT")) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY REMEDY-45.7-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Patient") (:VERB) (:ADV)))))
-((DEFINE-MIXIN-CATEGORY REMOVE-10.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-GOAL) :BINDS
-  ((GOAL LOCATION) (SOURCE LOCATION) (AGENT (OR NIL COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY RENDER-29.90 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-CAUSE WITH-PATIENT WITH-RESULT) :BINDS NIL :REALIZATION
-  (((:S "Causer") (:VERB) (:O "Result") (:IO "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY RENDER-29.90-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY RENDER-29.90-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY REPRESENTATION-110.1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-THEME WITH-THEME PREDICATION) :BINDS
-  ((PREDICATE "PREDICATE")) :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Co-Theme") (:PREP "in | for | to")
-    (:IO "Context"))
-   ((:S "Theme") (:VERB) (:O "Co-Theme")))))
-((DEFINE-MIXIN-CATEGORY REQUIRE-103 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-INSTRUMENT WITH-THEME) :BINDS ((INSTRUMENT "OBJECT"))
-  :REALIZATION
-  (((:S "Pivot") (:VERB) (:O "Theme")) ((:S "Pivot") (:VERB) (:O "Theme"))
-   ((:S "Pivot") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY REQUIRE-103-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-SOURCE) :BINDS NIL :REALIZATION
-  (((:S "Pivot") (:VERB) (:O "Theme")) ((:S "Pivot") (:VERB) (:O "Theme"))
-   ((:S "Pivot") (:VERB) (:O "Theme") (:PREP "from") (:IO "Source")))))
-((DEFINE-MIXIN-CATEGORY REQUIRE-103-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Pivot") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY RESIGN-10.11 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-SOURCE WITH-GOAL) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY RESIGN-10.11-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "from") (:IO "Source")))))
-((DEFINE-MIXIN-CATEGORY RESIGN-10.11-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Source")))))
-((DEFINE-MIXIN-CATEGORY RESPOND-113 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME PREDICATION) :BINDS
-  ((PREDICATE "PREDICATE") (AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "to|against") (:IO "Theme") (:PREP "with")
-    (:NP "Predicate"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Predicate"))
-   ((:S "Agent") (:VERB) (:PREP "to|against") (:IO "Theme"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY RESULT-27.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-CAUSE WITH-THEME) :BINDS ((CAUSE PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Causer") (:VERB) (:PREP "in | to") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY RISK-94 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY RISK-94-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY ROB-10.6.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-BENEFICIARY) :BINDS
-  ((BENEFICIARY PHYSICAL-AGENT) (SOURCE (OR PHYSICAL-AGENT LOCATION REGION))
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src") (:IO "Source")
-    (:PREP "for") (:NP "Beneficiary"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "for") (:IO "Beneficiary"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY ROLL-51.3.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-PATH WITH-RESULT) :BINDS
-  ((PATH PHYSICAL) (THEME PHYSICAL)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "to into")
-    (:IO "Result" "+" "state"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Result"))
-   ((:S "Theme") (:VERB) (:PREP "to into") (:IO "Result" "+" "state"))
-   ((:S "Theme") (:VERB) (:O "Result"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "path") (:IO "Trajectory"))
-   ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Theme") (:VERB) (:PREP "+" "spatial") (:IO "Trajectory"))
-   ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY ROTATE-51.9.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-EXTENT WITH-PATH) :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:ADV "Trajectory"))
-   ((:S "Theme") (:VERB) (:O "Extent")))))
-((DEFINE-MIXIN-CATEGORY ROTATE-51.9.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT) :BINDS ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Theme") (:IO "Extent")))))
-((DEFINE-MIXIN-CATEGORY RUMMAGE-35.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-CAUSE WITH-THEME) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "+" "loc") (:IO "Location") (:PREP "for")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "over through into") (:IO "Location")))))
-((DEFINE-MIXIN-CATEGORY RUMMAGE-35.5-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Location") (:PREP "for") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY RUN-51.3.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-SOURCE WITH-PATH WITH-DESTINATION) :BINDS
-  ((DESTINATION PHYSICAL) (PATH PHYSICAL) (SOURCE PHYSICAL)
-   (THEME (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :REALIZATION
-  (((:S "+" "path") (:NP "Initial_Location") (:VERB) (:IO "Theme"))
-   ((:S "there") (:VERB) (:O "Theme") (:PREP "+" "path")
-    (:IO "Initial_Location"))
-   ((:S "there") (:VERB) (:PREP "+" "path")
-    (:IO "Initial_Location" "+" "concrete") (:IO "Theme"))
-   ((:S "Theme") (:VERB) (:PREP "+" "spatial") (:IO "Trajectory"))
-   ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY RUN-51.3.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Trajectory" "+" "concrete")))))
-((DEFINE-MIXIN-CATEGORY RUN-51.3.2-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-RESULT WITH-SOURCE) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "to into")
-    (:IO "Result" "+" "state"))
-   ((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "spatial") (:IO "Trajectory"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "spatial")
-    (:IO "Trajectory")))))
-((DEFINE-MIXIN-CATEGORY RUN-51.3.2-2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Trajectory" "+" "concrete")))))
-((DEFINE-MIXIN-CATEGORY RUSH-53.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "through") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY SATISFY-55.7 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-INSTRUMENT) :BINDS
-  ((INSTRUMENT "OBJECT") (AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "with") (:IO "Instrument"))
-   ((:S "Instrument") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY SAY-37.7 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-TOPIC WITH-RECIPIENT) :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (TOPIC SPEECH-ACT)
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Topic")))))
-((DEFINE-MIXIN-CATEGORY SAY-37.7-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic") (:PREP "to") (:IO "Recipient"))
-   ((:S "Agent") (:VERB) (:O "Topic")))))
-((DEFINE-MIXIN-CATEGORY SAY-37.7-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic")))))
-((DEFINE-MIXIN-CATEGORY SAY-37.7-1-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic") (:PREP "to") (:IO "Recipient")))))
-((DEFINE-MIXIN-CATEGORY SAY-37.7-1-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic") (:PREP "to") (:IO "Recipient")))))
-((DEFINE-MIXIN-CATEGORY SCRIBBLE-25.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-DESTINATION) :BINDS
-  ((DESTINATION PHYSICAL) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "on | in") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY SCRIBBLE-25.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY SEARCH-35.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-CAUSE WITH-THEME) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Agent") (:VERB) (:PREP "+" "loc") (:IO "Location") (:PREP "for")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "for") (:IO "Theme") (:PREP "+" "loc")
-    (:NP "Location"))
-   ((:S "Agent") (:VERB) (:O "Location") (:PREP "for") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY SEE-30.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-EXPERIENCER WITH-STIMULUS) :BINDS ((EXPERIENCER PHYSICAL-AGENT))
-  :REALIZATION (((:S "Experiencer") (:VERB) (:O "Stimulus")))))
-((DEFINE-MIXIN-CATEGORY SEE-30.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus")))))
-((DEFINE-MIXIN-CATEGORY SEE-30.1-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus")))))
-((DEFINE-MIXIN-CATEGORY SEE-30.1-1-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Experiencer") (:VERB) (:PREP "about of") (:IO "Stimulus")))))
-((DEFINE-MIXIN-CATEGORY SEEM-109 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-THEME WITH-ATTRIBUTE) :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Attribute")))))
-((DEFINE-MIXIN-CATEGORY SEEM-109-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Attribute")))))
-((DEFINE-MIXIN-CATEGORY SEEM-109-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:PREP "in") (:IO "Attribute")))))
-((DEFINE-MIXIN-CATEGORY SEEM-109-1-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Attribute")))))
-((DEFINE-MIXIN-CATEGORY SEND-11.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION (OR PHYSICAL-AGENT LOCATION REGION)) (SOURCE LOCATION)
-   (THEME PHYSICAL) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Destination")
-    (:PREP "+" "src") (:NP "Initial_Location"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location") (:PREP "to") (:NP "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY SEND-11.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-DESTINATION) :BINDS ((DESTINATION PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Destination") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY SEPARATE-23.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT) :BINDS
-  ((AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Patient") (:VERB) (:ADV))
-   ((:S "Patient") (:VERB) (:ADV) (:PREP "from") (:IO "Co-Patient"))
-   ((:S "Patient") (:VERB)) ((:S "Agent") (:VERB) (:O "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "from") (:IO "Co-Patient")))))
-((DEFINE-MIXIN-CATEGORY SEPARATE-23.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "from") (:IO "Co-Patient")))))
-((DEFINE-MIXIN-CATEGORY SEPARATE-23.1-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "with") (:IO "Co-Patient")))))
-((DEFINE-MIXIN-CATEGORY SETTLE-36.1.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-AGENT WITH-TOPIC) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "on")
-    (:NP "Goal"))
-   ((:S "Agent") (:VERB) (:PREP "on") (:IO "Goal")) ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY SETTLE-36.1.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Goal"))
-   ((:S "Agent") (:VERB) (:O "Co-Agent") (:IO "Goal"))
-   ((:S "Agent") (:VERB) (:O "Goal")))))
-((DEFINE-MIXIN-CATEGORY SHAKE-22.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT) :BINDS
-  ((CO-PATIENT PHYSICAL) (PATIENT PHYSICAL)
-   (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :REALIZATION
-  (((:S "Patient") (:VERB) (:ADV) (:LEX "together"))
-   ((:S "Patient") (:VERB) (:ADV)))))
-((DEFINE-MIXIN-CATEGORY SHAKE-22.3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:LEX "together"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with into to")
-    (:IO "Co-Patient")))))
-((DEFINE-MIXIN-CATEGORY SHAKE-22.3-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient"))
-   ((:S "Patient") (:VERB) (:PREP "with into to") (:IO "Co-Patient") (:ADV)))))
-((DEFINE-MIXIN-CATEGORY SHAKE-22.3-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:LEX "together"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with into to")
-    (:IO "Co-Patient")))))
-((DEFINE-MIXIN-CATEGORY SHAKE-22.3-2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY SIGHT-30.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXPERIENCER WITH-STIMULUS) :BINDS
-  ((EXPERIENCER PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Experiencer") (:VERB) (:O "Stimulus")))))
-((DEFINE-MIXIN-CATEGORY SIMPLE_DRESSING-41.3.1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-THEME) :BINDS
-  ((AGENT PHYSICAL-AGENT)) :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY SLIDE-11.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-PATH) :BINDS
-  ((DESTINATION (OR PHYSICAL-AGENT LOCATION REGION)) (SOURCE LOCATION)
-   (THEME PHYSICAL))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location") (:PREP "to") (:NP "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "path") (:IO "Trajectory"))
-   ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Theme") (:VERB) (:PREP "+" "src") (:IO "Initial_Location")
-    (:PREP "to") (:NP "Destination"))
-   ((:S "Theme") (:VERB) (:PREP "to") (:IO "Destination"))
-   ((:S "Theme") (:VERB) (:PREP "+" "path") (:IO "Initial_Location"))
-   ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY SLIDE-11.2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-DESTINATION) :BINDS ((DESTINATION PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Destination") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY SMELL_EMISSION-43.3 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-THEME WITH-CAUSE) :BINDS
-  ((THEME PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Location") (:VERB) (:PREP "of") (:IO "Theme"))
-   ((:S "Location") (:VERB)) ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY SNOOZE-40.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT) :BINDS ((AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY SNOOZE-40.4-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME) :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY SOUND_EMISSION-43.2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-THEME WITH-CAUSE WITH-AGENT TEMPORALLY-LOCALIZED) :BINDS
-  ((CERTAINTY "CERTAINTY") (AGENT ("PRONOUN" "PHYSICAL-AGENT"))
-   (THEME PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Result")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "there") (:VERB) (:O "Theme") (:PREP "+" "loc") (:IO "Location"))
-   ((:S "+" "loc") (:NP "Location") (:VERB) (:IO "Theme"))
-   ((:S "Location") (:VERB) (:PREP "with") (:IO "Theme"))
-   ((:S "Theme") (:VERB) (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY SOUND_EXISTENCE-47.4 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-THEME WITH-CAUSE) :BINDS
-  ((CAUSE (AND/OR LOCATION REGION))) :REALIZATION
-  (((:S "Location") (:VERB) (:PREP "with") (:IO "Theme"))
-   ((:S "+" "loc") (:NP "Location") (:VERB) (:IO "Theme"))
-   ((:S "there") (:VERB) (:O "Theme"))
-   ((:S "Theme") (:VERB) (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY SPANK-18.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-CAUSE WITH-RESULT)
-  :BINDS ((CAUSE PHYSICAL) (INSTRUMENT PHYSICAL) (PATIENT PHYSICAL))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient" "+" "body_part"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "+" "loc")
-    (:IO "Location" "+" "body_part") (:PREP "with") (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "+" "loc")
-    (:IO "Location" "+" "body_part"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state") (:PREP "with") (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY SPATIAL_CONFIGURATION-47.6 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-THEME WITH-CAUSE) :BINDS
-  ((CAUSE (AND/OR LOCATION REGION)) (THEME PHYSICAL)) :REALIZATION
-  (((:S "+" "loc") (:NP "Location") (:VERB) (:IO "Theme"))
-   ((:S "there") (:VERB) (:PREP "+" "loc") (:IO "Location") (:IO "Theme"))
-   ((:S "Theme") (:VERB) (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY SPATIAL_CONFIGURATION-47.6-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT) :BINDS
-  ((AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "loc") (:IO "Location")))))
-((DEFINE-MIXIN-CATEGORY SPEND_TIME-104 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-EXTENT WITH-ATTRIBUTE) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Duration") (:LEX "as") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Duration") (:LEX "as") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Duration")))))
-((DEFINE-MIXIN-CATEGORY SPLIT-23.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT) :BINDS
-  ((CO-PATIENT SOLID) (PATIENT SOLID)) :REALIZATION
-  (((:S "Patient") (:VERB) (:LEX "apart") (:ADV))
-   ((:S "Patient") (:VERB) (:PREP "off off of from") (:IO "Co-Patient") (:ADV))
-   ((:S "Patient") (:VERB) (:LEX "apart"))
-   ((:S "Patient") (:VERB) (:PREP "off off of from") (:IO "Co-Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:LEX "apart"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "off off of from")
-    (:IO "Co-Patient")))))
-((DEFINE-MIXIN-CATEGORY SPRAY-9.7 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
-   (AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Destination") (:PREP "with") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP) (:IO "Destination")))))
-((DEFINE-MIXIN-CATEGORY SPRAY-9.7-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME) :BINDS ((THEME (OR NIL PHYSICAL COLLECTION)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:LEX "at") (:IO "Destination"))
-   ((:S "Theme") (:VERB) (:PREP) (:IO "Destination")))))
-((DEFINE-MIXIN-CATEGORY SPRAY-9.7-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Destination")))))
-((DEFINE-MIXIN-CATEGORY SPRAY-9.7-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME) :BINDS ((THEME PHYSICAL)) :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY STALK-35.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-CAUSE) :BINDS ((AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Agent") (:VERB) (:O "Location") (:PREP "for") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY STEAL-10.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-BENEFICIARY) :BINDS
-  ((BENEFICIARY PHYSICAL-AGENT) (SOURCE (OR PHYSICAL-AGENT COMPANY))
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src") (:IO "Source")
-    (:PREP "for") (:NP "Beneficiary"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "for") (:IO "Beneficiary"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY STEAL-10.5-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Beneficiary") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY STIMULATE-59.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT PREDICATION) :BINDS
-  ((PREDICATE "PREDICATE") (PATIENT (OR PHYSICAL-AGENT COMPANY))
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "into") (:IO "Predicate"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "into") (:IO "Predicate"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY STIMULUS_SUBJECT-30.4 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-EXPERIENCER WITH-STIMULUS) :BINDS
-  ((EXPERIENCER PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Stimulus") (:VERB) (:PREP "like"))
-   ((:S "Stimulus") (:VERB) (:ADJ) (:PREP "to") (:IO "Experiencer"))
-   ((:S "Stimulus") (:VERB) (:ADJ)))))
-((DEFINE-MIXIN-CATEGORY STOP-55.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Affector") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY STOP-55.4-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:ADV)) ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY STOP-55.4-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY SUBJUGATE-42.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT) :BINDS
-  ((INSTRUMENT "OBJECT") (PATIENT (OR PHYSICAL-AGENT COMPANY))
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY SUBORDINATE-95.2.1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-AGENT) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:PREP "to") (:IO "Co-Agent")))))
-((DEFINE-MIXIN-CATEGORY SUBSTANCE_EMISSION-43.4 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-THEME WITH-SOURCE) :BINDS NIL
-  :REALIZATION (((:S "Source") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY SUBSTANCE_EMISSION-43.4-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-CAUSE) :BINDS NIL :REALIZATION
-  (((:S "Source") (:VERB) (:O "Theme")) ((:S "Theme") (:VERB) (:LEX "out"))
-   ((:S "there") (:VERB) (:O "Theme") (:PREP "+" "loc") (:IO "Location"))
-   ((:S "+" "loc") (:NP "Location") (:VERB) (:IO "Theme"))
-   ((:S "Location") (:VERB) (:PREP "with") (:IO "Theme"))
-   ((:S "Theme") (:VERB) (:PREP "+" "path") (:IO "Location"))
-   ((:S "Theme") (:VERB) (:PREP "from out_of") (:IO "Source"))
-   ((:S "Source") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY SUBSTANCE_EMISSION-43.4-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT) :BINDS
-  ((AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Source")))))
-((DEFINE-MIXIN-CATEGORY SUBSTITUTE-13.6.2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-THEME WITH-THEME WITH-SOURCE WITH-GOAL WITH-CAUSE) :BINDS
-  ((CAUSE (AND/OR LOCATION REGION))) :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Location") (:PREP "with") (:IO "Co-Theme"))
-   ((:S "Theme") (:VERB) (:O "Location"))
-   ((:S "Theme") (:VERB) (:PREP "for into") (:IO "Co-Theme")))))
-((DEFINE-MIXIN-CATEGORY SUBSTITUTE-13.6.2-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Co-Theme")))))
-((DEFINE-MIXIN-CATEGORY SUCCEED-74 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY SUCCEED-74-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "in") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "in") (:IO "Theme")) ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY SUCCEED-74-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY SUCCEED-74-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "in at") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY SUCCEED-74-3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION (((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY SUCCEED-74-3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "in at") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY SUCCEED-74-3-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "in") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY SUFFOCATE-40.7 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-RESULT) :BINDS
-  ((PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "to")
-    (:IO "Result" "+" "state"))
-   ((:S "Patient") (:VERB) (:PREP "to") (:IO "Result" "+" "state"))
-   ((:S "Patient") (:VERB)) ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY SUPERVISION-95.2.2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-AGENT WITH-AGENT) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Co-Agent")))))
-((DEFINE-MIXIN-CATEGORY SUPPORT-15.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-INSTRUMENT) :BINDS
-  ((INSTRUMENT "OBJECT") (AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Instrument") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY SUPPORT-15.3-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "with | through")
-    (:IO "Instrument")))))
-((DEFINE-MIXIN-CATEGORY SUSPECT-81 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-ATTRIBUTE) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "of") (:IO "Attribute"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "of") (:IO "Attribute")))))
-((DEFINE-MIXIN-CATEGORY SUSTAIN-55.6 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-INSTRUMENT) :BINDS
-  ((INSTRUMENT "OBJECT") (AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "through") (:IO "Instrument")))))
-((DEFINE-MIXIN-CATEGORY SUSTAIN-55.6-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-ATTRIBUTE) :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:IO "Attribute")))))
-((DEFINE-MIXIN-CATEGORY SWARM-47.5.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-CAUSE) :BINDS
-  ((CAUSE (AND/OR LOCATION REGION)) (THEME (AND/OR PHYSICAL COLLECTION)))
-  :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY SWARM-47.5.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Location") (:VERB) (:PREP "with") (:IO "Theme"))
-   ((:S "+" "loc") (:NP "Location") (:VERB) (:IO "Theme"))
-   ((:S "there") (:VERB) (:O "Theme") (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Theme") (:VERB) (:PREP "+" "loc") (:IO "Location")))))
-((DEFINE-MIXIN-CATEGORY SWARM-47.5.1-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "there") (:VERB) (:O "Theme") (:PREP "+" "loc") (:IO "Location"))
-   ((:S "Theme") (:VERB) (:PREP "+" "loc") (:IO "Location")))))
-((DEFINE-MIXIN-CATEGORY SWARM-47.5.1-2-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Location") (:VERB) (:PREP "with") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY SWAT-18.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-CAUSE WITH-RESULT)
-  :BINDS
-  ((CAUSE PHYSICAL) (INSTRUMENT SOLID) (PATIENT PHYSICAL)
-   (AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "+" "loc")
-    (:IO "Location" "+" "body_part"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state") (:PREP "with") (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to into")
-    (:IO "Result" "+" "state"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:IO "Result") (:PREP "with")
-    (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:LEX "at") (:IO "Patient") (:PREP "with")
-    (:NP "Instrument"))
-   ((:S "Agent") (:VERB) (:LEX "at") (:IO "Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY TALK-37.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-AGENT WITH-TOPIC) :BINDS
-  ((TOPIC SPEECH-ACT) (AGENT (OR PHYSICAL-AGENT COMPANY))
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic") (:PREP "with")
-    (:NP "Co-Agent"))
-   ((:S "Agent") (:VERB) (:PREP "about") (:IO "Topic") (:PREP "to")
-    (:NP "Co-Agent"))
-   ((:S "Agent") (:VERB) (:LEX "together")) ((:S "Agent") (:VERB))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "about")
-    (:NP "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Co-Agent") (:PREP "about")
-    (:NP "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Co-Agent"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY TAPE-22.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT WITH-INSTRUMENT WITH-RESULT)
-  :BINDS
-  ((INSTRUMENT (AND/OR PHYSICAL PHYSICAL-AGENT)) (CO-PATIENT SOLID)
-   (PATIENT SOLID) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:IO "Result"))
-   ((:S "Patient") (:VERB) (:LEX "together") (:ADV))
-   ((:S "Patient") (:VERB) (:ADV) (:LEX "together"))
-   ((:S "Patient") (:VERB) (:ADV))
-   ((:S "Patient") (:VERB) (:ADV) (:PREP "to on onto") (:IO "Co-Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:LEX "together"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "to on onto")
-    (:IO "Co-Patient"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY TAPE-22.4-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "to on onto") (:IO "Co-Patient")))))
-((DEFINE-MIXIN-CATEGORY TELL-37.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-RECIPIENT WITH-TOPIC) :BINDS
-  ((TOPIC SPEECH-ACT) (RECIPIENT (OR PHYSICAL-AGENT COMPANY))
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:PREP "of") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient")))))
-((DEFINE-MIXIN-CATEGORY TERMINUS-47.9 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-CAUSE) :BINDS NIL :REALIZATION
-  (((:S "Theme") (:VERB) (:PREP "") (:IO "Location")))))
-((DEFINE-MIXIN-CATEGORY THROW-17.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-RESULT)
-  :BINDS
-  ((DESTINATION (OR PHYSICAL-AGENT LOCATION REGION)) (SOURCE LOCATION)
-   (THEME PHYSICAL))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:ADV))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location") (:PREP "+" "dest_dir") (:NP "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP) (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY THROW-17.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-DESTINATION) :BINDS ((DESTINATION PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Destination") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY THROW-17.1-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-CAUSE) :BINDS NIL :REALIZATION
-  (((:S "Causer") (:VERB) (:PREP "into") (:IO "Result") (:IO "Theme"))
-   ((:S "Causer") (:VERB) (:O "Theme") (:PREP "into") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY TINGLE-40.8.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXPERIENCER WITH-PATIENT WITH-STIMULUS) :BINDS
-  ((EXPERIENCER PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Patient") (:VERB) (:PREP "from at") (:IO "Stimulus"))
-   ((:S "Patient") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY TOUCH-20 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-EXPERIENCER WITH-INSTRUMENT) :BINDS
-  ((INSTRUMENT SOLID) (EXPERIENCER PHYSICAL)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Experiencer") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Experiencer")))))
-((DEFINE-MIXIN-CATEGORY TOUCH-20-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-EXPERIENCER) :BINDS ((EXPERIENCER (OR NIL PRONOUN)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Experiencer") (:PREP "with") (:IO "Instrument"))
-   ((:S "Agent") (:VERB) (:O "Experiencer")))))
-((DEFINE-MIXIN-CATEGORY TRANSCRIBE-25.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-DESTINATION) :BINDS
-  ((DESTINATION PHYSICAL) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP) (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY TRANSFER_MESG-37.1.1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-TOPIC WITH-RECIPIENT WITH-SOURCE) :BINDS
-  ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB)) ((:S "Agent") (:VERB) (:PREP "from") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:O "Topic") (:PREP "to") (:IO "Recipient"))
-   ((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Topic")) ((:S "Agent") (:VERB) (:O "Topic")))))
-((DEFINE-MIXIN-CATEGORY TRANSFER_MESG-37.1.1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic")))))
-((DEFINE-MIXIN-CATEGORY TRANSFER_MESG-37.1.1-1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:PREP "about") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient") (:IO "Topic"))
-   ((:S "Agent") (:VERB) (:O "Recipient")))))
-((DEFINE-MIXIN-CATEGORY TRICK-59.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT PREDICATION) :BINDS
-  ((PREDICATE "PREDICATE") (PATIENT (OR PHYSICAL-AGENT COMPANY))
-   (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:PREP "into") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "into") (:IO "Predicate"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY TRIFLE-105.3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:PREP "with") (:IO "Theme")))))
-((DEFINE-MIXIN-CATEGORY TRY-61.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY TURN-26.6.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-RESULT WITH-SOURCE) :BINDS
-  ((AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient")) ((:S "Patient") (:VERB))
-   ((:S "Patient") (:VERB) (:PREP "into") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "into") (:IO "Result"))
-   ((:S "Patient") (:VERB) (:PREP "from") (:IO "Initial_State") (:PREP "into")
-    (:NP "Result"))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "from") (:IO "Initial_State")
-    (:PREP "into") (:NP "Result")))))
-((DEFINE-MIXIN-CATEGORY TURN-26.6.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "to") (:IO "Result") (:PREP "from")
-    (:NP "Initial_State"))
-   ((:S "Agent") (:VERB) (:PREP "from") (:IO "Initial_State") (:PREP "to")
-    (:NP "Result"))
-   ((:S "Agent") (:VERB) (:PREP "to") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY URGE-58.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-RESULT) :BINDS
-  ((PATIENT (OR PHYSICAL-AGENT COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY URGE-58.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:IO "Result")))))
-((DEFINE-MIXIN-CATEGORY URGE-58.1-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Patient") (:IO "Topic")))))
-((DEFINE-MIXIN-CATEGORY USE-105.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME PREDICATION) :BINDS
-  ((PREDICATE "PREDICATE") (AGENT (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:IO "Predicate"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "for") (:IO "Predicate"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:ADV))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY VEHICLE-51.4.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-PATH WITH-RESULT) :BINDS
-  ((PATH PHYSICAL) (THEME PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "to into")
-    (:IO "Result" "+" "state"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Result"))
-   ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "path") (:IO "Trajectory"))
-   ((:S "Theme") (:VERB) (:PREP "+" "path") (:IO "Trajectory"))
-   ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY VEHICLE-51.4.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-CAUSE) :BINDS ((CAUSE PHYSICAL)) :REALIZATION
-  (((:S "Theme") (:VERB) (:O "Location")))))
-((DEFINE-MIXIN-CATEGORY VEHICLE_PATH-51.4.3 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME WITH-PATH WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION LOCATION) (SOURCE LOCATION) (THEME MOTOR-VEHICLE)
-   (AGENT (OR PHYSICAL-AGENT MOTOR-VEHICLE)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Trajectory") (:PREP "from")
-    (:IO "Initial_Location"))
-   ((:S "Agent") (:VERB) (:O "Trajectory") (:PREP "to") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Trajectory"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "from") (:IO "Initial_Location"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "to") (:IO "Destination"))
-   ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY VOID-106 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-PATIENT) :BINDS ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION (((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY VOLUNTEER-95.4 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-INSTRUMENT WITH-THEME WITH-ATTRIBUTE) :BINDS
-  ((INSTRUMENT "OBJECT") (AGENT ("PRONOUN" "PHYSICAL-AGENT"))) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Pivot") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY VOLUNTEER-95.4-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Attribute")))))
-((DEFINE-MIXIN-CATEGORY WALTZ-51.5 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-THEME WITH-PATH WITH-GOAL) :BINDS
-  ((PATH PHYSICAL) (THEME PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "to into")
-    (:IO "Goal" "+" "state"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:IO "Goal"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "path") (:IO "Trajectory"))
-   ((:S "Theme") (:VERB) (:PREP "+" "path") (:IO "Trajectory") (:IO "Goal"))
-   ((:S "Theme") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY WANT-32.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-INSTRUMENT WITH-THEME) :BINDS ((INSTRUMENT PHYSICAL-AGENT))
-  :REALIZATION (((:S "Pivot") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY WANT-32.1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Pivot") (:VERB) (:O "Theme")) ((:S "Pivot") (:VERB) (:O "Theme"))
-   ((:S "Pivot") (:VERB) (:O "Theme")) ((:S "Pivot") (:VERB) (:O "Theme"))
-   ((:S "Pivot") (:VERB) (:O "Theme"))
-   ((:S "Pivot") (:VERB) (:O "Theme") (:ADJ))
-   ((:S "Pivot") (:VERB) (:O "Theme")) ((:S "Pivot") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY WANT-32.1-1-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Pivot") (:VERB) (:O "Theme")) ((:S "Pivot") (:VERB) (:O "Theme")))))
-((DEFINE-MIXIN-CATEGORY WEATHER-57 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME) :BINDS ((THEME (OR PHYSICAL NIL))) :REALIZATION
-  (((:S "it[+be]") (:VERB) (:PREP "with") (:IO "Theme"))
-   ((:S "it") (:LEX "[+be]") (:VERB) (:IO "Theme"))
-   ((:S "it") (:LEX "[+be]") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY WEEKEND-56 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-THEME WITH-CAUSE) :BINDS
-  ((CAUSE LOCATION) (THEME PHYSICAL-AGENT)) :REALIZATION
-  (((:S "Theme") (:VERB) (:PREP "+" "loc") (:IO "Location")))))
-((DEFINE-MIXIN-CATEGORY WINK-40.3.1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-PATIENT WITH-THEME WITH-RECIPIENT) :BINDS
-  ((RECIPIENT PHYSICAL-AGENT) (THEME SPEECH-ACT) (AGENT PHYSICAL-AGENT))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "in") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "+" "dest_dir") (:IO "Recipient"))
-   ((:S "Agent") (:VERB))
-   ((:S "Agent") (:VERB) (:O "Patient") (:PREP "in") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:O "Patient")))))
-((DEFINE-MIXIN-CATEGORY WIPE_INSTR-10.4.2 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-INSTRUMENT
-   WITH-RESULT)
-  :BINDS
-  ((INSTRUMENT (AND/OR PHYSICAL PHYSICAL-AGENT)) (DESTINATION LOCATION)
-   (SOURCE LOCATION) (THEME (AND/OR PHYSICAL PHYSICAL-AGENT))
-   (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Initial_Location") (:IO "Result"))
-   ((:S "Agent") (:VERB)) ((:S "Agent") (:VERB) (:O "Initial_Location"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src")
-    (:IO "Initial_Location")))))
-((DEFINE-MIXIN-CATEGORY WIPE_INSTR-10.4.2-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-DESTINATION) :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "dest_conf")
-    (:IO "Destination")))))
-((DEFINE-MIXIN-CATEGORY WIPE_MANNER-10.4.1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION) :BINDS
-  ((DESTINATION LOCATION) (SOURCE LOCATION)
-   (THEME (AND/OR PHYSICAL PHYSICAL-AGENT)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:O "Theme")) ((:S "Agent") (:VERB) (:O "Source"))
-   ((:S "Agent") (:VERB) (:O "Theme") (:PREP "+" "src") (:IO "Source")))))
-((DEFINE-MIXIN-CATEGORY WIPE_MANNER-10.4.1-1 :SPECIALIZES
-  SUBCATEGORIZATION-PATTERN :MIXINS (WITH-SOURCE) :BINDS ((SOURCE REGION))
-  :REALIZATION (((:S "Agent") (:VERB) (:LEX "at") (:IO "Source")))))
-((DEFINE-MIXIN-CATEGORY WISH-62 :SPECIALIZES SUBCATEGORIZATION-PATTERN :MIXINS
-  (WITH-EXPERIENCER WITH-STIMULUS) :BINDS
-  ((EXPERIENCER (OR PHYSICAL-AGENT COMPANY))) :REALIZATION
-  (((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus"))
-   ((:S "Experiencer") (:VERB) (:O "Stimulus")))))
-((DEFINE-MIXIN-CATEGORY WITHDRAW-82 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-SOURCE) :BINDS
-  ((AGENT (AND/OR PHYSICAL-AGENT COMPANY))) :REALIZATION NIL))
-((DEFINE-MIXIN-CATEGORY WITHDRAW-82-1 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "of") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:PREP "of") (:IO "Source")) ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY WITHDRAW-82-2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "from") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:PREP "from") (:IO "Source"))
-   ((:S "Agent") (:VERB) (:LEX "away")))))
-((DEFINE-MIXIN-CATEGORY WITHDRAW-82-3 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS NIL :BINDS NIL :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "from") (:IO "Source"))
-   ((:S "Agent") (:VERB)))))
-((DEFINE-MIXIN-CATEGORY WORK-73.2 :SPECIALIZES SUBCATEGORIZATION-PATTERN
-  :MIXINS (WITH-AGENT WITH-AGENT WITH-THEME) :BINDS
-  ((AGENT ("PRONOUN" "PHYSICAL-AGENT")) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :REALIZATION
-  (((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "at")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "at") (:IO "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "with") (:IO "Co-Agent") (:PREP "on")
-    (:NP "Theme"))
-   ((:S "Agent") (:VERB) (:PREP "on") (:IO "Theme")) ((:S "Agent") (:VERB)))))
+ (define-mixin-category absorb-39.8
+  :specializes subcategorization-pattern
+  :mixins (WITH-GOAL WITH-THEME WITH-SOURCE)
+  :realization ((:S "Goal" :O "Theme" :PREP "from" :IO "Source")
+                (:S "Goal" :O "Theme"))) 
+
+ (define-mixin-category accept-77.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category accompany-51.7
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
+  :binds ((THEME PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :PREP :NP "Destination")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category acquiesce-95.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "to" :IO "Theme")
+                (:S "Agent" :PREP "to" :IO "Co-Agent"))) 
+
+ (define-mixin-category acquiesce-95.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category act-114
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT PREDICATION)
+  :binds ((PREDICATE "PREDICATE") (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Predicate"))) 
+
+ (define-mixin-category act-114-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category act-114-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Predicate")
+                (:S "Agent" :PREP "on" :IO "Predicate"))) 
+
+ (define-mixin-category addict-96
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-STIMULUS)
+  :binds ((PATIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Patient" :PREP "to" :IO "Stimulus"))) 
+
+ (define-mixin-category adjust-26.9
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-GOAL WITH-SOURCE)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "to" :IO "Goal")
+                (:S "Agent" :O "Patient" :PREP "to" :IO "Goal")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category admire-31.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-STIMULUS WITH-EXPERIENCER WITH-ATTRIBUTE)
+  :binds ((EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S "Experiencer" :O "Stimulus" :PREP "for" :IO "Attribute")
+                (:S "Experiencer" :O "Stimulus"))) 
+
+ (define-mixin-category admire-31.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Experiencer" :O "Stimulus"))) 
+
+ (define-mixin-category admit-64.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-CAUSE)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Theme" :IO "Location"))) 
+
+ (define-mixin-category admit-64.3-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :PREP :NP "Location")
+                (:S "Agent" :O "Theme" :IO "Location"))) 
+
+ (define-mixin-category adopt-93
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category advise-37.9
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-TOPIC WITH-RECIPIENT)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (TOPIC SPEECH-ACT)
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Recipient" :PREP "of" :IO "Topic")
+                (:S "Agent" :O "Recipient" :IO "Topic")
+                (:S "Agent" :O "Recipient" :PREP
+                 "against about concerning on regarding respecting" :IO
+                 "Topic")
+                (:S "Agent" :O "Recipient"))) 
+
+ (define-mixin-category advise-37.9-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Topic")
+                (:S "Agent" :PREP
+                 "against about concerning on regarding respecting" :IO
+                 "Topic"))) 
+
+ (define-mixin-category allow-64.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-BENEFICIARY WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Beneficiary"))) 
+
+ (define-mixin-category allow-64.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Beneficiary" :IO "Theme"))) 
+
+ (define-mixin-category amalgamate-22.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
+  :binds ((AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S "Patient" :ADV)
+                (:S "Patient" :ADV :PREP "with" :NP "Co-Patient"))) 
+
+ (define-mixin-category amalgamate-22.2-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT WITH-CO-PATIENT)
+  :binds ((CO-PATIENT PHYSICAL) (PATIENT PHYSICAL))
+  :realization ((:S "Patient" :PREP "with" :IO "Co-Patient")
+                (:S "Agent" :O "Patient")
+                (:S "Agent" :O "Patient" :PREP "into to with" :IO "Co-Patient"))) 
+
+ (define-mixin-category amalgamate-22.2-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient"))) 
+
+ (define-mixin-category amalgamate-22.2-2
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT WITH-CO-PATIENT WITH-AGENT)
+  :binds ((AGENT (OR PHYSICAL-AGENT ABSTRACT))
+          (CO-PATIENT (OR PHYSICAL-AGENT ABSTRACT)) (PATIENT PHYSICAL))
+  :realization ((:S "Patient" :PREP "with" :IO "Co-Patient")
+                (:S "Agent" :O "Patient")
+                (:S "Agent" :O "Patient" :PREP "with" :IO "Co-Patient"))) 
+
+ (define-mixin-category amalgamate-22.2-2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient"))) 
+
+ (define-mixin-category amalgamate-22.2-3
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category amalgamate-22.2-3-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Patient" :PREP "to" :IO "Co-Patient"))) 
+
+ (define-mixin-category amalgamate-22.2-3-1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
+  :binds ((CO-PATIENT PHYSICAL-AGENT) (PATIENT PHYSICAL-AGENT)
+          (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Patient"))) 
+
+ (define-mixin-category amalgamate-22.2-3-2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
+  :binds ((CO-PATIENT PHYSICAL) (PATIENT PHYSICAL)
+          (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Patient"))) 
+
+ (define-mixin-category amuse-31.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-STIMULUS WITH-RESULT)
+  :binds ((EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S "Stimulus" :O "Experiencer" :IO "Result")
+                (:S "Stimulus" :LEX "'s" :IO "Experiencer") (:S "Stimulus")
+                (:S "Experiencer" :ADV) (:S "Stimulus" :O "Experiencer"))) 
+
+ (define-mixin-category animal_sounds-38
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT WITH-CAUSE)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Location" :PREP "with" :IO "Agent")
+                (:S "Agent" :O "Location") (:S "Agent" :O "Theme")
+                (:S "Agent" :PREP :NP "Recipient") (:S "Agent"))) 
+
+ (define-mixin-category appeal-31.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-STIMULUS WITH-EXPERIENCER)
+  :binds ((EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S "Stimulus" :PREP "to" :IO "Experiencer"))) 
+
+ (define-mixin-category appeal-31.4-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Stimulus" :PREP "at" :IO "Experiencer"))) 
+
+ (define-mixin-category appeal-31.4-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Stimulus" :PREP "on" :IO "Experiencer"))) 
+
+ (define-mixin-category appeal-31.4-3
+  :specializes subcategorization-pattern
+  :realization ((:S "Stimulus"))) 
+
+ (define-mixin-category appear-48.1.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-CAUSE)
+  :realization ((:S "Theme" :O "Location") (:S :NP "Location" :NP "Theme")
+                (:S "there" :O "Theme" :PREP :NP "Location")
+                (:S "Theme" :PREP :NP "Location") (:S "Theme"))) 
+
+ (define-mixin-category appoint-29.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-RESULT)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme")
+                (:S "Agent" :O "Theme" :LEX "to" :LEX "be" :IO "Result")
+                (:S "Agent" :O "Theme" :LEX "as" :IO "Result")
+                (:S "Agent" :O "Theme" :IO "Result"))) 
+
+ (define-mixin-category assessment-34.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :LEX "'s" :IO "Attribute")
+                (:S "Agent" :O "Theme" :PREP "for" :IO "Attribute")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category assuming_position-50
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-CAUSE)
+  :binds ((CAUSE (AND/OR LOCATION REGION)) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :PREP :NP "Location") (:S "Agent"))) 
+
+ (define-mixin-category attack-60.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category attack-60.1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category attend-107.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-GOAL)
+  :realization NIL) 
+
+ (define-mixin-category attend-107.4-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Goal"))) 
+
+ (define-mixin-category attend-107.4-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :PREP :NP "Goal"))) 
+
+ (define-mixin-category avoid-52
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Location"))) 
+
+ (define-mixin-category banish-10.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
+          (THEME PHYSICAL-AGENT) (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "to" :IO "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Source")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category base-97.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "on" :IO "Source"))) 
+
+ (define-mixin-category battle-36.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "about | over " :IO "Theme")
+                (:S "Agent" :PREP "about | over" :IO "Theme")
+                (:S "Agent" :PREP "about | over" :IO "Topic")
+                (:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "about | over"
+                 :IO "Theme")
+                (:S "Agent") (:S "Agent" :PREP "with" :IO "Co-Agent"))) 
+
+ (define-mixin-category battle-36.4-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Co-Agent" :PREP "about | over" :IO "Theme")
+                (:S "Agent" :O "Co-Agent"))) 
+
+ (define-mixin-category become-109.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT WITH-RESULT)
+  :realization ((:S "Patient" :O "Result"))) 
+
+ (define-mixin-category become-109.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient" :PREP "in | into" :IO "Result"))) 
+
+ (define-mixin-category become-109.1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient" :O "Result"))) 
+
+ (define-mixin-category beg-58.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-RESULT)
+  :binds ((PATIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Result"))) 
+
+ (define-mixin-category beg-58.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "for" :IO "Result"))) 
+
+ (define-mixin-category beg-58.2-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Patient" :PREP "for" :IO "Result"))) 
+
+ (define-mixin-category begin-55.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-INSTRUMENT)
+  :binds ((INSTRUMENT "OBJECT") (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category begin-55.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category begin-55.1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Instrument" :O "Theme")
+                (:S "Agent" :O "Theme" :PREP "with" :IO "Instrument")
+                (:S "Theme" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Theme") (:S "Theme"))) 
+
+ (define-mixin-category being_dressed-41.3.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :PREP "in" :IO "Theme"))) 
+
+ (define-mixin-category bend-45.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT)
+  :binds ((INSTRUMENT SOLID) (PATIENT SOLID))
+  :realization ((:S "Agent" :O "Patient" :PREP "to into" :IO "Result" :PREP
+                 "with" :NP "Instrument")
+                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
+                (:S "Agent" :O "Patient" :IO "Result")
+                (:S "Instrument" :O "Patient") (:S "Patient" :ADV)
+                (:S "Patient")
+                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category benefit-72.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-CAUSE WITH-BENEFICIARY)
+  :realization ((:S "Beneficiary" :PREP "from by" :IO "Causer")
+                (:S "Beneficiary") (:S "Causer" :O "Beneficiary"))) 
+
+ (define-mixin-category berry-13.7
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category bill-54.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-EXTENT WITH-RECIPIENT)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (EXTENT CURRENCY)
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Recipient" :IO "Asset")
+                (:S "Agent" :O "Recipient"))) 
+
+ (define-mixin-category birth-28.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT)
+  :binds ((PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category birth-28.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category body_internal_motion-49.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT)
+  :binds ((PATIENT PRONOUN) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category body_internal_states-40.6
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-STIMULUS)
+  :binds ((EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S "Experiencer" :PREP "from at" :IO "Stimulus")
+                (:S "Experiencer"))) 
+
+ (define-mixin-category body_motion-49.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-GOAL WITH-PATH)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Path" :IO "Theme")
+                (:S "Agent" :O "Theme" :IO "Path"))) 
+
+ (define-mixin-category body_motion-49.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Path" :IO "Theme")
+                (:S "Agent" :PREP :NP "Path") (:S "Agent" :O "Goal")
+                (:S "Agent" :O "Theme" :IO "Goal"))) 
+
+ (define-mixin-category body_motion-49.2-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category braid-41.2.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category break-45.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT)
+  :binds ((INSTRUMENT SOLID) (PATIENT SOLID))
+  :realization ((:S "Patient" :PREP "to into" :IO "Result")
+                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result" :PREP
+                 "with" :NP "Instrument")
+                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
+                (:S "Agent" :O "Patient" :IO "Result" :PREP "with" :IO
+                 "Instrument")
+                (:S "Agent" :O "Patient" :IO "Result")
+                (:S "Instrument" :O "Patient") (:S "Patient" :ADV)
+                (:S "Patient")
+                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category break_down-45.8
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT)
+  :realization ((:S "Patient"))) 
+
+ (define-mixin-category breathe-40.1.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :PREP "on onto" :IO "Destination")
+                (:S "Agent" :O "Theme")
+                (:S "Agent" :PREP "on onto" :IO "Destination") (:S "Agent"))) 
+
+ (define-mixin-category breathe-40.1.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category bring-11.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-INSTRUMENT)
+  :binds ((INSTRUMENT "OBJECT")
+          (DESTINATION (OR PHYSICAL-AGENT LOCATION REGION)) (SOURCE LOCATION)
+          (THEME PHYSICAL))
+  :realization ((:S "Instrument" :O "Theme" :IO "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP "to"
+                 :NP "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
+                (:S "Agent" :PREP "against before into on to onto" :IO
+                 "Destination" :IO "Theme")
+                (:S "Agent" :O "Theme" :PREP "against before into on to onto"
+                 :IO "Destination")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category bring-11.3-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-DESTINATION)
+  :binds ((DESTINATION PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :LEX "together")
+                (:S "Agent" :O "Destination" :IO "Theme"))) 
+
+ (define-mixin-category build-26.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-MATERIAL WITH-PRODUCT WITH-BENEFICIARY WITH-EXTENT)
+  :binds ((EXTENT CURRENCY) (BENEFICIARY (OR PHYSICAL-AGENT COMPANY))
+          (MATERIAL PHYSICAL) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S "Agent" :O "Product" :PREP "from out_of" :IO "Material"
+                 :PREP "for" :NP "Asset")
+                (:S "Agent" :O "Beneficiary" :IO "Product" :PREP "for" :IO
+                 "Asset")
+                (:S "Material" :O "Product")
+                (:S "Agent" :O "Material" :PREP "into" :IO "Product" :PREP
+                 "for" :NP "Beneficiary")
+                (:S "Agent" :O "Material" :PREP "for" :IO "Beneficiary")
+                (:S "Agent" :O "Product" :PREP "from out_of" :IO "Material"
+                 :PREP "for" :NP "Beneficiary")
+                (:S "Agent" :O "Beneficiary" :IO "Product" :PREP "from out_of"
+                 :IO "Material")
+                (:S "Agent" :O "Product" :PREP "for" :IO "Beneficiary")
+                (:S "Agent" :O "Material" :PREP "into" :IO "Product")
+                (:S "Agent" :O "Product" :PREP "from out_of" :IO "Material")
+                (:S "Agent") (:S "Agent" :O "Product"))) 
+
+ (define-mixin-category build-26.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Asset" :O "Beneficiary" :IO "Product" :PREP "from out_of"
+                 :IO "Material")
+                (:S "Asset" :O "Product" :PREP "from out_of" :IO "Material")
+                (:S "Asset" :O "Beneficiary" :IO "Product")
+                (:S "Asset" :O "Product")
+                (:S "Agent" :O "Product" :PREP "for" :IO "Asset"))) 
+
+ (define-mixin-category bulge-47.5.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-CAUSE WITH-THEME)
+  :binds ((CAUSE PHYSICAL))
+  :realization ((:S "Location") (:S "Location" :PREP "with" :IO "Theme"))) 
+
+ (define-mixin-category bully-59.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-RESULT)
+  :binds ((PATIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Patient" :PREP "into" :IO "Result")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category bump-18.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-CAUSE WITH-THEME)
+  :binds ((THEME PHYSICAL) (CAUSE PHYSICAL))
+  :realization ((:S "Theme" :PREP "against into onto" :IO "Location"))) 
+
+ (define-mixin-category bump-18.4-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :LEX "together"))) 
+
+ (define-mixin-category butter-9.9
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
+          (THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Destination" :PREP "with" :IO "Theme")
+                (:S "Agent" :O "Destination"))) 
+
+ (define-mixin-category calibratable_cos-45.6.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT WITH-ATTRIBUTE)
+  :realization ((:S "Patient") (:S "Patient" :PREP "in" :IO "Attribute")
+                (:S "Attribute" :LEX "of" :IO "Patient"))) 
+
+ (define-mixin-category calibratable_cos-45.6.1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXTENT WITH-SOURCE WITH-RESULT)
+  :realization ((:S "Patient" :PREP "in" :IO "Attribute" :PREP "?by" :IO
+                 "?Extent" :PREP "?from" :NP "?Initial_State" :PREP "?to" :NP
+                 "?Result")
+                (:S "Patient" :PREP "in" :IO "Attribute" :IO "?Extent" :PREP
+                 "?from" :NP "?Initial_State" :PREP "?to" :NP "?Result")
+                (:S "Attribute" :PREP "of" :IO "Patient" :PREP "by" :IO
+                 "Extent" :PREP "?from" :NP "?Initial_State" :PREP "?to" :NP
+                 "?Result")
+                (:S "Attribute" :PREP "of" :IO "Patient" :IO "Extent" :PREP
+                 "?from" :NP "?Initial_State" :PREP "?to" :NP "?Result")
+                (:S "Patient" :PREP "by" :IO "Extent" :PREP "?from" :IO
+                 "?Initial_State" :PREP "?to" :NP "?Result")
+                (:S "Patient" :O "Extent" :PREP "?from" :IO "?Initial_State"
+                 :PREP "?to" :NP "?Result"))) 
+
+ (define-mixin-category calve-28.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT)
+  :binds ((PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category captain-29.8
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-BENEFICIARY)
+  :binds ((BENEFICIARY PHYSICAL) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :PREP "for" :IO "Beneficiary"))) 
+
+ (define-mixin-category captain-29.8-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Beneficiary"))) 
+
+ (define-mixin-category captain-29.8-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Beneficiary" :O "Agent"))) 
+
+ (define-mixin-category care-88.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-STIMULUS)
+  :binds ((EXPERIENCER (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Experiencer" :O "Stimulus") (:S "Experiencer"))) 
+
+ (define-mixin-category care-88.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Experiencer" :O "Stimulus")
+                (:S "Experiencer" :PREP "about" :IO "Stimulus"))) 
+
+ (define-mixin-category caring-75.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization NIL) 
+
+ (define-mixin-category caring-75.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category caring-75.2-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "to" :IO "Theme"))) 
+
+ (define-mixin-category caring-75.2-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "for" :IO "Theme"))) 
+
+ (define-mixin-category carry-11.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((SOURCE LOCATION) (THEME PHYSICAL))
+  :realization ((:S "Agent" :O "Theme" :PREP "to towards" :IO "Destination"
+                 :PREP :NP "Initial_Location")
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP
+                 "to towards" :NP "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
+                (:S "Agent" :O "Theme" :PREP "to towards" :IO "Destination")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category carry-11.4-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :PREP "to towards" :IO "Destination"
+                 :PREP :NP "Initial_Location")
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP
+                 "to towards" :NP "Destination")
+                (:S "Agent" :O "Theme" :PREP "to towards" :IO "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category carry-11.4-1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-DESTINATION)
+  :binds ((DESTINATION PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Destination" :IO "Theme"))) 
+
+ (define-mixin-category carve-21.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT)
+  :binds ((INSTRUMENT PHYSICAL) (PATIENT PHYSICAL))
+  :realization NIL) 
+
+ (define-mixin-category carve-21.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Instrument" :ADV) (:S "Instrument" :O "Patient")
+                (:S "Patient" :ADV)
+                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category carve-21.2-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Instrument" :ADV) (:S "Instrument" :O "Patient")
+                (:S "Patient" :ADV)
+                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category caused_calibratable_cos-45.6.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-CAUSE WITH-PATIENT WITH-EXTENT WITH-SOURCE WITH-GOAL
+           WITH-ATTRIBUTE)
+  :realization ((:S "Causer" :O "Patient" :IO "?Extent" :IO "?Source" :IO
+                 "?Goal"))) 
+
+ (define-mixin-category caused_calibratable_cos-45.6.2-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-ATTRIBUTE)
+  :realization ((:S "Patient" :PREP "in" :IO "Attribute" :PREP "?by" :IO
+                 "?Extent" :PREP "?from" :NP "?Source" :PREP "?to" :NP "?Goal")
+                (:S "Patient" :PREP "in" :IO "Attribute" :IO "?Extent" :PREP
+                 "?from" :NP "?Source" :PREP "?to" :NP "?Goal")
+                (:S "Attribute" :PREP "of" :IO "Patient" :PREP "by" :IO
+                 "Extent" :PREP "?from" :NP "?Source" :PREP "?to" :NP "?Goal")
+                (:S "Attribute" :PREP "of" :IO "Patient" :IO "?Extent" :PREP
+                 "?from" :NP "?Source" :PREP "?to" :NP "?Goal")
+                (:S "Patient" :PREP "?by" :IO "?Extent" :PREP "?from" :IO
+                 "?Source" :PREP "?to" :NP "?Goal")
+                (:S "Patient" :O "Extent" :PREP "?from" :IO "?Source" :PREP
+                 "?to" :NP "?Goal"))) 
+
+ (define-mixin-category change_bodily_state-40.8.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-STIMULUS)
+  :binds ((EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S "Experiencer" :PREP "from at" :IO "Stimulus")
+                (:S "Experiencer"))) 
+
+ (define-mixin-category characterize-29.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
+  :binds ((THEME (OR PHYSICAL COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "as" :IO "Attribute")
+                (:S "Agent" :O "Theme" :LEX "to be" :IO "Attribute")
+                (:S "Agent" :O "Theme" :LEX "as" :IO "Attribute"))) 
+
+ (define-mixin-category characterize-29.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category characterize-29.2-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category characterize-29.2-1-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category chase-51.6
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-PATH)
+  :binds ((THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :PREP "after" :IO "Theme")
+                (:S "Agent" :O "Theme" :PREP :NP "Trajectory")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category cheat-10.6.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-GOAL)
+  :binds ((SOURCE (OR PHYSICAL-AGENT LOCATION REGION))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Source" :PREP "out_of" :IO "Theme")
+                (:S "Agent" :O "Source"))) 
+
+ (define-mixin-category cheat-10.6.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Source" :PREP "for" :IO "Theme"))) 
+
+ (define-mixin-category cheat-10.6.1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :PREP "from" :IO "Source"))) 
+
+ (define-mixin-category chew-39.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization NIL) 
+
+ (define-mixin-category chew-39.2-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT)
+  :binds ((PATIENT (AND/OR NIL SOLID)))
+  :realization ((:S "Agent" :PREP "on" :IO "Patient")
+                (:S "Agent" :PREP "at" :IO "Patient") (:S "Agent")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category chew-39.2-2
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT)
+  :binds ((PATIENT (AND/OR NIL SOLID)))
+  :realization ((:S "Agent" :PREP "from" :IO "Patient") (:S "Agent")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category chit_chat-37.6
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT WITH-TOPIC)
+  :binds ((TOPIC SPEECH-ACT) (AGENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "about" :IO "Topic")
+                (:S "Agent" :PREP "about" :IO "Topic" :PREP "with" :IO
+                 "Co-Agent")
+                (:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "about" :IO
+                 "Topic")
+                (:S "Agent" :PREP "with" :IO "Co-Agent") (:S "Agent"))) 
+
+ (define-mixin-category chit_chat-37.6-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Topic" :PREP "with" :IO "Co-Agent")
+                (:S "Agent" :O "Topic"))) 
+
+ (define-mixin-category classify-29.10
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-GOAL)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "in" :IO "Goal")
+                (:S "Agent" :O "Theme" :PREP "as" :IO "Goal")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category clear-10.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION LOCATION) (SOURCE LOCATION) (THEME PHYSICAL))
+  :realization ((:S "Agent" :O "Source" :PREP "of" :IO "Theme")
+                (:S "Agent" :O "Theme" :PREP :NP "Source")
+                (:S "Agent" :O "Source"))) 
+
+ (define-mixin-category clear-10.3-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :PREP :NP "Source") (:S "Source"))) 
+
+ (define-mixin-category cling-22.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-THEME)
+  :binds ((THEME PHYSICAL) (THEME PHYSICAL))
+  :realization ((:S "Theme" :LEX "together")
+                (:S "Theme" :PREP "to with" :IO "Co-Theme"))) 
+
+ (define-mixin-category cognize-85
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-STIMULUS)
+  :binds ((EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S "Experiencer" :PREP "about" :IO "Stimulus")
+                (:S "Experiencer" :PREP "of" :IO "Stimulus")
+                (:S "Experiencer" :O "Stimulus"))) 
+
+ (define-mixin-category coil-9.6
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION LOCATION) (SOURCE LOCATION) (THEME (AND/OR NIL NIL)))
+  :realization ((:S "Theme" :ADV :PREP :IO "Destination")
+                (:S "Theme" :PREP :NP "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+
+ (define-mixin-category coil-9.6-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :ADV))) 
+
+ (define-mixin-category coloring-24
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-RESULT)
+  :binds ((PATIENT PHYSICAL))
+  :realization ((:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
+                (:S "Agent" :O "Patient" :IO "Result")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category compel-59.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT PREDICATION)
+  :binds ((PREDICATE "PREDICATE") (PATIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Patient" :IO "Predicate")
+                (:S "Agent" :O "Patient" :PREP "into" :IO "Predicate")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category complain-37.8
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-TOPIC WITH-RECIPIENT)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (TOPIC SPEECH-ACT)
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :PREP "about" :IO
+                 "Topic")
+                (:S "Agent" :PREP "about" :IO "Topic" :PREP "to" :IO
+                 "Recipient")
+                (:S "Agent" :PREP "about" :IO "Topic")
+                (:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
+                (:S "Agent" :O "Topic") (:S "Agent" :PREP "to" :IO "Recipient")
+                (:S "Agent"))) 
+
+ (define-mixin-category complete-55.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category complete-55.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category comprehend-87.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-ATTRIBUTE WITH-STIMULUS)
+  :binds ((EXPERIENCER (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Experiencer" :O "Stimulus" :PREP "as" :IO "Attribute")
+                (:S "Experiencer" :O "Stimulus"))) 
+
+ (define-mixin-category comprehend-87.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Experiencer" :O "Stimulus"))) 
+
+ (define-mixin-category comprehend-87.2-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Experiencer"))) 
+
+ (define-mixin-category comprehend-87.2-1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Experiencer" :O "Stimulus" :PREP "about")
+                (:S "Experiencer" :PREP "about | of" :IO "Stimulus"))) 
+
+ (define-mixin-category comprise-107.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-ATTRIBUTE)
+  :realization ((:S "Attribute" :O "Theme"))) 
+
+ (define-mixin-category comprise-107.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Attribute"))) 
+
+ (define-mixin-category concealment-16
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-BENEFICIARY WITH-PATIENT WITH-CAUSE)
+  :binds ((BENEFICIARY PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Patient")
+                (:S "Agent" :O "Patient" :PREP :NP "Location")
+                (:S "Agent" :O "Patient" :PREP "from" :IO "Beneficiary"))) 
+
+ (define-mixin-category concealment-16-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP :NP "Location")
+                (:S "Agent" :PREP "from" :IO "Beneficiary") (:S "Agent"))) 
+
+ (define-mixin-category conduct-111.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-BENEFICIARY)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Theme" :IO "Beneficiary")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category confess-37.10
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-RECIPIENT WITH-TOPIC)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
+                (:S "Agent" :PREP "to" :IO "Recipient")
+                (:S "Agent" :O "Topic" :PREP "to" :IO "Recipient")
+                (:S "Agent" :O "Topic"))) 
+
+ (define-mixin-category confine-92
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
+  :binds ((DESTINATION LOCATION) (AGENT (AND/OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category confine-92-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :PREP "to" :IO "Destination"))) 
+
+ (define-mixin-category confront-98
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-INSTRUMENT)
+  :binds ((INSTRUMENT "OBJECT") (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category conjecture-29.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME PREDICATION)
+  :binds ((PREDICATE "PREDICATE") (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme")
+                (:S "Agent" :O "Theme" :LEX "to" :LEX "be" :IO "Predicate"))) 
+
+ (define-mixin-category conjecture-29.5-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category conjecture-29.5-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "like | as if | as though" :IO "Theme"))) 
+
+ (define-mixin-category consider-29.9
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category consider-29.9-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Theme" :IO "Attribute"))) 
+
+ (define-mixin-category consider-29.9-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Theme" :IO "Attribute"))) 
+
+ (define-mixin-category consider-29.9-1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :PREP "for" :IO "Attribute")
+                (:S "Agent" :O "Theme" :IO "Attribute") (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category consider-29.9-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Theme" :IO "Attribute"))) 
+
+ (define-mixin-category conspire-71
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT WITH-THEME WITH-BENEFICIARY)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme")
+                (:S "Agent" :PREP "against" :IO "Beneficiary")
+                (:S "Agent" :PREP "with" :IO "Co-Agent") (:S "Agent"))) 
+
+ (define-mixin-category consume-66
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-EXTENT WITH-GOAL)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Asset" :IO "Goal") (:S "Agent" :O "Asset"))) 
+
+ (define-mixin-category consume-66-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Asset" :PREP "on" :IO "Goal"))) 
+
+ (define-mixin-category contain-15.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-INSTRUMENT WITH-THEME)
+  :binds ((INSTRUMENT "OBJECT"))
+  :realization ((:S "Pivot" :O "Theme"))) 
+
+ (define-mixin-category contiguous_location-47.8
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-THEME)
+  :binds ((THEME PHYSICAL) (THEME PHYSICAL))
+  :realization ((:S "Theme" :O "Co-Theme"))) 
+
+ (define-mixin-category contiguous_location-47.8-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :LEX "and" :IO "Co-Theme"))) 
+
+ (define-mixin-category contiguous_location-47.8-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme"))) 
+
+ (define-mixin-category continue-55.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME TEMPORALLY-LOCALIZED)
+  :binds ((CERTAINTY TIME) (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "until" :IO "Time")
+                (:S "Theme" :PREP "until" :IO "Time") (:S "Agent") (:S "Theme")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category contribute-13.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :IO "Theme")
+                (:S "Agent" :O "Theme")
+                (:S "Agent" :O "Theme" :PREP "to" :IO "Recipient"))) 
+
+ (define-mixin-category contribute-13.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :PREP "among" :IO "Recipient")
+                (:S "Agent" :PREP "to" :IO "Recipient"))) 
+
+ (define-mixin-category contribute-13.2-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category contribute-13.2-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Recipient" :IO "Theme"))) 
+
+ (define-mixin-category contribute-13.2-2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Recipient"))) 
+
+ (define-mixin-category convert-26.6.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT WITH-RESULT WITH-SOURCE)
+  :realization ((:S "Patient" :PREP "to" :IO "Result"))) 
+
+ (define-mixin-category convert-26.6.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient" :PREP "from" :IO "Initial_State" :PREP "to" :IO
+                 "Result"))) 
+
+ (define-mixin-category convert-26.6.2-1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Patient" :PREP "to" :IO "Result")
+                (:S "Agent" :O "Patient") (:S "Patient"))) 
+
+ (define-mixin-category cooking-45.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT)
+  :binds ((INSTRUMENT SOLID) (PATIENT PHYSICAL) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Patient" :PREP "to into" :IO "Result" :PREP "in on with"
+                 :IO "Instrument")
+                (:S "Patient" :PREP "to into" :IO "Result")
+                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result" :PREP
+                 "in on with" :NP "Instrument")
+                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
+                (:S "Instrument" :O "Patient") (:S "Patient" :ADV)
+                (:S "Patient")
+                (:S "Agent" :O "Patient" :PREP "in on with" :IO "Instrument")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category cooperate-73.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization NIL) 
+
+ (define-mixin-category cooperate-73.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "in" :IO "Theme")
+                (:S "Agent" :PREP "in" :IO "Theme")
+                (:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "on" :IO "Theme")
+                (:S "Agent" :PREP "on" :IO "Theme"))) 
+
+ (define-mixin-category cooperate-73.1-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "in" :IO "Theme"))) 
+
+ (define-mixin-category cooperate-73.1-3
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "at" :IO "Theme")
+                (:S "Agent" :PREP "at" :IO "Theme")
+                (:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "on" :IO "Theme")
+                (:S "Agent" :PREP "on" :IO "Theme"))) 
+
+ (define-mixin-category cope-83
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "with" :IO "Theme"))) 
+
+ (define-mixin-category cope-83-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category cope-83-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category correlate-86.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "with" :IO "Co-Theme")
+                (:S "Theme" :PREP "with" :IO "Co-Theme"))) 
+
+ (define-mixin-category correspond-36.1.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT WITH-TOPIC)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Topic")
+                (:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "about" :IO
+                 "Topic")
+                (:S "Agent" :PREP "about" :IO "Topic") (:S "Agent"))) 
+
+ (define-mixin-category correspond-36.1.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Topic")
+                (:S "Agent" :PREP "with" :IO "Co-Agent" :IO "Topic"))) 
+
+ (define-mixin-category correspond-36.1.1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Topic"))) 
+
+ (define-mixin-category cost-54.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-PATH WITH-BENEFICIARY)
+  :binds ((BENEFICIARY (OR PHYSICAL-AGENT COMPANY)) (THEME PHYSICAL))
+  :realization ((:S "Theme" :O "Beneficiary" :IO "Value")
+                (:S "Theme" :O "Value"))) 
+
+ (define-mixin-category crane-40.3.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-TOPIC WITH-RECIPIENT)
+  :binds ((RECIPIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Patient" :PREP :NP "Recipient" :PREP "in" :NP
+                 "Topic")
+                (:S "Agent" :O "Patient" :PREP :NP "Recipient")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category create-26.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-RESULT WITH-MATERIAL WITH-BENEFICIARY WITH-ATTRIBUTE)
+  :binds ((BENEFICIARY PHYSICAL-AGENT) (MATERIAL "PHYSICAL")
+          (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S "Agent" :O "Result" :LEX "as" :IO "Attribute")
+                (:S "Agent" :O "Result" :PREP "for" :IO "Beneficiary")
+                (:S "Agent" :O "Result" :PREP "from out_of" :IO "Material")
+                (:S "Agent" :O "Result"))) 
+
+ (define-mixin-category create-26.4-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category create-26.4-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Beneficiary" :IO "Result"))) 
+
+ (define-mixin-category curtsey-40.3.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-RECIPIENT WITH-TOPIC)
+  :binds ((RECIPIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Topic" :PREP "to" :IO "Recipient")
+                (:S "Agent" :O "Topic") (:S "Agent" :PREP :NP "Recipient")
+                (:S "Agent"))) 
+
+ (define-mixin-category cut-21.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-SOURCE WITH-RESULT)
+  :binds ((INSTRUMENT PHYSICAL) (PATIENT PHYSICAL))
+  :realization ((:S "Agent" :O "Patient" :PREP "from" :IO "Source" :PREP "with"
+                 :NP "Instrument")
+                (:S "Agent" :O "Patient" :PREP "from" :IO "Source")
+                (:S "Instrument" :O "Patient" :PREP "to into" :IO "Result")
+                (:S "Instrument" :O "Patient" :IO "Result")
+                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result" :PREP
+                 "with" :NP "Instrument")
+                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
+                (:S "Agent" :O "Patient" :IO "Result" :PREP "with" :IO
+                 "Instrument")
+                (:S "Agent" :O "Patient" :IO "Result") (:S "Instrument" :ADV)
+                (:S "Instrument" :O "Patient") (:S "Patient" :ADV)
+                (:S "Agent" :LEX "at" :IO "Patient" :PREP "with" :IO
+                 "Instrument")
+                (:S "Agent" :PREP "through|into" :IO "Patient")
+                (:S "Agent" :LEX "at" :IO "Patient")
+                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category cut-21.1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT)
+  :binds ((PATIENT (OR NIL PRONOUN)))
+  :realization ((:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category debone-10.8
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION PHYSICAL) (SOURCE PHYSICAL)
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Source"))) 
+
+ (define-mixin-category declare-29.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-RESULT)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Theme" :IO "Result"))) 
+
+ (define-mixin-category declare-29.4-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :PREP "as" :IO "Result")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category declare-29.4-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category declare-29.4-1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category declare-29.4-1-1-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category declare-29.4-1-1-3
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category declare-29.4-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category dedicate-79
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-GOAL)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "to" :IO "Goal"))) 
+
+ (define-mixin-category deduce-97.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "from" :IO "Theme" :IO "Source")
+                (:S "Agent" :O "Theme" :PREP "from" :IO "Source")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category defend-72.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-BENEFICIARY WITH-THEME)
+  :binds ((BENEFICIARY (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Beneficiary" :PREP "against" :IO "Theme")
+                (:S "Agent" :O "Beneficiary"))) 
+
+ (define-mixin-category deprive-10.6.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-GOAL)
+  :binds ((SOURCE (OR PHYSICAL-AGENT LOCATION REGION))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Source" :PREP "of" :IO "Theme")
+                (:S "Agent" :O "Source"))) 
+
+ (define-mixin-category destroy-44
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT)
+  :binds ((INSTRUMENT PHYSICAL) (PATIENT PHYSICAL))
+  :realization ((:S "Instrument" :O "Patient")
+                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category devour-39.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT)
+  :binds ((PATIENT PATHOGEN) (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category die-42.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT WITH-CAUSE)
+  :binds ((PATIENT PHYSICAL-AGENT))
+  :realization ((:S "Patient"))) 
+
+ (define-mixin-category die-42.4-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient" :PREP "of | from" :IO "Causer"))) 
+
+ (define-mixin-category differ-23.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-THEME)
+  :realization ((:S "Theme") (:S "Theme" :PREP "from with" :IO "Co-Theme"))) 
+
+ (define-mixin-category dine-39.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :PREP "on" :IO "Patient") (:S "Agent"))) 
+
+ (define-mixin-category disappearance-48.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT WITH-SOURCE)
+  :realization ((:S "Patient"))) 
+
+ (define-mixin-category disappearance-48.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient" :PREP "from" :IO "Initial_Location"))) 
+
+ (define-mixin-category disassemble-23.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
+  :binds ((CO-PATIENT PHYSICAL) (PATIENT PHYSICAL)
+          (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S "Patient" :ADV)
+                (:S "Agent" :O "Patient" :PREP "from" :IO "Co-Patient")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category discover-84
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category discover-84-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme")
+                (:S "Agent" :PREP "from" :IO "Source" :PREP "about" :IO
+                 "Theme")
+                (:S "Agent" :PREP "from" :IO "Source" :IO "Theme")
+                (:S "Agent" :PREP "about" :IO "Theme"))) 
+
+ (define-mixin-category discover-84-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "about" :IO "Theme" :PREP "from" :IO
+                 "Source")
+                (:S "Agent" :PREP "about" :IO "Theme") (:S "Agent"))) 
+
+ (define-mixin-category disfunction-105.2.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME)
+  :realization ((:S "Theme"))) 
+
+ (define-mixin-category distinguish-23.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-INSTRUMENT WITH-THEME WITH-THEME)
+  :binds ((INSTRUMENT "OBJECT") (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category distinguish-23.5-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "between" :IO "Theme" :IO "Co-Theme")
+                (:S "Instrument" :O "Theme" :PREP "from" :IO "Co-Theme")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category dress-41.1.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT)
+  :binds ((PATIENT (OR PHYSICAL-AGENT PRONOUN)) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Patient") (:S "Agent"))) 
+
+ (define-mixin-category dressing_well-41.3.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT)
+  :binds ((PATIENT PRONOUN) (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :LEX "up" :IO "Patient")
+                (:S "Agent" :O "Patient" :LEX "up"))) 
+
+ (define-mixin-category drive-11.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION (OR PHYSICAL-AGENT LOCATION REGION)) (SOURCE LOCATION)
+          (THEME PHYSICAL) (AGENT (OR PHYSICAL-AGENT MOTOR-VEHICLE)))
+  :realization ((:S "Agent" :O "Theme" :PREP "to" :IO "Destination" :PREP :NP
+                 "Initial_Location")
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP
+                 "to towards" :NP "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
+                (:S "Agent" :O "Theme" :PREP "to towards" :IO "Destination")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category drive-11.5-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :PREP "to" :IO "Destination" :PREP :NP
+                 "Initial_Location")
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP "to"
+                 :NP "Destination")
+                (:S "Agent" :O "Theme" :PREP "to" :IO "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category dub-29.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-RESULT)
+  :binds ((THEME (OR PHYSICAL COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Theme" :IO "Result"))) 
+
+ (define-mixin-category earn-54.6
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-EXTENT)
+  :realization ((:S "Theme" :O "Asset"))) 
+
+ (define-mixin-category eat-39.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-CAUSE)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization NIL) 
+
+ (define-mixin-category eat-39.1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT)
+  :binds ((PATIENT (AND/OR PATHOGEN SOLID)))
+  :realization ((:S "Agent" :PREP :NP "Source") (:S "Agent")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category eat-39.1-2
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT)
+  :binds ((PATIENT (AND/OR PATHOGEN SOLID)))
+  :realization ((:S "Agent" :PREP :NP "Source") (:S "Agent")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category eat-39.1-3
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT)
+  :binds ((PATIENT PATHOGEN))
+  :realization ((:S "Agent" :O "Patient") (:S "Agent"))) 
+
+ (define-mixin-category empathize-88.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-STIMULUS)
+  :binds ((EXPERIENCER (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Experiencer" :PREP "with" :IO "Stimulus")
+                (:S "Experiencer"))) 
+
+ (define-mixin-category employment-95.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT"))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Attribute" :IO "Co-Agent")
+                (:S "Agent" :PREP "on" :IO "Theme" :IO "Co-Agent")
+                (:S "Agent" :PREP "on | in | at" :IO "Theme")
+                (:S "Agent" :O "Co-Agent") (:S "Agent"))) 
+
+ (define-mixin-category encounter-30.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-STIMULUS)
+  :binds ((EXPERIENCER "PHYSICAL-AGENT"))
+  :realization ((:S "Experiencer" :O "Stimulus"))) 
+
+ (define-mixin-category enforce-63
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (AND/OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category engender-27.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-CAUSE WITH-THEME)
+  :binds ((THEME ABSTRACT))
+  :realization ((:S "Causer" :O "Theme"))) 
+
+ (define-mixin-category engender-27.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Causer" :O "Theme" :IO "Predicate"))) 
+
+ (define-mixin-category ensure-99
+  :specializes subcategorization-pattern
+  :mixins (PREDICATION WITH-THEME WITH-BENEFICIARY)
+  :binds ((PREDICATE "PREDICATE"))
+  :realization ((:S "Precondition" :O "Theme" :PREP "for" :IO "Beneficiary")
+                (:S "Precondition" :O "Beneficiary" :IO "Theme")
+                (:S "Precondition" :O "Theme"))) 
+
+ (define-mixin-category entity_specific_cos-45.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT)
+  :binds ((PATIENT PHYSICAL))
+  :realization ((:S "Patient"))) 
+
+ (define-mixin-category entity_specific_modes_being-47.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-CAUSE)
+  :binds ((CAUSE (AND/OR LOCATION REGION)))
+  :realization ((:S "Location" :PREP "with" :IO "Theme")
+                (:S :NP "Location" :NP "Theme") (:S "there" :O "Theme")
+                (:S "Theme" :PREP :NP "Location") (:S "Theme"))) 
+
+ (define-mixin-category equip-13.4.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Recipient" :PREP "with" :IO "Theme"))) 
+
+ (define-mixin-category equip-13.4.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Recipient"))) 
+
+ (define-mixin-category equip-13.4.2-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Recipient"))) 
+
+ (define-mixin-category escape-51.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-PATH)
+  :binds ((PATH PHYSICAL) (DESTINATION PHYSICAL) (SOURCE PHYSICAL)
+          (THEME PHYSICAL))
+  :realization ((:S "Theme" :PREP :NP "Initial_Location" :PREP :IO
+                 "Destination")
+                (:S "Theme" :PREP :NP "Trajectory")
+                (:S "Theme" :PREP :NP "Destination"))) 
+
+ (define-mixin-category escape-51.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :PREP :NP "Initial_Location") (:S "Theme"))) 
+
+ (define-mixin-category escape-51.1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Initial_Location"))) 
+
+ (define-mixin-category escape-51.1-1-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Destination"))) 
+
+ (define-mixin-category escape-51.1-1-3
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Trajectory"))) 
+
+ (define-mixin-category establish-55.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category establish-55.5-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-INSTRUMENT)
+  :binds ((INSTRUMENT "OBJECT"))
+  :realization ((:S "Agent" :O "Theme" :PREP "with" :IO "Instrument"))) 
+
+ (define-mixin-category estimate-34.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-PATH)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "at" :IO "Value"))) 
+
+ (define-mixin-category estimate-34.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Value") (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category exceed-90
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-THEME WITH-ATTRIBUTE)
+  :realization ((:S "Theme" :O "Co-Theme" :PREP "in" :IO "Attribute")
+                (:S "Theme" :O "Co-Theme"))) 
+
+ (define-mixin-category exchange-13.6.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-THEME WITH-AGENT)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "with" :IO "Co-Agent")
+                (:S "Agent" :PREP :NP "Theme") (:S "Agent" :O "Theme")
+                (:S "Agent" :O "Theme" :PREP "for" :IO "Co-Theme"))) 
+
+ (define-mixin-category exclude-107.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-GOAL)
+  :binds ((THEME (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme")
+                (:S "Agent" :O "Theme" :PREP "from" :IO "Goal"))) 
+
+ (define-mixin-category exclude-107.3-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :PREP "from" :IO "Goal"))) 
+
+ (define-mixin-category exhale-40.1.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-INSTRUMENT WITH-THEME)
+  :binds ((INSTRUMENT PHYSICAL-AGENT))
+  :realization NIL) 
+
+ (define-mixin-category exhale-40.1.3-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Pivot" :O "Theme") (:S "Pivot"))) 
+
+ (define-mixin-category exhale-40.1.3-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Pivot" :O "Theme") (:S "Pivot"))) 
+
+ (define-mixin-category exist-47.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-CAUSE)
+  :realization ((:S "Theme" :PREP :NP "Location") (:S "Theme"))) 
+
+ (define-mixin-category exist-47.1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-INSTRUMENT WITH-MANNER)
+  :binds ((MANNER "ADVERB") (INSTRUMENT "OBJECT"))
+  :realization ((:S "Theme" :PREP :NP "Manner") (:S "Theme" :PREP :NP "Pivot")
+                (:S "Theme" :O "Pivot"))) 
+
+ (define-mixin-category feeding-39.7
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT)
+  :binds ((RECIPIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Recipient" :IO "Theme")
+                (:S "Agent" :O "Theme" :PREP "to" :IO "Recipient")
+                (:S "Agent" :O "Recipient"))) 
+
+ (define-mixin-category ferret-35.6
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-SOURCE WITH-THEME)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :PREP :NP "Source"))) 
+
+ (define-mixin-category fill-9.8
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
+          (THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Destination") (:S "Theme" :O "Destination")
+                (:S "Agent" :O "Destination" :PREP "with" :IO "Theme"))) 
+
+ (define-mixin-category fill-9.8-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Destination" :PREP "in" :IO "Theme"))) 
+
+ (define-mixin-category fire-10.10
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-GOAL WITH-ATTRIBUTE)
+  :binds ((SOURCE COMPANY) (THEME (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "as" :IO "Attribute")
+                (:S "Agent" :O "Theme" :PREP "from" :IO "Source")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category fit-54.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATH WITH-CAUSE)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Value" :PREP "in" :IO "Location")
+                (:S "Location" :O "Value"))) 
+
+ (define-mixin-category flinch-40.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-STIMULUS)
+  :binds ((EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S "Experiencer" :PREP "at from" :IO "Stimulus")
+                (:S "Experiencer"))) 
+
+ (define-mixin-category floss-41.2.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT)
+  :binds ((INSTRUMENT "OBJECT") (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent") (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category focus-87.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-TOPIC)
+  :binds ((AGENT (OR PHYSICAL-AGENT)))
+  :realization ((:S "Agent" :PREP "on" :IO "Topic"))) 
+
+ (define-mixin-category focus-87.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "about" :IO "Topic") (:S "Agent"))) 
+
+ (define-mixin-category forbid-64.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-BENEFICIARY)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Beneficiary" :PREP "from" :IO "Theme"))) 
+
+ (define-mixin-category forbid-64.4-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category free-10.6.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-CAUSE WITH-SOURCE WITH-THEME)
+  :binds ((SOURCE (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Causer" :O "Source" :PREP "of" :IO "Theme"))) 
+
+ (define-mixin-category free-10.6.3-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Causer" :O "Source" :PREP "of" :IO "Theme"))) 
+
+ (define-mixin-category free-10.6.3-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Causer" :O "Source" :PREP "from" :IO "Theme"))) 
+
+ (define-mixin-category free-80
+  :specializes subcategorization-pattern
+  :mixins (WITH-CAUSE WITH-SOURCE WITH-THEME)
+  :binds ((SOURCE (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Causer" :O "Source" :PREP "of" :IO "Theme"))) 
+
+ (define-mixin-category free-80-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Causer" :O "Source" :PREP "of" :IO "Theme"))) 
+
+ (define-mixin-category free-80-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Causer" :O "Source" :PREP "from" :IO "Theme"))) 
+
+ (define-mixin-category fulfilling-13.4.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme")
+                (:S "Agent" :O "Recipient" :PREP "with" :IO "Theme")
+                (:S "Agent" :O "Theme" :PREP "to | for" :IO "Recipient"))) 
+
+ (define-mixin-category fulfilling-13.4.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Recipient"))) 
+
+ (define-mixin-category fulfilling-13.4.1-2
+  :specializes subcategorization-pattern
+  :mixins (WITH-RECIPIENT WITH-AGENT)
+  :binds ((AGENT (OR ABSTRACT PHYSICAL-AGENT))
+          (RECIPIENT (OR ABSTRACT PHYSICAL-AGENT)))
+  :realization ((:S "Agent" :PREP "for" :IO "Recipient"))) 
+
+ (define-mixin-category function-105.2.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME)
+  :realization ((:S "Theme"))) 
+
+ (define-mixin-category function-105.2.1-1
+  :specializes subcategorization-pattern
+  :mixins (PREDICATION)
+  :binds ((PREDICATE "PREDICATE"))
+  :realization ((:S "Theme" :O "Predicate"))) 
+
+ (define-mixin-category funnel-9.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
+          (THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :IO "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+
+ (define-mixin-category funnel-9.3-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :PREP "between in_between" :IO
+                 "Destination"))) 
+
+ (define-mixin-category funnel-9.3-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :PREP "into" :IO "Destination"))) 
+
+ (define-mixin-category future_having-13.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-BENEFICIARY WITH-GOAL)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Theme" :IO "Beneficiary" :IO "Goal")
+                (:S "Agent" :O "Theme" :PREP "for" :IO "Goal")
+                (:S "Agent" :O "Goal" :IO "Theme") (:S "Agent" :O "Theme")
+                (:S "Agent" :O "Theme" :PREP "to" :IO "Goal"))) 
+
+ (define-mixin-category future_having-13.3-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Beneficiary" :IO "Theme" :IO "Goal"))) 
+
+ (define-mixin-category get-13.5.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-BENEFICIARY WITH-EXTENT)
+  :binds ((EXTENT (AND/OR LOCATION REGION))
+          (BENEFICIARY (OR PHYSICAL-AGENT COMPANY)) (SOURCE PHYSICAL)
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "from" :IO "Source" :PREP "at for"
+                 :NP "Asset")
+                (:S "Asset" :O "Theme")
+                (:S "Agent" :O "Theme" :PREP "for" :IO "Asset")
+                (:S "Agent" :O "Beneficiary" :IO "Theme")
+                (:S "Agent" :O "Theme" :PREP "for" :IO "Beneficiary")
+                (:S "Agent" :O "Theme" :PREP "from" :IO "Source")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category get-13.5.1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-SOURCE)
+  :binds ((SOURCE ABSTRACT))
+  :realization ((:S "Agent" :O "Theme" :PREP "from for on" :IO "Source"))) 
+
+ (define-mixin-category give-13.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "to" :IO "Recipient") (:S "Agent" :O "Theme")
+                (:S "Agent" :O "Recipient" :IO "Theme")
+                (:S "Agent" :O "Theme" :PREP "to" :IO "Recipient"))) 
+
+ (define-mixin-category give-13.1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXTENT)
+  :realization ((:S "Agent" :O "Recipient" :IO "Theme" :PREP "at for on" :IO
+                 "Asset")
+                (:S "Agent" :O "Theme" :PREP "to" :IO "Recipient" :PREP
+                 "at for on" :NP "Asset")
+                (:S "Agent" :O "Theme" :PREP "for at" :IO "Asset"))) 
+
+ (define-mixin-category gobble-39.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization NIL) 
+
+ (define-mixin-category gobble-39.3-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT)
+  :binds ((PATIENT (AND/OR NIL SOLID)))
+  :realization ((:S "Agent" :O "Patient" :LEX "down")
+                (:S "Agent" :O "Patient" :LEX "up") (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category gobble-39.3-2
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT)
+  :binds ((PATIENT (AND/OR NIL SOLID)))
+  :realization ((:S "Agent" :O "Patient" :LEX "down") (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category gorge-39.6
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :PREP "on" :IO "Patient"))) 
+
+ (define-mixin-category groom-41.1.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT)
+  :binds ((PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category grow-26.2.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-PRODUCT)
+  :binds ((PRODUCT PHYSICAL) (PATIENT PHYSICAL) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Patient" :PREP "into" :IO "Product")
+                (:S "Agent" :O "Product" :PREP "from out_of" :IO "Patient")
+                (:S "Product" :PREP "from out_of" :IO "Patient")
+                (:S "Patient" :PREP "into" :IO "Product"))) 
+
+ (define-mixin-category harmonize-22.6
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-THEME)
+  :realization ((:S "Theme") (:S "Theme" :ADV :NP "Co-Theme")
+                (:S "Theme" :O "Co-Theme") (:S "Theme" :ADV))) 
+
+ (define-mixin-category help-72.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-BENEFICIARY WITH-THEME)
+  :binds ((BENEFICIARY (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization NIL) 
+
+ (define-mixin-category help-72.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "with" :IO "Theme")
+                (:S "Agent" :O "Beneficiary" :IO "Theme")
+                (:S "Agent" :O "Beneficiary" :PREP "with" :IO "Theme")
+                (:S "Agent" :O "Beneficiary"))) 
+
+ (define-mixin-category help-72.1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "with" :IO "Theme"))) 
+
+ (define-mixin-category help-72.1-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "with | for" :IO "Beneficiary"))) 
+
+ (define-mixin-category herd-47.5.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((THEME (AND/OR PHYSICAL COLLECTION)) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :LEX "together") (:S "Agent" :O "Theme")
+                (:S "Theme"))) 
+
+ (define-mixin-category hiccup-40.1.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category hire-13.5.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
+  :binds ((THEME (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :IO "Attribute")
+                (:S "Agent" :O "Theme" :PREP "as" :IO "Attribute")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category hit-18.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT)
+  :binds ((INSTRUMENT PHYSICAL) (PATIENT PHYSICAL))
+  :realization ((:S "Instrument" :O "Patient" :PREP "to into" :IO "Result")
+                (:S "Instrument" :O "Patient" :IO "Result")
+                (:S "Instrument" :O "Patient")
+                (:S "Agent" :O "Instrument" :PREP "against on" :IO "Patient")
+                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result" :PREP
+                 "with" :NP "Instrument")
+                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
+                (:S "Agent" :O "Patient" :IO "Result" :PREP "with" :IO
+                 "Instrument")
+                (:S "Agent" :O "Patient" :IO "Result")
+                (:S "Agent" :O "Patient" :LEX "together")
+                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category hit-18.1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-INSTRUMENT)
+  :binds ((INSTRUMENT (OR NIL PRONOUN)))
+  :realization ((:S "Agent" :LEX "at" :IO "Patient" :PREP "with" :IO
+                 "Instrument")
+                (:S "Agent" :LEX "at" :IO "Patient"))) 
+
+ (define-mixin-category hold-15.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((THEME (OR NIL PHYSICAL)) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category hunt-35.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent") (:S "Agent" :O "Theme")
+                (:S "Agent" :O "Theme" :PREP :NP "Location")
+                (:S "Agent" :PREP :NP "Location" :PREP "for" :NP "Theme")
+                (:S "Agent" :PREP "for" :IO "Theme" :PREP :NP "Location")
+                (:S "Agent" :O "Location" :PREP "for" :IO "Theme"))) 
+
+ (define-mixin-category hurt-40.8.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER)
+  :binds ((EXPERIENCER PHYSICAL-AGENT))
+  :realization NIL) 
+
+ (define-mixin-category hurt-40.8.3-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT)
+  :realization ((:S "Experiencer" :O "Patient"))) 
+
+ (define-mixin-category hurt-40.8.3-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient"))) 
+
+ (define-mixin-category hurt-40.8.3-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Experiencer" :O "Patient"))) 
+
+ (define-mixin-category illustrate-25.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
+  :binds ((DESTINATION PHYSICAL) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S "Agent" :O "Destination" :PREP "with" :IO "Theme")
+                (:S "Agent" :O "Destination"))) 
+
+ (define-mixin-category image_impression-25.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
+  :binds ((DESTINATION PHYSICAL))
+  :realization ((:S "Agent") (:S "Agent" :O "Theme")
+                (:S "Agent" :O "Destination")
+                (:S "Agent" :O "Destination" :PREP "with" :IO "Theme")
+                (:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+
+ (define-mixin-category indicate-78
+  :specializes subcategorization-pattern
+  :mixins (WITH-RECIPIENT WITH-CAUSE WITH-TOPIC)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Causer" :O "Topic"))) 
+
+ (define-mixin-category indicate-78-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Causer" :PREP "to" :IO "Recipient" :IO "Topic"))) 
+
+ (define-mixin-category indicate-78-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Causer" :O "Topic"))) 
+
+ (define-mixin-category initiate_communication-37.4.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-RECIPIENT)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Recipient"))) 
+
+ (define-mixin-category initiate_communication-37.4.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category inquire-37.1.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-RECIPIENT WITH-TOPIC)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "of" :IO "Recipient" :PREP "about" :IO
+                 "Topic")
+                (:S "Agent" :PREP "of" :IO "Recipient" :IO "Topic")
+                (:S "Agent" :PREP "about" :IO "Topic")
+                (:S "Agent" :O "Recipient" :IO "Topic")
+                (:S "Agent" :O "Recipient" :PREP "about" :IO "Topic")
+                (:S "Agent" :O "Recipient") (:S "Agent")
+                (:S "Agent" :O "Topic"))) 
+
+ (define-mixin-category instr_communication-37.4.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-TOPIC WITH-RECIPIENT)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (TOPIC SPEECH-ACT)
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "for" :IO "Topic")
+                (:S "Agent" :O "Recipient" :PREP "about" :IO "Topic")
+                (:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
+                (:S "Agent" :O "Recipient" :IO "Topic")
+                (:S "Agent" :O "Topic" :PREP "to" :IO "Recipient")
+                (:S "Agent" :O "Recipient") (:S "Agent" :O "Topic"))) 
+
+ (define-mixin-category intend-61.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-TOPIC WITH-ATTRIBUTE)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Topic" :PREP "as" :IO "Attribute")
+                (:S "Agent" :O "Topic"))) 
+
+ (define-mixin-category intend-61.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Topic"))) 
+
+ (define-mixin-category intend-61.2-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Topic"))) 
+
+ (define-mixin-category interact-36.6
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT)
+  :binds ((AGENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :PREP "with" :IO "Co-Agent") (:S "Agent"))) 
+
+ (define-mixin-category interrogate-37.1.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-RECIPIENT WITH-TOPIC WITH-ATTRIBUTE)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Recipient" :PREP "about" :IO "Topic")
+                (:S "Agent" :O "Recipient" :PREP "as" :IO "Attribute")
+                (:S "Agent" :O "Recipient"))) 
+
+ (define-mixin-category invest-13.5.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-EXTENT WITH-GOAL)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Goal"))) 
+
+ (define-mixin-category invest-13.5.4-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Asset" :IO "Theme")
+                (:S "Agent" :O "Asset" :IO "Goal"))) 
+
+ (define-mixin-category investigate-35.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Location")
+                (:S "Agent" :O "Location" :PREP "for" :IO "Theme"))) 
+
+ (define-mixin-category involve-107.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-GOAL)
+  :binds ((THEME (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "in" :IO "Goal")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category judgment-33.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
+  :realization ((:S "Agent" :O "Attribute")
+                (:S "Agent" :O "Theme" :PREP "for" :IO "Attribute")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category judgment-33.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :PREP "as" :IO "Attribute"))) 
+
+ (define-mixin-category judgment-33.1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :IO "Attribute"))) 
+
+ (define-mixin-category keep-15.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-CAUSE)
+  :binds ((CAUSE (AND/OR LOCATION REGION)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme")
+                (:S "Agent" :O "Theme" :PREP :NP "Location"))) 
+
+ (define-mixin-category knead-26.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PRODUCT WITH-MATERIAL)
+  :binds ((MATERIAL "PHYSICAL") (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S "Agent" :O "Material")
+                (:S "Agent" :O "Material" :PREP "into" :IO "Product")
+                (:S "Material" :PREP "into" :IO "Product"))) 
+
+ (define-mixin-category learn-14
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-TOPIC WITH-SOURCE)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Topic") (:S "Agent" :PREP "from" :IO "Source")
+                (:S "Agent" :O "Topic" :PREP "from" :IO "Source"))) 
+
+ (define-mixin-category learn-14-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category learn-14-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "from" :IO "Source" :IO "Topic")
+                (:S "Agent" :O "Topic"))) 
+
+ (define-mixin-category learn-14-2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "of about" :IO "Topic"))) 
+
+ (define-mixin-category leave-51.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-SOURCE WITH-GOAL)
+  :binds ((SOURCE PHYSICAL-AGENT) (THEME PHYSICAL-AGENT))
+  :realization ((:S "Theme" :O "Source"))) 
+
+ (define-mixin-category leave-51.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme"))) 
+
+ (define-mixin-category lecture-37.11
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-TOPIC WITH-RECIPIENT)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "about" :IO "Topic"))) 
+
+ (define-mixin-category lecture-37.11-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :PREP "about" :IO
+                 "Topic")
+                (:S "Agent" :PREP "about" :IO "Topic") (:S "Agent"))) 
+
+ (define-mixin-category lecture-37.11-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "about" :IO "Topic"))) 
+
+ (define-mixin-category lecture-37.11-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "on" :IO "Topic")
+                (:S "Agent" :PREP "about" :IO "Topic"))) 
+
+ (define-mixin-category let-64.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-BENEFICIARY WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Beneficiary" :IO "Theme"))) 
+
+ (define-mixin-category light_emission-43.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-CAUSE WITH-AGENT)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")) (THEME PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme")
+                (:S :NP "Location" :LEX "there" :NP "Theme")
+                (:S "there" :O "Theme" :PREP :NP "Location")
+                (:S "Location" :PREP "with" :IO "Theme")
+                (:S "Theme" :PREP :NP "Location") (:S "Theme"))) 
+
+ (define-mixin-category limit-76
+  :specializes subcategorization-pattern
+  :mixins (WITH-CAUSE WITH-PATIENT WITH-GOAL)
+  :binds ((PATIENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Causer" :O "Patient" :IO "Goal")
+                (:S "Causer" :O "Patient" :PREP "to" :IO "Goal")
+                (:S "Causer" :O "Patient"))) 
+
+ (define-mixin-category linger-53.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :PREP "over" :IO "Theme")
+                (:S "Agent" :PREP :NP "Location"))) 
+
+ (define-mixin-category linger-53.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category lodge-46
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-CAUSE)
+  :binds ((THEME PHYSICAL-AGENT))
+  :realization ((:S "Theme" :O "Location")
+                (:S "Theme" :PREP "at in with" :IO "Location"))) 
+
+ (define-mixin-category long-32.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-INSTRUMENT WITH-THEME)
+  :binds ((INSTRUMENT "OBJECT"))
+  :realization ((:S "Pivot" :O "Theme"))) 
+
+ (define-mixin-category long-32.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Pivot" :PREP "for" :IO "Theme"))) 
+
+ (define-mixin-category long-32.2-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Pivot" :PREP "after" :IO "Theme"))) 
+
+ (define-mixin-category lure-59.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT PREDICATION)
+  :binds ((PREDICATE "PREDICATE") (PATIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Patient" :PREP "into to" :IO "Predicate")
+                (:S "Agent" :O "Patient" :PREP "into" :IO "Predicate")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category manner_speaking-37.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-TOPIC WITH-RECIPIENT)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (TOPIC SPEECH-ACT)
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "for" :IO "Recipient" :IO "Topic")
+                (:S "Agent" :PREP :NP "Recipient" :NP "Topic")
+                (:S "Agent" :O "Topic" :PREP :NP "Recipient")
+                (:S "Agent" :O "Topic") (:S "Agent" :PREP "about" :IO "Topic")
+                (:S "Agent" :PREP :NP "Recipient") (:S "Agent"))) 
+
+ (define-mixin-category marry-36.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT)
+  :binds ((AGENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Co-Agent") (:S "Agent"))) 
+
+ (define-mixin-category marvel-31.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-STIMULUS)
+  :binds ((EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S "Experiencer" :PREP :NP "Stimulus") (:S "Experiencer"))) 
+
+ (define-mixin-category masquerade-29.6
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-ATTRIBUTE)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :LEX "as" :IO "Attribute"))) 
+
+ (define-mixin-category masquerade-29.6-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :LEX "like" :IO "Attribute"))) 
+
+ (define-mixin-category masquerade-29.6-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "in" :IO "Attribute")
+                (:S "Agent" :O "Attribute"))) 
+
+ (define-mixin-category matter-91
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-STIMULUS)
+  :binds ((EXPERIENCER (AND/OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "it" :O "Stimulus")
+                (:S "it" :PREP "to" :IO "Experiencer" :IO "Stimulus")
+                (:S "Stimulus" :PREP "to" :IO "Experiencer") (:S "Stimulus"))) 
+
+ (define-mixin-category meander-47.7
+  :specializes subcategorization-pattern
+  :mixins (WITH-CAUSE WITH-THEME)
+  :binds ((CAUSE PHYSICAL))
+  :realization ((:S "there" :O "Theme" :PREP :NP "Location")
+                (:S "there" :PREP :NP "Location" :NP "Theme")
+                (:S :NP "Location" :NP "Theme")
+                (:S "Theme" :PREP :NP "Location"))) 
+
+ (define-mixin-category meander-47.7-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme"))) 
+
+ (define-mixin-category meet-36.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT)
+  :binds ((AGENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization NIL) 
+
+ (define-mixin-category meet-36.3-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Co-Agent") (:S "Agent")
+                (:S "Agent" :PREP "with" :IO "Co-Agent"))) 
+
+ (define-mixin-category meet-36.3-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Co-Agent") (:S "Agent")
+                (:S "Agent" :PREP "with" :IO "Co-Agent"))) 
+
+ (define-mixin-category mine-10.9
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION LOCATION) (SOURCE LOCATION) (THEME PHYSICAL)
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category mix-22.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
+  :binds ((CO-PATIENT PHYSICAL) (PATIENT PHYSICAL))
+  :realization NIL) 
+
+ (define-mixin-category mix-22.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient" :ADV :LEX "together") (:S "Patient" :ADV)
+                (:S "Patient" :ADV :PREP "with into to" :NP "Co-Patient")
+                (:S "Patient" :PREP "with into to" :IO "Co-Patient")
+                (:S "Agent" :O "Patient" :LEX "together")
+                (:S "Agent" :O "Patient")
+                (:S "Agent" :O "Patient" :PREP "with into to" :IO "Co-Patient"))) 
+
+ (define-mixin-category mix-22.1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient" :LEX "together") (:S "Patient"))) 
+
+ (define-mixin-category mix-22.1-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient" :ADV :LEX "together") (:S "Patient" :ADV)
+                (:S "Patient" :ADV :PREP "with into to" :NP "Co-Patient")
+                (:S "Agent" :O "Patient" :LEX "together")
+                (:S "Agent" :O "Patient")
+                (:S "Agent" :O "Patient" :PREP "with into to" :IO "Co-Patient"))) 
+
+ (define-mixin-category mix-22.1-2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient" :LEX "together") (:S "Patient")
+                (:S "Patient" :PREP "with into to" :IO "Co-Patient"))) 
+
+ (define-mixin-category modes_of_being_with_motion-47.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-CAUSE)
+  :binds ((CAUSE (AND/OR LOCATION REGION)) (THEME PHYSICAL))
+  :realization ((:S "Agent" :O "Theme") (:S :NP "Location" :NP "Theme")
+                (:S "there" :O "Theme") (:S "Theme" :PREP :NP "Location")
+                (:S "Theme"))) 
+
+ (define-mixin-category multiply-108
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category multiply-108-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :PREP "by" :IO "Co-Theme"))) 
+
+ (define-mixin-category multiply-108-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :PREP "from" :IO "Co-Theme"))) 
+
+ (define-mixin-category multiply-108-3
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :PREP "over" :IO "Co-Theme"))) 
+
+ (define-mixin-category murder-42.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT)
+  :binds ((INSTRUMENT "OBJECT") (PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category murder-42.1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-INSTRUMENT)
+  :binds ((INSTRUMENT PHYSICAL))
+  :realization ((:S "Instrument" :O "Patient"))) 
+
+ (define-mixin-category neglect-75.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category neglect-75.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category nonvehicle-51.4.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-PATH)
+  :binds ((PATH PHYSICAL) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Trajectory") (:S "Agent" :O "Theme")
+                (:S "Agent" :O "Theme" :PREP :NP "Trajectory")
+                (:S "Agent" :PREP :NP "Trajectory") (:S "Agent"))) 
+
+ (define-mixin-category nonvehicle-51.4.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Trajectory"))) 
+
+ (define-mixin-category nonverbal_expression-40.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT)
+  :binds ((RECIPIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :PREP :NP "Recipient")
+                (:S "Agent" :PREP "in" :IO "Theme") (:S "Agent" :O "Theme")
+                (:S "Agent"))) 
+
+ (define-mixin-category obtain-13.5.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE)
+  :binds ((SOURCE PHYSICAL) (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "from" :IO "Source")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category obtain-13.5.2-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXTENT)
+  :binds ((EXTENT CURRENCY))
+  :realization ((:S "Asset" :O "Theme")
+                (:S "Agent" :O "Theme" :PREP "for" :IO "Asset"))) 
+
+ (define-mixin-category occur-48.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-CAUSE)
+  :realization ((:S "Theme" :PREP "" :IO "Location") (:S "there" :O "Theme")
+                (:S "Theme"))) 
+
+ (define-mixin-category occur-48.3-1
+  :specializes subcategorization-pattern
+  :realization ((:S "it" :O "Theme"))) 
+
+ (define-mixin-category occur-48.3-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme"))) 
+
+ (define-mixin-category orbit-51.9.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-INSTRUMENT)
+  :binds ((INSTRUMENT "OBJECT"))
+  :realization ((:S "Theme" :PREP :NP "Axis"))) 
+
+ (define-mixin-category order-58.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-RESULT)
+  :binds ((PATIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Result"))) 
+
+ (define-mixin-category order-58.3-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Patient" :IO "Result"))) 
+
+ (define-mixin-category orphan-29.7
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category other_cos-45.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT)
+  :binds ((INSTRUMENT "OBJECT"))
+  :realization ((:S "Instrument" :O "Patient") (:S "Patient" :ADV)
+                (:S "Patient")
+                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category other_cos-45.4-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient" :O "Result"))) 
+
+ (define-mixin-category overstate-37.12
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category own-100.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-INSTRUMENT WITH-THEME)
+  :binds ((INSTRUMENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Pivot" :O "Theme"))) 
+
+ (define-mixin-category pain-40.8.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-PATIENT WITH-STIMULUS)
+  :binds ((EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S "Patient" :PREP "from" :IO "Stimulus")
+                (:S "Patient" :O "Experiencer") (:S "Patient"))) 
+
+ (define-mixin-category patent-101
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category pay-68
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-EXTENT WITH-THEME)
+  :binds ((EXTENT CURRENCY) (AGENT (AND/OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Asset")
+                (:S "Agent" :O "Asset" :PREP "for" :IO "Theme"))) 
+
+ (define-mixin-category pay-68-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-RECIPIENT)
+  :realization ((:S "Agent" :O "Recipient" :IO "Asset")
+                (:S "Agent" :O "Recipient" :IO "Asset" :PREP "for" :IO "Theme"))) 
+
+ (define-mixin-category peer-30.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :PREP :NP "Theme"))) 
+
+ (define-mixin-category pelt-17.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION PHYSICAL) (SOURCE PHYSICAL) (THEME PHYSICAL))
+  :realization ((:S "Agent" :O "Destination")
+                (:S "Agent" :O "Destination" :PREP "with" :IO "Theme"))) 
+
+ (define-mixin-category performance-26.7
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-BENEFICIARY)
+  :binds ((BENEFICIARY PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :PREP "for" :IO "Beneficiary")
+                (:S "Agent") (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category performance-26.7-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Beneficiary" :IO "Theme"))) 
+
+ (define-mixin-category pit-10.7
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION PHYSICAL) (SOURCE PHYSICAL) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Source"))) 
+
+ (define-mixin-category play-114.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "with" :IO "Co-Agent") (:S "Agent"))) 
+
+ (define-mixin-category play-114.2-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME)
+  :realization ((:S "Agent" :O "Theme" :PREP "with" :IO "Co-Agent")
+                (:S "Agent" :O "Co-Agent")
+                (:S "Agent" :PREP "with" :IO "Theme") (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category pocket-9.10
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION PHYSICAL) (SOURCE PHYSICAL) (THEME PHYSICAL)
+          (AGENT (OR NIL COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "in on under" :IO "Destination")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category pocket-9.10-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Destination") (:S "Theme")
+                (:S "Theme" :PREP "in on under" :IO "Destination"))) 
+
+ (define-mixin-category poison-42.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT)
+  :binds ((INSTRUMENT "OBJECT") (PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
+                (:S "Agent" :O "Patient" :IO "Result")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category poke-19
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT)
+  :binds ((PATIENT PHYSICAL) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S "Instrument" :O "Patient")
+                (:S "Agent" :LEX "at" :IO "Patient" :PREP "with" :IO
+                 "Instrument")
+                (:S "Agent" :LEX "at" :IO "Patient")
+                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Instrument" :PREP "through into" :IO "Patient")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category pour-9.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION WITH-SOURCE)
+  :binds ((SOURCE (AND/OR LOCATION REGION))
+          (DESTINATION (AND/OR LOCATION REGION))
+          (THEME (OR NIL PHYSICAL COLLECTION)) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Theme" :PREP :NP "Initial_Location" :PREP :IO
+                 "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP :IO
+                 "Destination")
+                (:S "Theme" :PREP :NP "Destination")
+                (:S "Agent" :O "Theme" :IO "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+
+ (define-mixin-category preparing-26.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-BENEFICIARY)
+  :binds ((BENEFICIARY PHYSICAL-AGENT)
+          (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization NIL) 
+
+ (define-mixin-category preparing-26.3-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-PRODUCT)
+  :binds ((PRODUCT PHYSICAL))
+  :realization ((:S "Agent" :O "Product" :PREP "for" :IO "Beneficiary")
+                (:S "Agent" :O "Beneficiary" :IO "Product")
+                (:S "Agent" :O "Product"))) 
+
+ (define-mixin-category preparing-26.3-2
+  :specializes subcategorization-pattern
+  :mixins (WITH-PATIENT)
+  :binds ((PATIENT PHYSICAL))
+  :realization ((:S "Agent" :O "Patient" :PREP "for" :IO "Beneficiary")
+                (:S "Agent" :O "Beneficiary" :IO "Patient")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category price-54.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-PATH)
+  :binds ((PATH CURRENCY) (THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :PREP "at" :IO "Value")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category promise-37.13
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-RECIPIENT WITH-TOPIC)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
+                (:S "Agent" :O "Topic") (:S "Agent" :O "Recipient" :IO "Topic"))) 
+
+ (define-mixin-category promote-102
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category pronounce-29.3.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Theme" :PREP "with in" :IO "Attribute")
+                (:S "Agent" :O "Theme" :IO "Attribute"))) 
+
+ (define-mixin-category prosecute-33.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-THEME)
+  :binds ((AGENT (OR NIL COMPANY)))
+  :realization ((:S "Agent" :O "Patient" :PREP "for" :IO "Theme")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category prosecute-33.2-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-ATTRIBUTE)
+  :realization ((:S "Agent" :O "Patient" :PREP "as" :IO "Attribute" :PREP "for"
+                 :NP "Patient")
+                (:S "Agent" :O "Patient" :PREP "as" :IO "Attribute"))) 
+
+ (define-mixin-category push-12
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-PATH WITH-RESULT)
+  :binds ((THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category push-12-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "at against on" :IO "Theme")
+                (:S "Agent" :O "Theme" :IO "Result"))) 
+
+ (define-mixin-category push-12-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP :NP "Trajectory") (:S "Agent" :PREP))) 
+
+ (define-mixin-category put-9.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
+          (THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :IO "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+
+ (define-mixin-category put-9.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category put-9.1-2
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME)
+  :binds ((THEME ABSTRACT))
+  :realization ((:S "Agent" :PREP "on upon" :IO "Destination" :IO "Theme"))) 
+
+ (define-mixin-category put_direction-9.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
+          (THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :IO "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Destination")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category put_spatial-9.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
+          (THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :IO "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+
+ (define-mixin-category put_spatial-9.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Destination")
+                (:S "Theme" :PREP :NP "Destination"))) 
+
+ (define-mixin-category reach-51.8
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-GOAL)
+  :binds ((THEME (AND/OR PHYSICAL COMPANY)))
+  :realization ((:S "Theme" :O "Goal"))) 
+
+ (define-mixin-category rear-26.2.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PRODUCT)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category rear-26.2.2-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-MATERIAL)
+  :binds ((MATERIAL "PHYSICAL"))
+  :realization ((:S "Agent" :O "Material" :IO "Product"))) 
+
+ (define-mixin-category reciprocate-112
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME PREDICATION)
+  :binds ((PREDICATE "PREDICATE") (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Theme" :IO "Predicate") (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category reciprocate-112-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Predicate") (:S "Agent"))) 
+
+ (define-mixin-category reflexive_appearance-48.1.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-AGENT WITH-RECIPIENT REFLEXIVE)
+  :binds ((PRONOUN "PRONOUN") (RECIPIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Theme" :O "Reflexive")
+                (:S "Agent" :O "Theme" :PREP "to" :IO "Recipient")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category refrain-69
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "from" :IO "Theme") (:S "Agent"))) 
+
+ (define-mixin-category register-54.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-PATH)
+  :realization ((:S "Theme" :PREP "at | to" :IO "Value"))) 
+
+ (define-mixin-category register-54.1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-ATTRIBUTE)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Attribute" :PREP "at" :IO "Value")
+                (:S "Agent" :O "Theme" :PREP "at" :IO "Value")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category register-54.1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Value"))) 
+
+ (define-mixin-category rehearse-26.8
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category rehearse-26.8-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category reject-77.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category reject-77.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category relate-86.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-THEME)
+  :realization NIL) 
+
+ (define-mixin-category relate-86.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Co-Theme"))) 
+
+ (define-mixin-category relate-86.2-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :PREP "to" :IO "Co-Theme"))) 
+
+ (define-mixin-category rely-70
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "on" :IO "Theme"))) 
+
+ (define-mixin-category remedy-45.7
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT)
+  :binds ((INSTRUMENT "OBJECT"))
+  :realization ((:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category remedy-45.7-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient" :ADV))) 
+
+ (define-mixin-category remove-10.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-GOAL)
+  :binds ((GOAL LOCATION) (SOURCE LOCATION) (AGENT (OR NIL COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP :NP "Source")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category render-29.90
+  :specializes subcategorization-pattern
+  :mixins (WITH-CAUSE WITH-PATIENT WITH-RESULT)
+  :realization ((:S "Causer" :O "Result" :IO "Patient")
+                (:S "Agent" :O "Patient" :IO "Result"))) 
+
+ (define-mixin-category render-29.90-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Patient" :IO "Result"))) 
+
+ (define-mixin-category render-29.90-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Patient" :IO "Result"))) 
+
+ (define-mixin-category representation-110.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-THEME PREDICATION)
+  :binds ((PREDICATE "PREDICATE"))
+  :realization ((:S "Theme" :O "Co-Theme" :PREP "in | for | to" :IO "Context")
+                (:S "Theme" :O "Co-Theme"))) 
+
+ (define-mixin-category require-103
+  :specializes subcategorization-pattern
+  :mixins (WITH-INSTRUMENT WITH-THEME)
+  :binds ((INSTRUMENT "OBJECT"))
+  :realization ((:S "Pivot" :O "Theme"))) 
+
+ (define-mixin-category require-103-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-SOURCE)
+  :realization ((:S "Pivot" :O "Theme")
+                (:S "Pivot" :O "Theme" :PREP "from" :IO "Source"))) 
+
+ (define-mixin-category require-103-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Pivot" :O "Theme"))) 
+
+ (define-mixin-category resign-10.11
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-SOURCE WITH-GOAL)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category resign-10.11-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "from" :IO "Source"))) 
+
+ (define-mixin-category resign-10.11-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Source"))) 
+
+ (define-mixin-category respond-113
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME PREDICATION)
+  :binds ((PREDICATE "PREDICATE") (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :PREP "to|against" :IO "Theme" :PREP "with" :IO
+                 "Predicate")
+                (:S "Agent" :PREP "with" :IO "Predicate")
+                (:S "Agent" :PREP "to|against" :IO "Theme") (:S "Agent"))) 
+
+ (define-mixin-category result-27.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-CAUSE WITH-THEME)
+  :binds ((CAUSE PHYSICAL-AGENT))
+  :realization ((:S "Causer" :PREP "in | to" :IO "Theme"))) 
+
+ (define-mixin-category risk-94
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category risk-94-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category rob-10.6.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-BENEFICIARY)
+  :binds ((BENEFICIARY PHYSICAL-AGENT)
+          (SOURCE (OR PHYSICAL-AGENT LOCATION REGION))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP :NP "Source" :PREP "for" :NP
+                 "Beneficiary")
+                (:S "Agent" :O "Theme" :PREP "for" :IO "Beneficiary")
+                (:S "Agent" :O "Theme" :PREP :NP "Source")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category roll-51.3.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-PATH WITH-RESULT)
+  :binds ((PATH PHYSICAL) (THEME PHYSICAL))
+  :realization ((:S "Agent" :O "Theme" :PREP "to into" :IO "Result")
+                (:S "Agent" :O "Theme" :IO "Result")
+                (:S "Theme" :PREP "to into" :IO "Result")
+                (:S "Theme" :O "Result")
+                (:S "Agent" :O "Theme" :PREP :NP "Trajectory")
+                (:S "Agent" :O "Theme") (:S "Theme" :PREP :NP "Trajectory")
+                (:S "Theme"))) 
+
+ (define-mixin-category rotate-51.9.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-EXTENT WITH-PATH)
+  :realization ((:S "Theme" :ADV "Trajectory") (:S "Theme" :O "Extent"))) 
+
+ (define-mixin-category rotate-51.9.1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Theme" :IO "Extent"))) 
+
+ (define-mixin-category rummage-35.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :PREP :NP "Location" :PREP "for" :NP "Theme")
+                (:S "Agent" :PREP "over through into" :IO "Location"))) 
+
+ (define-mixin-category rummage-35.5-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Location" :PREP "for" :IO "Theme"))) 
+
+ (define-mixin-category run-51.3.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-SOURCE WITH-PATH WITH-DESTINATION)
+  :binds ((DESTINATION PHYSICAL) (PATH PHYSICAL) (SOURCE PHYSICAL)
+          (THEME (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S :NP "Initial_Location" :NP "Theme")
+                (:S "there" :O "Theme" :PREP :NP "Initial_Location")
+                (:S "there" :PREP :NP "Initial_Location" :NP "Theme")
+                (:S "Theme" :PREP :NP "Trajectory") (:S "Theme"))) 
+
+ (define-mixin-category run-51.3.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Trajectory"))) 
+
+ (define-mixin-category run-51.3.2-2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-RESULT WITH-SOURCE)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :PREP "to into" :IO "Result")
+                (:S "Agent" :O "Theme")
+                (:S "Agent" :O "Theme" :PREP :NP "Trajectory"))) 
+
+ (define-mixin-category run-51.3.2-2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Trajectory"))) 
+
+ (define-mixin-category rush-53.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :PREP "through" :IO "Theme")
+                (:S "Agent" :O "Theme") (:S "Agent" :PREP "with" :IO "Theme"))) 
+
+ (define-mixin-category satisfy-55.7
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-INSTRUMENT)
+  :binds ((INSTRUMENT "OBJECT") (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "with" :IO "Instrument")
+                (:S "Instrument" :O "Theme"))) 
+
+ (define-mixin-category say-37.7
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-TOPIC WITH-RECIPIENT)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (TOPIC SPEECH-ACT)
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Topic"))) 
+
+ (define-mixin-category say-37.7-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
+                (:S "Agent" :O "Topic" :PREP "to" :IO "Recipient")
+                (:S "Agent" :O "Topic"))) 
+
+ (define-mixin-category say-37.7-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Topic"))) 
+
+ (define-mixin-category say-37.7-1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
+                (:S "Agent" :O "Topic" :PREP "to" :IO "Recipient"))) 
+
+ (define-mixin-category say-37.7-1-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
+                (:S "Agent" :O "Topic" :PREP "to" :IO "Recipient"))) 
+
+ (define-mixin-category scribble-25.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
+  :binds ((DESTINATION PHYSICAL) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S "Agent" :O "Theme" :PREP "on | in" :IO "Destination")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category scribble-25.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category search-35.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :PREP :NP "Location")
+                (:S "Agent" :PREP :NP "Location" :PREP "for" :NP "Theme")
+                (:S "Agent" :PREP "for" :IO "Theme" :PREP :NP "Location")
+                (:S "Agent" :O "Location" :PREP "for" :IO "Theme"))) 
+
+ (define-mixin-category see-30.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-STIMULUS)
+  :binds ((EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S "Experiencer" :O "Stimulus"))) 
+
+ (define-mixin-category see-30.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Experiencer" :O "Stimulus"))) 
+
+ (define-mixin-category see-30.1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Experiencer" :O "Stimulus"))) 
+
+ (define-mixin-category see-30.1-1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Experiencer" :PREP "about of" :IO "Stimulus"))) 
+
+ (define-mixin-category seem-109
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-ATTRIBUTE)
+  :realization ((:S "Theme" :O "Attribute"))) 
+
+ (define-mixin-category seem-109-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Attribute"))) 
+
+ (define-mixin-category seem-109-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :PREP "in" :IO "Attribute"))) 
+
+ (define-mixin-category seem-109-1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Attribute"))) 
+
+ (define-mixin-category send-11.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION (OR PHYSICAL-AGENT LOCATION REGION)) (SOURCE LOCATION)
+          (THEME PHYSICAL) (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "to" :IO "Destination" :PREP :NP
+                 "Initial_Location")
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP "to"
+                 :NP "Destination")
+                (:S "Agent" :O "Theme" :PREP "to" :IO "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category send-11.1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-DESTINATION)
+  :binds ((DESTINATION PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Destination" :IO "Theme"))) 
+
+ (define-mixin-category separate-23.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Patient" :ADV)
+                (:S "Patient" :ADV :PREP "from" :NP "Co-Patient")
+                (:S "Patient") (:S "Agent" :O "Patient")
+                (:S "Agent" :O "Patient" :PREP "from" :IO "Co-Patient"))) 
+
+ (define-mixin-category separate-23.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient" :PREP "from" :IO "Co-Patient"))) 
+
+ (define-mixin-category separate-23.1-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient" :PREP "with" :IO "Co-Patient"))) 
+
+ (define-mixin-category settle-36.1.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT WITH-TOPIC)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "on" :IO "Goal")
+                (:S "Agent" :PREP "on" :IO "Goal") (:S "Agent"))) 
+
+ (define-mixin-category settle-36.1.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Co-Agent" :IO "Goal") (:S "Agent" :O "Goal"))) 
+
+ (define-mixin-category shake-22.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
+  :binds ((CO-PATIENT PHYSICAL) (PATIENT PHYSICAL)
+          (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S "Patient" :ADV :LEX "together") (:S "Patient" :ADV))) 
+
+ (define-mixin-category shake-22.3-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Patient" :LEX "together")
+                (:S "Agent" :O "Patient" :PREP "with into to" :IO "Co-Patient"))) 
+
+ (define-mixin-category shake-22.3-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Patient")
+                (:S "Patient" :PREP "with into to" :IO "Co-Patient" :ADV))) 
+
+ (define-mixin-category shake-22.3-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Patient" :LEX "together")
+                (:S "Agent" :O "Patient" :PREP "with into to" :IO "Co-Patient"))) 
+
+ (define-mixin-category shake-22.3-2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category sight-30.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-STIMULUS)
+  :binds ((EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S "Experiencer" :O "Stimulus"))) 
+
+ (define-mixin-category simple_dressing-41.3.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category slide-11.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-PATH)
+  :binds ((DESTINATION (OR PHYSICAL-AGENT LOCATION REGION)) (SOURCE LOCATION)
+          (THEME PHYSICAL))
+  :realization ((:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP "to"
+                 :NP "Destination")
+                (:S "Agent" :O "Theme" :PREP "to" :IO "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Trajectory")
+                (:S "Agent" :O "Theme")
+                (:S "Theme" :PREP :NP "Initial_Location" :PREP "to" :NP
+                 "Destination")
+                (:S "Theme" :PREP "to" :IO "Destination")
+                (:S "Theme" :PREP :NP "Initial_Location") (:S "Theme"))) 
+
+ (define-mixin-category slide-11.2-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-DESTINATION)
+  :binds ((DESTINATION PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Destination" :IO "Theme"))) 
+
+ (define-mixin-category smell_emission-43.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-CAUSE)
+  :binds ((THEME PHYSICAL-AGENT))
+  :realization ((:S "Location" :PREP "of" :IO "Theme") (:S "Location")
+                (:S "Theme"))) 
+
+ (define-mixin-category snooze-40.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category snooze-40.4-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME)
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category sound_emission-43.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-CAUSE WITH-AGENT TEMPORALLY-LOCALIZED)
+  :binds ((CERTAINTY "CERTAINTY") (AGENT ("PRONOUN" "PHYSICAL-AGENT"))
+          (THEME PHYSICAL-AGENT))
+  :realization ((:S "Theme" :O "Result") (:S "Agent" :O "Theme")
+                (:S "there" :O "Theme" :PREP :NP "Location")
+                (:S :NP "Location" :NP "Theme")
+                (:S "Location" :PREP "with" :IO "Theme")
+                (:S "Theme" :PREP :NP "Location") (:S "Theme"))) 
+
+ (define-mixin-category sound_existence-47.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-CAUSE)
+  :binds ((CAUSE (AND/OR LOCATION REGION)))
+  :realization ((:S "Location" :PREP "with" :IO "Theme")
+                (:S :NP "Location" :NP "Theme") (:S "there" :O "Theme")
+                (:S "Theme" :PREP :NP "Location") (:S "Theme"))) 
+
+ (define-mixin-category spank-18.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-CAUSE WITH-RESULT)
+  :binds ((CAUSE PHYSICAL) (INSTRUMENT PHYSICAL) (PATIENT PHYSICAL))
+  :realization ((:S "Agent" :O "Patient" :PREP :NP "Location" :PREP "with" :NP
+                 "Instrument")
+                (:S "Agent" :O "Patient" :PREP :NP "Location")
+                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result" :PREP
+                 "with" :NP "Instrument")
+                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
+                (:S "Agent" :O "Patient" :IO "Result")
+                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category spatial_configuration-47.6
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-CAUSE)
+  :binds ((CAUSE (AND/OR LOCATION REGION)) (THEME PHYSICAL))
+  :realization ((:S :NP "Location" :NP "Theme")
+                (:S "there" :PREP :NP "Location" :NP "Theme")
+                (:S "Theme" :PREP :NP "Location") (:S "Theme"))) 
+
+ (define-mixin-category spatial_configuration-47.6-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :PREP :NP "Location"))) 
+
+ (define-mixin-category spend_time-104
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-EXTENT WITH-ATTRIBUTE)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Duration" :LEX "as" :IO "Attribute")
+                (:S "Agent" :O "Duration"))) 
+
+ (define-mixin-category split-23.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
+  :binds ((CO-PATIENT SOLID) (PATIENT SOLID))
+  :realization ((:S "Patient" :LEX "apart" :ADV)
+                (:S "Patient" :PREP "off off of from" :IO "Co-Patient" :ADV)
+                (:S "Patient" :LEX "apart")
+                (:S "Patient" :PREP "off off of from" :IO "Co-Patient")
+                (:S "Agent" :O "Patient" :LEX "apart")
+                (:S "Agent" :O "Patient" :PREP "off off of from" :IO
+                 "Co-Patient"))) 
+
+ (define-mixin-category spray-9.7
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
+          (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Destination") (:S "Agent" :O "Theme")
+                (:S "Agent" :O "Destination" :PREP "with" :IO "Theme")
+                (:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+
+ (define-mixin-category spray-9.7-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME)
+  :binds ((THEME (OR NIL PHYSICAL COLLECTION)))
+  :realization ((:S "Agent" :O "Theme" :LEX "at" :IO "Destination")
+                (:S "Theme" :PREP :NP "Destination"))) 
+
+ (define-mixin-category spray-9.7-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Destination"))) 
+
+ (define-mixin-category spray-9.7-2
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME)
+  :binds ((THEME PHYSICAL))
+  :realization NIL) 
+
+ (define-mixin-category stalk-35.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-CAUSE)
+  :binds ((AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme")
+                (:S "Agent" :O "Theme" :PREP :NP "Location")
+                (:S "Agent" :O "Location" :PREP "for" :IO "Theme"))) 
+
+ (define-mixin-category steal-10.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-BENEFICIARY)
+  :binds ((BENEFICIARY PHYSICAL-AGENT) (SOURCE (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP :NP "Source" :PREP "for" :NP
+                 "Beneficiary")
+                (:S "Agent" :O "Theme" :PREP "for" :IO "Beneficiary")
+                (:S "Agent" :O "Theme" :PREP :NP "Source")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category steal-10.5-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Beneficiary" :IO "Theme"))) 
+
+ (define-mixin-category stimulate-59.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT PREDICATION)
+  :binds ((PREDICATE "PREDICATE") (PATIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Patient" :PREP "into" :IO "Predicate")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category stimulus_subject-30.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-STIMULUS)
+  :binds ((EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S "Stimulus" :PREP "like")
+                (:S "Stimulus" :ADJ :PREP "to" :NP "Experiencer")
+                (:S "Stimulus" :ADJ))) 
+
+ (define-mixin-category stop-55.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Affector" :O "Theme"))) 
+
+ (define-mixin-category stop-55.4-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :ADV) (:S "Theme"))) 
+
+ (define-mixin-category stop-55.4-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category subjugate-42.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT)
+  :binds ((INSTRUMENT "OBJECT") (PATIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category subordinate-95.2.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "to" :IO "Co-Agent"))) 
+
+ (define-mixin-category substance_emission-43.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-SOURCE)
+  :realization ((:S "Source" :O "Theme"))) 
+
+ (define-mixin-category substance_emission-43.4-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-CAUSE)
+  :realization ((:S "Source" :O "Theme") (:S "Theme" :LEX "out")
+                (:S "there" :O "Theme" :PREP :NP "Location")
+                (:S :NP "Location" :NP "Theme")
+                (:S "Location" :PREP "with" :IO "Theme")
+                (:S "Theme" :PREP :NP "Location")
+                (:S "Theme" :PREP "from out_of" :IO "Source") (:S "Source"))) 
+
+ (define-mixin-category substance_emission-43.4-1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Source"))) 
+
+ (define-mixin-category substitute-13.6.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-THEME WITH-SOURCE WITH-GOAL WITH-CAUSE)
+  :binds ((CAUSE (AND/OR LOCATION REGION)))
+  :realization ((:S "Theme" :O "Location" :PREP "with" :IO "Co-Theme")
+                (:S "Theme" :O "Location")
+                (:S "Theme" :PREP "for into" :IO "Co-Theme"))) 
+
+ (define-mixin-category substitute-13.6.2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Theme" :O "Co-Theme"))) 
+
+ (define-mixin-category succeed-74
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization NIL) 
+
+ (define-mixin-category succeed-74-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "in" :IO "Theme") (:S "Agent"))) 
+
+ (define-mixin-category succeed-74-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category succeed-74-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "in at" :IO "Theme") (:S "Agent" :O "Theme")
+                (:S "Agent"))) 
+
+ (define-mixin-category succeed-74-3
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent"))) 
+
+ (define-mixin-category succeed-74-3-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "in at" :IO "Theme") (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category succeed-74-3-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme") (:S "Agent" :PREP "in" :IO "Theme"))) 
+
+ (define-mixin-category suffocate-40.7
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-RESULT)
+  :binds ((PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Patient" :PREP "to" :IO "Result")
+                (:S "Patient" :PREP "to" :IO "Result") (:S "Patient")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category supervision-95.2.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Co-Agent"))) 
+
+ (define-mixin-category support-15.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-INSTRUMENT)
+  :binds ((INSTRUMENT "OBJECT") (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Instrument" :O "Theme"))) 
+
+ (define-mixin-category support-15.3-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Theme" :PREP "with | through" :IO "Instrument"))) 
+
+ (define-mixin-category suspect-81
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme")
+                (:S "Agent" :O "Theme" :PREP "of" :IO "Attribute"))) 
+
+ (define-mixin-category sustain-55.6
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-INSTRUMENT)
+  :binds ((INSTRUMENT "OBJECT") (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :PREP "through" :IO "Instrument"))) 
+
+ (define-mixin-category sustain-55.6-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-ATTRIBUTE)
+  :realization ((:S "Agent" :O "Theme" :IO "Attribute"))) 
+
+ (define-mixin-category swarm-47.5.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-CAUSE)
+  :binds ((CAUSE (AND/OR LOCATION REGION)) (THEME (AND/OR PHYSICAL COLLECTION)))
+  :realization NIL) 
+
+ (define-mixin-category swarm-47.5.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Location" :PREP "with" :IO "Theme")
+                (:S :NP "Location" :NP "Theme")
+                (:S "there" :O "Theme" :PREP :NP "Location")
+                (:S "Theme" :PREP :NP "Location"))) 
+
+ (define-mixin-category swarm-47.5.1-2
+  :specializes subcategorization-pattern
+  :realization ((:S "there" :O "Theme" :PREP :NP "Location")
+                (:S "Theme" :PREP :NP "Location"))) 
+
+ (define-mixin-category swarm-47.5.1-2-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Location" :PREP "with" :IO "Theme"))) 
+
+ (define-mixin-category swat-18.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-CAUSE WITH-RESULT)
+  :binds ((CAUSE PHYSICAL) (INSTRUMENT SOLID) (PATIENT PHYSICAL)
+          (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Patient" :PREP :NP "Location")
+                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result" :PREP
+                 "with" :NP "Instrument")
+                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
+                (:S "Agent" :O "Patient" :IO "Result" :PREP "with" :IO
+                 "Instrument")
+                (:S "Agent" :O "Patient" :IO "Result")
+                (:S "Agent" :LEX "at" :IO "Patient" :PREP "with" :IO
+                 "Instrument")
+                (:S "Agent" :LEX "at" :IO "Patient")
+                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category talk-37.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT WITH-TOPIC)
+  :binds ((TOPIC SPEECH-ACT) (AGENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "about" :IO "Topic")
+                (:S "Agent" :PREP "about" :IO "Topic" :PREP "with" :IO
+                 "Co-Agent")
+                (:S "Agent" :PREP "about" :IO "Topic" :PREP "to" :IO
+                 "Co-Agent")
+                (:S "Agent" :LEX "together")
+                (:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "about" :IO
+                 "Topic")
+                (:S "Agent" :PREP "to" :IO "Co-Agent" :PREP "about" :IO
+                 "Topic")
+                (:S "Agent" :PREP "with" :IO "Co-Agent")
+                (:S "Agent" :PREP "to" :IO "Co-Agent") (:S "Agent"))) 
+
+ (define-mixin-category tape-22.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT WITH-INSTRUMENT WITH-RESULT)
+  :binds ((INSTRUMENT (AND/OR PHYSICAL PHYSICAL-AGENT)) (CO-PATIENT SOLID)
+          (PATIENT SOLID) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S "Agent" :O "Patient" :IO "Result")
+                (:S "Patient" :LEX "together" :ADV)
+                (:S "Patient" :ADV :LEX "together") (:S "Patient" :ADV)
+                (:S "Patient" :ADV :PREP "to on onto" :NP "Co-Patient")
+                (:S "Agent" :O "Patient" :LEX "together")
+                (:S "Agent" :O "Patient" :PREP "to on onto" :IO "Co-Patient")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category tape-22.4-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Patient" :PREP "to on onto" :IO "Co-Patient"))) 
+
+ (define-mixin-category tell-37.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-RECIPIENT WITH-TOPIC)
+  :binds ((TOPIC SPEECH-ACT) (RECIPIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Recipient" :IO "Topic")
+                (:S "Agent" :O "Recipient" :PREP "of" :IO "Topic")
+                (:S "Agent" :O "Recipient"))) 
+
+ (define-mixin-category terminus-47.9
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-CAUSE)
+  :realization ((:S "Theme" :PREP "" :IO "Location"))) 
+
+ (define-mixin-category throw-17.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-RESULT)
+  :binds ((DESTINATION (OR PHYSICAL-AGENT LOCATION REGION)) (SOURCE LOCATION)
+          (THEME PHYSICAL))
+  :realization ((:S "Agent" :O "Theme" :ADV)
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP :IO
+                 "Destination")
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
+                (:S "Agent" :O "Theme" :PREP :NP "Destination")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category throw-17.1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-DESTINATION)
+  :binds ((DESTINATION PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Destination" :IO "Theme"))) 
+
+ (define-mixin-category throw-17.1-1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-CAUSE)
+  :realization ((:S "Causer" :PREP "into" :IO "Result" :IO "Theme")
+                (:S "Causer" :O "Theme" :PREP "into" :IO "Result"))) 
+
+ (define-mixin-category tingle-40.8.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-PATIENT WITH-STIMULUS)
+  :binds ((EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S "Patient" :PREP "from at" :IO "Stimulus") (:S "Patient"))) 
+
+ (define-mixin-category touch-20
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-EXPERIENCER WITH-INSTRUMENT)
+  :binds ((INSTRUMENT SOLID) (EXPERIENCER PHYSICAL))
+  :realization ((:S "Agent" :O "Experiencer" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Experiencer"))) 
+
+ (define-mixin-category touch-20-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER)
+  :binds ((EXPERIENCER (OR NIL PRONOUN)))
+  :realization ((:S "Agent" :O "Experiencer" :PREP "with" :IO "Instrument")
+                (:S "Agent" :O "Experiencer"))) 
+
+ (define-mixin-category transcribe-25.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
+  :binds ((DESTINATION PHYSICAL) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :PREP :NP "Destination")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category transfer_mesg-37.1.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-TOPIC WITH-RECIPIENT WITH-SOURCE)
+  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent") (:S "Agent" :PREP "from" :IO "Source")
+                (:S "Agent" :O "Topic" :PREP "to" :IO "Recipient")
+                (:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
+                (:S "Agent" :O "Topic"))) 
+
+ (define-mixin-category transfer_mesg-37.1.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Recipient" :IO "Topic"))) 
+
+ (define-mixin-category transfer_mesg-37.1.1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Recipient" :PREP "about" :IO "Topic")
+                (:S "Agent" :O "Recipient" :IO "Topic")
+                (:S "Agent" :O "Recipient"))) 
+
+ (define-mixin-category trick-59.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT PREDICATION)
+  :binds ((PREDICATE "PREDICATE") (PATIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Patient" :PREP "into" :IO "Result")
+                (:S "Agent" :O "Patient" :PREP "into" :IO "Predicate")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category trifle-105.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "with" :IO "Theme"))) 
+
+ (define-mixin-category try-61.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category turn-26.6.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-RESULT WITH-SOURCE)
+  :binds ((AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S "Agent" :O "Patient") (:S "Patient")
+                (:S "Patient" :PREP "into" :IO "Result")
+                (:S "Agent" :O "Patient" :PREP "into" :IO "Result")
+                (:S "Patient" :PREP "from" :IO "Initial_State" :PREP "into" :IO
+                 "Result")
+                (:S "Agent" :O "Patient" :PREP "from" :IO "Initial_State" :PREP
+                 "into" :NP "Result"))) 
+
+ (define-mixin-category turn-26.6.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "to" :IO "Result" :PREP "from" :IO
+                 "Initial_State")
+                (:S "Agent" :PREP "from" :IO "Initial_State" :PREP "to" :IO
+                 "Result")
+                (:S "Agent" :PREP "to" :IO "Result"))) 
+
+ (define-mixin-category urge-58.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-RESULT)
+  :binds ((PATIENT (OR PHYSICAL-AGENT COMPANY))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category urge-58.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Patient" :IO "Result"))) 
+
+ (define-mixin-category urge-58.1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Patient" :IO "Topic"))) 
+
+ (define-mixin-category use-105.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME PREDICATION)
+  :binds ((PREDICATE "PREDICATE") (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Theme" :IO "Predicate")
+                (:S "Agent" :O "Theme" :PREP "for" :IO "Predicate")
+                (:S "Agent" :O "Theme" :ADV) (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category vehicle-51.4.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-PATH WITH-RESULT)
+  :binds ((PATH PHYSICAL) (THEME PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :PREP "to into" :IO "Result")
+                (:S "Agent" :O "Theme" :IO "Result") (:S "Agent" :O "Theme")
+                (:S "Agent" :O "Theme" :PREP :NP "Trajectory")
+                (:S "Theme" :PREP :NP "Trajectory") (:S "Theme"))) 
+
+ (define-mixin-category vehicle-51.4.1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-CAUSE)
+  :binds ((CAUSE PHYSICAL))
+  :realization ((:S "Theme" :O "Location"))) 
+
+ (define-mixin-category vehicle_path-51.4.3
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-PATH WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION LOCATION) (SOURCE LOCATION) (THEME MOTOR-VEHICLE)
+          (AGENT (OR PHYSICAL-AGENT MOTOR-VEHICLE)))
+  :realization ((:S "Agent" :O "Trajectory" :PREP "from" :IO
+                 "Initial_Location")
+                (:S "Agent" :O "Trajectory" :PREP "to" :IO "Destination")
+                (:S "Agent" :O "Trajectory")
+                (:S "Agent" :O "Theme" :PREP "from" :IO "Initial_Location")
+                (:S "Agent" :O "Theme" :PREP "to" :IO "Destination")
+                (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category void-106
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT)
+  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category volunteer-95.4
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-INSTRUMENT WITH-THEME WITH-ATTRIBUTE)
+  :binds ((INSTRUMENT "OBJECT") (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
+  :realization ((:S "Agent" :O "Pivot" :IO "Theme") (:S "Agent" :O "Theme"))) 
+
+ (define-mixin-category volunteer-95.4-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :O "Attribute"))) 
+
+ (define-mixin-category waltz-51.5
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-PATH WITH-GOAL)
+  :binds ((PATH PHYSICAL) (THEME PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :O "Theme" :PREP "to into" :IO "Goal")
+                (:S "Agent" :O "Theme" :IO "Goal")
+                (:S "Agent" :O "Theme" :PREP :NP "Trajectory")
+                (:S "Theme" :PREP :NP "Trajectory" :NP "Goal") (:S "Theme"))) 
+
+ (define-mixin-category want-32.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-INSTRUMENT WITH-THEME)
+  :binds ((INSTRUMENT PHYSICAL-AGENT))
+  :realization ((:S "Pivot" :O "Theme"))) 
+
+ (define-mixin-category want-32.1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Pivot" :O "Theme" :ADJ) (:S "Pivot" :O "Theme"))) 
+
+ (define-mixin-category want-32.1-1-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Pivot" :O "Theme"))) 
+
+ (define-mixin-category weather-57
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME)
+  :binds ((THEME (OR PHYSICAL NIL)))
+  :realization ((:S "it[+be]" :PREP "with" :IO "Theme")
+                (:S "it" :LEX "[+be]" :IO "Theme") (:S "it" :LEX "[+be]"))) 
+
+ (define-mixin-category weekend-56
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-CAUSE)
+  :binds ((CAUSE LOCATION) (THEME PHYSICAL-AGENT))
+  :realization ((:S "Theme" :PREP :NP "Location"))) 
+
+ (define-mixin-category wink-40.3.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-THEME WITH-RECIPIENT)
+  :binds ((RECIPIENT PHYSICAL-AGENT) (THEME SPEECH-ACT) (AGENT PHYSICAL-AGENT))
+  :realization ((:S "Agent" :PREP "in" :IO "Theme") (:S "Agent" :O "Theme")
+                (:S "Agent" :PREP :NP "Recipient") (:S "Agent")
+                (:S "Agent" :O "Patient" :PREP "in" :IO "Theme")
+                (:S "Agent" :O "Patient"))) 
+
+ (define-mixin-category wipe_instr-10.4.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-INSTRUMENT
+           WITH-RESULT)
+  :binds ((INSTRUMENT (AND/OR PHYSICAL PHYSICAL-AGENT)) (DESTINATION LOCATION)
+          (SOURCE LOCATION) (THEME (AND/OR PHYSICAL PHYSICAL-AGENT))
+          (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S "Agent" :O "Initial_Location" :IO "Result") (:S "Agent")
+                (:S "Agent" :O "Initial_Location")
+                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location"))) 
+
+ (define-mixin-category wipe_instr-10.4.2-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-DESTINATION)
+  :realization ((:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+
+ (define-mixin-category wipe_manner-10.4.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
+  :binds ((DESTINATION LOCATION) (SOURCE LOCATION)
+          (THEME (AND/OR PHYSICAL PHYSICAL-AGENT)))
+  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Source")
+                (:S "Agent" :O "Theme" :PREP :NP "Source"))) 
+
+ (define-mixin-category wipe_manner-10.4.1-1
+  :specializes subcategorization-pattern
+  :mixins (WITH-SOURCE)
+  :binds ((SOURCE REGION))
+  :realization ((:S "Agent" :LEX "at" :IO "Source"))) 
+
+ (define-mixin-category wish-62
+  :specializes subcategorization-pattern
+  :mixins (WITH-EXPERIENCER WITH-STIMULUS)
+  :binds ((EXPERIENCER (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Experiencer" :O "Stimulus"))) 
+
+ (define-mixin-category withdraw-82
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-SOURCE)
+  :binds ((AGENT (AND/OR PHYSICAL-AGENT COMPANY)))
+  :realization NIL) 
+
+ (define-mixin-category withdraw-82-1
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "of" :IO "Source") (:S "Agent"))) 
+
+ (define-mixin-category withdraw-82-2
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "from" :IO "Source") (:S "Agent" :LEX "away"))) 
+
+ (define-mixin-category withdraw-82-3
+  :specializes subcategorization-pattern
+  :realization ((:S "Agent" :PREP "from" :IO "Source") (:S "Agent"))) 
+
+ (define-mixin-category work-73.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-AGENT WITH-THEME)
+  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT"))
+          (AGENT (OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "at" :IO "Theme")
+                (:S "Agent" :PREP "at" :IO "Theme")
+                (:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "on" :IO "Theme")
+                (:S "Agent" :PREP "on" :IO "Theme") (:S "Agent"))) 
