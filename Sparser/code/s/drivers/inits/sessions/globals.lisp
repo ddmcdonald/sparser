@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997,2011-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2011-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  September 2017
+;;;  Version:  July 2019
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -196,6 +196,13 @@
   "Flag read within scan-terminals-loop that determines
    whether or not we execute fsas such as the scan
    for digit sequences.")
+
+(defparameter *word-level-completion-sweep* t
+  "Flag read in scan-terminals-loop to control whether to run
+   word-level-completion-sweep, which passes unspanned words through
+   the completion hook to trigger any associated actions. Applies
+   particularly to quotation marks, but also conjunctions and
+   parentheses.")
 
 (defparameter *sweep-for-terminal-edges* t
   "Flag read within scan-terminals-loop that determines

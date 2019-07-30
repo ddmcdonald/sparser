@@ -221,7 +221,7 @@
   ;; This is called from scan-terminals-of-sentence, which is called
   ;; from scan-terminals-and-do-core
   (declare (special end-pos  *sweep-for-polywords* *sweep-for-word-level-fsas*
-                    *sweep-for-terminal-edges*)
+                    *sweep-for-terminal-edges* *word-level-completion-sweep*)
            (optimize debug))
   
   (tr :scan-terminals-loop)
@@ -231,7 +231,8 @@
   (when *sweep-for-word-level-fsas*
     (word-level-fsa-sweep position-before end-pos))
 
-  (word-level-completion-sweep position-before end-pos)
+  (when *word-level-completion-sweep*
+    (word-level-completion-sweep position-before end-pos))
 
   (when *sweep-for-terminal-edges*
     (terminal-edges-sweep position-before end-pos))
