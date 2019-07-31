@@ -25,7 +25,7 @@
     :documentation "The position just after the region ends"))
   (:documentation "Picks out a region of the chart. Somewhat the
    same position-relative information as an edge, so the content
-   of any object that mixes in theis class needs to reap it before
+   of any object that mixes in this class needs to reap it before
    the chart wraps and the positions are reclaimed."))
 
 (defmethod clear ((o chart-region))
