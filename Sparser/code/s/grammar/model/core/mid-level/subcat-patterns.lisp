@@ -308,7 +308,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
   on verbs, or attributes of nouns."
   :mixins (with-patient takes-adverb with-manner)
   :binds ((patient endurant) (manner adverb))
-  :realization ((:s patient :a manner)
+  :realization (:s patient :a manner
   :mumble (SVADV :s patient :a manner)))
 
 ;; Still under construction
