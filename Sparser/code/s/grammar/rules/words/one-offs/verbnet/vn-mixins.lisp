@@ -1,4 +1,4 @@
-;; Written 11:37:47 8/01/2019
+;; Written 15:23:53 8/01/2019
 
 (in-package :sparser)
 
@@ -18,7 +18,7 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
   :binds ((SPARSER::THEME PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL DESTINATION)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :SPATIAL DESTINATION)))
 
 (define-mixin-category acquiesce-95.1
   :specializes subcategorization-pattern
@@ -84,7 +84,7 @@
 (define-mixin-category admit-64.3-1
   :specializes subcategorization-pattern
   :mixins (ADMIT-64.3)
-  :realization ((:S AGENT :IO THEME O CAUSE) (:S AGENT :O THEME :NIL CAUSE)))
+  :realization ((:S AGENT :IO THEME O CAUSE) (:S AGENT :O THEME :LOC CAUSE)))
 
 (define-mixin-category adopt-93
   :specializes subcategorization-pattern
@@ -190,7 +190,7 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT WITH-CAUSE)
   :binds ((SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT) (:S AGENT :NIL RECIPIENT) (:S AGENT :O THEME)
+  :realization ((:S AGENT) (:S AGENT :DEST_DIR RECIPIENT) (:S AGENT :O THEME)
                 (:S AGENT :O CAUSE) (:S CAUSE :WITH AGENT)))
 
 (define-mixin-category appeal-31.4
@@ -217,8 +217,8 @@
 (define-mixin-category appear-48.1.1
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
-  :realization ((:S THEME) (:S THEME :NIL CAUSE) (:O THEME :NIL CAUSE)
-                (:NIL CAUSE :O THEME) (:S THEME :O CAUSE)))
+  :realization ((:S THEME) (:S THEME :LOC CAUSE) (:O THEME :LOC CAUSE)
+                (:LOC CAUSE :O THEME) (:S THEME :O CAUSE)))
 
 (define-mixin-category appoint-29.1
   :specializes subcategorization-pattern
@@ -238,7 +238,7 @@
   :mixins (WITH-AGENT WITH-CAUSE)
   :binds ((SPARSER::CAUSE (:AND/OR LOCATION REGION))
           (SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT) (:S AGENT :NIL CAUSE)))
+  :realization ((:S AGENT) (:S AGENT :LOC CAUSE)))
 
 (define-mixin-category attack-60.1
   :specializes subcategorization-pattern
@@ -278,7 +278,7 @@
   :binds ((SPARSER::DESTINATION (:AND/OR LOCATION REGION))
           (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL-AGENT)
           (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :SRC SOURCE)
                 (:S AGENT :O THEME :TO DESTINATION)))
 
 (define-mixin-category base-97.1
@@ -424,7 +424,7 @@
   :specializes subcategorization-pattern
   :mixins (BODY_MOTION-49.2)
   :realization ((:S AGENT :IO THEME O GOAL) (:S AGENT :O GOAL)
-                (:S AGENT :NIL PATH) (:S AGENT :IO PATH O THEME)))
+                (:S AGENT :DIR PATH) (:S AGENT :IO PATH O THEME)))
 
 (define-mixin-category body_motion-49.2-1-1
   :specializes subcategorization-pattern
@@ -481,8 +481,8 @@
                 (:S AGENT :AGAINST DESTINATION :BEFORE DESTINATION :INTO
                  DESTINATION :ON DESTINATION :TO DESTINATION :ONTO DESTINATION
                  :O THEME)
-                (:S AGENT :O THEME :NIL SOURCE)
-                (:S AGENT :O THEME :NIL SOURCE :TO DESTINATION)
+                (:S AGENT :O THEME :SRC SOURCE)
+                (:S AGENT :O THEME :SRC SOURCE :TO DESTINATION)
                 (:S INSTRUMENT :IO THEME O DESTINATION)))
 
 (define-mixin-category bring-11.3-1
@@ -633,20 +633,20 @@
   :binds ((SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL))
   :realization ((:S AGENT :O THEME)
                 (:S AGENT :O THEME :TO DESTINATION :TOWARDS DESTINATION)
-                (:S AGENT :O THEME :NIL SOURCE)
-                (:S AGENT :O THEME :NIL SOURCE :TO DESTINATION :TOWARDS
+                (:S AGENT :O THEME :SRC SOURCE)
+                (:S AGENT :O THEME :SRC SOURCE :TO DESTINATION :TOWARDS
                  DESTINATION)
-                (:S AGENT :O THEME :TO DESTINATION :TOWARDS DESTINATION :NIL
+                (:S AGENT :O THEME :TO DESTINATION :TOWARDS DESTINATION :SRC
                  SOURCE)))
 
 (define-mixin-category carry-11.4-1
   :specializes subcategorization-pattern
   :mixins (CARRY-11.4)
-  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :SRC SOURCE)
                 (:S AGENT :O THEME :TO DESTINATION :TOWARDS DESTINATION)
-                (:S AGENT :O THEME :NIL SOURCE :TO DESTINATION :TOWARDS
+                (:S AGENT :O THEME :SRC SOURCE :TO DESTINATION :TOWARDS
                  DESTINATION)
-                (:S AGENT :O THEME :TO DESTINATION :TOWARDS DESTINATION :NIL
+                (:S AGENT :O THEME :TO DESTINATION :TOWARDS DESTINATION :SRC
                  SOURCE)))
 
 (define-mixin-category carry-11.4-1-1
@@ -721,7 +721,7 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-PATH)
   :binds ((SPARSER::THEME PHYSICAL) (SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL PATH)
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :SPATIAL PATH)
                 (:S AGENT :AFTER THEME)))
 
 (define-mixin-category cheat-10.6.1
@@ -786,13 +786,13 @@
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
   :binds ((SPARSER::DESTINATION LOCATION) (SPARSER::SOURCE LOCATION)
           (SPARSER::THEME PHYSICAL))
-  :realization ((:S AGENT :O SOURCE) (:S AGENT :O THEME :NIL SOURCE)
+  :realization ((:S AGENT :O SOURCE) (:S AGENT :O THEME :SRC SOURCE)
                 (:S AGENT :O SOURCE :OF THEME)))
 
 (define-mixin-category clear-10.3-1
   :specializes subcategorization-pattern
   :mixins (CLEAR-10.3)
-  :realization ((:S SOURCE) (:S THEME :NIL SOURCE)))
+  :realization ((:S SOURCE) (:S THEME :SRC SOURCE)))
 
 (define-mixin-category cling-22.5
   :specializes subcategorization-pattern
@@ -812,8 +812,8 @@
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
   :binds ((SPARSER::DESTINATION LOCATION) (SPARSER::SOURCE LOCATION)
           (SPARSER::THEME (:AND/OR NIL NIL)))
-  :realization ((:S AGENT :O THEME :NIL DESTINATION)
-                (:S THEME :NIL DESTINATION)))
+  :realization ((:S AGENT :O THEME :PATH DESTINATION)
+                (:S THEME :PATH DESTINATION)))
 
 (define-mixin-category coil-9.6-1
   :specializes subcategorization-pattern
@@ -896,12 +896,12 @@
   :mixins (WITH-AGENT WITH-BENEFICIARY WITH-PATIENT WITH-CAUSE)
   :binds ((SPARSER::BENEFICIARY PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
   :realization ((:S AGENT :O PATIENT :FROM BENEFICIARY)
-                (:S AGENT :O PATIENT :NIL CAUSE) (:S AGENT :O PATIENT)))
+                (:S AGENT :O PATIENT :LOC CAUSE) (:S AGENT :O PATIENT)))
 
 (define-mixin-category concealment-16-1
   :specializes subcategorization-pattern
   :mixins (CONCEALMENT-16)
-  :realization ((:S AGENT) (:S AGENT :FROM BENEFICIARY) (:S AGENT :NIL CAUSE)))
+  :realization ((:S AGENT) (:S AGENT :FROM BENEFICIARY) (:S AGENT :LOC CAUSE)))
 
 (define-mixin-category conduct-111.1
   :specializes subcategorization-pattern
@@ -1165,8 +1165,8 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-TOPIC WITH-RECIPIENT)
   :binds ((SPARSER::RECIPIENT PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :NIL RECIPIENT)
-                (:S AGENT :O PATIENT :NIL RECIPIENT :IN TOPIC)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :DEST_DIR RECIPIENT)
+                (:S AGENT :O PATIENT :DEST_DIR RECIPIENT :IN TOPIC)))
 
 (define-mixin-category create-26.4
   :specializes subcategorization-pattern
@@ -1192,7 +1192,7 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-RECIPIENT WITH-TOPIC)
   :binds ((SPARSER::RECIPIENT PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT) (:S AGENT :NIL RECIPIENT) (:S AGENT :O TOPIC)
+  :realization ((:S AGENT) (:S AGENT :DEST_DIR RECIPIENT) (:S AGENT :O TOPIC)
                 (:S AGENT :O TOPIC :TO RECIPIENT)))
 
 (define-mixin-category cut-21.1
@@ -1401,18 +1401,18 @@
           (SPARSER::AGENT (:OR PHYSICAL-AGENT MOTOR-VEHICLE)))
   :realization ((:S AGENT :O THEME)
                 (:S AGENT :O THEME :TO DESTINATION :TOWARDS DESTINATION)
-                (:S AGENT :O THEME :NIL SOURCE)
-                (:S AGENT :O THEME :NIL SOURCE :TO DESTINATION :TOWARDS
+                (:S AGENT :O THEME :SRC SOURCE)
+                (:S AGENT :O THEME :SRC SOURCE :TO DESTINATION :TOWARDS
                  DESTINATION)
-                (:S AGENT :O THEME :TO DESTINATION :NIL SOURCE)))
+                (:S AGENT :O THEME :TO DESTINATION :SRC SOURCE)))
 
 (define-mixin-category drive-11.5-1
   :specializes subcategorization-pattern
   :mixins (DRIVE-11.5)
-  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :SRC SOURCE)
                 (:S AGENT :O THEME :TO DESTINATION)
-                (:S AGENT :O THEME :NIL SOURCE :TO DESTINATION)
-                (:S AGENT :O THEME :TO DESTINATION :NIL SOURCE)))
+                (:S AGENT :O THEME :SRC SOURCE :TO DESTINATION)
+                (:S AGENT :O THEME :TO DESTINATION :SRC SOURCE)))
 
 (define-mixin-category dub-29.3
   :specializes subcategorization-pattern
@@ -1435,13 +1435,13 @@
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT)
   :binds ((SPARSER::PATIENT (:AND/OR PATHOGEN SOLID)))
-  :realization ((:S AGENT :O PATIENT) (:S AGENT) (:S AGENT :NIL SOURCE)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT) (:S AGENT :SRC SOURCE)))
 
 (define-mixin-category eat-39.1-2
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT)
   :binds ((SPARSER::PATIENT (:AND/OR PATHOGEN SOLID)))
-  :realization ((:S AGENT :O PATIENT) (:S AGENT) (:S AGENT :NIL SOURCE)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT) (:S AGENT :SRC SOURCE)))
 
 (define-mixin-category eat-39.1-3
   :specializes subcategorization-pattern
@@ -1506,8 +1506,8 @@
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
   :binds ((SPARSER::CAUSE (:AND/OR LOCATION REGION)))
-  :realization ((:S THEME) (:S THEME :NIL CAUSE) (:O THEME)
-                (:NIL CAUSE :O THEME) (:S CAUSE :WITH THEME)))
+  :realization ((:S THEME) (:S THEME :LOC CAUSE) (:O THEME)
+                (:LOC CAUSE :O THEME) (:S CAUSE :WITH THEME)))
 
 (define-mixin-category equip-13.4.2
   :specializes subcategorization-pattern
@@ -1531,13 +1531,13 @@
   :mixins (WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-PATH)
   :binds ((SPARSER::PATH PHYSICAL) (SPARSER::DESTINATION PHYSICAL)
           (SPARSER::SOURCE PHYSICAL) (SPARSER::THEME PHYSICAL))
-  :realization ((:S THEME :NIL DESTINATION) (:S THEME :NIL PATH)
-                (:S THEME :NIL SOURCE :NIL DESTINATION)))
+  :realization ((:S THEME :PATH DESTINATION) (:S THEME :PATH PATH)
+                (:S THEME :PATH SOURCE :PATH DESTINATION)))
 
 (define-mixin-category escape-51.1-1
   :specializes subcategorization-pattern
   :mixins (ESCAPE-51.1)
-  :realization ((:S THEME) (:S THEME :NIL SOURCE)))
+  :realization ((:S THEME) (:S THEME :PATH SOURCE)))
 
 (define-mixin-category escape-51.1-1-1
   :specializes subcategorization-pattern
@@ -1587,7 +1587,7 @@
   :mixins (WITH-AGENT WITH-THEME WITH-THEME WITH-AGENT)
   :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))
           (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S AGENT :O THEME :FOR THEME) (:S AGENT :NIL THEME)
+  :realization ((:S AGENT :O THEME :FOR THEME) (:S AGENT :LOC THEME)
                 (:S AGENT :O THEME :WITH AGENT) (:S AGENT :O THEME)))
 
 (define-mixin-category exclude-107.3
@@ -1620,7 +1620,7 @@
 (define-mixin-category exist-47.1
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
-  :realization ((:S THEME) (:S THEME :NIL CAUSE)))
+  :realization ((:S THEME) (:S THEME :LOC CAUSE)))
 
 (define-mixin-category exist-47.1-1
   :specializes subcategorization-pattern
@@ -1640,7 +1640,7 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-SOURCE WITH-THEME)
   :binds ((SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O THEME :NIL SOURCE)))
+  :realization ((:S AGENT :O THEME :DIR SOURCE)))
 
 (define-mixin-category fill-9.8
   :specializes subcategorization-pattern
@@ -1777,7 +1777,7 @@
   :binds ((SPARSER::DESTINATION (:AND/OR LOCATION REGION))
           (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL)
           (SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O THEME :NIL DESTINATION)
+  :realization ((:S AGENT :O THEME :DEST_CONF DESTINATION)
                 (:S AGENT :IO THEME O DESTINATION)))
 
 (define-mixin-category funnel-9.3-1
@@ -1959,8 +1959,8 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
   :binds ((SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O CAUSE :FOR THEME) (:S AGENT :FOR THEME :NIL CAUSE)
-                (:S AGENT :NIL CAUSE :FOR THEME) (:S AGENT :O THEME :NIL CAUSE)
+  :realization ((:S AGENT :O CAUSE :FOR THEME) (:S AGENT :FOR THEME :LOC CAUSE)
+                (:S AGENT :LOC CAUSE :FOR THEME) (:S AGENT :O THEME :LOC CAUSE)
                 (:S AGENT :O THEME) (:S AGENT)))
 
 (define-mixin-category hurt-40.8.3
@@ -1994,7 +1994,7 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
   :binds ((SPARSER::DESTINATION PHYSICAL))
-  :realization ((:S AGENT :O THEME :NIL DESTINATION)
+  :realization ((:S AGENT :O THEME :LOC DESTINATION :DEST_CONF DESTINATION)
                 (:S AGENT :O DESTINATION :WITH THEME) (:S AGENT :O DESTINATION)
                 (:S AGENT :O THEME) (:S AGENT)))
 
@@ -2123,7 +2123,7 @@
   :mixins (WITH-AGENT WITH-THEME WITH-CAUSE)
   :binds ((SPARSER::CAUSE (:AND/OR LOCATION REGION))
           (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S AGENT :O THEME :NIL CAUSE) (:S AGENT :O THEME)))
+  :realization ((:S AGENT :O THEME :LOC CAUSE) (:S AGENT :O THEME)))
 
 (define-mixin-category knead-26.5
   :specializes subcategorization-pattern
@@ -2200,8 +2200,8 @@
   :mixins (WITH-THEME WITH-CAUSE WITH-AGENT)
   :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT)))
           (SPARSER::THEME PHYSICAL-AGENT))
-  :realization ((:S THEME) (:S THEME :NIL CAUSE) (:S CAUSE :WITH THEME)
-                (:O THEME :NIL CAUSE) (:NIL CAUSE :O THEME) (:S AGENT :O THEME)))
+  :realization ((:S THEME) (:S THEME :LOC CAUSE) (:S CAUSE :WITH THEME)
+                (:O THEME :LOC CAUSE) (:LOC CAUSE :O THEME) (:S AGENT :O THEME)))
 
 (define-mixin-category limit-76
   :specializes subcategorization-pattern
@@ -2214,7 +2214,7 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
   :binds ((SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :NIL CAUSE) (:S AGENT :OVER THEME)))
+  :realization ((:S AGENT :LOC CAUSE) (:S AGENT :OVER THEME)))
 
 (define-mixin-category linger-53.1-1
   :specializes subcategorization-pattern
@@ -2258,10 +2258,10 @@
   :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
           (SPARSER::TOPIC SPEECH-ACT)
           (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S AGENT) (:S AGENT :NIL RECIPIENT) (:S AGENT :ABOUT TOPIC)
-                (:S AGENT :O TOPIC :NIL RECIPIENT) (:S AGENT :O TOPIC)
-                (:S AGENT :FOR RECIPIENT :O TOPIC)
-                (:S AGENT :NIL RECIPIENT :O TOPIC)))
+  :realization ((:S AGENT) (:S AGENT :DEST_DIR RECIPIENT)
+                (:S AGENT :ABOUT TOPIC) (:S AGENT :O TOPIC :DEST_DIR RECIPIENT)
+                (:S AGENT :O TOPIC) (:S AGENT :FOR RECIPIENT :O TOPIC)
+                (:S AGENT :DEST_DIR RECIPIENT :O TOPIC)))
 
 (define-mixin-category marry-36.2
   :specializes subcategorization-pattern
@@ -2302,8 +2302,8 @@
   :specializes subcategorization-pattern
   :mixins (WITH-CAUSE WITH-THEME)
   :binds ((SPARSER::CAUSE PHYSICAL))
-  :realization ((:S THEME :NIL CAUSE) (:NIL CAUSE :O THEME)
-                (:O THEME :NIL CAUSE)))
+  :realization ((:S THEME :PATH CAUSE) (:PATH CAUSE :O THEME)
+                (:O THEME :PATH CAUSE)))
 
 (define-mixin-category meander-47.7-1
   :specializes subcategorization-pattern
@@ -2331,7 +2331,7 @@
   :binds ((SPARSER::DESTINATION LOCATION) (SPARSER::SOURCE LOCATION)
           (SPARSER::THEME PHYSICAL)
           (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :SRC SOURCE)))
 
 (define-mixin-category mix-22.1
   :specializes subcategorization-pattern
@@ -2371,8 +2371,8 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-CAUSE)
   :binds ((SPARSER::CAUSE (:AND/OR LOCATION REGION)) (SPARSER::THEME PHYSICAL))
-  :realization ((:S THEME) (:S THEME :NIL CAUSE) (:O THEME)
-                (:NIL CAUSE :O THEME) (:S AGENT :O THEME)))
+  :realization ((:S THEME) (:S THEME :LOC CAUSE) (:O THEME)
+                (:LOC CAUSE :O THEME) (:S AGENT :O THEME)))
 
 (define-mixin-category multiply-108
   :specializes subcategorization-pattern
@@ -2423,7 +2423,7 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-PATH)
   :binds ((SPARSER::PATH PHYSICAL) (SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT) (:S AGENT :NIL PATH) (:S AGENT :O THEME :NIL PATH)
+  :realization ((:S AGENT) (:S AGENT :PATH PATH) (:S AGENT :O THEME :PATH PATH)
                 (:S AGENT :O THEME) (:S AGENT :O PATH)))
 
 (define-mixin-category nonvehicle-51.4.2-1
@@ -2436,7 +2436,7 @@
   :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT)
   :binds ((SPARSER::RECIPIENT PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
   :realization ((:S AGENT) (:S AGENT :O THEME) (:S AGENT :IN THEME)
-                (:S AGENT :NIL RECIPIENT)))
+                (:S AGENT :DEST_DIR RECIPIENT)))
 
 (define-mixin-category obtain-13.5.2
   :specializes subcategorization-pattern
@@ -2470,7 +2470,7 @@
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-INSTRUMENT)
   :binds ((SPARSER::INSTRUMENT OBJECT))
-  :realization ((:S THEME :NIL INSTRUMENT)))
+  :realization ((:S THEME :PATH INSTRUMENT)))
 
 (define-mixin-category order-58.3
   :specializes subcategorization-pattern
@@ -2544,7 +2544,7 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
   :binds ((SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :NIL THEME)))
+  :realization ((:S AGENT :SPATIAL THEME)))
 
 (define-mixin-category pelt-17.2
   :specializes subcategorization-pattern
@@ -2625,10 +2625,10 @@
           (SPARSER::DESTINATION (:AND/OR LOCATION REGION))
           (SPARSER::THEME (:OR NIL PHYSICAL COLLECTION))
           (SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O THEME :NIL DESTINATION)
-                (:S AGENT :IO THEME O DESTINATION) (:S THEME :NIL DESTINATION)
-                (:S AGENT :O THEME :NIL SOURCE :NIL DESTINATION)
-                (:S THEME :NIL SOURCE :NIL DESTINATION)))
+  :realization ((:S AGENT :O THEME :PATH DESTINATION)
+                (:S AGENT :IO THEME O DESTINATION) (:S THEME :PATH DESTINATION)
+                (:S AGENT :O THEME :SRC SOURCE :DEST_CONF DESTINATION)
+                (:S THEME :SRC SOURCE :DEST_CONF DESTINATION)))
 
 (define-mixin-category preparing-26.3
   :specializes subcategorization-pattern
@@ -2705,7 +2705,7 @@
 (define-mixin-category push-12-1-1
   :specializes subcategorization-pattern
   :mixins (PUSH-12-1)
-  :realization ((:S AGENT) (:S AGENT :NIL PATH)))
+  :realization ((:S AGENT) (:S AGENT :DIR PATH)))
 
 (define-mixin-category put-9.1
   :specializes subcategorization-pattern
@@ -2713,7 +2713,7 @@
   :binds ((SPARSER::DESTINATION (:AND/OR LOCATION REGION))
           (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL)
           (SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O THEME :NIL DESTINATION)
+  :realization ((:S AGENT :O THEME :LOC DESTINATION)
                 (:S AGENT :IO THEME O DESTINATION)))
 
 (define-mixin-category put-9.1-1
@@ -2733,7 +2733,7 @@
   :binds ((SPARSER::DESTINATION (:AND/OR LOCATION REGION))
           (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL)
           (SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL DESTINATION)
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :SPATIAL DESTINATION)
                 (:S AGENT :IO THEME O DESTINATION)))
 
 (define-mixin-category put_spatial-9.2
@@ -2742,13 +2742,13 @@
   :binds ((SPARSER::DESTINATION (:AND/OR LOCATION REGION))
           (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL)
           (SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O THEME :NIL DESTINATION)
+  :realization ((:S AGENT :O THEME :LOC DESTINATION)
                 (:S AGENT :IO THEME O DESTINATION)))
 
 (define-mixin-category put_spatial-9.2-1
   :specializes subcategorization-pattern
   :mixins (PUT_SPATIAL-9.2)
-  :realization ((:S THEME :NIL DESTINATION) (:S THEME :O DESTINATION)))
+  :realization ((:S THEME :LOC DESTINATION) (:S THEME :O DESTINATION)))
 
 (define-mixin-category reach-51.8
   :specializes subcategorization-pattern
@@ -2869,7 +2869,7 @@
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-GOAL)
   :binds ((SPARSER::GOAL LOCATION) (SPARSER::SOURCE LOCATION)
           (SPARSER::AGENT (:OR NIL COMPANY)))
-  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :SRC SOURCE)))
 
 (define-mixin-category render-29.90
   :specializes subcategorization-pattern
@@ -2959,16 +2959,16 @@
   :binds ((SPARSER::BENEFICIARY PHYSICAL-AGENT)
           (SPARSER::SOURCE (:OR PHYSICAL-AGENT LOCATION REGION))
           (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :SRC SOURCE)
                 (:S AGENT :O THEME :FOR BENEFICIARY)
-                (:S AGENT :O THEME :NIL SOURCE :FOR BENEFICIARY)))
+                (:S AGENT :O THEME :SRC SOURCE :FOR BENEFICIARY)))
 
 (define-mixin-category roll-51.3.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-PATH WITH-RESULT)
   :binds ((SPARSER::PATH PHYSICAL) (SPARSER::THEME PHYSICAL))
-  :realization ((:S THEME) (:S THEME :NIL PATH) (:S AGENT :O THEME)
-                (:S AGENT :O THEME :NIL PATH) (:S THEME :O RESULT-ROLE)
+  :realization ((:S THEME) (:S THEME :SPATIAL PATH) (:S AGENT :O THEME)
+                (:S AGENT :O THEME :PATH PATH) (:S THEME :O RESULT-ROLE)
                 (:S THEME :TO RESULT-ROLE :INTO RESULT-ROLE)
                 (:S AGENT :IO THEME O RESULT-ROLE)
                 (:S AGENT :O THEME :TO RESULT-ROLE :INTO RESULT-ROLE)))
@@ -2989,7 +2989,7 @@
   :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
   :binds ((SPARSER::AGENT PHYSICAL-AGENT))
   :realization ((:S AGENT :OVER CAUSE :THROUGH CAUSE :INTO CAUSE)
-                (:S AGENT :NIL CAUSE :FOR THEME)))
+                (:S AGENT :LOC CAUSE :FOR THEME)))
 
 (define-mixin-category rummage-35.5-1
   :specializes subcategorization-pattern
@@ -3002,8 +3002,8 @@
   :binds ((SPARSER::DESTINATION PHYSICAL) (SPARSER::PATH PHYSICAL)
           (SPARSER::SOURCE PHYSICAL)
           (SPARSER::THEME (:OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization ((:S THEME) (:S THEME :NIL PATH) (:O THEME :NIL SOURCE)
-                (:NIL SOURCE :O THEME)))
+  :realization ((:S THEME) (:S THEME :SPATIAL PATH) (:O THEME :PATH SOURCE)
+                (:PATH SOURCE :O THEME)))
 
 (define-mixin-category run-51.3.2-1
   :specializes subcategorization-pattern
@@ -3014,7 +3014,7 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-RESULT WITH-SOURCE)
   :binds ((SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O THEME :NIL PATH) (:S AGENT :O THEME)
+  :realization ((:S AGENT :O THEME :SPATIAL PATH) (:S AGENT :O THEME)
                 (:S AGENT :O THEME :TO RESULT-ROLE :INTO RESULT-ROLE)))
 
 (define-mixin-category run-51.3.2-2-1
@@ -3085,8 +3085,8 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
   :binds ((SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O CAUSE :FOR THEME) (:S AGENT :FOR THEME :NIL CAUSE)
-                (:S AGENT :NIL CAUSE :FOR THEME) (:S AGENT :NIL CAUSE)))
+  :realization ((:S AGENT :O CAUSE :FOR THEME) (:S AGENT :FOR THEME :LOC CAUSE)
+                (:S AGENT :LOC CAUSE :FOR THEME) (:S AGENT :LOC CAUSE)))
 
 (define-mixin-category see-30.1
   :specializes subcategorization-pattern
@@ -3135,10 +3135,10 @@
   :binds ((SPARSER::DESTINATION (:OR PHYSICAL-AGENT LOCATION REGION))
           (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL)
           (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :SRC SOURCE)
                 (:S AGENT :O THEME :TO DESTINATION)
-                (:S AGENT :O THEME :NIL SOURCE :TO DESTINATION)
-                (:S AGENT :O THEME :TO DESTINATION :NIL SOURCE)))
+                (:S AGENT :O THEME :SRC SOURCE :TO DESTINATION)
+                (:S AGENT :O THEME :TO DESTINATION :SRC SOURCE)))
 
 (define-mixin-category send-11.1-1
   :specializes subcategorization-pattern
@@ -3224,11 +3224,11 @@
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-PATH)
   :binds ((SPARSER::DESTINATION (:OR PHYSICAL-AGENT LOCATION REGION))
           (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL))
-  :realization ((:S THEME) (:S THEME :NIL SOURCE) (:S THEME :TO DESTINATION)
-                (:S THEME :NIL SOURCE :TO DESTINATION) (:S AGENT :O THEME)
-                (:S AGENT :O THEME :NIL PATH)
+  :realization ((:S THEME) (:S THEME :PATH SOURCE) (:S THEME :TO DESTINATION)
+                (:S THEME :SRC SOURCE :TO DESTINATION) (:S AGENT :O THEME)
+                (:S AGENT :O THEME :PATH PATH)
                 (:S AGENT :O THEME :TO DESTINATION)
-                (:S AGENT :O THEME :NIL SOURCE :TO DESTINATION)))
+                (:S AGENT :O THEME :SRC SOURCE :TO DESTINATION)))
 
 (define-mixin-category slide-11.2-1
   :specializes subcategorization-pattern
@@ -3259,16 +3259,16 @@
   :binds ((SPARSER::CERTAINTY CERTAINTY)
           (SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT)))
           (SPARSER::THEME PHYSICAL-AGENT))
-  :realization ((:S THEME) (:S THEME :NIL CAUSE) (:S CAUSE :WITH THEME)
-                (:NIL CAUSE :O THEME) (:O THEME :NIL CAUSE) (:S AGENT :O THEME)
+  :realization ((:S THEME) (:S THEME :LOC CAUSE) (:S CAUSE :WITH THEME)
+                (:LOC CAUSE :O THEME) (:O THEME :LOC CAUSE) (:S AGENT :O THEME)
                 (:S THEME :O RESULT-ROLE)))
 
 (define-mixin-category sound_existence-47.4
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
   :binds ((SPARSER::CAUSE (:AND/OR LOCATION REGION)))
-  :realization ((:S THEME) (:S THEME :NIL CAUSE) (:O THEME)
-                (:NIL CAUSE :O THEME) (:S CAUSE :WITH THEME)))
+  :realization ((:S THEME) (:S THEME :LOC CAUSE) (:O THEME)
+                (:LOC CAUSE :O THEME) (:S CAUSE :WITH THEME)))
 
 (define-mixin-category spank-18.3
   :specializes subcategorization-pattern
@@ -3280,21 +3280,21 @@
                 (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE)
                 (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE :WITH
                  INSTRUMENT)
-                (:S AGENT :O PATIENT :NIL CAUSE)
-                (:S AGENT :O PATIENT :NIL CAUSE :WITH INSTRUMENT)
+                (:S AGENT :O PATIENT :LOC CAUSE)
+                (:S AGENT :O PATIENT :LOC CAUSE :WITH INSTRUMENT)
                 (:S AGENT :O PATIENT)))
 
 (define-mixin-category spatial_configuration-47.6
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
   :binds ((SPARSER::CAUSE (:AND/OR LOCATION REGION)) (SPARSER::THEME PHYSICAL))
-  :realization ((:S THEME) (:S THEME :NIL CAUSE) (:NIL CAUSE :O THEME)))
+  :realization ((:S THEME) (:S THEME :LOC CAUSE) (:LOC CAUSE :O THEME)))
 
 (define-mixin-category spatial_configuration-47.6-1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT)
   :binds ((SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O THEME :NIL CAUSE)))
+  :realization ((:S AGENT :O THEME :LOC CAUSE)))
 
 (define-mixin-category spend_time-104
   :specializes subcategorization-pattern
@@ -3318,7 +3318,7 @@
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
   :binds ((SPARSER::DESTINATION (:AND/OR LOCATION REGION))
           (SPARSER::SOURCE LOCATION) (SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O THEME :NIL DESTINATION)
+  :realization ((:S AGENT :O THEME :LOC DESTINATION :DEST_CONF DESTINATION)
                 (:S AGENT :O DESTINATION :WITH THEME) (:S AGENT :O THEME)
                 (:S AGENT :O DESTINATION)))
 
@@ -3326,7 +3326,8 @@
   :specializes subcategorization-pattern
   :mixins (WITH-THEME)
   :binds ((SPARSER::THEME (:OR NIL PHYSICAL COLLECTION)))
-  :realization ((:S THEME :NIL DESTINATION) (:S AGENT :IO THEME O DESTINATION)))
+  :realization ((:S THEME :LOC DESTINATION :DIR DESTINATION)
+                (:S AGENT :IO THEME O DESTINATION)))
 
 (define-mixin-category spray-9.7-1-1
   :specializes subcategorization-pattern
@@ -3342,7 +3343,7 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-CAUSE)
   :binds ((SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O CAUSE :FOR THEME) (:S AGENT :O THEME :NIL CAUSE)
+  :realization ((:S AGENT :O CAUSE :FOR THEME) (:S AGENT :O THEME :LOC CAUSE)
                 (:S AGENT :O THEME)))
 
 (define-mixin-category steal-10.5
@@ -3351,9 +3352,9 @@
   :binds ((SPARSER::BENEFICIARY PHYSICAL-AGENT)
           (SPARSER::SOURCE (:OR PHYSICAL-AGENT COMPANY))
           (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :SRC SOURCE)
                 (:S AGENT :O THEME :FOR BENEFICIARY)
-                (:S AGENT :O THEME :NIL SOURCE :FOR BENEFICIARY)))
+                (:S AGENT :O THEME :SRC SOURCE :FOR BENEFICIARY)))
 
 (define-mixin-category steal-10.5-1
   :specializes subcategorization-pattern
@@ -3414,8 +3415,8 @@
   :specializes subcategorization-pattern
   :mixins (WITH-CAUSE)
   :realization ((:S SOURCE) (:S THEME :FROM SOURCE :OUT_OF SOURCE)
-                (:S THEME :NIL CAUSE) (:S CAUSE :WITH THEME)
-                (:NIL CAUSE :O THEME) (:O THEME :NIL CAUSE) (:S THEME)
+                (:S THEME :PATH CAUSE) (:S CAUSE :WITH THEME)
+                (:LOC CAUSE :O THEME) (:O THEME :LOC CAUSE) (:S THEME)
                 (:S SOURCE :O THEME)))
 
 (define-mixin-category substance_emission-43.4-1-1
@@ -3525,13 +3526,13 @@
 (define-mixin-category swarm-47.5.1-1
   :specializes subcategorization-pattern
   :mixins (SWARM-47.5.1)
-  :realization ((:S THEME :NIL CAUSE) (:O THEME :NIL CAUSE)
-                (:NIL CAUSE :O THEME) (:S CAUSE :WITH THEME)))
+  :realization ((:S THEME :LOC CAUSE) (:O THEME :LOC CAUSE)
+                (:LOC CAUSE :O THEME) (:S CAUSE :WITH THEME)))
 
 (define-mixin-category swarm-47.5.1-2
   :specializes subcategorization-pattern
   :mixins (SWARM-47.5.1)
-  :realization ((:S THEME :NIL CAUSE) (:O THEME :NIL CAUSE)))
+  :realization ((:S THEME :LOC CAUSE) (:O THEME :LOC CAUSE)))
 
 (define-mixin-category swarm-47.5.1-2-1
   :specializes subcategorization-pattern
@@ -3549,7 +3550,7 @@
                 (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE)
                 (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE :WITH
                  INSTRUMENT)
-                (:S AGENT :O PATIENT :NIL CAUSE)))
+                (:S AGENT :O PATIENT :LOC CAUSE)))
 
 (define-mixin-category talk-37.5
   :specializes subcategorization-pattern
@@ -3599,9 +3600,9 @@
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-RESULT)
   :binds ((SPARSER::DESTINATION (:OR PHYSICAL-AGENT LOCATION REGION))
           (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL))
-  :realization ((:S AGENT :O THEME :NIL DESTINATION)
-                (:S AGENT :O THEME :NIL SOURCE)
-                (:S AGENT :O THEME :NIL SOURCE :NIL DESTINATION)
+  :realization ((:S AGENT :O THEME :DEST DESTINATION :LOC DESTINATION)
+                (:S AGENT :O THEME :SRC SOURCE)
+                (:S AGENT :O THEME :SRC SOURCE :DEST_DIR DESTINATION)
                 (:S AGENT :O THEME)))
 
 (define-mixin-category throw-17.1-1
@@ -3640,7 +3641,8 @@
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
   :binds ((SPARSER::DESTINATION PHYSICAL) (SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL DESTINATION)))
+  :realization ((:S AGENT :O THEME)
+                (:S AGENT :O THEME :LOC DESTINATION :DEST_CONF DESTINATION)))
 
 (define-mixin-category transfer_mesg-37.1.1
   :specializes subcategorization-pattern
@@ -3730,7 +3732,7 @@
   :mixins (WITH-AGENT WITH-THEME WITH-PATH WITH-RESULT)
   :binds ((SPARSER::PATH PHYSICAL) (SPARSER::THEME PHYSICAL-AGENT)
           (SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S THEME) (:S THEME :NIL PATH) (:S AGENT :O THEME :NIL PATH)
+  :realization ((:S THEME) (:S THEME :PATH PATH) (:S AGENT :O THEME :PATH PATH)
                 (:S AGENT :O THEME) (:S AGENT :IO THEME O RESULT-ROLE)
                 (:S AGENT :O THEME :TO RESULT-ROLE :INTO RESULT-ROLE)))
 
@@ -3774,8 +3776,8 @@
   :mixins (WITH-AGENT WITH-THEME WITH-PATH WITH-GOAL)
   :binds ((SPARSER::PATH PHYSICAL) (SPARSER::THEME PHYSICAL-AGENT)
           (SPARSER::AGENT PHYSICAL-AGENT))
-  :realization ((:S THEME) (:S THEME :NIL PATH :O GOAL)
-                (:S AGENT :O THEME :NIL PATH) (:S AGENT :IO THEME O GOAL)
+  :realization ((:S THEME) (:S THEME :PATH PATH :O GOAL)
+                (:S AGENT :O THEME :PATH PATH) (:S AGENT :IO THEME O GOAL)
                 (:S AGENT :O THEME :TO GOAL :INTO GOAL)))
 
 (define-mixin-category want-32.1
@@ -3804,7 +3806,7 @@
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
   :binds ((SPARSER::CAUSE LOCATION) (SPARSER::THEME PHYSICAL-AGENT))
-  :realization ((:S THEME :NIL CAUSE)))
+  :realization ((:S THEME :LOC CAUSE)))
 
 (define-mixin-category wink-40.3.1
   :specializes subcategorization-pattern
@@ -3812,7 +3814,7 @@
   :binds ((SPARSER::RECIPIENT PHYSICAL-AGENT) (SPARSER::THEME SPEECH-ACT)
           (SPARSER::AGENT PHYSICAL-AGENT))
   :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :IN THEME)
-                (:S AGENT) (:S AGENT :NIL RECIPIENT) (:S AGENT :IN THEME)
+                (:S AGENT) (:S AGENT :DEST_DIR RECIPIENT) (:S AGENT :IN THEME)
                 (:S AGENT :O THEME)))
 
 (define-mixin-category wipe_instr-10.4.2
@@ -3823,20 +3825,20 @@
           (SPARSER::DESTINATION LOCATION) (SPARSER::SOURCE LOCATION)
           (SPARSER::THEME (:AND/OR PHYSICAL PHYSICAL-AGENT))
           (SPARSER::AGENT (:OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization ((:S AGENT :O THEME :NIL SOURCE) (:S AGENT :O SOURCE) (:S AGENT)
+  :realization ((:S AGENT :O THEME :SRC SOURCE) (:S AGENT :O SOURCE) (:S AGENT)
                 (:S AGENT :IO SOURCE O RESULT-ROLE)))
 
 (define-mixin-category wipe_instr-10.4.2-1
   :specializes subcategorization-pattern
   :mixins (WITH-DESTINATION)
-  :realization ((:S AGENT :O THEME :NIL DESTINATION)))
+  :realization ((:S AGENT :O THEME :DEST_CONF DESTINATION)))
 
 (define-mixin-category wipe_manner-10.4.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
   :binds ((SPARSER::DESTINATION LOCATION) (SPARSER::SOURCE LOCATION)
           (SPARSER::THEME (:AND/OR PHYSICAL PHYSICAL-AGENT)))
-  :realization ((:S AGENT :O THEME :NIL SOURCE) (:S AGENT :O SOURCE)
+  :realization ((:S AGENT :O THEME :SRC SOURCE) (:S AGENT :O SOURCE)
                 (:S AGENT :O THEME)))
 
 (define-mixin-category wipe_manner-10.4.1-1
