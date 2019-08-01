@@ -1,3889 +1,3881 @@
-;; Written 16:11:1 7/30/2019
+;; Written 11:37:47 8/01/2019
 
 (in-package :sparser)
 
 
- (define-mixin-category absorb-39.8
+(define-mixin-category absorb-39.8
   :specializes subcategorization-pattern
   :mixins (WITH-GOAL WITH-THEME WITH-SOURCE)
-  :realization ((:S "Goal" :O "Theme" :PREP "from" :IO "Source")
-                (:S "Goal" :O "Theme"))) 
+  :realization ((:S GOAL :O THEME) (:S GOAL :O THEME :FROM SOURCE)))
 
- (define-mixin-category accept-77.1
+(define-mixin-category accept-77.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category accompany-51.7
+(define-mixin-category accompany-51.7
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
-  :binds ((THEME PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :PREP :NP "Destination")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::THEME PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL DESTINATION)))
 
- (define-mixin-category acquiesce-95.1
+(define-mixin-category acquiesce-95.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "to" :IO "Theme")
-                (:S "Agent" :PREP "to" :IO "Co-Agent"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :TO AGENT) (:S AGENT :TO THEME)))
 
- (define-mixin-category acquiesce-95.1-1
+(define-mixin-category acquiesce-95.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (ACQUIESCE-95.1)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category act-114
+(define-mixin-category act-114
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT PREDICATION)
-  :binds ((PREDICATE "PREDICATE") (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Predicate"))) 
+  :binds ((SPARSER::PREDICATE PREDICATE)
+          (SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :O PREDICATE)))
 
- (define-mixin-category act-114-1
+(define-mixin-category act-114-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent"))) 
+  :mixins (ACT-114)
+  :realization ((:S AGENT)))
 
- (define-mixin-category act-114-1-1
+(define-mixin-category act-114-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Predicate")
-                (:S "Agent" :PREP "on" :IO "Predicate"))) 
+  :mixins (ACT-114-1)
+  :realization ((:S AGENT :ON PREDICATE) (:S AGENT :O PREDICATE)))
 
- (define-mixin-category addict-96
+(define-mixin-category addict-96
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-STIMULUS)
-  :binds ((PATIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Patient" :PREP "to" :IO "Stimulus"))) 
+  :binds ((SPARSER::PATIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O PATIENT :TO STIMULUS)))
 
- (define-mixin-category adjust-26.9
+(define-mixin-category adjust-26.9
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-GOAL WITH-SOURCE)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "to" :IO "Goal")
-                (:S "Agent" :O "Patient" :PREP "to" :IO "Goal")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :TO GOAL)
+                (:S AGENT :TO GOAL)))
 
- (define-mixin-category admire-31.2
+(define-mixin-category admire-31.2
   :specializes subcategorization-pattern
   :mixins (WITH-STIMULUS WITH-EXPERIENCER WITH-ATTRIBUTE)
-  :binds ((EXPERIENCER PHYSICAL-AGENT))
-  :realization ((:S "Experiencer" :O "Stimulus" :PREP "for" :IO "Attribute")
-                (:S "Experiencer" :O "Stimulus"))) 
+  :binds ((SPARSER::EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S EXPERIENCER :O STIMULUS :FOR ATTRIBUTE)
+                (:S EXPERIENCER :O STIMULUS)))
 
- (define-mixin-category admire-31.2-1
+(define-mixin-category admire-31.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Experiencer" :O "Stimulus"))) 
+  :mixins (ADMIRE-31.2)
+  :realization ((:S EXPERIENCER :O STIMULUS)))
 
- (define-mixin-category admit-64.3
+(define-mixin-category admit-64.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-CAUSE)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Theme" :IO "Location"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :IO THEME O CAUSE)))
 
- (define-mixin-category admit-64.3-1
+(define-mixin-category admit-64.3-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :PREP :NP "Location")
-                (:S "Agent" :O "Theme" :IO "Location"))) 
+  :mixins (ADMIT-64.3)
+  :realization ((:S AGENT :IO THEME O CAUSE) (:S AGENT :O THEME :NIL CAUSE)))
 
- (define-mixin-category adopt-93
+(define-mixin-category adopt-93
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category advise-37.9
+(define-mixin-category advise-37.9
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-TOPIC WITH-RECIPIENT)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (TOPIC SPEECH-ACT)
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Recipient" :PREP "of" :IO "Topic")
-                (:S "Agent" :O "Recipient" :IO "Topic")
-                (:S "Agent" :O "Recipient" :PREP
-                 "against about concerning on regarding respecting" :IO
-                 "Topic")
-                (:S "Agent" :O "Recipient"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::TOPIC SPEECH-ACT)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O RECIPIENT)
+                (:S AGENT :O RECIPIENT :AGAINST TOPIC :ABOUT TOPIC :CONCERNING
+                 TOPIC :ON TOPIC :REGARDING TOPIC :RESPECTING TOPIC)
+                (:S AGENT :IO RECIPIENT O TOPIC)
+                (:S AGENT :O RECIPIENT :OF TOPIC)))
 
- (define-mixin-category advise-37.9-1
+(define-mixin-category advise-37.9-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Topic")
-                (:S "Agent" :PREP
-                 "against about concerning on regarding respecting" :IO
-                 "Topic"))) 
+  :mixins (ADVISE-37.9)
+  :realization ((:S AGENT :AGAINST TOPIC :ABOUT TOPIC :CONCERNING TOPIC :ON
+                 TOPIC :REGARDING TOPIC :RESPECTING TOPIC)
+                (:S AGENT :O TOPIC)))
 
- (define-mixin-category allow-64.1
+(define-mixin-category allow-64.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-BENEFICIARY WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Beneficiary"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O BENEFICIARY) (:S AGENT :O THEME)))
 
- (define-mixin-category allow-64.1-1
+(define-mixin-category allow-64.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Beneficiary" :IO "Theme"))) 
+  :mixins (ALLOW-64.1)
+  :realization ((:S AGENT :IO BENEFICIARY O THEME)))
 
- (define-mixin-category amalgamate-22.2
+(define-mixin-category amalgamate-22.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
-  :binds ((AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization ((:S "Patient" :ADV)
-                (:S "Patient" :ADV :PREP "with" :NP "Co-Patient"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S PATIENT :WITH CO-PATIENT) (:S PATIENT)))
 
- (define-mixin-category amalgamate-22.2-1
+(define-mixin-category amalgamate-22.2-1
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT WITH-CO-PATIENT)
-  :binds ((CO-PATIENT PHYSICAL) (PATIENT PHYSICAL))
-  :realization ((:S "Patient" :PREP "with" :IO "Co-Patient")
-                (:S "Agent" :O "Patient")
-                (:S "Agent" :O "Patient" :PREP "into to with" :IO "Co-Patient"))) 
+  :binds ((SPARSER::CO-PATIENT PHYSICAL) (SPARSER::PATIENT PHYSICAL))
+  :realization ((:S AGENT :O PATIENT :INTO CO-PATIENT :TO CO-PATIENT :WITH
+                 CO-PATIENT)
+                (:S AGENT :O PATIENT) (:S PATIENT :WITH CO-PATIENT)))
 
- (define-mixin-category amalgamate-22.2-1-1
+(define-mixin-category amalgamate-22.2-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Patient"))) 
+  :mixins (AMALGAMATE-22.2-1)
+  :realization ((:S PATIENT)))
 
- (define-mixin-category amalgamate-22.2-2
+(define-mixin-category amalgamate-22.2-2
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT WITH-CO-PATIENT WITH-AGENT)
-  :binds ((AGENT (OR PHYSICAL-AGENT ABSTRACT))
-          (CO-PATIENT (OR PHYSICAL-AGENT ABSTRACT)) (PATIENT PHYSICAL))
-  :realization ((:S "Patient" :PREP "with" :IO "Co-Patient")
-                (:S "Agent" :O "Patient")
-                (:S "Agent" :O "Patient" :PREP "with" :IO "Co-Patient"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT ABSTRACT))
+          (SPARSER::CO-PATIENT (:OR PHYSICAL-AGENT ABSTRACT))
+          (SPARSER::PATIENT PHYSICAL))
+  :realization ((:S AGENT :O PATIENT :WITH CO-PATIENT) (:S AGENT :O PATIENT)
+                (:S PATIENT :WITH CO-PATIENT)))
 
- (define-mixin-category amalgamate-22.2-2-1
+(define-mixin-category amalgamate-22.2-2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Patient"))) 
+  :mixins (AMALGAMATE-22.2-2)
+  :realization ((:S PATIENT)))
 
- (define-mixin-category amalgamate-22.2-3
+(define-mixin-category amalgamate-22.2-3
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Patient"))) 
+  :mixins (AMALGAMATE-22.2)
+  :realization ((:S AGENT :O PATIENT)))
 
- (define-mixin-category amalgamate-22.2-3-1
+(define-mixin-category amalgamate-22.2-3-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Patient" :PREP "to" :IO "Co-Patient"))) 
+  :mixins (AMALGAMATE-22.2-3)
+  :realization ((:S AGENT :O PATIENT :TO CO-PATIENT)))
 
- (define-mixin-category amalgamate-22.2-3-1-1
-  :specializes subcategorization-pattern
-  :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
-  :binds ((CO-PATIENT PHYSICAL-AGENT) (PATIENT PHYSICAL-AGENT)
-          (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Patient"))) 
-
- (define-mixin-category amalgamate-22.2-3-2
+(define-mixin-category amalgamate-22.2-3-1-1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
-  :binds ((CO-PATIENT PHYSICAL) (PATIENT PHYSICAL)
-          (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Patient"))) 
+  :binds ((SPARSER::CO-PATIENT PHYSICAL-AGENT)
+          (SPARSER::PATIENT PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S PATIENT)))
 
- (define-mixin-category amuse-31.1
+(define-mixin-category amalgamate-22.2-3-2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
+  :binds ((SPARSER::CO-PATIENT PHYSICAL) (SPARSER::PATIENT PHYSICAL)
+          (SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S PATIENT)))
+
+(define-mixin-category amuse-31.1
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-STIMULUS WITH-RESULT)
-  :binds ((EXPERIENCER PHYSICAL-AGENT))
-  :realization ((:S "Stimulus" :O "Experiencer" :IO "Result")
-                (:S "Stimulus" :LEX "'s" :IO "Experiencer") (:S "Stimulus")
-                (:S "Experiencer" :ADV) (:S "Stimulus" :O "Experiencer"))) 
+  :binds ((SPARSER::EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S EXPERIENCER) (:S STIMULUS) (:S STIMULUS :O EXPERIENCER)
+                (:S STIMULUS :IO EXPERIENCER O RESULT-ROLE)))
 
- (define-mixin-category animal_sounds-38
+(define-mixin-category animal_sounds-38
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT WITH-CAUSE)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Location" :PREP "with" :IO "Agent")
-                (:S "Agent" :O "Location") (:S "Agent" :O "Theme")
-                (:S "Agent" :PREP :NP "Recipient") (:S "Agent"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT) (:S AGENT :NIL RECIPIENT) (:S AGENT :O THEME)
+                (:S AGENT :O CAUSE) (:S CAUSE :WITH AGENT)))
 
- (define-mixin-category appeal-31.4
+(define-mixin-category appeal-31.4
   :specializes subcategorization-pattern
   :mixins (WITH-STIMULUS WITH-EXPERIENCER)
-  :binds ((EXPERIENCER PHYSICAL-AGENT))
-  :realization ((:S "Stimulus" :PREP "to" :IO "Experiencer"))) 
+  :binds ((SPARSER::EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S STIMULUS :TO EXPERIENCER)))
 
- (define-mixin-category appeal-31.4-1
+(define-mixin-category appeal-31.4-1
   :specializes subcategorization-pattern
-  :realization ((:S "Stimulus" :PREP "at" :IO "Experiencer"))) 
+  :mixins (APPEAL-31.4)
+  :realization ((:S STIMULUS :AT EXPERIENCER)))
 
- (define-mixin-category appeal-31.4-2
+(define-mixin-category appeal-31.4-2
   :specializes subcategorization-pattern
-  :realization ((:S "Stimulus" :PREP "on" :IO "Experiencer"))) 
+  :mixins (APPEAL-31.4)
+  :realization ((:S STIMULUS :ON EXPERIENCER)))
 
- (define-mixin-category appeal-31.4-3
+(define-mixin-category appeal-31.4-3
   :specializes subcategorization-pattern
-  :realization ((:S "Stimulus"))) 
+  :mixins (APPEAL-31.4)
+  :realization ((:S STIMULUS)))
 
- (define-mixin-category appear-48.1.1
+(define-mixin-category appear-48.1.1
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
-  :realization ((:S "Theme" :O "Location") (:S :NP "Location" :NP "Theme")
-                (:S "there" :O "Theme" :PREP :NP "Location")
-                (:S "Theme" :PREP :NP "Location") (:S "Theme"))) 
+  :realization ((:S THEME) (:S THEME :NIL CAUSE) (:O THEME :NIL CAUSE)
+                (:NIL CAUSE :O THEME) (:S THEME :O CAUSE)))
 
- (define-mixin-category appoint-29.1
+(define-mixin-category appoint-29.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-RESULT)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme")
-                (:S "Agent" :O "Theme" :LEX "to" :LEX "be" :IO "Result")
-                (:S "Agent" :O "Theme" :LEX "as" :IO "Result")
-                (:S "Agent" :O "Theme" :IO "Result"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :IO THEME O RESULT-ROLE) (:S AGENT :O THEME)))
 
- (define-mixin-category assessment-34.1
+(define-mixin-category assessment-34.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :LEX "'s" :IO "Attribute")
-                (:S "Agent" :O "Theme" :PREP "for" :IO "Attribute")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :FOR ATTRIBUTE)
+                (:S AGENT :IO THEME O ATTRIBUTE)))
 
- (define-mixin-category assuming_position-50
+(define-mixin-category assuming_position-50
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-CAUSE)
-  :binds ((CAUSE (AND/OR LOCATION REGION)) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :PREP :NP "Location") (:S "Agent"))) 
+  :binds ((SPARSER::CAUSE (:AND/OR LOCATION REGION))
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT) (:S AGENT :NIL CAUSE)))
 
- (define-mixin-category attack-60.1
+(define-mixin-category attack-60.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :O PATIENT)))
 
- (define-mixin-category attack-60.1-1
+(define-mixin-category attack-60.1-1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT)))
 
- (define-mixin-category attend-107.4
+(define-mixin-category attend-107.4
   :specializes subcategorization-pattern
-  :mixins (WITH-THEME WITH-GOAL)
-  :realization NIL) 
+  :mixins (WITH-THEME WITH-GOAL))
 
- (define-mixin-category attend-107.4-1
+(define-mixin-category attend-107.4-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Goal"))) 
+  :mixins (ATTEND-107.4)
+  :realization ((:S THEME :O GOAL)))
 
- (define-mixin-category attend-107.4-2
+(define-mixin-category attend-107.4-2
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :PREP :NP "Goal"))) 
+  :mixins (ATTEND-107.4)
+  :realization ((:S THEME :NIL GOAL)))
 
- (define-mixin-category avoid-52
+(define-mixin-category avoid-52
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Location"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O CAUSE) (:S AGENT :O THEME)))
 
- (define-mixin-category banish-10.2
+(define-mixin-category banish-10.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
-          (THEME PHYSICAL-AGENT) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "to" :IO "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Source")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::DESTINATION (:AND/OR LOCATION REGION))
+          (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL-AGENT)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)
+                (:S AGENT :O THEME :TO DESTINATION)))
 
- (define-mixin-category base-97.1
+(define-mixin-category base-97.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "on" :IO "Source"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME :ON SOURCE)))
 
- (define-mixin-category battle-36.4
+(define-mixin-category battle-36.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "about | over " :IO "Theme")
-                (:S "Agent" :PREP "about | over" :IO "Theme")
-                (:S "Agent" :PREP "about | over" :IO "Topic")
-                (:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "about | over"
-                 :IO "Theme")
-                (:S "Agent") (:S "Agent" :PREP "with" :IO "Co-Agent"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :WITH AGENT) (:S AGENT)
+                (:S AGENT :WITH AGENT :ABOUT THEME :|\|| THEME :OVER THEME)
+                (:S AGENT :ABOUT TOPIC :|\|| TOPIC :OVER TOPIC)
+                (:S AGENT :ABOUT THEME :|\|| THEME :OVER THEME)))
 
- (define-mixin-category battle-36.4-1
+(define-mixin-category battle-36.4-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Co-Agent" :PREP "about | over" :IO "Theme")
-                (:S "Agent" :O "Co-Agent"))) 
+  :mixins (BATTLE-36.4)
+  :realization ((:S AGENT :O AGENT)
+                (:S AGENT :O AGENT :ABOUT THEME :|\|| THEME :OVER THEME)))
 
- (define-mixin-category become-109.1
+(define-mixin-category become-109.1
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT WITH-RESULT)
-  :realization ((:S "Patient" :O "Result"))) 
+  :realization ((:S PATIENT :O RESULT-ROLE)))
 
- (define-mixin-category become-109.1-1
+(define-mixin-category become-109.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Patient" :PREP "in | into" :IO "Result"))) 
+  :mixins (BECOME-109.1)
+  :realization ((:S PATIENT :IN RESULT-ROLE :|\|| RESULT-ROLE :INTO
+                 RESULT-ROLE)))
 
- (define-mixin-category become-109.1-1-1
+(define-mixin-category become-109.1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Patient" :O "Result"))) 
+  :mixins (BECOME-109.1-1)
+  :realization ((:S PATIENT :O RESULT-ROLE)))
 
- (define-mixin-category beg-58.2
+(define-mixin-category beg-58.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-RESULT)
-  :binds ((PATIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Result"))) 
+  :binds ((SPARSER::PATIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O RESULT-ROLE)))
 
- (define-mixin-category beg-58.2-1
+(define-mixin-category beg-58.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "for" :IO "Result"))) 
+  :mixins (BEG-58.2)
+  :realization ((:S AGENT :FOR RESULT-ROLE)))
 
- (define-mixin-category beg-58.2-1-1
+(define-mixin-category beg-58.2-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Patient" :PREP "for" :IO "Result"))) 
+  :mixins (BEG-58.2-1)
+  :realization ((:S AGENT :O PATIENT :FOR RESULT-ROLE)))
 
- (define-mixin-category begin-55.1
+(define-mixin-category begin-55.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-INSTRUMENT)
-  :binds ((INSTRUMENT "OBJECT") (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category begin-55.1-1
+(define-mixin-category begin-55.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (BEGIN-55.1)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category begin-55.1-1-1
+(define-mixin-category begin-55.1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Instrument" :O "Theme")
-                (:S "Agent" :O "Theme" :PREP "with" :IO "Instrument")
-                (:S "Theme" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Theme") (:S "Theme"))) 
+  :mixins (BEGIN-55.1-1)
+  :realization ((:S THEME) (:S AGENT :O THEME) (:S THEME :WITH INSTRUMENT)
+                (:S AGENT :O THEME :WITH INSTRUMENT) (:S INSTRUMENT :O THEME)))
 
- (define-mixin-category being_dressed-41.3.3
+(define-mixin-category being_dressed-41.3.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :PREP "in" :IO "Theme"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :IN THEME)))
 
- (define-mixin-category bend-45.2
+(define-mixin-category bend-45.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT)
-  :binds ((INSTRUMENT SOLID) (PATIENT SOLID))
-  :realization ((:S "Agent" :O "Patient" :PREP "to into" :IO "Result" :PREP
-                 "with" :NP "Instrument")
-                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
-                (:S "Agent" :O "Patient" :IO "Result")
-                (:S "Instrument" :O "Patient") (:S "Patient" :ADV)
-                (:S "Patient")
-                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::INSTRUMENT SOLID) (SPARSER::PATIENT SOLID))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :WITH INSTRUMENT)
+                (:S PATIENT) (:S INSTRUMENT :O PATIENT)
+                (:S AGENT :IO PATIENT O RESULT-ROLE)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE :WITH
+                 INSTRUMENT)))
 
- (define-mixin-category benefit-72.2
+(define-mixin-category benefit-72.2
   :specializes subcategorization-pattern
   :mixins (WITH-CAUSE WITH-BENEFICIARY)
-  :realization ((:S "Beneficiary" :PREP "from by" :IO "Causer")
-                (:S "Beneficiary") (:S "Causer" :O "Beneficiary"))) 
+  :realization ((:S CAUSE :O BENEFICIARY) (:S BENEFICIARY)
+                (:S BENEFICIARY :FROM CAUSE :BY CAUSE)))
 
- (define-mixin-category berry-13.7
+(define-mixin-category berry-13.7
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT)))
 
- (define-mixin-category bill-54.5
+(define-mixin-category bill-54.5
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-EXTENT WITH-RECIPIENT)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (EXTENT CURRENCY)
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Recipient" :IO "Asset")
-                (:S "Agent" :O "Recipient"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::EXTENT CURRENCY)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O RECIPIENT) (:S AGENT :IO RECIPIENT O EXTENT)))
 
- (define-mixin-category birth-28.2
+(define-mixin-category birth-28.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT)
-  :binds ((PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent"))) 
+  :binds ((SPARSER::PATIENT PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT)))
 
- (define-mixin-category birth-28.2-1
+(define-mixin-category birth-28.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Patient"))) 
+  :mixins (BIRTH-28.2)
+  :realization ((:S AGENT :O PATIENT)))
 
- (define-mixin-category body_internal_motion-49.1
+(define-mixin-category body_internal_motion-49.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT)
-  :binds ((PATIENT PRONOUN) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent"))) 
+  :binds ((SPARSER::PATIENT PRONOUN) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT)))
 
- (define-mixin-category body_internal_states-40.6
+(define-mixin-category body_internal_states-40.6
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-STIMULUS)
-  :binds ((EXPERIENCER PHYSICAL-AGENT))
-  :realization ((:S "Experiencer" :PREP "from at" :IO "Stimulus")
-                (:S "Experiencer"))) 
+  :binds ((SPARSER::EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S EXPERIENCER) (:S EXPERIENCER :FROM STIMULUS :AT STIMULUS)))
 
- (define-mixin-category body_motion-49.2
+(define-mixin-category body_motion-49.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-GOAL WITH-PATH)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Path" :IO "Theme")
-                (:S "Agent" :O "Theme" :IO "Path"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :IO THEME O PATH) (:S AGENT :IO PATH O THEME)))
 
- (define-mixin-category body_motion-49.2-1
+(define-mixin-category body_motion-49.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Path" :IO "Theme")
-                (:S "Agent" :PREP :NP "Path") (:S "Agent" :O "Goal")
-                (:S "Agent" :O "Theme" :IO "Goal"))) 
+  :mixins (BODY_MOTION-49.2)
+  :realization ((:S AGENT :IO THEME O GOAL) (:S AGENT :O GOAL)
+                (:S AGENT :NIL PATH) (:S AGENT :IO PATH O THEME)))
 
- (define-mixin-category body_motion-49.2-1-1
+(define-mixin-category body_motion-49.2-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent"))) 
+  :mixins (BODY_MOTION-49.2-1)
+  :realization ((:S AGENT)))
 
- (define-mixin-category braid-41.2.2
+(define-mixin-category braid-41.2.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O PATIENT)))
 
- (define-mixin-category break-45.1
+(define-mixin-category break-45.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT)
-  :binds ((INSTRUMENT SOLID) (PATIENT SOLID))
-  :realization ((:S "Patient" :PREP "to into" :IO "Result")
-                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result" :PREP
-                 "with" :NP "Instrument")
-                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
-                (:S "Agent" :O "Patient" :IO "Result" :PREP "with" :IO
-                 "Instrument")
-                (:S "Agent" :O "Patient" :IO "Result")
-                (:S "Instrument" :O "Patient") (:S "Patient" :ADV)
-                (:S "Patient")
-                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::INSTRUMENT SOLID) (SPARSER::PATIENT SOLID))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :WITH INSTRUMENT)
+                (:S PATIENT) (:S INSTRUMENT :O PATIENT)
+                (:S AGENT :IO PATIENT O RESULT-ROLE)
+                (:S AGENT :IO PATIENT O RESULT-ROLE :WITH INSTRUMENT)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE :WITH
+                 INSTRUMENT)
+                (:S PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE)))
 
- (define-mixin-category break_down-45.8
+(define-mixin-category break_down-45.8
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT)
-  :realization ((:S "Patient"))) 
+  :realization ((:S PATIENT)))
 
- (define-mixin-category breathe-40.1.2
+(define-mixin-category breathe-40.1.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :PREP "on onto" :IO "Destination")
-                (:S "Agent" :O "Theme")
-                (:S "Agent" :PREP "on onto" :IO "Destination") (:S "Agent"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT) (:S AGENT :ON DESTINATION :ONTO DESTINATION)
+                (:S AGENT :O THEME)
+                (:S AGENT :O THEME :ON DESTINATION :ONTO DESTINATION)))
 
- (define-mixin-category breathe-40.1.2-1
+(define-mixin-category breathe-40.1.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (BREATHE-40.1.2)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category bring-11.3
+(define-mixin-category bring-11.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-INSTRUMENT)
-  :binds ((INSTRUMENT "OBJECT")
-          (DESTINATION (OR PHYSICAL-AGENT LOCATION REGION)) (SOURCE LOCATION)
-          (THEME PHYSICAL))
-  :realization ((:S "Instrument" :O "Theme" :IO "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP "to"
-                 :NP "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
-                (:S "Agent" :PREP "against before into on to onto" :IO
-                 "Destination" :IO "Theme")
-                (:S "Agent" :O "Theme" :PREP "against before into on to onto"
-                 :IO "Destination")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT)
+          (SPARSER::DESTINATION (:OR PHYSICAL-AGENT LOCATION REGION))
+          (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL))
+  :realization ((:S AGENT :O THEME)
+                (:S AGENT :O THEME :AGAINST DESTINATION :BEFORE DESTINATION
+                 :INTO DESTINATION :ON DESTINATION :TO DESTINATION :ONTO
+                 DESTINATION)
+                (:S AGENT :AGAINST DESTINATION :BEFORE DESTINATION :INTO
+                 DESTINATION :ON DESTINATION :TO DESTINATION :ONTO DESTINATION
+                 :O THEME)
+                (:S AGENT :O THEME :NIL SOURCE)
+                (:S AGENT :O THEME :NIL SOURCE :TO DESTINATION)
+                (:S INSTRUMENT :IO THEME O DESTINATION)))
 
- (define-mixin-category bring-11.3-1
+(define-mixin-category bring-11.3-1
   :specializes subcategorization-pattern
   :mixins (WITH-DESTINATION)
-  :binds ((DESTINATION PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :LEX "together")
-                (:S "Agent" :O "Destination" :IO "Theme"))) 
+  :binds ((SPARSER::DESTINATION PHYSICAL-AGENT))
+  :realization ((:S AGENT :IO DESTINATION O THEME) (:S AGENT :O THEME)))
 
- (define-mixin-category build-26.1
+(define-mixin-category build-26.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-MATERIAL WITH-PRODUCT WITH-BENEFICIARY WITH-EXTENT)
-  :binds ((EXTENT CURRENCY) (BENEFICIARY (OR PHYSICAL-AGENT COMPANY))
-          (MATERIAL PHYSICAL) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization ((:S "Agent" :O "Product" :PREP "from out_of" :IO "Material"
-                 :PREP "for" :NP "Asset")
-                (:S "Agent" :O "Beneficiary" :IO "Product" :PREP "for" :IO
-                 "Asset")
-                (:S "Material" :O "Product")
-                (:S "Agent" :O "Material" :PREP "into" :IO "Product" :PREP
-                 "for" :NP "Beneficiary")
-                (:S "Agent" :O "Material" :PREP "for" :IO "Beneficiary")
-                (:S "Agent" :O "Product" :PREP "from out_of" :IO "Material"
-                 :PREP "for" :NP "Beneficiary")
-                (:S "Agent" :O "Beneficiary" :IO "Product" :PREP "from out_of"
-                 :IO "Material")
-                (:S "Agent" :O "Product" :PREP "for" :IO "Beneficiary")
-                (:S "Agent" :O "Material" :PREP "into" :IO "Product")
-                (:S "Agent" :O "Product" :PREP "from out_of" :IO "Material")
-                (:S "Agent") (:S "Agent" :O "Product"))) 
+  :binds ((SPARSER::EXTENT CURRENCY)
+          (SPARSER::BENEFICIARY (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::MATERIAL PHYSICAL)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S AGENT :O PRODUCT) (:S AGENT)
+                (:S AGENT :O PRODUCT :FROM MATERIAL :OUT_OF MATERIAL)
+                (:S AGENT :O MATERIAL :INTO PRODUCT)
+                (:S AGENT :O PRODUCT :FOR BENEFICIARY)
+                (:S AGENT :IO BENEFICIARY O PRODUCT :FROM MATERIAL :OUT_OF
+                 MATERIAL)
+                (:S AGENT :O PRODUCT :FROM MATERIAL :OUT_OF MATERIAL :FOR
+                 BENEFICIARY)
+                (:S AGENT :O MATERIAL :FOR BENEFICIARY)
+                (:S AGENT :O MATERIAL :INTO PRODUCT :FOR BENEFICIARY)
+                (:S MATERIAL :O PRODUCT)
+                (:S AGENT :IO BENEFICIARY O PRODUCT :FOR EXTENT)
+                (:S AGENT :O PRODUCT :FROM MATERIAL :OUT_OF MATERIAL :FOR
+                 EXTENT)))
 
- (define-mixin-category build-26.1-1
+(define-mixin-category build-26.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Asset" :O "Beneficiary" :IO "Product" :PREP "from out_of"
-                 :IO "Material")
-                (:S "Asset" :O "Product" :PREP "from out_of" :IO "Material")
-                (:S "Asset" :O "Beneficiary" :IO "Product")
-                (:S "Asset" :O "Product")
-                (:S "Agent" :O "Product" :PREP "for" :IO "Asset"))) 
+  :mixins (BUILD-26.1)
+  :realization ((:S AGENT :O PRODUCT :FOR EXTENT) (:S EXTENT :O PRODUCT)
+                (:S EXTENT :IO BENEFICIARY O PRODUCT)
+                (:S EXTENT :O PRODUCT :FROM MATERIAL :OUT_OF MATERIAL)
+                (:S EXTENT :IO BENEFICIARY O PRODUCT :FROM MATERIAL :OUT_OF
+                 MATERIAL)))
 
- (define-mixin-category bulge-47.5.3
+(define-mixin-category bulge-47.5.3
   :specializes subcategorization-pattern
   :mixins (WITH-CAUSE WITH-THEME)
-  :binds ((CAUSE PHYSICAL))
-  :realization ((:S "Location") (:S "Location" :PREP "with" :IO "Theme"))) 
+  :binds ((SPARSER::CAUSE PHYSICAL))
+  :realization ((:S CAUSE :WITH THEME) (:S CAUSE)))
 
- (define-mixin-category bully-59.5
+(define-mixin-category bully-59.5
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-RESULT)
-  :binds ((PATIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Patient" :PREP "into" :IO "Result")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :INTO RESULT-ROLE)))
 
- (define-mixin-category bump-18.4
+(define-mixin-category bump-18.4
   :specializes subcategorization-pattern
   :mixins (WITH-CAUSE WITH-THEME)
-  :binds ((THEME PHYSICAL) (CAUSE PHYSICAL))
-  :realization ((:S "Theme" :PREP "against into onto" :IO "Location"))) 
+  :binds ((SPARSER::THEME PHYSICAL) (SPARSER::CAUSE PHYSICAL))
+  :realization ((:S THEME :AGAINST CAUSE :INTO CAUSE :ONTO CAUSE)))
 
- (define-mixin-category bump-18.4-1
+(define-mixin-category bump-18.4-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :LEX "together"))) 
+  :mixins (BUMP-18.4)
+  :realization ((:S THEME)))
 
- (define-mixin-category butter-9.9
+(define-mixin-category butter-9.9
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
-          (THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Destination" :PREP "with" :IO "Theme")
-                (:S "Agent" :O "Destination"))) 
+  :binds ((SPARSER::DESTINATION (:AND/OR LOCATION REGION))
+          (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O DESTINATION) (:S AGENT :O DESTINATION :WITH THEME)))
 
- (define-mixin-category calibratable_cos-45.6.1
+(define-mixin-category calibratable_cos-45.6.1
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT WITH-ATTRIBUTE)
-  :realization ((:S "Patient") (:S "Patient" :PREP "in" :IO "Attribute")
-                (:S "Attribute" :LEX "of" :IO "Patient"))) 
+  :realization ((:S ATTRIBUTE :S PATIENT) (:S PATIENT :IN ATTRIBUTE)
+                (:S PATIENT)))
 
- (define-mixin-category calibratable_cos-45.6.1-1
+(define-mixin-category calibratable_cos-45.6.1-1
   :specializes subcategorization-pattern
   :mixins (WITH-EXTENT WITH-SOURCE WITH-RESULT)
-  :realization ((:S "Patient" :PREP "in" :IO "Attribute" :PREP "?by" :IO
-                 "?Extent" :PREP "?from" :NP "?Initial_State" :PREP "?to" :NP
-                 "?Result")
-                (:S "Patient" :PREP "in" :IO "Attribute" :IO "?Extent" :PREP
-                 "?from" :NP "?Initial_State" :PREP "?to" :NP "?Result")
-                (:S "Attribute" :PREP "of" :IO "Patient" :PREP "by" :IO
-                 "Extent" :PREP "?from" :NP "?Initial_State" :PREP "?to" :NP
-                 "?Result")
-                (:S "Attribute" :PREP "of" :IO "Patient" :IO "Extent" :PREP
-                 "?from" :NP "?Initial_State" :PREP "?to" :NP "?Result")
-                (:S "Patient" :PREP "by" :IO "Extent" :PREP "?from" :IO
-                 "?Initial_State" :PREP "?to" :NP "?Result")
-                (:S "Patient" :O "Extent" :PREP "?from" :IO "?Initial_State"
-                 :PREP "?to" :NP "?Result"))) 
+  :realization ((:S PATIENT :O EXTENT :FROM ?INITIAL_STATE :TO ?RESULT)
+                (:S PATIENT :BY EXTENT :FROM ?INITIAL_STATE :TO ?RESULT)
+                (:S ATTRIBUTE :OF PATIENT :O EXTENT :FROM ?INITIAL_STATE :TO
+                 ?RESULT)
+                (:S ATTRIBUTE :OF PATIENT :BY EXTENT :FROM ?INITIAL_STATE :TO
+                 ?RESULT)
+                (:S PATIENT :IN ATTRIBUTE :O ?EXTENT :FROM ?INITIAL_STATE :TO
+                 ?RESULT)
+                (:S PATIENT :IN ATTRIBUTE :BY ?EXTENT :FROM ?INITIAL_STATE :TO
+                 ?RESULT)))
 
- (define-mixin-category calve-28.1
+(define-mixin-category calve-28.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT)
-  :binds ((PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent"))) 
+  :binds ((SPARSER::PATIENT PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT)))
 
- (define-mixin-category captain-29.8
+(define-mixin-category captain-29.8
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-BENEFICIARY)
-  :binds ((BENEFICIARY PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :PREP "for" :IO "Beneficiary"))) 
+  :binds ((SPARSER::BENEFICIARY PHYSICAL) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :FOR BENEFICIARY)))
 
- (define-mixin-category captain-29.8-1
+(define-mixin-category captain-29.8-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Beneficiary"))) 
+  :mixins (CAPTAIN-29.8)
+  :realization ((:S AGENT :O BENEFICIARY)))
 
- (define-mixin-category captain-29.8-1-1
+(define-mixin-category captain-29.8-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Beneficiary" :O "Agent"))) 
+  :mixins (CAPTAIN-29.8-1)
+  :realization ((:S BENEFICIARY :O AGENT)))
 
- (define-mixin-category care-88.1
+(define-mixin-category care-88.1
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-STIMULUS)
-  :binds ((EXPERIENCER (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Experiencer" :O "Stimulus") (:S "Experiencer"))) 
+  :binds ((SPARSER::EXPERIENCER (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S EXPERIENCER) (:S EXPERIENCER :O STIMULUS)))
 
- (define-mixin-category care-88.1-1
+(define-mixin-category care-88.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Experiencer" :O "Stimulus")
-                (:S "Experiencer" :PREP "about" :IO "Stimulus"))) 
+  :mixins (CARE-88.1)
+  :realization ((:S EXPERIENCER :O STIMULUS) (:S EXPERIENCER :ABOUT STIMULUS)))
 
- (define-mixin-category caring-75.2
+(define-mixin-category caring-75.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization NIL) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))))
 
- (define-mixin-category caring-75.2-1
+(define-mixin-category caring-75.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (CARING-75.2)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category caring-75.2-1-1
+(define-mixin-category caring-75.2-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "to" :IO "Theme"))) 
+  :mixins (CARING-75.2-1)
+  :realization ((:S AGENT :TO THEME)))
 
- (define-mixin-category caring-75.2-2
+(define-mixin-category caring-75.2-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "for" :IO "Theme"))) 
+  :mixins (CARING-75.2)
+  :realization ((:S AGENT :FOR THEME)))
 
- (define-mixin-category carry-11.4
+(define-mixin-category carry-11.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((SOURCE LOCATION) (THEME PHYSICAL))
-  :realization ((:S "Agent" :O "Theme" :PREP "to towards" :IO "Destination"
-                 :PREP :NP "Initial_Location")
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP
-                 "to towards" :NP "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
-                (:S "Agent" :O "Theme" :PREP "to towards" :IO "Destination")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL))
+  :realization ((:S AGENT :O THEME)
+                (:S AGENT :O THEME :TO DESTINATION :TOWARDS DESTINATION)
+                (:S AGENT :O THEME :NIL SOURCE)
+                (:S AGENT :O THEME :NIL SOURCE :TO DESTINATION :TOWARDS
+                 DESTINATION)
+                (:S AGENT :O THEME :TO DESTINATION :TOWARDS DESTINATION :NIL
+                 SOURCE)))
 
- (define-mixin-category carry-11.4-1
+(define-mixin-category carry-11.4-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :PREP "to towards" :IO "Destination"
-                 :PREP :NP "Initial_Location")
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP
-                 "to towards" :NP "Destination")
-                (:S "Agent" :O "Theme" :PREP "to towards" :IO "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
-                (:S "Agent" :O "Theme"))) 
+  :mixins (CARRY-11.4)
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)
+                (:S AGENT :O THEME :TO DESTINATION :TOWARDS DESTINATION)
+                (:S AGENT :O THEME :NIL SOURCE :TO DESTINATION :TOWARDS
+                 DESTINATION)
+                (:S AGENT :O THEME :TO DESTINATION :TOWARDS DESTINATION :NIL
+                 SOURCE)))
 
- (define-mixin-category carry-11.4-1-1
+(define-mixin-category carry-11.4-1-1
   :specializes subcategorization-pattern
   :mixins (WITH-DESTINATION)
-  :binds ((DESTINATION PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Destination" :IO "Theme"))) 
+  :binds ((SPARSER::DESTINATION PHYSICAL-AGENT))
+  :realization ((:S AGENT :IO DESTINATION O THEME)))
 
- (define-mixin-category carve-21.2
+(define-mixin-category carve-21.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT)
-  :binds ((INSTRUMENT PHYSICAL) (PATIENT PHYSICAL))
-  :realization NIL) 
+  :binds ((SPARSER::INSTRUMENT PHYSICAL) (SPARSER::PATIENT PHYSICAL)))
 
- (define-mixin-category carve-21.2-1
+(define-mixin-category carve-21.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Instrument" :ADV) (:S "Instrument" :O "Patient")
-                (:S "Patient" :ADV)
-                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Patient"))) 
+  :mixins (CARVE-21.2)
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :WITH INSTRUMENT)
+                (:S PATIENT) (:S INSTRUMENT :O PATIENT) (:S INSTRUMENT)))
 
- (define-mixin-category carve-21.2-2
+(define-mixin-category carve-21.2-2
   :specializes subcategorization-pattern
-  :realization ((:S "Instrument" :ADV) (:S "Instrument" :O "Patient")
-                (:S "Patient" :ADV)
-                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Patient"))) 
+  :mixins (CARVE-21.2)
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :WITH INSTRUMENT)
+                (:S PATIENT) (:S INSTRUMENT :O PATIENT) (:S INSTRUMENT)))
 
- (define-mixin-category caused_calibratable_cos-45.6.2
+(define-mixin-category caused_calibratable_cos-45.6.2
   :specializes subcategorization-pattern
   :mixins (WITH-CAUSE WITH-PATIENT WITH-EXTENT WITH-SOURCE WITH-GOAL
            WITH-ATTRIBUTE)
-  :realization ((:S "Causer" :O "Patient" :IO "?Extent" :IO "?Source" :IO
-                 "?Goal"))) 
+  :realization ((:S CAUSE)))
 
- (define-mixin-category caused_calibratable_cos-45.6.2-1
+(define-mixin-category caused_calibratable_cos-45.6.2-1
   :specializes subcategorization-pattern
   :mixins (WITH-ATTRIBUTE)
-  :realization ((:S "Patient" :PREP "in" :IO "Attribute" :PREP "?by" :IO
-                 "?Extent" :PREP "?from" :NP "?Source" :PREP "?to" :NP "?Goal")
-                (:S "Patient" :PREP "in" :IO "Attribute" :IO "?Extent" :PREP
-                 "?from" :NP "?Source" :PREP "?to" :NP "?Goal")
-                (:S "Attribute" :PREP "of" :IO "Patient" :PREP "by" :IO
-                 "Extent" :PREP "?from" :NP "?Source" :PREP "?to" :NP "?Goal")
-                (:S "Attribute" :PREP "of" :IO "Patient" :IO "?Extent" :PREP
-                 "?from" :NP "?Source" :PREP "?to" :NP "?Goal")
-                (:S "Patient" :PREP "?by" :IO "?Extent" :PREP "?from" :IO
-                 "?Source" :PREP "?to" :NP "?Goal")
-                (:S "Patient" :O "Extent" :PREP "?from" :IO "?Source" :PREP
-                 "?to" :NP "?Goal"))) 
+  :realization ((:S PATIENT :O EXTENT :FROM ?SOURCE :TO ?GOAL)
+                (:S PATIENT :BY ?EXTENT :FROM ?SOURCE :TO ?GOAL)
+                (:S ATTRIBUTE :OF PATIENT :O ?EXTENT :FROM ?SOURCE :TO ?GOAL)
+                (:S ATTRIBUTE :OF PATIENT :BY EXTENT :FROM ?SOURCE :TO ?GOAL)
+                (:S PATIENT :IN ATTRIBUTE :O ?EXTENT :FROM ?SOURCE :TO ?GOAL)
+                (:S PATIENT :IN ATTRIBUTE :BY ?EXTENT :FROM ?SOURCE :TO ?GOAL)))
 
- (define-mixin-category change_bodily_state-40.8.4
+(define-mixin-category change_bodily_state-40.8.4
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-STIMULUS)
-  :binds ((EXPERIENCER PHYSICAL-AGENT))
-  :realization ((:S "Experiencer" :PREP "from at" :IO "Stimulus")
-                (:S "Experiencer"))) 
+  :binds ((SPARSER::EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S EXPERIENCER) (:S EXPERIENCER :FROM STIMULUS :AT STIMULUS)))
 
- (define-mixin-category characterize-29.2
+(define-mixin-category characterize-29.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
-  :binds ((THEME (OR PHYSICAL COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "as" :IO "Attribute")
-                (:S "Agent" :O "Theme" :LEX "to be" :IO "Attribute")
-                (:S "Agent" :O "Theme" :LEX "as" :IO "Attribute"))) 
+  :binds ((SPARSER::THEME (:OR PHYSICAL COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :IO THEME O ATTRIBUTE)
+                (:S AGENT :O THEME :AS ATTRIBUTE)))
 
- (define-mixin-category characterize-29.2-1
+(define-mixin-category characterize-29.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (CHARACTERIZE-29.2)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category characterize-29.2-1-1
+(define-mixin-category characterize-29.2-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (CHARACTERIZE-29.2-1)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category characterize-29.2-1-2
+(define-mixin-category characterize-29.2-1-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (CHARACTERIZE-29.2-1)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category chase-51.6
+(define-mixin-category chase-51.6
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-PATH)
-  :binds ((THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :PREP "after" :IO "Theme")
-                (:S "Agent" :O "Theme" :PREP :NP "Trajectory")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::THEME PHYSICAL) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL PATH)
+                (:S AGENT :AFTER THEME)))
 
- (define-mixin-category cheat-10.6.1
+(define-mixin-category cheat-10.6.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-GOAL)
-  :binds ((SOURCE (OR PHYSICAL-AGENT LOCATION REGION))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Source" :PREP "out_of" :IO "Theme")
-                (:S "Agent" :O "Source"))) 
+  :binds ((SPARSER::SOURCE (:OR PHYSICAL-AGENT LOCATION REGION))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O SOURCE) (:S AGENT :O SOURCE :OUT_OF THEME)))
 
- (define-mixin-category cheat-10.6.1-1
+(define-mixin-category cheat-10.6.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Source" :PREP "for" :IO "Theme"))) 
+  :mixins (CHEAT-10.6.1)
+  :realization ((:S AGENT :O SOURCE :FOR THEME)))
 
- (define-mixin-category cheat-10.6.1-1-1
+(define-mixin-category cheat-10.6.1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :PREP "from" :IO "Source"))) 
+  :mixins (CHEAT-10.6.1-1)
+  :realization ((:S AGENT :O THEME :FROM SOURCE)))
 
- (define-mixin-category chew-39.2
+(define-mixin-category chew-39.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization NIL) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT)))
 
- (define-mixin-category chew-39.2-1
+(define-mixin-category chew-39.2-1
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT)
-  :binds ((PATIENT (AND/OR NIL SOLID)))
-  :realization ((:S "Agent" :PREP "on" :IO "Patient")
-                (:S "Agent" :PREP "at" :IO "Patient") (:S "Agent")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT (:AND/OR NIL SOLID)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT) (:S AGENT :AT PATIENT)
+                (:S AGENT :ON PATIENT)))
 
- (define-mixin-category chew-39.2-2
+(define-mixin-category chew-39.2-2
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT)
-  :binds ((PATIENT (AND/OR NIL SOLID)))
-  :realization ((:S "Agent" :PREP "from" :IO "Patient") (:S "Agent")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT (:AND/OR NIL SOLID)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT) (:S AGENT :FROM PATIENT)))
 
- (define-mixin-category chit_chat-37.6
+(define-mixin-category chit_chat-37.6
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT WITH-TOPIC)
-  :binds ((TOPIC SPEECH-ACT) (AGENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "about" :IO "Topic")
-                (:S "Agent" :PREP "about" :IO "Topic" :PREP "with" :IO
-                 "Co-Agent")
-                (:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "about" :IO
-                 "Topic")
-                (:S "Agent" :PREP "with" :IO "Co-Agent") (:S "Agent"))) 
+  :binds ((SPARSER::TOPIC SPEECH-ACT)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :WITH AGENT) (:S AGENT :WITH AGENT :ABOUT TOPIC)
+                (:S AGENT) (:S AGENT :ABOUT TOPIC :WITH AGENT)
+                (:S AGENT :ABOUT TOPIC)))
 
- (define-mixin-category chit_chat-37.6-1
+(define-mixin-category chit_chat-37.6-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Topic" :PREP "with" :IO "Co-Agent")
-                (:S "Agent" :O "Topic"))) 
+  :mixins (CHIT_CHAT-37.6)
+  :realization ((:S AGENT :O TOPIC) (:S AGENT :O TOPIC :WITH AGENT)))
 
- (define-mixin-category classify-29.10
+(define-mixin-category classify-29.10
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-GOAL)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "in" :IO "Goal")
-                (:S "Agent" :O "Theme" :PREP "as" :IO "Goal")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :AS GOAL)
+                (:S AGENT :O THEME :IN GOAL)))
 
- (define-mixin-category clear-10.3
+(define-mixin-category clear-10.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION LOCATION) (SOURCE LOCATION) (THEME PHYSICAL))
-  :realization ((:S "Agent" :O "Source" :PREP "of" :IO "Theme")
-                (:S "Agent" :O "Theme" :PREP :NP "Source")
-                (:S "Agent" :O "Source"))) 
+  :binds ((SPARSER::DESTINATION LOCATION) (SPARSER::SOURCE LOCATION)
+          (SPARSER::THEME PHYSICAL))
+  :realization ((:S AGENT :O SOURCE) (:S AGENT :O THEME :NIL SOURCE)
+                (:S AGENT :O SOURCE :OF THEME)))
 
- (define-mixin-category clear-10.3-1
+(define-mixin-category clear-10.3-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :PREP :NP "Source") (:S "Source"))) 
+  :mixins (CLEAR-10.3)
+  :realization ((:S SOURCE) (:S THEME :NIL SOURCE)))
 
- (define-mixin-category cling-22.5
+(define-mixin-category cling-22.5
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-THEME)
-  :binds ((THEME PHYSICAL) (THEME PHYSICAL))
-  :realization ((:S "Theme" :LEX "together")
-                (:S "Theme" :PREP "to with" :IO "Co-Theme"))) 
+  :binds ((SPARSER::THEME PHYSICAL) (SPARSER::THEME PHYSICAL))
+  :realization ((:S THEME :TO THEME :WITH THEME) (:S THEME)))
 
- (define-mixin-category cognize-85
+(define-mixin-category cognize-85
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-STIMULUS)
-  :binds ((EXPERIENCER PHYSICAL-AGENT))
-  :realization ((:S "Experiencer" :PREP "about" :IO "Stimulus")
-                (:S "Experiencer" :PREP "of" :IO "Stimulus")
-                (:S "Experiencer" :O "Stimulus"))) 
+  :binds ((SPARSER::EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S EXPERIENCER :OF STIMULUS) (:S EXPERIENCER :ABOUT STIMULUS)
+                (:S EXPERIENCER :O STIMULUS)))
 
- (define-mixin-category coil-9.6
+(define-mixin-category coil-9.6
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION LOCATION) (SOURCE LOCATION) (THEME (AND/OR NIL NIL)))
-  :realization ((:S "Theme" :ADV :PREP :IO "Destination")
-                (:S "Theme" :PREP :NP "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+  :binds ((SPARSER::DESTINATION LOCATION) (SPARSER::SOURCE LOCATION)
+          (SPARSER::THEME (:AND/OR NIL NIL)))
+  :realization ((:S AGENT :O THEME :NIL DESTINATION)
+                (:S THEME :NIL DESTINATION)))
 
- (define-mixin-category coil-9.6-1
+(define-mixin-category coil-9.6-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :ADV))) 
+  :mixins (COIL-9.6)
+  :realization ((:S THEME)))
 
- (define-mixin-category coloring-24
+(define-mixin-category coloring-24
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-RESULT)
-  :binds ((PATIENT PHYSICAL))
-  :realization ((:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
-                (:S "Agent" :O "Patient" :IO "Result")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT PHYSICAL))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :IO PATIENT O RESULT-ROLE)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE)))
 
- (define-mixin-category compel-59.1
+(define-mixin-category compel-59.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT PREDICATION)
-  :binds ((PREDICATE "PREDICATE") (PATIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Patient" :IO "Predicate")
-                (:S "Agent" :O "Patient" :PREP "into" :IO "Predicate")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PREDICATE PREDICATE)
+          (SPARSER::PATIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :INTO PREDICATE)
+                (:S AGENT :IO PATIENT O PREDICATE)))
 
- (define-mixin-category complain-37.8
+(define-mixin-category complain-37.8
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-TOPIC WITH-RECIPIENT)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (TOPIC SPEECH-ACT)
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :PREP "about" :IO
-                 "Topic")
-                (:S "Agent" :PREP "about" :IO "Topic" :PREP "to" :IO
-                 "Recipient")
-                (:S "Agent" :PREP "about" :IO "Topic")
-                (:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
-                (:S "Agent" :O "Topic") (:S "Agent" :PREP "to" :IO "Recipient")
-                (:S "Agent"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::TOPIC SPEECH-ACT)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT) (:S AGENT :TO RECIPIENT) (:S AGENT :ABOUT TOPIC)
+                (:S AGENT :ABOUT TOPIC :TO RECIPIENT) (:S AGENT :O TOPIC)
+                (:S AGENT :TO RECIPIENT :O TOPIC)
+                (:S AGENT :TO RECIPIENT :ABOUT TOPIC)))
 
- (define-mixin-category complete-55.2
+(define-mixin-category complete-55.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category complete-55.2-1
+(define-mixin-category complete-55.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (COMPLETE-55.2)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category comprehend-87.2
+(define-mixin-category comprehend-87.2
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-ATTRIBUTE WITH-STIMULUS)
-  :binds ((EXPERIENCER (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Experiencer" :O "Stimulus" :PREP "as" :IO "Attribute")
-                (:S "Experiencer" :O "Stimulus"))) 
+  :binds ((SPARSER::EXPERIENCER (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S EXPERIENCER :O STIMULUS :AS ATTRIBUTE)
+                (:S EXPERIENCER :O STIMULUS)))
 
- (define-mixin-category comprehend-87.2-1
+(define-mixin-category comprehend-87.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Experiencer" :O "Stimulus"))) 
+  :mixins (COMPREHEND-87.2)
+  :realization ((:S EXPERIENCER :O STIMULUS)))
 
- (define-mixin-category comprehend-87.2-1-1
+(define-mixin-category comprehend-87.2-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Experiencer"))) 
+  :mixins (COMPREHEND-87.2-1)
+  :realization ((:S EXPERIENCER)))
 
- (define-mixin-category comprehend-87.2-1-1-1
+(define-mixin-category comprehend-87.2-1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Experiencer" :O "Stimulus" :PREP "about")
-                (:S "Experiencer" :PREP "about | of" :IO "Stimulus"))) 
+  :mixins (COMPREHEND-87.2-1-1)
+  :realization ((:S EXPERIENCER :ABOUT STIMULUS :|\|| STIMULUS :OF STIMULUS)
+                (:S EXPERIENCER)))
 
- (define-mixin-category comprise-107.2
+(define-mixin-category comprise-107.2
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-ATTRIBUTE)
-  :realization ((:S "Attribute" :O "Theme"))) 
+  :realization ((:S ATTRIBUTE :O THEME)))
 
- (define-mixin-category comprise-107.2-1
+(define-mixin-category comprise-107.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Attribute"))) 
+  :mixins (COMPRISE-107.2)
+  :realization ((:S THEME :O ATTRIBUTE)))
 
- (define-mixin-category concealment-16
+(define-mixin-category concealment-16
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-BENEFICIARY WITH-PATIENT WITH-CAUSE)
-  :binds ((BENEFICIARY PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Patient")
-                (:S "Agent" :O "Patient" :PREP :NP "Location")
-                (:S "Agent" :O "Patient" :PREP "from" :IO "Beneficiary"))) 
+  :binds ((SPARSER::BENEFICIARY PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O PATIENT :FROM BENEFICIARY)
+                (:S AGENT :O PATIENT :NIL CAUSE) (:S AGENT :O PATIENT)))
 
- (define-mixin-category concealment-16-1
+(define-mixin-category concealment-16-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP :NP "Location")
-                (:S "Agent" :PREP "from" :IO "Beneficiary") (:S "Agent"))) 
+  :mixins (CONCEALMENT-16)
+  :realization ((:S AGENT) (:S AGENT :FROM BENEFICIARY) (:S AGENT :NIL CAUSE)))
 
- (define-mixin-category conduct-111.1
+(define-mixin-category conduct-111.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-BENEFICIARY)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Theme" :IO "Beneficiary")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :O THEME) (:S AGENT :IO THEME O BENEFICIARY)))
 
- (define-mixin-category confess-37.10
+(define-mixin-category confess-37.10
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-RECIPIENT WITH-TOPIC)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
-                (:S "Agent" :PREP "to" :IO "Recipient")
-                (:S "Agent" :O "Topic" :PREP "to" :IO "Recipient")
-                (:S "Agent" :O "Topic"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O TOPIC :TO RECIPIENT) (:S AGENT :TO RECIPIENT)
+                (:S AGENT :TO RECIPIENT :O TOPIC) (:S AGENT :O TOPIC)))
 
- (define-mixin-category confine-92
+(define-mixin-category confine-92
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
-  :binds ((DESTINATION LOCATION) (AGENT (AND/OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::DESTINATION LOCATION)
+          (SPARSER::AGENT (:AND/OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category confine-92-1
+(define-mixin-category confine-92-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :PREP "to" :IO "Destination"))) 
+  :mixins (CONFINE-92)
+  :realization ((:S AGENT :O THEME :TO DESTINATION)))
 
- (define-mixin-category confront-98
+(define-mixin-category confront-98
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-INSTRUMENT)
-  :binds ((INSTRUMENT "OBJECT") (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :WITH INSTRUMENT)))
 
- (define-mixin-category conjecture-29.5
+(define-mixin-category conjecture-29.5
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME PREDICATION)
-  :binds ((PREDICATE "PREDICATE") (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme")
-                (:S "Agent" :O "Theme" :LEX "to" :LEX "be" :IO "Predicate"))) 
+  :binds ((SPARSER::PREDICATE PREDICATE)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :IO THEME O PREDICATE) (:S AGENT :O THEME)))
 
- (define-mixin-category conjecture-29.5-1
+(define-mixin-category conjecture-29.5-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (CONJECTURE-29.5)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category conjecture-29.5-2
+(define-mixin-category conjecture-29.5-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "like | as if | as though" :IO "Theme"))) 
+  :mixins (CONJECTURE-29.5)
+  :realization ((:S AGENT :LIKE THEME :|\|| THEME :AS THEME :IF THEME :|\||
+                 THEME :AS THEME :THOUGH THEME)))
 
- (define-mixin-category consider-29.9
+(define-mixin-category consider-29.9
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category consider-29.9-1
+(define-mixin-category consider-29.9-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Theme" :IO "Attribute"))) 
+  :mixins (CONSIDER-29.9)
+  :realization ((:S AGENT :IO THEME O ATTRIBUTE) (:S AGENT :O THEME)))
 
- (define-mixin-category consider-29.9-1-1
+(define-mixin-category consider-29.9-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Theme" :IO "Attribute"))) 
+  :mixins (CONSIDER-29.9-1)
+  :realization ((:S AGENT :IO THEME O ATTRIBUTE) (:S AGENT :O THEME)))
 
- (define-mixin-category consider-29.9-1-1-1
+(define-mixin-category consider-29.9-1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :PREP "for" :IO "Attribute")
-                (:S "Agent" :O "Theme" :IO "Attribute") (:S "Agent" :O "Theme"))) 
+  :mixins (CONSIDER-29.9-1-1)
+  :realization ((:S AGENT :IO THEME O ATTRIBUTE)
+                (:S AGENT :O THEME :FOR ATTRIBUTE) (:S AGENT :O THEME)))
 
- (define-mixin-category consider-29.9-2
+(define-mixin-category consider-29.9-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Theme" :IO "Attribute"))) 
+  :mixins (CONSIDER-29.9)
+  :realization ((:S AGENT :IO THEME O ATTRIBUTE) (:S AGENT :O THEME)))
 
- (define-mixin-category conspire-71
+(define-mixin-category conspire-71
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT WITH-THEME WITH-BENEFICIARY)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme")
-                (:S "Agent" :PREP "against" :IO "Beneficiary")
-                (:S "Agent" :PREP "with" :IO "Co-Agent") (:S "Agent"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT) (:S AGENT :WITH AGENT)
+                (:S AGENT :AGAINST BENEFICIARY) (:S AGENT :O THEME)))
 
- (define-mixin-category consume-66
+(define-mixin-category consume-66
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-EXTENT WITH-GOAL)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Asset" :IO "Goal") (:S "Agent" :O "Asset"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O EXTENT) (:S AGENT :IO EXTENT O GOAL)))
 
- (define-mixin-category consume-66-1
+(define-mixin-category consume-66-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Asset" :PREP "on" :IO "Goal"))) 
+  :mixins (CONSUME-66)
+  :realization ((:S AGENT :O EXTENT :ON GOAL)))
 
- (define-mixin-category contain-15.4
+(define-mixin-category contain-15.4
   :specializes subcategorization-pattern
   :mixins (WITH-INSTRUMENT WITH-THEME)
-  :binds ((INSTRUMENT "OBJECT"))
-  :realization ((:S "Pivot" :O "Theme"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT))
+  :realization ((:S INSTRUMENT :O THEME)))
 
- (define-mixin-category contiguous_location-47.8
+(define-mixin-category contiguous_location-47.8
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-THEME)
-  :binds ((THEME PHYSICAL) (THEME PHYSICAL))
-  :realization ((:S "Theme" :O "Co-Theme"))) 
+  :binds ((SPARSER::THEME PHYSICAL) (SPARSER::THEME PHYSICAL))
+  :realization ((:S THEME :O THEME)))
 
- (define-mixin-category contiguous_location-47.8-1
+(define-mixin-category contiguous_location-47.8-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :LEX "and" :IO "Co-Theme"))) 
+  :mixins (CONTIGUOUS_LOCATION-47.8)
+  :realization ((:S THEME :S THEME)))
 
- (define-mixin-category contiguous_location-47.8-2
+(define-mixin-category contiguous_location-47.8-2
   :specializes subcategorization-pattern
-  :realization ((:S "Theme"))) 
+  :mixins (CONTIGUOUS_LOCATION-47.8)
+  :realization ((:S THEME)))
 
- (define-mixin-category continue-55.3
+(define-mixin-category continue-55.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME TEMPORALLY-LOCALIZED)
-  :binds ((CERTAINTY TIME) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "until" :IO "Time")
-                (:S "Theme" :PREP "until" :IO "Time") (:S "Agent") (:S "Theme")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::CERTAINTY TIME)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME) (:S THEME) (:S AGENT)
+                (:S THEME :UNTIL CERTAINTY) (:S AGENT :UNTIL CERTAINTY)))
 
- (define-mixin-category contribute-13.2
+(define-mixin-category contribute-13.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :IO "Theme")
-                (:S "Agent" :O "Theme")
-                (:S "Agent" :O "Theme" :PREP "to" :IO "Recipient"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME :TO RECIPIENT) (:S AGENT :O THEME)
+                (:S AGENT :TO RECIPIENT :O THEME)))
 
- (define-mixin-category contribute-13.2-1
+(define-mixin-category contribute-13.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :PREP "among" :IO "Recipient")
-                (:S "Agent" :PREP "to" :IO "Recipient"))) 
+  :mixins (CONTRIBUTE-13.2)
+  :realization ((:S AGENT :TO RECIPIENT) (:S AGENT :O THEME :AMONG RECIPIENT)))
 
- (define-mixin-category contribute-13.2-1-1
+(define-mixin-category contribute-13.2-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent"))) 
+  :mixins (CONTRIBUTE-13.2-1)
+  :realization ((:S AGENT)))
 
- (define-mixin-category contribute-13.2-2
+(define-mixin-category contribute-13.2-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Recipient" :IO "Theme"))) 
+  :mixins (CONTRIBUTE-13.2)
+  :realization ((:S AGENT :IO RECIPIENT O THEME)))
 
- (define-mixin-category contribute-13.2-2-1
+(define-mixin-category contribute-13.2-2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Recipient"))) 
+  :mixins (CONTRIBUTE-13.2-2)
+  :realization ((:S AGENT :O RECIPIENT)))
 
- (define-mixin-category convert-26.6.2
+(define-mixin-category convert-26.6.2
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT WITH-RESULT WITH-SOURCE)
-  :realization ((:S "Patient" :PREP "to" :IO "Result"))) 
+  :realization ((:S PATIENT :TO RESULT-ROLE)))
 
- (define-mixin-category convert-26.6.2-1
+(define-mixin-category convert-26.6.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Patient" :PREP "from" :IO "Initial_State" :PREP "to" :IO
-                 "Result"))) 
+  :mixins (CONVERT-26.6.2)
+  :realization ((:S PATIENT :FROM SOURCE :TO RESULT-ROLE)))
 
- (define-mixin-category convert-26.6.2-1-1
+(define-mixin-category convert-26.6.2-1-1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Patient" :PREP "to" :IO "Result")
-                (:S "Agent" :O "Patient") (:S "Patient"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S PATIENT) (:S AGENT :O PATIENT)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE)))
 
- (define-mixin-category cooking-45.3
+(define-mixin-category cooking-45.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT)
-  :binds ((INSTRUMENT SOLID) (PATIENT PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Patient" :PREP "to into" :IO "Result" :PREP "in on with"
-                 :IO "Instrument")
-                (:S "Patient" :PREP "to into" :IO "Result")
-                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result" :PREP
-                 "in on with" :NP "Instrument")
-                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
-                (:S "Instrument" :O "Patient") (:S "Patient" :ADV)
-                (:S "Patient")
-                (:S "Agent" :O "Patient" :PREP "in on with" :IO "Instrument")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::INSTRUMENT SOLID) (SPARSER::PATIENT PHYSICAL)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O PATIENT)
+                (:S AGENT :O PATIENT :IN INSTRUMENT :ON INSTRUMENT :WITH
+                 INSTRUMENT)
+                (:S PATIENT) (:S INSTRUMENT :O PATIENT)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE :IN
+                 INSTRUMENT :ON INSTRUMENT :WITH INSTRUMENT)
+                (:S PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE)
+                (:S PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE :IN INSTRUMENT
+                 :ON INSTRUMENT :WITH INSTRUMENT)))
 
- (define-mixin-category cooperate-73.1
+(define-mixin-category cooperate-73.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization NIL) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))))
 
- (define-mixin-category cooperate-73.1-1
+(define-mixin-category cooperate-73.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "in" :IO "Theme")
-                (:S "Agent" :PREP "in" :IO "Theme")
-                (:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "on" :IO "Theme")
-                (:S "Agent" :PREP "on" :IO "Theme"))) 
+  :mixins (COOPERATE-73.1)
+  :realization ((:S AGENT :ON THEME) (:S AGENT :WITH AGENT :ON THEME)
+                (:S AGENT :WITH AGENT :IN THEME) (:S AGENT :IN THEME)))
 
- (define-mixin-category cooperate-73.1-2
+(define-mixin-category cooperate-73.1-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "in" :IO "Theme"))) 
+  :mixins (COOPERATE-73.1)
+  :realization ((:S AGENT :IN THEME)))
 
- (define-mixin-category cooperate-73.1-3
+(define-mixin-category cooperate-73.1-3
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "at" :IO "Theme")
-                (:S "Agent" :PREP "at" :IO "Theme")
-                (:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "on" :IO "Theme")
-                (:S "Agent" :PREP "on" :IO "Theme"))) 
+  :mixins (COOPERATE-73.1)
+  :realization ((:S AGENT :ON THEME) (:S AGENT :WITH AGENT :ON THEME)
+                (:S AGENT :AT THEME) (:S AGENT :WITH AGENT :AT THEME)))
 
- (define-mixin-category cope-83
+(define-mixin-category cope-83
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "with" :IO "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :WITH THEME)))
 
- (define-mixin-category cope-83-1
+(define-mixin-category cope-83-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent"))) 
+  :mixins (COPE-83)
+  :realization ((:S AGENT)))
 
- (define-mixin-category cope-83-1-1
+(define-mixin-category cope-83-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (COPE-83-1)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category correlate-86.1
+(define-mixin-category correlate-86.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "with" :IO "Co-Theme")
-                (:S "Theme" :PREP "with" :IO "Co-Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S THEME :WITH THEME) (:S AGENT :O THEME :WITH THEME)))
 
- (define-mixin-category correspond-36.1.1
+(define-mixin-category correspond-36.1.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT WITH-TOPIC)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Topic")
-                (:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "about" :IO
-                 "Topic")
-                (:S "Agent" :PREP "about" :IO "Topic") (:S "Agent"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT) (:S AGENT :ABOUT TOPIC)
+                (:S AGENT :WITH AGENT :ABOUT TOPIC) (:S AGENT :O TOPIC)))
 
- (define-mixin-category correspond-36.1.1-1
+(define-mixin-category correspond-36.1.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Topic")
-                (:S "Agent" :PREP "with" :IO "Co-Agent" :IO "Topic"))) 
+  :mixins (CORRESPOND-36.1.1)
+  :realization ((:S AGENT :WITH AGENT :O TOPIC) (:S AGENT :O TOPIC)))
 
- (define-mixin-category correspond-36.1.1-1-1
+(define-mixin-category correspond-36.1.1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Topic"))) 
+  :mixins (CORRESPOND-36.1.1-1)
+  :realization ((:S AGENT :O TOPIC)))
 
- (define-mixin-category cost-54.2
+(define-mixin-category cost-54.2
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-PATH WITH-BENEFICIARY)
-  :binds ((BENEFICIARY (OR PHYSICAL-AGENT COMPANY)) (THEME PHYSICAL))
-  :realization ((:S "Theme" :O "Beneficiary" :IO "Value")
-                (:S "Theme" :O "Value"))) 
+  :binds ((SPARSER::BENEFICIARY (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::THEME PHYSICAL))
+  :realization ((:S THEME :O PATH) (:S THEME :IO BENEFICIARY O PATH)))
 
- (define-mixin-category crane-40.3.2
+(define-mixin-category crane-40.3.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-TOPIC WITH-RECIPIENT)
-  :binds ((RECIPIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Patient" :PREP :NP "Recipient" :PREP "in" :NP
-                 "Topic")
-                (:S "Agent" :O "Patient" :PREP :NP "Recipient")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::RECIPIENT PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :NIL RECIPIENT)
+                (:S AGENT :O PATIENT :NIL RECIPIENT :IN TOPIC)))
 
- (define-mixin-category create-26.4
+(define-mixin-category create-26.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-RESULT WITH-MATERIAL WITH-BENEFICIARY WITH-ATTRIBUTE)
-  :binds ((BENEFICIARY PHYSICAL-AGENT) (MATERIAL "PHYSICAL")
-          (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization ((:S "Agent" :O "Result" :LEX "as" :IO "Attribute")
-                (:S "Agent" :O "Result" :PREP "for" :IO "Beneficiary")
-                (:S "Agent" :O "Result" :PREP "from out_of" :IO "Material")
-                (:S "Agent" :O "Result"))) 
+  :binds ((SPARSER::BENEFICIARY PHYSICAL-AGENT) (SPARSER::MATERIAL PHYSICAL)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S AGENT :O RESULT-ROLE)
+                (:S AGENT :O RESULT-ROLE :FROM MATERIAL :OUT_OF MATERIAL)
+                (:S AGENT :O RESULT-ROLE :FOR BENEFICIARY)
+                (:S AGENT :IO RESULT-ROLE O ATTRIBUTE)))
 
- (define-mixin-category create-26.4-1
+(define-mixin-category create-26.4-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent"))) 
+  :mixins (CREATE-26.4)
+  :realization ((:S AGENT)))
 
- (define-mixin-category create-26.4-1-1
+(define-mixin-category create-26.4-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Beneficiary" :IO "Result"))) 
+  :mixins (CREATE-26.4-1)
+  :realization ((:S AGENT :IO BENEFICIARY O RESULT-ROLE)))
 
- (define-mixin-category curtsey-40.3.3
+(define-mixin-category curtsey-40.3.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-RECIPIENT WITH-TOPIC)
-  :binds ((RECIPIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Topic" :PREP "to" :IO "Recipient")
-                (:S "Agent" :O "Topic") (:S "Agent" :PREP :NP "Recipient")
-                (:S "Agent"))) 
+  :binds ((SPARSER::RECIPIENT PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT) (:S AGENT :NIL RECIPIENT) (:S AGENT :O TOPIC)
+                (:S AGENT :O TOPIC :TO RECIPIENT)))
 
- (define-mixin-category cut-21.1
+(define-mixin-category cut-21.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-SOURCE WITH-RESULT)
-  :binds ((INSTRUMENT PHYSICAL) (PATIENT PHYSICAL))
-  :realization ((:S "Agent" :O "Patient" :PREP "from" :IO "Source" :PREP "with"
-                 :NP "Instrument")
-                (:S "Agent" :O "Patient" :PREP "from" :IO "Source")
-                (:S "Instrument" :O "Patient" :PREP "to into" :IO "Result")
-                (:S "Instrument" :O "Patient" :IO "Result")
-                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result" :PREP
-                 "with" :NP "Instrument")
-                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
-                (:S "Agent" :O "Patient" :IO "Result" :PREP "with" :IO
-                 "Instrument")
-                (:S "Agent" :O "Patient" :IO "Result") (:S "Instrument" :ADV)
-                (:S "Instrument" :O "Patient") (:S "Patient" :ADV)
-                (:S "Agent" :LEX "at" :IO "Patient" :PREP "with" :IO
-                 "Instrument")
-                (:S "Agent" :PREP "through|into" :IO "Patient")
-                (:S "Agent" :LEX "at" :IO "Patient")
-                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::INSTRUMENT PHYSICAL) (SPARSER::PATIENT PHYSICAL))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :|THROUGH\|INTO| PATIENT)
+                (:S AGENT :O PATIENT :WITH INSTRUMENT) (:S PATIENT)
+                (:S INSTRUMENT :O PATIENT) (:S INSTRUMENT)
+                (:S AGENT :IO PATIENT O RESULT-ROLE)
+                (:S AGENT :IO PATIENT O RESULT-ROLE :WITH INSTRUMENT)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE :WITH
+                 INSTRUMENT)
+                (:S INSTRUMENT :IO PATIENT O RESULT-ROLE)
+                (:S INSTRUMENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE)
+                (:S AGENT :O PATIENT :FROM SOURCE)
+                (:S AGENT :O PATIENT :FROM SOURCE :WITH INSTRUMENT)))
 
- (define-mixin-category cut-21.1-1
+(define-mixin-category cut-21.1-1
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT)
-  :binds ((PATIENT (OR NIL PRONOUN)))
-  :realization ((:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT (:OR NIL PRONOUN)))
+  :realization ((:S AGENT :O PATIENT)))
 
- (define-mixin-category debone-10.8
+(define-mixin-category debone-10.8
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION PHYSICAL) (SOURCE PHYSICAL)
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Source"))) 
+  :binds ((SPARSER::DESTINATION PHYSICAL) (SPARSER::SOURCE PHYSICAL)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O SOURCE)))
 
- (define-mixin-category declare-29.4
+(define-mixin-category declare-29.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-RESULT)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Theme" :IO "Result"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :IO THEME O RESULT-ROLE) (:S AGENT :O THEME)))
 
- (define-mixin-category declare-29.4-1
+(define-mixin-category declare-29.4-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :PREP "as" :IO "Result")
-                (:S "Agent" :O "Theme"))) 
+  :mixins (DECLARE-29.4)
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :AS RESULT-ROLE)))
 
- (define-mixin-category declare-29.4-1-1
+(define-mixin-category declare-29.4-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (DECLARE-29.4-1)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category declare-29.4-1-1-1
+(define-mixin-category declare-29.4-1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (DECLARE-29.4-1-1)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category declare-29.4-1-1-2
+(define-mixin-category declare-29.4-1-1-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (DECLARE-29.4-1-1)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category declare-29.4-1-1-3
+(define-mixin-category declare-29.4-1-1-3
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (DECLARE-29.4-1-1)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category declare-29.4-2
+(define-mixin-category declare-29.4-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (DECLARE-29.4)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category dedicate-79
+(define-mixin-category dedicate-79
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-GOAL)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "to" :IO "Goal"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME :TO GOAL)))
 
- (define-mixin-category deduce-97.2
+(define-mixin-category deduce-97.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "from" :IO "Theme" :IO "Source")
-                (:S "Agent" :O "Theme" :PREP "from" :IO "Source")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME :FROM SOURCE)
+                (:S AGENT :FROM THEME :O SOURCE) (:S AGENT :O THEME)))
 
- (define-mixin-category defend-72.3
+(define-mixin-category defend-72.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-BENEFICIARY WITH-THEME)
-  :binds ((BENEFICIARY (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Beneficiary" :PREP "against" :IO "Theme")
-                (:S "Agent" :O "Beneficiary"))) 
+  :binds ((SPARSER::BENEFICIARY (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O BENEFICIARY :AGAINST THEME)
+                (:S AGENT :O BENEFICIARY)))
 
- (define-mixin-category deprive-10.6.2
+(define-mixin-category deprive-10.6.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-GOAL)
-  :binds ((SOURCE (OR PHYSICAL-AGENT LOCATION REGION))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Source" :PREP "of" :IO "Theme")
-                (:S "Agent" :O "Source"))) 
+  :binds ((SPARSER::SOURCE (:OR PHYSICAL-AGENT LOCATION REGION))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O SOURCE) (:S AGENT :O SOURCE :OF THEME)))
 
- (define-mixin-category destroy-44
+(define-mixin-category destroy-44
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT)
-  :binds ((INSTRUMENT PHYSICAL) (PATIENT PHYSICAL))
-  :realization ((:S "Instrument" :O "Patient")
-                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::INSTRUMENT PHYSICAL) (SPARSER::PATIENT PHYSICAL))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :WITH INSTRUMENT)
+                (:S INSTRUMENT :O PATIENT)))
 
- (define-mixin-category devour-39.4
+(define-mixin-category devour-39.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT)
-  :binds ((PATIENT PATHOGEN) (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT PATHOGEN)
+          (SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :O PATIENT)))
 
- (define-mixin-category die-42.4
+(define-mixin-category die-42.4
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT WITH-CAUSE)
-  :binds ((PATIENT PHYSICAL-AGENT))
-  :realization ((:S "Patient"))) 
+  :binds ((SPARSER::PATIENT PHYSICAL-AGENT))
+  :realization ((:S PATIENT)))
 
- (define-mixin-category die-42.4-1
+(define-mixin-category die-42.4-1
   :specializes subcategorization-pattern
-  :realization ((:S "Patient" :PREP "of | from" :IO "Causer"))) 
+  :mixins (DIE-42.4)
+  :realization ((:S PATIENT :OF CAUSE :|\|| CAUSE :FROM CAUSE)))
 
- (define-mixin-category differ-23.4
+(define-mixin-category differ-23.4
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-THEME)
-  :realization ((:S "Theme") (:S "Theme" :PREP "from with" :IO "Co-Theme"))) 
+  :realization ((:S THEME :FROM THEME :WITH THEME) (:S THEME)))
 
- (define-mixin-category dine-39.5
+(define-mixin-category dine-39.5
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :PREP "on" :IO "Patient") (:S "Agent"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT) (:S AGENT :ON PATIENT)))
 
- (define-mixin-category disappearance-48.2
+(define-mixin-category disappearance-48.2
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT WITH-SOURCE)
-  :realization ((:S "Patient"))) 
+  :realization ((:S PATIENT)))
 
- (define-mixin-category disappearance-48.2-1
+(define-mixin-category disappearance-48.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Patient" :PREP "from" :IO "Initial_Location"))) 
+  :mixins (DISAPPEARANCE-48.2)
+  :realization ((:S PATIENT :FROM SOURCE)))
 
- (define-mixin-category disassemble-23.3
+(define-mixin-category disassemble-23.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
-  :binds ((CO-PATIENT PHYSICAL) (PATIENT PHYSICAL)
-          (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization ((:S "Patient" :ADV)
-                (:S "Agent" :O "Patient" :PREP "from" :IO "Co-Patient")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::CO-PATIENT PHYSICAL) (SPARSER::PATIENT PHYSICAL)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :FROM CO-PATIENT)
+                (:S PATIENT)))
 
- (define-mixin-category discover-84
+(define-mixin-category discover-84
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category discover-84-1
+(define-mixin-category discover-84-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme")
-                (:S "Agent" :PREP "from" :IO "Source" :PREP "about" :IO
-                 "Theme")
-                (:S "Agent" :PREP "from" :IO "Source" :IO "Theme")
-                (:S "Agent" :PREP "about" :IO "Theme"))) 
+  :mixins (DISCOVER-84)
+  :realization ((:S AGENT :ABOUT THEME) (:S AGENT :FROM SOURCE :O THEME)
+                (:S AGENT :FROM SOURCE :ABOUT THEME) (:S AGENT :O THEME)))
 
- (define-mixin-category discover-84-1-1
+(define-mixin-category discover-84-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "about" :IO "Theme" :PREP "from" :IO
-                 "Source")
-                (:S "Agent" :PREP "about" :IO "Theme") (:S "Agent"))) 
+  :mixins (DISCOVER-84-1)
+  :realization ((:S AGENT) (:S AGENT :ABOUT THEME)
+                (:S AGENT :ABOUT THEME :FROM SOURCE)))
 
- (define-mixin-category disfunction-105.2.2
+(define-mixin-category disfunction-105.2.2
   :specializes subcategorization-pattern
   :mixins (WITH-THEME)
-  :realization ((:S "Theme"))) 
+  :realization ((:S THEME)))
 
- (define-mixin-category distinguish-23.5
+(define-mixin-category distinguish-23.5
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-INSTRUMENT WITH-THEME WITH-THEME)
-  :binds ((INSTRUMENT "OBJECT") (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT)
+          (SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category distinguish-23.5-1
+(define-mixin-category distinguish-23.5-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "between" :IO "Theme" :IO "Co-Theme")
-                (:S "Instrument" :O "Theme" :PREP "from" :IO "Co-Theme")
-                (:S "Agent" :O "Theme"))) 
+  :mixins (DISTINGUISH-23.5)
+  :realization ((:S AGENT :O THEME) (:S INSTRUMENT :O THEME :FROM THEME)
+                (:S AGENT :BETWEEN THEME :O THEME)))
 
- (define-mixin-category dress-41.1.1
-  :specializes subcategorization-pattern
-  :mixins (WITH-AGENT WITH-PATIENT)
-  :binds ((PATIENT (OR PHYSICAL-AGENT PRONOUN)) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Patient") (:S "Agent"))) 
-
- (define-mixin-category dressing_well-41.3.2
+(define-mixin-category dress-41.1.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT)
-  :binds ((PATIENT PRONOUN) (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :LEX "up" :IO "Patient")
-                (:S "Agent" :O "Patient" :LEX "up"))) 
+  :binds ((SPARSER::PATIENT (:OR PHYSICAL-AGENT PRONOUN))
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT) (:S AGENT :O PATIENT)))
 
- (define-mixin-category drive-11.5
+(define-mixin-category dressing_well-41.3.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-PATIENT)
+  :binds ((SPARSER::PATIENT PRONOUN)
+          (SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :O PATIENT)))
+
+(define-mixin-category drive-11.5
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION (OR PHYSICAL-AGENT LOCATION REGION)) (SOURCE LOCATION)
-          (THEME PHYSICAL) (AGENT (OR PHYSICAL-AGENT MOTOR-VEHICLE)))
-  :realization ((:S "Agent" :O "Theme" :PREP "to" :IO "Destination" :PREP :NP
-                 "Initial_Location")
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP
-                 "to towards" :NP "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
-                (:S "Agent" :O "Theme" :PREP "to towards" :IO "Destination")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::DESTINATION (:OR PHYSICAL-AGENT LOCATION REGION))
+          (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT MOTOR-VEHICLE)))
+  :realization ((:S AGENT :O THEME)
+                (:S AGENT :O THEME :TO DESTINATION :TOWARDS DESTINATION)
+                (:S AGENT :O THEME :NIL SOURCE)
+                (:S AGENT :O THEME :NIL SOURCE :TO DESTINATION :TOWARDS
+                 DESTINATION)
+                (:S AGENT :O THEME :TO DESTINATION :NIL SOURCE)))
 
- (define-mixin-category drive-11.5-1
+(define-mixin-category drive-11.5-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :PREP "to" :IO "Destination" :PREP :NP
-                 "Initial_Location")
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP "to"
-                 :NP "Destination")
-                (:S "Agent" :O "Theme" :PREP "to" :IO "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
-                (:S "Agent" :O "Theme"))) 
+  :mixins (DRIVE-11.5)
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)
+                (:S AGENT :O THEME :TO DESTINATION)
+                (:S AGENT :O THEME :NIL SOURCE :TO DESTINATION)
+                (:S AGENT :O THEME :TO DESTINATION :NIL SOURCE)))
 
- (define-mixin-category dub-29.3
+(define-mixin-category dub-29.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-RESULT)
-  :binds ((THEME (OR PHYSICAL COMPANY)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Theme" :IO "Result"))) 
+  :binds ((SPARSER::THEME (:OR PHYSICAL COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :IO THEME O RESULT-ROLE) (:S AGENT :O THEME)))
 
- (define-mixin-category earn-54.6
+(define-mixin-category earn-54.6
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-EXTENT)
-  :realization ((:S "Theme" :O "Asset"))) 
+  :realization ((:S THEME :O EXTENT)))
 
- (define-mixin-category eat-39.1
+(define-mixin-category eat-39.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-CAUSE)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization NIL) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT)))
 
- (define-mixin-category eat-39.1-1
+(define-mixin-category eat-39.1-1
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT)
-  :binds ((PATIENT (AND/OR PATHOGEN SOLID)))
-  :realization ((:S "Agent" :PREP :NP "Source") (:S "Agent")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT (:AND/OR PATHOGEN SOLID)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT) (:S AGENT :NIL SOURCE)))
 
- (define-mixin-category eat-39.1-2
+(define-mixin-category eat-39.1-2
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT)
-  :binds ((PATIENT (AND/OR PATHOGEN SOLID)))
-  :realization ((:S "Agent" :PREP :NP "Source") (:S "Agent")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT (:AND/OR PATHOGEN SOLID)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT) (:S AGENT :NIL SOURCE)))
 
- (define-mixin-category eat-39.1-3
+(define-mixin-category eat-39.1-3
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT)
-  :binds ((PATIENT PATHOGEN))
-  :realization ((:S "Agent" :O "Patient") (:S "Agent"))) 
+  :binds ((SPARSER::PATIENT PATHOGEN))
+  :realization ((:S AGENT) (:S AGENT :O PATIENT)))
 
- (define-mixin-category empathize-88.2
+(define-mixin-category empathize-88.2
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-STIMULUS)
-  :binds ((EXPERIENCER (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Experiencer" :PREP "with" :IO "Stimulus")
-                (:S "Experiencer"))) 
+  :binds ((SPARSER::EXPERIENCER (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S EXPERIENCER) (:S EXPERIENCER :WITH STIMULUS)))
 
- (define-mixin-category employment-95.3
+(define-mixin-category employment-95.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT"))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Attribute" :IO "Co-Agent")
-                (:S "Agent" :PREP "on" :IO "Theme" :IO "Co-Agent")
-                (:S "Agent" :PREP "on | in | at" :IO "Theme")
-                (:S "Agent" :O "Co-Agent") (:S "Agent"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT)))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT) (:S AGENT :O AGENT)
+                (:S AGENT :ON THEME :|\|| THEME :IN THEME :|\|| THEME :AT
+                 THEME)
+                (:S AGENT :ON THEME :O AGENT) (:S AGENT :IO ATTRIBUTE O AGENT)))
 
- (define-mixin-category encounter-30.5
+(define-mixin-category encounter-30.5
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-STIMULUS)
-  :binds ((EXPERIENCER "PHYSICAL-AGENT"))
-  :realization ((:S "Experiencer" :O "Stimulus"))) 
+  :binds ((SPARSER::EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S EXPERIENCER :O STIMULUS)))
 
- (define-mixin-category enforce-63
+(define-mixin-category enforce-63
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (AND/OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:AND/OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category engender-27.1
+(define-mixin-category engender-27.1
   :specializes subcategorization-pattern
   :mixins (WITH-CAUSE WITH-THEME)
-  :binds ((THEME ABSTRACT))
-  :realization ((:S "Causer" :O "Theme"))) 
+  :binds ((SPARSER::THEME ABSTRACT))
+  :realization ((:S CAUSE :O THEME)))
 
- (define-mixin-category engender-27.1-1
+(define-mixin-category engender-27.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Causer" :O "Theme" :IO "Predicate"))) 
+  :mixins (ENGENDER-27.1)
+  :realization ((:S CAUSE :IO THEME O PREDICATE)))
 
- (define-mixin-category ensure-99
+(define-mixin-category ensure-99
   :specializes subcategorization-pattern
   :mixins (PREDICATION WITH-THEME WITH-BENEFICIARY)
-  :binds ((PREDICATE "PREDICATE"))
-  :realization ((:S "Precondition" :O "Theme" :PREP "for" :IO "Beneficiary")
-                (:S "Precondition" :O "Beneficiary" :IO "Theme")
-                (:S "Precondition" :O "Theme"))) 
+  :binds ((SPARSER::PREDICATE PREDICATE))
+  :realization ((:S PREDICATE :IO BENEFICIARY O THEME)
+                (:S PREDICATE :O THEME :FOR BENEFICIARY)
+                (:S PREDICATE :O THEME)))
 
- (define-mixin-category entity_specific_cos-45.5
+(define-mixin-category entity_specific_cos-45.5
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT)
-  :binds ((PATIENT PHYSICAL))
-  :realization ((:S "Patient"))) 
+  :binds ((SPARSER::PATIENT PHYSICAL))
+  :realization ((:S PATIENT)))
 
- (define-mixin-category entity_specific_modes_being-47.2
+(define-mixin-category entity_specific_modes_being-47.2
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
-  :binds ((CAUSE (AND/OR LOCATION REGION)))
-  :realization ((:S "Location" :PREP "with" :IO "Theme")
-                (:S :NP "Location" :NP "Theme") (:S "there" :O "Theme")
-                (:S "Theme" :PREP :NP "Location") (:S "Theme"))) 
+  :binds ((SPARSER::CAUSE (:AND/OR LOCATION REGION)))
+  :realization ((:S THEME) (:S THEME :NIL CAUSE) (:O THEME)
+                (:NIL CAUSE :O THEME) (:S CAUSE :WITH THEME)))
 
- (define-mixin-category equip-13.4.2
+(define-mixin-category equip-13.4.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Recipient" :PREP "with" :IO "Theme"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O RECIPIENT :WITH THEME)))
 
- (define-mixin-category equip-13.4.2-1
+(define-mixin-category equip-13.4.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Recipient"))) 
+  :mixins (EQUIP-13.4.2)
+  :realization ((:S AGENT :O RECIPIENT)))
 
- (define-mixin-category equip-13.4.2-1-1
+(define-mixin-category equip-13.4.2-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Recipient"))) 
+  :mixins (EQUIP-13.4.2-1)
+  :realization ((:S THEME :O RECIPIENT)))
 
- (define-mixin-category escape-51.1
+(define-mixin-category escape-51.1
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-PATH)
-  :binds ((PATH PHYSICAL) (DESTINATION PHYSICAL) (SOURCE PHYSICAL)
-          (THEME PHYSICAL))
-  :realization ((:S "Theme" :PREP :NP "Initial_Location" :PREP :IO
-                 "Destination")
-                (:S "Theme" :PREP :NP "Trajectory")
-                (:S "Theme" :PREP :NP "Destination"))) 
+  :binds ((SPARSER::PATH PHYSICAL) (SPARSER::DESTINATION PHYSICAL)
+          (SPARSER::SOURCE PHYSICAL) (SPARSER::THEME PHYSICAL))
+  :realization ((:S THEME :NIL DESTINATION) (:S THEME :NIL PATH)
+                (:S THEME :NIL SOURCE :NIL DESTINATION)))
 
- (define-mixin-category escape-51.1-1
+(define-mixin-category escape-51.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :PREP :NP "Initial_Location") (:S "Theme"))) 
+  :mixins (ESCAPE-51.1)
+  :realization ((:S THEME) (:S THEME :NIL SOURCE)))
 
- (define-mixin-category escape-51.1-1-1
+(define-mixin-category escape-51.1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Initial_Location"))) 
+  :mixins (ESCAPE-51.1-1)
+  :realization ((:S THEME :O SOURCE)))
 
- (define-mixin-category escape-51.1-1-2
+(define-mixin-category escape-51.1-1-2
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Destination"))) 
+  :mixins (ESCAPE-51.1-1)
+  :realization ((:S THEME :O DESTINATION)))
 
- (define-mixin-category escape-51.1-1-3
+(define-mixin-category escape-51.1-1-3
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Trajectory"))) 
+  :mixins (ESCAPE-51.1-1)
+  :realization ((:S THEME :O PATH)))
 
- (define-mixin-category establish-55.5
+(define-mixin-category establish-55.5
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category establish-55.5-1
+(define-mixin-category establish-55.5-1
   :specializes subcategorization-pattern
   :mixins (WITH-INSTRUMENT)
-  :binds ((INSTRUMENT "OBJECT"))
-  :realization ((:S "Agent" :O "Theme" :PREP "with" :IO "Instrument"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT))
+  :realization ((:S AGENT :O THEME :WITH INSTRUMENT)))
 
- (define-mixin-category estimate-34.2
+(define-mixin-category estimate-34.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-PATH)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "at" :IO "Value"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME :AT PATH)))
 
- (define-mixin-category estimate-34.2-1
+(define-mixin-category estimate-34.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Value") (:S "Agent" :O "Theme"))) 
+  :mixins (ESTIMATE-34.2)
+  :realization ((:S AGENT :O PATH) (:S AGENT :O THEME)))
 
- (define-mixin-category exceed-90
+(define-mixin-category exceed-90
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-THEME WITH-ATTRIBUTE)
-  :realization ((:S "Theme" :O "Co-Theme" :PREP "in" :IO "Attribute")
-                (:S "Theme" :O "Co-Theme"))) 
+  :realization ((:S THEME :O THEME) (:S THEME :O THEME :IN ATTRIBUTE)))
 
- (define-mixin-category exchange-13.6.1
+(define-mixin-category exchange-13.6.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-THEME WITH-AGENT)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "with" :IO "Co-Agent")
-                (:S "Agent" :PREP :NP "Theme") (:S "Agent" :O "Theme")
-                (:S "Agent" :O "Theme" :PREP "for" :IO "Co-Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME :FOR THEME) (:S AGENT :NIL THEME)
+                (:S AGENT :O THEME :WITH AGENT) (:S AGENT :O THEME)))
 
- (define-mixin-category exclude-107.3
+(define-mixin-category exclude-107.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-GOAL)
-  :binds ((THEME (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme")
-                (:S "Agent" :O "Theme" :PREP "from" :IO "Goal"))) 
+  :binds ((SPARSER::THEME (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME :FROM GOAL) (:S AGENT :O THEME)))
 
- (define-mixin-category exclude-107.3-1
+(define-mixin-category exclude-107.3-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :PREP "from" :IO "Goal"))) 
+  :mixins (EXCLUDE-107.3)
+  :realization ((:S AGENT :O THEME :FROM GOAL)))
 
- (define-mixin-category exhale-40.1.3
+(define-mixin-category exhale-40.1.3
   :specializes subcategorization-pattern
   :mixins (WITH-INSTRUMENT WITH-THEME)
-  :binds ((INSTRUMENT PHYSICAL-AGENT))
-  :realization NIL) 
+  :binds ((SPARSER::INSTRUMENT PHYSICAL-AGENT)))
 
- (define-mixin-category exhale-40.1.3-1
+(define-mixin-category exhale-40.1.3-1
   :specializes subcategorization-pattern
-  :realization ((:S "Pivot" :O "Theme") (:S "Pivot"))) 
+  :mixins (EXHALE-40.1.3)
+  :realization ((:S INSTRUMENT) (:S INSTRUMENT :O THEME)))
 
- (define-mixin-category exhale-40.1.3-2
+(define-mixin-category exhale-40.1.3-2
   :specializes subcategorization-pattern
-  :realization ((:S "Pivot" :O "Theme") (:S "Pivot"))) 
+  :mixins (EXHALE-40.1.3)
+  :realization ((:S INSTRUMENT) (:S INSTRUMENT :O THEME)))
 
- (define-mixin-category exist-47.1
+(define-mixin-category exist-47.1
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
-  :realization ((:S "Theme" :PREP :NP "Location") (:S "Theme"))) 
+  :realization ((:S THEME) (:S THEME :NIL CAUSE)))
 
- (define-mixin-category exist-47.1-1
+(define-mixin-category exist-47.1-1
   :specializes subcategorization-pattern
   :mixins (WITH-INSTRUMENT WITH-MANNER)
-  :binds ((MANNER "ADVERB") (INSTRUMENT "OBJECT"))
-  :realization ((:S "Theme" :PREP :NP "Manner") (:S "Theme" :PREP :NP "Pivot")
-                (:S "Theme" :O "Pivot"))) 
+  :binds ((SPARSER::MANNER ADVERB) (SPARSER::INSTRUMENT OBJECT))
+  :realization ((:S THEME :O INSTRUMENT) (:S THEME :NIL INSTRUMENT)
+                (:S THEME :NIL MANNER)))
 
- (define-mixin-category feeding-39.7
+(define-mixin-category feeding-39.7
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT)
-  :binds ((RECIPIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Recipient" :IO "Theme")
-                (:S "Agent" :O "Theme" :PREP "to" :IO "Recipient")
-                (:S "Agent" :O "Recipient"))) 
+  :binds ((SPARSER::RECIPIENT PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O RECIPIENT) (:S AGENT :O THEME :TO RECIPIENT)
+                (:S AGENT :IO RECIPIENT O THEME)))
 
- (define-mixin-category ferret-35.6
+(define-mixin-category ferret-35.6
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-SOURCE WITH-THEME)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :PREP :NP "Source"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME :NIL SOURCE)))
 
- (define-mixin-category fill-9.8
+(define-mixin-category fill-9.8
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
-          (THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Destination") (:S "Theme" :O "Destination")
-                (:S "Agent" :O "Destination" :PREP "with" :IO "Theme"))) 
+  :binds ((SPARSER::DESTINATION (:AND/OR LOCATION REGION))
+          (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O DESTINATION :WITH THEME) (:S THEME :O DESTINATION)
+                (:S AGENT :O DESTINATION)))
 
- (define-mixin-category fill-9.8-1
+(define-mixin-category fill-9.8-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Destination" :PREP "in" :IO "Theme"))) 
+  :mixins (FILL-9.8)
+  :realization ((:S AGENT :O DESTINATION :IN THEME)))
 
- (define-mixin-category fire-10.10
+(define-mixin-category fire-10.10
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-GOAL WITH-ATTRIBUTE)
-  :binds ((SOURCE COMPANY) (THEME (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "as" :IO "Attribute")
-                (:S "Agent" :O "Theme" :PREP "from" :IO "Source")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::SOURCE COMPANY)
+          (SPARSER::THEME (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :FROM SOURCE)
+                (:S AGENT :O THEME :AS ATTRIBUTE)))
 
- (define-mixin-category fit-54.3
+(define-mixin-category fit-54.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATH WITH-CAUSE)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Value" :PREP "in" :IO "Location")
-                (:S "Location" :O "Value"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S CAUSE :O PATH) (:S AGENT :O PATH :IN CAUSE)))
 
- (define-mixin-category flinch-40.5
+(define-mixin-category flinch-40.5
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-STIMULUS)
-  :binds ((EXPERIENCER PHYSICAL-AGENT))
-  :realization ((:S "Experiencer" :PREP "at from" :IO "Stimulus")
-                (:S "Experiencer"))) 
+  :binds ((SPARSER::EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S EXPERIENCER) (:S EXPERIENCER :AT STIMULUS :FROM STIMULUS)))
 
- (define-mixin-category floss-41.2.1
+(define-mixin-category floss-41.2.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT)
-  :binds ((INSTRUMENT "OBJECT") (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent") (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT)
+                (:S AGENT :O PATIENT :WITH INSTRUMENT)
+                (:S AGENT :WITH INSTRUMENT)))
 
- (define-mixin-category focus-87.1
+(define-mixin-category focus-87.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-TOPIC)
-  :binds ((AGENT (OR PHYSICAL-AGENT)))
-  :realization ((:S "Agent" :PREP "on" :IO "Topic"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT)))
+  :realization ((:S AGENT :ON TOPIC)))
 
- (define-mixin-category focus-87.1-1
+(define-mixin-category focus-87.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "about" :IO "Topic") (:S "Agent"))) 
+  :mixins (FOCUS-87.1)
+  :realization ((:S AGENT) (:S AGENT :ABOUT TOPIC)))
 
- (define-mixin-category forbid-64.4
+(define-mixin-category forbid-64.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-BENEFICIARY)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Beneficiary" :PREP "from" :IO "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O BENEFICIARY :FROM THEME)))
 
- (define-mixin-category forbid-64.4-1
+(define-mixin-category forbid-64.4-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (FORBID-64.4)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category free-10.6.3
-  :specializes subcategorization-pattern
-  :mixins (WITH-CAUSE WITH-SOURCE WITH-THEME)
-  :binds ((SOURCE (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Causer" :O "Source" :PREP "of" :IO "Theme"))) 
-
- (define-mixin-category free-10.6.3-1
-  :specializes subcategorization-pattern
-  :realization ((:S "Causer" :O "Source" :PREP "of" :IO "Theme"))) 
-
- (define-mixin-category free-10.6.3-1-1
-  :specializes subcategorization-pattern
-  :realization ((:S "Causer" :O "Source" :PREP "from" :IO "Theme"))) 
-
- (define-mixin-category free-80
+(define-mixin-category free-10.6.3
   :specializes subcategorization-pattern
   :mixins (WITH-CAUSE WITH-SOURCE WITH-THEME)
-  :binds ((SOURCE (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Causer" :O "Source" :PREP "of" :IO "Theme"))) 
+  :binds ((SPARSER::SOURCE (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S CAUSE :O SOURCE :OF THEME)))
 
- (define-mixin-category free-80-1
+(define-mixin-category free-10.6.3-1
   :specializes subcategorization-pattern
-  :realization ((:S "Causer" :O "Source" :PREP "of" :IO "Theme"))) 
+  :mixins (FREE-10.6.3)
+  :realization ((:S CAUSE :O SOURCE :OF THEME)))
 
- (define-mixin-category free-80-1-1
+(define-mixin-category free-10.6.3-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Causer" :O "Source" :PREP "from" :IO "Theme"))) 
+  :mixins (FREE-10.6.3-1)
+  :realization ((:S CAUSE :O SOURCE :FROM THEME)))
 
- (define-mixin-category fulfilling-13.4.1
+(define-mixin-category free-80
+  :specializes subcategorization-pattern
+  :mixins (WITH-CAUSE WITH-SOURCE WITH-THEME)
+  :binds ((SPARSER::SOURCE (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S CAUSE :O SOURCE :OF THEME)))
+
+(define-mixin-category free-80-1
+  :specializes subcategorization-pattern
+  :mixins (FREE-80)
+  :realization ((:S CAUSE :O SOURCE :OF THEME)))
+
+(define-mixin-category free-80-1-1
+  :specializes subcategorization-pattern
+  :mixins (FREE-80-1)
+  :realization ((:S CAUSE :O SOURCE :FROM THEME)))
+
+(define-mixin-category fulfilling-13.4.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme")
-                (:S "Agent" :O "Recipient" :PREP "with" :IO "Theme")
-                (:S "Agent" :O "Theme" :PREP "to | for" :IO "Recipient"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME :TO RECIPIENT :|\|| RECIPIENT :FOR
+                 RECIPIENT)
+                (:S AGENT :O RECIPIENT :WITH THEME) (:S AGENT :O THEME)))
 
- (define-mixin-category fulfilling-13.4.1-1
+(define-mixin-category fulfilling-13.4.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Recipient"))) 
+  :mixins (FULFILLING-13.4.1)
+  :realization ((:S AGENT :O RECIPIENT)))
 
- (define-mixin-category fulfilling-13.4.1-2
+(define-mixin-category fulfilling-13.4.1-2
   :specializes subcategorization-pattern
   :mixins (WITH-RECIPIENT WITH-AGENT)
-  :binds ((AGENT (OR ABSTRACT PHYSICAL-AGENT))
-          (RECIPIENT (OR ABSTRACT PHYSICAL-AGENT)))
-  :realization ((:S "Agent" :PREP "for" :IO "Recipient"))) 
+  :binds ((SPARSER::AGENT (:OR ABSTRACT PHYSICAL-AGENT))
+          (SPARSER::RECIPIENT (:OR ABSTRACT PHYSICAL-AGENT)))
+  :realization ((:S AGENT :FOR RECIPIENT)))
 
- (define-mixin-category function-105.2.1
+(define-mixin-category function-105.2.1
   :specializes subcategorization-pattern
   :mixins (WITH-THEME)
-  :realization ((:S "Theme"))) 
+  :realization ((:S THEME)))
 
- (define-mixin-category function-105.2.1-1
+(define-mixin-category function-105.2.1-1
   :specializes subcategorization-pattern
   :mixins (PREDICATION)
-  :binds ((PREDICATE "PREDICATE"))
-  :realization ((:S "Theme" :O "Predicate"))) 
+  :binds ((SPARSER::PREDICATE PREDICATE))
+  :realization ((:S THEME :O PREDICATE)))
 
- (define-mixin-category funnel-9.3
+(define-mixin-category funnel-9.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
-          (THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :IO "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+  :binds ((SPARSER::DESTINATION (:AND/OR LOCATION REGION))
+          (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME :NIL DESTINATION)
+                (:S AGENT :IO THEME O DESTINATION)))
 
- (define-mixin-category funnel-9.3-1
+(define-mixin-category funnel-9.3-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :PREP "between in_between" :IO
-                 "Destination"))) 
+  :mixins (FUNNEL-9.3)
+  :realization ((:S AGENT :O THEME :BETWEEN DESTINATION :IN_BETWEEN
+                 DESTINATION)))
 
- (define-mixin-category funnel-9.3-1-1
+(define-mixin-category funnel-9.3-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :PREP "into" :IO "Destination"))) 
+  :mixins (FUNNEL-9.3-1)
+  :realization ((:S THEME :INTO DESTINATION)))
 
- (define-mixin-category future_having-13.3
+(define-mixin-category future_having-13.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-BENEFICIARY WITH-GOAL)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Theme" :IO "Beneficiary" :IO "Goal")
-                (:S "Agent" :O "Theme" :PREP "for" :IO "Goal")
-                (:S "Agent" :O "Goal" :IO "Theme") (:S "Agent" :O "Theme")
-                (:S "Agent" :O "Theme" :PREP "to" :IO "Goal"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :O THEME :TO GOAL) (:S AGENT :O THEME)
+                (:S AGENT :IO GOAL O THEME) (:S AGENT :O THEME :FOR GOAL)
+                (:S AGENT)))
 
- (define-mixin-category future_having-13.3-1
+(define-mixin-category future_having-13.3-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Beneficiary" :IO "Theme" :IO "Goal"))) 
+  :mixins (FUTURE_HAVING-13.3)
+  :realization ((:S AGENT)))
 
- (define-mixin-category get-13.5.1
+(define-mixin-category get-13.5.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-BENEFICIARY WITH-EXTENT)
-  :binds ((EXTENT (AND/OR LOCATION REGION))
-          (BENEFICIARY (OR PHYSICAL-AGENT COMPANY)) (SOURCE PHYSICAL)
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "from" :IO "Source" :PREP "at for"
-                 :NP "Asset")
-                (:S "Asset" :O "Theme")
-                (:S "Agent" :O "Theme" :PREP "for" :IO "Asset")
-                (:S "Agent" :O "Beneficiary" :IO "Theme")
-                (:S "Agent" :O "Theme" :PREP "for" :IO "Beneficiary")
-                (:S "Agent" :O "Theme" :PREP "from" :IO "Source")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::EXTENT (:AND/OR LOCATION REGION))
+          (SPARSER::BENEFICIARY (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::SOURCE PHYSICAL)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :FROM SOURCE)
+                (:S AGENT :O THEME :FOR BENEFICIARY)
+                (:S AGENT :IO BENEFICIARY O THEME)
+                (:S AGENT :O THEME :FOR EXTENT) (:S EXTENT :O THEME)
+                (:S AGENT :O THEME :FROM SOURCE :AT EXTENT :FOR EXTENT)))
 
- (define-mixin-category get-13.5.1-1
+(define-mixin-category get-13.5.1-1
   :specializes subcategorization-pattern
   :mixins (WITH-SOURCE)
-  :binds ((SOURCE ABSTRACT))
-  :realization ((:S "Agent" :O "Theme" :PREP "from for on" :IO "Source"))) 
+  :binds ((SPARSER::SOURCE ABSTRACT))
+  :realization ((:S AGENT :O THEME :FROM SOURCE :FOR SOURCE :ON SOURCE)))
 
- (define-mixin-category give-13.1
+(define-mixin-category give-13.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "to" :IO "Recipient") (:S "Agent" :O "Theme")
-                (:S "Agent" :O "Recipient" :IO "Theme")
-                (:S "Agent" :O "Theme" :PREP "to" :IO "Recipient"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME :TO RECIPIENT)
+                (:S AGENT :IO RECIPIENT O THEME) (:S AGENT :O THEME)
+                (:S AGENT :TO RECIPIENT)))
 
- (define-mixin-category give-13.1-1
+(define-mixin-category give-13.1-1
   :specializes subcategorization-pattern
   :mixins (WITH-EXTENT)
-  :realization ((:S "Agent" :O "Recipient" :IO "Theme" :PREP "at for on" :IO
-                 "Asset")
-                (:S "Agent" :O "Theme" :PREP "to" :IO "Recipient" :PREP
-                 "at for on" :NP "Asset")
-                (:S "Agent" :O "Theme" :PREP "for at" :IO "Asset"))) 
+  :realization ((:S AGENT :O THEME :FOR EXTENT :AT EXTENT)
+                (:S AGENT :O THEME :TO RECIPIENT :AT EXTENT :FOR EXTENT :ON
+                 EXTENT)
+                (:S AGENT :IO RECIPIENT O THEME :AT EXTENT :FOR EXTENT :ON
+                 EXTENT)))
 
- (define-mixin-category gobble-39.3
+(define-mixin-category gobble-39.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization NIL) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT)))
 
- (define-mixin-category gobble-39.3-1
+(define-mixin-category gobble-39.3-1
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT)
-  :binds ((PATIENT (AND/OR NIL SOLID)))
-  :realization ((:S "Agent" :O "Patient" :LEX "down")
-                (:S "Agent" :O "Patient" :LEX "up") (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT (:AND/OR NIL SOLID)))
+  :realization ((:S AGENT :O PATIENT)))
 
- (define-mixin-category gobble-39.3-2
+(define-mixin-category gobble-39.3-2
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT)
-  :binds ((PATIENT (AND/OR NIL SOLID)))
-  :realization ((:S "Agent" :O "Patient" :LEX "down") (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT (:AND/OR NIL SOLID)))
+  :realization ((:S AGENT :O PATIENT)))
 
- (define-mixin-category gorge-39.6
+(define-mixin-category gorge-39.6
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :PREP "on" :IO "Patient"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :ON PATIENT)))
 
- (define-mixin-category groom-41.1.2
+(define-mixin-category groom-41.1.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT)
-  :binds ((PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O PATIENT)))
 
- (define-mixin-category grow-26.2.1
+(define-mixin-category grow-26.2.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-PRODUCT)
-  :binds ((PRODUCT PHYSICAL) (PATIENT PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Patient" :PREP "into" :IO "Product")
-                (:S "Agent" :O "Product" :PREP "from out_of" :IO "Patient")
-                (:S "Product" :PREP "from out_of" :IO "Patient")
-                (:S "Patient" :PREP "into" :IO "Product"))) 
+  :binds ((SPARSER::PRODUCT PHYSICAL) (SPARSER::PATIENT PHYSICAL)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S PATIENT :INTO PRODUCT)
+                (:S PRODUCT :FROM PATIENT :OUT_OF PATIENT)
+                (:S AGENT :O PRODUCT :FROM PATIENT :OUT_OF PATIENT)
+                (:S AGENT :O PATIENT :INTO PRODUCT)))
 
- (define-mixin-category harmonize-22.6
+(define-mixin-category harmonize-22.6
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-THEME)
-  :realization ((:S "Theme") (:S "Theme" :ADV :NP "Co-Theme")
-                (:S "Theme" :O "Co-Theme") (:S "Theme" :ADV))) 
+  :realization ((:S THEME :O THEME) (:S THEME)))
 
- (define-mixin-category help-72.1
+(define-mixin-category help-72.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-BENEFICIARY WITH-THEME)
-  :binds ((BENEFICIARY (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization NIL) 
+  :binds ((SPARSER::BENEFICIARY (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))))
 
- (define-mixin-category help-72.1-1
+(define-mixin-category help-72.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "with" :IO "Theme")
-                (:S "Agent" :O "Beneficiary" :IO "Theme")
-                (:S "Agent" :O "Beneficiary" :PREP "with" :IO "Theme")
-                (:S "Agent" :O "Beneficiary"))) 
+  :mixins (HELP-72.1)
+  :realization ((:S AGENT :O BENEFICIARY) (:S AGENT :O BENEFICIARY :WITH THEME)
+                (:S AGENT :IO BENEFICIARY O THEME) (:S AGENT :WITH THEME)))
 
- (define-mixin-category help-72.1-1-1
+(define-mixin-category help-72.1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "with" :IO "Theme"))) 
+  :mixins (HELP-72.1-1)
+  :realization ((:S AGENT :WITH THEME)))
 
- (define-mixin-category help-72.1-2
+(define-mixin-category help-72.1-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "with | for" :IO "Beneficiary"))) 
+  :mixins (HELP-72.1)
+  :realization ((:S AGENT :WITH BENEFICIARY :|\|| BENEFICIARY :FOR BENEFICIARY)))
 
- (define-mixin-category herd-47.5.2
+(define-mixin-category herd-47.5.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((THEME (AND/OR PHYSICAL COLLECTION)) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :LEX "together") (:S "Agent" :O "Theme")
-                (:S "Theme"))) 
+  :binds ((SPARSER::THEME (:AND/OR PHYSICAL COLLECTION))
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S THEME) (:S AGENT :O THEME)))
 
- (define-mixin-category hiccup-40.1.1
+(define-mixin-category hiccup-40.1.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT)))
 
- (define-mixin-category hire-13.5.3
+(define-mixin-category hire-13.5.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
-  :binds ((THEME (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :IO "Attribute")
-                (:S "Agent" :O "Theme" :PREP "as" :IO "Attribute")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::THEME (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :AS ATTRIBUTE)
+                (:S AGENT :IO THEME O ATTRIBUTE)))
 
- (define-mixin-category hit-18.1
+(define-mixin-category hit-18.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT)
-  :binds ((INSTRUMENT PHYSICAL) (PATIENT PHYSICAL))
-  :realization ((:S "Instrument" :O "Patient" :PREP "to into" :IO "Result")
-                (:S "Instrument" :O "Patient" :IO "Result")
-                (:S "Instrument" :O "Patient")
-                (:S "Agent" :O "Instrument" :PREP "against on" :IO "Patient")
-                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result" :PREP
-                 "with" :NP "Instrument")
-                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
-                (:S "Agent" :O "Patient" :IO "Result" :PREP "with" :IO
-                 "Instrument")
-                (:S "Agent" :O "Patient" :IO "Result")
-                (:S "Agent" :O "Patient" :LEX "together")
-                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::INSTRUMENT PHYSICAL) (SPARSER::PATIENT PHYSICAL))
+  :realization ((:S AGENT :O PATIENT :WITH INSTRUMENT) (:S AGENT :O PATIENT)
+                (:S AGENT :IO PATIENT O RESULT-ROLE)
+                (:S AGENT :IO PATIENT O RESULT-ROLE :WITH INSTRUMENT)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE :WITH
+                 INSTRUMENT)
+                (:S AGENT :O INSTRUMENT :AGAINST PATIENT :ON PATIENT)
+                (:S INSTRUMENT :O PATIENT)
+                (:S INSTRUMENT :IO PATIENT O RESULT-ROLE)
+                (:S INSTRUMENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE)))
 
- (define-mixin-category hit-18.1-1
+(define-mixin-category hit-18.1-1
   :specializes subcategorization-pattern
   :mixins (WITH-INSTRUMENT)
-  :binds ((INSTRUMENT (OR NIL PRONOUN)))
-  :realization ((:S "Agent" :LEX "at" :IO "Patient" :PREP "with" :IO
-                 "Instrument")
-                (:S "Agent" :LEX "at" :IO "Patient"))) 
+  :binds ((SPARSER::INSTRUMENT (:OR NIL PRONOUN)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :WITH INSTRUMENT)))
 
- (define-mixin-category hold-15.1
+(define-mixin-category hold-15.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((THEME (OR NIL PHYSICAL)) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::THEME (:OR NIL PHYSICAL)) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category hunt-35.1
+(define-mixin-category hunt-35.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent") (:S "Agent" :O "Theme")
-                (:S "Agent" :O "Theme" :PREP :NP "Location")
-                (:S "Agent" :PREP :NP "Location" :PREP "for" :NP "Theme")
-                (:S "Agent" :PREP "for" :IO "Theme" :PREP :NP "Location")
-                (:S "Agent" :O "Location" :PREP "for" :IO "Theme"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O CAUSE :FOR THEME) (:S AGENT :FOR THEME :NIL CAUSE)
+                (:S AGENT :NIL CAUSE :FOR THEME) (:S AGENT :O THEME :NIL CAUSE)
+                (:S AGENT :O THEME) (:S AGENT)))
 
- (define-mixin-category hurt-40.8.3
+(define-mixin-category hurt-40.8.3
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER)
-  :binds ((EXPERIENCER PHYSICAL-AGENT))
-  :realization NIL) 
+  :binds ((SPARSER::EXPERIENCER PHYSICAL-AGENT)))
 
- (define-mixin-category hurt-40.8.3-1
+(define-mixin-category hurt-40.8.3-1
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT)
-  :realization ((:S "Experiencer" :O "Patient"))) 
+  :realization ((:S EXPERIENCER :O PATIENT)))
 
- (define-mixin-category hurt-40.8.3-1-1
+(define-mixin-category hurt-40.8.3-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Patient"))) 
+  :mixins (HURT-40.8.3-1)
+  :realization ((:S PATIENT)))
 
- (define-mixin-category hurt-40.8.3-2
+(define-mixin-category hurt-40.8.3-2
   :specializes subcategorization-pattern
-  :realization ((:S "Experiencer" :O "Patient"))) 
+  :mixins (HURT-40.8.3)
+  :realization ((:S EXPERIENCER :O PATIENT)))
 
- (define-mixin-category illustrate-25.3
-  :specializes subcategorization-pattern
-  :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
-  :binds ((DESTINATION PHYSICAL) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization ((:S "Agent" :O "Destination" :PREP "with" :IO "Theme")
-                (:S "Agent" :O "Destination"))) 
-
- (define-mixin-category image_impression-25.1
+(define-mixin-category illustrate-25.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
-  :binds ((DESTINATION PHYSICAL))
-  :realization ((:S "Agent") (:S "Agent" :O "Theme")
-                (:S "Agent" :O "Destination")
-                (:S "Agent" :O "Destination" :PREP "with" :IO "Theme")
-                (:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+  :binds ((SPARSER::DESTINATION PHYSICAL)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S AGENT :O DESTINATION) (:S AGENT :O DESTINATION :WITH THEME)))
 
- (define-mixin-category indicate-78
+(define-mixin-category image_impression-25.1
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
+  :binds ((SPARSER::DESTINATION PHYSICAL))
+  :realization ((:S AGENT :O THEME :NIL DESTINATION)
+                (:S AGENT :O DESTINATION :WITH THEME) (:S AGENT :O DESTINATION)
+                (:S AGENT :O THEME) (:S AGENT)))
+
+(define-mixin-category indicate-78
   :specializes subcategorization-pattern
   :mixins (WITH-RECIPIENT WITH-CAUSE WITH-TOPIC)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Causer" :O "Topic"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S CAUSE :O TOPIC)))
 
- (define-mixin-category indicate-78-1
+(define-mixin-category indicate-78-1
   :specializes subcategorization-pattern
-  :realization ((:S "Causer" :PREP "to" :IO "Recipient" :IO "Topic"))) 
+  :mixins (INDICATE-78)
+  :realization ((:S CAUSE :TO RECIPIENT :O TOPIC)))
 
- (define-mixin-category indicate-78-1-1
+(define-mixin-category indicate-78-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Causer" :O "Topic"))) 
+  :mixins (INDICATE-78-1)
+  :realization ((:S CAUSE :O TOPIC)))
 
- (define-mixin-category initiate_communication-37.4.2
+(define-mixin-category initiate_communication-37.4.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-RECIPIENT)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Recipient"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O RECIPIENT)))
 
- (define-mixin-category initiate_communication-37.4.2-1
+(define-mixin-category initiate_communication-37.4.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent"))) 
+  :mixins (INITIATE_COMMUNICATION-37.4.2)
+  :realization ((:S AGENT)))
 
- (define-mixin-category inquire-37.1.2
+(define-mixin-category inquire-37.1.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-RECIPIENT WITH-TOPIC)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "of" :IO "Recipient" :PREP "about" :IO
-                 "Topic")
-                (:S "Agent" :PREP "of" :IO "Recipient" :IO "Topic")
-                (:S "Agent" :PREP "about" :IO "Topic")
-                (:S "Agent" :O "Recipient" :IO "Topic")
-                (:S "Agent" :O "Recipient" :PREP "about" :IO "Topic")
-                (:S "Agent" :O "Recipient") (:S "Agent")
-                (:S "Agent" :O "Topic"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT) (:S AGENT :O RECIPIENT)
+                (:S AGENT :O RECIPIENT :ABOUT TOPIC) (:S AGENT :ABOUT TOPIC)
+                (:S AGENT :OF RECIPIENT :O TOPIC)
+                (:S AGENT :OF RECIPIENT :ABOUT TOPIC) (:S AGENT :O TOPIC)
+                (:S AGENT :IO RECIPIENT O TOPIC)))
 
- (define-mixin-category instr_communication-37.4.1
+(define-mixin-category instr_communication-37.4.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-TOPIC WITH-RECIPIENT)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (TOPIC SPEECH-ACT)
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "for" :IO "Topic")
-                (:S "Agent" :O "Recipient" :PREP "about" :IO "Topic")
-                (:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
-                (:S "Agent" :O "Recipient" :IO "Topic")
-                (:S "Agent" :O "Topic" :PREP "to" :IO "Recipient")
-                (:S "Agent" :O "Recipient") (:S "Agent" :O "Topic"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::TOPIC SPEECH-ACT)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O RECIPIENT) (:S AGENT :O TOPIC :TO RECIPIENT)
+                (:S AGENT :O RECIPIENT :ABOUT TOPIC) (:S AGENT :O TOPIC)
+                (:S AGENT :IO RECIPIENT O TOPIC)
+                (:S AGENT :TO RECIPIENT :O TOPIC) (:S AGENT :FOR TOPIC)))
 
- (define-mixin-category intend-61.2
+(define-mixin-category intend-61.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-TOPIC WITH-ATTRIBUTE)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Topic" :PREP "as" :IO "Attribute")
-                (:S "Agent" :O "Topic"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O TOPIC) (:S AGENT :O TOPIC :AS ATTRIBUTE)))
 
- (define-mixin-category intend-61.2-1
+(define-mixin-category intend-61.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Topic"))) 
+  :mixins (INTEND-61.2)
+  :realization ((:S AGENT :O TOPIC)))
 
- (define-mixin-category intend-61.2-1-1
+(define-mixin-category intend-61.2-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Topic"))) 
+  :mixins (INTEND-61.2-1)
+  :realization ((:S AGENT :O TOPIC)))
 
- (define-mixin-category interact-36.6
+(define-mixin-category interact-36.6
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT)
-  :binds ((AGENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :PREP "with" :IO "Co-Agent") (:S "Agent"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT) (:S AGENT :WITH AGENT)))
 
- (define-mixin-category interrogate-37.1.3
+(define-mixin-category interrogate-37.1.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-RECIPIENT WITH-TOPIC WITH-ATTRIBUTE)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Recipient" :PREP "about" :IO "Topic")
-                (:S "Agent" :O "Recipient" :PREP "as" :IO "Attribute")
-                (:S "Agent" :O "Recipient"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O RECIPIENT) (:S AGENT :O RECIPIENT :AS ATTRIBUTE)
+                (:S AGENT :O RECIPIENT :ABOUT TOPIC)))
 
- (define-mixin-category invest-13.5.4
+(define-mixin-category invest-13.5.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-EXTENT WITH-GOAL)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Goal"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O GOAL)))
 
- (define-mixin-category invest-13.5.4-1
+(define-mixin-category invest-13.5.4-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Asset" :IO "Theme")
-                (:S "Agent" :O "Asset" :IO "Goal"))) 
+  :mixins (INVEST-13.5.4)
+  :realization ((:S AGENT :IO EXTENT O GOAL) (:S AGENT :IO EXTENT O THEME)))
 
- (define-mixin-category investigate-35.4
+(define-mixin-category investigate-35.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Location")
-                (:S "Agent" :O "Location" :PREP "for" :IO "Theme"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O CAUSE :FOR THEME) (:S AGENT :O CAUSE)))
 
- (define-mixin-category involve-107.1
+(define-mixin-category involve-107.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-GOAL)
-  :binds ((THEME (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "in" :IO "Goal")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::THEME (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :IN GOAL)))
 
- (define-mixin-category judgment-33.1
+(define-mixin-category judgment-33.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
-  :realization ((:S "Agent" :O "Attribute")
-                (:S "Agent" :O "Theme" :PREP "for" :IO "Attribute")
-                (:S "Agent" :O "Theme"))) 
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :FOR ATTRIBUTE)
+                (:S AGENT :O ATTRIBUTE)))
 
- (define-mixin-category judgment-33.1-1
+(define-mixin-category judgment-33.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :PREP "as" :IO "Attribute"))) 
+  :mixins (JUDGMENT-33.1)
+  :realization ((:S AGENT :O THEME :AS ATTRIBUTE)))
 
- (define-mixin-category judgment-33.1-1-1
+(define-mixin-category judgment-33.1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :IO "Attribute"))) 
+  :mixins (JUDGMENT-33.1-1)
+  :realization ((:S AGENT :IO THEME O ATTRIBUTE)))
 
- (define-mixin-category keep-15.2
+(define-mixin-category keep-15.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-CAUSE)
-  :binds ((CAUSE (AND/OR LOCATION REGION)) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme")
-                (:S "Agent" :O "Theme" :PREP :NP "Location"))) 
+  :binds ((SPARSER::CAUSE (:AND/OR LOCATION REGION))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME :NIL CAUSE) (:S AGENT :O THEME)))
 
- (define-mixin-category knead-26.5
+(define-mixin-category knead-26.5
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PRODUCT WITH-MATERIAL)
-  :binds ((MATERIAL "PHYSICAL") (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization ((:S "Agent" :O "Material")
-                (:S "Agent" :O "Material" :PREP "into" :IO "Product")
-                (:S "Material" :PREP "into" :IO "Product"))) 
+  :binds ((SPARSER::MATERIAL PHYSICAL)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S MATERIAL :INTO PRODUCT)
+                (:S AGENT :O MATERIAL :INTO PRODUCT) (:S AGENT :O MATERIAL)))
 
- (define-mixin-category learn-14
+(define-mixin-category learn-14
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-TOPIC WITH-SOURCE)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Topic") (:S "Agent" :PREP "from" :IO "Source")
-                (:S "Agent" :O "Topic" :PREP "from" :IO "Source"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O TOPIC :FROM SOURCE) (:S AGENT :FROM SOURCE)
+                (:S AGENT :O TOPIC)))
 
- (define-mixin-category learn-14-1
+(define-mixin-category learn-14-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent"))) 
+  :mixins (LEARN-14)
+  :realization ((:S AGENT)))
 
- (define-mixin-category learn-14-2
+(define-mixin-category learn-14-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "from" :IO "Source" :IO "Topic")
-                (:S "Agent" :O "Topic"))) 
+  :mixins (LEARN-14)
+  :realization ((:S AGENT :O TOPIC) (:S AGENT :FROM SOURCE :O TOPIC)))
 
- (define-mixin-category learn-14-2-1
+(define-mixin-category learn-14-2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "of about" :IO "Topic"))) 
+  :mixins (LEARN-14-2)
+  :realization ((:S AGENT :OF TOPIC :ABOUT TOPIC)))
 
- (define-mixin-category leave-51.2
+(define-mixin-category leave-51.2
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-SOURCE WITH-GOAL)
-  :binds ((SOURCE PHYSICAL-AGENT) (THEME PHYSICAL-AGENT))
-  :realization ((:S "Theme" :O "Source"))) 
+  :binds ((SPARSER::SOURCE PHYSICAL-AGENT) (SPARSER::THEME PHYSICAL-AGENT))
+  :realization ((:S THEME :O SOURCE)))
 
- (define-mixin-category leave-51.2-1
+(define-mixin-category leave-51.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme"))) 
+  :mixins (LEAVE-51.2)
+  :realization ((:S THEME)))
 
- (define-mixin-category lecture-37.11
+(define-mixin-category lecture-37.11
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-TOPIC WITH-RECIPIENT)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "about" :IO "Topic"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :ABOUT TOPIC)))
 
- (define-mixin-category lecture-37.11-1
+(define-mixin-category lecture-37.11-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :PREP "about" :IO
-                 "Topic")
-                (:S "Agent" :PREP "about" :IO "Topic") (:S "Agent"))) 
+  :mixins (LECTURE-37.11)
+  :realization ((:S AGENT) (:S AGENT :ABOUT TOPIC)
+                (:S AGENT :TO RECIPIENT :ABOUT TOPIC)))
 
- (define-mixin-category lecture-37.11-1-1
+(define-mixin-category lecture-37.11-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "about" :IO "Topic"))) 
+  :mixins (LECTURE-37.11-1)
+  :realization ((:S AGENT :ABOUT TOPIC)))
 
- (define-mixin-category lecture-37.11-2
+(define-mixin-category lecture-37.11-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "on" :IO "Topic")
-                (:S "Agent" :PREP "about" :IO "Topic"))) 
+  :mixins (LECTURE-37.11)
+  :realization ((:S AGENT :ABOUT TOPIC) (:S AGENT :ON TOPIC)))
 
- (define-mixin-category let-64.2
+(define-mixin-category let-64.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-BENEFICIARY WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Beneficiary" :IO "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :IO BENEFICIARY O THEME)))
 
- (define-mixin-category light_emission-43.1
+(define-mixin-category light_emission-43.1
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE WITH-AGENT)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")) (THEME PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme")
-                (:S :NP "Location" :LEX "there" :NP "Theme")
-                (:S "there" :O "Theme" :PREP :NP "Location")
-                (:S "Location" :PREP "with" :IO "Theme")
-                (:S "Theme" :PREP :NP "Location") (:S "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT)))
+          (SPARSER::THEME PHYSICAL-AGENT))
+  :realization ((:S THEME) (:S THEME :NIL CAUSE) (:S CAUSE :WITH THEME)
+                (:O THEME :NIL CAUSE) (:NIL CAUSE :O THEME) (:S AGENT :O THEME)))
 
- (define-mixin-category limit-76
+(define-mixin-category limit-76
   :specializes subcategorization-pattern
   :mixins (WITH-CAUSE WITH-PATIENT WITH-GOAL)
-  :binds ((PATIENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Causer" :O "Patient" :IO "Goal")
-                (:S "Causer" :O "Patient" :PREP "to" :IO "Goal")
-                (:S "Causer" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S CAUSE :O PATIENT) (:S CAUSE :O PATIENT :TO GOAL)
+                (:S CAUSE :IO PATIENT O GOAL)))
 
- (define-mixin-category linger-53.1
+(define-mixin-category linger-53.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :PREP "over" :IO "Theme")
-                (:S "Agent" :PREP :NP "Location"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :NIL CAUSE) (:S AGENT :OVER THEME)))
 
- (define-mixin-category linger-53.1-1
+(define-mixin-category linger-53.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (LINGER-53.1)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category lodge-46
+(define-mixin-category lodge-46
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
-  :binds ((THEME PHYSICAL-AGENT))
-  :realization ((:S "Theme" :O "Location")
-                (:S "Theme" :PREP "at in with" :IO "Location"))) 
+  :binds ((SPARSER::THEME PHYSICAL-AGENT))
+  :realization ((:S THEME :AT CAUSE :IN CAUSE :WITH CAUSE) (:S THEME :O CAUSE)))
 
- (define-mixin-category long-32.2
+(define-mixin-category long-32.2
   :specializes subcategorization-pattern
   :mixins (WITH-INSTRUMENT WITH-THEME)
-  :binds ((INSTRUMENT "OBJECT"))
-  :realization ((:S "Pivot" :O "Theme"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT))
+  :realization ((:S INSTRUMENT :O THEME)))
 
- (define-mixin-category long-32.2-1
+(define-mixin-category long-32.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Pivot" :PREP "for" :IO "Theme"))) 
+  :mixins (LONG-32.2)
+  :realization ((:S INSTRUMENT :FOR THEME)))
 
- (define-mixin-category long-32.2-2
+(define-mixin-category long-32.2-2
   :specializes subcategorization-pattern
-  :realization ((:S "Pivot" :PREP "after" :IO "Theme"))) 
+  :mixins (LONG-32.2)
+  :realization ((:S INSTRUMENT :AFTER THEME)))
 
- (define-mixin-category lure-59.3
+(define-mixin-category lure-59.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT PREDICATION)
-  :binds ((PREDICATE "PREDICATE") (PATIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Patient" :PREP "into to" :IO "Predicate")
-                (:S "Agent" :O "Patient" :PREP "into" :IO "Predicate")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PREDICATE PREDICATE)
+          (SPARSER::PATIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :INTO PREDICATE)
+                (:S AGENT :O PATIENT :INTO PREDICATE :TO PREDICATE)))
 
- (define-mixin-category manner_speaking-37.3
+(define-mixin-category manner_speaking-37.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-TOPIC WITH-RECIPIENT)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (TOPIC SPEECH-ACT)
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "for" :IO "Recipient" :IO "Topic")
-                (:S "Agent" :PREP :NP "Recipient" :NP "Topic")
-                (:S "Agent" :O "Topic" :PREP :NP "Recipient")
-                (:S "Agent" :O "Topic") (:S "Agent" :PREP "about" :IO "Topic")
-                (:S "Agent" :PREP :NP "Recipient") (:S "Agent"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::TOPIC SPEECH-ACT)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT) (:S AGENT :NIL RECIPIENT) (:S AGENT :ABOUT TOPIC)
+                (:S AGENT :O TOPIC :NIL RECIPIENT) (:S AGENT :O TOPIC)
+                (:S AGENT :FOR RECIPIENT :O TOPIC)
+                (:S AGENT :NIL RECIPIENT :O TOPIC)))
 
- (define-mixin-category marry-36.2
+(define-mixin-category marry-36.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT)
-  :binds ((AGENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Co-Agent") (:S "Agent"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT) (:S AGENT :O AGENT)))
 
- (define-mixin-category marvel-31.3
+(define-mixin-category marvel-31.3
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-STIMULUS)
-  :binds ((EXPERIENCER PHYSICAL-AGENT))
-  :realization ((:S "Experiencer" :PREP :NP "Stimulus") (:S "Experiencer"))) 
+  :binds ((SPARSER::EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S EXPERIENCER) (:S EXPERIENCER :NIL STIMULUS)))
 
- (define-mixin-category masquerade-29.6
+(define-mixin-category masquerade-29.6
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-ATTRIBUTE)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :LEX "as" :IO "Attribute"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O ATTRIBUTE)))
 
- (define-mixin-category masquerade-29.6-1
+(define-mixin-category masquerade-29.6-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :LEX "like" :IO "Attribute"))) 
+  :mixins (MASQUERADE-29.6)
+  :realization ((:S AGENT :O ATTRIBUTE)))
 
- (define-mixin-category masquerade-29.6-2
+(define-mixin-category masquerade-29.6-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "in" :IO "Attribute")
-                (:S "Agent" :O "Attribute"))) 
+  :mixins (MASQUERADE-29.6)
+  :realization ((:S AGENT :O ATTRIBUTE) (:S AGENT :IN ATTRIBUTE)))
 
- (define-mixin-category matter-91
+(define-mixin-category matter-91
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-STIMULUS)
-  :binds ((EXPERIENCER (AND/OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "it" :O "Stimulus")
-                (:S "it" :PREP "to" :IO "Experiencer" :IO "Stimulus")
-                (:S "Stimulus" :PREP "to" :IO "Experiencer") (:S "Stimulus"))) 
+  :binds ((SPARSER::EXPERIENCER (:AND/OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S STIMULUS :TO EXPERIENCER) (:TO EXPERIENCER :O STIMULUS)
+                (:O STIMULUS) (:S STIMULUS)))
 
- (define-mixin-category meander-47.7
+(define-mixin-category meander-47.7
   :specializes subcategorization-pattern
   :mixins (WITH-CAUSE WITH-THEME)
-  :binds ((CAUSE PHYSICAL))
-  :realization ((:S "there" :O "Theme" :PREP :NP "Location")
-                (:S "there" :PREP :NP "Location" :NP "Theme")
-                (:S :NP "Location" :NP "Theme")
-                (:S "Theme" :PREP :NP "Location"))) 
+  :binds ((SPARSER::CAUSE PHYSICAL))
+  :realization ((:S THEME :NIL CAUSE) (:NIL CAUSE :O THEME)
+                (:O THEME :NIL CAUSE)))
 
- (define-mixin-category meander-47.7-1
+(define-mixin-category meander-47.7-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme"))) 
+  :mixins (MEANDER-47.7)
+  :realization ((:S THEME)))
 
- (define-mixin-category meet-36.3
+(define-mixin-category meet-36.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT)
-  :binds ((AGENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization NIL) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT)))
 
- (define-mixin-category meet-36.3-1
+(define-mixin-category meet-36.3-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Co-Agent") (:S "Agent")
-                (:S "Agent" :PREP "with" :IO "Co-Agent"))) 
+  :mixins (MEET-36.3)
+  :realization ((:S AGENT :WITH AGENT) (:S AGENT :O AGENT) (:S AGENT)))
 
- (define-mixin-category meet-36.3-2
+(define-mixin-category meet-36.3-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Co-Agent") (:S "Agent")
-                (:S "Agent" :PREP "with" :IO "Co-Agent"))) 
+  :mixins (MEET-36.3)
+  :realization ((:S AGENT :WITH AGENT) (:S AGENT :O AGENT) (:S AGENT)))
 
- (define-mixin-category mine-10.9
+(define-mixin-category mine-10.9
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION LOCATION) (SOURCE LOCATION) (THEME PHYSICAL)
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::DESTINATION LOCATION) (SPARSER::SOURCE LOCATION)
+          (SPARSER::THEME PHYSICAL)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)))
 
- (define-mixin-category mix-22.1
+(define-mixin-category mix-22.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
-  :binds ((CO-PATIENT PHYSICAL) (PATIENT PHYSICAL))
-  :realization NIL) 
+  :binds ((SPARSER::CO-PATIENT PHYSICAL) (SPARSER::PATIENT PHYSICAL)))
 
- (define-mixin-category mix-22.1-1
+(define-mixin-category mix-22.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Patient" :ADV :LEX "together") (:S "Patient" :ADV)
-                (:S "Patient" :ADV :PREP "with into to" :NP "Co-Patient")
-                (:S "Patient" :PREP "with into to" :IO "Co-Patient")
-                (:S "Agent" :O "Patient" :LEX "together")
-                (:S "Agent" :O "Patient")
-                (:S "Agent" :O "Patient" :PREP "with into to" :IO "Co-Patient"))) 
+  :mixins (MIX-22.1)
+  :realization ((:S AGENT :O PATIENT :WITH CO-PATIENT :INTO CO-PATIENT :TO
+                 CO-PATIENT)
+                (:S AGENT :O PATIENT)
+                (:S PATIENT :WITH CO-PATIENT :INTO CO-PATIENT :TO CO-PATIENT)
+                (:S PATIENT)))
 
- (define-mixin-category mix-22.1-1-1
+(define-mixin-category mix-22.1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Patient" :LEX "together") (:S "Patient"))) 
+  :mixins (MIX-22.1-1)
+  :realization ((:S PATIENT)))
 
- (define-mixin-category mix-22.1-2
+(define-mixin-category mix-22.1-2
   :specializes subcategorization-pattern
-  :realization ((:S "Patient" :ADV :LEX "together") (:S "Patient" :ADV)
-                (:S "Patient" :ADV :PREP "with into to" :NP "Co-Patient")
-                (:S "Agent" :O "Patient" :LEX "together")
-                (:S "Agent" :O "Patient")
-                (:S "Agent" :O "Patient" :PREP "with into to" :IO "Co-Patient"))) 
+  :mixins (MIX-22.1)
+  :realization ((:S AGENT :O PATIENT :WITH CO-PATIENT :INTO CO-PATIENT :TO
+                 CO-PATIENT)
+                (:S AGENT :O PATIENT)
+                (:S PATIENT :WITH CO-PATIENT :INTO CO-PATIENT :TO CO-PATIENT)
+                (:S PATIENT)))
 
- (define-mixin-category mix-22.1-2-1
+(define-mixin-category mix-22.1-2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Patient" :LEX "together") (:S "Patient")
-                (:S "Patient" :PREP "with into to" :IO "Co-Patient"))) 
+  :mixins (MIX-22.1-2)
+  :realization ((:S PATIENT :WITH CO-PATIENT :INTO CO-PATIENT :TO CO-PATIENT)
+                (:S PATIENT)))
 
- (define-mixin-category modes_of_being_with_motion-47.3
+(define-mixin-category modes_of_being_with_motion-47.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-CAUSE)
-  :binds ((CAUSE (AND/OR LOCATION REGION)) (THEME PHYSICAL))
-  :realization ((:S "Agent" :O "Theme") (:S :NP "Location" :NP "Theme")
-                (:S "there" :O "Theme") (:S "Theme" :PREP :NP "Location")
-                (:S "Theme"))) 
+  :binds ((SPARSER::CAUSE (:AND/OR LOCATION REGION)) (SPARSER::THEME PHYSICAL))
+  :realization ((:S THEME) (:S THEME :NIL CAUSE) (:O THEME)
+                (:NIL CAUSE :O THEME) (:S AGENT :O THEME)))
 
- (define-mixin-category multiply-108
+(define-mixin-category multiply-108
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category multiply-108-1
+(define-mixin-category multiply-108-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :PREP "by" :IO "Co-Theme"))) 
+  :mixins (MULTIPLY-108)
+  :realization ((:S AGENT :O THEME :BY THEME)))
 
- (define-mixin-category multiply-108-2
+(define-mixin-category multiply-108-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :PREP "from" :IO "Co-Theme"))) 
+  :mixins (MULTIPLY-108)
+  :realization ((:S AGENT :O THEME :FROM THEME)))
 
- (define-mixin-category multiply-108-3
+(define-mixin-category multiply-108-3
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :PREP "over" :IO "Co-Theme"))) 
+  :mixins (MULTIPLY-108)
+  :realization ((:S AGENT :O THEME :OVER THEME)))
 
- (define-mixin-category murder-42.1
+(define-mixin-category murder-42.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT)
-  :binds ((INSTRUMENT "OBJECT") (PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT) (SPARSER::PATIENT PHYSICAL-AGENT)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :WITH INSTRUMENT)))
 
- (define-mixin-category murder-42.1-1
+(define-mixin-category murder-42.1-1
   :specializes subcategorization-pattern
   :mixins (WITH-INSTRUMENT)
-  :binds ((INSTRUMENT PHYSICAL))
-  :realization ((:S "Instrument" :O "Patient"))) 
+  :binds ((SPARSER::INSTRUMENT PHYSICAL))
+  :realization ((:S INSTRUMENT :O PATIENT)))
 
- (define-mixin-category neglect-75.1
+(define-mixin-category neglect-75.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category neglect-75.1-1
+(define-mixin-category neglect-75.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (NEGLECT-75.1)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category nonvehicle-51.4.2
+(define-mixin-category nonvehicle-51.4.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-PATH)
-  :binds ((PATH PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Trajectory") (:S "Agent" :O "Theme")
-                (:S "Agent" :O "Theme" :PREP :NP "Trajectory")
-                (:S "Agent" :PREP :NP "Trajectory") (:S "Agent"))) 
+  :binds ((SPARSER::PATH PHYSICAL) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT) (:S AGENT :NIL PATH) (:S AGENT :O THEME :NIL PATH)
+                (:S AGENT :O THEME) (:S AGENT :O PATH)))
 
- (define-mixin-category nonvehicle-51.4.2-1
+(define-mixin-category nonvehicle-51.4.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Trajectory"))) 
+  :mixins (NONVEHICLE-51.4.2)
+  :realization ((:S THEME :O PATH)))
 
- (define-mixin-category nonverbal_expression-40.2
+(define-mixin-category nonverbal_expression-40.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-RECIPIENT)
-  :binds ((RECIPIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :PREP :NP "Recipient")
-                (:S "Agent" :PREP "in" :IO "Theme") (:S "Agent" :O "Theme")
-                (:S "Agent"))) 
+  :binds ((SPARSER::RECIPIENT PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT) (:S AGENT :O THEME) (:S AGENT :IN THEME)
+                (:S AGENT :NIL RECIPIENT)))
 
- (define-mixin-category obtain-13.5.2
+(define-mixin-category obtain-13.5.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE)
-  :binds ((SOURCE PHYSICAL) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "from" :IO "Source")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::SOURCE PHYSICAL)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :FROM SOURCE)))
 
- (define-mixin-category obtain-13.5.2-1
+(define-mixin-category obtain-13.5.2-1
   :specializes subcategorization-pattern
   :mixins (WITH-EXTENT)
-  :binds ((EXTENT CURRENCY))
-  :realization ((:S "Asset" :O "Theme")
-                (:S "Agent" :O "Theme" :PREP "for" :IO "Asset"))) 
+  :binds ((SPARSER::EXTENT CURRENCY))
+  :realization ((:S AGENT :O THEME :FOR EXTENT) (:S EXTENT :O THEME)))
 
- (define-mixin-category occur-48.3
+(define-mixin-category occur-48.3
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
-  :realization ((:S "Theme" :PREP "" :IO "Location") (:S "there" :O "Theme")
-                (:S "Theme"))) 
+  :realization ((:S THEME) (:O THEME) (:S THEME :|| CAUSE)))
 
- (define-mixin-category occur-48.3-1
+(define-mixin-category occur-48.3-1
   :specializes subcategorization-pattern
-  :realization ((:S "it" :O "Theme"))) 
+  :mixins (OCCUR-48.3)
+  :realization ((:O THEME)))
 
- (define-mixin-category occur-48.3-2
+(define-mixin-category occur-48.3-2
   :specializes subcategorization-pattern
-  :realization ((:S "Theme"))) 
+  :mixins (OCCUR-48.3)
+  :realization ((:S THEME)))
 
- (define-mixin-category orbit-51.9.2
+(define-mixin-category orbit-51.9.2
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-INSTRUMENT)
-  :binds ((INSTRUMENT "OBJECT"))
-  :realization ((:S "Theme" :PREP :NP "Axis"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT))
+  :realization ((:S THEME :NIL INSTRUMENT)))
 
- (define-mixin-category order-58.3
+(define-mixin-category order-58.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-RESULT)
-  :binds ((PATIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Result"))) 
+  :binds ((SPARSER::PATIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O RESULT-ROLE)))
 
- (define-mixin-category order-58.3-1
+(define-mixin-category order-58.3-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Patient" :IO "Result"))) 
+  :mixins (ORDER-58.3)
+  :realization ((:S AGENT :IO PATIENT O RESULT-ROLE)))
 
- (define-mixin-category orphan-29.7
+(define-mixin-category orphan-29.7
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category other_cos-45.4
+(define-mixin-category other_cos-45.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT)
-  :binds ((INSTRUMENT "OBJECT"))
-  :realization ((:S "Instrument" :O "Patient") (:S "Patient" :ADV)
-                (:S "Patient")
-                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :WITH INSTRUMENT)
+                (:S PATIENT) (:S INSTRUMENT :O PATIENT)))
 
- (define-mixin-category other_cos-45.4-1
+(define-mixin-category other_cos-45.4-1
   :specializes subcategorization-pattern
-  :realization ((:S "Patient" :O "Result"))) 
+  :mixins (OTHER_COS-45.4)
+  :realization ((:S PATIENT :O RESULT-ROLE)))
 
- (define-mixin-category overstate-37.12
+(define-mixin-category overstate-37.12
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category own-100.1
+(define-mixin-category own-100.1
   :specializes subcategorization-pattern
   :mixins (WITH-INSTRUMENT WITH-THEME)
-  :binds ((INSTRUMENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Pivot" :O "Theme"))) 
+  :binds ((SPARSER::INSTRUMENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S INSTRUMENT :O THEME)))
 
- (define-mixin-category pain-40.8.1
+(define-mixin-category pain-40.8.1
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-PATIENT WITH-STIMULUS)
-  :binds ((EXPERIENCER PHYSICAL-AGENT))
-  :realization ((:S "Patient" :PREP "from" :IO "Stimulus")
-                (:S "Patient" :O "Experiencer") (:S "Patient"))) 
+  :binds ((SPARSER::EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S PATIENT) (:S PATIENT :O EXPERIENCER)
+                (:S PATIENT :FROM STIMULUS)))
 
- (define-mixin-category patent-101
+(define-mixin-category patent-101
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category pay-68
+(define-mixin-category pay-68
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-EXTENT WITH-THEME)
-  :binds ((EXTENT CURRENCY) (AGENT (AND/OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Asset")
-                (:S "Agent" :O "Asset" :PREP "for" :IO "Theme"))) 
+  :binds ((SPARSER::EXTENT CURRENCY)
+          (SPARSER::AGENT (:AND/OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O EXTENT :FOR THEME) (:S AGENT :O EXTENT)))
 
- (define-mixin-category pay-68-1
+(define-mixin-category pay-68-1
   :specializes subcategorization-pattern
   :mixins (WITH-RECIPIENT)
-  :realization ((:S "Agent" :O "Recipient" :IO "Asset")
-                (:S "Agent" :O "Recipient" :IO "Asset" :PREP "for" :IO "Theme"))) 
+  :realization ((:S AGENT :IO RECIPIENT O EXTENT :FOR THEME)
+                (:S AGENT :IO RECIPIENT O EXTENT)))
 
- (define-mixin-category peer-30.3
+(define-mixin-category peer-30.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :PREP :NP "Theme"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :NIL THEME)))
 
- (define-mixin-category pelt-17.2
+(define-mixin-category pelt-17.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION PHYSICAL) (SOURCE PHYSICAL) (THEME PHYSICAL))
-  :realization ((:S "Agent" :O "Destination")
-                (:S "Agent" :O "Destination" :PREP "with" :IO "Theme"))) 
+  :binds ((SPARSER::DESTINATION PHYSICAL) (SPARSER::SOURCE PHYSICAL)
+          (SPARSER::THEME PHYSICAL))
+  :realization ((:S AGENT :O DESTINATION :WITH THEME) (:S AGENT :O DESTINATION)))
 
- (define-mixin-category performance-26.7
+(define-mixin-category performance-26.7
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-BENEFICIARY)
-  :binds ((BENEFICIARY PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :PREP "for" :IO "Beneficiary")
-                (:S "Agent") (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::BENEFICIARY PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME) (:S AGENT)
+                (:S AGENT :O THEME :FOR BENEFICIARY)))
 
- (define-mixin-category performance-26.7-1
+(define-mixin-category performance-26.7-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Beneficiary" :IO "Theme"))) 
+  :mixins (PERFORMANCE-26.7)
+  :realization ((:S AGENT :IO BENEFICIARY O THEME)))
 
- (define-mixin-category pit-10.7
+(define-mixin-category pit-10.7
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION PHYSICAL) (SOURCE PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Source"))) 
+  :binds ((SPARSER::DESTINATION PHYSICAL) (SPARSER::SOURCE PHYSICAL)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O SOURCE)))
 
- (define-mixin-category play-114.2
+(define-mixin-category play-114.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "with" :IO "Co-Agent") (:S "Agent"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :WITH AGENT) (:S AGENT)))
 
- (define-mixin-category play-114.2-1
+(define-mixin-category play-114.2-1
   :specializes subcategorization-pattern
   :mixins (WITH-THEME)
-  :realization ((:S "Agent" :O "Theme" :PREP "with" :IO "Co-Agent")
-                (:S "Agent" :O "Co-Agent")
-                (:S "Agent" :PREP "with" :IO "Theme") (:S "Agent" :O "Theme"))) 
+  :realization ((:S AGENT :WITH THEME) (:S AGENT :O AGENT)
+                (:S AGENT :O THEME :WITH AGENT) (:S AGENT :O THEME)))
 
- (define-mixin-category pocket-9.10
+(define-mixin-category pocket-9.10
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION PHYSICAL) (SOURCE PHYSICAL) (THEME PHYSICAL)
-          (AGENT (OR NIL COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "in on under" :IO "Destination")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::DESTINATION PHYSICAL) (SPARSER::SOURCE PHYSICAL)
+          (SPARSER::THEME PHYSICAL) (SPARSER::AGENT (:OR NIL COMPANY)))
+  :realization ((:S AGENT :O THEME)
+                (:S AGENT :O THEME :IN DESTINATION :ON DESTINATION :UNDER
+                 DESTINATION)))
 
- (define-mixin-category pocket-9.10-1
+(define-mixin-category pocket-9.10-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Destination") (:S "Theme")
-                (:S "Theme" :PREP "in on under" :IO "Destination"))) 
+  :mixins (POCKET-9.10)
+  :realization ((:S THEME :IN DESTINATION :ON DESTINATION :UNDER DESTINATION)
+                (:S THEME) (:S THEME :O DESTINATION)))
 
- (define-mixin-category poison-42.2
+(define-mixin-category poison-42.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-RESULT)
-  :binds ((INSTRUMENT "OBJECT") (PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
-                (:S "Agent" :O "Patient" :IO "Result")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT) (SPARSER::PATIENT PHYSICAL-AGENT)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :IO PATIENT O RESULT-ROLE)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE)
+                (:S AGENT :O PATIENT :WITH INSTRUMENT)))
 
- (define-mixin-category poke-19
+(define-mixin-category poke-19
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT)
-  :binds ((PATIENT PHYSICAL) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization ((:S "Instrument" :O "Patient")
-                (:S "Agent" :LEX "at" :IO "Patient" :PREP "with" :IO
-                 "Instrument")
-                (:S "Agent" :LEX "at" :IO "Patient")
-                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Instrument" :PREP "through into" :IO "Patient")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT PHYSICAL)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S AGENT :O INSTRUMENT :THROUGH PATIENT :INTO PATIENT)
+                (:S AGENT :O PATIENT) (:S AGENT :O PATIENT :WITH INSTRUMENT)
+                (:S INSTRUMENT :O PATIENT)))
 
- (define-mixin-category pour-9.5
+(define-mixin-category pour-9.5
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION WITH-SOURCE)
-  :binds ((SOURCE (AND/OR LOCATION REGION))
-          (DESTINATION (AND/OR LOCATION REGION))
-          (THEME (OR NIL PHYSICAL COLLECTION)) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Theme" :PREP :NP "Initial_Location" :PREP :IO
-                 "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP :IO
-                 "Destination")
-                (:S "Theme" :PREP :NP "Destination")
-                (:S "Agent" :O "Theme" :IO "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+  :binds ((SPARSER::SOURCE (:AND/OR LOCATION REGION))
+          (SPARSER::DESTINATION (:AND/OR LOCATION REGION))
+          (SPARSER::THEME (:OR NIL PHYSICAL COLLECTION))
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME :NIL DESTINATION)
+                (:S AGENT :IO THEME O DESTINATION) (:S THEME :NIL DESTINATION)
+                (:S AGENT :O THEME :NIL SOURCE :NIL DESTINATION)
+                (:S THEME :NIL SOURCE :NIL DESTINATION)))
 
- (define-mixin-category preparing-26.3
+(define-mixin-category preparing-26.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-BENEFICIARY)
-  :binds ((BENEFICIARY PHYSICAL-AGENT)
-          (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization NIL) 
+  :binds ((SPARSER::BENEFICIARY PHYSICAL-AGENT)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT PHYSICAL-OBJECT))))
 
- (define-mixin-category preparing-26.3-1
+(define-mixin-category preparing-26.3-1
   :specializes subcategorization-pattern
   :mixins (WITH-PRODUCT)
-  :binds ((PRODUCT PHYSICAL))
-  :realization ((:S "Agent" :O "Product" :PREP "for" :IO "Beneficiary")
-                (:S "Agent" :O "Beneficiary" :IO "Product")
-                (:S "Agent" :O "Product"))) 
+  :binds ((SPARSER::PRODUCT PHYSICAL))
+  :realization ((:S AGENT :O PRODUCT) (:S AGENT :IO BENEFICIARY O PRODUCT)
+                (:S AGENT :O PRODUCT :FOR BENEFICIARY)))
 
- (define-mixin-category preparing-26.3-2
+(define-mixin-category preparing-26.3-2
   :specializes subcategorization-pattern
   :mixins (WITH-PATIENT)
-  :binds ((PATIENT PHYSICAL))
-  :realization ((:S "Agent" :O "Patient" :PREP "for" :IO "Beneficiary")
-                (:S "Agent" :O "Beneficiary" :IO "Patient")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT PHYSICAL))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :IO BENEFICIARY O PATIENT)
+                (:S AGENT :O PATIENT :FOR BENEFICIARY)))
 
- (define-mixin-category price-54.4
+(define-mixin-category price-54.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-PATH)
-  :binds ((PATH CURRENCY) (THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :PREP "at" :IO "Value")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::PATH CURRENCY) (SPARSER::THEME PHYSICAL)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :AT PATH)))
 
- (define-mixin-category promise-37.13
+(define-mixin-category promise-37.13
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-RECIPIENT WITH-TOPIC)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
-                (:S "Agent" :O "Topic") (:S "Agent" :O "Recipient" :IO "Topic"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :IO RECIPIENT O TOPIC)
+                (:S AGENT :TO RECIPIENT :O TOPIC) (:S AGENT :O TOPIC)))
 
- (define-mixin-category promote-102
+(define-mixin-category promote-102
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category pronounce-29.3.1
+(define-mixin-category pronounce-29.3.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Theme" :PREP "with in" :IO "Attribute")
-                (:S "Agent" :O "Theme" :IO "Attribute"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :O THEME :WITH ATTRIBUTE :IN ATTRIBUTE)
+                (:S AGENT :IO THEME O ATTRIBUTE)))
 
- (define-mixin-category prosecute-33.2
+(define-mixin-category prosecute-33.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-THEME)
-  :binds ((AGENT (OR NIL COMPANY)))
-  :realization ((:S "Agent" :O "Patient" :PREP "for" :IO "Theme")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::AGENT (:OR NIL COMPANY)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :FOR THEME)))
 
- (define-mixin-category prosecute-33.2-1
+(define-mixin-category prosecute-33.2-1
   :specializes subcategorization-pattern
   :mixins (WITH-ATTRIBUTE)
-  :realization ((:S "Agent" :O "Patient" :PREP "as" :IO "Attribute" :PREP "for"
-                 :NP "Patient")
-                (:S "Agent" :O "Patient" :PREP "as" :IO "Attribute"))) 
+  :realization ((:S AGENT :O PATIENT :AS ATTRIBUTE)
+                (:S AGENT :O PATIENT :AS ATTRIBUTE :FOR PATIENT)))
 
- (define-mixin-category push-12
+(define-mixin-category push-12
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-PATH WITH-RESULT)
-  :binds ((THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::THEME PHYSICAL) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category push-12-1
+(define-mixin-category push-12-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "at against on" :IO "Theme")
-                (:S "Agent" :O "Theme" :IO "Result"))) 
+  :mixins (PUSH-12)
+  :realization ((:S AGENT :IO THEME O RESULT-ROLE)
+                (:S AGENT :AT THEME :AGAINST THEME :ON THEME)))
 
- (define-mixin-category push-12-1-1
+(define-mixin-category push-12-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP :NP "Trajectory") (:S "Agent" :PREP))) 
+  :mixins (PUSH-12-1)
+  :realization ((:S AGENT) (:S AGENT :NIL PATH)))
 
- (define-mixin-category put-9.1
+(define-mixin-category put-9.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
-          (THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :IO "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+  :binds ((SPARSER::DESTINATION (:AND/OR LOCATION REGION))
+          (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME :NIL DESTINATION)
+                (:S AGENT :IO THEME O DESTINATION)))
 
- (define-mixin-category put-9.1-1
+(define-mixin-category put-9.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (PUT-9.1)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category put-9.1-2
+(define-mixin-category put-9.1-2
   :specializes subcategorization-pattern
   :mixins (WITH-THEME)
-  :binds ((THEME ABSTRACT))
-  :realization ((:S "Agent" :PREP "on upon" :IO "Destination" :IO "Theme"))) 
+  :binds ((SPARSER::THEME ABSTRACT))
+  :realization ((:S AGENT :ON DESTINATION :UPON DESTINATION :O THEME)))
 
- (define-mixin-category put_direction-9.4
+(define-mixin-category put_direction-9.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
-          (THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :IO "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Destination")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::DESTINATION (:AND/OR LOCATION REGION))
+          (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL DESTINATION)
+                (:S AGENT :IO THEME O DESTINATION)))
 
- (define-mixin-category put_spatial-9.2
+(define-mixin-category put_spatial-9.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
-          (THEME PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :IO "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+  :binds ((SPARSER::DESTINATION (:AND/OR LOCATION REGION))
+          (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME :NIL DESTINATION)
+                (:S AGENT :IO THEME O DESTINATION)))
 
- (define-mixin-category put_spatial-9.2-1
+(define-mixin-category put_spatial-9.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Destination")
-                (:S "Theme" :PREP :NP "Destination"))) 
+  :mixins (PUT_SPATIAL-9.2)
+  :realization ((:S THEME :NIL DESTINATION) (:S THEME :O DESTINATION)))
 
- (define-mixin-category reach-51.8
+(define-mixin-category reach-51.8
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-GOAL)
-  :binds ((THEME (AND/OR PHYSICAL COMPANY)))
-  :realization ((:S "Theme" :O "Goal"))) 
+  :binds ((SPARSER::THEME (:AND/OR PHYSICAL COMPANY)))
+  :realization ((:S THEME :O GOAL)))
 
- (define-mixin-category rear-26.2.2
+(define-mixin-category rear-26.2.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PRODUCT)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :O PATIENT)))
 
- (define-mixin-category rear-26.2.2-1
+(define-mixin-category rear-26.2.2-1
   :specializes subcategorization-pattern
   :mixins (WITH-MATERIAL)
-  :binds ((MATERIAL "PHYSICAL"))
-  :realization ((:S "Agent" :O "Material" :IO "Product"))) 
+  :binds ((SPARSER::MATERIAL PHYSICAL))
+  :realization ((:S AGENT :IO MATERIAL O PRODUCT)))
 
- (define-mixin-category reciprocate-112
+(define-mixin-category reciprocate-112
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME PREDICATION)
-  :binds ((PREDICATE "PREDICATE") (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Theme" :IO "Predicate") (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::PREDICATE PREDICATE)
+          (SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :O THEME) (:S AGENT :IO THEME O PREDICATE)))
 
- (define-mixin-category reciprocate-112-1
+(define-mixin-category reciprocate-112-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Predicate") (:S "Agent"))) 
+  :mixins (RECIPROCATE-112)
+  :realization ((:S AGENT) (:S AGENT :O PREDICATE)))
 
- (define-mixin-category reflexive_appearance-48.1.2
+(define-mixin-category reflexive_appearance-48.1.2
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-AGENT WITH-RECIPIENT REFLEXIVE)
-  :binds ((PRONOUN "PRONOUN") (RECIPIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Theme" :O "Reflexive")
-                (:S "Agent" :O "Theme" :PREP "to" :IO "Recipient")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::PRONOUN PRONOUN) (SPARSER::RECIPIENT PHYSICAL-AGENT)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :TO RECIPIENT)
+                (:S THEME :O PRONOUN)))
 
- (define-mixin-category refrain-69
+(define-mixin-category refrain-69
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "from" :IO "Theme") (:S "Agent"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT) (:S AGENT :FROM THEME)))
 
- (define-mixin-category register-54.1
+(define-mixin-category register-54.1
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-PATH)
-  :realization ((:S "Theme" :PREP "at | to" :IO "Value"))) 
+  :realization ((:S THEME :AT PATH :|\|| PATH :TO PATH)))
 
- (define-mixin-category register-54.1-1
+(define-mixin-category register-54.1-1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-ATTRIBUTE)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Attribute" :PREP "at" :IO "Value")
-                (:S "Agent" :O "Theme" :PREP "at" :IO "Value")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :AT PATH)
+                (:S AGENT :O ATTRIBUTE :AT PATH)))
 
- (define-mixin-category register-54.1-1-1
+(define-mixin-category register-54.1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Value"))) 
+  :mixins (REGISTER-54.1-1)
+  :realization ((:S THEME :O PATH)))
 
- (define-mixin-category rehearse-26.8
-  :specializes subcategorization-pattern
-  :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
-
- (define-mixin-category rehearse-26.8-1
-  :specializes subcategorization-pattern
-  :realization ((:S "Agent"))) 
-
- (define-mixin-category reject-77.2
+(define-mixin-category rehearse-26.8
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category reject-77.2-1
+(define-mixin-category rehearse-26.8-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (REHEARSE-26.8)
+  :realization ((:S AGENT)))
 
- (define-mixin-category relate-86.2
-  :specializes subcategorization-pattern
-  :mixins (WITH-THEME WITH-THEME)
-  :realization NIL) 
-
- (define-mixin-category relate-86.2-1
-  :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Co-Theme"))) 
-
- (define-mixin-category relate-86.2-2
-  :specializes subcategorization-pattern
-  :realization ((:S "Theme" :PREP "to" :IO "Co-Theme"))) 
-
- (define-mixin-category rely-70
+(define-mixin-category reject-77.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "on" :IO "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category remedy-45.7
+(define-mixin-category reject-77.2-1
+  :specializes subcategorization-pattern
+  :mixins (REJECT-77.2)
+  :realization ((:S AGENT :O THEME)))
+
+(define-mixin-category relate-86.2
+  :specializes subcategorization-pattern
+  :mixins (WITH-THEME WITH-THEME))
+
+(define-mixin-category relate-86.2-1
+  :specializes subcategorization-pattern
+  :mixins (RELATE-86.2)
+  :realization ((:S THEME :O THEME)))
+
+(define-mixin-category relate-86.2-2
+  :specializes subcategorization-pattern
+  :mixins (RELATE-86.2)
+  :realization ((:S THEME :TO THEME)))
+
+(define-mixin-category rely-70
+  :specializes subcategorization-pattern
+  :mixins (WITH-AGENT WITH-THEME)
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :ON THEME)))
+
+(define-mixin-category remedy-45.7
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT)
-  :binds ((INSTRUMENT "OBJECT"))
-  :realization ((:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :WITH INSTRUMENT)))
 
- (define-mixin-category remedy-45.7-1
+(define-mixin-category remedy-45.7-1
   :specializes subcategorization-pattern
-  :realization ((:S "Patient" :ADV))) 
+  :mixins (REMEDY-45.7)
+  :realization ((:S PATIENT)))
 
- (define-mixin-category remove-10.1
+(define-mixin-category remove-10.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-GOAL)
-  :binds ((GOAL LOCATION) (SOURCE LOCATION) (AGENT (OR NIL COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP :NP "Source")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::GOAL LOCATION) (SPARSER::SOURCE LOCATION)
+          (SPARSER::AGENT (:OR NIL COMPANY)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)))
 
- (define-mixin-category render-29.90
+(define-mixin-category render-29.90
   :specializes subcategorization-pattern
   :mixins (WITH-CAUSE WITH-PATIENT WITH-RESULT)
-  :realization ((:S "Causer" :O "Result" :IO "Patient")
-                (:S "Agent" :O "Patient" :IO "Result"))) 
+  :realization ((:S AGENT :IO PATIENT O RESULT-ROLE)
+                (:S CAUSE :IO RESULT-ROLE O PATIENT)))
 
- (define-mixin-category render-29.90-1
+(define-mixin-category render-29.90-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Patient" :IO "Result"))) 
+  :mixins (RENDER-29.90)
+  :realization ((:S AGENT :IO PATIENT O RESULT-ROLE)))
 
- (define-mixin-category render-29.90-2
+(define-mixin-category render-29.90-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Patient" :IO "Result"))) 
+  :mixins (RENDER-29.90)
+  :realization ((:S AGENT :IO PATIENT O RESULT-ROLE)))
 
- (define-mixin-category representation-110.1
+(define-mixin-category representation-110.1
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-THEME PREDICATION)
-  :binds ((PREDICATE "PREDICATE"))
-  :realization ((:S "Theme" :O "Co-Theme" :PREP "in | for | to" :IO "Context")
-                (:S "Theme" :O "Co-Theme"))) 
+  :binds ((SPARSER::PREDICATE PREDICATE))
+  :realization ((:S THEME :O THEME)
+                (:S THEME :O THEME :IN PREDICATE :|\|| PREDICATE :FOR PREDICATE
+                 :|\|| PREDICATE :TO PREDICATE)))
 
- (define-mixin-category require-103
+(define-mixin-category require-103
   :specializes subcategorization-pattern
   :mixins (WITH-INSTRUMENT WITH-THEME)
-  :binds ((INSTRUMENT "OBJECT"))
-  :realization ((:S "Pivot" :O "Theme"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT))
+  :realization ((:S INSTRUMENT :O THEME)))
 
- (define-mixin-category require-103-1
+(define-mixin-category require-103-1
   :specializes subcategorization-pattern
   :mixins (WITH-SOURCE)
-  :realization ((:S "Pivot" :O "Theme")
-                (:S "Pivot" :O "Theme" :PREP "from" :IO "Source"))) 
+  :realization ((:S INSTRUMENT :O THEME :FROM SOURCE) (:S INSTRUMENT :O THEME)))
 
- (define-mixin-category require-103-2
+(define-mixin-category require-103-2
   :specializes subcategorization-pattern
-  :realization ((:S "Pivot" :O "Theme"))) 
+  :mixins (REQUIRE-103)
+  :realization ((:S INSTRUMENT :O THEME)))
 
- (define-mixin-category resign-10.11
+(define-mixin-category resign-10.11
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-SOURCE WITH-GOAL)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT)))
 
- (define-mixin-category resign-10.11-1
+(define-mixin-category resign-10.11-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "from" :IO "Source"))) 
+  :mixins (RESIGN-10.11)
+  :realization ((:S AGENT :FROM SOURCE)))
 
- (define-mixin-category resign-10.11-2
+(define-mixin-category resign-10.11-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Source"))) 
+  :mixins (RESIGN-10.11-1)
+  :realization ((:S AGENT :O SOURCE)))
 
- (define-mixin-category respond-113
+(define-mixin-category respond-113
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME PREDICATION)
-  :binds ((PREDICATE "PREDICATE") (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :PREP "to|against" :IO "Theme" :PREP "with" :IO
-                 "Predicate")
-                (:S "Agent" :PREP "with" :IO "Predicate")
-                (:S "Agent" :PREP "to|against" :IO "Theme") (:S "Agent"))) 
+  :binds ((SPARSER::PREDICATE PREDICATE)
+          (SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT) (:S AGENT :|TO\|AGAINST| THEME)
+                (:S AGENT :WITH PREDICATE)
+                (:S AGENT :|TO\|AGAINST| THEME :WITH PREDICATE)))
 
- (define-mixin-category result-27.2
+(define-mixin-category result-27.2
   :specializes subcategorization-pattern
   :mixins (WITH-CAUSE WITH-THEME)
-  :binds ((CAUSE PHYSICAL-AGENT))
-  :realization ((:S "Causer" :PREP "in | to" :IO "Theme"))) 
+  :binds ((SPARSER::CAUSE PHYSICAL-AGENT))
+  :realization ((:S CAUSE :IN THEME :|\|| THEME :TO THEME)))
 
- (define-mixin-category risk-94
+(define-mixin-category risk-94
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category risk-94-1
+(define-mixin-category risk-94-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (RISK-94)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category rob-10.6.4
+(define-mixin-category rob-10.6.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-BENEFICIARY)
-  :binds ((BENEFICIARY PHYSICAL-AGENT)
-          (SOURCE (OR PHYSICAL-AGENT LOCATION REGION))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP :NP "Source" :PREP "for" :NP
-                 "Beneficiary")
-                (:S "Agent" :O "Theme" :PREP "for" :IO "Beneficiary")
-                (:S "Agent" :O "Theme" :PREP :NP "Source")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::BENEFICIARY PHYSICAL-AGENT)
+          (SPARSER::SOURCE (:OR PHYSICAL-AGENT LOCATION REGION))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)
+                (:S AGENT :O THEME :FOR BENEFICIARY)
+                (:S AGENT :O THEME :NIL SOURCE :FOR BENEFICIARY)))
 
- (define-mixin-category roll-51.3.1
+(define-mixin-category roll-51.3.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-PATH WITH-RESULT)
-  :binds ((PATH PHYSICAL) (THEME PHYSICAL))
-  :realization ((:S "Agent" :O "Theme" :PREP "to into" :IO "Result")
-                (:S "Agent" :O "Theme" :IO "Result")
-                (:S "Theme" :PREP "to into" :IO "Result")
-                (:S "Theme" :O "Result")
-                (:S "Agent" :O "Theme" :PREP :NP "Trajectory")
-                (:S "Agent" :O "Theme") (:S "Theme" :PREP :NP "Trajectory")
-                (:S "Theme"))) 
+  :binds ((SPARSER::PATH PHYSICAL) (SPARSER::THEME PHYSICAL))
+  :realization ((:S THEME) (:S THEME :NIL PATH) (:S AGENT :O THEME)
+                (:S AGENT :O THEME :NIL PATH) (:S THEME :O RESULT-ROLE)
+                (:S THEME :TO RESULT-ROLE :INTO RESULT-ROLE)
+                (:S AGENT :IO THEME O RESULT-ROLE)
+                (:S AGENT :O THEME :TO RESULT-ROLE :INTO RESULT-ROLE)))
 
- (define-mixin-category rotate-51.9.1
+(define-mixin-category rotate-51.9.1
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-EXTENT WITH-PATH)
-  :realization ((:S "Theme" :ADV "Trajectory") (:S "Theme" :O "Extent"))) 
+  :realization ((:S THEME :O EXTENT) (:S THEME)))
 
- (define-mixin-category rotate-51.9.1-1
+(define-mixin-category rotate-51.9.1-1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Theme" :IO "Extent"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :IO THEME O EXTENT)))
 
- (define-mixin-category rummage-35.5
+(define-mixin-category rummage-35.5
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :PREP :NP "Location" :PREP "for" :NP "Theme")
-                (:S "Agent" :PREP "over through into" :IO "Location"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :OVER CAUSE :THROUGH CAUSE :INTO CAUSE)
+                (:S AGENT :NIL CAUSE :FOR THEME)))
 
- (define-mixin-category rummage-35.5-1
+(define-mixin-category rummage-35.5-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Location" :PREP "for" :IO "Theme"))) 
+  :mixins (RUMMAGE-35.5)
+  :realization ((:S AGENT :O CAUSE :FOR THEME)))
 
- (define-mixin-category run-51.3.2
+(define-mixin-category run-51.3.2
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-SOURCE WITH-PATH WITH-DESTINATION)
-  :binds ((DESTINATION PHYSICAL) (PATH PHYSICAL) (SOURCE PHYSICAL)
-          (THEME (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization ((:S :NP "Initial_Location" :NP "Theme")
-                (:S "there" :O "Theme" :PREP :NP "Initial_Location")
-                (:S "there" :PREP :NP "Initial_Location" :NP "Theme")
-                (:S "Theme" :PREP :NP "Trajectory") (:S "Theme"))) 
+  :binds ((SPARSER::DESTINATION PHYSICAL) (SPARSER::PATH PHYSICAL)
+          (SPARSER::SOURCE PHYSICAL)
+          (SPARSER::THEME (:OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S THEME) (:S THEME :NIL PATH) (:O THEME :NIL SOURCE)
+                (:NIL SOURCE :O THEME)))
 
- (define-mixin-category run-51.3.2-1
+(define-mixin-category run-51.3.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Trajectory"))) 
+  :mixins (RUN-51.3.2)
+  :realization ((:S THEME :O PATH)))
 
- (define-mixin-category run-51.3.2-2
+(define-mixin-category run-51.3.2-2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-RESULT WITH-SOURCE)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :PREP "to into" :IO "Result")
-                (:S "Agent" :O "Theme")
-                (:S "Agent" :O "Theme" :PREP :NP "Trajectory"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME :NIL PATH) (:S AGENT :O THEME)
+                (:S AGENT :O THEME :TO RESULT-ROLE :INTO RESULT-ROLE)))
 
- (define-mixin-category run-51.3.2-2-1
+(define-mixin-category run-51.3.2-2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Trajectory"))) 
+  :mixins (RUN-51.3.2-2)
+  :realization ((:S THEME :O PATH)))
 
- (define-mixin-category rush-53.2
+(define-mixin-category rush-53.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :PREP "through" :IO "Theme")
-                (:S "Agent" :O "Theme") (:S "Agent" :PREP "with" :IO "Theme"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :WITH THEME) (:S AGENT :O THEME)
+                (:S AGENT :THROUGH THEME)))
 
- (define-mixin-category satisfy-55.7
+(define-mixin-category satisfy-55.7
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-INSTRUMENT)
-  :binds ((INSTRUMENT "OBJECT") (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "with" :IO "Instrument")
-                (:S "Instrument" :O "Theme"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S INSTRUMENT :O THEME) (:S AGENT :O THEME :WITH INSTRUMENT)))
 
- (define-mixin-category say-37.7
+(define-mixin-category say-37.7
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-TOPIC WITH-RECIPIENT)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY)) (TOPIC SPEECH-ACT)
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Topic"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::TOPIC SPEECH-ACT)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O TOPIC)))
 
- (define-mixin-category say-37.7-1
+(define-mixin-category say-37.7-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
-                (:S "Agent" :O "Topic" :PREP "to" :IO "Recipient")
-                (:S "Agent" :O "Topic"))) 
+  :mixins (SAY-37.7)
+  :realization ((:S AGENT :O TOPIC :TO RECIPIENT)
+                (:S AGENT :TO RECIPIENT :O TOPIC) (:S AGENT :O TOPIC)))
 
- (define-mixin-category say-37.7-1-1
+(define-mixin-category say-37.7-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Topic"))) 
+  :mixins (SAY-37.7-1)
+  :realization ((:S AGENT :O TOPIC)))
 
- (define-mixin-category say-37.7-1-1-1
+(define-mixin-category say-37.7-1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
-                (:S "Agent" :O "Topic" :PREP "to" :IO "Recipient"))) 
+  :mixins (SAY-37.7-1-1)
+  :realization ((:S AGENT :O TOPIC :TO RECIPIENT)
+                (:S AGENT :TO RECIPIENT :O TOPIC)))
 
- (define-mixin-category say-37.7-1-2
+(define-mixin-category say-37.7-1-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
-                (:S "Agent" :O "Topic" :PREP "to" :IO "Recipient"))) 
+  :mixins (SAY-37.7-1)
+  :realization ((:S AGENT :O TOPIC :TO RECIPIENT)
+                (:S AGENT :TO RECIPIENT :O TOPIC)))
 
- (define-mixin-category scribble-25.2
+(define-mixin-category scribble-25.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
-  :binds ((DESTINATION PHYSICAL) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization ((:S "Agent" :O "Theme" :PREP "on | in" :IO "Destination")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::DESTINATION PHYSICAL)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S AGENT :O THEME)
+                (:S AGENT :O THEME :ON DESTINATION :|\|| DESTINATION :IN
+                 DESTINATION)))
 
- (define-mixin-category scribble-25.2-1
+(define-mixin-category scribble-25.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent"))) 
+  :mixins (SCRIBBLE-25.2)
+  :realization ((:S AGENT)))
 
- (define-mixin-category search-35.2
+(define-mixin-category search-35.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-CAUSE WITH-THEME)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :PREP :NP "Location")
-                (:S "Agent" :PREP :NP "Location" :PREP "for" :NP "Theme")
-                (:S "Agent" :PREP "for" :IO "Theme" :PREP :NP "Location")
-                (:S "Agent" :O "Location" :PREP "for" :IO "Theme"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O CAUSE :FOR THEME) (:S AGENT :FOR THEME :NIL CAUSE)
+                (:S AGENT :NIL CAUSE :FOR THEME) (:S AGENT :NIL CAUSE)))
 
- (define-mixin-category see-30.1
+(define-mixin-category see-30.1
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-STIMULUS)
-  :binds ((EXPERIENCER PHYSICAL-AGENT))
-  :realization ((:S "Experiencer" :O "Stimulus"))) 
+  :binds ((SPARSER::EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S EXPERIENCER :O STIMULUS)))
 
- (define-mixin-category see-30.1-1
+(define-mixin-category see-30.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Experiencer" :O "Stimulus"))) 
+  :mixins (SEE-30.1)
+  :realization ((:S EXPERIENCER :O STIMULUS)))
 
- (define-mixin-category see-30.1-1-1
+(define-mixin-category see-30.1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Experiencer" :O "Stimulus"))) 
+  :mixins (SEE-30.1-1)
+  :realization ((:S EXPERIENCER :O STIMULUS)))
 
- (define-mixin-category see-30.1-1-1-1
+(define-mixin-category see-30.1-1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Experiencer" :PREP "about of" :IO "Stimulus"))) 
+  :mixins (SEE-30.1-1-1)
+  :realization ((:S EXPERIENCER :ABOUT STIMULUS :OF STIMULUS)))
 
- (define-mixin-category seem-109
+(define-mixin-category seem-109
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-ATTRIBUTE)
-  :realization ((:S "Theme" :O "Attribute"))) 
+  :realization ((:S THEME :O ATTRIBUTE)))
 
- (define-mixin-category seem-109-1
+(define-mixin-category seem-109-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Attribute"))) 
+  :mixins (SEEM-109)
+  :realization ((:S THEME :O ATTRIBUTE)))
 
- (define-mixin-category seem-109-1-1
+(define-mixin-category seem-109-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :PREP "in" :IO "Attribute"))) 
+  :mixins (SEEM-109-1)
+  :realization ((:S THEME :IN ATTRIBUTE)))
 
- (define-mixin-category seem-109-1-1-1
+(define-mixin-category seem-109-1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Attribute"))) 
+  :mixins (SEEM-109-1-1)
+  :realization ((:S THEME :O ATTRIBUTE)))
 
- (define-mixin-category send-11.1
+(define-mixin-category send-11.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION (OR PHYSICAL-AGENT LOCATION REGION)) (SOURCE LOCATION)
-          (THEME PHYSICAL) (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "to" :IO "Destination" :PREP :NP
-                 "Initial_Location")
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP "to"
-                 :NP "Destination")
-                (:S "Agent" :O "Theme" :PREP "to" :IO "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::DESTINATION (:OR PHYSICAL-AGENT LOCATION REGION))
+          (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)
+                (:S AGENT :O THEME :TO DESTINATION)
+                (:S AGENT :O THEME :NIL SOURCE :TO DESTINATION)
+                (:S AGENT :O THEME :TO DESTINATION :NIL SOURCE)))
 
- (define-mixin-category send-11.1-1
+(define-mixin-category send-11.1-1
   :specializes subcategorization-pattern
   :mixins (WITH-DESTINATION)
-  :binds ((DESTINATION PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Destination" :IO "Theme"))) 
+  :binds ((SPARSER::DESTINATION PHYSICAL-AGENT))
+  :realization ((:S AGENT :IO DESTINATION O THEME)))
 
- (define-mixin-category separate-23.1
+(define-mixin-category separate-23.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Patient" :ADV)
-                (:S "Patient" :ADV :PREP "from" :NP "Co-Patient")
-                (:S "Patient") (:S "Agent" :O "Patient")
-                (:S "Agent" :O "Patient" :PREP "from" :IO "Co-Patient"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O PATIENT :FROM CO-PATIENT) (:S AGENT :O PATIENT)
+                (:S PATIENT :FROM CO-PATIENT) (:S PATIENT)))
 
- (define-mixin-category separate-23.1-1
+(define-mixin-category separate-23.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Patient" :PREP "from" :IO "Co-Patient"))) 
+  :mixins (SEPARATE-23.1)
+  :realization ((:S PATIENT :FROM CO-PATIENT)))
 
- (define-mixin-category separate-23.1-2
+(define-mixin-category separate-23.1-2
   :specializes subcategorization-pattern
-  :realization ((:S "Patient" :PREP "with" :IO "Co-Patient"))) 
+  :mixins (SEPARATE-23.1)
+  :realization ((:S PATIENT :WITH CO-PATIENT)))
 
- (define-mixin-category settle-36.1.2
+(define-mixin-category settle-36.1.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT WITH-TOPIC)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "on" :IO "Goal")
-                (:S "Agent" :PREP "on" :IO "Goal") (:S "Agent"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT) (:S AGENT :ON GOAL) (:S AGENT :WITH AGENT :ON GOAL)))
 
- (define-mixin-category settle-36.1.2-1
+(define-mixin-category settle-36.1.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Co-Agent" :IO "Goal") (:S "Agent" :O "Goal"))) 
+  :mixins (SETTLE-36.1.2)
+  :realization ((:S AGENT :IO AGENT O GOAL) (:S AGENT :O GOAL)))
 
- (define-mixin-category shake-22.3
+(define-mixin-category shake-22.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
-  :binds ((CO-PATIENT PHYSICAL) (PATIENT PHYSICAL)
-          (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization ((:S "Patient" :ADV :LEX "together") (:S "Patient" :ADV))) 
+  :binds ((SPARSER::CO-PATIENT PHYSICAL) (SPARSER::PATIENT PHYSICAL)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S PATIENT)))
 
- (define-mixin-category shake-22.3-1
+(define-mixin-category shake-22.3-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Patient" :LEX "together")
-                (:S "Agent" :O "Patient" :PREP "with into to" :IO "Co-Patient"))) 
+  :mixins (SHAKE-22.3)
+  :realization ((:S AGENT :O PATIENT :WITH CO-PATIENT :INTO CO-PATIENT :TO
+                 CO-PATIENT)
+                (:S AGENT :O PATIENT)))
 
- (define-mixin-category shake-22.3-1-1
+(define-mixin-category shake-22.3-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Patient")
-                (:S "Patient" :PREP "with into to" :IO "Co-Patient" :ADV))) 
+  :mixins (SHAKE-22.3-1)
+  :realization ((:S PATIENT :WITH CO-PATIENT :INTO CO-PATIENT :TO CO-PATIENT)
+                (:S AGENT :O PATIENT)))
 
- (define-mixin-category shake-22.3-2
+(define-mixin-category shake-22.3-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Patient" :LEX "together")
-                (:S "Agent" :O "Patient" :PREP "with into to" :IO "Co-Patient"))) 
+  :mixins (SHAKE-22.3)
+  :realization ((:S AGENT :O PATIENT :WITH CO-PATIENT :INTO CO-PATIENT :TO
+                 CO-PATIENT)
+                (:S AGENT :O PATIENT)))
 
- (define-mixin-category shake-22.3-2-1
+(define-mixin-category shake-22.3-2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Patient"))) 
+  :mixins (SHAKE-22.3-2)
+  :realization ((:S AGENT :O PATIENT)))
 
- (define-mixin-category sight-30.2
+(define-mixin-category sight-30.2
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-STIMULUS)
-  :binds ((EXPERIENCER PHYSICAL-AGENT))
-  :realization ((:S "Experiencer" :O "Stimulus"))) 
+  :binds ((SPARSER::EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S EXPERIENCER :O STIMULUS)))
 
- (define-mixin-category simple_dressing-41.3.1
+(define-mixin-category simple_dressing-41.3.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category slide-11.2
+(define-mixin-category slide-11.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-PATH)
-  :binds ((DESTINATION (OR PHYSICAL-AGENT LOCATION REGION)) (SOURCE LOCATION)
-          (THEME PHYSICAL))
-  :realization ((:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP "to"
-                 :NP "Destination")
-                (:S "Agent" :O "Theme" :PREP "to" :IO "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Trajectory")
-                (:S "Agent" :O "Theme")
-                (:S "Theme" :PREP :NP "Initial_Location" :PREP "to" :NP
-                 "Destination")
-                (:S "Theme" :PREP "to" :IO "Destination")
-                (:S "Theme" :PREP :NP "Initial_Location") (:S "Theme"))) 
+  :binds ((SPARSER::DESTINATION (:OR PHYSICAL-AGENT LOCATION REGION))
+          (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL))
+  :realization ((:S THEME) (:S THEME :NIL SOURCE) (:S THEME :TO DESTINATION)
+                (:S THEME :NIL SOURCE :TO DESTINATION) (:S AGENT :O THEME)
+                (:S AGENT :O THEME :NIL PATH)
+                (:S AGENT :O THEME :TO DESTINATION)
+                (:S AGENT :O THEME :NIL SOURCE :TO DESTINATION)))
 
- (define-mixin-category slide-11.2-1
+(define-mixin-category slide-11.2-1
   :specializes subcategorization-pattern
   :mixins (WITH-DESTINATION)
-  :binds ((DESTINATION PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Destination" :IO "Theme"))) 
+  :binds ((SPARSER::DESTINATION PHYSICAL-AGENT))
+  :realization ((:S AGENT :IO DESTINATION O THEME)))
 
- (define-mixin-category smell_emission-43.3
+(define-mixin-category smell_emission-43.3
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
-  :binds ((THEME PHYSICAL-AGENT))
-  :realization ((:S "Location" :PREP "of" :IO "Theme") (:S "Location")
-                (:S "Theme"))) 
+  :binds ((SPARSER::THEME PHYSICAL-AGENT))
+  :realization ((:S THEME) (:S CAUSE) (:S CAUSE :OF THEME)))
 
- (define-mixin-category snooze-40.4
+(define-mixin-category snooze-40.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT)))
 
- (define-mixin-category snooze-40.4-1
+(define-mixin-category snooze-40.4-1
   :specializes subcategorization-pattern
   :mixins (WITH-THEME)
-  :realization ((:S "Agent" :O "Theme"))) 
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category sound_emission-43.2
+(define-mixin-category sound_emission-43.2
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE WITH-AGENT TEMPORALLY-LOCALIZED)
-  :binds ((CERTAINTY "CERTAINTY") (AGENT ("PRONOUN" "PHYSICAL-AGENT"))
-          (THEME PHYSICAL-AGENT))
-  :realization ((:S "Theme" :O "Result") (:S "Agent" :O "Theme")
-                (:S "there" :O "Theme" :PREP :NP "Location")
-                (:S :NP "Location" :NP "Theme")
-                (:S "Location" :PREP "with" :IO "Theme")
-                (:S "Theme" :PREP :NP "Location") (:S "Theme"))) 
+  :binds ((SPARSER::CERTAINTY CERTAINTY)
+          (SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT)))
+          (SPARSER::THEME PHYSICAL-AGENT))
+  :realization ((:S THEME) (:S THEME :NIL CAUSE) (:S CAUSE :WITH THEME)
+                (:NIL CAUSE :O THEME) (:O THEME :NIL CAUSE) (:S AGENT :O THEME)
+                (:S THEME :O RESULT-ROLE)))
 
- (define-mixin-category sound_existence-47.4
+(define-mixin-category sound_existence-47.4
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
-  :binds ((CAUSE (AND/OR LOCATION REGION)))
-  :realization ((:S "Location" :PREP "with" :IO "Theme")
-                (:S :NP "Location" :NP "Theme") (:S "there" :O "Theme")
-                (:S "Theme" :PREP :NP "Location") (:S "Theme"))) 
+  :binds ((SPARSER::CAUSE (:AND/OR LOCATION REGION)))
+  :realization ((:S THEME) (:S THEME :NIL CAUSE) (:O THEME)
+                (:NIL CAUSE :O THEME) (:S CAUSE :WITH THEME)))
 
- (define-mixin-category spank-18.3
+(define-mixin-category spank-18.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-CAUSE WITH-RESULT)
-  :binds ((CAUSE PHYSICAL) (INSTRUMENT PHYSICAL) (PATIENT PHYSICAL))
-  :realization ((:S "Agent" :O "Patient" :PREP :NP "Location" :PREP "with" :NP
-                 "Instrument")
-                (:S "Agent" :O "Patient" :PREP :NP "Location")
-                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result" :PREP
-                 "with" :NP "Instrument")
-                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
-                (:S "Agent" :O "Patient" :IO "Result")
-                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::CAUSE PHYSICAL) (SPARSER::INSTRUMENT PHYSICAL)
+          (SPARSER::PATIENT PHYSICAL))
+  :realization ((:S AGENT :O PATIENT :WITH INSTRUMENT)
+                (:S AGENT :IO PATIENT O RESULT-ROLE)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE :WITH
+                 INSTRUMENT)
+                (:S AGENT :O PATIENT :NIL CAUSE)
+                (:S AGENT :O PATIENT :NIL CAUSE :WITH INSTRUMENT)
+                (:S AGENT :O PATIENT)))
 
- (define-mixin-category spatial_configuration-47.6
+(define-mixin-category spatial_configuration-47.6
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
-  :binds ((CAUSE (AND/OR LOCATION REGION)) (THEME PHYSICAL))
-  :realization ((:S :NP "Location" :NP "Theme")
-                (:S "there" :PREP :NP "Location" :NP "Theme")
-                (:S "Theme" :PREP :NP "Location") (:S "Theme"))) 
+  :binds ((SPARSER::CAUSE (:AND/OR LOCATION REGION)) (SPARSER::THEME PHYSICAL))
+  :realization ((:S THEME) (:S THEME :NIL CAUSE) (:NIL CAUSE :O THEME)))
 
- (define-mixin-category spatial_configuration-47.6-1
+(define-mixin-category spatial_configuration-47.6-1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :PREP :NP "Location"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME :NIL CAUSE)))
 
- (define-mixin-category spend_time-104
+(define-mixin-category spend_time-104
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-EXTENT WITH-ATTRIBUTE)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Duration" :LEX "as" :IO "Attribute")
-                (:S "Agent" :O "Duration"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O EXTENT) (:S AGENT :IO EXTENT O ATTRIBUTE)))
 
- (define-mixin-category split-23.2
+(define-mixin-category split-23.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT)
-  :binds ((CO-PATIENT SOLID) (PATIENT SOLID))
-  :realization ((:S "Patient" :LEX "apart" :ADV)
-                (:S "Patient" :PREP "off off of from" :IO "Co-Patient" :ADV)
-                (:S "Patient" :LEX "apart")
-                (:S "Patient" :PREP "off off of from" :IO "Co-Patient")
-                (:S "Agent" :O "Patient" :LEX "apart")
-                (:S "Agent" :O "Patient" :PREP "off off of from" :IO
-                 "Co-Patient"))) 
+  :binds ((SPARSER::CO-PATIENT SOLID) (SPARSER::PATIENT SOLID))
+  :realization ((:S AGENT :O PATIENT :OFF CO-PATIENT :OFF CO-PATIENT :OF
+                 CO-PATIENT :FROM CO-PATIENT)
+                (:S AGENT :O PATIENT)
+                (:S PATIENT :OFF CO-PATIENT :OFF CO-PATIENT :OF CO-PATIENT
+                 :FROM CO-PATIENT)
+                (:S PATIENT)))
 
- (define-mixin-category spray-9.7
+(define-mixin-category spray-9.7
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION (AND/OR LOCATION REGION)) (SOURCE LOCATION)
-          (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Destination") (:S "Agent" :O "Theme")
-                (:S "Agent" :O "Destination" :PREP "with" :IO "Theme")
-                (:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+  :binds ((SPARSER::DESTINATION (:AND/OR LOCATION REGION))
+          (SPARSER::SOURCE LOCATION) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME :NIL DESTINATION)
+                (:S AGENT :O DESTINATION :WITH THEME) (:S AGENT :O THEME)
+                (:S AGENT :O DESTINATION)))
 
- (define-mixin-category spray-9.7-1
+(define-mixin-category spray-9.7-1
   :specializes subcategorization-pattern
   :mixins (WITH-THEME)
-  :binds ((THEME (OR NIL PHYSICAL COLLECTION)))
-  :realization ((:S "Agent" :O "Theme" :LEX "at" :IO "Destination")
-                (:S "Theme" :PREP :NP "Destination"))) 
+  :binds ((SPARSER::THEME (:OR NIL PHYSICAL COLLECTION)))
+  :realization ((:S THEME :NIL DESTINATION) (:S AGENT :IO THEME O DESTINATION)))
 
- (define-mixin-category spray-9.7-1-1
+(define-mixin-category spray-9.7-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Destination"))) 
+  :mixins (SPRAY-9.7-1)
+  :realization ((:S THEME :O DESTINATION)))
 
- (define-mixin-category spray-9.7-2
+(define-mixin-category spray-9.7-2
   :specializes subcategorization-pattern
   :mixins (WITH-THEME)
-  :binds ((THEME PHYSICAL))
-  :realization NIL) 
+  :binds ((SPARSER::THEME PHYSICAL)))
 
- (define-mixin-category stalk-35.3
+(define-mixin-category stalk-35.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-CAUSE)
-  :binds ((AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme")
-                (:S "Agent" :O "Theme" :PREP :NP "Location")
-                (:S "Agent" :O "Location" :PREP "for" :IO "Theme"))) 
+  :binds ((SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O CAUSE :FOR THEME) (:S AGENT :O THEME :NIL CAUSE)
+                (:S AGENT :O THEME)))
 
- (define-mixin-category steal-10.5
+(define-mixin-category steal-10.5
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-BENEFICIARY)
-  :binds ((BENEFICIARY PHYSICAL-AGENT) (SOURCE (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP :NP "Source" :PREP "for" :NP
-                 "Beneficiary")
-                (:S "Agent" :O "Theme" :PREP "for" :IO "Beneficiary")
-                (:S "Agent" :O "Theme" :PREP :NP "Source")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::BENEFICIARY PHYSICAL-AGENT)
+          (SPARSER::SOURCE (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL SOURCE)
+                (:S AGENT :O THEME :FOR BENEFICIARY)
+                (:S AGENT :O THEME :NIL SOURCE :FOR BENEFICIARY)))
 
- (define-mixin-category steal-10.5-1
+(define-mixin-category steal-10.5-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Beneficiary" :IO "Theme"))) 
+  :mixins (STEAL-10.5)
+  :realization ((:S AGENT :IO BENEFICIARY O THEME)))
 
- (define-mixin-category stimulate-59.4
+(define-mixin-category stimulate-59.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT PREDICATION)
-  :binds ((PREDICATE "PREDICATE") (PATIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Patient" :PREP "into" :IO "Predicate")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PREDICATE PREDICATE)
+          (SPARSER::PATIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :INTO PREDICATE)))
 
- (define-mixin-category stimulus_subject-30.4
+(define-mixin-category stimulus_subject-30.4
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-STIMULUS)
-  :binds ((EXPERIENCER PHYSICAL-AGENT))
-  :realization ((:S "Stimulus" :PREP "like")
-                (:S "Stimulus" :ADJ :PREP "to" :NP "Experiencer")
-                (:S "Stimulus" :ADJ))) 
+  :binds ((SPARSER::EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S STIMULUS :TO EXPERIENCER) (:S STIMULUS)))
 
- (define-mixin-category stop-55.4
+(define-mixin-category stop-55.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Affector" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category stop-55.4-1
+(define-mixin-category stop-55.4-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :ADV) (:S "Theme"))) 
+  :mixins (STOP-55.4)
+  :realization ((:S THEME)))
 
- (define-mixin-category stop-55.4-1-1
+(define-mixin-category stop-55.4-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (STOP-55.4-1)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category subjugate-42.3
+(define-mixin-category subjugate-42.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT)
-  :binds ((INSTRUMENT "OBJECT") (PATIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT)
+          (SPARSER::PATIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :WITH INSTRUMENT)))
 
- (define-mixin-category subordinate-95.2.1
+(define-mixin-category subordinate-95.2.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "to" :IO "Co-Agent"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :TO AGENT)))
 
- (define-mixin-category substance_emission-43.4
+(define-mixin-category substance_emission-43.4
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-SOURCE)
-  :realization ((:S "Source" :O "Theme"))) 
+  :realization ((:S SOURCE :O THEME)))
 
- (define-mixin-category substance_emission-43.4-1
+(define-mixin-category substance_emission-43.4-1
   :specializes subcategorization-pattern
   :mixins (WITH-CAUSE)
-  :realization ((:S "Source" :O "Theme") (:S "Theme" :LEX "out")
-                (:S "there" :O "Theme" :PREP :NP "Location")
-                (:S :NP "Location" :NP "Theme")
-                (:S "Location" :PREP "with" :IO "Theme")
-                (:S "Theme" :PREP :NP "Location")
-                (:S "Theme" :PREP "from out_of" :IO "Source") (:S "Source"))) 
+  :realization ((:S SOURCE) (:S THEME :FROM SOURCE :OUT_OF SOURCE)
+                (:S THEME :NIL CAUSE) (:S CAUSE :WITH THEME)
+                (:NIL CAUSE :O THEME) (:O THEME :NIL CAUSE) (:S THEME)
+                (:S SOURCE :O THEME)))
 
- (define-mixin-category substance_emission-43.4-1-1
+(define-mixin-category substance_emission-43.4-1-1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Source"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :O SOURCE)))
 
- (define-mixin-category substitute-13.6.2
+(define-mixin-category substitute-13.6.2
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-THEME WITH-SOURCE WITH-GOAL WITH-CAUSE)
-  :binds ((CAUSE (AND/OR LOCATION REGION)))
-  :realization ((:S "Theme" :O "Location" :PREP "with" :IO "Co-Theme")
-                (:S "Theme" :O "Location")
-                (:S "Theme" :PREP "for into" :IO "Co-Theme"))) 
+  :binds ((SPARSER::CAUSE (:AND/OR LOCATION REGION)))
+  :realization ((:S THEME :FOR THEME :INTO THEME) (:S THEME :O CAUSE)
+                (:S THEME :O CAUSE :WITH THEME)))
 
- (define-mixin-category substitute-13.6.2-1
+(define-mixin-category substitute-13.6.2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Theme" :O "Co-Theme"))) 
+  :mixins (SUBSTITUTE-13.6.2)
+  :realization ((:S THEME :O THEME)))
 
- (define-mixin-category succeed-74
+(define-mixin-category succeed-74
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization NIL) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))))
 
- (define-mixin-category succeed-74-1
+(define-mixin-category succeed-74-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "in" :IO "Theme") (:S "Agent"))) 
+  :mixins (SUCCEED-74)
+  :realization ((:S AGENT) (:S AGENT :IN THEME)))
 
- (define-mixin-category succeed-74-1-1
+(define-mixin-category succeed-74-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme"))) 
+  :mixins (SUCCEED-74-1)
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category succeed-74-2
+(define-mixin-category succeed-74-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "in at" :IO "Theme") (:S "Agent" :O "Theme")
-                (:S "Agent"))) 
+  :mixins (SUCCEED-74)
+  :realization ((:S AGENT) (:S AGENT :O THEME) (:S AGENT :IN THEME :AT THEME)))
 
- (define-mixin-category succeed-74-3
+(define-mixin-category succeed-74-3
   :specializes subcategorization-pattern
-  :realization ((:S "Agent"))) 
+  :mixins (SUCCEED-74)
+  :realization ((:S AGENT)))
 
- (define-mixin-category succeed-74-3-1
+(define-mixin-category succeed-74-3-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "in at" :IO "Theme") (:S "Agent" :O "Theme"))) 
+  :mixins (SUCCEED-74-3)
+  :realization ((:S AGENT :O THEME) (:S AGENT :IN THEME :AT THEME)))
 
- (define-mixin-category succeed-74-3-1-1
+(define-mixin-category succeed-74-3-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme") (:S "Agent" :PREP "in" :IO "Theme"))) 
+  :mixins (SUCCEED-74-3-1)
+  :realization ((:S AGENT :IN THEME) (:S AGENT :O THEME)))
 
- (define-mixin-category suffocate-40.7
+(define-mixin-category suffocate-40.7
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-RESULT)
-  :binds ((PATIENT PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Patient" :PREP "to" :IO "Result")
-                (:S "Patient" :PREP "to" :IO "Result") (:S "Patient")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT PHYSICAL-AGENT) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O PATIENT) (:S PATIENT) (:S PATIENT :TO RESULT-ROLE)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE)))
 
- (define-mixin-category supervision-95.2.2
+(define-mixin-category supervision-95.2.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Co-Agent"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O AGENT)))
 
- (define-mixin-category support-15.3
+(define-mixin-category support-15.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-INSTRUMENT)
-  :binds ((INSTRUMENT "OBJECT") (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Instrument" :O "Theme"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT)
+          (SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S INSTRUMENT :O THEME)))
 
- (define-mixin-category support-15.3-1
+(define-mixin-category support-15.3-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Theme" :PREP "with | through" :IO "Instrument"))) 
+  :mixins (SUPPORT-15.3)
+  :realization ((:S AGENT :O THEME :WITH INSTRUMENT :|\|| INSTRUMENT :THROUGH
+                 INSTRUMENT)))
 
- (define-mixin-category suspect-81
+(define-mixin-category suspect-81
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-ATTRIBUTE)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme")
-                (:S "Agent" :O "Theme" :PREP "of" :IO "Attribute"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME :OF ATTRIBUTE) (:S AGENT :O THEME)))
 
- (define-mixin-category sustain-55.6
+(define-mixin-category sustain-55.6
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-INSTRUMENT)
-  :binds ((INSTRUMENT "OBJECT") (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :PREP "through" :IO "Instrument"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME :THROUGH INSTRUMENT)))
 
- (define-mixin-category sustain-55.6-1
+(define-mixin-category sustain-55.6-1
   :specializes subcategorization-pattern
   :mixins (WITH-ATTRIBUTE)
-  :realization ((:S "Agent" :O "Theme" :IO "Attribute"))) 
+  :realization ((:S AGENT :IO THEME O ATTRIBUTE)))
 
- (define-mixin-category swarm-47.5.1
+(define-mixin-category swarm-47.5.1
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
-  :binds ((CAUSE (AND/OR LOCATION REGION)) (THEME (AND/OR PHYSICAL COLLECTION)))
-  :realization NIL) 
+  :binds ((SPARSER::CAUSE (:AND/OR LOCATION REGION))
+          (SPARSER::THEME (:AND/OR PHYSICAL COLLECTION))))
 
- (define-mixin-category swarm-47.5.1-1
+(define-mixin-category swarm-47.5.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Location" :PREP "with" :IO "Theme")
-                (:S :NP "Location" :NP "Theme")
-                (:S "there" :O "Theme" :PREP :NP "Location")
-                (:S "Theme" :PREP :NP "Location"))) 
+  :mixins (SWARM-47.5.1)
+  :realization ((:S THEME :NIL CAUSE) (:O THEME :NIL CAUSE)
+                (:NIL CAUSE :O THEME) (:S CAUSE :WITH THEME)))
 
- (define-mixin-category swarm-47.5.1-2
+(define-mixin-category swarm-47.5.1-2
   :specializes subcategorization-pattern
-  :realization ((:S "there" :O "Theme" :PREP :NP "Location")
-                (:S "Theme" :PREP :NP "Location"))) 
+  :mixins (SWARM-47.5.1)
+  :realization ((:S THEME :NIL CAUSE) (:O THEME :NIL CAUSE)))
 
- (define-mixin-category swarm-47.5.1-2-1
+(define-mixin-category swarm-47.5.1-2-1
   :specializes subcategorization-pattern
-  :realization ((:S "Location" :PREP "with" :IO "Theme"))) 
+  :mixins (SWARM-47.5.1-2)
+  :realization ((:S CAUSE :WITH THEME)))
 
- (define-mixin-category swat-18.2
+(define-mixin-category swat-18.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-INSTRUMENT WITH-CAUSE WITH-RESULT)
-  :binds ((CAUSE PHYSICAL) (INSTRUMENT SOLID) (PATIENT PHYSICAL)
-          (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Patient" :PREP :NP "Location")
-                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result" :PREP
-                 "with" :NP "Instrument")
-                (:S "Agent" :O "Patient" :PREP "to into" :IO "Result")
-                (:S "Agent" :O "Patient" :IO "Result" :PREP "with" :IO
-                 "Instrument")
-                (:S "Agent" :O "Patient" :IO "Result")
-                (:S "Agent" :LEX "at" :IO "Patient" :PREP "with" :IO
-                 "Instrument")
-                (:S "Agent" :LEX "at" :IO "Patient")
-                (:S "Agent" :O "Patient" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::CAUSE PHYSICAL) (SPARSER::INSTRUMENT SOLID)
+          (SPARSER::PATIENT PHYSICAL) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :WITH INSTRUMENT)
+                (:S AGENT :IO PATIENT O RESULT-ROLE)
+                (:S AGENT :IO PATIENT O RESULT-ROLE :WITH INSTRUMENT)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE)
+                (:S AGENT :O PATIENT :TO RESULT-ROLE :INTO RESULT-ROLE :WITH
+                 INSTRUMENT)
+                (:S AGENT :O PATIENT :NIL CAUSE)))
 
- (define-mixin-category talk-37.5
+(define-mixin-category talk-37.5
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT WITH-TOPIC)
-  :binds ((TOPIC SPEECH-ACT) (AGENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "about" :IO "Topic")
-                (:S "Agent" :PREP "about" :IO "Topic" :PREP "with" :IO
-                 "Co-Agent")
-                (:S "Agent" :PREP "about" :IO "Topic" :PREP "to" :IO
-                 "Co-Agent")
-                (:S "Agent" :LEX "together")
-                (:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "about" :IO
-                 "Topic")
-                (:S "Agent" :PREP "to" :IO "Co-Agent" :PREP "about" :IO
-                 "Topic")
-                (:S "Agent" :PREP "with" :IO "Co-Agent")
-                (:S "Agent" :PREP "to" :IO "Co-Agent") (:S "Agent"))) 
+  :binds ((SPARSER::TOPIC SPEECH-ACT)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :TO AGENT) (:S AGENT :WITH AGENT)
+                (:S AGENT :TO AGENT :ABOUT TOPIC)
+                (:S AGENT :WITH AGENT :ABOUT TOPIC) (:S AGENT)
+                (:S AGENT :ABOUT TOPIC :TO AGENT)
+                (:S AGENT :ABOUT TOPIC :WITH AGENT) (:S AGENT :ABOUT TOPIC)))
 
- (define-mixin-category tape-22.4
+(define-mixin-category tape-22.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-CO-PATIENT WITH-INSTRUMENT WITH-RESULT)
-  :binds ((INSTRUMENT (AND/OR PHYSICAL PHYSICAL-AGENT)) (CO-PATIENT SOLID)
-          (PATIENT SOLID) (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization ((:S "Agent" :O "Patient" :IO "Result")
-                (:S "Patient" :LEX "together" :ADV)
-                (:S "Patient" :ADV :LEX "together") (:S "Patient" :ADV)
-                (:S "Patient" :ADV :PREP "to on onto" :NP "Co-Patient")
-                (:S "Agent" :O "Patient" :LEX "together")
-                (:S "Agent" :O "Patient" :PREP "to on onto" :IO "Co-Patient")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::INSTRUMENT (:AND/OR PHYSICAL PHYSICAL-AGENT))
+          (SPARSER::CO-PATIENT SOLID) (SPARSER::PATIENT SOLID)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S AGENT :O PATIENT :TO CO-PATIENT :ON CO-PATIENT :ONTO
+                 CO-PATIENT)
+                (:S AGENT :O PATIENT)
+                (:S PATIENT :TO CO-PATIENT :ON CO-PATIENT :ONTO CO-PATIENT)
+                (:S PATIENT) (:S AGENT :IO PATIENT O RESULT-ROLE)))
 
- (define-mixin-category tape-22.4-1
+(define-mixin-category tape-22.4-1
   :specializes subcategorization-pattern
-  :realization ((:S "Patient" :PREP "to on onto" :IO "Co-Patient"))) 
+  :mixins (TAPE-22.4)
+  :realization ((:S PATIENT :TO CO-PATIENT :ON CO-PATIENT :ONTO CO-PATIENT)))
 
- (define-mixin-category tell-37.2
+(define-mixin-category tell-37.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-RECIPIENT WITH-TOPIC)
-  :binds ((TOPIC SPEECH-ACT) (RECIPIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Recipient" :IO "Topic")
-                (:S "Agent" :O "Recipient" :PREP "of" :IO "Topic")
-                (:S "Agent" :O "Recipient"))) 
+  :binds ((SPARSER::TOPIC SPEECH-ACT)
+          (SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O RECIPIENT) (:S AGENT :O RECIPIENT :OF TOPIC)
+                (:S AGENT :IO RECIPIENT O TOPIC)))
 
- (define-mixin-category terminus-47.9
+(define-mixin-category terminus-47.9
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
-  :realization ((:S "Theme" :PREP "" :IO "Location"))) 
+  :realization ((:S THEME :|| CAUSE)))
 
- (define-mixin-category throw-17.1
+(define-mixin-category throw-17.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-RESULT)
-  :binds ((DESTINATION (OR PHYSICAL-AGENT LOCATION REGION)) (SOURCE LOCATION)
-          (THEME PHYSICAL))
-  :realization ((:S "Agent" :O "Theme" :ADV)
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location" :PREP :IO
-                 "Destination")
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location")
-                (:S "Agent" :O "Theme" :PREP :NP "Destination")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::DESTINATION (:OR PHYSICAL-AGENT LOCATION REGION))
+          (SPARSER::SOURCE LOCATION) (SPARSER::THEME PHYSICAL))
+  :realization ((:S AGENT :O THEME :NIL DESTINATION)
+                (:S AGENT :O THEME :NIL SOURCE)
+                (:S AGENT :O THEME :NIL SOURCE :NIL DESTINATION)
+                (:S AGENT :O THEME)))
 
- (define-mixin-category throw-17.1-1
+(define-mixin-category throw-17.1-1
   :specializes subcategorization-pattern
   :mixins (WITH-DESTINATION)
-  :binds ((DESTINATION PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Destination" :IO "Theme"))) 
+  :binds ((SPARSER::DESTINATION PHYSICAL-AGENT))
+  :realization ((:S AGENT :IO DESTINATION O THEME)))
 
- (define-mixin-category throw-17.1-1-1
+(define-mixin-category throw-17.1-1-1
   :specializes subcategorization-pattern
   :mixins (WITH-CAUSE)
-  :realization ((:S "Causer" :PREP "into" :IO "Result" :IO "Theme")
-                (:S "Causer" :O "Theme" :PREP "into" :IO "Result"))) 
+  :realization ((:S CAUSE :O THEME :INTO RESULT-ROLE)
+                (:S CAUSE :INTO RESULT-ROLE :O THEME)))
 
- (define-mixin-category tingle-40.8.2
+(define-mixin-category tingle-40.8.2
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-PATIENT WITH-STIMULUS)
-  :binds ((EXPERIENCER PHYSICAL-AGENT))
-  :realization ((:S "Patient" :PREP "from at" :IO "Stimulus") (:S "Patient"))) 
+  :binds ((SPARSER::EXPERIENCER PHYSICAL-AGENT))
+  :realization ((:S PATIENT) (:S PATIENT :FROM STIMULUS :AT STIMULUS)))
 
- (define-mixin-category touch-20
+(define-mixin-category touch-20
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-EXPERIENCER WITH-INSTRUMENT)
-  :binds ((INSTRUMENT SOLID) (EXPERIENCER PHYSICAL))
-  :realization ((:S "Agent" :O "Experiencer" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Experiencer"))) 
+  :binds ((SPARSER::INSTRUMENT SOLID) (SPARSER::EXPERIENCER PHYSICAL))
+  :realization ((:S AGENT :O EXPERIENCER)
+                (:S AGENT :O EXPERIENCER :WITH INSTRUMENT)))
 
- (define-mixin-category touch-20-1
+(define-mixin-category touch-20-1
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER)
-  :binds ((EXPERIENCER (OR NIL PRONOUN)))
-  :realization ((:S "Agent" :O "Experiencer" :PREP "with" :IO "Instrument")
-                (:S "Agent" :O "Experiencer"))) 
+  :binds ((SPARSER::EXPERIENCER (:OR NIL PRONOUN)))
+  :realization ((:S AGENT :O EXPERIENCER)
+                (:S AGENT :O EXPERIENCER :WITH INSTRUMENT)))
 
- (define-mixin-category transcribe-25.4
+(define-mixin-category transcribe-25.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-DESTINATION)
-  :binds ((DESTINATION PHYSICAL) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :PREP :NP "Destination")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::DESTINATION PHYSICAL) (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :NIL DESTINATION)))
 
- (define-mixin-category transfer_mesg-37.1.1
+(define-mixin-category transfer_mesg-37.1.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-TOPIC WITH-RECIPIENT WITH-SOURCE)
-  :binds ((RECIPIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent") (:S "Agent" :PREP "from" :IO "Source")
-                (:S "Agent" :O "Topic" :PREP "to" :IO "Recipient")
-                (:S "Agent" :PREP "to" :IO "Recipient" :IO "Topic")
-                (:S "Agent" :O "Topic"))) 
+  :binds ((SPARSER::RECIPIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :TO RECIPIENT :O TOPIC) (:S AGENT :O TOPIC)
+                (:S AGENT :O TOPIC :TO RECIPIENT) (:S AGENT :FROM SOURCE)
+                (:S AGENT)))
 
- (define-mixin-category transfer_mesg-37.1.1-1
+(define-mixin-category transfer_mesg-37.1.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Recipient" :IO "Topic"))) 
+  :mixins (TRANSFER_MESG-37.1.1)
+  :realization ((:S AGENT :IO RECIPIENT O TOPIC)))
 
- (define-mixin-category transfer_mesg-37.1.1-1-1
+(define-mixin-category transfer_mesg-37.1.1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Recipient" :PREP "about" :IO "Topic")
-                (:S "Agent" :O "Recipient" :IO "Topic")
-                (:S "Agent" :O "Recipient"))) 
+  :mixins (TRANSFER_MESG-37.1.1-1)
+  :realization ((:S AGENT :O RECIPIENT) (:S AGENT :O RECIPIENT :ABOUT TOPIC)
+                (:S AGENT :IO RECIPIENT O TOPIC)))
 
- (define-mixin-category trick-59.2
+(define-mixin-category trick-59.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT PREDICATION)
-  :binds ((PREDICATE "PREDICATE") (PATIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Patient" :PREP "into" :IO "Result")
-                (:S "Agent" :O "Patient" :PREP "into" :IO "Predicate")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PREDICATE PREDICATE)
+          (SPARSER::PATIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :INTO PREDICATE)
+                (:S AGENT :O PATIENT :INTO RESULT-ROLE)))
 
- (define-mixin-category trifle-105.3
+(define-mixin-category trifle-105.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "with" :IO "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :WITH THEME)))
 
- (define-mixin-category try-61.1
+(define-mixin-category try-61.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME)))
 
- (define-mixin-category turn-26.6.1
+(define-mixin-category turn-26.6.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-RESULT WITH-SOURCE)
-  :binds ((AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization ((:S "Agent" :O "Patient") (:S "Patient")
-                (:S "Patient" :PREP "into" :IO "Result")
-                (:S "Agent" :O "Patient" :PREP "into" :IO "Result")
-                (:S "Patient" :PREP "from" :IO "Initial_State" :PREP "into" :IO
-                 "Result")
-                (:S "Agent" :O "Patient" :PREP "from" :IO "Initial_State" :PREP
-                 "into" :NP "Result"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S AGENT :O PATIENT :FROM SOURCE :INTO RESULT-ROLE)
+                (:S PATIENT :FROM SOURCE :INTO RESULT-ROLE)
+                (:S AGENT :O PATIENT :INTO RESULT-ROLE)
+                (:S PATIENT :INTO RESULT-ROLE) (:S PATIENT)
+                (:S AGENT :O PATIENT)))
 
- (define-mixin-category turn-26.6.1-1
+(define-mixin-category turn-26.6.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "to" :IO "Result" :PREP "from" :IO
-                 "Initial_State")
-                (:S "Agent" :PREP "from" :IO "Initial_State" :PREP "to" :IO
-                 "Result")
-                (:S "Agent" :PREP "to" :IO "Result"))) 
+  :mixins (TURN-26.6.1)
+  :realization ((:S AGENT :TO RESULT-ROLE)
+                (:S AGENT :FROM SOURCE :TO RESULT-ROLE)
+                (:S AGENT :TO RESULT-ROLE :FROM SOURCE)))
 
- (define-mixin-category urge-58.1
+(define-mixin-category urge-58.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-RESULT)
-  :binds ((PATIENT (OR PHYSICAL-AGENT COMPANY))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::PATIENT (:OR PHYSICAL-AGENT COMPANY))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O PATIENT)))
 
- (define-mixin-category urge-58.1-1
+(define-mixin-category urge-58.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Patient" :IO "Result"))) 
+  :mixins (URGE-58.1)
+  :realization ((:S AGENT :IO PATIENT O RESULT-ROLE)))
 
- (define-mixin-category urge-58.1-1-1
+(define-mixin-category urge-58.1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Patient" :IO "Topic"))) 
+  :mixins (URGE-58.1-1)
+  :realization ((:S AGENT :IO PATIENT O TOPIC)))
 
- (define-mixin-category use-105.1
+(define-mixin-category use-105.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME PREDICATION)
-  :binds ((PREDICATE "PREDICATE") (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Theme" :IO "Predicate")
-                (:S "Agent" :O "Theme" :PREP "for" :IO "Predicate")
-                (:S "Agent" :O "Theme" :ADV) (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::PREDICATE PREDICATE)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :FOR PREDICATE)
+                (:S AGENT :IO THEME O PREDICATE)))
 
- (define-mixin-category vehicle-51.4.1
+(define-mixin-category vehicle-51.4.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-PATH WITH-RESULT)
-  :binds ((PATH PHYSICAL) (THEME PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :PREP "to into" :IO "Result")
-                (:S "Agent" :O "Theme" :IO "Result") (:S "Agent" :O "Theme")
-                (:S "Agent" :O "Theme" :PREP :NP "Trajectory")
-                (:S "Theme" :PREP :NP "Trajectory") (:S "Theme"))) 
+  :binds ((SPARSER::PATH PHYSICAL) (SPARSER::THEME PHYSICAL-AGENT)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S THEME) (:S THEME :NIL PATH) (:S AGENT :O THEME :NIL PATH)
+                (:S AGENT :O THEME) (:S AGENT :IO THEME O RESULT-ROLE)
+                (:S AGENT :O THEME :TO RESULT-ROLE :INTO RESULT-ROLE)))
 
- (define-mixin-category vehicle-51.4.1-1
+(define-mixin-category vehicle-51.4.1-1
   :specializes subcategorization-pattern
   :mixins (WITH-CAUSE)
-  :binds ((CAUSE PHYSICAL))
-  :realization ((:S "Theme" :O "Location"))) 
+  :binds ((SPARSER::CAUSE PHYSICAL))
+  :realization ((:S THEME :O CAUSE)))
 
- (define-mixin-category vehicle_path-51.4.3
+(define-mixin-category vehicle_path-51.4.3
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-PATH WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION LOCATION) (SOURCE LOCATION) (THEME MOTOR-VEHICLE)
-          (AGENT (OR PHYSICAL-AGENT MOTOR-VEHICLE)))
-  :realization ((:S "Agent" :O "Trajectory" :PREP "from" :IO
-                 "Initial_Location")
-                (:S "Agent" :O "Trajectory" :PREP "to" :IO "Destination")
-                (:S "Agent" :O "Trajectory")
-                (:S "Agent" :O "Theme" :PREP "from" :IO "Initial_Location")
-                (:S "Agent" :O "Theme" :PREP "to" :IO "Destination")
-                (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::DESTINATION LOCATION) (SPARSER::SOURCE LOCATION)
+          (SPARSER::THEME MOTOR-VEHICLE)
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT MOTOR-VEHICLE)))
+  :realization ((:S AGENT :O THEME) (:S AGENT :O THEME :TO DESTINATION)
+                (:S AGENT :O THEME :FROM SOURCE) (:S AGENT :O PATH)
+                (:S AGENT :O PATH :TO DESTINATION)
+                (:S AGENT :O PATH :FROM SOURCE)))
 
- (define-mixin-category void-106
+(define-mixin-category void-106
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT)
-  :binds ((AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT :O PATIENT)))
 
- (define-mixin-category volunteer-95.4
+(define-mixin-category volunteer-95.4
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-INSTRUMENT WITH-THEME WITH-ATTRIBUTE)
-  :binds ((INSTRUMENT "OBJECT") (AGENT ("PRONOUN" "PHYSICAL-AGENT")))
-  :realization ((:S "Agent" :O "Pivot" :IO "Theme") (:S "Agent" :O "Theme"))) 
+  :binds ((SPARSER::INSTRUMENT OBJECT)
+          (SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT))))
+  :realization ((:S AGENT :O THEME) (:S AGENT :IO INSTRUMENT O THEME)))
 
- (define-mixin-category volunteer-95.4-1
+(define-mixin-category volunteer-95.4-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :O "Attribute"))) 
+  :mixins (VOLUNTEER-95.4)
+  :realization ((:S AGENT :O ATTRIBUTE)))
 
- (define-mixin-category waltz-51.5
+(define-mixin-category waltz-51.5
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-PATH WITH-GOAL)
-  :binds ((PATH PHYSICAL) (THEME PHYSICAL-AGENT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :O "Theme" :PREP "to into" :IO "Goal")
-                (:S "Agent" :O "Theme" :IO "Goal")
-                (:S "Agent" :O "Theme" :PREP :NP "Trajectory")
-                (:S "Theme" :PREP :NP "Trajectory" :NP "Goal") (:S "Theme"))) 
+  :binds ((SPARSER::PATH PHYSICAL) (SPARSER::THEME PHYSICAL-AGENT)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S THEME) (:S THEME :NIL PATH :O GOAL)
+                (:S AGENT :O THEME :NIL PATH) (:S AGENT :IO THEME O GOAL)
+                (:S AGENT :O THEME :TO GOAL :INTO GOAL)))
 
- (define-mixin-category want-32.1
+(define-mixin-category want-32.1
   :specializes subcategorization-pattern
   :mixins (WITH-INSTRUMENT WITH-THEME)
-  :binds ((INSTRUMENT PHYSICAL-AGENT))
-  :realization ((:S "Pivot" :O "Theme"))) 
+  :binds ((SPARSER::INSTRUMENT PHYSICAL-AGENT))
+  :realization ((:S INSTRUMENT :O THEME)))
 
- (define-mixin-category want-32.1-1
+(define-mixin-category want-32.1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Pivot" :O "Theme" :ADJ) (:S "Pivot" :O "Theme"))) 
+  :mixins (WANT-32.1)
+  :realization ((:S INSTRUMENT :O THEME)))
 
- (define-mixin-category want-32.1-1-1
+(define-mixin-category want-32.1-1-1
   :specializes subcategorization-pattern
-  :realization ((:S "Pivot" :O "Theme"))) 
+  :mixins (WANT-32.1-1)
+  :realization ((:S INSTRUMENT :O THEME)))
 
- (define-mixin-category weather-57
+(define-mixin-category weather-57
   :specializes subcategorization-pattern
   :mixins (WITH-THEME)
-  :binds ((THEME (OR PHYSICAL NIL)))
-  :realization ((:S "it[+be]" :PREP "with" :IO "Theme")
-                (:S "it" :LEX "[+be]" :IO "Theme") (:S "it" :LEX "[+be]"))) 
+  :binds ((SPARSER::THEME (:OR PHYSICAL NIL)))
+  :realization (NIL (:O THEME) (:WITH THEME)))
 
- (define-mixin-category weekend-56
+(define-mixin-category weekend-56
   :specializes subcategorization-pattern
   :mixins (WITH-THEME WITH-CAUSE)
-  :binds ((CAUSE LOCATION) (THEME PHYSICAL-AGENT))
-  :realization ((:S "Theme" :PREP :NP "Location"))) 
+  :binds ((SPARSER::CAUSE LOCATION) (SPARSER::THEME PHYSICAL-AGENT))
+  :realization ((:S THEME :NIL CAUSE)))
 
- (define-mixin-category wink-40.3.1
+(define-mixin-category wink-40.3.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-PATIENT WITH-THEME WITH-RECIPIENT)
-  :binds ((RECIPIENT PHYSICAL-AGENT) (THEME SPEECH-ACT) (AGENT PHYSICAL-AGENT))
-  :realization ((:S "Agent" :PREP "in" :IO "Theme") (:S "Agent" :O "Theme")
-                (:S "Agent" :PREP :NP "Recipient") (:S "Agent")
-                (:S "Agent" :O "Patient" :PREP "in" :IO "Theme")
-                (:S "Agent" :O "Patient"))) 
+  :binds ((SPARSER::RECIPIENT PHYSICAL-AGENT) (SPARSER::THEME SPEECH-ACT)
+          (SPARSER::AGENT PHYSICAL-AGENT))
+  :realization ((:S AGENT :O PATIENT) (:S AGENT :O PATIENT :IN THEME)
+                (:S AGENT) (:S AGENT :NIL RECIPIENT) (:S AGENT :IN THEME)
+                (:S AGENT :O THEME)))
 
- (define-mixin-category wipe_instr-10.4.2
+(define-mixin-category wipe_instr-10.4.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION WITH-INSTRUMENT
            WITH-RESULT)
-  :binds ((INSTRUMENT (AND/OR PHYSICAL PHYSICAL-AGENT)) (DESTINATION LOCATION)
-          (SOURCE LOCATION) (THEME (AND/OR PHYSICAL PHYSICAL-AGENT))
-          (AGENT (OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
-  :realization ((:S "Agent" :O "Initial_Location" :IO "Result") (:S "Agent")
-                (:S "Agent" :O "Initial_Location")
-                (:S "Agent" :O "Theme" :PREP :NP "Initial_Location"))) 
+  :binds ((SPARSER::INSTRUMENT (:AND/OR PHYSICAL PHYSICAL-AGENT))
+          (SPARSER::DESTINATION LOCATION) (SPARSER::SOURCE LOCATION)
+          (SPARSER::THEME (:AND/OR PHYSICAL PHYSICAL-AGENT))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT PHYSICAL-OBJECT)))
+  :realization ((:S AGENT :O THEME :NIL SOURCE) (:S AGENT :O SOURCE) (:S AGENT)
+                (:S AGENT :IO SOURCE O RESULT-ROLE)))
 
- (define-mixin-category wipe_instr-10.4.2-1
+(define-mixin-category wipe_instr-10.4.2-1
   :specializes subcategorization-pattern
   :mixins (WITH-DESTINATION)
-  :realization ((:S "Agent" :O "Theme" :PREP :NP "Destination"))) 
+  :realization ((:S AGENT :O THEME :NIL DESTINATION)))
 
- (define-mixin-category wipe_manner-10.4.1
+(define-mixin-category wipe_manner-10.4.1
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-THEME WITH-SOURCE WITH-DESTINATION)
-  :binds ((DESTINATION LOCATION) (SOURCE LOCATION)
-          (THEME (AND/OR PHYSICAL PHYSICAL-AGENT)))
-  :realization ((:S "Agent" :O "Theme") (:S "Agent" :O "Source")
-                (:S "Agent" :O "Theme" :PREP :NP "Source"))) 
+  :binds ((SPARSER::DESTINATION LOCATION) (SPARSER::SOURCE LOCATION)
+          (SPARSER::THEME (:AND/OR PHYSICAL PHYSICAL-AGENT)))
+  :realization ((:S AGENT :O THEME :NIL SOURCE) (:S AGENT :O SOURCE)
+                (:S AGENT :O THEME)))
 
- (define-mixin-category wipe_manner-10.4.1-1
+(define-mixin-category wipe_manner-10.4.1-1
   :specializes subcategorization-pattern
   :mixins (WITH-SOURCE)
-  :binds ((SOURCE REGION))
-  :realization ((:S "Agent" :LEX "at" :IO "Source"))) 
+  :binds ((SPARSER::SOURCE REGION))
+  :realization ((:S AGENT :O SOURCE)))
 
- (define-mixin-category wish-62
+(define-mixin-category wish-62
   :specializes subcategorization-pattern
   :mixins (WITH-EXPERIENCER WITH-STIMULUS)
-  :binds ((EXPERIENCER (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Experiencer" :O "Stimulus"))) 
+  :binds ((SPARSER::EXPERIENCER (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S EXPERIENCER :O STIMULUS)))
 
- (define-mixin-category withdraw-82
+(define-mixin-category withdraw-82
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-SOURCE)
-  :binds ((AGENT (AND/OR PHYSICAL-AGENT COMPANY)))
-  :realization NIL) 
+  :binds ((SPARSER::AGENT (:AND/OR PHYSICAL-AGENT COMPANY))))
 
- (define-mixin-category withdraw-82-1
+(define-mixin-category withdraw-82-1
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "of" :IO "Source") (:S "Agent"))) 
+  :mixins (WITHDRAW-82)
+  :realization ((:S AGENT) (:S AGENT :OF SOURCE)))
 
- (define-mixin-category withdraw-82-2
+(define-mixin-category withdraw-82-2
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "from" :IO "Source") (:S "Agent" :LEX "away"))) 
+  :mixins (WITHDRAW-82)
+  :realization ((:S AGENT) (:S AGENT :FROM SOURCE)))
 
- (define-mixin-category withdraw-82-3
+(define-mixin-category withdraw-82-3
   :specializes subcategorization-pattern
-  :realization ((:S "Agent" :PREP "from" :IO "Source") (:S "Agent"))) 
+  :mixins (WITHDRAW-82)
+  :realization ((:S AGENT) (:S AGENT :FROM SOURCE)))
 
- (define-mixin-category work-73.2
+(define-mixin-category work-73.2
   :specializes subcategorization-pattern
   :mixins (WITH-AGENT WITH-AGENT WITH-THEME)
-  :binds ((AGENT ("PRONOUN" "PHYSICAL-AGENT"))
-          (AGENT (OR PHYSICAL-AGENT COMPANY)))
-  :realization ((:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "at" :IO "Theme")
-                (:S "Agent" :PREP "at" :IO "Theme")
-                (:S "Agent" :PREP "with" :IO "Co-Agent" :PREP "on" :IO "Theme")
-                (:S "Agent" :PREP "on" :IO "Theme") (:S "Agent"))) 
+  :binds ((SPARSER::AGENT (:OR (PRONOUN PHYSICAL-AGENT)))
+          (SPARSER::AGENT (:OR PHYSICAL-AGENT COMPANY)))
+  :realization ((:S AGENT) (:S AGENT :ON THEME)
+                (:S AGENT :WITH AGENT :ON THEME) (:S AGENT :AT THEME)
+                (:S AGENT :WITH AGENT :AT THEME)))
