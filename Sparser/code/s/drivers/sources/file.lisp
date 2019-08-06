@@ -20,7 +20,7 @@
                                        *paragraphs-from-orthography*)
                                       ((:prescan prescan-buffer?)
                                        *prescan-character-input-buffer*)
-                                      trace)
+                                      echo trace)
   (declare (special *open-stream-of-source-characters* *paragraphs-from-orthography*
                     *prescan-character-input-buffer*))
   (when *open-stream-of-source-characters*
@@ -33,7 +33,7 @@
     (establish-character-source/file pathname)
 
     (when prescan-buffer?  ;; *prescan-character-input-buffer*
-      (scan-and-swap-character-buffer))
+      (scan-and-swap-character-buffer :echo echo))
 
     (let ((*paragraphs-from-orthography* make-orthographic-paragraphs)
           (*tts-after-each-section* trace))
