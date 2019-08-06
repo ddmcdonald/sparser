@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "prescan"
 ;;;   Module:  "analyzers;char-level:"   ("character level processing")
-;;;  Version:   April 2019
+;;;  Version:   July 2019
 
 ;; Initiated 4/16/19 -- Before doing any analysis, sweep through the input
 ;; text at the character level to normalize newlines (paragraphs), convert
@@ -70,8 +70,8 @@ scan-name-position -> add-terminal-to-chart
  the flag *prescan-character-input-buffer* is up. Copies the just-populated
  character buffer in use to the alternative buffer, character by character
  and normalizing it, e.g., multiple newlines are reduced to just one,
- leading spaces are removed,
-"
+ leading spaces are removed, quotation marks and punctuation are flipped,
+ html character-coding escape strings decoded, ..."
   (multiple-value-bind (source sink) (character-buffer-being-used)
     (let* ((index-into-source 1)
            (index-into-sink 1)
@@ -127,6 +127,18 @@ scan-name-position -> add-terminal-to-chart
 
             (#\^M ;;(break "cntrl-M")
              (handle-newline char))
+
+            ((#\. #\,)
+             (if (eql (schar source (1+ index-into-source)) #\")
+               (then ;; swap them
+                 (setf (schar sink index-into-sink) #\")
+                 (setf (schar sink (1+ index-into-sink)) char)
+                 (when echo (write-char #\") (write-char char))
+                 (setf index-into-sink (+ 2 index-into-sink)
+                       index-into-source (+ 2 index-into-source)))
+               (else
+                 (when echo (write-char char))
+                 (push-char char))))
 
             (#\^B (setf (schar sink index-into-sink) char)
                   (setq source-exhausted t)) ;; :end-of-source
