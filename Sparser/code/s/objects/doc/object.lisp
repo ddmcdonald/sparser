@@ -541,6 +541,7 @@
  'current' sentence. When we are parsing a succession of
  sentences it is set in sweep-successive-sentences-from to
  the sentence object that is being worked on.")
+
 (defun sentence () *current-sentence*)
 
 (defvar *previous-sentence* nil
