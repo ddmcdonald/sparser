@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "paragraphs"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  January 2019
+;;;  Version:  July 2019
 
 #| Aggregates the special handling of paragraph objects that
 are found incrementally during the handling of large texts.
@@ -59,8 +59,9 @@ the original orthographic paragraph handling of the early 1990s
 |# 
 
 (defvar *prior-para-newline-pos* nil
-  "The position of the previous instance of paragraph-marking
+  "The position of the previous instance of a paragraph-marking
    newline character. Used in setting the bounds of the paragraphs.")
+
 (define-per-run-init-form
     '(setq *prior-para-newline-pos* (position# 0)))
 
@@ -68,10 +69,17 @@ the original orthographic paragraph handling of the early 1990s
 
 (defun new-ortho-paragraph (end-pos)
   "Called from sort-out-result-of-newline-analysis when we
-   are getting our paragraphs from the orthography (versus markup).
-   Interprets multiple newlines as delimiting the ongoing paragraph.
+   are getting our paragraphs from the orthography (versus markup),
+   which is signalled by the flag *paragraphs-from-orthography* that
+   is typically dynamically bound by analyze-text-from-file for
+   the duration of reading the file.
+     Interprets multiple newlines as delimiting the ongoing paragraph.
    'End-pos' is the position of the newline character and the end
-   position of the ongoing paragraph ('terminating')."
+   position of the ongoing paragraph ('terminating').
+      When this is called we are terminating an ongoing paragraph.
+   The initial paragraph was created by initialize-paragraphs, which
+   was called by initialize-sections via begin-new-article when
+   per-article-initializations is called at the start of a run."
 
   (if (eq end-pos (chart-position-after *prior-para-newline-pos*))
     (then ;; two (or more) newlines in a row
@@ -93,7 +101,7 @@ the original orthographic paragraph handling of the early 1990s
 
       (let ((starting (begin-new-paragraph end-pos)))
         ;; creating a new paragraph updates *previous-paragraph*
-        ;; to the value of the current paragraph
+        ;; to the value of the paragraph that we're terminating
       
         (setf (next terminating) starting)
         (setf (previous starting) terminating)
@@ -124,7 +132,8 @@ the original orthographic paragraph handling of the early 1990s
    boundaries in this mode and doesn't cross them."
   
   (declare (special *tts-after-each-section*))
-  
+
+  ;; pump priming
   (let ((start-pos (position# 1))
         eos-pos  sentence  previous-paragraph )
     
@@ -134,7 +143,8 @@ the original orthographic paragraph handling of the early 1990s
       
       (loop
          (multiple-value-setq (eos-pos sentence) ;; eos = 'end of sentence'
-           ;; Sweep to the end of the paragraph
+           ;; Sweep to the end of the paragraph, return the final
+           ;; sentence (= *current-sentence*)
            (scan-sentences-and-pws-to-eos start-pos))
 
 #| The scan-sentences calls scan-next-position. Periodically that will
@@ -143,11 +153,8 @@ the original orthographic paragraph handling of the early 1990s
  knows the length of the ongoing (current) paragraph it can populate
  its content-string from the character buffer.
 |#
-
-         ;; (format t "~&>>> para-length = ~a~%"
-         ;;         (length (content-string *current-paragraph*)))
-         ;; (break "break?") 
-
+         ;;--- pre-parsing terminating conditions
+         
          (when (or (eq (pos-terminal eos-pos) *end-of-source*)
                    (null sentence))
            (tr :sp-eos-return)
@@ -157,45 +164,55 @@ the original orthographic paragraph handling of the early 1990s
            (tr :sp-eos-return)
            (return))
 
-         (let* ((paragraph (parent sentence))
-                (s1 (children paragraph)))
+         ;;--- parse the paragraph
+         
+         (let* ((p (parent sentence))
+                (s1 (children p)))
+           ;; The initial sentence scan could have created any number
+           ;; of sentences, so we go up to the paragraph to be sure
+           ;; that we get the initial sentence
            
-           (when (eq paragraph previous-paragraph)
-             (error "Bad threading. Going to loop on ~a" paragraph))
+           (when (eq p previous-paragraph)
+             (error "Bad threading. Going to loop on ~a" p))
            
-           (tr :sp-para-content paragraph)
+           (tr :sp-para-content p)
 
            (unless (= 0 (length (content-string *current-paragraph*)))
+             
              (catch 'do-next-paragraph
-               ;; Continue in rest of parsing starting with the first sentence
+               ;; Continue to d the rest of the parsing starting with
+               ;; the first sentence
                (sweep-successive-sentences-from s1))
 
              (when *tts-after-each-section*
                (format t "~^&~%")
-               (tts t (starts-at-pos paragraph) (ends-at-pos paragraph))
+               (tts t (starts-at-pos p) (ends-at-pos p))
                (format t "~^&~%"))
-           
-             (when (null (next paragraph))
-               (tr :sp-null-next-return paragraph)
+
+             ;; Run the method in objects/content-methods
+             (after-actions p)
+
+             (when (null (next p))
+               (tr :sp-null-next-return p)
                (return)))
 
-           (unless (ends-at-pos paragraph)
-             (error "paragraph ~a not terminated" paragraph))
+           (unless (ends-at-pos p)
+             (error "paragraph ~a not terminated" p))
 
-           (setq previous-paragraph paragraph)
-           (setq start-pos (chart-position-after (ends-at-pos paragraph)))
-           ;;(push-debug `(,paragraph)) (break "After update: look around")
+           ;;--- loop
            
-           (setq *current-paragraph* (next paragraph))
+           (setq previous-paragraph p)
+           (setq start-pos (chart-position-after (ends-at-pos p)))
+           ;;////skip over newline character
+           ;;(push-debug `(,p)) (break "After update: look around")
+           
+           (setq *current-paragraph* (next p))
 
-          #| ;; null-string?
-           (when (= 0 (length (content-string (next paragraph))))
+            #| ;; null-string?
+           (when (= 0 (length (content-string (next p))))
              (tr :sp-empty-paragraph)|#
            
            ;; Parent of initialized sentences is the current paragraph
            ;; so we update it before going around the loop
            (initialize-sentences :start-pos start-pos))))))
-
-    
-
 
