@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "content"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  July 2016
+;;;  Version:  July 2019
 
 ;; initiated 3/13/13. Elaborated through 3/29/13. 9/17/13 fan-out
 ;; from sections make-over. 10/2/19 Fleshed out general notion of
@@ -26,9 +26,9 @@
     :documentation "backpointer to the document object that it's part of"))
   (:documentation "Common super class for all container-like things"))
 
-;;;---------------------
-;;; sentence containers
-;;;---------------------
+;;;------------------------
+;;; conditional containers
+;;;-----------------------
 
 (defparameter *container-for-sentence* :simple ;; :situation
   "Switch parameter for the kind of container we make for
@@ -37,38 +37,61 @@
    or (the motive for all this) a situation.")
 
 (defun make-sentence-container (sentence)
-  ;; called from start-sentence
+  "N.b. this called from start-sentence directly, not by a install-contents
+   method (probably it should be). The (setf contents) call is there. These
+   variants just determine what content class the sentences will have."
   (declare (ignore sentence))
   (error "No version of make-sentence-container has been specified"))
 
 (defun designate-sentence-container (&optional (keyword *container-for-sentence*))
+  (setq *container-for-sentence* keyword)
   (setf (symbol-function 'make-sentence-container)
         (ecase keyword
           (:simple (symbol-function 'make-sentence-container/simple))
           (:situation (symbol-function 'make-sentence-container/situation))
           (:complex (symbol-function 'make-sentence-content-container)))))
 
-;; (designate-sentence-container :simple)  => switch setting
-(defun make-sentence-container/simple (sentence)
-  (make-instance 'simple-container :in sentence))
 
+(defun make-paragraph-container (sentence)
+  ;; called from start-sentence
+  (declare (ignore sentence))
+  (error "No version of make-paragraph-container has been specified"))
+
+(defparameter *container-for-paragraph* :biology "Default choice")
+
+(defun designate-paragraph-container (&optional (keyword *container-for-paragraph*))
+  (setq *container-for-paragraph* keyword)
+  (setf (symbol-function 'make-paragraph-container)
+        (ecase keyword
+          (:biology (symbol-function 'make-paragraph-content-container/bio))
+          (:texture (symbol-function 'make-paragraph-content-container/texture)))))
 
 ;;;------------------------------------------
 ;;; content containers for document elements
 ;;;------------------------------------------
 
-(defclass sentence-content (container parsing-status
-                            local-layout epistemic-status
+;;--- sentence
+           
+(defclass sentence-content (container
+                            parsing-status
+                            local-layout ; from sweep-sentence-treetops
+                            epistemic-status
                             entities-and-relations
-                            sentence-discourse-history
-                            sentence-text-structure
+                            sentence-discourse-history ;; lifo instances
+                            sentence-text-structure ;; subject
                             records-of-delayed-actions
-                            accumulate-items ordered)
+                            accumulate-items
+                            ordered)
   ((metadata :initform nil :accessor metadata
     :documentation "Metadata describing choices made by Sparser."))
   (:documentation "From container we get :in to point back to the
     sentence. From ordered we get previous and next so we can link
     the directly without having to go to the sentence objects."))
+
+; (designate-sentence-container :complex)  ;; run with every change
+;
+(defun make-sentence-content-container (sentence)
+  (make-instance 'sentence-content :in sentence))
 
 (defmethod print-object ((c sentence-content) stream)
   (print-unreadable-object (c stream :type t)
@@ -81,13 +104,7 @@
         (format stream "?")))))
 
 
-;;---- Making it the container that's used with sentences
-
-; (designate-sentence-container :complex)  ;; run with every change
-;
-(defun make-sentence-content-container (sentence)
-  (make-instance 'sentence-content :in sentence))
-
+;;--- paragraph
 
 (defclass paragraph-content (container aggregated-bio-terms
                              epistemic-state discourse-relations
@@ -97,6 +114,26 @@
   (:documentation "Will want a bunch more structure just over
     the enties for the purpose of facilitating anaphora.
     Story structure might be paragraph based too."))
+
+(defun make-paragraph-content-container/bio (p)
+  (make-instance 'paragraph-content :in p))
+
+
+
+(defclass paragraph-features (container
+                              sentence-parse-quality
+                              sentence-tt-counts ; assess-sentence-analysis-quality
+                              paragraph-characteristics)
+  ()
+  (:documentation "Populated by collect-text-characteristics called
+    on the paragraph by after-actions. Concerned more with form than
+    semantic content"))
+
+(defun make-paragraph-content-container/texture (p)
+  (make-instance 'paragraph-features :in p))
+;; (designate-paragraph-container :texture)
+
+;;--- larger
 
 (defclass section-content (container aggregated-bio-terms
                            sentence-parse-quality)
@@ -130,13 +167,22 @@
   (unless (contents s)
     (setf (contents s) (make-instance 'section-content :in s))))
 
+#+ignore(defmethod install-contents ((p paragraph))
+  (unless (contents p)
+    (let ((container (make-paragraph-container p)))
+      (push-debug `(,container))
+      (setf (contents p) container))))
+;;//// Has to be recompiled?
 (defmethod install-contents ((p paragraph))
   (unless (contents p)
-    (setf (contents p) (make-instance 'paragraph-content :in p))))
+    (setf (contents p) (make-paragraph-container p))))
 
 (defmethod install-contents ((te title-text))
   (unless (contents te)
     (setf (contents te) (make-instance 'paragraph-content :in te))))
+
+#| Sentence content objects are installed directly in a call in
+start-sentence |#
 
 
 #|   Definition for Grok
@@ -167,6 +213,11 @@
 
 (defclass simple-container (container accumulate-items)
   ())
+
+;; (designate-sentence-container :simple)  => switch setting
+(defun make-sentence-container/simple (sentence)
+  (make-instance 'simple-container :in sentence))
+
 
 (defmethod print-object ((c accumulate-items) stream)
   (print-unreadable-object (c stream :type t)

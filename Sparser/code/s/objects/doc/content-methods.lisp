@@ -37,10 +37,11 @@
   (when *apply-document-after-actions*
     (let ((*current-paragraph* p))
       (declare (special *current-paragraph*))
-      (make-mentions-long-term)
       (when *run-aggregation-after-action*
         (aggregate-bio-terms p))
-      (assess-sentence-analysis-quality p))))
+      (assess-sentence-analysis-quality p)
+      (collect-text-characteristics p)
+      (make-mentions-long-term)))) ; zero's the list in the lattice
 
 (defmethod after-actions ((te title-text))
   (when *apply-document-after-actions*
@@ -229,6 +230,41 @@
            (format stream "~&~18T~a" p)))))
 
 
+;;;-----------------------------------
+;;; tally properties of text qua text
+;;;-----------------------------------
+
+(defclass paragraph-characteristics ()
+  ((s-count :initform 0 :accessor sentence-count
+    :documentation "How many sentences in the paragraph")
+   (total-words :initform 0 :accessor word-count
+    :documentation "How many words in the paragraph")
+   )
+  (:documentation "A set of easily measured, largely structural
+    rather than semantic, properties of a paragraph.
+    Populated by collect-text-characteristics after each
+    paragraph has been analysed."))
+
+(defgeneric collect-text-characteristics (doc-element)
+  (:documentation "Called from after-action on paragraphs.
+    Counts shallow attributes over the sentences in the
+    paragraph to get a coarse style marker of a sort.")
+  
+  (:method ((p paragraph))
+    (let ((content (contents p))
+          (sentences (sentences-in-paragraph p)) ; list of sentence objects
+          (word-count (pos-token-index (ends-at-pos p))))
+      (setf (sentence-count content) (length sentences))
+      (setf (word-count content) word-count)
+      ;;(break "collect - ~a" p)
+
+      (format t "~&Paragraph ~a~%  ~a sentences~%  ~a words~
+                 ~%  ~4,1F words per sentence~%"
+              p (length sentences) word-count
+              (float (/ word-count (length sentences)))))))
+
+
+
 ;;;--------------------------------
 ;;; how well is our analysis doing
 ;;;--------------------------------
@@ -248,9 +284,8 @@
     higher levels of document structure."))
 
 (defclass sentence-tt-counts ()
-  ((count-list :initform '()
-               :accessor sentence-tt-count
-               :documentation "The counts for each sentence in a paragraph")))
+  ((count-list :initform '() :accessor sentence-tt-count
+    :documentation "Treetop counts for each sentence in a paragraph")))
 
    
 (defmethod assess-sentence-analysis-quality ((p paragraph))
@@ -438,7 +473,7 @@
   (relations-in-sentence (contents s)))
 (defmethod get-tt-count ((s sentence))
   (treetops-in-sentence (contents s)))
-  
+
 
 (defparameter *mentions-in-sentence* (make-hash-table :size 10000))
 (defparameter *sentence-mismatch-mentions-ht* (make-hash-table :size 10000))
@@ -540,6 +575,8 @@
      and had its edges removed.")))
 
 (defmethod set-discourse-history ((s sentence) (history t))
+  "Called from end-of-sentence-processing-cleanup when nothing more
+   is going to be modified."
   (setf (sentence-individuals (contents s)) history))
           
 
