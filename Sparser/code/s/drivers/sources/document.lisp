@@ -180,46 +180,46 @@
    if there is one."
   (let ((*current-document-element* ss))
     (declare (special *current-document-element*))
-  (install-contents ss)
-  (when *show-section-printouts*
-    (format t "~&--------- starting section of sections ~a~%" ss))
-  (multiple-value-bind (title subsections) ;; multiple-titles?
-      (extract-titles-from-other-elements (children ss))
+    (install-contents ss)
+    (when *show-section-printouts*
+      (format t "~&--------- starting section of sections ~a~%" ss))
+    (multiple-value-bind (title subsections) ;; multiple-titles?
+        (extract-titles-from-other-elements (children ss))
 
-    (when title
-      (when (actually-reading)
-        (parse-section-title title)))
-    
-    (let ((count (copy-list '(a b c d e f g h i j))))
-      (let ((*section-of-sections* ss)
-            (*current-section-title* title)
-            (section (car subsections))
-            (remaining (cdr subsections))
-          previous-section)
-        (declare (special *current-section-title*
-                          *section-of-sections*))
-        (set-document-index section (pop count))
-        (loop
-           (unless section (return))
-           (catch 'do-next-paragraph
-             (read-from-document section))
-
-           (when (typep section 'paragraph)
-             (when (actually-reading)
-               (after-actions section)))
-         
-           (setq previous-section section)
-           (setq section (car remaining)
-                 remaining (cdr remaining))
-           (when section
-             (set-document-index section (pop count))
-             (setf (previous section) previous-section)
-             (setf (next previous-section) section)))
+      (when title
         (when (actually-reading)
-          (after-actions ss))
-        (when *show-section-printouts*
-          (format t "~&~%--------- finished section of sections ~a~%" ss)
-          (when (actually-reading) (show-parse-performance ss))))))))
+          (parse-section-title title)))
+      
+      (let ((count (copy-list '(a b c d e f g h i j))))
+        (let ((*section-of-sections* ss)
+              (*current-section-title* title)
+              (section (car subsections))
+              (remaining (cdr subsections))
+              previous-section)
+          (declare (special *current-section-title*
+                            *section-of-sections*))
+          (set-document-index section (pop count))
+          (loop
+             (unless section (return))
+             (catch 'do-next-paragraph
+               (read-from-document section))
+
+             (when (typep section 'paragraph)
+               (when (actually-reading)
+                 (after-actions section)))
+             
+             (setq previous-section section)
+             (setq section (car remaining)
+                   remaining (cdr remaining))
+             (when section
+               (set-document-index section (pop count))
+               (setf (previous section) previous-section)
+               (setf (next previous-section) section)))
+          (when (actually-reading)
+            (after-actions ss))
+          (when *show-section-printouts*
+            (format t "~&~%--------- finished section of sections ~a~%" ss)
+            (when (actually-reading) (show-parse-performance ss))))))))
 
 
 (defmethod read-from-document ((s section))
@@ -228,54 +228,54 @@
   section title if there is one."
   (let ((*current-document-element* s))
     (declare (special *current-document-element*))
-  (install-contents s)
-  (when *show-section-printouts*
-    (format t "~&~%--------- starting section ~a~%" s))
-  (multiple-value-bind (title paragraphs)
-      (extract-titles-from-other-elements (children s))
-    (let* ((*current-section* s)
-           (paragraph (car paragraphs))
-           (remaining (cdr paragraphs))
-           (count 0)
-           previous-paragraph )
-      (declare (special *current-section*))
-      
-      (when title
-        (when (actually-reading)
-          (parse-section-title title)))
-      
-      (let ((*current-section-title* title))
-        (declare (special *current-section-title*))
-        (loop
-           (unless paragraph (return))
-           (typecase paragraph
-             (paragraph
-              (set-document-index paragraph (incf count))
-              (catch 'do-next-paragraph
+    (install-contents s)
+    (when *show-section-printouts*
+      (format t "~&~%--------- starting section ~a~%" s))
+    (multiple-value-bind (title paragraphs)
+        (extract-titles-from-other-elements (children s))
+      (let* ((*current-section* s)
+             (paragraph (car paragraphs))
+             (remaining (cdr paragraphs))
+             (count 0)
+             previous-paragraph )
+        (declare (special *current-section*))
+        
+        (when title
+          (when (actually-reading)
+            (parse-section-title title)))
+        
+        (let ((*current-section-title* title))
+          (declare (special *current-section-title*))
+          (loop
+             (unless paragraph (return))
+             (typecase paragraph
+               (paragraph
+                (set-document-index paragraph (incf count))
+                (catch 'do-next-paragraph
+                  (read-from-document paragraph))
+                (when (actually-reading)
+                  (after-actions paragraph)))
+               
+               (section
                 (read-from-document paragraph))
-              (when (actually-reading)
-                (after-actions paragraph)))
-             
-             (section
-              (read-from-document paragraph))
-             
-             (otherwise
-              (push-debug `(,s ,paragraph ,title))
-              (error "Did not expect a ~a as a child of a section"
-                     (type-of paragraph))))
+               
+               (otherwise
+                (push-debug `(,s ,paragraph ,title))
+                (error "Did not expect a ~a as a child of a section"
+                       (type-of paragraph))))
 
-           (setq previous-paragraph paragraph)
-           (setq paragraph (car remaining)
-                 remaining (cdr remaining))
-           (when paragraph
-             (setf (previous paragraph) previous-paragraph)
-             (setf (next previous-paragraph) paragraph)))
-      
-        (when (actually-reading)
-          (after-actions s))
-        (when *show-section-printouts*
-          (format t "~%--------- finished section ~a~%~%" s)
-          (when (actually-reading) (show-parse-performance s))))))))
+             (setq previous-paragraph paragraph)
+             (setq paragraph (car remaining)
+                   remaining (cdr remaining))
+             (when paragraph
+               (setf (previous paragraph) previous-paragraph)
+               (setf (next previous-paragraph) paragraph)))
+          
+          (when (actually-reading)
+            (after-actions s))
+          (when *show-section-printouts*
+            (format t "~%--------- finished section ~a~%~%" s)
+            (when (actually-reading) (show-parse-performance s))))))))
 
 
 
