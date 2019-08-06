@@ -416,7 +416,7 @@
 
 (define-category caused-bio-process
     :specializes bio-process
-    :mixins (with-an-agent)
+    :mixins (with-agent)
     :restrict ((participant blocked-category)
                (agent
                 (:or bio-chemical-entity ;;molecule bio-complex drug
@@ -483,7 +483,7 @@
 ;;;----------------
 
 (define-category bio-rhetorical :specializes perdurant
-  :mixins (with-an-agent biological 
+  :mixins (with-agent biological 
            bio-thatcomp bio-whethercomp
            with-measurement bio-howcomp)
   :restrict ((agent
@@ -654,7 +654,7 @@
       :for result-or-purpose))
 
 (define-category bio-method :specializes purposive-process
-  :mixins (has-UID biological with-an-agent)
+  :mixins (has-UID biological with-agent)
   :documentation "No content by itself, provides a common parent
     for 'liquid chromatography', etc. that may be the basis
     of the grammar patterns."
