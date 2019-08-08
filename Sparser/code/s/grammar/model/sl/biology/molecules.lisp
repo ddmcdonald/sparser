@@ -30,11 +30,16 @@
 ;;; nucleobases
 ;;;-------------
 
-(def-bio "adenine" nucleobase)
-(def-bio "cytosine" nucleobase)
-(def-bio "guanine" nucleobase)
-(def-bio "thymine" nucleobase)
-(def-bio "uracil" nucleobase)
+;(def-bio "adenine" nucleobase)
+(def-indiv-with-id nucleobase "adenine" "CHEBI:16708")
+;(def-bio "cytosine" nucleobase)
+(def-indiv-with-id nucleobase "cytosine" "CHEBI:16040")
+;(def-bio "guanine" nucleobase)
+(def-indiv-with-id nucleobase "guanine" "CHEBI:16235")
+;(def-bio "thymine" nucleobase)
+(def-indiv-with-id nucleobase "thymine" "CHEBI:17821")
+;(def-bio "uracil" nucleobase)
+(def-indiv-with-id nucleobase "uracil" "CHEBI:17568")
 
 ;;;-------------
 ;;; nucleotides
@@ -50,9 +55,10 @@
 (def-indiv-with-id nucleotide "cyclic-AMP" "CHEBI:17489" :name "3',5'-cyclic AMP" :synonyms ("cAMP" "cyclic adenosine 3',5'-monophosphate" "cyclic adenosine monophosphate" "c-AMP"))
 (noun "dAMP" :super nucleotide)
 
-(def-indiv-with-id nucleotide "ATP"  "PUBCHEM:5957" :name "adenosine triphosphate")
+(def-indiv-with-id nucleotide "ATP" "PUBCHEM:5957" :name "adenosine triphosphate")
+(def-indiv-with-id nucleotide "ADP" "CHEBI:16761" :name "adenosine diphosphate")
 (noun "dATP" :super nucleotide)
-(noun ("ADP" "adenosine diphosphate") :super nucleotide)
+;(noun ("ADP" "adenosine diphosphate") :super nucleotide)
 (noun "dADP" :super nucleotide)
 
 
@@ -85,9 +91,15 @@
 ;;;-------------
 
 (noun "bradykinin" :super peptide)
-(noun "Abeta" :super peptide)
-(noun "AICAR" :super peptide)
-(def-synonym abeta (:noun "amyloid beta"))
+(def-indiv-with-id peptide "AICAR" "CHEBI:18406")
+
+;(noun "AICAR" :super peptide) moved to new molecules
+
+;; this is complicated because Abeta is a peptide but people often say it to refer to the protein this peptide is from -- changing these definitions to only go to the peptide when the word peptide is included
+#+ignore(noun "Abeta" :super peptide)
+#+ignore(def-synonym abeta (:noun "amyloid beta"))
+(def-indiv-with-id peptide "Abeta peptide" "CHEBI:64645" :synonyms ("amyloid beta peptide" "beta amyloid peptide" "Aβ peptide"))
+
 ;; to be reviewed -- from Localization
 (noun "D-peptide" :super peptide) ; d-enantiomers of peptides -- came up in article 3640864
 (noun ("AP" "activating peptide") :super peptide)
@@ -104,7 +116,7 @@
 ;(noun ("PIP2" "phosphatidylinositol 4,5-bisphosphate" "phosphatidylinositol-4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate") :super phospholipid)
 ;;(noun ("PIP3" "phosphatidylinositol 3,4,5-triphosphate" "phosphatidylinositol-3,4,5-trisphosphate") :super phospholipid)
 
-(noun "LPA" :super phospholipid)
+(noun "LPA" :super phospholipid) ;; also defined as a protein "UP:P08519" lipoprotein(a)
 (def-synonym lpa (:noun "lysophosphatidic acid"))
 
 ;;;-------------------
@@ -113,6 +125,7 @@
 
 (noun "chemical product" :super bio-chemical-entity)
 (noun "carcinogen" :super bio-agent)
+(noun "neurotoxin" :super bio-agent)
 
 (define-category activator :specializes molecule
   :binds ((activated molecule))
@@ -177,7 +190,7 @@
 (noun "MeHg" :super molecule)
 (def-synonym MeHg (:noun "methyl mercury"))
 
-(noun "lactate" :super molecule)
+;(noun "lactate" :super molecule) moved to new-molecules
 (noun "32P" :super molecule) 
 ;; actually an isotope -- need to adjust taxonomy 
 

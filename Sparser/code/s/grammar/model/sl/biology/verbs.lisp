@@ -1086,7 +1086,8 @@
 
 
 (define-category localization :specializes bio-self-movement
-  :restrict ((moving-object molecule)) 
+                 :restrict ((moving-object molecule))
+                 :bindings (uid "GO:0051179")
   :realization 
   (:verb "localize" 
    :noun "localization"
@@ -1450,7 +1451,8 @@
 
 
 (define-category transcribe :specializes caused-bio-process
-  :binds ((bio biological))
+                 :binds ((bio biological))
+                 :bindings (uid "GO:0006351")
   :restrict ((agent (:or cell-entity protein)))
   :realization 
   (:verb "transcribe" 
@@ -1495,6 +1497,7 @@
   ;; caused-bio-process "a delay in ... is directly translated into..."
   :binds ((initial biological)
           (translates-to biological))
+  :bindings (uid "GO:0006412")
   :realization
   (:verb "translate"
          :etf (svo-passive)

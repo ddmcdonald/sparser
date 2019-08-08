@@ -76,7 +76,8 @@
 ;(def-indiv-with-id cancer "MEC" "NCIT:C3772" :name "Mucoepidermoid Carcinoma")
 ;(def-indiv-with-id cancer "MFH" "NCIT:C4247" :name "malignant fibrous histiocytoma") 
 (def-indiv-with-id cancer "MGUS" "EFO:0000203" :name "monoclonal gammopathy") 
-;(def-indiv-with-id cancer "MPN" "NCIT:C4345" :name "chronic myeloproliferative disorder")
+(def-indiv-with-id cancer "MM" "MESH:D009101" :name "multiple myeloma")
+;;(def-indiv-with-id cancer "MPN" "NCIT:C4345" :name "chronic myeloproliferative disorder")
 (def-indiv-with-id cancer "MPNST" "EFO:0000760" :name "malignant peripheral nerve sheath tumor") 
 (def-indiv-with-id cancer "MPNu" "NCIT:C27350" :name "chronic myeloproliferative disease unclassifiable") 
 (def-indiv-with-id cancer "MZL" "EFO:1000630" :name "marginal zone B-cell lymphoma") 
@@ -108,7 +109,7 @@
 ;(def-indiv-with-id cancer "TCC" "NCIT:C2930" :name "Transitional Cell Carcinoma")
 (def-indiv-with-id cancer "UDH" "NCIT:C27941" :name "usual ductal breast hyperplasia") 
 (def-indiv-with-id cancer "alh" "NCIT:C4730" :name "atypical lobular breast hyperplasia") 
-(def-indiv-with-id cancer "adenocarcinoma" "EFO:0000228" :name "adenocarcinoma")
+(def-indiv-with-id cancer "adenocarcinoma" "MESH:D000230" :name "adenocarcinoma" :synonyms ("EFO:0000228" "AC")) ; AC is also proteins -- HMS also has ambiguity
 (def-indiv-with-id cancer "angiofibroma" "NCIT:C3799" :name "angiofibroma") 
 (def-indiv-with-id cancer "angiosarcoma" "EFO:0003968" :name "angiosarcoma") 
 (def-indiv-with-id cancer "astrocytoma" "EFO:0000272" :name "astrocytoma")

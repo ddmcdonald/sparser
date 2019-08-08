@@ -282,6 +282,7 @@
 	   :etf (svo-passive)))
 
 (define-category damage :specializes caused-bio-process
+                 ;; note: HMS uses this just to refer to DNA damage with UID "MESH:D004249"
   :restrict ((object (:or protein gene dna)))
   :realization
   (:verb "damage" :noun "damage" 

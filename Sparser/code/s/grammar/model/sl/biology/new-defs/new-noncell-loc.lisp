@@ -121,7 +121,8 @@
 (def-indiv-with-id organism "Monascus" "NCIT:C127295" :name "monascus") 
 (def-indiv-with-id organism "Rhizopus" "NCIT:C77196" :name "rhizopus") 
 (def-indiv-with-id organism "firefly" "NCIT:C61008" :name "lampyridae") 
-(def-indiv-with-id bio-organ "amnioserosa" "BTO:0004800" :name "amnioserosa") 
+(def-indiv-with-id bio-organ "amnioserosa" "BTO:0004800" :name "amnioserosa")
+(def-indiv-with-id bio-organ "amnion" "MESH:D000650" :name "amniotic membrane" :synonyms ("AM")) ;note: "AM" is also a protein -- HMS also has this ambiguity
 (def-indiv-with-id organism "Plant" "BTO:0001481" :name "plant") 
 (def-indiv-with-id bio-organ "biofilm" "BTO:0002690" :name "biofilm") 
 (def-indiv-with-id bio-organ "amastigote" "BTO:0000062" :name "amastigote") 

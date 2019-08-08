@@ -583,7 +583,8 @@
      :of moving-object))
 
 (define-category bio-transport :specializes bio-movement
-  :mixins (caused-bio-process)
+                 :mixins (caused-bio-process)
+                 :bindings (uid "GO:0006810")
   :restrict ((object bio-entity))               
   :realization 
     (;;:verb "transport" 
@@ -1054,10 +1055,11 @@
 
 
 (define-category disease-process :specializes process
-  :mixins (biological))
+  :mixins (biological has-uid))
 
 (define-category metastasis :specializes disease-process
-  :binds ((cancer cancer))
+                 :binds ((cancer cancer))
+                 :bindings (uid "MESH:D009362")
   :realization
     (:noun ("metastasis" :plural "metastases")
      :verb "metastasize"
@@ -1320,6 +1322,7 @@
 (define-category phosphatase :specializes post-translational-enzyme
   :instantiates :self
   :index (:permanent :key name)
+  :bindings (uid "FPLX:Phosphatase")
   :lemma (:common-noun "phosphatase")
   :realization
     (:common-noun name

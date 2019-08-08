@@ -272,7 +272,10 @@
 
 ;; from EDGFR comments
 
-(noun "calcium" :super molecule)
+(define-category calcium :specializes molecule
+                 :bindings (uid "CHEBI:29108")
+                 :realization
+                 (:noun ("calcium" "Ca")))
 
 (define-category calcium-ion :specializes ion
                  :restrict ((molecule calcium))
@@ -312,6 +315,8 @@
 (def-indiv-with-id bio-complex "proteasome complex" "GO:0000502" :adj "proteasomal" :synonyms ("PR:000027410"))
 (def-indiv-with-id bio-complex "mediator complex" "NCIT:C19864" :synonyms ("mediator of activation")) ;; used to be defined as protein with "mediators" as a synonym, but I'm not sure that's likely to be the primary definition of "mediators"
 (def-indiv-with-id bio-complex "VLA-4" "NCIT:C97745" :name "Integrin Alpha4/Beta1" :synonyms ("VLA4" "integrin alpha4-beta1")) ;; components are ("UP:P13612" "UP:P05556")
+
+(def-indiv-with-id bio-complex "Adaptor Protein 2 complex" "FPLX:Adaptor_protein_II" :name "Adaptor Protein 2 complex" :synonyms ("AP-2" "AP2" "adaptor protein complex 2" "AP-2 adaptor complex" "AP-2 complex" "AP2 adaptor complex" "AP2 clathrin adaptor complex" "AP2 complex")) ;; note: "AP-2" and "AP2" are intentionally overloaded because there's a transcription factor ("UP:P05549") that also has that as a short name but it's an activator protein not adaptor
 
 ;(def-family "DDR" :identifier "IPR003208" :synonyms ("diol dehydratase-reactivating factor")) ;; also PR:000027169 -- both a family and a complex
 ;(def-family "TSH" :identifier "NCIT:C2280" :synonyms ("thyroid stimulating hormone") :members ("UP:P01215" "UP:P01222")) ;; alternate id  "PR:000028269" -- more of a complex than a protein family

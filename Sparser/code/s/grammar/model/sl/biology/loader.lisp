@@ -51,6 +51,10 @@
 (gload "bio;proteins")
 (gload "bio;rhgnc-proteins")
 |#
+
+(gload "bio;general-verbs") ;; akin to terms-to-move. also, new-cell-proc has dependency on this
+
+
 (gload "bio;bio-complexes")
 (gload "bio;new-defs;new-bio-complexes")
 (gload "bio;bio-methods")
@@ -103,7 +107,6 @@
 (gload "bio;pathways") ;; after proteins
 (gload "bio;protein-terminals-domains") ;; has to be after terms-to-move
 (gload "bio;new-defs;new-prot-dom")
-(gload "bio;general-verbs") ;; akin to terms-to-move
 (gload "bio;verbs") ;; after phenomena, with bio synonyms of general verbs
 
 (gload "bio;molecules")

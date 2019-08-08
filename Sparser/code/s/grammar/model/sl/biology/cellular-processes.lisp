@@ -67,22 +67,12 @@
 (adj "cell-cell" :super bio-predication)
 
 (define-category adhesion :specializes cellular-process
+                 :bindings (uid "GO:0007155")
     :realization
     (:verb "adhere"
 	   :etf (sv)
-	   :noun "adhesion"))
-
-(define-category apoptosis ;; aka cell death
-    :specializes cellular-process
-    :bindings (uid "GO:0006915")
-    :realization
-    (:noun "apoptosis" :adj "apoptotic"))
-
-(define-category killing ;; related to but not quite the same as apoptosis
-    :specializes cellular-process
-    :realization
-    (:noun "killing"))
-
+	   :noun ("adhesion" "cell adhesion" "cellular adhesion")))
+                             
 
 (define-category axon-guidance :specializes cellular-process
    :binds ((initial biological)
@@ -93,10 +83,30 @@
           :to final
           :into final))
 
-(define-category death :specializes cellular-process ;; actually organism process
-  :realization
-  (:verb "die"
-         :noun "death" :etf (sv)))
+(define-category death :specializes cellular-process
+                 ;; actually organism process but we and harvard are just going with it being cell death
+                 :bindings (uid "GO:0008219")
+                 :realization
+                 (:verb "die"
+                        :noun ("death" "cell death" "cellular death")
+                        :etf (sv)))
+
+(define-category programmed-cell-death ;; aka programmed cell death
+    :specializes death
+    :bindings (uid "GO:0012501")
+    :realization (:noun "programmed cell death"))
+
+(define-category apoptosis ;; aka programmed cell death
+    :specializes programmed-cell-death
+    :bindings (uid "GO:0006915")
+    :realization
+    (:noun "apoptosis" :adj "apoptotic"))
+(adj "pro-apoptotic" :super apoptosis)
+
+(define-category killing ;; related to but not quite the same as apoptosis
+    :specializes cellular-process
+    :realization
+    (:noun "killing"))
 
 (define-category division :specializes cellular-process
     :realization
@@ -111,9 +121,10 @@
 	   :etf (sv)))
 
 (define-category proliferation :specializes cellular-process
-    :realization
+                 :bindings (uid "GO:0008283")
+                 :realization
     (:verb "proliferate"
-	   :noun "proliferation"
+	   :noun ("proliferation" "cell proliferation" "cellular proliferation")
 	   :etf (sv)))
 
 (define-category cell-cycle-progression :specializes cellular-process
@@ -146,56 +157,62 @@
            :o anchored
            :to anchor))
 
-(define-category necrosis :specializes cellular-process
-    :binds ((necrotized biological))                         
-    :realization
-    (:verb "necrotize"
-           :etf (svo-passive)
-           :o necrotized
-           :adj "necrotic"
-	   :noun "necrosis"
-	   :etf (sv)))
+(define-category necrosis :specializes death
+                 :binds ((necrotized biological))
+                 :bindings (uid "GO:0070265")
+                 :realization
+                 (:verb "necrotize"
+                        :etf (svo-passive)
+                        :o necrotized
+                        :adj "necrotic"
+                        :noun ("necrosis" :plural "necroses")
+                        :etf (sv)))
+(def-synonym necrosis
+    (:noun "necrotic cell death"))
 
+(define-category autophagy :specializes cellular-process
+                 :bindings (uid "GO:0006914")
+                 :realization (:noun "autophagy"))
 
+(define-category cell-growth
+    :specializes cellular-process
+    :bindings (uid "GO:0016049")
+    :realization (:noun  ("cell growth" "cellular growth" "growth" "growing"
+                                        "cell expansion" "cell enlargement")))
 
-(noun "autophagy" :super cellular-process)
-(define-category cell-growth :specializes cellular-process
-  :realization (:noun  "cell growth"))
-(def-synonym cell-growth
-    (:noun "cellular growth"))
-(def-synonym cell-growth
-    (:noun "growth"))
-(def-synonym cell-growth
-    (:noun "growing"))
-
-(noun "differentiation" :super cellular-process)
-
-(def-synonym differentiation
+(define-category differentiation :specializes cellular-process
+                 :bindings (uid "GO:0030154")
+                 :realization (:noun ("differentiation" "cell differentiation")))
+(def-synonym differentiation 
     (:noun "differentiating"))
 
-(noun "motility" :super cellular-process)
-(noun "neurite outgrowth" :super cellular-process)
-(noun "senescence" :super cellular-process)
-(noun "survival" :super cellular-process)
-(adj "pro-apoptotic" :super apoptosis)
+(define-category motility
+    :specializes cellular-process
+    :bindings (uid "GO:0016477")
+    :realization
+    (:noun ("motility" "cell motility" "cellular motility"
+                       "cell movement" "cellular movement"
+                       "cell migration")))
 
-(def-synonym adhesion (:noun "cell adhesion"))
-(def-synonym adhesion (:noun "cellular adhesion"))
-(def-synonym adhesion (:noun "cell–cell adhesion"))
-(def-synonym apoptosis (:noun "cell death"))
-(def-synonym apoptosis (:noun "cellular death"))
-(def-synonym apoptosis (:noun "programmed cell death"))
+(noun "neurite outgrowth" :super cellular-process)
+
+(define-category senescence :specializes cellular-process
+                 :bindings (uid "GO:0090398")
+                 :realization
+                 (:noun ("senescence" "cell senescence" "cellular senescence")
+                 :adj "senescent"))
+
+
+(define-category survival :specializes cellular-process
+                 :bindings (uid "MESH:D002470")
+                 :realization
+                 (:noun ("survival" "cell survival" "cellular survival"
+                                    "cell viability")))
+
+
+
 (def-synonym division (:noun "cell division"))
 (def-synonym division (:noun "cellular division"))
-(def-synonym motility (:noun "cell motility"))
-(def-synonym motility (:noun "cell movement"))
-(def-synonym motility (:noun "cellular motility"))
-(def-synonym motility (:noun "cellular movement"))
-(def-synonym proliferation (:noun "cell proliferation"))
-(def-synonym proliferation (:noun "cellular proliferation"))
-(def-synonym senescence (:adj "senescent"))
-(def-synonym senescence (:noun "cell senescence"))
-(def-synonym senescence (:noun "cellular senescence"))
-(def-synonym survival (:noun "cell survival"))
-(def-synonym survival (:noun "cellular survival"))
+
+
 

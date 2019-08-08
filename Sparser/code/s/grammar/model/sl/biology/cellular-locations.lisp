@@ -49,7 +49,7 @@
 (define-cellular-location "dendritic spine" "GO:0043197")
 (define-cellular-location "early endosome" "GO:0005769")
 (define-cellular-location "endoplasmic reticulum membrane" "GO:0005789")
-(define-cellular-location "endoplasmic reticulum" "GO:0005783")
+;(define-cellular-location "endoplasmic reticulum" "GO:0005783")
 (define-cellular-location "endosome" "GO:0005768" :adj "endosomal")
 (define-cellular-location "extracellular matrix" "GO:0031012")
 (define-cellular-location "extracellular region" "GO:0005576")

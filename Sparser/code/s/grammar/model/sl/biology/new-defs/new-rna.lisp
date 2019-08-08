@@ -56,6 +56,7 @@
 
 ;; these are bogus ids and names but needed for queries from bioagent testing
 ;; this is real and defined above (def-indiv-with-id micro-rna "miR-148a-3p" "MIMAmiR-148a-3p" :name "microRNA 148a-3p")
+;; this is an error
 (def-indiv-with-id micro-rna "miR-2000-5p" "MIMAmiR-2000-5p" :name "microRNA 2000-5p")
 ;; this is real and defined above (def-indiv-with-id micro-rna "miR-20b-5p" "MIMAmiR-20b-5p" :name "microRNA 20b-5p")
 ;; this is real and defined above (def-indiv-with-id micro-rna "miR-222-3p" "MIMAmiR-222-3p" :name "microRNA 222-3p")

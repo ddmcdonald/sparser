@@ -36,7 +36,7 @@
 
 ;added to other def
 ;(def-bio "BCR-ABL" protein);;  a constitutively activated version, MEK1S219D,S223D (MEK1DD)
-(def-bio "type IV collagen" protein) ;; a very generic term -- can't find an identifier TO-DO
+;(def-bio "type IV collagen" protein) ;; a very generic term -- can't find an identifier TO-DO ;; got FPLX ID
 
 #| folded into new std-prot-defs
 (define-protein "P06926" ("E1-E4"))
@@ -114,8 +114,7 @@
 ;; these same definitions exist in molecules
 ;(def-bio "GTP" nucleotide :identifier "CHEBI:15996" :mitre-link "PubChem:6830")
 ;(def-bio "GDP" nucleotide  :identifier "CHEBI:17552" :mitre-link "PubChem:8977")
-(noun ("GEF" "guanine nucleotide exchange factor" "guanyl-nucleotide-exchange factor") :super nucleotide-exchange-factor)
-(noun "growth factor" :super protein) ;; actually, either a protein or hormone, but occasionally some other molecule
+;(noun ("GEF" "guanine nucleotide exchange factor" "guanyl-nucleotide-exchange factor") :super nucleotide-exchange-factor) moved to protein-fam-with-id
 
 ;(define-protein "Ras-GDP" ()) ;; not really a "protein" but a complex, but for now...
 ;(define-protein "Ras-GTP" ()) ;; not really a "protein" but a complex, but for now...

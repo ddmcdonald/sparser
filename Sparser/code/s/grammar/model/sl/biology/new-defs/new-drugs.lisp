@@ -1931,3 +1931,17 @@
 (def-indiv-with-id drug "vemurafenib" "PUBCHEM:42611257" :name "vemurafenib" :synonyms ("vemurafe-nib" "vemurafemib" "vemurafenib" "vemurafinib" "vermurafenib")) ; synonyms actually misspellings
 (def-indiv-with-id drug "NG25" "PUBCHEM:53340664" :name "NG-25")
 (def-indiv-with-id drug "PLX-4720" "PUBCHEM:24180719" :name "PLX 4720") 
+(def-indiv-with-id drug "trastuzumab" "MESH:D000068878" :name "trastuzumab" :synonyms ("traszumab")) ;synonym is a misspelling
+(def-indiv-with-id drug "trametinib" "CHEBI:75998" :name "trametinib" :synonyms ("trameti-nib" "trametenib")) ;synonym is a misspelling
+(def-indiv-with-id drug "tipifarnib" "CHEBI:141969" :name "tipifarnib")
+(def-indiv-with-id drug "rapamycin" "CHEBI:9168" :name "rapamycin")
+(def-indiv-with-id drug "everolimus" "CHEBI:68478" :name "everolimus")
+(def-indiv-with-id drug "docetaxel" "CHEBI:4672" :name "docetaxel")
+(def-indiv-with-id drug "dasatinib" "CHEBI:49375" :name "dasatinib" :synonyms ("dasatanib")) ;synonym is a misspelling
+(def-indiv-with-id drug "dabrafenib" "CHEBI:75045" :name "dabrafenib" :synonyms ("dabrafinib" "dabrefenib")) ;synonym is a misspelling
+(def-indiv-with-id drug "cetuximab" "CHEMBL1201577" :name "cetuximab")
+(def-indiv-with-id drug "celecoxib" "CHEBI:41423" :name "celecoxib" :synonyms ("celexoxib")) ;synonym is a misspelling
+(def-indiv-with-id drug "bortezomib" "CHEBI:52717" :name "bortezomib")
+(def-indiv-with-id drug "afatinib" "CHEBI:61390" :name "afatinib")
+(def-indiv-with-id drug "DHA" "CHEBI:207229" :name "dihydroartemisinin")
+

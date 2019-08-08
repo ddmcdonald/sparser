@@ -60,7 +60,6 @@
 (def-indiv-with-id molecule "ursolic acid" "PUBCHEM:64945") 
 (def-indiv-with-id molecule "5-(Hydroxymethyl)-2-furaldehyde" "PUBCHEM:237332") 
 (def-indiv-with-id molecule "5-HMF" "PUBCHEM:237332") 
-(def-indiv-with-id molecule "oleanolic acid" "PUBCHEM:10494") 
 (def-indiv-with-id molecule "sialic acid" "PUBCHEM:445063") 
 (def-indiv-with-id molecule "Suberoylanilide Hydroxamic Acid" "PUBCHEM:5311") 
 (def-indiv-with-id molecule "guanosine triphosphate" "PUBCHEM:6830") 
@@ -1601,12 +1600,28 @@
 
 (def-indiv-with-id lipid "DAG" "PUBCHEM:6026790" :name "diacylglycerol")
 (def-indiv-with-id lipid "Sphingosine" "PUBCHEM:5353955" :name "Sphingosine")
+(def-indiv-with-id phospholipid "PIP" "CHEBI:28765" :name "phosphatidylinositol phosphate")
 (def-indiv-with-id phospholipid "PIP2" "PUBCHEM:5497157" :name "PIP2" :synonyms ("phosphatidylinositol 4,5-bisphosphate" "phosphatidylinositol-4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate"))
-(def-indiv-with-id phospholipid "PIP3" "PUBCHEM:101362114" :name "PIP3" :synonyms ("phosphatidylinositol 3,4,5-triphosphate" "phosphatidylinositol-3,4,5-trisphosphate"))
+(def-indiv-with-id phospholipid "PIP3" "PUBCHEM:101362114" :name "PIP3" :synonyms ("phosphatidylinositol 3,4,5-triphosphate" "phosphatidylinositol-3,4,5-trisphosphate" "PIP-3" "HMDB10147"))
 (def-indiv-with-id phospholipid "IP3" "PUBCHEM:439456" :name "IP3" :synonyms ("inositol 1,4,5-triphosphate"))
 (def-indiv-with-id molecule "Tris" "CHEBI:9754")
 (def-indiv-with-id molecule "HCl" "CHEBI:17883" :maintain-case t)
 (def-indiv-with-id molecule "NaCl" "CHEBI:26710" :name "sodium chloride" :maintain-case t :synonyms ("Na-Cl"))
 (def-indiv-with-id molecule "progesterone" "CHEBI:17026" :synonyms ("progesteron"))
 (def-indiv-with-id molecule "carboxylic acid" "CHEBI:33575" :synonyms ("COOH"))
-
+(def-indiv-with-id molecule "Mn" "CHEBI:29035" :maintain-case t :synonyms ("manganese" "PUBCHEM:27854")) ;; actually this is the Mn2+ ion but HMS says this is the mapping for "Mn"
+(def-indiv-with-id molecule "Pb" "CHEBI:25016" :maintain-case t :name "lead")
+(def-indiv-with-id phospholipid "lysophosphatidic acid" "PUBCHEM:5497152" :synonyms ("LPA")) ;; LPA also defined as a protein "UP:P08519" lipoprotein(a) which is preferred by HMS
+(def-indiv-with-id molecule "lactate" "CHEBI:24996")
+(def-indiv-with-id molecule "maslinic acid" "CHEBI:66682" :synonyms ("MA")) ;; MA definition intentionally overloaded to match HMS
+(def-indiv-with-id molecule "methamphetamine" "CHEBI:6809" :synonyms ("MA")) ;; MA definition intentionally overloaded to match HMS
+(def-indiv-with-id molecule "OA" "CHEBI:44658" :name "okadaic acid") ;; OA definition intentionally overloaded to match HMS
+(def-indiv-with-id molecule "OA" "CHEBI:37659" :name "oleanolic acid") ;; OA definition intentionally overloaded to match HMS
+;(def-indiv-with-id molecule "oleanolic acid" "PUBCHEM:10494") 
+(def-indiv-with-id molecule "creatine" "CHEBI:16919")
+(def-indiv-with-id molecule "PP2" "CHEBI:78331" :name "pyrazolopyrimidine 2") ;; note: this is an intentionally overloaded definition for PP2 to match HMS
+(def-indiv-with-id molecule "ROS" "MESH:D017382" :name "Reactive Oxygen Species") ;; note: this is an intentionally overloaded definition for ROS to match HMS
+(def-indiv-with-id molecule "STZ" "PUBCHEM:29327" :name "streptozocin") ;; note: this is an intentionally overloaded definition for STZ to match HMS
+(def-indiv-with-id molecule "SPC" "CHEBI:17689" :name "sphingosine-1-phosphocholine") ;; SPC overloaded with protein def
+(def-indiv-with-id molecule "doxorubicin" "CHEBI:28748" :name "doxorubicin")
+(def-indiv-with-id molecule "SFN" "CHEBI:47807" :name "sulforaphane") ;; SFN overloaded with protein def

@@ -526,7 +526,7 @@
 (def-indiv-with-id molecule "Carnosic acid" "PUBCHEM:455260") 
 (def-indiv-with-id molecule "Carbone" "PUBCHEM:297") 
 (def-indiv-with-id molecule "Caffeic acid phenethyl ester" "PUBCHEM:5281787") 
-(def-indiv-with-id molecule "Ca" "CHEBI:29108") 
+;(def-indiv-with-id molecule "Ca" "CHEBI:29108") moved to bio-complexes
 (def-indiv-with-id molecule "CYC202" "PUBCHEM:160355") 
 (def-indiv-with-id molecule "CRD" "PUBCHEM:447466") 
 (def-indiv-with-id molecule "CIU" "PUBCHEM:4357") 
@@ -1004,7 +1004,7 @@
 (def-indiv-with-id molecule "PRPP" "PUBCHEM:7339") 
 (def-indiv-with-id molecule "PROSTAGLANDIN E" "PUBCHEM:5280360") 
 (def-indiv-with-id molecule "PKC-412" "PUBCHEM:9829523") 
-(def-indiv-with-id molecule "PIP-3" "HMDB10147") 
+;(def-indiv-with-id molecule "PIP-3" "HMDB10147") 
 (def-indiv-with-id molecule "PI3K inhibitor" "CHEBI:84801") 
 (def-indiv-with-id molecule "PF477736" "PUBCHEM:16750408") 
 (def-indiv-with-id molecule "PF 573228" "PUBCHEM:11612883") 
