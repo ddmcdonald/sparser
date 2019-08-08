@@ -692,6 +692,7 @@ is a case in handle-any-anaphor
 (defun aux-before-np? (&key in-vg? first-np-edge)
   "Look in the chart just to the left of current chunk"
   ;; called by chunker methods ng-compatible? and vg-start?
+  (declare (special *chunk*))
   (let ((edges (cond ((or in-vg?
                           (and (boundp '*chunk*)
                                (member 'vg (chunk-forms *chunk*))))
