@@ -123,6 +123,9 @@ broadly speaking doing for you all the things you might do by hand.
          (word-list `(,base-word ,word ,.(when name `(,name))
                                  ,.(when synonyms `(,synonyms)))))
     (add-rules-cond-plural base-word category i :plural plural :no-plural no-plural)
+    (unless (equal (subseq word 1) (subseq base-word 1))
+      ;; if there were capitals beyond the initial letter in the original word, we want to actually make rules for that word so that tests for whether it has rewrites are correct
+      (add-rules-cond-plural word category i :plural plural :no-plural no-plural))
     (when (and name 
                (not (equal name base-word))) ;; if the name is the same as the base-word, there's nothing to do
       (add-rules-cond-plural name category i :no-plural no-plural)) 
