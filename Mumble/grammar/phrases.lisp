@@ -981,15 +981,36 @@
 		inf-comp c)))
 
 
-;; SVPComp --  "it seems like you're happy"
+;; SVPSComp --  "it seems like you're happy"
 
-(define-phrase SVPComp (s v p c)
+(define-phrase SVPSCOMP (s v p c)
   (clause :set-state (:aux-state initial)
      subject s :additional-labels (nominative)
      predicate (vp
                 verb v
                 prep p
-                vpcomp c)))
+                scomp c)))
+
+;; SVPingcomp "I asked about going to the party."
+
+(define-phrase SVPingComp (s v p c)
+  (clause :set-state (:aux-state initial)
+     subject s :additional-labels (nominative)
+     predicate (vp
+                verb v
+                prep p
+                vpcomp c :additional-labels (participle))))
+
+(define-phrase SVOPingComp (s v p o c)
+  (clause :set-state (:aux-state initial)
+     subject s :additional-labels (nominative)
+     predicate (vp
+                verb v
+                prep p
+                direct-object o 
+                vpcomp c :additional-labels (participle))))
+
+
 
 
 
@@ -1487,6 +1508,14 @@
     subject s :additional-labels (nominative)
     predicate (vp
 		verb v
+		vpcomp c)))
+
+(define-phrase SVOVPCOMP (s v o c)
+  (clause :set-state (:aux-state initial)
+    subject s :additional-labels (nominative)
+    predicate (vp
+		verb v
+		direct-object o
 		vpcomp c)))
 
 
