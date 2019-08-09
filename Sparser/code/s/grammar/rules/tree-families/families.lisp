@@ -93,6 +93,8 @@ when contemplating using a new tree family
             (vg . :self)
             (np/subject . subj-v/r)))
 
+;;now allows for direct objects to appear in PPs
+
 (define-realization-scheme svo transitive
   :head :verb
   :phrase (SVO (s . subj-slot) (v . :self)
@@ -103,7 +105,8 @@ when contemplating using a new tree family
             (vp . :self)
             (vg . :self)
             (np/subject . subj-v/r)
-            (np/object . theme-v/r)))
+            (np/object . theme-v/r)
+            (pp/object . theme-v/r)))
 
 (define-realization-scheme svo-passive passive/with-by-phrase
   :args (agent-slot agent-v/r patient-slot patient-v/r)
