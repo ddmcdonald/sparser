@@ -138,7 +138,7 @@
   is carried out. A role for adverbial complements.")
 
 (define-mixin-category with-result
-  :binds ((result-role))
+  :binds ((result))
   :documentation "The result of an action performed. Qualifies the
   predicate's effect on the theme.")
 
