@@ -286,6 +286,8 @@
 
 (deftype literal-subcat-slot-label ()
   '(member
+    :a ; attribute
+    :ac ; adjective complement
     :as-comp
     :ifcomp
     :l

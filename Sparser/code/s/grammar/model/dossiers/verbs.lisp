@@ -230,18 +230,14 @@ come
 
 (define-category make
   :specializes process
-  :mixins (action-verb)
-  :restrict ((actor physical-agent)
-             (patient (:or artifact ;; what they build ('result' ??)
-                           object-dependent-location)))
-  :binds ((adj-comp attribute-value)) ;; "make the stack green"
-  :documentation "The :adjp-complement is seen by the syntax fn
- assimilate-adj-complement to deal with the 'green' when it 
- composes with 'make the stack'."
+  :mixins (resultative)
+  :restrict ((patient (:or artifact ;; what they build
+                           object-dependent-location))
+             (result quality))
+  :documentation "Handles both transitive and svo-adj. Should it?"
   :realization
     (:verb ("make" :past-tense "made")
-     :adjp-complement adj-comp 
-     :mumble ("make" svo :a actor :o patient)))
+     :mumble ("make" svo :a agent :o patient)))
 
 #|
 (define-category propose
@@ -317,9 +313,7 @@ come
   ;:restrict ((actor physical-agent)
              ;(patient symbolic))
   ;:binds ((goal symbolic))
-  ;:documentation "The :adjp-complement is seen by the syntax fn
- ;assimilate-adj-complement to deal with the 'green' when it 
- ;composes with 'make the stack'."
+  ;:documentation ""
   ;:realization
     ;(:verb ("make" :past-tense "made")
      ;:etf svoa 

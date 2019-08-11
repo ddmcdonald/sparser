@@ -132,6 +132,7 @@ Should mirror the cases on the *single-words* ETF."
 (deftype subcat-slot-keyword ()
   '(member
     :a ; attribute
+    :ac ; adjective complement
     :about :above :across :after :against :among :as :as-comp :at
     :before :below :between :but\ not :by
     :designator :during
@@ -161,7 +162,7 @@ Should mirror the cases on the *single-words* ETF."
   "An alist of aliases for subcategorization slot names.")
 
 (deftype subcat-relation-keyword ()
-  '(member :adjp-complement
+  '(member
     :complement-variable
     :loc-pp-complement
     :optional-object))

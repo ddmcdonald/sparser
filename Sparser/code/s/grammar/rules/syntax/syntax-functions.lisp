@@ -2434,37 +2434,43 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun assimilate-adj-complement (vp adjp)
   "Post-verb Adverbial and adjectival complements can be predicating
    something of any of the elements of the clause: verb, subject, or
-   object. This code is only looks for the object case"
-  (cond
-    (*subcat-test*
-     (takes-adj? vp adjp t))
-    (t
-     (if (get-tag :adjp-complement (itype-of vp))
-       ;; is this verb marked as taking adjp-complements?
-       (let* ((obj-var (bound-object-var vp))
-              (obj (when obj-var (value-of obj-var vp))))
-         (if obj ;; there is an object to attach the adjp to
-           (cond
+   object. When a verb subcategories for the AC we indicate that with
+   the realiation key ':ac'"
+  (let* ((variable (subcategorized-variable vp :ac adjp)) ; subc by the verb
+         (obj-var (bound-object-var vp)) ; there is a direct object
+         (obj (when obj-var (value-of obj-var vp))))
+    (cond
+      (*subcat-test*
+       (or variable
+           (when obj (takes-adj? obj adjp t))))
+      (t
+       ;;(push-debug `(,vp ,adjp)) (break "assimilate ~a" variable)
+       (cond
+         (variable  ;; prefer the verb binding
+          (bind-variable variable adjp vp))
+         (obj ;; there is an object to attach the adjp to
+          (cond
+            #+ignore
+            ((itypep adjp 'attribute-value)
              ;; Ignoring this because the has-attribute that it
              ;; makes is not properly integrated
-             #+ignore((itypep adjp 'attribute-value)
-              ;; adj-noun-compound will look up the variable for
-              ;; the attribute and bind it. We're simply predicating it.
-              (attribute-value-of-object adjp obj)
-              vp)
-             ((takes-adj? obj adjp t)
-              (let ((mod-obj (adj-noun-compound adjp obj (right-edge-for-referent))))
-                (if mod-obj
-                  (bind-dli-variable 'predicate mod-obj vp)
-                  vp)))
-             (t ;; weaker claim
-              (bind-variable 'modifier adjp vp)))
-        (else ;; no object
-          vp)))
-       ;; No object, swe don't know where to put the adj complement, so we
-       ;; should drop it on the floor. /// need examples for the
-       ;; verb modifying and subject modifying cases
-       vp))))
+             ;;
+             ;; adj-noun-compound will look up the variable for
+             ;; the attribute and bind it. We're simply predicating it.
+             (attribute-value-of-object adjp obj)
+             vp)
+            ((takes-adj? obj adjp t)
+             (let ((mod-obj (adj-noun-compound adjp obj (right-edge-for-referent))))
+               (if mod-obj
+                 (bind-variable 'predicate mod-obj vp)
+                 vp)))
+            (t ;; weaker claim
+             (bind-variable 'modifier adjp vp))))
+         (t
+          ;; no object and no subcategorizing variable so we drop the adjp
+          ;; on the floor because we don't know what to associate it with.
+          vp))))))
+
 
 
 
