@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2011-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2011-2019 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   December 2018
+;;;   Version:   August 2019
 
 ;; broken out from all-in-one-file 11/28/91
 ;; 1.0 (8/28/92 v2.3) Added global referring to the referent returned.
@@ -273,24 +273,27 @@
 ;;;---------------------------------
 ;;; syntactic sugar for the globals
 ;;;---------------------------------
+#| The pointers to the edges, rule, etc. are globally bound to nil
+They get useful values within the dynamic scope of referent-from-rule
+or a function that simulates its environment like with-referent-edges |#
 
 (defun left-edge-for-referent ()
   (or *left-edge-into-reference*
-      (error "Left edge isn't bound now")))
+      (error "Left edge doesn't have a value now")))
 
 (defun right-edge-for-referent ()
   (or *right-edge-into-reference*
-      (error "Right edge isn't bound now")))
+      (error "Right edge doesn't have a value now")))
 
 (defun parent-edge-for-referent ()
   #+ignore(when (deactivated? *parent-edge-getting-reference*)
     (lsp-break "parent-edge-for-referent is ~s~%" *parent-edge-getting-reference*))
   (or *parent-edge-getting-reference*
-      (error "*parent-edge-getting-reference* isn't bound now")))
+      (error "*parent-edge-getting-reference* doesn't have a value now")))
 
 (defun rule-being-interpreted ()
   (or *rule-being-interpreted*
-      (error "*rule-being-interpreted* isn't bound now")))
+      (error "*rule-being-interpreted* doesn't have a value now")))
 
 #| Example from wh-initial-followed-by-modal, which operates outside
 of the context of applying a specific rules, and therefore not
@@ -333,7 +336,7 @@ in the scope of referent-from-rule.
         (revise-edge edge category form referent))
       (when *warn-on-unbound-parent-edge*
         (warn "revise-parent-edge called when *parent-edge-getting-reference* ~
-           is inactive or not bound -- possibly in da-rule"))))
+           is inactive or did not have a value -- possibly in da-rule"))))
 
 (defun revise-left-edge-into-rule (&key category form referent)
   (let ((edge (left-edge-for-referent)))
@@ -352,6 +355,43 @@ in the scope of referent-from-rule.
     (set-edge-referent edge referent))
   edge)
 
+
+(defun edge-for-referent (ref)
+  "We're in the middle of processing an interpretation. We have a value
+   in our hand (so to speak) -- 'ref' -- and we want to know which
+   edge is is the referent of."
+  (let* ((left-edge *left-edge-into-reference*)
+         (left-ref (when (edge-p left-edge) (edge-referent left-edge)))
+         (right-edge *right-edge-into-reference*)
+         (right-ref (when (edge-p right-edge) (edge-referent right-edge))))
+    (cond
+      ((when left-ref
+         (or (eq ref left-ref)
+             (eq ref (value-of 'comp left-ref))
+             (and (category-p left-ref)
+                  (itypep ref left-ref)))) ;; (eq ref (individual-for-ref left-ref))
+       left-edge)
+      ((when right-ref
+         (or (eq ref right-ref)
+             (eq ref (value-of 'comp right-ref))
+             (and (category-p right-ref) ;; (eq ref (individual-for-ref right-ref))
+                  (itypep ref right-ref))))
+       right-edge)
+      (t
+       (break "edge-for-referent - new case?")))))
+
+
+(defun current-constituent-edges () ;; only called by constituent-edge-with-value
+  (declare (special *da-constituent-edges* *left-edge-into-reference* *right-edge-into-reference*))
+  `(,.(and *left-edge-into-reference* (list *left-edge-into-reference*))
+      ,.(and *right-edge-into-reference* (list *right-edge-into-reference*))
+      ,@ *da-constituent-edges*))
+
+(defun constituent-edge-with-value (value)
+  (let ((edges (current-constituent-edges)))
+    (loop for e in edges
+          when (eq (edge-referent e) value)
+          return e)))
 
 
 ;;;-------------------------

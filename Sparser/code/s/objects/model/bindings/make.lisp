@@ -294,18 +294,6 @@ what happens rather than how it happens (ddm).  |#
                  (or edge (constituent-edge-with-value individual)))))
         individual)))
 
-(defun current-constituent-edges () ;; only called by constituent-edge-with-value
-  (declare (special *da-constituent-edges* *left-edge-into-reference* *right-edge-into-reference*))
-  `(,.(and *left-edge-into-reference* (list *left-edge-into-reference*))
-      ,.(and *right-edge-into-reference* (list *right-edge-into-reference*))
-      ,@ *da-constituent-edges*))
-
-(defun constituent-edge-with-value (value)
-  (let ((edges (current-constituent-edges)))
-    (loop for e in edges
-          when (eq (edge-referent e) value)
-          return e)))
-
 
 (defun perform-over-ridden-variable-disambiguation (over-ridden-binding var/name i edge)
   (declare (special *left-edge-into-reference*

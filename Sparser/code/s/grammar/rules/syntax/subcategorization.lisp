@@ -715,33 +715,6 @@
      (retrieve-surface-string (left-edge-for-referent))
      (retrieve-surface-string (right-edge-for-referent)))))
 
-(defun edge-for-referent (ref)
-  "We're in the middle of processing an interpretation. We have a value
-   in our hand (so to speak) -- 'ref' -- and we want to know which
-   edge is is the referent of."
-  (let* ((left-edge (when (boundp '*left-edge-into-reference*)
-                      (left-edge-for-referent)))
-         (left-ref (when (edge-p left-edge) (edge-referent left-edge)))
-         (right-edge (when (boundp '*right-edge-into-reference*)
-                       (right-edge-for-referent)))
-         (right-ref (when (edge-p right-edge)
-                      (edge-referent right-edge))))
-    (cond
-      ((when left-ref
-         (or (eq ref left-ref)
-           (eq ref (value-of 'comp left-ref))
-           (and (category-p left-ref)
-                (itypep ref left-ref)))) ;; (eq ref (individual-for-ref left-ref))
-       left-edge)
-      ((when right-ref
-         (or (eq ref right-ref)
-           (eq ref (value-of 'comp right-ref))
-           (and (category-p right-ref) ;; (eq ref (individual-for-ref right-ref))
-                (itypep ref right-ref))))
-       right-edge)
-      (t
-       (break "edge-for-referent - new case?")))))
-
 (defun save-cat-string (cat cat-string)
   (push cat-string (gethash cat *ref-cat-text*)))
 
@@ -858,19 +831,21 @@
 
 
 (defun assimilate-subcat-to-collection (head subcat-label item
-                                        &aux (heads (value-of 'items head))
+                                        &aux
+                                          (heads (value-of 'items head))
                                           (item-edge
                                            (constituent-edge-with-value item)))
+  "Spread the assimilation operation (variable binding) across the
+   items in the collection and make a new collection out of the result."
   (declare (special *subcat-test* head subcat-label item heads))
   (unless item-edge
     (lsp-break "assimilate-subcat-to-collection has no edge for its item"))
   ;; we use item-edge rather than item, since maximal projection of item
   ;;  triggered by assignment to earlier conjuncts can change the item
   ;;  before it is assigned to later conjuncts
-  
   (if *subcat-test*
       (loop for head-elt in heads
-            always (subcategorized-variable head-elt subcat-label item))
+         always (subcategorized-variable head-elt subcat-label item))
       (let ((interps
              (loop for head-elt in heads
                    collect (assimilate-subcat head-elt subcat-label
@@ -884,7 +859,8 @@
 
 (defun pronominal-or-deictic? (item)
   (declare (special category::this category::that category::these category::those
-                    category::quantifier category::pronoun category::interlocutor))
+                    category::quantifier category::pronoun
+                    category::interlocutor category::name))
   (cond
     ((or
       (itypep item category::this)
@@ -894,8 +870,9 @@
       ;;(itypep item category::numerated-anaphor) for "the seven" in DM&P
       (itypep item category::quantifier)) ;; as in "the other",
      t)
-    ( ;;(itypep item 'pronoun/first/plural) - but should add check for agentive verbs
-     (itypep item category::pronoun) ;; of any sort
+    ((itypep item category::pronoun) ;; of any sort
+     t)
+    ((itypep item category::name) ; interpreted later like a pronoun
      t)
     ((itypep item category::interlocutor)
      ;; replacement for forms of "I", "we", "you" 6/23/17
