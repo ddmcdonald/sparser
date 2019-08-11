@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "predicate"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  April 2017
+;;;  version:  August 2019
 
 ;; Broken out of upper-model 8/23/16
 
@@ -15,14 +15,14 @@
 ;;;------------------------------------------------
 
 (define-category dependent-substrate
-   ;;:specializes relation
+   :specializes relation
    ;; See dependent-of ETF and paths (exit-turnpike)
    ;; Related to feature in things.lisp
    :binds ((dependent)
            (substrate)))
 
 (define-category partonomic
-  ;;:specializes relation
+  :specializes relation
   :binds ((parts)
           (part-type :primitive category)
           (has-part)
@@ -64,7 +64,7 @@
   :binds ((predicate predicate))
   :documentation "Represents the application of a predicate
  to one or more terms, what terms and under what relationships
- (variable) is determined by the specific predicate. As the
+ (variables) is determined by the specific predicate. As the
  basis of an eventuality (clause, sentence) a predication 
  describes a state of affairs. These are a specialization
  of the category state, and the documentation on that category
