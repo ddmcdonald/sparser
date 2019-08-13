@@ -241,7 +241,7 @@
 
 (define-mixin-category NP-V-PP.destination
   :specializes subcategorization-pattern
-  :realization (:mumble ))
+  :realization (:mumble SVO))
 
 (define-mixin-category NP-V-PP.source
   :specializes subcategorization-pattern
@@ -533,7 +533,7 @@
 
 (define-mixin-category NP-V-NP.source
   :specializes subcategorization-pattern
-  :realization (:mumble ))
+  :realization (:mumble SVO))
 
 (define-mixin-category NP-V-NP.theme-(PP)
   :specializes subcategorization-pattern
