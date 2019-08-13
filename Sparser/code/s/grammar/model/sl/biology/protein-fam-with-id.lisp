@@ -142,12 +142,12 @@
 (def-family-with-id "GnRH" "FA:01630" :synonyms ("GnRHs"))
 (def-family-with-id "GRK" "NCIT:C26233" :synonyms ("FPLX:GRK" "g protein-coupled receptor kinase family" "G Protein-Coupled Receptor Kinase" "GPCR kinase" "G protein-coupled receptor kinases" "GrK"))
 (def-family-with-id "GSK-3" "FPLX:GSK3" :synonyms ("glycogen synthase kinase-3" "GSK3" "Gsk3") :members ("UP:P49840" "UP:P49841")) 
-(def-family-with-id "GST" "GO:0004364" :name "Glutathione S-transferase" :synonyms ("FPLX:GST" "Gst" "Glutathione S-Transferase" "glutathione-S transferase") :members ("UP:O60760" "UP:P46439" "UP:P78417" "UP:P30711" "UP:Q03013" "UP:Q9H4Y5" "UP:P09210" "UP:Q16772" "UP:P09488" "UP:P28161" "UP:P09211" "UP:P21266" "UP:P08263" "UP:O15217" "UP:Q9Y2Q3" "UP:O43708" "UP:P0CG30" "UP:P0CG29" "UP:Q7RTV2")) ; possibly more members
+(def-family-with-id "GST" "FPLX:GST" :name "Glutathione S-transferase" :synonyms ("GO:0004364" "Gst" "Glutathione S-Transferase" "glutathione-S transferase") :members ("UP:O60760" "UP:P46439" "UP:P78417" "UP:P30711" "UP:Q03013" "UP:Q9H4Y5" "UP:P09210" "UP:Q16772" "UP:P09488" "UP:P28161" "UP:P09211" "UP:P21266" "UP:P08263" "UP:O15217" "UP:Q9Y2Q3" "UP:O43708" "UP:P0CG30" "UP:P0CG29" "UP:Q7RTV2")) ; possibly more members
 (def-family-with-id "GTPase" "FPLX:GTPase" :synonyms ("guanosine triphosphatase"))
 (def-family-with-id "general transcription factor II F" "FPLX:GTF2F" :synonyms ("GTF2F" "TFIIF" "general transcription factor IIF") :members ("UP:P35269"))
 
 (def-family-with-id "gamma secretase" "NCIT:C95114" :synonyms ("gamma-secretase"))
-(def-family-with-id "gamma-tubulin" "NCIT:C32650" :synonyms ("gamma tubulin" "γtubulin" "TUBG"))
+(def-family-with-id "hCG" "FPLX:hCG" :members ("UP:P01215" "UP:P01233"))
 (def-family-with-id "HDL" "FPLX:HDL" :synonyms ("high density lipoprotein" "NCIT:C25186")) ;composed of hundreds of proteins
 (def-family-with-id "HHA" "XFAM:PF05321.9" :synonyms ("Hha" "hha"))
 (def-family-with-id "HIF" "FPLX:HIF" :synonyms ("hypoxia inducible factor" "NCIT:C113839") :members ( "UP:Q16665" "UP:P27540" "UP:Q9Y2N7" "UP:Q99814")) ; maybe more
@@ -157,7 +157,7 @@
 (def-family-with-id "HSP20" "XFAM:PF00011.19")
 (def-family-with-id "heat shock factor" "IPR000232" :name "heat shock factor protein" :members ("UP:Q00613" "UP:Q03933" "UP:Q9ULV5" "UP:O75031" "UP:O75506"))
 (def-family-with-id "HSP" "NCIT:C16672" :name "Heat Shock Protein" :synonyms ("heat shock protein" "Hsp") :members ("UP:P04792" "UP:P07900" "UP:P08238" "UP:P0DMV8" "UP:P0DMV9" "UP:P10809" "UP:P11021" "UP:P11142" "UP:P14625" "UP:P17066")) ; probably more
-(def-family-with-id "HSP70" "NCIT:C17765" :synonyms ("hsp-70" "hsp70s" "hsps70" "heat shock protein-70" "hsp70"))
+(def-family-with-id "HSP70" "NCIT:C17765" :synonyms ("IPR013126" "hsp-70" "hsp70s" "hsps70" "heat shock protein-70" "hsp70" "heat shock protein 70"))
 
 (def-family-with-id "Haspin" "FA:03103" :synonyms ("haspin"))
 (def-family-with-id "HDAC" "NCIT:C16682" :synonyms ("hdac" "histone deacetylase"))
@@ -200,8 +200,8 @@
 
 (def-family-with-id "METTL20" "FA:04857") 
 (def-family-with-id "MNR" "XFAM:PF15718.3")
-(def-family-with-id "mTORC1" "NCIT:C96314" :synonyms ("MTORC1" "mTOR-C1" "mTORC-1" "mTorc1" "FPLX:mTORC1" "mTORc1" "mTorC1" "mTORC 1" "Torc 1")) 
-(def-family-with-id "mTORC2" "NCIT:C96314" :synonyms ("MTORC2" "Rictor-mTOR" "mTOR-C2" "mTorC2" "FPLX:mTORC2" "mTORC-2" "mTORC 2" "mTORc2")) 
+(def-family-with-id "mTORC1" "FPLX:mTORC1" :synonyms ("NCIT:C96314" "MTORC1" "mTOR-C1" "mTORC-1" "mTorc1" "mTORc1" "mTorC1" "mTORC 1" "Torc 1" "TORC1") :members ("UP:P42345" "UP:Q8N122")) ;; TORC1 overloaded with "Transducer of CREB protein 1"
+(def-family-with-id "mTORC2" "FPLX:mTORC2" :synonyms ("NCIT:C96314" "MTORC2" "Rictor-mTOR" "mTOR-C2" "mTorC2" "mTORC-2" "mTORC 2" "mTORc2" "TORC2") :members ("UP:P42345" "UP:Q6R327" "UP:Q9BPZ7" "UP:Q9BVC4")) ;; TORC2 overloaded with "Transducer of CREB protein 2"
 (def-family-with-id "MYEOV2" "FA:02391" :synonyms ("Myeov2")) 
 (def-family-with-id "Mis14" "XFAM:PF08641.10" :synonyms ("mis14")) 
 (def-family-with-id "Mo25" "FA:02331") 
@@ -274,35 +274,44 @@
 (def-family-with-id "RasGEF" "XFAM:PF00617" :synonyms ("Ras-GEF" "Ras GEF")) ; many members
 
 (def-family-with-id "Rho" "FPLX:RHO" :synonyms ("rho family" "rho" "FA:03668") :members ("UP:P08100"))
+(def-family-with-id "RhoGDI" "FPLX:RhoGDI" :synonyms ("Rho-GDI") :members ("UP:P52565" "UP:P52566" "UP:Q99819"))
 (def-family-with-id "Ric-8" "XFAM:PF10165.7" :synonyms ("ric-8" "ric8"))
 (def-family-with-id "RING" "XFAM:PF00097")
 (def-family-with-id "RNA polymerase 1" "FPLX:RNApo_I") 
 (def-family-with-id "RNA polymerase II" "FPLX:RNApo_II" :synonyms ("RPII" "RNAP II") :members ("UP:Q9Y5B0" "UP:P24928")) ; >1000 other human ones as well
 (def-family-with-id "RPA" "FPLX:RPA" :synonyms ("Replication protein A" "Replication-associated protein A" "REPA" "RepA" "replication-associated protein" "Replication factor A" "RP-A") :members ("UP:P27694" "UP:P15927" "UP:P35244" "UP:Q13156")) 
-
+(def-family-with-id "RSK" "FPLX:RSK" :members ("UP:Q15418" "UP:P51812")) ;;many more
 (def-family-with-id "RyR" "XFAM:PF02026.14" :synonyms ("RyRs")) 
-(def-family-with-id "S-100" "FA:03480" :synonyms ("s-100")) 
+(def-family-with-id "S-100" "FPLX:S100" :synonyms ("FA:03480" "s-100" "S100") :members ("UP:P23297" "UP:P29034" "UP:P33764" "UP:P26447" "UP:P31151" "UP:P60903" "UP:P31949" "UP:P80511")) ;many more
+(def-family-with-id "S-100A" "FPLX:S100A" :synonyms ("s-100A" "S100A") :members ("UP:P23297" "UP:P29034" "UP:P33764" "UP:P26447" "UP:P31151" "UP:P60903" "UP:P31949" "UP:P80511")) ;many more
+(def-family-with-id "sphingosine 1-phosphate receptor" "FPLX:S1PR" :synonyms ("IPR004061" "S1PR" "S1P receptor"))
+(def-family-with-id "SAA" "FPLX:SAA" :members ("UP:P0DJI8" "UP:P0DJI9"))
 (def-family-with-id "SAS4" "XFAM:PF15460.4") 
 (def-family-with-id "SASP" "XFAM:PF00269.18" :synonyms ("SASPs")) 
 (def-family-with-id "SCF" "FA:03513" :synonyms ("SCFs")) 
 (def-family-with-id "SEA" "XFAM:PF01390.18") 
 (def-family-with-id "SEC1" "XFAM:PF00995.21" :synonyms ("sec1")) 
-(def-family-with-id "SERPIN" "FA:03578" :synonyms ("serpin" "serpins")) 
+(def-family-with-id "SERPIN" "FA:03578" :synonyms ("serpin" "serpins" "serpin family"))
+(def-family-with-id "SHC" "FPLX:SHC" :synonyms ("shc" "Shc") :members ("UP:P29353" "UP:P98077" "UP:Q92529" "UP:Q6S5L8"))
 (def-family-with-id "SID1" "FA:03617" :synonyms ("siD1")) 
 (def-family-with-id "SIR-2" "XFAM:PF02146.15" :synonyms ("SIR2" "Sir2")) 
 (def-family-with-id "SMC" "FA:03684" :synonyms ("SMCs")) 
+(def-family-with-id "SMC1" "FPLX:SMC1" :synonyms ("SMC-1" "smc1") :members ("UP:Q14683" "UP:Q8NDV3"))
 (def-family-with-id "SMN" "FA:03696") 
 (def-family-with-id "SMP" "XFAM:PF04927.10" :synonyms ("SMPs")) 
 (def-family-with-id "SNAP" "FA:03701" :synonyms ("SNAPs")) 
-(def-family-with-id "SNF5" "FA:03709") 
+(def-family-with-id "SNF5" "FA:03709")
+(def-family-with-id "SOD" "FPLX:SOD" :members ("UP:P00441" "UP:P04179" "UP:P08294"))
 (def-family-with-id "SOUL" "XFAM:PF04832.10") 
-(def-family-with-id "SPF27" "FA:03804") 
+(def-family-with-id "SPF27" "FA:03804")
+(def-family-with-id "SPRY" "FPLX:SPRY" :synonyms ("XFAM:PF05210" "FA:03814" "SPROUTY" "sprouty" "sprouty family") :members ("UP:O43609" "UP:O43597" "UP:O43610" "UP:Q9C004"))
 (def-family-with-id "SPT20" "FA:05167" :synonyms ("Spt20")) 
 (def-family-with-id "SPT4" "FA:03817" :synonyms ("Spt4")) 
 (def-family-with-id "SSF" "XFAM:PF00474.15") 
-(def-family-with-id "SSX" "FA:03840") 
+(def-family-with-id "SSX" "FA:03840")
+(def-family-with-id "STAT" "FPLX:STAT" :members ("UP:P42224" "UP:P52630" "UP:P40763" "UP:Q14765" "UP:P42229" "UP:P51692" "UP:P42226"))
 (def-family-with-id "STE20" "FA:03111" :synonyms ("Ste-20")) 
-(def-family-with-id "STOP" "FA:03855" :synonyms ("sTOP") :maintain-case t :members("UP:Q96JE9")) 
+(def-family-with-id "STOP" "FA:03855" :synonyms ("sTOP") :maintain-case t :members ("UP:Q96JE9")) 
 (def-family-with-id "SUI1" "FA:03871") 
 (def-family-with-id "SWR1" "FA:03708" :synonyms ("Swr1")) 
 (def-family-with-id "SYD" "XFAM:PF07348.10" :synonyms ("syd")) 
@@ -320,8 +329,8 @@
 (def-family-with-id "TAP" "FPLX:TAP" :members ("UP:O60763" "UP:O75369") :maintain-case t)
 (def-family-with-id "TCRP1" "XFAM:PF14944.4") 
 (def-family-with-id "TFA" "FA:03988" :synonyms ("TFAs"))
-(def-family-with-id "TGF-beta receptor" "FPLX:TGFBR" :synonyms ("TGF beta receptor")) 
-(def-family-with-id "TGF-beta" "FA:03989" :synonyms ("FPLX:TGFB" "TGF-β" "TGF-βs" "TGFbeta" "TGFβ" "TGFβs" "Tgfbeta" "Tgfβ" "tgfbeta" "tgfβ" "TGF-B" "TGF-Beta" "Tgf-beta" "TGFb" "As60A")) 
+(def-family-with-id "TGF-beta receptor" "FPLX:TGFBR" :synonyms ("GO:0005024" "TGF beta receptor" "TGF-beta-receptor" "TGF-βR" "TGF-βRs" "TGFβR" "TGFβRs" "transforming growth factor beta-activated receptor activity" "TGFBR") :members ("UP:P37173" "UP:P36897" "UP:Q03167")) 
+(def-family-with-id "TGF-beta" "FPLX:TGFB" :synonyms ("FA:03989" "IPR016319" "TGF-β" "TGF-βs" "TGFbeta" "TGFβ" "TGFβs" "Tgfbeta" "Tgfβ" "tgfbeta" "tgfβ" "TGF-B" "TGF-Beta" "Tgf-beta" "TGFb" "As60A" "transforming growth factor-beta" "transforming growth factor beta" "transforming growth factor-b" "TGFB" "TGF beta" "TGF-b") :members ("UP:P01137" "UP:P61812" "UP:P10600" "UP:O00292")) 
 (def-family-with-id "TPH" "XFAM:PF13868.4" :synonyms ("Tph" "tph")) 
 (def-family-with-id "TRS85" "FA:04220") 
 (def-family-with-id "TSA" "XFAM:PF03249.11" :synonyms ("TSAs")) 
@@ -370,10 +379,13 @@
 (def-family-with-id "tetraspanin" "XFAM:PF00335")
 (def-family-with-id "thioredoxin" "FPLX:TXN" :members ("UP:P10599" "UP:Q99757"))
 (def-family-with-id "thioredoxin reductase" "FPLX:TXNRD" :members ("UP:P30044" "UP:P80892"))
-(def-family-with-id "Tuba" "FPLX:TUBA") 
-(def-family-with-id "tubulin" "PR:000028799")
+(def-family-with-id "TUBA" "FPLX:TUBA" :synonyms ("alpha tubulin" "alpha-tubulin" "TUBA" "tubulin alpha chain" "αTubulin") :members ("UP:Q9H853" "UP:Q9NY65" "UP:P68366" "UP:P68363" "UP:P0DPH7" "UP:P0DPH8")) ;more members
+(def-family-with-id "TUBB" "FPLX:TUBB" :synonyms ("NCIT:C129655" "beta tubulin" "beta-tubulin" "betaTUB") :members ("UP:P07437")) ;more members but this one has TUBB as gene name
+(def-family-with-id "TUBG" "FPLX:TUBG" :synonyms ("NCIT:C32650" "gamma-tubulin" "gamma tubulin" "γtubulin") :members ("UP:Q96CW5" "UP:Q9NRH3"))
+(def-family-with-id "tubulin" "FPLX:Tubulin" :synonyms ("PR:000028799"))
 (def-family-with-id "trypsin" "CHEBI:9765" :members ("UP:P07477" "UP:P07478" "UP:P35030"))
 (def-family-with-id "tryptase" "FPLX:Tryptase" :members ("UP:Q02844" "UP:Q15661" "UP:Q9GZN4" "UP:Q9NRR2")) 
+(def-family-with-id "VAV" "FPLX:VAV" :synonyms ("vav") :members ("UP:P15498" "UP:P52735" "UP:Q9UKW4"))
 (def-family-with-id "vascular endothelial growth factor" "FPLX:VEGF" :synonyms ("VEGF") :members ("UP:P15692" "UP:P17948" "UP:P35968")) 
 
 (def-family-with-id "1.1.1.239" "ECCODE:1.1.1.239" :name "1.1.1.239" :members ("UP:P37059" "UP:P42330")) 
@@ -501,10 +513,11 @@
 (def-family-with-id "SGT1" "XFAM:PF07093.9" :synonyms ("Sgt1" "sgt1") :members ("UP:O43765" "UP:Q9Y2Z0")) 
 (def-family-with-id "SIP-1" "XFAM:PF04938.10" :synonyms ("sip-1" "SIP1") :members ("UP:O14893" "UP:Q15599"))
 (def-family-with-id "son of sevenless" "FPLX:SOS" :synonyms ("SOS" "son-of-sevenless" "sevenless" "sev") :members ("UP:Q07889" "UP:Q07890"))
-
-(def-family-with-id "TNC" "FPLX:Troponin_C" :synonyms ("TnC" "TN-C" "cTnC") :members ("UP:P24821" "UP:P63316")) 
-(def-family-with-id "troponin T" "FPLX:Troponin_T" :synonyms ("TPNT") :members ("UP:P45379")) 
-(def-family-with-id "troponin I" "FPLX:Troponin_I" :synonyms ("cTnI" "TPNI")) 
+(def-family-with-id "TFAP2" "FPLX:TFAP2" :synonyms ("TFAP2A,TFAP2B,TFAP2C,TFAP2D,TFAP2E" "transcription factor AP2") :members ("UP:P05549" "UP:Q92481" "UP:Q92754" "UP:Q7Z6R9" "UP:Q6VUC0"))
+(def-family-with-id "TNC" "FPLX:Troponin_C" :synonyms ("TnC" "cTnC") :members ("UP:P63316" "UP:P02585")) 
+(def-family-with-id "troponin T" "FPLX:Troponin_T" :synonyms ("TPNT" "cTNT" "cTnT" "TNT" "Troponin T" "tnt" "TnT") :members ("UP:P45378" "UP:P45379" "UP:P13805")) 
+(def-family-with-id "troponin I" "FPLX:Troponin_I" :synonyms ("cTnI" "TPNI" "TnI") :members ("UP:P48788" "UP:P19237" "UP:P19429"))
+(def-family-with-id "troponin" "FPLX:Troponin")
 (def-family-with-id "thyroid hormone receptor" "FPLX:THR") 
 
 (def-family-with-id "TIP49" "XFAM:PF06068.11" :synonyms ("Tip49" "tip49") :members ("UP:Q9Y230" "UP:Q9Y265"))
@@ -597,7 +610,7 @@
 (def-family-with-id "GEF" "FPLX:GEF" :synonyms ("guanine nucleotide exchange factor" "guanyl-nucleotide-exchange factor"))
 (def-family-with-id "α-catenin" "FPLX:CTNNA" :members ("UP:P35221" "UP:Q9UBT7") :synonyms ("a-cathenin" "alpha catenin" "alpha-catenin" "catenin alpha" "catenin α" "α catenin"))
 (def-family-with-id "immediate early response" "IPR008653") 
-(def-family-with-id "transforming growth factor-beta" "IPR016319") 
+;(def-family-with-id "transforming growth factor-beta" "IPR016319") 
 (def-family-with-id "bacterial lipoprotein" "XFAM:PF12182") 
 (def-family-with-id "tumour necrosis factor" "IPR006053") 
 ;(def-family-with-id "eukaryotic translation initiation factor 4E binding protein" "IPR008606") 
@@ -606,7 +619,7 @@
 (def-family-with-id "aquaporin 1" "IPR023274") 
 (def-family-with-id "cytochrome P450" "XFAM:PF00067" :synonyms ("CYP"  "cytochrome-P450" "P450" "NCIT:C16484"))
 (def-family-with-id "retinoblastoma protein" "IPR028309") 
-(def-family-with-id "heat shock protein 70" "IPR013126") 
+;(def-family-with-id "heat shock protein 70" "IPR013126") 
 (def-family-with-id "steroidogenic acute regulatory protein" "IPR029866") 
 (def-family-with-id "AP-1 transcription factor" "IPR000837") 
 (def-family-with-id "alkaline phosphatase" "XFAM:PF00245") 
@@ -635,8 +648,8 @@
 (def-family-with-id "KRAB" "XFAM:PF01352.25" :name "KRAB")
 (def-family-with-id "KSR" "FPLX:KSR" :members ("UP:Q8IVT5") :synonyms ("ksr"))
 (def-family-with-id "JAs" "XFAM:PF16135.3" :name "jas") 
-(def-family-with-id "Sprouty" "FA:03814" :name "sprouty family")
-(def-family-with-id "Spry" "FPLX:SPRY")
+;(def-family-with-id "Sprouty" "FA:03814" :name "sprouty family")
+;(def-family-with-id "Spry" "FPLX:SPRY")
 
 (def-family-with-id "PAE" "XFAM:PF03283.11" :name "PAE") 
 (def-family-with-id "DIRAS" "FA:03660" :name "Di-Ras family") 
@@ -644,7 +657,7 @@
 ;(def-family-with-id "cullin" "FA:00787" :name "cullin family") 
 (def-family-with-id "connexin" "FA:00722" :name "connexin family" :members ("UP:Q9Y6H8" "UP:A4IFL1" "UP:A6NN92" "UP:O75712" "UP:O95377" "UP:O95452" "UP:P08034"  "UP:P17302" "UP:P29033" "UP:P35212" "UP:P36382"  "UP:P36383" "UP:P48165" "UP:Q0VCR2" "UP:Q5T442" "UP:Q6PEY0" "UP:Q8N144" "UP:Q96KN9" "UP:Q9NTQ9" "UP:Q9UKL4")) 
 (def-family-with-id "WNK" "FA:03108" :name "WNK subfamily") 
-(def-family-with-id "TCF/LEF" "FA:03943" :name "TCF/LEF family") 
+;(def-family-with-id "TCF/LEF" "FA:03943" :name "TCF/LEF family") 
 (def-family-with-id "MGPC" "XFAM:PF05220.10" :name "MgpC") 
 (def-family-with-id "EXOC" "FPLX:EXOC" :synonyms ("exocyst complex")) 
 (def-family-with-id "FOXO" "FPLX:FOXO" :name "FOXO family" :synonyms ("NCIT:C118892" "Foxo" "FoxO") :members ("UP:Q12778" "UP:O43524" "UP:P98177")) ;more members
@@ -905,7 +918,7 @@
 (def-family-with-id "SREs" "XFAM:PF03125.16" :name "sre") 
 (def-family-with-id "SNAI" "FPLX:SNAI" :name "SNAI") 
 (def-family-with-id "SLH" "XFAM:PF00395.18" :name "SLH") 
-(def-family-with-id "SLC2A" "FPLX:SLC2A" :name "SLC2A") 
+(def-family-with-id "SLC2A" "FPLX:SLC2A" :name "SLC2A" :synonyms ("GLUT" "solute carrier family 2") :members ("UP:P11166" "UP:P11168" "UP:P11169")) ; and others
 (def-family-with-id "SGL" "XFAM:PF08450.10" :name "SGL") 
 (def-family-with-id "SCM" "FA:03516" :name "SCM family") 
 (def-family-with-id "SBE2" "XFAM:PF17076.3" :name "SBE2") 
@@ -1077,7 +1090,7 @@
 (def-family-with-id "siRas" "XFAM:PF10747.7" :name "SirA") 
 (def-family-with-id "siRB" "XFAM:PF04247.10" :name "SirB") 
 (def-family-with-id "siD" "XFAM:PF11778.6" :name "SID")
-(def-family-with-id "Wnt family" "BE:Wnt" :name "Wnt" :synonyms ("wnt") :members ("UP:P04628" "UP:P09544")) ;others but many of our current wnts are non-human
+(def-family-with-id "Wnt family" "FPLX:Wnt" :name "Wnt" :synonyms ("wnt") :members ("UP:P04628" "UP:P09544")) ;others but many of our current wnts are non-human
 (def-family-with-id "wntless" "FA:04687" :name "wntless family") 
 (def-family-with-id "vestigial" "FA:04577" :name "vestigial family") 
 (def-family-with-id "vasohibin" "FA:04571" :name "vasohibin family") 
@@ -1093,7 +1106,7 @@
 (def-family-with-id "Lin7" "FA:02096" :name "lin-7 family")
 (def-family-with-id "luteinizing hormone" "FPLX:LH") 
 (def-family-with-id "NPP1" "XFAM:PF05630.9" :name "NPP1") 
-(def-family-with-id "Tcf-Lef" "FPLX:TCF-LEF" :name "TCF-LEF" :synonyms ("Tcf/Lef" "Tcf" "TCF"))
+(def-family-with-id "Tcf-Lef" "FPLX:TCF_LEF" :name "TCF-LEF" :synonyms ("FA:03943" "Tcf/Lef" "Tcf" "TCF" "TCF/LEF" "TCF/LEF family"))
 (def-family-with-id "TNF-receptor family" "FPLX:TNFRSF" :synonyms ("TNFR superfamily receptors" "TNFR family")) 
 (def-family-with-id "UNC-5" "FA:04300" :name "unc-5 family") 
 (def-family-with-id "humanin" "FA:04811" :name "humanin family") 

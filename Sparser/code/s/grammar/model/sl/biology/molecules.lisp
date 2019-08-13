@@ -178,6 +178,8 @@
 
 (noun "transition state intermediate" :super molecule-state)
 
+(noun ("single nucleotide polymorphism" "SNP") :super variant)
+
 ;;;-------------
 ;;; miscellaneous
 ;;;-------------

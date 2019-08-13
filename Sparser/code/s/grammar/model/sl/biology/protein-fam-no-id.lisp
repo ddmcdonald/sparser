@@ -32,6 +32,10 @@
 (noun ("deubiquitinase" "deubiquitylase" "DUB") :super enzyme)
 (noun "isozyme" :super enzyme)
 (noun "phospholipase" :super enzyme)
+(noun "aminopeptidase" :super enzyme)
+(noun "hydrogenase" :super enzyme)
+(noun "nuclease" :super enzyme)
+(noun "glucosyltransferase" :super enzyme)
 
 (noun "growth factor" :super protein) ;; actually, either a protein or hormone, but occasionally some other molecule
 
@@ -1270,8 +1274,8 @@
 (def-family "TS2" :members ("UP:O95450" "UP:Q9SSP5")) 
 (def-family "TSC" :members ("UP:Q92574" "UP:Q99576")) 
 (def-family "TTP" :members ("UP:P26596" "UP:P26651")) 
-(def-family "TnI" :members ("UP:P05547" "UP:Q7M3Y3")) 
-(def-family "TnT" :members ("UP:P13805" "UP:Q9XZ71")) 
+;(def-family "TnI" :members ("UP:P05547" "UP:Q7M3Y3")) 
+;(def-family "TnT" :members ("UP:P13805" "UP:Q9XZ71")) 
 (def-family "Transcription factor AP-2-delta" :members ("UP:Q5RJ20" "UP:Q7Z6R9")) 
 (def-family "Transcription factor AP-2-epsilon" :members ("UP:Q6P0E7" "UP:Q6VUC0")) 
 (def-family "Transcription factor HES-1" :members ("UP:Q04666" "UP:Q14469")) 
