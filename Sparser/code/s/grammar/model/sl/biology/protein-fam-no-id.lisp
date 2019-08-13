@@ -543,7 +543,7 @@
 (def-family "CD98" :members ("UP:P08195" "UP:Q01650")) 
 (def-family "CDC4" :members ("UP:P07834" "UP:Q969H0")) 
 (def-family "CDG1" :members ("UP:O15305" "UP:Q9LSE1")) 
-(def-family "CDKN2A" :members ("UP:P42771" "UP:Q8N726")) 
+;(def-family "CDKN2A" :members ("UP:P42771" "UP:Q8N726")) 
 (def-family "CDKN3" :members ("UP:Q00526" "UP:Q16667")) 
 (def-family "CDR" :members ("UP:P17516" "UP:Q8VQF5")) 
 (def-family "CDS2" :members ("UP:O75420" "UP:O95674")) 
@@ -1653,7 +1653,7 @@
 ;(def-family "p12" :members ("UP:P41482" "UP:Q9HCU8")) 
 (def-family "p120" :members ("UP:O60716" "UP:Q00839")) ;; hms says just UP:O60716 but uniprot says both
 (def-family "p13" :members ("UP:Q9T1T5" "UP:Q9Y3B2")) 
-(def-family "p14" :members ("UP:P06702" "UP:Q9Y2Q5")) 
+(def-family "p14" :members ("UP:P06702" "UP:Q9Y2Q5" "UP:Q8N726")) 
 (def-family "p150" :members ("UP:O95163" "UP:P00519")) 
 (def-family "p180" :members ("UP:P09884" "UP:Q03164")) 
 (def-family "p20" :members ("UP:A1KXE4" "UP:Q9BW30")) 
