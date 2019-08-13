@@ -155,6 +155,7 @@
 (def-family-with-id "HIFalpha" "FPLX:HIF_alpha") 
 (def-family-with-id "HPP" "XFAM:PF04982.11" :synonyms ("HPPs")) 
 (def-family-with-id "HSP20" "XFAM:PF00011.19")
+(def-family-with-id "heat shock factor" "IPR000232" :name "heat shock factor protein" :members ("UP:Q00613" "UP:Q03933" "UP:Q9ULV5" "UP:O75031" "UP:O75506"))
 (def-family-with-id "HSP" "NCIT:C16672" :name "Heat Shock Protein" :synonyms ("heat shock protein" "Hsp") :members ("UP:P04792" "UP:P07900" "UP:P08238" "UP:P0DMV8" "UP:P0DMV9" "UP:P10809" "UP:P11021" "UP:P11142" "UP:P14625" "UP:P17066")) ; probably more
 (def-family-with-id "HSP70" "NCIT:C17765" :synonyms ("hsp-70" "hsp70s" "hsps70" "heat shock protein-70" "hsp70"))
 
@@ -375,33 +376,33 @@
 (def-family-with-id "tryptase" "FPLX:Tryptase" :members ("UP:Q02844" "UP:Q15661" "UP:Q9GZN4" "UP:Q9NRR2")) 
 (def-family-with-id "vascular endothelial growth factor" "FPLX:VEGF" :synonyms ("VEGF") :members ("UP:P15692" "UP:P17948" "UP:P35968")) 
 
-(def-family-with-id "1.1.1.239" "EC:1.1.1.239" :name "1.1.1.239" :members ("UP:P37059" "UP:P42330")) 
-(def-family-with-id "1.1.1.62" "EC:1.1.1.62" :name "1.1.1.62" :members ("UP:P14061" "UP:P37059" "UP:P56937" "UP:Q53GQ0")) 
-(def-family-with-id "1.14.14.1" "EC:1.14.14.1" :name "1.14.14.1" :members ("UP:P04798" "UP:P05177" "UP:Q16678")) 
-(def-family-with-id "1.15.1.1" "EC:1.15.1.1" :name "1.15.1.1" :members ("UP:P00441" "UP:P04179"))
+(def-family-with-id "1.1.1.239" "ECCODE:1.1.1.239" :name "1.1.1.239" :members ("UP:P37059" "UP:P42330")) 
+(def-family-with-id "1.1.1.62" "ECCODE:1.1.1.62" :name "1.1.1.62" :members ("UP:P14061" "UP:P37059" "UP:P56937" "UP:Q53GQ0")) 
+(def-family-with-id "1.14.14.1" "ECCODE:1.14.14.1" :name "1.14.14.1" :members ("UP:P04798" "UP:P05177" "UP:Q16678")) 
+(def-family-with-id "1.15.1.1" "ECCODE:1.15.1.1" :name "1.15.1.1" :members ("UP:P00441" "UP:P04179"))
 (def-family-with-id "14-3-3" "FPLX:p14_3_3" :synonyms ("14-3-3 protein") :members ("UP:P27348" "UP:P31946" "UP:P31947" "UP:P61981" "UP:P62258" "UP:P63104"))  
-(def-family-with-id "2.4.1.222" "EC:2.4.1.222" :name "2.4.1.222" :synonyms ("O-fucosylpeptide 3-beta-N-acetylglucosaminyltransferase" "O-fucosylpeptide 3-bη-N-acetylglucosaminyltransferase") :members ("UP:O00587" "UP:Q8NES3")) 
-(def-family-with-id "2.7.1.153" "EC:2.7.1.153" :name "2.7.1.153" :members ("UP:O00329" "UP:P42336" "UP:P42338" "UP:P48736")) 
-(def-family-with-id "2.7.1.154" "EC:2.7.1.154" :name "2.7.1.154" :members ("UP:O00443" "UP:O00750")) 
-(def-family-with-id "2.7.1.40" "EC:2.7.1.40" :name "2.7.1.40" :members ("UP:P14618" "UP:P30613")) 
-(def-family-with-id "2.7.1.68" "EC:2.7.1.68" :name "2.7.1.68" :members ("UP:O14986" "UP:O60331" "UP:Q99755")) 
-(def-family-with-id "2.7.1.91" "EC:2.7.1.91" :name "2.7.1.91" :members ("UP:Q9NRA0" "UP:Q9NYA1")) 
-(def-family-with-id "2.7.10.1" "EC:2.7.10.1" :name "2.7.10.1" :members ("UP:P00533" "UP:P04626" "UP:P04629" "UP:P06213" "UP:P07949" "UP:P08069" "UP:P08581" "UP:P09619" "UP:P10721" "UP:P11362" "UP:P16234" "UP:P21709" "UP:P21802" "UP:P21860" "UP:P22455" "UP:P22607" "UP:P29317" "UP:P29320" "UP:P29322" "UP:P29323" "UP:P35916" "UP:P35968" "UP:P54753" "UP:P54756" "UP:P54760" "UP:P54762" "UP:P54764" "UP:Q01974" "UP:Q02763" "UP:Q15303" "UP:Q15375" "UP:Q16288" "UP:Q16620" "UP:Q5JZY3" "UP:Q9UF33")) 
-(def-family-with-id "2.7.10.2" "EC:2.7.10.2" :name "2.7.10.2" :members ("UP:O60674" "UP:P00519" "UP:P06239" "UP:P06241" "UP:P07947" "UP:P07948" "UP:P08631" "UP:P09769" "UP:P12931" "UP:P23458" "UP:P42684" "UP:P43403" "UP:P43405" "UP:P51451" "UP:P52333" "UP:Q05397" "UP:Q06187" "UP:Q08881" "UP:Q14289")) 
-(def-family-with-id "2.7.11.1" "EC:2.7.11.1" :name "2.7.11.1" :members ("UP:O00141" "UP:O14578" "UP:O14757" "UP:O15530" "UP:O60229" "UP:O75116" "UP:O75460" "UP:O75962" "UP:P04049" "UP:P10398" "UP:P11274" "UP:P11309" "UP:P15056" "UP:P23443" "UP:P31749" "UP:P31751" "UP:P42336" "UP:P42345" "UP:P48736" "UP:Q13153" "UP:Q13177" "UP:Q13418" "UP:P04049" "UP:Q13464" "UP:Q13535" "UP:Q5VST9" "UP:Q8WZ42" "UP:Q9Y243")) 
-(def-family-with-id "2.7.11.13" "EC:2.7.11.13" :name "2.7.11.13" :members ("UP:O94806" "UP:P05129" "UP:P05771" "UP:P17252" "UP:P24723" "UP:P41743" "UP:Q02156" "UP:Q04759" "UP:Q05513" "UP:Q15139" "UP:Q16512" "UP:Q16513" "UP:Q9BZL6")) ;; FPLX:PKC
-(def-family-with-id "2.7.11.17" "EC:2.7.11.17" :name "2.7.11.17" :members ("UP:Q13554" "UP:Q13555" "UP:Q13557" "UP:Q16566" "UP:Q9UQM7")) 
-(def-family-with-id "2.7.11.24" "EC:2.7.11.24" :name "2.7.11.24" :members ("UP:P27361" "UP:P28482" "UP:P45983" "UP:P45984" "UP:P53779")) ;;FPLX:MAPK
-(def-family-with-id "2.7.11.25" "EC:2.7.11.25" :name "2.7.11.25" :members ("UP:O95382" "UP:Q13233" "UP:Q99683" "UP:Q99759" "UP:Q9Y2U5" "UP:Q9Y6R4")) ;; FPLX:MAP3K
-(def-family-with-id "2.7.11.30" "EC:2.7.11.30" :name "2.7.11.30" :members ("UP:O00238" "UP:P27037" "UP:P36894" "UP:P36896" "UP:P36897" "UP:P37023" "UP:P37173" "UP:Q04771" "UP:Q13705" "UP:Q13873" "UP:Q16671" "UP:Q8NER5")) 
-(def-family-with-id "2.7.12.2" "EC:2.7.12.2" :name "2.7.12.2" :members ("UP:O14733" "UP:P36507" "UP:P45985" "UP:P46734" "UP:P52564" "UP:Q02750")) ;; FPLX:MAPK
-(def-family-with-id "2.7.4.3" "EC:2.7.4.3" :name "2.7.4.3" :members ("UP:P00568" "UP:P54819" "UP:Q9Y6K8")) 
-(def-family-with-id "2.7.4.6" "EC:2.7.4.6" :name "2.7.4.6" :members ("UP:P00568" "UP:P15531" "UP:P22392" "UP:P30085" "UP:Q9Y6K8")) 
-(def-family-with-id "3.1.11.2" "EC:3.1.11.2" :name "3.1.11.2" :members ("UP:O60671" "UP:Q99638")) 
-(def-family-with-id "3.1.3.48" "EC:3.1.3.48" :name "3.1.3.48" :members ("UP:P18031" "UP:P18433" "UP:P29350" "UP:P30307" "UP:P60484" "UP:Q06124" "UP:Q12913")) 
-(def-family-with-id "3.1.3.86" "EC:3.1.3.86" :name "3.1.3.86" :members ("UP:O15357" "UP:Q92835")) 
-(def-family-with-id "3.1.4.11" "EC:3.1.4.11" :name "3.1.4.11" :members ("UP:P16885" "UP:P19174" "UP:Q00722" "UP:Q01970" "UP:Q15147" "UP:Q9NQ66" "UP:Q9P212")) 
-(def-family-with-id "3.1.4.4" "EC:3.1.4.4" :name "3.1.4.4" :members ("UP:O14939" "UP:Q13393")) ;;FPLX:PLD
+(def-family-with-id "2.4.1.222" "ECCODE:2.4.1.222" :name "2.4.1.222" :synonyms ("O-fucosylpeptide 3-beta-N-acetylglucosaminyltransferase" "O-fucosylpeptide 3-bη-N-acetylglucosaminyltransferase") :members ("UP:O00587" "UP:Q8NES3")) 
+(def-family-with-id "2.7.1.153" "ECCODE:2.7.1.153" :name "2.7.1.153" :members ("UP:O00329" "UP:P42336" "UP:P42338" "UP:P48736")) 
+(def-family-with-id "2.7.1.154" "ECCODE:2.7.1.154" :name "2.7.1.154" :members ("UP:O00443" "UP:O00750")) 
+(def-family-with-id "2.7.1.40" "ECCODE:2.7.1.40" :name "2.7.1.40" :members ("UP:P14618" "UP:P30613")) 
+(def-family-with-id "2.7.1.68" "ECCODE:2.7.1.68" :name "2.7.1.68" :members ("UP:O14986" "UP:O60331" "UP:Q99755")) 
+(def-family-with-id "2.7.1.91" "ECCODE:2.7.1.91" :name "2.7.1.91" :members ("UP:Q9NRA0" "UP:Q9NYA1")) 
+(def-family-with-id "2.7.10.1" "ECCODE:2.7.10.1" :name "2.7.10.1" :members ("UP:P00533" "UP:P04626" "UP:P04629" "UP:P06213" "UP:P07949" "UP:P08069" "UP:P08581" "UP:P09619" "UP:P10721" "UP:P11362" "UP:P16234" "UP:P21709" "UP:P21802" "UP:P21860" "UP:P22455" "UP:P22607" "UP:P29317" "UP:P29320" "UP:P29322" "UP:P29323" "UP:P35916" "UP:P35968" "UP:P54753" "UP:P54756" "UP:P54760" "UP:P54762" "UP:P54764" "UP:Q01974" "UP:Q02763" "UP:Q15303" "UP:Q15375" "UP:Q16288" "UP:Q16620" "UP:Q5JZY3" "UP:Q9UF33")) 
+(def-family-with-id "2.7.10.2" "ECCODE:2.7.10.2" :name "2.7.10.2" :members ("UP:O60674" "UP:P00519" "UP:P06239" "UP:P06241" "UP:P07947" "UP:P07948" "UP:P08631" "UP:P09769" "UP:P12931" "UP:P23458" "UP:P42684" "UP:P43403" "UP:P43405" "UP:P51451" "UP:P52333" "UP:Q05397" "UP:Q06187" "UP:Q08881" "UP:Q14289")) 
+(def-family-with-id "2.7.11.1" "ECCODE:2.7.11.1" :name "2.7.11.1" :members ("UP:O00141" "UP:O14578" "UP:O14757" "UP:O15530" "UP:O60229" "UP:O75116" "UP:O75460" "UP:O75962" "UP:P04049" "UP:P10398" "UP:P11274" "UP:P11309" "UP:P15056" "UP:P23443" "UP:P31749" "UP:P31751" "UP:P42336" "UP:P42345" "UP:P48736" "UP:Q13153" "UP:Q13177" "UP:Q13418" "UP:P04049" "UP:Q13464" "UP:Q13535" "UP:Q5VST9" "UP:Q8WZ42" "UP:Q9Y243")) 
+(def-family-with-id "2.7.11.13" "ECCODE:2.7.11.13" :name "2.7.11.13" :members ("UP:O94806" "UP:P05129" "UP:P05771" "UP:P17252" "UP:P24723" "UP:P41743" "UP:Q02156" "UP:Q04759" "UP:Q05513" "UP:Q15139" "UP:Q16512" "UP:Q16513" "UP:Q9BZL6")) ;; FPLX:PKC
+(def-family-with-id "2.7.11.17" "ECCODE:2.7.11.17" :name "2.7.11.17" :members ("UP:Q13554" "UP:Q13555" "UP:Q13557" "UP:Q16566" "UP:Q9UQM7")) 
+(def-family-with-id "2.7.11.24" "ECCODE:2.7.11.24" :name "2.7.11.24" :members ("UP:P27361" "UP:P28482" "UP:P45983" "UP:P45984" "UP:P53779")) ;;FPLX:MAPK
+(def-family-with-id "2.7.11.25" "ECCODE:2.7.11.25" :name "2.7.11.25" :members ("UP:O95382" "UP:Q13233" "UP:Q99683" "UP:Q99759" "UP:Q9Y2U5" "UP:Q9Y6R4")) ;; FPLX:MAP3K
+(def-family-with-id "2.7.11.30" "ECCODE:2.7.11.30" :name "2.7.11.30" :members ("UP:O00238" "UP:P27037" "UP:P36894" "UP:P36896" "UP:P36897" "UP:P37023" "UP:P37173" "UP:Q04771" "UP:Q13705" "UP:Q13873" "UP:Q16671" "UP:Q8NER5")) 
+(def-family-with-id "2.7.12.2" "ECCODE:2.7.12.2" :name "2.7.12.2" :members ("UP:O14733" "UP:P36507" "UP:P45985" "UP:P46734" "UP:P52564" "UP:Q02750")) ;; FPLX:MAPK in equivalences but really should be MAP2K
+(def-family-with-id "2.7.4.3" "ECCODE:2.7.4.3" :name "2.7.4.3" :members ("UP:P00568" "UP:P54819" "UP:Q9Y6K8")) 
+(def-family-with-id "2.7.4.6" "ECCODE:2.7.4.6" :name "2.7.4.6" :members ("UP:P00568" "UP:P15531" "UP:P22392" "UP:P30085" "UP:Q9Y6K8")) 
+(def-family-with-id "3.1.11.2" "ECCODE:3.1.11.2" :name "3.1.11.2" :members ("UP:O60671" "UP:Q99638")) 
+(def-family-with-id "3.1.3.48" "ECCODE:3.1.3.48" :name "3.1.3.48" :members ("UP:P18031" "UP:P18433" "UP:P29350" "UP:P30307" "UP:P60484" "UP:Q06124" "UP:Q12913")) 
+(def-family-with-id "3.1.3.86" "ECCODE:3.1.3.86" :name "3.1.3.86" :members ("UP:O15357" "UP:Q92835")) 
+(def-family-with-id "3.1.4.11" "ECCODE:3.1.4.11" :name "3.1.4.11" :members ("UP:P16885" "UP:P19174" "UP:Q00722" "UP:Q01970" "UP:Q15147" "UP:Q9NQ66" "UP:Q9P212")) 
+(def-family-with-id "3.1.4.4" "ECCODE:3.1.4.4" :name "3.1.4.4" :members ("UP:O14939" "UP:Q13393")) ;;FPLX:PLD
 (def-family-with-id "alcohol dehydrogenase" "FPLX:ADH" :members ("UP:P07327" "UP:P00325" "UP:P00326") :synonyms ("ADH" "adh")) 
 (def-family-with-id "AMPK" "FPLX:AMPK" :synonyms ("AMP activated protein kinase" "Ampk") :members ("UP:O43741" "UP:P54646" "UP:Q13131")) 
 (def-family-with-id "AMPKalpha" "FPLX:AMPK_alpha" :synonyms ("NCIT:C116019" "5-AMP-activated protein kinase catalytic subunit alpha" "PRKAA" "AMPK-alpha" "AMPKα" "5-AMP-activated protein kinase catalytic subunit alpha")) 
@@ -461,7 +462,7 @@
 ;;(def-family-with-id "JNK1/2" "FPLX:JNK" :synonyms ("JNK1-2") :members ("JNK1" "JNK2"))
 (def-family-with-id "Jnk" "FPLX:JNK" :members ("JNK1" "JNK2" "JNK3A") :synonyms ("JNK" "JNK MAPK" "JUN kinase activity" "c-JNK" "c-Jun N-terminal kinase" "c-Jun N-terminal protein kinase" "c-Jun NH2-terminal kinase" "c-jun-NH2-terminal kinase" "c-Jun N-terminal Kinase" "c-JUN N-terminal kinase" "c-jun NH2-terminal kinase" "c-jun N-terminal kinase" "C-jun N-terminal kinase" "C-Jun NH2-terminal kinase" "C-Jun NH2-Terminal Kinase" "C-Jun N-terminal kinase" "c-Jun NH2-Terminal Kinase" "c-Jun N-Terminal Kinase" "c-Jun  N-terminal kinase" "C-jun NH2-terminal kinase" "C-JNK" "JNK1/2"))
 (def-family-with-id "JUN" "FPLX:JUN_family" :synonyms ("jun subfamily" "jun" "FA:00409") :members ("UP:P05412"))
-(def-family-with-id "Jumpy" "PR:000010735" :members ("UP:Q8NCE2")) 
+;(def-family-with-id "Jumpy" "PR:000010735" :members ("UP:Q8NCE2")) 
 (def-family-with-id "MAC" "FPLX:MAC") 
 (def-family-with-id "MAPK" "FPLX:MAPK" :name "mitogen activated protein kinase" :synonyms ("PR:000000019" "mapk" "MAP kinase" "map kinase" "mitogen-activated protein kinase" "mitogen activated protein kinas" "mitogen-activated protein (MAP) kinase" "Mitogen Activated Protein Kinase" "mitogen -activated protein kinase" "mitogen- activated protein kinase" "mitogen-activated protein-kinase" "mitogen-activated-protein kinase" "mitogen-activated-protein-kinase" "mitogenactivated protein kinase" "mitogen-activated protein  kinase") :members ("UP:O15264" "UP:P27361" "UP:P28482" "UP:P31152" "UP:P45983" "UP:P45984" "UP:P53778" "UP:P53779" "UP:Q13164" "UP:Q15759" "UP:Q16539" "UP:Q16659" "UP:Q8TD08")) 
 (def-family-with-id "MAP2K" "FPLX:MAP2K" :synonyms ("NCIT:C105947" "mitogen activated protein kinase kinase" "MAP kinase kinase" "MAPK kinase" "MAPKK" "mitogen activated protein kinase kinase" "mitogen-activated protein kinase kinase" "MAP kinase kinase" "MAP Kinase Kinase") :members ("UP:Q02750" "UP:P36507" "UP:P46734" "UP:P45985" "UP:Q13163" "UP:P52564" "UP:O14733"#|"MAP2K1" "MAP2K2" "MAP2K3" "MAP2K4" "MAP2K5" "MAP2K6" "MAP2K7"|#)) 
@@ -511,8 +512,6 @@
 
 (def-family-with-id "TSH" "NCIT:C2280" :synonyms ("thyroid stimulating hormone") :members ("UP:P01215" "UP:P01222"))
 
-(def-family-with-id "TIP49" "XFAM:PF06068.11" :synonyms ("Tip49" "tip49") :members ("UP:Q9Y230" "UP:Q9Y265")) 
-
 (def-family-with-id "VEGFR" "FPLX:VEGFR" :synonyms ("Vascular endothelial growth factor receptor" "VEGF receptor" "vascular endothelial growth factor-activated receptor activity" "GO:0005021") :members ("UP:P17948" "UP:P35968" "UP:P35916"))
 (def-family-with-id "acetyltransferase" "GO:0016407" :synonyms ("acetyl-transferase" "acetylase"))
 
@@ -523,8 +522,8 @@
 (def-family-with-id "calpain" "FPLX:CAPN" :members ("UP:P04632" "UP:P07384")) 
 (def-family-with-id "capsid protein" "NCIT:C16383" :members ("UP:P14836" "UP:P21942" "UP:Q68985")) 
 (def-family-with-id "fibroblast growth factor receptor family" "FPLX:FGFR" :name "Fibroblast growth factor receptor" :synonyms ("NCIT:C17297" "FGFR" "FGF receptor" "Fgfr" "FGFr") :members ("UP:Q8N441" "UP:Q92913" "UP:Q92914" "UP:Q92915" "UP:Q9GZV9" "UP:Q9HCT0" "UP:Q9NP95" "UP:Q9NSA1"))
-(def-family-with-id "Fibroblast Growth Factor" "FPLX:FGF" :synonyms ("fgf" "fibroblast growth factor")) 
-(def-family-with-id "farnesyltransferase" "FPLX:FNT") 
+(def-family-with-id "Fibroblast Growth Factor" "FPLX:FGF" :synonyms ("fgf" "fibroblast growth factor" "XFAM:PF00167")) 
+(def-family-with-id "farnesyltransferase" "FPLX:FNT" :synonyms ("ECCODE:2.5.1.58") :members ("UP:P49354" "UP:P49356")) 
 (def-family-with-id "flotillin" "FPLX:FLOT" :members ("UP:O75955" "UP:Q14254")) 
 (def-family-with-id "hydrolase" "GO:0016787")
 ;(define-protein "GO:0016787" ("hydrolases" "hydrolase activity")) 
@@ -573,7 +572,7 @@
 
 ;; previously in the post TRIPS-defs new-defs file
 
-(def-family-with-id "transcriptional activator" "XFAM:PF04949") 
+;(def-family-with-id "transcriptional activator" "XFAM:PF04949") 
 (def-family-with-id "insulin like growth factor" "IPR022350")
 (def-family-with-id "insulin-like growth factor-binding protein" "FPLX:IGFBP" :synonyms ("Insulin-like growth factor binding protein" "insulin-like growth factor binding protein" "IGFBP")) 
 
@@ -617,8 +616,8 @@
 (def-family-with-id "desmoglein" "FPLX:Desmoglein") 
 (def-family-with-id "virulence factor" "XFAM:PF13769") 
 (def-family-with-id "BTB-Kelch protein" "IPR017096") 
-(def-family-with-id "Fibroblast growth factor" "XFAM:PF00167") 
-(def-family-with-id "transcriptional regulator" "XFAM:PF02082") 
+;(def-family-with-id "Fibroblast growth factor" "XFAM:PF00167") 
+;(def-family-with-id "transcriptional regulator" "XFAM:PF02082") 
 ;(def-family-with-id "ubiquitin conjugating enzyme" "XFAM:PF00179") 
 (def-family-with-id "Toll Like Receptor" "IPR017241") 
 (def-family-with-id "BTG family" "XFAM:PF07742") 
@@ -1021,7 +1020,7 @@
 (def-family-with-id "eno" "FPLX:ENO" :synonyms ("ENO")) 
 (def-family-with-id "homer" "FA:01786" :name "homer family") 
 (def-family-with-id "heme oxygenase" "FPLX:HMOX" :synonyms ("haem oxygenase")) 
-(def-family-with-id "hedgehog" "FA:01729" :name "hedgehog family") 
+(def-family-with-id "hedgehog" "FA:01729" :name "hedgehog family" :members ("UP:Q15465" "UP:O43323" "UP:Q14623")) 
 (def-family-with-id "hairpins" "XFAM:PF04877.10" :name "hairpins") 
 (def-family-with-id "HrpE" "XFAM:PF06188.10" :name "HrpE" :maintain-case t) 
 ;(def-family-with-id "matrices" "XFAM:PF00661.19" :name "matrix") 
@@ -1071,7 +1070,7 @@
 (def-family-with-id "tetR" "XFAM:PF13972.4" :name "TetR") 
 (def-family-with-id "tachykinin" "FA:03909" :name "tachykinin family") 
 (def-family-with-id "syntrophin" "FA:03905" :name "syntrophin family") 
-(def-family-with-id "synaptotagmin" "FA:03901" :name "synaptotagmin family") 
+(def-family-with-id "synaptotagmin" "FA:03901" :name "synaptotagmin family" :members ("UP:P21579" "UP:Q17RD7")) ;many more members
 (def-family-with-id "synaptojanin" "FA:03898" :name "synaptojanin family" :members ("UP:O43426" "UP:O15056")) 
 ;(def-family-with-id "sterile" "XFAM:PF03015.17" :name "sterile") 
 (def-family-with-id "sirtuin" "FA:03623" :name "sirtuin family") 
@@ -1103,7 +1102,7 @@
 (def-family-with-id "sec15" "FA:03529" :name "SEC15 family") 
 (def-family-with-id "selectins" "NCIT:C17897" :name "selectin") 
 (def-family-with-id "spectrins" "FA:03800" :name "spectrin family") 
-(def-family-with-id "syndecans" "NCIT:C17335" :name "syndecans") 
+(def-family-with-id "syndecan" "NCIT:C17335" :name "syndecans" :members ("UP:P18827" "UP:O75056" "UP:P31431" "UP:P34741")) 
 (def-family-with-id "CSGE" "XFAM:PF10627.7" :name "CsgE") 
 (def-family-with-id "CYFIP" "FA:00837" :name "CYFIP family") 
 (def-family-with-id "DAP-kinase" "FA:03074" :name "DAP kinase subfamily") 
@@ -1209,7 +1208,7 @@
 (def-family-with-id "CASC2" "HGNC:22933" :name "cancer susceptibility 2" :synonyms NIL :members ("UP:Q6XLA1" "UP:Q8IU53"))
 (def-family-with-id "CDKN2A" "HGNC:1787" :name "cyclin dependent kinase inhibitor 2A" :synonyms ("CMM2" "INK4" "p19Arf" "p14ARF") :members ("UP:P42771" "UP:Q8N726")) ;; "p19Arf" "p14ARF" are mouse homolog
 (def-family-with-id "CTAGE1" "HGNC:24346" :name "cutaneous T cell lymphoma-associated antigen 1" :synonyms ("CTAGE") :members ("UP:Q96RT6" "UP:Q9HC47"))
-(def-family-with-id "CUX1" "HGNC:2557" :name "cut like homeobox 1" :synonyms ("CDP" "CDP1" "CUX" "CUT" "Clox" "CDP/Cut" "CDP/Cux" "Cux/CDP" "GOLIM6") :members ("UP:P39880" "UP:Q13948"))
+(def-family-with-id "CUX1" "HGNC:2557" :name "cut like homeobox 1" :synonyms ("CDP" "CDP1" "CUX" "CUT" "Clox" "CDP/Cut" "CDP/Cux" "Cux/CDP" "GOLIM6" "CUTL1") :members ("UP:P39880" "UP:Q13948"))
 (def-family-with-id "DDIT3" "HGNC:2726" :name "DNA damage inducible transcript 3" :synonyms NIL :members ("UP:P0DPQ6" "UP:P35638"))
 (def-family-with-id "DUSP13" "HGNC:19681" :name "dual specificity phosphatase 13" :synonyms ("BEDP" "FLJ32450") :members ("UP:Q6B8I1" "UP:Q9UII6"))
 (def-family-with-id "EPM2A" "HGNC:3413" :name "EPM2A glucan phosphatase, laforin" :synonyms ("LDE" "LD") :members ("UP:B3EWF7" "UP:O95278"))
@@ -1236,9 +1235,9 @@
 (def-family-with-id "MIEF1" "HGNC:25979" :name "mitochondrial elongation factor 1" :synonyms ("FLJ20232") :members ("UP:L0R8F8" "UP:Q9NQG6"))
 (def-family-with-id "MOCS2" "HGNC:7193" :name "molybdenum cofactor synthesis 2" :synonyms ("MOCO1" "MOCS2A" "MOCS2B") :members ("UP:O96007" "UP:O96033"))
 (def-family-with-id "NACA" "HGNC:7629" :name "nascent polypeptide associated complex subunit alpha" :synonyms ("NACA1") :members ("UP:E9PAV3" "UP:Q13765"))
-(def-family-with-id "NRXN1" "HGNC:8008" :name "neurexin 1" :synonyms ("KIAA0578" "Hs.22998") :members ("UP:P58400" "UP:Q9ULB1"))
-(def-family-with-id "NRXN2" "HGNC:8009" :name "neurexin 2" :synonyms NIL :members ("UP:P58401" "UP:Q9P2S2"))
-(def-family-with-id "NRXN3" "HGNC:8010" :name "neurexin 3" :synonyms ("KIAA0743") :members ("UP:Q9HDB5" "UP:Q9Y4C0"))
+(def-family-with-id "NRXN1" "HGNC:8008" :name "neurexin 1" :synonyms ("KIAA0578" "Hs.22998" "neurexin-1") :members ("UP:P58400" "UP:Q9ULB1"))
+(def-family-with-id "NRXN2" "HGNC:8009" :name "neurexin 2" :synonyms ("neurexin II" "neurexin-2") :members ("UP:P58401" "UP:Q9P2S2"))
+(def-family-with-id "NRXN3" "HGNC:8010" :name "neurexin 3" :synonyms ("KIAA0743" "neurexin-3") :members ("UP:Q9HDB5" "UP:Q9Y4C0"))
 (def-family-with-id "POLR1D" "HGNC:20422" :name "RNA polymerase I and III subunit D" :synonyms ("MGC9850") :members ("UP:P0DPB5" "UP:P0DPB6"))
 (def-family-with-id "POLR2M" "HGNC:14862" :name "RNA polymerase II subunit M" :synonyms ("Gdown" "Gdown1" "GCOM1") :members ("UP:P0CAP2" "UP:Q6EEV4"))
 (def-family-with-id "PRNP" "HGNC:9449" :name "prion protein" :synonyms ("CD230" "PRP") :members ("UP:F7VJQ1" "UP:P04156"))
