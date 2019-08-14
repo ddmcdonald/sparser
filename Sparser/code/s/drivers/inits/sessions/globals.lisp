@@ -210,6 +210,12 @@
    words in the scaop of the terminals loop that
    aren't already covered by an edge.")
 
+(defparameter *smart-frequency-count* nil
+  "Flag checked in scan-terminals-and-do-core that controls whether
+   we stop the analysis at that point and just update the frequency
+   of various words (terminal under edges). Lets us appreciate
+   polywords and such rather than just orthographic words")
+
 (defparameter *grammar-and-model-based-parsing* nil
   "Wrapped around all of the parsing calls in sentence-processing-core
    to allow them to be turned off when all you want is to apply
