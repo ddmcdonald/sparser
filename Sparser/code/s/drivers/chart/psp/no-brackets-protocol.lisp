@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "no-brackets-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  December 2017
+;;;  version:  August 2019
 
 ;; Initiated 10/5/14, starting from the code for detecting bio-entities.
 ;; 10/29/14 added flags to turn off various steps so lower ones
@@ -263,36 +263,14 @@
        (setq sentence next-sentence))))
 
 
-
 (defun scan-terminals-and-do-core (sentence)
   "Do the remaining processing of the terminals followed
    by all the sentence-level parsing"
   (setq *sentence-in-core* sentence) ;; note 1
   (scan-terminals-of-sentence sentence) ;; (tr :scanning-done)
   (if *smart-frequency-count*
-      (do-smart-frequency-count sentence)
-      (sentence-processing-core sentence)))  ;; (tr :sweep-core-done)
-
-(defun do-smart-frequency-count (sentence)
-  (loop for e in
-          (all-tts (starts-at-pos sentence)
-                   (ends-at-pos sentence))
-        when (edge-p e)
-        do
-          (record-word-frequency
-           (word-from-edge e)
-           (pos-edge-starts-at e))))
-
-(defun word-from-edge (e)
-  (cond ((eq :single-term (edge-right-daughter e))
-         (if (edge-p (edge-left-daughter e))
-             ;; happens with things like the protein over MEK1
-             (word-from-edge (edge-left-daughter e))
-             (edge-left-daughter e)))
-        (t
-         ;;(warn "no word at ~s" e)
-         nil)))
-
+    (do-smart-frequency-count sentence)
+    (sentence-processing-core sentence)))  ;; (tr :sweep-core-done)
 
 (defun error-trapped-scan-and-core (sentence)
   "Wrapped scan-terminals-and-do-core inside an error catch"

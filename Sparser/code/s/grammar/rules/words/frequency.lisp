@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1996,2010-2014,2017-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1996,2010-2014,2017-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "frequency"
 ;;;   Module:  "rules;words:"
-;;;  Version:  January 2018
+;;;  Version:  August 2019
 
 ;; initiated 10/90
 ;; 3/21/92 Added capitalization information to the dummy words
@@ -121,6 +121,9 @@
 #| An entry is a list whose car is the count, followed by
  an alist of (<article> . <per-article-count>).  Word objects
  are linked to their entries via the table *word-frequence-table*
+ Note that aggregate classes such as numbers are implemented by
+ 'dummy' words so we're always associating counts with the same
+ kind of object.
 |#
 
 (defmethod frequency-table-entry ((word word))
@@ -163,6 +166,11 @@
       0
       (car entry))))
 
+(defun number-of-words-counted ()
+  "All entries in all documents in the set that has been scanned"
+  (hash-table-count *word-frequency-table*))
+
+
 (defmethod count-in-document ((w word) (o word-frequency))
   "Look up the count for a particular document that inherits
    the word-frequency mixin class. Note that this doesn't
@@ -172,9 +180,10 @@
     (gethash w table)))
 
 
-;;;----------------------------
-;;; driver - hook into Sparser
-;;;----------------------------
+
+;;;-----------------------------
+;;; driver - hooks into Sparser
+;;;-----------------------------
 
 #| Note that per-document variables like *words-in-run*
  need to be harvested and save off between documents if they
@@ -189,6 +198,31 @@
     (incf *words-in-run*) ;; running total of document length
     (let ((classification (classify-word-for-frequency word position)))
       (record-word-frequency/over-all word classification))))
+
+
+(defun do-smart-frequency-count (sentence)
+  "Called from scan-terminals-and-do-core when the *smart-frequency-count*
+   flag is up as an alternative to continuing with above-the-word analysis.
+   At that point we will have found all polywords, run any applicable FSAs
+   (e.g. for digit sequences), run word-level completion, introduced terminal
+   edges over the words and run any edge-level FSAs."
+  (loop for e in (all-tts (starts-at-pos sentence) (ends-at-pos sentence))
+     when (edge-p e)
+     do (record-word-frequency (word-from-edge e) (pos-edge-starts-at e))))
+
+(defun word-from-edge (e)
+  (cond ((eq :single-term (edge-right-daughter e))
+         (if (edge-p (edge-left-daughter e))
+             ;; happens with things like the protein over MEK1
+             (word-from-edge (edge-left-daughter e))
+             (edge-left-daughter e)))
+        (t ;;(warn "no word at ~s" e)
+         nil)))
+
+
+;;;----------------------------------------------
+;;; aggregating frequency information by article
+;;;----------------------------------------------
 
 (defun record-word-frequency/over-all (word classification)
   (let ((entry
@@ -234,12 +268,6 @@
       (incf-word-count word *current-article*)) 
     subentry-for-current-article ))
 
-
-
-
-(defun number-of-words-counted ()
-  "All entries in all documents in the set that has been scanned"
-  (hash-table-count *word-frequency-table*))
 
 
 
