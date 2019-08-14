@@ -928,6 +928,7 @@ in cwc-integ/spire/interface/sparser.lisp
 (defparameter *print-sentences* nil)
 
 (defun possibly-print-sentence ()
+  "Called at the top of sentence-processing-core"
   (declare (special *print-sentences*))
   (when (numberp *print-sentences*)
     (format t "~&~&*** (p ~s) ;; ~s" 
