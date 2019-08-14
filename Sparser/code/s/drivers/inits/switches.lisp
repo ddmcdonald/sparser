@@ -592,9 +592,7 @@
    ;; otherwise unknown words.
    ;; :capitalization-digits-&-morphology -- doesn't check Comlex
    :check-for-primed) ;; checks Comlex
-  
-  (use-unknown-words)
-  (include-comlex)
+
   (setq *edge-for-unknown-words* t)
   ;; It's T by default. Used by assign-morph-brackets-to-unknown-word
   ;; to control whether we make categories for the words
@@ -609,7 +607,7 @@
   (establish-pnf-routine :scan-classify-record)
   (setq *arabic-names* t) ;; British too
   
-  (setq *use-subtypes* t) ;; plurals as collections
+  (setq *use-subtypes* t) ;; e.g. plurals
 
   (setq *do-strong-domain-modeling* t)
   (setq *new-segment-coverage* :trivial)
