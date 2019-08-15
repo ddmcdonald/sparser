@@ -884,8 +884,9 @@ saturated? is a good entry point. |#
     (caar c/dh)
 
     ;; The discourse history is for an entire category.
-    ;; Each entry is (<individual> . <list of mentions,
-    ;; most-recent first>). The mentions are (<start-pos> . <end-pos)
+    ;; Each entry is (<individual> . <list of mentions>, where
+    ;; the mentions are ordered most-recent first>).
+    ;; The mentions are (<start-pos> . <end-pos)
     ;; until the chart (or workbench display) recycles, when it
     ;; is (:display-index start-number . end-number) because the
     ;; positions are no longer meaningful. 
@@ -907,9 +908,10 @@ saturated? is a good entry point. |#
                  last-mention (car (mentioned-where dh)))))
         ;(break "~a at ~a" individual last-mention)
 
-        (unless (eq last-mention :display-index)
-          ;; This mention is way out of bounds (the display has wrapped)
-          ;; so we shouldn't use it.
+        (unless (or (eq last-mention :display-index)
+                    (numberp last-mention))
+          ;; This mention is way out of bounds (the display has wrapped
+          ;; or the paragraph has been long-term-ified so we shouldn't use it.
           (when (> (pos-token-index last-mention)
                    largest-index-so-far)
             (setq largest-index-so-far (pos-token-index last-mention)
