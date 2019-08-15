@@ -362,7 +362,7 @@ come
                 :o theme
                 :l instrument
                 :on instrument
-                :loc-pp-complement  (on)
+                :loc-pp-complement  (on "around")
                 :mumble ("insert" svo1o2 :s agent :o theme :o2 instrument)))
 
 ;; "Move all the notes in measure 2 down an octave
@@ -413,11 +413,11 @@ come
 (define-category lower-note
   :specializes move
   :mixins (with-agent with-theme with-goal move-something-verb)
-  :binds ((agent physical-agent) (theme musical) (goal to-note))
+  :binds ((agent physical-agent) (theme musical) (goal musical))
   :realization (:verb "lower" :tree-family vp+adjunct
     :mapping ((vg . :self)
               (vp . move)
-              (adjunct . to-note)
+              (adjunct . to-dative)
               (slot . goal))))
 
 
