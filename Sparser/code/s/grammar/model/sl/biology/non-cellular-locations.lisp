@@ -17,8 +17,17 @@
 ;;;-------------
 ;;; organs
 ;;;-------------
+(define-category tissue :specializes non-cellular-location
+  :mixins (has-UID)
+  :binds ((organism organism))
+  :instantiates self
+  :index (:permanent :key name)
+  :realization
+    (:noun "tissue"
+     :in organism
+     :of organism))
 
-(define-category bio-organ :specializes non-cellular-location
+(define-category bio-organ :specializes tissue
   :mixins (has-UID)
   :binds ((organism organism))
   :instantiates self
@@ -60,15 +69,7 @@
 ;;; tissue
 ;;;-------------
 
-(define-category tissue :specializes non-cellular-location
-  :mixins (has-UID)
-  :binds ((organism organism))
-  :instantiates self
-  :index (:permanent :key name)
-  :realization
-    (:noun "tissue"
-     :in organism
-     :of organism))
+
 
 (noun ("acinus" :plural "acini") :super tissue) ;; any cluster of cells that resembles a many-lobed "berry"
 (noun "vasculature" :super tissue) ; to replace erroneous protein definition
