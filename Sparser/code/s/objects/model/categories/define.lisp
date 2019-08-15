@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2010-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "define"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  January 2017
+;;;  version:  August 2019
 
 ;; initiated 7/16/92 v2.3
 ;; 8/5 added call to process rdata, 8/31 gated it by the field having
@@ -125,7 +125,7 @@
 (defun decode-category-parameter-list (Category
                                        &key mixins
                                        documentation
-                                       instantiates
+                                       (instantiates :unspecified)
                                        specializes
                                        rule-label
                                        ((:binds var-v/r-pair))
@@ -185,7 +185,7 @@
     (setf (cat-lattice-position category)
           (initialize-top-lattice-point 
            category :specializes specialized-category))
-    
+
     (prepare-category-operations category index instantiates rule-label)
     ;; has to preceed rdata setup since some calculations there
     ;; can depend upon it.
@@ -225,17 +225,26 @@
     ;; printing
     (variables-allow-specialized-printer? category op-object)
 
-    ;; instantiate in the discourse history
-    (if instantiates-field
-      (decode-category-to-instantiate category instantiates-field)
-      (when *supply-instantiates-data*
-        (ecase *supply-instantiates-data*
-          (:inherit
-           (look-for-parent-instantiates-information
-            category op-object))
-          (:auto-self
-           (set-instantiates-information-to-self 
-            category op-object)))))
+    ;; what to instantiate in the discourse history
+  #| If there is no instantiate field included with the define-category
+ parameters, then the default on that keyword variable will supply
+ the value :unspecified, and we respect what *supply-instantiates-data*
+ says to do. If the parameter is present, but with the value of 'nil'
+ then we fall through this cond and the field in the operations
+ object will be nil. The intent of the nil is to keep individuals
+ with that category out of the discourse history. |#
+    (cond
+      ((eq instantiates-field :unspecified)
+       (when *supply-instantiates-data*
+         (ecase *supply-instantiates-data*
+           (:inherit
+            (look-for-parent-instantiates-information
+             category op-object))
+           (:auto-self
+            (set-instantiates-information-to-self 
+             category op-object)))))
+      (instantiates-field
+       (decode-category-to-instantiate category instantiates-field)))
         
     ;; find, index, delete
     (decode-index-field category op-object index-field)

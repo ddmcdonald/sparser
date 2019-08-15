@@ -90,7 +90,7 @@
          cfrs )
     (let* ((form `(define-category ,category-name
                     :specializes ,category::quantifier
-                    :instantiates :self
+                    :instantiates nil
                     :index (:permanent :key word)
                     :bindings (word ,word)))
            (category (eval form)))
