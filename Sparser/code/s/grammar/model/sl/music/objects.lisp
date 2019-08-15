@@ -17,6 +17,18 @@
 
 ;; Call setup-musical-notes, make-note-sequence.
 
+
+#| Molly 8/15/19 Progress
+Chunking issues arise in sentences like "Reverse everything from beat 3 of measure 1 through beat 1 of measure 2" where the 
+chunker wants to treat "3 of..." onward as a number. 
+Otherwise, most of the test sentences are working properly. 
+
+The next step as I see it is to flesh out the relationships between notes that are necessary in order to properly execute commands
+involving moving them - especially distances (in steps, half-steps) between notes (i.e. when we "move the G up one half-step", what note 
+do we get?), defining the note sequences that accompany certain keys, etc.
+
+|#
+
 (in-package :sparser)
 
 
@@ -33,7 +45,8 @@
   :specializes symbolic)
 
 
-;; various syntactic adjuncts to handle movement
+;; handles movement-verb adjuncts that combine a direction and a measurement,
+;; like "up three steps"; "down one half step"
 
 (define-category trajectory
   :instantiates nil
@@ -47,7 +60,8 @@
                           (item2 . extent))))
 
 
-;;--- pitch as a region
+;;; Pitch as a region. Thought it would be useful to designate differnet types of abstract regions, in order to
+;;; easily restrict types of movement within a particular region.
 
 (define-category pitch-region
   :instantiates nil
@@ -134,6 +148,8 @@ Treat notes, rests, and pitch classes all the same in terms
 of how they compose with other terms. 
 |#
 
+;;; Allows us to estabish a kind of synonymy of notes, by cconnect notes that are enharmonic to one another for more accurate parsing
+
 (defun bind-enharmonics (note1 note2)
   (bind-variable 'enharmonic note1 note2)
   (bind-variable 'enharmonic note2 note1))
@@ -144,6 +160,8 @@ of how they compose with other terms.
   :binds ((moves-in pitch-region) (flat music-flat) (sharp music-sharp) (enharmonic (:or music-note music-accidental)))
   :index (:permanent :key name :get)
   :realization (:common-noun name))
+
+;;; Workaround that allows us to parse sequences like "A B B C" as a single object, divisible into a sequence of individual notes.
 
 (define-category note-sequence 
   :specializes musical
