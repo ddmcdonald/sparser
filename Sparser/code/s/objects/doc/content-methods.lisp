@@ -187,8 +187,8 @@
                      (make-bucket-entry term bucket slot c))))))))))))
 
 (defun aggregation-target (i)
-  ;; Return the name of the slot that this individual 
-  ;; should be added to.
+  "Return the name of the slot that this individual 
+   should be added to."
   (typecase i
     (individual
      (cond
@@ -212,7 +212,7 @@
   (incf (cdr entry)))
 
 (defun make-bucket-entry (term bucket slot-name contents-instance)
-  ;; bucket exists. Need to add this term to it
+  "The bucket exists. Need to add this term to it"
   (let* ((entry `(,term . 1))
          (new-bucket-value (cons entry bucket)))
     (setf (slot-value contents-instance slot-name)
@@ -251,17 +251,18 @@
     paragraph to get a coarse style marker of a sort.")
   
   (:method ((p paragraph))
+    (declare (special *tts-after-each-section*))
     (let ((content (contents p))
           (sentences (sentences-in-paragraph p)) ; list of sentence objects
           (word-count (pos-token-index (ends-at-pos p))))
       (setf (sentence-count content) (length sentences))
       (setf (word-count content) word-count)
-      ;;(break "collect - ~a" p)
 
-      (format t "~&Paragraph ~a~%  ~a sentences~%  ~a words~
-                 ~%  ~4,1F words per sentence~%"
-              p (length sentences) word-count
-              (float (/ word-count (length sentences)))))))
+      (when *tts-after-each-section*
+        (format t "~&Paragraph ~a~%  ~a sentences~%  ~a words~
+                   ~%  ~4,1F words per sentence~%"
+                p (length sentences) word-count
+                (float (/ word-count (length sentences))))))))
 
 
 
