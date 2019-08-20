@@ -333,7 +333,6 @@
 ;; Convenience files
 (lload "workspace;abbreviations")
 (lload "workspace;traces")
-(lload "workspace;display")
 (lload "workspace;switch settings")
 
 (when *external-workspace-files*

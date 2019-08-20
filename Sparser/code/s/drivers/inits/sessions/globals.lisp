@@ -86,6 +86,10 @@
 (defparameter *print-forest-after-doing-forest* nil
   "Gates the printing in new-forest-driver")
 
+(defparameter *tts-after-each-section* nil
+  "Gates displaying the chart after each section.
+   Referenced in begin-new-paragraph")
+
 
 ;;;-----------------------------------------------
 ;;; parameters controlling whether trap new cases
