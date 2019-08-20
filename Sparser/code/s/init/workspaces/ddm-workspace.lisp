@@ -1,13 +1,78 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp -*-
-;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  February 2016
+;;;  version:  August 2019
 
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
 (in-package :sparser)
+
+;;;---------------------------------------------------------
+;;; shells for tailoring  what's done when analysing a file
+;;;---------------------------------------------------------
+
+(defun drive-file-reader (file &key (arabic? t) echo)
+  "Standard doctored setup for reading a file. The idea is that
+   we wrap different parsing setups around this uniform driver"
+
+  ;; Setup the right actions in the content methods
+  (let ((*apply-document-after-actions* t) ; run after-action method
+        (*run-aggregation-after-action* nil)) ; but not the bio one
+    (declare (special *apply-document-after-actions*
+                      *run-aggregation-after-action*))
+    ;; basics for analyze-text-from-file
+    (let ((*arabic-names* arabic?)
+          (*prescan-character-input-buffer* t)
+          (*paragraphs-from-orthography* t))
+      (declare (special *arabic-names*
+                        *prescan-character-input-buffer*
+                        *paragraphs-from-orthography*))
+      (analyze-text-from-file file :echo echo))))
+
+
+(defun just-sentence-stats (file)
+  "Minimal -- collect sentence count, word-count, ratio"
+  (let ((*grammar-and-model-based-parsing* nil) ; sentence-processing-core
+        (*sweep-for-word-level-fsas* nil) ; scan-terminals-loop
+        (*word-level-completion-sweep* nil)
+        (*sweep-for-terminal-edges* nil)
+        (*pnf-routine* nil)) ; referenced in scan-sentences-and-pws-to-eos
+    (declare (special *grammar-and-model-based-parsing*
+                      *sweep-for-word-level-fsas*
+                      *word-level-completion-sweep*
+                      *sweep-for-terminal-edges*
+                      *pnf-routine*))
+    (drive-file-reader file :arabic? t)))
+
+(defun just-chunks (file)
+  "Let the analysis run up through the moment when we're about to apply
+   the wack-a-mole procedure to parse the chunks. Particularly includes
+   the call to the layout classifier that sweep over the chunks."
+  (let ((*island-driving* nil)
+        (*sweep-sentence-treetops* t))
+    (declare (special *island-driving*
+                      *sweep-sentence-treetops*))
+    (drive-file-reader file)))
+
+
+;;--- target files
+
+(defun eastern ()
+  (string-append "/Users/ddm/Sparser/Sparser/code/s"
+                 "/drivers/timing/Bankruptcy/Eastern/just-body.lisp"))
+
+
+
+
+
+
+
+
+;;;-----------
+;;; originals
+;;;-----------
 
 ;; modeled on call in r3::run-localization
 (defun run-aspp2 (&rest args 

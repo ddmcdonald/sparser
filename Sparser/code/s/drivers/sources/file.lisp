@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "file"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   May 2019
+;;;  Version:   August 2019
 
 ;; initiated 2/91, added Analyze-text-from-file/at-filepos 12/14/94
 ;; 2/15/13 Folded in initializations from do-document-as-stream-of-files,
@@ -20,7 +20,9 @@
                                        *paragraphs-from-orthography*)
                                       ((:prescan prescan-buffer?)
                                        *prescan-character-input-buffer*)
-                                      echo trace)
+                                      ((:trace traces-on) t)
+                                      echo)
+  
   (declare (special *open-stream-of-source-characters* *paragraphs-from-orthography*
                     *prescan-character-input-buffer*))
   (when *open-stream-of-source-characters*
@@ -32,11 +34,11 @@
 
     (establish-character-source/file pathname)
 
-    (when prescan-buffer?  ;; *prescan-character-input-buffer*
+    (when prescan-buffer?
       (scan-and-swap-character-buffer :echo echo))
 
     (let ((*paragraphs-from-orthography* make-orthographic-paragraphs)
-          (*tts-after-each-section* trace))
+          (*tts-after-each-section* traces-on))
       (declare (special *paragraphs-from-orthography* *tts-after-each-section*))
 
       (analysis-core))
