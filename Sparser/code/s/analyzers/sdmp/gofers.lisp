@@ -27,7 +27,8 @@
    in Grok mode implies that the segment ended in a polyword.")
 
 (defun initialize-segment-state-variables ()
-  (declare (special *segment-position-just-left-of-head*))
+  (declare (special *segment-position-just-left-of-head*
+                    *right-segment-boundary*))
   (setq *segment-position-just-left-of-head*
         (or (position-before-segment-final-multi-word-edge)
             (chart-position-before *right-segment-boundary*))))
@@ -119,7 +120,7 @@
    right boundary of the segment?"
   (declare (special *right-segment-boundary*))
   (let ((ev (pos-ends-here *right-segment-boundary*)))
-    (ev-top-node ev)))
+    (top-edge-on-ev ev)))
   
 
 (defun head-word-of-segment ()
