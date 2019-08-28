@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2017 David D. McDonald -- all rights reserved
+;;; copyright (c) 2015-2019 David D. McDonald -- all rights reserved
 ;;;
 ;;;      File:   "sweep"
 ;;;    Module:   interface/grammar/
-;;;   Version:   October 2017
+;;;   Version:   August 2019
 
 ;; Routines for sweeping down through the structure of Krisp referents.
 ;; Initiated 1/11/15 with code from December. 
@@ -77,12 +77,9 @@
 
 
 (defun relevant-type-of-individual (i)
-  ;; close through propbably not completely correct
-  (declare (special category::prepositional-phrase))
-  (and (individual-p i)
-       (not (itypep i category::prepositional-phrase)))
-  ;;(itypep i 'biological)
-  )
+  (when (individual-p i)
+    (relevant-category-for-dh (itype-of i))))
+
 
 ;;;----------------------
 ;;; collecting the model
