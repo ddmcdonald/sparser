@@ -505,7 +505,7 @@
   (when (null *irrelevant-to-discourse-history*)
     (setq *irrelevant-to-discourse-history*
           `(,(category-named 'determiner)
-             (category-named 'approximator)
+             ,(category-named 'approximator)
              ,(category-named 'prepositional-phrase)
              ,(category-named 'relativized-prepositional-phrase)
              ,(category-named 'preposition)
