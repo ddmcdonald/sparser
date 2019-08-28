@@ -171,15 +171,6 @@
   (hash-table-count *word-frequency-table*))
 
 
-(defmethod count-in-document ((w word) (o word-frequency))
-  "Look up the count for a particular document that inherits
-   the word-frequency mixin class. Note that this doesn't
-   use the entry structure of the word in the frequency
-   table but assume that's been recorded on the document."
-  (let ((table (words-to-count o)))
-    (gethash w table)))
-
-
 
 ;;;-----------------------------
 ;;; driver - hooks into Sparser
@@ -542,40 +533,11 @@
 ;;; Differential counts by article (baby steps towards tf/idf)
 ;;;------------------------------------------------------------
 
-(defmethod unique-words ((d1 word-frequency) (d2 word-frequency))
-  "What wards are in d1 that aren't in d2?"
-  (let ( unique-to-d1
-	(table1 (words-to-count d1))
-	(table2 (words-to-count d2)))
-    (maphash #'(lambda (word count)
-		 (declare (ignore count))
-		 (unless (gethash word table2)
-		   (push word unique-to-d1)))
-	     table1)
-    unique-to-d1))
-
-(defmethod normalized-count ((w word) (d word-frequency))
-  (let ((total-tokens (token-count d))
-	(count-for-word (count-in-document w d)))
-    (unless (or (= total-tokens 0)
-		(null count-for-word)) ;; #<source-start>
-      (let ((ratio (/ count-for-word total-tokens)))
-	(values
-	 (format nil "~,8F" ratio)
-	 ratio)))))
-
 (defun number-of-documents-containing-word (word)
   (let ((entry (frequency-table-entry word)))
     (if entry
       (length (cdr entry))
       0)))
-
-(defmethod term-frequency ((w word) (d word-frequency))
-  (let ((total-tokens (token-count d))
-	(count-for-word (count-in-document w d)))
-    (unless (or (= total-tokens 0)
-		(null count-for-word)) ;; #<source-start>
-      (/ count-for-word total-tokens))))
 
 (defmethod inverse-document-frequency ((w word) (list-of-documents list))
   (let* ((doc-count (length list-of-documents))
