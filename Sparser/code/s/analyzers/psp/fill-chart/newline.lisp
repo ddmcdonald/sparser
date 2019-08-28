@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1996, 2010, 2016-2018  David D. McDonald
+;;; copyright (c) 1992-1996, 2010, 2016-2019  David D. McDonald
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC.
 ;;;
 ;;;     File:  "newline"
 ;;;   Module:  "analyzers;psp:fill chart:"
-;;;  Version:  December 2018
+;;;  Version:  August 2019
 
 ;; initiated 8/91 v1.2
 ;; (11/1 v2.0.1) Reordered the clauses by their frequency of occurance
@@ -93,7 +93,7 @@
    whether the newline word should be put into the chart as a
    terminal or treated as whitespace")
 
-#+ignore(defparameter *newline-delimits-paragraphs* nil
+(defparameter *newline-delimits-paragraphs* nil
   "A flag read in Sort-out-result-of-newline-analysis to determine
    whether the newline word delimits a paragraph (and does not get
    added to the chart)")
@@ -120,17 +120,13 @@
   (error "The initialization of the analyzer is incomplete:~
           ~%   The FSA for #\newline doesn't have a value"))
 
-
-;;;---------------------------
-;;; NL as word -- the default
-;;;---------------------------
-
+;; (use-return-newline-tokens-fsa)
 (defun use-return-newline-tokens-fsa ()
+  "NL as word -- the default"
   (setf (symbol-function 'newline-fsa)
         (symbol-function 'return-newline-tokens))
   (setq *newline-fsa-in-use* 'return-newline-tokens))
 
-; (use-return-newline-tokens-fsa)
 (defun return-newline-tokens (position-being-filled)
   (declare (ignore position-being-filled))
   (when *count-input-lines*
