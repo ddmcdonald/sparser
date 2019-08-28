@@ -96,7 +96,6 @@ the original orthographic paragraph handling of the early 1990s
       ;; version of it.
       (setf (ends-at-pos terminating) end-pos)
       (setf (ends-at-char terminating) (pos-character-index end-pos))
-      (install-contents terminating)
       (setq *prior-para-newline-pos* end-pos)
 
       (let ((starting (begin-new-paragraph end-pos)))
