@@ -187,6 +187,9 @@
         ;; The patterns reachable from here are all shorter than that
         (return-from make-this-a-question-if-appropriate nil))
 
+      (unless (every #'edge-p edges)
+        ;; unhandled punctuation can slip through
+        (return-from make-this-a-question-if-appropriate nil))
 
       (when *debug-questions* (push-debug `(,edges)))
 
