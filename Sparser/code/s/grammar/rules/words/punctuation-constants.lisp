@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "punctuation-constants"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   July 2016
+;;;   Version:   August 2019
 
 ;; Broken out from punctuation1 1/29/15 because the ACL compiler
 ;; doesn't know how to serialize a word object. Added right-arrow 4/23/15.
@@ -24,6 +24,7 @@
 (defparameter *the-punctuation-question-mark* (punctuation-named #\?))
 (defparameter *the-punctuation-percent* (punctuation-named #\%))
 (defparameter *the-punctuation-single-quote* (punctuation-named #\'))
+(defparameter *the-punctuation-double-quote* (punctuation-named #\"))
 (defparameter *the-punctuation-prime* (resolve "PRIME"))
 
 (defparameter *the-punctuation-hyphen* (punctuation-named #\-))

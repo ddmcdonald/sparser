@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "scan-gophers"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  January 2016
+;;;  version:  August 2019
 
 ;; initiated 5/15/15 breaking out the region delimiter and pattern
 ;; reader from other files. 7/18/15 Fixed but in collection of
@@ -52,6 +52,7 @@
                       *the-punctuation-percent*
                       *the-punctuation-prime*
                       *the-punctuation-single-quote*
+                      *the-punctuation-double-quote*
                       word::close-paren
                       word::open-paren
                       word::close-square-bracket
@@ -64,6 +65,7 @@
           (eq word *the-punctuation-percent*)
           (eq word *the-punctuation-prime*)
           (eq word *the-punctuation-single-quote*)
+          (eq word *the-punctuation-double-quote*)
           (eq word word::close-paren)
           (eq word word::open-paren)
           (eq word word::open-square-bracket)
