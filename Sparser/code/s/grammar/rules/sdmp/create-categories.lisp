@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2013-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2019  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File: "create-categories"
 ;;;    Module: "grammar;rules:SDM&P:
-;;;   Version: January 2017
+;;;   Version: July 2019
 
 ;; Initiated 2/9/07. Elaborated through 8/6. Refactored the head form
 ;; elevator 2/4/08. Added cases through 4/24, then through 6/16.
@@ -28,6 +28,9 @@
 ;;;--------------------------
 
 (defun elevate-head-edge-form-if-needed (edge)
+  "Called from refify-segment-head-if-needed, which is called when
+   we want to just-cover-segment rather than attempt to analyze the
+   debris."
   (let* ((form-category (edge-form edge))
 	 (symbol (when form-category
 		   ;; edges formed by :literal-in-a-rule don't have
@@ -57,7 +60,11 @@
 
 
 (defun generalize-segment-edge-form-if-needed (edge)
-  (declare (special *delay-generalization-of-verb-edge-form*))
+  "Called from most segment analyzing routines. 
+   We have completed a minimal phrase with this edge. Its form may still
+   reflect a word-level category. We want to elevate that to its phrase-level
+   equivalent."
+(declare (special *delay-generalization-of-verb-edge-form*))
   (let* ((form-category (edge-form edge))
 	 (symbol (when form-category (cat-symbol form-category))))
     (when symbol
