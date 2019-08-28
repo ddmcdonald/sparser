@@ -580,7 +580,7 @@
         )
   (setq *edges-from-referent-categories* nil
         *allow-pure-syntax-rules* t
-        *check-forms* t) ;; turn off validity check in multiply-edges
+        *check-forms* t) ;; controls validity check in multiply-edges
   (whack-a-rule t)
 
   (use-unknown-words)
@@ -588,8 +588,7 @@
   (setq *make-edges-over-new-digit-sequences* t)
   (what-to-do-with-unknown-words
    ;; :capitalization-digits-&-morphology/or-primed
-   ;; -- too strong. Does a setup-common-noun on all
-   ;; otherwise unknown words.
+   ;; -- too strong. Does a setup-common-noun on all otherwise unknown words.
    ;; :capitalization-digits-&-morphology -- doesn't check Comlex
    :check-for-primed) ;; checks Comlex
 
@@ -607,18 +606,22 @@
   (establish-pnf-routine :scan-classify-record)
   (setq *arabic-names* t) ;; British too
   
-  (setq *use-subtypes* t) ;; e.g. plurals
+  (setq *use-subtypes* t) ;; e.g. plurals, refining types of individuals
 
-  (setq *do-strong-domain-modeling* t)
-  (setq *new-segment-coverage* :trivial)
-  (setq *note-text-relations* nil) ;; for now
+  ;; variation on segment-analysis-settings
   (setq *after-action-on-segments* 'sdm/analyze-segment)
+  (setq *do-strong-domain-modeling* t)
+  (setq *new-segment-coverage* :trivial ; full's analyze-segment is not ready
+        *reify-implicit-individuals* nil ; needed in any Grok revival
+        *require-known-words-in-order-to-cover-a-segment* nil)
+  (setq *note-text-relations* t)
+  ;; (setq *profligate-creation-of-individuals* t) ; for Grok
 
-  (designate-sentence-container :complex) ;; holds preposed aux &such
+  (designate-sentence-container :complex)
+  (designate-paragraph-container :texture)
+  
   (setq *recognize-sections-within-articles* t) ;; otherwise no sentences
  
-  ;;(setq *description-lattice* nil) ;; ??? permanence of bindings
-
   (setq *switch-setting* :neo-fire))
 
 
@@ -684,11 +687,13 @@
 
 
 (defun dictionary/morphology-frequency-counts ()
-	(setq *smart-frequency-count* t)
-	(establish-word-frequency-classification
-	   :standard 'wf-classification/ignore-caps/known)
-	(setq *include-function-words-in-frequency-counts* t)
-	(setq *stem-words-for-frequency-counts* nil))
+  (declare (special *include-function-words-in-frequency-counts*
+                    *stem-words-for-frequency-counts*))
+  (setq *smart-frequency-count* t)
+  (establish-word-frequency-classification
+   :standard 'wf-classification/ignore-caps/known)
+  (setq *include-function-words-in-frequency-counts* t)
+  (setq *stem-words-for-frequency-counts* nil))
 
 (defun just-bracketing-setting ()
   "Goes with the 'no-grammar' option"

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2013 David D. McDonald all rights reserved
+;;; Copyright (c) 2013,2019 David D. McDonald all rights reserved
 ;;;
 ;;;      File: "note-text-relations"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: October 2013
+;;;   Version: August 2019
 
 ;; Initiated 3/9/13. Elaborated through 3/28/13. 7/15/13 Added gate
 ;; on new cases. Occasional fixes to edge cases through 9/16/13.
@@ -18,6 +18,8 @@
 ;;;--------
 
 (defun note-text-relations-in-segment (coverage)
+  "Invoked as part of the post-segment parsing operations
+   when the flag *note-text-relations* is up."
   (declare (special *debug-segment-handling *dbg-print*))
   (unless (segment-denotes-interesting-object coverage)
     ;;(format-words-in-segment)

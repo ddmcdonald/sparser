@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2013 David D. McDonald all rights reserved
+;;; Copyright (c) 2013,2019 David D. McDonald all rights reserved
 ;;;
 ;;;      File: "text-relations"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: October 2013
+;;;   Version: August 2019
 
 ;; Initiated 3/9/13. Distributed to other files for easier development
 ;; 3/12/13. 10/2/13 Added note-entity, 
@@ -22,6 +22,7 @@
    defined. Useful for re-initializing.")
 
 (defun canonical-tr-name (symbol)
+  "The package was created in objects/doc/loader.lisp"
   (intern (symbol-name symbol)
           (find-package :text-relationships)))
 

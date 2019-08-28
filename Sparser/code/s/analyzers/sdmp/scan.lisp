@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2013-2010  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2019  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File: "scan"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: January 2019
+;;;   Version: August 2019
 
 ;; Initiated 2/9/07. Completely redone starting 1/21/13. Adding a 
 ;; simpler variation 4/1/13. Which uses make-individual-for-dm&p 4/4
@@ -76,18 +76,19 @@ to make any semantic or form edges that the grammar dictates.
    (t
     (normal-segment-finished-options coverage))))
 
+
 ;;;-------------------------------------------------------
 ;;; trivial variant - just cover the segment with an edge
 ;;;-------------------------------------------------------
 
-;; Don't look at the edge or try to find more relations inside it,
-;; just make sure it's all covered with one edge, propagating the
-;; edge information from its suffix.
-
 (defparameter *require-known-words-in-order-to-cover-a-segment* nil)
 
 (defun just-cover-segment (coverage)
-  (declare (special *debug-segment-handling*))
+  "Don't look at the edge or try to find more relations inside it,
+   just make sure it's all covered with one edge, propagating the
+   edge information from its suffix."
+  (declare (special *debug-segment-handling*
+                    *left-segment-boundary* *right-segment-boundary*))
   (case coverage
     (:one-edge-over-entire-segment
      (let ((edge (edge-over-segment)))
@@ -109,7 +110,8 @@ to make any semantic or form edges that the grammar dictates.
          (generalize-segment-edge-form-if-needed edge)
          (convert-referent-to-individual edge)
          (when *note-text-relations*
-           (record-any-determiner edge)))) )
+           #+ignore(record-any-determiner edge) ;; redundant 8/20/19
+           ))))
 
     (:no-edges ;; "burnt" or any other word not in Comlex
      (cond
@@ -162,12 +164,12 @@ to make any semantic or form edges that the grammar dictates.
 (defparameter *show-sdm-span-segment* nil)
 
 (defun sdm-span-segment (&optional start-at)
+  "Make an edge over the whole segment based largely on the
+   properties of its suffix. The edge is presumed to be an NP
+   though nothing looks carefully at that."
   (declare (special category::adjective category::vg category::np category::np-head
                     category::n-bar *current-chunk*
                     *left-segment-boundary* *right-segment-boundary*))
-  ;; Make an edge over the whole segment based largely on the
-  ;; properties of its suffix. The edge is presumed to be an NP
-  ;; though nothing looks carefully at that.
   (let ((start-pos (or start-at
 		       *left-segment-boundary*))
 	(label (category-of-right-suffix))
@@ -240,24 +242,23 @@ to make any semantic or form edges that the grammar dictates.
        ;;/// Could imagine using a find-individual here,
        ;; but with no binding values we've nothing to find against.
        
-       ;; seems to cause of the smashing of 
-       ;; the referent of "the nucleus"
-       ;; -- we have now turned off this flag in the bio domain
        (cond
-        (*profligate-creation-of-individuals*
-         (let ((super (supercategory-of-constructed-category referent)))
-           (set-edge-referent edge
-                 (make-individual-for-dm&p (or super
-                                               referent)))
-           (note-surface-string edge)))
-        (*description-lattice*
-	 (setq referent (fom-lattice-description referent))
-         (set-edge-referent edge referent)
-	 ;;(update-edge-mention-referent Edge referent)
-	 ;; the discourse-mention had a category as its interpretation
-	 ;; and the new referent does not have that mention on its mention-history
-	 ;; correct that
-         (note-surface-string edge)))
+         (*profligate-creation-of-individuals*
+          ;; seems to cause of the smashing of 
+          ;; the referent of "the nucleus"
+          ;; -- we have now turned off this flag in the bio domain
+          (let ((super (supercategory-of-constructed-category referent)))
+            (set-edge-referent edge
+                               (make-individual-for-dm&p (or super referent)))
+            (note-surface-string edge)))
+         (*description-lattice*
+          (setq referent (fom-lattice-description referent))
+          (set-edge-referent edge referent)
+          ;;(update-edge-mention-referent Edge referent)
+          ;; the discourse-mention had a category as its interpretation
+          ;; and the new referent does not have that mention on its mention-history
+          ;; correct that
+          (note-surface-string edge)))
        referent)
       ;; These cases are original from 2009 and 
       ;; not reconsidered yet.
@@ -278,6 +279,7 @@ to make any semantic or form edges that the grammar dictates.
                 (type-of referent) referent))))))
 
 
+;; Almost certainly redundant
 (defun record-any-determiner (edge)
   ;; Wanted to have this done by the form rules in syntax/articles,
   ;; but referent expression interpreter there needs adjustment
@@ -354,6 +356,7 @@ to make any semantic or form edges that the grammar dictates.
 ;;--- cases
 
 (defun analyze-segment-with-continuous-edges ()
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
   (tr :sdm-all-contiguous-edges)
   (let ((edges (continuous-edges-between 
                 *left-segment-boundary* *right-segment-boundary*)))
@@ -395,6 +398,7 @@ to make any semantic or form edges that the grammar dictates.
   (sdm-action/some-edges))
 
 (defun sdm-action/some-edges ()
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
   (if (heuristics-apply-to-segment)
     (apply-segment-heuristics)
     (else
@@ -436,6 +440,7 @@ to make any semantic or form edges that the grammar dictates.
 ;;--- common subroutines
 
 (defun reify-segment-head-and-loop ()
+  (declare (special *right-segment-boundary*))
   (reify-segment-head-as-a-category) ;; lays down the edge
   ;; See if we can do something with that edge.
   ;; This will get us back to segment-parsed1
