@@ -52,12 +52,12 @@
           (:complex (symbol-function 'make-sentence-content-container)))))
 
 
-(defun make-paragraph-container (sentence)
-  ;; called from start-sentence
-  (declare (ignore sentence))
-  (error "No version of make-paragraph-container has been specified"))
-
 (defparameter *container-for-paragraph* :biology "Default choice")
+
+(defun make-paragraph-container (paragraph)
+  ;; called from start-sentence
+  (declare (ignore paragraph))
+  (error "No version of make-paragraph-container has been specified"))
 
 (defun designate-paragraph-container (&optional (keyword *container-for-paragraph*))
   (setq *container-for-paragraph* keyword)
@@ -117,10 +117,10 @@
 
 (defun make-paragraph-content-container/bio (p)
   (make-instance 'paragraph-content :in p))
+;; (designate-paragraph-container :biology)
 
 
-
-(defclass paragraph-features (container
+(defclass paragraph-features (container aggregated-bio-terms
                               sentence-parse-quality
                               sentence-tt-counts ; assess-sentence-analysis-quality
                               paragraph-characteristics)
@@ -139,8 +139,10 @@
                            sentence-parse-quality)
   ())
 
-(defclass article-content (container aggregated-bio-terms
-                           sentence-parse-quality)
+(defclass article-content (container
+                           aggregated-bio-terms
+                           sentence-parse-quality
+                           text-relations)
   ())
 
 
@@ -167,22 +169,18 @@
   (unless (contents s)
     (setf (contents s) (make-instance 'section-content :in s))))
 
-#+ignore(defmethod install-contents ((p paragraph))
-  (unless (contents p)
-    (let ((container (make-paragraph-container p)))
-      (push-debug `(,container))
-      (setf (contents p) container))))
-;;//// Has to be recompiled?
-(defmethod install-contents ((p paragraph))
-  (unless (contents p)
-    (setf (contents p) (make-paragraph-container p))))
-
 (defmethod install-contents ((te title-text))
   (unless (contents te)
     (setf (contents te) (make-instance 'paragraph-content :in te))))
 
-#| Sentence content objects are installed directly in a call in
-start-sentence |#
+(defmethod install-contents ((p paragraph))
+  "The setf is done in the caller, which should always be
+   begin-new-paragraph, regardless of where we're getting
+   the paragraphs from."
+  (make-paragraph-container p))
+
+#| The contents field for sentences is populated by a call to
+ make-sentence-container from start-sentence. |#
 
 
 #|   Definition for Grok

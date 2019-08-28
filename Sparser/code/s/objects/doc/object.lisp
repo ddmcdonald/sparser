@@ -185,53 +185,8 @@
     (setf (previous s) nil)
     (setf (parent s) title)
     (setf (children title) s)
-
-    ;; Now we have to 'pre-populate' the sentence so that
-    ;; we get a valid ends-at-pos value and get the
-    ;; proper value for its string. This entails pretending
-    ;; that we're in pre-scanning mode. ///Worth considering
-    ;; whether to just drop these into the regular pass
-    ;; rather than simulating it. 
-
-    (read-paragraph-guts title)
     
-    ;; code above is the right, and more general way to do this
-    #+ignore
-    (let ((*reading-populated-document* t) ;; for period-hook ??
-          (*sentence-making-sweep* t) 
-          (*pre-read-all-sentences* t)     ;; for simple-eos-check
-          (*current-paragraph* title))     ;; for initialize-sentences
-      (declare (special *reading-populated-document*
-                        *sentence-making-sweep*
-                        *pre-read-all-sentences*
-                        *current-paragraph*))
-      
-      ;; How much of analysis-core can we get away with leaving out?      
-      (initialize-tokenizer-state)
-      (initialize-chart-state)
-
-      ;; From read-from-document(paragraph)
-      (initialize-sentences)
-      (establish-character-source/string string)
-
-      ;; Top of, e.g. initiate-successive-sweeps
-      (scan-next-position) ;; pull the source-start word into the chart
-      (scan-next-position) ;; adds 1st real word into the chart
-
-      ;; from scan-sentences-to-eof
-      (let* ((p1 (position# 1))
-             (word (pos-terminal p1)))
-        
-        (catch 'sentences-finished
-          ;; Is there one sentence in the title or two?
-          ;; If there are two, then after catching the end of
-          ;; sentence we have to resume the scan. We could try
-          ;; to make scan-sentences-to-eof word, or replicate
-          ;; the essence of what it does without working in
-          ;; terms of sentence objects.
-          (catch :end-of-sentence
-            (scan-words-loop p1 word)))))
-
+    (read-paragraph-guts title)
     title))
 
 (defun replace-title-text-in-multiples (replacement tt-to-remove)
@@ -387,6 +342,7 @@
     (setf (name s) name)
     (setf (starts-at-pos s) start-pos)
     (setf (starts-at-char s) (pos-character-index start-pos))
+    (setf (contents s) (install-contents s))
     (when ongoing
       (setf (next ongoing) s)
       (setf (previous s) ongoing)
@@ -487,6 +443,7 @@
         (ongoing *current-paragraph*))
     (setf (name p) (next-indexical-name :paragraph))
     (setf (starts-at-pos p) start-pos)
+    (setf (contents p) (install-contents p))
     (if (pos-character-index start-pos)
       (setf (starts-at-char p) (pos-character-index start-pos))
       (setf (starts-at-char p) 1))
