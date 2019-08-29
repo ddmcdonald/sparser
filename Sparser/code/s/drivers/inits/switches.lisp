@@ -465,6 +465,8 @@
   ;; Specify where we start (needed as switch settings change)
   (do-strong-domain-modeling)
 
+  (designate-paragraph-container :biology)
+
   (let ((gmod (grammar-module-named '*biology*)))
     (assert gmod () "The biology grammar module is not available")
     (unmarked-category-makes-permanent-individuals gmod))
