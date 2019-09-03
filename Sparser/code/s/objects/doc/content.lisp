@@ -177,7 +177,9 @@
   "The setf is done in the caller, which should always be
    begin-new-paragraph, regardless of where we're getting
    the paragraphs from."
-  (make-paragraph-container p))
+  (ecase *container-for-paragraph*
+    (:biology (make-paragraph-content-container/bio p))
+    (:texture (make-paragraph-content-container/texture p))))
 
 #| The contents field for sentences is populated by a call to
  make-sentence-container from start-sentence. |#
