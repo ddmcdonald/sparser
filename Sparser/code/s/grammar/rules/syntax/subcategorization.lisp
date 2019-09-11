@@ -1053,6 +1053,7 @@
                 (loop for pat in subcat-patterns
                       when (and (equalp (pname (subcat-label pat)) "of")
                                 (eq (pname (subcat-variable pat)) 'object)
+                                (satisfies-subcat-restriction? item pat)
                                 ;; n.b. look at "panel"
                                 (not (itypep (subcat-restriction pat) 'over-ridden))
                                 (not (itypep (subcat-restriction pat) 'blocked-category)))
@@ -1062,10 +1063,12 @@
             (loop for pat in subcat-patterns
                   when (and (eq label (subcat-label pat))
                             (not (eq (pname (subcat-variable pat)) 'object))
+                            (satisfies-subcat-restriction? item pat)
                             (not (itypep (subcat-restriction pat) 'over-ridden))
                             (not (itypep (subcat-restriction pat) 'blocked-category)))
                   do (return pat)))))
     (declare (special category subcat-patterns of-object ambiguous-of-object))
+    (when ambiguous-of-object (warn "ambiguous-of-object is ~a" ambiguous-of-object))
 
     (when of-object
       (if ambiguous-of-object
@@ -1076,7 +1079,6 @@
                 (warn "ambiguous-of-object for ~s attaching to ~s in ~s"
                       item head (current-string))))
           (setq label :object)))
-    
     (when subcat-patterns
       (setq *label* label ;; global scope to aid debugging
             *head* head)
