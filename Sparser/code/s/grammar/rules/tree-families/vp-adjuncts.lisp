@@ -18,7 +18,10 @@
                          :binds (slot right-edge)))
           (:adjunction (vp (vp adjunct)
                          :head left-edge
-                         :binds (slot right-edge)))))
+                         :binds (slot right-edge)))
+          (:adjunction (vp (adjunct vp)
+                          :head right-edge
+                          :binds (slot left-edge)))))
 
 (define-exploded-tree-family  verb+specializing-adverb
   :description "The combination of the verb and adverb create an
