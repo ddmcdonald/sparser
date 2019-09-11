@@ -200,13 +200,13 @@ Show sents:
 (define-category model
   :specializes container
   :mixins (predication artifact) ;; make "consistent"/bio-relation's theme v/r happy
-  :binds ((process perdurant)
-          (object endurant))
+  :binds ((modeled-process perdurant)
+          (modeled-object endurant))
   :realization (:noun "model"
-                      :of process
-                      :of object
-                      :for process
-                      :for object))
+                      :of modeled-process
+                      :of modeled-object
+                      :for modeled-process
+                      :for modeled-object))
 
 
 
