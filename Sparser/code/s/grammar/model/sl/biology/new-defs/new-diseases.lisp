@@ -188,7 +188,7 @@
 (def-indiv-with-id cancer "ovarian carcinoma" "TS-0725") 
 (def-indiv-with-id cancer "PEL" "NCIT:C6915" :name "primary effusion lymphoma" :maintain-case t) 
 (def-indiv-with-id cancer "PNET" "NCIT:C3716" :name "neuroectodermal tumor" :maintain-case t) 
-(def-indiv-with-id cancer "pancreatic cancer" "TS-0739") 
+(def-indiv-with-id cancer "pancreatic cancer" "TS-0739" :name "PANCREATIC-CANCER") 
 (def-indiv-with-id cancer "pancreatic carcinoma" "TS-0740") 
 (def-indiv-with-id cancer "papillary thyroid carcinoma" "TS-1045") 
 (def-indiv-with-id cancer "papillomata" "NCIT:C7440" :name "papilloma") 
