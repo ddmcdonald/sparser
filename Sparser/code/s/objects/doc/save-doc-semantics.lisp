@@ -299,9 +299,10 @@
       (write-sem (or sent (sentence)) s)))))
 
 (defun sem-sexp (indiv)
-  (read-from-string
-    (with-output-to-string (s)
-       (write-sem indiv s))))
+  (let ((*package* (find-package :sp)))
+    (read-from-string
+     (with-output-to-string (s)
+       (write-sem indiv s)))))
 
 (defun find-sem-type-instances (s &optional (types
                                              '(:or bio-control post-translational-modification binding
