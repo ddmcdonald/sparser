@@ -84,11 +84,14 @@
 (defun sp-clauses (s &optional (with-breaks *break-in-sp-clauses*))
   (declare (special *save-clause-semantics* *clause-semantics-list*))
   (setq *save-clause-semantics* :sentence-clauses)
-  (if with-breaks
-      (qpp s)
-      (qepp s))
-  (when (null (cdr (all-tts)))
-    (car *clause-semantics-list*)))
+  (let ((*indra-post-process* (list t)))
+    (declare (special *indra-post-process*))
+    (if with-breaks
+        (qpp s)
+        (qepp s))
+     (when (null (cdr (all-tts)))
+       (car *clause-semantics-list*))
+     ))
 
 (defun clause-semantics-for-mention (mention)
   (declare (special mention))
@@ -668,7 +671,8 @@
                                                 (do-external-bindings cref external-bindings)
                                                 cref)
                                             (has-necessary-vars necessary-vars cref))))
-      (when (or nec-vars? (has-necessary-vars necessary-vars ref))
+      (when (or nec-vars? (get-indra-for-cwc?)
+                (has-necessary-vars necessary-vars ref))
         (push-sem->indra-post-process
          mention
          sentence
@@ -702,6 +706,31 @@
 (defun get-pmid ()
   (when *current-article* (symbol-name (name *current-article*))))
 
+
+(defun get-indra-for-cwc? ()
+  (and (boundp 'cl-user::*sparser-to-indra*)
+       cl-user::*sparser-to-indra*))
+
+(defparameter *indra-mention-var-ht*
+  (when (get-indra-for-cwc?)
+    (make-hash-table :size 10000)))
+
+(defmethod get-indra-sexp ((mention discourse-mention))
+  (when (get-indra-for-cwc?)
+    (get-indra-sexp (make-clause-var (mention-uid mention)))))
+
+(defmethod get-indra-sexp ((mention-var symbol))
+  (when (get-indra-for-cwc?)
+    (gethash mention-var *indra-mention-var-ht*)))
+
+(defmethod save-indra-sexpr ((mention discourse-mention)(indra-sexpr cons))
+  (when (get-indra-for-cwc?)
+    (save-indra-sexpr (make-clause-var (mention-uid mention)) indra-sexpr)))
+
+(defmethod save-indra-sexpr ((mention-var symbol)(indra-sexpr cons))
+  (when (get-indra-for-cwc?)
+    (setf (gethash mention-var *indra-mention-var-ht*) indra-sexpr)))
+
 (defun push-sem->indra-post-process (mention sentence lambda-expansion output-stream &optional desc)
   (declare (special *indra-text* *predication-links-ht* *indra-post-process* lambda-expansion desc))
   (unless desc (setq desc (base-description mention)))
@@ -725,7 +754,11 @@
                                (stringp (eval '*indra-text*)))
                           (eval '*indra-text*)
                           (sentence-string sentence))))))
-    (push f *indra-post-process*)))
+    (push f *indra-post-process*)
+    (when (get-indra-for-cwc?)
+      (let ((indra-form (indra-form-for-sexpr f nil nil)))
+        (when indra-form
+          (save-indra-sexpr mention indra-form))))))
 
 (defun contains-atom (atom list-struct)
   (if (not (consp list-struct))

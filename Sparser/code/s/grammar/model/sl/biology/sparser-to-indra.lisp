@@ -311,7 +311,14 @@ pass the result to the appropriate indra generator"
                          bio-form heterodimerize interact ligate
                          oligomerize recruit)
                     thereis (itypep cat? superc))
-              (make-indra-binding f cat? pmid))))))))
+              (make-indra-binding f cat? pmid))
+             ((and (boundp 'cl-user::*sparser-to-indra*)
+                   cl-user::*sparser-to-indra*
+                   (itypep cat? 'bio-entity))
+              (list (make-cwc-indra-bio-entity cat? f)))))))))
+
+(defun make-cwc-indra-bio-entity (cat f)
+  `((:type ,. (string cat)) ,.(car (prot-item->indra-list (second f) nil))))
 
 (defun complex-protein-json (prot)
   (prot-item->indra-list prot nil))
@@ -1470,6 +1477,7 @@ form) and the item return an indra form for that item"
 
 
 (defparameter *sents-to-indra* (make-hash-table :size 1000 :test #'equal))
+
 (defun assoc-hms-indra-with-sents ()
   (clrhash *sents-to-indra*)
   (loop for ss in (get-json-sexp-statements)
