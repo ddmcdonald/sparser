@@ -671,8 +671,9 @@
                                                 (do-external-bindings cref external-bindings)
                                                 cref)
                                             (has-necessary-vars necessary-vars cref))))
-      (when (or nec-vars? (get-indra-for-cwc?)
-                (has-necessary-vars necessary-vars ref))
+      (when (and (individual-p ref)
+                 (or nec-vars? (get-indra-for-cwc?)
+                     (has-necessary-vars necessary-vars ref)))
         (push-sem->indra-post-process
          mention
          sentence
