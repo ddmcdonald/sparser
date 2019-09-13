@@ -265,8 +265,8 @@
                
                (t
                 (if *show-wh-problems*
-                  (lsp-break "unhandled 3 edge polar-copular question: ~a" edges)
-                  (warn "unhandled 3 edge polar-copular question: ~a" edges)))))
+                  (lsp-break "unhandled 3 edge polar-copular question: ~s~% with edges ~a~%" (sentence-string sentence) edges)
+                  (warn "unhandled 3 edge polar-copular question: ~s~% with edges ~a~%" (sentence-string sentence) edges)))))
 
         ;; Initial WH questions
         (wh-initial?
