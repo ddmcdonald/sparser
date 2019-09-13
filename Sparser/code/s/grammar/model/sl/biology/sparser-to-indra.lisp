@@ -248,74 +248,77 @@ pass the result to the appropriate indra generator"
 (defvar *top-indra-form*)
 
 (defun indra-form-for-sexpr (f pmid &optional check-form)
-  (let ((cat? (if check-form check-form (car (second f))))
-        (*top-indra-form* f))
-    (declare (special *top-indra-form*))
-    (case cat?
-      (collection
-       (let ((elements (get-set-elements (second f))))
-         ;;         (lsp-break "indra-form-for-sexpr with collection")
-         (when (loop for item in elements
-                     thereis (itypep (car item) 'bio-process))
-           (indra-forms-for-items
-            (loop for item in (distribute-args-to-items (collection-args (second f)) elements)
-                  collect
-                    `(,(car f) ,item ,(assoc 'text (cdr f))))
-            pmid))))
-      (level (make-indra-level f cat? pmid)) 
-      ((translocation export recruit)
-       (make-indra-translocation f 'translocation (when pmid pmid)))
-      (bio-activate 
-       (make-indra-act-or-express f cat? pmid))
-      (inhibit 
-       (make-indra-act-or-express f cat? pmid))
-      (bio-inactivate 
-       (make-indra-act-or-express f cat? pmid))
-      ((gene-transcript-express gene-transcript-over-express
-                                gene-transcript-under-express
-                                transcribe
-                                gene-transcript-co-express
-                                gene-transcript-co-over-express)
-       (make-indra-act-or-express f 'gene-transcript-express pmid))
-      (auto-phosphorylate
-       (make-indra-autophosphorylation f cat? pmid))
-      ((phosphorylate hyperphosphorylate hypophosphorylate dephosphorylate
-                      residue-on-protein
-                      diphosphorylation)
-       (make-indra-post-trans-mod f cat? pmid))
-      (site
-       (let* ((site (second f))
-              (process (assoc 'process (cdr site)))
-              (new-site (remove process site :test #'equal))
-              (new-f
-               (cond ((not (consp (second process)))
-                      (warn "~%bad process in site, indra-form-for-sexpr,  ~s~%"
-                            f)
-                      nil)
-                     (t (when (itypep (car (second process)) 'post-trans-mod)
-                     (subst `(,@(second process) (site ,new-site))
-                            site
-                            f))))))
-         (declare (special site process new-site new-f))
-         (when new-f
-           (make-indra-post-trans-mod new-f (car (second process)) pmid))))
-      (t (when (and cat? (category-named cat?))
-           (cond
-             ((itypep cat? 'post-translational-modification)
-              (make-indra-post-trans-mod f cat? pmid))
-             ((itypep cat? 'bio-control)
-              (make-indra-bio-control f cat? pmid))
-             ((loop for superc
-                    in '(affinity binding ;bio-activity
-                         bio-associate bio-complex cooperate dimerize
-                         bio-form heterodimerize interact ligate
-                         oligomerize recruit)
-                    thereis (itypep cat? superc))
-              (make-indra-binding f cat? pmid))
-             ((and (boundp 'cl-user::*sparser-to-indra*)
-                   cl-user::*sparser-to-indra*
-                   (itypep cat? 'bio-entity))
-              (list (make-cwc-indra-bio-entity cat? f)))))))))
+  (when (and (consp f)
+             ;; fails for f= ("10 " 10 (sparser::text "Does phosphorylated MAPK1 vanish if we increase the amount of DUSP6 by 10 fold")bbbb)
+             (consp (second f)))
+    (let ((cat? (if check-form check-form (car (second f))))
+          (*top-indra-form* f))
+      (declare (special *top-indra-form*))
+      (case cat?
+        (collection
+         (let ((elements (get-set-elements (second f))))
+           ;;         (lsp-break "indra-form-for-sexpr with collection")
+           (when (loop for item in elements
+                       thereis (itypep (car item) 'bio-process))
+             (indra-forms-for-items
+              (loop for item in (distribute-args-to-items (collection-args (second f)) elements)
+                    collect
+                      `(,(car f) ,item ,(assoc 'text (cdr f))))
+              pmid))))
+        (level (make-indra-level f cat? pmid)) 
+        ((translocation export recruit)
+         (make-indra-translocation f 'translocation (when pmid pmid)))
+        (bio-activate 
+         (make-indra-act-or-express f cat? pmid))
+        (inhibit 
+         (make-indra-act-or-express f cat? pmid))
+        (bio-inactivate 
+         (make-indra-act-or-express f cat? pmid))
+        ((gene-transcript-express gene-transcript-over-express
+                                  gene-transcript-under-express
+                                  transcribe
+                                  gene-transcript-co-express
+                                  gene-transcript-co-over-express)
+         (make-indra-act-or-express f 'gene-transcript-express pmid))
+        (auto-phosphorylate
+         (make-indra-autophosphorylation f cat? pmid))
+        ((phosphorylate hyperphosphorylate hypophosphorylate dephosphorylate
+                        residue-on-protein
+                        diphosphorylation)
+         (make-indra-post-trans-mod f cat? pmid))
+        (site
+         (let* ((site (second f))
+                (process (assoc 'process (cdr site)))
+                (new-site (remove process site :test #'equal))
+                (new-f
+                 (cond ((not (consp (second process)))
+                        (warn "~%bad process in site, indra-form-for-sexpr,  ~s~%"
+                              f)
+                        nil)
+                       (t (when (itypep (car (second process)) 'post-trans-mod)
+                            (subst `(,@(second process) (site ,new-site))
+                                   site
+                                   f))))))
+           (declare (special site process new-site new-f))
+           (when new-f
+             (make-indra-post-trans-mod new-f (car (second process)) pmid))))
+        (t (when (and cat? (category-named cat?))
+             (cond
+               ((itypep cat? 'post-translational-modification)
+                (make-indra-post-trans-mod f cat? pmid))
+               ((itypep cat? 'bio-control)
+                (make-indra-bio-control f cat? pmid))
+               ((loop for superc
+                      in '(affinity binding ;bio-activity
+                           bio-associate bio-complex cooperate dimerize
+                           bio-form heterodimerize interact ligate
+                           oligomerize recruit)
+                      thereis (itypep cat? superc))
+                (make-indra-binding f cat? pmid))
+               ((and (boundp 'cl-user::*sparser-to-indra*)
+                     cl-user::*sparser-to-indra*
+                     (itypep cat? 'bio-entity))
+                (list (make-cwc-indra-bio-entity cat? f))))))))))
 
 (defun make-cwc-indra-bio-entity (cat f)
   `((:type ,. (string cat)) ,.(car (prot-item->indra-list (second f) nil))))
