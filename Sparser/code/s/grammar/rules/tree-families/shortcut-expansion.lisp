@@ -20,7 +20,9 @@
                 
 (defun make-scheme-mapping (schema args-to-substitute category)
   "Rebuild the schematic mapping into a real mapping according to the
-   category-specific substitution arguments; cf. decode-rdata-mapping."
+   category-specific substitution arguments; cf. decode-rdata-mapping,
+   which calls this function on its way out to return to setup-rdata
+   the values it expects."
   (loop for (term . value) in (schema-mapping schema)
      if (or (eq value :self)
             (eq value 'self))

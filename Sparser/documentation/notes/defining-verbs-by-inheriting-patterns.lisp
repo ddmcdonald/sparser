@@ -21,7 +21,7 @@ that involves an actor and a patient.
 (define-mixin-category action-verb
   :specializes subcategorization-pattern
   :instantiates nil
-  :mixins (actor patient)
+  :mixins (with-actor with-patient)
   :restrict ((actor (:or pronoun endurant))
              (patient physical))       
   :realization
@@ -38,12 +38,9 @@ Functionally, they supply a variable to bind.
   :documentation "The entity that performs the action.
     No implied agency. No obvious specified type.")
 
-Notice that there's no restriction on the 'actor' variable here where
-it's introduced into the grammar. The natural place to supply the
-value restriction is in the subcat definition. Syntactically, the
-two variables are incorporated into action-verb as mixins. The
-categories that provide the value restriction are stated in the
-:restrict field.
+Syntactically, the two variables are incorporated into action-verb as
+mixins. The categories that provide the value restriction are stated
+in the :restrict field.
 
 Every category that specializes action-verb will inherit all of
 the realization data that is specifies. Here the :s and :o labels
@@ -204,7 +201,7 @@ responsible for the semantic interpretation of the constituents the
 syntactic rule wants to compose.
 
 If you wander through shortcuts.lisp (in rules/tree-families, though
-the fule should be moved elsewhere), you'll see a diverse set of functions
+the file should be moved elsewhere), you'll see a diverse set of functions
 that assemble classic realization specifications for various sorts of
 clause subcategorization patterns, and simple treatments of nouns
 and adjectives or adverbs. However, because the prose in molecular biology

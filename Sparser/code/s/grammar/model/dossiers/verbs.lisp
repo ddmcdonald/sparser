@@ -382,17 +382,23 @@ come
 (define-category reverse
   :specializes process
   :mixins (simple-action with-co-patient with-patient)
-  :binds ((patient (:or sequence endurant)) (co-patient (:or sequence endurant)))
-  :realization (:verb "reverse" :s agent :o patient :i co-patient))
+  :binds ((patient (:or sequence endurant))
+          (co-patient (:or sequence endurant)))
+  :realization (:verb "reverse"
+                :s agent    ;; etf for this>
+                :o patient
+                :i co-patient))
 
 ;; "transpose the C up 1 half step"
 ;; Modeling "raise" and "lower" after this
 
 (define-category transpose
   :specializes move
-  :mixins (with-agent with-theme with-extent move-something-verb)
+  :mixins (with-agent with-theme with-extent
+           move-something-verb)
   :binds ((agent physical-agent) (theme musical) (extent trajectory))
-  :realization (:verb "transpose" :tree-family vp+adjunct
+  :realization (:verb "transpose"
+                :tree-family vp+adjunct
     :mapping ((vg . :self)
               (vp . move)
               (adjunct . trajectory)
@@ -401,9 +407,11 @@ come
 
 (define-category raise-note
   :specializes move
-  :mixins (with-agent with-theme with-goal move-something-verb)
+  :mixins (with-agent with-theme with-goal
+           move-something-verb)
   :binds ((agent physical-agent) (theme musical) (goal musical))
-  :realization (:verb "raise" :tree-family vp+adjunct
+  :realization (:verb "raise"
+                      :tree-family vp+adjunct
     :mapping ((vg . :self)
               (vp . move)
               (adjunct . to-dative)
@@ -414,7 +422,8 @@ come
   :specializes move
   :mixins (with-agent with-theme with-goal move-something-verb)
   :binds ((agent physical-agent) (theme musical) (goal musical))
-  :realization (:verb "lower" :tree-family vp+adjunct
+  :realization (:verb "lower"
+                      :tree-family vp+adjunct
     :mapping ((vg . :self)
               (vp . move)
               (adjunct . to-dative)
@@ -422,16 +431,18 @@ come
 
 
 ;; "work on measures 1 and 2"
- (define-category work-on
+(define-category work-on
   :specializes process
   :mixins (simple-action)
-  :realization (:verb ("work" :prep "on")))
+  :realization (:verb ("work" :prep "on")
+                :etf sv))
 
 (define-category change-to 
   :specializes move
   :mixins (with-agent with-goal with-patient)
   :restrict ((agent physical-agent))
-  :realization (:verb "change" 
+  :realization (:verb "change"
+                ;; etf ?
                 :s agent
                 :s patient
                 :o patient

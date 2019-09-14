@@ -50,7 +50,7 @@
 
 (defun realization-scheme-named (name &optional (errorp t))
   (or (gethash name *realization-schemas*)
-      (and errorp (error "There is no realization scheme named ~a." name))))
+      (when errorp (error "There is no realization scheme named ~a." name))))
 
 (defun fom-realization-scheme (name &rest initargs)
   (or (realization-scheme-named name nil)
@@ -155,6 +155,25 @@ when contemplating using a new tree family
             (np/object . theme-v/r)
             (np/patient . iobj-v/r)
             (pp/patient . iobj-v/r)))
+#|
+(define-realization-scheme svop ditransitive/pp
+  :head :verb
+  :phrase (svo1po2 ;; "trade a Donald Duck for an Archie"
+           (s . subject-slot) (v . :self) (o1 . theme-slot)
+           (p . XXXXXX) (o2 . ???))
+  ;; Mapping from join-company
+  :mapping  ((agent . person)
+             
+             (patient . company)
+             (goal . title)
+             (s . job-event)
+             (vp . job-event/agent)
+             (v-bar . job-event/title)
+             (vg . :self)
+             (np/agent . company)
+             (np/patient . person)
+             (prep . "as")
+             (pp/goal . title))) |#
 
 (define-realization-scheme svoa ditransitive/attribute
   :head :verb
