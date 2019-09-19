@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "text-relations"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: August 2019
+;;;   Version: September 2019
 
 ;; Initiated 3/9/13. Distributed to other files for easier development
 ;; 3/12/13. 10/2/13 Added note-entity, 
@@ -81,18 +81,18 @@
 (defun set-text-relation-instance-print-args (tr i)
   (case (name tr)
     (text-relationships::head
-     (let ((pname (word-pname (head-word i))))
+     (let ((pname (pname (head-word i))))
        (setf (tri-print-args-value i)
              (format nil "\"~a\"" pname))))
     (text-relationships::classifier-head
-     (let ((class-pname (word-pname (classifier-of-head i)))
-           (head-pname (word-pname (classified-head i))))
+     (let ((class-pname (pname (classifier-of-head i)))
+           (head-pname (pname (classified-head i))))
        (setf (tri-print-args-value i)
              (format nil "\"~a\" : \"~a\""
                      class-pname head-pname))))
     (text-relationships::modifier-head
-     (let ((modifier-pname (word-pname (modifier-of-head i)))
-           (head-pname (word-pname (modified-head i))))
+     (let ((modifier-pname (pname (modifier-of-head i)))
+           (head-pname (pname (modified-head i))))
        (setf (tri-print-args-value i)
              (format nil "\"~a\" : \"~a\""
                      modifier-pname head-pname))))
