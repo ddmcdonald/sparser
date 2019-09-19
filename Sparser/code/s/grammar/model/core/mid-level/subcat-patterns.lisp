@@ -31,6 +31,12 @@ subcategorization-pattern is a daughter of linguistic, abstract
 
 |#
 
+(define-mixin-category basic-intransitive
+  :specializes subcategorization-pattern
+  :instantiates nil
+  :mixins (with-patient)
+  :realization (:s patient :mumble (sv :s patient)))
+
 (define-mixin-category comlex-verb
   :specializes subcategorization-pattern
   :instantiates nil
@@ -159,14 +165,15 @@ subcategorization-pattern is a daughter of linguistic, abstract
      :to-comp theme))
 
 (define-mixin-category raising-to-subject
-  ;; "X seems to...
+  ;; "X seems to... " "X likes ..._ing "
   :specializes subcategorization-pattern
   :mixins (with-agent with-theme)
   :restrict ((agent (:or pronoun-animate physical-agent))
              (theme perdurant))
   :realization
     ((:s agent
-     :to-comp theme)))
+     :to-comp theme
+     :s-comp theme)))
 
 (define-mixin-category expletive-subject
   ;; seem, appear
