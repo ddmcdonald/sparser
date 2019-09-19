@@ -547,11 +547,21 @@
 
 ;; (p "Can you find any apoptotic pathways that stat3 is involved in?")
 (defun polar-aux-s-stranded-prep (aux-edge s-edge prep-edge start-pos end-pos)
+  "The constituens we have to more are largely buried inside the s-edge.
+   At the beginnng of the edge we are likely to have fluffy working like
+   'find' or 'know' that is just getting in the way, and could complicate
+   the effort to locate the constituent we have to compose with the stranded
+   preposition.
+"
   ;; 1. Identify what the complement of the preposition is
   ;;   and fold them into a new edge
   ;; 2. Fold the preposed-aux into the s/head
   ;; 3. Figure out where in the fringe of the s the pp goes and put it there
   ;; 4. Make an edge to cover the whole span
+;#################################################################
+  
+
+
   (when *debug-questions* ;; aux: 2 s: 27 p: 15
     (push-debug `(,aux-edge ,s-edge ,prep-edge))
     (break "got there")))
@@ -587,6 +597,12 @@
          :right-daughter displaced-pobj-edge
          :ignore-used-in t)))))
 
+(defun lowest-edge-taking-stranged-prep (main-edge prep-edge)
+  (let ((fringe-edges (right-fringe main-edge))) ;; largest to smallest
+    (loop for edge in (reverse fringe-edges)
+       when (takes-preposition? edge prep-edge)
+       return edge)))
+
 #|
 (p/s "What tissues can I ask about?") ;; da: wh-three-edges ?? /////
 "Are there any genes stat3 is upstream of?"
@@ -604,10 +620,12 @@
       ;; two cases -- regular subcategorization by a head and copulas
       (let* ((main-ref (edge-referent main-edge))
              (wh (find-wh-element wh-edge))
+             
              (fringe-edges (right-fringe main-edge)) ;; largest to smallest
              (head-edge (loop for edge in fringe-edges
                            when (takes-preposition? edge prep-edge)
                            return edge))
+             
              (predicate (when head-edge (edge-referent head-edge)))
              (preposition (get-word-for-prep (value-of 'prep (edge-referent pp-edge))))
              (wh-item (value-of 'pobj (edge-referent pp-edge)))
