@@ -60,7 +60,7 @@
 (export '(*display-word-stream*
           ))
 
-(defparameter *display-word-stream*  t
+(defparameter *display-word-stream*  nil
   "Acts as a flag to control whether the characters of the text under
    analysis are to be displayed as they are processed.  The flag
    is looked for within Next-token, and the display is done

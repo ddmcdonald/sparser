@@ -50,7 +50,7 @@
    Print-segment (subject to the flag just below - the full conditions
    is defined in Readout-segments?).")
 
-(defparameter *readout-segments-inline-with-text* nil
+(defparameter *readout-segments-inline-with-text* t
   "Read in pts as an alternative to *readout-segments*. Drives an input
    printer that indicates segment boundaries inline with the stream of
    text. Keeps track of the words that fall between segments and prints
