@@ -279,7 +279,7 @@ to make any semantic or form edges that the grammar dictates.
                 (type-of referent) referent))))))
 
 
-;; Almost certainly redundant
+
 (defun record-any-determiner (edge)
   ;; Wanted to have this done by the form rules in syntax/articles,
   ;; but referent expression interpreter there needs adjustment
@@ -292,20 +292,16 @@ to make any semantic or form edges that the grammar dictates.
       (return-from record-any-determiner nil))
     (when (determiner? word)
       (let ((i (edge-referent edge)))
-        #+ignore
         (unless (individual-p i)
-          ;;/// complain?
-          (return-from record-any-determiner nil)) 
-        ;; we were adding determiners to the base meaning of
-        ;; amino acids, among others, generating individuals
-        ;; with hundreds of determiners
-        (setq i (individual-for-ref i))
-        (setq i
-              (if (definite-determiner? word)
+          (setq i (individual-for-ref i)))
+        (unless (value-of 'has-determiner i)
+          ;; don't duplicate it
+          (setq i
+                (if (definite-determiner? word)
                   (bind-dli-variable 'has-determiner category::definite 
                                      i category::det)
                   (bind-dli-variable 'has-determiner category::indefinite
-                                     i category::det)))
+                                     i category::det))))
         ;;/// This also gets the "the" in a company name,  
         ;; but that's probably not relevant.
         (set-edge-referent edge i)
