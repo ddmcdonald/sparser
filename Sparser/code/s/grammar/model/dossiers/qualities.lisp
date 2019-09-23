@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   January 2017
+;;;   Version:   September 2019
 
 ;; Moved out of the definition files 1/11/17
 
@@ -12,10 +12,24 @@
 ;;--- color
 (define-color "black") ;; all :+ by default
 (define-color "white")
+
+(define-color "blue")
+(define-color "brown")
+(define-color "green")
+(define-color "orange")
+(define-color "pink")
+(define-color "purple")
 (define-color "red")
 (define-color "yellow")
-(define-color "blue")
-(define-color "green")
+(define-color "violet")
+#|The current 24-count Crayola box contains
+ red, yellow, blue, brown, orange, green, 
+violet, black, carnation pink, yellow orange, 
+blue green, red violet, red orange, yellow green, 
+blue violet, white, violet red, dandelion, c
+erulean, apricot, scarlet, green yellow, 
+indigo and gray.Mar 28, 2017
+|#
 
 ;;--- size
 (define-size "big" :dir :+)
