@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,1994,1995,2019  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "random and hacks"
 ;;;   Module:  "model;sl:whos news:"
-;;;  version:  June 1995
+;;;  version:  September 2019
 
 ;; initiated 6/18/93 v2.3
 ;; (1/7/94) patched Interpret-name-as-person.  5/12 pulled "--"
@@ -12,24 +12,12 @@
 
 (in-package :sparser)
 
-;;;---------------------------------------------
-;;; random rules that should be moved elsewhere
-;;;---------------------------------------------
-
-(def-cfr be ("wasn't")
-  )
-(assign-bracket "wasn" ].verb )
-(assign-bracket "wasn" .[verb )
-
-
-
 ;;;---------------------------------------------------------
 ;;;---------------------------------------------------------
 ;;; hacks to patch around things that need to be carefully
 ;;;        worked out to get general treatments
 ;;;---------------------------------------------------------
 ;;;---------------------------------------------------------
-
 
 ;;;-----------------------------------------------
 ;;; commas - appositives, participle markers, etc.
@@ -39,9 +27,6 @@
 (def-cfr confirm-as-job+ed ("," confirm-as-job+ed)
   :form vp
   :referent (:daughter right-edge))
-
-
-(def-cfr WH ("," WH))
 
 
 ;;;----------------
@@ -72,19 +57,6 @@
 (def-csr name person
   :right-context job-event/agent
   :referent (:function interpret-name-as-person left-edge))
-
-
-
-(def-csr name person
-  :right-context  WH
-  :referent (:function interpret-name-as-person left-edge))
-
-
-;; was in syntax;subject relatives, but it referenced "person"
-;; before it had been fully defined
-(def-csr WH person
-  :left-context person
-  :referent (:daughter left-edge))
 
 
 
