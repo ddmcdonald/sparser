@@ -357,6 +357,8 @@
 ;;;-------------
 
 (defun pnf-treetop-at (position)
+  "Called by Examine-capitalized-sequence, position by position,
+   to determine what treetop edge to pass through the loop."
   (let ((top-node-field (ev-top-node (pos-starts-here position))))
     (let ((tt (cond
                ((eq top-node-field :multiple-initial-edges)
