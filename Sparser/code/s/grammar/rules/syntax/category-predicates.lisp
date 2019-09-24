@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "category-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  February 2019
+;;;  Version:  September 2019
 
 ;; Predicates on syntactic form categories,
 ;; mostly for the use of the chunker.
@@ -98,6 +98,7 @@
     CATEGORY::PROPER-NAME
     CATEGORY::N-BAR
     CATEGORY::PROPER-NOUN
+    category::np-head
     CATEGORY::POST-ORDINAL
     CATEGORY::PARENTHESES
     CATEGORY::TIME-UNIT
@@ -108,6 +109,7 @@
     CATEGORY::COMMON-NOUN/PLURAL
     CATEGORY::NOUN/VERB-AMBIGUOUS
     CATEGORY::N-BAR
+    category::np-head
     CATEGORY::COMMON-NOUN
     CATEGORY::PROPER-NOUN
     CATEGORY::PROPER-NAME
