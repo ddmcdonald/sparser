@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 199-1995,2011-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 199-1995,2011-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "countries"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  October 2016
+;;;  version:  September 2019
 
 ;; 0.1 (10/12/92 v2.1) introducing new semantics
 ;;     (9/7 v2.3) revived the existing set of cases
@@ -19,7 +19,8 @@
 
 (in-package :sparser)
 
-(define-country "Afghanistan")
+(define-country "Afghanistan" :adjective "Afghan"
+    :cities '("Kabul"))
 (define-country "Albania")
 (define-country "Algeria")
 (define-country "Andorra")
@@ -221,7 +222,8 @@
 (define-country "United States"
   :aliases '("US" "U.S." "U.S.A." "America" )
   :adjective '("American")
-  :cities '("Washington, D.C." "New York"))
+  :cities '("Washington, D.C." "New York"
+            "an Francisco"))
 (define-country "Uruguay")
 (define-country "Uzbekistan")
 (define-country "Vanuatu")
