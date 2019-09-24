@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2019  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "position rules"
 ;;;   Module:  "model;sl:pct:"
-;;;  version:  0.2 June 1995
+;;;  version:  September 2019
 
 ;; initiated 6/15/93 v2.3
 ;; 0.1 (12/29) Added capability to look ahead for complements that supply
@@ -17,13 +17,15 @@
 ;;; defNP lookup -- special cased 
 ;;;-------------------------------
 
-(defun dereference-Post (obj)
-  (etypecase obj
-    ;; There's a hack on the plurals that the [:subtype collection] action
-    ;; is taken to an individual rather than to a specialized category
-    ;; as it should be. Hence these two cases. 
-    (individual (deref-plural-post obj))
-    (referential-category (deref-post obj))))
+(defun dereference-post (obj)
+  (declare (special *subcat-test*))
+  (or *subcat-test*
+      (etypecase obj
+        ;; There's a hack on the plurals that the [:subtype collection] action
+        ;; is taken to an individual rather than to a specialized category
+        ;; as it should be. Hence these two cases. 
+        (individual (deref-plural-post obj))
+        (referential-category (deref-post obj)))))
 
 (defun deref-post (cat)
   ;; We're called as a reference calculation, so we're down under Ref/function
@@ -64,10 +66,9 @@
              ;; take the most recent one
              (first collective-titles))))))
 
-             
     ;; this is the 12/93 quick & dirty code
     (individual
-     (let* ((types (indiv-type obj))
+     (let* ((types (itype-of obj))
             ;; if there's a collection of titles it won't be appreciated
             ;; as a title since there's no dual categorization yet, so we
             ;; have to look for the possibility of collections by hand
