@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013.2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:people:"
-;;;  version:  0.3 August 2013
+;;;  version:  September 2019
 
 ;; initiated 6/8/93 v2.3
 ;; 0.1 (1/7/94) redesigned not to pre-index
@@ -28,7 +28,7 @@
 
 (define-category  person
   :instantiates self
-  :specializes named-object
+  :specializes physical-agent ;;named-object
   :binds ((name . person-name)
           (age . age)
           (position . (:or title position-at-co))
@@ -66,10 +66,17 @@
    The define person types are in the people/kinds file.
 |#
 (define-category person-type
-  :instantiates self
-  :specializes named-type
+  :instantiates person
+  :mixins (named-type)
+  :specializes person
   :bindings (type-of 'person))
 
+(define-category family-member
+  :instantiates person
+  :specializes person-type
+  :documentation "Its worth separating out these cases
+    since they take possessives ('my mother is turning 92')
+    and have nice inter-relationships if we want to model them.")
 
 ;;;-----------------------------------------
 ;;; people defined implicitly by their role
