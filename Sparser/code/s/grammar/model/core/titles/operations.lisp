@@ -19,6 +19,9 @@
 ;;; forms
 ;;;-------
 
+(defun define-title (string) ; usually a polyword
+  (define-individual 'title :name string))
+
 (defun define-single-word-title (string)
   (define-individual 'title :name string))
 

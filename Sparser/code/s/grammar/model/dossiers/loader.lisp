@@ -170,7 +170,7 @@
   (gload "dossiers;report verbs"))
 
 (gate-grammar *full-titles*
- ;; (gload "dossiers;titles") ;; presently all commented out
+  (gload "dossiers;titles")
   (gload "dossiers;title-abbreviations"))
 (gate-grammar *title-heads*
   (gload "dossiers;title heads"))

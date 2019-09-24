@@ -20,8 +20,12 @@
 (define-single-word-title "commissioner")
 (define-single-word-title "counsel")
 (define-single-word-title "controller")
+(define-single-word-title "director")
+(define-single-word-title "forecaster")
+(define-single-word-title "journalist")
 (define-single-word-title "manager")
 (define-single-word-title "minister")
+(define-single-word-title "partner")
 (define-single-word-title "president")
 (define-single-word-title "professor")
 (define-single-word-title "publisher")
@@ -30,22 +34,20 @@
 (define-single-word-title "treasurer")
 (define-single-word-title "trustee")
 
+(define-single-word-title "official") ; "Beijing officials"
+(define-single-word-title "ambassador") 
+(define-single-word-title "figher") ; "riot fighters"
+(define-single-word-title "demonstrator")
+(define-single-word-title "protestor")
+(define-single-word-title "activist")
+(define-single-word-title "envoy") ; i.e. ambasador
+(define-single-word-title "radical")
+(define-single-word-title "separatist")
+(define-single-word-title "chancellor")
+(define-single-word-title "leader")
+#|(define-single-word-title "")
+(define-single-word-title "")
+(define-single-word-title "")|#
 
-
-
-;;-------------- added from the workbench ------------------
-
-
-
-;; 12/10
-(define-title-base-word "officer")
-
-;; 12/10
 (define-title-base-word "executive")
-
-;; 12/11
-(define-single-word-title "director")
-
-;; 1/17/96
-(define-single-word-title "partner")
-
+(define-title-base-word "officer")

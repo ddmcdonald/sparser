@@ -13,6 +13,10 @@
 ;;; object
 ;;;--------
 
+;;################### obsolete ##################
+;; Use person-type instead  9/23/19 ddm
+;;###############################################
+
 (define-category  type-of-person
   :specializes person
   :instantiates self

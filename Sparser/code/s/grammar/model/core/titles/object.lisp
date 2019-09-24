@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2011-2013,2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2011-2013,2016,2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:titles:"
-;;;  version:  April 2016
+;;;  version:  September 2019
 
 ;; initiated 6/10/93 v2.3.  Moved out the print macro 1/6/94 to help the
 ;; compiler.  1/18 added title-heads and title-modifiers
@@ -22,16 +22,28 @@
 
 (in-package :sparser)
 
-;;;---------------------------
-;;; two word-level categories
-;;;---------------------------
+#| Words we think of a titles, particularly those in the
+title-heads dossier, have a double life as refering to 
+people who have that title. The plurals always are best thought
+of a role-based-person's, as are nps with these words as their
+head ('the journalists'). A bare, singlular title is most like
+best considered as a title rather than a kind of person. |#
+
+;;;-----------------------
+;;; word-level categories
+;;;-----------------------
 
 (define-category  title
-  :specializes modifier
+  :specializes role-based-person ;; modifier
   :instantiates self
   :binds ((name :primitive word))
   :index (:permanent :key name)
-  :realization (:common-noun name))
+  :realization (:common-noun name)
+  :documentation "Simple words ('actuary', 'advisor' ...)
+    in the title-heads dossier. Also the polywords in
+    the dossier titles. The polywords are an intrinsically
+    limited approach, but they get around limitations
+    in getting the frequent compound forms by rule")
 
 ;; This is a general issue for which I don't have a comfortable
 ;; sense of how to conceptualize it. There are references to the
@@ -45,20 +57,23 @@
   :realization (:common-noun "title"))
 
 
-
 (define-category  title-modifier
   :instantiates self
   :specializes modifier
   :binds ((name :primitive word))
   :index (:permanent :key name)
-  :realization (:adjective name))
+  :realization (:adjective name)
+  :documentation "'adjunct', 'assistant' -- dossier is
+    title-modifiers. Take their specific meaning from
+    the titles at their heads")
 
 (define-category title-status
   :instantiates self
   :specializes modifier ;; inadequate for modeling
   :binds ((name :primitive word))
   :index (:permanent :key name)
-  :realization (:adjective name))
+  :realization (:adjective name)
+  :documentation "'former', 'ex' in title-qualifiers")
 #|
  This handled "former", which predominately appears in this
 function. The other reading I can think of it "the former .. the later".

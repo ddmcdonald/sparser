@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2011-2013,2919 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:titles:"
-;;;  version:  2.1 August 2013
+;;;  version:  September 2019
 
 ;; (4/19/92 v2.2) added title+miscl 
 ;; 1.0 (6/10/93 v2.3) completely revamped everything from scratch
@@ -26,7 +26,6 @@
 
 (in-package :sparser)
 
-
 (gate-grammar *titles-core*
   (gload "titles;object")
   (gload "titles;operations")
@@ -39,9 +38,6 @@
 (gate-grammar *title-qualifiers*
   (gload "titles;status")
   (gload "titles;status printer"))
-
-(gate-grammar *people*
-  (gload "titles;types of people"))
 |#
 
 #| Obsolete / subsumed into another file 
