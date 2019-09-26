@@ -279,9 +279,15 @@
              ;; triggering pattern
              (j (assimilate-object i np)))
 
-        (unless j
-          (when *debug-questions*
-            (break "assimilate-object of ~a and ~a failed" i np)))
+        (unless j ; maybe it's not passive?
+          ;; With "Is miR-145 associated with urinary bladder cancer?"
+          ;; the verb is intransitive
+          (let ((open-variable (open-core-variable i)))
+            (if open-variable
+              (setq j (bind-variable open-variable np i))
+              (when *debug-questions*
+                (break "assimilate-object and open-variable of ~a and ~a failed"
+                       i np)))))
 
         (let ((edge 
                (make-edge-over-long-span
