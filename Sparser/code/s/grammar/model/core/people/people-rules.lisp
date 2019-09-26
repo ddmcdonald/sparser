@@ -42,6 +42,7 @@
 
 
 (def-cfr person (person and/person)
+  :form np
   :referent (:composite plural-person
                         left-edge right-edge))
 
@@ -51,6 +52,7 @@
 ;;;------------------------------------
 
 (def-cfr by-person ("by" person)
+  :form pp
   :referent (:daughter right-edge))
 
 
@@ -59,5 +61,6 @@
 ;;; adjuncts
 
 (def-cfr person (person-possessive person)
+  :form np
   :referent (:daughter right-edge))
 
