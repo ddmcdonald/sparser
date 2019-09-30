@@ -954,6 +954,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
     (warn "can't apply add-tense/aspect to ~s and word ~s ~% in ~s%" aux w
           (current-string))
     nil)
+  (:method ((aux edge) (vg edge))
+    (add-tense/aspect (edge-referent aux) (edge-referent vg)))
   (:method ((aux category) (vg category))
     (add-tense/aspect (individual-for-ref aux) (individual-for-ref vg)))
   (:method ((aux individual) (vg category))
