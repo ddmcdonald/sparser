@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "tuck"
 ;;;   Module:  "objects/chart/edge vectors/"
-;;;  Version:  September 2018
+;;;  Version:  September 2019
 
 ;; Initiated 9/19/13 from code formerly in DA. 9/22/13 modifying it
 ;; to work in either direction. 9/29/14 fixed tuck-in-just-above to
@@ -92,7 +92,7 @@
        ;;(break "and what else?")
        ;;/// We now have two edges that are adjacent that weren't before
        ;; so we should see if there's a rule and recompute the referent
-       ))))
+       dominating-edge))))
 
 (defparameter *reinterpret-dominating-edges-warning* nil)
 
