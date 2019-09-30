@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "WH-word-semantics"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  June 2019
+;;;  Version:  September 2019
 
 ;; initiated 8/8/07. Added relatives 1/1/08
 ;; 0.1 Changed the names of the categories to just be the name of the pronoun.
@@ -41,6 +41,33 @@
     nil))
   
 
+(defgeneric which-wh (wh-term)
+  (:documentation "Provides a uniform way to determine which of the wh pronouns
+   a particular instance represents. Value is returned as a symbol in the
+   sparser package with the same spelling as the pronoun.")
+  (:method ((e edge))
+    (which-wh (edge-referent e)))
+  (:method ((i individual))
+    (which-wh (itype-of i)))
+  (:method ((c category))
+    (when (category-inherits-type? c category::wh-pronoun)
+      (cat-name c)))
+  (:method ((ignore t))
+    nil))
+
+(defun make-wh-identify-predicate (wh-pronoun-pname)
+  "Defines a short predicate based on the name of the pronoun ('how?') that
+   uses which-wh to determine whether its argument is an instance of that
+   wh-pronoun."
+  (let* ((pname (string-upcase wh-pronoun-pname))
+         (name (intern (string-append pname "?") (find-package :sparser)))
+         (target (intern pname (find-package :sparser)))
+         (form `(defun ,name (item)
+                  (eq ',target (which-wh item)))))
+    (eval form)
+    name))
+
+     
 ;;;---------------
 ;;; defining form
 ;;;---------------
@@ -62,6 +89,7 @@
                     :instantiates :self
                     :bindings (variable ,variable)))
            (category (eval expr))
+           (predicate (make-wh-identify-predicate string))
            (word-rule 
             (define-cfr category `(,word)
               :form (or form category::wh-pronoun)
@@ -70,6 +98,7 @@
       (add-rule word-rule category)
       (values category
               word-rule
+              predicate
               word))))
 
  
@@ -109,7 +138,11 @@
 ;; wherever, whenever
 
 
+
+
 (defun bind-wh-variable (wh statement)
+  "Look up the variable on this wh pronoun and
+   bind the the wh to the statement using that variable"
   (declare (special *debug-questions*))
   (if (itypep statement 'perdurant)
     (let ((wh-category (itype-of wh)))

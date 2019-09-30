@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "q-patterns"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  July 2019
+;;;  Version:  September 2019
 
 ;; Broken out from questions.lisp 8/7/18 to have all the formulation
 ;; heuristics in one place irrespective of what invokes them.
@@ -16,36 +16,58 @@
   "Wrap the referent in an instance of a wh-question as its statement.
    Make an edge over the whole span, using whatever pieces the callers
    have supplied."
-  (let* ((wh-base (cond ((and wh (itypep wh 'wh-pronoun))
-                         wh)))
-         (q (make-wh-object wh-base :statement statement)))
- 
-    (let ((edge (make-edge-over-long-span
-                 start-pos end-pos
-                 (edge-category head-edge) ;; category
-                 :form category::s ; question?
-                 :referent q
-                 :rule (or rule 'make-question-and-edge)
-                 :constituents (list head-edge)
-                 )))
-      edge)))
+  (labels ((decode-wh (wh)
+             (typecase wh
+               (null (break "no value passed in for wh"))
+               ((or individual category)
+                (if (itypep wh 'wh-pronoun)
+                  wh (break "WH is an individual but not a wh-pronoun: ~a" wh)))             
+               (edge (decode-wh (edge-referent wh)))
+               (otherwise (break "unexpected object passed in for wh: ~a" wh)))))
+    (let* ((wh-base (decode-wh wh))
+           (q (make-wh-object wh-base :statement statement)))
+      (let ((edge (make-edge-over-long-span
+                   start-pos end-pos
+                   (edge-category head-edge) ;; category
+                   :form category::s ; question?
+                   :referent q
+                   :rule (or rule 'make-question-and-edge)
+                   :constituents (list head-edge)
+                  )))
+        edge))))
 
-(defgeneric find-wh-element (loc)
-  (:documentation "Caller belives there is a wh-pronoun to be found at this
-    location, so we look for it. We're looking for a wh-category since that's
-    what's expected as the base of a wh-question variable.")
-  (:method ((e edge))
-    (let* ((left (edge-left-daughter e))
-           (left-ref (when (edge-p left) (edge-referent left))))
-      (cond ((itypep left-ref 'wh-pronoun)
-             left-ref)
-            (t nil)))))
-                  
+(defun make-edge-over-wh-question (rule-label i head start-pos end-pos)
+  (make-chart-edge
+   :category (edge-category head)
+   :form category::s
+   :referent i
+   :rule rule-label
+   :starting-position start-pos
+   :ending-position end-pos
+   :constituents (treetops-between start-pos end-pos)))
 
 ;;;--------------------------
 ;;; polar questions (yes/no)
 ;;;--------------------------
-         
+
+(defun make-polar-question (statement)  
+  "Standard referent constructor for polar questions -- wraps the statement"
+  (tr :wh-walk "make-polar-question")
+  (find-or-make-individual
+   'polar-question :statement statement))
+
+(defun make-polar-question-edge (label rule i start-pos end-pos)
+  (tr :wh-walk 'make-polar-question-edge)
+  (let* ((q (make-polar-question i))
+         (edge
+          (make-edge-over-long-span
+           start-pos end-pos label
+           :rule rule
+           :form category::s
+           :referent q
+           )))
+    edge))
+
 (defun make-polar-edge (statement-edge)
   "The pattern for doing a polar question is that the function
    for the specific case does its work and makes an edge over the
@@ -65,24 +87,8 @@
            (make-polar-question (edge-referent statement-edge)))))
     edge))
 
-(defun make-polar-question (statement)  
-  "Abstracted constructor so it will done the same way every time."
-  (tr :wh-walk "make-polar-question")
-  (find-or-make-individual
-   'polar-question :statement statement))
 
-#| version of that used in make-this-a-question-if-appropriate
-   before switched it to make-polar-edge
-             (let ((q (make-polar-question (edge-referent edge))))
-                (let ((spanning-edge
-                       (make-edge-over-long-span
-                        start-pos end-pos
-                        (edge-category edge)
-                        :rule 'make-this-a-question-if-appropriate
-                        :form category::s
-                        :referent q)))
-                  spanning-edge)) |#
-
+;;--- there questions
 
 (defun make-initial-there-is-edge (preposed-aux-edge)
   "Called by detect-early-information when there is a preposed auxillary
@@ -109,21 +115,16 @@
 
 
 
-;; Called from make-this-a-question-if-appropriate
+
 (defun sort-out-incompletely-parsed-there-is-q (start-pos end-pos edges)
+  "Called from make-this-a-question-if-appropriate when the first
+   edge is a there-exists"
   (tr :wh-walk 'sort-out-incompletely-parsed-there-is-q)
   (let ((labels (loop for e in edges collect (edge-cat-name e))))
-    (cond
-      ((equal labels '(there-exists-copular-pp))
-       ;; "Are there any genes stat3 is upstream of?", where make-copular-pp
-       ;; sorts everything out ///given it's expunged gate.
-       (when *debug-questions*       
-         (break "how do we make long edge?")))
-      (t
-       (if *debug-questions*
-         (error "incomplete there-is question. Labels = ~a" labels)
-         (warn "Incomplete there-is question: ~s"
-               (string-of-words-between start-pos end-pos)))))))
+    (if *debug-questions*
+      (error "incomplete there-is question. Labels = ~a" labels)
+      (warn "Incomplete there-is question: ~s"
+            (string-of-words-between start-pos end-pos)))))
 
 
 
@@ -147,8 +148,11 @@
       (when rule
         (let ((statement-edge (make-completed-binary-edge
                                s-edge pp-edge rule)))
-          ;;///  Now wrap in a question
-          statement-edge)))))
+          (make-edge-over-wh-question
+           'there-question/stranded-prep ; rule-label
+           (edge-referent statement-edge) ; i
+           statement-edge ; head (source of final category
+           start-pos end-pos))))))
          
 
 
@@ -266,38 +270,32 @@
     
     ;; This doesn't work in the question case
     ;; (is-passive? vp+ed-edge)
+     
+    (let* ((i (incorporate-displace-aux-into-predicate
+               be predicate :left be-edge :right vp+ed-edge))
 
-    (with-referent-edges (:l be-edge :r vp+ed-edge)
-      (let* ((i ;; add the tense information to the predicate
-              (if (eq (form-cat-name be-edge) 'preposed-auxiliary)
-                (if (plausibly-too-early-to-take-preposed-aux be-edge vp+ed-edge)
-                  predicate                                 
-                  (add-tense/aspect be predicate))
-                (add-tense/aspect be predicate)))
+           ;; We know this a passive clause because of the
+           ;; triggering pattern
+           (j (assimilate-object i np)))
 
-             ;; We know this a passive clause because of the
-             ;; triggering pattern
-             (j (assimilate-object i np)))
+      (unless j ; maybe it's not passive?
+        ;; With "Is miR-145 associated with urinary bladder cancer?"
+        ;; the verb is intransitive
+        (let ((open-variable (open-core-variable i)))
+          (if open-variable
+            (setq j (bind-variable open-variable np i))
+            (when *debug-questions*
+              (break "assimilate-object and open-variable of ~a and ~a failed"
+                     i np)))))
 
-        (unless j ; maybe it's not passive?
-          ;; With "Is miR-145 associated with urinary bladder cancer?"
-          ;; the verb is intransitive
-          (let ((open-variable (open-core-variable i)))
-            (if open-variable
-              (setq j (bind-variable open-variable np i))
-              (when *debug-questions*
-                (break "assimilate-object and open-variable of ~a and ~a failed"
-                       i np)))))
-
-        (let ((edge 
-               (make-edge-over-long-span
-                start-pos end-pos
-                (itype-of predicate) ;; category
-                :rule 'make-polar-participle-question
-                :form category::s
-                :referent (or j i))))
-          (make-polar-edge edge))))))
-      
+      (let ((edge 
+             (make-edge-over-long-span
+              start-pos end-pos
+              (itype-of predicate) ;; category
+              :rule 'make-polar-participle-question
+              :form category::s
+              :referent (or j i))))
+        (make-polar-edge edge)))))
 
 ;; Does phosphorylated MAP2K1 being high follow phosphorylated BRAF reaching a high value?"
 (defun polar-sentential-subject (aux-edge s-edge vp-edge start-pos end-pos)
@@ -332,15 +330,16 @@
 ;;; wh-initial? dispatches from make-this-a-question-if-appropriate 
 ;;;-----------------------------------------------------------------
 
-(defun make-edge-over-wh-question (rule-label i head start-pos end-pos)
-  (make-chart-edge
-   :category (edge-category head)
-   :form category::s
-   :referent i
-   :rule rule-label
-   :starting-position start-pos
-   :ending-position end-pos
-   :constituents (treetops-between start-pos end-pos)))
+(defgeneric find-wh-element (loc)
+  (:documentation "Caller belives there is a wh-pronoun to be found at this
+    location, so we look for it. We're looking for a wh-category since that's
+    what's expected as the base of a wh-question variable.")
+  (:method ((e edge))
+    (let* ((left (edge-left-daughter e))
+           (left-ref (when (edge-p left) (edge-referent left))))
+      (cond ((itypep left-ref 'wh-pronoun)
+             left-ref)
+            (t nil)))))                  
 
 (defun wh-initial-two-edges (wh-initial? edges start-pos end-pos)
   "One edge after the WH edge. Take it to be the statement."
@@ -363,22 +362,43 @@
 
 
 (defun wh-initial-three-edges (wh-edge edges start-pos end-pos)
-  "Dispatch over DA patterns where there are two edges after the WH edge."
-  ;; called from wh-three-edges DA rule and the 3 edge count in
-  ;; make-this-a-question-if-appropriate
+  "Dispatch over DA patterns where there are two edges after the WH edge.
+   called from wh-three-edges DA rule and the 3 edge count in
+   make-this-a-question-if-appropriate.
+   The first of the edges is the wh-edge."
   (tr :wh-walk "wh-initial-three-edges")
-  (tr :wh-3-edges edges)
+
   (when (not (every #'edge-p edges))
     (if *debug-questions*
       (lsp-break "something in 'edges' isn't an edge")
       (when *warn-when-can-not-formulate-question*
          (warn "something in 'edges' isn't an edge: ~a" edges)))
     (return-from wh-initial-three-edges nil))
-  (let ((e2-form (form-cat-name (second edges)))
-        (e3-form (form-cat-name (third edges)))
-        (other (value-of 'other (edge-referent wh-edge))))
-    ;;(lsp-break "check values")
+  (let* ((e2 (second edges))
+         (e3 (third edges))
+         (e2-form (form-cat-name e2))
+         (e3-form (form-cat-name e3))
+         (e2-ref (edge-referent e2))
+         (e3-ref (edge-referent e3))
+         (wh (edge-referent wh-edge))
+         (other (value-of 'other wh)))
     (cond
+      ((how? wh-edge)
+       (cond
+         ((eq 'adjective e2-form) ; "how important" "how often" ...
+          ;;/// move initial aux? But timing means it would force
+          ;; a reparse: "... is Scc1 phophorylation in vivo" is read
+          ;; as a copular predicate. Moving the aux would make it a clause
+          ;; "Scc1 phophorylation <is important> in vivo"
+          ;; This is a case where hacking the WH from the beginning
+          ;; is more obvious
+          (let ((q (wrap-in-whq-attribute wh e2-ref e3-ref)))
+            (make-edge-over-wh-question
+             'wh-initial-three-edges q e3 start-pos end-pos)))
+         (t (when *debug-questions*
+              (tr :wh-3-edges edges)
+              (break "New 3-edge case with 'how'")))))
+
       ((and (eq e2-form 'vp) ;; stranded preposition
             (preposition-category? (third edges))
             other)
@@ -551,28 +571,68 @@
            (break "new 4-edge wh case~%e2: ~a  e3: ~a  e4: ~a"
                   e2-form e3-form e4-form)) )))))
 
+
+;;-----------------------------------
 ;; (p "Can you find any apoptotic pathways that stat3 is involved in?")
+;;
 (defun polar-aux-s-stranded-prep (aux-edge s-edge prep-edge start-pos end-pos)
-  "The constituens we have to more are largely buried inside the s-edge.
-   At the beginnng of the edge we are likely to have fluffy working like
+  "The constituents we have to more are largely buried inside the s-edge.
+   At the beginnng of the edge we are likely to have fluffy wording like
    'find' or 'know' that is just getting in the way, and could complicate
    the effort to locate the constituent we have to compose with the stranded
-   preposition.
-"
-  ;; 1. Identify what the complement of the preposition is
-  ;;   and fold them into a new edge
-  ;; 2. Fold the preposed-aux into the s/head
-  ;; 3. Figure out where in the fringe of the s the pp goes and put it there
-  ;; 4. Make an edge to cover the whole span
-;#################################################################
+   preposition."
+  (tr :wh-walk 'polar-aux-s-stranded-prep)
+  (let* ((edge-taking-prep
+          (lowest-edge-taking-stranded-prep s-edge prep-edge))
+         (complement-edge
+          (identify-complement-of-stranded-prep s-edge edge-taking-prep)))
+    (cond
+      ((and complement-edge edge-taking-prep)
+       (let ((full-pp-edge (flesh-out-stranded-prep prep-edge complement-edge)))
+         (let ((e (compose-fleshed-out-pp-and-knit
+                   edge-taking-prep full-pp-edge)))
+           (when e
+             (make-polar-question-edge
+              (edge-category s-edge) ; label
+              'polar-aux-s-stranded-prep ; rule
+              (edge-referent e) ; i
+              start-pos end-pos)))))
+      (t
+       (when *debug-questions*
+         (push-debug `(,aux-edge ,s-edge ,prep-edge))
+         (break "need another approach"))))))
+
+(defun identify-complement-of-stranded-prep (s-edge edge-taking-prep)
+  "Find the participant in the clause that should 'move'. It has to be
+   somewhere to the left of the edge that gets the prep. If the predicate
+   that's the referent of the s is known to be lightweight ('do you know of..'
+   'are there any..') then we can lift out is 'object'. "
+  (let ((predicate (edge-referent s-edge))
+        (fluffy? (memq (edge-cat-name s-edge) ;/// probably wrong level
+                       '(bio-find   ))))
+    (cond
+      (fluffy?
+       ;; A nice generalization to introduce as part of reworking the bio verbs,
+       ;; with a more apt name of course
+       (let ((obj-var (object-variable predicate)))
+         (ecase (car fluffy?)
+           (bio-find
+            (let ((i (value-of obj-var predicate)))
+              (search-tree-for-referent s-edge i))))))
+      (t 
+       (when *debug-questions*
+         (break "Need another heuristic to find the complement"))))))
   
-
-
-  (when *debug-questions* ;; aux: 2 s: 27 p: 15
-    (push-debug `(,aux-edge ,s-edge ,prep-edge))
-    (break "got there")))
-
-
+      
+(defun lowest-edge-taking-stranded-prep (main-edge prep-edge)
+  "The edge we return is going to ultimately be composed with a pp.
+   That means we need to return a vg of some sort, and not return
+   any word-level edge like verb-present"
+  (let ((fringe-edges (right-fringe main-edge))) ;; largest to smallest
+    (loop for edge in fringe-edges
+       when (and (takes-preposition? edge prep-edge)
+                 (memq (edge-form edge) *verb-group-level-categories*))
+       return edge)))
 
 (defun flesh-out-stranded-prep (prep-edge displaced-pobj-edge)
   "Makes a pp when we have a stranded preposition but have determined what 
@@ -603,17 +663,38 @@
          :right-daughter displaced-pobj-edge
          :ignore-used-in t)))))
 
-(defun lowest-edge-taking-stranged-prep (main-edge prep-edge)
-  (let ((fringe-edges (right-fringe main-edge))) ;; largest to smallest
-    (loop for edge in (reverse fringe-edges)
-       when (takes-preposition? edge prep-edge)
-       return edge)))
 
 #|
-(p/s "What tissues can I ask about?") ;; da: wh-three-edges ?? /////
-"Are there any genes stat3 is upstream of?"
+(p/s "What tissues can I ask about?") ;; da: wh-three-edges+prep 
+|#
+(defun wh-modal-s-prep (wh-edge modal-edge s-edge prep-edge start-pos end-pos)
+  (tr :wh-walk 'wh-modal-s-prep)
+  (push-debug `(,wh-edge ,modal-edge ,s-edge ,prep-edge))
+  ;; pull out the edge we're going to move
+  (unless (one-word-long? wh-edge)
+    (let* ((displaced-edge (edge-right-daughter wh-edge)) ; tissues
+           (pp-edge (flesh-out-stranded-prep prep-edge displaced-edge))
+           (s+pp-rule (multiply-edges s-edge pp-edge)))
+      (unless s+pp-rule 
+        (warn "no rule to compose s+pp: ~a + ~a" s-edge pp-edge)
+        nil)
+      (when s+pp-rule
+        (let* ((s+pp-edge (make-completed-binary-edge s-edge pp-edge s+pp-rule))
+               (i (incorporate-displace-aux-into-predicate
+                   modal-edge s+pp-edge :left modal-edge :right s+pp-edge)))               
+          (make-question-and-edge
+           i ; statement
+           start-pos end-pos
+           :head s+pp-edge
+           :wh (edge-left-daughter wh-edge)
+           :rule 'wh-modal-s-prep))))))
 
-(p "What genes is stat3 upstream of?") ;; via s+prep
+
+
+  
+#| "Are there any genes stat3 is upstream of?" |#
+
+#| (p "What genes is stat3 upstream of?") ;; via s+prep
 |#
 (defun wh-stranded-prep (wh-edge main-edge prep-edge start-pos end-pos)
   "Intended for use with every case of short questions
@@ -654,6 +735,21 @@
           (t (when *debug-questions*
                (error "Fell through cond in wh-stranded-prep"))))))))
 
+(defun compose-fleshed-out-pp-and-knit (edge-taking-prep pp-edge)
+  ;; subroutine of stranded prep variants
+  (let ((parent-of-head (edge-used-in edge-taking-prep))
+        (rule (multiply-edges edge-taking-prep pp-edge)))
+    (unless rule
+      (when *debug-questions*
+        (break "No rule for ~a + ~a" edge-taking-prep pp-edge))
+      (return-from compose-fleshed-out-pp-and-knit nil))
+    (let ((extended-edge
+            (make-completed-binary-edge edge-taking-prep pp-edge rule)))
+      (tuck-new-edge-under-already-knit
+       edge-taking-prep ; subsumed-edge
+       extended-edge    ; new-edge
+       parent-of-head   ; dominating-edge
+       :right))))
 
 (defun wh-subcat-stranded-prep (main-edge head-edge pp-edge start-pos end-pos)
   (tr :wh-walk 'wh-subcat-stranded-prep)

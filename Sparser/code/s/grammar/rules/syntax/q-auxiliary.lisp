@@ -1,15 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
-;;; copyright (c) 2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2018-2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "q-auxiliary"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  December 2018
+;;;  Version:  September 2019
 
 ;; Broken out of questions.lisp for ease of development
 
 (in-package :sparser)
 
-;; move into wh-word-semantics when done
 ;;;--------------------
 ;;; WH nominal clauses
 ;;;--------------------
@@ -142,10 +141,40 @@
       j)))
 
 
+;;;---------------------------------------
+;;; helper for incorporating displace aux
+;;;---------------------------------------
+
+(defun incorporate-displace-aux-into-predicate (aux-edge predicate-edge
+                                                &key ((:left left-edge))
+                                                     ((:right right-edge)))
+  "Adds the tense information to the predicate.
+   The routine that does the work -- add-tense/aspect-info-to-head -- assumes
+   it's in a regular rule evaluation context so we need to emulate it.
+   Returns the predicate with its additional binding."
+  (with-referent-edges  (:l left-edge :r right-edge)
+    (let ((aux (etypecase aux-edge (edge (edge-referent aux-edge)) (individual aux-edge)))
+          (predicate
+           (etypecase predicate-edge
+             (edge (edge-referent predicate-edge)) (individual predicate-edge))))
+      (if (eq (form-cat-name aux-edge) 'preposed-auxiliary)
+        (if (plausibly-too-early-to-take-preposed-aux aux-edge predicate-edge)
+          predicate                                 
+          (add-tense/aspect aux predicate))
+        (add-tense/aspect aux predicate)))))
+
 
 ;;;-------------------------------
 ;;; auxiliaries for WH delimiting
 ;;;-------------------------------
+
+;; (p/s "How important are Scc1 and SA2 phosphorylation in vivo?")
+;;
+(defun wrap-in-whq-attribute (wh attribute statement)
+  "Make an instance of wh-question/attribute, including the statement."
+  (make-wh-object wh :attribute attribute :statement statement))
+
+
 
 (defun handle-wh-of (wh-edge wh-type of-edge other-edges)
   (declare (special *sentence-in-core*))
@@ -272,7 +301,6 @@
        ;; Statement isn't a predicate so we have to make it here
        (make-copular-predication wh-edge aux-edge stmt-edge))
 
-
       (s ;; "How does KRAS activate MAPK3?"
        (let ((wh-pronoun? (itypep wh 'wh-pronoun))
              (wh-category (wh-edge? wh-edge)))
@@ -303,8 +331,8 @@
 
 (defun bind-wh-to-stmt-variable (wh wh-edge stmt)
   "Lookup the variable associated with this WH pronoun
- and bind the referent of the wh-edge to that variable
- on the statement, which is expected to be a perdurant."
+   and bind the referent of the wh-edge to that variable
+   on the statement, which is expected to be a perdurant."
   (unless wh (error "WH argument is nil"))
   (unless (itypep stmt 'perdurant)
     (error "stmt is not a perdurant: ~a is a ~a"

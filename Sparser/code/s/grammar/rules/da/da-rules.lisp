@@ -1836,17 +1836,17 @@ assumed. |#
           (end-pos (fix-da-ending-pos *da-ending-position*)))
       (wh-initial-three-edges np edges *da-starting-position* end-pos))))
 
-#|
+
 (define-debris-analysis-rule np-modal-s-prep
     :pattern (np modal s preposition)
     ;; "What tissues can I ask about?"
     :action  (:function wh-three-edges+prep first second third fourth))
+
 (defun wh-three-edges+prep (np modal s prep)
   (when (wh-edge? np)
     (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
-      (XXXXX np modal s prep *da-starting-position* end-pos))))
-(defun XXXXX (wh-edge modal-edge s-edge prep-edge start-pos end-pos))
-|#
+      (wh-modal-s-prep np modal s prep *da-starting-position* end-pos))))
+
 
 (define-debris-analysis-rule wh-be-thing
   :pattern (question-marker vg np) ;; "what color is the block"

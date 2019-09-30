@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "questions"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  May 2019
+;;;  Version:  September 2019
 
 ;; Broken out from /grammar/model/sl/checkpoint/rules 6/17/09
 ;; Elaborated through 7/23/09. 9/28/11 removed spatial-orientation
@@ -113,7 +113,11 @@
   (declare (optimize debug))
   (push-debug `(,variable ,statement ,attribute ,other))
   (let* ((attribute-var
-          (when attribute (variable-for-attribute attribute)))
+          (when (and attribute (itypep attribute 'atribute-value))
+            ;; "important" is an attribute value, but we've not
+            ;; gotten around to defining its attribute. "How" context
+            ;; forces the functional interpretation if not the variable
+            (variable-for-attribute attribute)))
          (var-to-use (or variable
                          attribute-var
                          (value-of 'variable wh))))
