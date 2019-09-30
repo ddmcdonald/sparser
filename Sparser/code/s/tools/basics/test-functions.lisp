@@ -1355,12 +1355,13 @@ divides it into good and bad. |#
                       ~%  ~a bad~%"
               (length *bio-utt-test-good*) (length *bio-utt-test-bad*)))))
 
-(defun test-bio-utterance (s count &optional (stream *standard-output*) (quiet t)(with-breaks *break-on-parse-error*))
+(defun test-bio-utterance (s count &optional (stream *standard-output*) (quiet t)
+                                     (with-breaks *break-on-parse-error*))
   "Designed for getting useful information for every sentence.
- Includes the semantic interpretation if there was just one
- edge over it."
+   Includes the semantic interpretation if there was just one
+   edge over it."
   (declare (special *save-clause-semantics* *clause-semantics-list*))
-  (format stream "~%~%___________________~%~a: ~s~%" count s)
+  (format stream "~%~%___________________~%~a: (p ~s)~%" count s)
   (if quiet
       (if with-breaks
           (qpp s)
