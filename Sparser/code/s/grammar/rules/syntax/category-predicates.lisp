@@ -1,4 +1,4 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
+7;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
 ;;; copyright (c) 2016-2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "category-predicates"
@@ -194,6 +194,13 @@
     ,category::transitive-clause-without-object
     )
   "Categories that could be on the head-line of a predicate")
+
+(defparameter *verb-group-level-categories*
+  `(,category::vg 
+    ,category::vg+ed
+    ,category::vg+ing
+    ,category::vg+passive))
+
 
 
 ;;; control parameters for collecting data
