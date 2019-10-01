@@ -1636,14 +1636,16 @@ there was an edge for the qualifier (e.g., there is no edge for the
      (add-purpose-to-event vp subj))
      
     ((itypep vp 'control-verb) ;; e.g. "want"
-     (when *subcat-test* (return-from assimilate-subject t))
-     (assimilate-subject-for-control-verb subj vp vp-edge))
-    
+     (if *subcat-test* #+ignore(return-from assimilate-subject t)
+       (value-of 'theme vp) ;; don't allow intransitive reading
+       (assimilate-subject-for-control-verb subj vp vp-edge)))
+
     ((or (and (eq (cat-name (itype-of  vp)) 'be)
               ;; was itypep, but REMAIN (and other pseudo copulars) are subcategories of BE
               ;; block "what are" as a transitive-clause-without-object
               (null (value-of 'predicate vp)))
-         (itypep vp 'do)) ;; block "what does" as a transitive-clause-without-object         
+         #+ignore(itypep vp 'do)) ;; block "what does" as a transitive-clause-without-object         
+     ;; Blocking it blocks "Tell me what you want to do now"
      (return-from assimilate-subject nil))
     
     ((itypep vp 'copular-predication)
@@ -1674,16 +1676,16 @@ there was an edge for the qualifier (e.g., there is no edge for the
           (loop for e in (edges-under vp-edge)
                 when (eq (edge-referent e) theme-comp)
                 do (return e))))
-    (declare (special theme-comp object theme-comp-edge))
     (when theme-comp ;; cf. "what do you want"
       (let ((revised-theme-comp
              (if object
                  ;; 'I want you to wash the dishes' vs 'I want to wash the dishes'
                  (assimilate-subject object theme-comp)
                  (assimilate-subject subj theme-comp))))
-        (set-edge-referent theme-comp-edge revised-theme-comp)
-        (setq vp (rebind-variable 'theme revised-theme-comp vp))
-        (set-edge-referent vp-edge vp)))
+        (when revised-theme-comp
+          (set-edge-referent theme-comp-edge revised-theme-comp)
+          (setq vp (rebind-variable 'theme revised-theme-comp vp))
+          (set-edge-referent vp-edge vp))))
     (assimilate-subcat vp :subject subj)))
 
 
