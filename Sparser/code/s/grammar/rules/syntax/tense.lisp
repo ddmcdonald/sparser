@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1998,2011-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1998,2011-2019 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "tense"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2017
+;;;  Version:  September 2019
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3
 ;; 0.1 (5/15) giving it some real semantic content
@@ -57,9 +57,8 @@
 (define-category  do
   :specializes process
   :instantiates self
-  :binds ((agent pronoun)
-          (predicate pronoun))
-  :mixins (takes-neg)
+  :mixins (with-agent takes-neg)
+  :binds ((predicate top)) ; see note in be.lisp
   :realization (:etf (svo)
                 :s agent
                 :o predicate))
