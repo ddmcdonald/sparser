@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "predicate"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  June 2019
+;;;  version:  September 2019
 
 ;; To move all the standard thematic roles up to a place that
 ;; loads early so they're available for restriction as lower levels
@@ -11,15 +11,10 @@
 
 (in-package :sparser)
 
-(define-mixin-category with-an-agent ;; deprecated in favor of 'agent'
-  ;;:specializes relation
-  :binds ((agent))) ;; (:or pronoun physical-agent)
-;; Dolce has 'agency' as the union of physical and social agent
-
-;;/// replaces with-an-agent
 (define-mixin-category with-agent
   ;;:specializes relation
-  :binds ((agent (:or pronoun physical-agent)))
+  :binds ((agent (:or physical-agent social-agent)))
+  ;; Dolce has 'agency' as the union of physical and social agent
   :documentation "Participant that intentionally initiates
     the action.")
 
