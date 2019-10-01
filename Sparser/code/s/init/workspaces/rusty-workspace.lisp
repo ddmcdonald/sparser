@@ -3970,8 +3970,7 @@
     zero-individuals-bindings zero-lookup-buffer
     zero-out-individual zero-the-digits-array
     [-on-position-because-of-word? ]-on-position-because-of-word?))
-
-#+sbcl
+#+ignore ;;#+sbcl
 (defparameter *clic-fns*
   'clic::(* + - / /= 1+ 1- < <= = /> >= abandon-goal abort abs acons acos acosh
    action-clic-disable-pragmatic-interps action-clic-enable-pragmatic-interps
