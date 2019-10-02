@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1995,2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2017-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ditransitive"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  December 2017
+;;;  version:  October 2019
 
 ;; initiated 4/27/95
 ;; 0.1 (5/29/95) renamed "np/subject" to be "np/agent" for style consistency
@@ -49,6 +49,7 @@
                   :binds (patient left-edge)))
 
       (:passive+second-object (vp/+ed (vg/+ed np/goal)
+                                  :form vp
                                   :head left-edge
                                   :binds (goal right-edge)))))
 

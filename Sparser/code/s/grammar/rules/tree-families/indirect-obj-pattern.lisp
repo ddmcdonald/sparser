@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "indirect obj pattern"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  May 1995
+;;;  version:  October 2019
 
 ;; initiated 5/28/95
 
@@ -53,12 +53,13 @@
   :incorporates ditrans-pp/io
   :cases
      ((:passive (s (np/theme vp/+ed)
-                   ;; "[the book] [was given to Patience]"
+                ;; "[the book] [was given to Patience]"
                   :head right-edge
                   :binds (theme left-edge)))
 
       (:passive+second-object (vp/+ed (vg/+ed pp/patient)
-                                      ;; "was given to Patience"
+                 ;; "was given to Patience"
+                                  :form vp
                                   :head left-edge
                                   :binds (patient right-edge)))))
 
@@ -73,7 +74,8 @@
                   :binds (patient left-edge)))
 
       (:passive+first-object (vp/+ed (vg/+ed np/theme)
-                                      ;; "was given the book"
+                                     ;; "was given the book"
+                                  :form vp
                                   :head left-edge
                                   :binds (theme right-edge)))))
 

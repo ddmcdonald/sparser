@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1995-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2019 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "verbs taking pps"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  April 2009
+;;;  version:  October 2019
 
 ;; initiated 5/2/95.  Complex slashed symbol done 6/22. 3/17/05 added variant
 ;; with just a pp as the second post-verb argument. 4/20/09 moved in transitive/pp
@@ -40,8 +40,10 @@
                  :head right-edge
                  :binds (agent left-edge)))
       (:pp (pp/prep/pp/np (prep pp/np) ;; "for an open circuit"
+                            :form pp
 			    :head right-edge))
       (:verb+pp-object (vp (vg prep/pp/np)
+                             :form vp
 			     :head left-edge
 			     :binds (theme right-edge)))))
 
@@ -86,6 +88,7 @@
                 :binds (agent left-edge)))
 
      (:verb+first-object (v-bar (vg np/patient)
+                           :form vp
                            :head left-edge
                            :binds (patient right-edge)))
 
@@ -94,17 +97,21 @@
                              :binds (goal right-edge)))
 
      (:pp (pp/prep/pp/goal (prep pp/goal)
+             :form pp
              :head right-edge ))
 
      (:v-bar+pp-object (vp (v-bar prep/pp/goal)
+                            :form vp
                             :head left-edge
                             :binds (goal right-edge)))
 
      (:verb+pp-object (vp/+ed (vg/+ed prep/pp/goal)
+                            :form vp
                             :head left-edge
                             :binds (goal right-edge)))
 
      (:verb+second-object (vp/+ed (vg/+ed np/goal)
+                            :form vp
                             :head left-edge
                             :binds (goal right-edge)))
      
@@ -135,6 +142,7 @@
                 :binds (agent left-edge)))
 
      (:pp (pp/prep/pp/goal (prep pp/goal)
+             :form pp
              :head right-edge ))
 
      (:v-bar+pp-object (vp (v-bar prep/pp/goal)
@@ -146,10 +154,12 @@
                             :binds (goal right-edge)))
 
      (:verb+first-object (v-bar (vg np/patient)
+                           :form vp
                            :head left-edge
                            :binds (patient right-edge)))
 
      (:verb+omitting-patent (v-bar (vg prep/pp/goal)
+                              :form vp
                               :head left-edge
                               :binds (goal right-edge)))
      

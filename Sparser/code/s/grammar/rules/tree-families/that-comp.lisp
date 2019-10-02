@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2014,2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "that comp"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  November 2014
+;;;  version:  October 2019
 
 ;; initiated 10/22/93 v2.3.  Added def-rule data 3/8/95.
 ;; Converted uninteresting "+" to a "-" 5/2.  Added instantiation of
@@ -37,6 +37,7 @@
                     :binds (theme right-edge)))
 
       (:optional-that (s/that-comp ("that" s/that-comp)
+                        :form thatcomp
                         :daughter right-edge))))
 
 
@@ -49,11 +50,13 @@
   :binding-parameters ( agent result )
   :labels ( subj-verb np vg )
   :cases 
-    ((:reversed-tag (subj-verb (vg np) ;; "said the minister"
+   ((:reversed-tag (subj-verb (vg np) ;; "said the minister"
+                      :form subj+verb
                       :instantiate-individual result
                       :head left-edge
                       :binds (agent right-edge)))
      (:tag (subj-verb (np vg) ;; "the minister said"
+              :form subj+verb
               :instantiate-individual result
               :head right-edge
               :binds (agent left-edge)))))

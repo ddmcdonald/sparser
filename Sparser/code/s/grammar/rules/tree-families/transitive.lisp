@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1998,2011-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2011-2019 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "transitive"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  April 2017
+;;;  version:  October 2019
 
 ;; initiated 8/5/92 v2.3, added passives 8/24
 ;; 0.1 (10/13) reorganized (in)transitive to fit the paper
@@ -43,13 +43,8 @@
     :binding-parameters ( agent patient )
     :labels ( s vp vg np/subject np/object )
     :cases
-    (#+ignore
-     (:subject (s  (np/subject vp)
+    ((:subject (s  (np/subject vp)
                    :head right-edge
-                   :binds (agent left-edge)))
-     (:subject (s  (np/subject vp)
-                   :head right-edge
-                   ;; :binds (agent left-edge)
                    :function (assimilate-subject left-edge right-edge)))
 
      (:direct-object (vp  (vg np/object)
@@ -114,6 +109,7 @@
                   :binds (patient left-edge)
                   :head right-edge))
       (:by-phrase (by-pp ("by" np/agent)
+                    :form pp
                     :head right-edge
                     :daughter right-edge))
       (:passive-with-by (s (s by-pp)

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-2005,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2011-2013,2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "np adjuncts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  0.1 March 2013
+;;;  version:  October 2019
 
 ;; initiated 6/14/95.  8/11 added pp-after-np.  11/15 added premodifier-adds-
 ;; property and filled in a missing description.  12/5 added determiner-adds-property
@@ -150,6 +150,7 @@
   :binding-parameters ( agent )
   :labels ( np by-pp np/subject )
   :cases ((:by-phrase (by-pp ("by" np/subject)
+                        :form pp
                         :head right-edge
                         :daughter right-edge))
           (:pp-modifier (np (np by-pp)
@@ -188,13 +189,16 @@
   :binding-parameters ( type  N  unit )
   :labels ( unit-head  unit-np  N-np  top-np )
   :cases ((:np (top-np (N-np unit-np)
+                         :form np
                          :head left-edge  ;; ??
                          :instantiate-individual type
                          :binds (N left-edge
                                  unit right-edge)))
           (:pseudo-determiner (unit-np ("per" unit-head)
+                                :form det
                                 :head right-edge
                                 :binds (unit right-edge)))
           (:pseudo-determiner (unit-np ("a" unit-head)  ;; ???
+                                :form det
                                 :head right-edge
                                 :daughter right-edge))))

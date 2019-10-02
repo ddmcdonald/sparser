@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2005,2011-2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2005,2011-2012,2019 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "adverbs"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  November 2012
+;;;  version:  October 2019
 
 ;; initiated 3/9/05
 ;; 0.1 (5/20/09) Added verb+ing and verb cases to pre-verb-adverb
@@ -92,11 +92,10 @@
 
 
 (define-exploded-tree-family pre-adj-adverb
-  :description "For adverbs preceding adjectives, e.g. 'substantially flavorful coffee' "
-  :binding-parameters ( )
-  :labels ( adverb )
-  :cases
-    ((:modifier (adjective (adverb adjective)
+  :description "For adverbs preceding adjectives, e.g. 'substantially
+                flavorful coffee' "
+  :binding-parameters ( ) :labels ( adverb )
+  :cases ((:modifier (adjective (adverb adjective)
                   :head right-edge
                   :method (modified left-edge right-edge)))
     

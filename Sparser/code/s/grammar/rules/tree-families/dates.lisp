@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1999 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1999,2019 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
-;;;     File:  "loader"
+;;;     File:  "dates"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  March 2007
+;;;  version:  October 2019
 
 ;; initiated 9/27/99. 3/22/07 Found a typo in the mapping - the year was getting
 ;; the label for days.
@@ -37,6 +36,7 @@
 
       ;; ", 1999"
       (:consume-comma (comma-/n3 ("," n3)
+                         :form np
                          :head right-edge))
 
       ;; "(March 10), 1999"
@@ -46,6 +46,7 @@
 
       ;; ", (March10, 1999)"
       (:consume-comma (comma-/np ("," np)
+                         :form np
                          :head right-edge))
 
       
@@ -56,6 +57,7 @@
 
       ;; "August 1990"
       (:np (np (n1 n3)
+               :form np
                :head left-edge
                :instantiate-individual type
                :binds (term1 left-edge

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2003,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2003,2011-2014,2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "of"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  March 2014
+;;;  version:  October 2019
 
 ;; formed 10/26/94 from [of genitive] and [group of type]. Added def-rule data 3/8/95
 ;; 7/13/98 added item-of-value. 7/8/00 added member-of.
@@ -49,6 +49,7 @@
                                 of-item right-edge)))
 
      (of-complement (of-/complement ("of"  complement)
+                         :form pp
                          :daughter right-edge
                          :head right-edge))))
 
@@ -66,6 +67,7 @@
                         :binds (of-item left-edge)))
 
      (of-complement (of-/complement ("of"  complement)
+                         :form pp
                          :daughter right-edge
                          :head right-edge))))
 
@@ -113,13 +115,14 @@
       (possessive-formation (possessive/-s  (possessive  apostrophe-s)
                               :head left-edge))
 
-      (possessive+np  (np  (possessive/-s  base-np)
+      (possessive+np  (np  (possessive/-s  base-np)                        
                         :head right-edge
                         :instantiate-individual result-type
                         :binds (larger left-edge
                                 smaller right-edge)))
 
       (of-complement  (of-/complement  ("of"  complement)
+                         :form pp
                          :head right-edge))))
 
 
@@ -146,6 +149,7 @@
                         :binds (bound left-edge)))
 
       (of-complement  (of-/complement  ("of"  complement)
+                         :form pp
                          :head right-edge))))
 
 
@@ -174,6 +178,7 @@
                      :binds (type right-edge)))
     
       (:of-phrase (of-/complement ("of" complement)
+                    :form pp
                     :head right-edge
                     ))
 
@@ -197,7 +202,8 @@
                          :head left-edge
                          :binds (item left-edge
                                  value right-edge)))
-          (:of-phrase (of-/complement ("of" complement)     
+          (:of-phrase (of-/complement ("of" complement)
+                        :form pp
                         :head right-edge))))
 
 ;; includes a result-type -- don't want to mess with anything that's
@@ -212,6 +218,7 @@
                          :binds (item left-edge
                                  value right-edge)))
           (:of-phrase (of-/complement ("of" complement)
+                        :form pp
                         :head right-edge))))
 
 
@@ -229,6 +236,7 @@
                          :head right-edge
                          :function (give-kind-its-name left-edge right-edge)))
           (:of-phrase (of-/complement ("of" complement)
+                        :form pp
                         :head right-edge))))
 
 
@@ -247,6 +255,7 @@
                           :head left-edge
                           :binds (identifier right-edge)))
           (:of-phrase (of-/complement ("of" complement)
+                         :form pp
                          :head right-edge))))
 
 
@@ -269,5 +278,6 @@
                          :binds (dependent left-edge
                                  substrate right-edge)))
           (:pp (of-/complement ("of" complement)
+                    :form pp
                     :daughter right-edge
                     :head right-edge))))

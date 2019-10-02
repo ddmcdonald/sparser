@@ -162,13 +162,11 @@
                                   a substitution term." term))))
                   rhs))
     (if form-exp
-      (then
-        (setq form-category (category-named form-exp))
-        (unless form-category
-          (error "There is no (form) category named ~a" form-exp))
+      (then ;; given explicitly
+        (setq form-category (category-named form-exp :error-if-nil))
         (unless (form-category? form-category)
           (error "There is no form-category named ~a" form-exp)))
-      (else 
+      (else ;; figure it out from nature of the rule
         (let ((name-of-form-category
                (or (when (form-category? lhs) lhs)
                    (loop for term in rhs
@@ -176,11 +174,15 @@
                       when (form-category? term)
                       return term))))
           ;; Should we insist that the form be specified?
+          (unless name-of-form-category
+            (push-debug `(,rhs ,lhs))
+            (error "Could not identify a form category in the rhs of this case.~
+                  ~%etf: ~a~
+                  ~%case: ~a~
+                  ~%Try making it explicit" tree-family case-exp))
           (when name-of-form-category
-;;             (push-debug `(,rhs ,lhs))
-;;             (error "Could not identify a form category in the rhs of ~
-;;                     this case. Try making it explicit"))
-            (setq form-category (category-named name-of-form-category))))))
+            (setq form-category
+                  (category-named name-of-form-category :error))))))
     
     (multiple-value-bind (decoded-referent head etc)
                          (decode-referent-exp
