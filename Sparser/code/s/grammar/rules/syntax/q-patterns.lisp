@@ -36,7 +36,9 @@
                   )))
         edge))))
 
-(defun make-edge-over-wh-question (rule-label i head start-pos end-pos)
+(defun make-edge-over-question (rule-label i head start-pos end-pos)
+  "The caller has done all the work. The question referent is 'i'. The
+   category label on the new edge comes from the 'head' edge."
   (make-chart-edge
    :category (edge-category head)
    :form category::s
@@ -155,7 +157,7 @@
       (when rule
         (let ((statement-edge (make-completed-binary-edge
                                s-edge pp-edge rule)))
-          (make-edge-over-wh-question
+          (make-edge-over-question
            'there-question/stranded-prep ; rule-label
            (edge-referent statement-edge) ; i
            statement-edge ; head (source of final category
@@ -421,13 +423,19 @@
           ;; This is a case where hacking the WH from the beginning
           ;; is more obvious
           (let ((q (wrap-in-whq-attribute wh e2-ref e3-ref)))
-            (make-edge-over-wh-question
+            (make-edge-over-question
+             'wh-initial-three-edges q e3 start-pos end-pos)))
+         ((edge-over-aux? e2) ; e.g. "how does ..."
+          (let* ((i (incorporate-displace-aux-into-predicate
+                     e2 e3 :left e2 :right e3))
+                 (q (make-wh-object wh :statement i)))
+            (make-edge-over-question
              'wh-initial-three-edges q e3 start-pos end-pos)))
          ((da/how-preposed+s wh-edge e2 e3))
          (t (when *debug-questions*
               (tr :wh-3-edges edges)
               (break "New 3-edge case with 'how'")))))
-
+;;#######################################################################
       ((and (eq e2-form 'vp) ;; stranded preposition
             (preposition-category? (third edges))
             other)
@@ -550,7 +558,7 @@
                 (error "Why isn't passive open in its object?"))
               (let ((j (bind-variable (find-subcat-var  i :object vp-ref)
                                       i vp-ref)))
-                (make-edge-over-wh-question
+                (make-edge-over-question
                  'wh-initial-four-edges/vp+ed
                  j vp+ed-edge start-pos end-pos)))
              (t (when *debug-questions*
@@ -631,14 +639,23 @@
          (push-debug `(,aux-edge ,s-edge ,prep-edge))
          (break "need another approach"))))))
 
+(defparameter *fluffy-predicates*
+  '(bio-find tell))
+
+(defgeneric fluffy-prefix? (edge)
+  (:documentation "Many questions and tacit question ('tell me whether...')
+   begin with 'fluffy' wording like 'find' or 'know' that is just getting in
+   the way of seeing the general patterns")
+  (:method ((e edge))
+    (memq (edge-cat-name e) *fluffy-predicates*)))
+
 (defun identify-complement-of-stranded-prep (s-edge edge-taking-prep)
   "Find the participant in the clause that should 'move'. It has to be
    somewhere to the left of the edge that gets the prep. If the predicate
    that's the referent of the s is known to be lightweight ('do you know of..'
    'are there any..') then we can lift out is 'object'. "
   (let ((predicate (edge-referent s-edge))
-        (fluffy? (memq (edge-cat-name s-edge) ;/// probably wrong level
-                       '(bio-find   ))))
+        (fluffy? (fluffy-prefix? s-edge)))
     (cond
       (fluffy?
        ;; A nice generalization to introduce as part of reworking the bio verbs,

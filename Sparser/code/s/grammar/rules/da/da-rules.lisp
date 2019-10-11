@@ -1853,10 +1853,11 @@ assumed. |#
   :action (:function apply-question-marker first second third))
 
 
+;;--- patterns starting with wh-pronoun
 
 (define-debris-analysis-rule wh-vp
     :pattern (wh-pronoun vp)
-    ;; (p "How does knocking out p53 cause cancer via its effect on miRNAs?")
+    ;; ??
     :action (:function wh-vp-edge first second))
 
 (defun wh-vp-edge (whpn vp)
@@ -1919,6 +1920,17 @@ assumed. |#
   (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
     (wh-initial-four-edges/vp+ed wh vg np vp-ed
                                  *da-starting-position* end-pos)))
+
+(define-debris-analysis-rule wh-aux-vp
+    :pattern (wh-pronoun verb+present vp)
+    ;; (p "How does knocking out p53 cause cancer via its effect on miRNAs?")
+    :action (:function wh-aux-vp-setup first second third))
+
+(defun wh-aux-vp-setup (wh-edge aux-edge vp-edge)
+  (when (edge-over-aux? aux-edge) ; "does"
+    (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
+      (wh-initial-three-edges wh-edge (list wh-edge aux-edge vp-edge)
+                              *da-starting-position* end-pos))))
 
 
 
