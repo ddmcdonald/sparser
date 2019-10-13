@@ -56,6 +56,13 @@
   (find-or-make-individual
    'polar-question :statement statement))
 
+(defun make-how-question (how statement)  
+  "Standard referent constructor for polar questions -- wraps the statement"
+  (tr :wh-walk "make-polar-question")
+  (let* ((how-statement (bind-dli-variable 'manner how statement)))
+    how-statement
+    ))
+
 (defun make-polar-question-edge (label rule i start-pos end-pos)
   (tr :wh-walk 'make-polar-question-edge)
   (let* ((q (make-polar-question i))
@@ -172,6 +179,27 @@
      :rule 'da/preposed+s
      :form (edge-form s-edge) ;; category::question
      :referent q)))
+
+(defun da/how-preposed+s (how-edge? aux-edge? s-edge)
+  ;;(break "aux = ~a, s = ~a" aux s)
+  "Goes with DA rule for [preposed-auxiliary s ifcomp] except that
+   we left off the ifcomp to be handled by separate rules."
+  (tr :wh-walk "da/preposed+s")
+  (let* ((s-ref (edge-referent s-edge))
+         (aux (edge-referent aux-edge?))
+         (how-ref (edge-referent how-edge?)))
+    (when (and (itypep how-ref 'how)
+               (itypep aux 'do))
+      (let* ((q (make-how-question how-ref s-ref))
+             (start-pos (pos-edge-starts-at aux-edge?))
+             (end-pos (pos-edge-ends-at s-edge)))
+        (mask-preposed-aux)
+        (make-edge-over-long-span
+         start-pos end-pos
+         (itype-of s-ref)
+         :rule 'da/preposed+s
+         :form (edge-form s-edge) ;; category::question
+         :referent q)))))
 
 (defun polar-copula-question-object ()
   "A dummy so that we can find thefunction that creates an edge with that rule-name")
@@ -395,6 +423,7 @@
           (let ((q (wrap-in-whq-attribute wh e2-ref e3-ref)))
             (make-edge-over-wh-question
              'wh-initial-three-edges q e3 start-pos end-pos)))
+         ((da/how-preposed+s wh-edge e2 e3))
          (t (when *debug-questions*
               (tr :wh-3-edges edges)
               (break "New 3-edge case with 'how'")))))
@@ -435,7 +464,7 @@
  
       ((edge-over-aux? (second edges)) ;; "How many blocks did you add to the row?"
        (wh-initial-followed-by-modal wh-edge edges start-pos end-pos))
-      
+      ;;da/how-preposed+s
       ;; (and (eq e2-form vg+passive)
       ;;      (and (eq e3-form pp)
       ;;           == prep is 'by'
