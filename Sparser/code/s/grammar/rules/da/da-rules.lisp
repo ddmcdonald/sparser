@@ -1886,11 +1886,6 @@ assumed. |#
     ;; "How might a STAT3 mutation affect breast cancer?"
     :action (:function wh-three-edges first second third))
 
-(define-debris-analysis-rule wh-modal-s
-    :pattern (wh-pronoun modal s)
-    ;; "How might a STAT3 mutation affect breast cancer?"
-    :action (:function wh-three-edges first second third))
-
 (define-debris-analysis-rule wh-modal-transitive-clause-without-object
     :pattern (wh-pronoun modal transitive-clause-without-object)
     ;; "What could I use?"
