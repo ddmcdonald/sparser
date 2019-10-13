@@ -1039,7 +1039,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 (defun absorb-auxiliary (aux vg)
   (cond
-    (*subcat-test* t)
+    (*subcat-test*
+     (not (eq (form-cat-name (left-edge-for-referent)) 'sp::vp)))
     (t (make-vg-aux aux vg))))
 
 (defun make-vg-aux (aux vg)
@@ -1916,13 +1917,16 @@ there was an edge for the qualifier (e.g., there is no edge for the
     (unless (and vg obj
                  ;; block attaching NP to VP as object when we have evidence for aux inversion
                  (not (and (or (itypep vg 'be)
-                               (itypep vg 'have))
+                               (itypep vg 'have)
+                               (itypep vg 'do))
                            *right-edge-into-reference*
-                           (edge-just-to-right-of (right-edge-for-referent))
-                           (member (cat-name
-                                    (edge-form
-                                     (edge-just-to-right-of (right-edge-for-referent))))
-                                   '(vg+ed vp+ed vg+ing vp+ing)))))
+                           (let ((edge-to-right
+                                  (edge-just-to-right-of (right-edge-for-referent))))
+                             (when edge-to-right
+                               (if (itypep vg 'do)
+                                   (eq (form-cat-name edge-to-right) 'vg)
+                                   (member (form-cat-name edge-to-right)
+                                           '(vg+ed vp+ed vg+ing vp+ing))))))))
       (return-from assimilate-np-to-v-as-object nil)))
   
   (when (is-non-anaphor-numeric? *right-edge-into-reference* obj)
