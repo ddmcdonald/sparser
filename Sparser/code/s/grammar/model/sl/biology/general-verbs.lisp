@@ -1098,7 +1098,7 @@
          :on theme))
 
 (define-category remove :specializes bio-method
-    :binds ((source biological))
+    :binds ((source (:or biological model)))
     :realization
     (:verb "remove" ;; keyword: ENDS-IN-ED 
 	   :noun "removal"
