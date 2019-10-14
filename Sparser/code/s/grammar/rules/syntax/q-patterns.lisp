@@ -19,9 +19,14 @@
   (labels ((decode-wh (wh)
              (typecase wh
                (null (break "no value passed in for wh"))
-               ((or individual category)
+               (individual
+                wh
+                #+ignore
                 (if (itypep wh 'wh-pronoun)
-                  wh (break "WH is an individual but not a wh-pronoun: ~a" wh)))             
+                    wh (break "WH is an individual but not a wh-pronoun: ~a" wh)))
+               (category
+                (if (itypep wh 'wh-pronoun)
+                  wh (break "WH is an individual but not a wh-pronoun: ~a" wh)))
                (edge (decode-wh (edge-referent wh)))
                (otherwise (break "unexpected object passed in for wh: ~a" wh)))))
     (let* ((wh-base (decode-wh wh))
@@ -64,6 +69,16 @@
   (let* ((how-statement (bind-dli-variable 'manner how statement)))
     how-statement
     ))
+
+(defun make-how-question-and-edge (how statement edges)
+  (make-edge-over-long-span
+   (start-pos (car edges))
+   (end-pos (car (last edges))) 
+   (edge-category (third edges))
+   :form category::s
+   :referent (make-how-question how statement)
+   :rule 'make-how-question-and-edge
+   :constituents edges))
 
 (defun make-polar-question-edge (label rule i start-pos end-pos)
   (tr :wh-walk 'make-polar-question-edge)
@@ -426,8 +441,10 @@
             (make-edge-over-question
              'wh-initial-three-edges q e3 start-pos end-pos)))
          ((edge-over-aux? e2) ; e.g. "how does ..."
-          (let* ((i (incorporate-displace-aux-into-predicate
+          (let* ((ida (incorporate-displace-aux-into-predicate
                      e2 e3 :left e2 :right e3))
+                 (i-edge (make-how-question-and-edge wh ida edges))
+                 (i (edge-referent i-edge))
                  (q (make-wh-object wh :statement i)))
             (make-edge-over-question
              'wh-initial-three-edges q e3 start-pos end-pos)))
@@ -948,6 +965,13 @@
       (setq stmt (add-tense/aspect-info-to-head aux stmt)))
     (let ((q (fold-wh-into-statement wh stmt wh-edge (second edges) (third edges))))
       (when q
+        (make-edge-over-long-span
+         start-pos end-pos
+         (itype-of q)
+         :rule 'wh-initial-followed-by-modal
+         :form category::s
+         :referent q
+         :constituents edges)
         (make-question-and-edge
          q ; statement
          start-pos end-pos
