@@ -194,6 +194,21 @@
     q))
 
 
+(defun has-wh-determiner? (i)
+  "Does this individual include a wh determiner, e.g. because
+   is was the result of parsing 'what proteins' as an NP.
+   Called from make-question-and-edge, because the np was initial
+   and DA triggered question processing"
+  (let ((j (value-of 'has-determiner i)))
+    (itypep j 'wh-pronoun)))
+
+(defun repackage-wh-determiner (i)
+  "This call is keyed by has-wh-determiner? so can feel safe in
+   rebuilding this as a wh-question individual using its 'other' slot."
+  (let ((wh (value-of 'has-determiner i)))
+    (make-wh-object wh :other i)))
+
+
 ;; (p/s "What genes are regulated by FOS")
 ;; (p/s "What apoptotic genes are regulated by FOS")
 ;; (p/s "What three apoptotic genes are regulated by FOS")

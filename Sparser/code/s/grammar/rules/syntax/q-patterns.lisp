@@ -17,20 +17,29 @@
    Make an edge over the whole span, using whatever pieces the callers
    have supplied."
   (labels ((decode-wh (wh)
+             "Identify and return an individual we can feed to
+              make-wh-object as its wh argument, i.e. either one of
+              the wh categories or an already build instance of wh-question
+              that we'll extend."
              (typecase wh
                (null (break "no value passed in for wh"))
-               (individual
-                wh
-                #+ignore
-                (if (itypep wh 'wh-pronoun)
-                    wh (break "WH is an individual but not a wh-pronoun: ~a" wh)))
                (category
                 (if (itypep wh 'wh-pronoun)
                   wh (break "WH is an individual but not a wh-pronoun: ~a" wh)))
+               (individual
+                (cond
+                  ((itypep wh 'wh-pronoun) wh)
+                  ((has-wh-determiner? wh) ;; "what proteins"
+                   (repackage-wh-determiner wh))
+                  (t (break "New case of a WH individual: ~a" wh))))
                (edge (decode-wh (edge-referent wh)))
                (otherwise (break "unexpected object passed in for wh: ~a" wh)))))
     (let* ((wh-base (decode-wh wh))
-           (q (make-wh-object wh-base :statement statement)))
+           (q (cond ((itypep wh-base 'wh-pronoun)
+                     (make-wh-object wh-base :statement statement))
+                    ((itypep wh-base 'wh-question)
+                     (extend-wh-object wh-base :statement statement))
+                    (t (break "Unexpected value returned by decode-wh: ~a" wh-base)))))
       (let ((edge (make-edge-over-long-span
                    start-pos end-pos
                    (edge-category head-edge) ;; category
