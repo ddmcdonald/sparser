@@ -12,7 +12,7 @@
 
 
 (defun make-question-and-edge (statement start-pos end-pos
-                               &key ((:head head-edge)) wh rule)
+                               &key ((:head head-edge)) wh wh-edge rule)
   "Wrap the referent in an instance of a wh-question as its statement.
    Make an edge over the whole span, using whatever pieces the callers
    have supplied."
@@ -30,7 +30,7 @@
                 (cond
                   ((itypep wh 'wh-pronoun) wh)
                   ((has-wh-determiner? wh) ;; "what proteins"
-                   (repackage-wh-determiner wh))
+                   (repackage-wh-determiner wh wh-edge))
                   (t (break "New case of a WH individual: ~a" wh))))
                (edge (decode-wh (edge-referent wh)))
                (otherwise (break "unexpected object passed in for wh: ~a" wh)))))
@@ -964,7 +964,7 @@
   "The second argument is an aux or a modal that has to be
    folded in to the statement (third edge) for its tense or
    aspect contribution. Not bothering to explicitly hook
-   the aux edge into the tree."
+   the aux edge into the tree."2
   ;; continuation from wh-initial-three-edges
   (tr :wh-walk "wh-initial-followed-by-modal")
   (let ((wh (edge-referent wh-edge))
@@ -974,7 +974,7 @@
       (setq stmt (add-tense/aspect-info-to-head aux stmt)))
     (let ((q (fold-wh-into-statement wh stmt wh-edge (second edges) (third edges))))
       (when q
-        (make-edge-over-long-span
+        #+ignore(make-edge-over-long-span
          start-pos end-pos
          (itype-of q)
          :rule 'wh-initial-followed-by-modal
@@ -986,6 +986,7 @@
          start-pos end-pos
          :head (third edges) ; only a transitive-cluse-without-object !!
          :wh wh
+         :wh-edge wh-edge
          :rule 'wh-initial-followed-by-modal)))))
  
 

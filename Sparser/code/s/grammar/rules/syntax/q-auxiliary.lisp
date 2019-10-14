@@ -202,11 +202,16 @@
   (let ((j (value-of 'has-determiner i)))
     (itypep j 'wh-pronoun)))
 
-(defun repackage-wh-determiner (i)
+(defun repackage-wh-determiner (i wh-edge)
   "This call is keyed by has-wh-determiner? so can feel safe in
    rebuilding this as a wh-question individual using its 'other' slot."
-  (let ((wh (value-of 'has-determiner i)))
-    (make-wh-object wh :other i)))
+  (let ((wh (value-of 'has-determiner i))
+        (left (edge-left-daughter wh-edge)))
+    (cond
+      ((eq wh (edge-referent left))
+       (let ((other (edge-referent (edge-right-daughter wh-edge))))
+         (make-wh-object wh :other i)))
+      (t (break "New situation. wh-edge = ~a" wh-edge)))))
 
 
 ;; (p/s "What genes are regulated by FOS")
