@@ -435,7 +435,7 @@
          (t (when *debug-questions*
               (tr :wh-3-edges edges)
               (break "New 3-edge case with 'how'")))))
-;;#######################################################################
+
       ((and (eq e2-form 'vp) ;; stranded preposition
             (preposition-category? (third edges))
             other)
@@ -932,6 +932,7 @@
 
 
 ;; (p "where should I put the block?") <-- won't parse if 'block' is only a verb
+;; (p/s "What does MEK phosphorylate?")
 ;;
 (defun wh-initial-followed-by-modal (wh-edge edges start-pos end-pos)
   "The second argument is an aux or a modal that has to be
@@ -947,13 +948,12 @@
       (setq stmt (add-tense/aspect-info-to-head aux stmt)))
     (let ((q (fold-wh-into-statement wh stmt wh-edge (second edges) (third edges))))
       (when q
-        (make-edge-over-long-span
+        (make-question-and-edge
+         q ; statement
          start-pos end-pos
-         (itype-of q) ;; category (third edges) ;; ??
-         :rule 'wh-initial-followed-by-modal
-         :form category::s ;;question
-         :referent q
-         :constituents edges)))))
+         :head (third edges) ; only a transitive-cluse-without-object !!
+         :wh wh
+         :rule 'wh-initial-followed-by-modal)))))
  
 
 ;; "Which genes regulated by stat3 are kinases?"
