@@ -1013,8 +1013,10 @@
 ;; "Structural basis for conformational switching and GTP loading of the large G protein atlastin"
 
 (define-mixin-category on-substrate :specializes biological
- :binds ((substrate
-          (:or bio-complex peptide component))
+   :binds ((substrate
+            ;; add gene because of ambiguity in use b y biologists
+            ;; "What genes does MAPK1 phosphorylate?"
+          (:or bio-complex peptide component gene))
          (site
           (:or protein-domain region-of-molecule))))
 
