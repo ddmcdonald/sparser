@@ -7,7 +7,8 @@
 
 ;; Predicates on syntactic form categories,
 ;; mostly for the use of the chunker.
-
+(in-package :sparser)
+            
 (defparameter *prep-forms*
   `(preposition
     spatial-preposition
@@ -554,8 +555,11 @@
 
 (defun edge-over-aux? (edge)
   ;; called by wh question operations
-  (when (word-p (edge-left-daughter edge))
-    (auxiliary-word? (edge-left-daughter edge))))
+  (or
+   (and (eq (edge-cat-name edge) 'do)
+        (eq (edge-form-name edge) 'vg))
+   (when (word-p (edge-left-daughter edge))
+     (auxiliary-word? (edge-left-daughter edge)))))
 
 (defvar *verbal-auxiliaries* nil
   "Holds a list of all the auxiliary words, as words")
