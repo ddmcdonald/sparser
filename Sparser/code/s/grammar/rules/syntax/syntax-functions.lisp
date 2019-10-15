@@ -320,6 +320,8 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
       ev)))
 
 (defun sort-out-introduction-of-wh-nominal-edge (wh-nominal-edge parent)
+  ;; called by insert-wh-nominal-edge to do a specific case of
+  ;; sorting out an inserted edge.
   (setf (edge-used-in wh-nominal-edge) parent)
   (let ((ev (edge-ends-at parent)))
     (unless (index-of-edge-in-vector wh-nominal-edge ev)
@@ -328,21 +330,25 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
     (setf (ev-top-node ev) parent) ;; usually redundant with the swap  
     ev))
 
-
-(defun create-wh-nominal-and-edge-by-binding-and-insert-edge (var val pred)
-  (unless (edge-p (parent-edge-for-referent))
-    (lsp-break "create-wh-nominal-and-edge-by-binding-and-insert-edge - no valid parent edge"))
-  (let ((wh-nominal-ref (create-wh-nominal-by-binding var val pred)))
-    (insert-wh-nominal-edge (parent-edge-for-referent) wh-nominal-ref)
-    wh-nominal-ref))
-
 (defun insert-wh-nominal-edge (parent wh-nominal-ref)
+  ;; Callers
+  ;;   assimilate-clausal-comp
+  ;;   create-wh-nominal-and-edge-by-binding-and-insert-edge
   (declare (special wh-nominal-ref parent))
   (let ((wh-nominal-edge
          (make-wh-nominal-edge (right-edge-for-referent)
                                wh-nominal-ref)))
     (sort-out-introduction-of-wh-nominal-edge wh-nominal-edge parent)
     (values wh-nominal-ref wh-nominal-edge)))
+
+
+;; No lexical callers (symbol appears in rusty-workspace.lisp)
+(defun create-wh-nominal-and-edge-by-binding-and-insert-edge (var val pred)
+  (unless (edge-p (parent-edge-for-referent))
+    (lsp-break "create-wh-nominal-and-edge-by-binding-and-insert-edge - no valid parent edge"))
+  (let ((wh-nominal-ref (create-wh-nominal-by-binding var val pred)))
+    (insert-wh-nominal-edge (parent-edge-for-referent) wh-nominal-ref)
+    wh-nominal-ref))
 
 
 
