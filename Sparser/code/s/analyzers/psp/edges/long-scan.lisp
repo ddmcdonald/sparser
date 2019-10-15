@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2013-2014,2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "long scan"
 ;;;    Module:   "analyzers;psp:edges:"
-;;;   Version:   1.3 September 2014
+;;;   Version:   October 2019
 
 ;; 1.0 (9/7/92 v2.3) flushed out of date field references
 ;; 1.1 (2/24/94) added daughter and used-in encoding
@@ -17,22 +17,48 @@
 ;;      though even that is uneven about choice among multiple edges
 ;;      so added semi-redundant set-used-by when constituents are known.
 
-;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
-;;  initial work to produce a lattice of descriptions
-;;  the places where this call is put were determined by the methods where (complete edge) was also called
+;; 5/25/2015 added call to place-referent-in-lattice around
+;;  computation of edge-referent field initial work to produce a
+;;  lattice of descriptions the places where this call is put were
+;;  determined by the methods where (complete edge) was also called
 
 
 (in-package :sparser)
 
 
+(defun respan-new-referent (i &key start end edge
+                                head-edge category form
+                                rule constituents)
+  "We've added an additional binding to this individual 'i' but we did it
+   directly rather than via the usual rule-application route
+   (e.g. while stiching things together in formulating questions).
+   To make the mention-tracking machinery happy we need to add
+   an edge over it.   "
+  ;; 'edge' is hook for alternatively using a unary rule in the same
+  ;; way tha tmake-predication-edge does.
+  (let ((starting-position start)
+        (ending-position end)
+        (category-label (or category
+                            (when head-edge (edge-category head-edge))))
+        (form-label (or form
+                        (when head-edge (edge-form head-edge)))))
+    (make-edge-over-long-span
+     starting-position ending-position category-label
+     :form form-label
+     :referent i
+     :rule rule
+     :constituents constituents)))
+
+
 (defun make-edge-over-long-span (starting-position
                                  ending-position
                                  category
-                                 &key  rule
-                                 form
-                                 referent 
-                                 constituents
-                                 words )
+                                 &key
+                                   rule
+                                   form
+                                   referent 
+                                   constituents
+                                   words )
   
   ;; Called by routines in the header and anywhere else that a segment
   ;; of text can be bounded and characterized without it having any
@@ -49,8 +75,7 @@
     
     (setf (edge-rule edge) rule)
     (setf (edge-form edge) form)    
-    
-    
+        
     (let ((daughters
            (or constituents
                (successive-treetops :from starting-position
@@ -69,17 +94,19 @@
       (setf (edge-right-daughter edge) :long-span)
       (setf (edge-constituents edge)
             (or constituents ;; passed in
-                daughters))
+                daughters)))
 
-      (when words
-        (setf (edge-spanned-words edge) words))
+    (when words
+      (setf (edge-spanned-words edge) words))
+
+    (when referent
+      (set-edge-referent edge referent))
     
-      (when *trace-edge-creation*
-        (format t "~&Ccreating ~A for ~A" edge rule))
+    (when *trace-edge-creation*
+      (format t "~&Ccreating ~A for ~A" edge rule))
     
-      (assess-edge-label category edge) 
-      (set-edge-referent edge  (place-referent-in-lattice referent edge))
-      
-      (complete edge)
-      edge )))
+    (complete edge)
+    (assess-edge-label category edge)
+
+    edge ))
 

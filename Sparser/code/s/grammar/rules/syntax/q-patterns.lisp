@@ -967,17 +967,25 @@
    the aux edge into the tree."2
   ;; continuation from wh-initial-three-edges
   (tr :wh-walk "wh-initial-followed-by-modal")
-  (let ((wh (edge-referent wh-edge))
-        (aux (edge-referent (second edges)))
-        (stmt (edge-referent (third edges))))
-    (with-referent-edges (:l (second edges) :r (third edges))
-      (setq stmt (add-tense/aspect-info-to-head aux stmt)))
-    (let ((q (fold-wh-into-statement wh stmt wh-edge (second edges) (third edges))))
+  (let* ((wh (edge-referent wh-edge))
+         (aux-edge (second edges))
+         (aux (edge-referent aux-edge))
+         (stmt-edge (third edges))
+         (stmt (edge-referent stmt-edge)))
+    (with-referent-edges (:l aux-edge :r stmt-edge)
+      (setq stmt (add-tense/aspect-info-to-head aux stmt))) ;; binds tense
+    (let ((q (fold-wh-into-statement wh stmt wh-edge aux-edge stmt-edge)))
+      ;; If the folding is successful, the wh will have been bound
+      ;; to a variable in the statement
       (when q
-        ;; this operation creates an edge which has the interpretation of
-        ;;  the entire sentence, WITH THE WH ITEM
-        ;; It is necessary in order to create the appropriate mention
-        ;;  for that interpretation
+        (let ((respan-edge
+               (respan-new-referent
+                q :start start-pos :end end-pos
+                :form category::s
+                :rule 'respan_wh-initial-followed-by-modal
+                :head-edge stmt-edge
+                :constituents edges)))
+        #+ignore ;; replaced by call to respan-new-referent
         (make-edge-over-long-span
          start-pos end-pos
          (itype-of q)
@@ -988,10 +996,10 @@
         (make-question-and-edge
          q ; statement
          start-pos end-pos
-         :head (third edges) ; only a transitive-cluse-without-object !!
+         :head respan-edge
          :wh wh
          :wh-edge wh-edge
-         :rule 'wh-initial-followed-by-modal)))))
+         :rule 'wh-initial-followed-by-modal))))))
  
 
 ;; "Which genes regulated by stat3 are kinases?"
