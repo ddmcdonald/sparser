@@ -315,8 +315,7 @@
        (let ((subj-var (find-subcat-var wh :subject stmt)))
          (when subj-var
            (bind-variable subj-var wh stmt))))
-      ((np
-        proper-noun)
+      ((np proper-noun)
        ;; "Which of these are kinases"
        ;; Statement isn't a predicate so we have to make it here
        (make-copular-predication wh-edge aux-edge stmt-edge))
@@ -344,9 +343,9 @@
                 (break "New 's' case  WH: ~a" wh))))))
       
       (otherwise
-       (push-debug `(,wh ,stmt ,wh-edge ,stmt-edge))
        (when *debug-questions*
-         (break "new folding confiburation: ~a" stmt-form))
+         (push-debug `(,wh ,stmt ,wh-edge ,stmt-edge))
+         (break "new folding configuration: ~a" stmt-form))
        nil))))
 
 (defun bind-wh-to-stmt-variable (wh wh-edge stmt)
