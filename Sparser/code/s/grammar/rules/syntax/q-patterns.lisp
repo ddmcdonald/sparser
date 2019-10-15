@@ -974,7 +974,11 @@
       (setq stmt (add-tense/aspect-info-to-head aux stmt)))
     (let ((q (fold-wh-into-statement wh stmt wh-edge (second edges) (third edges))))
       (when q
-        #+ignore(make-edge-over-long-span
+        ;; this operation creates an edge which has the interpretation of
+        ;;  the entire sentence, WITH THE WH ITEM
+        ;; It is necessary in order to create the appropriate mention
+        ;;  for that interpretation
+        (make-edge-over-long-span
          start-pos end-pos
          (itype-of q)
          :rule 'wh-initial-followed-by-modal
