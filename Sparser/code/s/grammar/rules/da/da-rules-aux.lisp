@@ -78,29 +78,37 @@
 
 (defun make-event-relation (conj event sub-event &optional event-edge sub-event-edge)
   (cond ((itypep event 'polar-question)
-         (let ((event-relation (make-simple-individual
-               category::event-relation
-               `((relation ,conj)
-                 (event ,(value-of 'statement event))
-                 (subordinated-event ,sub-event)))))
-           (when sub-event-edge
-             (make-edge-over-long-span
-              (pos-edge-starts-at sub-event-edge)
-              (pos-edge-ends-at sub-event-edge)
-              category::event-relation
-              :rule 'make-event-relation
-              :form (edge-form sub-event-edge)
-              :referent event-relation))
+         (let ((event-relation
+                (make-simple-individual
+                 category::event-relation
+                 `((relation ,conj)
+                   (event ,(value-of 'statement event))
+                   (subordinated-event ,sub-event)))))
+           ;; create the edge needed to hold the mention for
+           ;;  event-relation
+           (make-edge-over-long-span
+            (pos-edge-starts-at sub-event-edge)
+            (pos-edge-ends-at sub-event-edge)
+            category::event-relation
+            :rule 'make-event-relation
+            :form (edge-form sub-event-edge)
+            :referent event-relation)
          (make-simple-individual
           category::polar-question
           `((statement , event-relation)))))
         (t
-         (make-simple-individual
-          category::event-relation
-          `((relation ,conj) (event ,event) (subordinated-event ,sub-event))))))
-
-
-
+         (let ((event-relation
+                (make-simple-individual
+                 category::event-relation
+                 `((relation ,conj) (event ,event) (subordinated-event ,sub-event)))))
+           (make-edge-over-long-span
+            (pos-edge-starts-at sub-event-edge)
+            (pos-edge-ends-at sub-event-edge)
+            category::event-relation
+            :rule 'make-event-relation
+            :form (edge-form sub-event-edge)
+            :referent event-relation)
+           event-relation))))
 ;;--- Common subroutines
 
 (defun fix-da-ending-pos (da-end-pos)
