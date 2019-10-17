@@ -48,7 +48,6 @@
           :key #'(lambda (m) (edge-position-in-resource-array (mention-source m))))))
     (case *save-clause-semantics*
       (:sentence-clauses
-       (break "1")
        (push (cons (sentence-string *sentence-in-core*)
                    (sentence-clauses))
              *clause-semantics-list*))
@@ -56,17 +55,6 @@
        (setq *save-clause-semantics*
              `(,(sentence-string *sentence-in-core*)
                 ,@(sentence-clauses)))
-       #+ignore
-       (append
-        (loop for m in mentions
-              unless (and (individual-p (base-description m))
-                          (itypep (base-description m)
-                                  '(:or prepositional-phrase prep
-                                    prepositional ;; new? part of the meaning of category::in
-                                    copular-predication-of-pp bio-pair
-                                    hyphenated-triple)))
-              append (clause-semantics-for-mention m))
-        *save-clause-semantics*)
        (push *save-clause-semantics* *clause-semantics-list*)
        (setq *save-clause-semantics* :mention-clauses)))
     (when *indra-post-process*
@@ -137,7 +125,7 @@
                                    do (push scs item-clauses))
                              (break "not a mention ~s" item)))
                  (push key cs)
-                 (push `(kb::seq-fn
+                 (push `(,(intern "SEQ-FN" (find-package :kb))
                          ,@(loop for item in (dependency-value d)
                                  collect
                                    (make-clause-var (mention-uid item))))
