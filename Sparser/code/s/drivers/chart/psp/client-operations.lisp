@@ -48,28 +48,29 @@
           :key #'(lambda (m) (edge-position-in-resource-array (mention-source m))))))
     (case *save-clause-semantics*
       (:sentence-clauses
+       (break "1")
        (push (cons (sentence-string *sentence-in-core*)
                    (sentence-clauses))
              *clause-semantics-list*))
       (:mention-clauses
-       (setq *save-clause-semantics* (list (sentence-string *sentence-in-core*)))
-       (setq
-        *save-clause-semantics*
-        (append
-             (loop for m in mentions
-                   unless (and (individual-p (base-description m))
-                               (itypep (base-description m)
-                                       '(:or prepositional-phrase prep
-                                         prepositional ;; new? part of the meaning of category::in
-                                         copular-predication-of-pp bio-pair
-                                         hyphenated-triple)))
-                   collect (clause-semantics-for-mention m))
-         *save-clause-semantics*))
-       (push (reverse *save-clause-semantics*) *clause-semantics-list*)
+       (setq *save-clause-semantics*
+             `(,(sentence-string *sentence-in-core*)
+                ,@(sentence-clauses)))
+       #+ignore
+       (append
+        (loop for m in mentions
+              unless (and (individual-p (base-description m))
+                          (itypep (base-description m)
+                                  '(:or prepositional-phrase prep
+                                    prepositional ;; new? part of the meaning of category::in
+                                    copular-predication-of-pp bio-pair
+                                    hyphenated-triple)))
+              append (clause-semantics-for-mention m))
+        *save-clause-semantics*)
+       (push *save-clause-semantics* *clause-semantics-list*)
        (setq *save-clause-semantics* :mention-clauses)))
     (when *indra-post-process*
       (indra-post-process mentions sentence *sentence-results-stream*)))
-  
   (when *callisto-compare* (extract-callisto-data sentence))
     
   (when *localization-interesting-heads-in-sentence*
@@ -77,13 +78,32 @@
       (setf (gethash sentence *colorized-sentence*) colorized-sentence)
       (push colorized-sentence *localization-split-sentences*))))
 
+(defun clause-from-top-mention-tree (mentions)
+  (let ((top-mentions
+         (loop for m in mentions
+               when
+                 (and (edge-p (mention-source m))
+                      (null (edge-used-in (mention-source m)))
+                      (null (cdr (all-tts)))
+                      (eq (mention-source m)
+                          (car (all-tts))))
+               collect m)))
+    (cond ((cdr top-mentions)
+           (warn "multiple-tops ~s"
+                 (loop for m in top-mentions
+                       collect (edge-form-name
+                                (mention-source m)))))
+          ((null top-mentions)
+           (warn "no top mention!!! in ~s"
+                 (sentence-string *sentence-in-core*))))))
+
 ;;;;;; Utility function for getting Sparser clauses, parsing from scratch
 
 (defparameter *break-in-sp-clauses* nil)
 
 (defun sp-clauses (s &optional (with-breaks *break-in-sp-clauses*))
   (declare (special *save-clause-semantics* *clause-semantics-list*))
-  (setq *save-clause-semantics* :sentence-clauses)
+  (setq *save-clause-semantics*  :mention-clauses) ;; :sentence-clauses)
   (let ((*indra-post-process* (list t)))
     (declare (special *indra-post-process*))
     (if with-breaks
@@ -96,17 +116,59 @@
 (defun clause-semantics-for-mention (mention)
   (declare (special mention))
   (let* ((desc (base-description mention))
-         (cs (list :isa (make-clause-var (mention-uid mention)) :var)))
+         (cs (list :isa (make-clause-var (mention-uid mention)) :var))
+         item-clauses)
+    
     (declare (special cs))
+    (when (and (individual-p desc)
+               (itypep desc 'conjunction))
+      (return-from clause-semantics-for-mention nil))
     (push (cat-name (itype-of desc)) cs)
     (loop for d in (dependencies mention)
           do
             (let ((key (intern (pname (var-name (dependency-variable d))) :keyword)))
-              (push  key cs)
-              (push (make-clause-ref key (dependency-value d)) cs)))
+              (case key
+                (:items
+                 (loop for item in (dependency-value d)
+                       do
+                         (if (mention-p item)
+                             (loop for scs
+                                   in (clause-semantics-for-mention item)
+                                   do (push scs item-clauses))
+                             (break "not a mention ~s" item)))
+                 (push key cs)
+                 (push `(kb::seq-fn
+                         ,@(loop for item in (dependency-value d)
+                                 collect
+                                   (make-clause-var (mention-uid item))))
+                       cs))
+                ((:left :right)
+                 (push key cs)
+                 (let ((item (dependency-value d)))
+                   (push
+                    (cond ((mention-p item)
+                           (setq item-clauses
+                                 (append item-clauses
+                                         (let ((clauses
+                                                (clause-semantics-for-mention item)))
+                                           (if (consp clauses)
+                                               clauses
+                                               (list item)))))
+                           (make-clause-var (mention-uid item)))
+                          ((and (individual-p item)
+                                (itypep item 'number))
+                           (value-of 'value item))
+                          ((individual-p item)
+                           (lsp-break "item is ~s" item))
+                          (t item))
+                    cs)))
+                        
+                (t
+                 (push  key cs)
+                 (push (make-clause-ref key (dependency-value d)) cs)))))
 
     (setq cs (reverse cs))
-    ))
+    `(,cs ,@item-clauses)))
 
 (defun mention-clause-tree (m &optional parent-mention)
   (typecase m 
@@ -115,22 +177,32 @@
             :isa ,(cat-name (itype-of (edge-referent (mention-source m))))
             ,.(when (itypep (edge-referent (mention-source m)) 'plural)
                 (list :plural t))
-        ,@(loop for d in (dependencies m) append
-                  `(,(intern (pname (pname (dependency-variable d)))
-                             :keyword)
-                     ,(cond ((eq (dependency-value d) '*lambda-var*)
-                             (if parent-mention
-                                 (make-clause-var (mention-uid parent-mention))
-                                 (loop for mention in (all-mentions)
-                                       when (loop for d2 in (dependencies mention)
-                                                  thereis (and (eq (var-name (dependency-variable d2))
-                                                                   'PREDICATION)
-                                                               (eq (dependency-value d2) m)))
-                                       do (return (make-clause-var (mention-uid mention))))))
-                            ((consp (dependency-value d))
-                             (mapcar #'mention-clause-tree (dependency-value d) ))
-                            (t
-                             (mention-clause-tree (dependency-value d) m)))))))
+            ,@(loop for d in (dependencies m)
+                    append
+                      (let ((val (dependency-value d)))
+                        `(,(intern (pname ;; not sure why, but this extra pname
+                                    ;; is needed! see
+                                    ;; (clic::sent-clauses "Does MAP2K1 phosphorylate and activate MAPK1?")
+                                    (pname (dependency-variable d)))
+                                   :keyword)
+                           ,(cond ((eq val '*lambda-var*)
+                                   (if parent-mention
+                                       (make-clause-var (mention-uid parent-mention))
+                                       (loop for mention in (all-mentions)
+                                             when (loop for d2 in (dependencies mention)
+                                                        thereis (and (eq (var-name (dependency-variable d2))
+                                                                         'PREDICATION)
+                                                                     (eq (dependency-value d2) m)))
+                                             do (return (make-clause-var (mention-uid mention))))))
+                                  ((consp val)
+                                   (mapcar #'mention-clause-tree val ))
+                                  (t
+                                   (typecase val
+                                     (word (pname val))
+                                     (polyword (pname val))
+                                     (number val)
+                                     (t
+                                      (mention-clause-tree val m))))))))))
     (t m)))
 
 (defun sentence-clause-tree ()
