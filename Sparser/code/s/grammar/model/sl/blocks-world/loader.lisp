@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
-;;; Copyright (c) 2015-2018 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2015-2019 David D. McDonald  All Rights Reserved
 ;;;
 ;;;      File:  "loader"
 ;;;    Module:  grammar/model/sl/blocks
-;;;   version:  December 2018
+;;;   version:  October 2019
 
 ;; Initiated 10/6/15. Added vocabulary 12/3/15. interface on 1/2/16.
 ;; resources 1/17/16. Entities 1/20/16. Staging 2/25/16.
@@ -17,8 +17,10 @@
   ;;Mostly same as regression tests
 
   ;;(gload "blocks;subcat-patterns") -- moved to mid-level
-  (gload "blocks;vocabulary")
   (gload "blocks;verbs") ;; evicerated to dossier
+  
+  (gload "blocks;vocabulary")
+  ;; categories for 'block', 'ball', 'box', and 'table'
 
   (gload "blocks;entities")
   ;; defines B6 etc. and the named blocks
