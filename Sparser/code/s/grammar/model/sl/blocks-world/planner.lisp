@@ -42,6 +42,98 @@ value in the appropriate current 'parameter store'.  |#
 we'd have to continually refactor as our idea evolve. |#
 
 
+Molly's thoughts:
+
+We start with:
+  R: an unordered list of relations in the universe. 
+
+  B1: object of focus.
+  Whether this is passed to us as a parameter, or we infer it by extracting
+  the common element among any two arbitrary relations in the set.
+
+  We query R for all relations containing the object in question, R(B1):
+
+  (left, B1, B2)
+  (right, B2, B1)
+  (touching, B1, B2)
+  (touching, B2, B1)
+  (on, B1, table)
+  (right, B1, B3)
+  (left, B3, B1)
+
+---Step 1: Filtering relations
+
+This is a process of slowly narrowing down which second object (or objects) will become the ground in our 
+spatial description of the focus object. Usually, this will come down to one object, but we may need to use 
+2 objects (say, if the object in focus is between two other objects.) We use various heuristics to filter out 
+relations (and therefore objects) that don't give us "interesting" information about the focus object.
+
+First, filter R(B1) based on focus: find relations where B is the first element of the ordered pair.
+
+  (on, B1, table)
+  (touching, B1, B2)
+  (left, B1, B2)
+  (right, B1, B3)
+
+Filter out any relations that hold via transitivity.
+  Let's say R(B1) has:
+
+  (left, B1, B2)
+  (left, B1, B3)
+
+We need to query R for relations that hold between B2 and B3. If (left, B2, B3) then we 
+can remove (left, B1, B3) because this is less interesting as it holds via transitivity.
+
+Next, filter out less "interesting" relations: finding the appropriate second object.
+
+  The simplest problem here is how to filter out relations like (on, B1, table) when we have
+  more "interesting" relations between blocks themselves.
+
+  We could simply hardcode a preference for relations between two objects of type B,
+  or hardcode a preference for relations that don't include the table (does the 
+  table have any special sort of defined status in the situation as a ground?)
+
+  Now we have:
+
+  (touching, B1, B2)
+  (left, B1, B2)
+  (right, B1, B3)
+
+ Heuristics to consider:
+    Which object(s) does B1 have the MOST relations with? (left and touching vs left)
+    Which object(s), if any, does B1 have an EC relationship with?
+    The agent's POV: is something blocking their view of B1? If so, whatever is 
+    blocking their view should be the focus of the relation.
+
+  The first two filter out B3 as a candidate. 
+  So we know that the object acting as our ground will be B2.
+
+Whatever relations/objects are left are those that haven't been filtered out by our heuristics.
+
+This should leave us with either a set of relations containing the focus object and one other
+reference object, or a set of relations containing the focus object and a series of other
+reference objects that is not able to be further simplified (i.e. a "between" situation).
+
+
+---Step 2: Generating KRISP individuals for figure and ground(s)
+
+---Step 3: Combining remaining relations into a predicate, with our KRISP individuals as participants
+
+  Some relations can be combined into a single predicate, when one is a subset of the other, i.e.:
+    (touching, B1, B2)
+    (support, B2, B1)
+
+    can be realized as "B1 is on top of B2".
+
+  Others need to be combined syntactically:
+    (left, B1, B2)
+    (touching, B1, B2)
+
+    "B1 is left of and touching B2."
+
+
+________
+
 The general picture is that we start with a representation of the
 content we intend to express that is abstract and has no association
 with language at all. For planar configurations of blocks the Region
@@ -61,8 +153,6 @@ will be 'finished' (up until this point we can freely revise it)
 and we send it off to Mumble to utter. Mumble will do a number of
 things on its own, but from the planner's perspective this are
 all unconscious. 
-
-
 
 
 Given one of these relations, say (EC B6 B3), there will be a set of
