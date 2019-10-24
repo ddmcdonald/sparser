@@ -34,6 +34,8 @@
   ;;(gload "blocks;interface")
   ;; OBE interface to sgp planner
 
+  (gload "blocks;code-for-planner")
+
   (gload "blocks;staging")  ;; experiment in higher abstraction
   
   (gload "blocks;blocksworld-sents")
