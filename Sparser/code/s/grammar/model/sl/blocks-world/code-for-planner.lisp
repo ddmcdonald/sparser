@@ -114,7 +114,7 @@
           (member `(,relation ,arg1 ,x) *R* :test #'equal))) *O*)))
 
 ;;returns the object(s) with which arg has the most relations in *R*
-(defun has-most-relations-with (arg)
-  (let ((counts (mapcar #'(lambda (x) (cons x (count x *R* :key #'caddr :test #'equal))) *O*)))
-    (car (alexandria::extremum counts #'> :key #'cdr))))
+; (defun has-most-relations-with (arg)
+;   (let ((counts (mapcar #'(lambda (x) (cons x (count x *R* :key #'caddr :test #'equal))) *O*)))
+;     (car (alexandria::extremum counts #'> :key #'cdr))))
 
