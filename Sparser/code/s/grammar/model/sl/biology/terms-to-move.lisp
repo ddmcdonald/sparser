@@ -90,16 +90,38 @@ be biology specific, since they aren't. |#
 ;;  to see if (in the dynamic-model texts) they could be
 ;;  coerced to states in place (which is what bio-predication does)
 (define-category high :specializes predication
-  :restrict ((participant (:or scalar measurement)))
+  :binds ((theme (:or scalar measurement bio-chemical-entity)))
   :realization
   (:adj "high"
-        :s participant))
+        :s theme))
 
 (define-category low :specializes predication
-  :restrict ((participant (:or scalar measurement)))
+  :binds ((theme (:or scalar measurement bio-chemical-entity)))
   :realization
   (:adj "low"
-        :s participant))
+        :s theme))
+
+(define-category noisy :specializes predication
+  :binds ((theme (:or scalar measurement bio-chemical-entity)))
+  :realization
+  (:adj "noisy"
+        :s theme))
+(define-category persistent :specializes predication
+  :binds ((theme (:or scalar measurement bio-chemical-entity)))
+  :realization
+  (:adj "persistent"
+        :s theme))
+(define-category unchanged :specializes predication
+   :binds ((theme (:or scalar measurement bio-chemical-entity)))
+  :realization
+   (:adj "unchanged"
+         :s theme)
+   )
+(define-category transient :specializes predication
+   :binds ((theme (:or scalar measurement bio-chemical-entity)))
+  :realization
+   (:adj "transient"
+         :s theme))
 
 ;; should be bio-level, because it restricts the argument
 ;;  but I don't want to impact parsing and Spire
@@ -174,11 +196,11 @@ be biology specific, since they aren't. |#
    :binds ((ability bio-process))
    :realization (:noun "ability"
                        :adj "able"
-                       :of participant
+                       :of theme
                        :to ability))
 
 (define-category capability :specializes ability
-  :restrict ((participant bio-entity))
+  :restrict ((theme bio-entity))
   :realization (:noun "capability"
                 :adj "capable"
                 :of ability))
@@ -186,18 +208,18 @@ be biology specific, since they aren't. |#
 (adj "common" :super bio-relation
   :realization 
     (:adj "common"
-     :to theme))
+     :to patient))
 (adj "in-common" :super bio-relation
   :adj "in common"
-  :realization (:to theme))
+  :realization (:to patient))
 ;;/// add "with" adjunct ?
 
 (adj "critical" :super bio-relation
   :realization 
     (:adj "critical"
      :adv "critically"
-     :to theme
-     :for theme))
+     :to participant
+     :for participant))
 
 (define-category exclusivity :specializes bio-relation 
   ;; this is actually a lot more general
@@ -252,7 +274,7 @@ be biology specific, since they aren't. |#
   :realization (:noun "threshold"))
 
 (define-category duration :specializes bio-scalar
-  :restrict ((participant (:or process bio-method bio-mechanism)))
+  :binds ((theme (:or process bio-method bio-mechanism)))
   :realization
     (:noun "duration"))
 

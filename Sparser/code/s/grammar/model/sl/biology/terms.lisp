@@ -126,13 +126,13 @@
 (define-category equivalent :specializes bio-relation
   :realization
   (:adj "equivalent" :noun "equivalence"
-	:to theme))
+	:to participant))
 
 (define-category prerequisite :specializes bio-relation
   :realization
   (:adj "prerequisite" ;;deacetylation of GR by HDAC2 may be prerequisite for GR association with the p65–NF-κB–activated complex
 	:noun "prerequisite"
-	:for theme))
+	:for participant))
 
 
 
@@ -145,7 +145,7 @@
                  :specializes bio-relation
   :realization
   (:adj "coincident"
-        :with theme))
+        :with participant))
 
 
 
@@ -389,7 +389,7 @@
 (adj "relative" :super bio-relation
      :restrict ((participant bio-scalar))
      :realization
-     (:to theme))
+     (:to participant))
 
 (adj "strong" :super bio-relation
   :realization 
