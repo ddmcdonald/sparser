@@ -514,10 +514,14 @@
             ;; special case for "matches MEK inhibits ERK" --
             ;;  where we want the embedded sentence created
             (let ((r-triple-rhs (cfr-rhs (triple-rule r-triple))))
-              (not
-               (and (member (cat-name (car r-triple-rhs)) '(np))
-                    (member (cat-name (second r-triple-rhs)) '(vp))
-                    (thatcomp-verb (second l-triple)))))
+              (and
+               (not
+                (and (member (cat-name (car r-triple-rhs)) '(np))
+                     (member (cat-name (second r-triple-rhs)) '(vp))
+                     (thatcomp-verb (second l-triple))))
+               (not
+                (and (member (cat-name (car r-triple-rhs)) '(np))
+                     (member (cat-name (second r-triple-rhs)) '(adjp))))))
             (not (eq 'thatcomp (form-cat-name r-triple-3)))
         
             ;; likely competition against a relative clause or a main clause
@@ -529,7 +533,6 @@
                   (or (eq (second (cfr-referent (triple-rule r-triple))) 'interpret-premod-to-verb)
                       ;;(eq (second (cfr-referent (car r-triple))) 'assimilate-subject-to-vp-ed)
                       )))
-        
             (not (and (member (edge-cat-name (left-edge-of-triple l-triple)) '(be have))
                       (member (form-cat-name r-triple-3) '(vp+ed vp+ing))))
                   
