@@ -115,7 +115,9 @@
      ;; adjective/adjp). We can't know that at this point, so we just
      ;; trust that it will all work out.
      t)
-    (t (let ((i (find-or-make-individual
+    (t 
+     #+ignore
+       (let ((i (find-or-make-individual
                  'copular-predication :predicate copula :value adjective)))
          ;; Note that edge label deliberately is different.
          ;; The idea is have edge category labels that distinguish
@@ -128,7 +130,13 @@
            ;; "to be dominant" is not a VP, but is a to-comp
            (revise-parent-edge :form category::to-comp)
            (revise-parent-edge :form category::vp))
-         i))))
+         i)
+       (progn
+         (if (eq (edge-form (left-edge-for-referent)) category::infinitive)
+           ;; "to be dominant" is not a VP, but is a to-comp
+           (revise-parent-edge :form category::to-comp)
+           (revise-parent-edge :form category::vp))
+         (bind-variable 'aux copula adjective)))))
 #|
   ;; optional edge used in calls from make-this-a-question-if-appropriate
   ;; when there wasn't an edge over the whole span and we're trying
