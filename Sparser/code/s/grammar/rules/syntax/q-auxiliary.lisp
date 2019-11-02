@@ -211,6 +211,12 @@
       ((eq wh (edge-referent left))
        (let ((other (edge-referent (edge-right-daughter wh-edge))))
          (make-wh-object wh :other i)))
+      ((let ((left-left (edge-left-daughter left)))
+         ;;"what genes in the liver"
+         (when left-left
+           (eq wh (edge-referent left-left))))
+       (let ((other (edge-referent (edge-right-daughter wh-edge))))
+         (make-wh-object wh :other i)))
       (t (break "New situation. wh-edge = ~a" wh-edge)))))
 
 

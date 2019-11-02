@@ -32,7 +32,8 @@
                   ((has-wh-determiner? wh) ;; "what proteins"
                    (repackage-wh-determiner wh wh-edge))
                   (t (break "New case of a WH individual: ~a" wh))))
-               (edge (decode-wh (edge-referent wh)))
+               (edge (setq wh-edge wh)
+                     (decode-wh (edge-referent wh)))
                (otherwise (break "unexpected object passed in for wh: ~a" wh)))))
     (let* ((wh-base (decode-wh wh))
            (q (cond ((itypep wh-base 'wh-pronoun)
@@ -46,7 +47,8 @@
                    :form category::s ; question?
                    :referent q
                    :rule (or rule 'make-question-and-edge)
-                   :constituents (list head-edge)
+                   :constituents
+                   (treetops-between start-pos end-pos) ;; (list head-edge)
                   )))
         edge))))
 
@@ -285,27 +287,40 @@
             (make-copular-adjective be adj)))
          (copular-adj-edge
           (when copular-adj
+            (respan-top-edge (third edges) copular-adj
+                             :start-pos start-pos
+                             :end-pos end-pos
+                             :category (edge-category (third edges))
+                             :form category::vg)
+            #+ignore
             (make-edge-over-long-span
              start-pos end-pos
              (itype-of copular-adj)
              :rule 'make-polar-adjective-question
              :form category::adjg ;;question
              :referent copular-adj)))
-         (copular-pred
+         (copular-pred-edge
           (when copular-adj
             (let ((*left-edge-into-reference* (first edges))
-                  (*right-edge-into-reference* copular-adj-edge))
-              (assimilate-subject np copular-adj nil))))
-         (copular-pred-edge
-          (when copular-pred
-            (make-edge-over-long-span
-             start-pos end-pos
-             (itype-of copular-pred)
-             :rule 'make-polar-adjective-question
-             :form category::s
-             :referent copular-pred))))
-    ;; this is bound since make-copular-adjective needs to know the edge for the "BE"
-    ;; to check if it is an infinitive
+                  (*right-edge-into-reference* copular-adj-edge)
+                  (interp (assimilate-subject np copular-adj nil)))
+              (respan-top-edge copular-adj-edge interp
+                               :start-pos start-pos
+                               :end-pos end-pos
+                               :category (itype-of interp)
+                               :form category::s)
+              #+ignore
+              (copular-pred-edge
+               (when copular-pred
+                 (make-edge-over-long-span
+                  start-pos end-pos
+                  (itype-of copular-pred)
+                  :rule 'make-polar-adjective-question
+                  :form category::s
+                  :referent copular-pred))))))
+         ;; this is bound since make-copular-adjective needs to know the edge for the "BE"
+         ;; to check if it is an infinitive
+         )
     (make-polar-edge copular-pred-edge)))
 
 
@@ -739,26 +754,39 @@
 #|
 (p/s "What tissues can I ask about?") ;; da: wh-three-edges+prep 
 |#
+
+(defun wh-modal-s-prep-add-aux ()
+  "dummy for adding as rule-name")
+
 (defun wh-modal-s-prep (wh-edge modal-edge s-edge prep-edge start-pos end-pos)
   (tr :wh-walk 'wh-modal-s-prep)
   (push-debug `(,wh-edge ,modal-edge ,s-edge ,prep-edge))
   ;; pull out the edge we're going to move
   (unless (one-word-long? wh-edge)
     (let* ((displaced-edge (edge-right-daughter wh-edge)) ; tissues
-           (pp-edge (flesh-out-stranded-prep prep-edge displaced-edge))
+           (pp-edge (flesh-out-stranded-prep prep-edge wh-edge))
            (s+pp-rule (multiply-edges s-edge pp-edge)))
+
       (unless s+pp-rule 
         (warn "no rule to compose s+pp: ~a + ~a" s-edge pp-edge)
         nil)
       (when s+pp-rule
         (let* ((s+pp-edge (make-completed-binary-edge s-edge pp-edge s+pp-rule))
                (i (incorporate-displace-aux-into-predicate
-                   modal-edge s+pp-edge :left modal-edge :right s+pp-edge)))               
+                   modal-edge s+pp-edge :left modal-edge :right s+pp-edge)))
+          (respan-new-referent i
+                               :start start-pos
+                               :end end-pos
+                               :head-edge s+pp-edge
+                               :rule 'wh-modal-s-prep-add-aux
+                               :constituents (list s+pp-edge))
+                               
+
           (make-question-and-edge
            i ; statement
            start-pos end-pos
            :head s+pp-edge
-           :wh (edge-left-daughter wh-edge)
+           :wh wh-edge
            :rule 'wh-modal-s-prep))))))
 
 
