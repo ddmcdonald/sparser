@@ -688,8 +688,23 @@ val-pred-var (pred vs modifier - left or right?)
              *current-chunk*
              (member 'ng (chunk-forms *current-chunk*)))
     (push (list (itype-of n)  (itype-of adj)) *premod-adjps*))
-  (when (or adj-edge (itypep adj 'post-adj))
-    (adj-noun-compound adj n adj-edge)))
+  
+  (cond ((when (and (boundp '*right-edge-into-reference*)
+                    *right-edge-into-reference*)
+           ;; e.g. "the transcription factors in common to the SRF and elk1 genes?""
+           (eq (edge-form-name *right-edge-into-reference*) 'adjp))
+         (let ((pred-var (subcategorized-variable adj :subject n)))
+           (when pred-var
+             (if  *subcat-test*
+                  t
+                  (let* ((pred 
+                          (create-predication-and-edge-by-binding-and-insert-edge
+                           pred-var n adj))
+                         (new-n
+                          (bind-dli-variable 'predication pred n)))
+                    new-n)))))
+        ((or adj-edge (itypep adj 'post-adj))
+         (adj-noun-compound adj n adj-edge))))
 
 (defun create-partitive-np (quantifier of-pp)
   (declare (special quantifier of-pp category::preposition))
