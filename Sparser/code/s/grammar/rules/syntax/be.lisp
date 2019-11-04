@@ -364,7 +364,10 @@ assess-edge-label, which rewrites the word as the category BE.
       ;;(lsp-break "lift from prediate")
       i)))
 
-
+;; make this a DA rule, since we want to get the complete parse
+;;  of the NP-like component before doing this
+;; e.g. "Are there any genes stat3 is upstream of?"
+#+ignore
 (loop for n in '(np n-bar proper-noun common-noun common-noun/plural)
    do (def-form-rule/expr `(there-exists ,n)
           ;;/// Because it's a form rule this makes the category of
