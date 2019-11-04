@@ -1672,7 +1672,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
     
     ((itypep vp 'copular-predication)
      (assimilate-subject-for-copular-predication subj vp vp-edge))
-    
+    ((itypep vp 'comparative-attribution)
+     (assimilate-subject-for-comparative-attribution subj vp vp-edge))    
     ((transitive-vp-missing-object? vp vp-edge)
      (unless *subcat-test*
        ;; the edge isn't available and shouldn't be chaged during the test phase
@@ -1763,6 +1764,11 @@ there was an edge for the qualifier (e.g., there is no edge for the
            (apply-copula subj controlled-val)) ;; in syntax/copulars.lisp
           (t (and (null (value-of 'item vp))
                   (apply-copula subj vp))))))
+
+(defun assimilate-subject-for-comparative-attribution (subj vp vp-edge)
+  (bind-variable 'subject subj vp))
+  
+
 
 (defun interpret-control-copula (subj copula subj-edge copula-edge)
   (declare (special subj copula subj-edge copula-edge))
@@ -2238,11 +2244,15 @@ there was an edge for the qualifier (e.g., there is no edge for the
                                     (eq (form-cat-name to-left) 'quantifier))
                            to-left))
              (prep-word (identify-preposition (parent-edge-for-referent)))
-             (wh-obj (cond ((itypep wh 'wh-pronoun) ;; which
-                            (make-wh-object wh))
-                           ((itypep wh 'partitive-relativizer) ;; each of which
-                            wh)
-                           (t wh))))
+             (wh-obj (cond
+                       #+ignore
+                       ;; not sure why this was supposed to help
+                       ;; (make-wh-object wh) needs a :statement
+                       ((itypep wh 'wh-pronoun) ;; which
+                        (make-wh-object wh))
+                       ((itypep wh 'partitive-relativizer) ;; each of which
+                        wh)
+                       (t wh))))
         (cond (left-quant
                (revise-parent-edge :form category::rel-pro-to-be-quantified)
                wh)
