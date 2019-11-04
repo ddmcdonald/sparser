@@ -94,7 +94,8 @@
           ;; handle DEC 33
           ;; "In A375 cells, endogenous C-RAF:B-RAF heterodimers were measurable and inducible
           ;;  following treatment with PLX4720 (Supplementary Fig. 9)."
-          (itypep clause-referent 'copular-predication)
+          (copular-predication-clause? clause clause-referent)
+          
           ;; this trick does NOT work for PP copular-predications
           )
          (setq *edge-spec*
@@ -148,6 +149,13 @@
                nil)))))
 
       *edge-spec*)))
+
+(defun copular-predication-clause? (clause clause-referent)
+  (or 
+   (itypep clause-referent 'copular-predication)
+   ;; we are no longer creating copular-predication
+   ;;  for copular adjecives
+   (adjective-phrase? (edge-right-daughter clause))))
 
 (defun failed-pp-attachment (pp clause-referent)
   (when *show-failed-fronted-pp-attachment*
@@ -2038,4 +2046,23 @@ assumed. |#
         (setf (edge-constituents edge) `(,word-edge))
         ;; (push-debug `(,edge)) (break "look at edge")
         edge))))
+
+
+(define-debris-analysis-rule are-there-np
+  :pattern (there-exists np)
+  :action (:function are-there-np first second))
+
+(defun are-there-np (there-exists np)
+  (declare (special category::there-exists category::np category::s))
+  (cond ((cddr (all-tts))
+         nil)
+        (t
+         (let* ((i (bind-variable 'value
+                                  (edge-referent np)
+                                  (edge-referent there-exists))))
+           (make-edge-spec
+            :category (edge-category there-exists)
+            :form category::s
+            :referent i)))))
+    
 
