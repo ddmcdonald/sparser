@@ -101,7 +101,8 @@
   (let ((re (and (edge-p e)
                  (edge-right-daughter e))))
     (and (edge-p re)
-         (eq category::adjective (edge-form re)))))
+         (or (eq category::adjective (edge-form re))
+             (eq category::adjp (edge-form re))))))
 
 
 (defun that-relative-clause? (ref)
