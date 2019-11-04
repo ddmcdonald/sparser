@@ -30,14 +30,25 @@
                 (cond
                   ((itypep wh 'wh-pronoun) wh)
                   ((has-wh-determiner? wh) ;; "what proteins"
-                   (repackage-wh-determiner wh wh-edge))
+                   ;; don't drop the rest of the NP 
+                    wh ;;(repackage-wh-determiner wh wh-edge)
+                   )
                   (t (break "New case of a WH individual: ~a" wh))))
                (edge (setq wh-edge wh)
                      (decode-wh (edge-referent wh)))
                (otherwise (break "unexpected object passed in for wh: ~a" wh)))))
     (let* ((wh-base (decode-wh wh))
-           (q (cond ((itypep wh-base 'wh-pronoun)
-                     (make-wh-object wh-base :statement statement))
+           (q (cond ((or (itypep wh-base 'wh-pronoun)
+                         ;; as in "what genes"
+                         (has-wh-determiner? wh-base))
+                     (make-wh-object
+                      wh-base
+                      :statement statement
+                      :variable
+                      (loop for binding in (indiv-old-binds statement)
+                            when (eq (binding-value binding) wh-base)
+                            do (return (binding-variable binding)))))
+
                     ((itypep wh-base 'wh-question)
                      (extend-wh-object wh-base :statement statement))
                     (t (break "Unexpected value returned by decode-wh: ~a" wh-base)))))
@@ -806,7 +817,7 @@
     (when pp-edge
       ;; two cases -- regular subcategorization by a head and copulas
       (let* ((main-ref (edge-referent main-edge))
-             (wh (find-wh-element wh-edge))
+             (wh (edge-referent wh-edge)) ;;(find-wh-element wh-edge))
              
              (fringe-edges (right-fringe main-edge)) ;; largest to smallest
              (head-edge (loop for edge in fringe-edges
@@ -820,7 +831,7 @@
                                         predicate preposition wh-item))))      
         (cond
           ((itypep main-ref 'be) ;;// broader?
-           (wh-copula-stranded-prep wh main-edge pp-edge start-pos end-pos))
+           (wh-copula-stranded-prep wh wh-edge main-edge pp-edge start-pos end-pos))
           ((null head-edge)
            ;; If we have the correct head, the variable will have a value.
            ;; /// Else keep moving downward
@@ -889,7 +900,7 @@
              (break "Wrong number of edges to cover"))))))))
 
 ;; (p "what pathways is ERK1 in?")
-(defun wh-copula-stranded-prep (wh main-edge pp-edge start-pos end-pos)
+(defun wh-copula-stranded-prep (wh wh-edge main-edge pp-edge start-pos end-pos)
   "Separate out the main edge (just after the wh-element and ending before
    the preposition) to get a predicate and a focused item for the copular
    predication. We know the main-edge is copular because that was the gate
@@ -908,7 +919,6 @@
         (break "New case in copula-stranded-prep: vg = ~a~%np = ~a"
                vg-edge focal-np-edge))
       (return-from wh-copula-stranded-prep nil))
-
     (let* ((copular-pp-rule (multiply-edges vg-edge pp-edge)))
       ;; N.b. resulting edge will -not- include the focal-np. It was parsed
       ;; as a direct object even though in a question like this it is subject
@@ -939,7 +949,9 @@
                   ;;(break "edge = ~a" s-edge)
                   (make-question-and-edge (edge-referent s-edge)
                                           start-pos end-pos
-                                          :wh wh :head s-edge
+                                          :wh wh
+                                          :wh-edge wh-edge
+                                          :head s-edge
                                           :rule 'wh-copula-stranded-prep)))))
              
              (t ;; we could make the copular-pp edge but the focal np
@@ -1025,7 +1037,7 @@
          q ; statement
          start-pos end-pos
          :head respan-edge
-         :wh wh
+         :wh (edge-referent wh-edge)
          :wh-edge wh-edge
          :rule 'wh-initial-followed-by-modal))))))
  
