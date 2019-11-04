@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "document"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   December 2016
+;;;  Version:   November 2019
 
 ;; initiated 4/25/15 to driving reading from a fully populated
 ;; article object. Continually modifying/adding routines through
@@ -301,7 +301,7 @@
                       *accumulate-content-across-documents*
                       *current-document-element*
                       *current-paragraph*))
-    (install-contents p)
+    (setf (contents p) (install-contents p))
     (let* ((text (content-string p)))
       (initialize-sentences) ;; set up or reuse the 1st sentence
       (paragraph-trace-hook p)
@@ -333,6 +333,7 @@
                       *accumulate-content-across-documents*
                       *current-document-element*
                       *current-paragraph*))
+    (setf (contents title) (install-contents title))
     (initialize-sentences)
     ;; For the setup on the title-text object see
     ;; setup-title-as-sentence-container

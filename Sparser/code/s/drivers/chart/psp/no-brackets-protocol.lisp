@@ -174,8 +174,8 @@
      ;; Dynamically bound by paragraph method for read-from-document
      (let ((s1 (sentence)))
        (unless (prepopulated? s1)
-         ;; If the document's sentences are already there then we're
-         ;; in the pass that creates them.
+         ;; If the document's sentences are not already there then
+         ;; we're in the pass that creates them.
          (let ((*pre-read-all-sentences* t))
            (declare (special *pre-read-all-sentences*))
            (catch 'sentences-finished

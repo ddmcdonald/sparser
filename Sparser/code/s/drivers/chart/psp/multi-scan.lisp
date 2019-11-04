@@ -143,7 +143,7 @@
 (defun eos-sweep-loop (position &aux (word (pos-terminal position)))
   "Subroutine of scan-sentences-and-pws-to-eos that applies if (when ?)
    we get a situation where the polyword check has already been done
-   but we want to return  the same values as the case when we're doing
+   but we want to return the same values as the case when we're doing
    the pw check."
   (loop
     (when (eq word *end-of-source*)
