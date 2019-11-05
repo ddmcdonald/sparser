@@ -537,3 +537,8 @@
     (:subject category::grammatical-subject)
     (:object category::direct-object)
     (otherwise nil)))
+
+(defun takes-thatcomp? (item)
+  ;; the item is one that takes a THATCOMP (e.g. "suggest")
+  ;;  or "evidence"  
+  (itypep item 'bio-thatcomp))
