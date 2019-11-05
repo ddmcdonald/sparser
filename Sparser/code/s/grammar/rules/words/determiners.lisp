@@ -63,6 +63,8 @@
  do that'. When we know what to with them we can add variables to
  model notions like distal vs. proxal.")
 
+(mark-as-form-category (category-named 'demonstrative))
+
 #| The grammar already refers to the demonstratives individually
 by their label as a category. Shifting the type of the category
 is transparent in the grammar but does provide a descriminating
@@ -88,7 +90,7 @@ type for variable restrictions and reference. |#
              (cfr ;; the base rule for the word
                (def-cfr/expr category ;; lhs
                              (list word) ;; rhs
-                 :form (category-named 'det)
+                 :form (category-named 'demonstrative)
                  :referent object)))
         (add-rule cfr object)
         object))))

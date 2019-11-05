@@ -79,6 +79,11 @@
            :form np
            :referent (:function determiner-noun left-edge right-edge)))
      (eval
+      `(def-syntax-rule (demonstrative ,nb) 
+           :head :right-edge
+           :form np
+           :referent (:function determiner-noun left-edge right-edge)))
+     (eval
       `(def-syntax-rule (wh-pronoun ,nb) 
            :head :right-edge
            :form np
@@ -483,7 +488,7 @@
            :referent (:function apply-object-relative-clause left-edge right-edge))))
 
 
-(loop for n in `(np wh-pronoun pronoun ,@*n-bar-categories*) ;; move vp+ing vg+ing to da-rules
+(loop for n in `(np wh-pronoun demonstrative pronoun demonstrative ,@*n-bar-categories*) ;; move vp+ing vg+ing to da-rules
   do
   (loop for v in '(vp vg vp+passive vg+passive vp+past vp+ed
                       ;; vg+ing ;; TO-DO see if this change improves or damages things
@@ -545,7 +550,8 @@
 ;;;--------------
 
 (loop for nb in `(vp+ing vg+ing ;; allow present-participles (gerunds) as objects
-                  np pronoun reflexive/pronoun ,@*n-bar-categories*)
+                         np pronoun reflexive/pronoun
+                         demonstrative ,@*n-bar-categories*)
   do
         (loop for vv in '((vg vp) (vg+ing vp+ing)
                           (vg+ed vp+past) ;; if there is a direct object, then mark the vg+ed as a past tense
@@ -936,7 +942,7 @@
 ;;; PREPOSITIONAL PHRASES
 ;;; ----------------------
 
-(loop for nb in `(np pronoun reflexive/pronoun ,@*n-bar-categories*)
+(loop for nb in `(np pronoun reflexive/pronoun demonstrative ,@*n-bar-categories*)
   do
   (eval 
    `(def-syntax-rule (preposition ,nb)
