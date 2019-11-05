@@ -84,41 +84,44 @@ be biology specific, since they aren't. |#
 ;; (adj "long" :super bio-predication)
 
 
+;; perhaps these should inherit from bio-predication or something
+;;  like that, but they need to have :theme slot, not :participant
+
 |#
 ;; high & low could be replaced by the general definitions
 ;;  on the attribute height, but it would be better
 ;;  to see if (in the dynamic-model texts) they could be
 ;;  coerced to states in place (which is what bio-predication does)
 (define-category high :specializes predication
-  :binds ((theme (:or scalar measurement bio-chemical-entity)))
+  :binds ((theme (:or scalar measurement biological)))
   :realization
   (:adj "high"
         :s theme))
 
 (define-category low :specializes predication
-  :binds ((theme (:or scalar measurement bio-chemical-entity)))
+  :binds ((theme (:or scalar measurement biological)))
   :realization
   (:adj "low"
         :s theme))
 
 (define-category noisy :specializes predication
-  :binds ((theme (:or scalar measurement bio-chemical-entity)))
+  :binds ((theme (:or scalar measurement biological)))
   :realization
   (:adj "noisy"
         :s theme))
 (define-category persistent :specializes predication
-  :binds ((theme (:or scalar measurement bio-chemical-entity)))
+  :binds ((theme (:or scalar measurement biological)))
   :realization
   (:adj "persistent"
         :s theme))
 (define-category unchanged :specializes predication
-   :binds ((theme (:or scalar measurement bio-chemical-entity)))
+   :binds ((theme (:or scalar measurement biological)))
   :realization
    (:adj "unchanged"
          :s theme)
    )
 (define-category transient :specializes predication
-   :binds ((theme (:or scalar measurement bio-chemical-entity)))
+   :binds ((theme (:or scalar measurement biological)))
   :realization
    (:adj "transient"
          :s theme))
