@@ -1944,6 +1944,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (when *subcat-test*
     (unless (and vg obj
                  ;; block attaching NP to VP as object when we have evidence for aux inversion
+                 ;;(not (itypep vg 'be))
+                 (not (and (itypep obj 'that)
+                           (takes-thatcomp? vg)))
                  (not (and (or (itypep vg 'be)
                                (itypep vg 'have)
                                (itypep vg 'do))
