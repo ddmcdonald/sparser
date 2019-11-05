@@ -183,22 +183,41 @@
    independent problem. That whole expression becomes the 'value'
    of the there-exists."
   (tr :wh-walk "there-question/stranded-prep")
-  (let* ((there-ref (edge-referent is-there-edge))
+  (let* ((*rule-being-interpreted* 'there-question/stranded-prep)
+         (there-ref (edge-referent is-there-edge))
          (s-ref (edge-referent s-edge))
-         (focus-edge (edge-right-daughter is-there-edge)) ;;/// check
+         (focus-edge
+          (cond ((edge-p (edge-right-daughter is-there-edge))
+                 (edge-right-daughter is-there-edge))
+                ((consp (edge-constituents is-there-edge))
+                 (car (last (edge-constituents is-there-edge))))
+                ))                           ;;/// check
          (focus (value-of 'value there-ref)) ;; "any genes"
          (pp-edge (flesh-out-stranded-prep prep-edge focus-edge)))
+         
+    (declare (special *rule-being-interpreted*))
     
     (let ((rule (multiply-edges s-edge pp-edge))) ; e.g. be+pp for copular pp
       ;;/// looking at the type of the s-ref might guide us to the choice of rule.
       (when rule
-        (let ((statement-edge (make-completed-binary-edge
-                               s-edge pp-edge rule)))
-          (make-edge-over-question
-           'there-question/stranded-prep ; rule-label
-           (edge-referent statement-edge) ; i
-           statement-edge ; head (source of final category
-           start-pos end-pos))))))
+        (let* ((statement-edge (make-completed-binary-edge
+                                s-edge pp-edge rule))
+               (statement (edge-referent statement-edge))
+               (there-exists
+                (find-or-make-individual
+                 'there-exists
+                 :value (edge-referent focus-edge)
+                 :predicate statement))
+               (there-exists-edge
+                (respan-edge-for-new-referent
+                 statement-edge
+                 there-exists)))
+          
+          (make-polar-question-edge
+           category::s
+           'there-question/stranded-prep
+           there-exists start-pos end-pos
+           ))))))
          
 
 
@@ -298,28 +317,30 @@
             (make-copular-adjective be adj)))
          (copular-adj-edge
           (when copular-adj
+            #+ignore
             (respan-top-edge (third edges) copular-adj
                              :start-pos start-pos
                              :end-pos end-pos
                              :category (edge-category (third edges))
                              :form category::vg)
-            #+ignore
             (make-edge-over-long-span
              start-pos end-pos
-             (itype-of copular-adj)
-             :rule 'make-polar-adjective-question
-             :form category::adjg ;;question
+             (edge-category (third edges))
+             :rule 'make-polar-adjective-question-1
+             :form category::vg ;;question
              :referent copular-adj)))
          (copular-pred-edge
           (when copular-adj
             (let ((*left-edge-into-reference* (first edges))
                   (*right-edge-into-reference* copular-adj-edge)
                   (interp (assimilate-subject np copular-adj nil)))
-              (respan-top-edge copular-adj-edge interp
-                               :start-pos start-pos
-                               :end-pos end-pos
-                               :category (itype-of interp)
-                               :form category::s)
+              (make-edge-over-long-span
+               start-pos
+               end-pos
+               (itype-of interp)
+               :referent interp
+               :rule 'make-polar-adjective-question-2
+               :form category::s)
               #+ignore
               (copular-pred-edge
                (when copular-pred
@@ -332,6 +353,7 @@
          ;; this is bound since make-copular-adjective needs to know the edge for the "BE"
          ;; to check if it is an infinitive
          )
+    (declare (special copular-adj))
     (make-polar-edge copular-pred-edge)))
 
 
