@@ -280,9 +280,15 @@
          (cond
            ((and (= 3 (length edges))
                  (edge-p (second edges)))
-            (unless (edge-used-in wh-initial?)
+            ;; we are allowing for "which of these" here
+            ;;  in which case, the wh-initial?
+            ;;  is incorporated in the first edge
+            ;;(unless (edge-used-in wh-initial?)
             ;; major dispatch point depending on what it finds
-              (wh-initial-three-edges wh-initial? edges start-pos end-pos)))
+            (wh-initial-three-edges (first edges) ;;wh-initial?
+                                    edges start-pos end-pos)
+            ;;)
+            )
 
            ((and (= 4 (length edges))
                  (itypep (edge-referent (second edges)) 'do))
