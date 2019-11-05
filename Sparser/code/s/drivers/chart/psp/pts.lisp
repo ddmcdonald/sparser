@@ -109,8 +109,9 @@
          (segment-finished :null-span))
 
         (:one-edge-over-entire-segment
-         (when *chunk-sentence-into-phrases*
-           (ensure-edge-consistent-with-chunk))
+         ;;(when *chunk-sentence-into-phrases*
+         (ensure-edge-consistent-with-chunk)
+         ;;)
          (segment-finished :one-edge-over-entire-segment)
          ;; want to do full parsing, so that we can distinguish NG and VG chunks
          ;; can have a chunk over a plural-noun and verb+present (like "increases")
@@ -145,7 +146,7 @@
   "Remove treetop edges that don't go with the chunk"
   (declare (special *current-chunk*))
   (when (member (chunk-forms *current-chunk*)
-                '((ng) (vg)) :test #'equal)
+                '((ng) (vg)(adjg)) :test #'equal)
     (let* ((segment-treetops 
             (treetops-in-segment (chunk-start-pos *current-chunk*)
                                  (chunk-end-pos *current-chunk*)))
