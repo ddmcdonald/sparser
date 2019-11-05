@@ -2054,15 +2054,16 @@ assumed. |#
 
 (defun are-there-np (there-exists np)
   (declare (special category::there-exists category::np category::s))
-  (cond ((cddr (all-tts))
-         nil)
-        (t
-         (let* ((i (bind-variable 'value
-                                  (edge-referent np)
-                                  (edge-referent there-exists))))
-           (make-edge-spec
-            :category (edge-category there-exists)
-            :form category::s
-            :referent i)))))
+  ;;(cond ((cddr (all-tts)) nil) ;; don't know if this test is really needed
+  ;;(t
+  (let* ((i (bind-variable 'value
+                           (edge-referent np)
+                           (edge-referent there-exists))))
+    (make-edge-spec
+     :category (edge-category there-exists)
+     :form category::s
+     :referent i))
+  ;;))
+  )
     
 
