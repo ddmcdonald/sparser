@@ -213,7 +213,9 @@ with something else
 
 (noun "natural growth conditions" :super experimental-condition)
 (define-category presence :specializes experimental-condition
-  :binds ((measurement (:or measurement bio-scalar)))
+  :binds ((measurement
+           (:or biological ;; can be "in the presence of of HRAS V12"
+                measurement bio-scalar)))
   :realization
   (:noun "presence"
 	 :of measurement))
