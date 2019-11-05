@@ -52,14 +52,14 @@
                  :realization (:adj "downstream"))
 (define-category downstream-segment :specializes pathway-segment
     :realization
-  (:noun ("downstreamx" :plural "downstreams")))
+  (:noun ("downstream" :plural "downstreams")))
 
 (define-category upstream :specializes pathway-direction
      :realization (:adj "upstream"))
 
 (define-category upstream-segment :specializes pathway-segment
     :realization
-  (:noun ("upstreamx" :plural "upstreams")))
+  (:noun ("upstream" :plural "upstreams")))
 
 ;;(def-synonym downstream (:noun ("downstreams" :plural "downstreamsxxx")))
 ;;(def-synonym upstream (:noun ("upstreams" :plural "upstreamsxxx")))
