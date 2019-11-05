@@ -122,11 +122,13 @@
                          attribute-var
                          (value-of 'variable wh))))
     (let ((q (define-an-individual
-                 (if (or attribute other)
+                 (if attribute ;; not other (catches "which genes" as an attribute!)
                    'wh-question/attribute 'wh-question)
-                 :wh wh
                  :var var-to-use
                  :statement statement)))
+      ;; for some reason, putting the binding of :wh in the define-an-individual
+      ;;  loses the individual for wh and puts in the category
+      (setq q (bind-variable 'wh wh q))
       (when embedded
         ;; If we are an interior wh-clause, then we are going to 
         ;; compose with something, and it will be important to expose
