@@ -11,10 +11,11 @@
 (defun absorb-parentheses ()
   "Run at the beginning of interp-big-mech-chunk"
   (let ((paren-pair (loop for ttl on (treetops-in-current-chunk)
-                       when (and (setq tt (second ttl))
-                                 (edge-p tt)
-                                 (category-p (edge-category tt))
-                                 (eq (cat-name (edge-category tt)) 'parentheses))
+                          when (let ((tt (second ttl)))
+                                 (and tt
+                                      (edge-p tt)
+                                      (category-p (edge-category tt))
+                                      (eq (cat-name (edge-category tt)) 'parentheses)))
                        do (return ttl))))
     ;;/// need to handle interior of parens as in
     ;; "a class ii (inactive conformation binder) drug"
@@ -44,6 +45,8 @@
    ((null (edge-form edge)))
    ((equal (chunk-forms chunk) '(vg))
     (member (cat-symbol (edge-form edge)) *vg-word-categories*))
+   ((equal (chunk-forms chunk) '(adjg))
+    (member (cat-symbol (edge-form edge)) *adjg-word-categories*))
    ((equal (chunk-forms chunk) '(ng))
     (not (member (cat-symbol (edge-form edge)) *vg-word-categories*)))
    (t t)))
