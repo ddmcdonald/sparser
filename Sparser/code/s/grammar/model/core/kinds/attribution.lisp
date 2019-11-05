@@ -260,11 +260,21 @@ be added to attribute so it knows how to handle the individuals.
          (defun ,instance-maker (string &key dir er est)
            (let ((*inhibit-constructing-comparatives* t))
              (declare (special *inhibit-constructing-comparatives*))
+
+             #+ignore ; original - everything's a class instance
              (let ((i (define-or-find-individual ',attibute-field-name
                           :name string)))
                (make-corresponding-mumble-resource (value-of 'name i) :adjective i)
                (setup-comparatives i dir er est)
-               i )))
+               i )
+             
+             (let ((c ;; need a tailored one that bind a var for the subject
+                    (define-adjective string
+                        :super-category ',attibute-field-name
+                        :rule-label ',attibute-field-name)))
+               ;;(make-corresponding-mumble-resource (value-of 'name i) :adjective i)
+               (setup-comparatives c string dir er est)
+               c )))
      #| This defined an attribute-specific function for defining
         its values. Given that attribute values are essentially
         always adjectives this def function also does the work of

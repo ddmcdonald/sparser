@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,2014-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2014-2019  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "comparatives"
 ;;;    Module:   "grammar;rules:syntax:"
-;;;   Version:   January 2017
+;;;   Version:   November 2019
 
 ;; initiated 7/29/94. 10/24/94 added defdata
 ;; 7/20/14 Added a lemma for "comparative"
@@ -18,14 +18,70 @@ be able to take that attribute (e.g. it isa 'has-size'). The attribute,
 e.g. size, is scalar. Comparative also convey the 'direction' of the
 difference from the reference set. Trips says 'orientation'. 
 
-abstract > region > 
-   attribute-value > size-value >
-      comparative-size-value > bigger
+abstract > abstract-region > 
+   attribute-value > size-value > big > bigger
 |#
+
+;;;----------------------------------
+;;; comparative adjective contructor
+;;;----------------------------------
+
+(defun setup-comparatives (base-adj base-pname direction-flag er est)
+  "Called from the define function of an attribute (e.g. define-size)
+   after the category for the  attribute-value ('base-adj') has been
+   created. Make categories for the comparative ('er') and superlative ('est')
+   forms. The morphology routines for constructing these words
+   by rule is not particularly good at it, so for that reason
+   and because some comparative paradigms are irregular, there is
+   a provision to pass the strings for 'er' and 'est' in explicitly.
+   Note that since we're using define-function-term to do all the heavy lifting
+   that we get an individual along with the category, and that individual
+   is the referent of the constructed rule."
+  (declare (special category::up category::down
+                    category::comparative category::superlative
+                    *comparative-brackets*))
+  (unless direction-flag ;; reasonable default
+    (setq direction-flag :+))
+  (let* ((direction (ecase direction-flag (:+ :more) (:- :less)))
+         (base-word (word-named base-pname))
+         (er-word
+          (if er
+            (resolve/make er)
+            (make-comparative/superlative
+             base-word :suffix "er" :y-suffix "ier")))
+         (est-word
+          (if est
+            (resolve/make est)
+            (make-comparative/superlative
+             base-word :suffix "est" :y-suffix "iest"))))
+
+    (multiple-value-bind (er-category er-indiv er-rule)
+        (define-function-term est-word 'comparative-adjective
+          :super-category (cat-name base-adj)
+          :mixins '(comparative)
+          :rule-label 'comparative)
+
+      (multiple-value-bind (est-category est-indiv est-rule)
+          (define-function-term est-word 'superlative-adjective
+            :super-category (cat-name base-adj)
+            :mixins '(superlative)
+            :rule-label 'superlative)
+        
+        (values er-category er-indiv er-rule
+                est-category est-indiv est-rule)))))
+
+
 ;;;-----------------
 ;;; base categories
 ;;;-----------------
 
+(define-mixin-category comparative
+  ;; inherits name, attribute variables from attribute-value
+  :specializes attribute-value
+  :binds ((direction) ;; more/less
+          ))
+
+#+ignore
 (define-category  comparative
   :specializes attribute-value
   :instantiates nil
@@ -45,6 +101,10 @@ abstract > region >
   :index (:permanent :key name)
   :realization (:word name))
 
+(define-mixin-category superlative
+    :specializes comparative)
+
+#+ignore
 (define-category superlative
   :specializes comparative
   :documentation "Not different from comparative in any
@@ -184,71 +244,6 @@ is seen.
       comparative)))
 
 
-;;;----------------------------------
-;;; comparative adjective contructor
-;;;----------------------------------
-
-(defun setup-comparatives (i direction-flag er est)
-  "Called from the define function of an attribute (e.g. define-size)
-   after the attribute-value ('i') has been defined (see define-attribute).
-   This makes a category and rule for the comparative ('er') and
-   superlative ('est') forms, getting its base word from the
-   name binding on i. The morphology routines for constructing the words
-   by rule is not particularly good at it, so for that reason
-   and because some comparative paradigms are irregular, there is
-   a provision to pass the strings for 'er' and 'est' in explicitly."
-  (declare (special category::up category::down
-                    category::comparative category::superlative
-                    *comparative-brackets*))
-  (unless direction-flag ;; reasonable default
-    (setq direction-flag :+))
-  
-  (let* ((direction (ecase direction-flag (:+ :more) (:- :less)))
-         (base-word (value-of 'name i))
-         (er-word
-          (if er
-            (resolve/make er)
-            (make-comparative/superlative
-             base-word :suffix "er" :y-suffix "ier")))
-         (est-word
-          (if est
-            (resolve/make est)
-            (make-comparative/superlative
-             base-word :suffix "est" :y-suffix "iest")))
-         (attribute (value-of 'attribute (itype-of i)))
-         (comparative (value-of 'comparative attribute)))
-    (unless comparative
-      ;; makes all the needed specific categories
-      (setq comparative (specialize-comparative attribute)))
-
-    (let* ((superlative (value-of 'superlative attribute))
-           (c-referent-category
-            (ecase direction
-              (:more (value-of 'more comparative))
-              (:less (value-of 'less comparative))))
-           (s-referent-category
-            (ecase direction
-              (:more (value-of 'more superlative))
-              (:less (value-of 'less superlative))))
-           (c-indiv (define-or-find-individual
-                        c-referent-category :name er-word))
-           (s-indiv (define-or-find-individual
-                        s-referent-category :name est-word)))
-      ;; n.b. the define calls make the unary rules
-      ;; and store them on the plist of the individual
-
-      ;; copy the words to the plist of the base word for ease of inspection
-      (setf (get-tag :comparative base-word) er-word)
-      (setf (get-tag :superlative base-word) est-word)
-
-      (switch-form-to-comparative er-word)
-      (switch-form-to-superlative est-word)
-      (modify-comparatives-rule-labels base-word er-word est-word)
-
-      (assign-brackets-to-word er-word *comparative-brackets*)
-      (assign-brackets-to-word est-word *comparative-brackets*)
-
-      (values c-indiv s-indiv))))
 
 
 #| These two function compensate for not having comparative

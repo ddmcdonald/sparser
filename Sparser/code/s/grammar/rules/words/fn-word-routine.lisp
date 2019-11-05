@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "fn word routine"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   April 2019
+;;;   Version:   November 2019
 
 ;; 0.1 (12/17/92 v2.3) redid the routine so it was caps insensitive and handled
 ;;      bracketing.
@@ -111,7 +111,7 @@
                              &key  brackets super-category
                                    rule-label discriminator
                                    tree-families subcat-info
-                                   word-variable
+                                   word-variable mixins
                                    documentation)
   "Does for deliberately defined modifiers the same thing as is done for
    Comlex or morphologically identified nouns or verbs in grammar/rules/
@@ -188,6 +188,7 @@
               (define-category/expr category-name  ;; e.g. 'only'
                   `(:specializes ,super-category
                     :instantiates nil
+                    :mixins ,mixins
                     :rule-label ,effective-rule-label
                     :bindings (,word-variable ,word)
                     :documentation ,documentation))))
