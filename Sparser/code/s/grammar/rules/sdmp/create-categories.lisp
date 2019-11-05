@@ -116,7 +116,8 @@
           category::common-noun
           category::common-noun/plural
           category::np-head
-          category::det) ;; "that"
+          category::det
+          category::demonstrative) ;; "that"
 	 (setf (edge-form edge) category::np))
 
         (category::comparative
