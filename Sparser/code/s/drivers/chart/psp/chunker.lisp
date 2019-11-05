@@ -724,6 +724,11 @@ than a bare "to".  |#
           ((and (sentence-initial? e)
                 (eq (form-cat-name e) 'wh-pronoun))
            t)
+          ((and (eq (edge-cat-name e) 'that)
+                (edge-p (edge-just-to-left-of e))
+                (takes-thatcomp?
+                 (edge-referent (edge-just-to-left-of e))))
+           nil)
           ((verb-premod-sequence? (edge-just-to-right-of e))
            nil)
           ((eq (edge-cat-name e) 'not)
@@ -859,6 +864,13 @@ than a bare "to".  |#
      (not (eq (edge-cat-name e) 'that))
      (not (and (boundp '*chunk*)
                (proper-noun-plural-modifier? e *chunk*)))
+     (not (and (boundp '*chunk*)
+               (member (edge-cat-name e)
+                       '(upstream-segment downstream-segment))
+               (not (eq (form-cat-name e) 'common-noun/plural))
+               (not (and (edge-p (edge-just-to-left-of e))
+                         (eq (form-cat-name (edge-just-to-left-of e))
+                             'det)))))
      #+ignore ;; this rule is not quite right
      ;; since we can get "cancer" and "phosphorylation"
      (not (and (boundp '*chunk*)
@@ -1034,7 +1046,9 @@ than a bare "to".  |#
           (let ((before (edges-before e)))
             (loop for ee in before
                   never
-                    (member (form-cat-name ee) '(proper-noun np ng verb+ed adjective)))))
+                    (member (form-cat-name ee)
+                            '(proper-noun common-noun common-noun/plural
+                              np ng verb+ed adjective)))))
          (following-adj ;; FOLLOWING is treated as an adj
           (prev-noun-or-adj e))
          (adverb
