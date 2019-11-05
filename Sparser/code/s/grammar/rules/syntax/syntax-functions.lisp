@@ -763,7 +763,8 @@ val-pred-var (pred vs modifier - left or right?)
         ;; quantity, approximator, etc. Pull them out of the
         ;; modifiers dossier. 
 
-	(unless (determiner? det-word) ;; anticipated cases
+	(unless (or (determiner? det-word)
+                    (itypep determiner 'demonstrative));; anticipated cases
 	  (pushnew determiner *dets-seen*))
         
         (when (definite-determiner? determiner)
