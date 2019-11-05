@@ -387,7 +387,7 @@
   (ecase form 
     (ng (if (sentential-adverb? edge)
             (loop for ee in (edges-before edge)
-                  thereis (member (form-cat-name ee) '(det possessive)))
+                  thereis (member (form-cat-name ee) '(det demonstrative possessive)))
             (ng-compatible? edge ev-list)))
     (vg (and
          (compatible-with-vg? edge)
@@ -518,7 +518,7 @@
 (defun non-det-or-verb-ng-start? (ee)
   (and (edge-p ee)
        (ng-start? ee)
-       (not (member (form-cat-name ee) '(det verb+ed verb+ing)))))
+       (not (member (form-cat-name ee) '(det demonstrative verb+ed verb+ing)))))
 
 (defun np-end-edge (ee)
   (member (form-cat-name ee) '(proper-noun pronoun)))
@@ -834,9 +834,10 @@ than a bare "to".  |#
   (let* ((det-ev? (when (boundp '*chunk*)
                     (car (last (chunk-ev-list *chunk*)))))
          (det (when (and (eq (type-of det-ev?) 'edge-vector)
-                        (eq 'det
-                            (form-cat-name
-                             (car (ev-edges det-ev?)))))
+                         (member
+                           (form-cat-name
+                            (car (ev-edges det-ev?)))
+                          '(det demonstrative)))
                 (car (ev-edges det-ev?)))))
     (member (edge-cat-name det)
             '(these those))))
@@ -855,13 +856,14 @@ than a bare "to".  |#
      ;;  into "the genes" "STAT3" "regulates"
      (not (and (boundp '*chunk*)
                (proper-noun-reduced-relative? e *chunk*)))
+     (not (eq (edge-cat-name e) 'that))
      (not (and (boundp '*chunk*)
                (proper-noun-plural-modifier? e *chunk*)))
      #+ignore ;; this rule is not quite right
      ;; since we can get "cancer" and "phosphorylation"
      (not (and (boundp '*chunk*)
                (singular-common-noun-no-determiner? e *chunk*)))
-
+     
      (not (and (member (edge-cat-name e) '(measurement #|n-fold|#))
                (boundp '*chunk*)
                (chunk-final-edge? e *chunk*)
@@ -881,7 +883,8 @@ than a bare "to".  |#
                      thereis
                        (or (eq (edge-category ee) word::comma)
                            (member (form-cat-name ee)
-                                   '(quantifier det adverb punctuation))))))
+                                   '(quantifier det demonstrative
+                                     adverb punctuation))))))
         
       (unless (or (preceding-adverb e edges-before)
                   (some-edge-satisfying? (all-edges-at e) #'preposition-edge?)
@@ -939,7 +942,7 @@ than a bare "to".  |#
           ((ng-head? (edge-form e)) t)
           
           ((and
-            (eq category::det (edge-form e))
+            (eq category::demonstrative (edge-form e))
             (member (edge-cat-name e) '(that this these those))))))))))
 
 
@@ -1027,6 +1030,11 @@ than a bare "to".  |#
       
       (t
        (case eform
+         (demonstrative
+          (let ((before (edges-before e)))
+            (loop for ee in before
+                  never
+                    (member (form-cat-name ee) '(proper-noun np ng verb+ed adjective)))))
          (following-adj ;; FOLLOWING is treated as an adj
           (prev-noun-or-adj e))
          (adverb
@@ -1046,7 +1054,8 @@ than a bare "to".  |#
                 
                 ((loop for edge in edges 
                     thereis (member (form-cat-name edge)
-                                    '(det quantifier adjective
+                                    '(det demonstrative
+                                      quantifier adjective
                                       comparative-adjective superlative-adjective))))))
          (verb+ed
           ;;"RNA interference (RNAi) blocked MEK/ERK activation."
@@ -1055,7 +1064,8 @@ than a bare "to".  |#
           ;; too tight, but probably OK
           ;; blocks "interaction eventually influencing ecm - driven cell motility"
           )
-         (t (if (preceding-adverb-preceded-by-ng edges)
+         (t 
+            (if (preceding-adverb-preceded-by-ng edges)
                 nil
                 (and (not (verb-premod-sequence? (edge-just-to-right-of e)))
                      (ng-compatible? (edge-form e) edges)))))))))
@@ -1496,10 +1506,11 @@ than a bare "to".  |#
      thereis (det-prep-poss-or-adj? ee)))
 
 (defun det-prep-poss-or-adj? (ee)
-  (or (member (form-cat-name ee) '(det possessive adjective
-                                          comparative-adjective superlative-adjective
-                                          number
-                                          verb+ed verb+ing))
+  (or (member (form-cat-name ee) '(det demonstrative
+                                   possessive adjective
+                                   comparative-adjective superlative-adjective
+                                   number
+                                   verb+ed verb+ing))
       (preposition-edge? ee)))
 
 
@@ -1537,7 +1548,7 @@ than a bare "to".  |#
 
 (defun preceding-determiner? (e &optional (edges (edges-before e)))
   (loop for ee in edges
-     thereis (or (member (form-cat-name ee) '(det quantifier))
+     thereis (or (member (form-cat-name ee) '(det demonstrative quantifier))
                  (wh-determiner? ee))))
 
 (defun followed-by-verb (e &optional (edges-after (edges-after e)))
