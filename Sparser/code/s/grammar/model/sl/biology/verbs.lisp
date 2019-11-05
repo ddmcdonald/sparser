@@ -1675,3 +1675,11 @@
 (def-synonym yield (:noun "yield"))
 
 
+;;; verbs for clic
+(define-category undo :specializes process
+  :mixins (simple-action)
+  :realization
+  (:verb "undo"
+         :etf (svo)))
+
+(def-synonym undo (:noun "revert"))
