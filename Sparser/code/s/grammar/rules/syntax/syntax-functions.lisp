@@ -1953,7 +1953,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
                                (if (itypep vg 'do)
                                    (eq (form-cat-name edge-to-right) 'vg)
                                    (member (form-cat-name edge-to-right)
-                                           '(vg+ed vp+ed vg+ing vp+ing))))))))
+                                           '(vg+ed vp+ed vg+ing vp+ing
+                                             adjective))))))))
       (return-from assimilate-np-to-v-as-object nil)))
   
   (when (is-non-anaphor-numeric? *right-edge-into-reference* obj)
@@ -2279,7 +2280,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (if *subcat-test*
       (and wh-pp vp
            (variable-to-bind-pp-to-head (left-edge-for-referent) vp)
-           (find-subcat-var (value-of 'wh (value-of 'pobj wh-pp))
+           (find-subcat-var (value-of 'pobj wh-pp) ;;(value-of 'wh (value-of 'pobj wh-pp))
                             (value-of 'prep wh-pp)
                             vp)
            (or (not (edge-p (edge-to-its-left left)))
