@@ -10,13 +10,16 @@
 
 (in-package :sparser)
 
-#| The predicate that's based on comparative adjectives (or superlatives)
-makes a statement about the value of some attribute of its open argument 
-that compares it to those values on some reference set. When applied to
-an individual to form a predication that 'subject' individual must
-be able to take that attribute (e.g. it isa 'has-size'). The attribute,
-e.g. size, is scalar. Comparative also convey the 'direction' of the
-difference from the reference set. Trips says 'orientation'. 
+#| A predication based on a comparative adjective (or superlative)
+makes a statement about the value of some attribute (e.g. size) of
+its 'subject' that compares it to the values of that attribute
+in some reference set. 
+
+That 'subject' individual must be able to take that attribute (e.g. it
+isa 'has-size'). The attribute, e.g. size, is scalar. 
+
+Comparatives also convey the 'direction' of the difference from 
+the reference set. Trips calls that 'orientation'.
 
 abstract > abstract-region > 
    attribute-value > size-value > big > bigger
@@ -26,24 +29,27 @@ abstract > abstract-region >
 ;;; comparative adjective contructor
 ;;;----------------------------------
 
-(defun setup-comparatives (base-adj base-pname direction-flag er est)
+;; TO-DO (11/5/19)
+;;   Figure out how to handle direction
+;;   Put make the mumble resource for the adj in the attribution
+
+(defun setup-comparatives (base-adj attribute-name base-pname
+                           direction-flag er est)
   "Called from the define function of an attribute (e.g. define-size)
    after the category for the  attribute-value ('base-adj') has been
    created. Make categories for the comparative ('er') and superlative ('est')
-   forms. The morphology routines for constructing these words
-   by rule is not particularly good at it, so for that reason
-   and because some comparative paradigms are irregular, there is
-   a provision to pass the strings for 'er' and 'est' in explicitly.
+   forms that inherit from that base. 
+
+   The morphology routines for constructing these words by rule is not
+   particularly good at it, so for that reason and because some
+   comparative paradigms are irregular, there is a provision to pass
+   the strings for 'er' and 'est' in explicitly.
+
    Note that since we're using define-function-term to do all the heavy lifting
-   that we get an individual along with the category, and that individual
+   we get an individual along with the category, and that individual
    is the referent of the constructed rule."
-  (declare (special category::up category::down
-                    category::comparative category::superlative
-                    *comparative-brackets*))
-  (unless direction-flag ;; reasonable default
-    (setq direction-flag :+))
-  (let* ((direction (ecase direction-flag (:+ :more) (:- :less)))
-         (base-word (word-named base-pname))
+  
+  (let* ((base-word (word-named base-pname))
          (er-word
           (if er
             (resolve/make er)
@@ -54,19 +60,23 @@ abstract > abstract-region >
             (resolve/make est)
             (make-comparative/superlative
              base-word :suffix "est" :y-suffix "iest"))))
-
+    
     (multiple-value-bind (er-category er-indiv er-rule)
-        (define-function-term est-word 'comparative-adjective
+        (define-function-term er-word 'comparative-adjective
           :super-category (cat-name base-adj)
+          :bindings `(attribute ',attribute-name)
           :mixins '(comparative)
           :rule-label 'comparative)
 
       (multiple-value-bind (est-category est-indiv est-rule)
           (define-function-term est-word 'superlative-adjective
             :super-category (cat-name base-adj)
+            :bindings `(attribute ',attribute-name)
             :mixins '(superlative)
             :rule-label 'superlative)
-        
+
+        (set-direction direction-flag base-adj er-category est-category)
+
         (values er-category er-indiv er-rule
                 est-category est-indiv est-rule)))))
 
@@ -75,48 +85,52 @@ abstract > abstract-region >
 ;;; base categories
 ;;;-----------------
 
+;; comparative is defined in categories.lisp as a form category,
+;; which happens to make it a referential-category.
+;;/// Consider having define-mixin-category rework the object to fit
+
 (define-mixin-category comparative
-  ;; inherits name, attribute variables from attribute-value
+  ;; inherits the variable name and attribute from attribute-value
   :specializes attribute-value
   :binds ((direction) ;; more/less
-          ))
-
-#+ignore
-(define-category  comparative
-  :specializes attribute-value
-  :instantiates nil
-  :documentation "Functionally this is a mixin since
- it is the super class of every specific comparative 
- category. Comparatives are a particular kind of attribute
+          (reference-set)) ;; holds what we're comparing it to
+  :documentation "This is included in (mixed into) every comparative.
+ Comparatives are a particular kind of attribute
  value, so their principal link is to the attribute they
  correspond to, and their second is to the direction
  on the scalar dimension of the attribute that they
  pick out (Trips calls this 'orientation'). They naturally
  fall into contrastive pairs ('larger', 'smaller'), but
  that's a property of the attribute rather than the
- particular comparative." 
-  ;; inherits name, attribute variables from attribute-value
-  :binds ((more :primitive category) ;; a custom direction-of-comparison
-          (less :primitive category))
-  :index (:permanent :key name)
-  :realization (:word name))
+ particular comparative.
+   Even as a bare adjective, a comparative is implicitly relative
+ to some 'reference-set'. That variable is bound when the
+ comparative is in composition with than phrase.")
 
 (define-mixin-category superlative
-    :specializes comparative)
-
-#+ignore
-(define-category superlative
   :specializes comparative
   :documentation "Not different from comparative in any
     germane respect")
 
+
+;;--- direction
+
+(defun set-direction (direction-flag base-class er-class est-class)
+  (unless direction-flag ;; reasonable default
+    (setq direction-flag :+))
+  (let ((direction (ecase direction-flag (:+ :more) (:- :less))))
+    ;;/// so how do we encode this in a useful way
+    ))
+#+ignore  ;; needs redesign
 (define-category direction-of-comparison
-  :specializes comparative
+  :specializes comparative 
   :documentation "Nothing neeeds to be done here
     other than provide a distinguishing name
     that we can attach inferences to.")
+#+ignore
 (define-category more-than ;; => 'more' once they're done right
-  :specializes direction-of-comparison)
+    :specializes direction-of-comparison)
+#+ignore
 (define-category less-than ;; => 'less'
     :specializes direction-of-comparison)
 
@@ -125,9 +139,16 @@ abstract > abstract-region >
 ;;; relations over comparatives
 ;;;-----------------------------
 
+;;--- "a bigger block"
+;; Done by comparative-adj-noun-compound
+;; If comparative derives from an attribute that determines what variable
+;; to bind on the head, otherwise we treat it as though it was
+;; a copula ("the block is bigger") -- interpret the head as the adjective's
+;; head and connect them via a predication.
+
 #| Functionally a comparative (or superlative) is an adjective
 that modifies some nominal head, as in "a bigger block".
-  -- That composition is done by comparative-adj-noun-compound,
+  -- That composition is done by ,
   which uses variable-for-attribute to see what variable to
   bind (e.g. 'size'). The value that's bound is a new instance
   (individual) of comparative-attribution. This is where the
@@ -145,10 +166,10 @@ head to form a comparative-predication. The syntax function
 is maybe-extend-comparative-with-than-np, which has to do
 a bit of digging to find the comparative-attribution since
 the np for "a bigger block" is interpreted before the than phrase
-is seen. 
+is seen.  |#
 
-|#
 ;; "bigger than a breadbox"
+#+ignore ;; move the reference-set up to comparative
 (define-category comparative-attribution
   :specializes quality-value-predicate
   :documentation "This represents the 
@@ -180,10 +201,13 @@ is seen.
   comparative with an an adjective.")
 
 
-;;;-------------------------------
-;;; derived-category constructors
-;;;-------------------------------
+;;;-------- Earler way to doing these that's not used any longer.
+;;;    Retained to mine the old ideas
 
+
+
+
+#+ignore
 (defun specialize-comparative (attribute)
   "Make a new category that specializes comparative
    by binding the attribute. The result will be stored
@@ -215,6 +239,7 @@ is seen.
     (specialize-directions s-category attribute)
     c-category)))
 
+#+ignore
 (defun specialize-directions (comparative attribute)
   "Define a pair of categories, one representing more
    the other representing less. Both have to be 'terminal'
@@ -244,7 +269,8 @@ is seen.
       comparative)))
 
 
-
+;;;
+;;; for the':adjective head specifier or from complex
 
 #| These two function compensate for not having comparative
 or superlative realization options. The categories we instantiate
@@ -259,6 +285,19 @@ route. That threading requires them to return a rule.
 (e.g. "cycle" in core/collections and in biology/taxonomy)
 so to return a rule in those cases we have to look for
 comparative rather than content-word.  |#
+
+(define-category comparative-modifier
+  :specializes attribute-value
+  :mixins (comparative)
+  :index (:permanent :key name)
+  :realization (:word name)) ;; form category is content-word
+
+(defun define-comparative (word)
+  "Called from setup-comparative and by make-comparative-rules in
+   the morphology of adjectives"
+  (define-or-find-individual 'comparative-modifier :name word)
+  (switch-form-to-comparative word))
+
 (defun switch-form-to-comparative (word)
   ;; simpler while designing these than extending the head keywords
   (let ((rule (find-form-cfr word category::content-word)))
@@ -267,12 +306,27 @@ comparative rather than content-word.  |#
     (or rule
         (find-form-cfr word category::comparative-adjective))))
 
+
+(define-category superlative-modifier
+  :specializes attribute-value
+  :mixins (superlative)
+  :index (:permanent :key name)
+  :realization (:word name))
+
+(defun define-superlative (word)
+  "Called from setup-superlative (Comlex) and from the adjective
+   handler in morphology"
+  (define-or-find-individual 'superlative-modifier :name word)
+  (switch-form-to-superlative word))
+
 (defun switch-form-to-superlative (word)
   (let ((rule (find-form-cfr word category::content-word)))
     (when rule
       (setf (cfr-form rule) category::superlative-adjective))
     (or rule
         (find-form-cfr word category::superlative-adjective))))
+
+
 
 (defun modify-comparatives-rule-labels (base-word er-word est-word)
   (let* ((base-rule (find-form-cfr base-word category::adjective))
@@ -293,28 +347,6 @@ comparative rather than content-word.  |#
   :specializes scalar-attribute
   :bindings (var (find-variable-for-category 'modifier 'top))
   :documentation "Modeled on comparative-quantification")
-
-(define-category comparative-modifier
-  :specializes attribute-value
-  :mixins (modifier)
-  :index (:permanent :key name)
-  :realization (:word name)) ;; form category is content-word
-
-(define-category superlative-modifier
-  :specializes attribute-value
-  :index (:permanent :key name)
-  :realization (:word name))
-
-
-(defun define-comparative (word)
-  "Called from setup-comparative"
-  (define-or-find-individual 'comparative-modifier :name word)
-  (switch-form-to-comparative word))
-
-(defun define-superlative (word)
-  "Called from setup-superlative"
-  (define-or-find-individual 'superlative-modifier :name word)
-  (switch-form-to-superlative word))
 
 
 
