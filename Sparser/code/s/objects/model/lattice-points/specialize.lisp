@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1997-2005,2011-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1997-2005,2011-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "specialize"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  October 2016
+;;;  version:  November 2019
 
 ;; initiated 11/29/97. Given some content 1/2/01 though punting on the issue of
 ;; cross-indexing all the different paths down to a subtype that is a specialization
@@ -42,14 +42,10 @@
     Returns an item that reflects the specialization of the
     base item by the specializer.")
 
-  (:method ((i individual) (c category)) ;; setup for eql case
-    (specialize-object i (cat-symbol c)))
+  (:method ((i individual) (cat-name symbol))
+    (specialize-object i (category-named cat-name :error-if-nil)))
 
-  (:method ((i individual) (c (eql 'category::collection)))
-    ;; Earlier scheme used by make-cn-plural-rule
-    (find-or-make-individual c :items nil :type (itype-of i)))
-
-  (:method ((i individual) (mixin mixin-category))
+  (:method ((i individual) (mixin category))
     (if *description-lattice*
       (let ((j (add-type-to-individual i mixin)))
         j)
