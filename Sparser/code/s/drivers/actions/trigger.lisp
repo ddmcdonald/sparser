@@ -35,7 +35,11 @@
                      (format t "~&  There aren't any -- empty action field~%"))))
                (when *trace-completion-hook*
                  (format t "~&  There aren't -- it has no rule set~%"))))))
-    (or (search-label-for-completion-action (edge-category edge))
+    (or (cond ((null (edge-category edge)) ;; REMOVE THIS WHEN DAVID FINISHES HIS WORK ON COMPARATIVE ADJECTIVES
+               (warn "null edge-category in check-for-completion-actions/category at edge"
+                         edge)
+               nil)
+              (t (search-label-for-completion-action (edge-category edge))))
         (when (edge-form edge)
           (search-label-for-completion-action (edge-form edge))))))
 
