@@ -692,7 +692,8 @@ val-pred-var (pred vs modifier - left or right?)
   (cond ((when (and (boundp '*right-edge-into-reference*)
                     *right-edge-into-reference*)
            ;; e.g. "the transcription factors in common to the SRF and elk1 genes?""
-           (eq (edge-form-name *right-edge-into-reference*) 'adjp))
+           (and (null (preposed-aux?))
+                (eq (edge-form-name *right-edge-into-reference*) 'adjp)))
          (let ((pred-var (subcategorized-variable adj :subject n)))
            (when pred-var
              (if  *subcat-test*
