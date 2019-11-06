@@ -306,7 +306,7 @@
 
 
 (define-category bio-chemical-entity :specializes bio-entity
-  :mixins (has-UID biological)
+  :mixins (has-UID biological physical-agent)
   :documentation  "includes all molecules and complexes"
   :binds ((in-equilibrium-with equilibrium))
   :realization
