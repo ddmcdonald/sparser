@@ -46,7 +46,11 @@
    ((equal (chunk-forms chunk) '(vg))
     (member (cat-symbol (edge-form edge)) *vg-word-categories*))
    ((equal (chunk-forms chunk) '(adjg))
-    (member (cat-symbol (edge-form edge)) *adjg-word-categories*))
+    (or
+     (member (cat-symbol (edge-form edge)) *adjg-word-categories*)
+     ;; following is both an ADJ and a PREPOSITION (for clausal relations)
+     (member (edge-cat-name edge) '(following))
+     ))
    ((equal (chunk-forms chunk) '(ng))
     (not (member (cat-symbol (edge-form edge)) *vg-word-categories*)))
    (t t)))
