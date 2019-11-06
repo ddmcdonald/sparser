@@ -73,13 +73,13 @@
 
 (define-category modifier
   :specializes predicate
-  :documentation "There are 313 direct specializations of
- this category (8/28/16) and appears to be no rhyme or reason
- to why some these terms are classified like this. At some
- point it will need to be sorted out where we give this category
- a real semantic consequence from which we can get a rationale
- for why something should be classified as a modifier or
- a specialization of it. See note with 'modifies'.")
+  :mixins (with-theme)
+  :realization (:s theme)
+  :documentation "Modifier is the defauqlt super class of all
+ adjectives (see define-adjective). One of the principle
+ ways that adjectives enter into predications is in copular
+ constructions, e.g. 'the block is red' where the color attribute
+ is being predicated of its theme, 'the block'")
 
 (define-category adverbial
   :specializes modifier)
