@@ -111,7 +111,7 @@
                              &key  brackets super-category
                                    rule-label discriminator
                                    tree-families subcat-info
-                                   word-variable mixins
+                                   word-variable mixins bindings
                                    documentation)
   "Does for deliberately defined modifiers the same thing as is done for
    Comlex or morphologically identified nouns or verbs in grammar/rules/
@@ -149,8 +149,9 @@
     (setq brackets
           (case form ;; match with values in rules/brackets/assignments (!!)
             (adverb *adverb-brackets*)
-            (comparative *comparative-brackets*)
-            (superlative *comparative-brackets*)
+            ((comparative comparative-adjective) *comparative-brackets*)
+            ((superlative superlative-adjective)
+             *comparative-brackets*)
             ((adjective spatial-adjective temporal-adjective) *adjective-brackets*)
             ((det approximator sequencer) *default-determiner-brackets*)
             (standalone *standalone-brackets*)
@@ -189,6 +190,7 @@
                   `(:specializes ,super-category
                     :instantiates nil
                     :mixins ,mixins
+                    :bindings ,bindings
                     :rule-label ,effective-rule-label
                     :bindings (,word-variable ,word)
                     :documentation ,documentation))))
@@ -274,7 +276,8 @@
   (ecase form
     (adverb :adverb)
     ((or adjective spatial-adjective temporal-adjective) :adjective)
-    ((or comparative superlative) :adjective)
+    ((or comparative superlative
+         comparative-adjective superlative-adjective) :adjective)
     ((or det approximator sequencer) :determiner)
     ((or conjunction subordinate-conjunction) :word) ;; i.e. ignore
     (preposition :preposition)
