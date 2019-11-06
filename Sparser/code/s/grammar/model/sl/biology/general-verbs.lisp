@@ -1259,10 +1259,14 @@
   (:verb "reveal" :noun "revelation" 
          :etf (svo-passive)))
 
+#| This is there before the attribute-value 'slow' loads
+   and inherit-subcat-patterns complains that a variable
+   on this verb ('certainty') isn't on the adjective
+   category. Probably renamining is in order?
 (define-category slow :specializes negative-bio-control
     :realization
     (:verb "slow" ;; keyword: ENDS-IN-ED 
-	   :etf (svo-passive)))
+	   :etf (svo-passive)))  |#
 
 (define-category stay
   :specializes be
