@@ -2610,7 +2610,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
 ;; "a bigger block than that block"
 (defun maybe-extend-comparative-with-than-np (np than-np)
   (when *subcat-test*
-    (return-from maybe-extend-comparative-with-than-np t))
+    (if (itypep np 'comparative)
+      (return-from maybe-extend-comparative-with-than-np t)
+      (return-from maybe-extend-comparative-with-than-np nil)))
   (if (itypep np 'comparative)
     (then ;; there's comparative binding for us to find
       (let* ((binding
