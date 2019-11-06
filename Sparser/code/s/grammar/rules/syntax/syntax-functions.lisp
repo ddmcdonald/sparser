@@ -2637,10 +2637,15 @@ there was an edge for the qualifier (e.g., there is no edge for the
           (else ;; drop it on the floor
             np))))
     (else
-      (rebind-variable ;;/// who would have bound this?
-       'comparative-predication
-       (bind-variable 'compared-to than-np (value-of 'comparative-predication np))
-       np))))
+      (let ((comp-pred (value-of 'comparative-predication np)))
+        ;;/// who would have bound this?
+        (if comp-pred
+          (rebind-variable 
+           'comparative-predication
+           (bind-variable 'compared-to than-np comp-pred))
+          (else ;; bind to the np
+            (setq np (bind-variable 'compared-to than-np np))))
+        np))))
 
 #|
       (open-attribution
