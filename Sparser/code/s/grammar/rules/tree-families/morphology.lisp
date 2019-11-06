@@ -1083,7 +1083,7 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
        ;; Otherwise we use the default.
        (define-comparative c-word)
        (define-cfr category (list c-word)
-         :form category::comparative
+         :form category::comparative-adjective
          :referent referent)))))
 
 (defun make-superlative-rules (word category referent)
@@ -1094,7 +1094,7 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
      (if (eq category referent)
        (define-superlative s-word)
        (define-cfr category (list s-word)
-         :form category::superlative
+         :form category::superlative-adjective
          :referent referent)))))
 
 
