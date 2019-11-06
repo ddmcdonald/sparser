@@ -530,26 +530,28 @@ there were ever to be any.  ///hook into final actions ??  |#
             (error "Unexpected value for *treetop-label-to-use*: ~a"
                    *treetop-label-to-use*)))))
     (unless word-or-category
-      (setq word-or-category (edge-category tt)))
-    (etypecase word-or-category
-      ((or category referential-category mixin-category
-           individual)
-       (format stream "~&e~A ~6,2t~A~20,2T~A ~S ~A~%" ;; tab had been 30
-               (edge-position-in-resource-array tt)
-               (pname word-or-category)
-               (pos-token-index (pos-edge-starts-at tt))
-               (extract-string-spanned-by-edge tt)
-               (pos-token-index (pos-edge-ends-at tt))))
-      (word
-       (format stream "~&e~A~20,2T~S~%"  ;; had been 33
-               (edge-position-in-resource-array tt)
-               (if (get-tag :use-symbol-name-when-printing word-or-category)
-                 (symbol-name (word-symbol word-or-category))
-                 (word-pname word-or-category))))
-      (polyword
-       (format stream "~&e~A~20,2T~S~%"  ;; had been 33
-               (edge-position-in-resource-array tt)
-               (pw-pname word-or-category))))))
+      (setq word-or-category
+            (or (edge-category tt)
+                "***missing***")))
+      (etypecase word-or-category
+        ((or category referential-category mixin-category
+             individual string)
+         (format stream "~&e~A ~6,2t~A~20,2T~A ~S ~A~%" ;; tab had been 30
+                 (edge-position-in-resource-array tt)
+                 (pname word-or-category)
+                 (pos-token-index (pos-edge-starts-at tt))
+                 (extract-string-spanned-by-edge tt)
+                 (pos-token-index (pos-edge-ends-at tt))))
+        (word
+         (format stream "~&e~A~20,2T~S~%" ;; had been 33
+                 (edge-position-in-resource-array tt)
+                 (if (get-tag :use-symbol-name-when-printing word-or-category)
+                     (symbol-name (word-symbol word-or-category))
+                     (word-pname word-or-category))))
+        (polyword
+         (format stream "~&e~A~20,2T~S~%" ;; had been 33
+                 (edge-position-in-resource-array tt)
+                 (pw-pname word-or-category))))))
 
 (defun print-treetop-tight (tt starting-position
                       &optional (stream *standard-output*))
