@@ -93,8 +93,9 @@ be added to attribute so it knows how to handle the individuals.
  We record the attribute as part of this class to make
  it easier for the parser to do the right thing if all you have
  is the word, as in 'red block'."
-  :specializes abstract-region ;; more like point in the region
+  :specializes modifier ;;abstract-region
   :instantiates :self
+  :mixins (abstract-region)  ;; more like point in the region
   :binds ((attribute :primitive category))
   :index (:permanent :key name))
 
@@ -260,20 +261,13 @@ be added to attribute so it knows how to handle the individuals.
          (defun ,instance-maker (string &key dir er est)
            (let ((*inhibit-constructing-comparatives* t))
              (declare (special *inhibit-constructing-comparatives*))
-
-             #+ignore ; original - everything's a class instance
-             (let ((i (define-or-find-individual ',attibute-field-name
-                          :name string)))
-               (make-corresponding-mumble-resource (value-of 'name i) :adjective i)
-               (setup-comparatives i dir er est)
-               i )
-             
-             (let ((c ;; need a tailored one that bind a var for the subject
+             (let ((c
                     (define-adjective string
                         :super-category ',attibute-field-name
+                        :bindings '(attribute ',attribute-name)
                         :rule-label ',attibute-field-name)))
                ;;(make-corresponding-mumble-resource (value-of 'name i) :adjective i)
-               (setup-comparatives c string dir er est)
+               (setup-comparatives c ',attribute-name string dir er est)
                c )))
      #| This defined an attribute-specific function for defining
         its values. Given that attribute values are essentially
