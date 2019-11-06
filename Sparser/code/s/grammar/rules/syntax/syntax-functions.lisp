@@ -1629,6 +1629,13 @@ there was an edge for the qualifier (e.g., there is no edge for the
       nil
       (assimilate-subject subj vp)))
 
+(defun likely-wh-aux-inversion? (subj vp)
+  (and (or (itypep subj '(:or what where when how why))
+           (and (initial-wh?)
+                (has-wh-determiner? subj)))
+       (itypep vp '(:or do would)))
+  )
+
 (defun assimilate-subject (subj vp
                            &optional (vp-edge (right-edge-for-referent))
                              dont-revise-parent-edge )
@@ -1639,11 +1646,10 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (unless (and subj vp) ;; have had cases of uninterpreted VPs
     (return-from assimilate-subject nil))
   (when (or (is-non-anaphor-numeric? *left-edge-into-reference* subj)
-            ;;(itypep subj '(:or when how where why))
-            (and (itypep subj '(:or what where when how why))
-                 (itypep vp '(:or do would))))
-                 ;; block when, how, where, why as subjects, and WHAT as a subject of DO or WOULD
-                 ;; as part ofimproved treatment of questions
+            (likely-wh-aux-inversion? subj vp))
+    ;; block when, how, where, why as subjects,
+    ;;  and WHAT as a subject of DO or WOULD
+    ;;  as part ofimproved treatment of questions
     (return-from assimilate-subject nil))
 
   (when (is-basic-collection? vp)
@@ -2390,7 +2396,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (when (itypep copular-pp 'wh-question)
     ;; e.g. "cancer patients who may not have been at risk themselves"
     (setq copular-pp (value-of 'statement copular-pp)))
-  
   (cond ((null copular-pp)
       ;; happens in "This analysis identified a group of tumours with good prognosis, almost all of which were of low grade and metastasis-free up to 5 years ( xref )."
          nil)
