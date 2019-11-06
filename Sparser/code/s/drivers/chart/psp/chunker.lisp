@@ -724,14 +724,14 @@ than a bare "to".  |#
           ((and (sentence-initial? e)
                 (eq (form-cat-name e) 'wh-pronoun))
            t)
-          ((and (eq (edge-cat-name e) 'that)
+          ((and (eq ecn 'that)
                 (edge-p (edge-just-to-left-of e))
                 (takes-thatcomp?
                  (edge-referent (edge-just-to-left-of e))))
            nil)
           ((verb-premod-sequence? (edge-just-to-right-of e))
            nil)
-          ((eq (edge-cat-name e) 'not)
+          ((eq ecn 'not)
            nil)
           ((plural-noun-and-present-verb? e)
            (plural-noun-not-present-verb? e))
@@ -789,11 +789,11 @@ than a bare "to".  |#
                       (loop for edge in (ev-top-edges (car (chunk-ev-list (car *chunks*))))
                          thereis (copula-verb? (edge-category edge)))))))
           
-          ((and (eq 'that (edge-cat-name e))
+          ((and (eq 'that ecn)
                 (not (sentence-initial? e))) ;; don't treat as relative clause marker when sentence initial
            ;; it is almost never the case that THAT is a determiner, 
            ;; it is usually a relative clause marker or a thatcomp marker
-           (and (not *big-mechanism*)
+           (and ;;(not *big-mechanism*)
                 (not (and (car *chunks*)
                           (member 'vg (chunk-forms (car *chunks*)))
                           (thatcomp-verb (car (chunk-edge-list (car *chunks*))))))
@@ -861,7 +861,12 @@ than a bare "to".  |#
      ;;  into "the genes" "STAT3" "regulates"
      (not (and (boundp '*chunk*)
                (proper-noun-reduced-relative? e *chunk*)))
-     (not (eq (edge-cat-name e) 'that))
+     (not (and (eq (edge-cat-name e) 'that)
+               (or (null (edge-p (edge-just-to-left-of e)))
+                   (not
+                    (member (edge-form-name (edge-just-to-left-of e))
+                            '(preposition subordinate-conjunction))))))
+          
      (not (and (boundp '*chunk*)
                (proper-noun-plural-modifier? e *chunk*)))
      (not (and (boundp '*chunk*)
