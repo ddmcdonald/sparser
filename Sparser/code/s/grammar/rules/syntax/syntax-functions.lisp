@@ -2463,18 +2463,22 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 
 (defun clause+pp (clause pp)
+  "Either the head of the clause subcategorizes for this preposition
+   or the pobj is a time phrase"
   (multiple-value-bind (preposition pobj-referent)
       (decompose-prepositional-phrase (right-edge-for-referent))
-    (let ((variable
-           (subcategorized-variable clause preposition pobj-referent)))
-      (if *subcat-test*
-          variable
-          (when variable
-            (collect-subcat-statistics
-             clause preposition variable pobj-referent)
-            (setq clause (bind-variable variable pobj-referent clause))
-            clause)))))
-
+    (let ((variable (subcategorized-variable clause preposition pobj-referent)))
+      (cond
+        (*subcat-test*
+         (or variable
+             (itypep pobj-referent 'amount-of-time))) ; how do we know it's got a time?
+        (variable
+         (collect-subcat-statistics clause preposition variable pobj-referent)
+         (setq clause (bind-variable variable pobj-referent clause))
+         clause)
+        ((itypep pobj-referent 'amount-of-time) ; "at one hour"
+         (setq clause (bind-variable 'time pobj-referent clause))
+         clause)))))
 
 (defun assimilate-adj-complement (vp adjp)
   "Post-verb Adverbial and adjectival complements can be predicating
