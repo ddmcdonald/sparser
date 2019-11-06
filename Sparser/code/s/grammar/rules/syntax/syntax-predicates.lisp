@@ -332,7 +332,7 @@
   (:method ((i individual)) ;; #<to 589>
     (get-word-for-prep (itype-of i)))
   (:method ((c category)) ;; category::to
-    (value-of 'word c))
+    (get-word-for-prep (cat-name c)))
   (:method ((cat-name symbol))
     (resolve/make (string-downcase (symbol-name cat-name)))))
 
