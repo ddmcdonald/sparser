@@ -104,7 +104,7 @@
 ;;; Simple test situation for debugging
 ;;;--------------------------------------------------
 
-;;; For now, dealing only with two-bloc situations: assuming that these heuristics will 
+;;; For now, dealing only with two-block situations: assuming that these heuristics will 
 ;;; leave us with only a single option as the "ground". I.e., we are not dealing wth "between" 
 ;;; situations, where the focus object is left of something and right of something else, or 
 ;;; supporting something and supported by something else. 
@@ -144,7 +144,6 @@ incrementally building up the derivation tree."
 (defun initialize-givens (R O focus)
   "Initializes the parameters of the *tp-parameters* object with given information."
   ;;setting up all the given information ;;
-  (tp-set-dt (mumble::make-dtn :referent (sp::category-named 'be))) ;; creating a copular clause dt
   (tp-set-objects O)
   (tp-set-focus focus)
   (tp-set-r R))
@@ -189,6 +188,10 @@ incrementally building up the derivation tree."
   "Determines whether f & g are in a vertical relationship (i.e. 'support' or 'on')."
   (some #'(lambda (x) (or (equal (first x) "support") (equal (first x) "on"))) (tp-get-relations)))
 
+(defun is-in-horizontal-relation? ()
+  "Determines whether f & g are in a horizontal relationship (i.e. 'left' or 'right')."
+  (some #'(lambda (x) (or (equal (first x) "left") (equal (first x) "right"))) (tp-get-relations)))
+
 ; (defun is-ec? ()
 ;   "Determines whether or not f & g participate in an EC relationship."
 ;   (some #'(lambda (x) (equal (first x) "touch") (tp-get-relations))))
@@ -196,7 +199,7 @@ incrementally building up the derivation tree."
 (defun generate-focus-node ()
   "Generates a dtn from the f(ocus) object."
  (let* ((block (mumble::noun "block"))
-      (dtn (mumble::make-dtn :resource block))
+      (dtn (mumble::make-dtn :resource block :referent 'a-block))
       (color (mumble::adjectivial-modifier (tp-get-focus))))
     (mumble::make-adjunction-node color dtn)
     (mumble::always-definite dtn)
@@ -210,16 +213,37 @@ incrementally building up the derivation tree."
 
 (defun generate-ground-node ()
   "Generates a dtn from the g(round) object.
-  For now, assuming there's only one possibel ground object.
+  For now, assuming there's only one possible ground object.
   As a result, we just take the second object in the first ordered pair 
   in our filtered list of relations."
  (let* ((block (mumble::noun "block"))
-      (dtn (mumble::make-dtn :resource block))
+      (dtn (mumble::make-dtn :resource block :referent 'the-block))
       (color (mumble::adjectivial-modifier (third (first (tp-get-relations))))))
     (mumble::make-adjunction-node color dtn)
     (mumble::always-definite dtn)
       (tp-set-ground dtn)))
 
+;;returns passivized, or otherwise alternate constructions, for a given relation
+;;i.e. 
+; (defun get-alternate-realizations (rel)
+;   (:method ((rel string))
+;     (let ((r (category-named rel)))
+
+
+;   (:method ((rel relation))
+
+
+; (defun combine-relations-into-predicate ()
+;   (let ((r (tp-get-relations)))
+;     (cond ((is-in-vertical-relation?) ;; in this case we only have one applicable predicate - 'support' or 'on' -- but could be realized in multiple ways
+;       (do stuff))
+;     (is-ec?) (check if horizontal relation - combined predicate)
+;     (t (let ((direction (first (first r))) ;; left, right, front, back?
+;       (phrase (make-dtn :resource 'copular-predication :referent 'be)))
+;       (make-complement-node 'o (make-dtn :resource 'of-genitive :referent 'of-genitive) (tp-get-ground))
+
+; (defun build-realization ()
+;   "Builds the final dtn from focus and predicate."
 
 ;;;-------------------------
 ;;; Order of Operations

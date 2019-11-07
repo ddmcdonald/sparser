@@ -103,11 +103,11 @@
 
 (define-mixin-category NP-V-what-S
   :specializes subcategorization-pattern
-  :realization (:mumble ))
+  :realization (:mumble SVO-obj-rel))
 
 (define-mixin-category NP-V-PP.theme-S_ING
   :specializes subcategorization-pattern
-  :realization (:mumble ))
+  :realization (:mumble SVPComp/ing))
 
 (define-mixin-category NP-V-how-S
   :specializes subcategorization-pattern
@@ -205,7 +205,7 @@
 
 (define-mixin-category NP-V-what-S_INF
   :specializes subcategorization-pattern
-  :realization (:mumble ))
+  :realization (:mumble SVOICOMP-obj-rel))
 
 (define-mixin-category NP-V-NP-PP.initial_location-PP.destination
   :specializes subcategorization-pattern
@@ -389,7 +389,7 @@
 
 (define-mixin-category NP-V-PP.stimulus-what-S
   :specializes subcategorization-pattern
-  :realization (:mumble ))
+  :realization (:mumble SVPCOMP-obj-rel))
 
 (define-mixin-category NP-V-S-Quote
   :specializes subcategorization-pattern
@@ -441,11 +441,11 @@
 
 (define-mixin-category NP-V-PP.recipient-what-S
   :specializes subcategorization-pattern
-  :realization (:mumble ))
+  :realization (:mumble SVPCOMP-obj-rel))
 
 (define-mixin-category NP-V-PP.theme-what-S
   :specializes subcategorization-pattern
-  :realization (:mumble ))
+  :realization (:mumble SVPCOMP-obj-rel))
 
 (define-mixin-category NP-V-PP.topic-PP.co-agent
   :specializes subcategorization-pattern
@@ -501,7 +501,7 @@
 
 (define-mixin-category NP-V-NP-what-S
   :specializes subcategorization-pattern
-  :realization (:mumble ))
+  :realization (:mumble S-V-IO-DO_obj-rel))
 
 (define-mixin-category NP-V-NP-what-S_INF
   :specializes subcategorization-pattern
@@ -637,7 +637,7 @@
 
 (define-mixin-category NP-V-PP.topic-what-S
   :specializes subcategorization-pattern
-  :realization (:mumble ))
+  :realization (:mumble SVPCOMP-obj-rel))
 
 (define-mixin-category NP-V-PP.trajectory
   :specializes subcategorization-pattern
@@ -873,7 +873,7 @@
 
 (define-mixin-category NP-V-NP-PP.theme-what-S
   :specializes subcategorization-pattern
-  :realization (:mumble ))
+  :realization (:mumble SVOPCOMP-obj-rel))
 
 (define-mixin-category NP-V-NP-PP.theme-what-S_INF
   :specializes subcategorization-pattern
@@ -889,7 +889,7 @@
 
 (define-mixin-category NP-V-NP-PP.topic-what-S
   :specializes subcategorization-pattern
-  :realization (:mumble ))
+  :realization (:mumble SVOPCOMP-obj-rel))
 
 (define-mixin-category NP-V-NP-PP.trajectory
   :specializes subcategorization-pattern
