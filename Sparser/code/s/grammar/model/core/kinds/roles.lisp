@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "predicate"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  September 2019
+;;;  version:  November 2019
 
 ;; To move all the standard thematic roles up to a place that
 ;; loads early so they're available for restriction as lower levels
@@ -12,24 +12,24 @@
 (in-package :sparser)
 
 (define-mixin-category with-agent
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((agent (:or physical-agent social-agent)))
   ;; Dolce has 'agency' as the union of physical and social agent
   :documentation "Participant that intentionally initiates
     the action.")
 
 (define-mixin-category with-actor
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((actor))
   :documentation "The entity that performs the action.
     No implied agency. No obvious specified type.")
 
 (define-mixin-category takes-adverb
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((adverb)))
 
 (define-mixin-category with-attribute
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((attribute))
   :documentation "Binds a property that is being attributed
     to another participant in the relation. Very closely
@@ -41,117 +41,129 @@
     its predication 'has-attribute'.")
 
 (define-mixin-category with-beneficiary
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((beneficiary))
   :documentation "Entity benefiting from the event. ")
 
 (define-mixin-category with-cause
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((cause))
   :documentation "That which causes an event to occur.")
 
 (define-mixin-category with-destination
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((destination))
   :documentation "The final location of a movement.")
 
 (define-mixin-category with-extent
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((extent))
   :documentation "The degree to which an event is carried out -
   length, duration, or some other verb-specific measure
   of completion. Extension along some dimension.")
 
 (define-mixin-category with-source
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((source))
   :documentation "The location or entity from which an event
   originates; usually involves movement.")
 
 (define-mixin-category with-material
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((material physical))
   :documentation "The source from which a product is created (always
   co-occurs with a Product role.)")
 
 (define-mixin-category with-product
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((product))
   :documentation "Entity created as a direct result of an event.")
 
 (define-mixin-category with-experiencer
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((experiencer physical-agent))
   :documentation "Participant that is aware of something
     pertaining to the event.")
 
 (define-category has-location
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((location location))
   :documentation "Said of something that must have a location
     Supplies a location variable whose value says where
     this thing is.")
 
 (define-mixin-category with-patient
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((patient))
   :documentation "The participant that is affected by the action.")
 
+(define-mixin-category with-co-patient
+  :specializes thematic-role
+  :binds ((co-patient))
+  :documentation "Used for verbs that involve two participants, both patients, such as 
+  'swap', 'reverse', etc.")
+
 (define-mixin-category with-theme
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((theme))
-  :documentation "Often characterized as the thing that moves.
-    Specialized (restricted) by move.")
+  :documentation "Undergoer that is central to an event or state
+   that does not have control over the way the event occurs, 
+   is not not structurally changed by the event and/or is characterized
+   as being in a certain position of condition throughout the state.
+   (VerbNet paper) Also often characterized as the thing that moves.
+   Specialized (restricted) by move.")
 
 (define-mixin-category with-instrument
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((instrument object))
   :documentation "Thing or medium by which an action is carried out.")
 
 (define-mixin-category with-goal
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((goal))
   :documentation "Location, entity, direction, or state toward which
   something moves.")
 
 (define-mixin-category with-recipient
-  ;;:specializes relation
+  :specializes thematic-role
   :binds ((recipient))
   :documentation "That which receives some participant in the event.")
 
 (define-mixin-category with-topic
+  :specializes thematic-role
   :binds ((topic))
   :documentation "The subject or theme of a communicative event.")
 
 (define-mixin-category with-stimulus
+  :specializes thematic-role
   :binds ((stimulus))
   :documentation "That which serves as the prompt for a state or experience.")
 
 (define-mixin-category with-manner
+  :specializes thematic-role
   :binds ((manner adverb))
   :documentation "A description of the style in which an action 
   is carried out. A role for adverbial complements.")
 
 (define-mixin-category with-result
+  :specializes thematic-role
   :binds ((result))
   :documentation "The result of an action performed. Qualifies the
   predicate's effect on the theme.")
 
 (define-mixin-category with-expletive
+  :specializes thematic-role
   :binds ((expletive pronoun-inanimate))
   :documentation "'Empty' subject 'it' or 'there', seen in raising verbs and 
   certain weather verbs.")
 
-(define-mixin-category with-co-patient
-  :binds ((co-patient))
-  :documentation "Used for verbs that involve two participants, both patients, such as 
-  'swap', 'reverse', etc.")
-
 (define-mixin-category with-path 
+  :specializes thematic-role
   :binds ((path))
   :documentation "The direction or trajectory of movement.")
 
 (define-mixin-category reflexive
+  :specializes thematic-role
   :binds ((pronoun pronoun))
   :documentation "Used for reflexive verbs, in which the subject and object refer
   to the same entity.")

@@ -196,6 +196,16 @@
  basic subcategorization information for how those variables are
  realized.")
 
+(define-category thematic-role
+  :instantiates nil
+  :specializes linguistic
+  :documentation
+  "A way to group all the role mixins in roles.lisp and thereby
+ make the sub/super organization of the ontology as a whole more
+ intelligible. These roles are use as the way to introduce variables
+ into regular categories. There are possibilities for drawing
+ general inferences from the use of one role vs. another but we
+ haven't worked that out yet.")
 
 ;;;---------------------------------------
 ;;; names -- simple and root of real ones
