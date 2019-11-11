@@ -75,7 +75,9 @@
           :super-category super-category
           :word-variable 'word)
 
-    (when synonyms
+    (make-corresponding-mumble-resource (resolve string) :preposition category)
+
+    (when synonyms ;;///what would mdata for a synonym look like?
       (flet ((prep-synonym (synonym-string referent name-of-form)
                (let* ((syn-word (resolve-string-to-word/make synonym-string))
                       (rule (define-cfr category `(,syn-word)
