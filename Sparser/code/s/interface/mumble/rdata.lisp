@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: SPARSER; -*-
-;;; Copyright (c) 2016-2017 David D. McDonald. All Rights Reserved.
+;;; Copyright (c) 2016-2019 David D. McDonald. All Rights Reserved.
 ;;;
 ;;;     File: "rdata"
 ;;;   Module: "interface;mumble;"
-;;;  Version: July 2017
+;;;  Version: November 2019
 
 (in-package :sparser)
 
@@ -522,11 +522,12 @@ have been filled in if the rdata includes an etf and a word.
     Returns a category if it suceeds.")
   (:method ((name symbol))
     (inherits-mumble-data? (category-named name :error-if-missing)))
+  (:method ((c mixin-category)) nil)
   (:method ((c referential-category))
-    (or (itypep c 'subcategorization-pattern)
-        (let ((super (superc c)))
-          (when (mumble-map-data super) super))))
-  (:method ((c mixin-category)) nil))
+    (let ((supers (immediate-supers c))) ;; include mixins
+      (loop for super in supers
+         when (mumble-map-data super)
+         return super))))
 
 (defparameter *deal-with-multiple-local-rdata* nil
   "Controls warning just below")
@@ -538,10 +539,10 @@ have been filled in if the rdata includes an etf and a word.
    it with whatever local data there is. Modifying the copy as
    needed. Called from setup-rdata when the category being setup 
    satisfies inherits-mumble-data?"
-  (declare (optimize debug)) ;;(lsp-break "inheriting")
+  (declare (optimize debug))
   (let* ((category-inheriting-from (inherits-mumble-data? category))
          (inherited-rdata (get-tag :mumble category-inheriting-from)))
-    
+    ;;(lsp-break "inheriting from ~a~%~a" category-inheriting-from inherited-rdata)
     (when (and inherited-rdata ;; not all subcat mixins have maps yet
                (abstract-mdata? inherited-rdata))
 
