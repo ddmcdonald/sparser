@@ -1,7 +1,7 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: MUMBLE -*-
 ;;; Copyright (c) 2013-2019 David D. McDonald -- all rights reserved
 
-;;;    File: "binding-centric"
+;;;    File: "binding-helpers"
 ;;;  Module: "Mumble/interface/sparser/"
 ;;; Version: November 2019
 

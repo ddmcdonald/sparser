@@ -171,8 +171,9 @@
 
 
 (defmethod grammatical-number ((i sp::individual))
+  ;; called from grammar/morphology.lisp - number-of-current-subject
   (cond
-    ((sp::itypep i 'collection) 'plural)
+    ((sp::itypep i 'sp::plural) 'plural)
     ((sp::value-of 'sp::is-plural i) 'plural)
     (t 'singular)))
 
