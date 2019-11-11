@@ -1,5 +1,9 @@
 ;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: MUMBLE -*-
-;;; copyright (c) 2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2019 David D. McDonald  -- all rights reserved
+
+;;;    File: "binding-helpers"
+;;;  Module: "Mumble/interface/sparser/"
+;;; Version: November 2019
 
 (in-package :mumble)
 
@@ -342,6 +346,13 @@
           (memq 'sp::perfect names)
           (memq 'sp::present names)))))
 
+
+
+(defun handle-possible-plural (i dtn)
+  "Called from realize-via-bindings-common-path when the POS
+   is 'noun. Analogous to verb-aux-handler."
+  (when (sp::itypep i 'sp::plural)
+    (plural dtn)))
 
 
 ;;;------------------------------------------

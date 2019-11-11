@@ -1,5 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: MUMBLE -*-
-;;; Copyright (c) 2013-2017 David D. McDonald -- all rights reserved
+;;; Copyright (c) 2013-2019 David D. McDonald -- all rights reserved
+
+;;;    File: "binding-centric"
+;;;  Module: "Mumble/interface/sparser/"
+;;; Version: November 2019
 
 (in-package :mumble)
 
@@ -81,6 +85,8 @@
     (if rdata
       (loop-over-some-bindings i pos dtn rdata)
       (loop-over-bindings i pos dtn))
+    (when (eq pos 'noun)
+      (handle-possible-plural i dtn))
     (verb-aux-handler dtn i) ;; formerly called 'tense'
     (when m::*trace-archie*
       (pprint (pp-dtn dtn)))
