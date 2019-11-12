@@ -1,5 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: SPARSER -*-
 ;;; Copyright (c) 2016 SIFT LLC. All Rights Reserved.
+;;;
+;;;     File:  "subcategorization"
+;;;   Module:  /sparser/test/
+;;;  Version:  November 2019
 
 ;;; Subcategorization frame inheritance tests.
 
@@ -64,8 +68,10 @@
          (pattern (find-subcat-pattern (resolve "from") frame-4)))
     (values (var-name (subcat-variable pattern))
             (cat-name (subcat-restriction pattern))))
+  ;; 11/12/19 ddm -- a restriction of nil (no restriction) is
+  ;; reformulated as a restriction to top (anything).
   d
-  nil)
+  top)
 
 (rt:deftest (subcat inheritance)
   (let ((frame-6 (get-subcategorization category::subcat-test-6)))
