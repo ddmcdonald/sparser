@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1995-1999,2016-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-1999,2016-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "directions"
 ;;;   Module:  "model;core:places:"
-;;;  version:  June 2017
+;;;  version:  November 2019
 
 ;; initiated in 1/9/95. Added string printer 1/9/96.
 ;; 0.1 (11/25/99) Changed the realizations to use the new schema protocol
@@ -74,25 +74,11 @@
 
 
 (defun define-standalone-direction (string)
-  (define-function-term string 'noun ;; adverb ??
+  (define-function-term string 'common-noun
     :super-category 'relative-direction
     :rule-label 'direction
     :brackets '( .[np )))
 
-#+ignore(defun define-standalone-direction (string)
-  ;; following pattern in define-dependent-location, define-preposition
-  ;; where all the mumble resources are developed during the
-  ;; handling of the lemma
-  (let* ((word (or (resolve string)
-                   (define-function-word string 
-                     :form 'noun
-                     :brackets '( .[np ))))
-         (category-name (name-to-use-for-category string))
-         (expr `(define-category ,category-name
-                  :specializes relative-direction
-                  :instantiates :self
-                  :lemma (:common-noun ,word))))
-    (eval expr)))
 
 ;;---- "leftward(s)"
 

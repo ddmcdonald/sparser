@@ -121,12 +121,15 @@
    name is the same as one that's already been defined, it will signal
    an error unless the *ignore-redefine-warnings* has been dynamically
    bound to non-nil. 
+     If there are values for the mixins, bindings, documentation, or restrict
+   parameters they are folded into the definition of the category in the normal way.
      To facilitate the possibility of lexically-specific k-methods,
-   we create one individual of this category and make that the
-   referent of the unary rule that's created.
+   we also create one individual of this category and make that the
+   referent of the unary rule that's created. We pass that individual
+   to make-corresponding-mumble-resource to be sure it reverses.
      The supercategory of the to-be-created category can be
    specified by the 'super-category' argument. It defaults to 'adverbial'.
-     The argument names the category that will be the form on the
+     The form argument names the category that will be the form on the
    unary rule this creates. It also determines the choice of brackets,
    mirroring the choices in the setup code used with Comlex.
      The tree-family argument should be a list of full ETF names; see example
@@ -157,7 +160,7 @@
             (standalone *standalone-brackets*)
             ((preposition #|spatial-preposition spatio-temporal-preposition|#)
              *preposition-brackets*)
-            (noun *common-noun-brackets*)
+            ((noun common-noun) *common-noun-brackets*)
             (otherwise
              (break "Need brackets for another syntactic form: ~a" form)))))
   (unless documentation (setq documentation ""))
@@ -221,9 +224,13 @@
               ;; form rules and we'd get a clash if we did them here. 
               (apply-function-term-etf category tree-families)))
 
+          
           (let ((*head-rules-already-created* t))
             (declare (special *head-rules-already-created*))
-            (setup-word-data word (rationalize-pos form) category))
+            ;; Make realization-data object for the category
+            (setup-word-data word (rationalize-pos form) category)
+            ;; make the lexicalize phrase
+            (make-corresponding-mumble-resource word :common-noun i))
 
           ;; This isn't ready for prime time yet. The function it's
           ;; calling was never finished and there need to be
@@ -281,5 +288,5 @@
     ((or det approximator sequencer) :determiner)
     ((or conjunction subordinate-conjunction) :word) ;; i.e. ignore
     (preposition :preposition)
-    (noun :common-noun)
+    ((noun common-noun) :common-noun)
     (standalone :word)))

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "operators"
 ;;;   Module:  "model;core:places:"
-;;;  version:  July 2017
+;;;  version:  November 2019
 
 ;; instantiates 11/2/16 to provide a semantic grounding to spatial
 ;; prepositions and such as functions. 
@@ -46,6 +46,7 @@ determined by the operator and the types of the two objects,
 (defun define-dependent-location (string &key multiple category-name)
   "Modeled on define-preposition with supercategory determined
    by keyword arg. Lots of room for growth."
+  (declare (special category::common-noun))
   (let ((word (resolve/make string))
         (form 'common-noun)
         (category-name (or category-name ;; don't redefine 'top'
@@ -53,22 +54,28 @@ determined by the operator and the types of the two objects,
         (super-category (if multiple
                           'multi-dependent-location
                           'object-dependent-location)))
-    (let* ((expr `(define-category ,category-name
+    (let* ((form `(define-category ,category-name
                     :specializes ,super-category
                     :instantiates :self
                     :lemma (:common-noun ,word)))
-           (category (eval expr))
-           (word-rule
-	    (def-cfr/expr category `(,word)
-              :form (resolve-form-category form)
-              :schema (get-schematic-word-rule :common-noun)
-              :referent category)))
-      (add-rule word-rule category)
-      (when multiple
-        (add-rules (make-cn-plural-rules word category category)
-                   category))
-      (values category
-              word-rule))))
+           (category (eval form))
+           (instance-form `(define-individual ',category-name
+                               :word ,word))
+           (i (eval instance-form)))
+
+      (let ((word-rule
+             (def-cfr/expr category `(,word)
+               :form category::common-noun
+               :schema (get-schematic-word-rule :common-noun)
+               :referent i)))
+        (make-corresponding-mumble-resource word :noun i)
+
+        (add-rule word-rule category)
+        (when multiple
+          (add-rules (make-cn-plural-rules word category i)
+                     category))
+        (values category
+                word-rule)))))
 
 
 

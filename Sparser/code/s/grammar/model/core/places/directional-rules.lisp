@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1995,2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2016-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "directional rules"
 ;;;   Module:  "model;core:places:"
-;;;  version:  December 2016
+;;;  version:  November 2019
 
 ;; initiated in 1/9/95
 
@@ -20,13 +20,15 @@
   :form np
   :referent (:daughter right-edge))
 
-
+#| determiners now need to be incorporated into the interpretation
+   Dropping this rule exposes the syntactic rule that goes through
+   the function determiner-noun where this happens
 (def-cfr direction ("the" direction)   ;; "the left"
   ;; This overgenerates (*"the westwards"), but since that phrase
   ;; won't be produced it's moot. 
   :form np
   :referent (:daughter right-edge))
-
+|#
 
 ;;--- of-complement ("south of the Lee exit")
 #| Needs a different analysis to fit current definition
