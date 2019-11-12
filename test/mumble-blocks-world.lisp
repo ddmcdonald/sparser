@@ -91,9 +91,6 @@
   (mumble-says "Put a green block on the table.")
   "put a green block on the table")
 
-;; 11/11/19 Actual value: "puts another block next to it".
-;; Error sparser::*lambda-var* fell through etypecase expression.
-;;      Wanted one of (sparser::individual sparser::referential-category).
 (deftest (say put another block next to it)
   (mumble-says "Put another block next to it.")
   "put another block next to it")
@@ -131,10 +128,9 @@
   "put a red block at the end")
 |#
 
-;; 11/11/19 Actual value: "puts another green block on the green block at the end of the row"
 (deftest (say put another at end)
   (mumble-says "Put another green block on the green block at the end of the row.")
-               "put another green block on the green block at the end of the row")
+  "put another green block on the green block at the end of the row")
 
 #+(or) ; "on the left" should be a relative location, not a modifier
 (deftest (say put another at end on left)
@@ -227,8 +223,6 @@
 
 ;;;--- from clic-bw-tests
 
-;; 11/11/19 Actual value: "Puts B7 On The Table"
-;;   predication bug caused by bad chunking
 (deftest (say B7 on table)
   (mumble-says "put B7 on the table")
   "put B7 on the table")
@@ -237,8 +231,6 @@
   (mumble-says "push B1 and B2 together")
   "push B1 and B2 together")
 
-;; 11/11/19 Dies in *lambda-var* falling through ecase
-;;    after bad chunking: [put B1 ]on [B2]
 (deftest (say B1 on B2)
   (mumble-says "put B1 on B2")
   "put B1 on B2")
