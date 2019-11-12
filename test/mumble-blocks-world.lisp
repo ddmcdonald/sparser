@@ -1,5 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: MUMBLE -*-
-;;; Copyright (c) 2016-2017 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2019 SIFT LLC. All Rights Reserved.
+;;;
+;;;     File:  "mumble-blocks-world"
+;;;   Module:  /sparser/test/
+;;;  Version:  November 2019
 
 (in-package :mumble)
 
@@ -34,6 +38,8 @@
   (mumble-says "There is a block")
   "there is a block")
 
+;; 11/11/19 Actual value: "Red.".
+;;  bad parse. Make-polar-adjective-question made the wrong assumptions
 (deftest (say question block red) ; test polar-question, copular-predication
   (mumble-says "is the block red?")
   "Is the block red?")
@@ -42,6 +48,8 @@
   (mumble-says "red blocks")
   "red blocks")
 
+;; 11/11/19 Actual value: "to make"
+;;    wrong parse -- "steps" taken in its music sense
 (deftest (say make steps green) ; predicate-binding case: subtracts a diff given
   (mumble-says "Make the steps green.") ; how Rusty analyzes the semantics
   "make the steps green")
@@ -56,6 +64,9 @@
 
 ;; "to the left of the block" -- sem is a vanila pp
 
+;; 11/11/19 Actual value: "left of the block".
+;;  initial "the" not copied into semantics
+;;  -- change "the" + "direction" rule
 (deftest (say left of block) ; relative-location case (orientation-dependent-location)
   (mumble-says "the left of the block")
   "the left of the block")
@@ -64,6 +75,10 @@
   (mumble-says "We do not have enough green blocks.")
   "we don't have enough green blocks")
 
+;; 11/11/19 Actual value: "make the the steps tops red".
+;;  music sense of "steps".
+;; Funny parse, [the steps] is in two places
+;; Predicate is the whole the tops of the steps red
 (deftest (say make tops of steps red)
   (mumble-says "Make the tops of the steps red.")
   "make the tops of the steps red")
@@ -76,6 +91,9 @@
   (mumble-says "Put a green block on the table.")
   "put a green block on the table")
 
+;; 11/11/19 Actual value: "puts another block next to it".
+;; Error sparser::*lambda-var* fell through etypecase expression.
+;;      Wanted one of (sparser::individual sparser::referential-category).
 (deftest (say put another block next to it)
   (mumble-says "Put another block next to it.")
   "put another block next to it")
@@ -84,6 +102,8 @@
   (mumble-says "Now add a red block next to that block.")
   "now add a red block next to that block")
 
+;; 11/11/19 Actual value: "now put a green block on top of the block".
+;;  The ordinal ("first") is there but Archie rules are ignoring it
 (deftest (say put green block on first block)
   (mumble-says "Now put a green block on top of the first block.")
                "now put a green block on top of the first block")
@@ -111,6 +131,7 @@
   "put a red block at the end")
 |#
 
+;; 11/11/19 Actual value: "puts another green block on the green block at the end of the row"
 (deftest (say put another at end)
   (mumble-says "Put another green block on the green block at the end of the row.")
                "put another green block on the green block at the end of the row")
@@ -125,6 +146,9 @@
   (mumble-says "Now put a block on top of it.")
   "now put a block on top of it")
 
+;; 11/11/19 Actual value: "red"
+;; new adj as head analysis -- lost tense/aspect, the color-value
+;; individual doesn't have indication of the predication
 (deftest (say top block should be red)
   (mumble-says "The top block should be red.")
   "the top block should be red")
@@ -160,6 +184,8 @@
   (mumble-says "Put a stack of two red blocks on the table.")
   "put a stack of two red blocks on the table")
 
+;; 11/11/19 Actual value: "add a red block at right"
+;; inadequate parse: don't get 'right end...'
 (deftest (say add block at right end of row)
   (mumble-says "Add a red block at the right end of the row.")
   "add a red block at the right end of the row")
@@ -186,7 +212,8 @@
 
 
 ;;;--- test multiple subcategorizations
-(deftest (say want block)
+
+(deftest (say want block) ;; 11/11/19 -- doesn't parse. Agent needs narrowing
   (mumble-says "I want the block")
   "I want the block")
 
@@ -200,6 +227,8 @@
 
 ;;;--- from clic-bw-tests
 
+;; 11/11/19 Actual value: "Puts B7 On The Table"
+ll  predication bug caused by bad chunking
 (deftest (say B7 on table)
   (mumble-says "put B7 on the table")
   "put B7 on the table")
@@ -208,6 +237,8 @@
   (mumble-says "push B1 and B2 together")
   "push B1 and B2 together")
 
+;; 11/11/19 Dies in *lambda-var* falling through ecase
+;;    after bad chunking: [put B1 ]on [B2]
 (deftest (say B1 on B2)
   (mumble-says "put B1 on B2")
   "put B1 on B2")
