@@ -228,7 +228,7 @@
 ;;;--- from clic-bw-tests
 
 ;; 11/11/19 Actual value: "Puts B7 On The Table"
-ll  predication bug caused by bad chunking
+;;   predication bug caused by bad chunking
 (deftest (say B7 on table)
   (mumble-says "put B7 on the table")
   "put B7 on the table")
