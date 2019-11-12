@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "chunker"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  May 2018
+;;;  version:  November 2019
 
 ;; Initiated 10/8/14
 ;; ddm: 10/16/14 Rewrote identify-chunks. Commented out lines anticipating 
@@ -983,20 +983,31 @@ than a bare "to".  |#
   (let ((edges (ev-top-edges (car evlist)))
         (eform (when (edge-p e) (form-cat-name e)))
         (ecat (when (edge-p e) (edge-cat-name e)))
+        (before (when (edge-p e) (edges-before e)))
         preceding-noun-refs)
-
+ 
     (cond
-      ((let ((before (edges-before e)))
-         ;; when you have a simple conjunction following a "between" as in
-         ;;  "any possible interaction between LRP and APOE revealed little evidence"
-         ;;  don't extend the NG beyond the conjunction
-         (loop for ee in before
-            thereis
-                 (and (member (form-cat-name ee) '(proper-noun np ng))
-                      (is-basic-collection? (edge-referent ee))
-                      (loop for b-edge in (edges-before ee)
-                            thereis
-                              (eq (edge-cat-name b-edge) 'between)))))
+      ((loop for ee in before
+          ;; when you have a simple conjunction following a "between" as in
+          ;;  "any possible interaction between LRP and APOE revealed little evidence"
+          ;;  don't extend the NG beyond the conjunction
+          thereis
+            (and (member (form-cat-name ee) '(proper-noun np ng))
+                 (is-basic-collection? (edge-referent ee))
+                 (loop for b-edge in (edges-before ee)
+                    thereis
+                      (eq (edge-cat-name b-edge) 'between))))
+       nil)
+
+      ((and (= 2 (length before))
+            (let ((forms (loop for ee in before
+                            collect (form-cat-name ee))))
+              (and (memq 'verb+ed forms)
+                   (memq 'verb forms))))
+       ;; We started this NG chunk because of the verb+ed. But that past-tense
+       ;; form was the same as the base (infinitive) form of that verb ("put"),
+       ;; so we can't let the chunk continue, but have to restart and let the
+       ;; verb be in its own chunk
        nil)
       
       ((or (member ecat '(modal syntactic-there))
