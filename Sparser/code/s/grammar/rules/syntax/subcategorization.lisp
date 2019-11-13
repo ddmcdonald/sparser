@@ -1042,7 +1042,7 @@
    that uses this label, and invokes satisfies-subcat-restriction? to
    check that the v/r of that pattern is satisfied"
   (declare (special item label head *subcat-test* *subcat-use*
-                    *left-edge-into-reference* ))
+                    *left-edge-into-reference* *pat*))
   (let* ((category (itype-of head))
          (subcat-patterns (known-subcategorization? head))
          (of-object
@@ -1051,8 +1051,9 @@
                 (member (form-cat-name *left-edge-into-reference*)
                         '(np ng vg+ing))
                 (loop for pat in subcat-patterns
-                      when (and (equalp (pname (subcat-label pat)) "of")
-                                (eq (pname (subcat-variable pat)) 'object)
+                      when (and (pname (subcat-label pat))
+                                (equalp (pname (subcat-label pat)) "of")
+                                (equal (pname (subcat-variable pat)) "OBJECT")
                                 (satisfies-subcat-restriction? item pat)
                                 ;; n.b. look at "panel"
                                 (not (itypep (subcat-restriction pat) 'over-ridden))
