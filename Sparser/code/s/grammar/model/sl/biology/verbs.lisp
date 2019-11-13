@@ -1236,16 +1236,16 @@
      :noun "regulation"
      :etf (svo-passive)
      :in theme
-     :for theme))
+     :for object))
 
 (define-category regulator :specializes bio-chemical-entity ;; more general than this
                  ;; anything which can be said to regulate a process
 ;; functional term (agent of regulate)
-  :binds ((theme biological))
+  :binds ((object biological))
   :realization
   (:noun "regulator"
-         :of theme
-         :for theme))
+         :of object
+         :for object))
 
 (define-category negative-regulator :specializes inhibitor
                  :realization (:noun "negative regulator"))
@@ -1260,7 +1260,7 @@
     (:verb "inter-regulate"
      :noun "inter-regulation"
      :etf (svo-passive)
-     :for theme
+     :for object
      :between theme))    ;; by <entity>
 
 (define-category internalize :specializes caused-bio-process
