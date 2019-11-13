@@ -1463,8 +1463,12 @@ there was an edge for the qualifier (e.g., there is no edge for the
     ((itypep pp 'collection) ;;(lsp-break "pp collection")
      nil)
     ((and np pp)
-     (multiple-value-bind (variable-to-bind  pobj-referent prep-word *pobj-edge*)
+     (multiple-value-bind (variable-to-bind
+                           pobj-referent
+                           prep-word
+                           *pobj-edge*)
          (variable-to-bind-pp-to-head (right-edge-for-referent) np)
+       
        (let* ((of (word-named "of"))
               (*in-scope-of-np+pp* prep-word))
          (declare (special *in-scope-of-np+pp*))
@@ -1472,107 +1476,105 @@ there was an edge for the qualifier (e.g., there is no edge for the
          (setq np (individual-for-ref np))
 
          (if *subcat-test*
-             (or variable-to-bind
-                 (maybe-extend-premod-adjective-with-pp np pp)
-                 (and *force-modifiers* 'modifier)
-                 (and (use-methods) (most-specific-k-method 'compose (list np pp)))
-                 (is-domain-adjunctive-pp? np (right-edge-for-referent))
-                 (and (eq prep-word of)
-                      (or (itypep np 'attribute)
-                          (and
-                           ;; (itypep np 'dependent-location)
-                           (itypep np 'object-dependent-location)
-                           (itypep pobj-referent 'partonomic))
-                          (and
-                           (itypep np 'partonomic)
-                           (compatible-with-specified-part-type pobj-referent np))
-                          (and (use-methods)
-                               (most-specific-k-method 'compose (list np pobj-referent)))))
-                 )
+           (or variable-to-bind
+               (maybe-extend-premod-adjective-with-pp np pp)
+               (and *force-modifiers* 'modifier)
+               (and (use-methods) (most-specific-k-method 'compose (list np pp)))
+               (is-domain-adjunctive-pp? np (right-edge-for-referent))
+               (and (eq prep-word of)
+                    (or (itypep np 'attribute)
+                        (and
+                         ;; (itypep np 'dependent-location)
+                         (itypep np 'object-dependent-location)
+                         (itypep pobj-referent 'partonomic))
+                        (and
+                         (itypep np 'partonomic)
+                         (compatible-with-specified-part-type pobj-referent np))
+                        (and (use-methods)
+                             (most-specific-k-method 'compose (list np pobj-referent))))))
 
-             ;; This side runs when subcat test passed and we're really interpreting.
-             ;; Specific cases are ordered before looking for applicable methods
-             ;; of using a subcategorized variable.
-             (cond
-               ((and (eq prep-word of)
-                     (itypep np 'attribute)) ;; "color of the block"
-                (find-or-make-individual 'quality-predicate
-                                         ;;:attribute (itype-of np) :item pobj-referent
-                                         :attribute np
-                                         :item pobj-referent)) ;;
+           ;; This side runs when subcat test passed and we're really interpreting.
+           ;; Specific cases are ordered before looking for applicable methods
+           ;; of using a subcategorized variable.
+           (cond             
+             (variable-to-bind
+              (collect-subcat-statistics np prep-word variable-to-bind pp)
+              (setq np (bind-dli-variable variable-to-bind pobj-referent np))
+              np)
+             
+             ((and (eq prep-word of)
+                   (itypep np 'attribute)) ;; "color of the block"
+              (find-or-make-individual 'quality-predicate
+                                       ;;:attribute (itype-of np) :item pobj-referent
+                                       :attribute np
+                                       :item pobj-referent))
 
-               ((and (eq prep-word of)
-                     (itypep np 'object-dependent-location)
-                     (itypep pobj-referent 'partonomic)) ;; "bottom of the stack"
-                (tr :np+pp/np-is-partonomic np pobj-referent)
-                (make-object-dependent-location np pobj-referent))
+             ((and (eq prep-word of)
+                   (itypep np 'object-dependent-location)
+                   (itypep pobj-referent 'partonomic)) ;; "bottom of the stack"
+              (tr :np+pp/np-is-partonomic np pobj-referent)
+              (make-object-dependent-location np pobj-referent))
 
-               ((and (eq prep-word of)
-                     (itypep np 'partonomic) ;; "a row of two blocks"
-                     (compatible-with-specified-part-type pobj-referent np))
-                (tr :np-pp-of-np-partonomic np pobj-referent)
-                (setq np (bind-variable 'parts pobj-referent np)))
+             ((and (eq prep-word of)
+                   (itypep np 'partonomic) ;; "a row of two blocks"
+                   (compatible-with-specified-part-type pobj-referent np))
+              (tr :np-pp-of-np-partonomic np pobj-referent)
+              (setq np (bind-variable 'parts pobj-referent np)))
 
-               ((when (and (use-methods)
-                           (most-specific-k-method 'compose (list np pp)))
-                  ;; e.g. has-location + location : "the block at the left end of the row"
-                  (let ((result (compose np pp)))
-                    (when result
-                      (tr :np-pp-composition np pp)
-                      result))))
+             ((when (and (use-methods)
+                         (most-specific-k-method 'compose (list np pp)))
+                ;; e.g. has-location + location : "the block at the left end of the row"
+                (let ((result (compose np pp)))
+                  (when result
+                    (tr :np-pp-composition np pp)
+                    result))))
 
-               ((when (and (use-methods)
-                           (eq prep-word of)
-                           (most-specific-k-method 'compose (list np pobj-referent)))
-                  (let ((result (compose np pobj-referent)))
-                    (when result
-                      (tr :compose-other-of np pobj-referent result)
-                      result))))
-           
-               (variable-to-bind
-                (collect-subcat-statistics np prep-word variable-to-bind pp)
-                (setq np (bind-dli-variable variable-to-bind pobj-referent np))
-                np)
-               ((maybe-add-domain-adjunctive-predicate-to-phrase np (right-edge-for-referent)))
-               ((maybe-extend-premod-adjective-with-pp np pp))
-                          (t ;;(break "fell through")
-                #+ignore(when (current-script :blocks-world)
-                          (if (eq prep-word of)
-                              (warn "No interpretation of ~a 'of' ~a" np pobj-referent)
-                              (warn "No interpretation of np ~a with pp ~a" np pp)))
-                ;; Needs an interpretation just to get through, so pretend
-                ;; we had *force-modifiers* on and take the weakest relationship
-                (setq np (bind-variable 'modifier pobj-referent np))
-                np ))))))))
+             ((when (and (use-methods)
+                         (eq prep-word of)
+                         (most-specific-k-method 'compose (list np pobj-referent)))
+                (let ((result (compose np pobj-referent)))
+                  (when result
+                    (tr :compose-other-of np pobj-referent result)
+                    result))))
+             
+             ((maybe-add-domain-adjunctive-predicate-to-phrase np (right-edge-for-referent)))
+             
+             ((maybe-extend-premod-adjective-with-pp np pp))
+             
+             (t ;;(break "fell through")
+              (when *force-modifiers*
+                (setq np (bind-variable 'modifier pobj-referent np)))
+              np ))))))))
 
 
-;; hash table keyed on prepositions, with values being triples of POBJ-type, NP-head-type and construction-function
-;;  this might want to be done by k-methods -- DAVID -- let's review this
-;; The current implementation is a standin
+
+;; hash table keyed on prepositions, with values being triples of
+;;  POBJ-type, NP-head-type and construction-function this might want
+;;  to be done by k-methods -- DAVID -- let's review this The current
+;;  implementation is a standin
 
 (defparameter *domain-adjunctive-pp-tests* (make-hash-table :test #'equal))
+
 (defun add-domain-adjunctive-pp-rule (prep pobj-type np-head-type interpretation-function)
   (push (list pobj-type np-head-type interpretation-function)
         (gethash (pname prep) *domain-adjunctive-pp-tests*)))
 
 (defun is-domain-adjunctive-pp? (np pp-edge)
-  "Test for PPs like 'in the literature' which may be used as modifiers for certain classes of general 
-  (mid-level model) NPs, but are domain specific -- e.g. 'the relations in the literature'"
-
+  "Test for PPs like 'in the literature' which may be used as
+   modifiers for certain classes of general (mid-level model) NPs, 
+   but are domain specific -- e.g. 'the relations in the literature'"
   (loop for triple in (gethash (pname (identify-preposition pp-edge))
                                *domain-adjunctive-pp-tests*)
-        when
-          
-          (and (itypep (identify-pobj pp-edge) (car triple))
+     when (and (itypep (identify-pobj pp-edge) (car triple))
                (itypep np (second triple)))
-        collect (third triple)))
+     collect (third triple)))
 
 (defun maybe-add-domain-adjunctive-predicate-to-phrase (np pp-edge)
   (let ((domain-adjunct-functions (is-domain-adjunctive-pp? np pp-edge))
         result)
     (loop for fn in domain-adjunct-functions
-          when (setq result (funcall fn np pp-edge))
-            do (return result))))
+       when (setq result (funcall fn np pp-edge))
+       do (return result))))
 
 
 
