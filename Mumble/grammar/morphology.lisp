@@ -44,12 +44,21 @@
   (label-intersection slot-labels '(gerund)))
 
 (defun case-from-labels (slot-labels)
+  "Called from pronoun-morphology to return one of its"
   (or (and (find (label-named 'reflexive) slot-labels) 'reflexive)
-      (ecase (name (first (case-governing-labels slot-labels)))
-        ((nil))
-        (possessive 'possessive-np) ;; Q&G pg 209
-        ((pred-nom object objective direct-object prep-obj) 'objective)
-        ((subject nominative) 'nominative))))
+      (let ((governing (case-governing-labels slot-labels)))
+        (if governing
+          (ecase (name (first governing))
+            ((nil))
+            (possessive 'possessive-np) ;; Q&G pg 209
+            ((pred-nom object objective direct-object prep-obj) 'objective)
+            ((subject nominative) 'nominative))
+          (else
+            ;; 11/12/19 a pronoun is showing up in an adjp-head slot,
+            ;; which isn't integrated into the governing case machinery.
+            ;; Situation is pathalogical (pronominalizing an adjective),
+            ;; so punting to a default
+            'nominative)))))
 
 (defun case-governing-labels (slot-labels)
   (or (label-intersection slot-labels *case-labels*)

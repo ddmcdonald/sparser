@@ -64,9 +64,6 @@
 
 ;; "to the left of the block" -- sem is a vanila pp
 
-;; 11/11/19 Actual value: "left of the block".
-;;  initial "the" not copied into semantics
-;;  -- change "the" + "direction" rule
 (deftest (say left of block) ; relative-location case (orientation-dependent-location)
   (mumble-says "the left of the block")
   "the left of the block")
@@ -128,6 +125,10 @@
   "put a red block at the end")
 |#
 
+;; 11/12/19 actual: "put another green block on the it block at the end of the row"
+;;  It's pronominalizing the second instance of 'green'
+;;  which gets through because of ugly patch in m::case-from-labels
+;;  Need to block the pronoun choice further upstream
 (deftest (say put another at end)
   (mumble-says "Put another green block on the green block at the end of the row.")
   "put another green block on the green block at the end of the row")
