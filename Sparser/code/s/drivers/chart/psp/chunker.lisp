@@ -721,6 +721,14 @@ than a bare "to".  |#
             (ecn (edge-cat-name e)))
         (declare (special *ng-start-tests-in-progress*))
         (cond
+          ((and
+            (loop for ee in (all-edges-at e)
+                 thereis (eq (edge-form-name ee) 'verb+ed))
+            (loop for ee in (all-edges-at e)
+                 thereis (eq (edge-form-name ee) 'verb)))
+           ;; for "put" which is a verb+ed and verb, and is
+           ;;  used as an impurative
+           nil)
           ((and (sentence-initial? e)
                 (eq (form-cat-name e) 'wh-pronoun))
            t)
