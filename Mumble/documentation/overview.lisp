@@ -5,7 +5,7 @@ Mumble-86 is a realization component based on a variation of tree-adjoining gram
 
 Since this version of Mumble doesn't do any thinking, all the considerations of what content to express and how organize it has to come from elsewhere, and be packaged as as a dtn.
 
-To the extent that we have thoroughly annotated all the elements in Sparser's Krisp model with their Mumble resource equivalents, we can do the thinking in terms of Krisp types. The resulting compound object that reflects what we want to express can then be automagically turned into a dtn (though that is likely to turn up gaps in our converage). 
+To the extent that we have thoroughly annotated all the elements in Sparser's Krisp model with their Mumble resource equivalents, we can do the thinking in terms of Krisp types. The resulting compound object that reflects what we want to express can then be automagically turned into a dtn (though that is likely to turn up gaps in our coverage). 
 
 
 * Start with the test files
@@ -41,27 +41,27 @@ This version of 'say' takes in a text string, has it parsed, then drives the ass
 
 * Code layout
 
-Mumble proper is loaded as a single ASDF module piggy-backing on Sparser
+Mumble proper is loaded as a single ASDF module piggy-backing on the Sparser ASDF system.
 
 (defsystem :sparser
   :depends-on (:ddm-util :mumble)
   :components ((:file "Sparser/code/s/init/everything"))
   ... )
 
-The mumble.asd file provides a nice overview of Mumble's layout as a set of files grouped functionally into directories. For example the drivers and control structure are in the 'interpreters' directory, and the grammar is in 'grammar' organized by the kind of grammatical object. To understand this level of Mumble's operation you should consult the mumble-86 manual in this directory. The first section of the manual is an easy to read self-contained summary.
+The Mumble/mumble.asd file provides a nice overview of Mumble's layout as a set of files grouped functionally into directories. For example the drivers and control structure are in the 'interpreters' directory, and the grammar is in 'grammar' organized by the kind of grammatical object. To understand this level of Mumble's operation you should consult the mumble-86 manual in this directory. The first section of the manual is an easy to read self-contained summary.
 
 For the interface with Sparser -- the procedures for annotating Sparser's grammar with the corresponding Mumble resources and for constructing derivation trees from Krips individuals -- there are several pockets of relevant code. Since they are a mix of Sparser and Mumble functions, and we load Mumble first, you have to be careful about having the correct systems.
 
-Sparser/.../interface/mumble/ 
+Sparser/.../interface/mumble/
 -- Has the Sparser side of this code and is primarily concerned with assembling the Mumble resources for all the Sparser realizations
 
-mumble/derivation-trees/
+Mumble/derivation-trees/
 -- Defines the data structures and basic helper functions that used to define the dtn-level resources and the mapping from Krisp individuals. The important files here are types.lisp and builders.lisp. The operators file is mostly OBE.
 
-mumble/interface/sparser/
+Mumble/interface/sparser/
 -- Has the methods for the general, type-driven Krisp individual to dtn machinery. The core file is binding-centric.lisp. It gets the head from the individual's type, then it maps over its bindings to add the needed complements and adjuncts.
 
-Mumble's interface to Sparser code depends on code from both systems having been loaded, and so it has a specific defsystem definition -- :mumble/sparser in mumble.asd -- to do this. This is what I just put in my .sbclrc file to make sure this works.
+Mumble's interface to Sparser code depends on code from both systems having been loaded, and so it has a specific defsystem definition -- :mumble/sparser included in mumble.asd -- to do this. This is what I just put in my .sbclrc file to make sure this works.
 
 (defun fire ()
   (handler-bind
