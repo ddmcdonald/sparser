@@ -22,12 +22,13 @@
   ;;:mixins (type-marker biological)
   :binds ((protein-sequence sequence)
           (pathwayComponent)
+          (pathwayEndpoints)
 	  (pathwayOrder)
           )
   :realization (:noun "pathway"
                       :with pathwayComponent
                       :for pathwayComponent
-                      :between pathwayComponent
+                      :between pathwayEndpoints
                       )
   :documentation "Pathways are inhibited and activated
    which makes them more like entities than processes.
