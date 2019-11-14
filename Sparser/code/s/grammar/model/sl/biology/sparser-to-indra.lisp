@@ -316,7 +316,7 @@ pass the result to the appropriate indra generator"
                       thereis (itypep cat? superc))
                 (make-indra-binding f cat? pmid))
                ((and (boundp 'cl-user::*sparser-to-indra*)
-                     cl-user::*sparser-to-indra*
+                     (symbol-value 'cl-user::*sparser-to-indra*)
                      (itypep cat? 'bio-entity))
                 (list (make-cwc-indra-bio-entity cat? f))))))))))
 
@@ -1802,3 +1802,40 @@ can still match things like CHK1 and CHK-1"
 ;;;!!!!!!!!
 (declaim (sb-ext:unmuffle-conditions sb-ext:compiler-note))
 (declaim (optimize (debug 1)(speed 3)(safety 0)))
+
+(defun biosense-for-sparser-output (&optional var)
+  (if var
+      (convert-to-biosense (gethash var *indra-mention-var-ht*))
+      (or
+       (loop for mention-indra in (hal *indra-mention-var-ht*)
+             when
+               (assoc :evidence (second mention-indra))
+             collect
+               (list (car mention-indra)
+                     (convert-to-biosense (second mention-indra))))
+       (loop for mention-indra in (hal *indra-mention-var-ht*)
+             unless
+               (assoc :evidence (second mention-indra))
+             collect
+               (list (car mention-indra)
+                     (convert-to-biosense (second mention-indra))))
+       )))
+
+
+(defun convert-to-biosense (indra-form)
+  (cond ((and (consp indra-form)
+              (not (consp (cdr indra-form))))
+         (list (car indra-form)
+               (cdr indra-form)))
+        ((and (consp indra-form)
+              (consp (cdr indra-form)))
+         (if (consp (car indra-form))
+             (loop for item in indra-form
+                   append (convert-to-biosense item))
+             (list (car indra-form)
+                   (case (car indra-form)
+                     (:evidence
+                      (list(loop for item in (cdr indra-form)
+                                 append (convert-to-biosense item))))
+                     (t (loop for item in (cdr indra-form)
+                                 append (convert-to-biosense item)))))))))
