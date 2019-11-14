@@ -58,6 +58,8 @@
        (push *save-clause-semantics* *clause-semantics-list*)
        (setq *save-clause-semantics* :mention-clauses)))
     (when *indra-post-process*
+      (when (get-indra-for-cwc?)
+        (clrhash *indra-mention-var-ht*))
       (indra-post-process mentions sentence *sentence-results-stream*)))
   (when *callisto-compare* (extract-callisto-data sentence))
     
@@ -770,7 +772,7 @@
 
 (defun get-indra-for-cwc? ()
   (and (boundp 'cl-user::*sparser-to-indra*)
-       cl-user::*sparser-to-indra*))
+       (symbol-value 'cl-user::*sparser-to-indra*)))
 
 (defparameter *indra-mention-var-ht*
   (when (get-indra-for-cwc?)
