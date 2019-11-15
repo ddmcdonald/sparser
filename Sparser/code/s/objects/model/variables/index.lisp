@@ -175,12 +175,16 @@
 (defun var-takes-category? (var/name individual category)
   "Does the restriction on this variable indicate that it can be bound
    to categories? Called from bind-dli-variable so may need to
-   decode the symbol that names the variable."
+   decode the symbol that names the variable.
+   Called by bind-dli-variable when the value being bound is a category.
+   It want to know whether the variable takes category values or
+   it should convert the category to an individual."
   (let* ((variable (variable-given-name-and-individual var/name individual category)))
     (cond (variable         
            (equal (var-value-restriction variable)
                   '(:PRIMITIVE CATEGORY)))
           (t
+           #+ignore
            (warn "no variable named ~s on ~s of category ~s~% in sentence ~s~%"
                  var/name individual category
                  (current-string))
