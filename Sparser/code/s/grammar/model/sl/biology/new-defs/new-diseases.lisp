@@ -113,7 +113,8 @@
 (def-indiv-with-id cancer "angiofibroma" "NCIT:C3799" :name "angiofibroma") 
 (def-indiv-with-id cancer "angiosarcoma" "EFO:0003968" :name "angiosarcoma") 
 (def-indiv-with-id cancer "astrocytoma" "EFO:0000272" :name "astrocytoma")
-(def-indiv-with-id cancer "breast cancer" "TS-0591") 
+(def-indiv-with-id cancer "bladder cancer" "NCIT:C2901")
+(def-indiv-with-id cancer "breast cancer" "TS-0591")
 (def-indiv-with-id cancer "breast carcinoma" "TS-0592") 
 (def-indiv-with-id cancer "carcinoma" "EFO:0000313" :name "carcinoma")
 (def-indiv-with-id cancer "carcinosarcoma" "NCIT:C34448" :name "carcinosarcoma") 
@@ -212,7 +213,8 @@
 (def-indiv-with-id cancer "thymoma" "NCIT:C3411" :name "thymoma") 
 (def-indiv-with-id cancer "thyroid cancer" "TS-1226") 
 (def-indiv-with-id cancer "thyroid carcinoma" "TS-1044") 
-(def-indiv-with-id cancer "trichilemmoma" "NCIT:C4113" :name "trichilemmoma") 
+(def-indiv-with-id cancer "trichilemmoma" "NCIT:C4113" :name "trichilemmoma")
+(def-indiv-with-id cancer "urinary bladder cancer" "NCIT:C2901")
 (def-indiv-with-id cancer "warts" "NCIT:C5028" :name "benign verrucous lesion")
 
 ;; Diseases
