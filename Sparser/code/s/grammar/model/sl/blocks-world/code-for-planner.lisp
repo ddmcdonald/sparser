@@ -16,9 +16,9 @@
 (defvar *focus* "The object in focus")
 
 ;;; some useful constants, types of relations, etc.
-(defparameter *horizontal-orientations* (list "left" "right"))
-(defparameter *ec-relations* (list "support" "on"))
-(defparameter *all-possible-relations* (list "on" "support" "touching" "left" "right" "behind" "front"))
+(defparameter *non-vertical-orientations* '("left" "right" "behind" "front"))
+(defparameter *ec-relations* '("support" "on" "touch"))
+(defparameter *all-possible-relations* '("on" "support" "touch" "left" "right" "behind" "front"))
 
 ;;;--------------------------------------------------
 ;;; Sequester parameters inside a tailored structure
@@ -119,14 +119,14 @@
 ;;; With green as the focus, the filters should pick blue as the ground and return:
 ;;; "The green block is right of the blue block."
 
-(defparameter *R* (list (list "left" "red" "green") (list "left" "blue" "green") 
-  (list "left" "red" "blue") (list "touching" "red" "blue") (list "right" "green" "blue") 
-  (list "right" "green" "red") (list "right" "blue" "red") (list "touching" "blue" "red")))
+(defparameter *R* '('(list "left" "red" "green") (list "left" "blue" "green") 
+  (list "left" "red" "blue") (list "touch" "red" "blue") (list "right" "green" "blue") 
+  (list "right" "green" "red") (list "right" "blue" "red") (list "touch" "blue" "red")))
 
-(defparameter *O* (list "red" "blue" "green"))
+(defparameter *O* '("red" "blue" "green"))
 (defparameter *focus* "red")
 
-(defun execute ()
+(defun execute-planner ()
 "Main method for generating a description of a situation. Updates the parameters of
 *tp-parameters* as various facts about the situation are unconvered/considered, 
 incrementally building up the derivation tree."
@@ -134,8 +134,63 @@ incrementally building up the derivation tree."
    (funcall fun *order-of-operations*)
    (when *order-of-operations*
     (setf *order-of-operations* (cdr *order-of-operations*))
-    (execute))))
+    (execute-planner))))
 
+
+;;;--------------------------------------------------
+;;; Helpers
+;;;--------------------------------------------------
+
+(defun support-something (something)
+  (let ((dtn (mumble::make-dtn :resource (verb "support" 'svo)
+                       :referent 'support-something)))
+    (mumble::make-complement-node 'o something dtn)
+    dtn))
+
+(defun realize-orientation (orientation something)
+  (cond ((string= orientation "left") (left-of-something something))
+    ((string= orientation "right") (right-of-something something))
+    ((string= orientation "front") (front-of-something something))
+    (t (back-of-something something))))
+
+(defun left-of-something (something)
+  (let ((dtn (mumble::make-dtn :resource 'of-genitive :referent 'of-something)))
+    (mumble::make-complement-node (mumble::name (mumble::parameter-named 'prep-object)) something dtn)
+    (mumble::make-complement-node (mumble::name (mumble::parameter-named 'qualifier)) "left" dtn)
+    dtn))
+
+(defun right-of-something (something)
+  (let ((dtn (mumble::make-dtn :resource 'of-genitive :referent 'of-something)))
+    (mumble::make-complement-node  (mumble::name (mumble::parameter-named 'prep-object)) something dtn)
+    (mumble::make-complement-node (mumble::name (mumble::parameter-named 'qualifier)) "right" dtn)
+    dtn))
+
+
+;;;"behind" causing trouble right now
+(defun back-of-something (something)
+  (let ((dtn (mumble::make-dtn :resource 'of-genitive :referent 'of-something)))
+    (mumble::make-complement-node (mumble::name (mumble::parameter-named 'prep-object)) something dtn)
+    (mumble::make-complement-node (mumble::name (mumble::parameter-named 'qualifier)) "back" dtn)
+    dtn))
+
+(defun front-of-something (something)
+  (let ((dtn (mumble::make-dtn :resource 'of-genitive :referent 'of-something)))
+    (mumble::make-complement-node (mumble::name (mumble::parameter-named 'prep-object)) something dtn)
+    (mumble::make-complement-node (mumble::name (mumble::parameter-named 'qualifier)) "front" dtn)
+    dtn))
+
+
+(defun orientation-and-connection (direction something)
+  (let ((orientation (mumble::make-dtn :resource 'multi-dependent-location :referent 'orientation))
+        (connection (mumble::make-dtn :resource (mumble::verb "touch") :referent 'touch-something))
+        (conjunction (mumble::make-dtn :referent `(and ,one ,two)
+                                     :resource (mumble::phrase-named 'two-item-conjunction))))
+    (mumble::make-complement-node 'qualifier direction orientation)
+    (mumble::make-complement-node 'ground something orientation)
+    (mumble::make-complement-node 'ground something connection)
+    (mumble::make-complement-node 'one orientation conjunction)
+    (mumble::make-complement-node 'two connection conjunction)
+    conjunction))
 
 ;;;--------------------------------------------------
 ;;; Functions, in order of execution, that incrementally build the representation
@@ -171,7 +226,6 @@ incrementally building up the derivation tree."
           (member `(,relation ,x ,arg2) r :test #'equal) 
           (member `(,relation ,arg1 ,x) r :test #'equal))) (tp-get-objects))))
 
-
 (defun remove-redundancies ()
   "Given a set of relations between f & g, removes any relations are subsets of other
   relations, mainly 'touch' and 'support' or 'on'."
@@ -181,20 +235,13 @@ incrementally building up the derivation tree."
 ;;called by remove-redundancies
 (defun ec-rel? (rel)
   "Determines whether or not f & g participate in an EC relationship."
-  (equal (first rel) "touching"))
+  (memq rel *ec-relations*))
 
 ;;called by remove-redundancies
 (defun is-in-vertical-relation? ()
   "Determines whether f & g are in a vertical relationship (i.e. 'support' or 'on')."
   (some #'(lambda (x) (or (equal (first x) "support") (equal (first x) "on"))) (tp-get-relations)))
 
-(defun is-in-horizontal-relation? ()
-  "Determines whether f & g are in a horizontal relationship (i.e. 'left' or 'right')."
-  (some #'(lambda (x) (or (equal (first x) "left") (equal (first x) "right"))) (tp-get-relations)))
-
-; (defun is-ec? ()
-;   "Determines whether or not f & g participate in an EC relationship."
-;   (some #'(lambda (x) (equal (first x) "touch") (tp-get-relations))))
 
 (defun generate-focus-node ()
   "Generates a dtn from the f(ocus) object."
@@ -229,28 +276,40 @@ incrementally building up the derivation tree."
 ;   (:method ((rel string))
 ;     (let ((r (category-named rel)))
 
-
 ;   (:method ((rel relation))
 
+;;called by combine-relations-into-predicate
+(defun non-vertical-orientation? ()
+  "Determines whether f and g are in an orientation that isn't vertical (i.e. left, right, front, back)"
+  (some #'(lambda (x) (memq x *non-vertical-orientations*)) (tp-get-relations)))
 
-; (defun combine-relations-into-predicate ()
-;   (let ((r (tp-get-relations)))
-;     (cond ((is-in-vertical-relation?) ;; in this case we only have one applicable predicate - 'support' or 'on' -- but could be realized in multiple ways
-;       (do stuff))
-;     (is-ec?) (check if horizontal relation - combined predicate)
-;     (t (let ((direction (first (first r))) ;; left, right, front, back?
-;       (phrase (make-dtn :resource 'copular-predication :referent 'be)))
-;       (make-complement-node 'o (make-dtn :resource 'of-genitive :referent 'of-genitive) (tp-get-ground))
+;; called by combine-relations-into-predicate
+(defun is-ec? ()
+   (some #'(lambda (x) (memq (first x) *ec-relations*)) (tp-get-relations)))
 
-; (defun build-realization ()
-;   "Builds the final dtn from focus and predicate."
+
+(defun combine-relations-into-predicate ()
+  (let ((r (tp-get-relations))
+        (ground (tp-get-ground)))
+    (cond ((is-in-vertical-relation?) ;; in this case we only have one applicable predicate - 'support' or 'on' -- but could be realized in multiple ways
+      (if (eq (first (first r) "on")) (on-something ground) (support-something ground)))
+    ((is-ec?) (orientation-and-connection (first (non-vertical-orientation?)) ground)) ;; in this case we need a combined representation
+    (t (let ((direction (first (first r)))) ;; standalone direction, not EC: left, right, front, behind?
+      (realize-orientation direction ground))))))
+
+(defun build-realization ()
+  "Builds the final dtn from focus and predicate."
+  (let ((dtn (mumble::make-dtn :resource 'copular-predication :referent 'copular-predication)))
+    (mumble::make-complement-node (mumble::parameter-named 's) (tp-get-focus) dtn)
+    (mumble::make-complement-node (mumble::parameter-named 'o) (combine-relations-into-predicate) dtn)
+    (tp-set-dt dtn)))
 
 ;;;-------------------------
 ;;; Order of Operations
 ;;;-------------------------
 
-(defparameter *order-of-operations* (list (initialize-givens *R* *O* *focus*) (filter-focus-relations)
+(defparameter *order-of-operations* `'((initialize-givens *R* *O* *focus*) (filter-focus-relations)
 (filter-for-transitivity) (remove-redundancies) (generate-focus-node) 
-(generate-ground-node))
+(generate-ground-node) (build-realization))
 "The order of operations for the above functions")
 
