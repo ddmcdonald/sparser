@@ -104,24 +104,42 @@
 ;;; Simple test situation for debugging
 ;;;--------------------------------------------------
 
-;;; For now, dealing only with two-block situations: assuming that these heuristics will 
-;;; leave us with only a single option as the "ground". I.e., we are not dealing wth "between" 
-;;; situations, where the focus object is left of something and right of something else, or 
-;;; supporting something and supported by something else. 
+;;; For now, dealing only with two-block situations: assuming that
+;;; these heuristics will leave us with only a single option as the
+;;; "ground". I.e., we are not dealing wth "between" situations, where
+;;; the focus object is left of something and right of something else,
+;;; or supporting something and supported by something else.
 
-;;; The test situation contains a red, green and blue block. Red is left of (and touching) blue and blue is left
-;;; of green. 
-;;; With red as the focus, the filters should pick out "blue" as the ground and return:
+;;; The test situation contains a red, green and blue block. Red is
+;;; left of (and touching) blue and blue is left of green.
+
+;;; With red as the focus, the filters should pick out "blue" as the
+;;; ground and return:
 ;;; "The red bloc is left of and touching the blue block."
-;;; With blue as the focus, the filters should pick out red as the ground (even though blue is between red and
-;;; green, it's not touching green) and return:
+
+;;; With blue as the focus, the filters should pick out red as the
+;;; ground (even though blue is between red and green, it's not
+;;; touching green) and return:
 ;;; "The blue block is right of and touching the red block."
-;;; With green as the focus, the filters should pick blue as the ground and return:
+
+;;; With green as the focus, the filters should pick blue as the
+;;; ground and return:
 ;;; "The green block is right of the blue block."
 
-(defparameter *R* '('(list "left" "red" "green") (list "left" "blue" "green") 
-  (list "left" "red" "blue") (list "touch" "red" "blue") (list "right" "green" "blue") 
-  (list "right" "green" "red") (list "right" "blue" "red") (list "touch" "blue" "red")))
+#| The list function is redundant if you've got literals
+like these. Enclosing something in parentheses creates a list.
+What the list means -- like is it a function call or just
+an enumeration -- is a matter of the context in which the list appears
+|#
+(defparameter *R*
+  '(("left" "red" "green")
+    ("left" "blue" "green") 
+    ("left" "red" "blue")
+    ("touch" "red" "blue")
+    ("right" "green" "blue") 
+    ("right" "green" "red")
+    ("right" "blue" "red")
+    ("touch" "blue" "red")))
 
 (defparameter *O* '("red" "blue" "green"))
 (defparameter *focus* "red")
@@ -139,57 +157,85 @@ incrementally building up the derivation tree."
 
 ;;;--------------------------------------------------
 ;;; Helpers
-;;;--------------------------------------------------
+;;;-----------------------------------------wp---------
+
+#| The mumble package has a short form -- m --  Similarly the sparser package
+ can be abbreviated to sp  |#
+
+#| The other option is to shift package in the middle of the file.
+This set of helpers has a plethora of package qualified symbols.
+You could start the section with (in-package :mumble) and make them
+all redundant.  The mumble test file that this is largely cribing from
+is all the in mumble package.
+
+Doing that would also make let you avoid the overly complicated
+(and therefor more prone to mistakes and harder to maintain) way
+you've been getting the symbol for the parameter. 
+
+It would have a further benefit -- the symbols that name parameters
+and such only have the values we want if they're in the mumble package.
+E.g.
+sp> (in-package :mumble)
+#<package "MUMBLE">
+m> (parameter-named 'o)
+#<parameter o>
+m> (parameter-named 'sp::o)
+nil
+m> (parameter-named 'sp::prep-object)
+nil
+|#
+
 
 (defun support-something (something)
-  (let ((dtn (mumble::make-dtn :resource (verb "support" 'svo)
-                       :referent 'support-something)))
-    (mumble::make-complement-node 'o something dtn)
+  (let ((dtn (m::make-dtn :resource (verb "support" 'svo)
+                          :referent 'support-something)))
+    (m::make-complement-node 'o something dtn)
     dtn))
 
 (defun realize-orientation (orientation something)
-  (cond ((string= orientation "left") (left-of-something something))
+  (cond
+    ((string= orientation "left") (left-of-something something))
     ((string= orientation "right") (right-of-something something))
     ((string= orientation "front") (front-of-something something))
     (t (back-of-something something))))
 
 (defun left-of-something (something)
-  (let ((dtn (mumble::make-dtn :resource 'of-genitive :referent 'of-something)))
-    (mumble::make-complement-node (mumble::name (mumble::parameter-named 'prep-object)) something dtn)
-    (mumble::make-complement-node (mumble::name (mumble::parameter-named 'qualifier)) "left" dtn)
+  (let ((dtn (m::make-dtn :resource 'of-genitive :referent 'of-something)))
+    (m::make-complement-node (m::name (m::parameter-named 'prep-object)) something dtn)
+    (m::make-complement-node (m::name (m::parameter-named 'qualifier)) "left" dtn)
     dtn))
 
 (defun right-of-something (something)
-  (let ((dtn (mumble::make-dtn :resource 'of-genitive :referent 'of-something)))
-    (mumble::make-complement-node  (mumble::name (mumble::parameter-named 'prep-object)) something dtn)
-    (mumble::make-complement-node (mumble::name (mumble::parameter-named 'qualifier)) "right" dtn)
+  (let ((dtn (m::make-dtn :resource 'of-genitive :referent 'of-something)))
+    (m::make-complement-node  (m::name (m::parameter-named 'prep-object)) something dtn)
+    (m::make-complement-node (m::name (m::parameter-named 'qualifier)) "right" dtn)
     dtn))
 
 
 ;;;"behind" causing trouble right now
 (defun back-of-something (something)
-  (let ((dtn (mumble::make-dtn :resource 'of-genitive :referent 'of-something)))
-    (mumble::make-complement-node (mumble::name (mumble::parameter-named 'prep-object)) something dtn)
-    (mumble::make-complement-node (mumble::name (mumble::parameter-named 'qualifier)) "back" dtn)
+  (let ((dtn (m::make-dtn :resource 'of-genitive :referent 'of-something)))
+    (m::make-complement-node (m::name (m::parameter-named 'prep-object)) something dtn)
+    (m::make-complement-node (m::name (m::parameter-named 'qualifier)) "back" dtn)
     dtn))
 
 (defun front-of-something (something)
-  (let ((dtn (mumble::make-dtn :resource 'of-genitive :referent 'of-something)))
-    (mumble::make-complement-node (mumble::name (mumble::parameter-named 'prep-object)) something dtn)
-    (mumble::make-complement-node (mumble::name (mumble::parameter-named 'qualifier)) "front" dtn)
+  (let ((dtn (m::make-dtn :resource 'of-genitive :referent 'of-something)))
+    (m::make-complement-node (m::name (m::parameter-named 'prep-object)) something dtn)
+    (m::make-complement-node (m::name (m::parameter-named 'qualifier)) "front" dtn)
     dtn))
 
 
 (defun orientation-and-connection (direction something)
-  (let ((orientation (mumble::make-dtn :resource 'multi-dependent-location :referent 'orientation))
-        (connection (mumble::make-dtn :resource (mumble::verb "touch") :referent 'touch-something))
-        (conjunction (mumble::make-dtn :referent `(and ,one ,two)
-                                     :resource (mumble::phrase-named 'two-item-conjunction))))
-    (mumble::make-complement-node 'qualifier direction orientation)
-    (mumble::make-complement-node 'ground something orientation)
-    (mumble::make-complement-node 'ground something connection)
-    (mumble::make-complement-node 'one orientation conjunction)
-    (mumble::make-complement-node 'two connection conjunction)
+  (let ((orientation (m::make-dtn :resource 'multi-dependent-location :referent 'orientation))
+        (connection (m::make-dtn :resource (m::verb "touch") :referent 'touch-something))
+        (conjunction (m::make-dtn :referent `(and ,one ,two)
+                                     :resource (m::phrase-named 'two-item-conjunction))))
+    (m::make-complement-node 'qualifier direction orientation)
+    (m::make-complement-node 'ground something orientation)
+    (m::make-complement-node 'ground something connection)
+    (m::make-complement-node 'one orientation conjunction)
+    (m::make-complement-node 'two connection conjunction)
     conjunction))
 
 ;;;--------------------------------------------------
@@ -198,16 +244,31 @@ incrementally building up the derivation tree."
 
 (defun initialize-givens (R O focus)
   "Initializes the parameters of the *tp-parameters* object with given information."
-  ;;setting up all the given information ;;
+  ;;setting up all the given information
   (tp-set-objects O)
   (tp-set-focus focus)
   (tp-set-r R))
 
 (defun filter-focus-relations ()
-  "Filters all the relations in :R slot of *tp-parameters* to only contain those that keep arg in focus."
+  "Filters all the relations in :R slot of *tp-parameters* to only
+   contain those that keep arg in focus."
   (let ((arg (tp-get-focus)))
- (tp-set-relations 
-  (remove-if-not #'(lambda (x) (equal (cadr x) arg)) (tp-get-R)))))
+    (tp-set-relations 
+     (remove-if-not #'(lambda (x) (equal (cadr x) arg))
+                    (tp-get-R)))))
+#| Lisp programmers fall into two camps as to whether they implement simple
+data structures with lists, selecting the field they want using car and cadr
+(or equivalently first and second), or they use structs (or even classes) so that
+every field has a name that's evokative of its function.
+  Rusty likes lists. I like classes. Alex liked structs for the uncomplicated things.
+
+When you're getting the real object and relation data over the wire via the facilitator
+everything will start out as a long string of characters and will need to be
+read out (parsed, for small values of parse) into a representation of object
+and their relationships. That's when you can see what you want as the representation
+and make a choice. 
+|#
+
 
 (defun filter-for-transitivity ()
   "Filters :relations slot of *tp-parameters* for relations that are not true by transitivity."
@@ -222,9 +283,10 @@ incrementally building up the derivation tree."
         (arg1 (cadr rel))
         (arg2 (caddr rel))
         (r (tp-get-R)))
-        (some #'(lambda (x) (and 
-          (member `(,relation ,x ,arg2) r :test #'equal) 
-          (member `(,relation ,arg1 ,x) r :test #'equal))) (tp-get-objects))))
+    (some #'(lambda (x)
+              (and (member `(,relation ,x ,arg2) r :test #'equal) 
+                   (member `(,relation ,arg1 ,x) r :test #'equal)))
+          (tp-get-objects))))
 
 (defun remove-redundancies ()
   "Given a set of relations between f & g, removes any relations are subsets of other
@@ -240,17 +302,19 @@ incrementally building up the derivation tree."
 ;;called by remove-redundancies
 (defun is-in-vertical-relation? ()
   "Determines whether f & g are in a vertical relationship (i.e. 'support' or 'on')."
-  (some #'(lambda (x) (or (equal (first x) "support") (equal (first x) "on"))) (tp-get-relations)))
+  (some #'(lambda (x) (or (equal (first x) "support")
+                          (equal (first x) "on")))
+        (tp-get-relations)))
 
 
 (defun generate-focus-node ()
   "Generates a dtn from the f(ocus) object."
- (let* ((block (mumble::noun "block"))
-      (dtn (mumble::make-dtn :resource block :referent 'a-block))
-      (color (mumble::adjectivial-modifier (tp-get-focus))))
-    (mumble::make-adjunction-node color dtn)
-    (mumble::always-definite dtn)
-      (tp-set-focus dtn)))
+  (let* ((block (m::noun "block"))
+         (dtn (m::make-dtn :resource block :referent 'a-block))
+         (color (m::adjectivial-modifier (tp-get-focus))))
+    (m::make-adjunction-node color dtn)
+    (m::always-definite dtn)
+    (tp-set-focus dtn)))
 
 ;; returns the object(s) with which arg has the most relations in R
 ;; perhaps not a useful heuristic when the others are combined
@@ -263,11 +327,11 @@ incrementally building up the derivation tree."
   For now, assuming there's only one possible ground object.
   As a result, we just take the second object in the first ordered pair 
   in our filtered list of relations."
- (let* ((block (mumble::noun "block"))
-      (dtn (mumble::make-dtn :resource block :referent 'the-block))
-      (color (mumble::adjectivial-modifier (third (first (tp-get-relations))))))
-    (mumble::make-adjunction-node color dtn)
-    (mumble::always-definite dtn)
+ (let* ((block (m::noun "block"))
+      (dtn (m::make-dtn :resource block :referent 'the-block))
+      (color (m::adjectivial-modifier (third (first (tp-get-relations))))))
+    (m::make-adjunction-node color dtn)
+    (m::always-definite dtn)
       (tp-set-ground dtn)))
 
 ;;returns passivized, or otherwise alternate constructions, for a given relation
@@ -291,25 +355,44 @@ incrementally building up the derivation tree."
 (defun combine-relations-into-predicate ()
   (let ((r (tp-get-relations))
         (ground (tp-get-ground)))
-    (cond ((is-in-vertical-relation?) ;; in this case we only have one applicable predicate - 'support' or 'on' -- but could be realized in multiple ways
-      (if (eq (first (first r) "on")) (on-something ground) (support-something ground)))
-    ((is-ec?) (orientation-and-connection (first (non-vertical-orientation?)) ground)) ;; in this case we need a combined representation
-    (t (let ((direction (first (first r)))) ;; standalone direction, not EC: left, right, front, behind?
-      (realize-orientation direction ground))))))
+    (cond
+      ((is-in-vertical-relation?)
+       ;; in this case we only have one applicable predicate -
+       ;; 'support' or 'on' -- but could be realized in multiple ways
+       (if (eq (first (first r) "on"))
+         (on-something ground)
+         (support-something ground)))
+      ((is-ec?)
+        ;; in this case we need a combined representation
+       (orientation-and-connection (first (non-vertical-orientation?)) ground))
+      (t (let ((direction (first (first r))))
+           ;; standalone direction, not EC: left, right, front, behind?
+           (realize-orientation direction ground))))))
 
 (defun build-realization ()
   "Builds the final dtn from focus and predicate."
-  (let ((dtn (mumble::make-dtn :resource 'copular-predication :referent 'copular-predication)))
-    (mumble::make-complement-node (mumble::parameter-named 's) (tp-get-focus) dtn)
-    (mumble::make-complement-node (mumble::parameter-named 'o) (combine-relations-into-predicate) dtn)
+  (let ((dtn (m::make-dtn :resource 'copular-predication :referent 'copular-predication)))
+    (m::make-complement-node (m::parameter-named 's) (tp-get-focus) dtn)
+    (m::make-complement-node (m::parameter-named 'o) (combine-relations-into-predicate) dtn)
     (tp-set-dt dtn)))
 
 ;;;-------------------------
 ;;; Order of Operations
 ;;;-------------------------
 
-(defparameter *order-of-operations* `'((initialize-givens *R* *O* *focus*) (filter-focus-relations)
-(filter-for-transitivity) (remove-redundancies) (generate-focus-node) 
-(generate-ground-node) (build-realization))
+#| Your (backquote (quote ...)) seems to be a mystical cargo culting (I needed that before, so I probably
+need it now too). The backquote doesn't do any work unless there a comma (embedded eval)
+somewhere in the list that you're backquoting. None in here, so a regular quote will 
+work fine.  Also I moved the list into a one-item-per-line form because it was much
+easier for me to scan and get a sense of the scope of the operations
+|#
+(defparameter *order-of-operations*
+  '((initialize-givens *R* *O* *focus*)
+    (filter-focus-relations)
+    (filter-for-transitivity)
+    (remove-redundancies)
+    (generate-focus-node) 
+    (generate-ground-node)
+    (build-realization))
 "The order of operations for the above functions")
 
