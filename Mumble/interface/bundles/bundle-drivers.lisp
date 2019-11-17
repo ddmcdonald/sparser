@@ -196,8 +196,10 @@
 
 (defun set-backpointer-of-root (root-node rspec)
   (if (not (typep root-node 'node))
-      (mbug "~s was realized as ~s, which is illegal for a phrasal root." 
-	    rspec root-node)
+      (mbug "~s was realized as ~s~%~
+            ~%an object of type ~a~
+            ~%which is illegal for a phrasal root." 
+	    rspec root-node (type-of root-node))
       (set-original-rspec (context-object root-node) rspec)))
 
 

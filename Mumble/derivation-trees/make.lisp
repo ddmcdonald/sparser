@@ -235,6 +235,9 @@ but we don't want to count on that.
     (make-complement-node (parameter-named parameter-name)
                           i dtn))
 
+  (:method ((parameter-name null) i (dtn derivation-tree-node))
+    (break "value for mumble parameter is nil -- check package"))
+
   (:method ((parameter parameter) i (dtn derivation-tree-node))
     (assert i () "No value provided for ~a" parameter)
     (let ((cn (make-instance 'complement-node

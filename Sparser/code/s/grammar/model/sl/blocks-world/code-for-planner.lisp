@@ -154,6 +154,28 @@ incrementally building up the derivation tree."
     (setf *order-of-operations* (cdr *order-of-operations*))
     (execute-planner))))
 
+(defun ex-planner ()
+  (flet ((pr (string &rest args)
+           ;; replace with real TR traces when it's clearer what to trace
+           (apply #'trace-msg string args)))
+    (let ((step (pop *order-of-operations*)))
+      ;; get the next thing to do
+      (if step
+        ;; It's like we're taking this step by passing it to the REPL
+        (then
+          (pr "About to execute ~a" step)
+          (eval step)
+          (ex-planner))
+        (else
+          ;; nothing to do. It's likely that we're done
+          (let ((dtn (tp-get-dt)))
+            (if dtn
+              (m::say dtn)
+              (break "no dtn?"))))))))
+
+(defun tp () ;; saves typing
+  (reinitialize-text-planner)
+  (ex-planner))
 
 ;;;--------------------------------------------------
 ;;; Helpers
@@ -187,9 +209,9 @@ nil
 
 
 (defun support-something (something)
-  (let ((dtn (m::make-dtn :resource (verb "support" 'svo)
+  (let ((dtn (m::make-dtn :resource (m::verb "support" 'svo)
                           :referent 'support-something)))
-    (m::make-complement-node 'o something dtn)
+    (m::make-complement-node 'm::o something dtn)
     dtn))
 
 (defun realize-orientation (orientation something)
@@ -200,42 +222,46 @@ nil
     (t (back-of-something something))))
 
 (defun left-of-something (something)
-  (let ((dtn (m::make-dtn :resource 'of-genitive :referent 'of-something)))
-    (m::make-complement-node (m::name (m::parameter-named 'prep-object)) something dtn)
-    (m::make-complement-node (m::name (m::parameter-named 'qualifier)) "left" dtn)
+  (let ((dtn (m::make-dtn :resource (m::phrase-named 'm::of-genitive)
+                          :referent 'of-something)))
+    (m::make-complement-node (m::name (m::parameter-named 'm::prep-object)) something dtn)
+    (m::make-complement-node (m::name (m::parameter-named 'm::qualifier)) "left" dtn)
     dtn))
 
 (defun right-of-something (something)
-  (let ((dtn (m::make-dtn :resource 'of-genitive :referent 'of-something)))
-    (m::make-complement-node  (m::name (m::parameter-named 'prep-object)) something dtn)
-    (m::make-complement-node (m::name (m::parameter-named 'qualifier)) "right" dtn)
+  (let ((dtn (m::make-dtn :resource (m::phrase-named 'm::of-genitive)
+                          :referent 'of-something)))
+    (m::make-complement-node  (m::name (m::parameter-named 'm::prep-object)) something dtn)
+    (m::make-complement-node (m::name (m::parameter-named 'm::qualifier)) "right" dtn)
     dtn))
 
 
 ;;;"behind" causing trouble right now
 (defun back-of-something (something)
-  (let ((dtn (m::make-dtn :resource 'of-genitive :referent 'of-something)))
-    (m::make-complement-node (m::name (m::parameter-named 'prep-object)) something dtn)
-    (m::make-complement-node (m::name (m::parameter-named 'qualifier)) "back" dtn)
+  (let ((dtn (m::make-dtn :resource (m::phrase-named 'm::of-genitive)
+                          :referent 'of-something)))
+    (m::make-complement-node (m::name (m::parameter-named 'm::prep-object)) something dtn)
+    (m::make-complement-node (m::name (m::parameter-named 'm::qualifier)) "back" dtn)
     dtn))
 
 (defun front-of-something (something)
-  (let ((dtn (m::make-dtn :resource 'of-genitive :referent 'of-something)))
-    (m::make-complement-node (m::name (m::parameter-named 'prep-object)) something dtn)
-    (m::make-complement-node (m::name (m::parameter-named 'qualifier)) "front" dtn)
+  (let ((dtn (m::make-dtn :resource (m::phrase-named 'm::of-genitive)
+                          :referent 'of-something)))
+    (m::make-complement-node (m::name (m::parameter-named 'm::prep-object)) something dtn)
+    (m::make-complement-node (m::name (m::parameter-named 'm::qualifier)) "front" dtn)
     dtn))
 
 
 (defun orientation-and-connection (direction something)
-  (let ((orientation (m::make-dtn :resource 'multi-dependent-location :referent 'orientation))
+  (let ((orientation (m::make-dtn :resource 'm::multi-dependent-location :referent 'orientation))
         (connection (m::make-dtn :resource (m::verb "touch") :referent 'touch-something))
         (conjunction (m::make-dtn :referent `(and ,one ,two)
                                      :resource (m::phrase-named 'two-item-conjunction))))
-    (m::make-complement-node 'qualifier direction orientation)
-    (m::make-complement-node 'ground something orientation)
-    (m::make-complement-node 'ground something connection)
-    (m::make-complement-node 'one orientation conjunction)
-    (m::make-complement-node 'two connection conjunction)
+    (m::make-complement-node 'm::qualifier direction orientation)
+    (m::make-complement-node 'm::ground something orientation)
+    (m::make-complement-node 'm::ground something connection)
+    (m::make-complement-node 'm::one orientation conjunction)
+    (m::make-complement-node 'm::two connection conjunction)
     conjunction))
 
 ;;;--------------------------------------------------
@@ -371,12 +397,14 @@ and make a choice.
 
 (defun build-realization ()
   "Builds the final dtn from focus and predicate."
-  (let ((dtn (m::make-dtn :resource 'copular-predication :referent 'copular-predication)))
-    (m::make-complement-node (m::parameter-named 's) (tp-get-focus) dtn)
-    (m::make-complement-node (m::parameter-named 'o) (combine-relations-into-predicate) dtn)
+  (let ((dtn (m::make-dtn :resource (m::phrase-named  'm::s-be-comp)
+                          :referent 'copular-predication)))
+    (m::make-complement-node (m::parameter-named 'm::s) (tp-get-focus) dtn)
+    (m::make-complement-node (m::parameter-named 'm::c) (combine-relations-into-predicate) dtn)
     (tp-set-dt dtn)))
 
 ;;;-------------------------
+
 ;;; Order of Operations
 ;;;-------------------------
 
@@ -394,5 +422,18 @@ easier for me to scan and get a sense of the scope of the operations
     (generate-focus-node) 
     (generate-ground-node)
     (build-realization))
-"The order of operations for the above functions")
+  "The order of operations for the above functions")
+
+(defun reinitialize-text-planner ()
+  ;; this will have been depleted
+  (setq *order-of-operations*
+        '((initialize-givens *R* *O* *focus*)
+          (filter-focus-relations)
+          (filter-for-transitivity)
+          (remove-redundancies)
+          (generate-focus-node) 
+          (generate-ground-node)
+          (build-realization)))
+  ;; make a clean one
+  (setq *tp-parameters* (make-instance 'tp-parameters)))
 
