@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "multiply-aux"
 ;;;   Module:  "analyzers;psp:check:"
-;;;  Version:   March 2019
+;;;  Version:   November 2019
 
 ;; 2/26/19 initiated to clear non-essentials from multiply.lisp
 
@@ -234,7 +234,7 @@
     (VERB+ED (VERB+ED)) 
     (VERB+ING (VERB+ING)) 
     (VERB+PRESENT (VERB+PRESENT)) 
-    (VG (VERB+ING VP VERB+ED  VG )) ;; not COMMON-NOUN
+    (VG (VERB+ING VP vp+ed VG vg+ed VERB+ED)) ;; not COMMON-NOUN
     (VP (VERB+ING  VG  S VP VERB+ED)) ;; not N-BAR COMMON-NOUN COMMON-NOUN/PLURAL PP NP RELATIVE-CLAUSE
     (WH-PRONOUN (WH-PRONOUN)) 
     ;;(BE (VERB VG VP VERB+ED)) 
