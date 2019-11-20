@@ -203,57 +203,10 @@
 ;;; compatible form information
 ;;;-----------------------------
 
-(defparameter *form-maps*
-  '(
-    (ADJECTIVE (ADJECTIVE)) 
-    (ADVERB (COMPARATIVE ADVERB)) 
-    (BIO-PROCESS (NP)) ;; not  VG
-    (BIOLOGICAL (PROPER-NOUN NP)) ;; not S PP VG
-    (COMMON-NOUN (COMMON-NOUN)) 
-    (COMMON-NOUN/PLURAL (COMMON-NOUN/PLURAL)) 
-    (ENZYME (NP)) ;; NOT PP
-    (IS-BIO-ENTITY (VP)) ;;  not PP VG RELATIVE-CLAUSE S VG 
-    (MODAL (MODAL)) 
-    (MODIFIER (ADJECTIVE NUMBER PROPER-NOUN NP COMMON-NOUN  COMMON-NOUN/PLURAL))  ;; not VP -- this is for the pre-mod rule
-    (N-BAR (N-BAR)) 
-    (NP (NP)) 
-    (NP-HEAD (COMMON-NOUN common-noun/plural proper-noun)) ;; Tuesday
-    (NP/OBJECT  (N-BAR COMMON-NOUN COMMON-NOUN/PLURAL NP PRONOUN PROPER-NAME PROPER-NOUN))  ;; not VG PP RELATIVE-CLAUSE  S VP VERB+ED
-    (NP/SUBJECT (N-BAR COMMON-NOUN COMMON-NOUN/PLURAL NP PRONOUN PROPER-NAME PROPER-NOUN)) ;; not VERB+ED VP  VG
-    (NUMBER (NUMBER NP)) 
-    (POST-ORDINAL (POST-ORDINAL)) 
-    (PP (PP)) 
-    (PREPOSITION (PREPOSITION)) 
-    (PROPER-NOUN (PROPER-NOUN)) 
-    (PROTEIN (NP PROPER-NOUN)) 
-    (RELATIVE-CLAUSE (RELATIVE-CLAUSE)) 
-    (S (S)) 
-    (SEQUENCER (DET)) 
-    (SPATIAL-PREPOSITION (SPATIAL-PREPOSITION)) 
-    (VERB (VERB)) 
-    (VERB+ED (VERB+ED)) 
-    (VERB+ING (VERB+ING)) 
-    (VERB+PRESENT (VERB+PRESENT)) 
-    (VG (VERB+ING VP vp+ed VG vg+ed VERB+ED)) ;; not COMMON-NOUN
-    (VP (VERB+ING  VG  S VP VERB+ED)) ;; not N-BAR COMMON-NOUN COMMON-NOUN/PLURAL PP NP RELATIVE-CLAUSE
-    (WH-PRONOUN (WH-PRONOUN)) 
-    ;;(BE (VERB VG VP VERB+ED)) 
-    ;;(COMMA (NIL)) 
-    ;;(DO (VERB)) 
-    ;;(HAVE (VERB VERB+S)) 
-    ;;(OF (PREPOSITION)) 
-    ;;(THAT (NP DET)) 
-    ;;(THE (DET)) 
-    ;;(YEAR (COMMON-NOUN)) 
-    ;;(\a (DET)) 
-    ;;(|an| (DET)) 
-    ;;(|not| (QUANTIFIER)) 
-    ;;(|these| (DET)) 
-    ;;(|the| (DET)) 
-    ;;(|this| (DET)) 
-    ))
-
 (defun compatible-form (rule-form edge)
+  "Consult *form-maps* to see what other form labels are compatible
+   with the form specified in the rule, e.g. because of a shift in tense"
+  (declare (special *form-maps*))
   (let ((compatible-forms (second (assq rule-form *form-maps*))))
     (or (null compatible-forms) ;; the rule-form is not taken to constrain anything
         (memq (cat-name (edge-form edge)) compatible-forms))))
@@ -284,6 +237,58 @@
                   (edge-form right-edge) right-edge))
         nil)))))
  
+(defparameter *form-maps*
+  '(
+    (ADJECTIVE (ADJECTIVE)) 
+    (ADVERB (COMPARATIVE ADVERB)) 
+    (BIO-PROCESS (NP)) ;; not  VG
+    (BIOLOGICAL (PROPER-NOUN NP)) ;; not S PP VG
+    (COMMON-NOUN (COMMON-NOUN)) 
+    (COMMON-NOUN/PLURAL (COMMON-NOUN/PLURAL)) 
+    (ENZYME (NP)) ;; NOT PP
+    (IS-BIO-ENTITY (VP)) ;;  not PP VG RELATIVE-CLAUSE S VG 
+    (MODAL (MODAL)) 
+    (MODIFIER (ADJECTIVE NUMBER PROPER-NOUN NP COMMON-NOUN  COMMON-NOUN/PLURAL))  ;; not VP -- this is for the pre-mod rule
+    (N-BAR (N-BAR)) 
+    (NP (NP )) 
+    (NP-HEAD (COMMON-NOUN common-noun/plural proper-noun)) ;; Tuesday
+    (NP/OBJECT  (N-BAR COMMON-NOUN COMMON-NOUN/PLURAL NP PRONOUN PROPER-NAME PROPER-NOUN))  ;; not VG PP RELATIVE-CLAUSE  S VP VERB+ED
+    (NP/SUBJECT (N-BAR COMMON-NOUN COMMON-NOUN/PLURAL NP PRONOUN wh-pronoun PROPER-NAME PROPER-NOUN)) ;; not VERB+ED VP  VG
+    (NUMBER (NUMBER NP)) 
+    (POST-ORDINAL (POST-ORDINAL)) 
+    (PP (PP)) 
+    (PREPOSITION (PREPOSITION)) 
+    (PROPER-NOUN (PROPER-NOUN)) 
+    (PROTEIN (NP PROPER-NOUN)) 
+    (RELATIVE-CLAUSE (RELATIVE-CLAUSE)) 
+    (S (S)) 
+    (SEQUENCER (DET)) 
+    (SPATIAL-PREPOSITION (SPATIAL-PREPOSITION)) 
+    (VERB (VERB)) 
+    (VERB+ED (VERB+ED)) 
+    (VERB+ING (VERB+ING)) 
+    (VERB+PRESENT (VERB+PRESENT))
+    (VG (VERB+ING VP vp+ed VG vg+ed VERB+ED)) ;; not COMMON-NOUN
+    (VP (VERB+ING  VG  S VP VERB+ED vg+ed)) ;; not N-BAR COMMON-NOUN COMMON-NOUN/PLURAL PP NP RELATIVE-CLAUSE
+    (WH-PRONOUN (WH-PRONOUN)) 
+    ;;(BE (VERB VG VP VERB+ED)) 
+    ;;(COMMA (NIL)) 
+    ;;(DO (VERB)) 
+    ;;(HAVE (VERB VERB+S)) 
+    ;;(OF (PREPOSITION)) 
+    ;;(THAT (NP DET)) 
+    ;;(THE (DET)) 
+    ;;(YEAR (COMMON-NOUN)) 
+    ;;(\a (DET)) 
+    ;;(|an| (DET)) 
+    ;;(|not| (QUANTIFIER)) 
+    ;;(|these| (DET)) 
+    ;;(|the| (DET)) 
+    ;;(|this| (DET)) 
+    ))
+
+
+
 (defun validate-rule-result-form-against-chunk (rule right-edge chunk)
   "If the right-edge being composed by this rule is the head edge of
    then chunk we're in, then check that the rule will give the 
@@ -305,6 +310,7 @@
          (tr :is-not-consistent-with-chunk right-edge))
        result))
    (t t)))
+
 
 
 (defun test-semantic-applicability (rule left-edge right-edge)
