@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,2013-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2013-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "subject relatives"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  version:  March 2017
+;;;  version:  November 2017
 
 ;; initiated 6/18/93 v2.3
 ;; (8/9/07) Well something else can go in this file, but just now this
@@ -28,8 +28,9 @@
 ;; 6/5/2015 rename method to apply-reduced-relative-clause and add semantic constraints
 
 
-
 (in-package :sparser)
+
+(defparameter *debug-reduced-relative-creation* nil)
 
 ;;;---------------------------
 ;;; Completion rule treatment 
@@ -37,37 +38,28 @@
  
 ;; (setq *trace-completion-hook* t)
 
-(defvar *debug-reduced-relative-creation* nil)
-
 (when (current-script :fire)
   (define-completion-action category::who ;; label
                            :look-for-rc-head
     'who-subject-relative-clause-operation)
-  
   ;; Keep it from running more than once
   (inhibit-completion-when-subsumes category::who))
-  
+
 (defun who-subject-relative-clause-operation (wh-edge)
+  "If there is an NP to our immediate left, then respan 
+   the wh word with the referent of the NP."
   (let* ((start-pos (pos-edge-starts-at wh-edge))
          (end-pos (pos-edge-ends-at wh-edge))
          (leftward-tt (left-treetop-at/edge start-pos)))
-    ;; If there is an NP to our immediate left,
-    ;; then respan the wh word with the referent of the NP
-
-    ;; Either a syntactic rule or a form-rule can compose
-    ;; the new spanning edge that we create with the VP
-    ;; that's to its right.
-
     (when (word-p leftward-tt)
       (if (eq leftward-tt word::comma)
         (then ;; //// swallow comma
          (setq start-pos (chart-position-before start-pos))
          (setq leftward-tt (left-treetop-at/edge start-pos)))
         (else
-         ;; it's unlikely to be a relative clause start
+         ;; it's unlikely to be the start of a relative clause
          ;; so punt e.g "(WHO)"
          (return-from who-subject-relative-clause-operation nil))))
-
     (when (edge-p leftward-tt)
       ;; if it's two words in a row then this simple scheme
       ;; won't work and we should punt in favor of some DA rule
@@ -242,8 +234,7 @@
   (setq np-ref (individual-for-ref np-ref))
   (let ((var (subcategorized-variable vp-ref :object np-ref)))
     (cond
-      (*subcat-test*
-       var)
+      (*subcat-test* var)
       (var
        ;; copy down the upstairs subject
        ;; Should we check if it was already bound to something?
@@ -256,7 +247,6 @@
 
 (defun apply-pp-relative-clause (np-ref pp-vp-ref)
   (declare (special category::have np-ref pp-vp-ref))
-  ;; block "histone 2B ... had high levels ..."
   (when (and (eq (edge-category (right-edge-for-referent)) category::have)
 	     (eq (edge-form (right-edge-for-referent)) category::VP+ED))
     (return-from apply-pp-relative-clause nil))
@@ -266,53 +256,32 @@
     (cond
       (*subcat-test* var)
       (var
-       ;; copy down the upstairs subject
-       ;; Should we check if it was already bound to something?
        (setq pp-vp-ref (create-predication-and-edge-by-binding-and-insert-edge
                         var np-ref pp-vp-ref))
-       ;; link the rc to the np
        (setq np-ref (bind-dli-variable 'predication pp-vp-ref np-ref))
-       ;; referent of the combination is the np
        np-ref))))
-
-
-
 
 (defun apply-where-relative-clause (np-ref vp-ref)
    (setq np-ref (individual-for-ref np-ref))
    (let ((var :where))
     (cond
-      (*subcat-test*
-       ;; NO LONGER TRUE (not (null var))) ;; this rule has no semantic restrictions as of now    
-       var)
+      (*subcat-test* var)
       (var
-       ;; copy down the upstairs subject
-       ;; Should we check if it was already bound to something?
        (setq vp-ref (create-predication-and-edge-by-binding-and-insert-edge
                      var np-ref vp-ref))
-       ;; link the rc to the np
        (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
-       ;; referent of the combination is the np
        np-ref))))
-
-
 
 
 (defun apply-when-relative-clause (np-ref vp-ref)
    (setq np-ref (individual-for-ref np-ref))
    (let ((var :when))
     (cond
-      (*subcat-test*
-       ;; NO LONGER TRUE (not (null var))) ;; this rule has no semantic restrictions as of now    
-       var)
+      (*subcat-test* var)
       (var
-       ;; copy down the upstairs subject
-       ;; Should we check if it was already bound to something?
        (setq vp-ref (create-predication-and-edge-by-binding-and-insert-edge
                      var np-ref vp-ref))
-       ;; link the rc to the np
        (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
-       ;; referent of the combination is the np
        np-ref))))
 
 (defun apply-why-relative-clause (np-ref vp-ref)
@@ -320,17 +289,11 @@
    (let ((var :why))
 	;; break down where, when and why relative clauses, and make them work better with questions
     (cond
-      (*subcat-test*
-       ;; NO LONGER TRUE (not (null var))) ;; this rule has no semantic restrictions as of now    
-       var)
+      (*subcat-test* var)
       (var
-       ;; copy down the upstairs subject
-       ;; Should we check if it was already bound to something?
        (setq vp-ref (create-predication-and-edge-by-binding-and-insert-edge
                      var np-ref vp-ref))
-       ;; link the rc to the np
        (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
-       ;; referent of the combination is the np
        np-ref))))
 
 
@@ -341,7 +304,6 @@
    (t
     (setq np-ref (individual-for-ref np-ref))
     (let ((object-var (find-subcat-var np-ref :object vp-ref)))
-
       (if object-var
           ;; copy down the upstairs subject
           ;; Should we check if it was already bound to something?
@@ -353,11 +315,7 @@
             (when nil
               (format t "~&~%No object variable recorded on ~a~%~%"
                       vp-ref))))
-      
-      ;; link the rc to the np
       (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
-      
-      ;; referent of the combination is the np
       np-ref))))
 
 
