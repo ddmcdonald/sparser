@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013,2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "grammar;model:sl:reports:"
-;;;  version:  0.3 April 2013
+;;;  version:  November 2019
 
 ;; initiated 10/22/93 v2.3 restarting from scratch. 5/3/95 changed "+" to "-"
 ;; 0.1 (1/8/96) Reorganized the conceptualization to break-out the verb.
@@ -24,15 +24,20 @@
   :instantiates self
   :binds ((name . (:primitive (:or word polyword))))
   :index (:permanent :key name))
-;; Realization is set up in the def form
-;;  :realization (:verb name))
+;; Realization is set up in the def form for the verbs
 
-; (define-report-verb "report")
-; (define-report-verb '("say" :past-tense "said"))
-
-;;--- def-form
+;; dossiers/report-verbs
 
 (defun define-report-verb (string/list)
+  "Makes the morphological base rules for the verb. They rewrite
+   as the category 'report-verb', which feeds into the rules
+   created for the category 'someone-reports'"
+  ;;/// should we go the class and instance route for these?
+  ;;   Comes down to whether we expect to do any reasoning with them
+  ;;   and would want to refer to them specificially in a method.
+  ;;   For now they're all individuals
+  ;; (define-report-verb "report")
+  ;; (define-report-verb '("say" :past-tense "said"))
   (let* ((category (category-named 'report-verb))
          (word/spec
           (etypecase string/list
