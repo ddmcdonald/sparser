@@ -134,7 +134,7 @@ an enumeration -- is a matter of the context in which the list appears
 (defparameter *R*
   '(("left" "red" "green")
     ("left" "blue" "green") 
-    ("left" "red" "blue")))
+    ("left" "red" "blue")
     ("touch" "red" "blue")
     ("right" "green" "blue") 
     ("right" "green" "red")
