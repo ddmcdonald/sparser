@@ -134,7 +134,7 @@ an enumeration -- is a matter of the context in which the list appears
 (defparameter *R*
   '(("left" "red" "green")
     ("left" "blue" "green") 
-    ("left" "red" "blue")
+    ("left" "red" "blue")))
     ("touch" "red" "blue")
     ("right" "green" "blue") 
     ("right" "green" "red")
@@ -224,45 +224,48 @@ nil
 (defun left-of-something (something)
   (let ((dtn (m::make-dtn :resource (m::phrase-named 'm::of-genitive)
                           :referent 'of-something)))
-    (m::make-complement-node (m::name (m::parameter-named 'm::prep-object)) something dtn)
-    (m::make-complement-node (m::name (m::parameter-named 'm::qualifier)) "left" dtn)
+    (m::make-complement-node (m::name (m::parameter-named 'm::p)) something dtn)
+    (m::make-adjunction-node (m::adjectivial-modifier "left") dtn)
     dtn))
 
 (defun right-of-something (something)
   (let ((dtn (m::make-dtn :resource (m::phrase-named 'm::of-genitive)
                           :referent 'of-something)))
-    (m::make-complement-node  (m::name (m::parameter-named 'm::prep-object)) something dtn)
-    (m::make-complement-node (m::name (m::parameter-named 'm::qualifier)) "right" dtn)
+    (m::make-complement-node (m::name (m::parameter-named 'm::p)) something dtn)
+    (m::make-adjunction-node (m::adjectivial-modifier "right") dtn)
     dtn))
-
 
 ;;;"behind" causing trouble right now
 (defun back-of-something (something)
   (let ((dtn (m::make-dtn :resource (m::phrase-named 'm::of-genitive)
                           :referent 'of-something)))
-    (m::make-complement-node (m::name (m::parameter-named 'm::prep-object)) something dtn)
-    (m::make-complement-node (m::name (m::parameter-named 'm::qualifier)) "back" dtn)
+    (m::make-complement-node (m::name (m::parameter-named 'm::p)) something dtn)
+    (m::make-adjunction-node (m::adjectivial-modifier "back") dtn)
     dtn))
 
 (defun front-of-something (something)
   (let ((dtn (m::make-dtn :resource (m::phrase-named 'm::of-genitive)
                           :referent 'of-something)))
-    (m::make-complement-node (m::name (m::parameter-named 'm::prep-object)) something dtn)
-    (m::make-complement-node (m::name (m::parameter-named 'm::qualifier)) "front" dtn)
+    (m::make-complement-node (m::name (m::parameter-named 'm::p)) something dtn)
+    (m::make-adjunction-node (m::adjectivial-modifier "front") dtn)
     dtn))
 
+;;;taken from sparser/test/mumble.lisp
+(defun conjoin (a b)
+  (let ((conj (m::make-dtn :referent `(and ,a ,b)
+      :resource (m::phrase-named 'm::two-item-conjunction))))
+    (m::make-complement-node (m::parameter-named 'm::one) a conj)
+    (m::make-complement-node (m::parameter-named 'm::two) b conj)
+    conj))
 
 (defun orientation-and-connection (direction something)
-  (let ((orientation (m::make-dtn :resource 'm::multi-dependent-location :referent 'orientation))
-        (connection (m::make-dtn :resource (m::verb "touch") :referent 'touch-something))
-        (conjunction (m::make-dtn :referent `(and ,one ,two)
-                                     :resource (m::phrase-named 'two-item-conjunction))))
-    (m::make-complement-node 'm::qualifier direction orientation)
-    (m::make-complement-node 'm::ground something orientation)
-    (m::make-complement-node 'm::ground something connection)
-    (m::make-complement-node 'm::one orientation conjunction)
-    (m::make-complement-node 'm::two connection conjunction)
-    conjunction))
+  (let ((orientation (m::present-tense (m::make-dtn :resource (m::phrase-named 'm::of-genitive) :referent 'of-something)))
+        (connection (m::present-tense (m::make-dtn :resource (m::verb "touch" 'svo) :referent 'touch-something))))
+    (m::make-adjunction-node (m::adjectivial-modifier direction) orientation)
+    (m::make-complement-node 'm::p something orientation)
+    (m::make-complement-node 'm::o something connection)
+    (conjoin orientation connection)))
+
 
 ;;;--------------------------------------------------
 ;;; Functions, in order of execution, that incrementally build the representation
@@ -282,6 +285,7 @@ nil
     (tp-set-relations 
      (remove-if-not #'(lambda (x) (equal (cadr x) arg))
                     (tp-get-R)))))
+
 #| Lisp programmers fall into two camps as to whether they implement simple
 data structures with lists, selecting the field they want using car and cadr
 (or equivalently first and second), or they use structs (or even classes) so that
@@ -323,7 +327,7 @@ and make a choice.
 ;;called by remove-redundancies
 (defun ec-rel? (rel)
   "Determines whether or not f & g participate in an EC relationship."
-  (memq rel *ec-relations*))
+  (member rel *ec-relations* :test #'string=))
 
 ;;called by remove-redundancies
 (defun is-in-vertical-relation? ()
@@ -371,11 +375,11 @@ and make a choice.
 ;;called by combine-relations-into-predicate
 (defun non-vertical-orientation? ()
   "Determines whether f and g are in an orientation that isn't vertical (i.e. left, right, front, back)"
-  (some #'(lambda (x) (memq x *non-vertical-orientations*)) (tp-get-relations)))
+  (some #'(lambda (x) (member (first x) *non-vertical-orientations* :test #'string-equal)) (tp-get-relations)))
 
 ;; called by combine-relations-into-predicate
 (defun is-ec? ()
-   (some #'(lambda (x) (memq (first x) *ec-relations*)) (tp-get-relations)))
+   (some #'(lambda (x) (member (first x) *ec-relations* :test #'string=)) (tp-get-relations)))
 
 
 (defun combine-relations-into-predicate ()
@@ -397,8 +401,8 @@ and make a choice.
 
 (defun build-realization ()
   "Builds the final dtn from focus and predicate."
-  (let ((dtn (m::make-dtn :resource (m::phrase-named  'm::s-be-comp)
-                          :referent 'copular-predication)))
+  (let ((dtn (m::present-tense (m::make-dtn :resource  (m::phrase-named  'm::s-be-comp)
+                          :referent 'copular-predication))))
     (m::make-complement-node (m::parameter-named 'm::s) (tp-get-focus) dtn)
     (m::make-complement-node (m::parameter-named 'm::c) (combine-relations-into-predicate) dtn)
     (tp-set-dt dtn)))
@@ -414,6 +418,7 @@ somewhere in the list that you're backquoting. None in here, so a regular quote 
 work fine.  Also I moved the list into a one-item-per-line form because it was much
 easier for me to scan and get a sense of the scope of the operations
 |#
+
 (defparameter *order-of-operations*
   '((initialize-givens *R* *O* *focus*)
     (filter-focus-relations)
