@@ -725,7 +725,7 @@
               :form transitive-clause-without-object
               :referent (:function compose-that-with-vp left-edge right-edge)))
         
-        (loop for v in '(vp  vg vp+passive vg+passive)
+        (loop for v in '(vp  vg vp+passive vg+passive vg+ed)
               do
                 (eval
                  `(def-form-rule (,rel ,v) 
