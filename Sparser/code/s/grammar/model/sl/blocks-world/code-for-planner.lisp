@@ -115,7 +115,7 @@
 
 ;;; With red as the focus, the filters should pick out "blue" as the
 ;;; ground and return:
-;;; "The red bloc is left of and touching the blue block."
+;;; "The red block is left of and touches the blue block."
 
 ;;; With blue as the focus, the filters should pick out red as the
 ;;; ground (even though blue is between red and green, it's not
@@ -142,7 +142,7 @@ an enumeration -- is a matter of the context in which the list appears
     ("touch" "blue" "red")))
 
 (defparameter *O* '("red" "blue" "green"))
-(defparameter *focus* "red")
+(defparameter *focus* "blue")
 
 (defun execute-planner ()
 "Main method for generating a description of a situation. Updates the parameters of
@@ -346,6 +346,10 @@ and make a choice.
     (m::always-definite dtn)
     (tp-set-focus dtn)))
 
+(defun filter-for-ground ()
+  (let ((ground (third (first (sort (tp-get-relations) #'count :key #'second)))))
+    (tp-set-relations (remove-if-not #'(lambda (x) (equal (third x) ground)) (tp-get-relations)))))
+
 ;; returns the object(s) with which arg has the most relations in R
 ;; perhaps not a useful heuristic when the others are combined
 ; (defun has-most-relations-with (arg)
@@ -359,7 +363,7 @@ and make a choice.
   in our filtered list of relations."
  (let* ((block (m::noun "block"))
       (dtn (m::make-dtn :resource block :referent 'the-block))
-      (color (m::adjectivial-modifier (third (first (tp-get-relations))))))
+      (color (m::adjectivial-modifier (third (first (sort (tp-get-relations) #'count :key #'second))))))
     (m::make-adjunction-node color dtn)
     (m::always-definite dtn)
       (tp-set-ground dtn)))
@@ -435,6 +439,7 @@ easier for me to scan and get a sense of the scope of the operations
         '((initialize-givens *R* *O* *focus*)
           (filter-focus-relations)
           (filter-for-transitivity)
+          (filter-for-ground)
           (remove-redundancies)
           (generate-focus-node) 
           (generate-ground-node)
