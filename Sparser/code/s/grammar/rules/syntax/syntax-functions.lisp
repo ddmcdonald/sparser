@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  July 2019
+;;;  Version:  November 2019
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -1842,10 +1842,11 @@ there was an edge for the qualifier (e.g., there is no edge for the
    surgery on the edge."
   (declare (special category::transitive-clause-without-object category::np))
   ;; (push-debug `(,subj ,vp)) (setq subj (car *) vp (cadr *))
-  (let* ((vp-edge (right-edge-for-referent))
+  (let* ((np-edge (left-edge-for-referent))
+         (vp-edge (right-edge-for-referent))
          (vp-form (edge-form vp-edge))
          result)
-    
+
     ;;(when (edge-p (edge-right-daughter vp-edge))
     ;; The other possibility is :single-term, which indicates
     ;; that we've just got a vg (one one form or another)
@@ -1855,15 +1856,12 @@ there was an edge for the qualifier (e.g., there is no edge for the
     ;; Don't want to have a subject in a relative clause if there is
     ;; no object (complement) in the VP. Applies to main clauses modulo
     ;; the possibility of traces.
-    
-    (cond
-      (*subcat-test*
-       (and 
-        #| allows these to succeed
+
+    #| allows these to succeed
         ("Is MAP2K1 bound to MAPK1 eventually high?" "Is MAPK1 bound to MAP2K1 transient?"
         "What are the genes regulated by STAT3?")
 
-        causes these to fail
+       causes these to fail
         ("How is stat3 involved in apoptotic regulation?"
         "How is stat3 involved in apoptotis regulation in the liver?"
         "How is stat3 involved in regulating apoptosis?" "How is stat3 used to regulate apoptosis?"
@@ -1874,15 +1872,11 @@ there was an edge for the qualifier (e.g., there is no edge for the
         "Is stat3 expressed in spleen?" "Is stat3 involved in any apoptotic pathways?"
         "Is stat3 involved in apoptotic regulation?" "Is stat3 involved in regulating apoptosis?"
         "Is the amount of phosphorylated MAPK1 sustained at a high level?")
-        (not
-             ;; aux inversion in question "is STAT3 involved in ..." ; ; ; ; ; ;
-         (let ((word-before (word-just-to-the-left (left-edge-for-referent))))
-           (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
-                (member (pname word-before)
-                        '("is" "was" "were" "are")
-                        :test #'equal))))
-
         |#
+    
+    (cond
+      (*subcat-test*
+       (and
         (not
          ;; aux inversion in question "is STAT3 involved in ..." ; ;
          (let ((word-before (word-just-to-the-left (left-edge-for-referent)))
@@ -1891,10 +1885,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                 (member (pname word-before)
                         '("is" "was" "were" "are")
                         :test #'equal)
-                (not (initial-wh?)) ;; used instead of
-                ;;(eq (pos-array-index (pos-edge-starts-at (car edges-before))) 1)
-                 ;; nothing preceding the aux
-                ;; so that we don't have "what are the genes mutated by ..."
+                (not (initial-wh?)) ;  "what are the genes mutated by ..."
                 (not (loop for e in  (edges-after (right-edge-for-referent))
                              thereis '(vg+ed vp+ed verb+ed adjective)))
                 )))
@@ -1906,7 +1897,13 @@ there was an edge for the qualifier (e.g., there is no edge for the
                                             '(past raw-text)))))
             (and (member (form-cat-name vp-edge) '(vg+ed verb+ed))
                  (interpret-premod-to-verb subj vp)))))
-     
+
+      ;; regular cases
+      ((proper-noun? np-edge) ;; proper nouns don't take restrictive qualifiers
+       (when (transitive-vp-missing-object? vp)
+         (revise-parent-edge :form category::transitive-clause-without-object))
+       (assimilate-subcat vp :subject subj))
+
       ((and (can-fill-vp-object? vp subj (left-edge-for-referent))
             (not (verb-premod-sequence? (left-edge-for-referent)))
             (loop for binding in (indiv-old-binds vp)
@@ -1922,13 +1919,12 @@ there was an edge for the qualifier (e.g., there is no edge for the
       ((can-fill-vp-subject? vp subj)
        (when (transitive-vp-missing-object? vp)
          (revise-parent-edge :form category::transitive-clause-without-object))
-       (assimilate-subcat vp :subject subj)) ;;/// try using assimilate-subject
+       (assimilate-subcat vp :subject subj))
       
       ((setq result (interpret-premod-to-verb subj vp))
        (revise-parent-edge :form category::vg+ed)
        result)
-      (t (warn "Error in sentence: ~s" (current-string))
-         (error "How can this happen? Null referent produced in assimilate-subject-to-vp-ed~%")))))
+      (t (warn "How can this happen? Null referent produced in assimilate-subject-to-vp-ed~%")))))
 
 
 ;;;---------
