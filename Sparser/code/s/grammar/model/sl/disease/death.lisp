@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013,2019  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "death"
 ;;;    Module:   "sl;disease:"
-;;;   version:   March 2013
+;;;   version:   November 2019
 
 ;; initiated 12/27/07 with just the category for "die". Revised slightly
 ;; 3/6/13 to specialize to 'event'.
@@ -22,7 +22,7 @@
 ;; more possible deaths of wild birds
 
 #|
- It's a classic 'process=>resulting-state' system. If one is dying (vb), the
+ It's a classic 'process=>resulting-state' system. If one is dying (v), the
  result is death (n), whereupon one is dead (adj). The agent that brought 
  about one's death is deadly (adv). The process is intransitive; the agentive
  form uses a different (set of) verb(s), e.g. kill. 
@@ -56,6 +56,9 @@
                            (complement . pathogen)
                            (np . :self))
                  :verb "die")))
+
+(assign-subcategorization category::die
+  :subject '(:or category::person category::title) 'who)
 
 
 (define-category kill
