@@ -21,14 +21,9 @@
 ; retaining transcriptional response to vemurafenib and AZD6244
 
 (define-category inhibitor :specializes drug
-  :binds ((process (:or bio-process bio-mechanism))
-          (protein protein))
   :realization (:noun "inhibitor"
-                :m process 
-                :m protein
-                :of process
-                :of protein
-                :for protein))
+                :m target
+                :of target))
 
 
 ;; THIS NEEDS WORK
