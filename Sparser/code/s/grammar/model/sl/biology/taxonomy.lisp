@@ -869,7 +869,7 @@
 (define-category drug :specializes molecule
                  :binds ((disease disease)
                          (treatment treatment)
-                         (target protein))
+                         (target (:or protein process)))
   :realization
      (:noun "drug"
             :for disease
@@ -960,13 +960,16 @@
 
 (define-category gene :specializes dna
   :binds ((expresses  protein)
-          (in-family protein-family))
+          (in-family protein-family)
+          (in-pathway pathway)
+          )
   :realization
   (:noun "gene"
          :m expresses
          :for disease
          :in disease
          :in in-family
+         :in in-pathway
 ))
 
 (define-category oncogene :specializes gene 
