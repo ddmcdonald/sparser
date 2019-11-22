@@ -795,7 +795,7 @@
   (tr :wh-walk 'wh-modal-s-prep)
   (push-debug `(,wh-edge ,modal-edge ,s-edge ,prep-edge))
   ;; pull out the edge we're going to move
-  (unless (one-word-long? wh-edge)
+  (unless nil ;;(one-word-long? wh-edge)
     (let* ((displaced-edge (edge-right-daughter wh-edge)) ; tissues
            (pp-edge (flesh-out-stranded-prep prep-edge wh-edge))
            (s+pp-rule (multiply-edges s-edge pp-edge)))
@@ -823,9 +823,8 @@
            :rule 'wh-modal-s-prep))))))
 
 
-
-  
 #| "Are there any genes stat3 is upstream of?" |#
+
 
 #| (p "What genes is stat3 upstream of?") ;; via s+prep
 |#
