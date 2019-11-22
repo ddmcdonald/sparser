@@ -942,7 +942,7 @@
 ;;; PREPOSITIONAL PHRASES
 ;;; ----------------------
 
-(loop for nb in `(np pronoun reflexive/pronoun demonstrative ,@*n-bar-categories*)
+(loop for nb in `(np pronoun wh-pronoun reflexive/pronoun demonstrative ,@*n-bar-categories*)
   do
   (eval 
    `(def-syntax-rule (preposition ,nb)
