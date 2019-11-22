@@ -1890,6 +1890,11 @@ assumed. |#
     ;; "How does STAT3 affect c-fos"  "What does ERBB regulate?"
     :action (:function wh-three-edges first second third))
 
+(define-debris-analysis-rule  whpn-vg-s-prep
+    :pattern (wh-pronoun vg s preposition)
+    ;; "what does MEK interact with?"
+    :action (:function wh-three-edges+prep first second third fourth))
+
 (define-debris-analysis-rule wh-modal-s
     :pattern (wh-pronoun modal s)
     ;; "How might a STAT3 mutation affect breast cancer?"
@@ -1919,6 +1924,7 @@ assumed. |#
     :pattern (wh-pronoun vg proper-noun vp+ed)
     ;; "How is stat3 involved in apoptotic regulation?"
     :action (:function wh-four-edges  first second third fourth))
+
 
 (defun wh-four-edges (wh vg noun adjp)
   (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
