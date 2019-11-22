@@ -37,7 +37,8 @@
 
 
 (define-category pathway-segment :specializes pathway
-   :realization (:of pathwayComponent))
+   :binds ((ground (:or gene protein)))
+   :realization (:of ground))
 
 (define-category pathway-direction :specializes bio-relation
 ;;  :mixins (post-adj)  messes up pred-adj reading of 'upstream'
