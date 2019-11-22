@@ -1226,7 +1226,7 @@ including PRAS40, FOXO 1/3, and AS160'"
      ;; this is a case like "p38 substrate" and we don't know what
      ;;  the actual protein is
      nil)
-    ((gene rna)
+    ((gene rna micro-rna)
      ;; can get in "activating the PLK1 gene"
      ;;  where this is not an activation
      ;;  but we may have another meaning
@@ -1282,7 +1282,9 @@ including PRAS40, FOXO 1/3, and AS160'"
   "Given an indra type (agent, obj, sub, or subj dependent on indra
 form) and the item return an indra form for that item"
   (let* ((uid (a-get-item 'UID item-content))
-         (uid-form (when (and uid (search ":" uid))
+         (uid-form (when (and uid (or
+                                   (search ":" uid)
+                                   (search "mima" uid :test #'equalp)))
                      (uid->db--ref uid)))
          (text (a-get-item 'RAW-TEXT item-content))
          (text-form (when text `((:+TEXT+ ., text))))
@@ -1319,9 +1321,13 @@ form) and the item return an indra form for that item"
          (prefix (subseq uid 0 colon))
          (id (when colon ;; sometimes "uids" aren't really UIDs, and thus don't have a :
                (subseq uid (+ 1 colon)))))
-    (when colon
+    (if colon
       `((,(intern (format nil "+~a+" prefix) (find-package :keyword))
-          .,id)))))
+          .,id))
+      (if (find-package :spg)
+          (let ((mdbr (funcall (intern "MAKE-DB-REFS" :spg) (list uid))))
+            (when mdbr
+              (list (cons (car mdbr)(second mdbr)))))))))
 
 
 (defun find-residue-in-res-item (res-item &aux (residue (cdr res-item)))
@@ -1803,7 +1809,21 @@ can still match things like CHK1 and CHK-1"
 (declaim (sb-ext:unmuffle-conditions sb-ext:compiler-note))
 (declaim (optimize (debug 1)(speed 3)(safety 0)))
 
-(defun biosense-for-sparser-output (&optional var)
+(defun save-bob-sparser-indra-forms ()
+  (loop for mention-indra in (hal *indra-mention-var-ht*)
+        do
+          (setf (get (intern (symbol-name (car mention-indra)) :kb)
+                     :sparser-indra-rep)
+                (convert-to-biosense (second mention-indra)))))
+
+(defun cl-user::bob-sparser-to-indra-forms ()
+  (loop for mention-indra in (hal *indra-mention-var-ht*)
+        collect
+          (list (intern (symbol-name (car mention-indra)) :kb)
+                (convert-to-biosense (second mention-indra)))))
+
+(defun cl-user::biosense-for-sparser-output (&optional var)
+  (when var (setq var (intern (symbol-name var) :sp)))
   (if var
       (convert-to-biosense (gethash var *indra-mention-var-ht*))
       (or

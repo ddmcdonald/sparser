@@ -13,11 +13,16 @@
 (in-package :sparser)
 
 
+(defun get-indra-for-cwc? ()
+  (and (boundp 'cl-user::*sparser-to-indra*)
+       (symbol-value 'cl-user::*sparser-to-indra*)))
 
 (defparameter *indra-post-process* nil)
 (defparameter *indra-embedded-post-mods* nil)
 (defparameter *callisto-compare* nil)
-
+(defparameter *indra-mention-var-ht*
+  (when (get-indra-for-cwc?)
+    (make-hash-table :size 10000)))
 
 (defun do-client-translations (sentence)
   (declare (special *sentence-results-stream* *semantic-output-format*
@@ -60,7 +65,10 @@
     (when *indra-post-process*
       (when (get-indra-for-cwc?)
         (clrhash *indra-mention-var-ht*))
-      (indra-post-process mentions sentence *sentence-results-stream*)))
+      (indra-post-process (mentions-in-sentence-edges sentence)
+                          sentence *sentence-results-stream*)
+      (when (fboundp 'save-bob-sparser-indra-forms)
+        (save-bob-sparser-indra-forms))))
   (when *callisto-compare* (extract-callisto-data sentence))
     
   (when *localization-interesting-heads-in-sentence*
@@ -769,14 +777,6 @@
 (defun get-pmid ()
   (when *current-article* (symbol-name (name *current-article*))))
 
-
-(defun get-indra-for-cwc? ()
-  (and (boundp 'cl-user::*sparser-to-indra*)
-       (symbol-value 'cl-user::*sparser-to-indra*)))
-
-(defparameter *indra-mention-var-ht*
-  (when (get-indra-for-cwc?)
-    (make-hash-table :size 10000)))
 
 (defmethod get-indra-sexp ((mention discourse-mention))
   (when (get-indra-for-cwc?)
