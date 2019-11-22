@@ -1679,7 +1679,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
          #+ignore(itypep vp 'do)) ;; block "what does" as a transitive-clause-without-object         
      ;; Blocking it blocks "Tell me what you want to do now"
      (return-from assimilate-subject nil))
-    
+    ((itypep vp 'copular-predication-of-pp)
+     (assimilate-subject-for-copular-predication subj vp vp-edge))
     ((itypep vp 'copular-predication)
      (assimilate-subject-for-copular-predication subj vp vp-edge))
     ((itypep vp 'comparative-attribution)
@@ -2415,11 +2416,12 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (declare (special category::copular-predicate))
   (let* ((prep-indiv (value-of 'prep copular-pp))
          (prep (when prep-indiv (get-word-for-prep prep-indiv)))
-         (pobj (value-of 'value copular-pp))
+         (pobj (value-of 'pobj copular-pp))
          (var-to-bind (when prep (subcategorized-variable np prep pobj))))
     (cond
-      (*subcat-test* var-to-bind)
-      (var-to-bind
+      (*subcat-test* (or var-to-bind
+                         (pronominal-or-deictic? np)))
+      (t 
        ;; Reinterpret-dominating-edges (e.g as the result of a tuck
        ;; initiated by a DA rule) does not validate rules with the subcat-test,
        ;; it just goes ahead and executes them. Hence this ostensibly redundant check
@@ -2428,15 +2430,28 @@ there was an edge for the qualifier (e.g., there is no edge for the
                *subcat-info*))
        (setq np (individual-for-ref np))
        (revise-parent-edge :category category::copular-predicate)
-       (let* ((pp-edge (edge-right-daughter (right-edge-for-referent)))
-              (new-np (bind-variable var-to-bind pobj np))
-              (new-np-edge (respan-edge-for-new-referent pp-edge new-np))
-              (new-parent-edge
-               (respan-edge-for-new-referent
-                (parent-edge-for-referent)
-                (bind-variable 'item np
-                               (rebind-variable 'value new-np copular-pp)))))
-         (edge-referent new-parent-edge))))))
+       (if var-to-bind
+           (let* ((pp-edge (edge-right-daughter (right-edge-for-referent)))
+                  (new-np (bind-variable var-to-bind pobj np))
+                  (new-np-edge (respan-edge-for-new-referent pp-edge new-np))
+                  (new-parent-edge
+                   (respan-edge-for-new-referent
+                    (parent-edge-for-referent)
+                    (bind-variable 'item np
+                                   (bind-variable 'value new-np copular-pp)))))
+             (edge-referent new-parent-edge))
+           (let* ((pp-edge (edge-right-daughter (right-edge-for-referent)))
+                  (new-np-edge (respan-edge-for-new-referent
+                                (left-edge-for-referent)
+                                np))
+                  (new-parent-edge
+                   (respan-edge-for-new-referent
+                    (parent-edge-for-referent)
+                    (bind-variable 'item np
+                                   (bind-variable 'value
+                                                  '**pronominal-resolution**
+                                                  copular-pp)))))
+             (edge-referent new-parent-edge)))))))
 
 
 

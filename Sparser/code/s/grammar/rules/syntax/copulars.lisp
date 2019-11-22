@@ -179,9 +179,10 @@ machinery. |#
 (define-category copular-predication-of-pp ;; (the cat)(is on the mat)
   :specializes copular-predication
   :instantiates self
-  :binds ((prep :primitive category))
+  :binds ((prep :primitive category)
+          (pobj))
   :index (:temporary :list)
-  :documentation "Adds a prep variable to the variables 
+  :documentation "Adds a prep and pobj variable to the variables 
  of copular-predication. The prepositional complement goes
  in the value variable, that sounds a bit odd, but what's in a name?")
 
@@ -234,7 +235,7 @@ machinery. |#
          category::copular-predication-of-pp
          `((predicate ,be-ref)
            (prep ,prep)
-           (value ,pobj))))))))
+           (pobj ,pobj))))))))
 
 
 
