@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1995,2014-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2014-2019  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "forest scan"
 ;;;   Module:  "analyzers;traversal:"
-;;;  Version:  September 2016
+;;;  Version:  November 2019
 
 ;; initiated 5/7/94 v2.3
 ;; 0.1 (10/24) it was attempting to do checks with words rather than literals
@@ -55,22 +55,27 @@
       (:otherwise
        coverage))))
 
-(defparameter *parse-between-parentheses-action* nil)
+(defparameter *parse-between-parentheses-action* t)
 
 (defun parse-between-parentheses-boundaries (left-bound right-bound)
-  ;; Called from do-paired-punctuation-interior to look for
-  ;; a parse between just after the open and just before the ends.
-  ;; Provides for different alg.
+  "The traversal action that sets this in motion is
+   sweep-to-span-parentheses (in multi-scan) which is called during
+   sentence-processing-core (no-brackets-protocol) as the last step
+   before the chunker is called and the later parsing actions invoked.
+   Consequently in order to parse this region we have to first invoke
+   the chunker and have the chunks handled before we can do proper parsing.
+      This isn't specific to parenthese, just a punctuation pair that
+   is handled by do-paired-punctionation-interior, the proximate caller."
   (when *parse-between-parentheses-action*
-    (push-debug `(,left-bound ,right-bound)) ;(break "parse-between parens")
-    (let ((edge (catch :done-parsing-region
-                  (parse-from-to/topmost left-bound right-bound))))
-      (let ((layout (analyze-segment-layout
-                     ;; /// it ought to be possible to keep a running model of this
-                     ;; rather than have to recalculate it here
-                     left-bound right-bound)))
-        (values layout
-                edge)))))
+    ;;(push-debug `(,left-bound ,right-bound))
+    ;;(break "parse-between ~a and ~a" left-bound right-bound)
+    (let ((chunks (find-chunks/bounded left-bound right-bound)))
+      ;; We're parsing the chunks online, so we just run them
+      ;; here. Using subroutine from identify-chunks
+      (handle-chunks chunks)
+      (parse-all-options-in-region left-bound right-bound))))
+
+
 
 (defun parse-between-boundaries (left-bound right-bound)
   ;; the caller has determined that there the two positions aren't
