@@ -105,9 +105,9 @@
   (when *trace-sections*
     (trace-msg "Hook: calling ~A" fn)))
 
-(deftrace :no-paired-punct-hook (label)
+(deftrace :no-paired-punct-hook (edge)
   (when *trace-sections*
-    (trace-msg "No hook associated with ~a" label)))
+    (trace-msg "No hook associated with labels on ~a" edge)))
 
 (deftrace :pp-not-single-span (layout)
   (when *trace-sections*

@@ -33,7 +33,7 @@
   over single-spans of :all-caps. Set when the caller want
   to do the handling itself.")
 
-;;
+;; (trace-sections)
 
 (defun do-paired-punctuation-interior (type
                                        pos-before-open pos-after-open
@@ -170,7 +170,7 @@
             (else
              ;; There's no special action for this edge label
              ;; so just make the default edge
-             (tr :no-paired-punct-hook label)
+             (tr :no-paired-punct-hook first-edge)
              (vanila-edge pos-before-open pos-after-close type))))
         (else
          ;; A more complex layout, which doesn't have a scheme for
