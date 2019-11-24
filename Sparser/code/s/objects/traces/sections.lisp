@@ -114,6 +114,10 @@
     (trace-msg "Region between punction is not single-strand: ~a"
                layout)))
 
+(deftrace :layout-between-punct (layout)
+  (when *trace-sections*
+    (trace-msg "The final layout is ~a" layout)))
+
 
 ;;;-------------------
 ;;; document elements
