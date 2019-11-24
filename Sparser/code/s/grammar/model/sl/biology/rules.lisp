@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2015-2016 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2015-2019 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "rules"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: August 2016
+;;; version: November 2019
 
 ;; Initiated 1/16/15 by lifting from other files.
 ;;  1/19/2015 put in rule for (not adjective) -- but doesn't seem to be found -- need help from David
@@ -60,7 +60,37 @@
   :referent (:function assimilate-object right-edge left-edge))
 |#
 
-;;; no-space pattern
+;;--- interior quotations
+
+(define-interior-action category::s :quotation-marks 'handle-quoted-statement)
+
+(defun handle-quoted-statement (edge-over-s
+                                pos-before-open pos-after-close
+                                pos-after-open pos-before-close 
+                                layout)
+  "Called from do-paired-punctuation-interior because of the interior action
+   that was defined for any edge that spans the entire region of the chart
+   between paired quotation marks whose form is 's'. We respan the edge with
+   a new edge whose end-points include the quotation marks. 
+     Following the treatment of 'the fact that', we make the referent of this
+   new edge be an instance of fact, whose statement is bound to the referent
+   of the covered s-edge."
+  (declare (special category::fact category::s)
+           (ignore pos-after-open pos-before-close layout))
+  (let* ((covered-s (edge-referent edge-over-s))
+         (i (define-an-individual 'fact
+                :statement covered-s)))
+    (let ((edge (make-edge-over-long-span
+                 pos-before-open pos-after-close
+                 category::fact
+                 :form category::np ; emulate 'the fact that'
+                 :referent i
+                 :constituents `(,edge-over-s) ; don't include the punctuation
+                 :rule 'handle-quoted-statement)))
+      edge)))
+
+
+;;--- no-space pattern
 
 ;; (p "in the 'off' state.")
 (define-no-space-pattern scare-quotes
