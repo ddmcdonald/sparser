@@ -165,18 +165,21 @@
     (when *record-chunks-for-regression-test*
       (record-chunks-for-regression-test chunks))
     (when *parse-chunk-interior-online*
-      (dolist (*chunk* chunks)
-        (declare (special *chunk*))
-        (push-debug `(,*chunk*))
-        (tr :parsing-chunk-interior-of *chunk*)
-	(when (chunk-forms *chunk*)
-          ;; don't parse a chunk like "EITHER" which has no form...
-	  (parse-chunk-interior *chunk*))))
+      (handle-chunks chunks))
     (set-sentence-status sentence :chunked)
     (when *record-all-chunks*
       (loop for c in chunks
         do (record-chunk c)))
     chunks))
+
+(defun handle-chunks (chunks)
+  "Pass each chunk to the parser in sequence"
+  (dolist (*chunk* chunks)
+    (declare (special *chunk*))
+    (tr :parsing-chunk-interior-of *chunk*)
+    (when (chunk-forms *chunk*)
+      ;; don't parse a chunk like "EITHER" which has no form...
+      (parse-chunk-interior *chunk*))))
 
 (defun parse-chunk-interior (chunk)
   "Use the standard machinery in PTS to parse the interior
@@ -210,15 +213,20 @@
 ;; (trace-chunker)
 
 (defun find-chunks (&optional (sentence (sentence)))
-  "Walk through the sentence delimiting successive chunks and accumulating
-  them on *chunks*. Loops over successive positions but uses their starting
-  edge vectors as its real loop variable. delimit-next-chunk does the real work."
+  "Entry point to running the chunker that allows it to be run
+   between arbitrary positions."
+  (find-chunks/bounded (starts-at-pos sentence)
+                       (ends-at-pos sentence)))
+
+(defun find-chunks/bounded (pos end)
+  "Walk the chart between beginning ('pos') and end, delimiting
+  successive chunks and accumulating them on *chunks*. Loops over
+  successive positions but uses their starting edge vectors as its
+  real loop variable. delimit-next-chunk does the real work."
   (declare (special *trace-chunker*))
   (setq *next-chunk* nil)
   (setq *chunks* nil)
-  (let ((pos (starts-at-pos sentence))
-        (end (ends-at-pos sentence))
-        forms  ev)
+  (let ( forms  ev)
     
     (until (position/<= end pos)
         (reverse *chunks*) ;; this is the return value
