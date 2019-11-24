@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996,2011-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2011-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "dispatch"
 ;;;   Module:  "analyzers;traversal:"
-;;;  Version:  April 2016
+;;;  Version:  November 2019
 
 ;; initiated 6/15/94 v2.3.  9/26 Fixed :multiple-initial-edges bug
 ;; 9/13/95 fleshed out stub for hook being a cfr. 9/15 fixed a bug.
@@ -33,6 +33,7 @@
   over single-spans of :all-caps. Set when the caller want
   to do the handling itself.")
 
+;;
 
 (defun do-paired-punctuation-interior (type
                                        pos-before-open pos-after-open
@@ -85,9 +86,6 @@
              (convert-ordinary-word-edge-to-proper-name first-edge)))))
 
       (:contiguous-edges
-       ;; ?? isn't this redundant because the interior will
-       ;; constitute a segment and have already been parsed
-       ;; before we traverse the closing punctuation mark?
        (parse-between-parentheses-boundaries pos-after-open pos-before-close)
        (setq first-edge  ;; update the flag that controls the hook
              (right-treetop-at/edge pos-after-open)))
@@ -111,6 +109,8 @@
                      ,pos-before-close ,pos-after-close))
        (error "Unexpected layout between paired punctuation: ~a" layout)))
 
+    (setq layout (analyze-segment-layout pos-after-open pos-before-close))
+    (tr :layout-between-punct layout)
 
     (flet ((vanila-edge (pos-before-open pos-after-close type)
              (make-edge-over-long-span
@@ -132,25 +132,29 @@
                       (:quotation-marks (category-named 'quotation))
                       (otherwise
                        (break "unexpected type: ~a" type)))
-              :rule  :default-edge-over-paired-punctuation)))
+              :rule  :default-edge-over-paired-punctuation))
+
+           (interior-hook (label)
+             "Does this label have an 'interior action' associated with it.
+              Goes with define-interior-action and ties the label to the
+              function to be executed."
+             (cadr (member (case type
+                             (:angle-brackets  :interior-of-angle-brackets)
+                             (:square-brackets :interior-of-square-brackets)
+                             (:curly-brackets  :interior-of-curly-brackets)
+                             (:parentheses     :interior-of-parentheses)
+                             (:quotation-marks :interior-of-quotation-marks)
+                             (otherwise
+                              (break "unexpected type: ~a" type)))
+                           (plist-for label)))))
 
       (if (and first-edge
                (eq layout :single-span))
         ;; Look for an action that's been defined for the category
         ;; on this edge for this type of punctuation.
         ;; See define-interior-action in analyzers/traversal/form.lisp
-        (let* ((label (edge-category first-edge))
-               (hook
-                (cadr
-                 (member (case type
-                           (:angle-brackets  :interior-of-angle-brackets)
-                           (:square-brackets :interior-of-square-brackets)
-                           (:curly-brackets  :interior-of-curly-brackets)
-                           (:parentheses     :interior-of-parentheses)
-                           (:quotation-marks :interior-of-quotation-marks)
-                           (otherwise
-                            (break "unexpected type: ~a" type)))
-                         (plist-for label)))))
+        (let ((hook (or (interior-hook (edge-category first-edge))
+                        (interior-hook (edge-form first-edge)))))
 
           (if hook
             (then
