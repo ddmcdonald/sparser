@@ -107,6 +107,18 @@
       ;; /// See if it's relatively easy to get it deferenced
       title)
 
+     ((itypep possessive 'title-modifier) ;; 'the [group's leaders]'
+      ;; the title-modifier function of "group" is found by taking up
+      ;; its usual function and extending the grammar of titles
+      ;; For now drop in on the floor
+      title)
+
+     ((itypep possessive 'name-word)
+      ;; "the Taliban's former deputy minister of communication"
+      ;; Treat it the same way as a country
+      title)
+      
+
      (t (when *break-on-unexpected-cases*
           (push-debug `(,possessive ,title))
           (error "New type for possessive: ~a~%  ~a"
