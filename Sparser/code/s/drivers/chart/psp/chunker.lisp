@@ -791,6 +791,10 @@ than a bare "to".  |#
                         (eq (chunk-end-pos (car *chunks*))
                             (pos-edge-starts-at e)))))))
           
+          ((and (eq (form-cat-name e) 'possessive)
+                (itypep (edge-referent e) 'time-unit)) ; "week's" in "last weeks's XX"
+           nil)
+
           ((or (eq category::modifier (edge-category e))
                (member (form-cat-name e)
                        '(adjective comparative-adjective superlative-adjective)))
