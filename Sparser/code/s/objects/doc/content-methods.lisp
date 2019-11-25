@@ -20,6 +20,8 @@
 ;;; aggregating entities and relations
 ;;;------------------------------------
 
+;;--- uses aggregated-bio-terms class
+
 (defgeneric add-bio-term-counts (document-element)
   (:documentation "Sweep through the daughers of the document
    tallying the terms they record and the incident count
@@ -63,19 +65,8 @@
                       (slot-value sink field))))))
     sink))
 
-    
 
 ;;--- sentences => paragraph contents
-
-(defclass aggregated-bio-terms ()
-  ((proteins :initform nil :accessor aggregated-proteins)
-   (residues :initform nil :accessor aggregated-residues)
-   (bio-processes :initform nil :accessor aggregated-processes)
-   (other :initform nil :accessor aggregated-other))
-  (:documentation "Collects the entities and relations of
-     the document layer below them summarizes them as
-     tables of individuals and their count."))
-
 
 (defmethod aggregate-bio-terms ((p paragraph))
   "Collect the raw lists of entities and relations from 
@@ -171,16 +162,7 @@
 ;;; tally properties of text qua text
 ;;;-----------------------------------
 
-(defclass paragraph-characteristics ()
-  ((s-count :initform 0 :accessor sentence-count
-    :documentation "How many sentences in the paragraph")
-   (total-words :initform 0 :accessor word-count
-    :documentation "How many words in the paragraph")
-   )
-  (:documentation "A set of easily measured, largely structural
-    rather than semantic, properties of a paragraph.
-    Populated by collect-text-characteristics after each
-    paragraph has been analysed."))
+;;--- Uses paragraph-characteristics class
 
 (defgeneric collect-text-characteristics (doc-element)
   (:documentation "Called from after-action on paragraphs.
@@ -207,24 +189,7 @@
 ;;; how well is our analysis doing
 ;;;--------------------------------
 
-(defclass sentence-parse-quality ()
-  ((great :initform 0 :accessor parses-with-one-edge
-    :documentation "Number of sentences in the doc element
-      that were spanned by one edge.")
-   (medium :initform 0 :accessor medium-quality-parses
-    :documentation "Number of sentences in the doc element
-      that were spanned by 2 to 5 edges.")
-   (horrible :initform 0 :accessor horrible-parses
-    :documentation "Number of sentences in the doc element
-      that were spanned by more than 5 edges."))
-  (:documentation "Compute measures of how well we are doing
-    in reading. At the sentence level and aggregated at
-    higher levels of document structure."))
-
-(defclass sentence-tt-counts ()
-  ((count-list :initform '() :accessor sentence-tt-count
-    :documentation "Treetop counts for each sentence in a paragraph")))
-
+;; Uses sentence-parse-quality class
    
 (defmethod assess-sentence-analysis-quality ((p paragraph))
   (let* ((sentences (sentences-in-paragraph p))
@@ -240,7 +205,6 @@
          (count (get-tt-count sentence)))
     (setf (sentence-tt-count content) count)))
     
-
 (defun grade-sentence-tt-counts (paragraph quality)
   (when (contents paragraph)
     (let ((count-list (sentence-tt-count (contents paragraph))))
@@ -311,14 +275,7 @@
 ;;; what did we find in the sentence
 ;;;----------------------------------
 
-(defclass entities-and-relations ()
-  ((entities :initform nil :accessor entities-in-sentence)
-   (relations :initform nil :accessor relations-in-sentence)
-   (treetop-count :initform 0 :accessor treetops-in-sentence))
-  (:documentation "Copies the output of identify-relations
-     from the post-analysis-operations function. Note that
-     this is dependent on the *readout-relations* flag.
-     Treetop count is simple by-product of the e/r calculation."))
+;;--- Uses entities-and-relations class
 
 (defmethod set-entities ((s sentence) (list list))
   (setf (entities-in-sentence (contents s)) list))
@@ -403,14 +360,7 @@
 ;;; functionally salient aspects of the sentence
 ;;;----------------------------------------------
 
-(defclass sentence-text-structure ()
-  ((subject :initform nil :accessor sentence-subject
-    :documentation "The subject of the sentence if we
-     were able to identify it."))
-  (:documentation
-   "Provides long-term representation of the contents of
-    the sentence that will be relevant to later sentences.
-    Alusion to the NLG notion of text structure."))
+;;--- Uses sentence-text-structure class
 
 (defmethod set-sentence-subject ((e edge) (s sentence))
   (let ((referent (edge-referent e)))
@@ -428,11 +378,7 @@
 ;;; ordered list of entities
 ;;;--------------------------
 
-(defclass sentence-discourse-history ()
-  ((individuals :accessor sentence-individuals
-    :documentation "This is a version of *lifo-instance-list* 
-     that been reversed to that is in left-to-right order
-     and had its edges removed.")))
+;;--- Uses sentence-discourse-history class
 
 (defmethod set-discourse-history ((s sentence) (history t))
   "Called from end-of-sentence-processing-cleanup when nothing more
@@ -445,21 +391,7 @@
 ;;; status of the parse
 ;;;---------------------
 
-(defclass parsing-status ()
-  ((level-completed :initform :initial :initarg :level
-                    :accessor level-completed
-    :documentation "The parsing is tiered into successive levels
-      of analysis. Which one have we completed for this level of
-      document structure?
-      Possible values:
-        :initial  -- we're at the start of the sentence and
-                   haven't scanned any part of it.
-        :scanned -- we've run scan-terminals-loop over it
-        :chunked -- we've run the phrase delimiter over it"))
-  (:documentation "Used by period-hook to keep track of what
-     phase it's in. Less used now (11/14) because more of the
-     multi-pass-over-sentence control is organized as direct
-     calls."))
+;;--- Uses parsing-status class
 
 (defmethod set-sentence-status ((s sentence) (keyword symbol))
   (let ((c (contents s))) ;; for debugging
@@ -489,34 +421,8 @@ we ought to have enough context to carry these out.
 by the syntax function determiner-noun and the reader (presently)
 is a case in handle-any-anaphor
 |#
-(defclass records-of-delayed-actions ()
-  ((pending-definite-references
-    :initform nil :accessor pending-def-references
-    :documentation "A list of any edges that were appreciated
-      to be definite references that we consider trying to
-      identify referents for. See determiner-noun for any
-      adjustments to what's stored.")
-   (pending-partitives
-    :initform nil :accessor pending-partitive-references
-    :documentation "A list of any edges that were appreciated
-      to be partitive references of the form <quantifier> of <definite-NP>.")
-   (preposed-aux
-    :initform nil :accessor preposed-aux
-    :documentation "The edge over the auxiliary or model that was
-      'moved' to 'sentence-initial' to indicate a question, along
-      with its original form label, as a dotted pair")
-   (initial-wh :initform nil :accessor initial-wh
-    :documentation "Records instances of the edge over a 'wh-marker'
-      that's done during WH questions.")
-   (sentence-mentions :initform nil :accessor sentence-mentions
-    :documentation "all mentions created within the sentence"))
-  
-  (:documentation "Each field is a kind of phenomena that
-    we can't make a decision about. The simplest thing to
-    put in them is probably the edge that's the locus of
-    the issue, but it's really a decision between the recorder
-    and the function that reads the record."))
 
+;;--- uses records-of-delayed-actions class
 
 (defgeneric record-preposed-aux (edge original-form)
   (:documentation "Store enough information about a preposed verbal
@@ -548,7 +454,6 @@ is a case in handle-any-anaphor
 (defun preposed-aux? (&key in-vg? first-np-edge)
   (original-form-of-preposed-aux))
 
-
 (defun aux-before-np? (&key in-vg? first-np-edge)
   "Look in the chart just to the left of current chunk"
   ;; called by chunker methods ng-compatible? and vg-start?
@@ -565,9 +470,6 @@ is a case in handle-any-anaphor
        do (return (values e (edge-form e))))))
 
     
-        
-
-
 (defgeneric record-initial-wh (edge)
   (:documentation "Just set the field with the edge, which
      provides a marker to make-this-a-question-if-appropriate")
@@ -587,8 +489,6 @@ is a case in handle-any-anaphor
                     (itypep (value-of 'quantifier (edge-referent first-edge))
                             '(:or what which how when why))))
        first-edge))))
-
-
 
 
 (defmethod add-pending-def-ref (determiner (e edge) (s sentence))

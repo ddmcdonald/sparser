@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "content"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  July 2019
+;;;  Version:  November 2019
 
 ;; initiated 3/13/13. Elaborated through 3/29/13. 9/17/13 fan-out
 ;; from sections make-over. 10/2/19 Fleshed out general notion of
@@ -17,65 +17,22 @@
 
 (in-package :sparser)
 
-;;;------------------
-;;; container object
-;;;------------------
 
-(defclass container ()
+;;;------------
+;;; containers
+;;;------------
+
+(defclass container (named-object)
   ((backpointer :initarg :in :accessor bkptr
     :documentation "backpointer to the document object that it's part of"))
   (:documentation "Common super class for all container-like things"))
-
-;;;------------------------
-;;; conditional containers
-;;;-----------------------
-
-(defparameter *container-for-sentence* :simple ;; :situation
-  "Switch parameter for the kind of container we make for
-   a sentence, which could be designed for simple accumulation,
-   presumably structured accumulation, long-distance parse state
-   or (the motive for all this) a situation.")
-
-(defun make-sentence-container (sentence)
-  "N.b. this called from start-sentence directly, not by a install-contents
-   method (probably it should be). The (setf contents) call is there. These
-   variants just determine what content class the sentences will have."
-  (declare (ignore sentence))
-  (error "No version of make-sentence-container has been specified"))
-
-(defun designate-sentence-container (&optional (keyword *container-for-sentence*))
-  (setq *container-for-sentence* keyword)
-  (setf (symbol-function 'make-sentence-container)
-        (ecase keyword
-          (:simple (symbol-function 'make-sentence-container/simple))
-          (:situation (symbol-function 'make-sentence-container/situation))
-          (:complex (symbol-function 'make-sentence-content-container)))))
-
-
-(defparameter *container-for-paragraph* :biology "Default choice")
-
-(defun make-paragraph-container (paragraph)
-  ;; called from start-sentence
-  (declare (ignore paragraph))
-  (error "No version of make-paragraph-container has been specified"))
-
-(defun designate-paragraph-container (&optional (keyword *container-for-paragraph*))
-  (setq *container-for-paragraph* keyword)
-  (setf (symbol-function 'make-paragraph-container)
-        (ecase keyword
-          (:biology (symbol-function 'make-paragraph-content-container/bio))
-          (:texture (symbol-function 'make-paragraph-content-container/texture)))))
-
-;;;------------------------------------------
-;;; content containers for document elements
-;;;------------------------------------------
 
 ;;--- sentence
            
 (defclass sentence-content (container
                             parsing-status
                             local-layout ; from sweep-sentence-treetops
-                            epistemic-status
+                            epistemic-status ; from rhetoric
                             entities-and-relations
                             sentence-discourse-history ;; lifo instances
                             sentence-text-structure ;; subject
@@ -106,8 +63,10 @@
 
 ;;--- paragraph
 
-(defclass paragraph-content (container aggregated-bio-terms
-                             epistemic-state discourse-relations
+(defclass paragraph-content (container
+                             aggregated-bio-terms
+                             epistemic-state
+                             discourse-relations
                              sentence-parse-quality
                              sentence-tt-counts)
   ()
@@ -115,12 +74,9 @@
     the enties for the purpose of facilitating anaphora.
     Story structure might be paragraph based too."))
 
-(defun make-paragraph-content-container/bio (p)
-  (make-instance 'paragraph-content :in p))
-;; (designate-paragraph-container :biology)
 
-
-(defclass paragraph-features (container aggregated-bio-terms
+(defclass paragraph-features (container
+                              aggregated-bio-terms
                               sentence-parse-quality
                               sentence-tt-counts ; assess-sentence-analysis-quality
                               paragraph-characteristics)
@@ -129,13 +85,11 @@
     on the paragraph by after-actions. Concerned more with form than
     semantic content"))
 
-(defun make-paragraph-content-container/texture (p)
-  (make-instance 'paragraph-features :in p))
-;; (designate-paragraph-container :texture)
 
 ;;--- larger
 
-(defclass section-content (container aggregated-bio-terms
+(defclass section-content (container
+                           aggregated-bio-terms
                            sentence-parse-quality)
   ())
 
@@ -144,6 +98,55 @@
                            sentence-parse-quality
                            text-relations)
   ())
+
+
+
+;;;------------------------
+;;; conditional containers
+;;;-----------------------
+
+(defun make-sentence-container (sentence)
+  "N.b. this called from start-sentence directly, not by a install-contents
+   method (probably it should be). The (setf contents) call is there. These
+   variants just determine what content class the sentences will have."
+  (declare (ignore sentence))
+  (error "No version of make-sentence-container has been specified"))
+
+(defparameter *container-for-sentence* :simple ;; :situation
+  "Switch parameter for the kind of container we make for
+   a sentence, which could be designed for simple accumulation,
+   presumably structured accumulation, long-distance parse state
+   or (the motive for all this) a situation.")
+
+(defun designate-sentence-container (&optional (keyword *container-for-sentence*))
+  (setq *container-for-sentence* keyword)
+  (setf (symbol-function 'make-sentence-container)
+        (ecase keyword
+          (:simple (symbol-function 'make-sentence-container/simple))
+          (:situation (symbol-function 'make-sentence-container/situation))
+          (:complex (symbol-function 'make-sentence-content-container)))))
+
+
+(defun make-paragraph-container (paragraph)
+  ;; called from start-sentence
+  (declare (ignore paragraph))
+  (error "No version of make-paragraph-container has been specified"))
+
+(defun designate-paragraph-container (&optional (keyword *container-for-paragraph*))
+  (setq *container-for-paragraph* keyword)
+  (setf (symbol-function 'make-paragraph-container)
+        (ecase keyword
+          (:biology (symbol-function 'make-paragraph-content-container/bio))
+          (:texture (symbol-function 'make-paragraph-content-container/texture)))))
+
+(defparameter *container-for-paragraph* :biology "Default choice")
+
+(defun make-paragraph-content-container/bio (p)
+  (make-instance 'paragraph-content :in p))
+
+(defun make-paragraph-content-container/texture (p)
+  (make-instance 'paragraph-features :in p))
+
 
 
 
@@ -185,6 +188,10 @@
  make-sentence-container from start-sentence. |#
 
 
+;;;---------------------------
+;;; Grok code to rehabilitate
+;;;--------------------------
+
 #|   Definition for Grok
   "Supplies the content field of an article"
   ;; placeholder for resource -- but only via a generating macro that
@@ -197,21 +204,10 @@
     contents))
 |#
 
-;;;---------------------------
-;;; Grok code to rehabilitate
-;;;---------------------------
+;;--- simplistic accumulator
 
-;;----------------- simplistic accumulator
-
-(defclass accumulate-items ()
-  ((list :initform nil :accessor items
-    :documentation "Simple list. Items are just pushed onto it
-      making them in reverse cronological order."))
-  (:documentation "Maintains a simple list. Up to the reader of
-     the list to sort it into various kinds of things.
-     Intended as a mixin for other containers."))
-
-(defclass simple-container (container accumulate-items)
+(defclass simple-container (container
+                            accumulate-items)
   ())
 
 ;; (designate-sentence-container :simple)  => switch setting
@@ -255,20 +251,10 @@
     (format stream "~%~5T~a~%" item)))
 
 
+;;----------- original Grok version ----------
 
-(defclass text-relations ()
-  ((head-relations :initform nil :accessor head-relations)
-   (classifier-heads :initform nil :accessor classifier-head-relations)
-   (modifier-heads :initform nil :accessor modifier-head-relations)
-   (adjacencies :initform nil :accessor adjacency-relations))
-  (:documentation
-   "Provides slots for counting the relations "))
-
-;;----------- original, clumsy Grok code below here ----------
-
-(defclass text-relation-contents (named-object
-                                  text-relations
-                                  container)
+(defclass text-relation-contents (container
+                                  text-relations)
   ()
   (:documentation "Minimal container wrapper around text-relations slots"))
 
@@ -302,5 +288,3 @@
       (otherwise
        (push-debug `(,relation ,instance))
        (error "No provision for storing ~a yet" relation)))))
-;; Noisy -- put it under a trace
-;;  (format t "~&Added ~a~%" instance)

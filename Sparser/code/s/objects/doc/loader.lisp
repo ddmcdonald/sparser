@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  August 2019
+;;;  Version:  November 2019
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -53,6 +53,7 @@
 (lload "doc;style")
 (lload "doc;object") ;; defines all the document classes
 (lload "doc;paragraphs")
+(lload "doc;content-classes")
 (lload "doc;content-actions") ;; depends on object
 (lload "doc;content-methods")
 (lload "doc;doc-set")
