@@ -114,7 +114,7 @@
 (defun clause-semantics-for-mention (mention)
   (declare (special mention))
   (let* ((desc (base-description mention))
-         (cs (list :isa (make-clause-var (mention-uid mention)) :var))
+         (cs (list :isa (fom-clause-var mention) :var))
          item-clauses)
     
     (declare (special cs))
@@ -138,7 +138,7 @@
                  (push `(,(intern "SEQ-FN" (find-package :kb))
                          ,@(loop for item in (dependency-value d)
                                  collect
-                                   (make-clause-var (mention-uid item))))
+                                   (fom-clause-var item)))
                        cs))
                 ((:left :right)
                  (push key cs)
@@ -152,7 +152,7 @@
                                            (if (consp clauses)
                                                clauses
                                                (list item)))))
-                           (make-clause-var (mention-uid item)))
+                           (fom-clause-var item))
                           ((and (individual-p item)
                                 (itypep item 'number))
                            (value-of 'value item))
@@ -171,7 +171,7 @@
 (defun mention-clause-tree (m &optional parent-mention)
   (typecase m 
     (discourse-mention
-     `(:var ,(make-clause-var (mention-uid m))
+     `(:var ,(fom-clause-var m)
             :isa ,(cat-name (itype-of (edge-referent (mention-source m))))
             ,.(when (itypep (edge-referent (mention-source m)) 'plural)
                 (list :plural t))
@@ -185,13 +185,13 @@
                                    :keyword)
                            ,(cond ((eq val '*lambda-var*)
                                    (if parent-mention
-                                       (make-clause-var (mention-uid parent-mention))
+                                       (fom-clause-var parent-mention)
                                        (loop for mention in (all-mentions)
                                              when (loop for d2 in (dependencies mention)
                                                         thereis (and (eq (var-name (dependency-variable d2))
                                                                          'PREDICATION)
                                                                      (eq (dependency-value d2) m)))
-                                             do (return (make-clause-var (mention-uid mention))))))
+                                             do (return (fom-clause-var mention)))))
                                   ((consp val)
                                    (mapcar #'mention-clause-tree val ))
                                   (t
@@ -228,8 +228,11 @@
                             (loop for item in val
                                         append (unwrap-clause-tree item)))))))
 
-(defun make-clause-var (n)
+(defmethod fom-clause-var ((n number))
   (intern (format nil "MV~s" n) :SP))
+
+(defmethod fom-clause-var ((m discourse-mention))
+  (fom-clause-var (mention-uid m)))
 
 (defun make-pseudo-clause-for-prot-indiv (i)
   (when (itypep i 'protein)
@@ -311,7 +314,7 @@
                            item))))
     (:modified-amino-acid
      (cond ((eq (type-of ref) 'discourse-mention)
-            (make-clause-var (mention-uid ref)))
+            (fom-clause-var ref))
            (t
             (push (list :modified-amino-acid (sentence-string *sentence-in-core*)) *non-mention-sents*)
             (semtree ref))))
@@ -344,7 +347,7 @@
                                (warn "individual as mention ~s in ~%-----  ~s" (semtree ref)
                                      (sentence-string *sentence-in-core*)))
                              (semtree ref))))
-                     (discourse-mention (make-clause-var (mention-uid ref)))
+                     (discourse-mention (fom-clause-var ref))
                      (referential-category (cat-name ref))
                      (string ref)
                      (word (pname ref))
@@ -780,7 +783,7 @@
 
 (defmethod get-indra-sexp ((mention discourse-mention))
   (when (get-indra-for-cwc?)
-    (get-indra-sexp (make-clause-var (mention-uid mention)))))
+    (get-indra-sexp (fom-clause-var mention))))
 
 (defmethod get-indra-sexp ((mention-var symbol))
   (when (get-indra-for-cwc?)
@@ -788,14 +791,19 @@
 
 (defmethod save-indra-sexpr ((mention discourse-mention)(indra-sexpr cons))
   (when (get-indra-for-cwc?)
-    (save-indra-sexpr (make-clause-var (mention-uid mention)) indra-sexpr)))
+    (save-indra-sexpr (fom-clause-var mention) indra-sexpr)))
 
 (defmethod save-indra-sexpr ((mention-var symbol)(indra-sexpr cons))
   (when (get-indra-for-cwc?)
+    (setf (get mention-var :save-indra-sexpr) indra-sexpr)
     (setf (gethash mention-var *indra-mention-var-ht*) indra-sexpr)))
 
 (defun push-sem->indra-post-process (mention sentence lambda-expansion output-stream &optional desc)
   (declare (special *indra-text* *predication-links-ht* *indra-post-process* lambda-expansion desc))
+  (when (get (fom-clause-var mention) :indra-form-for-sexpr)
+    (return-from push-sem->indra-post-process
+      (get (fom-clause-var mention) :indra-form-for-sexpr)))
+
   (unless desc (setq desc (base-description mention)))
   ;;(lsp-break "push-sem->indra-post-process")
   (let* ((lambda-expansion
@@ -819,9 +827,22 @@
                           (sentence-string sentence))))))
     (push f *indra-post-process*)
     (when (get-indra-for-cwc?)
-      (let ((indra-form (indra-form-for-sexpr f nil nil)))
-        (when indra-form
-          (save-indra-sexpr mention indra-form))))))
+      (or
+       (get (fom-clause-var mention) :indra-form-for-sexpr)
+       (let* ((embedded-forms
+               (loop for dependency in (dependencies mention)
+                     when (and (mention-p (second dependency))
+                               (itypep (base-description (second dependency))
+                                       'bio-entity))
+                     do
+                       (push-sem->indra-post-process
+                        (second dependency)
+                        sentence
+                        nil
+                        output-stream)))
+              (indra-form (indra-form-for-sexpr f nil nil)))
+         (when indra-form
+           (save-indra-sexpr mention indra-form)))))))
 
 (defun contains-atom (atom list-struct)
   (if (not (consp list-struct))

@@ -321,7 +321,33 @@ pass the result to the appropriate indra generator"
                 (list (make-cwc-indra-bio-entity cat? f))))))))))
 
 (defun make-cwc-indra-bio-entity (cat f)
-  `((:type ,. (string cat)) ,.(car (prot-item->indra-list (second f) nil))))
+  (let* ((prot-item (car (prot-item->indra-list (second f) nil)))
+         (db-refs (assoc :db--refs prot-item))
+         (res
+          (sublis
+           `(((:db--refs
+               (:+type+ ,.(symbol-name cat))
+               ,.(cdr db-refs))
+              ,.db-refs)
+             ( :+FA+ . :+NXPFA+))
+           prot-item)))
+    (when (assoc :+text+ res)
+      (setq res (remove (assoc :+text+ res) res)))
+    res))
+
+;; example from biosense
+#|
+(TYPE Activation SUBJ
+            (NAME KRAS DB--REFS
+             (+TYPE+ ONT::GENE-PROTEIN +TEXT+ KRAS +HGNC+ 6407 +UP+ P01116 +NCIT+ C52546))
+            OBJ
+            (NAME RAF DB--REFS (+TYPE+ ONT::PROTEIN-FAMILY +TEXT+ RAF +FPLX+ RAF +NXPFA+ 03114))
+            OBJ--ACTIVITY activity BELIEF 1 EVIDENCE
+            ((SOURCE--API trips SOURCE--HASH -1613118243458052451)) ID
+            acc5b40a-2b87-424d-bd01-ce849605130f MATCHES--HASH 19343107104138835)
+|#
+
+
 
 (defun complex-protein-json (prot)
   (prot-item->indra-list prot nil))
@@ -1158,7 +1184,8 @@ that sentence"
                   (get-set-elements (a-get-item 'FAMILY-MEMBERS (cdr prot-item)))
                   form)))
             (loop for i in items collect
-                    (append i (when (a-get-item 'raw-text (cdr prot-item))
+                    (append i (when (and (not (get-indra-for-cwc?))
+                                         (a-get-item 'raw-text (cdr prot-item)))
                                 `((:+TEXT+ ,.(a-get-item 'raw-text (cdr prot-item)))))))))
         (single-protein->indra-list prot-item form)))
       (t
@@ -1288,7 +1315,11 @@ form) and the item return an indra form for that item"
                      (uid->db--ref uid)))
          (text (a-get-item 'RAW-TEXT item-content))
          (text-form (when text `((:+TEXT+ ., text))))
-         (db-ref (when (or uid-form text) `((:DB--REFS ,@uid-form ,@text-form))))
+         (db-ref (when (or uid-form text)
+                   (if (get-indra-for-cwc?)
+                       (sublis `((:+FA+ . :+NXPFA+))
+                               `((:DB--REFS ,@uid-form ,@text-form)))
+                       `((:DB--REFS ,@uid-form ,@text-form)))))
          (name (a-get-item 'NAME item-content))
          (name-form (when (or name uid) `((:NAME .,(or name uid)))))
          (pred-forms (when (assoc 'predication item-content)
@@ -1299,7 +1330,8 @@ form) and the item return an indra form for that item"
                (null text))
       (return-from make-indra-item-desc nil))
     ;;(lsp-break "xx")
-    `(,@name-form ,@db-ref ,@text-form ,@pred-forms)))
+    `(,@name-form ,@db-ref ,@(when (not (get-indra-for-cwc?)) text-form)
+                  ,@pred-forms)))
 
 (defun create-pred-forms (item-content)
   (loop for aa in item-content when
@@ -1859,3 +1891,16 @@ can still match things like CHK1 and CHK-1"
                                  append (convert-to-biosense item))))
                      (t (loop for item in (cdr indra-form)
                                  append (convert-to-biosense item)))))))))
+
+
+;; example from biosense
+#|
+(TYPE Activation SUBJ
+            (NAME KRAS DB--REFS
+             (+TYPE+ ONT::GENE-PROTEIN +TEXT+ KRAS +HGNC+ 6407 +UP+ P01116 +NCIT+ C52546))
+            OBJ
+            (NAME RAF DB--REFS (+TYPE+ ONT::PROTEIN-FAMILY +TEXT+ RAF +FPLX+ RAF +NXPFA+ 03114))
+            OBJ--ACTIVITY activity BELIEF 1 EVIDENCE
+            ((SOURCE--API trips SOURCE--HASH -1613118243458052451)) ID
+            acc5b40a-2b87-424d-bd01-ce849605130f MATCHES--HASH 19343107104138835)
+|#
