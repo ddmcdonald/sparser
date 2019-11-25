@@ -139,7 +139,7 @@
       (case symbol
         (word::|year| (current-year index))
         (word::|month| (current-month index))
-        ;; week
+        (word::|week| (current-month index)) ; <=== fix!
         (word::|day| (today))
         ((or word::|hour| word::|minute| word::|second|)
          ;;//// pull out the rest of the 'now' data, on the fly?
