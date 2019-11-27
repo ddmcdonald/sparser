@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "prescan"
 ;;;   Module:  "analyzers;char-level:"   ("character level processing")
-;;;  Version:   July 2019
+;;;  Version:   November 2019
 
 ;; Initiated 4/16/19 -- Before doing any analysis, sweep through the input
 ;; text at the character level to normalize newlines (paragraphs), convert
@@ -140,8 +140,14 @@ scan-name-position -> add-terminal-to-chart
                  (when echo (write-char char))
                  (push-char char))))
 
-            (#\^B (setf (schar sink index-into-sink) char)
-                  (setq source-exhausted t)) ;; :end-of-source
+            (#\^B
+             (unless (eql (schar sink (1- index-into-sink)) #\newline)
+               ;; needs to be a final newline to trigger the operations
+               ;; that tie off the last paragraph
+               (setf (schar sink index-into-sink) #\newline)
+               (incf index-into-sink))
+             (setf (schar sink index-into-sink) char)
+             (setq source-exhausted t)) ;; :end-of-source
 
             (otherwise
              (setq starting? nil
