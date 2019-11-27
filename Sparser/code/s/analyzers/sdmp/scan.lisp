@@ -4,7 +4,7 @@
 ;;;
 ;;;      File: "scan"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: August 2019
+;;;   Version: November 2019
 
 ;; Initiated 2/9/07. Completely redone starting 1/21/13. Adding a 
 ;; simpler variation 4/1/13. Which uses make-individual-for-dm&p 4/4
@@ -106,12 +106,11 @@ to make any semantic or form edges that the grammar dictates.
      ;; That makes an individual referent. Ok?
      ;; /// And it doesn't set up the noun as such.
      (unless (chunker-overreached)
-       (let ((edge (propagate-suffix-to-segment)))
+       (let ((edge (if (not *inhibit-just-spanning-segments*)
+                     (sdm-span-segment)
+                     (edge-over-segment-head))))
          (generalize-segment-edge-form-if-needed edge)
-         (convert-referent-to-individual edge)
-         (when *note-text-relations*
-           #+ignore(record-any-determiner edge) ;; redundant 8/20/19
-           ))))
+         (convert-referent-to-individual edge))))
 
     (:no-edges ;; "burnt" or any other word not in Comlex
      (cond
@@ -137,6 +136,86 @@ to make any semantic or form edges that the grammar dictates.
 
 
 
+
+(defparameter *show-sdm-span-segment* nil "Print the span in line with the parse")
+
+(defparameter *inhibit-just-spanning-segments* nil
+  "Sometimes we strongly suspect that the segment boundaries are going
+   to be incorrect and the correct low-level composition will be with
+   words to one side or the other of the boundaries and we don't want
+   to seal them off.")
+
+(defun sdm-span-segment (&optional start-at)
+  "Make an edge over the whole segment based largely on the
+   properties of its suffix. The edge is presumed to be an NP
+   though nothing looks carefully at that."
+  (declare (special category::adjective category::vg category::np category::np-head
+                    category::n-bar *current-chunk*
+                    *left-segment-boundary* *right-segment-boundary*))
+  (unless *inhibit-just-spanning-segments*
+    (let* ((start-pos (or start-at
+                          *left-segment-boundary*))
+           (label (category-of-right-suffix)) ; becomes category label of the edge
+           (form-label
+            (cond ((and *current-chunk*
+                        (not (member 'ng (chunk-forms *current-chunk*))))
+                   (cond
+                     ((member 'vg (chunk-forms *current-chunk*))
+                      category::vg)
+                     ((member 'adjg (chunk-forms *current-chunk*))
+                      category::adjective)
+                     (t (error "strange call to sdm-span-segment"))))
+                  ((eq start-pos *left-segment-boundary*)
+                   category::np)
+                  ((= 1 (number-of-terminals-between 
+                         start-pos *right-segment-boundary*))
+                   category::np-head)
+                  (t category::n-bar)))
+           (right-referent (referent-of-right-suffix))
+           (edge-referent
+            (typecase right-referent
+              (referential-category
+               ;; When the category is one like 'protein' that expects
+               ;; its individuals to be named, then the empty binding
+               ;; instructions will lead to an error downstream
+               ;;(instantiate-reified-segment-category referent)
+               ;; This call creates an individual (stored on the
+               ;; category that might provide the basis for a subtype.
+               (if *description-lattice*
+                 (fom-lattice-description right-referent)
+                 (make-category-indexed-individual right-referent)))
+              (mixin-category
+               right-referent) ;; "can"
+              (individual
+               right-referent)
+              (word ;; #<word HYPHEN>
+               right-referent)
+              (polyword  ;; "M1A1"
+               right-referent)
+              (symbol ;; :uncalculated -- for a number
+               right-referent)
+              (otherwise
+               (break "New type of object as referent of right-suffix: ~a~%~a"
+                      (type-of right-referent) right-referent)))))
+      (let ((edge
+             (make-edge-over-long-span
+              start-pos
+              *right-segment-boundary*
+              label
+              :form form-label
+              :rule 'sdm-span-segment
+              :referent edge-referent)))
+        
+        (when (and *readout-segments-inline-with-text* ; make it quiet when other things are
+                   *show-sdm-span-segment*)
+          (format t "~&sdm-span-segment: ~s~%"
+                  (retrieve-surface-string edge)))
+        (tr :sdm-span-segment edge)
+        edge))))
+   
+
+
+
 (defun chunker-overreached ()
   "In biology, with the heavy use of syntactic rules, it's unusual
    for a segment (chunk) not to parse completely. It one doesn't we
@@ -154,82 +233,6 @@ to make any semantic or form edges that the grammar dictates.
       ;;   (edge-over-segment-prefix)
       (auxiliary-word? (first-word-in-segment)))))
       
-    
-
-(defun propagate-suffix-to-segment ()
-  ;; Look up the edge on the suffix, use its data to
-  ;; create an edge over the whole segment
-  (sdm-span-segment))
-
-(defparameter *show-sdm-span-segment* nil)
-
-(defun sdm-span-segment (&optional start-at)
-  "Make an edge over the whole segment based largely on the
-   properties of its suffix. The edge is presumed to be an NP
-   though nothing looks carefully at that."
-  (declare (special category::adjective category::vg category::np category::np-head
-                    category::n-bar *current-chunk*
-                    *left-segment-boundary* *right-segment-boundary*))
-  (let ((start-pos (or start-at
-		       *left-segment-boundary*))
-	(label (category-of-right-suffix))
-	(referent (referent-of-right-suffix)))
-    (let ((edge
-	   (make-edge-over-long-span
-	    start-pos
-	    *right-segment-boundary*
-	    label
-	    :form (cond
-                    ((and *current-chunk*
-                          (not (member 'ng (chunk-forms *current-chunk*))))
-                     (cond
-                       ((member 'vg (chunk-forms *current-chunk*))
-                        category::vg)
-                       ((member 'adjg (chunk-forms *current-chunk*))
-                        category::adjective)
-                       (t (error "strange call to sdm-span-segment"))))
-		    ((eq start-pos *left-segment-boundary*)
-		     category::np)
-		    ((= 1 (number-of-terminals-between 
-			   start-pos *right-segment-boundary*))
-		     category::np-head)
-		    (t category::n-bar))
-	    :rule 'sdm-span-segment
-	    :referent
-	       (typecase referent
-		 (referential-category
-                  ;; When the category is one like 'protein' that expects
-                  ;; its individuals to be named, then the empty binding
-                  ;; instructions will lead to an error downstream
-		  ;;(instantiate-reified-segment-category referent)
-                  ;; This call creates an individual (stored on the
-                  ;; category that might provide the basis for a subtype.
-                  (if *description-lattice*
-                      (fom-lattice-description referent)
-                      (make-category-indexed-individual referent)))
-		 (mixin-category
-		  referent) ;; "can"
-		 (individual
-		  referent)
-		 (word ;; #<word HYPHEN>
-		  referent)
-		 (polyword  ;; "M1A1"
-		  referent)
-		 (symbol ;; :uncalculated -- for a number
-		  referent)
-		 (otherwise
-		  (break "New type of object as referent of right-suffix: ~a~%~a"
-			 (type-of referent) referent))))))
-      (when (and *big-mechanism*
-                 ;; makes it quiet when other things are quiet
-                 ;;*readout-segments-inline-with-text*
-                 *show-sdm-span-segment*)
-        (format t "~&sdm-span-segment: ~s~%"
-                (retrieve-surface-string edge)))
-      (tr :sdm-span-segment edge)
-      edge)))
-   
-
 
 (defun convert-referent-to-individual (edge)
   "Converts category referents to individuals. Has cases for
@@ -317,8 +320,7 @@ to make any semantic or form edges that the grammar dictates.
 
 #| Look for rules that could have applied given the
  form of the edges in the segment
-|#
-;; Runs when *new-segment-coverage* is :full
+ Runs when *new-segment-coverage* is :full. |#
 
 (defun analyze-segment (coverage)
   (declare (special *left-segment-boundary* *right-segment-boundary*
