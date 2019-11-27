@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2016-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2016-2019  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "age"
 ;;;   Module:  "model;core:time:"
-;;;  version:  March 2018
+;;;  version:  November 2019
 
 ;; 0.1 (7/18 v1.8.6) Flushed the CA routines as redundant w/ the CS rules
 ;; 0.2 (4/16/92 v2.2) added two more rules to handle "60-year-old"
@@ -31,18 +31,27 @@
   :bindings (var (find-variable-for-category 'age 'has-age))
   :binds ((age amount-of-time))
   :index (:key age)
-  :realization (:common-noun "age")
+  ;; :realization (:common-noun "age")
   :documentation "This provides the basis for using the attribute
  machinery, and also provides a representation of an amount
  of time as the value of an age per se, without having to simultaneously
- attribute it to something that has that age.")
+ attribute it to something that has that age." )
+#|  Two edges over "old" -- from this and from qualitative-edge -- get to
+    disambiguate-head-of-chunk when the lack of a category label on this one
+    blocks the decision between the two.
+  :realization (:tree-family  item+idiomatic-head
+                :mapping ((np . :self)
+                          (modifier . amount-of-time)
+                          (np-head . "old")
+                          (result-type . :self)
+                          (item . age))) |#
+
 
 (define-category qualitative-age
   :specializes attribute-value
   :bindings (attribute 'age)
   :rule-label age
   :realization (:adjective name))
-
 
 (defun define-qualitative-age (string &key er est)
   "This is the 'instance-maker' of the standard attribution pattern.
@@ -72,13 +81,9 @@
 (define-qualitative-age "young" :er "younger" :est "youngest")
 (define-qualitative-age "old" :er "older" :est "oldest")
 
-;; "10 years old"
-;; n.b. this rule is only seen if *ignore-literal-edges* is nil
-;;
-(def-cfr age (amount-of-time "old")
-  :form np
-  :referent (:instantiate-individual age
-             :bind (age left-edge)))
+
+
+
 
 
 (defun interpret-number-as-years-of-age (number)
@@ -95,6 +100,15 @@
 
 ;;--------- original rules for "N years old" and variations
 #|
+
+;; "10 years old"
+;; n.b. this rule is only seen if *ignore-literal-edges* is nil
+;;
+(def-cfr age (amount-of-time "old")
+  :form np
+  :referent (:instantiate-individual age
+             :bind (age left-edge)))
+
 (def-cfr unit-of-time-old (time-unit "old")
   :referent (:daughter right-edge))
 
