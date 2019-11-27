@@ -636,18 +636,12 @@
           ;; sorted out at some point. 
           ;;//// look for the similar cases and rationalize
           (setq items (cdr items))))
-
-
-    #|(when person-version  ;; e.g. "Jr."
-        ;; substitute the object for the index that Examine... has passed in
-        (setq person-version (nth (1- person-version) items))
-        ;; excise it from the item list
-        (if (eq (car (last items)) person-version)
-          (setq items (all-but-last-item! items))
-          (when *break-on-new-cases*
-            (break "New case: The person-version is not at the end of the ~
-                    list of name items.~%It's probably a conjunction of ~
-                    names.~%  ~A~%  ~A" person-version items))))|#
+      
+      (when person-version  ;; e.g. "Jr."
+        (when (consp person-version) ; (4 . #<person-version "jr" 4096>)
+          (unless (individual-p (cdr person-version))
+            (error "Oddly formatted person-version: ~a" person-version))
+          (setq person-version (cdr person-version))))
 
       ;;--- Make the name
       (tr :name-category-is category)
