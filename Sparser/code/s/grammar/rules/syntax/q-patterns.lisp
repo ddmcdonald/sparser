@@ -11,7 +11,8 @@
 (in-package :sparser)
 
 
-(defun make-question-and-edge (statement start-pos end-pos
+(defun make-question-and-edge
+    (statement start-pos end-pos
                                &key ((:head head-edge)) wh wh-edge rule)
   "Wrap the referent in an instance of a wh-question as its statement.
    Make an edge over the whole span, using whatever pieces the callers
@@ -645,10 +646,28 @@
   ;; continuation of wh-initial-four-edges/adjunct
   (tr :wh-walk "fold-in-initial-wh-adjunct")
   (let* ((stmt (edge-referent edge-over-s))
-         (wh (edge-referent wh-edge)))
+         (wh (edge-referent wh-edge))
+         (wh-cat (cat-name (itype-of wh)))
+         edge-with-adjunct)
     ;;(set-edge-referent edge-over-s j)
-    (make-question-and-edge stmt start-pos end-pos
-                            :head edge-over-s :wh wh
+    (case wh-cat
+      (where
+       (setq
+        edge-with-adjunct
+        (make-edge-over-long-span
+         start-pos
+         end-pos
+         (itype-of stmt)
+         :rule 'fold-in-initial-wh-adjunct
+         :form (category-named 's)
+         :referent
+         (bind-dli-variable 'location wh stmt))))
+      (t (break "unhandled initial adjunct type ~s" wh-cat)))
+    
+    (make-question-and-edge (edge-referent edge-with-adjunct) ;;stmt
+                            start-pos end-pos
+                            :head edge-over-s
+                            :wh wh
                             :rule 'wh-initial-four-edges/adjunct)))
 
 

@@ -151,7 +151,7 @@
           (disease disease)
           (cell-line cell-line)
           (cell-type cell-type)
-          (organ bio-organ)
+          (organ (:or bio-organ where))
           (preparation preparation)
           (cellular-location cellular-location)
           (cellular-process cellular-process)
