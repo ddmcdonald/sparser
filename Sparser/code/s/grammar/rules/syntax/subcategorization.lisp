@@ -839,21 +839,22 @@
    items in the collection and make a new collection out of the result."
   (declare (special *subcat-test* head subcat-label item heads))
   (unless item-edge
-    (lsp-break "assimilate-subcat-to-collection has no edge for its item"))
-  ;; we use item-edge rather than item, since maximal projection of item
-  ;;  triggered by assignment to earlier conjuncts can change the item
-  ;;  before it is assigned to later conjuncts
-  (if *subcat-test*
+    (warn "assimilate-subcat-to-collection: no referent edge for item ~a" item))
+  (when item-edge
+    ;; we use item-edge rather than item, since maximal projection of item
+    ;;  triggered by assignment to earlier conjuncts can change the item
+    ;;  before it is assigned to later conjuncts
+    (if *subcat-test*
       (loop for head-elt in heads
          always (subcategorized-variable head-elt subcat-label item))
       (let ((interps
              (loop for head-elt in heads
-                   collect (assimilate-subcat head-elt subcat-label
-                                              (edge-referent item-edge)))))
+                collect (assimilate-subcat head-elt subcat-label
+                                           (edge-referent item-edge)))))
         (when (loop for i in interps always i)
           (create-collection
            interps
-           (itype-of (car heads)))))))
+           (itype-of (car heads))))))))
 
 (defparameter *show-one-anaphora* nil)
 
