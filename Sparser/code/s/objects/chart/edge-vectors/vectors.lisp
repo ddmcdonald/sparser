@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1992-1994,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2013,2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "vectors"
 ;;;   Module:  "objects;edge vectors:"
-;;;  Version:  2.2 September 2013
+;;;  Version:  November 2019
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;; 2.1 (4/6/93) Put in switch for kcons vs. vector versions
@@ -55,17 +55,13 @@
               (setq array (make-edge-vector-array)))))
 
     (when (>= count *maximum-number-of-edges-in-an-edge-vector*)
-      (break "Parser design-limit reached.~
-              ~%  The parser is about introduce one more edge into~
-              ~%  an edge-vector than the pre-constructed data structure~
-              ~%  is designed to allow.~
-              ~%     This usually indicates you have a runaway circular~
-              ~%  set of rules in your grammar, and you should rewrite~
-              ~%  your grammar accordingly.  If this is a reasonable~
-              ~%  parse, however, consult your vendor to have an increase~
-              ~%  in the limit installed.~
-              ~%     edge: ~A~
-              ~%     edge-vector: ~A"
+      (break "Reached the maximum number of edges (~a) allowed on~
+            ~%a pre-constructed edge-vector.
+            ~%    This usually indicates a runaway circular set of rules~
+            ~%in the grammar.~
+            ~%    next edge to add: ~A~
+            ~%      at edge-vector: ~A"
+             *maximum-number-of-edges-in-an-edge-vector*
              edge vector))
 
     (setf (aref array count) edge)
