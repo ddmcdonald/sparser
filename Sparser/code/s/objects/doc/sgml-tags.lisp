@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991,1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1994,2019  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "SGML tags"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  0.2 June 1994
+;;;  Version:  November 2019
 
 ;; initiated 10/91, 5/9/92 Made the ...-named fn. cannonical
 ;; 0.1 (5/15/92 v2.2)  Changed the semantics so that redefinition now
@@ -28,7 +28,7 @@ routine for deletion.   |#
 (defun find/SGML-tag (word)
   (find/section-marker word))
 
-(defun sGML-tag-named (string)
+(defun SGML-tag-named (string)
   (section-marker-named
    (concatenate 'string "sm-" string)))
 
@@ -47,8 +47,7 @@ routine for deletion.   |#
 
 (defun define-sgml-tag/expr (string name initiate terminate close
                              &aux new? )
-  (declare (special category::SGML-label))
-  (declare (special category::SECTION-MARKER))
+  (declare (special category::SGML-label category::SECTION-MARKER))
   (let* ((word (resolve-string-to-word/make string))
          (sm-word (define-word/expr
                     (concatenate 'string "sm-" string)))
@@ -61,7 +60,7 @@ routine for deletion.   |#
 
     (when new?
       (let ((cfr
-             (define-cfr category::SGML-label `(,word)
+             (define-cfr category::SGML-label `(,sm-word)
                :form category::section-marker
                :referent  sm )))
 
