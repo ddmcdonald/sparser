@@ -458,6 +458,7 @@
       (scan-next-position))
 
     (let ((next-word (pos-terminal next-position))
+          (previous-word (pos-terminal (chart-position-before position)))
           (caps-state (pos-capitalization next-position)))
 
       (cond ((or (eq word::\s (pos-terminal next-position))
@@ -476,6 +477,10 @@
 
             ((and (eq caps-state :lower-case)
                   *arabic-names*)
+             (cap-seq-continues-from-here? next-position))
+
+            ((and previous-word ;; "Workers' Party"
+                  (word-ends-in-s previous-word))
              (cap-seq-continues-from-here? next-position))
 
             (t
