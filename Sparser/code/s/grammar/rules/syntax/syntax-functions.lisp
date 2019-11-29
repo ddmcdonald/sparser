@@ -1352,9 +1352,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
 ;;;----------------
 
 (defun adjoin-tocomp-to-vg (vg tocomp &aux vg-object)
-  (when  (itypep vg 'raising-to-object)
-    (when
-        (setq vg-object (value-of (object-variable vg) vg))
+  (when (itypep vg 'raising-to-object)
+    (when (setq vg-object (value-of (object-variable vg) vg))
       (cond (*subcat-test*
              (unless (assimilate-subject vg-object tocomp)
                (return-from adjoin-tocomp-to-vg nil)))
@@ -1741,10 +1740,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
               ;; HANDLE THESE CORRECTLY
               (if (or (is-passive? vg-edge)
                       (member (form-cat-name right-edge) '(vp+ed vg+ed)))
-                  (when 
-                      (and (object-variables vg-edge)
-                           (loop for v in (object-variables vg-edge)
-                                 never (value-of v vp)))
+                  (when (and (object-variables vg-edge)
+                             (loop for v in (object-variables vg-edge)
+                                never (value-of v vp)))
                     (assimilate-subcat vp :object subj))
                   (when (missing-subject-vars (edge-referent vg-edge))
                     (assimilate-subcat vp :subject subj))))))
