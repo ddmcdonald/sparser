@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2010-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2019 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  June 2017
+;;;  version:  November 2019
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -571,6 +571,11 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
   (word-ends-in-d (word-pname w)))
 (defmethod word-ends-in-d ((s string))
   (eql #\d (last-letter s)))
+
+(defmethod word-ends-in-s ((w word))
+  (word-ends-in-s (word-pname w)))
+(defmethod word-ends-in-s ((s string))
+  (eql #\s (last-letter s)))
 
 
 ;;--- Verbs ("s", "ed", "ing")
