@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2018 David D. McDonald all rights reserved
+;;; Copyright (c) 2010-2019 David D. McDonald all rights reserved
 ;;;
 ;;;     File: "assignments"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  December 2018
+;;;  Version:  November 2019
 
 ;; Extracted from diverse files 12/4/12. Added referent construction
 ;; 12/11/12. Revised those 'setup' constructors 2/23/13 to specialize
@@ -273,22 +273,17 @@
 
 
 (defun setup-adjective (word &optional comlex-clause ambiguous?)
-  ;; /// pull stuff out of the clause
+  ;; /// pull stuff out of the comlex clause
   ;; Comlex has a 'gradable' feature on adjectives, with 
   ;; a flag for er-est. See adjectives in sl/checkpoint/
   (declare (special *break-on-pattern-outside-coverage?*))
   (let ((category-name (name-to-use-for-category word))
         (super-category (super-category-for-POS :adjective)))
-    (when ambiguous?
+    (when (or ambiguous?
+              (category-named category-name)) ;; "progressive" -- clashes w/ the aspect
       (setq category-name
             (construct-disambiguating-category-name
              category-name super-category)))
-    (when (category-named category-name)
-      (when *break-on-pattern-outside-coverage?*
-        (push-debug `(,category-name ,word ,comlex-clause))
-        (cerror "Maybe you can blow that one away?"
-                "Setup: The category named ~a already exists."
-                category-name)))
     (let* ((category (define-category/expr category-name
                        `(:specializes ,super-category
                         :instantiates :self)))
@@ -315,16 +310,10 @@
   (declare (special *break-on-pattern-outside-coverage?*))
   (let ((category-name (name-to-use-for-category word))
         (super-category (super-category-for-POS :adverb)))
-    (when ambiguous?
+    (when (or ambiguous? (category-named category-name))
       (setq category-name
             (construct-disambiguating-category-name
              category-name super-category)))
-    (when (category-named category-name)
-      (when *break-on-pattern-outside-coverage?*
-        (push-debug `(,category-name ,word))
-        (cerror "Maybe you can blow that one away?"
-                "Setup: The category named ~a already exists."
-                category-name)))
     (let* ((category (define-category/expr category-name
                        `(:specializes ,super-category
                         :instantiates :self)))
