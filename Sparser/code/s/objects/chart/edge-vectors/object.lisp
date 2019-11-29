@@ -212,11 +212,14 @@
 (defun top-edge-on-ev (ev)
   "If the top-node field holds an edge, return it. Otherwise
    return the final edge in the array."
-  (if (edge-p (ev-top-node ev))
-      (ev-top-node ev)
-      (when (> (ev-number-of-edges ev) 1)
-        (elt (ev-edge-vector ev)
-             (1- (ev-number-of-edges ev))))))
+  (cond
+    ((edge-p (ev-top-node ev))
+     (ev-top-node ev))
+    ((ev-number-of-edges ev) ;; nil over punctuation
+     (when (> (ev-number-of-edges ev) 1)
+       (elt (ev-edge-vector ev)
+            (1- (ev-number-of-edges ev)))))
+    (t nil)))
 
 (defun top-edge-at/ending (position)
   ;; returns the top-edge that ends at the position
