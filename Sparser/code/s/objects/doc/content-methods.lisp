@@ -126,7 +126,8 @@
       ((itypep i 'residue-on-protein) ;; or other regions
        'residues)
       ;; Could consider mutations, drugs, cell-lines, what else?
-      (t 'other)))
+      (t (unless (itype i 'linguistic)
+           'other))))
     (category ;; really ignore them?
      nil)
     (otherwise
@@ -171,9 +172,11 @@
   
   (:method ((p paragraph))
     (declare (special *tts-after-each-section*))
-    (let ((content (contents p))
-          (sentences (sentences-in-paragraph p)) ; list of sentence objects
-          (word-count (pos-token-index (ends-at-pos p))))
+    (let* ((content (contents p))
+           (sentences (sentences-in-paragraph p)) ; list of sentence objects
+           (start-index (pos-token-index (starts-at-pos p)))
+           (end-index (pos-token-index (ends-at-pos p)))
+           (word-count (- end-index start-index)))
       (setf (sentence-count content) (length sentences))
       (setf (word-count content) word-count)
 
