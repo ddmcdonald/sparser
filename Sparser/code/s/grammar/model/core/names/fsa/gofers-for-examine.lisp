@@ -454,11 +454,14 @@
         (pnf/throw-up-hands residue position))))
 
 (defun pnf/throw-up-hands (edges position)
-  (push-debug `(,edges ,position))
-  (error "Have run out of criteria for prefering one edge over another~
+  (if *debug-pnf*
+    (then
+      (push-debug `(,edges ,position))
+      (error "Have run out of criteria for prefering one edge over another~
         ~%when a word is spanned by more than one edge and we need~
         ~%a PNR treetop label.~%position = ~a~%remaining edges = ~a"
-         position edges))
+             position edges))
+    (first edges)))
 
 
 
