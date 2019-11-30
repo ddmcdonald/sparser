@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "copulars"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  July 2019
+;;;  Version:  November 2019
 
 (in-package :sparser)
 
@@ -87,8 +87,6 @@
           :prep p))))
 
 
-
-
 ;;;---------------------
 ;;; syntactic functions
 ;;;---------------------
@@ -98,7 +96,6 @@
    applies. For the snapshots as of 8/28/16 there were 80.")
 
 (defun make-copular-adjective (copula adjective)
-                              ;; &optional (copula-edge (left-edge-for-referent)))
   "Corresponds to the form rule for be+adjective (or +adjp) which
    composes them to create a VP with consituents for the verb group
    (e.g. 'should be') and the adjective or adjp. 
@@ -116,34 +113,13 @@
      ;; trust that it will all work out.
      t)
     (t 
-     #+ignore
-       (let ((i (find-or-make-individual
-                 'copular-predication :predicate copula :value adjective)))
-         ;; Note that edge label deliberately is different.
-         ;; The idea is have edge category labels that distinguish
-         ;; between the vp and the eventual full clause.
-         ;;/// this reads oddly in an analysis, so consider just
-         ;; going with the edge label of the adjp instead
-         (revise-parent-edge :category category::copular-predicate)
-
-         (if (eq (edge-form (left-edge-for-referent)) category::infinitive)
-           ;; "to be dominant" is not a VP, but is a to-comp
-           (revise-parent-edge :form category::to-comp)
-           (revise-parent-edge :form category::vp))
-         i)
        (progn
          (if (eq (edge-form (left-edge-for-referent)) category::infinitive)
            ;; "to be dominant" is not a VP, but is a to-comp
            (revise-parent-edge :form category::to-comp)
            (revise-parent-edge :form category::vp))
          (bind-variable 'aux copula adjective)))))
-#|
-  ;; optional edge used in calls from make-this-a-question-if-appropriate
-  ;; when there wasn't an edge over the whole span and we're trying
-  ;; to salvage an edge from the treetops we've got
-  (when (and (edge-p copula-edge)
-             (eq (edge-form copula-edge) category::vg+ing))
-     (revise-parent-edge :form category::vg+ing))  |#
+
 
 
 ;;--- be + location
@@ -170,6 +146,10 @@ machinery. |#
   (revise-parent-edge :category category::copular-predication)
   (setq vp (bind-variable 'item subj vp))
   vp)
+
+(def-k-method apply-copula ((subj category) (vp category::copular-predication))
+  (when (is-wh-pronoun? subj)
+    (assimilate-subcat vp :subject subj)))
 
 
 ;;;---------
