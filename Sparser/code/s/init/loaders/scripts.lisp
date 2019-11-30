@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "scripts"
 ;;;    Module: "init;loaders;"
-;;;   Version: February 2019
+;;;   Version: November 2019
 
 (in-package :sparser)
 
@@ -100,7 +100,6 @@ in conjunction with an early version of Hark. Notable for using the
    (*index-under-permanent-instances* t)
    (*index-bindings-to-variables* nil))
   (:grammar-configuration "bio-grammar")
-  (:interfering-rules ((sgml-label ("p")))) ; interferes with "p100"
   (:switches bio-setting))
 
 (defscript blocks-world ()
