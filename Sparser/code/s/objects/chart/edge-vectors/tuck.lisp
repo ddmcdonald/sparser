@@ -87,11 +87,10 @@
               (:right (edge-ends-at subsumed-edge)))
             new-edge-ev
             direction)))
+       
        (when *description-lattice*
+         ;;(break "About to reinterpret ~a" dominating-edge)
          (reinterpret-dominating-edges dominating-edge))
-       ;;(break "and what else?")
-       ;;/// We now have two edges that are adjacent that weren't before
-       ;; so we should see if there's a rule and recompute the referent
        dominating-edge))))
 
 (defparameter *reinterpret-dominating-edges-warning* nil)
@@ -103,26 +102,33 @@
    mentions inaccurate. Use referent-for-edge to rerun the
    rules that formed the edges. Recurse up the tree unless
    the rerun fails."
-  (let ((new-ref (referent-for-edge edge)))
-    (cond
-      ((null new-ref)
-       (when *reinterpret-dominating-edges-warning*
-         (warn "reinterpretation of edge ~s failed in reinterpret-~
-                dominating-edges by producing null interpretation~% in ~s~%"
-               edge (current-string))))
-      ((eq new-ref :abort-edge)
-       (when *reinterpret-dominating-edges-warning*
-         (warn "reinterpretation of edge ~s failed in reinterpret-~
-                dominating-edges by producing :abort-edge interpretation~% in ~s~%"
-               edge (current-string))))
-      (t
-       (set-edge-referent edge new-ref)
-       (if (edge-mention edge)
-           (when (typep (edge-mention edge) 'discourse-mention)
-             (setf (base-description (edge-mention edge)) new-ref))
-           (when *reinterpret-dominating-edges-warning*
-             (warn "null edge-mention on edge ~s in ~%~s"
-                   edge (current-string))))
+  (let ((parents (collect-edge-parents edge)))
+    (flet ((reinterpret-edge (edge)
+             ;; (format t "~&reinterpreting ~a~%" edge)
+             (let ((new-ref (referent-for-edge edge))) ; wraps referent-from-rule        
+               (cond
+                 ((null new-ref)
+                  (when *reinterpret-dominating-edges-warning*
+                    (warn "reinterpretation of edge ~s failed in reinterpret-~
+                      dominating-edges by producing null interpretation~% in ~s~%"
+                          edge (current-string))))
+                 ((eq new-ref :abort-edge)
+                  (when *reinterpret-dominating-edges-warning*
+                    (warn "reinterpretation of edge ~s failed in reinterpret-~
+                      dominating-edges by producing :abort-edge interpretation~% in ~s~%"
+                          edge (current-string))))
+                 (t
+                  (set-edge-referent edge new-ref)
+                  (if (edge-mention edge)
+                    (when (typep (edge-mention edge) 'discourse-mention)
+                      (setf (base-description (edge-mention edge)) new-ref))
+                    (when *reinterpret-dominating-edges-warning*
+                      (warn "null edge-mention on edge ~s in ~%~s"
+                            edge (current-string))))))) ))
+      (loop for parent in (cons edge parents)
+           do (reinterpret-edge edge)))))
+
+#| Original recursive loop
        (let ((parent (edge-used-in edge)))
          (cond
            ((edge-p parent)
@@ -130,11 +136,13 @@
               ;; happens in <give example here>
               (error "circular-loop in reinterpret-dominating-edges"))
             (reinterpret-dominating-edges parent (cons parent *visited*)))
+           
            ((null parent) ;; reached the topmost edge
             nil)
+           
            ((consp parent)
             (error "multiple parent edges in reinterpret-dominating-edges for ~s,~%~s~%" edge parent))
-           (t (lsp-break "what is going on with the used-in for ~s~%" edge))))))))
+           (t (lsp-break "what is going on with the used-in for ~s~%" edge)))) |#
         
 
 (defun move-edges-above-to-new-pos (above-this-one
