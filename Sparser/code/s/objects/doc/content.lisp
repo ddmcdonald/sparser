@@ -65,10 +65,11 @@
 
 (defclass paragraph-content (container
                              aggregated-bio-terms
-                             epistemic-state
-                             discourse-relations
                              sentence-parse-quality
-                             sentence-tt-counts)
+                             sentence-tt-counts ; assess-sentence-analysis-quality
+                             paragraph-characteristics
+                             epistemic-state
+                             discourse-relations)
   ()
   (:documentation "Will want a bunch more structure just over
     the enties for the purpose of facilitating anaphora.
