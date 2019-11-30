@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2019 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "forest-gophers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  February 2017
+;;;  Version:  November 2019
 
 ;; Initiated 8/30/14. To hold predicates and other little computations
 ;; done by the forest-level sweeping and island-driving. Also a good
@@ -225,6 +225,14 @@
 ;;;--------------
 ;;; tree walkers
 ;;;--------------
+
+(defgeneric collect-edge-parents (base-edge)
+  (:documentation "Make a list of the sequence of parent edges
+    above the base")
+  (:method ((base edge))
+    (let ((parent (edge-used-in base)))
+      (when parent
+        (cons parent (collect-edge-parents parent))))))
 
 (defgeneric search-tree-for-referent (edge value)
   (:documentation "Gradually walk down the binary tree of
