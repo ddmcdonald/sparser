@@ -154,7 +154,7 @@ SP> (stree 51)
                       (constituents-between
                        (or target (first constituents))
                        (car (last constituents))))))
-           (declare (special *edge-spec* preposed target dominating new-constituents))
+           (declare (special *edge-spec*))
         
            (setq *new-edge*
                  (make-edge-over-long-span
