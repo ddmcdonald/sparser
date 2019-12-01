@@ -737,7 +737,9 @@ than a bare "to".  |#
            ;; for "put" which is a verb+ed and verb, and is
            ;;  used as an impurative
            nil)
-          ((and (sentence-initial? e)
+          ((and (or (sentence-initial? e)
+                    (preceding-preposition e))
+                ;; "... in what tissue"
                 (eq (form-cat-name e) 'wh-pronoun))
            t)
           ((and (eq ecn 'that)
