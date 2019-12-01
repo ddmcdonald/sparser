@@ -578,6 +578,16 @@
         (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
         (break "new 4 edge case wh-type: ~a" wh-type)))))
 
+(defun wh-initial-five-edges (wh-edge vg1 np vg2-edge prep-edge)
+  ;; called by  whpn-vp-noun-vg+ed+prep DA rule
+  (tr :wh-walk "wh-initial-five-edges")
+  (let ((full-pp-edge (flesh-out-stranded-prep prep-edge wh-edge)))
+    (let ((e (compose-fleshed-out-pp-and-knit
+              vg2-edge full-pp-edge)))
+      (when e
+        (xxx)
+        ))))
+
 (defun wh-initial-four-edges/adjunct (wh-edge edges start-pos end-pos)
   "The wh being asked is an adjunct, so the edges should make a clause"
   (tr :wh-walk "wh-initial-four-edges/adjunct")

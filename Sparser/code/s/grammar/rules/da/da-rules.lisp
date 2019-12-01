@@ -1915,6 +1915,11 @@ assumed. |#
     ;; "Where is STAT3 expressed?"
     :action (:function wh-four-edges first second third fourth))
 
+(define-debris-analysis-rule whpn-vp-noun-vg+ed+prep
+    :pattern (wh-pronoun vg proper-noun vg+ed preposition)
+    ;; "What tissues is STAT3 expressed in?"
+    :action (:function wh-five-edges first second third fourth fifth))
+
 (define-debris-analysis-rule whpn-vg-np-vp+ed
     :pattern (wh-pronoun vg np vp+ed)
     ;; "What are the genes regulated by STAT3?
