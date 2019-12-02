@@ -65,6 +65,10 @@
 
 (define-punctuation  euro_sign (code-char 128)) ;; 128
 
+(define-punctuation  british-pound-sign (code-char 163))
+(define-punctuation  currency-sign (code-char 164))
+(define-punctuation  yen-sign (code-char 165))
+
 (define-punctuation  copyright_sign #\Copyright_Sign) ;; 169
 (define-punctuation  left-pointing-double-angle-quotation_mark #\Left-Pointing_Double_Angle_Quotation_Mark) ;; 171
 (define-punctuation not_sign #\NOT_SIGN) ;; 172

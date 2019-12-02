@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1996,2013-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013-2019  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "alphabet"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  August 2017
+;;;  Version:  December 2019
 
 ;; file created 9/15/92 v2.3, populated 9/21
 ;; 8/20/93 fixed mistake in entry for #127
@@ -607,15 +607,14 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 ;;---- selected characters above 127 and below 256 (extended ASCII)
 
-;;; added to cover up bio protein definition problems
 (setf (elt *character-dispatch-array* 128) ;; Euro sign
       `(:punctuation . ,(punctuation-named (code-char 128))))
 
-;;; added to cover biopax import issue
+
 (setf (elt *character-dispatch-array* 130) 
       `(:alphabetical . (:lowercase . ,(code-char 130))))
 
-;;; added to cover biopax import issue
+
 (setf (elt *character-dispatch-array* 131) 
       `(:alphabetical . (:lowercase . ,(code-char 131)))) 
 ;;#\No-break-permitted (?)
@@ -624,37 +623,32 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       `(:alphabetical . (:lowercase . ,(code-char 132)))) 
 ;;#\C84 (?)
 
-;;; added to cover biopax import issue
+
 (setf (elt *character-dispatch-array* 142) 
       `(:alphabetical . (:lowercase . ,(code-char 131)))) 
 ;;#\Single-Shift-Two (?)
 
 
 
-;;; added to cover up bio protein definition problems
+
 (setf (elt *character-dispatch-array* 145) ;; left single quotation
       `(:punctuation . ,(punctuation-named #\' )))
 
-
-;;; added to cover up bio protein definition problems
 (setf (elt *character-dispatch-array* 146) ;; right single quotation
       `(:punctuation . ,(punctuation-named #\' )))
 
-
-;;; added to cover up bio protein definition problems
 (setf (elt *character-dispatch-array* 147) ;; left double quotation
       `(:punctuation . ,(punctuation-named #\" )))
 
-;;; added to cover up bio protein definition problems
 (setf (elt *character-dispatch-array* 148) ;; right double quotation
       `(:punctuation . ,(punctuation-named #\" )))
 
-;;; added to cover biopax import issue
+
 (setf (elt *character-dispatch-array* 150) 
       `(:alphabetical . (:lowercase . ,(code-char 150)))) 
 ;;#\Start-Guarded-Area (?)
 
-;;; added to cover biopax import issue
+
 (setf (elt *character-dispatch-array* 157) 
       `(:alphabetical . (:lowercase . ,(code-char 157)))) 
 ;;#\Operating-System-Command (?)
@@ -662,36 +656,26 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 (setf (elt *character-dispatch-array* 160) ;; #\No-break_Space
   '(:punctuation . :space))
 
-;;; added to cover biopax import issue
-(setf (elt *character-dispatch-array* 161) 
+(setf (elt *character-dispatch-array* 161) ;; #\INVERTED_EXCLAMATION_MARKN 
       `(:alphabetical . (:lowercase . ,(code-char 161)))) 
-;;#\INVERTED_EXCLAMATION_MARKN 
 
-;;; added to cover biopax import issue
-(setf (elt *character-dispatch-array* 162) 
+(setf (elt *character-dispatch-array* 162) ;; #\CENT_SIGN 
       `(:alphabetical . (:lowercase . ,(code-char 162))))
 
-(setf (elt *character-dispatch-array* 163) 
-      `(:alphabetical . (:lowercase . ,(code-char 163))))
+(setf (elt *character-dispatch-array* 163) ;; #\POUND_SIGN  #\£
+      `(:punctuation . ,(punctuation-named (code-char 163))))
 
-;;#\CENT_SIGN 
+(setf (elt *character-dispatch-array* 164) ;; #\CURRENCY_SIGN 
+      `(:punctuation . ,(punctuation-named (code-char 164))))
 
-;;; added to cover biopax import issue
-(setf (elt *character-dispatch-array* 164) 
-      `(:alphabetical . (:lowercase . ,(code-char 164)))) 
-;;#\CURRENCY_SIGN 
-
-(setf (elt *character-dispatch-array* 164) 
-      `(:alphabetical . (:lowercase . ,(code-char 164))))
-
-;;; added to cover biopax import issue
 (setf (elt *character-dispatch-array* 165) ;;#\YEN_SIGN
-      `(:alphabetical . (:lowercase . ,(code-char 165))))
+      `(:punctuation . ,(punctuation-named (code-char 165))))
 
-(setf (elt *character-dispatch-array* 167) 
+(setf (elt *character-dispatch-array* 166) ;; #\BROKEN_BAR
+      `(:alphabetical . (:lowercase . ,(code-char 166))))
+
+(setf (elt *character-dispatch-array* 167) ;; #\section_sogn
       `(:alphabetical . (:lowercase . ,(code-char 167))))
-;;#\BROKEN_BAR
-
 
 (setf (elt *character-dispatch-array* 168) ;;#\DIAERESIS
       `(:alphabetical . (:lowercase . ,(code-char 168))))
@@ -707,32 +691,24 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 ;;#\Acute_Accent ? (this is what it previously said, but if you do code-char of 171 you get the following:
 ;; #\LEFT-POINTING_DOUBLE_ANGLE_QUOTATION_MARK
 
-;; FOR THE MOMENT -- PROBLEMS WITH LOADING
-(setf (elt *character-dispatch-array* 172) 
-      `(:punctuation . ,(punctuation-named (code-char 172)))) ;; #\NOT_SIGN
+
+(setf (elt *character-dispatch-array* 172)  ;; #\NOT_SIGN
+      `(:punctuation . ,(punctuation-named (code-char 172))))
 
 (setf (elt *character-dispatch-array* 173) ;; #\Soft_Hyphen
       `(:punctuation . ,(punctuation-named #\- )))
-
 (setf (elt *character-dispatch-array* 174) ;; #\Registered_Sign
       `(:punctuation . ,(punctuation-named (code-char 174))))
-
 (setf (elt *character-dispatch-array* 175) ;;#\MACRON
       `(:alphabetical . (:lowercase . ,(code-char 175))))
-
 (setf (elt *character-dispatch-array* 176) ;; #\Degree_Sign
       `(:punctuation
         . ,(punctuation-named #\* ))) ;; substitute simple asterisk
-
-(setf (elt *character-dispatch-array* 177) ;; #\Plus-Minus_Sign
+(setf (elt *character-dispatch-array* 177) ;; #\Plus-Minus_Sign  #\±
       `(:punctuation
-        . ,(punctuation-named (code-char 177)))) ;;//////////////////////////////////////// #\±
-
-;;; added to cover up bio protein definition problems
+        . ,(punctuation-named (code-char 177)))) ;;////////////////////////////////////////
 (setf (elt *character-dispatch-array* 178) ;; superscript two or 'squared' - just use #\2
       `(:number . (:digit . ,#\2 )))
-
-;;; added to cover up bio protein definition problems
 (setf (elt *character-dispatch-array* 179) ;; superscript three or 'cubed' - just use #\3
        `(:number . (:digit . ,#\3 )))
 
@@ -744,30 +720,16 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       '(:punctuation
         . :space)) ;;////////////////////////////////////////
 
-;;; added to cover biopax import issue
-(setf (elt *character-dispatch-array* 182) 
+(setf (elt *character-dispatch-array* 182) ;#\PILCROW_SIGN
       `(:alphabetical . (:lowercase . ,(code-char 182)))) 
-;;#\PILCROW_SIGN
-
-
 (setf (elt *character-dispatch-array* 183) ;; #\Middle_Dot
       `(:punctuation . ,(punctuation-named (code-char 183)))) 
-
-
-;;; added to cover up bio protein definition problems
 (setf (elt *character-dispatch-array* 184) ;; Spacing cedilla (subscript dot)
       `(:punctuation . :space))
-
-
-;;; added to cover up bio protein definition problems
 (setf (elt *character-dispatch-array* 185) ;; superscript one - just use #\1
       `(:number . (:digit . ,#\1 )))
-
-
-
 (setf (elt *character-dispatch-array* 186)  ;;#\Masculine_Ordinal_Indicator
       `(:punctuation . ,(punctuation-named (code-char 186))))
-
 (setf (elt *character-dispatch-array* 187)
       `(:punctuation . ,(punctuation-named (code-char 187)))) ;;#\Right-Pointing_Double_Angle_Quotation_Mark
 
@@ -775,13 +737,6 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 (setf (elt *character-dispatch-array* 189) `(:punctuation . ,(punctuation-named (code-char 189)))) ;;#\Vulgar_Fraction_One_Half
 (setf (elt *character-dispatch-array* 190) `(:punctuation . ,(punctuation-named (code-char 190)))) ;;#\Vulgar_Fraction_Three_Quarters
 (setf (elt *character-dispatch-array* 191) `(:punctuation . ,(punctuation-named (code-char 191)))) ;;#\Inverted_Question_Mark
-
-
-
-
-
-
-
 (setf (elt *character-dispatch-array* 192) `(:alphabetical . (:uppercase . ,(code-char 192)))) ;;#\Latin_Capital_Letter_A_With_Grave
 (setf (elt *character-dispatch-array* 193) `(:alphabetical . (:uppercase . ,(code-char 193)))) ;;#\Latin_Capital_Letter_A_With_Acute
 (setf (elt *character-dispatch-array* 194) `(:alphabetical . (:uppercase . ,(code-char 194)))) ;;#\Latin_Capital_Letter_A_With_Circumflex
