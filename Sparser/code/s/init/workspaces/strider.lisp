@@ -23,7 +23,7 @@
 ;(p "Martyr Mostafa Ahmadi-Rowshan was a graduate of Sharif University and the deputy director of Natanz nuclear site in charge of commercial affairs. He was martyred in Golnabi Street in front of the Faculty of Communications of Allameh Tabataba'i University at 8.19 on 21 Dey of the year 90 [ 10 January 2010]. ")
 ; (trace-paragraphs)
 
-; (f "/Users/ddm/sift/nlp/corpus/Strider/STRIDER Financial Problem.txt")
+; (f "/Users/ddm/sift/nlp/corpus/Strider/financial/financial-problems.txt")
 ; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/javan-online.txt")
 ;;  (setq *peek-rightward* t) (p "Roshan's driver Reza Qashqaei")
 
