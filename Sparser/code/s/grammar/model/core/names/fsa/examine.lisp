@@ -605,13 +605,13 @@
       ;;   resumes this process starting with "U.N. ..." rather than the
       ;;   original that started eariler. 
       ;;--- Look for things that would restructure the elements of the name
-
+      
       (when other ;; "George K. Ball" -- where "ball" is an ordinary word
-        ;;(break "other = ~a" other)
         (let* ((item-index (car other))
                (edge (cdr other))
+               (ref (edge-referent edge))
                (nw (find/make-silent-nw-for-word-under-edge edge)))
-          (setf (nth (1- item-index) items) nw)))
+          (setq items (substitute nw ref items))))
 
       (when ordinal  ;; e.g. "III", "Fourth"
         ;; a cons of the count and an ordinal unit
