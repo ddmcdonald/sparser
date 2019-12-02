@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2019 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "patterns"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  February 2016
+;;;  version:  November 2019
 
 ;; initiated 12/4/14 breaking out the patterns from uniform-scan1.
 ;; 2/2/2015 added initial patterns for colons, such as the ratio 1:500
@@ -107,64 +107,65 @@
            (when *work-on-ns-patterns*
              (break "Unclassified case of ~a between p~a and p~a"
                     pattern (pos-token-index start-pos) (pos-token-index end-pos)))))
-    (cond
-     ((or (equal pattern '(:full :single-digit)) ;; AF6, MEK1, SHOC2
-          (equal pattern '(:full :digits)))
-      (look-before-punting)
-      (reify-ns-name-and-make-edge start-pos end-pos))
+    (let ((bio (current-script :biology)))
+      (cond
+        ((or (equal pattern '(:full :single-digit)) ;; AF6, MEK1, SHOC2
+             (equal pattern '(:full :digits)))
+         (look-before-punting)
+         (reify-ns-name-and-make-edge start-pos end-pos))
 
-     ((equal pattern '(:capitalized :digits))
-      (or (reify-residue-and-make-edge start-pos end-pos)
-          (look-before-punting)
-          (reify-ns-name-and-make-edge start-pos end-pos)))
-     
-     ((equal pattern '(:capitalized :single-digit)) ;; Mst1, Mst2
-      ;;/// we should track the number, perhaps in a tailored kind of bio-entity
-      (reify-ns-name-and-make-edge start-pos end-pos))
-     
-     ((equal pattern '(:mixed :single-digit)) ;; PLCÎ³1
-      (look-before-punting)
-      (reify-ns-name-and-make-edge start-pos end-pos))
+        ((equal pattern '(:capitalized :digits))
+         (or (reify-residue-and-make-edge start-pos end-pos)
+             (look-before-punting)
+             (reify-ns-name-and-make-edge start-pos end-pos)))
+        
+        ((equal pattern '(:capitalized :single-digit)) ;; Mst1, Mst2
+         ;;/// we should track the number, perhaps in a tailored kind of bio-entity
+         (reify-ns-name-and-make-edge start-pos end-pos))
+        
+        ((equal pattern '(:mixed :single-digit)) ;; PLCÎ³1
+         (look-before-punting)
+         (reify-ns-name-and-make-edge start-pos end-pos))
 
-     ((equal pattern '(:single-cap :single-digit)) ;; "in Figure S1,"
-      (let ((left-edge (top-edge-at/starting start-pos)))
-        (if (eq (edge-cat-name left-edge) 'music-note) ;; "the C4 quarter note"
-          (let ((edges (treetops-between start-pos end-pos)))
-            (create-pitches (first edges) (second edges) start-pos end-pos))
-          (reify-two-part-label start-pos end-pos :cap-first))))
+        ((equal pattern '(:single-cap :single-digit)) ;; "in Figure S1,"
+         (let ((left-edge (top-edge-at/starting start-pos)))
+           (if (eq (edge-cat-name left-edge) 'music-note) ;; "the C4 quarter note"
+             (let ((edges (treetops-between start-pos end-pos)))
+               (create-pitches (first edges) (second edges) start-pos end-pos))
+             (reify-two-part-label start-pos end-pos :cap-first))))
 
-     ((or (equal pattern '(:single-digit :single-lower)) ;; (Fig. 4c, 4d) in Dec. 42 
-          (equal pattern '(:single-digit :single-cap))) ;; "3C" "Histone 2B phosphorylated by..." in Jan 34.
-      (reify-two-part-label start-pos end-pos :digit-first))
+        ((or (equal pattern '(:single-digit :single-lower)) ;; (Fig. 4c, 4d) in Dec. 42 
+             (equal pattern '(:single-digit :single-cap))) ;; "3C" "Histone 2B phosphorylated by..." in Jan 34.
+         (reify-two-part-label start-pos end-pos :digit-first))
 
-     ((equal pattern '(:single-cap :digits))
-      (or (reify-residue-and-make-edge start-pos end-pos) ;; Y420
-          (look-before-punting)
-          (reify-ns-name-and-make-edge start-pos end-pos)))
+        ((equal pattern '(:single-cap :digits))
+         (or (when bio (reify-residue-and-make-edge start-pos end-pos)) ;; Y420
+             (look-before-punting)
+             (reify-ns-name-and-make-edge start-pos end-pos)))
 
-     ((equal pattern '(:single-lower :digits))
-      (or (reify-p-protein-and-make-edge start-pos end-pos) ;; p38
-          (reify-residue-and-make-edge start-pos end-pos)
-          (look-before-punting)
-          (reify-ns-name-and-make-edge start-pos end-pos)))
+        ((equal pattern '(:single-lower :digits))
+         (or (when bio (reify-p-protein-and-make-edge start-pos end-pos)) ;; p38
+             (when bio (reify-residue-and-make-edge start-pos end-pos))
+             (look-before-punting)
+             (reify-ns-name-and-make-edge start-pos end-pos)))
 
-     ((equal pattern '(:single-cap :single-digit :single-cap))
-      (look-before-punting)
-      (reify-ns-name-and-make-edge start-pos end-pos))
+        ((equal pattern '(:single-cap :single-digit :single-cap))
+         (look-before-punting)
+         (reify-ns-name-and-make-edge start-pos end-pos))
 
-     ((or (equal pattern '(:single-cap :digits :single-cap))
-          (equal pattern '(:single-lower :digits :single-lower)))
-      ;;/// and a bunch more
-      (or (reify-point-mutation-and-make-edge start-pos end-pos)
-          (look-before-punting)
-          (reify-ns-name-and-make-edge start-pos end-pos)))
+        ((or (equal pattern '(:single-cap :digits :single-cap))
+             (equal pattern '(:single-lower :digits :single-lower)))
+         ;;/// and a bunch more
+         (or (when bio (reify-point-mutation-and-make-edge start-pos end-pos))
+             (look-before-punting)
+             (reify-ns-name-and-make-edge start-pos end-pos)))
 
-     (*work-on-ns-patterns*
-      (break "New simple pattern to resolve: ~a" pattern))
-     
-     ;; fall through 
-     (t (tr :no-ns-pattern-matched)
-        nil))))
+        (*work-on-ns-patterns*
+         (break "New simple pattern to resolve: ~a" pattern))
+        
+        ;; fall through 
+        (t (tr :no-ns-pattern-matched)
+           nil)))))
 
 
 
