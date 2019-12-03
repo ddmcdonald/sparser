@@ -127,6 +127,7 @@
     residue-on-protein
     cellular-location
     bio-scalar
+    disease
     ))
 
 
