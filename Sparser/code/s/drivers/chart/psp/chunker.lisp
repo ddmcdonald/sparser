@@ -737,10 +737,16 @@ than a bare "to".  |#
            ;; for "put" which is a verb+ed and verb, and is
            ;;  used as an impurative
            nil)
-          ((and (or (sentence-initial? e)
-                    (preceding-preposition e))
-                ;; "... in what tissue"
-                (eq (form-cat-name e) 'wh-pronoun))
+          ((or
+            (and (sentence-initial? e)
+                 (eq (form-cat-name e) 'wh-pronoun)
+                 (member (edge-cat-name e)
+                         '(what whichever whose which)))
+            (and (preceding-preposition e)
+                 ;; "... in what tissue"
+                 (eq (form-cat-name e) 'wh-pronoun)
+                 (member (edge-cat-name e) '(what whichever))))
+           ;; not which or whose, because of relative clause starts
            t)
           ((and (eq ecn 'that)
                 (edge-p (edge-just-to-left-of e))

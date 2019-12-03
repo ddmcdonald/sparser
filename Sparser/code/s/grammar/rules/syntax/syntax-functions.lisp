@@ -751,7 +751,11 @@ val-pred-var (pred vs modifier - left or right?)
 
 (defun determiner-noun (determiner head)
   "bind the determiner to a variable (no longer stash it in mention)"
-  (or *subcat-test*
+  (if *subcat-test*
+      (let ((det-edge (left-edge-for-referent)))
+        ;; "HOW" is not a valid determiner, though "WHAT" and "WHICH" are
+        (or (not (eq (edge-form-name det-edge) 'wh-pronoun))
+            (member (edge-cat-name det-edge) '(what which whichever whose))))
       (let* ((parent-edge (parent-edge-for-referent))
 	     (det-edge (left-edge-for-referent))
 	     (det-word (edge-left-daughter det-edge))
