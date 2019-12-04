@@ -834,10 +834,11 @@ than a bare "to".  |#
           
           ((and (edge-form e)
                 (eq (form-cat-name e) 'wh-pronoun)
-                (category-p (edge-referent e))
-                (member (cat-symbol (edge-referent e))
-                        '(category::which category::whose category::what))
-                (not (preceding-preposition e)))
+                (not (member (edge-cat-name e)
+                             '(whether when where)))
+                (or (not (preceding-preposition e))
+                    (member (edge-cat-name e)
+                            '(what whom whichever))))
            t)
           
           ((eq category::verb+ing (edge-form e))
@@ -962,13 +963,15 @@ than a bare "to".  |#
            ;;(break "e = ~a" e)
            (and (or (preceding-det-prep-poss-or-adj e edges-before)
                     (between-wh-and-modal e edges-before)
-                    (followed-by-verb e (edges-after e))
-                    (followed-by-of e (edges-after e)))
+                    (followed-by-verb e)
+                    (followed-by-of e)
+                    (followed-by-modal-or-be e))
                 (ng-head? (edge-form e))))
           
           ((singular-noun-and-present-verb? e)
            (and (not (preceding-pronoun-or-which? e edges-before))
                 (not (preceding-plural-noun? e))
+                (not (followed-by-modal-or-be e))
                 (ng-head? (edge-form e))))
           
           ((eq e-form-name 'VERB+ING)
@@ -983,7 +986,7 @@ than a bare "to".  |#
                    (memq 
                     (word-symbol (pos-terminal (pos-edge-ends-at e)))
                     '(word::|that| word::|which| word::|whose|))))))
-          
+          ((eq (edge-form-name e) 'wh-pronoun) t)
           ((ng-head? (edge-form e)) t)
           
           ((and
@@ -1612,7 +1615,13 @@ than a bare "to".  |#
 (defun followed-by-verb (e &optional (edges-after (edges-after e)))
   (loop for ee in edges-after
      thereis
-       (member (form-cat-name ee) '(verb verb+ed verb+ing))))
+          (member (form-cat-name ee) '(verb verb+ed verb+ing))))
+
+(defun followed-by-modal-or-be (e &optional (edges-after (edges-after e)))
+  (loop for ee in edges-after
+     thereis
+          (or (member (form-cat-name ee) '(modal))
+              (member (edge-cat-name ee) '(be)))))
 
 (defun preceding-adverb (e &optional (edges (edges-before e)))
   (loop for ee in edges

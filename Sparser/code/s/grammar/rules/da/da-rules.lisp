@@ -1852,7 +1852,7 @@ assumed. |#
 
 (defun wh-three-edges+prep (np modal s prep)
   (when (wh-edge? np)
-    (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
+    (let ((end-pos (pos-edge-ends-at prep))) ;; (fix-da-ending-pos *da-ending-position*)))
       (wh-modal-s-prep np modal s prep *da-starting-position* end-pos))))
 
 
