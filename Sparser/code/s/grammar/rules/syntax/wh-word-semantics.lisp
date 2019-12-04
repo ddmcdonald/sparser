@@ -90,11 +90,12 @@
                     :bindings (variable ,variable)))
            (category (eval expr))
            (predicate (make-wh-identify-predicate string))
+           (i (make-unindexed-individual category))
            (word-rule 
             (define-cfr category `(,word)
               :form (or form category::wh-pronoun)
               :schema (get-schematic-word-rule :word) ;;/// make schema for wh ??
-              :referent category)))
+              :referent i)))
       (add-rule word-rule category)
       (values category
               word-rule
