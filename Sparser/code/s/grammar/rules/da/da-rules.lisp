@@ -1855,6 +1855,17 @@ assumed. |#
     (let ((end-pos (pos-edge-ends-at prep))) ;; (fix-da-ending-pos *da-ending-position*)))
       (wh-modal-s-prep np modal s prep *da-starting-position* end-pos))))
 
+(define-debris-analysis-rule np-modal-s-prep-pp
+    :pattern (np modal s preposition pp)
+    ;; "What diseases can I ask about for microRNA?"
+    :action  (:function wh-three-edges+prep+pp first second third fourth fifth))
+
+(defun wh-three-edges+prep+pp (np modal s prep pp)
+  (when (wh-edge? np)
+    (let ((end-pos (pos-edge-ends-at prep))) ;; (fix-da-ending-pos *da-ending-position*)))
+      (wh-modal-s-prep-pp np modal s prep pp *da-starting-position* end-pos))))
+
+
 
 (define-debris-analysis-rule wh-be-thing
   :pattern (question-marker vg np) ;; "what color is the block"

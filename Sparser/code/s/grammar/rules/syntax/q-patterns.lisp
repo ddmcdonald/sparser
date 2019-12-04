@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "q-patterns"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  September 2019
+;;;  Version:  December 2019
 
 ;; Broken out from questions.lisp 8/7/18 to have all the formulation
 ;; heuristics in one place irrespective of what invokes them.
@@ -11,8 +11,7 @@
 (in-package :sparser)
 
 
-(defun make-question-and-edge
-    (statement start-pos end-pos
+(defun make-question-and-edge (statement start-pos end-pos
                                &key ((:head head-edge)) wh wh-edge rule)
   "Wrap the referent in an instance of a wh-question as its statement.
    Make an edge over the whole span, using whatever pieces the callers
@@ -35,9 +34,11 @@
                     wh ;;(repackage-wh-determiner wh wh-edge)
                    )
                   (t (break "New case of a WH individual: ~a" wh))))
-               (edge (setq wh-edge wh)
-                     (decode-wh (edge-referent wh)))
-               (otherwise (break "unexpected object passed in for wh: ~a" wh)))))
+               (edge
+                (setq wh-edge wh)
+                (decode-wh (edge-referent wh)))
+               (otherwise
+                (break "unexpected object passed in for wh: ~a" wh)))))
     (let* ((wh-base (decode-wh wh))
            (q (cond ((or (itypep wh-base 'wh-pronoun)
                          ;; as in "what genes"
@@ -160,9 +161,6 @@
         edge))))
 
 
-
-
-
 (defun sort-out-incompletely-parsed-there-is-q (start-pos end-pos edges)
   "Called from make-this-a-question-if-appropriate when the first
    edge is a there-exists"
@@ -172,7 +170,6 @@
       (error "incomplete there-is question. Labels = ~a" labels)
       (warn "Incomplete there-is question: ~s"
             (string-of-words-between start-pos end-pos)))))
-
 
 
 ;;//// actually pattern is [ s s preposition ]
@@ -221,7 +218,6 @@
            ))))))
          
 
-
 (defun da/preposed+s (aux-edge s-edge)
   ;;(break "aux = ~a, s = ~a" aux s)
   "Goes with DA rule for [preposed-auxiliary s ifcomp] except that
@@ -261,10 +257,12 @@
          :referent q)))))
 
 (defun polar-copula-question-object ()
-  "A dummy so that we can find thefunction that creates an edge with that rule-name")
+  "A dummy so that we can find thefunction that creates an edge with
+  that rule-name")
 
 (defun polar-copula-question-subject ()
-  "A dummy so that we can find thefunction that creates an edge with that rule-name")
+  "A dummy so that we can find thefunction that creates an edge with
+  that rule-name")
 
 ;; ;; called from make-this-a-question-if-appropriate
 (defun make-polar-copular-question (start-pos end-pos edges)
@@ -470,7 +468,6 @@
    make-this-a-question-if-appropriate.
    The first of the edges is the wh-edge."
   (tr :wh-walk "wh-initial-three-edges")
-
   (when (not (every #'edge-p edges))
     (if *debug-questions*
       (lsp-break "something in 'edges' isn't an edge")
@@ -545,7 +542,8 @@
                                      start-pos end-pos))))))
       
  
-      ((edge-over-aux? (second edges)) ;; "How many blocks did you add to the row?"
+      ((edge-over-aux? (second edges))
+       ;; "How many blocks did you add to the row?"
        (wh-initial-followed-by-modal wh-edge edges start-pos end-pos))
       ;;da/how-preposed+s
       ;; (and (eq e2-form vg+passive)
@@ -658,20 +656,18 @@
   (let* ((stmt (edge-referent edge-over-s))
          (wh (edge-referent wh-edge))
          (wh-cat (cat-name (itype-of wh)))
-         edge-with-adjunct)
+         edge-with-adjunct )
     ;;(set-edge-referent edge-over-s j)
     (case wh-cat
       (where
-       (setq
-        edge-with-adjunct
-        (make-edge-over-long-span
-         start-pos
-         end-pos
-         (itype-of stmt)
-         :rule 'fold-in-initial-wh-adjunct
-         :form (category-named 's)
-         :referent
-         (bind-dli-variable 'location wh stmt))))
+       (setq edge-with-adjunct
+             (make-edge-over-long-span
+              start-pos
+              end-pos
+              (itype-of stmt)
+              :rule 'fold-in-initial-wh-adjunct
+              :form (category-named 's)
+              :referent (bind-dli-variable 'location wh stmt))))
       (t (break "unhandled initial adjunct type ~s" wh-cat)))
     
     (make-question-and-edge (edge-referent edge-with-adjunct) ;;stmt
@@ -756,7 +752,7 @@
   "Find the participant in the clause that should 'move'. It has to be
    somewhere to the left of the edge that gets the prep. If the predicate
    that's the referent of the s is known to be lightweight ('do you know of..'
-   'are there any..') then we can lift out is 'object'. "
+   'are there any..') then we can lift out its 'object'. "
   (let ((predicate (edge-referent s-edge))
         (fluffy? (fluffy-prefix? s-edge)))
     (cond
@@ -823,36 +819,57 @@
 (defun wh-modal-s-prep (wh-edge modal-edge s-edge prep-edge start-pos end-pos)
   (tr :wh-walk 'wh-modal-s-prep)
   (push-debug `(,wh-edge ,modal-edge ,s-edge ,prep-edge))
-  ;; pull out the edge we're going to move
-  (unless nil ;;(one-word-long? wh-edge)
-    (let* ((displaced-edge (edge-right-daughter wh-edge)) ; tissues
-           (pp-edge (flesh-out-stranded-prep prep-edge wh-edge))
-           (s+pp-rule (multiply-edges s-edge pp-edge)))
-      (unless s+pp-rule 
-        (warn "no rule to compose s+pp: ~a + ~a" s-edge pp-edge)
-        nil)
+  (let ((s+pp-edge
+         (common-core-wh-modal-s-prep wh-edge modal-edge s-edge prep-edge)))
+    (when s+pp-edge
+      (make-question-and-edge
+       (edge-referent s+pp-edge)
+       start-pos end-pos
+       :head s+pp-edge
+       :wh wh-edge
+       :rule 'wh-modal-s-prep))))
+
+(defun common-core-wh-modal-s-prep (wh-edge modal-edge s-edge prep-edge)
+  (let* ((pp-edge (flesh-out-stranded-prep prep-edge wh-edge))
+         (s+pp-rule (multiply-edges s-edge pp-edge)))
+    (unless s+pp-rule 
+      (warn "no rule to compose s+pp: ~a + ~a" s-edge pp-edge)
+      nil)
+    (when s+pp-rule
+      (let* ((s+pp-edge (make-completed-binary-edge s-edge pp-edge s+pp-rule))
+             (i (incorporate-displace-aux-into-predicate
+                 modal-edge s+pp-edge :left modal-edge :right s+pp-edge)))
+        (respan-new-referent i
+                             :start (pos-edge-starts-at s+pp-edge)
+                             :end (pos-edge-ends-at s+pp-edge)
+                             :head-edge s+pp-edge
+                             :rule 'common-core-wh-modal-s-prep
+                             :constituents (list s+pp-edge))))))
+
+
+;; "What diseases can I ask about for microRNA?"
+;;
+(defun wh-modal-s-prep-pp (wh-edge modal-edge s-edge prep-edge pp-edge
+                           start-pos end-pos)
+  (tr :wh-walk 'wh-modal-s-prep-pp)
+  (let ((inner-span
+         (common-core-wh-modal-s-prep
+          wh-edge modal-edge s-edge prep-edge)))
+    (unless inner-span
+      (break "no"))
+    (let ((s+pp-rule (multiply-edges inner-span pp-edge)))
       (when s+pp-rule
-        (let* ((s+pp-edge (make-completed-binary-edge s-edge pp-edge s+pp-rule))
-               (i (incorporate-displace-aux-into-predicate
-                   modal-edge s+pp-edge :left modal-edge :right s+pp-edge)))
-          (respan-new-referent i
-                               :start start-pos
-                               :end end-pos
-                               :head-edge s+pp-edge
-                               :rule 'wh-modal-s-prep-add-aux
-                               :constituents (list s+pp-edge))
-                               
-
+        (let ((full-span (make-completed-binary-edge
+                          inner-span pp-edge s+pp-rule)))
           (make-question-and-edge
-           i ; statement
+           (edge-referent full-span)
            start-pos end-pos
-           :head s+pp-edge
+           :head full-span
            :wh wh-edge
-           :rule 'wh-modal-s-prep))))))
-
+           :rule 'wh-modal-s-prep-pp))))))
+          
 
 #| "Are there any genes stat3 is upstream of?" |#
-
 
 #| (p "What genes is stat3 upstream of?") ;; via s+prep
 |#
