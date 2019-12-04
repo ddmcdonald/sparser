@@ -828,7 +828,6 @@
     (let* ((displaced-edge (edge-right-daughter wh-edge)) ; tissues
            (pp-edge (flesh-out-stranded-prep prep-edge wh-edge))
            (s+pp-rule (multiply-edges s-edge pp-edge)))
-
       (unless s+pp-rule 
         (warn "no rule to compose s+pp: ~a + ~a" s-edge pp-edge)
         nil)
