@@ -131,14 +131,15 @@ SP> (stree 51)
     (let ((result (apply fn constituents)))
       (cond
         ((edge-p result)
-         (tr :da-fn-returned-edge result)
          (record-rule rule)
+         (tr :da-fn-returned-edge result)
          result)
         ((null result) ;; the rule failed
          (tr :da-fn-failed)
          nil)
         ((typep result 'edge-spec)
          (record-rule rule)
+         (tr :da-edge-spec result)
          (let* ((*edge-spec* result)
                 (target (edge-spec-target *edge-spec*))
                 (dominating (and (edge-p target) (edge-used-in target)))
@@ -155,7 +156,7 @@ SP> (stree 51)
                        (or target (first constituents))
                        (car (last constituents))))))
            (declare (special *edge-spec*))
-        
+
            (setq *new-edge*
                  (make-edge-over-long-span
                   (pos-edge-starts-at (car new-constituents))
@@ -168,11 +169,12 @@ SP> (stree 51)
            (tr :da-fn-returned-edge *new-edge*)
 
            (cond (dominating
+                  (tr :da-tuck-under dominating (edge-spec-direction *edge-spec*))
                   (tuck-new-edge-under-already-knit
-                   target
-                   *new-edge*
-                   dominating
-                   (edge-spec-direction *edge-spec*))
+                   target      ; subsumed
+                   *new-edge*  ; new-edge
+                   dominating  ; dominating-edge
+                   (edge-spec-direction *edge-spec*)) ; direction
                   dominating)
                  (t *new-edge*))))
         (t
