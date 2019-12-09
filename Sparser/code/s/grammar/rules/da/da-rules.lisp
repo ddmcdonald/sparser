@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "da-rules"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  May 2019
+;;;  Version:  December 2019
 
 ;; initiated 9/18/15 for da patterns and interpreters that had been
 ;; stashed in biology. Small tweaks and additions of the same kind
@@ -26,6 +26,20 @@
   ;; action handler
   category form referent target dominating direction preposed)
 
+(defun display-edge-spec (spec &optional (stream *standard-output*))
+  (format stream "~&edge-spec~
+                  ~%  category: ~a~
+                  ~%  form: ~a~
+                  ~%  referent: ~a~
+                  ~%  target: ~a~
+                  ~%  direction: ~a~
+                  ~%  preposed: ~a~%"
+          (edge-spec-category spec)
+          (edge-spec-form spec)
+          (edge-spec-referent spec)
+          (edge-spec-target spec)
+          (edge-spec-direction spec)
+          (edge-spec-preposed spec)))
 
 ;;;-------------------------------------------------
 ;;; debris analysis rules and their interpretations

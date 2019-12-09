@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "DA"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  July 2019
+;;;  Version:  December 2019
 
 ;; initiated 5/5/95.  Elaborated ..5/19. 11/3/11 added missing trace.
 
@@ -166,15 +166,26 @@
   (when *da-execution*
     (trace-msg "[DA] applying ~a to ~a" function args)))
 
+(deftrace :da-edge-spec (spec)
+  ;; Called from standardized-apply-da-function-action
+  (when *da-execution*
+    (display-edge-spec spec *trace-stream*)))
+
 (deftrace :da-fn-returned-edge (edge)
   ;; Called from standardized-apply-da-function-action
   (when *da-execution*
-    (trace-msg "[DA]   It returned ~a" edge)))
+    (trace-msg "[DA]   It returns ~a" edge)))
 
 (deftrace :da-fn-failed ()
   ;; Called from standardized-apply-da-function-action
   (when *da-execution*
     (trace-msg "[DA]   but it returned nil")))
+
+(deftrace :da-tuck-under (dominating direction)
+  ;; Called from standardized-apply-da-function-action
+  (when *da-execution*
+    (trace-msg "[DA]   which it tucks to the ~a under ~a"
+               direction dominating)))
 
 
 ;;;----------------------
