@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "tuck"
 ;;;   Module:  "objects/chart/edge vectors/"
-;;;  Version:  September 2019
+;;;  Version:  December 2019
 
 ;; Initiated 9/19/13 from code formerly in DA. 9/22/13 modifying it
 ;; to work in either direction. 9/29/14 fixed tuck-in-just-above to
@@ -22,7 +22,8 @@
   (declare (special *current-da-rule*))
   
   ;; (push-debug `(,subsumed-edge ,new-edge ,dominating-edge ,direction))
-  ;; (setq subsumed-edge (car *) new-edge (cadr *) dominating-edge (caddr *))  (break "tucking 1")
+  ;; (setq subsumed-edge (car *) new-edge (cadr *) dominating-edge (caddr *))
+  ;; (break "tucking 1")
 
   ;; Cleanup the used-in of the subsumed-edge
   (cond
@@ -67,7 +68,8 @@
               (:right (edge-ends-at new-edge))
               (:left (edge-starts-at new-edge)))))
        ;; (push-debug `(,dominating-edge-ev ,new-edge-ev))
-       ;; (setq dominating-edge-ev (car *) new-ev (cadr *)) (break "tucking 2")
+       ;; (break "tucking 2")
+       ;; (setq dominating-edge-ev (car *) new-ev (cadr *))
 
        ;; Remove the dominating edge from its ends/start-at vector
        (if (eq dominating-edge (highest-edge dominating-edge-ev))
@@ -103,9 +105,11 @@
    rules that formed the edges. Recurse up the tree unless
    the rerun fails."
   (let ((parents (collect-edge-parents edge)))
+    ;;(break "parents = ~a" parents)
     (flet ((reinterpret-edge (edge)
-             ;; (format t "~&reinterpreting ~a~%" edge)
-             (let ((new-ref (referent-for-edge edge))) ; wraps referent-from-rule        
+             ;;(format t "~&reinterpreting ~a~%" edge)
+             (let ((new-ref (referent-for-edge edge))) ; wraps referent-from-rule
+               ;;(break "new-ref = ~a" new-ref)
                (cond
                  ((null new-ref)
                   (when *reinterpret-dominating-edges-warning*
@@ -126,7 +130,7 @@
                       (warn "null edge-mention on edge ~s in ~%~s"
                             edge (current-string))))))) ))
       (loop for parent in (cons edge parents)
-           do (reinterpret-edge edge)))))
+         do (reinterpret-edge parent)))))
 
 #| Original recursive loop
        (let ((parent (edge-used-in edge)))
