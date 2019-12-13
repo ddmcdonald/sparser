@@ -190,7 +190,7 @@
    and just has to return non-nil to sanction the rule."
   (declare (special *check-semantic-applicability* *check-chunk-forms*))
   (when rule
-    (when (and (validate-rule-form rule left-edge right-edge) 
+    (when (and (validate-rule-form rule left-edge right-edge)
                (or (null chunk)
                    (not *check-chunk-forms*)
                    (validate-rule-result-form-against-chunk rule right-edge chunk))
@@ -212,9 +212,11 @@
         (memq (cat-name (edge-form edge)) compatible-forms))))
 
 (defun validate-rule-form (rule left-edge right-edge) 
-  ;; only accept rules that are compatible with their context
-  ;;  this check can be turned off for particular ETFs by calling
-  ;;  dont-check-rule-form-for-etf-named with the name of the family
+  ;; only accept rules that are compatible with their context.
+  ;;  This check can be turned off for particular ETFs by calling
+  ;;  dont-check-rule-form-for-etf-named with the name of the family.
+  ;;  That has the effect of leaving off the rule-forms information
+  ;;  (see instantiate-rule-schema).
   (if (not *check-forms*) ;; controlling switch
     rule
     (let ((rf (rule-forms rule))) ;; recorded at rule-creation time

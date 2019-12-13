@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2011-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2019 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  December 2018
+;;;  version:  December 2019
 
 ;; initiated 8/4/92, fleshed out 8/27, elaborated 8/31
 ;; fixed a bug in how lists of rules were accumulated 11/2
@@ -77,8 +77,13 @@
 
 (in-package :sparser)
 
+;;--- pre-empting the check in validate-rule-form
+
 (defparameter *dont-check-forms-for-etf*
-  '(ITEM+IDIOMATIC-HEAD)
+  '(item+idiomatic-head ; "10%"
+    quantity+kind ; "10 dollars"
+    modifier-creates-definite-individual ; "$10"
+    )
   "If the head is idiomaticmatic, like '%' or 'percent'
    or 'old' as in '5 years old', you can't predict the
    form category of the head, so just trust the rule writer.")
@@ -87,6 +92,9 @@
   "Trust that the given ETF is not applied in inappropriate syntactic contexts,
    so don't apply compatible-form check in multiply-edges."
   (pushnew etf-name *dont-check-forms-for-etf*))
+
+
+;;---- blocking rule construction
 
 (defparameter *big-mech-bad-schemas*
   '(:passive-with-by :by-phrase))
