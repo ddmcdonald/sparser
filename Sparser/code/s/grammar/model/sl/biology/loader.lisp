@@ -125,6 +125,7 @@
 (gload "bio;talking-about-a-model.lisp");; no definitions in here
 (gload "bio;get-reactome-hgnc-names.lisp")
 (gload "bio;visualization.lisp")
+(gload "bio;hms-hgnc-grounding")
 (when (and (boundp 'cl-user::*sparser-to-indra*)
            (symbol-value 'cl-user::*sparser-to-indra*))
   (gload "bio;sparser-to-indra"))

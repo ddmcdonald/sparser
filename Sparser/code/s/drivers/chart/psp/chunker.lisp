@@ -880,7 +880,7 @@ than a bare "to".  |#
 
 (defmethod ng-head? ((e edge))
   ;; methods over words and categories in category-predicates.lisp
-  (declare (special e *chunk* word::comma)) 
+  (declare (special e *chunk* word::comma category::demonstrative)) 
   (let ((edges-before (edges-before e))
         (e-form-name  (form-cat-name e))
         (plural-det? (chunk-has-plural-det?)))
@@ -971,8 +971,10 @@ than a bare "to".  |#
           ((singular-noun-and-present-verb? e)
            (and (not (preceding-pronoun-or-which? e edges-before))
                 (not (preceding-plural-noun? e))
-                (not (followed-by-modal-or-be e))
-                (ng-head? (edge-form e))))
+                (or (not (followed-by-modal-or-be e))
+                    (preceding-det? e))
+                (ng-head? (edge-form e))
+                ))
           
           ((eq e-form-name 'VERB+ING)
            (let ((end-pos (pos-edge-ends-at e))
@@ -1595,6 +1597,12 @@ than a bare "to".  |#
   (loop for ee in edges
         thereis
           (eq (cat-name (edge-form (noun-edge? ee))) 'common-noun/plural)))
+
+(defun preceding-det? (e &optional (edges (edges-before e)))
+  (loop for ee in edges
+        thereis
+          (member (cat-name (edge-form (noun-edge? ee)))
+                  '(determiner demonstrative))))
 
 (defun preceding-plural-deictic? (e &aux (edges (edges-before e)))
   (loop for ee in edges
