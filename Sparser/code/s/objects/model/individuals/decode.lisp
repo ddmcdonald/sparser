@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2010-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2010-2019 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "decode"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  July 2016
+;;;  version:  December 2019
 
 ;; pulled from [find] 5/25/93 v2.3
 ;; 0.1 (9/18) added referential-categories to the options for decoding
@@ -66,31 +66,38 @@
 
       (if (and (consp var-name)
                (lambda-variable-p (car var-name)))
-        (then (setq variable (first var-name)
-                    value (second var-name)))
-        (else
+        (then
           ;; already converted. This can happen with computed uses of
           ;; define-individual
-          (unless (symbolp var-name)
-            (error "Variables in a call to find-individual should be ~
+          (setq variable (first var-name)
+                    value (second var-name)))
+        (else
+          (when value-exp
+            (unless (symbolp var-name)
+              (error "Variables in a call to find-individual should be ~
                     given as symbols.~%  ~A isn't one" var-name))
 
-          (setq variable (find-variable-for-category var-name category))
-          ;; ought to be a check on the type of the value-exp too,
-          ;; today just assuming it's already evaluated and is correct
+            (when (eq (symbol-package var-name) (find-package :keyword))
+              (setq var-name (intern (symbol-name var-name) (find-package :sparser))))
 
-          (unless variable
-            (push-debug `(,var-name ,category))
-            (error "Can't locate a variable named \"~A\" ~
+            (setq variable (find-variable-for-category var-name category))
+            ;; ought to be a check on the type of the value-exp too,
+            ;; today just assuming it's already evaluated and is correct
+
+            (unless variable
+              (push-debug `(,var-name ,category))
+              (error "Can't locate a variable named \"~A\" ~
                     for the category ~A" var-name category))
 
-          (setq value (decode-value-for-variable value-exp variable))))
+            (setq value (decode-value-for-variable value-exp variable)))))
 
-      (if plist? ;; were the bindings supplied as a plist
-        (then
-          (push variable instructions)
-          (push value instructions))
-        (push `(,variable ,value) instructions)))
+      (when value-exp
+        (if plist? ;; were the bindings supplied as a plist
+          (then
+            (push variable instructions)
+            (push value instructions))
+          (push `(,variable ,value) instructions))))
+    
     (nreverse instructions)))
 
 
