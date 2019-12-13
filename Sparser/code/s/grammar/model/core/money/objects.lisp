@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1999,2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1999,2016-2019  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "objects"
 ;;;   Module:  "model;core:money:"
-;;;  version:  April 2016
+;;;  version:  December 2019
 
 ;; initiated 10/22/93 v2.3 from treatment of 11/91. Added a sort routine 11/15/95
 ;; Added a proper definition for stuff like "cents" 1/16/96
@@ -24,7 +24,8 @@
 (define-category  denomination/money
   :specializes  name
   :instantiates :self
-  :binds ((name  :primitive word))
+  :binds ((name  :primitive word)
+          (symbol :primitive word))
   :index (:permanent :key name)
   :realization
     (:common-noun name))
@@ -32,21 +33,46 @@
 (define-category  fractional-denomination/money    ; "cents"
   :specializes denomination/money
   :instantiates self
-  :binds ((name  :primitive word)
-          (reference-denomination . denomination/money)
+  :binds ((reference-denomination . denomination/money)
           (fraction))
   :index (:permanent :key name)
   :realization (:common-noun name)) ;; redo with a schema that uses
                                     ;; Equivalent-amount-in-reference-currency
 
+(defun define-denomination-of-money (pname &key symbol fraction reference)
+  (let ((symbol-word (when symbol
+                       (etypecase symbol
+                         (symbol ; euro_sign
+                          (resolve symbol)) 
+                         (character ; #\$
+                          (resolve (get-punct-symbol symbol))))))
+        (reference-denomination
+         (when reference (find-individual 'denomination/money :name reference)))
+        (fraction-value (when fraction fraction))) ; placeholder
+    (let ((i (if fraction
+               (define-or-find-individual 'fractional-denomination/money
+                   :name pname
+                   :symbol symbol-word
+                   :reference-denomination reference-denomination
+                   :fraction fraction-value)
+               (define-or-find-individual 'denomination/money
+                   :name pname
+                   :symbol symbol-word))))
+      (when symbol-word
+        (let ((rule (define-cfr category::denomination/money `(,symbol-word)
+                      :form category::determiner
+                      :referent i)))
+          (add-rule rule i)))
+      i)))
 
-
+               
+               
 (define-category  currency
   :specializes  unit-of-measure
   :instantiates :self
   :binds ((denomination . denomination/money)
           (country . country))
-  :realization (:tree-family definite-proper+np-head
+  :realization (:tree-family definite-proper+np-head ; "British pounds"
                 :mapping ((individual . country)
                           (base . denomination)
                           (np . :self)
@@ -54,6 +80,7 @@
                           (np-head . (denomination/money
                                       fractional-denomination/money))
                           (result-type . :self))))
+    
 
 
 (define-category  money
@@ -82,38 +109,7 @@
 ;;;----------------------------
 ;;; overhead for "cents", etc.
 ;;;----------------------------
-;; Need this to get the other slot values set up.
 
-;; version that makes an individual
-(defun define-fractional-denomination-of-money (string
-                                                &key reference-denomination
-                                                     fraction)
-  (let ((reference-obj (find-individual 'denomination/money
-                          :name reference-denomination)))
-
-    (let ((obj (define-individual 'fractional-denomination/money
-                 :name string)))
-            (setq obj
-                  (bind-dli-variable 'fraction fraction 
-                                 (bind-dli-variable 'reference-denomination reference-obj obj)))
-      obj )))
-
-;; Saving this version in case the pendulum swings back to making psi
-#|(defun define-fractional-denomination-of-money (string
-                                                &key reference-denomination
-                                                     fraction)
-  (let ((reference-obj (find-individual 'denomination/money
-                          :name reference-denomination)))
-
-    (let ((obj0 (define-individual 'fractional-denomination/money
-                 :name string)))
-      (let ((obj1 (bind-variable 'reference-denomination reference-obj obj0))) ;; obsolete for bind-dli-variable
-        (let ((obj2 (bind-variable 'fraction fraction obj1)));; obsolete for bind-dli-variable
-          obj2 )))))|#
-
-
-;; Called from the cfr
-;;
 (defun equivalent-amount-in-reference-currency (number fractional-denomination)
   (let ((integer (value-of 'value number))
         (reference-denomination (value-of 'reference-denomination
@@ -131,8 +127,6 @@
       (define-individual 'money
         :number value-as-number-obj
         :currency presumed-currency))))
-    
-
 
 
 ;;;---------------
