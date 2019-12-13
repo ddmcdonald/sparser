@@ -318,7 +318,7 @@
       (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
       np-ref))))
 
-
+#+ignore ;; no longer used
 (defun convert-clause-to-reduced-relative ()
   ;; called from assimilate-subject-to-vp-ed when it's looked
   ;; at the form of the vp and concluded that the combination

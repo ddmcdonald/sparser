@@ -225,7 +225,12 @@
        (not (value-of 'statement vp))
        (not (thatcomp-verb right-edge))
        (not (loop for v in (find-subcat-vars :to-comp vp)
-               thereis (value-of v vp)))))
+                  thereis (value-of v vp)))))
+
+(defun transitive-vp-with-object? (vp &optional (right-edge (right-edge-for-referent)))
+  ;; case like "The receptor tyrosine kinase EGFR binds the growth factor ligand EGF."
+  (and right-edge
+       (bound-object-var vp)))
 
 (defun preceding-that-whether-or-conjunction? (left-edge)
   "Called by can-fill-vp-subject? to determine whether there is a trace-forming
