@@ -252,73 +252,79 @@ pass the result to the appropriate indra generator"
              ;; fails for f= ("10 " 10 (sparser::text "Does phosphorylated MAPK1 vanish if we increase the amount of DUSP6 by 10 fold")bbbb)
              (consp (second f)))
     (let ((cat? (if check-form check-form (car (second f))))
-          (*top-indra-form* f))
+          (*top-indra-form* f)
+          result)
       (declare (special *top-indra-form*))
-      (case cat?
-        (collection
-         (let ((elements (get-set-elements (second f))))
-           ;;         (lsp-break "indra-form-for-sexpr with collection")
-           (when (loop for item in elements
-                       thereis (itypep (car item) 'bio-process))
-             (indra-forms-for-items
-              (loop for item in (distribute-args-to-items (collection-args (second f)) elements)
-                    collect
-                      `(,(car f) ,item ,(assoc 'text (cdr f))))
-              pmid))))
-        (level (make-indra-level f cat? pmid)) 
-        ((translocation export recruit)
-         (make-indra-translocation f 'translocation (when pmid pmid)))
-        (bio-activate 
-         (make-indra-act-or-express f cat? pmid))
-        (inhibit 
-         (make-indra-act-or-express f cat? pmid))
-        (bio-inactivate 
-         (make-indra-act-or-express f cat? pmid))
-        ((gene-transcript-express gene-transcript-over-express
-                                  gene-transcript-under-express
-                                  transcribe
-                                  gene-transcript-co-express
-                                  gene-transcript-co-over-express)
-         (make-indra-act-or-express f 'gene-transcript-express pmid))
-        (auto-phosphorylate
-         (make-indra-autophosphorylation f cat? pmid))
-        ((phosphorylate hyperphosphorylate hypophosphorylate dephosphorylate
-                        residue-on-protein
-                        diphosphorylation)
-         (make-indra-post-trans-mod f cat? pmid))
-        (site
-         (let* ((site (second f))
-                (process (assoc 'process (cdr site)))
-                (new-site (remove process site :test #'equal))
-                (new-f
-                 (cond ((not (consp (second process)))
-                        (warn "~%bad process in site, indra-form-for-sexpr,  ~s~%"
-                              f)
-                        nil)
-                       (t (when (itypep (car (second process)) 'post-trans-mod)
-                            (subst `(,@(second process) (site ,new-site))
-                                   site
-                                   f))))))
-           (declare (special site process new-site new-f))
-           (when new-f
-             (make-indra-post-trans-mod new-f (car (second process)) pmid))))
-        (t (when (and cat? (category-named cat?))
-             (cond
-               ((itypep cat? 'post-translational-modification)
-                (make-indra-post-trans-mod f cat? pmid))
-               ((itypep cat? 'bio-control)
-                (make-indra-bio-control f cat? pmid))
-               ((loop for superc
-                      in '(affinity binding ;bio-activity
-                           bio-associate bio-complex cooperate dimerize
-                           bio-form heterodimerize interact ligate
-                           oligomerize recruit)
-                      thereis (itypep cat? superc))
-                (make-indra-binding f cat? pmid))
-               ((and (boundp 'cl-user::*sparser-to-indra*)
-                     (symbol-value 'cl-user::*sparser-to-indra*)
-                     (itypep cat? 'bio-entity))
-                (list (make-cwc-indra-bio-entity cat? f))))))))))
+      (setq result
+            (case cat?
+              (collection
+               (let ((elements (get-set-elements (second f))))
+                 ;;         (lsp-break "indra-form-for-sexpr with collection")
+                 (when (loop for item in elements
+                             thereis (itypep (car item) 'bio-process))
+                   (indra-forms-for-items
+                    (loop for item in (distribute-args-to-items (collection-args (second f)) elements)
+                          collect
+                            `(,(car f) ,item ,(assoc 'text (cdr f))))
+                    pmid))))
+              (level (make-indra-level f cat? pmid)) 
+              ((translocation export recruit)
+               (make-indra-translocation f 'translocation (when pmid pmid)))
+              (bio-activate 
+               (make-indra-act-or-express f cat? pmid))
+              (inhibit 
+               (make-indra-act-or-express f cat? pmid))
+              (bio-inactivate 
+               (make-indra-act-or-express f cat? pmid))
+              ((gene-transcript-express gene-transcript-over-express
+                                        gene-transcript-under-express
+                                        transcribe
+                                        gene-transcript-co-express
+                                        gene-transcript-co-over-express)
+               (make-indra-act-or-express f 'gene-transcript-express pmid))
+              (auto-phosphorylate
+               (make-indra-autophosphorylation f cat? pmid))
+              ((phosphorylate hyperphosphorylate hypophosphorylate dephosphorylate
+                              residue-on-protein
+                              diphosphorylation)
+               (make-indra-post-trans-mod f cat? pmid))
+              (site
+               (let* ((site (second f))
+                      (process (assoc 'process (cdr site)))
+                      (new-site (remove process site :test #'equal))
+                      (new-f
+                       (cond ((not (consp (second process)))
+                              (warn "~%bad process in site, indra-form-for-sexpr,  ~s~%"
+                                    f)
+                              nil)
+                             (t (when (itypep (car (second process)) 'post-trans-mod)
+                                  (subst `(,@(second process) (site ,new-site))
+                                         site
+                                         f))))))
+                 (declare (special site process new-site new-f))
+                 (when new-f
+                   (make-indra-post-trans-mod new-f (car (second process)) pmid))))
+              (t (when (and cat? (category-named cat?))
+                   (cond
+                     ((itypep cat? 'post-translational-modification)
+                      (make-indra-post-trans-mod f cat? pmid))
+                     ((or (itypep cat? 'bio-control)
+                          (itypep cat? 'transcribe))
+                      (make-indra-bio-control f cat? pmid))
+                     ((loop for superc
+                            in '(affinity binding ;bio-activity
+                                 bio-associate bio-complex cooperate dimerize
+                                 bio-form heterodimerize interact ligate
+                                 oligomerize recruit)
+                            thereis (itypep cat? superc))
+                      (make-indra-binding f cat? pmid))
+                     ((and (boundp 'cl-user::*sparser-to-indra*)
+                           (symbol-value 'cl-user::*sparser-to-indra*)
+                           (itypep cat? 'bio-entity))
+                      (list (make-cwc-indra-bio-entity cat? f))))))))
+      (sublis '(("GeneTranscriptExpress" . "IncreaseAmount"))
+              result
+              :test #'equal))))
 
 (defun make-cwc-indra-bio-entity (cat f)
   (let* ((prot-item (car (prot-item->indra-list (second f) nil)))
@@ -326,7 +332,9 @@ pass the result to the appropriate indra generator"
          (res
           (sublis
            `(((:db--refs
-               (:+type+ ,.(symbol-name cat))
+               (:+type+ ,.(if (eq (symbol-package  cat) (find-package :sp))
+                              (intern (pname cat) (find-package :ont))
+                              (symbol-name cat)))
                ,.(cdr db-refs))
               ,.db-refs)
              ( :+FA+ . :+NXPFA+))
@@ -506,10 +514,16 @@ pass the result to the appropriate indra generator"
 
 
 
-(defun indra-obj-forms (indra-data &optional (vars '(object)) &aux (act-content (cdr (second indra-data))))
+(defun indra-obj-forms (indra-data &optional (vars '(object))
+                        &aux (act-content (cdr (second indra-data))))
   (let ((objs (find-named-args (second indra-data) vars)))
     (declare (special objs))
-    (cond ((and (consp (car objs))
+    (cond ((and (consp objs)
+                (consp (car objs))
+                (eq :name (caar objs)))
+           ;; already been translated
+           objs)
+          ((and (consp (car objs))
                 (category-named (caar objs))
                 (itypep (caar objs) 'process))
            `(,(car (a-get 'raw-text (cdar objs)))))
@@ -541,7 +555,11 @@ generate and indra form for that sentence"
 
 (defun make-indra-act-or-express-with-obj (obj-form act-content indra-data type pmid)
   (let* ((agent (get-agent-from-form act-content))
-         (agent-forms (when agent (prot-item->indra-list agent indra-data))))
+         (agent-forms
+          (when agent
+            (if (and (consp agent) (eq (car agent) :name))
+                (list agent)
+                (prot-item->indra-list agent indra-data)))))
     (loop for agentf in (or agent-forms (list nil)) ;; want result even if no enzyme
           collect (make-indra-act-or-express-with-agent obj-form indra-data type pmid agentf))))
 
@@ -763,7 +781,7 @@ post-translational modification and its type ('PHOSPHORYLATE or
                 append
                   (or
                    (prot-item->indra-list substrate indra-data)
-                   (list (make-indra-item-desc (cdr substrate))))))
+                   (list (maybe-make-indra-item-desc substrate)))))
          (new-substrate-forms (new-substrate-forms indra-data)))
     (declare (special phos-content substrates substrate-forms new-substrate-forms))
 
@@ -794,7 +812,9 @@ post-translational modification and its type ('PHOSPHORYLATE or
 (defun make-indra-post-trans-mod-with-sub (substrate-form phos-content indra-data mod pmid)
   (let* ((agent (or (get-agent-from-form phos-content)
                     (agent-from-sites phos-content)))
-         (agent-forms (or (prot-item->indra-list agent indra-data)
+         (agent-forms (or (when (and (consp agent) (eq (car agent) :name))
+                            `((,agent)))
+                          (prot-item->indra-list agent indra-data)
                           (list nil))))
     (loop for agentf in agent-forms
           append
@@ -870,7 +890,7 @@ post-translational modification and its type ('PHOSPHORYLATE or
                                thereis
                                  (itypep (category-named (car item)) 'bio-chemical-entity))))
                 (prot-item->indra-list item-desc indra-data)
-                (list (make-indra-item-desc (cdr item-desc)))))))
+                (list (maybe-make-indra-item-desc item-desc))))))
     (loop for item in level-items
           collect
             `(,(make-type-form-with-text indra-data indra-type)
@@ -913,17 +933,27 @@ post-translational modification and its type ('PHOSPHORYLATE or
              ;; could be '*lambda-var* or a number
              (let* ((text (a-get-item 'TEXT (cdr indra-data)))
                     (agents
-                     (if (or (itypep (category-named (car agent-desc)) 'bio-chemical-entity)
-                             (and (eq (car agent-desc) 'collection)
-                                  (loop for agent in (get-set-elements agent-desc)
-                                        thereis
-                                          (itypep (category-named (car agent)) 'bio-chemical-entity))))
-                         (prot-item->indra-list agent-desc indra-data)
-                         (list (make-indra-item-desc
-                                (cdr agent-desc)
-                                #+ignore ;; not sure why this was here
-                                (when (eq (car agent-desc) 'functionality)
-                                  (assoc 'modifier (cdr agent-desc)))))))
+                     (cond ((and (consp agent-desc)
+                                 (eq (car agent-desc) :name))
+                            (list agent-desc))
+                           ((and (consp agent-desc)
+                                 (consp (car agent-desc))
+                                 (eq (caar agent-desc) :name))
+                            ;; list of items as agents
+                            ;; as in "What genes are regulated by elk1 and srf"
+                            agent-desc)
+                           ((or (itypep (category-named (car agent-desc)) 'bio-chemical-entity)
+                                (and (eq (car agent-desc) 'collection)
+                                     (loop for agent in (get-set-elements agent-desc)
+                                           thereis
+                                             (itypep (category-named (car agent)) 'bio-chemical-entity))))
+                            (prot-item->indra-list agent-desc indra-data))
+                           (t
+                            (list (maybe-make-indra-item-desc
+                                   agent-desc
+                                   #+ignore ;; not sure why this was here
+                                   (when (eq (car agent-desc) 'functionality)
+                                     (assoc 'modifier (cdr agent-desc))))))))
                     (controlled (get-controlled indra-data))
                     (results
                      (loop for item in controlled
@@ -954,7 +984,7 @@ post-translational modification and its type ('PHOSPHORYLATE or
                                 ;; cleavage of caspase 8 and 9 following IR was examined"
                                 (itypep (category-named (car item)) 'bio-chemical-entity)))))
           (prot-item->indra-list item-desc indra-data)
-          (list (make-indra-item-desc (cdr item-desc) ))))))
+          (list (maybe-make-indra-item-desc item-desc ))))))
 
 
 (defun make-indra-translocation (indra-data type &optional pmid)
@@ -1284,7 +1314,9 @@ including PRAS40, FOXO 1/3, and AS160'"
            (lsp-break "prot-item->indra-list unknown type error"))))))
 
 (defun item->indra-list (prot-item form)
-  (cond ((or (assoc 'name (cdr prot-item))(assoc 'uid (cdr prot-item)))
+  (cond ((already-indra-item-desc? prot-item)
+         prot-item)
+        ((or (assoc 'name (cdr prot-item))(assoc 'uid (cdr prot-item)))
          (list (make-indra-item-desc (cdr prot-item))))
         ((or (assoc 'MODIFIER (cdr prot-item))
              (assoc 'APPOSITIVE-DESCRIPTION (cdr prot-item)))
@@ -1304,6 +1336,15 @@ including PRAS40, FOXO 1/3, and AS160'"
                ,@(item->indra-list (second (assoc 'modifier item-content))nil))
             (make-indra-item-desc item-content))
       (make-indra-item-desc item-content)))
+
+(defun already-indra-item-desc? (item-content)
+  (and (consp item-content)
+       (eq (car item-content) :name)))
+
+(defun maybe-make-indra-item-desc (item-content)
+  (if (already-indra-item-desc? item-content)
+      item-content
+      (make-indra-item-desc (cdr item-content))))
 
 (defun make-indra-item-desc (item-content)
   "Given an indra type (agent, obj, sub, or subj dependent on indra
@@ -1846,14 +1887,21 @@ can still match things like CHK1 and CHK-1"
         do
           (setf (get (intern (symbol-name (car mention-indra)) :kb)
                      :sparser-indra-rep)
-                (convert-to-biosense (second mention-indra)))))
+                (convert-to-biosense
+                 (if (consp (second mention-indra))
+                     (second mention-indra)
+                     (cdr mention-indra))))))
 
 (defun cl-user::bob-sparser-to-indra-forms ()
   (loop for mention-indra in (hal *indra-mention-var-ht*)
         collect
           (list (intern (symbol-name (car mention-indra)) :kb)
-                (convert-to-biosense (second mention-indra)))))
+                (convert-to-biosense
+                 (if (consp (second mention-indra))
+                     (second mention-indra)
+                     (cdr mention-indra))))))
 
+#+ignore
 (defun cl-user::biosense-for-sparser-output (&optional var)
   (when var (setq var (intern (symbol-name var) :sp)))
   (if var
@@ -1874,23 +1922,40 @@ can still match things like CHK1 and CHK-1"
        )))
 
 
+(defun old-convert-to-biosense (indra-form)
+  (declare (optimize (speed 0)(safety 3)))
+  (cond ((consp indra-form)
+         (cond ((consp (cdr indra-form))
+                (if (consp (second indra-form))
+                    (cons (car indra-form)
+                          (convert-to-biosense (second indra-form))
+                          #+ignore
+                          (loop for item in indra-form
+                                append (convert-to-biosense item)))
+                    (cons (car indra-form)
+                          (case (car indra-form)
+                            (:evidence
+                             (list(loop for item in (cdr indra-form)
+                                        append (convert-to-biosense item))))
+                            (t (loop for item in (cdr indra-form)
+                                     collect (convert-to-biosense item)))))))
+               (t (list (car indra-form)
+                        (cdr indra-form)))))
+        (t (pname indra-form))))
+
 (defun convert-to-biosense (indra-form)
-  (cond ((and (consp indra-form)
-              (not (consp (cdr indra-form))))
-         (list (car indra-form)
-               (cdr indra-form)))
-        ((and (consp indra-form)
-              (consp (cdr indra-form)))
-         (if (consp (car indra-form))
-             (loop for item in indra-form
-                   append (convert-to-biosense item))
-             (list (car indra-form)
-                   (case (car indra-form)
-                     (:evidence
-                      (list(loop for item in (cdr indra-form)
-                                 append (convert-to-biosense item))))
-                     (t (loop for item in (cdr indra-form)
-                                 append (convert-to-biosense item)))))))))
+  (if (symbolp (car indra-form)) ;; already converted?
+      ;;as in (sp->try-pragmatic-interp "The receptor tyrosine kinase EGFR binds the growth factor ligand EGF.")
+      indra-form
+      (loop for pair in indra-form
+            append
+              (list (car pair)
+                    (cond ((not (consp (cdr pair)))
+                           (cdr pair))
+                          ((consp (second pair))
+                           (convert-to-biosense (second pair)))
+                          (t (cdr pair)))))))
+
 
 
 ;; example from biosense

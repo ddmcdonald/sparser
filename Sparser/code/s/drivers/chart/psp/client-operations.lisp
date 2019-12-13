@@ -728,33 +728,33 @@
 
 (defun maybe-push-sem (mention ref sentence necessary-vars output-stream &optional desc nec-vars?)
   (declare (special mention ref sentence necessary-vars output-stream desc))
-  (if (and (is-basic-collection? ref)
-           (c-itypep ref 'caused-bio-process))
-      (let ((external-bindings
-             (loop for b in (indiv-binds ref)
-                   unless (member (var-name (binding-variable b))
-                                  '(raw-text items type number))
-                   collect b)))
-        ;(declare (special external-bindings))
-        ;;(lsp-break "maybe-push-sem")
-        (loop for cref in (value-of 'items ref)
-              do
-                (indra-post-process-mention mention sentence output-stream
-                                            (if external-bindings
-                                                (do-external-bindings cref external-bindings)
-                                                cref)
-                                            (has-necessary-vars necessary-vars cref))))
-      (when (and (individual-p ref)
-                 (or nec-vars? (get-indra-for-cwc?)
-                     (has-necessary-vars necessary-vars ref)))
-        (push-sem->indra-post-process
-         mention
-         sentence
-         ;; is there any variable bound to the lambda expression
-         ;;   (thus a trace to containing item)
-         (loop for b in (indiv-binds ref) thereis (eq (binding-value b) '*lambda-var*))
-         output-stream
-         desc))))
+  (cond ((and (is-basic-collection? ref)
+              (c-itypep ref 'caused-bio-process))
+         (let ((external-bindings
+                (loop for b in (indiv-binds ref)
+                      unless (member (var-name (binding-variable b))
+                                     '(raw-text items type number))
+                      collect b)))
+           (loop for cref in (value-of 'items ref)
+                 do
+                   (indra-post-process-mention mention sentence output-stream
+                                               (if external-bindings
+                                                   (do-external-bindings cref external-bindings)
+                                                   cref)
+                                               (has-necessary-vars necessary-vars cref)))))
+        ((and (individual-p ref)
+              (or (get-indra-for-cwc?)
+                  nec-vars?
+                  (has-necessary-vars necessary-vars ref)))
+         (push-sem->indra-post-process
+          mention
+          sentence
+          ;; is there any variable bound to the lambda expression
+          ;;   (thus a trace to containing item)
+          (loop for b in (indiv-binds ref)
+                thereis (eq (binding-value b) '*lambda-var*))
+          output-stream
+          desc))))
 
 (defun do-external-bindings (i bindings)
   (loop for b in bindings
@@ -798,51 +798,114 @@
     (setf (get mention-var :save-indra-sexpr) indra-sexpr)
     (setf (gethash mention-var *indra-mention-var-ht*) indra-sexpr)))
 
-(defun push-sem->indra-post-process (mention sentence lambda-expansion output-stream &optional desc)
-  (declare (special *indra-text* *predication-links-ht* *indra-post-process* lambda-expansion desc))
-  (when (get (fom-clause-var mention) :indra-form-for-sexpr)
-    (return-from push-sem->indra-post-process
-      (get (fom-clause-var mention) :indra-form-for-sexpr)))
+(defun push-sem->indra-post-process (mention sentence lambda-expansion output-stream
+                                     &optional (desc (base-description mention))
+                                     &aux desc-sexp subst-desc-sexp f)
+  (declare (special *indra-text* *predication-links-ht* *indra-post-process*))
+  (let ((already-has-indra-form? (get (fom-clause-var mention) :indra-form-for-sexpr)))
+    (when already-has-indra-form?
+      (return-from push-sem->indra-post-process already-has-indra-form?)))
 
-  (unless desc (setq desc (base-description mention)))
-  ;;(lsp-break "push-sem->indra-post-process")
-  (let* ((lambda-expansion
-          (when lambda-expansion (gethash desc *predication-links-ht*)))
-         (desc-sexp (sem-sexp desc))
-         (subst-desc-sexp
-          (when lambda-expansion
-            (subst (sem-sexp (gethash desc *predication-links-ht*))
-                   '*lambda-var*
-                   (sem-sexp desc))))
-         (f `(,(retrieve-surface-string (mention-source mention))
-               ,(cond (subst-desc-sexp
-                       (when *show-indra-lambda-substitutions*
-                         (pprint `(,desc-sexp ===> ,subst-desc-sexp))
-                         (terpri))
-                       subst-desc-sexp)
-                      (t desc-sexp))
-               (TEXT ,(if (and (boundp '*indra-text*)
-                               (stringp (eval '*indra-text*)))
-                          (eval '*indra-text*)
-                          (sentence-string sentence))))))
-    (push f *indra-post-process*)
-    (when (get-indra-for-cwc?)
-      (or
-       (get (fom-clause-var mention) :indra-form-for-sexpr)
-       (let* ((embedded-forms
-               (loop for dependency in (dependencies mention)
-                     when (and (mention-p (second dependency))
-                               (itypep (base-description (second dependency))
-                                       'bio-entity))
-                     do
-                       (push-sem->indra-post-process
-                        (second dependency)
-                        sentence
-                        nil
-                        output-stream)))
-              (indra-form (indra-form-for-sexpr f nil nil)))
-         (when indra-form
-           (save-indra-sexpr mention indra-form)))))))
+  (if (get-indra-for-cwc?)
+      (setq desc-sexp (cwc-sem-sexp mention sentence))
+      (setq desc-sexp (sem-sexp desc)))
+  (when lambda-expansion
+    (setq subst-desc-sexp
+          (subst (sem-sexp (gethash desc *predication-links-ht*))
+                 '*lambda-var*
+                 desc-sexp))
+    (when *show-indra-lambda-substitutions*
+      (pprint `(,desc-sexp ===> ,subst-desc-sexp))
+      (terpri)))
+
+  (setq f
+        `(,(retrieve-surface-string (mention-source mention))
+           ,(or subst-desc-sexp desc-sexp)
+           (TEXT ,(if (and (boundp '*indra-text*)
+                           (stringp (eval '*indra-text*)))
+                      (eval '*indra-text*)
+                      (sentence-string sentence)))))
+  (push f *indra-post-process*)
+  (when (get-indra-for-cwc?)
+    (if (and (individual-p desc)
+             (itypep desc 'bio-entity))
+        (if (itypep desc 'collection)
+            (push-sem-bio-entity-collection mention desc)
+            (push-sem-bio-entity mention desc))
+        (let ((indra-form
+               (indra-form-for-sexpr
+                `(,(retrieve-surface-string (mention-source mention))
+                   (,(cat-name (itype-of desc))
+                     ,@(loop for (var val) in (dependencies mention)
+                             collect
+                               (list (intern (symbol-name (pname var)) "SPARSER")
+                                     (cond ((eq (type-of val) 'discourse-mention)
+                                            (push-sem->indra-post-process val sentence nil nil))
+                                           ((and (individual-p val)
+                                                 (itypep val 'bio-entity))
+                                            (if (itypep val 'collection)
+                                                (loop for s
+                                                      in (cdr (assoc 'sp::items (cdr (sem-sexp val))))
+                                                      collect (get-indra-for-krisp-ent s))
+                                                (get-indra-entity-form-from-sem-sexp
+                                                 (itype-of val)
+                                                 (sem-sexp val)
+                                                 (fom-clause-var mention))))
+                                           ((individual-p val)
+                                            (indra-form-for-sexpr (sem-sexp val) nil nil))
+                                           (t val))))))
+                nil)))
+          (when indra-form
+            (save-indra-sexpr mention indra-form))))))
+
+(defun cwc-sem-sexp (mention sentence)
+  `(,(cat-name (itype-of (base-description mention)))
+     ,@(loop for (var val) in (dependencies mention)
+             collect
+               `(,(pname var)
+                  ,(cond ((eq (type-of val) 'discourse-mention)
+                         (push-sem->indra-post-process val sentence nil nil))
+                        ((and (individual-p val)
+                              (itypep val 'bio-entity))
+                         (if (itypep val 'collection)
+                             (loop for s
+                                   in (cdr (assoc 'sp::items (cdr (sem-sexp val))))
+                                   collect (get-indra-for-krisp-ent s))
+                             (get-indra-entity-form-from-sem-sexp
+                              (itype-of val)
+                              (sem-sexp val)
+                              (fom-clause-var mention))))
+                        ((individual-p val)
+                         (indra-form-for-sexpr (sem-sexp val) nil nil))
+                        ((or (numberp val) (symbolp val))
+                         val)
+                        ((consp val)
+                         (if (eq (type-of (car val)) 'discourse-mention)
+                             (loop for v-mention in val
+                                   when (eq (type-of v-mention) 'discourse-mention)
+                                   collect (cwc-sem-sexp v-mention sentence))
+                             (break "unusual CONSP value for variable ~s is ~s"
+                                    var val)))
+                        (t (pname val)))))))
+
+(defun push-sem-bio-entity (mention desc)
+  (let ((indra-form
+         (get-indra-entity-form-from-sem-sexp
+          (itype-of desc)
+          (sem-sexp desc)
+          (fom-clause-var mention))))
+    (when indra-form
+      (save-indra-sexpr mention indra-form))))
+
+(defun push-sem-bio-entity-collection (mention desc)
+  (let ((items (loop for (var val) in (dependencies mention)
+                     when (equal (pname (var-name var)) "ITEMS")
+                     do (return val))))
+    (save-indra-sexpr mention
+                      (loop for m in items
+                            when (eq (type-of m) 'discourse-mention)
+                            collect
+                              (push-sem->indra-post-process m (sentence) nil nil)))))
 
 (defun contains-atom (atom list-struct)
   (if (not (consp list-struct))
@@ -861,3 +924,4 @@
       (equal string list-struct)
       (loop for item in list-struct
               thereis (contains-string string item))))
+
