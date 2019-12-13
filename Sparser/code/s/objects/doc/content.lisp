@@ -133,14 +133,17 @@
   (declare (ignore paragraph))
   (error "No version of make-paragraph-container has been specified"))
 
+(defparameter *container-for-paragraph* :biology "Default choice")
+
 (defun designate-paragraph-container (&optional (keyword *container-for-paragraph*))
+  (declare (special *container-for-paragraph*))
   (setq *container-for-paragraph* keyword)
   (setf (symbol-function 'make-paragraph-container)
         (ecase keyword
           (:biology (symbol-function 'make-paragraph-content-container/bio))
           (:texture (symbol-function 'make-paragraph-content-container/texture)))))
 
-(defparameter *container-for-paragraph* :biology "Default choice")
+
 
 (defun make-paragraph-content-container/bio (p)
   (make-instance 'paragraph-content :in p))

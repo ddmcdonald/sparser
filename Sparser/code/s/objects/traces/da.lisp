@@ -17,10 +17,12 @@
 
 ;; useful combination
 (defun trace-da-question ()
+  (declare (special *debug-questions* *show-wh-problems*))
   (trace-da-hook) (trace-da-execution)
   (trace-questions) (setq *debug-questions* t)
   (setq *show-wh-problems* t))
 (defun untrace-da-question ()
+  (declare (special *debug-questions* *show-wh-problems*))
   (untrace-da-hook) (untrace-da-execution)
   (untrace-questions) (setq *debug-questions* nil)
    (setq *show-wh-problems* nil))

@@ -83,6 +83,7 @@
 
 
 (defun accept-pattern (vertex)
+  (declare (special *da-ending-position* *matched-da-rule*))
   (let ((rule (vertex-rule vertex)))
     (setq *da-ending-position* *da-next-position*
           *matched-da-rule* rule)

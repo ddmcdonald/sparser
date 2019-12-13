@@ -40,7 +40,7 @@
 
 
 (defun compatible-with-chunk (edge chunk)
-  (declare (special *vg-word-categories*))
+  (declare (special *vg-word-categories* *adjg-word-categories*))
   (cond
    ((null (edge-form edge)))
    ((equal (chunk-forms chunk) '(vg))

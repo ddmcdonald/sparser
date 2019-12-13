@@ -84,6 +84,7 @@ to make any semantic or form edges that the grammar dictates.
 (defparameter *require-known-words-in-order-to-cover-a-segment* nil)
 
 (defun just-cover-segment (coverage)
+  (declare (special *inhibit-just-spanning-segments*))
   "Don't look at the edge or try to find more relations inside it,
    just make sure it's all covered with one edge, propagating the
    edge information from its suffix."

@@ -267,6 +267,7 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
 (defparameter *diagnose-consp-referents* nil)
 
 (defun valid-referent? (edge)
+  (declare (special *lefthand-side-CW-words*))
   "Trap cases where an edge that should have a referent doesn't.
    And for the posibility of the referent being a cons"
   (declare (special category::punctuation category::dash

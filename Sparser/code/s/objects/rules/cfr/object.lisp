@@ -186,6 +186,7 @@
 ;; The def function for us-states looks odd. Might be source of problem
 
 (defun number-of-DA-rules ()
+  (declare (special *debris-analysis-rules*))
   ;; See objects/rules/da/object.lisp for the machinery
   ;; Most of the rules are in grammar/rules/da/da-rules.lisp
   (hash-table-count *debris-analysis-rules*))

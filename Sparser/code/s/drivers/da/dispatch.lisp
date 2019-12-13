@@ -41,7 +41,7 @@
 
 
 (defun execute-da-trie (1st-vertex tt pos-before pos-after)
-
+  (declare (special *da-ending-position* *matched-da-rule*))
   ;; called from Look-for-and-execute-any-DA-pattern to set up the
   ;; state and handle the return values from the search.
 
@@ -97,6 +97,7 @@
 
 
 (defun execute-trie-middle-out (arc tt pos-before pos-after)
+  (declare (special *da-ending-position*))
 
   ;; calle from Look-for-and-execute-any-DA-pattern
 

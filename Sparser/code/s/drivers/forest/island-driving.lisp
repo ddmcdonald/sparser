@@ -144,6 +144,7 @@
 (defparameter *new-pass2* t)
 
 (defun run-island-checks-pass-two (sentence start-pos end-pos)
+  (declare (special *trace-DA-check*))
   ;; Called from island-driven-forest-parse after it's done everything
   ;; in its phase-one operations. Given the predominance of whack a rule
   ;; in phase one, we could probably fold these two together into

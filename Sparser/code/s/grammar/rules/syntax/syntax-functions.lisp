@@ -1646,7 +1646,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
                            &optional (vp-edge (right-edge-for-referent))
                              dont-revise-parent-edge )
   (declare (special category::transitive-clause-without-object
-                    subj vp *left-edge-into-reference*))
+                    subj vp *left-edge-into-reference*
+                    *right-edge-into-reference*))
   ;; vp-edge is NIL when called from polar questions on adjectives
   ;;  this may want to be fixed
   (unless (and subj vp) ;; have had cases of uninterpreted VPs
@@ -1663,7 +1664,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
     
   (cond
     ((itypep subj 'when)
-      (add-time-to-event vp subj))
+     (add-time-to-event vp subj))
     ((itypep subj 'how)
      (add-manner-to-event vp subj))
     ((itypep subj 'where)
@@ -1673,8 +1674,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
      
     ((itypep vp 'control-verb) ;; e.g. "want"
      (if *subcat-test* #+ignore(return-from assimilate-subject t)
-       (value-of 'theme vp) ;; don't allow intransitive reading
-       (assimilate-subject-for-control-verb subj vp vp-edge)))
+         (value-of 'theme vp) ;; don't allow intransitive reading
+         (assimilate-subject-for-control-verb subj vp vp-edge)))
 
     ((or (and (eq (cat-name (itype-of  vp)) 'be)
               ;; was itypep, but REMAIN (and other pseudo copulars) are subcategories of BE
@@ -1698,10 +1699,30 @@ there was an edge for the qualifier (e.g., there is no edge for the
        (unless dont-revise-parent-edge
          (revise-parent-edge :form category::transitive-clause-without-object)))
      (assimilate-subcat vp :subject subj))
-    
     ((assimilate-subject-as-object? subj vp vp-edge)
      (assimilate-subcat vp :object subj))
-    
+    ((and *right-edge-into-reference*
+          (transitive-vp-with-object? vp)
+                    ;; deal with
+          ;; "The receptor tyrosine kinase EGFR binds the growth factor ligand EGF."
+          (let ((edge-to-left
+                 (when *left-edge-into-reference* (edge-just-to-left-of *left-edge-into-reference*))))
+            (when (and edge-to-left
+                       (eq (edge-form-name edge-to-left) 'np)
+                       (eq (edge-category edge-to-left)
+                           (edge-category *left-edge-into-reference*)))
+              (setq *left-edge-into-reference*
+                    (make-binary-edge/explicit-rule-components
+                              edge-to-left
+                              *left-edge-into-reference*
+                              :form (category-named 'np)
+                              :category (edge-category edge-to-left)
+                              :rule-name 'assimilate-subject/create-appositive
+                              :referent (bind-dli-variable 'appositive-description
+                                                           (edge-referent edge-to-left)
+                                                           subj)))
+              (assimilate-subject (edge-referent *left-edge-into-reference*) vp)                
+              ))))
     (t (assimilate-subcat vp :subject subj))))
 
 
