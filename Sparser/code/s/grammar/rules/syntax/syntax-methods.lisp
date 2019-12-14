@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2019  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:syntax:"
@@ -17,11 +17,7 @@
    for type specialization or adding additional relations to a 'daughter'
    style rule. Expecially well suited for form rules. Can be used as
    a dispatch point for more specific binary compostions. Intended to be
-   the most generic way to compose the referents of two edges.")
-  (:method (left right)
-    (declare (ignore left right))
-    nil))
-
+   the most generic way to compose the referents of two edges."))
 
 ;;--- copula
 
