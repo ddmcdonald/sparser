@@ -2354,12 +2354,13 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun make-pp (prep pobj)
   (declare (special category::prepositional-phrase))
   (if *subcat-test*
-    (or (not (itypep prep category::prepositional-phrase))
+    (or (not (itypep prep category::prepositional-phrase)) ; <-- Rusty - what does this check do?
         (and (use-methods) (most-specific-k-method 'compose (list prep pobj))))
     (else
       (setq prep (individual-for-ref prep))
       (or (when (use-methods)
-            (compose prep pobj))
+            (when (most-specific-k-method 'compose (list prep pobj))
+              (compose prep pobj)))
           (make-simple-individual
            category::prepositional-phrase
            `((prep ,prep) (pobj ,pobj)))))))
