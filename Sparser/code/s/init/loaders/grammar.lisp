@@ -126,9 +126,6 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *location* ;; for spatial prepositions in general-words
     (gload "places;loader"))
 
-  (gate-grammar *standard-adjuncts*
-    (gload "adjuncts;loader"))
-
   (gate-grammar *syntax*
     ;; be & have (etc) reference tree-families
     (gload "syntax;loader"))
@@ -147,6 +144,9 @@ omitted and then run (perhaps) after the image has been launched."
 
   (gate-grammar *amounts*
     (gload "amounts;loader"))
+
+  (gate-grammar *standard-adjuncts*
+    (gload "adjuncts;loader"))
 
   (gate-grammar *numbers*
     ;; this is just a definition for 'fractions' which conflicts with the

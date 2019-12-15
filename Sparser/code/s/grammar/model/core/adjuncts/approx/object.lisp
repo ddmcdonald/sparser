@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:adjuncts:approx:"
-;;;  version:  March 2019
+;;;  version:  December 2019
 
 ;; initiated 4/9/91 v1.8.2
 ;; 0.1 (12/7/92 v2.3) redone in the new semantics. 9/21/93 moved to [adjuncts]
@@ -53,6 +53,20 @@
 (def-cfr number (approximator number)
   :form number
   :referent (:function determiner-noun left-edge right-edge))
+
+
+(def-k-method compose ((approx category::approximator)
+                       (amount category::amount))
+  ;; Invoked from determiner-noun -- subcat test uses the
+  ;; macro applicable-methods to find this method (or not)
+  "The set of approximators in dossiers/modifiers.lisp will fall
+   into a number of semantically different camps. We should find
+   some use-cases where the differences carry fruitful consequences
+   for reasoning and then work that up as a set of subtype labels
+   on the amount individual or something similar.
+     Until then we just cache it out as a modifier."
+  (let ((j (bind-variable 'modifier approx amount)))
+    j))
 
 ;;;---------
 ;;; Autodef
