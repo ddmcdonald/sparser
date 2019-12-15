@@ -1,10 +1,10 @@
   ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2005,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2011-2014,2019 David D. McDonald  -- all rights reserved
 ;;; copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "pre-head np modifiers"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  0.8 May 2014
+;;;  version:  December 2019
 
 ;; initiated 4/28/94 v2.3
 ;; 0.1 (10/20) refined some of the distinctions amoung cases
@@ -125,7 +125,6 @@
           :instantiate-individual result-type
           :binds (individuator left-edge
                   base-category right-edge)
-          :method (modifier+noun left-edge right-edge)
           :head right-edge ))
 
       (:hyphenated (np-head ("-" np-head)
@@ -194,7 +193,7 @@ always headed by an mulitplier word, e.g. "10 million"
   :cases
      ((:modifier (np (modifier np-head)
                   :function (apply-multiplier))
-                 :head right-edge)                 
+                  :head right-edge)                 
 
       (:hyphenated  (np-head ("-" np-head)
                       :daughter right-edge))))
@@ -248,7 +247,7 @@ Whether it's generic enough to hand all sorts of quantifying determiners
      ((:modifier (np (modifier np-head)
                   :instantiate-individual result-type
                   :binds (item left-edge))
-                 :head right-edge)
+                  :head right-edge)
 
       (:hyphenated  (np-head ("-" np-head)
                       :daughter right-edge))))
@@ -306,7 +305,7 @@ Whether it's generic enough to hand all sorts of quantifying determiners
                        :instantiate-individual result-type
                        :binds (individual left-edge
                                base right-edge))
-                    :head right-edge )))
+                       :head right-edge )))
 
   
 
