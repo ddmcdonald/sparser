@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  November 2019
+;;;  Version:  Dece,ber 2019
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -149,6 +149,25 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
 
 (define-lambda-variable 'amount-of-time
     nil 'top)
+
+
+;;;-----------------------------
+;;; enabling k-methods (or not)
+;;;-----------------------------
+
+(defparameter *use-k-methods-in-syntax-functions* nil
+  "Permits overriding default in use-methods")
+
+(defun use-methods ()
+  "Gates k-method calls such as 'compose'. "
+  (declare (special *use-k-methods-in-syntax-functions*))
+  (or *use-k-methods-in-syntax-functions*
+      (not (current-script :biology))))
+
+(defmacro applicable-method (method &rest arguments)
+  (when (use-methods)
+    `(most-specific-k-method ',method (list ,@arguments)) ))
+
 
 
 ;;;-------------
@@ -487,20 +506,6 @@ val-pred-var (pred vs modifier - left or right?)
 ;;; see operations in create-discourse-mention and extend-discourse-mention
 
 
-;;;-----------------------------
-;;; enabling k-methods (or not)
-;;;-----------------------------
-
-(defparameter *use-k-methods-in-syntax-functions* nil
-  "Permits overriding default in use-methods")
-
-(defun use-methods ()
-  "Gates k-method calls such as 'compose'. "
-  (declare (special *use-k-methods-in-syntax-functions*))
-  (or *use-k-methods-in-syntax-functions*
-      (not (current-script :biology))))
-
-
 ;;;-------------------
 ;;; noun premodifiers
 ;;;-------------------
@@ -750,39 +755,44 @@ val-pred-var (pred vs modifier - left or right?)
 (define-lambda-variable 'is-plural nil 'top)
 
 (defun determiner-noun (determiner head)
-  "bind the determiner to a variable (no longer stash it in mention)"
+  "bind the determiner to a variable (no longer stash it in mention)"  
   (if *subcat-test*
-      (let ((det-edge (left-edge-for-referent)))
-        ;; "HOW" is not a valid determiner, though "WHAT" and "WHICH" are
-        (or (not (eq (edge-form-name det-edge) 'wh-pronoun))
-            (member (edge-cat-name det-edge)
-                    '(what which whichever whose how-many how-much))))
-      (let* ((parent-edge (parent-edge-for-referent))
-	     (det-edge (left-edge-for-referent))
-	     (det-word (edge-left-daughter det-edge))
-             (head-edge (right-edge-for-referent)))
+    (or (applicable-method compose determiner head)
+        (let ((det-edge (left-edge-for-referent)))
+          ;; "HOW" is not a valid determiner, though "WHAT" and "WHICH" are
+          (or (not (eq (edge-form-name det-edge) 'wh-pronoun))
+              (member (edge-cat-name det-edge)
+                      '(what which whichever whose how-many how-much)))))
+    
+    (let* ((parent-edge (parent-edge-for-referent))
+           (det-edge (left-edge-for-referent))
+           (det-word (edge-left-daughter det-edge))
+           (head-edge (right-edge-for-referent)))
 
-        ;; There are a ton of categories that are defined to be
-        ;; syntactic determiners that deserve their own careful
-        ;; semantic treatment that might funnel through here
-        ;; We can dispatch of the type of the determner:
-        ;; quantity, approximator, etc. Pull them out of the
-        ;; modifiers dossier. 
 
-	(unless (or (determiner? det-word)
-                    (itypep determiner 'demonstrative));; anticipated cases
-	  (pushnew determiner *dets-seen*))
+      (unless (or (determiner? det-word)
+                  (itypep determiner 'demonstrative));; anticipated cases
+        (pushnew determiner *dets-seen*))
+      
+      (when (definite-determiner? determiner)
+        (add-def-ref determiner parent-edge))
+      
+      (cond
+        ((applicable-method compose determiner head)
+         ;; There are a ton of categories that are defined to be
+         ;; syntactic determiners that deserve their own careful
+         ;; semantic treatment that might funnel through here
+         ;; We can dispatch of the type of the determner:
+         ;; quantity, approximator, etc. Pull them out of the
+         ;; modifiers dossier. 
+         (compose determiner head))
         
-        (when (definite-determiner? determiner)
-          (add-def-ref determiner parent-edge))
-        
-	(cond
-          ((or (individual-p head) (category-p head))
-           (setq head (bind-dli-variable 'has-determiner determiner head))
-           (when (eq (edge-category head-edge) category::common-noun/plural)
-             (setq head (bind-variable 'is-plural determiner head)))))
+        ((or (individual-p head) (category-p head))
+         (setq head (bind-dli-variable 'has-determiner determiner head))
+         (when (eq (edge-category head-edge) category::common-noun/plural)
+           (setq head (bind-variable 'is-plural determiner head)))
+         head)))))
 
-	head)))
 
 (defun add-def-ref (determiner parent-edge)
   (let ((sentence (identify-current-sentence)))
@@ -839,6 +849,8 @@ val-pred-var (pred vs modifier - left or right?)
   ;; (push-debug `(,quantifier ,head)) (break "quantifier-noun-compound")
   ;;  (setq quantifier (car *) head (cadr *))
 
+;; (and (use-methods) (most-specific-k-method 'compose (list np pp)))
+  
   (cond
     (*subcat-test*
      (itypep head '(:or endurant perdurant abstract bio-abstract quality
