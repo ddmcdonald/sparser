@@ -95,6 +95,7 @@
            :form np
            :referent (:function possessive-np left-edge right-edge))))
 
+
 ;;--- Partitive NPs
 
 (def-form-rule (quantifier of)
@@ -119,6 +120,8 @@
     :form det
     :referent (:function quantifier-noun-compound left-edge right-edge))
 
+
+;;--- post-position quantifiers
 
 (def-syntax-rule (proper-noun quantifier) 
   :head :left-edge 
@@ -234,6 +237,12 @@
     :head :right-edge
     :form np
     :referent (:function quantifier-noun-compound left-edge right-edge))
+
+(def-syntax-rule (approximator np)
+    ;;// relevant approximators are determiners, action is like quantifier
+    :head :right-edge
+    :form np
+    :referent (:function determiner-noun left-edge right-edge))
 
 (def-syntax-rule (quantifier number) ;; "all three" (should be red)
     :head :right-edge
