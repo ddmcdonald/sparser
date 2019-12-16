@@ -165,6 +165,8 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
       (not (current-script :biology))))
 
 (defmacro applicable-method (method &rest arguments)
+  "Combines the 'do we use methods?' gate with the check to determine whether
+   there is a signature on this method for this particular set of arguments."
   (when (use-methods)
     `(most-specific-k-method ',method (list ,@arguments)) ))
 
@@ -537,13 +539,15 @@ val-pred-var (pred vs modifier - left or right?)
      ;; Don't know what to  do
      (break "Can't deal with head whose interpretation is not ~
              an individual or category in noun-noun-compound, head is ~s~&" head))
+    
     ((and qualifier head)
      (setq head (individual-for-ref head))
      (cond
-       ((when (use-methods) ;; "left side" (etc. see core/places/methods.lisp)
-          (let ((result (compose qualifier head)))
-            (tr :composed-qualifier-with-head qualifier head result)
-            result)))
+       ((applicable-method compose qualifier head)
+        ;; "left side" (etc. see core/places/methods.lisp)
+        (let ((result (compose qualifier head)))
+          (tr :composed-qualifier-with-head qualifier head result)
+          result))
        ((and (not (eq script :biology))
              ;; w/o methods: "bottom" in "bottom block"
              (itypep qualifier 'object-dependent-location))
@@ -661,8 +665,9 @@ val-pred-var (pred vs modifier - left or right?)
   (cond
     (*subcat-test*
      t) ;;(takes-adj? head adjective) precludes all the other legal cases
-    ((when (use-methods) ;; "the Ras protein", where 'protein' is a type-marker
-       (compose adjective head)))
+    ((applicable-method compose adjective head)
+     ;; "the Ras protein", where 'protein' is a type-marker
+     (compose adjective head))
     ((itypep adjective 'attribute-value) ;; "red block"
      (handle-attribute-of-head adjective head))
     ((interpret-premod-to-np adjective head)) ;; normal subcategorization
@@ -809,7 +814,7 @@ val-pred-var (pred vs modifier - left or right?)
   (declare (special word::|of|))
   (or
    *subcat-test*
-   (when (use-methods)
+   (when (applicable-method compose possessive head)
      (compose possessive head))
    (let ((var (subcategorized-variable head word::|of| possessive)))
      (if var
@@ -848,8 +853,6 @@ val-pred-var (pred vs modifier - left or right?)
   ;; MS thesis and think about generalized quantifiers.
   ;; (push-debug `(,quantifier ,head)) (break "quantifier-noun-compound")
   ;;  (setq quantifier (car *) head (cadr *))
-
-;; (and (use-methods) (most-specific-k-method 'compose (list np pp)))
   
   (cond
     (*subcat-test*
@@ -899,7 +902,7 @@ val-pred-var (pred vs modifier - left or right?)
 
 
 (defun verb+ing-noun-compound (verb head)
-  (or (when (use-methods)
+  (or (when (applicable-method compose verb head)
         (compose verb head))
       (link-in-verb+ing verb head)))
 
@@ -962,7 +965,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
      nil)
     (*subcat-test* (subcategorized-variable qualifier :object head))
     
-    (t (or (when (use-methods)
+    (t (or (when (applicable-method compose  qualifier head)
              (compose qualifier head))
 	   (link-in-verb qualifier head)
 	   (progn
@@ -1310,7 +1313,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
          finally (return vg)))
           
     ;; It's not a collection. Compare handlers in interpret-pp-adjunct-to-np
-    (or (when (use-methods)
+    (or (when (applicable-method compose vg pp)
           (compose vg pp))
         (multiple-value-bind (variable-to-bind  pobj-referent prep-word *pobj-edge*)
             (variable-to-bind-pp-to-head (right-edge-for-referent) vg)
@@ -2060,7 +2063,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
   the conjunction as a modifier just to keep it around. My reading
   of Quirk et al. is that the ones that we're most interested in
   have an adverbial function in structuring the discourse (19.55)."
-  (or (when (use-methods)
+  (or (when (applicable-method compose conj eventuality)
         (compose conj eventuality))
       eventuality)) ;; for the moment dropping it on the floor
 
@@ -2163,7 +2166,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
                       '(so))))
     (let ((cl
            (or
-            (when (use-methods) (compose conj clause))
+            (when (applicable-method compose conj clause)
+              (compose conj clause))
            
             ;;in the case without methods, we simply want to put the
             ;; subordinate conjunction in a well-defined slot
@@ -2171,6 +2175,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
             ;; because we may end up adding a subject and don't need
             ;; another layer to get in the way.
             (bind-variable 'subordinate-conjunction conj clause))))
+      
       (when (and cl
                  (not (and (category-p conj)
                            (member (cat-name conj)
