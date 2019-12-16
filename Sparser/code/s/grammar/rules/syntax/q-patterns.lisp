@@ -31,8 +31,7 @@
                   ((itypep wh 'wh-pronoun) wh)
                   ((has-wh-determiner? wh) ;; "what proteins"
                    ;; don't drop the rest of the NP 
-                    wh ;;(repackage-wh-determiner wh wh-edge)
-                   )
+                    wh) ;;(repackage-wh-determiner wh wh-edge)
                   (t (break "New case of a WH individual: ~a" wh))))
                (edge
                 (setq wh-edge wh)
@@ -440,7 +439,31 @@
            (left-ref (when (edge-p left) (edge-referent left))))
       (cond ((itypep left-ref 'wh-pronoun)
              left-ref)
-            (t nil)))))                  
+            (t nil)))))
+
+;; "What drugs are inhibitors of GRB2"
+;; "What is the mutation significance of TP53 for prostatic adenocarcinoma?"
+;;
+(defun wh-initial-one-edge (edge start-pos end-pos)
+  "Called from make-this-a-question-if-appropriate when the whole sentence
+   is spanned by this single edge, and the initial-wh? flag is up.
+   Strong assumption that the wh term is the subject of the sentence
+   and the first constituent edge."
+  (tr :wh-walk 'wh-initial-one-edge)
+  (let ((left-edge (edge-left-daughter edge)))
+    (unless (find-wh-element left-edge)
+      (warn "find-wh-element can't locate a wh-pronoun in ~a" left-edge)
+      (when *debug-questions*
+        (break "Maybe find-wh-element is bad? edge = ~a" edge))
+      (return-from wh-initial-one-edge nil))
+    (make-question-and-edge
+     (edge-referent edge) ; statement
+     start-pos end-pos
+     :head edge
+     :wh left-edge
+     :rule 'wh-initial-one-edge)))
+         
+
 
 (defun wh-initial-two-edges (wh-initial? edges start-pos end-pos)
   "One edge after the WH edge. Take it to be the statement."
