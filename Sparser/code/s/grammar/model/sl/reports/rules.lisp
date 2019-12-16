@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "rules"
 ;;;   Module:  "grammar;model:sl:reports:"
-;;;  version:  0.1 March 2005
+;;;  version:  December 2019
 
 ;; initiated 10/22/93 v2.3 restarting from scratch. 1/8/96 added cs rule
 ;; for companies. 1/9 added vg rules. 
@@ -24,15 +23,14 @@
 ;;; context for 'company'
 ;;;-----------------------
 
-#|
-(def-csr  name company
+(def-csr  name person
   :right-context report-verb
   :form np
-  :referent (:function interpret-name-as-company left-edge))
+  :referent (:function interpret-name-as-person left-edge))
 
-(def-csr name-word company
+(def-csr name-word person
   :right-context report-verb
   :form np
-  :referent (:function interpret-name-as-company left-edge))
-|#
+  :referent (:function interpret-name-as-person left-edge))
+
 
