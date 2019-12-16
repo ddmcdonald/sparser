@@ -528,6 +528,7 @@ val-pred-var (pred vs modifier - left or right?)
                      (itypep head 'determiner))
                 (and (proper-noun? right-edge) ;; "Saturday", "June"
                      (itypep (edge-referent right-edge) 'time))
+                (itypep qualifier 'time) ; [the December ]11, [2012 edition]
                 ))))
     
     ((itypep head 'determiner) ;; had strange case with "some cases this" -- head was "this"
