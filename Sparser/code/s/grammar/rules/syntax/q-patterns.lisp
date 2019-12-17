@@ -32,12 +32,16 @@
                   ((has-wh-determiner? wh) ;; "what proteins"
                    ;; don't drop the rest of the NP 
                     wh) ;;(repackage-wh-determiner wh wh-edge)
-                  (t (break "New case of a WH individual: ~a" wh))))
+                  (t (warn "New case of a WH individual: ~a~%   in sentence: ~s~%"
+                           wh (sentence-string (sentence)))
+                     nil)))
                (edge
                 (setq wh-edge wh)
                 (decode-wh (edge-referent wh)))
                (otherwise
                 (break "unexpected object passed in for wh: ~a" wh)))))
+    (when (null (decode-wh wh))
+      (return-from make-question-and-edge nil))
     (let* ((wh-base (decode-wh wh))
            (q (cond ((or (itypep wh-base 'wh-pronoun)
                          ;; as in "what genes"
@@ -456,7 +460,8 @@
   (tr :wh-walk 'wh-initial-one-edge)
   (let ((left-edge (edge-left-daughter edge)))
     (unless (find-wh-element left-edge)
-      (warn "find-wh-element can't locate a wh-pronoun in ~a" left-edge)
+      (warn "find-wh-element can't locate a wh-pronoun in ~a~%   for sentence: ~s~%" left-edge
+            (sentence-string (sentence)))
       (when *debug-questions*
         (break "Maybe find-wh-element is bad? edge = ~a" edge))
       (return-from wh-initial-one-edge nil))
