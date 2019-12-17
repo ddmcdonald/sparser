@@ -841,7 +841,8 @@
   (when (get-indra-for-cwc?)
     (if (and (individual-p desc)
              (or (itypep desc 'bio-entity)
-                 (itypep desc 'disease)))
+                 (itypep desc 'disease)
+                 (itypep desc 'bio-mechanism))) ;; for pathways
         (if (itypep desc 'collection)
             (push-sem-bio-entity-collection mention desc)
             (push-sem-bio-entity mention desc))
