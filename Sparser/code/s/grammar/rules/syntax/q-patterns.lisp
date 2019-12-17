@@ -430,19 +430,20 @@
 ;;; wh-initial? dispatches from make-this-a-question-if-appropriate 
 ;;;-----------------------------------------------------------------
 
-(defgeneric find-wh-element (loc)
+(defgeneric find-wh-element (edge)
   (:documentation "Caller belives there is a wh-pronoun to be found at this
-    location, so we look for it. We're looking for a wh-category since that's
+    location, so we look for it. We're looking for a wh-pronoun since that's
     what's expected as the base of a wh-question variable.")
   (:method ((e edge))
-    (cond
-      ((itypep (edge-referent e) 'wh-pronoun) t)
-      (t
-       (let* ((left (edge-left-daughter e))
-              (left-ref (when (edge-p left) (edge-referent left))))
-         (cond ((itypep left-ref 'wh-pronoun)
-                left-ref)
-               (t nil)))))))
+    (if (itypep (edge-referent e) 'wh-pronoun)
+      e
+      (if (initial-wh?) ;; it's there somewhere
+        (let ((fringe-edges (left-fringe e)))
+          (loop for f in fringe-edges
+             when (itypep (edge-referent f) 'wh-pronoun)
+             return f))
+        nil))))
+
 
 ;; "What drugs are inhibitors of GRB2"
 ;; "What is the mutation significance of TP53 for prostatic adenocarcinoma?"
