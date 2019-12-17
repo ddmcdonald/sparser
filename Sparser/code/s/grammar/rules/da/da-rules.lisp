@@ -2102,4 +2102,13 @@ assumed. |#
   ;;))
   )
     
+(define-debris-analysis-rule demonstrative-that-np
+  :pattern (demonstrative)
+  :action (:function make-that-an-np first))
 
+(defun make-that-an-np (demonstrative)
+  (when (member (edge-cat-name demonstrative) '(that))
+    (make-edge-spec
+     :category (edge-category demonstrative)
+     :form category::pronoun
+     :referent (edge-referent demonstrative))))

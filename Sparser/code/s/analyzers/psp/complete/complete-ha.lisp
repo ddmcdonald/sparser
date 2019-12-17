@@ -92,7 +92,6 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
 (defun complete-edge/hugin (edge)
   (declare (special *do-anaphora*  ;; may be dynamically bound
                     *use-discourse-mentions*))
-
   (unless (subsumption-check/complete edge)
     ;;(push-debug `(,edge)) (lsp-break "~a passed the check" edge)
     (check-for-completion-actions/category (edge-category edge)
@@ -118,7 +117,6 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
     (update-definite-determiner edge)) ;; recording function
 
   (maybe-check-semantic-completeness edge)
-  
   (record-generation-information edge)
 
   ;; keep this on the stack

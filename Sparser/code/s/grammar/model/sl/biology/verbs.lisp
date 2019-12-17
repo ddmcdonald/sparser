@@ -1341,7 +1341,10 @@
 
 (define-category revert :specializes bio-process
  :binds ((state bio-state)
-         (scalar bio-scalar))
+         (scalar bio-scalar)
+         (object)
+         (agent))
+ 
  :realization
  (:verb "revert"
   :etf (sv)
@@ -1682,4 +1685,4 @@
   (:verb "undo"
          :etf (svo)))
 
-(def-synonym undo (:noun "revert"))
+(def-synonym undo (:verb "revert"))

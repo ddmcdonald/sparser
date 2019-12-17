@@ -34,7 +34,10 @@
   (:method ((ref individual))
     (declare (special category::pronoun))
     (when (individual-p ref)
-      (itypep ref category::pronoun)))
+      (or
+       (itypep ref category::pronoun)
+       (itypep ref category::demonstrative) ;; these, that
+       )))
   (:method ((e edge))
     (is-pronoun? (edge-referent e)))
   (:method ((e t))
