@@ -364,6 +364,15 @@
       (symbol (list base)) ;;/// extend for long edges
       (edge (cons base (right-fringe daughter))))))
 
+(defgeneric left-fringe (base)
+  (:method ((e edge))
+    (let ((daughter (edge-left-daughter e)))
+      (etypecase daughter
+        (null)
+        (word (list e))
+        (edge (cons e (left-fringe daughter)))))))
+   
+
 
 
 (defun find-copular-vp (vp-edges)
