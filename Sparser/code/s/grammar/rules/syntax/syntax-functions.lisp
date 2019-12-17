@@ -2461,9 +2461,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
       (*subcat-test* (or var-to-bind
                          (pronominal-or-deictic? np)))
       (t 
-       ;; Reinterpret-dominating-edges (e.g as the result of a tuck
-       ;; initiated by a DA rule) does not validate rules with the subcat-test,
-       ;; it just goes ahead and executes them. Hence this ostensibly redundant check
        (when *collect-subcat-info*
          (push (subcat-instance np prep var-to-bind copular-pp)
                *subcat-info*))
@@ -2473,24 +2470,22 @@ there was an edge for the qualifier (e.g., there is no edge for the
            (let* ((pp-edge (edge-right-daughter (right-edge-for-referent)))
                   (new-np (bind-variable var-to-bind pobj np))
                   (new-np-edge (respan-edge-for-new-referent pp-edge new-np))
-                  (new-parent-edge
-                   (respan-edge-for-new-referent
-                    (parent-edge-for-referent)
+                  (new-result
                     (bind-variable 'item np
-                                   (bind-variable 'value new-np copular-pp)))))
-             (edge-referent new-parent-edge))
+                                   (bind-variable 'value new-np copular-pp))))
+             ;; for cases like
+             ;; "What proteins are in the MAPK family?"
+             new-result)
            (let* ((pp-edge (edge-right-daughter (right-edge-for-referent)))
                   (new-np-edge (respan-edge-for-new-referent
                                 (left-edge-for-referent)
                                 np))
-                  (new-parent-edge
-                   (respan-edge-for-new-referent
-                    (parent-edge-for-referent)
+                  (new-result
                     (bind-variable 'item np
                                    (bind-variable 'value
                                                   '**pronominal-resolution**
-                                                  copular-pp)))))
-             (edge-referent new-parent-edge)))))))
+                                                  copular-pp))))
+             new-result))))))
 
 
 
