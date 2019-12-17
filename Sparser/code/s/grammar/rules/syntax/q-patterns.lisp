@@ -30,16 +30,10 @@
                 (cond
                   ((itypep wh 'wh-pronoun) wh)
                   ((has-wh-determiner? wh) ;; "what proteins"
-                   ;; don't drop the rest of the NP 
-<<<<<<< HEAD
-                    wh) ;;(repackage-wh-determiner wh wh-edge)
+                    wh) ; use whole phrase
                   (t (warn "New case of a WH individual: ~a~%   in sentence: ~s~%"
                            wh (sentence-string (sentence)))
                      nil)))
-=======
-                    wh)
-                  (t (break "New case of a WH individual: ~a" wh))))
->>>>>>> better warning
                (edge
                 (setq wh-edge wh)
                 (decode-wh (edge-referent wh)))
