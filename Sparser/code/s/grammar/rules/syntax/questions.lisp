@@ -219,7 +219,8 @@
             (dig-for-embedded-which edge))
 
            (wh-initial?
-            (wh-initial-one-edge edge start-pos end-pos))))
+            (unless (itypep (edge-referent edge) 'wh-question)
+              (wh-initial-one-edge edge start-pos end-pos)))))
 
         ;; In most cases, the proposed aux will have been accommodated by
         ;; the operations in the post-vg-hook, though that's just for explicit
