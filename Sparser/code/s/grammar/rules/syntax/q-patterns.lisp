@@ -435,11 +435,14 @@
     location, so we look for it. We're looking for a wh-category since that's
     what's expected as the base of a wh-question variable.")
   (:method ((e edge))
-    (let* ((left (edge-left-daughter e))
-           (left-ref (when (edge-p left) (edge-referent left))))
-      (cond ((itypep left-ref 'wh-pronoun)
-             left-ref)
-            (t nil)))))
+    (cond
+      ((itypep (edge-referent e) 'wh-pronoun) t)
+      (t
+       (let* ((left (edge-left-daughter e))
+              (left-ref (when (edge-p left) (edge-referent left))))
+         (cond ((itypep left-ref 'wh-pronoun)
+                left-ref)
+               (t nil)))))))
 
 ;; "What drugs are inhibitors of GRB2"
 ;; "What is the mutation significance of TP53 for prostatic adenocarcinoma?"
