@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2019
+;;;  Version:  December 2019
 
 ;; initiated 10/25/92 w/ mixin.  Given some content 5/17/95.  Added np cases
 ;; 4/1/05. Added common-noun 4/12/09. 10/14/12 Removed the 'that' rules 
@@ -178,6 +178,7 @@
 ;;;------------
 
 (when (or (current-script :default)
+          (current-script :fire)
           (current-script :grok))
   ;; These configurations do not use syntactic rules except under
   ;; very controlled circumstances so these explicit rules
@@ -263,44 +264,44 @@
 
 ;;--- this
 
-(def-form-rule ("this" common-noun)
+(def-form-rule (this common-noun)
   :form np
   :referent (:head right-edge
              :function dereference-DefNP right-edge))
 
-(def-form-rule ("this" np-head)
+(def-form-rule (this np-head)
   :form np
   :referent (:head right-edge
              :function dereference-DefNP right-edge))
 
-(def-form-rule ("this" n-bar)
+(def-form-rule (this n-bar)
   :form np
   :referent (:head right-edge
              :function dereference-DefNP right-edge))
 
-(def-form-rule ("this" np)
+(def-form-rule (this np)
   :form np
   :referent (:head right-edge
              :function dereference-DefNP right-edge))
 
 ;;--- "these"
 
-(def-form-rule ("these" common-noun/plural)
+(def-form-rule (these common-noun/plural)
   :form np
   :referent (:head right-edge
              :function dereference-DefNP right-edge))
 
-(def-form-rule ("these" np-head)
+(def-form-rule (these np-head)
   :form np
   :referent (:head right-edge
              :function dereference-DefNP right-edge))
 
-(def-form-rule ("these" n-bar)
+(def-form-rule (these n-bar)
   :form np
   :referent (:head right-edge
              :function dereference-DefNP right-edge))
 
-(def-form-rule ("these" np)
+(def-form-rule (these np)
   :form np
   :referent (:head right-edge
              :function dereference-DefNP right-edge))
@@ -309,22 +310,22 @@
 
 ;;--- that
 
- (def-form-rule ("that" common-noun)
+ (def-form-rule (that common-noun)
    :form np
    :referent (:daughter right-edge
               :bind (has-determiner left-edge)))
 
- (def-form-rule ("that" np-head)
+ (def-form-rule (that np-head)
      :form np
      :referent (:daughter right-edge
 		:bind (has-determiner left-edge)))
 
- (def-form-rule ("that" n-bar)
+ (def-form-rule (that n-bar)
      :form np
      :referent (:daughter right-edge
 	        :bind (has-determiner left-edge)))
 
- (def-form-rule ("that" np)
+ (def-form-rule (that np)
      :form np
      :referent (:daughter right-edge
 	        :bind (has-determiner left-edge)))

@@ -28,8 +28,10 @@
    each time it is used, hence it's initialization to minus one.")
 
 (unless (boundp '*length-of-character-input-buffer*)
-  (defparameter *length-of-character-input-buffer*  200000 ;; 200,000 characters
-    ;; formerly 1000 -- Has to be large to read the articles in CALLISTO -- Rusty
+  (defparameter *length-of-character-input-buffer*  200000
+    ;; 200,000 characters
+    ;; formerly 1000 -- Has to be large to read the articles in
+    ;; CALLISTO -- Rusty
     "A performance variable.  Should be adjusted to tradeoff between
      the size of the stored image and the overhead of sucessively
      opening the source to fill it."))
@@ -72,6 +74,12 @@
 (setf (elt *second-character-input-buffer*
            (1- *length-of-character-input-buffer*))
       #\^D)
+
+#| The source-start #\^A is inserted when we're establishing the
+character source, e.g. by establish-character-source/string which
+fills from position 1 onwards and then sets position 0 to
+the start character.  The #\^B for the end of the source is
+added at the same time. |#
 
 
 ;;;------------------------------

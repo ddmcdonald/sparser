@@ -72,14 +72,15 @@ scan-name-position -> add-terminal-to-chart
  and normalizing it, e.g., multiple newlines are reduced to just one,
  leading spaces are removed, quotation marks and punctuation are flipped,
  html character-coding escape strings decoded, ..."
+  
   (multiple-value-bind (source sink) (character-buffer-being-used)
-    (let* ((index-into-source 1)
-           (index-into-sink 1)
+    (let* ((index-into-source 0)
+           (index-into-sink 0)
            (starting? t)
            (source-exhausted nil)
            (pending-newline? nil)
            char  replacement-char )
-      
+      ;;(push-debug `(,source ,sink)) (break "cntrl-A there?")
       (labels ((push-char (c)
                  "Copy the character to the sink buffer and bump
                   both indicies."
@@ -107,7 +108,11 @@ scan-name-position -> add-terminal-to-chart
              (push-debug `(,source ,sink))
              (error "Prescan walked off the end of the buffer"))
 
-            (#\^A (error "aren't the ^A's already there?"))
+            (#\^A
+             (unless (= index-into-source 0)
+               (error "Encountered source-start character (\#^A) at ~
+                       index ~a" index-into-source))
+             (push-char char))
 
             (#\space ;; remove leading spaces
              (if starting?
