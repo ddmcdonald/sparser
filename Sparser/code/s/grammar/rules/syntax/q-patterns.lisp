@@ -14,7 +14,7 @@
 (defun make-question-and-edge (statement start-pos end-pos
                                &key ((:head head-edge)) wh wh-edge rule)
   "Wrap the referent in an instance of a wh-question as its statement.
-   Make an edge over the whole span, using whatever pieces the callers
+   Make an edge over the whole span using whatever pieces the callers
    have supplied."
   (labels ((decode-wh (wh)
              "Identify and return an individual we can feed to
@@ -31,10 +31,15 @@
                   ((itypep wh 'wh-pronoun) wh)
                   ((has-wh-determiner? wh) ;; "what proteins"
                    ;; don't drop the rest of the NP 
+<<<<<<< HEAD
                     wh) ;;(repackage-wh-determiner wh wh-edge)
                   (t (warn "New case of a WH individual: ~a~%   in sentence: ~s~%"
                            wh (sentence-string (sentence)))
                      nil)))
+=======
+                    wh)
+                  (t (break "New case of a WH individual: ~a" wh))))
+>>>>>>> better warning
                (edge
                 (setq wh-edge wh)
                 (decode-wh (edge-referent wh)))
@@ -460,8 +465,8 @@
   (tr :wh-walk 'wh-initial-one-edge)
   (let ((left-edge (edge-left-daughter edge)))
     (unless (find-wh-element left-edge)
-      (warn "find-wh-element can't locate a wh-pronoun in ~a~%   for sentence: ~s~%" left-edge
-            (sentence-string (sentence)))
+      (warn "find-wh-element couldn't find a wh in ~a~%within ~s"
+            left-edge (current-string))
       (when *debug-questions*
         (break "Maybe find-wh-element is bad? edge = ~a" edge))
       (return-from wh-initial-one-edge nil))
