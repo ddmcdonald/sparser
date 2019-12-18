@@ -442,36 +442,40 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 (defun word-stem (word)
   (get-tag :stem word))
 
-(defmethod stem-form ((s symbol))
-  (stem-form (symbol-name s)))
-  
-(defmethod stem-form ((s string))
-  (let ((word (resolve/make s)))
-    (stem-form word)))
+(defgeneric stem-form (word)
+  (:documentation "Lookup the morphological properties of the word
+    and use them to remove the suffix and attempt to recover the
+    appropriate lemma")
 
-(defmethod stem-form ((word word))
-  ;; Redundant with stem-form-of-verb but adds more cases and
-  ;; will do a Comlex check. Stores the stem once it finds it.
-  (or (word-stem word)
-      (let ((morphology (word-morphology word)))
-	;; the word-morphology field of a word is filled at the
-	;; time it is defined. 
-	(if morphology
-	  (let* ((putative-stem (construct-stem-form word morphology))
-                 ;; If Comlex says the reduced form is in its ~50k
-                 ;; word dictionary then we accept it as the lemma
-                 ;; form of the word and store it as the stem
-		 (attested-stem (test-against-comlex putative-stem morphology)))
-            (let ((stem
-                   ;; Some words are not in Comlex, especially in biology,
-                   ;; in these cases we'll take the stem that we construct.
-                   (or attested-stem
-                       putative-stem)))
-              (if stem
-                (setf (get-tag :stem word) stem)
-                word)))
-          ;; without morphology information we can't stem
-          word))))
+  (:method ((s symbol))
+    (stem-form (symbol-name s)))
+  (:method  ((s string))
+    (let ((word (resolve/make s)))
+      (stem-form word)))
+
+  (:method ((word word))
+    ;; Redundant with stem-form-of-verb but adds more cases and
+    ;; will do a Comlex check. Stores the stem once it finds it.
+    (or (word-stem word)
+        (let ((morphology (word-morphology word)))
+          ;; the word-morphology field of a word is filled at the
+          ;; time it is defined. 
+          (if morphology
+            (let* ((putative-stem (construct-stem-form word morphology))
+                   ;; If Comlex says the reduced form is in its ~50k
+                   ;; word dictionary then we accept it as the lemma
+                   ;; form of the word and store it as the stem
+                   (attested-stem (test-against-comlex putative-stem morphology)))
+              (let ((stem
+                     ;; Some words are not in Comlex, especially in biology,
+                     ;; in these cases we'll take the stem that we construct.
+                     (or attested-stem
+                         putative-stem)))
+                (if stem
+                  (setf (get-tag :stem word) stem)
+                  word)))
+            ;; without morphology information we can't stem
+            word)))))
 
 
 (defun stem-form-of-verb (word)

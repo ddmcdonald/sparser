@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1992-1993,2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2014-2019  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "morphology"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  0.4 September 2014
+;;;  Version:  December 2019
 
 ;; initiated June 1990
 ;; 0.1 (7/22/91 v1.8.6) Added an error check in Start-affix-stripper/
@@ -191,6 +191,7 @@
 ;; X-genesis: 'process of creating X' e.g. 'angiogenesis' 'embryogenesis'
 ;; -ian: e.g. 'mammalian'
 ;; -ics: e.g. 'energetics'
+;; -iest: e.g. 'deadliest'
 ;; -ive: e.g. 'reactive'
 ;; -ize, -yze: 'undergo process' OR 'cause to undergo process' 
 ;;     e.g. 'metastasize' 'catalyze'
@@ -213,6 +214,7 @@
     ("ible" ADJ)
     ("ic" ADJ)
     ("ics" N)
+    ("iest" ADJ)
     ("ify" V)
     ("ion" N)
     ("ist" N)
