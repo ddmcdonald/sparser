@@ -219,6 +219,11 @@
   (loop for e in (all-edges-on (pos-starts-here position))
         thereis (and (edge-p e) (eq (form-cat-name e) 'adverb))))
 
+(defun adjective-at? (position)
+  (declare (special category::adverb))
+  (loop for e in (all-edges-on (pos-starts-here position))
+        thereis (and (edge-p e) (member (form-cat-name e) '(adjective adjg)))))
+
 (defun to-be-at? (position)
   (loop for e in (ev-top-edges (pos-ends-here position))
      thereis (and (edge-p e) (eq (edge-cat-name e) 'be))))
