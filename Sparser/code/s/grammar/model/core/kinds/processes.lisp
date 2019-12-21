@@ -43,7 +43,7 @@
           (after (:or time-unit
                       time ;; for "any time"
                       amount-of-time))
-          (before (:or time-unit time amount-of-time))
+          (before (:or time-unit time amount-of-time end))
           (timeperiod (:or time-unit time amount-of-time)))
   :realization
     (:with certainty   ;; originally from with-certainty
@@ -51,6 +51,7 @@
      :after after
      :at timeperiod
      :before preceding
+     :at before
      :before before
      :during during
      :following following
