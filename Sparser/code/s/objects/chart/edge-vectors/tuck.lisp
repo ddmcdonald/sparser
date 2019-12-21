@@ -32,67 +32,70 @@
      nil)
     (t
      (setf (edge-used-in subsumed-edge) new-edge)
-     (set-used-by new-edge dominating-edge)
+     (when dominating-edge
+       ;; otherewise this causes an error in wh-initial-five-edges
+       ;;  for "What tissues is STAT3 expressed in?"
+       (set-used-by new-edge dominating-edge)
 
-     (cond
-       ((eq (edge-right-daughter dominating-edge) :long-span)
-        (when (not (member subsumed-edge (edge-constituents dominating-edge)))
-          (error "~%in tuck-new-edge-under-already-knit:~
+       (cond
+         ((eq (edge-right-daughter dominating-edge) :long-span)
+          (when (not (member subsumed-edge (edge-constituents dominating-edge)))
+            (error "~%in tuck-new-edge-under-already-knit:~
                   ~%edge-constituents in dominating edge ~s ~
                   ~%does not contain subsumed-edge ~s~%"
-                 dominating-edge subsumed-edge))
-        (setf (edge-constituents dominating-edge)
-              (subst new-edge subsumed-edge (edge-constituents dominating-edge))))
+                   dominating-edge subsumed-edge))
+          (setf (edge-constituents dominating-edge)
+                (subst new-edge subsumed-edge (edge-constituents dominating-edge))))
        
-       ((eq direction :right)
-        (unless (eq (edge-right-daughter dominating-edge) subsumed-edge)
-          (error  "~%in tuck-new-edge-under-already-knit for rule ~s:~
+         ((eq direction :right)
+          (unless (eq (edge-right-daughter dominating-edge) subsumed-edge)
+            (error  "~%in tuck-new-edge-under-already-knit for rule ~s:~
                     ~%edge-right-daughter in dominating edge ~s ~
                     ~%is not subsumed-edge ~s in sentence:~%~s~%"
-                 *current-da-rule* dominating-edge subsumed-edge
-                 (current-string)))
-        (setf (edge-right-daughter dominating-edge) new-edge))
-       ((eq direction :left)
-        (unless (eq (edge-left-daughter dominating-edge) subsumed-edge)
-          (error "~%in tuck-new-edge-under-already-knit:~
+                    *current-da-rule* dominating-edge subsumed-edge
+                    (current-string)))
+          (setf (edge-right-daughter dominating-edge) new-edge))
+         ((eq direction :left)
+          (unless (eq (edge-left-daughter dominating-edge) subsumed-edge)
+            (error "~%in tuck-new-edge-under-already-knit:~
                   ~%edge-left-daughter in dominating edge ~s ~
                   ~%is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
-        (setf (edge-left-daughter dominating-edge) new-edge)))
+          (setf (edge-left-daughter dominating-edge) new-edge)))
      
-     (let ((dominating-edge-ev
-            (ecase direction
-              (:right (edge-ends-at dominating-edge))
-              (:left (edge-starts-at dominating-edge))))
-           (new-edge-ev
-            (ecase direction
-              (:right (edge-ends-at new-edge))
-              (:left (edge-starts-at new-edge)))))
-       ;; (push-debug `(,dominating-edge-ev ,new-edge-ev))
-       ;; (break "tucking 2")
-       ;; (setq dominating-edge-ev (car *) new-ev (cadr *))
+       (let ((dominating-edge-ev
+              (ecase direction
+                (:right (edge-ends-at dominating-edge))
+                (:left (edge-starts-at dominating-edge))))
+             (new-edge-ev
+              (ecase direction
+                (:right (edge-ends-at new-edge))
+                (:left (edge-starts-at new-edge)))))
+         ;; (push-debug `(,dominating-edge-ev ,new-edge-ev))
+         ;; (break "tucking 2")
+         ;; (setq dominating-edge-ev (car *) new-ev (cadr *))
 
-       ;; Remove the dominating edge from its ends/start-at vector
-       (if (eq dominating-edge (highest-edge dominating-edge-ev))
-         (then ;; easy case
-           (pop-topmost-edge dominating-edge-ev)
-           ;; insert the dominating edge just above the top edge
-           ;; at the end location
-           (tuck-in-just-above new-edge-ev new-edge dominating-edge direction))
-         (else
-           ;; Several edges are above the edge now just above the
-           ;; subsumed-edge. They all have to be repositioned (in order)
-           ;; at the end-position of the top-edge where sit above it
-           (move-edges-above-to-new-pos 
-            subsumed-edge
-            (ecase direction
-              (:left (edge-starts-at subsumed-edge))
-              (:right (edge-ends-at subsumed-edge)))
-            new-edge-ev
-            direction)))
+         ;; Remove the dominating edge from its ends/start-at vector
+         (if (eq dominating-edge (highest-edge dominating-edge-ev))
+             (then ;; easy case
+               (pop-topmost-edge dominating-edge-ev)
+               ;; insert the dominating edge just above the top edge
+               ;; at the end location
+               (tuck-in-just-above new-edge-ev new-edge dominating-edge direction))
+             (else
+               ;; Several edges are above the edge now just above the
+               ;; subsumed-edge. They all have to be repositioned (in order)
+               ;; at the end-position of the top-edge where sit above it
+               (move-edges-above-to-new-pos 
+                subsumed-edge
+                (ecase direction
+                  (:left (edge-starts-at subsumed-edge))
+                  (:right (edge-ends-at subsumed-edge)))
+                new-edge-ev
+                direction)))
        
-       (when *description-lattice*
-         ;;(break "About to reinterpret ~a" dominating-edge)
-         (reinterpret-dominating-edges dominating-edge))
+         (when *description-lattice*
+           ;;(break "About to reinterpret ~a" dominating-edge)
+           (reinterpret-dominating-edges dominating-edge)))
        dominating-edge))))
 
 (defparameter *reinterpret-dominating-edges-warning* nil)
