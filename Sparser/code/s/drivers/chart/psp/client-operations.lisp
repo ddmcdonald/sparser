@@ -842,6 +842,7 @@
     (if (and (individual-p desc)
              (or (itypep desc 'bio-entity)
                  (itypep desc 'disease)
+                 (itypep desc 'bio-location) ;; for "immune system"
                  (itypep desc 'bio-mechanism))) ;; for pathways
         (if (itypep desc 'collection)
             (push-sem-bio-entity-collection mention desc)
@@ -858,7 +859,8 @@
                                          (cond ((eq (type-of val) 'discourse-mention)
                                                 (push-sem->indra-post-process val sentence nil nil))
                                                ((and (individual-p val)
-                                                     (itypep val 'bio-entity))
+                                                     (or (itypep val 'bio-entity)
+                                                         (itypep val 'bio-location)))
                                                 (if (itypep val 'collection)
                                                     (loop for s
                                                           in (cdr (assoc 'sp::items (cdr (sem-sexp val))))
@@ -866,7 +868,8 @@
                                                     (get-indra-entity-form-from-sem-sexp
                                                      (itype-of val)
                                                      (sem-sexp val)
-                                                     (fom-clause-var mention))))
+                                                     (fom-clause-var mention)
+                                                     mention)))
                                                ((individual-p val)
                                                 (indra-form-for-sexpr (sem-sexp val) nil nil))
                                                (t val))))))
@@ -882,7 +885,8 @@
                   ,(cond ((eq (type-of val) 'discourse-mention)
                           (push-sem->indra-post-process val sentence nil nil))
                          ((and (individual-p val)
-                               (itypep val 'bio-entity))
+                               (or (itypep val 'bio-entity)
+                                   (itypep val 'bio-location)))
                           (if (itypep val 'collection)
                               (loop for s
                                     in (cdr (assoc 'sp::items (cdr (sem-sexp val))))
@@ -890,7 +894,8 @@
                               (get-indra-entity-form-from-sem-sexp
                                (itype-of val)
                                (sem-sexp val)
-                               (fom-clause-var mention))))
+                               (fom-clause-var mention)
+                               mention)))
                          ((individual-p val)
                           (indra-form-for-sexpr (sem-sexp val) nil nil))
                          ((or (numberp val) (symbolp val))
@@ -927,7 +932,8 @@
          (get-indra-entity-form-from-sem-sexp
           (itype-of desc)
           (sem-sexp desc)
-          (fom-clause-var mention))))
+          (fom-clause-var mention)
+          mention)))
     (when indra-form
       (save-indra-sexpr mention indra-form))))
 

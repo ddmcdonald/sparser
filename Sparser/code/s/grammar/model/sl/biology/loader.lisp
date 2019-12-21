@@ -111,6 +111,8 @@
 
 (gload "bio;molecules")
 (gload "bio;new-defs;new-molecules")
+;; get rid of old incomplete list in favor of new one with ids
+(gload "bio;new-defs;new-diseases")
 
 ;(gload "bio;trips-terms.lisp")
 ;(gload "bio;trips-terms-new.lisp")

@@ -1572,7 +1572,8 @@
                      collect (make-entity-form name id-set))))))))
 
 (defun make-entity-form (text mapping)
-  (when (or (getf mapping :name) (remove nil (getf mapping :ids))) ;; not true for "What genes"
+  (when (or (getf mapping :name)
+            (remove nil (getf mapping :ids))) ;; not true for "What genes"
     `(:name ,(getf mapping :name)
             :db--refs ,(append `(:+text+ ,text)
                                (make-db-refs (getf mapping :ids)
@@ -1741,35 +1742,99 @@
                                                         (t isa)))
                                          :var (:+sparser+ ,(getf ent-formula :var)))))))))
 
-(defun get-indra-entity-form-from-sem-sexp (isa alist &optional var
+(defun get-indra-entity-form-from-sem-sexp (isa alist var mention
                                             &aux ent-formula uid)
   (unless (symbolp isa)
     (setq isa (cat-name isa)))
-  (when (and (consp alist)(not (consp (car alist)))) ;; standard (sem-sexp ...) with category as car
-    (setq alist (cdr alist)))             
-  (setq ent-formula
-        `(:var ,(or var 'xxx) :isa ,isa
-               ,@(loop for al in alist
-                       append
-                         (list (intern (symbol-name (car al)) "KEYWORD")
-                               (second al)))))
-  (setq uid (getf ent-formula :uid))
-  (make-entity-form (getf ent-formula :raw-text)
-                    `(:name ,(if (eq 0 (search "UP" uid))
-                                 (hgnc-name-from-uniprot uid)
-                                 (getf ent-formula :name))
-                            :ids ,(get-id-set ent-formula)
-                            :type ,(let ((isa (getf ent-formula :isa)))
-                                                  (cond ((or (eq isa *kb-protein*)
-                                                             (eq isa *ont-protein*)
-                                                             (eq isa 'sp::protein))
-                                                         *ont-gene-protein*)
-                                                        ((eq (symbol-package isa)
-                                                             (find-package :kb))
-                                                         (intern (symbol-name isa)
-                                                                 (find-package :ont)))
-                                                        (t isa)))
-                            :var (:+sparser+ ,(getf ent-formula :var)))))
+  (cond ((eq isa 'bio-complex)
+         (get-indra-entity-form-for-complex mention))
+        ((or (eq isa 'signaling-pathway)
+             (eq isa 'pathway))
+         (get-indra-entity-form-for-signaling-pathway mention))
+        (t
+         (when (and (consp alist)(not (consp (car alist)))) ;; standard (sem-sexp ...) with category as car
+           (setq alist (cdr alist)))             
+         (setq ent-formula
+               `(:var ,(or var 'xxx) :isa ,isa
+                      ,@(loop for al in alist
+                              append
+                                (list (intern (symbol-name (car al)) "KEYWORD")
+                                      (second al)))))
+         (setq uid (getf ent-formula :uid))
+         (make-entity-form (getf ent-formula :raw-text)
+                           `(:name ,(if (eq 0 (search "UP" uid))
+                                        (hgnc-name-from-uniprot uid)
+                                        (getf ent-formula :name))
+                                   :ids ,(get-id-set ent-formula)
+                                   :type ,(let ((isa (getf ent-formula :isa)))
+                                            (cond ((or (eq isa *kb-protein*)
+                                                       (eq isa *ont-protein*)
+                                                       (eq isa 'sp::protein))
+                                                   *ont-gene-protein*)
+                                                  ((eq (symbol-package isa)
+                                                       (find-package :kb))
+                                                   (intern (symbol-name isa)
+                                                           (find-package :ont)))
+                                                  (t isa)))
+                                   :var (:+sparser+ ,(getf ent-formula :var)))))))
+
+(defun get-indra-entity-form-for-complex (mention)
+  #+:ignore
+  ;; Ben says that this is not the representation for a complex
+  `((:TYPE . "Complex")
+    (:MEMBERS ,.(loop for pair in (cdr alist)
+                      collect
+                        (second pair))))
+  ;; but this is the form
+  #+ignore
+  (:NAME "MAP2K1"
+         :BOUND--CONDITIONS
+         ((:AGENT
+           (:NAME "MAPK1" :DB--REFS
+                  (:+TYPE+ "ONT::GENE-PROTEIN" :+TEXT+ "MAPK1"
+                           :+HGNC+ "6871" :+UP+ "P28482" :+NCIT+ "C52872"))
+           :IS--BOUND KB::TRUE))
+         :DB--REFS
+         (:+TEXT+ "MAP2K1" :+HGNC+ "6840" :+UP+ "Q02750"
+                  :+NCIT+ "C52823" :+TYPE+ "ONT::GENE-PROTEIN"))
+  (let* ((components
+          (loop for dep in (dependencies mention)
+                when (eq (var-name (dependency-variable dep)) 'component)
+                collect
+                  (save-bob-sparser-indra-form
+                   (fom-clause-var (dependency-value dep))
+                   (get (fom-clause-var (dependency-value dep))
+                        :SAVE-INDRA-SEXPR))))
+         (cp (second components))
+         (agent (car components))
+         (result `(,(car cp) ,(second cp)
+                    :bound--conditions
+                    ((:agent ,agent))
+                    :db--refs
+                    ,(getf cp :db--refs))))
+    #+ignore
+    (break "get-indra-entity-form-for-complex~%  mention-~s~%~s~%"
+           mention
+           result)
+    result))
+
+(defun get-indra-entity-form-for-signaling-pathway (mention)
+  (let* ((mods
+          (loop for dep in (dependencies mention)
+                when (member (var-name (dependency-variable dep))
+                             '(modifier location non-cellular-location)) ;; location for "immune system"
+                collect
+                  (save-bob-sparser-indra-form
+                   (fom-clause-var (dependency-value dep))
+                   (get (fom-clause-var (dependency-value dep))
+                        :SAVE-INDRA-SEXPR))))
+         (result `(#+ignore
+                   (:name ,(retrieve-surface-string
+                            (base-description mention)))
+                   ,(car mods))))
+    ;;(break)
+
+    result))
   
 (defun hgnc-name-from-uniprot (uid)
   (funcall (intern "HGNC-NAME-FROM-UNIPROT" :spg)

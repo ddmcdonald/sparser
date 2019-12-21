@@ -1961,12 +1961,16 @@ can still match things like CHK1 and CHK-1"
 (defun save-bob-sparser-indra-forms ()
   (loop for mention-indra in (hal *indra-mention-var-ht*)
         do
-          (setf (get (intern (symbol-name (car mention-indra)) :kb)
-                     :sparser-indra-rep)
-                (convert-to-biosense
-                 (cdr mention-indra)
-                 (symbol-name (car mention-indra))))))
+          (save-bob-sparser-indra-form (car mention-indra)
+                                       (cdr mention-indra))))
 
+
+(defun save-bob-sparser-indra-form (sp-var-symbol form)
+  (setf (get (intern (symbol-name sp-var-symbol) :kb)
+             :sparser-indra-rep)
+        (convert-to-biosense
+         form
+         (symbol-name sp-var-symbol))))
 
 (defun cl-user::bob-sparser-to-indra-forms ()
   (loop for mention-indra in (hal *indra-mention-var-ht*)
@@ -1975,6 +1979,8 @@ can still match things like CHK1 and CHK-1"
                 (convert-to-biosense
                  (cdr mention-indra)
                  (symbol-name (car mention-indra))))))
+
+
 
 #+ignore
 (defun cl-user::biosense-for-sparser-output (&optional var)

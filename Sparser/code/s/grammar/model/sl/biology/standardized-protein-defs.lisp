@@ -6501,7 +6501,7 @@
 (define-protein "UP:P20138" ("CD33" "CD33 molecule" "SIGLEC 3" "SIGLEC3" "gp67")) 
 (define-protein "UP:P20142" ("P20142" "PGC" "PGCs" "Pepsinogen C" "PgC" "gastricsin" "pepsinogen" "pepsinogen C" "progastricsin")) 
 (define-protein "UP:P20145" ("probable non-specific lipid-transfer protein")) 
-(define-protein "UP:P20151" ("KLK-2" "KLK2" "KLK2_HUMAN" "glandular kallikrein-1" "hGK-1" "kallikrein 2" "kallikrein related peptidase 2" "kallikrein-2" "p20151" "prostatic" "tissue kallikrein-2")) 
+(define-protein "UP:P20151" ("KLK-2" "KLK2" "KLK2_HUMAN" "glandular kallikrein-1" "hGK-1" "kallikrein 2" "kallikrein related peptidase 2" "kallikrein-2" "p20151" "tissue kallikrein-2")) 
 (define-protein "UP:P20154" ("lin-11" "lin11")) 
 (define-protein "UP:P20155" ("SPINK2" "serine peptidase inhibitor, Kazal type 2")) 
 (define-protein "UP:P20160" ("CAP7_HUMAN" "Cationic antimicrobial protein CAP37" "azurocidin" "heparin" "heparin binding protein" "heparin-binding protein" "p20160" "synergizes")) 
