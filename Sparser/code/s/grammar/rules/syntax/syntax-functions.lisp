@@ -1009,11 +1009,12 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (:method ((aux individual) (vg individual))
     (make-vg-aux aux vg)))
 
-(defun vg-cat (vg)
+(defun vg-cat (vg) ;; subroutine of check-passive-and-add-tense/aspect
   (cond ((category-p vg) vg)
         ((individual-p vg) (itype-of vg))
         (t (lsp-break "check-passive-and-add-tense/aspect -- no category to check passive verb"))))
 
+;;/// who calls this?
 (defun check-passive-and-add-tense/aspect (aux vg)
   (declare (special category::vg *parent-edge-getting-reference*))
   (let* ((be-edge (left-edge-for-referent))
@@ -1033,8 +1034,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                nil
                (break "check-passive-and-add-tense/aspect got ~s in ~s~%"
                      (form-cat-name be-edge)
-                     (current-string))))
-           
+                     (current-string))))           
       (loop for vg-item
             in (if (is-basic-collection? vg) (value-of 'items vg) (list vg))
             do
@@ -1046,7 +1046,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
                   (when *parent-edge-getting-reference*
                     ;; this is now (12/23/2016) used in polar questions, so there is no edge yet
                     (revise-parent-edge :form category::vg)))))
-     
       (if (eq be-form 'preposed-auxiliary)
         (then
          ;; (break "aux: ~a  vg: ~a" be-edge vg-edge) ;; test the plausibility check
@@ -1887,12 +1886,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
          (vp-form (edge-form vp-edge))
          result)
 
-    ;;(when (edge-p (edge-right-daughter vp-edge))
-    ;; The other possibility is :single-term, which indicates
-    ;; that we've just got a vg (one one form or another)
-    ;; and not a full vp, in which case we're returning nil
-    ;; so that the rule doesn't go through.
-
     ;; Don't want to have a subject in a relative clause if there is
     ;; no object (complement) in the VP. Applies to main clauses modulo
     ;; the possibility of traces.
@@ -1919,8 +1912,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
        (and
         (not
          ;; aux inversion in question "is STAT3 involved in ..." ; ;
-         (let ((word-before (word-just-to-the-left (left-edge-for-referent)))
-               (edges-before (edges-just-to-left-of (left-edge-for-referent))))
+         (let ((word-before (word-just-to-the-left np-edge))
+               (edges-before (edges-just-to-left-of np-edge)))
            (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
                 (member (pname word-before)
                         '("is" "was" "were" "are")
@@ -1940,12 +1933,16 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
       ;; regular cases
       ((proper-noun? np-edge) ;; proper nouns don't take restrictive qualifiers
-       (when (transitive-vp-missing-object? vp)
-         (revise-parent-edge :form category::transitive-clause-without-object))
-       (assimilate-subcat vp :subject subj))
+       ;; but does it fill the object of the vp or its subject
+       (if (transitive-vp-missing-object? vp (e# 11))
+         (assimilate-subcat vp :object subj)
+         (else
+           (when (transitive-vp-missing-object? vp)
+             (revise-parent-edge :form category::transitive-clause-without-object))
+           (assimilate-subcat vp :subject subj))))
 
-      ((and (can-fill-vp-object? vp subj (left-edge-for-referent))
-            (not (verb-premod-sequence? (left-edge-for-referent)))
+      ((and (can-fill-vp-object? vp subj np-edge)
+            (not (verb-premod-sequence? np-edge))
             (loop for binding in (indiv-old-binds vp)
                       thereis (not (member (var-name (binding-variable binding))
                                            '(past raw-text)))))
