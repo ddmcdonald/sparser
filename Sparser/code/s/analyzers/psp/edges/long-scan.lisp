@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "long scan"
 ;;;    Module:   "analyzers;psp:edges:"
-;;;   Version:   October 2019
+;;;   Version:   December 2019
 
 ;; 1.0 (9/7/92 v2.3) flushed out of date field references
 ;; 1.1 (2/24/94) added daughter and used-in encoding
@@ -35,9 +35,11 @@
    To make the mention-tracking machinery happy we need to add
    an edge over it.   "
   ;; 'edge' is hook for alternatively using a unary rule in the same
-  ;; way tha tmake-predication-edge does.
-  (let ((starting-position start)
-        (ending-position end)
+  ;; way that make-predication-edge does.
+  (unless head-edge
+    (error "the 'head-edge' argument must be supplied"))
+  (let ((starting-position (or start (pos-edge-starts-at head-edge)))
+        (ending-position (or end (pos-edge-ends-at head-edge)))
         (category-label (or category
                             (when head-edge (edge-category head-edge))))
         (form-label (or form
