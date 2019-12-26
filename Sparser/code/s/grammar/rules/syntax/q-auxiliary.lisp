@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "q-auxiliary"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  September 2019
+;;;  Version:  December 2019
 
 ;; Broken out of questions.lisp for ease of development
 
@@ -54,7 +54,8 @@
                 (set-edge-referent edge k) ;; the key side-effect so ref. changes
                 (values edge k)))))) ;; for when we trace this function
       ;;/// revise given more complex enabling conditions
-      (tr :clause-without-wh-element edge))))
+      nil  ;;(tr :clause-without-wh-element edge)
+      )))
 
 (defun trace-out-path-to-wh-element (edge)
   "Given a clause ('s') edge that is known to start with a wh-pronoun,
@@ -145,24 +146,43 @@
 ;;; helper for incorporating displace aux
 ;;;---------------------------------------
 
-(defun incorporate-displace-aux-into-predicate (aux-edge predicate-edge
+(defun incorporate-displaced-aux-into-predicate (aux-edge predicate-edge
                                                 &key ((:left left-edge))
                                                      ((:right right-edge)))
   "Adds the tense information to the predicate.
    The routine that does the work -- add-tense/aspect-info-to-head -- assumes
-   it's in a regular rule evaluation context so we need to emulate it.
+   that it's in a regular rule evaluation context so we need to emulate it
+   by binding the left and right edges into the reference by using the
+   with-referent-edge macro. These are the aux and verb-head edges.
    Returns the predicate with its additional binding."
   (with-referent-edges  (:l left-edge :r right-edge)
-    (let ((aux (etypecase aux-edge (edge (edge-referent aux-edge)) (individual aux-edge)))
+    (let ((aux (etypecase aux-edge
+                 (edge (edge-referent aux-edge))
+                 (individual aux-edge)))
           (predicate
            (etypecase predicate-edge
-             (edge (edge-referent predicate-edge)) (individual predicate-edge))))
+             (edge (edge-referent predicate-edge))
+             (individual predicate-edge))))
       (if (eq (form-cat-name aux-edge) 'preposed-auxiliary)
         (if (plausibly-too-early-to-take-preposed-aux aux-edge predicate-edge)
           predicate                                 
           (add-tense/aspect aux predicate))
         (add-tense/aspect aux predicate)))))
 
+
+;;;-----------------------------------------------------
+;;; abstraction for looking up rules and building edges
+;;;-----------------------------------------------------
+
+(defun rule-to-edge (left-edge right-edge)
+  "Packages a frequent set of actions in the q-pattern code.
+   1. Ask determine whether there is a rule to compose the two edges,
+   then 2. make the corresponding edge.
+   Returns nil if there is no rule, otherwise it returns the edge."
+  (let ((rule (multiply-edges left-edge right-edge)))
+    (when rule
+      (make-completed-binary-edge left-edge right-edge rule))))
+     
 
 ;;;-------------------------------
 ;;; auxiliaries for WH delimiting
