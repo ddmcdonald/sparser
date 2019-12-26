@@ -3,9 +3,13 @@
 ;;; 
 ;;;     File:  "discontinuous"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  July 2019
+;;;  Version:  December 2019
 
 (in-package :sparser)
+
+(defparameter *unhook-discontinuous-left-edge* t
+  "For experimenting. If this is up, then while making a discontinuous
+ edge we remove the left edge from its original edge vectors")
 
 (defun make-discontinuous-edge (left-edge right-edge rule)
   "The left and right edges are not adjacent. For preposed auxiliaries,
@@ -24,6 +28,9 @@
   (let* ((edge (next-edge-from-resource))
          (starting-vector (edge-starts-at right-edge))
          (ending-vector (edge-ends-at right-edge)))
+
+    (when *unhook-discontinuous-left-edge*
+      (remove-edge-from-chart left-edge))
 
     ;; new edge goes directly over the right-edge
     (knit-edge-into-positions edge starting-vector ending-vector)
