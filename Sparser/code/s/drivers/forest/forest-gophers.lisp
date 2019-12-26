@@ -419,9 +419,9 @@
               (right-form (when (edge-p right) ;; vs. a symbol
                             (edge-form right))))
          (cond
-           ((eq (cat-name (edge-category edge)) 'event-relation)
+           ((eq (edge-cat-name edge) 'event-relation)
             nil)
-           ((eq (edge-form left) category::pp)
+           ((eq (edge-form-name left) 'pp)
             (let ((vp-edge (loop for e in (edge-constituents edge)
                                  when (vp-category? (edge-form e))
                                  do (return e))))
@@ -436,6 +436,9 @@
             left)
            ((verb-category? right) ;; "is activated"
             right)
+           ((eq right :long-span) ;; it's hopeless -- parse was odd though
+            ;; "the amount of MAPK1 phosphorylated "
+            nil)
 
            (t (push-debug `(,left ,right ,left-form ,right-form))
               ;;(print `(can't find verb on edge ,edge)) 

@@ -77,7 +77,9 @@
   ;; the common end-of-segment adjudicator to dispatch again.
   (declare (special *chunk-sentence-into-phrases*
                     *segment-ended-because-of-boundary-from-form-label*
-                    *left-segment-boundary* *right-segment-boundary*))
+                    *left-segment-boundary* *right-segment-boundary*
+                    *readout-segments-inline-with-text* *display-word-stream*
+                    *readout-segments* ))
   (tr :pts)
   (when boundary-from-edge?
     (setq *segment-ended-because-of-boundary-from-form-label* t))
