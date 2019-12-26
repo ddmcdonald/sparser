@@ -12,20 +12,22 @@
 
 
 (defun make-question-and-edge (statement start-pos end-pos
-                               &key ((:head head-edge)) wh wh-edge rule)
+                               &key ((:head head-edge)) wh rule)
   "Wrap the referent in an instance of a wh-question as its statement.
    Make an edge over the whole span using whatever pieces the callers
-   have supplied."
+   have supplied.
+     The 'head' argument is required. It shapes the final edge.
+     The 'wh' argument is required to create the wh individual. "
   (labels ((decode-wh (wh)
              "Identify and return an individual we can feed to
               make-wh-object as its wh argument, i.e. either one of
               the wh categories or an already build instance of wh-question
               that we'll extend."
              (typecase wh
-               (null (break "no value passed in for wh"))
+               (null (error "no value passed in for wh"))
                (category
                 (if (itypep wh 'wh-pronoun)
-                  wh (break "WH is an individual but not a wh-pronoun: ~a" wh)))
+                  wh (error "WH is an individual but not a wh-pronoun: ~a" wh)))
                (individual
                 (cond
                   ((itypep wh 'wh-pronoun) wh)
@@ -35,11 +37,13 @@
                            wh (sentence-string (sentence)))
                      nil)))
                (edge
-                (setq wh-edge wh)
                 (decode-wh (edge-referent wh)))
                (otherwise
-                (break "unexpected object passed in for wh: ~a" wh)))))
+                (error "unexpected object passed in for wh: ~a" wh)))))
     (when (null (decode-wh wh))
+      (when *debug-questions*
+        (push-debug `(,head-edge ,wh ,statement ,start-pos ,end-pos))
+        (break "decode-wh returned nil"))
       (return-from make-question-and-edge nil))
     (let* ((wh-base (decode-wh wh))
            (q (cond ((or (itypep wh-base 'wh-pronoun)
@@ -52,7 +56,6 @@
                       (loop for binding in (indiv-old-binds statement)
                             when (eq (binding-value binding) wh-base)
                             do (return (binding-variable binding)))))
-
                     ((itypep wh-base 'wh-question)
                      (extend-wh-object wh-base :statement statement))
                     (t (break "Unexpected value returned by decode-wh: ~a" wh-base)))))
@@ -374,7 +377,7 @@
     ;; This doesn't work in the question case
     ;; (is-passive? vp+ed-edge)
      
-    (let* ((i (incorporate-displace-aux-into-predicate
+    (let* ((i (incorporate-displaced-aux-into-predicate
                be predicate :left be-edge :right vp+ed-edge))
 
            ;; We know this a passive clause because of the
@@ -417,14 +420,59 @@
                     :form category::s
                     :referent q)))
         (make-polar-edge edge)))))
-  
-(defun polar-reduced-relative (aux-edge noun-edge vp+ed-edge adj-edge start-pos end-pos)
+
+;; (p/s "Is the amount of MAPK1 phosphorylated eventually high?")
+;; "Is MAP2K1 bound to MAPK1 eventually high?"
+;;
+(defun polar-reduced-relative (aux-edge np-edge vp+ed-edge adj-edge start-pos end-pos)
+  "We assume the vg (vp) is a reduced relative on the np, and the reconstructed
+   form is np+relative aux adj -- 'the amount is eventually high'.
+   Borrows heavily from np-vg+ed DA function."
   (tr :wh-walk "polar-reduced-relative")
-  (when *debug-questions*
-    (push-debug `(,aux-edge ,noun-edge ,vp+ed-edge ,adj-edge))
-    ;; Want the reduced relative appreciated as such.
-    ;; Ub "Is MAP2K1 bound to MAPK1 eventually high?" the two edges don't have a rule
-    (break "finish polar-reduced-relative")))
+  (if (eq (form-cat-name vp+ed-edge) 'vg+ed)
+    (then ; we can be (relatively) sure the vg is a reduced relation
+      ;; So see if the aux and the adjective compose
+      (let ((aux+adj-rule (multiply-edges aux-edge adj-edge)))
+        (if aux+adj-rule
+          (let* ((copular-edge
+                  ;;/// this is wrong -- messes up tts of final edge
+                  (make-completed-binary-edge aux-edge adj-edge aux+adj-rule))
+                 (reduce-var (vg-is-reduced-relative? np-edge vp+ed-edge copular-edge)))
+            (if reduce-var
+              ;; compose the np and the vp as a reduced relative
+              (let* ((np-ref (edge-referent np-edge))
+                     (vg-ref (edge-referent vp+ed-edge))
+                     (vp-ref (create-predication-by-binding
+                              reduce-var np-ref vg-ref))
+                     (i (bind-variable 'predication vp-ref np-ref))
+                     (larger-np-edge
+                      (make-chart-edge
+                       :referent i
+                       :left-edge np-edge
+                       :right-edge vp+ed-edge ;/// and another for the predication
+                       :category (edge-category np-edge)
+                       :form (edge-form np-edge)
+                       :rule 'polar-reduced-relative)))
+                (let* ((np+copular-rule (multiply-edges larger-np-edge copular-edge))
+                       (full-spanning-edge
+                        (when np+copular-rule
+                          (make-completed-binary-edge
+                           larger-np-edge copular-edge np+copular-rule))))
+                  (make-polar-question-edge
+                   (edge-category full-spanning-edge) ; label
+                   'polar-reduced-relative ; rule
+                   (edge-referent full-spanning-edge) ; i
+                   start-pos end-pos)))
+              (else
+                (when *debug-questions*
+                  (break "~a is not a reduced relative" vp+ed-edge)))))
+          (else
+            (when *debug-questions*
+              (break "The aux and adj don't compose: ~a ~a" aux-edge adj-edge))))))
+    (else
+      (when *debug-questions*
+        (push-debug `(,aux-edge ,np-edge ,vp+ed-edge ,adj-edge))
+        (break "Is ~a a reduced relative? or what" vp+ed-edge)))))
 
 
 
@@ -527,7 +575,7 @@
             (make-edge-over-question
              'wh-initial-three-edges q e3 start-pos end-pos)))
          ((edge-over-aux? e2) ; e.g. "how does ..."
-          (let* ((ida (incorporate-displace-aux-into-predicate
+          (let* ((ida (incorporate-displaced-aux-into-predicate
                      e2 e3 :left e2 :right e3))
                  (i-edge (make-how-question-and-edge wh ida edges))
                  (i (edge-referent i-edge))
@@ -572,7 +620,6 @@
                (wh-initial-two-edges wh-edge (list wh-edge (third edges))
                                      start-pos end-pos))))))
       
- 
       ((edge-over-aux? (second edges))
        ;; "How many blocks did you add to the row?"
        (wh-initial-followed-by-modal wh-edge edges start-pos end-pos))
@@ -607,15 +654,71 @@
         (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
         (break "new 4 edge case wh-type: ~a" wh-type)))))
 
+
+;; "What is STAT3 expressed in?" whpn-vp-noun-vg+ed+prep
 (defun wh-initial-five-edges (wh-edge vg1 np vg2-edge prep-edge)
   ;; called by  whpn-vp-noun-vg+ed+prep DA rule
   (tr :wh-walk "wh-initial-five-edges")
+  (unless (and (wh-edge? wh-edge)
+               (edge-over-aux? vg1))
+    (when *debug-questions*
+      (when *debug-questions*
+        (break "five-edges: Wrong conditions"))
+      (return-from wh-initial-five-edges nil)))
   (let ((full-pp-edge (flesh-out-stranded-prep prep-edge wh-edge)))
-    (let ((e (compose-fleshed-out-pp-and-knit
-              vg2-edge full-pp-edge)))
-      (when e
-        (xxx)
-        ))))
+    (let* ((extended-vp (compose-fleshed-out-pp-and-knit vg2-edge full-pp-edge))
+           (aux+vp-rule (multiply-edges vg1 extended-vp)))
+      (if aux+vp-rule
+        (let* ((vp3 (make-completed-binary-edge vg1 extended-vp aux+vp-rule))
+               (np+vp-rule (multiply-edges np vp3))
+               (full-span (when np+vp-rule
+                            (make-completed-binary-edge np vp3 np+vp-rule))))
+          (when full-span
+            (make-question-and-edge
+             (edge-referent full-span) ; statement
+             (pos-edge-starts-at wh-edge)
+             (pos-edge-ends-at full-span)
+             :head full-span
+             :wh wh-edge
+             :rule 'wh-initial-five-edges)))))))
+
+#|
+           (i (incorporate-displaced-aux-into-predicate
+               vg1 ; aux edge
+               extended-vp ; predicate-edge
+               :left wh-edge
+               :right vg2-edge)))
+      ;; respan the vp for its modified interpretation
+      (let* ((vp3 (respan-new-referent
+                   i :head-edge extended-vp :constituents (list vg1 extended-vp)
+                   :rule 'wh-initial-five-edges))
+             (np+vp-rule (multiply-edges np vp3))
+             (full-span (make-completed-binary-edge np vp3 np+vp-rule)))
+|#
+
+
+(defun whnp-initial-five-edges (whnp aux-vp np vg+ed prep-edge start-pos end-pos)
+  ;; "What tissues is STAT3 expressed in? from whnp-is-prop-vg-prep
+  ;; Initial np has been checked by wh-edge? and aux-vp by edge-over-aux?
+  (let ((full-pp-edge (flesh-out-stranded-prep prep-edge whnp)))
+    (when full-pp-edge
+      (let* ((longer-vp (rule-to-edge vg+ed full-pp-edge))
+             (i (incorporate-displaced-aux-into-predicate
+                 aux-vp longer-vp :left aux-vp :right longer-vp))
+             (v-max (respan-new-referent i :head-edge longer-vp)))
+        (let ((s-edge (rule-to-edge np v-max)))
+          (if s-edge
+            (make-question-and-edge
+             (edge-referent s-edge)
+             start-pos end-pos
+             :wh whnp
+             :head s-edge
+             :rule 'whnp-initial-five-edges)
+            (when *debug-questions*
+              (push-debug `(,v-max ,np ,full-pp-edge))
+              (break "Something upstream didn't compose"))))))))
+
+
 
 (defun wh-initial-four-edges/adjunct (wh-edge edges start-pos end-pos)
   "The wh being asked is an adjunct, so the edges should make a clause"
@@ -638,7 +741,7 @@
                        (make-completed-binary-edge
                         e3 vp-edge rule2)))  ;; where + s
                  (fold-in-initial-wh-adjunct wh-edge edge-over-s
-                                             start-pos end-pos)) 
+                                             start-pos end-pos))
                (when *debug-questions*
                  (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
                  (break "subj & predicate don't compose, ~a ~a"
@@ -700,6 +803,7 @@
               :form (category-named 's)
               :referent (bind-dli-variable 'location wh stmt))))
       (t (break "unhandled initial adjunct type ~s" wh-cat)))
+         
     
     (make-question-and-edge (edge-referent edge-with-adjunct) ;;stmt
                             start-pos end-pos
@@ -861,6 +965,7 @@
        :rule 'wh-modal-s-prep))))
 
 (defun common-core-wh-modal-s-prep (wh-edge modal-edge s-edge prep-edge)
+  (tr :wh-walk 'common-core-wh-modal-s-prep)
   (let* ((pp-edge (flesh-out-stranded-prep prep-edge wh-edge))
          (s+pp-rule (multiply-edges s-edge pp-edge)))
     (unless s+pp-rule 
@@ -868,7 +973,7 @@
       nil)
     (when s+pp-rule
       (let* ((s+pp-edge (make-completed-binary-edge s-edge pp-edge s+pp-rule))
-             (i (incorporate-displace-aux-into-predicate
+             (i (incorporate-displaced-aux-into-predicate
                  modal-edge s+pp-edge :left modal-edge :right s+pp-edge)))
         (respan-new-referent i
                              :start (pos-edge-starts-at s+pp-edge)
@@ -920,7 +1025,6 @@
              (head-edge (loop for edge in fringe-edges
                            when (takes-preposition? edge prep-edge)
                            return edge))
-             
              (predicate (when head-edge (edge-referent head-edge)))
              (preposition (get-word-for-prep (value-of 'prep (edge-referent pp-edge))))
              (wh-item (value-of 'pobj (edge-referent pp-edge)))
@@ -952,12 +1056,14 @@
         (break "No rule for ~a + ~a" edge-taking-prep pp-edge))
       (return-from compose-fleshed-out-pp-and-knit nil))
     (let ((extended-edge
-            (make-completed-binary-edge edge-taking-prep pp-edge rule)))
-      (tuck-new-edge-under-already-knit
-       edge-taking-prep ; subsumed-edge
-       extended-edge    ; new-edge
-       parent-of-head   ; dominating-edge
-       :right))))
+           (make-completed-binary-edge edge-taking-prep pp-edge rule)))
+      (if parent-of-head
+        (tuck-new-edge-under-already-knit
+         edge-taking-prep ; subsumed-edge
+         extended-edge    ; new-edge
+         parent-of-head   ; dominating-edge
+         :right)
+        extended-edge))))
 
 (defun wh-subcat-stranded-prep (main-edge head-edge pp-edge start-pos end-pos)
   (tr :wh-walk 'wh-subcat-stranded-prep)
@@ -1110,6 +1216,8 @@
          (stmt-edge (third edges))
          (stmt (edge-referent stmt-edge)))
     (with-referent-edges (:l aux-edge :r stmt-edge)
+      ;;/// replace with incorporate-displace-aux-into-predicate, but only
+      ;; after reconciling its different approach to setting the tense
       (setq stmt (add-tense/aspect-info-to-head aux stmt))) ;; binds tense
     (let ((q (fold-wh-into-statement wh stmt wh-edge aux-edge stmt-edge)))
       ;; If the folding is successful, the wh will have been bound

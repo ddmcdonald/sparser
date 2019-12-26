@@ -1029,23 +1029,57 @@
            np-vg+ed first second))
 
 (defun np-vg+ed (np vg+ed)
+  "Have to determine the fate of the vg+ed -- is it a main verb or
+   is it a reduced relative and the actual main verb it to our
+   right (or preposed?)."
   (declare (special category::s category::vg+ed))
-  (unless (or (adverb-at? (pos-edge-starts-at vg+ed))
-              (to-be-at? (pos-edge-starts-at np)))
-    ;; this test is a heuristic, to block
-    ;; "another MAPK inhibitor, PD 98059, also inhibited ASPP2 function"
-    (let* ((*right-edge-into-reference* vg+ed)
-           (*left-edge-into-reference* np)
-           (interp (assimilate-subject (edge-referent np)
-                                       (edge-referent vg+ed))))
-      (declare (special *right-edge-into-reference* *left-edge-into-reference*))
-      ;; "Is MAPK1-bound MAP2K1 sustained?"
-      (when interp
-        (make-edge-spec
-         :category (edge-category vg+ed)
-         :form category::s
-         :referent interp
-         )))))
+
+  ;; It's a reduced relative if there's an edge to the right of the vg+ed
+  ;; and the np could be its subject.
+  ;; "the amount of MAPK1 phosphorylated is eventually high"
+  (let ((edge-on-right (edge-just-to-right-of vg+ed)))
+    (if (vg-is-reduced-relative? np vg+ed (edge-just-to-right-of vg+ed))
+      ;; If the vg+ed is a reduced relative then the np is its subject
+      ;; Compare '... which is <vg+ed>"
+      (let* ((np-ref (edge-referent np))
+             (vg-ref (edge-referent vg+ed))
+             (subj-var (subcategorized-variable vg-ref :subject np-ref)))
+        ;; cargo-culted from assimilate-subject-to-vp-ed
+        (let* ((vp-ref (create-predication-by-binding subj-var np-ref vg-ref))
+               (i (bind-variable 'predication vp-ref np-ref)))
+          ;; (push-debug `(,vp-ref ,vg-ref ,np-ref))  (break "i = ~a" i)
+          (make-edge-spec
+           :category (edge-category np)
+           :form category::np
+           :referent i)))
+
+      ;; main verb case
+      (unless (or (adverb-at? (pos-edge-starts-at vg+ed))
+                  (to-be-at? (pos-edge-starts-at np)))
+        ;; this test is a heuristic, to block
+        ;; "another MAPK inhibitor, PD 98059, also inhibited ASPP2 function"
+        (let* ((*right-edge-into-reference* vg+ed)
+               (*left-edge-into-reference* np)
+               (interp (assimilate-subject (edge-referent np)
+                                           (edge-referent vg+ed))))
+          (declare (special *right-edge-into-reference* *left-edge-into-reference*))
+          ;; "Is MAPK1-bound MAP2K1 sustained?"
+          (when interp
+            (make-edge-spec
+             :category (edge-category vg+ed)
+             :form category::s
+             :referent interp
+             )))))))
+
+
+(defun vg-is-reduced-relative? (np vg xp)
+  "The vg is a reduced relative if there's an edge to its right ('xp')
+   and the np could be its subject."
+  ;; "the amount of MAPK1 phosphorylated is eventually high"
+  (when xp
+    (subcategorized-variable
+     (edge-referent xp) :subject (edge-referent np))))
+
 
 
 (define-debris-analysis-rule proper-noun-vg+ed
@@ -1783,8 +1817,13 @@ assumed. |#
           (make-polar-copular-question
            *da-starting-position* end-pos edges)))))
 
-(define-debris-analysis-rule aux-np-vp-adj
+(define-debris-analysis-rule aux-proper-noun-vp-adj
     :pattern (preposed-auxiliary proper-noun vp+ed adjective)
+    :action (:function polar-reduced-rel first second third fourth))
+
+(define-debris-analysis-rule aux-np-vg-adj
+    :pattern (preposed-auxiliary np vg+ed adjective) ;/// why do we get a vg ?
+    ;; "Is the amount of MAPK1 phosphorylated eventually high?"
     :action (:function polar-reduced-rel first second third fourth))
 
 (defun polar-reduced-rel (aux-edge noun-edge vp+ed-edge adj-edge)
@@ -1857,6 +1896,8 @@ assumed. |#
                    (list np vg open-vp)))
           (end-pos (fix-da-ending-pos *da-ending-position*)))
       (wh-initial-three-edges np edges *da-starting-position* end-pos))))
+
+
 
 
 (define-debris-analysis-rule np-modal-s-prep
@@ -1942,9 +1983,23 @@ assumed. |#
 
 (define-debris-analysis-rule whpn-vp-noun-vg+ed+prep
     :pattern (wh-pronoun vg proper-noun vg+ed preposition)
+    ;; "What is STAT3 expressed in?"
+    :action (:function wh-initial-five-edges first second third fourth fifth))
+;;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+(define-debris-analysis-rule np-is-prop-vg-prep
+    :pattern (np vg proper-noun vg+ed preposition)
     ;; "What tissues is STAT3 expressed in?"
-    :action (:function wh-five-edges first second third fourth fifth))
+    ;;/// why was the "is" promoted to vg?
+    ;; Presumably also takes np in proper-noun position
+    :action (:function whnp-is-prop-vg-prep first second third fourth fifth))
 
+(defun whnp-is-prop-vg-prep (whnp aux-vp np vg+ed prep)
+  (when (wh-edge? whnp)
+    (when (edge-over-aux? aux-vp)
+      (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
+        (whnp-initial-five-edges whnp aux-vp np vg+ed prep
+                                 *da-starting-position* end-pos)))))
+    
 (define-debris-analysis-rule whpn-vg-np-vp+ed
     :pattern (wh-pronoun vg np vp+ed)
     ;; "What are the genes regulated by STAT3?
