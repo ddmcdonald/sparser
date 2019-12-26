@@ -161,8 +161,6 @@
       (let ((edge (make-completed-binary-edge preposed-aux-edge
                                                there-edge
                                                rule)))
-        ;;(format t "~&there-is edge: ~a~%" edge)
-        ;; add trace
         edge))))
 
 
@@ -435,8 +433,7 @@
       (let ((aux+adj-rule (multiply-edges aux-edge adj-edge)))
         (if aux+adj-rule
           (let* ((copular-edge
-                  ;;/// this is wrong -- messes up tts of final edge
-                  (make-completed-binary-edge aux-edge adj-edge aux+adj-rule))
+                  (make-discontinuous-edge aux-edge adj-edge aux+adj-rule))
                  (reduce-var (vg-is-reduced-relative? np-edge vp+ed-edge copular-edge)))
             (if reduce-var
               ;; compose the np and the vp as a reduced relative
@@ -445,24 +442,23 @@
                      (vp-ref (create-predication-by-binding
                               reduce-var np-ref vg-ref))
                      (i (bind-variable 'predication vp-ref np-ref))
+                     (respanned-vp+ed-edge
+                      (respan-new-referent i :head-edge vp+ed-edge :rule 'polar-reduced-relative))
                      (larger-np-edge
                       (make-chart-edge
                        :referent i
                        :left-edge np-edge
-                       :right-edge vp+ed-edge ;/// and another for the predication
+                       :right-edge respanned-vp+ed-edge
                        :category (edge-category np-edge)
                        :form (edge-form np-edge)
                        :rule 'polar-reduced-relative)))
-                (let* ((np+copular-rule (multiply-edges larger-np-edge copular-edge))
-                       (full-spanning-edge
-                        (when np+copular-rule
-                          (make-completed-binary-edge
-                           larger-np-edge copular-edge np+copular-rule))))
-                  (make-polar-question-edge
-                   (edge-category full-spanning-edge) ; label
-                   'polar-reduced-relative ; rule
-                   (edge-referent full-spanning-edge) ; i
-                   start-pos end-pos)))
+                (let* ((full-spanning-edge (rule-to-edge larger-np-edge copular-edge)))
+                  (when full-spanning-edge
+                    (make-polar-question-edge
+                     (edge-category full-spanning-edge) ; label
+                     'polar-reduced-relative ; rule
+                     (edge-referent full-spanning-edge) ; i
+                     start-pos end-pos))))
               (else
                 (when *debug-questions*
                   (break "~a is not a reduced relative" vp+ed-edge)))))
@@ -681,20 +677,6 @@
              :head full-span
              :wh wh-edge
              :rule 'wh-initial-five-edges)))))))
-
-#|
-           (i (incorporate-displaced-aux-into-predicate
-               vg1 ; aux edge
-               extended-vp ; predicate-edge
-               :left wh-edge
-               :right vg2-edge)))
-      ;; respan the vp for its modified interpretation
-      (let* ((vp3 (respan-new-referent
-                   i :head-edge extended-vp :constituents (list vg1 extended-vp)
-                   :rule 'wh-initial-five-edges))
-             (np+vp-rule (multiply-edges np vp3))
-             (full-span (make-completed-binary-edge np vp3 np+vp-rule)))
-|#
 
 
 (defun whnp-initial-five-edges (whnp aux-vp np vg+ed prep-edge start-pos end-pos)
