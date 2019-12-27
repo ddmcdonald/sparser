@@ -7,7 +7,7 @@
 
 (in-package :sparser)
 
-(defparameter *unhook-discontinuous-left-edge* t
+(defparameter *unhook-discontinuous-left-edge* nil
   "For experimenting. If this is up, then while making a discontinuous
  edge we remove the left edge from its original edge vectors")
 

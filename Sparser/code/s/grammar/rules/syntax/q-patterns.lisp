@@ -1135,7 +1135,7 @@
                   (make-question-and-edge (edge-referent s-edge)
                                           start-pos end-pos
                                           :wh wh
-                                          :wh-edge wh-edge
+                                          
                                           :head s-edge
                                           :rule 'wh-copula-stranded-prep)))))
              
@@ -1225,7 +1225,6 @@
          start-pos end-pos
          :head respan-edge
          :wh (edge-referent wh-edge)
-         :wh-edge wh-edge
          :rule 'wh-initial-followed-by-modal))))))
  
 
