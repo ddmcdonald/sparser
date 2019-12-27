@@ -1932,7 +1932,17 @@ there was an edge for the qualifier (e.g., there is no edge for the
                  (interpret-premod-to-verb subj vp)))))
 
       ;; regular cases
-      ((proper-noun? np-edge) ;; proper nouns don't take restrictive qualifiers
+      ((and (proper-noun? np-edge)
+            (not
+             (and
+              (member (pname (word-just-to-the-left np-edge))
+                      '("is" "was" "were" "are")
+                      :test #'equal)
+              (loop for e in  (edges-after (right-edge-for-referent))
+                    thereis '(vg+ed vp+ed verb+ed adjective)))))
+            
+       ;; proper nouns don't take restrictive qualifiers
+       ;; NO -- "MAP2K1 bound to MAPK1" shows one such example...
        ;; but does it fill the object of the vp or its subject
        (if (transitive-vp-missing-object? vp (e# 11))
          (assimilate-subcat vp :object subj)
