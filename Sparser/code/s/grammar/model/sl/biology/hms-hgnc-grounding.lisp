@@ -1703,7 +1703,7 @@
         ((member uid '("KEGG" "Reactome") :test #'equal)
          nil)
         (t
-         (warn "can't parse uid ~s" uid)
+         (break "can't parse uid ~s" uid)
          nil)))
            
 ;; go from sparser parse form (:VAR MV7336 :ISA PROTEIN :RAW-TEXT "frizzled8" :UID "UP:Q9H461" :NAME "FZD8_HUMAN")
@@ -1848,7 +1848,9 @@
   (cond ((getf entity :up)
          (push (hgnc-id-from-uniprot (getf entity :up)) ids))
         ((eq 0 (search "UP" uid))
-         (push (hgnc-id-from-uniprot uid)  ids))
+         (when (hgnc-id-from-uniprot uid)
+           ;;fails for :UID "UP:SL-0173" from "mitochondrion"
+           (push (hgnc-id-from-uniprot uid)  ids)))
         ((and (symbolp (getf entity :isa))
               (equal "PROTEIN-FAMILY" (symbol-name (getf entity :isa)))
               (not (eq 0 (search "FPLX" uid))))
