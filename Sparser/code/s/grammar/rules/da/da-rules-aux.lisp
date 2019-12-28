@@ -215,12 +215,10 @@
   (all-edges-on (pos-ends-here (pos-edge-ends-at edge))))
 
 (defun adverb-at? (position)
-  (declare (special category::adverb))
   (loop for e in (all-edges-on (pos-starts-here position))
         thereis (and (edge-p e) (eq (form-cat-name e) 'adverb))))
 
 (defun adjective-at? (position)
-  (declare (special category::adverb))
   (loop for e in (all-edges-on (pos-starts-here position))
         thereis (and (edge-p e) (member (form-cat-name e) '(adjective adjg)))))
 
