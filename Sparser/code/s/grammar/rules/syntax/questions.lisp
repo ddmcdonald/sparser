@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "questions"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  September 2019
+;;;  Version:  December 2019
 
 ;; Broken out from /grammar/model/sl/checkpoint/rules 6/17/09
 ;; Elaborated through 7/23/09. 9/28/11 removed spatial-orientation
@@ -336,17 +336,41 @@
 ;;; test suite
 ;;;------------
 
-(defparameter *biology-test-questions*
+(defparameter *biology-test-questions*  ; count = 64
   '("What is STAT3?"
+    "What drug could I use to target pancreatic cancer?"
+    "What apoptotic genes is stat3 upstream of?"
+    "What genes is stat3 upstream from?"
+    "What genes is stat3 upstream of?"
     "What transcription factors are regulators of SMURF2 in liver?"
     "What are the targets of PLX-4720?"
     "What are the targets of Selumetinib?"
     "What is the target of Selumetinib?" ;; chunking problem on 'the'
+    "What does miR-20b-5p target"
+    "What does p53 regulate?"
+    "what does stat regulate"
+    "What does STAT3 regulate in the liver?"
+    "What does it regulate in the liver?"
+    "What pathways involve SOARING?"
+    "What does MEK phosphorylate?"
+    "How does MAPK1 affect BRAF?"
     "How does KRAS activate MAPK3?"
+    "How does STAT3 affect c-fos"
+    "How does KRAS affect MAPK3?"
     "How is stat3 involved in apoptotic regulation?"
+    "How is stat3 involved in apoptotis regulation in the liver?"
+    "How is stat3 involved in regulating apoptosis?"
+    "How does STAT3 regulate the c-fos gene?"
+    "How does stat3 regulate apoptosis in the liver?"
+    "How does stat3 regulate apoptosis?"
+    "How does stat3 regulate apoptotic genes?"
+    "How is stat3 used to regulate apoptosis?"
     "How might a STAT3 mutation affect breast cancer?"
     "How many genes are in the MAPK signaling pathway?"
+    "How does SETDB1 affect ADAM17?" ;; needs extended set of proteins
+    "Where is STAT3 expressed?"
     "Where does stat3 regulate cfos"
+    "Where does STAT3 regulate the expression of c-fos?"
     "What drug could I use?"
     "What apoptotic genes does stat3 regulate in the liver"
     "Tell me what you want to do now."
@@ -369,6 +393,7 @@
     "Is STAT3 involved in apoptotic regulation?"
     "Is STAT3 involved in regulating apoptosis?"
     "Is STAT3 involved in regulating apoptosis?"
+    "Is STAT3 involved in apoptosis?"
     "Is phosphorylated MAPK1 sustained?"
     "Is stat3 involved in any apoptotic pathways?"
     "Is stat3 involved in apoptotic regulation?"
@@ -377,75 +402,18 @@
     "Is the MAP2K1-MAPK1 complex formed?"
     "Is the amount of MAPK1 phosphorylated eventually high?"
     "Is the amount of phosphorylated MAPK1 sustained?"
+    "Is phosphorylated MAPK1 sustained?"
 
     ))
-#|
-(p/s "Is STAT3 involved in apoptosis?")
-(p/s "Is MAPK1-bound MAP2K1 sustained?")
-(p/s "Is STAT3 involved in apoptotic regulation?")
-(p/s "Is STAT3 involved in regulating apoptosis?")
-(p/s "Is STAT3 involved in regulating apoptosis?")
-(p/s "Is phosphorylated MAPK1 sustained?")
-(p/s "Is stat3 involved in any apoptotic pathways?")
-(p/s "Is stat3 involved in apoptotic regulation?")
-(p/s "Is stat3 involved in regulating apoptosis?")
-(p/s "Is the MAP2K1-MAPK1 complex formed?")
-(p/s "Is the amount of phosphorylated MAPK1 sustained?")
-  applying np-vg+ed to (#<edge15 2 bio-amount 8> #<edge10 8 sustained  9>)
-  applying da/preposed+s to (#<edge2 1 be 2> #<edge16 2 sustained 9>)
-(p/s "How does STAT3 affect c-fos")
-(p/s "What does STAT3 regulate in the liver?")
-(p/s "What does it regulate in the liver?")
-(p/s "Where does STAT3 regulate the expression of c-fos?")
-(p/s "what does stat regulate")
-(p/s "How does MAPK1 affect BRAF?")
-(p/s "How does MAPK1 affect JUND?")
-(p/s "How does SETDB1 affect ADAM17?") ;; needs extended set of proteins
-(p/s "How does KRAS affect MAPK3?")
-(p/s "How does ITGAV affect ILK?")
-(p/s "How does ITGAV affect ILK?")
-(p "What apoptotic genes is stat3 upstream of?")
-(p/s "What does ERBB regulate?")
-(p/s "What does it regulate in liver")
-(p/s "What does miR-20b-5p target")
-(p/s "What does p53 regulate?")
-(p/s "What does rb1 regulate")
-(p/s "What does smad2 regulate")
-(p/s "What does stat regulate")
-(p/s "What drug could I use to target pancreatic cancer?")
-(p.s "What genes is stat3 upstream from?")
-(p/s "What genes is stat3 upstream of?")
-(p/s "Where is STAT3 expressed?")
-(p/s  "Which apoptotic genes is stat3 upstream of?")
-(p/s "How does KRAS activate MAPK3?")
-(p/s "How does STAT3 regulate the c-fos gene?")
-(p/s "How does stat3 regulate apoptosis in the liver?")
-(p/s "How does stat3 regulate apoptosis?")
-(p/s "How does stat3 regulate apoptotic genes?")
-(p/s "How is stat3 involved in apoptotic regulation?")
-(p/s "How is stat3 involved in apoptotis regulation in the liver?")
-(p/s "How is stat3 involved in regulating apoptosis?")
-(p/s "How is stat3 used to regulate apoptosis?")
-(p/s "How might a STAT3 mutation affect breast cancer?")
-(p/s "What pathways involve SOARING?")
-(p/s "Where does stat3 regulate cfos")
-(p/s "What does MEK phosphorylate?")
-|#
+
 
 
 #|
-(p "Consistent with the critical role of VEGF and VEGFR2 in BPD, 
-  human infants who die of BPD have little or no VEGF in their 
-  lung epithelium.")
-Error: New type of wh-obj passed in: #<ref-category INFANT>
-
-(p "Until now, it has been unclear how RAS could affect ASPP2 to enhance 
-p53 function") ;; dry-run $40
-From :id "PMC1702556" :corpus :jun15eval
-   This wh-np has no aux per se and blew out the loop
 (p "Whether all EGFR ectodomain mutants share a common mechanism of 
 oncogenic receptor conversion warrants further study.")
-9th June article
+;; doesn't appreciate that 'warrants' is the mainverb
+
+Questions in 9th June article
 "How does fibrinogen binding to αIIbβ3 lead to activation of Src?"
 "How is the specificity of Sos-1 directed toward Ras or Rac?"
 "What type of nuclear speckles is containing the IKKε protein?"
