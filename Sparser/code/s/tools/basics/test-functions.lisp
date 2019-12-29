@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "test-functions"
 ;;;    Module:   "tools:basics"
-;;;   Version:   January 2019
+;;;   Version:   December 2019
 
 ;; utilities for testing in R3. Made format-item prettier 1/10/15.
 ;; 2/8/15 Turning off anaphora on sentence calls. 
@@ -19,6 +19,7 @@
 (defvar *DEC-TESTS*)
 (defvar *JAN-DRY-RUN*)
 (defvar *aspp2-whole*) ;; one of the local declares does not seem to work
+
 (defparameter *show-semantics* t
   "Parameter default to run-test. If non-nil the semantic interpretation
   of the text is shown after it is parsed.")
@@ -35,14 +36,14 @@
 ;;;----------------------------
 ;;; Sentence corpus specifiers
 ;;;----------------------------
-; These specify which corpus a general iterator
-					; should run on.
+;; These specify which corpus a general iterator
+;; should run on. 
 
 (defun test-corpus (sentences &optional numbers)
   (setq *sentences* sentences)
   (reset-test)
-  (if (null numbers)
-      (setq numbers (loop for i from 1 to (length sentences) collect i)))
+  (when (null numbers)
+    (setq numbers (loop for i from 1 to (length sentences) collect i)))
   (loop for i in numbers
      do
        (run-test i nil)))
@@ -57,7 +58,11 @@
     (loop for i in numbers
        do
 	 (sem-test i))))
-  
+
+;; With no argument these run over the entire corpus.
+;; With specific numbers the run just those sentences.
+
+;; The sentence lists are all in r3/code/grammar-tests/
 
 (defun test-overnight (&rest numbers)
   (declare (special *overnight-sentences*))
@@ -83,7 +88,6 @@
   (declare (special *erk-abstract*))
   (test-corpus *erk-abstract* numbers))
 
-
 (defun test-aspp2 (&rest numbers)
   (declare (special *aspp2-whole*))
   (test-corpus *aspp2-whole* numbers))
@@ -95,6 +99,8 @@
 (defun test-load-test (&rest numbers)
   (declare (special *load-test-sents*))
   (test-corpus *load-test-sents* numbers))
+
+
 
 (defun test-sent (corpus n &key (multi-sent t) (no-syn-tree nil) (no-edges t) (quiet t) (stream *standard-output*))
   (declare (special *chunks* *overnight-sentences* *jan-dry-run*
@@ -108,14 +114,16 @@
         :quiet quiet
         :stream stream))
 
-(defun psem (sent &key (corpus nil)(n 0)(multi-sent t) (no-syn-tree nil) (no-edges t) (quiet t) (stream *standard-output*))
-  (let*
-      ((*readout-segments-inline-with-text* nil) ;; quiet
-       (*show-syn-tree* (not no-syn-tree))
-       (*end-of-sentence-display-operation*
-        (when multi-sent
-          #'(lambda (sent)
-              (display-sent-results sent corpus n :stream stream)))))
+(defun psem (sent &key (corpus nil)
+                    (n 0) (multi-sent t)
+                    (no-syn-tree nil) (no-edges t)
+                    (quiet t) (stream *standard-output*))
+  (let* ((*readout-segments-inline-with-text* nil) ;; quiet
+         (*show-syn-tree* (not no-syn-tree))
+         (*end-of-sentence-display-operation*
+          (when multi-sent
+            #'(lambda (sent)
+                (display-sent-results sent corpus n :stream stream)))))
     (declare (special *show-syn-tree* *readout-segments-inline-with-text*
                       *end-of-sentence-display-operation*))
     (cond
@@ -139,20 +147,18 @@
 (defun display-sent-results (sent corpus n &key (no-edges t) (quiet t) (stream *standard-output*))
   (show-sent-heading sent corpus n stream)
   (display-chunks stream)
-  (show-sem-syn-forest stream)
-  )
+  (show-sem-syn-forest stream))
 
 (defparameter *show-syn-tree* t)
 (defun show-sem-syn-forest (&optional  (stream *standard-output*) (no-edges t))
   (declare (special *show-syn-tree*))
   (loop for edge in (all-tts)
      do
-       (let
-	   ((*no-edge-info* no-edges)
-	    (*suppress-indiv-uids* t)
-	    (ref (if (edge-p edge)
-                     (edge-referent edge)
-                     edge)))
+       (let ((*no-edge-info* no-edges)
+             (*suppress-indiv-uids* t)
+             (ref (if (edge-p edge)
+                    (edge-referent edge)
+                    edge)))
 	 (declare (special *no-edge-info* *suppress-indiv-uids*))
 	 (format stream "~% --- ~s~%"
                  (if (edge-p edge)
@@ -214,8 +220,7 @@
   (format stream "~%"))
 
 (defun show-canonical-syntax-tree (stream &optional (no-edges t))
-  (let
-      ((*no-edge-info* no-edges))
+  (let ((*no-edge-info* no-edges))
     (declare (special *no-edge-info*))
     (ptree stream)))
 
@@ -330,8 +335,7 @@
  
 (defvar *tested* '(0)
  "Retest pushes sentence numbers onto this list 
-   as they are executed")
-
+  as they are executed")
 
 (defun reset-test ()
   "Set the two accumulators back to their initial values"
@@ -480,7 +484,8 @@
     
 ;; sentence a string.
 (defun p2sem (sentence) 
-  (format t "~2%----------------------------------------------~%Processing '~a'~%" sentence)
+  (format t "~2%----------------------------------------------~
+              ~%Processing '~a'~%" sentence)
   (p sentence)
   (show-sem-forest))
 
@@ -503,8 +508,7 @@
        (< (tree-size tree) 5)))
 
 (defun print-tree (tree &optional (last nil) (indent 0) (stream t)(tight nil))
-  (if
-   tight
+  (if tight
    (nspaces 1 stream)
    (else
      (terpri stream)
@@ -531,7 +535,6 @@
 (defun psemtree (x)
   (print-tree (semtree x)))
 
-    
 (defun format-item (item stream)
   (declare (special *suppress-indiv-uids*))
   (typecase item
@@ -572,8 +575,7 @@
    (eq 'pp (simple-label (edge-form edge)))))
 
 (defun case-pp-search ()
-  (let
-      ((res nil))
+  (let ((res nil))
     (loop for res in
       (loop for i from 1 to (length *sentences* )
       when (setq res (case-pps i))
@@ -586,8 +588,7 @@
   (progn 
     (format t "~&~&~&**************************************************************~&")
     (sem-test i)
-    (let
-        ((res (loop for pair in (adjacent-tts) 
+    (let ((res (loop for pair in (adjacent-tts) 
                 when (eq 'pp (car (edge-rep (second pair))))
                 collect (loop for edge in pair collect (edge-rep edge)))))
       (np res)
@@ -618,7 +619,13 @@
                (simple-label 
                 (edge-category 
                  (edge-right-daughter edge))))))))
- 
+
+
+
+;;;---------------------------------
+;;; Handling comparisons with REACH
+;;;---------------------------------
+
 (defun init-reach-directory ()
   (when (find-package :r3)
     (save-article-semantics
@@ -1019,7 +1026,6 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
 (defun get-reach-entities-strings (entities)
   (mapcar #'(lambda (x) (cdr (assoc :text x))) entities))
 
-
   
 (defun reach-trigger->krisp-cats (str)
   "Given a string that Reach considers to be an event trigger, it collects all the KRISP categories that that can mean"
@@ -1311,6 +1317,10 @@ applied to l, and values are values associated with that key example"
   "Has the test bio functions include the treetop form edges as well
    as the semantic edges when the parse isn't complete")
 
+(defparameter *break-on-parse-error* nil
+  "Holds default for whether test-bio-utternces stops when it
+   gets an error or ignores it.")
+
 #| This assumes you've got a list of sentences and want to divided
 them out according to whether or not we get complete parses ('good')
 or a set of treetops ('bad'). 
@@ -1323,7 +1333,7 @@ For successful parses you get the interpretation of the sentence.
 For bad parses you get the treetops.
   Calling it with the 'split' option runs through the list and
 divides it into good and bad. |#
-(defparameter *break-on-parse-error* nil)
+
 (defun test-bio-utterances (sentence-list &optional split?
                             &key list-of-lists (stream *standard-output*)
                               clauses (quiet t)
@@ -1344,7 +1354,7 @@ divides it into good and bad. |#
     (setq *bio-utt-test-good* nil
           *bio-utt-test-bad* nil)
     (when clauses
-        (setq *save-clause-semantics* :sentence-clauses))
+      (setq *save-clause-semantics* :sentence-clauses))
     (loop for s in *list-of-bio-utterances*
        do (if split?
             (test-bio-utterance/split s (incf count) stream quiet with-breaks)
@@ -1419,6 +1429,9 @@ divides it into good and bad. |#
          as s = (nth index *list-of-bio-utterances*)
          collect s)
    #'string<))
+
+
+
 
 (defun load-bio-test-sentences (&optional (file "all-bioagent-capability-sentences.lisp"))
   "load a file from bio-not-loaded;bioagent-cap-testing -- default 
