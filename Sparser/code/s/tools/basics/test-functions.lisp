@@ -1314,7 +1314,7 @@ applied to l, and values are values associated with that key example"
   "List of the numbers of sentences that get more one edge")
 
 (defparameter *bio-utt-test-show-form* t
-  "Has the test bio functions include the treetop form edges as well
+  "Have the test bio functions include the treetop form edges as well
    as the semantic edges when the parse isn't complete")
 
 (defparameter *break-on-parse-error* nil
@@ -1336,7 +1336,7 @@ divides it into good and bad. |#
 
 (defun test-bio-utterances (sentence-list &optional split?
                             &key list-of-lists (stream *standard-output*)
-                              clauses (quiet t)
+                              clauses (quiet t) track-questions 
                               (with-breaks *break-on-parse-error*))
   "Walk over the list and set the global -- edit to shift test fn"
   (declare (special *save-clause-semantics*))
@@ -1358,27 +1358,35 @@ divides it into good and bad. |#
     (loop for s in *list-of-bio-utterances*
        do (if split?
             (test-bio-utterance/split s (incf count) stream quiet with-breaks)
-            (test-bio-utterance s (incf count) stream quiet with-breaks)))
+            (test-bio-utterance s (incf count) stream quiet with-breaks
+                                :track track-questions)))
     (format stream "~&~a sentences in *list-of-bio-utterances*~%" (+ 1 count))
     (when split?
       (format stream "~&  ~a good~
                       ~%  ~a bad~%"
               (length *bio-utt-test-good*) (length *bio-utt-test-bad*)))))
 
-(defun test-bio-utterance (s count &optional (stream *standard-output*) (quiet t)
-                                     (with-breaks *break-on-parse-error*))
+(defun test-bio-utterance (s count
+                           &optional
+                             (stream *standard-output*) (quiet t)
+                             (with-breaks *break-on-parse-error*)
+                           &key track)
   "Designed for getting useful information for every sentence.
-   Includes the semantic interpretation if there was just one
-   edge over it."
+   Includes the semantic interpretation if there was just one edge."
   (declare (special *save-clause-semantics* *clause-semantics-list*))
   (format stream "~%~%___________________~%~a: (p ~s)~%" count s)
-  (if quiet
+  (let ((*tracking-question-patterns* track))
+    (declare (special *tracking-question-patterns*))
+    (if quiet
       (if with-breaks
-          (qpp s)
-          (qepp s))
-      (pp s))
-  (format stream "~&~%") (tts stream)
+        (qpp s)
+        (qepp s))
+      (pp s)))
   (let ((edges (all-tts)))
+    (terpri)
+    (when (cdr edges) (display-chunks stream))
+    (format stream "~&~%")
+    (tts stream)
     (cond
       ((null (cdr edges)) ;; single span
        (if (eq *save-clause-semantics* :sentence-clauses)
@@ -1388,7 +1396,8 @@ divides it into good and bad. |#
                (format stream "ERROR -- encountered failure during parse"))
            (format stream "~&~s" (semtree (car edges)))))
       (*bio-utt-test-show-form* ;; multiple edges - fix could involve DA
-       (terpri) (tts-form stream)))))
+       (terpri)
+       (tts-form stream)))))
     
 
 (defun test-bio (n)
@@ -1419,8 +1428,7 @@ divides it into good and bad. |#
   "Getting output on known failures"
   (loop for index in (reverse *bio-utt-test-bad*)
      as s = (nth index *list-of-bio-utterances*)
-       do (test-bio-utterance s index stream)))
-
+     do (test-bio-utterance s index stream)))
 
 (defun collect-bio-bad-utterances (&optional (stream *standard-output*))
   "Getting output on known failures"
@@ -1431,7 +1439,19 @@ divides it into good and bad. |#
    #'string<))
 
 
+(defvar *tracking-question-patterns* nil "Flag used in trace function")
 
+(defun emit-q-pattern-name (name)
+  "Called from trace-wh-walk. When the flag is up write the
+   name of the q-pattern that invoked the trace."
+  ;; trace fn. is named :wh-walk in objects/trace/discourse.lisp
+  (when *tracking-question-patterns*
+    (print name)))
+
+
+;;;---------------------------------
+;;; ( something else entirely ;-)
+;;;---------------------------------
 
 (defun load-bio-test-sentences (&optional (file "all-bioagent-capability-sentences.lisp"))
   "load a file from bio-not-loaded;bioagent-cap-testing -- default 

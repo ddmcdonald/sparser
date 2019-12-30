@@ -116,6 +116,7 @@
     (trace-msg "[wh] 'how' compose method: ~a" q)))
 
 (deftrace :wh-walk (fn-name)
+  (emit-q-pattern-name fn-name)
   (when *trace-questions*
     (trace-msg "[wh] entering ~a" fn-name)))
 
