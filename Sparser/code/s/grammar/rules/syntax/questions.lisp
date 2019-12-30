@@ -378,7 +378,6 @@
     "How important are Scc1 and SA2 phosphorylation in vivo?"
     "Can you show me genes regulated by ELK1"
     "are there any genes that are upstream of stat3?"
-    "What genes is stat3 upstream of?"
     "What tissues can I ask about?" ;; doesn't take "about"    
     "What tissues is STAT3 expressed in?" ;; doesn't tuck
     "Are there any genes stat3 is upstream of?"
