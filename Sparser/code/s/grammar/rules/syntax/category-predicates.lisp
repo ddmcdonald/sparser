@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "category-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  September 2019
+;;;  Version:  December 2019
 
 ;; Predicates on syntactic form categories,
 ;; mostly for the use of the chunker.
@@ -16,7 +16,7 @@
     approximator
     sequencer))
 
-(defvar *adjg-word-categories*
+(defparameter *adjg-word-categories*
   '(CATEGORY::ADVERB 
     CATEGORY::ADJECTIVE
     CATEGORY::PROPER-ADJECTIVE
@@ -28,8 +28,9 @@
     ;;CATEGORY::QUANTIFIER don't think this is right -- it accepts "NO"
     ))
 
-(defvar *adjg-head-categories*
-  '(CATEGORY::ADJECTIVE
+(defparameter *adjg-head-categories*
+  '(category::adjp
+    CATEGORY::ADJECTIVE
     CATEGORY::PROPER-ADJECTIVE
     CATEGORY::COMPARATIVE
     CATEGORY::SUPERLATIVE
@@ -462,6 +463,19 @@
   (:method ((name symbol))
     (memq name *vg-categories*)))
 
+(defgeneric vp-category? (label)
+  (:documentation "The full set of labels up the verb-to-s headline.
+    Originally motivated by find-verb")
+  (:method ((e edge))
+    (vp-category? (edge-form e)))
+  (:method ((c category))
+    (or (memq c *vp-categories*)
+        ;; this is from questions like "What genes are ..."
+        (eq (cat-name c) 'preposed-auxiliary)))
+  (:method ((ignore t))
+    nil))
+
+
 (defgeneric verb-category? (label)
   (:documentation "Verbs and their variants. Should be a single word")
   (:method ((e edge))
@@ -484,14 +498,6 @@
       ((:ends-in-ed
         :ends-in-ing) t)
       (otherwise nil))))
-
-(defmethod vp-category? ((c category))
-  ;; motivated by find-verb
-  (or (memq c *vp-categories*)
-      ;; this is from questions like "What genes are ..."
-      (eq (cat-name c) 'preposed-auxiliary)))
-(defmethod vp-category? ((ignore t))
-  nil)
 
 
 (defgeneric pronoun-category? (label)
@@ -530,15 +536,16 @@
 
 ;; special purpose for text-relations - note-what-the-head-is
 (defgeneric ignorable-category? (label)
-  (:documentation "quantifiers, modals, and their variants. Should be a single word"))
-(defmethod ignorable-category? ((e edge))
-  (ignorable-category? (edge-form e)))
-(defmethod ignorable-category? ((c referential-category))
-  (ignorable-category? (cat-symbol c)))
-(defmethod ignorable-category? ((name symbol))
-  (memq name '(category::quantifier category::adverb
-               category::preposition
-               category::modal category::subordinate-conjunction)))
+  (:documentation "quantifiers, modals, and their variants. 
+     Should be a single word")
+  (:method ((e edge))
+    (ignorable-category? (edge-form e)))
+  (:method ((c referential-category))
+    (ignorable-category? (cat-symbol c)))
+  (:method ((name symbol))
+    (memq name '(category::quantifier category::adverb
+                 category::preposition
+                 category::modal category::subordinate-conjunction)))
 
 
 ;;--- aux

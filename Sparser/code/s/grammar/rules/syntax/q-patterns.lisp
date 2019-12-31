@@ -520,7 +520,7 @@
 (defun wh-initial-two-edges (wh-initial? edges start-pos end-pos)
   "One edge after the WH edge. Take it to be the statement."
   ;; called from DA wh-vp-edge
-  (tr :wh-walk "wh-initial-two-edges")
+  (tr :wh-walk 'wh-initial-two-edges)
   (let* ((wh (edge-referent wh-initial?))
          (complement (edge-referent (second edges)))
          (q (compose wh complement))) ;;//// do the fold manouver
@@ -650,6 +650,130 @@
         (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
         (break "new 4 edge case wh-type: ~a" wh-type)))))
 
+;; "How is stat3 used to regulate apoptosis?"
+;;
+(defun wh-initial-four-edges/adjunct (wh-edge edges start-pos end-pos)
+  "The wh being asked is an adjunct, so the edges should make a clause"
+  (tr :wh-walk "wh-initial-four-edges/adjunct")
+  (let* ((e2 (first edges))  ; "is"
+         (e3 (second edges)) ; "stat3"
+         (e4 (third edges))  ; "used to ..."
+         (e2-form (form-cat-name e2))
+         (e3-form (form-cat-name e3))
+         (e4-form (form-cat-name e4)))
+    (cond
+      ((and (edge-over-aux? e2)
+            (noun-category? e3))
+       (let ((vp-edge (rule-to-edge e2 e4)))
+         (if (null vp-edge)
+           (when *debug-questions*
+             (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
+             (break "vg and adjunct don't compose, ~a ~a"
+                    (first edges) (third edges)))
+
+           (let ((edge-over-s (rule-to-edge e3 vp-edge)))
+             (if (null edge-over-s)
+               (when *debug-questions*
+                 (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
+                 (break "subj & predicate don't compose, ~a ~a"
+                        (second edges) vp-edge))
+
+               ;; Add the wh adjunct and make the question
+               (fold-in-initial-wh-adjunct wh-edge edge-over-s
+                                           start-pos end-pos))))))
+
+      (t (when *debug-questions*
+           (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
+           (break "New pattern for WH 4 edges/adjunct"))))))
+
+
+(defun fold-in-initial-wh-adjunct (wh-edge edge-over-s start-pos end-pos)
+  ;; continuation of wh-initial-four-edges/adjunct
+  (tr :wh-walk 'fold-in-initial-wh-adjunct)
+  (let* ((stmt (edge-referent edge-over-s))
+         (wh (edge-referent wh-edge))
+         (wh-cat (cat-name (itype-of wh))))
+    
+    (unless (memq wh-cat '(how why where when))
+      (when *debug-questions*
+        (break "unhandled initial adjunct type ~s" wh-cat)))
+    (let* ((variable (value-of 'variable (itype-of wh))) ; var is on category
+           (edge-with-adjunct
+             (make-edge-over-long-span
+              start-pos
+              end-pos
+              (itype-of stmt)
+              :rule 'fold-in-initial-wh-adjunct
+              :form (category-named 's)
+              :referent (bind-dli-variable variable wh stmt))))
+      (make-question-and-edge (edge-referent edge-with-adjunct) ;;stmt
+                              start-pos end-pos
+                              :head edge-over-s
+                              :wh wh
+                              :rule 'wh-initial-four-edges/adjunct))))
+
+
+(defun wh-initial-four-edges/vp+ed (wh-edge vg-edge np-edge vp+ed-edge
+                                    start-pos end-pos)
+  ;; from wh-four-edges/vp in DA
+  (tr :wh-walk "wh-initial-four-edges/vp+ed")
+  (unless (edge-over-aux? vg-edge)
+    (when *debug-questions*
+      (break "Expected ~a to be an aux" vg-edge))
+    (return-from wh-initial-four-edges/vp+ed nil))
+  (let (;; add the wh as a determiner to the np-edge
+        (i (bind-variable 'has-determiner (edge-referent wh-edge)
+                          (edge-referent np-edge)))
+        (vp-ref (edge-referent vp+ed-edge)))
+    (cond
+      ((open-core-variable vp-ref)
+       (cond ((is-passive? vp+ed-edge)
+              ;; open in object since there's a by-phrase
+              (unless (missing-object-vars vp-ref)
+                (error "Why isn't passive open in its object?"))
+              (let ((j (bind-variable (find-subcat-var  i :object vp-ref)
+                                      i vp-ref)))
+                (make-edge-over-question
+                 'wh-initial-four-edges/vp+ed
+                 j vp+ed-edge start-pos end-pos)))
+             (t (when *debug-questions*
+                  (break "~a is open in something, but not object"
+                         vp-ref)))))
+      (t (when *debug-questions*
+           (break "New case for the vp+ed"))))))
+
+
+
+;; (p/s "What genes is stat3 upstream of?")
+;; (p/s "What tissues is STAT3 expressed in?") <== doesn't tuck
+;; 
+(defun wh-initial-four-edges/be (wh-edge edges start-pos end-pos)
+  ;; called from make-this-a-question-if-appropriate with 2d edge
+  ;; known to be 'be' or 'modal'
+  ;; --- now a DA rule sees this pattern ---
+  (tr :wh-walk "wh-initial-four-edges/be")
+  (let ((e2-form (form-cat-name (second edges)))
+        (e3-form (form-cat-name (third edges)))
+        (e4-form (form-cat-name (fourth edges))))
+    (flet ((ok-aux (form-name)
+             (member form-name
+                     '(preposed-auxiliary modal
+                       verb+present)))
+           (ok-main (form-name)
+             (member form-name
+               '(s transitive-clause-without-object)))
+           (ok-prep (form-name)
+             (member form-name ;; also add to takes-preposition?
+                     '(preposition spatial-preposition
+                       approximator)))) ;; about
+      (cond
+        ((and (ok-aux e2-form) (ok-main e3-form) (ok-prep e4-form))
+         (wh-stranded-prep wh-edge (third edges) (fourth edges) start-pos end-pos))
+        (t
+         (when *debug-questions*
+           (break "new 4-edge wh case~%e2: ~a  e3: ~a  e4: ~a"
+                  e2-form e3-form e4-form)) )))))
+
 
 ;; "What is STAT3 expressed in?" whpn-vp-noun-vg+ed+prep
 (defun wh-initial-five-edges (wh-edge vg1 np vg2-edge prep-edge)
@@ -682,12 +806,12 @@
 (defun whnp-initial-five-edges (whnp aux-vp np vg+ed prep-edge start-pos end-pos)
   ;; "What tissues is STAT3 expressed in? from whnp-is-prop-vg-prep
   ;; Initial np has been checked by wh-edge? and aux-vp by edge-over-aux?
+  (tr :wh-walk 'whnp-initial-five-edges)
   (let ((full-pp-edge (flesh-out-stranded-prep prep-edge whnp)))
     (when full-pp-edge
-      (let* ((longer-vp (rule-to-edge vg+ed full-pp-edge))
-             (i (incorporate-displaced-aux-into-predicate
-                 aux-vp longer-vp :left aux-vp :right longer-vp))
-             (v-max (respan-new-referent i :head-edge longer-vp)))
+      (let* ((longer-vp ; "expressed in x" -- adjp if vg+ed is an adjective
+              (rule-to-edge vg+ed full-pp-edge))
+             (v-max (formulate-aux-vg-combination aux-vp vg+ed)))
         (let ((s-edge (rule-to-edge np v-max)))
           (if s-edge
             (make-question-and-edge
@@ -700,129 +824,26 @@
               (push-debug `(,v-max ,np ,full-pp-edge))
               (break "Something upstream didn't compose"))))))))
 
-
-
-(defun wh-initial-four-edges/adjunct (wh-edge edges start-pos end-pos)
-  "The wh being asked is an adjunct, so the edges should make a clause"
-  (tr :wh-walk "wh-initial-four-edges/adjunct")
-  (let* ((e2 (first edges))
-         (e3 (second edges))
-         (e4 (third edges))
-         (e2-form (form-cat-name e2))
-         (e3-form (form-cat-name e3))
-         (e4-form (form-cat-name e4)))
-    (cond
-      ((and (edge-over-aux? e2)
-            (noun-category? e3))
-       (let ((rule (multiply-edges e2 e4)))
-         (if rule
-           (let* ((vp-edge (make-completed-binary-edge e2 e4 rule))
-                  (rule2 (multiply-edges e3 vp-edge)))
-             (if rule2
-               (let* ((edge-over-s
-                       (make-completed-binary-edge
-                        e3 vp-edge rule2)))  ;; where + s
-                 (fold-in-initial-wh-adjunct wh-edge edge-over-s
-                                             start-pos end-pos))
-               (when *debug-questions*
-                 (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
-                 (break "subj & predicate don't compose, ~a ~a"
-                        (second edges) vp-edge))))
+(defun formulate-aux-vg-combination (aux-edge vg-edge)
+  "The aux and the vg it composes with are not adjacent. Implicitly an NP
+   is present that will compose with the VP we produce here.
+   There are two possibilities (so far) depending on what the 'vg' is.
+   If it's a proper vg with a verb then we go one route. If it's actually
+   an adjp then we go another."
+  (cond
+    ((vp-category? vg-edge)
+     (let ((i (incorporate-displaced-aux-into-predicate
+               aux-edge vg-edge :left aux-edge :right vg-edge)))
+       (respan-new-referent i :head-edge vg-edge)))
+    ((adjg-head? vg-edge) ; "upstream"
+     (let ((aux+adjp (rule-to-edge aux-edge vg-edge)))
+       (or aux+adjp
            (when *debug-questions*
-             (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
-             (break "vg and adjunct don't compose, ~a ~a"
-                    (first edges) (third edges))))))
-      (t (when *debug-questions*
-           (push-debug `(,wh-edge ,edges ,start-pos ,end-pos))
-           (break "New pattern for WH 4 edges/adjunct"))))))
-
-
-(defun wh-initial-four-edges/vp+ed (wh-edge vg-edge np-edge vp+ed-edge
-                                    start-pos end-pos)
-  ;; from wh-four-edges/vp in DA
-  (tr :wh-walk "wh-initial-four-edges/vp+ed")
-  (unless (edge-over-aux? vg-edge)
-    (when *debug-questions*
-      (break "Expected ~a to be an aux" vg-edge))
-    (return-from wh-initial-four-edges/vp+ed nil))
-  (let (;; add the wh as a determiner to the np-edge
-        (i (bind-variable 'has-determiner (edge-referent wh-edge)
-                          (edge-referent np-edge)))
-        (vp-ref (edge-referent vp+ed-edge)))
-    (cond
-      ((open-core-variable vp-ref)
-       (cond ((is-passive? vp+ed-edge)
-              ;; open in object since there's a by-phrase
-              (unless (missing-object-vars vp-ref)
-                (error "Why isn't passive open in its object?"))
-              (let ((j (bind-variable (find-subcat-var  i :object vp-ref)
-                                      i vp-ref)))
-                (make-edge-over-question
-                 'wh-initial-four-edges/vp+ed
-                 j vp+ed-edge start-pos end-pos)))
-             (t (when *debug-questions*
-                  (break "~a is open in something, but not object"
-                         vp-ref)))))
-      (t (when *debug-questions*
-           (break "New case for the vp+ed"))))))
-           
-(defun fold-in-initial-wh-adjunct (wh-edge edge-over-s start-pos end-pos)
-  ;; continuation of wh-initial-four-edges/adjunct
-  (tr :wh-walk "fold-in-initial-wh-adjunct")
-  (let* ((stmt (edge-referent edge-over-s))
-         (wh (edge-referent wh-edge))
-         (wh-cat (cat-name (itype-of wh)))
-         edge-with-adjunct )
-    ;;(set-edge-referent edge-over-s j)
-    (case wh-cat
-      (where
-       (setq edge-with-adjunct
-             (make-edge-over-long-span
-              start-pos
-              end-pos
-              (itype-of stmt)
-              :rule 'fold-in-initial-wh-adjunct
-              :form (category-named 's)
-              :referent (bind-dli-variable 'location wh stmt))))
-      (t (break "unhandled initial adjunct type ~s" wh-cat)))
-         
+             (break "aux and adjp did not compose")))))
+    (t (when *debug-questions*
+         (break "new case vg-edge: ~a aux: ~a" vg-edge aux-edge)))))
     
-    (make-question-and-edge (edge-referent edge-with-adjunct) ;;stmt
-                            start-pos end-pos
-                            :head edge-over-s
-                            :wh wh
-                            :rule 'wh-initial-four-edges/adjunct)))
 
-
-
-;; (p/s "What genes is stat3 upstream of?")
-;; (p/s "What tissues is STAT3 expressed in?") <== doesn't tuck
-;; 
-(defun wh-initial-four-edges/be (wh-edge edges start-pos end-pos)
-  ;; called from make-this-a-question-if-appropriate with 2d edge
-  ;; known to be 'be' or 'modal'
-  (tr :wh-walk "wh-initial-four-edges/be")
-  (let ((e2-form (form-cat-name (second edges)))
-        (e3-form (form-cat-name (third edges)))
-        (e4-form (form-cat-name (fourth edges))))
-    (flet ((ok-aux (form-name)
-             (member form-name
-                     '(preposed-auxiliary modal
-                       verb+present)))
-           (ok-main (form-name)
-             (member form-name
-               '(s transitive-clause-without-object)))
-           (ok-prep (form-name)
-             (member form-name ;; also add to takes-preposition?
-                     '(preposition spatial-preposition
-                       approximator)))) ;; about
-      (cond
-        ((and (ok-aux e2-form) (ok-main e3-form) (ok-prep e4-form))
-         (wh-stranded-prep wh-edge (third edges) (fourth edges) start-pos end-pos))
-        (t
-         (when *debug-questions*
-           (break "new 4-edge wh case~%e2: ~a  e3: ~a  e4: ~a"
-                  e2-form e3-form e4-form)) )))))
 
 
 ;;-----------------------------------

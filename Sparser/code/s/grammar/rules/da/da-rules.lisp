@@ -1985,7 +1985,7 @@ assumed. |#
     :pattern (wh-pronoun vg proper-noun vg+ed preposition)
     ;; "What is STAT3 expressed in?"
     :action (:function wh-initial-five-edges first second third fourth fifth))
-;;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+
 (define-debris-analysis-rule np-is-prop-vg-prep
     :pattern (np vg proper-noun vg+ed preposition)
     ;; "What tissues is STAT3 expressed in?"
@@ -1994,6 +1994,18 @@ assumed. |#
     :action (:function whnp-is-prop-vg-prep first second third fourth fifth))
 
 (defun whnp-is-prop-vg-prep (whnp aux-vp np vg+ed prep)
+  (when (wh-edge? whnp)
+    (when (edge-over-aux? aux-vp)
+      (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
+        (whnp-initial-five-edges whnp aux-vp np vg+ed prep
+                                 *da-starting-position* end-pos)))))
+
+(define-debris-analysis-rule np-is-np-adj-prep
+    :pattern (np vg proper-noun adjective preposition)
+    ;; (p "What genes is stat3 upstream from?")
+    :action (:function whnp-is-prop-adj-prep first second third fourth fifth))
+
+(defun whnp-is-prop-adj-prep (whnp aux-vp np vg+ed prep)
   (when (wh-edge? whnp)
     (when (edge-over-aux? aux-vp)
       (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
