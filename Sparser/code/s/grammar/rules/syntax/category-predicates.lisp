@@ -545,7 +545,7 @@
   (:method ((name symbol))
     (memq name '(category::quantifier category::adverb
                  category::preposition
-                 category::modal category::subordinate-conjunction)))
+                 category::modal category::subordinate-conjunction))))
 
 
 ;;--- aux
