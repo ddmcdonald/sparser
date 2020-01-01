@@ -1654,8 +1654,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (and (or (itypep subj '(:or what where when how why))
            (and (initial-wh?)
                 (has-wh-determiner? subj)))
-       (itypep vp '(:or do would)))
-  )
+       (itypep vp '(:or do would))))
+
 
 (defun assimilate-subject (subj vp
                            &optional (vp-edge (right-edge-for-referent))
@@ -1879,13 +1879,87 @@ there was an edge for the qualifier (e.g., there is no edge for the
    where the criteria is whether the verb is in oblique or tensed
    form. If it turned out to be a RR then we do fairly serious
    surgery on the edge."
-  (declare (special category::transitive-clause-without-object category::np))
+  (declare (special category::transitive-clause-without-object category::np category::s))
   ;; (push-debug `(,subj ,vp)) (setq subj (car *) vp (cadr *))
   (let* ((np-edge (left-edge-for-referent))
          (vp-edge (right-edge-for-referent))
          (vp-form (edge-form vp-edge))
+         (inside? (and (inside-current-chunk? np-edge)
+                       (inside-current-chunk? vp-edge)))
          result)
 
+    (cond
+      (*subcat-test*
+       (and
+        (not
+         ;; aux inversion in question "is STAT3 involved in ..." ; ;
+         (let ((word-before (word-just-to-the-left np-edge))
+               (edges-before (edges-just-to-left-of np-edge)))
+           (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
+                (member (pname word-before)
+                        '("is" "was" "were" "are")
+                        :test #'equal)
+                (not (initial-wh?)) ;  "what are the genes mutated by ..."
+                (not (loop for e in (edges-after (right-edge-for-referent))
+                        thereis '(vg+ed vp+ed verb+ed adjective))))))
+        
+        (or (can-fill-vp-subject? vp subj) ;; evidence for S rather than reduced relative
+            (and (can-fill-vp-object? vp subj (left-edge-for-referent))
+                 ;; make sure this is a non-trivial relative clause (not just the verb)
+                 (loop for binding in (indiv-old-binds vp)
+                       thereis (not (member (var-name (binding-variable binding))
+                                            '(past raw-text)))))
+            (and (member (form-cat-name vp-edge) '(vg+ed verb+ed))
+                 (interpret-premod-to-verb subj vp)))))
+
+      (t ;;/// ought to be a more elegant way to do this
+       (setq result
+             (cond ;; regular cases
+               ((and (proper-noun? np-edge)
+                     (not
+                      (and
+                       (member (pname (word-just-to-the-left np-edge))
+                               '("is" "was" "were" "are")
+                               :test #'equal)
+                       (loop for e in (edges-after (right-edge-for-referent))
+                          thereis '(vg+ed vp+ed verb+ed adjective)))))
+                ;; e.g. "MAP2K1 bound to MAPK1" 
+                (if (transitive-vp-missing-object? vp) ; uses right-edge-for-referent
+                  (assimilate-subcat vp :object subj)
+                  (else
+                    (when (transitive-vp-missing-object? vp)
+                      (revise-parent-edge :form category::transitive-clause-without-object))
+                    (assimilate-subcat vp :subject subj))))
+
+               ((and (can-fill-vp-object? vp subj np-edge)
+                     (not (verb-premod-sequence? np-edge))
+                     (loop for binding in (indiv-old-binds vp)
+                        thereis (not (member (var-name (binding-variable binding))
+                                             '(past raw-text)))))
+                ;; since this is applied to vp+ed, there is no syntactic object present
+                (setq vp (create-predication-and-edge-by-binding-and-insert-edge
+                          (subcategorized-variable vp :object subj) subj vp))       
+                (setq subj (bind-dli-variable 'predication vp subj)) ;; link the rc to the np
+                (revise-parent-edge :form category::np :category (itype-of subj))
+                subj)
+               
+               ((can-fill-vp-subject? vp subj)
+                (when (transitive-vp-missing-object? vp)
+                  (revise-parent-edge :form category::transitive-clause-without-object))
+                (assimilate-subcat vp :subject subj))
+               
+               ((setq result (interpret-premod-to-verb subj vp))
+                (revise-parent-edge :form category::vg+ed)
+                result)
+               (t (warn "How can this happen? Null referent produced in assimilate-subject-to-vp-ed~%"))))
+       
+       (when inside?
+         (when (eq (edge-form (parent-edge-for-referent)) category::s)
+           (revise-parent-edge :form category::transitive-clause-without-object)))
+
+       result ))))
+
+  
     ;; Don't want to have a subject in a relative clause if there is
     ;; no object (complement) in the VP. Applies to main clauses modulo
     ;; the possibility of traces.
@@ -1906,73 +1980,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
         "Is stat3 involved in apoptotic regulation?" "Is stat3 involved in regulating apoptosis?"
         "Is the amount of phosphorylated MAPK1 sustained at a high level?")
         |#
-    
-    (cond
-      (*subcat-test*
-       (and
-        (not
-         ;; aux inversion in question "is STAT3 involved in ..." ; ;
-         (let ((word-before (word-just-to-the-left np-edge))
-               (edges-before (edges-just-to-left-of np-edge)))
-           (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
-                (member (pname word-before)
-                        '("is" "was" "were" "are")
-                        :test #'equal)
-                (not (initial-wh?)) ;  "what are the genes mutated by ..."
-                (not (loop for e in  (edges-after (right-edge-for-referent))
-                             thereis '(vg+ed vp+ed verb+ed adjective)))
-                )))
-        (or (can-fill-vp-subject? vp subj) ;; evidence for S rather than reduced relative
-            (and (can-fill-vp-object? vp subj (left-edge-for-referent))
-                 ;; make sure this is a non-trivial relative clause (not just the verb)
-                 (loop for binding in (indiv-old-binds vp)
-                       thereis (not (member (var-name (binding-variable binding))
-                                            '(past raw-text)))))
-            (and (member (form-cat-name vp-edge) '(vg+ed verb+ed))
-                 (interpret-premod-to-verb subj vp)))))
-
-      ;; regular cases
-      ((and (proper-noun? np-edge)
-            (not
-             (and
-              (member (pname (word-just-to-the-left np-edge))
-                      '("is" "was" "were" "are")
-                      :test #'equal)
-              (loop for e in  (edges-after (right-edge-for-referent))
-                    thereis '(vg+ed vp+ed verb+ed adjective)))))
-            
-       ;; proper nouns don't take restrictive qualifiers
-       ;; NO -- "MAP2K1 bound to MAPK1" shows one such example...
-       ;; but does it fill the object of the vp or its subject
-       (if (transitive-vp-missing-object? vp (e# 11))
-         (assimilate-subcat vp :object subj)
-         (else
-           (when (transitive-vp-missing-object? vp)
-             (revise-parent-edge :form category::transitive-clause-without-object))
-           (assimilate-subcat vp :subject subj))))
-
-      ((and (can-fill-vp-object? vp subj np-edge)
-            (not (verb-premod-sequence? np-edge))
-            (loop for binding in (indiv-old-binds vp)
-                      thereis (not (member (var-name (binding-variable binding))
-                                           '(past raw-text)))))
-       ;; since this is applied to vp+ed, there is no syntactic object present
-       (setq vp (create-predication-and-edge-by-binding-and-insert-edge
-                 (subcategorized-variable vp :object subj) subj vp))       
-       (setq subj (bind-dli-variable 'predication vp subj)) ;; link the rc to the np
-       (revise-parent-edge :form category::np :category (itype-of subj))
-       subj)
-      
-      ((can-fill-vp-subject? vp subj)
-       (when (transitive-vp-missing-object? vp)
-         (revise-parent-edge :form category::transitive-clause-without-object))
-       (assimilate-subcat vp :subject subj))
-      
-      ((setq result (interpret-premod-to-verb subj vp))
-       (revise-parent-edge :form category::vg+ed)
-       result)
-      (t (warn "How can this happen? Null referent produced in assimilate-subject-to-vp-ed~%")))))
-
 
 ;;;---------
 ;;; VP + NP
