@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   August 2019
+;;;   Version:   December 2019
 
 ;; broken out from all-in-one-file 11/28/91
 ;; 1.0 (8/28/92 v2.3) Added global referring to the referent returned.
@@ -296,7 +296,7 @@ or a function that simulates its environment like with-referent-edges |#
       (error "*rule-being-interpreted* doesn't have a value now")))
 
 #| Example from wh-initial-followed-by-modal, which operates outside
-of the context of applying a specific rules, and therefore not
+of the context of applying specific rules, and therefore is not
 in the scope of referent-from-rule.
     (with-referent-edges (:l (second edges) :r (third edges))
       (setq stmt (add-tense/aspect-info-to-head aux stmt)))  |#
@@ -311,6 +311,20 @@ in the scope of referent-from-rule.
                          *right-edge-into-reference*
                          *parent-edge-getting-reference*))
        ,@body)))
+
+
+
+(defun stipulate-referent-edges (left right)
+  "For simulating the referents off-line as part of debugging"
+  (setq *left-edge-into-reference* left
+        *right-edge-into-reference* right)
+ "Call (clear-referent-edges) when finished")
+
+(defun clear-referent-edges ()
+  "Unless we're in the scope of interpreting a referent,
+   the natural state of these state variables is to be bound to nil"
+  (setq *left-edge-into-reference* nil
+        *right-edge-into-reference* nil))
 
 
 (defun pair-context ()
