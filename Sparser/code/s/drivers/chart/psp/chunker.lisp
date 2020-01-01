@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "chunker"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  November 2019
+;;;  version:  December 2019
 
 ;; Initiated 10/8/14
 ;; ddm: 10/16/14 Rewrote identify-chunks. Commented out lines anticipating 
@@ -90,6 +90,11 @@
                   (if (eq start end)
                       "" (string-of-words-between start end)) ;; has happened
                   (pos-token-index end))))))
+
+(defun inside-current-chunk? (edge)
+  (when *current-chunk*
+    (assert (edge-p edge))
+    (member edge (chunk-edge-list *current-chunk*) :test #'eq)))
 
 
 (defparameter *record-all-chunks* nil)
