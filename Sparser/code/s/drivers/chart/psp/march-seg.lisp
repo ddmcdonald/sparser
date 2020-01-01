@@ -133,7 +133,7 @@ its head will be at
   ;; 5. repeat
 
   (tr :interpeting-chunk chunk from-right)
-  ;;(push-debug `(,chunk)) (break "Look at chunk? ~a" chunk)
+  (push-debug `(,chunk)) ;;(break "Look at chunk? ~a" chunk)
 
   (absorb-parentheses)
 
@@ -191,7 +191,7 @@ its head will be at
    We first sort by rule type, priority (in someo cases) and
    chunk type. Finally we make a arbitrary choice."
   (when triples
-    ;;(push-debug `(,triples)) (lsp-break "triple")
+    (push-debug `(,triples)) ;;(lsp-break "triples")
     (tr :n-triples-apply triples)
     
     (let ((non-syntactic-triples

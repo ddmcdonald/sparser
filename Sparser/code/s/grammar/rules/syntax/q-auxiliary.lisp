@@ -176,8 +176,8 @@
 
 (defun rule-to-edge (left-edge right-edge)
   "Packages a frequent set of actions in the q-pattern code.
-   1. Ask determine whether there is a rule to compose the two edges,
-   then 2. make the corresponding edge.
+   1. Determine whether there is a rule to compose the two edges,
+   then 2. Make the corresponding edge.
    Returns nil if there is no rule, otherwise it returns the edge."
   (let ((rule (multiply-edges left-edge right-edge)))
     (when rule
