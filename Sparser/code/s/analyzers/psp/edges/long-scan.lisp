@@ -60,7 +60,8 @@
                                    form
                                    referent 
                                    constituents
-                                   words )
+                                   words
+                                   dependencies)
   
   ;; Called by routines in the header and anywhere else that a segment
   ;; of text can be bounded and characterized without it having any
@@ -101,8 +102,16 @@
     (when words
       (setf (edge-spanned-words edge) words))
 
-    (when referent
-      (set-edge-referent edge referent))
+    (cond (referent (set-edge-referent edge referent))
+          (dependencies
+           (setq referent
+                 (create-individual-from-category-and-dependencies
+                  category
+                  dependencies))
+           ;; this call below uses dependencies
+           ;;  and avoids the normal searching for
+           ;;  dependencies, based on the binding-list of the referent
+           (set-edge-referent edge referent nil dependencies category)))
     
     (when *trace-edge-creation*
       (format t "~&Ccreating ~A for ~A" edge rule))
@@ -112,3 +121,15 @@
 
     edge ))
 
+
+(defun create-individual-from-category-and-dependencies (category dependencies)
+  (let ((i (individual-for-ref category)))
+    (loop for dep in dependencies
+          do
+            (setq i (bind-variable (dependency-variable dep)
+                                   (if (eq (type-of (dependency-value dep))
+                                           'discourse-mention)
+                                       (base-description (dependency-value dep))
+                                       (dependency-value dep))
+                                   i)))
+    i))
