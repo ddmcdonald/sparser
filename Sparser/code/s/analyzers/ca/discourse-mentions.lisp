@@ -340,7 +340,7 @@
 (defun mention-p (mention)
   (typep mention 'discourse-mention))
 
-(defun make-mention (i source &optional category)
+(defun make-mention (i source &optional category dependencies)
   "Individuals reside in a description lattice. Every new
   property or relation extends the lattice and in so doing
   creates a new individual that is more specific than
@@ -359,10 +359,11 @@
   (let* ((*mention-individual* i)
          (*mention-source* source)
          (subsumed-mention
-          (and (or (not (edge-p source))
+          (and (not dependencies) ;; creating a de novo mention with given dependencies
+               (or (not (edge-p source))
                    (not (eq (edge-rule source) 'make-ns-pair)))
                (subsumed-mention? i source)))
-	 (m (if (and subsumed-mention
+	 (m (if (and subsumed-mention 
                      ;; "which accumulates and can act "
                      ;;  tries to create a mention twice
                      (typep subsumed-mention 'discourse-mention))
@@ -373,11 +374,12 @@
                                       :uid (incf *mention-uid*))))
                   (setf (mention-head new-mention) source)
                   (setf (dependencies new-mention)
-                         (when (individual-p i) ;; no dependencies for categories
-                          (create-new-dependencies
-                           (indiv-old-binds i)
-                           (when (edge-p source) (semantic-edges-under source))
-                           (when (edge-p source) source))))
+                        (or dependencies
+                            (when (individual-p i) ;; no dependencies for categories
+                              (create-new-dependencies
+                               (indiv-old-binds i)
+                               (when (edge-p source) (semantic-edges-under source))
+                               (when (edge-p source) source)))))
                   new-mention))))
     (declare (special m *mention-individual* *mention-source*))
     (fill-in-mention m i source)
