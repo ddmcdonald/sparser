@@ -2065,6 +2065,10 @@ assumed. |#
         (predicate (edge-right-daughter s-edge))
         (end-pos (fix-da-ending-pos *da-ending-position*)))
     (when (wh-edge? subject)
+    ;; get rid of unneeded edge that complicates chart
+      (setf (edge-used-in (edge-left-daughter s-edge)) nil)
+      (setf (edge-used-in (edge-right-daughter s-edge)) nil)
+      (remove-edge-from-chart s-edge)
       (wh-stranded-prep subject ;; wh-edge
                         predicate ;; main-edge
                         prep-edge
