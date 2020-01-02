@@ -1117,7 +1117,8 @@
          (np (edge-referent focal-np-edge))
          (pp-ref (edge-referent pp-edge))
          (prep (get-word-for-prep (value-of 'prep pp-ref)))
-         (pobj (value-of 'pobj pp-ref)))
+         (pobj (value-of 'pobj pp-ref))
+         (cop-cat (category-named 'copular-predication-of-pp)))
     
     (unless (and (vg-category? vg-edge)
                  (np-category? focal-np-edge))
@@ -1137,28 +1138,44 @@
            ;; we're not in a normal rule-application content
            (cond
              (var ;; value, prep, and predicate are bound
+              (when (edge-p (edge-used-in wh-edge))
+                (remove-edge-from-chart (edge-used-in wh-edge))
+                (setf (edge-used-in wh-edge) nil))
               (let* ((copular-pp (edge-referent copular-pp-edge))
-                     (new-np (bind-variable var pobj np)))
-                ;; create an edge for the new (extended)np
-                ;;  and thereby create a mention (for clausal form)
-                (respan-top-edge focal-np-edge
-                                 new-np
-                                 :form (category-named 'np)
-                                 :internal t)
-                (let ((i (rebind-variable 'value new-np copular-pp)))
-                (tr :stranded-copular-pp i)
-                (let* ((respanned-vp (respan-top-edge
-                                      copular-pp-edge i
-                                      :form category::vp))
-                       (s-edge (stipulate-subject-edge focal-np-edge
-                                                       respanned-vp)))
-                  ;;(break "edge = ~a" s-edge)
-                  (make-question-and-edge (edge-referent s-edge)
-                                          start-pos end-pos
-                                          :wh wh
-                                          
-                                          :head s-edge
-                                          :rule 'wh-copula-stranded-prep)))))
+                     (new-np (bind-variable var pobj np))
+                     ;; create an edge for the new (extended)np
+                     ;;  and thereby create a mention (for clausal form)
+                     (new-np-edge
+                      (respan-top-edge pp-edge ;; focal-np-edge
+                                       new-np
+                                       :form (category-named 'np)
+                                       :internal t))
+                     (predicate (semtree (find-head-edge main-edge)))
+                     (dependencies
+                      `((,(find-variable-for-category 'item cop-cat)
+                          ,(edge-mention focal-np-edge))
+                        (,(find-variable-for-category 'value cop-cat)
+                          ,(edge-mention new-np-edge))
+                        (,(find-variable-for-category 'pobj cop-cat)
+                          ,(edge-mention wh-edge))
+                        (,(find-variable-for-category 'prep cop-cat)
+                          ,(edge-referent (edge-left-daughter pp-edge)))
+                        (,(find-variable-for-category 'predicate cop-cat)
+                          ,(edge-referent (find-head-edge vg-edge)))))
+                     (s-edge
+                      (make-edge-over-long-span
+                       start-pos end-pos
+                       cop-cat
+                       :rule 'wh-copula-stranded-prep
+                       :form (category-named 's)
+                       :dependencies dependencies)))
+                (tr :stranded-copular-pp (edge-referent s-edge))
+                ;;(break "edge = ~a" s-edge)
+                (make-question-and-edge (edge-referent s-edge)
+                                        start-pos end-pos
+                                        :wh wh                                          
+                                        :head s-edge
+                                        :rule 'wh-copula-stranded-prep)))
              
              (t ;; we could make the copular-pp edge but the focal np
               ;; doesn't take the preposition so we make a simpler
