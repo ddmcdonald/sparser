@@ -72,7 +72,7 @@
 ;;; single code locus for setting the referent of an edge
 ;;;-------------------------------------------------------
 
-(defun set-edge-referent (edge value &optional (create-mention nil))
+(defun set-edge-referent (edge value &optional (create-mention nil) dependencies category)
   "The single point in the code that's entitled to setf the
    referent of and edge. Provides locus for associated actions
    like updating edge mentions. The 'value' is to be the
@@ -90,6 +90,9 @@
          ;; If the edge already has a referent still have to update the mention
          (setf (edge-referent edge) value)
          (update-edge-mention-referent edge value))
+        (dependencies
+         (make-mention value edge category dependencies)
+         (setf (edge-referent edge) value))
         (t (when create-mention
              (unless (or
                       (typep (edge-mention edge) 'discourse-mention)
