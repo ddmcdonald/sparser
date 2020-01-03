@@ -172,19 +172,20 @@
   
   (:method ((p paragraph))
     (declare (special *tts-after-each-section*))
-    (let* ((content (contents p))
-           (sentences (sentences-in-paragraph p)) ; list of sentence objects
-           (start-index (pos-token-index (starts-at-pos p)))
-           (end-index (pos-token-index (ends-at-pos p)))
-           (word-count (- end-index start-index)))
-      (setf (sentence-count content) (length sentences))
-      (setf (word-count content) word-count)
+    (when (and (starts-at-pos p)(ends-at-pos p)) ;; patch for anomaly with David's new code
+      (let* ((content (contents p))
+             (sentences (sentences-in-paragraph p)) ; list of sentence objects
+             (start-index (pos-token-index (starts-at-pos p)))
+             (end-index (pos-token-index (ends-at-pos p)))
+             (word-count (- end-index start-index)))
+        (setf (sentence-count content) (length sentences))
+        (setf (word-count content) word-count)
 
-      (when *tts-after-each-section*
-        (format t "~&Paragraph ~a~%  ~a sentences~%  ~a words~
+        (when *tts-after-each-section*
+          (format t "~&Paragraph ~a~%  ~a sentences~%  ~a words~
                    ~%  ~4,1F words per sentence~%"
-                p (length sentences) word-count
-                (float (/ word-count (length sentences))))))))
+                  p (length sentences) word-count
+                  (float (/ word-count (length sentences)))))))))
 
 
 
