@@ -1039,13 +1039,20 @@
   ;; "the amount of MAPK1 phosphorylated is eventually high"
   (let ((edge-on-right (edge-just-to-right-of vg+ed)))
     (if (vg-is-reduced-relative? np vg+ed (edge-just-to-right-of vg+ed))
-      ;; If the vg+ed is a reduced relative then the np is its subject
+        ;; If the vg+ed is a reduced relative then the np is its subject
+        ;; not always -- see "The two cell lines used were ..."
       ;; Compare '... which is <vg+ed>"
       (let* ((np-ref (edge-referent np))
              (vg-ref (edge-referent vg+ed))
-             (subj-var (subcategorized-variable vg-ref :subject np-ref)))
+             (subj-var (subcategorized-variable vg-ref :subject np-ref))
+             (obj-var
+              (and (null subj-var)
+                   (transitive-vp-missing-object? vg-ref vg+ed)
+                   (subcategorized-variable vg-ref :object np-ref))))
         ;; cargo-culted from assimilate-subject-to-vp-ed
-        (let* ((vp-ref (create-predication-by-binding subj-var np-ref vg-ref))
+        (let* ((vp-ref
+                (if obj-var (create-predication-by-binding obj-var np-ref vg-ref)
+                    (create-predication-by-binding subj-var np-ref vg-ref)))
                (i (bind-variable 'predication vp-ref np-ref)))
           ;; (push-debug `(,vp-ref ,vg-ref ,np-ref))  (break "i = ~a" i)
           (make-edge-spec
