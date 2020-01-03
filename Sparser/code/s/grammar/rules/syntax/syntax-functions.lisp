@@ -942,7 +942,9 @@ insert edges instead of behaving differently based on whether or not
 there was an edge for the qualifier (e.g., there is no edge for the
 'p' in cases like 'pERK1/2')"
   (unless (or (null edge-for-qualifier) (eq qualifier (edge-referent edge-for-qualifier)))
-    (lsp-break "bad call to extend-interpretation-of-verb-as-predication"))
+    (break "bad call to extend-interpretation-of-verb-as-predication in ~%  ~s~%"
+               (current-string))
+    (return-from interpret-verb-as-predication nil))
   (setq qualifier (individual-for-ref qualifier))
   (cond (var
          ;; really should check for passivizing
@@ -984,7 +986,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
            qualifier
            *left-edge-into-reference*
            var))
-    (setq head (bind-dli-variable 'predication qualifier head))
+    (if qualifier
+        (setq head (bind-dli-variable 'predication qualifier head))
+        (break "link-in-verb gets bad predication for ~s ~s" qualifier head))
     head))
 
 ;;;------------------
@@ -1873,6 +1877,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
       (assimilate-subcat vp :object subj)
       (assimilate-subcat vp :subject subj)))
 
+(defparameter *inside-strings* nil)
+
 (defun assimilate-subject-to-vp-ed (subj vp)
   "We have to determine whether this is an s (which the rule
    that's being invoked assumes) or actually a reduced relative,
@@ -1924,11 +1930,19 @@ there was an edge for the qualifier (e.g., there is no edge for the
                        (loop for e in (edges-after (right-edge-for-referent))
                           thereis '(vg+ed vp+ed verb+ed adjective)))))
                 ;; e.g. "MAP2K1 bound to MAPK1" 
-                (if (transitive-vp-missing-object? vp) ; uses right-edge-for-referent
+                (if (and (transitive-vp-missing-object? vp) ; uses right-edge-for-referent
+                         ;; the NP preceding a participle inside a chunk
+                         ;;  (of necessity an NG chunk)
+                         ;;  is (almost?) always the subject, not the object
+                         (not inside?)) 
                   (assimilate-subcat vp :object subj)
                   (else
                     (when (transitive-vp-missing-object? vp)
                       (revise-parent-edge :form category::transitive-clause-without-object))
+                    (when inside? (push (list :np (retrieve-surface-string np-edge)
+                                              :vp (retrieve-surface-string vp-edge)
+                                              (current-string))
+                                        *inside-strings*))
                     (assimilate-subcat vp :subject subj))))
 
                ((and (can-fill-vp-object? vp subj np-edge)
@@ -2096,7 +2110,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 (defun assimilate-clausal-comp (vg-or-np s-comp &optional (role :thatcomp))
   (declare (special *right-edge-into-reference*))
-  ;;(push-debug `(,vg-or-np ,s-comp)) (break "what's what?")
+  ;;(push-debug `(,vg-or-np ,s-comp)) v(break "what's what?")
   (or
    (when (and (takes-wh-nominals? vg-or-np)
               (or (itypep s-comp 'wh-nominal)
