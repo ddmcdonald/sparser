@@ -274,6 +274,7 @@
                    as var = (subcat-variable pattern)
                    as local-var = (find-variable-for-category var category)
                    as local-v/r = (and local-var (var-value-restriction local-var))
+                   when local-var ;; DAVID -- fix this!!
                    do (assert local-var (var category) "no ~a variable in ~a" var category)
                       (pushnew (if (eq var local-var)
                                  pattern ; no local restriction on var
