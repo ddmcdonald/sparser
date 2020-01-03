@@ -340,7 +340,10 @@
        (insert-edge-into-vector-at ev new-edge (1+ edge-index)))
       (t
        (push-debug `(,edge-index ,edges-over-parent ,count))
-       (lsp-break "Next case for inserting the new edge")))
+       (warn "Next case for inserting the new edge in ~%~s~%"
+             (current-string))
+       (break "in insert-new-edge-between-daughter-and-parent: Next case for inserting the new edge in ~%~s~%"
+             (current-string))))
     (setf (edge-starts-at new-edge) starting-vector
           (edge-ends-at new-edge) ending-vector)))
 
