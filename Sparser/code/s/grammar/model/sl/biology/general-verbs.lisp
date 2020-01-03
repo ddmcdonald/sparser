@@ -1382,6 +1382,7 @@
           ;;(disease disease)
           (purpose (:or treatment disease))
           (object (:or bio-chemical-entity bio-organ bio-process bio-mechanism
+                       bio-method
                        experimental-condition cell-line))
           (agent (:or bio-chemical bio-process bio-mechanism)))
   :realization ;; (p/s "use KRAS to treat pancreatic cancer")
