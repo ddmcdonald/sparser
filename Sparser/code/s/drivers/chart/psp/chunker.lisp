@@ -77,13 +77,15 @@
 
 (defmethod print-object ((chunk chunk) stream)
   (print-unreadable-object (chunk stream :type t)
-    (let ((start (chunk-start-pos chunk))
+    (let ((start (chunk-start-pos chunk))y
           (end (chunk-end-pos chunk)))
       (if (null end)
           (format stream "~s ~s"
                   (chunk-forms chunk)
                   (loop for e in (chunk-edge-list chunk)
-                     collect (retrieve-surface-string e))) 
+                        collect (if (edge-p e)
+                                    (retrieve-surface-string e)
+                                    "empty-edge")))
           (format stream "~a p~a ~s p~a"
                   (chunk-forms chunk)
                   (pos-token-index start)
@@ -1025,6 +1027,29 @@ than a bare "to".  |#
         preceding-noun-refs)
  
     (cond
+      ((and (eq eform 'verb+ed)
+            (loop for ee in before
+                  thereis (eq (edge-form-name ee) 'proper-noun))
+            (or
+             (loop for ee in before
+                   thereis
+                     (loop for eee in (edges-before ee)
+                           thereis (and (edge-p eee)
+                                        (eq (edge-cat-name eee) 'that))))
+             (loop for ee in (edges-before-chunk)
+                   thereis
+                     (or (eq (edge-cat-name ee) 'of)
+                         ;;(eq (edge-form-name ee) 'subordinate-conjunction)
+                         (eq (edge-cat-name ee) 'since)))
+             ;; not a preceding verb+ed,
+             ;;  e.g. "the concept that activated Src phosphorylated Y247"
+             (chunk-contains-other? 'verb+ed e)
+             ))
+       ;; heuristic reject verb_ed 'directed' in
+       ;; "The NH 2 terminus of AHNAK directed exclusively cytoplasmic localization..."
+       ;; and 'activated' in
+       ;; "Since HIPK2 activated p53-mediated transcription..."
+       nil)                        
       ((loop for ee in before
           ;; when you have a simple conjunction following a "between" as in
           ;;  "any possible interaction between LRP and APOE revealed little evidence"
@@ -1301,7 +1326,8 @@ than a bare "to".  |#
           ((null head-edges)
            ;; in "make the steps green" the "green" is included in the chunk,
            ;; even though it's not a valid np head.
-           (lsp-break "bad set of edge vectors -- last one isn't valid head"))
+           (break "in find-consistent-edges bad set of edge vectors -- last one isn't valid head in ~%~s~%"
+                  (current-string)))
           ((and head-edges (null head-edge))
            (when *warn-on-multiple-heads*
              (warn "multiple head edges on ~a: ~a" chunk head-edges))
@@ -1601,7 +1627,8 @@ than a bare "to".  |#
 (defun preceding-plural-noun? (e &optional (edges (edges-before e)))
   (loop for ee in edges
         thereis
-          (eq (cat-name (edge-form (noun-edge? ee))) 'common-noun/plural)))
+          (and (edge-p (noun-edge? ee))
+               (eq (cat-name (edge-form (noun-edge? ee))) 'common-noun/plural))))
 
 (defun preceding-det? (e &optional (edges (edges-before e)))
   (loop for ee in edges
@@ -1651,7 +1678,15 @@ than a bare "to".  |#
      thereis
        (member (form-cat-name ee) '(adverb subordinate-conjunction))))
 
+
 (defun followed-by-of (e &optional (edges-after (edges-after e)))
   (loop for ee in edges-after
      thereis
        (eq (cat-name (edge-category ee)) 'of)))
+
+(defun chunk-contains-other? (form e)
+  (loop for ev in (cdr (chunk-ev-list *chunk*))
+        thereis (loop for edge in (ev-top-edges ev)
+                      thereis
+                        (and (not (eq e edge))
+                             (eq form (edge-form-name edge))))))
