@@ -227,19 +227,24 @@ the fsa would be identified at the word level rather than the category level.
        ;; Construct the range, put a edge over the whole span
        (let* ((edge-1 (aref *digit-position-array* 0))
               (edge-2 (aref *digit-position-array* 1))
-              (i (define-or-find-individual 'range
+              (i (when (and (edge-p edge-1)
+                            (edge-p edge-2))
+                   ;; failed at "at Ser-854"
+                   (define-or-find-individual 'range
                      :from (edge-referent edge-1)
-                     :to (edge-referent edge-2))))
-         (make-chart-edge :starting-position starting-position
-                          :ending-position ending-position
-                          :category category::range
-                          :form category::number ;; ??
-                          :referent i
-                          :left-daughter edge-1
-                          :right-daughter edge-2
-                          :rule 'digit-fsa))))
+                     :to (edge-referent edge-2)))))
+         (when i
+           (make-chart-edge :starting-position starting-position
+                            :ending-position ending-position
+                            :category category::range
+                            :form category::number ;; ??
+                            :referent i
+                            :left-daughter edge-1
+                            :right-daughter edge-2
+                            :rule 'digit-fsa)))))
     
     ending-position ))
+
 
   
 
