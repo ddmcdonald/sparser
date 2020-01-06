@@ -31,7 +31,7 @@
   "Is the type of this candidate complement consistent with constraints
    on the EC variable for this head."
   (let ((variables (takes-object-complement? vg)))
-    (when variables
+    (when (and obj variables) ;; get null OBJ in "...slightly decreased haptotaxis..."
       (when (cdr variables)
         (error "Multiple object-complement variables on ~a: (~a)~
               ~%Don't know what to do." vg variables))
@@ -445,7 +445,7 @@
     (if (edge-p erd)
         erd
         (else
-          (warn "can't find pobj edge for edge ~s" edge)
+          (warn "can't find pobj edge for edge ~s in sentence: ~s" edge (current-string))
           nil))))
 
 (defun base-pp (edge)
