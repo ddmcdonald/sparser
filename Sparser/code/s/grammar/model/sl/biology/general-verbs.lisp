@@ -330,12 +330,12 @@
 
 (def-cfr depend (protein depend)
   :form category::adjg
-  :referent (:function assimilate-object-to-dependent right-edge left-edge))
+  :referent (:function assimilate-dependent-premod left-edge right-edge))
 
-(defun assimilate-object-to-dependent (protein depend)
+(defun assimilate-dependent-premod (protein depend)
   (when (and (edge-p (right-edge-for-referent))
              (eq (form-cat-name (right-edge-for-referent)) 'adjective))
-    (assimilate-object protein depend)))
+    (assimilate-subcat depend (resolve "on") protein)))
 
 #|
 (def-cfr tag (protein tag)
