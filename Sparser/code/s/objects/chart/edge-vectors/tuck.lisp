@@ -248,7 +248,8 @@
 
 
 
-(defun respan-edge-for-new-referent (edge new-ref)
+(defun respan-edge-for-new-referent (edge new-ref
+                                     &optional (new-form (edge-form edge)))
   "We have just modified the referent of one of the edges 
    somewhere inside an already complete edge. This happens
    with comparative, and other cases where we learn something
@@ -269,12 +270,15 @@
     (setf (edge-rule new-edge) (rule-being-interpreted))
     (setf (edge-left-daughter new-edge) edge)
     (setf (edge-right-daughter new-edge)
+          :single-term
+          #+ignore ;; don't want dupication of the lower edges
           (if (edge-p (edge-right-daughter edge))
               (edge-right-daughter edge)
-              :single-term)) ;; alternatives?
+              :single-term) ;; alternatives?
+          )
 
     (setf (edge-category new-edge) (edge-category edge))
-    (setf (edge-form new-edge) (edge-form edge))
+    (setf (edge-form new-edge) new-form)
     (set-edge-referent new-edge new-ref)
     
     (set-used-by edge new-edge)
