@@ -240,6 +240,7 @@
 
 (define-position-in-process "eventually")
 (define-position-in-process "finally")
+(define-position-in-process "first") ;; "it was first rinsed ..."
 (define-position-in-process "initially")
 (define-position-in-process "subsequently")
 (define-position-in-process "ultimately")
