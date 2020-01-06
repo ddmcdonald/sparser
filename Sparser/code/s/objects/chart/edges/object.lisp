@@ -97,8 +97,8 @@
              (unless (or
                       (typep (edge-mention edge) 'discourse-mention)
                       (not (individual-p value))
-                      (null (indiv-old-binds value))))
-             (make-mention value edge))
+                      (null (indiv-old-binds value)))
+               (make-mention value edge)))
            (setf (edge-referent edge) value)))
   value)
 
