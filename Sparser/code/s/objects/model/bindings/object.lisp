@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2011-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  March 2018
+;;;  version:  January 2020
 
 ;; initiated 11/30 v2.1
 ;; 7/17/92 v2.3 revised the definition
@@ -95,7 +95,15 @@
      (let ((category individual))
        (let ((bindings (cat-binds category)))
          (when bindings
-           (value-of/binding var-name bindings category)))))))
+           (value-of/binding var-name bindings category)))))
+
+    (symbol
+     ;; The only symbol we ever expect (1/20) is *lambda-var* which
+     ;; is introduced in predication edges. (/// check for it?).
+     ;; It's not a Krisp data type so no consumer of the value
+     ;; will know what to do with it, hence we're returning nil
+     nil)))
+
 
 (defun value/var (variable individual)
   "Caller did the dereferencing: both variable and individual are objects"
