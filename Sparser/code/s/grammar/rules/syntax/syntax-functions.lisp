@@ -277,20 +277,24 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
   "Given a variable (var), and two referents (val, pred), assert that
    the variable is abstracted out from the pred(icate)."
   (declare (special **lambda-var**))
-  (let ((new-predication (bind-dli-variable var **lambda-var** pred)))
-    (declare (special new-predication))
-    (when (and val (not (individual-p val))
-               ;; below happens for "when oncogenic RAS is induced in HKe3 ER:HRASV12 cells (Figure S3B) "
-               (not (referential-category-p val)))
-      (if (eq val '*lambda-var*)
-          (when *lambda-var-warnings*
-            (warn "still trying to bind *lambda-var* in predication, in ~s~%"
-                (current-string)))
-          (lsp-break "non individual as val")))
-    (cond (new-predication
-           (setf (gethash new-predication *predication-links-ht*) val)
-           new-predication)
-          (t pred))))
+  (cond ((null var)
+         (warn "bad lambda-var binding for ~s to ~s in ~s~%" val pred (current-string))
+         pred)
+        (t
+         (let ((new-predication (bind-dli-variable var **lambda-var** pred)))
+           (declare (special new-predication))
+           (when (and val (not (individual-p val))
+                      ;; below happens for "when oncogenic RAS is induced in HKe3 ER:HRASV12 cells (Figure S3B) "
+                      (not (referential-category-p val)))
+             (if (eq val '*lambda-var*)
+                 (when *lambda-var-warnings*
+                   (warn "still trying to bind *lambda-var* in predication, in ~s~%"
+                         (current-string)))
+                 (lsp-break "non individual as val")))
+           (cond (new-predication
+                  (setf (gethash new-predication *predication-links-ht*) val)
+                  new-predication)
+                 (t pred))))))
 
 (defun insert-predication-edge (parent pred new-predication)
   (declare (special new-predication parent))
@@ -2497,7 +2501,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
        (if var-to-bind
            (let* ((pp-edge (edge-right-daughter (right-edge-for-referent)))
                   (new-np (bind-variable var-to-bind pobj np))
-                  (new-np-edge (respan-edge-for-new-referent pp-edge new-np))
+                  (new-np-edge (respan-edge-for-new-referent
+                                pp-edge new-np
+                                (category-named 'np)))
                   (new-result
                     (bind-variable 'item np
                                    (bind-variable 'value new-np copular-pp))))
@@ -2787,19 +2793,22 @@ there was an edge for the qualifier (e.g., there is no edge for the
     (cond
       (*subcat-test* premod-binding)
       (premod-takes-pp
-       (multiple-value-bind (variable-to-bind pobj-referent prep-word *pobj-edge*)
-           (variable-to-bind-pp-to-head (right-edge-for-referent) premod-takes-pp)
-         (let ((extended-premod
-                (bind-variable variable-to-bind pobj-referent premod-takes-pp)))
-           (multiple-value-bind (edge-over-premod)
-               (search-tree-for-referent (left-edge-for-referent) premod-takes-pp)
+       (multiple-value-bind (edge-over-premod)
+           (search-tree-for-referent (left-edge-for-referent) premod-takes-pp)
+         (unless edge-over-premod
+           #+ignore
+           (lsp-break "Could not locate edge over ~a under ~a in ~s~%"
+                      premod-takes-pp (left-edge-for-referent)
+                      (current-string))
+           (return-from maybe-extend-premod-adjective-with-pp nil))
+         (multiple-value-bind (variable-to-bind pobj-referent prep-word *pobj-edge*)
+             (variable-to-bind-pp-to-head (right-edge-for-referent) premod-takes-pp)
+           (let ((extended-premod
+                  (bind-variable variable-to-bind pobj-referent premod-takes-pp)))
+
              ;; Insert a new edge over the comparative edge
              ;; of the np with the completed-attribution as its value.
-             (unless edge-over-premod
-               (warn "Could not locate edge over ~a under ~a in ~s~%"
-                     premod-takes-pp (left-edge-for-referent)
-                     (current-string))
-               (return-from maybe-extend-premod-adjective-with-pp nil))
+             
              (respan-edge-for-new-referent edge-over-premod extended-premod)
              (rebind-variable premod-var extended-premod np))))))))
 
