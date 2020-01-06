@@ -281,7 +281,10 @@
     (polyword nil) ;; ditto
     (symbol nil) ;; ditto
     (edge
-     (when (funcall test-fn edge) (throw :type-search edge))
+     (when (funcall test-fn edge)
+       (unless (eq (edge-cat-name edge) 'lambda-expression)
+         ;; skip over predication edges
+         (throw :type-search edge)))
      (let ((left (edge-left-daughter edge))
            (right (edge-right-daughter edge))
            (consitituents (edge-constituents edge)))
