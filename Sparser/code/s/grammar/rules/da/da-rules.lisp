@@ -2131,7 +2131,8 @@ assumed. |#
     :action (:function raise-quantifier-to-np first))
 
 (defun raise-quantifier-to-np (quantifier)
-  (unless (itypep (edge-referent quantifier) 'either) ;; more often a part of a conjunction or partitive
+  (unless (or (itypep (edge-referent quantifier) 'either) ;; more often a part of a conjunction or partitive
+              (eq (edge-cat-name quantifier) 'ordinal))
     (make-edge-spec
      :category (edge-category quantifier)
      :form category::np
