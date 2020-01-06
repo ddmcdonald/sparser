@@ -338,7 +338,8 @@
                            '(lambda-form)))
               (loop for st-class in *save-surface-text-classes*
                     thereis (itypep referent st-class)))
-     (when (null (value-of 'raw-text referent))
+     (when (and (null (value-of 'raw-text referent))
+                 (head-string edge)) ;; must have a non-null head-string
        ;; do this after the code above, so that the *bce-ht*
        ;;  is keyed on the individual without the text
        ;; (format t "set raw-text of ~s to ~s~%" edge (head-string edge))
