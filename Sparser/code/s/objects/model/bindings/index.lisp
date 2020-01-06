@@ -179,7 +179,7 @@
   When it retrieves an individual we don't automatically get the
   automatic indexing of the binding (particularly the bound-in information
   we need), so we do that here."
-  (let ((b (has-binding i :variable var :value value))
+  (let ((b (when value (has-binding i :variable var :value value)))
         (bound-in-field (indiv-bound-in i)))
     ;;(unless b (break "Why no binding of ~a on ~a" var i))
     ;;  first case was the list of variables
