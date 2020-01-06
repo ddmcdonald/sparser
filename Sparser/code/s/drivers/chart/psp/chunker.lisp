@@ -1634,7 +1634,8 @@ than a bare "to".  |#
   (loop for ee in edges
         thereis
           (member (cat-name (edge-form (noun-edge? ee)))
-                  '(determiner demonstrative))))
+                  ;; not sure why this had DETERMINER rather than DET
+                  '(det determiner demonstrative))))
 
 (defun preceding-plural-deictic? (e &aux (edges (edges-before e)))
   (loop for ee in edges
@@ -1666,7 +1667,10 @@ than a bare "to".  |#
 (defun preceding-adverb (e &optional (edges (edges-before e)))
   (loop for ee in edges
      thereis
-          (eq (form-cat-name ee) 'adverb)))
+          (and (eq (form-cat-name ee) 'adverb)
+               ;; first is now optionally an adverb (as in "we first rinsed ...")
+               ;;  but in an NP it is an ordinal
+               (not (eq (edge-cat-name ee) 'first)))))
 
 (defun preceding-preposition (e &optional (edges (edges-before e)))
   (loop for ee in edges
