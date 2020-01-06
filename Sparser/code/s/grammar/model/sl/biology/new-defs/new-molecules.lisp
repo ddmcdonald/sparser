@@ -1602,7 +1602,7 @@
 (def-indiv-with-id lipid "Sphingosine" "PUBCHEM:5353955" :name "Sphingosine")
 (def-indiv-with-id phospholipid "PIP" "CHEBI:28765" :name "phosphatidylinositol phosphate")
 (def-indiv-with-id phospholipid "PIP2" "PUBCHEM:5497157" :name "PIP2" :synonyms ("phosphatidylinositol 4,5-bisphosphate" "phosphatidylinositol-4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate"))
-(def-indiv-with-id phospholipid "PIP3" "PUBCHEM:101362114" :name "PIP3" :synonyms ("phosphatidylinositol 3,4,5-triphosphate" "phosphatidylinositol-3,4,5-trisphosphate" "PIP-3" "HMDB10147"))
+(def-indiv-with-id phospholipid "PIP3" "PUBCHEM:101362114" :name "PIP3" :synonyms ("phosphatidylinositol 3,4,5-triphosphate" "phosphatidylinositol-3,4,5-trisphosphate" "phosphatidylinositol 3,4,5-trisphosphate" "PIP-3" "HMDB10147"))
 (def-indiv-with-id phospholipid "IP3" "PUBCHEM:439456" :name "IP3" :synonyms ("inositol 1,4,5-triphosphate"))
 (def-indiv-with-id molecule "Tris" "CHEBI:9754")
 (def-indiv-with-id molecule "HCl" "CHEBI:17883" :maintain-case t)
