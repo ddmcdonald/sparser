@@ -278,7 +278,8 @@
           )
 
     (setf (edge-category new-edge) (edge-category edge))
-    (setf (edge-form new-edge) new-form)
+    (setf (edge-form new-edge) (or new-form
+                                   (edge-form edge)))
     (set-edge-referent new-edge new-ref)
     
     (set-used-by edge new-edge)

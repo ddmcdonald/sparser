@@ -2114,7 +2114,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 (defun assimilate-clausal-comp (vg-or-np s-comp &optional (role :thatcomp))
   (declare (special *right-edge-into-reference*))
-  ;;(push-debug `(,vg-or-np ,s-comp)) v(break "what's what?")
+  ;;(push-debug `(,vg-or-np ,s-comp)) (break "what's what?")
   (or
    (when (and (takes-wh-nominals? vg-or-np)
               (or (itypep s-comp 'wh-nominal)
