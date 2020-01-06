@@ -495,7 +495,7 @@ is replaced with replacement."
 ;;;-------------------------
 
 (defun repair-bad-composition (sentence)
-  "1st experiment: subcategorized locations that were swallowed 
+  "1st case: subcategorized locations that were swallowed 
    as modifiers to preceding np. Generalize when there's been a third example."
   (let* ((edge (span-covered-by-one-edge?
                 (starts-at-pos sentence)
