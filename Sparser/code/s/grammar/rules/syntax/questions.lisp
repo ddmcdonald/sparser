@@ -224,10 +224,7 @@
 
         ;; In most cases, the proposed aux will have been accommodated by
         ;; the operations in the post-vg-hook, though that's just for explicit
-        ;; auxiliaries.         
-
-        ((eq (edge-category (car edges)) category::there-exists)
-         (sort-out-incompletely-parsed-there-is-q start-pos end-pos edges))
+        ;; auxiliaries.  
 
         ((and preposed? ;; "does MEK phosphorylate ERK?"
               (edge-p (first edges))

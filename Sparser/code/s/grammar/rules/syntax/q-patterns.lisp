@@ -164,19 +164,6 @@
         edge))))
 
 
-(defun sort-out-incompletely-parsed-there-is-q (start-pos end-pos edges)
-  "Called from make-this-a-question-if-appropriate when the first
-   edge is a there-exists"
-  (tr :wh-walk 'sort-out-incompletely-parsed-there-is-q)
-  (let ((labels (loop for e in edges collect (edge-cat-name e))))
-    (when *debug-questions*
-      (error "incomplete there-is question. Labels = ~a" labels)
-      #+ignore
-      (warn "Incomplete there-is question: ~s in sentence ~%~s"
-            (string-of-words-between start-pos end-pos)
-            (current-string)))))
-
-
 ;;//// actually pattern is [ s s preposition ]
 ;; DA: there-s-prep  "Are there any genes stat3 is upstream of?"
 ;;         chunking:  are there [any genes ][stat3 ][is ][upstream ]of
