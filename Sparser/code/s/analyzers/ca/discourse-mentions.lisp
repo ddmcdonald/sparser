@@ -428,7 +428,9 @@
   subsumed-mention)
 
 (defun embedded-statement? (edge)
-  (let ((statement (value-of 'statement (edge-referent edge))))
+  (let* ((referent (edge-referent edge)) ;; be a bit more paranoid -- can be called with null referent
+                    ;; perhaps we should track down the cause?
+         (statement (when referent (value-of 'statement referent))))
     ;; is this an edge like a whethercomp or a wh-question that
     ;;  embeds the meaning of a lower edge as the value of the
     ;;  statement variable
@@ -549,7 +551,10 @@
                            (stringp value)
                            (word-p value)
                            (polyword-p value)
-                           (numberp value))
+                           (numberp value)
+                           (and (eq (pname (binding-variable b))
+                                    'number)
+                                (itypep value 'number)))
                           `(,(binding-variable b) ,value))
                        ((and (eq 'COUNT
                             ;; if we don't do this, the count value
