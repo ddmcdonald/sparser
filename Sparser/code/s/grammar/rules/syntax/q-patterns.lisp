@@ -169,10 +169,12 @@
    edge is a there-exists"
   (tr :wh-walk 'sort-out-incompletely-parsed-there-is-q)
   (let ((labels (loop for e in edges collect (edge-cat-name e))))
-    (if *debug-questions*
+    (when *debug-questions*
       (error "incomplete there-is question. Labels = ~a" labels)
-      (warn "Incomplete there-is question: ~s"
-            (string-of-words-between start-pos end-pos)))))
+      #+ignore
+      (warn "Incomplete there-is question: ~s in sentence ~%~s"
+            (string-of-words-between start-pos end-pos)
+            (current-string)))))
 
 
 ;;//// actually pattern is [ s s preposition ]
@@ -811,7 +813,8 @@
     (when full-pp-edge
       (let* ((longer-vp ; "expressed in x" -- adjp if vg+ed is an adjective
               (rule-to-edge vg+ed full-pp-edge))
-             (v-max (formulate-aux-vg-combination aux-vp vg+ed)))
+             ;; make sure that longer-vp is passed for v-max, not vg+ed
+             (v-max (formulate-aux-vg-combination aux-vp longer-vp)))
         (let ((s-edge (rule-to-edge np v-max)))
           (if s-edge
             (make-question-and-edge
