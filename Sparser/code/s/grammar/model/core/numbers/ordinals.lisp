@@ -151,7 +151,7 @@
     ordinal individual based just on the number.")
   (:method ((n number))
     (let ((number (find-or-make-number n)))
-      (make-ordinal n)))
+      (make-ordinal number)))
   (:method ((i individual))
     (assert (itypep i 'number))
     (define-individual 'ordinal :number i)))
