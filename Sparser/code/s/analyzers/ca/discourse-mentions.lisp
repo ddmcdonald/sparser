@@ -447,7 +447,8 @@
   (declare (special edge category::wh-question))
   (cond ((null i)
          (error "null individual in subsumed-mention?"))
-        ((and (member (edge-rule edge) '(make-predication-edge))
+        ((and (member (edge-rule edge) '(make-predication-edge
+                                         elevate-spanning-edge-over-paired-punctuation))
               (typep (edge-mention (edge-left-daughter edge))
                      'discourse-mention))
          (return-from subsumed-mention?
