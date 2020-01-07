@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "da-rules"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  December 2019
+;;;  Version:  January 2020
 
 ;; initiated 9/18/15 for da patterns and interpreters that had been
 ;; stashed in biology. Small tweaks and additions of the same kind
@@ -1049,12 +1049,16 @@
               (and (null subj-var)
                    (transitive-vp-missing-object? vg-ref vg+ed)
                    (subcategorized-variable vg-ref :object np-ref))))
+
         ;; cargo-culted from assimilate-subject-to-vp-ed
         (let* ((vp-ref
-                (if obj-var (create-predication-by-binding obj-var np-ref vg-ref)
-                    (create-predication-by-binding subj-var np-ref vg-ref)))
+                (cond
+                  (obj-var (create-predication-by-binding obj-var np-ref vg-ref))
+                  (subj-var (create-predication-by-binding subj-var np-ref vg-ref))
+                  (t (push-debug `(,vg-ref ,np-ref))
+                     (break "Why did we think ~a is a reduced relative?" vg+ed))))
                (i (bind-variable 'predication vp-ref np-ref)))
-          ;; (push-debug `(,vp-ref ,vg-ref ,np-ref))  (break "i = ~a" i)
+          ;; (break "i = ~a" i)
           (make-edge-spec
            :category (edge-category np)
            :form category::np
@@ -1084,8 +1088,10 @@
    and the np could be its subject."
   ;; "the amount of MAPK1 phosphorylated is eventually high"
   (when xp
-    (subcategorized-variable
-     (edge-referent xp) :subject (edge-referent np))))
+    (unless (np-category? xp)
+      ;; "These data prompted the suggestion that APC may regulate cell migration"
+      (subcategorized-variable
+       (edge-referent xp) :subject (edge-referent np)))))
 
 
 
