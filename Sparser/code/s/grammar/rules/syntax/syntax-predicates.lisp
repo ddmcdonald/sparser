@@ -441,6 +441,9 @@
     (when pobj-edge (edge-referent pobj-edge))))
 
 (defun find-pobj-edge (edge)
+  (when (eq (edge-rule edge) 'elevate-spanning-edge-over-paired-punctuation)
+    ;; "the epitope (on the ligand) "
+    (setq edge (edge-left-daughter edge)))
   (let* ((bpp-edge (base-pp edge))
          (erd (edge-right-daughter bpp-edge)))
     (if (edge-p erd)
