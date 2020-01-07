@@ -392,7 +392,10 @@ in the scope of referent-from-rule.
                   (itypep ref right-ref))))
        right-edge)
       (t
-       (break "edge-for-referent - new case?")))))
+       (or (search-tree-for-referent left-edge ref)
+           (search-tree-for-referent right-edge ref)
+           (then (push-debug `(,ref ,left-edge ,right-edge))
+                 (break "edge-for-referent - new case?")))))))
 
 
 (defun current-constituent-edges () ;; only called by constituent-edge-with-value
