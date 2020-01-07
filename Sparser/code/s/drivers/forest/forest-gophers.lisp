@@ -169,7 +169,8 @@
 
 
 (defun starts-with-prep? ()
-  (starts-with-prep (layout)))
+  (when (layout) ; nil during some phases
+    (starts-with-prep (layout))))
 
 
 (defun push-prepositional-phrase (tt)

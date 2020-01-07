@@ -316,14 +316,15 @@
    to check for a common situation in questions.
   Uses the information acquired in sweep-sentence-treetops, which
   runs just after chunking and before we start parsing at the forest level."
-  (let ((leading-prep (starts-with-prep?)) ;; returns an edge
-        (of-edges (of-mentions (layout))))
-    ;; Could have used there-are-of-mentions? to get the of-edges but it
-    ;; has a filter that omits an edge if it is 'used-in' anything.
-    ;; That's probably OBE, but not worth changes for just one case.
-    (when (and leading-prep of-edges)
-      (let ((of-edge (car (last of-edges)))) ;; pushed onto the list
-        (eq of-edge leading-prep)))))
+  (when (layout) ; nil during some phases
+    (let ((leading-prep (starts-with-prep?)) ;; returns an edge
+          (of-edges (of-mentions (layout))))
+      ;; Could have used there-are-of-mentions? to get the of-edges but it
+      ;; has a filter that omits an edge if it is 'used-in' anything.
+      ;; That's probably OBE, but not worth changes for just one case.
+      (when (and leading-prep of-edges)
+        (let ((of-edge (car (last of-edges)))) ;; pushed onto the list
+          (eq of-edge leading-prep))))))
 
 
 
