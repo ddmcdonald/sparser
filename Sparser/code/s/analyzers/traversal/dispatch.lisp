@@ -112,41 +112,51 @@
     (setq layout (analyze-segment-layout pos-after-open pos-before-close))
     (tr :layout-between-punct layout)
 
-    (flet ((vanila-edge (pos-before-open pos-after-close type)
-             (make-edge-over-long-span
-              pos-before-open
-              pos-after-close
-              (case type
-                (:angle-brackets  (category-named 'angle-brackets))
-                (:square-brackets (category-named 'square-brackets))
-                (:curly-brackets  (category-named 'curly-brackets))
-                (:parentheses     (category-named 'parentheses))
-                (:quotation-marks (category-named 'quotation))
-                (otherwise
-                 (break "unexpected type: ~a" type)))
-              :form (case type
-                      (:angle-brackets  (category-named 'angle-brackets))
-                      (:square-brackets (category-named 'square-brackets))
-                      (:curly-brackets  (category-named 'curly-brackets))
-                      (:parentheses     (category-named 'parentheses))
-                      (:quotation-marks (category-named 'quotation))
-                      (otherwise
-                       (break "unexpected type: ~a" type)))
-              :rule  :default-edge-over-paired-punctuation))
+    (labels ((referent-for-vanila-edge ()
+               "Edges need referents, even their semantically vacuous"
+               (if first-edge
+                 (edge-referent first-edge)
+                 (let ((type-category (intern (symbol-name type) :category)))
+                   (find-or-make-individual type-category))))
 
-           (interior-hook (label)
-             "Does this label have an 'interior action' associated with it.
+             (vanila-edge (pos-before-open pos-after-close type)
+               "Just cover the span between the punctuation (inclusive)
+              with an edge labeled according to the type of bracket."
+               (make-edge-over-long-span
+                pos-before-open
+                pos-after-close
+                (case type
+                  (:angle-brackets  (category-named 'angle-brackets))
+                  (:square-brackets (category-named 'square-brackets))
+                  (:curly-brackets  (category-named 'curly-brackets))
+                  (:parentheses     (category-named 'parentheses))
+                  (:quotation-marks (category-named 'quotation))
+                  (otherwise
+                   (break "unexpected type: ~a" type)))
+                :form (case type
+                        (:angle-brackets  (category-named 'angle-brackets))
+                        (:square-brackets (category-named 'square-brackets))
+                        (:curly-brackets  (category-named 'curly-brackets))
+                        (:parentheses     (category-named 'parentheses))
+                        (:quotation-marks (category-named 'quotation))
+                        (otherwise
+                         (break "unexpected type: ~a" type)))
+                :referent (referent-for-vanila-edge)
+                :rule  :default-edge-over-paired-punctuation))
+
+             (interior-hook (label)
+               "Does this label have an 'interior action' associated with it.
               Goes with define-interior-action and ties the label to the
               function to be executed."
-             (cadr (member (case type
-                             (:angle-brackets  :interior-of-angle-brackets)
-                             (:square-brackets :interior-of-square-brackets)
-                             (:curly-brackets  :interior-of-curly-brackets)
-                             (:parentheses     :interior-of-parentheses)
-                             (:quotation-marks :interior-of-quotation-marks)
-                             (otherwise
-                              (break "unexpected type: ~a" type)))
-                           (plist-for label)))))
+               (cadr (member (case type
+                               (:angle-brackets  :interior-of-angle-brackets)
+                               (:square-brackets :interior-of-square-brackets)
+                               (:curly-brackets  :interior-of-curly-brackets)
+                               (:parentheses     :interior-of-parentheses)
+                               (:quotation-marks :interior-of-quotation-marks)
+                               (otherwise
+                                (break "unexpected type: ~a" type)))
+                             (plist-for label)))))
 
       (if (and first-edge
                (eq layout :single-span))
@@ -155,28 +165,30 @@
         ;; See define-interior-action in analyzers/traversal/form.lisp
         (let ((hook (or (interior-hook (edge-category first-edge))
                         (interior-hook (edge-form first-edge)))))
-
           (if hook
             (then
-             (tr :paired-punct-hook hook)
-             (if (cfr-p hook)
-               (do-paired-punct-cfr hook first-edge
-                                    pos-before-open pos-after-close)
-               (funcall hook
-                        first-edge
-                        pos-before-open pos-after-close
-                        pos-after-open pos-before-close 
-                        layout)))
+              (tr :paired-punct-hook hook)
+              (if (cfr-p hook)
+                (do-paired-punct-cfr hook first-edge
+                                     pos-before-open pos-after-close)
+                (funcall hook
+                         first-edge
+                         pos-before-open pos-after-close
+                         pos-after-open pos-before-close 
+                         layout)))
             (else
-             ;; There's no special action for this edge label
-             ;; so just make the default edge
-             (tr :no-paired-punct-hook first-edge)
-             (vanila-edge pos-before-open pos-after-close type))))
+              ;; There's no special action for this edge label
+              ;; so just make the default edge
+              (tr :no-paired-punct-hook first-edge)
+              #+ignore (vanila-edge pos-before-open pos-after-close type)
+              (elevate-spanning-edge-over-paired-punctuation
+                       first-edge pos-before-open pos-after-close pos-after-open pos-before-close 
+                       layout))))
         (else
-         ;; A more complex layout, which doesn't have a scheme for
-         ;; hooks yet.
-         (tr :pp-not-single-span layout)
-         (vanila-edge pos-before-open pos-after-close type))))))
+          ;; A more complex layout, which doesn't have a scheme for
+          ;; hooks yet.
+          (tr :pp-not-single-span layout)
+          (vanila-edge pos-before-open pos-after-close type))))))
 
 
 
@@ -244,7 +256,8 @@
                                                       pos-before-open pos-after-close
                                                       pos-after-open pos-before-close 
                                                       layout )
-
+  "Used by do-paired-punctuation-interior as a version of 'vanila-edge'. It just
+   exposes the 'first-edge' as though the punctuation wasn't there"
   (declare (ignore layout ;; do-paired-punctuation-interior requires :single-span
                    pos-after-open pos-before-close))
   (make-chart-edge :category (edge-category first-edge)
@@ -254,5 +267,5 @@
                    :ending-position pos-after-close
                    :left-daughter first-edge
                    :right-daughter :single-term
-                   :rule :elevate-spanning-edge-within-parens))
+                   :rule 'elevate-spanning-edge-over-paired-punctuation))
   
