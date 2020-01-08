@@ -184,6 +184,9 @@
    (extract-characters-between-positions pos-before pos-after)))
 
 
+(defun string-for-edge (edge)
+  "Abbreviation for the long version"
+  (extract-string-spanned-by-edge edge))
 
 (defun extract-string-spanned-by-edge (edge)
   (let* ((start-pos (pos-edge-starts-at edge))
