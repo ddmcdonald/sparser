@@ -991,6 +991,9 @@
        nil))))
 
 
+
+;;------------------ vp+ed -------------------
+
 (define-debris-analysis-rule proper-noun-comma-vg+ed-comma
   :pattern (proper-noun "," vp+ed ",")
   :action (:function ;; providing all edges should let the constituents
@@ -1028,6 +1031,7 @@
   :action (:function
            np-vg+ed first second))
 
+
 (defun np-vg+ed (np vg+ed)
   "Have to determine the fate of the vg+ed -- is it a main verb or
    is it a reduced relative and the actual main verb it to our
@@ -1038,12 +1042,13 @@
   ;; and the np could be its subject.
   ;; "the amount of MAPK1 phosphorylated is eventually high"
   (let ((edge-on-right (edge-just-to-right-of vg+ed)))
-    (if (vg-is-reduced-relative? np vg+ed (edge-just-to-right-of vg+ed))
+    (if (vg-is-reduced-relative? np vg+ed edge-on-right)
         ;; If the vg+ed is a reduced relative then the np is its subject
         ;; not always -- see "The two cell lines used were ..."
       ;; Compare '... which is <vg+ed>"
       (let* ((np-ref (edge-referent np))
              (vg-ref (edge-referent vg+ed))
+
              (subj-var (subcategorized-variable vg-ref :subject np-ref))
              (obj-var
               (and (null subj-var)
@@ -1056,7 +1061,16 @@
                   (obj-var (create-predication-by-binding obj-var np-ref vg-ref))
                   (subj-var (create-predication-by-binding subj-var np-ref vg-ref))
                   (t (push-debug `(,vg-ref ,np-ref))
-                     (break "Why did we think ~a is a reduced relative?" vg+ed))))
+                     (break "Variables for reduce-relative are nil~
+                           ~%  np: e~a ~s~
+                           ~%  vg+ed: e~a ~s~
+                           ~%  xp: e~a ~s"
+                            (edge-position-in-resource-array np)
+                            (string-for-edge np)
+                            (edge-position-in-resource-array vg+ed)
+                            (string-for-edge vg+ed)
+                            (edge-position-in-resource-array edge-on-right)
+                            (string-for-edge edge-on-right)))))
                (i (bind-variable 'predication vp-ref np-ref)))
           ;; (break "i = ~a" i)
           (make-edge-spec
@@ -1083,24 +1097,31 @@
              )))))))
 
 
+;; "the amount of MAPK1 phosphorylated is eventually high"
+;;
 (defun vg-is-reduced-relative? (np vg xp)
   "The vg is a reduced relative if there's an edge to its right ('xp')
-   and the np could be its subject."
-  ;; "the amount of MAPK1 phosphorylated is eventually high"
-  (when (and xp (edge-referent xp))
-    (unless (np-category? xp)
-      ;; "These data prompted the suggestion that APC may regulate cell migration"
-      (subcategorized-variable
-       (edge-referent xp) :subject (edge-referent np)))))
+   and the np could be its subject. In our present grammar there are
+   a great many cases where a variable would be identified but a
+   reduced relative would make no sense. We try to rule these out
+   on grammatical grounds."
+  (when (and xp (edge-referent xp)) ; rules out semi-colons
+    (let ((xp-form (form-cat-name xp)))
+      (if (or (np-category? xp) ;; "These data prompted the suggestion that APC may regulate cell migration"
+              (adjg-compatible? xp) ; "replication forks assembled early"
+              (adjg-head? xp)
+              (memq xp-form
+                    '(to-comp ; "some investigations failed to demonstrate the role of DCC"
+                      vg+ing ; "the Src kinase activity assayed using a kit"
+                      infinitive ; "to examine"
+                      transitive-clause-without-object
+                      comparative ; "more"
+                      )))
+        nil
+        (subcategorized-variable
+         (edge-referent xp) :subject (edge-referent np))))))
 
 
-
-(define-debris-analysis-rule proper-noun-vg+ed
-  :pattern (proper-noun vg+ed )
-  :action (:function proper-noun-vg+ed first second))
-
-(defun proper-noun-vg+ed (pronoun vg+ed)
-  (np-vg+ed pronoun vg+ed))
 
 
 (define-debris-analysis-rule pp-vg+ed
