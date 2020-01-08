@@ -192,11 +192,14 @@
   (let ( matching-edge )
     (let ((ev (edge-ends-at edge-before)) ;; look leftward first
           (label (edge-category edge-after)))
-      (setq matching-edge (search-ev-for-edge ev label))
-      (when matching-edge
-        ;;/// refactor so can easily run the same check on
-        ;; the right edge-vector
-        (conjoin-and-rethread-edges matching-edge edge-after :left)))))
+      (unless (eq (edge-form-name edge-after) 'pp)
+        ;; don't do this conjunction and rethreading on PPs
+        ;; such as "in Bak protein content nor in subcellular  location "
+        (setq matching-edge (search-ev-for-edge ev label))
+        (when matching-edge
+          ;;/// refactor so can easily run the same check on
+          ;; the right edge-vector
+          (conjoin-and-rethread-edges matching-edge edge-after :left))))))
 
 (defparameter *trace-conjoin-and-rethread* nil)
 

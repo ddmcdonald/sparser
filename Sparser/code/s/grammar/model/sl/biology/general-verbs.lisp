@@ -1230,6 +1230,27 @@
   (:verb ("show" :past-tense "showed" :past-participle "shown")
          :etf (svo-passive)))
 
+;; two verbs that are similar to "show" and are used in papers
+(define-category demonstrate :specializes bio-rhetorical
+   :mixins (bio-thatcomp raising-to-object directed-action
+            with-specified-location takes-wh-nominals)           
+  :restrict ((theme (:or be biological predication abstract))
+             (beneficiary interlocutor))
+  ;; it was shown that
+  :realization
+  (:verb "demonstrate"
+         :etf (svo-passive)))
+
+(define-category exhibit :specializes bio-rhetorical
+   :mixins (bio-thatcomp raising-to-object directed-action
+            with-specified-location takes-wh-nominals)           
+  :restrict ((theme (:or be biological predication abstract))
+             (beneficiary interlocutor))
+  ;; it was shown that
+  :realization
+  (:verb ("exhibit":past-tense "exhibited" :past-participle "exhibited")
+         :etf (svo-passive)))
+
 (define-category list :specializes perdurant
   :mixins (directed-action)
   :binds ((theme (:or be biological predication abstract)))

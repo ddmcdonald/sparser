@@ -2723,7 +2723,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                    (search-tree-for-referent (left-edge-for-referent) comp-indiv)))
               (unless edge-over-comparative
                 (warn "Could not locate edge over ~a under ~a~ in~% ~s"
-                      comp-indiv (lefdivt-edge-for-referent)
+                      comp-indiv (left-edge-for-referent)
                       (current-string))
                 (return-from maybe-extend-comparative-with-than-np nil))
               (respan-edge-for-new-referent edge-over-comparative j)

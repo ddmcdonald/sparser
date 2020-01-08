@@ -402,7 +402,10 @@
 (defun find-verb (edge)
   (declare (special category::pp))
   (let ((form (edge-form edge)))
-    (unless (vp-category? form)
+    (unless (or (vp-category? form)
+                ;; this is for predication edges formed over vp+ing
+                ;; as in "suggesting that terminally differentiated myotube nuclei are competent "
+                (eq (edge-form-name edge) 'lambda-form))
       (push-debug `(,edge))
       (error "Not a VP category: ~a in e~a"
              form (edge-position-in-resource-array edge)))

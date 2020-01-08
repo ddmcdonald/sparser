@@ -151,7 +151,7 @@ increasing amounts of recombinant XRCC1.
 
 ;; failed to find a treatment for pancreatic cancer
 (define-category fail :specializes aspectual-relation
-  :restrict ((theme bio-process))
+  :restrict ((theme (:or bio-process evidence)))
   :realization 
     (:verb "fail"  
      :etf (sv) ))

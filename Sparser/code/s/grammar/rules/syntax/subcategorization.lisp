@@ -1010,7 +1010,7 @@
      do (setq label (edge-left-daughter label)))
   (cond
     ((null head)
-     (warn-or-error "~&null head in call to subcategorized-variable in ~% ~s~%"
+     (lsp-break "~&null head in call to subcategorized-variable in ~% ~s~%"
             (sentence-string *sentence-in-core*))
      nil)
     ((null item)

@@ -385,6 +385,15 @@ in the scope of referent-from-rule.
              (and (category-p left-ref)
                   (itypep ref left-ref)))) ;; (eq ref (individual-for-ref left-ref))
        left-edge)
+      ((when left-edge
+         (loop for e in (edges-under left-edge)
+               when
+                 (and (edge-referent e)
+                      (or (eq ref (edge-referent e))
+                          (eq ref (value-of 'comp (edge-referent e)))
+                          (and (category-p (edge-referent e))
+                               (itypep ref (edge-referent e)))))
+               do (return e))))
       ((when right-ref
          (or (eq ref right-ref)
              (eq ref (value-of 'comp right-ref))
