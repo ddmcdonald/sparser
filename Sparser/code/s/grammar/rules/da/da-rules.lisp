@@ -1087,7 +1087,7 @@
   "The vg is a reduced relative if there's an edge to its right ('xp')
    and the np could be its subject."
   ;; "the amount of MAPK1 phosphorylated is eventually high"
-  (when xp
+  (when (and xp (edge-referent xp))
     (unless (np-category? xp)
       ;; "These data prompted the suggestion that APC may regulate cell migration"
       (subcategorized-variable
