@@ -1449,6 +1449,20 @@ divides it into good and bad. |#
     (print name)))
 
 
+(defun run-test-set (list-of-texts)
+  "Unencumbered version of test-bio-utterances "
+  (flet ((do-test (string)
+           (assert (stringp string))
+           (handler-case
+               (progn
+                 (format t "~&~%(p ~s)~%" string)
+                 (analyze-text-from-string string))
+             (error (e)
+               (format t "~&Error ~a~%" e)))))
+    (loop for text in list-of-texts do (do-test text))))
+       
+
+
 ;;;---------------------------------
 ;;; ( something else entirely ;-)
 ;;;---------------------------------
