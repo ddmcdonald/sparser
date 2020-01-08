@@ -350,8 +350,7 @@
 
 (defgeneric adjg-compatible? (label)
   (:documentation "Is a category which can occur inside an ADJG")
-  (:method ((w word))
-    t)
+  (:method ((w word)) nil) ; was T
   (:method ((e edge))
     (declare (special category::have category::percent))
     (or
@@ -377,11 +376,10 @@
 
 (defgeneric adjg-head? (label)
   (:documentation "Is a category which can occur as the head of an ADJG")
-  (:method ((w word))
-    t)
+  (:method ((w word)) nil) ; was T, which is inconsistent with other cases
   (:method ((e edge))
     (unless (prev-adj e)
-      (when (not (eq (cat-name (edge-category e)) 'sequencer))
+      (unless (eq (cat-name (edge-category e)) 'sequencer)
         ;; sequencers like "next" cannot be heads of adjg's
         (adjg-head? (edge-form e)))))
   (:method ((c referential-category))
@@ -402,13 +400,13 @@
 ;;--- nouns and friends
 
 (defgeneric noun-category? (label)
-  (:documentation "Nouns and their variants. Should be a single word"))
-(defmethod noun-category? ((e edge))
-  (noun-category? (edge-form e)))
-(defmethod noun-category? ((c referential-category))
-  (noun-category? (cat-symbol c)))
-(defmethod noun-category? ((name symbol))
-  (memq name *noun-categories*))
+  (:documentation "Nouns and their variants. Should be a single word")
+  (:method ((e edge))
+    (noun-category? (edge-form e)))
+  (:method ((c referential-category))
+    (noun-category? (cat-symbol c)))
+  (:method ((name symbol))
+    (memq name *noun-categories*)))
 
 (defgeneric np-category? (label)
   (:documentation "Toplevel NPs and N-Bar categories")
@@ -443,7 +441,7 @@
     ;; n.b. the list holds categories, not symbols
     (memq c *v-bar-categories*)))
 
-(defun  copula-v-adjective-ambiguity (e) ;; preceding copula, and V/ADJECTIVE ambiguity
+(defun copula-v-adjective-ambiguity (e) ;; preceding copula, and V/ADJECTIVE ambiguity
   (declare (special category::adjective category::be))
   (and (loop for edge in (all-edges-at e)
              thereis (eq category::adjective (edge-form edge)))
@@ -466,14 +464,14 @@
 (defgeneric vp-category? (label)
   (:documentation "The full set of labels up the verb-to-s headline.
     Originally motivated by find-verb")
+  (:method ((ignore t))
+    nil)
   (:method ((e edge))
     (vp-category? (edge-form e)))
   (:method ((c category))
     (or (memq c *vp-categories*)
         ;; this is from questions like "What genes are ..."
-        (eq (cat-name c) 'preposed-auxiliary)))
-  (:method ((ignore t))
-    nil))
+        (eq (cat-name c) 'preposed-auxiliary))))
 
 
 (defgeneric verb-category? (label)
