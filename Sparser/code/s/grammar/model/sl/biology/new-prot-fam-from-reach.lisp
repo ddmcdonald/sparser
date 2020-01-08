@@ -479,7 +479,7 @@
 (def-family-with-id "death  domain" "XFAM:PF00531") 
 (def-family-with-id "dUs" "XFAM:PF01207") 
 ;(def-family-with-id "cyclin-dependent kinase inhibitor" "BE:CDKN") 
-(def-family-with-id "ctD" "XFAM:PF12815") 
+;(def-family-with-id "ctD" "XFAM:PF12815")  ;; weak match
 (def-family-with-id "cornifin" "XFAM:PF02389") 
 (def-family-with-id "claudin1" "IPR003548") 
 (def-family-with-id "citrate transporter" "XFAM:PF03600") 

@@ -183,6 +183,7 @@ it is created from N-terminus to C-terminus.|#
              (:noun "N-terminal acidic motif"))
 
 (noun "ring finger domain" :super protein-domain)
+(noun "zinc finger" :super protein-domain)
 (noun ("AF-2" "AF2") :super protein-domain) ; androgen receptor domain -- can't find any ontology groundings
  
 (define-category regulatory-subunit :specializes protein-domain

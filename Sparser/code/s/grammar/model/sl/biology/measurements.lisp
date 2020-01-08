@@ -41,14 +41,14 @@
 ;;-- see model/dossiers/units-of-measure.lisp for more forms.
 
 
-(define-unit-of-measure "cm")
-(define-unit-of-measure "dalton")
-(define-unit-of-measure "kD")
+;(define-unit-of-measure "cm")
+(;define-unit-of-measure "dalton")
+;(define-unit-of-measure "kD")
 (define-unit-of-measure "kb")
-(define-unit-of-measure "mL")
-(define-unit-of-measure "ml")
+;(define-unit-of-measure "mL")
+;(define-unit-of-measure "ml")
 ;(define-unit-of-measure "mg");moved to be with new-units def
-(define-unit-of-measure "mm")
+;(define-unit-of-measure "mm")
 ;(define-unit-of-measure "nM");moved to be with new-units def
 ;(define-unit-of-measure "ng");moved to be with new-units def
 ;(define-unit-of-measure "nm");moved to be with new-units def

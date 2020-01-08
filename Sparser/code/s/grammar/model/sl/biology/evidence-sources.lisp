@@ -15,6 +15,14 @@
 
 (def-indiv-with-id database "reactome" "Reactome" :name "Reactome")
 (def-indiv-with-id database "kegg" "KEGG" :name "KEGG")
+(def-indiv-with-id database "wikipathways" "wikipathway" :name "WikiPathways" :synonyms ("WikiPathway"))
+(def-indiv-with-id database "humancyc" "humancyc" :name "HumanCyc")
+(def-indiv-with-id database "disgenet" "disgenet" :name "DisGeNET")
+(def-indiv-with-id database "smpdb" "SMPDB" :name "SMPDB" :synonyms ("Small Molecule Pathway Database"))
+(def-indiv-with-id database "ctd" "ctd" :name "CTD" :synonyms ("Comparative Toxicogenomics Database"))
+(def-indiv-with-id database "msigdb" "msigdb" :name "MSigDB" :synonyms ("Molecular Signatures Database"))
+(def-indiv-with-id database "pharmgkb" "pharmgkb" :name "PharmGKB" :synonyms ("Pharmacogenomics Knowledgebase"))
+(def-indiv-with-id database "biocarta" "biocarta" :name "BioCarta")
 
 ;; note: this is based on a question in
 ;; all-bioagent-capability-sentences but googling I can't actually
@@ -29,7 +37,6 @@
 ;;   general (non-domain) NPs, but which only make sense in some domain
 ;; e.g. "any relations in the literature" where "relation" is a general NP
 ;;  but "in the literature" (only?} makes sense in the context of bio-curation, etc.
-
 
 (define-category in-the-literature :specializes bio-predication)
 
@@ -46,3 +53,21 @@
   (bind-variable 'in-the-literature (identify-pobj pp-edge)
                  head))
                  
+;; same but for databases (e,g, "which pathways from the KEGG database use SRF?"
+;; making duplicate rules for now in case there are subtle differences in the
+;; patterning that we want to capture later
+
+(define-category in-the-database :specializes bio-predication)
+
+(add-domain-adjunctive-pp-rule "in" 'database '(:or relation factor
+                                                  bio-process bio-entity)
+                               'add-database-adjunct)
+(add-domain-adjunctive-pp-rule "from" 'database '(:or relation factor
+                                                    bio-process bio-entity)
+                               'add-database-adjunct)
+(define-lambda-variable 'in-the-database
+    nil 'top)
+
+(defun add-database-adjunct (head pp-edge)
+  (bind-variable 'in-the-database (identify-pobj pp-edge)
+                 head))

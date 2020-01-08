@@ -1,10 +1,10 @@
 ; Spellcheck program in lisp inspired by Peter Norvig's spellcheck algorithm
-                                        ; Ryan Riddle (http://github.com/RyanRiddle
+                                        ; Ryan Riddle (http://github.com/RyanRiddle/lispell
 ;; adapted to our dictionary/library along with sorting by Damerau–Levenshtein distance
 
 (in-package :sp)
-(defparameter *dictionary* (make-hash-table :test #'equal))
-(defparameter *misspellings* (make-hash-table :test #'equal))
+(defparameter *dictionary* (make-hash-table :size 85000 :test #'equal))
+(defparameter *misspellings* (make-hash-table :size 10000000 :test #'equal))
 (defparameter *alphabet* "abcdefghijklmnopqrstuvwxyz") 
 
 (defun spell-add (word)
@@ -95,14 +95,21 @@
     deletes))
 		
 (defun suggest (word)
-  (if (spell-check word)
-      nil
-      (let* ((deletes (get-ed2-deletes word))
-             (sugs (mapcar (lambda (del)
+  (unless (spell-check word)
+    (let* ((deletes (get-ed2-deletes word))
+           (sugs (mapcar #'(lambda (del)
                              (gethash del *misspellings*))
-                           deletes)))
-        (sort (remove-duplicates (apply #'append sugs) :test #'equal )
-              #'< :key #'(lambda(sug) (edit-distance word sug))))))
+                         deletes)))
+      (sort (remove-duplicates (apply #'append sugs) :test #'equal )
+            #'< :key #'(lambda(sug) (edit-distance word sug))))))
+
+(defun get-best-sug (word &aux (suggestions (suggest word)) best)
+  (loop for sug in (cdr suggestions)
+        with min = (edit-distance word (car suggestions))
+        if (> (edit-distance word sug) min)
+        do (return (push (car suggestions) best))
+        else
+          do (push sug best)))
 
 ;; implementing the Damerau–Levenshtein distance from wikipedia
 ;; pseudocode with some input from cl-edit-distance although that is
@@ -123,8 +130,9 @@
     (setf s1 (make-array m :element-type 'string :initial-contents s1)))
   (unless (typep s2 'simple-array)
     (setf s2 (make-array n :element-type 'string :initial-contents s2)))
-    ;; Check trivial cases
-    (cond ((equal s1 s2) (return-from edit-distance 0))
+  ;; Check trivial cases
+  ;; anything that's only off in terms of capitalization should get 
+    (cond ((equalp s1 s2) (return-from edit-distance 0))
           ((= 0 n) (return-from edit-distance m))
 	  ((= 0 m) (return-from edit-distance n)))
     (let* ((maxdist (+ m n))

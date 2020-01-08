@@ -50,14 +50,16 @@
 (def-indiv-with-id micro-rna "miR-155" "MI0000681" :name "miR-155" :synonyms ("miR155"))
 (def-indiv-with-id micro-rna "miR-155-5p" "MIMAT0000646" :name "miR-155-5p" :synonyms ("microRNA 155-5p" "miR155-5p"))
 (def-indiv-with-id micro-rna "miR-181" "NCIT:C116021" :name "miR-181" :synonyms ("miRs181" "microRNA 181"))
-(def-indiv-with-id micro-rna "miR-200c" "NCIT:C82157" :name "miR-200c" :synonyms ("MIR200C")) 
+(def-indiv-with-id micro-rna "miR-200c" "MI0000650" :name "miR-200c" :synonyms ("MIR200C" "microRNA 200c" )) 
 (def-indiv-with-id micro-rna "miR-200c-3p" "MIMAT0000617" :name "miR-200c-3p" :synonyms ("microRNA 200c-3p" "miR200c-3p"))
 (def-indiv-with-id micro-rna "miR-222-3p" "MIMAT0000279" :name "miR-222-3p" :synonyms ("microRNA 222-3p" "miR222-3p"))
 (def-indiv-with-id micro-rna "miR-335" "MI0000816" :name "miR-335" :synonyms ("microRNA 335" "miR335"))
 (def-indiv-with-id micro-rna "miR-335-5p" "MIMAT0000765" :name "miR-335-5p" :synonyms ("microRNA 335-5p" "miR335-5p"))
-(def-indiv-with-id micro-rna "miR-562" "MI0003569" :name "miR-562" :synonyms ("microRNA 562"))
-
-
+(def-indiv-with-id micro-rna "miR562" "MI0003569" :name "miR-562" :synonyms ("microRNA 562" "mir-562"))
+(def-indiv-with-id micro-rna "miR218-1" "MI0000294" :name "miR-218-1" :synonyms ("microRNA 218-1" "mir-218-1"))
+(def-indiv-with-id micro-rna "miR218-5p" "MIMAT0000275" :name "miR-218-5p" :synonyms ("microRNA 218-5p" "mir-218-5p"))
+(def-indiv-with-id micro-rna "miR200c-5p" "MIMAT0004657" :name "miR-200c-5p" :synonyms ("microRNA 200c-5p" "mir-200c-5p"))
+(def-indiv-with-id micro-rna "miR195" "MI0000489" :name "miR-195" :synonyms ("microRNA 195" "mir-195"))
 ;; these are bogus ids and names but needed for queries from bioagent testing
 ;; this is real and defined above (def-indiv-with-id micro-rna "miR-148a-3p" "MIMAmiR-148a-3p" :name "microRNA 148a-3p")
 ;; this is an error

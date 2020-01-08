@@ -377,7 +377,8 @@
 ;; (def-family "p63" :members ("UP:Q07065" "UP:Q9H3D4" "UP:Q9P2Y5"))  HMS says "UP:Q9H3D4"
 ;; (def-family "p65" :members ("UP:P21579" "UP:Q9H4A3" "UP:Q04206"))  HMS says "UP:Q04206"
 (def-family "p68" :members ("UP:P08133" "UP:Q07666")) 
-(def-family "p75" :members ("UP:P14317" "UP:P14784" "UP:P20333" "UP:Q92945" "UP:Q9Y286")) 
+(def-family "p75" :members ("UP:P14317" "UP:P14784" "UP:P20333" "UP:Q92945" "UP:Q9Y286"))
+(def-family "p70" :members ("UP:P23443" "UP:P08133"))
 (def-family "p8" :members ("UP:P05109" "UP:Q7Z2W7")) 
 (def-family "p90" :members ("UP:P02786" "UP:P27824")) 
 (def-family "p97" :members ("UP:P55072" "UP:P57678" "UP:P78344")) 

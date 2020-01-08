@@ -2,6 +2,10 @@
 
 ;; to be verified
 
+;; it seems that HMS also just uses the single protein as
+;; beta-catenin, so I'm going with that and no longer having these
+;; different family definitions for small-proteins
+#+ignore
 (cond ((not *use-small-proteins*)
       ; (def-family-with-id "FAK" "FA:03125" :synonyms ("FAK subfamily") :members ("PTK2" "PTK2B")) fixed
        ;;(def-family "p53" :identifier "FA:02632" :synonyms ("p-53" "p53"  "p53 family" "p53−") :members ("TP53" "TP63" "TP73"))
@@ -288,7 +292,7 @@
 (def-family-with-id "SAA" "FPLX:SAA" :members ("UP:P0DJI8" "UP:P0DJI9"))
 (def-family-with-id "SAS4" "XFAM:PF15460.4") 
 (def-family-with-id "SASP" "XFAM:PF00269.18" :synonyms ("SASPs")) 
-(def-family-with-id "SCF" "FA:03513" :synonyms ("SCFs")) 
+;(def-family-with-id "SCF" "FA:03513" :synonyms ("SCFs")) only has one human member, so going with that "UP:P21583"
 (def-family-with-id "SEA" "XFAM:PF01390.18") 
 (def-family-with-id "SEC1" "XFAM:PF00995.21" :synonyms ("sec1")) 
 (def-family-with-id "SERPIN" "FA:03578" :synonyms ("serpin" "serpins" "serpin family"))

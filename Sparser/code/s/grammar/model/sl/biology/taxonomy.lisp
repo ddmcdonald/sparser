@@ -1338,6 +1338,7 @@
 (define-category GTPase :specializes enzyme
   :instantiates :self
   :index (:permanent :key name)
+  :bindings (uid "FPLX:GTPase")
   :lemma (:common-noun "GTPase")
   :realization
     (:common-noun name))
