@@ -404,8 +404,15 @@
               ((and (individual-p (edge-referent left-daughter))
                     (itypep (edge-referent left-daughter) 'collection))
                nil)
-              ((word-p (edge-left-daughter left-daughter))
+              ((or (word-p (edge-left-daughter left-daughter))
+                   (polyword-p (edge-left-daughter left-daughter)))
                (edge-left-daughter left-daughter))
+              ((let ((ld (edge-left-daughter left-daughter)))
+                 (when
+                     (and (edge-p ld)
+                      (or (word-p (edge-left-daughter ld))
+                          (polyword-p (edge-left-daughter ld))))
+                   ld)))
               (t (push-debug `(,edge ,prep-edge ,left-daughter))
                  (break "Unexpected edge-over-preposition pattern:~
                        ~%he left daughter ~a is a prepositiion-edge ~
