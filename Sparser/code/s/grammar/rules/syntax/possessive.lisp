@@ -55,6 +55,12 @@
                   (single-best-edge-over-word
                    (chart-position-before starts-at))))
 
+          (when (polyword-p (edge-category prior-edge))
+            ;; The rule is not going to succeed. Record the context and punt
+            (break "The category field of ~a is a polyword.~
+                  ~%in ~s" prior-edge (current-string))
+            (return-from check-special-cases-and-possessive nil))
+
           (let ((rule (multiply-labels (edge-category prior-edge)
                                        category::apostrophe-s)))
             (unless rule
