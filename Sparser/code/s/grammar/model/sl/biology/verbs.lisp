@@ -154,8 +154,17 @@
 ;; leads to rule bio-entity + load, 
 ;; which works, but isn't satisfying
 
-
-
+(define-category compose :specializes other-bio-process
+  :binds ((agent biological)
+          (whole biological)
+          (parts biological))
+  :realization
+  (:verb "compose"
+         :etf (svo-passive)
+         :o whole
+         :of parts
+         :s agent) ;; not really used
+   )
 
 
 (define-category derive :specializes caused-bio-process
