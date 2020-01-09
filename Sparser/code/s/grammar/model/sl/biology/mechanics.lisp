@@ -658,8 +658,13 @@ uid binding, if there is one"
   "Takes the name of the bio-entity and makes it the name of
    a protein by using define-bio. Deleted the rules associated
    with the bio-entity. Returns the protein."
-  (let* ((name (value-of 'name bio-entity))) ;; often a polyword
-    (if name
+  (unless (itypep bio-entity 'collection)
+    ;; We encounter cases like this, where a conjunction of bio-enties
+    ;; has been passed up. The problem should be fixed upstream where
+    ;; the list of possible proteins is assembled 
+    ;;  "Ax12-810Δ251-351, Ax12-672Δ251-351, and Ax12-531Δ251-351"
+    (let* ((name (value-of 'name bio-entity))) ;; often a polyword
+      (if name
         (let ((protein (define-bio name 'protein)))
           ;; delete all the rules associated with the individual
           (setf (get-rules bio-entity) (map nil #'delete/cfr (get-rules bio-entity)))
@@ -668,7 +673,7 @@ uid binding, if there is one"
         (else
           (warn "Couldn't convert bio-entity ~s to a protein."
                 (retrieve-surface-string bio-entity))
-          bio-entity))))
+          bio-entity)))))
 
 (defmethod convert-bio-entity-to-protein ((e edge))
   ;; called from make-protein-pair/convert-bio-entity and
