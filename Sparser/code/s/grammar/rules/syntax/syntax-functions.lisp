@@ -1969,7 +1969,10 @@ there was an edge for the qualifier (e.g., there is no edge for the
                ((setq result (interpret-premod-to-verb subj vp))
                 (revise-parent-edge :form category::vg+ed)
                 result)
-               (t (warn "How can this happen? Null referent produced in assimilate-subject-to-vp-ed~%"))))
+               (t (warn "How can this happen? Null referent produced in assimilate-subject-to-vp-ed~% ~s assimilated to ~s in~%~s~%"
+                           (retrieve-surface-string subj)
+                           (or (retrieve-surface-string vp) vp)
+                         (current-string)))))
        
        (when inside?
          (when (eq (edge-form (parent-edge-for-referent)) category::s)
@@ -2477,8 +2480,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
          (if *subcat-test*
              (loop for cop-p in (value-of 'items copular-pp)
                    always (test-and-apply-simple-copula-pp np cop-p))
-             (revise-variable
-              (bind-dli-variable 'item np copular-pp))))
+             (bind-dli-variable 'item np copular-pp)))
         (t
          (test-and-apply-simple-copula-pp np copular-pp)
          )))
