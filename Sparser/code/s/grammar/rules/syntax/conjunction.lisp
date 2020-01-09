@@ -192,9 +192,14 @@
   (let ( matching-edge )
     (let ((ev (edge-ends-at edge-before)) ;; look leftward first
           (label (edge-category edge-after)))
-      (unless (eq (edge-form-name edge-after) 'pp)
+      (unless (member (edge-form-name edge-after) '(pp preposition))
         ;; don't do this conjunction and rethreading on PPs
         ;; such as "in Bak protein content nor in subcellular  location "
+        ;; also don't do if the edge afterwards is a preposition (aborted pp)
+        ;; example --
+        ;;   "Antibodies against calnexin (goat polyclonal G-20) and
+        ;;      against PP1 (rabbit polyclonal FL-18, and mAb E-19)
+        ;;      were from Santa Cruz Biotechnology, Inc.")
         (setq matching-edge (search-ev-for-edge ev label))
         (when matching-edge
           ;;/// refactor so can easily run the same check on
