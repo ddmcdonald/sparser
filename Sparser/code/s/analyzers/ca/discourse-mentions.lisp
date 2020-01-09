@@ -443,7 +443,10 @@
   "Is this edge an additional instance of i that subsumes the immedidately
    prior mention of i? Cannonical situation is walking up a head line,
    where each progressively higher edge is a (more specific) reference
-   to i."
+   to i.  The job here is to identify and return the mention of 'i' that
+   this edge subsumes. If that happens then our caller, make-mention, will
+   update the subsumed-mentions bounds to reflect this edge. Otherwise it
+   will make a new mention for the edge."
   (declare (special edge category::wh-question))
   (cond ((null i)
          (error "null individual in subsumed-mention?"))
