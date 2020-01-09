@@ -208,6 +208,7 @@
   (:noun ("antibody" "anti-" "Ab") ;; often plural "Abs"
          :m antigen
          :to antigen
+         :against antigen
          :for antigen))
 
 ;; note: monoclonal antibody and polyclonal antibody are currently
