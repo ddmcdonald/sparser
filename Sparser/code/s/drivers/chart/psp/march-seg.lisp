@@ -290,26 +290,28 @@ its head will be at
   ;; Better accumulator than treetops-in-current-chunk because it digs deeper
   ;; when there are multple edges on a position
   (declare (special *current-chunk* *left-segment-boundary* *right-segment-boundary*))
-  (let* ((start-pos *left-segment-boundary*)
-         (end-pos *right-segment-boundary*)
+  (let* ((start-pos (chunk-start-pos *chunk*))
+         (end-pos (chunk-end-pos *chunk*))
          (length ;;(number-of-terminals-between start-pos end-pos)
           (number-of-treetops-between start-pos end-pos)))
     (unless (= length 1)
       ;; if the whole segment has been spanned (or it's just one word long)
       ;; then we should return nil
-      (let* ((suffix-edge (edge-over-segment-suffix)) ;; see analyzers/sdmp/gophers.lisp
+      (let* ((suffix-edge (edge-over-segment-suffix end-pos)) ;; see analyzers/sdmp/gophers.lisp
              (pos (pos-edge-starts-at suffix-edge))
-             position-pairs  all-pairs next-pos )
-         (loop
-            (setq position-pairs (adjacent-edges-at pos))
-            (setq all-pairs (append position-pairs all-pairs))
-            ;;(push-debug `(,position-pairs)) (break "check pairs")
-            (let ((left-edge-of-pair (car (car position-pairs))))
-              (setq next-pos (pos-edge-starts-at left-edge-of-pair))
-              (if (eq next-pos start-pos)
-                (return)
-                (setq pos next-pos))))
-         all-pairs))))
+             position-pairs all-pairs next-pos)
+        (loop
+          (setq position-pairs (adjacent-edges-at pos))
+          (setq all-pairs (append position-pairs all-pairs))
+          ;;(push-debug `(,position-pairs)) (break "check pairs")
+          (setq next-pos
+                (if (and position-pairs (caar position-pairs))
+                    (pos-edge-starts-at (caar position-pairs))
+                    (chart-position-before pos)))
+          (if (position/> next-pos start-pos) ;;(eq next-pos start-pos)
+              (setq pos next-pos)
+              (return)))
+        all-pairs))))
 
 (defun adjacent-edges-at (p)
   "Look at the two edge-vectors at position p. Collect every pair.
