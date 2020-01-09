@@ -244,9 +244,9 @@
 
 ;;---- below here not vetted for segment ending in polyword
 
-(defun edge-over-segment-suffix ()
+(defun edge-over-segment-suffix (&optional (rightmost-pos *right-segment-boundary*))
   (declare (special *right-segment-boundary*))
-  (let* ((right-ev (pos-ends-here *right-segment-boundary*))
+  (let* ((right-ev (pos-ends-here rightmost-pos))
          (top-node (ev-top-node right-ev)))
     (when (eq top-node :multiple-initial-edges)
       ;; arbitrarily take the most recent edge
