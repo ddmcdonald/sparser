@@ -463,10 +463,13 @@
   (when (eq (edge-rule edge) 'knit-parens-into-neighbor)
     ;; e.g. in "about Myosin IIC ( xref ; xref )"
     (setq edge (edge-left-daughter edge)))
-  (if (and (edge-p (edge-left-daughter edge))
-           (eq (form-cat-name (edge-left-daughter edge)) 'adverb))
-      (base-pp (edge-right-daughter edge))
-      edge))
+  (cond ((and (edge-p (edge-left-daughter edge))
+           (eq  (form-cat-name (edge-left-daughter edge)) 'adverb))
+         (base-pp (edge-right-daughter edge)))
+        ((and (edge-p (edge-left-daughter edge))
+              (eq (edge-rule edge) 'elevate-spanning-edge-over-paired-punctuation))
+         (base-pp (edge-left-daughter edge)))
+        (t edge)))
 
 
 
