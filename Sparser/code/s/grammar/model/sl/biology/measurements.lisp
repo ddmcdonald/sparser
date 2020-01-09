@@ -42,7 +42,7 @@
 
 
 ;(define-unit-of-measure "cm")
-(;define-unit-of-measure "dalton")
+;(define-unit-of-measure "dalton")
 ;(define-unit-of-measure "kD")
 (define-unit-of-measure "kb")
 ;(define-unit-of-measure "mL")
