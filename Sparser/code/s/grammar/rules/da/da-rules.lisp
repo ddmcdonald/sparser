@@ -1061,7 +1061,7 @@
                   (obj-var (create-predication-by-binding obj-var np-ref vg-ref))
                   (subj-var (create-predication-by-binding subj-var np-ref vg-ref))
                   (t (push-debug `(,vg-ref ,np-ref))
-                     (break "Variables for reduce-relative are nil~
+                     (warn "Variables for reduce-relative are nil~
                            ~%  np: e~a ~s~
                            ~%  vg+ed: e~a ~s~
                            ~%  xp: e~a ~s"
