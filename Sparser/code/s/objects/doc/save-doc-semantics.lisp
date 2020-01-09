@@ -347,7 +347,12 @@
 (defparameter *short-protein-xml* nil)
 
 (defmethod write-sem ((i individual) stream &optional (newline t))
-  (cond ((simple-number? i)
+  (cond ((itypep i 'number-range)
+         (start-cat i stream newline)
+         (print-binding-list i stream newline)
+         (finish-cat stream newline)
+         )
+        ((simple-number? i)
          (space-prin1 (value-of 'value i) stream))
         ((and (eq *semantic-output-format* :xml)
               *short-protein-xml*
