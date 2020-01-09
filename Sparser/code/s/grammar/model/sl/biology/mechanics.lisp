@@ -666,7 +666,8 @@ uid binding, if there is one"
           ;; can't easily delete the individual itself
           protein)
         (else
-          (warn "Couldn't convert bio-entity ~s to a protein -- bad plural?" (retrieve-surface-string bio-entity))
+          (warn "Couldn't convert bio-entity ~s to a protein."
+                (retrieve-surface-string bio-entity))
           bio-entity))))
 
 (defmethod convert-bio-entity-to-protein ((e edge))
