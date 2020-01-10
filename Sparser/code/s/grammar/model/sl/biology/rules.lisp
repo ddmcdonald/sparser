@@ -276,12 +276,24 @@
   :form n-bar
   :referent (:function make-point-mutation-from-residue left-edge right-edge))
 
+(def-cfr point-mutation (residue-on-protein A)
+  :form n-bar
+  :referent (:function make-point-mutation-from-residue left-edge right-edge))
+
 
 (defun make-point-mutation-from-residue (residue replacement-amino-acid)
-  (when (or
-         (not (itypep replacement-amino-acid 'single-capitalized-letter))
-         (setq replacement-amino-acid
-               (gethash replacement-amino-acid *single-letters-to-amino-acids*)))
+  (when (cond ((itypep replacement-amino-acid 'single-capitalized-letter)
+               (setq replacement-amino-acid
+                     (gethash replacement-amino-acid *single-letters-to-amino-acids*)))
+              ((itypep replacement-amino-acid 'A)
+               (setf (edge-form *right-edge-into-reference*)
+                     (category-named 'proper-noun))
+               (setq replacement-amino-acid
+                     (gethash (resolve "A") *single-letters-to-amino-acids*)))
+              ((itypep replacement-amino-acid 'amino-acid))
+              (t
+               (setq replacement-amino-acid
+                     (gethash replacement-amino-acid *single-letters-to-amino-acids*))))
     (let ((original (value-of 'amino-acid residue))
           (residue-number (value-of 'position residue)))
       (set-edge-referent *right-edge-into-reference* replacement-amino-acid)
