@@ -292,7 +292,7 @@
   ;; and we make a category for that rule with that same spelling,
   ;; form is 'proper-name'.  Something makes me think this could
   ;; be problem down the line, but we can deal with it when it emerges.
-  (declare (special *big-mechanism*))
+  (declare (special *big-mechanism* *positions-with-unhandled-unknown-words*))
   (cond ((eq pos-before next-position)
          (error "Upstream mistake in no-space routine. ~
             the position before is EQ to the position after")
@@ -322,6 +322,12 @@
                    :form (category-named 'proper-name)
                    :referent referent
                    :words (effective-words-given-edges pos-before next-position))))
+             (setq *positions-with-unhandled-unknown-words*
+                   (remove-if
+                    #'(lambda (pos)
+                        (and (position/< pos-before pos)
+                             (position/> next-position pos)))
+                    *positions-with-unhandled-unknown-words*))
              (tr :made-edge edge)
              edge)))))
 
