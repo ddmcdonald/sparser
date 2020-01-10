@@ -264,7 +264,7 @@ the fsa would be identified at the word level rather than the category level.
                     *the-punctuation-period*
                     *the-punctuation-comma*))
   (when (null last-treetop)
-    (lsp-break "what are you doing passing expect-digit-delimiter-as-next-~
+    (break "what are you doing passing expect-digit-delimiter-as-next-~
             treetop NIL as the last-treetop"))
 
   (let* ((next-position (ev-position (edge-ends-at last-treetop)))
