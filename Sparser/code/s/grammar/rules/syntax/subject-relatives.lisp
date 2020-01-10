@@ -191,7 +191,7 @@
           (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
           np-ref))))))
 
-(defparameter *break-on-null-ref-in-context-needs-clause* t)
+(defparameter *break-on-null-ref-in-context-needs-clause* nil)
 
 (defun context-needs-clause? (np-ref vp-ref)
   (declare (special category::APOSTROPHE-S category::parentheses
@@ -205,7 +205,7 @@
                          (not (member (cat-name (edge-category e))
                                       '(apostrophe-s parentheses semicolon)))
                          *break-on-null-ref-in-context-needs-clause*)
-                (warn "null ref in context-needs-clause in ~%  ~s~%-- quiet this by ~
+                (lsp-break "null ref in context-needs-clause in ~%  ~s~%-- quiet this by ~
                      setting *break-on-null-ref-in-context-needs-clause* to nil"
                        (current-string)))
               (and ref
