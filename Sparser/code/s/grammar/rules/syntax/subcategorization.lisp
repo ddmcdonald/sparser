@@ -1010,7 +1010,7 @@
      do (setq label (edge-left-daughter label)))
   (cond
     ((null head)
-     (lsp-break "~&null head in call to subcategorized-variable in ~% ~s~%"
+     (break "~&null head in call to subcategorized-variable in ~% ~s~%"
             (sentence-string *sentence-in-core*))
      nil)
     ((null item)
@@ -1025,7 +1025,7 @@
               (retrieve-surface-string head)
               (current-string)))
        ((eq label :object)
-        (lsp-break "~&*** null item in subcategorized object for ~
+        (break "~&*** null item in subcategorized object for ~
                  clause ~s~&  in sentence: ~s~%"
               (retrieve-surface-string head)
               (current-string)))
