@@ -91,6 +91,9 @@
 
 (defun attach-leading-pp-to-clause (pp comma clause)
   (declare (ignore comma) (special *debug-questions*))
+  (when (eq (edge-rule pp) 'elevate-spanning-edge-over-paired-punctuation)
+    ;; parenthetical PP -- ignore for now
+    (return-from attach-leading-pp-to-clause nil))
   (let* ((clause-referent (edge-referent clause))
 	 (pobj-edge (edge-right-daughter pp))
 	 (pobj-referent
@@ -823,7 +826,8 @@
   (declare (ignore comma-edge))
   (let* ((s (edge-referent s-edge))
          (s-subject (get-subject-from-s-edge s-edge))
-         (s-pred (update-edge-as-lambda-predicate srel-edge s-subject)))
+         (s-pred (when s-subject
+                   (update-edge-as-lambda-predicate srel-edge s-subject))))
     (cond (s-pred
            (make-edge-spec 
             :category (edge-category s-edge)
@@ -831,7 +835,7 @@
             :referent (bind-dli-variable 'predication s-pred s)))
           (t
            (let* ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?))
-                  (t-pred (update-edge-as-lambda-predicate srel-edge target)))
+                  (t-pred (when target (update-edge-as-lambda-predicate srel-edge target))))
              (when t-pred
                (make-edge-spec 
                 :category (edge-category target)
