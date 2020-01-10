@@ -1020,7 +1020,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun vg-cat (vg) ;; subroutine of check-passive-and-add-tense/aspect
   (cond ((category-p vg) vg)
         ((individual-p vg) (itype-of vg))
-        (t (lsp-break "check-passive-and-add-tense/aspect -- no category to check passive verb"))))
+        (t (break "check-passive-and-add-tense/aspect -- no category to check passive verb on ~s"
+                      vg))))
 
 ;;/// who calls this?
 (defun check-passive-and-add-tense/aspect (aux vg)
@@ -1590,8 +1591,10 @@ there was an edge for the qualifier (e.g., there is no edge for the
   "Test for PPs like 'in the literature' which may be used as
    modifiers for certain classes of general (mid-level model) NPs, 
    but are domain specific -- e.g. 'the relations in the literature'"
-  (loop for triple in (gethash (pname (identify-preposition pp-edge))
-                               *domain-adjunctive-pp-tests*)
+  (loop for triple in
+          (let ((prep (identify-preposition pp-edge)))
+            (when (category-p prep)
+                (gethash (pname prep) *domain-adjunctive-pp-tests*)))
      when (and (itypep (identify-pobj pp-edge) (car triple))
                (itypep np (second triple)))
      collect (third triple)))
@@ -1758,7 +1761,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
           (loop for e in (edges-under vp-edge)
                 when (eq (edge-referent e) theme-comp)
                 do (return e))))
-    (when theme-comp ;; cf. "what do you want"
+    (when (and theme-comp ;; cf. "what do you want"
+               theme-comp-edge)
       (let ((revised-theme-comp
              (if object
                  ;; 'I want you to wash the dishes' vs 'I want to wash the dishes'
@@ -2713,27 +2717,28 @@ there was an edge for the qualifier (e.g., there is no edge for the
     (then ;; there's comparative binding for us to find
       (let* ((binding
               (loop for b in (indiv-binds np)
-                 as value = (binding-value b)
-                 when (itypep value 'comparative)
-                 return b))
-             (comp-indiv (binding-value binding))
-             (variable (binding-variable binding)))
-        (if (null (value-of 'reference-set comp-indiv))
-          (then ;; we can put the than-np there
-            (let ((j (bind-variable 'reference-set than-np comp-indiv))
-                  (edge-over-comparative
-                   (search-tree-for-referent (left-edge-for-referent) comp-indiv)))
-              (unless edge-over-comparative
-                (warn "Could not locate edge over ~a under ~a~ in~% ~s"
-                      comp-indiv (left-edge-for-referent)
-                      (current-string))
-                (return-from maybe-extend-comparative-with-than-np nil))
-              (respan-edge-for-new-referent edge-over-comparative j)
-              ;;(break "np = ~a, j = ~a" np j)
-              (setq np (rebind-variable variable j np))
-              np))
-          (else ;; drop it on the floor
-            np))))
+                    as value = (binding-value b)
+                    when (itypep value 'comparative)
+                    return b))
+             (comp-indiv (when binding (binding-value binding)))
+             (variable (when binding (binding-variable binding))))
+        (when binding
+          (if (null (value-of 'reference-set comp-indiv))
+              (then ;; we can put the than-np there
+                (let ((j (bind-variable 'reference-set than-np comp-indiv))
+                      (edge-over-comparative
+                       (search-tree-for-referent (left-edge-for-referent) comp-indiv)))
+                  (unless edge-over-comparative
+                    (warn "Could not locate edge over ~a under ~a in~% ~s"
+                          comp-indiv (left-edge-for-referent)
+                          (current-string))
+                    (return-from maybe-extend-comparative-with-than-np nil))
+                  (respan-edge-for-new-referent edge-over-comparative j)
+                  ;;(break "np = ~a, j = ~a" np j)
+                  (setq np (rebind-variable variable j np))
+                  np))
+              (else ;; drop it on the floor
+                np)))))
     (else
       (let ((comp-pred (value-of 'comparative-predication np)))
         ;;/// who would have bound this?
