@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "terminal edges"
 ;;;   Module:  "analyzers;psp:assess:"
-;;;  Version:  August 2017
+;;;  Version:  January 2020
 
 ;; initiated 9/12 v2.3
 ;; 1.1 (10/23) reorganized what kinds of property edges are created
@@ -60,6 +60,7 @@
              (and (eq (edge-right-daughter edge) :literal-in-a-rule)
                   (not (eq (edge-category edge) word::comma))
                   (not (eq (edge-category edge) word::|to|)))))
+         #+ignore
          (word-is-spanned? (position-after)
            "This is a very limited case, but it handles a timing interaction
             where the traversal action on '>' in the case of a section marker
@@ -73,10 +74,14 @@
     (let ((rule-set (word-rules word)))
       (tr :installing-edges-over-word/un/known word rule-set)
 
-      (if (word-is-spanned? next-position)
-        (then
-          (tr :install/already-spanned word)
-          nil)
+      ;; (if (word-is-spanned? next-position)
+      ;;   (then
+      ;;     (tr :install/already-spanned word)
+      ;;     nil)
+      ;; Word-is-spanned? triggers for unclear reasons when its called
+      ;; from function in the digits fsa on non-canonical digit/punctuation
+      ;; sequences
+
         (let ((edges
                (if (and rule-set
                         (rule-set-with-rules rule-set))
@@ -98,7 +103,7 @@
                                           next-position))
 
           (set-status :preterminals-installed position-scanned)
-          edges )))))
+          edges )))) ;)
 
 
 
