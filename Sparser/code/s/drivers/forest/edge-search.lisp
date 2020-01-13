@@ -246,7 +246,7 @@
                 unless (member pair pairs :test #'equal)
 	       collect pair)))
 	(when new-pairs
-	  (format t "~&old set of pairs~s~&new set of pairs: ~s" pairs new-pairs)
+	 ;; (format t "~&old set of pairs~s~&new set of pairs: ~s" pairs new-pairs)
 	  (loop for pair in new-pairs 
 	     when (setq rule (rule-for-edge-pair pair))
 	     do (push (cons rule pair)
