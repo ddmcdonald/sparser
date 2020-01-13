@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996,2011-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2011-2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "conjunction"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  October 2016
+;;;  Version:  January 2020
 
 ;; initated 6/10/93 v2.3, added multiplicity cases 6/15
 ;; 6.1 (12/13) fixed datatype glitch in resuming from unspaned conj.
@@ -675,7 +675,7 @@
 ;;;---------------------
 
 (defun conjoin-two-edges (left-edge right-edge heuristic &key do-not-knit pass)
-  (declare (special left-edge right-edge  *sentence-in-core*))
+  (declare (special *sentence-in-core*))
   (let ((referent
          (referent-of-two-conjoined-edges left-edge right-edge))
         (form (edge-form left-edge))
@@ -684,14 +684,24 @@
     (let* ((constituents
             (all-tts (pos-edge-starts-at left-edge)
                      (pos-edge-ends-at right-edge)))
-           (edge (make-edge-over-long-span
+           (edge (make-chart-edge
+                  :left-edge left-edge :right-edge right-edge
+                  :category category
+                  :form form
+                  :referent referent
+                  :rule 'conjoin-two-edges)))
+      ;; This version will use the wrong edge if there are multiple
+      ;; readings for, e.g., the left edge. All-tts has the same issue
+      ;; which makes setting the constituents problematic
+      ;; Issue was with "up", which is a direction as well as a prep.
+       #+ignore(make-edge-over-long-span
                   (pos-edge-starts-at left-edge)
                   (pos-edge-ends-at right-edge)
                   category
                   :constituents constituents
                   :form form
                   :referent referent
-                  :rule heuristic)))
+                  :rule heuristic)
       (when (null (cdr constituents))
         (warn "bad conjunction of 1 constituent at ~a in ~s~%"
               (toc-index *sentence-in-core*)
