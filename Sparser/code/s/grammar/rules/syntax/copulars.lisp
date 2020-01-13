@@ -184,7 +184,8 @@ machinery. |#
 
 (defun make-copular-pp (be-ref pp)
   (declare (special category::copular-predication-of-pp *left-edge-into-reference*))
-  (when t
+  (when (not (eq 'np (edge-form-name (left-edge-for-referent))))
+    ;; block "the existence of ..." but accept "what pathes exist between ..."
     #+ignore(and
          be-ref
          ;;(null (value-of 'predicate be-ref))
