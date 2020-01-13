@@ -47,7 +47,6 @@
             (if (or multiple-heads multiple-prefixes)
               (apply-ha-to-segment-with-multiple-heads-or-prefixes
                left-end right-end)
-
               (ha-segment-heuristics prefix head right-end)))
 
       (if result

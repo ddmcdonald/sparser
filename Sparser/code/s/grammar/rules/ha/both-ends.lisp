@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2013.2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "both ends"
 ;;;   Module:  "grammar;rules:HA:"
@@ -21,15 +21,18 @@
 
 (defun both-ends-completion-heuristic (prefix-edge
                                        head-edge)
-  (let ((rule
-         (multiply-edges prefix-edge head-edge)))
+  "Called from ha-segment-heuristics when both the head of the segment
+   and its prefix are spanned by edges but the regular parsing
+   operation has only produced contiguous edges. The goal is to 
+   look for edges in between the prefix and the head and see
+   whether they can be parsed /// a better goal is to get
+   these longer chunks parsed by regular rules."
 
-    (let ((inner-spanning-edge
-           (inner-edges-go-with-head-heuristic
-            prefix-edge head-edge)))
-      
-      
-      (when rule
+  (let ((rule (multiply-edges prefix-edge head-edge)))
+    (when rule
+      (let ((inner-spanning-edge
+             (inner-edges-go-with-head-heuristic
+              prefix-edge head-edge)))
         (let ((edge
                (make-completed-binary-edge
                 ;; have to use this high-level rule executor
@@ -44,27 +47,28 @@
 
 
 (defun inner-edges-go-with-head-heuristic (prefix-edge head-edge)
-  (multiple-value-bind (edge-after-prefix multiple-after-prefixes)
-                       (edge-starting-at
-                        (pos-edge-ends-at prefix-edge))
-    (declare (ignore multiple-after-prefixes))
-
+  "Look for incremental extensions from head or prefix"
+  ;; Nice example: (p "events may in fact not be conserved.")
+  ;; with the chunk [may in fact not be conserved]
+  (multiple-value-bind (edge-after-prefix)
+      (edge-starting-at (pos-edge-ends-at prefix-edge))
+    
     (when edge-after-prefix
+      ;; In the example there are two edges between prefix
+      ;; and edge. The code assumes just one and drops
+      ;; the "not" on the floor. Have to be more clever
+      ;; => (adjacent-edges? edge-after-prefix head-edge)
+ 
       (unless (or (eq edge-after-prefix head-edge)
                   ;; Both checks needed for the case when the head has
                   ;; multiple interpretations and so we won't catch it
                   ;; with just the first check.
                   (edge-subsumes-edge? edge-after-prefix head-edge))
-
+        
         (let ((rule (multiply-edges edge-after-prefix head-edge)))
           (when rule
             (let ((edge
-                   (make-chart-edge
-                    :left-edge edge-after-prefix
-                    :right-edge head-edge
-                    :category (category-to-apply rule)
-                    :form (cfr-form rule)
-                    :rule rule )))
-              
+                   (make-completed-binary-edge
+                    edge-after-prefix head-edge rule)))
               edge )))))))
 
