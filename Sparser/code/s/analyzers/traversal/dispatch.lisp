@@ -115,9 +115,13 @@
     (labels ((referent-for-vanila-edge ()
                "Edges need referents, even their semantically vacuous"
                (if first-edge
-                 (edge-referent first-edge)
-                 (let ((type-category (intern (symbol-name type) :category)))
-                   (find-or-make-individual type-category))))
+                   (edge-referent first-edge)
+                   (let ((type-category
+                          (category-named
+                           (if (eq type :quotation-marks)
+                               'QUOTATION
+                               type))))
+                     (find-or-make-individual type-category))))
 
              (vanila-edge (pos-before-open pos-after-close type &key referent)
                "Just cover the span between the punctuation (inclusive)
@@ -263,7 +267,7 @@
   (declare (ignore layout ;; do-paired-punctuation-interior requires :single-span
                    pos-after-open pos-before-close))
   (make-chart-edge :category (edge-category first-edge)
-                   :form (edge-form first-edge)
+                   :form (edge-form first-edge) ;;(category-named 'paired-punctuation) ;; 
                    :referent (edge-referent first-edge)
                    :starting-position pos-before-open
                    :ending-position pos-after-close
