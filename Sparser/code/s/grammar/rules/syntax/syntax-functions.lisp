@@ -970,7 +970,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (cond
     ((null *current-chunk*) ;; not in an NG chunk -- don't apply this rule at the top level
      nil)
-    (*subcat-test* (subcategorized-variable qualifier :object head))
+    (*subcat-test* (and (not (itypep qualifier 'do))
+                        ;; don't allow "done" -- no "thus far was done using " but also "done deals"
+                        (subcategorized-variable qualifier :object head)))
     
     (t (or (when (applicable-method compose  qualifier head)
              (compose qualifier head))
