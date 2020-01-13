@@ -272,7 +272,7 @@
              (:noun "support"))
 
 
-(define-category range :specializes bio-relation ;; REVIEW!!
+(define-category bio-range :specializes bio-relation ;; REVIEW!!
   :binds ((low-value scalar-quantity)
           (high-value scalar-quantity))
   :realization

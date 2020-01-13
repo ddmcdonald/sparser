@@ -75,6 +75,8 @@
 (define-adjective "cancerous")
 (define-adjective "catalytic")
 (define-adjective "chromosomal") ;chromosome
+(define-adjective "conserved")
+(define-adjective "non-conserved")
 (define-adjective "embryonic")
 (define-adjective "endothelial") ; endothelium is noun
 (define-adjective "epidermal")
@@ -532,6 +534,10 @@
 
 
 (noun "table" :super article-table)
+(define-category well-being :specializes :bio-predication
+    :realization (:noun "well-being"))
+(define-category health :specializes :bio-predication
+    :realization (:noun "health"))
 
 #+ignore
 (define-category article-table

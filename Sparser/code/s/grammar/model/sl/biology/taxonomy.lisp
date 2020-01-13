@@ -1241,6 +1241,33 @@
      :m residue
      :m amino-acid))
 
+(define-category methyltransferase-enzyme :specializes enzyme
+  :realization (:noun "methyltransferase enzyme"))
+  
+(define-category dna-methyltransferase :specializes methyltransferase-enzyme
+  :realization (:noun "DNA methyltransferase"))
+
+(define-category m6a :specializes dna-methyltransferase
+                 :realization (:noun "m6 a"))
+
+(def-synonym m6a (:noun "m6a"))
+(def-synonym m6a (:noun "m6A"))
+(def-synonym m6a (:noun "m6 A"))
+
+(define-category m4c :specializes dna-methyltransferase
+                 :realization (:noun "m4 c"))
+
+(def-synonym m6a (:noun "m4c"))
+(def-synonym m6a (:noun "m4C"))
+(def-synonym m6a (:noun "m4 C"))
+
+(define-category m5c :specializes dna-methyltransferase
+                 :realization (:noun "m5 c"))
+
+(def-synonym m6a (:noun "m5c"))
+(def-synonym m6a (:noun "m5C"))
+(def-synonym m6a (:noun "m5 C"))
+
 (define-category transcription-factor :specializes protein ;; maybe another higher class?
                  ;; a transcription-factor is a protein which somehow regulates the transcription of a gene
   :binds ((controlled-gene (:or gene protein)))

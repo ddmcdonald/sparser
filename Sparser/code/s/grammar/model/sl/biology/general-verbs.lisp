@@ -565,6 +565,15 @@
          :etf (svo-passive)
          :noun "application"))
 
+(define-category fall :specializes bio-relation
+  :realization
+    (:verb "fall"
+	   :etf (sv)
+           :s theme
+           :within patient
+           :in patient))
+
+
 (define-category fragment-action :specializes bio-method
   :realization
   (:verb ("fragmentXX" :past-participle "fragmented" :present-participle "fragmenting");; don't accept present tense "fragments"
