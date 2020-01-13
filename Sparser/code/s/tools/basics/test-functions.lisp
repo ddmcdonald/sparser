@@ -1285,6 +1285,17 @@ applied to l, and values are values associated with that key example"
                     (eval (intern "*R3-TRUNK*" (find-package :r3)))
                     "corpus/phase3_nxml/results/"))))))
 
+(defun init-pmc-directory (directory-string &key (semantic-output-format *semantic-output-format* *indra-post-process*))
+  (declare (special *comparable-indra*))
+  (setq *semantic-output-format* semantic-output-format)
+  (when (eq semantic-output-format :hms-json)
+    (setq *comparable-indra* nil))
+  (case *semantic-output-format* (:hms-json (setq *indra-post-process* (list t))))
+  (when (find-package :r3)
+    (save-article-semantics
+     (pathname
+      (ensure-directories-exist directory-string)))))
+
 (defun init-annot2017-directory (&key (semantic-output-format *semantic-output-format*))
   (declare (special *comparable-indra*))
   (setq *semantic-output-format* semantic-output-format)
