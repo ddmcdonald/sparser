@@ -393,6 +393,14 @@
         :head :right-edge
         :form ,(second vv)
         :referent (:function interpret-adverb+verb left-edge right-edge)))
+
+     (eval
+      `(def-form-rule (not ,(car vv))
+           :form ,(second vv)
+           :head :right-edge
+           :referent (:head right-edge
+                     :bind (negation left-edge))))
+     
   (eval
     `(def-form-rule  (both ,(car vv))
         :head :right-edge
@@ -425,7 +433,7 @@
 
 
 
-
+#+ignore ;; incorporated into rules above
 (def-form-rule (not verb+ed) ;; "RAS not bound to ERK"
     :form vg+ed
     :head :right-edge
