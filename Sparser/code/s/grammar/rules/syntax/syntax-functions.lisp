@@ -1032,11 +1032,13 @@ there was an edge for the qualifier (e.g., there is no edge for the
     (when (or
            (member be-form
                    '(verb verb+present verb+past verb+ed verb+ing
+                     vp+past ;; from "was reduced and delayed"
                      vg+ed vg vg+ing vp+ing infinitive
                      preposed-auxiliary))
            (if (member be-form
                        '(that-comp thatcomp to-comp whethercomp
-                         vp S subject-relative-clause
+                         vp vp+ed
+                         S subject-relative-clause
                          subordinate-s subordinate-clause
                          object-relative-clause ;; "that PTEN protein levels are, in part, regulated by ..."
                          transitive-clause-without-object))
@@ -1147,6 +1149,13 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 (defparameter *adverb+vg* nil)
 (defparameter *show-missing-adverb-slots* nil)
+
+(defun interpret-verb-conjunction-quantifier+verb (both vg-phrase)
+  ;; as in"both reads and writes" or "either excites or inhibits"
+  (when (is-basic-collection? vg-phrase) ;; only applies to conjunctions
+    (cond
+      (*subcat-test* t)
+      (t (bind-variable 'quantifier both vg-phrase))))) ;; overloading of this variable, but it seems correct
 
 (defun interpret-adverb+verb (adverb vg-phrase)
   (declare (special category::pp category::hyphenated-pair category::hyphenated-triple))
@@ -2784,24 +2793,32 @@ there was an edge for the qualifier (e.g., there is no edge for the
 ;; "the mutually exclusive genes with ASPP2"
 ;;
 (defun maybe-extend-premod-adjective-with-pp (np pp)
-  (let* ((premod-binding
-          (loop for b in (indiv-binds np)
-                as value = (when (binding-p b) (binding-value b))
-                when
-                  (and (individual-p value)
-                       (multiple-value-bind (variable-to-bind pobj-referent prep-word *pobj-edge*)
-                           (variable-to-bind-pp-to-head (right-edge-for-referent) value)
-                         variable-to-bind))
-                do (return b)))
-         (premod-takes-pp (when (binding-p premod-binding)
-                            (binding-value premod-binding)))
-         (premod-var (when (binding-p premod-binding)
-                       (binding-variable premod-binding))))
+  (let* ((np-edge (left-edge-for-referent))
+         (premod-dep
+          (when (eq 'discourse-mention (type-of (edge-mention np-edge)))
+            ;; might not be a discourse-mention if cases of conjunctions
+            (loop for dep in (dependencies (edge-mention np-edge))
+                  as value = (dependency-value dep)
+                  when
+                    (and (eq 'discourse-mention (type-of value))
+                         (edge-p (mention-source value))
+                         (eq 'adjective
+                             (edge-form-name (mention-source value)))
+                         (multiple-value-bind (variable-to-bind pobj-referent prep-word *pobj-edge*)
+                             (variable-to-bind-pp-to-head
+                              (right-edge-for-referent)
+                              (base-description value))
+                           variable-to-bind))
+                  do (return dep))))
+         (premod-takes-pp (when premod-dep
+                            (base-description
+                             (dependency-value premod-dep))))
+         (premod-var (when premod-dep
+                       (dependency-variable premod-dep))))
     (cond
-      (*subcat-test* premod-binding)
+      (*subcat-test* premod-dep)
       (premod-takes-pp
-       (multiple-value-bind (edge-over-premod)
-           (search-tree-for-referent (left-edge-for-referent) premod-takes-pp)
+       (let ((edge-over-premod (mention-source (dependency-value premod-dep))))
          (unless edge-over-premod
            #+ignore
            (lsp-break "Could not locate edge over ~a under ~a in ~s~%"

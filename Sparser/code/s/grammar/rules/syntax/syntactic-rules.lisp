@@ -393,6 +393,17 @@
         :head :right-edge
         :form ,(second vv)
         :referent (:function interpret-adverb+verb left-edge right-edge)))
+  (eval
+    `(def-form-rule  (both ,(car vv))
+        :head :right-edge
+        :form ,(second vv)
+        :referent (:function interpret-verb-conjunction-quantifier+verb left-edge right-edge)))
+
+  (eval
+    `(def-form-rule  (either ,(car vv))
+        :head :right-edge
+        :form ,(second vv)
+        :referent (:function interpret-verb-conjunction-quantifier+verb left-edge right-edge)))
 
   (eval
    `(def-syntax-rule  (approximator ,(car vv))
