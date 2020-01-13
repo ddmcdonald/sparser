@@ -119,7 +119,7 @@
                  (let ((type-category (intern (symbol-name type) :category)))
                    (find-or-make-individual type-category))))
 
-             (vanila-edge (pos-before-open pos-after-close type)
+             (vanila-edge (pos-before-open pos-after-close type &key referent)
                "Just cover the span between the punctuation (inclusive)
               with an edge labeled according to the type of bracket."
                (make-edge-over-long-span
@@ -141,7 +141,8 @@
                         (:quotation-marks (category-named 'quotation))
                         (otherwise
                          (break "unexpected type: ~a" type)))
-                :referent (referent-for-vanila-edge)
+                :referent (or referent
+                              (referent-for-vanila-edge))
                 :rule  :default-edge-over-paired-punctuation))
 
              (interior-hook (label)
@@ -180,8 +181,9 @@
               ;; There's no special action for this edge label
               ;; so just make the default edge
               (tr :no-paired-punct-hook first-edge)
-              #+ignore (vanila-edge pos-before-open pos-after-close type)
-              (elevate-spanning-edge-over-paired-punctuation
+              (vanila-edge pos-before-open pos-after-close type
+                           :referent (edge-referent first-edge))
+              #+ignore (elevate-spanning-edge-over-paired-punctuation
                        first-edge pos-before-open pos-after-close pos-after-open pos-before-close 
                        layout))))
         (else
