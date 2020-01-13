@@ -350,7 +350,6 @@ assess-edge-label, which rewrites the word as the category BE.
     (let ((i
            (cond
              ((and (itypep vg 'be) (value-of 'predicate vg))
-              (format t "~&predicate~%")
               (let* ((value (value-of 'predicate vg))
                      (i (find-or-make-individual 'there-exists :value value)))
                 (revise-parent-edge :form category::s) ;; vs subj+verb
