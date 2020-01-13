@@ -307,7 +307,13 @@ where it regulates gene expression.") ;; no restriction on the 'it'
       (make-an-individual 'collection
                           :items interps
                           :number (length interps)
-                          :type (itype-of (car interps)))
+                          ;; strange case
+                          ;; "At the conclusion of the telephone interview, all cases and controls were asked to provide a mouthwash rinse."
+                          ;; with interps = (T <ask ...>)
+                          :type  (loop for interp in interps
+                                       when (individual-p interp)
+                                       do (return
+                                            (itype-of interp))))
       (car interps)))
 
 
