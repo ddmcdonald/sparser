@@ -183,6 +183,13 @@
            :to to
            :upon bio))
 
+
+(define-category bio-concern :specializes bio-rhetorical
+    :mixins (bio-thatcomp)
+    :realization
+    (:verb "concern" ;; keyword: ENDS-IN-ED 
+	   :etf (svo-passive)))
+
 (define-category confirm :specializes bio-rhetorical
     :mixins (bio-thatcomp)
     :realization
