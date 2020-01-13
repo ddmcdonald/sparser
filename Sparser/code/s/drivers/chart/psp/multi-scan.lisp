@@ -628,10 +628,10 @@
               ;; We're only here because it's a *big-mechanism* case,
               ;; so we call a function there to do the handling.
               (when *trace-delay-unknown-judgment*
-                (lsp-break "About to make a bio-entity for ~a" pos-before))
+                (break "About to make a bio-entity for ~a" pos-before))
               (handle-unknown-word-as-bio-entity pos-before)))))
          (t
-          (lsp-break "Any reason not to rewrite as bio-entity?")))))))
+          (break "Any reason not to rewrite as bio-entity?")))))))
 
 (defun covered-by-nearby-edge (pos-before)
   "Does any edge span this position? We're checking this during
@@ -1265,8 +1265,8 @@ pos-after-close (nth 4 *)) |#
            (one-word-long? first-edge)
            (eq (pos-capitalization pos-after-open) :all-caps))
       (unless (and edge-to-left (edge-p edge-to-left))
-        (warn "Stub of new case: probable acronym w/o edge to ~
-                the left - in assess-parenthesized-content"))
+        (warn "probable acronym w/o edge to its left: ~s~%in ~s"
+              (string-for-edge first-edge) (current-string)))
       (when (edge-p edge-to-left) ;; otherwise there's nothing to hide under
         (let* ((ev-after-close (pos-ends-here pos-after-close))
                (ev-to-get-edges-from (edge-starts-at edge-to-left))
