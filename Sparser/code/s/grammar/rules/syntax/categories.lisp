@@ -153,6 +153,8 @@
 
 (def-form-category section-marker)
 
+(def-form-category paired-punctuation)
+
 ;;;--------------
 ;;; clause level
 ;;;--------------
