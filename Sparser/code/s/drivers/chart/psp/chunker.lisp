@@ -996,10 +996,13 @@ than a bare "to".  |#
            ;; or if it is followed by "of" e.g., "the activation states of ERK"
            ;;(break "e = ~a" e)
            (and (or (preceding-det-prep-poss-or-adj e edges-before)
+                    ;;(preceding-det-prep-poss-or-adj e (edges-before-chunk))
+                    (preceding-verb (edges-before-chunk))
                     (between-wh-and-modal e edges-before)
                     (followed-by-verb e)
                     (followed-by-of e)
                     (followed-by-modal-or-be e)
+                    (followed-by-punctuation e)
                     (and end (eq (pos-edge-ends-at e) end)))
                 (ng-head? (edge-form e))))
           
@@ -1359,7 +1362,10 @@ than a bare "to".  |#
           ((null head-edges)
            ;; in "make the steps green" the "green" is included in the chunk,
            ;; even though it's not a valid np head.
-           (break "~%in find-consistent-edges bad set of edge vectors -- last one isn't valid head in ~%~s~%"
+           (break "~%in find-consistent-edges bad set of edge vectors -- last one isn't valid head in ~s within: ~%~s~%"
+                  (string-of-words-between
+                   (chunk-start-pos *chunk*)
+                   (chunk-end-pos *chunk*))
                   (current-string)))
           ((and head-edges (null head-edge))
            (when *warn-on-multiple-heads*
@@ -1630,7 +1636,26 @@ than a bare "to".  |#
 (defun preceding-det-prep-poss-or-adj (e &optional (edges (edges-before e)))
   ;; called by vg-start? and np-head?
   (loop for ee in edges
-     thereis (det-prep-poss-or-adj? ee)))
+        thereis (det-prep-poss-or-adj? ee)))
+
+(defun preceding-verb (edges)
+  ;; called by vg-start? and np-head?
+  (loop for ee in edges
+        thereis (member (edge-form-name ee)
+                        '(v-bar
+                          verb
+                          infinitive
+                          verb+present
+                          verb+past
+                          verb+ed
+                          verb+ing
+                          verb+object
+                          verb+s
+                          modal
+                          vg 
+                          vg+ed
+                          vg+ing
+                          vg+passive))))
 
 (defun det-prep-poss-or-adj? (ee)
   (or (member (form-cat-name ee) '(det demonstrative
@@ -1698,6 +1723,11 @@ than a bare "to".  |#
      thereis
           (or (member (form-cat-name ee) '(modal))
               (member (edge-cat-name ee) '(be)))))
+
+(defun followed-by-punctuation (e &optional (edges-after (edges-after e)))
+    (loop for ee in edges-after
+          thereis (member (form-cat-name ee)
+                          '(punctuation square-brackets parentheses))))
 
 (defun preceding-adverb (e &optional (edges (edges-before e)))
   (loop for ee in edges
