@@ -249,7 +249,7 @@
          (tr :delimit-chunk-start ev forms)
          (setq *next-chunk* (delimit-next-chunk ev forms end))
          (push *next-chunk* *chunks*)
-         (disambiguate-head-of-chunk *next-chunk*)
+         (disambiguate-head-of-chunk *next-chunk* end)
          (when (null (chunk-end-pos *next-chunk*))
            (setf (chunk-end-pos *next-chunk*) end))
          (setq pos (chunk-end-pos *next-chunk*)))
@@ -264,6 +264,7 @@
              (t
               (setq pos (pos-edge-ends-at right-treetop))))))))))
 
+(defparameter *delimit-next-chunk-trace* nil)
 
 (defun delimit-next-chunk (ev forms sentence-end)
   "The caller, find-chunks, knows that this edge vector starts a chunk 
@@ -275,6 +276,7 @@
    closed off when the edges on the next position are not consistent
    with the remaining form."
   (let* ((start (ev-position ev))
+         (prev-chunk (car *chunks*))
          (*chunk* (make-instance 'chunk :forms forms
                                  :start start
                                  :end nil
@@ -283,17 +285,25 @@
          (pos start)
          possible-heads)
     (declare (special *chunk*))
-    
+    (when *delimit-next-chunk-trace*
+      (format t "previous *chunk* is ~s, *chunk* is ~s~%" prev-chunk *chunk*))
     (loop until (or (chunk-end-pos *chunk*)
                     (eq pos sentence-end))
        do
          (when forms ;; chunk still valid for at least one category
+           (when *delimit-next-chunk-trace*
+             (format t "~%forms ~s are still possible ~%" forms))
            (setf (chunk-forms *chunk*) forms)
            (push ev (chunk-ev-list *chunk*))
            (setq pos (pos-ev-ends-at ev forms))
-           (loop for compatible-head in (compatible-heads forms ev pos)
-                ;; lists of form, next-pos
-              do (push compatible-head possible-heads)))
+           (loop for compatible-head in (compatible-heads forms ev pos sentence-end)
+                 ;; lists of form, next-pos
+                 do
+                   (when *delimit-next-chunk-trace*
+                     (format t "~%pushing ~s onton possible-heads%" compatible-head))
+                   (push compatible-head possible-heads))
+           (when *delimit-next-chunk-trace*
+             (format t "~%possible-heads is ~s~%" possible-heads)))
 
          (if (or (null forms) ;; syntactic category of edge is inconsistent
                  ;; with the possible forms for the ongoing chunk
@@ -309,11 +319,15 @@
                 ;; complete this chunk -- signaling end of the until loop
                 (setf (chunk-end-pos *chunk*) (second head))
                 (setf (chunk-forms *chunk*) (list (first head)))
+                (when *delimit-next-chunk-trace*
+                  (format t "~%found head, set chunk-end-pos to ~s~%" (chunk-end-pos *chunk*)))
                 (gross-infinitive-chunker-test *chunk*) ;; as much fall-back as improvement see note w/ fn.
                 (tr :delimited-chunk *chunk*))
                (t
                 (setf (chunk-end-pos *chunk*) pos)
                 (setf (chunk-forms *chunk*) nil)
+                (when *delimit-next-chunk-trace*
+                  (format t "~%no head, set chunk-end-pos to ~s~%" (chunk-end-pos *chunk*)))
                 (tr :delimited-ill-formed-chunk *chunk*))))
            
            (else ;; loop around.
@@ -323,14 +337,18 @@
              (setq forms ;; This call is where we extend the chunk.                
                    (remaining-forms ev *chunk*))
              (tr :chunk-loop-next-edge forms)))
-       finally
+          finally
+            (when *delimit-next-chunk-trace*
+              (format t "~%chunk-end-pos is ~s, evlist is ~s"
+                    (chunk-end-pos *chunk*)
+                    (chunk-ev-list *chunk*)))
          (return 
-           (find-consistent-edges *chunk*)))))
+           (find-consistent-edges *chunk* sentence-end)))))
 
 
 ;;--- compatible heads
 
-(defun compatible-heads (forms ev next-pos)
+(defun compatible-heads (forms ev next-pos end)
   "Called in the delimit-next-chunk loop to see whether we can
    extend the current chunk. This is the 'step' function. 
    It returns a list of form-ev pairs where the call to compatible-head?
@@ -338,27 +356,27 @@
    is consistent with that form label. Return value is pushed onto
    possible-heads local in delimit-next-chunk."
     (loop for form in forms
-       when (compatible-head? form ev)
+       when (compatible-head? form ev end)
           collect (list form next-pos)))
 
-(defun compatible-head? (form ev)
+(defun compatible-head? (form ev end)
   "The type of this chunk is 'form'. Checks whether any of 
    the edges on this edge vector are suitable heads for that type."
   (loop for edge in (ev-top-edges ev)
         thereis (ecase form
-                  (ng (ng-head? edge))
+                  (ng (ng-head? edge end))
                   (vg (vg-head? edge))
                   (adjg (adjg-head? edge)))))
 
 
-(defun compatible-head-edges? (forms ev)
+(defun compatible-head-edges? (forms ev &optional end)
   "Like compatible-head? except that it returns the edge (or edges)
    that are compatible with the (one of) the form(s)."
   ;; called by find-consistent-edgs and disambiguate-head-of-chunk
   (loop for edge in (ev-top-edges ev)
         when (loop for form in forms
                    thereis (ecase form
-                             (ng (ng-head? edge))
+                             (ng (ng-head? edge end))
                              (vg (vg-head? edge))
                              (adjg (adjg-head? edge))))
         collect edge))
@@ -374,7 +392,7 @@
    select the one whose end position is to the right of the others."
   (let (furthest)
     (loop for p in possible-heads ;; e.g. (ng #<position 4 "on">)
-       when (and (member (car p) forms)
+          when (and (member (car p) forms)
                  (or (null furthest)
                      (>= (pos-token-index (second p))
                          (pos-token-index (second furthest)))))
@@ -438,7 +456,7 @@
 
 ;;--- at chunk end
 
-(defun disambiguate-head-of-chunk (chunk)
+(defun disambiguate-head-of-chunk (chunk end)
   ;; called by find-chunks and from suppress-extra-head-edges-if-necessary
   ;; in find-consistent
   (let* ((head-ev (car (chunk-ev-list chunk)))
@@ -449,7 +467,7 @@
          (forms (chunk-forms chunk))
          (head-compatible-edges
           (when multi-edges
-            (compatible-head-edges? forms head-ev))))
+            (compatible-head-edges? forms head-ev end))))
     (declare (special ;;head-ev multi-edges top-node head-compatible-edges
                       *vg-head-categories*))
     (when (and multi-edges ;; the head started as ambiguous
@@ -720,6 +738,13 @@ than a bare "to".  |#
 (defparameter *ng-start-tests-in-progress* nil
   "to prevent looping?")
 
+;; words that can mistakenly occur inside of NGs
+(defparameter *ng-blocked-list* nil)
+(defun ng-blocked-list ()
+  (or *ng-blocked-list*
+      (setq *ng-blocked-list*
+            (list (resolve "does")))))
+
 (defmethod ng-start? ((e edge))
   ;; Methods over words and categories are in category-predicates.lisp
   (declare (special category::modifier category::adjective
@@ -730,7 +755,9 @@ than a bare "to".  |#
                     category::also category::and
                     category::vp+ed category::subordinate-conjunction
 		    category::to))
-  (if (member e *ng-start-tests-in-progress*)
+  (if (or (member e *ng-start-tests-in-progress*)
+          (member (pos-terminal (pos-edge-starts-at e))
+                (ng-blocked-list)))
       nil
       (let ((*ng-start-tests-in-progress* (cons e *ng-start-tests-in-progress*))
             (ecn (edge-cat-name e)))
@@ -885,7 +912,7 @@ than a bare "to".  |#
 
 
 
-(defmethod ng-head? ((e edge))
+(defmethod ng-head? ((e edge) &optional end)
   ;; methods over words and categories in category-predicates.lisp
   (declare (special e *chunk* word::comma category::demonstrative)) 
   (let ((edges-before (edges-before e))
@@ -972,7 +999,8 @@ than a bare "to".  |#
                     (between-wh-and-modal e edges-before)
                     (followed-by-verb e)
                     (followed-by-of e)
-                    (followed-by-modal-or-be e))
+                    (followed-by-modal-or-be e)
+                    (and end (eq (pos-edge-ends-at e) end)))
                 (ng-head? (edge-form e))))
           
           ((singular-noun-and-present-verb? e)
@@ -1006,6 +1034,7 @@ than a bare "to".  |#
 
 ;;--- ng-compatible?
 
+
 (defmethod ng-compatible? ((e edge) evlist)
   "Is this edge a compatible part of a noun group?
    Return nil if this edge is not compatible.
@@ -1020,6 +1049,10 @@ than a bare "to".  |#
                     category::quantifier
                     category::verb+ed
                     word::comma))
+  (when (member (pos-terminal (pos-edge-starts-at e))
+                (ng-blocked-list))
+    (return-from ng-compatible? nil))
+  
   (let ((edges (ev-top-edges (car evlist)))
         (eform (when (edge-p e) (form-cat-name e)))
         (ecat (when (edge-p e) (edge-cat-name e)))
@@ -1303,7 +1336,7 @@ than a bare "to".  |#
 
 (defparameter *warn-on-multiple-heads* nil)
 
-(defun find-consistent-edges (chunk)
+(defun find-consistent-edges (chunk &optional end)
   "Called as the finally clause in the delimit-next-chunk loop. Assuming there
    are forms associated with this chunk then we have
    determined the type of the chunk and collected the starting-edge vectors
@@ -1316,7 +1349,7 @@ than a bare "to".  |#
       (when (cdr forms) ;; consistent with more than one
         (lsp-break "More than one form on chunk"))
       (let* ((head-ev (car ev-list))
-             (head-edges (compatible-head-edges? forms head-ev))
+             (head-edges (compatible-head-edges? forms head-ev end))
              (head-edge (when (null (cdr head-edges)) (car head-edges)))
              (other-edges
               (loop for ev in (cdr ev-list)
@@ -1326,7 +1359,7 @@ than a bare "to".  |#
           ((null head-edges)
            ;; in "make the steps green" the "green" is included in the chunk,
            ;; even though it's not a valid np head.
-           (break "in find-consistent-edges bad set of edge vectors -- last one isn't valid head in ~%~s~%"
+           (break "~%in find-consistent-edges bad set of edge vectors -- last one isn't valid head in ~%~s~%"
                   (current-string)))
           ((and head-edges (null head-edge))
            (when *warn-on-multiple-heads*
@@ -1341,7 +1374,7 @@ than a bare "to".  |#
               head-edge)
              (t (lsp-break "Need another multiple head edge recovery option")))))
         
-        (suppress-extra-head-edges-if-necessary chunk head-edge)
+        (suppress-extra-head-edges-if-necessary chunk head-edge end)
         (setf (chunk-edge-list chunk) (cons head-edge other-edges))))
     chunk))
 
@@ -1364,14 +1397,14 @@ than a bare "to".  |#
         (setf (chunk-ev-list chunk) revised-ev-list))
       (chunk-ev-list chunk))))
 
-(defun suppress-extra-head-edges-if-necessary (chunk head-edge)
+(defun suppress-extra-head-edges-if-necessary (chunk head-edge end)
   "If there are multiple edges on this position (or if the wrong one is said
    to be the top edge, then parsing will get the right one only at chance, 
    so suppress the others by making the head-edge the top."
   (let* ((ev (edge-starts-at head-edge))
          (all-edges (ev-top-edges ev)))
     (when (cdr all-edges)
-      (disambiguate-head-of-chunk chunk))))
+      (disambiguate-head-of-chunk chunk end))))
 
 
 (defun compatible-edge? (ev forms ev-list)
@@ -1645,7 +1678,9 @@ than a bare "to".  |#
 
 (defun noun-edge? (e)
   (if (eq (cat-name (edge-form e)) 'np)
-      (car (last (edges-under e)))
+      (or (car (last (edges-under e)))
+          ;; funny issue with "BC" meaning "breast cancer"
+          e)          
       e))
 
 (defun preceding-determiner? (e &optional (edges (edges-before e)))

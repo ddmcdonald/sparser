@@ -291,13 +291,13 @@
 
 
 
-(defgeneric ng-head? (label)
+(defgeneric ng-head? (label &optional end)
   (:documentation "Is a category which can occur as the head of an NG")
-  (:method ((c referential-category))
+  (:method ((c referential-category) &optional end)
     (ng-head? (cat-symbol c)))
-  (:method  ((name symbol))
+  (:method  ((name symbol) &optional end)
     (memq name *ng-head-categories*))
-  (:method ((w word))  nil))
+  (:method ((w word) &optional end)  nil))
 
 
 
