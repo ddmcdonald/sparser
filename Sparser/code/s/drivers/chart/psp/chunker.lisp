@@ -1003,12 +1003,14 @@ than a bare "to".  |#
                     (followed-by-of e)
                     (followed-by-modal-or-be e)
                     (followed-by-punctuation e)
+                    (followed-by-conjunction e)
                     (and end (eq (pos-edge-ends-at e) end)))
                 (ng-head? (edge-form e))))
           
           ((singular-noun-and-present-verb? e)
            (and (not (preceding-pronoun-or-which? e edges-before))
                 (not (preceding-plural-noun? e))
+                #+ignore ;; what are the examples??
                 (or (not (followed-by-modal-or-be e))
                     (preceding-det? e))
                 (ng-head? (edge-form e))
@@ -1728,6 +1730,12 @@ than a bare "to".  |#
     (loop for ee in edges-after
           thereis (member (form-cat-name ee)
                           '(punctuation square-brackets parentheses))))
+
+(defun followed-by-conjunction (e &optional (edges-after (edges-after e)))
+    (loop for ee in edges-after
+          thereis (member (form-cat-name ee)
+                          '(conjunction))))
+
 
 (defun preceding-adverb (e &optional (edges (edges-before e)))
   (loop for ee in edges
