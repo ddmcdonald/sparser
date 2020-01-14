@@ -109,8 +109,8 @@ part even if it's invariably left out as obvious except in comparisons. |#
 
 (define-category fiscal
   :instantiates self
-  :realization ((:adjective "fiscal")
-                (:tree-family  adjective-creates-subtype
+  :realization (:adjective "fiscal"
+                #+ignore(:tree-family  adjective-creates-subtype
                 :mapping (;(specializing-function . subtype-the-head)
                           (adjective . :self)))))
 
