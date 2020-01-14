@@ -2217,7 +2217,16 @@ assumed. |#
   :action (:function make-that-an-np first))
 
 (defun make-that-an-np (demonstrative)
-  (when (member (edge-cat-name demonstrative) '(that))
+  (when (and (member (edge-cat-name demonstrative) '(that))
+             (not (loop for e in (edges-after demonstrative)
+                        thereis
+                          (or
+                           (member (edge-form-name e)
+                                   '(when-relative-clause
+                                     where-relative-clause
+                                     subordinate-s))
+                           (member (edge-cat-name e)
+                                  '(when where if because))))))
     (make-edge-spec
      :category (edge-category demonstrative)
      :form category::pronoun
