@@ -147,42 +147,6 @@
         
       end-pos)))
 
-(defun is-phosphorylated-protein? (start end)
-  (let* ((extr-string (extract-characters-between-positions start end))
-         (sur-str  (when (> (length extr-string) 0) (trim-whitespace extr-string)))
-         (pro-string? (cond ((equal extr-string "") ;; couldn't get it
-                             nil)
-                            ((eq #\p (aref  sur-str 0))
-                             (subseq sur-str
-                                     (if (eq 0 (search "p-" sur-str)) 2 1)))
-                            ((and (eq #\P (aref  sur-str 0))
-                                  (and (> (length sur-str) 1)
-                                       (eq #\- (aref  sur-str 1))))
-                             (subseq sur-str 2))))
-         (pro-word? (when pro-string? (resolve pro-string?)))
-         (pro-cfr? (when pro-word? (find-single-unary-cfr pro-word?)))
-         (pro? (when (and pro-cfr?
-                          (itypep (cfr-referent pro-cfr?) category::protein)
-                          ;; block things like "pAb" (polyclonal antibody) getting phosphorylated
-                          (not (category-p (cfr-referent pro-cfr?))))
-                 (cfr-referent pro-cfr?))))
-    (declare (special sur-str pro-string? pro-word? pro-cfr? pro?))
-    ;;(lsp-break "is-pro")
-    (when pro? (values pro? start end pro-cfr? sur-str))))
-
-(defun span-phosphorylated-protein (start end &optional cat form)
-  (multiple-value-bind (protein start end cfr sur-string)
-      (is-phosphorylated-protein? start end)
-    (make-edge-over-long-span
-     start
-     end
-     (or cat (cfr-category cfr))
-     :rule 'span-phosphorylated-protein
-     :form (or form (cfr-form cfr))
-     :referent (make-phosphorylated-protein protein sur-string))
-    end))
-                            
-        
 
 ;;;----------
 ;;; Dispatch
@@ -412,6 +376,22 @@
 		 'reify-ns-name-as-bio-entity
 		 i))))))
 
+(defun convert-words-to-bio-entities (items)
+  "These items are the treetops-between some of a no-space span.
+   Some treetops are unknown words, this converts them to edges over
+   newly contructed bio-entities"
+  (flet ((bio-entity-for-word (word))
+         (edge-over-bio-entity (word)
+           (
+))
+    (loop for item in items
+       as edge = (etypecase item
+                   (edge item)
+                   (word (edge-over-bio-entity word)))
+       collect edge)))
+
+       
+
 
 (defun reason-to-not-span-ns (start-pos end-pos)
   (declare (special word::|s|))
@@ -443,6 +423,42 @@
          
    
     
+(defun is-phosphorylated-protein? (start end)
+  (let* ((extr-string (extract-characters-between-positions start end))
+         (sur-str  (when (> (length extr-string) 0) (trim-whitespace extr-string)))
+         (pro-string? (cond ((equal extr-string "") ;; couldn't get it
+                             nil)
+                            ((eq #\p (aref  sur-str 0))
+                             (subseq sur-str
+                                     (if (eq 0 (search "p-" sur-str)) 2 1)))
+                            ((and (eq #\P (aref  sur-str 0))
+                                  (and (> (length sur-str) 1)
+                                       (eq #\- (aref  sur-str 1))))
+                             (subseq sur-str 2))))
+         (pro-word? (when pro-string? (resolve pro-string?)))
+         (pro-cfr? (when pro-word? (find-single-unary-cfr pro-word?)))
+         (pro? (when (and pro-cfr?
+                          (itypep (cfr-referent pro-cfr?) category::protein)
+                          ;; block things like "pAb" (polyclonal antibody) getting phosphorylated
+                          (not (category-p (cfr-referent pro-cfr?))))
+                 (cfr-referent pro-cfr?))))
+    (declare (special sur-str pro-string? pro-word? pro-cfr? pro?))
+    ;;(lsp-break "is-pro")
+    (when pro? (values pro? start end pro-cfr? sur-str))))
+
+(defun span-phosphorylated-protein (start end &optional cat form)
+  (multiple-value-bind (protein start end cfr sur-string)
+      (is-phosphorylated-protein? start end)
+    (make-edge-over-long-span
+     start
+     end
+     (or cat (cfr-category cfr))
+     :rule 'span-phosphorylated-protein
+     :form (or form (cfr-form cfr))
+     :referent (make-phosphorylated-protein protein sur-string))
+    end))
+                            
+        
 
 
 ;;;------------------------------------
