@@ -376,20 +376,6 @@
 		 'reify-ns-name-as-bio-entity
 		 i))))))
 
-(defun convert-words-to-bio-entities (items)
-  "These items are the treetops-between some of a no-space span.
-   Some treetops are unknown words, this converts them to edges over
-   newly contructed bio-entities"
-  (flet ((bio-entity-for-word (word))
-         (edge-over-bio-entity (word)
-           (
-))
-    (loop for item in items
-       as edge = (etypecase item
-                   (edge item)
-                   (word (edge-over-bio-entity word)))
-       collect edge)))
-
        
 
 
