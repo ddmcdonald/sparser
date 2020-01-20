@@ -349,7 +349,7 @@
 (def-family-with-id "VIT1" "XFAM:PF01988.17") 
 (def-family-with-id "VPR" "XFAM:PF00522.16" :synonyms ("Vpr" "vpr")) 
 (def-family-with-id "WAVE" "XFAM:PF07507.9" :synonyms ("WavE") :maintain-case t)
-(def-family-with-id "Wnt" "FPLX:Wnt" :synonyms ("WNT"))
+;(def-family-with-id "Wnt" "FPLX:Wnt" :synonyms ("WNT"))
 (def-family-with-id "XPG" "FA:04707") 
 (def-family-with-id "Zeta" "FA:01677" :synonyms ("zeta" "zeta family")) 
 (def-family-with-id "cIII" "XFAM:PF08134.9")
@@ -561,7 +561,7 @@
 (def-family-with-id "p85" "FPLX:PI3K_p85" :members ("UP:O00459" "UP:O43439" "UP:Q14155")) 
 ;(def-family-with-id "DC" "FPLX:PDC") 
 
-(def-family-with-id "phospholipase-C" "FPLX:PLC" :members ("UP:Q00722" "UP:Q01970" "UP:Q15147" "UP:Q9NQ66")) ;more -this is just the beta ones 
+(def-family-with-id "phospholipase-C" "FPLX:PLC" :synonyms ("phospholipase c" "phospholipase C") :members ("UP:Q00722" "UP:Q01970" "UP:Q15147" "UP:Q9NQ66")) ;more -this is just the beta ones 
 (def-family-with-id "phospholipase Cβ" "FPLX:PLCB" :synonyms ("phospholipase Cbeta" "phospholipase C-beta" "PLC-beta" "PLC-β" "PLCbeta" "PLCβ" "PLCB") :members ("UP:Q00722" "UP:Q01970" "UP:Q15147" "UP:Q9NQ66"))
 (def-family-with-id "PLCG" "FPLX:PLCG" :synonyms ("NCIT:C126114" "PLCγ" "phospholipase C gamma" "phospholipase-C-γ" "phospholipase-Cγ")) 
 ;(def-family-with-id "PLCγ" "NCIT:C126114" :name "phospholipase C gamma") 
@@ -1095,7 +1095,7 @@
 (def-family-with-id "siRas" "XFAM:PF10747.7" :name "SirA") 
 (def-family-with-id "siRB" "XFAM:PF04247.10" :name "SirB") 
 (def-family-with-id "siD" "XFAM:PF11778.6" :name "SID")
-(def-family-with-id "Wnt family" "FPLX:Wnt" :name "Wnt" :synonyms ("wnt") :members ("UP:P04628" "UP:P09544")) ;others but many of our current wnts are non-human
+(def-family-with-id "Wnt family" "FPLX:Wnt" :name "Wnt" :synonyms ("wnt" "WNT") :members ("UP:P04628" "UP:P09544" "UP:Q9H1J7" "UP:Q9H1J5")) ;others but many of our current wnts are non-human
 (def-family-with-id "wntless" "FA:04687" :name "wntless family") 
 (def-family-with-id "vestigial" "FA:04577" :name "vestigial family") 
 (def-family-with-id "vasohibin" "FA:04571" :name "vasohibin family") 
