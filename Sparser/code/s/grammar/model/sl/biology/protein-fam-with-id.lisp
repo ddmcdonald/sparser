@@ -494,7 +494,7 @@
 (def-family-with-id "NF-kappaB" "FPLX:NFkappaB" :synonyms ("NCIT:C17380" "NF-kappabeta" "NFkappaB" "NF-kB" "NF-kappab" "NF-kb" "NF-κB" "NFK-B" "NFKB" "NF-kB" "NF-KB" "NFkB" "NFkappaB" "kB" "nfκ" "nfκb" "NFkappaB" "nuclear factor kappa-b" "nuclear kappa B" "Nuclear factor-kappaB" "nuclear factor-kappaB" "NfkappaB" "NF- kappaB" "nuclear factor kappaB" "Nf-kappaB" "NFkappa-B" "NF-KappaB" "Relish" "REL1096" "NFκB") :members ("UP:P19838" "UP:Q04206"))
 
 (def-family-with-id "NCOA" "FPLX:NCOA" :synonyms ("p160/SRC" "NcoA")) 
-
+(def-family-with-id "NOS" "FPLX:NOS" :synonyms ("nitric oxide synthase" "NO synthase") :members ("UP:P29475" "UP:P35228" "UP:P29474"))
 (def-family-with-id "PAK" "FPLX:PAK" :synonyms ("PAK" "p21-activated kinase" "p21 activated serine threonine kinases" "Pak") :members ("UP:O75914" "UP:O96013" "UP:Q13153" "UP:Q13177" "UP:Q16512" "UP:Q9NQU5" "UP:Q9P286"))
 ;(def-family-with-id "PDGR" "NCIT:C17322" :synonyms ("platelet-derived growth factor-activated receptor" "PDGF receptor"  "PDGF-R" "pdgfr" "derived growth factor-receptor" "derived growth-factor receptor" "platelet-derived growth factor-activated receptor activity" "FPLX:PDGR") :members ( "UP:P09619" "UP:P16234")) 
 (def-family-with-id "phosphodiesterase" "GO:0008081" :synonyms ("PDE" "phosphoric diester hydrolase" "FPLX:PDE") :members ("UP:Q08499" "UP:Q08493" "UP:Q13370" "UP:Q13946" "UP:Q14432" "UP:Q9HCR9" "UP:Q9NP56")) ;more members

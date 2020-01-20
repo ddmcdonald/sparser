@@ -15,7 +15,7 @@
 
 (def-indiv-with-id database "reactome" "Reactome" :name "Reactome")
 (def-indiv-with-id database "kegg" "KEGG" :name "KEGG")
-(def-indiv-with-id database "wikipathways" "wikipathway" :name "WikiPathways" :synonyms ("WikiPathway"))
+(def-indiv-with-id database "wikipathways" "wikipathway" :name "WikiPathways" :synonyms ("WikiPathway" "wikipathway"))
 (def-indiv-with-id database "humancyc" "humancyc" :name "HumanCyc")
 (def-indiv-with-id database "disgenet" "disgenet" :name "DisGeNET")
 (def-indiv-with-id database "smpdb" "SMPDB" :name "SMPDB" :synonyms ("Small Molecule Pathway Database"))
@@ -30,6 +30,8 @@
 ;; Omnibus" https://www.ncbi.nlm.nih.gov/geo/ a "functional genomics
 ;; data repository") and "GenomeRNAi" (http://www.genomernai.org/)
 ;; not sure which was meant
+;; turns out it's from Enrichr's dataset of "Kinase_Perturbations_from_GEO"
+;; listed here: https://amp.pharm.mssm.edu/Enrichr/#stats
 (def-indiv-with-id database "GEO RNAi" "GEO-RNAi" :name "GEO RNAi database")
 
 
