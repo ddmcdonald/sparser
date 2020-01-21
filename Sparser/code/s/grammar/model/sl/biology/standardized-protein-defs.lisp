@@ -4521,7 +4521,7 @@
 (define-protein "UP:P06340" ("2DOA_HUMAN" "DO alpha" "DOA_HUMAN" "HLA class II histocompatibility antigen, DO alpha chain precursor" "HLA-D0-alpha" "HLA-DNA" "HLA-DOA" "HLA-DZA" "p06340")) 
 (define-protein "UP:P06341" ("RT1-B")) 
 (define-protein "UP:P06396" ("AGEL" "GELS_HUMAN" "GSN" "Gsn" "actin-depolymerizing factor" "brevin" "gelsolin" "p06396")) 
-(define-protein "UP:P06400" ("PP-110" "PRB" "RB" "RB protein" "RB1" "RB_HUMAN" "Rb" "Rb1" "rb1" "p06400" "p105 Rb" "p105-Rb" "p105RB" "p105Rb" "pRB" "pRb" "p-RB" "p-Rb" "pp105" "pp110" "rb" "retinoblastoma-associated protein" "tumor suppressor retinoblastoma protein")) 
+(define-protein "UP:P06400" ("PP-110" "PRB" "RB" "RB protein" "RB1" "RB_HUMAN" "Rb" "Rb1" "rb1" "p06400" "p105 Rb" "p105-Rb" "p105RB" "p105Rb" "pp105" "pp110" "rb" "retinoblastoma-associated protein" "tumor suppressor retinoblastoma protein")) 
 (define-protein "UP:P06401" ("Nuclear receptor subfamily 3 group C member 3" "P/R" "P06401" "PGR" "PR" "PR-B" "PRGR_HUMAN" "PRs" "PgR" "Progesterone receptors"  "p06401" "progesterone receptor")) 
 (define-protein "UP:P06435" ("45 kDa immediate-early protein 2")) 
 (define-protein "UP:P06454" ("PTMA" "PTMA_HUMAN" "ProTalpha" "ProTα" "p06454" "proTα" "prothymosin" "prothymosin alpha" "prothymosin, alpha" "prothymosin-alpha")) 
@@ -4894,12 +4894,12 @@
 (define-protein "UP:P09169" ("OmpT")) 
 (define-protein "UP:P09172" ("DBH" "DBH(40-617)" "DBM" "DOPO_HUMAN" "Dbh" "dopamine beta-hydroxylase" "dopamine beta-hydroxylase (dopamine beta-monooxygenase)" "dopamine beta-monooxygenase" "dopamine-beta-hydroxylase" "p09172")) 
 (define-protein "UP:P09184" ("VSR")) 
-(define-protein "UP:P09208" ("INRA" "dINR" "dIR")) 
+(define-protein "UP:P09208" ("INRA" "dINR" "dIR" "insulin-like receptor")) 
 (define-protein "UP:P09210" ("GST HA subunit 2" "GST class-alpha member 2" "GST-gamma" "GST2" "GSTA2" "GSTA2-2" "GSTA2_HUMAN" "GTH2" "Glutathione S-transferase A2" "Glutathione S-transferase alpha 2" "glutathione S-transferase A2" "glutathione S-transferase alpha 2" "p09210")) 
 (define-protein "UP:P09211" ("FAEES3" "GST-3" "GST-P" "GST3" "GSTP" "GSTP1" "GSTP1-1" "GSTP1_HUMAN" "GSTp" "Glutathione S-transferase P" "Glutathione S-transferase pi 1" "Gstp1" "glutathione S-transferase pi 1" "glutathione S-transferase-Pi" "glutathione-S-transferase-pi" "p09211")) 
 (define-protein "UP:P09228" ("CST2" "cst2" "cystatin SA")) 
 (define-protein "UP:P09229" ("OCI" "cysteine proteinase inhibitor 1" "p09229")) 
-(define-protein "UP:P09232" ("P-Rb")) 
+;(define-protein "UP:P09232" ("P-Rb")) yeast
 (define-protein "UP:P09234" ("RU1C_HUMAN" "SNRPC" "U1-C" "U1C" "p09234" "small nuclear ribonucleoprotein polypeptide C" "yhc1")) 
 (define-protein "UP:P09237" ("3.4.24.23" "MMP- 7" "MMP-7" "MMP7" "MMP7_HUMAN" "MPSL1" "Mmp7" "P09237" "PUMP1" "matrilysin" "matrin" "matrix metalloproteinase 7" "matrix metalloproteinase-7" "matrix mηlloproteinase-7" "p09237" "pump-1 protease" "uterine metalloproteinase" "uterine mηlloproteinase")) 
 (define-protein "UP:P09238" ("MMP 10" "MMP-10" "MMP10" "P09238" "SL-2" "SL2" "matrix metallopeptidase 10" "matrix metalloproteinase 10" "p09238" "stromelysin 2" "stromelysin-2" "sts2")) 
@@ -4943,7 +4943,7 @@
 (define-protein "UP:P09543" ("2',3'-cyclic-nucleotide 3'-phosphodiesterase" "CN37_HUMAN" "CNP" "CNPase" "p09543")) 
 (define-protein "UP:P09544" ("INT1L1" "IRP" "IRPs" "Protein Wnt-2" "WNT2" "WNT2 protein" "WNT2_HUMAN" "int-1-like protein 1" "int-1-related protein" "p09544" "secreted growth factor" "wingless-type MMTV integration site family member 2" "wnt family member 2" "wnt-2" "wnt2")) 
 (define-protein "UP:P09564" ("CD7" "CD7 molecule" "CD7_HUMAN" "Cd7" "GP40" "P09564" "T-cell antigen CD7" "T-cell surface antigen Leu-9" "TP41" "p09564" "t-cell leukemia antigen")) 
-a;(define-protein "UP:P09598" ("phospholipase c")) ;bacteria
+;(define-protein "UP:P09598" ("phospholipase c")) ;bacteria
 (define-protein "UP:P09599" ("SMase" "SMases" "Sphingomyelinase C" "smase" "sphingomyelinases")) 
 (define-protein "UP:P09601" ("HMOX-1" "HMOX1" "HMOX1_HUMAN" "HO" "HO-1" "HO1" "HO1_HUMAN" "Heme Oxygenase-1" "Heme oxygenase-1" "Hmox1" "Ho" "Ho-1" "P09601" "bK286B10" "heme oxygenase (decycling)1" "heme oxygenase-1" "hemeoxygenase-1" "ho-1" "ho1" "p09601")) 
 (define-protein "UP:P09603" ("CSF-1" "CSF1" "M-CSF" "MCSF" "macrophage colony stimulating factor 1" "macrophage colony-stimulating factor 1" "p09603")) 

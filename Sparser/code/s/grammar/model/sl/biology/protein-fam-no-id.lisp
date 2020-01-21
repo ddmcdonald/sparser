@@ -1552,7 +1552,7 @@
 (def-family "inositol polyphosphate-4-phosphatase" :members ("UP:O15327" "UP:Q96PE3")) 
 (def-family "ins" :members ("UP:P01308" "UP:P16070")) 
 (def-family "insulin receptor substrate 2" :members ("UP:P81122" "UP:Q9Y4H2")) 
-(def-family "insulin-like receptor" :members ("UP:P09208" "UP:Q93105")) 
+;(def-family "insulin-like receptor" :members ("UP:P09208")) 
 (def-family "integrator complex subunit 2" :members ("UP:Q5ZKU4" "UP:Q9H0H0")) 
 (def-family "interferon regulatory factor 2" :members ("UP:P14316" "UP:Q98925")) 
 (def-family "intimin" :members ("UP:Q07591" "UP:W1XTR8")) 
