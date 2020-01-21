@@ -337,7 +337,7 @@
                     (literal-edge? right-edge))
           (let ((heuristic (conjunction-heuristics left-edge right-edge)))
             (if heuristic
-              ;; conjoin/2 looks for leftwards
+              ;; conjoin/2 looks for leftwards extension of conjunction
               (let ((edge (conjoin/2 left-edge right-edge heuristic :pass 'look-for-short-obvious-conjunctions)))
                 (tr :conjoined-edge edge)
                 edge)

@@ -209,13 +209,14 @@
 (defparameter *trace-conjoin-and-rethread* nil)
 
 (defun conjoin-and-rethread-edges (left-edge right-edge direction)
-  "We've just plucked an edge out from the fringe of one of these
- edges and are about make a new edge that conjoins it with the
- other edge. That will force a re-kniting of the links between
- many of the edges.
+  "We've just identified an edge from the fringe of one of these
+ two edges and are about make a new edge that conjoins it with the
+ other edge --  from the 'left-edge' if we looked to our left.
+ That will force a re-kniting of the links between
+ many of the edges, and recomputation of their referents.
  In particular, the edge-ends-at of all the edges above the edge
  that we lift have to be reset to go to the other end of the newly
- created conjoined-edge (i.e. new-ev). "
+ created conjoined-edge (i.e. new-ev below). "
 
   (let* ((heuristic (ecase direction
                       (:left :lifted-left-edge-of-conjunction)
@@ -225,9 +226,9 @@
                         (:right right-edge)))
          (parent-edge (edge-used-in lifted-edge)))
 
-    ;; Check the lifted -- If it's been respanned by an edge of the same
-    ;; span (like a lambda predication), then the parent is further up
     (when parent-edge
+      ;; Check the lifted -- If it's been respanned by an edge of the same
+      ;; span (like a lambda predication), then the parent is further up
       (when (edges-have-same-span? lifted-edge parent-edge)
         (setq parent-edge (edge-used-in parent-edge))))
         
@@ -237,14 +238,14 @@
                      ~&lifted: ~a~
                      ~&left: ~a~
                      ~%right: ~a~%"
-                parent-edge
-                lifted-edge left-edge right-edge)
+                parent-edge lifted-edge left-edge right-edge)
         (break "look at parent"))
 
     (let* ((conjoined-edge (conjoin-two-edges left-edge right-edge
                                               heuristic 
                                               :do-not-knit t
                                               :pass 'conjoin-and-rethread-edges))
+           (ref-conjoined (edge-referent conjoined-edge))
            (new-ev (ecase direction
                      (:left (edge-ends-at conjoined-edge))
                      (:right (edge-starts-at conjoined-edge)))))
@@ -259,6 +260,7 @@
       ;; Now all the edges above the parent (inclusive) need to get
       ;; new end-positions (trashing the intermediate end edge-vectors
       ;; but we won't be looking there again so it doesn't matter.
+      ;; They'll also need updated referents.
       ;; Start with the new edge because we deliberatedly told the
       ;; edge-maker not to do the knitting since it would have 
       ;; messed up the 'top' edge information.
@@ -277,8 +279,8 @@
           (when *trace-conjoin-and-rethread*
             (format t "~&%About to lift:~
                         ~&ev: ~a~
-                        ~&~%constituents: ~a~
-                        ~&~%dominating: ~a~%"
+                        ~&constituents: ~a~
+                        ~&dominating: ~a~%"
                     ev constituents edges-dominating-lifted))
 
           ;; We have to remove from this edge the edges that are part
@@ -296,7 +298,6 @@
             (break "before loop"))
 
           (dolist (e edges-dominating-lifted)
-            ;;(break "About to knit ~a" e)
             (knit-edge-into-position e new-ev)
             (ecase direction
               (:left (setf (edge-ends-at e) new-ev))
@@ -308,6 +309,8 @@
             (:left (setf (edge-right-daughter parent-edge) conjoined-edge))
             (:right (setf (edge-left-daughter parent-edge) conjoined-edge)))
           (setf (edge-used-in conjoined-edge) parent-edge)
+
+          (reinterpret-dominating-edges conjoined-edge)
 
           (when *trace-conjoin-and-rethread* (break "dust settled"))
 
@@ -676,38 +679,19 @@
 
 (defun conjoin-two-edges (left-edge right-edge heuristic &key do-not-knit pass)
   (declare (special *sentence-in-core*))
-  (let ((referent
-         (referent-of-two-conjoined-edges left-edge right-edge))
+  (let ((category (edge-category left-edge))
         (form (edge-form left-edge))
-        (category (edge-category left-edge)))
-
-    (let* ((constituents
-            (all-tts (pos-edge-starts-at left-edge)
-                     (pos-edge-ends-at right-edge)))
-           (edge (make-chart-edge
-                  :left-edge left-edge :right-edge right-edge
-                  :category category
-                  :form form
-                  :referent referent
-                  :rule 'conjoin-two-edges)))
-      ;; This version will use the wrong edge if there are multiple
-      ;; readings for, e.g., the left edge. All-tts has the same issue
-      ;; which makes setting the constituents problematic
-      ;; Issue was with "up", which is a direction as well as a prep.
-       #+ignore(make-edge-over-long-span
-                  (pos-edge-starts-at left-edge)
-                  (pos-edge-ends-at right-edge)
-                  category
-                  :constituents constituents
-                  :form form
-                  :referent referent
-                  :rule heuristic)
-      (when (null (cdr constituents))
-        (warn "bad conjunction of 1 constituent at ~a in ~s~%"
-              (toc-index *sentence-in-core*)
-              (current-string)))
-      (tr :conjoining-two-edges edge left-edge right-edge heuristic)
+        (referent (referent-of-two-conjoined-edges left-edge right-edge))
+        (constituents (constituents-of-two-conjoined-edges left-edge right-edge)))
+    (let ((edge (make-chart-edge
+                 :left-edge left-edge :right-edge right-edge
+                 :category category
+                 :form form
+                 :referent referent
+                 :rule 'conjoin-two-edges
+                 :constituents constituents)))
       (edge-interaction-with-quiescence-check edge)
+      (tr :conjoining-two-edges edge left-edge right-edge heuristic)
       (when *save-conjunctions* 
         (push (conj-info (edge-referent left-edge) (edge-referent right-edge)
                          left-edge right-edge
@@ -715,6 +699,25 @@
               *all-conjunctions*))
       edge)))
 
+#|    ;; This earlier version will use the wrong edge if there are multiple
+      ;; readings for, e.g., the left edge. All-tts has the same issue
+      ;; which makes using it to set the constituents problematic
+      ;; Issue was with "up", which is a direction as well as a prep.
+       (make-edge-over-long-span
+                  (pos-edge-starts-at left-edge)
+                  (pos-edge-ends-at right-edge)
+                  category
+                  :constituents constituents
+                  :form form
+                  :referent referent
+                  :rule heuristic) |#
+ 
+(defun constituents-of-two-conjoined-edges (left-edge right-edge)
+  (let* ((ev (pos-ends-here (pos-edge-starts-at right-edge))) ; avoid Oxford comma
+         (conj-edge (ev-top-node ev)))
+    (when (and conj-edge
+               (eq (form-cat-name conj-edge) 'conjunction))
+      (list left-edge conj-edge right-edge))))
 
 (defun conjoin-multiple-edges (edge-list &key pass)
   (let* ((rightmost-edge (car (last edge-list)))

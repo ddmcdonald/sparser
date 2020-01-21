@@ -108,11 +108,8 @@
    rules that formed the edges. Recurse up the tree unless
    the rerun fails."
   (let ((parents (collect-edge-parents edge)))
-    ;;(break "parents = ~a" parents)
     (flet ((reinterpret-edge (edge)
-             ;;(format t "~&reinterpreting ~a~%" edge)
              (let ((new-ref (referent-for-edge edge))) ; wraps referent-from-rule
-               ;;(break "new-ref = ~a" new-ref)
                (cond
                  ((null new-ref)
                   (when *reinterpret-dominating-edges-warning*
@@ -155,12 +152,8 @@
 (defun move-edges-above-to-new-pos (above-this-one
                                     old-edge-vector new-edge-vector
                                     direction)
-  ;; (push-debug `(,above-this-one ,old-edge-vector ,new-edge-vector))
   (let* ((index (index-of-edge-in-vector above-this-one old-edge-vector)))
-    ;;(break "index = ~a" index)
     (let ((edges-to-move (edges-higher-than old-edge-vector index)))
-      (push-debug `(,edges-to-move))
-      ;;(break "edges-to-move")
       (dolist (edge edges-to-move)
         (ecase direction
           (:left (setf (edge-starts-at edge) new-edge-vector))
@@ -347,7 +340,8 @@
        (push-debug `(,edge-index ,edges-over-parent ,count))
        (warn "Next case for inserting the new edge in ~%~s~%"
              (current-string))
-       (break "in insert-new-edge-between-daughter-and-parent: Next case for inserting the new edge in ~%~s~%"
+       (break "in insert-new-edge-between-daughter-and-parent: ~
+             ~%   New case for inserting the new edge in ~%~s~%"
              (current-string))))
     (setf (edge-starts-at new-edge) starting-vector
           (edge-ends-at new-edge) ending-vector)))
