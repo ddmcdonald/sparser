@@ -59,32 +59,39 @@
 ;;;----------------
 
 (defparameter *save-conjunctions* nil)
-(defparameter *show-protein-coercions* nil)
+
 (defun save-conjunctions (&optional (yes? t))
   (setq *save-conjunctions* yes?))
+
+(defparameter *show-protein-coercions* nil)
+
 (defparameter *collect-conjunctions* nil)
+
 (defparameter *all-conjunctions* nil)
+
 (defparameter *rejected-form-conjs* nil
   "Accumulator for collecting instances where form motivates
   conjunction, but semantics rejects it")
+
 (defparameter *form-conjs* nil
-"Accumulator for collecting instances where form motivates
-   conjunction")
+ "Accumulator for collecting instances where form motivates conjunction")
+
 (defun collect-conjunctions ()
   (save-conjunctions)
   (loop for corpus in '(dec-test dry-run erk) 
     do (print corpus)(compare-to-snapshot corpus)))
+
 
 ;;;------
 ;;; hook
 ;;;------
 
 (define-completion-action word::|and|
-  :mark-event  'mark-instance-of-AND)
+  :mark-event 'mark-instance-of-AND)
 
 
 (define-completion-action word::|or|
-  :mark-event  'mark-instance-of-AND)
+  :mark-event 'mark-instance-of-AND)
 
 #|
 (define-completion-action category::and
@@ -105,6 +112,7 @@
 |#
 
 (defun mark-instance-of-AND (and-word position-before position-after)
+  "Push the position of the conjunction onto the global flag"
   (if *pending-conjunction*
     (cond
      (*speech*
@@ -122,11 +130,14 @@
       ;; is turned off in this mode. Instead we the state global
       ;; into a push-stack of positions and handle them in a
       ;; later pass.
+      (tr :setting-another-conjunction-pos-before position-before)
       (push position-before *pending-conjunction*))
+     
      (t
       (push-debug `(,and-word ,position-before ,position-after))
       (break "stub -- unhandled case of two 'and's in a row")))
-    (else ; 
+    
+    (else
       (tr :setting-conjunction-pos-before position-before)
       (if (sucessive-sweeps?)
         (push position-before *pending-conjunction*)
@@ -761,6 +772,20 @@
     (when edge-list
       (conjoin-multiple-edges edge-list :pass pass))))
 
+#| Excised from short-conjunctions-sweep. It moves the left-side
+   reference position across the Oxford comma if there is one.
+   Since that code runs before the chunking operations that carate
+   the segments, it can lead to very odd mistakes.
+
+    ;; handle case of A, B, and C (i.e. comma before conjunction)
+    (when (and (not (word-p left-edge))
+               ;; case such as ...cells (Figure 1B and 1C) and we...
+               (eq word::comma 
+                   (edge-category 
+                    (if (edge-vector-p left-edge) 
+                      (lowest-edge left-edge)
+                      left-edge))))
+          (setq left-edge (next-treetop/leftward left-edge))  |#
 
 (defun get-another-comma-chain-conj (edges-so-far right-edge left-pos)
   (multiple-value-bind (left-edge new-left-pos)

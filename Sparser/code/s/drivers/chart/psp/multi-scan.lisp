@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  February 2019
+;;;  version:  January 2020
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -1116,32 +1116,18 @@
 
 ;;  (p "by PIK3CA and BRAF are.")
 (defun short-conjunctions-sweep (sentence)
+  "Look for adjacent edges that can conjoin around an instance of
+   'and' identified by the completion action on the conjunction"
   (declare (ignore sentence))
   (tr :short-conjunctions-sweep)
   (when *pending-conjunction*
-    ;; set by complete calling mark-instance-of-AND during the
-    ;; scan-terminals-loop pass.
-    ;;/// The flag gets initialized, but mark-instance-of-AND or
-    ;; something is putting on two copies.
     (dolist (position (remove-duplicates *pending-conjunction*))
-      ;; lifted from look-for-short-obvious-conjunctions which will
       (let ((left-edge (next-treetop/leftward position))
             (right-edge (right-treetop-at/edge 
                          (chart-position-after position)))
             (*allow-form-conjunction-heuristic* 
              *use-form-heuristic-in-conj-sweep*))
         (declare (special *allow-form-conjunction-heuristic*))
-        ;;(break "short-conjunctions")
-        ;; handle case of A, B, and C (i.e. comma before conjunction)
-        (when (and
-               (not (word-p left-edge)) ;; case such as ...cells (Figure 1B and 1C) and we...
-               (eq word::comma 
-                   (edge-category 
-                    (if (edge-vector-p left-edge) 
-                      (lowest-edge left-edge)
-                      left-edge))))
-          (setq left-edge (next-treetop/leftward left-edge)))
-
         (unless (or (word-p left-edge)
                     (word-p right-edge))
           (create-short-conjunction-edge-if-possible left-edge right-edge))))

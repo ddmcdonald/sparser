@@ -62,11 +62,15 @@
   (setq *trace-conjunction-hook* nil))
 
 
-
 (deftrace :setting-conjunction-pos-before (pos)
   ;; called from Mark-instance-of-AND
   (when *trace-conjunction-hook*
     (trace-msg "[conj] flag set to ~A" pos)))
+
+(deftrace :setting-another-conjunction-pos-before (pos)
+  ;; called from Mark-instance-of-AND
+  (when *trace-conjunction-hook*
+    (trace-msg "[conj] flag also set to ~A" pos)))
 
 (deftrace :conj-flag-still-up-in-speech ()
   ;; called from Mark-instance-of-AND
@@ -115,5 +119,5 @@
 (deftrace :submerged-check (edge-before edge-after)
   ;; called from look-for-submerged-matching-conj-edge
   (when *trace-conjunction-algorithm*
-    (trace-msg "Submergd check:~%   ~a~%   ~a"
+    (trace-msg "Submerged check:~%   ~a~%   ~a"
                edge-before edge-after)))
