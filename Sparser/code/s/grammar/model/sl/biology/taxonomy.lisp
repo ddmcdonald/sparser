@@ -866,6 +866,8 @@
 
 
 (noun "toxin" :super molecule)
+(noun "cytotoxin" :super toxin)
+(noun "cardiotoxin" :super toxin)
 
 (define-category drug :specializes molecule
                  :binds ((disease disease)

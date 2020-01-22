@@ -164,7 +164,7 @@
 (def-family-with-id "HSP70" "NCIT:C17765" :synonyms ("IPR013126" "hsp-70" "hsp70s" "hsps70" "heat shock protein-70" "hsp70" "heat shock protein 70"))
 
 (def-family-with-id "Haspin" "FA:03103" :synonyms ("haspin"))
-(def-family-with-id "HDAC" "NCIT:C16682" :synonyms ("hdac" "histone deacetylase"))
+(def-family-with-id "HDAC" "FPLX:HDAC" :synonyms ("hdac" "histone deacetylase"))
 (def-family-with-id "HDAC I" "FPLX:HDAC_I" :synonyms ("class I histone deacetylases" "class I HDACs" "Class I HDAC"))
 (def-family-with-id "class II HDAC" "FPLX:HDAC_II" :synonyms ("HDACII")) 
 (def-family-with-id "HDACIII" "FPLX:HDAC_III" :name "HDAC-III" :synonyms ("class III HDAC"))
@@ -220,7 +220,8 @@
 (def-family-with-id "NRAMP" "FA:02517" :synonyms ("nramp")) 
 ;(def-family-with-id "NUDF" "FA:02562" :synonyms ("NudF" "nudF")) 
 (def-family-with-id "Not3" "XFAM:PF04065.13" :synonyms ("not3")) 
-(def-family-with-id "OATP" "XFAM:PF03137.18") 
+(def-family-with-id "OATP" "XFAM:PF03137.18")
+(def-family-with-id "ODC-AZ" "IPR002993" :name  "Ornithine decarboxylase antizyme" :synonyms ("antizyme") :members ("UP:P54368" "UP:O95190" "UP:Q9UMX2"))
 (def-family-with-id "OKL38" "FA:02586") 
 (def-family-with-id "OST1" "FA:02613" :synonyms ("Ost1"))
 (def-family-with-id "p110" "FPLX:PI3K_p110" :synonyms ("PI3K p110" "PI3K p110 subunit") :members ("UP:P42336" "UP:P42338" "UP:P48736" "UP:O00329"))

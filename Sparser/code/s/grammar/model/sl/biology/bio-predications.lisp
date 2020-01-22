@@ -53,6 +53,7 @@
 (adj "unbound" :super bio-predication)
 (adj "dual-specificity" :super bio-predication)
 (adj "acidic" :super bio-predication)
+(adj "alkaline" :super bio-predication)
 (adj "adaptor" :super bio-predication) ;; "adaptor protein"
 (adj "allosteric" :super bio-predication) ;; "allosteric activation", "allosteric activator""allosteric charge"
 (adj "banded" :super bio-predication)
