@@ -304,3 +304,28 @@ is a protein..."
                             (find-or-make-individual 'amino-acid :name (string-downcase aa)))))
   `(,(cons :POSITION pos)
      ,(cons :RESIDUE aa-abbrev))))
+
+
+;;;
+;;;;; code for comparing new Sparser indra output to results of old sparser core image
+
+(defun read-indra-json (pmcid &optional (source :hms) &aux js-file)
+  (unless (or (search "~/" pmcid)
+              (search "/users/" pmcid))
+    (setq js-file
+          (make-pathname :name 
+                         (format nil "~a~a-semantics"
+                                 (case source
+                                   (:hms "hms-json/")
+                                   (:sift "sift-json/"))
+                                 pmcid
+                                 )
+                         :type "json"
+                         :defaults
+                         (asdf:system-relative-pathname
+                          :r3
+                          "../corpus/hms-update/"))))
+  (with-open-file (in js-file :direction :input)
+    (cl-json::decode-json in)))
+
+

@@ -706,7 +706,8 @@
     ;; (MODIFIER
     ;; (PROTEIN (RAW-TEXT "TAL1") (UID "UP:P17542") (NAME "TAL1_HUMAN")))
     ;; (MODIFIER (DNA-BINDING (RAW-TEXT "DNA binding"))) (RAW-TEXT "activity"))
-        ((c-itypep ref 'complex)
+        ((or (c-itypep ref 'complex)
+             (c-itypep ref 'bio-complex))
              ;(c-itypep ref 'heterodimer)
          '(component))
         ;; cooperate?
@@ -755,7 +756,9 @@
         ((and (individual-p ref)
               (or (get-indra-for-cwc?)
                   nec-vars?
-                  (has-necessary-vars necessary-vars ref)))
+                  (and (not (itypep ref 'prepositional-phrase))
+                       necessary-vars
+                       (has-necessary-vars necessary-vars ref))))
          (push-sem->indra-post-process
           mention
           sentence
@@ -776,8 +779,14 @@
   i)
 
 (defun has-necessary-vars (necessary-vars ref)
-  (loop for v in necessary-vars when  (value-of v ref)
-        collect (list v (value-of v ref))))
+  (or
+   (loop for v in necessary-vars when  (value-of v ref)
+         collect (list v (value-of v ref)))
+   (when (itypep ref 'bio-complex)
+     (let ((pred (value-of 'predication ref)))
+       (when (and (itypep pred 'bio-form)(value-of 'using pred))
+         `((,(car necessary-vars)
+             ,(value-of 'using pred))))))))
 
 (defun c-itypep (c super)
   (or

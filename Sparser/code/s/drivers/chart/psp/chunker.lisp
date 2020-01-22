@@ -931,7 +931,8 @@ than a bare "to".  |#
                             '(preposition subordinate-conjunction))))))
           
      (not (and (boundp '*chunk*)
-               (proper-noun-plural-modifier? e *chunk*)))
+               (or (proper-noun-plural-modifier? e *chunk*)
+                   (proper-noun-verb-modifier-no-det-or-aux? e *chunk*))))
      (not (and (boundp '*chunk*)
                (member (edge-cat-name e)
                        '(upstream-segment downstream-segment))
@@ -1171,9 +1172,17 @@ than a bare "to".  |#
          (adverb
           (not (eq ecat 'also)))
          (proper-noun ;; don't incorporate days of the week, names of months
-          (if (itypep (edge-referent e) 'time)
-            evlist ;; unless they're being modified: "last Tuesday" 
-            t)) ;; otherwise do incorporate proper names
+          (cond ((itypep (edge-referent e) 'time)
+                 evlist) ;; unless they're being modified: "last Tuesday"
+                ((and (member (edge-form-name (edge-just-to-left-of e))
+                              '(verb+ed verb+ing))
+                      (edge-p (edge-just-to-left-of (edge-just-to-left-of e)))
+                      (not (member
+                            (edge-form-name
+                             (edge-just-to-left-of (edge-just-to-left-of e)))
+                            '(preposed-auxiliary))))
+                 nil)
+                (t t))) ;; otherwise do incorporate proper names
          (verb+ing
           ;;(lsp-break "check verb+ing in NG")
           (cond ((setq preceding-noun-refs (preceding-noun-refs edges))
@@ -1235,8 +1244,31 @@ than a bare "to".  |#
                  thereis (and (edge-form ee)
                               (member (cat-name (edge-form ee))
                                       '(common-noun/plural)))))
-    (push (sentence-string (current-sentence))
-          *proper-noun-plural-modifiers*)))
+    (push (current-string) *proper-noun-plural-modifiers*)))
+
+(defparameter *proper-noun-verb-modifier-no-det-or-aux* nil)
+
+(defun proper-noun-verb-modifier-no-det-or-aux? (e *chunk* &aux (e-form-name (form-cat-name e)))
+  (declare (special *noun-categories*))
+  (when
+      (and (member e-form-name '(proper-name proper-noun))
+           (boundp '*chunk*)
+           (chunk-final-edge? e *chunk*)
+           (cdr (chunk-ev-list *chunk*))
+           (loop for ee in (ev-top-edges (cadr (chunk-ev-list *chunk*)))
+                 thereis (and (edge-form ee)
+                              (member (edge-form-name ee)
+                                      '(verb+ed berb+ing))
+                              (not (member
+                                    (edge-form-name (edge-just-to-left-of ee))
+                                    '(preposed-auxiliary)))))
+           (not
+            (loop for ee in (ev-top-edges (cadr (chunk-ev-list *chunk*)))
+                 thereis (and (edge-form ee)
+                              (member (edge-form-name ee)
+                                      '(determiner))))))
+    (push (current-string) *proper-noun-verb-modifier-no-det-or-aux*)))
+
 
 (defparameter *singular-common-noun-no-determiners* nil)
 
