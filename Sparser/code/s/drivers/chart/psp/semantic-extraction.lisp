@@ -375,6 +375,9 @@
 
 
 
+(defun edge-string (e)
+  (get-surface-string-for-individual (edge-referent e)))
+
 (defun all-surface-strings (i)
   (gethash i *referent-surface-strings*))
 
