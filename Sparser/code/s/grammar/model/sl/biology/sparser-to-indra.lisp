@@ -403,7 +403,8 @@ pass the result to the appropriate indra generator"
            result))
         (t
          (let ((complex 
-                (create-complex-json (second f) pmid (second (assoc 'text (cdr f))) (car f))))
+                (create-complex-json
+                 (second f) pmid (second (assoc 'text (cdr f))) (car f))))
            (when complex
              (push (list cat? f pmid) *indra-binding*))
            complex))))
