@@ -96,7 +96,9 @@
 (defun inside-current-chunk? (edge)
   (when *current-chunk*
     (assert (edge-p edge))
-    (member edge (chunk-edge-list *current-chunk*) :test #'eq)))
+    (loop for ev in (chunk-ev-list *current-chunk*)
+          thereis
+          (member edge (ev-edges ev)))))
 
 
 (defparameter *record-all-chunks* nil)
@@ -910,6 +912,15 @@ than a bare "to".  |#
     (member (edge-cat-name det)
             '(these those))))
 
+(defun chunk-has-det? ()
+  (declare (special *chunk*))
+  (loop for ev in (chunk-ev-list *chunk*)
+        thereis
+          (loop for ee in (ev-top-edges ev)
+        thereis (and (edge-form ee)
+                     (member (edge-form-name ee)
+                             '(determiner det))))))
+
 
 
 (defmethod ng-head? ((e edge) &optional end)
@@ -932,7 +943,7 @@ than a bare "to".  |#
           
      (not (and (boundp '*chunk*)
                (or (proper-noun-plural-modifier? e *chunk*)
-                   (proper-noun-verb-modifier-no-det-or-aux? e *chunk*))))
+                   (proper-noun-unlikely-verb-premodifier? e *chunk*))))
      (not (and (boundp '*chunk*)
                (member (edge-cat-name e)
                        '(upstream-segment downstream-segment))
@@ -1174,13 +1185,7 @@ than a bare "to".  |#
          (proper-noun ;; don't incorporate days of the week, names of months
           (cond ((itypep (edge-referent e) 'time)
                  evlist) ;; unless they're being modified: "last Tuesday"
-                ((and (member (edge-form-name (edge-just-to-left-of e))
-                              '(verb+ed verb+ing))
-                      (edge-p (edge-just-to-left-of (edge-just-to-left-of e)))
-                      (not (member
-                            (edge-form-name
-                             (edge-just-to-left-of (edge-just-to-left-of e)))
-                            '(preposed-auxiliary))))
+                ((proper-noun-unlikely-verb-premodifier? e *chunk*)
                  nil)
                 (t t))) ;; otherwise do incorporate proper names
          (verb+ing
@@ -1240,34 +1245,36 @@ than a bare "to".  |#
            (boundp '*chunk*)
            (chunk-final-edge? e *chunk*)
            (cdr (chunk-ev-list *chunk*))
+           (not (eq 'conjoin-two-edges (edge-rule e)))
            (loop for ee in (ev-top-edges (cadr (chunk-ev-list *chunk*)))
                  thereis (and (edge-form ee)
                               (member (cat-name (edge-form ee))
                                       '(common-noun/plural)))))
-    (push (current-string) *proper-noun-plural-modifiers*)))
+    (push (current-string) *proper-noun-plural-modifiers*)
+    t))
 
-(defparameter *proper-noun-verb-modifier-no-det-or-aux* nil)
+(defparameter *proper-noun-unlikely-verb-premodifier* nil)
 
-(defun proper-noun-verb-modifier-no-det-or-aux? (e *chunk* &aux (e-form-name (form-cat-name e)))
+(defun proper-noun-unlikely-verb-premodifier? (e *chunk* &aux (e-form-name (form-cat-name e)))
   (declare (special *noun-categories*))
   (when
       (and (member e-form-name '(proper-name proper-noun))
            (boundp '*chunk*)
            (chunk-final-edge? e *chunk*)
            (cdr (chunk-ev-list *chunk*))
-           (loop for ee in (ev-top-edges (cadr (chunk-ev-list *chunk*)))
-                 thereis (and (edge-form ee)
-                              (member (edge-form-name ee)
-                                      '(verb+ed berb+ing))
-                              (not (member
-                                    (edge-form-name (edge-just-to-left-of ee))
-                                    '(preposed-auxiliary)))))
-           (not
-            (loop for ee in (ev-top-edges (cadr (chunk-ev-list *chunk*)))
-                 thereis (and (edge-form ee)
-                              (member (edge-form-name ee)
-                                      '(determiner))))))
-    (push (current-string) *proper-noun-verb-modifier-no-det-or-aux*)))
+           (and (member (edge-form-name (edge-just-to-left-of e))
+                        '(verb+ed verb+ing))
+                (not (and (edge-p (edge-just-to-left-of (edge-just-to-left-of e)))
+                          (member
+                           (edge-form-name
+                            (edge-just-to-left-of (edge-just-to-left-of e)))
+                           '(preposed-auxiliary verb+ed verb+ing))))
+                
+                (loop for e in (edges-before-chunk)
+                      thereis (member (edge-form-name e)
+                                      '(proper-noun proper-name np conjunction))))
+           (not (chunk-has-det?)))
+    (push (current-string) *proper-noun-unlikely-verb-premodifier*)))
 
 
 (defparameter *singular-common-noun-no-determiners* nil)
