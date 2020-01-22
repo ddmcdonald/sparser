@@ -1178,7 +1178,7 @@
 (def-indiv-with-id molecule "Cucurbitacin E" "PUBCHEM:5281319") 
 (def-indiv-with-id molecule "Cucurbitacin B" "PUBCHEM:5281316") 
 (def-indiv-with-id molecule "Cu(2+)" "PUBCHEM:27099") 
-(def-indiv-with-id molecule "Cl" "PUBCHEM:313") 
+;;(def-indiv-with-id molecule "Cl" "PUBCHEM:313")  BAD
 (def-indiv-with-id molecule "Citrinin" "PUBCHEM:54680783") 
 (def-indiv-with-id molecule "Cinnamic acid" "PUBCHEM:5372954") 
 (def-indiv-with-id molecule "Chromium (VI)" "PUBCHEM:29131") 

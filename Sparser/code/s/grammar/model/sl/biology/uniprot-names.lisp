@@ -19224,7 +19224,7 @@
     ("UP:Q93098" "WNT8B_HUMAN" "Protein Wnt-8b") 
     ("UP:Q93099" "HGD_HUMAN" "Homogentisate 1,2-dioxygenase") 
     ("UP:Q93100" "KPBB_HUMAN" "Phosphorylase b kinase regulatory subunit beta") 
-    ("UP:Q93105" "INSR_AEDAE" "Insulin-like receptor") 
+    ;;("UP:Q93105" "INSR_AEDAE" "Insulin-like receptor") 
     ("UP:Q93134" "GBLP_BIOGL" "Guanine nucleotide-binding protein subunit beta-2-like 1") 
     ("UP:Q93705" "UNC3_CAEEL" "Transcription factor unc-3") 
     ("UP:Q937L4" "CPNA_COMTE" "Cyclopentanol dehydrogenase") 

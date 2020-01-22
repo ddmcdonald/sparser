@@ -42,6 +42,7 @@
 (define-cellular-location "caveola" "GO:0005901")
 (define-cellular-location "cell leading edge" "GO:0031252")
 (define-cellular-location "cell-cell junction" "GO:0005911")
+(define-cellular-location "chloride channel" "GO:0005254" :synonyms ("chloride-channel" "Cl channel" "calcium-activated Cl channel" "Ca-activated Cl channel"))
 (define-cellular-location "cytoplasm" "GO:0005737" :adj "cytoplasmic")
 (define-cellular-location "cytoplasmic vesicle" "GO:0031410")
 (define-cellular-location "cytoskeleton" "GO:0005856" :adj "cytoskeletal")

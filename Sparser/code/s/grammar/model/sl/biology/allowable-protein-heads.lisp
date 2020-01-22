@@ -16693,7 +16693,7 @@
             "CiC" "Ciao1" "Cic" "Ciccia" "Ciclin" "Ciclopirox" "Cidea" "Ciesielski"
             "Ciglitazone" "Cilengitide" "Ciofani" "Cip" "Cip-1" "Cip1" "Ciprofloxacin"
             "Ciribilli" "Cis" "Cisplatin" "Cistrome" "Cited2" "Citrate synthase" "Ciz1"
-            "Ck" "Ck1alpha" "Cki" "Cks" "Cks1" "Cks2" "Cl" "Cl 41" "Cl2" "ClC-3" "ClN 3"
+            "Ck" "Ck1alpha" "Cki" "Cks" "Cks1" "Cks2" "Cl 41" "Cl2" "ClC-3" "ClN 3"
             "ClQ" "Cladribine" "Clapsin" "Clara" "Clark" "Clarke" "Claspin" "Class"
             "Class 1A" "Class I" "Class O" "Class V" "Class VI" "Classon" "Clathrin"
             "Claudin 1" "Claudin-1" "Claudin-18" "Claudin-2" "Claudin-7" "Clb2p" "Clc-3"
@@ -22263,12 +22263,26 @@ arsenite"
            do (setf (gethash w *allowable-protein-head-ht*) t)))))
 
 (defparameter *used-protein-defs* (make-hash-table :size 100000 :test #'equal))
+(defparameter *warn-on-questionable-protein-heads* t)
+
 
 (defun allowable-protein-head (w)
   (declare (special cl-user::*use-all-proteins*))
-  (or (and (boundp 'cl-user::*use-all-proteins*)
-           cl-user::*use-all-proteins*)
-      (gethash w *allowable-protein-head-ht*))
+  (unless *comlex-words-primed*
+    (prime-comlex))
+  (and (or (and (boundp 'cl-user::*use-all-proteins*)
+                cl-user::*use-all-proteins*)
+           (gethash w *allowable-protein-head-ht*))
+       (cond ((and (equal w (string-downcase w))
+                   (or (comlex-entry w) ;; (get-comlex-entry w)
+                       ;;(resolve w)
+                       ))
+              (when *warn-on-questionable-protein-heads*
+                (if (comlex-entry w)
+                    (format t "~%WARN:: trying to redefine a COMLEX word as a protein ~s~%" W)
+                    (format t "~%WARN:: trying to redefine a known word as a protein ~s~%" W)))
+              nil)
+             (t t)))
   #+ignore
   (when (gethash w *allowable-protein-head-ht*)
     (setf (gethash w *used-protein-defs*) t)

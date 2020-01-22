@@ -6073,7 +6073,7 @@
 (define-protein "UP:P16401" ("H15_HUMAN" "H1F5" "HIST1H1B" "h1.5" "h1b" "h1s-3" "histone H1.5" "histone cluster 1 H1 family member b" "p16401")) 
 (define-protein "UP:P16402" ("H13_HUMAN" "H1F3" "HIST1H1D" "h1.3" "h1d" "h1s-2" "histone H1.3" "histone cluster 1 H1 family member d" "p16402")) 
 (define-protein "UP:P16403" ("H12_HUMAN" "H1F2" "HIST1H1C" "h1.2" "h1c" "h1s-1" "histone H1.2" "histone cluster 1 H1 family member c" "p16403")) 
-(define-protein "UP:P16410" ("CD152" "CTLA- 4" "CTLA-4" "CTLA4" "CTLA4_HUMAN" "Cytotoxic T-lymphocyte protein 4" "Cytotoxic T-lymphocyte-associated antigen 4" "cytotoxic" "cytotoxic T-lymphocyte associated antigen-4" "cytotoxic T-lymphocyte-associated antigen 4" "cytotoxic T-lymphocyte-associated antigen-4" "p16410")) 
+(define-protein "UP:P16410" ("CD152" "CTLA- 4" "CTLA-4" "CTLA4" "CTLA4_HUMAN" "Cytotoxic T-lymphocyte protein 4" "Cytotoxic T-lymphocyte-associated antigen 4"  "cytotoxic T-lymphocyte associated antigen-4" "cytotoxic T-lymphocyte-associated antigen 4" "cytotoxic T-lymphocyte-associated antigen-4" "p16410")) 
 (define-protein "UP:P16415" ("P16415" "Zfp36")) 
 (define-protein "UP:P16422" ("CD326" "EGP" "EGP314" "EGP40" "EPCAM" "EPCAM_HUMAN" "Ep-CAM" "EpCAM" "EpCam" "GA733-2" "KSA" "M1S2" "M4S1" "MIC18" "TACSTD1" "TROP1" "Trop-1" "epithelial cell adhesion molecule" "epithelial glycoprotein" "hEGP314" "p16422" "tumor associated calcium signal transducer 1" "tumor-associated calcium signal transducer-1")) 
 (define-protein "UP:P16429" ("HEV-C")) 

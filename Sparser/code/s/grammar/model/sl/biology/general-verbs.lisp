@@ -321,6 +321,12 @@
 	   :noun "demonstration"
 	   :etf (svo-passive)))
 
+(define-category note :specializes bio-rhetorical
+    :mixins (bio-thatcomp)
+    :realization
+    (:verb "note" ;; keyword: ENDS-IN-ED 
+	   :etf (svo-passive)))
+
 (define-category evidenced :specializes demonstrate
     :realization
     (:verb ("evidenceXX" :past-tense "evidenced")

@@ -35,13 +35,14 @@
           (object (:or bio-process protein)))  ;; what's being signaled
   :realization 
     (:verb ("signal"  :present-participle "xxxsignaling") ;; block "signaling" as a verb
-     :noun "signalling"
      :etf (svo-passive)
      :m agent
      :s agent 
      :o object
      :to object))
 
+(def-synonym signal ;; Jan.#26
+    (:noun "signalling"))
 (def-synonym signal ;; Jan.#26
    (:noun "signaling"))
 
