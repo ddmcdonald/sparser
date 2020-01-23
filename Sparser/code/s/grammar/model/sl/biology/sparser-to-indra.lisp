@@ -663,21 +663,24 @@ generate and indra form for that sentence"
 
 (defun get-agent-from-form (form)
   ;; protein-agent is the closest (in the string) to the verb
-  ;;  "the tumor-suppressor p53 modulates" -- 
-  (or (a-get-item 'PROTEIN-AGENT form)
-      (a-get-item 'AGENT form)
-      (a-get-item 'BY-MEANS-OF-OR-AGENT form)
-      (a-get-item 'BY-MEANS-OF-OR-AGENT-OR-CAUSE form) ;;"can be activated by proline motifs"
-      (a-get-item 'KINASE form) ;;"lower concentrations of p53 and OKL38 induced more efficient cytochrome c release "
-      (a-get-item 'CAUSE form)
-      (let ((pred (a-get-item 'predication form)))
-        (cond ((not (consp pred)) nil)
-              ((and (eq (car pred) 'depend)
-                    (a-get-item 'theme (cdr pred)))
-               (a-get-item 'theme (cdr pred)))
-              ((and (eq (car pred) 'induce)
-                    (a-get-item 'agent (cdr pred)))
-               (a-get-item 'agent (cdr pred)))))))          
+  ;;  "the tumor-suppressor p53 modulates" --
+  (let ((agent?
+         (or (a-get-item 'PROTEIN-AGENT form)
+             (a-get-item 'AGENT form)
+             (a-get-item 'BY-MEANS-OF-OR-AGENT form)
+             (a-get-item 'BY-MEANS-OF-OR-AGENT-OR-CAUSE form) ;;"can be activated by proline motifs"
+             (a-get-item 'KINASE form) ;;"lower concentrations of p53 and OKL38 induced more efficient cytochrome c release "
+             (a-get-item 'CAUSE form)
+             (let ((pred (a-get-item 'predication form)))
+               (cond ((not (consp pred)) nil)
+                     ((and (eq (car pred) 'depend)
+                           (a-get-item 'theme (cdr pred)))
+                      (a-get-item 'theme (cdr pred)))
+                     ((and (eq (car pred) 'induce)
+                           (a-get-item 'agent (cdr pred)))
+                      (a-get-item 'agent (cdr pred))))))))
+    (when (consp agent?)
+      agent?)))
 
 
 (defun make-indra-act-or-express-with-agent (obj-form indra-data type pmid &optional agent-form)
@@ -991,7 +994,7 @@ post-translational modification and its type ('PHOSPHORYLATE or
                     (and (eq (car item-desc) 'collection)
                          (loop for item in (get-set-elements item-desc)
                                thereis
-                                 (itypep (category-named item) 'bio-chemical-entity))))
+                                 (itypep (safe-category-named item) 'bio-chemical-entity))))
                 (prot-item->indra-list item-desc indra-data)
                 (list (maybe-make-indra-item-desc item-desc))))))
     (loop for item in level-items
@@ -1020,7 +1023,8 @@ post-translational modification and its type ('PHOSPHORYLATE or
          (make-indra-post-trans-mod
           `(, (car indra-data)
               (,(car (a-get-item 'affected-process (cdr frame)))
-                (agent , (get-agent-from-form (cdr frame)))
+                ,@(when (get-agent-from-form (cdr frame))
+                    `((agent , (get-agent-from-form (cdr frame)))))
                 ,@(cdr (a-get-item 'affected-process (cdr frame))))
               ,(assoc 'text (cdr indra-data)))
           (car (a-get-item 'affected-process (cdr frame)))))
@@ -1255,10 +1259,13 @@ that sentence"
         append (prot-item->indra-list item form)))
 
 (defun get-set-elements (coll)
-  (loop for item in
-          (cdr (a-get-item 'items (cdr coll)))
-        when (not (numberp item)) ;; ignore numbers!!
-        collect item))
+  (let ((items (a-get-item 'items (cdr coll))))
+    (cond ((eq (car items) 'set)
+           (setq items (cdr items))))
+          
+    (loop for item in items          
+          when (not (numberp item)) ;; ignore numbers!!
+          collect item)))
 
 (defun protein-items-from-complex (prot-item form)
   (protein-items-from-collection
@@ -1997,10 +2004,12 @@ can still match things like CHK1 and CHK-1"
 (declaim (optimize (debug 1)(speed 3)(safety 0)))
 
 (defun save-bob-sparser-indra-forms ()
-  (loop for mention-indra in (hal *indra-mention-var-ht*)
-        do
-          (save-bob-sparser-indra-form (car mention-indra)
-                                       (cdr mention-indra))))
+  (when (and (boundp '*indra-mention-var-ht*)
+             (symbol-value '*indra-mention-var-ht*))
+    (loop for mention-indra in (hal *indra-mention-var-ht*)
+          do
+            (save-bob-sparser-indra-form (car mention-indra)
+                                         (cdr mention-indra)))))
 
 
 (defun save-bob-sparser-indra-form (sp-var-symbol form)
