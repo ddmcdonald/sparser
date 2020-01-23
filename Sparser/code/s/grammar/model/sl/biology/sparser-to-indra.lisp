@@ -348,9 +348,12 @@ pass the result to the appropriate indra generator"
                            (symbol-value 'cl-user::*sparser-to-indra*)
                            (itypep cat? 'bio-entity))
                       (list (make-cwc-indra-bio-entity cat? f))))))))
-      (sublis '(("GeneTranscriptExpress" . "IncreaseAmount"))
-              result
-              :test #'equal))))
+      (if (get-indra-for-cwc?)
+          (sublis '(("GeneTranscriptExpress" . "IncreaseAmount"))
+                  result
+                  :test #'equal)
+          result))))
+  
 
 (defun make-cwc-indra-bio-entity (cat f)
   (let* ((prot-item (car (prot-item->indra-list (second f) nil)))
@@ -674,8 +677,10 @@ generate and indra form for that sentence"
              (let ((pred (a-get-item 'predication form)))
                (cond ((not (consp pred)) nil)
                      ((and (eq (car pred) 'depend)
-                           (a-get-item 'theme (cdr pred)))
-                      (a-get-item 'theme (cdr pred)))
+                           (or (a-get-item 'theme (cdr pred))
+                               (a-get-item 'patient (cdr pred))))
+                      (or (a-get-item 'theme (cdr pred))
+                               (a-get-item 'patient (cdr pred))))
                      ((and (eq (car pred) 'induce)
                            (a-get-item 'agent (cdr pred)))
                       (a-get-item 'agent (cdr pred))))))))
@@ -2339,20 +2344,28 @@ can still match things like CHK1 and CHK-1"
           (list (car ii)
                 (loop for ss in (safe-prop :compared ii)
                       when (and (safe-prop :hms ss)(safe-prop :sift ss))
-                      collect (list (car ss):hms 
-                                    (loop for hm in (safe-prop :hms ss)
-                                          unless (member hm (safe-prop :sift ss) :test #'equal)
-                                          collect hm)
-                                    :sift (loop for sift in (safe-prop :sift ss)
-                                                unless (member sift (safe-prop :hms ss) :test #'equal)
-                                                collect sift))))))
+                      collect
+                        (list (car ss)
+                              :hms
+                              (remove-excess+texts
+                               (loop for hm in (safe-prop :hms ss)
+                                     unless (member hm (safe-prop :sift ss)
+                                                    :test #'equal)
+                                     collect hm))
+                              :sift
+                              (remove-excess+texts
+                               (loop for sift in (safe-prop :sift ss)
+                                     unless (member sift (safe-prop :hms ss) :test #'equal)
+                                     collect sift)))))))
 (defun collect-sift-hms-names ()
   (loop for pmc in (indra-comparisons) do 
           (loop for sent in (second pmc) 
                 do (loop for hms in (get-named-items (safe-prop :hms sent))
-                         do (pushnew hms *hms-names* :test #'equal))
+                         do (pushnew hms
+                                     *hms-names* :test #'equal))
                   (loop for sift in (get-named-items (safe-prop :sift sent))
-                        do (pushnew sift *sift-names* :test #'equal)))
+                        do (pushnew sift
+                                    *sift-names* :test #'equal)))
           )
   (let ((hms-defs (group-by *hms-names* #'db-ref-text))
         (sift-defs (group-by *sift-names* #'db-ref-text)))
