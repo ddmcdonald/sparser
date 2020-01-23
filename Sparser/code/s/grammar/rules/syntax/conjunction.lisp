@@ -824,7 +824,8 @@
 (defgeneric edge-over-comma? (edge)
   (:documentation "Is this an edge over a comma?")
   (:method ((e edge))
-    (eq (edge-category e) word::comma)))
+    (eq (edge-category e) word::comma))
+  (:method ((punct null)) nil))
 
 (defun get-another-comma-chain-conj (edges-so-far right-edge left-pos)
   (multiple-value-bind (left-edge new-left-pos)
