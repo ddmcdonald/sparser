@@ -1065,7 +1065,8 @@ than a bare "to".  |#
                     category::what category::which
                     category::quantifier
                     category::verb+ed
-                    word::comma))
+                    word::comma
+                    *chunk*))
   (when (member (pos-terminal (pos-edge-starts-at e))
                 (ng-blocked-list))
     (return-from ng-compatible? nil))
