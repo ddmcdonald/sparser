@@ -87,8 +87,15 @@
     (trace-msg "[conj] Invoking the treetop hook at ~a"
                position-after)))
 
+(deftrace :oxford-comma (edge-left-of-comma)
+  ;; called from short-conjunctions-sweep
+  (when *trace-conjunction-hook*
+    (trace-msg "[conj] Oxford comma pattern detected.~
+              ~%   Using ~a as the left edge" edge-left-of-comma)))
+
 (deftrace :short-conjoined-edge (edge)
-  ;; called from try-spanning-conjunctions
+  ;; called from try-spanning-conjunctions and from
+  ;; create-short-conjunction-edge-if-possible
   (when *trace-conjunction-hook*
     (trace-msg "[conj] They conjoined to form e~a"
                (edge-position-in-resource-array edge))))

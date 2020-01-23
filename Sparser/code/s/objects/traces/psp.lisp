@@ -1401,7 +1401,7 @@
     (trace-msg "[scan] entered sweep-for-no-space-patterns")))
 
 (deftrace :short-conjunctions-sweep ()
-  (when *trace-network-flow*
+  (when (or *trace-network-flow* *trace-conjunction-hook*)
     (trace-msg "[scan] entered short-conjunctions-sweep")))
 
 (deftrace :sweep-to-span-parentheses ()

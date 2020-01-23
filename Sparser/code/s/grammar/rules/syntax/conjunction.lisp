@@ -821,6 +821,11 @@
                       left-edge))))
           (setq left-edge (next-treetop/leftward left-edge))  |#
 
+(defgeneric edge-over-comma? (edge)
+  (:documentation "Is this an edge over a comma?")
+  (:method ((e edge))
+    (eq (edge-category e) word::comma)))
+
 (defun get-another-comma-chain-conj (edges-so-far right-edge left-pos)
   (multiple-value-bind (left-edge new-left-pos)
                        (seg-before-conjoins left-pos right-edge)
@@ -851,6 +856,24 @@
 		    (chart-position-before (pos-edge-starts-at left-edge))))
 	    nil )))))
         
+
+
+(defun oxford-comma-pattern? (comma-edge)
+  "Called from short-conjunctions-sweep when it has this pattern:
+   [ , and <right-edge> ]. The question is whether (a) there is
+   an edge just to the left of the comma. (Given when this runs that
+   edge will have been formed by a polyword, a terminal, or the
+   no-space machinery.) And (b) is there a comma immediately to the
+   left of this edge: [ , <edge> , and <right-edge> ]. 
+   If this is the case then return the new edge."
+  (let* ((comma-position (pos-edge-starts-at comma-edge))
+         (edge (left-treetop-at/only-edges comma-position)))
+    (when (and edge (edge-p edge)) ; e.g. not source-start
+      (let* ((edge-start-pos (pos-edge-starts-at edge))
+             (pos-before (chart-position-before edge-start-pos)))
+        (when (eq word::comma (pos-terminal pos-before))
+          edge)))))
+      
 
 
 
