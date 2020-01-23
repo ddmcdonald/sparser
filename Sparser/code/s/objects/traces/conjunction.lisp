@@ -1,29 +1,25 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996,2011-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2011-2012,2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: conjunction.lisp 207 2009-06-18 20:59:16Z cgreenba $
-;;; 
+
 ;;;     File:  "conjunction"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  November 2012
+;;;  Version:  January 2020
 
 ;; initiated 5/18/94.  Added cases and more intuitive flag function 9/12/96.
 ;; Added more cases 2/13/07, and 8/11. 8/4/11 Added trace for treetop case.
 ;; 11/8/12 Started set for the submered check
 
 (in-package :sparser)
-(defvar *TRACE-CONJUNCTION-ALGORITHM*)
-(defvar *TRACE-CONJUNCTION-HOOK*)
-
-
 
 (defun trace-conjunction ()
-  (setq *trace-conjunction-algorithm* t
-        *trace-conjunction-hook* t))
+  (trace-conjunction-algorithm)
+  (trace-conjunction-hook))
 
-(defun unTrace-conjunction ()
-  (setq *trace-conjunction-algorithm* nil
-        *trace-conjunction-hook* nil))
+(defun untrace-conjunction ()
+  (untrace-conjunction-algorithm)
+  (untrace-conjunction-hook))
+
 
 
 ;;;-------------------------------------
@@ -31,6 +27,13 @@
 ;;;-------------------------------------
 
 (defparameter *trace-conjunction-algorithm* nil)
+
+(defun trace-conjunction-algorithm ()
+  (setq *trace-conjunction-algorithm* t))
+
+(defun untrace-conjunction-algorithm ()
+  (setq *trace-conjunction-algorithm* nil))
+
 
 (deftrace :conj-edges-to-each-side (edge-before edge-after)
   ;; called from Check-out-possible-conjunction
@@ -84,6 +87,12 @@
     (trace-msg "[conj] Invoking the treetop hook at ~a"
                position-after)))
 
+(deftrace :short-conjoined-edge (edge)
+  ;; called from try-spanning-conjunctions
+  (when *trace-conjunction-hook*
+    (trace-msg "[conj] They conjoined to form e~a"
+               (edge-position-in-resource-array edge))))
+
 
 (deftrace :calling-conj-checkout-routine-at (pos)
   ;; called from Check-out-possible-conjunction
@@ -121,3 +130,78 @@
   (when *trace-conjunction-algorithm*
     (trace-msg "Submerged check:~%   ~a~%   ~a"
                edge-before edge-after)))
+
+
+;;--- conjunction (orginally in treetops traces)
+
+(deftrace :try-spanning-conjunctions ()
+  ;; called from run-island-checks
+  (when (or *trace-island-driving* *trace-conjunction-hook*)
+    (trace-msg "~%Checking for conjunction")))
+
+(deftrace :no-heuristics-for (left right)
+  ;; called from try-spanning-conjunctions
+  (when (or *trace-island-driving* *trace-conjunction-hook*)
+    (trace-msg "[islands] no heuristic for composing e~a and e~a"
+               (edge-position-in-resource-array left)
+               (edge-position-in-resource-array right))))
+
+(deftrace :no-conjunction-edges ()
+  ;; called from try-spanning-conjunctions
+  (when (or *trace-island-driving* *trace-conjunction-hook*)
+    (trace-msg "[islands] There are no conjunction edges")))
+
+(deftrace :looking-at-conj-edge (conj-edge)
+  ;; called from try-spanning-conjunctions
+  (when (or *trace-island-driving* *trace-conjunction-hook*)
+    (trace-msg "[islands] Looking around ~a" conj-edge)))
+
+(deftrace :new-conjunction-pattern ()
+  ;; called from try-spanning-conjunctions
+  (when (or *trace-island-driving* *trace-conjunction-hook*)
+    (trace-msg "[islands] new arrangement of conjuncts")))
+
+(deftrace :trying-to-conjoin (e1 e2)
+  ;; called from try-spanning-conjunctions
+  ;; and look-for-short-obvious-conjunctions
+  (when (or *trace-island-driving* *trace-conjunction-hook*)
+    (trace-msg "[islands] Trying to conjoin  e~a and e~a"
+               (edge-position-in-resource-array e1)
+               (edge-position-in-resource-array e2))))
+
+(deftrace :conjoined-edge (edge)
+  ;; called from try-spanning-conjunctions
+  (when (or *trace-island-driving* *trace-conjunction-hook*)
+    (trace-msg "[islands]   They conjoined to form e~a"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :no-conjunction-heuristics-applied ()
+  ;; called from try-spanning-conjunctions
+  (when (or *trace-island-driving* *trace-conjunction-hook*)
+    (trace-msg "[islands]   No conjunction heuristics applied")))
+
+(deftrace :two-conjuncts-not-consistent ()
+  ;; called from try-spanning-conjunctions
+  (when (or *trace-island-driving* *trace-conjunction-hook*)
+    (trace-msg "[islands]   The two aligned conjuncts aren't consistent")))
+
+(deftrace :different-two-conjunction-pattern ()
+  ;; called from try-spanning-conjunctions
+  (when (or *trace-island-driving* *trace-conjunction-hook*)
+    (trace-msg "[islands]   New pattern of two conjunctions")))
+
+
+(deftrace :looking-for-list-conj (left)
+  ;; called from search-for-list-conjunction
+  (when *trace-conjunction-hook*
+    (trace-msg "[conj] Looking for list conjunction at ~a" left)))
+
+(deftrace :no-list-conj ()
+  ;; called from search-for-list-conjunction
+  (when *trace-conjunction-hook*
+    (trace-msg "[conj]  didn't find one")))
+
+(deftrace :extended-conjunction (new-edge)
+  ;; called from seg-before-conjoins
+  (when *trace-conjunction-hook*
+    (trace-msg "[conj] added ~a to list" new-edge)))

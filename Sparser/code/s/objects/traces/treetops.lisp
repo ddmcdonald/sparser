@@ -704,12 +704,6 @@
   (when *trace-island-driving*
     (trace-msg "~%Trying to take loose verbs into VPs")))
 
-(deftrace :try-spanning-conjunctions ()
-  ;; called from island-driven-forest-parse
-  (when (or *trace-island-driving* *trace-conjunction-hook*)
-    (trace-msg "~%Seeing if we can handle the conjunctions")))
-
-
 
 
 
@@ -997,48 +991,6 @@
     (trace-msg "[islands]    spanned them with e~a"
                (edge-position-in-resource-array edge))))
 
-
-;;--- conjunction
-
-(deftrace :no-heuristics-for (left right)
-  ;; called from try-spanning-conjunctions
-  (when (or *trace-island-driving* *trace-conjunction-hook*)
-    (trace-msg "[islands] no heuristic for composing e~a and e~a"
-               (edge-position-in-resource-array left)
-               (edge-position-in-resource-array right))))
-
-(deftrace :new-conjunction-pattern ()
-  ;; called from try-spanning-conjunctions
-  (when (or *trace-island-driving* *trace-conjunction-hook*)
-    (trace-msg "[islands] new arrangement of conjuncts")))
-
-(deftrace :trying-to-conjoin (e1 e2)
-  ;; called from try-spanning-conjunctions
-  (when (or *trace-island-driving* *trace-conjunction-hook*)
-    (trace-msg "[islands] Trying to conjoin  e~a and e~a"
-               (edge-position-in-resource-array e1)
-               (edge-position-in-resource-array e2))))
-
-(deftrace :conjoined-edge (edge)
-  ;; called from try-spanning-conjunctions
-  (when (or *trace-island-driving* *trace-conjunction-hook*)
-    (trace-msg "[islands]   They conjoined to form e~a"
-               (edge-position-in-resource-array edge))))
-
-(deftrace :no-conjunction-heuristics-applied ()
-  ;; called from try-spanning-conjunctions
-  (when (or *trace-island-driving* *trace-conjunction-hook*)
-    (trace-msg "[islands]   No conjunction heuristics applied")))
-
-(deftrace :two-conjuncts-not-consistent ()
-  ;; called from try-spanning-conjunctions
-  (when (or *trace-island-driving* *trace-conjunction-hook*)
-    (trace-msg "[islands]   The two aligned conjuncts aren't consistent")))
-
-(deftrace :different-two-conjunction-pattern ()
-  ;; called from try-spanning-conjunctions
-  (when (or *trace-island-driving* *trace-conjunction-hook*)
-    (trace-msg "[islands]   New pattern of two conjunctions")))
 
 
 ;;--- Short leftward extension (roll up from the right)

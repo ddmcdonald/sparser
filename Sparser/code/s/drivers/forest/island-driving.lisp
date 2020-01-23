@@ -59,6 +59,7 @@
   (tr :island-driven-forest-parse start-pos end-pos)
   (when (or *trace-island-driving* 
             *parse-edges*
+            *trace-conjunction-hook*
             *trace-whack-a-rule*
             *print-forest-after-doing-forest*) ;; light weight
     (format t "~&Treetops at start of island-driven parsing")
@@ -164,8 +165,8 @@
   (let* ((treetops (successive-treetops :from start-pos :to end-pos))
          (number-of-treetops (length treetops)))
     (tr :islands-pass-2 number-of-treetops)
-    (when (or *print-forest-after-doing-forest* *trace-DA-check*)
-      (format t "~&Just before 2d pass:~%")
+    (when (or *print-forest-after-doing-forest* *trace-DA-check* *trace-conjunction-hook*)
+      (format t "~&~%Just before 2d pass:~%")
       (tts)
       (when *trace-DA-check*
         (terpri)

@@ -112,7 +112,12 @@
 |#
 
 (defun mark-instance-of-AND (and-word position-before position-after)
-  "Push the position of the conjunction onto the global flag"
+  "Push the position of the conjunction onto the global flag.
+   When doing successive sweeps, this flag is noticed and managed by
+   short-conjunctions-sweep which checks short adjacent edges.
+   Large-scale conjunction is done in the successive passes of
+   island driving, using a tally of conjunction positions that are
+   found by sweep-sentence-treetops just after the chunking phase is done."
   (if *pending-conjunction*
     (cond
      (*speech*
@@ -154,12 +159,11 @@
                             'conjoin-adjacent-like-treetops)
 
 (defun conjoin-adjacent-like-treetops (position-after)
-  ;; Called by invoking the treetop-action above during the
-  ;; forest scan. Timing of the segment scan prohibited running
-  ;; via the usual entry point.
-  ;; position-after is the one that immediately follows the
-  ;; conjunction.
-
+  "Called by invoking the treetop-action above during the
+   forest scan. Timing of the segment scan prohibited running
+   via the usual entry point.
+   'position-after' is the one that immediately follows the
+    conjunction."
   (when (edge-p position-after)
     ;; Can happen if we have an edge over "and", which we'll get
     ;; sometimes depending on how it's being defined (which varies
@@ -193,12 +197,12 @@
 
 (defun look-for-submerged-matching-conj-edge (edge-before edge-after)
   "Called from conjoin-adjacent-like-treetop and (recently 11/18) from
- look-for-submerged-conjunct where there is reason to believe that
- parsing activity after the early conjunction check has built an
- edge over the true (leftward) conjunct of a pending 'and'.
- We look at the edge-vector of the candidate edges (initially looking
- leftwards) and scan for an edge with the same semantic category label
- as the the edge on the right (i.e. we don't do any complex heuristics)."
+   look-for-submerged-conjunct where there is reason to believe that
+   parsing activity after the early conjunction check has built an
+   edge over the true (leftward) conjunct of a pending 'and'.
+   We look at the edge-vector of the candidate edges (initially looking
+   leftwards) and scan for an edge with the same semantic category label
+   as the the edge on the right (i.e. we don't do any complex heuristics)."
   (tr :submerged-check edge-before edge-after)
   (let ( matching-edge )
     (let ((ev (edge-ends-at edge-before)) ;; look leftward first
@@ -227,7 +231,10 @@
  many of the edges, and recomputation of their referents.
  In particular, the edge-ends-at of all the edges above the edge
  that we lift have to be reset to go to the other end of the newly
- created conjoined-edge (i.e. new-ev below). "
+ created conjoined-edge (i.e. new-ev below). 
+   This routine uses close to the techniquees as in the tuck
+ routines. Need a good reason to merge them though, given the
+ need to be very accurate."
 
   (let* ((heuristic (ecase direction
                       (:left :lifted-left-edge-of-conjunction)
@@ -339,10 +346,34 @@
 ;;; checking out the segment after the conjunction -- driver
 ;;;----------------------------------------------------------
 
-(defun check-out-possible-conjunction (start-of-after-segment)
+
+(defun conjunction-is-before-this-segment (left-boundary) ; of completed segment
+  "In a successive-sweeps algorithm, all of the conjunctions
+  in the sentence are going to be stashed on *pending-conjunction*.
+  In the incremental scan algorithm we get a conjunction and
+  deal with it at the earliest possible moment, which is when
+  the segment just after the conjunction has been scanned.
+  That moment is sf-action/spanned-segment, which call this
+  function to determine whether any pending conjunction
+  applies to the segment it's just finished. This gates a call
+  to look-for-possible-conjunction below."
+  (declare (special *pending-conjunction*))
+  (let ((conjunction-positions *pending-conjunction*)
+        (pos-before (chart-position-before left-boundary)))
+    (loop for conj-pos in conjunction-positions
+       when (eq conj-pos pos-before) return t
+       finally (return nil))))
+
+
+  ;; (when *pending-conjunction*
+  ;;   (unless (null (cdr *pending-conjunction*))
+  ;;     (break "mulitple conjunctions"))
+  ;;   (eq (car *pending-conjunction*) (chart-position-before left-boundary))))
+ 
+(defun look-for-possible-conjunction (start-of-after-segment)
 
   ;; This is the ordinary entry point from segment-finishing code
-  ;; in drivers/chart/psp/pts.lisp
+  ;; in drivers/chart/psp/pts.lisp (sf-action/spanned-segment)
 
   ;; We wouldn't be called if there wasn't a full span over
   ;; the segment after the conjunction, and the segment in front
@@ -355,17 +386,14 @@
 
   (tr :calling-conj-checkout-routine-at start-of-after-segment)
 
-  (let* ((end-of-before-segment *pending-conjunction*)
+  (let* ((end-of-before-segment (car *pending-conjunction*))
          (position-after (chart-position-after end-of-before-segment))
          (edge-before (span-ending-at end-of-before-segment))
          (edge-after (span-starting-at position-after)))
-    
-    (when (edge-vector-p edge-before)
-      (let ((good-edges (reduce-multiple-initial-edges edge-before))) ;; no literals
-        (setq edge-before (car (last good-edges)))))
-    (when (edge-vector-p edge-after)
-      (let ((good-edges (reduce-multiple-initial-edges edge-after)))
-        (setq edge-after (car (last good-edges)))))
+
+    (when (word-p edge-before) ;; source-start -- dynamic-model #93
+      ;; "And does phospho-MAPK1 now have a peak?"
+      (return-from look-for-possible-conjunction nil))
 
     ;; check for a comma just before the conjunction. This first case
     ;; depends on the grammar putting literal edges over it, so this
@@ -375,22 +403,32 @@
         (setq edge-before
               (span-ending-at (chart-position-before end-of-before-segment)))))
 
-    ;(format t "~%~%position before conjunction = p~A~
-    ;             ~%             position after = p~A~%~%"
-    ;        (pos-token-index end-of-before-segment)
-    ;        (pos-token-index position-after))
-
-    (setq *pending-conjunction* nil)
-
     (tr :conj-edges-to-each-side edge-before edge-after)
 
+    (let ((heuristic (conjunction-heuristics edge-before edge-after)))
+      (if heuristic
+        (let ((edge (conjoin/2 edge-before edge-after heuristic
+                               :pass 'after-chunking)))
+          (tr :short-conjoined-edge edge)
+          edge)
+        (tr :no-heuristics-for edge-before edge-after)))))
+
+    
+
+#| Original continuation when we were running a completely incremental scan
+    
+    (when (edge-vector-p edge-before)
+      (let ((good-edges (reduce-multiple-initial-edges edge-before))) ;; no literals
+        (setq edge-before (car (last good-edges)))))
+    (when (edge-vector-p edge-after)
+      (let ((good-edges (reduce-multiple-initial-edges edge-after)))
+        (setq edge-after (car (last good-edges)))))
+ 
     (let ((new-edge (dispatch-conj-by-multiplicities edge-before
                                                      edge-after)))
-
       ;; The PTS routines all presume that we're going to renter
       ;; the control fsa from here rather than return a value
       ;; to them.
-
       (if new-edge
         ;; if the conjunction went through then we have to pick up
         ;; again at the point where we left off in segment-finished
@@ -424,7 +462,7 @@
                        (word (chart-position-after end-of-before-segment))))))
               (tr :moving-to-forest-level/conj/no-edge rightmost-pos)
               (move-to-forest-level rightmost-pos           
-                                    :full-segment-scanned))))))))
+                                    :full-segment-scanned)))))) |#
 
 
 ;;;-------------------------------
@@ -453,15 +491,8 @@
       (test-for-conjunction edge-before edge-after))))
 
 
-
 (defun test-for-conjunction (edge-before edge-after)
   ;; common point to check for conjunction across a conjunction word.
-  ;(format t "~& left edge: ~A~
-  ;           ~%right edge: ~A~%~%"
-  ;        edge-before edge-after)
-  ;(update-workbench)
-  ;(break)
-
   (let ((heuristic
          (conjunction-heuristics edge-before edge-after)))
     (when heuristic
@@ -530,15 +561,14 @@
                            (category-p ref-before)
                            (itypep ref-before ref-before)))
                      t)
-                    (t (warn "conjunction-problem: conjunction of category and individual ~s and ~s" ref-before ref-after)
+                    (t (warn "conjunction-problem: conjunction of category and ~
+                              individual ~s and ~s" ref-before ref-after)
                        nil)))
              (when (current-script :biology)
                (bio-coercion-compatible? label-before label-after edge-before edge-after)))
          :conjunction/identical-adjacent-labels)
         
         (*allow-form-conjunction-heuristic*   
-         ;;(break "form heuristics allowed. Check backtrace")
-         
          (when (and
                 (or (not (eq *allow-form-conjunction-heuristic* :vg))
                     (and (category-p form-before)
@@ -573,6 +603,9 @@
                       label-before label-after edge-before edge-after)))
            :conjunction/identical-form-labels))))))
 
+
+;;------------- biology-specific (mostly) heuristic data
+
 (defun bio-coercion-compatible? (label-before label-after edge-before edge-after)
   (declare (special label-after label-before category::bio-entity))
   (cond
@@ -601,7 +634,6 @@
        ))))
 
 
-
 (defun show-protein-coercion (e1 e2)
   (when *show-protein-coercions*
     (let ((e1-chars (actual-characters-of-word (pos-edge-starts-at e1)
@@ -612,9 +644,6 @@
 	      (actual-characters-of-word (pos-edge-starts-at e2)
 					 (pos-edge-ends-at e2))
 	      (current-string)))))
-
-(defun edge-string (e)
-  (get-surface-string-for-individual (edge-referent e)))
 
 (defun conjunction-incompatible-labels (before after edge-before edge-after)
   (let ((reject?
@@ -700,7 +729,8 @@
                  :form form
                  :referent referent
                  :rule 'conjoin-two-edges
-                 :constituents constituents)))
+                 :constituents constituents
+                 :do-not-knit do-not-knit)))
       (edge-interaction-with-quiescence-check edge)
       (tr :conjoining-two-edges edge left-edge right-edge heuristic)
       (when *save-conjunctions* 
@@ -730,17 +760,17 @@
                (eq (form-cat-name conj-edge) 'conjunction))
       (list left-edge conj-edge right-edge))))
 
+
 (defun conjoin-multiple-edges (edge-list &key pass)
   (let* ((rightmost-edge (car (last edge-list)))
          (leftmost-edge (car edge-list))
          (referent (referent-of-list-of-conjoined-edges edge-list)))
-    ;; the previous version of this lost edges -- it did not set up the edge-constituents
     (let ((edge (make-edge-over-long-span
                  (pos-edge-starts-at leftmost-edge)
                  (pos-edge-ends-at rightmost-edge)
                  (edge-category leftmost-edge)
-                 :constituents edge-list
                  :form (edge-form leftmost-edge)
+                 :constituents edge-list
                  :referent referent
                  :rule 'conjoin-multiple-edges)))
       (tr :conjoining-multiple-edges/comma edge)
@@ -764,13 +794,16 @@
   ;; Called from Conjoin/2. Return nil if no list is found, signalling
   ;; that it should go ahead with just these two initial edges.
   ;; If a list is found, we call the edge-maker from here.
+  (tr :looking-for-list-conj left-edge)
   (let ((edge-list
          (get-another-comma-chain-conj
-          (list left-edge right-edge)
-          left-edge 
-          (chart-position-before (pos-edge-starts-at left-edge)))))
-    (when edge-list
-      (conjoin-multiple-edges edge-list :pass pass))))
+          (list left-edge right-edge) ; edges-so-far
+          left-edge ; right-edge
+          (chart-position-before (pos-edge-starts-at left-edge))))) ; left-pos
+    (if edge-list
+      (conjoin-multiple-edges edge-list :pass pass)
+      (else (tr :no-list-conj)
+            nil))))
 
 #| Excised from short-conjunctions-sweep. It moves the left-side
    reference position across the Oxford comma if there is one.
@@ -796,23 +829,25 @@
 
       (if (> (length edges-so-far) 2)
         ;; we've accumulated at least one more edge, so we return
-        ;; the list whether or not we extend the chain
+        ;; the list whether or not we've extended the chain
         edges-so-far
         nil ))))
 
 
 (defun seg-before-conjoins (middle-pos right-edge)
-  ;; Look for a comma just before the left edge. If there is one
-  ;; and if the segment ending there conjoins with the leftmost of
-  ;; the edges conjoined so far (i.e. 'right-edge') then return
-  ;; that new segment and the position it starts at.  Otherwise
-  ;; return nil
+  "Look for a comma just before the left edge. If there is one
+   and if the segment ending there conjoins with the leftmost of
+   the edges conjoined so far (i.e. 'right-edge') then return
+   that new segment and the position it starts at.  Otherwise
+   return nil"
   (when (eq word::comma (pos-terminal middle-pos))
     (let ((left-edge (edge-ending-at middle-pos)))
       (when left-edge
 	(if (conjunction-heuristics left-edge right-edge)
+          (then
+            (tr :extended-conjunction left-edge)
 	    (values left-edge
-		    (chart-position-before (pos-edge-starts-at left-edge)))
+		    (chart-position-before (pos-edge-starts-at left-edge))))
 	    nil )))))
         
 

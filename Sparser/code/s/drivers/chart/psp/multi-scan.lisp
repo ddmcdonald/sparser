@@ -1130,12 +1130,13 @@
         (declare (special *allow-form-conjunction-heuristic*))
         (unless (or (word-p left-edge)
                     (word-p right-edge))
-          (create-short-conjunction-edge-if-possible left-edge right-edge))))
-    ;; zero it to avoid confusing the pass through a later sentence
-    (setq *pending-conjunction* nil)))
+          (create-short-conjunction-edge-if-possible left-edge right-edge))))))
 
 
 (defun create-short-conjunction-edge-if-possible (left-edge right-edge)
+  "Loop through the edges on the end edge vectors of these two edges.
+   That the first pair of edges that pass the currently active set of heuristics
+   and make a conjunction edge."
   (dolist (left (if (edge-vector-p left-edge) 
 		    (ev-edges left-edge)
 		    (list left-edge)))
@@ -1146,7 +1147,7 @@
 	(if heuristic
           ;; conjoin/2 looks for leftwards for more comma-separated conjuncts
           (let ((edge (conjoin/2 left right heuristic :pass 'short-conjunctions-sweep)))
-            (tr :conjoined-edge edge)
+            (tr :short-conjoined-edge edge)
             (return-from create-short-conjunction-edge-if-possible edge))
           (tr :no-heuristics-for left-edge right-edge))))))
 

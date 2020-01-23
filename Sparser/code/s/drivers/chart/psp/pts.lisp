@@ -401,10 +401,15 @@ have to be tail recursion to the next thing to do.
 
 
 (defun sf-action/spanned-segment ()
-  ;; called from segment-finished when there's one edge over the entire
-  ;; segment. 
+  "Common final path for segments that are completely spanned by
+   one edge. Site for segment-finished hook and a conjunction check."
   (tr :spanned-segment)
   (segment-finished-hook)
+  (when (conjunction-is-before-this-segment *left-segment-boundary*)
+    (look-for-possible-conjunction *left-segment-boundary*))
+  (sf-action/spanned-segment1))
+
+#|
   (if *pending-conjunction*
     (if *do-heuristic-segment-analysis*
       (if (sucessive-sweeps?)
@@ -414,7 +419,7 @@ have to be tail recursion to the next thing to do.
         (tr ::turning-off-conj-flag-w/o-any-action)
         (setq *pending-conjunction* nil)
         (sf-action/spanned-segment1)))
-    (sf-action/spanned-segment1)))
+    (sf-action/spanned-segment1)) |#
 
 (defun sf-action/spanned-segment1 ()
   (declare (special *return-after-doing-segment*))
@@ -473,7 +478,7 @@ have to be tail recursion to the next thing to do.
   (tr :sf-action/all-contiguous-edges/no-more-heuristics)
   (when *pending-conjunction*
     (if *do-heuristic-segment-analysis*
-      (check-out-possible-conjunction *left-segment-boundary*)
+      (look-for-possible-conjunction *left-segment-boundary*)
       (else
         (tr :turning-off-conj-flag-w/o-any-action)
         (setq *pending-conjunction* nil))))

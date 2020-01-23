@@ -343,34 +343,40 @@
                 edge)
               (tr :no-heuristics-for left-edge right-edge))))))))
 
+(defvar *conj-look-past-comma* nil
+  "Permit try-spanning-conjunctions to look past left adjacent commas")
+
 (defun try-spanning-conjunctions (&optional (allow-form-conjunction-heuristic t))
   ;; This is the version used in later situations and applying to
   ;; much larger phrases that may only be composable on the basis
   ;; of having a common form (both NPs, both clauses, etc.)
+  (declare (special *conj-look-past-comma*))
   (let ((conjunction-edges (there-are-conjunctions?)))
-    (when conjunction-edges
+    (if conjunction-edges
       (dolist (conj-edge conjunction-edges)
         ;; given how the list was accumulated this moves right to left
         ;; through the sentence
-        (let ((edge-to-the-left (left-treetop-at/edge conj-edge))
-              (edge-to-the-right (right-treetop-at/edge conj-edge)))
-          (unless (or (literal-edge? edge-to-the-left) ;; comma
-                      (literal-edge? edge-to-the-right))
-            (tr :trying-to-conjoin  edge-to-the-left edge-to-the-right)
-            (push-debug `(,edge-to-the-left ,edge-to-the-right))
+        (tr :looking-at-conj-edge conj-edge)
+        (let ((edge-to-left (left-treetop-at/edge conj-edge))
+              (edge-to-right (right-treetop-at/edge conj-edge)))
+
+          (unless (or (literal-edge? edge-to-left) ;; comma
+                      (literal-edge? edge-to-right))
+            (tr :trying-to-conjoin  edge-to-left edge-to-right)
+            (push-debug `(,edge-to-left ,edge-to-right))
             (let ((*allow-form-conjunction-heuristic* allow-form-conjunction-heuristic))
               (declare (special *allow-form-conjunction-heuristic*))
-              (let ((heuristic (conjunction-heuristics edge-to-the-left 
-                                                       edge-to-the-right)))
+              (let ((heuristic (conjunction-heuristics edge-to-left edge-to-right)))
                 (if heuristic
                   (let ((edge 
-                         (conjoin-two-edges edge-to-the-left edge-to-the-right heuristic
+                         (conjoin-two-edges edge-to-left edge-to-right heuristic
                                             :pass 'try-spanning-conjunction)))
                     (tr :conjoined-edge edge)
                     edge)
                   (else
                    (tr :no-conjunction-heuristics-applied)
-                   nil))))))))))
+                   nil)))))))
+      (tr :no-conjunction-edges))))
 
 (defun look-for-submerged-conjunct ()
   "Called from run-island-checks after we've run the whack-a-rule cycle, 
