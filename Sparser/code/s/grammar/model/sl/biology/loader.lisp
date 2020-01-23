@@ -133,6 +133,7 @@
       (and (boundp 'cl-user::*sparser-to-indra*)
            (symbol-value 'cl-user::*sparser-to-indra*))
       (asdf:load-system :cl-json)
+      (asdf:load-system :cl-ppcre)
       (gload "bio;sparser-to-indra"))
 
 
