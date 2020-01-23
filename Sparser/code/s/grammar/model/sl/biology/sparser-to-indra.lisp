@@ -287,7 +287,11 @@ pass the result to the appropriate indra generator"
                    (indra-forms-for-items
                     (loop for item in (distribute-args-to-items (collection-args (second f)) elements)
                           collect
-                            `(,(car f) ,item ,(assoc 'text (cdr f))))
+                            `(,(car f) ,item
+                               ;; not sure why this was there -- it caused the text of the conjunction
+                               ;; to be added to the text of the individual item
+                               ;;,(assoc 'text (cdr f))
+                               ))
                     pmid))))
               (level (make-indra-level f cat? pmid)) 
               ((translocation export recruit)
@@ -390,7 +394,6 @@ pass the result to the appropriate indra generator"
 
 (defparameter *indra-binding* nil)
 (defun make-indra-binding (f cat? pmid)
-  (declare (special f cat? pmid))
   (cond ((get-indra-for-cwc?)
          (let* ((binding-sexpr (second f))
                 (binder (second (assoc 'sp::binder (cdr binding-sexpr))))
@@ -403,8 +406,12 @@ pass the result to the appropriate indra generator"
            result))
         (t
          (let ((complex 
-                (create-complex-json
-                 (second f) pmid (second (assoc 'text (cdr f))) (car f))))
+                (case (car (second f))
+                  (bio-associate
+                   (create-complex-json-from-associate
+                    (second f) pmid (second (assoc 'text (cdr f))) (car f)))
+                  (t (create-complex-json
+                      (second f) pmid (second (assoc 'text (cdr f))) (car f))))))
            (when complex
              (push (list cat? f pmid) *indra-binding*))
            complex))))
@@ -440,6 +447,31 @@ To MRA:
           :BELIEF 1 
           :EVIDENCE ((:SOURCE--API "trips" :SOURCE--HASH -1613118243458052451)) :ID "f667053b-a79a-4948-8c7e-badcaf68b238" :MATCHES--HASH "2790195940312003"))) :TO MRA :REPLY-WITH ECI-GOAL217 :sender BA)|#
 
+(defparameter *bio-assoc-args* nil)
+
+(defun create-complex-json-from-associate (complex-expr &optional pmid sentence trigger (head (car complex-expr)))
+  (let ((members
+         (remove-duplicates
+          (loop for arg in (cdr complex-expr)
+                when (and (member (car arg) '(participant object))
+                          (or (itypep (car (second arg)) 'protein)
+                              (when (eq (car (second arg)) 'collection)
+                                (loop for type in (second (assoc 'type (cdr (second arg))))
+                                        thereis (itypep type 'protein)))))
+                collect (second arg))
+          :test #'equal)))
+    (when (cdr members)
+      (push (list sentence members) *bio-assoc-args*)
+      `(((:TYPE . "Complex")
+         (:MEMBERS ,@members)
+         ;;,(evidence xxx)
+         (:EVIDENCE
+          ((:SOURCE--API . "sparser") (:PMID ,. pmid)
+           (:TEXT ,. sentence)
+           (:TRIGGER ,.trigger)
+           (:ANNOTATIONS (:FOUND--BY ., (pname head)))))
+         (:SBO . "http://identifiers.org/sbo/SBO:0000526"))))))
+
 (defun create-complex-json (complex-expr &optional pmid sentence trigger (head (car complex-expr)))
   (let ((members (remove-duplicates
                   (loop for prot in (type-expressions-in complex-expr 'protein)
@@ -453,7 +485,7 @@ To MRA:
     ;; don't create a complex if you can;t find its members
     (when (cdr members)
       `(((:TYPE . "Complex")
-         (:MEMBERS ,members)
+         (:MEMBERS ,@members)
          ;;,(evidence xxx)
          (:EVIDENCE
           ((:SOURCE--API . "sparser") (:PMID ,. pmid)
@@ -1248,8 +1280,8 @@ that sentence"
 (defun prot-item->indra-list (prot-item form)
   ;; don't have a way to handle
   #| '(MOTIF (MODIFIER (AMINO-ACID (RAW-TEXT "proline") 
-                        (NAME "proline"))) 
- (RAW-TEXT "motifs") (IS-PLURAL "t"))
+                       (NAME "proline"))) 
+             (RAW-TEXT "motifs") (IS-PLURAL "t"))
 |#
   (declare (special prot-item form *orig-sent-string*))
   (when prot-item
@@ -1268,7 +1300,10 @@ that sentence"
       ((collection pair-with-protein)
        (let ((items (protein-items-from-collection (get-set-elements prot-item) form)))
          (loop for i in items collect
-                 (append i (when (a-get-item 'raw-text (cdr prot-item))
+                 (append i (when nil
+                             ;; not sure why this was there -- it caused the text of the conjunction
+                             ;; to be added to the text of the individual item
+                             ;; (a-get-item 'raw-text (cdr prot-item))
                              `((:+TEXT+ ,.(a-get-item 'raw-text (cdr prot-item)))))))))
       (bio-complex (protein-items-from-complex prot-item form))
       (mutant (single-protein->indra-list prot-item form))
@@ -1290,8 +1325,10 @@ that sentence"
                   (get-set-elements (a-get-item 'FAMILY-MEMBERS (cdr prot-item)))
                   form)))
             (loop for i in items collect
-                    (append i (when (and (not (get-indra-for-cwc?))
-                                         (a-get-item 'raw-text (cdr prot-item)))
+                    (append i (when nil
+                                ;; not sure why this was there -- it caused the text of the conjunction
+                                ;; to be added to the text of the individual item
+                                ;;(a-get-item 'raw-text (cdr prot-item))
                                 `((:+TEXT+ ,.(a-get-item 'raw-text (cdr prot-item)))))))))
         (single-protein->indra-list prot-item form)))
       (t
@@ -2036,3 +2073,295 @@ can still match things like CHK1 and CHK-1"
             acc5b40a-2b87-424d-bd01-ce849605130f MATCHES--HASH 19343107104138835)
 |#
 
+
+
+;;;
+;;;;; code for comparing new Sparser indra output to results of old sparser core image
+
+
+(defparameter *pmc-indra-json-ht* (make-hash-table :test #'equal))
+
+(defun read-indra-json (pmcid &optional (source :hms) &aux js-file)
+  (unless (or (search "~/" pmcid)
+              (search "/users/" pmcid))
+    (setq js-file
+          (make-pathname :name 
+                         (format nil "~a~a-semantics"
+                                 (case source
+                                   (:hms "hms-json/")
+                                   (:sift "sift-json/"))
+                                 pmcid
+                                 )
+                         :type "json"
+                         :defaults
+                         (asdf:system-relative-pathname
+                          :r3
+
+                          "../corpus/hms-update/"))))
+  (with-open-file (in js-file :direction :input)
+    (when (> (file-length in) 0)
+      (cl-json::decode-json in))))
+
+(defun remove-sent-indra-dups (sent-indra-list &optional hms?)
+  (when sent-indra-list
+    (loop for sent-indra in sent-indra-list
+          collect
+            (list (car sent-indra)
+                  (loop for item
+                        in (remove-duplicates (second sent-indra)
+                                              :test #'equal)
+                        collect
+                          (remove-conjunction-text
+                           (sublis
+                            '((:+BE+ . :+FPLX+))
+                            (remove-indra-evidence item))
+                           hms?))))))
+
+(defun remove-conjunction-text (indra hms?)
+  (if (not hms?)
+      indra
+      (loop for clause in indra
+            collect
+              (cond ((and (consp clause)
+                          (keywordp (car clause)))
+                     (cons (car clause)
+                           (if (consp (cdr clause))
+                               (loop for item in (cdr clause)
+                                     unless (and (consp item)
+                                                 (stringp (cdr item))
+                                                 (search " and " (cdr item)))
+                                     collect item)
+                               (cdr clause))))
+                    (t clause)))))
+          
+
+(defun remove-indra-evidence (indra)
+  (loop for item in indra
+        unless (eq (car item) :evidence)
+        collect item))
+
+(defun remove-excess+texts (json-list)
+  (loop for json-exp in json-list
+        collect (remove-excess+texts1 json-exp)))
+
+(defun remove-excess+texts1 (json-exp)
+`(,(car json-exp)         
+  ,@(loop for json in (cdr json-exp)
+           collect
+           (if (and (consp json)
+                          (keywordp (car json)))
+                     `(,(car json)
+                        ,.(if (consp (cdr json))
+                              (loop for item in (cdr json)
+                                    append
+                                      (case (and (consp item)
+                                                 (keywordp (car item))
+                                                 (car item))
+                                        (:+text+ nil)
+                                        (t (list item))))
+                              (cdr json)))
+                     json))))
+  
+
+(defun pmc-indras (&optional (all? nil))
+  (loop for pmc in (hms-indra-pmcs)
+        do
+          (let* ((hms-indra (read-indra-json pmc :hms))
+                 (hms-indra-by-sents
+                  (remove-sent-indra-dups
+                   (group-by hms-indra #'indra-evidence-text)
+                   :hms))
+                 (sift-indra (read-indra-json pmc :sift))
+                 (sift-indra-by-sents
+                  (remove-sent-indra-dups
+                   (group-by sift-indra #'indra-evidence-text)))
+                 (sents (sort (remove-duplicates
+                               (append
+                                (mapcar #'indra-evidence-text hms-indra)
+                                (mapcar #'indra-evidence-text sift-indra))
+                               :TEST #'equal)
+                              #'string<))
+                 (compared
+                  (loop for s in sents
+                        append
+                          (let ((hms (second
+                                      (assoc s hms-indra-by-sents
+                                             :test #'equal)))                                     
+                                (sift (second
+                                       (assoc s sift-indra-by-sents
+                                              :test #'equal))))
+                            (if (null (set-exclusive-or hms sift :test #'equal)) ;; (equal hms sift)
+                                (when all?
+                                  `((,s (:equal
+                                         ,(second (assoc s hms-indra-by-sents
+                                                         :test #'equal))))))
+                                `((,s :hms ,(remove-excess+texts
+                                             (loop for js in hms
+                                                  unless (uninteresting-json? js sift)
+                                                  collect js))
+                                      :sift ,(remove-excess+texts
+                                              (loop for js in sift
+                                                   unless (uninteresting-json? js hms)
+                                                   collect js)))))))))
+            (when (or all? compared)
+              (setf
+               (gethash (intern pmc :sp) *pmc-indra-json-ht*)
+               (if all?
+                   `(:compared
+                     ,compared
+                     :hms
+                     ,hms-indra
+                     :sift
+                     ,sift-indra)
+                   `(:compared
+                     ,compared)
+                   )))))
+  
+  (hal *pmc-indra-json-ht*))
+
+(defun uninteresting-json? (js uninteresting)
+  (or (member js uninteresting :test #'equal)
+      ;; get rid of GFP complexes
+      (and (equal (assoc :type js) '(:TYPE . "Complex"))
+           (loop for m in (cdr (assoc :members js))
+                 thereis
+                   (equal (assoc :name m) '(:NAME . "GFP_AEQVI"))))
+      (and (equal (assoc :type js) '(:TYPE . "Phosphorylation"))
+           (or (fplx-protein? (cdr (assoc :sub js)))
+               (fplx-protein? (cdr (assoc :enz js)))))
+      (and (member (assoc :type js)
+                   '((:TYPE . "GeneTranscriptExpress")
+                     (:TYPE . "Inhibition")
+                     (:TYPE . "Activation"))
+                   :test #'equal)
+           (fplx-protein? (cdr (assoc :obj js)))
+           ))
+  )
+
+(defun fplx-protein? (prot)
+  (when (consp prot)
+    (let ((text (cdr (assoc :+TEXT+ prot)))
+          (name (cdr (assoc :name prot))))
+      (or
+       (member text '( "AKT"  "AKT"  "Activin"  "Akt"  "Arp2/3"  "CAMs"  "CD8"  "CDK"
+                      "GPCRs"  "GST"  "HSP90"  "IFN"  "JNK1/2"  "MAPK"  "MAPKs"  "NF-κB"
+                      "NFκB"  "PI(3K"  "PI3K"  "Rac"  "Rho"  "SOD"  "TGF-β"  "TnC"  "TnI"
+                      "Wnt"  "actin"  "adenylate cyclase"  "adenylyl cyclase"  "calcineurin"
+                      "calpain"  "caspase"  "caspases"  "cholinesterase"  "dynamin"
+                      "estrogen receptor"  "JNK1/2" "mitogen-activated protein kinases"  "p38 MAPK"
+                      "phospholipase C"  "proteases"  "transforming growth factor beta"
+                      "troponin"  "troponins"  "tubulin") :test #'equal)
+
+       (member name '( "AKT" "Arp2/3" "CD8" "CDK" "cholinesterase"
+                      "dynamin" "GPCR" "Glutathione S-transferase" "HSP90"
+                      "Jnk" "NF-kappaB" "PI3-kinase" "PPP3" "Phospholipase C"
+                      "Rac" "Rho" "SOD" "TGF-beta" "TNC" "Wnt"
+                      "actin" "activin" "calmodulin" "calpain" "caspase"
+                      "dynamin" "interferon" "protease" "troponin I" "troponin" "tubulin") :test #'equal)))
+    ))
+
+
+(defun hms-indra-pmcs ()
+  (loop for pathname in (hms-indra-files)
+        collect
+          (let ((pname (pathname-name pathname)))
+            (subseq pname 0
+                    (search "-" pname)))))
+
+(defun hms-indra-files ()
+  (directory
+   (format nil "~a*semantics.json"
+           (namestring 
+            (asdf:system-relative-pathname
+             :r3
+             "../corpus/hms-update/hms-json/")))))
+
+(defun sift-indra-files ()
+  (directory
+   (format nil "~a*semantics.json"
+           (namestring 
+            (asdf:system-relative-pathname
+             :r3
+             "../corpus/hms-update/sift-json/")))))
+
+(defun indra-evidence-text (indra)
+  (cdr (assoc :text (second (assoc :evidence indra)))))
+
+
+(defun safe-prop (key list)
+  "Works like getf on plists, but also handles cases where there is an extra item at the beginning of the list"
+  (cond ((null key) nil)
+        ((symbolp key)
+         (when (consp list)
+           (second (member key list))))
+        ((consp key)
+         (let ((first-one (safe-prop (car key) list)))
+           (if (and first-one (cdr key) (cadr key))
+               (safe-prop (cdr key) first-one)
+               first-one
+               )
+           ))))
+
+(defun get-named-items (json-sexpr-list)
+  (loop for json-sexp in json-sexpr-list 
+        append
+          (let ((sexpr-type (car json-sexp))
+                (args (when (consp (cdr json-sexp))
+                        (cdr json-sexp))))
+          (loop for arg in args
+                when
+                  (and (consp arg)
+                       (symbolp (car arg))
+                       (consp (cdr arg)))
+                  ;; like ((:type ...) (arg ...)
+                append
+                  (case (car arg)
+                    (:members (cdr arg))
+                    (t (when (assoc :name (cdr arg))
+                         (list (member (assoc :name (cdr arg)) (cdr arg))))))))))
+                  
+(defparameter *hms-names* nil)
+(defparameter *sift-names* nil)
+(defun indra-comparisons ()
+  (declare (special *indras*))
+  (loop for ii in *indras* 
+        when (loop for ss in (safe-prop :compared ii) when (and (safe-prop :hms ss) (safe-prop :sift ss)) collect (safe-prop :hms ss))
+        collect
+          (list (car ii)
+                (loop for ss in (safe-prop :compared ii)
+                      when (and (safe-prop :hms ss)(safe-prop :sift ss))
+                      collect (list (car ss):hms 
+                                    (loop for hm in (safe-prop :hms ss)
+                                          unless (member hm (safe-prop :sift ss) :test #'equal)
+                                          collect hm)
+                                    :sift (loop for sift in (safe-prop :sift ss)
+                                                unless (member sift (safe-prop :hms ss) :test #'equal)
+                                                collect sift))))))
+(defun collect-sift-hms-names ()
+  (loop for pmc in (indra-comparisons) do 
+          (loop for sent in (second pmc) 
+                do (loop for hms in (get-named-items (safe-prop :hms sent))
+                         do (pushnew hms *hms-names* :test #'equal))
+                  (loop for sift in (get-named-items (safe-prop :sift sent))
+                        do (pushnew sift *sift-names* :test #'equal)))
+          )
+  (let ((hms-defs (group-by *hms-names* #'db-ref-text))
+        (sift-defs (group-by *sift-names* #'db-ref-text)))
+    (loop for ii in
+            (loop for h in hms-defs
+                  collect
+                    (list (car h)
+                          (second h)
+                          (second (assoc (car h) sift-defs :test #'equal))))
+          when (and (third ii)
+                    (not (equal (second ii)
+                                (third ii))))
+                        
+          collect ii)))
+    
+
+(defun db-ref-text (sexpr)
+  (cdr (assoc :+text+
+         (cdr (assoc :db--refs sexpr)))))
+
+                  
