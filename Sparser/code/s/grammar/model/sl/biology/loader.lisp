@@ -128,8 +128,11 @@
 (gload "bio;get-reactome-hgnc-names.lisp")
 (gload "bio;visualization.lisp")
 (gload "bio;hms-hgnc-grounding")
-(when (and (boundp 'cl-user::*sparser-to-indra*)
+
+(when t #+ignore ;;always load
+      (and (boundp 'cl-user::*sparser-to-indra*)
            (symbol-value 'cl-user::*sparser-to-indra*))
-  (gload "bio;sparser-to-indra"))
+      (asdf:load-system :cl-json)
+      (gload "bio;sparser-to-indra"))
 
 
