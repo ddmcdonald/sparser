@@ -398,8 +398,9 @@
     ;; check for a comma just before the conjunction. This first case
     ;; depends on the grammar putting literal edges over it, so this
     ;; will not be sufficent in general using a different grammar
-    (when edge-before
-      (when (eq (edge-category edge-before) (word-named ","))
+    (when (and edge-before
+               (edge-p edge-before)
+               (eq (edge-category edge-before) (word-named ","))
         (setq edge-before
               (span-ending-at (chart-position-before end-of-before-segment)))))
 
