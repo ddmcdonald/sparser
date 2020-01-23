@@ -27,7 +27,7 @@
 ;(def-family-with-id "sensor" "XFAM:PF13796") 
 (def-family-with-id "selenophosphate synthetase" "IPR004536") 
 (def-family-with-id "ribonucleotide reductase inhibitor" "XFAM:PF08591") 
-(def-family-with-id "rhoGAP" "XFAM:PF00620") 
+;(def-family-with-id "rhoGAP" "XFAM:PF00620") 
 (def-family-with-id "nuclear receptor coactivator" "XFAM:PF08815") 
 ;(def-family-with-id "nuclear receptor co-repressor" "BE:NCOR") 
 (def-family-with-id "rRNA processing" "XFAM:PF08524") 

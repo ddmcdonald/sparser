@@ -281,7 +281,7 @@
 (def-family-with-id "RasGEF" "XFAM:PF00617" :synonyms ("Ras-GEF" "Ras GEF")) ; many members
 
 (def-family-with-id "Rho" "FPLX:RHO" :synonyms ("rho family" "rho" "FA:03668") :members ("UP:P08100"))
-(def-family-with-id "RhoGAP" "IPR000198" :synonyms ("Rho GTPase-activating protein" "Rho-GAP"))
+(def-family-with-id "RhoGAP" "IPR000198" :synonyms ("Rho GTPase-activating protein" "Rho-GAP" "rhoGAP" "XFAM:PF00620"))
 (def-family-with-id "RhoGDI" "FPLX:RhoGDI" :synonyms ("Rho-GDI") :members ("UP:P52565" "UP:P52566" "UP:Q99819"))
 (def-family-with-id "Ric-8" "XFAM:PF10165.7" :synonyms ("ric-8" "ric8"))
 (def-family-with-id "RING" "XFAM:PF00097")
