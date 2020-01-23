@@ -22263,7 +22263,7 @@ arsenite"
            do (setf (gethash w *allowable-protein-head-ht*) t)))))
 
 (defparameter *used-protein-defs* (make-hash-table :size 100000 :test #'equal))
-(defparameter *warn-on-questionable-protein-heads* t)
+(defparameter *warn-on-questionable-protein-heads* nil)
 
 
 (defun allowable-protein-head (w)
