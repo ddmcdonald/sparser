@@ -217,3 +217,4 @@
 (def-indiv-with-id organism "pig" "NCIT:C14280" :name "pig")
 (def-indiv-with-id bio-organ "CNS" "NCIT:C12433" :name "central nervous system" :synonyms ("Central Nervous System") :maintain-case t) 
 (def-indiv-with-id bio-organ "nephron" "MESH:D009399")
+(def-indiv-with-id bio-organ "striatum" "UBERON:0002435")

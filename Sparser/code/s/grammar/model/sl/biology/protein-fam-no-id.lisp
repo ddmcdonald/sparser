@@ -20,7 +20,12 @@
 (noun "receptor protein-tyrosine kinase" :super kinase)
 (noun ("scaffold" "scaffolding protein") :super protein)
 (noun "coactivator" :super protein)
-(noun "transporter" :super protein)
+(define-category transporter :specializes protein
+                 :bindings (uid "GO:0005215")
+                 :realization (:noun "transporter"))
+
+(noun ("anti-oncogene" "antioncogene") :super protein)
+(noun ("tumor suppressor gene" "TSG" "tsg") :super protein)
 
 (noun "isomerase" :super enzyme)
 (noun "ligase" :super enzyme)
@@ -38,6 +43,7 @@
 (noun "glucosyltransferase" :super enzyme)
 
 (noun "growth factor" :super protein) ;; actually, either a protein or hormone, but occasionally some other molecule
+
 
 ;; likely figure numbers
 ;;(def-family "2B" :members ("UP:O94953" "UP:Q93097" "UP:Q9UQ03"))
@@ -308,15 +314,15 @@
 (def-family "cpt1b" :members ("UP:A5PLL0" "UP:Q92523")) 
 (def-family "derived growth factor" :members ("UP:P01127" "UP:P04085" "UP:P16234")) 
 (def-family "dihydrodiol dehydrogenase 3" :members ("UP:P14550" "UP:P42330")) 
-(def-family "eIF-2A" :members ("UP:P05198" "UP:Q9BY44")) 
 (def-family "ecto" :members ("UP:P49961" "UP:Q9UPN9"))
+(def-family "elongation factor-1-alpha" :members ("UP:P68104" "UP:Q05639") :synonyms ("EF-1alpha" "EF-1α" "EF1α" "eF1α" "elongation factor 1-alpha" "elongation factor-1α" "elongation factor 1alpha" "EF1alpha"))
 (def-family "envelope glycoprotein" :members ("UP:D2XWF1" "UP:E2F1Z4" "UP:O41637" "UP:Q5EHA4" "UP:Q99C47" "UP:W0G7P8")) ;all HIV, so BG removed them, but that's what they're from 
 (def-family "f-actin cross-linking protein" :members ("UP:P12814" "UP:P35609")) 
 (def-family "f3" :members ("UP:P13726" "UP:Q12860")) 
 (def-family "factor 1" :members ("UP:O95831" "UP:P48061" "UP:Q8WXW3")) 
 (def-family "forkhead" :synonyms ("Forkhead Box Protein") :members ("UP:O16850" "UP:O43524" "UP:Q9UJU5"))
 (def-family "fritz" :members ("UP:O95876" "UP:Q92765")) 
-(def-family "gag protein" :members ("UP:Q79354" "UP:Q79360"))
+(def-family "gag protein" :members ("UP:Q79354" "UP:Q79360")) ;; both unreviewed hiv
 (def-family "gene 1" :members ("UP:O14503" "UP:O15503" "UP:O95997" "UP:P49788" "UP:Q2M385" "UP:Q86UE4")) 
 (def-family "glyceraldehyde-3-phosphate dehydrogenase" :members ("UP:O14556" "UP:P04406")) 
 (def-family "growth factor receptor" :members ("UP:P00533" "UP:P04629" "UP:P08138" "UP:P08581" "UP:P16234" "UP:P17948" "UP:P35968")) 
@@ -660,7 +666,7 @@
 ;(def-family "EC 2.5.1.58" :members ("UP:Q02293" "UP:Q04631")) 
 (def-family "EDG1" :members ("UP:O94992" "UP:P21453")) 
 (def-family "EDG2" :members ("UP:P41223" "UP:Q92633")) 
-(def-family "EF1alpha" :members ("UP:O64937" "UP:P85915")) 
+;(def-family "EF1alpha" :members ("UP:O64937" "UP:P85915")) 
 (def-family "EFA6A" :members ("UP:A5PKW4" "UP:Q5DTT2")) 
 (def-family "EGF1" :members ("UP:P10079" "UP:Q96RP9")) 
 (def-family "EGR-1" :members ("UP:P08046" "UP:P18146") :synonyms ("early growth response protein 1")) 
@@ -1255,7 +1261,7 @@
 ;(def-family "TNFR" :members ("UP:P25942" "UP:Q9Y5U5")) 
 (def-family "TOC" :members ("UP:P02930" "UP:Q6PJF5")) 
 (def-family "TPK" :members ("UP:O34664" "UP:P35202")) 
-(def-family "TPP" :members ("UP:P10463" "UP:Q68CZ2")) 
+;(def-family "TPP" :members ("UP:P10463" "UP:Q68CZ2")) 
 (def-family "TPX" :members ("UP:O66780" "UP:P07202")) 
 (def-family "TR2" :members ("UP:P13056" "UP:Q17QD6")) 
 (def-family "TR3" :members ("UP:Q7RTX0" "UP:Q93038")) 
@@ -1489,11 +1495,11 @@
 (def-family "fibroblast growth factor receptor 2 isoform IIIb" :members ("UP:O15520" "UP:P21802")) 
 (def-family "flagellin" :members ("UP:P85307" "UP:Q56826")) 
 (def-family "fliC" :members ("UP:P04949" "UP:Q56826")) 
-(def-family "flotillin-1" :members ("UP:O13127" "UP:O75955")) 
+;(def-family "flotillin-1" :members ("UP:O13127" "UP:O75955")) 
 ;(def-family "folate receptor alpha" :members ("UP:P02702" "UP:P15328"))
 (def-family "formyl peptide receptor" :members ("UP:P21462" "UP:P25090")) 
-(def-family "formyl peptide receptor 2" :members ("UP:O88536" "UP:P25090")) 
-(def-family "foxp3" :members ("UP:B7ZLG1" "UP:Q9BZS1")) 
+;(def-family "formyl peptide receptor 2" :members ("UP:O88536" "UP:P25090")) one mouse
+;(def-family "foxp3" :members ("UP:B7ZLG1" "UP:Q9BZS1")) ; one unreviewed
 (def-family "fps" :members ("UP:P07332" "UP:P31040") :synonyms ("succinate dehydrogenase ubiquinone flavoprotein subunit mitochondrial")) 
 ;(def-family "frizzled-1" :members ("UP:O57328" "UP:Q9UP38") :synonyms ("fz1")) 
 ;(def-family "frizzled-4" :members ("UP:Q9IA05" "UP:Q9ULV1") :synonyms ("fz4")) 
@@ -1584,10 +1590,10 @@
 (def-family "major capsid protein" :members ("UP:P17499" "UP:P22776")) 
 (def-family "malate synthase" :members ("UP:D4GTL2" "UP:Q9LZC3")) 
 (def-family "mash2" :members ("UP:O35885" "UP:Q99929")) 
-(def-family "mat" :members ("UP:P24752" "UP:Q00266")) 
+;(def-family "MAT" :members ("UP:P24752" "UP:Q00266")) 
 ;(def-family "matrilysin" :members ("UP:P09237" "UP:P55032")) 
 (def-family "matrix metalloproteinase" :synonyms ("MT-MMP" "MT-MMPs") :members ("UP:P50281" "UP:P51511" "UP:P51512" "UP:Q99542" "UP:P22894" "UP:P09237" "UP:Q9ULZ9" "UP:P14780" "UP:P09238" "UP:P09237")) ;and others
-(def-family "mats" :members ("UP:Q00266" "UP:Q95RA8")) 
+;(def-family "mats" :members ("UP:Q00266" "UP:Q95RA8")) 
 (def-family "mdr2" :members ("UP:P21439" "UP:Q8LPK2")) 
 (def-family "melittin" :members ("UP:P68407" "UP:Q8LW54")) 
 (def-family "menin" :members ("UP:O00255" "UP:Q0P5I0")) 
@@ -1604,8 +1610,8 @@
 (def-family "mpr1" :members ("UP:P11717" "UP:P43588")) 
 (def-family "mtf1" :members ("UP:Q01538" "UP:Q14872")) 
 (def-family "mu 1" :members ("UP:P11077" "UP:P35372")) 
-(def-family "mu2" :members ("UP:P12418" "UP:Q00335")) 
-(def-family "multidrug resistance" :members ("UP:P08183" "UP:P96712")) 
+(def-family "mu2" :members ("UP:P12418" "UP:Q00335")) ;two viruses
+(def-family "multidrug resistance" :members ("UP:P08183" "UP:P96712")) ; both are valid... and there are many more
 (def-family "mum2" :members ("UP:Q15007" "UP:Q9Y5R8")) 
 (def-family "mycb" :members ("UP:P15171" "UP:Q6P8Z1")) 
 (def-family "myosin 2a" :members ("UP:Q875X3" "UP:Q9UKX2")) 
@@ -1628,8 +1634,8 @@
 (def-family "neuraminidase" :members ("UP:P18881" "UP:P31206")) 
 ;(def-family "neurogenin1" :members ("UP:O42606" "UP:Q92886") :synonyms ("ngn1"))
 (def-family "neuronal calcium sensor 1" :members ("UP:P62166" "UP:Q91614")) 
-(def-family "neuropilin-1" :members ("UP:O14786" "UP:P79795")) 
-(def-family "neurotactin" :members ("UP:P23654" "UP:P78423")) 
+;(def-family "neuropilin-1" :members ("UP:O14786" "UP:P79795")) 
+;(def-family "neurotactin" :members ("UP:P23654" "UP:P78423")) 
 (def-family "nirs" :members ("UP:Q39161" "UP:Q5FBZ9")) 
 (def-family "nkx2.1" :members ("UP:P43699" "UP:P50220")) 
 (def-family "non-structural protein 2" :members ("UP:P28889" "UP:Q3ZK62")) 
@@ -1803,8 +1809,8 @@
 ;(def-family "smad8" :members ("UP:O15198" "UP:Q9JIW5")) 
 ;(def-family "small ubiquitin-related modifier 3" :members ("UP:P55854" "UP:Q17QV3")) 
 (def-family "snr1" :members ("UP:Q12824" "UP:Q17348")) 
-(def-family "solute carrier family 2" :members ("UP:P11166" "UP:P11169")) 
-(def-family "solute carrier family 2, facilitated glucose transporter member 4" :members ("UP:P14142" "UP:P14672")) 
+(def-family "solute carrier family 2" :members ("UP:P11166" "UP:P11169" "UP:P14672")) 
+;(def-family "solute carrier family 2, facilitated glucose transporter member 4" :members ("UP:P14142" "UP:P14672")) one human one mouse
 (def-family "son of sevenless homolog 1" :members ("UP:Q07889" "UP:Q62245")) 
 (def-family "sororin" :members ("UP:Q563C3" "UP:Q96FF9")) 
 (def-family "spc1" :members ("UP:P09958" "UP:Q74Z81")) 
@@ -1823,10 +1829,10 @@
 (def-family "sur8" :members ("UP:A8XWW4" "UP:Q9UQ13")) 
 (def-family "syn" :members ("UP:O15061" "UP:P06241")) 
 (def-family "syn1" :members ("UP:O95988" "UP:P17600")) 
-(def-family "synapsin" :members ("UP:P17600" "UP:Q24546")) 
-(def-family "synapsin-1" :members ("UP:P17599" "UP:P17600") :synonyms ("synapsin1")) 
+;(def-family "synapsin" :members ("UP:P17600" "UP:Q24546")) 
+;(def-family "synapsin-1" :members ("UP:P17599" "UP:P17600") :synonyms ("synapsin1")) 
 ;(def-family "synaptotagmin" :members ("UP:P21579" "UP:Q17RD7")) 
-(def-family "syncytin" :members ("UP:P61561" "UP:Q9UQF0")) 
+(def-family "syncytin" :members ("UP:P60508" "UP:Q9UQF0")) 
 ;(def-family "syndecan" :members ("UP:P49415" "UP:Q90ZY9")) 
 ;(def-family "syndecan-2" :members ("UP:P34741" "UP:Q58DD4"))
 (def-family "syntaxin-1" :members ("UP:P61266" "UP:Q16623")) 

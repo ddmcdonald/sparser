@@ -105,14 +105,16 @@
 (def-family-with-id "dopamine receptor" "FPLX:DRD") 
 (def-family-with-id "Doppel" "XFAM:PF11466.6" :synonyms ("doppel")) 
 (def-family-with-id "E6" "XFAM:PF00518.15" :synonyms ("e6")) 
-(def-family-with-id "EIF2alpha" "FA:01067" :synonyms ("eIF-2-alpha" "eIF2alpha"))
+(def-family-with-id "EIF2alpha" "FA:01067" :synonyms ("eIF-2-alpha" "eIF2alpha" "eIF-2A") :members ("UP:P05198" "UP:Q9BY44"))
 (def-family-with-id "EIF2" "FA:01067" :synonyms ("eIF-2" "eIF2") :members ("UP:P20042"))
-(def-family-with-id "EIF2B" "FPLX:EIF2B" :synonyms ("eIF-2" "eIF2B") :members ("UP:P49770" "UP:Q13144" "UP:Q14232" "UP:Q9NR50" "UP:Q9UI10"))
+(def-family-with-id "EIF2B" "FPLX:EIF2B" :synonyms ("eIF-2B" "eIF2B") :members ("UP:P49770" "UP:Q13144" "UP:Q14232" "UP:Q9NR50" "UP:Q9UI10"))
 (def-family-with-id "EIF4A" "FPLX:EIF4A" :synonyms ("eIF 4A" "eIF4A" "eIf4a") :members ("UP:P60842"))
 (def-family-with-id "EIF4G" "FPLX:EIF4G" :synonyms ("eIF-4G" "eIF4 G" "Eukaryotic translation initiation factor 4G" "eIF4Gs" "eIF4G") :members ("UP:Q04637"))
 
 (def-family-with-id "elastase" "FPLX:ELA" :members ("UP:Q9UNI1" "UP:P08217" "UP:P08861" "UP:P08246" "UP:P39900")) ;there are 3 other human elastases but we don't have the base proteins defined "UP:Q99895" "UP:P09093" "UP:P08218"
+(def-family-with-id "elongation factor-1" "NCIT:C38958" :synonyms ("eF1" "EF1" "elongation factor 1") :members ("UP:P24534" "UP:P26641" "UP:P29692" "UP:P68104" "UP:Q05639"))
 (def-family-with-id "elongin" "NCIT:C95244" :members ("UP:Q14241" "UP:Q15369" "UP:Q15370"))
+(def-family-with-id "keratin" "IPR003461")
 (def-family-with-id "ELF" "XFAM:PF03317.11" :synonyms ("elf")) 
 (def-family-with-id "ephrin receptor" "FPLX:Ephrin_receptor" :members ("UP:P21709")) 
 (def-family-with-id "ERD2" "FA:01126" :synonyms ("erd2"))
@@ -279,6 +281,7 @@
 (def-family-with-id "RasGEF" "XFAM:PF00617" :synonyms ("Ras-GEF" "Ras GEF")) ; many members
 
 (def-family-with-id "Rho" "FPLX:RHO" :synonyms ("rho family" "rho" "FA:03668") :members ("UP:P08100"))
+(def-family-with-id "RhoGAP" "IPR000198" :synonyms ("Rho GTPase-activating protein" "Rho-GAP"))
 (def-family-with-id "RhoGDI" "FPLX:RhoGDI" :synonyms ("Rho-GDI") :members ("UP:P52565" "UP:P52566" "UP:Q99819"))
 (def-family-with-id "Ric-8" "XFAM:PF10165.7" :synonyms ("ric-8" "ric8"))
 (def-family-with-id "RING" "XFAM:PF00097")
@@ -331,6 +334,7 @@
 (def-family-with-id "STAT-5" "FPLX:STAT5" :synonyms ("STAT5" "Stat5" "stat5") :members ("UP:P42229" "UP:P51692")) 
 (def-family-with-id "Stearoyl-CoA desaturase" "FPLX:SCD" :members ("UP:Q86SK9" "UP:O00767")) 
 (def-family-with-id "SWI/SNF complex" "FPLX:SWI_SNF")
+(def-family-with-id "synapsin" "IPR001359" :members ("UP:P17600"))
 (def-family-with-id "syntaxin" "XFAM:PF00804" :members ("UP:P61266" "UP:Q12846" "UP:Q13190" "UP:Q13277" "UP:Q16623" "UP:Q9UNK0" "UP:O14662" "UP:O15400" "UP:O43752" "UP:O60499" "UP:O75558" "UP:P32856"))
 (def-family-with-id "TAP" "FPLX:TAP" :members ("UP:O60763" "UP:O75369") :maintain-case t)
 (def-family-with-id "TCRP1" "XFAM:PF14944.4") 

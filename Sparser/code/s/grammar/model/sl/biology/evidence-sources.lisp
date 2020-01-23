@@ -23,6 +23,8 @@
 (def-indiv-with-id database "msigdb" "msigdb" :name "MSigDB" :synonyms ("Molecular Signatures Database"))
 (def-indiv-with-id database "pharmgkb" "pharmgkb" :name "PharmGKB" :synonyms ("Pharmacogenomics Knowledgebase"))
 (def-indiv-with-id database "biocarta" "biocarta" :name "BioCarta")
+(def-indiv-with-id database "MeSH" "MESH" :name "MeSH" :maintain-case t)
+
 
 ;; note: this is based on a question in
 ;; all-bioagent-capability-sentences but googling I can't actually
