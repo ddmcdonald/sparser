@@ -426,7 +426,7 @@
 (def-family-with-id "3.1.4.11" "ECCODE:3.1.4.11" :name "3.1.4.11" :members ("UP:P16885" "UP:P19174" "UP:Q00722" "UP:Q01970" "UP:Q15147" "UP:Q9NQ66" "UP:Q9P212")) 
 (def-family-with-id "3.1.4.4" "ECCODE:3.1.4.4" :name "3.1.4.4" :members ("UP:O14939" "UP:Q13393")) ;;FPLX:PLD
 (def-family-with-id "alcohol dehydrogenase" "FPLX:ADH" :members ("UP:P07327" "UP:P00325" "UP:P00326") :synonyms ("ADH" "adh")) 
-(def-family-with-id "AMPK" "FPLX:AMPK" :synonyms ("AMP activated protein kinase" "Ampk") :members ("UP:O43741" "UP:P54646" "UP:Q13131")) 
+(def-family-with-id "AMPK" "FPLX:AMPK" :synonyms ("AMP activated protein kinase" "adenosine monophosphate-activated protein kinase" "Ampk") :members ("UP:O43741" "UP:P54646" "UP:Q13131")) 
 (def-family-with-id "AMPKalpha" "FPLX:AMPK_alpha" :synonyms ("NCIT:C116019" "5-AMP-activated protein kinase catalytic subunit alpha" "PRKAA" "AMPK-alpha" "AMPKα" "5-AMP-activated protein kinase catalytic subunit alpha")) 
 
 (def-family-with-id "Acad" "FPLX:ACAD" :synonyms ("acyl-CoA dehydrogenase" "acyl-Coenzyme A dehydrogenase" "ACAD" "acyl CoA dehydrogenase") :members ("UP:P11310"))
