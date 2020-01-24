@@ -59,7 +59,7 @@
   (tr :island-driven-forest-parse start-pos end-pos)
   (when (or *trace-island-driving* 
             *parse-edges*
-            *trace-conjunction-hook*
+            (and (there-are-conjunctions?) *trace-conjunction-hook*)
             *trace-whack-a-rule*
             *print-forest-after-doing-forest*) ;; light weight
     (format t "~&Treetops at start of island-driven parsing")
@@ -116,7 +116,7 @@
     (older-island-driving-rest-of-pass-one))
 
   (when (there-are-conjunctions?)
-    (tr :try-spanning-conjunctions)
+    (tr :try-spanning-conjunctions-again)
     (let ((*allow-form-conjunction-heuristic* t))
       (declare (special *allow-form-conjunction-heuristic*))
       (or (try-spanning-conjunctions)
@@ -165,7 +165,9 @@
   (let* ((treetops (successive-treetops :from start-pos :to end-pos))
          (number-of-treetops (length treetops)))
     (tr :islands-pass-2 number-of-treetops)
-    (when (or *print-forest-after-doing-forest* *trace-DA-check* *trace-conjunction-hook*)
+    (when (or *print-forest-after-doing-forest*
+              *trace-DA-check*
+              (and (there-are-conjunctions?) *trace-conjunction-hook*))
       (format t "~&~%Just before 2d pass:~%")
       (tts)
       (when *trace-DA-check*
@@ -178,7 +180,7 @@
 (defun new-pass2 (sentence start-pos end-pos treetops)
   (flet ((conjunction-check ()
            (when (there-are-conjunctions?)
-             (tr :try-spanning-conjunctions)
+             (tr :try-spanning-conjunctions-pass2)
              (let ((*allow-form-conjunction-heuristic* t))
                (declare (special *allow-form-conjunction-heuristic*))
                (try-spanning-conjunctions)))))

@@ -365,14 +365,20 @@
 
 
 (defun look-for-possible-conjunction (conj-pos)
-  
+  "Called from sf-action/spanned-segment and passed the position
+   of the conjunction that conjunction-just-before-this-segment 
+   identified. Similar to short-conjunctions-sweep in operation,
+   and moves over any comma that preceded the conjunction, but
+   does not explicitly look for the Oxford comma pattern as it is
+   working with much larger, likely to be inaccurate, phrases.
+   Invokes conjoin/2, so any longer sequence of conjoined
+   elements does get looked for."
   (tr :calling-conj-checkout-routine-at conj-pos)
 
   (let* ((edge-before (left-treetop-at/only-edges
                        (chart-position-before conj-pos)))
          (edge-after (right-treetop-at/only-edges
                       (chart-position-after conj-pos))))
-    ;;(break "top of look-for-possible: ~a" conj-pos)
     (tr :conj-edges-to-each-side edge-before edge-after)
 
     (when (word-p edge-before) ;; source-start -- dynamic-model #93
@@ -800,21 +806,6 @@
       (else (tr :no-list-conj)
             nil))))
 
-#| Excised from short-conjunctions-sweep. It moves the left-side
-   reference position across the Oxford comma if there is one.
-   Since that code runs before the chunking operations that carate
-   the segments, it can lead to very odd mistakes.
-
-    ;; handle case of A, B, and C (i.e. comma before conjunction)
-    (when (and (not (word-p left-edge))
-               ;; case such as ...cells (Figure 1B and 1C) and we...
-               (eq word::comma 
-                   (edge-category 
-                    (if (edge-vector-p left-edge) 
-                      (lowest-edge left-edge)
-                      left-edge))))
-          (setq left-edge (next-treetop/leftward left-edge))  |#
-
 (defgeneric edge-over-comma? (edge)
   (:documentation "Is this an edge over a comma?")
   (:method ((e edge))
@@ -827,7 +818,6 @@
     (if left-edge
       (get-another-comma-chain-conj
        (push left-edge edges-so-far) left-edge new-left-pos)
-
       (if (> (length edges-so-far) 2)
         ;; we've accumulated at least one more edge, so we return
         ;; the list whether or not we've extended the chain

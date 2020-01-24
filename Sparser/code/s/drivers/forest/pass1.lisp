@@ -339,7 +339,7 @@
             (if heuristic
               ;; conjoin/2 looks for leftwards extension of conjunction
               (let ((edge (conjoin/2 left-edge right-edge heuristic :pass 'look-for-short-obvious-conjunctions)))
-                (tr :conjoined-edge edge)
+                (tr :conjoined-edge edge left-edge right-edge)
                 edge)
               (tr :no-heuristics-for left-edge right-edge))))))))
 
@@ -347,6 +347,11 @@
   "Permit try-spanning-conjunctions to look past left adjacent commas")
 
 (defun try-spanning-conjunctions (&optional (allow-form-conjunction-heuristic t))
+  "Called from run-island-checks as the second check for conjunctions.
+   There it's called with :vg as the form argument. Also called in the last
+   conj check in run-island-checks, that time with no argument.
+   It's called many times, potentially, within pass2
+"
   ;; This is the version used in later situations and applying to
   ;; much larger phrases that may only be composable on the basis
   ;; of having a common form (both NPs, both clauses, etc.)
@@ -359,9 +364,9 @@
         (tr :looking-at-conj-edge conj-edge)
         (let ((edge-to-left (left-treetop-at/edge conj-edge))
               (edge-to-right (right-treetop-at/edge conj-edge)))
-
           (unless (or (literal-edge? edge-to-left) ;; comma
                       (literal-edge? edge-to-right))
+            ;;/// Insert look-past flag here to override that rejection
             (tr :trying-to-conjoin  edge-to-left edge-to-right)
             (push-debug `(,edge-to-left ,edge-to-right))
             (let ((*allow-form-conjunction-heuristic* allow-form-conjunction-heuristic))
@@ -371,7 +376,7 @@
                   (let ((edge 
                          (conjoin-two-edges edge-to-left edge-to-right heuristic
                                             :pass 'try-spanning-conjunction)))
-                    (tr :conjoined-edge edge)
+                    (tr :conjoined-edge edge edge-to-left edge-to-right)
                     edge)
                   (else
                    (tr :no-conjunction-heuristics-applied)

@@ -412,23 +412,8 @@ have to be tail recursion to the next thing to do.
     ;; of one of these positions.
     (let ((conj-pos (conjunction-just-before-this-segment *left-segment-boundary*)))
       (when conj-pos
-        ;;(format t "~&conj-pos = ~a~%" conj-pos)
-        ;;(break "conj-pos: ~a" conj-pos)
         (look-for-possible-conjunction conj-pos))))
-
   (sf-action/spanned-segment1))
-
-#|
-  (if *pending-conjunction*
-    (if *do-heuristic-segment-analysis*
-      (if (sucessive-sweeps?)
-         (sf-action/spanned-segment1)
-         (check-out-possible-conjunction *left-segment-boundary*))
-      (else
-        (tr ::turning-off-conj-flag-w/o-any-action)
-        (setq *pending-conjunction* nil)
-        (sf-action/spanned-segment1)))
-    (sf-action/spanned-segment1)) |#
 
 (defun sf-action/spanned-segment1 ()
   (declare (special *return-after-doing-segment*))
