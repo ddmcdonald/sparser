@@ -36,9 +36,9 @@
 
 
 (deftrace :conj-edges-to-each-side (edge-before edge-after)
-  ;; called from Check-out-possible-conjunction
+  ;; called from look-for-possible-conjunction
   (when *trace-conjunction-algorithm*
-    (trace-msg "[conj] edge before \"and\" = ~A~
+    (trace-msg "[conj] edge before = ~A~
               ~%       edge after = ~A"
                edge-before edge-after)))
 
@@ -102,9 +102,20 @@
 
 
 (deftrace :calling-conj-checkout-routine-at (pos)
-  ;; called from Check-out-possible-conjunction
+  ;; called from look-for-possible-conjunction
   (when *trace-conjunction-hook*
-    (trace-msg "[conj] reacting to the flag at ~A" pos)))
+    (trace-msg "[conj] reacting to the conjunction at ~A" pos)))
+
+(deftrace :reset-edge-before-comma (edge-before)
+  ;; called from look-for-possible-conjunction
+  (when *trace-conjunction-hook*
+    (trace-msg "[conj] moved over comma: ~a" edge-before)))
+
+(deftrace :checking-conj (left-edge right-edge)
+  ;; called from look-for-possible-conjunction
+  (when *trace-conjunction-hook*
+    (trace-msg "[conj]   considering conjoining ~a and ~a"
+               left-edge right-edge)))
 
 (deftrace :turning-off-conj-flag-w/o-any-action ()
   ;; called from sf-action/no-edges

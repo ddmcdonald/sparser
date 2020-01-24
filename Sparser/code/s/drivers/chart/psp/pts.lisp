@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1996,2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2013-2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "pts"  --  "parse the segment"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  August 2016
+;;;  Version:  January 2020
 
 ;; initiated 4/22/91, extended 4/23, tweeked 4/24,26
 ;; 5/6, "march/seg" saves version that doesn't check for an extensible
@@ -185,7 +185,9 @@
    subroutines should re-enter the scanning level of processing
    by directly making a tail-recursive call to one of the functions 
    at that level (or at the forest level) -- nil. Or should instead
-   return to its caller -- t. ")
+   return to its caller -- t.
+   Bound to t by parse-chunk-interior so we parse all the chunks
+   sequentially.")
 
 (defun return-to-scanning-level (boundary-pos)
   (declare (special *return-after-doing-segment*))
@@ -194,17 +196,16 @@
 
 
 
+;;;------------------------
+;;; decide what to do next
+;;;------------------------
+
 (defun segment-parsed1 ()
   ;; called from within the march/segment parsing routines once
   ;; they have walked all the way back to the left end of the segment
   (tr :segment-parsed1)
   (tr :parsing-of-segment-finished)
   (segment-finished (segment-coverage)))
-
-
-;;;------------------------
-;;; decide what to do next
-;;;------------------------
 
 (defun segment-finished (coverage)
   (declare (special *peek-rightward*))
@@ -217,7 +218,6 @@
     ;; just happened, we can be very specific about where to drop into
     ;; the word-level fsa rather than just call scan-next-segment.
     (then
-      ;;(return-to-scan-level-from-null-span *where-the-last-segment-ended*)
       (return-to-scanning-level *right-segment-boundary*))
     (else ;; (p "Roshan's driver Reza Qashqaei")
      (when *peek-rightward*
@@ -291,15 +291,15 @@ have to be tail recursion to the next thing to do.
       'note-text-relations-in-segment)
      (t 
       'normal-segment-finished-options))
-    "Name of the function to call after the interior of a segment
+    "The name of the function to be called after the interior of a segment
      has been parsed. It may do further analyses of what's in the
      segments, but eventually has to do the 'normal' options
      and ultimately scan another segment or move to the forest level."))
 
 
 (defun after-action-on-segments (coverage)
+  "Called from segment-finished after the globals have been tidy'd up"
   (declare (special *after-action-on-segments*))
-  ;; called from segment-finished
   (tr :after-action-on-segments)
   (funcall *after-action-on-segments* coverage))
 
@@ -405,8 +405,17 @@ have to be tail recursion to the next thing to do.
    one edge. Site for segment-finished hook and a conjunction check."
   (tr :spanned-segment)
   (segment-finished-hook)
-  (when (conjunction-is-before-this-segment *left-segment-boundary*)
-    (look-for-possible-conjunction *left-segment-boundary*))
+  (when *pending-conjunction*
+    ;; This flag stays up throughout. It consists of one or more
+    ;; positions that contain a conjunction. We run the conjunction
+    ;; routine only if the start of this segment is just to the left
+    ;; of one of these positions.
+    (let ((conj-pos (conjunction-just-before-this-segment *left-segment-boundary*)))
+      (when conj-pos
+        ;;(format t "~&conj-pos = ~a~%" conj-pos)
+        ;;(break "conj-pos: ~a" conj-pos)
+        (look-for-possible-conjunction conj-pos))))
+
   (sf-action/spanned-segment1))
 
 #|
@@ -476,9 +485,9 @@ have to be tail recursion to the next thing to do.
 
 (defun sf-action/all-contiguous-edges/no-more-heuristics ()
   (tr :sf-action/all-contiguous-edges/no-more-heuristics)
-  (when *pending-conjunction*
+  #+ignore(when *pending-conjunction*
     (if *do-heuristic-segment-analysis*
-      (look-for-possible-conjunction *left-segment-boundary*)
+      (look-for-possible-conjunction *left-segment-boundary*) ;<<<<<<<
       (else
         (tr :turning-off-conj-flag-w/o-any-action)
         (setq *pending-conjunction* nil))))
@@ -516,7 +525,7 @@ have to be tail recursion to the next thing to do.
 (defun sf-action/some-adjacent-edges/no-more-heuristics ()
   (declare (special *return-after-doing-segment*))
   (tr :sf-action/some-adjacent-edges/no-more-heuristics)
-  (when *pending-conjunction*
+  #+ignore(when *pending-conjunction*
     (tr ::turning-off-conj-flag-w/o-any-action)
     (setq *pending-conjunction* nil))
   (trivially-span-current-segment)
@@ -554,7 +563,7 @@ have to be tail recursion to the next thing to do.
 (defun sf-action/discont-edges/no-more-heuristics ()
   (declare (special *return-after-doing-segment*))
   (tr :discontinuous/no-more-heuristics)
-  (when *pending-conjunction*
+  #+ignore(when *pending-conjunction*
     (tr ::turning-off-conj-flag-w/o-any-action)
     (setq *pending-conjunction* nil))
   (let ((right-boundary *right-segment-boundary*))
@@ -580,7 +589,7 @@ have to be tail recursion to the next thing to do.
   ;; this region later
   (declare (special *return-after-doing-segment*))
   (tr :no-edges)
-  (when *pending-conjunction*
+  #+ignore(when *pending-conjunction*
     ;; could happen when cruising through text that's not in
     ;; a known sublanguage
     (tr ::turning-off-conj-flag-w/o-any-action)

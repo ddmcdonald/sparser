@@ -346,14 +346,13 @@
 ;;; checking out the segment after the conjunction -- driver
 ;;;----------------------------------------------------------
 
-
-(defun conjunction-is-before-this-segment (left-boundary) ; of completed segment
+(defun conjunction-just-before-this-segment (left-boundary) ; of completed segment
   "In a successive-sweeps algorithm, all of the conjunctions
   in the sentence are going to be stashed on *pending-conjunction*.
   In the incremental scan algorithm we get a conjunction and
   deal with it at the earliest possible moment, which is when
   the segment just after the conjunction has been scanned.
-  That moment is sf-action/spanned-segment, which call this
+  That moment is sf-action/spanned-segment, which calls this
   function to determine whether any pending conjunction
   applies to the segment it's just finished. This gates a call
   to look-for-possible-conjunction below."
@@ -361,52 +360,39 @@
   (let ((conjunction-positions *pending-conjunction*)
         (pos-before (chart-position-before left-boundary)))
     (loop for conj-pos in conjunction-positions
-       when (eq conj-pos pos-before) return t
+       when (eq conj-pos pos-before) return conj-pos
        finally (return nil))))
 
 
-  ;; (when *pending-conjunction*
-  ;;   (unless (null (cdr *pending-conjunction*))
-  ;;     (break "mulitple conjunctions"))
-  ;;   (eq (car *pending-conjunction*) (chart-position-before left-boundary))))
- 
-(defun look-for-possible-conjunction (start-of-after-segment)
+(defun look-for-possible-conjunction (conj-pos)
+  
+  (tr :calling-conj-checkout-routine-at conj-pos)
 
-  ;; This is the ordinary entry point from segment-finishing code
-  ;; in drivers/chart/psp/pts.lisp (sf-action/spanned-segment)
-
-  ;; We wouldn't be called if there wasn't a full span over
-  ;; the segment after the conjunction, and the segment in front
-  ;; has at least the trivial span ("segment") over it.
-  ;;   Get the edges that span these segments and start applying
-  ;; progressively more heuristic conjunction algorithms until
-  ;; we get a match or know we don't yet have enough information
-  ;; in which case we set up a state that will have this process
-  ;; resumed later.
-
-  (tr :calling-conj-checkout-routine-at start-of-after-segment)
-
-  (let* ((end-of-before-segment (car *pending-conjunction*))
-         (position-after (chart-position-after end-of-before-segment))
-         (edge-before (span-ending-at end-of-before-segment))
-         (edge-after (span-starting-at position-after)))
+  (let* ((edge-before (left-treetop-at/only-edges
+                       (chart-position-before conj-pos)))
+         (edge-after (right-treetop-at/only-edges
+                      (chart-position-after conj-pos))))
+    ;;(break "top of look-for-possible: ~a" conj-pos)
+    (tr :conj-edges-to-each-side edge-before edge-after)
 
     (when (word-p edge-before) ;; source-start -- dynamic-model #93
       ;; "And does phospho-MAPK1 now have a peak?"
       (return-from look-for-possible-conjunction nil))
-
-    ;; check for a comma just before the conjunction. This first case
-    ;; depends on the grammar putting literal edges over it, so this
-    ;; will not be sufficent in general using a different grammar
+    
+    ;; check for a comma just before the conjunction. 
+    ;; This depends on the grammar putting literal edges over it,
+    ;; and isn't sufficent in general using with a different grammar
     (when (and edge-before
                (edge-p edge-before)
-               (eq (edge-category edge-before) (word-named ","))
-        (setq edge-before
-              (span-ending-at (chart-position-before end-of-before-segment)))))
-
-    (tr :conj-edges-to-each-side edge-before edge-after)
+               (eq (edge-category edge-before) (word-named ",")))
+      (setq edge-before
+            (span-ending-at
+             (chart-position-before
+              (chart-position-before conj-pos))))
+      (tr :reset-edge-before-comma edge-before))
 
     (let ((heuristic (conjunction-heuristics edge-before edge-after)))
+      (tr :checking-conj edge-before edge-after)
       (if heuristic
         (let ((edge (conjoin/2 edge-before edge-after heuristic
                                :pass 'after-chunking)))
@@ -417,7 +403,15 @@
     
 
 #| Original continuation when we were running a completely incremental scan
-    
+  ;; We wouldn't be called if there wasn't a full span over
+  ;; the segment after the conjunction, and the segment in front
+  ;; has at least the trivial span ("segment") over it.
+  ;;   Get the edges that span these segments and start applying
+  ;; progressively more heuristic conjunction algorithms until
+  ;; we get a match or know we don't yet have enough information
+  ;; in which case we set up a state that will have this process
+  ;; resumed later.
+
     (when (edge-vector-p edge-before)
       (let ((good-edges (reduce-multiple-initial-edges edge-before))) ;; no literals
         (setq edge-before (car (last good-edges)))))
