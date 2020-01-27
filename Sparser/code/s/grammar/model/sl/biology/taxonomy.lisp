@@ -433,6 +433,7 @@
                   ))
             (object
              (:or bio-entity cell-entity molecular-location
+                  ;;bio-process bio-mechanism
                   measurement bio-quality disease)))
     :realization
     (:s agent
@@ -447,6 +448,10 @@
 (define-category process-control-process :specializes caused-bio-process
   :binds ((affected-process (:or bio-process bio-mechanism bio-method
                                  bio-predication bio-relation medical-treatment)))
+  ::restrict ((object
+               (:or bio-entity cell-entity molecular-location
+                  bio-process bio-mechanism
+                  measurement bio-quality disease)))
   :realization
   (:o affected-process
       :o object))
