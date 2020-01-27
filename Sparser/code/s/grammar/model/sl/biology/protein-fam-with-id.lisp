@@ -538,7 +538,7 @@
 (def-family-with-id "VEGFR" "FPLX:VEGFR" :synonyms ("Vascular endothelial growth factor receptor" "VEGF receptor" "vascular endothelial growth factor-activated receptor activity" "GO:0005021") :members ("UP:P17948" "UP:P35968" "UP:P35916"))
 (def-family-with-id "acetyltransferase" "GO:0016407" :synonyms ("acetyl-transferase" "acetylase"))
 
-(def-family-with-id "actin" "FPLX:Actin" :members ("UP:P63267" "UP:P68133") :synonyms ("actin filament"))
+(def-family-with-id "actin" "FPLX:Actin" :members ("UP:P63267" "UP:P68133") :synonyms ("actin filament" "f-actin" "F-actin"))
 
 (def-family-with-id "bone morphogenetic protein" "FPLX:BMP" :synonyms ("NCIT:C17274" "BMP" "bmp") :members ("UP:O95390" "UP:O95393" "UP:O95972" "UP:P12643" "UP:P12644" "UP:P12645" "UP:P13497" "UP:P18075" "UP:P22003" "UP:P22004" "UP:P34819" "UP:P34820" "UP:P43026" "UP:P55107" "UP:Q6KF10" "UP:Q7Z5Y6" "UP:Q9UK05")) 
 ;(def-family-with-id "calcineurin" "NCIT:C17275" :members ("UP:P42322" "UP:Q08209"))
