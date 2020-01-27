@@ -202,15 +202,17 @@
   ss)
 
 
-(defun has-indra-data (s)
+(defun has-indra-data (s &optional break-on-errors)
   (let ((*indra-post-process* (list t)))
     (declare (special *indra-post-process*))
     (setq s (clear-out-xrefs s))
-    (safe-parse s)
+    (if break-on-errors
+        (qpp s)
+        (safe-parse s))
     (reverse (cdr (reverse *indra-post-process*)))))
 
-(defun indra-data (s) (has-indra-data s))
-(defun indra-forms (s) (find-indra-forms s))
+(defun indra-data (s &optional break-on-errors) (has-indra-data s break-on-errors))
+(defun indra-forms (s &optional break-on-errors) (find-indra-forms s 'dummy-pmc break-on-errors))
 
 
 (defun indra-field-filter (field type &key (return-fn #'identity) (data (get-json-sexp-statements)))
@@ -229,11 +231,11 @@
     
 (defvar *indra-sentence*)
 
-(defun find-indra-forms (s &optional pmid &aux (*indra-sentence* s))
+(defun find-indra-forms (s &optional pmid break-on-errors &aux (*indra-sentence* s))
   "Given a sentence, look at the has-indra-data for the sentence and
 pass the result to the appropriate indra generator"
   (declare (special *indra-sentence*))
-  (indra-sexps->json-sexps (has-indra-data s) pmid))
+  (indra-sexps->json-sexps (has-indra-data s break-on-errors) pmid))
 
 (defun indra-sexps->json-sexps (forms &optional pmid &key check-form)
   (remove nil ;; some forms will return nil -- will be on the
@@ -399,12 +401,24 @@ pass the result to the appropriate indra generator"
 (defun make-indra-binding (f cat? pmid)
   (cond ((get-indra-for-cwc?)
          (let* ((binding-sexpr (second f))
-                (binder (second (assoc 'sp::binder (cdr binding-sexpr))))
-                (bindee (second (assoc 'sparser::direct-bindee (cdr binding-sexpr))))
+                (binder (if (assoc 'sp::component (cdr binding-sexpr))
+                            (second (assoc 'sp::component (cdr binding-sexpr)))
+                            (second (assoc 'sp::binder (cdr binding-sexpr)))))
+                (bindee (if (assoc 'sp::component (cdr binding-sexpr))
+                            (second
+                             (assoc 'sp::component
+                                    ;; get the second component binding
+                                    (cdr (member
+                                          (assoc 'sp::component (cdr binding-sexpr))
+                                          (cdr binding-sexpr)
+                                          ))))
+                            (second (assoc 'sparser::direct-bindee (cdr binding-sexpr)))))
                 (result
                  `(((:type . "Complex")
-                    (:members
-                     (,binder ,bindee))))))
+                    ;;(:members ,binder ,bindee)
+                    (:members (,binder ,bindee))))))
+           (when (and (consp bindee)(not (keywordp (car bindee))))
+             (lsp-break "direct-bindee"))
            ;;(break "make-indra-binding ~%result=~%~s~%" result)
            result))
         (t
@@ -455,13 +469,17 @@ To MRA:
 (defun create-complex-json-from-associate (complex-expr &optional pmid sentence trigger (head (car complex-expr)))
   (let ((members
          (remove-duplicates
-          (loop for arg in (cdr complex-expr)
-                when (and (member (car arg) '(participant object))
-                          (or (itypep (car (second arg)) 'protein)
-                              (when (eq (car (second arg)) 'collection)
-                                (loop for type in (second (assoc 'type (cdr (second arg))))
-                                        thereis (itypep type 'protein)))))
-                collect (second arg))
+          (create-protein-indra-list
+           (loop for arg in (cdr complex-expr)
+                 when (and (consp arg) ;; "the association of one or more ..."
+                           (member (car arg) '(participant object))
+                           (consp (second arg))
+                           (or (itypep (car (second arg)) 'protein)
+                               (when (eq (car (second arg)) 'collection)
+                                 (loop for type
+                                       in (second (assoc 'type (cdr (second arg))))
+                                       thereis (itypep type 'protein)))))
+                collect (second arg)))
           :test #'equal)))
     (when (cdr members)
       (push (list sentence members) *bio-assoc-args*)
@@ -475,15 +493,20 @@ To MRA:
            (:ANNOTATIONS (:FOUND--BY ., (pname head)))))
          (:SBO . "http://identifiers.org/sbo/SBO:0000526"))))))
 
+(defun create-protein-indra-list (prots)
+  (loop for prot in prots
+        append
+          (if
+           (or (itypep (car prot) 'human-protein-family)
+               (itypep (car prot) 'protein-family))
+           (single-protein->indra-list prot nil)
+           (complex-protein-json prot))))
+
+
 (defun create-complex-json (complex-expr &optional pmid sentence trigger (head (car complex-expr)))
   (let ((members (remove-duplicates
-                  (loop for prot in (type-expressions-in complex-expr 'protein)
-                        append
-                          (if
-                           (or (itypep (car prot) 'human-protein-family)
-                               (itypep (car prot) 'protein-family))
-                           (single-protein->indra-list prot nil)
-                           (complex-protein-json prot)))
+                  (create-protein-indra-list
+                   (type-expressions-in complex-expr 'protein))
                   :test #'equal)))
     ;; don't create a complex if you can;t find its members
     (when (cdr members)
@@ -648,6 +671,7 @@ generate and indra form for that sentence"
     (if (null obj-forms)
         (then (push indra-data *missing-indra-object*) nil)
         (loop for objf in obj-forms
+                unless (stringp objf)
               append
                 (make-indra-act-or-express-with-obj
                  objf
@@ -1497,7 +1521,7 @@ form) and the item return an indra form for that item"
                (null text))
       (return-from make-indra-item-desc nil))
     ;;(lsp-break "xx")
-    `(,@name-form ,@db-ref ,@(when (not (get-indra-for-cwc?)) text-form)
+    `(,@name-form ,@db-ref ;;,@(when (not (get-indra-for-cwc?)) text-form)
                   ,@pred-forms)))
 
 (defun create-pred-forms (item-content)
@@ -2067,7 +2091,9 @@ can still match things like CHK1 and CHK-1"
                     (cond ((eq (car pair) :evidence)
                            (cdr pair))
                           ((eq (car pair) :members)
-                           (second pair))
+                           (cdr pair)
+                           ;;(second pair)
+                           )
                           ((not (consp (cdr pair)))
                            (cdr pair))
                           ((consp (second pair))
@@ -2094,7 +2120,7 @@ can still match things like CHK1 and CHK-1"
 
 
 (defparameter *pmc-indra-json-ht* (make-hash-table :test #'equal))
-
+(defparameter *use-phase3-hms-files* t)
 (defun read-indra-json (pmcid &optional (source :hms) &aux js-file)
   (unless (or (search "~/" pmcid)
               (search "/users/" pmcid))
@@ -2110,11 +2136,13 @@ can still match things like CHK1 and CHK-1"
                          :defaults
                          (asdf:system-relative-pathname
                           :r3
-
-                          "../corpus/hms-update/"))))
-  (with-open-file (in js-file :direction :input)
-    (when (> (file-length in) 0)
-      (cl-json::decode-json in))))
+                          (if *use-phase3-hms-files*
+                              "../corpus/phase3_nxml/"
+                              "../corpus/hms-update/")))))
+  (when (probe-file js-file)
+    (with-open-file (in js-file :direction :input)
+      (when (> (file-length in) 0)
+        (cl-json::decode-json in)))))
 
 (defun remove-sent-indra-dups (sent-indra-list &optional hms?)
   (when sent-indra-list
@@ -2159,22 +2187,32 @@ can still match things like CHK1 and CHK-1"
         collect (remove-excess+texts1 json-exp)))
 
 (defun remove-excess+texts1 (json-exp)
-`(,(car json-exp)         
-  ,@(loop for json in (cdr json-exp)
-           collect
-           (if (and (consp json)
-                          (keywordp (car json)))
-                     `(,(car json)
-                        ,.(if (consp (cdr json))
-                              (loop for item in (cdr json)
-                                    append
-                                      (case (and (consp item)
-                                                 (keywordp (car item))
-                                                 (car item))
-                                        (:+text+ nil)
-                                        (t (list item))))
-                              (cdr json)))
-                     json))))
+  `(,(car json-exp)         
+     ,@(loop for json in (cdr json-exp)
+             unless (and (consp json)(eq (car json) :+text+))
+             collect
+               (if (and (consp json) (keywordp (car json)))
+                   `(,(car json)
+                      ,@(case (car json)
+                          ((:members :proteins)
+                           (remove-excess+texts (cdr json)))
+                          (:db--refs (cdr json))
+                          (t
+                           (if (consp (cdr json))
+                               (loop for item in (cdr json)
+                                     append
+                                       (case (and (consp item)
+                                                  (keywordp (car item))
+                                                  (car item))
+                                         (:proteins
+                                          (list
+                                           (cons (car item)
+                                                (remove-excess+texts
+                                                 (cdr item)))))                                                
+                                         (:+text+ nil)
+                                         (t (list item))))
+                               (cdr json)))))
+                   json))))
   
 
 (defun pmc-indras (&optional (all? nil))
@@ -2198,9 +2236,11 @@ can still match things like CHK1 and CHK-1"
                  (compared
                   (loop for s in sents
                         append
-                          (let ((hms (second
-                                      (assoc s hms-indra-by-sents
-                                             :test #'equal)))                                     
+                          (let ((hms (map-hms-to-sift-proteins
+                                      (remove-excess+texts
+                                       (second
+                                        (assoc s hms-indra-by-sents
+                                               :test #'equal)))))
                                 (sift (second
                                        (assoc s sift-indra-by-sents
                                               :test #'equal))))
@@ -2237,9 +2277,11 @@ can still match things like CHK1 and CHK-1"
   (or (member js uninteresting :test #'equal)
       ;; get rid of GFP complexes
       (and (equal (assoc :type js) '(:TYPE . "Complex"))
-           (loop for m in (cdr (assoc :members js))
-                 thereis
-                   (equal (assoc :name m) '(:NAME . "GFP_AEQVI"))))
+           (or (and (assoc :members js)
+                    (null (cddr (assoc :members js))))
+               (loop for m in (cdr (assoc :members js))
+                     thereis
+                       (equal (assoc :name m) '(:NAME . "GFP_AEQVI")))))
       (and (equal (assoc :type js) '(:TYPE . "Phosphorylation"))
            (or (fplx-protein? (cdr (assoc :sub js)))
                (fplx-protein? (cdr (assoc :enz js)))))
@@ -2258,8 +2300,8 @@ can still match things like CHK1 and CHK-1"
           (name (cdr (assoc :name prot))))
       (or
        (member text '( "AKT"  "AKT"  "Activin"  "Akt"  "Arp2/3"  "CAMs"  "CD8"  "CDK"
-                      "GPCRs"  "GST"  "HSP90"  "IFN"  "JNK1/2"  "MAPK"  "MAPKs"  "NF-κB"
-                      "NFκB"  "PI(3K"  "PI3K"  "Rac"  "Rho"  "SOD"  "TGF-β"  "TnC"  "TnI"
+                      "GPCRs"  "GST"  "HSP90"  "IFN"  "JNK1/2"  "MAPK"  "MAPKs"  "NF-ÎºB"
+                      "NFÎºB"  "PI(3K"  "PI3K"  "Rac"  "Rho"  "SOD"  "TGF-Î²"  "TnC"  "TnI"
                       "Wnt"  "actin"  "adenylate cyclase"  "adenylyl cyclase"  "calcineurin"
                       "calpain"  "caspase"  "caspases"  "cholinesterase"  "dynamin"
                       "estrogen receptor"  "JNK1/2" "mitogen-activated protein kinases"  "p38 MAPK"
@@ -2275,6 +2317,7 @@ can still match things like CHK1 and CHK-1"
     ))
 
 
+
 (defun hms-indra-pmcs ()
   (loop for pathname in (hms-indra-files)
         collect
@@ -2288,7 +2331,9 @@ can still match things like CHK1 and CHK-1"
            (namestring 
             (asdf:system-relative-pathname
              :r3
-             "../corpus/hms-update/hms-json/")))))
+             (if *use-phase3-hms-files*
+                 "../corpus/phase3_nxml/hms-json/"
+                 "../corpus/hms-update/hms-json/"))))))
 
 (defun sift-indra-files ()
   (directory
@@ -2296,7 +2341,9 @@ can still match things like CHK1 and CHK-1"
            (namestring 
             (asdf:system-relative-pathname
              :r3
-             "../corpus/hms-update/sift-json/")))))
+             (if *use-phase3-hms-files*
+                 "../corpus/phase3_nxml/sift-json/"
+                 "../corpus/hms-update/sift-json/"))))))
 
 (defun indra-evidence-text (indra)
   (cdr (assoc :text (second (assoc :evidence indra)))))
@@ -2381,9 +2428,401 @@ can still match things like CHK1 and CHK-1"
                         
           collect ii)))
     
-
+(defun map-hms-to-sift-proteins (hms)
+  (sublis
+   '(((:+GO+ . "0004016"):+FPLX+ . "ADCY")
+     ((:+PR+ . "000000019"):+FPLX+ . "MAPK")
+     ((((:NAME . "PCID:9999") (:DB--REFS (:+PCID+ . "9999") (:+TEXT+ . "cyanogen"))))
+      ((:NAME . "cyanogen") (:DB--REFS (:+PUBCHEM+ . "9999") (:+TEXT+ . "cyanogen"))))
+     ((((:NAME . "FMN1_HUMAN") (:DB--REFS (:+UP+ . "Q68DA7") (:+TEXT+ . "LD"))))
+      ((:NAME . "EPM2A glucan phosphatase, laforin") (:DB--REFS (:+HGNC+ . "3413") (:+TEXT+ . "LD"))))
+     ((((:NAME . "PCID:5484352") (:DB--REFS (:+PCID+ . "5484352") (:+TEXT+ . "aa"))))
+      ((:NAME . "aa") (:DB--REFS (:+PUBCHEM+ . "5484352") (:+TEXT+ . "aa"))))
+     ((((:NAME . "UP:P03406") (:DB--REFS (:+UP+ . "P03406") (:+TEXT+ . "Nef")))
+       ((:NAME . "Negative Regulatory Factor") (:DB--REFS (:+XFAM+ . "PF00469") (:+TEXT+ . "Nef"))))
+      ((:NAME . "UP:P03406") (:DB--REFS (:+UP+ . "P03406") (:+TEXT+ . "Nef"))))
+     ((((:NAME . "PI3-kinase") (:DB--REFS (:+XFAM+ . "PF00454") (:+TEXT+ . "PI 3-kinase"))))
+      ((:NAME . "PI3-kinase") (:DB--REFS (:+FPLX+ . "PI3K") (:+TEXT+ . "PI 3-kinase"))))
+     ((((:NAME . "p85α") (:DB--REFS (:+TEXT+ . "p85α"))))
+      ((:NAME . "P85A_HUMAN") (:DB--REFS (:+UP+ . "P27986") (:+TEXT+ . "p85α"))))
+     ((((:NAME . "PCID:97054") (:DB--REFS (:+PCID+ . "97054") (:+TEXT+ . "Wg"))))
+      ((:NAME . "wg") (:DB--REFS (:+PUBCHEM+ . "97054") (:+TEXT+ . "Wg"))))
+     ((((:NAME . "PCID:97054") (:DB--REFS (:+PCID+ . "97054") (:+TEXT+ . "wg"))))
+      ((:NAME . "wg") (:DB--REFS (:+PUBCHEM+ . "97054") (:+TEXT+ . "wg"))))
+     ((((:NAME . "Cyclins") (:DB--REFS (:+FA+ . "00815") (:+TEXT+ . "Cyclin"))))
+      ((:NAME . "Cyclin") (:DB--REFS (:+FPLX+ . "Cyclin") (:+TEXT+ . "Cyclin"))))
+     ((((:NAME . "IFN-γ") (:DB--REFS (:+TEXT+ . "IFN-γ"))))
+      ((:NAME . "IFNG_HUMAN") (:DB--REFS (:+UP+ . "P01579") (:+TEXT+ . "IFN-γ"))))
+     ((((:NAME . "PDGR") (:DB--REFS (:+NCIT+ . "C17322") (:+TEXT+ . "PDGFRs"))))
+      ((:NAME . "PDGFR") (:DB--REFS (:+FPLX+ . "PDGFR") (:+TEXT+ . "PDGFRs"))))
+     ((((:NAME . "PCID:5780") (:DB--REFS (:+PCID+ . "5780") (:+TEXT+ . "sorbitol"))))
+      ((:NAME . "sorbitol") (:DB--REFS (:+PUBCHEM+ . "5780") (:+TEXT+ . "sorbitol"))))
+     ((((:NAME . "GAP") (:DB--REFS (:+XFAM+ . "PF00616") (:+TEXT+ . "GAP"))))
+      ((:NAME . "RASA1_HUMAN") (:DB--REFS (:+UP+ . "P20936") (:+TEXT+ . "GAP"))))
+     ((((:NAME . "PI3-kinase") (:DB--REFS (:+XFAM+ . "PF00454") (:+TEXT+ . "PI(3)K"))))
+      ((:NAME . "PI3-kinase") (:DB--REFS (:+FPLX+ . "PI3K") (:+TEXT+ . "PI(3)K"))))
+     ((((:NAME . "MEK") (:DB--REFS (:+FPLX+ . "MEK") (:+TEXT+ . "MAP kinase kinase"))))
+      ((:NAME . "MAP2K") (:DB--REFS (:+FPLX+ . "MAP2K") (:+TEXT+ . "MAP kinase kinase"))))
+     ((((:NAME . "tubulin") (:DB--REFS (:+PR+ . "000028799") (:+TEXT+ . "Tubulin"))))
+      ((:NAME . "tubulin") (:DB--REFS (:+FPLX+ . "Tubulin") (:+TEXT+ . "Tubulin"))))
+     ((((:NAME . "lamin") (:DB--REFS (:+NCIT+ . "C17307") (:+TEXT+ . "lamin"))))
+      ((:NAME . "LMNB1_HUMAN") (:DB--REFS (:+UP+ . "P20700") (:+TEXT+ . "lamin"))))
+     ((((:NAME . "PCID:11966311") (:DB--REFS (:+PCID+ . "11966311") (:+TEXT+ . "Sepharose"))))
+      ((:NAME . "sepharose") (:DB--REFS (:+PUBCHEM+ . "11966311") (:+TEXT+ . "Sepharose"))))
+     ((((:NAME . "GRP1_HUMAN") (:DB--REFS (:+UP+ . "O95267") (:+TEXT+ . "RasGRP"))))
+      ((:NAME . "RASGRP") (:DB--REFS (:+FPLX+ . "RASGRP") (:+TEXT+ . "RasGRP"))))
+     ((((:NAME . "ROS1_HUMAN") (:DB--REFS (:+UP+ . "P08922") (:+TEXT+ . "Ros"))))
+      ((:NAME . "Reactive Oxygen Species") (:DB--REFS (:+MESH+ . "D017382") (:+TEXT+ . "Ros")))
+      ((:NAME . "ROS1_HUMAN") (:DB--REFS (:+UP+ . "P08922") (:+TEXT+ . "Ros"))))
+     ((((:NAME . "Sos") (:DB--REFS (:+FPLX+ . "SOS") (:+TEXT+ . "Sos"))))
+      ((:NAME . "son of sevenless") (:DB--REFS (:+FPLX+ . "SOS") (:+TEXT+ . "Sos"))))
+     ((((:NAME . "CK2") (:DB--REFS (:+FA+ . "03101") (:+TEXT+ . "casein kinase 2"))))
+      ((:NAME . "CK2") (:DB--REFS (:+FPLX+ . "CK2") (:+TEXT+ . "casein kinase 2"))))
+     ((((:NAME . "CDK") (:DB--REFS (:+NCIT+ . "C17767") (:+TEXT+ . "Cdk"))))
+      ((:NAME . "CDK") (:DB--REFS (:+FPLX+ . "CDK") (:+TEXT+ . "Cdk"))))
+     ((((:NAME . "ARG28_HUMAN") (:DB--REFS (:+UP+ . "Q8N1W1") (:+TEXT+ . "RhoGEF"))))
+      ((:NAME . "rho guanyl-nucleotide exchange factor activity")
+       (:DB--REFS (:+GO+ . "0005089") (:+TEXT+ . "RhoGEF"))))
+     ((((:NAME . "SOS_DROME") (:DB--REFS (:+UP+ . "P26675") (:+TEXT+ . "SOS"))))
+      ((:NAME . "son of sevenless") (:DB--REFS (:+FPLX+ . "SOS") (:+TEXT+ . "SOS"))))
+     ((((:NAME . "CDN2A_HUMAN") (:DB--REFS (:+UP+ . "P42771") (:+TEXT+ . "p14Arf"))))
+      ((:NAME . "ARF_HUMAN") (:DB--REFS (:+UP+ . "Q8N726") (:+TEXT+ . "p14Arf"))))
+     ((((:NAME . "TCF-LEF") (:DB--REFS (:+FPLX+ . "TCF-LEF") (:+TEXT+ . "Tcf"))))
+      ((:NAME . "TCF-LEF") (:DB--REFS (:+FPLX+ . "TCF_LEF") (:+TEXT+ . "Tcf"))))
+     ((((:NAME . "AXIN1_HUMAN") (:DB--REFS (:+UP+ . "O15169") (:+TEXT+ . "axin"))))
+      ((:NAME . "AXIN") (:DB--REFS (:+FPLX+ . "AXIN") (:+TEXT+ . "axin"))))
+     ((((:NAME . "RBP1_HUMAN") (:DB--REFS (:+UP+ . "Q15311") (:+TEXT+ . "doxorubicin"))))
+      ((:NAME . "doxorubicin") (:DB--REFS (:+CHEBI+ . "28748") (:+TEXT+ . "doxorubicin"))))
+     ((((:NAME . "Rac") (:DB--REFS (:+FA+ . "03066") (:+TEXT+ . "PKB"))))
+      ((:NAME . "AKT") (:DB--REFS (:+FPLX+ . "AKT") (:+TEXT+ . "PKB"))))
+     ((((:NAME . "PCID:31193") (:DB--REFS (:+PCID+ . "31193") (:+TEXT+ . "CD"))))
+      ((:NAME . "cd") (:DB--REFS (:+PUBCHEM+ . "31193") (:+TEXT+ . "CD"))))
+     ((((:NAME . "SHC1_HUMAN") (:DB--REFS (:+UP+ . "P29353") (:+TEXT+ . "SHC"))))
+      ((:NAME . "SHC") (:DB--REFS (:+FPLX+ . "SHC") (:+TEXT+ . "SHC"))))
+     ((((:NAME . "OPSD_HUMAN") (:DB--REFS (:+UP+ . "P08100") (:+TEXT+ . "Rho family"))))
+      ((:NAME . "Rho") (:DB--REFS (:+FPLX+ . "RHO") (:+TEXT+ . "Rho family"))))
+     ((((:NAME . "CHKA_HUMAN") (:DB--REFS (:+UP+ . "P35790") (:+TEXT+ . "CKIs"))))
+      ((:NAME . "cyclin-dependent kinase inhibitor")
+       (:DB--REFS (:+FPLX+ . "CDKN") (:+TEXT+ . "CKIs"))))
+     ((((:NAME . "CDN2A_HUMAN") (:DB--REFS (:+UP+ . "P42771") (:+TEXT+ . "P14ARF"))))
+      ((:NAME . "ARF_HUMAN") (:DB--REFS (:+UP+ . "Q8N726") (:+TEXT+ . "P14ARF"))))
+     ((((:NAME . "RGD1_YEAST") (:DB--REFS (:+UP+ . "P38339") (:+TEXT+ . "Rho-GAP"))))
+      ((:NAME . "RhoGAP") (:DB--REFS (:+TEXT+ . "Rho-GAP"))))
+     ((((:NAME . "RGRF1_HUMAN") (:DB--REFS (:+UP+ . "Q13972") (:+TEXT+ . "Cdc25"))))
+      ((:NAME . "CDC25") (:DB--REFS (:+FPLX+ . "CDC25") (:+TEXT+ . "Cdc25"))))
+     ((((:NAME . "CHKA_HUMAN") (:DB--REFS (:+UP+ . "P35790") (:+TEXT+ . "CKI"))))
+      ((:NAME . "cyclin-dependent kinase inhibitor") (:DB--REFS (:+FPLX+ . "CDKN") (:+TEXT+ . "CKI"))))
+     ((((:NAME . "ubiquitin conjugating enzyme")
+        (:DB--REFS (:+XFAM+ . "PF00179") (:+TEXT+ . "ubiquitin-conjugating enzymes"))))
+      ((:NAME . "UBE2") (:DB--REFS (:+FPLX+ . "UBE2") (:+TEXT+ . "ubiquitin-conjugating enzymes"))))
+     ((((:NAME . "PI3K1_DICDI") (:DB--REFS (:+UP+ . "P54673") (:+TEXT+ . "PI3Ks"))))
+      ((:NAME . "PI3-kinase") (:DB--REFS (:+FPLX+ . "PI3K") (:+TEXT+ . "PI3Ks"))))
+     ((((:NAME . "JAK2_HUMAN") (:DB--REFS (:+UP+ . "O60674") (:+TEXT+ . "JAK"))))
+      ((:NAME . "JAK") (:DB--REFS (:+FPLX+ . "JAK") (:+TEXT+ . "JAK"))))
+     ((((:NAME . "Jun") (:DB--REFS (:+FA+ . "00409") (:+TEXT+ . "jun"))))
+      ((:NAME . "JUN") (:DB--REFS (:+FPLX+ . "JUN_family") (:+TEXT+ . "jun"))))
+     ((((:NAME . "MMP1_HUMAN") (:DB--REFS (:+UP+ . "P03956") (:+TEXT+ . "MMPs"))))
+      ((:NAME . "MMP") (:DB--REFS (:+FPLX+ . "MMP") (:+TEXT+ . "MMPs"))))
+     ((((:NAME . "PCID:5757") (:DB--REFS (:+PCID+ . "5757") (:+TEXT+ . "E2"))))
+      ((:NAME . "UP:P27958") (:DB--REFS (:+UP+ . "P27958") (:+TEXT+ . "E2"))))
+     ((((:NAME . "ubiquitin conjugating enzyme")
+        (:DB--REFS (:+XFAM+ . "PF00179") (:+TEXT+ . "ubiquitin conjugating enzyme"))))
+      ((:NAME . "UBE2") (:DB--REFS (:+FPLX+ . "UBE2") (:+TEXT+ . "ubiquitin conjugating enzyme"))))
+     ((((:NAME . "ADA12_HUMAN") (:DB--REFS (:+UP+ . "O43184") (:+TEXT+ . "syndecans"))))
+      ((:NAME . "syndecans") (:DB--REFS (:+NCIT+ . "C17335") (:+TEXT+ . "syndecans"))))
+     ((((:NAME . "CD8A_HUMAN") (:DB--REFS (:+UP+ . "P01732") (:+TEXT+ . "CD8"))))
+      ((:NAME . "CD8") (:DB--REFS (:+FPLX+ . "CD8") (:+TEXT+ . "CD8"))))
+     ((((:NAME . "GDIR1_HUMAN") (:DB--REFS (:+UP+ . "P52565") (:+TEXT+ . "Rho-GDI"))))
+      ((:NAME . "RhoGDI") (:DB--REFS (:+FPLX+ . "RhoGDI") (:+TEXT+ . "Rho-GDI"))))
+     ((((:NAME . "caspase") (:DB--REFS (:+NCIT+ . "C18153") (:+TEXT+ . "caspase"))))
+      ((:NAME . "caspase") (:DB--REFS (:+FPLX+ . "Caspase") (:+TEXT+ . "caspase"))))
+     ((((:NAME . "transfectant") (:DB--REFS (:+TEXT+ . "transfectants"))))
+      ((:NAME . "FUT4_HUMAN") (:DB--REFS (:+UP+ . "P22083") (:+TEXT+ . "transfectants"))))
+     ((((:NAME . "SIR3_YEAST") (:DB--REFS (:+UP+ . "P06701") (:+TEXT+ . "SIR3"))))
+      ((:NAME . "organosilyl group") (:DB--REFS (:+CHEBI+ . "33478") (:+TEXT+ . "SIR3"))))
+     ((((:NAME . "CDK") (:DB--REFS (:+NCIT+ . "C17767") (:+TEXT+ . "CDKs"))))
+      ((:NAME . "CDK") (:DB--REFS (:+FPLX+ . "CDK") (:+TEXT+ . "CDKs"))))
+     ((((:NAME . "CD3") (:DB--REFS (:+NCIT+ . "C38897") (:+TEXT+ . "CD3"))))
+      ((:NAME . "CD3") (:DB--REFS (:+FPLX+ . "CD3") (:+TEXT+ . "CD3"))))
+     ((((:NAME . "ESR1_HUMAN") (:DB--REFS (:+UP+ . "P03372") (:+TEXT+ . "estrogen receptors"))))
+      ((:NAME . "estrogen receptor") (:DB--REFS (:+FPLX+ . "ESR") (:+TEXT+ . "estrogen receptors"))))
+     ((((:NAME . "Fibroblast growth factor receptor")
+        (:DB--REFS (:+NCIT+ . "C17297") (:+TEXT+ . "FGFR"))))
+      ((:NAME . "Fibroblast growth factor receptor")
+       (:DB--REFS (:+FPLX+ . "FGFR") (:+TEXT+ . "FGFR"))))
+     ((((:NAME . "VAV_HUMAN") (:DB--REFS (:+UP+ . "P15498") (:+TEXT+ . "Vav"))))
+      ((:NAME . "VAV") (:DB--REFS (:+FPLX+ . "VAV") (:+TEXT+ . "Vav"))))
+     ((((:NAME . "KSYK_HUMAN") (:DB--REFS (:+UP+ . "P43405") (:+TEXT+ . "Syk"))
+        (:MOD--CONDITIONS (:MOD--TYPE . "phosphorylation") (:IS--MODIFIED . "true")))
+       ((:NAME . "KSYK_HUMAN") (:DB--REFS (:+UP+ . "P43405") (:+TEXT+ . "Syk"))))
+      ((:NAME . "KSYK_HUMAN") (:DB--REFS (:+UP+ . "P43405") (:+TEXT+ . "Syk")))
+      ((:NAME . "KSYK_HUMAN") (:DB--REFS (:+UP+ . "P43405") (:+TEXT+ . "Syk"))
+       (:MOD--CONDITIONS (:MOD--TYPE . "phosphorylation") (:IS--MODIFIED . "true"))))
+     ((((:NAME . "PI3K1_DICDI") (:DB--REFS (:+UP+ . "P54673") (:+TEXT+ . "PI3-K"))))
+      ((:NAME . "PI3-kinase") (:DB--REFS (:+FPLX+ . "PI3K") (:+TEXT+ . "PI3-K"))))
+     ((((:NAME . "RB_HUMAN") (:DB--REFS (:+UP+ . "P06400") (:+TEXT+ . "pRb")))
+       ((:NAME . "RB_HUMAN") (:DB--REFS (:+UP+ . "P06400") (:+TEXT+ . "pRb"))
+        (:MOD--CONDITIONS (:MOD--TYPE . "phosphorylation") (:IS--MODIFIED . "true"))))
+      ((:NAME . "RB_HUMAN") (:DB--REFS (:+UP+ . "P06400") (:+TEXT+ . "pRb"))
+       (:MOD--CONDITIONS (:MOD--TYPE . "phosphorylation") (:IS--MODIFIED . "true")))
+      ((:NAME . "RB_HUMAN") (:DB--REFS (:+UP+ . "P06400") (:+TEXT+ . "pRb"))
+       (:MOD--CONDITIONS (:MOD--TYPE . "phosphorylation") (:IS--MODIFIED . "true"))
+       (:MOD--CONDITIONS (:MOD--TYPE . "phosphorylation") (:IS--MODIFIED . "true"))))
+     ((((:NAME . "SOAT1_HUMAN") (:DB--REFS (:+UP+ . "P35610") (:+TEXT+ . "STATs"))))
+      ((:NAME . "STAT") (:DB--REFS (:+FPLX+ . "STAT") (:+TEXT+ . "STATs"))))
+     ((((:NAME . "PCID:128837") (:DB--REFS (:+PCID+ . "128837") (:+TEXT+ . "KK"))))
+      ((:NAME . "kk") (:DB--REFS (:+PUBCHEM+ . "128837") (:+TEXT+ . "KK"))))
+     ((((:NAME . "RB_HUMAN") (:DB--REFS (:+UP+ . "P06400") (:+TEXT+ . "pRB"))))
+      ((:NAME . "RB_HUMAN") (:DB--REFS (:+UP+ . "P06400") (:+TEXT+ . "pRB"))
+       (:MOD--CONDITIONS (:MOD--TYPE . "phosphorylation") (:IS--MODIFIED . "true"))))
+     ((((:NAME . "NPY6R_HUMAN") (:DB--REFS (:+UP+ . "Q99463") (:+TEXT+ . "PP2"))))
+      ((:NAME . "protein phosphatase 2") (:DB--REFS (:+FPLX+ . "PPP2") (:+TEXT+ . "PP2"))))
+     ((((:NAME . "SRC_HUMAN") (:DB--REFS (:+UP+ . "P12931") (:+TEXT+ . "c-Src")))
+       ((:NAME . "SRC_HUMAN") (:DB--REFS (:+UP+ . "P12931") (:+TEXT+ . "c-Src"))
+        (:MOD--CONDITIONS (:MOD--TYPE . "phosphorylation") (:IS--MODIFIED . "true"))))
+      ((:NAME . "SRC_HUMAN") (:DB--REFS (:+UP+ . "P12931") (:+TEXT+ . "c-Src"))))
+     ((((:NAME . "Eph receptor")
+        (:DB--REFS (:+FPLX+ . "Ephrin_receptor") (:+TEXT+ . "Eph receptors"))))
+      ((:NAME . "ephrin receptor")
+       (:DB--REFS (:+FPLX+ . "Ephrin_receptor") (:+TEXT+ . "Eph receptors"))))
+     ((((:NAME . "dishevelled") (:DB--REFS (:+XFAM+ . "PF02377.13") (:+TEXT+ . "Dishevelled"))))
+      ((:NAME . "dishevelled") (:DB--REFS (:+FPLX+ . "DVL") (:+TEXT+ . "Dishevelled"))))
+     ((((:NAME . "TRCB_XENLA") (:DB--REFS (:+UP+ . "Q91854") (:+TEXT+ . "β-TrCP"))))
+      ((:NAME . "FBW1A_HUMAN") (:DB--REFS (:+UP+ . "Q9Y297") (:+TEXT+ . "β-TrCP"))))
+     ((((:NAME . "KCC2G_HUMAN") (:DB--REFS (:+UP+ . "Q13555") (:+TEXT+ . "CaMKII"))))
+      ((:NAME . "CAMKII") (:DB--REFS (:+FPLX+ . "CAMK2_family") (:+TEXT+ . "CaMKII"))))
+     ((((:NAME . "bone morphogenetic protein") (:DB--REFS (:+NCIT+ . "C17274") (:+TEXT+ . "BMP"))))
+      ((:NAME . "bone morphogenetic protein") (:DB--REFS (:+FPLX+ . "BMP") (:+TEXT+ . "BMP"))))
+     ((((:NAME . "AMPKalpha") (:DB--REFS (:+NCIT+ . "C116019") (:+TEXT+ . "AMPKα"))))
+      ((:NAME . "AMPKalpha") (:DB--REFS (:+FPLX+ . "AMPK_alpha") (:+TEXT+ . "AMPKα"))))
+     ((((:NAME . "PDPK1_HUMAN") (:DB--REFS (:+UP+ . "O15530") (:+TEXT+ . "PDK1"))))
+      ((:NAME . "PDK1_HUMAN") (:DB--REFS (:+UP+ . "Q15118") (:+TEXT+ . "PDK1"))))
+     ((((:NAME . "TRCB_XENLA") (:DB--REFS (:+UP+ . "Q91854") (:+TEXT+ . "TrCP"))))
+      ((:NAME . "FBW1A_HUMAN") (:DB--REFS (:+UP+ . "Q9Y297") (:+TEXT+ . "TrCP"))))
+     ((((:NAME . "PIP") (:DB--REFS (:+TEXT+ . "PIP"))))
+      ((:NAME . "PIP_HUMAN") (:DB--REFS (:+UP+ . "P12273") (:+TEXT+ . "PIP"))))
+     ((((:NAME . "Fibroblast growth factor receptor")
+        (:DB--REFS (:+NCIT+ . "C17297") (:+TEXT+ . "FGFRs"))))
+      ((:NAME . "Fibroblast growth factor receptor")
+       (:DB--REFS (:+FPLX+ . "FGFR") (:+TEXT+ . "FGFRs"))))
+     ((((:NAME . "TCF-LEF") (:DB--REFS (:+FPLX+ . "TCF-LEF") (:+TEXT+ . "Tcf-Lef"))))
+      ((:NAME . "TCF-LEF") (:DB--REFS (:+FPLX+ . "TCF_LEF") (:+TEXT+ . "Tcf-Lef"))))
+     ((((:NAME . "dishevelled") (:DB--REFS (:+XFAM+ . "PF02377.13") (:+TEXT+ . "dishevelled"))))
+      ((:NAME . "dishevelled") (:DB--REFS (:+FPLX+ . "DVL") (:+TEXT+ . "dishevelled"))))
+     ((((:NAME . "AXIN1_HUMAN") (:DB--REFS (:+UP+ . "O15169") (:+TEXT+ . "Axin"))))
+      ((:NAME . "AXIN") (:DB--REFS (:+FPLX+ . "AXIN") (:+TEXT+ . "Axin"))))
+     ((((:NAME . "SYRC_HUMAN") (:DB--REFS (:+UP+ . "P54136") (:+TEXT+ . "RARs"))))
+      ((:NAME . "RAR") (:DB--REFS (:+FPLX+ . "RAR") (:+TEXT+ . "RARs"))))
+     ((((:NAME . "RXR_BIOGL") (:DB--REFS (:+UP+ . "Q8T5C6") (:+TEXT+ . "RXR"))))
+      ((:NAME . "RXRA_HUMAN") (:DB--REFS (:+UP+ . "P19793") (:+TEXT+ . "RXR"))))
+     ((((:NAME . "SYRC_HUMAN") (:DB--REFS (:+UP+ . "P54136") (:+TEXT+ . "RAR"))))
+      ((:NAME . "RAR") (:DB--REFS (:+FPLX+ . "RAR") (:+TEXT+ . "RAR"))))
+     ((((:NAME . "PGFRA_HUMAN") (:DB--REFS (:+UP+ . "P16234") (:+TEXT+ . "PDGF receptors"))))
+      ((:NAME . "PDGFR") (:DB--REFS (:+FPLX+ . "PDGFR") (:+TEXT+ . "PDGF receptors"))))
+     ((((:NAME . "KS6B1_HUMAN") (:DB--REFS (:+UP+ . "P23443") (:+TEXT+ . "p70S6K"))))
+      ((:NAME . "P70RSK") (:DB--REFS (:+FPLX+ . "P70S6K") (:+TEXT+ . "p70S6K"))))
+     ((((:NAME . "PI3-kinase")
+        (:DB--REFS (:+XFAM+ . "PF00454") (:+TEXT+ . "phosphatidylinositol 3-kinase"))))
+      ((:NAME . "PI3-kinase")
+       (:DB--REFS (:+FPLX+ . "PI3K") (:+TEXT+ . "phosphatidylinositol 3-kinase"))))
+     ((((:NAME . "RAB") (:DB--REFS (:+FA+ . "03661") (:+TEXT+ . "Rab"))))
+      ((:NAME . "RAB") (:DB--REFS (:+FPLX+ . "RAB") (:+TEXT+ . "Rab"))))
+     ((((:NAME . "TCF-LEF") (:DB--REFS (:+FPLX+ . "TCF-LEF") (:+TEXT+ . "TCFs"))))
+      ((:NAME . "TCF-LEF") (:DB--REFS (:+FPLX+ . "TCF_LEF") (:+TEXT+ . "TCFs"))))
+     ((((:NAME . "FOXO3_HUMAN") (:DB--REFS (:+UP+ . "O43524") (:+TEXT+ . "FoxO"))))
+      ((:NAME . "FOXO family") (:DB--REFS (:+FPLX+ . "FOXO") (:+TEXT+ . "FoxO"))))
+     ((((:NAME . "FOXO family") (:DB--REFS (:+NCIT+ . "C118892") (:+TEXT+ . "FoxOs"))))
+      ((:NAME . "FOXO family") (:DB--REFS (:+FPLX+ . "FOXO") (:+TEXT+ . "FoxOs"))))
+     ((((:NAME . "PI3-kinase") (:DB--REFS (:+XFAM+ . "PF00454") (:+TEXT+ . "PI3K"))))
+      ((:NAME . "PI3-kinase") (:DB--REFS (:+FPLX+ . "PI3K") (:+TEXT+ . "PI3K"))))
+     ((((:NAME . "PCID:6857385") (:DB--REFS (:+PCID+ . "6857385") (:+TEXT+ . "T antigen"))))
+      ((:NAME . "t antigen") (:DB--REFS (:+PUBCHEM+ . "6857385") (:+TEXT+ . "T antigen"))))
+     ((((:NAME . "caspase") (:DB--REFS (:+NCIT+ . "C18153") (:+TEXT+ . "Caspases"))))
+      ((:NAME . "caspase") (:DB--REFS (:+FPLX+ . "Caspase") (:+TEXT+ . "Caspases"))))
+     ((((:NAME . "BBC3B_HUMAN") (:DB--REFS (:+UP+ . "Q96PG8") (:+TEXT+ . "Puma"))))
+      ((:NAME . "BCL2 binding component 3") (:DB--REFS (:+HGNC+ . "17868") (:+TEXT+ . "Puma"))))
+     ((((:NAME . "SCF") (:DB--REFS (:+FA+ . "03513") (:+TEXT+ . "SCF"))))
+      ((:NAME . "SCF_HUMAN") (:DB--REFS (:+UP+ . "P21583") (:+TEXT+ . "SCF"))))
+     ((((:NAME . "PLCD1_HUMAN") (:DB--REFS (:+UP+ . "P51178") (:+TEXT+ . "phospholipase C"))))
+      ((:NAME . "Phospholipase C") (:DB--REFS (:+FPLX+ . "PLC") (:+TEXT+ . "phospholipase C"))))
+     ((((:NAME . "CDK") (:DB--REFS (:+NCIT+ . "C17767") (:+TEXT+ . "cdks"))))
+      ((:NAME . "CDK") (:DB--REFS (:+FPLX+ . "CDK") (:+TEXT+ . "cdks"))))
+     ((((:NAME . "cyclin D") (:DB--REFS (:+TEXT+ . "cyclin D"))))
+      ((:NAME . "cyclin D") (:DB--REFS (:+FPLX+ . "Cyclin_D") (:+TEXT+ . "cyclin D"))))
+     ((((:NAME . "CAV3_HUMAN") (:DB--REFS (:+UP+ . "P56539") (:+TEXT+ . "caveolin"))))
+      ((:NAME . "CAV") (:DB--REFS (:+FPLX+ . "CAV") (:+TEXT+ . "caveolin"))))
+     ((((:NAME . "PCID:247304") (:DB--REFS (:+PCID+ . "247304") (:+TEXT+ . "ECs"))))
+      ((:NAME . "ecs") (:DB--REFS (:+PUBCHEM+ . "247304") (:+TEXT+ . "ECs"))))
+     ((((:NAME . "E3 ligase") (:DB--REFS (:+XFAM+ . "PF12483") (:+TEXT+ . "ubiquitin ligase"))))
+      ((:NAME . "E3 ligase") (:DB--REFS (:+FPLX+ . "E3_Ub_ligase") (:+TEXT+ . "ubiquitin ligase"))))
+     ((((:NAME . "cyclin E") (:DB--REFS (:+TEXT+ . "cyclin E"))))
+      ((:NAME . "cyclin E") (:DB--REFS (:+FPLX+ . "Cyclin_E") (:+TEXT+ . "cyclin E"))))
+     ((((:NAME . "PCID:2051") (:DB--REFS (:+PCID+ . "2051") (:+TEXT+ . "AG1478"))))
+      ((:NAME . "ag 1478") (:DB--REFS (:+PUBCHEM+ . "2051") (:+TEXT+ . "AG1478"))))
+     ((((:NAME . "KRT_CEREL") (:DB--REFS (:+UP+ . "P86498") (:+TEXT+ . "keratin"))))
+      ((:NAME . "keratin") (:DB--REFS (:+TEXT+ . "keratin"))))
+     ((((:NAME . "Jun") (:DB--REFS (:+FA+ . "00409") (:+TEXT+ . "Jun"))))
+      ((:NAME . "JUN") (:DB--REFS (:+FPLX+ . "JUN_family") (:+TEXT+ . "Jun"))))
+     ((((:NAME . "ESR1_HUMAN") (:DB--REFS (:+UP+ . "P03372") (:+TEXT+ . "estrogen receptor"))))
+      ((:NAME . "estrogen receptor") (:DB--REFS (:+FPLX+ . "ESR") (:+TEXT+ . "estrogen receptor"))))
+     ((((:NAME . "SOAT1_HUMAN") (:DB--REFS (:+UP+ . "P35610") (:+TEXT+ . "STAT"))))
+      ((:NAME . "STAT") (:DB--REFS (:+FPLX+ . "STAT") (:+TEXT+ . "STAT"))))
+     ((((:NAME . "α-catenin") (:DB--REFS (:+TEXT+ . "α-catenin"))))
+      ((:NAME . "α-catenin") (:DB--REFS (:+FPLX+ . "CTNNA") (:+TEXT+ . "α-catenin"))))
+     ((((:NAME . "TCF-LEF") (:DB--REFS (:+FPLX+ . "TCF-LEF") (:+TEXT+ . "TCF"))))
+      ((:NAME . "TCF-LEF") (:DB--REFS (:+FPLX+ . "TCF_LEF") (:+TEXT+ . "TCF"))))
+     ((((:NAME . "BBC3B_HUMAN") (:DB--REFS (:+UP+ . "Q96PG8") (:+TEXT+ . "PUMA"))))
+      ((:NAME . "BCL2 binding component 3") (:DB--REFS (:+HGNC+ . "17868") (:+TEXT+ . "PUMA"))))
+     ((((:NAME . "CCNA2_HUMAN") (:DB--REFS (:+UP+ . "P20248") (:+TEXT+ . "cyclin A"))))
+      ((:NAME . "cyclinA") (:DB--REFS (:+FPLX+ . "Cyclin_A") (:+TEXT+ . "cyclin A"))))
+     ((((:NAME . "EGFR_HUMAN") (:DB--REFS (:+UP+ . "P00533") (:+TEXT+ . "ErbB"))))
+      ((:NAME . "ERBB") (:DB--REFS (:+FPLX+ . "ERBB") (:+TEXT+ . "ErbB"))))
+     ((((:NAME . "GSK3B_HUMAN") (:DB--REFS (:+UP+ . "P49841") (:+TEXT+ . "GSK-3α"))))
+      ((:NAME . "GSK3A_HUMAN") (:DB--REFS (:+UP+ . "P49840") (:+TEXT+ . "GSK-3α"))))
+     ((((:NAME . "E3 ligase") (:DB--REFS (:+XFAM+ . "PF12483") (:+TEXT+ . "E3 ligase"))))
+      ((:NAME . "E3 ligase") (:DB--REFS (:+FPLX+ . "E3_Ub_ligase") (:+TEXT+ . "E3 ligase"))))
+     ((((:NAME . "Rac") (:DB--REFS (:+FA+ . "03066") (:+TEXT+ . "Rac"))))
+      ((:NAME . "Rac") (:DB--REFS (:+FPLX+ . "RAC") (:+TEXT+ . "Rac"))))
+     ((((:NAME . "Fibroblast growth factor receptor")
+        (:DB--REFS (:+NCIT+ . "C17297") (:+TEXT+ . "FGF receptors"))))
+      ((:NAME . "Fibroblast growth factor receptor")
+       (:DB--REFS (:+FPLX+ . "FGFR") (:+TEXT+ . "FGF receptors"))))
+     ((((:NAME . "Cyclins") (:DB--REFS (:+FA+ . "00815") (:+TEXT+ . "cyclin"))))
+      ((:NAME . "Cyclin") (:DB--REFS (:+FPLX+ . "Cyclin") (:+TEXT+ . "cyclin"))))
+     ((((:NAME . "Rho") (:DB--REFS (:+FA+ . "03668") (:+TEXT+ . "Rho"))))
+      ((:NAME . "Rho") (:DB--REFS (:+FPLX+ . "RHO") (:+TEXT+ . "Rho"))))
+     ((((:NAME . "ATM_HUMAN") (:DB--REFS (:+UP+ . "Q13315") (:+TEXT+ . "ATM"))))
+      ((:NAME . "ATM_HUMAN") (:DB--REFS (:+UP+ . "Q13315") (:+TEXT+ . "ATM")))
+      ((:NAME . "ATM_HUMAN") (:DB--REFS (:+UP+ . "Q13315") (:+TEXT+ . "ATM"))
+       (:MOD--CONDITIONS (:MOD--TYPE . "phosphorylation") (:IS--MODIFIED . "true"))))
+     ((((:NAME . "ETS") (:DB--REFS (:+FA+ . "01142") (:+TEXT+ . "Ets"))))
+      ((:NAME . "ETS") (:DB--REFS (:+FPLX+ . "ETS") (:+TEXT+ . "Ets"))))
+     ((((:NAME . "SHC1_HUMAN") (:DB--REFS (:+UP+ . "P29353") (:+TEXT+ . "Shc"))))
+      ((:NAME . "SHC") (:DB--REFS (:+FPLX+ . "SHC") (:+TEXT+ . "Shc"))))
+     ((((:NAME . "HDAC") (:DB--REFS (:+NCIT+ . "C16682") (:+TEXT+ . "HDACs"))))
+      ((:NAME . "HDAC") (:DB--REFS (:+FPLX+ . "HDAC") (:+TEXT+ . "HDACs"))))
+     ((((:NAME . "RGRF1_HUMAN") (:DB--REFS (:+UP+ . "Q13972") (:+TEXT+ . "cdc25"))))
+      ((:NAME . "CDC25") (:DB--REFS (:+FPLX+ . "CDC25") (:+TEXT+ . "cdc25"))))
+     ((((:NAME . "CIPA_CLOTH") (:DB--REFS (:+UP+ . "Q06851") (:+TEXT+ . "cohesin"))))
+      ((:NAME . "cohesin") (:DB--REFS (:+FPLX+ . "Cohesin") (:+TEXT+ . "cohesin"))))
+     ((((:NAME . "SMC1A_HUMAN") (:DB--REFS (:+UP+ . "Q14683") (:+TEXT+ . "Smc1"))))
+      ((:NAME . "SMC1") (:DB--REFS (:+FPLX+ . "SMC1") (:+TEXT+ . "Smc1"))))
+     ((((:NAME . "ATC1_YEAST") (:DB--REFS (:+UP+ . "P13586") (:+TEXT+ . "Scc1"))))
+      ((:NAME . "RAD21_HUMAN") (:DB--REFS (:+UP+ . "O60216") (:+TEXT+ . "Scc1"))))
+     ((((:NAME . "HDAC") (:DB--REFS (:+NCIT+ . "C16682") (:+TEXT+ . "HDAC"))))
+      ((:NAME . "HDAC") (:DB--REFS (:+FPLX+ . "HDAC") (:+TEXT+ . "HDAC"))))
+     ((((:NAME . "CaMK") (:DB--REFS (:+FA+ . "03072") (:+TEXT+ . "CaMKs"))))
+      ((:NAME . "CaMK") (:DB--REFS (:+FPLX+ . "CAMK") (:+TEXT+ . "CaMKs"))))
+     ((((:NAME . "SRC_HUMAN") (:DB--REFS (:+UP+ . "P12931") (:+TEXT+ . "Src")))
+       ((:NAME . "SRC_HUMAN") (:DB--REFS (:+UP+ . "P12931") (:+TEXT+ . "Src"))
+        (:MOD--CONDITIONS (:MOD--TYPE . "phosphorylation") (:IS--MODIFIED . "true"))))
+      ((:NAME . "SRC_HUMAN") (:DB--REFS (:+UP+ . "P12931") (:+TEXT+ . "Src"))))
+     ((((:NAME . "P53_HUMAN") (:DB--REFS (:+UP+ . "P04637") (:+TEXT+ . "p53"))))
+      ((:NAME . "P53_HUMAN") (:DB--REFS (:+UP+ . "P04637") (:+TEXT+ . "p53")))
+      ((:NAME . "P53_HUMAN") (:DB--REFS (:+UP+ . "P04637") (:+TEXT+ . "p53"))
+       (:MOD--CONDITIONS (:MOD--TYPE . "phosphorylation") (:IS--MODIFIED . "true"))))
+     ((((:NAME . "PDGF") (:DB--REFS (:+FPLX+ . "PDGF") (:+TEXT+ . "PDGF"))))
+      ((:NAME . "PDGFA_HUMAN") (:DB--REFS (:+UP+ . "P04085") (:+TEXT+ . "PDGF"))))
+     ((((:NAME . "Cyclins") (:DB--REFS (:+FA+ . "00815") (:+TEXT+ . "cyclins"))))
+      ((:NAME . "Cyclin") (:DB--REFS (:+FPLX+ . "Cyclin") (:+TEXT+ . "cyclins"))))
+     ((((:NAME . "CHEBI:73965") (:DB--REFS (:+CHEBI+ . "73965") (:+TEXT+ . "PGE 2"))))
+      ((:NAME . "pge 2") (:DB--REFS (:+CHEBI+ . "73965") (:+TEXT+ . "PGE 2"))))
+     
+     (((:NAME . "WNT5B_DANRE") (:DB--REFS (:+UP+ . "Q92050") (:+TEXT+ . "Wnt-5"))) (:NAME . "WNT-5")
+      (:DB--REFS (:+TEXT+ . "Wnt-5")))
+     (((:NAME . "PCID:6993105") (:DB--REFS (:+PCID+ . "6993105") (:+TEXT+ . "hh"))) (:NAME . "hh")
+      (:DB--REFS (:+PUBCHEM+ . "6993105") (:+TEXT+ . "hh")))
+     (((:NAME . "PCID:313") (:DB--REFS (:+PCID+ . "313") (:+TEXT+ . "Cl"))) (:NAME . "Chlorine atom")
+      (:DB--REFS (:+CHEBI+ . "23116") (:+TEXT+ . "Cl")))
+     (((:NAME . "HDAC") (:DB--REFS (:+NCIT+ . "C16682") (:+TEXT+ . "histone deacetylase")))
+      (:NAME . "HDAC") (:DB--REFS (:+FPLX+ . "HDAC") (:+TEXT+ . "histone deacetylase")))
+     (((:NAME . "IFNG_HUMAN") (:DB--REFS (:+UP+ . "P01579"))) (:NAME . "ES1_HUMAN")
+      (:DB--REFS (:+UP+ . "P30042")))
+     (((:NAME . "ARC1B_HUMAN") (:DB--REFS (:+UP+ . "O15143") (:+TEXT+ . "Arp2/3"))) (:NAME . "Arp2/3")
+      (:DB--REFS (:+FPLX+ . "Arp2_3_protein") (:+TEXT+ . "Arp2/3")))
+     (((:NAME . "PCID:6995653") (:DB--REFS (:+PCID+ . "6995653") (:+TEXT+ . "ES"))) (:NAME . "es")
+      (:DB--REFS (:+PUBCHEM+ . "6995653") (:+TEXT+ . "ES")))
+     (((:NAME . "PCID:104810") (:DB--REFS (:+PCID+ . "104810") (:+TEXT+ . "BA"))) (:NAME . "barium")
+      (:DB--REFS (:+PUBCHEM+ . "104810") (:+TEXT+ . "BA")))
+     (((:NAME . "PCID:7019993") (:DB--REFS (:+PCID+ . "7019993") (:+TEXT+ . "NVs"))) (:NAME . "nv")
+      (:DB--REFS (:+PUBCHEM+ . "7019993") (:+TEXT+ . "NVs")))
+     (((:NAME . "ADA17_HUMAN") (:DB--REFS (:+UP+ . "P78536") (:+TEXT+ . "TNF-α")))
+      (:NAME . "TNFA_HUMAN") (:DB--REFS (:+UP+ . "P01375") (:+TEXT+ . "TNF-α")))
+     (((:NAME . "CDK") (:DB--REFS (:+NCIT+ . "C17767") (:+TEXT+ . "CDK"))) (:NAME . "CDK")
+      (:DB--REFS (:+FPLX+ . "CDK") (:+TEXT+ . "CDK")))
+     (((:NAME . "PCID:9858135") (:DB--REFS (:+PCID+ . "9858135") (:+TEXT+ . "LVs"))) (:NAME . "lv")
+      (:DB--REFS (:+PUBCHEM+ . "6993116") (:+TEXT+ . "LVs")))
+     (((:NAME . "TSPO_HUMAN") (:DB--REFS (:+UP+ . "P30536") (:+TEXT+ . "benzodiazepine receptor")))
+      (:NAME . "translocator protein")
+      (:DB--REFS (:+HGNC+ . "1158") (:+TEXT+ . "benzodiazepine receptor")))
+     (((:NAME . "PCID:3019") (:DB--REFS (:+PCID+ . "3019") (:+TEXT+ . "diazoxide")))
+      (:NAME . "diazoxide") (:DB--REFS (:+PUBCHEM+ . "3019") (:+TEXT+ . "diazoxide")))
+     (((:NAME . "NOS_ANOST") (:DB--REFS (:+UP+ . "O61608") (:+TEXT+ . "nitric oxide synthase")))
+      (:NAME . "NOS") (:DB--REFS (:+FPLX+ . "NOS") (:+TEXT+ . "nitric oxide synthase")))
+     (((:NAME . "tubulin") (:DB--REFS (:+PR+ . "000028799") (:+TEXT+ . "tubulin"))) (:NAME . "tubulin")
+      (:DB--REFS (:+FPLX+ . "Tubulin") (:+TEXT+ . "tubulin")))
+     (((:NAME . "PCID:145068") (:DB--REFS (:+PCID+ . "145068") (:+TEXT+ . "nitric oxide")))
+      (:NAME . "nitroxyl") (:DB--REFS (:+PUBCHEM+ . "145068") (:+TEXT+ . "nitric oxide")))
+     (((:NAME . "Glutathione S-transferase") (:DB--REFS (:+GO+ . "0004364") (:+TEXT+ . "GST")))
+      (:NAME . "Glutathione S-transferase") (:DB--REFS (:+FPLX+ . "GST") (:+TEXT+ . "GST")))
+     (((:NAME . "cyclin E") (:DB--REFS (:+TEXT+ . "Cyclin E"))) (:NAME . "Cyclin E")
+      (:DB--REFS (:+TEXT+ . "Cyclin E")))
+     (((:NAME . "PCID:7019108") (:DB--REFS (:+PCID+ . "7019108") (:+TEXT+ . "WD"))) (:NAME . "wd")
+      (:DB--REFS (:+PUBCHEM+ . "7019108") (:+TEXT+ . "WD")))
+     (((:NAME . "CHEBI:72564") (:DB--REFS (:+CHEBI+ . "72564") (:+TEXT+ . "TMZ"))) (:NAME . "tmz")
+      (:DB--REFS (:+CHEBI+ . "72564") (:+TEXT+ . "TMZ")))
+     (((:NAME . "caspase") (:DB--REFS (:+NCIT+ . "C18153") (:+TEXT+ . "caspases"))) (:NAME . "caspase")
+      (:DB--REFS (:+FPLX+ . "Caspase") (:+TEXT+ . "caspases")))
+     (((:NAME . "TGF-beta") (:DB--REFS (:+FA+ . "03989") (:+TEXT+ . "TGF-β"))) (:NAME . "TGF-beta")
+      (:DB--REFS (:+FPLX+ . "TGFB") (:+TEXT+ . "TGF-β")))
+     (((:NAME . "Rac") (:DB--REFS (:+FA+ . "03066") (:+TEXT+ . "AKT"))) (:NAME . "AKT")
+      (:DB--REFS (:+FPLX+ . "AKT") (:+TEXT+ . "AKT")))
+     (((:NAME . "heat shock protein 70") (:DB--REFS (:+TEXT+ . "heat shock protein 70")))
+      (:NAME . "HSP70") (:DB--REFS (:+NCIT+ . "C17765") (:+TEXT+ . "heat shock protein 70")))
+     (((:NAME . "TNNT_CAEEL") (:DB--REFS (:+UP+ . "Q27371") (:+TEXT+ . "troponin")))
+      (:NAME . "troponin") (:DB--REFS (:+FPLX+ . "Troponin") (:+TEXT+ . "troponin")))
+     (((:NAME . "NOS_ANOST") (:DB--REFS (:+UP+ . "O61608") (:+TEXT+ . "NOS"))) (:NAME . "NOS")
+      (:DB--REFS (:+FPLX+ . "NOS") (:+TEXT+ . "NOS")))
+     (((:NAME . "mitogen activated protein kinase")
+       (:DB--REFS (:+PR+ . "000000019") (:+TEXT+ . "MAPK")))
+      (:NAME . "mitogen activated protein kinase") (:DB--REFS (:+FPLX+ . "MAPK") (:+TEXT+ . "MAPK")))
+     (((:NAME . "mitogen activated protein kinase")
+       (:DB--REFS (:+PR+ . "000000019") (:+TEXT+ . "MAPKs")))
+      (:NAME . "mitogen activated protein kinase") (:DB--REFS (:+FPLX+ . "MAPK") (:+TEXT+ . "MAPKs"))))
+   hms :test #'equal))
 (defun db-ref-text (sexpr)
   (cdr (assoc :+text+
          (cdr (assoc :db--refs sexpr)))))
 
-                  
+
+(defun normalized-hms-sift-diffs (indras)
+  (loop for ii in indras
+        when (loop for ss in (safe-prop :compared ii)
+                   when (and (safe-prop :hms ss) (safe-prop :sift ss)) collect (safe-prop :hms ss))
+        append 
+          (let ((pmc-result
+                 (list (car ii)
+                       (loop for ss in (safe-prop :compared ii)
+                             when (and (safe-prop :hms ss)(safe-prop :sift ss))
+                             append
+                               (let ((result
+                                      (list (car ss)
+                                            :hms 
+                                            (remove-duplicates
+                                             (remove-excess+texts
+                                              (loop for hm in (safe-prop :hms ss)
+                                                    unless (member hm (safe-prop :sift ss) :test #'equal)
+                                                    collect hm))
+                                             :test #'equal)
+                                            :sift            
+                                            (remove-duplicates
+                                 
+                                             (loop for sift in (safe-prop :sift ss)
+                                                   unless (member sift (safe-prop :hms ss) :test #'equal)
+                                                   collect sift)
+                                             :test #'equal))))
+                                 (when (or (second (member :hms result))(second (member :sift result)))
+                                   (list result)))))))
+            (when (second pmc-result)
+              (list pmc-result))))
+  )
