@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2019 David D. McDonald -- all rights reserved
+;;; copyright (c) 2014-2020 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  Dece,ber 2019
+;;;  Version:  January 2020
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -847,6 +847,18 @@ val-pred-var (pred vs modifier - left or right?)
   (warn "quantifier-det-compound got ~s ~s~%" quantifier det)
   nil)
 
+(defun quantify-comparative (quantifier comparative)
+  (or *subcat-test* ;; this always composes
+      (cond
+        #+ignore ;; for future expansion
+        ((applicable-method compose quantifier comparative)
+         (let ((result (compose quantifier comparative)))
+           ;;(tr :composed-qualifier-with-head qualifier head result)
+           result))
+        (t
+         (define-or-find-individual 'quantified-comparative
+             :quantifier quantifier :comparative comparative)))))
+  
 (defun quantifier-noun-compound (quantifier head)
   ;; Not all quantifiers are equivalent. We want to idenify
   ;; cases of negation ("no increase") and eventually probably
@@ -2240,15 +2252,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
       cl)))
 
 
-
-            
-(defun first-sentence-constituent (edge &optional (sentence (current-sentence)))
-  (let* ((position-before (starts-at-pos sentence))
-         (first-item (next-treetop/rightward position-before)))
-    (eq edge first-item)))
          
-
-
 
 ;; for v in (vp vp+passive vg+passive vg)
 ;; as rel in '(which who whom why that)

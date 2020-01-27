@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,2014-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2014-2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "comparatives"
 ;;;    Module:   "grammar;rules:syntax:"
-;;;   Version:   November 2019
+;;;   Version:   January 2020
 
 ;; initiated 7/29/94. 10/24/94 added defdata
 ;; 7/20/14 Added a lemma for "comparative"
@@ -201,11 +201,22 @@ is seen.  |#
   comparative with an an adjective.")
 
 
+(define-category quantified-comparative ;; "many more"
+  :specializes comparative
+  :binds ((quantifier quantifier)
+          (comparative comparative))
+  :documentation "Gives us a base representation of the composition
+    of a quantifier (many, some, any, all) and a comparative,
+    maybe only 'more' and 'less. The meaning of the composition
+    is strictly dependent on the choice of quantifer and the
+    reference set of the comparison, so computing it will depend
+    on having all those elements in hand and will be a matter
+    of applying word-specific k-methods.")
+
+
+
 ;;;-------- Earler way to doing these that's not used any longer.
 ;;;    Retained to mine the old ideas
-
-
-
 
 #+ignore
 (defun specialize-comparative (attribute)

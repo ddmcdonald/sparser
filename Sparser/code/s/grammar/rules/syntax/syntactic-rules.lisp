@@ -1211,6 +1211,10 @@ similar to an oncogenic RasG12V mutation (9)."))
     :referent (:head right-edge
                :bind (comparative left-edge)))
 
+(def-syntax-rule (quantifier comparative) ;; "many more"
+    :head :right-edge
+    :form comparative
+    :referent (:function quantify-comparative left-edge right-edge))
 
 ;;--- comparative + than-np
 
