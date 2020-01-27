@@ -52,7 +52,7 @@
 (define-cellular-location "endoplasmic reticulum membrane" "GO:0005789")
 ;(define-cellular-location "endoplasmic reticulum" "GO:0005783")
 (define-cellular-location "endosome" "GO:0005768" :adj "endosomal")
-(define-cellular-location "extracellular matrix" "GO:0031012")
+(define-cellular-location "extracellular matrix" "GO:0031012" :synonyms ("ECM"))
 (define-cellular-location "extracellular region" "GO:0005576" :adj "extracellular")
 (define-cellular-location "focal adhesion" "GO:0005925")
 (define-cellular-location "growth cone" "GO:0030426")
