@@ -561,3 +561,11 @@
   ;; the item is one that takes a THATCOMP (e.g. "suggest")
   ;;  or "evidence"  
   (itypep item 'bio-thatcomp))
+
+
+            
+(defun first-sentence-constituent (edge &optional (sentence (current-sentence)))
+  ;; used in compose-wh-with-vp (at least)
+  (let* ((position-before (starts-at-pos sentence))
+         (first-item (next-treetop/rightward position-before)))
+    (eq edge first-item)))
