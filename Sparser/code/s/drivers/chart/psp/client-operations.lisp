@@ -629,9 +629,18 @@
           (loop for s in *saved-bio-processes*
                 append (second s)))))
 
+(defun complex-mention-in-pathway? (m)
+      (and (itypep (base-description m) 'bio-complex)
+           (and (edge-p (mention-source m))
+                (edge-used-in (mention-source m))
+                (itypep (edge-referent (edge-used-in (mention-source m)))
+                        'pathway))))
+
+
 (defun indra-post-process (mentions sentence output-stream)
   (setq *indra-embedded-post-mods* nil)
   (loop for mention in mentions
+          unless (complex-mention-in-pathway? mention)
         do (indra-post-process-mention mention sentence output-stream)))
 
 (defun indra-post-process-mention (mention sentence output-stream
@@ -832,9 +841,10 @@
       (setq desc-sexp (sem-sexp desc)))
   (when lambda-expansion
     (setq subst-desc-sexp
-          (subst (sem-sexp (gethash desc *predication-links-ht*))
-                 '*lambda-var*
-                 desc-sexp))
+          (subst
+               (sem-sexp (gethash desc *predication-links-ht*))
+           '*lambda-var*
+           desc-sexp))
     (when *show-indra-lambda-substitutions*
       (pprint `(,desc-sexp ===> ,subst-desc-sexp))
       (terpri)))
