@@ -356,46 +356,60 @@
   (declare (special *current-paragraph* category::prepositional-phrase category))
   (when (null source) (lsp-break "null source in make-mention"))
   (when (null category) (setq category (itype-of i)))
-  (let* ((*mention-individual* i)
+  (let* (subsumed-mention
+         (*mention-individual* i)
          (*mention-source* source)
-         (subsumed-mention
+         (subsumed-mentions
           (and (not dependencies) ;; creating a de novo mention with given dependencies
                (or (not (edge-p source))
                    (not (eq (edge-rule source) 'make-ns-pair)))
-               (subsumed-mention? i source)))
-	 (m (if (and subsumed-mention 
-                     ;; "which accumulates and can act "
-                     ;;  tries to create a mention twice
-                     (typep subsumed-mention 'discourse-mention))
-                
-                (update-subsumed-mention subsumed-mention i source)
-                (let ((new-mention
-                       (make-instance 'discourse-mention
-                                      :uid (incf *mention-uid*))))
-                  (setf (mention-head new-mention) source)
-                  (setf (dependencies new-mention)
-                        (or dependencies
-                            (when (individual-p i) ;; no dependencies for categories
-                              (create-new-dependencies
-                               (indiv-old-binds i)
-                               (when (edge-p source) (semantic-edges-under source))
-                               (when (edge-p source) source)))))
-                  new-mention))))
-    (declare (special m *mention-individual* *mention-source*))
-    (fill-in-mention m i source)
-    (unless subsumed-mention
-      (tr :making-new-mention m)
-      (push m (mention-history i))) ;; calls (check-consistent-mention m)
-    (when (edge-p source)
-      (pushnew m *lattice-individuals-mentioned-in-paragraph*)
-      (when category (pushnew m (discourse-entry category)))
-      (unless (eq (edge-form source) category::prepositional-phrase)
-        (pushnew m (gethash category *maximal-lattice-mentions-in-paragraph*))))
-    (when (and (current-sentence)
-               (not (member m (sentence-mentions (contents (current-sentence))))))
-      (setf (sentence-mentions (contents (current-sentence)))
-            (cons m (sentence-mentions (contents (current-sentence))))))
-    m))
+               (subsumed-mentions? i source)))
+         (m (cond ((and (consp subsumed-mentions)
+                        (cdr subsumed-mentions)
+                        (setq subsumed-mention
+                              (loop for sm in subsumed-mentions
+                                    when (eq (base-description sm) i)
+                                    do (return sm))))
+                   
+                   (loop for sm in subsumed-mentions
+                         unless (eq (base-description sm) i)
+                         do (setf (edge-mention (mention-source sm)) t))
+                   (update-subsumed-mention subsumed-mention i source))
+                  ((setq subsumed-mention
+                         (if (consp subsumed-mentions)
+                             (car subsumed-mentions)
+                             subsumed-mentions))
+                   ;; "which accumulates and can act "
+                   ;;  tries to create a mention twice
+                   (update-subsumed-mention subsumed-mention i source))
+                  (t
+                   (let ((new-mention
+                          (make-instance 'discourse-mention
+                                         :uid (incf *mention-uid*))))
+                     (setf (mention-head new-mention) source)
+                     (setf (dependencies new-mention)
+                           (or dependencies
+                               (when (individual-p i) ;; no dependencies for categories
+                                 (create-new-dependencies
+                                  (indiv-old-binds i)
+                                  (when (edge-p source) (semantic-edges-under source))
+                                  (when (edge-p source) source)))))
+                     new-mention)))))
+         (declare (special m *mention-individual* *mention-source*))
+         (fill-in-mention m i source)
+         (unless subsumed-mention
+           (tr :making-new-mention m)
+           (push m (mention-history i))) ;; calls (check-consistent-mention m)
+         (when (edge-p source)
+           (pushnew m *lattice-individuals-mentioned-in-paragraph*)
+           (when category (pushnew m (discourse-entry category)))
+           (unless (eq (edge-form source) category::prepositional-phrase)
+             (pushnew m (gethash category *maximal-lattice-mentions-in-paragraph*))))
+         (when (and (current-sentence)
+                    (not (member m (sentence-mentions (contents (current-sentence))))))
+           (setf (sentence-mentions (contents (current-sentence)))
+                 (cons m (sentence-mentions (contents (current-sentence))))))
+         m))
 
 (defparameter *dont-check-dependencies* nil)
 
@@ -439,7 +453,7 @@
          (loop for ee in (edges-under edge)
                thereis (eq (edge-referent ee) statement)))))
 
-(defun subsumed-mention? (i edge)
+(defun subsumed-mentions? (i edge)
   "Is this edge an additional instance of i that subsumes the immedidately
    prior mention of i? Cannonical situation is walking up a head line,
    where each progressively higher edge is a (more specific) reference
@@ -454,11 +468,11 @@
                                          elevate-spanning-edge-over-paired-punctuation))
               (typep (edge-mention (edge-left-daughter edge))
                      'discourse-mention))
-         (return-from subsumed-mention?
+         (return-from subsumed-mentions?
            (edge-mention (edge-left-daughter edge))))
         ((and (not (itypep i category::wh-question))
               (embedded-statement? edge))
-         (return-from subsumed-mention? nil)))
+         (return-from subsumed-mentions? nil)))
 
   (let ((un-embedded-edge (un-embed-edge edge)))
     (declare (special un-embedded-edge category::wh-question))
@@ -469,7 +483,7 @@
                                  (edge-referent un-embedded-edge))))
       ;; this happens when we are lifting to a that-comp
       ;; as in "that the RBD of PI3KC2β binds nucleotide-free Ras"
-      (return-from subsumed-mention?
+      (return-from subsumed-mentions?
         (edge-mention un-embedded-edge)))
     (setq edge un-embedded-edge)
     (cond ((and (itypep i category::wh-question)
@@ -491,13 +505,24 @@
            (safe-edge-mention (edge-left-daughter edge)))        
           (t
            (let ((left (subsumed-mention-edge? i (edge-left-daughter edge)))
-                 (right (subsumed-mention-edge? i (edge-right-daughter edge))))
-             ;; which edge is the head line? 
+                 (right (subsumed-mention-edge? i (edge-right-daughter edge)))
+                 (eld (edge-left-daughter edge))
+                 (erd (edge-right-daughter edge)))
+             ;; which edge is the head line?
+
              (cond
+               ((and (edge-p eld)
+                     (edge-p erd)
+                     (typep (edge-mention eld) 'discourse-mention)
+                     (typep (edge-mention erd) 'discourse-mention)
+                     (eq (edge-referent eld) i))
+                ;; case like "MAPK1-MAP2K1 complex"
+                ;;  where the meaning is the same as the left constituent
+                (list (edge-mention eld)(edge-mention erd)))
                (left
                 (unless right ;; no real subsumption -- can't find head
                   (edge-mention left)))
-               (right (edge-mention right))
+               (right (edge-mention right)) ;;only  right edge
                (t
                 (let ((subsumed-edges
                        (loop for e in (edge-constituents edge)
