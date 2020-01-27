@@ -1550,7 +1550,7 @@
 (def-family "hpo" :members ("UP:A6YIH8" "UP:P55789")) 
 (def-family "hrp1" :members ("UP:P35125" "UP:P9WJA2")) 
 (def-family "hst" :members ("UP:P08620" "UP:P15516")) 
-(def-family "htt" :members ("UP:P31645" "UP:P42858")) 
+;;(def-family "htt" :members ("UP:P31645" "UP:P42858")) 
 (def-family "ifi204" :members ("UP:P0DOV2" "UP:P15092") :synonyms ("interferon-activable protein 204")) 
 (def-family "ileal sodium/bile acid cotransporter" :members ("UP:Q12908" "UP:Q60414")) 
 (def-family "imp4" :members ("UP:Q8TCT7" "UP:Q8TEX9")) 
