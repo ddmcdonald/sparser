@@ -503,13 +503,25 @@ To MRA:
            (complex-protein-json prot))))
 
 
+(defparameter *protein-args-for-complex* nil)
+
 (defun create-complex-json (complex-expr &optional pmid sentence trigger (head (car complex-expr)))
   (let ((members (remove-duplicates
                   (create-protein-indra-list
-                   (type-expressions-in complex-expr 'protein))
-                  :test #'equal)))
+                   (loop for branch in (cdr complex-expr)
+                         when (member (car branch)
+                                      '(COMPONENT DIRECT-BINDEE BINDEE BINDER MODIFIER
+                                        INTERACTOR PARTICIPANT AGENT
+                                        OBJECT
+                                        APPOSITIVE-DESCRIPTION))
+                         append
+                           (type-expressions-in branch 'protein)))
+                   ;;(type-expressions-in complex-expr )
+                   :test #'equal)))
     ;; don't create a complex if you can;t find its members
     (when (cdr members)
+      (push (list (current-string) complex-expr members)
+            *protein-args-for-complex*)
       `(((:TYPE . "Complex")
          (:MEMBERS ,@members)
          ;;,(evidence xxx)
@@ -2249,14 +2261,12 @@ can still match things like CHK1 and CHK-1"
                                   `((,s (:equal
                                          ,(second (assoc s hms-indra-by-sents
                                                          :test #'equal))))))
-                                `((,s :hms ,(remove-excess+texts
-                                             (loop for js in hms
+                                `((,s :hms ,(loop for js in (remove-excess+texts hms)
                                                   unless (uninteresting-json? js sift)
-                                                  collect js))
-                                      :sift ,(remove-excess+texts
-                                              (loop for js in sift
-                                                   unless (uninteresting-json? js hms)
-                                                   collect js)))))))))
+                                                  collect js)
+                                      :sift ,(loop for js in sift
+                                                   unless (uninteresting-json? js (remove-excess+texts hms))
+                                                   collect js))))))))
             (when (or all? compared)
               (setf
                (gethash (intern pmc :sp) *pmc-indra-json-ht*)
@@ -2790,6 +2800,7 @@ can still match things like CHK1 and CHK-1"
        (:DB--REFS (:+PR+ . "000000019") (:+TEXT+ . "MAPKs")))
       (:NAME . "mitogen activated protein kinase") (:DB--REFS (:+FPLX+ . "MAPK") (:+TEXT+ . "MAPKs"))))
    hms :test #'equal))
+
 (defun db-ref-text (sexpr)
   (cdr (assoc :+text+
          (cdr (assoc :db--refs sexpr)))))
