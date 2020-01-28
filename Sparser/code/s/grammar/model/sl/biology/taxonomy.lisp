@@ -450,8 +450,7 @@
                                  bio-predication bio-relation medical-treatment)))
   ::restrict ((object
                (:or bio-entity cell-entity molecular-location
-                  bio-process bio-mechanism
-                  measurement bio-quality disease)))
+                    measurement bio-quality disease)))
   :realization
   (:o affected-process
       :o object))
