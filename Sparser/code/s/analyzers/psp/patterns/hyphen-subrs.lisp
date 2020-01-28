@@ -83,7 +83,6 @@
               (declare (special *work-on-ns-patterns*))
               (let ((result (resolve-ns-pattern pattern start-pos end-pos)))
                (unless result 
-                 (push-debug `(,pattern ,(effective-words-given-edges start-pos end-pos) ,start-pos ,end-pos))
                  (when *work-on-ns-patterns*
                    (break "no result on hyphen segment pattern: ~a" pattern)))
                result)))))))

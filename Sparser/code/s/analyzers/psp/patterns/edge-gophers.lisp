@@ -73,7 +73,8 @@
                  :rule 'package-number-plus-error
                  :form category::number
                  :referent base
-                 :words (effective-words-given-edges start-pos end-pos))))
+                 ;; :words (effective-words-given-edges start-pos end-pos)
+                 )))
       (tr :no-space-made-edge edge)
       edge)))
 

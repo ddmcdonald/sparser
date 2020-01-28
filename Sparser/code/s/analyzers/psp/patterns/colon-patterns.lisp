@@ -98,7 +98,9 @@
                       start-pos end-pos category::protein
                       :referent i :rule 'multi-colon-ns-patterns
                       :constituents segments
-                      :words (effective-words-given-edges start-pos end-pos))))
+                      ;;:words (effective-words-given-edges start-pos end-pos)
+                      ;; don't create gratuitout polywords
+                      )))
           edge))
        (*work-on-ns-patterns*
         (push-debug `(,pattern ,(treetops-between start-pos end-pos) ,start-pos ,end-pos))
