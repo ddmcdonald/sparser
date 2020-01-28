@@ -3801,7 +3801,7 @@
 (define-protein "UP:P00747" ("PLG" "PLG(20-810)" "PLMN_HUMAN" "PlG" "Plg" "activation peptide" "angiostatin" "p00747" "plasminogen")) 
 (define-protein "UP:P00748" ("Coagulation factor XII" "FA12_HUMAN" "HAF" "HAFs" "coagulation factor XII" "coagulation factor XII (Hageman factor)" "f12" "factor XIIa heavy chain" "hAF" "hageman factor" "p00748")) 
 (define-protein "UP:P00749" ("3.4.21.73" "PLAU" "UPA" "UROK_HUMAN" "Urokinase-type plasminogen activator chain B" "Urokinase-type plasminogen activator long chain A" "Urokinase-type plasminogen activator short chain A" "p00749" "plasmin" "plasminogen activator, urokinase" "u-PA" "u-plasminogen activator" "uPA" "urokinase" "urokinase type" "urokinase-type plasminogen activator")) 
-(define-protein "UP:P00750" ("PLAT" "PLAT(36-562)" "TPA" "TPA_HUMAN" "p-Lats" "p00750" "pLAT" "plasminogen activator" "plasminogen activator, tissue type" "t-PA" "t-plasminogen activator" "tPA" "tissue plasminogen activator (one-chain)" "tissue-type plasminogen activator")) 
+(define-protein "UP:P00750" ("PLAT" "PLAT(36-562)" "TPA_HUMAN" "p-Lats" "p00750" "pLAT" "plasminogen activator" "plasminogen activator, tissue type" "t-PA" "t-plasminogen activator" "tPA" "tissue plasminogen activator (one-chain)" "tissue-type plasminogen activator")) 
 (define-protein "UP:P00751" ("B- F" "BF" "BFD" "Bf" "CFAB_HUMAN" "CFB" "CFB(26-764)" "Complement Factor B" "H2-Bf" "b-factor" "cfb" "complement factor B" "gbg" "p00751")) 
 (define-protein "UP:P00758" ("RK1")) 
 (define-protein "UP:P00759" ("tonin")) 

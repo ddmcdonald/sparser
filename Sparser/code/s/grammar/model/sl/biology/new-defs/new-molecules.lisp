@@ -1571,6 +1571,7 @@
 (def-indiv-with-id molecule "NH3" "CHEBI:16134" :name "ammonia") 
 (def-indiv-with-id molecule "NaOH" "CHEBI:32145" :name "sodium hydroxide" :maintain-case t) 
 (def-indiv-with-id molecule "PUFA" "CHEBI:76567" :name "polyunsaturated fatty acid anion") 
+(def-indiv-with-id molecule "TPA" "CHEBI:37537" :name "12-O-Tetradecanoylphorbol-13-acetate")
 (def-indiv-with-id molecule "TPE" "CHEBI:30360" :name "tert-pentyl group") 
 (def-indiv-with-id molecule "UDP-glucose" "CHEBI:18066" :name "UDP-D-glucose") 
 (def-indiv-with-id molecule "amyloid-β" "CHEBI:64645" :name "beta-amyloid") 
