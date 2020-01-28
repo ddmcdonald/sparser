@@ -378,8 +378,13 @@
   (let* ((edge-before (left-treetop-at/only-edges
                        (chart-position-before conj-pos)))
          (edge-after (right-treetop-at/only-edges
-                      (chart-position-after conj-pos))))
+                      (chart-position-after conj-pos)))
+         (terminal-before (pos-terminal (chart-position-before conj-pos))))
     (tr :conj-edges-to-each-side edge-before edge-after)
+
+    (when (punctuation? terminal-before)
+      ;; Overnight #10 "for Ras17N (and Ras17N/69N)"
+      (return-from look-for-possible-conjunction nil))
 
     (when (word-p edge-before) ;; source-start -- dynamic-model #93
       ;; "And does phospho-MAPK1 now have a peak?"
