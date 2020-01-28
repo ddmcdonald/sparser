@@ -118,6 +118,10 @@
   (when *trace-sections*
     (trace-msg "The final layout is ~a" layout)))
 
+(deftrace :vanila-paired-edge (pos-before-open pos-after-close)
+  (when *trace-sections*
+    (trace-msg "Making a vanila edge from ~a to ~a"
+               pos-before-open pos-after-close)))
 
 ;;;-------------------
 ;;; document elements
