@@ -157,16 +157,15 @@
   ;; dispatch. Every path is expected to form an edge over the
   ;; span one way or another.
   (let* ((edges (treetops-between start-pos end-pos))
-         (pattern ns-pattern)
-         (words (effective-words-given-edges start-pos end-pos)))
+         (pattern ns-pattern))
     
     (when final-colon?
       ;; If the span to the left of the colon is a single word then
       ;; we have nothing to do. If this is not enough of a check
       ;; then the next thing to do is to look for whether the 
       ;; non-colon punctuation parameters have values.
-      (when (null (cdr words))
-        (tr :single-word-followed-by-colon (car words))
+      (when (null (cdr edges))
+        (tr :single-word-followed-by-colon (car edges))
         (return-from ns-pattern-dispatch t)))
     
     #+ignore
@@ -285,7 +284,12 @@
                    :rule rule
                    :form (category-named 'proper-name)
                    :referent referent
-                   :words (effective-words-given-edges pos-before next-position))))
+                   :constituents (treetops-between pos-before next-position)
+                   ;; :words (effective-words-given-edges pos-before next-position)
+                   ;; don't try to create words here
+                   ;; this creates bogus words in
+                   ;; "Thr49/Thr20" where the words have no referent...
+                   )))
              (setq *positions-with-unhandled-unknown-words*
                    (remove-if
                     #'(lambda (pos)
