@@ -57,13 +57,23 @@
                          (is-in-p category::which
                                   (semtree (edge-referent e)))))))))
 
-(defun is-in-p (item tree)
-  (cond ((and (consp tree) (listp (cdr tree))) ;; not a dotted pair
-         (loop for i in tree thereis (is-in-p item i)))
-        ((consp tree)
-         (eq item (car tree)))
-        (t
-         (eq item tree))))
+(defun is-in-p (item tree &key test)
+  (if (null test)
+      (cond ((and (consp tree) (listp (cdr tree))) ;; not a dotted pair
+             (loop for i in tree thereis (is-in-p item i)))
+            ((consp tree)
+             (or
+              (eq item (car tree))
+              (eq item (cdr tree))))
+            (t
+             (eq item tree)))
+      (cond ((and (consp tree) (listp (cdr tree))) ;; not a dotted pair
+             (loop for i in tree thereis (is-in-p item i :test test)))
+            ((consp tree)
+             (or (funcall test item (car tree))
+                 (funcall test item (cdr tree))))
+            (t
+             (funcall test item tree)))))
 
 
 
