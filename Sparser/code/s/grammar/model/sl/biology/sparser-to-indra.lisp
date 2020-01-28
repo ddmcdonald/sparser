@@ -510,12 +510,14 @@ To MRA:
                   (create-protein-indra-list
                    (loop for branch in (cdr complex-expr)
                          when (member (car branch)
-                                      '(COMPONENT DIRECT-BINDEE BINDEE BINDER MODIFIER
+                                      '(COMPONENT DIRECT-BINDEE BINDEE BINDER
+                                        MODIFIER DOMAIN
                                         INTERACTOR PARTICIPANT AGENT
                                         OBJECT
+                                        USING ;; interaction with ...
                                         APPOSITIVE-DESCRIPTION))
                          append
-                           (type-expressions-in branch 'protein)))
+                           (type-expressions-in (second branch) 'protein)))
                    ;;(type-expressions-in complex-expr )
                    :test #'equal)))
     ;; don't create a complex if you can;t find its members
@@ -2442,6 +2444,9 @@ can still match things like CHK1 and CHK-1"
   (sublis
    '(((:+GO+ . "0004016"):+FPLX+ . "ADCY")
      ((:+PR+ . "000000019"):+FPLX+ . "MAPK")
+     ((:+UP+ . "O15169"):+FPLX+ . "AXIN")
+     (((:NAME . "AXIN1_HUMAN") (:DB--REFS (:+UP+ . "O15169") (:+TEXT+ . "Axin")))
+      ((:NAME . "AXIN") (:DB--REFS (:+FPLX+ . "AXIN") (:+TEXT+ . "Axin"))))
      ((((:NAME . "PCID:9999") (:DB--REFS (:+PCID+ . "9999") (:+TEXT+ . "cyanogen"))))
       ((:NAME . "cyanogen") (:DB--REFS (:+PUBCHEM+ . "9999") (:+TEXT+ . "cyanogen"))))
      ((((:NAME . "FMN1_HUMAN") (:DB--REFS (:+UP+ . "Q68DA7") (:+TEXT+ . "LD"))))
