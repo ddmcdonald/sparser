@@ -10906,7 +10906,7 @@
 (define-protein "UP:P69169" ("Attachment protein G3P" "g3p")) 
 (define-protein "UP:P69179" ("SLTB")) 
 (define-protein "UP:P69191" ("NDD")) 
-(define-protein "UP:P69208" ("HA")) 
+;;(define-protein "UP:P69208" ("HA")) 
 (define-protein "UP:P69394" ("psij")) 
 (define-protein "UP:P69548" ("j protein")) 
 (define-protein "UP:P69722" ("virion infectivity factor")) 

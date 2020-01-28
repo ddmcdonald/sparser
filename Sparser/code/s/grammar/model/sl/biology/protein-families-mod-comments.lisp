@@ -307,7 +307,7 @@ Guanine Nucleotide Binding Protein" "GTP-Binding Protein")) ; previously we had 
 (def-family "HV313_HUMAN" :members ("UP:P01766" "UP:P01774"))
 (def-family "Haspin" :synonyms ("haspin") :identifier "FA:03103")
 (def-family "Heat shock 70 kDa protein 1A" :members ("UP:P0DMV8" "UP:Q27975" "UP:Q61696"))
-(def-family "Hemagglutinin" :synonyms ("haemagglutinin" "haemoagglutinin" "hemagglutinin" "hemagglutinins") :identifier "XFAM:PF00509.16")
+(def-family "Hemagglutinin" :synonyms ("haemagglutinin" "haemoagglutinin" "hemagglutinin" "hemagglutinins" "HA") :identifier "XFAM:PF00509.16")
 (def-family "Hematopoietic prostaglandin D synthase" :members ("UP:O60760" "UP:O73888"))
 (def-family "Hic" :synonyms ("hic") :identifier "FA:01997")
 (def-family "HisRS" :members ("UP:P12081" "UP:P49590"))
