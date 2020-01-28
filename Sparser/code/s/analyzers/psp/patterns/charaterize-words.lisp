@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "charaterize-words"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  June 2016
+;;;  version:  January 2020
 
 ;; initiated 5/15/15 breaking out the routines that look at the words
 ;; and characterize them as patterns to drive the matcher. Moved in
@@ -243,6 +243,11 @@
    allowing for polywords, e.g. protein edges"
   ;; called from ns-pattern-dispatch -- sort of open-codes
   ;; a variant on words-between and edges-between
+  ;; N.b had used resolve/make, but that problematically would
+  ;; create a polyword that was not related to the referent
+  ;; of the treetop it wanted words for. Now just uses
+  ;; resolve, which picks up all the predefine or already
+  ;; created polywords and these will be associated with edges.
   (loop for tt in (treetops-between start-pos end-pos)
         collect
           (if (edge-p tt)
@@ -250,7 +255,7 @@
                         (pos-edge-starts-at tt)
                         (pos-edge-ends-at tt)))
                   (pos-terminal (pos-edge-starts-at tt))
-                  (resolve/make ;; "Wise Men's"
+                  (resolve ;; n.b. applies only to known PW
                    (trim-whitespace
                     (extract-characters-between-positions
                      (pos-edge-starts-at tt)
