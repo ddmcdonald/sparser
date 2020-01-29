@@ -1306,7 +1306,7 @@
 (def-family "VRP" :members ("UP:O95759" "UP:P49767")) 
 (def-family "WGEF" :members ("UP:Q8BWA8" "UP:Q8IW93")) 
 ;(def-family "WNT1-inducible-signaling pathway protein 1" :members ("UP:O54775" "UP:O95388")) one mouse
-(def-family "WNT-5" :synonyms ("WNT5" "wnt-5" "Wnt-5" "wnt5") :members ("UP:P41221" "UP:Q9H1J7"))
+;(def-family "WNT-5" :synonyms ("WNT5" "wnt-5" "Wnt-5" "wnt5") :members ("UP:P41221" "UP:Q9H1J7"))
 (def-family "WNT-7" :synonyms ("WNT7" "wnt-7" "Wnt-7" "wnt7") :members ("UP:O00755" "UP:P56706"))
 (def-family "WNT-8" :synonyms ("WNT8" "wnt-8" "Wnt-8" "wnt8") :members ("UP:Q9H1J5" "UP:Q93098"))
 (def-family "WNT-9" :synonyms ("WNT9" "wnt-9" "Wnt-9" "wnt9") :members ("UP:O14904" "UP:O14905"))

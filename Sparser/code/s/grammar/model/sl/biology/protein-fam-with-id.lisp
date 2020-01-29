@@ -503,7 +503,10 @@
 (def-family-with-id "PAK" "FPLX:PAK" :synonyms ("PAK" "p21-activated kinase" "p21 activated serine threonine kinases" "Pak") :members ("UP:O75914" "UP:O96013" "UP:Q13153" "UP:Q13177" "UP:Q16512" "UP:Q9NQU5" "UP:Q9P286"))
 ;(def-family-with-id "PDGR" "NCIT:C17322" :synonyms ("platelet-derived growth factor-activated receptor" "PDGF receptor"  "PDGF-R" "pdgfr" "derived growth factor-receptor" "derived growth-factor receptor" "platelet-derived growth factor-activated receptor activity" "FPLX:PDGR") :members ( "UP:P09619" "UP:P16234")) 
 (def-family-with-id "phosphodiesterase" "GO:0008081" :synonyms ("PDE" "phosphoric diester hydrolase" "FPLX:PDE") :members ("UP:Q08499" "UP:Q08493" "UP:Q13370" "UP:Q13946" "UP:Q14432" "UP:Q9HCR9" "UP:Q9NP56")) ;more members
-;(def-family-with-id "PDE4" "FPLX:PDE4" :members ("UP:Q86V67" "UP:Q07343" "UP:P27815" "UP:P08493" "UP:Q08499")) 
+                                        ;(def-family-with-id "PDE4" "FPLX:PDE4" :members ("UP:Q86V67" "UP:Q07343" "UP:P27815" "UP:P08493" "UP:Q08499"))
+(def-family-with-id "phosphoprotein" "NCIT:C16982")
+(def-family-with-id "glycoprotein" "CHEBI:17089")
+(def-family-with-id "replicase" "XFAM:PF03090")
 (def-family-with-id "Pol delta" "FPLX:DNA_polymerase_delta" :synonyms ("DNA polymerase delta" "pol delta")) 
 
 (def-family-with-id "AKT" "FPLX:AKT" :synonyms ("FA:03066" "Akt" "AKt" "NCIT:C41625" "protein kinase B" "pkba" "PR:000029189" "PKB" "Protein Kinase B" "protein kinase b" "Protein kinase B") :members ("AKT1" "AKT2" "AKT3"))
@@ -666,7 +669,9 @@
 ;(def-family-with-id "AMPKα" "NCIT:C116019" :name "5-AMP-activated protein kinase catalytic subunit alpha") 
 ;(def-family-with-id "cullin" "FA:00787" :name "cullin family") 
 (def-family-with-id "connexin" "FA:00722" :name "connexin family" :members ("UP:Q9Y6H8" "UP:A4IFL1" "UP:A6NN92" "UP:O75712" "UP:O95377" "UP:O95452" "UP:P08034"  "UP:P17302" "UP:P29033" "UP:P35212" "UP:P36382"  "UP:P36383" "UP:P48165" "UP:Q0VCR2" "UP:Q5T442" "UP:Q6PEY0" "UP:Q8N144" "UP:Q96KN9" "UP:Q9NTQ9" "UP:Q9UKL4")) 
-(def-family-with-id "WNK" "FA:03108" :name "WNK subfamily") 
+(def-family-with-id "WNK" "FA:03108" :name "WNK subfamily")
+(def-family-with-id "WNT-5" "FPLX:Wnt5" :synonyms ("WNT5" "wnt-5" "Wnt-5" "wnt5") :members ("UP:P41221" "UP:Q9H1J7"))
+
 ;(def-family-with-id "TCF/LEF" "FA:03943" :name "TCF/LEF family") 
 (def-family-with-id "MGPC" "XFAM:PF05220.10" :name "MgpC") 
 (def-family-with-id "EXOC" "FPLX:EXOC" :synonyms ("exocyst complex")) 

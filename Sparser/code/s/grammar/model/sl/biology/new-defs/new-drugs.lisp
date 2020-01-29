@@ -1944,4 +1944,4 @@
 (def-indiv-with-id drug "bortezomib" "CHEBI:52717" :name "bortezomib")
 (def-indiv-with-id drug "afatinib" "CHEBI:61390" :name "afatinib")
 (def-indiv-with-id drug "DHA" "CHEBI:207229" :name "dihydroartemisinin")
-
+(def-indiv-with-id drug "vasodilator" "CHEBI:35620")
