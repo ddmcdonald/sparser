@@ -1373,13 +1373,24 @@ that sentence"
           (let ((items
                  (protein-items-from-collection
                   (get-set-elements (a-get-item 'FAMILY-MEMBERS (cdr prot-item)))
-                  form)))
-            (loop for i in items collect
-                    (append i (when nil
-                                ;; not sure why this was there -- it caused the text of the conjunction
-                                ;; to be added to the text of the individual item
-                                ;;(a-get-item 'raw-text (cdr prot-item))
-                                `((:+TEXT+ ,.(a-get-item 'raw-text (cdr prot-item)))))))))
+                  form))
+                new-items)
+
+            (setq new-items
+                  (loop for i in items collect
+                          (if (assoc :db--refs i)
+                              (subst
+                               (append (assoc :db--refs i)
+                                       (when (a-get :name i)
+                                         (list (cons `:+text+
+                                                     (a-get-item 'raw-text (cdr prot-item))
+                                                     ;;(a-get :name i)
+                                                     ))))
+                               (assoc :db--refs i)
+                               i)
+                              i)))
+            ;;(break "protein-family, new-items= ~s~%" new-items)
+            new-items))
         (single-protein->indra-list prot-item form)))
       (t
        (single-protein->indra-list prot-item form)))))
@@ -2412,10 +2423,9 @@ can still match things like CHK1 and CHK-1"
                                                     :test #'equal)
                                      collect hm))
                               :sift
-                              (remove-excess+texts
                                (loop for sift in (safe-prop :sift ss)
                                      unless (member sift (safe-prop :hms ss) :test #'equal)
-                                     collect sift)))))))
+                                     collect sift))))))
 (defun collect-sift-hms-names ()
   (loop for pmc in (indra-comparisons) do 
           (loop for sent in (second pmc) 
