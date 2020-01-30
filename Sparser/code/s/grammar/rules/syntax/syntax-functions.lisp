@@ -856,8 +856,10 @@ val-pred-var (pred vs modifier - left or right?)
            ;;(tr :composed-qualifier-with-head qualifier head result)
            result))
         (t
-         (define-or-find-individual 'quantified-comparative
-             :quantifier quantifier :comparative comparative)))))
+         (if (itypep comparative 'less)
+             comparative ;; for now, ignore this operation, since it causes an error
+             (define-or-find-individual 'quantified-comparative
+                 :quantifier quantifier :comparative comparative))))))
   
 (defun quantifier-noun-compound (quantifier head)
   ;; Not all quantifiers are equivalent. We want to idenify
