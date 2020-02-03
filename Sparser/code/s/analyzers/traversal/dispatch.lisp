@@ -114,7 +114,8 @@
 
     (labels ((referent-for-vanila-edge ()
                "Edges need referents, even their semantically vacuous"
-               (if first-edge
+               (if (and first-edge
+                        (edge-p first-edge))
                    (edge-referent first-edge)
                    (let ((type-category
                           (category-named
