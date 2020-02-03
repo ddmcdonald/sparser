@@ -1958,7 +1958,10 @@ there was an edge for the qualifier (e.g., there is no edge for the
                      (not
                       (and
                        (member (pname (word-just-to-the-left np-edge))
-                               '("is" "was" "were" "are")
+                               '("is" "was" "were" "are"
+                                 "that" ;; we have a that-comp case with a vp after this one
+                                 ;; like "We found that  α-adducin phosphorylated at Thr445 accumulated at the  membrane ruffling areas"
+                                 )
                                :test #'equal)
                        (loop for e in (edges-after (right-edge-for-referent))
                           thereis '(vg+ed vp+ed verb+ed adjective)))))
