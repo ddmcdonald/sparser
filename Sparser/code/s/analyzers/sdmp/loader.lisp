@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2013 David D. McDonald all rights reserved
+;;; Copyright (c) 2013,2020 David D. McDonald all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 
 ;;;      File: "loader"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: April 2013
+;;;   Version: January 2020
 
 ;; Initiated 2/9/07. Bumped scan to 1 to completely revamp it 1/21/13. Added
 ;; [form-march] 1/23/13. Added [reify-individuals] 2/28/13 and also broke out
@@ -22,6 +22,7 @@
 (lload "do-SDM&P;scan")
 (lload "do-SDM&P;form-march")
 
+(lload "do-SDM&P;note")
 (lload "do-SDM&P;text-relations")
 (lload "do-SDM&P;text-relation-class")
 (lload "do-SDM&P;text-relation-form")

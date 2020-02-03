@@ -85,7 +85,7 @@
                  ((or (noun-category? form)
                       (verb-category? form)
                       (modifier-category? form))
-                  (note 'head head-word))
+                  (note-relation 'head head-word))
                  ((or (pronoun-category? form) ;; ignore
                       (ignorable-category? form)))
                  (t
@@ -105,10 +105,10 @@
                (adjacent-edge (edge-to-left-of-head)))
           (cond
            ((noun-category? adjacent-edge)
-            (note 'classifier-head adjacent-word head-word))
+            (note-relation 'classifier-head adjacent-word head-word))
            ((or (not (ignorable-category? adjacent-edge))
                 (not (pronoun-category? adjacent-edge))) ;; really "the"
-            (note 'modifier-head adjacent-word head-word))))))))
+            (note-relation 'modifier-head adjacent-word head-word))))))))
 
 
 (defun note-in-segment-adgacences ()
@@ -139,10 +139,11 @@
           (then
            (setq word-just-to-the-left
                  (word-just-to-the-left edge-just-to-the-left))
-           (note 'adjacent word-just-to-the-left word-to-the-right)
+           (note-relation 'adjacent word-just-to-the-left word-to-the-right)
            (if (edge-starts-at-segment-boundary edge-just-to-the-left)
              (return)
              (setq right-edge edge-just-to-the-left))))
+         
         (return)))))
 
 

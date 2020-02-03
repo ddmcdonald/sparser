@@ -58,7 +58,18 @@
 ;;; driver
 ;;;--------
 
-(defun note (relation-name &rest args)
+#|  note is called by
+/Users/ddm/sparser/Sparser/code/s/analyzers/sdmp/note-text-relations.lisp
+  note-in-segment-adgacences
+  note-what-the-head-is
+  note-immediate-relations-to-head |#
+
+
+(defun note-entity (item)
+  (add-to-container item (sentence)))
+
+
+(defun note-relation (relation-name &rest args)
   (let ((tr (text-relation-named relation-name)))
     (unless tr (error "No text-relation named ~a" relation-name))
     (let ((i (or (find-text-relation-instance tr args)
@@ -73,9 +84,6 @@
       i)))
 ;;//// we need the relationship from the word/s
 ;; to the relations they're in
-
-(defun note-entity (item)
-  (add-to-container item (sentence)))
 
 
 (defun set-text-relation-instance-print-args (tr i)
