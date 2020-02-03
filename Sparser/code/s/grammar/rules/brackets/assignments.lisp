@@ -408,7 +408,8 @@
 
 (defgeneric name-to-use-for-category (string)
   (:documentation"Encapsulates the lisp-specific checks 
-    for what case to use. Also makes polyword category names hyphenated")
+    for what case to use. Hyphenates category names
+    based on a polyword")
   (:method ((string string))
     (declare (special *break-on-pattern-outside-coverage?*))
     (assert (not (string-equal string "top")) ()
@@ -428,6 +429,9 @@
 
   (:method ((w word))
     (name-to-use-for-category (word-pname w)))
+
+  (:method ((pw polyword))
+     (name-to-use-for-category (pw-pname pw)))
 
   (:method ((exp cons))
     "We get this case when the word includes keywords to mark
