@@ -100,7 +100,8 @@
 (defun remove-edge-from-chart (edge)
   ;; Called by form-rule-completion and by
   ;; ensure-edge-consistent-with-chunk
-  (let ((starting-vector (edge-starts-at edge))
+  (let ((edges (ev-edges (edge-starts-at edge)))
+        (starting-vector (edge-starts-at edge))
         (ending-vector (edge-ends-at edge)))
     (remove-edge-from-position starting-vector edge)
     (remove-edge-from-position ending-vector edge)))
@@ -116,9 +117,11 @@
   "Helper -- When the dust has settled after the ev has been edited
    this uses the count and actual vector to do the right thing."
   (let ((count (ev-number-of-edges ev)))
-    (if (= count 0) ;; doesn't try ot re-compute :multiple-initial=edges
-      (setf (ev-top-node ev) nil)
-      (setf (ev-top-node ev) (aref (ev-edge-vector ev) (1- count))))))
+    (cond ((= count 0) ;; doesn't try ot re-compute :multiple-initial=edges
+           (setf (ev-top-node ev) nil))
+          ((= count 1)
+           (setf (ev-top-node ev) (aref (ev-edge-vector ev) (1- count))))
+          (t (setf (ev-top-node ev) :multiple-initial-edges)))))
 
 (defun remove-edge-from-vector-ev (ev edge)
   "Remove 'edge' from the the edge vector ev, adjusting
