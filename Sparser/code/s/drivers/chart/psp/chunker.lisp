@@ -291,61 +291,76 @@
       (format t "previous *chunk* is ~s, *chunk* is ~s~%" prev-chunk *chunk*))
     (loop until (or (chunk-end-pos *chunk*)
                     (eq pos sentence-end))
-       do
-         (when forms ;; chunk still valid for at least one category
-           (when *delimit-next-chunk-trace*
-             (format t "~%forms ~s are still possible ~%" forms))
-           (setf (chunk-forms *chunk*) forms)
-           (push ev (chunk-ev-list *chunk*))
-           (setq pos (pos-ev-ends-at ev forms))
-           (loop for compatible-head in (compatible-heads forms ev pos sentence-end)
-                 ;; lists of form, next-pos
-                 do
-                   (when *delimit-next-chunk-trace*
-                     (format t "~%pushing ~s onton possible-heads%" compatible-head))
-                   (push compatible-head possible-heads))
-           (when *delimit-next-chunk-trace*
-             (format t "~%possible-heads is ~s~%" possible-heads)))
+          do
+            (when forms ;; chunk still valid for at least one category
+              (when *delimit-next-chunk-trace*
+                (format t "~%forms ~s are still possible ~%" forms))
+              (setf (chunk-forms *chunk*) forms)
+              (push ev (chunk-ev-list *chunk*))
+              (setq pos (pos-ev-ends-at ev forms))
+              (loop for compatible-head in (compatible-heads forms ev pos sentence-end)
+                    ;; lists of form, next-pos
+                    do
+                      (when *delimit-next-chunk-trace*
+                        (format t "~%pushing ~s onton possible-heads%" compatible-head))
+                      (push compatible-head possible-heads))
+              (when *delimit-next-chunk-trace*
+                (format t "~%possible-heads is ~s~%" possible-heads)))
 
-         (if (or (null forms) ;; syntactic category of edge is inconsistent
-                 ;; with the possible forms for the ongoing chunk
-                 (eq pos sentence-end)) ;; chunk must end at or before this pos-before
+            (if (or (null forms) ;; syntactic category of edge is inconsistent
+                    ;; with the possible forms for the ongoing chunk
+                    (eq pos sentence-end)) ;; chunk must end at or before this pos-before
            
-           (let ((head (best-head (chunk-forms *chunk*) possible-heads)))
-             ;; We've either run out of text or the ev we just looked at
-             ;; does not extend any of the running cases.
-             ;; Tie off or flush this chunk
-             (cond
-               (head
-                ;; the chunk has a head for at least one of the consistent forms
-                ;; complete this chunk -- signaling end of the until loop
-                (setf (chunk-end-pos *chunk*) (second head))
-                (setf (chunk-forms *chunk*) (list (first head)))
-                (when *delimit-next-chunk-trace*
-                  (format t "~%found head, set chunk-end-pos to ~s~%" (chunk-end-pos *chunk*)))
-                (gross-infinitive-chunker-test *chunk*) ;; as much fall-back as improvement see note w/ fn.
-                (tr :delimited-chunk *chunk*))
-               (t
-                (setf (chunk-end-pos *chunk*) pos)
-                (setf (chunk-forms *chunk*) nil)
-                (when *delimit-next-chunk-trace*
-                  (format t "~%no head, set chunk-end-pos to ~s~%" (chunk-end-pos *chunk*)))
-                (tr :delimited-ill-formed-chunk *chunk*))))
+                (let ((head (best-head (chunk-forms *chunk*) possible-heads)))
+                  ;; We've either run out of text or the ev we just looked at
+                  ;; does not extend any of the running cases.
+                  ;; Tie off or flush this chunk
+                  (cond
+                    (head
+                     ;; the chunk has a head for at least one of the consistent forms
+                     ;; complete this chunk -- signaling end of the until loop
+                     (setf (chunk-end-pos *chunk*) (second head))
+                     (setf (chunk-forms *chunk*) (list (first head)))
+                     (when *delimit-next-chunk-trace*
+                       (format t "~%found head, set chunk-end-pos to ~s~%" (chunk-end-pos *chunk*)))
+                     (gross-infinitive-chunker-test *chunk*) ;; as much fall-back as improvement see note w/ fn.
+                     (tr :delimited-chunk *chunk*))
+                    (t
+                     (setf (chunk-end-pos *chunk*) pos)
+                     (setf (chunk-forms *chunk*) nil)
+                     (when *delimit-next-chunk-trace*
+                       (format t "~%no head, set chunk-end-pos to ~s~%" (chunk-end-pos *chunk*)))
+                     (tr :delimited-ill-formed-chunk *chunk*))))
            
-           (else ;; loop around.
-             (tr :chunker-moving-to pos)
-             (setq ev (pos-starts-here pos))
-             (tr :chunker-next-edges ev)
-             (setq forms ;; This call is where we extend the chunk.                
-                   (remaining-forms ev *chunk*))
-             (tr :chunk-loop-next-edge forms)))
+                (else ;; loop around.
+                  (tr :chunker-moving-to pos)
+                  (setq ev (pos-starts-here pos))
+                  (tr :chunker-next-edges ev)
+                  (setq forms ;; This call is where we extend the chunk.                
+                        (remaining-forms ev *chunk*))
+                  (tr :chunk-loop-next-edge forms)))
           finally
             (when *delimit-next-chunk-trace*
               (format t "~%chunk-end-pos is ~s, evlist is ~s"
-                    (chunk-end-pos *chunk*)
-                    (chunk-ev-list *chunk*)))
-         (return 
-           (find-consistent-edges *chunk* sentence-end)))))
+                      (chunk-end-pos *chunk*)
+                      (chunk-ev-list *chunk*)))
+          ;; filter out all edges including the putatitve head edge
+            (when (position/<= (chunk-end-pos *chunk*)
+                               (ev-position (car (chunk-ev-list *chunk*))))
+              (setf (chunk-ev-list *chunk*)
+                    (loop for ev in (chunk-ev-list *chunk*)
+                          when
+                            (position/> (chunk-end-pos *chunk*)
+                                        (ev-position ev))
+                          collect ev))
+              ;;(format t "~% shortened ev-list to ~s" (chunk-ev-list *chunk*))
+              )
+            (loop for ev in (chunk-ev-list *chunk*)
+                  do (filter-chunk-compatible-edges-from-ev ev *chunk*))
+            (return 
+              (find-consistent-edges *chunk* sentence-end)))))
+
+
 
 
 ;;--- compatible heads
@@ -382,7 +397,50 @@
                              (vg (vg-head? edge))
                              (adjg (adjg-head? edge))))
         collect edge))
-
+(defparameter *show-chunk-filtering* nil)
+(defun filter-chunk-compatible-edges-from-ev (ev chunk
+                                              &aux
+                                                (end (chunk-end-pos chunk))
+                                                (forms (chunk-forms chunk))
+                                                (top-edges (ev-top-edges ev))
+                                                filtered-edges)
+  (when (cdr top-edges)
+    ;; the edge at this position is still ambiguous
+    (loop for edge in top-edges
+          unless
+            (or (null forms) ;; not a valid chunk
+                ;; "following" is both an "ADJ" and a "PREPOSITION"
+                (eq (edge-form-name edge) 'preposition)
+                (position/> (pos-edge-ends-at edge)
+                            (chunk-end-pos chunk))
+                (member (edge-cat-name edge)
+                        '(acknowledgement syntactic-there))
+                (member (edge-form-name edge) '(adverb))
+                (eq (edge-category edge) (word-named "there"))
+                (loop for form in forms
+                       thereis (if (eq (edge-ending-position edge) end)
+                                   (ecase form
+                                     (ng (ng-head? edge end))
+                                     (vg (vg-head? edge))
+                                     (adjg (adjg-head? edge)))
+                                   (ecase form
+                                     (ng (ng-compatible?
+                                          edge
+                                          (cdr (member ev (chunk-ev-list chunk)))))
+                                     (vg (vg-compatible?
+                                          (cat-symbol (edge-form edge))))
+                                     (adjg (adjg-compatible? edge))))))
+          do
+            (unless  (member (edge-cat-name edge)
+                             '(deictic-location adverb also))
+              
+              (when *show-chunk-filtering*
+                (format t "removing incompatible ~s (~s) from chunk (forms ~s)~%  from ~s~%"
+                        edge (edge-form-name edge)
+                        forms
+                        (current-string))
+                (break)))
+            (remove-edge-from-chart edge))))
 
 ;;--- best head
 
@@ -591,9 +649,16 @@
         (and (memq name *vg-head-categories*)
              (or (not (boundp '*chunk*))
                  (null (cdr (chunk-ev-list *chunk*)))
-                 (not (loop for ev in (cdr (chunk-ev-list *chunk*))
-                            thereis (loop for edge in (ev-top-edges ev)
-                                          thereis (eq 'be (edge-cat-name edge))))))))))
+                 (not
+                  (and ;; the rightmost 
+                   (loop for e in (ev-edges (car (chunk-ev-list *chunk*)))
+                         thereis
+                           (and (referential-category-p (edge-form e))
+                                (member (cat-symbol (edge-form e))
+                                        *vg-head-categories*)))
+                   (loop for ev in (cdr (chunk-ev-list *chunk*))
+                         thereis (loop for edge in (ev-top-edges ev)
+                                       thereis (eq 'be (edge-cat-name edge)))))))))))
 
 ;;--- vg-compatible?
 
@@ -1462,9 +1527,6 @@ than a bare "to".  |#
      when (loop for form in forms
              always (compatible-edge-form? e form ev-list t))
      do (return e)))
-
-
-
 
 (defun sentential-adverb? (edge)
   (declare (special edge))
