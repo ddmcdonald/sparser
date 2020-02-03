@@ -71,8 +71,8 @@
     the specifier of an np. Referent point is Jackendoff's 1977 book onn
     X-bar Syntax.")
   (:method ((triple list))
-    (assert (= 3 (length triple)) (triple)
-            "The list that was passed to np-specifier? was not a triple")
+    (assert (triple-p triple) ;;(= 3 (length triple))
+            (triple)  "The list that was passed to np-specifier? was not a triple")
     (np-specifier? (triple-rule triple)))
   (:method ((rule cfr))
     (np-specifier? (cfr-form rule)))
