@@ -141,8 +141,8 @@ its head will be at
     (clrhash *rules-for-pairs*)
     
     (when (and ng? (> (segment-length) 2))
-      (setq triples (collect-triples-in-segment chunk))
-      ;; These are ordered left to right
+      (setq triples (collect-triples-in-segment chunk)) ; ordered left to right
+      ;;(push-debug `(,triples)) (break "1st triples")
       (when triples ;; nil in overnight #4 "the first direct evidence"
         (when (np-specifier? (first triples))
           (tr :segment-starts-with-NP-specifier (first triples))
@@ -151,13 +151,13 @@ its head will be at
             (when *parse-edges* (tts))))))
 
     (loop
-       (setq triples
-	     (if from-right
-		 (reverse (collect-triples-in-segment chunk))
-		 (collect-triples-in-segment chunk)))
-       (when blocked-triples ;; triple that multiply-edges declared invalid
+       (setq triples (collect-triples-in-segment chunk))
+       ;;(push-debug `(,triples)) (break "2d triples")
+       (when from-right (reverse triples)) ; now right-to-left		 
+       (when blocked-triples ;; triples that multiply-edges declared invalid
+         ;;/// revise triple collection to hash like we do when whacking,
+         ;; then this will be a #'eq check
 	 (setq triples (loop for tr in triples
-	          ;; not sure why we are seeing equal but not eq triples...
 			  unless (member tr blocked-triples :test #'equal)
 			  collect tr)))
        (setq triple (select-best-chunk-triple triples chunk))
@@ -188,10 +188,10 @@ its head will be at
 (defun select-best-chunk-triple (triples chunk)
   "All of these triples are valid, but we're not keeping
    systematic track of their placement within the segment yet.
-   We first sort by rule type, priority (in someo cases) and
+   We first sort by rule type, priority (in some cases) and
    chunk type. Finally we make a arbitrary choice."
   (when triples
-    (push-debug `(,triples)) ;;(lsp-break "triples")
+    ;;(push-debug `(,triples)) (lsp-break "triples")
     (tr :n-triples-apply triples)
     
     (let ((non-syntactic-triples
@@ -243,7 +243,7 @@ its head will be at
       collect (cons rule pair))))
 
 (defun segment-rule-check (pair chunk)
-  "Wrap a filter aftern the lookup"
+  "Wrap a filter after the lookup"
   (declare (special *vp-categories* ))
   (let ((rule (find-rule-for-edge-pair pair chunk)))
     ;; But don't employ a verb-centric rule when spanning
