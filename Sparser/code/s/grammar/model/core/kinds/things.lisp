@@ -38,7 +38,7 @@
    "Fundamentally, this is the same concept as the 'abstract-region'
  in upper-model.lisp. It demarcates, sets a boundary around a portion
  of some stuff. But because 'regions' are central to the geography
- of space, where using the simple name 'region' here as a type of
+ of space, we are using the simple name 'region' here as a type of
  endurant.")
 
 

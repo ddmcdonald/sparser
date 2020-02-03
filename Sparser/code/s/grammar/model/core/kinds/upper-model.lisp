@@ -49,11 +49,14 @@
   :specializes nil
   :binds ((name :primitive word) ;; more like a label than a name proper.
           
-          (modifier)
+          (modifier) ;; supplies a property. May be adverbial
+          
           (qualifier) ;; a modifier that changes somethings type: 'toy gun'
           
           (negation) ;; applies to both endurants and perdurants
           ;;/// but c.f. negative on tense/modal -- needs coordination
+
+          (quantifier) ;; "more precise" -- applies to attributes
 
           ;; Variables for plural
           (number) ;; leave v/r open -- could be a #<number>, integer, quantifier etc.
