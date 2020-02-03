@@ -1170,6 +1170,7 @@ similar to an oncogenic RasG12V mutation (9)."))
            :form n-bar
            :referent (:function superlative-adj-noun-compound left-edge right-edge))))
 
+;;--- comparatives + pp
 
 (def-syntax-rule (comparative-adjective pp)
     :head :left-edge
@@ -1191,30 +1192,29 @@ similar to an oncogenic RasG12V mutation (9)."))
     :form superlative-adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
  
+;;--- comparatives + adjp
 
 (def-syntax-rule (comparative adjective) ;; "more precise"
     :head :right-edge
     :form comparative-adjp
-    :referent (:instantiate-individual qualified-attribute
-               :with (comparative left-edge
-                      attribute right-edge)))
+    :referent (:function interpret-comparative+adjective left-edge right-edge))
 
 (def-syntax-rule (superlative adjective)
     :head :right-edge
     :form adjp ;;superlative-adjp ;; adjective ;;superlative
-    :referent (:head right-edge
-                     :bind (comparative left-edge)))
+    :referent (:function interpret-superlative+adjective left-edge right-edge))
 
-(def-syntax-rule (superlative adverb)
+(def-syntax-rule (superlative adverb) ;;/// what's an example of this??
     :head :right-edge
     :form adverb ;;superlative-adverb ;; adverb ;;superlative
-    :referent (:head right-edge
-               :bind (comparative left-edge)))
+    :referent (:function interpret-superlative+adjective left-edge right-edge))
+
 
 (def-syntax-rule (quantifier comparative) ;; "many more"
     :head :right-edge
     :form comparative
     :referent (:function quantify-comparative left-edge right-edge))
+
 
 ;;--- comparative + than-np
 
@@ -1233,6 +1233,8 @@ similar to an oncogenic RasG12V mutation (9)."))
     :form np
     :referent (:function maybe-extend-comparative-with-than-np left-edge right-edge))
 
+
+;;--- comparative + vg
 
 (loop for vv in '((verb+ed vg+ed)
                   (verb+ing vg+ing)

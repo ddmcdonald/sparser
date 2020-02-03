@@ -154,22 +154,12 @@
 ;;; scalar / comparative quantification
 ;;;-------------------------------------
 
-(define-category comparative-quantification
+#+ignore(define-category comparative-quantification
   :specializes scalar-attribute
   :bindings (var (find-variable-for-category 'quantifier 'endurant))
   :documentation "Draft of the 'attribute' that scalar quantifiers
     are values of. Mostly serves to specific the variable, and that
     could use some work in handling the meaning of any quantifier")
-
-(define-category comparative-quantifier
-  :specializes attribute-value
-  :mixins (quantifier comparative)
-  :bindings (attribute (category-named 'comparative-quantification))
-  :binds ((quantifier quantifier))
-  :documentation "For the actual quantifiers themselves"
-  :rule-label comparative
-  :index (:permanent :key name)
-  :realization (:adjective name))
 
 ;;/// there's also direction -- see specialize-direction
 ;; And we could refine the referent like setup-comparatives
@@ -178,21 +168,81 @@
 ;;/// These all relate back to the base quantifier. Should we record
 ;; the other direction as well? Say on q's plist
 
-(define-category superlative-quantifier
-  :specializes comparative-quantifier
+;; Attribute is 'quantity' or 'amount'
+
+(define-category scalar-quantifier ; "many" "much"
+  :specializes attribute-value
+  :mixins (quantifier comparative)
+  :realization (:adjective name))
+
+(define-category comparative-scalar-quantifier ; "more"
+  :specializes scalar-quantifier
+  :mixins (quantifier comparative)
+  ;; :bindings (attribute (category-named 'comparative-quantification))
+  ;; :binds ((quantifier quantifier))
+  ;; :documentation "For the actual quantifiers themselves"
+  :rule-label comparative
+  :index (:permanent :key name)
+  :realization (:adjective name))
+
+(define-category superlative-scalar-quantifier ; "most"
+  :specializes comparative-scalar-quantifier
+  :mixins (quantifier superlative)
   :rule-label superlative
   :index (:permanent :key name)
   :realization (:adjective name))
 
-(defun define-scalar-quantifier (&key dir base er est)
-  "All three words share the same basic meaning as a quantifier.
+;; Have to go through constraint in maybe-extend-comparative-with-than-np
+;; (for "a bigger block than that block" where we have to provide
+;; a binding value (i.e. attribute-value) that is itypep 'comparative
+
+(defun define-scalar-quantifier (&key dir base base-count base-mass er est)
+  "All three (or four) words share the same basic meaning as a quantifier.
    The comparative (:er) and superlative  (:est) forms add the
    notion of a scale or attribute (attr) along with the
    term they quantify varies relative to some reference set.
    They pattern like adjectival comparatives."
   (let ((*inhibit-constructing-comparatives* t))
     (declare (special *inhibit-constructing-comparatives*))
-    
+
+    (let ((count-word (when base-count (resolve/make base-count)))
+          (mass-word (when base-mass (resolve/make base-mass)))
+          (er-word (when er (resolve/make er)))
+          (est-word (when est (resolve/make est))))
+
+      (when count-word ; "many"
+        (define-function-term count-word 'adjective ;; vs. quantifier
+          :super-category (category-named 'scalar-quantifier)))
+      ;; should these have :rule-label fields that identify
+      ;; the attribute these are refering to? (cf. setup-comparatives)
+      (when mass-word ; "much"
+        (define-function-term mass-word 'adjective
+          :super-category (category-named 'scalar-quantifier)))
+
+      (when er-word ; "more"
+        (define-function-term er-word 'comparative-adjective
+          :super-category (category-named 'comparative-scalar-quantifier)
+          :rule-label 'comparative))
+
+      (when est-word ; "most"
+        (define-function-term est-word 'superlative-adjective
+          :super-category (category-named 'superlative-scalar-quantifier)
+          :rule-label 'superlative)))))
+      
+
+;; count
+(define-scalar-quantifier :base-count "few" :er "fewer" :est "fewest")
+
+;; mass
+(define-scalar-quantifier :base-mass "a little" :er "less" :est "least")
+;;/// "at least N"
+
+(define-scalar-quantifier :base-count "many" :base-mass "much" :er "more" :est "most")
+;;/// "most of all, ..."
+
+
+#| Previous version where we start with quantifier
+   and make these all instances instead of categories
     (flet ((switch-form (string old-cat-name new-cat-name)
              (let* ((word (resolve string))
                     (category (category-named old-cat-name :error))
@@ -201,9 +251,9 @@
                (unless rule
                  (error "Expected a rule on ~a with form ~a" category old-cat-name))
                (setf (cfr-form rule) replacement))))
-      
-      (let* ((q (when base
-                  (define-quantifier base)))
+  
+
+      (let ((q (when base (define-quantifier base)))
              (comparative
               (when er ;;/// shouldn't we be making subtypes? of the quantifier?
                 (define-or-find-individual 'comparative-quantifier
@@ -220,13 +270,5 @@
         (when base (switch-form base 'quantifier 'comparative)) ;;???
         (when er (switch-form er 'adjective 'comparative))
         (when est (switch-form est 'adjective 'adverb))
-        (values q comparative superlative)))))
-
-;; count
-(define-scalar-quantifier :base "few" :er "fewer" :est "fewest")
-
-;; mass
-(define-scalar-quantifier :base "less" :er "lesser" :est "least") ;;/// "at least N"
-
-(define-scalar-quantifier :er "more" :est "most") ;;/// "most of all, ..."
+        (values q comparative superlative))) |#
 

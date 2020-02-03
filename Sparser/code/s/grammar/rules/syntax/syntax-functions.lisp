@@ -856,10 +856,12 @@ val-pred-var (pred vs modifier - left or right?)
            ;;(tr :composed-qualifier-with-head qualifier head result)
            result))
         (t
-         (if (itypep comparative 'less)
-             comparative ;; for now, ignore this operation, since it causes an error
-             (define-or-find-individual 'quantified-comparative
-                 :quantifier quantifier :comparative comparative))))))
+         ;; (if (itypep comparative 'less)
+         ;;     comparative ;; for now, ignore this operation, since it causes an error
+         ;;     (define-or-find-individual 'quantified-comparative
+         ;;         :quantifier quantifier :comparative comparative))
+         (bind-variable 'quantifier quantifier comparative)))))
+
   
 (defun quantifier-noun-compound (quantifier head)
   ;; Not all quantifiers are equivalent. We want to idenify
@@ -1227,6 +1229,19 @@ there was an edge for the qualifier (e.g., there is no edge for the
           ((has-adverb-variable? vg vg-phrase adverb)
            (setq vg (bind-dli-variable 'adverb adverb vg)))
           (t vg)))))
+
+(defun interpret-comparative+adjective (comparative adjp) ;; "more precise"
+  "The comparative is modulating the interpretation of the adjective rather like
+   a quantifier would. It doesn't change the type of the adjectival head though."
+  (or *subcat-test* ; always works
+      (let ((head (bind-variable 'quantifier ; on top
+                                 comparative adjp)))
+        (specialize-object head category::comparative))))
+
+(defun interpret-superlative+adjective (superlative adjp)
+  (or *subcat-test*
+      (bind-variable 'quantifier superlative adjp)))
+
 
 (defun interpret-adverb+adjective (adverb adj-phrase) 
   (declare (special category::pp))

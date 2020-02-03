@@ -156,7 +156,8 @@
             ((superlative superlative-adjective)
              *comparative-brackets*)
             ((adjective spatial-adjective temporal-adjective) *adjective-brackets*)
-            ((det approximator sequencer) *default-determiner-brackets*)
+            ((det approximator sequencer quantifier)
+             *default-determiner-brackets*)
             (standalone *standalone-brackets*)
             ((preposition #|spatial-preposition spatio-temporal-preposition|#)
              *preposition-brackets*)
@@ -285,7 +286,7 @@
     ((or adjective spatial-adjective temporal-adjective) :adjective)
     ((or comparative superlative
          comparative-adjective superlative-adjective) :adjective)
-    ((or det approximator sequencer) :determiner)
+    ((or det approximator sequencer quantifier) :determiner)
     ((or conjunction subordinate-conjunction) :word) ;; i.e. ignore
     (preposition :preposition)
     ((noun common-noun) :common-noun)
