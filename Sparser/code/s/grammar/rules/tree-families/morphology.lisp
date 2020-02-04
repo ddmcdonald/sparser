@@ -979,20 +979,12 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
               (apply #'make-cn-plural-rules word category referent
                      special-cases)))))
 
-(defvar *deferred-collection-plurals* nil
-  "An alist of word and category for all the plurals created before the
-   category 'collection' was defined, mostly lemmas in the upper model.")
-
 (defun make-cn-plural-rules (word category referent &key plural)
-                             ;; (plural (etypecase word
-                             ;;           (polyword (plural-version/pw word))
-                             ;;           (word (plural-version word))))
   (if plural ;; a marked irregular
     (make-irreg-mword word :noun :plural plural)
     (setq plural (etypecase word
                    (polyword (plural-version/pw word))
                    (word (plural-version word)))))
-
   (loop for plural in (ensure-list plural)
         as plural-word = (etypecase plural
                            ((or word polyword) plural)
@@ -1005,26 +997,23 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                 do (record-lemma i word :noun))
        (return rules)))
 
-(defparameter *temporary-new-plural-flag* t
+#+ignore(defvar *deferred-collection-plurals* nil
+  "An alist of word and category for all the plurals created before the
+   category 'collection' was defined, mostly lemmas in the upper model.")
+
+#+ignore(defparameter *temporary-new-plural-flag* t
   "Remove once this is settled")
 
 (defun make-cn-plural-rule (plural category referent)
   (assign-brackets-as-a-common-noun plural)
-  ;; (when *temporary-new-plural-flag*
-  ;;   (add-mixin category 'plural))
-
-  ;; This one is for categories where we expect sets: companies, people
-  ;;                (define-cfr category (list plural)
-  ;;                  :form  category::common-noun/plural
-  ;;                  :referent (resolve-referent-expression
-  ;;                             `(:head ,referent
-  ;;                               :subtype (:instantiate-individual collection
-  ;;                                           :with (type ,referent)))))
-  ;; This is simple cases where the set would never be enumerated: share-of-stock
   (define-cfr category (list plural)
     :form  category::common-noun/plural
     :schema (get-schematic-word-rule :common-noun)
-    :referent (cond
+    :referent (resolve-referent-expression
+                `(:head ,referent
+                  :subtype ,(category-named 'plural)))))
+
+              #+ignore(cond  ;; version before 2/4/20
                 (*external-referents* referent)
                 (*temporary-new-plural-flag*
                  (resolve-referent-expression
@@ -1039,43 +1028,52 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                 (t
                  (push `(,plural . ,referent) *deferred-collection-plurals*)
                  (resolve-referent-expression
-                  `(:head ,referent))))))
+                  `(:head ,referent))))
 
-(defmethod plural-version ((w word))
-  (let ((plural-pname (plural-version (word-pname w))))
-    (define-word/expr plural-pname)))
+(defun unresolved-plural-referent? (item)
+  "We have an unsolved issue with some plurals referents remaining as expressions.
+   rather than being resolved. This is to detect that pattern."
+  (when (listp item)
+    (and (= 2 (length item))
+         (eq (car (first item)) :head)
+         (eq (car (second item)) :subtype))))
 
-(defmethod plural-version ((pname string))
-  ;; Revised 8/1/11 to draw on Comlex utilties, which says these
-  ;; are from the Oxford Advanced Learners Dictionary
-  (let ((lastchar (subseq pname (- (length pname) 1)))
-        (last2char (subseq pname (max (- (length pname) 2) 0))))
-    (cond
-      ((or (member lastchar '("s" "z" "x") :test #'string-equal)
-           (member last2char '("ch" "sh") :test #'string-equal))
-       (string-append pname "es"))
-      ((member last2char '("ay" "ey" "iy" "oy" "uy")
-               :test #'string-equal)
-       (string-append pname "s"))
-      ((string-equal lastchar "y")
-       (string-append (subseq pname 0 (- (length pname) 1)) "ies"))
-      (t (string-append pname "s")))))
+(defgeneric plural-version (word)
+  (:documentation "Given the singular version of a noun, construct its plural
+   by rule.")
+  (:method ((pname string))
+    ;; Revised 8/1/11 to draw on Comlex utilties, which says these
+    ;; are from the Oxford Advanced Learners Dictionary
+    (let ((lastchar (subseq pname (- (length pname) 1)))
+          (last2char (subseq pname (max (- (length pname) 2) 0))))
+      (cond
+        ((or (member lastchar '("s" "z" "x") :test #'string-equal)
+             (member last2char '("ch" "sh") :test #'string-equal))
+         (string-append pname "es"))
+        ((member last2char '("ay" "ey" "iy" "oy" "uy")
+                 :test #'string-equal)
+         (string-append pname "s"))
+        ((string-equal lastchar "y")
+         (string-append (subseq pname 0 (- (length pname) 1)) "ies"))
+        (t (string-append pname "s")))))
+  (:method ((w word))
+    (let ((plural-pname (plural-version (word-pname w))))
+      (define-word/expr plural-pname))))
 
 (defun plural-version/pw (pw)
-  ;; /// won't do the right thing for irregulars -- "chairmen"
+  "Form the plural of a polyword. Naieve version that just forms the
+   plural of the last word. Doesn't handle irregulars -- 'chairmen',
+   and doesn't handle cases where the plurality should be marked on
+   an earlier word."
   (let* ((words (pw-words pw))
          (last-word (car (last words)))
          (last-word-plural (plural-version last-word)))
-
     (let* ((word-list (copy-list words))
            (final-cell (last word-list)))
       (declare (special word-list))
       (rplaca final-cell last-word-plural)
       (let* ((word-strings (mapcar #'word-pname word-list))
              (pw-string
-              ;;(spaced-string word-strings)))
-              ;; the above causes issues now that we're not ignoring
-              ;; whitespace in definitions
               (apply #'string-append word-strings)))
         (define-polyword/expr pw-string)))))
 

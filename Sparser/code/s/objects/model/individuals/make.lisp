@@ -386,7 +386,7 @@
    They will often be working with a head consitituent whose
    referent will be a category. To provide a binding site for
    modifiers we need to replace categories with individuals."
-  (etypecase head
+  (typecase head
     (null)
     (individual
      head)  ;; non-DL case called maybe-copy-individual     
@@ -415,7 +415,11 @@
              (make-unindexed-individual head)))))
     ((cons (eql :or))
      ;; The first category is supposed to be the 'primary' one
-     (individual-for-ref (second head)))))
+     (individual-for-ref (second head)))
+    (otherwise
+     (if (unresolved-plural-referent? head)
+       (break "unresolved plural referent: ~a~%in ~a" head (current-string))
+       (error "falling through etypecase on ~a" head)))))
 
 (defun maybe-make-individual (r)
   (if (referential-category-p r)

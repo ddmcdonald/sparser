@@ -542,8 +542,10 @@ val-pred-var (pred vs modifier - left or right?)
 		   (individual-p head))))
      ;; Have cases like "pp170" where the head has a PW as referent.
      ;; Don't know what to  do
-     (break "Can't deal with head whose interpretation is not ~
-             an individual or category in noun-noun-compound, head is ~s~&" head))
+     (if (unresolved-plural-referent? head)
+       (break "unresolved plural referent: ~a~%in ~a" head (current-string))
+       (break "Can't deal with head whose interpretation is not ~
+               an individual or category in noun-noun-compound, head is ~s~&" head)))
     
     ((and qualifier head)
      (setq head (individual-for-ref head))
