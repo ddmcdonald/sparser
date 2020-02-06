@@ -828,40 +828,36 @@
     (setf (get mention-var :save-indra-sexpr) indra-sexpr)
     (setf (gethash mention-var *indra-mention-var-ht*) indra-sexpr)))
 
-(defun push-sem->indra-post-process (mention sentence lambda-expansion output-stream
-                                     &optional (desc (base-description mention))
-                                     &aux desc-sexp subst-desc-sexp f)
-  (declare (special *indra-text* *predication-links-ht* *indra-post-process*))
-  (let ((already-has-indra-form? (get (fom-clause-var mention) :indra-form-for-sexpr)))
-    (when already-has-indra-form?
-      (return-from push-sem->indra-post-process already-has-indra-form?)))
-
-  (if (get-indra-for-cwc?)
-      (setq desc-sexp (cwc-sem-sexp mention sentence))
-      (setq desc-sexp (sem-sexp desc)))
+(defun maybe-do-lambda-expansion (desc desc-sexp lambda-expansion)
+  ;; when we have a *lambda-var* in the desc-sexp, and we know the
+  ;;  variable to be bound, do the substitution
   (when lambda-expansion
-    (setq subst-desc-sexp
-          (subst
-               (sem-sexp (gethash desc *predication-links-ht*))
-           '*lambda-var*
-           desc-sexp))
-    (when *show-indra-lambda-substitutions*
-      (pprint `(,desc-sexp ===> ,subst-desc-sexp))
-      (terpri)))
+    (let ((subst-desc-sexp
+           (subst
+            (sem-sexp (gethash desc *predication-links-ht*))
+            '*lambda-var*
+            desc-sexp)))
+      (when *show-indra-lambda-substitutions*
+        (pprint `(,desc-sexp ===> ,subst-desc-sexp))
+        (terpri))
+      (setq desc-sexp subst-desc-sexp)))
+  desc-sexp)
 
-  (setq f
-        `(,(retrieve-surface-string (mention-source mention))
-           ,(or subst-desc-sexp desc-sexp)
-           (TEXT ,(if (and (boundp '*indra-text*)
-                           (stringp (eval '*indra-text*)))
-                      (eval '*indra-text*)
-                      (sentence-string sentence)))))
-  (push f *indra-post-process*)
+
+(defun make-indra-post-process-entry (mention sentence desc-sexp)
+  `(,(retrieve-surface-string (mention-source mention))
+     ,desc-sexp
+     (TEXT ,(if (and (boundp '*indra-text*)
+                     (stringp (eval '*indra-text*)))
+                (eval '*indra-text*)
+                (sentence-string sentence)))))
+
+(defun maybe-save-indra-for-cwc? (mention sentence desc)
   (when (get-indra-for-cwc?)
     (if (and (individual-p desc)
              (or (itypep desc 'bio-entity)
                  (itypep desc 'disease)
-                 (itypep desc 'bio-location) ;; for "immune system"
+                 (itypep desc 'bio-location)    ;; for "immune system"
                  (itypep desc 'bio-mechanism))) ;; for pathways
         (if (itypep desc 'collection)
             (push-sem-bio-entity-collection mention desc)
@@ -895,6 +891,24 @@
                     nil)))
               (when indra-form
                 (save-indra-sexpr mention indra-form)))))))
+
+(defun push-sem->indra-post-process (mention sentence lambda-expansion output-stream
+                                     &optional (desc (base-description mention)))
+  (declare (special *indra-text* *predication-links-ht* *indra-post-process*))
+  (let ((already-has-indra-form? (get (fom-clause-var mention) :indra-form-for-sexpr)))
+    (when already-has-indra-form?
+      (return-from push-sem->indra-post-process already-has-indra-form?)))
+
+  (push (make-indra-post-process-entry
+         mention sentence
+         (maybe-do-lambda-expansion
+          desc
+          (if (get-indra-for-cwc?)
+              (cwc-sem-sexp mention sentence)
+              (sem-sexp desc))
+          lambda-expansion))
+        *indra-post-process*)
+  (maybe-save-indra-for-cwc? mention sentence desc))
 
 (defun cwc-sem-sexp (mention sentence)
   `(,(cat-name (itype-of (base-description mention)))
