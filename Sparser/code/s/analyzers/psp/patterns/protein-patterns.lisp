@@ -130,7 +130,7 @@
            (t nil))))
       (tr :making-a-protein-collection start-pos end-pos)
       (make-ns-edge start-pos end-pos category
-                    :form category::n-bar
+                    :form category::proper-noun ;; n-bar
                     :rule 'make-protein-collection
                     :referent 
                     (find-or-make-individual category
