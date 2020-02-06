@@ -160,7 +160,7 @@ its head will be at
 	 (setq triples (loop for tr in triples
 			  unless (member tr blocked-triples :test #'equal)
 			  collect tr)))
-       (setq triple (select-best-chunk-triple triples chunk))
+       (setq triple (select-best-chunk-triple (reverse triples) chunk))
        (when (null triple)
 	 (return))
        (setq edge (execute-triple triple))
