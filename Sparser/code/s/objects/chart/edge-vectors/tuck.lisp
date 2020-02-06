@@ -40,10 +40,10 @@
        (cond
          ((eq (edge-right-daughter dominating-edge) :long-span)
           (when (not (member subsumed-edge (edge-constituents dominating-edge)))
-            (error "~%in tuck-new-edge-under-already-knit:~
+            (error "~%in tuck-new-edge-under-already-knit: ~
                   ~%edge-constituents in dominating edge ~s ~
-                  ~%does not contain subsumed-edge ~s~%"
-                   dominating-edge subsumed-edge))
+                  ~%does not contain subsumed-edge ~s~% in ~s~%"
+                   dominating-edge subsumed-edge (current-string)))
           (setf (edge-constituents dominating-edge)
                 (subst new-edge subsumed-edge (edge-constituents dominating-edge))))
        
@@ -55,11 +55,13 @@
                     *current-da-rule* dominating-edge subsumed-edge
                     (current-string)))
           (setf (edge-right-daughter dominating-edge) new-edge))
+         
          ((eq direction :left)
           (unless (eq (edge-left-daughter dominating-edge) subsumed-edge)
-            (error "~%in tuck-new-edge-under-already-knit:~
+            (error "~%in tuck-new-edge-under-already-knit: ~
                   ~%edge-left-daughter in dominating edge ~s ~
-                  ~%is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
+                  ~%is not subsumed-edge ~s~%in sentence: ~s~%"
+                   dominating-edge subsumed-edge (current-string)))
           (setf (edge-left-daughter dominating-edge) new-edge)))
      
        (let ((dominating-edge-ev
