@@ -448,12 +448,13 @@
 (define-category process-control-process :specializes caused-bio-process
   :binds ((affected-process (:or bio-process bio-mechanism bio-method
                                  bio-predication bio-relation medical-treatment)))
-  ::restrict ((object
+  :restrict ((object
                (:or bio-entity cell-entity molecular-location
                     measurement bio-quality disease)))
   :realization
   (:o affected-process
-      :o object))
+      :o object
+      :of affected-process))
 
 (define-category caused-biochemical-process :specializes caused-bio-process
   :binds ((process-for biochemical-process)))
