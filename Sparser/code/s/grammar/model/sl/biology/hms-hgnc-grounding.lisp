@@ -1809,7 +1809,8 @@
          (agent (car components))
          (result `(,(car cp) ,(second cp)
                     :bound--conditions
-                    ((:agent ,agent))
+                    ((:agent ,agent
+                     :IS--BOUND ,(intern "TRUE" (find-package "KB"))))
                     :db--refs
                     ,(getf cp :db--refs))))
     #+ignore
