@@ -1115,7 +1115,15 @@ than a bare "to".  |#
 
 
 ;;--- ng-compatible?
+(defun multiple-named-items (e eform)
+  ;; test intended to capture "proper-noun" (named items)
+  ;;  with multiple items explicitly mentioned
+  ;;  intended to allow for "the kinases MEK and ERK"
+  ;;   and the "the proteins MEK/ERK"
 
+  ;; Rusty, David and Laurel should look at this
+  (member eform '(proper-noun)))
+  
 
 (defmethod ng-compatible? ((e edge) evlist)
   "Is this edge a compatible part of a noun group?
@@ -1143,6 +1151,13 @@ than a bare "to".  |#
         preceding-noun-refs)
  
     (cond
+      ((and (loop for ev in evlist
+                  thereis
+                    (loop for ee in (ev-edges ev)
+                          thereis (eq (edge-form-name ee) 'common-noun/plural)))
+            (not (multiple-named-items e eform)))
+       ;; plural nouns 'cannot' occur inside an NG -- only as the head
+       nil)
       ((and (eq eform 'verb+ed)
             (loop for ee in before
                   thereis (eq (edge-form-name ee) 'proper-noun))
