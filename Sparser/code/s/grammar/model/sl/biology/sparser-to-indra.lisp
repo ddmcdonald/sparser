@@ -213,6 +213,12 @@
 
 (defun indra-data (s &optional break-on-errors) (has-indra-data s break-on-errors))
 (defun indra-forms (s &optional break-on-errors) (find-indra-forms s 'dummy-pmc break-on-errors))
+(defun find-indra-forms (s &optional pmid break-on-errors &aux (*indra-sentence* s))
+  "Given a sentence, look at the has-indra-data for the sentence and
+pass the result to the appropriate indra generator"
+  (declare (special *indra-sentence*))
+  (indra-sexps->json-sexps (has-indra-data s break-on-errors) pmid))
+
 
 
 (defun indra-field-filter (field type &key (return-fn #'identity) (data (get-json-sexp-statements)))
@@ -230,12 +236,6 @@
                      :test #'equal))
     
 (defvar *indra-sentence*)
-
-(defun find-indra-forms (s &optional pmid break-on-errors &aux (*indra-sentence* s))
-  "Given a sentence, look at the has-indra-data for the sentence and
-pass the result to the appropriate indra generator"
-  (declare (special *indra-sentence*))
-  (indra-sexps->json-sexps (has-indra-data s break-on-errors) pmid))
 
 (defun indra-sexps->json-sexps (forms &optional pmid &key check-form)
   (remove nil ;; some forms will return nil -- will be on the
@@ -504,6 +504,9 @@ To MRA:
 
 
 (defparameter *protein-args-for-complex* nil)
+(defparameter *multiple-protein-complex* nil)
+(defparameter *single-protein-complex* nil)
+
 
 (defun create-complex-json (complex-expr &optional pmid sentence trigger (head (car complex-expr)))
   (let ((members (remove-duplicates
@@ -517,24 +520,53 @@ To MRA:
                                         USING ;; interaction with ...
                                         APPOSITIVE-DESCRIPTION))
                          append
-                           (type-expressions-in (second branch) 'protein)))
-                   ;;(type-expressions-in complex-expr )
+                           (let ((proteins-in
+                                  (type-expressions-in (second branch) 'protein))
+                                 filtered)
+                             (setq filtered
+                                   (loop for p in proteins-in
+                                         when (is-in-p 'name p)
+                                         collect p))
+                             (unless (or (null proteins-in) filtered)
+                               (format t "~%no remainingproteins out of ~s in ~s~%"
+                                       proteins-in trigger))
+                             (setq proteins-in filtered)
+                               
+                             (when (and (cdr proteins-in)
+                                        (not (member (car branch) '(participant))))
+                               (pushnew `(,sentence
+                                          ,trigger
+                                          ,(car branch)
+                                          ,proteins-in)
+                                        *multiple-protein-complex*
+                                        :test #'equal))
+                             ;;(break)
+                             proteins-in)))
                    :test #'equal)))
     ;; don't create a complex if you can;t find its members
-    (when (cdr members)
-      (push (list (current-string) complex-expr members)
-            *protein-args-for-complex*)
-      `(((:TYPE . "Complex")
-         (:MEMBERS ,@members)
-         ;;,(evidence xxx)
-         (:EVIDENCE
-          ((:SOURCE--API . "sparser") (:PMID ,. pmid)
-           (:TEXT ,. sentence)
-           (:TRIGGER ,.trigger)
-           (:ANNOTATIONS (:FOUND--BY ., (pname head))
+    (cond
+      ((cdr members)
+       (push (list (current-string) complex-expr members)
+             *protein-args-for-complex*)
+       `(((:TYPE . "Complex")
+          (:MEMBERS ,@members)
+          ;;,(evidence xxx)
+          (:EVIDENCE
+           ((:SOURCE--API . "sparser") (:PMID ,. pmid)
+            (:TEXT ,. sentence)
+            (:TRIGGER ,.trigger)
+            (:ANNOTATIONS (:FOUND--BY ., (pname head))
                          
-                         )))
-         (:SBO . "http://identifiers.org/sbo/SBO:0000526"))))))
+                          )))
+          (:SBO . "http://identifiers.org/sbo/SBO:0000526"))))
+      (members
+       (push `(,(current-string)
+                ,trigger
+                ,members)
+             *single-protein-complex*)
+       nil)
+      (t
+         nil))))
 
 
 (defun collection-args (f)
@@ -2053,11 +2085,9 @@ can still match things like CHK1 and CHK-1"
                append found))))
 
 
-;;;!!!!!!!!
-(declaim (sb-ext:unmuffle-conditions sb-ext:compiler-note))
-(declaim (optimize (debug 1)(speed 3)(safety 0)))
 
 (defun save-bob-sparser-indra-forms ()
+  (declare (optimize (debug 1)(speed 3)(safety 0)))
   (when (and (boundp '*indra-mention-var-ht*)
              (symbol-value '*indra-mention-var-ht*))
     (loop for mention-indra in (hal *indra-mention-var-ht*)
@@ -2067,12 +2097,15 @@ can still match things like CHK1 and CHK-1"
 
 
 (defun save-bob-sparser-indra-form (sp-var-symbol form)
+  (declare (optimize (debug 1)(speed 3)(safety 0)))
   (setf (get (intern (symbol-name sp-var-symbol) :kb)
              :sparser-indra-rep)
         (convert-to-biosense
          form
          (symbol-name sp-var-symbol))))
 
+
+;; utility-function, not called in code
 (defun cl-user::bob-sparser-to-indra-forms ()
   (loop for mention-indra in (hal *indra-mention-var-ht*)
         collect
@@ -2146,6 +2179,9 @@ can still match things like CHK1 and CHK-1"
 
 (defparameter *pmc-indra-json-ht* (make-hash-table :test #'equal))
 (defparameter *use-phase3-hms-files* t)
+(defun use-phase3 (&optional (yes? t))
+  (setq *use-phase3-hms-files* yes?))
+
 (defun read-indra-json (pmcid &optional (source :hms) &aux js-file)
   (unless (or (search "~/" pmcid)
               (search "/users/" pmcid))
@@ -2169,37 +2205,21 @@ can still match things like CHK1 and CHK-1"
       (when (> (file-length in) 0)
         (cl-json::decode-json in)))))
 
-(defun remove-sent-indra-dups (sent-indra-list &optional hms?)
-  (when sent-indra-list
-    (loop for sent-indra in sent-indra-list
-          collect
-            (list (car sent-indra)
-                  (loop for item
-                        in (remove-duplicates (second sent-indra)
-                                              :test #'equal)
-                        collect
-                          (remove-conjunction-text
-                           (sublis
-                            '((:+BE+ . :+FPLX+))
-                            (remove-indra-evidence item))
-                           hms?))))))
 
-(defun remove-conjunction-text (indra hms?)
-  (if (not hms?)
-      indra
-      (loop for clause in indra
-            collect
-              (cond ((and (consp clause)
-                          (keywordp (car clause)))
-                     (cons (car clause)
-                           (if (consp (cdr clause))
-                               (loop for item in (cdr clause)
-                                     unless (and (consp item)
-                                                 (stringp (cdr item))
-                                                 (search " and " (cdr item)))
-                                     collect item)
-                               (cdr clause))))
-                    (t clause)))))
+
+(defun remove-conjunction-text (indra)
+  (loop for clause in indra
+        collect
+          (cond ((and (consp clause)(keywordp (car clause)))
+                 (cons (car clause)
+                       (if (consp (cdr clause))
+                           (loop for item in (cdr clause)
+                                 unless (and (consp item)
+                                             (stringp (cdr item))
+                                             (search " and " (cdr item)))
+                                 collect item)
+                           (cdr clause))))
+                (t clause))))
           
 
 (defun remove-indra-evidence (indra)
@@ -2209,7 +2229,10 @@ can still match things like CHK1 and CHK-1"
 
 (defun remove-excess+texts (json-list)
   (loop for json-exp in json-list
-        collect (remove-excess+texts1 json-exp)))
+        collect
+          (if (consp (cdr json-exp))
+              (remove-excess+texts1 json-exp)
+              json-exp)))
 
 (defun remove-excess+texts1 (json-exp)
   `(,(car json-exp)         
@@ -2238,66 +2261,94 @@ can still match things like CHK1 and CHK-1"
                                          (t (list item))))
                                (cdr json)))))
                    json))))
-  
+
+(defun normalize-sent-indras (sent-indra-list hms-or-json?)
+  (loop for sent-indra in sent-indra-list
+        collect (normalize-sent-indra sent-indra hms-or-json?)))
+
+(defun normalize-sent-indra (sent-indra hms-or-json?)
+  `(,(car sent-indra) ;;sentence
+     ,(loop for indra
+            in
+              (remove-duplicates 
+               (mapcar #'remove-indra-evidence (second sent-indra))
+               :test #'equal)
+            collect
+              (if (eq hms-or-json? :hms)
+                  (normalize-hms-indra indra)
+                  indra))))
+
+(defparameter *do-hms-normalization* t)
+
+(defun normalize-hms-indra (indra)
+  (if *do-hms-normalization*
+      (map-hms-to-sift-proteins
+       (remove-excess+texts1
+        (remove-conjunction-text
+         (sublis '((:+BE+ . :+FPLX+)) indra))))
+      indra))
+
+(defun normalize-pmc-indras-by-sents (pmc hms-or-json?)
+  (normalize-sent-indras
+   (group-by (read-indra-json pmc hms-or-json?) #'indra-evidence-text)
+   hms-or-json?))
+
+(defun read-sift-indras (&optional (pmcs (hms-indra-pmcs)))
+  (loop for pmc in pmcs
+        collect
+          (read-indra-json pmc :sift)))
+
+(defun get-sentence-indras (sentence hms-or-sift-list)
+  (second
+   (assoc sentence hms-or-sift-list :test #'equal)))
+
+
+(defun pmc-indra-compare (pmc &optional (all? nil))
+  (let* ((hms-indra-by-sents (normalize-pmc-indras-by-sents pmc :hms))
+         (sift-indra-by-sents (normalize-pmc-indras-by-sents pmc :sift))
+         (sents (sort (remove-duplicates
+                       (append
+                        (mapcar #'car hms-indra-by-sents)
+                        (mapcar #'car sift-indra-by-sents))
+                       :TEST #'equal)
+                      #'string<))
+         (compared
+          (loop for s in sents
+                append
+                  (let* ((hms (get-sentence-indras s hms-indra-by-sents))
+                         (sift (get-sentence-indras s sift-indra-by-sents))
+                         (ex-or (set-exclusive-or hms sift :test #'equal)))
+                    (cond (ex-or ;; (equal hms sift)
+                           #+ignore
+                           (format t "in ~s :hms ~s :sift ~s ~%ex-or=~s~%"
+                                   s hms sift ex-or)
+                           `((,s :hms ,(loop for js in hms
+                                             unless (uninteresting-json? js sift)
+                                             collect js)
+                                 :sift ,(loop for js in sift
+                                              unless (uninteresting-json? js hms)
+                                              collect js))))
+                          (all? `((,s (:equal ,hms)))))))))
+    (when (or all? compared)
+      (setf
+       (gethash (intern pmc :sp) *pmc-indra-json-ht*)
+       (if all?
+           `(:compared ,compared :hms ,hms-indra-by-sents :sift ,sift-indra-by-sents)
+           `(:compared ,compared))))))
 
 (defun pmc-indras (&optional (all? nil))
   (loop for pmc in (hms-indra-pmcs)
-        do
-          (let* ((hms-indra (read-indra-json pmc :hms))
-                 (hms-indra-by-sents
-                  (remove-sent-indra-dups
-                   (group-by hms-indra #'indra-evidence-text)
-                   :hms))
-                 (sift-indra (read-indra-json pmc :sift))
-                 (sift-indra-by-sents
-                  (remove-sent-indra-dups
-                   (group-by sift-indra #'indra-evidence-text)))
-                 (sents (sort (remove-duplicates
-                               (append
-                                (mapcar #'indra-evidence-text hms-indra)
-                                (mapcar #'indra-evidence-text sift-indra))
-                               :TEST #'equal)
-                              #'string<))
-                 (compared
-                  (loop for s in sents
-                        append
-                          (let ((hms (map-hms-to-sift-proteins
-                                      (remove-excess+texts
-                                       (second
-                                        (assoc s hms-indra-by-sents
-                                               :test #'equal)))))
-                                (sift (second
-                                       (assoc s sift-indra-by-sents
-                                              :test #'equal))))
-                            (if (null (set-exclusive-or hms sift :test #'equal)) ;; (equal hms sift)
-                                (when all?
-                                  `((,s (:equal
-                                         ,(second (assoc s hms-indra-by-sents
-                                                         :test #'equal))))))
-                                `((,s :hms ,(loop for js in (remove-excess+texts hms)
-                                                  unless (uninteresting-json? js sift)
-                                                  collect js)
-                                      :sift ,(loop for js in sift
-                                                   unless (uninteresting-json? js (remove-excess+texts hms))
-                                                   collect js))))))))
-            (when (or all? compared)
-              (setf
-               (gethash (intern pmc :sp) *pmc-indra-json-ht*)
-               (if all?
-                   `(:compared
-                     ,compared
-                     :hms
-                     ,hms-indra
-                     :sift
-                     ,sift-indra)
-                   `(:compared
-                     ,compared)
-                   )))))
-  
+        do (pmc-indra-compare pmc all?))
   (hal *pmc-indra-json-ht*))
 
-(defun uninteresting-json? (js uninteresting)
+
+(defparameter *complexes-json* :yes)
+(defun uninteresting-json? (js uninteresting &optional (complexes? *complexes-json*))
   (or (member js uninteresting :test #'equal)
+      (case complexes?
+        (:no (is-in-p "Complex" js :test #'equal))
+        (:yes nil)
+        (:only (not (is-in-p "Complex" js :test #'equal))))
       ;; get rid of GFP complexes
       (and (equal (assoc :type js) '(:TYPE . "Complex"))
            (or (and (assoc :members js)
