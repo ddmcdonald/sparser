@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2012-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2012-2020 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "unary driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   October 2016
+;;;   Version:   February 2020
 
 ;; broken out as its own file 11/91
 ;; 1.0 (10/23/92 v2.3) Got the options set up to date with actions in
@@ -49,6 +49,8 @@
   ;; This is analogous to Referent-from-rule except for its specialization
   ;; to the case of having just a single daughter.
 
+  (declare (special *show-note-candidates*))
+
   (let ((*parent-edge-getting-reference* edge)
         (*single-daughter-edge* daughter)
         (*rule-being-interpreted* rule)
@@ -57,6 +59,7 @@
            (cfr-referent rule)))
         *referent*  direct-pointer?)
     (declare (special *referent*))
+    
     (tr :ref-unary-rule edge rule)
 
     (when rule-field  ;; return nil for empty fields
@@ -99,6 +102,10 @@
 	   (unless *external-referents*
 	     (break "Unexpected type: ~a~%~a" ; 
 		    (type-of *referent*) *referent*)))))
+      
+      (when *show-note-candidates*
+        (format t "~&Unary: ~a~%" *referent*))
+      (note? *referent*)
 
       *referent* )))
 

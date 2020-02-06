@@ -37,7 +37,8 @@
                             sentence-discourse-history ;; lifo instances
                             sentence-text-structure ;; subject
                             records-of-delayed-actions
-                            accumulate-items
+                            accumulate-items ; noteworthy categories
+                            text-relation ; Grok chunk analysis
                             ordered)
   ((metadata :initform nil :accessor metadata
     :documentation "Metadata describing choices made by Sparser."))
@@ -208,16 +209,7 @@
     contents))
 |#
 
-;;--- simplistic accumulator
-
-(defclass simple-container (container
-                            accumulate-items)
-  ())
-
-;; (designate-sentence-container :simple)  => switch setting
-(defun make-sentence-container/simple (sentence)
-  (make-instance 'simple-container :in sentence))
-
+;;--- printing item list
 
 (defmethod print-object ((c accumulate-items) stream)
   (print-unreadable-object (c stream :type t)
@@ -233,13 +225,13 @@
 
 (defgeneric add-to-container (item container)
   (:documentation "Handles the odities of putting the items into
-     the correct place according to the type of the container."))
+     the correct place according to the type of the container.")
 
-(defmethod add-to-container ((item t) (s sentence))
-  (tr :adding-to-container item s)
-  (let* ((container (contents s))
-         (list (items container)))
-    (setf (items container) (cons item list))))
+  (:method ((item t) (s sentence))
+    (tr :adding-to-container item s)
+    (let* ((container (contents s))
+           (list (items container)))
+      (setf (items container) (cons item list)))))
 
 
 ;;--- other operations
@@ -248,22 +240,16 @@
   (:documentation "Print the contents of the container to
      the stream in a form designed to inform people"))
 
-(defmethod display-contents  ((c simple-container)
+(defmethod display-contents  ((c accumulate-items)
                               &optional (stream *standard-output*))
   (format stream "~&~a" (bkptr c))
   (dolist (item (items c))
     (format stream "~%~5T~a~%" item)))
 
 
-;;----------- original Grok version ----------
+;;----------- Grok text-relations operations ----------
 
-(defclass text-relation-contents (container
-                                  text-relations)
-  ()
-  (:documentation "Minimal container wrapper around text-relations slots"))
-
-
-(defmethod display ((tc text-relation-contents)) ;; add a stream?
+(defmethod display ((tc text-relations)) ;; add a stream?
   (format t "~&  ~a heads~
              ~%  ~a clasifier-heads~
              ~%  ~a modifier-heads~
@@ -273,7 +259,6 @@
           (length (modifier-head-relations tc))
           (length (adjacency-relations tc)))
   tc)
-
 
 (defun add-text-relation-to-article (relation instance)
   (unless *current-article*

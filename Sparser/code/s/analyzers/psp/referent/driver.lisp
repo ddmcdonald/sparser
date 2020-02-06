@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2011-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2011-2020 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   December 2019
+;;;   Version:   February 2020
 
 ;; broken out from all-in-one-file 11/28/91
 ;; 1.0 (8/28/92 v2.3) Added global referring to the referent returned.
@@ -90,7 +90,7 @@
                            rule
                            &key left-ref
                              right-ref )
-  (declare (special *c3*))
+  (declare (special *c3* *show-note-candidates*))
 
   (setq *referent* nil) ;; cleanup from last time
 
@@ -146,6 +146,13 @@
                (when result
                  (unless (eq result *referent*)
                    (setq *referent* result)))))
+
+           (when *show-note-candidates*
+             (format t "~&Binary: ~a~
+                        ~%      + ~a~
+                        ~%   = ~a~%"
+                     left-referent right-referent *referent*))
+           (note? *referent*)
 
            (if (null *referent*)
              :abort-edge

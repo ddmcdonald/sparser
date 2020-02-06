@@ -14,7 +14,6 @@
 (gload "SDM&P;create-categories")
 (gload "SDM&P;infer-categories")
 
-(gload "SDM&P;noteworthy")
 (gload "SDM&P;text-relations")
 (gload "SDM&P;reify-relations")
 (lload "SDM&P;analyze-text-relations")

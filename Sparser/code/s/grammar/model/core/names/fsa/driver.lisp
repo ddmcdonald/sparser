@@ -106,6 +106,8 @@
 ; (establish-pnf-routine :scan-classify-record)
 
 (defun pnf/scan-classify-record (starting-position)
+  (declare (special *show-note-candidates*))
+
   (tr :initiating-pnf starting-position)
   (set-status :pnf-checked starting-position) ;; move below when coordinated
                                               ;; with the scan differently
@@ -136,14 +138,16 @@
         (let ((edge
                (classify-and-record-name starting-position
                                          *pnf-end-of-span*)))
-
           (if edge
             (tr :pnf/classification edge *pnf-end-of-span*)
             (tr :pnf/aborted-during-classification))
 
           (when edge
             (sort-out-name-bracketing-state
-             starting-position *pnf-end-of-span* edge))
+             starting-position *pnf-end-of-span* edge)
+            (when *show-note-candidates*
+              (format t "~&PNF: ~a~%" edge))
+            (note? edge))
 
           (if edge
             *pnf-end-of-span*
