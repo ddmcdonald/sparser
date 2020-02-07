@@ -438,7 +438,7 @@
   (use-unknown-words)
   (setq *make-edges-over-new-digit-sequences* t)
   (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
-  ;;(designate-sentence-container :complex)
+  (designate-sentence-container :complex)
   (setq *treat-single-Capitalized-words-as-names* t)
   
   ;; (grok-setting)
