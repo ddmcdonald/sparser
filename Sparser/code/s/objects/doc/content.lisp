@@ -46,8 +46,7 @@
     sentence. From ordered we get previous and next so we can link
     the directly without having to go to the sentence objects."))
 
-; (designate-sentence-container :complex)  ;; run with every change
-;
+
 (defun make-sentence-content-container (sentence)
   (make-instance 'sentence-content :in sentence))
 
@@ -114,7 +113,7 @@
   (declare (ignore sentence))
   (error "No version of make-sentence-container has been specified"))
 
-(defparameter *container-for-sentence* :simple ;; :situation
+(defparameter *container-for-sentence* :complex ;; :situation
   "Switch parameter for the kind of container we make for
    a sentence, which could be designed for simple accumulation,
    presumably structured accumulation, long-distance parse state
@@ -124,7 +123,6 @@
   (setq *container-for-sentence* keyword)
   (setf (symbol-function 'make-sentence-container)
         (ecase keyword
-          (:simple (symbol-function 'make-sentence-container/simple))
           (:situation (symbol-function 'make-sentence-container/situation))
           (:complex (symbol-function 'make-sentence-content-container)))))
 

@@ -303,7 +303,7 @@
   (declare (special *treat-single-Capitalized-words-as-names*))
   (ignore-unknown-words)
   (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
-  (designate-sentence-container :simple)
+  ;;(designate-sentence-container :simple)
   (setq *ignore-capitalization* nil)
   (setq *treat-single-Capitalized-words-as-names* nil)
   (setq *make-edges-over-new-digit-sequences* t)
@@ -415,7 +415,7 @@
 
   (setq *after-action-on-segments* 'sdm/analyze-segment)
   (setq *note-text-relations* nil) ;; 3/6/16 overly complicated just now
-  (designate-sentence-container :complex) ;;// overkill - separate doc vs sentence
+  ;;(designate-sentence-container :complex) ;;// overkill - separate doc vs sentence
   (setq *do-strong-domain-modeling* t)
   (setq *new-segment-coverage* :trivial)
 
@@ -438,7 +438,7 @@
   (use-unknown-words)
   (setq *make-edges-over-new-digit-sequences* t)
   (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
-  (designate-sentence-container :complex)
+  ;;(designate-sentence-container :complex)
   (setq *treat-single-Capitalized-words-as-names* t)
   
   ;; (grok-setting)
@@ -465,7 +465,7 @@
   ;; Specify where we start (needed as switch settings change)
   (do-strong-domain-modeling)
 
-  (designate-paragraph-container :biology)
+  ;;(designate-paragraph-container :biology)
 
   (let ((gmod (grammar-module-named '*biology*)))
     (assert gmod () "The biology grammar module is not available")
@@ -539,7 +539,7 @@
             *c3*)
     (setq *c3* nil ;; turn off the flag
           *use-subtypes* nil)
-    (designate-sentence-container :simple))) ;; only other option
+    (designate-sentence-container :complex))) ;; only other option
 
 
 
