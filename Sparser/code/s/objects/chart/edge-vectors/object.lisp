@@ -392,7 +392,10 @@
 
 (defun remove-noun-edge (e)
   "When the chunker decides that the noun edge is highly implausible, then remove it from the chart -- e.g. 'these target SMAD2' where the noun reading of target is wrong"
-  (specify-top-edge (get-verb-edge e)))
+  ;; was   (specify-top-edge (get-verb-edge e))
+  (loop for ee in (get-non-verb-edges e)
+          do
+          (remove-edge-from-chart ee)))
 
 (defun stipulate-edge-position (start-pos end-pos edge)
   "We're editing the chart, and we want to 'move' an edge

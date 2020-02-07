@@ -395,7 +395,7 @@ and make a choice.
       ((is-in-vertical-relation?)
        ;; in this case we only have one applicable predicate -
        ;; 'support' or 'on' -- but could be realized in multiple ways
-       (if (eq (first (first r)) "on")
+       (if (equal (first (first r)) "on")
          (on-something ground)
          (support-something ground)))
       ((is-ec?)

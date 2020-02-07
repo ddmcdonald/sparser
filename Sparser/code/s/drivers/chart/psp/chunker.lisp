@@ -607,6 +607,15 @@
               (eq (edge-form ee) category::verb+present))
         do (return ee)))
 
+(defun get-non-verb-edges (e)
+  (declare (special category::common-noun
+                    category::verb category::verb+present))
+  (loop for ee in (all-edges-at e)
+        unless
+          (or (eq (edge-form ee) category::verb)
+              (eq (edge-form ee) category::verb+present))
+        collect ee))
+
 
 (defun non-det-or-verb-ng-start? (ee)
   (and (edge-p ee)
@@ -868,6 +877,9 @@ than a bare "to".  |#
                     (preceding-do? e)
                     (and (edge-just-to-left-of e)
                          (eq (edge-cat-name (edge-just-to-left-of e)) 'to)))
+                  ;; this was apparently useful in the past (otherwise why was it put in)
+                  ;;   but it causes an error in "...to adhere to vitronectin-coated cell culture wells in the presence of integrin-specific antibodies ..."
+                  ;; by removing the N reading of culture when that is the head of the NG
                   (remove-noun-edge e)
                   nil)
                  (t t)))
@@ -1004,7 +1016,7 @@ than a bare "to".  |#
                (or (null (edge-p (edge-just-to-left-of e)))
                    (not
                     (member (edge-form-name (edge-just-to-left-of e))
-                            '(preposition subordinate-conjunction))))))
+                            '(preposition subordinate-conjunction quantifier))))))
           
      (not (and (boundp '*chunk*)
                (or (proper-noun-plural-modifier? e *chunk*)
