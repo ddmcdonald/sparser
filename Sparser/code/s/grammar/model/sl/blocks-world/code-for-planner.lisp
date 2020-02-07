@@ -145,9 +145,10 @@ an enumeration -- is a matter of the context in which the list appears
 (defparameter *focus* "blue")
 
 (defun execute-planner ()
-"Main method for generating a description of a situation. Updates the parameters of
-*tp-parameters* as various facts about the situation are unconvered/considered, 
-incrementally building up the derivation tree."
+  "Main method for generating a description of a situation. Updates the parameters of
+  *tp-parameters* as various facts about the situation are unconvered/considered, 
+  incrementally building up the derivation tree."
+  (declare (special *order-of-operations*))
   (let ((fun 'car))
    (funcall fun *order-of-operations*)
    (when *order-of-operations*
@@ -155,6 +156,7 @@ incrementally building up the derivation tree."
     (execute-planner))))
 
 (defun ex-planner ()
+  (declare (special *order-of-operations*))
   (flet ((pr (string &rest args)
            ;; replace with real TR traces when it's clearer what to trace
            (apply #'trace-msg string args)))
