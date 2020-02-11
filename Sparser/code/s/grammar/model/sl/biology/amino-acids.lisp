@@ -451,10 +451,12 @@ We therefore have the special cases:
               
 
 (defun make-point-mutation (original replacement residue-number)
+  (when (and (or (null original) (itypep original 'amino-acid))
+             (or (null replacement) (itypep replacement 'amino-acid)))
   (find-or-make-individual 'point-mutated-protein
     :original-amino-acid original
     :new-amino-acid replacement
-    :position residue-number))
+    :position residue-number)))
 
 (defun make-edge-over-mutated-protein (protein-edge point-mutation
                                        start-pos end-pos)
