@@ -1185,7 +1185,7 @@
   :binds ((basis bio-entity)) ;; can be a gene or protein, or something else
   :instantiates :self
   :realization
-    (:noun "variant"
+    (:noun ("variant" "form")
      :m basis
      :of basis))
 
