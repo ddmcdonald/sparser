@@ -506,6 +506,7 @@ To MRA:
 (defparameter *protein-args-for-complex* nil)
 (defparameter *multiple-protein-complex* nil)
 (defparameter *single-protein-complex* nil)
+(defparameter *show-no-remaining-proteins* nil)
 
 
 (defun create-complex-json (complex-expr &optional pmid sentence trigger (head (car complex-expr)))
@@ -527,8 +528,9 @@ To MRA:
                                    (loop for p in proteins-in
                                          when (is-in-p 'name p)
                                          collect p))
-                             (unless (or (null proteins-in) filtered)
-                               (format t "~%no remainingproteins out of ~s in ~s~%"
+                             (unless (or (null proteins-in) filtered
+                                         (null *show-no-remaining-proteins*))
+                               (format t "~%no remaining proteins out of ~s in ~s~%"
                                        proteins-in trigger))
                              (setq proteins-in filtered)
                                
