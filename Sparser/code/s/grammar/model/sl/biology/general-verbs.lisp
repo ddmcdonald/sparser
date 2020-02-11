@@ -602,7 +602,7 @@
          ;; NOW: "form" occurs in the Reactome comments
          ;; occurs in articles too:
          ;; "These results indicate that USP7, RING1 and HSCARG form a complex."
-         :noun ("formation" "form")
+         :noun ("formation")
          :etf (svo-passive) ))
 
 (define-category frees :specializes caused-bio-process
