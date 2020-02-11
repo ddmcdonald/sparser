@@ -1527,7 +1527,9 @@
                 #'np-conjunction-edge?)))
           (when (and np-conj-edge
                      (not (eq np-conj-edge
-                              (edge-left-daughter np-containing-edge))))
+                              (edge-left-daughter np-containing-edge)))
+                     (not (eq np-conj-edge np-containing-edge)))
+
             (let* ((np-ref (edge-referent np-conj-edge))
                    (label (identify-preposition pp-edge))
                    (last-np
