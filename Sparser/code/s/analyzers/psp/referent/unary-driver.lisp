@@ -67,16 +67,13 @@
         (then
 	  (tr :rule-field-is-a-list)
           (if (listp (first rule-field))
-            (then
-              (setq *referent*
-                    (dispatch-on-unary-ref-actions (first rule-field)))
-              (dolist (ref-action (rest rule-field))
+              (then
+                (setq *referent* (evaluate-unary-ref-actions rule-field)))
+                
+              (else
+                (tr :simple-unary-dispatch rule-field)
                 (setq *referent*
-                      (dispatch-on-unary-ref-actions ref-action))))
-            (else
-	      (tr :simple-unary-dispatch rule-field)
-              (setq *referent*
-                    (dispatch-on-unary-ref-actions rule-field)))))
+                      (dispatch-on-unary-ref-actions rule-field)))))
         (else
 	  (tr :direct-referent rule-field)
           (setq *referent* rule-field
@@ -108,6 +105,16 @@
       (note? *referent*)
 
       *referent* )))
+
+(defun evaluate-unary-ref-actions (rule-field)
+  (let ((*referent*
+         (dispatch-on-unary-ref-actions (first rule-field))))
+    (declare (special *referent*))
+
+    (dolist (ref-action (rest rule-field))
+      (setq *referent*
+            (dispatch-on-unary-ref-actions ref-action)))
+    *referent*))
 
 
 (defun dispatch-on-unary-ref-actions (rule-field)

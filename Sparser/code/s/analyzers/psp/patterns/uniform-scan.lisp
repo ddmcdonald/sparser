@@ -353,17 +353,22 @@
                (rule
                 (values (cfr-category rule)
                         rule
-                        (cfr-referent rule)))
+                        (etypecase (cfr-referent rule)
+                          (individual (cfr-referent rule))
+                          (cons 
+                           ;;(lsp-break "bad referent ~s for bio-entity" (cfr-referent rule))
+                           (evaluate-unary-ref-actions (cfr-referent rule))))))
                ((punctuation? w) ;; e.g. asterix
                 (throw :punt-on-nospace-without-resolution
                   :single-character-punctuation))
                (t (push-debug `(,w))
-                  (when nil
-                    ;; probably no longer need this warning
-                    (format t "~&^^^^^^ Known word ~s, but no associated rule. ~
+                  
+                  ;; probably no longer need this warning
+                  #+ignore
+                  (format t "~&^^^^^^ Known word ~s, but no associated rule. ~
                               Probably a part of a polyword, now defining it ~
                               as a bio-entity~%  in ~s~%"
-                            w (current-string)))
+                          w (current-string))
                   (values category::bio-entity
                           'reify-ns-name-as-bio-entity
                           (find-or-make-individual 'bio-entity :name w))))))))
