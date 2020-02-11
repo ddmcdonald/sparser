@@ -192,7 +192,10 @@
 
 (defun find-target-satisfying (fringe pred)
   (loop for edge in fringe
-     when (funcall pred edge)
+        when (and (not (eq (edge-mention edge) t))
+                  ;; only want maximal projections
+                  ;; not subsumed by a larger projection on the fringe/head-line
+                  (funcall pred edge))
      return edge))
 
 (defun np-target? (edge)
