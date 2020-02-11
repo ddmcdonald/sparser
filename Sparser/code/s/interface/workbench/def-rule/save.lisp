@@ -117,7 +117,8 @@
          (format stream "\"~A\"" value)) ;; SBCL flagged (word-pname value))
         (cons
          (format stream "~A)"
-                (etypecase value
+                 (etypecase value
+                   #+ignore
                   (lambda-variable
                    `(,(var-name value)
                      ,(string-downcase
