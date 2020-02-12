@@ -88,22 +88,23 @@
        do (note c)))
 
   (:method ((c category))
-    (let ((s (current-sentence))
-          (name (cat-name c)))
-      (unless s (error "Current-sentence is not defined"))
-      (let ((container (contents s)))
-        (unless (and container (typep container 'accumulate-items))
-          (error "wrong kind of container"))
-        (let* ((alist (slot-value container 'list))
-               (entry (assoc name alist :test #'eq)))
-          (cond
-            ((null alist)
-             (setf (slot-value container 'list) `((,name 1))))
-            (entry
-             (incf (cadr entry)))
-            (t
-             (setf (slot-value container 'list)
-                   (cons `(,name 1) alist)))))))))
+    (unless (current-script :biology)
+      (let ((s (current-sentence))
+            (name (cat-name c)))
+        (unless s (error "Current-sentence is not defined"))
+        (let ((container (contents s)))
+          (unless (and container (typep container 'accumulate-items))
+            (error "wrong kind of container"))
+          (let* ((alist (slot-value container 'list))
+                 (entry (assoc name alist :test #'eq)))
+            (cond
+              ((null alist)
+               (setf (slot-value container 'list) `((,name 1))))
+              (entry
+               (incf (cadr entry)))
+              (t
+               (setf (slot-value container 'list)
+                     (cons `(,name 1) alist))))))))))
 
 
 ;;--- helpers
