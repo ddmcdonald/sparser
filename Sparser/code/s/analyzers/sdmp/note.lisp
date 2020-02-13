@@ -63,7 +63,7 @@
       (note i)))
 
   (:method ((c category))
-    (when (noteworthy c)
+    (when (noteworthy? c)
       (note c)))
 
   ;; We could devise eql methods for specific words, but seems
