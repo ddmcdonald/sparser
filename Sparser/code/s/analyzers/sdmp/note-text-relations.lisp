@@ -165,7 +165,7 @@
   ;; called from note-text-relations-in-segment
   (when (eq coverage :one-edge-over-entire-segment)
     (let ((edge (edge-over-segment)))
-      (edge-denotes-interesting-object edge))))
+      #+ignore(edge-denotes-interesting-object edge))))
 
 (defun edge-denotes-interesting-object (edge)
   (declare (special category::parentheses category::name-word
