@@ -14,6 +14,8 @@
 (defvar *segment-heuristic-to-apply* nil)
 
 (defun heuristics-apply-to-segment ()
+  "Called from sdm-action/some-edges when there are unconnected edges
+   and the goal is to get more and reify some relations"
   (dolist (h *segment-heuristics*)
     (when (segment-heuristic-succeeds? h)
       (setq *segment-heuristic-to-apply* h)
