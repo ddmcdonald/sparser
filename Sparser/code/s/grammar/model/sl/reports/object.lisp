@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013,2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013,2019-2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "grammar;model:sl:reports:"
-;;;  version:  November 2019
+;;;  version:  February 2020
 
 ;; initiated 10/22/93 v2.3 restarting from scratch. 5/3/95 changed "+" to "-"
 ;; 0.1 (1/8/96) Reorganized the conceptualization to break-out the verb.
@@ -55,7 +55,7 @@
 ;;;------------------
 
 (define-category someone-reports
-  :specializes modifier  ;; hook to fold into clause that gives the report
+  :specializes process
   :instantiates self
   :binds ((reporter . (:or person company title)))
   :index (:temporary :key reporter)
@@ -64,8 +64,19 @@
                            (agent . reporter)
                            (subj-verb . :self)
                            (np . (person company title))
-                           (vg . report-verb)))))
+                           (vg . report-verb))))
+  :documentation "More realistic amount of information to expect
+ to understand in unrestricted open text. Had considered treating
+ these as modifiers that would compose with their independently
+ identified statements, but these subj-verb phrases take time
+ and location adverbials, so it's simpler to take them as a sort
+ of process. //Would be nice to figure out how to systematically
+ represent how there are open in the thing reported.")
 
+
+;;;--------------------------------------
+;;; "reports" as thing that are reported
+;;;--------------------------------------
 
 
 

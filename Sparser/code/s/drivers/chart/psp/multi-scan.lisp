@@ -864,7 +864,7 @@
 
 ;; -- ddm this function is an example of that (and belons in edge-vectors/object.lisp
 (defgeneric includes-edge-over-literal? (position)
-  (:documentation "Are any of the edge starting a this position
+  (:documentation "Are any of the edges starting at this position
     edges over a literal?")
   (:method ((e edge))
     (includes-edge-over-literal? (edge-starts-at e)))
@@ -877,7 +877,7 @@
        finally (return nil))))
 
 (defun early-rule-criteria (left-edge mid-pos right-edge)
-  "If these criteria a met then we'll look for a rule that combines
+  "If these criteria are met then we'll look for a rule that combines
    the two edges."
   (declare (special category::number category::plus-minus-number
                     *the-punctuation-plus-minus*))
