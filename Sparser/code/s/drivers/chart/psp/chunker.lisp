@@ -424,9 +424,10 @@
                                      (vg (vg-head? edge))
                                      (adjg (adjg-head? edge)))
                                    (ecase form
-                                     (ng (ng-compatible?
-                                          edge
-                                          (cdr (member ev (chunk-ev-list chunk)))))
+                                     (ng (or (ng-start? edge) ;; catch DET
+                                             (ng-compatible?
+                                              edge
+                                              (cdr (member ev (chunk-ev-list chunk))))))
                                      (vg (vg-compatible?
                                           (cat-symbol (edge-form edge))))
                                      (adjg (adjg-compatible? edge))))))
