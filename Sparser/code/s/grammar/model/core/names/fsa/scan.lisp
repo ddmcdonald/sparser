@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2013.2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2013.2018-2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "scan"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  April 2018
+;;;  Version:  February 2020
 
 ;; initiated 5/15/93 v2.3 on a few pieces of names:fsa:fsa8
 ;; 5/21 fixed a bug, 5/26 added traces
@@ -44,8 +44,6 @@
 ;;      against continuing over "of"
 
 (in-package :sparser)
-(defvar *OF-APPEARS-WITHIN-PNF-SCAN*)
-(defvar *LC-PERSON-WORDS*)
 
 ;;;---------
 ;;; the FSA
@@ -111,29 +109,37 @@
     ;; will become the call of this value as well
     (checkout-punctuation-for-capseq position-before))
 
-   ((eq cap-state :lower-case)  ;; "de"
-    (if (lc-non-boundary-word-that-may-extend-cap-seq?
-              (pos-terminal position-before))
-      ;; Then see if the word after than is capitalized.
-      ;; Some of the words in the list are difinitive, but
-      ;; words like "of" are also in it.
-      (multiple-value-bind (capitalized? interveening-hyphen?)
-                           (word-after-lc-word-is-capitalized? position-before)
-        (if capitalized?
-          (then
-           (tr :continuing-over-lc position-before interveening-hyphen?)
-           (let* ((pos-after-lc-word (chart-position-after position-before))
-                  (continue-pos
-                   (if interveening-hyphen?
-                     (chart-position-after pos-after-lc-word)
-                     pos-after-lc-word)))
-             (cap-seq-continues-from-here? continue-pos)))
-          (else
-           ;; trace goes here
-           position-before)))
-      (else
-       ;; trace goes here
-       position-before)))
+   ((eq cap-state :lower-case)
+    (cond
+      ((lc-non-boundary-word-that-may-extend-cap-seq?  ;; "de"
+        (pos-terminal position-before))
+       ;; Then see if the word after than is capitalized.
+       ;; Some of the words in the list are definitive, but
+       ;; words like "of" are also in it.      
+       (multiple-value-bind (capitalized? interveening-hyphen?)
+           (word-after-lc-word-is-capitalized? position-before)
+         (if capitalized?
+           (then
+             (tr :continuing-over-lc position-before interveening-hyphen?)
+             (let* ((pos-after-lc-word (chart-position-after position-before))
+                    (continue-pos
+                     (if interveening-hyphen?
+                       (chart-position-after pos-after-lc-word)
+                       pos-after-lc-word)))
+               (cap-seq-continues-from-here? continue-pos)))
+           (else
+             ;; trace goes here
+             position-before))))
+      (t
+       (let* ((next-pos (chart-position-after position-before))
+              (next-word (pos-terminal next-pos)))
+         (cond
+           ((eq next-word *end-of-source*)
+            position-before)
+           ((eq next-word word::.)
+            ;; generalize to other punct? via checkout-punctuation-for-capseq
+            (checkout-period-for-capseq next-pos))
+           (t position-before))))))
 
    (t
     (checkout-continuation-for-non-punctuation
@@ -185,6 +191,7 @@
   ;; Called from Cap-seq-continues-from-here? when there is a
   ;; close-bracket on the position before the next word and we're
   ;; supposed to respect it: *pnf-scan-respects-segment-boundaries*
+  (declare (special *of-appears-within-PNF-scan*))
   (tr :boundary-continuation position-before)
   (if (eq cap-state :punctuation)
     (checkout-punctuation-for-capseq position-before)
@@ -452,6 +459,7 @@
   ;; In all these cases we just pass judgement on whether to continue
   ;; the sequence -- handling the meaning of these cases is left to
   ;; classification.
+  (declare (special *lc-person-words*))
 
   (let ((next-position (chart-position-after position)))         
     (unless (has-been-status? :scanned next-position)
