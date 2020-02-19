@@ -1,8 +1,9 @@
-;;; copyright (c) 2018 David D. McDonald  -- all rights reserved
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; copyright (c) 2018-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "generic"
 ;;;   Module:  "analyzers:FSA:"
-;;;  Version:  February 2018
+;;;  Version:  February 2020
 
 ;; Initiated 2/13/18 to gather into one place the routines that
 ;; add and access fsas, thence to generalize them.
@@ -23,16 +24,17 @@
   (:method ((pw polyword) (p position))
     (has-fsa? pw))
   (:method ((w word) (p position))
-    (or (has-fsa? w)
-        (unless (eq :lower-case (pos-capitalization p))
-          (let ((variants (word-capitalization-variants w))
-                (actual-state (pos-capitalization p)))
-            (when variants
-              (let ((relevant-variant
-                     (find actual-state variants :key #'word-capitalization)))
-                (values
-                 (has-fsa? relevant-variant)
-                 relevant-variant))))))))
+    (if (has-fsa? w)
+      (values (has-fsa? w) w)
+      (unless (eq :lower-case (pos-capitalization p))
+        (let ((variants (word-capitalization-variants w))
+              (actual-state (pos-capitalization p)))
+          (when variants
+            (let ((relevant-variant
+                   (find actual-state variants :key #'word-capitalization)))
+              (values
+               (has-fsa? relevant-variant)
+               relevant-variant))))))))
               
 (defgeneric has-fsa? (word-or-category)
   (:documentation "Does this label include one or more fsa functions
