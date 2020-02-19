@@ -246,6 +246,8 @@
             abbrev-word
             (pos-token-index position-before-word)))
 
+  (unless abbrev-word (error "no abbrev-word supplied to abbreviation fsa"))
+
   (let ((next-position (chart-position-after position-before-word)))
     (when (null (pos-assessed? next-position))
       (scan-next-position))
