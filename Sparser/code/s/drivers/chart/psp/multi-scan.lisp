@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  January 2020
+;;;  version:  February 2020
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -296,7 +296,7 @@
                        (scan-next-position))
                      (setq word (pos-terminal where-fsa-ended)))))))))
              
-       (when (eq position-after end-pos)
+       (when (position/>= position-after end-pos)
          (return))
 
        (setq position-before position-after
@@ -395,7 +395,7 @@
                             (chart-position-after position-before))))
      (loop
         ,@body
-        (when (eq position-after end-pos)
+        (when (position/>= position-after end-pos)
           (return))
         (setq position-before position-after
               ev (pos-starts-here position-after)
