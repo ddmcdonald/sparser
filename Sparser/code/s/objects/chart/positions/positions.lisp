@@ -181,7 +181,7 @@
     (> text-index ref-index)))
 
 (defun position/>= (test-pos reference-pos)
-  "The the position of the test position equal to or greate
+  "The the position of the test position equal to or greater
    than the position of the reference position."
   (let ((text-index (pos-token-index test-pos))
         (ref-index (pos-token-index reference-pos)))
