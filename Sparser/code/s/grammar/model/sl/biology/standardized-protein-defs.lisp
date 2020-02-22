@@ -3895,7 +3895,7 @@
 (define-protein "UP:P01286" ("GHRF" "GHRH" "GRF" "GRFs" "SLIB_HUMAN" "growth hormone releasing factor" "growth hormone releasing hormone" "p01286" "sermorelin" "somatocrinin" "somatoliberin")) 
 (define-protein "UP:P01298" ("P-P" "PAHO_HUMAN" "PP" "PPY" "PPY(30-65)" "PH" "Pp" "p01298" "pancreatic peptide" "pancreatic polypeptide" "pancreatic polypeptide Y" "pancreatic prohormone" "prepro-PP (prepropancreatic polypeptide)")) 
 (define-protein "UP:P01303" ("NPY" "NPY_HUMAN" "Neuropeptide Y" "Pro-neuropeptide Y" "neuropeptide Y" "p01303")) 
-(define-protein "UP:P01308" ("INS" "INS_HUMAN" "Insulin A chain" "Insulin B chain" "in- sulin" "insu-  lin" "insulin" "insulin A chain" "insulin B chain" "p01308" "proinsulin")) 
+(define-protein "UP:P01308" ("INS" "INS_HUMAN" "Insulin A chain" "Insulin B chain"  "insulin" "insulin A chain" "insulin B chain" "p01308" "proinsulin")) 
 (define-protein "UP:P01344" ("IGF II" "IGF-II" "IGF2" "IGF2_HUMAN" "IGFII" "Igf-2" "Insulin like growth factor II" "Insulin-like growth factor II" "Insulin-like growth factor II Ala-25 Del" "Somatomedin-A" "igf2" "igfII" "insulin like growth factor 2" "insulin like growth factor II" "insulin-like growth factor II" "p01344" "preptin" "somatomedin A")) 
 (define-protein "UP:P01350" ("GAST" "GAST_HUMAN" "Gastrin-17" "g1-4" "g3-4" "GAS" "gast" "gastrin" "gastrins" "p01350")) 
 (define-protein "UP:P01374" ("LT-alpha" "LTA" "LTalpha" "TNF-beta" "TNFB" "TNFb" "TNFβ" "lymphotoxin alpha" "lymphotoxin-alpha" "lymphotoxin-α" "p01374" "tumor necrosis factor-beta")) 
