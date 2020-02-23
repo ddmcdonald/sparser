@@ -103,7 +103,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
      :mumble ((s-v-io-do :s agent :do theme :io beneficiary)
      	      (S-V-DO-ToIO  :s agent :do theme :io beneficiary))))
 
-
+;
 (define-mixin-category attributing-verb
   :specializes subcategorization-pattern
   :instantiates nil
@@ -300,8 +300,7 @@ subcategorization-pattern is a daughter of linguistic, abstract
                 :at at-relative-location ;; at the end
                 :on at-relative-location ;; on the left
                 :into at-relative-location
-                :to goal)
-  )
+                :to goal))
 
 ;; VerbNet additions
 
@@ -315,8 +314,9 @@ subcategorization-pattern is a daughter of linguistic, abstract
   on verbs, or attributes of nouns."
   :mixins (with-patient takes-adverb with-manner)
   :binds ((patient endurant) (manner adverb))
-  :realization (:s patient :a manner
-  :mumble (SVADV :s patient :a manner)))
+  :realization (:s patient
+                :a manner
+                :mumble (SVADV :s patient :a manner)))
 
 ;; Still under construction
 
@@ -338,9 +338,10 @@ subcategorization-pattern is a daughter of linguistic, abstract
   Any verb that represents an explicit change of state for a patient. 
   Rise, fall, change etc. Binds source and goal.
   'The company went from a failure to a success.'
-  'Gas prices rose from $1.00 to $3.00.'
-  "
+  'Gas prices rose from $1.00 to $3.00.'  "
   :mixins (with-source with-goal with-patient)
-  :realization (:s patient :from source :to goal
-  :mumble ((svo1o2 :s patient :o1 source :o2 goal)
+  :realization (:s patient
+                :from source
+                :to goal
+                :mumble ((svo1o2 :s patient :o1 source :o2 goal)
                         (svo :s patient :o goal))))
