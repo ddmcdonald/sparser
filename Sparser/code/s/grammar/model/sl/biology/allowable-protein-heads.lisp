@@ -22273,7 +22273,8 @@ arsenite"
   (and (or (and (boundp 'cl-user::*use-all-proteins*)
                 cl-user::*use-all-proteins*)
            (gethash w *allowable-protein-head-ht*))
-       (cond ((and (equal w (string-downcase w))
+       (cond ((and NIL
+                   (equal w (string-downcase w))
                    (or (comlex-entry w) ;; (get-comlex-entry w)
                        ;;(resolve w)
                        ))
