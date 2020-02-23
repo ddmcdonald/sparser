@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2017-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2017-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  March 2019
+;;;  version:  February 2020
 
 ;; Initiated 8/15/17 to hold general noun-like stuff, particularly the
 ;; vocabulary need for the fixed texts in generate.lisp
@@ -50,6 +50,19 @@ invites this reply: "What (else) do you need to know?"
   singing the Star Spangled Banner at ball games) but poor copies are
   still copies of the same information.")
 
+(define-category information-container
+  :specializes container
+  :restrict ((contents information))
+  :documentation "This is a rough draft waiting on more use-cases.
+ The definition of 'container' (in kinds/space.lisp) is based on
+ physical (geographical) regions rather than abstract regions.
+ More importantly, the protopyical containers of information
+ ('books', 'newspapers') are also the locus of the Pustejovsky's
+ logical polysemy where alternative properties are inherited along
+ different qualia: the physical newspaper that you spilled coffee on,
+ vs. the telic newspaper that you always read for its articles, etc.
+ That needs an treatment somewhere, and it could be here.")
+
 (define-category answer/info ;; ugh
   :specializes information
   :instantiates self
@@ -58,14 +71,14 @@ invites this reply: "What (else) do you need to know?"
 (define-category literature
     ;; from biocuration questions e.g.,
     ;; "What factors from the literature regulate IL15 and IL2?"
-    :specializes information
+    :specializes information-container
     :instantiates self
     :lemma (:common-noun "literature"))
 
 (define-category database
     ;; from biocuration questions e.g.,
     ;; "What regulates GLUL from the GEO RNAi database?"
-    :specializes information
+    :specializes information-container
     :mixins (has-UID) ;; because of how we're defining the individuals
     :instantiates self
     :lemma (:common-noun "database"))
@@ -198,7 +211,7 @@ Show sents:
   "in this model P" -- the contents of the model do P
   |#
 (define-category model
-  :specializes container
+  :specializes information-container
   :mixins (predication artifact) ;; make "consistent"/bio-relation's theme v/r happy
   :binds ((modeled-process perdurant)
           (modeled-object endurant))

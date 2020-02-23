@@ -71,14 +71,23 @@
  identified statements, but these subj-verb phrases take time
  and location adverbials, so it's simpler to take them as a sort
  of process. //Would be nice to figure out how to systematically
- represent how there are open in the thing reported.")
+ represent how they are open in the thing reported.")
 
 
 ;;;--------------------------------------
 ;;; "reports" as thing that are reported
 ;;;--------------------------------------
 
-
+(define-category report
+  :specializes information-container
+  :lemma (common-noun "report")
+  :documentation "This is the content/theme of the act of reporting.
+ They can may be 'commissioned' or be just the incidental concomptant
+ of doing a briefing or writing a news article. They have contents:
+ 'a report on..' and may be directed at someone ('a report for...').
+   This needs to be tied to the act of reporting ('someone-reports'),
+ which feels like something we'd do in the constitutive implicature
+ on an ECI.")
 
 ;;----------------------------
 ;; Attempt at full relation

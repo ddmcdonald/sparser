@@ -143,6 +143,14 @@ come
                   :o artifact
                   :mumble ("build" svo :s agent :o artifact)))
 
+(define-category contribute ;; "donate", maybe "provide, "give"??
+  :specializes process
+  :mixins (directed-action ;; agent __ theme 'to' beneficiary
+           nominal-attribute) ;; __ of theme
+  :realization (:verb "contribute"
+                :noun "contribution"))
+
+
 ;; expect -- to do, that P, John to 
 (define-category expect
   :specializes state
@@ -162,7 +170,7 @@ come
   :mixins (action-verb)
   :restrict ((patient (:or physical-object location))) ;; find a block
   :realization
-  (:verb ("find" :past-tense "found")))
+     (:verb ("find" :past-tense "found")))
 
 
 (define-category give
@@ -172,7 +180,7 @@ come
   :realization (:verb ("give" :past-tense "gave"
                        :past-participle "given"
                        :present-participle "giving")
-                      :etf (svo-passive)))
+                :etf (svo-passive)))
  
 (define-category get
   :specializes accomplishment
