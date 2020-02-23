@@ -1058,7 +1058,9 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
         (t (string-append pname "s")))))
   (:method ((w word))
     (let ((plural-pname (plural-version (word-pname w))))
-      (define-word/expr plural-pname))))
+      (define-word/expr plural-pname)))
+  (:method ((pw polyword))
+    (plural-version/pw pw)))
 
 (defun plural-version/pw (pw)
   "Form the plural of a polyword. Naieve version that just forms the
