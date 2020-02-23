@@ -975,6 +975,7 @@
   (:noun "gene"
          :m expresses
          :for disease
+         :for expresses
          :in disease
          :in in-family
          :in in-pathway
