@@ -23,6 +23,13 @@
    See model/core/names.lisp, particularly its fsa subdirectory,
    and specializations in core/people & companies.")
 
+(define-category  symbol
+  :specializes attribute 
+  :instantiates self
+  :lemma (common-noun "symbol")
+  :documentation "DAVID -- let's talk about this -- want to handle 'the symbol for MEK'"
+)
+
 
 ;;;---------------------
 ;;; standard attributes
