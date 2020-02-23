@@ -29,7 +29,7 @@
   fsa     ;; a list of a polyword start state and/or a symbol naming an fsa
   phrase-boundary       ;; a bracket-assignment 
   completion-actions    ;; a plist of keywords and function names
-  plist
+  plist ;; records, e.g., the rules associated with the ids
   )
 
 (defun print-rule-set-structure (obj stream depth)
@@ -67,10 +67,8 @@
         when (and (cfr-p r)
                   (not (consp (cfr-referent r))))
         collect (itype-of (cfr-referent r)))))
-  
   (:method ((w word))
     (rs-distinct-categories (rule-set-for w)))
-  
   (:method ((str string))
     (let ((word (or (resolve str)
                     (resolve (string-downcase str)))))
