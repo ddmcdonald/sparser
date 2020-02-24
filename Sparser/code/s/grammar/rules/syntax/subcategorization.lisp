@@ -139,16 +139,22 @@
   "From words or categories to subcategorization objects")
 
 (defun filter-patterns (item &optional label)
+  "Retrieve the subcategorization patterns of 'item', then filter them
+ to collect all the patterns that have the same label as 'label'.
+ If 'label' is nil return all the patterns
+ The labels in subcat-patterns are either words or keywords (:subject)."
   (let ((patterns (subcat-patterns item)))
     (if label
-        (loop for pat in patterns
+      (loop for pat in patterns
+         when (eq label (subcat-label pat))
+         collect pat)
+      patterns)))
+  ;;/// the question is whether this ever gets called with uppercase words
+#| older version -- the equalp is problematic in latest SBCL - loops on word structs
               when (equalp (subcat-label pat)
                            (if (keywordp label)
                                label
-                               (resolve (string-downcase (pname label)))))
-                       
-              collect pat)
-        patterns)))
+                               (resolve (string-downcase (pname label))))) |#
 
 
 (defgeneric subcat-patterns (object)
