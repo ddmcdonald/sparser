@@ -182,6 +182,23 @@
   (let ((rule (multiply-edges left-edge right-edge)))
     (when rule
       (make-completed-binary-edge left-edge right-edge rule))))
+
+(defun extend-to-boundaries (head start-pos end-pos)
+  "If we moved an edge out of initial position, such as a preposed-
+   auxiliary, and integrated it into the chart elsewhere,
+   then the tree down from the head will leave that initial position
+   vacant (e.g. as seen by tts, or anything else that looks for
+   edges starting at the first position in the chart.
+   We paper over that problem by modifying the recorded
+   position of this edge. We do -not- also modify the tree,
+   just its start/end positions and their edge-vectors."
+  (let ((start-ev (pos-starts-here start-pos))
+        (end-ev (pos-ends-here end-pos)))
+    (setf (edge-starts-at head) start-ev)
+    (knit-edge-into-position head start-ev)
+    (setf (edge-ends-at head) end-ev)
+    (knit-edge-into-position head end-ev)
+    head))
      
 
 ;;;-------------------------------

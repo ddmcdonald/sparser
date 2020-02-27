@@ -355,14 +355,11 @@
   (let ((vp-edge (rule-to-edge aux pp)))
     (when vp-edge
       (mask-preposed-aux)
-      (let* ((s-edge (rule-to-edge np vp-edge))
-             (i (when s-edge (edge-referent s-edge))))
-        (when i
-          (make-polar-question-edge
-           category::s ; label
-           'polar-copular-pp-question ; rule
-           i ; the interpretation we're going to wrap in a polar-question
-           start-pos end-pos))))))
+      (let* ((s-edge (rule-to-edge np vp-edge)))
+        (when s-edge
+          (extend-to-boundaries s-edge start-pos end-pos)
+          (make-polar-edge s-edge))))))
+
   
 
 
