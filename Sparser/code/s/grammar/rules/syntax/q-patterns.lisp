@@ -347,6 +347,24 @@
     (declare (special copular-adj))
     (make-polar-edge copular-pred-edge)))
 
+;; (p "is ATM in a pathway with MTOR")
+;;
+(defun polar-copular-pp-question (aux np pp start-pos end-pos)
+  "Invoked by decompose-np-for-polary-question which did the checking
+   so we can be confident that we have the requisite pieces."
+  (let ((vp-edge (rule-to-edge aux pp)))
+    (when vp-edge
+      (mask-preposed-aux)
+      (let* ((s-edge (rule-to-edge np vp-edge))
+             (i (when s-edge (edge-referent s-edge))))
+        (when i
+          (make-polar-question-edge
+           category::s ; label
+           'polar-copular-pp-question ; rule
+           i ; the interpretation we're going to wrap in a polar-question
+           start-pos end-pos))))))
+  
+
 
 ;; (p/s "Is stat3 expressed in liver?")
 ;; (p/s "is the BRAF-NRAS complex sustained in time?")

@@ -105,9 +105,9 @@
 (deftrace :checking-extension-from (vertex tt)
   ;; called from check-for-extension-from-vertex
   (when *trace-DA*
-    (trace-msg "[DA] Checking whether ~A~
+    (trace-msg "[DA] Checking whether ~A (~a)~
               ~%     extends any of the options from ~A"
-               tt vertex)
+               tt (when (edge-p tt) (form-cat-name tt)) vertex)
     ;(pl (vertex-rightward-extensions vertex) t *trace-stream*)
     ))
 
@@ -142,7 +142,10 @@
 
 (deftrace :arc-matches-tt? (arc tt)
   ;; called from Arc-matches-tt?
+  (declare (ignore tt))
   (when *trace-DA*
+    (trace-msg "[DA]  Checking ~a" arc)
+    #+ignore
     (trace-msg "[DA]      Checking ~A~
               ~%          against ~A" arc tt)))
 
@@ -245,6 +248,17 @@
   (declare (ignore vertex))
   (when *trace-DA*
     (trace-msg "[defDA]    which ends this thread of the trie")))
+
+(deftrace :replacing-vertex (rule original)
+  ;; called from convert-to-end-vertex
+  (when *trace-DA*
+    (trace-msg "[defDA] prefix up to ~a matched by ~a"
+               original rule)))
+(deftrace :replacement-vertex (left-arc replacement)
+  ;; called from convert-to-end-vertex
+  (when *trace-DA*
+    (trace-msg "[defDA]    new vertex: ~a on arc ~a"
+               replacement left-arc)))
 
 #|
 (deftrace : ()
