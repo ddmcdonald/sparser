@@ -901,7 +901,7 @@
   :lemma (:common-noun "micro-rna")
   :realization
      (:common-noun name 
-                   :noun ("miR" "microRNA" "miRNA" "microrna" "mir")))
+                   :noun ("miR" "microRNA" "miRNA" "mirna" "microrna" "mir")))
 
 (define-category ce-rna  :specializes rna
   :instantiates self
