@@ -90,12 +90,13 @@
   )
 
 (defun make-an-end-vertex (item count rule
-                        &key leftward-arcs )
+                        &key leftward-arcs rightward-arcs)
   (let ((vertex (make-end-vertex
                  :reference-item  item
-                 :count  count
-                 :leftward-extensions  leftward-arcs
-                 :rule  rule )))
+                 :count count
+                 :leftward-extensions leftward-arcs
+                 :rightward-extensions rightward-arcs
+                 :rule rule )))
     (index-vertex vertex)
     vertex ))
 
@@ -105,12 +106,17 @@
 ;;; printers
 ;;;----------
 
-(defun print-da-vertex-structure (obj stream depth)
+(defun print-da-vertex-structure (vertex stream depth)
   (declare (ignore depth))
-  (format stream "#<vertex ~A/~A>"
-          (pattern-item-as-string (vertex-reference-item obj))
-          (vertex-count obj)))
+  (let ((v-type (etypecase vertex
+                  (vertex-base 'base)
+                  (start-vertex 'start)
+                  (vertex 'vertex)
+                  (end-vertex 'end))))
+    (format stream "#<~a-vertex ~a>"
+            v-type (vertex-count vertex))))
 
+;;/// revise if there are users
 (defun short-string-for-vertex (v)
   (format nil "~A/~A"
           (pattern-item-as-string (vertex-reference-item v))

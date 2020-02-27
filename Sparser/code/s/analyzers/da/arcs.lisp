@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995,2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2015,2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "arcs"
 ;;;   Module:  "analyzers;DA:"
-;;;  Version:  May 1995
+;;;  Version:  February 2020
 
 ;; initiated 5/5/95. Elaborating ..5/22
 ;; 3/25/2015 handle SBCL problem by making form-arc inherit from label-arc,
@@ -108,29 +108,44 @@
 ;;; structure printer
 ;;;-------------------
 
-(defun print-da-arc-structure (obj stream depth)
+
+
+
+(defun print-da-arc-structure (arc stream depth)
   (declare (ignore depth))
-  (format stream "#<arc ~A ~A ~A>"
+  (let* ((arc-type (etypecase arc
+                     (gap-arc 'gap)
+                     (unknown-word/s-arc 'unknown)
+                     (polyword-arc 'polyword)
+                     (word-arc 'word)
+                     (morph-arc 'morph)
+                     (form-arc 'form)
+                     (label-arc 'label)))
+         (label (ecase arc-type
+                  (form
+                   (string-downcase (symbol-name (cat-symbol (arc-label arc)))))
+                  (label
+                   (string-downcase (symbol-name (cat-symbol (arc-label arc)))))
+                  (morph
+                   (arc-morph-keyword arc))
+                  (word
+                   (format nil "\"~A\"" (word-pname (arc-word arc))))
+                  (polyword
+                   (format nil "\"~A\"" (pw-pname (arc-polyword arc))))
+                  (unknown
+                   (format nil "~A unknown word/s"
+                           (arc-number-of-words arc)))
+                  (gap
+                   (format nil "gap: ~A" (arc-scan-function arc))))))
+    (format stream "#<~a-arc ~a>"
+            arc-type label)))
+
+#|
           (if (arc-left-vertex obj)
             (short-string-for-vertex (arc-left-vertex obj))
             "nil")
-          (etypecase obj
-            (form-arc
-             (string-downcase (symbol-name (cat-symbol (arc-label obj)))))
-            (label-arc
-             (string-downcase (symbol-name (cat-symbol (arc-label obj)))))
-            (morph-arc
-             (arc-morph-keyword obj))
-            (word-arc
-             (format nil "\"~A\"" (word-pname (arc-word obj))))
-            (polyword-arc
-             (format nil "\"~A\"" (pw-pname (arc-polyword obj))))
-            (unknown-word/s-arc
-             (format nil "~A unknown word/s"
-                     (arc-number-of-words obj)))
-            (gap-arc
-             (format nil "gap: ~A" (arc-scan-function obj))))
+
           (if (arc-right-vertex obj)
             (short-string-for-vertex (arc-right-vertex obj))
-            "nil" )))
+            "nil" )))  |#
 

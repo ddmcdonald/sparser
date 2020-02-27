@@ -653,63 +653,6 @@
 
 
 
-;;; NP rules
-
-(define-debris-analysis-rule attach-np-comma-np-comma-as-appositive
-  :pattern ( np "," np ",")
-  ;; The action can fail. Returning nil ought to suffice
-  :action (:function
-           attach-np-comma-np-comma-as-appositive
-           first second third fourth))
-
-(defun attach-np-comma-np-comma-as-appositive (np1 comma-1 np2 comma-2)
-  (attach-appositive-to-np np1 comma-1 np2 comma-2))
-
-
-(define-debris-analysis-rule attach-proper-noun-comma-np-comma-as-appositive
-  :pattern ( proper-noun "," np ",")
-  ;; The action can fail. Returning nil ought to suffice
-  :action (:function
-           attach-proper-noun-comma-np-comma-as-appositive
-           first second third fourth))
-
-(defun attach-proper-noun-comma-np-comma-as-appositive (np1 comma-1 np2 comma-2)
-  (attach-appositive-to-np np1 comma-1 np2 comma-2))
-
-
-(define-debris-analysis-rule attach-np-comma-proper-noun-comma-as-appositive
-  :pattern ( np "," proper-noun ",")
-  ;; The action can fail. Returning nil ought to suffice
-  :action (:function
-           attach-np-comma-proper-noun-comma-as-appositive
-           first second third fourth))
-
-(defun attach-np-comma-proper-noun-comma-as-appositive (np1 comma-1 np2 comma-2)
-  (attach-appositive-to-np np1 comma-1 np2 comma-2))
-
-
-(define-debris-analysis-rule attach-proper-noun-comma-proper-noun-comma-as-appositive
-  :pattern ( proper-noun "," proper-noun ",")
-  ;; The action can fail. Returning nil ought to suffice
-  :action (:function
-           attach-proper-noun-comma-proper-noun-comma-as-appositive
-           first second third fourth))
-
-(defun attach-proper-noun-comma-proper-noun-comma-as-appositive (np1 comma-1 np2 comma-2)
-  (attach-appositive-to-np np1 comma-1 np2 comma-2))
-
-(defun attach-appositive-to-np (base-np comma-edge np-edge trailing-comma)
-  (unless (and (edge-p (edge-just-to-right-of trailing-comma))
-               (member (cat-name (edge-category (edge-just-to-right-of trailing-comma)))
-                       '(and or)))
-    (make-edge-spec 
-     :category (edge-category base-np)
-     :form (edge-form base-np)
-     :referent
-     (bind-dli-variable 'appositive-description (edge-referent np-edge) (edge-referent base-np))
-     )))
-
-
 ;;------------------------- S -----------------------
 (define-debris-analysis-rule s-comma-subj-relative
     :pattern (s "," subject-relative-clause)
@@ -850,6 +793,58 @@
 
 ;;--------------- NP
 
+
+(define-debris-analysis-rule attach-np-comma-np-comma-as-appositive
+  :pattern ( np "," np ",")
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           attach-np-comma-np-comma-as-appositive
+           first second third fourth))
+
+(defun attach-np-comma-np-comma-as-appositive (np1 comma-1 np2 comma-2)
+  (attach-appositive-to-np np1 comma-1 np2 comma-2))
+
+
+(define-debris-analysis-rule attach-proper-noun-comma-np-comma-as-appositive
+  :pattern ( proper-noun "," np ",")
+  :action (:function
+           attach-proper-noun-comma-np-comma-as-appositive
+           first second third fourth))
+
+(defun attach-proper-noun-comma-np-comma-as-appositive (np1 comma-1 np2 comma-2)
+  (attach-appositive-to-np np1 comma-1 np2 comma-2))
+
+
+(define-debris-analysis-rule attach-np-comma-proper-noun-comma-as-appositive
+  :pattern ( np "," proper-noun ",")
+  :action (:function
+           attach-np-comma-proper-noun-comma-as-appositive
+           first second third fourth))
+
+(defun attach-np-comma-proper-noun-comma-as-appositive (np1 comma-1 np2 comma-2)
+  (attach-appositive-to-np np1 comma-1 np2 comma-2))
+
+
+(define-debris-analysis-rule attach-proper-noun-comma-proper-noun-comma-as-appositive
+  :pattern ( proper-noun "," proper-noun ",")
+  :action (:function
+           attach-proper-noun-comma-proper-noun-comma-as-appositive
+           first second third fourth))
+
+(defun attach-proper-noun-comma-proper-noun-comma-as-appositive (np1 comma-1 np2 comma-2)
+  (attach-appositive-to-np np1 comma-1 np2 comma-2))
+
+(defun attach-appositive-to-np (base-np comma-edge np-edge trailing-comma)
+  (unless (and (edge-p (edge-just-to-right-of trailing-comma))
+               (member (cat-name (edge-category (edge-just-to-right-of trailing-comma)))
+                       '(and or)))
+    (make-edge-spec 
+     :category (edge-category base-np)
+     :form (edge-form base-np)
+     :referent
+     (bind-dli-variable 'appositive-description (edge-referent np-edge) (edge-referent base-np))
+     )))
+
 (define-debris-analysis-rule np-comma-subj-relative
     :pattern (np "," subject-relative-clause)
     :action (:function np-comma-subj-relative first second third))
@@ -929,7 +924,6 @@
 
 (define-debris-analysis-rule np-comma-pp-comma
   :pattern ( np "," pp ",")
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function np-comma-pp-comma first second third fourth))
 
 (defun np-comma-pp-comma (np comma-1 pp comma-2)
@@ -938,7 +932,6 @@
 
 (define-debris-analysis-rule proper-noun-comma-pp-comma
   :pattern ( proper-noun "," pp ",")
-  ;; The action can fail. Returning nil ought to suffice
   :action (:function proper-noun-comma-pp-comma first second third fourth))
 
 (defun proper-noun-comma-pp-comma (np comma-1 pp comma-2)
@@ -1411,8 +1404,8 @@
 
 
 (define-debris-analysis-rule when-relative-clause-comma
-               :pattern (when-relative-clause "," s)
-	       :action (:function when-relative-clause-comma  first second third))
+    :pattern (when-relative-clause "," s)
+    :action (:function when-relative-clause-comma  first second third))
 
 (defun when-relative-clause-comma (wc comma s)
   (declare (ignore comma))
@@ -1420,8 +1413,8 @@
 
 
 (define-debris-analysis-rule where-relative-clause-comma
-               :pattern (where-relative-clause "," s)
-	       :action (:function where-relative-clause-comma  first second third))
+    :pattern (where-relative-clause "," s)
+    :action (:function where-relative-clause-comma  first second third))
 
 (defun where-relative-clause-comma (wc comma s)
   (declare (ignore comma))
@@ -1429,8 +1422,8 @@
 
 
 (define-debris-analysis-rule s-when-relative-clause
-               :pattern (s when-relative-clause)
-	       :action (:function s-when-relative-clause first second))
+    :pattern (s when-relative-clause)
+    :action (:function s-when-relative-clause first second))
 
 (defun s-when-relative-clause (wc s)
    (create-event-relation wc s))
@@ -1497,6 +1490,7 @@
   (create-event-relation s event-relation (edge-referent sconj)))
 
 
+
 (define-debris-analysis-rule np-conj-pp
     ;; for the case where the rightmost NP in a conjunction can
     ;; take a PP, but was conjoined early
@@ -1504,8 +1498,6 @@
     :action (:function np-conj-pp first second))
 
 (define-debris-analysis-rule s-with-np-conj-pp
-    ;; for the case where the rightmost NP in a conjunction can
-    ;; take a PP, but was conjoined early
     :pattern (s pp)
     :action (:function np-conj-pp first second))
 
@@ -1826,7 +1818,6 @@ assumed. |#
                pattern
                '(:function polar-postmodifying-vp+ed first second third))))
 
-
 (defun polar-postmodifying-vp+ed (be-edge np-edge vp+ed-edge)
   (declare (special *da-starting-position* *da-ending-position*))
   (when (aux-before-np? :first-np-edge np-edge)
@@ -1890,7 +1881,27 @@ assumed. |#
   (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
     (polar-aux-s-stranded-prep aux-edge s-edge prep-edge
                                *da-starting-position* end-pos)))
-  
+
+(define-debris-analysis-rule aux-np
+    :pattern (preposed-auxiliary np)
+    ;; "is ATM in a pathway with MTOR"
+    :action (:function decompose-np-for-polar-question first second))
+;;###############################################################################
+(defun decompose-np-for-polar-question (aux-edge np-edge)
+  "Does the np decompose into a simple term and a prepositional phrase.
+   If it does we construct the question from those daughters and
+   remove their spanning np-edge from the chart so nothing will be
+   confused by it later."
+  (let ((left (edge-left-daughter np-edge))
+        (right (edge-right-daughter np-edge)))
+    (when (and (edge-p left) (edge-p right)
+               (np-category? left) (eq (form-cat-name right) 'pp))
+      (remove-and-unhook-edge-from-chart np-edge (list left right))
+      (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
+        (polar-copular-pp-question aux-edge left right
+                                   *da-starting-position* end-pos)))))
+
+
 
 
 (define-debris-analysis-rule is-s-under-condition
@@ -1919,12 +1930,10 @@ assumed. |#
 
 (define-debris-analysis-rule wh-vg-transitive-no-object
     :pattern (np vg transitive-clause-without-object) ;; np = "what genes"
-    ;; "What genes does lung cancer target?"
     :action (:function wh-three-edges first second third))
 
 (define-debris-analysis-rule np-modal-s
     :pattern (np modal s)
-    ;; "What drug could I use to target pancreatic cancer?"
     :action  (:function wh-three-edges first second third))
 
 (defun wh-three-edges (np vg open-vp)
@@ -2105,10 +2114,8 @@ assumed. |#
         (predicate (edge-right-daughter s-edge))
         (end-pos (fix-da-ending-pos *da-ending-position*)))
     (when (wh-edge? subject)
-    ;; get rid of unneeded edge that complicates chart
-      (setf (edge-used-in (edge-left-daughter s-edge)) nil)
-      (setf (edge-used-in (edge-right-daughter s-edge)) nil)
-      (remove-edge-from-chart s-edge)
+      ;; get rid of unneeded edge that complicates chart
+      (remove-and-unhook-edge-from-chart s-edge (list subject predicate))
       (wh-stranded-prep subject ;; wh-edge
                         predicate ;; main-edge
                         prep-edge

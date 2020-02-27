@@ -97,6 +97,11 @@
 ;;; removing edges
 ;;;----------------
 
+(defun remove-and-unhook-edge-from-chart (edge daughters)
+  (loop for d in daughters
+     do (setf (edge-used-in d) nil))
+  (remove-edge-from-chart edge))
+
 (defun remove-edge-from-chart (edge)
   ;; Called by form-rule-completion and by
   ;; ensure-edge-consistent-with-chunk
@@ -113,16 +118,6 @@
      (break "Stub: write the routine for removing an edge from an~
              ~%edge-vector based on kcons lists."))))
 
-(defun reset-ev-top-node (ev)
-  "Helper -- When the dust has settled after the ev has been edited
-   this uses the count and actual vector to do the right thing."
-  (let ((count (ev-number-of-edges ev)))
-    (cond ((= count 0) ;; doesn't try ot re-compute :multiple-initial=edges
-           (setf (ev-top-node ev) nil))
-          ((= count 1)
-           (setf (ev-top-node ev) (aref (ev-edge-vector ev) (1- count))))
-          (t (setf (ev-top-node ev) :multiple-initial-edges)))))
-
 (defun remove-edge-from-vector-ev (ev edge)
   "Remove 'edge' from the the edge vector ev, adjusting
    the other edges in its array and its meta data accordingly."
@@ -134,12 +129,22 @@
       (setf (aref array (decf (ev-number-of-edges ev)))
             nil)
       (reset-ev-top-node ev))
-     ;;/// suppose it's the top edge of multiple initial edges
+     ;;/// what if it's the top edge of multiple initial edges?
      (t
       (reset-ev-edges ;; it's in the middle somewhere
        ev (loop for e in (ev-edges ev)
              unless (eq e edge) collect e))))
     edge ))
+
+(defun reset-ev-top-node (ev)
+  "Helper -- When the dust has settled after the ev has been edited
+   this uses the count and actual vector to do the right thing."
+  (let ((count (ev-number-of-edges ev)))
+    (cond ((= count 0) ;; doesn't try ot re-compute :multiple-initial=edges
+           (setf (ev-top-node ev) nil))
+          ((= count 1)
+           (setf (ev-top-node ev) (aref (ev-edge-vector ev) (1- count))))
+          (t (setf (ev-top-node ev) :multiple-initial-edges)))))
 
 (defun reset-ev-edges (ev edge-list) ;; moved from psp/chunker.lisp
   ;; Prime use is the chunker, and it knows its dealing with

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995.2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "add pattern"
 ;;;   Module:  "analyzers;DA:"
-;;;  Version:  May 1995
+;;;  Version:  February 2020
 
 ;; initiated 5/5/95.  Elaborated ..5/11
 
@@ -19,24 +19,21 @@
 
 
 (defun make-new-trie (pattern rule)
-  ;; There is no pattern that begins with this same 1st item,
-  ;; so we just make a straightline trie with no alternatives.
+  "There is no pattern that begins with this same 1st item,
+   so we just make a straightline trie with no alternatives."
   (let* ((start (make-the-start-vertex pattern))
          (items (copy-list pattern))
          (prior-vertex start)
          arc )
-
     (loop
-      (setq arc (make-arc-for-pattern-item (pop items)
-                                           prior-vertex))
-      (knit-arc-to-prior-vertex arc)
+      (setq arc (make-arc-for-pattern-item (pop items) prior-vertex))
+      (knit-arc-to-prior-vertex arc prior-vertex)
       (if items
         (setq prior-vertex
               (knit-arc-to-next-vertex arc))
         (else
           (knit-arc-to-next-vertex/end arc rule)
           (return))))
-
     start ))
 
 
@@ -45,13 +42,18 @@
 ;;;--------------------
 
 (defun thread-pattern-into-existing-trie (pattern rule vertex-0)
+  "The first element of the pattern is already the start of a trie.
+   We need to fold this new pattern into the trie at that same
+   starting point, 'vertex-0'. We walk out the shared portion of
+   the trie ('point of divergence'), then we add additional arcs
+   to get to the end of the new pattern."
   (tr :rule-varies-known-trie rule vertex-0)
-  (find-point-of-divergence-and-extend-trie vertex-0  rule
+  (find-point-of-divergence-and-extend-trie vertex-0 rule
                                             (copy-list pattern))
   vertex-0 )
 
 
-(defun find-point-of-divergence-and-extend-trie (vertex  rule
+(defun find-point-of-divergence-and-extend-trie (vertex rule
                                                  remaining-items)
   (let* ((1st-item (first remaining-items))
          (remainder (rest remaining-items))
@@ -59,11 +61,14 @@
           (item-in-new-pattern-fits-existing-arc? vertex
                                                   1st-item)))
     (if next-vertex
-      (find-point-of-divergence-and-extend-trie next-vertex  rule
+      (find-point-of-divergence-and-extend-trie next-vertex rule
                                                 remainder)
-
-      (extend-trie-for-rest-of-pattern vertex rule
-                                           remaining-items))))
+      (if remaining-items
+        (extend-trie-for-rest-of-pattern vertex rule remaining-items)
+        (else
+          ;; The vertex at this level is the end of this pattern
+          ;; so we need to mark it as an accept vertex. 
+          (convert-to-end-vertex vertex rule))))))
 
 
 (defun extend-trie-for-rest-of-pattern (vertex rule rest-of-the-items)
@@ -73,11 +78,10 @@
   ;; the rest of the pattern.
   (let* ((1st-item (first rest-of-the-items))
          (remainder (rest rest-of-the-items))
-        (new-arc (make-arc-for-pattern-item 1st-item 
-                                            vertex)))
+         (new-arc (make-arc-for-pattern-item 1st-item vertex)))
     (tr :made-arc-for vertex new-arc 1st-item)
 
-    (knit-arc-to-prior-vertex new-arc)
+    (knit-arc-to-prior-vertex new-arc vertex)
 
     (let ((new-vertex
            (if remainder
@@ -92,9 +96,6 @@
         (extend-trie-for-rest-of-pattern new-vertex rule
                                          remainder)
         new-vertex ))))
-
-
-
 
 
 (defun item-in-new-pattern-fits-existing-arc? (vertex item)
@@ -115,14 +116,12 @@
            (when (eq (arc-label arc) item)
              (setq matching-arc arc)
              (return))))
-
         (label-arc
          (when (or (referential-category-p item)
                    (category-p item))
            (when (eq (arc-label arc) item)
              (setq matching-arc arc)
              (return))))
-
         (morph-arc
          (when (pattern-item-p item)
            (when (eq (pattern-item-type item) :morph)
@@ -130,21 +129,16 @@
                        (arc-morph-keyword arc))
                (setq matching-arc arc)
                (return)))))
-          
         (word-arc
          (when (word-p item)
            (when (eq (arc-word arc) item)
              (setq matching-arc arc)
              (return))))
-
         (polyword-arc
          (when (word-p item)
            (when (eq (arc-polyword arc) item)
              (setq matching-arc arc)
-             (return))))
-
-        
-        ))
+             (return))))))
 
     (if matching-arc
       (then
