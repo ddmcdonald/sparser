@@ -86,7 +86,8 @@
       (unless (allowable-referential-edge? edge value)
         (setf value
               (find-or-make-lattice-description-for-ref-category value)))))
-  (cond ((edge-referent edge)
+  (cond ((and (edge-referent edge)
+              (typep (edge-mention edge) 'discourse-mention))
          ;; If the edge already has a referent still have to update the mention
          (setf (edge-referent edge) value)
          (update-edge-mention-referent edge value))
