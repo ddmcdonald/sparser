@@ -2546,10 +2546,14 @@ there was an edge for the qualifier (e.g., there is no edge for the
                   (new-np (bind-variable var-to-bind pobj np))
                   (new-np-edge (respan-edge-for-new-referent
                                 pp-edge new-np
-                                (category-named 'np)))
+                                :new-form (category-named 'np)
+                                :new-category (itype-of new-np)
+                                ))
                   (new-result
                     (bind-variable 'item np
                                    (bind-variable 'value new-np copular-pp))))
+             (setf (edge-right-daughter (right-edge-for-referent))
+                   new-np-edge)
              ;; for cases like
              ;; "What proteins are in the MAPK family?"
              new-result)
