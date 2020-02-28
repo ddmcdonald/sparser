@@ -99,7 +99,10 @@
 
 (defun remove-and-unhook-edge-from-chart (edge daughters)
   (loop for d in daughters
-     do (setf (edge-used-in d) nil))
+        do (setf (edge-used-in d) nil))
+  (loop for daughter in daughters
+        do
+          (set-edge-referent daughter (edge-referent daughter) t))
   (remove-edge-from-chart edge))
 
 (defun remove-edge-from-chart (edge)

@@ -244,7 +244,9 @@
 
 
 (defun respan-edge-for-new-referent (edge new-ref
-                                     &optional (new-form (edge-form edge)))
+                                     &key
+                                       (new-form (edge-form edge))
+                                       new-category)
   "We have just modified the referent of one of the edges 
    somewhere inside an already complete edge. This happens
    with comparative, and other cases where we learn something
@@ -272,7 +274,8 @@
               :single-term) ;; alternatives?
           )
 
-    (setf (edge-category new-edge) (edge-category edge))
+    (setf (edge-category new-edge) (or new-category
+                                       (edge-category edge)))
     (setf (edge-form new-edge) (or new-form
                                    (edge-form edge)))
     (set-edge-referent new-edge new-ref)
