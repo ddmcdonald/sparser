@@ -124,18 +124,18 @@
                         
          (when rule-field
            (if (listp rule-field)
-             (then
-               (if (listp (first rule-field))
-                 (walk-through-referent-actions 
-                  rule-field left-referent right-referent right-edge)
-                 (else ;; just one action
-                   (setq *referent*
-                         (dispatch-on-rule-field-keys
-                          rule-field left-referent right-referent right-edge)))))
+               (then
+                 (if (listp (first rule-field))
+                     (walk-through-referent-actions 
+                      rule-field left-referent right-referent right-edge)
+                     (else ;; just one action
+                       (setq *referent*
+                             (dispatch-on-rule-field-keys
+                              rule-field left-referent right-referent right-edge)))))
 
-             (else ;; direct pointer to referent
-               (setq *referent* rule-field)
-               (annotate-individual *referent* :immediate-referent)))
+               (else ;; direct pointer to referent
+                 (setq *referent* rule-field)
+                 (annotate-individual *referent* :immediate-referent)))
 
            (redistribute left-referent right-referent)
 
@@ -152,11 +152,12 @@
                         ~%      + ~a~
                         ~%   = ~a~%"
                      left-referent right-referent *referent*))
-           (note? *referent*)
+           
 
-           (if (null *referent*)
-             :abort-edge
-             *referent* )))))))
+           (cond ((null *referent*)
+                  :abort-edge)
+                 (t (note? *referent*)
+                    *referent* ))))))))
 
 (defun walk-through-referent-actions  (rule-field 
                                        left-referent right-referent 
