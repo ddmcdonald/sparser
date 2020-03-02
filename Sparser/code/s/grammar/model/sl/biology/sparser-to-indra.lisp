@@ -416,7 +416,7 @@ pass the result to the appropriate indra generator"
                 (result
                  `(((:type . "Complex")
                     ;;(:members ,binder ,bindee)
-                    (:members (,binder ,bindee))))))
+                    (:members ,binder ,bindee)))))
            (when (and (consp bindee)(not (keywordp (car bindee))))
              (lsp-break "direct-bindee"))
            ;;(break "make-indra-binding ~%result=~%~s~%" result)
