@@ -1894,8 +1894,13 @@ assumed. |#
    confused by it later."
   (let ((left (edge-left-daughter np-edge))
         (right (edge-right-daughter np-edge)))
-    (when (and (edge-p left) (edge-p right)
-               (np-category? left) (eq (form-cat-name right) 'pp))
+    (when (and (edge-p left)
+               (edge-p right)
+               (np-category? left)
+               (eq (form-cat-name right) 'pp)
+               ;; <right> must be last edge, not
+               ;; e.g. "is NP sustained"
+               (not (edges-after right)))
       (remove-and-unhook-edge-from-chart np-edge (list left right))
       (let ((end-pos (fix-da-ending-pos *da-ending-position*)))
         (polar-copular-pp-question aux-edge left right
