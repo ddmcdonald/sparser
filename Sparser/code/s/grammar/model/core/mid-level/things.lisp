@@ -163,7 +163,15 @@ some subcategory of the category 'name'
   :realization 
     (:noun "name"
      :of item
-     :for item))     
+     :for item))
+
+(define-category has-symbol
+  :specializes has-attribute ;; vars: item, attribute, value
+  ;; :mixins ()
+  :realization 
+    (:noun "symbol"
+     :of item
+     :for item))
      
 (define-category name-something
   :specializes achievement
