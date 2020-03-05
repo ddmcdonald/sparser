@@ -2411,6 +2411,22 @@ can still match things like CHK1 and CHK-1"
                  "../corpus/phase3_nxml/hms-json/"
                  "../corpus/hms-update/hms-json/"))))))
 
+(defun hms-indra-nxml-pmcs ()
+  (loop for pathname in (hms-update-xml-files)
+        collect
+          (let ((pname (pathname-name pathname)))
+            (subseq pname 0
+                    (search "." pname)))))
+
+
+(defun hms-update-xml-files ()
+  (directory
+   (format nil "~a*.nxml"
+           (namestring 
+            (asdf:system-relative-pathname
+             :r3
+             "../corpus/hms-update/")))))
+
 (defun sift-indra-files ()
   (directory
    (format nil "~a*semantics.json"
