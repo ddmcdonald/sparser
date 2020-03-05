@@ -91,7 +91,7 @@
 
 
 
-(def-family "20 alpha-hydroxysteroid dehydrogenase" :synonyms ("20 α-hydroxysteroid dehydrogenase" "20-α-HSD" "E2DH" "EDH17B2") :members ("UP:P14061" "UP:P37059"))
+(def-family "20 alpha-hydroxysteroid dehydrogenase" :synonyms ("20 α-hydroxysteroid dehydrogenase" "20-α-HSD" "E2DH" "EDH17B2") :members ("UP:P14061" "UP:P37059" "UP:Q04828"))
 (def-family "20-alpha-HSD" :members ("UP:P14061" "UP:P37059" "UP:Q04828")) 
 (def-family "51 kDa FK506-binding protein" :members ("UP:Q02790" "UP:Q13451")) 
 (def-family "ADF" :members ("UP:P06396" "UP:P10599")) 
@@ -1564,7 +1564,7 @@
 (def-family "intimin" :members ("UP:Q07591" "UP:W1XTR8")) 
 (def-family "iso1" :members ("UP:P41567" "UP:P83721")) 
 (def-family "isoflavone reductase" :members ("UP:P52575" "UP:Q00016")) 
-(def-family "isomaltase" :members ("UP:P14410" "UP:P21332")) 
+;(def-family "isomaltase" :members ("UP:P14410" "UP:P21332")) 
 (def-family "j1" :members ("UP:Q5I141" "UP:Q9Y385")) 
 (def-family "j2" :members ("UP:Q5I140" "UP:Q8N2K1")) 
 (def-family "kaiso" :members ("UP:A8DU70" "UP:Q86T24")) 
