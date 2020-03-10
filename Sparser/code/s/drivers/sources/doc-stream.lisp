@@ -111,6 +111,14 @@
     (ds/do-explicit-file-list ds files)))
 
 
+(defun analyze-text-from-directory (dir &key doc-set-name)
+  (declare (ignore doc-set-name))
+  (let* ((file-list (directory (format nil "~a/*.txt" dir)))
+         (stream (define-document-stream (gensym "document-stream")
+                     :style-name 'hand-typed/no-headers
+                     :file-list file-list)))
+    (do-document-as-stream-of-files stream)))
+
 ;;;-------------------
 ;;; final common path
 ;;;-------------------
