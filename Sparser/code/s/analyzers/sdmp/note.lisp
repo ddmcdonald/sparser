@@ -3,7 +3,7 @@
 
 ;;;      File: "note"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: January 2020
+;;;   Version: March 2020
 
 ;; Initiated 1/29/20. To make an easy to use, structured, ability to
 ;; 'note and record interesting objects' 
@@ -38,7 +38,14 @@
     is noteworthy if there is a statement to that effect in
     the grammar.
     Used as a gate controling whether this is an item to record.")
+
+  (:method ((e edge))
+    (noteworthy? (edge-referent e)))
   
+  (:method ((w word)) nil)
+  (:method ((pw polyword)) nil)
+  (:method ((ignore null)) nil)
+
   (:method ((i individual))
     (loop for c in (indiv-type i)
        when (noteworthy? c)
@@ -46,6 +53,7 @@
 
   (:method ((c category))
     (get-tag :noteworthy c)))
+
 
 
 (defgeneric note? (item)
@@ -57,6 +65,11 @@
     (let ((referent (edge-referent e)))
       (when (noteworthy? referent)
         (note referent))))
+
+  (:method ((list cons))
+    "Call from pnf/scan-classify-record will return a list of edges
+     when it can't decide between them"
+    (loop for e in list do (note? e)))
 
   (:method ((i individual))
     (when (noteworthy? i)
@@ -78,7 +91,7 @@
 
 (defgeneric note (item)
   (:documentation "Add a noteworthy item to the sentence-level
-    the contents model using the list element of the accumulate-items
+    contents model using the list element of the accumulate-items
     class. For now, an alist on the category recording the count
     of how many we got. Like entities-and-relations we could make
     this more interesting at higher layers of document structure.")
@@ -99,7 +112,8 @@
                  (entry (assoc name alist :test #'eq)))
             (cond
               ((null alist)
-               (setf (slot-value container 'list) `((,name 1))))
+               (setf (slot-value container 'list)
+                     `((,name 1))))
               (entry
                (incf (cadr entry)))
               (t
@@ -113,3 +127,4 @@
   "Flag in the various place that note is used to report the
    full list of things they've seen, noteworthy or not.
    Useful in gauging what groups of categories might be")
+
