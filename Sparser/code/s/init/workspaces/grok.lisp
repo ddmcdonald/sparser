@@ -33,6 +33,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;;  analyzers/SDM&P/document-handling.lisp and take document-streams as input
 
 #| Presumes a value for corpus;
+(setq cl-user::location-of-text-corpora "/Users/ddm/sift/nlp/corpus/")
 (def-logical-pathname "corpus;" cl-user::location-of-text-corpora)
 (def-logical-pathname "bird-flu;" "corpus;bird-flu;")
 (def-logical-pathname "bird-flu-2009;" "bird-flu;iraq-2006;")
@@ -103,9 +104,20 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 ;; (p *iraqi-girl*)
 ;; (p "in Iraq, H5N1 has killed at least 91 people,")
-
+;;    (make-an-avian-flu 5 1)
 ;; (grok-pass-three-setup)
-;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/1 Aljazeera_Jan-18.txt")
+
+;;(analyze-directory-files "/Users/ddm/sift/nlp/corpus/bird-flu/iraq-2006/")
+
+(defun run-hard-wired-corpus (directory
+                              &key ((:base hard-wired-dir)
+                                    "/Users/ddm/sift/nlp/corpus/bird-flu/"))
+  (let ((dir-namestring (string-append hard-wired-dir directory "/")))
+    (analyze-directory-files dir-namestring)))
+
+(run-hard-wired-corpus "iraq-2006")
+
+;; (f "/Users/ddm/sift/nlp/corpus/bird-flu/iraq-2006/1 Aljazeera_Jan-18.txt")
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/2 ABCNews_Jan-30.txt")
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/3 Yahoo-India_Jan-30.txt")
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/4 bbc_Jan-31.txt")
@@ -113,8 +125,10 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/6 Newsfactor_Feb-16.txt")
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/7 bbc_March-3.txt")
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/8 bbc_March-24.txt")
-
 ;; (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu" :doc-set-name 'bird-flu) 
+
+(run-hard-wired-corpus "biology" :base "/Users/ddm/sift/nlp/corpus/")
+
 
 ;; These are in dm&p in the workspaces file under init. They're stray medium size
 ;; articles lifted from the news
