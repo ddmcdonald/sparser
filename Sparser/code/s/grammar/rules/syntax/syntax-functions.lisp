@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  January 2020
+;;;  Version:  March 2020
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -532,6 +532,7 @@ val-pred-var (pred vs modifier - left or right?)
                      (itypep head 'determiner))
                 (and (proper-noun? right-edge) ;; "Saturday", "June"
                      (itypep (edge-referent right-edge) 'time))
+                (itypep head 'amount-of-time) ; "two weeks"
                 (itypep qualifier 'time) ; [the December ]11, [2012 edition]
                 ))))
     
@@ -1511,7 +1512,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun interpret-for-to-comp (for-pp to-comp)
   (let* ((for-subj (value-of 'pobj for-pp))
 	 (subj-var
-	  (subcategorized-variable to-comp :subject for-subj)))
+          (when for-subj
+            (subcategorized-variable to-comp :subject for-subj))))
     (if *subcat-test*
 	subj-var
 	(bind-dli-variable subj-var for-subj to-comp))))
@@ -2476,7 +2478,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun make-prep-comp (prep complement)
   ;; Called for the pattern 
   ;; preposition + (vg vg+ing vg+ed vg+passive vp+passive & vp)
-  (declare (special category::to-comp category::pp))
+  (declare (special category::to-comp category::pp  category::prep-comp))
   (let ((preposition (get-word-for-prep prep))) 
     ;;(push-debug `(,prep ,complement)) (break "where prep?")
     (cond
@@ -2490,7 +2492,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
       (t
        (revise-parent-edge :form category::pp)	 
        (make-simple-individual
-        category::prepositional-phrase
+        category::prep-comp
         `((prep ,prep) (comp ,complement)))))))
 
 
