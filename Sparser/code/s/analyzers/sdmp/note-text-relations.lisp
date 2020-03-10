@@ -70,7 +70,7 @@
   (declare (special *debug-segment-handling*))
   (let ((head-edge (edge-over-segment-head)))
     (unless (and head-edge
-                 (edge-denotes-interesting-object head-edge))
+                 (noteworthy? head-edge))
       (let ((head-word (head-word-of-segment)))
         (when head-word ;; if assumptions are violated this
           ;; will be nil. 

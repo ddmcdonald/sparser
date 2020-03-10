@@ -64,7 +64,7 @@
   note-what-the-head-is
   note-immediate-relations-to-head |#
 
-
+#+ignore ;; Use note instead
 (defun note-entity (item)
   (add-to-container item (sentence)))
 
