@@ -590,6 +590,7 @@
   "Continuation of losing-competition?"
   (declare (special category::adjective category::as))
   (let ((r-triple-rhs (cfr-rhs (triple-rule r-triple))))
+    (push-debug `(,l-triple ,r-triple ,r-triple-rhs))
     (and
      (prep? (cat-name (car (cfr-rhs (triple-rule l-triple))))) ;;l-triple-left
      (not (subordinate-conjunction? (left-edge-of-triple l-triple)))
@@ -614,9 +615,9 @@
                    category::copular-pp
                    ;;category::comma-separated-subject-relative-clause
                    )))
-      ;; this is needed because the schema based rules generate rules in terms of 
-      ;;  semantics and not syntax, so we have phosphorylate+ed and not vp/+ed
       (memq (second (cfr-rhs-forms (triple-rule r-triple)))
+            ;; this is needed because the schema based rules generate rules in terms of 
+            ;;  semantics and not syntax, so we have phosphorylate+ed and not vp/+ed
             '(vg vp vg+ed vg+ed vp+ed vp+past vg+passive vp+passive
               vg/+ed vg/+ed vp/+ed vg/+passive vp/+passive
               ;;comma-separated-subject-relative-clause
