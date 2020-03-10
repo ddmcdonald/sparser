@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2013-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016,2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "h-n-scanner"   e.g. "H5N1" or 
 ;;;    Module:   "sl;disease:"
-;;;   version:   May 2016
+;;;   version:   March 2020
 
 ;; initiated 5/6/13. Rebuilt as a no-space pattern fsa 7/28/14
 
@@ -34,6 +34,22 @@ combinations are possible e.g. H1N1, H7N2, H6N9 and etc.  |#
   (push-debug `(,start-pos ,reached-pos ,args)) (break "make avian"))
 ;  (find-or-make-individual 'avian-flu
 
+;; Stopgap while repositioning the no-space pattern
+(defun make-an-avian-flu (H-digit N-digit)
+  (let* ((h-number (find-number h-digit))
+         (n-number (find-number n-digit))
+         (string (string-append "H" H-digit "N" N-digit))
+         (polyword (define-polyword string)))
+    (let* ((i (define-or-find-individual 'avian-flu
+                  :H-number h-number
+                  :N-number n-number))
+           (rule (define-cfr category::avian-flu `(,polyword)
+                   :form category::common-noun
+                   :referent i)))
+      (values i
+              rule))))
+
+(make-an-avian-flu 1 1)
 
 ;;;---------
 ;;; scanner
