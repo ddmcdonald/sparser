@@ -605,14 +605,15 @@
            (eq category::adjective 
                (edge-form (edge-left-daughter (right-edge-of-triple r-triple))))))
      (or
-      (pp-relative-clause? r-triple)    
-      (memq (cat-symbol (left-edge-of-triple r-triple-rhs))
-            '(category::vg category::vp category::vg+ed category::vp+ed
-              category::vp+past
-              category::vg+passive category::vp+passive
-              category::copular-pp
-              ;;category::comma-separated-subject-relative-clause
-              ))
+      (pp-relative-clause? r-triple)
+      (and (category-p (second r-triple-rhs))
+           (memq (cat-symbol (second r-triple-rhs))
+                 '(category::vg category::vp category::vg+ed category::vp+ed
+                   category::vp+past
+                   category::vg+passive category::vp+passive
+                   category::copular-pp
+                   ;;category::comma-separated-subject-relative-clause
+                   )))
       ;; this is needed because the schema based rules generate rules in terms of 
       ;;  semantics and not syntax, so we have phosphorylate+ed and not vp/+ed
       (memq (second (cfr-rhs-forms (triple-rule r-triple)))
