@@ -112,9 +112,6 @@
 (define-lambda-variable 'relative-prep
     nil 'top) ;; holds the relative PP for cases like "the X in which Y is placed"
 
-(define-lambda-variable 'ordinal ;; used for "third" in "the third gene"
-    nil 'top)
-
 (define-lambda-variable 'appositive-description
     nil 'top)
 
@@ -2460,19 +2457,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
           (make-simple-individual
            category::prepositional-phrase
            `((prep ,prep) (pobj ,pobj)))))))
-
-
-(defun make-ordinal-item (ordinal item)
-  ;; Used with np+number and np+hyphenated-number.
-  ;; Compare to (merge with) rules in core/numbers/ordinals.lisp.
-  (if *subcat-test*
-    (and ordinal item)
-    (or (when (and (use-methods)
-                   (most-specific-k-method 'compose (list ordinal item)))
-          (compose ordinal item))
-        (bind-variable 'ordinal ordinal item))))
-
-
 
 
 (defun make-prep-comp (prep complement)

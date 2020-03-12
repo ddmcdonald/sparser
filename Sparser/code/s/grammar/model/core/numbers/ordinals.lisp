@@ -61,7 +61,7 @@
 ;;;-----------------------
 ;;; ordinals as selectors
 ;;;-----------------------
-
+#| -- living with sequence
 (define-category  position-in-a-sequence
   :instantiates self
   :specializes index
@@ -88,7 +88,7 @@
  for previous and next and is principally used in calendar time.
  If ordering doesn't matter, then partonomies are worth considering.
  We use this when the position and sequence are incidental.")
-
+|#
 ;;;--------------------------------------------
 ;;; 'post' ordinal treatment of Roman numerals
 ;;;--------------------------------------------
@@ -101,6 +101,28 @@
           (roman-numeral :primitive word))
   :documentation "Applies to romman numerals. Instantiated as part of
     define-ordinal.")
+
+
+;;--- ad-hoc use of an ordinal variable (moved from syntax functions)
+
+(define-lambda-variable 'ordinal ;; used for "third" in "the third gene"
+    nil 'top)
+
+(defvar *ordinal-item-sentences* nil) ;; instance accumulator
+
+(defun make-ordinal-item (ordinal item)
+  ;; Used with np+number and np+hyphenated-number.
+  ;; Compare to (merge with) rules in core/numbers/ordinals.lisp.
+  (if *subcat-test*
+    (and ordinal item)
+    ;; (else
+    ;;   (let ((
+    (or (when (and (use-methods)
+                   (most-specific-k-method 'compose (list ordinal item)))
+          (compose ordinal item))
+        (bind-variable 'ordinal ordinal item))))
+
+
 
 
 ;;;------
