@@ -22,7 +22,7 @@
   ;; never instantiated itself, just provides a common supercategory
   ;; for the discourse history
   :instantiates nil
-  :specializes phrase-interpretation
+  :specializes requires-context
   :documentation "Strictly speaking, a pronoun is an indicator of
     an anaphoric reference, and shouldn't per se have any substantive
     meaning. The object that the pronoun refers to is what provides 

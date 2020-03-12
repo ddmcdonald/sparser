@@ -55,7 +55,7 @@
 
 
 (define-category demonstrative
-  :specializes linguistic
+  :specializes requires-context
   :documentation "Like determiner, this category is for reasoning 
  about these terms, particularly to organize their anaphoric aspects.
  A demonstrative by itself 'that is a red block' will have a denotation

@@ -190,6 +190,14 @@
  interpretation. Things that are phrase-interpretation's only
  live during an interpretation and are meaningless afterwards.")
 
+(define-category requires-context
+  :instantiates nil
+  :specializes phrase-interpretation
+  :documentation "Intended for things like pronouns that require
+ reference to the discourse context or general knowledge of defaults
+ to be grounded.")
+
+
 (define-category subcategorization-pattern
   :instantiates nil
   :specializes linguistic
