@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "comparatives"
 ;;;    Module:   "grammar;rules:syntax:"
-;;;   Version:   January 2020
+;;;   Version:   March 2020
 
 ;; initiated 7/29/94. 10/24/94 added defdata
 ;; 7/20/14 Added a lemma for "comparative"
@@ -89,11 +89,18 @@ abstract > abstract-region >
 ;; which happens to make it a referential-category.
 ;;/// Consider having define-mixin-category rework the object to fit
 
+(define-mixin-category shared-comparative-and-superlative
+  :instantiates nil
+  :binds ((direction) ;; more/less
+          (reference-set)) ;; holds what we're comparing it to
+  :documentation "These could be on comparative and superlatives
+ could inherit from comparative, but that would make a superative
+ also be a comparative, which would be messy to reason with.")
+
 (define-mixin-category comparative
   ;; inherits the variable name and attribute from attribute-value
   :specializes attribute-value
-  :binds ((direction) ;; more/less
-          (reference-set)) ;; holds what we're comparing it to
+  :mixins (shared-comparative-and-superlative)
   :documentation "This is included in (mixed into) every comparative.
  Comparatives are a particular kind of attribute
  value, so their principal link is to the attribute they
@@ -108,9 +115,11 @@ abstract > abstract-region >
  comparative is in composition with than phrase.")
 
 (define-mixin-category superlative
-  :specializes comparative
-  :documentation "Not different from comparative in any
-    germane respect")
+  :specializes attribute-value
+  :mixins (shared-comparative-and-superlative)
+  :documentation "Shares properties with comparatives, but picks
+ out the end of its reference-set's scalar attribute: 'biggest',
+ 'smallest'.")
 
 
 ;;--- direction
