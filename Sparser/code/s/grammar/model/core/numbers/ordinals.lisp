@@ -103,28 +103,6 @@
     define-ordinal.")
 
 
-;;--- ad-hoc use of an ordinal variable (moved from syntax functions)
-
-(define-lambda-variable 'ordinal ;; used for "third" in "the third gene"
-    nil 'top)
-
-(defvar *ordinal-item-sentences* nil) ;; instance accumulator
-
-(defun make-ordinal-item (ordinal item)
-  ;; Used with np+number and np+hyphenated-number.
-  ;; Compare to (merge with) rules in core/numbers/ordinals.lisp.
-  (if *subcat-test*
-    (and ordinal item)
-    ;; (else
-    ;;   (let ((
-    (or (when (and (use-methods)
-                   (most-specific-k-method 'compose (list ordinal item)))
-          (compose ordinal item))
-        (bind-variable 'ordinal ordinal item))))
-
-
-
-
 ;;;------
 ;;; form
 ;;;------
@@ -223,17 +201,6 @@ that use the syntax function make-ordinal-item to form their interpretation.
              :with (number right-edge
                            item left-edge)))
 
-;; "the fifth attack"
-(def-form-rule (ordinal common-noun)
-  ;; possible ETF: designated-instance-of-set ("third quarter")
-  ;;  or modifier-creates-definite-individual ("last year")
-  ;; The point is to create the position-in-a-sequence while
-  ;; leaving the common-noun as the head. Those would be more
-  ;; generically reversible than the compose oridinal function  
-  :form n-bar
-  :head :right-edge
-  :referent (:function compose-ordinal-to-head left-edge right-edge))
-
 
 ;;--- "the first two" 
 (def-cfr sequence (ordinal number)
@@ -265,7 +232,7 @@ that use the syntax function make-ordinal-item to form their interpretation.
     ;;/// have to work out some gymnastics to swap out the right edge
     ;; that's being composed (based on a number) for this pn-edge
     ;; based on the pronoun.
-    (compose-ordinal-to-head ordinal pronoun)))
+    (compose-ordinal ordinal pronoun)))
 
         
 
@@ -281,13 +248,34 @@ plurality appears out of date - variables no on top.)|#
 
 ;;--- "first"
 
-;;;------------------------
-;;; phrase interpretations
-;;;------------------------
+
 
 ;;--- building a position-in-a-sequence without its sequence
 
-;; "the third protein"
+;; "the fifth attack"
+(def-form-rule (ordinal common-noun)
+  ;; possible ETF: designated-instance-of-set ("third quarter")
+  ;;  or modifier-creates-definite-individual ("last year")
+  ;; The point is to create the position-in-a-sequence while
+  ;; leaving the common-noun as the head. Those would be more
+  ;; generically reversible than the compose oridinal function  
+  :form n-bar
+  :head :right-edge
+  :referent (:function compose-ordinal left-edge right-edge))
+
+(defun compose-ordinal (ordinal head)
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    (and ordinal head)
+    (let ((ss (value-of 'selector head)))
+      (if ss
+        (extend-set-selector ss :ordinal ordinal)
+        (else
+          (setq ss (make-set-selector :position ordinal))
+          (bind-variable 'selector ss head))))))
+
+
+#+ignore
 (defun compose-ordinal-to-head (ordinal head)
   "This approximates the treatment in the Krisp paper (pg. 31 & subseq)
    which would make a subtype of the head so that it gets the slots
@@ -299,7 +287,6 @@ plurality appears out of date - variables no on top.)|#
   ;; applied, then for this individual we'd bind (FoM actually)
   ;; the item variable. Approximating that my using ad-hoc lambda 
   ;; variable manipulation
-  #+ignore
   (let ((num-var (find-variable-for-category 'number 'position-in-a-sequence))
         (item-var (find-variable-for-category 'item 'position-in-a-sequence))
         (head-category (etypecase head
@@ -312,9 +299,7 @@ plurality appears out of date - variables no on top.)|#
     ;; Is this the best represention of the 'item', 
 
     (setq i (bind-variable num-var ordinal i))
-    i)
-  (bind-variable 'ordinal (value-of 'number ordinal) head)
-  )
+    i))
 
 
 (when t ;;/// these should get swallowed into reversible rdata  
@@ -339,3 +324,102 @@ plurality appears out of date - variables no on top.)|#
     :referent (:instantiate-individual position-in-a-sequence
                :with (number left-edge)))
   )
+
+
+;;;-----------------------------------------------------------------
+;;; ad-hoc use of an ordinal variable (moved from syntax functions)
+;;;-----------------------------------------------------------------
+
+#| Since this machinery isn't doing anything sensible, removing it
+from the grammar / ontology 
+
+(define-lambda-variable 'ordinal ;; used for "third" in "the third gene"
+    nil 'top)
+
+(defvar *ordinal-item-phrases* nil) ;; instance accumulator
+
+(defun make-ordinal-item (ordinal item)
+  ;; Used with np+number and np+hyphenated-number.
+  ;; Compare to (merge with) rules in core/numbers/ordinals.lisp.
+  (if *subcat-test*
+    (and ordinal item)
+    (else
+      (when *parent-edge-getting-reference*
+        (push (string-for-edge *parent-edge-getting-reference*)
+              *ordinal-item-phrases*))
+      (or (when (and (use-methods)
+                     (most-specific-k-method 'compose (list ordinal item)))
+            (compose ordinal item))
+          (bind-variable 'ordinal ordinal item)))))
+
+;;--- These bind a loose 'ordinal' variable to the number
+(def-syntax-rule (np number) ;; should be allowable as a form rule
+    :form np
+    :head :left-edge
+    :referent (:function make-ordinal-item right-edge left-edge))
+
+(def-form-rule (np hyphenated-number)  
+    :form np
+    :head :left-edge
+    :referent (:function make-ordinal-item right-edge left-edge)) |#
+
+#| Sample from 40 june
+ "the plasma levels of T 4 " "293T cells with T 3 " "day 3.5 [ xref ]"
+ "regulated CREB protein 2 (TORC2) " "0.2 mM ZnCl 2 " "lane 3 " "lane 4"
+ "supplementary file 2" "ZnCl 2 " "pH 7.2" "pH 7.0" "an O.D 600 "
+ "pH 7.2" "50 mM Tris pH 8.0" "4 mM MnCl 2 " "pH 8.5" "5 mM MnCl 2 "
+ "5 mM MgCl 2 " "pH 7.2" "the transcription reaction 1 µ" "Alexa Flour 568 "
+ "4 mM MgCl 2 " "50 mM Tris-HCl pH 7.4" "5 mM EDTA pH 7.4" "8 mM Na 2 HPO 4 "
+ "1.5 mM KH 2 PO 4 " "pH 7.2" "Fluor 488 F(ab’)2 " "Fluor 488 F(ab’)2 "
+ "p21-activated kinase 4 (PAK4) " "both p21-activated kinase 4 (PAK4) "
+ "p90 ribosomal S6 kinase 2 (Rsk2) " "lanes 2 "
+ "response to E 2 (Fig. xref , lanes 2 and 3, second panel)" "lanes 2 and 3"
+ "lane 5 " "lane 7 " "lanes 1, 4, 5, 6, and 7" "lane 7" "lane 6" "lane 5"
+ "lane 4" "lane 3" "lane 2" "lane 1" "lane 1 " "lane 3 " "lanes 3 and 4"
+ "lane 1" "lane 1" "lane 4" "lane 3" "lane 2" "lane 1" "pH 7.6" "5% CO 2 "
+ "5% CO 2 " "200 µM Na 3 VO 4 " "200 µM Na 3 VO 4 "
+ "the predicted Grb2-binding sites, tyrosines 175, 195, and 235 "
+ "mixed cultures of two retrovirus producing cell lines, Bosc 23 and Phoenix E. 16 "
+ "CO 2 " "0.5–1.0 " "150 μl dH 2 0 " "150 μl dH 2 " "reference 13" "pH 7.6"
+ "pH 7.6" "Bosc 23 " "reference 9" "One hundred and seventy (79.4%) " "OD 600 "
+ "TiO 2 " "TiO 2 ")
+
+sp> (p *)
+[50 mM Na 3 PO ]4 
+                    source-start
+e13   BIO-ENTITY    1 "50 mM Na 3 PO 4 " 7
+                    end-of-source
+sp> (semtree 13)
+(#<bio-entity "PO" 250023> (ordinal 4) (number 50)
+ (modifier
+  (#<unit-of-measure millimolar 63636> (name "millimolar") (uid "UO:0000063")))
+ (modifier
+  (#<molecule sodium atom 106582> (raw-text "Na") (name "sodium atom")
+   (uid "CHEBI:26708")))
+ (number 3) (name "PO"))
+
+|#
+
+#+ignore
+(def-syntax-rule (proper-noun number) ;; should be allowable as a form rule
+    :form np
+    :head :left-edge
+    :referent (:function make-ordinal-item right-edge left-edge))
+
+#+ignore
+(def-form-rule (proper-noun hyphenated-number)  
+    :form np
+    :head :left-edge
+    :referent (:function make-ordinal-item right-edge left-edge))
+
+#+ignore
+(def-syntax-rule (common-noun number) ;; should be allowable as a form rule
+    :form np
+    :head :left-edge
+    :referent (:function make-ordinal-item right-edge left-edge))
+
+#+ignore
+(def-form-rule (common-noun/plural hyphenated-number)  
+    :form np
+    :head :left-edge
+    :referent (:function make-ordinal-item right-edge left-edge))
