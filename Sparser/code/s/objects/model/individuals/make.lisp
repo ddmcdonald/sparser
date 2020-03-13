@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2016 David D. McDonald  -- all rights reserved
-;;; extensions opyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
+;;; copyright (c) 1992-2005,2011-2020 David D. McDonald  -- all rights reserved
+;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  April 2016
+;;;  version:  March 2020
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/23) Tweeked an internal call w/in Define-individual to fit lower change
@@ -396,19 +396,6 @@
         (if (allowable-referential-value? head)
           head
           (find-or-make-lattice-description-for-ref-category head)))
-	;; was previously written as the cond below -- but there are too many cases
-	;;  depending on individual-for-ref creating a dli
-        #+ignore
-	(cond
-	  ((individuals-of-this-category-are-permanent? head)
-	   (find-or-make-lattice-description-for-ref-category head))
-         (t ;; temporaries to be reclaimed.
-          ;; Not stored in DL. Need to force temporary-ness
-          (let ((*override-category-permanent-individuals-assumption* t)
-                (*index-under-permanent-instances* nil))
-            (declare (special *override-category-permanent-individuals-assumption*
-                              *index-under-permanent-instances*))
-            (make-unindexed-individual head))))
         (t (if (allowable-referential-value? head)
              head
              ;; may well not be the proper choice of individual maker
