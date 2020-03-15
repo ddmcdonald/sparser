@@ -731,9 +731,7 @@ val-pred-var (pred vs modifier - left or right?)
       (cond
         ((eq 'which (cat-name (edge-category right-daughter)))
          (create-partitive-wh-relativizer quantifier of-pp))
-        ((has-definite-determiner? right-daughter)
-         ;;/// alternatively, we could just look for the determiner directly
-         ;; rather than depend on this device to stay stable
+        ((definite-np? right-daughter)
          (cond
            (*subcat-test* t)
            (t

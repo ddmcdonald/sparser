@@ -506,22 +506,14 @@ is a case in handle-any-anaphor
 (defmethod pending-definite-references ((s sentence))
   (pending-def-references (contents s)))
 
-(defun has-definite-determiner? (edge)
-  (declare (special *sentence-in-core*))
-  (unless *sentence-in-core*
-    (error "Threading bug. No value for *sentence-in-core*"))
-  (or (member (cat-name (edge-category edge)) '(these those them pronoun/plural))
-      (member edge (pending-definite-references *sentence-in-core*) :key #'second)))
-
 (defun update-definite-determiner (edge)
   (declare (special *all-np-categories* *sentence-in-core*))
   (when (and *sentence-in-core*
              (category-p (edge-form edge))
              (member (cat-symbol (edge-form edge)) *all-np-categories*))
     (loop for pair in (pending-definite-references *sentence-in-core*)
-       when
-	 (or (eq (second pair) (edge-left-daughter edge))
-	     (eq (second pair) (edge-right-daughter edge)))
+       when (or (eq (second pair) (edge-left-daughter edge))
+	       (eq (second pair) (edge-right-daughter edge)))
        do
 	 (setf (second pair) edge)
 	 (return t))))
