@@ -295,6 +295,7 @@
 (def-form-category  det)
 (def-form-category  approximator)
 (def-form-category  n-bar)
+(def-form-category  specifier) ;; if we have others, rename this np-specifier
 (def-form-category  noun)
 (def-form-category  common-noun)
 (def-form-category  common-noun/plural)
