@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993-2005,2012-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2012-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  September 2018
+;;;  version:  March 2020
 
 ;; initiated 6/7/93 v2.3, added Sequence 6/9.
 ;; 6/13/95 added searching routine: collection-of-type/dh
@@ -47,6 +47,7 @@
 #| N.b. Including the mixin (takes-tense-aspect-modal
 has the effect of making a conjunction almost a perdurant in terms
 of the variables it provided for composition. That requirement is
+
 a conceptual bug, but given that clause conjunctions are presently
 modeled as collections it's a requirement if we don't want to be
 bombared with warnings, e.g.
@@ -81,6 +82,8 @@ and not entangle the simple notion of a collection. |#
  not even sure that you can extend them without creating a new object.")
 
 
+;;--- initially motivated by music
+
 (define-category subsequence
   :instantiates self
   :specializes sequence
@@ -92,13 +95,13 @@ and not entangle the simple notion of a collection. |#
 
 (define-category subseq-up-to
    :specializes subsequence
-   :documentation "A sort of closed-interval. Denotes all of
+   :documentation "A closed-interval. Denotes all of
  the items in the reference sequence from its beginning up to
  but not including the element at the index.")
 
 (define-category subseq-after
    :specializes subsequence
-   :documentation "A sort of closed-interval. Denotes all of
+   :documentation "A closed-interval. Denotes all of
  the items in the reference sequence from the index element
  to the end of the sequence, excluding the index element..")
 
@@ -109,6 +112,50 @@ and not entangle the simple notion of a collection. |#
  Denotes all the elements of the reference sequence that
  are between the index position (start) and the end-index,
  exclusing those elements.")
+
+
+;;--- ordinals as selecting a position in a sequence
+
+(define-category  position-in-a-sequence
+  :instantiates self
+  :specializes index
+  :binds ((number . ordinal)
+          (item)
+          (sequence . sequence))
+  :documentation "Free-standing relation linking a sequence, one of
+ its elements ('item') and a ordinal that records the position of
+ the item in the sequence. Automatically instantiated as one of the
+ steps in indexing a sequence. Indirectly useful in modeling proper
+ names since they are a sequence of name-word instances.
+ We use this one when the position of the item is the focus")
+
+(define-mixin-category part-of-a-sequence
+  :instantiates nil
+  :specializes index ;; ???
+  :binds ((position ordinal)
+          (sequence sequence))
+  :documentation "Folded into other objects to indicate that any
+ instance of the object with occupy a particular position in
+ a particular sequence. Compared with position-in-a-sequence, this
+ is not a free-standing relationship, just the addition of a few
+ properties. Should also compare to sequential, which adds variables
+ for previous and next and is principally used in calendar time.
+ If ordering doesn't matter, then partonomies are worth considering.
+ We use this when the position and sequence are incidental.")
+
+
+
+;;--- specifier
+
+(define-category sequence-selector
+  :specializes subsequence ;; inherits number
+  :mixins (part-of-a-sequence) ;; provides position, sequence
+  :binds ((ordering superlative))
+  :documentation "Provides a container for bare NP specifier phrases
+ that function as specifications of what to select from the reference
+ set (which will usually be construed as an ordered sequence).")
+
+
 
 ;;;--------
 ;;; mixins
