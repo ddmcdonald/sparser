@@ -1289,41 +1289,6 @@ similar to an oncogenic RasG12V mutation (9)."))
 ;; And see above syntax rule (number ,nb) --> number-noun-compound
 
 
-;;--- These bind a loose 'ordinal' variable to the number
-(def-syntax-rule (np number) ;; should be allowable as a form rule
-    :form np
-    :head :left-edge
-    :referent (:function make-ordinal-item right-edge left-edge))
-
-(def-form-rule (np hyphenated-number)  
-    :form np
-    :head :left-edge
-    :referent (:function make-ordinal-item right-edge left-edge))
-
-#+ignore
-(def-syntax-rule (proper-noun number) ;; should be allowable as a form rule
-    :form np
-    :head :left-edge
-    :referent (:function make-ordinal-item right-edge left-edge))
-
-#+ignore
-(def-form-rule (proper-noun hyphenated-number)  
-    :form np
-    :head :left-edge
-    :referent (:function make-ordinal-item right-edge left-edge))
-
-#+ignore
-(def-syntax-rule (common-noun number) ;; should be allowable as a form rule
-    :form np
-    :head :left-edge
-    :referent (:function make-ordinal-item right-edge left-edge))
-
-#+ignore
-(def-form-rule (common-noun/plural hyphenated-number)  
-    :form np
-    :head :left-edge
-    :referent (:function make-ordinal-item right-edge left-edge))
-
 ;;;-------------------------------------
 ;;; rules involving semantic categories
 ;;;-------------------------------------
