@@ -48,21 +48,22 @@
    for big-mechanism and follows the same style as used by the
    whack-a-rule-cycle to parse at the treetop level. We also
    have the original 'march back' protocol that was tries very
-   hard not to miss any cases."
+   hard not to miss any cases.
+   For neo-fire trying to see if we can leach some of the
+   bio-knowledge out and also use the 'specialized' protocols."
   (declare (special *current-chunk* *big-mechanism-ngs*))
   (tr :parse-at-the-segment-level segment-end-pos)
   (setq *rightmost-active-position/segment* segment-end-pos)
-  (if *big-mechanism-ngs*
-    (cond
-      ((member (chunk-forms *current-chunk*) '((VG) (ADJG)) :test #'equal)
-       ;; arguments: the chunk, parse from the right, noun-group?
-       (interp-big-mech-chunk *current-chunk* t nil))
-      ((use-specialized-ng-parser?)
-       (interp-big-mech-chunk *current-chunk* t t))
-      ((use-specialized-vg-parser?)
-       (interp-big-mech-chunk *current-chunk* nil nil)))
-
-    (march-back-from-the-right/segment)))
+  
+  (cond
+    ((member (chunk-forms *current-chunk*) '((VG) (ADJG)) :test #'equal)
+     ;; arguments: the chunk, parse from the right, noun-group?
+     (interp-big-mech-chunk *current-chunk* t nil))
+    ((use-specialized-ng-parser?)
+     (interp-big-mech-chunk *current-chunk* t t))
+    ((use-specialized-vg-parser?)
+     (interp-big-mech-chunk *current-chunk* nil nil))
+    (t (march-back-from-the-right/segment))))
 
 
 
@@ -199,6 +200,11 @@ its head will be at
 	      as rule = (car triple)
 	      unless (syntactic-rule? rule)
 	      collect triple))
+          (semantic-triples
+           (loop for triple in triples
+	      as rule = (car triple)
+              when (semantic-rule? rule)
+                collect triple))
           (priority-triples
            (loop for triple in triples
               as rule = (car triple)
@@ -206,6 +212,11 @@ its head will be at
               collect triple)))
       (tr :non-syntactic-rules-used? non-syntactic-triples)
       (cond
+        (semantic-triples
+         (tr :selected-semantic-triple semantic-triples)
+         (let ((selected (car semantic-triples)))
+           (tr :selected-best-triple selected)
+           selected))
 	(priority-triples ;; "was rapidly phosphorylated"
          (tr :n-priority-triples priority-triples)
 	 (let ((selected (car (last priority-triples))))
