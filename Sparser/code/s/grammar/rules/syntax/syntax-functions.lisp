@@ -2391,7 +2391,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
   "Many of which"
   (declare (special quant rel-pro))
   (when (category-p rel-pro) 
-    (setq rel-pro (find-or-make-lattice-description-for-ref-category rel-pro)))
+    (setq rel-pro (individual-for-ref rel-pro)))
   (cond (*subcat-test* t)
         (t
          (revise-parent-edge :category (itype-of rel-pro))
