@@ -272,7 +272,7 @@ plurality appears out of date - variables no on top.)|#
         (extend-set-selector ss :ordinal ordinal)
         (else
           (setq ss (make-set-selector :position ordinal))
-          (bind-variable 'selector ss head))))))
+          (bind-variable 'selector (list ss) head))))))
 
 
 #+ignore
