@@ -578,6 +578,12 @@
                     (loop for tr in triples
                        collect (format-triple tr))))))))
 
+(deftrace :selected-semantic-triple (triples)
+  ;; called from select-best-triple
+  (when *parse-edges*
+    (trace-msg "Selecting from ~a semantic triples:~{~&  ~a~}"
+               (length triples) triples)))
+
 (deftrace :non-syntactic-rules-used? (list-of-triples)
   ;; called from select-best-triple
   (when *parse-edges*

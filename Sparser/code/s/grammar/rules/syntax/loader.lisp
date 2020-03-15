@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2013-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2013-2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  December 2018
+;;;  Version:  March 2020
 
 ;; 3.0 (10/11/92 v2.3) Bumped to shadow old versions from extensive
 ;;      changes involving form rules and the new semantics
@@ -57,7 +57,8 @@
 (gate-grammar *default-semantics-for-NP*
   (gload "syntax-art;articles")
   (gload "syntax-art;adjectives")
-  (gload "syntax-art;prepositions"))
+  (gload "syntax-art;prepositions")
+  (gload "syntax-art;specifiers"))
 
 (gate-grammar *conjunction*
   (gload "syntax-conj;conjunction"))
