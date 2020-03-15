@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2020 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  February 2018
+;;;  version:  March 2020
 
 ;; initiated 6/7/93 v2.3, added sequences 6/9 - finished them 6/17
 ;; fixed a bug 10/29
@@ -365,3 +365,36 @@
   (:method ((item category::sequential))
     (value-of 'previous item)))
 
+
+;;;-----------------------------
+;;; manipulating a set-selector
+;;;-----------------------------
+
+(defun make-set-selector (&key number position ordering)
+  "It's up to the caller to see if the head already has a set selector
+ object on it that should be extended. This starts with a fresh
+ individual and populates all of the variables as are indicated
+ by the keywords.  It's also the caller's responsibilty to
+ link this new individual to the head since there's no find operation
+ for these."
+  (let ((ss (individual-for-ref category::sequence-selector)))
+    (when number
+      (setq ss (bind-variable 'number number ss)))
+    (when position
+      (setq ss (bind-variable 'position position ss)))
+    (when ordering
+      (setq ss (bind-variable 'ordering ordering ss)))
+    ss))
+
+(defun extend-set-selector (ss &key number position ordering)
+  "This is somewhat reminiscent of decode-category-specific-binding-instr-exps
+  but we get to be looser with the type-checking on the values
+  while this is shaken down."
+  (when number
+    (setq ss (bind-variable 'number number ss)))
+  (when position
+    (setq ss (bind-variable 'position position ss)))
+  (when ordering
+    (setq ss (bind-variable 'ordering ordering ss)))
+  ss)
+  
