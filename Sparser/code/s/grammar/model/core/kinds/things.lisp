@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  December 2018
+;;;  version:  March 2020
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 7/20/14 Added lemmas and realizations as needed to hold the
@@ -21,14 +21,17 @@
 (define-category endurant 
   :specializes top
   :binds ((number) ;; could also be amount -- handle count vs mass distinction better
-          (quantifier))
+          (quantifier)
+          (selector :primitive list)) ; see rules/syntax/specifiers.lisp
   :documentation
   "Endurants (aka objects, things) have an identity that doesn't depend
  on the identity of their parts, see axe handles and greek ships. The
  split below Endurant is physical vs. non-physical. 
-   Number is bound here possibly as an expediency since actual instances
- ('three swans', 'four drugs') should almost certainly be analyzed as
- collections.")
+   Number is abbreviating the long form we'd want for reasoning about
+ e.g. 'three swans', 'four drugs' where we're dealing with a collection.
+   Quantifier and selector are here because we're using this category
+ as a stand-in for any nominal entity that is expressible as a noun phrase.
+ If perdurants start patterning in this way we'll need to rethink this.")
 
 
 (define-category region
