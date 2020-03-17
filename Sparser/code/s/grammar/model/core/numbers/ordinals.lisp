@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "ordinals"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  March 2019
+;;;  Version:  March 2020
 
 ;; initiated [ordinals1] 9/18/93 v2.3 as completely new treatment
 ;; 1.0 (1/7/94) redesigned as specialized categories
@@ -179,10 +179,6 @@
 ;;; phrase structure rules
 ;;;------------------------
 
-#| N.b. There are syntactic rules for np+number and np+hyphenated-number
-that use the syntax function make-ordinal-item to form their interpretation.
-|#
-
 ;; "site I"
 (def-form-rule (common-noun post-ordinal)
   :form n-bar
@@ -199,7 +195,7 @@ that use the syntax function make-ordinal-item to form their interpretation.
   :referent (:head left-edge
              :instantiate-individual position-in-a-sequence
              :with (number right-edge
-                           item left-edge)))
+                    item left-edge)))
 
 
 ;;--- "the first two" 

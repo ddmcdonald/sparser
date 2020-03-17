@@ -2,6 +2,16 @@
 
 (in-package :sparser)
 
+;; From 4/17/18 telcon notes
+Clay: "give me 4 more measures like that"
+"move the G"
+
+;; 5/7/18
+"measures one through three"
+"transpose the C up one half step"
+
+
+
 ;; The original sentence list, with this parameter, is at
 ;; clic/notes/museci/sentences.lisp. Load the file to
 ;; bind *museci-sentences*. The test routine is more generic
