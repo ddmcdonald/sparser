@@ -211,12 +211,12 @@
           (est-word (when est (resolve/make est))))
 
       (when count-word ; "many"
-        (define-function-term count-word 'adjective ;; vs. quantifier
+        (define-function-term count-word 'quantifier ;; had been 'adjective
           :super-category (category-named 'scalar-quantifier)))
       ;; should these have :rule-label fields that identify
       ;; the attribute these are refering to? (cf. setup-comparatives)
       (when mass-word ; "much"
-        (define-function-term mass-word 'adjective
+        (define-function-term mass-word 'quantifier
           :super-category (category-named 'scalar-quantifier)))
 
       (when er-word ; "more"
