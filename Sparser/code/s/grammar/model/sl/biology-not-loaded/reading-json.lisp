@@ -100,7 +100,7 @@ else that takes two arguments:  (1) the s-expression (2) the file's pathname
 (defun sample-processing-fn (sexp filepath)
   (declare (ignorable filepath))
   (declare (type cons sexp))
-  (format t "Nom nom, processing sexp of length ~a.." (length sexp)))
+  (format t "Nom nom, processing s-expression of length ~a." (length sexp)))
 
 
 ;;;------------------------------------------------
