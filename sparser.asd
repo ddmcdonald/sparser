@@ -1,12 +1,12 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; -*-
-;;; Copyright (c) 2016-2019 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2020 SIFT LLC. All Rights Reserved.
 
 (defvar cl-user::script :default
   "Specifies a set of Sparser parameters, switch values, grammar files, etc.
 This variable must be set before loading Sparser to have the correct effect.")
 
 (defsystem :sparser
-  :depends-on (:ddm-util :mumble)
+  :depends-on (:cl-json :ddm-util :mumble)
   :components ((:file "Sparser/code/s/init/everything"))
   :perform (load-op :after (o c) (pushnew :sparser *features*))
   :in-order-to ((test-op (test-op :sparser/tests))))
