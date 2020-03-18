@@ -82,10 +82,8 @@
   "some errors or interesting events happen in the sentence creating sweep, 
    and we want to se the entire sentence context")
 
-;;(defparameter *warn-or-error-choice* :error)
-(defparameter *warn-or-error-choice* :warn)
 
-
+(defparameter *warn-or-error-choice* :warn) ;; :error)
 
 (defun warn-or-error (datum &rest arguments)
   (case *warn-or-error-choice*
@@ -136,8 +134,6 @@
    functions like (sentence) ahead of the current point of operations.
    The special *sentence-in-core* is available when we're operating
    on whole sentences at a time, though not in other modes."
-  ;; called from the epistemic collector functions but could
-  ;; be generally useful. 
   (let ((s *sentence-in-core*)
         (current *current-sentence*))
     (cond
