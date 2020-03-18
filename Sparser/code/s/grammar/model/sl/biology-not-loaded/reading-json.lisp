@@ -24,16 +24,16 @@ I was trying to copy that.  Also, since no one is going to be able to remember
 these file names, it would be nice to collect whole directories of pathnames
 and have some sort of "do the next one" set up
 
-[MDM]  Okay, see what you think of this setup...
+[MDM 3/17/20]  Okay, see what you think of this setup...
 
 You can collect the files into the hopper using, e.g.:
-SP> (collect-json-directory :dir "biorxiv_medrxiv")
+(sparser::collect-json-directory :dir "biorxiv_medrxiv")
 
 Then "do the next one" using using:
-SP> (do-next-json)
+(sparser::do-next-json)
 
 Or peek at what's on deck using:
-SP> (peek-next-json)
+(sparser::peek-next-json)
 
 Or do the remaining ones using:
 (sparser::do-remaining-json)
