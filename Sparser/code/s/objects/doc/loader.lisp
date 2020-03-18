@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1995,2012-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2012-2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  November 2019
+;;;  Version:  March 2020
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -62,5 +62,5 @@
 (lload "doc;content")
 (lload "doc;initialization")
 (lload "doc;save-doc-semantics")
-
+(lload "doc;json-articles")
 

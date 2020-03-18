@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991,1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1994,2015-2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:  1.2 August 1994
+;;;  Version:  March 2020
 
 ;; 1.1 (9/24/93 v2.3) broke out articles as their own directory
 ;;     (12/13) added [doc stream]
@@ -23,4 +23,5 @@
   (lload "source-drivers;doc stream")
   (lload "source-drivers;articles")
   (lload "source-drivers;document")
-  (lload "source-drivers;scan-parsed-document"))
+  (lload "source-drivers;scan-parsed-document")
+  (lload "source-drivers;reading-json"))
