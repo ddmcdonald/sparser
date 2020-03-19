@@ -59,7 +59,6 @@
        (b (cadr list) (cadr rest))
        (rest (cdr list) (cdr rest)))
       ((null b))
-    (format t "~&a = ~a, b = ~a" a b)
     (setf (next a) b)
     (setf (previous b) a)
     (setf (parent a) section)))
