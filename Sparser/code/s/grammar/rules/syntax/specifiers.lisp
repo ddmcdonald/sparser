@@ -57,6 +57,20 @@
                     ordering right-edge)))
 
 
+;;--- "three largest"
+
+(define-category number-ordering
+  :specializes sequence-selector
+  :documentation "The ordering determines a directed scale to sort
+ the set then we select 'number' members from that end of the set.")
+
+(def-cfr sequence-selector (number superlative)
+  :form specifier
+  :referent (:instantiate-individual ordinal-ordering
+             :with (position left-edge
+                    ordering right-edge)))
+
+
 ;;---  "largest three"
 
 (define-category ordering-number
@@ -69,3 +83,30 @@
   :referent (:instantiate-individual ordering-number
              :with (ordering left-edge
                     number right-edge)))
+
+
+;;--- "first two"
+
+(define-category ordinal-number
+  :specializes sequence-selector
+  :documentation "The reference set has some ordering, we select
+ 'number' elements from the 'ordinal'th position in the sequence.")
+
+
+(def-cfr sequence-selector (ordinal number)
+  :form specifier
+  :referent (:instantiate-individual ordering-number
+             :with (position left-edge
+                    number right-edge)))
+
+;;  "last two" 
+
+;;  "the latter three"
+
+;; "the first three", "the first three genes"
+
+;; "the first three by height", "the second three by weight"
+
+;; "the first three tallest..."
+
+;; "first three proteins combine to form a complex, then ..."

@@ -198,6 +198,8 @@
                     item left-edge)))
 
 
+#| Reworked as a set-selector 3/19/20 -- see syntax/specifiers.lisp
+
 ;;--- "the first two" 
 (def-cfr sequence (ordinal number)
   :form n-bar
@@ -229,7 +231,7 @@
     ;; that's being composed (based on a number) for this pn-edge
     ;; based on the pronoun.
     (compose-ordinal ordinal pronoun)))
-
+|#
         
 
 ;;--- "the first"
