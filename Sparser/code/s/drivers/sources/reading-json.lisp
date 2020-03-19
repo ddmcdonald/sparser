@@ -15,7 +15,7 @@
    it for someone else to fix -- ddm 3/17/20  |#
 
 (defun json-base ()
-  (let ((base (asdf:system-relative-pathname :r3 "corpus/covid/2020-03-13/")))
+  (let ((base (asdf:system-relative-pathname :r3 "../corpus/covid/2020-03-13/")))
     base))
 
 (defun json-directory (&key base ((:dir dir-string) "biorxiv_medrxiv/biorxiv_medrxiv/"))          
