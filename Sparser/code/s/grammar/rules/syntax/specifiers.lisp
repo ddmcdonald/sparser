@@ -9,8 +9,51 @@
 
 (in-package :sparser)
 
-#| 'specifier' added as a form category in categories.lisp
-   'selector' is a variable on endurant
+#| 
+
+------- semantics
+
+Available variables for the interpretation of an NP
+
+-- on Top
+
+modifiier - supplies a property. May be adverbial
+qualifier - a modifier that changes something's type: 'toy gun'
+negation
+quantifier
+number (these two were motivated by plural)
+items
+
+-- on endurant (with some redundancy)
+number
+quantifier
+selector
+
+
+Given this set of rules, the selector variable will be bound
+to an instance of sequence-selector (in core/collections/object.lisp)
+
+Sequence-selector inherits from sequence and mixes in the
+category part-of-a-sequence (both in that file). 
+Collectively that binds:
+
+number -- how many do we select
+position -- construcing the reference set as a sequence, which one do we select
+ordering -- a superlative or the like that imposes an order on the set
+
+
+------- syntax
+
+The rules for realizing sequence-selector all use 
+the form label 'specifier' 
+ 
+(This is the one we might specialize according whether or not
+a head is semantically required or alternatively it will be
+presumed from the discourse -- which would make them instances
+of the category 'requires-context', just like pronouns and
+demonstratives.)
+
+
 |#
 
 ;;;---------------------------
@@ -37,6 +80,15 @@
                (list selector))))
         (bind-variable 'selector value np-head)))))
 
+
+;;;------------------------
+;;; incorporate determiner
+;;;------------------------
+
+(def-syntax-rule (det specifier)
+  :head :right-edge
+  :form specifier
+  :referent (:function determiner-noun left-edge right-edge))
 
 ;;;-------
 ;;; cases
@@ -67,9 +119,25 @@
 (def-cfr sequence-selector (number superlative)
   :form specifier
   :referent (:instantiate-individual ordinal-ordering
-             :with (position left-edge
+             :with (number left-edge
                     ordering right-edge)))
 
+;;--- "the first three largest"
+#| Given binary rules, this is going to come out in two pieces
+    [ordinal/quantifier] [sequence-selector/specifier] |#
+
+(def-cfr sequence-selector (ordinal sequence-selector)
+  :form specifier
+  :referent (:function compose-ss-and-ordinal left-edge right-edge))
+;; There's a problem with this composition function (3/20/20) which
+;; leads to a scrambled result 
+(defun compose-ss-and-ordinal (ordinal ss)
+  (if *subcat-test*
+    (and ordinal ss)
+    (let ((ss-prime (extend-set-selector ss :position ordinal)))
+      ;; (break "ss-prime: ~a" ss-prime)
+      ss-prime)))
+ 
 
 ;;---  "largest three"
 
@@ -91,22 +159,37 @@
   :specializes sequence-selector
   :documentation "The reference set has some ordering, we select
  'number' elements from the 'ordinal'th position in the sequence.")
-
-
+#|  this clashes with a (now commented out) rule in ordinals,
+and if run in isolation ("first two") where there's no preference
+on rule choice (??), it gets picked up by the syntactic rule
+for quantifier-noun compounds. Behaves as desired in the context
+of an np segment ("the first two genes")
+|#
 (def-cfr sequence-selector (ordinal number)
   :form specifier
   :referent (:instantiate-individual ordering-number
              :with (position left-edge
                     number right-edge)))
 
-;;  "last two" 
 
-;;  "the latter three"
+;;--- "last two",  "the latter three"
 
-;; "the first three", "the first three genes"
+(define-category sequencer-number
+  :specializes sequence-selector
+  :documentation "The reference set is ordered. Selected 'number' of
+ elements from the region of the set indicated by the sequencer.")
+
+(def-cfr sequence-selector (sequencer number)
+  :form specifier
+  :referent (:instantiate-individual sequencer-number
+             :with (position left-edge
+                    number right-edge)))
+
+   
+
+
+;; "the first"
 
 ;; "the first three by height", "the second three by weight"
-
-;; "the first three tallest..."
 
 ;; "first three proteins combine to form a complex, then ..."
