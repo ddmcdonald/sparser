@@ -301,9 +301,9 @@
      ;;(push-debug `(,chunk ,right-edge)) (break "chunk head")
      (let ((result
             (case (car (chunk-forms chunk))
-              (ng (memq (rule-lhs-form rule) ;; the symbol of the lhs category
+              (ng (memq (rule-lhs-form rule) ;; rule's form category
                         '(n-bar ng np common-noun common-noun/plural
-                          ;;/// rewrite to use *ng-head-categories*
+                          specifier
                           np-head pronoun proper-name proper-noun)))
               (vg t)
               (adjg t))))
@@ -311,8 +311,9 @@
          (tr :is-consistent-with-chunk right-edge)
          (tr :is-not-consistent-with-chunk right-edge))
        result))
-   (t t)))
+    (t t)))
 
+;;/// rewrite to use *ng-head-categories*
 
 
 (defun test-semantic-applicability (rule left-edge right-edge)
@@ -328,9 +329,6 @@
       (test-subcat-rule (list left-edge right-edge) rule)
       t)
     t))
-
-
-
 
 
 ;;;---------------------
