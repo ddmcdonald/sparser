@@ -145,11 +145,10 @@ its head will be at
       (setq triples (collect-triples-in-segment chunk)) ; ordered left to right
       ;;(push-debug `(,triples)) (break "1st triples")
       (when triples ;; nil in overnight #4 "the first direct evidence"
-        (when (np-specifier? (first triples))
-          (tr :segment-starts-with-NP-specifier (first triples))
-          (let ((edge (execute-triple (first triples))))
-            (tr :triple-led-to-edge edge)
-            (when *parse-edges* (tts))))))
+        (when (some #'np-specifier? triples)
+          ;; continue to the general triple loop
+          ;; after the edge(s) for the specifier are created
+          (parse-np-specifier chunk))))
 
     (loop
        (setq triples (collect-triples-in-segment chunk))
@@ -182,8 +181,36 @@ its head will be at
         (march-back-from-the-right/segment))))
 
 
-;; Could start with just simple rules and then
-;; extend to semantic and then syntactic on successive passes
+(defun filter-blocked (triples blocked)
+  (loop for triple in triples
+     unless (member triple blocked :test #'equal)
+     collect triple))
+
+(defun parse-np-specifier (chunk)
+  ;;(tr :segment-starts-with-NP-specifier (first triples))
+  (let ( triples  triple  blocked  edge )
+    (loop
+       (setq triples (loop for triple in (collect-triples-in-segment chunk)
+                        when (np-specifier? triple) collect triple))
+       (setq triples (filter-blocked triples blocked))
+       (setq triples (reverse triples))
+       (setq triple (select-best-chunk-triple triples chunk))
+       (when (null triple) (return))
+       l(push-debug `(,triples)) (break "look at spec triples?")
+       (setq edge (execute-triple triple))
+       (cond
+	 ((null edge) ;; rule failed (invalid) on those edges
+	  (push triple blocked)
+          (when *debug-cases-of-triple-failure*
+            (push-debug `(,triple))
+            (lsp-break "triple did not produce an edge")))
+	 (edge 
+	  (tr :triple-led-to-edge edge)
+          (when *parse-edges* (tts)))))
+    (when *parse-edges*
+      (format t "~&After parsing the specifiers")
+      (tts))))
+
 
 
 (defun select-best-chunk-triple (triples chunk)
@@ -192,9 +219,8 @@ its head will be at
    We first sort by rule type, priority (in some cases) and
    chunk type. Finally we make a arbitrary choice."
   (when triples
-    ;;(push-debug `(,triples)) (lsp-break "triples")
+    (push-debug `(,triples)) ;;(lsp-break "triples to select from")
     (tr :n-triples-apply triples)
-    
     (let ((non-syntactic-triples
            (loop for triple in triples
 	      as rule = (car triple)
