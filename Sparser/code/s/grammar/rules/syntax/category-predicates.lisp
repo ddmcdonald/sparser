@@ -119,7 +119,7 @@
     CATEGORY::PRONOUN
     ;; not sure about these -- think of "the largest" as an NP
     ;; CATEGORY::COMPARATIVE -- this causes problems with MORE
-    CATEGORY::SUPERLATIVE
+    CATEGORY::SUPERLATIVE-ADJECTIVE
     ;;CATEGORY::NUMBER ;; 'HOW many do you want? I want 3'
     ;; need to handle bare numbers, but treat numbers as post-modifying NPs
     ;; need to handle this case specially, but want numbers to be post-modifiers...
