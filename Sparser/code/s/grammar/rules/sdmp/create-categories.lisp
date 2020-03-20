@@ -85,6 +85,7 @@
         (category::comparative)
         (category::comparative-adjp)
         (category::superlative-adjp)
+        (category::superlative-adjective)
         (category::possessive)
         (category::quantifier)
         (category::adjective)
