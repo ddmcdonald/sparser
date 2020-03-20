@@ -122,6 +122,7 @@ demonstratives.)
              :with (number left-edge
                     ordering right-edge)))
 
+
 ;;--- "the first three largest"
 #| Given binary rules, this is going to come out in two pieces
     [ordinal/quantifier] [sequence-selector/specifier] |#
@@ -129,13 +130,11 @@ demonstratives.)
 (def-cfr sequence-selector (ordinal sequence-selector)
   :form specifier
   :referent (:function compose-ss-and-ordinal left-edge right-edge))
-;; There's a problem with this composition function (3/20/20) which
-;; leads to a scrambled result 
+
 (defun compose-ss-and-ordinal (ordinal ss)
   (if *subcat-test*
     (and ordinal ss)
     (let ((ss-prime (extend-set-selector ss :position ordinal)))
-      ;; (break "ss-prime: ~a" ss-prime)
       ss-prime)))
  
 
@@ -159,12 +158,8 @@ demonstratives.)
   :specializes sequence-selector
   :documentation "The reference set has some ordering, we select
  'number' elements from the 'ordinal'th position in the sequence.")
-#|  this clashes with a (now commented out) rule in ordinals,
-and if run in isolation ("first two") where there's no preference
-on rule choice (??), it gets picked up by the syntactic rule
-for quantifier-noun compounds. Behaves as desired in the context
-of an np segment ("the first two genes")
-|#
+
+#|  this clashes with a (now commented out) rule in ordinal |#
 (def-cfr sequence-selector (ordinal number)
   :form specifier
   :referent (:instantiate-individual ordering-number
