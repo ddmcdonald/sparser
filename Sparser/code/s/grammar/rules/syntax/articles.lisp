@@ -68,18 +68,18 @@
 
 (defgeneric np-specifier? (item)
   (:documentation "Is the item the sort of thing that can act as
-    the specifier of an np. Referent point is Jackendoff's 1977 book onn
+    the specifier of an np. Referent point is Jackendoff's 1977 book on
     X-bar Syntax.")
   (:method ((triple list))
     (assert (triple-p triple) ;;(= 3 (length triple))
-            (triple)  "The list that was passed to np-specifier? was not a triple")
+            (triple) "The list that was passed to np-specifier? was not a triple")
     (np-specifier? (triple-rule triple)))
   (:method ((rule cfr))
     (np-specifier? (cfr-form rule)))
   (:method ((c category))
     (or (determiner? c)
         (memq (cat-name c) ;; what else?
-              '(number quantifier)))))
+              '(number quantifier specifier)))))
 
 
 (defgeneric determiner? (label)
