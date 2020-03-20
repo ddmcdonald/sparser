@@ -956,6 +956,12 @@
                                 ((member (pname var) '(wh-path items))
                                  val)
                                 (t
+                                 (loop for item in val
+                                       always
+                                         (and (individual-p item)
+                                              (itypep item 'sequence-selector)))
+                                 val)
+                                (t
                                  (break "unusual CONSP value for variable ~s is ~s"
                                         var val))))
                          (t (pname val)))))))
