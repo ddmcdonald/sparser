@@ -272,6 +272,10 @@
 (define-sequencer/determiner "last")
 (define-sequencer/determiner "previous")
 (define-sequencer/determiner "next") ;; adv? "next to"
+
+(define-sequencer/determiner "former")
+(define-sequencer/determiner "latter")
+        
 (unless (current-script :biology)
   (define-sequencer/determiner "subsequent")
   (define-sequencer/determiner "following"))
