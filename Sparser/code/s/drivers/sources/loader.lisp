@@ -20,8 +20,9 @@
 (lload "source-drivers;open file")
 
 (when *orthographic-structure*
-  (lload "source-drivers;doc stream")
+  (lload "source-drivers;doc-stream")
   (lload "source-drivers;articles")
   (lload "source-drivers;document")
   (lload "source-drivers;scan-parsed-document")
-  (lload "source-drivers;reading-json"))
+  (lload "source-drivers;reading-json")
+  (lload "source-drivers;driver"))
