@@ -267,7 +267,8 @@ plurality appears out of date - variables no on top.)|#
     (and ordinal head)
     (let ((ss (value-of 'selector head)))
       (if ss
-        (extend-set-selector ss :ordinal ordinal)
+        (let ((ss-prime (extend-set-selector ss :ordinal ordinal)))
+          (bind-variable 'selector (list ss-prime) head))
         (else
           (setq ss (make-set-selector :position ordinal))
           (bind-variable 'selector (list ss) head))))))
