@@ -15,9 +15,23 @@
 ;; will likely be part of the parameterization
 (setq *default-json-processing-fn* 'make-document)
 
-;; (collect-json-directory)
-;; (do-next-json) --> #<article >
-;; (run-json-article article :quiet nil :show-sect t)
+#|
+ 1. (collect-json-directory) -- prime the pump
+
+Loading 803 file pathnames into the hopper.
+To process the next one, call (sparser::do-next-json)
+To see what the next is, call (sparser::peek-next-json)
+To do the rest, call (sparser::do-remaining-json)
+To do a batch of n using (sparser::do-remaining-json :n n)
+Remaining list stored in sparser::*json-files-to-read*.
+
+
+ 2. (do-next-json) --> #<article >
+  Sets *current-json-based-article* to the article
+
+ 3. (run-json-article *current-json-based-article* :quiet nil :show-sect t)
+
+|#
 
 (defun run-json-article (article &key (source :next)
                                    (sweep t) (read t)
