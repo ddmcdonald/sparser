@@ -196,7 +196,6 @@ its head will be at
        (setq triples (reverse triples))
        (setq triple (select-best-chunk-triple triples chunk))
        (when (null triple) (return))
-       ;;(push-debug `(,triples)) (break "look at spec triples?")
        (setq edge (execute-triple triple))
        (cond
 	 ((null edge) ;; rule failed (invalid) on those edges
@@ -206,7 +205,7 @@ its head will be at
             (lsp-break "triple did not produce an edge")))
 	 (edge 
 	  (tr :triple-led-to-edge edge)
-          (when *parse-edges* (tts)))))
+          (when *parse-edges* (tts))))) 
     (when *parse-edges*
       (format t "~&After parsing the specifiers")
       (tts))))
