@@ -10,6 +10,10 @@
 
 (in-package :sparser)
 
+(defvar *current-json-based-article* nil
+  "Set in make-document and read in run-json-article to provide 
+ a conduit between those two steps while we're sorting out what
+ control flow to actually use.")
        
 (defun make-document (sexp filepath)
   ;; text-blocks to paragraphs
@@ -30,12 +34,15 @@
       (setf (parent s) article)
       (setf (children article) (list s))
 
+      (setf (article-source article) filepath)
+
       (let ((paragraphs
              (loop for block in text-blocks
                 collect (make-paragraph block))))
-        (knit-paragraphs paragraphs s)        
+        (knit-paragraphs paragraphs s)
         (setf (children s) paragraphs)
 
+        (setq *current-json-based-article* article)
         article))))
 
 
@@ -61,7 +68,8 @@
       ((null b))
     (setf (next a) b)
     (setf (previous b) a)
-    (setf (parent a) section)))
+    (setf (parent a) section)
+    (setf (parent b) section)))
 
 
 ;;--- top-level tags
