@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; Package: sparser; -*-
-;;; Copyright (c) 2010-2019 David D. McDonald 
+;;; Copyright (c) 2010-2020 David D. McDonald 
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  January 2019
+;;;  version:  March 2020
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -223,14 +223,15 @@
 ;;;---------------------------------------
 
 (define-mixin-category has-UID
-  ;;:specializes relation
+  :instantiates nil
+  :specializes abstract 
   :binds ((uid))
   :documentation "UID is a field in many TRIPS objects")
 
 (define-category designator
-  :specializes quality
+  :specializes abstract
   :documentation "Provides a generalization over diffent
-  kinds of things that pick out instances from some set.")
+  kinds of things that pick out instances.")
 
 (define-category index
   :specializes designator
