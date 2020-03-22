@@ -284,6 +284,11 @@
 (define-sequencer/preposition "before")
 (define-sequencer/preposition "during")
 
+;;;; based on discussion with David
+;;;;; this looks like an appropriate place to put definitions of "former" and "latter"
+(define-sequencer/determiner "former")
+(define-sequencer/determiner "latter")
+
 
 ;;;-----------
 ;;; subjuncts
