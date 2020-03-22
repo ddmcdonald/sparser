@@ -52,8 +52,23 @@ Remaining list stored in sparser::*json-files-to-read*.
       (setq read nil))
     (when read
       (if quiet
-        (sp::with-total-quiet (sp::read-from-document article))
-        (sp::read-from-document article)))
+        (with-total-quiet (sp::read-from-document article))
+        (read-from-document article)))
     (when stats
       (summary-document-stats article))
     article))
+
+#| These are quick and dirty -- don't incorporate any way to change
+ the default setting. Intended to see a mass effect such as
+ collecting vocabulary |#
+
+(defun pull-json-and-run (&optional quiet?)
+  (do-next-json)
+  (if quiet?
+    (run-json-article *current-json-based-article*)
+    (run-json-article *current-json-based-article*
+                      :quiet nil :show-sect t)))
+
+(defun run-n-json-articles (n)
+  (dotimes (i n)
+    (pull-json-and-run :quiet)))
