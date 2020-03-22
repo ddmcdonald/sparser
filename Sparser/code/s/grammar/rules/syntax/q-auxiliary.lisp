@@ -75,7 +75,8 @@
       (let* ((parent (car remaining-parents))
              (grandparent (cadr remaining-parents))
              (parent-ref (edge-referent parent))
-             (det-binding (binds-variable parent-ref 'has-determiner)))
+             (det-binding (or (binds-variable parent-ref 'quantifier)
+                              (binds-variable parent-ref 'has-determiner))))
         (when det-binding
           ;; in (p "Can you tell me what is in the model?")
           ;;    there's no phrase binding the wh, 
@@ -237,7 +238,8 @@
    Called from make-question-and-edge, because the np was initial
    and DA triggered question processing"
   (or
-   (let ((j (value-of 'has-determiner i)))
+   (let ((j (or (value-of 'quantifier i)
+                (value-of 'has-determiner i))))
      (itypep j 'wh-pronoun))
    (let ((quant (value-of 'quantifier i)))
      (itypep quant 'wh-pronoun))))
@@ -380,7 +382,8 @@
             (bind-wh-to-stmt-variable wh wh-edge stmt))
            
            (wh-category ;; "what drug" wh is a determiner
-            (let ((embedded-wh (value-of 'has-determiner wh)))
+            (let ((embedded-wh (or (value-of 'quantifier wh)
+                                   (value-of 'has-determiner wh))))
               ;; value is a wh-pronoun category
               (bind-wh-to-stmt-variable embedded-wh wh-edge stmt)))
            
@@ -450,8 +453,9 @@
     (cond
       ((itypep i 'wh-pronoun) i) ;; "What ..."
       (t
-       (let ((value (or (value-of 'has-determiner i) ;; "What genes ..."
-                        (value-of 'quantifier i)))) ;; "Which of these"
+       (let ((value (or (value-of 'quantifier i)
+                        (value-of 'has-determiner i) ;; "What genes ..."
+                        ))) ;; "Which of these"
          (when value
            (cond
              ((itypep value 'wh-pronoun) t)
