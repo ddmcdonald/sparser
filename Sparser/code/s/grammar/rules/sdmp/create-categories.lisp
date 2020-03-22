@@ -64,7 +64,7 @@
    We have completed a minimal phrase with this edge. Its form may still
    reflect a word-level category. We want to elevate that to its phrase-level
    equivalent."
-(declare (special *delay-generalization-of-verb-edge-form*))
+  (declare (special *delay-generalization-of-verb-edge-form*))
   (let* ((form-category (edge-form edge))
 	 (symbol (when form-category (cat-symbol form-category))))
     (when symbol
@@ -96,6 +96,12 @@
         (category::spatial-preposition)
         (category::spatio-temporal-preposition)
         
+        (category::comparative)
+        (category::comparative-adjp)
+        (category::superlative)
+        (category::superlative-adjective)
+        (category::superlative-adjp)
+
         (category::s)
         (category::subj+verb)
         (category::vp)
@@ -121,10 +127,6 @@
           category::demonstrative) ;; "that"
 	 (setf (edge-form edge) category::np))
 
-        (category::comparative
-         category::comparative-adjp)
-        (category::superlative
-         category::superlative-adjp)
         
 	((category::verb 
           category::verb+s 
@@ -145,9 +147,9 @@
 	(otherwise
 	 (unless *cfg-flag*
            (push-debug `(,edge))
-	   (break "New case of form category of edge over segment: ~a~
-           ~%Add it to generalize-segment-edge-form-if-needed"
-		  (edge-form edge))))))))
+	   (break "~a is a new case of form category of edge over segment: ~a~
+                 ~%in ~a"
+		  (edge-form edge) edge)))))))
 
 
 (defun elevate-form-given-subcat (new-edge edge pattern)
