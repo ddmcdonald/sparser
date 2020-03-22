@@ -1,14 +1,22 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "html"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  September 1995
+;;;  Version:  March 2020
 
 ;; initiated 9/19/95
 
 (in-package :sparser)
 
+;;;--------------------
+;;; The stub from 1995
+;;;--------------------
+;; //// there are fragments of URL handling scattered about,
+;; non complete, from start on them in September 1995 that
+;; had to be shutdown. They're gated by the *internet* grammar
+;; module. When we figure out what (if anything) more we want here
+;; it should be organized in files it gates. (ddm 3/19/20)
 
 ;;--- normally these will be called from the autodef routines
 
@@ -28,12 +36,8 @@
                   :referent cat)))
     cat))
 
- 
-
 (defun define-empty-html-tag/expr (string)
   (define-html-tag string))
-
-
 
 (defun define-html-attribute (string)
   (declare (ignore string))
