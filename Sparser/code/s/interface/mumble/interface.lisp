@@ -174,7 +174,9 @@
   ;; called from grammar/morphology.lisp - number-of-current-subject
   (cond
     ((sp::itypep i 'sp::plural) 'plural)
-    ((sp::value-of 'sp::is-plural i) 'plural)
+    ((or (eq (sp::value-of 'sp::number i) :plural)
+         (sp::value-of 'sp::is-plural i))
+     'plural)
     (t 'singular)))
 
 (defmethod grammatical-person ((i sp::individual)) 'third)
