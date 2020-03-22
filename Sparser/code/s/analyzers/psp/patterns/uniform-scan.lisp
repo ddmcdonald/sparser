@@ -187,15 +187,18 @@
        (divide-and-recombine-ns-pattern-with-slash pattern start-pos end-pos))
 
       ((member :forward-slash pattern)
-       (tr :ns-looking-at-slash-patterns)
-       (when (eq (car pattern) :forward-slash)
-         (setq start-pos
-               (if (top-edge-at/ending start-pos) 
-                   (edge-starting-position (top-edge-at/ending start-pos))
-                   (chart-position-before start-pos)))
-         (setq pattern (sweep-ns-region start-pos end-pos)))
-       (or (resolve-slash-pattern pattern start-pos end-pos)
-           (reify-ns-name-and-make-edge start-pos end-pos)))
+       (if (url-prefix start-pos)
+         (package-url start-pos end-pos)
+         (else
+           (tr :ns-looking-at-slash-patterns)
+           (when (eq (car pattern) :forward-slash) ; it's initial
+             (setq start-pos
+                   (if (top-edge-at/ending start-pos) 
+                     (edge-starting-position (top-edge-at/ending start-pos))
+                     (chart-position-before start-pos)))
+             (setq pattern (sweep-ns-region start-pos end-pos)))
+           (or (resolve-slash-pattern pattern start-pos end-pos)
+               (reify-ns-name-and-make-edge start-pos end-pos)))))
 
       ((and (member :hyphen pattern)
             (member :colon pattern))
@@ -221,8 +224,9 @@
        (or (resolve-ns-pattern pattern start-pos end-pos)
            (reify-ns-name-and-make-edge start-pos end-pos))))))
 
-(defparameter *other-punct* nil)
 
+;; tally the odd punctuation noticed in the pattern dispatch
+(defparameter *other-punct* nil)
 (defun other-punct? (x)
     (pushnew x *other-punct*)
     nil)
@@ -304,9 +308,14 @@
   (setq *bio-entity-strings* (list "111BOGUSSTRING***")))
 
 (defun reify-ns-name-as-bio-entity (pos-before pos-after)
-  ;; called from reify-ns-name-and-make-edge when *big-mechanism*
-  ;; flag is up. Responsible for returning the category to use,
-  ;; the rule, and the referent so that the caller can make an edge
+  "Called from reify-ns-name-and-make-edge when *big-mechanism*
+   flag is up. Responsible for returning the category to use,
+   the rule, and the referent so that the caller can make an edge.
+     Looks for the possibility that we already know something
+   about this span of characters. (a) perhaps we know the uppercase
+   version, (b) maybe we can find it in the OBO data, (c) it corresponds
+   to a known polyword, perhaps an already encountered bi-entity,
+   and (d) we package it as a bio-entity."
   (declare (special category::bio-entity words))
   (let* ((words-string (actual-characters-of-word pos-before pos-after))
          (obo (corresponding-obo words-string))
@@ -332,7 +341,7 @@
 	 (values (cfr-category uc-rule)
 		 cfr
 		 (cfr-referent uc-rule))))
-
+      
       (obo
        ;; OBO check/handling matches what is done when it comes in as
        ;; an unknown word via make-word/all-properties/or-primed
@@ -343,7 +352,6 @@
        (let* ((w (resolve words-string))
 	      (bio-entity (find-individual 'bio-entity :name w)))
 	 (if bio-entity
-
            (values category::bio-entity
                    'reify-ns-name-as-bio-entity
                    bio-entity)
@@ -361,18 +369,10 @@
                ((punctuation? w) ;; e.g. asterix
                 (throw :punt-on-nospace-without-resolution
                   :single-character-punctuation))
-               (t (push-debug `(,w))
-                  
-                  ;; probably no longer need this warning
-                  #+ignore
-                  (format t "~&^^^^^^ Known word ~s, but no associated rule. ~
-                              Probably a part of a polyword, now defining it ~
-                              as a bio-entity~%  in ~s~%"
-                          w (current-string))
-                  (values category::bio-entity
-                          'reify-ns-name-as-bio-entity
-                          (find-or-make-individual 'bio-entity :name w))))))))
-
+               (t 
+                (values category::bio-entity
+                        'reify-ns-name-as-bio-entity
+                        (find-or-make-individual 'bio-entity :name w))))))))
 
       (t ;; by default make a bio-entity
        ;; Open-code key part of handle-unknown-word-as-bio-entity,
@@ -385,26 +385,24 @@
 		 'reify-ns-name-as-bio-entity
 		 i))))))
 
-       
-
 
 (defun reason-to-not-span-ns (start-pos end-pos)
   (declare (special word::|s|))
   (let* ((edges (treetops-between start-pos end-pos))
-         (form-labels (loop for e in edges
-                            when (edge-p e)
-                            collect (or (edge-form e)
-                                        ;; the only cases this happens seem to be
-                                        ;;(PRONOUN/FEMALE APOSTROPHE-S SINGLE-QUOTE HYPHEN PERCENT-SIGN FORWARD-SLASH)
-                                        (let* ((ec (edge-category e))
-                                               (symbol
-                                                (if (word-p ec)
-                                                    (word-symbol ec)
-                                                    (intern (string-upcase (pname ec))
-                                                            (find-package :sparser)))))
-                                          ;;(pushnew symbol *no-form-cats*)
-                                          symbol))))
-                                          
+         (form-labels
+          (loop for e in edges
+             when (edge-p e)
+             collect (or (edge-form e)
+                         ;; the only cases this happens seem to be
+                         ;;(PRONOUN/FEMALE APOSTROPHE-S SINGLE-QUOTE HYPHEN PERCENT-SIGN FORWARD-SLASH)
+                         (let* ((ec (edge-category e))
+                                (symbol
+                                 (if (word-p ec)
+                                   (word-symbol ec)
+                                   (intern (string-upcase (pname ec))
+                                           (find-package :sparser)))))
+                           ;;(pushnew symbol *no-form-cats*)
+                           symbol))))
          (form-symbols (loop for l in form-labels
                              when l collect (if (category-p l)(cat-symbol l) l))))
     (or (and (edge-p (car edges))
@@ -453,7 +451,6 @@
      :referent (make-phosphorylated-protein protein sur-string))
     end))
                             
-        
 
 
 ;;;------------------------------------
