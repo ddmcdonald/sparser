@@ -191,7 +191,7 @@
   (declare (ignore source)) ;; Comlex vs. morphology vs. ...
   (mark-definition-source word) ;; replaces ignore argument
   (when *collect-new-words*
-    (push word *newly-found-unknown-words*)))
+    (pushnew word *newly-found-unknown-words*)))
 
 
   
