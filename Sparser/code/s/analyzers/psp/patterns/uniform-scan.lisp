@@ -303,7 +303,7 @@
              (tr :made-edge edge)
              edge)))))
 
-(defparameter *bio-entity-strings* (list nil))
+(defparameter *bio-entity-strings* (list "not-a-word-end-marker"))
 (defun collect-bio-entity-strings ()
   (setq *bio-entity-strings* (list "111BOGUSSTRING***")))
 
