@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "punctuation"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   February 2017
+;;;   Version:   March 2020
 
 ;; 1.0 (9/21/92 v2.3) added everything else, in ascii order
 ;; 1.1 (4/9/93) moved newline to required
@@ -132,6 +132,9 @@
     (code-char 730) ;; #\Ring_Above
     (code-char 732) ;; #\small_tilde
     (code-char 732) ;;"˜"  ;; #\Small_Tilde
+
+    (code-char 739) ;; "ˣ" #\MODIFIER_LETTER_SMALL_X
+    
     (code-char 768) ;; #\COMBINING_GRAVE_ACCENT
     (code-char 769) ;; #\Combining_Acute_Accent
     (code-char 772) ;; #\Combining_Macron
@@ -157,6 +160,7 @@
     
     (code-char 1013) ;; "ϵ"
     (code-char 1523) ;; ׳
+
     (code-char 7484) ;; ᴼ
     (code-char 7527) ;; ᵧ
     (code-char 7529) ;; ᵩ
@@ -202,11 +206,17 @@
     (code-char 8260) ;; "⁄" #\U+2044
     (code-char 8270) ;; ⁎
     (code-char 8289) ;; ⁡
+
+    (code-char 8313) ;; "⁹" #\SUPERSCRIPT_NINE
+
     (code-char 8322) ;; ₂
     (code-char 8323) ;; ₃
     (code-char 8364) ;; #\EURO_SIGN
     (code-char 8446) ;;"ℒ", (code = 8446)
     (code-char 8451) ;;"℃", (code = 8451)
+
+    (code-char 8462) ;; "ℎ", #\PLANCK_CONSTANT
+
     (code-char 8466) ;;"ℒ", (code = 8466)
     (code-char 8467) ;; ℓ
     (code-char 8471) ;;℗
@@ -351,6 +361,15 @@
     (code-char 12297)  ;; 〉
     (code-char 12304)  ;; 【
     (code-char 12305)  ;; 】
+
+    (code-char 61508) ;; #\UF044
+    (code-char 61537) ;; #\UF061
+    (code-char 61538) ;; #\UF062
+    (code-char 61549) ;; #\UF06D
+    (code-char 61566) ;; #\UF07E
+    (code-char 61616) ;; #\UF0B0
+    (code-char 61620) ;; #\UF0B4
+
     (code-char 64256)  ;; ﬀ
     (code-char 64257)  ;;"ﬁ", (code = 64257) ;; alphabetical
     (code-char 64258)  ;;"ﬂ", (code = 64258)

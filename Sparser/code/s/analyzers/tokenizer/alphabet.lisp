@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1996,2013-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013-2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "alphabet"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  December 2019
+;;;  Version:  March 2020
 
 ;; file created 9/15/92 v2.3, populated 9/21
 ;; 8/20/93 fixed mistake in entry for #127
@@ -885,6 +885,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (729 (:punctuation .,(punctuation-named (code-char 729)))) ;; #\*)) ;;"˙", (code = 729)  ;; #\Dot_Above
     (730 (:punctuation .,(punctuation-named (code-char 730)))) ;; #\Ring_Above
     (732 (:punctuation .,(punctuation-named (code-char 732)))) ;;"˜"  ;; #\Small_Tilde
+    (739 (:alphabetical . (:lowercase .,(code-char 739)))) ;; "ˣ" #\MODIFIER_LETTER_SMALL_X
     (768 (:punctuation .,(punctuation-named (code-char 768)))) ;; #\COMBINING_GRAVE_ACCENT
     (769 (:punctuation .,(punctuation-named (code-char 769)))) ;; #\Combining_Acute_Accent
     (770 (:alphabetical . (:lowercase .,(code-char 770)))) ;; #\Latin_Small_Letter_S_With_Acute
@@ -999,10 +1000,17 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (1255 (:alphabetical . (:uppercase .,(code-char 1255)))) ;; ӧ
     (1279 (:alphabetical . (:uppercase .,(code-char 1279)))) ;; ӿ
     (1523 (:punctuation  .,(punctuation-named (code-char 1523)))) ;; ׳
-   ;; (1548 (:alphabetical .,(punctuation-named (code-char 1548)))) ;; ،
+    ;; (1548 (:alphabetical .,(punctuation-named (code-char 1548)))) ;; ،
+
+    (5039 (:alphabetical . (:uppercase .,(code-char 5039)))) ;; "Ꭿ"  #\CHEROKEE_LETTER_HI
+    (5043 (:alphabetical . (:uppercase .,(code-char 5043)))) ;; "Ꮃ" #\CHEROKEE_LETTER_LA
+
     (7484 (:punctuation  .,(punctuation-named (code-char 7484)))) ;; ᴼ
     (7527 (:punctuation  .,(punctuation-named (code-char 7527)))) ;; ᵧ
     (7529 (:punctuation  .,(punctuation-named (code-char 7529)))) ;; ᵩ
+
+    (7712 (:alphabetical . (:uppercase .,(code-char 7712)))) ;; "Ḡ"  #\LATIN_CAPITAL_LETTER_G_WITH_MACRON
+
     (7818 (:alphabetical . (:uppercase .,(code-char 7818))))      ;; Ẋ
     (7853 (:alphabetical . (:uppercase .,(code-char 7853)))) ;; ậ
     (7857 (:alphabetical . (:uppercase .,(code-char 7857)))) ;; ằ
@@ -1052,11 +1060,17 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8260 (:punctuation  .,(punctuation-named (code-char 8260)))) ;; "⁄" #\U+2044
     (8270 (:punctuation  .,(punctuation-named (code-char 8270)))) ;; ⁎
     (8289 (:punctuation  .,(punctuation-named (code-char 8289)))) ;; ⁡
+
+    (8313 (:punctuation  .,(punctuation-named (code-char 8313)))) ;; "⁹" #\SUPERSCRIPT_NINE
+
     (8322 (:punctuation  .,(punctuation-named (code-char 8322)))) ;; ₂
     (8323 (:punctuation  .,(punctuation-named (code-char 8323)))) ;; ₃
     (8364 (:punctuation  .,(punctuation-named (code-char 8364)))) ;; #\EURO_SIGN
     (8446 (:punctuation  .,(punctuation-named (code-char 8446)))) ;;"ℒ", (code = 8446)
     (8451 (:punctuation  .,(punctuation-named (code-char 8451)))) ;;"℃", (code = 8451)
+
+    (8462 (:punctuation  .,(punctuation-named (code-char 8462)))) ;; "ℎ", #\PLANCK_CONSTANT
+
     (8466 (:punctuation  .,(punctuation-named (code-char 8466)))) ;;"ℒ", (code = 8466)
     (8467 (:punctuation  .,(punctuation-named (code-char 8467)))) ;; ℓ
     (8469 (:alphabetical . (:uppercase .,(code-char 8469)))) ;; ℕ
@@ -1657,6 +1671,15 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (39064 (:alphabetical .(:lowercase .,(code-char 39064)))) ;; #\U9898 
     (39640 (:alphabetical .(:lowercase .,(code-char 39640)))) ;; #\U9AD8 
     (40802 (:alphabetical .(:lowercase .,(code-char 40802)))) ;; #\U9F62
+
+    (61508  (:punctuation .,(punctuation-named (code-char 61508)))) ;; #\UF044
+    (61537  (:punctuation .,(punctuation-named (code-char 61537)))) ;; #\UF061
+    (61538  (:punctuation .,(punctuation-named (code-char 61538)))) ;; #\UF062
+    (61549  (:punctuation .,(punctuation-named (code-char 61549)))) ;; #\UF06D
+    (61566  (:punctuation .,(punctuation-named (code-char 61566))))  ;; #\UF07E
+    (61616  (:punctuation .,(punctuation-named (code-char 61616)))) ;; #\UF0B0
+    (61620  (:punctuation .,(punctuation-named (code-char 61620)))) ;; #\UF0B4
+
     (64256 (:punctuation .,(punctuation-named (code-char 64256)))) ;; ﬀ
     (65285 (:punctuation .,(punctuation-named (code-char 65285)))) ;; #\FULLWIDTH_PERCENT_SIGN 
     (65289 (:punctuation .,(punctuation-named (code-char 65289)))) ;;  #\FULLWIDTH_RIGHT_PARENTHESIS 
