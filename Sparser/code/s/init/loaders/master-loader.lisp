@@ -1,10 +1,10 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2003,2010-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2003,2010-2020 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "master-loader"
 ;;;   module:  "init;loaders;"
-;;;  Version:   July 2019
+;;;  Version:   March 2020
 
 ;; 4/21  added loading of chart-drivers;new:loader
 ;; 4/25  split fsas into basics and model
@@ -247,8 +247,8 @@
   (use-return-newline-tokens-fsa))
   
 (gate-grammar *miscellaneous*  ;; a daughter of testing
-  (gload "gr-tests;parsing"))
-
+  (gload "gr-tests;parsing")
+  (lload "timing;loader")) ;; quiet macro before drivers
 
 ;;;---------
 ;;; drivers
@@ -308,7 +308,6 @@
   (load *external-testing-files*))
 
 (gate-grammar *miscellaneous*
-  (lload "timing;loader")
   (lload "measuring;distance between brackets")
   (lload "measuring;line count"))
 
