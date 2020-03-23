@@ -179,26 +179,87 @@
   "Gates add-new-word-to-catalog, which is called by 
   all the different ways of defining a previously unknown word")
 
+;;-- accumulators
 (defvar *newly-found-unknown-words* nil
   "Accumulator for add-new-word-to-catalog")
+(defvar *from-comlex* nil)
+(defvar *from-BigMech-default* nil)
+(defvar *from-no-morph-default* nil)
+(defvar *from-morphology* nil)
 
-; make-word/all-properties/or-primed =>
-;   setup-unknown-word-by-default
-;   assign-morph-brackets-to-unknown-word
-;   unpack-primed-word
-;   suitable-for-and-in-OBO => setup-word-denoting-an-OBO
+(defun reset-unknown-word-accumulators ()
+  (setq *newly-found-unknown-words* nil
+        *from-comlex* nil
+        *from-BigMech-default* nil
+        *from-no-morph-default* nil
+        *from-morphology* nil
+        ))
+
+(defun display-word-accumulator-tallies (&optional (stream *standard-output*))
+  (format stream "~& ~a looked up in Comlex~
+                  ~% ~a deduced from their morphology~
+                  ~% ~a added by Big Mechanism default~
+                  ~% ~a added with default setup~%~%"
+          (length *from-comlex*)
+          (length *from-morphology*)
+          (length *from-BigMech-default*)
+          (length *from-no-morph-default*)))
+
+#| make-word/all-properties/or-primed => objects/chart/words/lookup/new-words
+The real call is to establish-unknown-word, which gets set by the switch
+call what-to-do-with-unknown-words according to what protocol 
+we're using in the switch settings. The precursor feeder routines are
+find-word, really-known-word?, and word-has-associated-category who encounter
+unknown words.|#
+
 (defun add-new-word-to-catalog (word source)
+  "Called as part of cataloging any new word. The 'source' encodes
+   which of the places that define new words was involved."
+  (declare (special *suffix-pos-table*))
+  (case source
+    (:comlex ;; unpack-primed-word, continue-unpacking-lexical-entry
+     (pushnew word *from-comlex*))
+    
+    (:BgMech-default ;; handle-unknown-word-as-bio-entity
+     (pushnew word *from-BigMech-default*))
+    
+    (:default ;; setup-unknown-word-by-default -- no mophology information
+     (pushnew word *from-no-morph-default*))
+
+    ((:ends-in-ed :ends-in-ing :ends-in-ly
+                  :ends-in-er :ends-in-est)
+     ;; in assign-morph-brackets-to-unknown-word
+     ;; Those are the explicit keyword cases
+     (pushnew word *from-morphology*))
+
+    (otherwise
+     (typecase source
+       (cons
+        ;; There is also a set of cons values for a word's morphology,
+        ;; e.g. ("ible" ADJ) in objects/chart/words/lookup/morphology.lisp
+        (if (and (= 2 (length source))
+                 (assq (car source) *suffix-pos-table*))
+          (pushnew word *from-morphology*)
+          (warn "New cons source for ~s - ~a"
+                (word-pname word) source)))
+       (otherise
+        (warn "Unexpected source type for ~s~%~a  ~a"
+               (word-pname word) (type-of source) source))))))
+
+#| original
   (declare (ignore source)) ;; Comlex vs. morphology vs. ...
   (mark-definition-source word) ;; replaces ignore argument
   (when *collect-new-words*
-    (pushnew word *newly-found-unknown-words*)))
+    (pushnew word *newly-found-unknown-words*)))  |#
 
 
-  
+;;;------------------------
+;;; sweeping for sentences
+;;;------------------------
+
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 1.txt")
 ; (setq *sweep-for-sentences* t)
 ; (setq *sweep-for-sentences* nil)
-
 
 
 (defvar *sentence-sweep-stream* *standard-output*
@@ -246,9 +307,9 @@
 
 
 
-;;;------------------------------------;;;------------------------------------
-
+;;;------------------------------------
 ;;; tabulating facts about the grammar
+;;;------------------------------------
 
 (defun words-with-rule-sets () ;; vanilla R3 10/9/18 32,146
   (loop for w in *words-defined* ;; 66,638
