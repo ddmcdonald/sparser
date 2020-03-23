@@ -37,11 +37,18 @@ e66   BIO-ENTITY    9 "com/rrwick/Porechop" 14
 |#
 
 (defparameter *url-prefixes* (list (resolve/make "http")
-                                   (resolve/make "https")))
+                                   (resolve/make "https")
+                                   (resolve/make "doi")))
+
+;(def-cfr double-slash ("//"))
+
+;; " https: //doi.org/10.1101/478040"
 
 (defun url-prefix (start-pos)
-  "Called from ns-pattern-dispatch when there's a slash in the pattern
-   so that we should go to this handler rather than our standard set"
+  "Called from ns-pattern-dispatch when there's a slash somewhere in
+   the patternso that we should go to this handler rather than
+   our standard set"
+  ;;(break "start-pos = ~a" start-pos)
   (memq (pos-terminal start-pos) *url-prefixes*))
 
 (defun package-url (start-pos end-pos)
