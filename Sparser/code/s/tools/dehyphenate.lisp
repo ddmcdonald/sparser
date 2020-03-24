@@ -59,7 +59,7 @@
     (cond ((approved-word? merged-word) ; if the merged word is an approved word, use that
            (setf replacement merged-word-with-punc)) ; keep the trailing punctuation with the word
           ((or (approved-word? hyphenated-word)
-               (every #'(lambda (member-word) (approved-word? member-word)) member-words))
+               (every #'approved-word? member-words))
            ;; if removing the newline but leaving the hyphen results in an approved word, or something
            ;; whose parts (separated by hyphens) are all approved words, use the hyphenated version.
            (setf replacement hyphenated-word-with-punc)) ; keep the trailing punctuation with the word
