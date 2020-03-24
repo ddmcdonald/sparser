@@ -6,7 +6,7 @@
 This variable must be set before loading Sparser to have the correct effect.")
 
 (defsystem :sparser
-  :depends-on (:cl-json :ddm-util :mumble)
+  :depends-on (:cl-json :ddm-util :mumble :cl-ppcre)
   :components ((:file "Sparser/code/s/init/everything"))
   :perform (load-op :after (o c) (pushnew :sparser *features*))
   :in-order-to ((test-op (test-op :sparser/tests))))
