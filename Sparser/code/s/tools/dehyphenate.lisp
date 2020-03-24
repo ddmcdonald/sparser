@@ -72,12 +72,7 @@
 
 (defun approved-word? (word)
   (or (member word *word-whitelist* :test #'string-equal)
-      (known-word? word)))
-
-;; TODO: How do we ask sparser if this is a known word?
-(defun known-word? (word)
-  (declare (ignore word))
-  nil)
+      (resolve word)))  ;; known to sparser
 
 ;;the default way to construct an output filename from an input filename
 (defun add-dehyphenated-suffix (namestring)
