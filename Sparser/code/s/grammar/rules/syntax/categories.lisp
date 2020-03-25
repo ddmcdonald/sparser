@@ -502,7 +502,7 @@
 ;;;--------------------------------------------------------------
 
 (defparameter *irrelevant-to-discourse-history* nil
-  "Populated by call from irrelevant-category-for-dh")
+  "Populated by call from relevant-category-for-dh ('discourse history')")
 
 (defun populate-irrelevant-to-discourse-history ()
   (when (null *irrelevant-to-discourse-history*)
@@ -515,14 +515,16 @@
              ,(category-named 'spatial-preposition)
              ,(category-named 'pronoun)
              ,(category-named 'conjunction) ;; Observed cases just covered "and"
-
+             ,(category-named 'subordinate-conjunction)
              ,(category-named 'single-capitalized-letter)
+             ,(category-named 'quantifier)
              ,(category-named 'number)
              ))))
 
 ;;;----------------------------------------
 ;;; instances of part-of-speech categories
 ;;;----------------------------------------
+
 (unless *nothing-Mac-specific*
   
   (define-autodef-data  'content-word
