@@ -1205,6 +1205,7 @@ similar to an oncogenic RasG12V mutation (9)."))
     :referent (:function interpret-superlative+adjective left-edge right-edge))
 
 (def-syntax-rule (superlative adverb) ;;/// what's an example of this??
+    ;; "most frequently"
     :head :right-edge
     :form adverb ;;superlative-adverb ;; adverb ;;superlative
     :referent (:function interpret-superlative+adjective left-edge right-edge))
