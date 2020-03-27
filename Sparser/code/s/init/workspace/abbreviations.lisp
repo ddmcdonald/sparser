@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2013-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2013-2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "init;workspace:"
-;;;  version:  July 2019
+;;;  version:  March 2020
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -181,13 +181,18 @@
   (:documentation "Where was this in the file system when it was 
      catalogued. (The same name can be introduced several times")
   (:method ((pname string))
-    (loc (resolve pname)))
+    (let ((w (resolve pname)))
+      (if w
+        (loc w)
+        (format nil "The string '~a' is not a defined word" pname))))
   (:method ((name symbol))
     (let ((c (category-named name)))
       (if c (loc c)
           (format nil "The symbol ~a does not name a category" name))))
   (:method ((w word))
     (file-location w))
+  (:method ((pw polyword))
+    (file-location pw))
   (:method ((c category))
     (file-location c)))
 
@@ -427,21 +432,21 @@
   (tts))
 
 (defun f (pathname
-          &key time (initial-region :header)
+          &key time ;;(initial-region :header) vestige from WSJ Who's News
             ((:paragraph make-orthographic-paragraphs) t)
-            ((:trace tts-after-para) t))
-  (declare (ignore initial-region))
-  (when *open-stream-of-source-characters*
-    (close-character-source-file))
+            ((:trace tts-after-para) t)
+            ((:skip ignore-errors)))
   (format t "~%analyzing ~A~%~%" pathname)
   (let ((*prescan-character-input-buffer* t))
     (declare (special *prescan-character-input-buffer*))
     (if time
       (time (analyze-text-from-file pathname
                                     :paragraph make-orthographic-paragraphs
+                                    :skip ignore-errors
                                     :trace tts-after-para))
       (analyze-text-from-file pathname
                               :paragraph make-orthographic-paragraphs
+                              :skip ignore-errors
                               :trace tts-after-para))))
 
 
