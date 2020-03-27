@@ -388,7 +388,7 @@
 
 (defgeneric add-punctuation-char (identifier)
   (:documentation "Create a punctuation word for the
-     identified character. Useful for doing them b7
+     identified character. Useful for doing them by
      had when entering new characters")
   (:method ((form list)) ;; e.g. '(code-char 65293)
     (assert (= 2 (length form)))
