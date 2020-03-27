@@ -1,7 +1,7 @@
 ;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: CLIC -*-
 ;;; Copyright (c) 2020 Smart Information Flow Technologies
 ;;;
-;;;     File:  "loader"
+;;;     File:  "reading-json"
 ;;;   Module:  "drivers;sources:"
 ;;;  Version:  March 2020
 
@@ -10,9 +10,6 @@
 ;;;--------------------
 ;;; get the json files
 ;;;--------------------
-
-#| These don't work. The merging ties me in knots right now so I'm leaving
-   it for someone else to fix -- ddm 3/17/20  |#
 
 (defun json-base ()
   (let ((base (asdf:system-relative-pathname :r3 "../corpus/covid/2020-03-13/")))
@@ -50,7 +47,9 @@ reassign *default-json-processing-fn* (directly below this) to something
 else that takes two arguments:  (1) the s-expression (2) the file's pathname
 |#
 
-(defparameter *default-json-processing-fn* 'sample-processing-fn) ;; Replace me!
+(defparameter *default-json-processing-fn* 'make-document
+  "Function to make an article instance from the JSON")
+
 (defvar *json-files-to-read* nil)  ;; The file path hopper
 
 (defun all-covid-json-filepaths ()
