@@ -53,8 +53,17 @@ else that takes two arguments:  (1) the s-expression (2) the file's pathname
 (defparameter *default-json-processing-fn* 'sample-processing-fn) ;; Replace me!
 (defvar *json-files-to-read* nil)  ;; The file path hopper
 
-(defun collect-json-directory (&key (dir "biorxiv_medrxiv"))
-  (declare (type string dir))  ;; To appease compiler complaints
+(defun all-covid-json-filepaths ()
+  (setf *json-files-to-read*
+        (loop for dir in '("biorxiv_medrxiv" "comm_use_subset" "noncomm_use_subset")
+              append (progn (collect-json-directory :dir dir :quiet t)
+                            *json-files-to-read*)))
+  (format t "~%Loading ~d file pathnames into the hopper.~%To process the next one, call (sparser::do-next-json)~%To see what the next is, call (sparser::peek-next-json)~%To do the rest, call (sparser::do-remaining-json)~%To do a batch of n using (sparser::do-remaining-json :n n)~%Remaining list stored in sparser::*json-files-to-read*.~%"
+          (length *json-files-to-read*))
+  :done)
+
+(defun collect-json-directory (&key (dir "biorxiv_medrxiv")(quiet nil))
+  (declare (type string dir)) ;; To appease compiler complaints
   (let* ((double-dir (format nil "~a/~a/" dir dir)) ;; May want to make more flexible
          (dir-path (json-directory :base (json-base) :dir double-dir))
          (wild-path (merge-pathnames "*.json" dir-path))
@@ -62,8 +71,9 @@ else that takes two arguments:  (1) the s-expression (2) the file's pathname
     (cond ((not file-paths)
            (warn "No json files found in location ~a." dir-path))
           (t
-           (format t "~%Loading ~d file pathnames into the hopper.~%To process the next one, call (sparser::do-next-json)~%To see what the next is, call (sparser::peek-next-json)~%To do the rest, call (sparser::do-remaining-json)~%To do a batch of n using (sparser::do-remaining-json :n n)~%Remaining list stored in sparser::*json-files-to-read*.~%"
-                   (length file-paths))
+           (unless quiet
+             (format t "~%Loading ~d file pathnames into the hopper.~%To process the next one, call (sparser::do-next-json)~%To see what the next is, call (sparser::peek-next-json)~%To do the rest, call (sparser::do-remaining-json)~%To do a batch of n using (sparser::do-remaining-json :n n)~%Remaining list stored in sparser::*json-files-to-read*.~%"
+                     (length file-paths)))
            (setf *json-files-to-read* file-paths)
            :done))))
 
