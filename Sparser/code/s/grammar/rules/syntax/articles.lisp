@@ -155,8 +155,13 @@
   (or ;;(definite-np? (edge-mention e))
    ;; not being reset? ERROR -- FIX THIS
    (and (individual-p (edge-referent e))
-        (value-of 'has-determiner (edge-referent e))
-        (definite-determiner? (value-of 'has-determiner (edge-referent e))))))
+        (or
+         (and (value-of 'has-determiner (edge-referent e))
+              (definite-determiner? (value-of 'has-determiner (edge-referent e))))
+         (itypep (edge-referent e) 'these)
+         (itypep (edge-referent e) 'those)
+         (itypep (edge-referent e) 'pronoun/plural) ;; "they" "them"
+         ))))
 
 (defmethod definite-np? ((m discourse-mention))
    (definite-np? (mention-source m)))
