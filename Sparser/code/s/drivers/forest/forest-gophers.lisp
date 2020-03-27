@@ -229,11 +229,28 @@
 
 (defgeneric collect-edge-parents (base-edge)
   (:documentation "Make a list of the sequence of parent edges
-    above the base")
+    above the base. Edges are return in order from the lowest
+    tp the highest.")
   (:method ((base edge))
+    (let ((visited `(,base))
+           (daughter base)
+          parent  parents )
+      (loop
+         (push daughter visited)
+         (setq parent (edge-used-in daughter))
+         (when (null parent) ;; we're at the top
+           (return))
+         (if (memq parent visited) ;; we're about to loop
+           (return)
+           (push parent parents))
+         (setq daughter parent))
+      (nreverse parents))))
+
+#| Original version that loops if the edges themselves aree
+   in a loop
     (let ((parent (edge-used-in base)))
       (when parent
-        (cons parent (collect-edge-parents parent))))))
+        (cons parent (collect-edge-parents parent)))) |#
 
 (defgeneric search-tree-for-referent (edge value)
   (:documentation "Gradually walk down the binary tree of
