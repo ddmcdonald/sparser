@@ -135,8 +135,7 @@
 ;;; assignments and access
 ;;;------------------------
 
-(defparameter *labels-to-their-subcategorization* (make-hash-table)
-  "From words or categories to subcategorization objects")
+
 
 (defun filter-patterns (item &optional label)
   "Retrieve the subcategorization patterns of 'item', then filter them
@@ -200,8 +199,14 @@
            (get-subcategorization conj-type))))
       (t (get-subcategorization (itype-of ref-object))))))
 
-(defparameter *all-subcat-frames* nil)
-(defparameter *all-subcat-patterns* (make-hash-table))
+
+(unless (and (boundp '*labels-to-their-subcategorization*)
+             (hash-table-p (symbol-value '*labels-to-their-subcategorization*)))
+  (defparameter *labels-to-their-subcategorization* (make-hash-table)
+  "From words or categories to subcategorization objects")
+  (defparameter *all-subcat-frames* nil)
+  (defparameter *all-subcat-patterns* (make-hash-table)))
+
 (defun all-subcat-patterns ()
   (unless (> (hash-table-count *all-subcat-patterns*) 0)
     (loop for var-group
@@ -1110,14 +1115,12 @@
             
             (dolist (entry subcat-patterns)
               (when (eq label (subcat-label entry))
-                (unless (satisfies-subcat-restriction? item entry)
-                  (tr :failed-subcat-restriction item entry))
-                (when (satisfies-subcat-restriction? item entry)
-                  (setq variable (subcat-variable entry))
-                  (return)))))
+                (cond ((satisfies-subcat-restriction? item entry)
+                       (setq variable (subcat-variable entry))
+                       (return))
+                      (t (tr :failed-subcat-restriction item entry))))))
         
-        (when (and *ambiguous-variables*
-                   (consp variable))
+        (when (and *ambiguous-variables* (consp variable))
           (setq variable
                 (if over-ridden
                     (cond
@@ -1238,6 +1241,7 @@
 (defun variable-from-pats (item head label pats subcat-patterns)
   (declare (special category::number))
   (when (and (not (itypep item 'pronoun))
+             (not (itypep item 'requires-context));; new, for "those", "these"
              (loop for pat in pats
                    thereis
                      (not (consp (subcat-restriction pat)))))
