@@ -512,7 +512,9 @@
              ,(category-named 'prepositional-phrase)
              ,(category-named 'relativized-prepositional-phrase)
              ,(category-named 'preposition)
+             ,(category-named 'prepositional)
              ,(category-named 'spatial-preposition)
+             ,(category-named 'adverbial)
              ,(category-named 'pronoun)
              ,(category-named 'conjunction) ;; Observed cases just covered "and"
              ,(category-named 'subordinate-conjunction)
