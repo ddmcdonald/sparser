@@ -20,9 +20,24 @@
                                        *paragraphs-from-orthography*)
                                       ((:prescan prescan-buffer?)
                                        *prescan-character-input-buffer*)
+                                      echo
                                       ((:trace traces-on) t)
-                                      ((:skip ignore-errors?) t)
-                                      echo)
+                                      ((:skip ignore-errors?) t))
+
+  "Opens the indicated file an passes it to analysis-core for parsing.
+     :paragraph signals that the file you be interpreted as a multi-paragraph
+   document, where paragraph breaks are signaled by newlines. For the details,
+   read the documentation on new-ortho-paragraph (objects/doc/paragraphs.lisp)
+     :prescan gates a procedure that runs before any parsing to apply a
+   set of character-level transformation to the input before it is passed
+   to the parsing engine: collapse multiple newlines, move puntuation outside
+   a final quotation make, and translate html escape strings.
+     :echo is passed to the character-level transducer so we can see what
+   its doing.
+     :trace gates the display of a set of per-paragraph stats, notably this
+   includes doing a tts to show what was parsed in the paragraph. 
+     :skip enables the alternate parsing path for sentences that traps and
+   reports errors when they occur rather than bring up the debugger."
   
   (declare (special *open-stream-of-source-characters* *paragraphs-from-orthography*
                     *prescan-character-input-buffer*))
