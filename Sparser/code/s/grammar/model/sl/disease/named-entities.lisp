@@ -11,7 +11,8 @@
 
 (in-package :sparser)
 
-(define-with-all-instances-permanent
+(when (fboundp 'define-company)
+  (define-with-all-instances-permanent
 
     ;; "company" isn't right for most of these, but it will do 
     ;; agreed, should perhaps have "organization" category?
@@ -23,4 +24,4 @@
     ;;Médecins Sans Frontières--won't work yet because of special characters?
     (define-company '("Doctors" "Without" "Borders"))
 
-) ;; closes with all permanent
+    ))
