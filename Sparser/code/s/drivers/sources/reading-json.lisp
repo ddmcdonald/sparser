@@ -20,6 +20,17 @@
     (unless (probe-file dir-path) (error "extension to directory is wrong" dir-path))
     dir-path))
 
+
+(defparameter *json-corpus-paths*
+  '((rxiv "biorxiv_medrxiv")
+    (com "comm_use_subset")
+    (non-com "noncomm_use_subset")
+    (pmc "pmc_custom_license"))
+  "Modeled on the list in r3/code/evaluation/doc-support.
+   Could be integrated into the file selection machinery to allow
+   a short way to identify individuals json files to make into
+   articles and process")
+
 #| There's a good design for file handling in r3/code/evaluation/doc-support.
 I was trying to copy that.  Also, since no one is going to be able to remember
 these file names, it would be nice to collect whole directories of pathnames
