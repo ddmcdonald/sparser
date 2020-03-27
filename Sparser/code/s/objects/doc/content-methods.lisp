@@ -268,18 +268,23 @@
 ;;--------- summary statistics
 
 (defgeneric summary-document-stats (document-element &optional stream)
+  (:documentation "Write a short version of the information that was
+   collected in the contents field of the document")
   (:method ((a article) &optional stream)
     (unless stream (setq stream *standard-output*))
     (format stream "~&For ~a" a)
     (show-parse-performance a stream)
     (display-top-bio-terms a stream)))
-    
 
 ;;;----------------------------------
 ;;; what did we find in the sentence
 ;;;----------------------------------
 
 ;;--- Uses entities-and-relations class
+
+#| These are populated in record-sentence-model-data
+which runs at the very end of each sentence's analysis
+using data collected by identify-relations |#
 
 (defmethod set-entities ((s sentence) (list list))
   (setf (entities-in-sentence (contents s)) list))
