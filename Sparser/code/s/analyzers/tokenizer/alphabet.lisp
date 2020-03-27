@@ -18,15 +18,13 @@
 ;;     (4/15/15) added correct entry for a right arrow
 ;;     (6/5/15) Massive infusion of new characters
 ;;     (6/20/15) Another one. 
-
-
-
-;; NOTE: the encodings of unicode characters are in HEX, so #\+2192 is 5894 decimal
-;;  while the alist (*entries-for-out-of-band-characters*) for out-of-band characters
-;;  uses decimal encoding, so in *entries-for-out-of-band-characters* we need
-;;  (8594 ;; rightwards arrow
-;;    (:punctuation . ,(punctuation-named #\U+2192)))
 ;; 6/28/2015 correct handling of  (8764 (:punctuation . ,(punctuation-named (code-char 8764)))) ;; #\∼
+
+
+;; This file just contains the alphabet. Functions for extending or manipulating
+;; it are in analyzers/tokenizer/alphabet-fns.lisp
+
+(in-package :sparser)
 
 ;; NOTE: Uppercase alphabetic characters feed lowercase letters to the tokenizer.
 ;; e.g. (setf (elt *character-dispatch-array* 80)  ;; #\P
@@ -35,58 +33,17 @@
 ;; This is deliberate. See Sparser/documentation/manual/6. Analyzing a text.pdf
 
 
-(in-package :sparser)
-
 ;;;----------------------
 ;;; populating the array
 ;;;----------------------
 
-;;---------------- extended (Mac) char set ------------
-
-(defun announce-out-of-range-character ()
-  (let* ((character (elt *character-buffer-in-use* *index-of-next-character*))
-         (code (char-code character)))
-    (push-debug `(,*index-of-next-character* ,*character-buffer-in-use*))      
-    (push-debug `(,character ,code))
-    ;;(lsp-break "out-of-range-char")
-    (error "~%The input stream contains the character \"~A\", whose character code~
-            ~%is ~A.  That character is not part of the ascii character set~
-            ~%(0 to 127), and has not yet been entered into either Sparser's ~
-            ~%extended character array (128 to 255) or its table of 'out of bound'~
-            ~%characters. Note that above ascii the character encoding is~
-            ~%expected to be unicode, UTF-8.~
-            ~%~
-            ~%   If the character shouldn't have been in the stream, then you~
-            ~%should just remove it and try again. If it does belong there, then ~
-            ~%you can extend the character set. If you meta-. on this function~
-            ~%that will take you to the file analyzers/tokenizer/alphabet.lisp~
-            ~%where you can see examples to copy and read more details.~
-            ~%"
-           character code (length *character-dispatch-array*))))
-
-#| When you get that error it's likely because the text you're running
-has a UTF-8 character that we don't have an entry for yet. The error message
-showed you what the character was visually, and identified the code point
-that has to be added to the *entries-for-out-of-band-characters* alist at
-the bottom of this file. Your job is to figure out what "normal" character
-that corresponds to (e.g. a unicode left-single-quotation-mark corresponds
-to an ascii single quote), as least for the purpose of telling the token fsa
-how to handle it -- the original character won't be replaced in the token.
-
-This will usually entail a web search. There are lots of unicode web pages.
-This is a reasonable choice http://www.fileformat.info/info/unicode/char/search.htm
-|#
-
-
-#|
-Entries are decoded by continue-token which uses the car to determine
+#| Entries are decoded by continue-token which uses the car to determine
 the character type (for token boundaries), then the cdr is accumulated
 and eventually passed to finish-token where the capitalization information
 is noted by the capitalization-fsa and the character is entered into
 the buffer that is fed to find-word and becomes part of the word's pname.
 
 (:alphabetical . (:lowercase . ,#\212 ))  |#
-
 
 
 ;;---------------- standard ascii ----------------
@@ -629,8 +586,6 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 ;;#\Single-Shift-Two (?)
 
 
-
-
 (setf (elt *character-dispatch-array* 145) ;; left single quotation
       `(:punctuation . ,(punctuation-named #\' )))
 
@@ -687,8 +642,9 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 ;;      `(:punctuation . ,(punctuation-named (code-char 170))))
 
 (setf (elt *character-dispatch-array* 171) 
-      `(:punctuation . ,(punctuation-named (code-char 171)))) 
-;;#\Acute_Accent ? (this is what it previously said, but if you do code-char of 171 you get the following:
+      `(:punctuation . ,(punctuation-named (code-char 171))))
+;;#\Acute_Accent ? (this is what it previously said, but if you do
+;; code-char of 171 you get the following:
 ;; #\LEFT-POINTING_DOUBLE_ANGLE_QUOTATION_MARK
 
 
@@ -806,14 +762,6 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 ;;;-------------------------------------------
 ;;; Machinery for characters higher than that
 ;;;-------------------------------------------
-
-;; (code-char 954) => #\Greek_Small_Letter_Kappa
-;; (format nil "~x" 954) => 3BA
-;; (format nil "~a" (code-char 954)) => "κ"
-
-(defun to-hex (n)
-  (format nil "~x" n))
-
 
 (defparameter *entries-for-out-of-band-characters* 
   `((256 (:alphabetical . (:uppercase .,(code-char 256)))) ;; #\LATIN_CAPITAL_LETTER_A_WITH_MACRON
@@ -1702,35 +1650,6 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       
     ))
 
-
-(defparameter *cache-out-of-band-characters* t)
-
-(defun entry-for-out-of-band-character (char-code)
-  (let ((entry
-         (cadr (assoc char-code *entries-for-out-of-band-characters*))))
-    (or entry
-        (when *cache-out-of-band-characters*
-          (cache-out-of-band-character char-code))
-        (announce-out-of-range-character))))
-
-(defvar *new-characters-to-define* nil
-  "Holds a list of character points that require definition.
-   Needs to be emptied by hand. No provision as yet for storing
-   across runs if you don't actually make the definitions.")
-
-(defun cache-out-of-band-character (char-code)
-  ;; Called from character-entry when zero is returned or from
-  ;; entry-given-char-code for the characters above 256.
-  ;; Announce what's happening. Store the character code.
-  ;; Return an inoccuous character is its place.
-  (let ((character (code-char char-code)))
-    (format t "~&~%The character \"~a\", (code = ~a) is not in the alphabet yet.~
-                 ~%Using a space in its place.~%~%"
-            character char-code)
-    (pushnew (cons character char-code)
-          *new-characters-to-define*
-          :test #'equal)
-    '(:punctuation . :space)))
 
 
 

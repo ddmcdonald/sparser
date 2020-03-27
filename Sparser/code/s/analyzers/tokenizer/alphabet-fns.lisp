@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1996,2014-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2014-2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "alphabet fns"
 ;;;   Module:  "analyzers;tokenizer:"
-;;;  Version:  June 2016
+;;;  Version:  March 2020
 
 ;; initiated 9/21/92 v2.3
 ;; (4/20/93) added Set-tokenizer-table-entry
@@ -32,8 +32,98 @@
    because we don't want to further burden the inner-most of
    inner loops.")
 
+#| the 'out of band' characters (i.e. code points higher than 256)
+are defined in an alist in alphabet.lisp that is bound to
+the parameter *entries-for-out-of-band-characters* that is
+defined there. 
+
+Whenever a new punctuation character is added it has to be
+defined. Known punctuation is defined in grammar/rules/words/
+punctuation.list. For smaller code points the file makes an
+explicit call to define-punctuation. For all other punctuation
+it is added to a list in the file that is bound to
+*out-of-band-punctuation*. At the bottom of the punctuation file
+there is a call to add-punctuation-chars which maps the function
+add-punctuation-char over the list.
+
+|#
 
 
+(defparameter *cache-out-of-band-characters* t)
+
+(defun entry-for-out-of-band-character (char-code)
+  (let ((entry
+         (cadr (assoc char-code *entries-for-out-of-band-characters*))))
+    (or entry
+        (when *cache-out-of-band-characters*
+          (cache-out-of-band-character char-code))
+        (announce-out-of-range-character))))
+
+(defvar *new-characters-to-define* nil
+  "Holds a list of character points that require definition.
+   Needs to be emptied by hand. No provision as yet for storing
+   across runs if you don't actually make the definitions.")
+
+(defun cache-out-of-band-character (char-code)
+  ;; Called from character-entry when zero is returned or from
+  ;; entry-given-char-code for the characters above 256.
+  ;; Announce what's happening. Store the character code.
+  ;; Return an inoccuous character is its place.
+  (let ((character (code-char char-code)))
+    (format t "~&~%The character \"~a\", (code = ~a) is not in the alphabet yet.~
+                 ~%Using a space in its place.~%~%"
+            character char-code)
+    (pushnew (cons character char-code)
+          *new-characters-to-define*
+          :test #'equal)
+    '(:punctuation . :space)))
+
+
+;;---------------- extended (Mac) char set ------------
+
+(defun announce-out-of-range-character ()
+  "Called in run-token-fsa if a character doesn't have an entry
+   or its entry is 0."
+  (let* ((character (elt *character-buffer-in-use* *index-of-next-character*))
+         (code (char-code character)))
+    (push-debug `(,*index-of-next-character* ,*character-buffer-in-use*))      
+    (push-debug `(,character ,code))
+    ;;(lsp-break "out-of-range-char")
+    (error "~%The input stream contains the character \"~A\", whose character code~
+            ~%is ~A.  That character is not part of the ascii character set~
+            ~%(0 to 127), and has not yet been entered into either Sparser's ~
+            ~%extended character array (128 to 255) or its table of 'out of bound'~
+            ~%characters. Note that above ascii the character encoding is~
+            ~%expected to be unicode, UTF-8.~
+            ~%~
+            ~%   If the character shouldn't have been in the stream, then you~
+            ~%should just remove it and try again. If it does belong there, then ~
+            ~%you can extend the character set. If you meta-. on this function~
+            ~%that will take you to the file analyzers/tokenizer/alphabet.lisp~
+            ~%where you can see examples to copy and read more details.~
+            ~%"
+           character code (length *character-dispatch-array*))))
+
+#| When you get that error it's likely because the text you're running
+has a UTF-8 character that we don't have an entry for yet. The error message
+showed you what the character was visually, and identified the code point
+that has to be added to the *entries-for-out-of-band-characters* alist at
+the bottom of this file. Your job is to figure out what "normal" character
+that corresponds to (e.g. a unicode left-single-quotation-mark corresponds
+to an ascii single quote), as least for the purpose of telling the token fsa
+how to handle it -- the original character won't be replaced in the token.
+
+This will usually entail a web search. There are lots of unicode web pages.
+This is a reasonable choice http://www.fileformat.info/info/unicode/char/search.htm
+|#
+
+
+;; (code-char 954) => #\Greek_Small_Letter_Kappa
+;; (format nil "~x" 954) => 3BA
+;; (format nil "~a" (code-char 954)) => "κ"
+
+(defun to-hex (n)
+  (format nil "~x" n))
 
 ;;;----------------------------
 ;;; access function (off-line)
