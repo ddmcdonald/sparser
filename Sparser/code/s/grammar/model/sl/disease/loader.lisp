@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013,2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "sl;disease:"
-;;;   version:   December 2013
+;;;   version:   March 2020
 
 ;; initiated 12/27/07. Started expanding 5/6/13 with [named-entities],
 ;; [h-n-scanner]
@@ -22,4 +22,5 @@
 (gload "disease;disease-ref")
 (gload "disease;cases")
 
+(gload "disease;covid-19")
 
