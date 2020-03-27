@@ -40,7 +40,7 @@
 ;;;----------
 
 (defun define-country (name &key adjective aliases ;; Add 'language' for "Hebrew"
-                            cities)
+                            cities provinces language)
   (let ((country (define-or-find-individual 'country :name name))
         (category (category-named 'country))
         word  rules )
