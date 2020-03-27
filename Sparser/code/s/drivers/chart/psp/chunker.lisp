@@ -721,6 +721,9 @@
                            (loop for ee in edges-before
                                  thereis (eq (edge-cat-name ee) 'to)))))
                 (not (followed-by-verb e)))))
+      ((or (itypep (edge-referent e) 'most)
+           (itypep (edge-referent e) 'least))
+       t)
 
       (t (compatible-with-vg? e)))))
 
@@ -1143,7 +1146,8 @@ than a bare "to".  |#
    Return nil if this edge is not compatible.
    'evlist' is the list of edge-vectors on the ongoing chunk."
   ;; n.b. all the companion methods are in syntax/category-predicates.lisp
-  (declare (special e category::adverb category::also category::be category::have
+  (declare (special e evlist
+                    category::adverb category::also category::be category::have
                     category::modal
                     category::common-noun category::det category::ordinal
                     category::parentheses category::pronoun
@@ -1162,6 +1166,10 @@ than a bare "to".  |#
         (ecat (when (edge-p e) (edge-cat-name e)))
         (before (when (edge-p e) (edges-before e)))
         preceding-noun-refs)
+    (declare (special edges eform ecat before preceding-noun-refs))
+    #+ignore
+    (when (eq (form-cat-name e) 'adjective)
+      (break))
  
     (cond
       ((and (loop for ev in evlist
@@ -1612,7 +1620,8 @@ than a bare "to".  |#
                         (or
                          (and (eq (form-cat-name left)  'adverb)
                               (ng-head? (edge-just-to-left-of left)))
-                         (and (ng-head? left)
+                         (and (not (eq (edge-cat-name left) 'superlative))
+                              (ng-head? left)
                               (not (eq (edge-cat-name left) 'that)))))))))
 
 
