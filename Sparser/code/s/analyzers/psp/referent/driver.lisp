@@ -408,6 +408,10 @@ in the scope of referent-from-rule.
              (and (category-p right-ref) ;; (eq ref (individual-for-ref right-ref))
                   (itypep ref right-ref))))
        right-edge)
+      ((boundp '*da-constituent-edges*)
+       (loop for e in (symbol-value '*da-constituent-edges*)
+             when (eq ref (edge-referent e))
+             do (return e)))            
       (t
        (or (search-tree-for-referent left-edge ref)
            (search-tree-for-referent right-edge ref)
