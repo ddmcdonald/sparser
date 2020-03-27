@@ -271,6 +271,10 @@ where it regulates gene expression.") ;; no restriction on the 'it'
           (and (itypep interp (car cv))
                (eq (pname var) (second cv)))))
 
+#| Non-individual warning is triggerd by
+  "In the undirected model, contact was a function of within-state flows 
+and both flows into and out of a state."  because 'interp' includes the
+symbol 't' -- (t #<flow-endurant plural 98209>)   ddm 3/25/20|#
 (defun reinterp-list-using-bindings (interps bindings)
   (loop for (var val) in (reverse bindings)
         ;; the value of indiv-old-binds is created by PUSH operations -- it is in reverse order!
