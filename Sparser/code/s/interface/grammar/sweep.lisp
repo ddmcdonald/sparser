@@ -22,9 +22,10 @@
 
 (in-package :sparser)
 
-
 (defun strip-model-descriptions (list)
-  ;; Called by identify-relations
+  "Called by identify-relations to pass the raw-entities and raw-relations
+   that are collected by collect-model and pass them through a filter
+   dropping out types of individuals that aren't relevant."
   (let (  clean-items  )
     (dolist (item list)
       (when item ;; some are null
@@ -95,7 +96,7 @@
 
 (defgeneric collect-model (object)
   (:documentation "Called from identify-relations after all
-   other operatiosn on a sentence have been done, provided
+   other operations on a sentence have been done, provided
    that the *readout-relations* flag is set. Returns a list
    of (variable-name, value) pairs based on a recursive
    sweep through the bindings on individuals. Called on
@@ -116,17 +117,45 @@
 (defmethod collect-model ((c category)) nil) ;;`(,c))
 ;; anything else to be dropped on the floor?
 
+(defparameter *original-collect-mode-recursion-on-individuals* t)
+
+(defvar *categories-seen-by-collect-model* nil)
+(define-per-run-init-form
+    (setq *categories-seen-by-collect-model* nil))
+
+(defgeneric filter-bindings-by-category (i)
+  (:documentation "For selected categories, remove certain bindings
+    from the recursive collection walk over bind values.
+    Returns the list of bindings to use.")
+  (:method ((i individual))
+    ;; Evolve into eql signatures if this starts to get large
+    (let ((i-cat (cat-name (itype-of i)))
+          (bindings (indiv-binds i)))
+      (push i-cat *categories-seen-by-collect-model*)
+      (case i-cat
+        (company (break "company: ~a" i))
+        (otherwise
+         bindings)))))
+
 
 (defmethod collect-model ((i individual))
-  (declare (special category::number category::prepositional-phrase))
+  (declare (special category::number category::prepositional-phrase
+                    *original-collect-mode-recursion-on-individuals*))
+  
   (unless (gethash i *individuals-seen*)
-    (let ((bindings (indiv-binds i))
+    
+    (let ((bindings (if *original-collect-mode-recursion-on-individuals*
+                      (indiv-binds i)
+                      (filter-bindings-by-category i)))
           objects )
+      
       (push (if (itypep i category::number)
               (value-of 'value i)
               i)
             objects)
+
       (setf (gethash i *individuals-seen*) t)
+
       (dolist (b bindings)
         (let* ((var (binding-variable b))
                (var-name (var-name var))
@@ -135,24 +164,30 @@
           (unless (or (memq var-name '(category trailing-parenthetical))
                       (typep value 'mixin-category)) ;; has-determiner
             (typecase value
-              (individual 
-               (cond
-                ;;((itypep value 'unclear) nil)
-                 ((itypep value category::prepositional-phrase)
-                  (cond ((value-of 'pobj value)
-                         (push (list var-name
-                                     (collect-model-description (value-of 'pobj value)))
-                               objects))
-                        ((value-of 'comp value)
-                         (push (list var-name
-                                     (collect-model-description (value-of 'comp value)))
-                               objects))))
-                ((itypep value 'protein-family) ;; no longer use bio-family
-                 (push (list var-name value)
-                       objects))
-                (t
-                 (push (list var-name (collect-model value))
-                       objects))))
+              (individual
+               (if *original-collect-mode-recursion-on-individuals*
+                 (cond
+                   ;;((itypep value 'unclear) nil)
+                   ((itypep value category::prepositional-phrase)
+                    (cond ((value-of 'pobj value)
+                           (push (list var-name
+                                       (collect-model-description (value-of 'pobj value)))
+                                 objects))
+                          ((value-of 'comp value)
+                           (push (list var-name
+                                       (collect-model-description (value-of 'comp value)))
+                                 objects))))
+                   ((itypep value 'protein-family) ;; no longer use bio-family
+                    (push (list var-name value)
+                          objects))
+                   (t
+                    (push (list var-name (collect-model value))
+                          objects)))
+                 (else
+                   (let ((interior-objects
+                          (collect-from-individual i var-name value)))
+                     (loop for o in interior-objects
+                        do (push o objects))))))
               (number)
               (list (push (list var-name (list :list value))
                           objects))
@@ -169,6 +204,35 @@
                (break "Unexpected type of value of a binding: ~a" value))))))
       
       (reverse objects))))
+
+
+(defun collect-from-individual (i var-name value)
+  "Normally we recursively call collect-model on the values of all
+   of the bindings. But for some cases we want to deliberated
+   ignore some of those bindings as subsumed in the individual"
+  ;; Right now this is inside a loop over i's bindings.
+  ;; Might have to position this dispatch earlier
+  (let ((v-cat (cat-name (itype-of value)))
+        objects ) ;; for the new ones
+    (case v-cat
+      (prepositional-phrase
+       (cond ((value-of 'pobj value)
+              (push (list var-name
+                          (collect-model (value-of 'pobj value)))
+                    objects))
+             ((value-of 'comp value)
+              (push (list var-name
+                          (collect-model (value-of 'comp value)))
+                    objects))))
+
+      (protein-family ;; no longer use bio-family
+       (push (list var-name value)
+             objects))
+      (otherwise
+       (push (list var-name (collect-model value))
+             objects)))
+
+    objects))
 
 
 ;;;--------------------------------------------------------------------

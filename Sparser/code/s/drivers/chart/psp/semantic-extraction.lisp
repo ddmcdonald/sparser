@@ -5,10 +5,11 @@
 ;;;   Module:  "drivers/chart/psp/"
 ;;;  version:  March 2018
 
+;;; This file contains all the functions/methods for extracting the
+;;;  elements of the semantics of a parse, for display to the user,
+;;;  and for transmission to Spire...
 
-;;; This file contains all the functions/methods for extracting the elements of the semantics of a
-;;;  parse, for display to the user, and for transmission to Spire...
-
+(in-package :sparser)
 
 ;;;-----------------------
 ;;; identifying relations
@@ -16,7 +17,7 @@
 
 ;; (setq *readout-relations* nil)
 ;; (identify-relations *sentence*)
-(in-package :sparser)
+
 (defvar *relations* nil
   "Holds the relations for the last sentence when *readout-relations* is up")
 (defvar *entities* nil
