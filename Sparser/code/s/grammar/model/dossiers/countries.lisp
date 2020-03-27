@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 199-1995,2011-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 199-1995,2011-2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "countries"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  September 2019
+;;;  version:  March 2020
 
 ;; 0.1 (10/12/92 v2.1) introducing new semantics
 ;;     (9/7 v2.3) revived the existing set of cases
@@ -35,6 +35,7 @@
 (define-country "Bahrain")
 (define-country "Bangladesh")
 (define-country "Barbados")
+(define-country "Balearic Islands") ;; linked to Spain
 (define-country "Belarus")
 (define-country "Belgium")
 (define-country "Belize")
@@ -44,8 +45,10 @@
 (define-country "Bosnia and Herzegovina")
 (define-country "Botswana")
 (define-country "Brazil")
-(define-country "Britain" :aliases '("United Kingdom" "UK") :adjective "British"
-  :cities '("London" "Birmingham" "Cardiff"))
+(define-country "Britain"
+    :aliases '("United Kingdom" "UK")
+    :adjective "British"
+    :cities '("London" "Birmingham" "Cardiff"))
  (define-country "England" :adjective "English")
  (define-country "Scotland" :adjective "Scotish")
  (define-country "Wales" :adjective "Welsh")
@@ -59,12 +62,16 @@
 (define-country "Cambodia")
 (define-country "Cameroon")
 (define-country "Canada" :adjective "Canadian")
+(define-country "Canary Islands") ;; linked to Spain
 (define-country "Cape Verde")
 (define-country "Central African Republic")
 (define-country "Chad")
 (define-country "Chile")
-(define-country "China" :adjective "Chinese" :aliases '("PRC")
-  :cities '("Beijing" "Shanghai" "Guangzhou"))
+(define-country "China"
+    :adjective "Chinese"
+    :aliases '("PRC")
+    :provinces (Hubei
+    :cities '("Beijing" "Shanghai" "Guangzhou" "Wuhan"))
 (define-country "Colombia")
 (define-country "Comoros")
 (define-country "Costa Rica")
@@ -110,10 +117,14 @@
 (define-country "India" :adjective "Indian"
   :cities '("New Deli" "Mumbai"))
 (define-country "Indonesia")
-(define-country "Iran" :adjective "Iranian")
+(define-country "Iran"
+    :adjective "Iranian"
+    :cities ("Qom"))
 (define-country "Iraq" :adjective "Iraqi")
 (define-country "Ireland")
-(define-country "Israel" :adjective '("Israeli" "Jewish")) ;; :language "Hebrew"
+(define-country "Israel"
+    :adjective '("Israeli" "Jewish")
+    :language "Hebrew")
 (define-country "Italy")
 (define-country "Jamaica")
 (define-country "Japan" :adjective "Japanese"
@@ -136,6 +147,7 @@
 (define-country "Lithuania")
 (define-country "Luxembourg")
 (define-country "Macedonia")
+(define-country "Macau") ;; Chinese province?
 (define-country "Madagascar")
 (define-country "Malawi")
 (define-country "Malaysia")
@@ -189,13 +201,15 @@
 (define-country "Serbia")
 (define-country "Seychelles")
 (define-country "Sierra Leone")
-(define-country "Singapore")
+(define-country "Singapore") ;; city state
 (define-country "Slovakia")
 (define-country "Slovenia")
 (define-country "Solomon Islands")
 (define-country "Somalia")
 (define-country "South Africa")
-(define-country "South Korea" :adjective "South Korean")
+(define-country "South Korea"
+    :adjective "South Korean"
+    :cities ("Daegu"))
 (define-country "Spain")
 (define-country "Sri Lanka")
 (define-country "Sudan")
@@ -223,7 +237,7 @@
   :aliases '("US" "U.S." "U.S.A." "America" )
   :adjective '("American")
   :cities '("Washington, D.C." "New York"
-            "an Francisco"))
+            "San Francisco"))
 (define-country "Uruguay")
 (define-country "Uzbekistan")
 (define-country "Vanuatu")
