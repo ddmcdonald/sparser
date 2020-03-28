@@ -234,7 +234,7 @@
 ;; (include-grammar-module  *ambush*)
 ;; (include-grammar-module  *call-signs*)
 ;; (include-grammar-module  *checkpoint-ops*)
-;; (include-grammar-module  *disease*)
+(include-grammar-module  *disease*)
 (include-grammar-module  *biology*)
 ;; (include-grammar-module  *hurricanes*)
 ;;(include-grammar-module  *generic-military*)
