@@ -235,9 +235,9 @@
                                    *right-segment-boundary*))
 
 
-
+(defvar *left-segment-boundary*)
+(defvar *right-segment-boundary*)
 (defun edge-starts-at-segment-boundary (edge)
-  (declare (special *left-segment-boundary*))
   (eq (pos-edge-starts-at edge)
       *left-segment-boundary*))
 
@@ -245,7 +245,6 @@
 ;;---- below here not vetted for segment ending in polyword
 
 (defun edge-over-segment-suffix (&optional (rightmost-pos *right-segment-boundary*))
-  (declare (special *right-segment-boundary*))
   (let* ((right-ev (pos-ends-here rightmost-pos))
          (top-node (ev-top-node right-ev)))
     (when (eq top-node :multiple-initial-edges)

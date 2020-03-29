@@ -38,6 +38,7 @@
 ;;;-------------------------------------
 
 (defparameter *trace-conjunction-algorithm* nil)
+(defparameter *trace-conjunction-hook* nil)
 
 (defun trace-conjunction-algorithm ()
   (setq *trace-conjunction-algorithm* t))
@@ -97,7 +98,7 @@
 ;;; the 'hook', notes whether conjunction is triggered
 ;;;----------------------------------------------------
 
-(defparameter *trace-conjunction-hook* nil)
+
 
 (defun trace-conjunction-hook ()
   (setq *trace-conjunction-hook* t))

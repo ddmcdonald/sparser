@@ -831,6 +831,7 @@
 (defun maybe-do-lambda-expansion (desc desc-sexp lambda-expansion)
   ;; when we have a *lambda-var* in the desc-sexp, and we know the
   ;;  variable to be bound, do the substitution
+  (declare (special *predication-links-ht*))
   (when lambda-expansion
     (let ((subst-desc-sexp
            (subst

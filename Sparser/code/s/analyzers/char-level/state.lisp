@@ -27,7 +27,9 @@
    the tokenizer should take the next character from. Incremented
    each time it is used, hence it's initialization to minus one.")
 
-(unless (boundp '*length-of-character-input-buffer*)
+(defvar *length-of-character-input-buffer*)
+(unless (and (boundp '*length-of-character-input-buffer*)
+             (numberp *length-of-character-input-buffer*))
   (defparameter *length-of-character-input-buffer*  200000
     ;; 200,000 characters
     ;; formerly 1000 -- Has to be large to read the articles in

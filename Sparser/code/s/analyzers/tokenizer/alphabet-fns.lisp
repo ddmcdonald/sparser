@@ -52,6 +52,7 @@ add-punctuation-char over the list.
 (defparameter *cache-out-of-band-characters* t)
 
 (defun entry-for-out-of-band-character (char-code)
+  (declare (special *entries-for-out-of-band-characters*))
   (let ((entry
          (cadr (assoc char-code *entries-for-out-of-band-characters*))))
     (or entry

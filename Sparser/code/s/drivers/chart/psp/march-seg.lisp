@@ -325,7 +325,8 @@ its head will be at
    to the right."
   ;; Better accumulator than treetops-in-current-chunk because it digs deeper
   ;; when there are multple edges on a position
-  (declare (special *current-chunk* *left-segment-boundary* *right-segment-boundary*))
+  (declare (special *current-chunk* *chunk*
+                    *left-segment-boundary* *right-segment-boundary*))
   (let* ((start-pos (chunk-start-pos *chunk*))
          (end-pos (chunk-end-pos *chunk*))
          (length ;;(number-of-terminals-between start-pos end-pos)

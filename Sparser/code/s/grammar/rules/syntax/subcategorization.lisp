@@ -167,6 +167,7 @@
   (:method ((i individual))
     (subcat-patterns (get-subcategorization (itype-of i)))))
 
+(defvar *labels-to-their-subcategorization*)
 
 (defun get-subcategorization (label)
   (gethash label *labels-to-their-subcategorization*))
@@ -199,13 +200,15 @@
            (get-subcategorization conj-type))))
       (t (get-subcategorization (itype-of ref-object))))))
 
+(defvar *labels-to-their-subcategorization* nil)
+(defvar *all-subcat-frames* nil)
+(defvar *all-subcat-patterns* nil)
 
-(unless (and (boundp '*labels-to-their-subcategorization*)
-             (hash-table-p (symbol-value '*labels-to-their-subcategorization*)))
-  (defparameter *labels-to-their-subcategorization* (make-hash-table)
-  "From words or categories to subcategorization objects")
-  (defparameter *all-subcat-frames* nil)
-  (defparameter *all-subcat-patterns* (make-hash-table)))
+(unless (hash-table-p (symbol-value '*labels-to-their-subcategorization*))
+  (setf *labels-to-their-subcategorization* (make-hash-table))
+  ;;"From words or categories to subcategorization objects"
+  (setf *all-subcat-frames* nil)
+  (setf *all-subcat-patterns* (make-hash-table)))
 
 (defun all-subcat-patterns ()
   (unless (> (hash-table-count *all-subcat-patterns*) 0)

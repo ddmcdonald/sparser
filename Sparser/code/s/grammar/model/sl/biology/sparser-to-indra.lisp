@@ -302,6 +302,8 @@ pass the result to the appropriate indra generator"
                (make-indra-act-or-express f cat? pmid))
               (inhibit 
                (make-indra-act-or-express f cat? pmid))
+              (decrease 
+               (make-indra-act-or-express f cat? pmid))
               (bio-inactivate 
                (make-indra-act-or-express f cat? pmid))
               ((gene-transcript-express gene-transcript-over-express
