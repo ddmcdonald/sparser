@@ -250,6 +250,7 @@
 (defvar *from-BigMech-default* nil)
 (defvar *from-no-morph-default* nil)
 (defvar *from-morphology* nil)
+;; *bio-entity-strings* is in analyzers/psp/patterns/driver.lisp
 
 (defun reset-unknown-word-accumulators ()
   (setq *newly-found-unknown-words* nil
@@ -257,17 +258,20 @@
         *from-BigMech-default* nil
         *from-no-morph-default* nil
         *from-morphology* nil
+        *bio-entity-strings* (list *bio-entity-initial-string*)
         ))
 
 (defun display-word-accumulator-tallies (&optional (stream *standard-output*))
   (format stream "~& ~a looked up in Comlex~
                   ~% ~a deduced from their morphology~
                   ~% ~a added by Big Mechanism default~
-                  ~% ~a added with default setup~%~%"
+                  ~% ~a added with default setup~
+                  ~% ~a added from no-space operations~%~%"
           (length *from-comlex*)
           (length *from-morphology*)
           (length *from-BigMech-default*)
-          (length *from-no-morph-default*)))
+          (length *from-no-morph-default*)
+          (1- (length *bio-entity-strings*))))
 
 #| make-word/all-properties/or-primed => objects/chart/words/lookup/new-words
 The real call is to establish-unknown-word, which gets set by the switch
@@ -288,6 +292,7 @@ unknown words.|#
      (pushnew word *from-BigMech-default*))
     
     (:default ;; setup-unknown-word-by-default -- no mophology information
+     ;; will be redundantly listed in *from-morphology*
      (pushnew word *from-no-morph-default*))
 
     ((:ends-in-ed :ends-in-ing :ends-in-ly
@@ -316,6 +321,77 @@ unknown words.|#
   (when *collect-new-words*
     (pushnew word *newly-found-unknown-words*)))  |#
 
+
+;;--- saving an alloquat of unknown word information
+#|
+  1. (reset-unknown-word-accumulators)
+  2. run the files you want the data on, e.g.
+        (run-n-json-articles 50)
+  3. pick a name to describe what you did: 'xriv-1-50 
+  4. figure out where you want to stash the file
+  5. call save-unknown-word-alloquate with the name and filename
+|#
+
+(defun save-unknown-word-alloquate (name outfilename)
+  "Sort the different lists or otherwise clean up the various
+   accumulators. Write them to 'outfilename' as a succession
+   of lists each bound to a parameter whose name will
+   incorporate the name of this run in an attempt to be unique"
+  (with-open-file (out outfilename :direction :output
+                       :if-exists :overwrite :if-does-not-exist :create)
+    (format out ";; ~a sample of unknown words~
+               ~%;; created ~a~
+             ~%~%(in-package :sparser)~%"
+            name (date-&-time-as-formatted-string))
+
+    (flet ((tailored-string (type)
+             (intern (string-append type "-" name)
+                     (find-package :sparser))))
+      
+      (let ((pnames (loop for word in (sort-words *from-BigMech-default*)
+                       collect (word-pname word)))
+            (var-name (tailored-string 'bigmech)))
+        (format out "~&~%;; extracted as unknown bio-entity~%")
+        (write-list-to-param var-name pnames out))
+
+      (let* ((minus-seed (delete *bio-entity-initial-string*
+                                 *bio-entity-strings*
+                                 :test #'string=))
+             (sorted (sort (copy-list minus-seed) #'string-lessp))
+             (var-name (tailored-string 'bio-entity)))
+        (format out "~&~%;; defined as a bio-entity~%")
+        (write-list-to-param var-name sorted out))
+
+      (let* ((minus-default
+              (if (null *from-no-morph-default*)
+                *from-morphology*
+                (loop for word in *from-morphology*
+                   unless (memq word *from-no-morph-default*)
+                   collect word)))
+             (pnames (loop for word in (sort-words minus-default)
+                        collect (word-pname word)))
+             (var-name (tailored-string 'morph)))
+        (format out "~&~%;; extracted by morphology~%")
+        (write-list-to-param var-name pnames out))
+      
+      (let ((pnames (loop for word in (sort-words *from-no-morph-default*)
+                       collect (word-pname word)))
+            (var-name (tailored-string 'defaulted)))
+        (format out "~&~%;; extracted with default mophology~%")
+        (write-list-to-param var-name pnames out))
+
+      (let ((pnames (loop for word in (sort-words *from-comlex*)
+                       collect (word-pname word)))
+            (var-name (tailored-string 'comlex)))
+        (format out "~&~%;; extracted from Comlex~%")
+        (write-list-to-param var-name pnames out)))))
+
+(defun write-list-to-param (param-name list stream)
+  (format stream "~&(defvar ~a~
+                  ~%  '(" param-name)
+  (loop for item in list
+     do (format stream "~s " item))
+  (format stream "))~%"))
 
 ;;;------------------------
 ;;; sweeping for sentences
