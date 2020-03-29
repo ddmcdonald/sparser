@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  February 2019
+;;;  version:  March 2019
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -303,9 +303,16 @@
              (tr :made-edge edge)
              edge)))))
 
-(defparameter *bio-entity-strings* (list "not-a-word-end-marker"))
+
+(defparameter *bio-entity-initial-string* "not-a-word-end-marker"
+  "A labeled value makes it easy to remove from the list later")
+
+(defparameter *bio-entity-strings* (list *bio-entity-initial-string*)
+  "If this has a value then the words string for every newly created
+   bio-entity will be pushed onto this list")
+
 (defun collect-bio-entity-strings ()
-  (setq *bio-entity-strings* (list "111BOGUSSTRING***")))
+  (setq *bio-entity-strings* (list *bio-entity-initial-string*)))
 
 (defun reify-ns-name-as-bio-entity (pos-before pos-after)
   "Called from reify-ns-name-and-make-edge when *big-mechanism*
