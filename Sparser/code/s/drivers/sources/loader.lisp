@@ -24,5 +24,6 @@
   (lload "source-drivers;articles")
   (lload "source-drivers;document")
   (lload "source-drivers;scan-parsed-document")
+  (lload "source-drivers;json-corpus-registry")
   (lload "source-drivers;reading-json")
   (lload "source-drivers;driver"))

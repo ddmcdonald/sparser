@@ -20,6 +20,15 @@
     (unless (probe-file dir-path) (error "extension to directory is wrong" dir-path))
     dir-path))
 
+(defun json-relative-pathname (path)
+  (let* ((base (namestring (json-base)))
+         (pathname (namestring path))
+         (path-base (subseq pathname 0 (length base))))
+    (when (equal base path-base)
+      (subseq pathname (length base)))))
+
+(defun json-absolute-pathname (rel-path)
+  (concatenate 'string (namestring (json-base)) (namestring rel-path)))
 
 (defparameter *json-corpus-paths*
   '((rxiv "biorxiv_medrxiv")
@@ -36,7 +45,7 @@ I was trying to copy that.  Also, since no one is going to be able to remember
 these file names, it would be nice to collect whole directories of pathnames
 and have some sort of "do the next one" set up
 
-[MDM 3/17/20]  Okay, see what you think of this setup...
+[MDM 3/17/20]
 
 You can collect the files into the hopper using, e.g.:
 (sparser::collect-json-directory :dir "biorxiv_medrxiv")
@@ -63,52 +72,167 @@ else that takes two arguments:  (1) the s-expression (2) the file's pathname
 
 (defvar *json-files-to-read* nil)  ;; The file path hopper
 
+(defparameter *corpus-registry-path*
+  (probe-file (lisp-file (sparser-logical-pathname "source-drivers;json-corpus-registry.lisp"))))
+
 (defun all-covid-json-filepaths ()
   (setf *json-files-to-read*
         (loop for dir in '("biorxiv_medrxiv" "comm_use_subset" "noncomm_use_subset")
               append (progn (collect-json-directory :dir dir :quiet t)
                             *json-files-to-read*)))
-  (format t "~%Loading ~d file pathnames into the hopper.~%To process the next one, call (sparser::do-next-json)~%To see what the next is, call (sparser::peek-next-json)~%To do the rest, call (sparser::do-remaining-json)~%To do a batch of n using (sparser::do-remaining-json :n n)~%Remaining list stored in sparser::*json-files-to-read*.~%"
+  (format t "~%Loading ~d file pathnames into the hopper.~%To process the next one, call (sparser::do-next-json)~%To process a particular one, call, e.g., (sparser::do-json 'com-52)~%To see what the next is, call (sparser::peek-next-json)~%To do the rest, call (sparser::do-remaining-json)~%To do a batch of n using (sparser::do-remaining-json :n n)~%Remaining list will be stored in sparser::*json-files-to-read*.~%...~%"
           (length *json-files-to-read*))
   :done)
 
-(defun collect-json-directory (&key (dir "biorxiv_medrxiv")(quiet nil))
-  (declare (type string dir)) ;; To appease compiler complaints
-  (let* ((double-dir (format nil "~a/~a/" dir dir)) ;; May want to make more flexible
-         (dir-path (json-directory :base (json-base) :dir double-dir))
-         (wild-path (merge-pathnames "*.json" dir-path))
-         (file-paths (directory wild-path)))
-    (cond ((not file-paths)
-           (warn "No json files found in location ~a." dir-path))
+(defun collect-json-directory (&key (dir)(quiet nil) (append))
+  (let ((decoded-dir (decoded-dir dir))
+        (encoded-dir (encoded-dir dir)))
+    (when decoded-dir  ;; Don't proceed if there's no entry in *json-corpus-paths* that contains it, as key or value.
+      (let* ((double-dir (format nil "~a/~a/" decoded-dir decoded-dir)) ;; May want to make more flexible
+             (dir-path (json-directory :base (json-base) :dir double-dir))
+             (wild-path (merge-pathnames "*.json" dir-path))
+             (file-paths (directory wild-path)))
+        (cond ((not file-paths)
+               (warn "No json files found in location ~a." dir-path))
+              (t
+               (unless quiet
+                 (format t "~%Loading ~d file pathnames into the hopper.~%To process the next one, call (sparser::do-next-json)~%To process a particular one, call, e.g., (sparser::do-json 'com-52)~%To see what the next is, call (sparser::peek-next-json)~%To do the rest, call (sparser::do-remaining-json)~%To do a batch of n using (sparser::do-remaining-json :n n)~%Remaining list will be stored in sparser::*json-files-to-read*.~%...~%"
+                         (length file-paths)))
+               (setf *json-files-to-read*
+                     (register-corpus-filepaths file-paths encoded-dir))
+               :done))))))
+
+(defgeneric decoded-dir (dir-handle)
+  (:documentation
+   "Get the json directory that this handleiated symbol or string denotes, if any exists")
+  (:method ((dir-sym symbol))
+    (decoded-dir (symbol-name dir-sym)))
+  (:method ((dir-str string))
+    (or (second (assoc (intern (string-upcase dir-str) :sparser)
+                       *json-corpus-paths*))
+        (and (member dir-str *json-corpus-paths*
+                     :key #'second :test #'equal)
+             dir-str)
+        (t nil))))
+
+(defgeneric encoded-dir (dir-name)
+  (:documentation
+   "Get the abbreviated handle for this json directory.")
+  (:method ((dir-sym symbol))
+    (encoded-dir (symbol-name dir-sym)))
+  (:method ((dir-str string))
+    (let ((entry
+           (find-if
+            #'(lambda (entry)
+                (or (equal (second entry) dir-str)
+                    (eq (first entry) (intern (string-upcase dir-str) :sparser))))
+            *json-corpus-paths*)))
+      (first entry))))
+
+(defgeneric decoded-file (file-handle)
+  (:documentation
+   "Get the json file path namestring that this handle symbol or string denotes,
+ if any such file is registered.")
+  (:method ((file-sym symbol))
+    (decoded-file (symbol-name file-sym)))
+  (:method ((file-str string))
+    (let* ((sym (intern (string-upcase file-str) :sparser))
+           (rel-path (some #'(lambda (registry-tuple)
+                               (let ((registry (cdr registry-tuple)))
+                                 (second (find sym registry :key #'first :test #'equal))))
+                           *corpus-handle-registries*)))
+      (when rel-path
+        (json-absolute-pathname rel-path))))
+  (:method ((file-path pathname))
+    file-path))
+
+;; Returns a list of handles for the files.  The order of the handles returned
+;; Does NOT neccessarily correpsond to the order of the paths argument.
+;; We go by the order in the registry.
+;; Note: A side-effect of this function is that ./json-corpus-registry.lisp will
+;; get rewritten.
+(defun register-corpus-filepaths (paths dir &key (write t))
+  (let ((dir-handle (encoded-dir dir)))
+    (macrolet ((registry-tuple () `(assoc dir-handle *corpus-handle-registries*))
+               (registry () `(cdr (registry-tuple))))
+      ;; add a registry for the dir-handle if it doesn't exist
+      (unless (registry-tuple)
+        (setf *corpus-handle-registries*
+              (append *corpus-handle-registries* (list (list dir-handle)))))
+      ;; The registry tuple is of the form: (<dir-handle> . <registry>)
+      ;; where the registry is a list of file tuples of the form: (<file-handle> . <path-namestring>)
+      (flet ((registered-file (str)
+               ;; return the handle associated with this file, iff it's registered.
+               (first (find str (registry) :key #'second :test #'equal)))
+             (register-file (str)
+               ;; register the file under the next new handle.
+               ;; the list is one-indexed.
+               (let* ((next-handle-str (format nil "~a-~a" dir-handle (length (registry-tuple))))
+                      (next-handle (intern next-handle-str :sparser)))
+                 (setf (registry)
+                       (append (registry)
+                               (list (list next-handle str))))
+                 next-handle)))
+        (let* ((handles (mapcar #'(lambda (path)
+                                    (or (registered-file (json-relative-pathname path))
+                                        (register-file (json-relative-pathname path))))
+                                paths))
+               (extra-registered
+                (remove-if #'(lambda (file-tuple)
+                               (member (car file-tuple) handles))
+                           (registry))))
+          (when extra-registered
+            (warn "There are extra files in the registry that aren't in the provided path list:~%  ~a."
+                  extra-registered))
+          (when write (write-corpus-registry))
+          (sort handles #'string<))))))
+
+(defun write-corpus-registry ()
+  (cond ((not *corpus-registry-path*) (warn "Corpus registy not found."))
+        (t
+         (with-open-file (stream *corpus-registry-path*
+                                 :direction :output
+                                 :if-exists :supersede)
+           (format stream "(in-package :sparser)")
+           (let ((*package* (find-package :sparser)))
+             (format stream "~%~%(defparameter *corpus-handle-registries*~%'~S)" *corpus-handle-registries*))))))
+
+;; file name can be a pathname, a path namestring, or an abbreviated
+;; symbol of string, e.g. (do-json 'com-1)
+(defun do-json (file-handle &key (do-fn *default-json-processing-fn*))
+  (let ((file-namestring (decoded-file file-handle)))
+    (cond ((not file-namestring)
+           (warn "No registered json path found for file handle ~a.  Run collect-json-directory to register a directory's files." file-handle)
+           nil)
           (t
-           (unless quiet
-             (format t "~%Loading ~d file pathnames into the hopper.~%To process the next one, call (sparser::do-next-json)~%To see what the next is, call (sparser::peek-next-json)~%To do the rest, call (sparser::do-remaining-json)~%To do a batch of n using (sparser::do-remaining-json :n n)~%Remaining list stored in sparser::*json-files-to-read*.~%"
-                     (length file-paths)))
-           (setf *json-files-to-read* file-paths)
-           :done))))
+           (let ((rel-name (json-relative-pathname file-namestring))
+                 (filepath (probe-file file-namestring)))
+             (cond ((not filepath)
+                    (error "probe-file returned nil for file path ~s" file-namestring))
+                   (t
+                    (format t "~%~% Processing file: ~s ~s~%" file-handle rel-name)
+                    (let ((sexp (cl-json:decode-json-from-source filepath)))
+                      (cond ((null sexp)
+                             (warn "The json file looks empty."))
+                            ((not (fboundp do-fn))
+                             (error "~a (value for keyword :do-fn) is not fbound." do-fn))
+                            (t
+                             (let ((fn-obj (symbol-function do-fn)))
+                               (funcall fn-obj sexp filepath))))))))))))
+
 
 (defun do-next-json (&key (do-fn *default-json-processing-fn*))
   (let ((next-file (pop *json-files-to-read*)))
-    (cond ((not (probe-file next-file))
-           (error "probe-file returned nil for file path ~s" next-file))
-          (t
-           (format t "~%~% Processing file: ~s~%" next-file)
-           (let ((sexp (cl-json:decode-json-from-source next-file)))
-             (cond ((null sexp)
-                    (warn "The json file looks empty."))
-                   ((not (fboundp do-fn))
-                    (error "~a (value for keyword :do-fn) is not fbound." do-fn))
-                   (t
-                    (let ((fn-obj (symbol-function do-fn)))
-                      (declare (type function fn-obj))
-                      (funcall fn-obj sexp next-file)))))))))
+    (do-json next-file :do-fn do-fn)))
 
 (defun peek-next-json ()
   (declare (type list *json-files-to-read*))
-  (let ((next-file (car *json-files-to-read*)))
-    (cond ((not next-file)
-           (format t "The reading list is empty." next-file))
-          (t (format t "The next json path is:~%  ~s~%  It is followed by ~a more" next-file (- (length *json-files-to-read*) 1))
+  (let* ((next-file-handle (car *json-files-to-read*))
+         (next-file (decoded-file next-file-handle)))
+    (cond ((not next-file-handle)
+           (format t "The reading list is empty."))
+          (t (format t "The next json file to process is ~a, at:~% ~s.~%  It is followed by ~a more."
+                     next-file-handle next-file (- (length *json-files-to-read*) 1))
              next-file))))
 
 (defun do-remaining-json (&key (do-fn *default-json-processing-fn*)
