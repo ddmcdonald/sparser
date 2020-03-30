@@ -251,6 +251,8 @@
 (defvar *from-no-morph-default* nil)
 (defvar *from-morphology* nil)
 ;; *bio-entity-strings* is in analyzers/psp/patterns/driver.lisp
+(defvar *first-names* (make-hash-table :size 5000 :test #'equalp))
+(defvar *last-names* (make-hash-table :size 5000 :test #'equalp))
 
 (defun reset-unknown-word-accumulators ()
   (setq *newly-found-unknown-words* nil
@@ -332,7 +334,7 @@ unknown words.|#
   5. call save-unknown-word-aliquat with the name and filename
 |#
 
-(defun save-unknown-word-aliquat (name outfilename)
+(defun save-unknown-word-aliquat (name outfilename &aux *fnames* *lnames*)
   "Sort the different lists or otherwise clean up the various
    accumulators. Write them to 'outfilename' as a succession
    of lists each bound to a parameter whose name will
@@ -352,7 +354,36 @@ unknown words.|#
                        collect (word-pname word)))
             (var-name (tailored-string 'bigmech)))
         (format out "~&~%;; extracted as unknown bio-entity~%")
-        (write-list-to-param var-name pnames out))
+
+        (when (or (> (hash-table-count *first-names*) 0)
+                  (> (hash-table-count *last-names*) 0))
+          (setq *fnames*
+                (loop for w in pnames when (gethash (pname w) *first-names*) collect w))
+          (setq *lnames*
+                (loop for w in pnames when (gethash (pname w) *last-names*) collect w))
+          (setq pnames (loop for w in pnames
+                             unless (or (gethash (pname w) *first-names*)
+                                        (gethash (pname w) *last-names*))
+                             collect w))
+          (write-list-to-param (format nil "~a-All-Upper" var-name)
+                               (loop for w in pnames
+                                     when (equal (pname w) (string-upcase (pname w)))
+                                     collect w)
+                               out)
+          (write-list-to-param (format nil "~a-All-Lower" var-name)
+                               (loop for w in pnames
+                                     when (equal (pname w) (string-downcase (pname w)))
+                                     collect w)
+                               out)
+          (write-list-to-param (format nil "~a-MixedCase" var-name)
+                               (loop for w in pnames
+                                     unless (or
+                                             (equal (pname w) (string-downcase (pname w)))
+                                             (equal (pname w) (string-upcase (pname w))))
+                                     collect w)
+                               out)
+          (write-list-to-param "FirstNames" *fnames* out)
+          (write-list-to-param "LastNames" *lnames* out)))
 
       (let* ((minus-seed (delete *bio-entity-initial-string*
                                  *bio-entity-strings*

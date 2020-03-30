@@ -111,8 +111,7 @@
 
 
 (defvar *authors-and-bibs* nil)
-(defvar *first-names* nil)
-(defvar *last-names* nil)
+
 
 (defun extract-authors-and-bibliography (sexp)
   (declare (special *article-short-name*))
@@ -131,9 +130,9 @@
 (defun record-author-name (name-entry)
   (when (assq :first name-entry)
     (when (> (length (cdr (assq :first name-entry))) 1)
-      (pushnew (cdr (assq :first name-entry)) *first-names* :test #'equalp)))
+      (setf (gethash  (cdr (assq :first name-entry)) *first-names*) t)))
   (when (assq :last name-entry)
-    (pushnew (cdr (assq :last name-entry)) *last-names* :test #'equalp)))
+    (setf (gethash  (cdr (assq :last name-entry)) *last-names*) t)))
     
          
 
