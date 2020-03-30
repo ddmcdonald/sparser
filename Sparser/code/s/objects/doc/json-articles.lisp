@@ -87,7 +87,6 @@
   ;; retuns a list of text blocks
   (cdr (assq :body--text sexp)))
 
-
 (defun extract-title (sexp)
   (let ((string (cdr (assq :title (extract-metadata sexp))))
         (tt (make-instance 'title-text)))
@@ -96,8 +95,6 @@
     (setf (name tt) (next-indexical-name :title-text))
     (setf (content-string tt) string)
     tt))
-
-  
 
 (defun extract-abstract (sexp)
   "Can be several paragraphs"
@@ -113,4 +110,30 @@
     ))
 
 
+(defvar *authors-and-bibs* nil)
+(defvar *first-names* nil)
+(defvar *last-names* nil)
+
+(defun extract-authors-and-bibliography (sexp)
+  (declare (special *article-short-name*))
+  ;; retuns a list of text blocks
+  (let* ((authors (cdr (assq :authors (extract-metadata sexp))))
+         (bib-entries (cdr (assq :bib--entries sexp))))
+    (loop for author in authors do (record-author-name author))
+    (loop for bib-entry in bib-entries
+          do
+            (loop for author in (cdr (assq :authors (cdr bib-entry)))
+                    do (record-author-name author)))
+    (push
+     (list *article-short-name* authors bib-entries)
+     *authors-and-bibs*)))
+
+(defun record-author-name (name-entry)
+  (when (assq :first name-entry)
+    (when (> (length (cdr (assq :first name-entry))) 1)
+      (pushnew (cdr (assq :first name-entry)) *first-names* :test #'equalp)))
+  (when (assq :last name-entry)
+    (pushnew (cdr (assq :last name-entry)) *last-names* :test #'equalp)))
+    
+         
 
