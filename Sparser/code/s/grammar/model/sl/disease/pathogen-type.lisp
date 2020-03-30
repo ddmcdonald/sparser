@@ -41,18 +41,3 @@
                   'pathogen-type :name string)))
         name))
 
-
-;;;------
-;;; the instances
-;;;------
-
-;;(define-pathogen-type "virus")
-(noun "virus" :super pathogen-type)
-
-(define-pathogen-type "flu")
-
-(define-pathogen-type "bacteria")
-
-(define-pathogen-type "disease") ;;not really a kind of pathogen
-
-(define-pathogen-type "strain") ;;same as above

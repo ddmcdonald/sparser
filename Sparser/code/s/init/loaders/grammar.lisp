@@ -317,7 +317,10 @@ omitted and then run (perhaps) after the image has been launched."
   (let ((*inhibit-construction-of-systematic-semantic-rules* t))
     (declare (special *inhibit-construction-of-systematic-semantic-rules*))
     (gate-grammar *biology*
-      (gload "bio;loader")))
+                  (gload "bio;loader")))
+
+  (gate-grammar *disease*
+    (disease-loaded-after-bio))
 
   (gate-grammar *testing*
     (gate-grammar *miscellaneous*

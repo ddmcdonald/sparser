@@ -24,3 +24,5 @@
 
 (gload "disease;covid-19")
 
+(defun disease-loaded-after-bio ()
+  (gload "disease;misc-covid"))
