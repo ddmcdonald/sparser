@@ -73,10 +73,13 @@ Remaining list stored in sparser::*json-files-to-read*.
   (dotimes (i n)
     (pull-json-and-run :quiet)))
 
-(defun run-nth-json-article (n &optional (article-set-name 'rxiv))
+(defun run-nth-json-article (n &key ((:corpus article-set-name) 'rxiv)
+                                 (quiet t) (skip-errors t) (show-sect nil)
+                                 (sexp nil))
   (let* ((file-path-name (decoded-file (format nil "~a-~a" article-set-name n)))
          (file-path (probe-file file-path-name))
-         (article-json (cl-json::decode-json-from-source file-path))
-         (article (make-document article-json file-path))
-         )
-    (run-json-article article)))
+         (article-json (cl-json::decode-json-from-source file-path)))
+    (if sexp ;; return the decoding and don't do anything else
+      article-json
+      (let ((article (make-document article-json file-path)))         
+        (run-json-article article :quiet quiet :skip-errors skip-errors)))))
