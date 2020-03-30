@@ -329,10 +329,10 @@ unknown words.|#
         (run-n-json-articles 50)
   3. pick a name to describe what you did: 'xriv-1-50 
   4. figure out where you want to stash the file
-  5. call save-unknown-word-alloquate with the name and filename
+  5. call save-unknown-word-aliquat with the name and filename
 |#
 
-(defun save-unknown-word-alloquate (name outfilename)
+(defun save-unknown-word-aliquat (name outfilename)
   "Sort the different lists or otherwise clean up the various
    accumulators. Write them to 'outfilename' as a succession
    of lists each bound to a parameter whose name will
