@@ -18,7 +18,7 @@
 ;;;------------
 
 (define-category pathogen-type
-  ;;:specializes pathogen
+  :specializes pathogen
   :instantiates self
   :binds ((name :primitive word))
   :index (:permanent :key name)
@@ -46,7 +46,8 @@
 ;;; the instances
 ;;;------
 
-(define-pathogen-type "virus")
+;;(define-pathogen-type "virus")
+(noun "virus" :super pathogen-type)
 
 (define-pathogen-type "flu")
 
