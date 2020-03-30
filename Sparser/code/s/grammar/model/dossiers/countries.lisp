@@ -70,7 +70,7 @@
 (define-country "China"
     :adjective "Chinese"
     :aliases '("PRC")
-    :provinces (Hubei
+    :provinces '(Hubei)
     :cities '("Beijing" "Shanghai" "Guangzhou" "Wuhan"))
 (define-country "Colombia")
 (define-country "Comoros")
@@ -119,7 +119,7 @@
 (define-country "Indonesia")
 (define-country "Iran"
     :adjective "Iranian"
-    :cities ("Qom"))
+    :cities '("Qom"))
 (define-country "Iraq" :adjective "Iraqi")
 (define-country "Ireland")
 (define-country "Israel"
@@ -209,7 +209,7 @@
 (define-country "South Africa")
 (define-country "South Korea"
     :adjective "South Korean"
-    :cities ("Daegu"))
+    :cities '("Daegu"))
 (define-country "Spain")
 (define-country "Sri Lanka")
 (define-country "Sudan")
