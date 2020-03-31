@@ -79,6 +79,34 @@ add-punctuation-char over the list.
           :test #'equal)
     '(:punctuation . :space)))
 
+;;--- readout the cache
+
+#| When new characters occur, you can use write-lines-for-out-of-band-cache
+ which reads out what's in the cache and writes out the entries for them
+ in sorted order.
+
+ You just add that list to the bottom of alphabet.lisp. You have to inspect
+ the list by eye to determine which, if any, of the new characters are
+ punctuation. Change those entries to be punctuation entries, and then
+ go to grammar/rules/words/punctuation.lisp and add definitions for them.
+|#
+
+(defun sort-out-of-band-cache ()
+  (when *new-characters-to-define*
+    (sort (copy-list *new-characters-to-define*) #'<  :key #'cdr)))
+
+(defun write-alphabet-entry-line (cache-data stream)
+  (let ((character (car cache-data))
+        (char-code (cdr cache-data)))
+    (format stream "~&(~a (:alphabetical . (:lowercase .,(code-char ~a)))) ;; ~@c ~%"
+            char-code char-code character)))
+
+(defun write-lines-for-out-of-band-cache (&optional (stream *standard-output*))
+  (let ((data (sort-out-of-band-cache)))
+    (loop for datum in data
+       do (write-alphabet-entry-line datum stream))))
+
+
 
 ;;---------------- extended (Mac) char set ------------
 
