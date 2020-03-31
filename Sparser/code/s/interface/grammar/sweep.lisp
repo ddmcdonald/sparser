@@ -324,7 +324,7 @@ unknown words.|#
     (pushnew word *newly-found-unknown-words*)))  |#
 
 
-;;--- saving an alloquat of unknown word information
+;;--- saving an aliquat of unknown word information
 #|
   1. (reset-unknown-word-accumulators)
   2. run the files you want the data on, e.g.
@@ -339,6 +339,7 @@ unknown words.|#
    accumulators. Write them to 'outfilename' as a succession
    of lists each bound to a parameter whose name will
    incorporate the name of this run in an attempt to be unique"
+  (declare (special *first-names* *last-names*))
   (with-open-file (out outfilename :direction :output
                        :if-exists :overwrite :if-does-not-exist :create)
     (format out ";; ~a sample of unknown words~
@@ -353,8 +354,9 @@ unknown words.|#
       (let ((pnames (loop for word in (sort-words *from-BigMech-default*)
                        collect (word-pname word)))
             (var-name (tailored-string 'bigmech)))
-        (format out "~&~%;; extracted as unknown bio-entity~%")
-
+        (format out "~&~%;; ~a extracted as unknown bio-entity~%"
+                (length pnames))
+        ;; package the subsets of these unknown bio entities
         (when (or (> (hash-table-count *first-names*) 0)
                   (> (hash-table-count *last-names*) 0))
           (setq *fnames*
@@ -362,25 +364,24 @@ unknown words.|#
           (setq *lnames*
                 (loop for w in pnames when (gethash (pname w) *last-names*) collect w))
           (setq pnames (loop for w in pnames
-                             unless (or (gethash (pname w) *first-names*)
-                                        (gethash (pname w) *last-names*))
-                             collect w))
+                          unless (or (gethash (pname w) *first-names*)
+                                     (gethash (pname w) *last-names*))
+                          collect w))
           (write-list-to-param (format nil "~a-All-Upper" var-name)
                                (loop for w in pnames
-                                     when (equal (pname w) (string-upcase (pname w)))
-                                     collect w)
+                                  when (equal (pname w) (string-upcase (pname w)))
+                                  collect w)
                                out)
           (write-list-to-param (format nil "~a-All-Lower" var-name)
                                (loop for w in pnames
-                                     when (equal (pname w) (string-downcase (pname w)))
-                                     collect w)
+                                  when (equal (pname w) (string-downcase (pname w)))
+                                  collect w)
                                out)
           (write-list-to-param (format nil "~a-MixedCase" var-name)
                                (loop for w in pnames
-                                     unless (or
-                                             (equal (pname w) (string-downcase (pname w)))
+                                  unless (or (equal (pname w) (string-downcase (pname w)))
                                              (equal (pname w) (string-upcase (pname w))))
-                                     collect w)
+                                  collect w)
                                out)
           (write-list-to-param "FirstNames" *fnames* out)
           (write-list-to-param "LastNames" *lnames* out)))
@@ -390,7 +391,7 @@ unknown words.|#
                                  :test #'string=))
              (sorted (sort (copy-list minus-seed) #'string-lessp))
              (var-name (tailored-string 'bio-entity)))
-        (format out "~&~%;; defined as a bio-entity~%")
+        (format out "~&~%;; ~a defined as a bio-entity~%" (length sorted))
         (write-list-to-param var-name sorted out))
 
       (let* ((minus-default
@@ -402,19 +403,19 @@ unknown words.|#
              (pnames (loop for word in (sort-words minus-default)
                         collect (word-pname word)))
              (var-name (tailored-string 'morph)))
-        (format out "~&~%;; extracted by morphology~%")
+        (format out "~&~%;; ~a extracted by morphology~%" (length pnames))
         (write-list-to-param var-name pnames out))
       
       (let ((pnames (loop for word in (sort-words *from-no-morph-default*)
                        collect (word-pname word)))
             (var-name (tailored-string 'defaulted)))
-        (format out "~&~%;; extracted with default mophology~%")
+        (format out "~&~%;; ~a extracted with default mophology~%" (length pnames))
         (write-list-to-param var-name pnames out))
 
       (let ((pnames (loop for word in (sort-words *from-comlex*)
                        collect (word-pname word)))
             (var-name (tailored-string 'comlex)))
-        (format out "~&~%;; extracted from Comlex~%")
+        (format out "~&~%;; ~a extracted from Comlex~%" (length pnames))
         (write-list-to-param var-name pnames out)))))
 
 (defun write-list-to-param (param-name list stream)
