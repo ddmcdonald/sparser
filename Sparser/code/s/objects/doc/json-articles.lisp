@@ -15,38 +15,47 @@
  a conduit between those two steps while we're sorting out what
  control flow to actually use.")
        
-(defun make-document (sexp filepath)
+(defun make-document (sexp filepath &key handle)
   ;; text-blocks to paragraphs
   ;; make an article and hook in the paragraphs.
   ;; The NXML would suppy us structure for sections and sections of
   ;; sections. That information might be here, but for the nonce
   ;; use a variant article that just dominates the paragraphs
-  (let ((text-blocks (extract-text-body sexp)))
-    (unless text-blocks
-      (warn-or-error "could not find the text-body in JSON sexp"))
-    (let ((article (make-instance 'article))
-          (s (make-instance 'section))
-          (tt (extract-title sexp)))
-      (setf (name article) (next-indexical-name :article))
-      (setf (title article) tt)
+  (declare (special *current-json-based-article*))
+  (let ((article (make-instance 'article))
+        (tt (extract-title sexp)))
+    (setq *current-json-based-article* article)
+    (setf (name article) (or handle
+                             (next-indexical-name :article)))
+    (setf (title article) tt)
+    (setf (article-source article) filepath)
 
-      (setf (name s) (next-indexical-name :section))
-      (setf (parent s) article)
-      (setf (children article) (list s))
+    ;; body text
+    (let ((text-blocks (extract-text-body sexp)))
+      (unless text-blocks
+        (warn-or-error "could not find the text-body in JSON sexp"))
+      (let ((s (make-instance 'section)))
+        (setf (name s) (next-indexical-name :section))
+        (setf (parent s) article)
+        (setf (children s) (find-paragraphs text-blocks s))
+        (setf (children article) (list s)))
 
-      (setf (article-source article) filepath)
-
-      (let ((paragraphs
-             (loop for block in text-blocks
-                collect (make-paragraph block))))
-        (knit-paragraphs paragraphs s)
-        (setf (children s) paragraphs)
-
-        (setq *current-json-based-article* article)
-        article))))
+      (let ((abstract (extract-abstract sexp article)))
+        (when abstract
+          (setf (children article)
+                (push abstract (children article)))))
+        
+      article)))
 
 
 ;;--- text-blocks -> paragraphs
+
+(defun find-paragraphs (text-blocks parent)
+  (let ((paragraphs
+         (loop for block in text-blocks
+            collect (make-paragraph block))))
+    (knit-paragraphs paragraphs parent)
+    paragraphs))
 
 (defun read-out-text-block (sexp)
   (values (cdr (assq :section sexp))
@@ -87,6 +96,8 @@
   ;; retuns a list of text blocks
   (cdr (assq :body--text sexp)))
 
+;;--- article title
+
 (defun extract-title (sexp)
   (let ((string (cdr (assq :title (extract-metadata sexp))))
         (tt (make-instance 'title-text)))
@@ -96,22 +107,28 @@
     (setf (content-string tt) string)
     tt))
 
-(defun extract-abstract (sexp)
-  "Can be several paragraphs"
-#|          (let ((sec (make-instance 'sparser::section)) ;;(sparser::allocate-section))
-                 (parent (or my-section my-article)))
-                  (setf (sparser::name title)
-                   (sparser::next-indexical-name :title-text))
-                 (setf (sparser::title sec) title)
-                 (setf (sparser::content-string title) "ABSTRACT")
-|#
-  (let ((text-blocks (cdr (assq :abstract sexp))))
-    ;; one paragraph each
-    ))
+;;--- abstract
 
+(defun extract-abstract (sexp parent)
+  "Can be several paragraphs"
+  (let* ((sec (make-instance 'section)) ;;(allocate-section))
+         (abst-blocks (cdr (assq :abstract sexp))))
+    (when abst-blocks ; in rxiv-9 the abstract field is empty
+      (let ((paragraphs (find-paragraphs abst-blocks sec))
+            (title (make-instance 'title-text)))
+        (setf (content-string title) "Abstract")
+        (setf (title sec) title)
+        (setf (children sec) paragraphs)
+        (setf (parent sec) parent)
+        sec))))
+
+
+
+  
+
+;;--- authors, bibliography
 
 (defvar *authors-and-bibs* nil)
-
 
 (defun extract-authors-and-bibliography (sexp)
   (declare (special *article-short-name*))
