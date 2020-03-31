@@ -577,31 +577,33 @@
                collect
                  (let* ((value (binding-value b)))
                    (cond ((or (referential-category-p value)
-                           (eq value **lambda-var**)
-                           (stringp value)
-                           (word-p value)
-                           (polyword-p value)
-                           (numberp value)
-                           (and (eq (pname (binding-variable b))
-                                    'number)
-                                (itypep value 'number)))
+                              (eq value **lambda-var**)
+                              (stringp value)
+                              (word-p value)
+                              (polyword-p value)
+                              (numberp value)
+                              (and (eq (pname (binding-variable b))
+                                       'number)
+                                   (itypep value 'number))
+                              (equal (pname (binding-variable b))
+                                     'FAMILY-MEMBERS))
                           `(,(binding-variable b) ,value))
-                       ((and (eq 'COUNT
-                            ;; if we don't do this, the count value
-                            ;; ends up as a number individual instead
-                            ;; of a literal number which can cause problems
-                                 (pname (binding-variable b)))
-                             ;; making sure to only do this if the
-                             ;; value is an individual -- hopefully
-                             ;; all counts are now numbers so this
-                             ;; branch of the cond is moot, but I'm
-                             ;; not going to fully test that yet
-                             (individual-p value))
-                        `(,(binding-variable b) ,(value-of 'value value)))
-                       (t
-                        (create-dependency-pair
-                         b
-                         (find-binding-dependency value edges top-edge b))))))))
+                         ((and (eq 'COUNT
+                                   ;; if we don't do this, the count value
+                                   ;; ends up as a number individual instead
+                                   ;; of a literal number which can cause problems
+                                   (pname (binding-variable b)))
+                               ;; making sure to only do this if the
+                               ;; value is an individual -- hopefully
+                               ;; all counts are now numbers so this
+                               ;; branch of the cond is moot, but I'm
+                               ;; not going to fully test that yet
+                               (individual-p value))
+                          `(,(binding-variable b) ,(value-of 'value value)))
+                         (t
+                          (create-dependency-pair
+                           b
+                           (find-binding-dependency value edges top-edge b))))))))
     (declare (special deps))
     #+ignore
     (when (eq 10 (edge-position-in-resource-array top-edge))
