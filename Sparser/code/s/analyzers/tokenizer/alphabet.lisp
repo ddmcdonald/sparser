@@ -1710,7 +1710,19 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (119978 (:alphabetical .(:lowercase .,(code-char 119978)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_O 
     (119989 (:alphabetical .(:lowercase .,(code-char 119989)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_Z 
     (120594 (:alphabetical .(:lowercase .,(code-char 120594)))) ;; #\MATHEMATICAL_ITALIC_SMALL_CHI 
-      
+
+    ;; 3/31/20 ddm
+    (283 (:alphabetical . (:lowercase .,(code-char 283)))) ;; #\LATIN_SMALL_LETTER_E_WITH_CARON 
+    (292 (:alphabetical . (:lowercase .,(code-char 292)))) ;; #\LATIN_CAPITAL_LETTER_H_WITH_CIRCUMFLEX 
+    (462 (:alphabetical . (:lowercase .,(code-char 462)))) ;; #\LATIN_SMALL_LETTER_A_WITH_CARON 
+    (1843 (:alphabetical . (:lowercase .,(code-char 1843)))) ;; #\SYRIAC_ZQAPHA_ABOVE 
+    (1878 (:alphabetical . (:lowercase .,(code-char 1878)))) ;; #\ARABIC_LETTER_BEH_WITH_SMALL_V 
+    (2013 (:alphabetical . (:lowercase .,(code-char 2013)))) ;; #\NKO_LETTER_FA 
+    (2028 (:alphabetical . (:lowercase .,(code-char 2028)))) ;; #\NKO_COMBINING_SHORT_LOW_TONE 
+    (8713 (:punctuation .,(punctuation-named (code-char 8713)))) ;; #\NOT_AN_ELEMENT_OF 
+    (61542 (:alphabetical . (:lowercase .,(code-char 61542)))) ;; #\UF066 
+    (61554 (:alphabetical . (:lowercase .,(code-char 61554)))) ;; #\UF072 
+ 
     ))
 
 

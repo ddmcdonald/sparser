@@ -384,6 +384,9 @@
     (code-char 65310)  ;; #\FULLWIDTH_GREATER-THAN_SIGN 
     (code-char 65374)  ;; #\FULLWIDTH_TILDE 
     (code-char 65533)  ;; �
+
+    ;; 3/31/20 ddm
+    (code-char 8713) ;; #\NOT_AN_ELEMENT_OF 
     ))
 
 (defgeneric add-punctuation-char (identifier)
