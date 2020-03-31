@@ -426,15 +426,27 @@
 |#
 
 
-(defgeneric document-tree (source)
+(defgeneric document-tree (source &optional show-sentence-strings)
   (:documentation "recurses through document structure creating a tree structure"))
 
-(defmethod document-tree ((hc has-children))
-    (cons hc
-          (loop for child in (children hc)
-             collect (document-tree child))))
+(defmethod document-tree ((hc has-children) &optional show-sentence-strings)
+  (cons hc
+        (if (eq 'sentence (type-of (children hc)))
+            (let* ((s (children hc))
+                   (s-list (list s))
+                   nxt)
+              (loop while (setq nxt (next s))
+                    do
+                      (push (if show-sentence-strings
+                                (sentence-string nxt)
+                                nxt)
+                            s-list)
+                      (setq s nxt))
+              (reverse s-list))
+            (loop for child in (children hc)
+                  collect (document-tree child show-sentence-strings)))))
 
-(defmethod document-tree ((hc t))
+(defmethod document-tree ((hc t) &optional show-sentence-strings)
     (list hc))
 
 

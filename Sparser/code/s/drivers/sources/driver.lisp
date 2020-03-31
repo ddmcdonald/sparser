@@ -132,6 +132,9 @@
     (pull-json-and-run :quiet)))
 
 (defvar *article-short-name* nil)
+(defvar *article-json* nil)
+(defvar *json-article* nil)
+
 (defun run-nth-json-article (n &key ((:corpus article-set-name) 'rxiv)
                                  (quiet t) (skip-errors t) (show-sect nil)
                                  (sexp nil))
@@ -139,9 +142,9 @@
           (format nil "~a-~a" article-set-name n))
          (file-path-name (decoded-file *article-short-name*))
          (file-path (probe-file file-path-name))
-         (article-json (cl-json::decode-json-from-source file-path)))
+         (*article-json* (cl-json::decode-json-from-source file-path)))
     (if sexp ;; return the decoding and don't do anything else
-      article-json
-      (let ((article (make-document article-json file-path)))
-        (extract-authors-and-bibliography article-json)
-        (run-json-article article :quiet quiet :skip-errors skip-errors)))))
+      *article-json*
+      (let ((*json-article* (make-document *article-json* file-path)))
+        (extract-authors-and-bibliography *article-json*)
+        (run-json-article *json-article* :quiet quiet :skip-errors skip-errors)))))
