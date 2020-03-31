@@ -78,7 +78,8 @@
    parse it."
   (let ((*sentence-making-sweep* t) ;; sweep that makes the sentences
         (*sections-to-ignore* nil)) ;; e.g. methods
-    (declare (special *sentence-making-sweep* *sections-to-ignore*))
+    (declare (special *sentence-making-sweep* *sections-to-ignore*
+                      *show-article-progress* *show-section-printouts*))
     (when (or *show-article-progress* *show-section-printouts*)
       (format t "~&~%~%Sweeping document ~a~%" (name doc)))
     (read-from-document doc)
@@ -114,7 +115,8 @@
           (*grammar-and-model-based-parsing* nil)) ;; don't parse
       (declare (special *scanning-epistemic-features*
                         *use-occasional-polywords*
-                        *grammar-and-model-based-parsing*))
+                        *grammar-and-model-based-parsing*
+                        *show-article-progress* *show-section-printouts*))
       (when (or *show-article-progress* *show-section-printouts*)
         (format t "~&=============================================~%~
                    ~%~%Reading Epistemic features in ~a~%" (name a)))
@@ -286,6 +288,7 @@
    'do-next-paragraph. The usual point is in the section
    reader but it could also be the section-of-sections reader
    in some odd cases."
+  (declare (special *show-section-printouts*))
   (when *show-section-printouts*
     (format t "~&~%--------- starting paragraph ~a~%" p))
   (read-paragraph-guts p))
