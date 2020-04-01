@@ -145,8 +145,8 @@
          (*article-json* (cl-json::decode-json-from-source file-path)))
     (if sexp ;; return the decoding and don't do anything else
       *article-json*
-      (let ((*json-article* (make-document article-json file-path
+      (let ((*json-article* (make-document *article-json* file-path
                                            :handle *article-short-name*)))
         (extract-authors-and-bibliography *article-json*)
-        (run-json-article article :quiet quiet :skip-errors skip-errors)))))
+        (run-json-article *json-article* :quiet quiet :skip-errors skip-errors)))))
 
