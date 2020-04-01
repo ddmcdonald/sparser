@@ -240,3 +240,53 @@ e11   DATE                    5 "january 1 , 1999" 9
 #|(define-citation "a day ago"
   (1 AGE 4))|#
 
+#|
+sp> (p/s "in the last century alone")
+in [the last century ]alone
+                    source-start
+e9    IN            1 "in the last century " 5
+e6    ALONE         5 "alone" 6
+                    end-of-source
+
+(p "in the past two decades")
+                    source-start
+e1    IN            1 "in " 2
+e3    THE           2 "the " 3
+e9    PAST          3 "past two decades" 6 ; "past" vanila preposition
+                    end-of-source
+
+(p "in 2002-2003") ; year, year --> hyphenated-number/number
+  make-hyphenated-number needs to notice the years and make time interval
+
+
+sp> (p/s "at the end of 2019")
+at [the end ]of [2019]
+                    source-start
+e11   AT            1 "at the end " 4
+e10   OF            4 "of 2019" 6
+                    end-of-source
+
+
+(p/s "in late 2019")
+
+sp> (p "it will take months and maybe years")
+[it ][will take ][months ]and maybe years
+e10   TAKE          1 "it will take " 4
+e5    TIME-UNIT     4 "months " 5
+e6    AND           5 "and " 6
+e7    MAYBE         6 "maybe " 7
+e8    TIME-UNIT     7 "years" 8
+
+
+sp> (p/s "since December 2019")
+since [December 2019]
+e5    SINCE         1 "since December 2019" 4
+(#<prepositional-phrase 91576>
+ (pobj
+  (#<month-of-the-year 91574>
+   (month (#<month "December" 1061> (name "December")))
+   (year
+    (#<year "2019" 1343> (year-of-century 19) (value 2019) (name "2019")))))
+ (prep (#<since 598> (word "since"))))
+
+|#

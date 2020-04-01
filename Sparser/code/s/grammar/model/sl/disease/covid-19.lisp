@@ -25,8 +25,5 @@
 (def-synonym MERS (:noun "MERS-CoV"))
 
 (noun "SARS-CoV-2" :super coronavirus)
+(def-synonym SARS-CoV-2 (:noun "SAR-CoV-2"))
 
-
-;; disease "2019-nCoV" "COVID-19"
-
-  
