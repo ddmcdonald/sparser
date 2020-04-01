@@ -183,14 +183,22 @@
 (defun pop-topmost-edge (ev)
   "Remove the topmost edge from this vector and adjust
    the other fields to fit."
-  (let* ((topmost (ev-top-node ev))
-         (index (index-of-edge-in-vector topmost ev))
-         (count (ev-number-of-edges ev))
-         (array (ev-edge-vector ev)))
-    (setf (aref array index) nil) ;; remove it
-    (setf (ev-number-of-edges ev) (1- count)) ;; adjust count
-    (let ((next-item-down (aref array (1- index))))
-      (setf (ev-top-node ev) next-item-down))))
+  (let ((topmost (ev-top-node ev))
+        (count (ev-number-of-edges ev))
+        (array (ev-edge-vector ev)))
+    (unless (eq topmost :multiple-initial-edges)
+      #+ignore(p "Second, our data showed the clinical characteristics of AMI
+      induced by COVID-19, including the clinical presentations,
+      electrophysiological abnormality, myocardial enzyme and
+      myocardial injury marker levels, and cardiac dysfunction and
+      enlargement.")
+      ;; Something left that on the top-node of the end-vector
+      ;; even though it had three edges on it. 
+      (let ((index (index-of-edge-in-vector topmost ev)))
+        (setf (aref array index) nil) ;; remove it
+        (setf (ev-number-of-edges ev) (1- count)) ;; adjust count
+        (let ((next-item-down (aref array (1- index))))
+          (setf (ev-top-node ev) next-item-down))))))
 
 
 ;;;--------
