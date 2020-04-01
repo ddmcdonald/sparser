@@ -398,6 +398,7 @@
                              (adjg (adjg-head? edge))))
         collect edge))
 (defparameter *show-chunk-filtering* nil)
+(defparameter *filtering-predicates* nil)
 (defun filter-chunk-compatible-edges-from-ev (ev chunk
                                               &aux
                                                 (end (chunk-end-pos chunk))
@@ -434,7 +435,7 @@
           do
             (unless  (member (edge-cat-name edge)
                              '(deictic-location adverb also))
-              
+                            
               (when *show-chunk-filtering*
                 (format t "removing incompatible ~s (~s) from chunk (forms ~s)~%  from ~s~%"
                         edge (edge-form-name edge)
@@ -884,7 +885,7 @@ than a bare "to".  |#
                   ;; this was apparently useful in the past (otherwise why was it put in)
                   ;;   but it causes an error in "...to adhere to vitronectin-coated cell culture wells in the presence of integrin-specific antibodies ..."
                   ;; by removing the N reading of culture when that is the head of the NG
-                  (remove-noun-edge e)
+                 ;; (remove-noun-edge e)
                   nil)
                  (t t)))
           ((member ecn '(modal following-adj syntactic-there))
