@@ -21,6 +21,9 @@
 		 :realization
 		 (:noun ("datum" :plural "data")))
 
+(define-category dataset :specializes measurement
+		 :realization
+		 (:noun ("dataset" :plural "datasets")))
 
 ;; below is needed because of a use of "transients" in the CURE corpus
 (define-category transient-measurement :specializes bio-measurement

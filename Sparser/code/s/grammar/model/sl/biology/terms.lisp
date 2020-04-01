@@ -37,7 +37,6 @@
 
 (in-package :sparser)
 
-(noun "http://" :super abstract) ;; avoid an NS error
 
 ;;from pathway comments
 

@@ -20,6 +20,41 @@
  and unanalyzed. Should use regex for delimiting components
  when we're serious about these")
 
+
+(define-category url-prefix
+  :specializes index
+  :binds ((string (:primitive word)))
+  :documentation "The UR ፡string is just stored as at polyword
+ and unanalyzed. Should use regex for delimiting components
+ when we're serious about these")
+
+(define-category url-address
+  :specializes index
+  :binds ((string (:primitive word)))
+  :documentation "The UR ፡string is just stored as at polyword
+ and unanalyzed. Should use regex for delimiting components
+ when we're serious about these")
+
+(define-category url-initial-separator
+  :specializes index
+  :binds ((string (:primitive word)))
+  :documentation "The UR ፡string is just stored as at polyword
+ and unanalyzed. Should use regex for delimiting components
+ when we're serious about these")
+
+
+(noun "http://" :super url-prefix) 
+(noun "http:" :super url-prefix) 
+
+(noun "https://" :super url-prefix) 
+(noun "https:" :super url-prefix)
+
+(noun "doi:" :super url-prefix) 
+(noun "doi://" :super url-prefix) 
+
+(noun "doi.org" :super url-address)
+(noun "//" :super url-initial-separator)
+
 #| 
 Long-winded way to get around the problem of '//' 
  handling when there's a URL in the text
@@ -35,6 +70,7 @@ e0                  "https://github"
                     period
 e66   BIO-ENTITY    9 "com/rrwick/Porechop" 14
 |#
+
 
 (defparameter *url-prefixes* (list (resolve/make "http")
                                    (resolve/make "https")

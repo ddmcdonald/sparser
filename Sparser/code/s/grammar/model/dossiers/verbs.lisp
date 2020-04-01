@@ -245,7 +245,16 @@ come
   :documentation "Handles both transitive and svo-adj. Should it?"
   :realization
     (:verb ("make" :past-tense "made")
-     :mumble ("make" svo :a agent :o patient)))
+           :mumble ("make" svo :a agent :o patient)))
+
+(define-category make-up
+    ;; in the sense of "compose" "the rsidues make up the binding site"
+  :specializes process
+  :mixins (resultative)
+  :restrict ((patient endurant))
+  :documentation "Handles both transitive and svo-adj. Should it?"
+  :realization
+    (:verb ("make" :past-tense "made" :prep "up") ))
 
 #|
 (define-category propose
