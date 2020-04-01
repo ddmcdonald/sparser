@@ -51,7 +51,7 @@
 ;;;------
 
 (defun define-month (string integer &optional length  abbrev)
-  "Allowing dnumber of days to be optional to accommodate cases 
+  "Allowing number of days ('length') to be optional to accommodate cases 
    where we don't know them, see model/sl/middle-east/months.lisp"
   (let* ((count (when length (find-or-make-number length)))
          (ordinal (nth-ordinal integer))
@@ -60,7 +60,11 @@
                     :position-in-year ordinal
                     :number-of-days count)))
     (when abbrev
-      (define-abbreviation string abbrev))
+      ;; Need rules for when followed by a period and also when not
+      (define-abbreviation string abbrev)
+      (define-cfr category::month (list (resolve/make abbrev))
+        :form category::proper-noun
+        :referent month))
     month ))
 
 ;;;-----------
