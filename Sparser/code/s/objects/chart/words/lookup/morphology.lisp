@@ -197,7 +197,8 @@
 ;;     e.g. 'metastasize' 'catalyze'
 ;; -oma: denoting a tumor
 (defparameter *suffix-pos-table*
-  '(("able" ADJ)
+  '(
+    ("able" ADJ)
     ("al" ADJ)
     ("ar" ADJ)
     ("ary" ADJ)
@@ -208,13 +209,16 @@
     ("ency" N)
     ("ment" N)   ;; longer forms must precede
     ("ent" ADJ)  ;; their shorter forms
+    ("est" SUPERLATIVE)
     ("genesis" N)
     ("gram" N)
     ("ian" ADJ)
     ("ible" ADJ)
+    ("er" COMPARATIVE)
     ("ic" ADJ)
     ("ics" N)
-    ("iest" ADJ)
+    ("ier" COMPARATIVE)
+    ("iest" SUPERLATIVE)
     ("ify" V)
     ("ion" N)
     ("ist" N)
@@ -227,7 +231,8 @@
     ("ous" ADJ)
     ("sis" N)
     ("tion" N)
-    ("yze" V)))
+    ("yze" V)
+    ))
 
 ;; If we ever add ADV to this list, add it to
 ;; assign-morph-brackets-to-unknown-word and its friends
