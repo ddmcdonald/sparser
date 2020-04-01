@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013-2014,2017-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2014,2017-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "weekdays"
 ;;;   Module:  "model;core:time:"
-;;;  version:  February 2018
+;;;  version:  April 2020
 
 ;; 1.0 (9/18/93 v2.3) completely revamped for new semantics
 ;; 1.1 (1/10/94) redid ordinals.  Broke out the cases 10/20
@@ -49,7 +49,10 @@
          (weekday (define-or-find-individual 'weekday
                       :name string
                       :position-in-week ordinal)))
-    (define-abbreviation string abbrev-string)
+    (define-abbreviation string abbrev-string) ; trailing period case
+    (define-cfr category::weekday (list (resolve/make abbrev-string))
+      :form category::proper-noun ; no-period case
+      :referent weekday)
     weekday ))
 
 
