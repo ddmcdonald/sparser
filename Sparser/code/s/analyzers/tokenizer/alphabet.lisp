@@ -1069,8 +1069,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8656 (:punctuation  .,(punctuation-named (code-char 8656)))) ;; #\LEFTWARDS_DOUBLE_ARROW
     (8658 (:punctuation  .,(punctuation-named (code-char 8658)))) ;; #\RIGHTWARDS_DOUBLE_ARROW
     (8660 (:punctuation  .,(punctuation-named (code-char 8660)))) ;; ⇔
-    (8672 (:alphabetical . (:lowercase ., (code-char 8672)))) 
-    (8677 (:alphabetical . (:lowercase ., (code-char 8677)))) 
+    (8672 (:punctuation  .,(punctuation-named (code-char 8672)))) ;; "⇠"
+    (8677 (:punctuation  .,(punctuation-named (code-char 8677)))) ;;"⇥"
     (8704 (:punctuation  .,(punctuation-named (code-char 8704)))) ;; #|for_all
     (8706 (:punctuation  .,(punctuation-named (code-char 8706)))) ;;"∂", (code = 8706)
     (8707 (:punctuation  .,(punctuation-named (code-char 8707)))) ;;"∃"
@@ -1080,7 +1080,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8712 (:punctuation  .,(punctuation-named (code-char 8712)))) ;; "∈" #\U+2208
     (8714 (:punctuation  .,(punctuation-named (code-char 8714)))) ;;"∊", (code = 8714)
     (8715 (:punctuation  .,(punctuation-named (code-char 8715)))) ;; ∋
-    (8719 (:alphabetical . (:lowercase ., (code-char 8719)))) 
+    (8719 (:punctuation  .,(punctuation-named (code-char 8719)))) ;; "∏"
     (8721 (:punctuation  .,(punctuation-named (code-char 8721)))) ;;"∑", (code = 8721)
     (8722 (:punctuation  .,(punctuation-named #\-))) ;; ""−" #\U+2212 Minus sign
     (8725 (:punctuation  .,(punctuation-named (code-char 8725)))) ;; ∕
@@ -1122,7 +1122,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8811 (:punctuation  .,(punctuation-named (code-char 8811)))) ;; "≫" #\U+226B
     (8819 (:punctuation  .,(punctuation-named (code-char 8819)))) ;; ≳
     (8834 (:punctuation  .,(punctuation-named (code-char 8834)))) ;; ⊂
-    (8838 (:alphabetical . (:uppercase .,(code-char 8838)))) ;; ⊆
+    (8838 (:punctuation  .,(punctuation-named (code-char 8838)))) ;; ⊆
     (8839 (:punctuation  .,(punctuation-named (code-char 8839)))) ;; "⊇" #\U+2287
     (8853 (:punctuation  .,(punctuation-named (code-char 8853)))) ;; ⊕
     (8855 (:punctuation  .,(punctuation-named (code-char 8855)))) ;; ⊗
@@ -1131,15 +1131,13 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8895 (:punctuation  .,(punctuation-named (code-char 8895)))) ;;⊿
     (8896 (:punctuation  .,(punctuation-named (code-char 8896)))) ;; #\N-ARY_LOGICAL_AND
     (8900 (:punctuation  .,(punctuation-named (code-char 8900)))) ;; "⋄"
-    (8900 (:punctuation  .,(punctuation-named (code-char 8900)))) ;;"⋅", (code = 8901)
     (8901 (:punctuation  .,(punctuation-named (code-char 8901)))) ;;"⋅", (code = 8901)
     (8902 (:punctuation  .,(punctuation-named (code-char 8902))))
     (8921 (:punctuation  .,(punctuation-named (code-char 8921)))) ;; #\VERY_MUCH_GREATER-THAN
     (8942 (:punctuation  .,(punctuation-named (code-char 8942)))) ;; "▪"
-    (8943 (:punctuation  .,(punctuation-named (code-char 8943)))) ;; "⋯"
     (8943 (:punctuation  .,(punctuation-named (code-char 8943)))) ;;"⋯", (code = 8943)
-    (8970 (:alphabetical . (:uppercase .,(code-char 8970)))) ;; ⌊
-    (8971 (:alphabetical . (:uppercase .,(code-char 8971)))) ;; ⌋
+    (8970 (:punctuation  .,(punctuation-named (code-char 8970)))) ;; ⌊
+    (8971 (:punctuation  .,(punctuation-named (code-char 8971)))) ;; ⌋
     (9001 (:punctuation  .,(punctuation-named (code-char 9001)))) ;; 〈
     (9002 (:punctuation  .,(punctuation-named (code-char 9002)))) ;; 〉
     (9082 (:punctuation  .,(punctuation-named (code-char 9082)))) ;;⍺
@@ -1151,7 +1149,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (9524 (:punctuation  .,(punctuation-named (code-char 9524)))) ;;┴
     (9552 (:punctuation  .,(punctuation-named (code-char 9552)))) ;; ═
     (9553 (:punctuation  .,(punctuation-named (code-char 9553)))) ;;║
-    (9587 (:alphabetical . (:lowercase ., (code-char 9587)))) 
+    (9587 (:punctuation  .,(punctuation-named (code-char 9587)))) ;; "╳"
     (9632 (:punctuation  .,(punctuation-named (code-char 9632)))) ;; #\BLACK_SQUARE
     (9633 (:punctuation  .,(punctuation-named (code-char 9633)))) ;; "□"
     (9633 (:punctuation  .,(punctuation-named (code-char 9633)))) ;; "□"
@@ -1182,7 +1180,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 
 
-    (10005 (:alphabetical . (:lowercase ., (code-char 10005)))) 
+    (10005 (:punctuation  .,(punctuation-named (code-char 10005)))) ;; #\MULTIPLICATION_X
     (10216 (:punctuation  .,(punctuation-named (code-char 10216)))) ;; ⟨
     (10217 (:punctuation  .,(punctuation-named (code-char 10217)))) ;; ⟩
     (10794 (:punctuation  .,(punctuation-named (code-char 10794)))) ;; "⨪" #\U+2A2A
@@ -1190,7 +1188,6 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (10877 (:punctuation  .,(punctuation-named (code-char 10877)))) ;;"⩽", (code = 10878)
     (10878 (:punctuation  .,(punctuation-named (code-char 10878)))) ;;"⩾", (code = 10878)
     (11373 (:punctuation  .,(punctuation-named (code-char 11373)))) ;; Ɑ
-    (119974 (:alphabetical . (:uppercase .,(code-char 119974)))) ;;;; 𝒦
     (12288 (:punctuation  .,(punctuation-named (code-char 12288)))) ;; 　
     (12289 (:punctuation  .,(punctuation-named (code-char 12289)))) ;;
     (12290 (:punctuation  .,(punctuation-named (code-char 12290)))) ;; 。
@@ -1650,7 +1647,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (39064 (:alphabetical .(:lowercase .,(code-char 39064)))) ;; #\U9898 
     (39640 (:alphabetical .(:lowercase .,(code-char 39640)))) ;; #\U9AD8 
     (40802 (:alphabetical .(:lowercase .,(code-char 40802)))) ;; #\U9F62
-    (61472 (:alphabetical . (:lowercase ., (code-char 61472)))) 
+    
+    (61472  (:punctuation .,(punctuation-named (code-char 61472)))) ;; #\UF020 this seems to be a space
     (61480 (:alphabetical . (:lowercase ., (code-char 61480)))) 
     (61481 (:alphabetical . (:lowercase ., (code-char 61481)))) 
     (61482 (:alphabetical . (:lowercase ., (code-char 61482)))) 
@@ -1696,7 +1694,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (65285 (:punctuation .,(punctuation-named (code-char 65285)))) ;; #\FULLWIDTH_PERCENT_SIGN 
     (65288 (:punctuation  .,(punctuation-named (code-char 65288)))) ;;"（", (code = 65288)
     (65289 (:punctuation .,(punctuation-named (code-char 65289)))) ;;  #\FULLWIDTH_RIGHT_PARENTHESIS 
-    (65291 (:alphabetical . (:lowercase ., (code-char 65291)))) 
+    (65291 (:punctuation .,(punctuation-named (code-char 65291)))) ;; #\FULLWIDTH_PLUS_SIGN
     (65292 (:punctuation .,(punctuation-named (code-char 65292)))) ;; #\FULLWIDTH_COMMA 
     (65293 (:punctuation  .,(punctuation-named (code-char 65293)))) ;;"－", (code = 65293)
     (65306 (:punctuation .,(punctuation-named (code-char 65306)))) ;; #\FULLWIDTH_COLON 
@@ -1706,6 +1704,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (65374 (:punctuation .,(punctuation-named (code-char 65374)))) ;; #\FULLWIDTH_TILDE 
     (65533 (:punctuation .,(punctuation-named (code-char 65533)))) ;; �
     (119967 (:punctuation  .,(punctuation-named (code-char 119967)))) ;;"풟", (code = 119967)
+    (119974 (:alphabetical .(:uppercase .,(code-char 119974)))) ;;;; 𝒦
     (119977 (:alphabetical .(:lowercase .,(code-char 119977)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_N 
     (119978 (:alphabetical .(:lowercase .,(code-char 119978)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_O 
     (119989 (:alphabetical .(:lowercase .,(code-char 119989)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_Z 

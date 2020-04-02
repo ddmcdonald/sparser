@@ -240,6 +240,8 @@
     (code-char 8656) ;; #\LEFTWARDS_DOUBLE_ARROW
     (code-char 8658) ;; #\RIGHTWARDS_DOUBLE_ARROW
     (code-char 8660) ;; ⇔ ;; #\left_right_double_arrow
+    (code-char 8672) ;; #\LEFTWARDS_DASHED_ARROW
+    (code-char 8677) ;; #\RIGHTWARDS_ARROW_TO_BA
     (code-char 8704) ;; "∀" #\FOR_ALL
     (code-char 8706) ;; "∂", (code = 8706)
     (code-char 8707) ;; "∃" #\there_exists
@@ -250,6 +252,7 @@
     (code-char 8714) ;; "∊"
     (code-char 8714) ;;"∊", (code = 8714)
     (code-char 8715) ;; ∋
+    (code-char 8719) ;; "∏" #\N-ARY_PRODUCT
     (code-char 8721) ;; "∑"
     (code-char 8722) ;; ""−" #\U+2212 Minus sign
     (code-char 8725) ;; ∕
@@ -289,6 +292,7 @@
     (code-char 8811) ;; "≫" #\U+226B
     (code-char 8819) ;; ≳
     (code-char 8834) ;; ⊂
+    (code-char 8838) ;; ⊆
     (code-char 8839) ;; "⊇" #\U+2287
     (code-char 8853) ;; ⊕
     (code-char 8855) ;; ⊗
@@ -303,7 +307,8 @@
     (code-char 8921) ;; #\VERY_MUCH_GREATER-THAN
     (code-char 8942) ;; "▪"
     (code-char 8943) ;; "⋯"
-    (code-char 8943) ;; "⋯"
+    (code-char 8970) ;; ⌊
+    (code-char 8971) ;; ⌋
     (code-char 9001) ;; 〈
     (code-char 9002) ;; 〉
     (code-char 9082) ;;⍺
@@ -316,6 +321,7 @@
     (code-char 9552) ;; ═
     (code-char 9553) ;;║
     (code-char 9553) ;;║
+    (code-char 9587) ;; #\BOX_DRAWINGS_LIGHT_DIAGONAL_CROSS "╳"
     (code-char 9632) ;; #\BLACK_SQUARE
     (code-char 9633) ;; "□"
     (code-char 9642) ;; "▪" ;; "□"
@@ -345,7 +351,7 @@
     
 
 
-
+    (code-char 10005) ;; #\MULTIPLICATION_X
     (code-char 10216) ;; ⟨
     (code-char 10217) ;; ⟩
     (code-char 10794)  ;; "⨪" #\U+2A2A
@@ -353,7 +359,6 @@
     (code-char 10877) ;;"⩽", (code = 10878)
     (code-char 10878)  ;;"⩾", (code = 10878)
     (code-char 11373) ;; Ɑ
-    (code-char 119967) ;; "풟"
     (code-char 12288)  ;; 　
     (code-char 12289)  ;;、
     (code-char 12290)  ;; 。
@@ -361,7 +366,8 @@
     (code-char 12297)  ;; 〉
     (code-char 12304)  ;; 【
     (code-char 12305)  ;; 】
-
+    
+    (code-char 61472) ;; #\UF020
     (code-char 61508) ;; #\UF044
     (code-char 61537) ;; #\UF061
     (code-char 61538) ;; #\UF062
@@ -375,7 +381,8 @@
     (code-char 64258)  ;;"ﬂ", (code = 64258)
     (code-char 65285)  ;; #\FULLWIDTH_PERCENT_SIGN 
     (code-char 65288)  ;;"（", (code = 65288)
-    (code-char 65289)  ;;  #\FULLWIDTH_RIGHT_PARENTHESIS 
+    (code-char 65289)  ;;  #\FULLWIDTH_RIGHT_PARENTHESIS
+    (code-char 65291) ;; #\FULLWIDTH_PLUS_SIGN
     (code-char 65292)  ;; #\FULLWIDTH_COMMA 
     (code-char 65293)  ;;"－", (code = 65293)
     (code-char 65306)  ;; #\FULLWIDTH_COLON 
@@ -384,6 +391,7 @@
     (code-char 65310)  ;; #\FULLWIDTH_GREATER-THAN_SIGN 
     (code-char 65374)  ;; #\FULLWIDTH_TILDE 
     (code-char 65533)  ;; �
+    (code-char 119967) ;; "풟"
 
     ;; 3/31/20 ddm
     (code-char 8713) ;; #\NOT_AN_ELEMENT_OF 
