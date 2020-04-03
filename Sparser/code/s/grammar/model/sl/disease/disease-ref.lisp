@@ -22,10 +22,11 @@
 ;;should work for both pathogen-type and "it"
 ;;right now links back a pathogen-type to the most recently mentioned pathogen
 
+#|
 (define-completion-action  category::pathogen-type ;; label
                            :pathogen-type                    ;; tag
                            'seek-pathogen-for-pathogen-type)   ;; function
-
+|#
 
 ;;this works but it messes up the company anaphora with "it"
 #|(define-completion-action  category::pronoun/inanimate  ;; label
