@@ -1,0 +1,18 @@
+(in-package :sparser)
+
+
+(def-indiv-with-id bio-method "DLS" "NCIT:C62329" :name "photon correlation spectroscopy") 
+(def-indiv-with-id bio-method "FPLC" "NCIT:C80368" :name "fast protein liquid chromatography") 
+(def-indiv-with-id bio-method "GWAS" "NCIT:C93020" :name "whole genome association study") 
+(def-indiv-with-id bio-method "SILAC" "NCIT:C161804" :name "stable isotope labeling with amino acids in cell culture") 
+(def-indiv-with-id bio-method "firststrand" "NCIT:C150428" :name "first-strand library sequencing") 
+(def-indiv-with-id bio-method "percentile" "NCIT:C48919" :name "percentile") 
+(def-indiv-with-id bio-method "preprocess" "NCIT:C64201" :name "preprocess") 
+(def-indiv-with-id bio-method "ttest" "NCIT:C53231" :name "t-test") 
+(def-indiv-with-id bio-method "CLIPseq" "EFO:0003143" :name "CLIP-seq") 
+(def-indiv-with-id bio-method "CrI" "NCIT:C123799" :name "cell response index") 
+(def-indiv-with-id bio-method "DNAseq" "EFO:0002693" :name "DNA-seq") 
+(def-indiv-with-id bio-method "Endpoint" "NCIT:C82866" :name "endpoint value derivation technique") 
+(def-indiv-with-id bio-method "RNAseq" "EFO:0002770" :name "transcription profiling by high throughput sequencing") 
+(def-indiv-with-id bio-method "miRNASeq" "NCIT:C156057" :name "microRNA sequencing") 
+(def-indiv-with-id bio-method "qPCR" "NCIT:C51962" :name "real time PCR") 
