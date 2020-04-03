@@ -56,6 +56,8 @@
 (defparameter *new-units* nil)
 (defparameter *new-prot-fam* nil)
 
+(defparameter *non-bio-defs* nil) ;; ref-sem time-unit, organization
+
 (defparameter *prot-fam-redef* nil) ;; holds protein families where the name is already defined as a category -- to be folded in later
 ;; define all the parameters to hold the new definitions
 
@@ -165,9 +167,12 @@
                (else (push `(def-family-with-id ,word ,id ,.(when name `(:name ,(pname name))))
                            *new-prot-fam*)
                      (car *new-prot-fam*))))
+          ((referential-sem time-unit organization)
+           (push term *non-bio-defs*))
           (t 
            (unless (or (eq category 'referential-sem)
-                       (eq category 'time-unit))
+                       (eq category 'time-unit)
+                       (eq category 'organization)) ;; HANDLE LATER
              (lsp-break "unknown category for trips/reach-term->def-indiv-with-id"))))))))
 
 (defun word-has-uid-p (word)
@@ -197,9 +202,10 @@ uid binding, if there is one"
   that matches the term id, and if not adds it to the relevant list to
   deal with later"
   (let* ((rword-id (word-has-uid-p rword))
-        (rword-sc (if (name-is-cat-p rword)
-                      (cat-name (second (super-categories-of (name-is-cat-p rword))))
-                      (cat-name (category-of (get-head-ref-from-rule (car (single-term-rewrite? rword)))))))
+         (rword-sc
+          (if (name-is-cat-p rword)
+              (cat-name (second (super-categories-of (name-is-cat-p rword))))
+              (cat-name (category-of (get-head-ref-from-rule (car (single-term-rewrite? rword)))))))
          (sc-match? (eq rword-sc category))
          (same-sc-list (list mod rword term))
          (mismatch-sc-list (list mod rword :old-cat rword-sc :new-cat category term)))
@@ -222,7 +228,8 @@ uid binding, if there is one"
                      term))
            (if sc-match?
                (push (list mod rword rword-id term) *id-mismatch-redef*)
-               (push (list mod rword rword-id :old-cat rword-sc :new-cat category term) *id-and-cat-mismatch*)))
+               (push (list mod rword rword-id :old-cat rword-sc :new-cat category term)
+                     *id-and-cat-mismatch*)))
           ((null rword-id)
            (when *show-trips-redefinitions*
              (format t "~%stashing redefinition ~s of already defined word with no UID~%"
@@ -247,7 +254,7 @@ uid binding, if there is one"
          (name-cat-uid (when name-cat (word-has-uid-p name)))
          (name-cat-sc (when name-cat (cat-name (second (super-categories-of name-cat)))))
          (word-plural-name (when name (word-is-plural-name? word name)))
-         (word-diff-pos-name (when name (word-and-name-diff-pos? word name)))
+         ;(word-diff-pos-name (when name (word-and-name-diff-pos? word name)))
          (name-ind (when (and name
                               (not name-cat)
                               (resolve name) 
@@ -259,6 +266,7 @@ uid binding, if there is one"
     (cond (name-cat 
            (cond (word-plural-name
                   (push (list category name-cat id :word word) *plurals-of-existing-cats*))
+                 #+ignore
                  (word-diff-pos-name
                   (push (list category name-cat id :word word) *diff-pos-of-existing-cats*))
                  ((eq name-cat-sc category)
@@ -271,12 +279,20 @@ uid binding, if there is one"
           (name-ind
            (cond (word-plural-name
                   (push (list category word id :name name) *plurals-of-existing-words*))
+                 #+ignore
                  (word-diff-pos-name
                   (push (list category word id name) *diff-pos-of-existing-words*))
                  ((eq name-ind-cat category)
                   (push (list category word id name)  *synonym-for-existing-words*)
-                  (unless (equal id name-ind-uid)
-                    (push (list category name name-ind-uid :newUID id :word word) *name-id-mismatches*)))
+                  (if (equal id name-ind-uid)
+                      (push `(def-indiv-with-id ,category ,word
+                               ,(simplify-colons id)
+                               ,.(when name `(:name ,(pname name)))
+                               ,.(when no-plural `(:no-plural t))
+                               ,.(when maintain-case `(:maintain-case t)))
+                            (symbol-value loc))
+                      (push (list category name name-ind-uid :newUID id :word word)
+                            *name-id-mismatches*)))
                  (t
                   (push (list :orig-cat name-ind-cat :new-cat category :name name :newUID id :word word) 
                         *category-mismatch-existing-words*))))
@@ -294,6 +310,7 @@ uid binding, if there is one"
                         ,.(when maintain-case `(:maintain-case t)))
                      (symbol-value loc)))
            (when no-plural (push (list category word id name) *violates-no-plural*)))
+          #+ignore
           (word-diff-pos-name
            (push (list category word id name) *word-diff-pos-name*))
           (t
@@ -350,7 +367,7 @@ uid binding, if there is one"
 
 (defun match-words-minus-suffix? (word suffix pname)
   (and (search suffix word :test #'equal) ;; need to check because string-trim just uses a character bag so order isn't preserved
-       (equalp (remove-sufix pname suffix) pname)))
+       (equalp (remove-suffix pname suffix) pname)))
 
 (defun trips-class->krisp (term)
   (unless (null (second term))
@@ -359,7 +376,11 @@ uid binding, if there is one"
     (ecase (intern (subseq (second term) 4)) ;; drop the ONT:
       ((protein gene-protein gene) ;; we treat genes as if they name the protein
        (cond ((or (search "FA:" id)
-                  (search "XFAM:" id))
+                  (search "XFAM:" id)
+                  (search "FPLX:" id)
+                  (search "GO" id)
+                  (search "NCIT" id) ;; maybe, but can be non-fam, also hgnc?
+                  )
               'protein-family)
              ((and (or (eq 0 (search "mir" name :test #'equalp))
                        (eq 0 (search "microRNA" name :test #'equalp)))
@@ -390,9 +411,10 @@ uid binding, if there is one"
       (physical-condition 'disease)
       (post-translational-modification 'post-translational-modification)
       (procedure 'bio-method)
+      (professional-organization 'organization)
       (process 'bio-method) ;; the one case we have here is a bio-method -- transplantation
       (protein-family 'protein-family)
-      ((amino-acid referential-sem time-unit mutation) 'referential-sem) 
+      ((amino-acid referential-sem time-unit mutation residue) 'referential-sem) 
       ;; have now made substance a category. amino-acids and mutations should be handled better
       ((rna mrna) 
        (if (or (eq 0 (search "mir" name :test #'equalp))
@@ -484,7 +506,7 @@ uid binding, if there is one"
         (loop for def in var
                 do (lc-one-line-print def stream)))))
 
-(defparameter *suppressed-new-defs* '(*suppressed-hyphenated-new-words* *suppressed-mod-redefs* *id-mismatch-redef* *id-and-cat-mismatch* *no-id-redef* *namecat-id-mismatches* *no-rule-redef* *name-id-mismatches* *prot-fam-redef* *inhibited-plurals* *violates-no-plural* *word-diff-pos-name* *plurals-of-existing-cats* *diff-pos-of-existing-cats* *plurals-of-existing-words* *diff-pos-of-existing-words* *synonym-for-existing-words* *category-mismatch-existing-cats* *category-mismatch-existing-words* *suppressed-redefs*))
+(defparameter *suppressed-new-defs* '(*suppressed-hyphenated-new-words* *suppressed-mod-redefs* *id-mismatch-redef* *id-and-cat-mismatch* *no-id-redef* *namecat-id-mismatches* *no-rule-redef* *name-id-mismatches* *prot-fam-redef* *violates-no-plural* *word-diff-pos-name* *plurals-of-existing-cats* *diff-pos-of-existing-cats* *plurals-of-existing-words* *diff-pos-of-existing-words* *synonym-for-existing-words* *category-mismatch-existing-cats* *category-mismatch-existing-words* *suppressed-redefs* *non-bio-defs*))
 
 (defparameter *new-id-defs*  '(*new-diseases* *new-bio-complexes* *new-bio-meth* *new-bio-proc* *new-noncell-loc* *new-cells* *new-cell-loc* *new-cell-proc* *new-drugs* *new-molecules* *new-pathways* *new-prot-dom* *new-rna* *new-units* *new-prot-fam* *new-post-trans-mod* *new-substances*))
 
