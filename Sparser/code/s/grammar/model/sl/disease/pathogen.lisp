@@ -49,27 +49,6 @@
 
 
 ;;;------------
-;;; the instances
-;;;------------
-
-;;(define-pathogen "h5n1")
-
-;;function that iterates over all possible combinations of bird flu
-;;x, y <= 9
-#+ignore(defun define-hXnY ()
-  (loop for i from 1 below 10 do
-    (loop for j from 1 below 10 do
-      (define-pathogen (concatenate 'string "h" (write-to-string i) "n" (write-to-string j))))))
-;(define-hXnY)
-
-;;from Saudia Arabia article - MERS is Middle Eastern Respiratory Syndrome
-(define-pathogen "MERS")
-
-;;from various disease based articles from New York Times -
-(define-pathogen "ebola")
-
-
-;;;------------
 ;;; cfrs
 ;;;------------
 
