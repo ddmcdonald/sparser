@@ -16,6 +16,8 @@
 (noun "saRNA" :super rna)
 (def-synonym saRNA (:noun "small activating RNA")) ;; no findable ontology ID yet but wiki article with sources https://en.wikipedia.org/wiki/SaRNA
 
+(noun "vRNA" :super rna)
+(def-synonym vRNA (:noun "viral RNA")) ;; can also be vaultRNA but viral is more likely but has no uid
 
 (noun "UTR" :super rna-region)
 (def-synonym UTR (:noun "untranslated region"))

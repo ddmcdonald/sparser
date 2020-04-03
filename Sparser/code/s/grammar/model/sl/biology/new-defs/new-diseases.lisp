@@ -732,7 +732,7 @@
 (def-indiv-with-id virus "poxvirus" "NCIT:C14261" :name "poxvirus") 
 (def-indiv-with-id virus "reovirus" "NCIT:C112026" :name "reoviridae")
 (def-indiv-with-id virus "retrovirus" "NCIT:C14268" :name "retrovirus" :plural ("retroviruses" "retroviridae"))
-(def-indiv-with-id virus "rhinovirus" "NCIT:C77200" :name "rhinovirus") 
+(def-indiv-with-id virus "rhinovirus" "NCIT:C77200" :name "rhinovirus" :synonyms ("HRV" "human rhinovirus")) 
 (def-indiv-with-id virus "φX174" "NCIT:C97346" :name "bacteriophage phi X 174") 
 (def-indiv-with-id virus "Epstein-Barr virus" "TI:10376") 
 (def-indiv-with-id virus "Haemophilus influenzae" "TI:727") 

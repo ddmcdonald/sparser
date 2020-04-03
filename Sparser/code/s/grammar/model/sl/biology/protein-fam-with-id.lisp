@@ -16,9 +16,18 @@
        ;;(def-family "p53" :identifier "FA:02632" :synonyms ( "p53 family"))
        (def-family-with-id "beta-catenin" "FA:00361" :synonyms ( "beta-catenin family"))))
 
+
+;; VIRAL PROTEIN SUBSECTION:
+(def-family-with-id "env" "IPR018154" :name "envelope protein" :synonyms ("env polyprotein") :members ("UP:C1JJY3" "UP:P03386" "UP:U3LIR9" "UP:C6FX96" "UP:P03386"))
+(def-family-with-id "gag" "IPR004957" :name "gag protein" :members ("UP:Q79354" "UP:Q79360" "UP:P03333"))
+(def-family-with-id "VP1" "IPR000662" :name "Major capsid protein VP1" :synonyms ("major capsid protein VP1" "capsid protein VP1") :members ("UP:P03135" "UP:P04010" "UP:D2XYZ5"))
+(def-family-with-id "capsid" "NCIT:C16383" :name "capsid protein")
+
+;; other families
 (def-family-with-id "FAK" "FA:03125" :synonyms ("FAK subfamily") :members ("UP:Q05397" "UP:Q14289"))
 
-(def-family-with-id "4EBP" "FPLX:EIF4EBP" :name "EIF4EBP" :synonyms ("IPR008606" "initiation factor 4E-binding protein" "Eukaryotic translation initiation factor 4E-binding protein" "4E-BP" "eukaryotic translation initiation factor 4E binding protein") :members ("UP:Q13541" "UP:Q13542" "UP:O60516")) 
+(def-family-with-id "4EBP" "FPLX:EIF4EBP" :name "EIF4EBP" :synonyms ("IPR008606" "initiation factor 4E-binding protein" "Eukaryotic translation initiation factor 4E-binding protein" "4E-BP" "eukaryotic translation initiation factor 4E binding protein") :members ("UP:Q13541" "UP:Q13542" "UP:O60516"))
+(def-family-with-id "alpha tubulin" "IPR002452" :name "alpha-tubulin" :synonyms ("αtubulin" "α-tubulin" "α-tubulin") :members ("UP:Q71U36" "UP:Q9BQE3" "UP:P0DPH7" "UP:P0DPH8" "UP:P68366" "UP:P68363" "UP:Q9BQE3" "UP:Q9NY65"))
 (def-family-with-id "ABCC" "FA:00048" :synonyms ("aBCC"))
 (def-family-with-id "ABL" "FPLX:ABL_family" :members ("UP:P00519" "UP:P42684") :synonyms ("ABL family"))
 (def-family-with-id "ACC" "FPLX:ACC" :members ("UP:Q13085" "UP:O00763" "UP:P09668") :synonyms ("Acetyl Coenzyme A Carboxylase" "Acetyl-CoA carboxylase" "acetyl-CoA carboxylase")) 
@@ -1016,7 +1025,8 @@
 (def-family-with-id "eaf" "FA:01051" :name "EAF family") 
 (def-family-with-id "eIF4EBP" "FPLX:EIF4EBP" :name "EIF4EBP")
 (def-family-with-id "Eif2b" "FPLX:EIF2B")
-(def-family-with-id "Egr" "FPLX:EGR") 
+(def-family-with-id "Egr" "FPLX:EGR")
+ 
 (def-family-with-id "dynactin" "XFAM:PF12455.6" :name "dynactin") 
 (def-family-with-id "dishevelled" "FPLX:DVL" :name "dishevelled" :synonyms ("XFAM:PF02377.13" "DVL" "Dvl" "dvl"))
 ;;(def-family-with-id "DVL" "XFAM:PF08137.10" :synonyms ("Dvl" "dvl")) 

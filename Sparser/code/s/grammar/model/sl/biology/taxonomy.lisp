@@ -315,7 +315,7 @@
 
 (define-category dna :specializes bio-chemical-entity
    :bindings (uid "CHEBI:16991")
-   :realization (:noun ("DNA" "deoxyribonucleic acid")))
+   :realization (:noun ("DNA" "deoxyribonucleic acid" "dna")))
 
 
 (define-category dna-motif :specializes bio-chemical-entity
@@ -892,7 +892,7 @@
   :lemma (:common-noun "RNA")
   :realization
      (:common-noun name 
-      :noun "ribonucleic acid"))
+                   :noun ("ribonucleic acid" "rna")))
 
 (define-category micro-rna  :specializes rna
   :instantiates self
@@ -1426,6 +1426,8 @@
   :index (:permanent :key name)
   :lemma (:common-noun "animal")
   :realization (:common-noun name))
+
+(def-synonym animal (:noun "metazoa" :adj "metazoan"))
 
 (define-category species :specializes organism
   :instantiates self 

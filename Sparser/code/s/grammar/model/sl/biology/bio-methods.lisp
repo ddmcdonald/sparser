@@ -113,9 +113,21 @@
       (:noun "panel"
              :of component))
 
+;; polymerase chain reaction
 (noun "PCR" :super bio-method)
 (noun "RT-PCR" :super PCR)
 (noun "qRT/PCR" :super PCR)
+
+;; unrelated PCR - defining this partly to block a bad trips def
+(noun "ePCR" :super bio-method)
+(def-synonym ePCR (:noun "electronic Patient Care Reporting"))
+
+;; "detection of regulatory elements using GRO-Seq"
+(noun "dREG" :super bio-method)
+;; Broad-platform Evolutionary Analysis General Likelihood Evaluator
+(noun "BEAGLE" :super bio-method) 
+
+
 (noun "QCT" :super bio-method)
 (def-synonym QCT (:noun "quantitative computed tomography"))
 (noun "pQCT" :super QCT)

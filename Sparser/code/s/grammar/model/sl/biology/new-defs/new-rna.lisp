@@ -19,7 +19,8 @@
 ;(def-indiv-with-id micro-rna "c13orf25" "NCIT:C118113" :name "MIR17HG gene") 
 (def-indiv-with-id rna "hTERC" "NCIT:C2097" :name "telomerase RNA component") 
 (def-indiv-with-id rna "ssRNA" "NCIT:C95939" :name "single-stranded RNA") 
-(def-indiv-with-id rna "snRNA" "NCIT:C815" :name "small nuclear RNA") 
+(def-indiv-with-id rna "snRNA" "NCIT:C815" :name "small nuclear RNA")
+(def-indiv-with-id rna "crRNA" "CHEBI:134528" :name "CRISPR RNA")
 (def-indiv-with-id rna "PCA3" "NCIT:C92559" :name "prostate cancer antigen 3")
 
 ;; microrna -- names need to be of the form mir-# for TFTA

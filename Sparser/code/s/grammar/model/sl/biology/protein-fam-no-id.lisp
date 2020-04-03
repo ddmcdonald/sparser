@@ -44,6 +44,8 @@
 
 (noun "growth factor" :super protein) ;; actually, either a protein or hormone, but occasionally some other molecule
 
+(noun "polyprotein" :super protein) ;; any protein cleaved into multiple peptide proteing, often but not always viruses
+
 
 ;; likely figure numbers
 ;;(def-family "2B" :members ("UP:O94953" "UP:Q93097" "UP:Q9UQ03"))
@@ -76,6 +78,10 @@
 ;;; protein-families
 ;;;-----------------
 
+;; virus proteins
+(def-family "nucleocapsid protein" :members ("UP:Q8JTH3"))
+(def-family "capsid protein" :synonyms ("capsid")) ;; should define this better -kind of cell part but viruses don't have cells
+;;
 
 (def-family "USP" :synonyms ("ubiquitin-specific protease" "ubiquitin-specific peptidase")) 
 (def-family "UBL" :synonyms ("ubiquitin-like")) 
@@ -322,7 +328,7 @@
 (def-family "factor 1" :members ("UP:O95831" "UP:P48061" "UP:Q8WXW3")) 
 (def-family "forkhead" :synonyms ("Forkhead Box Protein") :members ("UP:O16850" "UP:O43524" "UP:Q9UJU5"))
 (def-family "fritz" :members ("UP:O95876" "UP:Q92765")) 
-(def-family "gag protein" :members ("UP:Q79354" "UP:Q79360")) ;; both unreviewed hiv
+;(def-family "gag protein" :members ("UP:Q79354" "UP:Q79360")) ;; both unreviewed hiv
 (def-family "gene 1" :members ("UP:O14503" "UP:O15503" "UP:O95997" "UP:P49788" "UP:Q2M385" "UP:Q86UE4")) 
 (def-family "glyceraldehyde-3-phosphate dehydrogenase" :members ("UP:O14556" "UP:P04406")) 
 (def-family "growth factor receptor" :members ("UP:P00533" "UP:P04629" "UP:P08138" "UP:P08581" "UP:P16234" "UP:P17948" "UP:P35968")) 
@@ -1469,7 +1475,7 @@
 (def-family "endoglucanase 1" :members ("UP:P21833" "UP:Q02934")) 
 (def-family "endothelin-2" :members ("UP:P20800" "UP:P22389")) 
 (def-family "enoyl-CoA hydratase" :members ("UP:P30084" "UP:P76082")) 
-(def-family "env" :members ("UP:C1JJY3" "UP:P03386" "UP:U3LIR9" "UP:C6FX96")) 
+;(def-family "env" :members ("UP:C1JJY3" "UP:P03386" "UP:U3LIR9" "UP:C6FX96")) 
 (def-family "eomesodermin" :members ("UP:O95936" "UP:P79944")) 
 (def-family "epl1" :members ("UP:Q752Q3" "UP:Q9H2F5")) 
 (def-family "erb" :members ("UP:P00533" "UP:Q92731")) 
