@@ -1552,5 +1552,136 @@ new file to append to new-prot-fam, those without get filtered to "
             ;; the uid isn't diagnostic of category (e.g., mesh and go
             ;; can be lots of things) so we can't create a definition
             (push reach-def *potential-other-reach-defs*)))))
-            
-            
+
+(defparameter *suspect-trips-defs* nil)
+(defvar *trips-words-hash* (make-hash-table :size 5000 :test #'equalp))
+
+(defun new-trips-defs->krisp-defs (file &optional (suppress-redef nil))
+  (setq *suppress-redefinitions* suppress-redef)
+  (with-open-file (stream (concatenate 'string "sparser:bio-not-loaded;" file ".lisp")
+                          :direction :input 
+                          :external-format :UTF-8)
+    (loop for term-def = (read stream nil)
+          while term-def
+            do (when term-def
+                 (let* ((word (car term-def))
+                        (word-len (length word))
+                        (id (getf (cddr term-def) :id)))
+                   (unless (or (null id)
+                                 (gethash word *trips-words-hash*))
+                       (setf (gethash word *trips-words-hash*) term-def)
+                       (if (or (eq 2 word-len)
+                               (and (search "-" word)
+                                    (eq 3 word-len))
+                               (and (< word-len 5)
+                                    (search "ORPHANET:" (fourth term-def))))
+                           (push term-def *suspect-trips-defs*)
+                           (trips/reach-term->def-indiv-with-id term-def))))))
+    (save-var->bio-nl-new-defs-file *suspect-trips-defs* 
+                                    "suspect-trips-reach-defs")
+    (save-var->bio-nl-new-defs-file *suppressed-new-defs* "suppressed-new-defs" :vl t)
+  (loop for v in *new-id-defs*
+          do (save-var->bio-nl-new-defs-file (symbol-value v)
+                                             (string-downcase (string-trim "*" (string v)))))
+    (with-open-file (prot-stream (concatenate 'string "sparser:bio-not-loaded;" 
+                                              file "-proteins.lisp")
+                                 :direction :output :if-exists :supersede 
+                                 :if-does-not-exist :create
+                                 :external-format :UTF-8)
+      (loop for item in *trips-define-proteins*
+            do (lc-one-line-print item prot-stream)))))
+                      
+                    
+
+(defparameter *all-human-prot-fam* nil)
+(defparameter *mixed-prot-fam* nil)
+(defparameter *one-human-prot-fam* nil)
+(defparameter *no-human-prot-fam* nil)
+(defparameter *no-members-prot-fam* nil)
+(defparameter *non-up-members-proxt-fam* nil)
+(defparameter *new-id-fam-defs* nil)
+(defparameter *check-hms-id-fam* nil)
+
+(defun get-hms-data (syns)
+  (declare (special *hms-grounding-ht*))
+  (loop for syn in syns
+        as hms =  (gethash syn *hms-grounding-ht*)
+        when hms
+        collect `(,syn ,hms) into hms-data
+        finally (return (when hms-data
+                          (group-by hms-data #'second))))) 
+
+(defun get-id-dist (members)
+  (declare (special *upa-key-upm-val*))
+  (loop for id in members
+        if (not (search "UP:" id :test #'equal))
+        collect id into non-up-ids
+        else
+        if (human-mnemonic? (gethash (remove-uniprot-prefix id)
+                                     *upa-key-upm-val*))
+        collect id into human-ids
+        else
+        collect id into non-human-ids
+        end
+        finally (return (values non-up-ids human-ids non-human-ids))))
+
+(defun fix-no-id-fams (&key (protein-file "protein-fam-no-id-has-members.lisp"))
+  (unless (boundp '*hms-grounding-ht*)
+    (load "sparser:bio-not-loaded;hms-grounding;hms-grounding-map-01-2020.lisp"))
+  (unless (boundp '*upa-key-upm-val*)
+    (load "sparser:bio;uniprot-accession-id-mnemonic.lisp"))
+    (let ((input (open (concatenate 'string "sparser:bio;" protein-file)
+                     
+                     :if-does-not-exist nil)))
+    (when input
+      (loop for fam = (read input nil)
+            while fam
+              when (eq 'def-family (first fam))
+            do (let* ((fam-word (second fam))
+                      (syns (getf fam :synonyms))
+                      (all-syns (cons fam-word syns))
+                      (hms-data (get-hms-data all-syns))
+                      (members (getf fam :members)))
+                 (multiple-value-bind (non-up-ids human-ids non-human-ids)
+                     (get-id-dist members)
+                 (cond ((null hms-data)
+                        (cond ((null members)
+                               (push fam *no-members-prot-fam*))
+                              (non-up-ids
+                               (push fam *non-up-members-prot-fam*))
+                              ((null human-ids)
+                               (push fam *no-human-prot-fam*))
+                              ((eq 1 (length human-ids))
+                               (push `(,(car human-ids) :syns ,all-syns :non-human ,non-human-ids)
+                                     *one-human-prot-fam*))
+                              (t
+                               (when non-human-ids
+                                 (push `(:human ,human-ids :non-human ,non-human-ids :orig ,fam)
+                                       *mixed-prot-fam*))
+                               (push (subst human-ids (getf fam :members) fam :test #'equal)
+                                     *all-human-prot-fam*))))
+                        ((and (null (cdr hms-data)) (null members)
+                              (search "FPLX:" (car hms-data) :test #'equal))
+                         (push (cons `(def-family-with-id ,fam-word ,(caar hms-data))
+                                     (when syns (list :synonyms syns)))
+                               *new-id-fam-defs*))
+                        (t
+                         (push (cons `(:hms ,hms-data :human ,human-ids
+                                            :non-human ,non-human-ids)
+                                     (when non-up-ids (list :non-up non-up-ids)))
+                               *check-hms-id-fam*))))))))
+    (with-open-file (stream "sparser:bio-not-loaded;hms-grounding;prot-fam-fix-01-2020.lisp"
+                            :direction :output :if-exists :supersede 
+                                       :if-does-not-exist :create
+                                       :external-format :UTF-8)
+      (format stream "(in-package :sparser)~%~%")
+      (format stream "(defparameter *new-id-fam-defs* ~%'~s~%)~%~%" *new-id-fam-defs*)
+      (format stream "(defparameter *all-human-prot-fam* ~%'~s~%)~%~%" *all-human-prot-fam*)
+      (format stream "(defparameter *no-human-prot-fam* ~%'~s~%)~%~%" *no-human-prot-fam*)
+      (format stream "(defparameter *no-members-prot-fam* ~%'~s~%)~%~%" *no-members-prot-fam*)
+      (format stream "(defparameter *non-up-members-prot-fam* ~%'~s~%)~%~%" *non-up-members-prot-fam*)
+      (format stream "(defparameter *one-human-prot-fam* ~%'~s~%)~%~%" *one-human-prot-fam*)
+      (format stream "(defparameter *mixed-prot-fam* ~%'~s~%)~%~%" *mixed-prot-fam*)
+      (format stream "(defparameter *check-hms-id-fam* ~%'~s~%)~%~%" *check-hms-id-fam*)))
+      
+                                     
