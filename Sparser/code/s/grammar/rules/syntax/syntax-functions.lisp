@@ -132,6 +132,11 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
 (define-lambda-variable 'number
     nil 'top)
 
+;; DAVID -- let's talk about this
+;; example is "in position 147"
+(define-lambda-variable 'relative-position-number
+    nil 'top)
+
 (define-lambda-variable 'det-quantifier ;; as in "all these"
     nil 'determiner)
 
@@ -721,6 +726,10 @@ val-pred-var (pred vs modifier - left or right?)
                     new-n)))))
         ((or adj-edge (itypep adj 'post-adj))
          (adj-noun-compound adj n adj-edge))))
+
+(defun np-number (np number)
+  (or *subcat-test*
+      (bind-dli-variable 'relative-position-number number np)))
 
 (defun create-partitive-np (quantifier of-pp)
   (declare (special quantifier of-pp category::preposition))
