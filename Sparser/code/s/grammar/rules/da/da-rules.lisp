@@ -1028,6 +1028,7 @@
   :action (:function
            np-vg+ed first second))
 
+(defparameter *np-vg+ed-xp* nil)
 
 (defun np-vg+ed (np vg+ed)
   "Have to determine the fate of the vg+ed -- is it a main verb or
@@ -1058,22 +1059,27 @@
                   (obj-var (create-predication-by-binding obj-var np-ref vg-ref))
                   (subj-var (create-predication-by-binding subj-var np-ref vg-ref))
                   (t (push-debug `(,vg-ref ,np-ref))
-                     (warn "Variables for reduce-relative are nil~
+                     (push (format nil "Variables for reduce-relative are nil~
                            ~%  np: e~a ~s~
                            ~%  vg+ed: e~a ~s~
                            ~%  xp: e~a ~s"
-                            (edge-position-in-resource-array np)
-                            (string-for-edge np)
-                            (edge-position-in-resource-array vg+ed)
-                            (string-for-edge vg+ed)
-                            (edge-position-in-resource-array edge-on-right)
-                            (string-for-edge edge-on-right)))))
-               (i (bind-variable 'predication vp-ref np-ref)))
+                                   (edge-position-in-resource-array np)
+                                   (string-for-edge np)
+                                   (edge-position-in-resource-array vg+ed)
+                                   (string-for-edge vg+ed)
+                                   (edge-position-in-resource-array edge-on-right)
+                                   (string-for-edge edge-on-right))
+                           *np-vg+ed-xp*)
+                     nil
+                     )))
+               (i (when vp-ref
+                    (bind-variable 'predication vp-ref np-ref))))
           ;; (break "i = ~a" i)
-          (make-edge-spec
-           :category (edge-category np)
-           :form category::np
-           :referent i)))
+          (when i
+            (make-edge-spec
+             :category (edge-category np)
+             :form category::np
+             :referent i))))
 
       ;; main verb case
       (unless (or (adverb-at? (pos-edge-starts-at vg+ed))
