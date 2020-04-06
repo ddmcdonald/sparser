@@ -275,3 +275,22 @@
       (otherwise
        (push-debug `(,relation ,instance))
        (error "No provision for storing ~a yet" relation)))))
+
+
+;;; displaying content
+
+(defgeneric show-entities (contents)
+  (:method ((c entities-and-relations))
+    (entities-in-sentence c)))
+
+(defgeneric show-relations (contents)
+  (:method ((c entities-and-relations))
+    (relations-in-sentence c)))
+
+(defgeneric show-individuals (contents)
+  (:method ((c sentence-discourse-history))
+    (sentence-individuals c)))
+
+
+
+
