@@ -86,11 +86,25 @@
       (error "Entry doesn't begin with :comlex~%  ~a" entry))
 
     (let* ((clauses (cdr entry))
-           (variants
+           (variants-and-parts-of-speech
             (unless (string-equal string "be")
               (collect-strings-from-comlex-entry string clauses)))
+           (variants
+            (if (stringp (car variants-and-parts-of-speech))
+                variants-and-parts-of-speech
+                (loop for alt in variants-and-parts-of-speech
+                      when (consp alt)
+                        append alt)))
            (all-words (pushnew string variants :test #'string-equal)))
-
+      (when (and (consp variants-and-parts-of-speech)
+                 (member (car variants-and-parts-of-speech)
+                         '(:comparative :superlative)))
+        (setq entries
+              (merge-variants-and-parts-of-speech-into-entry
+               string
+               clauses
+               variants-and-parts-of-speech))
+        )
       ;;(break "check for verb variants")
       (let* ((prior-entry ;;/// only ever one? Need to test for this !
               (gethash string *primed-words*))
@@ -101,6 +115,10 @@
                           ,@(cdr entry)))))
         (dolist (string all-words)
           ;;(format t "~&priming \"~a\"~%" string)
+          #+ignore
+          (when (is-in-p 'gradable entries)
+            (format t "comlex for adjectiv ~s~%"
+                    entry-to-store))
           (setf (gethash string *primed-words*) entry-to-store))
         all-words))))
 
@@ -117,7 +135,19 @@
         ;; but I'm putting that off 12/3/12 ddm.
         ))
     `(:comlex ,pname ,@final-clauses)))
-      
+
+
+(defun merge-variants-and-parts-of-speech-into-entry (lemma entries pos-variants)
+  (let ((adjective (assoc 'adjective entries)))
+    (when adjective
+      (setf (second adjective)
+            (append pos-variants (second adjective)))
+      #+ignore
+      (format t "~%merge-variants-and-parts-of-speech-into-entry ~% entry: ~s entries ~s~% pos-variants ~s~%====> ~s%"
+              lemma entries pos-variants
+              entries))
+    entries))
+    
 
 ;;--- aux
 
@@ -161,7 +191,32 @@
              (pushnew (ing-form-of-verb lemma) strings
                       :test #'string-equal))))
 
-        (adjective) ;; just the lemma, so the caller handled it
+        (adjective
+         (let* ((plist (cadr clause))
+                (features (cadr (memq :features plist)))
+                (comparative (cadr (memq :comparative plist)))
+                (superlative (cadr (memq :superlative plist)))
+                (gradable (assoc 'gradable features))
+                (er-est (or (memq :er-est gradable)
+                            (memq :both gradable)))
+                (more-most (not (memq :er-est gradable)))
+                (adj-entry
+                 (when gradable
+                   (append
+                    (unless
+                        comparative
+                      `(:comparative
+                        ,
+                        (append (when er-est (make-er-comparatives lemma))
+                                (when more-most (make-more-comparatives lemma)))))
+                    (unless superlative
+                      `(:superlative
+                        ,(append
+                          (when er-est (make-est-superlatives lemma))
+                          (when more-most (make-most-superlatives lemma)))))))))
+           (when adj-entry
+             (setq strings adj-entry)
+             ))) ;; just the lemma, so the caller handled it
         (adverb)
         ;; These below should mostly be lifted from comlex-function-words
         ;; and integrated carefully so they'll be 'known' when we upload
@@ -178,7 +233,8 @@
         (word)  ;; "whatever"
         (title) ;; e.g. "Cpl."
         (sconj) ;; "according as"
-        (aux))) ;; for "d" and "ll" -- ignore them? 
+        (aux))) ;; for "d" and "ll" -- ignore them?
+    ;;(format t "~%collect-strings-from-comlex-entry ~s ~s" lemma strings )
     strings))
 
 (defmethod extract-plurals-from-comlex-entry ((lemma word) clause)
@@ -202,7 +258,28 @@
        (let ((plural (plural-version lemma)))
          `(,plural))))))
 
+(defun make-er-comparatives (lemma)
+  (setq lemma (maybe-replace-final-y-by-i lemma))
+  (when (equal "e" (subseq lemma (1- (length lemma))))
+    (setq lemma (subseq lemma 0 (1- (length lemma)))))
+  (list (format nil "~aer" lemma)))
 
+(defun make-more-comparatives (lemma)
+  (list (format nil "more ~a" lemma)))
+
+(defun make-est-superlatives (lemma)
+  (setq lemma (maybe-replace-final-y-by-i lemma))
+  (when (equal "e" (subseq lemma (1- (length lemma))))
+    (setq lemma (subseq lemma 0 (1- (length lemma)))))
+  (list (format nil "~aest" lemma)))
+
+(defun make-most-superlatives (lemma)
+  (list (format nil "most ~a" lemma (maybe-replace-final-y-by-i lemma))))
+
+(defun maybe-replace-final-y-by-i (lemma)
+  (if (equal "y" (subseq lemma (1- (length lemma))))
+      (format nil "~ai" (subseq lemma 0 (1- (length lemma))))
+      lemma))
 
 ;;;--------
 ;;; traces        
