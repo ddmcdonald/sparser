@@ -229,20 +229,24 @@
   "What this does needs to correspond to what digit-FSA does in 
    the same situation."
   (declare (special category::hyphenated-number category::number))
-  (let* ((i (find-or-make-individual
-             'hyphenated-number
-             :left (find-or-make-number (edge-referent left-edge))
-             :right (find-or-make-number (edge-referent right-edge))))
-         (edge (make-ns-edge
-                (pos-edge-starts-at left-edge)
-                (pos-edge-ends-at right-edge)
-                category::hyphenated-number
-                :rule 'make-hyphenated-number
-                :form category::number
-                :referent i
-                :constituents `(,left-edge ,right-edge)
-                :words `(,left-edge ,right-edge))))
-      edge))
+  (if (and (eq (edge-cat-name left-edge) 'year)
+           (or (eq (edge-cat-name right-edge) 'year)
+               (eq (edge-cat-name right-edge) 'number)))
+    (look-for-year-expression left-edge right-edge)
+    (let* ((i (find-or-make-individual
+               'hyphenated-number
+               :left (find-or-make-number (edge-referent left-edge))
+               :right (find-or-make-number (edge-referent right-edge))))
+           (edge (make-ns-edge
+                  (pos-edge-starts-at left-edge)
+                  (pos-edge-ends-at right-edge)
+                  category::hyphenated-number
+                  :rule 'make-hyphenated-number
+                  :form category::number
+                  :referent i
+                  :constituents `(,left-edge ,right-edge)
+                  :words `(,left-edge ,right-edge))))
+      edge)))
 
       
 

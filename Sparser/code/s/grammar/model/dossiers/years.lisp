@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2013-2014,2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "years"
 ;;;   Module:  "model;dossiers:"
-;;;  Version:  May 2014
+;;;  Version:  April 2020
 
 ;; broken out as its own file 10/20/94 v2.3
 ;; added years up to 2013 6/8/2013. Up to 2022 5/14/14
@@ -84,4 +84,31 @@
 (define-year "2020" 20)
 (define-year "2021" 21)
 (define-year "2022" 22)
+(define-year "2023" 23)
+(define-year "2024" 24)
+(define-year "2025" 25)
+(define-year "2026" 26)
+(define-year "2027" 27)
+(define-year "2028" 28)
+(define-year "2029" 29)
+(define-year "2030" 30)
+(define-year "2031" 31)
+(define-year "2032" 32)
+(define-year "2033" 33)
+(define-year "2034" 34)
+(define-year "2035" 35)
+(define-year "2036" 36)
+(define-year "2037" 37)
+(define-year "2038" 38)
+(define-year "2036" 39)
+(define-year "2040" 40)
+(define-year "2041" 41)
+(define-year "2042" 42)
+(define-year "2043" 43)
+(define-year "2044" 44)
+(define-year "2045" 45)
+(define-year "2046" 46)
+(define-year "2047" 47)
+(define-year "2048" 48)
+(define-year "2049" 49) ;; after this, the two-digit rules will loop
 

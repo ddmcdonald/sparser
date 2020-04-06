@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "interval"
 ;;;   Module:  "model;core:time:"
-;;;  version:  April 2016
+;;;  version:  April 2020
 
 ;; initiated 7/18/13
 ;;a category to represent intervals
@@ -14,10 +14,32 @@
 
 (in-package :sparser)
 
+#| This would be the same as the 'time-interval' in ecis/regions.lisp
+that is a specialization of 'interval'
+
+(def-eci interval (region 1D) ;; 1d-region
+  :comment "Regions that have an extent that is measured in only
+ one dimension: a length of string, a path in the woods, a period of time.
+ The extent of ordinary one dimenional regions (as opposed to the
+ mathematical notion of a line) begins and ends at specific points."
+  :args ((@begin :isa point :specializes (@border region))
+         (@end :isa point :specializes (@border region))
+         (@length :isa measurement :specializes (@extent region)))
+  :const ((exists @extent)))
+
+|#
+
+;; move up to earlier spot (file) in the taxonomy
+(define-category interval
+  :specializes bounded-region
+  :binds ((begin)
+          (end)))
 
 (define-category  time-interval
-  ;; What other sorts of 'intervals' are there?
-  :specializes time) ;; or is it amount-of-time?
+  :specializes interval
+  :mixins (time)
+  :restrict ((begin time)
+             (end time)))
 
 
 ;;//// Look up Allen's relations

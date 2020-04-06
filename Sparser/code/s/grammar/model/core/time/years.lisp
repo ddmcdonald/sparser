@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2000,2013-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2000,2013-2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "years"
 ;;;   Module:  "model;core:time:"
-;;;  version:  March 2019
+;;;  version:  April 2020
 
 ;; initiated in February 1991
 ;; 0.1 (4/9 v1.8.2)  Added the years from 1959 to 1979
@@ -37,13 +37,21 @@
 ;;; defining form
 ;;;---------------
 
+(defvar *year-of-century-to-year* (make-hash-table)
+  "The wiring of the description lattice makes it unduely hard to
+   allow both finding from the first variable ('name') and any later
+   variable ('year-of-century'). This ad-hoc table fills the gap.")
+
 (defun define-year (string integer)  ;; e.g. "2015" & 15
   (let ((number (find-or-make-number string)))
     (or (find-individual 'year :name string)
-        (define-individual 'year
-            :name string
-            :value (value-of 'value number)
-            :year-of-century integer))))
+        (let ((year
+               (define-individual 'year
+                 :name string
+                 :value (value-of 'value number)
+                 :year-of-century integer)))
+          (setf (gethash integer *year-of-century-to-year*) year)
+          year))))
 
 
 ;;;-----------
@@ -60,6 +68,15 @@
              (word name))))     
       (get-by-name category::year word))
     (find-individual 'year :name name)))
+
+(defgeneric get-year-from-last-two-digits (number)
+  (:method ((i individual))
+    (unless (itypep i 'number) (error "not a number ~a" i)) ; use k-method?
+    (let ((value (value-of 'value i)))
+      (unless (< value 100) (error "value is too large: ~a" value))
+      (get-year-from-last-two-digits value)))
+  (:method ((n integer))
+    (gethash n *year-of-century-to-year*)))
 
 
 (def-k-method next-item ((year category::year))
@@ -140,3 +157,33 @@
       (let ((rule (multiply-edges date-edge comma-year-edge)))
         (when rule
           (make-edge-below-top-edge date-edge comma-year-edge rule))))))
+
+
+;;;----------------
+;;; pairs of years
+;;;----------------
+
+(defun look-for-year-expression (left-edge right-edge)
+  "Called from the no-space function make-hyphenated-number when notices
+ that the left edge is labeled a year. Given the role of its
+ caller, this function has to make the edge over the two edges
+ (and the hyphen between them) and return it."
+  (declare (special category::time-interval category::np))
+  (let ((from-year (edge-referent left-edge))
+        (to-year (edge-referent right-edge)))
+    (unless (itypep to-year 'year)
+      ;; caller checked already, so we know it's a number
+      (setq to-year (get-year-from-last-two-digits to-year)))
+    (let* ((i (make-simple-individual category::time-interval
+                 `((begin ,from-year) (:end ,to-year))))
+           (edge (make-ns-edge
+                  (pos-edge-starts-at left-edge)
+                  (pos-edge-ends-at right-edge)
+                  category::time-interval ; category
+                  :form category::np
+                  :referent i
+                  :constituents `(,left-edge ,right-edge)
+                  :rule 'look-for-year-expression)))
+      edge)))
+
+
