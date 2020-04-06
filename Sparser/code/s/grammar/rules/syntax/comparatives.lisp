@@ -81,6 +81,15 @@ abstract > abstract-region >
                 est-category est-indiv est-rule)))))
 
 
+(defun setup-anonymous-graded-adjective ()
+  "Called from setup-adjective for the case where the Comlex entry 
+   includes explicit 'er' and 'est' words. These have no real
+   semantics -- no associated attribute -- so we have to make
+   one for them.
+"
+  )
+
+
 ;;;-----------------
 ;;; base categories
 ;;;-----------------
