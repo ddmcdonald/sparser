@@ -134,6 +134,9 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
 
 ;; DAVID -- let's talk about this
 ;; example is "in position 147"
+;; all NPs without determiners can have such numbers
+;;  independent of the place in the taxonomy of their interpretation
+;;  so that is why I have put this variable at the 'top
 (define-lambda-variable 'relative-position-number
     nil 'top)
 
@@ -728,8 +731,9 @@ val-pred-var (pred vs modifier - left or right?)
          (adj-noun-compound adj n adj-edge))))
 
 (defun np-number (np number)
-  (or *subcat-test*
-      (bind-dli-variable 'relative-position-number number np)))
+  (if  *subcat-test*
+       (not (value-of np 'has-determiner))
+       (bind-dli-variable 'relative-position-number number np)))
 
 (defun create-partitive-np (quantifier of-pp)
   (declare (special quantifier of-pp category::preposition))

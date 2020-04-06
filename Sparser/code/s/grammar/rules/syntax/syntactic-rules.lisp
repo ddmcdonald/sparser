@@ -164,11 +164,6 @@
            :head :right-edge
            :form n-bar
            :referent (:function adj-noun-compound left-edge right-edge)))
-     (eval 
-      `(def-syntax-rule (adjp ,nb) ;; "most likely [cellular location]"
-           :head :right-edge
-           :form n-bar
-           :referent (:function adj-noun-compound left-edge right-edge)))
      (eval
       `(def-syntax-rule (,nb adjective) ;; "RAS in vivo"
            :head :left-edge
@@ -232,6 +227,10 @@
                 :form n-bar 
                 :referent (:function noun-noun-compound left-edge right-edge)))))
 
+(def-syntax-rule (np number) ;; "position 146"
+           :head :left-edge
+           :form np
+           :referent (:function np-number left-edge right-edge))
 
 (def-syntax-rule (quantifier np) ;; "all the blocks" (should be red)
     :head :right-edge
