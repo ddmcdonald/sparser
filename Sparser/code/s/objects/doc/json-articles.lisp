@@ -15,6 +15,8 @@
  a conduit between those two steps while we're sorting out what
  control flow to actually use.")
        
+(defparameter *show-sections* nil)
+
 (defun make-document (sexp filepath &key handle)
   ;; text-blocks to paragraphs
   ;; make an article and hook in the paragraphs.
@@ -32,8 +34,11 @@
 
     ;; body text
     (let ((text-blocks (extract-text-body sexp)))
-      (unless text-blocks
-        (warn-or-error "could not find the text-body in JSON sexp"))
+      (declare (special text-blocks))
+      (if text-blocks
+          (when *show-sections*
+            (pprint (list handle (loop for tb in text-blocks collect (cdr (assoc :section tb))))))
+          (warn-or-error "could not find the text-body in JSON sexp"))
       (let ((s (make-instance 'section)))
         (setf (name s) (next-indexical-name :section))
         (setf (parent s) article)
@@ -53,7 +58,7 @@
 (defun find-paragraphs (text-blocks parent)
   (let ((paragraphs
          (loop for block in text-blocks
-            collect (make-paragraph block))))
+            append (make-paragraph block))))
     (knit-paragraphs paragraphs parent)
     paragraphs))
 
@@ -65,9 +70,23 @@
   (multiple-value-bind (section text)
       (read-out-text-block text-block)
     ;; ignore the section till we see what may occur
-    (let ((p (allocate-paragraph))) ;; (make-instance 'paragraph)
-      (setf (content-string p) text)
-      p)))
+    (when (eql (search ". " text) 0)
+      ;; e.g. article rxiv-55 has
+      ;;    "body_text": [
+      ;;{
+      ;; "text": ". In addition, SARS-CoV was detected in urine, feces and tears of some SARS-CoV infected patients.
+      (setq text (subseq text 2)))
+    (unless (equal text ".")
+      ;; we have bizarre paragraphs like
+      ;;{
+      ;; "text": ".",
+      ;;     "cite_spans": [],
+      ;;     "ref_spans": [],
+      ;;     "section": "Relative mean absolute error"
+      ;;},
+      (let ((p (allocate-paragraph))) ;; (make-instance 'paragraph)
+        (setf (content-string p) text)
+        (list p)))))
 
 (defun knit-paragraphs (list section)
   "Set the previous/next and parent pointers"
