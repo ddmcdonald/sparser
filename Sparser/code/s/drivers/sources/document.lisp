@@ -310,7 +310,14 @@
       (paragraph-trace-hook p)
       
       ;; lifted from analyze-text-from-string 
+      (setq text (cl-ppcre:regex-replace-all " q q" text ""))
       (establish-character-source/string text)
+
+      ;; Needs to be debuged -- DAVID TAKE A LOOK
+      ;; look at what happens in
+      ;;  (run-nth-json-article 17 :skip-errors nil)
+      (when *prescan-character-input-buffer*
+        (scan-and-swap-character-buffer))
       (analysis-core))))
 
 
