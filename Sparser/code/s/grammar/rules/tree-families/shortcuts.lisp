@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2020 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "shortcuts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  September 2017
+;;;  version:  April 2020
 
 
 ;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
@@ -407,19 +407,24 @@ see if there are issues"
     category))
 
 
+#| 4/6/20 ddm -- reviewed every instance of the macro, and with
+one trieo of exceptions (in bio;harvar-terms) they all only supply
+the supercategory to use. This means that the original code here
+can be replace with a call to define-adjective, ensuring that there
+is a uniform treatment.|#
 (defmacro adj (name
                &key adj
-                    super specializes
-                    binds realization
-                    instantiates mixins restrict rule-label 
-		 obo-id)
-     (cond
+                 super specializes
+                 form mixins instantiates
+                 binds realization
+                 restrict rule-label 
+		 obo-id
+                 documentation)
+  (cond
     ((and super specializes)
      (lsp-break "defining noun with both :super ~s  and :specialize ~s"
 		super specializes))
     (t (setq super (or super specializes))))
-   
-
   (typecase name
     (string ;; name is taken from the string
      (unless adj ;; is there a good reason for them to be different?
@@ -430,6 +435,9 @@ see if there are issues"
        (error "You have to specify the word for the noun (:adj)")))
     (otherwise
      (error "Bad type for 'name'. It should be a string or a symbol")))
+
+;;  `(define-adjective
+
   `(adj/expr ',name
         :adj ',adj
         :super ',super ;; :specializes ',specializes
