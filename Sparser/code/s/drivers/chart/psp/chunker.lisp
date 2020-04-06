@@ -1058,6 +1058,8 @@ than a bare "to".  |#
                        (or (eq (edge-category ee) word::comma)
                            (member (form-cat-name ee)
                                    '(quantifier det demonstrative
+                                     ;; changed to allow "a parameter of 2.3"
+                                     preposition
                                      adverb punctuation))))))
         
       (unless (or (preceding-adverb e edges-before)
