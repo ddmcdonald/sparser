@@ -1420,13 +1420,16 @@
 (define-category bio-use :specializes bio-method
   :mixins (raising-to-object)
   :restrict ((theme
-              (:or bio-event bio-predication bio-process bio-method bio-rhetorical)))
+              (:or bio-event bio-predication bio-process
+                   bio-method bio-rhetorical)))
   :binds ((used-to biological)
           ;;(disease disease)
           (purpose (:or treatment disease))
           (object (:or bio-chemical-entity bio-organ bio-process bio-mechanism
                        bio-method
-                       experimental-condition cell-line))
+                       experimental-condition cell-line
+                       measurement ;; "data", "dataset"
+                       ))
           (agent (:or bio-chemical bio-process bio-mechanism)))
   :realization ;; (p/s "use KRAS to treat pancreatic cancer")
   (:verb "use"
