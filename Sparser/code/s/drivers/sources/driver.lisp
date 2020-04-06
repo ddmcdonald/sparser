@@ -30,7 +30,9 @@
   (let ((*show-section-printouts* show-sect)
         (*trap-error-skip-sentence* skip-errors))
     (declare (special *show-section-printouts*
-                      *trap-error-skip-sentence*))
+                      *trap-error-skip-sentence*
+                      *article*))
+    (setq *article* article)
     ;; If sweep is nil, this returns the raw document,
     ;; i.e. no section-of-sections or sentences.
     (when sweep
