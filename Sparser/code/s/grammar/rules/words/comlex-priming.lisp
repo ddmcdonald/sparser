@@ -203,17 +203,17 @@
                 (adj-entry
                  (when gradable
                    (append
-                    (unless
-                        comparative
-                      `(:comparative
-                        ,
-                        (append (when er-est (make-er-comparatives lemma))
-                                (when more-most (make-more-comparatives lemma)))))
-                    (unless superlative
-                      `(:superlative
-                        ,(append
-                          (when er-est (make-est-superlatives lemma))
-                          (when more-most (make-most-superlatives lemma)))))))))
+                    `(:comparative
+                      ,(cond ((consp comparative) comparative)
+                             (comparative (list comparative))
+                             (t (append (when er-est (make-er-comparatives lemma))
+                                   (when more-most (make-more-comparatives lemma))))))
+                    `(:superlative
+                      ,(cond ((consp superlative) superlative)
+                             (superlative (list superlative))
+                             (t (append
+                                 (when er-est (make-est-superlatives lemma))
+                                 (when more-most (make-most-superlatives lemma))))))))))
            (when adj-entry
              (setq strings adj-entry)
              ))) ;; just the lemma, so the caller handled it
