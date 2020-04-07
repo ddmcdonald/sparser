@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2010-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2010-2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "decode"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  December 2019
+;;;  version:  April 2019
 
 ;; pulled from [find] 5/25/93 v2.3
 ;; 0.1 (9/18) added referential-categories to the options for decoding
@@ -83,6 +83,14 @@
             (setq variable (find-variable-for-category var-name category))
             ;; ought to be a check on the type of the value-exp too,
             ;; today just assuming it's already evaluated and is correct
+
+            (unless variable
+              ;; We're calling this decoder because we're defining an individual.
+              ;; The arguments to these individuals are rarely wrong (e.g. that
+              ;; the presume there is a 'name' variable somewhere up the superc
+              ;; chain. If they fail is can be because the cache is out of date.
+              (cache-variable-lookup)
+              (setq variable (find-variable-for-category var-name category)))
 
             (unless variable
               (push-debug `(,var-name ,category))
