@@ -76,10 +76,11 @@
 
     (let ((category (find-or-make-category-object symbol :referential source-location)))
       (apply #'decode-category-parameter-list category parameter-list)
+      
       (when (and old-obj (cached-variable-lookup?)
-                 (subcategories-of old-obj)) ;; only need to recompute cached variables if there are sub-categories
-        (format t "cache-variable-lookup called on redefinition of ~s" old-obj)
-
+                 (subcategories-of old-obj))
+        ;; only need to recompute cached variables if there are sub-categories
+        (format t "~&cache-variable-lookup called on redefinition of ~s~%" old-obj)
         ;;(lsp-break "cache-variable-lookup")
         (cache-variable-lookup))
       category )
