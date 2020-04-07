@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1994,2012,2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1994,2012,2016-2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "polywords"
 ;;;   Module:  "objects;chart:words:"
-;;;  Version:  December 2016
+;;;  Version:  April 2020
 
 ;; 1.1 (1/18/91 v1.8)  Added a proper Display-polyword that didn't use
 ;;      bracketing double quotes -- Princ-polyword does that.
@@ -59,8 +59,10 @@
   (write-string (pw-pname pw) stream))
 
 (defun hyphenated-string-for-pw (pw)
-  (let ((word-strings (mapcar #'(lambda (w) (word-pname w)) 
-			      (pw-words pw))))
+  ;; #<polyword "more common"> --> "more-common"
+  (let ((word-strings (loop for w in (pw-words pw)
+                         unless (spaces-word? w)
+                         collect (pname w))))
     (let ((reversed (reverse word-strings))
 	  with-hyphens )
       (do ((s (car reversed) (car rest))
