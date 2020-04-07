@@ -11,30 +11,43 @@
 ;;; get the json files
 ;;;--------------------
 
+(defparameter *json-base* nil)
+;; look up just once -- don't use asdf lookup each time
 (defun json-base ()
-  (let ((base (asdf:system-relative-pathname :r3 "../corpus/covid/2020-03-13/")))
-    base))
+  (or *json-base*
+      (setq *json-base*
+            (namestring
+             (asdf:system-relative-pathname :r3 "../corpus/covid/2020-04-03/")))))
 
-(defun json-directory (&key base ((:dir dir-string) "biorxiv_medrxiv/biorxiv_medrxiv/"))          
+(defun json-directory (&key (base (json-base)) ((:dir dir-string) "comm_use_subset"))
+  (declare (special base dir-string))
   (let ((dir-path (merge-pathnames dir-string base)))
     (unless (probe-file dir-path) (error "extension to directory is wrong" dir-path))
     dir-path))
 
 (defun json-relative-pathname (path)
-  (let* ((base (namestring (json-base)))
+  (let* ((base (json-base))
          (pathname (namestring path))
          (path-base (subseq pathname 0 (length base))))
     (when (equal base path-base)
       (subseq pathname (length base)))))
 
 (defun json-absolute-pathname (rel-path)
-  (concatenate 'string (namestring (json-base)) (namestring rel-path)))
+  (concatenate 'string (json-base) (namestring rel-path)))
 
 (defparameter *json-corpus-paths*
-  '((rxiv "biorxiv_medrxiv")
-    (com "comm_use_subset")
-    (non-com "noncomm_use_subset")
-    (pmc "pmc_custom_license"))
+  '((rxiv "biorxiv_medrxiv/biorxiv_medrxiv/")
+    (com "comm_use_subset/comm_use_subset/")
+    (non-com "noncomm_use_subset/noncomm_use_subset/")
+    (pmc "pmc_custom_license/pmc_custom_license/")
+    (0403-rxiv "biorxiv_medrxiv/pdf_json/")
+    (0403-com-pdf "comm_use_subset/pdf_json/")
+    (0403-com-pmc "comm_use_subset/pmc_json/")
+    (0403-non-com-pdf "noncomm_use_subset/pdf_json/")
+    (0403-non-com-pmc "noncomm_use_subset/pmc_json/")
+    (0403-custom-pdf "custom_license/pdf_json/")
+    (0403-custom-pmc "custom_license/pmc_json/")
+    )
   "Modeled on the list in r3/code/evaluation/doc-support.
    Could be integrated into the file selection machinery to allow
    a short way to identify individuals json files to make into
@@ -75,10 +88,14 @@ else that takes two arguments:  (1) the s-expression (2) the file's pathname
 (defparameter *corpus-registry-path*
   (probe-file (lisp-file (sparser-logical-pathname "source-drivers;json-corpus-registry.lisp"))))
 
-(defun all-covid-json-filepaths ()
+(defun all-covid-json-filepaths (&optional (date "0403"))
   (setf *json-files-to-read*
-        (loop for dir in '("biorxiv_medrxiv" "comm_use_subset" "noncomm_use_subset")
-              append (progn (collect-json-directory :dir dir :quiet t)
+        (loop for dir in
+                (if (equal date "0403")
+                    `("0403-rxiv" "0403-com-pdf" "0403-com-pmc" "0403-non-com-pdf"
+                                  "0403-non-com-pmc" "0403-custom-pdf" "0403-custom-pmc")
+                    '("biorxiv_medrxiv" "comm_use_subset" "noncomm_use_subset"))
+              append (progn (collect-json-directory :dir (decoded-dir dir) :quiet t)
                             *json-files-to-read*)))
   (format t "~%Loading ~d file pathnames into the hopper.~%To process the next one, call (sparser::do-next-json)~%To process a particular one, call, e.g., (sparser::do-json 'com-52)~%To see what the next is, call (sparser::peek-next-json)~%To do the rest, call (sparser::do-remaining-json)~%To do a batch of n using (sparser::do-remaining-json :n n)~%Remaining list will be stored in sparser::*json-files-to-read*.~%...~%"
           (length *json-files-to-read*))
@@ -88,12 +105,12 @@ else that takes two arguments:  (1) the s-expression (2) the file's pathname
   (let ((decoded-dir (decoded-dir dir))
         (encoded-dir (encoded-dir dir)))
     (when decoded-dir  ;; Don't proceed if there's no entry in *json-corpus-paths* that contains it, as key or value.
-      (let* ((double-dir (format nil "~a/~a/" decoded-dir decoded-dir)) ;; May want to make more flexible
-             (dir-path (json-directory :base (json-base) :dir double-dir))
+      (let* ((dir-path (json-directory :base (json-base) :dir decoded-dir))
              (wild-path (merge-pathnames "*.json" dir-path))
              (file-paths (directory wild-path)))
+        (declare (special dir-path wild-path file-paths))
         (cond ((not file-paths)
-               (warn "No json files found in location ~a." dir-path))
+               (break "No json files found in location ~a." dir-path))
               (t
                (unless quiet
                  (format t "~%Loading ~d file pathnames into the hopper.~%To process the next one, call (sparser::do-next-json)~%To process a particular one, call, e.g., (sparser::do-json 'com-52)~%To see what the next is, call (sparser::peek-next-json)~%To do the rest, call (sparser::do-remaining-json)~%To do a batch of n using (sparser::do-remaining-json :n n)~%Remaining list will be stored in sparser::*json-files-to-read*.~%...~%"
@@ -108,12 +125,12 @@ else that takes two arguments:  (1) the s-expression (2) the file's pathname
   (:method ((dir-sym symbol))
     (decoded-dir (symbol-name dir-sym)))
   (:method ((dir-str string))
+    (declare (special dir-str))
     (or (second (assoc (intern (string-upcase dir-str) :sparser)
                        *json-corpus-paths*))
         (and (member dir-str *json-corpus-paths*
                      :key #'second :test #'equal)
-             dir-str)
-        (t nil))))
+             dir-str))))
 
 (defgeneric encoded-dir (dir-name)
   (:documentation

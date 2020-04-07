@@ -137,7 +137,7 @@
 (defvar *article-json* nil)
 (defvar *json-article* nil)
 
-(defun run-nth-json-article (n &key ((:corpus article-set-name) 'rxiv)
+(defun run-nth-json-article (n &key ((:corpus article-set-name) '0403-com-pmc)
                                  (quiet t) (skip-errors t) (show-sect nil)
                                  (sexp nil))
   (let* ((*article-short-name* ; file-handle
