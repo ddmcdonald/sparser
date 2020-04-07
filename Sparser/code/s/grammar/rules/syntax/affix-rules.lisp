@@ -64,9 +64,9 @@
 
   (let ((*source-of-unknown-words-definition* :morphology)
         (*unknown-word* word))
-
     (declare (special *source-of-unknown-words-definition* *unknown-word*))
 
+    
     (flet ((block-verbified-nouns (lemma)
              ;; originally put in to block creation of a verb form of "residue"
              ;;  based in a typo "residued"
@@ -79,17 +79,17 @@
                    (warn "^^^^Refusing to verbify a previously defined noun ~s~%" word)
                    (pushnew (pname word) *verbified-nouns* :test #'equal))))))
   
-      ;;(push-debug `(,word ,morph-keyword)) (break "fix stemming")
+      (push-debug `(,word ,morph-keyword)) ;;(break "fix stemming")
       (add-new-word-to-catalog word morph-keyword)
 
       (setq morph-keyword (no-morph-on-short-words word)) ;; one-syllable
-      
+
       (when (and *show-morphs* morph-keyword)
         (push (list morph-keyword word) *show-morphs*))
-    
+
       (etypecase morph-keyword
         (null (setup-unknown-word-by-default word))
-        (keyword 
+        (keyword
          (case morph-keyword
            ;;(:ends-in-s) ;; always ambiguous?
            (:ends-in-ed
@@ -118,25 +118,13 @@
               (setup-adverb word)
               (assign-brackets-to-adverb word)))
            
-           (:ends-in-er
-            (tr :defining-as-given-morph 'comparative)
-            (if *edge-for-unknown-words*
-              (setup-comparative word)
-              (assign-brackets-to-adjective word)))
-           
-           (:ends-in-est
-            (tr :defining-as-given-morph 'superlative)
-            (if *edge-for-unknown-words*
-              (setup-superlative word)
-              (assign-brackets-to-adjective word)))
-           
            (otherwise
             (push-debug `(,word ,morph-keyword))
             (error "Unexpected affix keyword: ~A"
                    (word-morphology word)))))
+        
         (cons
-         ;; e.g. ("ible" ADJ)
-         (let ((morph-key (cadr morph-keyword)))
+         (let ((morph-key (cadr morph-keyword))) ;; e.g. ("ible" ADJ)
            (ecase morph-key
              (n
               (tr :defining-as-given-morph 'noun)
