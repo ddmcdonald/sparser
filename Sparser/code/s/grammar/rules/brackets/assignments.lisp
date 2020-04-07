@@ -273,9 +273,7 @@
 
 
 (defun setup-adjective (word &optional comlex-clause ambiguous?)
-  ;; /// pull stuff out of the comlex clause
-  ;; Comlex has a 'gradable' feature on adjectives, with 
-  ;; a flag for er-est. See adjectives in sl/checkpoint/
+  ;; For more exhaustive treamemt of comlex adjectives see adjectives in sl/checkpoint/
   (declare (special *break-on-pattern-outside-coverage?*))
   (let ((category-name (name-to-use-for-category word))
         (super-category (super-category-for-POS :adjective)))    
@@ -284,21 +282,24 @@
       (setq category-name ;;/// feed into discriminator
             (construct-disambiguating-category-name
              category-name super-category)))
-    (let ((entry (if ambiguous?
-                   (cadr (assq 'adjective comlex-clause))
-                   (second comlex-clause))))
-      (push-debug `(,entry))
-      (if (memq :comparative entry)
-        (let ((comparative (cadr (memq :comparative entry)))
-              (superlative (cadr (memq :superlative entry))))
-          ;;(break "er: ~a~%est: ~a" comparative superlative)
-          (setup-anonymous-graded-adjective
-           word comparative superlative))
-        (else
-          (let ((category (define-adjective (word-pname word)
-                              :super-category super-category)))
-            (mark-as-constructed-category-for-word category super-category)
-            category))))))
+    
+    (if comlex-clause
+      (let ((entry (if ambiguous?
+                     (cadr (assq 'adjective comlex-clause))
+                     (second comlex-clause))))
+        (push-debug `(,entry))
+        (if (memq :comparative entry)
+          (let ((comparative (cadr (memq :comparative entry)))
+                (superlative (cadr (memq :superlative entry))))
+            ;;(break "er: ~a~%est: ~a" comparative superlative)
+            (setup-anonymous-graded-adjective
+             word comparative superlative))))
+
+      (else
+        (let ((category (define-adjective (word-pname word)
+                            :super-category super-category)))
+          (mark-as-constructed-category-for-word category super-category)
+          category)))))
 
 #|
     (let* ((category (define-category/expr category-name
