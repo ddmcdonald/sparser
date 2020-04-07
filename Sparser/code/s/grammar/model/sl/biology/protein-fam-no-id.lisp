@@ -81,7 +81,11 @@
 ;; virus proteins
 (def-family "nucleocapsid protein" :members ("UP:Q8JTH3"))
 (def-family "capsid protein" :synonyms ("capsid")) ;; should define this better -kind of cell part but viruses don't have cells
+(def-family "ORF" :synonyms ("Orf") :members ("UP:P16320")) ;; really "open reading frame" which is a name for putative proteins from genes before they are characterized
 ;;
+(def-family "ORFX" :members ("UP:Q15059"))
+
+
 
 (def-family "USP" :synonyms ("ubiquitin-specific protease" "ubiquitin-specific peptidase")) 
 (def-family "UBL" :synonyms ("ubiquitin-like")) 

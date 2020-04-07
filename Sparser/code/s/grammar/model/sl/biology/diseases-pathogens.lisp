@@ -53,7 +53,9 @@
 ;;; viruses
 ;;;-----------------
 
-
+(define-category coronavirus :specializes virus
+   :bindings (uid "NCIT:C26431")
+   :realization (:noun ("coronavirus" "coronaviridae")))
 
 #|
 ;;; diseases known to BoB

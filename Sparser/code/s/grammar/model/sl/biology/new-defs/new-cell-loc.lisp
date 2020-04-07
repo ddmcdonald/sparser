@@ -6,7 +6,8 @@
 (def-indiv-with-id cellular-location "target cell" "UP:SL-0487") 
 (def-indiv-with-id cellular-location "tight junction" "UP:SL-0265") 
 (def-indiv-with-id cellular-location "cell surface" "GO:0009986") 
-(def-indiv-with-id cellular-location "nucleolus" "GO:0005730") 
+;;(def-indiv-with-id cellular-location "nucleolus" "GO:0005730")
+(def-indiv-with-id cellular-location "nucleolus" "UP:SL-0188" :name "Nucleolus" :plural ("Nucleoluses" "nucleoli")) 
 (def-indiv-with-id cellular-location "lipid droplet" "UP:SL-0154") 
 (def-indiv-with-id cellular-location "recycling endosome" "GO:0055037") 
 (def-indiv-with-id cellular-location "late endosome" "GO:0005770") 
@@ -52,7 +53,7 @@
 (def-indiv-with-id cellular-location "endomembrane" "UP:SL-0147" :name "Endomembrane system") 
 (def-indiv-with-id cellular-location "endo-lysosome" "GO:0036019" :name "endolysosome") 
 (def-indiv-with-id cellular-location "dendrite" "UP:SL-0283" :name "Dendrite") 
-(def-indiv-with-id cellular-location "cilium" "UP:SL-0066" :name "Cilium") 
+(def-indiv-with-id cellular-location "cilium" "UP:SL-0066" :name "Cilium" :plural ("cilia")) 
 (def-indiv-with-id cellular-location "centrosome" "UP:SL-0048" :name "Centrosome") 
 (def-indiv-with-id cellular-location "centromere" "UP:SL-0047" :name "Centromere") 
 (def-indiv-with-id cellular-location "centriole" "UP:SL-0046" :name "Centriole") 
@@ -152,3 +153,8 @@
 (def-indiv-with-id cellular-location "soma" "GO:0044297" :name "cell body") 
 (def-indiv-with-id cellular-location "Perikaryon" "UP:SL-0197" :name "Perikaryon" :plural ("perikaryons" "perikarya"))
 (def-indiv-with-id cellular-location "nucleosome" "GO:0000786" :name "nucleosome") 
+
+;; post-covid
+(def-indiv-with-id cellular-location "archaellum" "GO:0097589" :name "archaeal-type flagellum") 
+(def-indiv-with-id cellular-location "plasmodesmata" "UP:SL-0208" :name "Plasmodesma") 
+(def-indiv-with-id cellular-location "tonoplast" "GO:0009705" :name "plant-type vacuole membrane") 

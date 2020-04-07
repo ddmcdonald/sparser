@@ -51,3 +51,6 @@
 (def-indiv-with-id bio-complex "heterochromatin" "GO:0000792" :name "heterochromatin") 
 (def-indiv-with-id bio-complex "chromatin" "GO:0000785" :name "chromatin") 
 (def-indiv-with-id bio-complex "DGC" "FPLX:DGC" :name "dystrophin glycoprotein complex" :synonyms ("dystrophin glycoprotein complex" "dystrophin glycoprotein" "dystrophin-associated glycoprotein complex" "dystrophin-glycoprotein complex")) 
+
+;; since covid
+(def-indiv-with-id bio-complex "BBSome" "GO:0034464" :name "BBSome") 

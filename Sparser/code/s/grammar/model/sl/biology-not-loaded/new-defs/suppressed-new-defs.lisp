@@ -2,28 +2,28 @@
 
 (defparameter *SUPPRESSED-HYPHENATED-NEW-WORDS* 'NIL)
 
-(defparameter *SUPPRESSED-MOD-REDEFS* '(("upcase" "ARB"
+(defparameter *SUPPRESSED-MOD-REDEFS* '(("upcase" "ARB" ;; added
                                          ("arb" "ONT:PROTEIN" :ID "UP:Q54NZ7"
                                           :NAME "Aldose reductase B"))
-                                        ("upcase" "CPT"
+                                        ("upcase" "CPT" ;; added but questionable
                                          ("cpt" "ONT:GENE-PROTEIN" :ID
                                           "UP:Q56148" :NAME
                                           "Chloramphenicol 3-O phosphotransferase"))
-                                        ("upcase" "ETC"
+                                        ("upcase" "ETC" ;;treefrog
                                          ("etc" "ONT:PROTEIN" :ID "UP:P32940"
                                           :NAME "Endothelin-3 receptor"))
-                                        ("upcase" "FDA"
+                                        ("upcase" "FDA" ;;bad making prof-def
                                          ("fda" "ONT:PROTEIN" :ID "UP:P81543"
                                           :NAME
                                           "Zinc-containing ferredoxin A"))
-                                        ("upcase" "HOC"
+                                        ("upcase" "HOC" ;; added
                                          ("hoc" "ONT:PROTEIN" :ID "UP:P18056"
                                           :NAME
                                           "Highly immunogenic outer capsid protein {ECO:0000255|HAMAP-Rule:MF_04116}"))
-                                        ("upcase" "MLE"
+                                        ("upcase" "MLE" ;; added but questionable
                                          ("mle" "ONT:PROTEIN" :ID "UP:Q43931"
                                           :NAME "Muconate cycloisomerase 1"))
-                                        ("upcase" "NOS"
+                                        ("upcase" "NOS" ;;added
                                          ("nos" "ONT:GENE-PROTEIN" :ID
                                           "FPLX:NOS" :NAME "NOS"))
                                         ("upcase" "PHAS"
@@ -36,7 +36,7 @@
                                           :ID "NCIT:C3365" :NAME
                                           "sexually transmitted disorder"))))
 
-(defparameter *ID-MISMATCH-REDEF* '(("orig" "ASPM" "UP:Q8IZT6"
+(defparameter *ID-MISMATCH-REDEF* '(("orig" "ASPM" "UP:Q8IZT6" ;; done
                                      ("ASPM" "ONT:GENE" :ID "HGNC:19048" :NAME
                                       "abnormal spindle microtubule assembly"))
                                     ("upcase" "ASC" "XFAM:PF00858.22"
@@ -90,7 +90,7 @@
                                     ("upcase" "IARS" "UP:P41252"
                                      ("IARs" "ONT:GENE" :ID "HGNC:5330" :NAME
                                       "isoleucyl-tRNA synthetase 1"))
-                                    ("upcase" "IFNA" "NCIT:C20494"
+                                    ("upcase" "IFNA" "NCIT:C20494" ;; done
                                      ("IFNa" "ONT:GENE-PROTEIN" :ID "FPLX:IFNA"
                                       :NAME "IFNA"))
                                     ("upcase" "JUNO" "UP:A6ND01"
@@ -148,7 +148,7 @@
                                        PROTEIN :NEW-CAT PROTEIN-FAMILY
                                        ("coi" "ONT:GENE" :ID "NCIT:C128942"
                                         :NAME "MT-CO1"))
-                                      ("orig" "dna" "CHEBI:16991" :OLD-CAT
+                                      ("orig" "dna" "CHEBI:16991" :OLD-CAT ;;done
                                        BIO-CHEMICAL-ENTITY :NEW-CAT BIO-METHOD
                                        ("dna" "ONT:PROCEDURE" :ID
                                         "NCIT:C135409" :NAME
@@ -302,6 +302,7 @@
 
 (defparameter *DIFF-POS-OF-EXISTING-WORDS* 'NIL)
 
+;;not actually suppressed
 (defparameter *SYNONYM-FOR-EXISTING-WORDS* '((CELL-LINE "BHK" "CVCL:1914"
                                               "BHK-21")
                                              (CELL-LINE "CEM" "CVCL:0207"
@@ -397,7 +398,7 @@
                                               "SARS coronavirus")
                                              (BIO-METHOD "qPCR" "NCIT:C51962"
                                               "real time PCR")))
-
+;; dealt with
 (defparameter *CATEGORY-MISMATCH-EXISTING-CATS* '((:ORIG-CAT SMALL-MOLECULE
                                                    :NEW-CAT MOLECULE :NAME
                                                    "nucleoside" :NEWUID
@@ -421,19 +422,23 @@
                                                     DRUG :NAME "cidofovir"
                                                     :NEWUID "NCIT:C1600" :WORD
                                                     "CDV")
+                                                   ;; actually prof org
                                                    (:ORIG-CAT PROTEIN-FAMILY
                                                     :NEW-CAT CELL-LINE :NAME
                                                     "BG1" :NEWUID "CVCL:6570"
                                                     :WORD "bgi")
+                                                   ;;hard to deal with
                                                    (:ORIG-CAT AMINO-ACID
                                                     :NEW-CAT MOLECULE :NAME
                                                     "phenylalanine" :NEWUID
                                                     "CHEBI:28044" :WORD
                                                     "phenylalanin")
+                                                   ;;dealt with
                                                    (:ORIG-CAT MOLECULE :NEW-CAT
                                                     DRUG :NAME "ritonavir"
                                                     :NEWUID "NCIT:C1609" :WORD
                                                     "Norvir")
+                                                   ;; need to deal with better
                                                    (:ORIG-CAT MOLECULE :NEW-CAT
                                                     DRUG :NAME "sumatriptan"
                                                     :NEWUID "CHEBI:10650" :WORD

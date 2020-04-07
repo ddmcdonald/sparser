@@ -113,6 +113,12 @@
       (:noun "panel"
              :of component))
 
+(noun "RCT" :super bio-method)
+(def-synonym RCT (:noun "Randomized Controlled Trial")) ;; could also be radiochemotherapy
+
+(noun "LCMS" :super bio-method)
+(def-synonym LCMS (:noun "Liquid Chromatography Mass Spectrometry"))
+
 ;; polymerase chain reaction
 (noun "PCR" :super bio-method)
 (noun "RT-PCR" :super PCR)
@@ -126,7 +132,8 @@
 (noun "dREG" :super bio-method)
 ;; Broad-platform Evolutionary Analysis General Likelihood Evaluator
 (noun "BEAGLE" :super bio-method) 
-
+(noun "CIGAR" :super bio-method)
+(def-synonym CIGAR (:noun "Compact Idiosyncratic Gapped Alignment Report"))
 
 (noun "QCT" :super bio-method)
 (def-synonym QCT (:noun "quantitative computed tomography"))

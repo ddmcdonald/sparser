@@ -8,7 +8,7 @@
 (def-indiv-with-id protein-domain "telomere Sde2" "XFAM:PF13019.4" :name "telomere Sde2") ; used to redefine "ubiquitin-like" but this protein domain is not that 
 ;(def-indiv-with-id protein-domain "proteasome" "XFAM:PF00227.24" :name "proteasome") 
 (def-indiv-with-id protein-domain "helix-turn-helix" "XFAM:PF00126.25" :name "HTH 1") 
-(def-indiv-with-id protein-domain "furin-like" "XFAM:PF00757.18" :name "furin-like") 
+(def-indiv-with-id protein-domain "furin-like" "XFAM:PF00757.18" :name "furin-like" :synonyms ("furinlike")) 
 (def-indiv-with-id protein-domain "cadherin-like" "XFAM:PF12733.5" :name "cadherin-like") 
 (def-indiv-with-id protein-domain "WD-40" "XFAM:PF00400.30" :name "WD40") 
 (def-indiv-with-id protein-domain "T-box" "XFAM:PF00907.20" :name "T-box") 
@@ -226,3 +226,12 @@
 (def-indiv-with-id protein-domain "phosphoribosyl-transferase" "XFAM:PF02277.15" :name "DBI PRT") 
 (def-indiv-with-id protein-domain "villin" "XFAM:PF02209.17" :name "VHP") 
 (def-indiv-with-id protein-domain "zf-C3HC4" "XFAM:PF00097.23" :name "zf-C3HC4") 
+
+;; post covid
+(def-indiv-with-id protein-domain "MTS" "XFAM:PF05175" :name "MTS") 
+(def-indiv-with-id protein-domain "ftp" "XFAM:PF07504" :name "FTP") 
+(def-indiv-with-id protein-domain "homeodomain" "XFAM:PF00046" :name "homeodomain") 
+(def-indiv-with-id protein-domain "BamHI" "XFAM:PF02923" :name "BamHI") 
+;(def-indiv-with-id protein-domain "CPEs" "XFAM:PF09367" :name "CpeS") cytopathic effect
+(def-indiv-with-id protein-domain "EcoRI" "XFAM:PF02963" :name "EcoRI") 
+(def-indiv-with-id protein-domain "Leh" "XFAM:PF07858" :name "LEH") 

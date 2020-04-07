@@ -61,4 +61,6 @@
 (def-indiv-with-id unit-of-measure "mV" "UO:0000247" :name "millivolt" :maintain-case t)
 (def-indiv-with-id unit-of-measure "cpm" "UO:0000148" :name "counts per minute" :maintain-case t :synonyms ("c.p.m.")) ;"c.p.m./pmol" activity of a radionuclide
 (def-indiv-with-id unit-of-measure "pH" "UO:0000196" :name "pH" :maintain-case t)
-
+;; post covid
+(def-indiv-with-id unit-of-measure "microliter" "UO:0000101" :name "microliter") 
+(def-indiv-with-id unit-of-measure "Coulomb" "UO:0000220" :name "coulomb") 

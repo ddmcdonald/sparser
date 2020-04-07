@@ -188,7 +188,7 @@
 (def-family-with-id "inhibin" "NCIT:C2276" :members ("UP:P05111" "UP:P08476" "UP:P09529"))
 (def-family-with-id "inhibin A" "FPLX:Inhibin_A" :synonyms ("inhibin-A") :members ("UP:P05111"))
 (def-family-with-id "interferon" "FPLX:Interferon" :synonyms ("IFN"))
-(def-family-with-id "interferon alpha"  "NCIT:C20494" :synonyms ("FPLX:IFNA" "IFN-alpha" "IFN-α" "IFNA" "IFNalpha" "IFNα" "IFN-a") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571"))
+(def-family-with-id "interferon alpha" "FPLX:IFNA" :synonyms ("NCIT:C20494" "IFN-alpha" "IFN-α" "IFNA" "IFNalpha" "IFNα" "IFN-a" "IFNa") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571"))
 (def-family-with-id "interferon beta"  "FPLX:IFNB" :synonyms ("IFN-beta" "IFN beta" "IFN-β" "IFNB" "IFNbeta") :members ("UP:P01574")) ;; not sure why HMS has this family because it seems to just have one member and they overload the synonyms to point to both so now we do too...
 (def-family-with-id "IL" "NCIT:C20497" :name "interleukin" :synonyms ("interleukine") :members ("UP:P01583" "UP:P01584" "UP:P05231" "UP:P08700" "UP:P10145" "UP:P13232" "UP:P60568")) 
 
@@ -508,7 +508,7 @@
 (def-family-with-id "NF-kappaB" "FPLX:NFkappaB" :synonyms ("NCIT:C17380" "NF-kappabeta" "NFkappaB" "NF-kB" "NF-kappab" "NF-kb" "NF-κB" "NFK-B" "NFKB" "NF-kB" "NF-KB" "NFkB" "NFkappaB" "kB" "nfκ" "nfκb" "NFkappaB" "nuclear factor kappa-b" "nuclear kappa B" "Nuclear factor-kappaB" "nuclear factor-kappaB" "NfkappaB" "NF- kappaB" "nuclear factor kappaB" "Nf-kappaB" "NFkappa-B" "NF-KappaB" "Relish" "REL1096" "NFκB") :members ("UP:P19838" "UP:Q04206"))
 
 (def-family-with-id "NCOA" "FPLX:NCOA" :synonyms ("p160/SRC" "NcoA")) 
-(def-family-with-id "NOS" "FPLX:NOS" :synonyms ("nitric oxide synthase" "NO synthase") :members ("UP:P29475" "UP:P35228" "UP:P29474"))
+(def-family-with-id "NOS" "FPLX:NOS" :synonyms ("nitric oxide synthase" "NO synthase" "nos") :members ("UP:P29475" "UP:P35228" "UP:P29474"))
 (def-family-with-id "PAK" "FPLX:PAK" :synonyms ("PAK" "p21-activated kinase" "p21 activated serine threonine kinases" "Pak") :members ("UP:O75914" "UP:O96013" "UP:Q13153" "UP:Q13177" "UP:Q16512" "UP:Q9NQU5" "UP:Q9P286"))
 ;(def-family-with-id "PDGR" "NCIT:C17322" :synonyms ("platelet-derived growth factor-activated receptor" "PDGF receptor"  "PDGF-R" "pdgfr" "derived growth factor-receptor" "derived growth-factor receptor" "platelet-derived growth factor-activated receptor activity" "FPLX:PDGR") :members ( "UP:P09619" "UP:P16234")) 
 (def-family-with-id "phosphodiesterase" "GO:0008081" :synonyms ("PDE" "phosphoric diester hydrolase" "FPLX:PDE") :members ("UP:Q08499" "UP:Q08493" "UP:Q13370" "UP:Q13946" "UP:Q14432" "UP:Q9HCR9" "UP:Q9NP56")) ;more members

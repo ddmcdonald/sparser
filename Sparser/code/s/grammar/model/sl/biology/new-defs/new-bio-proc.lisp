@@ -133,3 +133,7 @@
 (def-indiv-with-id bio-process "gastrulation" "GO:0007369" :name "gastrulation") 
 (def-indiv-with-id bio-process "gluconeogenesis" "GO:0006094" :name "gluconeogenesis") 
 (def-indiv-with-id bio-process "mating" "GO:0007618" :name "mating") 
+
+;; post covid
+(def-indiv-with-id bio-process "gravitropism" "GO:0009630" :name "gravitropism")
+
