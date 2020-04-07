@@ -81,13 +81,48 @@ abstract > abstract-region >
                 est-category est-indiv est-rule)))))
 
 
-(defun setup-anonymous-graded-adjective ()
+(defun setup-anonymous-graded-adjective (base-word
+                                         comparative-entry superlative-entry)
   "Called from setup-adjective for the case where the Comlex entry 
    includes explicit 'er' and 'est' words. These have no real
    semantics -- no associated attribute -- so we have to make
-   one for them.
-"
-  )
+   one for them."
+  ;;(push-debug `(,base-word ,comparative-entry ,superlative-entry))
+  (let* ((pname (pname base-word))
+         (attribute (create-scalar-attribute base-word))
+         (comparative (first comparative-entry)) ;; ignore "more happy" for now
+         (superlative (first superlative-entry))
+         (base-adjective (define-adjective pname)))
+    (setup-comparatives base-adjective
+                        (cat-name attribute)
+                        pname
+                        nil ;  direction-flag
+                        comparative ; er
+                        superlative ; est
+                        )))
+
+(defgeneric create-scalar-attribute (base)
+  (:method ((w word))
+    (create-scalar-attribute (pname w)))
+  (:method ((pname string))
+    (let* ((ness-name
+            (intern (string-append (string-upcase pname) "-" '#:ness)
+                    (find-package :sparser)))
+           (form `(define-category ,ness-name
+                      :specializes scalar-attribute))
+           (category (eval form)))
+      category)))
+
+(defun er-test-entry (pname)
+  (let* ((word (resolve/make pname))
+         (entry (gethash pname *primed-words*)))
+    (values word entry)))
+
+(defun er-test-jig (pname)
+  (multiple-value-bind (word entry)
+      (er-test-entry pname)
+    (when entry
+      (continue-unpacking-lexical-entry word entry))))
 
 
 ;;;-----------------

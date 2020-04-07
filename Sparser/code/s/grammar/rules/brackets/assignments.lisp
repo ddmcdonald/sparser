@@ -278,21 +278,35 @@
   ;; a flag for er-est. See adjectives in sl/checkpoint/
   (declare (special *break-on-pattern-outside-coverage?*))
   (let ((category-name (name-to-use-for-category word))
-        (super-category (super-category-for-POS :adjective)))
+        (super-category (super-category-for-POS :adjective)))    
     (when (or ambiguous?
               (category-named category-name)) ;; "progressive" -- clashes w/ the aspect
-      (setq category-name
+      (setq category-name ;;/// feed into discriminator
             (construct-disambiguating-category-name
              category-name super-category)))
+    (let ((entry (if ambiguous?
+                   (cadr (assq 'adjective comlex-clause))
+                   (second comlex-clause))))
+      (push-debug `(,entry))
+      (if (memq :comparative entry)
+        (let ((comparative (cadr (memq :comparative entry)))
+              (superlative (cadr (memq :superlative entry))))
+          ;;(break "er: ~a~%est: ~a" comparative superlative)
+          (setup-anonymous-graded-adjective
+           word comparative superlative))
+        (else
+          (let ((category (define-adjective (word-pname word)
+                              :super-category super-category)))
+            (mark-as-constructed-category-for-word category super-category)
+            category))))))
+
+#|
     (let* ((category (define-category/expr category-name
                        `(:specializes ,super-category
                         :instantiates :self)))
            (rules (make-rules-for-head :adjective word category category)))
-      (mark-as-constructed-category-for-word category super-category)
-      (add-rules rules category)
-      category)))
-
-
+     (add-rules rules category) |#
+      
 (defun setup-comparative (word)
   (define-comparative word))
 
