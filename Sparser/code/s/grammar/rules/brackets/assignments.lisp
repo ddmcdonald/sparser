@@ -306,10 +306,11 @@
                         :instantiates :self)))
            (rules (make-rules-for-head :adjective word category category)))
      (add-rules rules category) |#
-      
+
+#+ignore
 (defun setup-comparative (word)
   (define-comparative word))
-
+#+ignore
 (defun setup-superlative (word)
   (define-superlative word))
 

@@ -85,7 +85,7 @@ abstract > abstract-region >
                                          comparative-entry superlative-entry)
   "Called from setup-adjective for the case where the Comlex entry 
    includes explicit 'er' and 'est' words. These have no real
-   semantics -- no associated attribute -- so we have to make
+   meaning -- no associated attribute -- so we have to make
    one for them."
   ;;(push-debug `(,base-word ,comparative-entry ,superlative-entry))
   (let* ((pname (pname base-word))
@@ -104,6 +104,8 @@ abstract > abstract-region >
 (defgeneric create-scalar-attribute (base)
   (:method ((w word))
     (create-scalar-attribute (pname w)))
+  (:method ((pw polyword))
+    (create-scalar-attribute (hyphenated-string-for-pw pw)))
   (:method ((pname string))
     (let* ((ness-name
             (intern (string-append (string-upcase pname) "-" '#:ness)
