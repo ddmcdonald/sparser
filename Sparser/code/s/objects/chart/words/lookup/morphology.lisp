@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1992-1993,2014-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2014-2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "morphology"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  December 2019
+;;;  Version:  April 2020
 
 ;; initiated June 1990
 ;; 0.1 (7/22/91 v1.8.6) Added an error check in Start-affix-stripper/
@@ -227,6 +227,8 @@
     ("ize" V)
     ("oma" N)
     ("or" N)
+    ("gory" N) ;; "category"
+    ("tory" N) ;; "promintory", "inventory"
     ("ory" ADJ)
     ("ous" ADJ)
     ("sis" N)
