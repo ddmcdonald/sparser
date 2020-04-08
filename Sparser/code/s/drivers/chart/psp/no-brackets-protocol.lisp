@@ -109,7 +109,7 @@
 (defparameter *string-from-analyze-text-from-string* nil
   "Provides analog to *sentence-in-core* when parsing protocol
    doesn't go through the document-centric code that sets that.
-   Set globally by analyze-text-from-string (not bound).")
+   Set globally by analyze-text-from-string (not dynamically bound).")
 
 (defvar *sentence-in-core* nil
   "Set in sweep-successive-sentences-from and also in
@@ -142,7 +142,7 @@
            (null (ends-at-pos current)))
       current)
      (s (unless no-break
-          (error "Odd type returned for sentence: ~a~%~a"
+          (error "Odd type of object returned for sentence: ~a~%~a"
                  (type-of s) s))
         nil)
      (t (unless no-break
@@ -258,15 +258,6 @@
        (setq sentence next-sentence))))
 
 
-(defun scan-terminals-and-do-core (sentence)
-  "Do the remaining processing of the terminals followed
-   by all the sentence-level parsing"
-  (setq *sentence-in-core* sentence) ;; note 1
-  (scan-terminals-of-sentence sentence) ;; (tr :scanning-done)
-  (if *smart-frequency-count*
-    (do-smart-frequency-count sentence)
-    (sentence-processing-core sentence)))  ;; (tr :sweep-core-done)
-
 (defun error-trapped-scan-and-core (sentence)
   "Wrapped scan-terminals-and-do-core inside an error catch"
   ;; Modeled on code in get-bracketing-from-string and
@@ -277,6 +268,16 @@
       (ignore-errors ;; got an error with something printing once
        (when *show-handled-sentence-errors*
          (format t "~&Error in ~s~%~a~%~%" (current-string) e))))))
+
+(defun scan-terminals-and-do-core (sentence)
+  "Do the remaining processing of the terminals followed
+   by all the sentence-level parsing"
+  (declare (special *smart-frequency-count*))
+  (setq *sentence-in-core* sentence) ;; note 1
+  (scan-terminals-of-sentence sentence) ;; (tr :scanning-done)
+  (if *smart-frequency-count*
+    (do-smart-frequency-count sentence)
+    (sentence-processing-core sentence))) ;; (tr :sweep-core-done)
 
 #| Note #1  We sometimes get errors in scan-terminals-of-sentence
  so it is important for the error message routines
