@@ -38,12 +38,13 @@
       (if text-blocks
           (when *show-sections*
             (pprint (list handle (loop for tb in text-blocks collect (cdr (assoc :section tb))))))
-          (warn-or-error "could not find the text-body in JSON sexp"))
-      (let ((s (make-instance 'section)))
-        (setf (name s) (next-indexical-name :section))
-        (setf (parent s) article)
-        (setf (children s) (find-paragraphs text-blocks s))
-        (setf (children article) (list s)))
+          (warn-or-error "Missing or empty text-body in JSON sexp"))
+      (when text-blocks
+        (let ((s (make-instance 'section)))
+          (setf (name s) (next-indexical-name :section))
+          (setf (parent s) article)
+          (setf (children s) (find-paragraphs text-blocks s))
+          (setf (children article) (list s))))
 
       (let ((abstract (extract-abstract sexp article)))
         (when abstract
