@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2011-2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  February 2019
+;;;  Version:  April 2020
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -654,41 +654,19 @@
   (establish-version-of-complete :ca/ha)
   (setq *count-input-lines* nil)
   (establish-word-frequency-classification
-   ;;:standard 'standard-wf-classification)
    :ignore-capitalization 'wf-classification/ignore-caps)
   (setq *switch-setting* :word-frequency))
 
 (defun word-frequency-setting-caps ()
-  "Turned on by hand. No corresponding configuration"
-  (turn-off-c3)
-  (ignore-comlex)
-  (establish-character-translation-protocol :no-changes)
-  (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
-  (setq *make-edges-for-unknown-words-from-their-properties* t
-        *do-forest-level* nil
-        *do-conceptual-analysis* nil
-        *do-heuristic-boundary-detection* nil
-	*do-heuristic-segment-analysis* nil
-	*do-domain-modeling-and-population* nil
-	*do-strong-domain-modeling* nil
-        *recognize-sections-within-articles* nil
-        *newline-delimits-paragraphs* nil
-        *do-completion-actions* nil
-        *after-action-on-segments* 'normal-segment-finished-options)
-  (period-hook-off)
-  (establish-version-of-next-terminal-to-use :pass-through-all-tokens)
-  (establish-kind-of-chart-processing-to-do :just-do-terminals)
-  (establish-version-of-look-at-terminal :record-word-frequency)
-  (establish-version-of-complete :ca/ha)
-  (setq *count-input-lines* nil)
+  (word-frequency-setting)
   (establish-word-frequency-classification
-   :standard 'wf-classification/ignore-caps/known
-  ;;:Ignore-capitalization 'wf-classification/ignore-caps
-  )
+   :standard 'wf-classification/ignore-caps/known)
   (setq *switch-setting* :word-frequency))
 
-
 (defun dictionary/morphology-frequency-counts ()
+  "Designed to run within an otherwise normal configuration.
+   The parameter is checked in scan-terminals-and-do-core an uses
+   a different entry point in the word frequency code"
   (declare (special *include-function-words-in-frequency-counts*
                     *stem-words-for-frequency-counts*))
   (setq *smart-frequency-count* t)
@@ -696,6 +674,7 @@
    :standard 'wf-classification/ignore-caps/known)
   (setq *include-function-words-in-frequency-counts* t)
   (setq *stem-words-for-frequency-counts* nil))
+
 
 (defun just-bracketing-setting ()
   "Goes with the 'no-grammar' option"
