@@ -17,7 +17,7 @@
   (or *json-base*
       (setq *json-base*
             (namestring
-             (asdf:system-relative-pathname :r3 "../corpus/covid/2020-04-03/")))))
+             (asdf:system-relative-pathname :r3 "../corpus/covid/")))))
 
 (defun json-directory (&key (base (json-base)) ((:dir dir-string) "comm_use_subset"))
   (declare (special base dir-string))
@@ -32,21 +32,21 @@
     (when (equal base path-base)
       (subseq pathname (length base)))))
 
-(defun json-absolute-pathname (rel-path)
-  (concatenate 'string (json-base) (namestring rel-path)))
+(defun json-absolute-pathname (rel-path &optional (date "2020-04-03"))
+  (format nil "~a~a/~a" (json-base) date (namestring rel-path)))
 
 (defparameter *json-corpus-paths*
-  '((rxiv "biorxiv_medrxiv/biorxiv_medrxiv/")
-    (com "comm_use_subset/comm_use_subset/")
-    (non-com "noncomm_use_subset/noncomm_use_subset/")
-    (pmc "pmc_custom_license/pmc_custom_license/")
-    (0403-rxiv "biorxiv_medrxiv/pdf_json/")
-    (0403-com-pdf "comm_use_subset/pdf_json/")
-    (0403-com-pmc "comm_use_subset/pmc_json/")
-    (0403-non-com-pdf "noncomm_use_subset/pdf_json/")
-    (0403-non-com-pmc "noncomm_use_subset/pmc_json/")
-    (0403-custom-pdf "custom_license/pdf_json/")
-    (0403-custom-pmc "custom_license/pmc_json/")
+  '((rxiv "2020-03-13/biorxiv_medrxiv/biorxiv_medrxiv/")
+    (com "2020-03-13/comm_use_subset/comm_use_subset/")
+    (non-com "2020-03-13/noncomm_use_subset/noncomm_use_subset/")
+    (pmc "2020-03-13/pmc_custom_license/pmc_custom_license/")
+    (0403-rxiv "2020-04-03/biorxiv_medrxiv/pdf_json/")
+    (0403-com-pdf "2020-04-03/comm_use_subset/pdf_json/")
+    (0403-com-pmc "2020-04-03/comm_use_subset/pmc_json/")
+    (0403-non-com-pdf "2020-04-03/noncomm_use_subset/pdf_json/")
+    (0403-non-com-pmc "2020-04-03/noncomm_use_subset/pmc_json/")
+    (0403-custom-pdf "2020-04-03/custom_license/pdf_json/")
+    (0403-custom-pmc "2020-04-03/custom_license/pmc_json/")
     )
   "Modeled on the list in r3/code/evaluation/doc-support.
    Could be integrated into the file selection machinery to allow
@@ -159,7 +159,10 @@ else that takes two arguments:  (1) the s-expression (2) the file's pathname
                                  (second (find sym registry :key #'first :test #'equal))))
                            *corpus-handle-registries*)))
       (when rel-path
-        (json-absolute-pathname rel-path))))
+        (cond ((search "0403" file-str)
+               (json-absolute-pathname rel-path "2020-04-03"))
+              ((not (search "04" file-str))
+               (json-absolute-pathname rel-path "2020-03-13"))))))
   (:method ((file-path pathname))
     file-path))
 

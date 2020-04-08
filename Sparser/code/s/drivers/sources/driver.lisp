@@ -140,15 +140,17 @@
 (defun run-nth-json-article (n &key ((:corpus article-set-name) '0403-com-pmc)
                                  (quiet t) (skip-errors t) (show-sect nil)
                                  (sexp nil))
-  (let* ((*article-short-name* ; file-handle
-          (format nil "~a-~a" article-set-name n))
+  (let* ((*article-short-name* (format nil "~a-~a" article-set-name n)) ; file-handle
          (file-path-name (decoded-file *article-short-name*))
          (file-path (probe-file file-path-name))
          (*article-json* (cl-json::decode-json-from-source file-path)))
     (if sexp ;; return the decoding and don't do anything else
-      *article-json*
-      (let ((*json-article* (make-document *article-json* file-path
-                                           :handle *article-short-name*)))
-        (extract-authors-and-bibliography *article-json*)
-        (run-json-article *json-article* :quiet quiet :skip-errors skip-errors)))))
+        *article-json*
+        (let ((*json-article* (make-document *article-json* file-path
+                                             :handle
+                                             (if (stringp *article-short-name*)
+                                                 (intern *article-short-name* :sp)
+                                                 *article-short-name*))))
+          (extract-authors-and-bibliography *article-json*)
+          (run-json-article *json-article* :quiet quiet :skip-errors skip-errors)))))
 
