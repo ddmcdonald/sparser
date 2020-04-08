@@ -379,7 +379,7 @@
 ;;; Paragraphs
 ;;;------------
 
-(defclass paragraph (document-element named-object string-holder)
+(defclass paragraph (document-element named-object string-holder word-frequency)
   ()
   (:documentation "Either An orthographic paragraph as established
     by patterns of newlines (see sort-out-result-of-newline-analysis)

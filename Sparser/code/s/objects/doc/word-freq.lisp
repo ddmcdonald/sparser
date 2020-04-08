@@ -44,7 +44,6 @@
 (defgeneric incf-word-count (word table)
   (:documentation "Assumes the table is an instance of word-frequency.
     Bumps up the count, and if the word is new it is added to that list.")
-
   (:method  ((w word) (o word-frequency))
     (let* ((table (words-to-count o))
            (count (gethash w table)))
@@ -63,6 +62,7 @@
       (incf (token-count o))
       (incf (gethash w table))
       w)))
+
 
 
 ;;;----------------------
@@ -107,3 +107,23 @@
     (unless (or (= total-tokens 0)
 		(null count-for-word)) ;; #<source-start>
       (/ count-for-word total-tokens))))
+
+(defun number-of-documents-containing-word (word)
+  (let ((entry (frequency-table-entry word)))
+    (if entry
+      (length (cdr entry))
+      0)))
+
+(defmethod inverse-document-frequency ((w word) (list-of-documents list))
+  (let* ((doc-count (length list-of-documents))
+         (incident-count (number-of-documents-containing-word w))
+         (ratio (/ doc-count (1+ incident-count))))
+    (log ratio)))
+
+(defmethod tf-idf ((w word) (document word-frequency)
+                   (list-of-documents list))
+  (let ((tf (term-frequency w document)))
+    (when tf
+      (* tf
+         (inverse-document-frequency w list-of-documents)))))
+

@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1996,2010-2014,2017-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1996,2010-2014,2017-2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "frequency"
 ;;;   Module:  "rules;words:"
-;;;  Version:  August 2019
+;;;  Version:  April 2020
 
 ;; initiated 10/90
 ;; 3/21/92 Added capitalization information to the dummy words
@@ -529,29 +529,6 @@
                 count (length sorted) sorted)))))
 
 
-;;;------------------------------------------------------------
-;;; Differential counts by article (baby steps towards tf/idf)
-;;;------------------------------------------------------------
-
-(defun number-of-documents-containing-word (word)
-  (let ((entry (frequency-table-entry word)))
-    (if entry
-      (length (cdr entry))
-      0)))
-
-(defmethod inverse-document-frequency ((w word) (list-of-documents list))
-  (let* ((doc-count (length list-of-documents))
-         (incident-count (number-of-documents-containing-word w))
-         (ratio (/ doc-count (1+ incident-count))))
-    (log ratio)))
-
-(defmethod tf-idf ((w word) (document word-frequency)
-                   (list-of-documents list))
-  (let ((tf (term-frequency w document)))
-    (when tf
-      (* tf
-         (inverse-document-frequency w list-of-documents)))))
-
 
 ;;;------------------------------------
 ;;; portions of the tracked vocabulary
@@ -559,46 +536,53 @@
 
 (defgeneric filter-hapax (document)
   (:documentation "Go through the sorted-word-entry list for this
- document and cons a new list that doesn't include any words 
- of frequency 1."))
-
-(defmethod  filter-hapax ((document-name symbol))
-  (let ((document (get-document document-name)))
-    (unless document
-      (error "There is no document with the name ~a" document-name))
-    (loop for (word . count) in *sorted-word-entries*
-      when (> count 1) collect word)))
+   document and cons a new list that doesn't include any words 
+   of frequency 1. Uses *sorted-word-entries* ")
+  
+  (:method ((document-name symbol))
+    (let ((document (get-document document-name)))
+      (unless document
+        (error "There is no document with the name ~a" document-name))
+      (loop for (word . count) in *sorted-word-entries*
+         when (> count 1) collect word))))
 
   
-
 
 
 ;;;-------------------------
 ;;; writing out the results
 ;;;-------------------------
 
-(defmethod word-frequency-export-form ((word word) &optional
-				       (stream *standard-output*))
-  (let* ((entry (frequency-table-entry word))
-         (doc-counts (cdr entry))
-         (pname (word-pname word))
-         (forms (map-doc-count-entry word doc-counts)))
-    (format stream "(def-word ~s" pname)
-    (format stream "~&   ~{ ~a~})~%" forms)))
+(defgeneric word-frequency-export-form (word &optional stream)
+  (:documentation "Writes a def-word entry for a single word
+    to the stream using the data in its frequency-table-entry")
+  (:method ((word word) &optional (stream *standard-output*))
+    (let* ((entry (frequency-table-entry word))
+           (doc-counts (cdr entry))
+           (pname (word-pname word))
+           (forms (map-doc-count-entry word doc-counts)))
+      (format stream "(def-word ~s" pname)
+      (format stream "~&   ~{ ~a~})~%" forms))))
 
 (defun map-doc-count-entry (word doc-counts)
+  "Collect export doc and count data for use in word-frequency-export-form"
   (loop for (doc . count) in doc-counts
        collect (export-doc-count word doc count)))
 
 (defun export-doc-count (word doc count)
+  "Format the document and count information for export"
   (let ((normalized (normalized-count word doc))
 	(doc-name (name doc)))
     `(,doc-name ,normalized ,count)))
-    
-;; Reading them back in. See one-offs/def-word.lisp
+
+
 (defun define-2010-words-frequency-data (string doc-freq-data)
+  "This is the body of def-word when it is used for repopulating
+   or extending word frequency data"
+  (assert (eq *def-word-definition* :2010-frequency)
+          () (error "*def-word-definition* should be :2010-frequency"))
   (let* ((word (or (word-named string)
-		   (define-word/expr string)))
+		   (resolve/make string)))
 	 (entry (gethash word *word-frequency-table*)))
     (dolist (data doc-freq-data)
       (let ((article (car data))
@@ -614,7 +598,8 @@
 
 ;;--- lifted from word-frequency-reader
 (defvar *wf-sections* nil
-  "For now, just a dotted pair.")
+  "For now, just a dotted pair of section names and counts.")
+
 (defmacro def-section  (section-name word-count)
   ;; e.g. (def-section chapter11 9781)
   `(def-section/expr ',section-name ,word-count))
@@ -629,9 +614,7 @@
     (cdr entry)))
 
     
-
-(defun write-def-forms-for-all-words (&optional
-				      (stream *standard-output*))
+(defun write-def-forms-for-all-words (&optional (stream *standard-output*))
   (let* ((pairs (readout-word-frequency-table-into-a-list))
 	 (words (mapcar #'car pairs))
 	 (sorted (sort words #'alphabetize-words)))
