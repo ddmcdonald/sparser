@@ -836,4 +836,4 @@
 (def-indiv-with-id disease "Zika" "NCIT:C128423" :name "zika virus infection") 
 (def-indiv-with-id virus "hRSV" "NCIT:C14267" :name "human respiratory syncytial virus") 
 
-(def-indiv-with-id disease "CPE" "NCIT:C141201" "Cytopathic Effect" :synonyms ("CPEs")) ;; CPE also overloaded with protein def
+(def-indiv-with-id disease "CPE" "NCIT:C141201" :name "Cytopathic Effect" :synonyms ("CPEs")) ;; CPE also overloaded with protein def
