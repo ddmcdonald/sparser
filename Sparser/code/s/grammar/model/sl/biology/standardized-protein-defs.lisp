@@ -14953,7 +14953,7 @@
 (define-protein "UP:Q5EBH1" ("Q5EBH1" "RASF5_MOUSE" "new ras effector 1" "rapl" "ras association domain-containing protein 5" "rassf5" "regulator for cell adhesion and polarization enriched in lymphoid tissues")) 
 (define-protein "UP:Q5EBL4" ("RILPL1" "Rilpl1")) 
 (define-protein "UP:Q5EBL8" ("AIPP1" "HSPC227" "PDZ domain containing 11" "PDZ domain-containing protein 11" "PDZ11_HUMAN" "PDZD11" "PDZK11" "PISP" "Q5EBL8" "UNQ6486/PRO21335")) 
-(define-protein "UP:Q5EC55" ("Q5EC55" "anti")) 
+;;(define-protein "UP:Q5EC55" ("Q5EC55" "anti")) VERY BAD
 (define-protein "UP:Q5EE01" ("CENP-W" "CENPW" "CENPW_HUMAN" "CUG2" "Centromere protein W" "Q5EE01" "c6orf173" "cancer-upregulated gene 2" "centromere protein W" "chromosome 6 open reading frame 173" "cug2")) 
 (define-protein "UP:Q5EG05" ("CARD16" "COP" "COP1" "Cop" "Cop1" "Q5EG05" "cop1" "copGFP" "pseudo-ICE")) 
 (define-protein "UP:Q5EHA4" ("Q5EHA4_9HIV1" "ig6")) 
