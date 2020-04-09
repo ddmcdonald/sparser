@@ -70,19 +70,20 @@
 (define-country "China"
     :adjective "Chinese"
     :aliases '("PRC")
-    :provinces '(Hubei)
+    :provinces '("Hubei")
     :cities '("Beijing" "Shanghai" "Guangzhou" "Wuhan"))
 (define-country "Colombia")
 (define-country "Comoros")
 (define-country "Costa Rica")
-;define-country should be Côte d'Ivoire but having problems with the circumflex diacritic mark and apostrophe
+;define-country should be Cï¿½te d'Ivoire but having problems with the circumflex diacritic mark and apostrophe
 (define-country "Ivory Coast")
 (define-country "Croatia")
 (define-country "Cuba")
 (define-country "Cyprus")
 (define-country "Czech Republic")
 (define-country "Democratic Republic of the Congo")
-(define-country "Denmark")
+(define-country "Denmark"
+    :cities '("Copenhagen"))
 (define-country "Djibouti")
 (define-country "Dominica")
 (define-country "Dominican Republic")
@@ -116,7 +117,7 @@
 (define-country "Iceland")
 (define-country "India" :adjective "Indian"
   :cities '("New Deli" "Mumbai"))
-(define-country "Indonesia")
+(define-country "Indonesia") ;; how do we want to add sumatra and sumatran?
 (define-country "Iran"
     :adjective "Iranian"
     :cities '("Qom"))
@@ -131,7 +132,7 @@
   :cities '("Tokyo"))
 (define-country "Jordan")
 (define-country "Kazakhstan")
-(define-country "Kenya" :adjective "Kenyian"
+(define-country "Kenya" :adjective "Kenyan"
   :cities '("Nairobi"))
 (define-country "Kiribati")
 (define-country "Kosovo")

@@ -64,3 +64,15 @@
 ;; post covid
 (def-indiv-with-id unit-of-measure "microliter" "UO:0000101" :name "microliter") 
 (def-indiv-with-id unit-of-measure "Coulomb" "UO:0000220" :name "coulomb") 
+(def-indiv-with-id unit-of-measure "eV" "UO:0000266" :name "electronvolt" :maintain-case t)
+(def-indiv-with-id unit-of-measure "meV" "NCIT:C67398" :name "millielectronvolt" :maintain-case t)
+(def-indiv-with-id unit-of-measure "MeV" "NCIT:C152057" :name "megaelectronvolt" :maintain-case t)
+
+(def-indiv-with-id unit-of-measure "kHz" "NCIT:C67279" :name "kilohertz" :maintain-case t)
+(def-indiv-with-id unit-of-measure "MHz" "NCIT:C67314" :name "megahertz" :maintain-case t)
+(def-indiv-with-id unit-of-measure "kcal" "NCIT:C67194" :name "calorie")
+
+(def-indiv-with-id unit-of-measure "Celsius" "NCIT:C41151" :name "celsius scale")
+(def-indiv-with-id unit-of-measure "BMI" "EFO:0004340" :name "body mass index")
+(def-indiv-with-id unit-of-measure "tinct" "NCIT:C43000" :name "tincture dosage form")
+(def-indiv-with-id unit-of-measure "lumen" "UO:0000118")

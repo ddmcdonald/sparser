@@ -2074,3 +2074,5 @@
 (def-indiv-with-id drug "CDV" "PUBCHEM:60613" :name "cidofovir" :synonyms ("NCIT:C1600"))
 (def-indiv-with-id drug "BSO" "PUBCHEM:21157" :name "buthionine sulfoximine" :synonyms ("NCIT:C1029")) 
 (def-indiv-with-id drug "heparin" "NCIT:C539" :name "heparin") ;; also protein
+(def-indiv-with-id drug "chloroquine" "CHEBI:3638" :name "chloroquine")
+(def-indiv-with-id drug "Alg" "NCIT:C62577" :name "antilymphocyte serum")

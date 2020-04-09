@@ -86,8 +86,20 @@
 (noun "liquid chromatography" :super bio-method)
 (noun "mass-spectrometry" :super bio-method)
 (def-synonym mass-spectrometry (:noun ("mass spectrometry" "MS")))
+(noun "LCMS" :super bio-method)
+(def-synonym LCMS (:noun "Liquid Chromatography Mass Spectrometry"))
+
 (noun "IP-MS" :super bio-method) ;; added to get rid of erroneous TRIPS def that was plural of "IPM"
 (def-synonym ip-ms (:noun "immunoprecipitation mass spectrometry"))
+
+(noun "CLx" :super bio-method)
+(def-synonym clx (:noun "Odyssey CLx")) ;; imager technology, blocking bad protein
+(noun "PME" :super bio-method)
+(def-synonym PME (:noun "particle mesh ewald")) ;; algorithm used in comp bio
+
+(noun "MAPE" :super bio-method) ;; block bad gene def
+(def-synonym MAPE (:noun "mean absolute percentage error"))
+(def-synonym MAPE (:noun "Mean Absolute Percentage Error"))
 
 (noun "means" :super bio-method
       :restrict ((object over-ridden))
@@ -116,8 +128,6 @@
 (noun "RCT" :super bio-method)
 (def-synonym RCT (:noun "Randomized Controlled Trial")) ;; could also be radiochemotherapy
 
-(noun "LCMS" :super bio-method)
-(def-synonym LCMS (:noun "Liquid Chromatography Mass Spectrometry"))
 
 ;; polymerase chain reaction
 (noun "PCR" :super bio-method)

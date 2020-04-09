@@ -40,7 +40,7 @@
 (gload "bio;standardized-protein-defs")
 ;(gload "bio;standardized-protein-defs-no-fams-complete")
 ;(gload "bio;standardized-protein-defs-new")
-
+(gload "bio;covid-proteins")
 ;(gload "bio;non-upa-upm-proteins") all of these have been folded into real defs now
 (gload "bio;proteins-revised") 
 (gload "bio;fix-protein-defs")

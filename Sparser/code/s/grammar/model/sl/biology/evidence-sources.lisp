@@ -36,6 +36,14 @@
 ;; listed here: https://amp.pharm.mssm.edu/Enrichr/#stats
 (def-indiv-with-id database "GEO RNAi" "GEO-RNAi" :name "GEO RNAi database")
 
+;; these have UIDs and came up in covid papers
+(def-indiv-with-id database "Unigene" "NCIT:C43563" :name "uniGene")
+(def-indiv-with-id database "uniprotkb" "NCIT:C47851" :name "uniProtKB")
+(def-indiv-with-id database "refseq" "NCIT:C45335" :name "refSeq")
+(def-indiv-with-id database "PFam" "NCIT:C43580" :name "protein families database")
+(def-indiv-with-id database "pubchem" "NCIT:C54563" :name "pubChem")
+(def-indiv-with-id database "ensembl" "NCIT:C45763" :name "ENSEMBL")
+(def-indiv-with-id database "entrez" "NCIT:C45764" :name "Entrez")
 
 ;;; Functions to allow for "domain adjunct" PPs -- PPs which can attach to
 ;;   general (non-domain) NPs, but which only make sense in some domain

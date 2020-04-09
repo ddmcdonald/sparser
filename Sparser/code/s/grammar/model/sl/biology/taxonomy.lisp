@@ -317,7 +317,6 @@
    :bindings (uid "CHEBI:16991")
    :realization (:noun ("DNA" "deoxyribonucleic acid" "dna")))
 
-
 (define-category dna-motif :specializes bio-chemical-entity
                  :documentation "enhancers, promoters, etc., also response elements")
 
@@ -997,6 +996,7 @@
      :m basis
      :of basis))
 
+(noun "exon" :super gene) ;; the sequences of a gene that are present in the final, mature, spliced messenger RNA molecule from that gene.
 
 
 

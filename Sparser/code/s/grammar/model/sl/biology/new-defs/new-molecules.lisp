@@ -1718,3 +1718,5 @@
 (def-indiv-with-id molecule "Reston" "CHEBI:6820" :name "methapyrilene") 
 (def-indiv-with-id molecule "AcOH" "CHEBI:15366" :name "acetic acid") ;;"PUBCHEM:176"
 (def-indiv-with-id molecule "HCOOH" "CHEBI:30751" :name "formic acid");;"PUBCHEM:284"
+(def-indiv-with-id molecule "thiazolidinediones" "CHEBI:50990")
+(def-indiv-with-id molecule "NEM" "CHEBI:44485" :name "N-ethylmaleimide")

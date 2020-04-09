@@ -242,3 +242,6 @@
 (def-indiv-with-id organism "Strongyloides" "NCIT:C125924" :name "strongyloides") 
 (def-indiv-with-id organism "Toxoplasma" "NCIT:C75538" :name "toxoplasma") 
 (def-indiv-with-id organism "Yucatan" "NCIT:C77108" :name "yucatan pig") 
+
+(def-indiv-with-id bio-organ "GPe" "UBERON:0002476" :name "lateral globus pallidus" :synonyms ("globus pallidus external" "external globus pallidus") :maintain-case t)
+(def-indiv-with-id bio-organ "GPi" "UBERON:0002477" :name "medial globus pallidus" :synonyms ("globus pallidus internal" "internal globus pallidus") :maintain-case t)

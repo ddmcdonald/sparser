@@ -235,3 +235,4 @@
 ;(def-indiv-with-id protein-domain "CPEs" "XFAM:PF09367" :name "CpeS") cytopathic effect
 (def-indiv-with-id protein-domain "EcoRI" "XFAM:PF02963" :name "EcoRI") 
 (def-indiv-with-id protein-domain "Leh" "XFAM:PF07858" :name "LEH") 
+(def-indiv-with-id protein-domain "Ubx" "XFAM:PF00789" :name "UBX") 

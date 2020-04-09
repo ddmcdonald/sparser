@@ -57,6 +57,9 @@
    :bindings (uid "NCIT:C26431")
    :realization (:noun ("coronavirus" "coronaviridae")))
 
+(noun "SSV" :super virus) ;; can't find an ontology with UID but this was to block a protein def that was based on it being 
+(def-synonym SSV (:noun "Simian Sarcoma Virus"))
+
 #|
 ;;; diseases known to BoB
 Abdominal Aortic Aneurysm

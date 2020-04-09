@@ -1093,6 +1093,7 @@
 (def-indiv-with-id cell-line "AC2M2" "CVCL:AZ67" :name "AC2M2" :no-plural t) 
 (def-indiv-with-id cell-line "AB1" "CVCL:N791" :name "AB1 [Mouse ESC]" :no-plural t) 
 (def-indiv-with-id cell-line "A02" "CVCL:W875" :name "A02" :no-plural t) 
+(def-indiv-with-id cell-line "ele" "CVCL:0C08" :name "EL-E" :no-plural t) 
 (def-indiv-with-id cell-line "MDA-MB-435s" "CVCL:0622" :name "MDA-MB-435S" :no-plural t) 
 (def-indiv-with-id cell-line "LM2-4142" "CVCL:DG21" :name "MDA231-LM2-4142" :no-plural t) 
 (def-indiv-with-id cell-line "Kep1" "CVCL:DR13" :name "KEP1" :no-plural t) 

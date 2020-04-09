@@ -880,7 +880,7 @@
 ;(def-family-with-id "RasGAPS" "BE:RasGAP") 
 ;(def-family-with-id "Ras family" "BE:RAS") 
 (def-family-with-id "Rad3" "IPR013020") 
-(def-family-with-id "RTX" "XFAM:PF02382") 
+(def-family-with-id "RTX" "XFAM:PF02382" :synonyms ("RTx")) 
 ;(def-family-with-id "RNA polymerase 1" "BE:RNApo_I") 
 (def-family-with-id "RNA binding domain" "XFAM:PF08675") 
 (def-family-with-id "RHIM" "XFAM:PF12721") 

@@ -9,6 +9,13 @@
 
 (in-package :sparser)
 
+;;; Bacteriophage attachment sites for dna  recombination:
+(noun "attB" :super molecular-location) ; bacteria site
+(noun "attP" :super molecular-location) ; phage site
+(noun "attL" :super molecular-location) ; Left side once attached
+(noun "attR" :super molecular-location) ; Right side once attached
+
+
 ;;;------------------
 ;;; RNA and microRNAs
 ;;;------------------

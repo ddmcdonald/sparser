@@ -1,5 +1,10 @@
 (in-package :sparser)
 
+(def-indiv-with-id dna "dsDNA" "NCIT:C449" :name "double-stranded DNA")
+(def-indiv-with-id dna "ssDNA" "NCIT:C111311" :name "single-stranded DNA")
+(def-indiv-with-id dna "gDNA" "NCIT:C95940" :name "genomic DNA")
+(def-indiv-with-id dna "pDNA" "NCIT:C95940" :name "plasmid DNA")
+
 
 (def-indiv-with-id rna "si-RNA" "NCIT:C2191" :name "small interfering RNA" :synonyms ("siRNA")) 
 (def-indiv-with-id rna "pri-miRNA" "NCIT:C25967" :name "pri-miRNA") 

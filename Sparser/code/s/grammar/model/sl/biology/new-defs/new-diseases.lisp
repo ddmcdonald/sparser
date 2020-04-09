@@ -837,3 +837,7 @@
 (def-indiv-with-id virus "hRSV" "NCIT:C14267" :name "human respiratory syncytial virus") 
 
 (def-indiv-with-id disease "CPE" "NCIT:C141201" :name "Cytopathic Effect" :synonyms ("CPEs")) ;; CPE also overloaded with protein def
+(def-indiv-with-id coronavirus "MERS" "NCIT:C128424" :name"Middle East Respiratory Syndrome" :synonyms ("MERS-CoV" "MERS coronavirus"))
+(def-indiv-with-id disease "CDG" "ORPHANET:137" :name "Congenital disorder of glycosylation")
+(def-indiv-with-id disease "FSHD" "ORPHANET:269" :name "Facioscapulohumeral dystrophy")
+(def-indiv-with-id disease "LIMD"  "ORPHANET:254857" :name "Lethal infantile mitochondrial myopathy")
