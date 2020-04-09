@@ -21,6 +21,7 @@
                                       ((:prescan prescan-buffer?)
                                        *prescan-character-input-buffer*)
                                       echo
+                                      (ext-format :utf-8)
                                       ((:trace traces-on) t)
                                       ((:skip ignore-errors?) t))
 
@@ -53,7 +54,7 @@
 
     (set-initial-state :name file-name :location pathname)
 
-    (establish-character-source/file pathname)
+    (establish-character-source/file pathname :ext-format ext-format )
 
     (when prescan-buffer?
       (scan-and-swap-character-buffer :echo echo))

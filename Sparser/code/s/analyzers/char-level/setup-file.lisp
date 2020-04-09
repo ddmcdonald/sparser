@@ -20,9 +20,9 @@
 (defparameter *filepos-at-beginning-of-source* 0)
 
 
-(defun establish-character-source/file (pathname)
+(defun establish-character-source/file (pathname &key (ext-format :utf-8))
   (let ((file-stream
-         (open-character-source/file pathname)))
+         (open-character-source/file pathname :ext-format ext-format)))
 
     (setq *filepos-at-beginning-of-source* 0)
     (establish-character-source/open-file file-stream)))

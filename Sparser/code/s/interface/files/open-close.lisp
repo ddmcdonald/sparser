@@ -30,13 +30,14 @@
   (setq *open-stream-of-source-characters* nil))
 
 
-(defun open-character-source/file (pathname)
+(defun open-character-source/file (pathname &key (ext-format :utf-8))
   (setq *open-stream-of-source-characters*
         #+openmcl (open pathname
                         :external-format :UTF-8
                         :direction :input)
         #-openmcl (open pathname
-                        :direction :input)))
+                        :direction :input
+                        :external-format ext-format)))
 
 
 ;;;-----------------------
