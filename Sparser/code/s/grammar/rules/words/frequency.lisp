@@ -188,6 +188,7 @@
   (when word ;; can be nil in cases where there isn't a word
     (incf *words-in-run*) ;; running total of document length
     (let ((classification (classify-word-for-frequency word position)))
+      (format t " ~s" (pname word))
       (record-word-frequency/over-all word classification))))
 
 
@@ -204,9 +205,9 @@
 (defun word-from-edge (e)
   (cond ((eq :single-term (edge-right-daughter e))
          (if (edge-p (edge-left-daughter e))
-             ;; happens with things like the protein over MEK1
-             (word-from-edge (edge-left-daughter e))
-             (edge-left-daughter e)))
+           ;; happens with things like the protein over MEK1
+           (word-from-edge (edge-left-daughter e))
+           (edge-left-daughter e)))
         (t ;;(warn "no word at ~s" e)
          nil)))
 
@@ -226,10 +227,6 @@
       (make-initial-word-frequency-entry/over-all w)
       (increment-word-frequency-entry/over-all entry w))))
 
-;; *current-article* is defined in drivers/sources/state.lisp which is 
-;; loaded well before this file is. For our purposes it's bound in
-;; one of the frequency drivers. The value is supposed to be an article
-;; object, but haven't revived those yet (ddm 7/15/10)
 
 (defun make-initial-word-frequency-entry/over-all (word)
   ;; called the first time a word is seen, i.e. when it isn't already
@@ -393,6 +390,21 @@
 		      (polyword (pw-pname (car second)))))
                    nil)))))
 
+(defun sort-word-count-pairs (list-of-pairs)
+  (sort list-of-pairs ;; (word . number)
+        #'(lambda (first second)
+            (cond ((> (cdr first) (cdr second))
+                   t)
+                  ((> (cdr second) (cdr first))
+                   nil)
+                  ((= (cdr second) (cdr first))
+                   (cond
+                     ((string> (pname (car first))
+                               (pname (car second)))
+                      t)
+                     ((string> (pname (car second))
+                               (pname (car first)))
+                      nil)))))))
 
 
 ;;--- Another way to bucket and report the results

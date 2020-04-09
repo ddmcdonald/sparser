@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2012-2013,2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2012-2013,2019-2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;    File:  "word-freq"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  August 2019
+;;;  Version:  April 2020
 
 ;; initiated 9/2/12 to provide a mix-in for tabulating word-frequency information.
 ;; 10/26/13 Reworked as a regular class form with initial values since the initialize
@@ -62,68 +62,4 @@
       (incf (token-count o))
       (incf (gethash w table))
       w)))
-
-
-
-;;;----------------------
-;;; Steps towards tf/idf
-;;;----------------------
-
-(defgeneric count-in-document (word table)
-  (:documentation "Look up the count for a particular document that
-   inherits the word-frequency mixin class. Note that this doesn't use
-   the entry structure of the word in the frequency table but assumes
-   that's been recorded on the document.")
-  (:method ((w word) (o word-frequency))
-    (let ((table (words-to-count o)))
-      (gethash w table))))
-
-
-(defmethod normalized-count ((w word) (d word-frequency))
-  (let ((total-tokens (token-count d))
-	(count-for-word (count-in-document w d)))
-    (unless (or (= total-tokens 0)
-		(null count-for-word)) ;; #<source-start>
-      (let ((ratio (/ count-for-word total-tokens)))
-	(values
-	 (format nil "~,8F" ratio)
-	 ratio)))))
-
-(defmethod unique-words ((d1 word-frequency) (d2 word-frequency))
-  "What wards are in d1 that aren't in d2?"
-  (let ( unique-to-d1
-	(table1 (words-to-count d1))
-	(table2 (words-to-count d2)))
-    (maphash #'(lambda (word count)
-		 (declare (ignore count))
-		 (unless (gethash word table2)
-		   (push word unique-to-d1)))
-	     table1)
-    unique-to-d1))
-
-(defmethod term-frequency ((w word) (d word-frequency))
-  (let ((total-tokens (token-count d))
-	(count-for-word (count-in-document w d)))
-    (unless (or (= total-tokens 0)
-		(null count-for-word)) ;; #<source-start>
-      (/ count-for-word total-tokens))))
-
-(defun number-of-documents-containing-word (word)
-  (let ((entry (frequency-table-entry word)))
-    (if entry
-      (length (cdr entry))
-      0)))
-
-(defmethod inverse-document-frequency ((w word) (list-of-documents list))
-  (let* ((doc-count (length list-of-documents))
-         (incident-count (number-of-documents-containing-word w))
-         (ratio (/ doc-count (1+ incident-count))))
-    (log ratio)))
-
-(defmethod tf-idf ((w word) (document word-frequency)
-                   (list-of-documents list))
-  (let ((tf (term-frequency w document)))
-    (when tf
-      (* tf
-         (inverse-document-frequency w list-of-documents)))))
 

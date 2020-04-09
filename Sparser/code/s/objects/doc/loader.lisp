@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  March 2020
+;;;  Version:  April 2020
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -39,9 +39,9 @@
                         :use nil))))
 
 (lload "doc;classes")
+(lload "doc;word-freq")
 (lload "doc;globals")
 (lload "doc;rhetoric")
-(lload "doc;word-freq")
 (lload "doc;section markers")
 (lload "doc;sgml tags")
 (lload "doc;html")
@@ -57,6 +57,7 @@
 (lload "doc;content-actions") ;; depends on object
 (lload "doc;content-methods")
 (lload "doc;doc-set")
+(lload "doc;word-freq-methods")
 (lload "doc;doc stream")
 (lload "doc;context")
 (lload "doc;content")
