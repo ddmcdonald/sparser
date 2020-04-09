@@ -44,7 +44,7 @@
 
 (noun "growth factor" :super protein) ;; actually, either a protein or hormone, but occasionally some other molecule
 
-(noun "polyprotein" :super protein) ;; any protein cleaved into multiple peptide proteing, often but not always viruses
+(noun "polyprotein" :super protein) ;; any protein cleaved into multiple peptide proteins, often but not always viruses
 
 
 ;; likely figure numbers
@@ -79,12 +79,92 @@
 ;;;-----------------
 
 ;; virus proteins
-(def-family "nucleocapsid protein" :members ("UP:Q8JTH3"))
-(def-family "capsid protein" :synonyms ("capsid")) ;; should define this better -kind of cell part but viruses don't have cells
-(def-family "ORF" :synonyms ("Orf") :members ("UP:P16320")) ;; really "open reading frame" which is a name for putative proteins from genes before they are characterized
-;;
-(def-family "ORFX" :members ("UP:Q15059"))
+(def-family "non-structural protein" :synonyms ("nsp" "nsP" "NSPs"))
+;(def-family "capsid protein" :synonyms ("capsid")) ;; should define this better -kind of cell part but viruses don't have cells
+(def-family "ORF" :synonyms ("orf") :members ("UP:P16320")) ;; really "open reading frame" which is a name for putative proteins from genes before they are characterized
 
+#| should be families but for now grounding to covid only
+(def-family "nucleoprotein" :synonyms ("nucleocapsid protein" "N protein" "n protein" "NC protein" "Nprotein" "nucleo-protein") :members ("UP:Q8JTH3" "UP:Q9JGU1" "UP:Q9QSP4" "UP:P0C796" "NCAP_CVHSA" "NCAP_SARS2"))
+(def-family "membrane protein" :synonyms ("M protein" "m protein" "E1 glycoprotein" "matrix glycoprotein" "membrane glycoprotein" "Mprotein") :members ("VME1_CVHSA" "VME1_SARS2"))
+
+(def-family "PP1a" :name "replicase polyprotein 1a" :synonyms ("pp1a" "ORF1a polyprotein" "ORF1a" "ORF-1a") :members ("R1A_CVH22" "R1A_CVHSA" "R1A_SARS2"))
+(def-family "PP1ab" :name "replicase polyprotein 1ab" :synonyms ("pp1ab" "ORF1ab polyprotein" "ORF1ab" "ORF-1ab") :members ("R1AB_CVH22" "R1AB_CVHSA" "R1AB_SARS2"))
+
+
+(def-family "nsp1" :name "non-structural protein 1" :members ("UP:Q0H8C5" "UP:Q0PDM0" "UP:Q9INI2" "R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2") :synonyms ("Leader protein")) 
+(def-family "host translation inhibitor nsp1" :members ("R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2"))
+(def-family "nsp2" :name "non-structural protein 2" :synonyms ("p65 homolog") :members ("UP:P28889" "UP:Q3ZK62" "R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2")) 
+(def-family "p65 homolog" :members ("R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2"))
+(def-family "nsp3" :name "non-structural protein 3" :members ("UP:Q8N5H7" "UP:Q9YWQ0" "R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2")) ;; first is human not non-structural
+(def-family "SARS coronavirus papain like protease" :synonyms ("SARS coronavirus papain-like protease" "Papain-like proteinase" "PL-PRO" "PL2-PRO" "SARS coronavirus main proteinase") :members ("R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2"))
+(def-family "PL2 pro" :members ("UP:P0C6F7" "R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2"))
+(def-family "nsp4" :name "non-structural protein 4" :members ("UP:Q3ZK64" "UP:Q9YWQ3" "R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2"))
+(def-family "nsp5" :name "non-structural protein 5" :members ("UP:Q3ZK65" "UP:Q9YIT9" "R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2"))
+(def-family "3C-like proteinase" :synonyms ("3CL-PRO" "3CLp") :members ("R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2"))
+(def-family "nsp6" :name "non-structural protein 6" :members ("R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2"))
+(def-family "nsp7" :name "non-structural protein 7" :members ("R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2"))
+(def-family "nsp8" :name "non-structural protein 8" :members ("R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2"))
+(def-family "nsp9" :name "non-structural protein 9" :members ("R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2"))
+(def-family "nsp10" :name "non-structural protein 10" :members ("R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2"))
+(def-family "growth factor-like peptide" :members ("R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2"))
+(def-family "nsp11" :name "non-structural protein 11" :members ("R1A_CVHSA" "R1A_SARS2"))
+(def-family "nsp12" :name "non-structural protein 12" :members ("R1AB_CVH22" "R1AB_SARS2"))
+(def-family "Pol" :synonyms ("pol protein") :members ("UP:A4ZJ37" "UP:B7TEU4" "UP:B7TEZ7" "UP:G3FA30" "UP:G3FA67" "UP:G3GCR0" "UP:G3GCV8" "UP:Q5G4B7" "UP:Q9WJJ2" "UP:P03261" "UP:P18131" "R1AB_CVH22" "R1AB_SARS2" )) 
+(def-family "RdRp" :name "RNA-directed RNA polymerase" :synonyms ("RdRP" "rdrp") :members ("UP:Q8AZL8" "R1AB_CVH22" "R1AB_SARS2"))
+(def-family "nsp13" :name "non-structural protein 13" :members ("R1AB_CVH22" "R1AB_SARS2"))
+;; NOTE: many helicases are human proteins too, but since that's the name of this covid one for now I'm leaving it
+(def-family "helicase" :synonyms ("Hel") :members ("UP:Q9HCK8" "UP:Q9NRZ9" "UP:Q9UPY3" "UP:Q14527" "UP:Q15477" "UP:Q8N3C0" "UP:Q8TD26" "UP:Q8TDG4" "UP:Q9BYK8" "UP:Q9BYX4" "R1AB_CVH22" "R1AB_SARS2")) 
+(def-family "nsp14" :name "non-structural protein 14" :members ("R1AB_CVH22" "R1AB_SARS2"))
+(def-family "guanine-N7 methyltransferase" :members ("R1AB_CVH22" "R1AB_SARS2")) 
+(def-family "ExoN" :members ("UP:P0C6Y2" "R1AB_CVH22" "R1AB_SARS2"))
+(def-family "nsp15" :name "non-structural protein 15" :members ("R1AB_CVH22" "R1AB_SARS2"))
+(def-family "uridylate-specific endoribonuclease" :members ("R1AB_CVH22" "R1AB_SARS2"))
+(def-family "NendoU" :members ("UP:P0C6Y2" "R1AB_CVH22" "R1AB_SARS2"))
+
+(def-family "Spike glycoprotein" :synonyms ("S glycoprotein" "Spike protein S1" "Spike protein S2" "peplomer protein" "S protein" "Sprotein") :members ("SPIKE_CVHSA" "SPIKE_SARS2"))
+
+(def-family "protein 3A" :synonyms ("protein 3a" "accessory protein 3a" "protein U274" "protein X1") :members ("AP3A_CVHSA" "AP3A_SARS2"))
+(def-family "non-structural protein 3b" :synonyms ("ns3b" "accessory protein 3b" "protein X2") :members ("NS3B_CVHSA")) ;; no SARS2 one yet
+(def-family "non-structural protein 6" :synonyms ("ns6" "accessory protein 6" "protein X3") :members ("NS6_CVHSA" "NS6_SAR2"))
+(def-family "protein 7A" :synonyms ("protein 7a" "accessory protein 7a" "protein U122" "protein X4") :members ("NS7A_CVHSA" "NS7A_SARS2"))
+(def-family "non-structural protein 7b" :synonyms ("ns7b" "accessory protein 7b" "protein non-structural 7b") :members ("NS7B_CVHSA" "NS7B_SARS2"))
+(def-family "non-structural protein 8a" :synonyms ("ns8a" "accessory protein 8a" "protein non-structural 8a") :members ("NS8A_CVHSA"))
+(def-family "non-structural protein 8b" :synonyms ("ns8b" "accessory protein 8b") :members ("NS8B_CVHSA")) ;; there is a SARS2 8 but not 8a 8b
+(def-family "non-structural protein 8" :synonyms ("ns8" "NS8") :members ("UP:Q0Q469" "NS8_SARS2"))
+(def-family "protein 9B" :synonyms ("protein 9b" "accessory protein 9b" "ORF-9b" "ORF9b" "ORF 9b") :members ("ORF9B_CVHSA" "ORF9B_SARS2"))
+(def-family "ORF14" :synonyms ("Uncharacterized protein 14") :members ("Y14_CVHSA" "Y14_SARS2"))
+
+(def-family "envelope small membrane protein" :synonyms ("E protein" "sM protein") :members ("VEMP_CVHSA" "VEMP_SARS2"))
+(def-family "sm protein" :members ("UP:Q89894" "VEMP_CVHSA" "VEMP_SARS2"))
+(def-family "ORF2" :synonyms ("ORF-2") :members ("UP:P52069" "UP:Q68985" "SPIKE_CVHSA" "SPIKE_SARS2"))
+
+(def-family "ORF3a" :synonyms ("ORF-3a") :members ("AP3A_CVHSA" "AP3A_SARS2"))
+(def-family "ORF3b" :synonyms ("ORF-3b") :members ("NS3B_CVHSA")) ;; there isn't a SARS2 on yet
+(def-family "ORF4" :synonyms ("ORF-4") :members ("VEMP_CVHSA" "VEMP_SARS2"))
+(def-family "ORF5" :synonyms ("ORF-5") :members ("VME1_CVHSA" "VME1_SARS2"))
+(def-family "ORF6" :synonyms ("ORF-6") :members ("UP:Q4L2X2" "NS6_CVHSA" "NS6_SARS2"))
+(def-family "ORF7a" :synonyms ("ORF-7a") :members ("NS7A_CVHSA" "NS7A_SARS2"))
+(def-family "ORF7b" :synonyms ("ORF-7b") :members ("NS7B_CVHSA" "NS7B_SARS2"))
+(def-family "ORF8" :synonyms ("ORF-8") :members ("NS8_SARS2"))
+(def-family "ORF9b" :synonyms ("ORF-9b") :members ("ORF9B_CVHSA" "ORF9B_SARS2"))
+(def-family "ORF10" :synonyms ("ORF-10") :members ("A0A663DJA2_SARS2"))
+(def-family "ORF14" :synonyms ("ORF-14") :members ("Y14_CVHSA" "Y14_SARS2"))
+|#
+;;
+(def-family "ORFX" :members ("UP:Q15059")) 
+(def-family "envelope glycoprotein" :members ("UP:D2XWF1" "UP:E2F1Z4" "UP:O41637" "UP:Q5EHA4" "UP:Q99C47" "UP:W0G7P8")) ;all HIV, so BG removed them, but that's what they're from 
+(def-family "SARS coronavirus papain like protease" :synonyms ("SARS coronavirus papain-like protease") :members ("R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2"))
+(def-family "mu 1" :members ("UP:P11077" "UP:P35372")) ;two viruses
+(def-family "mu2" :members ("UP:P12418" "UP:Q00335")) ;two viruses
+(def-family "coat protein" :members ("UP:P21942" "UP:Q9UBF2"))
+(def-family "major capsid protein" :members ("UP:P17499" "UP:P22776"))
+
+(def-family "Protein X" :members ("UP:P0C781" "UP:P69714" "AP3A_CVHSA" "UP:P0DTC3"))
+
+(def-family "ORF1" :members ("UP:P42536" "UP:Q8N157")) 
+(def-family "ORF63" :members ("UP:P38468" "UP:Q00159")) 
+(def-family "ORF65" :members ("UP:O78421" "UP:Q00106")) 
+(def-family "ORF72" :members ("UP:Q00103" "UP:Q6EN94")) 
 
 
 (def-family "USP" :synonyms ("ubiquitin-specific protease" "ubiquitin-specific peptidase")) 
@@ -97,9 +177,7 @@
 (def-family "importin") 
 (def-family "karyopherin α" :synonyms ("karyopherin αs" "karyopherin alpha")) 
 (def-family "karyopherin β" :synonyms ("karyopherin βs" "karyopherin beta"))
-(def-family "tyrphostin") 
-
-
+(def-family "tyrphostin")
 
 (def-family "20 alpha-hydroxysteroid dehydrogenase" :synonyms ("20 α-hydroxysteroid dehydrogenase" "20-α-HSD" "E2DH" "EDH17B2") :members ("UP:P14061" "UP:P37059" "UP:Q04828"))
 (def-family "20-alpha-HSD" :members ("UP:P14061" "UP:P37059" "UP:Q04828")) 
@@ -241,7 +319,6 @@
 ;(def-family "NRXN2" :synonyms ("p58401" "neurexin 2") :members ("UP:P58401" "UP:Q9P2S2")) 
 (def-family "ODC1" :members ("UP:P11926" "UP:Q9BQT8")) 
 (def-family "ORC1" :members ("UP:Q13415" "UP:Q9Y619")) 
-(def-family "ORF2" :members ("UP:P52069" "UP:Q68985")) 
 (def-family "PAR-3" :members ("UP:O00254" "UP:Q8TEW0")) 
 (def-family "PB2" :synonyms ("polymerase basic protein 2") :members ("UP:P03428" "UP:Q6UBL8"))
 (def-family "PBP" :members ("UP:P02775" "UP:P30086" "UP:Q15648")) 
@@ -271,7 +348,7 @@
 (def-family "RBP4" :members ("UP:O15514" "UP:P02753")) 
 (def-family "RGS9" :members ("UP:O75916" "UP:Q6ZS82")) 
 (def-family "RIS1" :members ("UP:P47985" "UP:Q8WZ71")) 
-(def-family "RNA helicase" :members ("UP:A6VKC3" "UP:P60842" "UP:Q08211" "UP:Q9H2U1")) 
+(def-family "RNA helicase" :synonyms ("RNA helicase family") :members ("UP:A6VKC3" "UP:P60842" "UP:Q08211" "UP:Q9H2U1" "UP:Q8N3C0" "UP:Q8IY37" "UP:Q92620")) 
 (def-family "ROR1" :members ("UP:P35398" "UP:Q01973")) 
 (def-family "RPF1" :members ("UP:P46934" "UP:Q9H9Y2")) 
 (def-family "RPL10" :members ("UP:P27635" "UP:P61313")) 
@@ -326,7 +403,7 @@
 (def-family "dihydrodiol dehydrogenase 3" :members ("UP:P14550" "UP:P42330")) 
 (def-family "ecto" :members ("UP:P49961" "UP:Q9UPN9"))
 (def-family "elongation factor-1-alpha" :members ("UP:P68104" "UP:Q05639") :synonyms ("EF-1alpha" "EF-1α" "EF1α" "eF1α" "elongation factor 1-alpha" "elongation factor-1α" "elongation factor 1alpha" "EF1alpha"))
-(def-family "envelope glycoprotein" :members ("UP:D2XWF1" "UP:E2F1Z4" "UP:O41637" "UP:Q5EHA4" "UP:Q99C47" "UP:W0G7P8")) ;all HIV, so BG removed them, but that's what they're from 
+
 (def-family "f-actin cross-linking protein" :members ("UP:P12814" "UP:P35609")) 
 (def-family "f3" :members ("UP:P13726" "UP:Q12860")) 
 (def-family "factor 1" :members ("UP:O95831" "UP:P48061" "UP:Q8WXW3")) 
@@ -357,8 +434,8 @@
 ;(def-family "mitochondrial" :members ("UP:O95363" "UP:P11177" "UP:P50213" "UP:Q15031" "UP:Q8IVS2" "UP:Q99798")) 
 (def-family "mixed lineage kinase" :members ("UP:O43283" "UP:Q12852")) 
 (def-family "myosin" :members ("UP:B0I1T2" "UP:B2RTY4" "UP:O00159" "UP:O43795" "UP:O94832" "UP:Q13402" "UP:Q13459" "UP:Q9HD67" "UP:Q9NQX4" "UP:Q9ULV0" "UP:Q9Y6X6"))
-(def-family "non-structural protein 1" :members ("UP:Q0H8C5" "UP:Q0PDM0" "UP:Q9INI2")) 
-;(def-family "non-structural protein 3" :members ("UP:Q3ZK63" "UP:Q9YWQ0")) 
+
+;;(def-family "non-structural protein 3" :members ("UP:Q3ZK63" "UP:Q9YWQ0")) 
 ;; (def-family "noxa" :members ("UP:Q0GKC8" "UP:Q13794")) HMS says "UP:Q13794"
 ;(def-family "o00505" :synonyms ("o00629") :members ("UP:O00505" "UP:O00629")) 
 ;;  (def-family "p100" :members ("UP:P40967" "UP:Q9ULW0" "UP:Q00653")) HMS says "HGNC:NFKB2"
@@ -402,7 +479,7 @@
 ;(def-family "peroxisome proliferator-activated receptor gamma" :members ("UP:P37231" "UP:Q86YN6")) 
 (def-family "phosphatase 1" :members ("UP:Q8TDY2" "UP:Q9UQK1")) 
 ;(def-family "phosphoinositide-3-kinase" :members ("UP:O75747" "UP:P42336" "UP:Q8NEB9" "UP:Q8WYR1")) 
-(def-family "pol protein" :members ("UP:A4ZJ37" "UP:B7TEU4" "UP:B7TEZ7" "UP:G3FA30" "UP:G3FA67" "UP:G3GCR0" "UP:G3GCV8" "UP:Q5G4B7" "UP:Q9WJJ2")) 
+
 (def-family "poly(ADP–ribose)" :members ("PARP1_HUMAN" "PARP2_HUMAN" "PARP3_HUMAN")) 
 (def-family "polyubiquitin" :synonyms ("polyUb" "UBI" "poly-Ubi") :members ("UP:P0CG47" "UP:P0CG48")) 
 (def-family "pop3" :members ("UP:Q9BVC4" "UP:Q9HBV1")) 
@@ -910,7 +987,8 @@
 (def-family "MIP-1α" :members ("UP:P10147" "UP:P32246")) 
 (def-family "MIP-1β" :members ("UP:P10147" "UP:P13236")) 
 (def-family "MIP-2" :members ("UP:P19875" "UP:Q9H7D7") :synonyms ("MIP2")) 
-(def-family "MK" :members ("UP:P21741" "UP:Q03426")) 
+(def-family "MK" :members ("UP:P21741" "UP:Q03426"))
+(def-family "MKS" :members ("UP:Q9NXB0" "UP:Q5HYA8"))
 (def-family "MK3" :members ("UP:P22001" "UP:Q16644")) 
 (def-family "ML1" :members ("UP:Q96PD4" "UP:Q9NTI2")) 
 (def-family "ML7" :members ("UP:P10143" "UP:P16260")) 
@@ -933,7 +1011,8 @@
 (def-family "MRS" :members ("UP:P59665" "UP:Q1RNF8")) 
 (def-family "MSCs" :members ("UP:O52401" "UP:O60682")) 
 (def-family "MSF1" :members ("UP:P08425" "UP:Q9UHD8")) 
-(def-family "MSH" :members ("UP:D4GTL2" "UP:Q03372")) 
+(def-family "MSH" :members ("UP:D4GTL2" "UP:Q03372"))
+
 (def-family "MSP2" :members ("UP:P13263" "UP:Q9S841")) 
 (def-family "MST1" :members ("UP:P26927" "UP:Q13043") :synonyms ("Mst1")) ;; hms says just UP:Q13043 but MST1 is literally the gene name for UP:P26927
 (def-family "MT1M" :members ("UP:P13640" "UP:Q8N339")) 
@@ -1000,10 +1079,7 @@
 (def-family "OGA" :members ("UP:O60502" "UP:Q9EQQ9")) 
 (def-family "OGD" :members ("UP:P11362" "UP:Q01F03")) 
 (def-family "OLF1" :members ("UP:Q13606" "UP:Q9UH73")) 
-(def-family "ORF1" :members ("UP:P42536" "UP:Q8N157")) 
-(def-family "ORF63" :members ("UP:P38468" "UP:Q00159")) 
-(def-family "ORF65" :members ("UP:O78421" "UP:Q00106")) 
-(def-family "ORF72" :members ("UP:Q00103" "UP:Q6EN94")) 
+
 (def-family "OX2R" :members ("UP:Q8TD46" "UP:Q9TUP7")) 
 (def-family "P2X purinoceptor 4" :members ("UP:Q5E9U1" "UP:Q99571") :synonyms ("P2X4")) 
 (def-family "P2Y purinoceptor 14" :members ("UP:Q15391" "UP:Q3SX17") :synonyms ("P2Y14")) 
@@ -1104,7 +1180,7 @@
 (def-family "PrPc" :members ("UP:F7VJQ1" "UP:O34779")) 
 (def-family "Prenylated Rab acceptor protein 1" :members ("UP:Q9UI14" "UP:Q9Z0S9") :synonyms ("rabac1")) 
 (def-family "ProA" :members ("UP:B0CFL0" "UP:Q07295")) 
-(def-family "Protein X" :members ("UP:P0C781" "UP:P69714")) 
+
 (def-family "RA175" :members ("UP:Q8R5M8" "UP:Q9BY67") :synonyms ("SynCAM1")) 
 (def-family "RACE" :members ("UP:O93323" "UP:Q9UHK6")) 
 (def-family "RAD54L" :members ("UP:P46100" "UP:Q92698")) 
@@ -1172,8 +1248,8 @@
 (def-family "SAP-2" :members ("UP:P07602" "UP:P27559")) 
 (def-family "SAP1" :members ("UP:O15263" "UP:P07602")) 
 (def-family "SARA" :members ("UP:O95405" "UP:Q9NR31")) 
-(def-family "SARS" :members ("UP:P49591" "UP:Q9NP81"))
-(def-family "SARS coronavirus papain like protease" :synonyms ("SARS coronavirus papain-like protease") :members ("UP:P0C6U8" "UP:P0C6X7"))
+;(def-family "SARS" :members ("UP:P49591" "UP:Q9NP81")); human proteins SARS1 SARS2
+
 (def-family "SAT1" :members ("UP:P21673" "UP:Q9H2H9")) 
 (def-family "SCA2" :members ("UP:P83515" "UP:Q16553")) 
 (def-family "SCC2" :members ("UP:Q6KC79" "UP:Q750S2")) 
@@ -1204,7 +1280,8 @@
 (def-family "SPAR" :members ("UP:O35412" "UP:P33112")) 
 (def-family "SPINK3" :members ("UP:P00995" "UP:P09036")) 
 (def-family "SPN" :members ("UP:O75398" "UP:P16150")) 
-(def-family "SPRK" :members ("UP:P35321" "UP:Q16584")) 
+(def-family "SPRK" :members ("UP:P35321" "UP:Q16584"))
+(def-family "SRs" :synonyms ("SR proteins" "SR splicing factor" "SRSF") :members ("UP:Q07955" "UP:Q01130" "UP:P84103" "UP:Q08170" "UP:Q05519" "UP:Q13242" "UP:Q13243" "UP:Q13247" "UP:Q16629" "UP:O75494"))
 (def-family "SR-A" :members ("UP:P68193" "UP:Q9XZL8") :synonyms ("SRA")) 
 (def-family "SRM" :members ("UP:P19623" "UP:Q9H3Y6")) 
 (def-family "SRp55" :members ("UP:P26686" "UP:Q13247")) 
@@ -1236,7 +1313,7 @@
 (def-family "TAF15" :members ("UP:Q16514" "UP:Q92804")) 
 (def-family "TAG1" :members ("UP:Q02246" "UP:Q40168") :synonyms ("tag1")) 
 ;(def-family "TAK-1" :members ("UP:O43318" "UP:P49116") :synonyms ("TAK1")) ;; HMS thinks this should just be  "UP:O43318"
-(def-family "TATA box binding protein" :members ("UP:P20226" "UP:Q15573")) 
+;(def-family "TATA box binding protein" :members ("UP:P20226" "UP:Q15573")) 
 (def-family "TBC1 domain family member 14" :members ("UP:Q5CD77" "UP:Q9P2M4")) 
 (def-family "TBL1" :members ("UP:O60907" "UP:Q9BQ87")) 
 (def-family "TBP2" :members ("UP:P20333" "UP:Q6SJ96")) 
@@ -1423,7 +1500,7 @@
 (def-family "claudin-5" :members ("UP:O00501" "UP:Q2HJ22")) 
 (def-family "clf1" :members ("UP:O75462" "UP:Q9BZJ0")) 
 (def-family "clp1" :members ("UP:O94992" "UP:Q92989")) 
-(def-family "coat protein" :members ("UP:P21942" "UP:Q9UBF2")) 
+ 
 (def-family "collybistin" :members ("UP:O43307" "UP:Q58DL7")) 
 (def-family "complement receptor type 3" :members ("UP:P20023" "UP:P94854")) 
 (def-family "complex I" :members ("UP:O95139" "UP:Q9Y375" "UP:Q9Y6M9")) ; partial list -- 50 human ones in all 
@@ -1548,7 +1625,6 @@
 ;(def-family "heat shock factor protein" :members ("UP:P22813" "UP:P41154")) 
 ;(def-family "heat shock protein 90" :members ("UP:P40292" "UP:Q4UDU8")) 
 ;(def-family "hedgehog" :members ("UP:B3LV44" "UP:Q15465")) 
-(def-family "helicase" :members ("UP:Q9HCK8" "UP:Q9NRZ9" "UP:Q9UPY3" "UP:Q14527" "UP:Q15477" "UP:Q8N3C0" "UP:Q8TD26" "UP:Q8TDG4" "UP:Q9BYK8" "UP:Q9BYX4")) 
 (def-family "heme oxygenase 1" :members ("UP:P06762" "UP:P09601")) 
 (def-family "hepatocyte nuclear factor 3-gamma" :members ("UP:P55318" "UP:Q3Y598")) 
 (def-family "heterogeneous nuclear ribonucleoprotein" :members ("UP:P21522" "UP:P61978")) 
@@ -1597,7 +1673,6 @@
 (def-family "mRNA export factor" :members ("UP:P10238" "UP:P78406")) 
 (def-family "mac1" :members ("UP:P11215" "UP:P92948")) 
 (def-family "mad3" :members ("UP:P25963" "UP:P84022")) 
-(def-family "major capsid protein" :members ("UP:P17499" "UP:P22776")) 
 (def-family "malate synthase" :members ("UP:D4GTL2" "UP:Q9LZC3")) 
 (def-family "mash2" :members ("UP:O35885" "UP:Q99929")) 
 ;(def-family "MAT" :members ("UP:P24752" "UP:Q00266")) 
@@ -1619,8 +1694,7 @@
 (def-family "movement protein" :members ("UP:P0C648" "UP:Q01268")) 
 (def-family "mpr1" :members ("UP:P11717" "UP:P43588")) 
 (def-family "mtf1" :members ("UP:Q01538" "UP:Q14872")) 
-(def-family "mu 1" :members ("UP:P11077" "UP:P35372")) 
-(def-family "mu2" :members ("UP:P12418" "UP:Q00335")) ;two viruses
+
 (def-family "multidrug resistance" :members ("UP:P08183" "UP:P96712")) ; both are valid... and there are many more
 (def-family "mum2" :members ("UP:Q15007" "UP:Q9Y5R8")) 
 (def-family "mycb" :members ("UP:P15171" "UP:Q6P8Z1")) 
@@ -1648,15 +1722,14 @@
 ;(def-family "neurotactin" :members ("UP:P23654" "UP:P78423")) 
 (def-family "nirs" :members ("UP:Q39161" "UP:Q5FBZ9")) 
 (def-family "nkx2.1" :members ("UP:P43699" "UP:P50220")) 
-(def-family "non-structural protein 2" :members ("UP:P28889" "UP:Q3ZK62")) 
-(def-family "non-structural protein 5" :members ("UP:Q3ZK65" "UP:Q9YIT9")) 
+
 (def-family "norrin" :members ("UP:Q00604" "UP:Q2KI78")) 
 (def-family "novel zinc finger protein" :members ("UP:Q96AX9" "UP:Q9BVI0")) 
 (def-family "npn3" :members ("UP:Q9BYN0" "UP:Q9D975")) 
 ;(def-family "nsP3" :members ("UP:Q3ZK63" "UP:Q8N5H7")) "nsp3"
 (def-family "nuclear receptor" :members ("UP:P11473" "UP:Q07869")) 
 (def-family "nucleoporin 214" :members ("UP:F4I1T7" "UP:P35658")) 
-(def-family "nucleoprotein" :members ("UP:Q9JGU1" "UP:Q9QSP4")) 
+
 (def-family "oc" :members ("UP:P22810" "UP:Q02509")) 
 (def-family "oligo2" :members ("UP:Q13516" "UP:Q90XB3") :synonyms ("oligodendrocyte transcription factor 2")) 
 ;(def-family "orexin" :members ("UP:O43612" "UP:Q9GLF6")) 
@@ -1729,7 +1802,7 @@
 ;(def-family "pin1" :members ("UP:P83239" "UP:Q13526")) 
 ;(def-family "pin2" :members ("UP:P54274" "UP:P83240")) 
 (def-family "pinin" :members ("UP:P79122" "UP:Q9H307")) 
-(def-family "pols" :members ("UP:P03261" "UP:Q5XG87")) 
+;(def-family "pols" :members ("UP:P03261" "UP:Q5XG87")) 
 (def-family "polygalacturonase" :members ("UP:P20041" "UP:P35336")) 
 (def-family "polynucleotide kinase" :members ("UP:P06855" "UP:P41476")) 
 (def-family "polypyrimidine tract-binding protein" :members ("UP:P26599" "UP:Q9UKA9")) 
