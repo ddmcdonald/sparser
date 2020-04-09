@@ -41,8 +41,10 @@
   (eval `(np-head ,drug-name :super 'drug :rule-label 'drug)))
 ;;(define-drug "inhibitor")
 
-(defun define-drug (drug-name)
-  (def-bio/expr drug-name 'drug :takes-plurals nil))
+(defun define-drug (drug-name &key (synonyms nil))
+  (if synonyms 
+      (def-bio/expr drug-name 'drug :takes-plurals nil :synonyms synonyms)
+      (def-bio/expr drug-name 'drug :takes-plurals nil)))
 
 ;; amazing name for sorafenib
 ;(define-drug "N -(3-trifluoromethyl-4-chlorophenyl)- N '-(4-(2-methylcarbamoyl pyridin-4-yl)oxyphenyl)urea)")
@@ -238,6 +240,7 @@
 (define-drug "infliximab")
 (define-drug "inflixmab")
 (define-drug "iniparib")
+(define-drug "interferon alfacon-1" :synonyms '("interferon alfacon1"))
 (define-drug "ionafarnib")
 (define-drug "ionomycin")
 (define-drug "ipilimumab")
