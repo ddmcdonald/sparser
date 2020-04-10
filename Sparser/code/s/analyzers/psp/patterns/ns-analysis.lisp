@@ -62,6 +62,29 @@ collected a set of ns-examples"
 ;;; Code to filter NS for words to identify by TRIPS or other means
 ;;; ---------------------------------------------------------------
 
+(defun collect-ns->trips-file (&key (prefix "ns-undef-for-trips")
+                                 (n 2500) (interim-files nil))
+  "Having run (collect-ns-examples) to turn on collection and then
+running articles so that *collect-ns-examples* is full of items, go
+through the rest of the steps to create a filtered NS list for words
+to identify by TRIPS. Default name is ns-undef-for-trips which will
+create files in r3/corpus/trips-defs/ns-undef-for-trips-$n.lisp where
+$n split into files of 2500 undefined words at a time to run through
+trips. Use the keyword interim-files if you want files of the interim
+ns-filtering steps, that will be saved in sparser:tools;ns-stuff;"
+  (format t "found ~s items in ns-unknown-sublist~%" (ns-unknown-sublist))
+  (when interim-files
+    (ns-unknown-sublist->file :prefix prefix))
+  (format t "found ~s ns-unknown-items~%" (ns-unknown-items))
+  (format t "found ~s rd-ns items" (ns-unknown-rd-items))
+  (when interim-files
+    (ns-unknown-rd-items->file :prefix prefix))
+  (format t "found ~s undef-ns items~%" (remove-predef-ns))
+  (when interim-files
+    (ns-undef-items->file :prefix prefix))
+  (split-ns-file-for-trips :prefix prefix :n n)
+  )
+
 (defparameter *ns-unknown-sublist* nil)
 (defun ns-unknown-sublist (&optional (ns-examples *collect-ns-examples*))
   (length (setq *ns-unknown-sublist*
@@ -87,6 +110,7 @@ collected a set of ns-examples"
                                     'PACKAGE-APPROXIMATION-NUMBER
                                     'MAKE-NS-PAIR ;; these are mostly not of interest, but may have some false-negs
                                     :NUMBER-FSA
+                                    'MAKE-WILD-TYPE-EDGE
                                     ))
                             (when (symbol-package (car (third n)))
                               (equal "RULE" (package-name (symbol-package (car (third n))))))
@@ -111,8 +135,11 @@ collected a set of ns-examples"
                                                           :ACTIVATION-LOOP :CAPITALIZED))))))
                collect (list (caar n) (second (car n)) (car (third n)))))))
 
-(defun ns-unknown-sublist->file (&optional (filename 
-                                            "sparser:tools;ns-stuff;ns-unknown-sublist.lisp"))
+(defun ns-unknown-sublist->file (&key (prefix "1-500")
+                                    (filename 
+                                     (format nil
+                                             "sparser:tools;ns-stuff;ns-unknown-sublist-~a.lisp"
+                                             prefix)))
   "Save the collected ns examples to a file"
   (with-open-file (stream filename :direction :output :if-exists :supersede)
     (pprint *ns-unknown-sublist* stream))
