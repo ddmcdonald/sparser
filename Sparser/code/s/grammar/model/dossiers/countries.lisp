@@ -33,7 +33,7 @@
 (define-country "Azerbaijan")
 (define-country "Bahamas")
 (define-country "Bahrain")
-(define-country "Bangladesh")
+(define-country "Bangladesh" :adjective "Bangladeshi")
 (define-country "Barbados")
 (define-country "Balearic Islands") ;; linked to Spain
 (define-country "Belarus")
@@ -48,7 +48,7 @@
 (define-country "Britain"
     :aliases '("United Kingdom" "UK")
     :adjective "British"
-    :cities '("London" "Birmingham" "Cardiff"))
+    :cities '("London" "Birmingham" "Brighton" "Cardiff"))
  (define-country "England" :adjective "English")
  (define-country "Scotland" :adjective "Scotish")
  (define-country "Wales" :adjective "Welsh")
@@ -61,7 +61,8 @@
 (define-country "Burundi")
 (define-country "Cambodia")
 (define-country "Cameroon")
-(define-country "Canada" :adjective "Canadian")
+(define-country "Canada" :adjective "Canadian"
+                :cities '("Ottawa" "Quebec" "Québec"))
 (define-country "Canary Islands") ;; linked to Spain
 (define-country "Cape Verde")
 (define-country "Central African Republic")
@@ -81,7 +82,8 @@
 (define-country "Cuba")
 (define-country "Cyprus")
 (define-country "Czech Republic")
-(define-country "Democratic Republic of the Congo")
+(define-country "Democratic Republic of the Congo"
+    :aliases '("Congo" "Zaire"));; former name but probably worth having
 (define-country "Denmark"
     :cities '("Copenhagen"))
 (define-country "Djibouti")
@@ -96,7 +98,7 @@
 (define-country "Ethiopia")
 (define-country "Federated States of Micronesia")
 (define-country "Fiji")
-(define-country "Finland")
+(define-country "Finland" :adjective "finnish")
 (define-country "France"  :adjective "french")
 (define-country "Gabon")
 (define-country "Gambia")
@@ -117,7 +119,7 @@
 (define-country "Iceland")
 (define-country "India" :adjective "Indian"
   :cities '("New Deli" "Mumbai"))
-(define-country "Indonesia") ;; how do we want to add sumatra and sumatran?
+(define-country "Indonesia") ;; how do we want to add sumatra and sumatran? also Java
 (define-country "Iran"
     :adjective "Iranian"
     :cities '("Qom"))
@@ -128,7 +130,7 @@
     :language "Hebrew")
 (define-country "Italy")
 (define-country "Jamaica")
-(define-country "Japan" :adjective "Japanese"
+(define-country "Japan" :adjective '("Japanese" "japanese") ;have seen lowercase
   :cities '("Tokyo"))
 (define-country "Jordan")
 (define-country "Kazakhstan")
@@ -198,11 +200,12 @@
 (define-country "San Marino")
 (define-country "Sao Tome and Principe")
 (define-country "Saudi Arabia")
-(define-country "Senegal")
+(define-country "Senegal" :adjective "Senegalese"
+                :cities '("Dakar"))
 (define-country "Serbia")
 (define-country "Seychelles")
 (define-country "Sierra Leone")
-(define-country "Singapore") ;; city state
+(define-country "Singapore" :adjective "Singaporean") ;; city state
 (define-country "Slovakia")
 (define-country "Slovenia")
 (define-country "Solomon Islands")
@@ -211,7 +214,7 @@
 (define-country "South Korea"
     :adjective "South Korean"
     :cities '("Daegu"))
-(define-country "Spain")
+(define-country "Spain" :adjective '("Spanish" "spanish")) ;; have seen lower case
 (define-country "Sri Lanka")
 (define-country "Sudan")
 (define-country "Suriname")
@@ -219,7 +222,7 @@
 (define-country "Sweden" :adjective "Swedish")
 (define-country "Switzerland")
 (define-country "Syria")
-(define-country "Taiwan")
+(define-country "Taiwan" :adjective "Taiwanese")
 (define-country "Tajikistan")
 (define-country "Tanzania")
 (define-country "Thailand")
@@ -259,4 +262,19 @@
 (define-country "West Bank")
 ;;  Palestine
 ;;  Siberia
+(define-country "Tibet" :adjective "Tibetan")
+(define-country "Korea" :adjective "Korean") ;; we have examples of both tibetan and korean
 
+;;; CONTINENTS - currently going under countries so they get definitions
+(define-country "Africa" :adjective "african")
+(define-country "Asia" :adjective "asian")
+(define-country "Europe" :adjective "european")
+(define-country "North America" :adjective "North American")
+(define-country "South America" :adjective "South American")
+(define-country "Central America" :adjective "Central American")
+;; hack - because countries can't be pluralized, we need a way to refer to the continents collectively
+(define-country "Americas") ;;
+
+(define-country "Oceania")
+
+;; not sure how we want to add "Caribbean" "mediterranean" "Arab"
