@@ -25,7 +25,7 @@
 (define-us-state "Arizona"
                  :abbreviations '("Ariz" "AZ"))
 
-(define-us-state "Arkanses"
+(define-us-state "Arkansas"
                  :abbreviations '("Ark" "AR"))
 
 (define-us-state "California"
@@ -37,7 +37,7 @@
 (define-us-state "Connecticut"
                  :abbreviations '("Conn" "CT"))
 
-(define-us-state "Deleware"
+(define-us-state "Delaware"
                  :abbreviations '("Del" "DE"))
 
 (define-us-state "Florida"
@@ -63,7 +63,7 @@
 (define-us-state "Kansas"
                  :abbreviations '("Kans" "Kan" "KS"))
 
-(define-us-state "Kenntucky"
+(define-us-state "Kentucky"
                  :abbreviations '("Ky" "Ken" "KY"))
 
 (define-us-state "Louisiana"
