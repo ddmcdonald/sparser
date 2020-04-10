@@ -14,10 +14,10 @@
 (defparameter *json-base* nil)
 ;; look up just once -- don't use asdf lookup each time
 (defun json-base ()
-  (or *json-base*
+  ;;(or *json-base*
       (setq *json-base*
             (namestring
-             (asdf:system-relative-pathname :r3 "../corpus/covid/")))))
+             (asdf:system-relative-pathname :r3 "../corpus/covid/")))) ;;)
 
 (defun json-directory (&key (base (json-base)) ((:dir dir-string) "comm_use_subset"))
   (declare (special base dir-string))
@@ -159,10 +159,10 @@ else that takes two arguments:  (1) the s-expression (2) the file's pathname
                                  (second (find sym registry :key #'first :test #'equal))))
                            *corpus-handle-registries*)))
       (when rel-path
-        (cond ((search "0403" file-str)
-               (json-absolute-pathname rel-path "2020-04-03"))
-              ((not (search "04" file-str))
-               (json-absolute-pathname rel-path "2020-03-13"))))))
+        (if (search "0403" file-str)
+          (json-absolute-pathname rel-path "2020-04-03")
+          (json-absolute-pathname rel-path "2020-03-13")))))
+
   (:method ((file-path pathname))
     file-path))
 

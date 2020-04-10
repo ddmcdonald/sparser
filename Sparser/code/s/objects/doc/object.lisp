@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  December 2018
+;;;  Version:  April 2020
 
 ;; Created 2/6/13 to solve the problem of keeping document/section context.
 ;; [sfriedman:20130206.2038CST] I'm writing this using /objects/chart/edges/object3.lisp as an analog.
@@ -784,6 +784,33 @@
 ;; Make a resource? Or will they usually be part of one-off's.
 
 (setup-find-or-make 'document)
+
+
+;;;---------------------
+;;; Document collection
+;;;---------------------
+#| Like doc-set, but it's too much work to modify it and
+take if from the Grok era (and early 1990s) to today. |#
+
+(defclass document-collection (named-object word-frequency)
+  ()
+  (:documentation "Collector for operations over a set of documents."))
+
+(defvar *current-doc-collection* nil
+  "Points to the most-recently set up document-collection object")
+
+
+
+(defgeneric setup-doc-collection (name)
+  (:documentation "Instantiate a document-collection object and
+    set the global pointer. Could do a lot more if we reified the
+    parameters on large article runs.")
+  (:method ((name symbol))
+    (let ((dc (make-instance 'document-collection :name name)))
+      (setf *current-doc-collection* dc))))
+
+
+
 
 
 ;;;---------

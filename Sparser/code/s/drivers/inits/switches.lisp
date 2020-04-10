@@ -672,7 +672,7 @@
   (setq *smart-frequency-count* t)
   (establish-word-frequency-classification
    :standard 'wf-classification/ignore-caps/known)
-  (setq *include-function-words-in-frequency-counts* t)
+  (setq *include-function-words-in-frequency-counts* nil)
   (setq *stem-words-for-frequency-counts* nil))
 
 

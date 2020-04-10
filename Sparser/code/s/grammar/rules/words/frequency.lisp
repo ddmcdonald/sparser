@@ -49,6 +49,8 @@
      :punctuation will usually be lumped into the pseud-word
      *punctuation-word*"))
 
+(defparameter *show-word-freq-collection* nil
+  "Turns on print operations while the words are being collected")
 
 ;;;-----------------
 ;;; state variables
@@ -188,7 +190,8 @@
   (when word ;; can be nil in cases where there isn't a word
     (incf *words-in-run*) ;; running total of document length
     (let ((classification (classify-word-for-frequency word position)))
-      (format t " ~s" (pname word))
+      (when *show-word-freq-collection*
+        (format t " ~s" (pname word)))
       (record-word-frequency/over-all word classification))))
 
 
@@ -240,6 +243,14 @@
     (incf-word-count word *current-article*)))
 
 (defun increment-word-frequency-entry/over-all (entry word)
+  "Increments the count in the entry. Would increment the entry's
+ per-article 'subentry' if we were using them like we did in
+ the 2010 version of the workflow. As of now (March 2020) we're
+ keeping the information directly on document elements:
+   *current-article* is active for every run and points to an
+ instance of the 'article' class.
+   *current-doc-collection* covers runs over multiple articles."
+  (declare (special *current-article* *current-doc-collection*))
   (incf (first entry))
   (let ((subentry-for-current-article 
 	 (if *current-article*
@@ -253,7 +264,9 @@
 			    (cdr entry)))))
     (incf (cdr subentry-for-current-article))
     (when *current-article*
-      (incf-word-count word *current-article*)) 
+      (incf-word-count word *current-article*))
+    (when *current-doc-collection*
+      (incf-word-count word *current-doc-collection*))      
     subentry-for-current-article ))
 
 

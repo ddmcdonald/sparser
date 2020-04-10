@@ -17,16 +17,19 @@
   (:documentation "Given an instance of a document class that
  inherits from word-frequency, readout its hash table")
   (:method ((a article))
-    (let ((table (words-to-count a)))
-      ;; table is words to their counts. Extract them as a cons,
-      ;; then sort by count and alphabetically.
-      (let ((readout
-             (loop for word being the hash-key in table
-                as count = (gethash word table)                  
-                collect (cons word count))))
-        (let ((sorted (sort-word-count-pairs readout)))
-          (display-sorted-results t nil sorted)
-          (length sorted))))))
+    (readout-frequency-record (words-to-count a)))
+  (:method ((dc document-collection))
+    (readout-frequency-record (words-to-count dc)))
+  (:method ((table hash-table))
+    ;; table is words to their counts. Extract them as a cons,
+    ;; then sort by count and alphabetically.
+    (let ((readout
+           (loop for word being the hash-key in table
+              as count = (gethash word table)                  
+              collect (cons word count))))
+      (let ((sorted (sort-word-count-pairs readout)))
+        (display-sorted-results t nil sorted)
+        (length sorted)))))
 
 
 
