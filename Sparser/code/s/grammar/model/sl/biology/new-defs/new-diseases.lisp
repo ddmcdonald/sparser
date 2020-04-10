@@ -739,7 +739,7 @@
 (def-indiv-with-id virus "Haemophilus influenzae" "TI:727") 
 
 ;; post covid
-(def-indiv-with-id coronavirus "SARS-CoV-2" "NCIT:C169076" :name "SARS Coronavirus 2" :synonyms ("2019-nCoV" "2019 Novel Coronavirus" "COVID-19" "nCoV" "SARS-CoV-2" "Severe Acute Respiratory Syndrome Coronavirus 2"))
+(def-indiv-with-id coronavirus "SARS-CoV-2" "NCIT:C169076" :name "SARS Coronavirus 2" :synonyms ("SARS-CoV2" "2019-nCoV" "2019 Novel Coronavirus" "COVID-19" "covid-19" "covid19" "COVID19" "nCoV" "SARS-CoV-2" "Severe Acute Respiratory Syndrome Coronavirus 2"))
 
 
 (def-indiv-with-id disease "CADASIL" "ORPHANET:136" :name "CADASIL") 

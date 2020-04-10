@@ -17,7 +17,7 @@
 
 ;;/// inhibit plurals -- add-rules-cond-plural  :no-plural
 (noun "SARS" :super coronavirus)
-(def-synonym SARS (:noun "severve acute respiratory syndrome"))
+(def-synonym SARS (:noun "severe acute respiratory syndrome"))
 (def-synonym SARS (:noun "SARS-CoV"))
 
 (noun "MERS" :super coronavirus)

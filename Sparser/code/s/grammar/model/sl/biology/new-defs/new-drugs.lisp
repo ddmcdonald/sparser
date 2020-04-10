@@ -2069,7 +2069,7 @@
 (def-indiv-with-id drug "Fosaprepitant" "NCIT:C72787" :name "fosaprepitant") 
 (def-indiv-with-id drug "compB" "MESH:C402921" :name "J 113397") 
 (def-indiv-with-id drug "Tilorone" "NCIT:C73335" :name "tilorone") 
-(def-indiv-with-id drug "Sumatriptan" "PUBCHEM:5358" :synonyms ("CHEBI:10650"))
+(def-indiv-with-id drug "Sumatriptan" "PUBCHEM:5358" :synonyms ("CHEBI:10650" "Sumatran")) ;; obviously this might be conflated with the demonym "Sumatran" 
 (def-indiv-with-id drug "Norvir" "PUBCHEM:392622" :name "ritonavir" :synonyms ("NCIT:C1609")) 
 (def-indiv-with-id drug "CDV" "PUBCHEM:60613" :name "cidofovir" :synonyms ("NCIT:C1600"))
 (def-indiv-with-id drug "BSO" "PUBCHEM:21157" :name "buthionine sulfoximine" :synonyms ("NCIT:C1029")) 
