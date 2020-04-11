@@ -32,12 +32,45 @@
 
 (defun make-antibody (antibody protein)
   (when (and (edge-p (left-edge-for-referent))
-             (member (form-cat-name (right-edge-for-referent))
-                     '(np proper-noun))
+             (or (member (form-cat-name (right-edge-for-referent))
+                         '(np proper-noun))
+                 (and (member (form-cat-name (right-edge-for-referent))
+                              '(common-noun))
+                      (or (value-of 'name protein)
+                          (value-of 'uid protein))))
              (equal (retrieve-surface-string (left-edge-for-referent))
                  "anti-"))
     (bind-dli-variable 'antigen protein antibody)))
-               
+
+(def-cfr treatment (antibody disease)
+  :form category::np
+  :referent (:function make-disease-treatment left-edge right-edge))
+
+(def-cfr treatment (antibody cancer)
+  :form category::np
+  :referent (:function make-disease-treatment left-edge right-edge))
+
+(defun make-disease-treatment (antibody disease)
+  (when (and (edge-p (left-edge-for-referent))
+             (or (member (form-cat-name (right-edge-for-referent))
+                         '(np proper-noun))
+                 (and (member (form-cat-name (right-edge-for-referent))
+                              '(common-noun))
+                  ))
+             (equal (retrieve-surface-string (left-edge-for-referent))
+                 "anti-"))
+    (bind-dli-variable 'disease disease antibody)))
+
+(def-cfr biological (biological -like)
+  :form category::np
+  :referent (:function make-similar-biological left-edge right-edge)
+  )
+
+(defun make-similar-biological (-like biological)
+  (break))
+
+
+
   
 ;;; 'free' variables
 

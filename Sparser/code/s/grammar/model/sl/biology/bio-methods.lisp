@@ -240,6 +240,12 @@ with something else
   :realization
   (:adj "in vitro"))
 
+(define-category -like :specializes bio-predication
+  :mixins (post-adj)
+  :realization
+  (:adj "-like"))
+                 
+
 (noun "natural growth conditions" :super experimental-condition)
 (define-category presence :specializes experimental-condition
   :binds ((measurement

@@ -200,13 +200,16 @@
 
 ;; Usually in a hyphenated construction. Idiomatically as a XXXXXXX
 ;; marker and generally: "anti-inflammatory"
+#|
 (adj "anti" :super bio-predication)
+(def-synonym anti (:adj "anti-"))
+|#
 
 (define-category antibody :specializes protein
                  :binds ((antigen molecule))
                  :bindings (uid "NCIT:C16295")
   :realization
-  (:noun ("antibody" "anti-" "Ab") ;; often plural "Abs"
+  (:noun ("antibody" "anti-" "anti" "Ab") ;; often plural "Abs"
          :m antigen
          :to antigen
          :against antigen
