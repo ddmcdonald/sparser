@@ -163,9 +163,9 @@
  (include-grammar-module  *countries*)
  (include-grammar-module  *US-States*)
  (include-grammar-module  *cities*)
-#|
+
  (include-grammar-module  *other-locations*)
-|#
+
 
 
 
