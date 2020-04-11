@@ -58,6 +58,7 @@
 (define-function-word "himself"    :brackets '( ].pronoun  .[np  np]. ))
 (define-function-word "herself"    :brackets '( ].pronoun  .[np  np]. ))
 (define-function-word "itself"     :brackets '( ].pronoun  .[np  np]. ))
+(define-function-word "oneself"    :brackets '( ].pronoun  .[np  np]. ))
 (define-function-word "themselves" :brackets '( ].pronoun  .[np  np]. ))
 
 

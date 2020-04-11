@@ -67,6 +67,7 @@
 (define-pronoun "yourselves" 'second         'reflexive/pronoun)
 (define-pronoun "himself"    'male           'reflexive/pronoun)
 (define-pronoun "herself"    'female         'reflexive/pronoun)
+(define-pronoun "oneself"    'neutral        'reflexive/pronoun)
 (define-pronoun "itself"     'inanimate      'reflexive/pronoun)
 (define-pronoun "themselves" 'plural         'reflexive/pronoun)
 

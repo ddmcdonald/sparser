@@ -82,6 +82,13 @@
   :index (:permanent :key word)
   :realization ( :word word ))
 
+(define-category  pronoun/neutral
+  :specializes pronoun
+  :instantiates pronoun
+  :binds ((word  :primitive word))
+  :index (:permanent :key word)
+  :realization ( :word word ))
+
 (define-category  pronoun/inanimate
   :specializes pronoun
   :instantiates pronoun
