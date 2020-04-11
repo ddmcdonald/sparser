@@ -70,6 +70,7 @@
 (define-punctuation  yen-sign (code-char 165))
 
 (define-punctuation  copyright_sign #\Copyright_Sign) ;; 169
+(define-punctuation  ordinal-indicator #\FEMININE_ORDINAL_INDICATOR) ;; 170
 (define-punctuation  left-pointing-double-angle-quotation_mark #\Left-Pointing_Double_Angle_Quotation_Mark) ;; 171
 (define-punctuation not_sign #\NOT_SIGN) ;; 172
 (define-punctuation  registered_sign #\Registered_Sign) ;; 174
@@ -394,7 +395,13 @@
     (code-char 119967) ;; "풟"
 
     ;; 3/31/20 ddm
-    (code-char 8713) ;; #\NOT_AN_ELEMENT_OF 
+    (code-char 8713) ;; #\NOT_AN_ELEMENT_OF
+
+    ;; 4/10/20 ddm
+    (code-char 1546) ;; #\ARABIC-INDIC_PER_TEN_THOUSAND_SIGN
+    (code-char 9251) ;; #\OPEN_BOX
+    (code-char 9252) ;; #\SYMBOL_FOR_NEWLINE
+    
     ))
 
 (defgeneric add-punctuation-char (identifier)

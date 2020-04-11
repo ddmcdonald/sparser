@@ -638,8 +638,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 (setf (elt *character-dispatch-array* 169) ;; #\Copyright_Sign
       `(:punctuation . ,(punctuation-named (code-char 169))))
 
-;;(setf (elt *character-dispatch-array* 170) ;;#\FEMININE_ORDINAL_INDICATOR
-;;      `(:punctuation . ,(punctuation-named (code-char 170))))
+(setf (elt *character-dispatch-array* 170) ;;#\FEMININE_ORDINAL_INDICATOR
+      `(:punctuation . ,(punctuation-named (code-char 170))))
 
 (setf (elt *character-dispatch-array* 171) 
       `(:punctuation . ,(punctuation-named (code-char 171))))
@@ -1726,7 +1726,22 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (2028 (:alphabetical . (:lowercase .,(code-char 2028)))) ;; #\NKO_COMBINING_SHORT_LOW_TONE 
     (8713 (:punctuation .,(punctuation-named (code-char 8713)))) ;; #\NOT_AN_ELEMENT_OF 
     (61542 (:alphabetical . (:lowercase .,(code-char 61542)))) ;; #\UF066 
-    (61554 (:alphabetical . (:lowercase .,(code-char 61554)))) ;; #\UF072 
+    (61554 (:alphabetical . (:lowercase .,(code-char 61554)))) ;; #\UF072
+
+    ;; 4/10/20 ddm
+    ;;(170 (:alphabetical . (:lowercase .,(code-char 170)))) ;; #\FEMININE_ORDINAL_INDICATOR 
+    (275 (:alphabetical . (:lowercase .,(code-char 275)))) ;; #\LATIN_SMALL_LETTER_E_WITH_MACRON 
+    (1002 (:alphabetical . (:lowercase .,(code-char 1002)))) ;; #\COPTIC_CAPITAL_LETTER_GANGIA 
+    (1003 (:alphabetical . (:lowercase .,(code-char 1003)))) ;; #\COPTIC_SMALL_LETTER_GANGIA 
+    (1005 (:alphabetical . (:lowercase .,(code-char 1005)))) ;; #\COPTIC_SMALL_LETTER_SHIMA 
+    (1011 (:alphabetical . (:lowercase .,(code-char 1011)))) ;; #\GREEK_LETTER_YOT 
+    (1021 (:alphabetical . (:lowercase .,(code-char 1021)))) ;; #\GREEK_CAPITAL_REVERSED_LUNATE_SIGMA_SYMBOL 
+    (1022 (:alphabetical . (:lowercase .,(code-char 1022)))) ;; #\GREEK_CAPITAL_DOTTED_LUNATE_SIGMA_SYMBOL 
+    (1349 (:alphabetical . (:lowercase .,(code-char 1349)))) ;; #\ARMENIAN_CAPITAL_LETTER_YI 
+    (1546 (:punctuation .,(punctuation-named (code-char 1546)))) ;; #\ARABIC-INDIC_PER_TEN_THOUSAND_SIGN 
+    (9251 (:punctuation .,(punctuation-named (code-char 9251)))) ;; #\OPEN_BOX 
+    (9252 (:punctuation .,(punctuation-named (code-char 9252)))) ;; #\SYMBOL_FOR_NEWLINE 
+
  
     ))
 

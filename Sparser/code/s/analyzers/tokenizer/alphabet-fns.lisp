@@ -72,12 +72,14 @@ add-punctuation-char over the list.
   ;; Return an inoccuous character is its place.
   (let ((character (code-char char-code)))
     (format t "~&~%The character \"~a\", (code = ~a) is not in the alphabet yet.~
-                 ~%Using a space in its place.~%~%"
+                 ~%Using a space in its place.~%"
             character char-code)
     (pushnew (cons character char-code)
           *new-characters-to-define*
           :test #'equal)
     '(:punctuation . :space)))
+
+
 
 ;;--- readout the cache
 
@@ -112,12 +114,19 @@ add-punctuation-char over the list.
 
 (defun announce-out-of-range-character ()
   "Called in run-token-fsa if a character doesn't have an entry
-   or its entry is 0."
+   or its entry is 0. Cache the character and return the entry
+   for a space so the process can continue"
   (let* ((character (elt *character-buffer-in-use* *index-of-next-character*))
          (code (char-code character)))
     (push-debug `(,*index-of-next-character* ,*character-buffer-in-use*))      
     (push-debug `(,character ,code))
-    ;;(lsp-break "out-of-range-char")
+    (when (null (character-entry character))
+      (warn "Null entry for character ~a at position ~a in the character buffer"
+            character *index-of-next-character*))
+    (cache-out-of-band-character code)))
+
+
+#+ignore   
     (error "~%The input stream contains the character \"~A\", whose character code~
             ~%is ~A.  That character is not part of the ascii character set~
             ~%(0 to 127), and has not yet been entered into either Sparser's ~
@@ -131,7 +140,7 @@ add-punctuation-char over the list.
             ~%that will take you to the file analyzers/tokenizer/alphabet.lisp~
             ~%where you can see examples to copy and read more details.~
             ~%"
-           character code (length *character-dispatch-array*))))
+           character code (length *character-dispatch-array*))
 
 #| When you get that error it's likely because the text you're running
 has a UTF-8 character that we don't have an entry for yet. The error message

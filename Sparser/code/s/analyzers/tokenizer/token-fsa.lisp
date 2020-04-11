@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1996,2013-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013-2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "token FSA"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  January 2018
+;;;  Version:  April 2020
 
 ;;  initated ~6/90
 ;;  1.1  (12/90) Added a call to zero-lookup-buffer when the end-of-stream is
@@ -47,29 +47,30 @@
                   *pending-entry* nil))
       (setq entry
             (character-entry char)))
-    
-    (if entry
-      (cond
-        ((and (numberp entry) (= entry 0)) ;; missing Latin-1 character
-         (announce-out-of-range-character))
 
-        ((eq :punctuation 
-             (setq char-type (car entry)))
-         ;; punctuation tokens are just one character long
-         (do-punctuation (cdr entry)))
-            
-        (t
-          ;; it's now likely to be more than one character long, so set up
-          ;; pointers to keep track of it
-          (setq *category-of-accumulating-token* (car entry))
-          (when (consp (cdr (cdr entry)))
-            (error "bad character entry: ~a" entry))
-          (continue-token (kcons (cdr entry)
-                                 nil)
-                          1
-                          char-type)))
-        
-      (announce-out-of-range-character))))
+    (when (and entry (numberp entry) (= entry 0))
+      ;; missing Latin-1 character
+      (setq entry (cache-out-of-band-character (char-code char))))
+
+    (when (null entry)
+      (announce-out-of-range-character))
+ 
+    (cond
+      ((eq :punctuation 
+           (setq char-type (car entry)))
+       ;; punctuation tokens are just one character long
+       (do-punctuation (cdr entry)))
+      
+      (t
+       ;; it's now likely to be more than one character long, so set up
+       ;; pointers to keep track of it
+       (setq *category-of-accumulating-token* (car entry))
+       (when (consp (cdr (cdr entry)))
+         (error "bad character entry: ~a" entry))
+       (continue-token (kcons (cdr entry)
+                              nil)
+                       1
+                       char-type)))))
 
 
 (defun continue-token (accumulated-entries length char-type)
