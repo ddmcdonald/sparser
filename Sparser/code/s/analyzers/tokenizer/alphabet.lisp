@@ -1742,7 +1742,20 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (9251 (:punctuation .,(punctuation-named (code-char 9251)))) ;; #\OPEN_BOX 
     (9252 (:punctuation .,(punctuation-named (code-char 9252)))) ;; #\SYMBOL_FOR_NEWLINE 
 
- 
+    ;; Rusty 4/11/20
+    (350 (:alphabetical . (:lowercase .,(code-char 350)))) ;; #\LATIN_CAPITAL_LETTER_S_WITH_CEDILLA
+    (402 (:alphabetical . (:lowercase .,(code-char 402)))) ;; #\LATIN_SMALL_LETTER_F_WITH_HOOK
+    (8614 (:punctuation .,(punctuation-named (code-char 8614)))) ;; #\RIGHTWARDS_ARROW_FROM_BAR
+    (8826 (:punctuation .,(punctuation-named (code-char 8826)))) ;; #\PRECEDES
+    (8827 (:punctuation .,(punctuation-named (code-char 8827)))) ;; #\SUCCEEDS
+    (8835 (:punctuation .,(punctuation-named (code-char 8835)))) ;; #\SUPERSET_OF
+    (9617 (:punctuation .,(punctuation-named (code-char 9617)))) ;; #\LIGHT_SHADE
+    (9618 (:punctuation .,(punctuation-named (code-char 9618)))) ;; #\MEDIUM_SHADE
+    (9643 (:punctuation .,(punctuation-named (code-char 9643)))) ;; #\WHITE_SMALL_SQUARE
+    (9659 (:punctuation .,(punctuation-named (code-char 9659)))) ;; #\WHITE_RIGHT-POINTING_POINTER
+
+
+    
     ))
 
 

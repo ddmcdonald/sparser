@@ -401,6 +401,16 @@
     (code-char 1546) ;; #\ARABIC-INDIC_PER_TEN_THOUSAND_SIGN
     (code-char 9251) ;; #\OPEN_BOX
     (code-char 9252) ;; #\SYMBOL_FOR_NEWLINE
+
+    ;; Rusty 4/11/20
+    (code-char 8614) ;; #\RIGHTWARDS_ARROW_FROM_BAR
+    (code-char 8826) ;; #\PRECEDES
+    (code-char 8827) ;; #\SUCCEEDS
+    (code-char 8835) ;; #\SUPERSET_OF
+    (code-char 9617) ;; #\LIGHT_SHADE
+    (code-char 9618) ;; #\MEDIUM_SHADE
+    (code-char 9643) ;; #\WHITE_SMALL_SQUARE
+    (code-char 9659) ;; #\WHITE_RIGHT-POINTING_POINTER
     
     ))
 
