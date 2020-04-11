@@ -3836,7 +3836,11 @@
 (define-adjective/gradable "linear")
 (define-adjective/null "lingering")
 (define-adjective/null "lingual")
-(define-adjective/null "linguistic")
+
+;;(define-adjective/null "linguistic")
+;; this definition of linguistic can produce a circularity in the
+;; subcat frames
+;;  modifier -> with-theme -> thematic-role ->linguistic ===>  modifier, 
 (define-adjective/gradable "lion-hearted")
 (define-adjective/null "lipped")
 (define-adjective/null "liquescent")
