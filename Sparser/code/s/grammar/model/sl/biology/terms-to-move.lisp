@@ -27,6 +27,8 @@ be biology specific, since they aren't. |#
 (define-adverb "readily")
 (define-adverb "pretty" :super-category 'intensifier)
 
+;; want to force the super-category of "linguistic" to NOT be MODIFIER
+(adj "linguistic" :super abstract)
 
 (noun "route" :super bio-mechanism)
 
@@ -397,10 +399,12 @@ be biology specific, since they aren't. |#
     (:noun "similarity"
      :adj "similar"
      :adv "similarly"
-     :to theme))
+     :to patient))
+
 ;;(define-adverb "similarly")
 
 (adj "related" :super similar)
+
 
 
 
