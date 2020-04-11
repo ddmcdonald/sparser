@@ -422,7 +422,7 @@ is a uniform treatment.|#
                  documentation)
   (cond
     ((and super specializes)
-     (lsp-break "defining noun with both :super ~s  and :specialize ~s"
+     (lsp-break "defining adjective with both :super ~s  and :specialize ~s"
 		super specializes))
     (t (setq super (or super specializes))))
   (typecase name
