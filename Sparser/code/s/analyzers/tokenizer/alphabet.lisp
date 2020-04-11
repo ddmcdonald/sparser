@@ -1754,6 +1754,16 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (9643 (:punctuation .,(punctuation-named (code-char 9643)))) ;; #\WHITE_SMALL_SQUARE
     (9659 (:punctuation .,(punctuation-named (code-char 9659)))) ;; #\WHITE_RIGHT-POINTING_POINTER
 
+    ;; ddm 4/11/20
+    (468 (:alphabetical . (:lowercase .,(code-char 468)))) ;; "ǔ",#\LATIN_SMALL_LETTER_U_WITH_CARON 
+    (1001 (:alphabetical . (:lowercase .,(code-char 1001)))) ;; "ϩ", #\COPTIC_SMALL_LETTER_HORI 
+    (1033 (:alphabetical . (:lowercase .,(code-char 1033)))) ;; #\CYRILLIC_CAPITAL_LETTER_LJE 
+    (57557 (:alphabetical . (:lowercase .,(code-char 57557)))) ;;"", #\UE0D5 
+    (61485 (:alphabetical . (:lowercase .,(code-char 61485)))) ;;"", #\UF02D 
+    (61539 (:alphabetical . (:lowercase .,(code-char 61539)))) ;; "", #\UF063 
+    (61558 (:alphabetical . (:lowercase .,(code-char 61558)))) ;; "",#\UF076 
+    (61627 (:alphabetical . (:lowercase .,(code-char 61627)))) ;;  "", #\UF0BB 
+    (61655 (:alphabetical . (:lowercase .,(code-char 61655)))) ;; "", #\UF0D7 
 
     
     ))
