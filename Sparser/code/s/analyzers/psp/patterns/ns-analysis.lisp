@@ -87,52 +87,57 @@ ns-filtering steps, that will be saved in sparser:tools;ns-stuff;"
 
 (defparameter *ns-unknown-sublist* nil)
 (defun ns-unknown-sublist (&optional (ns-examples *collect-ns-examples*))
-  (length (setq *ns-unknown-sublist*
+  (length
+   (setq *ns-unknown-sublist*
          (loop for n in ns-examples
-                ; do (print (car (third n)))
-                ; do (print (caar n))
+                                        ; do (print (car (third n)))
+                                        ; do (print (caar n))
                unless
-               (or (not (stringp (second (car n))))
-                   (and (consp (third n))
-                        (or (memq (car (third n)) 
-                                  (list
-                                   'DO-RELATION-BETWEEN-FIRST-AND-SECOND
-                                    'MAKE-PROTEIN-COLLECTION
-                                    'MAKE-BIO-COMPLEX
-                                    'MAKE-AMINO-COLLECTION
-                                    'COMPOSE-SALIENT-HYPHENATED-LITERALS
-                                    'RESOLVE-TRAILING-STRANDED-HYPHEN
-                                    'RESOLVE-INITIAL-STRANDED-HYPHEN
-                                    'MAKE-EDGE-OVER-MUTATED-PROTEIN
-                                    'RESOLVE-PROTEIN-PREFIX
-                                    :REIFY-RESIDUE
-                                    :REIFY-POINT-MUTATION-AND-MAKE-EDGE
-                                    'PACKAGE-APPROXIMATION-NUMBER
-                                    'MAKE-NS-PAIR ;; these are mostly not of interest, but may have some false-negs
-                                    :NUMBER-FSA
-                                    'MAKE-WILD-TYPE-EDGE
-                                    ))
-                            (when (symbol-package (car (third n)))
-                              (equal "RULE" (package-name (symbol-package (car (third n))))))
-                            ))
-                   (member (caaar n) 
-                           (list :ASTERISK :GREEK_LUNATE_EPSILON_SYMBOL :HYPHEN :TILDA :PLUS-SIGN :EQUAL-SIGN
-                                 :GREATER-THAN_OR_SLANTED_EQUAL_TO :GREATER-THAN_OR_EQUAL_TO :GREATER-THAN 
-                                 :LESS-THAN_OR_SLANTED_EQUAL_TO :LESS-THAN_OR_EQUAL_TO :LESS-THAN
-                                 :SHARP-SIGN :DIGITS :NUMBER :VERTICAL-BAR :UNDER-BAR :AND-SIGN 
-                                 :LEFT-POINTING-DOUBLE-ANGLE-QUOTATION_MARK
-                                 '(COMMON-NOUN |HTTP://|))
-                         :test #'equal) 
-                   ;; removed :SINGLE-DIGIT because there are several things of interest starting with 5α
-                   (and (eq (length (caar n)) 1)
-                        (memq (caaar n) '(:LOWER :SINGLE-CAP :SINGLE-LOWER :LITTLE-P)))
-                   (and (eq (length (caar n)) 2)
-                        (or (and (memq (second (caar n)) '(:HYPHEN :COLON))
-                                 (memq (first (caar n)) '(:LOWER :SINGLE-LOWER :SINGLE-CAP
-                                                         :SINGLE-DIGIT :PROTEIN :FORWARD-SLASH :HYPHEN)))
-                            (and (eq (first (caar n)) :DOUBLE-QUOTE)
-                                 (memq (second (caar n)) '(:LOWER :SINGLE-DIGIT :PROTEIN :CELLULAR-PROCESS 
-                                                          :ACTIVATION-LOOP :CAPITALIZED))))))
+                 (let ((*ns-ex* n))
+                   (declare (special *ns-ex*))
+                   ;; to help diagnose errors in this process
+                   (or (not (stringp (second (car n))))
+                       (and (consp (third n))
+                            (or (memq (car (third n)) 
+                                      (list
+                                       'DO-RELATION-BETWEEN-FIRST-AND-SECOND
+                                       'MAKE-PROTEIN-COLLECTION
+                                       'MAKE-BIO-COMPLEX
+                                       'MAKE-AMINO-COLLECTION
+                                       'COMPOSE-SALIENT-HYPHENATED-LITERALS
+                                       'RESOLVE-TRAILING-STRANDED-HYPHEN
+                                       'RESOLVE-INITIAL-STRANDED-HYPHEN
+                                       'MAKE-EDGE-OVER-MUTATED-PROTEIN
+                                       'RESOLVE-PROTEIN-PREFIX
+                                       :REIFY-RESIDUE
+                                       :REIFY-POINT-MUTATION-AND-MAKE-EDGE
+                                       'PACKAGE-APPROXIMATION-NUMBER
+                                       'MAKE-NS-PAIR ;; these are mostly not of interest, but may have some false-negs
+                                       :NUMBER-FSA
+                                       'MAKE-WILD-TYPE-EDGE
+                                       ))
+                                (when (and (symbolp (car (third n)))
+                                           (symbol-package (car (third n))))
+                                  (equal "RULE" (package-name (symbol-package (car (third n))))))
+                                ))
+                       (member (caaar n) 
+                               (list :ASTERISK :GREEK_LUNATE_EPSILON_SYMBOL :HYPHEN :TILDA :PLUS-SIGN :EQUAL-SIGN
+                                     :GREATER-THAN_OR_SLANTED_EQUAL_TO :GREATER-THAN_OR_EQUAL_TO :GREATER-THAN 
+                                     :LESS-THAN_OR_SLANTED_EQUAL_TO :LESS-THAN_OR_EQUAL_TO :LESS-THAN
+                                     :SHARP-SIGN :DIGITS :NUMBER :VERTICAL-BAR :UNDER-BAR :AND-SIGN 
+                                     :LEFT-POINTING-DOUBLE-ANGLE-QUOTATION_MARK
+                                     '(COMMON-NOUN |HTTP://|))
+                               :test #'equal) 
+                       ;; removed :SINGLE-DIGIT because there are several things of interest starting with 5α
+                       (and (eq (length (caar n)) 1)
+                            (memq (caaar n) '(:LOWER :SINGLE-CAP :SINGLE-LOWER :LITTLE-P)))
+                       (and (eq (length (caar n)) 2)
+                            (or (and (memq (second (caar n)) '(:HYPHEN :COLON))
+                                     (memq (first (caar n)) '(:LOWER :SINGLE-LOWER :SINGLE-CAP
+                                                              :SINGLE-DIGIT :PROTEIN :FORWARD-SLASH :HYPHEN)))
+                                (and (eq (first (caar n)) :DOUBLE-QUOTE)
+                                     (memq (second (caar n)) '(:LOWER :SINGLE-DIGIT :PROTEIN :CELLULAR-PROCESS 
+                                                               :ACTIVATION-LOOP :CAPITALIZED)))))))
                collect (list (caar n) (second (car n)) (car (third n)))))))
 
 (defun ns-unknown-sublist->file (&key (prefix "1-500")
