@@ -804,7 +804,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (345 (:alphabetical . (:uppercase .,(code-char 345)))) ;; ř
     (347 (:alphabetical . (:lowercase . #\Latin_Small_Letter_S_With_Acute))) ;; #\Latin_Small_Letter_S_With_Acute
     (347 (:alphabetical . (:lowercase . #\Latin_Small_Letter_S_With_Acute))) ;; #\Latin_Small_Letter_S_With_Acute
-    (349 (:alphabetical . (:lowercase .,(code-char 349)))) ;; #\LATIN_SMALL_LETTER_S_WITH_CIRCUMFLEX 
+    (349 (:alphabetical . (:lowercase .,(code-char 349)))) ;; #\LATIN_SMALL_LETTER_S_WITH_CIRCUMFLEX
+    (350 (:alphabetical . (:lowercase .,(code-char 350)))) ;; #\LATIN_CAPITAL_LETTER_S_WITH_CEDILLA 
     (351 (:alphabetical . (:uppercase .,(code-char 351)))) ;; ş
     (352 (:alphabetical . (:lowercase .,(code-char 352)))) ;; #\latin_capital_letter_s_with_Caron
     (353 (:alphabetical . (:lowercase . #\s))) ;; #\Latin_Small_Letter_S_With_Caron
@@ -817,6 +818,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (381 (:alphabetical . (:uppercase .,(code-char 381)))) ;; #\LATIN_CAPITAL_LETTER_Z_WITH_CARON
     (382 (:alphabetical . (:uppercase .,(code-char 382)))) ;; #\LATIN_SMALL_LETTER_Z_WITH_CARON
     (400 (:alphabetical . (:lowercase . #\s))) ;; #\Latin_Capital_Letter_Open_E
+    (402 (:alphabetical . (:lowercase .,(code-char 402)))) ;; #\LATIN_SMALL_LETTER_F_WITH_HOOK 
     (404 (:alphabetical . (:lowercase .,(code-char 404)))) ;;Ɣ
     (408 (:alphabetical . (:lowercase .,(code-char 408)))) ;;Ƙ
     (413 (:alphabetical . (:lowercase ., (code-char 413)))) 
@@ -925,6 +927,14 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (982 (:alphabetical . (:uppercase .,(code-char 982)))) ;; ϖ
     (997 (:alphabetical . (:uppercase .,(code-char 997)))) ;; ϥ
 
+    (8614 (:punctuation .,(punctuation-named (code-char 8614)))) ;; #\RIGHTWARDS_ARROW_FROM_BAR 
+    (8826 (:punctuation .,(punctuation-named (code-char 8826)))) ;; #\PRECEDES 
+    (8827 (:punctuation .,(punctuation-named (code-char 8827)))) ;; #\SUCCEEDS 
+    (8835 (:punctuation .,(punctuation-named (code-char 8835)))) ;; #\SUPERSET_OF 
+    (9617 (:punctuation .,(punctuation-named (code-char 9617)))) ;; #\LIGHT_SHADE 
+    (9618 (:punctuation .,(punctuation-named (code-char 9618)))) ;; #\MEDIUM_SHADE 
+    (9643 (:punctuation .,(punctuation-named (code-char 9643)))) ;; #\WHITE_SMALL_SQUARE 
+    (9659 (:punctuation .,(punctuation-named (code-char 9659)))) ;; #\WHITE_RIGHT-POINTING_POINTER 
     (1013 (:punctuation  .,(punctuation-named (code-char 1013)))) ;; "ϵ"
     (1030 (:alphabetical . (:uppercase .,(code-char 1030))))      ;; І
     (1040 (:alphabetical . (:uppercase .,(code-char 1040))))      ;; А
@@ -1188,6 +1198,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (10005 (:punctuation  .,(punctuation-named (code-char 10005)))) ;; #\MULTIPLICATION_X
     (10216 (:punctuation  .,(punctuation-named (code-char 10216)))) ;; ⟨
     (10217 (:punctuation  .,(punctuation-named (code-char 10217)))) ;; ⟩
+    (10229 (:punctuation .,(punctuation-named (code-char 10229)))) ;; #\LONG_LEFTWARDS_ARROW 
     (10794 (:punctuation  .,(punctuation-named (code-char 10794)))) ;; "⨪" #\U+2A2A
     (10815 (:punctuation  .,(punctuation-named (code-char 10815)))) ;; ⨿
     (10877 (:punctuation  .,(punctuation-named (code-char 10877)))) ;;"⩽", (code = 10878)
