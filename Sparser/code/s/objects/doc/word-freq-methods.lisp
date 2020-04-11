@@ -28,7 +28,13 @@
               as count = (gethash word table)                  
               collect (cons word count))))
       (let ((sorted (sort-word-count-pairs readout)))
-        (display-sorted-results t nil sorted)
+        ;; populate *how-many-at-each-frequency-count* table
+        (count-how-many-at-each-frequency-count sorted)
+
+        ;; write it out
+        (display-sorted-results *standard-output*
+                                nil ; just summary
+                                sorted)
         (length sorted)))))
 
 
