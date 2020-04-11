@@ -30,13 +30,27 @@
       (let ((sorted (sort-word-count-pairs readout)))
         ;; populate *how-many-at-each-frequency-count* table
         (count-how-many-at-each-frequency-count sorted)
-
-        ;; write it out
-        (display-sorted-results *standard-output*
-                                nil ; just summary
-                                sorted)
+        (write-wf-readout-to-file sorted)
         (length sorted)))))
 
+(defparameter *write-wf-readout-to-file* nil
+  "If nil, the readout goes to standard-out, if set
+   to a namestring, that file is created and the readout
+   goes there.")
+  
+(defun write-wf-readout-to-file (sorted)
+  (flet ((display (stream)
+           (display-sorted-results stream
+                                   nil ; just summary
+                                   sorted)))
+    (if *write-wf-readout-to-file*
+      (with-open-file (stream
+                       *write-wf-readout-to-file*
+                       :direction :output
+                       :if-exists :overwrite
+                       :if-does-not-exist :create)
+        (display stream))
+      (display *standard-output*))))
 
 
 ;;;----------------------
