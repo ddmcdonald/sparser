@@ -26,8 +26,8 @@
  red, yellow, blue, brown, orange, green, 
 violet, black, carnation pink, yellow orange, 
 blue green, red violet, red orange, yellow green, 
-blue violet, white, violet red, dandelion, c
-erulean, apricot, scarlet, green yellow, 
+blue violet, white, violet red, dandelion, 
+cerulean, apricot, scarlet, green yellow, 
 indigo and gray.Mar 28, 2017
 |#
 
@@ -52,7 +52,7 @@ indigo and gray.Mar 28, 2017
 
 ;;--- length
 (define-length "long" :dir :+)
-(define-length "short" :dir :-)
+;;(define-length "short" :dir :-) duplicate w/ height?, need neutral
 
 ;;--- rate of change
 (define-rate-of-change "fast" :dir :+)

@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "prepositions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   April 2019
+;;;   Version:   April 2020
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 1/11/94 added "through"  7/14 added "up" & "down"  8/19 added "off"
@@ -112,7 +112,7 @@ these are really prepositions, and should function as such
 ;; (define-preposition "around") moved to modifiers as an approximator
 (define-preposition "as")
 (define-preposition "as a result of")
-(define-preposition "as far as")
+;;(define-preposition "as far as") prefer subordinating conjunction
 (define-preposition "as for")
 (define-preposition "as from")
 (define-preposition "as of")
@@ -127,7 +127,7 @@ these are really prepositions, and should function as such
 (define-preposition "bar")
 (define-preposition "barring")
 
-(define-preposition "besides")
+;; (define-preposition "besides") -> subordinating conjunction
 (define-preposition "but not" )
 (define-preposition "by" )
 (define-preposition "by means of")
@@ -142,7 +142,7 @@ these are really prepositions, and should function as such
 (when nil
   (define-preposition "during")) ;;///// THIS DOESN'T WORK defined as sequencer/prep in modifiers
 
-(define-preposition "except")
+;; (define-preposition "except")-> subordinating conjunction
 (define-preposition "except for") 
 (define-preposition "exclusive of")
 ;; This is more of an adverb, no? (define-preposition "far" :form 'spatial-preposition)
@@ -168,7 +168,6 @@ these are really prepositions, and should function as such
 (define-preposition "in contact with")
 (define-preposition "in contrast to")
 (define-preposition "in contrast with")
-(define-preposition "in addition to")
 (define-preposition "in exchange for")
 (define-preposition "in face of")
 (define-preposition "in favor of")
@@ -217,23 +216,23 @@ these are really prepositions, and should function as such
 (define-preposition "preliminary to")
 (define-preposition "preparatory to")
 (define-preposition "previous to")
-(define-preposition "prior to")
+;; (define-preposition "prior to") -- sub.con.
 (define-preposition "pursuant to")
 (define-preposition "regarding")
 (define-preposition "regardless of") ;;in modifiers as a reflection-on
 (define-preposition "short of")
-(define-preposition "since")
+;; (define-preposition "since") -- sub.con.
 (define-preposition "subsequent to")
 (define-preposition "such as")
 (define-preposition "thanks to")
 (define-preposition "throughout")
-(define-preposition "till")
-(define-preposition "to" )
+;;(define-preposition "till") -- sub.conj. but also takes a simple complement
+;;(define-preposition "to" ) -- infinitive reading more frequent that range
 (define-preposition "together with")
 (define-preposition "unlike")
-(define-preposition "until")
+;; (define-preposition "until")  -- sub.conj.
 (define-preposition "unto")
-(define-preposition "upon")
+;;(define-preposition "upon") -- sub.conj.
 (define-preposition "upwards of")
 (define-preposition "versus" :synonyms '("vs" "vs.")) 
 (define-preposition "via")

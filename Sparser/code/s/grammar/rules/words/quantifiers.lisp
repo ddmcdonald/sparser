@@ -114,6 +114,8 @@
       object )))
 
 
+;; n.b. there are also the scalar quantifiers below
+
 (define-quantifier "additional")
 (define-quantifier "all")
 (define-quantifier "any")
@@ -123,9 +125,6 @@
 (define-quantifier "either")
 (define-quantifier "enough")
 (define-quantifier "every")
-
-(define-quantifier "much") ;; mass 
-(define-quantifier "many") ;; count
 
 (define-quantifier "neither")
 (define-quantifier "numerous")

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   March 2017
+;;;   Version:   April 2020
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
@@ -74,7 +74,7 @@
 (define-approximator/determiner "nearly") ;; could also be approx/adverbial. what to do for this type of "generic" modifier that can go before preps, adjs too?
 (define-approximator/determiner "precisely") ;;
 (define-approximator/determiner "roughly")
-(define-approximator/determiner "somewhat")
+(define-approximator/determiner "somewhat") ;; also an intensifier?
 
 (define-approximator/adverbial "fairly")
 (define-approximator/adverbial "hardly")
@@ -189,7 +189,7 @@
 (define-intensifier "really")
 (define-intensifier "sharply")
 (define-intensifier "significantly")
-(define-intensifier "somewhat")
+;;(define-intensifier "somewhat") -- approx. determiner
 (define-intensifier "sparingly")
 (define-intensifier "sparsely")
 (define-intensifier "straightforwardly")
@@ -434,8 +434,8 @@
 (define-adverb "discretely")
 (define-adverb "distributionally")
 (define-adverb "dynamically")
-(define-adverb "e.g.")
-(define-adverb "e. g.")
+;;(define-adverb "e.g.") -- see conjunction
+(define-adverb "e. g.") ;; attested?
 (define-adverb "easily")
 (define-adverb "effectively")
 (define-adverb "efficiently")
@@ -463,7 +463,7 @@
 (define-adverb "figuratively")
 (define-adverb "finely")
 (define-adverb "firmly")
-(define-adverb "for example")
+;; (define-adverb "for example") -- see conjunction
 (define-adverb "for instance")
 (define-adverb "forcefully")
 (define-adverb "formally")
@@ -524,7 +524,7 @@
 (define-adverb "infrequently")
 (define-adverb "inherently")
 (define-adverb "innately")
-(define-adverb "instead")
+;; (define-adverb "instead") use subord. conj.
 (define-adverb "insufficiently")
 (define-adverb "integrally")
 (define-adverb "intensely")
@@ -576,7 +576,7 @@
 (define-adverb "originally")
 (define-adverb "osmotically")
 (define-adverb "ostensibly")
-(define-adverb "otherwise") ;;
+;; (define-adverb "otherwise") ;; subord. comj
 (define-adverb "painfully")
 (define-adverb "painstakingly")
 (define-adverb "paradoxically")
@@ -604,7 +604,6 @@
 (define-adverb "preferentially")
 (define-adverb "prematurely")
 (define-adverb "presumably")
-(define-adverb "previously") ;; maybe want to specify something else?
 (define-adverb "privately")
 (define-adverb "progressively")
 (define-adverb "properly")
@@ -883,7 +882,7 @@
 (define-adjective "karyotypic")
 (define-adjective "key") ;also noun
 (define-adjective "known")
-(define-adjective "large")
+;; (define-adjective "large") -- quality
 (define-adjective "latent")
 (define-adjective "lineal")
 (define-adjective "local")
@@ -967,13 +966,13 @@
 (define-adjective "reversible")
 (define-adjective "selective")
 (define-adjective "senescent")
-(define-adjective "short")
+;; (define-adjective "short") -- quality
 (define-adjective "significant")
 (define-adjective "silent") ;in terms of mutation: no resultant change in phenotype
 (unless (current-script :biology)
   (define-adjective "similar"))
 (define-adjective "simple")
-(define-adjective "small")
+;; (define-adjective "small")-- quality
 (define-adjective "solid")
 
 (define-adjective "specific")
@@ -997,7 +996,8 @@
 (define-adjective "transitive")
 (define-adjective "transitory")
 
-(define-adjective "two-dimensional") ;synonym "2D", is this spatial?
+;;(define-adjective "two-dimensional") ;synonym "2D", is this spatial?
+;;   in midlevel ontology
 (define-adjective "unanticipated")
 (define-adjective "unbalanced")
 (define-adjective "uncontrolled")

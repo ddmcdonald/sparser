@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2012-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012-2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "conjunctions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   November 2017
+;;;   Version:   April 2020
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/11/94
 ;; added conjunction.] to "and" and "or" 3/17
@@ -114,10 +114,10 @@ syntactic properties of three types.
 (mapcar #'define-conjunction
         '("according as"
           "albeit"
-          "also"
+          ;;"also" use version in modifiers
           "although" 
-          "among"
-          "as"
+          ;; "among" prefer treatment as a preposition
+          ;; "as" -- ditto
 	  "as expected"
 	  "as a result"
           "as far as"
@@ -137,14 +137,14 @@ syntactic properties of three types.
           "even if"
           "except"
           "except that"
-	  "finally"
+	  ;; "finally" go with position-in-process
           "for example"
           "furthermore"
           "hence"
           "however"
           "if"
           "i.e."
-	  "in contrast"
+	  ;; "in contrast" -- like the adverb in modifiers
 	  ;; "in contrast to" probably a preposition
 	  ;; "in contrast with"
 	  ;; "in addition to"
@@ -161,17 +161,17 @@ syntactic properties of three types.
           "rather than"
           "since"
           "so"
-          ;;"such as"
+          ;;"such as" -- in prepositions
           "such that"
-	  "surprisingly"
+	  ;; "surprisingly" use the adverb
           "than" ;; much better than we could have expected
           "therefore"
           "though"
-          "till"
+          "till" ;; short for 'until' takes range of complements
           "thereby"
           "thus"  
           "to this end"
-	  "unexpectedly"
+	  ;; "unexpectedly" go with 'intensifier' reading as an adverb
           "until"
           "until now"
           "whereas"
