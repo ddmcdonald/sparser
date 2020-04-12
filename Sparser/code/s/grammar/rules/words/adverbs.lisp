@@ -44,7 +44,7 @@
                                   rule-label discriminator)
   "The string can be a single word or a polyword. The super-category
    defaults to adverb. If you supply a value for the super-category
-   it should be the symbolthat names the category, not the actual 
+   it should be the symbol that names the category, not the actual 
    category. The same applies to rule-label, though discriminator 
    is an arbitrary distinguishing symbol that gets concatenated in
    forming the name of the category this creates.
