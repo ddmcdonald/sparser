@@ -1,10 +1,14 @@
 (in-package :sparser)
 
-;; FIXME: This is the major remaining issue.  Apparently we need to provide the full path to
-;; our python3 when running the shell command.  There has to be a way to find it
-;; programmatically (perhaps by running "which python3" as a separate shell command),
-;; but I haven't gotten it working yet.  This is a temporary hack that isn't machine agnostic!
-(defparameter *python3-path* "/usr/local/bin")
+;; N.B. To run pdf-to-txt, your PATH environment variable must include the path
+;; to python3.  If you're in unix & sbcl like me, You can check your PATH with
+;; (sb-posix:getenv "PATH"). For me, this returns something different than in
+;; my terminal (echo $PATH).  I'm still not sure why.  Even though my python3
+;; location is in my terminal $PATH, it wasn't in my PATH from sbcl.
+
+;; Solution: I now add my python3 location to my PATH env var in my .sbclrc using
+;; (sb-posix:getenv <var>) and (sb-posix:setenv <var> <val> 1)  <= 1 means overwrite.
+;; [-MDM]
 
 (defparameter *pdf2txt-path*
   (asdf:system-relative-pathname :sparser "Sparser/code/s/tools/pdf2txt_mod.py"))
@@ -26,7 +30,7 @@
   ;; Run the pdf2txt script to turn pdf to txt
   (let ((pdf-namestring (namestring pdf-file))
         (txt-namestring (namestring txt-file)))
-    (uiop::run-program (format nil "~a/python3 ~a ~a -o ~a" *python3-path* *pdf2txt-path* pdf-namestring txt-namestring)
+    (uiop::run-program (format nil "python3 ~a ~a -o ~a" *pdf2txt-path* pdf-namestring txt-namestring)
                        :output t :error-output t)
     ;; Clean up hyphens
     (remove-hyphen-line-breaks-in-file txt-namestring txt-namestring)
