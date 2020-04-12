@@ -33,39 +33,39 @@
     (uiop::run-program (format nil "python3 ~a ~a -o ~a" *pdf2txt-path* pdf-namestring txt-namestring)
                        :output t :error-output t)
     ;; Clean up hyphens
-    (remove-hyphen-line-breaks-in-file txt-namestring txt-namestring)
+    (move-hyphen-line-breaks-in-file txt-namestring txt-namestring)
     ;; Optionally remove within-paragraph line breaks
     (when collapse-paragraphs
       (remove-within-paragraph-line-breaks-in-file txt-namestring txt-namestring))
     txt-namestring))
 
 
-;;  ==  REMOVING HYPHEN LINE BREAKS ============================================
+;;  ==  MOVING HYPHEN LINE BREAKS ==============================================
 
-;;  == from a file ==
-;; (remove-hyphen-line-breaks-in-file "/path/to/file.txt")
+;;  == in a file ==
+;; (move-hyphen-line-breaks-in-file "/path/to/file.txt")
 
 ;; The first argument is the namestring or pathname for the input file.
 ;; The second argument (optional) is a file to output to (given as a namestring or pathname).
 ;; It will default to adding "-dehyphenated" at the end of the input filename (before the
 ;; file extension).
 
-(defmethod remove-hyphen-line-breaks-in-file ((infile-namestring string) &optional outfile)
+(defmethod move-hyphen-line-breaks-in-file ((infile-namestring string) &optional outfile)
   (let ((outfile-ns (namestring (or outfile (add-file-suffix infile-namestring "-dehyphenated")))))
-    (convert-file-using infile-namestring outfile-ns 'remove-hyphen-line-breaks)))
+    (convert-file-using infile-namestring outfile-ns 'move-hyphen-line-breaks)))
 
-(defmethod remove-hyphen-line-breaks-in-file ((infile-path pathname) &optional outfile)
-  (remove-hyphen-line-breaks-in-file (namestring infile-path) outfile))
+(defmethod move-hyphen-line-breaks-in-file ((infile-path pathname) &optional outfile)
+  (move-hyphen-line-breaks-in-file (namestring infile-path) outfile))
 
-;;  == from a string ==
-;; (remove-hyphen-line-breaks <string>)
+;;  == in a string ==
+;; (move-hyphen-line-breaks <string>)
 
-(defun remove-hyphen-line-breaks (str)
+(defun move-hyphen-line-breaks (str)
   (cl-ppcre::regex-replace-all "(\\S+)-\\s*[\\r\\n]+(\\S+)\\s*" str #'replace-hyphen-line-break))
 
 ;;  == internals ==
 
-;; a replacement function passed to cl-ppcre::regex-replace-all in remove-hyphen-line-breaks
+;; a replacement function passed to cl-ppcre::regex-replace-all in move-hyphen-line-breaks
 (defun replace-hyphen-line-break (target-string start end match-start match-end reg-starts reg-ends)
   (declare (ignore start end reg-starts reg-ends))
   (declare (type vector target-string))
@@ -90,16 +90,19 @@
              ;; whose parts (separated by hyphens) are all approved words, use the hyphenated version.
              (setf replacement hyphenated-word-with-punc)) ; keep the trailing punctuation with the word
             (t   ; otherwise, signal a warning and assume the merged version.
-             ;; We may decide to remove this warning if it's too annoying.
-             (warn "~a is not known to be a word or white-listed in sp::*word-whitelist*, nor is the hyphenated version ~a, nor are (all of) its constituents (~{~A~^, ~}). Default: Using merged version: ~a."
-                   merged-word hyphenated-word member-words merged-word)
+             ;; Probably too annoying.
+             ;; (warn "~a is not known to be a word or white-listed in sp::*word-whitelist*,
+             ;;       nor is the hyphenated version ~a,
+             ;;       nor are (all of) its constituents (~{~A~^, ~}).
+             ;;       Default: Using merged version: ~a."
+             ;;       merged-word hyphenated-word member-words merged-word)
              (setf replacement merged-word-with-punc)))  ; keep the trailing punctuation with the word
       (format nil "~a~%" replacement))))
 
 
 ;;  ==  REMOVING WITHIN-PARAGRAPH LINE BREAKS ==================================
 
-;;  == from a file ==
+;;  == in a file ==
 ;; (remove-within-paragraph-line-breaks-in-file "/path/to/file.txt")
 
 (defmethod remove-within-paragraph-line-breaks-in-file ((infile-namestring string) &optional outfile)
@@ -115,13 +118,14 @@
 (defun remove-within-paragraph-line-breaks (str)
   ;; Replace every line break with a space, except the ones that look like paragraph line breaks.
   ;; Specifically, leave a (single) break where there are two or more successive line breaks and the
-  ;; first word after the line breaks is capitalized.
-  (cl-ppcre::regex-replace-all "[\\r\\n]+\\s*\\S" str #'remove-within-paragraph-line-break))
+  ;; first word after the line breaks is capitalized.  There may be a better heuristic out there.  This
+  ;; worked pretty well on my test file, but not perfectly.
+  (cl-ppcre::regex-replace-all "[\\r\\n]+\\s*\\S" str #'replace-within-paragraph-line-break))
 
 ;;  == internals ==
 
 ;; a replacement function passed to cl-ppcre::regex-replace-all in remove-within-paragraph-line-breaks
-(defun remove-within-paragraph-line-break (target-string start end match-start match-end reg-starts reg-ends)
+(defun replace-within-paragraph-line-break (target-string start end match-start match-end reg-starts reg-ends)
   (declare (ignore start end reg-starts reg-ends))
   (declare (type vector target-string))
   ;;construct a replacement
