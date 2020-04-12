@@ -89,7 +89,7 @@
 ;;; flags
 ;;;-------
 
-(defparameter *ignore-redefine-warning* nil
+(defparameter *ignore-redefine-warning* t ;; set to nil to find duplicates
   "When you are deliberately reloading a set of function terms,
    you can set this flag to t and it will quiet the complaint
    about redefining an already known category.")
@@ -184,9 +184,20 @@
               base-name)))
 
       (when (category-named category-name)
-        (when *ignore-redefine-warning*
-          (cerror "Ignore and keep going"
-                  "We're about to redefine the category ~a" category-name)))
+        (unless *ignore-redefine-warning*
+          ;; Intended to quiet complaints when we reloading
+          ;; a file we've already loaded. If the flag is up
+          ;; we just keep going. If it's nil then we probably
+          ;; have a naming problem.
+          (let* ((existing (category-named category-name))
+                 (loc (file-location existing)))
+            (push-debug `(,existing))
+            (cerror "Redefine the existing category"
+             "The name '~a' is already the name of the category ~a~
+            ~%which was defined in ~a~
+            ~%If you are deliberately reloading that file, bind ~
+              *ignore-redefine-warning* to t"
+             category-name existing loc))))
 
       (let* ((effective-rule-label (or rule-label category-name))
              (category ;; for the function word
