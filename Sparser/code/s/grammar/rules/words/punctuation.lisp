@@ -411,6 +411,12 @@
     (code-char 9618) ;; #\MEDIUM_SHADE
     (code-char 9643) ;; #\WHITE_SMALL_SQUARE
     (code-char 9659) ;; #\WHITE_RIGHT-POINTING_POINTER
+
+    ;; ddm 4/13/20
+    (code-char 9121) ;; #\LEFT_SQUARE_BRACKET_UPPER_CORNER 
+    (code-char 9123) ;; #\LEFT_SQUARE_BRACKET_LOWER_CORNER
+    (code-char 9124) ;; #\RIGHT_SQUARE_BRACKET_UPPER_CORNER
+    (code-char 9126) ;; #\RIGHT_SQUARE_BRACKET_LOWER_CORNER 
     
     ))
 

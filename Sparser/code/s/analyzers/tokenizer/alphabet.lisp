@@ -1763,7 +1763,28 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (61539 (:alphabetical . (:lowercase .,(code-char 61539)))) ;; "", #\UF063 
     (61558 (:alphabetical . (:lowercase .,(code-char 61558)))) ;; "",#\UF076 
     (61627 (:alphabetical . (:lowercase .,(code-char 61627)))) ;;  "", #\UF0BB 
-    (61655 (:alphabetical . (:lowercase .,(code-char 61655)))) ;; "", #\UF0D7 
+    (61655 (:alphabetical . (:lowercase .,(code-char 61655)))) ;; "", #\UF0D7
+
+    ;; ddm 4/13/20
+    (285 (:alphabetical . (:lowercase .,(code-char 285)))) ;; #\LATIN_SMALL_LETTER_G_WITH_CIRCUMFLEX 
+    (491 (:alphabetical . (:lowercase .,(code-char 491)))) ;; #\LATIN_SMALL_LETTER_O_WITH_OGONEK 
+    (733 (:alphabetical . (:lowercase .,(code-char 733)))) ;; #\DOUBLE_ACUTE_ACCENT 
+    (895 (:alphabetical . (:uppercase .,(code-char 895)))) ;; #\GREEK_CAPITAL_LETTER_YOT 
+    (1006 (:alphabetical . (:uppercase .,(code-char 1006)))) ;; #\COPTIC_CAPITAL_LETTER_DEI 
+    (1350 (:alphabetical . (:uppercase .,(code-char 1350)))) ;; #\ARMENIAN_CAPITAL_LETTER_NOW 
+    (7825 (:alphabetical . (:lowercase .,(code-char 7825)))) ;; #\LATIN_SMALL_LETTER_Z_WITH_CIRCUMFLEX 
+    (7869 (:alphabetical . (:lowercase .,(code-char 7869)))) ;; #\LATIN_SMALL_LETTER_E_WITH_TILDE 
+    (9121 (:alphabetical .,(punctuation-named (code-char 9121)))) ;; #\LEFT_SQUARE_BRACKET_UPPER_CORNER 
+    (9123 (:alphabetical .,(punctuation-named (code-char 9123)))) ;; #\LEFT_SQUARE_BRACKET_LOWER_CORNER 
+    (9124 (:alphabetical .,(punctuation-named (code-char 9124)))) ;; #\RIGHT_SQUARE_BRACKET_UPPER_CORNER 
+    (9126 (:alphabetical .,(punctuation-named (code-char 9126)))) ;; #\RIGHT_SQUARE_BRACKET_LOWER_CORNER 
+    (9253 (:alphabetical . (:lowercase .,(code-char 9253)))) ;; "␥", #\SYMBOL_FOR_DELETE_FORM_TWO 
+    (32800 (:alphabetical . (:lowercase .,(code-char 32800)))) ;;"耠", #\U8020 
+    (61487 (:alphabetical . (:lowercase .,(code-char 61487)))) ;; "", #\UF02F 
+    (61516 (:alphabetical . (:lowercase .,(code-char 61516)))) ;;"", #\UF04C 
+    (61518 (:alphabetical . (:lowercase .,(code-char 61518)))) ;; "", #\UF04E 
+    (61523 (:alphabetical . (:lowercase .,(code-char 61523)))) ;; "",#\UF053 
+
 
     
     ))
