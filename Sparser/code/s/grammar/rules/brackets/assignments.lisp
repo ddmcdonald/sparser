@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2019 David D. McDonald all rights reserved
+;;; Copyright (c) 2010-2020 David D. McDonald all rights reserved
 ;;;
 ;;;     File: "assignments"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  November 2019
+;;;  Version:  April 2020
 
 ;; Extracted from diverse files 12/4/12. Added referent construction
 ;; 12/11/12. Revised those 'setup' constructors 2/23/13 to specialize
@@ -109,6 +109,7 @@
                              (:interjection *interjection-brackets*)
                              (:preposition *preposition-brackets*))))
 
+
 ;;;------------------------
 ;;; Word with multiple POS 
 ;;;------------------------
@@ -177,12 +178,21 @@
   (assign-brackets-to-word word '( ].phrase phrase.[ )))
 
 
+
 ;;;-------------------------------------------
 ;;; Deciding on category, referent, and rules
 ;;;-------------------------------------------
 ;; Much of this is from tree-families/shortcuts, but adapted
 ;; so we can be free with the factoring. Final actions by
 ;; the code in morphology just as its used by ETF.
+
+(defparameter *block-redefinition* t
+  "Words that are automatically given categories via Comlex or
+   morphology should not inadvertantly clobber an explicitly defined
+   category. When this flag is up we catch these potental clashes
+   and give the proposed category a distinguishing name.")
+
+
 
 (defun setup-common-noun (word &optional comlex-clause ambiguous?)
   (declare (special *break-on-pattern-outside-coverage?*))      
@@ -194,18 +204,13 @@
       (setq category-name
             (construct-disambiguating-category-name
              category-name super-category)))
+    (when (and *block-redefinition*
+               (category-named category-name))
+      (setq category-name (distinguish-category category-name)))
     (let* ((category
-            (if (category-named category-name)
-              (then
-                (when *break-on-pattern-outside-coverage?*
-                  (push-debug `(,category-name ,word ,comlex-clause))
-                  (break "Maybe you can blow that one away?"
-                         "Setup: The category named ~a already exists."
-                         category-name))
-                (category-named category-name))
-              (define-category/expr category-name
+            (define-category/expr category-name
                                     `(:specializes ,super-category
-                                      :instantiates :self))))
+                                      :instantiates :self)))
            (rs (rule-set-for word))
            (rules (apply #'make-rules-for-head
                          :common-noun word category category
@@ -247,21 +252,17 @@
           (setq category-name
                 (construct-disambiguating-category-name
                  category-name super-category)))
-        (let ((category
-               (if (category-named category-name)
-                 (then
-                   (when *break-on-pattern-outside-coverage?*
-                     (cerror "Maybe you can blow that one away?"
-                             "Setup: The category named ~a already exists."
-                             category-name))
+        (when (and *block-redefinition*
                    (category-named category-name))
-                 (define-category/expr category-name
-                     `(:specializes ,super-category
-                       :instantiates :self
-                       :mixins (comlex-verb)
-                       :realization (:verb ,word ;;///analyze special-cases
-                                     :etf svo) )))))
-          ;; Adds the rule to the category itself
+          (setq category-name (distinguish-category category-name)))
+        (let ((category
+               (define-category/expr category-name
+                   `(:specializes ,super-category
+                     :instantiates :self
+                     :mixins (comlex-verb)
+                     :realization (:verb ,word ;;///analyze special-cases
+                                   :etf svo) ))))
+          ;; Adds the rules to the category itself
           (apply #'define-main-verb (cat-symbol category)
                  :infinitive (word-pname word)
                  :category category
@@ -277,12 +278,13 @@
   (declare (special *break-on-pattern-outside-coverage?*))
   (let ((category-name (name-to-use-for-category word))
         (super-category (super-category-for-POS :adjective)))    
-    (when (or ambiguous?
-              (category-named category-name)) ;; "progressive" -- clashes w/ the aspect
-      (setq category-name ;;/// feed into discriminator
+    (when ambiguous?
+      (setq category-name ;;/// feed into define-adjective discriminator ??
             (construct-disambiguating-category-name
              category-name super-category)))
-    
+    (when (and *block-redefinition*    
+               (category-named category-name)) ;; "progressive" -- clashes w/ the aspect
+      (setq category-name (distinguish-category category-name)))
     (if comlex-clause
       (let ((entry (if ambiguous?
                      (cadr (assq 'adjective comlex-clause))
@@ -294,42 +296,30 @@
             ;;(break "er: ~a~%est: ~a" comparative superlative)
             (setup-anonymous-graded-adjective
              word comparative superlative))))
-
       (else
         (let ((category (define-adjective (word-pname word)
                             :super-category super-category)))
           (mark-as-constructed-category-for-word category super-category)
           category)))))
 
-#|
-    (let* ((category (define-category/expr category-name
-                       `(:specializes ,super-category
-                        :instantiates :self)))
-           (rules (make-rules-for-head :adjective word category category)))
-     (add-rules rules category) |#
-
-#+ignore
-(defun setup-comparative (word)
-  (define-comparative word))
-#+ignore
-(defun setup-superlative (word)
-  (define-superlative word))
-
 
 
 (defun setup-adverb (word &optional ambiguous?)
   ;; Adverbs that serve functions that we understand,
   ;; such as approximation, are explicitly defined using
-  ;; define-adverb. Ones that we import are by that
-  ;; token ones we wouldn't know what to do with, so
+  ;; define-adverb. Ones that we import are, by that
+  ;; token, ones that we wouldn't know what to do with, so
   ;; we go through the morphology routine used with ETF.
   (declare (special *break-on-pattern-outside-coverage?*))
   (let ((category-name (name-to-use-for-category word))
         (super-category (super-category-for-POS :adverb)))
-    (when (or ambiguous? (category-named category-name))
+    (when ambiguous?
       (setq category-name
             (construct-disambiguating-category-name
              category-name super-category)))
+    (when (and *block-redefinition*
+               (category-named category-name))
+      (setq category-name (distinguish-category category-name)))
     (let* ((category (define-category/expr category-name
                        `(:specializes ,super-category
                         :instantiates :self)))
@@ -368,23 +358,6 @@
     (otherwise
      (break "Unexpected pos: ~a" pos))))
   
-(defun construct-disambiguating-category-name (category-name super-category)
-  "Something should constrain this to make sure that we only apply
-   it in this case where we're doing general word -> category setup's
-   out of a lexical store that discriminates on POS.
-      We construct a name to distinguish e.g. the noun version of
-   'die' (the stuff that changes the color of cloth) from the verb
-   version, by appending their type to their name."
-  (unless (and (symbolp category-name)
-               (referential-category-p super-category))
-    (push-debug `(,category-name ,super-category))
-    (error "Parameters are the wrong type - check in debugger"))
-  (let* ((super-name (cat-symbol super-category))
-         (super-pname (symbol-name super-name))
-         (disambiguated (string-append category-name "-"
-                                       super-pname)))
-    (name-to-use-for-category disambiguated)))
-
 
 ;;--- Probably simpler way to do this
 ;; Want it for the reification code in analyzers/SDM&P/reify-individuals
@@ -416,16 +389,38 @@
           `(:plural ,plural-entry))))))
 
 
+(defun construct-disambiguating-category-name (category-name super-category)
+  "Something should constrain this to make sure that we only apply
+   it in this case where we're doing general word -> category setup's
+   out of a lexical store that discriminates on POS.
+      We construct a name to distinguish e.g. the noun version of
+   'die' (the stuff that changes the color of cloth) from the verb
+   version, by appending their type to their name."
+  (unless (and (symbolp category-name)
+               (referential-category-p super-category))
+    (push-debug `(,category-name ,super-category))
+    (error "Parameters are the wrong type"))
+  (let* ((super-name (cat-symbol super-category))
+         (super-pname (symbol-name super-name))
+         (disambiguated (string-append category-name "-" super-pname)))
+    (name-to-use-for-category disambiguated)))
+
+(defun distinguish-category (original-name)
+  "Similar to construct-disambiguating-category-name but applies in
+   any case where the name is already taken by an already defined
+   category."
+  (let ((new-name (string-append (cat-symbol original-name) '#:-auto)))
+    (name-to-use-for-category new-name)))
+   
+
 ;;;-------------------------------------------
 ;;; Making a category name from a word string
 ;;;-------------------------------------------
 
-
-
 (defgeneric name-to-use-for-category (string)
-  (:documentation"Encapsulates the lisp-specific checks 
-    for what case to use. Hyphenates category names
-    based on a polyword")
+  (:documentation "Encapsulates the lisp-specific checks 
+    for what case to use. Hyphenates category names that
+    are based on a polyword")
   (:method ((string string))
     (declare (special *break-on-pattern-outside-coverage?*))
     (assert (not (string-equal string "top")) ()
@@ -438,9 +433,6 @@
            (symbol (intern s (find-package :sparser))))
       ;; n.b. not the category package. The pname will be interned there
       ;; as part of creating the category
-      (when (and *break-on-pattern-outside-coverage?*
-                 (category-named symbol))
-        (error "The proposed name ~a is already names a category" symbol))
       symbol))
 
   (:method ((w word))
