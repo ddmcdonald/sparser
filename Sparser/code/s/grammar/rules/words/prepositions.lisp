@@ -227,12 +227,12 @@ these are really prepositions, and should function as such
 (define-preposition "thanks to")
 (define-preposition "throughout")
 ;;(define-preposition "till") -- sub.conj. but also takes a simple complement
-;;(define-preposition "to" ) -- infinitive reading more frequent that range
+(define-preposition "to")
 (define-preposition "together with")
 (define-preposition "unlike")
 ;; (define-preposition "until")  -- sub.conj.
 (define-preposition "unto")
-;;(define-preposition "upon") -- sub.conj.
+(define-preposition "upon")
 (define-preposition "upwards of")
 (define-preposition "versus" :synonyms '("vs" "vs.")) 
 (define-preposition "via")

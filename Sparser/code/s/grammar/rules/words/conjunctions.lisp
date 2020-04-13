@@ -179,7 +179,7 @@ syntactic properties of three types.
           "whilst"
           "unless"  
           "until"   
-          "upon"
+          ;;"upon"
           "whatever"
 	  "when" ;; also a wh-pronoun
           "whether" ;; this is to allow "whether" to be a subordinating conjunction leading to a "whethercomp"
