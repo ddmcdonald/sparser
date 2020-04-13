@@ -89,7 +89,9 @@
 ;;; flags
 ;;;-------
 
-(defparameter *ignore-redefine-warning* t ;; set to nil to find duplicates
+(defparameter *ignore-redefine-warning* t
+  ;; Set this to nil if you want to find duplicate entries
+  ;;   for function words
   "When you are deliberately reloading a set of function terms,
    you can set this flag to t and it will quiet the complaint
    about redefining an already known category.")
