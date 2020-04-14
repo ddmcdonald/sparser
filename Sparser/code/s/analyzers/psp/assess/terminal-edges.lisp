@@ -327,7 +327,8 @@
   
   (when (word-morphology word)
     ;; Don't bother to make edges unless there's some affix to react to.
-    (when *make-edges-for-unknown-words-from-their-suffixes*
+    (when (and *make-edges-for-unknown-words-from-their-suffixes*
+               (not (eq :all-caps (pos-capitalization position-scanned))))
       (make-edge-based-on-morphology word
                                      position-scanned
                                      next-position))))
