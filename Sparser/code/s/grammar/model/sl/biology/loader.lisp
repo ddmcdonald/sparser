@@ -128,7 +128,7 @@
 (gload "bio;get-reactome-hgnc-names.lisp")
 (gload "bio;visualization.lisp")
 (gload "bio;hms-hgnc-grounding")
-
+(gload "bio;category-defining-words.lisp")
 (when t #+ignore ;;always load
       (and (boundp 'cl-user::*sparser-to-indra*)
            (symbol-value 'cl-user::*sparser-to-indra*))
