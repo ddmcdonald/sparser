@@ -258,20 +258,21 @@
        (let ((plural (plural-version lemma)))
          `(,plural))))))
 
-(defun make-er-comparatives (lemma)
-  (setq lemma (maybe-replace-final-y-by-i lemma))
-  (when (equal "e" (subseq lemma (1- (length lemma))))
-    (setq lemma (subseq lemma 0 (1- (length lemma)))))
-  (list (format nil "~aer" lemma)))
+(defun make-er-comparatives (lemma &aux new-lemma)
+  (when
+      (setq new-lemma (fix-base-to-add-suffix lemma "er"))
+    ;;(setq lemma (maybe-replace-final-y-by-i lemma))
+    #+ignore (when (equal "e" (subseq lemma (1- (length lemma))))
+               (setq lemma (subseq lemma 0 (1- (length lemma)))))
+    (list (format nil "~aer" new-lemma))))
 
 (defun make-more-comparatives (lemma)
   (list (format nil "more ~a" lemma)))
 
-(defun make-est-superlatives (lemma)
-  (setq lemma (maybe-replace-final-y-by-i lemma))
-  (when (equal "e" (subseq lemma (1- (length lemma))))
-    (setq lemma (subseq lemma 0 (1- (length lemma)))))
-  (list (format nil "~aest" lemma)))
+(defun make-est-superlatives (lemma &aux new-lemma)
+  (when
+      (setq new-lemma (fix-base-to-add-suffix lemma "est"))
+    (list (format nil "~aest" new-lemma))))
 
 (defun make-most-superlatives (lemma)
   (list (format nil "most ~a" lemma (maybe-replace-final-y-by-i lemma))))
@@ -309,5 +310,67 @@
     (trace-msg "  it is ambiguous between ~a" combination)))
 
 
-
-
+(defun fix-base-to-add-suffix (base suffix &key (initial-letter-suffix (subseq suffix 0 1)))
+  (declare (special *consonants* *vowels*))
+  (cond ((and (vowel? initial-letter-suffix)
+	      (>= (length base) 3))
+	 (let ((lastchar (subseq base (- (length base) 1)))
+	       (2lastchar (subseq base
+				  (- (length base) 2)
+				  (- (length base) 1)))
+	       (3lastchar (subseq base
+				  (- (length base) 3)
+				  (- (length base) 2))))
+	   (cond ((string-equal lastchar "y")
+		  (cond 
+                    ;; additional possible condition, which we are marking as
+                    ;; irregular
+                    ;;		   ((string-equal 2lastchar "e")
+                    ;;			 (concatenate 'string
+                    ;;			   (subseq base 0 (- (length base) 2))
+                    ;;			   "i"))
+                    ((vowel? 2lastchar) base)
+                    (t (concatenate 
+                        'string
+			(subseq base 0 (- (length base) 1))
+			"i"))))
+		 ((member lastchar '("h" "w" "x") :test #'string-equal)
+		  base)
+		 ((and (member suffix '("er" "est") :test #'string-equal)
+		       (string-equal (subseq base
+					     (- (length base) 3))
+				     "ous"))
+		  nil)
+		 ;; affix-specific for er and est - 
+		 ;; there is no comparative/superlative forms for
+		 ;; adjectives ending in "ous" - I hope there are
+		 ;; no verbs ending in "ous" or the ones that
+		 ;; do do not take "er" endings - also
+		 ;; I am ignoring the phrase "curiouser and curiouser"
+		 ;; from Alice in Wonderland/through the looking glass
+		 
+		 ;; add in other suffix specific stuff here *****
+		 
+		 ((vowel? lastchar)
+		  (cond ((string-equal lastchar initial-letter-suffix)
+			 (subseq base 0 (- (length base) 1)))
+			(t base)))
+		 ((consonant? lastchar)
+		  (cond ((consonant? 2lastchar)
+			 base)
+			((vowel? 2lastchar)
+			 (cond ((vowel? 3lastchar)
+				base)
+			       ((consonant? 3lastchar)
+				(concatenate
+                                 'string
+                                 base
+                                 lastchar))
+			       (t nil)))
+			(t nil)))
+		 (t nil))))
+	((< (length base) 3) nil)
+	((consonant? initial-letter-suffix)
+	 (error "A general routine for suffixes beginning with a consonant has not been written"))
+	(t (error "The suffix ~s does not begin with a consonant or a vowel" 
+		  suffix))))
