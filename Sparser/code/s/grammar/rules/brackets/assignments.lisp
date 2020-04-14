@@ -193,6 +193,10 @@
    and give the proposed category a distinguishing name.")
 
 
+(defparameter *categories-created-by-setup*
+  (make-hash-table :size 10000)
+  "These are categories that were created while defining words -- they were not pre-defined in the loadup")
+
 
 (defun setup-common-noun (word &optional comlex-clause ambiguous?)
   (declare (special *break-on-pattern-outside-coverage?*))      
@@ -204,9 +208,7 @@
       (setq category-name
             (construct-disambiguating-category-name
              category-name super-category)))
-    (when (and *block-redefinition*
-               (category-named category-name))
-      (setq category-name (distinguish-category category-name)))
+    (setq category-name (maybe-distinguish-category category-name))   
     (let* ((category
             (define-category/expr category-name
                                     `(:specializes ,super-category
@@ -252,9 +254,8 @@
           (setq category-name
                 (construct-disambiguating-category-name
                  category-name super-category)))
-        (when (and *block-redefinition*
-                   (category-named category-name))
-          (setq category-name (distinguish-category category-name)))
+
+        (setq category-name (maybe-distinguish-category category-name))
         (let ((category
                (define-category/expr category-name
                    `(:specializes ,super-category
@@ -282,9 +283,7 @@
       (setq category-name ;;/// feed into define-adjective discriminator ??
             (construct-disambiguating-category-name
              category-name super-category)))
-    (when (and *block-redefinition*    
-               (category-named category-name)) ;; "progressive" -- clashes w/ the aspect
-      (setq category-name (distinguish-category category-name)))
+    (setq category-name (maybe-distinguish-category category-name))
     (if comlex-clause
       (let ((entry (if ambiguous?
                      (cadr (assq 'adjective comlex-clause))
@@ -317,9 +316,7 @@
       (setq category-name
             (construct-disambiguating-category-name
              category-name super-category)))
-    (when (and *block-redefinition*
-               (category-named category-name))
-      (setq category-name (distinguish-category category-name)))
+    (setq category-name (maybe-distinguish-category category-name))
     (let* ((category (define-category/expr category-name
                        `(:specializes ,super-category
                         :instantiates :self)))
@@ -403,13 +400,41 @@
   (let* ((super-name (cat-symbol super-category))
          (super-pname (symbol-name super-name))
          (disambiguated (string-append category-name "-" super-pname)))
+    #+ignore
+    (format t "construct-disambiguating-category-name given ~a produces ~a~%"
+            category-name disambiguated)
+    ;;(lsp-break)
     (name-to-use-for-category disambiguated)))
+
+(defun maybe-distinguish-category (category-name)
+      (if (and *block-redefinition*
+               (not (gethash category-name *categories-created-by-setup*))
+               (category-named category-name)
+               ;; next is a temporary fix because it'll take a while to define plurals
+               ;;  for all cellular locations suchh as "nuclei"               
+               (not (itypep (category-named category-name) 'cellular-location))
+               ;; for "additives"
+               (not (itypep (category-named category-name) 'bio-predication))
+               ;; for :comparative and "superlative of already defined adjectives
+               (not (itypep (category-named category-name) 'modifier))
+               ;; to handle plurals of already defined common-nouns
+               (not (search "-ENDURANT" (symbol-name category-name)))
+               (not (search "-PERDURANT" (symbol-name category-name))))
+          (setq category-name (distinguish-category category-name))
+          (setf (gethash category-name *categories-created-by-setup*) t))
+      category-name)
+
 
 (defun distinguish-category (original-name)
   "Similar to construct-disambiguating-category-name but applies in
    any case where the name is already taken by an already defined
    category."
-  (let ((new-name (string-append (cat-symbol original-name) '#:-auto)))
+  (let ((new-name (string-append original-name '#:-auto)))  
+    (if (search "-" (format nil "~a" original-name))
+        (format t "*** distinguish-category given ~a produces ~a~%" original-name new-name)
+        ;;(lsp-break "*** CORE CATEGORY OVERLAP distinguish-category given ~a produces ~a~%" original-name new-name)
+        (format t "*** CORE CATEGORY OVERLAP distinguish-category given ~a produces ~a~%" original-name new-name)
+        )
     (name-to-use-for-category new-name)))
    
 
