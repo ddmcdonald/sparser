@@ -1001,13 +1001,6 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                 do (record-lemma i word :noun))
        (return rules)))
 
-#+ignore(defvar *deferred-collection-plurals* nil
-  "An alist of word and category for all the plurals created before the
-   category 'collection' was defined, mostly lemmas in the upper model.")
-
-#+ignore(defparameter *temporary-new-plural-flag* t
-  "Remove once this is settled")
-
 (defun make-cn-plural-rule (plural category referent)
   (assign-brackets-as-a-common-noun plural)
   (define-cfr category (list plural)
@@ -1017,22 +1010,6 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
                 `(:head ,referent
                   :subtype ,(category-named 'plural)))))
 
-              #+ignore(cond  ;; version before 2/4/20
-                (*external-referents* referent)
-                (*temporary-new-plural-flag*
-                 (resolve-referent-expression
-                  `(:head ,referent
-                    :subtype ,(category-named 'plural))))
-                ((category-named 'collection)
-                 ;; Have we reached a point in the load where collection
-                 ;; has been defined?
-                 (resolve-referent-expression
-                  `(:head ,referent
-                    :subtype ,(category-named 'collection))))
-                (t
-                 (push `(,plural . ,referent) *deferred-collection-plurals*)
-                 (resolve-referent-expression
-                  `(:head ,referent))))
 
 (defun unresolved-plural-referent? (item)
   "We have an unsolved issue with some plurals referents remaining as expressions.
