@@ -322,6 +322,10 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *disease*
     (disease-loaded-after-bio))
 
+  (gload "bio;category-defining-words.lisp")
+  ;; Defines lemmas for categories that don't naturally or easily
+  ;; support them.
+
   (gate-grammar *testing*
     (gate-grammar *miscellaneous*
       (gload "grammar;tests;loader"))

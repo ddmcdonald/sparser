@@ -25,12 +25,12 @@
 (def-synonym beagle (:noun "beagle")) 
 (def-synonym candidate (:noun "candidate" :adj "candidate")) 
 (def-synonym category (:noun ("category" :plural "categories"))) 
-(def-synonym city (:noun ("city" :plural "cities"))) 
+
 (def-synonym company (:noun ("company" :plural "companies"))) 
 (def-synonym comparative (:noun "comparative")) 
 (def-synonym conjunction (:noun "conjunction")) 
 (def-synonym container (:noun "container")) 
-(def-synonym country (:noun ("country" :plural "countries"))) 
+
 (def-synonym definite (:noun "definite")) 
 (def-synonym demonstrative (:noun "demonstrative")) 
 (def-synonym dimension (:noun "dimension")) 
