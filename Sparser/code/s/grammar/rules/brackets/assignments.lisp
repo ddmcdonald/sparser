@@ -288,14 +288,17 @@
       (let ((entry (if ambiguous?
                      (cadr (assq 'adjective comlex-clause))
                      (second comlex-clause))))
-        (push-debug `(,entry))
         (if (memq :comparative entry)
           (let ((comparative (cadr (memq :comparative entry)))
                 (superlative (cadr (memq :superlative entry))))
-            ;;(break "er: ~a~%est: ~a" comparative superlative)
             (setup-anonymous-graded-adjective
-             word comparative superlative))))
-      (else
+             word comparative superlative))
+          (else ;; has comlex entry but isn't an er-est
+            (let ((category (define-adjective (word-pname word)
+                            :super-category super-category)))
+              (mark-as-constructed-category-for-word category super-category)
+              category))))
+      (else ;; no entry. Probably coming from morphology
         (let ((category (define-adjective (word-pname word)
                             :super-category super-category)))
           (mark-as-constructed-category-for-word category super-category)
@@ -303,8 +306,7 @@
 
 
 
-(defun setup-adverb (word &optional ambiguous?)
-  ;; Adverbs that serve functions that we understand,
+(defun setup-adverb (word &optional ambiguous?)  ;; Adverbs that serve functions that we understand,
   ;; such as approximation, are explicitly defined using
   ;; define-adverb. Ones that we import are, by that
   ;; token, ones that we wouldn't know what to do with, so
