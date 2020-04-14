@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:places:countries:"
-;;;  version:  1.5 September 2013
+;;;  version:  April 2020
 
 ;; 1.0 (10/12/92 v2.1) introducing new semantics
 ;; 1.1 (9/7/93 v2.3) adding a define routine and a realization
@@ -27,7 +27,9 @@
 
 (define-category  country
   :instantiates  self
-  :specializes   location
+  :specializes geographical-region
+  :lemma (:common-noun "country")
+  :rule-label region-type
   :binds ((name :primitive word)
           (adjective-form  :primitive word)
           (aliases  :primitive list))
@@ -39,22 +41,33 @@
 ;;; def form
 ;;;----------
 
-(defun define-country (name &key adjective aliases ;; Add 'language' for "Hebrew"
-                            cities provinces language)
+(defun define-country (name &key adjective aliases language
+                              cities provinces)
   (let ((country (define-or-find-individual 'country :name name))
         (category (category-named 'country))
         word  rules )
     ;; The name gets  ].proper-noun proper-noun.[  is that ok?
-    (when (or adjective aliases)
+    (when (or adjective aliases language)
       (flet ((adjective-rule (string)
-               (setq word (resolve-string-to-word/make string))
+               (setq word (resolve/make string))
                (assign-brackets-to-adjective word)
                (define-cfr category `(,word)
                 :form category::adjective ;; or proper-adjective
                  ;; it's a question of picking up form rules
                 :referent country))
              (alias-rule (string)
-               (setq word (resolve-string-to-word/make string))
+               (setq word (resolve/make string))
+               (assign-brackets-as-a-common-noun word)
+               (define-cfr category `(,word)
+                 :form category::proper-noun
+                 :referent country))
+             (language-rule (string)
+               "The adjective form for describing something as
+                being associated with the country ('British tea')
+                often is also can be the word for the language
+                they speak -- though that is an ontological shortcut.
+                But for some ('Hebrew') the language is a different word."
+               (setq word (resolve/make string))
                (assign-brackets-as-a-common-noun word)
                (define-cfr category `(,word)
                  :form category::proper-noun
@@ -67,12 +80,14 @@
         (when aliases
           (if (consp aliases)
             (loop for alias in aliases
-              do (push (alias-rule alias) rules))))))
+               do (push (alias-rule alias) rules))))
+        (when language
+          (push (language-rule language) rules))))
     (setf (get-rules country) rules)
-    (when cities
-      (dolist (city-string cities)
-        (let ((city (define-or-find-individual 'city :name city-string)))
-          (bind-variable 'country country city)))) ;; needs to be checked in DLI case
+    (when cities ;; stash them somewhere
+      (loop for string in cities
+         do (define-city string :country country)))
+    (when provinces )
     (values country
             rules)))
 

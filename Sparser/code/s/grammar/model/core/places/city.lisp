@@ -24,14 +24,16 @@
 ;;;--------
 
 (define-category  city
-  :instantiates  self
-  :specializes  region-type
+  :instantiates self
+  :specializes geographical-region
+  :lemma (:common-noun "city")
+  :rule-label region-type
   :binds ((name :primitive word)
           (aliases  :primitive list)
           (country . country)
           (state . state))
   :index (:permanent :key name)
-  :realization (:word name))
+  :realization (:proper-noun name))
 
 ;; patch forced in Subsumption-check/complete because "New York"
 ;; has ':mixed-case' in its plist field
@@ -43,6 +45,29 @@
       (word (word-pname name))
       (polyword (pw-pname name)))))
 
+
+;;;---------------
+;;; defining form
+;;;---------------
+
+(defun define-city (string &key country state aliases)
+  (unless (itypep country 'country)
+    (break "Called with country '~a'~%of type ~a"
+           country (type-of country)))
+  (let* ((word (resolve/make string))
+         (city (define-or-find-individual 'city
+                   :name word :country country)))
+    (when aliases
+      (let ((rules
+             (loop for alias in aliases
+                as word = (resolve/make alias) ;;///use rule-label?
+                collect (define-cfr category::city `( ,word )
+                      :form category::proper-noun
+                      :referent city))))
+        (setf (get-rules city)
+              (append rules (get-rules city)))))
+    ;; ignoring state
+    city))
 
 
 
@@ -90,61 +115,6 @@
 
     (word
      (define-city (word-pname name)))))
-
-;;;---------------
-;;; defining form
-;;;---------------
-
-(defun define-city (name-string  &optional country-string
-                    &key state aliases)
-  (let ((country
-         (when country-string
-           (etypecase country-string
-             (string (find-individual 'country :name country-string))
-             (referential-category country-string))))
-        (name
-         (etypecase name-string
-           (string (resolve-string-to-word/make name-string))
-           (word name-string)))
-        obj )
-
-    (if (setq obj (find-individual 'city
-                                   :name name :country country))
-      obj
-      (let ( rule  rules )
-        (setq obj (define-individual 'city
-                    :name name :country country))
-
-        ;(unless country
-        ;  (format t "~&~%No country has been specified for ~A~%~%" obj))
-
-        (setq rule
-              (list (define-cfr category::city `( ,name )
-                      :form category::proper-noun
-                      :referent obj)))
-
-        (when state
-          (let ((state-obj
-                 (etypecase state
-                   (string (find-individual 'state :name state))
-                   ;;(list ) ;; (state . country)
-                   (referential-category state))))
-            (setq obj (bind-dli-variable 'state state-obj obj))))
-                    
-        (when aliases
-          (let ( word )
-            (dolist (alias-string aliases)
-              (setq word (resolve-string-to-word/make alias-string))
-              (push (define-cfr category::city `( ,word )
-                      :form category::proper-noun
-                      :referent obj)
-                    rules))
-            (when rules
-              (setq rule (cons rule (nreverse rules))))))
-
-        (setf (get-rules obj) rules)
-
-        obj ))))
 
 
 ;;;-----------------

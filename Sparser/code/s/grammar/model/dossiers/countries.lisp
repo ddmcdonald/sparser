@@ -72,7 +72,7 @@
     :adjective "Chinese"
     :aliases '("PRC")
     :provinces '("Hubei")
-    :cities '("Beijing" "Shanghai" "Guangzhou" "Wuhan"))
+    :cities '("Beijing" "Shanghai" "Guangzhou" "Wuhan" "Macau"))
 (define-country "Colombia")
 (define-country "Comoros")
 (define-country "Costa Rica")
@@ -122,7 +122,7 @@
 (define-country "Indonesia") ;; how do we want to add sumatra and sumatran? also Java
 (define-country "Iran"
     :adjective "Iranian"
-    :cities '("Qom"))
+    :cities '("Qom" "Tehran"))
 (define-country "Iraq" :adjective "Iraqi")
 (define-country "Ireland")
 (define-country "Israel"

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2011,2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "U.S. States"
 ;;;   Module:  "model;core:places:"
-;;;  version:  0.2 July 2011
+;;;  version:  April 2020
 
 ;; initiated 3/10/94 v2.3
 ;; 0.1 (4/23) added provision for name-words. 10/6 added string-for fn
@@ -17,8 +17,8 @@
 ;;;--------
 
 (define-category  US-state
-  :instantiates  self
-  :specializes   location
+  :instantiates self
+  :specializes geographical-region
   :binds ((name :primitive word)
           (adjective-form :primitive word)
           (abbreviations  :primitive list)
@@ -68,8 +68,8 @@
     ;; making names for things that reference it, e.g. "University of Iowa"
 
     (when adjective
-      (setq adj-word (resolve-string-to-word/make adjective))
-      (setq obj (bind-dli-variable 'adjective-form adj-word obj))
+      (setq adj-word (resolve/make adjective))
+      (setq obj (bind-variable 'adjective-form adj-word obj))
       (push (define-cfr US-state `(,adj-word)
               :form category::proper-adjective
               :referent obj)
@@ -77,7 +77,7 @@
 
     (when abbreviations
       (dolist (string abbreviations)
-        (setq abbrev-word (resolve-string-to-word/make string))
+        (setq abbrev-word (resolve/make string))
         (push abbrev-word abbrev-words)
         (push (define-cfr US-state `(,abbrev-word)
                 :form (if (polyword-p abbrev-word)
@@ -85,12 +85,12 @@
                         category::np-head)
                 :referent obj)
               rules))
-      (setq obj (bind-dli-variable 'abbreviations (nreverse abbrev-words) obj
-                     US-state)))
+      (setq obj (bind-variable 'abbreviations (nreverse abbrev-words) obj
+                               US-state)))
      
     (when aliases
       (dolist (string aliases)
-        (setq alias-word (resolve-string-to-word/make string))
+        (setq alias-word (resolve/make string))
         (push alias-word alias-words)
         (push (define-cfr US-state `(,alias-word)
                 :form (if (polyword-p alias-word)
@@ -98,10 +98,8 @@
                         category::np-head)
                 :referent obj)
               rules))
-      (setq obj (bind-dli-variable 'aliases alias-words obj)))
+      (setq obj (bind-variable 'aliases alias-words obj)))
 
-
-    ;;/// put the rules somewhere that they can be deleted
     obj ))
 
 

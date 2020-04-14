@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
@@ -27,6 +27,15 @@
 ;;   friends to core/kinds/space.lisp
 
 (in-package :sparser)
+
+#| endurant > region > {location, bounded-region}  |#
+
+(define-category geographical-region
+  :specializes bounded-region
+  :mixins (location)
+  :documentation "Just a renaming of bounded-region that 
+ lets us group the kinds of things we find in a geography
+ book: cities, oceans, continents, etc.")
 
 ;;--- general words
 

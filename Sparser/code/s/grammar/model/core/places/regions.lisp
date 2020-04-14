@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1995,2011-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2011-2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "regions"
 ;;;   Module:  "model;core:places:"
-;;;  version:  December 2018
+;;;  version:  April 2020
 
 ;; initiated 4/4/94 v2.3.  Added string/region 10/5.  Added missing typecase
 ;; to String-for 6/22.  (9/12) tweeked the autodef
@@ -37,7 +37,7 @@
 ;; Dossier of named regions is [regions]
 ;; Dossier of region types and edge types is [location kinds]
 
-(define-category  geographical-region
+(define-category  geographical-area
   :documentation "E.g. New England, real places. Should be relatively large 
    and not have a more specific characterization."
   ;;/// The notion of a named-location is similar and some consolidation
@@ -52,9 +52,9 @@
   :index (:permanent :key name)
   :realization (:proper-noun name)) ;; for the predefined ones
 
-(defun define-geographical-region (name-string &key part-of aliases)
+(defun define-geographical-area (name-string &key part-of aliases)
   (let ((r (define-named-individual-with-synonyms/expr
-               'geographical-region
+               'geographical-area
                (cons name-string aliases))))
     (when part-of
       (push-debug `(,r ,part-of))
@@ -137,28 +137,16 @@
   ;; kind category is region-type
   ;; /// replace with define-type-category-constructor ?
   (let* ((symbol (name-to-use-for-category string))
-         (word (define-word string))
+         (word (resolve string))
          (category (category-named symbol)))
       (let ((expr `(define-category ,symbol ;; e.g. 'city
-                     :specializes region-type
+                     :specializes geographical-region
                      :rule-label region-type
                      :instantiates :self
                      :bindings (name ,word)
                      :realization (:common-noun ,string))))
         (setq category (eval expr)))))
 
-   #| (let ((rule
-           (if new?
-             (first (get-rules category))
-             (construct-cfr ;; consider def-cfr/expr
-              (category-named 'region-type) ;; lhs
-              (list word) ;; rhs
-              (category-named 'common-noun) ;; form
-              category ;; referent
-              :define-cfr)))) ;; source -- see note-grammar-module
-      
-      (values category
-              rule))))  |#
 
 
 (eval-when (:compile-toplevel :load-toplevel :execute)

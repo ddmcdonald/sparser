@@ -118,8 +118,8 @@
 ;; These interfer with / are OBE by the treatment in regions
 ;; and there wasn't that much there in the first place
 ;; as opposed to these other two.
-  (gate-grammar *cities*
-    (gload "dossiers;cities"))
+;;  (gate-grammar *cities*
+;;    (gload "dossiers;cities")) -- migrated the few cases there to countries
 ;;   (gload "dossiers;city rules"))
   (gate-grammar *US-States*
     (gload "dossiers;US states")
