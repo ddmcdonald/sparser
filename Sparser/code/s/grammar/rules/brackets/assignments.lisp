@@ -195,7 +195,8 @@
 
 (defparameter *categories-created-by-setup*
   (make-hash-table :size 10000)
-  "These are categories that were created while defining words -- they were not pre-defined in the loadup")
+  "These are categories that were created while defining words.
+   They were not pre-defined in the loadup")
 
 
 (defun setup-common-noun (word &optional comlex-clause ambiguous?)
@@ -224,6 +225,7 @@
                 "Rule set for ~a changed by making rules." word))
       (add-rules rules category)
       category)))
+
 
 (defparameter *show-R3-new-verb-definitions* nil)
 (defun show-new-verb-definitions ()
@@ -254,7 +256,6 @@
           (setq category-name
                 (construct-disambiguating-category-name
                  category-name super-category)))
-
         (setq category-name (maybe-distinguish-category category-name))
         (let ((category
                (define-category/expr category-name
@@ -275,7 +276,7 @@
 
 
 (defun setup-adjective (word &optional comlex-clause ambiguous?)
-  ;; For more exhaustive treamemt of comlex adjectives see adjectives in sl/checkpoint/
+  ;; For more exhaustive treament of comlex adjectives see adjectives in sl/checkpoint/
   (declare (special *break-on-pattern-outside-coverage?*))
   (let ((category-name (name-to-use-for-category word))
         (super-category (super-category-for-POS :adjective)))    
@@ -409,22 +410,22 @@
     (name-to-use-for-category disambiguated)))
 
 (defun maybe-distinguish-category (category-name)
-      (if (and *block-redefinition*
-               (not (gethash category-name *categories-created-by-setup*))
-               (category-named category-name)
-               ;; next is a temporary fix because it'll take a while to define plurals
-               ;;  for all cellular locations suchh as "nuclei"               
-               (not (itypep (category-named category-name) 'cellular-location))
-               ;; for "additives"
-               (not (itypep (category-named category-name) 'bio-predication))
-               ;; for :comparative and "superlative of already defined adjectives
-               (not (itypep (category-named category-name) 'modifier))
-               ;; to handle plurals of already defined common-nouns
-               (not (search "-ENDURANT" (symbol-name category-name)))
-               (not (search "-PERDURANT" (symbol-name category-name))))
-          (setq category-name (distinguish-category category-name))
-          (setf (gethash category-name *categories-created-by-setup*) t))
-      category-name)
+  (if (and *block-redefinition*
+           (not (gethash category-name *categories-created-by-setup*))
+           (category-named category-name)
+           ;; next is a temporary fix because it'll take a while to define plurals
+           ;;  for all cellular locations suchh as "nuclei"               
+           (not (itypep (category-named category-name) 'cellular-location))
+           ;; for "additives"
+           (not (itypep (category-named category-name) 'bio-predication))
+           ;; for :comparative and "superlative of already defined adjectives
+           (not (itypep (category-named category-name) 'modifier))
+           ;; to handle plurals of already defined common-nouns
+           (not (search "-ENDURANT" (symbol-name category-name)))
+           (not (search "-PERDURANT" (symbol-name category-name))))
+    (setq category-name (distinguish-category category-name))
+    (setf (gethash category-name *categories-created-by-setup*) t))
+  category-name)
 
 
 (defun distinguish-category (original-name)
@@ -433,10 +434,11 @@
    category."
   (let ((new-name (string-append original-name '#:-auto)))  
     (if (search "-" (format nil "~a" original-name))
-        (format t "*** distinguish-category given ~a produces ~a~%" original-name new-name)
-        ;;(lsp-break "*** CORE CATEGORY OVERLAP distinguish-category given ~a produces ~a~%" original-name new-name)
-        (format t "*** CORE CATEGORY OVERLAP distinguish-category given ~a produces ~a~%" original-name new-name)
-        )
+      (format t "*** distinguish-category given ~a produces ~a~%"
+              original-name new-name)
+        ;;(lsp-break "*** CORE CATEGORY OVERLAP distinguish-category ~given ~a produces ~a~%" original-name new-name)
+        (format t "*** CORE CATEGORY OVERLAP distinguish-category given ~a~
+                produces ~a~%" original-name new-name))
     (name-to-use-for-category new-name)))
    
 
