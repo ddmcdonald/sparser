@@ -713,9 +713,13 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
       t)))
 
 (defun consonant? (character)
+  (if (stringp character)
+      (setq character (elt character 0)))
   (not (member character *vowels* :test #'eql)))
 
 (defun vowel? (character)
+  (if (stringp character)
+      (setq character (elt character 0)))
   (member character *vowels* :test #'eql))
 
 (defun semi-vowel? (character)
