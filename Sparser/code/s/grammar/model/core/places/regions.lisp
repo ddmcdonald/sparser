@@ -67,7 +67,7 @@
 
 
 (define-category typed-region  ;; "the Kurdish city of Sulaimaniya"
-  :specializes region
+  :specializes location
   :rule-label region
   ;; This is a category that fits the way the information is packaged.
   ;; We're really identifying something about the region itself,
@@ -138,17 +138,16 @@
   ;; /// replace with define-type-category-constructor ?
   (let* ((symbol (name-to-use-for-category string))
          (word (define-word string))
-         (category (category-named symbol))
-         (new? (null category)))
-    (when new? ;; for re-evaluation of this file
+         (category (category-named symbol)))
       (let ((expr `(define-category ,symbol ;; e.g. 'city
                      :specializes region-type
                      :rule-label region-type
                      :instantiates :self
                      :bindings (name ,word)
                      :realization (:common-noun ,string))))
-        (setq category (eval expr))))
-    (let ((rule
+        (setq category (eval expr)))))
+
+   #| (let ((rule
            (if new?
              (first (get-rules category))
              (construct-cfr ;; consider def-cfr/expr
@@ -157,8 +156,9 @@
               (category-named 'common-noun) ;; form
               category ;; referent
               :define-cfr)))) ;; source -- see note-grammar-module
+      
       (values category
-              rule))))
+              rule))))  |#
 
 
 (eval-when (:compile-toplevel :load-toplevel :execute)

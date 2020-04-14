@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "city"
 ;;;   Module:  "model;core:places:"
-;;;  version:  0.2 September 1995
+;;;  version:  April 2020
 
 ;; initiated 1/91 v1.8
 ;; 0.1 (10/19/93 v2.3) revamped for modern semantics
@@ -25,12 +25,12 @@
 
 (define-category  city
   :instantiates  self
-  :specializes  location
+  :specializes  region-type
   :binds ((name :primitive word)
           (aliases  :primitive list)
           (country . country)
           (state . state))
-  :index (:permanent :key name) ;; deleted country
+  :index (:permanent :key name)
   :realization (:word name))
 
 ;; patch forced in Subsumption-check/complete because "New York"

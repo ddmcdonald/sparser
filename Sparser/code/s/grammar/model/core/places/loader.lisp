@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2011-2020  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:places:"
-;;;  version:  October 2017
+;;;  version:  April 2020
 
 ;; initiated in December 1990, added flags 12/28/91 v2.1
   ;; 1.0 (10/12/92 v2.3) Shadowing to gradually introduce the new semantics
@@ -34,6 +34,17 @@
   (gload "places;compass points")
   (gload "places;traces"))
 
+(gate-grammar *other-locations*
+  (gload "places;places") ;; name-of-location
+  (gload "places;directional rules") ;; "to" + direction
+  (gload "places;paths") ;; highways
+  (gload "places;configurations") ;; intersections, junctions
+  (gate-grammar *countries*
+    (gload "countries;relation"))
+  (gload "places;regions") ;; geographical regions
+  (gload "places;location descriptions")
+  (gload "places;moving"))
+
 (gate-grammar *countries*
   (gload "countries;loader"))
 
@@ -42,15 +53,6 @@
  
 (gate-grammar *US-States*
   (gload "places;US states"))
-
-(gate-grammar *other-locations*
-  (gload "places;places") ;; name-of-location
-  (gload "places;directional rules") ;; "to" + direction
-  (gload "places;paths") ;; highways
-  (gload "places;configurations") ;; intersections, junctions
-  (gload "places;regions") ;; geographical regions
-  (gload "places;location descriptions")
-  (gload "places;moving"))
 
 
 ;; rules have to load last so that referential versions of the

@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993.1994.1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:names:places:countries:"
-;;;  version:  1.1 October 1993
+;;;  version:  April 2020
 
 ;; initiated December 1990
 ;; 1.0 (10/12/92 v2.1) introducing new semantics
@@ -14,7 +13,7 @@
 
 (in-package :sparser)
 
-(lload "countries;object")
-(lload "countries;relation")
-(lload "countries;rules")
+(gload "countries;object")
+;;(gload "countries;relation") -- moved to locations loader
+(gload "countries;rules")
 
