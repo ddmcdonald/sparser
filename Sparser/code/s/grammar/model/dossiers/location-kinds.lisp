@@ -14,7 +14,7 @@
 ;; that has an anaphoric role in many cases: "What region is that?"
 
 (in-package :sparser)
-
+#|
 (define-region-type "region")
 (define-region-type "city")
 (define-region-type "country")
@@ -34,5 +34,5 @@
 (define-border-type "boundary")
 (define-border-type "coast")
 (define-border-type "edge")
-
+|#
 
