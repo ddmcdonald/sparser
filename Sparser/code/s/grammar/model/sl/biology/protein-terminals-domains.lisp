@@ -60,11 +60,33 @@ it is created from N-terminus to C-terminus.|#
   :specializes protein-terminus
   :realization
   (:etf (pre-mod)
-        :noun ("n-terminal" "n-terminus" "N-terminal" "N-terminus"
-                            "N-tail"
-          "n-termini"
-          "amino terminus"
-          "NtA") ;; n-terminal acidic
+        :noun (
+               "N tail"
+               "N terminal end"
+               "N terminal"
+               "N terminus"
+               "N-tail"
+               "N-terminal end"
+               "N-terminal"
+               "N-terminus"
+               "NH 2 terminus"
+               "NH 2 -terminus"
+               "NH2 terminus"
+               "NH2 -terminus"
+               "NH2 terminus"
+               "NH2-terminus"
+               "NtA"
+               "amine terminus"
+               "amine-terminus"
+               "amino terminus"
+               "amino terminus"
+               "n terminal"
+               "n termini"
+               "n terminus"
+               "n-terminal"
+               "n-termini"
+               "n-terminus"
+               ) ;; n-terminal acidic
         :adj "n-terminally"
         :premod context ;; NEEDS TO BE CHANGED -- only here because need :etf (pre-mod), to get synonyms
          ))
