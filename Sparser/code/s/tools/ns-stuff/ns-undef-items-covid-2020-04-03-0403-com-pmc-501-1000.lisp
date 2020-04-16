@@ -123,7 +123,7 @@
     "Illness-specific" "Illumina's" "Immobilon-P" "Importance-to-patient" "In-Fusion" "In-depth"
     "In-gel" "In-vitro" "Information-dependent" "InnateDB_2010_curation_guide"
     "Institute-Frederick" "Inter-University" "Inter-genotype" "Inter-sample" "Interferon-α"
-    "Internet-based" "Intra-host" "Iota-Carrageenan" "Iota-Carrageenan-treated" "J2-071"
+    "Internet-based" "Intra-host" "Iota-Carrageenan" "Iota-Carrageenan-treated" "Italy-02" "J2-071"
     "JAVA-based" "JF-RL" "JFH-HA-PP" "JFH-Luc" "JFH-RR" "JFH-S" "JFH-ΔTM12-HA" "JR-FL" "Jean-Luc"
     "K+-ATPase" "K-means" "K02013" "K6PP_MOUSE" "K80" "KDEL-2" "KDEL-3" "KDEL-4" "KIR2DL1-3"
     "KIR2DS3" "KLA-peptide" "KM670" "KSHV_67" "KV3A6_MOUSE" "Kermack-McKendrick" "Knowledge-based"
