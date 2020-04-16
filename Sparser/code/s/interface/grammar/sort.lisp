@@ -35,8 +35,8 @@
 
 
 (defun capitalization-sensitive-word-order (w1 w2)
-  (let ((s1 (word-pname w1))
-        (s2 (word-pname w2)))
+  (let ((s1 (pname w1))
+        (s2 (pname w2)))
     (cond ((string-equal s1 s2)
            (order-by-capitalization w1 w2))
           ((string< s1 s2) t)

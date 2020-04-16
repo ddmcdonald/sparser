@@ -334,13 +334,16 @@ unknown words.|#
   5. call save-unknown-word-aliquat with the name and filename
 |#
 
-(defun save-unknown-word-aliquat (name outfilename &aux *fnames* *lnames*)
+(defun save-unknown-word-aliquat (name outfilename &key ns-stuff &aux *fnames* *lnames*)
   "Sort the different lists or otherwise clean up the various
    accumulators. Write them to 'outfilename' as a succession
    of lists each bound to a parameter whose name will
    incorporate the name of this run in an attempt to be unique"
   (declare (special *first-names* *last-names*))
-  (with-open-file (out outfilename :direction :output
+  (with-open-file (out (if ns-stuff
+                           (format nil "sparser:tools;ns-stuff;~a" outfilename)
+                           outfilename)
+                       :direction :output
                        :if-exists :overwrite :if-does-not-exist :create)
     (format out ";; ~a sample of unknown words~
                ~%;; created ~a~
@@ -352,7 +355,7 @@ unknown words.|#
                      (find-package :sparser))))
       
       (let ((pnames (loop for word in (sort-words *from-BigMech-default*)
-                       collect (word-pname word)))
+                       collect (pname word)))
             (var-name (tailored-string 'bigmech)))
         (format out "~&~%;; ~a extracted as unknown bio-entity~%"
                 (length pnames))
