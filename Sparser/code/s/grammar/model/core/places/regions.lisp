@@ -29,93 +29,6 @@
 
 (in-package :sparser)
 
-;;;-----------------------------------
-;;; specific places that are regions
-;;; and not anything more specific
-;;;-----------------------------------
-
-;; Dossier of named regions is [regions]
-;; Dossier of region types and edge types is [location kinds]
-
-(define-category  geographical-area
-  :documentation "E.g. New England, real places. Should be relatively large 
-   and not have a more specific characterization."
-  ;;/// The notion of a named-location is similar and some consolidation
-  ;; is in order.
-  :instantiates  location
-  :specializes location
-  :rule-label location
-  :binds ((name :primitive word) 
-          (aliases  :primitive list)
-          (type . region-type)
-          (containing-region . location))
-  :index (:permanent :key name)
-  :realization (:proper-noun name)) ;; for the predefined ones
-
-(defun define-geographical-area (name-string &key part-of aliases)
-  (let ((r (define-named-individual-with-synonyms/expr
-               'geographical-area
-               (cons name-string aliases))))
-    (when part-of
-      (push-debug `(,r ,part-of))
-      (cerror "just continue"
-              "Deal with part-of in region definitions ~
-               now? (\"~a\")" name-string))
-    ; Note to self to make sure the ancillary bits to this ...
-    ;(setf (get-rules obj) rules)
-    r))
-
-
-(define-category typed-region  ;; "the Kurdish city of Sulaimaniya"
-  :specializes location
-  :rule-label region
-  ;; This is a category that fits the way the information is packaged.
-  ;; We're really identifying something about the region itself,
-  ;; but to get it we need to pull it from this relation.
-  :binds ((type . region-type)
-          (region . region))
-  ;; This ETF has the transfer built into it, as give-kind-its-name,
-  ;; which is awfully specialized. 
-  :realization (:tree-family  kind-of-name ;; "strait of Hormous"
-                :mapping ((np . region-type)
-                          (complement . name-word)
-                          (result-np . :self))))
-;; Something trick in setup-rdata creates duplicate rules if we include 'name'
-;; in the labels of the complement in the mapping
-
-(def-cfr typed-region (region-type of-name)
-  :form np
-  :referent (:function give-kind-its-name left-edge right-edge))
-
-
-(defun give-kind-its-name (region name)
-  "Takes phrases like 'the village of Dolwyddelan' or 'strait of Hormous'
-   and creates instances of named-location from them, recording both the
-   name and the type of region."
-  (declare (special *subcat-test*))
-  (if *subcat-test*
-    (itypep region 'region-type)
-
-    (let* ((region-name (convert-to-canonical-name-form name))
-           #+ignore(name-edge (right-edge-for-referent))
-           (sequence (extract-name-sequence-from-name region-name))
-           (region-type (itype-of region)))
-
-      (push-debug `(,region ,sequence))
-
-      (let ((loc-name (define-or-find-individual 'name-of-location
-                          :sequence sequence
-                          :type region-type)))
-        (push-debug `(,loc-name))
-        (let ((place
-               (define-or-find-individual 'named-location
-                   :type region-type
-                   :name loc-name)))
-
-          place)))))
-
-
-
 ;;;----------------------------
 ;;; kinds of regions/locations
 ;;;----------------------------
@@ -146,6 +59,54 @@
                      :bindings (name ,word)
                      :realization (:common-noun ,string))))
         (setq category (eval expr)))))
+
+
+
+;;;--------------------------------------
+;;; name + type of region
+;;;--------------------------------------
+
+(define-category named-region-type ;; "the Kurdish city of Sulaimaniya"
+  :specializes location
+  :rule-label region
+  :documentation "This is a category that fits the way the information
+ is packaged. We're really identifying something about the region itself,
+ but to get it we need to pull it from this relation."
+  :binds ((type . region-type)
+          (region . region))
+  ;; This ETF has the transfer built into it, as give-kind-its-name,
+  ;; which is awfully specialized. 
+  :realization (:tree-family kind-of-name ;; "strait of Hormous"
+                :mapping ((np . region-type)
+                          (complement . name-word)
+                          (result-np . :self))))
+
+(def-cfr named-region-type (region-type of-name)
+  :form np
+  :referent (:function give-kind-its-name left-edge right-edge))
+
+
+(defun give-kind-its-name (region name)
+  "Takes phrases like 'the village of Dolwyddelan' or 'strait of Hormous'
+   and creates instances of named-location from them, recording both the
+   name and the type of region."
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    (itypep region 'region-type)
+
+    (let* ((region-name (convert-to-canonical-name-form name))
+           #+ignore(name-edge (right-edge-for-referent))
+           (sequence (extract-name-sequence-from-name region-name))
+           (region-type (itype-of region)))
+      (let ((loc-name (define-or-find-individual 'name-of-location
+                          :sequence sequence
+                          :type region-type)))
+        (let ((place
+               (define-or-find-individual 'named-location
+                   :type region-type
+                   :name loc-name)))
+          place)))))
+
 
 
 
@@ -190,6 +151,7 @@
 (define-category border
    :specializes location
    :instantiates :self
+   :lemma (:common-noun "border")
    :rule-label location
    :binds ((type . border-type)
            (region . location)) ;; be more specific in v/r ?
@@ -207,6 +169,83 @@
 ;; to the rule-label override, and we're very much instantiating a
 ;; border here, not a location. Location is just the label for 
 ;; purposes of phrase composition. 
+
+
+
+;;;-----------------------------------
+;;; specific places that are regions
+;;; and not anything more specific
+;;;-----------------------------------
+
+;; Dossier of named regions is [regions]
+
+(define-category  geographical-area
+  :documentation "E.g. New England, real places. Should be relatively large 
+   and not have a more specific characterization."
+  ;;/// The notion of a named-location is similar and some consolidation
+  ;; is in order.
+  :instantiates  location
+  :specializes location
+  :rule-label location
+  :binds ((name :primitive word) 
+          (aliases  :primitive list)
+          (type . region-type)
+          (containing-region . location))
+  :index (:permanent :key name)
+  :realization (:proper-noun name)) ;; for the predefined ones
+
+(defun define-geographical-area (name-string #|&key part-of aliases|#)
+  (let ((r (define-named-individual-with-synonyms/expr
+               'geographical-area (list name-string))))
+    #|(when part-of
+      (push-debug `(,r ,part-of))
+      (cerror "just continue"
+              "Deal with part-of in region definitions ~
+               now? (\"~a\")" name-string))
+    ; Note to self to make sure the ancillary bits to this ...
+    ;(setf (get-rules obj) rules) |#
+    r))
+
+
+;;--- continents
+
+(define-category continent ;; "Asia"
+  :specializes geographical-area
+  :rule-label location
+  :lemma (:common-noun "continent")
+  :realization (:proper-noun name))
+
+(define-type-instance-constructor continent)
+
+
+;;--- oceans
+
+(define-category body-of-water
+  :specializes geographical-area
+  :documentation "Typing category to make the distinction
+ from the other kinds of name geographical regions")
+
+(define-category ocean ;; "Pacific Ocean"
+  :specializes body-of-water
+  :rule-label location
+  :lemma (:common-noun "ocean")
+  :realization (:proper-noun name))
+
+(define-type-instance-constructor ocean)
+
+
+;;--- seas
+
+(define-category sea ;; "Black Sea"
+  :specializes geographical-area
+  :rule-label location
+  :lemma (:common-noun "sea")
+  :realization (:proper-noun name))
+
+(define-type-instance-constructor sea)
+
+
+
 
 
 ;;;---------

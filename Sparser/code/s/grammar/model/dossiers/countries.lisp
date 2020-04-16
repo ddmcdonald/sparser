@@ -265,16 +265,5 @@
 (define-country "Tibet" :adjective "Tibetan")
 (define-country "Korea" :adjective "Korean") ;; we have examples of both tibetan and korean
 
-;;; CONTINENTS - currently going under countries so they get definitions
-(define-country "Africa" :adjective "african")
-(define-country "Asia" :adjective "asian")
-(define-country "Europe" :adjective "european")
-(define-country "North America" :adjective "North American")
-(define-country "South America" :adjective "South American")
-(define-country "Central America" :adjective "Central American")
 ;; hack - because countries can't be pluralized, we need a way to refer to the continents collectively
-(define-country "Americas") ;;
-
-(define-country "Oceania")
-
-;; not sure how we want to add "Caribbean" "mediterranean" "Arab"
+(define-country "Americas")
