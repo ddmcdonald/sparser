@@ -35,28 +35,6 @@
 
 ;; dossier is [path-types]
 
-(defun find-or-make-named-type-of-location (location-name)
-  (let ((type (value-of 'type location-name)))
-    (push-debug `(,location-name ,type));; (lsp-break "type = ~a" type)
-    (cond
-     ((not (category-p type))
-      (or (find/location-with-name location-name)
-          (make/location-with-name location-name)))
-     ((itypep type 'path-type) ;;(itypep type 'region-type))
-      (let ((symbol (cat-name type)))
-        ;; doesn't seem to be a make with correct
-        ;; factoring to take the category directly
-        (or (find-individual symbol :name location-name)
-          (let ((i (make-an-individual symbol :name location-name)))
-            ;; The automatic indexing will have run 
-            ;; (push-debug `(,i)) (break "look at individual")
-            i))))
-     (t
-      ;; not sure what this would be. Letting it fall through
-      ;; to 
-      (find/location-with-name location-name)))))
-
-
 ;;;------------------
 ;;; highway patterns
 ;;;------------------
@@ -67,6 +45,7 @@
   :instantiates :self
   :rule-label path
   :specializes location
+  :lemma (:common-noun "highway")
   :binds ((authority :or country US-state)
           (number . number))
   :realization (:tree-family pair-instantiates-category
@@ -112,4 +91,27 @@
                           (complement . path))))
 
 
-  
+
+;;--- used by establish-referent-of-pn to sort out location names
+
+(defun find-or-make-named-type-of-location (location-name)
+  (let ((type (value-of 'type location-name)))
+    (push-debug `(,location-name ,type));; (lsp-break "type = ~a" type)
+    (cond
+     ((not (category-p type))
+      (or (find/location-with-name location-name)
+          (make/location-with-name location-name)))
+     ((itypep type 'path-type) ;;(itypep type 'region-type))
+      (let ((symbol (cat-name type)))
+        ;; doesn't seem to be a make with correct
+        ;; factoring to take the category directly
+        (or (find-individual symbol :name location-name)
+          (let ((i (make-an-individual symbol :name location-name)))
+            ;; The automatic indexing will have run 
+            ;; (push-debug `(,i)) (break "look at individual")
+            i))))
+     (t
+      ;; not sure what this would be. Letting it fall through
+      ;; to 
+      (find/location-with-name location-name)))))
+
