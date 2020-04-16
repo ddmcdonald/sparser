@@ -993,16 +993,40 @@ is a uniform treatment.|#
                                :index (:permanent :key name)
                                ;;:bindings (type-name ,word) /// rethink -- was variable on location
                                :realization (:common-noun ,string))))
-                  (setq category (eval expr))))
-;; Double check, but this is likely completely redundant with the
-;; rules created by the category given that we've fed it a specific
-;; word.
-;;               (let ((rule
-;;                      (define-cfr super-category `(,word)
-;;                        :form (category-named 'common-noun)
-;;                        :referent category))) ;;//// :schema
-;;                 (values category
-;;                         rule))
-              ))))
+                  (setq category (eval expr)))) ))))
     (eval form)))
 
+
+
+(defmacro define-type-instance-constructor (category-name)
+  "Sets up a standard framework for defining named individuals of a particular type,
+   where define-category is the prototypical example."
+  (assert (symbolp category-name))
+  (let ((fn-name (intern (string-append #+mlisp "define-"
+                                         #-mlisp "DEFINE-"
+                                         (symbol-name category-name))
+                         (find-package :sparser))))
+    `(def-type-instance-constructor ',fn-name ',category-name)))
+
+(defun def-type-instance-constructor (fn-name category-name)
+  (let* ((category (category-named category-name))
+         (form
+         `(defun ,fn-name (string &key aliases adjective)
+            (let ((i (define-or-find-individual ',category-name
+                         :name string)))
+              (when adjective
+                (let ((adjectives (ensure-list adjective)))
+                  (loop for adj in adjectives
+                     as word = (resolve/make adj)
+                     do (define-cfr ,category (list word)
+                          :form category::adjective
+                          :referent i))))
+              (when aliases
+                (loop for pname in aliases
+                   as word = (resolve/make pname)
+                   do (define-cfr ,category (list word)
+                        :form category::proper-noun
+                        :referent i)))
+              i))))
+    (eval form)))
+              
