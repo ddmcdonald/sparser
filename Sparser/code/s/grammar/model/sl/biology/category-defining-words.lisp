@@ -35,7 +35,6 @@
 (def-synonym demonstrative (:noun "demonstrative")) 
 (def-synonym dimension (:noun "dimension")) 
 (def-synonym great (:adj ("great" :comparative "greater" :superlative "greatest")))
-;;(def-synoynm highway (:noun "highway"))
 (def-synonym imperative (:noun "imperative")) 
 (def-synonym indefinite (:noun "indefinite")) 
 (def-synonym interval (:noun "interval")) 
