@@ -83,6 +83,9 @@
    (restriction :accessor mention-restriction)
    (source :accessor mention-source)
    (dependencies :initform nil :accessor dependencies)
+   (text-offsets :accessor mention-offsets
+    :documentation "A pair of numbers that are the begin/end character
+      offsets relative to the paragraph. Indexes are between characters")
    (location-in-paragraph :accessor mentioned-where
                           :documentation "An encoding of the location at which
      this mention occurred. Given the present implementation,
@@ -199,10 +202,13 @@
   ;;  changes the referent of an edge from a category to an individual
   ;; we need to update the discourse mention
   (if (typep (edge-mention edge) 'discourse-mention)
-      (update-mention-referent (edge-mention edge) referent)
-      (when *warn-on-update-edge-mention-referent*
-        (warn "update-edge-mention-referent called on edge with reset referent ~s ~s~%"
-              edge referent))))
+    (let* ((mention+referent (update-mention-referent (edge-mention edge) referent))
+           (m (car mention+referent)))
+      (setf (mention-offsets m) (cons (edge-start-offset edge)
+                                      (edge-end-offset edge))))
+    (when *warn-on-update-edge-mention-referent*
+      (warn "update-edge-mention-referent called on edge with reset referent ~s ~s~%"
+            edge referent))))
 
 (defparameter *dont-check-inconsistent-mentions* nil)
 (defun check-consistent-mention (mention)
@@ -394,6 +400,8 @@
                                   (indiv-old-binds i)
                                   (when (edge-p source) (semantic-edges-under source))
                                   (when (edge-p source) source)))))
+                     (setf (mention-offsets new-mention) (cons (edge-start-offset source)
+                                                               (edge-end-offset source)))
                      new-mention)))))
          (declare (special m *mention-individual* *mention-source*))
          (fill-in-mention m i source)
