@@ -280,17 +280,22 @@
 ;;; displaying content
 
 (defgeneric show-entities (contents)
+  (:method ((s sentence))
+    (show-entities (contents s)))
   (:method ((c entities-and-relations))
     (entities-in-sentence c)))
 
 (defgeneric show-relations (contents)
+  (:method ((s sentence))
+    (show-relations (contents s)))
   (:method ((c entities-and-relations))
     (relations-in-sentence c)))
 
 (defgeneric show-individuals (contents)
+  (:method ((s sentence))
+    (show-individuals (contents s)))
   (:method ((c sentence-discourse-history))
     (sentence-individuals c)))
-
 
 
 
