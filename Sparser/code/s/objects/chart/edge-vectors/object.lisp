@@ -65,14 +65,14 @@
 
 
 (defun edge-start-offset (edge)
-  (pos-character-index (pos-starts-here edge)))
+  (pos-character-index (pos-edge-starts-at edge)))
 
 (defun edge-end-offset (edge)
-  (pos-character-index (pos-ends-here edge)))
+  (pos-character-index (pos-edge-ends-at edge)))
 
 (defun edge-character-offsets (edge)
-  (values (pos-character-index (pos-starts-here edge))
-          (pos-character-index (pos-ends-here edge))))
+  (values (pos-character-index (pos-edge-starts-at edge))
+          (pos-character-index (pos-edge-starts-at edge))))
 
 ;;;--------------------------------
 ;;; searching through edge vectors
