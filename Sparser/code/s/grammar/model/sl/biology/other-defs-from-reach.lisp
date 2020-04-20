@@ -928,7 +928,7 @@
 (def-indiv-with-id molecule "W13" "PUBCHEM:4299") 
 (def-indiv-with-id molecule "Voltage" "PUBCHEM:93460") 
 (def-indiv-with-id molecule "Vitamin K3" "PUBCHEM:4055") 
-(def-indiv-with-id molecule "Vitamin E" "PUBCHEM:14985") 
+;(def-indiv-with-id molecule "Vitamin E" "PUBCHEM:14985") 
 (def-indiv-with-id molecule "Vigabatrin" "PUBCHEM:5665") 
 (def-indiv-with-id molecule "Velcade" "PUBCHEM:387447") 
 (def-indiv-with-id molecule "Valproate" "PUBCHEM:3121") 

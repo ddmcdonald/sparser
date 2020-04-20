@@ -115,6 +115,7 @@ ns-filtering steps, that will be saved in sparser:tools;ns-stuff;"
                                        'MAKE-NS-PAIR ;; these are mostly not of interest, but may have some false-negs
                                        :NUMBER-FSA
                                        'MAKE-WILD-TYPE-EDGE
+                                       'MAKE-HYPHENATED-NUMBER
                                        ))
                                 (when (and (symbolp (car (third n)))
                                            (symbol-package (car (third n))))
@@ -126,6 +127,10 @@ ns-filtering steps, that will be saved in sparser:tools;ns-stuff;"
                                      :LESS-THAN_OR_SLANTED_EQUAL_TO :LESS-THAN_OR_EQUAL_TO :LESS-THAN
                                      :SHARP-SIGN :DIGITS :NUMBER :VERTICAL-BAR :UNDER-BAR :AND-SIGN 
                                      :LEFT-POINTING-DOUBLE-ANGLE-QUOTATION_MARK
+                                     :OPEN-ANGLE-BRACKET :CLOSE-ANGLE-BRACKET
+                                     :LEFT-POINTING_ANGLE_BRACKET
+                                     :OPEN-CURLY-BRACKET :CLOSE-CURLY-BRACKET
+                                     :N-ARY_SUMMATION :PERCENT
                                      '(COMMON-NOUN |HTTP://|))
                                :test #'equal) 
                        ;; removed :SINGLE-DIGIT because there are several things of interest starting with 5α
@@ -316,7 +321,13 @@ ns-filtering steps, that will be saved in sparser:tools;ns-stuff;"
     "\\" "^" "_" "`"  "|" "~"
     "«" "®" "°" "±" "´" "·" "º" "Å" "É" "Ö"  "ß" "ö" "͂"
     "‐" "–" "―" "…" " " "″" "™" "→" "↔" 
-    "−" "∩" "∼" "≈" "≠" "≤" "≥" "≫" "⊇" "⋅" "▵" "⩽" "⩾" "•" "“" "‑"))
+    "−" "∩" "∼" "≈" "≠" "≤" "≥" "≫" "⊇" "⋅" "▵" "⩽" "⩾" "•" "“" "‑" "∝"))
+
+(defparameter *bad-anywhere*
+  '("≈" "≠" "≤" "≥" "≫" "⊇" "⋅" "▵" "⩽" "⩾" "=" "<" ">" "∝" "±" "→" "↔" "∑" "{" "}" "!" "…" "")) ;; last item is weird char not space
+
+(defparameter *hyphen-no*
+    '("twenty" "thirty" "forty" "fifty" "sixty" "seventy" "eighty" "ninety"))
 
 (defun remove-predef-ns (&optional (rd-ns *rd-ns*))
   "Remove items that resolve and hence are already defined in Sparser"
@@ -329,6 +340,11 @@ ns-filtering steps, that will be saved in sparser:tools;ns-stuff;"
                                                      (search "‑" x)))
                                            (and (eq 2 (search "s" x)) 
                                                 (upper-case-p (char x 1)))))
+                                  (find #\newline x)
+                                  (loop for bad in *bad-anywhere*
+                                        thereis (search bad x))
+                                  (loop for num in *hyphen-no*
+                                          thereis (eq 0 (search num x :test #'equalp)))
                                   (loop for bad-initial in *bad-inits* 
                                         thereis (eq 0 (search bad-initial x)))
                                   (resolve x)
@@ -343,11 +359,9 @@ ns-filtering steps, that will be saved in sparser:tools;ns-stuff;"
                                       prefix)))
   "Save the collected undefined items to a file"
   (with-open-file (stream filename :direction :output :if-exists :supersede)
-    (pprint `(in-package :sp) stream)
-    (pprint
-     `(defparameter ,(intern (format nil "*NS-UNDEF-~a*" prefix) (find-package :sp))
-        ',*undef-ns*)
-     stream))
+    (format stream "(in-package :sp)")
+    (format stream
+     "(defparameter *ns-undef-~a*~% '~s)" prefix *undef-ns*))
   filename)
 
 (defun split-ns-file-for-trips (&key (n 2500) (file nil) (prefix nil))
@@ -366,9 +380,13 @@ filenum is for the output name"
                                            file ".lisp")
                               :direction :input
                               :external-format :UTF-8)
-               (read stream nil))
+               (read stream nil)
+               (eval (third (read stream nil)))
+               ;;(symbol-value (intern (format nil "*~a*" file) (find-package :sp)))
+               )
              *undef-ns*))
          (quot (floor (length undef-ns) n)))
+    
     (loop for i from 0 to quot
           do (ns-undef->trips (subseq undef-ns (* i n)
                                       (unless (eq i quot)

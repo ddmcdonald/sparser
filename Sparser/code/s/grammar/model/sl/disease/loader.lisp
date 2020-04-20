@@ -24,5 +24,19 @@
 
 (gload "disease;covid-19")
 
+
 (defun disease-loaded-after-bio ()
-  (gload "disease;misc-covid"))
+  (gload "disease;misc-covid")
+
+  ;; moved from bio;new-defs;new-diseases
+  ;; partially supercede the covid-19 and misc-covid files, but not
+  ;; removing those until we have more discussions integrating viruses
+  ;; (and bacteria) as organisms w/ pathogens and the resulting
+  ;; diseases
+  ;; these are loaded after bio because their superclasses are still in
+  ;; bio;taxonomy for now
+(gload "disease;viruses")
+(gload "disease;bacteria")
+(gload "disease;cancers")
+(gload "disease;other-medical-conditions") ;; diseases, syndromes, symptoms
+  )

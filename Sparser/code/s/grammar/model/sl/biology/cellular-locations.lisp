@@ -39,7 +39,8 @@
        
 (define-cellular-location "Golgi apparatus" "GO:0005794")
 (define-cellular-location "basolateral plasma membrane" "GO:0016323")
-(define-cellular-location "caveola" "GO:0005901")
+;(define-cellular-location "caveola" "GO:0005901")
+(def-indiv-with-id cellular-location "caveola" "GO:0005901" :name "caveola" :plural "caveolae")
 (define-cellular-location "cell leading edge" "GO:0031252")
 (define-cellular-location "cell-cell junction" "GO:0005911")
 (define-cellular-location "chloride channel" "GO:0005254" :synonyms ("chloride-channel" "Cl channel" "calcium-activated Cl channel" "Ca-activated Cl channel"))

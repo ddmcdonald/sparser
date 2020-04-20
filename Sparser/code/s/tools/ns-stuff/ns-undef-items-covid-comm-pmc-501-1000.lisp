@@ -1,6 +1,6 @@
 
-(IN-PACKAGE :SP)
-(DEFPARAMETER |*NS-UNDEF-covid-comm-pmc-501-1000*|
+(in-package :sp)
+(defparameter *ns-undef-covid-comm-pmc-501-1000*
   '("198A" "198AA" "198C" "198CC" "2+M-5" "2+M-5+M6" "2+M-6" "323A" "3×FLAG" "577C" "<20-10,000"
     "<4,000" "<k>−1" ">40" ">400,000" "A-2058" "A-375" "A-DNA" "A-H1N1" "A-H5N1" "A-HA" "A-MID"
     "A-SAA" "A-T-G" "A-Tailing" "A-form" "A-to-G" "A1-2" "A1BG_BOVIN" "A260" "A280" "A3-1" "A405"

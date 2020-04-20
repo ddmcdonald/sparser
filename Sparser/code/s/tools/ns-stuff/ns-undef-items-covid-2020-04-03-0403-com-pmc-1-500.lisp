@@ -1,6 +1,5 @@
-
-(IN-PACKAGE :SP)
-(DEFPARAMETER |*NS-UNDEF-covid-2020-04-03-0403-COM-PMC-1-500*|
+(in-package :sp)
+(defparameter *ns-undef-covid-2020-04-03-0403-com-pmc-1-500*
   '("1R1L" "31st" "<25-bp" ">400" ">650IU" ">90" "A-0452" "A-115" "A-120" "A-4416" "A-859" "A-899"
     "A-905" "A-AFFY-45" "A-Fos" "A-GFP" "A-H1N1" "A-H2N2" "A-H3N2" "A-ISRE-W" "A-JV" "A-LW" "A-MLV"
     "A-Q461" "A-RNA" "A-T-G-C" "A-form" "A-type" "A182" "A260" "A280nm" "A3-supertype" "A33" "A490"

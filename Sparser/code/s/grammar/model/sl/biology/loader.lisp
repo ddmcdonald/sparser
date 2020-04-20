@@ -41,7 +41,7 @@
 ;(gload "bio;standardized-protein-defs-no-fams-complete")
 ;(gload "bio;standardized-protein-defs-new")
 (gload "bio;covid-proteins")
-;(gload "bio;non-upa-upm-proteins") all of these have been folded into real defs now
+;;(gload "bio;non-upa-upm-proteins") all of these have been folded into real defs now
 (gload "bio;proteins-revised") 
 (gload "bio;fix-protein-defs")
 #|
@@ -79,6 +79,9 @@
 (gload "bio;new-defs;new-substances")
 (gload "bio;other-defs-from-reach") ; temporary -- will be folded into the correct definition files once checked
 ;(gload "bio;new-defs;reach-additional-proteins") folded into std prot
+(gload "bio;new-defs;suspect-trips-defs") ;; these will be vetted more later
+
+
 
 (gload "bio;amino-acids")
 (gload "bio;terms-to-move")

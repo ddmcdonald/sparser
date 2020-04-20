@@ -137,3 +137,13 @@
 ;; post covid
 (def-indiv-with-id bio-process "gravitropism" "GO:0009630" :name "gravitropism")
 
+(def-indiv-with-id bio-process "ERAD" "GO:0030433" :name "ubiquitin-dependent ERAD pathway") 
+(def-indiv-with-id bio-process "XDR" "NCIT:C102633" :name "extensively drug resistance process") 
+(def-indiv-with-id bio-process "neuronophagia" "NCIT:C120901" :name "neuronophagia")
+(def-indiv-with-id bio-process "cross-reactive" "NCIT:C96482" :name "cross reaction") 
+(def-indiv-with-id bio-process "cross-priming" "GO:0042590" :name "antigen processing and presentation of exogenous peptide antigen via MHC class I") 
+(def-indiv-with-id bio-process "cross-presentation" "GO:0002479" :name "antigen processing and presentation of exogenous peptide antigen via MHC class I, TAP-dependent") 
+(def-indiv-with-id bio-process "drug-resistance" "NCIT:C16523" :name "drug resistance process") 
+(def-indiv-with-id bio-process "pseudo-uridylation" "GO:0001522" :name "pseudouridine synthesis") 
+(def-indiv-with-id bio-process "self-tolerance" "NCIT:C17712" :name "immunologic tolerance") 
+(def-indiv-with-id bio-process "reproduc-tive" "NCIT:C17087" :name "reproduction") 

@@ -1080,9 +1080,23 @@
      :etf (sv)
      :s cancer))
 
+(define-category medical-condition  :specializes bio-context
+  :mixins (has-uid)
+  :binds ((organ bio-organ))
+  :instantiates self
+  :index (:permanent :key name)
+  :realization
+    (:common-noun name
+     :noun "medical condition"
+     :m organ
+     :of organ
+     :in organ))
 
+(noun "abnormality" :super medical-condition)
+(noun "disorder" :super medical-condition)
+(noun "symptom" :super medical-condition)
 
-(define-category disease  :specializes bio-context
+(define-category disease  :specializes medical-condition
   :mixins (has-uid)
   :binds ((organ bio-organ))
   :instantiates self
@@ -1107,7 +1121,7 @@
   :realization (:common-noun name))
 
 
-(define-category injury  :specializes bio-context
+(define-category injury  :specializes medical-condition
   :mixins (has-uid)
   :binds ((organ bio-organ))
   :instantiates self
@@ -1413,9 +1427,10 @@
 (define-category organism ;; used in biopax
  :specializes endurant
  :mixins (has-uid biological)
+ :bindings (uid "NCIT:C14250")
  :instantiates self  
  :index (:permanent :key name)
- :lemma (:common-noun "organism")
+ :lemma (:common-noun ("organism" "taxon")) ;; ncit considers taxon a synonym, and it's not exactly wrong
  :realization
    (:common-noun name))
 
@@ -1433,6 +1448,12 @@
   :instantiates self 
   :index (:permanent :key name)
   :lemma (:common-noun "species")
+  :realization (:common-noun name))
+
+(define-category strain :specializes organism ;; biological variant - may want to change how this is implemented 
+  :instantiates self 
+  :index (:permanent :key name)
+  :lemma (:common-noun "strain")
   :realization (:common-noun name))
 
 (define-category virus :specializes organism

@@ -741,7 +741,8 @@
 ;; post covid
 (def-indiv-with-id coronavirus "SARS-CoV-2" "NCIT:C169076" :name "SARS Coronavirus 2"
                    :synonyms ("SARS-CoV2" "2019-nCoV" "2019 Novel Coronavirus" "COVID-19" "covid-19" "covid19" "COVID19"
-                              "nCoV" "SARS-CoV-2" "Severe Acute Respiratory Syndrome Coronavirus 2"))
+                                          "nCoV" "SARS-CoV-2" "Severe Acute Respiratory Syndrome Coronavirus 2" "nCoV-2019"
+                                          "novel-coronavirus-2019" "2019-CoV" "CoV-2019"))
 
 
 (def-indiv-with-id disease "CADASIL" "ORPHANET:136" :name "CADASIL") 
@@ -756,14 +757,16 @@
 (def-indiv-with-id virus "YFV" "NCIT:C97156" :name "yellow fever virus") 
 (def-indiv-with-id virus "ZIKV" "NCIT:C128553" :name "zika virus") 
 (def-indiv-with-id virus "alphavirus" "NCIT:C112030" :name "alphavirus") 
-(def-indiv-with-id disease "aortitis" "NCIT:C97085" :name "aortitis") 
+
 (def-indiv-with-id virus "avulavirus" "NCIT:C117722" :name "avulavirus") 
+(def-indiv-with-id disease "aortitis" "NCIT:C97085" :name "aortitis")
 (def-indiv-with-id disease "bacteraemia" "EFO:0003033" :name "bacteriemia") 
 (def-indiv-with-id coronavirus "betacoronavirus" "NCIT:C113207" :name "betacoronavirus") 
 (def-indiv-with-id virus "bocavirus" "NCIT:C127691" :name "bocaparvovirus") 
 (def-indiv-with-id disease "coagulopathy" "NCIT:C2902" :name "coagulation disorder") 
 ;(def-indiv-with-id virus "coronaviridae" "NCIT:C113205" :name "coronaviridae") made category
 (def-indiv-with-id disease "dengue" "NCIT:C34528" :name "dengue fever") 
+
 (def-indiv-with-id virus "echovirus" "NCIT:C112272" :name "echovirus") 
 (def-indiv-with-id disease "eclampsia" "NCIT:C87167" :name "eclampsia") 
 (def-indiv-with-id disease "enterocolitis" "EFO:1001481" :name "enterocolitis") 

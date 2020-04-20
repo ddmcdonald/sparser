@@ -1,6 +1,6 @@
 
-(IN-PACKAGE :SP)
-(DEFPARAMETER |*NS-UNDEF-covid-2020-03-18-RXIV-1-end*|
+(in-package :sp)
+(defparameter *ns-undef-covid-2020-03-18-rxiv-1-end*
   '("16S-596" "181!" "2019-CoV" "28!" "<190" "<25ng" "<3μg" "<50ng" ">0.35kU" ">100ng" ">15μg"
     "A*02" "A-325C" "A-6455" "A-H1N1" "A-form" "A15-032" "A260" "A280" "A488" "A9dvaccinated"
     "AAV-DUX4" "AAV-tetO-hM3Dq" "AAV-tetO-hM4Di" "AB_2536989" "ACE2-B" "ACE2-Fc" "ACE2-blocking"

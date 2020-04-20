@@ -14,3 +14,4 @@
 (def-indiv-with-id substance "build-up" "NCIT:C94553" :name "buildup") 
 (def-indiv-with-id substance "contaminant" "NCIT:C84280" :name "contaminant") 
 (def-indiv-with-id substance "crystallized" "NCIT:C61303" :name "crystal") 
+(def-indiv-with-id substance "stationary-phase" "NCIT:C70673" :name "stationary phase") ;;yes this is a substance

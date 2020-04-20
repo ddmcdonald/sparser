@@ -71,6 +71,8 @@
   (:noun "fluorescence"))
 (noun "fluorescence correlation spectroscopy" :super bio-method)
 (noun "fluorescence correlation spectroscopy measurements" :super bio-method)
+(noun "FFS" :super bio-method)
+(def-synonym FFS (:noun "fluorescence fluctuation spectroscopy"))
 (noun "fluorescence microscopy" :super bio-method)
 (noun "forster resonance energy transfer" :super bio-method)
 (noun "gel electrophoresis" :super bio-method)
@@ -100,6 +102,8 @@
 (noun "MAPE" :super bio-method) ;; block bad gene def
 (def-synonym MAPE (:noun "mean absolute percentage error"))
 (def-synonym MAPE (:noun "Mean Absolute Percentage Error"))
+(noun "MSA" :super bio-method)
+(def-synonym MSA (:noun "Multiple Sequence Alignment"))
 
 (noun "means" :super bio-method
       :restrict ((object over-ridden))
@@ -117,6 +121,8 @@
 
 (noun "NMR" :super bio-method)
 (def-synonym NMR (:noun "NMR analyses"))
+(noun "nPCR" :super bio-method)
+(def-synonym nPCR (:noun "normalized protein catabolic rate"))
 
 (noun "panel" :super bio-method
       :restrict ((object over-ridden))

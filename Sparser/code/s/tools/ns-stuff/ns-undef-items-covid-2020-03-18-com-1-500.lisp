@@ -1,6 +1,5 @@
-
-(IN-PACKAGE :SP)
-(DEFPARAMETER |*NS-UNDEF-covid-2020-03-18-COM-1-500*|
+(in-package :sp)
+(defparameter *ns-undef-covid-2020-03-18-com-1-500*
   '("18T-HCLV" "198A" "198AA" "198C" "198CC" "1b-2" "323A" "557C" "577C" "66K" "98K" "<4,000"
     "<50,000" ">66%" ">dog" "A*02" "A-0452" "A-11011" "A-11122" "A-145-05" "A-315675" "A-438079"
     "A-GMP" "A-H1N1" "A-form" "A-to-I" "A-type" "A1998" "A2000" "A260" "A9G" "AA-3" "AAL-2"

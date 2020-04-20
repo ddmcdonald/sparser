@@ -39,6 +39,10 @@
 (defparameter *trips-define-proteins* nil)
 
 (defparameter *new-diseases* nil)
+(defparameter *new-bacteria* nil)
+(defparameter *new-viruses* nil)
+(defparameter *new-cancers* nil)
+
 (defparameter *new-bio-complexes* nil)
 (defparameter *new-bio-meth* nil)
 (defparameter *new-bio-proc* nil)
@@ -110,10 +114,13 @@
           ((residue-on-protein molecular-site nil )
            ;;(format t "Rejecting REACH definition ~s~%" term)
            nil)
-          ((bacterium
-            cancer
-            disease
-            virus)
+          (bacterium
+            (stash-def-indiv-with-id word category id name '*new-bacteria*))
+          (cancer
+           (stash-def-indiv-with-id word category id name '*new-cancers*))
+          (virus
+           (stash-def-indiv-with-id word category id name '*new-viruses*))
+          (disease
            (stash-def-indiv-with-id word category id name '*new-diseases*))
           (bio-complex
            (stash-def-indiv-with-id word category id name '*new-bio-complexes*))
@@ -379,7 +386,7 @@ uid binding, if there is one"
                   (search "XFAM:" id)
                   (search "FPLX:" id)
                   (search "GO" id)
-                  (search "NCIT" id) ;; maybe, but can be non-fam, also hgnc?
+                 ; (search "NCIT" id) ;; maybe, but can be non-fam, also hgnc?
                   )
               'protein-family)
              ((and (or (eq 0 (search "mir" name :test #'equalp))
@@ -406,7 +413,8 @@ uid binding, if there is one"
       (molecular-domain 'protein-domain)
       (molecular-site 'residue-on-protein)
       ((organism nonhuman-animal animal fish insect invertebrate
-                 microorganism person fungus plant bird vertebrate) 'organism)
+                 microorganism person fungus plant bird vertebrate)
+       'organism)
       (pharmacologic-substance 'drug)
       (physical-condition 'disease)
       (post-translational-modification 'post-translational-modification)
@@ -508,7 +516,7 @@ uid binding, if there is one"
 
 (defparameter *suppressed-new-defs* '(*suppressed-hyphenated-new-words* *suppressed-mod-redefs* *id-mismatch-redef* *id-and-cat-mismatch* *no-id-redef* *namecat-id-mismatches* *no-rule-redef* *name-id-mismatches* *prot-fam-redef* *violates-no-plural* *word-diff-pos-name* *plurals-of-existing-cats* *diff-pos-of-existing-cats* *plurals-of-existing-words* *diff-pos-of-existing-words* *synonym-for-existing-words* *category-mismatch-existing-cats* *category-mismatch-existing-words* *suppressed-redefs* *non-bio-defs*))
 
-(defparameter *new-id-defs*  '(*new-diseases* *new-bio-complexes* *new-bio-meth* *new-bio-proc* *new-noncell-loc* *new-cells* *new-cell-loc* *new-cell-proc* *new-drugs* *new-molecules* *new-pathways* *new-prot-dom* *new-rna* *new-units* *new-prot-fam* *new-post-trans-mod* *new-substances*))
+(defparameter *new-id-defs*  '(*new-diseases* *new-bacteria* *new-viruses* *new-cancers* *new-bio-complexes* *new-bio-meth* *new-bio-proc* *new-noncell-loc* *new-cells* *new-cell-loc* *new-cell-proc* *new-drugs* *new-molecules* *new-pathways* *new-prot-dom* *new-rna* *new-units* *new-prot-fam* *new-post-trans-mod* *new-substances*))
 
 (defun collect-all-new-defs (functions)
   "Call on a list of functions, e.g., (list #'load-trips-terms #'load-reach-terms)"

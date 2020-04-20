@@ -382,12 +382,30 @@
      :etf (svo-passive)))
 
 ;; manually added from TRIPS
-(define-category poly-adp-ribosylation 
+(define-category adp-ribosylation 
  :specializes ribosylation 
+  :bindings (uid  "GO:0006471") ;; manually added from TRIPS
+  :realization 
+    (:verb ("adp-ribosylate" "ADP-ribosylate") 
+     :noun ("adp-ribosylation" "ADP-ribosylation")
+     :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category mono-adp-ribosylation 
+ :specializes adp-ribosylation 
+  :bindings (uid  "GO:0140289") ;; manually added from TRIPS
+  :realization 
+    (:verb ("mono-adp-ribosylate" "mono-ADP-ribosylate") 
+     :noun ("mono-adp-ribosylation" "mono-ADP-ribosylation")
+     :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category poly-adp-ribosylation 
+ :specializes adp-ribosylation 
   :bindings (uid  "GO:0070212") ;; manually added from TRIPS
   :realization 
-    (:verb "poly-adp-ribosylate"
-     :noun "poly-adp-ribosylation"
+    (:verb ("poly-adp-ribosylate" "poly-ADP-ribosylate")
+     :noun ("poly-adp-ribosylation" "poly-ADP-ribosylation")
      :etf (svo-passive)))
 
 (define-category sumoylation 

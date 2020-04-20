@@ -54,7 +54,7 @@
 ;;;-----------------
 
 (define-category coronavirus :specializes virus
-   :bindings (uid "NCIT:C26431")
+                 :bindings (uid "NCIT:C26431")
    :realization (:noun ("coronavirus" "CoV" "coronaviridae")))
 
 (noun "SSV" :super virus) ;; can't find an ontology with UID but this was to block a protein def that was based on it being 

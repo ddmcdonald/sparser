@@ -142,6 +142,7 @@
      :realization
      (:adj "present"
            :in in-molecule))
+(adj "preset" :super bio-predication) ;; preset t cells
 (adj "prevalent" :super bio-predication)
 (adj "putative" :super bio-predication)
 (adj "rate-limiting" :super bio-predication)
@@ -175,8 +176,10 @@
 
 (adj "supplementary" :super bio-predication) ;; keyword: (ary ADJ)
 (adj "synthetic" :super bio-predication)
+(adj "trans" :super bio-predication) ;; vs. cis
 (adj "unknown" :super bio-predication)
 (adj "unmodified" :super bio-predication)
 (adj "wild-type" :super bio-predication)
 (def-synonym wild-type (:adj "wild type"))
 (def-synonym wild-type (:adj "wt"))
+(def-synonym wild-type (:adj "WT"))
