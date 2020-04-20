@@ -128,22 +128,24 @@
     (code-char 697) ;; "ʹ" #\Modifier_Letter_Prime
     (code-char 707) ;; ˃
     (code-char 710) ;; "ˆ" #\Modifier_Letter_Circumflex_Accent
+    (code-char 714) ;;     "ˊ"
     (code-char 729) ;; "˙", (code = 729)  ;; #\Dot_Above
     (code-char 729) ;; #\*)) ;;"˙", (code = 729)  ;; #\Dot_Above
     (code-char 730) ;; #\Ring_Above
+    (code-char 731) ;; "˛"
     (code-char 732) ;; #\small_tilde
     (code-char 732) ;;"˜"  ;; #\Small_Tilde
-
     (code-char 739) ;; "ˣ" #\MODIFIER_LETTER_SMALL_X
-    
     (code-char 768) ;; #\COMBINING_GRAVE_ACCENT
     (code-char 769) ;; #\Combining_Acute_Accent
     (code-char 772) ;; #\Combining_Macron
     (code-char 776) ;; #\Combining_Diaeresis
     (code-char 807) ;; ̧
     (code-char 817) ;; ̱
+    (code-char 824) ;; "̸"
     (code-char 834) ;; "͂" #\Combining_Greek_Perispomeni
     (code-char 834) ;;";", (code = 894)    
+    (code-char 884) ;; "ʹ"
     (code-char 894) ;; #\Dot_Above
     (code-char 894) ;;";", (code = 894)
     (code-char 900) ;; #\GREEK_TONOS
@@ -161,11 +163,11 @@
     
     (code-char 1013) ;; "ϵ"
     (code-char 1523) ;; ׳
-
     (code-char 7484) ;; ᴼ
     (code-char 7527) ;; ᵧ
     (code-char 7529) ;; ᵩ
     (code-char 8004) ;; #\GREEK_SMALL_LETTER_OMICRON_WITH_PSILI_AND_OXIA
+    (code-char 8125) ;;      "᾽"
     (code-char 8194) ;; en_space
     (code-char 8195) ;; em_space
     (code-char 8195) ;;  #\EM_SPACE      
@@ -196,6 +198,7 @@
     (code-char 8230) ;;"…", (code = 8230)
     (code-char 8231) ;; ‧
     (code-char 8232) ;;"", (code = 8232)
+    (code-char 8234) ;; "‪"
     (code-char 8239) ;; 
     (code-char 8240) ;;"‰", (code = 8240)
     (code-char 8242) ;; prime
@@ -203,21 +206,19 @@
     (code-char 8244) ;; #\TRIPLE_PRIME
     (code-char 8245) ;;‵
     (code-char 8249) ;;‹
+    (code-char 8250) ;; "›"
     (code-char 8257) ;; ⁁
     (code-char 8260) ;; "⁄" #\U+2044
     (code-char 8270) ;; ⁎
     (code-char 8289) ;; ⁡
-
+    (code-char 8290) ;;"⁢"
     (code-char 8313) ;; "⁹" #\SUPERSCRIPT_NINE
-
     (code-char 8322) ;; ₂
     (code-char 8323) ;; ₃
     (code-char 8364) ;; #\EURO_SIGN
     (code-char 8446) ;;"ℒ", (code = 8446)
     (code-char 8451) ;;"℃", (code = 8451)
-
     (code-char 8462) ;; "ℎ", #\PLANCK_CONSTANT
-
     (code-char 8466) ;;"ℒ", (code = 8466)
     (code-char 8467) ;; ℓ
     (code-char 8471) ;;℗
@@ -227,6 +228,7 @@
     (code-char 8491) ;; "Å" ;; angstrom symbol
     (code-char 8499) ;;"ℳ" #\U+2133
     (code-char 8531) ;;"⅓" (code = 8531)
+    (code-char 8532) ;;"⅔"
     (code-char 8544) ;; #\ROMAN_NUMERAL_ONE
     (code-char 8545) ;;"Ⅱ", (code = 8545)
     (code-char 8546) ;; #\ROMAN_NUMERAL_THREE
@@ -241,6 +243,7 @@
     (code-char 8656) ;; #\LEFTWARDS_DOUBLE_ARROW
     (code-char 8658) ;; #\RIGHTWARDS_DOUBLE_ARROW
     (code-char 8660) ;; ⇔ ;; #\left_right_double_arrow
+    (code-char 8669) ;; "⇝"
     (code-char 8672) ;; #\LEFTWARDS_DASHED_ARROW
     (code-char 8677) ;; #\RIGHTWARDS_ARROW_TO_BA
     (code-char 8704) ;; "∀" #\FOR_ALL
@@ -257,6 +260,7 @@
     (code-char 8721) ;; "∑"
     (code-char 8722) ;; ""−" #\U+2212 Minus sign
     (code-char 8725) ;; ∕
+    (code-char 8726) ;; "∖"
     (code-char 8727) ;; "∗" #\U+2217
     (code-char 8728) ;;∘
     (code-char 8729) ;; 
@@ -272,6 +276,8 @@
     (code-char 8745) ;; "∩" #\U+2229
     (code-char 8746) ;; #\UNION
     (code-char 8747) ;; "∫"
+    (code-char 8748) ;; "∬"
+    (code-char 8749) ;; "∭"
     (code-char 8758) ;; ratio  #\U+2236
     (code-char 8759) ;; ∷
     (code-char 8760) ;; ∸
@@ -285,22 +291,26 @@
     (code-char 8793) ;; ≙
     (code-char 8800) ;; "≠"
     (code-char 8801) ;; #\IDENTICAL_TO
+    (code-char 8802) ;; "≢"
     (code-char 8804) ;;  "≤"
     (code-char 8805) ;;"≥", (code = 8805)
     (code-char 8806) ;;"≦", (code = 8806)
     (code-char 8807) ;; #\GREATER-THAN_OVER_EQUAL_TO
     (code-char 8810) ;; "≪" #\U+226B
     (code-char 8811) ;; "≫" #\U+226B
+    (code-char 8818) ;; "≲"
     (code-char 8819) ;; ≳
     (code-char 8834) ;; ⊂
     (code-char 8838) ;; ⊆
     (code-char 8839) ;; "⊇" #\U+2287
+    (code-char 8840) ;; "⊈"
     (code-char 8853) ;; ⊕
     (code-char 8855) ;; ⊗
     (code-char 8867) ;; ⊣
     (code-char 8869) ;; #\UP_TACK
     (code-char 8895) ;;⊿
     (code-char 8896) ;; #\N-ARY_LOGICAL_AND
+    (code-char 8899) ;; "⋃"
     (code-char 8900) ;; "⋄"
     (code-char 8900) ;;"⋅", (code = 8901)
     (code-char 8901) ;;"⋅", (code = 8901)
@@ -308,15 +318,22 @@
     (code-char 8921) ;; #\VERY_MUCH_GREATER-THAN
     (code-char 8942) ;; "▪"
     (code-char 8943) ;; "⋯"
+    (code-char 8945) ;; "⋱"
     (code-char 8970) ;; ⌊
     (code-char 8971) ;; ⌋
     (code-char 9001) ;; 〈
     (code-char 9002) ;; 〉
     (code-char 9082) ;;⍺
+    (code-char 9183) ;; "⏟"
     (code-char 9312) ;; #\CIRCLED_DIGIT_ONE
     (code-char 9313) ;; #\CIRCLED_DIGIT_TWO
     (code-char 9314) ;; #\CIRCLED_DIGIT_THREE
+    (code-char 9315) ;; "④"
+    (code-char 9316) ;; "⑤"
+    (code-char 9317) ;; "⑥"
+    (code-char 9318) ;; "⑦"
     (code-char 9415) ;; "Ⓡ" #\circled_latin_capital_letter_r
+    (code-char 9472) ;; "─"
     (code-char 9474) ;;│
     (code-char 9524) ;;┴
     (code-char 9552) ;; ═
@@ -349,12 +366,14 @@
     (code-char 9794) ;; "♂" #\U+2642
     (code-char 9830) ;; "♦"
     (code-char 9839) ;; #\MUSIC_SHARP_SIGN
-    
-
 
     (code-char 10005) ;; #\MULTIPLICATION_X
+    (code-char 10031) ;; "✯"
     (code-char 10216) ;; ⟨
     (code-char 10217) ;; ⟩
+    (code-char 10230) ;; "⟶"
+    (code-char 10233) ;; "⟹"
+    (code-char 10625) ;; "⦁"
     (code-char 10794)  ;; "⨪" #\U+2A2A
     (code-char 10815) ;; ⨿
     (code-char 10877) ;;"⩽", (code = 10878)
@@ -367,7 +386,21 @@
     (code-char 12297)  ;; 〉
     (code-char 12304)  ;; 【
     (code-char 12305)  ;; 】
-    
+    (code-char 13212) ;; "㎜"
+    (code-char 19977) ;; "三"
+
+    (code-char 55349) ;; "�"
+    (code-char 56348) ;; "�"
+    (code-char 56361) ;; "�"
+    (code-char 56364) ;; "�"
+    (code-char 56465) ;; "�"
+    (code-char 56592) ;; "�"
+    (code-char 56635) ;; "�"
+    (code-char 56650) ;; "�"
+    (code-char 57083) ;; "�"
+    (code-char 57088) ;; "�"
+    (code-char 57091) ;; "�"
+    (code-char 57305) ;; "�"
     (code-char 61472) ;; #\UF020
     (code-char 61508) ;; #\UF044
     (code-char 61537) ;; #\UF061
@@ -376,20 +409,26 @@
     (code-char 61566) ;; #\UF07E
     (code-char 61616) ;; #\UF0B0
     (code-char 61620) ;; #\UF0B4
-
     (code-char 64256)  ;; ﬀ
     (code-char 64257)  ;;"ﬁ", (code = 64257) ;; alphabetical
     (code-char 64258)  ;;"ﬂ", (code = 64258)
+    (code-char 65080) ;; "︸"
+    (code-char 65279) ;; "﻿"
     (code-char 65285)  ;; #\FULLWIDTH_PERCENT_SIGN 
+    (code-char 65286) ;; "＆"
     (code-char 65288)  ;;"（", (code = 65288)
     (code-char 65289)  ;;  #\FULLWIDTH_RIGHT_PARENTHESIS
     (code-char 65291) ;; #\FULLWIDTH_PLUS_SIGN
     (code-char 65292)  ;; #\FULLWIDTH_COMMA 
     (code-char 65293)  ;;"－", (code = 65293)
+    (code-char 65294) ;; "．"
     (code-char 65306)  ;; #\FULLWIDTH_COLON 
     (code-char 65307)  ;; #\FULLWIDTH_SEMICOLON 
     (code-char 65308)  ;; #\FULLWIDTH_LESS-THAN_SIGN 
     (code-char 65310)  ;; #\FULLWIDTH_GREATER-THAN_SIGN 
+    (code-char 65311) ;; "？"
+    (code-char 65325) ;; "Ｍ"
+    (code-char 65357) ;; "ｍ"
     (code-char 65374)  ;; #\FULLWIDTH_TILDE 
     (code-char 65533)  ;; �
     (code-char 119967) ;; "풟"
@@ -417,8 +456,11 @@
     (code-char 9123) ;; #\LEFT_SQUARE_BRACKET_LOWER_CORNER
     (code-char 9124) ;; #\RIGHT_SQUARE_BRACKET_UPPER_CORNER
     (code-char 9126) ;; #\RIGHT_SQUARE_BRACKET_LOWER_CORNER 
-    
-    ))
+    (code-char 10031) ;;     "✯"
+    (code-char 10230) ;; "⟶"
+    (code-char 10233) ;; "⟹"
+    (code-char 10625)  ;; "⦁"
+   ))
 
 (defgeneric add-punctuation-char (identifier)
   (:documentation "Create a punctuation word for the
