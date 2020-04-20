@@ -399,7 +399,7 @@
 
 
 (defparameter *subordinating-adverbs*
-  '(consequently))
+  '(consequently as since))
 
 
 ;;--- nouns and friends
