@@ -486,7 +486,11 @@
     location, so we look for it. We're looking for a wh-pronoun since that's
     what's expected as the base of a wh-question variable.")
   (:method ((e edge))
-    (if (itypep (edge-referent e) 'wh-pronoun)
+    (if (or
+         ;; added tests to account for "why"
+         (itypep (edge-form e) 'wh-pronoun)
+         (itypep (edge-category e) 'wh-pronoun)
+         (itypep (edge-referent e) 'wh-pronoun))
       e
       (if (initial-wh?) ;; it's there somewhere
         (let ((fringe-edges (left-fringe e)))
@@ -506,6 +510,9 @@
    and the first constituent edge."
   (tr :wh-walk 'wh-initial-one-edge)
   (let ((left-edge (edge-left-daughter edge)))
+    (unless (edge-p left-edge)
+      ;; happens for "why"
+      (setq left-edge edge))
     (unless (find-wh-element left-edge)
       (warn "find-wh-element couldn't find a wh in ~a~%within ~s"
             left-edge (current-string))
