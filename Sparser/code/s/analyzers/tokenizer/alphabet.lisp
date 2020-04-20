@@ -852,6 +852,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (413 (:alphabetical . (:lowercase ., (code-char 413)))) 
     (425 (:alphabetical . (:uppercase .,(code-char 425))))  ;; Ʃ
     (432 (:alphabetical . (:uppercase .,(code-char 432))))  ;; ư
+    (435 (:alphabetical . (:lowercase ., (code-char 435)))) ;; "Ƴ"
     (448 (:alphabetical . (:lowercase .,(code-char 448)))) ;; #\Latin_Capital_Letter_Open_E
     (449 (:alphabetical .(:lowercase .,(code-char 449)))) ;;  "ǁ"
     (487 (:alphabetical .(:lowercase .,(code-char 487)))) ;;  "ǧ"
@@ -874,6 +875,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (632 (:alphabetical .(:lowercase .,(code-char 632)))) ;;  "ɸ"
     (657 (:alphabetical . (:uppercase .,(code-char 657)))) ;; #\LATIN_SMALL_LETTER_Z_WITH_CURL
     (697 (:punctuation .,(punctuation-named (code-char 697)))) ;; "ʹ" #\Modifier_Letter_Prime
+
+
     (700 (:alphabetical . (:uppercase .,(code-char 700)))) ;;#\MODIFIER_LETTER_APOSTROPHE
     (706 (:alphabetical . (:uppercase .,(code-char 706)))) ;;˂
     (707 (:punctuation .,(punctuation-named (code-char 707)))) ;; ˃
@@ -887,6 +890,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (730 (:punctuation .,(punctuation-named (code-char 730)))) ;; #\Ring_Above
     (731 (:punctuation .,(punctuation-named (code-char 731)))) ;; "˛"
     (732 (:punctuation .,(punctuation-named (code-char 732)))) ;;"˜"  ;; #\Small_Tilde
+    (733 (:alphabetical . (:lowercase .,(code-char 733)))) ;; #\DOUBLE_ACUTE_ACCENT
     (739 (:alphabetical . (:lowercase .,(code-char 739)))) ;; "ˣ" #\MODIFIER_LETTER_SMALL_X
     (768 (:punctuation .,(punctuation-named (code-char 768)))) ;; #\COMBINING_GRAVE_ACCENT
     (769 (:punctuation .,(punctuation-named (code-char 769)))) ;; #\Combining_Acute_Accent
@@ -894,6 +898,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (771 (:alphabetical . (:uppercase .,(code-char 771)))) ;; #\COMBINING_TILDE
     (772 (:punctuation .,(punctuation-named (code-char 772)))) ;; #\Combining_Macron
     (773 (:alphabetical . (:uppercase .,(code-char 773)))) ;;#\COMBINING_OVERLINE
+    (774 (:alphabetical . (:lowercase ., (code-char 774)))) ;; "̆"
+    (775 (:alphabetical . (:lowercase ., (code-char 775)))) ;; "̇"
     (776 (:punctuation .,(punctuation-named (code-char 776)))) ;; #\Combining_Diaeresis
     (778 (:alphabetical . (:uppercase .,(code-char 778))))     ;;̊
     (803 (:alphabetical . (:uppercase .,(code-char 803)))) ;; #\COMBINING_DOT_BELOW
@@ -903,11 +909,13 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (834 (:punctuation .,(punctuation-named (code-char 834)))) ;;";", (code = 894)    
     (884 (:punctuation .,(punctuation-named (code-char 884)))) ;; "ʹ"
     (894 (:punctuation .,(punctuation-named (code-char 894)))) ;;";", (code = 894)
+    (895 (:alphabetical . (:uppercase .,(code-char 895)))) ;; #\GREEK_CAPITAL_LETTER_YOT 
     (900 (:punctuation .,(punctuation-named (code-char 900)))) ;;΄
     (901 (:alphabetical . (:uppercase .,(code-char 901)))) ;; #\GREEK_DIALYTIKA_TONOS
     (902 (:alphabetical . (:uppercase .,(code-char 902)))) ;;Ά
     (903 (:punctuation .,(punctuation-named (code-char 903)))) ;; ·
     (906 (:alphabetical . (:lowercase .,(code-char 906)))) ;; #\GREEK_CAPITAL_LETTER_IOTA_WITH_TONOS 
+    (908 (:alphabetical . (:lowercase ., (code-char 908)))) ;; "Ό"
     (913 (:greek . (:uppercase .,(code-char 913)))) ;; #\Greek_Capital_Letter_Alpha "Α"
     (914 (:greek . (:uppercase .,(code-char 914)))) ;; #\Greek_Capital_Letter_Beta "Β"
     (915 (:greek . (:uppercase .,(code-char 915)))) ;; #\Greek_Capital_Letter_Gamma "Γ"
@@ -972,11 +980,12 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (982 (:alphabetical . (:uppercase .,(code-char 982)))) ;; ϖ
     (997 (:alphabetical . (:uppercase .,(code-char 997)))) ;; ϥ
 
-    (1008 (:alphabetical .(:lowercase .,(code-char 1008)))) ;;  "ϰ"
+    (1008 (:alphabetical . (:lowercase .,(code-char 1008)))) ;;  "ϰ"
+    (1009 (:alphabetical . (:lowercase ., (code-char 1009)))) ;; "ϱ"
     (1013 (:punctuation  .,(punctuation-named (code-char 1013)))) ;; "ϵ"
     (1030 (:alphabetical . (:uppercase .,(code-char 1030))))      ;; І
     (1040 (:alphabetical . (:uppercase .,(code-char 1040))))      ;; А
-    (1042 (:alphabetical .(:lowercase .,(code-char 1042)))) ;;  "В"
+    (1042 (:alphabetical . (:lowercase .,(code-char 1042)))) ;;  "В"
     (1043 (:alphabetical . (:lowercase ., (code-char 1043)))) 
     (1045 (:alphabetical . (:uppercase .,(code-char 1045))))      ;; Е
     (1050 (:alphabetical . (:uppercase .,(code-char 1050)))) ;; #\CYRILLIC_CAPITAL_LETTER_KA
@@ -1010,6 +1019,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (1093 (:alphabetical . (:uppercase .,(code-char 1093)))) ;; х
     (1094 (:alphabetical . (:uppercase .,(code-char 1094)))) ;; ц
     (1108 (:alphabetical . (:uppercase .,(code-char 1108)))) ;; #\CYRILLIC_SMALL_LETTER_UKRAINIAN_IE      
+    (1111 (:alphabetical . (:lowercase ., (code-char 1111)))) ;; "ї"
     (1185 (:alphabetical . (:uppercase .,(code-char 1185)))) ;; ҡ
     (1255 (:alphabetical . (:uppercase .,(code-char 1255)))) ;; ӧ
     (1279 (:alphabetical . (:uppercase .,(code-char 1279)))) ;; ӿ
@@ -1051,12 +1061,14 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (7712 (:alphabetical . (:uppercase .,(code-char 7712)))) ;; "Ḡ"  #\LATIN_CAPITAL_LETTER_G_WITH_MACRON
     (7818 (:alphabetical . (:uppercase .,(code-char 7818))))      ;; Ẋ
     (7819 (:alphabetical . (:lowercase ., (code-char 7819)))) 
-    (7821 (:alphabetical . (:lowercase ., (code-char 7821)))) 
+    (7821 (:alphabetical . (:lowercase ., (code-char 7821))))
+    (7825 (:alphabetical . (:lowercase .,(code-char 7825)))) ;; #\LATIN_SMALL_LETTER_Z_WITH_CIRCUMFLEX 
     (7842 (:alphabetical .(:lowercase .,(code-char 7842)))) ;;  "Ả"
     (7853 (:alphabetical . (:uppercase .,(code-char 7853)))) ;; ậ
     (7857 (:alphabetical . (:uppercase .,(code-char 7857)))) ;; ằ
     (7867 (:alphabetical . (:uppercase .,(code-char 7867)))) ;; ẻ
     (7868 (:alphabetical . (:uppercase .,(code-char 7868))))      ;; Ẽ
+    (7869 (:alphabetical . (:lowercase .,(code-char 7869)))) ;; #\LATIN_SMALL_LETTER_E_WITH_TILDE 
     (7887 (:alphabetical . (:uppercase .,(code-char 7887)))) ;; ỏ
     (7899 (:alphabetical . (:uppercase .,(code-char 7899)))) ;; ớ
     (7923 (:alphabetical .(:lowercase .,(code-char 7923)))) ;;  "ỳ"
@@ -1104,6 +1116,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8245 (:punctuation  .,(punctuation-named (code-char 8245)))) ;;‵
     (8249 (:punctuation  .,(punctuation-named (code-char 8249)))) ;;‹
     (8250 (:punctuation .,(punctuation-named (code-char 8250)))) ;; "›"
+    (8254 (:alphabetical . (:lowercase ., (code-char 8254)))) ;; "‾"
     (8257 (:punctuation  .,(punctuation-named (code-char 8257)))) ;; ⁁
     (8260 (:punctuation  .,(punctuation-named (code-char 8260)))) ;; "⁄" #\U+2044
     (8270 (:punctuation  .,(punctuation-named (code-char 8270)))) ;; ⁎
@@ -1115,6 +1128,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8323 (:punctuation  .,(punctuation-named (code-char 8323)))) ;; ₃
     (8364 (:punctuation  .,(punctuation-named (code-char 8364)))) ;; #\EURO_SIGN
     (8446 (:punctuation  .,(punctuation-named (code-char 8446)))) ;;"ℒ", (code = 8446)
+    (8450 (:alphabetical . (:lowercase ., (code-char 8450)))) ;; "ℂ"
     (8451 (:punctuation  .,(punctuation-named (code-char 8451)))) ;;"℃", (code = 8451)
     (8459 (:alphabetical .(:lowercase .,(code-char 8459)))) ;;  "ℋ"
     (8462 (:punctuation  .,(punctuation-named (code-char 8462)))) ;; "ℎ", #\PLANCK_CONSTANT
@@ -1142,12 +1156,14 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8545 (:punctuation  .,(punctuation-named (code-char 8545)))) ;;"Ⅱ", (code = 8545)
     (8546 (:punctuation  .,(punctuation-named (code-char 8546)))) ;; #\ROMAN_NUMERAL_THREE
     (8547 (:punctuation  .,(punctuation-named (code-char 8547)))) ;; #\ROMAN_NUMERAL_FOUR
+    (8550 (:alphabetical . (:lowercase ., (code-char 8550)))) ;; "Ⅶ"
     (8569 (:punctuation  .,(punctuation-named (code-char 8569)))) ;; ⅹ
     (8592 (:punctuation  .,(punctuation-named (code-char 8592)))) ;;"←" #\left_right_arrow
     (8593 (:punctuation  .,(punctuation-named (code-char 8593)))) ;;"↑", (code = 8593)
     (8594 (:punctuation  .,(punctuation-named (code-char 8594)))) ;; rightwards arrow
     (8595 (:punctuation  .,(punctuation-named (code-char 8595)))) ;;"↓", (code = 8595)
     (8596 (:punctuation  .,(punctuation-named (code-char 8596))))
+    (8614 (:punctuation .,(punctuation-named (code-char 8614)))) ;; #\RIGHTWARDS_ARROW_FROM_BAR
     (8644 (:punctuation  .,(punctuation-named (code-char 8644)))) ;;⇄     
     (8656 (:punctuation  .,(punctuation-named (code-char 8656)))) ;; #\LEFTWARDS_DOUBLE_ARROW
     (8658 (:punctuation  .,(punctuation-named (code-char 8658)))) ;; #\RIGHTWARDS_DOUBLE_ARROW
@@ -1162,8 +1178,10 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8710 (:punctuation  .,(punctuation-named (code-char 8710)))) ;;"∆" #\U+2206
     (8711 (:punctuation  .,(punctuation-named (code-char 8711)))) ;; ∇
     (8712 (:punctuation  .,(punctuation-named (code-char 8712)))) ;; "∈" #\U+2208
+    (8713 (:punctuation .,(punctuation-named (code-char 8713)))) ;; #\NOT_AN_ELEMENT_OF 
     (8714 (:punctuation  .,(punctuation-named (code-char 8714)))) ;;"∊", (code = 8714)
     (8715 (:punctuation  .,(punctuation-named (code-char 8715)))) ;; ∋
+    (8718 (:alphabetical . (:lowercase ., (code-char 8718)))) ;; "∎"
     (8719 (:punctuation  .,(punctuation-named (code-char 8719)))) ;; "∏"
     (8721 (:punctuation  .,(punctuation-named (code-char 8721)))) ;;"∑", (code = 8721)
     (8722 (:punctuation  .,(punctuation-named #\-))) ;; ""−" #\U+2212 Minus sign
@@ -1198,6 +1216,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8776 (:punctuation  .,(punctuation-named (code-char 8776)))) ;;"≈", (code = 8776)
     (8780 (:punctuation  .,(punctuation-named (code-char 8780)))) ;; #\ALL_EQUAL_TO
     (8781 (:punctuation  .,(punctuation-named (code-char 8781)))) ;;"≍", (code = 8781)
+    (8786 (:alphabetical . (:lowercase ., (code-char 8786)))) ;; "≒"
     (8793 (:punctuation  .,(punctuation-named (code-char 8793)))) ;; ≙
     (8800 (:punctuation  .,(punctuation-named (code-char 8800)))) ;;"≠", (code = 8805)    
     (8801 (:punctuation  .,(punctuation-named (code-char 8801)))) ;; #\IDENTICAL_TO
@@ -1210,10 +1229,14 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8811 (:punctuation  .,(punctuation-named (code-char 8811)))) ;; "≫" #\U+226B
     (8818 (:punctuation .,(punctuation-named (code-char 8818)))) ;; "≲"
     (8819 (:punctuation  .,(punctuation-named (code-char 8819)))) ;; ≳
+    (8826 (:punctuation .,(punctuation-named (code-char 8826)))) ;; #\PRECEDES
+    (8827 (:punctuation .,(punctuation-named (code-char 8827)))) ;; #\SUCCEEDS
     (8834 (:punctuation  .,(punctuation-named (code-char 8834)))) ;; ⊂
+    (8835 (:punctuation .,(punctuation-named (code-char 8835)))) ;; #\SUPERSET_OF
     (8838 (:punctuation  .,(punctuation-named (code-char 8838)))) ;; ⊆
     (8839 (:punctuation  .,(punctuation-named (code-char 8839)))) ;; "⊇" #\U+2287
     (8840 (:punctuation .,(punctuation-named (code-char 8840)))) ;; "⊈"
+    (8842 (:alphabetical . (:lowercase ., (code-char 8842)))) ;; "⊊"
     (8853 (:punctuation  .,(punctuation-named (code-char 8853)))) ;; ⊕
     (8855 (:punctuation  .,(punctuation-named (code-char 8855)))) ;; ⊗
     (8867 (:punctuation  .,(punctuation-named (code-char 8867)))) ;; ⊣
@@ -1234,7 +1257,14 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (9001 (:punctuation  .,(punctuation-named (code-char 9001)))) ;; 〈
     (9002 (:punctuation  .,(punctuation-named (code-char 9002)))) ;; 〉
     (9082 (:punctuation  .,(punctuation-named (code-char 9082)))) ;;⍺
+    (9121 (:alphabetical .,(punctuation-named (code-char 9121)))) ;; #\LEFT_SQUARE_BRACKET_UPPER_CORNER 
+    (9123 (:alphabetical .,(punctuation-named (code-char 9123)))) ;; #\LEFT_SQUARE_BRACKET_LOWER_CORNER 
+    (9124 (:alphabetical .,(punctuation-named (code-char 9124)))) ;; #\RIGHT_SQUARE_BRACKET_UPPER_CORNER 
+    (9126 (:alphabetical .,(punctuation-named (code-char 9126)))) ;; #\RIGHT_SQUARE_BRACKET_LOWER_CORNER 
     (9183 (:punctuation .,(punctuation-named (code-char 9183)))) ;; "⏟"
+    (9251 (:punctuation .,(punctuation-named (code-char 9251)))) ;; #\OPEN_BOX 
+    (9252 (:punctuation .,(punctuation-named (code-char 9252)))) ;; #\SYMBOL_FOR_NEWLINE 
+    (9253 (:alphabetical . (:lowercase .,(code-char 9253)))) ;; "␥", #\SYMBOL_FOR_DELETE_FORM_TWO 
     (9312 (:punctuation  .,(punctuation-named (code-char 9312)))) ;; #\CIRCLED_DIGIT_ONE
     (9313 (:punctuation  .,(punctuation-named (code-char 9313)))) ;; #\CIRCLED_DIGIT_TWO
     (9314 (:punctuation  .,(punctuation-named (code-char 9314)))) ;; #\CIRCLED_DIGIT_THREE
@@ -1249,10 +1279,13 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (9552 (:punctuation  .,(punctuation-named (code-char 9552)))) ;; ═
     (9553 (:punctuation  .,(punctuation-named (code-char 9553)))) ;;║
     (9587 (:punctuation  .,(punctuation-named (code-char 9587)))) ;; "╳"
+    (9617 (:punctuation .,(punctuation-named (code-char 9617)))) ;; #\LIGHT_SHADE
+    (9618 (:punctuation .,(punctuation-named (code-char 9618)))) ;; #\MEDIUM_SHADE
     (9632 (:punctuation  .,(punctuation-named (code-char 9632)))) ;; #\BLACK_SQUARE
     (9633 (:punctuation  .,(punctuation-named (code-char 9633)))) ;; "□"
     (9633 (:punctuation  .,(punctuation-named (code-char 9633)))) ;; "□"
     (9642 (:punctuation  .,(punctuation-named (code-char 9642)))) ;; "□"
+    (9643 (:punctuation .,(punctuation-named (code-char 9643)))) ;; #\WHITE_SMALL_SQUARE
     (9650 (:punctuation  .,(punctuation-named (code-char 9650)))) ;; ▲
     (9651 (:punctuation  .,(punctuation-named (code-char 9651)))) ;; "△" #\U+25B3
     (9652 (:punctuation  .,(punctuation-named (code-char 9652)))) ;; "▴"
@@ -1260,6 +1293,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (9654 (:punctuation  .,(punctuation-named (code-char 9654)))) ;;▶
     (9656 (:punctuation  .,(punctuation-named (code-char 9656)))) ;; ▸
     (9658 (:punctuation  .,(punctuation-named (code-char 9658)))) ;;""►", (code = 9658)
+    (9659 (:punctuation .,(punctuation-named (code-char 9659)))) ;; #\WHITE_RIGHT-POINTING_POINTER
     (9660 (:punctuation  .,(punctuation-named (code-char 9660)))) ;;▼
     (9663 (:punctuation  .,(punctuation-named (code-char 9663)))) ;; "▿" #\U+25BF
     (9670 (:punctuation  .,(punctuation-named (code-char 9670)))) ;;◆
@@ -1275,17 +1309,23 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (9830 (:punctuation  .,(punctuation-named (code-char 9830)))) ;; "♦"
     (9839 (:punctuation  .,(punctuation-named (code-char 9839)))) ;; #\MUSIC_SHARP_SIGN
     ;; (1548 (:alphabetical .,(punctuation-named (code-char 1548)))) ;; ،
-
-    
-    
     
     
     (10005 (:punctuation  .,(punctuation-named (code-char 10005)))) ;; #\MULTIPLICATION_X
+    (1001 (:alphabetical . (:lowercase .,(code-char 1001)))) ;; "ϩ", #\COPTIC_SMALL_LETTER_HORI 
+    (1002 (:alphabetical . (:lowercase .,(code-char 1002)))) ;; #\COPTIC_CAPITAL_LETTER_GANGIA 
+    (1003 (:alphabetical . (:lowercase .,(code-char 1003)))) ;; #\COPTIC_SMALL_LETTER_GANGIA 
     (10031 (:punctuation .,(punctuation-named (code-char 10031)))) ;; "✯"
+    (1005 (:alphabetical . (:lowercase .,(code-char 1005)))) ;; #\COPTIC_SMALL_LETTER_SHIMA 
+    (1006 (:alphabetical . (:uppercase .,(code-char 1006)))) ;; #\COPTIC_CAPITAL_LETTER_DEI 
+    (1011 (:alphabetical . (:lowercase .,(code-char 1011)))) ;; #\GREEK_LETTER_YOT 
+    (1021 (:alphabetical . (:lowercase .,(code-char 1021)))) ;; #\GREEK_CAPITAL_REVERSED_LUNATE_SIGMA_SYMBOL 
     (10216 (:punctuation  .,(punctuation-named (code-char 10216)))) ;; ⟨
     (10217 (:punctuation  .,(punctuation-named (code-char 10217)))) ;; ⟩
+    (1022 (:alphabetical . (:lowercase .,(code-char 1022)))) ;; #\GREEK_CAPITAL_DOTTED_LUNATE_SIGMA_SYMBOL 
     (10230 (:punctuation .,(punctuation-named (code-char 10230)))) ;; "⟶"
     (10233 (:punctuation .,(punctuation-named (code-char 10233)))) ;; "⟹"
+    (1033 (:alphabetical . (:lowercase .,(code-char 1033)))) ;; #\CYRILLIC_CAPITAL_LETTER_LJE 
     (10564 (:alphabetical . (:lowercase .,(code-char 10564)))) ;; #\SHORT_RIGHTWARDS_ARROW_ABOVE_LEFTWARDS_ARROW 
     (10625 (:punctuation .,(punctuation-named (code-char 10625)))) ;; "⦁"
     (10794 (:punctuation  .,(punctuation-named (code-char 10794)))) ;; "⨪" #\U+2A2A
@@ -1366,6 +1406,11 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (12540 (:katakana .(:lowercase ., (code-char 12540)))) ;; #\KATAKANA-HIRAGANA_PROLONGED_SOUND_MARK
     (13212 (:punctuation .,(punctuation-named (code-char 13212)))) ;; "㎜"
     (13212 (:punctuation .,(punctuation-named (code-char 13212)))) ;; "㎜"'
+    (1349 (:alphabetical . (:lowercase .,(code-char 1349)))) ;; #\ARMENIAN_CAPITAL_LETTER_YI 
+    (1350 (:alphabetical . (:uppercase .,(code-char 1350)))) ;; #\ARMENIAN_CAPITAL_LETTER_NOW 
+    (1546 (:punctuation .,(punctuation-named (code-char 1546)))) ;; #\ARABIC-INDIC_PER_TEN_THOUSAND_SIGN 
+    (1843 (:alphabetical . (:lowercase .,(code-char 1843)))) ;; #\SYRIAC_ZQAPHA_ABOVE 
+    (1878 (:alphabetical . (:lowercase .,(code-char 1878)))) ;; #\ARABIC_LETTER_BEH_WITH_SMALL_V 
     (19968 (:alphabetical .(:lowercase .,(code-char 19968)))) ;; #\U4E00       ;; following are not yet characterized unicode characters
     (19977 (:punctuation .,(punctuation-named (code-char  19977)))) ;; "三"
     (19978 (:alphabetical .(:lowercase .,(code-char 19978)))) ;; #\U4E0A 
@@ -1374,6 +1419,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (19982 (:alphabetical .(:lowercase .,(code-char 19982)))) ;; #\U4E0E 
     (19988 (:alphabetical .(:lowercase .,(code-char 19988)))) ;; #\U4E14 
     (19990 (:alphabetical .(:lowercase .,(code-char 19990)))) ;; #\U4E16 
+    (19999 (:alphabetical . (:lowercase ., (code-char 19999)))) ;; "丟"
+    (20002 (:alphabetical . (:lowercase ., (code-char 20002)))) ;; "丢"
     (20010 (:alphabetical .(:lowercase .,(code-char 20010)))) ;; #\U4E2A 
     (20013 (:alphabetical .(:lowercase .,(code-char 20013)))) ;; #\U4E2D 
     (20020 (:alphabetical .(:lowercase .,(code-char 20020)))) ;; #\U4E34 
@@ -1390,6 +1437,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (20114 (:alphabetical .(:lowercase .,(code-char 20114)))) ;; #\U4E92 
     (20122 (:alphabetical .(:lowercase .,(code-char 20122)))) ;; #\U4E9A 
     (20123 (:alphabetical .(:lowercase .,(code-char 20123)))) ;; #\U4E9B 
+    (2013 (:alphabetical . (:lowercase .,(code-char 2013)))) ;; #\NKO_LETTER_FA 
     (20132 (:alphabetical .(:lowercase .,(code-char 20132)))) ;; #\U4EA4 
     (20154 (:alphabetical .(:lowercase .,(code-char 20154)))) ;; #\U4EBA 
     (20182 (:alphabetical .(:lowercase .,(code-char 20182)))) ;; #\U4ED6 
@@ -1397,9 +1445,11 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (20197 (:alphabetical .(:lowercase .,(code-char 20197)))) ;; #\U4EE5 
     (20210 (:alphabetical .(:lowercase .,(code-char 20210)))) ;; "仲"
     (20219 (:alphabetical .(:lowercase .,(code-char 20219)))) ;; #\U4EFB 
+    (20221 (:alphabetical . (:lowercase ., (code-char 20221)))) ;; "份"
     (20237 (:alphabetical .(:lowercase .,(code-char 20237)))) ;; "伍"
     (20253 (:alphabetical .(:lowercase .,(code-char 20253)))) ;; #\U4F1D 
     (20272 (:alphabetical .(:lowercase .,(code-char 20272)))) ;; #\U4F30 
+    (2028 (:alphabetical . (:lowercase .,(code-char 2028)))) ;; #\NKO_COMBINING_SHORT_LOW_TONE 
     (20284 (:alphabetical .(:lowercase .,(code-char 20284)))) ;; #\U4F3C 
     (20294 (:alphabetical .(:lowercase .,(code-char 20294)))) ;; #\U4F46 
     (20301 (:alphabetical .(:lowercase .,(code-char 20301)))) ;; #\U4F4D 
@@ -1426,13 +1476,16 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (20837 (:alphabetical .(:lowercase .,(code-char 20837)))) ;; #\U5165 
     (20839 (:alphabetical .(:lowercase .,(code-char 20839)))) ;; "內"
     (20840 (:alphabetical .(:lowercase .,(code-char 20840)))) ;; #\U5168 
+    (20843 (:alphabetical . (:lowercase ., (code-char 20843)))) ;; "八"
     (20849 (:alphabetical .(:lowercase .,(code-char 20849)))) ;; #\U5171 
     (20851 (:alphabetical .(:lowercase .,(code-char 20851)))) ;; #\U5173 
     (20854 (:alphabetical .(:lowercase .,(code-char 20854)))) ;; #\U5176 
     (20855 (:alphabetical .(:lowercase .,(code-char 20855)))) ;; #\U5177 
     (20856 (:alphabetical .(:lowercase .,(code-char 20856)))) ;; "典"
+    (20869 (:alphabetical . (:lowercase ., (code-char 20869)))) ;; "内"
     (20882 (:alphabetical .(:lowercase .,(code-char 20882)))) ;; "冒"
     (20896 (:alphabetical .(:lowercase .,(code-char 20896)))) ;; "冠"
+    (20914 (:alphabetical . (:lowercase ., (code-char 20914)))) ;; "冲"
     (20917 (:alphabetical .(:lowercase .,(code-char 20917)))) ;; #\U51B5 
     (20934 (:alphabetical .(:lowercase .,(code-char 20934)))) ;; #\U51C6 
     (20943 (:alphabetical .(:lowercase .,(code-char 20943)))) ;; #\U51CF 
@@ -1473,6 +1526,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (21457 (:alphabetical .(:lowercase .,(code-char 21457)))) ;; #\U53D1 
     (21463 (:alphabetical .(:lowercase .,(code-char 21463)))) ;; #\U53D7 
     (21464 (:alphabetical .(:lowercase .,(code-char 21464)))) ;; #\U53D8 
+    (21475 (:alphabetical . (:lowercase ., (code-char 21475)))) ;; "口"
     (21476 (:alphabetical .(:lowercase .,(code-char 21476)))) ;; "古"
     (21487 (:alphabetical .(:lowercase .,(code-char 21487)))) ;; #\U53EF 
     (21490 (:alphabetical .(:lowercase .,(code-char 21490)))) ;; #\U53F2 
@@ -1492,6 +1546,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (21766 (:alphabetical .(:lowercase .,(code-char 21766)))) ;; #\U5506 
     (21777 (:alphabetical .(:lowercase .,(code-char 21777)))) ;; #\U5511 
     (21892 (:alphabetical .(:lowercase .,(code-char 21892)))) ;; #\U5584 
+    (21902 (:alphabetical . (:lowercase ., (code-char 21902)))) ;; "喎"
     (21931 (:alphabetical .(:lowercase .,(code-char 21931)))) ;; #\U55AB 
     (22139 (:alphabetical .(:lowercase .,(code-char 22139)))) ;; #\U567B 
     (22235 (:alphabetical .(:lowercase .,(code-char 22235)))) ;; "四"
@@ -1527,12 +1582,14 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (22949 (:alphabetical .(:lowercase .,(code-char 22949)))) ;; #\U59A5 
     (23004 (:alphabetical .(:lowercase .,(code-char 23004)))) ;; "姜"
     (23376 (:alphabetical .(:lowercase .,(code-char 23376)))) ;; #\U5B50 
+    (23383 (:alphabetical . (:lowercase ., (code-char 23383)))) ;; "字"
     (23384 (:alphabetical .(:lowercase .,(code-char 23384)))) ;; #\U5B58 
     (23398 (:alphabetical .(:lowercase .,(code-char 23398)))) ;; #\U5B66 
     (23433 (:alphabetical .(:lowercase .,(code-char 23433)))) ;; #\U5B89 
     (23450 (:alphabetical .(:lowercase .,(code-char 23450)))) ;; #\U5B9A 
     (23454 (:alphabetical .(:lowercase .,(code-char 23454)))) ;; #\U5B9E 
     (23460 (:alphabetical .(:lowercase .,(code-char 23460)))) ;; #\U5BA4 
+    (23478 (:alphabetical . (:lowercase ., (code-char 23478)))) ;; "家"
     (23494 (:alphabetical .(:lowercase .,(code-char 23494)))) ;; #\U5BC6 
     (23506 (:alphabetical .(:lowercase .,(code-char 23506)))) ;; "寒"
     (23526 (:alphabetical .(:lowercase .,(code-char 23526)))) ;; "實"
@@ -1541,6 +1598,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (23550 (:alphabetical .(:lowercase .,(code-char 23550)))) ;; #\U5BFE 
     (23556 (:alphabetical .(:lowercase .,(code-char 23556)))) ;; #\U5C04 
     (23569 (:alphabetical .(:lowercase .,(code-char 23569)))) ;; #\U5C11 
+    (23613 (:alphabetical . (:lowercase ., (code-char 23613)))) ;; "尽"
     (23615 (:alphabetical .(:lowercase .,(code-char 23615)))) ;; #\U5C3F 
     (23637 (:alphabetical .(:lowercase .,(code-char 23637)))) ;; #\U5C55 
     (23665 (:alphabetical .(:lowercase .,(code-char 23665)))) ;; "山"
@@ -1554,11 +1612,13 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (24179 (:alphabetical .(:lowercase .,(code-char 24179)))) ;; #\U5E73 
     (24180 (:alphabetical .(:lowercase .,(code-char 24180)))) ;; #\U5E74 
     (24182 (:alphabetical .(:lowercase .,(code-char 24182)))) ;; #\U5E76 
+    (24184 (:alphabetical . (:lowercase ., (code-char 24184)))) ;; "幸"
     (24191 (:alphabetical .(:lowercase .,(code-char 24191)))) ;; "广"
     (24202 (:alphabetical .(:lowercase .,(code-char 24202)))) ;; #\U5E8A 
     (24212 (:alphabetical .(:lowercase .,(code-char 24212)))) ;; #\U5E94 
     (24230 (:alphabetical .(:lowercase .,(code-char 24230)))) ;; #\U5EA6 
     (24320 (:alphabetical .(:lowercase .,(code-char 24320)))) ;; #\U5F00 
+    (24322 (:alphabetical . (:lowercase ., (code-char 24322)))) ;; "异"
     (24341 (:alphabetical .(:lowercase .,(code-char 24341)))) ;; #\U5F15 
     (24373 (:alphabetical .(:lowercase .,(code-char 24373)))) ;; "張"
     (24418 (:alphabetical .(:lowercase .,(code-char 24418)))) ;; #\U5F62 
@@ -1573,10 +1633,13 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (24577 (:alphabetical .(:lowercase .,(code-char 24577)))) ;; #\U6001 
     (24615 (:alphabetical .(:lowercase .,(code-char 24615)))) ;; #\U6027 
     (24635 (:alphabetical .(:lowercase .,(code-char 24635)))) ;; #\U603B 
+    (24694 (:alphabetical . (:lowercase ., (code-char 24694)))) ;; "恶"
     (24739 (:alphabetical .(:lowercase .,(code-char 24739)))) ;; #\U60A3 
     (24773 (:alphabetical .(:lowercase .,(code-char 24773)))) ;; #\U60C5 
+    (24813 (:alphabetical . (:lowercase ., (code-char 24813)))) ;; "惭"
     (24847 (:alphabetical .(:lowercase .,(code-char 24847)))) ;; #\U610F 
     (24863 (:alphabetical .(:lowercase .,(code-char 24863)))) ;; "感"
+    (24871 (:alphabetical . (:lowercase ., (code-char 24871)))) ;; "愧"
     (25104 (:alphabetical .(:lowercase .,(code-char 25104)))) ;; #\U6210 
     (25239 (:alphabetical .(:lowercase .,(code-char 25239)))) ;; #\U6297 
     (25253 (:alphabetical .(:lowercase .,(code-char 25253)))) ;; #\U62A5 
@@ -1593,6 +1656,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (25968 (:alphabetical .(:lowercase .,(code-char 25968)))) ;; #\U6570 
     (25972 (:alphabetical .(:lowercase .,(code-char 25972)))) ;; #\U6574 
     (26001 (:alphabetical .(:lowercase .,(code-char 26001)))) ;; #\U6591 
+    (26012 (:alphabetical . (:lowercase ., (code-char 26012)))) ;; "斜"
     (26029 (:alphabetical .(:lowercase .,(code-char 26029)))) ;; #\U65AD 
     (26032 (:alphabetical .(:lowercase .,(code-char 26032)))) ;; #\U65B0 
     (26041 (:alphabetical .(:lowercase .,(code-char 26041)))) ;; #\U65B9 
@@ -1623,6 +1687,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (26524 (:alphabetical .(:lowercase .,(code-char 26524)))) ;; #\U679C 
     (26597 (:alphabetical .(:lowercase .,(code-char 26597)))) ;; #\U67E5 
     (26631 (:alphabetical .(:lowercase .,(code-char 26631)))) ;; #\U6807 
+    (26679 (:alphabetical . (:lowercase ., (code-char 26679)))) ;; "样"
     (26681 (:alphabetical .(:lowercase .,(code-char 26681)))) ;; #\U6839 
     (26685 (:alphabetical .(:lowercase .,(code-char 26685)))) ;; "栽"
     (26690 (:alphabetical .(:lowercase .,(code-char 26690)))) ;; "桂"
@@ -1633,9 +1698,11 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (27169 (:alphabetical .(:lowercase .,(code-char 27169)))) ;; #\U6A21 
     (27178 (:alphabetical .(:lowercase .,(code-char 27178)))) ;; #\U6A2A 
     (27425 (:alphabetical .(:lowercase .,(code-char 27425)))) ;; #\U6B21 
+    (27465 (:alphabetical . (:lowercase ., (code-char 27465)))) ;; "歉"
     (27491 (:alphabetical .(:lowercase .,(code-char 27491)))) ;; #\U6B63 
     (27492 (:alphabetical .(:lowercase .,(code-char 27492)))) ;; #\U6B64 
     (27493 (:alphabetical .(:lowercase .,(code-char 27493)))) ;; #\U6B65 
+    (275 (:alphabetical . (:lowercase .,(code-char 275)))) ;; #\LATIN_SMALL_LETTER_E_WITH_MACRON 
     (27507 (:alphabetical .(:lowercase .,(code-char 27507)))) ;; #\U6B73 
     (27599 (:alphabetical .(:lowercase .,(code-char 27599)))) ;; #\U6BCF 
     (27602 (:alphabetical .(:lowercase .,(code-char 27602)))) ;; #\U6BD2 
@@ -1656,7 +1723,9 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (27979 (:alphabetical .(:lowercase .,(code-char 27979)))) ;; #\U6D4B 
     (28082 (:alphabetical .(:lowercase .,(code-char 28082)))) ;; #\U6DB2 
     (28201 (:alphabetical .(:lowercase .,(code-char 28201)))) ;; "温"
+    (283 (:alphabetical . (:lowercase .,(code-char 283)))) ;; #\LATIN_SMALL_LETTER_E_WITH_CARON 
     (28331 (:alphabetical .(:lowercase .,(code-char 28331)))) ;; "溫"
+    (285 (:alphabetical . (:lowercase .,(code-char 285)))) ;; #\LATIN_SMALL_LETTER_G_WITH_CIRCUMFLEX 
     (28508 (:alphabetical .(:lowercase .,(code-char 28508)))) ;; #\U6F5C 
     (28608 (:alphabetical .(:lowercase .,(code-char 28608)))) ;; #\U6FC0 
     (28814 (:alphabetical .(:lowercase .,(code-char 28814)))) ;; #\U708E 
@@ -1667,9 +1736,11 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (29031 (:alphabetical .(:lowercase .,(code-char 29031)))) ;; #\U7167 
     (29105 (:alphabetical .(:lowercase .,(code-char 29105)))) ;; "熱"
     (29151 (:alphabetical .(:lowercase .,(code-char 29151)))) ;; "營"
+    (292 (:alphabetical . (:lowercase .,(code-char 292)))) ;; #\LATIN_CAPITAL_LETTER_H_WITH_CIRCUMFLEX 
     (29273 (:alphabetical .(:lowercase .,(code-char 29273)))) ;; "牙"
     (29289 (:alphabetical .(:lowercase .,(code-char 29289)))) ;; #\U7269 
     (29305 (:alphabetical .(:lowercase .,(code-char 29305)))) ;; #\U7279 
+    (29359 (:alphabetical . (:lowercase ., (code-char 29359)))) ;; "犯"
     (29366 (:alphabetical .(:lowercase .,(code-char 29366)))) ;; #\U72B6 
     (29421 (:alphabetical .(:lowercase .,(code-char 29421)))) ;; "狭"
     (29575 (:alphabetical .(:lowercase .,(code-char 29575)))) ;; #\U7387 
@@ -1685,6 +1756,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (30064 (:alphabetical .(:lowercase .,(code-char 30064)))) ;; #\U7570 
     (30097 (:alphabetical .(:lowercase .,(code-char 30097)))) ;; #\U7591 
     (30103 (:alphabetical .(:lowercase .,(code-char 30103)))) ;; #\U7597 
+    (30106 (:alphabetical . (:lowercase ., (code-char 30106)))) ;; "疚"
     (30149 (:alphabetical .(:lowercase .,(code-char 30149)))) ;; #\U75C5 
     (30151 (:alphabetical .(:lowercase .,(code-char 30151)))) ;; #\U75C7 
     (30244 (:alphabetical .(:lowercase .,(code-char 30244)))) ;; #\U7624 
@@ -1734,12 +1806,16 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (32455 (:alphabetical .(:lowercase .,(code-char 32455)))) ;; #\U7EC7 
     (32456 (:alphabetical .(:lowercase .,(code-char 32456)))) ;; #\U7EC8 
     (32467 (:alphabetical .(:lowercase .,(code-char 32467)))) ;; #\U7ED3 
+    (32618 (:alphabetical . (:lowercase ., (code-char 32618)))) ;; "罪"
+    (32670 (:alphabetical . (:lowercase ., (code-char 32670)))) ;; "羞"
     (32676 (:alphabetical .(:lowercase .,(code-char 32676)))) ;; #\U7FA4 
     (32709 (:alphabetical .(:lowercase .,(code-char 32709)))) ;; "翅"
     (32771 (:alphabetical .(:lowercase .,(code-char 32771)))) ;; #\U8003 
     (32773 (:alphabetical .(:lowercase .,(code-char 32773)))) ;; #\U8005 
     (32780 (:alphabetical .(:lowercase .,(code-char 32780)))) ;; #\U800C 
     (32784 (:alphabetical .(:lowercase .,(code-char 32784)))) ;; #\U8010 
+    (32800 (:alphabetical . (:lowercase .,(code-char 32800)))) ;;"耠", #\U8020 
+    (32827 (:alphabetical . (:lowercase ., (code-char 32827)))) ;; "耻"
     (32852 (:alphabetical .(:lowercase .,(code-char 32852)))) ;; #\U8054 
     (32858 (:alphabetical .(:lowercase .,(code-char 32858)))) ;; "聚"
     (32908 (:alphabetical .(:lowercase .,(code-char 32908)))) ;; #\U808C 
@@ -1754,9 +1830,12 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (33033 (:alphabetical .(:lowercase .,(code-char 33033)))) ;; "脉"
     (33039 (:alphabetical .(:lowercase .,(code-char 33039)))) ;; #\U810F 
     (33041 (:alphabetical .(:lowercase .,(code-char 33041)))) ;; #\U8111 
+    (33080 (:alphabetical . (:lowercase ., (code-char 33080)))) ;; "脸"
     (33146 (:alphabetical .(:lowercase .,(code-char 33146)))) ;; #\U817A 
     (33205 (:alphabetical .(:lowercase .,(code-char 33205)))) ;; #\U81B5 
+    (33225 (:alphabetical . (:lowercase ., (code-char 33225)))) ;; "臉"
     (33235 (:alphabetical .(:lowercase .,(code-char 33235)))) ;; #\U81D3 
+    (33258 (:alphabetical . (:lowercase ., (code-char 33258)))) ;; "自"
     (33310 (:alphabetical .(:lowercase .,(code-char 33310)))) ;; "舞"
     (33324 (:alphabetical .(:lowercase .,(code-char 33324)))) ;; #\U822C 
     (33457 (:alphabetical .(:lowercase .,(code-char 33457)))) ;; "花"
@@ -1780,6 +1859,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (34907 (:alphabetical .(:lowercase .,(code-char 34907)))) ;; "衛"
     (34920 (:alphabetical .(:lowercase .,(code-char 34920)))) ;; #\U8868 
     (34928 (:alphabetical .(:lowercase .,(code-char 34928)))) ;; #\U8870 
+    (350 (:alphabetical . (:lowercase .,(code-char 350)))) ;; #\LATIN_CAPITAL_LETTER_S_WITH_CEDILLA
     (35199 (:alphabetical .(:lowercase .,(code-char 35199)))) ;; "西"
     (35201 (:alphabetical .(:lowercase .,(code-char 35201)))) ;; #\U8981 
     (35211 (:alphabetical .(:lowercase .,(code-char 35211)))) ;; #\U898B 
@@ -1804,13 +1884,17 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (35937 (:alphabetical .(:lowercase .,(code-char 35937)))) ;; #\U8C61 
     (36127 (:alphabetical .(:lowercase .,(code-char 36127)))) ;; #\U8D1F 
     (36229 (:alphabetical .(:lowercase .,(code-char 36229)))) ;; #\U8D85 
+    (36319 (:alphabetical . (:lowercase ., (code-char 36319)))) ;; "跟"
     (36321 (:alphabetical .(:lowercase .,(code-char 36321)))) ;; #\U8DE1 
     (36341 (:alphabetical .(:lowercase .,(code-char 36341)))) ;; #\U8DF5 
     (36394 (:alphabetical .(:lowercase .,(code-char 36394)))) ;; #\U8E2A 
+    (36523 (:alphabetical . (:lowercase ., (code-char 36523)))) ;; "身"
     (36716 (:alphabetical .(:lowercase .,(code-char 36716)))) ;; #\U8F6C 
     (36739 (:alphabetical .(:lowercase .,(code-char 36739)))) ;; #\U8F83 
     (36741 (:alphabetical .(:lowercase .,(code-char 36741)))) ;; #\U8F85 
     (36755 (:alphabetical .(:lowercase .,(code-char 36755)))) ;; #\U8F93 
+    (36764 (:alphabetical . (:lowercase ., (code-char 36764)))) ;; "辜"
+    (36785 (:alphabetical . (:lowercase ., (code-char 36785)))) ;; "辱"
     (36798 (:alphabetical .(:lowercase .,(code-char 36798)))) ;; #\U8FBE 
     (36807 (:alphabetical .(:lowercase .,(code-char 36807)))) ;; #\U8FC7 
     (36816 (:alphabetical .(:lowercase .,(code-char 36816)))) ;; #\U8FD0 
@@ -1855,18 +1939,26 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (39064 (:alphabetical .(:lowercase .,(code-char 39064)))) ;; #\U9898 
     (39321 (:alphabetical .(:lowercase .,(code-char 39321)))) ;; "香"
     (39640 (:alphabetical .(:lowercase .,(code-char 39640)))) ;; #\U9AD8 
+    (39764 (:alphabetical . (:lowercase ., (code-char 39764)))) ;; "魔"
+    (402 (:alphabetical . (:lowercase .,(code-char 402)))) ;; #\LATIN_SMALL_LETTER_F_WITH_HOOK
     (40643 (:alphabetical .(:lowercase .,(code-char 40643)))) ;; "黃"
     (40644 (:alphabetical .(:lowercase .,(code-char 40644)))) ;; "黄"
     (40802 (:alphabetical .(:lowercase .,(code-char 40802)))) ;; #\U9F62
     (40857 (:alphabetical .(:lowercase .,(code-char 40857)))) ;; "龙"
     (44032 (:alphabetical .(:lowercase .,(code-char 44032)))) ;; "가"
     (45740 (:alphabetical .(:lowercase .,(code-char 45740)))) ;; "늬"
+    (462 (:alphabetical . (:lowercase .,(code-char 462)))) ;; #\LATIN_SMALL_LETTER_A_WITH_CARON 
+    (468 (:alphabetical . (:lowercase .,(code-char 468)))) ;; "ǔ",#\LATIN_SMALL_LETTER_U_WITH_CARON 
     (47280 (:alphabetical .(:lowercase .,(code-char 47280)))) ;; "뢰"
+    (47476 (:alphabetical . (:lowercase ., (code-char 47476)))) ;; "르"
     (47532 (:alphabetical .(:lowercase .,(code-char 47532)))) ;; "리"
     (47536 (:alphabetical .(:lowercase .,(code-char 47536)))) ;; "린"
     (47673 (:alphabetical .(:lowercase .,(code-char 47673)))) ;; "먹"
+    (47700 (:alphabetical . (:lowercase ., (code-char 47700)))) ;; "메"
     (47924 (:alphabetical .(:lowercase .,(code-char 47924)))) ;; "무"
+    (491 (:alphabetical . (:lowercase .,(code-char 491)))) ;; #\LATIN_SMALL_LETTER_O_WITH_OGONEK 
     (49108 (:alphabetical .(:lowercase .,(code-char 49108)))) ;; "뿔"
+    (49828 (:alphabetical . (:lowercase ., (code-char 49828)))) ;; "스"
     (49912 (:alphabetical .(:lowercase .,(code-char 49912)))) ;; "싸"
     (50276 (:alphabetical .(:lowercase .,(code-char 50276)))) ;; "쑤"
     (50864 (:alphabetical .(:lowercase .,(code-char 50864)))) ;; "우"
@@ -1883,20 +1975,28 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (57088 (:punctuation .,(punctuation-named (code-char  57088)))) ;; "�"
     (57091 (:punctuation .,(punctuation-named (code-char  57091)))) ;; "�"
     (57305 (:punctuation .,(punctuation-named (code-char  57305)))) ;;"�"
+    (57557 (:alphabetical . (:lowercase .,(code-char 57557)))) ;;"", #\UE0D5 
     (61472  (:punctuation .,(punctuation-named (code-char 61472)))) ;; #\UF020 this seems to be a space
     (61480 (:alphabetical . (:lowercase ., (code-char 61480)))) 
     (61481 (:alphabetical . (:lowercase ., (code-char 61481)))) 
     (61482 (:alphabetical . (:lowercase ., (code-char 61482)))) 
     (61484 (:alphabetical . (:lowercase ., (code-char 61484)))) 
+    (61485 (:alphabetical . (:lowercase .,(code-char 61485)))) ;;"", #\UF02D 
+    (61487 (:alphabetical . (:lowercase .,(code-char 61487)))) ;; "", #\UF02F 
     (61501 (:alphabetical . (:lowercase ., (code-char 61501)))) 
     (61508  (:punctuation .,(punctuation-named (code-char 61508)))) ;; #\UF044
     (61515 (:alphabetical . (:lowercase ., (code-char 61515)))) 
+    (61516 (:alphabetical . (:lowercase .,(code-char 61516)))) ;;"", #\UF04C 
+    (61518 (:alphabetical . (:lowercase .,(code-char 61518)))) ;; "", #\UF04E 
+    (61523 (:alphabetical . (:lowercase .,(code-char 61523)))) ;; "",#\UF053 
     (61527 (:alphabetical . (:lowercase ., (code-char 61527)))) 
     (61536 (:alphabetical . (:lowercase ., (code-char 61536)))) 
     (61537  (:punctuation .,(punctuation-named (code-char 61537)))) ;; #\UF061
     (61538  (:punctuation .,(punctuation-named (code-char 61538)))) ;; #\UF062
+    (61539 (:alphabetical . (:lowercase .,(code-char 61539)))) ;; "", #\UF063 
     (61540 (:alphabetical . (:lowercase ., (code-char 61540)))) 
     (61541 (:alphabetical . (:lowercase ., (code-char 61541)))) 
+    (61542 (:alphabetical . (:lowercase .,(code-char 61542)))) ;; #\UF066 
     (61543 (:alphabetical . (:lowercase ., (code-char 61543)))) 
     (61544 (:alphabetical . (:lowercase ., (code-char 61544)))) 
     (61546 (:alphabetical . (:lowercase ., (code-char 61546)))) 
@@ -1904,8 +2004,10 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (61548 (:alphabetical . (:lowercase ., (code-char 61548)))) 
     (61549  (:punctuation .,(punctuation-named (code-char 61549)))) ;; #\UF06D
     (61553 (:alphabetical . (:lowercase ., (code-char 61553)))) 
+    (61554 (:alphabetical . (:lowercase .,(code-char 61554)))) ;; #\UF072
     (61555 (:alphabetical . (:lowercase ., (code-char 61555)))) 
     (61556 (:alphabetical . (:lowercase ., (code-char 61556)))) 
+    (61558 (:alphabetical . (:lowercase .,(code-char 61558)))) ;; "",#\UF076 
     (61559 (:alphabetical . (:lowercase ., (code-char 61559)))) 
     (61566  (:punctuation .,(punctuation-named (code-char 61566))))  ;; #\UF07E
     (61602 (:alphabetical . (:lowercase ., (code-char 61602)))) 
@@ -1917,6 +2019,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (61619 (:alphabetical . (:lowercase ., (code-char 61619)))) 
     (61620  (:punctuation .,(punctuation-named (code-char 61620)))) ;; #\UF0B4
     (61623 (:alphabetical . (:lowercase ., (code-char 61623)))) 
+    (61627 (:alphabetical . (:lowercase .,(code-char 61627)))) ;;  "", #\UF0BB 
+    (61655 (:alphabetical . (:lowercase .,(code-char 61655)))) ;; "", #\UF0D7
     (61656 (:alphabetical . (:lowercase ., (code-char 61656)))) 
     (61664 (:alphabetical . (:lowercase ., (code-char 61664)))) 
     (63729 (:alphabetical . (:lowercase ., (code-char 63729)))) 
@@ -1925,6 +2029,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (64256 (:punctuation .,(punctuation-named (code-char 64256)))) ;; ﬀ
     (64257 (:alphabetical . (:lowercase ., (code-char 64257)))) ;;"ﬁ", (code = 64257)
     (64258 (:alphabetical . (:lowercase ., (code-char 64258)))) ;;"ﬂ", (code = 64258)
+    (64259 (:alphabetical . (:lowercase ., (code-char 64259)))) ;; "ﬃ"
+    (64979 (:alphabetical . (:lowercase ., (code-char 64979)))) ;; "﷓"
     (65080 (:punctuation .,(punctuation-named (code-char  65080)))) ;; "︸"
     (65087 (:alphabetical . (:lowercase ., (code-char 65087)))) 
     (65279 (:punctuation .,(punctuation-named (code-char  65279)))) ;; "﻿"
@@ -1945,75 +2051,6 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (65357 (:punctuation .,(punctuation-named (code-char  65357)))) ;; "ｍ"
     (65374 (:punctuation .,(punctuation-named (code-char 65374)))) ;; #\FULLWIDTH_TILDE 
     (65533 (:punctuation .,(punctuation-named (code-char 65533)))) ;; �
-
-    ;; 3/31/20 ddm
-    (283 (:alphabetical . (:lowercase .,(code-char 283)))) ;; #\LATIN_SMALL_LETTER_E_WITH_CARON 
-    (292 (:alphabetical . (:lowercase .,(code-char 292)))) ;; #\LATIN_CAPITAL_LETTER_H_WITH_CIRCUMFLEX 
-    (462 (:alphabetical . (:lowercase .,(code-char 462)))) ;; #\LATIN_SMALL_LETTER_A_WITH_CARON 
-    (1843 (:alphabetical . (:lowercase .,(code-char 1843)))) ;; #\SYRIAC_ZQAPHA_ABOVE 
-    (1878 (:alphabetical . (:lowercase .,(code-char 1878)))) ;; #\ARABIC_LETTER_BEH_WITH_SMALL_V 
-    (2013 (:alphabetical . (:lowercase .,(code-char 2013)))) ;; #\NKO_LETTER_FA 
-    (2028 (:alphabetical . (:lowercase .,(code-char 2028)))) ;; #\NKO_COMBINING_SHORT_LOW_TONE 
-    (8713 (:punctuation .,(punctuation-named (code-char 8713)))) ;; #\NOT_AN_ELEMENT_OF 
-    (61542 (:alphabetical . (:lowercase .,(code-char 61542)))) ;; #\UF066 
-    (61554 (:alphabetical . (:lowercase .,(code-char 61554)))) ;; #\UF072
-
-    ;; 4/10/20 ddm
-    ;;(170 (:alphabetical . (:lowercase .,(code-char 170)))) ;; #\FEMININE_ORDINAL_INDICATOR 
-    (275 (:alphabetical . (:lowercase .,(code-char 275)))) ;; #\LATIN_SMALL_LETTER_E_WITH_MACRON 
-    (1002 (:alphabetical . (:lowercase .,(code-char 1002)))) ;; #\COPTIC_CAPITAL_LETTER_GANGIA 
-    (1003 (:alphabetical . (:lowercase .,(code-char 1003)))) ;; #\COPTIC_SMALL_LETTER_GANGIA 
-    (1005 (:alphabetical . (:lowercase .,(code-char 1005)))) ;; #\COPTIC_SMALL_LETTER_SHIMA 
-    (1011 (:alphabetical . (:lowercase .,(code-char 1011)))) ;; #\GREEK_LETTER_YOT 
-    (1021 (:alphabetical . (:lowercase .,(code-char 1021)))) ;; #\GREEK_CAPITAL_REVERSED_LUNATE_SIGMA_SYMBOL 
-    (1022 (:alphabetical . (:lowercase .,(code-char 1022)))) ;; #\GREEK_CAPITAL_DOTTED_LUNATE_SIGMA_SYMBOL 
-    (1349 (:alphabetical . (:lowercase .,(code-char 1349)))) ;; #\ARMENIAN_CAPITAL_LETTER_YI 
-    (1546 (:punctuation .,(punctuation-named (code-char 1546)))) ;; #\ARABIC-INDIC_PER_TEN_THOUSAND_SIGN 
-    (9251 (:punctuation .,(punctuation-named (code-char 9251)))) ;; #\OPEN_BOX 
-    (9252 (:punctuation .,(punctuation-named (code-char 9252)))) ;; #\SYMBOL_FOR_NEWLINE 
-
-    ;; Rusty 4/11/20
-    (350 (:alphabetical . (:lowercase .,(code-char 350)))) ;; #\LATIN_CAPITAL_LETTER_S_WITH_CEDILLA
-    (402 (:alphabetical . (:lowercase .,(code-char 402)))) ;; #\LATIN_SMALL_LETTER_F_WITH_HOOK
-    (8614 (:punctuation .,(punctuation-named (code-char 8614)))) ;; #\RIGHTWARDS_ARROW_FROM_BAR
-    (8826 (:punctuation .,(punctuation-named (code-char 8826)))) ;; #\PRECEDES
-    (8827 (:punctuation .,(punctuation-named (code-char 8827)))) ;; #\SUCCEEDS
-    (8835 (:punctuation .,(punctuation-named (code-char 8835)))) ;; #\SUPERSET_OF
-    (9617 (:punctuation .,(punctuation-named (code-char 9617)))) ;; #\LIGHT_SHADE
-    (9618 (:punctuation .,(punctuation-named (code-char 9618)))) ;; #\MEDIUM_SHADE
-    (9643 (:punctuation .,(punctuation-named (code-char 9643)))) ;; #\WHITE_SMALL_SQUARE
-    (9659 (:punctuation .,(punctuation-named (code-char 9659)))) ;; #\WHITE_RIGHT-POINTING_POINTER
-
-    ;; ddm 4/11/20
-    (468 (:alphabetical . (:lowercase .,(code-char 468)))) ;; "ǔ",#\LATIN_SMALL_LETTER_U_WITH_CARON 
-    (1001 (:alphabetical . (:lowercase .,(code-char 1001)))) ;; "ϩ", #\COPTIC_SMALL_LETTER_HORI 
-    (1033 (:alphabetical . (:lowercase .,(code-char 1033)))) ;; #\CYRILLIC_CAPITAL_LETTER_LJE 
-    (57557 (:alphabetical . (:lowercase .,(code-char 57557)))) ;;"", #\UE0D5 
-    (61485 (:alphabetical . (:lowercase .,(code-char 61485)))) ;;"", #\UF02D 
-    (61539 (:alphabetical . (:lowercase .,(code-char 61539)))) ;; "", #\UF063 
-    (61558 (:alphabetical . (:lowercase .,(code-char 61558)))) ;; "",#\UF076 
-    (61627 (:alphabetical . (:lowercase .,(code-char 61627)))) ;;  "", #\UF0BB 
-    (61655 (:alphabetical . (:lowercase .,(code-char 61655)))) ;; "", #\UF0D7
-
-    ;; ddm 4/13/20
-    (285 (:alphabetical . (:lowercase .,(code-char 285)))) ;; #\LATIN_SMALL_LETTER_G_WITH_CIRCUMFLEX 
-    (491 (:alphabetical . (:lowercase .,(code-char 491)))) ;; #\LATIN_SMALL_LETTER_O_WITH_OGONEK 
-    (733 (:alphabetical . (:lowercase .,(code-char 733)))) ;; #\DOUBLE_ACUTE_ACCENT 
-    (895 (:alphabetical . (:uppercase .,(code-char 895)))) ;; #\GREEK_CAPITAL_LETTER_YOT 
-    (1006 (:alphabetical . (:uppercase .,(code-char 1006)))) ;; #\COPTIC_CAPITAL_LETTER_DEI 
-    (1350 (:alphabetical . (:uppercase .,(code-char 1350)))) ;; #\ARMENIAN_CAPITAL_LETTER_NOW 
-    (7825 (:alphabetical . (:lowercase .,(code-char 7825)))) ;; #\LATIN_SMALL_LETTER_Z_WITH_CIRCUMFLEX 
-    (7869 (:alphabetical . (:lowercase .,(code-char 7869)))) ;; #\LATIN_SMALL_LETTER_E_WITH_TILDE 
-    (9121 (:alphabetical .,(punctuation-named (code-char 9121)))) ;; #\LEFT_SQUARE_BRACKET_UPPER_CORNER 
-    (9123 (:alphabetical .,(punctuation-named (code-char 9123)))) ;; #\LEFT_SQUARE_BRACKET_LOWER_CORNER 
-    (9124 (:alphabetical .,(punctuation-named (code-char 9124)))) ;; #\RIGHT_SQUARE_BRACKET_UPPER_CORNER 
-    (9126 (:alphabetical .,(punctuation-named (code-char 9126)))) ;; #\RIGHT_SQUARE_BRACKET_LOWER_CORNER 
-    (9253 (:alphabetical . (:lowercase .,(code-char 9253)))) ;; "␥", #\SYMBOL_FOR_DELETE_FORM_TWO 
-    (32800 (:alphabetical . (:lowercase .,(code-char 32800)))) ;;"耠", #\U8020 
-    (61487 (:alphabetical . (:lowercase .,(code-char 61487)))) ;; "", #\UF02F 
-    (61516 (:alphabetical . (:lowercase .,(code-char 61516)))) ;;"", #\UF04C 
-    (61518 (:alphabetical . (:lowercase .,(code-char 61518)))) ;; "", #\UF04E 
-    (61523 (:alphabetical . (:lowercase .,(code-char 61523)))) ;; "",#\UF053 
 
 
     
