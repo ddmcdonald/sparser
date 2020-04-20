@@ -1,0 +1,185 @@
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
+;;; Copyright (c) 2020 SIFT LLC. All Rights Reserved
+;;;
+;;;      File:   "viruses"
+;;;    Module:   "sl;disease:"
+;;;   version:   April 2020
+
+;;; broken out from biology/new-defs/new-diseases.lisp 4/14/2020
+
+;;; coronaviruses and their associated diseases are broken out in the covid-19 section
+
+(define-category coronavirus :specializes virus
+                 :mixins (pathogen-type)
+                 :bindings (uid "NCIT:C26431")
+                 :realization (:noun ("coronavirus" "CoV" "coronaviridae")))
+
+(def-indiv-with-id coronavirus "SARS-CoV-2" "NCIT:C169076" :name "SARS Coronavirus 2"
+                   :synonyms ("SARS-CoV2" "2019-nCoV" "2019 Novel Coronavirus" 
+                                          "nCoV" "nCoV-2019" "SARS-CoV-2" "SARSCoV2" "SARSCoV-2"
+                                          "Severe Acute Respiratory Syndrome Coronavirus 2"
+                                          "novel-coronavirus-2019" "2019-CoV" "CoV-2019"
+                                          ;; arguably the rest of these should be the disease
+                                          ;; instead of the virus but currently not separating them
+                                          "covid19" "COVID19" "COVID-19" "covid-19"
+                                          "Corona Virus Disease 2019"))
+
+(def-indiv-with-id coronavirus "SARS-CoV" "NCIT:C112432" :name "SARS coronavirus"
+                   :synonyms ("SARS Coronavirus" "SARS virus" "HCoV-SARS" "SARSCoV"
+                                                 "Severe Acute Respiratory Syndrome Coronavirus"))
+(def-indiv-with-id disease "SARS" "NCIT:C85064" :name "Severe Acute Respiratory Syndrome"
+                   :synonyms ("severe acute respiratory syndrome"))
+;; arguably half of these MERS definitions should be the disease --
+;; once we have a way to tie the two together we should do so
+(def-indiv-with-id coronavirus "MERS" "NCIT:C128424" :name "Middle East Respiratory Syndrome"
+                   :synonyms ("MERS-CoV" "MERS coronavirus" "middle east respiratory syndrome"))
+
+(def-indiv-with-id coronavirus "Alphacoronavirus" "NCIT:C119319" :name "alphacoronavirus") 
+(def-indiv-with-id coronavirus "betacoronavirus" "NCIT:C113207" :name "betacoronavirus")
+(def-indiv-with-id coronavirus "Deltacoronavirus" "NCIT:C122279" :name "deltacoronavirus") 
+(def-indiv-with-id coronavirus "Gammacoronavirus" "NCIT:C122313" :name "gammacoronavirus")
+
+
+;;; non-coronaviruses
+(noun "SSV" :super virus) ;; can't find an ontology with UID but this was to block a protein def that was based on it being 
+(def-synonym SSV (:noun "Simian Sarcoma Virus"))
+
+(def-indiv-with-id virus "DENV2" "NCIT:C112267" :name "dengue virus 2") 
+(def-indiv-with-id virus "EIAV" "NCIT:C14205" :name "equine infectious anemia virus") 
+(def-indiv-with-id virus "FIV" "NCIT:C14288" :name "feline immunodeficiency virus") 
+(def-indiv-with-id virus "Flaviviridae" "NCIT:C113201" :name "flaviviridae") 
+(def-indiv-with-id virus "HBV" "NCIT:C14215" :name "hepatitis B virus") 
+(def-indiv-with-id virus "HCV" "NCIT:C14312" :name "hepatitis C virus") 
+(def-indiv-with-id virus "HERV-K" "NCIT:C128305" :name "HERV-K") 
+(def-indiv-with-id virus "HEV" "NCIT:C14295" :name "hepatitis E virus") 
+(def-indiv-with-id virus "HHV" "NCIT:C112419" :name "simplexvirus") 
+(def-indiv-with-id virus "HHV6" "NCIT:C14218" :name "human herpesvirus 6") 
+(def-indiv-with-id virus "HHV8" "NCIT:C14327" :name "human herpesvirus 8") 
+(def-indiv-with-id virus "HIV" "NCIT:C14219" :name "human immunodeficiency virus") 
+(def-indiv-with-id virus "HIV-1" "NCIT:C14220" :name "human immunodeficiency virus 1") 
+(def-indiv-with-id virus "HIV-2" "NCIT:C14221" :name "human immunodeficiency virus 2") 
+(def-indiv-with-id virus "HPIV2" "NCIT:C112316" :name "human parainfluenza virus 2") 
+(def-indiv-with-id virus "HPV11" "NCIT:C99178" :name "human papillomavirus-11") 
+(def-indiv-with-id virus "HPV16" "NCIT:C14338" :name "human papillomavirus-16") 
+(def-indiv-with-id virus "HPV18" "NCIT:C14377" :name "human papillomavirus-18") 
+(def-indiv-with-id virus "HPV26" "NCIT:C102995" :name "human papillomavirus-26") 
+(def-indiv-with-id virus "HPV31" "NCIT:C102904" :name "human papillomavirus-31") 
+(def-indiv-with-id virus "HPV33" "NCIT:C102996" :name "human papillomavirus-33") 
+(def-indiv-with-id virus "HPV39" "NCIT:C102998" :name "human papillomavirus-39") 
+(def-indiv-with-id virus "HPV45" "NCIT:C102999" :name "human papillomavirus-45") 
+(def-indiv-with-id virus "HPV51" "NCIT:C103000" :name "human papillomavirus-51") 
+(def-indiv-with-id virus "HPV53" "NCIT:C103002" :name "human papillomavirus-53") 
+(def-indiv-with-id virus "HPV56" "NCIT:C103003" :name "human papillomavirus-56") 
+(def-indiv-with-id virus "HPV6" "NCIT:C14319" :name "human papillomavirus-6") 
+(def-indiv-with-id virus "HPV66" "NCIT:C103006" :name "human papillomavirus-66") 
+(def-indiv-with-id virus "HPV68" "NCIT:C103007" :name "human papillomavirus-68")
+(def-indiv-with-id virus "HSV" "NCITC112419" :name "herpes simplex virus")
+(def-indiv-with-id virus "HSV1" "NCIT:C14311" :name "herpes simplex virus 1") 
+(def-indiv-with-id virus "HTLV-2" "NCIT:C14224" :name "HTLV-2") 
+(def-indiv-with-id virus "HTLV1" "NCIT:C14223" :name "HTLV-1") 
+(def-indiv-with-id virus "LCMV" "NCIT:C14230" :name "lymphocytic choriomeningitis virus") 
+(def-indiv-with-id virus "MCPyV" "NCIT:C73535" :name "merkel cell polyomavirus") 
+(def-indiv-with-id virus "MLV" "NCIT:C14241" :name "moloney leukemia virus") 
+(def-indiv-with-id virus "MuLV" "NCIT:C14244" :name "mouse leukemia virus") 
+(def-indiv-with-id virus "PEDV" "NCIT:C121657" :name "porcine epidemic diarrhea virus") 
+(def-indiv-with-id virus "Paramyxoviridae" "NCIT:C14255" :name "paramyxoviridae") 
+(def-indiv-with-id virus "RRV" "NCIT:C112411" :name "ross river virus") 
+(def-indiv-with-id virus "RSV" "NCIT:C14267" :name "respiratory syncytial virus") 
+(def-indiv-with-id virus "Rhabdoviridae" "NCIT:C112027" :name "rhabdoviridae") 
+
+(def-indiv-with-id virus "SV-40" "NCIT:C14279" :name "SV40") 
+(def-indiv-with-id virus "WNV" "NCIT:C71877" :name "west nile virus") 
+(def-indiv-with-id virus "XMRV" "NCIT:C84344" :name "xenotropic murine leukemia virus-related virus") 
+(def-indiv-with-id virus "adenovirus" "NCIT:C14179" :name "adenovirus") 
+(def-indiv-with-id virus "aphthovirus" "NCIT:C112229" :name "aphthovirus") 
+(def-indiv-with-id virus "arbovirus" "NCIT:C112230" :name "arbovirus") 
+(def-indiv-with-id virus "arenavirus" "NCIT:C14306" :name "arenavirus") 
+(def-indiv-with-id virus "astrovirus" "NCIT:C112231" :name "astroviridae") 
+(def-indiv-with-id virus "baculovirus" "NCIT:C61156" :name "baculoviridae") 
+(def-indiv-with-id virus "betaretrovirus" "NCIT:C14291" :name "betaretrovirus") 
+(def-indiv-with-id virus "biv" "NCIT:C117711" :name "bovine immunodeficiency virus") 
+(def-indiv-with-id virus "bpV" "NCIT:C14190" :name "bovine papillomavirus") 
+(def-indiv-with-id virus "bunyavirus" "NCIT:C112366" :name "orthobunyavirus") 
+;(def-indiv-with-id virus "coronavirus" "NCIT:C26431" :name "coronavirus")  made category
+(def-indiv-with-id virus "cytomegalovirus" "NCIT:C14196" :name "cytomegalovirus") 
+(def-indiv-with-id virus "flavivirus" "NCIT:C14208" :name "flavivirus") 
+(def-indiv-with-id virus "gammaretrovirus" "NCIT:C14305" :name "gammaretrovirus") 
+(def-indiv-with-id virus "hMPV" "NCIT:C125640" :name "human metapneumovirus") 
+(def-indiv-with-id virus "hantavirus" "NCIT:C14213" :name "hantavirus") 
+(def-indiv-with-id virus "hepadnavirus" "NCIT:C14214" :name "hepadnavirus") 
+(def-indiv-with-id virus "herpesvirus" "NCIT:C14217" :name "herpesvirus" :plural ("herpesviruses" "herpesviridae")) 
+(def-indiv-with-id virus "lentivirus" "NCIT:C14290" :name "lentivirus") 
+(def-indiv-with-id virus "metapneumovirus" "NCIT:C125956" :name "metapneumovirus") 
+(def-indiv-with-id virus "norovirus" "NCIT:C112362" :name "norovirus") 
+(def-indiv-with-id virus "orthopoxvirus" "NCIT:C96524" :name "orthopoxvirus") 
+(def-indiv-with-id virus "papillomavirus" "NCIT:C14251" :name "papillomavirus") 
+(def-indiv-with-id virus "paramyxovirus" "NCIT:C14310" :name "paramyxovirus") 
+(def-indiv-with-id virus "parapoxvirus" "NCIT:C112367" :name "parapoxvirus") 
+(def-indiv-with-id virus "phage" "NCIT:C14188" :name "bacteriophage") 
+(def-indiv-with-id virus "picornavirus" "NCIT:C14256" :name "picornavirus" :plural ("picornaviruses" "picornaviridae")) 
+(def-indiv-with-id virus "poliovirus" "NCIT:C14259" :name "poliovirus") 
+(def-indiv-with-id virus "polyoma" "NCIT:C14260" :name "polyomavirus") 
+(def-indiv-with-id virus "poxvirus" "NCIT:C14261" :name "poxvirus" :plural ("poxviruses" "poxviridae")) 
+(def-indiv-with-id virus "reovirus" "NCIT:C112026" :name "reoviridae")
+(def-indiv-with-id virus "retrovirus" "NCIT:C14268" :name "retrovirus" :plural ("retroviruses" "retroviridae"))
+(def-indiv-with-id virus "rhinovirus" "NCIT:C77200" :name "rhinovirus" :synonyms ("HRV" "human rhinovirus")) 
+(def-indiv-with-id virus "φX174" "NCIT:C97346" :name "bacteriophage phi X 174") 
+(def-indiv-with-id virus "EBV" "TI:10376" :name "Epstein-Barr virus") 
+(def-indiv-with-id virus "Haemophilus influenzae" "TI:727") 
+(def-indiv-with-id virus "EBOV" "NCIT:C112271" :name "ebola virus") 
+(def-indiv-with-id virus "HDV" "NCIT:C93324" :name "hepatitis D virus") 
+(def-indiv-with-id virus "HPIV" "NCIT:C125641" :name "human parainfluenza virus") 
+(def-indiv-with-id virus "NDV" "NCIT:C93023" :name "newcastle disease virus")
+(def-indiv-with-id virus "VZV" "NCIT:C71091" :name "varicella zoster virus") 
+(def-indiv-with-id virus "YFV" "NCIT:C97156" :name "yellow fever virus") 
+(def-indiv-with-id virus "ZIKV" "NCIT:C128553" :name "zika virus") 
+(def-indiv-with-id virus "alphavirus" "NCIT:C112030" :name "alphavirus")
+(def-indiv-with-id virus "avulavirus" "NCIT:C117722" :name "avulavirus")
+(def-indiv-with-id virus "bocavirus" "NCIT:C127691" :name "bocaparvovirus")
+(def-indiv-with-id virus "echovirus" "NCIT:C112272" :name "echovirus")
+(def-indiv-with-id virus "enterovirus" "NCIT:C14203" :name "enterovirus")
+(def-indiv-with-id virus "filovirus" "NCIT:C112031" :name "filoviridae")
+(def-indiv-with-id virus "lyssavirus" "NCIT:C112330" :name "lyssavirus")
+(def-indiv-with-id virus "pneumovirus" "NCIT:C112398" :name "pneumovirus") 
+(def-indiv-with-id virus "respirovirus" "NCIT:C117721" :name "respirovirus") 
+(def-indiv-with-id virus "vaccinia" "NCIT:C14281" :name "vaccinia virus")
+(def-indiv-with-id virus "Caliciviridae" "NCIT:C14304" :name "caliciviridae")
+(def-indiv-with-id virus "Filoviridae" "NCIT:C112031" :name "filoviridae")
+(def-indiv-with-id virus "Henipavirus" "NCIT:C112290" :name "henipavirus") 
+(def-indiv-with-id virus "Hepacivirus" "NCIT:C113202" :name "hepacivirus")
+(def-indiv-with-id virus "Orthomyxoviridae" "NCIT:C53453" :name "orthomyxoviridae")
+(def-indiv-with-id virus "parvovirus" "NCIT:C14299" :name "parvovirus" :plural ("parvoviruses" "parvoviridae")) 
+(def-indiv-with-id virus "Rotavirus" "NCIT:C77199" :name "rotavirus")
+(def-indiv-with-id virus "Sapovirus" "NCIT:C112029" :name "sapovirus")
+(def-indiv-with-id virus "hRSV" "NCIT:C14267" :name "human respiratory syncytial virus")
+(def-indiv-with-id virus "BKV" "NCIT:C89820" :name "BK virus") 
+(def-indiv-with-id virus "CMV" "NCIT:C14196" :name "cytomegalovirus") 
+(def-indiv-with-id virus "ERV" "NCIT:C14334" :name "endogenous retrovirus") 
+(def-indiv-with-id virus "FLUAV" "NCIT:C53454" :name "influenza A virus") 
+(def-indiv-with-id virus "FLUBV" "NCIT:C53468" :name "influenza B virus") 
+(def-indiv-with-id virus "HAV" "NCIT:C14325" :name "hepatitis A virus") 
+(def-indiv-with-id virus "HTLVI" "NCIT:C14223" :name "HTLV-1") 
+(def-indiv-with-id virus "JCV" "NCIT:C14229" :name "JC virus") 
+(def-indiv-with-id virus "MOCV" "NCIT:C112357" :name "molluscum contagiosum virus") 
+(def-indiv-with-id virus "TBEV" "NCIT:C112422" :name "tick-borne encephalitis virus") 
+(def-indiv-with-id virus "WHV" "NCIT:C124253" :name "woodchuck hepatitis virus") 
+(def-indiv-with-id virus "influenzavirus" "NCIT:C53469" :name "influenzavirus") 
+(def-indiv-with-id virus "lentivirinae" "NCIT:C14290" :name "lentivirus") 
+(def-indiv-with-id virus "viroid" "NCIT:C95945" :name "viroid") 
+(def-indiv-with-id virus "Adenoviridae" "NCIT:C14179" :name "adenoviridae") 
+(def-indiv-with-id virus "Bunyaviridae" "NCIT:C112028" :name "bunyaviridae") 
+(def-indiv-with-id virus "Canarypox" "NCIT:C14315" :name "canarypox virus") 
+(def-indiv-with-id virus "Lymphocryptovirus" "NCIT:C14204" :name "epstein-barr virus") 
+(def-indiv-with-id virus "Marburgvirus" "NCIT:C112331" :name "marburgvirus") 
+(def-indiv-with-id virus "Molluscipoxvirus" "NCIT:C112356" :name "molluscipoxvirus") 
+(def-indiv-with-id virus "Morbillivirus" "NCIT:C14309" :name "morbillivirus") 
+(def-indiv-with-id virus "Nairovirus" "NCIT:C112358" :name "nairovirus") 
+(def-indiv-with-id virus "NiV" "NCIT:C29902" :name "nodule-inducing virus") 
+(def-indiv-with-id virus "Orbivirus" "NCIT:C112365" :name "orbivirus") 
+(def-indiv-with-id virus "Paramyxovirinae" "NCIT:C14307" :name "paramyxovirinae") 
+(def-indiv-with-id virus "Phlebovirus" "NCIT:C112397" :name "phlebovirus") 
+(def-indiv-with-id virus "Pneumovirinae" "NCIT:C14308" :name "pneumovirinae") 
+(def-indiv-with-id virus "Roseolovirus" "NCIT:C112410" :name "roseolovirus") 
+(def-indiv-with-id virus "Rubulavirus" "NCIT:C14326" :name "rubulavirus") 
+(def-indiv-with-id virus "Togaviridae" "NCIT:C77197" :name "togaviridae") 
+(def-indiv-with-id virus "Varicellovirus" "NCIT:C112426" :name "varicellovirus") 
