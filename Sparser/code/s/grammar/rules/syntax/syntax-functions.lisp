@@ -295,7 +295,7 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
                  (when *lambda-var-warnings*
                    (warn "still trying to bind *lambda-var* in predication, in ~s~%"
                          (current-string)))
-                 (lsp-break "non individual as val")))
+                 (break "non individual as val")))
            (cond (new-predication
                   (setf (gethash new-predication *predication-links-ht*) val)
                   new-predication)
