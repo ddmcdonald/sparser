@@ -381,18 +381,22 @@ unknown---in any event, we're taking the first edge that is installed.
                          digit-word
                          next-position
                          (chart-position-after next-position)))))
-              (when (> next-cell 4)
-                (error "No provision for digit-based numbers in the quadrillions ~
-                    or larger"))
-              (setf (aref array next-cell)
-                    digits-edge)
-              (expect-digit-delimiter-as-next-treetop (1+ next-cell)
-                                                      array
-                                                      digits-edge))
+
+              (if (> next-cell 4)
+                (if (heuristically-not-a-number array)
+                  (close-out-number-sequence (1+ next-cell) array
+                                             (chart-position-after next-position))
+                  (error "No provision for digit-based numbers in the quadrillions ~
+                    or larger"))              
+                (else ;; continue
+                  (setf (aref array next-cell)
+                        digits-edge)
+                  (expect-digit-delimiter-as-next-treetop (1+ next-cell)
+                                                          array
+                                                          digits-edge))))
             (else
               (setq *too-few-digits-to-be-number* t)
               (setf (aref array next-cell) digit-word) ; stash what we got
-
               (close-out-number-sequence (1+ next-cell) array
                                          (chart-position-after next-position)))))                       
 
@@ -463,6 +467,15 @@ unknown---in any event, we're taking the first edge that is installed.
 ;;;----------------------------------------------------
 ;;; scanning something that is not conventional number
 ;;;----------------------------------------------------
+
+(defun heuristically-not-a-number (array)
+  "If the first element of the array (leftmost) has fewer than three digits
+   in its edge, we have a number. If it has three digits it's probably the
+   first of a series of indicies."
+  (let* ((e1 (aref array 0)) ; we know they're all edges over digits
+         (w1 (edge-left-daughter e1)))
+    (= 3 (length (pname w1)))))
+
 
 (defun close-out-number-sequence (next-cell array next-position)
   "We just detected an interior span of digits that wasn't three digits
