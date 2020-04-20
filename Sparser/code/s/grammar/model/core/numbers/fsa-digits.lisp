@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2003,2011-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2003,2011-2020 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "fsa digits"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  June 2019
+;;;  Version:  April 2020
 
 ;; 5.0 (10/5 v2.3) rephrased the scan step to get subtler steps
 ;; 5.1 (9/14/93) updated the scanning calls, finished 9/16
@@ -140,12 +140,18 @@ the fsa would be identified at the word level rather than the category level.
    something other than a number such as a serial number or
    raw web address")
 
+(defvar *too-few-digits-to-be-number* nil
+  "Flag that indicates that we're not parsing a conventional
+   multi-segment number but something else")
+
 (defvar *pending-final-hyphen* nil)
 
 (defvar *interpretation-of-digit-sequence* :number)
 
+(defparameter *length-of-digit-array* 50)
 
-(defparameter *digit-position-array* (make-array 20))
+(defparameter *digit-position-array* (make-array *length-of-digit-array*)
+  "This is where we store successive elements of the number as it's scanned")
 
 (defun zero-the-digits-array ()
   (dotimes (i (length *digit-position-array*))
@@ -160,6 +166,8 @@ the fsa would be identified at the word level rather than the category level.
     (t ;; already saw at least one
      (setq *multiple-periods-within-digit-sequence* t))))
 
+
+
 ;;;--------
 ;;; driver
 ;;;--------
@@ -173,6 +181,7 @@ the fsa would be identified at the word level rather than the category level.
   ;; initialization of flags
   (setq *period-within-digit-sequence* nil
         *multiple-periods-within-digit-sequence* nil
+        *too-few-digits-to-be-number* nil
         *pending-final-hyphen* nil
         *interpretation-of-digit-sequence* :number)
   (zero-the-digits-array)
@@ -193,6 +202,9 @@ the fsa would be identified at the word level rather than the category level.
     (tr :digit-fsa-returned-to-start ending-position number-of-segments)
 
     (ecase *interpretation-of-digit-sequence*
+      (:not-a-number
+       (make-edge-for-not-a-number starting-position ending-position
+                                   number-of-segments *digit-position-array*))
       (:number
        (span-digits-number starting-position
                            ending-position
@@ -333,7 +345,7 @@ the 'position-of-the-delimiter'is the one just before the delimiting
 punctuation. 
 
     The acquisition of the next digit sequence is via the edge that
-is built over it by install-terminal-edges.  This scheme depends on
+is built over it by install-terminal-edges. This scheme depends on
 the assumptions that the tokenizer flags have been set to construct
 an interpretation for previously unseen digit sequences, and that
 there will only ever be one edge over any digit sequence, known or
@@ -358,24 +370,37 @@ unknown---in any event, we're taking the first edge that is installed.
 
     (if (null (pos-preceding-whitespace next-position))
       (if (eq :digits (pos-capitalization next-position))
-        (let ((digits-edge
-               (car (install-terminal-edges
-                     (pos-terminal next-position)
-                     next-position
-                     (chart-position-after next-position)))))
-          (when (> next-cell 4)
-            (error "No provision for digit-based numbers in the quadrillions ~
+        ;; Check whether we have the basis of a number,
+        ;; i.e. three digits in this sequence that we just scanned.
+        ;; If it's not three then we're lookin at some other
+        ;; sort of numeric object
+        (let ((digit-word (pos-terminal next-position)))
+          (if (= 3 (length (pname digit-word)))
+            (let ((digits-edge
+                   (car (install-terminal-edges
+                         digit-word
+                         next-position
+                         (chart-position-after next-position)))))
+              (when (> next-cell 4)
+                (error "No provision for digit-based numbers in the quadrillions ~
                     or larger"))
-          (setf (aref array next-cell)
-                digits-edge)
-          (expect-digit-delimiter-as-next-treetop (1+ next-cell)
-                                                  array
-                                                  digits-edge))
-        (else
+              (setf (aref array next-cell)
+                    digits-edge)
+              (expect-digit-delimiter-as-next-treetop (1+ next-cell)
+                                                      array
+                                                      digits-edge))
+            (else
+              (setq *too-few-digits-to-be-number* t)
+              (setf (aref array next-cell) digit-word) ; stash what we got
+
+              (close-out-number-sequence (1+ next-cell) array
+                                         (chart-position-after next-position)))))                       
+
+        (else ;; not a digit
           (tr :digit-fsa-returning :non-digit-word
               'continue-digit-sequence-after-comma)
           (values position-of-delimiter next-cell)))
-      (else
+      (else ;; whitespace
         (tr :digit-fsa-returning :preceding-whitespace
             'continue-digit-sequence-after-comma)
         (values position-of-delimiter next-cell)))))
@@ -433,6 +458,98 @@ unknown---in any event, we're taking the first edge that is installed.
         (setq *period-within-digit-sequence* nil)
         (values position-of-delimiter next-cell)))))
 
+
+
+;;;----------------------------------------------------
+;;; scanning something that is not conventional number
+;;;----------------------------------------------------
+
+(defun close-out-number-sequence (next-cell array next-position)
+  "We just detected an interior span of digits that wasn't three digits
+ long, e.g. '1,2' rather than '1,200'. This means we should not assume
+ that we have a regular number but something else entirely: a sequence of
+ reference numbers, part of a chemical formula, etc.
+   We scan ahead until we hit a space, then we package up what we've found
+ so that some other process can use external evidence to decided what
+ sort of thing it is."
+  (declare (special *interpretation-of-digit-sequence*
+                    *the-punctuation-hyphen*
+                    *the-punctuation-period*
+                    *the-punctuation-comma*
+                    *end-of-source*))
+  (setq *interpretation-of-digit-sequence* :not-a-number)
+  (unless (pos-assessed? next-position)
+    (scan-next-position))
+  (tr :digit-fsa-scanned (pos-terminal next-position)
+      'close-out-number-sequence)
+  ;; Continue over reasonable number-internal punctuation (comma, period, hyphen).
+  ;; Terminate and return on whitespace or delimiting punction like close backet.
+  ;; Along the way stash what find in successive cells of the array.
+  (let ((ok-punctuation `(,*the-punctuation-period*
+                          ,*the-punctuation-comma*
+                          ,*the-punctuation-hyphen*))
+        (terminating-punctuation `(,*the-punctuation-close-parenthesis*
+                                   ,(punctuation-named #\])
+                                   ,(punctuation-named #\>)))
+        (continue t))
+
+    (flet ((punctuation-ok-in-numeric (word)
+             (memq word ok-punctuation))
+           (punctuation-terminates-numeric (word)
+             (memq word terminating-punctuation))
+           (push-and-loop (word)
+             (unless (>= next-cell *length-of-digit-array*)
+               (setf (aref array next-cell) word)
+               (incf next-cell))))
+           
+      (until (or (pos-preceding-whitespace next-position)
+                 (punctuation-terminates-numeric next-position)
+                 (null continue))
+          (progn
+            (tr :digit-fsa-returning :preceding-whitespace
+                'close-out-number-sequence)
+            (values next-position next-cell))
+
+        (let ((next-word (pos-terminal next-position)))
+          (cond
+            ((punctuation? next-word)
+             (cond
+               ((punctuation-ok-in-numeric next-word)
+                (push-and-loop next-word))
+               ((punctuation-terminates-numeric next-word)
+                (setq continue nil))
+               ((eq next-word *end-of-source*)
+                (setq continue nil))
+               (t ;; other punctuation ///record it
+                (push-and-loop next-word))))
+            ((eq :digits (pos-capitalization next-position))
+             (push-and-loop (pos-terminal next-position)))
+            (t
+             (setq continue nil)))
+
+          (when continue
+            (setq next-position (chart-position-after next-position))
+            (unless (pos-assessed? next-position)
+              (scan-next-position))
+            (tr :digit-fsa-scanned (pos-terminal next-position)
+                'close-out-number-sequence)))) )))
+         
+(defun make-edge-for-not-a-number (starting-position ending-position
+                                   number-of-segments *digit-position-array*)
+  (let* ((items (loop for i from 0 to number-of-segments
+                   collect (aref *digit-position-array* i)))
+         (sequence (create-sequence items))
+         (i (define-or-find-individual 'number-sequence :value sequence)))
+    (let ((edge
+           (make-chart-edge :starting-position starting-position
+                            :ending-position ending-position
+                            :category category::number-sequence
+                            :form category::number
+                            :referent i
+                            :rule-name 'digit-fsa
+                            :ignore-used-in t)))
+      ;;(break "edge: ~a" edge)
+      edge)))
 
 
 ;;;--------------------

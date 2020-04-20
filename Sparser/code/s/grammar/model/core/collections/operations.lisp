@@ -223,17 +223,18 @@
                    :number ordinal :item item :sequence s)))
         ;(break "ordinal-psi -- bound-in's too??")
         (push pos pos-objects)
-        (if running-type
-          (unless (eq running-type
-		      (if (typep item 'word)
-			item ;; it's a literal
-			(first (indiv-type item))))
-            (setq same-type? nil))
-          (else ;; 1st time through
-	    (setq running-type
-		  (if (typep item 'word)
-		    item
-		    (first (indiv-type item))))))))
+        (when (typep item 'individual)
+          (if running-type
+            (unless (eq running-type
+                        (if (typep item 'word)
+                          item ;; it's a literal
+                          (first (indiv-type item))))
+              (setq same-type? nil))
+            (else ;; 1st time through
+              (setq running-type
+                    (if (typep item 'word)
+                      item
+                      (first (indiv-type item)))))))))
   
     (values (when same-type? 
               running-type)

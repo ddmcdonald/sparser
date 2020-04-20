@@ -71,6 +71,7 @@
     (number)
     (string)
     (word)
+    (edge) ;; in sequence of number-sequence
     (otherwise
      (push-debug `(,item))
      (break "New case to strip: ~a~%~a"

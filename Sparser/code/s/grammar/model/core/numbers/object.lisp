@@ -51,9 +51,9 @@
   :realization (:common-noun name))
 
 
-;;; -----------------------------
+;;;------------------------------
 ;;; making illions-distributions
-;;; -----------------------------
+;;;------------------------------
 
 (define-category illions-distribution
   :specializes index
@@ -72,8 +72,14 @@
     :illion illion
     :value value))
 
-    
 
+;;;--------------------
+;;; number-like things
+;;;--------------------
+
+(define-category number-sequence
+  :specializes abstract
+  :binds ((value  sequence)))
 
 ;;;-------
 ;;; rules
