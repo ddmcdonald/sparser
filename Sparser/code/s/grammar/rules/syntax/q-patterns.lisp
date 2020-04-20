@@ -157,7 +157,8 @@
     (assert there-edge)
     (let ((rule (multiply-edges there-edge preposed-aux-edge)))
       ;; n.b. we switch the order of the edges to make the rule happy
-      (assert rule)
+      (assert rule (preposed-aux-edge)
+              "no rule composes a there edge with ~a" preposed-aux-edge)
       (let ((edge (make-completed-binary-edge preposed-aux-edge
                                                there-edge
                                                rule)))

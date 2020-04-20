@@ -713,7 +713,8 @@
           (case (cat-symbol form-label)
             ((category::verb category::verb+s category::verb+ed
               category::verb+ing category::verb+present category::verb+past)
-             (when (auxiliary-word? word)
+             (when (and (auxiliary-word? word)
+                        (itypep (edge-referent edge) 'be))
                (cond
                  (there?
                   (let ((there-is-edge (handle-there-is edge)))
