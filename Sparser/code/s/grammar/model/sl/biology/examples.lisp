@@ -13,6 +13,72 @@
 ;;; Example texts
 ;;;---------------
 
+;;----- Brent's texts selected from article-preview-8
+#|
+(p "HPAI virus and MERS-CoV induce repressive histone modifications, which downregulate expression of ISG subsets.")
+(p "Notably, influenza A virus NS1 appears to play a central role in this histone-mediated downregulation")
+
+(p "NS1 contributes to ISG control via altered histone methylation")
+
+(p "H1N1-09 quickly and robustly induced the majority (97%) of ISGs")
+
+
+(p "However, H5N1-VN1203 induced robust induction in only 35% of the consensus annotated ISGs")
+
+(p "several ISGs showed only minimal, if any, stimulation (e.g., TLR3, SERPIN1), and ACE2O")
+
+(p "H1N1-09, the limited control of ISG RNA expression also manifested in robust ISG protein production; 27 ISG proteins were among 530 significantly upregulated host proteins")
+
+(p "H5N1-VN1203 infection had reduced protein expression of both STAT1 (27.4% decrease at 24 hpi) and PKR (28.5% decrease at 18 hpi) relative to that of mock; similarly, MERS-CoV reduced the protein level of STAT1 (15.8% decrease at 18 to 24 hpi) and PKR (20.2% decrease at 18 to 24 hpi). In contrast, both proteins were significantly increased following both H1N1-09 and SARS-CoV infection")
+
+(p "both H5N1-VN1203 and H1N1-09 infection resulted in robust transcription of type I and type III IFN molecules (Fig. 2A); IFN-(cid:3)1, IFN-(cid:2)5, and IFN-(cid:4)1 were each strongly induced in both influenza strains.")
+
+(cid:3) = beta
+(cid:2) = alpha
+(cid:4) = lambda
+
+[[ can't find the prior one in the source ]]
+
+(p "CoV infections more tightly block recognition and/or disrupt IFN induction.")
+
+(p "The results indicated that CXCL10 and IFIT1, highly expressed ISGs following H5N1-VN1203 infection (Fig. 3A), had a corresponding increase in STAT1 binding in their 5' promoter region at 12 hpi (Fig. 3B). In contrast, CFHR1 and APOL6, ISGs with decreased expression, had no increase in STAT1 binding despite the presence of activated STAT1 in those cells.")
+
+(p "the repressive H3K27me3 revealed enhanced association with CFHR1, DDX58, and SMAD9L during H5N1-VN1203 infection")
+
+(p "both MERS-CoV and SARS-CoV maintain delayed IFN induction")
+
+(p "two genes (TLR3 and CFHR1) downregulated in both H5N1VN1203 and MERS-CoV, but not SARS-CoV infection")
+
+(p "DDX58, a gene downregulated by H5N1-VN1203 but not MERS-CoV")
+
+(p "Having established NS1 as a required component for strong ISG manipulation and downregulation")
+
+(p "mutations in PB1-F2 and PB2 resulted in significant ISG augmentation, the majority of ISGs maintain low or downregulated expression")
+
+(p "NS1 truncation halted ISG downregulation by H5N1-VN1203")
+
+(p "ORF4b, a MERS accessory protein with no homologue in SARS-CoV, maintains a purported nuclear localization signal, exhibits nuclear localization based on transfection, and may play a role in IFN antagonism")
+
+
+;;--- Brent's excerpts from 2020.03.24
+
+(p "SARS-CoV-2 elicits a muted response  that  lacks  robust  induction  of  a  subset  of  cytokines  including  the  Type  I  and  Type  III  interferons as well as a numerous chemokines.")
+
+(p "SARS-CoV-2  infection  shows  a  significant  lack of Type I and III interferon (IFN-I and IFN-III) expression")
+
+(p "A  highly  interacting  cluster  enriched  in  genes  involved  in  the  cellular  response  to  virus  infection  (GO:0009615, FDR << 0.0001), mainly composed of type-I ISGs (GO:0034340, FDR <<  0.0001),  and  a  second  cluster  enriched  in  genes  involved  in  the  humoral  immune  response  (GO:0006959,  FDR  <<  0.0001),  which  further  subdivided  into  two  smaller  clusters  enriched  in  chemokines  and  cytokines  (GO:0005125,  FDR  <  0.001),  and  complement  proteins  (GO:0006956,  FDR  <  0.0005)")
+
+(p "we  observe  the  induction  of  well-characterized  direct  effectors  of  the  innate  immune  response  including:  MX1,  IFITM3,  SAMHD1  and  TRIM25,  as  well  as  the  induction  of  viral  RNA  sensors  such  as  RIG-I  and  the  OAS1-3  genes")
+
+(p "SARS-CoV-2  lacks  the  induction  of  IFN-I  and  IFN-III  genes")
+
+(p "two  cytokines  (EDN1  and  TNFSF15)  were  uniquely upregulated")
+
+(p "Despite  the  apparent  muted  induction  of  antiviral  genes  in  response  to  SARS-CoV-2,  we do observe a significant up regulation of well-characterized ISGs including: IFIT1-3, ISG15,  DDX58,  and  others.")
+
+(p "Amongst  the  genes  that  are  uniquely  present  when  comparing  SARS-CoV-2  to  other  respiratory  viruses  are  EDN1  and  TNFSF15  -  two  putative biomarkers that may contribute to COVID-19 pathology.")
+|#
+
 ;;---- Scott's 11/21/17 paragraphs to illustrate interesting DefNP anaphora
 ;; Lifted from Reactome curators descriptions
 
