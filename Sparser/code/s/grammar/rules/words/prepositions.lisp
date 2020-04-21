@@ -111,7 +111,7 @@ these are really prepositions, and should function as such
 (define-preposition "apart from")
 ;; (define-preposition "around") moved to modifiers as an approximator
 
-;;(define-preposition "as") => subordinate conjunction
+(define-preposition "as") ;; also subordinate conjunction
 ;;  'the same price as before'
 (define-preposition "as a result of")
 (define-preposition "as for")

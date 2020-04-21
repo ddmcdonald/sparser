@@ -713,13 +713,13 @@
           (case (cat-symbol form-label)
             ((category::verb category::verb+s category::verb+ed
               category::verb+ing category::verb+present category::verb+past)
-             (when (and (auxiliary-word? word)
-                        (itypep (edge-referent edge) 'be))
+             (when (auxiliary-word? word)
                (cond
                  (there?
-                  (let ((there-is-edge (handle-there-is edge)))
-                    (store-preposed-aux edge)
-                    (specify-top-edge there-is-edge)))
+                  (when (itypep (edge-referent edge) 'be)
+                    (let ((there-is-edge (handle-there-is edge)))
+                      (store-preposed-aux edge)
+                      (specify-top-edge there-is-edge))))
                  (t (store-preposed-aux edge)))))
             (category::modal
              (when there? (handle-there-is edge))
