@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "anaphora"
 ;;;   Module:  "analyzers;CA:"
-;;;  Version:  October 2016
+;;;  Version:  April 2020
 
 ;; new design initiated 7/14/92 v2.3
 ;; 1.1 (6/17/93) bringing it into sync with Krisp
@@ -986,21 +986,3 @@ saturated? is a good entry point. |#
           (format nil "p~a(~a)" token-index array-index)
           (format nil "p~a" array-index))))))
 
-
-
-;;;-----------------------------------
-;;; filter out grammatical categories
-;;;-----------------------------------
-
-(defun relevant-category-for-dh (category)
-  "Some categories are irrelevant and should never be recorded
-   in the discourse history (see global). Return nil if the
-   category is on this list."
-  (declare (special *irrelevant-to-discourse-history*))
-  (unless *irrelevant-to-discourse-history*
-    (populate-irrelevant-to-discourse-history))
-  (let ((supers (super-categories-of category)))
-    (loop for c in *irrelevant-to-discourse-history*
-      when (memq c supers)
-      do (return-from relevant-category-for-dh nil))
-    t))

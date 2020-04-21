@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2019 David D. McDonald -- all rights reserved
+;;; copyright (c) 2015-2020 David D. McDonald -- all rights reserved
 ;;;
 ;;;      File:   "sweep"
 ;;;    Module:   interface/grammar/
-;;;   Version:   August 2019
+;;;   Version:   April 2020
 
 ;; Routines for sweeping down through the structure of Krisp referents.
 ;; Initiated 1/11/15 with code from December. 
@@ -78,9 +78,80 @@
             (type-of item) item))))
 
 
-(defun relevant-type-of-individual (i)
-  (when (individual-p i)
-    (relevant-category-for-dh (itype-of i))))
+
+;;;-----------------------------------
+;;; filter out grammatical categories
+;;;-----------------------------------
+
+(defun filter-list-of-items-for-relevance (list)
+  ;; different take on strip-model-descriptions
+  (loop for item in list
+     when (relevant-type-of-individual item)
+     collect item))
+
+(defgeneric relevant-type-of-individual (item)
+  (:documentation "Is this item the type of individual that
+    is included in the discourse history")
+  (:method ((c category))
+    (relevant-category-for-dh c))
+  (:method ((i individual))
+    (relevant-category-for-dh (itype-of i)))
+  (:method ((m discourse-mention))
+    (if (slot-boundp m 'ci)
+      (relevant-type-of-individual (contextual-description m)))
+      (relevant-type-of-individual (base-description m)))
+  (:method ((s symbol)) nil)
+  (:method ((l lambda-variable)) nil)
+  (:method ((w word)) nil)
+  (:method ((pw polyword)) nil)
+  (:method ((e edge)) nil)
+  (:method ((n number)) nil)
+  (:method ((item T))
+    (warn "'~a' of type ~a passed to relevant type filter"
+          item (type-of item))
+    nil))
+
+(defun relevant-category-for-dh (category)
+  "Some categories are irrelevant and should never be recorded
+   in the discourse history (see global). Return nil if the
+   category is on this list."
+  ;; also called by add-subsuming-object-to-discourse-history
+  (declare (special *irrelevant-to-discourse-history*))
+  (unless *irrelevant-to-discourse-history*
+    (populate-irrelevant-to-discourse-history))
+  (let ((supers (super-categories-of category)))
+    (loop for c in *irrelevant-to-discourse-history*
+      when (memq c supers)
+      do (return-from relevant-category-for-dh nil))
+    t))
+
+
+(defparameter *irrelevant-to-discourse-history* nil
+  "Populated by the first call from relevant-category-for-dh ('discourse history')")
+
+(defparameter *names-of-irrelecant-to-dh-categories*
+  '(determiner
+    approximator
+    prepositional-phrase
+    relativized-prepositional-phrase
+    preposition
+    prepositional
+    spatial-preposition
+    adverbial
+    pronoun
+    conjunction
+    subordinate-conjunction
+    single-capitalized-letter
+    quantifier
+    number
+    ))
+
+(defun populate-irrelevant-to-discourse-history ()
+  (when (null *irrelevant-to-discourse-history*)
+    (setq *irrelevant-to-discourse-history*
+          (loop for name in *names-of-irrelecant-to-dh-categories*
+             collect (category-named name)))))
+
 
 
 ;;;----------------------

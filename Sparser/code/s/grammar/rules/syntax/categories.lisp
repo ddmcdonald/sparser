@@ -497,32 +497,6 @@
 
 
 
-;;;--------------------------------------------------------------
-;;; Basis of filter in add-subsuming-object-to-discourse-history
-;;;--------------------------------------------------------------
-
-(defparameter *irrelevant-to-discourse-history* nil
-  "Populated by call from relevant-category-for-dh ('discourse history')")
-
-(defun populate-irrelevant-to-discourse-history ()
-  (when (null *irrelevant-to-discourse-history*)
-    (setq *irrelevant-to-discourse-history*
-          `(,(category-named 'determiner)
-             ,(category-named 'approximator)
-             ,(category-named 'prepositional-phrase)
-             ,(category-named 'relativized-prepositional-phrase)
-             ,(category-named 'preposition)
-             ,(category-named 'prepositional)
-             ,(category-named 'spatial-preposition)
-             ,(category-named 'adverbial)
-             ,(category-named 'pronoun)
-             ,(category-named 'conjunction) ;; Observed cases just covered "and"
-             ,(category-named 'subordinate-conjunction)
-             ,(category-named 'single-capitalized-letter)
-             ,(category-named 'quantifier)
-             ,(category-named 'number)
-             ))))
-
 ;;;----------------------------------------
 ;;; instances of part-of-speech categories
 ;;;----------------------------------------
