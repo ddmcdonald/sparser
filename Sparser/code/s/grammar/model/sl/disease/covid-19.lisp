@@ -11,19 +11,3 @@
 
 (noun "virus" :super pathogen-type)
 
-(noun "coronavirus" :super virus)
-
-;; genus Betacoronabirus
-
-;;/// inhibit plurals -- add-rules-cond-plural  :no-plural
-(noun "SARS" :super coronavirus)
-(def-synonym SARS (:noun "severe acute respiratory syndrome"))
-(def-synonym SARS (:noun "SARS-CoV"))
-
-(noun "MERS" :super coronavirus)
-(def-synonym MERS (:noun "middle east respiratory syndrome"))
-(def-synonym MERS (:noun "MERS-CoV"))
-
-(noun "SARS-CoV-2" :super coronavirus)
-(def-synonym SARS-CoV-2 (:noun "SAR-CoV-2"))
-

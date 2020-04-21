@@ -35,8 +35,8 @@
   ;; diseases
   ;; these are loaded after bio because their superclasses are still in
   ;; bio;taxonomy for now
-(gload "disease;viruses")
-(gload "disease;bacteria")
-(gload "disease;cancers")
-(gload "disease;other-medical-conditions") ;; diseases, syndromes, symptoms
+  (gload "disease;viruses")
+  (gload "disease;bacteria")
+  (gload "disease;cancers")
+  (gload "disease;other-medical-conditions") ;; diseases, syndromes, symptoms
   )
