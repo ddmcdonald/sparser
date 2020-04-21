@@ -163,6 +163,9 @@ This is a reasonable choice http://www.fileformat.info/info/unicode/char/search.
 (defun to-hex (n)
   (format nil "~x" n))
 
+;; Reader macro #x goes from hex to ordinary decimal
+;; #x2015 = 8213
+
 ;;;----------------------------
 ;;; access function (off-line)
 ;;;----------------------------
