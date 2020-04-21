@@ -435,22 +435,23 @@
           &key time ;;(initial-region :header) vestige from WSJ Who's News
             ((:paragraph make-orthographic-paragraphs) t)
             ((:trace tts-after-para) t)
-            ((:skip ignore-errors))
+            ((:skip ignore-errors) t)
+            (scan t)
             (ext-format :utf-8))
   (format t "~%analyzing ~A~%~%" pathname)
-  (let ((*prescan-character-input-buffer* t))
-    (declare (special *prescan-character-input-buffer*))
-    (if time
-      (time (analyze-text-from-file pathname
-                                    :paragraph make-orthographic-paragraphs
-                                    :skip ignore-errors
-                                    :trace tts-after-para
-                                    :ext-format ext-format))
-      (analyze-text-from-file pathname
-                              :paragraph make-orthographic-paragraphs
-                              :skip ignore-errors
-                              :trace tts-after-para
-                              :ext-format ext-format))))
+  (if time
+    (time (analyze-text-from-file pathname
+                                  :paragraph make-orthographic-paragraphs
+                                  :skip ignore-errors
+                                  :trace tts-after-para
+                                  :prescan scan
+                                  :ext-format ext-format))
+    (analyze-text-from-file pathname
+                            :paragraph make-orthographic-paragraphs
+                            :skip ignore-errors
+                            :trace tts-after-para
+                            :prescan scan
+                            :ext-format ext-format)))
 
 
 ;;------------ generic, switched routine
