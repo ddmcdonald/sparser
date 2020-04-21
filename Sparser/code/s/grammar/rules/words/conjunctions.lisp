@@ -117,7 +117,7 @@ syntactic properties of three types.
           ;;"also" use version in modifiers
           "although" 
           ;; "among" prefer treatment as a preposition
-          ;; "as" -- ditto
+          "as" ; read as 'since' or 'before'
 	  "as expected"
 	  "as a result"
           "as far as"

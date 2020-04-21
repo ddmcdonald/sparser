@@ -110,14 +110,16 @@ these are really prepositions, and should function as such
 (define-preposition "among" :synonyms '("amongst")) 
 (define-preposition "apart from")
 ;; (define-preposition "around") moved to modifiers as an approximator
-(define-preposition "as")
+
+;;(define-preposition "as") => subordinate conjunction
+;;  'the same price as before'
 (define-preposition "as a result of")
-;;(define-preposition "as far as") prefer subordinating conjunction
 (define-preposition "as for")
 (define-preposition "as from")
 (define-preposition "as of")
 (define-preposition "as per")
 (define-preposition "as to")
+
 (define-preposition "aside from")
 (define-preposition "at the expense of") 
 (define-preposition "at the hands of")
