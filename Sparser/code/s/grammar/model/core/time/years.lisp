@@ -73,8 +73,9 @@
   (:method ((i individual))
     (unless (itypep i 'number) (error "not a number ~a" i)) ; use k-method?
     (let ((value (value-of 'value i)))
-      (unless (< value 100) (error "value is too large: ~a" value))
-      (get-year-from-last-two-digits value)))
+      ;; don't assume this is being called correctly -- causes error with "1990–2328"
+      (when (< value 100) ;; (error "value is too large: ~a" value)
+        (get-year-from-last-two-digits value))))
   (:method ((n integer))
     (gethash n *year-of-century-to-year*)))
 
