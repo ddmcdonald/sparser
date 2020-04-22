@@ -1007,11 +1007,11 @@ than a bare "to".  |#
 
 (defmethod ng-head? ((e edge) &optional end)
   ;; methods over words and categories in category-predicates.lisp
-  (declare (special e *chunk* word::comma category::demonstrative)) 
+  (declare (special e end *chunk* word::comma category::demonstrative)) 
   (let ((edges-before (edges-before e))
         (e-form-name  (form-cat-name e))
         (plural-det? (chunk-has-plural-det?)))
-    (declare (special edges-before e-form-name))
+    (declare (special edges-before e-form-name plural-det?))
     (and
      ;;code to split "the genes STAT3 regulates"
      ;;  into "the genes" "STAT3" "regulates"
@@ -1331,7 +1331,10 @@ than a bare "to".  |#
        (loop for ee in (ev-top-edges (cadr (chunk-ev-list *chunk*)))
              thereis (and (edge-form ee)
                           (member (cat-symbol (edge-form ee))
-                                  *noun-categories*)))
+                                  *noun-categories*)
+                          ;; "influenza A virus NS1 induces"
+                          (not (itypep (edge-referent ee) 'organism))
+                          ))
        (loop for ee in (edges-after e)
              thereis
                (and (edge-form ee)
