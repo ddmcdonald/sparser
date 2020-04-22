@@ -131,6 +131,7 @@
 
 (defparameter *names-of-irrelecant-to-dh-categories*
   '(determiner
+    demonstrative
     approximator
     prepositional-phrase
     relativized-prepositional-phrase
@@ -138,6 +139,7 @@
     prepositional
     spatial-preposition
     adverbial
+    modality ; 'may', 'should'
     pronoun
     conjunction
     subordinate-conjunction
