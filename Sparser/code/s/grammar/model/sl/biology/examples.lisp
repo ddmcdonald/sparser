@@ -43,11 +43,11 @@
 
 (p "H5N1-VN1203 infection had reduced protein expression of both STAT1 (27.4% decrease at 24 hpi) and PKR (28.5% decrease at 18 hpi) relative to that of mock; similarly, MERS-CoV reduced the protein level of STAT1 (15.8% decrease at 18 to 24 hpi) and PKR (20.2% decrease at 18 to 24 hpi). In contrast, both proteins were significantly increased following both H1N1-09 and SARS-CoV infection")
 
-(p "both H5N1-VN1203 and H1N1-09 infection resulted in robust transcription of type I and type III IFN molecules (Fig. 2A); IFN-(cid:3)1, IFN-(cid:2)5, and IFN-(cid:4)1 were each strongly induced in both influenza strains.")
+(p "both H5N1-VN1203 and H1N1-09 infection resulted in robust transcription of type I and type III IFN molecules (Fig. 2A); IFN-β1, IFN-α5, and IFN-λ1 were each strongly induced in both influenza strains.")
 
-(cid:3) = beta
-(cid:2) = alpha
-(cid:4) = lambda
+;;(cid:3) = beta
+;;(cid:2) = alpha
+;;(cid:4) = lambda
 
 [[ can't find the prior one in the source ]]
 
