@@ -119,12 +119,10 @@
     CATEGORY::PRONOUN
     ;; not sure about these -- think of "the largest" as an NP
     ;; CATEGORY::COMPARATIVE -- this causes problems with MORE
-<<<<<<< HEAD
     CATEGORY::SUPERLATIVE-ADJECTIVE
-=======
     CATEGORY::SUPERLATIVE
     CATEGORY::SUPERLATIVE-adjective
->>>>>>> Add superlative-adjective ("largest") to the ng heads
+    ;;    >>>>>>> Add superlative-adjective ("largest") to the ng heads
     ;;CATEGORY::NUMBER ;; 'HOW many do you want? I want 3'
     ;; need to handle bare numbers, but treat numbers as post-modifying NPs
     ;; need to handle this case specially, but want numbers to be post-modifiers...
