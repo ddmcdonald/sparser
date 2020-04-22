@@ -419,6 +419,8 @@
     :restrict ((participant blocked-category)
                (agent
                 (:or bio-chemical-entity ;;molecule bio-complex drug
+                     infectious-agent ;; virus, bacterium
+                     medical-condition
                      experimental-condition
                      bio-process bio-mechanism bio-method)))
     :binds ((cause ;; semantically like agent, but want to tighten the restriction on premodifiers used as agents
@@ -1456,14 +1458,17 @@
   :lemma (:common-noun "strain")
   :realization (:common-noun name))
 
-(define-category virus :specializes organism
+(define-category infectious-agent :specializes organism ;; are VIRUSes ORGANISMs? -- for our purposes yes
+  )
+
+(define-category virus :specializes infectious-agent
   :instantiates self 
   :index (:permanent :key name)
   :lemma (:common-noun "virus")
   :realization
     (:common-noun name))
 
-(define-category bacterium :specializes organism
+(define-category bacterium :specializes infectious-agent
   :instantiates self 
   :index (:permanent :key name)
   :lemma (:common-noun ("bacterium" :plural "bacteria"))
