@@ -769,6 +769,10 @@
 	   :form subordinate-relative-clause
 	   :referent (:function compose-wh-with-vp left-edge right-edge))))
 
+(def-syntax-rule  (adverb subordinate-s)
+        :head :right-edge
+        :form subordinate-s
+        :referent (:function interpret-adverb+verb left-edge right-edge))
 
 
 ;;--- Embedded questions
