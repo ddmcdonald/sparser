@@ -288,15 +288,14 @@
 ;; collections
 (define-category bio-grouping :specializes bio-entity
   :binds ((group-members bio-entity))
-  :realization
-  (:noun "group"
-         :of group-members))
+  :realization (:noun "group" :of group-members))
 
 (def-synonym bio-grouping (:noun "set"))
 (def-synonym bio-grouping (:noun "subset"))
 (def-synonym bio-grouping (:noun "collection"))
 (def-synonym bio-grouping (:noun "family"))
 (def-synonym bio-grouping (:noun "superfamily"))
+(def-synonym bio-grouping (:noun "cluster"))
 
 
 
@@ -503,6 +502,7 @@
                ;; bio-entity too general -- leads to problems with created semantic rules
                bio-chemical-entity
                bio-location ;; "the Y561 site displayed no difference..."
+               disease ;; "SARS-CoV-2 infection shows ..."
                evidence
                article-figure
                bio-quality
