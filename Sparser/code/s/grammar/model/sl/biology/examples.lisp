@@ -13,6 +13,18 @@
 ;;; Example texts
 ;;;---------------
 
+(defun cov-reactome ()
+  (p "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) is a strain of the species severe acute respiratory syndrome-related coronavirus (SARSr-CoV). It belongs to the family Coronaviridae which are a family of enveloped, positive-sense, single-stranded RNA viruses. SARS-CoV-2 likely originated from a bat coronavirus, to which it has a close genetic similarity. A highly contagious disease in humans, transmission occurs via liquid droplets from coughs or sneezes in a range of around 2 metres. SARS-CoV-2 is the cause of the ongoing pandemic of coronavirus disease 2019"))
+
+(defun yellow-fever ()
+  (p "Yellow fever, a mosquito-borne flavivirus, was inescapable in the 19th-century Deep South and a point of near-constant terror in New Orleans, the region’s hub. In the six decades between the Louisiana Purchase and the Civil War, New Orleans experienced 22 full-blown epidemics, cumulatively killing over 150,000 people. (Perhaps another 150,000 died in nearby American cities.) The virus killed about half of all those it infected and it killed them horribly, with many victims vomiting thick black blood, the consistency and color of coffee grounds. The lucky survivors became “acclimated,” or immune for life."))
+
+;; From David Mudd, guest column in the Arlington Advocate 4/9/20
+(defun mudd-p1 ()
+  (p "The COVID-19 epidemic started in Wuhan China in late December at a market where live bats and other wild animals are sold along with chickens and pigs. The virus transformed into a new and dangerous virus in humans, spreading like wildfire as no one has immunity to the virus and there are no proven treatments."))
+(defun mudd-p2 ()
+  (p "The virus is highly contagious, spread by respiratory droplets from coughing sneezing and breathing. We contaminate our fingers from touching the moth and nose and then all manner of surfaces. Others touch those surfaces and then become infected from touching their noses and mouths. The virus can stay contagious on plastic and metal for several days unless destroyed with 60 percent alcohol or various detergents. Thorough hand washing is a very effective method of preventing the virus from spreading."))
+
 ;;----- Brent's texts selected from article-preview-8
 #|
 (p "HPAI virus and MERS-CoV induce repressive histone modifications, which downregulate expression of ISG subsets.")
