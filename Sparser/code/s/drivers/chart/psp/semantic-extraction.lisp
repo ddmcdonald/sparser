@@ -1025,11 +1025,43 @@ in cwc-integ/spire/interface/sparser.lisp
 
 
 (defun get-mentions (&optional (s (current-sentence)))
-  (sort (remove-duplicates (sentence-mentions s))
-        #'>
-        :key #'mention-uid))
+  ;; sorted list of all mentions in the dependency tree of all
+  ;;  terminals of a sentence
+  (sort
+   (loop for m in (flatten (get-mention-forest s))
+         when (mention-p m)
+         collect m)
+   #'>
+   :key #'mention-uid))
+
+(defun get-mention-forest (&optional (s (current-sentence)))
+  ;; the dependency forest of all terminals of a sentence
+  ;;  (ignoring the dependency variables)
+  (let ((start-pos (starts-at-pos s))
+        (end-pos (ends-at-pos s)))
+    (loop for tt in (all-tts start-pos end-pos)
+          when (and (edge-p tt) (edge-mention tt))
+          collect (dependency-tree (edge-mention tt) nil))))
+
+(defun dependency-tree (mention mentions-above)
+  (unless (member mention mentions-above)
+    (setq mentions-above (cons mention mentions-above))
+    `(,mention
+      ,@
+      (loop for d in (dependencies mention) unless (member d mentions-above)
+            append
+              (let ((key (intern (pname (var-name (dependency-variable d))) :keyword)))
+                (case key
+                  ((:items :members)
+                   (loop for item in (dependency-value d)
+                         when (mention-p item)
+                         collect
+                           (dependency-tree item mentions-above)))
+                  (t
+                   (when (mention-p (dependency-value d))
+                     (list (dependency-tree (dependency-value d) mentions-above))))))))))
         
-  
+
 (defun mentions-in-sentence-edges (s)
   (sentence-mentions s))
 
