@@ -288,8 +288,22 @@ come
   ((:verb "propose")
    (:mumble ("propose" svscomp :o statement))
    (:tree-family ))) |#
-#|
 
+(define-category sell
+  :specializes process
+  :mixins (directed-action)
+  :realization (:verb ("sell" :past-tense "sold")))
+;; takes other adjuncts, e.g. for-$
+#|
+((verb (:tensed/singular "sells" :infinitive "sell" :past-tense "sold")
+  (:subc
+   ((intrans) (part-pp :adval ("out") :pval ("to" "for"))
+    (part-np :adval ("out")) (part :adval ("out"))
+    (pp :pval ("in" "to" "at" "for")) (np-pp :pval ("at" "for" "on")) (advp)
+    (adjp) (np-adjp) (np-as-np-sc) (np-as-np) (np-to-np) (np))))
+ (noun (:plural *none*) (:features ((countable))))) |#
+
+#|
 (define-category show
     :specializes achievement
     :binds ((statement ))
