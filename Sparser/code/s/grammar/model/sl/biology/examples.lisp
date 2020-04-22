@@ -59,7 +59,7 @@
 
 (p "both MERS-CoV and SARS-CoV maintain delayed IFN induction")
 
-(p "two genes (TLR3 and CFHR1) downregulated in both H5N1VN1203 and MERS-CoV, but not SARS-CoV infection")
+(p "two genes (TLR3 and CFHR1) downregulated in both H5N1-VN1203 and MERS-CoV, but not SARS-CoV infection")
 
 (p "DDX58, a gene downregulated by H5N1-VN1203 but not MERS-CoV")
 
