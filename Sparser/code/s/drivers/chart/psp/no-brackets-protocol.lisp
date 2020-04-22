@@ -420,7 +420,9 @@
 ;; collect the non-trivial mentions in a sentence, to allow for checking if the sentence
 ;; semantics drops pieces of meaning
 (defun semantic-mentions-in-current-sentence ()
-  (sentence-mentions (current-sentence)))
+  (get-mentions (current-sentence))
+  ;;(sentence-mentions (current-sentence))
+  )
 
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article*
@@ -428,6 +430,8 @@
                     *predication-links-ht*
                     *sentence-in-core*))
   (setq *sentence-in-core* sentence)
+  (setf (sentence-mentions (contents (current-sentence)))
+        (semantic-mentions-in-current-sentence))
   (set-discourse-history sentence (cleanup-lifo-instance-list))
   (when *end-of-sentence-display-operation*
     (funcall *end-of-sentence-display-operation* sentence))
