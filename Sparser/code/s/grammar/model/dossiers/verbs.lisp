@@ -256,6 +256,29 @@ come
   :realization
     (:verb ("make" :past-tense "made" :prep "up") ))
 
+(define-category play
+  :specializes process
+  :mixins (basic-intransitive)
+  :realization (:verb "play"))
+#|(comlex-entry "play")
+((verb
+  (:subc
+   ((part-np-pp :adval ("off") :pval ("against"))
+    (part :adval ("along" "around"))
+    (part-np :adval ("down" "out" "back" "up"))
+    (pp :pval ("for" "on" "upon" "against" "with")) (advp) (np) (intrans))))
+ (noun (:features ((countable :pval ("at" "in" "into" "out of")))))) |#
+(define-category play-a-role-in
+  :specializes play
+  :mixins (with-patient) ; introduces patient variable
+  :binds ((activity process)) ;;/// generalize to a thematic role!!
+  :restrict ((patient role))
+  :realization (:verb "play"
+                :o patient
+                :in activity
+))
+
+
 #|
 (define-category propose
     :specializes achievement
