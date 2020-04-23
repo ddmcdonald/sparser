@@ -679,17 +679,18 @@
         (t
          ;;new code
          (or
-          (find-binding-dependency-in-sentence-mentions value)
           
-                                           
+          ;; last-ditch effort caused by change in interpretation of
+          ;;  a previously ambiguous variable, which causes the
+          ;;  subsumed-mention to be missed
+          (loop for edge in edges when (and (dli-eq? value (edge-referent edge))
+                                            (typep (edge-mention edge) 'discourse-mention))
+                do (return edge))
           (loop for edge in edges
                 as ref-edge = (find-dependent-edge edge)
                 as ref = (when ref-edge (edge-referent ref-edge))
                 when (and ref (dli-eq? ref value))
                 do (return ref-edge))
-          ;; last-ditch effort caused by change in interpretation of
-          ;;  a previously ambiguous variable, which causes the
-          ;;  subsumed-mention to be missed
           (loop for edge in edges
                 as ee = (and (typep (edge-mention edge) 'discourse-mention)
                              (loop for d in (dependencies (edge-mention edge))
@@ -697,6 +698,7 @@
                                              (dli-eq? value (base-description (second d))))
                                    do (return (mention-source (second d)))))
                 do (when ee (return ee)))
+          (find-binding-dependency-in-sentence-mentions value)
           (when b
             (check-plausible-missing-edge-for-dependency b top-edge))))))
 
