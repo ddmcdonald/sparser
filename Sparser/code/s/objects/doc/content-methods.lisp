@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2018 David D. McDonald -- all rights reserved
+;;; copyright (c) 2013-2020 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "content-methods"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  September 2018
+;;;  Version:  April 2020
 
 ;; Created 5/12/15 to hold the container mixings and such that need
 ;; to have the document model elements already defined so they can
@@ -84,11 +84,24 @@
     (aggregate-sentence-bio-terms s tt)
     (sort-bio-terms tt (contents tt))))
 
+(defgeneric filter-for-relevant-mentions (sentence)
+  (:documentation "Take the raw set of mentions created by
+    walking the mention forest and pass them through the
+    relevant-for-dh filter")
+  (:method ((s sentence))
+    (filter-for-relevant-mentions (contents s)))
+  (:method ((c container))
+    (let ((raw (remove-duplicates (sentence-mentions c))))
+      (setf (sentence-mentions c)
+            (filter-list-of-items-for-relevance raw)))))
+
 (defun aggregate-sentence-bio-terms (s p)
-  "Given a sentence s and paragraph p retrieve the entities
-   and relations from s and store them on p."
-  (aggregate-terms p (get-entities s))
-  (aggregate-terms p (get-relations s)))
+  "Given a sentence s and paragraph p, update the entities and relations
+   for relevance and pass the mentions off to be bucketized."
+  (set-entities s (filter-list-of-items-for-relevance (get-entities s)))
+  (set-entities s (filter-list-of-items-for-relevance (get-relations s)))
+  (aggregate-terms p (filter-for-relevant-mentions s)))
+  
 
 (defun aggregate-terms (paragraph terms)
   "Store the terms in the content object of the paragraph
@@ -114,25 +127,26 @@
                      (incf-bucket-entry entry)
                      (make-bucket-entry term bucket slot c))))))))))))
 
-(defun aggregation-target (i)
-  "Return the name of the slot that this individual 
-   should be added to."
-  (typecase i
-    (individual
-     (cond
+(defgeneric aggregation-target (item)
+  (:documentation "Return the name of the slot that this individual 
+   should be added to.")
+  (:method ((m discourse-mention))
+    (if (slot-boundp m 'ci)
+      (aggregation-target (contextual-description m))
+      (aggregation-target (base-description m))))
+  (:method ((i individual))
+    ;; Could also consider mutations, drugs, cell-lines, what else?
+    (cond
       ((itypep i 'bio-process) 'bio-processes)
       ((itypep i '(:or protein human-protein-family))
        'proteins)
       ((itypep i 'residue-on-protein) ;; or other regions
        'residues)
-      ;; Could consider mutations, drugs, cell-lines, what else?
-      (t (unless (itype i 'linguistic)
-           'other))))
-    (category ;; really ignore them?
-     nil)
-    (otherwise
-     (error "Unexpected type of thing passed to aggregation-target: ~
-             ~a~%  ~a" (type-of i) i))))
+      (t 
+       'other)))
+  (:method ((odd T))
+    (error "Unexpected type of thing passed to aggregation-target: ~
+            ~a~%  ~a" (type-of odd) odd)))
 
 (defun get-from-bucket (term bucket)
   (assq term bucket))
@@ -306,8 +320,13 @@ using data collected by identify-relations |#
 (defparameter *break-on-sentence-mention-mismatches* nil)
 (defparameter *reset-sent-mentions* nil)
 
+#+ignore ;; conflicts with function in semantic-extraction
 (defmethod get-mentions ((s sentence))
   (sentence-mentions s))
+
+(defmethod sentence-mentions ((s sentence))
+  (sentence-mentions (contents s)))
+
 
 (defmethod set-mentions ((s sentence))
   (let ((s-toc-ind (toc-index s))
@@ -529,6 +548,3 @@ is a case in handle-any-anaphor
 
 (defmethod pending-partitives ((s sentence))
   (pending-partitive-references (contents s)))
-
-(defmethod sentence-mentions ((s sentence))
-  (sentence-mentions (contents s)))

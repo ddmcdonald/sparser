@@ -277,7 +277,9 @@
        (error "No provision for storing ~a yet" relation)))))
 
 
+;;;--------------------
 ;;; displaying content
+;;;--------------------
 
 (defgeneric show-entities (contents)
   (:method ((s sentence))
@@ -296,6 +298,7 @@
     (show-individuals (contents s)))
   (:method ((c sentence-discourse-history))
     (sentence-individuals c)))
+
 
 
 

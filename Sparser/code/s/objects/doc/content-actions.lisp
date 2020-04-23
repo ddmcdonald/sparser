@@ -1,7 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 2019 David D. McDonald -- all rights reserved
 ;;;
-;;;     File:  "content-methods"
+;;;     File:  "content-actions"
 ;;;   Module:  "objects;doc;"
 ;;;  Version:  August 2019
 
@@ -13,6 +13,9 @@ and make that file easier to understand. |#
 ;;;---------------------------------------------------
 ;;; Action hook for after a document element finishes
 ;;;---------------------------------------------------
+
+(defparameter *debugging-document-structure* nil
+  "Usually used to inhibit cleanup steps that remove data")
 
 (defparameter *apply-document-after-actions* t
   "Gates whether to run after actions. Makes it possible to commit
@@ -35,7 +38,8 @@ and make that file easier to understand. |#
         (aggregate-bio-terms p))
       (assess-sentence-analysis-quality p)
       (collect-text-characteristics p)
-      (make-mentions-long-term)))) ; zero's the list in the lattice
+      (unless *debugging-document-structure*
+        (make-mentions-long-term))))) ; zero's the list in the lattice
 
 (defmethod after-actions ((te title-text))
   (when *apply-document-after-actions*

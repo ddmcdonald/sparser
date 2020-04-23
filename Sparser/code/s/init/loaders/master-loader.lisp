@@ -193,11 +193,11 @@
 (when *brackets*
   (lload "do ha;loader"))
 
-(lload "objects;doc;loader") 
-
 ;;(when *heuristics*
 ;;  These are just enabling fns. they aren't heuristics
 (lload "do ca;loader")
+
+(lload "objects;doc;loader") ;; refer to discourse-mention class in CA
 
 (when *DM&P*
   (lload "analyzers;DM&P;loader"))

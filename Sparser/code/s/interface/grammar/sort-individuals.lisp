@@ -58,9 +58,11 @@
 (defun sort-units-alphabetically (unit1 unit2)
   (let ((type1 (type-of unit1))
         (type2 (type-of unit2)))
-    (unless (member type1 '(individual referential-category))
+    (unless (member type1 '(individual referential-category
+                            discourse-mention))
       (break "new object type: ~A" type1))
-    (unless (member type2 '(individual referential-category))
+    (unless (member type2 '(individual referential-category
+                            discourse-mention))
       (break "new object type: ~A" type2))
 
     (cond ((and (eq type1 'referential-category)
@@ -69,6 +71,9 @@
           ((and (eq type1 'individual)
                 (eq type2 'individual))
            (sort-individuals-alphabetically unit1 unit2))
+          ((and (eq type1 'discourse-mention)
+                (eq type2 'discourse-mention))
+           (sort-discourse-mentions-alphabetically unit1 unit2))
           (t (cond
               ;; individuals before categories
               ((eq type1 'individual)
@@ -124,7 +129,11 @@
     (sort-individuals-by-their-name i1 i2))
    (t
     (sort-by-UID i1 i2))))
-   
+
+(defun sort-discourse-mentions-alphabetically (m1 m2)
+  (let ((i1 (base-description m1))
+        (i2 (base-description m2)))
+    (sort-individuals-alphabetically i1 i2)))
 
 
 (defun sort-individuals-alphabetically-for-dm&p (i1 i2)

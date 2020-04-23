@@ -204,7 +204,7 @@
      (parse-successive-paragraphs)
      (terminate-chart-level-process))
     (t
-     ;; Default path, used for string sourcse.
+     ;; Default path, used for string sources.
      ;; N.b. this is the identical processing sequence as document case.
      (let ((initial-sentence (sentence)))
        (multiple-value-bind (eos-pos sentence)
@@ -417,33 +417,34 @@
    in that sentence.")
 
 (defparameter *sentence-semantic-mentions* nil)
-;; collect the non-trivial mentions in a sentence, to allow for checking if the sentence
-;; semantics drops pieces of meaning
-(defun semantic-mentions-in-current-sentence ()
-  (get-mentions (current-sentence))
-  ;;(sentence-mentions (current-sentence))
-  )
+;; collect the non-trivial mentions in a sentence, to allow for
+;; checking if the sentence semantics drops pieces of meaning
+
+(defun semantic-mentions-in-current-sentence (sentence)
+  (get-mentions sentence))
 
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article*
                     *end-of-sentence-display-operation*
                     *predication-links-ht*
                     *sentence-in-core*))
-  (setq *sentence-in-core* sentence)
-  (setf (sentence-mentions (contents (current-sentence)))
-        (semantic-mentions-in-current-sentence))
-  (set-discourse-history sentence (cleanup-lifo-instance-list))
-  (when *end-of-sentence-display-operation*
-    (funcall *end-of-sentence-display-operation* sentence))
-  (when *current-article*
+  (setf (sentence-mentions (contents sentence))
+        (semantic-mentions-in-current-sentence sentence))
+  (when *current-article* ;; probably won't need this
     (save-article-sentence *current-article* sentence)
     (setf (gethash sentence *article-sent-mentions*)
           (let ((sent-entity-mention-ht (make-hash-table)))
             (loop for m in (mentions-in-sentence-edges sentence)
                do (push m (gethash (base-description m) sent-entity-mention-ht)))
             sent-entity-mention-ht)))
-  (do-client-translations sentence)
   (when *sentence-semantic-mentions*
-    (setq *sentence-semantic-mentions* (semantic-mentions-in-current-sentence)))
-  (clrhash *predication-links-ht*))
+    (setq *sentence-semantic-mentions*
+          (semantic-mentions-in-current-sentence sentence)))
+
+  (set-discourse-history sentence (cleanup-lifo-instance-list))
+  (when *end-of-sentence-display-operation*
+    (funcall *end-of-sentence-display-operation* sentence))
+  (do-client-translations sentence)
+  (clrhash *predication-links-ht*)
+  sentence)
 
