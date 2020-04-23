@@ -407,7 +407,7 @@
 
 (defun sort-by-count-and-alphabetical (pair1 pair2)
   (cond 
-   ((> (cdr pair1) (cdr pair2)) t)
-   ((> (cdr pair2) (cdr pair1)) nil)
+   ((> (second pair1) (second pair2)) t)
+   ((> (second pair2) (second pair1)) nil)
    (t (sort-units-alphabetically (car pair1) (car pair2)))))
 

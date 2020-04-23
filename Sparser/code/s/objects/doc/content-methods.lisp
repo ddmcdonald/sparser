@@ -28,17 +28,20 @@
    of each term. Add tallies of terms to arrive at incident
    count at this level of the document. Writen as method
    to provide the option to do different things at different
-   levels."))
-
-(defmethod add-bio-term-counts ((d document-element))
-  (let ((sink (contents d))
-        (daughters (children d)))
-    (loop for next in daughters
-       do (accumulate-bio-terms-and-add-counts
-           sink (contents next)))
-    d))
+   levels.")
+  (:method ((d document-element))
+    (let ((sink (contents d))
+          (daughters (children d)))
+      (loop for next in daughters
+         do (accumulate-bio-terms-and-add-counts
+             sink (contents next)))
+      d)))
 
 (defun accumulate-bio-terms-and-add-counts (sink source)
+  "Extend the records on the parent document element ('sink')
+   with the content of the records on the daughter element ('source').
+   Walk through each of the interesting slots and extend the
+   records on the sink with those on the source."
   (when source ;; source is nil when section has been ignored
     (assert (typep sink 'aggregated-bio-terms))
     (assert (typep source 'aggregated-bio-terms))
@@ -49,19 +52,24 @@
     sink))
 
 (defun add-new-terms-or-add-counts (field sink source)
-  (let ((source-terms (slot-value source field))
-        (sink-terms (slot-value sink field)))
-    (loop for source-term in source-terms
-       do (let* ((term (car source-term))
-                 (sink-term (assq term sink-terms)))
+  "Increments the counts/mentions on the sink of items that are
+   already there, and adds in entries for any new ones."
+  (let ((source-entries (slot-value source field))
+        (sink-entries (slot-value sink field)))
+    (loop for source-entry in source-entries
+       do (let* ((i (car source-entry))
+                 (sink-entry (assq i sink-entries)))
             (cond
-              (sink-term
-               (let ((sink-count (cdr sink-term))
-                     (source-count (cdr source-term)))
-                 (rplacd sink-term
-                         (+ sink-count source-count))))
+              (sink-entry
+               (let ((sink-count (second sink-entry))
+                     (source-count (second source-entry))
+                     (sink-mentions (third sink-entry))
+                     (source-mentions (third source-entry)))
+                 (setf (second sink-entry) (+ sink-count source-count))
+                 (setf (third sink-entry)
+                       (append source-mentions sink-mentions))))
                (t
-                (push source-term
+                (push source-entry
                       (slot-value sink field))))))
     sink))
 
@@ -111,29 +119,63 @@
    in the paragraph so we can accumulate by count in
    larger sections."
   (when terms
-    (let ((c (contents paragraph)))
-      (dolist (term terms)
-        (let ((slot (aggregation-target term)))
-          (when slot ;; ignoring categories and literals
-            (let ((bucket (slot-value c slot)))
-              (cond
-                ((null bucket)
-                 (let* ((entry `(,term . 1))
-                        (bucket `( ,entry  )))
-                   (setf (slot-value c slot) bucket)))
-                (t
-                 (let ((entry (when bucket (get-from-bucket term bucket))))
-                   (if entry
-                     (incf-bucket-entry entry)
-                     (make-bucket-entry term bucket slot c))))))))))))
+    (unless (every #'mention-p terms)
+      (break "Revise aggregate-terms - terms aren't all mentions")
+      (return-from aggregate-terms nil))
+
+    (flet ((get-from-bucket (item bucket)
+             (assq item bucket))
+
+           (incf-bucket-entry (entry mention)
+             (incf (second entry))
+             (let ((existing-mentions (third entry)))
+               (setf (third entry)
+                     (cons mention existing-mentions))))
+
+           (make-bucket-entry (i mention bucket slot-name contents-instance)
+             "The bucket exists. Need to add this term to it"
+             (let* ((entry `(,i 1 (,mention)))
+                    (new-bucket-value (cons entry bucket)))
+               (setf (slot-value contents-instance slot-name)
+                     new-bucket-value))))
+
+      (let ((c (contents paragraph)))
+        
+        (dolist (term terms)
+          
+          (multiple-value-bind (slot i)
+              (aggregation-target term)
+            
+            (let ((mention term)) ; renaming for clarity
+              
+              (let ((bucket (slot-value c slot)))
+                (cond
+                  ((null bucket)
+                   (let* ((entry `(,i 1 (,mention)) ) ; first entry in bucket
+                          (bucket `( ,entry  )))
+                     (setf (slot-value c slot) bucket)))
+                  (t
+                   (let ((entry (when bucket (get-from-bucket i bucket))))
+                     (if entry
+                       (incf-bucket-entry entry mention)
+                       (make-bucket-entry i mention bucket slot c)))))))))))))
+
 
 (defgeneric aggregation-target (item)
-  (:documentation "Return the name of the slot that this individual 
-   should be added to.")
+  (:documentation "Called by aggregate-terms to determine the name of
+    the slot where we're going to store this item. Aggregate-terms manages
+    the instance count on the item. That is problematic for mentions
+    since by definition each on is unique. To handle that we return
+    as a second value the individual that the mention is based on")
+
   (:method ((m discourse-mention))
-    (if (slot-boundp m 'ci)
-      (aggregation-target (contextual-description m))
-      (aggregation-target (base-description m))))
+    (let ((i (if (and (slot-boundp m 'ci)
+                      (contextual-description m)) ; it might be bound but nil
+               (contextual-description m)
+               (base-description m))))
+      (values (aggregation-target i)
+              i)))
+
   (:method ((i individual))
     ;; Could also consider mutations, drugs, cell-lines, what else?
     (cond
@@ -144,22 +186,12 @@
        'residues)
       (t 
        'other)))
+  
   (:method ((odd T))
     (error "Unexpected type of thing passed to aggregation-target: ~
             ~a~%  ~a" (type-of odd) odd)))
 
-(defun get-from-bucket (term bucket)
-  (assq term bucket))
 
-(defun incf-bucket-entry (entry)
-  (incf (cdr entry)))
-
-(defun make-bucket-entry (term bucket slot-name contents-instance)
-  "The bucket exists. Need to add this term to it"
-  (let* ((entry `(,term . 1))
-         (new-bucket-value (cons entry bucket)))
-    (setf (slot-value contents-instance slot-name)
-          new-bucket-value)))
 
 ;;--- display (see summary-document-stats)
 

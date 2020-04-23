@@ -281,6 +281,8 @@
 ;;; displaying content
 ;;;--------------------
 
+;;--- sentence level
+
 (defgeneric show-entities (contents)
   (:method ((s sentence))
     (show-entities (contents s)))
@@ -298,6 +300,14 @@
     (show-individuals (contents s)))
   (:method ((c sentence-discourse-history))
     (sentence-individuals c)))
+
+;;--- larger scale
+
+(defgeneric show-proteins (contents)
+  (:method ((d document-element))
+    (show-proteins (contents d)))
+  (:method ((c container))
+    (aggregated-proteins c)))
 
 
 
