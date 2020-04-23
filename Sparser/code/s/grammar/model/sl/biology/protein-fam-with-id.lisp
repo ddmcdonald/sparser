@@ -38,7 +38,7 @@
 (def-family-with-id "CPS" "GO:0004088" :name "carbamoyl-phosphate synthase (glutamine-hydrolyzing) activity") 
 (def-family-with-id "ERCC" "NCIT:C105959" :name "excision repair cross-complementing family") 
 (def-family-with-id "FNZ" "NCIT:C16581" :name "fibronectin") 
-(def-family-with-id "IFIT" "FA:01813" :name "IFIT family") 
+(def-family-with-id "IFIT" "FA:01813" :name "IFIT family" :synonyms ("IFIT1-3") :members ("UP:P09914" "UP:P09913" "UP:O14879" "UP:Q13325"))  ;; "IFIT1-3" = "UP:P09914" "UP:P09913" "UP:O14879" -- "UP:Q13325" is ifit5
 (def-family-with-id "LAC" "NCIT:C70620" :name "lupus anticoagulant antibody") 
 (def-family-with-id "LACT" "XFAM:PF02450" :name "LCAT") 
 ;(def-family-with-id "MAPE" "NCIT:C127929" :name "PRAME") 
@@ -215,6 +215,8 @@
 (def-family-with-id "DEGS" "IPR011388" :name "Sphingolipid delta4-desaturase" :members ("UP:O15121" "UP:Q6QHC5"))
 (def-family-with-id "delta cateninn" "NCIT:C128319" :synonyms ("δ-catenin") :members ("UP:O60716" "UP:Q9UQB3")) 
 (def-family-with-id "DGK" "FPLX:DGK" :synonyms ("DAGK" "diacylglycerol kinase") :members ("UP:P23743" "UP:Q9Y6T7" "UP:Q16760" "UP:P49619" "UP:Q5KSL6" "UP:O75912" "UP:Q13574" "UP:P52429" "UP:P52824" "UP:Q86XP1")) ;;intentionally overloaded DGK with other protein "deoxyguanosine kinase"
+(def-family-with-id "DLIC" "IPR022780" :name "Dynein family light intermediate chain" :synonyms ("LIC" "light intermediate chain") :members ("UP:Q9Y6G9" "UP:O43237" "UP:Q8TCX1"))
+
 (def-family-with-id "DPPIV" "FA:02787") 
 ;(def-family-with-id "DVL" "XFAM:PF08137.10" :synonyms ("Dvl" "dvl")) 
 (def-family-with-id "discoidin domain receptor" "FPLX:DDR" :members ("UP:Q08345" "UP:Q16832")) 
@@ -277,7 +279,7 @@
 (def-family-with-id "hypoxia-inducible factor-1" "FPLX:HIF1" :synonyms ("hif-1")) 
 (def-family-with-id "HIFalpha" "FPLX:HIF_alpha") 
 (def-family-with-id "HPP" "XFAM:PF04982.11" :synonyms ("HPPs")) 
-(def-family-with-id "HSP20" "XFAM:PF00011.19")
+(def-family-with-id "HSP20" "XFAM:PF00011" :synonyms ("Hsp20" "XFAM:PF00011.19"))
 (def-family-with-id "heat shock factor" "IPR000232" :name "heat shock factor protein" :members ("UP:Q00613" "UP:Q03933" "UP:Q9ULV5" "UP:O75031" "UP:O75506"))
 (def-family-with-id "HSP" "NCIT:C16672" :name "Heat Shock Protein" :synonyms ("heat shock protein" "Hsp") :members ("UP:P04792" "UP:P07900" "UP:P08238" "UP:P0DMV8" "UP:P0DMV9" "UP:P10809" "UP:P11021" "UP:P11142" "UP:P14625" "UP:P17066")) ; probably more
 (def-family-with-id "HSP70" "NCIT:C17765" :synonyms ("IPR013126" "hsp-70" "hsp70s" "hsps70" "heat shock protein-70" "hsp70" "heat shock protein 70"))
@@ -298,6 +300,10 @@
 (def-family-with-id "interferon" "FPLX:Interferon" :synonyms ("IFN"))
 (def-family-with-id "interferon alpha" "FPLX:IFNA" :synonyms ("NCIT:C20494" "IFN-alpha" "IFN-α" "IFNA" "IFNalpha" "IFNα" "IFN-a" "IFNa") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571"))
 (def-family-with-id "interferon beta"  "FPLX:IFNB" :synonyms ("IFN-beta" "IFN beta" "IFN-β" "IFNB" "IFNbeta") :members ("UP:P01574")) ;; not sure why HMS has this family because it seems to just have one member and they overload the synonyms to point to both so now we do too...
+(def-family-with-id "IFN-I" "IPR000471" :name "interferon type I" :synonyms ("type I interferon"  "IFN I" "type I IFN") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571" "UP:P01574" "UP:Q9P0W0" "UP:P05000"))
+;; type II consists of one protein in humans - interferon-gamma - so that's why it's not family
+(def-family-with-id "IFN-III" "IPR029177" :name "interferon type III" :synonyms ("type III interferon"  "IFN III" "type III IFN" "IFN-lambda" "IFN-λ" "IFNL" "IFN-L" "IFNlambda" "IFN lambda" "IFNλ" "interferon lambda" "ifnλ") :members ("UP:Q8IU54" "UP:Q8IZJ0" "UP:Q8IZI9" "UP:K9M1U5"))
+
 (def-family-with-id "IL" "NCIT:C20497" :name "interleukin" :synonyms ("interleukine") :members ("UP:P01583" "UP:P01584" "UP:P05231" "UP:P08700" "UP:P10145" "UP:P13232" "UP:P60568")) 
 
 (def-family-with-id "IL-1" "FA:01820" :synonyms ("IL1" "il-1" "interleukin 1" "interleukin-1" "FPLX:IL1") :members ("UP:P01583" "UP:P01584")) 
@@ -338,7 +344,8 @@
 (def-family-with-id "NPP" "XFAM:PF08384.8") 
 (def-family-with-id "NRAMP" "FA:02517" :synonyms ("nramp")) 
 ;(def-family-with-id "NUDF" "FA:02562" :synonyms ("NudF" "nudF")) 
-(def-family-with-id "Not3" "XFAM:PF04065.13" :synonyms ("not3")) 
+(def-family-with-id "Not3" "XFAM:PF04065.13" :synonyms ("not3"))
+(def-family-with-id "OAS" "IPR026774" :name "2'-5'-oligoadenylate synthase" :synonyms ("2'-5'-oligoadenylate synthetase" "OAS1-3") :members ("UP:P00973" "UP:P29728" "UP:Q9Y6K5"))
 (def-family-with-id "OATP" "XFAM:PF03137.18")
 (def-family-with-id "ODC-AZ" "IPR002993" :name  "Ornithine decarboxylase antizyme" :synonyms ("antizyme") :members ("UP:P54368" "UP:O95190" "UP:Q9UMX2"))
 (def-family-with-id "OKL38" "FA:02586") 
@@ -589,7 +596,7 @@
 ;(def-family-with-id "GSK3" "BE:GSK3" :members ("UP:P38615" "UP:P49840" "UP:Q9U2Q9")) bad -- only one human
 (def-family-with-id "HSPA1" "NCIT:C103999" :synonyms ("HSPA1A" "HSP72" "hsp70-1" "hsp72") :members ("UP:P0DMV8" "UP:P48741")) 
 
-(def-family-with-id "HSP90" "FPLX:HSP90" :synonyms ("XFAM:PF02518" "IPR001404" "Hsp-90" "HSPC" "HSP-90" "heat shock protein 90" "heat shock protein Hsp90") :members ("UP:P07900" "UP:P08238" "UP:P14625" "UP:P55737" "UP:Q14568" "UP:Q58FF7" "UP:Q58FF8" "UP:Q58FG1"))
+(def-family-with-id "HSP90" "FPLX:HSP90" :synonyms ("XFAM:PF02518" "IPR001404" "Hsp-90" "HSPC" "HSP-90" "heat shock protein 90" "heat shock protein Hsp90" "heat shock protein HSP90") :members ("UP:P07900" "UP:P08238" "UP:P14625" "UP:P55737" "UP:Q14568" "UP:Q58FF7" "UP:Q58FF8" "UP:Q58FG1"))
 (def-family-with-id "HSP90A" "FPLX:HSP90A" :synonyms ("Hsp-90A" "HSP-90A" "heat shock protein 90A" "heat shock protein Hsp90A") :members ("UP:P07900" "UP:Q14568")) ;other members
 (def-family-with-id "IFNGR" "FPLX:Interferon_gamma_receptor" :synonyms ("interferon gamma receptor") :members ("UP:P15260"))
 (def-family-with-id "IkappaB" "NCIT:C17583" :synonyms ("I-kappa-B" "I-kappa-B protein" "I-kappaB" "I-κBs" "IkappaBs" "IκB"  "I-kappa-B protein" "IkB" "Ikappa-B" "I-κB" "IKB" "iκB" "IκBs") :members ("UP:O14920" "UP:O15111" "UP:P25963" "UP:O00221" "UP:Q15653" "UP:Q8NI38" "UP:Q9BYH8" "UP:Q9Y6K9"))

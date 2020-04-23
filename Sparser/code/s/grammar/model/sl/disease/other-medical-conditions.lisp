@@ -8,12 +8,12 @@
 ;;; broken out from biology/new-defs/new-diseases.lisp 4/14/20
 ;;; this contains a mix of diseases, syndromes and symptoms as they are not differentiated in TRIPS, etc.
 
-(noun "normoxia" :super disease) ; not really a disease - the opposite, but we have hypoxia as a disease and there's no ncit id for normoxia so I'm adding htis here
+(noun "normoxia" :super medical-condition) ; not really a disease - the opposite, but we have hypoxia as a disease and there's no ncit id for normoxia so I'm adding htis here
 
 
 ;(def-indiv-with-id disease "ABC" "NCIT:C3516" :name "aneurysmal bone cyst") 
 (def-indiv-with-id disease "AD-HIES" "ORPHANET:2314" :name "Autosomal dominant hyper-IgE syndrome") 
-(def-indiv-with-id disease "AIDS" "EFO:0000765" :name "AIDS") 
+(def-indiv-with-id disease "AIDS" "EFO:0000765" :name "AIDS" :synonyms ("Acquired Immunodeficiency Syndrome")) 
 (def-indiv-with-id disease "ARCMT2" "ORPHANET:91024" :name "Autosomal recessive axonal Charcot-Marie-Tooth disease type 2") 
 (def-indiv-with-id disease "ARDS" "EFO:1000637" :name "acute respiratory distress syndrome") 
 (def-indiv-with-id disease "Aniridia" "NCIT:C84563" :name "aniridia") 

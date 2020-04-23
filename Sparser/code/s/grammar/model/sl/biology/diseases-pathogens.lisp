@@ -44,10 +44,10 @@
 ;;; other diseases
 ;;;----------------
 
-(noun "anaphylaxis" :super disease)
-(noun "metaplasia" :super disease)
-(noun "neurofibromatosis" :super disease)
-(noun "CML" :super disease)
+;(noun "anaphylaxis" :super disease)
+;(noun "metaplasia" :super disease)
+;(noun "neurofibromatosis" :super disease)
+;(noun "CML" :super disease)
 
 ;;;-----------------
 ;;; viruses
@@ -57,8 +57,8 @@
                  :bindings (uid "NCIT:C26431")
    :realization (:noun ("coronavirus" "CoV" "coronaviridae")))
 
-(noun "SSV" :super virus) ;; can't find an ontology with UID but this was to block a protein def that was based on it being 
-(def-synonym SSV (:noun "Simian Sarcoma Virus"))
+;(noun "SSV" :super virus) ;; can't find an ontology with UID but this was to block a protein def that was based on it being 
+;(def-synonym SSV (:noun "Simian Sarcoma Virus"))
 
 #|
 ;;; diseases known to BoB

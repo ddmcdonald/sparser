@@ -44,15 +44,70 @@
 (def-indiv-with-id coronavirus "Deltacoronavirus" "NCIT:C122279" :name "deltacoronavirus") 
 (def-indiv-with-id coronavirus "Gammacoronavirus" "NCIT:C122313" :name "gammacoronavirus")
 
+(noun ("MuCoV" "murine coronavirus" "mouse coronavirus") :super coronavirus) ;; no NCIT
 
-;;; non-coronaviruses
+;; Flu viruses
+;(def-indiv-with-id virus "influenzavirus" "NCIT:C53469" :name "influenzavirus") 
+(define-category FLUV :specializes virus
+                 :mixins (pathogen-type)
+                 :bindings (uid "NCIT:C53469")
+                 :realization (:noun ("FLUV" "influenzavirus" "influenza virus")))
+
+;(def-indiv-with-id virus "FLUAV" "NCIT:C53454" :name "influenza A virus") 
+;(def-indiv-with-id virus "FLUBV" "NCIT:C53468" :name "influenza B virus") 
+(define-category FLUAV :specializes FLUV
+                 :bindings (uid "NCIT:C53454")
+                 :realization (:noun ("FLUAV" "influenza A virus" "Influenza A Virus")))
+
+(define-category HPAI :specializes FLUAV
+                 :realization (:noun ("HPAI" "Highly Pathogenic Asian Avian Influenza A" "Highly Pathogenic Asian Avian Influenza A Virus" "highly pathogenic avian influenza")))
+;(def-indiv-with-id HPAI "H5N1" "NCIT:C123490" :name "Influenza A (H5N1) Virus" :synonyms ("H5N1" "Highly Pathogenic Asian Avian Influenza A (H5N1) Virus" "HPAI H5N1 Virus")) 
+
+(define-category H5N1 :specializes HPAI
+                 :bindings (uid "NCIT:C123490")
+                 :realization (:noun ("H5N1" "Influenza A (H5N1) Virus" "Influenza A Virus"
+                                             "Highly Pathogenic Asian Avian Influenza A (H5N1) Virus"
+                                             "HPAI H5N1 Virus" "HPAI H5N1")))
+;;(def-indiv-with-id virus "H5N1" "NCIT:C123490" :name "Influenza A (H5N1) Virus" :synonyms ("HPAI" "highly pathogenic avian influenza" "Influenza A (H5N1) Virus" "H5N1" "Highly Pathogenic Asian Avian Influenza A (H5N1) Virus" "HPAI H5N1 Virus"))
+(noun "H5N1VN1203" :super H5N1)
+(def-synonym H5N1VN1203 (:noun ("H5N1-VN1203" "influenza A/Vietnam/1203/2004")))
+
+(def-indiv-with-id HPAI "H5N2" "NCIT:C123490" :name "H5N2 Avian Influenza Virus" :synonyms ("H5N2" "Highly P
+athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathogenic H5N2 Avian Influenza Virus")) 
+
+(define-category H1N1 :specializes FLUAV
+                 :bindings (uid "NCIT:C80445")
+                 :realization (:noun ("H1N1" "Influenza A (H1N1) Virus" "Swine Influenza A (H1N1) Virus"
+                                             "Swine-origin influenza A (H1N1) virus"
+                                             "H1N1 swine influenza virus")))
+(noun "H1N1-09" :super H1N1)
+(def-synonym H1N1-09 (:noun ("H1N1/09" "2009 swine flu virus"))) 
+
+
+;;; non-flu/non-coronaviruses
+;; no IDs
+(noun "paleovirus" :super virus) ;; extinct/ancient viruses - not NCIT
+(noun "archaeovirus" :super virus) ;; viruses that infect archaea "MESH:D023641"
+
 (noun "SSV" :super virus) ;; can't find an ontology with UID but this was to block a protein def that was based on it being 
 (def-synonym SSV (:noun "Simian Sarcoma Virus"))
+(noun "WSSV" :super virus) 
+(def-synonym WSSV (:noun ("white spot syndrome virus" "whispovirus")))
+(noun "phaeovirus" :super virus)
+(noun "roniviridae" :super virus)
+(noun "CnMV" :super virus) 
+(def-synonym CnMV (:noun "canine minute virus"))
+(noun "asfarviridae" :super virus)
+(noun "nidovirus" :super virus)
+(noun "NNV" :super virus) 
+(def-synonym NNV (:noun ("nervous necrosis virus" "betanodavirus")))
+(noun "MACV" :super virus) 
+(def-synonym MACV (:noun "machupo virus"))
 
 (def-indiv-with-id virus "DENV2" "NCIT:C112267" :name "dengue virus 2") 
 (def-indiv-with-id virus "EIAV" "NCIT:C14205" :name "equine infectious anemia virus") 
 (def-indiv-with-id virus "FIV" "NCIT:C14288" :name "feline immunodeficiency virus") 
-(def-indiv-with-id virus "Flaviviridae" "NCIT:C113201" :name "flaviviridae") 
+(def-indiv-with-id virus "Flaviviridae" "NCIT:C113201" :name "flaviviridae" :synonyms ("Flaviridae")) 
 (def-indiv-with-id virus "HBV" "NCIT:C14215" :name "hepatitis B virus") 
 (def-indiv-with-id virus "HCV" "NCIT:C14312" :name "hepatitis C virus") 
 (def-indiv-with-id virus "HERV-K" "NCIT:C128305" :name "HERV-K") 
@@ -64,7 +119,7 @@
 (def-indiv-with-id virus "HIV-1" "NCIT:C14220" :name "human immunodeficiency virus 1") 
 (def-indiv-with-id virus "HIV-2" "NCIT:C14221" :name "human immunodeficiency virus 2") 
 (def-indiv-with-id virus "HPIV2" "NCIT:C112316" :name "human parainfluenza virus 2")
-(def-indiv-with-id virus "H5N1" "NCIT:C123490" :name "Influenza A (H5N1) Virus" :synonyms ("HPAI" "highly pathogenic avian influenza"))
+
 (def-indiv-with-id virus "HPV11" "NCIT:C99178" :name "human papillomavirus-11") 
 (def-indiv-with-id virus "HPV16" "NCIT:C14338" :name "human papillomavirus-16") 
 (def-indiv-with-id virus "HPV18" "NCIT:C14377" :name "human papillomavirus-18") 
@@ -161,15 +216,14 @@
 (def-indiv-with-id virus "BKV" "NCIT:C89820" :name "BK virus") 
 (def-indiv-with-id virus "CMV" "NCIT:C14196" :name "cytomegalovirus") 
 (def-indiv-with-id virus "ERV" "NCIT:C14334" :name "endogenous retrovirus") 
-(def-indiv-with-id virus "FLUAV" "NCIT:C53454" :name "influenza A virus") 
-(def-indiv-with-id virus "FLUBV" "NCIT:C53468" :name "influenza B virus") 
+
 (def-indiv-with-id virus "HAV" "NCIT:C14325" :name "hepatitis A virus") 
 (def-indiv-with-id virus "HTLVI" "NCIT:C14223" :name "HTLV-1") 
 (def-indiv-with-id virus "JCV" "NCIT:C14229" :name "JC virus") 
 (def-indiv-with-id virus "MOCV" "NCIT:C112357" :name "molluscum contagiosum virus") 
 (def-indiv-with-id virus "TBEV" "NCIT:C112422" :name "tick-borne encephalitis virus") 
 (def-indiv-with-id virus "WHV" "NCIT:C124253" :name "woodchuck hepatitis virus") 
-(def-indiv-with-id virus "influenzavirus" "NCIT:C53469" :name "influenzavirus") 
+
 (def-indiv-with-id virus "lentivirinae" "NCIT:C14290" :name "lentivirus") 
 (def-indiv-with-id virus "viroid" "NCIT:C95945" :name "viroid") 
 (def-indiv-with-id virus "Adenoviridae" "NCIT:C14179" :name "adenoviridae") 
@@ -204,34 +258,34 @@
 
 
 ;; need checking
-(def-indiv-with-id virus "Whispovirus" "NCIT:C112029" :name "sapovirus") 
-(def-indiv-with-id virus "ViroChip" "NCIT:C14219" :name "human immunodeficiency virus") 
-(def-indiv-with-id virus "TBDev" "NCIT:C112422" :name "tick-borne encephalitis virus") 
-(def-indiv-with-id virus "Siadenovirus" "NCIT:C14179" :name "adenoviridae") 
-(def-indiv-with-id virus "Roniviridae" "NCIT:C112026" :name "reoviridae") 
+;(def-indiv-with-id virus "Whispovirus" "NCIT:C112029" :name "sapovirus") 
+;(def-indiv-with-id virus "ViroChip" "NCIT:C14219" :name "human immunodeficiency virus") 
+;(def-indiv-with-id virus "TBDev" "NCIT:C112422" :name "tick-borne encephalitis virus") 
+;(def-indiv-with-id virus "Siadenovirus" "NCIT:C14179" :name "adenoviridae") 
+;(def-indiv-with-id virus "Roniviridae" "NCIT:C112026" :name "reoviridae") 
 (def-indiv-with-id virus "Rhinvoirus" "NCIT:C77200" :name "rhinovirus") 
 (def-indiv-with-id virus "Rhabdovirdae" "NCIT:C112027" :name "rhabdoviridae") 
 (def-indiv-with-id virus "Picornavirales" "NCIT:C14256" :name "picornavirus") 
-(def-indiv-with-id virus "Phaeovirus" "NCIT:C14299" :name "parvovirus") 
-(def-indiv-with-id virus "MuCoV" "NCIT:C112357" :name "molluscum contagiosum virus") 
-(def-indiv-with-id virus "HBoV" "NCIT:C14215" :name "hepatitis B virus") 
-(def-indiv-with-id virus "Flaviridae" "NCIT:C112031" :name "filoviridae") 
+;(def-indiv-with-id virus "Phaeovirus" "NCIT:C14299" :name "parvovirus") 
+;(def-indiv-with-id virus "MuCoV" "NCIT:C112357" :name "molluscum contagiosum virus") 
+(def-indiv-with-id virus "HBoV" "NCIT:C127691" :name "Bocaparvovirus" :synonyms ("human bocavirus"))
+;(def-indiv-with-id virus "Flaviridae" "NCIT:C112031" :name "filoviridae") 
 (def-indiv-with-id virus "Enterovius" "NCIT:C14203" :name "enterovirus")
-(def-indiv-with-id virus "CnMV" "NCIT:C14196" :name "cytomegalovirus") 
-(def-indiv-with-id virus "Asfarviridae" "NCIT:C112231" :name "astroviridae") 
+;(def-indiv-with-id virus "CnMV" "NCIT:C14196" :name "cytomegalovirus") 
+;(def-indiv-with-id virus "Asfarviridae" "NCIT:C112231" :name "astroviridae") 
 (def-indiv-with-id virus "vaccinica" "NCIT:C14281" :name "vaccinia virus") 
-(def-indiv-with-id virus "rabiesvirus" "NCIT:C112414" :name "rubivirus") 
+(def-indiv-with-id virus "rabiesvirus" "NCIT:C112405" :name "rabies virus");;C112414" :name "rubivirus")
+(def-indiv-with-id virus "rubivirus" "NCIT:C112414" :name "rubivirus")
 (def-indiv-with-id virus "polioviruse" "NCIT:C14259" :name "poliovirus") 
-(def-indiv-with-id virus "paleovirus" "NCIT:C14259" :name "poliovirus") 
-(def-indiv-with-id virus "nidovirus" "NCIT:C112358" :name "nairovirus") 
+;(def-indiv-with-id virus "paleovirus" "NCIT:C14259" :name "poliovirus") 
+;(def-indiv-with-id virus "nidovirus" "NCIT:C112358" :name "nairovirus") 
 (def-indiv-with-id virus "herpesvirues" "NCIT:C14217" :name "herpesvirus") 
 (def-indiv-with-id virus "deltaretrovirus" "NCIT:C14347" :name "deltaretrovirus") 
 (def-indiv-with-id virus "cyotomegalovirus" "NCIT:C14196" :name "cytomegalovirus") 
-(def-indiv-with-id virus "archaeovirus" "NCIT:C112272" :name "echovirus") 
+;(def-indiv-with-id virus "archaeovirus" "NCIT:C112272" :name "echovirus") 
 (def-indiv-with-id virus "adenovirsuses" "NCIT:C14179" :name "adenoviridae") 
 (def-indiv-with-id virus "WHBV" "NCIT:C124253" :name "woodchuck hepatitis virus") 
-(def-indiv-with-id virus "NNV" "NCIT:C112363" :name "norwalk virus") 
-(def-indiv-with-id virus "MACV" "NCIT:C73535" :name "merkel cell polyomavirus") 
-(def-indiv-with-id virus "JCVI" "NCIT:C14229" :name "JC virus") 
+;(def-indiv-with-id virus "NNV" "NCIT:C112363" :name "norwalk virus") 
+;(def-indiv-with-id virus "MACV" "NCIT:C73535" :name "merkel cell polyomavirus") 
+;(def-indiv-with-id virus "JCVI" "NCIT:C14229" :name "JC virus") 
 (def-indiv-with-id virus "HPMV" "NCIT:C125640" :name "human metapneumovirus") 
-(def-indiv-with-id virus "FLUV" "NCIT:C53454" :name "influenza A virus") 

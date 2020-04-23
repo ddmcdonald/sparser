@@ -1961,6 +1961,7 @@
 (def-indiv-with-id drug "FSS" "NCIT:C74029" :name "fentanyl sublingual spray" :no-plural t) 
 (def-indiv-with-id drug "GLIDE" "NCIT:C148500" :name "anti-minor histocompatibility complex donor T-lymphocytes" :no-plural t :maintain-case t) 
 (def-indiv-with-id drug "HABA" "MESH:C001413" :name "HABA" :no-plural t) 
+;(def-indiv-with-id drug "HPAI" "MESH:C016679" :name "polyacrylamide" :no-plural t) ;; taken over by flu virus
 (def-indiv-with-id drug "MDMA" "NCIT:C61081" :name "3,4-methylenedioxymethamphetamine" :no-plural t) 
 (def-indiv-with-id drug "MSIR" "NCIT:C669" :name "morphine sulfate" :no-plural t) 
 (def-indiv-with-id drug "POCA" "MESH:C033891" :name "ethyl 2-(5-(4-chlorophenyl)pentyl)oxiran-2-carboxylate" :no-plural t) 
@@ -2149,7 +2150,7 @@
 (def-indiv-with-id drug "fungizone" "NCIT:C62201" :name "amphotericin B deoxycholate" :no-plural t) 
 (def-indiv-with-id drug "glyphosate" "MESH:C010974" :name "glyphosate" :no-plural t) 
 (def-indiv-with-id drug "imipenem" "NCIT:C570" :name "imipenem" :no-plural t) 
-(def-indiv-with-id drug "immunoadjuvant" "NCIT:C210" :name "immunoadjuvant" :no-plural t) 
+(def-indiv-with-id drug "immunoadjuvant" "NCIT:C210" :name "immunoadjuvant") 
 (def-indiv-with-id drug "indotricarbocyanine" "MESH:C501744" :name "indotricarbocyanine" :no-plural t) 
 (def-indiv-with-id drug "isoaaptamine" "MESH:C417553" :name "isoaaptamine" :no-plural t) 
 (def-indiv-with-id drug "isoprinosine" "NCIT:C601" :name "inosine pranobex" :no-plural t) 

@@ -151,6 +151,11 @@
 (def-family "ORF14" :synonyms ("ORF-14") :members ("Y14_CVHSA" "Y14_SARS2"))
 |#
 ;;
+
+(def-family "NS1" :synonyms ("NS-1") :members ("UP:Q9INI2" "UP:Q0H8C5" "UP:Q0PDM0" "UP:Q9INI2" "R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2")) ;; technically this is another name for non-structural protein 1 -- still unsure what we want to do about the family vs. defaulting to SARS2 definition
+
+(def-family "PB1F2" :synonyms ("PB1-F2" "polymerase basic 1-frame 2") :members ("UP:P0C0U1"))
+(def-family "PB2" :synonyms ("polymerase basic protein 2") :members ("UP:P03428" "UP:Q6UBL8"))
 (def-family "ORFX" :members ("UP:Q15059")) 
 (def-family "envelope glycoprotein" :members ("UP:D2XWF1" "UP:E2F1Z4" "UP:O41637" "UP:Q5EHA4" "UP:Q99C47" "UP:W0G7P8")) ;all HIV, so BG removed them, but that's what they're from 
 (def-family "SARS coronavirus papain like protease" :synonyms ("SARS coronavirus papain-like protease") :members ("R1A_CVHSA" "R1AB_CVHSA" "R1A_SARS2" "R1AB_SARS2"))
@@ -165,6 +170,8 @@
 (def-family "ORF63" :members ("UP:P38468" "UP:Q00159")) 
 (def-family "ORF65" :members ("UP:O78421" "UP:Q00106")) 
 (def-family "ORF72" :members ("UP:Q00103" "UP:Q6EN94")) 
+
+(def-family "ISG" :synonyms ("Interferon Stimulated Gene")) ;; a set of genes important in virus response
 
 
 (def-family "USP" :synonyms ("ubiquitin-specific protease" "ubiquitin-specific peptidase")) 
@@ -320,7 +327,7 @@
 (def-family "ODC1" :members ("UP:P11926" "UP:Q9BQT8")) 
 (def-family "ORC1" :members ("UP:Q13415" "UP:Q9Y619")) 
 (def-family "PAR-3" :members ("UP:O00254" "UP:Q8TEW0")) 
-(def-family "PB2" :synonyms ("polymerase basic protein 2") :members ("UP:P03428" "UP:Q6UBL8"))
+
 (def-family "PBP" :members ("UP:P02775" "UP:P30086" "UP:Q15648")) 
 (def-family "PDI" :members ("UP:P07237" "UP:Q9ULC6")) 
 (def-family "PEMT" :members ("UP:P15941" "UP:Q9UBM1")) 
@@ -1060,7 +1067,7 @@
 ;(def-family "neurexin 2" :members ("UP:P58401" "UP:Q9P2S2") :synonyms ("neurexin II" "neurexin-2")) 
 ;(def-family "neurexin 3" :members ("UP:Q9HDB5" "UP:Q9Y4C0") :synonyms ("neurexin-3")) 
 ;(def-family "NRs" :members ("UP:P27967" "UP:Q7ZU13")) 
-(def-family "NS1" :members ("UP:Q9INI2" "UP:Q9Y6Y0")) 
+;(def-family "NS1" :members ("UP:Q9INI2" "UP:Q9Y6Y0")) 
 (def-family "NS2" :members ("UP:P28889" "UP:Q8JJE2")) 
 (def-family "NS3" :members ("UP:Q8JU52" "UP:Q9YWQ0")) 
 (def-family "NS4A" :members ("UP:P19711" "UP:P19739")) 

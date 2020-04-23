@@ -165,6 +165,11 @@
       (:noun "strategy"
              :for goal))
 (noun "two-dimensional isoelectric focussing" :super bio-method)
+
+(noun ("ViroChip" "virochip") :super bio-method) ;; a panviral DNA microarray assay
+(noun "TBDev" :super bio-method) ;; a file sharing/torrent system which has an offshoot called BioTorrents for scientific data
+(noun "BioTorrents" :super bio-method)
+
 (noun "way" :super bio-method
       :restrict ((object over-ridden))
       :binds ((process bio-process))

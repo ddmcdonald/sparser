@@ -999,7 +999,7 @@
      :of basis))
 
 (noun "exon" :super gene) ;; the sequences of a gene that are present in the final, mature, spliced messenger RNA molecule from that gene.
-
+(noun "intron" :super dna)
 
 
 ;; molecule-states are the predications, whereas bio-states are the

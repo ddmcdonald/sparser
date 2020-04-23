@@ -8,6 +8,9 @@
 (define-protein "UP:P0C6U2" ("R1A_CVH22")) ;; "PP1a" "replicase polyprotein 1a" ;; family/covid def
 (define-protein "UP:P0C6X1" ("R1AB_CVH22")) ;; "ORF1ab polyprotein" "pp1ab" "replicase polyprotein 1ab")) 
 
+;; MERS
+(define-protein "UP:K9N643" ("ORF4b" "Non-structural protein ORF4b"))
+
 ;; CVHSA (SARS)
 (define-protein "UP:P0C6U8" ("R1A_CVHSA" "SARS PP1a" "SARS replicase polyprotein 1a" "SARS pp1a" "SARS ORF1a polyprotein")) 
 (define-protein "UP:P0C6X7" ("R1AB_CVHSA" "SARS PP1ab" "SARS replicase polyprotein 1ab" "SARS pp1ab" "SARS ORF1ab polyprotein"))
