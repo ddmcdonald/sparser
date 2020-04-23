@@ -1023,10 +1023,13 @@ in cwc-integ/spire/interface/sparser.lisp
     (loop for ee in (edges-under e)
           do (traverse-edges-below ee fn))))
 
+;;;------------------------------------------------
+;;; collecting the relevant mentions actually used
+;;;------------------------------------------------
 
 (defun get-mentions (&optional (s (current-sentence)))
-  ;; sorted list of all mentions in the dependency tree of all
-  ;;  terminals of a sentence
+  "Sorted list of all mentions in the dependency tree of all
+   terminals of a sentence"
   (sort
    (loop for m in (flatten (get-mention-forest s))
          when (mention-p m)
@@ -1035,8 +1038,8 @@ in cwc-integ/spire/interface/sparser.lisp
    :key #'mention-uid))
 
 (defun get-mention-forest (&optional (s (current-sentence)))
-  ;; the dependency forest of all terminals of a sentence
-  ;;  (ignoring the dependency variables)
+  "the dependency forest of all terminals of a sentence
+   (ignoring the dependency variables)"
   (let ((start-pos (starts-at-pos s))
         (end-pos (ends-at-pos s)))
     (loop for tt in (all-tts start-pos end-pos)
@@ -1044,22 +1047,26 @@ in cwc-integ/spire/interface/sparser.lisp
           collect (dependency-tree (edge-mention tt) nil))))
 
 (defun dependency-tree (mention mentions-above)
+  "Recursively walk the dependency links in the mention, collecting any
+   mentions on the links into an aggregated set for the mention
+   as a whole."
   (unless (member mention mentions-above)
     (setq mentions-above (cons mention mentions-above))
     `(,mention
       ,@
-      (loop for d in (dependencies mention) unless (member d mentions-above)
-            append
-              (let ((key (intern (pname (var-name (dependency-variable d))) :keyword)))
-                (case key
-                  ((:items :members)
-                   (loop for item in (dependency-value d)
-                         when (mention-p item)
-                         collect
-                           (dependency-tree item mentions-above)))
-                  (t
-                   (when (mention-p (dependency-value d))
-                     (list (dependency-tree (dependency-value d) mentions-above))))))))))
+      (loop for d in (dependencies mention)
+         unless (member d mentions-above)
+         append
+           (let ((key (intern (pname (var-name (dependency-variable d))) :keyword)))
+             (case key
+               ((:items :members)
+                (loop for item in (dependency-value d)
+                   when (mention-p item)
+                   collect
+                     (dependency-tree item mentions-above)))
+               (t
+                (when (mention-p (dependency-value d))
+                  (list (dependency-tree (dependency-value d) mentions-above))))))))))
         
 
 (defun mentions-in-sentence-edges (s)
@@ -1076,6 +1083,8 @@ in cwc-integ/spire/interface/sparser.lisp
     (loop for m in mentions unless (member (edge-referent (mention-source m)) item-refs)
             collect m)))
           
+
+
 
 ;; a useful example -- traversal functions to be used with traverse-sem
 (defmethod find-biochemical-entities ((s sentence))
