@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2019 David D. McDonald -- all rights reserved
+;;; copyright (c) 2019-2020 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "content-actions"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  August 2019
+;;;  Version:  April 2020
 
 #| Created 8/27/19 to move general action out of content-methods.lisp
 and make that file easier to understand. |#
@@ -256,3 +256,52 @@ and make that file easier to understand. |#
   (when *reading-populated-document*
     (let ((s (identify-current-sentence t)))
       (when s (toc-index s)))))
+
+;;;----------
+;;; printing 
+;;;----------
+
+
+
+(defgeneric display-top-bio-terms (document-element &optional stream)
+  (:method ((a article) &optional stream)
+    (let* ((stream (or stream *standard-output*))
+           (c (contents a)))
+      (when (aggregated-proteins c)
+        (bio-term-summary c 'proteins 5 stream))
+      (when (aggregated-residues c)
+        (bio-term-summary c 'residues 3 stream))
+      (when (aggregated-processes c)
+        (bio-term-summary c 'bio-processes 5 stream))
+      (when (aggregated-other c)
+        (bio-term-summary c 'other 15 stream)))))
+
+#|           (proteins (take-first-n 5 (aggregated-proteins c))))
+      (format stream "~&~2TTop 5 proteins: ~a" (car proteins))
+      (loop for p in (cdr proteins) do
+           (format stream "~&~18T~a" p))))) |#
+
+
+(defun bio-term-summary (container slot-name n stream)
+  (let* ((contents (slot-value container slot-name))
+         (top-n (take-first-n n contents)))
+    (format stream "~&~a:  ~a total entries~%"
+            slot-name (length contents))
+    (loop for entry in top-n
+       do (summarize-term-entry entry stream))))
+
+(defun summarize-term-entry (entry stream)
+  (let ((term (car entry))
+        (count (second entry))
+        (mentions (third entry)))
+    (format stream "~&~5T~a  ~a~%"
+            (print-form-for-term term) count)))
+
+(defgeneric print-form-for-term (term)
+  (:method ((i individual))
+    (or (value-of 'name i)
+        (format nil "~a" i))))
+
+
+
+

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "content"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  November 2019
+;;;  Version:  April 2020
 
 ;; initiated 3/13/13. Elaborated through 3/29/13. 9/17/13 fan-out
 ;; from sections make-over. 10/2/19 Fleshed out general notion of
@@ -278,7 +278,7 @@
 
 
 ;;;--------------------
-;;; displaying content
+;;; accessing content
 ;;;--------------------
 
 ;;--- sentence level
@@ -308,7 +308,4 @@
     (show-proteins (contents d)))
   (:method ((c container))
     (aggregated-proteins c)))
-
-
-
 

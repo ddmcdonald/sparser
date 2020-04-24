@@ -193,18 +193,6 @@
 
 
 
-;;--- display (see summary-document-stats)
-
-(defgeneric display-top-bio-terms (document-element &optional stream)
-  (:method ((a article) &optional stream)
-    (let* ((stream (or stream *standard-output*))
-           (c (contents a))
-           (proteins (take-first-n 5 (aggregated-proteins c))))
-      (format stream "~&~2TTop 5 proteins: ~a" (car proteins))
-      (loop for p in (cdr proteins) do
-           (format stream "~&~18T~a" p)))))
-
-
 ;;;-----------------------------------
 ;;; tally properties of text qua text
 ;;;-----------------------------------
