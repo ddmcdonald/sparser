@@ -122,7 +122,7 @@
                        (place category::location))
   (declare (special *subcat-test*))
   (if *subcat-test*
-    t
+    (not (itypep place 'bio-location))
     (else
       (tr :relative-location+location operator place)
       (make-relative-location/revise-parent operator place))))

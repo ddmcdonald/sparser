@@ -2466,17 +2466,21 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 (defun make-pp (prep pobj)
   (declare (special category::prepositional-phrase))
-  (if *subcat-test*
-    (or (not (itypep prep category::prepositional-phrase)) ; <-- Rusty - what does this check do?
-        (and (use-methods) (most-specific-k-method 'compose (list prep pobj))))
-    (else
-      (setq prep (individual-for-ref prep))
-      (or (when (use-methods)
-            (when (most-specific-k-method 'compose (list prep pobj))
-              (compose prep pobj)))
-          (make-simple-individual
-           category::prepositional-phrase
-           `((prep ,prep) (pobj ,pobj)))))))
+  (let ((use-method? (and (use-methods)
+                          (most-specific-k-method 'compose (list prep pobj)))))
+    (if *subcat-test*
+      (or (and use-method? ; it's legal to use the method
+               (compose prep pobj)) ;; run subcat test in the method
+          (progn
+            (setq use-method? nil)
+            (not (itypep prep category::prepositional-phrase))))
+      (else
+        (setq prep (individual-for-ref prep))
+        (or (when use-method?              
+              (compose prep pobj))
+            (make-simple-individual
+             category::prepositional-phrase
+             `((prep ,prep) (pobj ,pobj))))))))
 
 
 (defun make-prep-comp (prep complement)
