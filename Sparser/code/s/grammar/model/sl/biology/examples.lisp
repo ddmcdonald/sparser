@@ -13,6 +13,23 @@
 ;;; Example texts
 ;;;---------------
 
+#| Scraped off of https://www.thelancet.com/action/showPdf?pii=S0140-6736%2820%2930304-4
+
+Given the scale and rapid spread of the 2019 novel coronavirus (2019-nCoV) acute respiratory disease, there is an immediate need for medicines that can help before a vaccine can be produced. Results of rapid sequencing of 2019-nCoV, coupled with molecular modelling based on the genomes of related virus proteins, have suggested a few compounds that are likely to be effective, including the anti-HIV lopinavir plus ritonavir combination.
+
+BenevolentAI’s knowledge graph is a large repository of structured medical information, including numerous connections extracted from scientific literature by machine learning. Together with customisations bespoke to 2019-nCoV, we used BenevolentAI to search for approved drugs that could help, focusing on those that might block the viral infection process. We identified baricitinib, which is predicted to reduce the ability of the virus to infect lung cells.
+
+Most viruses enter cells through receptor-mediated endocytosis. The receptor that 2019-nCoV uses to infect lung cells might be ACE2, a cell-surface protein on cells in the kidney, blood vessels, heart, and, importantly, lung AT2 alveolar epithelial cells (figure). These AT2 cells are particularly prone to viral infection. One of the known regulators of endocytosis is the AP2-associated protein kinase 1 (AAK1). Disruption of AAK1 might, in turn, interrupt the passage of the virus into cells and also the intracellular assembly of virus particles.
+
+Of 378 AAK1 inhibitors in the knowledge graph, 47 have been approved for medical use and six inhibited AAK1 with high affinity. These included a number of oncology drugs such as sunitinib and erlotinib, both of which have been shown to inhibit viral infection of cells through the inhibition of AAK1. However, these compounds bring serious side-effects, and our data infer high doses to inhibit AAK1 effectively. We do not consider these drugs would be a safe therapy for a population of sick and infected people.
+
+By contrast, one of the six high- affinity AAK1-binding drugs was the janus kinase inhibitor baricitinib, which also binds the cyclin G-associated kinase, another regulator of endocytosis. Because the plasma concentration of baricitinib on therapeutic dosing (either as 2 mg or 4 mg once daily) is sufficient to inhibit AAK1, we suggest it could be trialled, using an appropriate patient population with 2019-nCoV acute respiratory disease, to reduce both the viral entry and the inflammation in patients, using endpoints such as the MuLBSTA score, an early warning model for predicting mortality in viral pneumonia.
+
+Figure: Viral entry via clathrin-mediated endocytosis
+The virus binds through its spike protein to ACE2 on the surface of AT2 epithelial cells (1), which induces activation of clathrin-mediated
+endocytosis. AAK1- and GAK-mediated phosphorylation of clathrin adapter proteins (2) starts the assembly of the clathrin cage around the enclosed virus, before it is pinched off and trafficked to endosomes (3). Inhibition of AAK1 and GAK by baricitinib thereby inhibits virus entry. SARS-CoV-2=severe acute respiratory syndrome coronavirus 2.
+|#
+
 (defun cov-reactome ()
   (p "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) is a strain of the species severe acute respiratory syndrome-related coronavirus (SARSr-CoV). It belongs to the family Coronaviridae which are a family of enveloped, positive-sense, single-stranded RNA viruses. SARS-CoV-2 likely originated from a bat coronavirus, to which it has a close genetic similarity. A highly contagious disease in humans, transmission occurs via liquid droplets from coughs or sneezes in a range of around 2 metres. SARS-CoV-2 is the cause of the ongoing pandemic of coronavirus disease 2019"))
 
