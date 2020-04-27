@@ -2052,6 +2052,13 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (65374 (:punctuation .,(punctuation-named (code-char 65374)))) ;; #\FULLWIDTH_TILDE 
     (65533 (:punctuation .,(punctuation-named (code-char 65533)))) ;; �
 
+    ;; ddm 4/27/20
+    (296 (:alphabetical . (:lowercase .,(code-char 296)))) ;; #\LATIN_CAPITAL_LETTER_I_WITH_TILDE 
+    (297 (:alphabetical . (:lowercase .,(code-char 297)))) ;; #\LATIN_SMALL_LETTER_I_WITH_TILDE 
+    (1004 (:alphabetical . (:lowercase .,(code-char 1004)))) ;; #\COPTIC_CAPITAL_LETTER_SHIMA 
+    (1032 (:alphabetical . (:lowercase .,(code-char 1032)))) ;; #\CYRILLIC_CAPITAL_LETTER_JE 
+    (3006 (:alphabetical . (:lowercase .,(code-char 3006)))) ;; #\TAMIL_VOWEL_SIGN_AA 
+    (9426 (:alphabetical . (:lowercase .,(code-char 9426)))) ;; #\CIRCLED_LATIN_SMALL_LETTER_C 
 
     
     ))
