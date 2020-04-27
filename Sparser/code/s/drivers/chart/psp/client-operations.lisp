@@ -43,14 +43,22 @@
     ;; by *semantic-output-format* -- code is in save-doc-semantics
     
     (write-semantics sentence *sentence-results-stream*))
-  
 
-  (let ((mentions ;; sort, so that embedding edges for positive-bio-control come out first
+  #+ignore ;;for debugging -- catch the mentions which don't have edges at this point...
+  (loop for m in (mentions-in-sentence-edges sentence)
+        do
+          (when (not (edge-p (mention-source m)))
+            (lsp-break "mention ~s has non-edge source" m)))
+
+  (let ((xxx-mentions ;; sort, so that embedding edges for positive-bio-control come out first
          (sort
           (remove-collection-item-mentions ;; why are we removing item-mentions?
-           (mentions-in-sentence-edges sentence))
+           (loop for m in (mentions-in-sentence-edges sentence)
+                 when (edge-p (mention-source m))
+                 collect m))
           #'>
           :key #'(lambda (m) (edge-position-in-resource-array (mention-source m))))))
+    ;; xxx-mentions (previously mentions) is not used any more!!
     (case *save-clause-semantics*
       (:sentence-clauses
        (push (cons (sentence-string *sentence-in-core*)

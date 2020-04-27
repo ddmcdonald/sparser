@@ -1075,12 +1075,14 @@ in cwc-integ/spire/interface/sparser.lisp
 (defun remove-collection-item-mentions (mentions)
   (let ((item-refs nil))
     (declare (special item-refs))
-    (loop for m in mentions when (is-basic-collection? (edge-referent (mention-source m)))
+    (loop for m in mentions when (and (edge-p (mention-source m))
+                                      (is-basic-collection? (edge-referent (mention-source m))))
           do
             (loop for item in (value-of 'items (edge-referent (mention-source m)))
                   do (push item item-refs)))
     ;;(lsp-break "foo")
-    (loop for m in mentions unless (member (edge-referent (mention-source m)) item-refs)
+    (loop for m in mentions unless (and (edge-p (mention-source m))
+                                        (member (edge-referent (mention-source m)) item-refs))
             collect m)))
           
 
