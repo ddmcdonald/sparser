@@ -391,19 +391,13 @@
 ;;;-----------------------------------------
 
 (defmethod sort-bio-terms ((e document-element) (c aggregated-bio-terms))
-  (let ((proteins (copy-list (aggregated-proteins c)))
-        (processes (copy-list (aggregated-processes c)))
-        (residues (copy-list (aggregated-residues c)))
-        (other (copy-list (aggregated-other c))))
-    (setf (aggregated-proteins c)
-          (sort proteins 'sort-by-count-and-alphabetical))
-    (setf (aggregated-processes c)
-          (sort processes 'sort-by-count-and-alphabetical))
-    (setf (aggregated-residues c)
-          (sort residues 'sort-by-count-and-alphabetical))
-    (setf (aggregated-other c)
-          (sort other 'sort-by-count-and-alphabetical))
-    c))
+  (declare (special *term-buckets*))
+  (loop for bucket in *term-buckets*
+     as contents = (slot-value c bucket)
+     as sorted = (sort (copy-list contents)
+                       'sort-by-count-and-alphabetical)
+     do (setf (slot-value c bucket) sorted))
+  c)
 
 (defun sort-by-count-and-alphabetical (pair1 pair2)
   (cond 

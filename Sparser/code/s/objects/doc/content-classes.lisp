@@ -16,10 +16,17 @@
   ((proteins :initform nil :accessor aggregated-proteins)
    (residues :initform nil :accessor aggregated-residues)
    (bio-processes :initform nil :accessor aggregated-processes)
+   (conditions :initform nil :accessor aggregated-conditions) ; medical-condition
+   (agents :initform nil :accessor aggregated-agents) ; infectious-agent
    (other :initform nil :accessor aggregated-other))
   (:documentation "Collects the entities and relations of
      the document layer below them summarizes them as
      tables of individuals and their count."))
+
+(defparameter *term-buckets*
+  '(proteins residues bio-processes conditions agents other)
+  "Used by downstream routines that are performing the identical
+ operation on each of the slots in aggregated-bio-terms.")
 
 
 

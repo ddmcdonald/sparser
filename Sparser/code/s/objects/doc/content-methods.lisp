@@ -42,13 +42,12 @@
    with the content of the records on the daughter element ('source').
    Walk through each of the interesting slots and extend the
    records on the sink with those on the source."
+  (declare (special *term-buckets*))
   (when source ;; source is nil when section has been ignored
     (assert (typep sink 'aggregated-bio-terms))
     (assert (typep source 'aggregated-bio-terms))
-    (add-new-terms-or-add-counts 'proteins sink source)
-    (add-new-terms-or-add-counts 'residues sink source)
-    (add-new-terms-or-add-counts 'bio-processes sink source)
-    (add-new-terms-or-add-counts 'other sink source)
+    (loop for bucket in *term-buckets*
+         do (add-new-terms-or-add-counts bucket sink source))
     sink))
 
 (defun add-new-terms-or-add-counts (field sink source)
@@ -106,8 +105,8 @@
 (defun aggregate-sentence-bio-terms (s p)
   "Given a sentence s and paragraph p, update the entities and relations
    for relevance and pass the mentions off to be bucketized."
-  (set-entities s (filter-list-of-items-for-relevance (get-entities s)))
-  (set-entities s (filter-list-of-items-for-relevance (get-relations s)))
+  ;;(set-entities s (filter-list-of-items-for-relevance (get-entities s)))
+  ;;(set-entities s (filter-list-of-items-for-relevance (get-relations s)))
   (aggregate-terms p (filter-for-relevant-mentions s)))
   
 
@@ -125,13 +124,11 @@
 
     (flet ((get-from-bucket (item bucket)
              (assq item bucket))
-
            (incf-bucket-entry (entry mention)
              (incf (second entry))
              (let ((existing-mentions (third entry)))
                (setf (third entry)
                      (cons mention existing-mentions))))
-
            (make-bucket-entry (i mention bucket slot-name contents-instance)
              "The bucket exists. Need to add this term to it"
              (let* ((entry `(,i 1 (,mention)))
@@ -140,14 +137,10 @@
                      new-bucket-value))))
 
       (let ((c (contents paragraph)))
-        
         (dolist (term terms)
-          
           (multiple-value-bind (slot i)
               (aggregation-target term)
-            
             (let ((mention term)) ; renaming for clarity
-              
               (let ((bucket (slot-value c slot)))
                 (cond
                   ((null bucket)
@@ -184,6 +177,8 @@
        'proteins)
       ((itypep i 'residue-on-protein) ;; or other regions
        'residues)
+      ((itypep i 'medical-condition) 'conditions)
+      ((itypep i 'infectious-agent) 'agents)
       (t 
        'other)))
   
@@ -220,6 +215,14 @@
                    ~%  ~4,1F words per sentence~%"
                   p (length sentences) word-count
                   (float (/ word-count (length sentences)))))))))
+
+#|(defgeneric aggregate-text-characteristics (doc-element)
+  (:documentation "Add up the word-count over the element's
+    daughters. Other paragraph-level assessed characteristics
+    can be put here later.")
+  (:method ((e document-element))
+    (let ((count (loop for d in (children e) |#
+                      
 
 
 

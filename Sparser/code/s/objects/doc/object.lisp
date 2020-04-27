@@ -284,7 +284,8 @@
 ;;; Sections
 ;;;----------
 
-(defclass section (document-element named-object titled-entity)
+(defclass section (document-element named-object titled-entity
+                   word-frequency)
   ()
   (:documentation "A toplevel unit within a document that
    is several paragraphs long."))
@@ -357,7 +358,8 @@
 ;;; A section that contains other sections
 ;;;----------------------------------------
 
-(defclass section-of-sections (document-element named-object titled-entity)
+(defclass section-of-sections (document-element named-object titled-entity
+                               word-frequency)
   ()
   (:documentation "Motivated by the NXML for PubMed articles where there
     can be multiple titled 'section' elements within a section.

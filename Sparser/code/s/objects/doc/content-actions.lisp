@@ -45,8 +45,6 @@ and make that file easier to understand. |#
   (when *apply-document-after-actions*
     ;;/// should it also bind *current-paragraph* ?
     (make-mentions-long-term)
-    ;;(push-debug `(,te))
-    ;;(lsp-break "after parsing ~a" te)
     (when *run-aggregation-after-action*
       (aggregate-bio-terms te))
     (assess-sentence-analysis-quality te)))
@@ -69,9 +67,10 @@ and make that file easier to understand. |#
       (declare (special *current-article*))
       (do-section-level-after-actions a))))
 
-
 (defun do-section-level-after-actions (s)
+  "Actions taken by everything about the level of a paragraph"
   (summarize-parse-performance s)
+  ;;  (aggregate-text-characteristics s)
   (add-bio-term-counts s)
   (sort-bio-terms s (contents s))
   s)
@@ -261,20 +260,31 @@ and make that file easier to understand. |#
 ;;; printing 
 ;;;----------
 
-
-
 (defgeneric display-top-bio-terms (document-element &optional stream)
+  (:documentation "Called as part of summary-document-stats on any article.
+    Useful to get a set of what we're getting for an article without running
+    the visual interface.")
   (:method ((a article) &optional stream)
+    (declare (special *term-buckets*))
     (let* ((stream (or stream *standard-output*))
            (c (contents a)))
+      (loop for bucket in *term-buckets*
+         as contents = (slot-value c bucket)
+         when contents do
+           (bio-term-summary c bucket 5 stream)))))
+#|
       (when (aggregated-proteins c)
         (bio-term-summary c 'proteins 5 stream))
       (when (aggregated-residues c)
         (bio-term-summary c 'residues 3 stream))
       (when (aggregated-processes c)
         (bio-term-summary c 'bio-processes 5 stream))
+      (when (aggregated-conditions c)
+        (bio-term-summary c 'conditions 5 stream))
+      (when (aggregated-agents c)
+        (bio-term-summary c 'agents 5 stream))
       (when (aggregated-other c)
-        (bio-term-summary c 'other 15 stream)))))
+        (bio-term-summary c 'other 15 stream))))) |#
 
 #|           (proteins (take-first-n 5 (aggregated-proteins c))))
       (format stream "~&~2TTop 5 proteins: ~a" (car proteins))
