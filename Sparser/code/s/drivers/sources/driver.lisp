@@ -60,7 +60,6 @@
    and pass the article to run-json-article. Standard way to run an
    article from the json corpus. Designed for iterating over:
      (loop for i from 11 to 50 do (run-json-article-from-handle :n i))"
-  
   (multiple-value-bind (article sexp)
       (make-article-from-handle :n n :corpus corpus :verbose verbose)
     (if return-sexp
@@ -104,8 +103,25 @@
           (return-from make-article-from-handle nil))
 
         (let ((article (make-document sexp filepath :handle file-handle)))
+          (save-article file-handle article)
           (values article
                   sexp))))))
+
+
+(defvar *handles-to-articles* (make-hash-table)
+  "Handle symbols to article objects")
+
+(defvar *handles-analyzed* nil
+  "Simple list in reverse chronological order")
+
+(defgeneric save-article (handle article)
+  (:method ((handle symbol) (article article))
+    (push handle *handles-analyzed*)
+    (setf (gethash handle *handles-to-articles*) article)))
+
+(defgeneric get-article (handle)
+  (:method ((handle symbol))
+    (gethash handle *handles-to-articles*)))
 
   
 #| Original set
