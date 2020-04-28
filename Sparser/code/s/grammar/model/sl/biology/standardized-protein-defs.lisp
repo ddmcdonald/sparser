@@ -26134,7 +26134,7 @@
 (define-protein "UP:Q60Z52" nil) 
 (define-protein "UP:Q61286" nil) 
 (define-protein "UP:Q61618" nil) 
-(define-protein "UP:Q6F0Q9" nil) 
+;(define-protein "UP:Q6F0Q9" nil) 
 (define-protein "UP:Q6QIY3" nil) 
 (define-protein "UP:Q6TM72" nil) 
 (define-protein "UP:Q74Z81" nil) 

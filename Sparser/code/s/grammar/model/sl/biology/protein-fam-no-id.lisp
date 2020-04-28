@@ -1386,7 +1386,7 @@
 (def-family "UBA1" :members ("UP:P22314" "UP:P41226")) 
 (def-family "UBC3" :members ("UP:P42746" "UP:P49427")) 
 (def-family "UFD2" :members ("UP:O95155" "UP:Q14139")) 
-(def-family "UK" :members ("UP:O31749" "UP:Q6F0Q9")) 
+;(def-family "UK" :members ("UP:O31749" "UP:Q6F0Q9")) 
 (def-family "UNG2" :members ("UP:P13051" "UP:Q5L9D9")) 
 (def-family "UNR" :members ("UP:O75534" "UP:P55055")) 
 (def-family "UP1" :members ("UP:P11684" "UP:P81827") :synonyms ("urinary protein 1")) 
