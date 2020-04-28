@@ -117,4 +117,4 @@
 (def-indiv-with-id bacterium "Ruminococcus" "NCIT:C86729" :name "ruminococcus") 
 (def-indiv-with-id bacterium "Stenotrophomonas" "NCIT:C86776" :name "stenotrophomonas") 
 (def-indiv-with-id bacterium "Tropheryma" "NCIT:C86826" :name "tropheryma") 
-(def-indiv-with-id bacterium "Mtb" "NCIT:C76370" "Mycobacterium tuberculosis") ;; causes tb "NCIT:C3423"
+(def-indiv-with-id bacterium "Mtb" "NCIT:C76370" :name "Mycobacterium tuberculosis") ;; causes tb "NCIT:C3423"
