@@ -371,6 +371,7 @@
     (code-char 10031) ;; "✯"
     (code-char 10216) ;; ⟨
     (code-char 10217) ;; ⟩
+    (code-char 10229) ;; 'LONG LEFTWARDS ARROW'
     (code-char 10230) ;; "⟶"
     (code-char 10233) ;; "⟹"
     (code-char 10625) ;; "⦁"
