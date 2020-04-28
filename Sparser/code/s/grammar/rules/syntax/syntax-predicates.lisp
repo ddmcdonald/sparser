@@ -402,6 +402,10 @@
          (cond
            ((polyword-p (edge-rule left-daughter))
             (edge-rule left-daughter)) ;; return the pw
+
+           ((and (word-p (edge-category left-daughter)) ;; "-such as"
+                 (eq (word-named "-") (edge-category left-daughter)))
+            right-daughter)
        
            ((and (prep-edge? left-daughter) ;; sanity check
                  (word-p left-daughter))
