@@ -202,10 +202,13 @@
   ;;  changes the referent of an edge from a category to an individual
   ;; we need to update the discourse mention
   (if (typep (edge-mention edge) 'discourse-mention)
-    (let* ((mention+referent (update-mention-referent (edge-mention edge) referent))
-           (m (car mention+referent)))
-      (setf (mention-offsets m) (cons (edge-start-offset edge)
-                                      (edge-end-offset edge))))
+      (update-mention-referent (edge-mention edge) referent)
+      ;; no longer update the offsets -- leave the offsets as the "head" offsets
+      #+ignore
+      (let* ((mention+referent (update-mention-referent (edge-mention edge) referent))
+             (m (car mention+referent)))
+        (setf (mention-offsets m) (cons (edge-start-offset edge)
+                                        (edge-end-offset edge))))
     (when *warn-on-update-edge-mention-referent*
       (warn "update-edge-mention-referent called on edge with reset referent ~s ~s~%"
             edge referent))))
