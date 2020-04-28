@@ -18,7 +18,26 @@
 (def-synonym coronavirus (:noun "coronovirus")) 
 (def-synonym coronavirus (:noun "coronavirusa")) 
 
-(def-indiv-with-id coronavirus "SARS-CoV-2" "NCIT:C169076" :name "SARS Coronavirus 2"
+(define-category alphacoronavirus :specializes coronavirus
+                 :bindings (uid "NCIT:C119319")
+                 :realization (:noun ("Alphacoronavirus" "alphacoronavirus" "alpha coronavirus" "alpha-coronavirus" "alphaCoV" "alpha-CoV")))
+
+(define-category betacoronavirus :specializes coronavirus
+                 :bindings (uid "NCIT:C113207")
+                 :realization (:noun ("betacoronavirus" "beta coronavirus" "beta-coronavirus" "betaCoV" "beta-CoV")))
+
+(define-category deltacoronavirus :specializes coronavirus
+                 :bindings (uid "NCIT:C122279")
+                 :realization (:noun ("deltacoronavirus" "delta coronavirus" "delta-coronavirus" "deltaCoV" "delta-CoV")))
+
+(define-category gammacoronavirus :specializes coronavirus
+                 :bindings (uid "NCIT:C122313")
+                 :realization (:noun ("gammacoronavirus" "gamma coronavirus" "gamma-coronavirus" "gammaCoV" "gamma-CoV")))
+
+(define-category SARSr-CoV :specializes betacoronavirus
+                 :realization (:noun ("SARS-related coronavirus" "SARSr-CoV" "Severe Acute Respiratory Syndrome-related Coronavirus" "SARSr" "SARr-CoV" "SL-CoV" "SARS-like coronavirus")))
+
+(def-indiv-with-id betacoronavirus "SARS-CoV-2" "NCIT:C169076" :name "SARS Coronavirus 2"
                    :synonyms ("SARS-CoV2" "2019-nCoV" "2019 Novel Coronavirus" 
                                           "nCoV" "nCoV-2019" "SARS-CoV-2" "SARSCoV2" "SARSCoV-2"
                                           "SAR-CoV-2"
@@ -27,31 +46,30 @@
                                           ;; arguably the rest of these should be the disease
                                           ;; instead of the virus but currently not separating them
                                           "covid19" "COVID19" "COVID-19" "covid-19"
-                                          "Corona Virus Disease 2019"))
+                                          "Corona Virus Disease 2019" "Coronavirus Disease-2019"))
 
-(def-indiv-with-id coronavirus "SARS-CoV" "NCIT:C112432" :name "SARS coronavirus"
-                   :synonyms ("SARS Coronavirus" "SARS virus" "HCoV-SARS" "SARSCoV"
+(def-indiv-with-id betacoronavirus "SARS-CoV" "NCIT:C112432" :name "SARS coronavirus"
+                   :synonyms ("SARS Coronavirus" "SARS virus" "HCoV-SARS" "SARSCoV" "SARS-CoV-1"
                                                  "Severe Acute Respiratory Syndrome Coronavirus"))
 (def-indiv-with-id disease "SARS" "NCIT:C85064" :name "Severe Acute Respiratory Syndrome"
                    :synonyms ("severe acute respiratory syndrome"))
 ;; arguably half of these MERS definitions should be the disease --
 ;; once we have a way to tie the two together we should do so
-(def-indiv-with-id coronavirus "MERS" "NCIT:C128424" :name "Middle East Respiratory Syndrome"
+(def-indiv-with-id betacoronavirus "MERS" "NCIT:C128424" :name "Middle East Respiratory Syndrome"
                    :synonyms ("MERS-CoV" "MERS coronavirus" "middle east respiratory syndrome"))
 
-(def-indiv-with-id coronavirus "Alphacoronavirus" "NCIT:C119319" :name "alphacoronavirus") 
-(def-indiv-with-id coronavirus "betacoronavirus" "NCIT:C113207" :name "betacoronavirus")
-(def-indiv-with-id coronavirus "Deltacoronavirus" "NCIT:C122279" :name "deltacoronavirus") 
-(def-indiv-with-id coronavirus "Gammacoronavirus" "NCIT:C122313" :name "gammacoronavirus")
-
 (noun ("MuCoV" "murine coronavirus" "mouse coronavirus") :super coronavirus) ;; no NCIT
+(noun ("BatCoV" "Bat-CoV" "bat-coronavirus") :super coronavirus) ;; no NCIT
+(noun ("Bat-SL-RaTG13" "bat-SL-RaTG13" "bat/RaTG13" "BetaCoV/bat/Yunnan/RaTG13/2013") :super SARSr-CoV)
+
+(noun ("BuCov" "Buffalo coronavirus") :super coronavirus) ;; no NCIT
 
 ;; Flu viruses
 ;(def-indiv-with-id virus "influenzavirus" "NCIT:C53469" :name "influenzavirus") 
 (define-category FLUV :specializes virus
                  :mixins (pathogen-type)
                  :bindings (uid "NCIT:C53469")
-                 :realization (:noun ("FLUV" "influenzavirus" "influenza virus")))
+                 :realization (:noun ("FLUV" "influenzavirus" "influenza virus" "flu virus")))
 
 ;(def-indiv-with-id virus "FLUAV" "NCIT:C53454" :name "influenza A virus") 
 ;(def-indiv-with-id virus "FLUBV" "NCIT:C53468" :name "influenza B virus") 
@@ -230,7 +248,7 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (def-indiv-with-id virus "Bunyaviridae" "NCIT:C112028" :name "bunyaviridae") 
 (def-indiv-with-id virus "Canarypox" "NCIT:C14315" :name "canarypox virus") 
 (def-indiv-with-id virus "Lymphocryptovirus" "NCIT:C14204" :name "epstein-barr virus") 
-(def-indiv-with-id virus "Marburgvirus" "NCIT:C112331" :name "marburgvirus") 
+(def-indiv-with-id virus "Marburg virus" "NCIT:C112331" :name "marburgvirus") 
 (def-indiv-with-id virus "Molluscipoxvirus" "NCIT:C112356" :name "molluscipoxvirus") 
 (def-indiv-with-id virus "Morbillivirus" "NCIT:C14309" :name "morbillivirus") 
 (def-indiv-with-id virus "Nairovirus" "NCIT:C112358" :name "nairovirus") 

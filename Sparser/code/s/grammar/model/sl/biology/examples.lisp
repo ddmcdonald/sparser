@@ -54,7 +54,7 @@ endocytosis. AAK1- and GAK-mediated phosphorylation of clathrin adapter proteins
 
 (p "However, H5N1-VN1203 induced robust induction in only 35% of the consensus annotated ISGs")
 
-(p "several ISGs showed only minimal, if any, stimulation (e.g., TLR3, SERPIN1), and ACE2O")
+(p "several ISGs showed only minimal, if any, stimulation (e.g., TLR3, SERPIN1), and ACE2")
 
 (p "H1N1-09, the limited control of ISG RNA expression also manifested in robust ISG protein production; 27 ISG proteins were among 530 significantly upregulated host proteins")
 

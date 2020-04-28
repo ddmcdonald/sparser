@@ -166,3 +166,6 @@
 (def-indiv-with-id cellular-location "phagosome" "UP:SL-0206" :name "Phagosome") 
 (def-indiv-with-id cellular-location "plastid" "UP:SL-0209" :name "Plastid") 
 (def-indiv-with-id cellular-location "uropod" "GO:0001931" :name "uropod") 
+
+
+(def-indiv-with-id cellular-location "spike" "GO:0098029" :name "icosahedral viral capsid, spike" :synonyms ("peplomer"))

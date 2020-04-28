@@ -48,7 +48,7 @@
 (def-indiv-with-id cancer "MPNST" "EFO:0000760" :name "malignant peripheral nerve sheath tumor") 
 (def-indiv-with-id cancer "MPNu" "NCIT:C27350" :name "chronic myeloproliferative disease unclassifiable") 
 (def-indiv-with-id cancer "MZL" "EFO:1000630" :name "marginal zone B-cell lymphoma") 
-(def-indiv-with-id cancer "NHL" "NCIT:C3423" :name "Non-Hodgkin Lymphoma")
+(def-indiv-with-id cancer "NHL" "NCIT:C3211" :name "Non-Hodgkin Lymphoma")
 (def-indiv-with-id cancer "NLPHL" "NCIT:C7258" :name "nodular lymphocyte predominant hodgkin s lymphoma")
 (def-indiv-with-id cancer "ovarian cancer" "NCIT:C4908" :name "ovarian carcinoma")
 (def-indiv-with-id cancer "ovarian serous cystadenocarcinoma" "NCIT:C7978"  :name "ovarian serous cystadenocarcinoma" )

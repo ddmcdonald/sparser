@@ -54,6 +54,9 @@
   :realization
   (:noun "guanyl-nucleotide exchange"))
 
+(noun ("PPI" "protein-protein interaction") :super bio-process)
+(noun ("HC-PPI" "High-confidence protein-protein interaction") :super bio-process)
+
 ;;;------------------------
 ;;; caused, named, and other bio-processes
 ;;;------------------------

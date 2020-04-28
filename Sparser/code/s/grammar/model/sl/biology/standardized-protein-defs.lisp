@@ -7264,7 +7264,7 @@
 (define-protein "UP:P27073" ("pS16")) 
 (define-protein "UP:P27079" ("excisionase")) 
 (define-protein "UP:P27080" ("ABT")) 
-(define-protein "UP:P27087" ("Metallothionein B" "mtb")) 
+(define-protein "UP:P27087" ("Metallothionein B")):; "mtb")) bobwhite
 (define-protein "UP:P27091" ("GBB")) 
 (define-protein "UP:P27105" ("STOM")) 
 (define-protein "UP:P27127" ("RFa-B")) 

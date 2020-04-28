@@ -45,6 +45,8 @@
 (def-indiv-with-id database "ensembl" "NCIT:C45763" :name "ENSEMBL")
 (def-indiv-with-id database "entrez" "NCIT:C45764" :name "Entrez")
 
+(def-indiv-with-id database "2019nCoVR" "2019nCoVR" :name "2019 Novel Coronavirus Resource")
+
 ;;; Functions to allow for "domain adjunct" PPs -- PPs which can attach to
 ;;   general (non-domain) NPs, but which only make sense in some domain
 ;; e.g. "any relations in the literature" where "relation" is a general NP
