@@ -15391,7 +15391,7 @@
 (define-protein "UP:Q5YD75" ("LR1" "Phospholipase D LrSicTox-alphaIB1" "lrs1")) 
 (define-protein "UP:Q5YD76" ("LB3" "Phospholipase D LbSicTox-betaIA1a")) 
 (define-protein "UP:Q5YDB6" ("CPL1")) 
-(define-protein "UP:Q5ZC82" ("log")) 
+;; (define-protein "UP:Q5ZC82" ("log"))  NO!! -- logarrhytm
 (define-protein "UP:Q5ZJ58" ("PIP5KIβ" "phosphatidylinositol 4-phosphate 5-kinase type-1 beta")) 
 (define-protein "UP:Q5ZKU4" ("int2")) 
 ;(define-protein "UP:Q5ZLN5" ("TAR DNA-binding protein 43" "TDP-43")) chicken
