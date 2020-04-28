@@ -186,7 +186,8 @@
       ((itypep i 'molecule) 'molecule)
       (t 
        'other)))
-  
+  (:method ((cat referential-category))
+    'other)  
   (:method ((odd T))
     (error "Unexpected type of thing passed to aggregation-target: ~
             ~a~%  ~a" (type-of odd) odd)))
