@@ -1270,7 +1270,7 @@
              (beneficiary interlocutor))
   ;; it was shown that
   :realization
-  (:verb ("exhibit":past-tense "exhibited" :past-participle "exhibited")
+  (:verb ("exhibit" :past-tense "exhibited" :past-participle "exhibited")
          :etf (svo-passive)))
 
 (define-category list :specializes perdurant
