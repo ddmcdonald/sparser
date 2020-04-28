@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2019 David D. McDonald -- all rights reserved
+;;; copyright (c) 2019-2020 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "content-classes"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  November 2019
+;;;  Version:  April 2020
 
 #| Created 11/25/19 to separate out container component classes  |#
 
@@ -26,7 +26,12 @@
    (other :initform nil :accessor aggregated-other))
   (:documentation "Collects the entities and relations of
      the document layer below them summarizes them as
-     tables of individuals and their count."))
+     tables of individuals and their count.
+     Note that if you extend this class you need to also extend
+     *term-buckets* to match.
+     The type check that directs mentions to one of these 'buckets'
+     is done by aggregation-target in objects/doc/content-methods.lisp
+"))
 
 (defparameter *term-buckets*
   '(proteins residues bio-processes medical-conditions infectious-agents 
