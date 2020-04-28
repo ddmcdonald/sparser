@@ -272,25 +272,6 @@ and make that file easier to understand. |#
          as contents = (slot-value c bucket)
          when contents do
            (bio-term-summary c bucket 5 stream)))))
-#|
-      (when (aggregated-proteins c)
-        (bio-term-summary c 'proteins 5 stream))
-      (when (aggregated-residues c)
-        (bio-term-summary c 'residues 3 stream))
-      (when (aggregated-processes c)
-        (bio-term-summary c 'bio-processes 5 stream))
-      (when (aggregated-conditions c)
-        (bio-term-summary c 'conditions 5 stream))
-      (when (aggregated-agents c)
-        (bio-term-summary c 'agents 5 stream))
-      (when (aggregated-other c)
-        (bio-term-summary c 'other 15 stream))))) |#
-
-#|           (proteins (take-first-n 5 (aggregated-proteins c))))
-      (format stream "~&~2TTop 5 proteins: ~a" (car proteins))
-      (loop for p in (cdr proteins) do
-           (format stream "~&~18T~a" p))))) |#
-
 
 (defun bio-term-summary (container slot-name n stream)
   (let* ((contents (slot-value container slot-name))
@@ -313,5 +294,23 @@ and make that file easier to understand. |#
         (format nil "~a" i))))
 
 
+;;;------------------------
+;;; exploring the mentions
+;;;------------------------
 
-
+(defgeneric m-string (article bucket n)
+  (:documentation "Get the nth item in this bucket (e.g. 'other)
+    of this article and extract the text")
+  (:method ((handle symbol) (slot symbol) (n integer))
+    (let* ((article (get-article handle))
+           (c (when article (contents article))))
+      (when article
+        (let* ((entries (slot-value c slot))
+               (entry (nth (1- n) entries))
+               (mentions (third entry))
+               (m (car mentions))
+               (offsets (mention-offsets m))
+               (paragraph (cdr (mentioned-in-article-where m))))
+          (when paragraph
+            (let ((text (content-string paragraph)))
+              (subseq text (1- (car offsets)) (1- (cdr offsets))))))))))
