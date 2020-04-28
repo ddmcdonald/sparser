@@ -663,7 +663,8 @@
 
 (define-category bio-method :specializes purposive-process
   :mixins (has-UID biological with-agent)
-  :documentation "No content by itself, provides a common parent
+  :documentation "No content by itself, but indicates something that
+    experimental biologist do, and provides a common parent
     for 'liquid chromatography', etc. that may be the basis
     of the grammar patterns."
   :restrict ((agent biological))
@@ -675,6 +676,9 @@
      :by agent
      :of :object)) ;; for nominal forms
 
+(define-category medical-method :specializes bio-method
+                 :documentation "No content by itself, but indicates something that
+    medical personnel do to patients e.g. 'transfuse', 'intubate' etc.")
     
 (define-category immune-method :specializes bio-method
    :binds ((antibody (:or protein antibody))
