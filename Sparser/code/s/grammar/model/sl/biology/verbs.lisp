@@ -83,6 +83,9 @@
 (defparameter *comlex-category-names* nil)
 (defparameter *new-bio-processes* nil)
 
+(define-mixin-category comlex-derived :specializes abstract
+                       :documentation "Marker that this category was produced to hold a word that is only known through COMLEX")
+
 (defun svo/bio/expr (verb)
   (declare (special category::bio-process))
   (when *show-bio-verbs*
@@ -119,6 +122,7 @@
                           `(define-category ,category-name
                                :instantiates :self
                                :specializes bio-process
+                               :mixins (comlex-derived)
                                :binds ((participant endurant)
                                        (object endurant))
                                :realization (:etf (svo-passive)
@@ -188,9 +192,7 @@
   (:verb "characterize"
          :noun "characterization" :etf (svo-passive)))
 
-(define-category distinguish :specializes bio-method
-  :realization
-  (:verb "distinguish" :etf (svo-passive)))
+
 
 (define-category compensate :specializes other-bio-process
   :binds ((alternate biological))
@@ -198,6 +200,12 @@
   (:verb "compensate" :etf (sv)
          :for alternate))
 
+(define-category hypothesize :specializes bio-rhetorical
+    :mixins (bio-thatcomp)
+    :realization
+    (:verb "hypothesize" ;; keyword: ENDS-IN-ED 
+	   :noun "hypothesis"
+	   :etf (svo-passive)))
 
 (define-category learning :specializes bio-rhetorical
   :realization
@@ -209,41 +217,6 @@
   (:verb ("find" :prep "out")
          :etf (svo-passive)))
 
-(define-category isolate :specializes bio-method
-  :binds ((background biological))
-  :realization
-  (:verb "isolate" :etf (svo-passive)
-         ;;:from background
-         ))
-
-(define-category immunoblot :specializes immune-method
-  :binds ((object bio-entity)
-	  (tested-for bio-chemical-entity))
-  :realization
-  (:verb ("immunoblot" :present-participle "immunoblotting"
-                       :past-tense "immunoblotted")
-         :etf (svo-passive)
-         :for tested-for
-	 ))
-
-(define-category lyse :specializes bio-method
-  :realization
-  (:verb "lyse" :etf (svo-passive)))
-
-(define-category label :specializes bio-method
-                 ;; e.g. "SILAC labeling"
-  :bindings (uid "EFO:0000562")
-  :realization
-  (:verb ("label" :present-participle ("labeling" "labelling")
-                  :past-tense ("labeled" "labelled"))
-         :etf (svo-passive))) ;; how to add single-l version for "labeling"?
-
-(define-category screen :specializes  bio-method
-  :realization
-  (:verb "screen" :etf (svo-passive)))
-
-(def-synonym screen
-             (:noun "screen"))
 
           
 (define-category feature :specializes  bio-rhetorical ;; not really -- but WHAT??
@@ -398,6 +371,13 @@
      :noun "activation"
      :etf (svo-passive)))
 
+(define-category bio-hyperactivate
+  :specializes bio-activate
+  :realization
+    (:verb "hyperactivate" 
+     :noun "hyperactivation"
+     :etf (svo-passive)))
+
 (define-category auto-activate
   :specializes bio-activate
   :realization
@@ -463,12 +443,7 @@
          :with object
          :between objects))
 
-(define-category assess :specializes bio-method
-  :mixins (bio-thatcomp)
-  :realization
-  (:verb "assess" ;; keyword: ENDS-IN-ED 
-         :noun "assessment"
-         :etf (svo-passive)))
+
 
 
 (define-category attenuate :specializes negative-bio-control
@@ -555,27 +530,9 @@
 (def-synonym change
     (:noun "variation"))
 
-(define-category clustering :specializes bio-method
-  :realization (:verb ("cluster" :present-participle "clustering" :past-tense "clustered")
-                      :etf (svo-passive)))
 
 (noun "hierarchical clustering analysis" :super clustering)
 
-
-
-(define-category coimmunoprecipitate :specializes immune-method
-  :binds ((co-precipitant protein))
-  :realization 
-  (:verb "co-immunoprecipitate" :noun "co-immunoprecipitation"
-         :etf (svo-passive) 
-	 :with co-precipitant))
-
-(def-synonym coimmunoprecipitate
-    (:noun "co-IP"))
-
-(def-synonym coimmunoprecipitate
-    (:noun "coimmunoprecipitation"
-	   :verb "coimmunoprecipitate" :etf (svo-passive) ))
 
 
 ;; like inhibit "therapeutics are confounded by acquired resistance"
@@ -607,13 +564,6 @@
     (:verb ("harbor" :past-tense "harbored" :present-participle "harboring")
 	   :etf (svo-passive)))
 
-
-
-(define-category culture :specializes bio-method
-  :realization
-  (:verb "culture" ;; keyword: ENDS-IN-ED
-         :etf (svo-passive)
-         :noun "culture"))
 
 (define-category cycle
  :specializes bio-process
@@ -671,11 +621,7 @@
    :etf (sv)))
 |#
 
-(define-category digest ;; as in a chemical process for breaking down proteins
-  :specializes bio-method
-  :realization
-  (:verb   "digest" :noun "digestion"
-   :etf (svo-passive)))
+
 
 (define-category displace :specializes caused-bio-process
   :binds ((source-location (:or bio-location bio-complex)))
@@ -686,12 +632,7 @@
          :etf (svo-passive)
          :from source-location))
 
-(define-category dissect 
-  :specializes bio-method 
-  :realization 
-  (:verb "dissect" 
-   :noun "dissection" 
-   :etf (svo-passive)))
+
 
 (define-category dissociate :specializes caused-bio-process
   :mixins (on-substrate)
@@ -746,14 +687,7 @@
   (:verb   "dysregulate" :noun "dysregulation"
    :etf (svo-passive)))
 
-(define-category elute :specializes bio-method
-    :binds ((source biological))
-    :realization
-    (:verb "elute" ;; keyword: ENDS-IN-ED 
-	   :noun "elution"
-	   :etf (svo-passive)
-           ;;:from source
-           :with agent)) ;; from/onto column (?)
+
 
 ;;--- "encode"
 ;; <enzyme> encoded by <gene>
@@ -910,76 +844,6 @@
 
 
 
-(define-category bio-fraction :specializes bio-method ;; avoid conflict with core category FRACTION
-  :binds ((basis bio-entity)) ;; this should be for genes and proteins
-  :realization
-  (:verb ("fractionXX" :past-participle "fractioned" :past-tense "fractioned")
-         ;; bizarre, but needed to handle the conflict between "fractioned" and the noun
-         :etf (svo-passive)
-         :o basis
-         :on instrument))
-
-;; exchange
-
-
-(define-category generate :specializes caused-bio-process
-  :binds ((bio biological))
-  :realization 
-  (:verb "generate" :noun "generation"
-         :etf (svo-passive) 
-         :from bio
-         :in bio))
-
-;; formation "GO:0009058"
-;;--- hydrolysis
-;; http://en.wikipedia.org/wiki/Hydrolysis
-;; j3  "upon hydrolysis of GTP to GDP"
-;;  The phosphate is removed/cleaved from the GTP (ATP)
-;;  and GDP (di-phosphate) is the result.
-;;  "gtp hydrolysis on ras"
-;; "GO:0019514"
-(define-category hydrolyze :specializes chemical-reaction
-  :realization            
-  (:verb "hydrolyze" :noun "hydrolysis"
-   :etf (svo-passive) 
-   ))
-
-(def-synonym hydrolyze
-    (:verb "hydrolyse"
-           :etf (svo-passive)))
-
-(define-category bio-hyperactivate
-  :specializes bio-activate
-  :realization
-    (:verb "hyperactivate" 
-     :noun "hyperactivation"
-     :etf (svo-passive)))
-
-(define-category hypothesize :specializes bio-rhetorical
-    :mixins (bio-thatcomp)
-    :realization
-    (:verb "hypothesize" ;; keyword: ENDS-IN-ED 
-	   :noun "hypothesis"
-	   :etf (svo-passive)))
-
-(define-category immortalize :specializes bio-method
-                 :bindings (uid "NCIT:C82424")
-                 :restrict ((object cell-entity)) ; covers both cell-line and cell-type
-                 :realization
-                 (:verb "immortalize" :noun "immortalization"
-                       :etf (svo-passive)
-                       ))
-
-(define-category immunoprecipitate :specializes immune-method
-  :binds ((origin bio-location))
-  :realization 
-  (:verb "immunoprecipitate" :noun "immunoprecipitate"
-         :etf (svo-passive)
-         :from origin))
-
-(def-synonym immunoprecipitate
-    (:noun "IP"))
-
 (define-category impact :specializes bio-relation
   :realization
   (:verb "impact" 
@@ -1036,11 +900,7 @@
     (:verb "intrigue"
 	   :etf (svo-passive)))
 
-(define-category investigate :specializes bio-method 
-  :mixins (bio-whethercomp)
-  :realization
-  (:verb "investigate" :noun "investigation"
-         :etf (svo-passive)))
+
 
 
 (define-category knock-out :specializes negative-bio-control
@@ -1198,13 +1058,7 @@
    :noun "propagation" 
    :etf (svo-passive)))
 
-(define-category purify :specializes bio-method
-  :binds ((bio biological))
-  :realization 
-  (:verb "purify" :noun "purification" 
-         :etf (svo-passive)
-         :from bio
-         :with agent))
+
 
 
 (define-category reconstitute :specializes caused-bio-process
@@ -1323,16 +1177,6 @@
          :noun "relief"
          :etf (svo-passive)))
 
-
-
-;; not really relevant, but the existence of "replating" caused an error -- no  edge between positions
-(define-category replate
-  :specializes bio-method
-  :realization
-  (:verb   "replate"
-   :etf (svo-passive)))
-
-
 (define-category resist :specializes bio-relation
   :realization
   (:verb "resist"
@@ -1364,16 +1208,6 @@
 
 
 
-
-
-(define-category bio-sequence :specializes bio-method
-    :binds ((method bio-method))
-    :realization
-    (:verb "sequence" ;; keyword: ENDS-IN-ED 
-	   :etf (svo-passive)
-           :with method))
-
-
 (define-category stabilize :specializes bio-control
   :binds ((process bio-process))
  :realization
@@ -1385,12 +1219,7 @@
     (:verb "stabilise"
            :etf (svo-passive)))
 
-(define-category starve :specializes bio-method
-    :binds ((nutrient biological))
-    :realization
-    (:verb "starve" 
-           :noun "starvation"
-	   :etf (svo-passive)))
+
 
 (define-category stimulate
   :specializes positive-bio-control
@@ -1398,14 +1227,6 @@
   (:verb "stimulate" :noun "stimulation"
    :etf (svo-passive)
    :with agent))    ;; by <entity>
-
-(define-category subject :specializes bio-method
-      :binds ((treatment biological))
-      :realization
-      (:verb "subject"
-             :etf (svo-passive)
-             :adj "subject"
-             :to treatment))
 
 
 (define-category summarize :specializes bio-rhetorical
@@ -1419,19 +1240,6 @@
     (:verb "suppress" ;; keyword: ENDS-IN-ED 
 	   :noun "suppression"
 	   :etf (svo-passive)))
-
-
-
-
-
-(define-category tag :specializes bio-method
-    :binds ((molecular-location molecular-location))    ;; :mixins (has-location)
-    ;; :restrict ((location bio-location))
-    :realization
-    (:verb "tag" ;; keyword: ENDS-IN-ED 
-	   :etf (svo-passive)
-           :at molecular-location
-           :with agent))
 
 (define-category target :specializes bio-control
   :binds ((destination biological))
@@ -1498,10 +1306,7 @@
   :from source
   :to destination))
 
-(define-category transfer :specializes bio-method
-  :realization 
-  (:verb "transfer"
-         :etf (svo-passive)))
+
 
 (def-synonym transition (:noun "transition"))
 
@@ -1582,17 +1387,6 @@
 
 
 
-(define-category transfect :specializes bio-method
-  :binds ((genetic-material biological))
-  :realization 
-  (:verb "transfect"
-         :etf (svo-passive)
-         :with genetic-material))
-
-(define-category trap :specializes bio-method
-  :realization 
-  (:verb "trap"
-         :etf (svo-passive)))
 
 (define-category relocate :specializes translocation
   :realization 
