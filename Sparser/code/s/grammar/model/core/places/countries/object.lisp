@@ -87,7 +87,9 @@
     (when cities ;; stash them somewhere
       (loop for string in cities
          do (define-city string :country country)))
-    (when provinces )
+    (when provinces ;; bad for grammar, but makes them known
+      (loop for string in provinces
+         do (define-city string :country country)))
     (values country
             rules)))
 
