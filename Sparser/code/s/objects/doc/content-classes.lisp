@@ -16,15 +16,23 @@
   ((proteins :initform nil :accessor aggregated-proteins)
    (residues :initform nil :accessor aggregated-residues)
    (bio-processes :initform nil :accessor aggregated-processes)
-   (conditions :initform nil :accessor aggregated-conditions) ; medical-condition
-   (agents :initform nil :accessor aggregated-agents) ; infectious-agent
+   (medical-conditions :initform nil :accessor aggregated-medical-conditions) ; medical-condition
+   (infectious-agents :initform nil :accessor aggregated-infectious-agents) ; infectious-agent
+   (cellular-locations :initform nil :accessor aggregated-cellular-locations)
+   (cell-type :initform nil :accessor aggregated-cell-type)
+   (cell-line :initform nil :accessor aggregated-cell-line)
+   (protein-domain :initform nil :accessor aggregated-protein-domain)
+   (molecule :initform nil :accessor aggregated-protein-molecule)
    (other :initform nil :accessor aggregated-other))
   (:documentation "Collects the entities and relations of
      the document layer below them summarizes them as
      tables of individuals and their count."))
 
 (defparameter *term-buckets*
-  '(proteins residues bio-processes conditions agents other)
+  '(proteins residues bio-processes medical-conditions infectious-agents 
+    cellular-locations cell-type cell-line
+    protein-domain molecule
+    other)
   "Used by downstream routines that are performing the identical
  operation on each of the slots in aggregated-bio-terms.")
 

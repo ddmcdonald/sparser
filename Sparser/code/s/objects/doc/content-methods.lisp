@@ -172,13 +172,18 @@
   (:method ((i individual))
     ;; Could also consider mutations, drugs, cell-lines, what else?
     (cond
-      ((itypep i 'bio-process) 'bio-processes)
+      ((and (itypep i 'bio-process)
+            (not (itypep i 'comlex-derived)))
+       'bio-processes)
       ((itypep i '(:or protein human-protein-family))
        'proteins)
       ((itypep i 'residue-on-protein) ;; or other regions
        'residues)
-      ((itypep i 'medical-condition) 'conditions)
-      ((itypep i 'infectious-agent) 'agents)
+      ((itypep i 'medical-condition) 'medical-conditions)
+      ((itypep i 'infectious-agent) 'infectious-agents)
+      ((itypep i 'cellular-location) 'cellular-locations)
+      ((itypep i 'protein-domain) 'protein-domain)
+      ((itypep i 'molecule) 'molecule)
       (t 
        'other)))
   
