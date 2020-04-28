@@ -48,7 +48,8 @@
 (define-country "Britain"
     :aliases '("United Kingdom" "UK")
     :adjective "British"
-    :cities '("London" "Birmingham" "Brighton" "Cardiff"))
+    :cities '("London" "Birmingham" "Brighton" "Cardiff"
+       "Edinburgh" "Glasgow" "Oxford" "Cambridge"))
  (define-country "England" :adjective "English")
  (define-country "Scotland" :adjective "Scotish")
  (define-country "Wales" :adjective "Welsh")

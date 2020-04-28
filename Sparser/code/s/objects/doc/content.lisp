@@ -277,35 +277,3 @@
        (error "No provision for storing ~a yet" relation)))))
 
 
-;;;--------------------
-;;; accessing content
-;;;--------------------
-
-;;--- sentence level
-
-(defgeneric show-entities (contents)
-  (:method ((s sentence))
-    (show-entities (contents s)))
-  (:method ((c entities-and-relations))
-    (entities-in-sentence c)))
-
-(defgeneric show-relations (contents)
-  (:method ((s sentence))
-    (show-relations (contents s)))
-  (:method ((c entities-and-relations))
-    (relations-in-sentence c)))
-
-(defgeneric show-individuals (contents)
-  (:method ((s sentence))
-    (show-individuals (contents s)))
-  (:method ((c sentence-discourse-history))
-    (sentence-individuals c)))
-
-;;--- larger scale
-
-(defgeneric show-proteins (contents)
-  (:method ((d document-element))
-    (show-proteins (contents d)))
-  (:method ((c container))
-    (aggregated-proteins c)))
-
