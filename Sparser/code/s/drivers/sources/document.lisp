@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2015-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "document"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   November 2019
+;;;  Version:   April 2020
 
 ;; initiated 4/25/15 to driving reading from a fully populated
 ;; article object. Continually modifying/adding routines through
@@ -305,6 +305,10 @@
                       *current-document-element*
                       *current-paragraph*))
     (setf (contents p) (install-contents p))
+    (when (actually-reading)
+      (setf (starts-at-pos p) (chart-position 1)
+            (starts-at-char p) 1))
+    
     (let* ((text (content-string p)))
       (initialize-sentences) ;; set up or reuse the 1st sentence
       (paragraph-trace-hook p)
@@ -318,7 +322,14 @@
       ;;  (run-nth-json-article 17 :skip-errors nil)
       (when *prescan-character-input-buffer*
         (scan-and-swap-character-buffer))
-      (analysis-core))))
+      (analysis-core)
+
+      (when (actually-reading)
+        (setf (ends-at-pos p)
+              (chart-position-before (next-chart-position-to-fill)))
+        (setf (ends-at-char p) (pos-character-index (ends-at-pos p))))
+
+      p)))
 
 
 (defvar *reading-section-title* nil
