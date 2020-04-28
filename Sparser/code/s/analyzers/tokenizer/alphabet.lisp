@@ -1322,7 +1322,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (1021 (:alphabetical . (:lowercase .,(code-char 1021)))) ;; #\GREEK_CAPITAL_REVERSED_LUNATE_SIGMA_SYMBOL 
     (10216 (:punctuation  .,(punctuation-named (code-char 10216)))) ;; ⟨
     (10217 (:punctuation  .,(punctuation-named (code-char 10217)))) ;; ⟩
-    (1022 (:alphabetical . (:lowercase .,(code-char 1022)))) ;; #\GREEK_CAPITAL_DOTTED_LUNATE_SIGMA_SYMBOL 
+    (1022 (:alphabetical . (:lowercase .,(code-char 1022)))) ;; #\GREEK_CAPITAL_DOTTED_LUNATE_SIGMA_SYMBOL
+    (10229 (:punctuation .,(punctuation-named (code-char 10229)))) ;; 'LONG LEFTWARDS ARROW'
     (10230 (:punctuation .,(punctuation-named (code-char 10230)))) ;; "⟶"
     (10233 (:punctuation .,(punctuation-named (code-char 10233)))) ;; "⟹"
     (1033 (:alphabetical . (:lowercase .,(code-char 1033)))) ;; #\CYRILLIC_CAPITAL_LETTER_LJE 
