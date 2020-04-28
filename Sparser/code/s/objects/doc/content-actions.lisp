@@ -70,7 +70,7 @@ and make that file easier to understand. |#
 (defun do-section-level-after-actions (s)
   "Actions taken by everything about the level of a paragraph"
   (summarize-parse-performance s)
-  ;;  (aggregate-text-characteristics s)
+  (aggregate-text-characteristics s)
   (add-bio-term-counts s)
   (sort-bio-terms s (contents s))
   s)
@@ -260,6 +260,31 @@ and make that file easier to understand. |#
 ;;; printing 
 ;;;----------
 
+(defgeneric summary-document-stats (document-element &optional stream)
+  (:documentation "Principally for information while debugging.
+   This method is called when you specify :stats in a json article function
+   such as run-json-article-from-handle")
+  (:method ((a article) &optional stream)
+    (unless stream (setq stream *standard-output*))
+    (format stream "~&For ~a" a)
+    (show-parse-performance a stream)
+    (display-top-bio-terms a stream)))
+
+
+(defun show-parse-performance (doc-element
+                               &optional (stream *standard-output*))
+  (let ((content (contents doc-element)))
+    (if (not (typep content 'sentence-parse-quality))
+      (format stream "~a does not record parse quality" doc-element)
+      (let ((great (parses-with-one-edge content))
+            (medium (medium-quality-parses content))
+            (horrible (horrible-parses content)))
+        (format stream "~&  Parsing coverage: ~a (1 edge), ~a (2-5), ~a (> 5)~%"
+                great medium horrible)))))
+
+
+
+
 (defgeneric display-top-bio-terms (document-element &optional stream)
   (:documentation "Called as part of summary-document-stats on any article.
     Useful to get a set of what we're getting for an article without running
@@ -302,15 +327,35 @@ and make that file easier to understand. |#
   (:documentation "Get the nth item in this bucket (e.g. 'other)
     of this article and extract the text")
   (:method ((handle symbol) (slot symbol) (n integer))
-    (let* ((article (get-article handle))
-           (c (when article (contents article))))
-      (when article
-        (let* ((entries (slot-value c slot))
-               (entry (nth (1- n) entries))
-               (mentions (third entry))
-               (m (car mentions))
-               (offsets (mention-offsets m))
-               (paragraph (cdr (mentioned-in-article-where m))))
-          (when paragraph
-            (let ((text (content-string paragraph)))
-              (subseq text (1- (car offsets)) (1- (cdr offsets))))))))))
+    (m-string (get-article handle) slot n))
+  (:method ((article article) (slot symbol) (n integer))
+    (let* ((c (contents article))
+           (entries (slot-value c slot))
+           (entry (nth (1- n) entries))
+           (mentions (third entry))
+           (m (car mentions))
+           (offsets (mention-offsets m))
+           (paragraph (cdr (mentioned-in-article-where m)))
+           (text (content-string paragraph)))
+      (if (string-equal "" text)
+        (format nil "no content in ~a" paragraph)            
+        (subseq text (1- (car offsets)) (1- (cdr offsets)))))))
+
+(defgeneric string-for-mention (mention)
+  (:method ((n number))
+    (string-for-mention (m# n)))
+  (:method ((m discourse-mention))
+    (let* ((paragraph (cdr (mentioned-in-article-where m)))
+           (text (content-string paragraph))
+           (offsets (mention-offsets m)))
+      (if (string-equal "" text)
+        (format nil "no content in ~a" paragraph)            
+        (subseq text (1- (car offsets)) (1- (cdr offsets)))))))
+
+(defgeneric para-for-mention (mention)
+  (:method ((n number))
+    (para-for-mention (m# n)))
+  (:method ((m discourse-mention))
+    (let* ((paragraph (cdr (mentioned-in-article-where m)))
+           (text (content-string paragraph)))
+      (values paragraph text))))

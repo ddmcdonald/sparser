@@ -168,7 +168,6 @@
                (base-description m))))
       (values (aggregation-target i)
               i)))
-
   (:method ((i individual))
     ;; Could also consider mutations, drugs, cell-lines, what else?
     (cond
@@ -199,6 +198,7 @@
 ;;;-----------------------------------
 
 ;;--- Uses paragraph-characteristics class
+;;     and also word-frequency when above paragraph level
 
 (defgeneric collect-text-characteristics (doc-element)
   (:documentation "Called from after-action on paragraphs.
@@ -215,19 +215,25 @@
              (word-count (- end-index start-index)))
         (setf (sentence-count content) (length sentences))
         (setf (word-count content) word-count)
+        (setf (token-count p) word-count)
 
         (when *tts-after-each-section*
           (format t "~&Paragraph ~a~%  ~a sentences~%  ~a words~
                    ~%  ~4,1F words per sentence~%"
                   p (length sentences) word-count
-                  (float (/ word-count (length sentences)))))))))
+                  (float (/ word-count (length sentences)))))
+        word-count ))))
 
-#|(defgeneric aggregate-text-characteristics (doc-element)
+(defgeneric aggregate-text-characteristics (doc-element)
   (:documentation "Add up the word-count over the element's
     daughters. Other paragraph-level assessed characteristics
     can be put here later.")
   (:method ((e document-element))
-    (let ((count (loop for d in (children e) |#
+    (let ((count (loop for d in (children e)
+                    sum (token-count d))))
+      (setf (token-count e) count)
+      count)))
+      
                       
 
 
@@ -296,28 +302,6 @@
            (aggregate-parse-performance e content)))))))
 
 
-(defun show-parse-performance (doc-element
-                               &optional (stream *standard-output*))
-  (let ((content (contents doc-element)))
-    (if (not (typep content 'sentence-parse-quality))
-      (format stream "~a does not record parse quality" doc-element)
-      (let ((great (parses-with-one-edge content))
-            (medium (medium-quality-parses content))
-            (horrible (horrible-parses content)))
-        (format stream "~&  Parsing coverage: ~a (1 edge), ~a (2-5), ~a (> 5)~%"
-                great medium horrible)))))
-
-
-;;--------- summary statistics
-
-(defgeneric summary-document-stats (document-element &optional stream)
-  (:documentation "Write a short version of the information that was
-   collected in the contents field of the document")
-  (:method ((a article) &optional stream)
-    (unless stream (setq stream *standard-output*))
-    (format stream "~&For ~a" a)
-    (show-parse-performance a stream)
-    (display-top-bio-terms a stream)))
 
 ;;;----------------------------------
 ;;; what did we find in the sentence
