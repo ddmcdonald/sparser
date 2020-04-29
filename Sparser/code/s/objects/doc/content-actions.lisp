@@ -266,7 +266,8 @@ and make that file easier to understand. |#
    such as run-json-article-from-handle")
   (:method ((a article) &optional stream)
     (unless stream (setq stream *standard-output*))
-    (format stream "~&For ~a" a)
+    (format stream "~&~%For ~a  (~a words)"
+            a (insert-commas-into-number-string (token-count a)))
     (show-parse-performance a stream)
     (display-top-bio-terms a stream)))
 
@@ -279,9 +280,8 @@ and make that file easier to understand. |#
       (let ((great (parses-with-one-edge content))
             (medium (medium-quality-parses content))
             (horrible (horrible-parses content)))
-        (format stream "~&  Parsing coverage: ~a (1 edge), ~a (2-5), ~a (> 5)~%"
+        (format stream "~&Parsing coverage: ~a (1 edge), ~a (2-5), ~a (> 5)~%"
                 great medium horrible)))))
-
 
 
 
@@ -293,6 +293,7 @@ and make that file easier to understand. |#
     (declare (special *term-buckets*))
     (let* ((stream (or stream *standard-output*))
            (c (contents a)))
+      (terpri stream)
       (loop for bucket in *term-buckets*
          as contents = (slot-value c bucket)
          when contents do
@@ -301,7 +302,7 @@ and make that file easier to understand. |#
 (defun bio-term-summary (container slot-name n stream)
   (let* ((contents (slot-value container slot-name))
          (top-n (take-first-n n contents)))
-    (format stream "~&~a:  ~a total entries~%"
+    (format stream "~&~a: ~a total entries~%"
             slot-name (length contents))
     (loop for entry in top-n
        do (summarize-term-entry entry stream))))
