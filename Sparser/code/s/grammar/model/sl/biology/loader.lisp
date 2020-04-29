@@ -68,7 +68,8 @@
 (gload "bio;cellular-processes")
 (gload "bio;new-defs;new-cell-proc")
 (gload "bio;diseases-pathogens")
-(gload "bio;new-defs;new-diseases")
+;;(gload "bio;new-defs;new-diseases")
+;; now moved to sl/disease and split into bacteria, viruses, cancers, and other-medical-conditions
 (gload "bio;measurements")
 (gload "bio;new-defs;new-units")
 (gload "bio;molecular-locations")
@@ -116,7 +117,7 @@
 (gload "bio;molecules")
 (gload "bio;new-defs;new-molecules")
 ;; get rid of old incomplete list in favor of new one with ids
-(gload "bio;new-defs;new-diseases")
+
 
 ;(gload "bio;trips-terms.lisp")
 ;(gload "bio;trips-terms-new.lisp")

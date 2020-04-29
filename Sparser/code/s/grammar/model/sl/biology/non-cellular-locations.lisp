@@ -126,7 +126,7 @@
 ;;;-------------------
 ;;; organisms with IDs
 ;;;-------------------
-
+(def-indiv-with-id organism "bat" "TI:9397" :name "chiroptera")
 (def-indiv-with-id organism "Caenorhabditis elegans" "TI:6239" :synonyms ("C. elegans")) 
 (def-indiv-with-id organism "drosophila" "NCIT:C14202" :synonyms ("fruit fly")) 
 (def-indiv-with-id organism "mouse" "NCIT:C14238" :plural "mice" :synonyms ("mus") :adj "murine")

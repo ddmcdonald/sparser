@@ -17,7 +17,7 @@
     ;; "company" isn't right for most of these, but it will do 
     ;; agreed, should perhaps have "organization" category?
     (define-company '("United" "Nations") :aliases '("U.N.") :takes-the t)
-    (define-company '("World" "Health" "Organization") :aliases '("W.H.O."))
+    (define-company '("World" "Health" "Organization") :aliases '("W.H.O.")) ;; NCIT:C75419
     ;;medical group operating throughout the world: Doctors Without Borders
     ;;also French name is used in English news articles as well
     ;;since it is actually a French based organization
@@ -29,7 +29,7 @@
 potentially make them of the form:
 (def-individual-with-id prof-org "FDA" "NCIT:C17237" :name "Food and Drug Administration" :no-plural t)
 but not sure what prof-org should fall under
-
+("NIH" "ONT:PROFESSIONAL-ORGANIZATION" :ID "NCIT:C16895" :NAME "National Institutes of Health")
 ("COG" "ONT:PROFESSIONAL-ORGANIZATION" :ID
                                 "NCIT:C39353" :NAME
                                 "children's oncology group")

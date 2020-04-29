@@ -38,7 +38,7 @@
 
 (noun "abnormality" :super disease)
 (noun "disorder" :super disease)
-(noun "normoxia" :super disease) ; not really a disease - the opposite, but we have hypoxia as a disease and there's no ncit id for normoxia so I'm adding htis here
+;(noun "normoxia" :super disease) ; not really a disease - the opposite, but we have hypoxia as a disease and there's no ncit id for normoxia so I'm adding htis here
 
 ;;;----------------
 ;;; other diseases
@@ -53,7 +53,7 @@
 ;;; viruses
 ;;;-----------------
 
-(define-category coronavirus :specializes virus
+#+ignore(define-category coronavirus :specializes virus
                  :bindings (uid "NCIT:C26431")
    :realization (:noun ("coronavirus" "CoV" "coronaviridae")))
 

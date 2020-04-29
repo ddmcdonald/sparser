@@ -38,14 +38,14 @@
                  :realization (:noun ("SARS-related coronavirus" "SARSr-CoV" "Severe Acute Respiratory Syndrome-related Coronavirus" "SARSr" "SARr-CoV" "SL-CoV" "SARS-like coronavirus")))
 
 (def-indiv-with-id betacoronavirus "SARS-CoV-2" "NCIT:C169076" :name "SARS Coronavirus 2"
-                   :synonyms ("SARS-CoV2" "2019-nCoV" "2019 Novel Coronavirus" 
+                   :synonyms ("SARS-CoV2" "2019-nCoV" "2019 Novel Coronavirus" "2019nCoV" 
                                           "nCoV" "nCoV-2019" "SARS-CoV-2" "SARSCoV2" "SARSCoV-2"
-                                          "SAR-CoV-2"
+                                          "SAR-CoV-2" "HCoV-19"
                                           "Severe Acute Respiratory Syndrome Coronavirus 2"
                                           "novel-coronavirus-2019" "2019-CoV" "CoV-2019"
                                           ;; arguably the rest of these should be the disease
                                           ;; instead of the virus but currently not separating them
-                                          "covid19" "COVID19" "COVID-19" "covid-19"
+                                          "covid19" "COVID19" "COVID-19" "covid-19" "COVID-9" ;;typo
                                           "Corona Virus Disease 2019" "Coronavirus Disease-2019"))
 
 (def-indiv-with-id betacoronavirus "SARS-CoV" "NCIT:C112432" :name "SARS coronavirus"
@@ -59,10 +59,23 @@
                    :synonyms ("MERS-CoV" "MERS coronavirus" "middle east respiratory syndrome"))
 
 (noun ("MuCoV" "murine coronavirus" "mouse coronavirus") :super coronavirus) ;; no NCIT
-(noun ("BatCoV" "Bat-CoV" "bat-coronavirus") :super coronavirus) ;; no NCIT
-(noun ("Bat-SL-RaTG13" "bat-SL-RaTG13" "bat/RaTG13" "BetaCoV/bat/Yunnan/RaTG13/2013") :super SARSr-CoV)
+(noun ("BatCoV" "Bat-CoV" "BtCoV" "bat-coronavirus") :super coronavirus) ;; no NCIT
+(noun ("bat-SL-RaTG13" "bat SL-RaTG13" "bat/RaTG13" "BetaCoV/bat/Yunnan/RaTG13/2013" "RaTG13" "SL-RaTG13"
+                       "Bat-CovRaTG13")
+      :super SARSr-CoV)
+(noun ("bat-SL-CoVZC45" "bat SL-CoVZC45" "SL-CoVZC45" "SL-ZC45" "ZC45") :super SARSr-CoV)
+(noun ("bat-SL-CoVZXC21" "bat SL-CoVZXC21" "bat-SLCoVZC21" "bat_SL_CoVZXC21"
+                         "SL-CoVZXC21" "SL-ZXC21" "ZXC21") :super SARSr-CoV)
+(noun ("BatCoV-HKU4" "BtCoV-HKU4" "Bat-CoV-HKU4" "bat-coronavirus HKU4" "HKU4") :super betacoronavirus) ;; MERS-related
+(noun ("BatCoV-HKU5" "BtCoV-HKU5" "Bat-CoV-HKU5" "bat-coronavirus HKU5" "HKU5") :super betacoronavirus) ;; MERS-related
 
 (noun ("BuCov" "Buffalo coronavirus") :super coronavirus) ;; no NCIT
+(noun ("hCoV" "hcoV" "hcov""human coronavirus") :super coronavirus) ;; no NCIT
+(noun ("HCoV-229E" "HCoV 229E" "human coronavirus 229E" "229E") :super alphacoronavirus) ;; no NCIT
+(noun ("HCoV-NL63" "HCoV NL63" "human coronavirus NL63" "NL63" "HCoVNL63" "HcoV-NL" "HcoV-NL63") :super alphacoronavirus) ;; no NCIT
+(noun ("HCoV-OC43" "HCoV OC43" "human coronavirus OC43" "OC43" "HcoV-OC43") :super betacoronavirus) ;; no NCIT
+(noun ("HCoV-HKU1" "HCoV HKU1" "human coronavirus HKU1" "HKU1" "Human_coronavirus_HKU1") :super betacoronavirus) ;; no NCIT
+
 
 ;; Flu viruses
 ;(def-indiv-with-id virus "influenzavirus" "NCIT:C53469" :name "influenzavirus") 
@@ -102,6 +115,16 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (def-synonym H1N1-09 (:noun ("H1N1/09" "2009 swine flu virus"))) 
 
 
+(define-category henipavirus :specializes virus
+                 :bindings (uid "NCIT:C112290")
+                 :realization (:noun "henipavirus"))
+;(def-indiv-with-id virus "Henipavirus" "NCIT:C112290" :name "henipavirus") 
+(define-category niv :specializes henipavirus
+                 :bindings (uid "NCIT:C112359")
+                 :realization (:noun ("NiV" "Nipah Virus" "Nipah virus")))
+(noun ("NiV-B" "NiV-Bangladesh") :super niv) 
+(noun ("NiV-M" "NiV-Malaysia") :super niv)
+
 ;;; non-flu/non-coronaviruses
 ;; no IDs
 (noun "paleovirus" :super virus) ;; extinct/ancient viruses - not NCIT
@@ -130,6 +153,7 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (def-indiv-with-id virus "HCV" "NCIT:C14312" :name "hepatitis C virus") 
 (def-indiv-with-id virus "HERV-K" "NCIT:C128305" :name "HERV-K") 
 (def-indiv-with-id virus "HEV" "NCIT:C14295" :name "hepatitis E virus") 
+(def-indiv-with-id virus "HeV" "NCIT:C112289" :name "Hendra virus") 
 (def-indiv-with-id virus "HHV" "NCIT:C112419" :name "simplexvirus") 
 (def-indiv-with-id virus "HHV6" "NCIT:C14218" :name "human herpesvirus 6") 
 (def-indiv-with-id virus "HHV8" "NCIT:C14327" :name "human herpesvirus 8") 
@@ -224,7 +248,6 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (def-indiv-with-id virus "vaccinia" "NCIT:C14281" :name "vaccinia virus")
 (def-indiv-with-id virus "Caliciviridae" "NCIT:C14304" :name "caliciviridae")
 (def-indiv-with-id virus "Filoviridae" "NCIT:C112031" :name "filoviridae")
-(def-indiv-with-id virus "Henipavirus" "NCIT:C112290" :name "henipavirus") 
 (def-indiv-with-id virus "Hepacivirus" "NCIT:C113202" :name "hepacivirus")
 (def-indiv-with-id virus "Orthomyxoviridae" "NCIT:C53453" :name "orthomyxoviridae")
 (def-indiv-with-id virus "parvovirus" "NCIT:C14299" :name "parvovirus" :plural ("parvoviruses" "parvoviridae")) 
@@ -252,7 +275,7 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (def-indiv-with-id virus "Molluscipoxvirus" "NCIT:C112356" :name "molluscipoxvirus") 
 (def-indiv-with-id virus "Morbillivirus" "NCIT:C14309" :name "morbillivirus") 
 (def-indiv-with-id virus "Nairovirus" "NCIT:C112358" :name "nairovirus") 
-(def-indiv-with-id virus "NiV" "NCIT:C29902" :name "nodule-inducing virus") 
+(def-indiv-with-id virus "NIV" "NCIT:C29902" :name "nodule-inducing virus")
 (def-indiv-with-id virus "Orbivirus" "NCIT:C112365" :name "orbivirus") 
 (def-indiv-with-id virus "Paramyxovirinae" "NCIT:C14307" :name "paramyxovirinae") 
 (def-indiv-with-id virus "Phlebovirus" "NCIT:C112397" :name "phlebovirus") 

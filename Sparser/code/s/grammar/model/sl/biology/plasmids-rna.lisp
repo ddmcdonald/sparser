@@ -86,3 +86,4 @@
 (noun "pCEP" :super plasmid)
 (noun "pGL3B" :super plasmid) ; luciferase reporter plasmid
 (noun "pEGFP-N1" :super plasmid)
+(noun "pGPT-1" :super plasmid)

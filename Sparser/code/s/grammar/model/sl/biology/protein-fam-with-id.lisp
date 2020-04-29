@@ -298,16 +298,17 @@
 (def-family-with-id "inhibin" "NCIT:C2276" :members ("UP:P05111" "UP:P08476" "UP:P09529"))
 (def-family-with-id "inhibin A" "FPLX:Inhibin_A" :synonyms ("inhibin-A") :members ("UP:P05111"))
 (def-family-with-id "interferon" "FPLX:Interferon" :synonyms ("IFN"))
-(def-family-with-id "interferon alpha" "FPLX:IFNA" :synonyms ("NCIT:C20494" "IFN-alpha" "IFN-α" "IFNA" "IFNalpha" "IFNα" "IFN-a" "IFNa") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571"))
+(def-family-with-id "interferon alpha" "FPLX:IFNA" :synonyms ("NCIT:C20494" "IFN-alpha" "IFN-α" "IFNA" "IFNalpha" "IFNα" "IFN-a" "IFNa" "ifnα") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571"))
 (def-family-with-id "interferon beta"  "FPLX:IFNB" :synonyms ("IFN-beta" "IFN beta" "IFN-β" "IFNB" "IFNbeta") :members ("UP:P01574")) ;; not sure why HMS has this family because it seems to just have one member and they overload the synonyms to point to both so now we do too...
 (def-family-with-id "IFN-I" "IPR000471" :name "interferon type I" :synonyms ("type I interferon"  "IFN I" "type I IFN") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571" "UP:P01574" "UP:Q9P0W0" "UP:P05000"))
 ;; type II consists of one protein in humans - interferon-gamma - so that's why it's not family
-(def-family-with-id "IFN-III" "IPR029177" :name "interferon type III" :synonyms ("type III interferon"  "IFN III" "type III IFN" "IFN-lambda" "IFN-λ" "IFNL" "IFN-L" "IFNlambda" "IFN lambda" "IFNλ" "interferon lambda" "ifnλ") :members ("UP:Q8IU54" "UP:Q8IZJ0" "UP:Q8IZI9" "UP:K9M1U5"))
+(def-family-with-id "IFN-III" "IPR029177" :name "interferon type III" :synonyms ("type III interferon"  "IFN III" "type III IFN" "IFN-lambda" "IFN-λ" "IFNL" "IFN-L" "IFNlambda" "IFN lambda" "IFNλ" "interferon lambda" "ifnλ" "IFN-k" "IFNk") :members ("UP:Q8IU54" "UP:Q8IZJ0" "UP:Q8IZI9" "UP:K9M1U5")) ;; note: while there  is an IFN-kappa, "IFN-k" is much more frequently a bad OCR of "IFN-λ" -- nearly all google hits are for "IFN-ks" are for this
 
 (def-family-with-id "IL" "NCIT:C20497" :name "interleukin" :synonyms ("interleukine") :members ("UP:P01583" "UP:P01584" "UP:P05231" "UP:P08700" "UP:P10145" "UP:P13232" "UP:P60568")) 
 
 (def-family-with-id "IL-1" "FA:01820" :synonyms ("IL1" "il-1" "interleukin 1" "interleukin-1" "FPLX:IL1") :members ("UP:P01583" "UP:P01584")) 
-(def-family-with-id "IL23" "XFAM:PF16649.3" :synonyms ("Il23" "il23")) 
+(def-family-with-id "IL23" "XFAM:PF16649.3" :synonyms ("Il23" "il23"))
+(def-family-with-id "Interleukin-27" "NCIT:C118114" :name "interleukin-27" :synonyms ("Il27" "il27" "IL-27") :members ("UP:Q8NEV9" "UP:Q14213"))
 (def-family-with-id "ITIH" "FA:01924") 
 ;(def-family-with-id "Jun" "FA:00409" :synonyms ("jun"))
 (def-family-with-id "KIN17" "FA:01961" :synonyms ("Kin17")) 
