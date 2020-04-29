@@ -506,11 +506,12 @@ unknown words.|#
         (write-list-to-param var-name pnames out)))))
 
 (defun write-list-to-param (param-name list stream)
-  (format stream "~&(defvar ~a~
-                  ~%  '(" param-name)
+  (format stream
+          "~%~%(defvar ~a~%    (remove-duplicates~%      (append ~%         (when (boundp '~a) (symbol-value `~a))~%         '("
+          param-name param-name param-name)
   (loop for item in list
      do (format stream "~s " item))
-  (format stream "))~%"))
+  (format stream "))~%    :test #'equalp))~%"))
 
 ;;;------------------------
 ;;; sweeping for sentences
