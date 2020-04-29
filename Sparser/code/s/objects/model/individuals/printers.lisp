@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "printers"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  February 2018
+;;;  version:  April 2020
 
 ;; initiated 7/16/92 v2.3, 9/3 added Princ-individual
 ;; (5/26/93) added Print-individual-with-name
@@ -51,7 +51,9 @@
 ;;; value as a structure
 ;;;----------------------
 
-(defparameter *suppress-indiv-uids* nil) ;; set to T for canonical semtree printouts
+(defparameter *suppress-indiv-uids* nil
+  "set to T for canonical semtree printouts")
+
 (defun maybe-indiv-uid (indiv)
   (if *suppress-indiv-uids*
       ""
@@ -379,35 +381,38 @@
   (format stream "~&~%")
   i )
 
-(defmethod describe-individual ((i individual)
-                                &optional (stream *standard-output*))
-  ;; would have used pretty-print-individual but want something
-  ;; more compact. Also, something has walked out from under
-  ;; pretty-princ-individual (3/15)
-  (let* ((categories (indiv-type i))
-         (category-names (loop for c in categories
-                           collect (cat-symbol c)))
-         (binds-bindings (indiv-binds i))
-         (bound-in-bindings (indiv-bound-in i)))
 
-    (format stream "~&~a  ~a"
-            (maybe-indiv-uid i)
-            (if (permanent-individual? i) :permanent :temporary))
-    (format stream "~&  ~{~a ~}" category-names)
-    (when binds-bindings
-      (format stream "~&  binds: ~a"
-              (binding-short-string (car binds-bindings))))
-    (when (cdr binds-bindings)
-      (let ((b-strings (loop for b in (cdr binds-bindings)
-                         collect (binding-short-string b))))
-        (format stream "~{~&         ~a~}" b-strings)))
-    (when bound-in-bindings
-      (let ((b-strings (loop for b in bound-in-bindings
-                         collect (bound-in-short-string b))))
-        (format stream "~&  bound in: ~a" (car b-strings))
-        (when (cdr b-strings)
-          (format stream "~{~&            ~a~}" (cdr b-strings)))))
-    i))
+(defgeneric describe-individual (i &optional stream)
+  (:documentation "print just the fields of the individual
+   that are useful in debugging")
+  (:method ((i individual)  &optional (stream *standard-output*))
+    (let* ((categories (indiv-type i))
+           (category-names (loop for c in categories
+                              collect (cat-symbol c)))
+           (binds-bindings (indiv-binds i))
+           (bound-in-bindings (indiv-bound-in i)))
+
+      (format stream "~&~a  ~a"
+              (maybe-indiv-uid i)
+              (if (permanent-individual? i) :permanent :temporary))
+      (format stream "~& type:  ~{~a ~}" category-names)
+      (when binds-bindings
+        (format stream "~&  binds: ~a"
+                (binding-short-string (car binds-bindings))))
+      (when (cdr binds-bindings)
+        (let ((b-strings (loop for b in (cdr binds-bindings)
+                            collect (binding-short-string b))))
+          (format stream "~{~&         ~a~}" b-strings)))
+      (when bound-in-bindings
+        (let ((b-strings (loop for b in bound-in-bindings
+                            as i from 1 to 5
+                            collect (bound-in-short-string b))))
+          (format stream "~&  bound in: ~a" (car b-strings))
+          (when (cdr b-strings)
+            (format stream "~{~&            ~a~}" (cdr b-strings)))
+          (when (> (length bound-in-bindings) 5)
+            (format stream "~&            ..."))))
+      i)))
             
 
 
