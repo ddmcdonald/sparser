@@ -121,29 +121,35 @@
     (populate-irrelevant-to-discourse-history))
   (let ((supers (super-categories-of category)))
     (loop for c in *irrelevant-to-discourse-history*
-      when (memq c supers)
-      do (return-from relevant-category-for-dh nil))
-    t))
+       when (memq c supers)
+       do (return-from relevant-category-for-dh nil)
+       finally (return t))))
 
 
 (defparameter *irrelevant-to-discourse-history* nil
   "Populated by the first call from relevant-category-for-dh ('discourse history')")
 
-(defparameter *names-of-irrelecant-to-dh-categories*
+;; (update-irrelevant-to-discourse-history)
+
+(defparameter *names-of-irrelevant-to-dh-categories*
   '(
     adverbial
     approximator
     be
+    bib-reference ; "et-al." -- maybe document-part, it's parent?
+    conjunction
     demonstrative
     determiner
+    experimental-condition ; in-vivo
     have
+    greek-letter
     hyphenated-pair
     interlocutor
-    linguisitic
+    knockout-pattern ; -/-
+    linguistic
     modality ; 'may', 'should'
     modifier
     number
-    conjunction
     prepositional-phrase
     prep-comp
     relativized-prepositional-phrase
@@ -159,10 +165,17 @@
     ))
 
 (defun populate-irrelevant-to-discourse-history ()
+  "Just runs once, the very first time we need it"
   (when (null *irrelevant-to-discourse-history*)
-    (setq *irrelevant-to-discourse-history*
-          (loop for name in *names-of-irrelecant-to-dh-categories*
-             collect (category-named name)))))
+    (update-irrelevant-to-discourse-history)))
+
+(defun update-irrelevant-to-discourse-history ()
+  "Should be used while debugging when testing additions
+   to the list"
+  (declare (special *names-of-irrelevant-to-dh-categories*))
+  (setq *irrelevant-to-discourse-history*
+        (loop for name in *names-of-irrelevant-to-dh-categories*
+           collect (category-named name))))
 
 
 
