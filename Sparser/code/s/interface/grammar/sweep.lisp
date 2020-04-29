@@ -130,22 +130,32 @@
   "Populated by the first call from relevant-category-for-dh ('discourse history')")
 
 (defparameter *names-of-irrelecant-to-dh-categories*
-  '(determiner
-    demonstrative
+  '(
+    adverbial
     approximator
+    be
+    demonstrative
+    determiner
+    have
+    hyphenated-pair
+    interlocutor
+    linguisitic
+    modality ; 'may', 'should'
+    modifier
+    number
+    conjunction
     prepositional-phrase
+    prep-comp
     relativized-prepositional-phrase
     preposition
     prepositional
-    spatial-preposition
-    adverbial
-    modality ; 'may', 'should'
     pronoun
-    conjunction
+    quantifier
+    spatial-preposition
     subordinate-conjunction
     single-capitalized-letter
-    quantifier
-    number
+    there-exists
+
     ))
 
 (defun populate-irrelevant-to-discourse-history ()
