@@ -49,7 +49,7 @@
 
 (def-organization "COG" :id "NCIT:C39353" :name "Children's Oncology Group")
 (def-organization "DSMB" :id "NCIT:C94204" :name "Data and Safety Monitoring Board")
-(def-organization "FDA" :id "NCIT:C17237" :name "Food and rug Administration")
+(def-organization "FDA" :id "NCIT:C17237" :name "Food and Drug Administration")
 (def-organization "FIGO" :id "NCIT:C89808" :name "Federation of Gynecology and Obstetrics")
 (def-organization "IUPAC" :id "NCIT:C82878" :name "International Union of Pure and Applied Chemistry")
 (def-organization "MSKCC" :id "NCIT:C39457" :name "Memorial Sloan-Kettering Cancer Center")
