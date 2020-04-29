@@ -278,7 +278,7 @@ see if there are issues"
         (setq category (eval form))))
      (t
       ;; Essentially the same thing, but with no bindings,
-      ;; just the interited ones
+      ;; just the inherited ones
       (let ((form
              `(define-category ,name
                 :instantiates ,(or instantiates :self)
@@ -296,7 +296,6 @@ see if there are issues"
 
 
 ;;--- NP patterns
-
 
 
 (defmacro noun (name
@@ -333,8 +332,10 @@ see if there are issues"
          :noun ',noun
          :super ',super ;;:specializes ',specializes no longer use this
 	 :index ',index
-         :binds ',binds :realization ',realization
-         :instantiates ',instantiates :mixins ',mixins
+         :binds ',binds
+         :realization ',realization
+         :instantiates ',instantiates
+         :mixins ',mixins
          :restrict ',restrict :rule-label ',rule-label
          :obo-id ,obo-id))
 
@@ -344,7 +345,6 @@ see if there are issues"
                      binds realization
                      instantiates mixins restrict rule-label 
 		  obo-id)
-
    (cond
     ((and super specializes)
      (lsp-break "defining noun with both :super ~s  and :specialize ~s"
@@ -381,9 +381,9 @@ see if there are issues"
 
   (let* ((form
 	  `(define-category ,name
-	       ;;:instantiates ,(or instantiates :self)
+	       :instantiates ,(or instantiates :self)
 	       :specializes ,super
-	       ;;:rule-label ,rule-label
+	       :rule-label ,rule-label
 	       :binds ,binds
 	       ;;:index ,index
 	       :restrict ,restrict
