@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2014-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2014-2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  February 2019
+;;;  version:  April 2020
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -101,7 +101,8 @@ Should mirror the cases on the *single-words* ETF."
   '(member :verb
            :modal
            :common-noun
-           :proper-noun
+           :proper-noun ; one word
+           :proper-name ; more than one word - np
            :adjective
            :adverb
            :interjection

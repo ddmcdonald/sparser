@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2010-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  November 2019
+;;;  version:  April 2020
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -982,6 +982,11 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
       (append singular-rules
               (apply #'make-cn-plural-rules word category referent
                      special-cases)))))
+
+(defmethod make-rules-for-head ((pos (eql :proper-name))  word category referent &rest special-cases)
+  ;; cargo-cult from common-noun case
+  (let ((singular-rules (call-next-method)))
+    singular-rules))
 
 (defun make-cn-plural-rules (word category referent &key plural)
   (if plural ;; a marked irregular
