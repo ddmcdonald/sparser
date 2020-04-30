@@ -45,6 +45,7 @@
   `(define-individual-with-id 'organization ,short-pname ,id
                               :no-plural t :pos 'proper-name
                               ,.(when synonyms `(:synonyms ',synonyms))
+                              ,.(when name `(:name ,name))
                               ))
 
 (def-organization "COG" :id "NCIT:C39353" :name "Children's Oncology Group")
