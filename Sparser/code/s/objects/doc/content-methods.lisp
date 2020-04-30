@@ -181,9 +181,16 @@
       ((itypep i 'medical-condition) 'medical-conditions)
       ((itypep i 'infectious-agent) 'infectious-agents)
       ((itypep i 'cellular-location) 'cellular-locations)
+      ((itypep i 'cell-type) 'cell-type)
+      ((itypep i 'medical-method) 'medical-method)
+      ((itypep i 'bio-method) 'experimental-method)
       ((itypep i 'protein-domain) 'protein-domain)
       ((itypep i 'molecule) 'molecule)
-      (t 
+      ((and (not (search "-ENDURANT" (pname (itype-of i))))
+            (not (search "-PERDURANT" (pname (itype-of i)))))
+       ;; don't highlight words just brought in from COMLEX
+       'COMLEX)
+      (T
        'other)))
   (:method ((cat referential-category))
     'other)  

@@ -16,6 +16,8 @@
   ((proteins :initform nil :accessor aggregated-proteins)
    (residues :initform nil :accessor aggregated-residues)
    (bio-processes :initform nil :accessor aggregated-processes)
+   (medical-method :initform nil :accessor aggregated-medical-method)
+   (experimental-method :initform nil :accessor aggregated-experimental-method)
    (medical-conditions :initform nil :accessor aggregated-medical-conditions) ; medical-condition
    (infectious-agents :initform nil :accessor aggregated-infectious-agents) ; infectious-agent
    (cellular-locations :initform nil :accessor aggregated-cellular-locations)
@@ -23,6 +25,7 @@
    (cell-line :initform nil :accessor aggregated-cell-line)
    (protein-domain :initform nil :accessor aggregated-protein-domain)
    (molecule :initform nil :accessor aggregated-protein-molecule)
+   (comlex :initform nil :accessor aggregated-comlex)
    (other :initform nil :accessor aggregated-other))
   (:documentation "Collects the entities and relations of
      the document layer below them summarizes them as
