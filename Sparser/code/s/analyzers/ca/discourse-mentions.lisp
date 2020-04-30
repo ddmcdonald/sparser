@@ -188,6 +188,24 @@
   (declare (optimize (speed 3)(safety 0)))
   (pos-edge-ends-at e))
 
+(defun m#-paragraph (m-number)(cdr (mentioned-in-article-where (m# m-number))))
+
+(defun mention-paragraph (m)(cdr (mentioned-in-article-where m)))
+(defun m#-paragraph-location (m-number)
+    (list (m#-paragraph m-number)
+          (start-pos (m# m-number))
+          (end-pos (m# m-number))))
+
+(defmethod mention-paragraph-string ((m-number number))
+  (let* ((m (m# m-number)))
+    (mention-paragraph-string m)))
+
+(defmethod mention-paragraph-string ((m discourse-mention))
+  (subseq (content-string (mention-paragraph m))
+          (- (start-pos m) 1)
+          (- (end-pos m) 1)))
+
+
 (defun update-mention-links (edge)
   (let ((mention (edge-mention edge))
         (interp (edge-referent edge)))
