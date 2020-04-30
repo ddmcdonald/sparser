@@ -116,7 +116,7 @@ else that takes two arguments:  (1) the s-expression (2) the file's pathname
                  (format t "~%Loading ~d file pathnames into the hopper.~%To process the next one, call (sparser::do-next-json)~%To process a particular one, call, e.g., (sparser::do-json 'com-52)~%To see what the next is, call (sparser::peek-next-json)~%To do the rest, call (sparser::do-remaining-json)~%To do a batch of n using (sparser::do-remaining-json :n n)~%Remaining list will be stored in sparser::*json-files-to-read*.~%...~%"
                          (length file-paths)))
                (setf *json-files-to-read*
-                     (register-corpus-filepaths file-paths encoded-dir))
+                     (register-corpus-filepaths file-paths encoded-dir :quiet quiet))
                :done))))))
 
 (defgeneric decoded-dir (dir-handle)
@@ -171,7 +171,7 @@ else that takes two arguments:  (1) the s-expression (2) the file's pathname
 ;; We go by the order in the registry.
 ;; Note: A side-effect of this function is that ./json-corpus-registry.lisp will
 ;; get rewritten.
-(defun register-corpus-filepaths (paths dir &key (write t))
+(defun register-corpus-filepaths (paths dir &key (write t)(quiet t))
   (let ((dir-handle (encoded-dir dir)))
     (macrolet ((registry-tuple () `(assoc dir-handle *corpus-handle-registries*))
                (registry () `(cdr (registry-tuple))))
@@ -202,8 +202,9 @@ else that takes two arguments:  (1) the s-expression (2) the file's pathname
                                (member (car file-tuple) handles))
                            (registry))))
           (when extra-registered
-            (warn "There are extra files in the registry that aren't in the provided path list:~%  ~a."
-                  extra-registered))
+            (unless quiet
+              (warn "There are extra files in the registry that aren't in the provided path list:~%  ~a."
+                    extra-registered)))
           (when write (write-corpus-registry))
           (sort handles #'string<))))))
 
