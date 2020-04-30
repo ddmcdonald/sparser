@@ -44,7 +44,6 @@
   "Variation on what it calls where several fields are already filled in"
   `(define-individual-with-id 'organization ,short-pname ,id
                               :no-plural t :pos 'proper-name
-                              :name ,name
                               ,.(when synonyms `(:synonyms ',synonyms))
                               ,.(when name `(:name ,name))
                               ))
@@ -66,38 +65,21 @@
 (def-organization "USDA" :id "NCIT:C68708" :name  "United States Department of Agriculture")
 
 
-#| professional organizations to add:
-
-                               
-                               ("cshl"  :ID
-                                "NCIT:C39335" :NAME
-                                "cold spring harbor laboratory cancer
-                                center")
-                                ("jax"  :ID
-                                "NCIT:C39529" :NAME
-                                "the jackson laboratory cancer
-                                center")
+;;-- these are labs -- change the superclass? -- do it for universities too?
+;; though that rapidly escalates the number of classes when you recognize org's programmatically
+(def-organization "CSHL" :id "NCIT:C39335" :name "Cold Spring Harbor Laboratory Cancer Center")
+(def-organization "JAX" :id "NCIT:C39529" :name "Jackson Laboratory Cancer Center")
 
 
-                               
-
-                               ("org"  :ID
-                                "NCIT:C19711" :NAME
-                                "professional organization or group")
-
-                               
-
+#| more professional organizations to add:
+         
 ;; some have no UID:
 "BGI" "bgi" "Beijing Genomics Institute"
 "JCVI" "J. Craig Venter Institute" ;; does genomic and virus research
 
 slightly different -- local institutions so could have plurals:
-("IACUC"  :ID
-                                "NCIT:C19487" :NAME
-                                "institutional animal care and use committee")
-                               ("IRB"  :ID
-                                "NCIT:C16741" :NAME
-                                "institutional review board")
+("IACUC"  :ID  "NCIT:C19487" :NAME "institutional animal care and use committee")
+("IRB"  :ID  "NCIT:C16741" :NAME "institutional review board")
 
 universities
 ("UCSC"
