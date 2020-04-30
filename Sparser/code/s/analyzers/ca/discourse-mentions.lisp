@@ -163,7 +163,6 @@
                      collect (show-mention m)))))
 
 
-
 (defun cat-mention? (m name-spec)
   (let ((form-cat (and (edge-p (mention-source m))(edge-form (mention-source m)))))
     (and form-cat
@@ -171,26 +170,29 @@
 	     (member (cat-name form-cat) name-spec)
 	     (eq (cat-name form-cat) name-spec)))))
 
-(defmethod start-pos ((m discourse-mention))
-  (car (mentioned-where m)))
+
+(defgeneric start-pos (mention)
+  (:method ((m discourse-mention))
+    (car (mentioned-where m)))
+  (:method ((e edge))
+    (pos-edge-starts-at e))
+  (:method ((c cons))
+    (lsp-break "start-pos handed a list")))
 
 (defmethod end-pos ((m discourse-mention))
   (declare (optimize (speed 3)(safety 0)))
   (cdr (mentioned-where m)))
 
-(defmethod start-pos ((e edge))
-  (pos-edge-starts-at e))
-
-(defmethod start-pos ((c cons))
-  (lsp-break "start-pos handed a list"))
-
 (defmethod end-pos ((e edge))
   (declare (optimize (speed 3)(safety 0)))
   (pos-edge-ends-at e))
 
-(defun m#-paragraph (m-number)(cdr (mentioned-in-article-where (m# m-number))))
+(defun m#-paragraph (m-number)
+  (cdr (mentioned-in-article-where (m# m-number))))
 
-(defun mention-paragraph (m)(cdr (mentioned-in-article-where m)))
+(defun mention-paragraph (m)
+  (cdr (mentioned-in-article-where m)))
+
 (defun m#-paragraph-location (m-number)
     (list (m#-paragraph m-number)
           (start-pos (m# m-number))
