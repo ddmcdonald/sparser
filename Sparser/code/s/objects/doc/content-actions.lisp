@@ -342,6 +342,17 @@ and make that file easier to understand. |#
         (format nil "no content in ~a" paragraph)            
         (subseq text (1- (car offsets)) (1- (cdr offsets)))))))
 
+(defgeneric bucket-entry (article bucket n)
+  (:documentation "Return the individual for nth item in this bucket")
+  (:method ((handle symbol) (slot symbol) (n integer))
+    (bucket-entry (get-article handle) slot n))
+  (:method ((article article) (slot symbol) (n integer))
+    (let* ((c (contents article))
+           (entries (slot-value c slot))
+           (entry (nth (1- n) entries))
+           (individual (car entry)))
+      individual)))
+
 (defgeneric string-for-mention (mention)
   (:method ((n number))
     (string-for-mention (m# n)))
