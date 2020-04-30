@@ -147,11 +147,13 @@
     interlocutor
     knockout-pattern ; -/-
     linguistic
+    measurement
     modality ; 'may', 'should'
     modifier
     number
     prepositional-phrase
     prep-comp
+    relative-time-adverb
     relativized-prepositional-phrase
     preposition
     prepositional
