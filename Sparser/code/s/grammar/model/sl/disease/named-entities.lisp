@@ -44,6 +44,7 @@
   "Variation on what it calls where several fields are already filled in"
   `(define-individual-with-id 'organization ,short-pname ,id
                               :no-plural t :pos 'proper-name
+                              :name ,name
                               ,.(when synonyms `(:synonyms ',synonyms))
                               ,.(when name `(:name ,name))
                               ))
