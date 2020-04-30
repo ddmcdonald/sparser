@@ -158,7 +158,8 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (def-indiv-with-id virus "HHV6" "NCIT:C14218" :name "human herpesvirus 6") 
 (def-indiv-with-id virus "HHV8" "NCIT:C14327" :name "human herpesvirus 8") 
 (def-indiv-with-id virus "HIV" "NCIT:C14219" :name "human immunodeficiency virus") 
-(def-indiv-with-id virus "HIV-1" "NCIT:C14220" :name "human immunodeficiency virus 1") 
+(def-indiv-with-id virus "HIV-1" "NCIT:C14220" :name "human immunodeficiency virus 1"
+                   :synonyms ("Human Immunodeficiency Virus type 1") )
 (def-indiv-with-id virus "HIV-2" "NCIT:C14221" :name "human immunodeficiency virus 2") 
 (def-indiv-with-id virus "HPIV2" "NCIT:C112316" :name "human parainfluenza virus 2")
 
