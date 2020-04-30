@@ -300,7 +300,10 @@
     ((or (null child?) (category-p child?)) ;; should not happen
      nil)
     ((loop for pair in (indiv-uplinks child?)
-           when (eq (cdr pair) parent?)
+           when (or (eq (cdr pair) parent?)
+                    (and (value-of 'has-determiner child?)
+                         ;; determiner can add two roles!
+                         (is-dl-child? (cdr pair) parent?)))
            do (return-from is-dl-child? t))
      t)
     (t nil)))
@@ -397,7 +400,6 @@
                               (loop for sm in subsumed-mentions
                                     when (eq (base-description sm) i)
                                     do (return sm))))
-                   
                    (loop for sm in subsumed-mentions
                          unless (eq (base-description sm) i)
                          do (setf (edge-mention (mention-source sm)) t))
@@ -532,7 +534,14 @@
            (safe-edge-mention (edge-right-daughter
                                (edge-right-daughter edge))))
           ((member (edge-rule edge) '(knit-parens-into-neighbor))
-           (safe-edge-mention (edge-left-daughter edge)))        
+           (safe-edge-mention (edge-left-daughter edge)))
+          ((eq (edge-rule edge) 'sdm-span-segment)
+           (loop for e in (edge-constituents edge)
+                 when
+                   (or (eq (edge-referent e) i)
+                       (subsumed-mention-edge? i e))
+                 do
+                   (return (edge-mention e))))
           (t
            (let ((left (subsumed-mention-edge? i (edge-left-daughter edge)))
                  (right (subsumed-mention-edge? i (edge-right-daughter edge)))
