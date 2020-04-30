@@ -137,6 +137,7 @@
     approximator
     be
     bib-reference ; "et-al." -- maybe document-part, it's parent?
+    collection ;; don't want to highlight conjunctions of NPs, just the individual NPs
     conjunction
     demonstrative
     determiner
@@ -146,8 +147,8 @@
     hyphenated-pair
     interlocutor
     knockout-pattern ; -/-
-    linguistic
-    measurement
+    ;;linguistic -- kills items that inherit from has-location, etc.
+	;; remove "linguistic" as an ignored category, since too many items inherit from it, e.g. through has-location
     modality ; 'may', 'should'
     modifier
     number
