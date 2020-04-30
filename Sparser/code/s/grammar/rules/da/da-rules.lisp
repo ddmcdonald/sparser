@@ -1934,11 +1934,6 @@ assumed. |#
 
 ;;--- patterns starting in np (covering a wh)
 
-(define-debris-analysis-rule wh-vg-np-vg
-    :pattern (np vg np vg)
-    :action (:function apply-question-displaced-vg
-                       first second third fourth))
-
 (define-debris-analysis-rule wh-vg-transitive-no-object
     :pattern (np vg transitive-clause-without-object) ;; np = "what genes"
     :action (:function wh-three-edges first second third))

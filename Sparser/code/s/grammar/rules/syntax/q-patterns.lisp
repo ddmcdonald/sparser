@@ -1341,31 +1341,6 @@
               (lsp-break "Don't know how to formulate a wh question whose vg is ~a" vg)
               (warn "Don't know how to formulate a wh question whose vg is ~a" vg))))))
 
-;;--- no callers 5/23/19
-;; "What genes does lung cancer target?"
-(defun apply-question-displaced-vg (wh-edge vg1-edge np-edge vg2-edge)
-  "Goes with DA pattern [question-marker vg np vg] which is one consituent
-   longer than the pattern for apply-question-marker. The first vg
-   is very likely an inverted auxiliary, which should be applied to
-   the second vg that is the main verb.
-     To get this to parse we have to elevate the second vg to be a vp
-   for which there is a rule (no rule for ng+vg). We want this to get
-   handled by assimilate-subject, and there probably via the checks in
-   transitive-vp-missing-object?"
-  (declare (special category::vp))
-  (tr :wh-walk "apply-question-displaced-vg")
-  (cond
-    ((itypep (edge-referent vg1-edge) 'do)
-     ;;(break "stranded vg do - ~a" vg2-edge)
-     ;; These cases don't set the preposed aux, so the vg segment-finished
-     ;; action will have taken up the tense from the do, but not connected the edge.
-     (let ((vg2-tweaked (compose-discontinuous-aux vg1-edge vg2-edge)))
-       ;; promote the edge to VP
-       (setf (edge-form vg2-tweaked) category::vp)
-       vg2-tweaked))
-    (t
-     (when *debug-questions*
-       (break "The 1st vg is of type ~a" (itype-of (edge-referent vg1-edge)))))))
 
 
 
