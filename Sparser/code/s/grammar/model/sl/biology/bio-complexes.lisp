@@ -91,6 +91,10 @@
          :between binding-set
          :in complex))
 
+;; SPECIAL DEFINITIONS FOR ANTIBODIES AND VIRUSES
+(def-synonym binding (:noun "recognition" :verb ("recognize" :past-tense "recognized" :present-participle "recognizing")))
+(def-synonym binding (:noun "attachment" :verb ("attach" :past-tense "attached" :present-participle "attaching")))
+
 (def-synonym binding (:noun "binding event"))
 
 (delete-verb-cfr (resolve "assemble"))
