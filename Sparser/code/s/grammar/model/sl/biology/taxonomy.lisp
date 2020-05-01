@@ -889,6 +889,18 @@
             :for treatment
             :for target))
 
+;; actually, vaccines are multi-component, not a single molecule
+(define-category vaccine :specializes drug
+                 :binds ((disease disease)
+                         (treatment treatment)
+                         (target (:or protein process)))
+  :realization
+     (:noun "vaccine"
+            :for disease
+            :m disease
+            :for treatment
+            :for target))
+
 
 (define-category rna :specializes molecule
   :instantiates self
@@ -1468,9 +1480,9 @@
 (define-category virus :specializes infectious-agent
   :instantiates self 
   :index (:permanent :key name)
-  :lemma (:common-noun "virus")
+  :lemma (:common-noun "virus" :adjective "viral")
   :realization
-    (:common-noun name))
+    (:common-noun name ))
 
 (define-category bacterium :specializes infectious-agent
   :instantiates self 

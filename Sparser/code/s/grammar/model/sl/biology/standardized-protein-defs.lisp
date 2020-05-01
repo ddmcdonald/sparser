@@ -214,7 +214,7 @@
 (define-protein "NCIT:C54435" ("DLEU2" "dleu2")) 
 (define-protein "NCIT:C567" ("IgE" "IgEs" "Q9ZNX9")) 
 (define-protein "NCIT:C569" ("IgM" "o07582")) 
-(define-protein "NCIT:C63927" ("scFv" "scFvs" "single chain variable fragment")) 
+(define-protein "NCIT:C63927" ("scFv" "scFvs" "single chain variable fragment" "single chain Fvs"))
 (define-protein "NCIT:C67099" ("SNP309")) 
 (define-protein "NCIT:C70547" ("ana" "antinuclear antibody")) 
 ;(define-protein "NCIT:C70620" ("LA" "LAC" "LACs" "lupus anticoagulant antibody" "q26474")) 
