@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2011-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "sort"
 ;;;    Module:  "interface;grammar:"
-;;;   version:  February 2016
+;;;   version:  May 2020
 
 ;; initiated 3/10/92 v2.2, elaborated 3/19,21,26
 ;; 0.1 (6/7/93 v2.3) Added appreciation of form rules to the combined
@@ -404,4 +404,15 @@
    ((> (second pair1) (second pair2)) t)
    ((> (second pair2) (second pair1)) nil)
    (t (sort-units-alphabetically (car pair1) (car pair2)))))
+
+
+;;;----------------------------------------------
+;;; Lists of (<string> <numerical count> . rest)
+;;;----------------------------------------------
+
+(defun sort-aggregation-table-entries (entry1 entry2)
+  (cond
+    ((> (second entry1) (second entry2)) t)
+    ((> (second entry2) (second entry1)) nil)
+    (t (string< (car entry1) (car entry2)))))
 
