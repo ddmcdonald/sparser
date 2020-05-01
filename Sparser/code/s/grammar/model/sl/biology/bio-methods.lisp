@@ -201,7 +201,7 @@
 (define-category transfect :specializes bio-method
   :binds ((genetic-material biological))
   :realization 
-  (:verb "transfect"
+  (:verb "transfect" :noun "transfection"
          :etf (svo-passive)
          :with genetic-material))
 
