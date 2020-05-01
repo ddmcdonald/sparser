@@ -1580,7 +1580,8 @@
 (def-indiv-with-id molecule "ethoxycarbonyl" "CHEBI:52109" :name "ethoxycarbonyl group") 
 (def-indiv-with-id molecule "fibrin" "CHEBI:5054" :name "Fibrin") 
 (def-indiv-with-id molecule "folates" "CHEBI:67011" :name "folates") 
-(def-indiv-with-id molecule "glycosylphosphatidylinositol" "CHEBI:24410" :name "glycosylphosphatidylinositol") 
+(def-indiv-with-id molecule "glycosylphosphatidylinositol" "CHEBI:24410" :name "glycosylphosphatidylinositol"
+                   :synonyms ("glycosyl-phosphatidylinositol" "GPI")) 
 (def-indiv-with-id molecule "guanidinium" "CHEBI:30087" :name "guanidinium") 
 (def-indiv-with-id molecule "hydroxide" "CHEBI:24651" :name "hydroxide") 
 (def-indiv-with-id molecule "isoflavone" "CHEBI:18220" :name "isoflavone") 
