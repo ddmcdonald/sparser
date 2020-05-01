@@ -705,6 +705,14 @@
    :noun "inhibition"
    :etf (svo-passive)))
 
+(define-category neutralize ;; "antibody neutralizes antigen"
+  :specializes negative-bio-control
+  :realization 
+  (:verb ("neutralize" :past-tense "neutralized" 
+                    :present-participle "neutralizing" )
+   :noun "neutralization"
+   :etf (svo-passive)))
+
 (define-category bio-insert :specializes caused-bio-process
   :mixins (on-substrate)
   :binds ((between residue-on-protein)
