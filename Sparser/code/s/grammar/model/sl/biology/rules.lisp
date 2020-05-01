@@ -50,6 +50,10 @@
   :form category::np
   :referent (:function make-disease-treatment left-edge right-edge))
 
+(def-cfr treatment (antibody virus)
+  :form category::np
+  :referent (:function make-disease-treatment left-edge right-edge))
+
 (defun make-disease-treatment (antibody disease)
   (when (and (edge-p (left-edge-for-referent))
              (or (member (form-cat-name (right-edge-for-referent))
