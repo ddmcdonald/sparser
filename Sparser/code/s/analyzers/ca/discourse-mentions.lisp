@@ -702,7 +702,8 @@
               ;; "Only in conditions where RAS is constitutively active "
               ) ;; NEED TO WORK WITH DAVID HERE
          nil)
-        ((lambda-variable-p value)
+        ((or (lambda-variable-p value)
+             (numberp value))
          nil)
         ((eq (pname (binding-variable b)) 'wh-element)
          (let ((wh-mention (find-mention-for-wh-element value top-edge)))
@@ -730,7 +731,8 @@
                                              (dli-eq? value (base-description (second d))))
                                    do (return (mention-source (second d)))))
                 do (when ee (return ee)))
-          (find-binding-dependency-in-sentence-mentions value)
+          (when (current-sentence) ;; NIL in prepass
+            (find-binding-dependency-in-sentence-mentions value))
           (when b
             (check-plausible-missing-edge-for-dependency b top-edge))))))
 
