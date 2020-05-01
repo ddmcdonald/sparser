@@ -1,5 +1,7 @@
 (in-package :sparser)
 
+
+(def-indiv-with-id bio-process "membrane fusion" "GO:0006897" :name "cellular membrane fusion")
 (def-indiv-with-id bio-process "LOH" "NCIT:C18016" :name "loss of heterozygosity") 
 (def-indiv-with-id bio-process "biogenesis" "NCIT:C17702" :name "biosynthesis") 
 (def-indiv-with-id bio-process "oncogenesis" "NCIT:C18121" :name "tumorigenesis") 
