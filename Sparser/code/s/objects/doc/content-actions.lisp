@@ -360,10 +360,12 @@ and make that file easier to understand. |#
   (:method ((n number))
     (string-for-mention (m# n)))
   (:method ((m discourse-mention))
-    (let* ((paragraph (cdr (mentioned-in-article-where m)))
-           (text (content-string paragraph))
+    (let* ((paragraph (and
+                       (slot-boundp m 'location-in-article)
+                       (cdr (mentioned-in-article-where m))))
+           (text (when paragraph (content-string paragraph)))
            (offsets (mention-offsets m)))
-      (if (string-equal "" text)
+      (if (or (null paragraph) (string-equal "" text))
         (format nil "no content in ~a" paragraph)            
         (subseq text (1- (car offsets)) (1- (cdr offsets)))))))
 
