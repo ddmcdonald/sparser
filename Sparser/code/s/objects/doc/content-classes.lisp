@@ -38,9 +38,11 @@
 "))
 
 (defparameter *term-buckets*
-  '(proteins residues bio-processes medical-conditions infectious-agents 
+  '(proteins residues biochemical-entity bio-processes medical-method
+    experimental-method medical-conditions infectious-agents 
     cellular-locations cell-type cell-line
     protein-domain molecule
+    comlex
     other)
   "Used by downstream routines that are performing the identical
  operation on each of the slots in aggregated-bio-terms.")
