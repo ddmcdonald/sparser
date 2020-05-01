@@ -65,7 +65,8 @@ and make that file easier to understand. |#
   (when *apply-document-after-actions*
     (let ((*current-article* a))
       (declare (special *current-article*))
-      (do-section-level-after-actions a))))
+      (do-section-level-after-actions a)
+      (consolidate-aggregations a))))
 
 (defun do-section-level-after-actions (s)
   "Actions taken by everything about the level of a paragraph"
@@ -317,7 +318,9 @@ and make that file easier to understand. |#
 (defgeneric print-form-for-term (term)
   (:method ((i individual))
     (or (value-of 'name i)
-        (format nil "~a" i))))
+        (format nil "~a" i)))
+  (:method ((name string))
+    name))
 
 
 ;;;------------------------

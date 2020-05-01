@@ -200,6 +200,69 @@
             ~a~%  ~a" (type-of odd) odd)))
 
 
+(defgeneric consolidate-aggregations (article)
+  (:documentation "Up to this point, the entries in the aggregation
+   buckets are headed by an individual. But the same base individual
+   often occurs in several entries because those correspond to different
+   extension of the head (e.g. 'factors' -- 'climatic factors' and
+   'other factors'). Here we go through every entry in every bucket
+   and replace the individuals with their head strings.")
+  (:method ((a article))
+    (loop for slot-name in *term-buckets*
+       as bucket = (slot-value (contents a) slot-name)
+       do (let* ((new-contents (consolidate-bucket bucket))
+                 (new-sorted (sort (copy-list new-contents)
+                                   'sort-aggregation-table-entries)))
+            (setf (slot-value (contents a) slot-name)
+                  new-sorted)))))
+
+(defvar *consolidated-entries* (make-hash-table :test #'equal))
+
+(defun consolidate-bucket (list-of-entries)
+  "Maybe their larger structures are worth reifying -- in structs?
+   Then we could ripple the consolidate method"
+  (clrhash *consolidated-entries*)
+  (flet ((consolidate-entry (table-entry revised-entry)
+           "Add the mentions of the revised entry to the table entry"
+           (setf (third table-entry)
+                 (append (third revised-entry)
+                         (third table-entry)))
+           (setf (second table-entry) (length (third table-entry)))))
+    (loop for entry in list-of-entries
+       as canonical-name = (canonical-string entry)
+       as revised-entry = (cons canonical-name (cdr entry))
+       as table-entry = (gethash canonical-name *consolidated-entries*)
+       unless table-entry
+       do (setf (gethash canonical-name *consolidated-entries*) revised-entry)
+       when table-entry do (consolidate-entry table-entry revised-entry))
+     (all-hash-vals *consolidated-entries*)))
+
+  #| for each entry in the bucket
+ - determine its canoncal string
+     - replace the individual in the entry with this string
+   - check whether we've already stored a count and mentions
+     on the table under this string as the key
+       - if we haven't, store this modified entry as the fst value
+       - if we have, the we merge this entry with the one that's 
+           already there.
+   - when we've done this for every entry,
+       - drain the table back into a list, 
+         and sort it like we usually do (though with a different
+          signature for the alphabetical part of the sort.
+       - replace the value in the slot with this revised value
+|#
+
+(defun canonical-string (mention-entry)
+  "The entry has three values, its individual, the count, and a list
+   of the mentions of that individual. We select one of those mentions
+   and return the corresponding 'short' (head) string"
+  (let* ((m (car (third mention-entry)))
+         (string (string-for-mention m)))
+    (unless string (break "no string for mention ~a" m)
+            (setq string "")) ;;// warn?
+    (trim-whitespace string)))
+
+
 
 ;;;-----------------------------------
 ;;; tally properties of text qua text
