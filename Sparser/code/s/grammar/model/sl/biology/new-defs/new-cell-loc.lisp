@@ -169,3 +169,6 @@
 
 
 (def-indiv-with-id cellular-location "spike" "GO:0098029" :name "icosahedral viral capsid, spike" :synonyms ("peplomer"))
+
+(def-indiv-with-id cellular-location "membrane raft" "GO:0045121" :name "lipid raft" :synonyms ("lipid raft" "GEM domain" "glycolipid-enriched membrane domain"))
+
