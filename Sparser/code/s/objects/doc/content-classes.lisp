@@ -15,6 +15,7 @@
 (defclass aggregated-bio-terms ()
   ((proteins :initform nil :accessor aggregated-proteins)
    (residues :initform nil :accessor aggregated-residues)
+   (biochemical-entity :initform nil :accessor aggregated-biochemical-entity)
    (bio-processes :initform nil :accessor aggregated-processes)
    (medical-method :initform nil :accessor aggregated-medical-method)
    (experimental-method :initform nil :accessor aggregated-experimental-method)

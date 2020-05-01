@@ -186,6 +186,7 @@
       ((itypep i 'bio-method) 'experimental-method)
       ((itypep i 'protein-domain) 'protein-domain)
       ((itypep i 'molecule) 'molecule)
+      ((itypep i 'bio-chemical-entity) 'biochemical-entity)
       ((and (not (search "-ENDURANT" (pname (itype-of i))))
             (not (search "-PERDURANT" (pname (itype-of i)))))
        ;; don't highlight words just brought in from COMLEX
