@@ -505,78 +505,78 @@
            (edge-mention (edge-left-daughter edge))))
         ((and (not (itypep i category::wh-question))
               (embedded-statement? edge))
-         (return-from subsumed-mentions? nil)))
+         (return-from subsumed-mentions? nil))
+        (t
+         (let ((un-embedded-edge (un-embed-edge edge)))
+           (declare (special un-embedded-edge category::wh-question))
+           (when (and (not (eq edge un-embedded-edge))
+                      (typep (edge-mention un-embedded-edge) 'discourse-mention)
+                      (or (eq (edge-referent edge)(edge-referent un-embedded-edge))
+                          (is-dl-child? (edge-referent edge)
+                                        (edge-referent un-embedded-edge))))
+             ;; this happens when we are lifting to a that-comp
+             ;; as in "that the RBD of PI3KC2β binds nucleotide-free Ras"
+             (return-from subsumed-mentions?
+               (edge-mention un-embedded-edge)))
+           (setq edge un-embedded-edge)
+           (cond ((and (itypep i category::wh-question)
+                       (typep (edge-mention edge) 'discourse-mention))
+                  (edge-mention edge))
+                 ((member (edge-rule edge)
+                          '(:conjunction/identical-form-labels
+                            :conjunction/identical-adjacent-labels))
+                  (safe-edge-mention edge))
+                 ((member (form-cat-name edge)
+                          '(subject-relative-clause thatcomp))
+                  (unless (eq (edge-right-daughter edge) :long-span)
+                    (safe-edge-mention (edge-right-daughter edge))))
+                 ((and (cfr-p (edge-rule edge))
+                       (equal '(:funcall create-partitive-np left-referent right-referent)
+                              (cfr-referent (edge-rule edge))))
+                  (safe-edge-mention (edge-right-daughter
+                                      (edge-right-daughter edge))))
+                 ((member (edge-rule edge) '(knit-parens-into-neighbor))
+                  (safe-edge-mention (edge-left-daughter edge)))
+                 ((eq (edge-rule edge) 'sdm-span-segment)
+                  (loop for e in (edge-constituents edge)
+                        when
+                          (or (eq (edge-referent e) i)
+                              (subsumed-mention-edge? i e))
+                        do
+                          (return (safe-edge-mention e))))
+                 (t
+                  (let ((left (subsumed-mention-edge? i (edge-left-daughter edge)))
+                        (right (subsumed-mention-edge? i (edge-right-daughter edge)))
+                        (eld (edge-left-daughter edge))
+                        (erd (edge-right-daughter edge)))
+                    ;; which edge is the head line?
 
-  (let ((un-embedded-edge (un-embed-edge edge)))
-    (declare (special un-embedded-edge category::wh-question))
-    (when (and (not (eq edge un-embedded-edge))
-               (typep (edge-mention un-embedded-edge) 'discourse-mention)
-               (or (eq (edge-referent edge)(edge-referent un-embedded-edge))
-                   (is-dl-child? (edge-referent edge)
-                                 (edge-referent un-embedded-edge))))
-      ;; this happens when we are lifting to a that-comp
-      ;; as in "that the RBD of PI3KC2β binds nucleotide-free Ras"
-      (return-from subsumed-mentions?
-        (edge-mention un-embedded-edge)))
-    (setq edge un-embedded-edge)
-    (cond ((and (itypep i category::wh-question)
-                (typep (edge-mention edge) 'discourse-mention))
-           (edge-mention edge))
-          ((member (edge-rule edge)
-                   '(:conjunction/identical-form-labels
-                     :conjunction/identical-adjacent-labels))
-           (edge-mention edge))
-          ((member (form-cat-name edge)
-                   '(subject-relative-clause thatcomp))
-           (unless (eq (edge-right-daughter edge) :long-span)
-             (safe-edge-mention (edge-right-daughter edge))))
-          ((and (cfr-p (edge-rule edge))
-                (equal '(:funcall create-partitive-np left-referent right-referent)
-                       (cfr-referent (edge-rule edge))))
-           (safe-edge-mention (edge-right-daughter
-                               (edge-right-daughter edge))))
-          ((member (edge-rule edge) '(knit-parens-into-neighbor))
-           (safe-edge-mention (edge-left-daughter edge)))
-          ((eq (edge-rule edge) 'sdm-span-segment)
-           (loop for e in (edge-constituents edge)
-                 when
-                   (or (eq (edge-referent e) i)
-                       (subsumed-mention-edge? i e))
-                 do
-                   (return (edge-mention e))))
-          (t
-           (let ((left (subsumed-mention-edge? i (edge-left-daughter edge)))
-                 (right (subsumed-mention-edge? i (edge-right-daughter edge)))
-                 (eld (edge-left-daughter edge))
-                 (erd (edge-right-daughter edge)))
-             ;; which edge is the head line?
-
-             (cond
-               ((and (edge-p eld)
-                     (edge-p erd)
-                     (typep (edge-mention eld) 'discourse-mention)
-                     (typep (edge-mention erd) 'discourse-mention)
-                     (eq (edge-referent eld) i))
-                ;; case like "MAPK1-MAP2K1 complex"
-                ;;  where the meaning is the same as the left constituent
-                (list (edge-mention eld)(edge-mention erd)))
-               (left
-                (unless right ;; no real subsumption -- can't find head
-                  (edge-mention left)))
-               (right (edge-mention right)) ;;only  right edge
-               (t
-                (let ((subsumed-edges
-                       (loop for e in (edge-constituents edge)
-                             when (and (edge-p e)
-                                       ;; in two-part-label, the constituents
-                                       ;; include a WORD!
-                                       (is-dl-child? i (edge-referent e))
-                                       (typep (edge-mention e) 'discourse-mention))
-                             collect e)))
-                  (if (and subsumed-edges
-                           (null (cdr subsumed-edges)))
-                      (edge-mention (car subsumed-edges))
-                      nil)))))))))
+                    (cond
+                      ((and (edge-p eld)
+                            (edge-p erd)
+                            (typep (edge-mention eld) 'discourse-mention)
+                            (typep (edge-mention erd) 'discourse-mention)
+                            (eq (edge-referent eld) i))
+                       ;; case like "MAPK1-MAP2K1 complex"
+                       ;;  where the meaning is the same as the left constituent
+                       (list (safe-edge-mention eld)(safe-edge-mention erd)))
+                      (left
+                       (unless right ;; no real subsumption -- can't find head
+                         (safe-edge-mention left)))
+                      (right (safe-edge-mention right)) ;;only  right edge
+                      (t
+                       (let ((subsumed-edges
+                              (loop for e in (edge-constituents edge)
+                                    when (and (edge-p e)
+                                              ;; in two-part-label, the constituents
+                                              ;; include a WORD!
+                                              (is-dl-child? i (edge-referent e))
+                                              (typep (edge-mention e) 'discourse-mention))
+                                    collect e)))
+                         (if (and subsumed-edges
+                                  (null (cdr subsumed-edges)))
+                             (safe-edge-mention (car subsumed-edges))
+                             nil)))))))))))
 
 (defun subsumed-mention-edge? (i edge)
   "Is the edge a more-specific reference to i?"
