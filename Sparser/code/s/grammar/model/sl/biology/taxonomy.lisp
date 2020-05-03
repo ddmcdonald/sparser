@@ -1259,6 +1259,21 @@
      :with enzyme-activity
      :m enzyme))
 
+(define-category chaperone :specializes protein
+  :binds ((protein protein))
+  :realization
+  (:noun ("chaperone" "chaperone protein" "molecular chaperone")
+           :for protein
+           :m protein))
+
+(define-category co-chaperone :specializes protein
+  :binds ((protein protein))
+  :realization
+  (:noun ("co-chaperone" "molecular co-chaperone" "co-chaperone protein")
+           :for protein
+           :m protein))
+
+
 
 (define-mixin-category with-specified-amino-acid ;;:specializes relation
    :binds ((amino-acid amino-acid)))
@@ -1420,6 +1435,18 @@
   ;; the part of an antigen that is recognized by the immune system
   :realization (:noun "epitope"))
 
+(define-category hinge
+  :specializes protein-domain
+  ;; not sure these are only proteins,
+  ;; the part of an antigen that is recognized by the immune system
+  :realization (:noun ("hinge" "hinge region")))
+
+(define-category determinant
+  :specializes protein-domain
+  ;; not sure these are only proteins,
+  ;; the part of an antigen that is recognized by the immune system
+  :realization (:noun "determinant"))
+
 
 
 (define-category cell-entity :specializes physical-object
@@ -1474,7 +1501,9 @@
   :lemma (:common-noun "strain")
   :realization (:common-noun name))
 
-(define-category infectious-agent :specializes organism ;; are VIRUSes ORGANISMs? -- for our purposes yes
+(define-category infectious-agent :specializes organism
+                 ;; are VIRUSes ORGANISMs? --YES!! according to NCIT
+                 ;;These organisms lack independent metabolism, and  must infect the cells of other organisms to reproduce. 
   )
 
 (define-category virus :specializes infectious-agent
@@ -1483,6 +1512,8 @@
   :lemma (:common-noun "virus" :adjective "viral")
   :realization
     (:common-noun name ))
+
+(def-synonym virus (:noun "virion"))
 
 (define-category bacterium :specializes infectious-agent
   :instantiates self 
