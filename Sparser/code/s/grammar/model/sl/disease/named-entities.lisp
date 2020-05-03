@@ -75,13 +75,28 @@
          
 ;; some have no UID:
 "BGI" "bgi" "Beijing Genomics Institute"
+Wuhan Institute of Virology (WIV)
+Wuhan Cenerter for Disease Control and Preventino (WHCDC)
+
 "JCVI" "J. Craig Venter Institute" ;; does genomic and virus research
+
+Center for Infection Disease Research, University of Minnisota
+Fred Hutchinson Cancer Research Center
+
+Office of the Director of National Intelligence
+the U.S. intelligence community  The IC 
+the Defense Department
+Center for Arms Control and Non-Proliferation
+
+It shares nearly 80 percent of the genome as the original SARS-CoV and 96 percent of the genome of a virus (RaTG13) that Shi’s team had previously sampled.
+
 
 slightly different -- local institutions so could have plurals:
 ("IACUC"  :ID  "NCIT:C19487" :NAME "institutional animal care and use committee")
-("IRB"  :ID  "NCIT:C16741" :NAME "institutional review board")
+("IRB"  :ID  "NCIT:C16741" :NAME https://s2.washingtonpost.com/28ed4f7/5eac8d78fe1ff654c2c950eb/ZGRtY2RvbmFsZEBtYWMuY29t/13/65/5b6c007ee6f74ddb397ee1e56a7292e3"institutional review board")
 
 universities
+South China University of Technology
 ("UCSC"
    ("ucsc" "UCSC" "NCIT:C63549" "university of california at santa cruz"
     "synonym"))
