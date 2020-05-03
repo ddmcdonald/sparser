@@ -95,13 +95,25 @@
 ;;; an unassuming triple application
 ;;;----------------------------------
 
-(defun parse-all-options-in-region (start-pos end-pos)
-  (let* ((pairs (adjacent-edges-in-region start-pos end-pos))
-         (triples (form-triples-from-pairs pairs)))
-    (when triples
-      (let ((triple-to-use (select-triple-for-region triples)))
-        (execute-triple triple-to-use)
-        (parse-all-options-in-region start-pos end-pos)))))
+(defun parse-all-options-in-region (start-pos end-pos &optional used-triples)
+  (if
+   (> (length used-triples) 100)
+   ;; happened in a number of cases
+   ;; e.g. "Plates were washed with ELISA wash buffer (1x PBS, 0.02% Tween 20, 0.1% NaN 3 ) and a titration of mouse sera ranging from 1:10-1:2560 (1:2 dilutions) from MVA-, MVA35Δ-1-, or MVA35Δ-2-vaccinated mice (n=5) (and PBS treated mice as control) was added."
+   ;; DAVID -- can you track this down?
+   (error "parse-all-options-in-region in infinite loop? on sentence ~s ~%"
+          (sentence-string (sentence)))
+   (let* ((pairs (adjacent-edges-in-region start-pos end-pos))
+          (triples (form-triples-from-pairs pairs)))
+     (when (setq triples
+                 (loop for tr in triples
+                       unless (member tr used-triples)
+                       collect tr))
+                        
+       (let ((triple-to-use (select-triple-for-region triples)))
+         (push triple-to-use used-triples)
+         (execute-triple triple-to-use)
+         (parse-all-options-in-region start-pos end-pos used-triples))))))
   
 (defun adjacent-edges-in-region (start-pos end-pos)
   (let ((tt-or-ev-in-region (treetops-in-segment start-pos end-pos))
