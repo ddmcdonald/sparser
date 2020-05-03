@@ -179,7 +179,10 @@
       ((itypep i 'residue-on-protein) ;; or other regions
        'residues)
       ((itypep i 'medical-condition) 'medical-conditions)
-      ((itypep i 'infectious-agent) 'infectious-agents)
+      ((or (itypep i 'infectious-agent)
+           ;; pahtogens are not (always) infectious agents,  but for now...
+           (itypep i 'pathogen))
+       'infectious-agents)
       ((itypep i 'cellular-location) 'cellular-locations)
       ((itypep i 'cell-type) 'cell-type)
       ((itypep i 'medical-method) 'medical-method)
