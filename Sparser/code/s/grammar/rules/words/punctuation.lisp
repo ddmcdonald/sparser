@@ -512,7 +512,42 @@
     (code-char 9324)  ;; #\CIRCLED_NUMBER_THIRTEEN 
     (code-char 9673)  ;; #\FISHEYE 
     (code-char 9687)  ;; #\RIGHT_HALF_BLACK_CIRCLE 
-    (code-char 9758)  ;; #\WHITE_RIGHT_POINTING_INDEX 
+    (code-char 9758)  ;; #\WHITE_RIGHT_POINTING_INDEX
+    (code-char 61550) ;; ""
+    (code-char 61552) ;; ""
+    (code-char 61561) ;; ""
+    (code-char 61562) ;; ""
+    (code-char 61569) ;; ""
+    (code-char 61575) ;; ""
+    (code-char 61593) ;; ""
+    (code-char 61596) ;; ""
+    (code-char 61597) ;; ""
+    (code-char 61598) ;; ""
+    (code-char 61600) ;; ""
+    (code-char 61607) ;; ""
+    (code-char 61622) ;; ""
+    (code-char 61625) ;; ""
+    (code-char 61662) ;; ""
+    (code-char 61663) ;; ""
+    (code-char 61665) ;; ""
+    (code-char 61669) ;; ""
+    (code-char 61670) ;; ""
+    (code-char 61671) ;; ""
+    (code-char 61672) ;; ""
+    (code-char 61676) ;; ""
+    (code-char 61677) ;; ""
+    (code-char 61678) ;; ""
+    (code-char 61679) ;; ""
+    (code-char 61686) ;; ""
+    (code-char 61687) ;; ""
+    (code-char 61688) ;; ""
+    (code-char 61692) ;; ""
+    (code-char 63193) ;; ""
+    (code-char 63341) ;; ""
+    (code-char 63719) ;; ""
+    (code-char 65072) ;; "︰"
+    (code-char 65125) ;; "﹥"
+
     ))
 
 (defgeneric add-punctuation-char (identifier)
