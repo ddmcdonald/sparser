@@ -106,7 +106,11 @@ add-punctuation-char over the list.
 (defun write-lines-for-out-of-band-cache (&optional (stream *standard-output*))
   (let ((data (sort-out-of-band-cache)))
     (loop for datum in data
-       do (write-alphabet-entry-line datum stream))))
+          do (write-alphabet-entry-line datum stream))))
+
+(defun write-lines-for-char-codes (char-codes &optional (stream *standard-output*))
+    (loop for ccode in char-codes
+       do (write-alphabet-entry-line (cons (code-char ccode) ccode) stream)))
 
 
 
