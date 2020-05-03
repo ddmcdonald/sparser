@@ -640,6 +640,16 @@
                                ;; not going to fully test that yet
                                (individual-p value))
                           `(,(binding-variable b) ,(value-of 'value value)))
+                         ((and (member (pname (binding-variable b))
+                                       '(previous next number-of-days
+                                         position-in-year))
+                               ;; making sure to only do this if the
+                               ;; value is an individual -- hopefully
+                               ;; all counts are now numbers so this
+                               ;; branch of the cond is moot, but I'm
+                               ;; not going to fully test that yet
+                               (individual-p value))
+                          `(,(binding-variable b) ,value))
                          (t
                           (create-dependency-pair
                            b
