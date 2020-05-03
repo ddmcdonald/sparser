@@ -141,7 +141,9 @@
 (def-indiv-with-id cell-type "endothelial cell" "TS-0278") 
 (def-indiv-with-id cell-type "embryonic stem cell" "TS-0263") 
 (def-indiv-with-id cell-type "cardiac cell" "TS-0115") 
-(def-indiv-with-id cell-type "airway epithelial cell" "TS-0023") 
+(def-indiv-with-id cell-type "airway epithelial cell" "TS-0023")
+(def-indiv-with-id cell-type "CD4+ T cell" "C12537"
+                   :synonyms("CD4 lymphocyte" "CD4-positive T lymphocyte"))
 (def-indiv-with-id cell-type "T cell" "TS-1001") 
 (def-indiv-with-id cell-type "Stromal cell" "TS-0984") 
 (def-indiv-with-id cell-type "HeLa cell" "TS-0136") 

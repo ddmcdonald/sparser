@@ -292,6 +292,8 @@
 (noun  "microimaging" :super bio-method)
 (noun  "microarray" :super bio-method)
 (noun  "array" :super bio-method)
+(noun  "well" :super bio-method)
+(noun  "plate" :super bio-method)
 (noun "sequential immunoblotting" :super bio-method)
 (noun "immunofluorescence" :super bio-method)
 (noun "approach" :super bio-method)

@@ -247,7 +247,7 @@
 (def-indiv-with-id disease "GIST" "ORPHANET:44890" :name "Gastrointestinal stromal tumor" :maintain-case t) 
 (def-indiv-with-id disease "GVHD" "NCIT:C3063" :name "graft versus host disease")
 (def-indiv-with-id disease "HCMV" "EFO:0001062" :name "cytomegalovirus infection") 
-(def-indiv-with-id disease "HFMD" "NCIT:C128439" :name "hand foot and mouth disease") 
+(def-indiv-with-id disease "HFMD" "NCIT:C128439" :name "hand foot and mouth disease")
 (def-indiv-with-id disease "HFRS" "EFO:0007299" :name "hemorrhagic fever with renal syndrome") 
 (def-indiv-with-id disease "HGDN" "NCIT:C96768" :name "high grade hepatic dysplastic nodule") 
 (def-indiv-with-id disease "HIE" "NCIT:C35549" :name "hypoxic encephalopathy") 

@@ -104,6 +104,23 @@
     (:noun "apoptosis" :adj "apoptotic"))
 (adj "pro-apoptotic" :super apoptosis)
 
+(define-category viral-egress
+    :specializes cellular-process
+    :realization
+    (:noun ("egress" "viral egress")))
+
+(define-category exocytosis
+    :specializes viral-egress
+    :bindings (uid "GO:0006887")
+    :realization
+    (:noun "exocytosis"))
+
+(define-category viral-budding
+    :specializes viral-egress
+    :bindings (uid "GO:0046755")
+    :realization
+    (:noun ("viral budding" "virus budding" "virion budding" "budding")))
+
 (define-category killing ;; related to but not quite the same as apoptosis
     :specializes cellular-process
     :realization

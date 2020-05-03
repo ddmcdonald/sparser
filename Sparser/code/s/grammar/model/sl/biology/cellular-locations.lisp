@@ -71,7 +71,7 @@
 (define-cellular-location "mitochondrial matrix" "GO:0005759")
 (define-cellular-location "neuromuscular junction" "GO:0031594")
 (define-cellular-location "nucleoplasm" "GO:0005654")
-(define-cellular-location "nucleus" "GO:0005634" :adj "nuclear")
+(define-cellular-location "nucleus" "GO:0005634" :adj "nuclear" :synonyms ("nuclei"))
 (define-cellular-location "plasma membrane" "GO:0005886" :synonyms ("PM" "cell membrane" "cellular membrane"))
 (define-cellular-location "platelet dense granule lumen" "GO:0031089")
 (define-cellular-location "trailing edge" "GO:0031254")
