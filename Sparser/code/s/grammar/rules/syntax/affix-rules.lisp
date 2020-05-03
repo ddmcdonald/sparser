@@ -51,7 +51,7 @@
 
 (defparameter *show-morphs* nil "Store data on the unknowns")
 (defparameter *block-verbification* t "Gates flet function below")
-(defparameter *show-verbification* nil "Accounce them")
+(defparameter *show-verbification* t "Announce them")
 (defparameter *verbified-nouns* nil "Accumulates a list of them")
 
 ;; (trace-morphology)
