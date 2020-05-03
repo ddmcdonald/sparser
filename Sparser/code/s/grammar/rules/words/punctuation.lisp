@@ -375,61 +375,61 @@
     (code-char 10230) ;; "⟶"
     (code-char 10233) ;; "⟹"
     (code-char 10625) ;; "⦁"
-    (code-char 10794)  ;; "⨪" #\U+2A2A
+    (code-char 10794) ;; "⨪" #\U+2A2A
     (code-char 10815) ;; ⨿
     (code-char 10877) ;;"⩽", (code = 10878)
-    (code-char 10878)  ;;"⩾", (code = 10878)
+    (code-char 10878) ;;"⩾", (code = 10878)
     (code-char 11373) ;; Ɑ
-    (code-char 12288)  ;; 　
-    (code-char 12289)  ;;、
-    (code-char 12290)  ;; 。
-    (code-char 12296)  ;; 〈
-    (code-char 12297)  ;; 〉
-    (code-char 12304)  ;; 【
-    (code-char 12305)  ;; 】
+    (code-char 12288) ;; 　
+    (code-char 12289) ;;、
+    (code-char 12290) ;; 。
+    (code-char 12296) ;; 〈
+    (code-char 12297) ;; 〉
+    (code-char 12304) ;; 【
+    (code-char 12305) ;; 】
     (code-char 13212) ;; "㎜"
     (code-char 19977) ;; "三"
 
-    (code-char 55349) ;; "�"
-    (code-char 56348) ;; "�"
-    (code-char 56361) ;; "�"
-    (code-char 56364) ;; "�"
-    (code-char 56465) ;; "�"
-    (code-char 56592) ;; "�"
-    (code-char 56635) ;; "�"
-    (code-char 56650) ;; "�"
-    (code-char 57083) ;; "�"
-    (code-char 57088) ;; "�"
-    (code-char 57091) ;; "�"
-    (code-char 57305) ;; "�"
-    (code-char 61472) ;; #\UF020
-    (code-char 61508) ;; #\UF044
-    (code-char 61537) ;; #\UF061
-    (code-char 61538) ;; #\UF062
-    (code-char 61549) ;; #\UF06D
-    (code-char 61566) ;; #\UF07E
-    (code-char 61616) ;; #\UF0B0
-    (code-char 61620) ;; #\UF0B4
+    (code-char 55349)  ;; "�"
+    (code-char 56348)  ;; "�"
+    (code-char 56361)  ;; "�"
+    (code-char 56364)  ;; "�"
+    (code-char 56465)  ;; "�"
+    (code-char 56592)  ;; "�"
+    (code-char 56635)  ;; "�"
+    (code-char 56650)  ;; "�"
+    (code-char 57083)  ;; "�"
+    (code-char 57088)  ;; "�"
+    (code-char 57091)  ;; "�"
+    (code-char 57305)  ;; "�"
+    (code-char 61472)  ;; #\UF020
+    (code-char 61508)  ;; #\UF044
+    (code-char 61537)  ;; #\UF061
+    (code-char 61538)  ;; #\UF062
+    (code-char 61549)  ;; #\UF06D
+    (code-char 61566)  ;; #\UF07E
+    (code-char 61616)  ;; #\UF0B0
+    (code-char 61620)  ;; #\UF0B4
     (code-char 64256)  ;; ﬀ
     (code-char 64257)  ;;"ﬁ", (code = 64257) ;; alphabetical
     (code-char 64258)  ;;"ﬂ", (code = 64258)
-    (code-char 65080) ;; "︸"
-    (code-char 65279) ;; "﻿"
+    (code-char 65080)  ;; "︸"
+    (code-char 65279)  ;; "﻿"
     (code-char 65285)  ;; #\FULLWIDTH_PERCENT_SIGN 
-    (code-char 65286) ;; "＆"
+    (code-char 65286)  ;; "＆"
     (code-char 65288)  ;;"（", (code = 65288)
     (code-char 65289)  ;;  #\FULLWIDTH_RIGHT_PARENTHESIS
-    (code-char 65291) ;; #\FULLWIDTH_PLUS_SIGN
+    (code-char 65291)  ;; #\FULLWIDTH_PLUS_SIGN
     (code-char 65292)  ;; #\FULLWIDTH_COMMA 
     (code-char 65293)  ;;"－", (code = 65293)
-    (code-char 65294) ;; "．"
+    (code-char 65294)  ;; "．"
     (code-char 65306)  ;; #\FULLWIDTH_COLON 
     (code-char 65307)  ;; #\FULLWIDTH_SEMICOLON 
     (code-char 65308)  ;; #\FULLWIDTH_LESS-THAN_SIGN 
     (code-char 65310)  ;; #\FULLWIDTH_GREATER-THAN_SIGN 
-    (code-char 65311) ;; "？"
-    (code-char 65325) ;; "Ｍ"
-    (code-char 65357) ;; "ｍ"
+    (code-char 65311)  ;; "？"
+    (code-char 65325)  ;; "Ｍ"
+    (code-char 65357)  ;; "ｍ"
     (code-char 65374)  ;; #\FULLWIDTH_TILDE 
     (code-char 65533)  ;; �
     (code-char 119967) ;; "풟"
@@ -453,15 +453,67 @@
     (code-char 9659) ;; #\WHITE_RIGHT-POINTING_POINTER
 
     ;; ddm 4/13/20
-    (code-char 9121) ;; #\LEFT_SQUARE_BRACKET_UPPER_CORNER 
-    (code-char 9123) ;; #\LEFT_SQUARE_BRACKET_LOWER_CORNER
-    (code-char 9124) ;; #\RIGHT_SQUARE_BRACKET_UPPER_CORNER
-    (code-char 9126) ;; #\RIGHT_SQUARE_BRACKET_LOWER_CORNER 
+    (code-char 9121)  ;; #\LEFT_SQUARE_BRACKET_UPPER_CORNER 
+    (code-char 9123)  ;; #\LEFT_SQUARE_BRACKET_LOWER_CORNER
+    (code-char 9124)  ;; #\RIGHT_SQUARE_BRACKET_UPPER_CORNER
+    (code-char 9126)  ;; #\RIGHT_SQUARE_BRACKET_LOWER_CORNER 
     (code-char 10031) ;;     "✯"
     (code-char 10230) ;; "⟶"
     (code-char 10233) ;; "⟹"
-    (code-char 10625)  ;; "⦁"
-   ))
+    (code-char 10625) ;; "⦁"
+
+    ;; rjb 5/2/2020
+    (code-char 10004) ;; #\HEAVY_CHECK_MARK 
+    (code-char 10118) ;; #\DINGBAT_CIRCLED_SANS-SERIF_DIGIT_SEVEN 
+    (code-char 10119) ;; #\DINGBAT_CIRCLED_SANS-SERIF_DIGIT_EIGHT 
+    (code-char 10122) ;; #\DINGBAT_NEGATIVE_CIRCLED_SANS-SERIF_DIGIT_ONE 
+    (code-char 10123) ;; #\DINGBAT_NEGATIVE_CIRCLED_SANS-SERIF_DIGIT_TWO 
+    (code-char 10124) ;; #\DINGBAT_NEGATIVE_CIRCLED_SANS-SERIF_DIGIT_THREE 
+    (code-char 10125) ;; #\DINGBAT_NEGATIVE_CIRCLED_SANS-SERIF_DIGIT_FOUR 
+    (code-char 10126) ;; #\DINGBAT_NEGATIVE_CIRCLED_SANS-SERIF_DIGIT_FIVE 
+    (code-char 10127) ;; #\DINGBAT_NEGATIVE_CIRCLED_SANS-SERIF_DIGIT_SIX 
+    (code-char 10132) ;; #\HEAVY_WIDE-HEADED_RIGHTWARDS_ARROW 
+    (code-char 10137) ;; #\HEAVY_RIGHTWARDS_ARROW 
+    (code-char 10146) ;; #\THREE-D_TOP-LIGHTED_RIGHTWARDS_ARROWHEAD 
+    (code-char 10300) ;; #\BRAILLE_PATTERN_DOTS-3456 
+    (code-char 10754) ;; #\N-ARY_CIRCLED_TIMES_OPERATOR 
+    (code-char 10848) ;; #\LOGICAL_AND_WITH_DOUBLE_UNDERBAR 
+    (code-char 10869) ;; #\TWO_CONSECUTIVE_EQUALS_SIGNS 
+    (code-char 10913) ;; #\DOUBLE_NESTED_LESS-THAN 
+    (code-char 11374) ;; #\LATIN_CAPITAL_LETTER_M_WITH_HOOK 
+    (code-char 65105) ;; #\SMALL_IDEOGRAPHIC_COMMA 
+    (code-char 8640)  ;; #\RIGHTWARDS_HARPOON_WITH_BARB_UPWARDS 
+    (code-char 8652)  ;; #\RIGHTWARDS_HARPOON_OVER_LEFTWARDS_HARPOON 
+    (code-char 8661)  ;; #\UP_DOWN_DOUBLE_ARROW 
+    (code-char 8705)  ;; #\COMPLEMENT 
+    (code-char 8736)  ;; #\ANGLE 
+    (code-char 8744)  ;; #\LOGICAL_OR 
+    (code-char 8754)  ;; #\CLOCKWISE_CONTOUR_INTEGRAL 
+    (code-char 8756)  ;; #\THEREFORE 
+    (code-char 8757)  ;; #\BECAUSE 
+    (code-char 8784)  ;; #\APPROACHES_THE_LIMIT 
+    (code-char 8788)  ;; #\COLON_EQUALS 
+    (code-char 8796)  ;; #\DELTA_EQUAL_TO 
+    (code-char 8868)  ;; #\DOWN_TACK 
+    (code-char 8898)  ;; #\N-ARY_INTERSECTION 
+    (code-char 8968)  ;; #\LEFT_CEILING 
+    (code-char 8969)  ;; #\RIGHT_CEILING 
+    (code-char 8988)  ;; #\TOP_LEFT_CORNER 
+    (code-char 8991)  ;; #\BOTTOM_RIGHT_CORNER 
+    (code-char 9004)  ;; #\BENZENE_RING 
+    (code-char 9148)  ;; #\HORIZONTAL_SCAN_LINE-7 
+    (code-char 9182)  ;; #\TOP_CURLY_BRACKET 
+    (code-char 9254)  ;; #\SYMBOL_FOR_SUBSTITUTE_FORM_TWO 
+    (code-char 9319)  ;; #\CIRCLED_DIGIT_EIGHT 
+    (code-char 9320)  ;; #\CIRCLED_DIGIT_NINE 
+    (code-char 9321)  ;; #\CIRCLED_NUMBER_TEN 
+    (code-char 9322)  ;; #\CIRCLED_NUMBER_ELEVEN 
+    (code-char 9323)  ;; #\CIRCLED_NUMBER_TWELVE 
+    (code-char 9324)  ;; #\CIRCLED_NUMBER_THIRTEEN 
+    (code-char 9673)  ;; #\FISHEYE 
+    (code-char 9687)  ;; #\RIGHT_HALF_BLACK_CIRCLE 
+    (code-char 9758)  ;; #\WHITE_RIGHT_POINTING_INDEX 
+    ))
 
 (defgeneric add-punctuation-char (identifier)
   (:documentation "Create a punctuation word for the
