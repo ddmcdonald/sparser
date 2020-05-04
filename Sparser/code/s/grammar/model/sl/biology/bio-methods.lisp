@@ -387,6 +387,8 @@
 (noun "BEAGLE" :super bio-method) 
 (noun "CIGAR" :super bio-method)
 (def-synonym CIGAR (:noun "Compact Idiosyncratic Gapped Alignment Report"))
+(noun "dUST" :super bio-method)
+(def-synonym dUST (:noun "deoxyuridine suppression test"))
 
 (noun "QCT" :super bio-method)
 (def-synonym QCT (:noun "quantitative computed tomography"))

@@ -168,6 +168,10 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (noun "H1N1-09" :super H1N1)
 (def-synonym H1N1-09 (:noun ("H1N1/09" "2009 swine flu virus" "2009 pandemic influenza A (H1N1)"))) 
 
+(def-indiv-with-id FLUV "FLUBV" "NCIT:C53468" :name "influenza B virus") 
+(def-indiv-with-id FLUV "FLUCV" "NCIT:C97157" :name "influenza C virus")
+
+
 
 (define-category henipavirus :specializes virus
                  :bindings (uid "NCIT:C112290")
@@ -280,7 +284,7 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (def-indiv-with-id virus "poxvirus" "NCIT:C14261" :name "poxvirus" :plural ("poxviruses" "poxviridae")) 
 (def-indiv-with-id virus "reovirus" "NCIT:C112026" :name "reoviridae")
 (def-indiv-with-id virus "retrovirus" "NCIT:C14268" :name "retrovirus" :plural ("retroviruses" "retroviridae"))
-(def-indiv-with-id virus "rhinovirus" "NCIT:C77200" :name "rhinovirus" :synonyms ("HRV" "human rhinovirus" "hRV")) 
+(def-indiv-with-id virus "rhinovirus" "NCIT:C77200" :name "rhinovirus" :synonyms ("HRV" "human rhinovirus" "hRV" "RhV")) 
 (def-indiv-with-id virus "φX174" "NCIT:C97346" :name "bacteriophage phi X 174") 
 (def-indiv-with-id virus "EBV" "TI:10376" :name "Epstein-Barr virus") 
 (def-indiv-with-id virus "Haemophilus influenzae" "TI:727") 
@@ -385,3 +389,22 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 ;(def-indiv-with-id virus "MACV" "NCIT:C73535" :name "merkel cell polyomavirus") 
 ;(def-indiv-with-id virus "JCVI" "NCIT:C14229" :name "JC virus") 
 (def-indiv-with-id virus "HPMV" "NCIT:C125640" :name "human metapneumovirus") 
+
+(def-indiv-with-id virus "HGV" "NCIT:C14328" :name "GB virus C") 
+(def-indiv-with-id virus "CTFV" "NCIT:C112240" :name "colorado tick fever virus") 
+
+(def-indiv-with-id virus "GLV" "NCIT:C29917" :name "gross leukemia virus") 
+(def-indiv-with-id virus "MPMV" "NCIT:C14236" :name "mason-pfizer monkey virus") 
+(def-indiv-with-id virus "STLV" "NCIT:C14277" :name "simian T-lymphotropic virus type I") 
+(def-indiv-with-id virus "TCRV" "NCIT:C129405" :name "tacaribe complex virus") 
+(def-indiv-with-id virus "oncornavirus" "NCIT:C14371" :name "oncornavirus") 
+(def-indiv-with-id virus "mcv" "NCIT:C73535" :name "merkel cell polyomavirus") 
+(def-indiv-with-id virus "MMuLV" "NCIT:C14241" :name "moloney leukemia virus") 
+(def-indiv-with-id virus "MoMuLV" "NCIT:C14241" :name "moloney leukemia virus") 
+(def-indiv-with-id virus "Pow" "NCIT:C134498" :name "powassan virus") 
+(def-indiv-with-id virus "Spumavirus" "NCIT:C14293" :name "spumavirus") 
+(def-indiv-with-id virus "Alpharetrovirus" "NCIT:C14186" :name "alpharetrovirus") 
+(def-indiv-with-id virus "Pegivirus" "NCIT:C113204" :name "pegivirus") 
+(def-indiv-with-id virus "hrHPV" "NCIT:C44391" :name "HPV-high risk") 
+(def-indiv-with-id virus "Birnaviridae" "TI:10993")
+(def-indiv-with-id virus "TrV" "TI:30075" :name "triatoma virus")
