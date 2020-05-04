@@ -134,12 +134,14 @@
    functions like (sentence) ahead of the current point of operations.
    The special *sentence-in-core* is available when we're operating
    on whole sentences at a time, though not in other modes."
+  (declare (special *sentence-in-core* *current-sentence*))
   (let ((s *sentence-in-core*)
         (current *current-sentence*))
     (cond
      ((typep s 'sentence) s)
-     ((and current
-           (null (ends-at-pos current)))
+     ((and current ;; why did we have this check?
+           ;; need *current-sentence* for access in sentence-making pass
+           #+ignore(null (ends-at-pos current)))
       current)
      (s (unless no-break
           (error "Odd type of object returned for sentence: ~a~%~a"
