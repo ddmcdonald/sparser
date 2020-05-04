@@ -249,13 +249,13 @@ and make that file easier to understand. |#
 
 (defun location-in-article-of-current-sentence ()
   "Looks up the sentence we are presently working on
-  and returns its document index. Only makes sense if
-  we are working through a document that supports the
-  toc classes (as above), so returns nil if we aren't"
-  (declare (special *reading-populated-document*))
-  (when *reading-populated-document*
-    (let ((s (identify-current-sentence t)))
-      (when s (toc-index s)))))
+  and returns its document index. This will always work
+  provided we do the usual initializations: creating document
+  objects for even the simplest analyses"
+  ;; previously returned nil if *reading-populated-document*
+  ;; was nil.
+  (let ((s (identify-current-sentence t)))
+    (when s (toc-index s))))
 
 ;;;----------
 ;;; printing 
