@@ -1,0 +1,15 @@
+(in-package :sparser)
+
+
+(def-indiv-with-id virus "DENV-4" "NCIT:C112269" :name "dengue virus 4") 
+(def-indiv-with-id virus "DENV-3" "NCIT:C112268" :name "dengue virus 3") 
+(def-indiv-with-id virus "DENV-1" "NCIT:C112266" :name "dengue virus 1") 
+(def-indiv-with-id virus "DEN-4" "NCIT:C112269" :name "dengue virus 4") 
+(def-indiv-with-id virus "DEN-3" "NCIT:C112268" :name "dengue virus 3") 
+(def-indiv-with-id virus "DEN-2" "NCIT:C112267" :name "dengue virus 2") 
+(def-indiv-with-id virus "HTLV-II" "NCIT:C14224" :name "HTLV-2") 
+(def-indiv-with-id virus "HHV5" "NCIT:C14196" :name "cytomegalovirus") 
+(def-indiv-with-id virus "EV-D68" "NCIT:C125639" :name "enterovirus D68") 
+(def-indiv-with-id virus "hPIV-4" "NCIT:C112318" :name "human parainfluenza virus 4") 
+(def-indiv-with-id virus "hPIV-3" "NCIT:C112317" :name "human parainfluenza virus 3") 
+(def-indiv-with-id virus "hPIV-1" "NCIT:C14254" :name "human parainfluenza virus 1") 
