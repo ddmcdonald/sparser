@@ -976,9 +976,11 @@ so we return the edge for the POBJ"
       (setf (edge-mention source) m)
       (setf (mention-source-form-category m) (edge-form source)))
     (setf (base-description m) i)
-    (setf (mentioned-where m)
+    (setf (mentioned-where m) ; pair of positions
           (encode-mention-location
            (if (consp source) (second source) source)))
+    (unless toc
+      (error "TOC is nil for ~a~%Mention will not get a location" m))
     (when toc
       ;; some mentions get created in MAKE-EDGE-FOR-POLYWORD or other passes
       ;;  which occurs before sentences are delimited
@@ -987,7 +989,7 @@ so we return the edge for the POBJ"
         (lsp-break "why don't we have a real toc?"))
             
       (setf (mentioned-in-article-where m)
-          (cons toc *current-paragraph*)))
+            (cons toc *current-paragraph*)))
    ))
 
 
