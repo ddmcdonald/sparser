@@ -160,7 +160,8 @@ else that takes two arguments:  (1) the s-expression (2) the file's pathname
                            *corpus-handle-registries*)))
       (when rel-path
         (if (search "0403" file-str)
-          (json-absolute-pathname rel-path "2020-04-03")
+        ;; get the correct decoded-file path -- it already has the "2020-04-03"
+          (json-absolute-pathname rel-path "") ;;"2020-04-03")
           (json-absolute-pathname rel-path "2020-03-13")))))
 
   (:method ((file-path pathname))
