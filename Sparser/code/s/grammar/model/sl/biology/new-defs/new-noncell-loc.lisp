@@ -299,7 +299,6 @@
 (def-indiv-with-id bio-organ "thyroid" "BTO:0001379" :name "thyroid gland")
 (def-indiv-with-id bio-organ "prostate" "BTO:0001129" :name "prostate gland")
 (def-indiv-with-id bio-organ "spleen" "BTO:0001281" :adj "splenic")
-(def-indiv-with-id bio-organ "gastroinstestinal system" "BTO:0000511" :name "gastroinstestinal tract") 
 
 (def-indiv-with-id bio-organ "trichome" "BTO:0001395")
 
@@ -469,4 +468,6 @@
 (def-indiv-with-id organism "Kudzu" "NCIT:C73971" :name "pueraria montana var. lobata") 
 (def-indiv-with-id organism "Pueraria" "NCIT:C73971" :name "pueraria montana var. lobata") 
 (def-indiv-with-id organism "Toxocara" "NCIT:C125927" :name "toxocara") 
-(def-indiv-with-id organism "Ginkgo" "NCIT:C93305" :name "ginkgo biloba") 
+(def-indiv-with-id organism "Ginkgo" "NCIT:C93305" :name "ginkgo biloba")
+(def-indiv-with-id bio-organ "gastrointestinal system" "BTO:0000511" :name "gastroinstestinal tract" ;; mis-spelling
+                   :synonyms ("gastroinstestinal system"))

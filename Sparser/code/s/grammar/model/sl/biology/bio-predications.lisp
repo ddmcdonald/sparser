@@ -34,6 +34,7 @@
 ;;;------------------------
 ;;; bio-predications
 ;;;------------------------
+(adj "encapsulated" :super bio-predication) ;; about a virus
 (define-category dose-dependent :specializes :bio-predication
   :realization
   (:adj "dose-dependent"))

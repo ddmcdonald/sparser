@@ -167,14 +167,17 @@
          :for enzyme))
 
 
+#|
 (noun "class" :super variant  ;;NOT SURE THIS IS RIGHT
       )
 (noun "type" :super variant)
+(noun "variety" :super variant)
+|#
 
 (noun "allele" :super variant)
 (noun "analog" :super variant)
 (noun "isoform" :super variant)
-(noun "variety" :super variant)
+
 
 (noun "transition state intermediate" :super molecule-state)
 
