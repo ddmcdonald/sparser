@@ -407,13 +407,13 @@ uid binding, if there is one"
       (gene-translation 'cellular-process) ;; so far only "translation" so mostly moot
       (injury 'injury) ;; added category modeled on disease
       (macromolecular-complex 'bio-complex)
-      ((length-unit measure-unit volume-unit weight-unit) 'unit-of-measure)
+      ((length-unit measure-unit temperature-unit volume-unit weight-unit area-unit) 'unit-of-measure)
       (medical-disorders-and-conditions 'disease)
       (medical-instrument 'bio-method) ;; not quite, but we don't distinguish the instruments from the methods
       (molecular-domain 'protein-domain)
       (molecular-site 'residue-on-protein)
       ((organism nonhuman-animal animal fish insect invertebrate
-                 microorganism person fungus plant bird vertebrate)
+                 microorganism person fungus plant bird vertebrate alga amphibian)
        'organism)
       (pharmacologic-substance 'drug)
       (physical-condition 'disease)
