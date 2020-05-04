@@ -180,6 +180,11 @@
 (adj "unknown" :super bio-predication)
 (adj "unmodified" :super bio-predication)
 (adj "wild-type" :super bio-predication)
-(def-synonym wild-type (:adj "wild type"))
+(def-synonym wild-type (:adj ("wild type" "wildtype")))
 (def-synonym wild-type (:adj "wt"))
 (def-synonym wild-type (:adj "WT"))
+
+
+(adj "antisense" :super bio-predication)
+(adj "negative-sense" :super bio-predication)
+(adj "positive-sense" :super bio-predication)

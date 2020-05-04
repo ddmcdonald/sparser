@@ -285,3 +285,18 @@
 (def-indiv-with-id organism "Trichinella" "NCIT:C125928" :name "trichinella") 
 (def-indiv-with-id organism "ViteX" "NCIT:C72243" :name "angus castus") 
 (def-indiv-with-id organism "Wuchereria" "NCIT:C122013" :name "wuchereria") 
+
+(def-indiv-with-id bio-organ "brain" "BTO:0000142" :adj "cerebral")
+(def-indiv-with-id bio-organ "breast" "BTO:0000149" :adj "mammary")
+(def-indiv-with-id bio-organ "colon" "BTO:0000269")
+(def-indiv-with-id bio-organ "eye" "BTO:0000439" :adj "optic")
+(def-indiv-with-id bio-organ "kidney" "BTO:0000671" :adj "renal")
+(def-indiv-with-id bio-organ "liver" "BTO:0000759" :adj "hepatic")
+(def-indiv-with-id bio-organ "lung" "BTO:0000763" :adj "pulmonary")
+(def-indiv-with-id bio-organ "pancreas" "BTO:0000988" :adj "pancreatic")
+(def-indiv-with-id bio-organ "parathyroid" "BTO:0000997"
+                   :name "parathyroid gland")
+(def-indiv-with-id bio-organ "thyroid" "BTO:0001379" :name "thyroid gland")
+(def-indiv-with-id bio-organ "prostate" "BTO:0001129" :name "prostate gland")
+(def-indiv-with-id bio-organ "spleen" "BTO:0001281" :adj "splenic")
+(def-indiv-with-id bio-organ "gastroinstestinal system" "BTO:0000511" :name "gastroinstestinal tract") 

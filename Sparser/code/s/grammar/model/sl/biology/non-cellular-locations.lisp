@@ -36,7 +36,8 @@
     (:noun "organ"
      :in organism
      :of organism))
-
+#|
+made def-indiv-with-id
 (noun "brain" :super bio-organ)
 (noun "colon" :super bio-organ)
 (noun "breast" :super bio-organ)
@@ -57,6 +58,7 @@
 (define-category lung :specializes bio-organ
   :realization
   (:noun "lung"))
+|#
 
 (noun "trophectoderm" :super bio-organ)
 (def-synonym trophectoderm (:noun "TE"))

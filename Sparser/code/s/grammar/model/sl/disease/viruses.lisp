@@ -7,16 +7,24 @@
 
 ;;; broken out from biology/new-defs/new-diseases.lisp 4/14/2020
 
+(define-category neg-sense-ssrna-virus :specializes virus
+                 :realization (:noun
+                               ("negative-sense single-stranded RNA virus" "(-)ssRNA virus"
+                               "-ssRNA virus" "negative-sense ssRNA virus" "negative-sense (-)RNA virus"))) 
+(define-category pos-sense-ssrna-virus :specializes virus
+                 :realization (:noun
+                               ("positive-sense single-stranded RNA virus" "(+)ssRNA virus"
+                               "+ssRNA virus" "positive-sense ssRNA virus" "positive-sense (+)RNA virus")))                                                  
 ;;; coronaviruses and their associated diseases are broken out in the covid-19 section
 
-(define-category coronavirus :specializes virus
+(define-category coronavirus :specializes pos-sense-ssrna-virus
                  :mixins (pathogen-type)
                  :bindings (uid "NCIT:C26431")
-                 :realization (:noun ("coronavirus" "CoV" "coronaviridae")))
-(def-synonym coronavirus (:noun "Coronvirus")) 
-(def-synonym coronavirus (:noun "Coronoavirus"))
+                 :realization (:noun ("coronavirus" "CoV" "coronaviridae" "Cov")))
+(def-synonym coronavirus (:noun "coronvirus")) 
+(def-synonym coronavirus (:noun "coronoavirus"))
 (def-synonym coronavirus (:noun "coronovirus")) 
-(def-synonym coronavirus (:noun "coronavirusa")) 
+(def-synonym coronavirus (:noun ("coronavirusa" "coronavirinae" "coronavirdiae")))
 
 (define-category alphacoronavirus :specializes coronavirus
                  :bindings (uid "NCIT:C119319")
@@ -32,15 +40,16 @@
 
 (define-category gammacoronavirus :specializes coronavirus
                  :bindings (uid "NCIT:C122313")
-                 :realization (:noun ("gammacoronavirus" "gamma coronavirus" "gamma-coronavirus" "gammaCoV" "gamma-CoV")))
+                 :realization (:noun ("gammacoronavirus" "gamma coronavirus" "gamma-coronavirus" "gammaCoV" "gamma-CoV" "Gamacoronavirus")))
 
 (define-category SARSr-CoV :specializes betacoronavirus
-                 :realization (:noun ("SARS-related coronavirus" "SARSr-CoV" "Severe Acute Respiratory Syndrome-related Coronavirus" "SARSr" "SARr-CoV" "SL-CoV" "SARS-like coronavirus")))
+                 :realization (:noun "SARS-related coronavirus"))
+(def-synonym SARSr-CoV (:noun ("SARSr-CoV" "Severe Acute Respiratory Syndrome-related Coronavirus" "SARSr" "SARr-CoV" "SL-CoV" "SARS-like coronavirus" "severe acute respiratory syndrome-related coronavirus")))
 
 (def-indiv-with-id betacoronavirus "SARS-CoV-2" "NCIT:C169076" :name "SARS Coronavirus 2"
                    :synonyms ("SARS-CoV2" "2019-nCoV" "2019 Novel Coronavirus" "2019nCoV" 
                                           "nCoV" "nCoV-2019" "SARS-CoV-2" "SARSCoV2" "SARSCoV-2"
-                                          "SAR-CoV-2" "HCoV-19"
+                                          "SAR-CoV-2" "HCoV-19" "hCoV-19"
                                           "Severe Acute Respiratory Syndrome Coronavirus 2"
                                           "novel-coronavirus-2019" "2019-CoV" "CoV-2019"
                                           ;; arguably the rest of these should be the disease
@@ -50,16 +59,22 @@
 
 (def-indiv-with-id betacoronavirus "SARS-CoV" "NCIT:C112432" :name "SARS coronavirus"
                    :synonyms ("SARS Coronavirus" "SARS virus" "HCoV-SARS" "SARSCoV" "SARS-CoV-1"
-                                                 "Severe Acute Respiratory Syndrome Coronavirus"))
+                                                 "Severe Acute Respiratory Syndrome Coronavirus"
+                                                 "severe acute respiratory syndrome (SARS) virus"))
 (def-indiv-with-id disease "SARS" "NCIT:C85064" :name "Severe Acute Respiratory Syndrome"
                    :synonyms ("severe acute respiratory syndrome"))
-;; arguably half of these MERS definitions should be the disease --
-;; once we have a way to tie the two together we should do so
-(def-indiv-with-id betacoronavirus "MERS" "NCIT:C128424" :name "Middle East Respiratory Syndrome"
-                   :synonyms ("MERS-CoV" "MERS coronavirus" "middle east respiratory syndrome"))
 
-(noun ("MuCoV" "murine coronavirus" "mouse coronavirus") :super coronavirus) ;; no NCIT
-(noun ("BatCoV" "Bat-CoV" "BtCoV" "bat-coronavirus") :super coronavirus) ;; no NCIT
+;; once we have a way to tie the two together we should do so
+(def-indiv-with-id betacoronavirus "MERS-CoV" "TI:1335626"
+                   :name "Middle East respiratory syndrome-related coronavirus"
+                   :synonyms ("MERS coronavirus" "MERSr-CoV" "MERSCoV"
+                                                 "Middle East respiratory syndrome (MERS) virus"
+                                                 "Middle East Respiratory Syndrome Coronavirus"))
+(def-indiv-with-id disease "MERS" "NCIT:C128424" :name "Middle East Respiratory Syndrome"
+                   :synonyms ("middle east respiratory syndrome"))
+
+(noun ("MuCoV" "MurCoV" "murine coronavirus" "mouse coronavirus") :super coronavirus) ;; no NCIT
+(noun ("BatCoV" "Bat-CoV" "BtCoV" "bat-coronavirus" "BtSCoV" "BtS-CoV") :super coronavirus) ;; no NCIT
 (noun ("bat-SL-RaTG13" "bat SL-RaTG13" "bat/RaTG13" "BetaCoV/bat/Yunnan/RaTG13/2013" "RaTG13" "SL-RaTG13"
                        "Bat-CovRaTG13")
       :super SARSr-CoV)
@@ -68,8 +83,47 @@
                          "SL-CoVZXC21" "SL-ZXC21" "ZXC21") :super SARSr-CoV)
 (noun ("BatCoV-HKU4" "BtCoV-HKU4" "Bat-CoV-HKU4" "bat-coronavirus HKU4" "HKU4") :super betacoronavirus) ;; MERS-related
 (noun ("BatCoV-HKU5" "BtCoV-HKU5" "Bat-CoV-HKU5" "bat-coronavirus HKU5" "HKU5") :super betacoronavirus) ;; MERS-related
+(noun "NeoCoV" :super coronavirus) ;; another bat one similar to MERS
 
-(noun ("BuCov" "Buffalo coronavirus") :super coronavirus) ;; no NCIT
+(noun ("AcCoV" "unspecified alphacoronavirus") :super alphacoronavirus)
+(noun "AcCoV-JC34" :super alphacoronavirus)
+(noun ("ACoV" "alpaca coronavirus") :super coronavirus) 
+(noun ("ALCCoV" "asian leopard cat coronavirus") :super coronavirus)
+(noun ("BCoV" "bovine coronavirus") :super coronavirus) ;; no NCIT
+(noun ("BuCoV" "buffalo coronavirus") :super coronavirus) ;; no NCIT
+(noun ("CCoV" "canine coronavirus") :super coronavirus)
+(noun ("CRCoV" "canine respiratory coronavirus") :super coronavirus)
+(noun ("CECoV" "canine enteric coronavirus") :super coronavirus)
+(noun ("CFBCoV" "chinese ferret badger coronavirus") :super coronavirus)
+(noun ("ECoV" "equine coronavirus") :super betacoronavirus) ;; 	TI:136187
+(noun ("EriCoV" "erinaceus coronavirus") :super betacoronavirus)
+(noun ("FCoV" "FeCoV" "feline coronavirus") :super coronavirus)
+(noun ("FECoV" "feline enteric coronavirus") :super coronavirus)
+(noun ("RCoV" "rat coronavirus") :super betacoronavirus) ;; no NCIT "TI:11146"
+(noun ("ChRCoV" "chinese rat coronavirus") :super betacoronavirus) ;; no NCIT "TI:11146"
+
+
+(noun ("PorCoV" "porcine coronavirus")  :super coronavirus)
+(noun ("PDCoV" "porcine deltacoronavirus") :super deltacoronavirus)
+(noun ("PRCoV" "porcine respiratory coronavirus") :super coronavirus) ;; "TI:11146" 
+(noun ("SeACoV" "SeaCoV" "swine enteric alphacoronavirus"
+                "SADS-CoV" "swine acute diarrhea syndrome coronavirus")
+      :super alphacoronavirus)
+(noun ("SeCoV" "swine enteric coronavirus") :super coronavirus)
+
+(noun ("AvCoV" "avian coronavirus") :super coronavirus)
+(noun ("CGCoV" "canada goose coronavirus") :super coronavirus)
+(noun ("DCoV" "duck coronavirus") :super coronavirus)
+(noun ("DdCoV" "dominant duck coronavirus") :super coronavirus)
+(noun ("GCoV" "goose coronavirus") :super coronavirus) ;; no NCIT
+(noun ("GuCoV" "gull coronavirus") :super coronavirus)
+(noun ("QuaCoV" "quail coronavirus") :super coronavirus)
+(noun ("SPaCoV" "SpaCoV" "sparrow coronavirus") :super coronavirus)
+(noun ("SpDCoV" "SpdCoV" "sparrow deltacoronavirus") :super deltacoronavirus)
+(noun ("TCoV" "turkey coronavirus") :super coronavirus)
+(noun ("ThCoV" "thrush coronavirus") :super coronavirus)
+
+
 (noun ("hCoV" "hcoV" "hcov""human coronavirus") :super coronavirus) ;; no NCIT
 (noun ("HCoV-229E" "HCoV 229E" "human coronavirus 229E" "229E") :super alphacoronavirus) ;; no NCIT
 (noun ("HCoV-NL63" "HCoV NL63" "human coronavirus NL63" "NL63" "HCoVNL63" "HcoV-NL" "HcoV-NL63") :super alphacoronavirus) ;; no NCIT
@@ -96,7 +150,7 @@
 
 (define-category H5N1 :specializes HPAI
                  :bindings (uid "NCIT:C123490")
-                 :realization (:noun ("H5N1" "Influenza A (H5N1) Virus" "Influenza A Virus"
+                 :realization (:noun ("H5N1" "Influenza A (H5N1) Virus" "H5N1 Influenza A Virus"
                                              "Highly Pathogenic Asian Avian Influenza A (H5N1) Virus"
                                              "HPAI H5N1 Virus" "HPAI H5N1")))
 ;;(def-indiv-with-id virus "H5N1" "NCIT:C123490" :name "Influenza A (H5N1) Virus" :synonyms ("HPAI" "highly pathogenic avian influenza" "Influenza A (H5N1) Virus" "H5N1" "Highly Pathogenic Asian Avian Influenza A (H5N1) Virus" "HPAI H5N1 Virus"))
@@ -112,7 +166,7 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
                                              "Swine-origin influenza A (H1N1) virus"
                                              "H1N1 swine influenza virus")))
 (noun "H1N1-09" :super H1N1)
-(def-synonym H1N1-09 (:noun ("H1N1/09" "2009 swine flu virus"))) 
+(def-synonym H1N1-09 (:noun ("H1N1/09" "2009 swine flu virus" "2009 pandemic influenza A (H1N1)"))) 
 
 
 (define-category henipavirus :specializes virus
@@ -226,7 +280,7 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (def-indiv-with-id virus "poxvirus" "NCIT:C14261" :name "poxvirus" :plural ("poxviruses" "poxviridae")) 
 (def-indiv-with-id virus "reovirus" "NCIT:C112026" :name "reoviridae")
 (def-indiv-with-id virus "retrovirus" "NCIT:C14268" :name "retrovirus" :plural ("retroviruses" "retroviridae"))
-(def-indiv-with-id virus "rhinovirus" "NCIT:C77200" :name "rhinovirus" :synonyms ("HRV" "human rhinovirus")) 
+(def-indiv-with-id virus "rhinovirus" "NCIT:C77200" :name "rhinovirus" :synonyms ("HRV" "human rhinovirus" "hRV")) 
 (def-indiv-with-id virus "φX174" "NCIT:C97346" :name "bacteriophage phi X 174") 
 (def-indiv-with-id virus "EBV" "TI:10376" :name "Epstein-Barr virus") 
 (def-indiv-with-id virus "Haemophilus influenzae" "TI:727") 

@@ -888,6 +888,7 @@
             :for disease
             :for treatment
             :for target))
+(def-synonym drug (:noun "therapeutic agent"))
 
 ;; actually, vaccines are multi-component, not a single molecule
 (define-category vaccine :specializes drug
@@ -1125,6 +1126,7 @@
      :m organ
      :of organ
      :in organ))
+(def-synonym disease (:noun "illness"))
 
 (define-category cancer  :specializes disease
   :instantiates self

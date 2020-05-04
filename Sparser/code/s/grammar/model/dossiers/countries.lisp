@@ -26,10 +26,14 @@
 (define-country "Andorra")
 (define-country "Angola")
 (define-country "Antigua and Barbuda")
-(define-country "Argentina")
+(define-country "Argentina" :adjective "Argentine"
+                :cities '("Buenos Aires"))
 (define-country "Armenia")
-(define-country "Australia" :adjective "Australian")
-(define-country "Austria")
+(define-country "Australia" :adjective "Australian"
+                :provinces '("Queensland" "Tasmania" "New South Wales")
+                :cities '("Sydney" "Melbourne"))
+(define-country "Austria" :adjective "Austrian"
+    :cities '("Vienna"))
 (define-country "Azerbaijan")
 (define-country "Bahamas")
 (define-country "Bahrain")
@@ -45,25 +49,28 @@
 (define-country "Bosnia and Herzegovina")
 (define-country "Botswana")
 (define-country "Brazil")
-(define-country "Britain"
-    :aliases '("United Kingdom" "UK")
+(define-country "Great Britain"
+    :aliases '("United Kingdom" "UK" "Britain") ;; u.k. and great britain aren't actuallythe same
     :adjective "British"
     :cities '("London" "Birmingham" "Brighton" "Cardiff"
-       "Edinburgh" "Glasgow" "Oxford" "Cambridge"))
+       "Edinburgh" "Glasgow" "Oxford" "Cambridge" "Leeds"))
  (define-country "England" :adjective "English")
- (define-country "Scotland" :adjective "Scotish")
+ (define-country "Scotland" :adjective "Scottish")
  (define-country "Wales" :adjective "Welsh")
 ;;  Northern Ireland
 (define-country "Brunei")
 (define-country "Bulgaria")
-(define-country "Burkina Faso"  )
+(define-country "Burkina Faso")
 (define-country "Burma" :adjective "Burmese" :aliases '("Myanmar")
   :cities '("Rangoon"))
 (define-country "Burundi")
 (define-country "Cambodia")
 (define-country "Cameroon")
 (define-country "Canada" :adjective "Canadian"
-                :cities '("Ottawa" "Quebec" "Québec"))
+                :provinces '("Alberta" "British Columbia" "Manitoba" "New Brunswick" "Newfoundland" "Newfoundland and Labrador"
+                             "Nova Scotia" "Ontario" "Prince Edward Island" "Quebec" "Québec" "Saskatchewan"
+                             "Northwest Territories" "Nunavut" "Yukon") ;; technically territories
+                :cities '("Ottawa" "Quebec City" "Québec City" "Vancouver" "Winnepeg"))
 (define-country "Canary Islands") ;; linked to Spain
 (define-country "Cape Verde")
 (define-country "Central African Republic")
@@ -71,40 +78,45 @@
 (define-country "Chile")
 (define-country "China"
     :adjective "Chinese"
-    :aliases '("PRC")
-    :provinces '("Hubei")
-    :cities '("Beijing" "Shanghai" "Guangzhou" "Wuhan" "Macau"))
+    :aliases '("PRC" "People's Republic of China")
+    :provinces '("Hubei" "Shandong" "Shandon" "Hunan")
+    :cities '("Beijing" "Shanghai" "Guangzhou" "Wuhan" "Macau" "Shenzhen" "Sichuan" "Chengdu"))
 (define-country "Colombia")
 (define-country "Comoros")
 (define-country "Costa Rica")
 ;define-country should be C�te d'Ivoire but having problems with the circumflex diacritic mark and apostrophe
 (define-country "Ivory Coast")
 (define-country "Croatia")
-(define-country "Cuba")
-(define-country "Cyprus")
+(define-country "Cuba" :cities '("Havana"))
+(define-country "Cyprus" :adjective "Cypriot")
 (define-country "Czech Republic")
 (define-country "Democratic Republic of the Congo"
-    :aliases '("Congo" "Zaire"));; former name but probably worth having
-(define-country "Denmark"
+    :aliases '("Congo" "Zaire" "Republic of the Congo");; former name but probably worth having
+    :adjective '("Congolese" "Zairean"))
+;(define-country "Republic of the Congo")
+(define-country "Denmark" :adjective "Danish"
     :cities '("Copenhagen"))
 (define-country "Djibouti")
 (define-country "Dominica")
 (define-country "Dominican Republic")
+(define-country "East Timor")
 (define-country "Ecuador")
 (define-country "Egypt")
 (define-country "El Salvador") 
 (define-country "Equatorial Guinea")
-(define-country "Eritrea")
+(define-country "Eritrea" :adjective "Eritrean")
 (define-country "Estonia")
 (define-country "Ethiopia")
 (define-country "Federated States of Micronesia")
 (define-country "Fiji")
-(define-country "Finland" :adjective "finnish")
+(define-country "Finland" :adjective "finnish"
+                :cities '("Helsinki"))
 (define-country "France"  :adjective "french")
 (define-country "Gabon")
 (define-country "Gambia")
 (define-country "Georgia")
-(define-country "Germany" :adjective "German")
+(define-country "Germany" :adjective "German"
+                :cities '("Berlin" "Frankfurt" "Leipzig" "Munich"))
 (define-country "Ghana")
 (define-country "Greece")
 (define-country "Grenada")
@@ -112,29 +124,32 @@
 (define-country "Guinea")
 (define-country "Guinea-Bissau")
 (define-country "Guyana")
-(define-country "Haiti" :adjective "Haitian")
+(define-country "Haiti" :adjective "Haitian" :aliases '("Haïti"))
 (define-country "Holy See")
 (define-country "Honduras")
 (define-country "Hong Kong")
 (define-country "Hungary")
-(define-country "Iceland")
-(define-country "India" :adjective "Indian"
-  :cities '("New Deli" "Mumbai"))
-(define-country "Indonesia") ;; how do we want to add sumatra and sumatran? also Java
+(define-country "Iceland" :adjective '("Icelander" "Icelandic")) ;; problem with demonym vs adjective
+(define-country "India" :adjective "Indian" :aliases '("india")
+  :cities '("New Delhi" "Mumbai"))
+(define-country "Indonesia"
+    :cities '("Jakarta")
+    :provinces '("Java" "Sumatra")) ;; how do we want to add sumatra and sumatran? also Java
 (define-country "Iran"
     :adjective "Iranian"
     :cities '("Qom" "Tehran"))
 (define-country "Iraq" :adjective "Iraqi")
-(define-country "Ireland")
+(define-country "Ireland" :adjective "Irish")
 (define-country "Israel"
-    :adjective '("Israeli" "Jewish")
-    :language "Hebrew")
-(define-country "Italy")
-(define-country "Jamaica")
+    :adjective '("Israeli" "Jewish") ;; jewish is problematic -- we need a religions section 
+    :language "Hebrew"
+    :cities '("Jerusalem"))
+(define-country "Italy" :aliases '("Italia"))
+(define-country "Jamaica" :adjective "Jamaican")
 (define-country "Japan" :adjective '("Japanese" "japanese") ;have seen lowercase
   :cities '("Tokyo"))
 (define-country "Jordan")
-(define-country "Kazakhstan")
+(define-country "Kazakhstan" :adjective "Kazakh")
 (define-country "Kenya" :adjective "Kenyan"
   :cities '("Nairobi"))
 (define-country "Kiribati")
@@ -143,25 +158,30 @@
 (define-country "Kyrgyzstan")
 (define-country "Laos")
 (define-country "Latvia")
-(define-country "Lebanon")
+(define-country "Lebanon" :adjective "Lebanese")
 (define-country "Lesotho")
 (define-country "Liberia")
-(define-country "Libya")
+(define-country "Libya" :adjective "Libyan"
+                :cities '("Tripoli"))
 (define-country "Liechtenstein")
 (define-country "Lithuania")
-(define-country "Luxembourg")
+(define-country "Luxembourg" :adjective "Luxembourgish")
 (define-country "Macedonia")
-(define-country "Macau") ;; Chinese province?
-(define-country "Madagascar")
+(define-country "Macau" :aliases '("Macao")) ;; Chinese province?
+(define-country "Madagascar" :adjective "Malagasy")
 (define-country "Malawi")
 (define-country "Malaysia")
 (define-country "Maldives")
 (define-country "Mali")
-(define-country "Malta")
+(define-country "Malta" :adjective "Maltese")
 (define-country "Marshall Islands")
 (define-country "Mauritania")
 (define-country "Mauritius")
-(define-country "Mexico" :adjective "Mexican")
+(define-country "Mexico" :adjective "Mexican"
+                :provinces '("Aguascalientes" "Campeche" "Coahuila" "Colima" "Durango"
+                             "Guanajuato" "Jalisco" "Michoacán" "Nayarit" "Querétaro"
+                             "Sinaloa" "Tabasco" "Tamaulipas" "Tlaxcala"
+                             "Yucatán" "Yucatan" "Zacatecas"))
 (define-country "Moldova")
 (define-country "Monaco")
 (define-country "Mongolia")
@@ -170,14 +190,18 @@
 (define-country "Mozambique")
 (define-country "Namibia")
 (define-country "Nauru")
-(define-country "Nepal")
-(define-country "Netherlands" :adjective "Dutch" :aliases '("Holland"))
+(define-country "Nepal" :adjective '("Nepali" "Nepalese"))
+(define-country "Netherlands" :adjective "Dutch" :aliases '("Holland")
+                :cities '("Amsterdam" "Utrecht"))
+  (define-country "Aruba")
+  (define-country "Curaçao")
 (define-country "New Zealand")
 (define-country "Nicaragua")
 (define-country "Niger")
 (define-country "Nigeria")
 (define-country "North Korea" :adjective "North Korean")
-(define-country "Norway")
+(define-country "Norway" :adjective "Norwegian"
+                :provinces '("Svalbard")) 
 (define-country "Oman")
 (define-country "Pakistan" :adjective "Pakistani"
   :cities '("Islamabad" "Lahore"))                
@@ -186,21 +210,23 @@
 (define-country "Papua New Guinea")
 (define-country "Paraguay")
 (define-country "Peru")
-(define-country "Philippines")
+(define-country "Philippines" :adjective "Filipino" :aliases '("Phillippines"))
 (define-country "Poland")
-(define-country "Portugal")
+(define-country "Portugal" :adjective "Portuguese"
+                :cities '("Lisbon"))
 (define-country "Qatar")
-(define-country "Republic of the Congo")
 (define-country "Romania")
-(define-country "Russia")
-(define-country "Rwanda")
+(define-country "Russia" :adjective "Russian"
+                :cities '("Moscow" "St. Petersburg"))
+(define-country "Rwanda" :adjective "Rwandan")
 (define-country "Saint Kitts and Nevis")
 (define-country "Saint Lucia")
 (define-country "Saint Vincent and the Grenadines")
 (define-country "Samoa")
 (define-country "San Marino")
 (define-country "Sao Tome and Principe")
-(define-country "Saudi Arabia")
+(define-country "Saudi Arabia" :adjective "Saudi Arabian"
+                :cities '("Riyadh"))
 (define-country "Senegal" :adjective "Senegalese"
                 :cities '("Dakar"))
 (define-country "Serbia")
@@ -210,7 +236,7 @@
 (define-country "Slovakia")
 (define-country "Slovenia")
 (define-country "Solomon Islands")
-(define-country "Somalia")
+(define-country "Somalia" :adjective "Somali")
 (define-country "South Africa")
 (define-country "South Korea"
     :adjective "South Korean"
@@ -218,36 +244,41 @@
 (define-country "Spain" :adjective '("Spanish" "spanish")) ;; have seen lower case
 (define-country "Sri Lanka")
 (define-country "Sudan")
-(define-country "Suriname")
+(define-country "Suriname" :adjective "Surinamese")
 (define-country "Swaziland")
 (define-country "Sweden" :adjective "Swedish")
-(define-country "Switzerland")
+(define-country "Switzerland" :adjective '("Swiss" "swiss")
+                :cities '("Basel"))
 (define-country "Syria")
-(define-country "Taiwan" :adjective "Taiwanese")
+(define-country "Taiwan" :adjective "Taiwanese"
+                :cities '("Taipei"))
 (define-country "Tajikistan")
 (define-country "Tanzania")
-(define-country "Thailand")
+(define-country "Thailand" :adjective "Thai"
+                :cities '("Bangkok"))
 (define-country "Timor-Leste")
 (define-country "Togo")
 (define-country "Tonga")
 (define-country "Trinidad and Tobago")
 (define-country "Tunisia")
-(define-country "Turkey")
+(define-country "Turkey" :adjective "Turkish")
 (define-country "Turkmenistan")
 (define-country "Tuvalu")
-(define-country "Uganda")
+(define-country "Uganda" :adjective "Ugandan")
 (define-country "Ukraine")
 (define-country "United Arab Emirates")
 (define-country "United States"
   :aliases '("US" "U.S." "U.S.A." "America" )
   :adjective '("American")
   :cities '("Washington, D.C." "New York"
-            "San Francisco"))
+            "San Francisco" "Miami" "Boston" "Sunnyvale" "Seattle" "Portland" "Newark"
+            "Minneapolis" "Milwaukee" "Indianapolis" "Denver" "Chicago"
+            "Charlottesville" "Atlanta"))
 (define-country "Uruguay")
 (define-country "Uzbekistan")
 (define-country "Vanuatu")
-(define-country "Venezuela")
-(define-country "Vietnam")
+(define-country "Venezuela" :adjective "Venezuelan")
+(define-country "Vietnam" :aliases '("VietNam") :adjective "Vietnamese")
 (define-country "Yemen")
 (define-country "Zambia")
 (define-country "Zimbabwe")
@@ -266,5 +297,8 @@
 (define-country "Tibet" :adjective "Tibetan")
 (define-country "Korea" :adjective "Korean") ;; we have examples of both tibetan and korean
 
+(define-country "Corsica" :adjective "Corsican")
+
+(define-country "Yugoslavia") 
 ;; hack - because countries can't be pluralized, we need a way to refer to the continents collectively
 (define-country "Americas")

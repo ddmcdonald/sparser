@@ -287,8 +287,10 @@
 (noun  "spectroscopy" :super bio-method)
 (noun  "microscopy" :super bio-method)
 (noun  "microscope" :super bio-method)
-(noun "LSM" :super bio-method)
+(noun "LSM" :super microscope)
 (def-synonym LSM (:noun "laser scanning microscope"))
+(noun ("cryoEM" "cryo-EM" "cryo-electron microscopy" "cryogenic electron microscopy")
+      :super microscopy)
 (noun  "microimaging" :super bio-method)
 (noun  "microarray" :super bio-method)
 (noun  "array" :super bio-method)
@@ -471,7 +473,7 @@ with something else
 ;;(noun "condition" :super experimental-condition) OBE -- in taxonomy
 ;(noun "fetal calf serum" :super experimental-condition)
 ;(def-synonym category::fetal-calf-serum  (:noun "FCS")) ; added with id now in new-bio-meths
-
+(noun ("petri dish" "petridish") :super experimental-condition)
   
 (define-category in-situ :specializes experimental-condition
   :realization  ;; could also be considered as a location

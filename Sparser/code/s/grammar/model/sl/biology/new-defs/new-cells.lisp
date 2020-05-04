@@ -142,7 +142,7 @@
 (def-indiv-with-id cell-type "embryonic stem cell" "TS-0263") 
 (def-indiv-with-id cell-type "cardiac cell" "TS-0115") 
 (def-indiv-with-id cell-type "airway epithelial cell" "TS-0023")
-(def-indiv-with-id cell-type "CD4+ T cell" "C12537"
+(def-indiv-with-id cell-type "CD4+ T cell" "NCIT:C12537"
                    :synonyms("CD4 lymphocyte" "CD4-positive T lymphocyte"))
 (def-indiv-with-id cell-type "T cell" "TS-1001") 
 (def-indiv-with-id cell-type "Stromal cell" "TS-0984") 
@@ -2923,7 +2923,8 @@
 (def-indiv-with-id cell-line "th-5" "CVCL:UA26" :name "TH-5" :no-plural t) 
 (def-indiv-with-id cell-type "D-cell" "CO:0000502" :name "type D enteroendocrine cell") 
 (def-indiv-with-id cell-type "NK-cell" "CO:0000623" :name "natural killer cell") 
-(def-indiv-with-id cell-type "Th2-cell" "BTO:0001679" :name "Th2 cell") 
+(def-indiv-with-id cell-type "Th2-cell" "BTO:0001679" :name "Th2 cell" :synonyms ("T helper 2 cell" "T-helper 2 cell" "T-helper-2 cell")) 
 (def-indiv-with-id cell-type "Th1-cell" "BTO:0001678" :name "Th1 cell") 
 (def-indiv-with-id cell-type "memory-Tcell" "CO:0000813" :name "memory T cell") 
 (def-indiv-with-id cell-type "sickle-cell" "BTO:0002656" :name "sickle cell") 
+(def-indiv-with-id cell-line "MRC-5" "CVCL:0440" :name "MRC-5")

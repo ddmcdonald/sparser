@@ -72,7 +72,9 @@
 (def-indiv-with-id unit-of-measure "MHz" "NCIT:C67314" :name "megahertz" :maintain-case t)
 (def-indiv-with-id unit-of-measure "kcal" "NCIT:C67194" :name "calorie")
 
-(def-indiv-with-id unit-of-measure "Celsius" "NCIT:C41151" :name "celsius scale")
+(def-indiv-with-id unit-of-measure "Celsius" "UO:0000027" :name "degrees Celsius" :synonyms ("˚C"))
+(def-indiv-with-id unit-of-measure "Fahrenheit" "UO:0000195" :name "degrees Fahrenheit" :synonyms ("˚F"))
+(def-indiv-with-id unit-of-measure "Kelvin" "UO:0000012" :name "Kelvin")
 (def-indiv-with-id unit-of-measure "BMI" "EFO:0004340" :name "body mass index")
 (def-indiv-with-id unit-of-measure "tinct" "NCIT:C43000" :name "tincture dosage form")
 (def-indiv-with-id unit-of-measure "lumen" "UO:0000118")

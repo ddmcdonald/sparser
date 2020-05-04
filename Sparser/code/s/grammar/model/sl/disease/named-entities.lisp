@@ -57,10 +57,11 @@
 (def-organization "NCI" :id "NCIT:C19202"   :name "National Cancer Institute")
 (def-organization "NHLBI" :id "NCIT:C82613" :name "National Heart, Lung, and Blood Institute")
 (def-organization "NICHD" :id "NCIT:C19754" :name "National Institute of Child Health and Human Development")
-(def-organization "NIAID" :id "NCIT:C19753" :name "National Institute of Allergy and Infectious Disease")
+(def-organization "NIAID" :id "NCIT:C19753" :name "National Institute of Allergy and Infectious Disease"
+                  :synonyms ("National Institute of Allergy and Infectious Diseases"))
 (def-organization "NCBI" :id "NCIT:C45799" :name "National Center for Biotechnology Information")
 (def-organization "NIH" :id "NCIT:C16895"   :name "National Institutes of Health")
-(def-organization "nlm" :id "NCIT:C82620" :name "National Library of Medicine")
+(def-organization "NLM" :id "NCIT:C82620" :name "National Library of Medicine")
 (def-organization "SCI" :id "NCIT:C105626" :name  "Stanford Cancer Institute")
 (def-organization "USDA" :id "NCIT:C68708" :name  "United States Department of Agriculture")
 
@@ -100,6 +101,8 @@ South China University of Technology
 ("UCSC"
    ("ucsc" "UCSC" "NCIT:C63549" "university of california at santa cruz"
     "synonym"))
+Harvard
+Vanderbilt
 hospital locations (again, can be plural):
  ("ICU"
    ("icu" "ICU" "NCIT:C53511" "intensive care unit" "synonym" "NCIT:C147938"

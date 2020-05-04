@@ -232,7 +232,7 @@
   (if (and (eq (edge-cat-name left-edge) 'year)
            (or (eq (edge-cat-name right-edge) 'year)
                (eq (edge-cat-name right-edge) 'number)))
-    (look-for-year-expression left-edge right-edge)
+      (look-for-year-expression left-edge right-edge)
     (let* ((i (find-or-make-individual
                'hyphenated-number
                :left (find-or-make-number (edge-referent left-edge))

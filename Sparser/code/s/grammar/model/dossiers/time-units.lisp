@@ -20,8 +20,10 @@
 (define-named-individual-with-synonyms time-unit ("minute" "min"))
 (define-named-individual-with-synonyms time-unit ("hour" "hr" "h"))
 (define-named-individual-with-synonyms time-unit ("second" "sec" "s"))
+(def-indiv-with-id time-unit "millisecond" "UO:0000028" :name "millisecond" :synonyms ("ms"))
 (def-indiv-with-id time-unit "microsecond" "UO:0000029" :name "microsecond" :synonyms ("μs"))
 (def-indiv-with-id time-unit "nanosecond" "UO:0000150" :name "nanosecond" :synonyms ("ns"))
+(def-indiv-with-id time-unit "picosecond" "UO:0000030" :name "picosecond" :synonyms ("ps"))
 
 
 

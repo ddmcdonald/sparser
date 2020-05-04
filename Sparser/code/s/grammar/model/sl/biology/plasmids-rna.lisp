@@ -26,6 +26,38 @@
 (noun "vRNA" :super rna)
 (def-synonym vRNA (:noun "viral RNA")) ;; can also be vaultRNA but viral is more likely but has no uid
 
+(define-category sirna :specializes rna
+                 :bindings (uid "NCIT:C2191")
+                 :realization (:noun
+                               ("si-RNA" "small interfering RNA"
+                                         "siRNA" "sirna"))) 
+(noun "SARSi-1" :super sirna)
+(noun "SARSi-2" :super sirna)
+(noun "SARSi-3" :super sirna)
+(noun "SARSi-4" :super sirna)
+(noun "SARSi-5" :super sirna)
+(noun "SARSi-6" :super sirna)
+(noun "SARSi-7" :super sirna)
+(noun "SARSi-8" :super sirna)
+(noun "SARSi-9" :super sirna)
+(noun "SARSi-10" :super sirna)
+(noun "SARSi-11" :super sirna)
+#|
+siRNA	sense strand	CAS RN	target region or gene
+SARSi-1 5′-gugaacucacucgugagcuctt-3′	821121-35-1	512–531 bp of replicase A1 region
+SARSi-2	5′-guacccucuugauugcauctt-3′	821121-36-2	586–604 bp of replicase A1 region
+SARSi-3	5′-gagucgaagagaggugucutt-3′	821121-37-3	916–934 bp of replicase A1 region
+SARSi-4	5′-gcacuugucuaccuugaugtt-3′	821121-38-4	1194–1213 of replicase A1 region
+SARSi-5	5′-ccuccagaugaggaagaagtt-3′	821121-39-5	3028–3046 bp of replicase A region
+SARSi-6	5′-gguguuuccauuccaugugtt-3′	821121-40-8	5024–5042 bp of replicase A region
+SARSi-7	5′-cacugauuccguucgagauctt-3′	821121-41-9	S gene
+SARSi-8	5′-cguuucggaagaaacagguactt-3′	821121-42-0	E gene
+SARSi-9	5′-caagccucuucucgcuccuctt-3′	821121-43-1	N gene
+SARSi-10	5′-guggcuuagcuacuucguugtt-3′	821121-44-2	M gene
+SARSi-11	5′-ugcuugcugcugucuacagtt-3′	821121-45-3	M gene
+|#
+
+
 (noun "UTR" :super rna-region)
 (def-synonym UTR (:noun "untranslated region"))
 

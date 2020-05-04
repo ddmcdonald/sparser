@@ -544,10 +544,10 @@
 (define-category ubiquitination
  :specializes post-translational-modification 
   :realization 
-    (:verb ("ubiquitinate" "ubiquitylate")
+    (:verb ("ubiquitinate" "ubiquitylate" "ubiquinate")
      :noun ("ubiquitination" "ubiquitylation")
      :etf (svo-passive)))
-  
+
 (define-category auto-ubiquitinate
   :specializes ubiquitination
   :realization
@@ -568,7 +568,7 @@
 (define-category de-ubiquitination :specializes post-translational-modification
   :bindings (uid  "GO:0016579") 
   :realization
-  (:verb ("de-ubiquitinate" "deubiquitinate"
+  (:verb ("de-ubiquitinate" "deubiquitinate" "deubiquinate"
                             "de-ubiquitylate" "deubiquitylate")
    :etf (svo-passive)
    :noun ("de-ubiquitination" "deubiquitination"

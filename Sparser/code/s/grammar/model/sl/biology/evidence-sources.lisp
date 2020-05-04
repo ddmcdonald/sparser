@@ -46,6 +46,18 @@
 (def-indiv-with-id database "entrez" "NCIT:C45764" :name "Entrez")
 
 (def-indiv-with-id database "2019nCoVR" "2019nCoVR" :name "2019 Novel Coronavirus Resource")
+(def-indiv-with-id database "EpiCoV" "EpiCoV" :name "GISAID EpiCoV")
+
+(def-indiv-with-id database "CAS" "CAS" :name "Chemical Abstracts Service")
+(def-indiv-with-id database "ChEMBL" "ChEMBL" :name "ChEMBL")
+(def-indiv-with-id database "GeneDB" "GeneDB" :name "GeneDB")
+(def-indiv-with-id database "MEDLINE" "MEDLINE" :name "MEDLINE")
+
+
+(def-indiv-with-id database "BioRxiv" "BioRxiv" :name "BioRxiv")
+(def-indiv-with-id database "ChemRxiv" "ChemRxiv" :name "ChemRxiv")
+(def-indiv-with-id database "MedRxiv" "MedRxiv" :name "MedRxiv")
+
 
 ;;; Functions to allow for "domain adjunct" PPs -- PPs which can attach to
 ;;   general (non-domain) NPs, but which only make sense in some domain

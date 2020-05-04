@@ -1,8 +1,10 @@
 (in-package :sparser)
 
 
-(def-indiv-with-id bio-complex "Ypic" "GO:0019035" :name "viral integration complex") 
-(def-indiv-with-id bio-complex "TTTCC" "GO:0005579" :name "membrane attack complex") 
-(def-indiv-with-id bio-complex "RJC" "GO:0035145" :name "exon-exon junction complex") 
-(def-indiv-with-id bio-complex "DDDDK" "GO:0031431" :name "Dbf4-dependent protein kinase complex") 
-(def-indiv-with-id bio-complex "AHNRC" "GO:0034751" :name "aryl hydrocarbon receptor complex") 
+(def-indiv-with-id bio-complex "UAF" "GO:0000500" :name "RNA polymerase I upstream activating factor complex") 
+(def-indiv-with-id bio-complex "macropain" "GO:0005839" :name "proteasome core complex") 
+(def-indiv-with-id bio-complex "primosome" "GO:1990077" :name "primosome complex") 
+(def-indiv-with-id bio-complex "photosystem" "GO:0009521" :name "photosystem") 
+(def-indiv-with-id bio-complex "Curli" "GO:0098774" :name "curli") 
+(def-indiv-with-id bio-complex "HCAb" "GO:0071762" :name "heavy chain immunoglobulin complex") 
+(def-indiv-with-id bio-complex "preBCR" "GO:0035369" :name "pre-B cell receptor complex") 

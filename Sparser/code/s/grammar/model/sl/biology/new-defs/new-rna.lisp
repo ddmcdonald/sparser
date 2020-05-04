@@ -16,9 +16,8 @@
 (def-indiv-with-id rna "PRNT" "HGNC:18046" :name "prion locus lncRNA, testis expressed") 
 (def-indiv-with-id rna "BGas" "HGNC:40144" :name "CFTR antisense RNA 1") 
 (def-indiv-with-id rna "Dali" "HGNC:51429" :name "DNMT1-associated long intergenic non-coding RNA") 
-(def-indiv-with-id rna "Sirna" "NCIT:C2191" :name "small interfering RNA") 
 (def-indiv-with-id rna "TncRNA" "HGNC:30815" :name "nuclear paraspeckle assembly transcript 1") 
-(def-indiv-with-id rna "si-RNA" "NCIT:C2191" :name "small interfering RNA" :synonyms ("siRNA")) 
+;;(def-indiv-with-id rna "si-RNA" "NCIT:C2191" :name "small interfering RNA" :synonyms ("siRNA")) ;; made category
 (def-indiv-with-id rna "pri-miRNA" "NCIT:C25967" :name "pri-miRNA") 
 (def-indiv-with-id rna "hsa-let-7" "NCIT:C48183" :name "let-7") 
 (def-indiv-with-id rna "LncRNA" "NCIT:C88924" :name "lincRNA") 

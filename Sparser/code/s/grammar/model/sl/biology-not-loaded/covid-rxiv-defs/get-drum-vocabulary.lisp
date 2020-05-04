@@ -24,7 +24,8 @@
 (defun get-drum-defs (set-id case)
   (loop for w in
                 (symbol-value (intern (string-upcase
-                                       (format nil "BIGMECH-~a~a" set-id case))
+                                        ;(format nil "BIGMECH-~a~a" set-id case))
+                                       (format nil "~a~a" case set-id))
                                       (find-package :sp)))
         if (gethash w *drum-hash-table*)
         collect `(,w ,(gethash w *drum-hash-table*))
@@ -47,9 +48,9 @@
               (t
                (break "please provide set-id")))
         (break "please provide set-id")))
-  (setq *all-upper-drum-terms* (get-drum-defs set-id "-All-Upper"))
-  (setq *all-lower-drum-terms* (get-drum-defs set-id "-All-Lower"))
-  (setq *all-mixedcase-drum-terms* (get-drum-defs set-id "-MixedCase"))
+  (setq *all-upper-drum-terms* (get-drum-defs set-id "*all-upper-"));set-id "-All-Upper"))
+  (setq *all-lower-drum-terms* (get-drum-defs set-id "*all-lower-"));;set-id "-All-Lower"))
+  (setq *all-mixedcase-drum-terms* (get-drum-defs set-id "*MIXEDCASE-"));;set-id "-MixedCase"))
   (with-open-file (stream (concatenate 'string "sparser:bio-not-loaded;covid-rxiv-defs;"
                                        set-id "-drum-groundings.lisp")
                           :direction :output :if-exists :supersede 

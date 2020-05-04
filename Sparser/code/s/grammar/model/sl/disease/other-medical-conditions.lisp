@@ -521,3 +521,4 @@
 (def-indiv-with-id disease "mal-absorption" "NCIT:C3214" :name "malabsorption syndrome") 
 (def-indiv-with-id disease "pink-eye" "NCIT:C35704" :name "acute contagious conjunctivitis") 
 (def-indiv-with-id disease "Marburg" "NCIT:C84883" :name "Marburg Virus Disease" :synonyms ("Marburg Hemorrhagic Fever")) 
+(def-indiv-with-id disease "rheumatoid arthritis" "EFO:0000685" :name "rheumatoid arthritis")

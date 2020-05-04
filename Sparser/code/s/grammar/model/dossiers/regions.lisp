@@ -11,16 +11,22 @@
 
 ;;--- vague cases
 
+(define-geographical-area "Midwest") 
 (define-geographical-area "New England")
-
+(define-geographical-area "Mediterranean")
+(define-geographical-area "Australasia")
+(define-geographical-area "Scandinavia") ;; :adjective "Scandinavian")
 
 ;;--- continents
 (define-continent "Africa" :adjective "african")
+(define-continent "Antarctica")
 (define-continent "Asia" :adjective "asian")
 (define-continent "Europe" :adjective "european")
 (define-continent "North America" :adjective "North American")
 (define-continent "South America" :adjective "South American")
 (define-continent "Central America" :adjective "Central American")
+
+(define-continent "Oceania")
 
 ;;--- oceans
 (define-ocean "Atlantic")

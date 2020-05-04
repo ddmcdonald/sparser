@@ -42,6 +42,7 @@
 (noun "nuclease" :super enzyme)
 (noun "glucosyltransferase" :super enzyme)
 
+(noun "nonintegrin" :super protein)
 (noun "growth factor" :super protein) ;; actually, either a protein or hormone, but occasionally some other molecule
 
 (noun "polyprotein" :super protein) ;; any protein cleaved into multiple peptide proteins, often but not always viruses
@@ -79,7 +80,7 @@
 ;;;-----------------
 
 ;; virus proteins
-(def-family "non-structural protein" :synonyms ("nsp" "nsP" "NSPs"))
+(def-family "non-structural protein" :synonyms ("nonstructural protein" "nsp" "nsP" "NSPs"))
 ;(def-family "capsid protein" :synonyms ("capsid")) ;; should define this better -kind of cell part but viruses don't have cells
 (def-family "ORF" :synonyms ("orf") :members ("UP:P16320")) ;; really "open reading frame" which is a name for putative proteins from genes before they are characterized
 
@@ -283,7 +284,8 @@
 (def-family "HTRA3" :members ("UP:O15484" "UP:P83110")) 
 (def-family "HisRS" :members ("UP:P12081" "UP:P49590")) 
 (def-family "IAP" :members ("UP:P09923" "UP:Q08722" "UP:Q9H0U3")) 
-;(def-family "IFN-γ" :members ("UP:P01579" "UP:P15260")) second was receptor
+;;(def-family "IFN-γ" :members ("UP:P01579" "UP:P15260")) second was receptor
+
 ;(def-family "IL-1" :synonyms ("interleukin 1" "interleukin-1"  "IL1") :members ("UP:P01583" "UP:P01584")) merged with ided fam
 (def-family "IL13R" :members ("UP:P78552" "UP:Q14627")) 
 ;(def-family "INPP4B" :members ("UP:O15327" "UP:Q9BS68")) 
@@ -571,7 +573,7 @@
 (def-family "ARs" :members ("UP:P10275" "UP:P55000")) 
 (def-family "ARv7" :members ("UP:P10275" "UP:Q93033") :synonyms ("androgen receptor splice variant 3")) 
 (def-family "ASPS" :members ("UP:B0CF01" "UP:P48730")) 
-(def-family "AT1" :members ("UP:O00400" "UP:P30556")) 
+;(def-family "AT1" :members ("UP:O00400" "UP:P30556")) both are human, but the second is important for covid
 (def-family "ATDC" :members ("UP:Q13315" "UP:Q14134")) 
 (def-family "ATI" :members ("UP:P19398" "UP:P21114")) 
 (def-family "ATP receptor" :members ("UP:O15547" "UP:P41231") :synonyms ("purinergic receptor")) 
