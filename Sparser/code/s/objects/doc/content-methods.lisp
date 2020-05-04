@@ -180,16 +180,24 @@
        'residues)
       ((itypep i 'medical-condition) 'medical-conditions)
       ((or (itypep i 'infectious-agent)
-           ;; pahtogens are not (always) infectious agents,  but for now...
+           ;; pathogens are not (always) infectious agents,  but for now...
            (itypep i 'pathogen))
        'infectious-agents)
       ((itypep i 'cellular-location) 'cellular-locations)
+      ((itypep i 'tissue) 'organs/tissues)
       ((itypep i 'cell-type) 'cell-type)
       ((itypep i 'medical-method) 'medical-method)
       ((itypep i 'bio-method) 'experimental-method)
       ((itypep i 'protein-domain) 'protein-domain)
       ((itypep i 'molecule) 'molecule)
       ((itypep i 'bio-chemical-entity) 'biochemical-entity)
+      ((itypep i 'bio-predication) 'biological-predications)
+      ((or (itypep i 'species)
+           (and (itypep i 'organism)
+                (not (or (itypep i 'infectious-agent)
+                         ;; pathogens are not (always) infectious agents,  but for now...
+                         (itypep i 'pathogen)))))
+       'species)
       ((and (not (search "-ENDURANT" (pname (itype-of i))))
             (not (search "-PERDURANT" (pname (itype-of i)))))
        ;; don't highlight words just brought in from COMLEX

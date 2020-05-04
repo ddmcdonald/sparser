@@ -17,6 +17,11 @@
 ;;;  are recycled
 
 (in-package :sparser)
+(defparameter *mention-uid* 0) ;;/// needs to be reset at some point
+;;/// and cross-article and per-article long term has to be
+;; worked out
+
+(defparameter *mention-index-table* (make-hash-table :size 10000000))
 
 (defvar *lattice-individuals-mentioned-in-paragraph* nil
   "List of mentions within the current paragraph. Most recent
@@ -45,8 +50,6 @@
   (declare (special *lattice-individuals-to-mentions*))
   (gethash i *lattice-individuals-to-mentions*))
 
-
-
 (defun (setf mention-history) (mentions i)
   (declare (special *lattice-individuals-to-mentions*))
   (when *check-consistent-mentions*
@@ -63,16 +66,17 @@
 
 
 (defun m# (uid)
+  (declare (special *mention-index-table*))
+  (gethash uid *mention-index-table*)
+  #|
   (declare (special *lattice-individuals-to-mentions*))
   (maphash #'(lambda(i ml)
 	       (let ((m (find uid ml :key #'mention-uid)))
 		 (when m (return-from m# m))))
-	   *lattice-individuals-to-mentions*))
+	   *lattice-individuals-to-mentions*)
+  |#
+  )
 
-
-(defparameter *mention-uid* 0) ;;/// needs to be reset at some point
-;;/// and cross-article and per-article long term has to be
-;; worked out
 
 (defclass discourse-mention ()
   ((uid :initarg :uid :accessor mention-uid)
@@ -417,6 +421,11 @@
                    (let ((new-mention
                           (make-instance 'discourse-mention
                                          :uid (incf *mention-uid*))))
+                     #+ignore ;; tracking down sub tle bug
+                     (when (eq *mention-uid* 2)
+                       (lsp-break "mention #2"))
+                     (setf (gethash  *mention-uid* *mention-index-table*)
+                           new-mention)
                      (setf (mention-head new-mention) source)
                      (setf (dependencies new-mention)
                            (or dependencies

@@ -21,7 +21,10 @@
    (experimental-method :initform nil :accessor aggregated-experimental-method)
    (medical-conditions :initform nil :accessor aggregated-medical-conditions) ; medical-condition
    (infectious-agents :initform nil :accessor aggregated-infectious-agents) ; infectious-agent
+   (biological-predications :initform nil :accessor aggregated-biological-predications)
    (cellular-locations :initform nil :accessor aggregated-cellular-locations)
+   (organs/tissues :initform nil :accessor aggregated-organs/tissues)
+   (species :initform nil :accessor aggregated-species)
    (cell-type :initform nil :accessor aggregated-cell-type)
    (cell-line :initform nil :accessor aggregated-cell-line)
    (protein-domain :initform nil :accessor aggregated-protein-domain)
@@ -39,8 +42,8 @@
 
 (defparameter *term-buckets*
   '(proteins residues biochemical-entity bio-processes medical-method
-    experimental-method medical-conditions infectious-agents 
-    cellular-locations cell-type cell-line
+    experimental-method medical-conditions infectious-agents biological-predications
+    cellular-locations cell-type cell-line organs/tissues species
     protein-domain molecule
     comlex
     other)
