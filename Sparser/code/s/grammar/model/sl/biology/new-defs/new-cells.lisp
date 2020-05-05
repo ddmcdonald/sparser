@@ -51,7 +51,7 @@
 (def-indiv-with-id cell-type "prostate epithelial cell" "CO:0002231") 
 (def-indiv-with-id cell-type "retinal cell" "CO:0009004") 
 (def-indiv-with-id cell-type "granulosa cell" "CO:0000501") 
-(def-indiv-with-id cell-type "cytotoxic T cell" "CO:0000910" :synonyms ("cytotoxic T lymphocyte" "CTL" "T-killer cell" "cytolytic T cell" "CD8+ T-cell" "killer T cell")) 
+(def-indiv-with-id cell-type "cytotoxic T cell" "CO:0000910" :synonyms ("cytotoxic T lymphocyte" "CTL" "T-killer cell" "cytolytic T cell" "CD8+ T-cell" "CD8+ T cell" "CD8+ T lymphocyte" "CD8-positive T-cell" "CD8-positive T lymphocyte" "killer T cell" "CD8+")) 
 (def-indiv-with-id cell-type "helper T cell" "CO:0000912") 
 (def-indiv-with-id cell-type "alveolar macrophage" "CO:0000583") 
 (def-indiv-with-id cell-type "hepatic stellate cell" "CO:0000632") 
@@ -143,7 +143,7 @@
 (def-indiv-with-id cell-type "cardiac cell" "TS-0115") 
 (def-indiv-with-id cell-type "airway epithelial cell" "TS-0023")
 (def-indiv-with-id cell-type "CD4+ T cell" "NCIT:C12537"
-                   :synonyms("CD4 lymphocyte" "CD4-positive T lymphocyte"))
+                   :synonyms("CD4 lymphocyte" "CD4-positive T lymphocyte" "CD4+"))
 (def-indiv-with-id cell-type "T cell" "TS-1001") 
 (def-indiv-with-id cell-type "Stromal cell" "TS-0984") 
 (def-indiv-with-id cell-type "HeLa cell" "TS-0136") 

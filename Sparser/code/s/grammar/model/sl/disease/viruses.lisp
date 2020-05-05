@@ -73,6 +73,7 @@
 (def-indiv-with-id disease "MERS" "NCIT:C128424" :name "Middle East Respiratory Syndrome"
                    :synonyms ("middle east respiratory syndrome"))
 
+(def-indiv-with-id SARSr-CoV "BJ01" "TI:228407" :name "SARS coronavirus BJ01")
 (noun ("MuCoV" "MurCoV" "murine coronavirus" "mouse coronavirus") :super coronavirus) ;; no NCIT
 (noun ("BatCoV" "Bat-CoV" "BtCoV" "bat-coronavirus" "BtSCoV" "BtS-CoV") :super coronavirus) ;; no NCIT
 (noun ("bat-SL-RaTG13" "bat SL-RaTG13" "bat/RaTG13" "BetaCoV/bat/Yunnan/RaTG13/2013" "RaTG13" "SL-RaTG13"
@@ -408,3 +409,5 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (def-indiv-with-id virus "hrHPV" "NCIT:C44391" :name "HPV-high risk") 
 (def-indiv-with-id virus "Birnaviridae" "TI:10993")
 (def-indiv-with-id virus "TrV" "TI:30075" :name "triatoma virus")
+(def-indiv-with-id virus "MHV-A59" "TI:11142" :name "murine coronavirus (strain A59)" :synonyms ("murine hepatitis virus (strain A59)"))
+

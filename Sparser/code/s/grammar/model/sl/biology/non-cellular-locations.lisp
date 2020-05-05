@@ -131,11 +131,21 @@ made def-indiv-with-id
 (def-indiv-with-id organism "bat" "TI:9397" :name "chiroptera")
 (def-indiv-with-id organism "Caenorhabditis elegans" "TI:6239" :synonyms ("C. elegans")) 
 (def-indiv-with-id organism "drosophila" "NCIT:C14202" :synonyms ("fruit fly")) 
-(def-indiv-with-id organism "mouse" "NCIT:C14238" :plural "mice" :synonyms ("mus") :adj "murine")
-(def-indiv-with-id organism "rat" "NCIT:C14266")
+;(def-indiv-with-id organism "mouse" "NCIT:C14238" :plural "mice" :synonyms ("mus") :adj "murine")
+(def-indiv-with-id organism "rat" "NCIT:C14266" :synonyms ("rattus"))
 (def-indiv-with-id organism "goat" "NCIT:C14210")
 (def-indiv-with-id organism "xenopus" "NCIT:C14285") 
 (def-indiv-with-id organism "zebrafish" "NCIT:C14287") 
+
+(define-category mouse :specializes species
+                 :mixins (has-UID mammal) ;; not sure if mixins is the right thing?
+                   :instantiates self
+                   :index (:permanent :key name)
+                   :bindings (uid "NCIT:C14225")
+                   :realization (:noun ("mouse" :plural "mice")
+                                       :adj "murine"))
+(def-synonym mouse (:noun "mus"))
+(noun "Ad5-hDPP4" :super mouse) ;;no uid
 
 (def-indiv-with-id species "Saccharomyces cerevisiae" "NCIT:C14271" :synonyms ("saccharomyces" "yeast" "S. cerevisiae"))
 (define-category human :specializes species
