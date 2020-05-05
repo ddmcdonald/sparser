@@ -14,21 +14,22 @@
 
 (defclass aggregated-bio-terms ()
   ((proteins :initform nil :accessor aggregated-proteins)
+   (drugs :initform nil :accessor aggregated-drugs)
    (residues :initform nil :accessor aggregated-residues)
-   (biochemical-entity :initform nil :accessor aggregated-biochemical-entity)
-   (bio-processes :initform nil :accessor aggregated-processes)
-   (medical-method :initform nil :accessor aggregated-medical-method)
-   (experimental-method :initform nil :accessor aggregated-experimental-method)
+   (other-chemical-entities :initform nil :accessor aggregated-other-chemical-entities)
+   (biological-processes :initform nil :accessor aggregated-biological-processes)
+   (medical-methods :initform nil :accessor aggregated-medical-methods)
+   (experimental-methods :initform nil :accessor aggregated-experimental-methods)
    (medical-conditions :initform nil :accessor aggregated-medical-conditions) ; medical-condition
    (infectious-agents :initform nil :accessor aggregated-infectious-agents) ; infectious-agent
    (biological-predications :initform nil :accessor aggregated-biological-predications)
    (cellular-locations :initform nil :accessor aggregated-cellular-locations)
    (organs/tissues :initform nil :accessor aggregated-organs/tissues)
    (species :initform nil :accessor aggregated-species)
-   (cell-type :initform nil :accessor aggregated-cell-type)
-   (cell-line :initform nil :accessor aggregated-cell-line)
-   (protein-domain :initform nil :accessor aggregated-protein-domain)
-   (molecule :initform nil :accessor aggregated-protein-molecule)
+   (cell-types :initform nil :accessor aggregated-cell-types)
+   (cell-lines :initform nil :accessor aggregated-cell-lines)
+   (protein-domains :initform nil :accessor aggregated-protein-domains)
+   ;;(molecule :initform nil :accessor aggregated-protein-molecule)
    (comlex :initform nil :accessor aggregated-comlex)
    (other :initform nil :accessor aggregated-other))
   (:documentation "Collects the entities and relations of
@@ -41,10 +42,12 @@
 "))
 
 (defparameter *term-buckets*
-  '(proteins residues biochemical-entity bio-processes medical-method
-    experimental-method medical-conditions infectious-agents biological-predications
-    cellular-locations cell-type cell-line organs/tissues species
-    protein-domain molecule
+  '(drugs proteins residues other-chemical-entities ;;molecule
+    biological-processes medical-methods
+    experimental-methods medical-conditions infectious-agents
+    biological-predications
+    cellular-locations cell-types cell-lines organs/tissues species
+    protein-domains 
     comlex
     other)
   "Used by downstream routines that are performing the identical

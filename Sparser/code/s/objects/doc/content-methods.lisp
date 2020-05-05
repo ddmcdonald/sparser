@@ -173,9 +173,11 @@
     (cond
       ((and (itypep i 'bio-process)
             (not (itypep i 'comlex-derived)))
-       'bio-processes)
+       'biological-processes)
       ((itypep i '(:or protein human-protein-family))
        'proteins)
+      ((itypep i 'drug)
+       'drugs)
       ((itypep i 'residue-on-protein) ;; or other regions
        'residues)
       ((itypep i 'medical-condition) 'medical-conditions)
@@ -185,12 +187,11 @@
        'infectious-agents)
       ((itypep i 'cellular-location) 'cellular-locations)
       ((itypep i 'tissue) 'organs/tissues)
-      ((itypep i 'cell-type) 'cell-type)
-      ((itypep i 'medical-method) 'medical-method)
-      ((itypep i 'bio-method) 'experimental-method)
-      ((itypep i 'protein-domain) 'protein-domain)
-      ((itypep i 'molecule) 'molecule)
-      ((itypep i 'bio-chemical-entity) 'biochemical-entity)
+      ((itypep i 'cell-type) 'cell-types)
+      ((itypep i 'medical-method) 'medical-methods)
+      ((itypep i 'bio-method) 'experimental-methods)
+      ((itypep i 'protein-domain) 'protein-domains)
+      ((itypep i 'bio-chemical-entity) 'other-chemical-entities)
       ((itypep i 'bio-predication) 'biological-predications)
       ((or (itypep i 'species)
            (and (itypep i 'organism)
@@ -202,6 +203,7 @@
             (not (search "-PERDURANT" (pname (itype-of i)))))
        ;; don't highlight words just brought in from COMLEX
        'COMLEX)
+      ;;((itypep i 'molecule) 'molecule)
       (T
        'other)))
   (:method ((cat referential-category))
