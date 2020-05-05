@@ -32,8 +32,11 @@
     (when (equal base path-base)
       (subseq pathname (length base)))))
 
-(defun json-absolute-pathname (rel-path &optional (date "2020-04-03"))
-  (format nil "~a~a/~a" (json-base) date (namestring rel-path)))
+;(defun json-absolute-pathname (rel-path &optional (date "2020-04-03"))
+;  (format nil "~a~a/~a" (json-base) date (namestring rel-path)))
+
+(defun json-absolute-pathname (rel-path)
+  (concatenate 'string (namestring (json-base)) (namestring rel-path)))
 
 (defparameter *json-corpus-paths*
   '((rxiv "2020-03-13/biorxiv_medrxiv/biorxiv_medrxiv/")
@@ -159,14 +162,24 @@ else that takes two arguments:  (1) the s-expression (2) the file's pathname
                                  (second (find sym registry :key #'first :test #'equal))))
                            *corpus-handle-registries*)))
       (when rel-path
-        (if (search "0403" file-str)
-        ;; get the correct decoded-file path -- it already has the "2020-04-03"
-          (json-absolute-pathname rel-path "") ;;"2020-04-03")
-          (json-absolute-pathname rel-path "2020-03-13")))))
-
+        (json-absolute-pathname rel-path))))
   (:method ((file-path pathname))
     file-path))
 
+;; You can give it a list of corpus handles, which should be a subset of the
+;; cars of the alist stored in *json-corpus-paths*.
+;; By default, it will blow them all away.
+(defun clear-corpus-registries (&optional specific-registries)
+  (setf *corpus-handle-registries*
+        (when specific-registries
+          (reduce
+           #'(lambda (registries-alist registry-handle)
+               (remove registry-handle registries-alist :key #'car :test #'equal))
+           specific-registries
+           :initial-value *corpus-handle-registries*)))
+  ;; Now write the cache
+  (write-corpus-registry))
+  
 ;; Returns a list of handles for the files.  The order of the handles returned
 ;; Does NOT neccessarily correpsond to the order of the paths argument.
 ;; We go by the order in the registry.
@@ -217,7 +230,7 @@ else that takes two arguments:  (1) the s-expression (2) the file's pathname
                                  :if-exists :supersede)
            (format stream "(in-package :sparser)")
            (let ((*package* (find-package :sparser)))
-             (format stream "~%~%(defparameter *corpus-handle-registries*~%'~S)" *corpus-handle-registries*))))))
+             (format stream "~%~%(defparameter *corpus-handle-registries* ~:[NIL~;~%  '~:*~S~])" *corpus-handle-registries*))))))
 
 ;; file name can be a pathname, a path namestring, or an abbreviated
 ;; symbol of string, e.g. (do-json 'com-1)
