@@ -66,6 +66,7 @@
 (define-cellular-location "filopodia" "GO:0030175")
 (define-cellular-location "membrane raft" "GO:0045121")
 (define-cellular-location "membrane" "GO:0016020")
+(define-cellular-location "viral membrane" "GO:0036338")
 (define-cellular-location "mitochondrial inner membrane" "GO:0005743")
 (define-cellular-location "mitochondrial intermembrane space" "GO:0005758")
 (define-cellular-location "mitochondrial matrix" "GO:0005759")

@@ -1,5 +1,7 @@
 (in-package :sparser)
 
+(def-indiv-with-id cell-type "host cell" "host-cell" :name "host cell" :no-plural nil)
+
 (def-indiv-with-id cell-type "CSC" "NCIT:C68706" :name "cancer stem cell")
 (def-indiv-with-id cell-type "REC" "CO:0002585" :name "retinal endothelial cell") 
 (def-indiv-with-id cell-type "lung endothelial cell" "CO:1001567") 
@@ -3249,3 +3251,4 @@
 (def-indiv-with-id cell-type "iTreg" "CO:0000902" :name "induced T-regulatory cell") 
 (def-indiv-with-id cell-type "nTreg" "CO:0000903" :name "natural T-regulatory cell") 
 (def-indiv-with-id cell-line "Eli" "CVCL:M653" :name "Elijah" :no-plural t) 
+

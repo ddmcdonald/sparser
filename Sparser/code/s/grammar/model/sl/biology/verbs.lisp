@@ -1396,7 +1396,7 @@
 (define-category entry :specializes translocation
   :realization 
   (:verb "enter" 
-   :noun "entry" 
+   :noun ("entry" "entrance")
    :etf (svo-passive) 
    :s moving-object ;; ERK translocates -- this is not the agent, but the object!
    :of :object))

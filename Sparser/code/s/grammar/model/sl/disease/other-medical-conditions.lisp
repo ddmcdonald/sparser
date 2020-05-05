@@ -698,4 +698,6 @@
 (def-indiv-with-id disease "Tracheomalacia" "NCIT:C98634" :name "tracheomalacia") 
 (def-indiv-with-id disease "Hypoglycemia" "HP:0001943" :name "Hypoglycemia") 
 (def-indiv-with-id disease "Panniculitis" "EFO:1000746" :name "panniculitis") 
-(def-indiv-with-id disease "Hypertriglyceridemia" "EFO:0004211" :name "Hypertriglyceridemia") 
+(def-indiv-with-id disease "Hypertriglyceridemia" "EFO:0004211" :name "Hypertriglyceridemia")
+
+(def-indiv-with-id disease "multiple organ failure" "NCIT:C75568" :name "multiple organ failure")
