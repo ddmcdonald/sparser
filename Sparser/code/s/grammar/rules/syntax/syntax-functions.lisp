@@ -593,6 +593,12 @@ val-pred-var (pred vs modifier - left or right?)
         ;; intended as test for proper noun or other specific NP
         (revise-parent-edge :form category::proper-noun)
 	qualifier)
+       ((and (itypep head 'label) ;; "group 2B"
+             (find-variable-for-category 'label qualifier))
+        (setq qualifier (bind-variable 'label head qualifier))
+        (revise-parent-edge
+         :category (edge-category (left-edge-for-referent)))
+        qualifier)
        ((and (itypep qualifier (itype-of head))
              ;; "The concentration of BRAF-NRAS complex." comes out
              ;; as 'complex of complex of' if we fall through to

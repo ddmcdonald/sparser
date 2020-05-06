@@ -286,8 +286,10 @@
                 :from produced-by))
 
 ;; collections
-(define-category bio-grouping :specializes bio-entity
-  :binds ((group-members bio-entity))
+(define-category bio-grouping
+  :specializes bio-entity
+  :binds ((group-members bio-entity)
+          (label label)) ;; "group 2B CoVs"
   :realization (:noun "group" :of group-members))
 
 (def-synonym bio-grouping (:noun "set"))

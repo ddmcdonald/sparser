@@ -1,9 +1,9 @@
 ;;;-*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "nospace-categories"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  March 2018
+;;;  Version:  May 2020
 
 ;; Created 10/7/14 to hold categories and routines used by the
 ;; nospace character specialists (analyzers/psp/patterns/) since
@@ -227,7 +227,7 @@
 
 (defun make-hyphenated-number (left-edge right-edge)
   "What this does needs to correspond to what digit-FSA does in 
-   the same situation."
+   the same situation." ;///
   (declare (special category::hyphenated-number category::number))
   (if (and (eq (edge-cat-name left-edge) 'year)
            (or (eq (edge-cat-name right-edge) 'year)
@@ -584,7 +584,7 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
 ; we end up here.
 
 (define-category two-part-label
-  :specializes sequence ;; though we won't use it
+  :specializes label
   :binds ((part-one)
           (part-two))
   :index (:sequential-keys part-one part-two))

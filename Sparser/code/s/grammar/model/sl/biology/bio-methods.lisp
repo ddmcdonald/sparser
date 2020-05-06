@@ -142,12 +142,16 @@
   (:verb "lyse" :etf (svo-passive)))
 
 (define-category label :specializes bio-method
-                 ;; e.g. "SILAC labeling"
+                 ;; e.g. "SILAC labeling" ; n.b. this is explicitly defined somewhere
   :bindings (uid "EFO:0000562")
   :realization
   (:verb ("label" :present-participle ("labeling" "labelling")
                   :past-tense ("labeled" "labelled"))
          :etf (svo-passive))) ;; how to add single-l version for "labeling"?
+;; cf. the designator, noun "label" in mid-level/things.lisp
+;; That sort of label is the result of the processing of labeling
+;; in this category
+
 
 ;; not really relevant, but the existence of "replating" caused an error -- no  edge between positions
 (define-category replate :specializes bio-method
