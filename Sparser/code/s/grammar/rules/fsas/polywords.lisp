@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2015-2018  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2015-2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "polywords"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  March 2018
+;;;  Version:  May 2020
 
 ;; 3.0 (10/2/92 v2.3) tweeked interactions with scan as that routine
 ;;      was broken down into smaller parts.
@@ -49,6 +49,7 @@ grammar/rules/FSAs/polywords4.lisp:  (defun do-polyword-fsa (word cfr position-s
 
 
 ;; (trace-polywords)
+;; (trace-polyword-edges)
 
 (defun do-polyword-fsa (first-word initial-state position-before)
   "Called by check-for-polywords in scan or by polyword-check in
@@ -99,6 +100,7 @@ grammar/rules/FSAs/polywords4.lisp:  (defun do-polyword-fsa (word cfr position-s
                     pw
                     (pos-starts-here position-before)
                     (pos-ends-here *position-of-longest-success-state*))))
+        (tr :pw-taking-longest-complete edge)
         *position-of-longest-success-state* ))))
 
 

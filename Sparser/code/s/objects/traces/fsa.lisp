@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2016-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2016-2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "FSA"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  August 2017
+;;;  Version:  May 2020
 
 ;; initiated November 1990
 ;; 0.1  (2/15/91 v1.8.1)  Changed *trace-pw-buffer* to *trace-next-terminal*
@@ -13,7 +13,6 @@
 ;;      (7/15/94) added functions for on/off
 
 (in-package :sparser)
-
 
 ;;;-------
 ;;; flags
@@ -36,6 +35,15 @@
 
 (defun untrace-polywords ()
   (setq *trace-polywords* nil))
+
+
+(defparameter *trace-polyword-edge-creation* nil)
+
+(defun trace-polyword-edges ()
+  (setq *trace-polyword-edge-creation* t))
+
+(defun untrace-polyword-edges ()
+  (setq *trace-polyword-edge-creation* nil))
 
 
 ;;;-----------
@@ -81,9 +89,16 @@
                label)))
 
 (deftrace :pw-doesnt-extend-taking-complete (edge)
-  (when *trace-polywords*
+  (when (or *trace-polywords* *trace-polyword-edge-creation*)
     (trace-msg "[pw]     it doesn't extend the polyword~
               ~%            Taking the pending completion and ~
+                forming the edge:~
+              ~%               ~A"
+               edge)))
+
+(deftrace :pw-taking-longest-complete (edge)
+  (when (or *trace-polywords* *trace-polyword-edge-creation*)
+    (trace-msg "[pw] Taking the pending completion and ~
                 forming the edge:~
               ~%               ~A"
                edge)))
