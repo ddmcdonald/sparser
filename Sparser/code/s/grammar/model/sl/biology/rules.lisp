@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "rules"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: November 2019
+;;; version: May 2020
 
 ;; Initiated 1/16/15 by lifting from other files.
 ;;  1/19/2015 put in rule for (not adjective) -- but doesn't seem to be found -- need help from David
@@ -339,19 +339,27 @@
 
 (def-cfr point-mutation (number single-capitalized-letter)
   :form n-bar
-  :referent (:function make-point-mutation-from-number-amino-acid left-edge right-edge))
+  :referent (:function maybe-make-point-mutation-from-number-amino-acid left-edge right-edge))
+
+(defun maybe-make-point-mutation-from-number-amino-acid (number letter)
+  "Heuristically decide between a point-mutation and a two-part-label based on the
+   length of the digit"
+  (let* ((digit-word (get-tag :digit-sequence number))
+         (pname (when digit-word (pname digit-word))))
+    (if (and pname (= 1 (length pname)))
+      (then ;; cf. reify-two-part-label
+        (revise-parent-edge :category category::two-part-label)
+        (find-or-make-individual 'two-part-label :part-one number :part-two letter))
+      (make-point-mutation-from-number-amino-acid number letter))))
 
 (defun make-point-mutation-from-number-amino-acid (number replacement-amino-acid)
   (when (or
          (not (itypep replacement-amino-acid 'single-capitalized-letter))
-         (when
-             (setq replacement-amino-acid
-                   (gethash replacement-amino-acid *single-letters-to-amino-acids*))
+         (when (setq replacement-amino-acid
+                     (gethash replacement-amino-acid *single-letters-to-amino-acids*))
            (setf (edge-category *right-edge-into-reference*) (itype-of replacement-amino-acid))
            (set-edge-referent *right-edge-into-reference* replacement-amino-acid)))
     (make-point-mutation nil replacement-amino-acid number)))
-
-
 
 #|
 ;; p38 kinase
