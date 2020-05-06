@@ -83,6 +83,29 @@ invites this reply: "What (else) do you need to know?"
     :instantiates self
     :lemma (:common-noun "database"))
 
+
+;;--- 'label'
+
+(define-category label
+  :specializes designator
+  :lemma (:common-noun "label")
+  :documentation "A label is a way to specify one instance of stuff
+ versus another. 'doi's label publications, as do PMC ids. This notion
+ of 'label' is the result of the process of 'labeling' (defined in
+ bio;bio-methods. The name tag a person might wear is a physical
+ embodiment of the 'label', and probably should be analyzed as
+ as sort of information container. Labels aren't expected to be
+ unique (as a 'UID' would be), just to provide a possibly ideosyncrating
+ basis for distinguishing things. If the label incorporates numbers
+ or letters could be used to sort things, e.g. the components in
+ a Dewey Decimal system identifier.")
+#|
+Cf. the category two-part-label (in rules/DA/nospace-categories.lisp)
+ that provides an account for ""in Figure S1", where 'figure', 'Fig.'
+ are in bio;terms.lisp and the label assembled by nospace.
+|#
+
+
 #|
 "intent" is the 'result' of having an intention
    It's an 'intent' to do something
