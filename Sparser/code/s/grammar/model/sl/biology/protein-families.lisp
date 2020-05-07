@@ -875,7 +875,7 @@ Guanine Nucleotide Binding Protein" "GTP-Binding Protein")) ; previously we had 
 (def-family "inositol 1,4,5-trisphosphate receptor" :members ("UP:Q14643" "UP:Q8WSR4"))
 (def-family "integrin" :identifier "NCIT:C16748")
 (def-family "intercellular adhesion molecule 2" :members ("UP:P13598" "UP:Q5NKV1"))
-(def-family "interferon alpha" :members ("UP:P01563" "UP:P35849"))
+(def-family "interferon alpha" :members ("UP:P01563" "UP:P35849") :synonyms ("α-interferon" "α-interferons" "α interferon" "α interferons"))
 (def-family "interferon regulatory factor 3" :members ("UP:Q14653" "UP:Q4JF28"))
 (def-family "interferon regulatory factor 5" :members ("UP:Q13568" "UP:Q58DJ0"))
 (def-family "interleukin" :members ("NCIT:C20497" "UP:P01583" "UP:P01584" "UP:P05231" "UP:P08700" "UP:P10145" "UP:P13232" "UP:P60568" "UP:Q15KG7"))
