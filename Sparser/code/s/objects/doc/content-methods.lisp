@@ -171,6 +171,8 @@
   (:method ((i individual))
     ;; Could also consider mutations, drugs, cell-lines, what else?
     (cond
+      ((eq (itype-of i) (category-named 'bio-entity))
+       'other)
       ((and (itypep i 'bio-process)
             (not (itypep i 'comlex-derived)))
        'biological-processes)
