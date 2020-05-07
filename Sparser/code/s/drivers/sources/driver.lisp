@@ -70,7 +70,7 @@
                 article :sweep sweep :read read :quiet quiet 
                 :show-sect show-sect :stats stats))))
       (when *write-article-objects-file*
-        (write-article-objects-file article n corpus)
+        (write-article-objects-file article corpus n)
         )
       result)))
 
