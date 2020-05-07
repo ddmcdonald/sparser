@@ -593,6 +593,7 @@
        (not (eq t (edge-mention edge)))
        (or
         (is-dl-child? i (edge-referent edge))
+        (eq i (edge-referent edge))
         ;;(subsumed-with-disambiguation i (edge-referent edge))
         )
        edge))
