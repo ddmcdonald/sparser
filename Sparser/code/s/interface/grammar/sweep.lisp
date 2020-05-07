@@ -423,7 +423,28 @@ unknown words.|#
                 (word-pname word) source)))
        (otherise
         (warn "Unexpected source type for ~s~%~a  ~a"
-               (word-pname word) (type-of source) source))))))
+              (word-pname word) (type-of source) source))))))
+
+
+(defgeneric added-from-comlex (word)
+  (:method ((pname string))
+    (let ((word (resolve pname)))
+      (if word
+        (added-from-comlex word)
+        (format nil "'~a' is not defined as a word" pname))))
+  (:method ((w word))
+    (or (get-tag :comlex w)
+        (eq :comlex (get-tag :source w)))))
+
+(defgeneric added-from-morphology (word)
+  (:method ((pname string))
+    (let ((word (resolve pname)))
+      (if word
+        (added-from-morphology word)
+        (format nil "'~a' is not defined as a word" pname))))
+  (:method ((w word))
+    (eq :morphology (get-tag :source w))))
+  
 
 #| original
   (declare (ignore source)) ;; Comlex vs. morphology vs. ...

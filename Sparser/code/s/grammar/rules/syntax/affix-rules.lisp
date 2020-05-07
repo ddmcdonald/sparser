@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2014-2017  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2014-2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "affix rules"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2017
+;;;  Version:  May 2020
 
 ;; moved over from preterminals code 5/11/93, v2.3
 ;; 0.1 (3/28/94) changed the 'rule' on these edges from :known-affix to
@@ -66,6 +66,7 @@
         (*unknown-word* word))
     (declare (special *source-of-unknown-words-definition* *unknown-word*))
 
+    (mark-definition-source word)
     
     (flet ((block-verbified-nouns (lemma)
              ;; originally put in to block creation of a verb form of "residue"

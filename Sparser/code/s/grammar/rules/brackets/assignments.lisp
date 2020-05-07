@@ -201,6 +201,7 @@
 
 (defun setup-common-noun (word &optional comlex-clause ambiguous?)
   (declare (special *break-on-pattern-outside-coverage?*))      
+  (mark-definition-source word)
   (let ((marked-plural
          (when comlex-clause (explicit-plurals comlex-clause)))
         (category-name (name-to-use-for-category word))
@@ -236,6 +237,7 @@
 (defun setup-verb (word &optional comlex-clause ambiguous?)
   (declare (special *big-mechanism* *unknown-word*
                     *break-on-pattern-outside-coverage?*))
+  (mark-definition-source word)
   (if *big-mechanism*
     (then
       (when *show-R3-new-verb-definitions*
@@ -278,6 +280,7 @@
 (defun setup-adjective (word &optional comlex-clause ambiguous?)
   ;; For more exhaustive treament of comlex adjectives see adjectives in sl/checkpoint/
   (declare (special *break-on-pattern-outside-coverage?*))
+  (mark-definition-source word)
   (let ((category-name (name-to-use-for-category word))
         (super-category (super-category-for-POS :adjective)))    
     (when ambiguous?
@@ -292,6 +295,8 @@
         (if (memq :comparative entry)
           (let ((comparative (cadr (memq :comparative entry)))
                 (superlative (cadr (memq :superlative entry))))
+            (mark-definition-source comparative)
+            (mark-definition-source superlative)
             (setup-anonymous-graded-adjective
              word comparative superlative))
           (else ;; has comlex entry but isn't an er-est
@@ -313,6 +318,7 @@
   ;; token, ones that we wouldn't know what to do with, so
   ;; we go through the morphology routine used with ETF.
   (declare (special *break-on-pattern-outside-coverage?*))
+  (mark-definition-source word)
   (let ((category-name (name-to-use-for-category word))
         (super-category (super-category-for-POS :adverb)))
     (when ambiguous?
@@ -368,9 +374,13 @@
    it to its supercategory")
 
 (defun mark-as-constructed-category-for-word (category super-category)
-  (setf (get-tag :file-location category) :comlex)
-  (setf (gethash category *constructed-categories-to-supercategory*)
-        super-category))
+  "Serves same purpose as mark-definition-source, but applies to categories
+   rather than words"
+  (declare (special *source-of-unknown-words-definition*))
+  (let ((source *source-of-unknown-words-definition*))
+    (setf (get-tag :file-location category) source)
+    (setf (gethash category *constructed-categories-to-supercategory*)
+          super-category)))
 
 (defun supercategory-of-constructed-category (category)
   (gethash category *constructed-categories-to-supercategory*))
