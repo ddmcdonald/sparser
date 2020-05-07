@@ -10,7 +10,8 @@
 ;; for nxml documents.
 
 (in-package :sparser)
-
+(defparameter *WRITE-ARTICLE-OBJECTS-FILE* t
+  "If T, then save the facts for the article to a file with name derived from the article")
 
 (defun run-json-article (article &key (sweep t) (read t)
                                    (quiet t) (skip-errors t) (verbose t)
@@ -62,11 +63,73 @@
      (loop for i from 11 to 50 do (run-json-article-from-handle :n i))"
   (multiple-value-bind (article sexp)
       (make-article-from-handle :n n :corpus corpus :verbose verbose)
-    (if return-sexp
-      sexp
-      (run-json-article
-       article :sweep sweep :read read :quiet quiet 
-       :show-sect show-sect :stats stats))))
+    (let ((result
+           (if return-sexp
+               sexp
+               (run-json-article
+                article :sweep sweep :read read :quiet quiet 
+                :show-sect show-sect :stats stats))))
+      (when *write-article-objects-file*
+        (write-article-objects-file article n corpus)
+        )
+      result)))
+
+(defun corpus-file-handle (corpus n)
+  (intern (string-append corpus "-" n)
+          (find-package :sparser)))
+
+(defun corpus-file-namestring (corpus n)
+  (decoded-file (corpus-file-handle corpus n)))
+
+
+(defun mentions-filename (&key corpus n)
+  (let ((article-namestring
+         (json-relative-pathname (corpus-file-namestring corpus n))))
+    (declare (special article-namestring))
+    (json-absolute-pathname
+     (format nil "~amentions/mentions-in-~a.lisp" 
+             (directory-namestring article-namestring)
+             (pathname-name
+              (file-namestring article-namestring))
+             ))))
+
+(defun article-relevant-mentions (article  &aux (contents (contents article)))
+  (loop for slot-name in *term-buckets*
+        as bucket = (slot-value contents slot-name)
+        unless (eq slot-name 'other)
+        append
+          (loop for mention-set in bucket
+                append  (third mention-set))))
+
+
+(defun write-article-objects-file (article corpus n)
+  (let ((mention-file (mentions-filename :corpus corpus :n n)))
+    (ensure-directories-exist mention-file)
+    (with-open-file (mf mention-file :direction :output
+                        :if-exists :supersede
+                        :if-does-not-exist :create)
+      (format mf "(in-package :sp)~%;;;;;mentions for article ~s~%" (corpus-file-handle corpus n))
+      (write-list-to-param
+       "*article-mention-facts*"
+       (grouped-article-mentions article)
+       mf)
+       mention-file)))
+
+
+(defun grouped-article-mentions (article)
+  (group-by
+   (loop for g in
+           (group-by (loop for m in (article-relevant-mentions article)
+                           unless (itypep (mention-head-referent m)
+                                          '(:or number-sequence))
+                           collect m)
+                     #'(lambda(m)(krisp->sexpr (mention-head-referent m)))
+                     #'(lambda(m) (car (mentioned-in-article-where m))))
+         collect
+           (list (car g)
+                 (loop for str in (remove-duplicates (second g) :test #'equal)
+                       collect (subseq str (+ 1 (search ".p" str))))))
+   #'caar))
 
 
 (defun make-article-from-handle (&key (n 1) (corpus 'rxiv) (verbose t))
@@ -81,8 +144,7 @@
                    (stringp corpus)))
     (return-from make-article-from-handle nil))
 
-  (let* ((file-handle (intern (string-append corpus "-" n)
-                              (find-package :sparser)))
+  (let* ((file-handle (corpus-file-handle corpus n))
          (file-namestring (decoded-file file-handle)))
     (unless file-namestring
       (warn "No registered json path found for file handle ~a.~
