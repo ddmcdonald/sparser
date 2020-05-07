@@ -134,7 +134,6 @@
 (defparameter *names-of-irrelevant-to-dh-categories*
   '(
     BIO-PAIR
-    BIO-ENTITY
     BIO-USE
     COPULAR-PREDICATION-OF-PP
     EVENT-RELATION
