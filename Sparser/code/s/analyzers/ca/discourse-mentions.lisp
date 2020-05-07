@@ -84,6 +84,8 @@
        :documentation "Backpointer to the individual which is the base description")
    (ci :accessor contextual-description
        :documentation "Backpointer to the individual which is the contextually revised description")
+   (head-description :accessor mention-head-referent
+                     :documentation "the first Krisp object or other referent for the head")
    (restriction :accessor mention-restriction)
    (source :accessor mention-source)
    (dependencies :initform nil :accessor dependencies)
@@ -421,12 +423,10 @@
                    (let ((new-mention
                           (make-instance 'discourse-mention
                                          :uid (incf *mention-uid*))))
-                     #+ignore ;; tracking down sub tle bug
-                     (when (eq *mention-uid* 2)
-                       (lsp-break "mention #2"))
                      (setf (gethash  *mention-uid* *mention-index-table*)
                            new-mention)
                      (setf (mention-head new-mention) source)
+                     (setf (mention-head-referent new-mention) i)
                      (setf (dependencies new-mention)
                            (or dependencies
                                (when (individual-p i) ;; no dependencies for categories
