@@ -250,7 +250,9 @@
                   (or
                    (not (itypep amino-acid 'single-capitalized-letter))
                    ;; want to get "S6"
-                   (> (value-of 'value position) 5)))))
+                   (and (> (value-of 'value position) 5)
+                        ;; block C-467926
+                        (< (value-of 'value position) 10000))))))
     (when (itypep amino-acid 'single-capitalized-letter)
       (setq amino-acid (gethash amino-acid *single-letters-to-amino-acids*))
       (setf (edge-category *left-edge-into-reference*) category::amino-acid)
@@ -346,7 +348,9 @@
    length of the digit"
   (let* ((digit-word (get-tag :digit-sequence number))
          (pname (when digit-word (pname digit-word))))
-    (if (and pname (= 1 (length pname)))
+    (if (and pname (or (= 1 (length pname))
+                       ;; block things like C-467929
+                       (> (length pname) 3)))
       (then ;; cf. reify-two-part-label
         (revise-parent-edge :category category::two-part-label)
         (find-or-make-individual 'two-part-label :part-one number :part-two letter))
