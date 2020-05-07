@@ -133,6 +133,15 @@
 
 (defparameter *names-of-irrelevant-to-dh-categories*
   '(
+    BIO-PAIR
+    BIO-ENTITY
+    BIO-USE
+    COPULAR-PREDICATION-OF-PP
+    EVENT-RELATION
+    PERCENT
+    RELATIVE-TIME
+    SEQUENCE
+    TIME-UNIT
     adverbial
     approximator
     be
@@ -636,6 +645,8 @@ unknown words.|#
   (format stream
           "~%~%(defparameter ~a~%    (remove-duplicates~%      (append ~%         (when (boundp '~a) (symbol-value `~a))~%         '("
           param-name param-name param-name)
+  (pprint list stream)
+  #+gnore
   (loop for item in list
      do (format stream "~s " item))
   (format stream "))~%    :test #'equalp))~%"))
