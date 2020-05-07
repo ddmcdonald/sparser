@@ -700,4 +700,4 @@
 (def-indiv-with-id disease "Panniculitis" "EFO:1000746" :name "panniculitis") 
 (def-indiv-with-id disease "Hypertriglyceridemia" "EFO:0004211" :name "Hypertriglyceridemia")
 
-(def-indiv-with-id disease "multiple organ failure" "NCIT:C75568" :name "multiple organ failure")
+(def-indiv-with-id disease "multiple organ failure" "NCIT:C75568" :name "multiple organ failure" :synonyms ("multi-organ failure" "multi organ failure"))
