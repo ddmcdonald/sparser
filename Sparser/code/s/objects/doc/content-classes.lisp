@@ -30,6 +30,7 @@
    (cell-lines :initform nil :accessor aggregated-cell-lines)
    (protein-domains :initform nil :accessor aggregated-protein-domains)
    ;;(molecule :initform nil :accessor aggregated-protein-molecule)
+   (locations :initform nil :accessor aggregated-locations)
    (comlex :initform nil :accessor aggregated-comlex)
    (other :initform nil :accessor aggregated-other))
   (:documentation "Collects the entities and relations of
@@ -47,7 +48,7 @@
     experimental-methods medical-conditions infectious-agents
     biological-predications
     cellular-locations cell-types cell-lines organs/tissues species
-    protein-domains 
+    protein-domains  locations
     comlex
     other)
   "Used by downstream routines that are performing the identical

@@ -200,6 +200,7 @@
                          ;; pathogens are not (always) infectious agents,  but for now...
                          (itypep i 'pathogen)))))
        'species)
+      ((itypep i 'geographical-region) 'locations)
       ((and (get-tag :file-location (itype-of i))
             (eq :comlex (get-tag :file-location (itype-of i))))
        'COMLEX)
