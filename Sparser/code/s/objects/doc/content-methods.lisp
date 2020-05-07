@@ -160,7 +160,6 @@
     the instance count on the item. That is problematic for mentions
     since by definition each on is unique. To handle that we return
     as a second value the individual that the mention is based on")
-
   (:method ((m discourse-mention))
     (let ((i (if (and (slot-boundp m 'ci)
                       (contextual-description m)) ; it might be bound but nil
@@ -201,9 +200,8 @@
                          ;; pathogens are not (always) infectious agents,  but for now...
                          (itypep i 'pathogen)))))
        'species)
-      ((and (not (search "-ENDURANT" (pname (itype-of i))))
-            (not (search "-PERDURANT" (pname (itype-of i)))))
-       ;; don't highlight words just brought in from COMLEX
+      ((and (get-tag :file-location (itype-of i))
+            (eq :comlex (get-tag :file-location (itype-of i))))
        'COMLEX)
       ;;((itypep i 'molecule) 'molecule)
       (T
