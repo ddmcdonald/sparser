@@ -41,10 +41,12 @@
            #:sans
            #:choose
            #:take-first-n
+           #:singletonp
            #:deep-copy
            #:flatten #:flattenc
            #:all-the-same
-
+           #:invert-type
+       
            ;; strings
            #:string-append
            #:s-intern
@@ -88,6 +90,7 @@
            #:indexed-object-index
 
            ;; push-debug
+           #:*debug*
            #:push-debug
            #:pop-debug
            #:peek-debug
