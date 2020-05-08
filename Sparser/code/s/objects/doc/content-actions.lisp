@@ -84,7 +84,7 @@ and make that file easier to understand. |#
 
 (defgeneric paragraphs-in-doc-element (document-element)
   (:documentation "Locate and return a list of all the paragraph
- objects at or below the indicated document-element")
+    objects at or below the indicated document-element")
   (:method ((p paragraph))
     (list p))
   (:method ((tt title-text)) nil)
@@ -115,10 +115,6 @@ and make that file easier to understand. |#
   (some #'(lambda (c) (typep c 'section))
         (children s)))
 
-(defmethod nth-child ((n integer) (a has-children))
-  ;; Argument is 1-based, so needs conversion to
-  ;; zero-based
-  (nth (1- n) (children a))) ;; what else could it be?
 
 (defmethod first-section ((a article))
   (first (children a)))
@@ -143,15 +139,14 @@ and make that file easier to understand. |#
          (s s1)
          next )
     (loop 
-       (unless (and
-		(slot-boundp s 'next)
-		(next s)) ;; had a NULL next in articel 23 of June -- should investigate
-        (return))
-      (setq next (next s))
-      (when (string-equal (sentence-string next) "")
-        (return))
-      (setq s next)
-      (push s sentences))
+       (unless (and (slot-boundp s 'next)
+                    (next s)) ;; had a NULL next in article 23 of June
+         (return))
+       (setq next (next s))
+       (when (string-equal (sentence-string next) "")
+         (return))
+       (setq s next)
+       (push s sentences))
     (nreverse sentences)))
 
 
@@ -256,6 +251,53 @@ and make that file easier to understand. |#
   ;; was nil.
   (let ((s (identify-current-sentence t)))
     (when s (toc-index s))))
+
+
+;;--- TOC string decoding
+
+(defun explode-table-of-contents-string (toc-string) ; "0403-rxiv-40.2.p2"
+  " <handle> . <section> . <paragraph> . <sentence> "
+  (let* ((substrings (break-string-at toc-string #\.))
+         (handle-name (first substrings))
+         (sect-name (second substrings))
+         (para-name (third substrings))
+         (sent-name (fourth substrings)))
+    (values handle-name sect-name para-name sent-name)))
+
+(defun sentence-for-toc (toc-string)
+  (multiple-value-bind (handle-name sect-name para-name sent-name)
+      (explode-table-of-contents-string toc-string)
+    (let* ((handle (intern (string-upcase handle-name) (find-package :sparser)))
+           (article (get-article handle)))
+      (unless article (error "Can't access article with handle ~a" handle))
+      (let* ((section (get-toc-child article sect-name))
+             (paragraph (get-toc-child section para-name)))
+        (get-toc-child paragraph sent-name)))))
+
+
+(defgeneric get-toc-child (parent child)
+  (:documentation "Used in deploying the information in a table of contents
+   string to access the elements of a document. Each level knows how its
+   component of the TOC string is decoded")
+
+  (:method ((a article) (section string)) ; "2"
+    (let ((n (read-from-string section)))
+      (nth-child n a)))
+
+  (:method ((s section) (paragraph string)) ; "p2"
+    (let* ((minus-the-p (subseq paragraph 1))
+           (n (read-from-string minus-the-p)))
+      (nth-child n s)))
+
+  (:method ((p paragraph) (sentence string)) ; "s1"
+    (let* ((minus-the-s (subseq sentence 1))
+           (n (read-from-string minus-the-s))
+           (s1 (children p)))
+      (if (= n 1)
+        s1
+        (nth-next s1 n)))))
+      
+
 
 ;;;----------
 ;;; printing 
