@@ -3,15 +3,13 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:  March 2020
+;;;  Version:  May 2020
 
 ;; Created 3/20/20 to organize the marshalling and reading of json-based
 ;; documents with the same range of options as run-an-article has
 ;; for nxml documents.
 
 (in-package :sparser)
-(defparameter *WRITE-ARTICLE-OBJECTS-FILE* t
-  "If T, then save the facts for the article to a file with name derived from the article")
 
 (defun run-json-article (article &key (sweep t) (read t)
                                    (quiet t) (skip-errors t) (verbose t)
@@ -61,6 +59,7 @@
    and pass the article to run-json-article. Standard way to run an
    article from the json corpus. Designed for iterating over:
      (loop for i from 11 to 50 do (run-json-article-from-handle :n i))"
+  (declare (special *write-article-objects-file*))
   (multiple-value-bind (article sexp)
       (make-article-from-handle :n n :corpus corpus :verbose verbose)
     (let ((result
@@ -70,66 +69,8 @@
                 article :sweep sweep :read read :quiet quiet 
                 :show-sect show-sect :stats stats))))
       (when *write-article-objects-file*
-        (write-article-objects-file article corpus n)
-        )
+        (write-article-objects-file article corpus n))
       result)))
-
-(defun corpus-file-handle (corpus n)
-  (intern (string-append corpus "-" n)
-          (find-package :sparser)))
-
-(defun corpus-file-namestring (corpus n)
-  (decoded-file (corpus-file-handle corpus n)))
-
-
-(defun mentions-filename (&key corpus n)
-  (let ((article-namestring
-         (json-relative-pathname (corpus-file-namestring corpus n))))
-    (declare (special article-namestring))
-    (json-absolute-pathname
-     (format nil "~amentions/mentions-in-~a.lisp" 
-             (directory-namestring article-namestring)
-             (pathname-name
-              (file-namestring article-namestring))
-             ))))
-
-(defun article-relevant-mentions (article  &aux (contents (contents article)))
-  (loop for slot-name in *term-buckets*
-        as bucket = (slot-value contents slot-name)
-        unless (eq slot-name 'other)
-        append
-          (loop for mention-set in bucket
-                append  (third mention-set))))
-
-
-(defun write-article-objects-file (article corpus n)
-  (let ((mention-file (mentions-filename :corpus corpus :n n)))
-    (ensure-directories-exist mention-file)
-    (with-open-file (mf mention-file :direction :output
-                        :if-exists :supersede
-                        :if-does-not-exist :create)
-      (format mf "(in-package :sp)~%;;;;;mentions for article ~s~%" (corpus-file-handle corpus n))
-      (write-list-to-param
-       "*article-mention-facts*"
-       (grouped-article-mentions article)
-       mf)
-       mention-file)))
-
-
-(defun grouped-article-mentions (article)
-  (group-by
-   (loop for g in
-           (group-by (loop for m in (article-relevant-mentions article)
-                           unless (itypep (mention-head-referent m)
-                                          '(:or number-sequence))
-                           collect m)
-                     #'(lambda(m)(krisp->sexpr (mention-head-referent m)))
-                     #'(lambda(m) (car (mentioned-in-article-where m))))
-         collect
-           (list (car g)
-                 (loop for str in (remove-duplicates (second g) :test #'equal)
-                       collect (subseq str (+ 1 (search ".p" str))))))
-   #'caar))
 
 
 (defun make-article-from-handle (&key (n 1) (corpus 'rxiv) (verbose t))
@@ -170,6 +111,72 @@
                   sexp))))))
 
 
+;;;--------------------
+;;; saving out results
+;;;--------------------
+
+(defparameter *write-article-objects-file* t
+  "If T, then save the facts for the article to a file with name derived from the article")
+
+(defun corpus-file-handle (corpus n)
+  (intern (string-append corpus "-" n)
+          (find-package :sparser)))
+
+(defun corpus-file-namestring (corpus n)
+  (decoded-file (corpus-file-handle corpus n)))
+
+(defun mentions-filename (&key corpus n)
+  (let ((article-namestring
+         (json-relative-pathname (corpus-file-namestring corpus n))))
+    (declare (special article-namestring))
+    (json-absolute-pathname
+     (format nil "~amentions/mentions-in-~a.lisp" 
+             (directory-namestring article-namestring)
+             (pathname-name
+              (file-namestring article-namestring))))))
+
+(defun article-relevant-mentions (article  &aux (contents (contents article)))
+  (loop for slot-name in *term-buckets*
+     as bucket = (slot-value contents slot-name)
+     unless (eq slot-name 'other)
+     append
+       (loop for mention-set in bucket
+          append (third mention-set))))
+
+(defun write-article-objects-file (article corpus n)
+  (let ((mention-file (mentions-filename :corpus corpus :n n)))
+    (ensure-directories-exist mention-file)
+    (with-open-file (mf mention-file :direction :output
+                        :if-exists :supersede
+                        :if-does-not-exist :create)
+      (format mf "(in-package :sp)~%;;;;;mentions for article ~s~%" (corpus-file-handle corpus n))
+      (write-list-to-param
+       "*article-mention-facts*"
+       (grouped-article-mentions article)
+       mf)
+       mention-file)))
+
+(defun grouped-article-mentions (article)
+  (group-by
+   (loop for g in
+        (group-by (loop for m in (article-relevant-mentions article)
+                     unless (itypep (mention-head-referent m)
+                                    '(:or number-sequence))
+                     collect m)
+                  #'(lambda(m) (krisp->sexpr (mention-head-referent m)))
+                  #'(lambda(m) (car (mentioned-in-article-where m))))
+      collect
+        (list (car g)
+              (loop for str in (remove-duplicates (second g) :test #'equal)
+                 collect (subseq str (+ 1 (search ".p" str))))))
+   #'caar))
+
+
+
+;;;------------------------
+;;; saving article objects 
+;;;------------------------
+
 (defvar *handles-to-articles* (make-hash-table)
   "Handle symbols to article objects")
 
@@ -185,9 +192,12 @@
   (:method ((handle symbol))
     (gethash handle *handles-to-articles*)))
 
+
+;;;--------------
+;;; original set
+;;;--------------
   
-#| Original set
- These are quick and dirty -- don't incorporate any way to change
+#|  These are quick and dirty -- don't incorporate any way to change
  the default setting. Intended to see a mass effect such as
  collecting vocabulary 
 
