@@ -1,5 +1,5 @@
 ;;; -*- Mode: Lisp; Syntax: COMMON-LISP; -*-
-;;; Copyright (c) 2011-2019 David D. McDonald. All Rights Reserved.
+;;; Copyright (c) 2011-2020 David D. McDonald. All Rights Reserved.
 
 ;; initiated 3/8/11. Pulled in file-local exports 10/6/14 in effort
 ;; to accommodate changes in MCL 10.0
@@ -59,6 +59,12 @@
            #:remove-suffix
            #:remove-comma-from-number
            #:insert-commas-into-number-string
+           #:break-string-at
+           #:string-to-words
+           #:string-to-list
+           #:new-scan-to
+           #:break-up
+           #:fold
 
            ;; hash-tables
            #:all-hash-keys
