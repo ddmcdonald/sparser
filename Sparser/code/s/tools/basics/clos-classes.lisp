@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;    File:  "clos-classes"
 ;;;   Module:  tools/basics/
-;;;  Version:  July 2015
+;;;  Version:  May 2020
 
 ;; initiated 3/29/13 to hold general clos classes that will be used as
 ;; mix-ins and such. 9/16/13 added ordered. 9/17/13 added indexed.
@@ -51,6 +51,19 @@
   (:documentation "The topmost structure in a partonomy will
     only have children."))
 
+(defgeneric nth-child (n item)
+  (:documentation "The item is assumed to have a list of children
+    (i.e. any document element above paragraph). It n is longer
+    than the number of children return nil and the actual length")
+  (:method ((n integer) (item has-children))
+    (let* ((children (children item))
+           (count (length children)))
+      (if (> n count)
+        (values nil count)
+        (nth (1- n)
+             ;; Argument is 1-based, so needs conversion to zero-based
+             children)))))
+      
 
 ;;---- double linked list
 
@@ -63,3 +76,20 @@
     of anything that has a sense of direction (creation order, scanning
     order, ...) where the notion of 'the next one' and 'the last (previous,
     prior) one' makes sense."))
+
+(defgeneric nth-next (base n)
+  (:documentation "Traverse 'n' next pointers out from the base and
+     return that element.
+     If n is zero return the base. If we run out of pointers before
+     traversing n of them (either the slot is not bound or it is nil)
+     return nil and the actual number traversed.")
+  (:method ((base ordered) (n integer))
+    (if (= n 0)
+      base
+      (let ((item base))
+        (dotimes (i n item)
+          (if (not (slot-boundp item 'next))
+            (values nil i)
+            (setq item (next item)))
+          (when (null item)
+            (return (values nil i))))))))
