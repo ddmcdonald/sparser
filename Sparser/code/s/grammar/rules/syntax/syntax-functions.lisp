@@ -938,6 +938,9 @@ val-pred-var (pred vs modifier - left or right?)
   ;; See notes on forming plurals in tree-families/morphology.lisp
   (cond
     (*subcat-test* (and number head ;; J34: "Histone 2B"
+                        ;; we get a bunch of number-sequence items for referents
+                        ;; e.g. "...3CLpro and PLpro.12,13 PLpro also behaves..."
+                        (not (itypep number 'number-sequence))
                         (not (itypep head 'single-capitalized-letter))
                         (not (itypep head 'year)))) ;; "December 4 2017"
     (t

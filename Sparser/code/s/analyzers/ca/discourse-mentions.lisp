@@ -423,6 +423,7 @@
                    (let ((new-mention
                           (make-instance 'discourse-mention
                                          :uid (incf *mention-uid*))))
+                     ;;(lsp-break "new mention")
                      (setf (gethash  *mention-uid* *mention-index-table*)
                            new-mention)
                      (setf (mention-head new-mention) source)
@@ -512,8 +513,15 @@
                      'discourse-mention))
          (return-from subsumed-mentions?
            (edge-mention (edge-left-daughter edge))))
-        ((and (not (itypep i category::wh-question))
-              (embedded-statement? edge))
+        (#+ignore
+         (not (itypep i category::wh-question))
+         
+         (and (not (itypep i category::wh-question))
+              (embedded-statement? edge)
+              ;; block cases like "supporting table s2"
+              (not (itype (value-of 'statement i)
+                          '(:or physical-object medical-condition
+                            ))))
          (return-from subsumed-mentions? nil))
         (t
          (let ((un-embedded-edge (un-embed-edge edge)))
@@ -540,7 +548,8 @@
                   (unless (eq (edge-right-daughter edge) :long-span)
                     (safe-edge-mention (edge-right-daughter edge))))
                  ((and (cfr-p (edge-rule edge))
-                       (equal '(:funcall create-partitive-np left-referent right-referent)
+                       (equal '(:funcall create-partitive-np left-referent
+                                right-referent)
                               (cfr-referent (edge-rule edge))))
                   (safe-edge-mention (edge-right-daughter
                                       (edge-right-daughter edge))))

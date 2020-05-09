@@ -157,19 +157,31 @@
        mention-file)))
 
 (defun grouped-article-mentions (article)
-  (group-by
-   (loop for g in
-        (group-by (loop for m in (article-relevant-mentions article)
-                     unless (itypep (mention-head-referent m)
-                                    '(:or number-sequence))
-                     collect m)
-                  #'(lambda(m) (krisp->sexpr (mention-head-referent m)))
-                  #'(lambda(m) (car (mentioned-in-article-where m))))
-      collect
-        (list (car g)
-              (loop for str in (remove-duplicates (second g) :test #'equal)
-                 collect (subseq str (+ 1 (search ".p" str))))))
-   #'caar))
+  (sort
+   (group-by
+    (loop for g in
+            (group-by (loop for m in (article-relevant-mentions article)
+                            unless (itypep (mention-head-referent m)
+                                           '(:or number-sequence))
+                            collect m)
+                      #'(lambda(m)(krisp->sexpr (mention-head-referent m)))
+                      #+ignore
+                      #'(lambda(m) (car (mentioned-in-article-where m))))
+          collect
+            (list (car g)
+                  (loop for m in (remove-duplicates (second g) :test #'equal)
+                        collect
+                          (let ((str (car (mentioned-in-article-where m))))
+                            (subseq str (+ 1 (search ".p" str)))
+                            #+ignore
+                            (list (subseq str (+ 1 (search ".p" str)))
+                                  (list (subseq str (+ 1 (search ".p" str)))
+                                        (mention-uid m))
+                                  )))))
+    #'caar)
+   #'string<
+   :key
+   #'car))
 
 
 
