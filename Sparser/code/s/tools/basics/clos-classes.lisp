@@ -80,14 +80,14 @@
 (defgeneric nth-next (base n)
   (:documentation "Traverse 'n' next pointers out from the base and
      return that element.
-     If n is zero return the base. If we run out of pointers before
+     If n is one return the base. If we run out of pointers before
      traversing n of them (either the slot is not bound or it is nil)
      return nil and the actual number traversed.")
   (:method ((base ordered) (n integer))
-    (if (= n 0)
+    (if (= n 1)
       base
-      (let ((item base))
-        (dotimes (i n item)
+      (let ((item base)) 
+        (dotimes (i (1- n) item)
           (if (not (slot-boundp item 'next))
             (values nil i)
             (setq item (next item)))
