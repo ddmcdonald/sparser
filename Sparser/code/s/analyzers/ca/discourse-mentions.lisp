@@ -519,7 +519,7 @@
          (and (not (itypep i category::wh-question))
               (embedded-statement? edge)
               ;; block cases like "supporting table s2"
-              (not (itype (value-of 'statement i)
+              (not (itypep (value-of 'statement i)
                           '(:or physical-object medical-condition
                             ))))
          (return-from subsumed-mentions? nil))
