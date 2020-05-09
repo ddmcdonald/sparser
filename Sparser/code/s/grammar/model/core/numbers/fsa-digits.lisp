@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "fsa digits"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  April 2020
+;;;  Version:  May 2020
 
 ;; 5.0 (10/5 v2.3) rephrased the scan step to get subtler steps
 ;; 5.1 (9/14/93) updated the scanning calls, finished 9/16
@@ -127,6 +127,11 @@ the fsa would be identified at the word level rather than the category level.
     (trace-msg "[digits] returning from ~a~
               ~%    because ~a"
                function reason)))
+
+(deftrace :too-few-digits (digit-word next-position)
+  (when *trace-digits-fsa*
+    (trace-msg "[digits] too few digits in ~s at p~a"
+               (pname digit-word) (pos-token-index next-position))))
 
 ;;;-----------------
 ;;; state variables
@@ -396,6 +401,7 @@ unknown---in any event, we're taking the first edge that is installed.
                                                           digits-edge))))
             (else
               (setq *too-few-digits-to-be-number* t)
+              (tr :too-few-digits digit-word next-position)
               (setf (aref array next-cell) digit-word) ; stash what we got
               (close-out-number-sequence (1+ next-cell) array
                                          (chart-position-after next-position)))))                       
@@ -486,10 +492,8 @@ unknown---in any event, we're taking the first edge that is installed.
  so that some other process can use external evidence to decided what
  sort of thing it is."
   (declare (special *interpretation-of-digit-sequence*
-                    *the-punctuation-hyphen*
-                    *the-punctuation-period*
-                    *the-punctuation-comma*
-                    *end-of-source*))
+                    *the-punctuation-hyphen* *the-punctuation-period*
+                    *the-punctuation-comma* *end-of-source*))
   (setq *interpretation-of-digit-sequence* :not-a-number)
   (unless (pos-assessed? next-position)
     (scan-next-position))
@@ -546,12 +550,19 @@ unknown---in any event, we're taking the first edge that is installed.
               (scan-next-position))
             (tr :digit-fsa-scanned (pos-terminal next-position)
                 'close-out-number-sequence)))) )))
-         
+
+
 (defun make-edge-for-not-a-number (starting-position ending-position
                                    number-of-segments *digit-position-array*)
-  (let* ((items (loop for i from 0 to number-of-segments
+  "Readout the array into the items for a sequence. Depending exactly how
+   we got here, the array will be holding edges or even just words. We convert
+   all these to numbers" ;;/// later may include the punctuation in the array
+  (let* ((edges (loop for i from 0 to (1- number-of-segments)
                    collect (aref *digit-position-array* i)))
-         (sequence (create-sequence items))
+         (numbers (loop for e in edges
+                     when (edge-p e) collect (edge-referent e)
+                     when (not (edge-p e)) collect (find-or-make-number e)))
+         (sequence (create-sequence numbers))
          (i (define-or-find-individual 'number-sequence :value sequence)))
     (let ((edge
            (make-chart-edge :starting-position starting-position
@@ -559,7 +570,7 @@ unknown---in any event, we're taking the first edge that is installed.
                             :category category::number-sequence
                             :form category::number
                             :referent i
-                            :rule-name 'digit-fsa
+                            :rule-name 'make-edge-for-not-a-number
                             :ignore-used-in t)))
       ;;(break "edge: ~a" edge)
       edge)))
