@@ -2176,16 +2176,23 @@ assumed. |#
     :pattern (quantifier)
     :action (:function raise-quantifier-to-np first))
 
-(defun raise-quantifier-to-np (quantifier)
-  (unless (or (itypep (edge-referent quantifier) 'either) ;; more often a part of a conjunction or partitive
-              (eq (edge-cat-name quantifier) 'ordinal))
-    (make-edge-spec
-     :category (edge-category quantifier)
-     :form category::np
-     :referent (edge-referent quantifier))))
+(defun raise-quantifier-to-np (quantifier-edge)
+  (unless (or (itypep (edge-referent quantifier-edge) 'either) ;; more often a part of a conjunction or partitive
+              (eq (edge-cat-name quantifier-edge) 'ordinal))
+    (let ((edge (make-completed-unary-edge
+                 (edge-starts-at quantifier-edge)
+                 (edge-ends-at quantifier-edge)
+                 :raise-quantifier-to-np ; rule
+                 quantifier-edge ; daughter
+                 (edge-category quantifier-edge) ; category
+                 category::np ; form
+                 (edge-referent quantifier-edge)))) ; referent
+       (when edge
+         (setf (edge-constituents edge) `(,quantifier-edge))
+         edge))))
 
 
-;;--- other 
+;;--- others
 
 (define-debris-analysis-rule its-a-number
   :pattern (number)
@@ -2204,9 +2211,10 @@ assumed. |#
                    word-category 
                    category::np
                    word-referent)))
-        (setf (edge-constituents edge) `(,word-edge))
-        ;; (push-debug `(,edge)) (break "look at edge")
-        edge))))
+        (when edge
+          (setf (edge-constituents edge) `(,word-edge))
+          ;; (push-debug `(,edge)) (break "look at edge")
+          edge)))))
 
 
 (define-debris-analysis-rule are-there-np

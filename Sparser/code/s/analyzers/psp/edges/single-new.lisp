@@ -69,6 +69,26 @@
                                   &optional  category
                                              form
                                              referent )
+
+  (when (and category daughter)
+    (when (eq category (edge-category daughter))
+      (let ((daughter-rule (edge-rule daughter)))
+        (if (eq daughter-rule rule)
+          t ;;(break "loop?")
+          (else ;; it's a different rule, but we have to look deeper
+            ;; If the highest number edge on the vector has this
+            ;; same rule then we abort.
+            ;; e.g. "almost twice as much than one week earlier"
+            ;;  though that one's grammar also needs to change.
+            ;;  Looping was done by raise-quantifier-to-np
+            (let ((top-edge (top-edge-on-ev starting-vector)))
+              (push-debug `(,starting-vector))
+              (if (eq rule (edge-rule top-edge))
+                (return-from make-completed-unary-edge nil) ;;(break "abort")
+                t ;;(break "different rule")
+                )))))))
+
+
   (let ((edge (next-edge-from-resource)))
     (knit-edge-into-positions edge
                               starting-vector
