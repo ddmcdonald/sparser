@@ -70,7 +70,8 @@
                                              form
                                              referent )
 
-  (when (and category daughter)
+  (when (and category daughter
+             (edge-p daughter)) ;; Dec#2
     (when (eq category (edge-category daughter))
       (let ((daughter-rule (edge-rule daughter)))
         (if (eq daughter-rule rule)
