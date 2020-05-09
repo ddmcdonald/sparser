@@ -140,7 +140,7 @@
 (defun article-relevant-mentions (article  &aux (contents (contents article)))
   (loop for slot-name in *term-buckets*
      as bucket = (slot-value contents slot-name)
-     unless (eq slot-name 'other)
+     unless (member slot-name '(other comlex))
      append
        (loop for mention-set in bucket
              append (third mention-set))))
@@ -188,8 +188,7 @@
                    (loop for m in (remove-duplicates (second g) :test #'equal)
                          collect
                            (let ((str (car (mentioned-in-article-where m))))
-                             (mapcar #'read-from-string
-                                     (break-string-at (subseq str (+ 1 (search ".p" str))) #\.))))
+                             (subseq str (+ 1 (search "." str)))))
                              
                    #+ignore
                    (list (subseq str (+ 1 (search ".p" str)))
