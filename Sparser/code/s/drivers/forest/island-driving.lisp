@@ -67,6 +67,7 @@
     (tts))
   (let ((*allow-pure-syntax-rules* t)
         (*edges-from-referent-categories* *island-driven-efrc*))
+    (clrhash *executed-triples*)
     (run-island-checks sentence)
     ;;  (successive-treetops :from start-pos :to end-pos)
     (let ((coverage (coverage-over-region start-pos end-pos)))

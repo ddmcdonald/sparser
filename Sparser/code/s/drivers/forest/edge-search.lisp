@@ -63,6 +63,9 @@
 (defparameter *rules-for-pairs* (make-hash-table :test #'equal :size 200)
   "Cache for rule lookup")
 
+(defparameter *executed-triples* (make-hash-table :test #'equal :size 200)
+  "Used to avoid executing circular sets of rules")
+
 (defvar *whack-a-rule-sentence* nil
   "Dynamically bound to provide the correct boundaries,
   usually within a particular sentence or chunk, without
@@ -83,17 +86,19 @@
  triples to consider."
   (let ((*whack-a-rule-sentence* sentence))
     (declare (special *whack-a-rule-sentence*))
-    (let ( rule-and-edges  edge at-least-one-rule)
+    (let ( triple  edge at-least-one-rule)
       (clrhash *rules-for-pairs*)
       (loop
-        (setq rule-and-edges (best-treetop-rule sentence))
-        (when (null rule-and-edges)
-          (return-from whack-a-rule-cycle at-least-one-rule))
-        (setq edge (execute-triple rule-and-edges))
-        (cond
-         (edge (setq at-least-one-rule edge))
-         (t (return-from whack-a-rule-cycle at-least-one-rule)))
-        (tr :whacking-triple rule-and-edges edge)))))
+         (setq triple (best-treetop-rule sentence))
+         (when (null triple)
+           (return-from whack-a-rule-cycle at-least-one-rule))
+         (setq edge (execute-triple triple))
+         (cond
+           (edge
+            (tr :whacking-triple triple edge)
+            (setf (gethash triple *executed-triples*) edge)
+            (setq at-least-one-rule edge))
+           (t (return-from whack-a-rule-cycle at-least-one-rule)))))))
 
 
 ;;--------------------------------------------------------
@@ -251,15 +256,25 @@
 	     when (setq rule (rule-for-edge-pair pair))
 	     do (push (cons rule pair)
 		      triples)))))
+    #+ignore
     (setq triples
           (let ((original-triples (copy-list triples))) ;; for trace
             (push-debug `(,original-triples))
             (remove-surplus-literal-compositions triples)))
     ;; (break "triples")
-    (let ((triple (filter-rules-by-local-competition triples)))
-      (tr :filter-selected-triple triple)
-      triple)))
 
+    (setq triples (filter-for-already-executed triples))
+    (when triples
+      (let ((triple (filter-rules-by-local-competition triples)))
+        (tr :filter-selected-triple triple)
+        triple))))
+
+(defun filter-for-already-executed (triples)
+  (loop for triple in triples
+     unless (gethash triple *executed-triples*)
+     collect triple))
+
+#+ignore
 (defun remove-surplus-literal-compositions (triples)
   "Is there is pair involving an edge based on a literal
    and another pair, employing the same rule, that applies
@@ -268,7 +283,6 @@
   (if (cdr triples) ;; more than one
       (let ((edges-over-one-word
 	     (collect-triples-with-edges-over-one-word triples)))
-	(push-debug `(,edges-over-one-word))
 	(if edges-over-one-word               
 	    (if (cdr edges-over-one-word) ;; more than one?
 		(let ((triples-minus-redundant-literals
@@ -278,7 +292,7 @@
 		triples) ;; only one edge over a single word
 	    triples))	 ;; none over just one word
       triples))		 ;; only one triple
-
+#+ignore
 (defun remove-redundant-literal-triples (records)
   (declare (special records))
   (push-debug `(,records))
