@@ -47,6 +47,8 @@
         (read-from-document article)))
     (when stats
       (summary-document-stats article))
+    (when *write-article-objects-file*
+      (write-article-objects-file article))
     article))
 
 
@@ -141,47 +143,63 @@
      unless (eq slot-name 'other)
      append
        (loop for mention-set in bucket
-          append (third mention-set))))
+             append (third mention-set))))
 
-(defun write-article-objects-file (article corpus n)
-  (let ((mention-file (mentions-filename :corpus corpus :n n)))
+(defun article-corpus (article &aux (name (name article)))
+  (intern
+   (subseq (string name) 0 (search "-" (string name) :from-end t))
+   :sp))
+
+(defun article-corpus-index (article &aux (name (name article)))
+  (read-from-string
+   (subseq (string name) (+ 1 (search "-" (string name) :from-end t)))))
+
+(defun write-article-objects-file (article)
+  (let* ((corpus (article-corpus article))
+         (n (article-corpus-index article))
+         (mention-file (mentions-filename :corpus corpus :n n)))
     (ensure-directories-exist mention-file)
     (with-open-file (mf mention-file :direction :output
                         :if-exists :supersede
                         :if-does-not-exist :create)
-      (format mf "(in-package :sp)~%;;;;;mentions for article ~s~%" (corpus-file-handle corpus n))
+      (format mf "(in-package :sp)~%;;;;;mentions for article ~s~%" (name article))
       (write-list-to-param
        "*article-mention-facts*"
        (grouped-article-mentions article)
        mf)
-       mention-file)))
+      mention-file)))
 
 (defun grouped-article-mentions (article)
-  (sort
-   (group-by
-    (loop for g in
-            (group-by (loop for m in (article-relevant-mentions article)
-                            unless (itypep (mention-head-referent m)
-                                           '(:or number-sequence))
-                            collect m)
-                      #'(lambda(m)(krisp->sexpr (mention-head-referent m)))
-                      #+ignore
-                      #'(lambda(m) (car (mentioned-in-article-where m))))
-          collect
-            (list (car g)
-                  (loop for m in (remove-duplicates (second g) :test #'equal)
-                        collect
-                          (let ((str (car (mentioned-in-article-where m))))
-                            (subseq str (+ 1 (search ".p" str)))
-                            #+ignore
-                            (list (subseq str (+ 1 (search ".p" str)))
-                                  (list (subseq str (+ 1 (search ".p" str)))
-                                        (mention-uid m))
-                                  )))))
-    #'caar)
-   #'string<
-   :key
-   #'car))
+  (list
+   (name article)
+   (sort
+    (group-by
+     (loop for g in
+             (group-by (loop for m in (article-relevant-mentions article)
+                             unless (itypep (mention-head-referent m)
+                                            '(:or number-sequence))
+                             collect m)
+                       #'(lambda(m)
+                           (handler-case
+                               (krisp->sexpr (mention-head-referent m))
+                             (error (e) (list '**error-in-krisp->sexpr**)))))
+           collect
+             (list (car g)
+                   (loop for m in (remove-duplicates (second g) :test #'equal)
+                         collect
+                           (let ((str (car (mentioned-in-article-where m))))
+                             (mapcar #'read-from-string
+                                     (break-string-at (subseq str (+ 1 (search ".p" str))) #\.))))
+                             
+                   #+ignore
+                   (list (subseq str (+ 1 (search ".p" str)))
+                         (list (subseq str (+ 1 (search ".p" str)))
+                               (mention-uid m))
+                         )))
+     #'caar)
+    #'string<
+    :key
+    #'car)))
 
 
 
@@ -242,15 +260,16 @@
                                  (sexp nil))
   (let* ((*article-short-name* (format nil "~a-~a" article-set-name n)) ; file-handle
          (file-path-name (decoded-file *article-short-name*))
-         (file-path (probe-file file-path-name))
-         (*article-json* (cl-json::decode-json-from-source file-path)))
+         (file-path (probe-file file-path-name)))
+    (setq *article-json* (cl-json::decode-json-from-source file-path))
     (if sexp ;; return the decoding and don't do anything else
         *article-json*
-        (let ((*json-article* (make-document *article-json* file-path
-                                             :handle
-                                             (if (stringp *article-short-name*)
-                                                 (intern *article-short-name* :sp)
-                                                 *article-short-name*))))
+        (progn
+          (setq *json-article* (make-document *article-json* file-path
+                                              :handle
+                                              (if (stringp *article-short-name*)
+                                                  (intern *article-short-name* :sp)
+                                                  *article-short-name*)))
           (extract-authors-and-bibliography *article-json*)
           (run-json-article *json-article* :quiet quiet :skip-errors skip-errors)))))
 
