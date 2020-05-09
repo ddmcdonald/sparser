@@ -117,7 +117,7 @@
 ;;; saving out results
 ;;;--------------------
 
-(defparameter *write-article-objects-file* t
+(defparameter *write-article-objects-file* nil
   "If T, then save the facts for the article to a file with name derived from the article")
 
 (defun corpus-file-handle (corpus n)
