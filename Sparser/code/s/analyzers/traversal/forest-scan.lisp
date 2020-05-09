@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1995,2014-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2014-2020  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "forest scan"
 ;;;   Module:  "analyzers;traversal:"
-;;;  Version:  November 2019
+;;;  Version:  May 2020
 
 ;; initiated 5/7/94 v2.3
 ;; 0.1 (10/24) it was attempting to do checks with words rather than literals
@@ -27,6 +27,9 @@
 ;;;-------
 ;;; cases
 ;;;-------
+
+(defparameter *rules-firing-within-ns-span* nil
+  "If non-nil, accumulate all the rules that ever fire in a no-space context")
 
 (defun parse-between-nospace-scan-boundaries (left-bound right-bound)
   "Called from collect-no-space-segment-into-word to look for
@@ -268,6 +271,7 @@
   ;; Note that this solves a single specific problem, which is
   ;; arranging for the cs rules in be.lisp and the other that handle
   ;; apostrophe are able to run.
+  (declare (special *rules-firing-within-ns-span*))
   (let* ((*allow-pure-syntax-rules* nil)
          (*allow-form-rules* nil)
          (tt (treetops-between start-pos end-pos))
@@ -284,6 +288,8 @@
                    (dolist (right-edge edges-starting-there)
                      (setq rule (multiply-edges left-edge right-edge))
                      (when rule
+                       (when *rules-firing-within-ns-span*
+                         (pushnew rule *rules-firing-within-ns-span*))
                        (throw :succeeded
                          (make-completed-binary-edge left-edge right-edge rule))))))))
           edge)))))
