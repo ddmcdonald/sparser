@@ -264,11 +264,11 @@ and make that file easier to understand. |#
          (sent-name (fourth substrings)))
     (values handle-name sect-name para-name sent-name)))
 
-(defun sentence-for-toc (toc-string)
+(defun sentence-for-toc (toc-string &optional article)
   (multiple-value-bind (handle-name sect-name para-name sent-name)
       (explode-table-of-contents-string toc-string)
     (let* ((handle (intern (string-upcase handle-name) (find-package :sparser)))
-           (article (get-article handle)))
+           (article (or article (get-article handle))))
       (unless article (error "Can't access article with handle ~a" handle))
       (let* ((section (get-toc-child article sect-name))
              (paragraph (get-toc-child section para-name)))
