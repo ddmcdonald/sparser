@@ -32,8 +32,9 @@
   (when *source-of-unknown-words-definition*
     ;; Most definitions come from grammar modules so this is
     ;; usually off
-    (setf (get-tag :source unit)
-          *source-of-unknown-words-definition*)))
+    (when (not (consp unit)) ;; problem with ("more real")
+      (setf (get-tag :source unit)
+            *source-of-unknown-words-definition*))))
 
 
 ;;;---------------
