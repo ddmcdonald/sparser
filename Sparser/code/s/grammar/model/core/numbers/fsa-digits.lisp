@@ -561,7 +561,9 @@ unknown---in any event, we're taking the first edge that is installed.
                    collect (aref *digit-position-array* i)))
          (numbers (loop for e in edges
                      when (edge-p e) collect (edge-referent e)
-                     when (not (edge-p e)) collect (find-or-make-number e)))
+                     when (and (word-p e)
+                               (not (punctuation? e)))
+                     collect (find-or-make-number e)))
          (sequence (create-sequence numbers))
          (i (define-or-find-individual 'number-sequence :value sequence)))
     (let ((edge
