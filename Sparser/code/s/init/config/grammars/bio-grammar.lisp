@@ -146,7 +146,7 @@
 (include-grammar-module  *amounts*)
 
 (include-grammar-module  *time*)
-;; (include-grammar-module  *money*)
+(include-grammar-module  *money*)
 ;; (include-grammar-module  *finance*)
 
 #|
