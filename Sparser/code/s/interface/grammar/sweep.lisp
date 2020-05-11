@@ -142,6 +142,7 @@
     RELATIVE-TIME
     SEQUENCE
     TIME-UNIT
+    WH-QUESTION
     adverbial
     approximator
     be
