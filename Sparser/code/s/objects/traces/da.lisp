@@ -1,13 +1,20 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995,2011,2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2011,2019-2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "DA"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  December 2019
+;;;  Version:  May 2020
 
 ;; initiated 5/5/95.  Elaborated ..5/19. 11/3/11 added missing trace.
 
 (in-package :sparser)
+
+(defparameter *trace-tucking* nil)
+(defun trace-tucking ()
+  (setq *trace-tucking* t))
+(defun untrace-tucking ()
+  (setq *trace-tucking* nil))
+
 
 (defparameter *trace-DA-check* nil) ;; does anything apply?
 (defun trace-da-hook ()
@@ -260,19 +267,57 @@
     (trace-msg "[defDA]    new vertex: ~a on arc ~a"
                replacement left-arc)))
 
+
+;;;----------------
+;;; tucking traces
+;;;----------------
+
+(deftrace :tuck-1 (subsumed-edge new-edge
+                   dominating-edge direction)
+  ;; called from tuck-new-edge-under-already-knit
+  (when *trace-tucking*
+    (trace-msg "[tuck] About to tunk~
+              ~%  subsumed-edge: ~a~
+              ~%  new-edge: ~a~
+              ~%  dominating-edge: ~a~
+              ~%  direction: ~a"
+               subsumed-edge new-edge
+               dominating-edge direction)))
+
+(deftrace :tuck-2 (dominating-edge-ev new-edge-ev) 
+  ;; called from tuck-new-edge-under-already-knit
+  (when *trace-tucking*
+    (trace-msg "[tuck] dominating-edge-ev: ~a~
+              ~%       new-edge-ev: ~a"
+               dominating-edge-ev new-edge-ev)))
+
+(deftrace :tuck-pop-topmost ()
+  ;; called from tuck-new-edge-under-already-knit
+  (when *trace-tucking*
+    (trace-msg "[tuck] popping off the topmost edge")))
+
+(deftrace :tuck-moving-above ()
+  ;; called from tuck-new-edge-under-already-knit
+  (when *trace-tucking*
+    (trace-msg "[tuck] moving edges above the insertion point")))
+
+(deftrace :tuck-reinterpret (dominating-edge)
+  ;; called from tuck-new-edge-under-already-knit
+  (when *trace-tucking*
+    (trace-msg "[tuck] about to reinterpret ~a"
+               dominating-edge)))
+
+
 #|
 (deftrace : ()
   ;; called from 
-  (when *trace-DA*
-    (trace-msg "[defDA] ")))
+  (when *trace-tucking*
+    (trace-msg "[tuck] ")))
 
 (deftrace : ()
   ;; called from 
-  (when *trace-DA*
-    (trace-msg "[defDA] ")))
+  (when *trace-tucking*
+    (trace-msg "[tuck] "))) |#
 
-(deftrace : ()
-  ;; called from 
-  (when *trace-DA*
-    (trace-msg "[defDA] ")))  |#
+
 

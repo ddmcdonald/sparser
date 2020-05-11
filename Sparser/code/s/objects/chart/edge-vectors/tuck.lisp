@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "tuck"
 ;;;   Module:  "objects/chart/edge vectors/"
-;;;  Version:  December 2019
+;;;  Version:  May 2020
 
 ;; Initiated 9/19/13 from code formerly in DA. 9/22/13 modifying it
 ;; to work in either direction. 9/29/14 fixed tuck-in-just-above to
@@ -11,6 +11,7 @@
 
 (in-package :sparser)
 
+;; (trace-tucking)
 
 (defun tuck-new-edge-under-already-knit (subsumed-edge new-edge 
                                          dominating-edge direction)
@@ -23,6 +24,7 @@
   
   ;; (push-debug `(,subsumed-edge ,new-edge ,dominating-edge ,direction))
   ;; (setq subsumed-edge (car *) new-edge (cadr *) dominating-edge (caddr *))
+  (tr :tuck-1 subsumed-edge new-edge dominating-edge direction)
   ;; (break "tucking 1")
 
   ;; Cleanup the used-in of the subsumed-edge
@@ -49,9 +51,10 @@
        
          ((eq direction :right)
           (unless (eq (edge-right-daughter dominating-edge) subsumed-edge)
-            (error  "~%in tuck-new-edge-under-already-knit for rule ~s:~
+            (error  "~%in tuck-new-edge-under-already-knit for rule ~s: ~
                     ~%edge-right-daughter in dominating edge ~s ~
                     ~%is not subsumed-edge ~s in sentence:~%~s~%"
+                    
                     *current-da-rule* dominating-edge subsumed-edge
                     (current-string)))
           (setf (edge-right-daughter dominating-edge) new-edge))
@@ -59,8 +62,8 @@
          ((eq direction :left)
           (unless (eq (edge-left-daughter dominating-edge) subsumed-edge)
             (error "~%in tuck-new-edge-under-already-knit: ~
-                  ~%edge-left-daughter in dominating edge ~s ~
-                  ~%is not subsumed-edge ~s~%in sentence: ~s~%"
+                    ~%edge-left-daughter in dominating edge ~s ~
+                    ~%is not subsumed-edge ~s~%in sentence: ~s~%"
                    dominating-edge subsumed-edge (current-string)))
           (setf (edge-left-daughter dominating-edge) new-edge)))
      
@@ -72,30 +75,34 @@
               (ecase direction
                 (:right (edge-ends-at new-edge))
                 (:left (edge-starts-at new-edge)))))
-         ;; (push-debug `(,dominating-edge-ev ,new-edge-ev))
-         ;; (break "tucking 2")
-         ;; (setq dominating-edge-ev (car *) new-ev (cadr *))
+          (push-debug `(,dominating-edge-ev ,new-edge-ev))
+          ;; (setq dominating-edge-ev (car *) new-ev (cadr *))
+          (tr :tuck-2 dominating-edge-ev new-edge-ev)
+          ;; (break "tucking 2")
 
          ;; Remove the dominating edge from its ends/start-at vector
          (if (eq dominating-edge (highest-edge dominating-edge-ev))
-             (then ;; easy case
-               (pop-topmost-edge dominating-edge-ev)
-               ;; insert the dominating edge just above the top edge
-               ;; at the end location
-               (tuck-in-just-above new-edge-ev new-edge dominating-edge direction))
-             (else
-               ;; Several edges are above the edge now just above the
-               ;; subsumed-edge. They all have to be repositioned (in order)
-               ;; at the end-position of the top-edge where sit above it
-               (move-edges-above-to-new-pos 
-                subsumed-edge
-                (ecase direction
-                  (:left (edge-starts-at subsumed-edge))
-                  (:right (edge-ends-at subsumed-edge)))
-                new-edge-ev
-                direction)))
+           (then ;; easy case
+             (tr :tuck-pop-topmost)
+             (pop-topmost-edge dominating-edge-ev)
+             ;; insert the dominating edge just above the top edge
+             ;; at the end location
+             (tuck-in-just-above new-edge-ev new-edge dominating-edge direction))
+           (else
+             ;; Several edges are above the edge now just above the
+             ;; subsumed-edge. They all have to be repositioned (in order)
+             ;; at the end-position of the top-edge where sit above it
+             (tr :tuck-moving-above)
+             (move-edges-above-to-new-pos 
+              subsumed-edge
+              (ecase direction
+                (:left (edge-starts-at subsumed-edge))
+                (:right (edge-ends-at subsumed-edge)))
+              new-edge-ev
+              direction)))
        
          (when *description-lattice*
+           (tr :tuck-reinterpret dominating-edge)
            ;;(break "About to reinterpret ~a" dominating-edge)
            (reinterpret-dominating-edges dominating-edge)))
        dominating-edge))))
@@ -168,7 +175,7 @@
   "Assumes that the edge-below (top-edge) is already in the ev.
    We add the edge-above (dominating-edge) just above it
    in the vector and adjust things accordingly."
-  ;; (push-debug `(,ev ,edge-below ,edge-above))
+   (push-debug `(,ev ,edge-below ,edge-above))
   ;; (setq ev (car *) edge-below (cadr *) edge-above (caddr *))
   (ecase direction
     (:left
