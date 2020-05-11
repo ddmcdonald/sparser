@@ -159,6 +159,22 @@
         (subject-variable vp))))
 
 
+(defun copular-predication-clause? (clause clause-referent)
+  (or 
+   (itypep clause-referent 'copular-predication)
+   ;; we are no longer creating copular-predication
+   ;;  for copular adjecives
+   (adjective-phrase? (edge-right-daughter clause))))
+
+(defun failed-pp-attachment (pp clause-referent)
+  (when *show-failed-fronted-pp-attachment*
+    (format t "~&~&<<<<<<<>>>>>> attaching leading PP ~s to clause ~s without defined variable~&"
+	    (retrieve-surface-string pp)
+	    (retrieve-surface-string clause-referent)))
+  nil)
+
+
+
 (defun update-wh-question-as-lambda-predicate (vp-edge np syntactic-label)
   (let ((new-pred (update-edge-as-lambda-predicate
                    (edge-right-daughter vp-edge)
