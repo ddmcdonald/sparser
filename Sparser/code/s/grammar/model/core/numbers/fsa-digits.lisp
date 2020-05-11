@@ -321,7 +321,6 @@ the fsa would be identified at the word level rather than the category level.
         (else ;; cases that want a space between the digits
           (cond
             ((eq word-at-next-position (word-named "through"))
-             (setq *interpretation-of-digit-sequence* :through-range)
              (continue-digit-sequence-after-through next-position
                                                     next-cell array))
             (t
@@ -551,6 +550,10 @@ unknown---in any event, we're taking the first edge that is installed.
             (tr :digit-fsa-scanned (pos-terminal next-position)
                 'close-out-number-sequence)))) )))
 
+#| test cases
+"an α-2,3 or α-2,6 linkage"
+"resuspended in 1,1,1,3,3,3-hexafluoro-2-propanol"
+|#
 
 (defun make-edge-for-not-a-number (starting-position ending-position
                                    number-of-segments *digit-position-array*)
@@ -834,12 +837,14 @@ unknown---in any event, we're taking the first edge that is installed.
                      pos-after-through
                      (chart-position-after pos-after-through)))))
         ;;(break "digits-edge = ~a" digits-edge)
+        (setq *interpretation-of-digit-sequence* :through-range)
         (setf (aref array next-cell) digits-edge)
         (values (chart-position-after pos-after-through)
                 2))
       (else ;; we didn't find the target pattern
-        ;; I don't think this case is anticipated. 
-        nil))))
+        ;; e.g. "generated $105,740 through community fund schemes"
+        (values position-of-through
+                next-cell)))))
 
 
 
