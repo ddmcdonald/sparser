@@ -289,11 +289,14 @@
       (catch :type-search
         (research-edge-tree edge test)))))
 
-(defun research-edge-tree (edge test-fn)
+(defun research-edge-tree (edge test-fn &optional visited)
   "Written with different search pattern than search-edge-tree
    as an experiment (which could merge now). Copes with problem
    of long spans where the right daughter has no information but
    there will likely be a recorded list of constituents."
+  (when (memq edge visited) ;; we're looping
+    ;;(break "edge is looping: ~a" edge)
+    (throw :type-search nil))
   (etypecase edge
     (word nil) ;; terminal ignore
     (polyword nil) ;; ditto
@@ -303,18 +306,21 @@
        (unless (eq (edge-cat-name edge) 'lambda-expression)
          ;; skip over predication edges
          (throw :type-search edge)))
+     (setq visited (cons edge visited))
      (let ((left (edge-left-daughter edge))
            (right (edge-right-daughter edge))
            (consitituents (edge-constituents edge)))
        (cond
          (consitituents
           (loop for e in consitituents
-             do (research-edge-tree e test-fn)))
+             do (research-edge-tree e test-fn visited)))
          ((and (edge-p left) (edge-p right))
-          (research-edge-tree left test-fn)
-          (research-edge-tree right test-fn))
+          (research-edge-tree left test-fn visited)
+          (research-edge-tree right test-fn visited))
          ((edge-p left)
-          (research-edge-tree left test-fn)))))))
+          (research-edge-tree left test-fn visited))
+         ((edge-p right)
+          (research-edge-tree right test-fn visited)))))))
  
 
 
