@@ -110,6 +110,7 @@ SP> (stree 51)
   "This is used by make-maximal-projection to find the edge which
   corresponds to the maximal projection")
 
+;;  (trace-da-execution)
 
 (defun standardized-apply-da-function-action (rule)
   (declare (special *current-da-rule* *da-constituent-edges*))
@@ -149,7 +150,8 @@ SP> (stree 51)
                  ;;  preposed prepositional phrases before a conjunction
                   (if preposed 
                       (if (not (member target constituents))
-                          ;; happens when the PP premodifies only the first S in a conjunction
+                        ;; happens when the PP premodifies only the first S in
+                        ;; a conjunction
                           (substitute target (edge-used-in target) constituents)
                           constituents)
                       (constituents-between
@@ -167,7 +169,7 @@ SP> (stree 51)
                   :rule (da-name rule)
                   :constituents new-constituents))
            (tr :da-fn-returned-edge *new-edge*)
-
+           
            (cond (dominating
                   (tr :da-tuck-under dominating (edge-spec-direction *edge-spec*))
                   (tuck-new-edge-under-already-knit
