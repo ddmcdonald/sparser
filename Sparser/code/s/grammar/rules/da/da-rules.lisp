@@ -102,19 +102,15 @@
               (edge-referent pobj-edge)))
 	 (prep-edge (edge-left-daughter pp))
 	 (prep-word (edge-left-daughter prep-edge)))
-    (declare (special clause-referent pobj-edge))
 
     (let (*edge-spec*)
-      (declare (special *edge-spec*))
       (cond
         ((and
-          ;; handle DEC 33
+          ;; to handle DEC 33
           ;; "In A375 cells, endogenous C-RAF:B-RAF heterodimers were measurable and inducible
           ;;  following treatment with PLX4720 (Supplementary Fig. 9)."
-          (copular-predication-clause? clause clause-referent)
-          
           ;; this trick does NOT work for PP copular-predications
-          )
+          (copular-predication-clause? clause clause-referent)) ;;(break "1st")
          (setq *edge-spec*
                (make-edge-spec
                 :category (edge-category clause)
@@ -128,7 +124,8 @@
         ((null pobj-referent) ;; punt at the moment for conjoined PPs
          nil)
       
-        ((is-basic-collection? clause-referent) ;; Dec #33 goes through here
+        ((is-basic-collection? clause-referent)
+         ;;(break "2")
          (setq *edge-spec*
                (or
                 (distribute-pp-to-conjoined-clauses pp clause prep-word
@@ -142,7 +139,7 @@
          (let ((var-name
                 (or (subcategorized-variable clause-referent
                                              prep-word pobj-referent)
-                    (failed-pp-attachment pp clause-referent))) )
+                    (failed-pp-attachment pp clause-referent))) ) ;;(break "3")
            (if var-name
              (then
                (setq *edge-spec*
@@ -164,24 +161,35 @@
                (when *debug-questions*
                  (format t "~&~%PP + S -- likely sentential adjunct~%~%"))
                nil)))))
-
+      
       *edge-spec*)))
 
-(defun copular-predication-clause? (clause clause-referent)
-  (or 
-   (itypep clause-referent 'copular-predication)
-   ;; we are no longer creating copular-predication
-   ;;  for copular adjecives
-   (adjective-phrase? (edge-right-daughter clause))))
+(defun distribute-pp-to-first-conjoined-clause (pp clause rule-name)
+  (let* ((left-clause (edge-left-daughter clause))
+	 (pobj-edge (edge-right-daughter pp))
+	 (prep-edge (edge-left-daughter pp))
+	 (pobj-referent (edge-referent pobj-edge))
+	 (prep-word (edge-left-daughter prep-edge))
+	 (var-name
+	  (or
+	   (subcategorized-variable (edge-referent left-clause) prep-word pobj-referent)
+	   (failed-pp-attachment pp left-clause)))
+	 new-left new-items new-interp new-edge)
+    (when var-name
+      (setq new-left
+            (bind-dli-variable var-name pobj-referent (edge-referent left-clause)))
+      ;;(break "5")
+      (make-edge-spec
+       :category (edge-category left-clause)
+       :form (edge-form left-clause)
+       :referent new-left
+       :target left-clause
+       :dominating clause
+       :direction :left
+       :preposed pp))))
 
-(defun failed-pp-attachment (pp clause-referent)
-  (when *show-failed-fronted-pp-attachment*
-    (format t "~&~&<<<<<<<>>>>>> attaching leading PP ~s to clause ~s without defined variable~&"
-	    (retrieve-surface-string pp)
-	    (retrieve-surface-string clause-referent)))
-  nil)
-
-(defun distribute-pp-to-conjoined-clauses (pp clause prep-word pobj-referent clause-referent rule-name)
+(defun distribute-pp-to-conjoined-clauses (pp clause prep-word pobj-referent
+                                           clause-referent rule-name)
   (let* ((clauses (value-of 'items clause-referent))
          (clause-edges
           (loop for e in
@@ -225,36 +233,13 @@
 	   :number (length clauses)
 	   :type (itype-of (car clauses))))
 	 edge)
-    (declare (special clauses clause-edges))
+    (declare (special clauses clause-edges)) ;;(break "conjoined-clauses")
     (setq edge (make-edge-spec
                 :category (edge-category clause)
 		:form (edge-form clause)
 		:referent new-interp))
     (tr :comma-3tt-pattern edge)
     edge))
-
-(defun distribute-pp-to-first-conjoined-clause (pp clause rule-name)
-  (let* ((left-clause (edge-left-daughter clause))
-	 (pobj-edge (edge-right-daughter pp))
-	 (prep-edge (edge-left-daughter pp))
-	 (pobj-referent (edge-referent pobj-edge))
-	 (prep-word (edge-left-daughter prep-edge))
-	 (var-name
-	  (or
-	   (subcategorized-variable (edge-referent left-clause) prep-word pobj-referent)
-	   (failed-pp-attachment pp left-clause)))
-	 new-left new-items new-interp new-edge)
-    (when var-name
-      (setq new-left
-            (bind-dli-variable var-name pobj-referent (edge-referent left-clause)))
-      (make-edge-spec
-       :category (edge-category left-clause)
-       :form (edge-form left-clause)
-       :referent new-left
-       :target left-clause
-       :dominating clause
-       :direction :left
-       :preposed pp))))
 
 
 
