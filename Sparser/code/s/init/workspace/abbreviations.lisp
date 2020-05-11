@@ -118,6 +118,8 @@
             (edge-category e) (edge-form e) 
             (edge-rule e) (edge-referent e)
             (edge-left-daughter e) (edge-right-daughter e))
+    (when (eq :long-span (edge-right-daughter e))
+      (format t "~&constituents: ~a" (edge-constituents e)))
     e))
 
 (defun ier (number-of-edge) ;; inspect edge referent
