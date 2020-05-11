@@ -329,7 +329,7 @@
                       collect (integer-for-number number))))
     ;; Simplifying initial runs by restricting to just two numbers
     (when (> (length edges) 2)
-      (warn "more than three edges in number word: ~a" edges))
+      (warn "more than three edges in number word: ~a~%in ~a" edges (current-string)))
     (let ((value (* (car integers) (cadr integers))))
       (find-or-make-number value))))
 
