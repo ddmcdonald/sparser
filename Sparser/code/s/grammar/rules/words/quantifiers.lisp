@@ -74,8 +74,9 @@
   :binds ((word  :primitive word)))
 
 (define-mixin-category with-quantifier
+  :specializes adds-relation
   :binds ((quantifier quantifier))
-  :documentation "Was in bio taxonomy. May not make sense")
+  :documentation "Used in bio;taxonomy, as a mixin to biological")
 
 
 (defun define-quantifier (string &key brackets )
