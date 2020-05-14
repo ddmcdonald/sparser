@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1995,2011-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2011-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:adjuncts:approx:"
-;;;  version:  December 2019
+;;;  version:  May 2020
 
 ;; initiated 4/9/91 v1.8.2
 ;; 0.1 (12/7/92 v2.3) redone in the new semantics. 9/21/93 moved to [adjuncts]
@@ -30,6 +30,17 @@
   :index (:key name :permanent)
   :realization (:word name))
 
+(define-mixin-category approximate
+  :specializes adds-relation
+  :binds ((qualifier))
+  :documentation "Provides a place to put approximators ans
+ theire that indicate that a value is not exact. The identify
+ of the approximator is where to go to determine what this
+ means in any given case. 
+   Can be used simply as a mixin in a category definition
+ or could be used like 'plural' is and make the individual
+ that has this added to behave differently because of the
+ extra type its carrying.")
 
 ;;;----------------
 ;;; defining forms
