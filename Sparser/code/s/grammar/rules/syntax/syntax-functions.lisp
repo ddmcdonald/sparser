@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  March 2020
+;;;  Version:  May 2020
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -77,13 +77,11 @@
 
 (in-package :sparser)
 
+;;--- Never use the raw variables. Use these instead.
 ;; (left-edge-for-referent)
 ;; (right-edge-for-referent)
 ;; (parent-edge-for-referent)
 
-;; used all over
-(defvar *left-edge-into-reference*)
-(defvar *right-edge-into-reference*)
 
 ;;;------------
 ;;; parameters
@@ -718,11 +716,10 @@ val-pred-var (pred vs modifier - left or right?)
              (member 'ng (chunk-forms *current-chunk*)))
     (push (list (itype-of n)  (itype-of adj)) *premod-adjps*))
   
-  (cond ((when (and (boundp '*right-edge-into-reference*)
-                    *right-edge-into-reference*)
+  (cond ((when (right-edge-for-referent)
            ;; e.g. "the transcription factors in common to the SRF and elk1 genes?""
            (and (null (preposed-aux?))
-                (eq (edge-form-name *right-edge-into-reference*) 'adjp)))
+                (eq (edge-form-name (right-edge-for-referent)) 'adjp)))
          (let ((pred-var (subcategorized-variable adj :subject n)))
            (when pred-var
              (if  *subcat-test*
@@ -741,26 +738,28 @@ val-pred-var (pred vs modifier - left or right?)
        (not (value-of np 'has-determiner))
        (bind-dli-variable 'relative-position-number number np)))
 
-(defun create-partitive-np (quantifier of-pp)
-  (declare (special quantifier of-pp category::preposition))
+(defun create-partitive-np (spec of-pp)
+  (declare (special spec of-pp category::preposition))
   (let* ((pp-edge (right-edge-for-referent))
          (right-daughter (edge-right-daughter pp-edge)))
     (unless (eq (edge-form pp-edge) category::preposition)
       ;; Rules out "all" + "of" where we've not filled in the of-pp
       (cond
         ((eq 'which (cat-name (edge-category right-daughter)))
-         (create-partitive-wh-relativizer quantifier of-pp))
+         (create-partitive-wh-relativizer spec of-pp))
         ((definite-np? right-daughter)
          (cond
            (*subcat-test* t)
            (t
             (unless *sentence-in-core*
               (error "Threading bug. No value for *sentence-in-core*"))
-            (let ((pobj-ref
-                   (individual-for-ref (edge-referent right-daughter))))
-              (revise-parent-edge :category (itype-of pobj-ref))
-              (setq pobj-ref (bind-variable 'quantifier quantifier pobj-ref))
-              pobj-ref))))))))
+            ;; (break "create-partitive spec = ~a" spec) ;;#########
+            (let* ((pobj-ref
+                    (individual-for-ref (edge-referent right-daughter)))
+                   (interpretation-of-head (sort-out-specifier/of spec pobj-ref)))
+              (swap-rule-head right-daughter interpretation-of-head)
+              interpretation-of-head))))))))
+
 
 (defun create-partitive-wh-relativizer (quantifier of-pp)
   ;; e.g. "three of which"  of-pp should be a relativized-prepositional-phrase
@@ -795,7 +794,6 @@ val-pred-var (pred vs modifier - left or right?)
              (det-edge (left-edge-for-referent))
              (det-word (edge-left-daughter det-edge))
              (head-edge (right-edge-for-referent)))
-
 
         (unless (or (determiner? det-word)
                     (itypep determiner 'demonstrative)) ;; anticipated cases
@@ -978,7 +976,7 @@ val-pred-var (pred vs modifier - left or right?)
                     'link-in-verb+ing
                     head
                     verb
-                    *left-edge-into-reference*
+                    (left-edge-for-referent)
                     subject-var))
              (setq head (bind-dli-variable 'predication verb head))
              head))))))
@@ -990,7 +988,8 @@ make-phosphorylated-protein (a function used in no-space operations)
 insert edges instead of behaving differently based on whether or not
 there was an edge for the qualifier (e.g., there is no edge for the
 'p' in cases like 'pERK1/2')"
-  (unless (or (null edge-for-qualifier) (eq qualifier (edge-referent edge-for-qualifier)))
+  (unless (or (null edge-for-qualifier)
+              (eq qualifier (edge-referent edge-for-qualifier)))
     (break "bad call to extend-interpretation-of-verb-as-predication in ~%  ~s~%"
                (current-string))
     (return-from interpret-verb-as-predication nil))
@@ -1001,11 +1000,10 @@ there was an edge for the qualifier (e.g., there is no edge for the
                           var head qualifier))
          (if (edge-p edge-for-qualifier)
              (set-edge-referent edge-for-qualifier qualifier)
-             qualifier))
-           
+             qualifier))           
         (t
-         (lsp-break "call to extend-interpretation-of-verb-as-predication with null binding variable, var")))
-  qualifier)
+         (lsp-break "call to extend-interpretation-of-verb-as-predication with null binding
+  variable, var"))) qualifier)
 
 
 
@@ -1035,7 +1033,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
            'link-in-verb
            head
            qualifier
-           *left-edge-into-reference*
+           (left-edge-for-referent)
            var))
     (if qualifier
         (setq head (bind-dli-variable 'predication qualifier head))
@@ -1072,7 +1070,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 ;;/// who calls this?
 (defun check-passive-and-add-tense/aspect (aux vg)
-  (declare (special category::vg *parent-edge-getting-reference*))
+  (declare (special category::vg))
   (let* ((be-edge (left-edge-for-referent))
          (be-form (form-cat-name be-edge))
          (vg-edge (right-edge-for-referent)))
@@ -1101,7 +1099,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                            (rdata-etf (first (cat-realization vg-cat)))
                            (not (member  (etf-name (rdata-etf (first (cat-realization vg-cat))))
                                          '(passive/with-by-phrase))))
-                  (when *parent-edge-getting-reference*
+                  (when (parent-edge-for-referent)
                     ;; this is now (12/23/2016) used in polar questions, so there is no edge yet
                     (revise-parent-edge :form category::vg)))))
       (if (eq be-form 'preposed-auxiliary)
@@ -1205,7 +1203,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
       (t (bind-variable 'quantifier both vg-phrase))))) ;; overloading of this variable, but it seems correct
 
 (defun interpret-adverb+verb (adverb vg-phrase)
-  (declare (special category::pp category::hyphenated-pair category::hyphenated-triple))
+  (declare (special category::pp category::hyphenated-pair
+                    category::hyphenated-triple))
   ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
   (if (word-p vg-phrase)
       (then (format t "vg-phrase ~s is not a category or an individual,~
@@ -1393,7 +1392,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
     ;; It's not a collection. Compare handlers in interpret-pp-adjunct-to-np
     (or (when (applicable-method compose vg pp)
           (compose vg pp))
-        (multiple-value-bind (variable-to-bind  pobj-referent prep-word *pobj-edge*)
+        (multiple-value-bind (variable-to-bind pobj-referent prep-word *pobj-edge*)
             (variable-to-bind-pp-to-head (right-edge-for-referent) vg)
           (declare (special *pobj-edge*))
           (cond
@@ -1409,6 +1408,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
              vg)
             ((maybe-add-domain-adjunctive-predicate-to-phrase
               vg (right-edge-for-referent))))))))
+
 
 (defun variable-to-bind-pp-to-head (base-pp-edge head)
   (let* ((pp-edge (base-pp base-pp-edge))
@@ -1464,7 +1464,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
  ;;(value-of 'comp tocomp)
 		    
 (defun insert-object-raised-tocomp (parent to-comp to-comp-with-subject)
-  "make an edge for the result of inserting the object of the rasing-to-object verb as the subject of the to-comp"
+  "make an edge for the result of inserting the object of the rasing-to-object verb
+   as the subject of the to-comp"
   (let* ((to-comp-edge (edge-right-daughter parent)))
     (unless to-comp-edge
       (lsp-break "insert-object-raised-tocomp predicate is not from right edge~%"))
@@ -1508,8 +1509,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
       (*subcat-test* variable-to-bind)
       (variable-to-bind
        (if *collect-subcat-info*
-           (push (subcat-instance np 'to-comp variable-to-bind
-                                  to-comp)
+           (push (subcat-instance np 'to-comp variable-to-bind to-comp)
                  *subcat-info*))
        (setq np (individual-for-ref np))
        (setq np (bind-dli-variable variable-to-bind to-comp np))
@@ -1526,7 +1526,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
     (cond
      (to-comp-var 
       (or *subcat-test*
-       (setq s (bind-dli-variable to-comp-var tocomp s))))
+          (setq s (bind-dli-variable to-comp-var tocomp s))))
      (t
       (let ((ok? (and s (itypep s 'perdurant) (itypep tocomp 'perdurant))))
         (cond
@@ -1556,7 +1556,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (cond
     ((null np) 
      (break "null interpretation for NP in interpret-pp-adjunct-to-np edge ~s~&"
-            *left-edge-into-reference*)
+            (left-edge-for-referent))
      nil)
     ((itypep pp 'collection) ;;(lsp-break "pp collection")
      nil)
@@ -1573,6 +1573,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
        
          (setq np (individual-for-ref np))
 
+         ;; (push-debug `(,np ,pp ,variable-to-bind ,pobj-referent ,prep-word))
+         ;; (when (eq prep-word of) (break "np: ~a" np))
+
          (if *subcat-test*
            (or variable-to-bind
                (maybe-extend-premod-adjective-with-pp np pp)
@@ -1581,19 +1584,18 @@ there was an edge for the qualifier (e.g., there is no edge for the
                (is-domain-adjunctive-pp? np (right-edge-for-referent))
                (and (eq prep-word of)
                     (or (itypep np 'attribute)
-                        (and
-                         ;; (itypep np 'dependent-location)
-                         (itypep np 'object-dependent-location)
-                         (itypep pobj-referent 'partonomic))
-                        (and
-                         (itypep np 'partonomic)
-                         (compatible-with-specified-part-type pobj-referent np))
+                        (or (itypep np 'measurement) ;; "42% of all new cases"
+                            (itypep np 'number)) ;; "two of them"
+                        (and (itypep np 'object-dependent-location)
+                             (itypep pobj-referent 'partonomic))
+                        (and (itypep np 'partonomic)
+                             (compatible-with-specified-part-type pobj-referent np))
                         (and (use-methods)
                              (most-specific-k-method 'compose (list np pobj-referent))))))
 
            ;; This side runs when subcat test passed and we're really interpreting.
            ;; Specific cases are ordered before looking for applicable methods
-           ;; of using a subcategorized variable.
+           ;; or using a subcategorized variable.
            (cond             
              (variable-to-bind
               (collect-subcat-statistics np prep-word variable-to-bind pp)
@@ -1619,6 +1621,13 @@ there was an edge for the qualifier (e.g., there is no edge for the
               (tr :np-pp-of-np-partonomic np pobj-referent)
               (setq np (bind-variable 'parts pobj-referent np)))
 
+             ((and (eq prep-word of)
+                   (or (itypep np 'measurement) ;; "42% of all new cases"
+                       (itypep np 'number))) ;; "two of them"
+              (let ((i (sort-out-specifier/of np pobj-referent)))
+                (swap-rule-head *pobj-edge* i)
+                i)) ;;#################################################
+
              ((when (and (use-methods)
                          (most-specific-k-method 'compose (list np pp)))
                 ;; e.g. has-location + location : "the block at the left end of the row"
@@ -1635,7 +1644,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
                     (tr :compose-other-of np pobj-referent result)
                     result))))
              
-             ((maybe-add-domain-adjunctive-predicate-to-phrase np (right-edge-for-referent)))
+             ((maybe-add-domain-adjunctive-predicate-to-phrase
+               np (right-edge-for-referent)))
              
              ((maybe-extend-premod-adjective-with-pp np pp))
              
@@ -1646,12 +1656,11 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 
 
-;; hash table keyed on prepositions, with values being triples of
-;;  POBJ-type, NP-head-type and construction-function this might want
-;;  to be done by k-methods -- DAVID -- let's review this The current
-;;  implementation is a standin
-
-(defparameter *domain-adjunctive-pp-tests* (make-hash-table :test #'equal))
+(defparameter *domain-adjunctive-pp-tests* (make-hash-table :test #'equal)
+  "Hash table keyed on prepositions, with values being triples of
+   POBJ-type, NP-head-type and construction-function this might want
+   to be done by k-methods -- DAVID -- let's review this The current
+  implementation is a standin")
 
 (defun add-domain-adjunctive-pp-rule (prep pobj-type np-head-type interpretation-function)
   (push (list pobj-type np-head-type interpretation-function)
@@ -1699,8 +1708,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
      (*subcat-test* variable-to-bind)
      (variable-to-bind
       (if *collect-subcat-info*
-          (push (subcat-instance np prep-word variable-to-bind
-                                 pp)
+          (push (subcat-instance np prep-word variable-to-bind pp)
                 *subcat-info*))
       #+ignore ;; used this to check when the rule is applied
       ;;; found it is mostly being called for the right things, but we need to make it play better
@@ -1742,13 +1750,12 @@ there was an edge for the qualifier (e.g., there is no edge for the
                            &optional (vp-edge (right-edge-for-referent))
                              dont-revise-parent-edge )
   (declare (special category::transitive-clause-without-object
-                    subj vp *left-edge-into-reference*
-                    *right-edge-into-reference*))
+                    subj vp *left-edge-into-reference*))
   ;; vp-edge is NIL when called from polar questions on adjectives
   ;;  this may want to be fixed
   (unless (and subj vp) ;; have had cases of uninterpreted VPs
     (return-from assimilate-subject nil))
-  (when (or (is-non-anaphor-numeric? *left-edge-into-reference* subj)
+  (when (or (is-non-anaphor-numeric? (left-edge-for-referent) subj)
             (likely-wh-aux-inversion? subj vp))
     ;; block when, how, where, why as subjects,
     ;;  and WHAT as a subject of DO or WOULD
@@ -1797,34 +1804,34 @@ there was an edge for the qualifier (e.g., there is no edge for the
      (assimilate-subcat vp :subject subj))
     ((assimilate-subject-as-object? subj vp vp-edge)
      (assimilate-subcat vp :object subj))
-    ((and *right-edge-into-reference*
+    ((and (right-edge-for-referent)
           (transitive-vp-with-object? vp)
-                    ;; deal with
+          ;; deal with
           ;; "The receptor tyrosine kinase EGFR binds the growth factor ligand EGF."
           (let ((edge-to-left
-                 (when *left-edge-into-reference* (edge-just-to-left-of *left-edge-into-reference*))))
+                 (when (left-edge-for-referent)
+                   (edge-just-to-left-of (left-edge-for-referent)))))
             (when (and edge-to-left
                        (eq (edge-form-name edge-to-left) 'np)
                        (eq (edge-category edge-to-left)
-                           (edge-category *left-edge-into-reference*)))
-              (setq *left-edge-into-reference*
+                           (edge-category (left-edge-for-referent))))
+              (setq *left-edge-into-reference* ;;/// does this actually work??
                     (make-binary-edge/explicit-rule-components
                               edge-to-left
-                              *left-edge-into-reference*
+                              (left-edge-for-referent)
                               :form (category-named 'np)
                               :category (edge-category edge-to-left)
                               :rule-name 'assimilate-subject/create-appositive
                               :referent (bind-dli-variable 'appositive-description
                                                            (edge-referent edge-to-left)
                                                            subj)))
-              (assimilate-subject (edge-referent *left-edge-into-reference*) vp)                
+              (assimilate-subject (edge-referent (left-edge-for-referent)) vp)                
               ))))
     (t (assimilate-subcat vp :subject subj))))
 
 
 
 (defun assimilate-subject-for-control-verb (subj vp vp-edge)
-  (declare (special subj vp vp-edge))
   (let* ((theme-comp (value-of 'theme vp))
          (object (value-of 'patient vp))
          (theme-comp-edge
@@ -1875,7 +1882,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (if (eq (edge-right-daughter right-edge) :long-span)
       (if (edge-p (car (last (edge-constituents right-edge))))
           (car (last (edge-constituents right-edge)))
-          (else (warn  "can't find right daughter in assimilate-subject -- ~s~%" (current-string))
+          (else (warn  "can't find right daughter in assimilate-subject ~
+                        -- ~s~%" (current-string))
                 nil))
       (edge-right-daughter right-edge)))
 
@@ -1905,10 +1913,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun interpret-control-copula (subj copula subj-edge copula-edge)
   (declare (special subj copula subj-edge copula-edge))
   (let* ((copula-val (value-of 'value copula)) ;; e.g. (ability ...)
-         (copula-val-edge (when 
-                                (eq (edge-referent (edge-right-daughter copula-edge))
+         (copula-val-edge (when (eq (edge-referent (edge-right-daughter copula-edge))
                                     copula-val)
-                              (edge-right-daughter copula-edge)))
+                            (edge-right-daughter copula-edge)))
          (right (and (edge-p copula-val-edge)
                      (edge-right-daughter copula-val-edge)))
          (controlled-val-edge (and (edge-p right)
@@ -1941,15 +1948,13 @@ there was an edge for the qualifier (e.g., there is no edge for the
 (defun assimilate-subject-to-vp-ing (subj vp)
   ;; special case where the vp is a gerund, and we make it
   ;; an NP (not sure how often this is right)
-  (unless 
-      ;; remove the printout until it is needed again
-      t ;;   *subcat-test*
+  (unless t ;;   *subcat-test* ;; remove the printout until it is needed again
     (format t "~&----assimilate-subject-to-vp-ing make an NP for ~s and ~s---~&  in ~s~&" 
             subj vp
             (if (> (length (current-string)) 0)
 		(current-string)
 		*string-from-analyze-text-from-string*)))
-  (when (is-non-anaphor-numeric? *left-edge-into-reference* subj)
+  (when (is-non-anaphor-numeric? (left-edge-for-referent) subj)
     (return-from assimilate-subject-to-vp-ing nil))
   (if (is-passive? (right-edge-for-referent))
       (assimilate-subcat vp :object subj)
@@ -1971,12 +1976,11 @@ there was an edge for the qualifier (e.g., there is no edge for the
          (inside? (and (inside-current-chunk? np-edge)
                        (inside-current-chunk? vp-edge)))
          result)
-
     (cond
       (*subcat-test*
        (and
         (not
-         ;; aux inversion in question "is STAT3 involved in ..." ; ;
+         ;; aux inversion in question "is STAT3 involved in ..."
          (let ((word-before (word-just-to-the-left np-edge))
                (edges-before (edges-just-to-left-of np-edge)))
            (and (member (form-cat-name vp-edge) '(vg+ed vp+ed verb+ed))
@@ -2059,8 +2063,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
   
     ;; Don't want to have a subject in a relative clause if there is
-    ;; no object (complement) in the VP. Applies to main clauses modulo
-    ;; the possibility of traces.
+    ;; no object (complement) in the VP. Applies to main clauses
+    ;; modulo the possibility of traces.
 
     #| allows these to succeed
         ("Is MAP2K1 bound to MAPK1 eventually high?" "Is MAPK1 bound to MAP2K1 transient?"
@@ -2108,7 +2112,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                  (not (and (or (itypep vg 'be)
                                (itypep vg 'have)
                                (itypep vg 'do))
-                           *right-edge-into-reference*
+                           (right-edge-for-referent)
                            (let ((edge-to-right
                                   (edge-just-to-right-of (right-edge-for-referent))))
                              (when edge-to-right
@@ -2119,7 +2123,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                                              adjective))))))))
       (return-from assimilate-np-to-v-as-object nil)))
   
-  (when (is-non-anaphor-numeric? *right-edge-into-reference* obj)
+  (when (is-non-anaphor-numeric? (right-edge-for-referent) obj)
     (return-from assimilate-np-to-v-as-object nil))
   
   (let* ((indirect-object? (possible-indirect-object? vg))
@@ -2139,28 +2143,28 @@ there was an edge for the qualifier (e.g., there is no edge for the
     (cond
       (*subcat-test* result)
       (result
-       (when (and (boundp '*parent-edge-getting-reference*)
-                  *parent-edge-getting-reference*)
+       (when (parent-edge-for-referent)
          ;; Revise the parent edges to reflect what we've observed
          (if (and (typep *current-chunk* 'chunk)
                   (member 'ng (chunk-forms *current-chunk*)))
              (revise-parent-edge :category (itype-of obj)
                                  :form category::n-bar
                                  :referent result)
-             (revise-parent-edge :category (if (itype vg 'collection)
+             (revise-parent-edge
+              :category (if (itype vg 'collection)
                                                (value-of 'type vg)
                                                (itype-of vg))
-                                 :form (if (or indirect-object? oc-follows)
-                                           category::vg
-                                           (case (form-cat-name (parent-edge-for-referent))
-                                             ((vg vp) category::vp)
-                                             ((vp+ing vg+ing) category::vp+ing)
-                                             ((vp+ed vg+ed vp+past) category::vp+past)
-                                             ((to-comp) category::to-comp)
-                                             (t (warn "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP? in ~s!"
-                                                      (current-string))
-                                                category::n-bar)))
-                                 :referent result)))
+              :form (if (or indirect-object? oc-follows)
+                      category::vg
+                      (case (form-cat-name (parent-edge-for-referent))
+                        ((vg vp) category::vp)
+                        ((vp+ing vg+ing) category::vp+ing)
+                        ((vp+ed vg+ed vp+past) category::vp+past)
+                        ((to-comp) category::to-comp)
+                        (t (warn "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP? in ~s!"
+                                 (current-string))
+                           category::n-bar)))
+              :referent result)))
        result))))
 
 
@@ -2193,7 +2197,6 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (assimilate-clausal-comp vg-or-np thatcomp :thatcomp))
 
 (defun assimilate-clausal-comp (vg-or-np s-comp &optional (role :thatcomp))
-  (declare (special *right-edge-into-reference*))
   ;;(push-debug `(,vg-or-np ,s-comp)) (break "what's what?")
   (or
    (when (and (takes-wh-nominals? vg-or-np)
@@ -2211,9 +2214,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
    (assimilate-subcat vg-or-np :s-comp s-comp)
    (assimilate-subcat vg-or-np :thatcomp s-comp)
    (and (itypep vg-or-np 'let) ;; or #| make help hear see |#))
-        *right-edge-into-reference*
-        (eq (edge-form *right-edge-into-reference*)
-            category::s)
+        (right-edge-for-referent)
+        (eq (edge-form (right-edge-for-referent)) category::s)
         (assimilate-subcat vg-or-np :s-comp s-comp))))
 
 (defun assimilate-whethercomp (vg-or-np whethercomp)
@@ -2293,10 +2295,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
                  (not (and (category-p conj)
                            (member (cat-name conj)
                                    '(who what where when why))))
-                 *right-edge-into-reference*
-                 (eq (edge-referent *right-edge-into-reference*)
-                     clause)
-                 (member (form-cat-name *right-edge-into-reference*)
+                 (right-edge-for-referent)
+                 (eq (edge-referent (right-edge-for-referent)) clause)
+                 (member (form-cat-name (right-edge-for-referent))
                          '(s subordinate-s)))
         (revise-parent-edge :form category::subordinate-s))
       cl)))
@@ -2366,7 +2367,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
              (t (wh-vp-as-relative-clause wh-obj predicate))))
 
       ((eq (edge-rule (left-edge-for-referent)) 'who-subject-relative-clause-operation)
-       ;; the referent of the previous NP's been copied to the WH, so its category
+       ;; the referent of the previous NP has been copied to the WH, so its category
        ;; is unpredictable. Parent edge type is unchanged subj relative.
        predicate)
       
@@ -2392,7 +2393,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
    We need to assemble a structure that will be unpacked by
    make-pp-relative-clause which will unfold the pied-piped
    preposition."
-  (declare (special category::prepositional-phrase))
+  (declare (special category::prepositional-phrase category::sequencer))
   (if *subcat-test*
       (and (not (itypep prep category::prepositional-phrase))
            (not (itypep prep category::sequencer)))
@@ -2440,18 +2441,17 @@ there was an edge for the qualifier (e.g., there is no edge for the
                             (value-of 'prep wh-pp)
                             vp)
            (or (not (edge-p (edge-to-its-left left)))
-               (not
-                (member (cat-name (edge-category (edge-to-its-left left)))
-                        '(number quantifier all some each both many most)))))
+               (not (member (cat-name (edge-category (edge-to-its-left left)))
+                            '(number quantifier all some each both many most)))))
       (let* ((pp-edge (left-edge-for-referent))
              (var (variable-to-bind-pp-to-head pp-edge vp)))
-      (declare (special preposition wh-obj var))
-      ;; while debugging -- what's a reasonable default?
-      (unless var
-        (when *partitive-pp-warnings*
-          (warn "no variable for ~a on ~a in~%~s" preposition vp (current-string)))
-        (return-from make-pp-relative-clause nil))
-      (bind-variable 'relative-prep (value-of 'prep wh-pp) vp))))
+        (declare (special preposition wh-obj var))
+        ;; while debugging -- what's a reasonable default?
+        (unless var
+          (when *partitive-pp-warnings*
+            (warn "no variable for ~a on ~a in~%~s" preposition vp (current-string)))
+          (return-from make-pp-relative-clause nil))
+        (bind-variable 'relative-prep (value-of 'prep wh-pp) vp))))
 
 
 
@@ -2490,7 +2490,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
             (make-simple-individual
              category::prepositional-phrase
              `((prep ,prep) (pobj ,pobj))))))))
-
+;;###################################3
 
 (defun make-prep-comp (prep complement)
   ;; Called for the pattern 
@@ -2534,7 +2534,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
     ;; e.g. "cancer patients who may not have been at risk themselves"
     (setq copular-pp (value-of 'statement copular-pp)))
   (cond ((null copular-pp)
-      ;; happens in "This analysis identified a group of tumours with good prognosis, almost all of which were of low grade and metastasis-free up to 5 years ( xref )."
+         ;; happens in "This analysis identified a group of tumours with good prognosis, almost all of which were of low grade and metastasis-free up to 5 years ( xref )."
          nil)
         ((is-basic-collection? copular-pp)
          (if *subcat-test*
@@ -2542,8 +2542,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                    always (test-and-apply-simple-copula-pp np cop-p))
              (bind-dli-variable 'item np copular-pp)))
         (t
-         (test-and-apply-simple-copula-pp np copular-pp)
-         )))
+         (test-and-apply-simple-copula-pp np copular-pp))))
 
 (defun test-and-apply-simple-copula-pp (np copular-pp)
   (declare (special category::copular-predicate))
@@ -2690,7 +2689,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
   (if *subcat-test*
       t
       (bind-dli-variable :intensity intensifier adjective)))
-
+;;##########################################################################
 
 ;;;------------
 ;;; add adverb
@@ -2849,18 +2848,16 @@ there was an edge for the qualifier (e.g., there is no edge for the
           (when (eq 'discourse-mention (type-of (edge-mention np-edge)))
             ;; might not be a discourse-mention if cases of conjunctions
             (loop for dep in (dependencies (edge-mention np-edge))
-                  as value = (dependency-value dep)
-                  when
-                    (and (eq 'discourse-mention (type-of value))
+               as value = (dependency-value dep)
+               when (and (eq 'discourse-mention (type-of value))
                          (edge-p (mention-source value))
                          (eq 'adjective
                              (edge-form-name (mention-source value)))
                          (multiple-value-bind (variable-to-bind pobj-referent prep-word *pobj-edge*)
                              (variable-to-bind-pp-to-head
-                              (right-edge-for-referent)
-                              (base-description value))
+                              (right-edge-for-referent) (base-description value))
                            variable-to-bind))
-                  do (return dep))))
+               do (return dep))))
          (premod-takes-pp (when premod-dep
                             (base-description
                              (dependency-value premod-dep))))

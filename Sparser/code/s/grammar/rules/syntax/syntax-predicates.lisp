@@ -486,6 +486,19 @@
         (t edge)))
 
 
+;;;--------------------
+;;; mqnipulqting edges
+;;;--------------------
+
+(defun swap-rule-head (edge interp)
+  "We're elevating an interior 'edge' to be the basis the edge, pulling it
+   from an adjunct or complement to now cover the original light head"
+  (revise-parent-edge
+   :category (edge-category edge)
+   :form (edge-form edge)
+   :referent interp))
+
+
 
 ;;;--------------------
 ;;; recording pronouns
