@@ -377,33 +377,41 @@ unknown---in any event, we're taking the first edge that is installed.
         ;; Check whether we have the basis of a number,
         ;; i.e. three digits in this sequence that we just scanned.
         ;; If it's not three then we're lookin at some other
-        ;; sort of numeric object
+        ;; sort of numerical object and shunt the processing
+        ;; to close-out-number-sequence to get to the end
         (let ((digit-word (pos-terminal next-position)))
-          (if (= 3 (length (pname digit-word)))
-            (let ((digits-edge
-                   (car (install-terminal-edges
-                         digit-word
-                         next-position
-                         (chart-position-after next-position)))))
+          (cond
+            ((= 3 (length (pname digit-word)))
+             (let ((digits-edge
+                    (car (install-terminal-edges
+                          digit-word
+                          next-position
+                          (chart-position-after next-position)))))
 
-              (if (> next-cell 4)
-                (if (heuristically-not-a-number array)
-                  (close-out-number-sequence (1+ next-cell) array
-                                             (chart-position-after next-position))
-                  (error "No provision for digit-based numbers in the quadrillions ~
+               (if (> next-cell 4)
+                 (if (heuristically-not-a-number array)
+                   (close-out-number-sequence (1+ next-cell) array
+                                              (chart-position-after next-position))
+                   (error "No provision for digit-based numbers in the quadrillions ~
                     or larger"))              
-                (else ;; continue
-                  (setf (aref array next-cell)
-                        digits-edge)
-                  (expect-digit-delimiter-as-next-treetop (1+ next-cell)
-                                                          array
-                                                          digits-edge))))
-            (else
-              (setq *too-few-digits-to-be-number* t)
-              (tr :too-few-digits digit-word next-position)
-              (setf (aref array next-cell) digit-word) ; stash what we got
-              (close-out-number-sequence (1+ next-cell) array
-                                         (chart-position-after next-position)))))                       
+                 (else ;; continue
+                   (setf (aref array next-cell)
+                         digits-edge)
+                   (expect-digit-delimiter-as-next-treetop (1+ next-cell)
+                                                           array
+                                                           digits-edge)))))
+            ((< 3 (length (pname digit-word)))
+               (setq *too-few-digits-to-be-number* t)
+               (tr :too-few-digits digit-word next-position)
+               (setf (aref array next-cell) digit-word) ; stash what we got
+               (close-out-number-sequence (1+ next-cell) array
+                                          (chart-position-after next-position)))
+            ((> 3 (length (pname digit-word))) 
+               (setq *too-few-digits-to-be-number* t) ;;/// change?
+               (tr :too-few-digits digit-word next-position)
+               (setf (aref array next-cell) digit-word) ; stash what we got
+               (close-out-number-sequence (1+ next-cell) array
+                                          (chart-position-after next-position)))))                       
 
         (else ;; not a digit
           (tr :digit-fsa-returning :non-digit-word
