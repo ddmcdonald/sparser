@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2014-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2014-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  October 2017
+;;;  Version:  May 2020
 
 ;; 1.2 (7/19/92 v2.3) made over as "real" category. 8/4/94 finished princ routine
 ;;     (10/3) improved the printer.  11/15/95 added a sort routine.
@@ -79,7 +79,17 @@
 
 (define-category number-sequence
   :specializes abstract
-  :binds ((value  sequence)))
+  :binds ((value  sequence))
+  :documentation "Used by the digits FSA to represent strings of
+ digits and punctuation that resemble regular multi-element numbers
+ ('3,141,592.1') but are not, which is signalled by there being other
+ than three digits in one of the comma-delimited elements.
+ See make-edge-for-not-a-number for details.")
+
+#| Phone numbers, numerical URLs, social security numbers, etc.
+ could be specialization of this, though they should probably be
+ done by regular expressions rather than further complicating the
+ state machine in the FSA. |#
 
 ;;;-------
 ;;; rules
