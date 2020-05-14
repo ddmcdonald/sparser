@@ -181,10 +181,41 @@ demonstratives.)
                     number right-edge)))
 
    
-
-
 ;; "the first"
 
 ;; "the first three by height", "the second three by weight"
 
 ;; "first three proteins combine to form a complex, then ..."
+
+
+;;;----------------------------
+;;; <spec-elemement> of <head>
+;;;----------------------------
+
+(defun sort-out-specifier/of (spec head)
+  "Called from interpret-pp-adjunct-to-np and has to return the
+   interpretation of the phrase as a whole"
+  (cond
+    ((itypep spec 'measurement) ;; "42% of all new cases"
+     ;; <measurement> of <head>
+     (let ((inner-quantifier (value-of 'quantifier head)))
+       (if inner-quantifier
+         (qualify-quantifier spec inner-quantifier head)
+         (bind-variable 'quantifier spec head))))
+    ((itypep spec 'number) ;; "two of the cases"
+     ;;/// test for a number already in the head: "two of the five"
+     (bind-variable 'number spec head))
+    (t
+     (warn "sort-out-specifier/of: no handler for specifiers ~
+            of type: ~a, ~a.~%in ~s"
+           (itype-of spec) spec (current-string))
+     ;; drop the spec on the floor
+     head)))
+
+(defun qualify-quantifier (measurement inner-quantifier head)
+  (let* ((q (specialize-object inner-quantifier 'approximate))
+         (qp (bind-variable 'qualifier measurement q)))
+    (rebind-variable 'quantifier qp head)))
+
+
+
