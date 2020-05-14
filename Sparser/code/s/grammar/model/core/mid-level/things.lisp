@@ -135,14 +135,8 @@ Tr: "enough" qua 'adequate' is a quantity-related-property-val
 "Is your [intent] to ~a something?"
 |#
 
-#|
-"goal" is a ps-object < mental-object < mental-construction
-    < abstract-object-non-temporal
-Tr "goal" words: "intent" "objective" "target"
-  taking a figure/ground and formal
 
-Dolce: mental-object
-|#
+
 
 ;;;---------------
 ;;; Having a name
