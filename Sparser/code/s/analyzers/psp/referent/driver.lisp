@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   February 2020
+;;;   Version:   May 2020
 
 ;; broken out from all-in-one-file 11/28/91
 ;; 1.0 (8/28/92 v2.3) Added global referring to the referent returned.
@@ -285,23 +285,35 @@
 They get useful values within the dynamic scope of referent-from-rule
 or a function that simulates its environment like with-referent-edges |#
 
+(defvar *referent-edges-return-nil* nil
+  "Functions invoked by Debris Analysis typically need the variables
+   to have values -- set up by with-referent-edges -- this had them
+   return nil where there's no edge rather than throwing it error
+   which is what makes sense in regular parsing.")
+  
 (defun left-edge-for-referent ()
   (or *left-edge-into-reference*
-      (error "Left edge doesn't have a value now")))
+      (if *referent-edges-return-nil*
+        nil
+        (error "Left edge doesn't have a value now"))))
 
 (defun right-edge-for-referent ()
   (or *right-edge-into-reference*
-      (error "Right edge doesn't have a value now")))
+      (if *referent-edges-return-nil*
+        nil
+        (error "Right edge doesn't have a value now"))))
 
 (defun parent-edge-for-referent ()
-  #+ignore(when (deactivated? *parent-edge-getting-reference*)
-    (lsp-break "parent-edge-for-referent is ~s~%" *parent-edge-getting-reference*))
   (or *parent-edge-getting-reference*
-      (error "*parent-edge-getting-reference* doesn't have a value now")))
+      (if *referent-edges-return-nil*
+        nil
+        (error "*parent-edge-getting-reference* doesn't have a value now"))))
 
 (defun rule-being-interpreted ()
   (or *rule-being-interpreted*
-      (error "*rule-being-interpreted* doesn't have a value now")))
+      (if *referent-edges-return-nil*
+        nil
+        (error "*rule-being-interpreted* doesn't have a value now"))))
 
 #| Example from wh-initial-followed-by-modal, which operates outside
 of the context of applying specific rules, and therefore is not
@@ -314,10 +326,12 @@ in the scope of referent-from-rule.
         (parent (cadr (memq :p bindings))))
     `(let ((*left-edge-into-reference* ,left)
            (*right-edge-into-reference* ,right)
-           (*parent-edge-getting-reference* ,parent))
+           (*parent-edge-getting-reference* ,parent)
+           (*referent-edges-return-nil* t))
        (declare (special *left-edge-into-reference*
                          *right-edge-into-reference*
-                         *parent-edge-getting-reference*))
+                         *parent-edge-getting-reference*
+                         *referent-edges-return-nil*))
        ,@body)))
 
 
