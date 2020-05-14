@@ -202,10 +202,17 @@ demonstratives.)
        (if inner-quantifier
          (qualify-quantifier spec inner-quantifier head)
          (bind-variable 'quantifier spec head))))
+    
     ((itypep spec 'number) ;; "two of the cases"
      ;;/// test for a number already in the head: "two of the five"
      (bind-variable 'number spec head))
+    
+    ((itypep spec 'quantifier) ;; "all of these lines"
+     ;;/// test for interior case
+     (bind-variable 'quantifier spec head))
+
     (t
+     (push-debug `(,spec ,head))
      (warn "sort-out-specifier/of: no handler for specifiers ~
             of type: ~a, ~a.~%in ~s"
            (itype-of spec) spec (current-string))
