@@ -42,7 +42,7 @@
 ;; providing a place for searches up the AKO tree to stop.
 ;; However, there's no established way to say that 'this variable
 ;; applies to every kind of thing' except to have it defined here,
-;; though we should keep it to a very minimal set.
+;; though we should keep it to a minimal set.
 
 (define-category top
   :instantiates nil
@@ -280,6 +280,28 @@
   :documentation "'scalar' per se is a meta-property. 
  It is a quality of some other category and says about it 
  that it can take on different values along some dimention")
+
+
+;;;------------------------------------------------
+;;;----------- parent of most mixins --------------
+;;;------------------------------------------------
+
+(define-category notational-extension
+  :instantiates nil
+  :specializes top
+  :documentation "Covering term for notions that are really
+ outside the taxonomy, principally mixins that add relations
+ but are (typically) not themselves types that are intended
+ to play a role in inference.")
+
+(define-category adds-relation
+  :instantiates nil
+  :specializes notational-extension
+  :documentation "Specifically designed to be the super catagory
+ of mixins that simply add another variable to the category
+ they're mixed into.")
+
+
 
 (define-mixin-category qualifiable
   :instantiates nil
