@@ -309,12 +309,6 @@
             (make-copular-adjective be adj)))
          (copular-adj-edge
           (when copular-adj
-            #+ignore
-            (respan-top-edge (third edges) copular-adj
-                             :start-pos start-pos
-                             :end-pos end-pos
-                             :category (edge-category (third edges))
-                             :form category::vg)
             (make-edge-over-long-span
              start-pos end-pos
              (edge-category (third edges))
@@ -324,27 +318,17 @@
          (copular-pred-edge
           (when copular-adj
             (let ((*left-edge-into-reference* (first edges))
-                  (*right-edge-into-reference* copular-adj-edge)
-                  (interp (assimilate-subject np copular-adj nil)))
-              (make-edge-over-long-span
-               start-pos
-               end-pos
-               (itype-of interp)
-               :referent interp
-               :rule 'make-polar-adjective-question-2
-               :form category::s)
-              #+ignore
-              (copular-pred-edge
-               (when copular-pred
-                 (make-edge-over-long-span
-                  start-pos end-pos
-                  (itype-of copular-pred)
-                  :rule 'make-polar-adjective-question
-                  :form category::s
-                  :referent copular-pred))))))
-         ;; this is bound since make-copular-adjective needs to know the edge for the "BE"
-         ;; to check if it is an infinitive
-         )
+                  (*right-edge-into-reference* copular-adj-edge))
+              (declare (special *left-edge-into-reference*
+                                *right-edge-into-reference*))
+              (let ((interp (assimilate-subject np copular-adj nil)))
+                (make-edge-over-long-span
+                 start-pos
+                 end-pos
+                 (itype-of interp)
+                 :referent interp
+                 :rule 'make-polar-adjective-question-2
+                 :form category::s))))))
     (declare (special copular-adj))
     (make-polar-edge copular-pred-edge)))
 
@@ -385,7 +369,8 @@
 
            ;; We know this a passive clause because of the
            ;; triggering pattern
-           (j (assimilate-object i np)))
+           (j (with-referent-edges (:l be-edge :r vp+ed-edge :p nil)
+                (assimilate-object i np))))
 
       (unless j ; maybe it's not passive?
         ;; With "Is miR-145 associated with urinary bladder cancer?"
