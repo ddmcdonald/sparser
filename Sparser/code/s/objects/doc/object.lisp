@@ -29,7 +29,7 @@
 
 (defclass document-element (chart-region document-region
                             has-parent has-children
-                            ordered indexed
+                            ordered indexed word-frequency
                             has-content-model)
   ()
   (:documentation "Provides a super-type with common set of slots
@@ -88,9 +88,9 @@
   ((content-string :initform "" :accessor content-string
    :documentation "The text content of the element")))
 
-;;;----------
-;;; Titles
-;;;----------
+;;;------------
+;;; Title-text
+;;;------------
 
 (defclass title-text (document-element named-object string-holder)
   ()
@@ -211,8 +211,7 @@
 ;;; Articles (whole documents/files)
 ;;;-----------------------------------
 
-(defclass article (document-element named-object 
-                   word-frequency titled-entity)
+(defclass article (document-element named-object titled-entity)
   ((location :initform nil :accessor article-location
     :documentation "Usually a short form of the file name")
    (date :initform nil :accessor article-date
@@ -284,8 +283,7 @@
 ;;; Sections
 ;;;----------
 
-(defclass section (document-element named-object titled-entity
-                   word-frequency)
+(defclass section (document-element named-object titled-entity)
   ()
   (:documentation "A toplevel unit within a document that
    is several paragraphs long."))
@@ -358,8 +356,7 @@
 ;;; A section that contains other sections
 ;;;----------------------------------------
 
-(defclass section-of-sections (document-element named-object titled-entity
-                               word-frequency)
+(defclass section-of-sections (document-element named-object titled-entity)
   ()
   (:documentation "Motivated by the NXML for PubMed articles where there
     can be multiple titled 'section' elements within a section.
@@ -381,7 +378,7 @@
 ;;; Paragraphs
 ;;;------------
 
-(defclass paragraph (document-element named-object string-holder word-frequency)
+(defclass paragraph (document-element named-object string-holder)
   ()
   (:documentation "Either An orthographic paragraph as established
     by patterns of newlines (see sort-out-result-of-newline-analysis)
