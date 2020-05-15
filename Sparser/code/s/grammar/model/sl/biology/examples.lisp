@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2015-2017 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2015-2020 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "examples"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: March 2017
+;;; version: May 2020
 
 ;; Broken out from Biology-workspace 10/8/15
 
@@ -12,6 +12,14 @@
 ;;;---------------
 ;;; Example texts
 ;;;---------------
+
+
+;; scraped from https://bfi.uchicago.edu/wp-content/uploads/BFI_WP_202058-1.pdf?campaign_id=116&emc=edit_pk_20200512&instance_id=18415&nl=paul-krugman&regi_id=21241184&segment_id=27424&te=1&user_id=2c8a54c8a23f13b62411bbe259d68b73  5//14/20
+(defun novel-virus ()
+  (p
+   "A novel coronavirus disease -- later named COVID-19 -- originated in China in December 2019. The virus quickly spread to the rest of the world. The first confirmed case within the U.S. occurred in mid-January. On March 11th, the World Health Organization declared the COVID-19 outbreak a global pandemic. On the same day, the U.S. government banned travel from dozens of European countries. As of early May 2020, there were approximately 3.6 million confirmed COVID-19 cases worldwide resulting in roughly 250,000 deaths. Within the U.S., there were approximately 1.2 million confirmed COVID-19 cases resulting in 70,000 deaths as of early May."))
+
+
 
 #| "SARS-CoV-2 is sentitive to type I interferon pretreatment"
 https://www.biorxiv.org/content/10.1101/2020.03.07.982264v3.full
@@ -78,8 +86,6 @@ In addition to treatment, the sensitivity to type I IFN may also have implicatio
 Overall, our results indicate that SARS-CoV-2 has a much higher sensitivity to type I IFN than the previously emergent SARS-CoV. This augmented type I IFN sensitivity is likely due to changes in viral proteins between the two epidemic CoV strains. Moving forward, these data could provide important insights for both the treatment of SARS-CoV-2 as well as developing novel animal models of disease. In this ongoing outbreak, the results also highlight a distinction between the highly related viruses and suggest insights from SARS-CoV must be verified for SARS-CoV-2 infection and disease.
 
 [[ Methods section ]]
-
-
 
 |#
 
