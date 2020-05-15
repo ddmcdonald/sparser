@@ -52,7 +52,7 @@
     article))
 
 
-(defun run-json-article-from-handle (&key (n 1) (corpus 'rxiv)
+(defun run-json-article-from-handle (&key (n 1) (corpus '0512-pdf)
                                        ((:sexp return-sexp) nil)
                                        (sweep t) (read t)
                                        (quiet t) (skip-errors t) (verbose t)
@@ -75,7 +75,7 @@
       result)))
 
 
-(defun make-article-from-handle (&key (n 1) (corpus 'rxiv) (verbose t))
+(defun make-article-from-handle (&key (n 1) (corpus '0512-pdf) (verbose t))
   "Construct the file handle, check that it corresponds to a valid file,
    extract the Lisp sexp from the JSON file, pass it to make-document
    to assemble an article from it. Code is a different factoring of

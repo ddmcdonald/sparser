@@ -14,10 +14,10 @@
 (defparameter *json-base* nil)
 ;; look up just once -- don't use asdf lookup each time
 (defun json-base ()
-  ;;(or *json-base*
+  (or *json-base*
       (setq *json-base*
             (namestring
-             (asdf:system-relative-pathname :r3 "../corpus/covid/")))) ;;)
+             (asdf:system-relative-pathname :r3 "../corpus/covid/")))))
 
 (defun json-directory (&key (base (json-base)) ((:dir dir-string) "comm_use_subset"))
   (declare (special base dir-string))
@@ -50,6 +50,8 @@
     (0403-non-com-pmc "2020-04-03/noncomm_use_subset/pmc_json/")
     (0403-custom-pdf "2020-04-03/custom_license/pdf_json/")
     (0403-custom-pmc "2020-04-03/custom_license/pmc_json/")
+    (0512-pmc "2020-05-12/document_parses/pmc_json/")
+    (0512-pdf "2020-05-12/document_parses/pdf_json/")
     )
   "Modeled on the list in r3/code/evaluation/doc-support.
    Could be integrated into the file selection machinery to allow
