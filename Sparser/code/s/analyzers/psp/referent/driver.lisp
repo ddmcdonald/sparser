@@ -285,7 +285,7 @@
 They get useful values within the dynamic scope of referent-from-rule
 or a function that simulates its environment like with-referent-edges |#
 
-(defvar *referent-edges-return-nil* nil
+(defvar *referent-edges-return-nil* t
   "Functions invoked by Debris Analysis typically need the variables
    to have values -- set up by with-referent-edges -- this had them
    return nil where there's no edge rather than throwing it error
