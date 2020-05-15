@@ -1259,10 +1259,10 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (9001 (:punctuation  .,(punctuation-named (code-char 9001)))) ;; 〈
     (9002 (:punctuation  .,(punctuation-named (code-char 9002)))) ;; 〉
     (9082 (:punctuation  .,(punctuation-named (code-char 9082)))) ;;⍺
-    (9121 (:alphabetical .,(punctuation-named (code-char 9121)))) ;; #\LEFT_SQUARE_BRACKET_UPPER_CORNER 
-    (9123 (:alphabetical .,(punctuation-named (code-char 9123)))) ;; #\LEFT_SQUARE_BRACKET_LOWER_CORNER 
-    (9124 (:alphabetical .,(punctuation-named (code-char 9124)))) ;; #\RIGHT_SQUARE_BRACKET_UPPER_CORNER 
-    (9126 (:alphabetical .,(punctuation-named (code-char 9126)))) ;; #\RIGHT_SQUARE_BRACKET_LOWER_CORNER 
+    (9121 (:punctuation  .,(punctuation-named (code-char 9121)))) ;; #\LEFT_SQUARE_BRACKET_UPPER_CORNER 
+    (9123 (:punctuation  .,(punctuation-named (code-char 9123)))) ;; #\LEFT_SQUARE_BRACKET_LOWER_CORNER 
+    (9124 (:punctuation  .,(punctuation-named (code-char 9124)))) ;; #\RIGHT_SQUARE_BRACKET_UPPER_CORNER 
+    (9126 (:punctuation  .,(punctuation-named (code-char 9126)))) ;; #\RIGHT_SQUARE_BRACKET_LOWER_CORNER 
     (9183 (:punctuation .,(punctuation-named (code-char 9183)))) ;; "⏟"
     (9251 (:punctuation .,(punctuation-named (code-char 9251)))) ;; #\OPEN_BOX 
     (9252 (:punctuation .,(punctuation-named (code-char 9252)))) ;; #\SYMBOL_FOR_NEWLINE 
@@ -1310,9 +1310,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (9794 (:punctuation  .,(punctuation-named (code-char 9794)))) ;; "♂" #\U+2642
     (9830 (:punctuation  .,(punctuation-named (code-char 9830)))) ;; "♦"
     (9839 (:punctuation  .,(punctuation-named (code-char 9839)))) ;; #\MUSIC_SHARP_SIGN
-    ;; (1548 (:alphabetical .,(punctuation-named (code-char 1548)))) ;; ،
-    
-    
+
     (10005 (:punctuation  .,(punctuation-named (code-char 10005)))) ;; #\MULTIPLICATION_X
     (1001 (:alphabetical . (:lowercase .,(code-char 1001)))) ;; "ϩ", #\COPTIC_SMALL_LETTER_HORI 
     (1002 (:alphabetical . (:lowercase .,(code-char 1002)))) ;; #\COPTIC_CAPITAL_LETTER_GANGIA 
