@@ -346,11 +346,14 @@
 (defun maybe-make-point-mutation-from-number-amino-acid (number letter)
   "Heuristically decide between a point-mutation and a two-part-label based on the
    length of the digit"
+  (when *subcat-test*
+    (if (itypep number 'number-sequence) ;; "the addition of PI3,4,5P (0.5 μM)"
+      (return-from maybe-make-point-mutation-from-number-amino-acid nil)
+      t))
   (let* ((digit-word (get-tag :digit-sequence number))
          (pname (when digit-word (pname digit-word))))
     (if (and pname (or (= 1 (length pname))
-                       ;; block things like C-467929
-                       (> (length pname) 3)))
+                       (> (length pname) 3))) ;; block things like C-467929
       (then ;; cf. reify-two-part-label
         (revise-parent-edge :category category::two-part-label)
         (find-or-make-individual 'two-part-label :part-one number :part-two letter))
