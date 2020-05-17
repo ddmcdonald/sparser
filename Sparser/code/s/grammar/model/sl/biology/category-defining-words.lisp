@@ -60,7 +60,6 @@
 (def-synonym quantity (:noun ("quantity" :plural "quantities")))
 (def-synonym quotation (:noun "quotation"))
 (def-synonym scalar (:noun "scalar" :adj "scalar")) 
-(def-synonym sequential (:adj "sequential")) 
 (def-synonym subsequence (:noun "subsequence")) 
 (def-synonym thematic (:adj "thematic")) 
 (def-synonym title (:noun "title")) 

@@ -258,6 +258,7 @@
      :realization 
      (:adj "fail-proof"))
 
+
 (adj "reliable" :super bio-predication
      :realization 
      (:adj "reliable"))
@@ -271,7 +272,11 @@
            :in theme
 	   :on theme))
 
+;; SEQUENTIAL is a key CORE mixin, and does not take an AUX
 
+(adj "sequential-adj" :super bio-predication
+     :realization 
+     (:adj "sequential"))
 
 
 (define-category fact :specializes bio-rhetorical
@@ -509,6 +514,16 @@
 (def-synonym article-figure (:noun "Fig."))
 
 (def-synonym article-figure (:noun "Fig"))
+
+(define-category article-table
+  :specializes visual-representation
+  :binds ((label two-part-label))
+  :realization
+  (:noun "table"))
+
+(def-synonym article-table (:noun "Tab."))
+(def-synonym article-table (:noun "Tab"))
+
 
 (define-category arrow :specializes visual-representation
 		 :realization
