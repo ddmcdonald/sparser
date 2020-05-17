@@ -107,6 +107,7 @@
 (define-country "Eritrea" :adjective "Eritrean")
 (define-country "Estonia")
 (define-country "Ethiopia")
+(define-country "European Union" :aliases '("EU"))
 (define-country "Federated States of Micronesia")
 (define-country "Fiji")
 (define-country "Finland" :adjective "finnish"
