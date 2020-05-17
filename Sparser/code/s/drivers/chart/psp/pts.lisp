@@ -114,6 +114,18 @@
          ;;(when *chunk-sentence-into-phrases*
          (ensure-edge-consistent-with-chunk)
          ;;)
+         (when (equal (chunk-forms *current-chunk*) '(ng))
+           (let ((edge-after-chunk (right-treetop-at/only-edges (chunk-end-pos *current-chunk*))))
+             (when (and (edge-p edge-after-chunk)
+                        (eq (edge-cat-name edge-after-chunk) 'number))
+               (let* ((pairs (adjacent-edges-in-region (chunk-start-pos *current-chunk*)
+                                                       (pos-edge-ends-at edge-after-chunk)))
+                      (triples (form-triples-from-pairs pairs)))
+                 (declare (special pairs triples))
+                 (when triples
+                   (execute-triple (car triples))
+                   (setf (chunk-end-pos *current-chunk*)
+                         (pos-edge-ends-at edge-after-chunk)))))))
          (segment-finished :one-edge-over-entire-segment)
          ;; want to do full parsing, so that we can distinguish NG and VG chunks
          ;; can have a chunk over a plural-noun and verb+present (like "increases")
