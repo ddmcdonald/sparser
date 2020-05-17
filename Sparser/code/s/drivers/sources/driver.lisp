@@ -163,8 +163,8 @@
                         :if-exists :supersede
                         :if-does-not-exist :create)
       (format mf "(in-package :sp)~%;;;;;mentions for article ~s~%" (name article))
-      (write-list-to-param
-       "*article-mention-facts*"
+      (push-list-on-param
+       (name article)
        (grouped-article-mentions article)
        mf)
       mention-file)))

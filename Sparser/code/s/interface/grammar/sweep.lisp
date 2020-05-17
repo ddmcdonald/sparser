@@ -673,6 +673,15 @@ unknown words.|#
      do (format stream "~s " item))
   (format stream "))~%    :test #'equalp))~%"))
 
+(defun push-list-on-param (file-handle items stream)
+  (format stream
+          "~%~%(install-article-mentions~%  ~s~%  ~a~%"
+          (json-relative-pathname (decoded-file file-handle))
+          file-handle)
+  (pprint (second items) stream)
+  (format stream ")")
+  )
+
 ;;;------------------------
 ;;; sweeping for sentences
 ;;;------------------------
