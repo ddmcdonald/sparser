@@ -10,7 +10,8 @@
 (def-indiv-with-id unit-of-measure "amol" "UO:0000044" :name "attomole") 
 
 (def-indiv-with-id unit-of-measure "Gram" "UO:0000021" :name "gram") 
-(def-indiv-with-id unit-of-measure "mg" "UO:0000023" :name "microgram" :maintain-case t)
+(def-indiv-with-id unit-of-measure "mg" "UO:0000022" :name "milligram" :maintain-case t)
+(def-indiv-with-id unit-of-measure "μg" "UO:0000023" :name "microgram" :maintain-case t)
 (def-indiv-with-id unit-of-measure "picogram" "UO:0000025" :name "picogram") 
 (def-indiv-with-id unit-of-measure "ng" "UO:0000024" :name "nanogram") 
 
