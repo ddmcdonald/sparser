@@ -207,7 +207,8 @@ demonstratives.)
      ;;/// test for a number already in the head: "two of the five"
      (bind-variable 'number spec head))
     
-    ((itypep spec 'quantifier) ;; "all of these lines"
+    ((or (itypep spec 'quantifier) ;; "all of these lines"
+         (itypep spec 'which))
      ;;/// test for interior case
      (bind-variable 'quantifier spec head))
 
