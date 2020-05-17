@@ -228,6 +228,7 @@
     CATEGORY::MODAL
     category::infinitive
     CATEGORY::NOT
+    category::quantifier ; "should both go home"
     CATEGORY::APPROXIMATOR))
 
 (defvar *vg-head-categories*
