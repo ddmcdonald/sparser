@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-15901-16000 sample of unknown words
-;; created 5/16/20 20:42:40
+;; created 5/18/20 2:4:52
 
 (in-package :sparser)
 
@@ -2032,3 +2032,4 @@
  "wrists" "write" "wrote" "wrought" "yearbook" "yellowish" "yolk" "yuan" "zipper" "zippers" "zone"
  "zoo" "zoos" "zucchini")))
     :test #'equalp))
+)

@@ -1,9 +1,9 @@
 ;; covid-2020-05-12-0512-PDF-16401-16500 sample of unknown words
-;; created 5/16/20 20:47:37
+;; created 5/18/20 2:58:48
 
 (in-package :sparser)
 
-;; 11047 extracted as unknown bio-entity
+;; 11048 extracted as unknown bio-entity
 
 
 (defparameter *All-Upper-Unknown-Words*
@@ -88,7 +88,7 @@
  "TTTACGCCTATCTGAGGAAGCACTTTAGCATGATGATCCTGTCCGATGACGCCGTGGTGTGCTACAACTCCAATTAT" "TUNEL" "UAE"
  "UCB" "UGGGCGG" "UNDP" "UNICEF" "URL" "URTI" "USA" "USB" "UU" "UUUU" "UVA" "UVB" "UVC" "UVV" "VBG"
  "VCAM" "VEE" "VGGVV" "VGM" "VLBW" "VRC" "VSVG" "WAKO" "WB" "WBC" "WLC" "WPGSPA" "XDS" "XXI"
- "YLPPPSVARV" "YLPPVPVSKV" "ZS" "ZVK" "§" "À" "Á" "Â" "Ã" "ÃÃ" "ÃÃÃ" "Ò" "Ó")))
+ "YLPPPSVARV" "YLPPVPVSKV" "ZS" "ZVK" "§" "À" "Á" "Â" "Ã" "ÃÃ" "ÃÃÃ" "Ò" "Ó" "")))
     :test #'equalp))
 
 
@@ -318,12 +318,12 @@
  "entscheidend" "entsorgen" "entsorgt" "entsprach" "entspre" "entsprechen" "entsprechend"
  "entsprechendem" "entsprechenden" "entspricht" "entstehen" "entsteht" "entweder" "entwickeln"
  "entérica" "entéricas" "entéricos" "envoltura" "envía" "enzimas" "enzymeproduct" "eoli" "eosin"
- "eosinophilia" "epg" "epicardium" "epide" "epidemia" "epidemie" "epidemiologische"
- "epidemiologischen" "epidemiologischer" "epidemiología" "epidemiológica" "epidemiológico"
- "epidemiológicos" "epidemische" "epidemischem" "epidemischen" "epidemischer" "epidemiólogo"
- "epidermidis" "epididymo" "epidurale" "epidémico" "epidémicos" "epiphenomenon" "epiphyses"
- "episodio" "episomatischen" "epithelia" "epithelioid" "epithelium" "epizootiology" "epoxyacrylate"
- "eq" "equivalenten" "eradizieren" "eran" "erarbeitet" "erbracht" "ereignete" "ereigneten" "erent"
+ "epg" "epicardium" "epide" "epidemia" "epidemie" "epidemiologische" "epidemiologischen"
+ "epidemiologischer" "epidemiología" "epidemiológica" "epidemiológico" "epidemiológicos"
+ "epidemische" "epidemischem" "epidemischen" "epidemischer" "epidemiólogo" "epidermidis"
+ "epididymo" "epidurale" "epidémico" "epidémicos" "epiphenomenon" "epiphyses" "episodio"
+ "episomatischen" "epithelia" "epithelioid" "epithelium" "epizootiology" "epoxyacrylate" "eq"
+ "equivalenten" "eradizieren" "eran" "erarbeitet" "erbracht" "ereignete" "ereigneten" "erent"
  "erfahren" "erfahrungsgemäß" "erfass" "erfassen" "erfasst" "erfol" "erfolgen" "erfolgreiche"
  "erfolgt" "erfolgter" "erforder" "erforderlich" "erforderliche" "erforderlichen" "erfordern"
  "erfordert" "erfüllen" "ergaben" "erge" "ergeben" "ergibt" "ergänzend" "erhalten" "erheblich"
@@ -454,9 +454,9 @@
  "infektiös" "infektiösem" "infektiösen" "infektiöser" "infi" "infiltrados" "infiltratie"
  "infiziert" "infizierte" "infizierten" "infl" "inflight" "influenzae" "influenzalike" "infolge"
  "información" "informaron" "informieren" "infrage" "infundiert" "infusiepomp" "ing" "ingesteld"
- "inglés" "inhalant" "inhalants" "inhouse" "iniciado" "iniciales" "inicialmente" "inicio"
- "initiieren" "injectors" "inmediata" "inmunidad" "inmunofluorescencia" "inmunológicas" "inneren"
- "innerer" "innerhalb" "innocents" "innocula" "innoculum" "inoculum" "inpatients" "insbe"
+ "inglés" "inhalant" "eosinophilia" "inhalants" "inhouse" "iniciado" "iniciales" "inicialmente"
+ "inicio" "initiieren" "injectors" "inmediata" "inmunidad" "inmunofluorescencia" "inmunológicas"
+ "inneren" "innerer" "innerhalb" "innocents" "innocula" "innoculum" "inoculum" "inpatients" "insbe"
  "insbesondere" "insecten" "insectiside" "insgesamt" "insoweit" "insti" "instituciones"
  "instrumentarium" "insuffi" "insuficiencia" "insulineafhankelijke" "intakt" "intakte" "integ"
  "integrado" "integrativen" "integrierte" "intensiven" "intensivmedizinische" "intensivos"
@@ -868,7 +868,7 @@
  "überlebt" "überlegen" "überlässt" "übernehmen" "übernimmt" "übernommen" "überprüfter"
  "überschreiten" "überschätzt" "übersichtlich" "übersteigbare" "übertragen" "übertreten"
  "überwachung" "überwiegend" "überzeugen" "überziehen" "üblich" "üblichen" "üblicherweise" "übrige"
- "þ")))
+ "þ" "")))
     :test #'equalp))
 
 
@@ -976,8 +976,8 @@
  "DGUVVorschrift" "DNAworks" "Daarom" "Dabei" "Dadoua" "Dadurch" "Daeschlein" "Dahlem" "Daiichi"
  "Damit" "Damme" "Dammnähten" "Daneben" "Dann" "Darby" "Darier" "Darm" "Darmbereichen" "Darmflora"
  "Darmschleimhaut" "Darmstadt" "Darwin" "Daten" "Datenlage" "Dauer" "Daueranwendung" "Dauerdialyse"
- "Dauerpräparaten" "Daumen" "Dave" "Dazu" "DdA" "Debemos" "Decke" "Deckel" "Defensi" "Defyrus"
- "Dekubi" "Democratische" "Denge" "Dengvaxia" "Denisovans" "Dennoch" "Deos" "Dequalinium"
+ "Dauerpräparaten" "Daumen" "Dave" "Dazu" "DdA" "Debemos" "Decke" "Deckel" "Defensi" "Defi"
+ "Defyrus" "Dekubi" "Democratische" "Denge" "Dengvaxia" "Denisovans" "Dennoch" "Deos" "Dequalinium"
  "Dermatochirurgie" "Dermatologie" "Dermatophyten" "Dermatosen" "Deshalb" "Desinfek"
  "Desinfektionen" "Desinfektionsmaßnahmen" "Desinfektionsmitteln" "Dettenkofer" "Deutsche"
  "Deutschen" "Deutschland" "Dhul" "Diagnosticsjmd" "Diagnostiek" "Diagnostik" "Dialysat"
@@ -1196,18 +1196,18 @@
  "Octenidindihydrochlorid" "Oeganda" "Ogawa" "Ohishi" "Ohrenpflege" "Ohrenschmalz" "Ohrmuschel"
  "Ohrspülungen" "Okinawa" "Okzipitalpol" "Oldhafer" "Olympus" "Omphalozele" "Ondanks" "OnlineErgän"
  "OnlineErgänzung" "OpenEpi" "Operateur" "Operon" "Ophthalmika" "Ophthalmologie" "Opsys" "OptiPrep"
- "Optikspülflasche" "Orchiectomy" "Organe" "Organen" "Organinsuffizienz" "Organismen" "Organismus"
- "Organización" "Organsysteme" "Orien" "Orientierende" "Orsi" "Ortenzio" "Orthocoronavirinae"
- "Osaka" "Osama" "Osler" "Oswaldo" "Otitiden" "Ottobrunn" "Ottowa" "Oua" "Ov" "Oxbow" "PDBeFold"
- "PDBid" "PDBidcode" "PECy" "PEFRa" "POCTs" "PRoV" "PVPIodLösung" "PaCO" "Packard" "Padova"
- "Panaritium" "Pancreatitis" "Pank" "Pankreasgang" "Pankreasresek" "Pankreatitis"
- "Pankreatoduodenektomie" "Papier" "Papillomavi" "Paraffinöl" "Parainfluen" "Parametern"
- "Paraphenylenediamine" "Parasitology" "Parastrellus" "Parfümstoffe" "Paronychie" "Parthenium"
- "Parvoviriadae" "Parvovirinae" "Pasteur" "Pathoge" "Pathogenen" "Pathologie" "Pati" "Patien"
- "Patienten" "Patientenakten" "Patientenbehandlung" "Patientengruppen" "Patientenkohorten"
- "Patientenkontakt" "Patientenver" "Patientenzimmer" "Patientenzimmern" "Patientinnen" "Patiënt"
- "Paulo" "Pediculus" "Pediküre" "Pekín" "Pelke" "Penang" "Penzberg" "Perfora" "Perfusorspritzen"
- "Perhaps" "Peritonealdialyse" "Peritonealka" "Peritonealkather" "Peritoneum" "Peritonitisrate"
+ "Optikspülflasche" "Organe" "Organen" "Organinsuffizienz" "Organismen" "Organismus" "Organización"
+ "Organsysteme" "Orien" "Orientierende" "Orsi" "Ortenzio" "Orthocoronavirinae" "Osaka" "Osama"
+ "Osler" "Oswaldo" "Otitiden" "Ottobrunn" "Ottowa" "Oua" "Ov" "Oxbow" "PDBeFold" "PDBid"
+ "PDBidcode" "PECy" "PEFRa" "POCTs" "PRoV" "PVPIodLösung" "PaCO" "Packard" "Padova" "Panaritium"
+ "Pancreatitis" "Pank" "Pankreasgang" "Pankreasresek" "Pankreatitis" "Pankreatoduodenektomie"
+ "Papier" "Papillomavi" "Paraffinöl" "Parainfluen" "Parametern" "Paraphenylenediamine"
+ "Parasitology" "Parastrellus" "Parfümstoffe" "Paronychie" "Parthenium" "Parvoviriadae"
+ "Parvovirinae" "Pasteur" "Pathoge" "Pathogenen" "Pathologie" "Pati" "Patien" "Patienten"
+ "Patientenakten" "Patientenbehandlung" "Patientengruppen" "Patientenkohorten" "Patientenkontakt"
+ "Patientenver" "Patientenzimmer" "Patientenzimmern" "Patientinnen" "Patiënt" "Paulo" "Pediculus"
+ "Pediküre" "Pekín" "Pelke" "Penang" "Penzberg" "Perfora" "Perfusorspritzen" "Perhaps"
+ "Peritonealdialyse" "Peritonealka" "Peritonealkather" "Peritoneum" "Peritonitisrate"
  "Personalbedarfs" "Personals" "Personen" "PessoaSilva" "Peyer" "Pfi" "Pflegeartikel"
  "Pflegeheimbewohnern" "Pflegeteam" "Pflicht" "Pflichtuntersuchung" "Pflichtuntersuchungen"
  "Pharma" "Pharmacia" "Pharmacopeia" "Phenomenex" "Philadelphia" "Phlebotomus" "PhosphorImager"
@@ -1219,7 +1219,7 @@
  "Podologen" "Podrían" "Poisson" "Polihe" "Polymorphisms" "Polynesia" "Polytrauma" "Polyurethan"
  "Pontiac" "Porengröße" "Posch" "Postexpositionspro" "Pott" "Pr" "Praxis" "Pretoria" "PrimeScript"
  "Primärbeutel" "Prinzipen" "Prinzipiell" "Prionen" "Prionerkrankungen" "Prionprogramm"
- "Privateigentum" "ProLinker " "Probablemente" "Proben" "Probenumfang" "Probio" "Probiose"
+ "Privateigentum" "ProLinker" "Probablemente" "Proben" "Probenumfang" "Probio" "Probiose"
  "Probioti" "Probiotika" "Problematisch" "Probleme" "Problemerreger" "Problemerregern"
  "Problemstellung" "Projektils" "Proksch" "Promega" "Prophylaxe" "Prophylaxemaß"
  "Propionibakterien" "Proteine" "Proteinmangel" "Proteinmengen" "Proteo" "ProteoBlock" "ProteoChip"
@@ -1274,25 +1274,24 @@
  "Shuntinfektionen" "Sicherheit" "Sicherheitseinwegbehältern" "Sicherheitsmaßnahmen"
  "Sicherheitswerkbank" "Sicht" "Sichtbare" "SigmaeAldrich" "Silbernitratlösung" "Silikon"
  "Silkmate" "Simmon" "Simplot" "Sindbis" "Singapur" "SinghNaz" "Sino" "Situationen" "Sitz"
- "Skinsense" "SmartCycler" "Smegma" "SnapGene" "Soedan" "Solange" "Solter" "SolvensDetergens"
- "Sondennahrung" "Sondennahrungen" "Sonderfall" "Sorgfalt" "Sorvall" "Sota" "Soucie" "Southwark"
- "Souto" "Souza" "Spalte" "Spektrum" "Spende" "Spendeabstand" "Spendebereich"
- "Spendecharakteristika" "Spenden" "Spenderblut" "Spendewillige" "Spezialsarg" "Speziell" "Spezies"
- "Spezifität" "Spherotech" "Spielzeug" "Spijkervert" "Spitze" "Splieth" "Sporenbildnern" "Sporozoa"
- "Spülung" "Spülungen" "Squalamines" "Squamae" "Stabilisierung" "Stadien" "Stamm"
- "Standardblutprodukt" "Standardfilter" "Standardhygienemaßnahmen" "Standardverfahren"
- "Standortflora" "Stationen" "Stationsbad" "Stattdessen" "Stauschlauch" "Stauschläuche"
- "Stauschläuchen" "Stehbrett" "Steinhausen" "Sterbefall" "Sterbefällen" "Stereoview" "Sterilität"
- "Sterilwasserfilter" "Steuer" "Steuerung" "Stichproben" "Stille" "Stillen" "Stillhygiene"
- "Stillwell" "Stobart" "Stockholm" "Stoffs" "Stoffwechselprodukte" "Stoma" "Stott" "StrSchV"
- "Strahlen" "Strahlenschutz" "Strahlentherapie" "Stratifi" "Strep" "Streptokokken" "Strickland"
- "Stromgebiet" "Strongylida" "Strongylidu" "Stu" "Studi" "Studie" "Studien" "Stufen"
- "Stuhlinkontinenz" "Stunde" "Stunden" "Stutz" "Stärkung" "Störung" "Substanzen" "Substitu"
- "Substrat" "Substraten" "Substratzufuhr" "Sudáfrica" "Suecia" "Summin" "SuperScript"
- "Superinfektio" "Superiore" "Supermix" "Superscript" "Supplemente" "Supplementierung" "Surflex"
- "Susanne" "Suxiang" "Swapnil" "SybrGreen" "Symbiose" "Symphyse" "Symptomatik" "Symptome"
- "Synbiotika" "Synechococcus" "Synechocystis" "Systeme" "Systemen" "Szucs" "Sâo" "São"
- "Säugetieren" "Säuglingsalter" "Säure" "Sörenson" "Südosten" "TALENs" "TCIDso" "TGBs"
+ "Skinsense" "SmartCycler" "Smegma" "Soedan" "Solange" "Solter" "SolvensDetergens" "Sondennahrung"
+ "Sondennahrungen" "Sonderfall" "Sorgfalt" "Sorvall" "Sota" "Soucie" "Southwark" "Souto" "Souza"
+ "Spalte" "Spektrum" "Spende" "Spendeabstand" "Spendebereich" "Spendecharakteristika" "Spenden"
+ "Spenderblut" "Spendewillige" "Spezialsarg" "Speziell" "Spezies" "Spezifität" "Spherotech"
+ "Spielzeug" "Spijkervert" "Spitze" "Splieth" "Sporenbildnern" "Sporozoa" "Spülung" "Spülungen"
+ "Squalamines" "Squamae" "Stabilisierung" "Stadien" "Stamm" "Standardblutprodukt" "Standardfilter"
+ "Standardhygienemaßnahmen" "Standardverfahren" "Standortflora" "Stationen" "Stationsbad"
+ "Stattdessen" "Stauschlauch" "Stauschläuche" "Stauschläuchen" "Stehbrett" "Steinhausen"
+ "Sterbefall" "Sterbefällen" "Stereoview" "Sterilität" "Sterilwasserfilter" "Steuer" "Steuerung"
+ "Stichproben" "Stille" "Stillen" "Stillhygiene" "Stillwell" "Stobart" "Stockholm" "Stoffs"
+ "Stoffwechselprodukte" "Stoma" "Stott" "StrSchV" "Strahlen" "Strahlenschutz" "Strahlentherapie"
+ "Stratifi" "Strep" "Streptokokken" "Strickland" "Stromgebiet" "Strongylida" "Strongylidu" "Stu"
+ "Studi" "Studie" "Studien" "Stufen" "Stuhlinkontinenz" "Stunde" "Stunden" "Stutz" "Stärkung"
+ "Störung" "Substanzen" "Substitu" "Substrat" "Substraten" "Substratzufuhr" "Sudáfrica" "Suecia"
+ "Summin" "SuperScript" "Superinfektio" "Superiore" "Supermix" "Superscript" "Supplemente"
+ "Supplementierung" "Surflex" "Susanne" "Suxiang" "Swapnil" "SybrGreen" "Symbiose" "Symphyse"
+ "Symptomatik" "Symptome" "Synbiotika" "Synechococcus" "Synechocystis" "Systeme" "Systemen" "Szucs"
+ "Sâo" "São" "Säugetieren" "Säuglingsalter" "Säure" "Sörenson" "Südosten" "TALENs" "TCIDso" "TGBs"
  "TPCRprotocol" "TRSs" "TSEhaltige" "TXn" "TaKaRa" "Tabelle" "TagRFP" "Tage" "Tagen"
  "Tagesrhythmus" "Taiwán" "Takara" "Takemura" "Takt" "Taq" "TaqMan" "Taqman" "Tarangire"
  "Tatsächlich" "Tbk" "Techni" "Ted" "Teil" "Teilbeitrag" "Teile" "Teilkörperwaschung" "Teilnahme"
@@ -1366,15 +1365,16 @@
  "Zusammensetzung" "Zusammenspiel" "Zusammenwirken" "Zusatz" "Zusatzbezeichnung"
  "Zusatzinstrumentarium" "Zuschnitt" "Zustand" "Zusätzen" "Zuteilung" "Zutreffen" "Zuweisung"
  "Zwecke" "Zweibettzimmer" "Zweifel" "Zweifelsfall" "Zymo" "Zytokincock" "Zytostatika" "Zähne"
- "aDNA" "aVF" "aaUTP" "aadA" "andT" "arXiv" "cccDNA" "coEi" "Defi" "diarrhoBea" "eIPV" "getT"
- "humanÁ" "iTaq" "implyingT" "Inhalant" "jV" "koKISSModul" "lacZa" "logStufen" "mBio" "mMNa"
- "measlesÁmumpsÁrubella" "multiplexNAT" "nowT" "obtainT" "pCMV" "pECFP" "pEGFP" "pGemTeasy"
- "pHWert" "pIBV" "pIBVand" "pN" "pTWin" "pUC" "pUbEm" "pVSV" "pcDNA" "pieAbteilung" "Prognose"
- "rLTB" "rTaq" "sFold" "Simplex" "softWoRx" "Subclones" "tJL" "thatT" "tiHCV" "trpA" "whereT"
- "Àngela" "África" "Ähnlich" "Änderungen" "Ära" "Ärzte" "Ärzten" "Ätiologie" "Äußerer" "Ödeme"
- "Öle" "Ölen" "Österberg" "Über" "Überempfindlichkeit" "Überernährung" "Überlagerung" "Überlegung"
- "Überprüfung" "Überprüfungen" "Übertragbarkeit" "Übertragung" "Übertragungen" "Übertragungsrisiko"
- "Übertragungsweg" "Übertragungswege" "Überträger" "Überwachung" "Üblicherweise")))
+ "aDNA" "aVF" "aaUTP" "aadA" "andT" "arXiv" "cccDNA" "coEi" "diarrhoBea" "eIPV" "getT" "humanÁ"
+ "iTaq" "implyingT" "Inhalant" "jV" "koKISSModul" "lacZa" "logStufen" "mBio" "mMNa"
+ "measlesÁmumpsÁrubella" "multiplexNAT" "nowT" "obtainT" "Orchiectomy" "pCMV" "pECFP" "pEGFP"
+ "pGemTeasy" "pHWert" "pIBV" "pIBVand" "pN" "pTWin" "pUC" "pUbEm" "pVSV" "pcDNA" "pieAbteilung"
+ "Prognose" "rLTB" "rTaq" "sFold" "Simplex" "SnapGene" "softWoRx" "Subclones" "tJL" "thatT" "tiHCV"
+ "trpA" "whereT" "Àngela" "África" "Ähnlich" "Änderungen" "Ära" "Ärzte" "Ärzten" "Ätiologie"
+ "Äußerer" "Ödeme" "Öle" "Ölen" "Österberg" "Über" "Überempfindlichkeit" "Überernährung"
+ "Überlagerung" "Überlegung" "Überprüfung" "Überprüfungen" "Übertragbarkeit" "Übertragung"
+ "Übertragungen" "Übertragungsrisiko" "Übertragungsweg" "Übertragungswege" "Überträger"
+ "Überwachung" "Üblicherweise")))
     :test #'equalp))
 
 
@@ -1493,7 +1493,7 @@
  "Ziebuhr" "Zimmerman" "Ziolkowska" "Zou" "Zybert")))
     :test #'equalp))
 
-;; 2221 defined as a bio-entity
+;; 2220 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-16401-16500
@@ -1629,21 +1629,21 @@
  "EC50=5.47%µ" "ECDC-WHO" "eczema-like" "edema/exudates" "edu/groups/fha/" "edu/rspvirus/"
  "EF639268-EF639288" "eighty-seven" "Einbett-und" "Env-pp" "enzyme/DNA" "enzyme/substrate"
  "EPI-INFO" "ePlex-RPP" "Epstein-Barr" "EPVGPTDPSIVTLI-type18" "equine-1/mouse-1" "ER/Golgi"
- "Erdös-Rényi" "ERS/ATS" "Esser-Nobis" "ESWC09" "ESWC10" "EU041602-041606" "EU041609-041610"
- "Europa…" "Excel®" "existence/absence" "E‚" "F.R." "F4/8" "F4/80+" "factor-2" "factor-kB"
- "failure/pulmonary" "farrow-to-finisher" "FCV3-70" "Fernandez-Sesma" "FEV1" "fever/history"
- "ff12SB" "FFGGLGIGTGSGTGGR-type16" "Fibroblastose/fibrocytose" "Fifty-four" "Fifty-one"
- "Fifty-two" "findings/treatment" "finger-like" "FIP-like" "FIPV3-70" "Fite-Faraco" "FLJ10357"
- "flu-like" "fluid/salt" "foghorn-like" "Fokker-Planck" "Folder0" "Food-borne" "food/water"
- "foot-and-mouth-disease" "for/to" "force-ramp" "formamidopyrimidine-DNA glycosylase" "formula/"
- "formφ" "Forty-two" "four-fifths" "Fourier-Laplace" "FOXO3α" "Fpg/DNA" "Fpg/hNei1" "FRECV-like"
- "from/to" "FRSCV-like" "Fukami-Kobayashi" "full-time" "FV10-ASW" "G+" "G+C" "G.G.K." "g/100"
- "g/cm 2" "g/day" "g/L" "g/ml" "g/ml+0.2" "g/mm" "g/mouse" "G1rt" "gamma1" "Gangwon"
- "gastro-Angioedema" "GC-3" "GCGGTGGATCTGCGGATGCATCAA-39" "Gehan-Breslow-Wilcoxon" "gene 1b"
- "Gene4" "generating-angiotensin" "genetica&" "genetics/immune response" "genotypic/subtypic" "gg/"
- "gg/ml" "GGACA-3" "GI:15826311" "Glaxo-SmithKline" "GLGIGTGSGTGGRT-type16" "GloPID-R" "GLTU2"
- "glucagon-like peptide-2" "Glutamin/kg" "gly-co1" "Gn-Cκ" "Golgi/ER" "Google™" "gov/blast"
- "gov/EID/" "gov/EID/content/13/7/" "GP64" "GP64TM" "gradual/continued" "Gram+" "groups/mechanisms"
+ "Erdös-Rényi" "ERS/ATS" "Esser-Nobis" "ESWC09" "ESWC10" "Europa…" "Excel®" "existence/absence"
+ "E‚" "F.R." "F4/8" "F4/80+" "factor-2" "factor-kB" "failure/pulmonary" "farrow-to-finisher"
+ "FCV3-70" "Fernandez-Sesma" "FEV1" "fever/history" "ff12SB" "FFGGLGIGTGSGTGGR-type16"
+ "Fibroblastose/fibrocytose" "Fifty-four" "Fifty-one" "Fifty-two" "findings/treatment"
+ "finger-like" "FIP-like" "FIPV3-70" "Fite-Faraco" "FLJ10357" "flu-like" "fluid/salt"
+ "foghorn-like" "Fokker-Planck" "Folder0" "Food-borne" "food/water" "foot-and-mouth-disease"
+ "for/to" "force-ramp" "formamidopyrimidine-DNA glycosylase" "formula/" "formφ" "Forty-two"
+ "four-fifths" "Fourier-Laplace" "FOXO3α" "Fpg/DNA" "Fpg/hNei1" "FRECV-like" "from/to" "FRSCV-like"
+ "Fukami-Kobayashi" "full-time" "FV10-ASW" "G+" "G+C" "G.G.K." "g/100" "g/cm 2" "g/day" "g/L"
+ "g/ml" "g/ml+0.2" "g/mm" "g/mouse" "G1rt" "gamma1" "Gangwon" "gastro-Angioedema" "GC-3"
+ "GCGGTGGATCTGCGGATGCATCAA-39" "Gehan-Breslow-Wilcoxon" "gene 1b" "Gene4" "generating-angiotensin"
+ "genetica&" "genetics/immune response" "genotypic/subtypic" "gg/" "gg/ml" "GGACA-3" "GI:15826311"
+ "Glaxo-SmithKline" "GLGIGTGSGTGGRT-type16" "GloPID-R" "GLTU2" "glucagon-like peptide-2"
+ "Glutamin/kg" "gly-co1" "Gn-Cκ" "Golgi/ER" "Google™" "gov/blast" "gov/EID/"
+ "gov/EID/content/13/7/" "GP64" "GP64TM" "gradual/continued" "Gram+" "groups/mechanisms"
  "Grund-und" "GSTnsp13-nsp12" "Guillain-Barr" "Guillain-Barre" "Guillain-Barré" "Gunn-Moore" "G•C"
  "H&E" "H+L" "H-2Db" "H-2Kb" "H.-pylori-Infektion" "H.G." "H1N5" "H2TH" "H7N" "H7N7" "H7N9" "H9N2"
  "H=" "hACE2" "half-time" "Harn-und" "HB28" "HB29" "HBoV1" "HBoV2" "HBoV2/4" "HBoV3" "HBoV4"
@@ -1779,7 +1779,7 @@
  "À0.12" "À80" "À80˚C" "α-methyl-glucopyranoside" "α/" "α/β" "αD" "αF-β9" "αM" "αX" "β2" "β2-β3"
  "βe" "βI" "γ/M ." "ΔCt" "ΔF508" "ΔG" "ΔG 0" "ΔX" "μg/L" "μg/mL" "μL" "μl" "μmol/L" "πs" "πT" "ψ|y"
  "ω3" "ω3Fettsäuren" "ωT" "ωt" "ω|xt" "р12" "у30" "†See" "†The" "‡ /k" "‡This" "…S21-8" "′ /dτ"
- "↑Cough" "∆hNeil1" "∆mass=" "−20°C" "−80°C" "−86°C" "−∞" "∼$60-$90" "∼0.2" "∼0.5" "∼10-15 µ"
+ "↑Cough" "∆hNeil1" "∆mass=" "−20°C" "−80°C" "−86°C" "−∞" "∓v0" "∼$60-$90" "∼0.2" "∼0.5" "∼10-15 µ"
  "∼100" "∼12" "∼120-130" "∼1300" "∼20%" "∼200" "∼500" "∼70" "∼80%" "≅200" "≈1" "≈1/10" "≈1:40"
  "≈2.8" "≈25%" "≈37%" "≤24" "≤5" "≤60%" "≥0.5" "≥10" "≥15" "≥24 h" "≥4" "≥5" "≥65" "≥8")))
     :test #'equalp))
@@ -2949,4 +2949,5 @@
  "worldwide" "worm" "worms" "worsen" "worsens" "worthwhile" "wound" "wounds" "wright" "wrist"
  "write" "wrote" "yeoman" "yogurt" "youngster" "youngsters" "yuan" "zebu" "zipper" "zippers"
  "zonal" "zone" "zones" "zoo" "zoom")))
+    :test #'equalp))
     :test #'equalp))

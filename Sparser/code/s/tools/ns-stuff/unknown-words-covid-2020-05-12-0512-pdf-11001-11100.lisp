@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-11001-11100 sample of unknown words
-;; created 5/17/20 11:50:3
+;; created 5/17/20 19:50:41
 
 (in-package :sparser)
 
@@ -692,7 +692,7 @@
  "Zou" "Zu" "Zumla" "Zuo" "Zurek" "Mermel" "Tyler" "pC")))
     :test #'equalp))
 
-;; 2729 defined as a bio-entity
+;; 2725 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-11001-11100
@@ -851,43 +851,42 @@
  "Edelstein-Keshet" "EDP-938" "edu/mpex" "edu/mpex/" "EIDD-1931" "EIDD-2801" "eIF4B." "eIF4G."
  "Eighty-five" "Eighty-two" "Elmo/02" "EMD-20074" "EMD/Millipore" "Emergent-Behaviors-in-Biology"
  "EN1499" "EN1500" "engineer/Skilled" "enterovirus/rhinovirus" "enterovirus/RV" "EpiCoV™"
- "epidemic/pandemics" "epithelium/basement membrane" "Epstein-Barr" "ERA000206" "Erdös-Rényi"
- "EU095850" "EU352767" "EU487200" "EU660415" "EV1" "EV2A" "EV3A" "EV3B" "EV4" "events/hour"
- "ExoSAP-IT" "exp-insp" "EY013124" "EY014104" "EY021558" "EZ-link-NHS-PEG4-Biotin" "e~c" "F/"
- "F/37" "F/39.56" "F/W" "F/W/Y" "F3x4" "FAdV-1-FadV-8a" "FAdV-11" "FAdV-8a" "FAdV-8b"
- "FAdV-8b-FAdV-11" "FAdV-I" "Falck-Pedersen" "fatalities/cases" "fatality/infection" "FB-GWUH-2016"
- "Fcγ-mediated" "FcεR1" "FcεR1␣␥" "FcεRI" "FcεRImediated" "FcεRI␣" "FcεRI␤" "FcεRI␥"
- "feces-to-hand-to-mouth" "Fel-O-Vax" "Fernandes-Alnemri" "FEV1" "FHV-1" "fi/" "Fi6" "Fifty-four"
- "Fifty-nine" "Fifty-three" "Fifty-two" "FilmArray®" "first-aid" "Five-year" "FJ410275" "Flu-IVIG"
- "flu-like" "FluNET/EMFLU" "fluorescent-antibody" "FM1" "FM200053" "Forty-eight" "Forty-seven"
- "forward/side" "fowl/" "FR/2011" "freedom=1" "freedom=2" "freeze/thaw" "FRhK-4" "funeral/memorial"
- "Fuzeon™" "FVB/N" "G.J." "G/2" "g/day" "g/L" "g/m" "g/ml" "g/mol" "g/µ" "G0/G1 phase" "G229E"
- "GA/E31" "GA/E31-dHDL" "GA/E31-sHDL" "GACCC-TAMRA-3" "GAGAT-3" "Gamino-Arroyo" "gammaCoV/guinea"
- "Ganser-Pornillos" "García-Montoya" "gas-tric" "GAV94" "GAV95" "GAV96" "GCC-2017-005" "GD03T0013"
- "GD1α" "GE31" "GEN5™" "gene/s" "gentomi-HYPERKALEMIC" "GF9" "GF9-dHDL" "GF9-HDL" "GF9-sHDL"
- "GF9/kg" "GfCoV/" "GfCoV/FR/" "GfCoV/FR/2011" "GI-GVII" "Gibco-BRL" "Ginseng-Pseudostellaria"
- "GlcNAc/MurNAc" "glow-in-the-dark" "GlutaMax-1" "Gly110/Ala111" "GM-Mφ" "GMO/CMO"
- "Gonzalez-Dominguez" "gov/" "gov/BLAST" "gov/EID" "gov/ij/" "gov/nip/" "gp116" "gp120-41"
- "gp120-V4" "gp120-V5" "gp64" "GPX™" "Grail-like" "GRCh39" "Guandong/1" "Guangdong/P2S"
- "Guangxi/P1E" "Guangxi/P2V." "Guangxi/P3B" "Guangxi/P4L" "Guangxi/P5E" "Guangxi/P5L" "guoyan@bjmu"
- "GZ-C" "GZ02" "H-2" "H/C" "H/L" "H/S" "H1N1v2009" "H2.35" "H2N2" "H3N1" "H3N8" "H5N7" "H7N7"
- "H7N9" "H9N2" "HAdV-64" "HAdV-C3" "half-time" "hands-on-time" "handson-time" "Hapag-Lloyd"
- "haplotype/SNV" "Hardy-Weinberg" "Havenar-Daughton" "HBS-EP" "Heald-Sargent" "health/treatment"
- "HEK 293T/17" "HeLa-Kyoto" "Hematology-Oncology" "hemorrhagic fever/dengue"
- "hemorrhagic fever/shock" "hemorrhagic fever\\shock" "herpes simplex virus-2" "herpesvirus-1"
- "Hertz-Picciotto" "hg18-mapped" "HHV-6" "HILIC-UPLC" "HK-21" "HKU-39849" "HLA-B*0703" "HLA-B*46"
- "HLA-B7" "HLA-Cw*0801" "HLA-DRB1*0301" "HLA-DRB1*12" "HLA-DRB1*1202" "HLA-DRB1*13" "Hoffmann-La"
- "Holm-Bonferroni" "Hom-berger" "Houston-1" "Hoyeraal-Hreidarsson" "HR:0.887" "HRV14" "HRV16/ml"
- "HS-20" "Hsd:ICR" "HSV-1" "HSV-2" "http://au" "http://blanco" "http://collaborations" "http://dx"
- "http://ec" "http://genecodes" "http://gnomad" "http://orcid" "http://rsb" "http://sisu"
- "http://sourceforge" "http://www" "http://wwwnc" "https://doi.org/10.1371/journal"
- "https://github" "https://huiyan" "https://talk" "https://www" "HuCoV-229E" "Huh7"
- "human immunoglobulin G1" "human rhinovirus/enterovirus" "Human610-Quadv1" "HXB2" "HXB2-456"
- "HXB2-R166-K171" "hydroxymethylglutaryl-CoA" "hypercal~emia" "h~perkalemia" "I*" "I.U./ml" "I/II"
- "I/Phase" "I38X" "iAg-Path-ID" "IBV-like" "IC50/IC90" "ICD-9-CM" "identi@ing" "IFN-R−/−" "IFN-α/β"
- "IFN-γtreated" "IFN-γ−/−" "IFN-␣" "IFN-␥" "IFNAR−/−" "IFNR−/−" "IgG2" "IgG2b" "IgG2b-treated"
- "IgG3" "IgG~" "Iglesias-Ferná" "IIb/IIIa" "IKBKB-rs3747811AT" "IL-13expressing" "IL-13producing"
- "IL-1α/β" "IL-1␣" "IL4Ra-rs1801275GG" "IL8-rs4073AT" "ILl0" "illness/symptoms"
+ "epidemic/pandemics" "epithelium/basement membrane" "Epstein-Barr" "ERA000206" "Erdös-Rényi" "EV1"
+ "EV2A" "EV3A" "EV3B" "EV4" "events/hour" "ExoSAP-IT" "exp-insp" "EY013124" "EY014104" "EY021558"
+ "EZ-link-NHS-PEG4-Biotin" "e~c" "F/" "F/37" "F/39.56" "F/W" "F/W/Y" "F3x4" "FAdV-1-FadV-8a"
+ "FAdV-11" "FAdV-8a" "FAdV-8b" "FAdV-8b-FAdV-11" "FAdV-I" "Falck-Pedersen" "fatalities/cases"
+ "fatality/infection" "FB-GWUH-2016" "Fcγ-mediated" "FcεR1" "FcεR1␣␥" "FcεRI" "FcεRImediated"
+ "FcεRI␣" "FcεRI␤" "FcεRI␥" "feces-to-hand-to-mouth" "Fel-O-Vax" "Fernandes-Alnemri" "FEV1" "FHV-1"
+ "fi/" "Fi6" "Fifty-four" "Fifty-nine" "Fifty-three" "Fifty-two" "FilmArray®" "first-aid"
+ "Five-year" "FJ410275" "Flu-IVIG" "flu-like" "FluNET/EMFLU" "fluorescent-antibody" "FM1"
+ "FM200053" "Forty-eight" "Forty-seven" "forward/side" "fowl/" "FR/2011" "freedom=1" "freedom=2"
+ "freeze/thaw" "FRhK-4" "funeral/memorial" "Fuzeon™" "FVB/N" "G.J." "G/2" "g/day" "g/L" "g/m"
+ "g/ml" "g/mol" "g/µ" "G0/G1 phase" "G229E" "GA/E31" "GA/E31-dHDL" "GA/E31-sHDL" "GACCC-TAMRA-3"
+ "GAGAT-3" "Gamino-Arroyo" "gammaCoV/guinea" "Ganser-Pornillos" "García-Montoya" "gas-tric" "GAV94"
+ "GAV95" "GAV96" "GCC-2017-005" "GD03T0013" "GD1α" "GE31" "GEN5™" "gene/s" "gentomi-HYPERKALEMIC"
+ "GF9" "GF9-dHDL" "GF9-HDL" "GF9-sHDL" "GF9/kg" "GfCoV/" "GfCoV/FR/" "GfCoV/FR/2011" "GI-GVII"
+ "Gibco-BRL" "Ginseng-Pseudostellaria" "GlcNAc/MurNAc" "glow-in-the-dark" "GlutaMax-1"
+ "Gly110/Ala111" "GM-Mφ" "GMO/CMO" "Gonzalez-Dominguez" "gov/" "gov/BLAST" "gov/EID" "gov/ij/"
+ "gov/nip/" "gp116" "gp120-41" "gp120-V4" "gp120-V5" "gp64" "GPX™" "Grail-like" "GRCh39"
+ "Guandong/1" "Guangdong/P2S" "Guangxi/P1E" "Guangxi/P2V." "Guangxi/P3B" "Guangxi/P4L"
+ "Guangxi/P5E" "Guangxi/P5L" "guoyan@bjmu" "GZ-C" "GZ02" "H-2" "H/C" "H/L" "H/S" "H1N1v2009"
+ "H2.35" "H2N2" "H3N1" "H3N8" "H5N7" "H7N7" "H7N9" "H9N2" "HAdV-64" "HAdV-C3" "half-time"
+ "hands-on-time" "handson-time" "Hapag-Lloyd" "haplotype/SNV" "Hardy-Weinberg" "Havenar-Daughton"
+ "HBS-EP" "Heald-Sargent" "health/treatment" "HEK 293T/17" "HeLa-Kyoto" "Hematology-Oncology"
+ "hemorrhagic fever/dengue" "hemorrhagic fever/shock" "hemorrhagic fever\\shock"
+ "herpes simplex virus-2" "herpesvirus-1" "Hertz-Picciotto" "hg18-mapped" "HHV-6" "HILIC-UPLC"
+ "HK-21" "HKU-39849" "HLA-B*0703" "HLA-B*46" "HLA-B7" "HLA-Cw*0801" "HLA-DRB1*0301" "HLA-DRB1*12"
+ "HLA-DRB1*1202" "HLA-DRB1*13" "Hoffmann-La" "Holm-Bonferroni" "Hom-berger" "Houston-1"
+ "Hoyeraal-Hreidarsson" "HR:0.887" "HRV14" "HRV16/ml" "HS-20" "Hsd:ICR" "HSV-1" "HSV-2" "http://au"
+ "http://blanco" "http://collaborations" "http://dx" "http://ec" "http://genecodes" "http://gnomad"
+ "http://orcid" "http://rsb" "http://sisu" "http://sourceforge" "http://www" "http://wwwnc"
+ "https://doi.org/10.1371/journal" "https://github" "https://huiyan" "https://talk" "https://www"
+ "HuCoV-229E" "Huh7" "human immunoglobulin G1" "human rhinovirus/enterovirus" "Human610-Quadv1"
+ "HXB2" "HXB2-456" "HXB2-R166-K171" "hydroxymethylglutaryl-CoA" "hypercal~emia" "h~perkalemia" "I*"
+ "I.U./ml" "I/II" "I/Phase" "I38X" "iAg-Path-ID" "IBV-like" "IC50/IC90" "ICD-9-CM" "identi@ing"
+ "IFN-R−/−" "IFN-α/β" "IFN-γtreated" "IFN-γ−/−" "IFN-␣" "IFN-␥" "IFNAR−/−" "IFNR−/−" "IgG2" "IgG2b"
+ "IgG2b-treated" "IgG3" "IgG~" "Iglesias-Ferná" "IIb/IIIa" "IKBKB-rs3747811AT" "IL-13expressing"
+ "IL-13producing" "IL-1α/β" "IL-1␣" "IL4Ra-rs1801275GG" "IL8-rs4073AT" "ILl0" "illness/symptoms"
  "illnesses/symptoms" "Immor-talized" "immune/host" "individual/societal" "inductive/steady-state"
  "INF-␥" "infection/acquired" "infiltrate/SEI" "influenza-like" "Influenza-like" "inrg/zz~"
  "Insavc-1" "insertions/deletions" "instrument/definition" "instruments/definition"
@@ -2082,4 +2081,6 @@
  "wormwood" "worry" "worsen" "worthwhile" "worthy" "wound" "wounds" "wrap" "wraps" "wright"
  "wringer" "write" "writer" "writers" "wrong" "wrongs" "wrote" "yellowish" "yogurt" "yolk" "yon"
  "yuan" "zebra" "zebras" "zigzag" "zone" "zones")))
+    :test #'equalp))
+zag" "zone" "zones")))
     :test #'equalp))

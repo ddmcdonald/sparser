@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-10101-10200 sample of unknown words
-;; created 5/17/20 11:38:20
+;; created 5/17/20 19:35:27
 
 (in-package :sparser)
 
@@ -776,7 +776,7 @@
  "Zorick" "Zou" "Zucht" "Roche")))
     :test #'equalp))
 
-;; 2319 defined as a bio-entity
+;; 2316 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-10101-10200
@@ -909,39 +909,39 @@
  "eIF4G." "eIF4G/eIF4F" "eIF5-induced" "EL-620" "El-Serag" "ELD50/" "elongation-like"
  "embalming/thanatopractical" "EMC/" "emergency/ICU" "emergent/urgent" "EN3HANCE" "endosomal-like"
  "Endovac-Bovi" "Entervene-D" "Env-2" "Env1" "Env2" "Env3" "enveloped/nonenveloped"
- "epithelial cells/low" "equiva-9" "ESAG4" "ESI/MS" "ESwab™" "et/ou" "EU244823" "EU250330"
- "EU703762" "European/Asian" "EV71" "evolving/codiverging" "Exo70p" "Exo84p" "extra~5" "EZ-CyTox"
- "EZ1" "F-defluorination" "F-deoxyfluorination" "F-fluorination" "F1/DCpep" "F1/P1" "F31-D4"
- "F48E9" "factor 4G" "factor VII/VIIa" "factor-1" "factor^" "family-RIG-I"
- "fasta/gallus_gallus/dna/" "FASTX-Toolkit" "Fat=BW" "FDA/European" "FeatureCountsv1.5.0-p3"
- "FEM-FLEX2" "Ferro-Novick" "FFP3" "FFU/ml" "Fg/ml" "fibrinogen-like" "FiO2" "Fisher-Hoch"
- "FJ882884-FJ882922" "FJzz1/2011" "Fluc/Rluc" "Ford-Gilboe" "Forty-eight" "Forty-one"
- "fos/phenytoin" "FRhK-4" "Friedrich-Loeffler-Institut" "Friis-Moller" "frozen/thawed" "ftp://ftp"
- "FUNDING/SUPPORT" "Fusion®" "FV1200CLSM" "fw/RHDV-10" "fw/RHDV-13" "fw/RHDV-2" "fw/RHDV-6"
- "fw/RHDV-8" "g/" "g/day" "g/kg" "g/L" "g/liter" "g/ml" "g/well" "G2M" "G_GUU_UUU" "Gag1" "Gag2"
- "Gag3" "Garcia-Crespo" "García-Basteiro" "García-Mediavilla" "GasPak™" "GB10078" "GB13503"
- "GB14654" "GB15070" "GB15688" "GB17188" "GBq·μmol" "GC/MS" "gene/drug" "gene_id" "genome-5.6"
- "genomes/ml" "Gesichtsrose" "ggplot2" "Ghon-focus" "Giemsa-stained" "Glas-Col" "GLEAN3" "GluA*166"
- "GluA166" "GluB166" "GlyA*143" "GlyB143" "gl~merulonephritis" "golli-MBP" "Golli-mbp" "gov/"
- "gov/Blast" "gov/EisenSoftware" "GP1/GP2" "gp140" "gp46" "GPIb/IX" "GPIIb/IIIa" "GPLGS-WT"
- "GPLGS-WT-N3" "GQ398255" "GQ398257" "GQ398265" "GQ398266" "Greifswald-Insel" "GST-N1"
- "GST-N1-1-GST-N1-11" "GST-N2" "GST-N2-1-GST-N2-11" "GU301779" "GU301780" "GU301781" "GU372691"
- "H&E" "H&L" "H+L" "H.Y." "h/d" "H1-H16" "H2N2" "H37Rv" "H5N8" "H7N7" "H7N9" "H9N2" "HA0" "hACE2"
- "Haj-Yahya" "half-day" "hands-219" "hands-on-time" "handson-time" "Hasegawa-Kishino-Yano" "HAT/HT"
- "HB-Immunglobulin" "HB-Impfkampagnen" "HB-Schutzimpfung" "HBs-Ag-positiv" "HBS-EP" "HCV-Genotyp"
- "HCV-like" "hCYP1A2" "hCYP2B6" "hCYP2C8" "HD-73" "HD-Epidemiologie" "health/safety" "height/clock"
- "Hellstern/Solheim" "heme:globin" "hemostasis/coagulation" "Hep-2" "herd-year" "herds/100"
- "herpes simplex virus-1" "herpesvirus-1" "hire/" "his/herresponses" "HisB163"
- "historical/epidemiological" "HIV-1/2" "HIV-1/HIV-2" "HIV-Infizierte" "HIV-Kontakt"
- "HIV-Nadelstichverletzungen" "HKL2000" "HKU39849" "HL003" "HL010" "HL013" "HL015" "HLJ/2011"
- "HNly15" "HNly150326" "HNly150403" "HNly150520B" "Horsfall-Bauer" "hospital/health" "HPV-16"
- "HPV-18" "HQ166035" "hr=g" "HSV-1" "HSV-1-like" "HSV-2" "HSV1/2" "http://blast" "http://chembank"
- "http://clinicaltrias" "http://geodacenter" "http://iimcb" "http://metacyc" "http://phenome"
- "http://primerexplorer" "http://racerx00" "http://sanger" "http://tree" "http://www" "http://xin"
- "http://zhanglab" "https://doi" "https://github" "https://string-db" "https://www" "Huerta-Zepeda"
- "human-like" "HXB2" "hydrophobic/nonpolar" "hydroxymethylglutaryl-Coenzyme A"
- "hyper-inflammatory response" "hypothalamo-pituitary-adrenal" "HΦ" "i-" "I-TASSER" "i.e.,the"
- "I.G." "I/II" "I/III" "I/N" "I:C" "IAD2" "IB88" "IB88-like" "Ibis/Abbott" "ICP6" "ID21_2" "ID28_2"
+ "epithelial cells/low" "equiva-9" "ESAG4" "ESI/MS" "ESwab™" "et/ou" "European/Asian" "EV71"
+ "evolving/codiverging" "Exo70p" "Exo84p" "extra~5" "EZ-CyTox" "EZ1" "F-defluorination"
+ "F-deoxyfluorination" "F-fluorination" "F1/DCpep" "F1/P1" "F31-D4" "F48E9" "factor 4G"
+ "factor VII/VIIa" "factor-1" "factor^" "family-RIG-I" "fasta/gallus_gallus/dna/" "FASTX-Toolkit"
+ "Fat=BW" "FDA/European" "FeatureCountsv1.5.0-p3" "FEM-FLEX2" "Ferro-Novick" "FFP3" "FFU/ml"
+ "Fg/ml" "fibrinogen-like" "FiO2" "Fisher-Hoch" "FJ882884-FJ882922" "FJzz1/2011" "Fluc/Rluc"
+ "Ford-Gilboe" "Forty-eight" "Forty-one" "fos/phenytoin" "FRhK-4" "Friedrich-Loeffler-Institut"
+ "Friis-Moller" "frozen/thawed" "ftp://ftp" "FUNDING/SUPPORT" "Fusion®" "FV1200CLSM" "fw/RHDV-10"
+ "fw/RHDV-13" "fw/RHDV-2" "fw/RHDV-6" "fw/RHDV-8" "g/" "g/day" "g/kg" "g/L" "g/liter" "g/ml"
+ "g/well" "G2M" "G_GUU_UUU" "Gag1" "Gag2" "Gag3" "Garcia-Crespo" "García-Basteiro"
+ "García-Mediavilla" "GasPak™" "GB10078" "GB13503" "GB14654" "GB15070" "GB15688" "GB17188"
+ "GBq·μmol" "GC/MS" "gene/drug" "gene_id" "genome-5.6" "genomes/ml" "Gesichtsrose" "ggplot2"
+ "Ghon-focus" "Giemsa-stained" "Glas-Col" "GLEAN3" "GluA*166" "GluA166" "GluB166" "GlyA*143"
+ "GlyB143" "gl~merulonephritis" "golli-MBP" "Golli-mbp" "gov/" "gov/Blast" "gov/EisenSoftware"
+ "GP1/GP2" "gp140" "gp46" "GPIb/IX" "GPIIb/IIIa" "GPLGS-WT" "GPLGS-WT-N3" "GQ398255" "GQ398257"
+ "GQ398265" "GQ398266" "Greifswald-Insel" "GST-N1" "GST-N1-1-GST-N1-11" "GST-N2"
+ "GST-N2-1-GST-N2-11" "GU301779" "GU301780" "GU301781" "GU372691" "H&E" "H&L" "H+L" "H.Y." "h/d"
+ "H1-H16" "H2N2" "H37Rv" "H5N8" "H7N7" "H7N9" "H9N2" "HA0" "hACE2" "Haj-Yahya" "half-day"
+ "hands-219" "hands-on-time" "handson-time" "Hasegawa-Kishino-Yano" "HAT/HT" "HB-Immunglobulin"
+ "HB-Impfkampagnen" "HB-Schutzimpfung" "HBs-Ag-positiv" "HBS-EP" "HCV-Genotyp" "HCV-like" "hCYP1A2"
+ "hCYP2B6" "hCYP2C8" "HD-73" "HD-Epidemiologie" "health/safety" "height/clock" "Hellstern/Solheim"
+ "heme:globin" "hemostasis/coagulation" "Hep-2" "herd-year" "herds/100" "herpes simplex virus-1"
+ "herpesvirus-1" "hire/" "his/herresponses" "HisB163" "historical/epidemiological" "HIV-1/2"
+ "HIV-1/HIV-2" "HIV-Infizierte" "HIV-Kontakt" "HIV-Nadelstichverletzungen" "HKL2000" "HKU39849"
+ "HL003" "HL010" "HL013" "HL015" "HLJ/2011" "HNly15" "HNly150326" "HNly150403" "HNly150520B"
+ "Horsfall-Bauer" "hospital/health" "HPV-16" "HPV-18" "HQ166035" "hr=g" "HSV-1" "HSV-1-like"
+ "HSV-2" "HSV1/2" "http://blast" "http://chembank" "http://clinicaltrias" "http://geodacenter"
+ "http://iimcb" "http://metacyc" "http://phenome" "http://primerexplorer" "http://racerx00"
+ "http://sanger" "http://tree" "http://www" "http://xin" "http://zhanglab" "https://doi"
+ "https://github" "https://string-db" "https://www" "Huerta-Zepeda" "human-like" "HXB2"
+ "hydrophobic/nonpolar" "hydroxymethylglutaryl-Coenzyme A" "hyper-inflammatory response"
+ "hypothalamo-pituitary-adrenal" "HΦ" "i-" "I-TASSER" "i.e.,the" "I.G." "I/II" "I/III" "I/N" "I:C"
+ "IAD2" "IB88" "IB88-like" "Ibis/Abbott" "ICP6" "ID21_2" "ID28_2"
  "IDO-inhibitor 1-methyl-D-tryptophan" "IDPs/IDRs" "IE/l" "IEC/ARAII" "IFITM-1" "Ifitm3-deficient"
  "IFN-l1" "IFN-α/β" "IFNa/b" "Igκ" "IL-10related" "IL-4OIL-6Ointerferon-gammaOIL-10" "IL-4was"
  "IMG/VR" "IMGN388" "immunc@wrescence" "immunogenic/allergenic" "ImProm-II" "infection/fever"
@@ -2101,4 +2101,6 @@
  "workload" "workplace" "workshop" "world" "worldwide" "worse" "worsen" "worsens" "worthwhile"
  "wreath" "wreaths" "wright" "wrist" "write" "writer" "writers" "writings" "wrote" "xenophobia"
  "yogurt" "yolk" "zenith" "zonal" "zone")))
+    :test #'equalp))
+" "zone")))
     :test #'equalp))

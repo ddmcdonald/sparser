@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-9401-9500 sample of unknown words
-;; created 5/17/20 11:30:43
+;; created 5/17/20 19:7:17
 
 (in-package :sparser)
 
@@ -570,7 +570,7 @@
  "Reitemeier" "Willis" "tenOever")))
     :test #'equalp))
 
-;; 2416 defined as a bio-entity
+;; 2409 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-9401-9500
@@ -712,9 +712,8 @@
  "ends/million" "Ent_P1" "Ent_P3" "enterovirus/parechovirus" "enterovirus_genus" "EPI_ISL_402125"
  "EPI_ISL_406801" "EPI_ISL_410543" "EPI_ISL_410544" "epithelial-like" "EPI~" "EPt~" "equa-Outbreak"
  "Erdheim-Chester" "Erickson-Goldthorpe-Portocarero" "error/approximation" "ESBL+"
- "ethylendiamine-N" "Ethylenediaminetet-raacetic" "EU/ml" "EU703813" "EU840726" "EU840726-EU840988"
- "EU840727" "EU840733" "EU840918" "EU840930" "Eucalypt-based" "Eucalypt-focused" "EV-104" "EV-68"
- "EV71" "EV71-B4" "evalu-Human rhinovirus" "event12" "EWDI1" "EWDI2"
+ "ethylendiamine-N" "Ethylenediaminetet-raacetic" "EU/ml" "Eucalypt-based" "Eucalypt-focused"
+ "EV-104" "EV-68" "EV71" "EV71-B4" "evalu-Human rhinovirus" "event12" "EWDI1" "EWDI2"
  "exogenousl-1-tosylamide-2-phenylethyl" "explain~50%" "exter-nal" "extract/compounds"
  "extremi5ies" "ez-Santos" "e~" "e~c" "F3aa" "F3aa-IL-2" "F4/" "F503&F504" "F503A&F504A"
  "F503A&F504A&Y506A" "F503G&F504G" "FA5" "Family/Genus" "FastPrep24" "FC500" "FCS2.0" "Fe86.9"
@@ -1996,4 +1995,6 @@
  "workload" "workplace" "workshop" "workshops" "world" "worldwide" "worries" "worrisome" "worry"
  "worse" "worsen" "worthwhile" "worthy" "wound" "wounds" "wrap" "wrench" "wright" "write" "wrote"
  "yak" "youth" "zebra" "zebu" "zenith" "zipper" "zone" "zoo" "zoos")))
+    :test #'equalp))
+k" "youth" "zebra" "zebu" "zenith" "zipper" "zone" "zoo" "zoos")))
     :test #'equalp))

@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-7801-7900 sample of unknown words
-;; created 5/17/20 11:12:39
+;; created 5/17/20 17:59:12
 
 (in-package :sparser)
 
@@ -628,7 +628,7 @@
  "Zygraich")))
     :test #'equalp))
 
-;; 2481 defined as a bio-entity
+;; 2478 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-7801-7900
@@ -780,14 +780,14 @@
  "ear/nose/throat" "Easy-nLC" "EcoRV-digested" "ecosys-3" "edu/cne_disaster_prep_home" "EdU/vDNA"
  "EGAS00001000950" "eGFP-6D-COE" "Eighty-four" "El-Darzi" "El-Kanawati" "EM90"
  "endo-I~-N-acetylglucosaminidase" "endosomes/lysosomes" "epitope-COE" "Epon-Araldite"
- "Erdheim-Chester" "ERP99" "eRR_ac" "eRR_pk" "eRR_sp" "eRR_zc" "EU27" "EU28" "EU659121" "EUROC*"
- "EUROC-12" "EUROC-L" "europeo/americana3" "EV1" "EV2" "EV3" "EV4" "EV5" "EV71" "exchanges/hour"
- "ExoSAP-IT®" "exposure/history" "Express-96" "EZ1" "F.D.A." "FAM19A5" "family/visitors" "FANTOM5"
- "FC-40" "FDR<0.1" "Fernandes-Alnemri" "Fernandez-Reyes" "Ficoll-Hypaque" "Fifty-eight"
- "Fifty-five" "Fig.S1" "FilmArray®" "FITC-C3c" "FITC/" "FLC-like" "FLC2" "flight/route"
- "FLORALI-REVA" "FLORALI-REVA4" "flu-like" "forSARS-CoV-2" "forty-one" "Forty-one" "Four-month-old"
- "France/Les" "FrC63Fwd" "Frias-Staheli" "from1.4" "Fs2" "G 2 /M" "G-S4LM20-VAC-100" "g/" "g/day"
- "g/kg" "g/kg⋅d" "g/L" "g/ml" "G/P" "G/U" "G1P" "G1P1" "G2P" "G3P" "G4P" "G6t" "GAGATGAT-3"
+ "Erdheim-Chester" "ERP99" "eRR_ac" "eRR_pk" "eRR_sp" "eRR_zc" "EUROC*" "EUROC-12" "EUROC-L"
+ "europeo/americana3" "EV1" "EV2" "EV3" "EV4" "EV5" "EV71" "exchanges/hour" "ExoSAP-IT®"
+ "exposure/history" "Express-96" "EZ1" "F.D.A." "FAM19A5" "family/visitors" "FANTOM5" "FC-40"
+ "FDR<0.1" "Fernandes-Alnemri" "Fernandez-Reyes" "Ficoll-Hypaque" "Fifty-eight" "Fifty-five"
+ "Fig.S1" "FilmArray®" "FITC-C3c" "FITC/" "FLC-like" "FLC2" "flight/route" "FLORALI-REVA"
+ "FLORALI-REVA4" "flu-like" "forSARS-CoV-2" "forty-one" "Forty-one" "Four-month-old" "France/Les"
+ "FrC63Fwd" "Frias-Staheli" "from1.4" "Fs2" "G 2 /M" "G-S4LM20-VAC-100" "g/" "g/day" "g/kg"
+ "g/kg⋅d" "g/L" "g/ml" "G/P" "G/U" "G1P" "G1P1" "G2P" "G3P" "G4P" "G6t" "GAGATGAT-3"
  "Garcia-Sastre" "García-Sastre" "gastro-oesophageal-reflux" "GC/AT" "GCF_009858895.2" "GD03"
  "Gehan-Breslow-Wilcoxon" "Genome-Phenome" "genomes/ml" "GFP-L2" "GGGAGAGGGCG-3" "GI-11" "GI-16"
  "Gibco/Life" "Gillim-Ross" "gl/8a9uCP" "GlaxoS-mithKline" "GLOPID-R" "GM1/GM2" "Gomez-Acebo"
@@ -1920,4 +1920,6 @@
  "workforce" "workload" "workplace" "workshop" "workshops" "world" "worldwide" "worm" "worms"
  "worrisome" "worse" "worthwhile" "worthy" "wound" "wright" "wrist" "wrists" "write" "wrote"
  "youth" "zonal")))
+    :test #'equalp))
+)))
     :test #'equalp))

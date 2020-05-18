@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-13801-13900 sample of unknown words
-;; created 5/16/20 20:18:35
+;; created 5/17/20 22:37:21
 
 (in-package :sparser)
 
@@ -773,7 +773,7 @@
  "Zimmermann" "Zimmern" "Ziska" "Zompi" "Zou" "Zuñiga" "Èttger")))
     :test #'equalp))
 
-;; 2675 defined as a bio-entity
+;; 2673 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-13801-13900
@@ -936,7 +936,7 @@
  "control/OD" "con®guration" "con®rm" "Coomassie-blue" "coordinator/investigator" "copies/ml"
  "coronavirus-keepthings-in-perspective-reasons-not-to-panic" "coronavirus-like"
  "coronavirus/rhinovirus" "countries/" "Covid-19utilization" "COVID-2" "COX/NSAIDs" "Cox1gene"
- "Cremer-Pople" "cross/documentation" "Crude/refined" "CT/MR" "CT/MRI" "Ctsample-CtGAPDH"
+ "Cremer-Pople" "cross/documentation" "Crude/refined" "CT/MR" "CT/MRI"
  "CTTCTTCTTCTTTGCCTGAGTTGAATC-3" "CV7" "CYT006-AngQb" "C→T" "D+" "D.Hruby" "D.J." "D.R." "D/" "D/D"
  "D/M" "D/MHOs" "DA36R" "Dabcyl-KTSAVLQSGFRKME-Edans" "DakAr-141069" "DakAr141069" "data022"
  "data068" "dataRequest" "date/time" "day-1" "day-of-week" "day-to-day" "Day/" "days-15" "daysρ"
@@ -958,18 +958,18 @@
  "enzyme/substrate" "EP1i" "EP2i" "EP3i" "EP4deficient" "EP4i" "EP4itreated" "EP4mediated"
  "EPA/OCPH" "Epanchin-Niell" "epidemic/pandemic" "epidemics/pandemics" "epithelial-like"
  "Epstein±Barr" "equivalents/mL" "ERK/" "ERK/MAPK" "ES-SENCE" "ESAG8" "Escobedo-Bonilla" "ESF-8"
- "Esp31" "ESSO*have" "et/ou" "EU195095" "eukaryotic initiation factor-2" "EV1" "EV2" "EV3" "EV4"
- "EV5" "EV71" "evaluation\\management" "examined*" "exploration}" "exporting/importing"
- "expression/" "F.C." "F.J." "F1-V" "F508del" "fatigue/" "FBS/PBS" "FC2" "fd_sc" "felCat8"
- "Fels-Klerx" "FFP2" "fhn_t" "Ficoll-Paque" "fifty-five" "Fifty-three" "Fig.2B" "FJ890356"
- "FJ890357" "FJ890358" "FJ890359" "flox/D" "flu-like" "FLuc-NeoR" "Fluoro-2nitropyridine-N-oxide"
- "fluoro-pyridine-N-oxides" "fluoronitropyridine-N-oxides" "FM1" "FN295485" "Fock-matrix"
- "food/crop" "for*indeed" "forskolin/" "forskolin/IBMX" "forskolin/IBMX+" "Forty-eight" "Forty-one"
- "Forty-six" "Foster-Tecknik" "FP7/" "FP7/2007" "fr_ps" "fr_s" "fr_sc" "fr_sh" "Fraenkel-Conrat"
- "Frankfurt-1" "freeze/thaw" "Friedman-Einat" "from-upand-coming" "from~8 h" "fs_ps" "fsc_sh"
- "fsh_s" "function/reactivity" "Furthermore,~10%" "FV1000" "FV3000" "FY10" "F…O" "g /2" "G+C"
- "G.P.L." "g/" "g/day" "g/dL" "g/kg" "g/ml" "g/pig" "G0/G1" "G4L" "GAATC-3" "GADD34/PPI" "GaHV-2"
- "GaHV-3" "gal4D" "Gal4p" "Gal4p-binding-dependent" "Gaussian09" "GCA_000181335.3" "GCCNNNN↓NGGC"
+ "Esp31" "ESSO*have" "et/ou" "eukaryotic initiation factor-2" "EV1" "EV2" "EV3" "EV4" "EV5" "EV71"
+ "evaluation\\management" "examined*" "exploration}" "exporting/importing" "expression/" "F.C."
+ "F.J." "F1-V" "F508del" "fatigue/" "FBS/PBS" "FC2" "fd_sc" "felCat8" "Fels-Klerx" "FFP2" "fhn_t"
+ "Ficoll-Paque" "fifty-five" "Fifty-three" "Fig.2B" "FJ890356" "FJ890357" "FJ890358" "FJ890359"
+ "flox/D" "flu-like" "FLuc-NeoR" "Fluoro-2nitropyridine-N-oxide" "fluoro-pyridine-N-oxides"
+ "fluoronitropyridine-N-oxides" "FM1" "FN295485" "Fock-matrix" "food/crop" "for*indeed"
+ "forskolin/" "forskolin/IBMX" "forskolin/IBMX+" "Forty-eight" "Forty-one" "Forty-six"
+ "Foster-Tecknik" "FP7/" "FP7/2007" "fr_ps" "fr_s" "fr_sc" "fr_sh" "Fraenkel-Conrat" "Frankfurt-1"
+ "freeze/thaw" "Friedman-Einat" "from-upand-coming" "from~8 h" "fs_ps" "fsc_sh" "fsh_s"
+ "function/reactivity" "Furthermore,~10%" "FV1000" "FV3000" "FY10" "F…O" "g /2" "G+C" "G.P.L." "g/"
+ "g/day" "g/dL" "g/kg" "g/ml" "g/pig" "G0/G1" "G4L" "GAATC-3" "GADD34/PPI" "GaHV-2" "GaHV-3"
+ "gal4D" "Gal4p" "Gal4p-binding-dependent" "Gaussian09" "GCA_000181335.3" "GCCNNNN↓NGGC"
  "GCF_000181335.3" "GCTCTTC-CGATCTNNNNNNNNN-3" "Gehan-Breslow" "Gel/PCR" "genome-like"
  "geographically/demographically" "GFP-BlaR" "gg-3" "Gg_GAPDHf" "Gg_GAPDHr" "gland-like"
  "glyceraldehyd-3-phosphate dehydrogenase" "glycogen synthase kinase-3b" "González-Peñas" "gov/"
@@ -1130,12 +1130,12 @@
  "±1.96SD" "±20°C" "±80°C." "·4HCl" "»15%" "»5" "»85%" "×100" "×g" "À0.066e0.576" "À13" "À14" "À70"
  "Â1%" "États-Unis" "ð0Þ" "ðtÞ=N" "ðtÞg=N" "ˆdehydˆ" "ˆdiarrheaˆ" "ˆgastroenter-itisˆ" "ˆgunshotˆ"
  "ˆheatˆ" "ˆhotˆ" "Ͻ4.9%" "Ͻ5 m" "Ͻ90.0%" "Ͼ10-day" "Ͼ300" "Ͼ5 m" "αand" "β-1,3-glucan" "γand"
- "Δ0Cl" "δ1-lineage" "ΔCt" "ΔCtsample＝" "ΔH" "ΔI" "ΔIsc" "ΔPT" "μA" "μA/" "μg/g" "μg/ml" "μL" "μl"
- "μl/well" "μNS" "Φ-X174" "Ϫ70°C" "Ϫ80°C" "ϳ45" "ϳ45-min" "ϳ65" "Յ5" "Յ6" "Ն91%" "Ն93.8%" "Ն99.1%"
- "→3" "∇I" "−20°C" "−80°C" "−80°C." "√2777/118" "√2777/1425" "√∑" "∼0.06" "∼0.08" "∼0.7%" "∼1,000"
- "∼10%" "∼11%" "∼1500" "∼2" "∼20%" "∼2000" "∼25" "∼30%" "∼40" "∼45" "∼68%" "∼70%" "∼700" "∼80%"
- "∼85%" "∼90%" "≈2,500" "≈4.8" "≤0.01" "≤1" "≤29" "≥18" "≥3" "≥5" "≥60" "≥65" "≥8" "≧2" "⌈·⌋"
- "␣-cluster" "␣-fetoprotein" "␦-cluster" "⩾24 h" "⩾37.8°C" "⩾4 µ")))
+ "Δ0Cl" "δ1-lineage" "ΔCt" "ΔCtsample＝Ctsample-CtGAPDH" "ΔH" "ΔI" "ΔIsc" "ΔPT" "μA" "μA/" "μg/g"
+ "μg/ml" "μL" "μl" "μl/well" "μNS" "Φ-X174" "Ϫ70°C" "Ϫ80°C" "ϳ45" "ϳ45-min" "ϳ65" "Յ5" "Յ6" "Ն91%"
+ "Ն93.8%" "Ն99.1%" "→3" "∇I" "−20°C" "−80°C" "−80°C." "√2777/118" "√2777/1425" "√∑" "∼0.06" "∼0.08"
+ "∼0.7%" "∼1,000" "∼10%" "∼11%" "∼1500" "∼2" "∼20%" "∼2000" "∼25" "∼30%" "∼40" "∼45" "∼68%" "∼70%"
+ "∼700" "∼80%" "∼85%" "∼90%" "≈2,500" "≈4.8" "≤0.01" "≤1" "≤29" "≥18" "≥3" "≥5" "≥60" "≥65" "≥8"
+ "≧2" "⌈·⌋" "␣-cluster" "␣-fetoprotein" "␦-cluster" "⩾24 h" "⩾37.8°C" "⩾4 µ")))
     :test #'equalp))
 
 ;; 5003 extracted by morphology
@@ -2289,3 +2289,4 @@
  "worst" "worthwhile" "wound" "wrap" "wrist" "wrists" "write" "writer" "wrote" "yahoo" "yelp"
  "yolk" "youngster" "youngsters" "zebra" "zone" "zones" "zoom")))
     :test #'equalp))
+st #'equalp))

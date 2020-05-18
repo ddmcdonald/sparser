@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-6001-6100 sample of unknown words
-;; created 5/17/20 10:51:12
+;; created 5/17/20 16:47:28
 
 (in-package :sparser)
 
@@ -2182,7 +2182,7 @@
  "Stevens-Johnson-Syndrom" "stop-times" "Storm-Versloot" "strand/RISC" "Strepto-und"
  "Streptokinase/Streptodornase" "Stressulkus-Prophylaxe" "structural/functional" "Suarez-Pinzon"
  "Substrate_search" "subunit H1" "subunit H2" "SuperScript®" "surface/intraeellular"
- "Susceptible-Exposed-Infective-Recovered" "SV-5" "SW40Ti" "SW41" "Sympto-Tab"
+ "Susceptible-Exposed-Infective-Recovered" "SV-5" "SW40Ti" "SW41" "Sympto-Tab."
  "Symptom-onset-to-first-medicalcontact" "Symptoms/signs" "sys-tematischen" "systemic/i"
  "Säuglings-und" "T-cell/DC" "T-helper" "T-helper1" "T-Zell-Leukämieviren" "T.A." "T1DM"
  "T1DM/LADA" "T1Neth/84" "T1Neth/85" "t20200121_211337" "T2DM" "T3N2M0" "T4-17" "T4D" "Tana-ka"
@@ -2211,7 +2211,7 @@
  "Virulenzfaktor/en" "virus-like" "Virus/Pathogen" "viruses/" "Viruskrankheiten/RKI"
  "visited/source" "vol/" "vol/vol" "volont6" "Vor-aussetzungen" "VP2" "VPI-5482" "VRE-Ausbruchs"
  "VRE=vancomycin-resistant" "VS2366" "w-aminopentyl" "W.A.I.T." "w/v" "w/w" "w=1" "Waltner-Toews"
- "Waschflotte!" "Wasser-Tab" "Wasserdampf-FA-Gemischs" "WC-Becken" "WC-Brille" "WC-Reiniger"
+ "Waschflotte!" "Wasser-Tab." "Wasserdampf-FA-Gemischs" "WC-Becken" "WC-Brille" "WC-Reiniger"
  "WC-Rohr" "WC500003154" "wells/dilution" "werden!" "werfen!" "wet/dry" "WHA55.18" "within-pen"
  "wochen-bis" "Wohn-und" "Wolhyni-oder" "work-time" "work/life" "Wund-und"
  "Wurzelka-nalbehandlungen" "Wyn-Jones" "x+1" "X-axis" "X-OMAT" "X60" "Xaa-methyl-His" "Xho1" "XR+"

@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-7401-7500 sample of unknown words
-;; created 5/17/20 11:8:10
+;; created 5/17/20 17:42:45
 
 (in-package :sparser)
 
@@ -609,7 +609,7 @@
  "Zhang" "Zhao" "Zhe" "Zheng" "Zhong" "Zhou" "Zhu" "Zhuang" "Zuccotti" "Zuker" "Zuo" "Zárate")))
     :test #'equalp))
 
-;; 2371 defined as a bio-entity
+;; 2370 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-7401-7500
@@ -753,8 +753,8 @@
  "Edmonston-Zagreb" "edu/apps/shiny/activemonitr/" "edu/vectorcore" "Eight-week-old" "Eighty-Four"
  "Eighty-seven" "Eighty-three" "either/or" "electron/nm" "en/index" "end-effectors" "End1/"
  "End1/E6E7" "End1/E6E7and" "entero-like" "EP4mediated" "Epon-Araldite" "epstein-barr-virusencoded"
- "error/mean" "ERS/ESCMID" "ES/MCDB201" "ES15" "ESAVI-2010-0392" "ESBL+" "eta/" "EU/mg" "EU418976"
- "EX-taq" "ExD/E" "exercise/activity" "experience/Epidemiology" "extract/kg" "Exviera™" "eye/face"
+ "error/mean" "ERS/ESCMID" "ES/MCDB201" "ES15" "ESAVI-2010-0392" "ESBL+" "eta/" "EU/mg" "EX-taq"
+ "ExD/E" "exercise/activity" "experience/Epidemiology" "extract/kg" "Exviera™" "eye/face"
  "eyes/optic" "EZ1" "F/M" "F1-F7" "F3-F4" "F:M" "face/eye" "FAI-3" "Fam-brough"
  "FAM-TTGGCCAYAACCTCCCTGA-MGB" "fat/g" "Fcγ" "February/March" "fecal/oral" "feedback/training"
  "feet/min" "Ferrer-Costa" "fetus-4" "FFP2" "ffu=focus" "Fgfr2b"
@@ -2134,3 +2134,4 @@
  "wounds" "wrap" "wright" "wrist" "write" "writer" "writers" "wrote" "xenophobia" "yacht" "yachts"
  "yahoo" "yak" "yellowish" "yoga" "youth" "zone" "zoom")))
     :test #'equalp))
+'equalp))

@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-10401-10500 sample of unknown words
-;; created 5/17/20 11:43:44
+;; created 5/17/20 19:43:56
 
 (in-package :sparser)
 
@@ -767,7 +767,7 @@
  "Zimmerman" "Zou" "Zuo" "dU" "duPont" "Ünlü")))
     :test #'equalp))
 
-;; 3333 defined as a bio-entity
+;; 3331 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-10401-10500
@@ -957,38 +957,37 @@
  "endo-β-N-acetylglucosaminidase" "endocrine/metabolic" "endosomes/lysosomes" "endothelial-like"
  "ENDOVAC-Bovi" "enteritis/colitis" "entry/exit" "EO0381" "EP0111" "epidermoid/dermoid"
  "epididymitis/orchitis" "equine-1" "equine-2" "ER/ERGIC" "erana@childrensnational" "ERBV2" "ERV2"
- "ESA-2" "ESICM-TG" "estuarine/seawaters" "EU/mL" "EU448368" "EU448381"
- "eukaryotic translation initiation factor 2" "European-like" "EV-A71" "EV3" "EVA+" "EVA+V/C"
- "Evans-Allen-1013186" "ex@ure" "Examples!" "expressing!" "extracellular/"
- "extraipe@texaschildrens" "EYFP!" "EZ1" "Ezy-Drug" "F.C." "F.M." "f/u" "F:66" "factor 2x1-2x2"
- "factor-88" "FAM-CTCGGCTTTGAGGGGGCCTGA-MGB" "famous!" "Fat-Sat" "fBM~l~phocytes" "Fcc-receptor"
- "Fcγ" "FcεRI" "FDG-18" "FDR=0.05" "Fei-Shih" "Fel-O-Vax" "feline coronavirus/FeLV"
- "Fernández-Oliva" "Fever/Dengue" "FHCA/FHA" "FHCP/FHA" "FHD/2" "Fifty-five" "Figure!1D" "Figure+"
- "Figure+2" "Figure+4" "Figure+5" "Figure/" "final/baseline" "finished…" "first!" "first-time"
- "First-time" "Fisherbrand®" "Five-Year" "flanking!" "flavan-3-oles" "Flores-Sahagun" "flow+IVC"
- "flow-cytometry" "flu-like" "Flu-M179rev" "Flu-M32for" "fluorescent!" "fluoroscopy/angiography"
- "folates/antifolates" "following-1" "Fontainebleau" "Forty-one" "Forty-six" "for~9,000"
- "fowlpox-H5" "FPKVP26" "freeze/thaw" "freezing/HPF" "friedman@" "friends/family" "FT120"
- "full-time" "Funet$nal" "fused!" "fusion!" "Fuyang0805" "FV1000" "G-quadruplex"
- "G-quadruplex-related" "G-quartet" "G-quartets" "G-tetrad" "G.G." "G.P." "g/" "g/dl" "g/kg" "g/L"
- "g/min" "g/ml" "G1/S" "G1P0" "GACTACHVGGGTWTCTAAT-3" "Gal4DB" "gamma-carboxypeptidase" "ganglion!"
- "Garcia-Sastre" "García-Serradilla" "GAT-3" "GCaMP!" "GCaMP3" "Gd-EOB-DTPA" "gE/gI"
- "gebaoxue@sibs" "GeLC-MS" "GeLC-MS/MS" "gene-1" "gene/protein" "gene/sequence" "genes!"
- "Genes/Proteins" "genes/subtypes" "genetic/genomic" "geneticists/genetic" "genotype/subgenotype"
- "genotypes/subgenotypes" "genus-like" "GeXP-based" "GGA-3" "GGATTGGTCTTGTCTT-TAGCCA"
- "glasiercharlesm@uams" "globe…and" "Gn/Gc" "Gool&" "gov/blast/" "gov/ncidod/dvbid/" "gov/Taxonomy"
- "gov/travel/" "gov/travel/content/vaccinations" "GP1/2" "GQN1" "Grattan-Smith" "grattansmith@mac"
- "GRCh37" "GRCm38" "GROMACS4.6.1" "growth/no" "Gr€" "GTA-3" "Guillain-Barre" "Guillen-Guio"
- "Guio-et-al" "gun011" "GZ-08-02" "H&E" "H+L" "H-2D" "H-2K" "H129∆TK-TT" "H1N2" "H2N2" "H2O/5"
- "H3N8" "H5/H7" "H6N1" "H77/JFH1" "H7N2" "H7N3" "H7N7" "H7N7and" "H7N9" "H7N9infected" "H9N2"
- "ha!-at" "HA0" "half-dozen" "half-times" "HAM/" "Hardy-Weinberg" "Hare!in!1997!" "Harwood-Nash"
- "have!" "Havenar-Daughton" "haverkampbt@umkc" "HB-65" "HbA1c" "HBV-like" "hch229@uky" "HCT-116"
- "HD750" "HDAC1/NuRD" "hDDP4" "hDPP4" "head/neck" "health/" "heart/liver" "heat-labile" "HeLamCAT1"
- "helium-3" "hellinger@yahoo" "Hellstr€" "helper/inducer" "Hemoglobin/hematocrit"
- "hemorrhagic fever-like" "hemorrhagic fever/dengue" "Hendra-like" "Henoch-Schönlein"
- "hepatocytes/cholangiocytes" "hepatotropic/biliary" "Hernanz-Schulman" "herpesvirus!"
- "herpesvirus-1" "herpesviruses!" "Heymann&Shindo" "hg19" "HHV-1" "HHV-1positive" "HHV-4"
- "HHV-4-positive" "HHV-5" "HHV-6" "high-383" "hindson@bmc" "Hisat2" "HiSeq2000" "HiSeq4000"
+ "ESA-2" "ESICM-TG" "estuarine/seawaters" "EU/mL" "eukaryotic translation initiation factor 2"
+ "European-like" "EV-A71" "EV3" "EVA+" "EVA+V/C" "Evans-Allen-1013186" "ex@ure" "Examples!"
+ "expressing!" "extracellular/" "extraipe@texaschildrens" "EYFP!" "EZ1" "Ezy-Drug" "F.C." "F.M."
+ "f/u" "F:66" "factor 2x1-2x2" "factor-88" "FAM-CTCGGCTTTGAGGGGGCCTGA-MGB" "famous!" "Fat-Sat"
+ "fBM~l~phocytes" "Fcc-receptor" "Fcγ" "FcεRI" "FDG-18" "FDR=0.05" "Fei-Shih" "Fel-O-Vax"
+ "feline coronavirus/FeLV" "Fernández-Oliva" "Fever/Dengue" "FHCA/FHA" "FHCP/FHA" "FHD/2"
+ "Fifty-five" "Figure!1D" "Figure+" "Figure+2" "Figure+4" "Figure+5" "Figure/" "final/baseline"
+ "finished…" "first!" "first-time" "First-time" "Fisherbrand®" "Five-Year" "flanking!"
+ "flavan-3-oles" "Flores-Sahagun" "flow+IVC" "flow-cytometry" "flu-like" "Flu-M179rev" "Flu-M32for"
+ "fluorescent!" "fluoroscopy/angiography" "folates/antifolates" "following-1" "Fontainebleau"
+ "Forty-one" "Forty-six" "for~9,000" "fowlpox-H5" "FPKVP26" "freeze/thaw" "freezing/HPF"
+ "friedman@" "friends/family" "FT120" "full-time" "Funet$nal" "fused!" "fusion!" "Fuyang0805"
+ "FV1000" "G-quadruplex" "G-quadruplex-related" "G-quartet" "G-quartets" "G-tetrad" "G.G." "G.P."
+ "g/" "g/dl" "g/kg" "g/L" "g/min" "g/ml" "G1/S" "G1P0" "GACTACHVGGGTWTCTAAT-3" "Gal4DB"
+ "gamma-carboxypeptidase" "ganglion!" "Garcia-Sastre" "García-Serradilla" "GAT-3" "GCaMP!" "GCaMP3"
+ "Gd-EOB-DTPA" "gE/gI" "gebaoxue@sibs" "GeLC-MS" "GeLC-MS/MS" "gene-1" "gene/protein"
+ "gene/sequence" "genes!" "Genes/Proteins" "genes/subtypes" "genetic/genomic" "geneticists/genetic"
+ "genotype/subgenotype" "genotypes/subgenotypes" "genus-like" "GeXP-based" "GGA-3"
+ "GGATTGGTCTTGTCTT-TAGCCA" "glasiercharlesm@uams" "globe…and" "Gn/Gc" "Gool&" "gov/blast/"
+ "gov/ncidod/dvbid/" "gov/Taxonomy" "gov/travel/" "gov/travel/content/vaccinations" "GP1/2" "GQN1"
+ "Grattan-Smith" "grattansmith@mac" "GRCh37" "GRCm38" "GROMACS4.6.1" "growth/no" "Gr€" "GTA-3"
+ "Guillain-Barre" "Guillen-Guio" "Guio-et-al" "gun011" "GZ-08-02" "H&E" "H+L" "H-2D" "H-2K"
+ "H129∆TK-TT" "H1N2" "H2N2" "H2O/5" "H3N8" "H5/H7" "H6N1" "H77/JFH1" "H7N2" "H7N3" "H7N7" "H7N7and"
+ "H7N9" "H7N9infected" "H9N2" "ha!-at" "HA0" "half-dozen" "half-times" "HAM/" "Hardy-Weinberg"
+ "Hare!in!1997!" "Harwood-Nash" "have!" "Havenar-Daughton" "haverkampbt@umkc" "HB-65" "HbA1c"
+ "HBV-like" "hch229@uky" "HCT-116" "HD750" "HDAC1/NuRD" "hDDP4" "hDPP4" "head/neck" "health/"
+ "heart/liver" "heat-labile" "HeLamCAT1" "helium-3" "hellinger@yahoo" "Hellstr€" "helper/inducer"
+ "Hemoglobin/hematocrit" "hemorrhagic fever-like" "hemorrhagic fever/dengue" "Hendra-like"
+ "Henoch-Schönlein" "hepatocytes/cholangiocytes" "hepatotropic/biliary" "Hernanz-Schulman"
+ "herpesvirus!" "herpesvirus-1" "herpesviruses!" "Heymann&Shindo" "hg19" "HHV-1" "HHV-1positive"
+ "HHV-4" "HHV-4-positive" "HHV-5" "HHV-6" "high-383" "hindson@bmc" "Hisat2" "HiSeq2000" "HiSeq4000"
  "HIV-eGFP-delEnv" "HIV/" "HIV/AIDS" "HIV/M." "hkeslamy@gmail" "HM40-3" "Ho-Fung" "hOAS1"
  "Hofmann-Lehmann" "HOIL-1L" "HOIL-1L/HOIP" "hoofed-stock-to-canid" "hospitals/cities"
  "host/vectors" "hosts-Mammarenaviridae" "host×microbe" "However,!" "However,differentiation"
@@ -2562,4 +2561,6 @@
  "world" "worldwide" "worm" "worrisome" "worsen" "worthwhile" "worthy" "wound" "wright" "wrist"
  "write" "writer" "writers" "wrote" "yahoo" "yearling" "yearlings" "yoghurt" "youth" "yuan" "zebu"
  "zenith" "zipper" "zone" "zones" "zoo" "zoologist" "zoologists")))
+    :test #'equalp))
+)
     :test #'equalp))

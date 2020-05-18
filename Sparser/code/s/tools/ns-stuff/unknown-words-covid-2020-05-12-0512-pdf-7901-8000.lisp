@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-7901-8000 sample of unknown words
-;; created 5/17/20 11:13:34
+;; created 5/17/20 18:2:54
 
 (in-package :sparser)
 
@@ -587,7 +587,7 @@
  "Zulperi" "dN" "dS" "miRanda" "Petroski" "Özgün" "Østerås" "Škrovánková")))
     :test #'equalp))
 
-;; 2136 defined as a bio-entity
+;; 2135 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-7901-8000
@@ -712,7 +712,7 @@
  "eighty-one" "EIT-023B" "electrophoresis-electrospray-mass spectrometry"
  "elongin-C-elongin-B-Cullin-5-E3" "elongin-C-elongin-B-Cullin-5-SOCS" "EM-10"
  "endocytic/lysosomal" "endopeptidase-like" "entry/" "entry/penetration" "EP155" "Eq/100" "ER-1"
- "ER/Golgi" "ER/nuclear" "Erv29p" "es/CAIcal/" "ESCRT-1" "estrogen-like" "EU684972"
+ "ER/Golgi" "ER/nuclear" "Erv29p" "es/CAIcal/" "ESCRT-1" "estrogen-like"
  "EU684972_96363_India_1996" "EU684972__96363_India_1996" "Eusebio-Cope" "EV68" "EV71" "evi-4"
  "Ex-Taq" "ExoSAP-IT" "Expre~inn" "eye/conjunctiva" "Ez4D" "F1-F2" "facilitysyndrome-day"
  "factor-kB" "family!" "Fang-chou" "Farnesyltransferase/Geranylgeranyltransferase" "FastPrep-24"
@@ -1828,3 +1828,4 @@
  "wound" "wounds" "wrist" "write" "writer" "writers" "writings" "wrote" "yak" "yardstick"
  "yearlong" "yuan" "zebra" "zipper" "zippers" "zone" "zones" "zoom")))
     :test #'equalp))
+ #'equalp))

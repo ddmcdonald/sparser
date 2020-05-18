@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-10001-10100 sample of unknown words
-;; created 5/17/20 11:36:58
+;; created 5/17/20 19:31:54
 
 (in-package :sparser)
 
@@ -592,7 +592,7 @@
  "Zhang" "Zhao" "Zheng" "Zhou" "Zhu" "Ziebuhr" "Zimprich" "Zubler" "Zuo" "Zwick" "huI")))
     :test #'equalp))
 
-;; 2773 defined as a bio-entity
+;; 2771 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-10001-10100
@@ -750,24 +750,23 @@
  "enhancer/promoter" "EnShell-Seijffers" "enterovirus-like" "env-gp21" "env-gp46"
  "epidermal growth factor receptor-2" "epinephrine/" "Epstein---Barr" "ER/phagolysosomes" "ERDJ3"
  "ERMs-DA470" "Ert€" "erythro-myeloid" "ESAT6" "estrogen/progesterone" "EsyPred3D" "et al.capture"
- "eta/" "EU400116-EU400128" "EU703812" "Euler-Lotka" "Europe-1/" "EV-A71" "EV71" "except for/Y2M"
- "Expi293F" "exposures/cases" "F /n" "F.B." "F.chinensis" "factor-6" "factor-kB" "factors/sample"
- "falcipain-2" "falcipain-3" "Fc-gamma" "FC>2" "Fcγ" "FD-500" "few-adjuvants-many-vaccines"
- "FF14SB" "FFP2" "Ffrench-Constant" "Ficoll-Paque" "Fifty-four" "Fifty-one" "Fifty-three" "Fig3A"
- "Fig3B" "final-year" "fish-borne" "FITC-Arachis" "Five-week-old" "fl/fl" "FL2013" "Flores-Mendoza"
- "Flow-Jo" "flu-like" "flu_trials_tables" "fluorescent-antibody" "FNα" "Fo-Fc" "foam-like"
- "Food-HACCP" "Footand-mouth" "forkhead box O3A" "Forty-three" "four-week-old" "Frankfurt-1"
- "Fribourg-Blanc" "Friedel-Crafts" "from/Y2M" "FS772/70" "full-time" "functional/packed"
- "fusion-protein" "FV1000" "Fw109-5" "FY523" "G!T" "G+C" "G+U-rich" "g-quadruplex" "G.E." "g/L"
- "g/ml" "g/μl" "G1a" "G1b" "G238!A" "G2b" "G391!A" "G52!T" "G9C4" "gag-p244gag-p19" "Galton-Watson"
- "Garcia-Faroldi" "García-Sastre" "Gardasil®" "Gawel-Thompson" "GB21A" "GB30" "GBF1-Arf1-COP-I"
- "GCAGCAGGAGTTCATGAAGAGGG-3" "GD03T0013" "GD1" "gen3" "gen5-1for" "gen5-1for/MamuIFITM3" "gene 3a"
- "Gene 3b" "gene 3b" "gene-1" "genera/species" "genes/ESTs" "GEq/mL"
- "German-Endocrine-Brain-Immune-Network" "GFP+" "GFP-Olig1−/−" "GGATCCGCTC-TAACTCTATACTAGCCTAT"
- "Gibco/Sigma-Aldrich" "Gln45!stop" "gly-cosy1" "glycan-V3" "glycerol/potassium"
- "glyceroladipate-co-ω-pentadecalactone" "GM95" "gov/" "gov/about/" "gov/aboutfda/whatwedo/"
- "gov/cber/genetherapy/" "gov/cber/genetherapy/isct092506jcr" "gov/eis/" "gov/genbank/" "gov/geo"
- "gov/ij" "gov/mmwr" "gov/pesticides/factsheets/"
+ "eta/" "Euler-Lotka" "Europe-1/" "EV-A71" "EV71" "except for/Y2M" "Expi293F" "exposures/cases"
+ "F /n" "F.B." "F.chinensis" "factor-6" "factor-kB" "factors/sample" "falcipain-2" "falcipain-3"
+ "Fc-gamma" "FC>2" "Fcγ" "FD-500" "few-adjuvants-many-vaccines" "FF14SB" "FFP2" "Ffrench-Constant"
+ "Ficoll-Paque" "Fifty-four" "Fifty-one" "Fifty-three" "Fig3A" "Fig3B" "final-year" "fish-borne"
+ "FITC-Arachis" "Five-week-old" "fl/fl" "FL2013" "Flores-Mendoza" "Flow-Jo" "flu-like"
+ "flu_trials_tables" "fluorescent-antibody" "FNα" "Fo-Fc" "foam-like" "Food-HACCP" "Footand-mouth"
+ "forkhead box O3A" "Forty-three" "four-week-old" "Frankfurt-1" "Fribourg-Blanc" "Friedel-Crafts"
+ "from/Y2M" "FS772/70" "full-time" "functional/packed" "fusion-protein" "FV1000" "Fw109-5" "FY523"
+ "G!T" "G+C" "G+U-rich" "g-quadruplex" "G.E." "g/L" "g/ml" "g/μl" "G1a" "G1b" "G238!A" "G2b"
+ "G391!A" "G52!T" "G9C4" "gag-p244gag-p19" "Galton-Watson" "Garcia-Faroldi" "García-Sastre"
+ "Gardasil®" "Gawel-Thompson" "GB21A" "GB30" "GBF1-Arf1-COP-I" "GCAGCAGGAGTTCATGAAGAGGG-3"
+ "GD03T0013" "GD1" "gen3" "gen5-1for" "gen5-1for/MamuIFITM3" "gene 3a" "Gene 3b" "gene 3b" "gene-1"
+ "genera/species" "genes/ESTs" "GEq/mL" "German-Endocrine-Brain-Immune-Network" "GFP+"
+ "GFP-Olig1−/−" "GGATCCGCTC-TAACTCTATACTAGCCTAT" "Gibco/Sigma-Aldrich" "Gln45!stop" "gly-cosy1"
+ "glycan-V3" "glycerol/potassium" "glyceroladipate-co-ω-pentadecalactone" "GM95" "gov/"
+ "gov/about/" "gov/aboutfda/whatwedo/" "gov/cber/genetherapy/" "gov/cber/genetherapy/isct092506jcr"
+ "gov/eis/" "gov/genbank/" "gov/geo" "gov/ij" "gov/mmwr" "gov/pesticides/factsheets/"
  "gov/scienceresearch/specialtopics/womenshealthresearch/" "gov/travel" "gov/travel/" "government/"
  "governmental/noncivilian" "gp120based" "gp14092UG37.8" "gp140CZA79012" "gp140YU2" "gp220/350"
  "gp46" "gp69/71" "gp71" "Gray1" "GRCm38" "Grid/collection" "growth factor-like" "GSE110188"
@@ -1958,4 +1957,6 @@
  "words" "wore" "worker" "workers" "workforce" "workload" "workplace" "workshop" "workshops"
  "world" "worldwide" "worm" "worsen" "worsens" "worthy" "wow" "wrap" "wraps" "wreak" "wright"
  "write" "writer" "wrote" "yolk" "yolks" "yuan" "zee" "zipper" "zonal" "zone" "zoo" "zoos")))
+    :test #'equalp))
+ "zoos")))
     :test #'equalp))

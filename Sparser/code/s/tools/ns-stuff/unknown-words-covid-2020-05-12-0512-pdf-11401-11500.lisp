@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-11401-11500 sample of unknown words
-;; created 5/17/20 11:54:40
+;; created 5/17/20 20:1:31
 
 (in-package :sparser)
 
@@ -803,7 +803,7 @@
  "Ziemann" "Zoric" "Zou" "Zumla" "Zuo" "Zurek" "Zwarum" "Zwickl" "fU" "Álvarez")))
     :test #'equalp))
 
-;; 2909 defined as a bio-entity
+;; 2908 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-11401-11500
@@ -979,16 +979,16 @@
  "endosomes/lysosomes" "enemy!" "ENT-Klinik" "enterovirus/rhinovirus" "Env-H5" "envelope/ns1"
  "enveloped~100" "eon~entration" "EPI180038" "epidemic-like" "equipment/materials"
  "Erlangen-Niimberg" "Esa1p" "esterilización/desinfección" "et al.1992" "et al.1996" "ether-labile"
- "eu/" "EU082069.1" "eukaryotic initiation factor-4a" "eukaryotic-like" "EV71" "events/CFLI"
- "exemplified3" "exon/intron" "expo-•" "extracytoplasmic/lumenal" "EZ-Detect" "E~f" "e~t"
- "e¤ective" "e¤ects" "e¤ort" "e¤orts" "f/f" "F508del" "FA113" "faeces7" "FANTOM5" "Fe/ml"
- "federal-state" "FF14SB" "Ficoll-Paque" "Fig.1a" "FIO2" "fiO2" "FITC-MALI" "Five-to-ten"
- "flow-cytometry" "flu-like" "folding-modulators" "folding/unfolding" "Forty-eight" "for~85%" "FP7"
- "Fpz-T4" "front-temporal" "fructose-2,6-bisphosphate" "ft/min" "Fujian-like" "full-time"
- "function/folding" "Furthermore ,mtDNA" "fusion/fission" "Fusolin/gp37" "g-adaptin" "g-Un"
- "g/cm 3" "g/d" "g/day" "g/dL" "g/día" "g/g" "g/kg" "g/L" "g/L." "g/L/yr" "g/m" "g/ml" "G1X5" "G:F"
- "G:U" "Galat-Luong" "gamma-zein" "Garcia-Estringana" "García-Quetglas" "García-Sastre" "Gary-Bobo"
- "Gaussian-like" "GC376" "GC813" "GCRV-873" "gd-T" "Geg" "gel/filter" "GG-3"
+ "eu/" "eukaryotic initiation factor-4a" "eukaryotic-like" "EV71" "events/CFLI" "exemplified3"
+ "exon/intron" "expo-•" "extracytoplasmic/lumenal" "EZ-Detect" "E~f" "e~t" "e¤ective" "e¤ects"
+ "e¤ort" "e¤orts" "f/f" "F508del" "FA113" "faeces7" "FANTOM5" "Fe/ml" "federal-state" "FF14SB"
+ "Ficoll-Paque" "Fig.1a" "FIO2" "fiO2" "FITC-MALI" "Five-to-ten" "flow-cytometry" "flu-like"
+ "folding-modulators" "folding/unfolding" "Forty-eight" "for~85%" "FP7" "Fpz-T4" "front-temporal"
+ "fructose-2,6-bisphosphate" "ft/min" "Fujian-like" "full-time" "function/folding"
+ "Furthermore ,mtDNA" "fusion/fission" "Fusolin/gp37" "g-adaptin" "g-Un" "g/cm 3" "g/d" "g/day"
+ "g/dL" "g/día" "g/g" "g/kg" "g/L" "g/L." "g/L/yr" "g/m" "g/ml" "G1X5" "G:F" "G:U" "Galat-Luong"
+ "gamma-zein" "Garcia-Estringana" "García-Quetglas" "García-Sastre" "Gary-Bobo" "Gaussian-like"
+ "GC376" "GC813" "GCRV-873" "gd-T" "Geg" "gel/filter" "GG-3"
  "GGCCGCCAGTGCACGCGGGGATTTGGCTCACCTAACGACGA-CGCATGCTCGGCATTTGCCGGC" "glyceraldehyde-3"
  "glyco-protein D" "glycosyl-phosphatidylinosito1" "gm/dl" "gov/" "gov/dpdx/HTML/" "gov/Genbank"
  "gov/ij/" "gov/sites/batchentrez" "gp140" "gp140ΔCFI" "gp145" "GP28" "gp35" "gp52" "gp69" "gp71"
@@ -2265,3 +2265,4 @@
  "worse" "wound" "wounds" "wright" "wring" "write" "wrote" "wrung" "yearbook" "yoghurt" "youth"
  "zebra" "zigzag" "zipper" "zone" "zoo" "zoom")))
     :test #'equalp))
+st #'equalp))

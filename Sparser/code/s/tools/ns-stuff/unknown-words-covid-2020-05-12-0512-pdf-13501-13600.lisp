@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-13501-13600 sample of unknown words
-;; created 5/17/20 13:21:30
+;; created 5/17/20 22:32:59
 
 (in-package :sparser)
 
@@ -720,7 +720,7 @@
  "Legionnaires" "Çelik" "Šarić")))
     :test #'equalp))
 
-;; 2443 defined as a bio-entity
+;; 2439 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-13501-13600
@@ -867,15 +867,14 @@
  "endo-ß-TV-acetylglucosaminidase" "endogenous retroviruses/retroelements" "ENLYFQ/S" "enqu~tes"
  "enterovirus/rhinovirus" "ENTSO-E" "envigo-68-c57bl6-enhanced-technical-data-sheet_screen"
  "epidemic!" "epidemics/pandemics" "equiva-The" "Erd}" "ERp49" "ERp59" "ERp99" "ERp99-#"
- "ERp99related" "est n6cessaire" "estim6e" "ET-1-induced" "eu/en/" "EU078325" "EU716415-EU716419"
- "EU716420" "EU716421-EU716424" "EV-A71" "EV/AdV" "EV68" "EV71" "EV71-3D" "EV71infection"
- "Experi-ments" "F/" "factor 4G" "Fairman-Williams" "famciclovir/kg" "family 1b"
- "faucitis/periodontitis" "fCD4" "fCD4:fCD8" "fCD5" "fCD8" "febrile/hemorrhagic" "February-March"
- "Fel7" "Fernandes-Alnemri" "fever/weight" "FFHV-1" "FHV-1" "Fifty-six" "Fig.1b" "Fig.6b" "Fig.6g"
- "Fig.6h" "fil-integrins" "Fil-mArray" "find-and-order-jax-mice" "FiO2" "first-aid"
- "fisetin-8-glucoside" "fi~vre" "FJ644291" "fl2-microglobulin" "flavivirus-like" "flow-TV"
- "flu-like" "fluoridated/non" "for/c" "forward-5VAGA" "forward-5VAGT" "forward-5VGCA" "FoxP3+"
- "Foxp3+" "fr6quent" "fragmentation/" "Francois-Newton" "free-BSA" "FRhK-4" "fs104" "FT2"
+ "ERp99related" "est n6cessaire" "estim6e" "ET-1-induced" "eu/en/" "EV-A71" "EV/AdV" "EV68" "EV71"
+ "EV71-3D" "EV71infection" "Experi-ments" "F/" "factor 4G" "Fairman-Williams" "famciclovir/kg"
+ "family 1b" "faucitis/periodontitis" "fCD4" "fCD4:fCD8" "fCD5" "fCD8" "febrile/hemorrhagic"
+ "February-March" "Fel7" "Fernandes-Alnemri" "fever/weight" "FFHV-1" "FHV-1" "Fifty-six" "Fig.1b"
+ "Fig.6b" "Fig.6g" "Fig.6h" "fil-integrins" "Fil-mArray" "find-and-order-jax-mice" "FiO2"
+ "first-aid" "fisetin-8-glucoside" "fi~vre" "FJ644291" "fl2-microglobulin" "flavivirus-like"
+ "flow-TV" "flu-like" "fluoridated/non" "for/c" "forward-5VAGA" "forward-5VAGT" "forward-5VGCA"
+ "FoxP3+" "Foxp3+" "fr6quent" "fragmentation/" "Francois-Newton" "free-BSA" "FRhK-4" "fs104" "FT2"
  "full-time" "function-like" "fusion/entry" "g/day" "g/L" "g/ml" "g/mL" "G2b" "Gadd153/"
  "Gadd153/chop" "Galbl-4Glc-cer" "Gasteiger-Huckel" "Gasteiger-Marsili" "gastrojejunos="
  "GCTAACCCACTTCGTCAA/R2" "GeneMark" "genera/species" "genetic/metabolic" "Genomi-Phi" "geo-105"
@@ -2080,5 +2079,8 @@
  "withhold" "withstand" "witness" "wizard" "wold" "woo" "wood" "woodcock" "word" "words" "worker"
  "workers" "workforce" "workload" "workplace" "workshop" "world" "worldwide" "worm" "worrisome"
  "worst" "worthwhile" "worthy" "wound" "wounds" "wright" "write" "wrote" "yacht" "yachts" "zone"
+ "zoo")))
+    :test #'equalp))
+"wrote" "yacht" "yachts" "zone"
  "zoo")))
     :test #'equalp))

@@ -1,9 +1,9 @@
 ;; covid-2020-05-12-0512-PDF-16101-16200 sample of unknown words
-;; created 5/16/20 20:44:31
+;; created 5/18/20 2:21:5
 
 (in-package :sparser)
 
-;; 4205 extracted as unknown bio-entity
+;; 4206 extracted as unknown bio-entity
 
 
 (defparameter *All-Upper-Unknown-Words*
@@ -36,7 +36,7 @@
  "TLV" "TNCC" "TNE" "TOT" "TRAW" "TTA" "TTC" "TV" "TXGYG" "UAE" "UCSD" "UCSF" "UCT" "UCYAA" "UE"
  "UNAIDS" "UNICEF" "UNIX" "URTI" "USA" "USD" "USEPA" "UVGI" "VEB" "VFC" "VII" "VNN" "VOD" "VPC"
  "VPH" "WAZ" "WB" "WBC" "WIFI" "WOMAC" "XL" "XP" "XRQ" "XS" "YHC" "YOSHIKURA" "ZCTA" "ZDOCK" "TCID"
- "¢" "¢I" "À" "Â" "Ò" "Þ" "Ϫ" "Г" "ଝ" "‫ע‬" "" "")))
+ "¢" "¢I" "À" "Â" "Ò" "Þ" "Ϫ" "Г" "ଝ" "‫ע‬" "" "" "")))
     :test #'equalp))
 
 
@@ -167,7 +167,7 @@
  "metaspecies" "methanaminium" "methicillinresistant" "methionin" "methylcholanthrene" "metritis"
  "metry" "mialgias" "micrangia" "microbalance" "microbiologists" "microbiota" "microbiotahost"
  "microdata" "microdeletions" "microdeposits" "microglobulins" "micrograph" "micropipettes"
- "microplates" "microthrombus" "microtiter" "microplate" "microtitre" "microvasculature"
+ "microplate" "microplates" "microthrombus" "microtiter" "microtitre" "microvasculature"
  "mictrotitre" "middleincome" "miedo" "mientras" "millones" "millón" "misma" "mismatch" "mismos"
  "mitosignalosome" "miyabeanus" "modeld" "modem" "modifi" "mofetil" "momento" "monestrus"
  "monitorings" "monlayers" "monocultures" "monocytogenes" "monodomain" "monokines" "monolaycrs"
@@ -262,7 +262,7 @@
  "website" "welldefi" "whodsadlydare" "wiley" "withdrawn" "withingroup" "workflow" "workflows"
  "workup" "worldometer" "worn" "written" "wtih" "www" "x" "xaminophosphonates" "yl" "ylmethylene"
  "yloxy" "yloxytris" "ysate" "zeroes" "zg" "ziplock" "ziptip" "zoonoses" "¢" "árbol" "ði" "ðx"
- "únicos" "þ" "ınicas" "ϫ" "ଝ" "‫ע‬" "i" "" "k" "")))
+ "únicos" "þ" "ınicas" "ϫ" "ଝ" "‫ע‬" "i" "" "k" "" "")))
     :test #'equalp))
 
 
@@ -327,50 +327,51 @@
  "Marek" "Markov" "Marle" "Marseilles" "Martõ" "Masson" "Mastertech" "Mattern" "Maxtek" "Maya"
  "Maywood" "McAb" "McGaw" "McPherson" "Mclnerney" "MeCN" "Medizinische" "Meer" "Megascript"
  "Melinda" "Merck" "MgCl" "Micoplasma" "Microbiol" "Microdata" "Micronesia" "Microsoft" "Microtest"
- "Mierotest" "Milan" "Milkers" "Millipore" "Millville" "Miltenyi" "Miniopteridae" "Ministerio"
- "MnCl" "ModFit" "Molossid" "Monoculture" "Monte" "Morag" "Morgeaux" "MtIV" "MttV" "Multilabel"
- "Multilayers" "Multipin" "Multistate" "Muñozalmagro" "Mx" "Mytilus" "Myxococcus" "Möröy"
- "NDRSprotein" "NHPs" "NODosome" "NaHCO" "Nadu" "Nagoya" "Nagpur" "Nanoclave" "Naughton" "Negrette"
- "Nernst" "Nesoenas" "Nettesheim" "Neuroinvasiveness" "NheI" "Nicola" "Nidovirales" "Nikon" "Nino"
- "Nipah" "Nlrx" "Nobel" "Nombre" "Norderstedt" "NucliSens" "Nuevo" "Nusa" "Nusselt" "Nutley" "OEMs"
- "Odiethylphosphonate" "Odimethylhydroxamate" "Ohmic" "Olpers" "Olympus" "Omnic" "OpenMP" "Opteron"
- "Optima" "Orang" "Orbitrap" "Oswaldo" "Ought" "Oxfordshire" "Oxnard" "PMOs" "Palo" "Paneth"
- "Papanicolau" "Papua" "Parafilm" "Parainfl" "Parainfluenzavirus" "Paratyphi" "Parijs" "Parma"
- "Pascale" "Passer" "Pasteur" "Pathanamthitta" "Pathofinder" "Pbf" "Pearson" "Pediátrica" "Pentony"
- "PeptideAtlas" "Perkin" "PerkinElmer" "Permount" "Peromyscus" "Perth" "Pfizer" "Philipps"
- "Phlebotomus" "PhyloChip" "Pierre" "Piscataway" "Pjtj" "Pneumoslide" "Poisson" "Polyomaviridae"
- "Polysciences" "Portail" "Porton" "Posch" "Pottelberge" "Poumerol" "Pradesh" "Produits" "Promega"
- "ProtoScript" "Psarros" "Pseudomona" "Pteropus" "Pty" "Puchheim" "Puerto" "Pune" "Purdue"
- "Purkinje" "Puumala" "PyBOP" "Pyrenophora" "Pública" "QIAquick" "QconCAT" "Qiagen" "Quant"
- "Quantas" "Qui" "Quõ" "RHEIs" "RNasin" "RNeasy" "RSVimmunoglobulin" "Ra" "RainWise" "Raipur"
- "Rajasthan" "Ranavirus" "RdDP" "Redmond" "Regierungspräsidium" "Reinaldo" "Reino" "Relman"
- "Remdesvir" "ReproCHEK" "Respirology" "Rhinonycteridae" "Ri" "Ribavirina" "Ricardo" "Rickert"
- "Rico" "Rochester" "Rockborn" "Rockefeller" "Rockford" "Rockville" "Rome" "Rompun" "Ronald"
- "Rooij" "Rosamund" "Rosetta" "Ruta" "Rémy" "SARScoronavirus" "SDvH" "SFMs" "STSMs" "Saft" "SalI"
- "Salem" "Sanand" "Sandiego" "Sanger" "Sangli" "Sanitaire" "Sanofi" "Santé" "Sarasota" "Sarawak"
- "Schro¨dinger" "Sciex" "Scripps" "Seda" "Según" "Seiko" "Selz" "Semliki" "Sendai" "Seoul" "Seprot"
- "Sequest" "Servicios" "Seville" "Sewall" "Sheffield" "Shibasaburo" "Shiga" "Shimpkin" "Shutte"
- "SignalP" "Siliguri" "Sindbis" "Sindsbis" "Sinica" "Sinyugina" "Skimpkin" "Sligo" "Sociedad"
- "Société" "Soziales" "SpectraMax" "Spoel" "Spurr" "Stalder" "Stamaril" "Staten" "Statista"
- "Sterilizer" "Stohiman" "Stoner" "Subdirectorate" "Suecia" "Suizhou" "Sulawesi" "Sumatera"
- "Suncus" "Sungai" "Superdex" "Surveilans" "Suwa" "Sylvania" "Symp" "Syngene" "Sysmex" "Systat"
- "Sécurité" "TEJIXgA" "TaKaRa" "Taguri" "Takara" "Taluka" "Tamhane" "Tamil" "Taoe" "Tappero" "Taq"
- "Tarassevich" "Tatpeptide" "Tdap" "TechAmerica" "Tedros" "Telangana" "Tenbrock" "Tenggara"
- "Tetralogy" "Teyssou" "Theiler" "Theiss" "Thermo" "ThermoFisher" "Thimphu" "Thottapalayam"
- "Threfore" "Thüringen" "Toolan" "Toolbox" "Toronto" "Townhall" "Tox" "Transportan" "Transtems"
- "Triaenops" "Trinidad" "Triticumaestivum" "Tucson" "Tukey" "UAEmL" "Ubottom" "UgV" "Ui"
- "Ultramark" "Unido" "UnivBiotech" "Uppsala" "Urtica" "Uttar" "Uþ" "Vaart" "Valencia" "Valinezhad"
- "Variola" "Vellore" "Vena" "Verbraucherschutz" "Vergil" "Verrucomicrobia" "Vesiculovirus" "Viet"
- "VilberLourmat" "ViraQuest" "Vircell" "Voinova" "Vol" "Vorobieva" "Vries" "Vuk" "Vþ" "WUPyV"
- "Waals" "Waltham" "WeChat" "Websites" "Weijden" "Weinreb" "Weiqun" "Wesel" "Wetzlan" "Wiesbaden"
- "Wilcoxon" "Wilina" "William" "Windkessel" "WisconsineMadison" "Wochenschrift" "Wþ" "XbaI" "Xcorr"
- "Xiaogan" "Xiaogun" "XmaI" "Yersina" "Yogyakarta" "Yonemaru" "Yunnan" "Yðx" "Zeiss" "andL"
- "bydHCPs" "cByJ" "CellML" "deSolve" "eQTL" "Fibrinoid" "Neufuchsin" "hACE" "hrGFP" "iSEIR" "iSERI"
- "iTasser" "iTraq" "Interobserver" "Interunit" "isomiRs" "Jejunum" "kDt" "kilodMtons" "lgAEmL"
- "lgÞ" "lnL" "mDt" "mMACHINE" "mMESSAGE" "miRNPs" "Microtiter" "moDCs" "mtLSU" "mtLSUrRNA" "mtlLSU"
- "pAAV" "pCMV" "pEq" "pHelper" "pI" "pIgR" "pLysS" "pTriExIBVN" "pXBP" "Pseudotype" "qSOFA"
- "qScript" "rAAV" "rGp" "rRT" "sVLP" "Supernatants" "tVIonolayers" "tÞ" "Undefi" "África" "Âlez"
- "Ân" "Âtoquinol" "ÃðtÞ" "État" "Índice" "ðR" "ðRiÞ" "ðallÞ" "ðaÞ" "ðjUjÞ" "ðjÞ" "ðlÞ" "ðtÞ" "ðxÞ")))
+ "Microtiter" "Mierotest" "Milan" "Milkers" "Millipore" "Millville" "Miltenyi" "Miniopteridae"
+ "Ministerio" "MnCl" "ModFit" "Molossid" "Monoculture" "Monte" "Morag" "Morgeaux" "MtIV" "MttV"
+ "Multilabel" "Multilayers" "Multipin" "Multistate" "Muñozalmagro" "Mx" "Mytilus" "Myxococcus"
+ "Möröy" "NDRSprotein" "NHPs" "NODosome" "NaHCO" "Nadu" "Nagoya" "Nagpur" "Nanoclave" "Naughton"
+ "Negrette" "Nernst" "Nesoenas" "Nettesheim" "Neuroinvasiveness" "NheI" "Nicola" "Nidovirales"
+ "Nikon" "Nino" "Nipah" "Nlrx" "Nobel" "Nombre" "Norderstedt" "NucliSens" "Nuevo" "Nusa" "Nusselt"
+ "Nutley" "OEMs" "Odiethylphosphonate" "Odimethylhydroxamate" "Ohmic" "Olpers" "Olympus" "Omnic"
+ "OpenMP" "Opteron" "Optima" "Orang" "Orbitrap" "Oswaldo" "Ought" "Oxfordshire" "Oxnard" "PMOs"
+ "Palo" "Paneth" "Papanicolau" "Papua" "Parafilm" "Parainfl" "Parainfluenzavirus" "Paratyphi"
+ "Parijs" "Parma" "Pascale" "Passer" "Pasteur" "Pathanamthitta" "Pathofinder" "Pbf" "Pearson"
+ "Pediátrica" "Pentony" "PeptideAtlas" "Perkin" "PerkinElmer" "Permount" "Peromyscus" "Perth"
+ "Pfizer" "Philipps" "Phlebotomus" "PhyloChip" "Pierre" "Piscataway" "Pjtj" "Pneumoslide" "Poisson"
+ "Polyomaviridae" "Polysciences" "Portail" "Porton" "Posch" "Pottelberge" "Poumerol" "Pradesh"
+ "Produits" "Promega" "ProtoScript" "Psarros" "Pseudomona" "Pteropus" "Pty" "Puchheim" "Puerto"
+ "Pune" "Purdue" "Purkinje" "Puumala" "PyBOP" "Pyrenophora" "Pública" "QIAquick" "QconCAT" "Qiagen"
+ "Quant" "Quantas" "Qui" "Quõ" "RHEIs" "RNasin" "RNeasy" "RSVimmunoglobulin" "Ra" "RainWise"
+ "Raipur" "Rajasthan" "Ranavirus" "RdDP" "Redmond" "Regierungspräsidium" "Reinaldo" "Reino"
+ "Relman" "Remdesvir" "ReproCHEK" "Respirology" "Rhinonycteridae" "Ri" "Ribavirina" "Ricardo"
+ "Rickert" "Rico" "Rochester" "Rockborn" "Rockefeller" "Rockford" "Rockville" "Rome" "Rompun"
+ "Ronald" "Rooij" "Rosamund" "Rosetta" "Ruta" "Rémy" "SARScoronavirus" "SDvH" "SFMs" "STSMs" "Saft"
+ "SalI" "Salem" "Sanand" "Sandiego" "Sanger" "Sangli" "Sanitaire" "Sanofi" "Santé" "Sarasota"
+ "Sarawak" "Schro¨dinger" "Sciex" "Scripps" "Seda" "Según" "Seiko" "Selz" "Semliki" "Sendai"
+ "Seoul" "Seprot" "Sequest" "Servicios" "Seville" "Sewall" "Sheffield" "Shibasaburo" "Shiga"
+ "Shimpkin" "Shutte" "SignalP" "Siliguri" "Sindbis" "Sindsbis" "Sinica" "Sinyugina" "Skimpkin"
+ "Sligo" "Sociedad" "Société" "Soziales" "SpectraMax" "Spoel" "Spurr" "Stalder" "Stamaril" "Staten"
+ "Statista" "Sterilizer" "Stohiman" "Stoner" "Subdirectorate" "Suecia" "Suizhou" "Sulawesi"
+ "Sumatera" "Suncus" "Sungai" "Superdex" "Surveilans" "Suwa" "Sylvania" "Symp" "Syngene" "Sysmex"
+ "Systat" "Sécurité" "TEJIXgA" "TaKaRa" "Taguri" "Takara" "Taluka" "Tamhane" "Tamil" "Taoe"
+ "Tappero" "Taq" "Tarassevich" "Tatpeptide" "Tdap" "TechAmerica" "Tedros" "Telangana" "Tenbrock"
+ "Tenggara" "Tetralogy" "Teyssou" "Theiler" "Theiss" "Thermo" "ThermoFisher" "Thimphu"
+ "Thottapalayam" "Threfore" "Thüringen" "Toolan" "Toolbox" "Toronto" "Townhall" "Tox" "Transportan"
+ "Transtems" "Triaenops" "Trinidad" "Triticumaestivum" "Tucson" "Tukey" "UAEmL" "Ubottom" "UgV"
+ "Ui" "Ultramark" "Unido" "UnivBiotech" "Uppsala" "Urtica" "Uttar" "Uþ" "Vaart" "Valencia"
+ "Valinezhad" "Variola" "Vellore" "Vena" "Verbraucherschutz" "Vergil" "Verrucomicrobia"
+ "Vesiculovirus" "Viet" "VilberLourmat" "ViraQuest" "Vircell" "Voinova" "Vol" "Vorobieva" "Vries"
+ "Vuk" "Vþ" "WUPyV" "Waals" "Waltham" "WeChat" "Websites" "Weijden" "Weinreb" "Weiqun" "Wesel"
+ "Wetzlan" "Wiesbaden" "Wilcoxon" "Wilina" "William" "Windkessel" "WisconsineMadison"
+ "Wochenschrift" "Wþ" "XbaI" "Xcorr" "Xiaogan" "Xiaogun" "XmaI" "Yersina" "Yogyakarta" "Yonemaru"
+ "Yunnan" "Yðx" "Zeiss" "andL" "bydHCPs" "cByJ" "CellML" "deSolve" "eQTL" "Fibrinoid" "Neufuchsin"
+ "hACE" "hrGFP" "iSEIR" "iSERI" "iTasser" "iTraq" "Interobserver" "Interunit" "isomiRs" "Jejunum"
+ "kDt" "kilodMtons" "lgAEmL" "lgÞ" "lnL" "mDt" "mMACHINE" "mMESSAGE" "miRNPs" "moDCs" "mtLSU"
+ "mtLSUrRNA" "mtlLSU" "pAAV" "pCMV" "pEq" "pHelper" "pI" "pIgR" "pLysS" "pTriExIBVN" "pXBP"
+ "Pseudotype" "qSOFA" "qScript" "rAAV" "rGp" "rRT" "sVLP" "Supernatants" "tVIonolayers" "tÞ"
+ "Undefi" "África" "Âlez" "Ân" "Âtoquinol" "ÃðtÞ" "État" "Índice" "ðR" "ðRiÞ" "ðallÞ" "ðaÞ" "ðjUjÞ"
+ "ðjÞ" "ðlÞ" "ðtÞ" "ðxÞ")))
     :test #'equalp))
 
 
@@ -513,7 +514,7 @@
  "Fung" "Garny" "Humphrey" "McCulloch" "Preziosi" "Rudy" "Silva" "Sneyd" "Ørum")))
     :test #'equalp))
 
-;; 1991 defined as a bio-entity
+;; 1988 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-16101-16200
@@ -537,12 +538,12 @@
  "10:3%" "10^" "10°" "10°centigrade" "110/2014" "111/699" "112/95" "114/2012" "119/182"
  "12-year-olds" "12.19a" "12.19b" "12.21a-flexible" "12.21a-weak" "12.21b" "12.6a" "12.6b" "12.8b"
  "12.8c--gal" "12/12" "12/77" "121/71" "129/189" "12e14" "12e16" "12e18" "13.22*" "13/72" "13/8"
- "135/70" "13a-c" "13e" "14/26" "14/667" "14/99" "143/163" "144/01" "144a" "148/189" "14a" "14b"
- "15/26" "150/~g" "150xg" "15:00:00" "16/22" "16:6%" "16g" "16•" "170/" "178/189" "179/182" "17:7%"
- "17:9%" "17a-24a" "17a-24d" "17a-25a" "17a-25d" "17b-25b" "17c-25c" "17C1-1" "17CI-1" "17CI-I"
- "17Cl-1" "17CL1" "17D-204" "17D-213" "17D-213/77" "17d-25d" "17D." "17DD" "17e21" "18/44" "18d"
- "18e" "18e20" "19/115" "19/32" "195,300x" "1968}" "1982a" "1982b" "1985a" "1985}" "1994a" "1995a"
- "1995b" "1997a" "1997b" "1999a" "1999b" "19e21" "1:0 m=" "1:0-5:0 m=s" "1:05 m" "1:05 m=s"
+ "135/70" "138؇C" "13a-c" "13e" "14/26" "14/667" "14/99" "143/163" "144/01" "144a" "148/189" "14a"
+ "14b" "15/26" "150/~g" "150xg" "15:00:00" "16/22" "16:6%" "16g" "16•" "170/" "178/189" "179/182"
+ "17:7%" "17:9%" "17a-24a" "17a-24d" "17a-25a" "17a-25d" "17b-25b" "17c-25c" "17C1-1" "17CI-1"
+ "17CI-I" "17Cl-1" "17CL1" "17D-204" "17D-213" "17D-213/77" "17d-25d" "17D." "17DD" "17e21" "18/44"
+ "18d" "18e" "18e20" "19/115" "19/32" "195,300x" "1968}" "1982a" "1982b" "1985a" "1985}" "1994a"
+ "1995a" "1995b" "1997a" "1997b" "1999a" "1999b" "19e21" "1:0 m=" "1:0-5:0 m=s" "1:05 m" "1:05 m=s"
  "1:108 ± 20" "1:109 ± 18" "1:2 m" "1:3584 ± 627" "1:384 ± 64" "1:42 ± 10" "1:4754 ± 366"
  "1:48 ± 8" "1:512 ± 78" "1:5120 ± 320" "1:640 ± 121" "1:680 ± 120" "1:686 ± 175" "1:880 ± 160"
  "1:lO" "1e-6" "1e4" "1Hz" "1s~" "1|y" "1}" "1×" "1Ân" "2 /g" "2%-9%" "2+" "2---6" "2-5-day-old"
@@ -636,16 +637,15 @@
  "EMC/2012" "Emergence/" "Emergence/re-emergence" "emergency/patient" "Emilia-Romagna" "EndoGrade®"
  "engineering/heuristic" "Entero-bacteriaceae" "Enterovirus-71" "environmental/sustainable"
  "eor~centration" "epithelial/mesothelial" "Erlenmeyer-Kimling" "Esquela-Kerscher"
- "estigmatización»" "ETIF2ak4" "EU-88" "EU041608" "EU277015" "EU296475" "EV-71" "evolves/changes"
- "exper-5" "extraction/purification" "EZ1" "F.H." "F4A1" "FA/cm" "FA1002" "face/eye" "factor-2"
- "Faeco-oral" "failed/inhibited" "fd-tet" "female=3" "FEV1" "fever/" "FFM1" "FFP2" "FFP2/N95"
- "FFP3" "FFU/well" "field-like" "fifty-six" "Fifty-two" "figure-of-eight" "Figure_II_iSEIR"
- "find_contacts" "fish/L" "fish/L." "flu-like" "fluticasone propionate/"
- "fluticasone propionate/salmeterol" "Fmoc-L-a-amino acids" "Fmol/L" "Forty-five" "forty-four"
- "Forty-six" "forγ" "FP/" "FP/SAL" "Fraenkel-Conrat" "fRHK-4" "full-time" "G.K" "G/" "g/dose" "g/m"
- "g/ml" "G1/S" "GAA-GATCTGGGCTGAGGAGACACAAGAG" "galactose-1-phosphate" "gallium-67" "Gallium-67"
- "gamma-interferon" "Garnier-Robson" "geographical-distribution-2019-ncov-cases"
- "geographical-distribution-2019ncov-cases" "gg/ml"
+ "estigmatización»" "ETIF2ak4" "EV-71" "evolves/changes" "exper-5" "extraction/purification" "EZ1"
+ "F.H." "F4A1" "FA/cm" "FA1002" "face/eye" "factor-2" "Faeco-oral" "failed/inhibited" "fd-tet"
+ "female=3" "FEV1" "fever/" "FFM1" "FFP2" "FFP2/N95" "FFP3" "FFU/well" "field-like" "fifty-six"
+ "Fifty-two" "figure-of-eight" "Figure_II_iSEIR" "find_contacts" "fish/L" "fish/L." "flu-like"
+ "fluticasone propionate/" "fluticasone propionate/salmeterol" "Fmoc-L-a-amino acids" "Fmol/L"
+ "Forty-five" "forty-four" "Forty-six" "forγ" "FP/" "FP/SAL" "Fraenkel-Conrat" "fRHK-4" "full-time"
+ "G.K" "G/" "g/dose" "g/m" "g/ml" "G1/S" "GAA-GATCTGGGCTGAGGAGACACAAGAG" "galactose-1-phosphate"
+ "gallium-67" "Gallium-67" "gamma-interferon" "Garnier-Robson"
+ "geographical-distribution-2019-ncov-cases" "geographical-distribution-2019ncov-cases" "gg/ml"
  "GGGAGCUCCAGAAGAUAAAUUACAGG-UCGUAG-CAUAGUUAUUAGUCCAGAGAUGUUGAGA-GAUA-CAGCGCAGUCUCCAACUAGGAUACUAUG-ACCCC"
  "ggplot2" "Ghosh-Choudhury" "GJV2" "GL67-formulated" "GL67-mediated" "Glatman-Freedman" "GNF2"
  "GNF5" "Gordox®" "gov/" "gov/coronavirus/" "gov/coronavirus/mers" "gov/ntp/" "gov/travel" "gp53"
@@ -1747,4 +1747,6 @@
  "workforce" "workload" "workplace" "workshop" "workshops" "world" "worldwide" "worm" "wormhole"
  "worms" "worsen" "worst" "worthwhile" "wound" "wright" "write" "writer" "writers" "wrote" "youth"
  "youthful" "yuan" "zebu" "zero" "zeros" "zonal" "zone" "zones" "zoo" "zoos")))
+    :test #'equalp))
+
     :test #'equalp))

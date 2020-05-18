@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-13301-13400 sample of unknown words
-;; created 5/17/20 13:19:20
+;; created 5/17/20 22:27:42
 
 (in-package :sparser)
 
@@ -1588,7 +1588,7 @@
 ("bled" "ding" "fied" "holy" "ling" "ming" "reed" "ring" "rmed" "shed" "sing" "wing" "xing" "ΦΧ")))
     :test #'equalp))
 
-;; 3492 extracted from Comlex
+;; 3490 extracted from Comlex
 
 
 (defparameter *Comlex-Words*
@@ -1928,23 +1928,23 @@
  "surroundings" "surveillance" "survey" "suspicion" "suspicions" "swab" "swabs" "swamp" "swamps"
  "swath" "sweat" "sweats" "sweet" "swerve" "swerves" "swift" "swine" "swollen" "sword" "symbolize"
  "symbolizes" "symmetry" "symposium" "symptomless" "synchrotron" "synergy" "syntheses" "synthesis"
- "syringe" "tab" "tablet" "tablets" "tabs" "tail" "take" "takes" "tale" "talent" "talents" "tales"
- "tandem" "tang" "tap" "taps" "task" "tasks" "taste" "taught" "taxi" "taxonomy" "teach" "teacher"
- "teachers" "team" "tear" "tears" "teaspoon" "technique" "techniques" "technologist"
- "technologists" "technology" "teenager" "telemetry" "telephone" "temperate" "temperature"
- "template" "tenderness" "tendon" "tenet" "tenfold" "tens" "tense" "tent" "terephthalate"
- "terminology" "termite" "termites" "territories" "territory" "terrorism" "testes" "testimony"
- "testis" "text" "textile" "textiles" "thank" "thankful" "thanks" "theatre" "theatres" "theme"
- "theories" "theory" "therapy" "therein" "thereon" "thermometer" "thermometers" "thick" "thickness"
- "thigh" "thing" "things" "think" "thirds" "thirst" "thorny" "thorough" "thoughtful" "thoughts"
- "thousands" "threat" "threaten" "threefold" "throat" "thunderstorm" "thunderstorms" "tidal" "tide"
- "tie" "tier" "ties" "tight" "tightness" "time" "timeliness" "timer" "timers" "timings" "tiny"
- "tip" "toe" "toenail" "toes" "toggle" "toilet" "toilets" "tolerant" "tolerate" "toll" "tomato"
- "tomography" "tone" "tonsil" "tonsillitis" "tonsils" "took" "tool" "tools" "topic" "topography"
- "tore" "tornado" "tornadoes" "torque" "total" "tough" "tougher" "tour" "tourism" "tourist"
- "tourists" "toxic" "trachea" "tract" "trade" "trainee" "trainees" "trainer" "trait" "traits"
- "transaction" "transactions" "transcript" "transcripts" "transit" "transmit" "transverse" "trauma"
- "travel" "traveler" "travelers" "traveller" "travellers" "traverse" "tray" "tree" "trees" "tremor"
+ "syringe" "tablet" "tablets" "tail" "take" "takes" "tale" "talent" "talents" "tales" "tandem"
+ "tang" "tap" "taps" "task" "tasks" "taste" "taught" "taxi" "taxonomy" "teach" "teacher" "teachers"
+ "team" "tear" "tears" "teaspoon" "technique" "techniques" "technologist" "technologists"
+ "technology" "teenager" "telemetry" "telephone" "temperate" "temperature" "template" "tenderness"
+ "tendon" "tenet" "tenfold" "tens" "tense" "tent" "terephthalate" "terminology" "termite"
+ "termites" "territories" "territory" "terrorism" "testes" "testimony" "testis" "text" "textile"
+ "textiles" "thank" "thankful" "thanks" "theatre" "theatres" "theme" "theories" "theory" "therapy"
+ "therein" "thereon" "thermometer" "thermometers" "thick" "thickness" "thigh" "thing" "things"
+ "think" "thirds" "thirst" "thorny" "thorough" "thoughtful" "thoughts" "thousands" "threat"
+ "threaten" "threefold" "throat" "thunderstorm" "thunderstorms" "tidal" "tide" "tie" "tier" "ties"
+ "tight" "tightness" "time" "timeliness" "timer" "timers" "timings" "tiny" "tip" "toe" "toenail"
+ "toes" "toggle" "toilet" "toilets" "tolerant" "tolerate" "toll" "tomato" "tomography" "tone"
+ "tonsil" "tonsillitis" "tonsils" "took" "tool" "tools" "topic" "topography" "tore" "tornado"
+ "tornadoes" "torque" "total" "tough" "tougher" "tour" "tourism" "tourist" "tourists" "toxic"
+ "trachea" "tract" "trade" "trainee" "trainees" "trainer" "trait" "traits" "transaction"
+ "transactions" "transcript" "transcripts" "transit" "transmit" "transverse" "trauma" "travel"
+ "traveler" "travelers" "traveller" "travellers" "traverse" "tray" "tree" "trees" "tremor"
  "tremors" "trend" "triangle" "tribe" "tribes" "tribune" "trio" "trios" "trip" "tripartite"
  "triple" "triples" "triplet" "triplex" "triplicate" "trips" "troll" "troublesome" "truck" "trucks"
  "trustworthiness" "truth" "truths" "try" "tube" "tugboat" "tugboats" "tunnel" "turkey" "turkeys"
@@ -1973,3 +1973,4 @@
  "worst" "worthy" "wound" "wounds" "wright" "write" "wrote" "wrought" "yearlong" "yew" "yolk"
  "youth" "yuan" "zebra" "zipper" "zone" "zones" "zoo" "zoom" "zoos")))
     :test #'equalp))
+t #'equalp))

@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-7701-7800 sample of unknown words
-;; created 5/17/20 11:11:39
+;; created 5/17/20 17:55:0
 
 (in-package :sparser)
 
@@ -1943,3 +1943,4 @@
  "wound" "wounds" "wrapper" "wright" "write" "writer" "wrote" "xenophobia" "yam" "yellowish" "yolk"
  "youth" "youths" "yuan" "zebra" "zipper" "zippers" "zonal" "zone" "zones" "zucchini")))
     :test #'equalp))
+

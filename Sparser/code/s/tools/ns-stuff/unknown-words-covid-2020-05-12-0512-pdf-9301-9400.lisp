@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-9301-9400 sample of unknown words
-;; created 5/17/20 11:29:37
+;; created 5/17/20 19:3:20
 
 (in-package :sparser)
 
@@ -1149,7 +1149,7 @@
  "Zhang" "Zhao" "Zheng" "Zhou" "Zhu" "Zimmer" "Zinkernagel" "Zlotnik" "Kohda" "eOM" "pO")))
     :test #'equalp))
 
-;; 2754 defined as a bio-entity
+;; 2751 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-9301-9400
@@ -1315,22 +1315,21 @@
  "Eighty-six" "Eighty-three" "Eighty-two" "EL-4" "EL-4-S35" "ELD96LLCE/" "ELWI0"
  "emerging/re-emerging" "EMPIAR-10048" "en/of" "encephalomyeli-6" "Enigma®" "entry/fusion"
  "enzyme-1" "eosinophilic/neutrophilic" "epitope~" "Epstein-Barr" "epstein-barr-virus" "ERRB-2"
- "es /E" "ES-1" "ES-12" "ES-4" "ES-5" "ES-8" "ESEQuant™" "ether-labile" "eu/" "EU598486" "EU598487"
- "EU598488" "EV-A71" "EVP4" "EW04" "EW05" "EW06" "EW44" "EW50" "Expositionsprophylaxe!" "F.E."
- "F.H." "f/VT" "F1-antigen" "faag-DNA" "factor-kβ" "factors/" "false-ILI" "false/misinterpreted"
- "family/household" "Family/patient" "fat/kg" "Fc-en" "FD210" "FD210/" "FD53" "February-August"
- "fever-JE" "FGI-103" "FGI-104" "FGI-106" "fibrinogeen/fibrine" "Ficoll-Paque" "Fifty-eight"
- "Fifty-one" "Fifty-two" "FilmArray®" "finger/heel" "first-aid" "fJAM1" "Flexyn2a"
- "FloTrac/Vigileo" "FLT3-ITD" "FLT3-ITD+" "FLT3/ITD" "flu-like" "FluAB-RSV" "fol-CNS" "force-ramp"
- "Forty-eight" "forty-four" "forty-one" "forty-seven" "Forty-seven" "Forty-six" "Forty-two"
- "founder-like" "FP7" "fty-eight" "fty-six" "fty-three" "full-194" "G 1 /S" "G 2 /M" "G 2 /M phase"
- "G 2 /M phases" "G&P" "G.P." "g/" "g/d" "g/dl" "g/hour" "g/m" "g/m/m" "g/ml" "G101/N133"
- "G99/N131" "GA2B" "García-Arenal" "García-Sastre" "gast-gastheerrelatie"
- "GCCGAC-TAATGCGTAGTCNNNNNNNNN" "gelekoortsvaccin!" "GenePOC™" "GeneXpert®" "Genius™"
- "geno3D-release" "gentamycin/0.5" "GG-TAMRA" "GGATGGTCCGGGAAGCTCCGAGATTGTG-3=" "Giemsa-stained"
- "glands/saliva" "Glaxo-SmithKline" "GLS-5300" "glucose/diabetes" "glue/solvents" "GLYCAM-Web"
- "GLYCAM06/AMBER" "GLYCAM06j" "GM17" "González-Candelas" "Gore-Tex®" "gov/" "gov/Blast"
- "gov/content" "gov/EID" "gov/flusight" "gov/GenBank" "gov/genbank/" "grayscale/RGB"
+ "es /E" "ES-1" "ES-12" "ES-4" "ES-5" "ES-8" "ESEQuant™" "ether-labile" "eu/" "EV-A71" "EVP4"
+ "EW04" "EW05" "EW06" "EW44" "EW50" "Expositionsprophylaxe!" "F.E." "F.H." "f/VT" "F1-antigen"
+ "faag-DNA" "factor-kβ" "factors/" "false-ILI" "false/misinterpreted" "family/household"
+ "Family/patient" "fat/kg" "Fc-en" "FD210" "FD210/" "FD53" "February-August" "fever-JE" "FGI-103"
+ "FGI-104" "FGI-106" "fibrinogeen/fibrine" "Ficoll-Paque" "Fifty-eight" "Fifty-one" "Fifty-two"
+ "FilmArray®" "finger/heel" "first-aid" "fJAM1" "Flexyn2a" "FloTrac/Vigileo" "FLT3-ITD" "FLT3-ITD+"
+ "FLT3/ITD" "flu-like" "FluAB-RSV" "fol-CNS" "force-ramp" "Forty-eight" "forty-four" "forty-one"
+ "forty-seven" "Forty-seven" "Forty-six" "Forty-two" "founder-like" "FP7" "fty-eight" "fty-six"
+ "fty-three" "full-194" "G 1 /S" "G 2 /M" "G 2 /M phase" "G 2 /M phases" "G&P" "G.P." "g/" "g/d"
+ "g/dl" "g/hour" "g/m" "g/m/m" "g/ml" "G101/N133" "G99/N131" "GA2B" "García-Arenal" "García-Sastre"
+ "gast-gastheerrelatie" "GCCGAC-TAATGCGTAGTCNNNNNNNNN" "gelekoortsvaccin!" "GenePOC™" "GeneXpert®"
+ "Genius™" "geno3D-release" "gentamycin/0.5" "GG-TAMRA" "GGATGGTCCGGGAAGCTCCGAGATTGTG-3="
+ "Giemsa-stained" "glands/saliva" "Glaxo-SmithKline" "GLS-5300" "glucose/diabetes" "glue/solvents"
+ "GLYCAM-Web" "GLYCAM06/AMBER" "GLYCAM06j" "GM17" "González-Candelas" "Gore-Tex®" "gov/"
+ "gov/Blast" "gov/content" "gov/EID" "gov/flusight" "gov/GenBank" "gov/genbank/" "grayscale/RGB"
  "grippe@pasteur" "GUG/GUA" "gureof-eight" "H&E" "H&H" "H-2" "H-2D" "H-2K" "H-donor" "H.A." "H.D."
  "H1N1influenza" "H1N1pdm09" "H7N9" "H9N2" "Hafr-Al-Batin" "Hagtolur" "Hahn-Schickard"
  "hand-foot-and-mouth" "Hans-Georg" "Hardy-Weinberg" "Harris-Benedict" "HAuCl4" "Haver~"
@@ -2630,4 +2629,6 @@
  "worker" "workers" "workforce" "workload" "workout" "workplace" "world" "worldwide" "worm" "worse"
  "worthwhile" "worthy" "wound" "wounds" "wrapper" "wright" "write" "wrote" "yak" "youth" "youthful"
  "zipper" "zirconium" "zombie" "zombies" "zone")))
+    :test #'equalp))
+es" "zone")))
     :test #'equalp))

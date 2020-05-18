@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-6901-7000 sample of unknown words
-;; created 5/17/20 11:1:27
+;; created 5/17/20 17:20:39
 
 (in-package :sparser)
 
@@ -799,7 +799,7 @@
  "Zubkova" "Zumla" "Zuñiga" "Zwickle" "Kodama" "Nikolaidis" "Gluck")))
     :test #'equalp))
 
-;; 3434 defined as a bio-entity
+;; 3433 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-6901-7000
@@ -1016,9 +1016,9 @@
  "environmental/behavioral" "environmental/lifestyle" "EnVision/HRP" "eosinophilia/neutrophilia"
  "EP5A2" "episodes/10,000" "Epstein-Barr" "equip-ment" "Ergin*" "ermA+mphC" "ermB-20" "ESBL/AmpC"
  "Eser*" "Espínola*" "ESR-Epi-Surv" "estX-psp-aadA2-cmlA1-aadA1" "ethanol/formic acid" "EU-CORESM"
- "EU341596" "EV-A71" "EV71" "EVO-DEVO" "EVU-23458" "exercise/inactivity" "exogenous/extrinsic"
- "expre~sion" "extracellular/intracellular" "F.M." "F/A" "F/M" "F22190F" "F508del" "f::lInilial"
- "fA59" "face-mask" "faIl1ilial" "Falcon™" "Falcou-Briatte*" "fan1ilial" "Fariñas-Alvarez*" "fate!"
+ "EV-A71" "EV71" "EVO-DEVO" "EVU-23458" "exercise/inactivity" "exogenous/extrinsic" "expre~sion"
+ "extracellular/intracellular" "F.M." "F/A" "F/M" "F22190F" "F508del" "f::lInilial" "fA59"
+ "face-mask" "faIl1ilial" "Falcon™" "Falcou-Briatte*" "fan1ilial" "Fariñas-Alvarez*" "fate!"
  "FBVE/NoroNet" "FC6" "FC8" "Fcγ" "FcγII" "FcγRII" "FcγRII/" "FcγRII/RIII" "FcγRIII"
  "Fernandez-Nuñez" "fetal calf serum-Iscove" "FEV1" "fibrosis/cirrhosis" "fifty-eight thousand"
  "Fifty-five" "Fifty-four" "Fifty-two" "FIGURE^" "Filo-A" "Filo-A/Filo-B" "Filo-B" "fingerprint^"
@@ -2449,3 +2449,4 @@
  "wrist" "write" "writer" "writers" "writings" "wrote" "yahoo" "yoga" "yolk" "youth" "yuan" "zebu"
  "zenith" "zero" "zeros" "zigzag" "zone" "zones" "zoo")))
     :test #'equalp))
+'equalp))

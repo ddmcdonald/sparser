@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-11501-11600 sample of unknown words
-;; created 5/17/20 11:55:45
+;; created 5/17/20 20:2:51
 
 (in-package :sparser)
 
@@ -493,7 +493,7 @@
  "Zou" "Zwart" "Hargreaves")))
     :test #'equalp))
 
-;; 1922 defined as a bio-entity
+;; 1917 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-11501-11600
@@ -598,11 +598,10 @@
  "DV40" "dw/dt" "E-MTAB-7426" "E.C" "E7derived" "EBLV1" "edu/∼sawyer/geneconv/" "EHA0005" "EHA0006"
  "EHA0008" "EID/" "Eighty-six" "EMC/2012" "en/index" "EN_" "endotoxin-like" "eNPeP/"
  "environmental/ecological" "Enzyme-Linked-Immuno-Assay" "EpiFlu™" "erythrocytes/100" "es/CAIcal"
- "et al.,2007" "et/ou" "EU116037" "EU116044" "EU668998" "EU669003" "EU669004" "events‖" "event‖"
- "excision/biopsy" "experience!" "exposure/" "E½u" "F2α" "facilities/workers" "factor-2α"
- "factor-of-2" "factors/subscales" "fair/poor" "FAO/WHO/" "Fcγ" "FcεRI" "Fc␥R-mediated"
- "Ficoll-Paque" "Fifty-five" "Fifty-one" "Fig.S4" "Fig.S6" "Fig.S7" "fig/ml"
- "File:Silver-haired_bat" "first-day" "first-time" "Fischer-344" "fluid-like" "FM2292"
+ "et al.,2007" "et/ou" "events‖" "event‖" "excision/biopsy" "experience!" "exposure/" "E½u" "F2α"
+ "facilities/workers" "factor-2α" "factor-of-2" "factors/subscales" "fair/poor" "FAO/WHO/" "Fcγ"
+ "FcεRI" "Fc␥R-mediated" "Ficoll-Paque" "Fifty-five" "Fifty-one" "Fig.S4" "Fig.S6" "Fig.S7"
+ "fig/ml" "File:Silver-haired_bat" "first-day" "first-time" "Fischer-344" "fluid-like" "FM2292"
  "foods/soups‖" "forearm/" "forearm/elbow" "Formvar-carbon-coated" "Formvarcarbon-backed"
  "Formvarcarbon-coated" "Forty-one" "four-time" "FP7" "Frankfurt-1" "Frenkel-Morgenstern" "FRhK-4"
  "FRHK4" "FRhL-2" "full#supplementary-material" "full-genome" "full-time" "fX174" "g-week" "G.V.V."
@@ -1821,4 +1820,6 @@
  "worldwide" "worm" "worms" "worrisome" "worsen" "worsens" "worship" "worst" "worthlessness"
  "worthwhile" "worthy" "wound" "wounds" "wrap" "wrist" "write" "writings" "wrote" "wrought" "yoga"
  "yolk" "yuan" "zebra" "zombie" "zombies" "zonal" "zone" "zones" "zoo" "zoos")))
+    :test #'equalp))
+nal" "zone" "zones" "zoo" "zoos")))
     :test #'equalp))

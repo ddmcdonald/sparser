@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-15701-15800 sample of unknown words
-;; created 5/16/20 20:40:57
+;; created 5/18/20 1:50:54
 
 (in-package :sparser)
 
@@ -456,7 +456,7 @@
  "Zubieta" "Zuniga" "Zurcher" "Zust" "CRUZ")))
     :test #'equalp))
 
-;; 2038 defined as a bio-entity
+;; 2034 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-15701-15800
@@ -574,11 +574,10 @@
  "Elmo-like" "Elmo/02" "elongation factor1α" "ElonginB/C" "encephalitis-like"
  "encephalitis/encephalopathy" "endosome/lysosome" "enhancer/promoter" "epidemiology!"
  "epithelia-like" "Eps15-DIIIΔ2-GFP" "Eps15-Δ95" "Eps15-Δ95/295" "epstein-Barr" "equivalents/g"
- "ERAP1/" "ERAP1/ERAP2/IRAP" "Erp70" "EU789367" "EU789368-EU789373" "EU789374-EU789390"
- "EU789391-EU789395" "Euler-Maruyama" "EVU302" "excessive·" "expression/activity" "F-2" "F-value"
- "F1-Score" "F2-F3" "F344/N" "F4/80+CD11b+" "farrowing/sow" "featureσ" "FeLV/FIV" "FHV-1"
- "fibroblast-like" "Ficoll-Paque" "Fig.1a" "Fig.1b" "Fig.1c" "Fig.1e" "Fig.2a" "Fig.2b" "Fig.3a"
- "Fig.4a" "Fig.4b" "Fig.4c" "Fig.6a" "Fig.6b" "Fig.6c" "figure/table" "fingerprint-like"
+ "ERAP1/" "ERAP1/ERAP2/IRAP" "Erp70" "Euler-Maruyama" "EVU302" "excessive·" "expression/activity"
+ "F-2" "F-value" "F1-Score" "F2-F3" "F344/N" "F4/80+CD11b+" "farrowing/sow" "featureσ" "FeLV/FIV"
+ "FHV-1" "fibroblast-like" "Ficoll-Paque" "Fig.1a" "Fig.1b" "Fig.1c" "Fig.1e" "Fig.2a" "Fig.2b"
+ "Fig.3a" "Fig.4a" "Fig.4b" "Fig.4c" "Fig.6a" "Fig.6b" "Fig.6c" "figure/table" "fingerprint-like"
  "first-time" "fish/seafood" "flows/mills" "flu-like" "fluorescein-12-dUTP" "foetus/placenta"
  "Folin-Ciocalteu" "follows-8" "Forty-eight" "Forty-nine" "FoxP3+" "FoxP3/CD25+" "fr/" "fractionσ"
  "FSC-A" "FSC-W" "full-time" "FV1000" "g/100" "g/day" "g/dl" "g/g" "g/kg" "g/kg/day" "g/L" "g/ml"
@@ -1629,4 +1628,6 @@
  "windy" "wise" "wit" "withstand" "witness" "wolf" "woo" "wood" "word" "words" "worker" "workers"
  "workload" "workman" "workplace" "world" "worldwide" "worsen" "worsens" "worst" "worthwhile"
  "worthy" "wound" "wounds" "wrapper" "wreak" "wrist" "write" "wrote" "yolk" "zone")))
+    :test #'equalp))
+r" "wreak" "wrist" "write" "wrote" "yolk" "zone")))
     :test #'equalp))

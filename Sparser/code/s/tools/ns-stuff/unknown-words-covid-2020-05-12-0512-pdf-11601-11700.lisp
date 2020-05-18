@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-11601-11700 sample of unknown words
-;; created 5/17/20 11:56:56
+;; created 5/17/20 20:5:37
 
 (in-package :sparser)
 
@@ -852,7 +852,7 @@
  "Zhao" "Zhou" "Zimmer" "Zumla" "Zuñiga" "cH" "miRanda" "sRNAtoolbox" "Åberg")))
     :test #'equalp))
 
-;; 3020 defined as a bio-entity
+;; 3019 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-11601-11700
@@ -1110,23 +1110,23 @@
  "economic/educational" "economical/educational" "edu/" "edu/BioEdit/bioedit" "EF446615" "Eg101"
  "EhCp5" "elastin-like-peptide" "elbow!" "ELRORJLFDOO\\" "EMO3-VTTL" "Empore™" "Epstein-Barr"
  "equivalents/mmol" "ER-TR7" "ER/cis-Golgi" "Erdos-Renyi" "Erd}" "Erwin-Cohen" "es/"
- "es/srnatoolbox" "Esp31" "EU703762" "Euro/g" "Euronet-P4" "EV71" "EVA1C" "excretory/secretory"
- "expense/" "exposure/contact" "expression/activity" "F-4" "F3G-A" "F3x4" "F=4.38" "F?V"
- "F\\VWHLQH" "F\\WRNLQHV" "face!" "factor-jB" "FAM-CGG" "faringe-laringo-traqueitis"
- "Fc-like-fragments" "FCR3" "fda-approved-hivmedicines" "FDWDO\\WLF" "FEV1" "FF100" "Fig.1B"
- "filter-aid" "finish/packaging" "Five-micrometer-thick" "Five-weekold" "Fixation/Permeabilization"
- "flu-like" "Flu/RSV" "flu=" "FLuc-NeoR" "fludarabine-TP" "FODVVL¿HG" "follows:0-55%"
- "Foot-and-Mouth-Disease" "FoxP3/Transcription" "fragment-like" "Francois-Rene" "Frankfurt-1"
- "Friiss-Moller" "FRQ¿UPHG" "Fugen-eHD" "full-122" "function-2" "furan-2-carboxaldehyde"
- "furan-2carboxaldehyde" "fusion/entry" "G+C" "G-like" "g-phenoxypropylamine" "G-quadruplex" "g/"
- "g/dl" "g/kg" "g/L" "g/ml" "G1-1" "G:NðkÞ" "G:s" "G?A" "G?C" "G?S" "GAATCATCATAGAGA-3"
- "GAGAGATAATGGCA-3" "gallium67" "Galveston-Tx" "Ganova-Raeva" "gastro-faringo-laríngeo" "Gb3Cer"
- "GBV-A" "GBV-C" "GBV-C/HGV" "GBX-101" "GBX-102" "GBX-104" "GBX-105" "GBX-106" "GBX-107" "GBX-108"
- "GBX-109" "GBX-110" "GBX-111" "GBX-112" "GCCACCATGATACACTCAGTGTTTCTACTG-3´" "GCCNNNN↓NGGC"
- "gene-5" "general/poor" "GeneTex-125932" "Genetyx-MAC" "genome-like" "genomes/ml" "genomes=ml"
- "genotype/lineage" "genotypes/and" "genotypes/lineages" "genotyping»" "GFP-3" "GFP-A60-HR"
- "GFP-BlaR" "GFP-codingSLII" "GFP-hisL" "GFP-X41" "GFP-X61" "GGACTATCCTAAGTGTGA-3" "GGGA-CAAGU"
- "ggplot2" "gij18645167" "GL/M" "glass-like" "glceraldehyde-3-phosphate dehydrogenase"
+ "es/srnatoolbox" "Esp31" "Euro/g" "Euronet-P4" "EV71" "EVA1C" "excretory/secretory" "expense/"
+ "exposure/contact" "expression/activity" "F-4" "F3G-A" "F3x4" "F=4.38" "F?V" "F\\VWHLQH"
+ "F\\WRNLQHV" "face!" "factor-jB" "FAM-CGG" "faringe-laringo-traqueitis" "Fc-like-fragments" "FCR3"
+ "fda-approved-hivmedicines" "FDWDO\\WLF" "FEV1" "FF100" "Fig.1B" "filter-aid" "finish/packaging"
+ "Five-micrometer-thick" "Five-weekold" "Fixation/Permeabilization" "flu-like" "Flu/RSV" "flu="
+ "FLuc-NeoR" "fludarabine-TP" "FODVVL¿HG" "follows:0-55%" "Foot-and-Mouth-Disease"
+ "FoxP3/Transcription" "fragment-like" "Francois-Rene" "Frankfurt-1" "Friiss-Moller" "FRQ¿UPHG"
+ "Fugen-eHD" "full-122" "function-2" "furan-2-carboxaldehyde" "furan-2carboxaldehyde"
+ "fusion/entry" "G+C" "G-like" "g-phenoxypropylamine" "G-quadruplex" "g/" "g/dl" "g/kg" "g/L"
+ "g/ml" "G1-1" "G:NðkÞ" "G:s" "G?A" "G?C" "G?S" "GAATCATCATAGAGA-3" "GAGAGATAATGGCA-3" "gallium67"
+ "Galveston-Tx" "Ganova-Raeva" "gastro-faringo-laríngeo" "Gb3Cer" "GBV-A" "GBV-C" "GBV-C/HGV"
+ "GBX-101" "GBX-102" "GBX-104" "GBX-105" "GBX-106" "GBX-107" "GBX-108" "GBX-109" "GBX-110"
+ "GBX-111" "GBX-112" "GCCACCATGATACACTCAGTGTTTCTACTG-3´" "GCCNNNN↓NGGC" "gene-5" "general/poor"
+ "GeneTex-125932" "Genetyx-MAC" "genome-like" "genomes/ml" "genomes=ml" "genotype/lineage"
+ "genotypes/and" "genotypes/lineages" "genotyping»" "GFP-3" "GFP-A60-HR" "GFP-BlaR"
+ "GFP-codingSLII" "GFP-hisL" "GFP-X41" "GFP-X61" "GGACTATCCTAAGTGTGA-3" "GGGA-CAAGU" "ggplot2"
+ "gij18645167" "GL/M" "glass-like" "glceraldehyde-3-phosphate dehydrogenase"
  "glutathione-s-transferase" "glycerine-PBS" "glycinamide/alaninamide" "GM-95" "Gomori-Grocott"
  "Gomori/Grocott" "good/" "Gor-don" "GoTaq/dNTP" "gov/blast" "gov/Structure/"
  "gov/tb/publications/" "governmental/" "Gowtage-Sequeria" "gp41N-terminal" "GP64binding" "gQ1"
@@ -2352,3 +2352,4 @@
  "workplace" "workshop" "world" "worldwide" "worm" "worrisome" "worry" "worse" "worthy" "wound"
  "write" "wrote" "yogurt" "youth" "yuan" "zero" "zeros" "zipper" "zone" "zoology")))
     :test #'equalp))
+ #'equalp))

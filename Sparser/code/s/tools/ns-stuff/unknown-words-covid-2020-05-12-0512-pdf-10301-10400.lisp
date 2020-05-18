@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-10301-10400 sample of unknown words
-;; created 5/17/20 11:42:7
+;; created 5/17/20 19:42:18
 
 (in-package :sparser)
 
@@ -581,7 +581,7 @@
  "Zhou" "Zhu" "Zinkernagel" "Zumla" "Zurich")))
     :test #'equalp))
 
-;; 2471 defined as a bio-entity
+;; 2468 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-10301-10400
@@ -711,45 +711,44 @@
  "El-Husseini" "ELx800" "ema-gives-advice-use-non-steroidal-antiinflammatories-covid-19"
  "encephalomyelitis/chronic" "end-times" "enFeLV-U3-1" "enFeLV-U3-2" "entering/appearing"
  "entero-pathogenic&y" "entry/fusion" "envelope glycoprotein gp120/" "Eq2" "ER/Golgi" "Erf2"
- "erythroc5" "et al.,1987a" "et al.Il3" "Et2O" "EU293175" "EU293194" "EU743920-EU743927" "EUMVS2"
- "EV71" "event/time" "excitation/emission" "exon-1" "exon-2" "exon51" "export/" "export/import"
- "extensin-like" "eye/face" "EZ-Link™" "FAC-1" "factor-6" "factor-kB" "FBS-199" "FC>2" "FcR+"
- "FcR÷" "Feb-Mar" "FeLV-3281" "FeLV-FAIDS" "FeLV-like" "Fernandez-Hernando" "ff14SB" "FFP2" "FFP3"
- "FHV-1" "Ficoll/" "Ficoll/Triosil" "FIPV-D3abcRL" "fish/M." "fi~idirigs" "fl/fl"
- "flag-tagged-ires-hrGFP" "flu-like" "FLuc-G*" "fluorescein-di-b-D-galactopyranoside"
- "fluorescent/quencher" "Fly-In-Fly-Out" "Formas-2012-586" "Forty-four" "Forty-three" "Forty-two"
- "fowl/Italy/" "Fpockts2" "FPV" "FR000373" "fragment-like" "Frisch-Niggemeyer" "fTHTR1" "full-time"
- "functions_SN_covid_spread" "fusion/entry" "fusion/penetration" "f~giperda" "G+C" "g/250" "g/30"
- "g/day" "g/dl" "g/kg" "g/L" "g/ml" "g/mL" "G:C" "gag-rlpro" "gag-xlpro" "GalNAcα1-3GalNAcβ-PAA"
- "GalNAcα1-PAA" "GalNAcβ-PAA" "GalNAcβ1-4GlcNAc" "Galα1-3Galα1-PAA" "Galα1-3LacNAc" "Galα1-4LacNAc"
- "Galβ1-3GalNAcα1-PAA" "Galβ1-3GalNAcβ1-4Galβ1-4Glc-PA" "Galβ1-4Glc-PA" "Galβ1-4GlcNAcβ"
- "ganglionnaire…" "Garcia-Garcia" "gasdermin A3" "Gaussian-like" "gB-like" "GCA9ATC9CGA9GGG9CGT"
- "GCGTCGTAAGCTAATAC-3" "GD/P1L" "GD/P2S" "GDP/GRP" "Gebicke-Haerter" "GFP+" "GFP-8b" "GGTTGCA-3"
- "Gibco/Life" "GlcNAcβ-PAA" "GlcNAcβ1-3" "GlcNAcβ1-3GalNAcα1-PAA"
- "GlcNAcβ1-4GlcNAcβ1-4GlcNAcβ1-4GlcNAcβ1" "GlcNAcβ1-4GlcNAcβ1-4GlcNAcβ1-4GlcNAcβ1-4GlcNAcβ1"
- "GlcNAcβ1-6" "GlcNAcβ1-6-terminated" "GlcNAcβ1-6Gal" "GlcNAcβ1-6GalNAcα1-PAA" "Glcα1-4"
- "Godoy-Santos" "González-Scarano" "Goodnessof-fit" "gov/" "gov/ct2" "gov/e" "gov/geo/"
- "gov/geo/query/acc" "gov/nndss/script/" "gov/sequencingcosts" "gov/sra" "GP64" "GPF-8b" "GRCm38"
- "GSDMA/" "Gsdma1" "Gsdma1-3" "Gsdma3" "Gsdma3's" "Gsdma3/" "Gsdma3/mh" "Gsdma3/V5" "GSE109037"
- "GSE109816" "GSE118127" "GSE118819" "GSE122960" "GSE125970" "GSE131685" "GSE134355" "GSE134520"
- "GSE137082" "Gsα" "GTG-3" "Guang-dong" "Guerra-Maupome" "GX/P1E" "GX/P2V" "GX/P3B" "GX/P4L"
- "GX/P5E" "GX/P5L." "Gαs" "H&E" "H-1" "H-and" "H.influenzae" "H.W." "H.Y." "h/mL" "H1-DV33"
- "H1-DV33-fV33" "H1-DV33-fV33A" "H1-DV33A-fV33" "H1-H16" "H1N1-like" "H1NI" "H2N2" "H2O" "H3-N2"
- "H37Rv" "H3N8" "H7N1" "H7N2" "H7N3" "H9N2" "HA0" "HA1/HA2" "HA2/inhibitor"
- "Haemophilus influenzae/Human" "haplotypes6" "Hashimoto-Tane" "HBS-P" "HE-like" "HE14.7" "HE52.11"
- "HE52.7" "HE52.7-myc-" "heat-labile" "HEK 293T cell" "HEK 293T cells" "HeLa-mCC1a"
- "HeLa-mCC1a-DM15" "Henle-Koch" "heparin-MnC1" "heparin-MnCl" "Heparin-Natrium-5000-ratiopharm"
- "herbicide/pesticide" "hevein-like" "Hex/EtOAc" "hexanoic acid-3-sulfo-Nhydroxysuccinimide"
- "Hg38/PanTro" "HHV-6" "HiSeq2000" "HiSeq3000" "HIT3a" "HIV-1/NL4-3" "HIV-1exposed" "HIV-1infected"
- "HIV1-1" "HIV1-2" "HIV1-3" "HK-39849" "HKU-1" "HL-60" "HlON7" "HM57" "HmLu-1" "hnRT-PCR"
- "homology-4" "host/cell" "HOU~E" "HPIV-2" "HR1trimer" "HR2peptides" "Hsp90α" "Hsp90β" "HSV-1"
- "HTLV-I" "http://2019ncov" "http://avianflu" "http://cbdm" "http://dx" "http://esa" "http://fred"
- "http://genome" "http://myhits" "http://nc2" "http://omics" "http://togo" "http://www"
- "http://wwwn" "https://clinicaltrials" "https://data" "https://deepmine" "https://doi"
- "https://flunearyou" "https://github" "https://www" "hUCH-L1" "hUCH-L3"
- "human coronavirus-Erasmus" "human-like" "hut!" "hyposmia/" "hyposmia/anosmia" "I-2" "I-3"
- "I.U./ml" "I359N/V5" "I8Fdopa" "I:C" "i=0" "I=I" "IBV-Beaudette" "IBV-like" "ID#Mm1921" "IFLU-A"
- "IFN-ls" "IgG/" "IgG/IgM" "IgG1k" "IgG2" "IgG2b" "Illumina2bam" "IMAB™" "immuno-globulin"
+ "erythroc5" "et al.,1987a" "et al.Il3" "Et2O" "EUMVS2" "EV71" "event/time" "excitation/emission"
+ "exon-1" "exon-2" "exon51" "export/" "export/import" "extensin-like" "eye/face" "EZ-Link™" "FAC-1"
+ "factor-6" "factor-kB" "FBS-199" "FC>2" "FcR+" "FcR÷" "Feb-Mar" "FeLV-3281" "FeLV-FAIDS"
+ "FeLV-like" "Fernandez-Hernando" "ff14SB" "FFP2" "FFP3" "FHV-1" "Ficoll/" "Ficoll/Triosil"
+ "FIPV-D3abcRL" "fish/M." "fi~idirigs" "fl/fl" "flag-tagged-ires-hrGFP" "flu-like" "FLuc-G*"
+ "fluorescein-di-b-D-galactopyranoside" "fluorescent/quencher" "Fly-In-Fly-Out" "Formas-2012-586"
+ "Forty-four" "Forty-three" "Forty-two" "fowl/Italy/" "Fpockts2" "FPV" "FR000373" "fragment-like"
+ "Frisch-Niggemeyer" "fTHTR1" "full-time" "functions_SN_covid_spread" "fusion/entry"
+ "fusion/penetration" "f~giperda" "G+C" "g/250" "g/30" "g/day" "g/dl" "g/kg" "g/L" "g/ml" "g/mL"
+ "G:C" "gag-rlpro" "gag-xlpro" "GalNAcα1-3GalNAcβ-PAA" "GalNAcα1-PAA" "GalNAcβ-PAA"
+ "GalNAcβ1-4GlcNAc" "Galα1-3Galα1-PAA" "Galα1-3LacNAc" "Galα1-4LacNAc" "Galβ1-3GalNAcα1-PAA"
+ "Galβ1-3GalNAcβ1-4Galβ1-4Glc-PA" "Galβ1-4Glc-PA" "Galβ1-4GlcNAcβ" "ganglionnaire…" "Garcia-Garcia"
+ "gasdermin A3" "Gaussian-like" "gB-like" "GCA9ATC9CGA9GGG9CGT" "GCGTCGTAAGCTAATAC-3" "GD/P1L"
+ "GD/P2S" "GDP/GRP" "Gebicke-Haerter" "GFP+" "GFP-8b" "GGTTGCA-3" "Gibco/Life" "GlcNAcβ-PAA"
+ "GlcNAcβ1-3" "GlcNAcβ1-3GalNAcα1-PAA" "GlcNAcβ1-4GlcNAcβ1-4GlcNAcβ1-4GlcNAcβ1"
+ "GlcNAcβ1-4GlcNAcβ1-4GlcNAcβ1-4GlcNAcβ1-4GlcNAcβ1" "GlcNAcβ1-6" "GlcNAcβ1-6-terminated"
+ "GlcNAcβ1-6Gal" "GlcNAcβ1-6GalNAcα1-PAA" "Glcα1-4" "Godoy-Santos" "González-Scarano"
+ "Goodnessof-fit" "gov/" "gov/ct2" "gov/e" "gov/geo/" "gov/geo/query/acc" "gov/nndss/script/"
+ "gov/sequencingcosts" "gov/sra" "GP64" "GPF-8b" "GRCm38" "GSDMA/" "Gsdma1" "Gsdma1-3" "Gsdma3"
+ "Gsdma3's" "Gsdma3/" "Gsdma3/mh" "Gsdma3/V5" "GSE109037" "GSE109816" "GSE118127" "GSE118819"
+ "GSE122960" "GSE125970" "GSE131685" "GSE134355" "GSE134520" "GSE137082" "Gsα" "GTG-3" "Guang-dong"
+ "Guerra-Maupome" "GX/P1E" "GX/P2V" "GX/P3B" "GX/P4L" "GX/P5E" "GX/P5L." "Gαs" "H&E" "H-1" "H-and"
+ "H.influenzae" "H.W." "H.Y." "h/mL" "H1-DV33" "H1-DV33-fV33" "H1-DV33-fV33A" "H1-DV33A-fV33"
+ "H1-H16" "H1N1-like" "H1NI" "H2N2" "H2O" "H3-N2" "H37Rv" "H3N8" "H7N1" "H7N2" "H7N3" "H9N2" "HA0"
+ "HA1/HA2" "HA2/inhibitor" "Haemophilus influenzae/Human" "haplotypes6" "Hashimoto-Tane" "HBS-P"
+ "HE-like" "HE14.7" "HE52.11" "HE52.7" "HE52.7-myc-" "heat-labile" "HEK 293T cell" "HEK 293T cells"
+ "HeLa-mCC1a" "HeLa-mCC1a-DM15" "Henle-Koch" "heparin-MnC1" "heparin-MnCl"
+ "Heparin-Natrium-5000-ratiopharm" "herbicide/pesticide" "hevein-like" "Hex/EtOAc"
+ "hexanoic acid-3-sulfo-Nhydroxysuccinimide" "Hg38/PanTro" "HHV-6" "HiSeq2000" "HiSeq3000" "HIT3a"
+ "HIV-1/NL4-3" "HIV-1exposed" "HIV-1infected" "HIV1-1" "HIV1-2" "HIV1-3" "HK-39849" "HKU-1" "HL-60"
+ "HlON7" "HM57" "HmLu-1" "hnRT-PCR" "homology-4" "host/cell" "HOU~E" "HPIV-2" "HR1trimer"
+ "HR2peptides" "Hsp90α" "Hsp90β" "HSV-1" "HTLV-I" "http://2019ncov" "http://avianflu" "http://cbdm"
+ "http://dx" "http://esa" "http://fred" "http://genome" "http://myhits" "http://nc2" "http://omics"
+ "http://togo" "http://www" "http://wwwn" "https://clinicaltrials" "https://data"
+ "https://deepmine" "https://doi" "https://flunearyou" "https://github" "https://www" "hUCH-L1"
+ "hUCH-L3" "human coronavirus-Erasmus" "human-like" "hut!" "hyposmia/" "hyposmia/anosmia" "I-2"
+ "I-3" "I.U./ml" "I359N/V5" "I8Fdopa" "I:C" "i=0" "I=I" "IBV-Beaudette" "IBV-like" "ID#Mm1921"
+ "IFLU-A" "IFN-ls" "IgG/" "IgG/IgM" "IgG1k" "IgG2" "IgG2b" "Illumina2bam" "IMAB™" "immuno-globulin"
  "immunoglobulin-like" "import/export" "in/" "inclusion/exclusion" "inconcl~sive" "ine/"
  "infected/" "inflammation/infection" "influenza-like" "influenza/Research_Agenda_Document"
  "information/material" "ingestion/injection" "input/" "input/output" "ins1217K" "Institute-sent"
@@ -1901,4 +1900,6 @@
  "worldwide" "worries" "worrisome" "worry" "worse" "worsen" "worship" "worthwhile" "worthy" "wound"
  "wounds" "wriggle" "wright" "write" "wrote" "yacht" "yachts" "yearbook" "yellowish" "yolk"
  "zipper" "zone" "zoo" "zoom")))
+    :test #'equalp))
+one" "zoo" "zoom")))
     :test #'equalp))

@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-8001-8100 sample of unknown words
-;; created 5/17/20 11:15:26
+;; created 5/17/20 18:8:55
 
 (in-package :sparser)
 
@@ -1128,7 +1128,7 @@
  "Zitka" "Zsigmondy" "Zuker" "Zuniga")))
     :test #'equalp))
 
-;; 3090 defined as a bio-entity
+;; 3089 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-8001-8100
@@ -1306,24 +1306,24 @@
  "einer˛-Untereinheit" "El-Haig" "El-Lethey" "El-Shehedi" "Elga⁎" "Elisabeth⁎" "ELR+"
  "empty/collapsed" "ENaC-Homologe" "Encephalitis***" "encephalitis/levels"
  "encephalomyelitis/multiple" "endIKKb-KO" "enhancer-like" "epithelial-like"
- "espace-ethique-bretagne" "estímulos»" "EU200363" "EV71" "Evert⁎" "ex-URSS"
- "expansion/accumulation" "expiration/renewal" "E~" "F/M" "F14mu" "F2-F1" "F2c-F1c" "F4/80+"
- "F4/80positive" "F:M" "factor-kappa" "factor-KB" "fat/septa" "Fausther-Bovendo" "FcγRdependent"
- "FC≥2" "FDC-like" "Fe&" "felices»" "Feodor-Lynen-Str" "FG1665-A-1" "Fifty-one" "Fifty-six"
- "Fifty-three" "Fiocruz/RJ" "FIPV-79-1146" "FIPV-UCD2" "FIPV-UCD3" "first-aid" "first-time"
- "first-year" "FIV-like" "fixed/permeabilized" "Fleisher-Berkovich" "flow-TRAIL" "flower-like"
- "flu-like" "flujo/volumen" "Fms-like" "FN20" "follistatin-like" "forest/trees" "Forty-five"
- "Forty-nine" "forty-two" "FOXP3+" "Foxp3+" "FoxP3+" "Foxp3+CD4+CD25+" "Foxp3+Treg"
- "FoxP3expressing" "Foxp3expressing" "FP7" "fpv012" "fpv014" "fpv016" "fpv021" "fpv027" "fpv060"
- "fpv061" "fpv073" "fpv116" "fpv121" "fpv206" "fpv214" "FQ22-I" "FQ22-M" "fr/" "fractalkine/mg"
- "freeze/thaw" "Frias-Staheli" "FtFo-ATPase" "FucT-VII−/−" "FuGENE6" "full-time" "funèbres…"
- "fusion/entry" "fusse-t-elle" "g-D-glutamyl-meso-diaminopimelic" "g-HV68" "G-INS-i" "G-quadruplex"
- "g/dl" "g/día" "g/g" "g/kg" "g/kg/min" "g/L" "g/ml" "g/mol" "G12C" "G681A." "GA+MIN" "GAAA/TTTC"
- "gamma-delta-T cells" "gammadelta+" "ganglia-thalamo-cortical" "gap-LCR" "García-Sastre" "GE/ml"
- "gel-like" "geldanamycin/17-AAG" "Geldanamycin/17-AAG" "GENBAMK_ACCESSION" "gene/mouse"
- "Genechip™" "Genentech/Roche" "generated/modulated" "Germline-encoded" "GFP+"
- "GGCTAGCACGGAAGCGAC-3" "GI254023X" "gilt/sow" "gilts/sows" "Gil⁎" "girls/" "girls/39" "gland-sIgA"
- "glial/T-cell" "GLRaV-3" "GLRaV-5" "GLRV-2" "GLS-5300" "Glyco-gag" "glyco-glycero-cholinolipid"
+ "espace-ethique-bretagne" "estímulos»" "EV71" "Evert⁎" "ex-URSS" "expansion/accumulation"
+ "expiration/renewal" "E~" "F/M" "F14mu" "F2-F1" "F2c-F1c" "F4/80+" "F4/80positive" "F:M"
+ "factor-kappa" "factor-KB" "fat/septa" "Fausther-Bovendo" "FcγRdependent" "FC≥2" "FDC-like" "Fe&"
+ "felices»" "Feodor-Lynen-Str" "FG1665-A-1" "Fifty-one" "Fifty-six" "Fifty-three" "Fiocruz/RJ"
+ "FIPV-79-1146" "FIPV-UCD2" "FIPV-UCD3" "first-aid" "first-time" "first-year" "FIV-like"
+ "fixed/permeabilized" "Fleisher-Berkovich" "flow-TRAIL" "flower-like" "flu-like" "flujo/volumen"
+ "Fms-like" "FN20" "follistatin-like" "forest/trees" "Forty-five" "Forty-nine" "forty-two" "FOXP3+"
+ "Foxp3+" "FoxP3+" "Foxp3+CD4+CD25+" "Foxp3+Treg" "FoxP3expressing" "Foxp3expressing" "FP7"
+ "fpv012" "fpv014" "fpv016" "fpv021" "fpv027" "fpv060" "fpv061" "fpv073" "fpv116" "fpv121" "fpv206"
+ "fpv214" "FQ22-I" "FQ22-M" "fr/" "fractalkine/mg" "freeze/thaw" "Frias-Staheli" "FtFo-ATPase"
+ "FucT-VII−/−" "FuGENE6" "full-time" "funèbres…" "fusion/entry" "fusse-t-elle"
+ "g-D-glutamyl-meso-diaminopimelic" "g-HV68" "G-INS-i" "G-quadruplex" "g/dl" "g/día" "g/g" "g/kg"
+ "g/kg/min" "g/L" "g/ml" "g/mol" "G12C" "G681A." "GA+MIN" "GAAA/TTTC" "gamma-delta-T cells"
+ "gammadelta+" "ganglia-thalamo-cortical" "gap-LCR" "García-Sastre" "GE/ml" "gel-like"
+ "geldanamycin/17-AAG" "Geldanamycin/17-AAG" "GENBAMK_ACCESSION" "gene/mouse" "Genechip™"
+ "Genentech/Roche" "generated/modulated" "Germline-encoded" "GFP+" "GGCTAGCACGGAAGCGAC-3"
+ "GI254023X" "gilt/sow" "gilts/sows" "Gil⁎" "girls/" "girls/39" "gland-sIgA" "glial/T-cell"
+ "GLRaV-3" "GLRaV-5" "GLRV-2" "GLS-5300" "Glyco-gag" "glyco-glycero-cholinolipid"
  "goffinet@twincore" "gov/" "gov/aphis/ourfocus/animalhealth/" "gov/BiologicsBloodVaccines"
  "gov/cber" "gov/forms" "gov/Genbank/" "gov/h1n1flu/update" "gov/ICTVdb/index" "goyal-13-215-main"
  "gp1OO" "gp69/71" "GQ117044" "GQ1b" "GQ1b/GD1a" "GQ1b/GM1" "GR1+" "Granger-Causality"
@@ -2736,3 +2736,4 @@
  "worsen" "worsens" "worthwhile" "worthy" "write" "wrote" "yardstick" "yolk" "youth" "youths"
  "yuan" "zipper" "zone" "zoo" "zoos")))
     :test #'equalp))
+ #'equalp))

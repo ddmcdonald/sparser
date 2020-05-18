@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-6501-6600 sample of unknown words
-;; created 5/17/20 10:57:13
+;; created 5/17/20 17:4:52
 
 (in-package :sparser)
 
@@ -1893,3 +1893,4 @@
  "worthy" "wound" "wounds" "wrapper" "wrist" "write" "writer" "writers" "wrote" "yob" "yolk"
  "youth" "yuan" "zebra" "zebras" "zonal" "zone" "zoo" "zoology" "zoom")))
     :test #'equalp))
+

@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-11701-11800 sample of unknown words
-;; created 5/17/20 11:57:53
+;; created 5/17/20 20:6:55
 
 (in-package :sparser)
 
@@ -2025,3 +2025,4 @@
  "workshop" "world" "worldwide" "worm" "worrisome" "worse" "worsen" "worthy" "wound" "wrap"
  "wrappings" "wright" "write" "wrote" "yahoo" "youth" "yuan" "zone" "zones" "zoo" "zoom")))
     :test #'equalp))
+

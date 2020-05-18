@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-6401-6500 sample of unknown words
-;; created 5/17/20 10:56:16
+;; created 5/17/20 17:1:4
 
 (in-package :sparser)
 
@@ -2454,3 +2454,4 @@
  "wrists" "write" "wrote" "yam" "yearling" "yearlings" "yellowish" "yoga" "yolk" "youth" "yuan"
  "zipper" "zone" "zoo" "zoom" "zoos")))
     :test #'equalp))
+)

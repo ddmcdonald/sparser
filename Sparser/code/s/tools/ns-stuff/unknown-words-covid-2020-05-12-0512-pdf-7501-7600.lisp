@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-7501-7600 sample of unknown words
-;; created 5/17/20 11:9:15
+;; created 5/17/20 17:47:25
 
 (in-package :sparser)
 

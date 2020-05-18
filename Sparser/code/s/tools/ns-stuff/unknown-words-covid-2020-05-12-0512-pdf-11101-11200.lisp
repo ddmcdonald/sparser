@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-11101-11200 sample of unknown words
-;; created 5/17/20 11:51:7
+;; created 5/17/20 19:51:52
 
 (in-package :sparser)
 
@@ -754,7 +754,7 @@
  "Zarychanski" "Zeuzem" "Zhang" "Zhao" "Zheng" "Zhong" "Zhou" "Zhu" "Zimber" "Zsak" "Zygun")))
     :test #'equalp))
 
-;; 2360 defined as a bio-entity
+;; 2356 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-11101-11200
@@ -892,22 +892,21 @@
  "E3L-deleted" "early/late" "eB131-15F9" "EC50" "ECFP-NR1+2" "Edghill-Smith" "editorial/peer"
  "edu/" "edu/rna22/Interactive/" "edu/∼zukerm/" "eEF1␣1" "EG&G" "EID50" "eIF2AK4/GCN2" "Eighty-six"
  "El-Shami" "EMBL/GenBank/" "enterovirus-71" "enzymes/substrates" "EpiLag-Protokolle" "Eq/1000"
- "estimation/quantification" "et/collection" "EU-Ländern" "eu/covid_report" "EU418975" "EU418976"
- "EU5-546f" "EU6-343f" "EU6-462r" "EU6-MGB" "EU7-340r" "EU718732"
- "eukaryotic translation initiation factor 2α" "European/North American" "EV-71" "EV-A71" "EV/ml"
- "EV71" "exac-" "EZ-Melt" "F-box-like" "F-fluorodeoxyglucose" "F.-H.M" "F1L" "F1L-deficient"
- "F=12.747" "faeces/vomitus" "FAM-AGGAC" "FAM-H1" "FAM-H2" "fast5" "Fc-loop" "Fc␥III/II" "FeCV-a"
- "Fernández-Sánchez" "ferroportina-1" "fever/dengue" "FHV-1" "FHV-1or" "Fi0" "Ficoll-Conray"
- "Fig.5a" "find_amplicons" "fisiológica»" "Fitzgerald-Hayes" "flavan-3,4-diols" "flavan-3-ols"
- "flavan-4-ols" "flower-like" "flu-like" "formaldehyde-1%" "Forty-eight" "Forty-oneday-old"
- "Forty-six" "forward+reverse" "frag-ment" "freeze/thaw" "FRhK-4" "fs/step" "f€" "G 2 /M phases"
- "G.J." "g/" "g/4" "g/cm 3" "g/day" "g/dl" "g/kg" "g/kg/h" "g/L" "G/m" "g/ml" "G0/G 1" "G00-G04"
- "Gabcíkovo-Nagymaros" "GACCGATTTGCACGTC-3" "Gal /34" "GAL&EN" "GAL&IO-actin-test" "GAL4/UAS"
- "GAL70" "gan-glioside" "García-Arriaza" "Gasteiger-Huckel" "gastroenteritis-like"
- "GCAGGAAC-CTTTATAACCAAATCCT" "GCTCAACCCTTGACGAG-GACT" "GD7" "Geffroy-Luseau" "gene-15"
- "genome/nucleocapsid" "germline-like" "GeXP-based" "GFP-20" "gg/ml" "GGATGCAGAA-3"
- "GGGTAC-GAGGCTTTC" "GGTGGCGAATAAG-3=" "GL533" "GlcNAc /33" "glutamer-200" "GMP-140" "gov/"
- "gov/clinical" "gov/coronavirus/mers/" "gov/eid" "gov/ncidod/diseases/hepatitis/c/"
+ "estimation/quantification" "et/collection" "EU-Ländern" "eu/covid_report" "EU5-546f" "EU6-343f"
+ "EU6-462r" "EU7-340r" "eukaryotic translation initiation factor 2α" "European/North American"
+ "EV-71" "EV-A71" "EV/ml" "EV71" "exac-" "EZ-Melt" "F-box-like" "F-fluorodeoxyglucose" "F.-H.M"
+ "F1L" "F1L-deficient" "F=12.747" "faeces/vomitus" "FAM-AGGAC" "FAM-H1" "FAM-H2" "fast5" "Fc-loop"
+ "Fc␥III/II" "FeCV-a" "Fernández-Sánchez" "ferroportina-1" "fever/dengue" "FHV-1" "FHV-1or" "Fi0"
+ "Ficoll-Conray" "Fig.5a" "find_amplicons" "fisiológica»" "Fitzgerald-Hayes" "flavan-3,4-diols"
+ "flavan-3-ols" "flavan-4-ols" "flower-like" "flu-like" "formaldehyde-1%" "Forty-eight"
+ "Forty-oneday-old" "Forty-six" "forward+reverse" "frag-ment" "freeze/thaw" "FRhK-4" "fs/step" "f€"
+ "G 2 /M phases" "G.J." "g/" "g/4" "g/cm 3" "g/day" "g/dl" "g/kg" "g/kg/h" "g/L" "G/m" "g/ml"
+ "G0/G 1" "G00-G04" "Gabcíkovo-Nagymaros" "GACCGATTTGCACGTC-3" "Gal /34" "GAL&EN"
+ "GAL&IO-actin-test" "GAL4/UAS" "GAL70" "gan-glioside" "García-Arriaza" "Gasteiger-Huckel"
+ "gastroenteritis-like" "GCAGGAAC-CTTTATAACCAAATCCT" "GCTCAACCCTTGACGAG-GACT" "GD7"
+ "Geffroy-Luseau" "gene-15" "genome/nucleocapsid" "germline-like" "GeXP-based" "GFP-20" "gg/ml"
+ "GGATGCAGAA-3" "GGGTAC-GAGGCTTTC" "GGTGGCGAATAAG-3=" "GL533" "GlcNAc /33" "glutamer-200" "GMP-140"
+ "gov/" "gov/clinical" "gov/coronavirus/mers/" "gov/eid" "gov/ncidod/diseases/hepatitis/c/"
  "gov/westnile/statsmaps/" "gr/dl" "granulocyte/macrophage" "GRCh38" "grigoriev@gpc-biotech"
  "growth-factor-like" "GTP-ATTO" "GU109481.1" "GU247050" "GU391"
  "guaninephosphoribosyl-transferase" "Guillain-Barre" "gut/" "gut/unzufrieden" "gut/weniger" "GZ01"
@@ -2098,5 +2097,7 @@
  "worker" "workers" "workforce" "workload" "workplace" "workshop" "world" "worldwide" "worm"
  "worries" "worry" "worse" "worsen" "worthwhile" "worthy" "wound" "wounds" "wrapper" "wrestler"
  "wrestlers" "wright" "write" "wrote" "yawn" "yearbook" "yuan" "zone" "zoo" "zoos")))
+    :test #'equalp))
+zone" "zoo" "zoos")))
     :test #'equalp))
 

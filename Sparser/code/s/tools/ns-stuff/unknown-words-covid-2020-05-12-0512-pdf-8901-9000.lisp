@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-8901-9000 sample of unknown words
-;; created 5/17/20 11:25:22
+;; created 5/17/20 18:48:5
 
 (in-package :sparser)
 
@@ -2271,3 +2271,4 @@
  "worthwhile" "worthy" "wound" "wounds" "wright" "write" "wrote" "yahoo" "yew" "yoghurt" "yolk"
  "yuan" "zipper" "zone")))
     :test #'equalp))
+

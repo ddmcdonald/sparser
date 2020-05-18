@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-15201-15300 sample of unknown words
-;; created 5/16/20 20:34:28
+;; created 5/18/20 0:59:59
 
 (in-package :sparser)
 
@@ -2149,3 +2149,4 @@
  "wound" "wounds" "wrap" "wraps" "wright" "wrist" "wrists" "write" "wrote" "yellowish" "youth"
  "yuan" "zenith" "zonal" "zone")))
     :test #'equalp))
+

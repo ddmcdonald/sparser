@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-13201-13300 sample of unknown words
-;; created 5/17/20 13:18:15
+;; created 5/17/20 22:26:20
 
 (in-package :sparser)
 
@@ -632,7 +632,7 @@
  "Zou" "Zúñiga" "haWeS" "missForest" "pI" "vRTIs" "Özkaragöz")))
     :test #'equalp))
 
-;; 2533 defined as a bio-entity
+;; 2531 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-13201-13300
@@ -782,17 +782,17 @@
  "EMC/2012" "enhancer/promoter" "enrichment/" "enter/leave" "entering/leaving" "enterovirus-like"
  "entrance/exit" "Env-2-3-SF2" "env-2-3SF2" "EnvCTdel-144" "Epa/Epc" "epidemiologica!"
  "epithelial cells/low" "ERGIC/" "ERGIC/Golgi" "ERGIC/Golgi-like" "ERGNO" "er…" "ESI-QqQ" "ESO-1"
- "estrogen-like" "et al.,1990" "et al.,1996" "et al.,1998" "EU175855.1" "EU546204.1"
- "EUCTR2006-006690-25-GB" "EV71" "EV71-infected" "EVD68" "event/crisis" "excep-Varying" "exercise…"
- "expro-B" "F-araD139" "F-lon::TnlO" "F-ompT::kan" "F.G." "F1-score" "F12K" "facility/system"
- "factor 1␥" "factsheets/fs360/en/" "family/" "family/friends" "Fcγ" "fever…" "ff14SB"
- "fi-galactosidase" "Fifty-eight" "Fifty-nine" "finger-like" "FIT-039" "Fite-Faraco" "five-dayold"
- "five/six" "fixed/" "fl-galactosidase" "FLAG/66His-tagged" "flbB5301" "fluorescent-antibody"
- "fmol/μL" "Fontana-Masson" "foot-and-mouth-disease" "Forms®" "Formvar/Carbon" "forty-four"
- "Forty-nine" "FP36L2" "FPD/Total" "fr/pub/ClustalX/" "ftp://ftp-igbmc" "Fugene6" "Fungizone®"
- "G+C" "G.B." "G.H." "G.I." "G.K." "G.L." "G.X." "g/100" "G/actuation" "g/kg" "g/L" "g/lOO" "g/ml"
- "g/mL" "G0-phase" "G0/G1" "G0/G1 phase" "G0/G1-phase" "G0/G1phase" "G2b" "GAAAAT-3"
- "Garcia-Arriaza" "Garcia-Gimenez" "Garín-Muñ" "Gavier-Widen" "GC4670"
+ "estrogen-like" "et al.,1990" "et al.,1996" "et al.,1998" "EUCTR2006-006690-25-GB" "EV71"
+ "EV71-infected" "EVD68" "event/crisis" "excep-Varying" "exercise…" "expro-B" "F-araD139"
+ "F-lon::TnlO" "F-ompT::kan" "F.G." "F1-score" "F12K" "facility/system" "factor 1␥"
+ "factsheets/fs360/en/" "family/" "family/friends" "Fcγ" "fever…" "ff14SB" "fi-galactosidase"
+ "Fifty-eight" "Fifty-nine" "finger-like" "FIT-039" "Fite-Faraco" "five-dayold" "five/six" "fixed/"
+ "fl-galactosidase" "FLAG/66His-tagged" "flbB5301" "fluorescent-antibody" "fmol/μL"
+ "Fontana-Masson" "foot-and-mouth-disease" "Forms®" "Formvar/Carbon" "forty-four" "Forty-nine"
+ "FP36L2" "FPD/Total" "fr/pub/ClustalX/" "ftp://ftp-igbmc" "Fugene6" "Fungizone®" "G+C" "G.B."
+ "G.H." "G.I." "G.K." "G.L." "G.X." "g/100" "G/actuation" "g/kg" "g/L" "g/lOO" "g/ml" "g/mL"
+ "G0-phase" "G0/G1" "G0/G1 phase" "G0/G1-phase" "G0/G1phase" "G2b" "GAAAAT-3" "Garcia-Arriaza"
+ "Garcia-Gimenez" "Garín-Muñ" "Gavier-Widen" "GC4670"
  "GCAGAAAACGAAGAATCCT-CACCCTAGTTTGTCTGAAATCAATCGATGAATTCGAG-CTCG" "gel-protein" "generat-Germany"
  "genomic DNA/RNA" "Genotype-2" "GFP-ST-LT" "GFP:STLT" "GG-AGCTCGAGTTACTTATCGTCATCGTC"
  "GGCTGGGGTAACAGCGGTGGTTCAAA-CAACTCTTCTTGGTGGCGTACGCTGCAGGTCGAC" "Gibco™" "gill/lung" "Glasgow´s"
@@ -2053,4 +2053,6 @@
  "workshops" "world" "worldwide" "worm" "worsen" "worship" "worst" "worthwhile" "worthy" "wound"
  "wounds" "wright" "write" "wrote" "yahoo" "yam" "yearbook" "yellowish" "yolk" "youngster" "yuan"
  "zebra" "zipper" "zone" "zones" "zoo")))
+    :test #'equalp))
+")))
     :test #'equalp))

@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-6801-6900 sample of unknown words
-;; created 5/17/20 11:0:3
+;; created 5/17/20 17:16:7
 
 (in-package :sparser)
 
@@ -964,7 +964,7 @@
  "Zuo" "Zweers" "Venter" "Je")))
     :test #'equalp))
 
-;; 2166 defined as a bio-entity
+;; 2165 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-6801-6900
@@ -1098,8 +1098,8 @@
  "edu/vvi/" "EFBN2" "egg/eggshell" "Egr-1siRNA" "Eick-Cost" "eIF2␣" "eIF4E." "eight-weeks-old"
  "Eighty-seven" "El-Emam" "El-Sherbeny" "ELS-8000" "EM10" "endo-laryngée" "endocannabinoid-like"
  "EP7" "episodic/pervasive" "ER-TR7" "et al.,2006a" "et/ou" "et6" "eta/" "ethyl-2-methylbutyrate"
- "EU074218" "F 2 /H" "F-statistics" "F/L" "F1c/F2" "factor-kB" "fapm/" "farnesyl-protein" "fat/d"
- "fat/day" "FBS/8%" "Fel-O-Vax" "feline coronavirus--feline" "Fernandez-Miragall" "Ferre-D" "FFP2"
+ "F 2 /H" "F-statistics" "F/L" "F1c/F2" "factor-kB" "fapm/" "farnesyl-protein" "fat/d" "fat/day"
+ "FBS/8%" "Fel-O-Vax" "feline coronavirus--feline" "Fernandez-Miragall" "Ferre-D" "FFP2"
  "fi-globin" "Fi6v3" "fibroblast-like" "Fifty-one" "Fig.S5" "figtree/" "flu-like" "fois/j"
  "Foot-andmouth" "Four-fold" "Four-week-old" "fPL™" "fr/index" "frame-L2" "FRE-QUENCY" "Fung-Leung"
  "fungi/mould" "Furman-Fratczak" "FV10i" "FY2014-02" "G-3ƍ" "G/" "g/20" "g/dl" "G/glycoprotein"
@@ -2262,3 +2262,4 @@
  "worthy" "wound" "wounds" "wright" "write" "xerox" "yam" "yarrow" "yearbook" "yolk" "yuan" "zebra"
  "zenith" "zone" "zoo" "zoom" "zucchini")))
     :test #'equalp))
+'equalp))

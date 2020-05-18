@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-10501-10600 sample of unknown words
-;; created 5/17/20 11:44:38
+;; created 5/17/20 19:44:50
 
 (in-package :sparser)
 
@@ -499,7 +499,7 @@
  "Zähringer" "Ân" "Èslund")))
     :test #'equalp))
 
-;; 1921 defined as a bio-entity
+;; 1920 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-10501-10600
@@ -614,9 +614,9 @@
  "Edghill-Smith" "edu/" "ef®ciency" "ef®cient" "EGFP-RFP+" "EI-1" "EiF-4E" "Eight-week-old"
  "Eighty-six" "El-Kanawati" "Ellermann-Eriksen" "EM-10" "embryonic/fetal" "en/of"
  "enterovirus-like" "epidemic*" "Epidemiology/Clinical" "Epon-Araldite" "Epstein-Barr" "es/4wt"
- "es/523" "es/52g" "es/53d" "es/542" "es/554" "estimatedγ" "estimatesβ" "EU886967" "EV-E" "EV-F"
- "EWI-2wint" "excitation/emission" "express-1.0" "F1-F6" "f1000r" "F1000Res" "F1000Research"
- "factor-kB" "FAM83" "fc6" "fc6-8" "fc8" "FCS/0.1%" "Fcγ" "FcγRIIb2" "February-March" "fecal/nasal"
+ "es/523" "es/52g" "es/53d" "es/542" "es/554" "estimatedγ" "estimatesβ" "EV-E" "EV-F" "EWI-2wint"
+ "excitation/emission" "express-1.0" "F1-F6" "f1000r" "F1000Res" "F1000Research" "factor-kB"
+ "FAM83" "fc6" "fc6-8" "fc8" "FCS/0.1%" "Fcγ" "FcγRIIb2" "February-March" "fecal/nasal"
  "fever/stress" "Ficoll/Hypaque" "Fifty-three" "Fig.3B" "fitsβ" "fittedβ" "FJ235181" "FJ235184"
  "FJ235187" "FJ235188" "FJ235190" "FJ235192" "Flighradar24" "flu-like" "fluids/semen" "Forty-eight"
  "Forty-eight-hour" "Fos/Jun" "freeze/thaw" "ftp://ftp" "full-time" "Fuzeon™" "g 1×/wk" "G+C"
@@ -1723,3 +1723,4 @@
  "workplace" "workshop" "workshops" "world" "worldwide" "worm" "worst" "worthwhile" "worthy"
  "wound" "wounds" "wright" "write" "writer" "writers" "zone" "zones")))
     :test #'equalp))
+#'equalp))

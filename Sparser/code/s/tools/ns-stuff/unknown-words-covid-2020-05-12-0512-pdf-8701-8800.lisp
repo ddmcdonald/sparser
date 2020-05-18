@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-8701-8800 sample of unknown words
-;; created 5/17/20 11:23:18
+;; created 5/17/20 18:40:1
 
 (in-package :sparser)
 
@@ -2296,3 +2296,4 @@
  "wounds" "wright" "write" "writer" "writers" "wrote" "yearbook" "yolk" "youngster" "youngsters"
  "yuan" "zipper" "zone")))
     :test #'equalp))
+

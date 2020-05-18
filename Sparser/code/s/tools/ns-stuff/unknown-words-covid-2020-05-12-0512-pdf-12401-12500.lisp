@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-12401-12500 sample of unknown words
-;; created 5/17/20 13:9:47
+;; created 5/17/20 20:29:22
 
 (in-package :sparser)
 
@@ -759,7 +759,7 @@
  "3e38" "3e4" "3e40" "3e6" "3p" "3SEQ" "3´" "4 N95" "4,5-biphosphate"
  "4,8,11-tetra-azacyclotetradecane" "4.0AE3" "4.26/100,000" "4.4e20" "4.4°C" "4/4" "4/8" "40 %/day"
  "40e50" "40°C" "40°C." "42°C" "43e77" "45.3″S" "46%-63%" "489bp" "4e10" "4e20" "4e48"
- "4e5eday-old" "4e6" "4edayold" "4Tab" "4°C" "4°C." "5.6e30.0" "50 /ml" "500/ll" "5000×" "50°C"
+ "4e5eday-old" "4e6" "4edayold" "4Tab." "4°C" "4°C." "5.6e30.0" "50 /ml" "500/ll" "5000×" "50°C"
  "52·9" "53B3" "54B3" "54e79" "55-yr" "55°C" "55ºC" "56.0%-74.2%" "56°C" "5="
  "5=-ATGGGCCAGGAGTGTGTCA" "5=-ATGTGCCAGCTTGATGTCGC-3="
  "5=-CAAUGGACUGGCGAUUUAGUUUUAGAGCUAGAAAUAGCAAG" "5=-CCTAGTAACACTCGTCCGAC" "5=-CGAGGCAGAACATCTCAA"

@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-12601-12700 sample of unknown words
-;; created 5/17/20 13:11:54
+;; created 5/17/20 20:33:42
 
 (in-package :sparser)
 
@@ -762,7 +762,7 @@
  "TwistDx" "Wiley" "Özdemir" "Úrsula")))
     :test #'equalp))
 
-;; 2632 defined as a bio-entity
+;; 2630 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-12601-12700
@@ -912,8 +912,8 @@
  "egg/g" "eggs/g" "EID50" "Eighty-four" "El-Ayache" "Elavarasan:Conceptualization" "EMAN2"
  "embryos/transfer" "emergence/spread" "EMY3" "endemic/migrating" "endosomal/"
  "endosomal/lysosomal" "endothelial/" "EPA-UN-EPSA" "ERBUS-Paris" "erosions/ulcerations"
- "errors/uncertainties" "et/ou" "etc…" "EU195090" "EU636924" "exam-ple" "exosome-like"
- "exponential-like" "exposure-time-based" "extra-nodal" "eye/ear" "EzWay™" "facilities/" "FaCT++"
+ "errors/uncertainties" "et/ou" "etc…" "exam-ple" "exosome-like" "exponential-like"
+ "exposure-time-based" "extra-nodal" "eye/ear" "EzWay™" "facilities/" "FaCT++"
  "FAMCACCACCAGAACCTGTCACCTC-BHQ1" "farm/forest" "farm/production" "farm/wildlife" "farms-One"
  "FCC-2" "fermentation-like" "Fernandez-Garcia" "FFP1" "FFP2" "FFP3" "FFP3≥98%" "fiber/receptor"
  "Fibrobacteres-Chlorobi-Bacteroidetes" "Fifty-five" "fifty-nine" "Fifty-one" "Fig.2d-e"
@@ -990,7 +990,7 @@
  "N/Asp194" "N/Gly193" "N/Ile86" "N/Ser195" "N1-N9" "N=1,257" "n=120" "n=360" "n=396" "n=4" "n=766"
  "Na-parstek" "nano-W" "nanoparticle/protein" "nasal/sinus" "nasal»" "Navarrete-V"
  "Navarro-Sanchez" "Navier-Stokes" "NC_001405" "NC_001731" "NCT00001846" "ND1/His198" "ND2/Asn171"
- "ND2/Asn55" "Negrete/Hernández" "neighbouring/European" "Neu5Ac2en" "ng/" "ng/forms" "ng/l"
+ "ND2/Asn55" "Negrete/Hernández" "neighbouring/European Union" "Neu5Ac2en" "ng/" "ng/forms" "ng/l"
  "ng/sustainability" "ng/μl" "NH2terminal" "NHg-terminal" "NHz-terminal" "night-time"
  "Nikolich-Zugich" "Nim-bleGen" "nl/" "NM_0010" "NM_001001303" "NM_009283" "NM_213659" "NOD-like"
  "non-ATCG" "non-FibL" "non-FIP" "non-insulin" "Non-lnsulin-I" "non-MHC" "non-protein" "non-zero"
@@ -2285,3 +2285,4 @@
  "wright" "wrist" "wristband" "write" "writer" "writers" "wrote" "yam" "yardstick" "yardsticks"
  "yore" "youth" "yuan" "zee" "zonal" "zone" "zoo")))
     :test #'equalp))
+test #'equalp))

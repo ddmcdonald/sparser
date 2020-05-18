@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-13001-13100 sample of unknown words
-;; created 5/17/20 13:16:0
+;; created 5/17/20 21:1:31
 
 (in-package :sparser)
 
@@ -642,7 +642,7 @@
  "Zinyama" "hW")))
     :test #'equalp))
 
-;; 2449 defined as a bio-entity
+;; 2443 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-13001-13100
@@ -787,28 +787,27 @@
  "EF-Tu-GTP-Tyr-tRNA" "EF444549" "EF444554" "eFluor450-conjugated" "eIF2α-controlled"
  "Eighty-seven" "Elbez-Rubinstein" "ell^" "end-April" "enhancement/attenuation"
  "environmental/ecosystem" "Epstein-Barr" "Erlangen-N€" "ES-242" "ES-242s" "estimateπ" "et/ou"
- "eu/efsajournal" "EU296475" "EU693903" "EU693904" "EU693905" "EU693906" "EU693907" "EV68" "EV71"
- "ex-NASA" "experimental/" "external/internal" "extracellular/secreted" "EZ1" "e~t" "F.P." "F.γ/"
- "FAC-Scalibur" "face-mask" "facilitie~" "factor-kappa" "factsheets/fs211/en/" "failure/HIV"
- "FAM89A" "family/" "fast5" "Favor/Oppose" "FcγRIII" "Fea-tureSFS-BW" "FeatureBFS-BW"
- "FeatureBFS-Comb" "FeatureSFS-BW" "FeatureSFS-Comb" "ff99SB-ILDN" "FFU/mL" "Fifty-one"
- "Fifty-one-day-old" "Fig.12b" "Fig.1A" "Fig.1B" "Fig.1C" "Fig.1D" "Fig.1E" "Fig.3A" "Fig.3B"
- "Fig.4A" "Fig.4B" "Fig.5A" "Fig.5B" "Fig.6A" "Fig.6D" "FIPV3-70" "first-time" "FJ641062"
- "FJ821732" "FJ970627" "FKBP/" "FKPB/Rapamycinbinding" "flash-frozen" "Flavi-and" "Fluor-647"
- "fm-&erdu" "FM002" "FM016" "FM017" "FM019" "FM020" "foot-andmouth-disease-virus" "Forty-eight"
- "Forty-nine" "Forty-one" "Forty-three" "FPRψ" "FRCPC*" "FRhK-4" "Friedrich-Alexander"
- "friends/family" "from3-day-old" "fs310" "FSC=0.143" "function!" "fungus/insect" "F~t"
- "F−measureðiÞ" "g$&2*" "G-or" "g/calf" "g/day" "g/m" "g/ml" "g/sample" "G0-phase" "G:U" "g=m"
- "GADD45A--through" "GAGGTAGT-3" "Garcia-Closas" "García-Arenal" "Garza-García" "GDP/GTP" "GE/"
- "GE/mL" "Geneaid®" "genomes/genome" "GER/" "GER/L00719/2014" "Gerstmann-Sträussler-Scheinker"
- "GFP-DDDHA" "GFT505" "global/local" "glucose-insulin" "glycoprotein-39" "glycoprot~ins"
- "glyqwrote-ins" "go-andgrow" "González-González" "gov/" "gov/BLAST/" "gov/cebs" "gov/eid"
- "gov/flu/about/" "gov/gene/" "gov/globalhealth/gdder" "gov/lrn/" "gov/travel/contentAvianFluAsia"
- "gp116" "GP5a" "gp60/10" "GRA6" "GRCh38" "Green-5N" "Group D2" "group/condition" "GSE28878"
- "GSE33142" "GSE58235" "GTR+I" "GuHMGRF1" "GuHMGRR1" "GuHMGRR3" "GuHMGRSP1" "H&E" "H1-A"
- "H1-promoter-driven" "H1-short hairpin RNA" "H2N2" "H2O" "H3b" "H3c" "H3e" "H3f" "H5-specific"
- "H52/H120" "H7N7" "H7N9" "HA-ISG15-LRAA" "HA-ISG15-LRGG" "hACE2" "Haemophi-lus"
- "hand-foot-and-mouth" "Have/Have" "HBoV1" "HBoV1-load" "HBoV1-PCR" "HBoV1-positive"
+ "eu/efsajournal" "EV68" "EV71" "ex-NASA" "experimental/" "external/internal"
+ "extracellular/secreted" "EZ1" "e~t" "F.P." "F.γ/" "FAC-Scalibur" "face-mask" "facilitie~"
+ "factor-kappa" "factsheets/fs211/en/" "failure/HIV" "FAM89A" "family/" "fast5" "Favor/Oppose"
+ "FcγRIII" "Fea-tureSFS-BW" "FeatureBFS-BW" "FeatureBFS-Comb" "FeatureSFS-BW" "FeatureSFS-Comb"
+ "ff99SB-ILDN" "FFU/mL" "Fifty-one" "Fifty-one-day-old" "Fig.12b" "Fig.1A" "Fig.1B" "Fig.1C"
+ "Fig.1D" "Fig.1E" "Fig.3A" "Fig.3B" "Fig.4A" "Fig.4B" "Fig.5A" "Fig.5B" "Fig.6A" "Fig.6D"
+ "FIPV3-70" "first-time" "FJ641062" "FJ821732" "FJ970627" "FKBP/" "FKPB/Rapamycinbinding"
+ "flash-frozen" "Flavi-and" "Fluor-647" "fm-&erdu" "FM002" "FM016" "FM017" "FM019" "FM020"
+ "foot-andmouth-disease-virus" "Forty-eight" "Forty-nine" "Forty-one" "Forty-three" "FPRψ" "FRCPC*"
+ "FRhK-4" "Friedrich-Alexander" "friends/family" "from3-day-old" "fs310" "FSC=0.143" "function!"
+ "fungus/insect" "F~t" "F−measureðiÞ" "g$&2*" "G-or" "g/calf" "g/day" "g/m" "g/ml" "g/sample"
+ "G0-phase" "G:U" "g=m" "GADD45A--through" "GAGGTAGT-3" "Garcia-Closas" "García-Arenal"
+ "Garza-García" "GDP/GTP" "GE/" "GE/mL" "Geneaid®" "genomes/genome" "GER/" "GER/L00719/2014"
+ "Gerstmann-Sträussler-Scheinker" "GFP-DDDHA" "GFT505" "global/local" "glucose-insulin"
+ "glycoprotein-39" "glycoprot~ins" "glyqwrote-ins" "go-andgrow" "González-González" "gov/"
+ "gov/BLAST/" "gov/cebs" "gov/eid" "gov/flu/about/" "gov/gene/" "gov/globalhealth/gdder" "gov/lrn/"
+ "gov/travel/contentAvianFluAsia" "gp116" "GP5a" "gp60/10" "GRA6" "GRCh38" "Green-5N" "Group D2"
+ "group/condition" "GSE28878" "GSE33142" "GSE58235" "GTR+I" "GuHMGRF1" "GuHMGRR1" "GuHMGRR3"
+ "GuHMGRSP1" "H&E" "H1-A" "H1-promoter-driven" "H1-short hairpin RNA" "H2N2" "H2O" "H3b" "H3c"
+ "H3e" "H3f" "H5-specific" "H52/H120" "H7N7" "H7N9" "HA-ISG15-LRAA" "HA-ISG15-LRGG" "hACE2"
+ "Haemophi-lus" "hand-foot-and-mouth" "Have/Have" "HBoV1" "HBoV1-load" "HBoV1-PCR" "HBoV1-positive"
  "HBoV1positive" "HCV-371" "HCV-570" "HCV-like" "HCVco-infected" "health/governmental"
  "health/life" "HEK293T/17" "Hematology-Oncology" "Hep-2" "HERC5/6" "herpes simplex virus-1"
  "heterochromatin-like" "HG-U133" "hg38" "hgu133plus2" "hgu219" "hgug4112a" "HHV-6" "HHV-6A"
@@ -1944,5 +1943,7 @@
  "workload" "workplace" "workshop" "workshops" "world" "worldwide" "worry" "worse" "worsen"
  "worship" "worthwhile" "wound" "wounds" "wrapper" "wreak" "wright" "write" "wrote" "yahoo"
  "yellowish" "yolk" "yolks" "youth" "yuan" "zone" "zones" "zoo")))
+    :test #'equalp))
+yolks" "youth" "yuan" "zone" "zones" "zoo")))
     :test #'equalp))
 

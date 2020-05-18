@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-14101-14200 sample of unknown words
-;; created 5/16/20 20:22:7
+;; created 5/17/20 22:52:19
 
 (in-package :sparser)
 
@@ -771,7 +771,7 @@
  "Zwitter" "Scandella")))
     :test #'equalp))
 
-;; 2056 defined as a bio-entity
+;; 2055 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-14101-14200
@@ -899,10 +899,10 @@
  "emerging/reemerging" "Emilia-Romagna" "Emp46/47p" "Emp46p" "EMP47" "Emp47p"
  "endo-b-N-acetylgluco-saminidase" "endosomal/lysosomal" "endosome-like" "Engelberg-Kulka"
  "epidemic/epizootic" "ER/Golgi" "ERGIC-53-like" "ERGIC/cis-Golgi" "ERto-Golgi" "Erv29p"
- "erythema-multiforme-like" "et al.'s7" "et/ou" "Etten-Leur" "EU-28" "EU/" "EU/EEA" "EV71"
- "examples-one" "Excel©" "excitation/emission" "exoplasmic/luminal" "extracellular/" "EZ1" "F-or"
- "F0*" "F2*" "Fcm*" "Fcm1" "Fcm2" "FE20" "federal-state" "Fg3" "Fg3cm2" "fiber-like" "Fifty-one"
- "fifty-seven" "FITCanti-CD4" "fixation/" "FJ937641-FJ937659" "flavovone-7-glucoside" "flu-like"
+ "erythema-multiforme-like" "et al.'s7" "et/ou" "Etten-Leur" "EU/" "EU/EEA" "EV71" "examples-one"
+ "Excel©" "excitation/emission" "exoplasmic/luminal" "extracellular/" "EZ1" "F-or" "F0*" "F2*"
+ "Fcm*" "Fcm1" "Fcm2" "FE20" "federal-state" "Fg3" "Fg3cm2" "fiber-like" "Fifty-one" "fifty-seven"
+ "FITCanti-CD4" "fixation/" "FJ937641-FJ937659" "flavovone-7-glucoside" "flu-like"
  "Fluor488-conjugated" "fluores-cent" "fol-Recombinant" "folate-receptor" "fold-like"
  "follicle-like" "Food-borne" "forma-2.9" "formaldehyde-PBS" "Forty-two" "full-time" "fung&bac"
  "FV/FVIII" "g/" "g/day" "g/dL" "g/kg" "g/L" "g/L/1000" "g/ml" "g/mol" "G0/G1" "G2B"
@@ -2103,3 +2103,4 @@
  "world" "worldwide" "worm" "worsen" "worst" "worthy" "wound" "wrestler" "wright" "write" "wrote"
  "yarrow" "yelp" "yob" "yolk" "zebra" "zero" "zeros" "zone" "zones" "zoo" "zoos")))
     :test #'equalp))
+ualp))

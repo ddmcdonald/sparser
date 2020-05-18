@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-10201-10300 sample of unknown words
-;; created 5/17/20 11:41:6
+;; created 5/17/20 19:41:16
 
 (in-package :sparser)
 
@@ -705,7 +705,7 @@
  "Zukal" "Wiley")))
     :test #'equalp))
 
-;; 5217 defined as a bio-entity
+;; 5216 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-10201-10300
@@ -1004,8 +1004,8 @@
  "ELWA3" "Emory+Children's" "en-zymaticaUy" "ENST000000367134" "ENST00000340781" "ENST00000367135"
  "enterovirus/rhinovirus" "Entner-Doudoroff" "Eos#" "EP12-A2" "EphB4/Fc" "EPI_ISL_406592"
  "EPI_ISL_411929" "episodes/year" "equipment/supplies" "eRapid™" "ERMs-DA470" "ERp29s" "ERS/ATS"
- "Escalera-Zamudio" "ET12" "ethical/moral" "EU236259" "EUR/CNY" "events/1000" "events/hr"
- "events/TCD" "Excel®" "exceptions!" "exon13" "Expi293F" "expression/silencing" "extraction/PCR"
+ "Escalera-Zamudio" "ET12" "ethical/moral" "EUR/CNY" "events/1000" "events/hr" "events/TCD"
+ "Excel®" "exceptions!" "exon13" "Expi293F" "expression/silencing" "extraction/PCR"
  "extras/pdb_select/" "F.S" "f/u" "F0-F1" "F0-F2" "F1000Res" "F2-F4" "F2F" "F31HL131231" "F508del"
  "F508del-3HA" "F508del-CFTR" "F508del-Fam13" "F508del-hNBD1" "F508del-homozygote" "F508del/"
  "F508del/1154insTC" "F508del/2789+5G>A" "F508del/3905insT" "F508del/712-1G>T." "F508del/A455E"
@@ -2582,3 +2582,4 @@
  "wound" "wrapper" "wright" "wrist" "write" "writings" "wrote" "yearbook" "yob" "yoga" "youth"
  "yuan" "zigzag" "zipper" "zone" "zoo" "zoos")))
     :test #'equalp))
+'equalp))

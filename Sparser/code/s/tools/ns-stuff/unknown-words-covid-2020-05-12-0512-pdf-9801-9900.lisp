@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-9801-9900 sample of unknown words
-;; created 5/17/20 11:34:55
+;; created 5/17/20 19:23:3
 
 (in-package :sparser)
 
@@ -2110,3 +2110,4 @@
  "wright" "write" "wrote" "yearling" "yearlings" "yolk" "yuan" "zero" "zeros" "zigzag" "zipper"
  "zone" "zoo")))
     :test #'equalp))
+

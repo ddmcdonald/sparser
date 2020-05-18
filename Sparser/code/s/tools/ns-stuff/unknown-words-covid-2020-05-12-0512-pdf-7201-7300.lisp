@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-7201-7300 sample of unknown words
-;; created 5/17/20 11:5:50
+;; created 5/17/20 17:34:2
 
 (in-package :sparser)
 
@@ -1040,7 +1040,7 @@
  "Škrovánková")))
     :test #'equalp))
 
-;; 2355 defined as a bio-entity
+;; 2354 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-7201-7300
@@ -1187,8 +1187,8 @@
  "early/late" "EC50" "Edinger-Westphal" "edit#gid=0" "EDTA/PBS" "ef®ciencies" "ef®ciency"
  "ef®cient" "ef®cient`programmed" "ef®ciently" "El-Sadr" "EMBL-EBI" "employer`s" "en_uk"
  "end-®lled" "endosomes/lysosomes" "entities/professionals" "entry/replication" "EPI_ISL_" "Epo-S1"
- "Epstein-Barr" "ERA5" "ESG+H" "est-àdire" "et/ou" "eta/" "ethanolamine±Sepharose" "EU554535.1"
- "Eurostat-INE" "EV71" "exfoliative/crusting" "F.H." "F.O." "F3B" "F3TdR" "falcipain-2"
+ "Epstein-Barr" "ERA5" "ESG+H" "est-àdire" "et/ou" "eta/" "ethanolamine±Sepharose" "Eurostat-INE"
+ "EV71" "exfoliative/crusting" "F.H." "F.O." "F3B" "F3TdR" "falcipain-2"
  "FAM-AGAGCTCTGACGCGCGAGGAGTAAGC-TAMRA" "FBS/1%" "FBS/RPMI" "Fc-RIIIa" "FCHo1/2" "FCN-8s"
  "females--received" "Fernandez-Cassi" "Fernandez-Fewell" "ferrets/virus" "FFM-ic" "FFP2" "FFP2/3"
  "FFP3" "fibrosis/hepatic stellate cell" "Fig.6A" "fixσ" "FK11" "FK12" "flowers/nectar" "flu-like"
@@ -2375,3 +2375,4 @@
  "worm" "worrisome" "worse" "worthy" "wound" "wrap" "wreak" "wrist" "wrists" "write" "wrote"
  "xenophobia" "yam" "yob" "yogurt" "yuan" "zigzag" "zone")))
     :test #'equalp))
+t #'equalp))

@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-8201-8300 sample of unknown words
-;; created 5/17/20 11:17:33
+;; created 5/17/20 18:17:5
 
 (in-package :sparser)
 
@@ -1942,3 +1942,4 @@
  "workshops" "world" "worldwide" "worthwhile" "wound" "wounds" "wren" "wrinkle" "wrist" "write"
  "wrote" "yogurt" "yolk" "youth" "yuan" "zenith" "zipper" "zone" "zones" "zoo" "zoos")))
     :test #'equalp))
+

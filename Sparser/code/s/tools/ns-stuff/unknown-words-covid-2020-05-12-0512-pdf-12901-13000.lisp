@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-12901-13000 sample of unknown words
-;; created 5/17/20 13:15:3
+;; created 5/17/20 20:54:17
 
 (in-package :sparser)
 
@@ -772,7 +772,7 @@
  "Zuniga" "Zwick" "Kepner" "Kildeso" "Nielsen" "Rong")))
     :test #'equalp))
 
-;; 2234 defined as a bio-entity
+;; 2233 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-12901-13000
@@ -919,7 +919,7 @@
  "eIF2$GDP" "eIF2$GTP" "eIF2B." "eIF2Ddependent" "eIF4E-binding" "eIF4F." "eIF4Fand"
  "eIF4G-associated" "eIF4G." "eIF5B-dependent" "Eight-week-old" "El-Agamy" "elution/concentration"
  "EMC/2012" "emulsion/solvent" "energy/carbon" "EPM1" "ero1" "Estrada-Garcia" "et al./" "et/ou"
- "eta!" "EU-12" "EU/m" "EU/ml" "eukaryote-like" "Euryarchaeota-195" "evasion/modulation"
+ "eta!" "EU/m" "EU/ml" "eukaryote-like" "Euryarchaeota-195" "evasion/modulation"
  "excreted/secreted" "expectorants/" "exponential-like" "exposures/laboratoryacquired"
  "extraction/evaporation" "F-moc" "F.a" "F1-score" "f=l" "factor=2" "factor=3" "factor=RFI=1.9"
  "Fagundes-Neto" "FAM-BHQ" "family-3" "FAO/" "Faulkner-Valle" "FC2" "feed/day" "females/group"
@@ -2047,3 +2047,4 @@
  "workplace" "world" "worldwide" "worm" "worthwhile" "worthy" "wound" "wounds" "wright" "wrist"
  "write" "wrote" "yoghurt" "yolk" "youth" "zeal" "zebra" "zonal" "zone" "zoom")))
     :test #'equalp))
+ualp))

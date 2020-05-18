@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-14801-14900 sample of unknown words
-;; created 5/16/20 20:30:17
+;; created 5/18/20 0:19:21
 
 (in-package :sparser)
 
@@ -765,7 +765,7 @@
  "Zindl" "Zmudzinski" "Zuckermann" "Zumla" "Zygmunt" "dC")))
     :test #'equalp))
 
-;; 3442 defined as a bio-entity
+;; 3441 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-14801-14900
@@ -958,32 +958,31 @@
  "embracing/" "empowerment/financial" "EN-SMMUP00000027609" "encephalitis-like" "entry/fusion"
  "envE-pcDNA3.1" "epidemic-a-pandemic-alert-andresponse" "EpoNi/22.1" "Epstein-Bar" "Epstein-Barr"
  "Epworth-Billings" "EQ-5D" "ER-BZT" "Erazo-Oliveras" "eSolutions-Plus" "ESr=−0,06,"
- "esulliva@hsph" "et/ou" "Eta2=" "ethnic/racial" "Ethnic/racial" "ethyl/methyl" "EU827527.1"
- "EUR-OIMMUN" "Euro-Qol" "Euro-Reves" "EV71" "EvaGreen™" "Everything!" "EWL-KJ" "EX7" "EX8"
- "Excellent/Very" "excitation/emission" "Expectancy/Experience" "expectation/wish"
- "extracted/volume" "F.A." "F.G." "F.K." "F.W." "F12K" "F1G4B" "F1G4B." "F3x4" "F=" "F=0.48"
- "F=13.77" "F=2.13" "F=26.52" "F=27.6" "F=3.53" "F=3.9" "F=30.45" "F=34.708" "F=7.98" "F=8.05"
- "F=8.44" "F=−3.66" "FACIT-SWB" "factor1" "factor2" "factor3" "family/" "fCCR6" "FDA/CFSAN"
- "feelings/emotions" "female/male" "female=" "female=20" "female=29" "Female=5" "female=518"
- "FEV1 %" "FFAS03" "FFU/cell" "ffu/ml" "FI-00271" "Fifty-seven" "Fifty-six" "Fifty-two"
- "FilmArray™" "Final-year" "fixation/histology" "Fleta-Soriano" "FLU-H5" "flu-like" "Flu-like"
- "fluorescence-3-hybrid" "folding/" "following:1" "Forbes-Faulkner" "force/violence" "Form-36"
- "forma-lin" "Forty-eight" "Forty-five" "Forty-one" "Forty-three" "forward/backward" "Four-week"
- "fragment-like" "Frankfurt-1" "freezing/thawing" "Friedrich-Loeffler-Institut" "fruit /vegetable"
- "fruit/" "fruit/vegetable" "fruits/" "FSL-1" "FUGUE-2" "full-time" "fur-ther"
- "G-AACCATGGTGATGGTGGGG" "G-quadruplex" "G.A." "G.C." "G.D." "G.E." "G.F." "G.G." "G.J.R." "G.S."
- "G.T." "g/disk" "g/kg" "g/L" "g/ml" "g/mol" "g/week" "G1R" "G3L" "g:2.5µ" "Gaboriau-Routhiau"
- "gain/loss" "Garcia-Gimeno" "Garcia-Sanchez" "García-Montojo" "GC+" "GC-GFAP+" "GC-GFAP-"
- "GD410721" "GelRed™" "Gen-Vec" "Gen5" "gene 1a/1b" "gene 1ab" "generated/consumed" "geo-temporal"
- "GFAP+" "GFI=" "GFP+" "ggplot2" "GHQ-12" "GHQ12" "GHQ30" "Gibco-BRL" "Gibco-Invitrogen"
- "Gibco/Invitrogen" "gi|237651250|gb|" "GL-7" "Glaesmer@medizin" "glucuronyl-3-sulfate"
- "glyc-oproteins" "glyco-proteins" "González-Fandos" "gov/" "gov/genomes/flu/" "GP2subunit"
- "graphite/epoxy" "group-by-day" "GS5734" "GSTnsp15C300" "GTPγS" "Guillain-Barré" "GX_P1E"
- "Gxa23-902-530" "gyms/cafeterias" "H&E" "H+L" "H-2" "H-2003-014-089" "H.A.D." "H.C." "H.E.N."
- "H.F." "H.J." "H.R." "H.S.A." "H.S.M." "H.U." "H1N1v2009" "H2/O2" "H37Rv" "H3N2v" "H3N8" "H5N8"
- "H5N9" "H7N1" "H7N7" "H7N9" "H9N2" "hACE2" "hACE2positive" "Hans-Christian" "Har-ris" "HBA1C"
- "HbA1c" "HBA1C." "HbA1c=8.7%" "HBS-P" "HBV-like" "HCV+" "HD:over" "heat-labile" "heavy/regular"
- "HECoV-4408" "height2kg/m2" "Hek239T cells" "Hek293T cells" "Hernandez-Pozo"
+ "esulliva@hsph" "et/ou" "Eta2=" "ethnic/racial" "Ethnic/racial" "ethyl/methyl" "EUR-OIMMUN"
+ "Euro-Qol" "Euro-Reves" "EV71" "EvaGreen™" "Everything!" "EWL-KJ" "EX7" "EX8" "Excellent/Very"
+ "excitation/emission" "Expectancy/Experience" "expectation/wish" "extracted/volume" "F.A." "F.G."
+ "F.K." "F.W." "F12K" "F1G4B" "F1G4B." "F3x4" "F=" "F=0.48" "F=13.77" "F=2.13" "F=26.52" "F=27.6"
+ "F=3.53" "F=3.9" "F=30.45" "F=34.708" "F=7.98" "F=8.05" "F=8.44" "F=−3.66" "FACIT-SWB" "factor1"
+ "factor2" "factor3" "family/" "fCCR6" "FDA/CFSAN" "feelings/emotions" "female/male" "female="
+ "female=20" "female=29" "Female=5" "female=518" "FEV1 %" "FFAS03" "FFU/cell" "ffu/ml" "FI-00271"
+ "Fifty-seven" "Fifty-six" "Fifty-two" "FilmArray™" "Final-year" "fixation/histology"
+ "Fleta-Soriano" "FLU-H5" "flu-like" "Flu-like" "fluorescence-3-hybrid" "folding/" "following:1"
+ "Forbes-Faulkner" "force/violence" "Form-36" "forma-lin" "Forty-eight" "Forty-five" "Forty-one"
+ "Forty-three" "forward/backward" "Four-week" "fragment-like" "Frankfurt-1" "freezing/thawing"
+ "Friedrich-Loeffler-Institut" "fruit /vegetable" "fruit/" "fruit/vegetable" "fruits/" "FSL-1"
+ "FUGUE-2" "full-time" "fur-ther" "G-AACCATGGTGATGGTGGGG" "G-quadruplex" "G.A." "G.C." "G.D."
+ "G.E." "G.F." "G.G." "G.J.R." "G.S." "G.T." "g/disk" "g/kg" "g/L" "g/ml" "g/mol" "g/week" "G1R"
+ "G3L" "g:2.5µ" "Gaboriau-Routhiau" "gain/loss" "Garcia-Gimeno" "Garcia-Sanchez" "García-Montojo"
+ "GC+" "GC-GFAP+" "GC-GFAP-" "GD410721" "GelRed™" "Gen-Vec" "Gen5" "gene 1a/1b" "gene 1ab"
+ "generated/consumed" "geo-temporal" "GFAP+" "GFI=" "GFP+" "ggplot2" "GHQ-12" "GHQ12" "GHQ30"
+ "Gibco-BRL" "Gibco-Invitrogen" "Gibco/Invitrogen" "gi|237651250|gb|" "GL-7" "Glaesmer@medizin"
+ "glucuronyl-3-sulfate" "glyc-oproteins" "glyco-proteins" "González-Fandos" "gov/"
+ "gov/genomes/flu/" "GP2subunit" "graphite/epoxy" "group-by-day" "GS5734" "GSTnsp15C300" "GTPγS"
+ "Guillain-Barré" "GX_P1E" "Gxa23-902-530" "gyms/cafeterias" "H&E" "H+L" "H-2" "H-2003-014-089"
+ "H.A.D." "H.C." "H.E.N." "H.F." "H.J." "H.R." "H.S.A." "H.S.M." "H.U." "H1N1v2009" "H2/O2" "H37Rv"
+ "H3N2v" "H3N8" "H5N8" "H5N9" "H7N1" "H7N7" "H7N9" "H9N2" "hACE2" "hACE2positive" "Hans-Christian"
+ "Har-ris" "HBA1C" "HbA1c" "HBA1C." "HbA1c=8.7%" "HBS-P" "HBV-like" "HCV+" "HD:over" "heat-labile"
+ "heavy/regular" "HECoV-4408" "height2kg/m2" "Hek239T cells" "Hek293T cells" "Hernandez-Pozo"
  "herpes simplex virus-1" "herpes simplex virus-2" "Hewicker-Trautwein" "hhi1" "HHV-6"
  "high-micromolar" "HIS/target" "Hispanic=38%" "HIV/" "HIV/AIDS" "HIV/STI" "HKU1-1ab" "HKx31"
  "HKY+Γ" "HL-60" "HlN7" "HM-175" "Holstein-Friesian" "HOMA-IR" "HOmISG15" "homo-oligomers"
@@ -2493,3 +2492,4 @@
  "wright" "write" "writer" "writers" "writings" "wrote" "wrought" "yahoo" "yam" "yoga" "youth"
  "yuan" "zenith" "zonal" "zone" "zones" "zoo")))
     :test #'equalp))
+est #'equalp))
