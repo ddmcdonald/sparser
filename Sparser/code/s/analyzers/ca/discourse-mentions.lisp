@@ -710,8 +710,25 @@
     old-dependencies))
 
 
+(defvar *contextually-supplied-edge* nil
+  "Bound in the with-contextually-supplied-edge macro for use
+   in find-binding-depencency.")
+
+(defmacro with-contextually-supplied-edge (edge &body body)
+  "There are constructions where the structure of the interpretation is
+ compositional, but the syntax of the construction is not. When we need to
+ use the value of an edge (e.g. to bind a variable on a head), but that edge
+ is not syntactically related to the head because it was 'moved', then
+ we use this variable to provide the edge."
+  `(let ((*contextually-supplied-edge* ,edge))
+     (declare (special *contextually-supplied-edge*))
+     ,@body))
+  
+
+
 (defun find-binding-dependency (value edges top-edge &optional b &aux (top-ref (edge-referent top-edge)))
-  (declare (special top-edge category::prepositional-phrase category::protein-family))
+  (declare (special top-edge category::prepositional-phrase category::protein-family
+                    *contextually-supplied-edge*))
   (cond ((and b (eq (pname (binding-variable b)) 'items))
          (find-binding-dependencies-for-items value edges top-edge))
         ((and b (eq (pname (binding-variable b)) 'has-determiner))
@@ -741,6 +758,11 @@
         (t
          ;;new code
          (or
+          
+          (when (and *contextually-supplied-edge*
+                     (eq value (edge-referent *contextually-supplied-edge*)))
+            ;;(break "we got here")
+            *contextually-supplied-edge*)
           
           ;; last-ditch effort caused by change in interpretation of
           ;;  a previously ambiguous variable, which causes the
