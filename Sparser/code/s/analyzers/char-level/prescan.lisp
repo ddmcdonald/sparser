@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2019-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "prescan"
 ;;;   Module:  "analyzers;char-level:"   ("character level processing")
-;;;  Version:   November 2019
+;;;  Version:   May 2020
 
 ;; Initiated 4/16/19 -- Before doing any analysis, sweep through the input
 ;; text at the character level to normalize newlines (paragraphs), convert
@@ -40,7 +40,8 @@ scan-name-position -> add-terminal-to-chart
   -> next-terminal (parameterized on *definition-of-next-terminal*)
      -> next-terminal/pass-through-all-tokens
         -> next-token
-           -> run-token-fsa ;; pulls from *character-buffer-in-use*
+           -> run-token-fsa 
+                (elt *character-buffer-in-use* (incf *index-of-next-character*))))
 |#
 
 ;;--- flags
@@ -187,8 +188,15 @@ scan-name-position -> add-terminal-to-chart
 
 
 (defun swap-in-sink-buffer (sink)
+  "Called as the exit operation in the until loop that scans
+   the characters. Makes the sink the official character
+   buffer and initializes the key state variables.
+   Note that the index of the next character is -1 because
+   scan-next-position increments this variable before it accesses
+   a character (see run-token-fsa) and the first call to it is
+   supposed to pull the ~A into the chart as the start marker."
   (setq *character-buffer-in-use* sink)
-  (setq *index-of-next-character* 0) ;; the ^A is already there
+  (setq *index-of-next-character* -1)
   (setq *length-accumulated-from-prior-buffers* 0))
 
 
