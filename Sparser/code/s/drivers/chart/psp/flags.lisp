@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995,2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "flags"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  August 2016
+;;;  Version:  May 2020
 
 ;; initiated 4/21/91, tweeked 4/26, added to 5/1, 7/11
 ;; 12/15/92 v2.3  Added in some flags from all-edges
@@ -184,13 +184,16 @@
 (defvar *pending-open-square-bracket* nil) ;; ditto
 
 (defun clear-traversal-state ()
+  "Run by sentence-level-initializations which itself is run by
+   scan-terminals-loop before it starts scanning."
   (setq *pending-conjunction* nil
         *position-of-pending-open-paren* nil
         *pending-open-angle-bracket* nil
         *pending-open-curly-bracket* nil
-        *pending-open-square-bracket* nil)
+        *pending-open-square-bracket* nil)        
   (rplaca *pending-double-quote* nil)
-  (rplacd *pending-double-quote* nil))
+  (rplacd *pending-double-quote* nil)
+  (setq *quantifier-in-vg* nil))
 
 
 

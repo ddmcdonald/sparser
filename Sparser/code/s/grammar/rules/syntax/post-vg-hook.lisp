@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "post-vg-hook"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  January 2019
+;;;  Version:  May 2020
 
 ;; Initiated 8/9/16
 
@@ -26,7 +26,8 @@
     (record-verb-tense vg-edge)
     (generalize-vg-segment-edge vg-edge)
     ;;(update-edge-mention-referent vg-edge (edge-referent vg-edge))
-    ))
+    (when *quantifier-in-vg*
+      (float-quantifier vg-edge))))
 
 
 ;;;---------------------------

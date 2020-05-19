@@ -78,8 +78,11 @@
   :binds ((quantifier quantifier))
   :documentation "Used in bio;taxonomy, as a mixin to biological")
 
+(defvar *floatable-quantifier* nil
+  "Accumulates quantifiers marked as being able to do quantifier-float")
 
-(defun define-quantifier (string &key brackets )
+
+(defun define-quantifier (string &key brackets floats)
   (unless brackets
     (setq brackets '( ].quantifier  .[np )))
   (let* ((word (or (resolve string) ;; e.g. "no" is an acknowledgement
@@ -108,6 +111,9 @@
                :referent object)))
         (push cfr cfrs))
 
+      (when floats
+        (pushnew object *floatable-quantifier*))
+
       ;; Not clear we need anything bigger
       (make-corresponding-mumble-resource word :quantifier object)
 
@@ -118,11 +124,11 @@
 ;; n.b. there are also the scalar quantifiers below
 
 (define-quantifier "additional")
-(define-quantifier "all")
+(define-quantifier "all" :floats t)
 (define-quantifier "any")
 (define-quantifier "another")
-(define-quantifier "both")
-(define-quantifier "each")
+(define-quantifier "both" :floats t)
+(define-quantifier "each" :floats t)
 (define-quantifier "either")
 (define-quantifier "enough")
 (define-quantifier "every")
