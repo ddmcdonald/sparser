@@ -2104,13 +2104,17 @@ assumed. |#
   (let ((subject (edge-left-daughter s-edge))
         (predicate (edge-right-daughter s-edge))
         (end-pos (fix-da-ending-pos *da-ending-position*)))
-    (when (wh-edge? subject)
-      ;; get rid of unneeded edge that complicates chart
-      (remove-and-unhook-edge-from-chart s-edge (list subject predicate))
-      (wh-stranded-prep subject ;; wh-edge
-                        predicate ;; main-edge
-                        prep-edge
-                        *da-starting-position* end-pos))))
+    (unless (eq predicate :long-span)
+      ;; encountered in "From the perspective of the practicing immunologist,
+      ;; what does systems biology in all its guises have to offer?" where the
+      ;; s-edge spanned "what does systems biology"
+      (when (wh-edge? subject)
+        ;; get rid of unneeded edge that complicates chart
+        (remove-and-unhook-edge-from-chart s-edge (list subject predicate))
+        (wh-stranded-prep subject ;; wh-edge
+                          predicate ;; main-edge
+                          prep-edge
+                          *da-starting-position* end-pos)))))
 
 
 ;;--- there questions
