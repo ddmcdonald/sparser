@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "pts"  --  "parse the segment"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  January 2020
+;;;  Version:  May 2020
 
 ;; initiated 4/22/91, extended 4/23, tweeked 4/24,26
 ;; 5/6, "march/seg" saves version that doesn't check for an extensible
@@ -111,10 +111,12 @@
          (segment-finished :null-span))
 
         (:one-edge-over-entire-segment
-         ;;(when *chunk-sentence-into-phrases*
          (ensure-edge-consistent-with-chunk)
-         ;;)
          (when (equal (chunk-forms *current-chunk*) '(ng))
+           ;; We peek ahead here to for the possibility that this ng is followed
+           ;; by a number. Handles issue in conjoining "Figure 2 and Table 3"
+           ;; Without this we would combind "Figure 1" with "Table" and only then
+           ;; add the "3"
            (let ((edge-after-chunk (right-treetop-at/only-edges (chunk-end-pos *current-chunk*))))
              (when (and (edge-p edge-after-chunk)
                         (eq (edge-cat-name edge-after-chunk) 'number))
