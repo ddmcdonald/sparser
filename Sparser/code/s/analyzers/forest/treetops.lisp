@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1996,2014-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2014-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "treetops"
 ;;;    Module:   "analyzers;forest:"
-;;;   Version:   November 2018
+;;;   Version:   May 2020
 
 ;; 1.1  (2/8/91 v1.8.1) added Final-tt/category
 ;; 1.2  (2/13 v1.8.1) Modified ...-treetop-at to both return words if there
@@ -99,7 +99,7 @@
             (t (pos-terminal position))))))
 
 (defun right-treetop-edge-at (position)
-  "Identical to right-treetop-at/edge"
+  "Identical to right-treetop-at/edge" ;; replace with /edge version !!
   (let* ((vector (pos-starts-here position))
          (top-node (ev-top-node vector)))
     (cond
@@ -109,6 +109,13 @@
        top-node))
      (t
       (pos-terminal position)))))
+#|
+analyzers/forest/treetops.lisp:(defun right-treetop-edge-at (position)
+drivers/forest/edge-search.lisp:  (let* ((tt (right-treetop-edge-at starting-position))
+init/workspaces/rusty-workspace.lisp:    right-treetop-at/only-edges right-treetop-edge-at
+drivers/chart/psp/multi-scan.lisp:     (setq left-edge (right-treetop-edge-at start))
+drivers/chart/psp/multi-scan.lisp:     (setq right-edge (when (edge-p left-edge) (right-treetop-edge-at mid-pos)))
+|#
 
 
 ;;//// these two are redundant 
@@ -141,17 +148,17 @@
             (top-node top-node)
             (t nil)))))
 
-(defmethod left-treetop-at/only-edges ((e edge))
-  (left-treetop-at/only-edges (pos-edge-starts-at e)))
-
-(defmethod left-treetop-at/only-edges ((p position))
-  (let* ((ev (pos-ends-here p))
-         (top-node (ev-top-node ev)))
-    (cond ((eq top-node :multiple-initial-edges)
-           (elt (ev-edge-vector ev)
-                (1- (ev-number-of-edges ev))))
-          (top-node top-node)
-          (t nil))))
+(defgeneric left-treetop-at/only-edges (position)
+  (:method ((e edge))
+    (left-treetop-at/only-edges (pos-edge-starts-at e)))
+  (:method ((p position))
+    (let* ((ev (pos-ends-here p))
+           (top-node (ev-top-node ev)))
+      (cond ((eq top-node :multiple-initial-edges)
+             (elt (ev-edge-vector ev)
+                  (1- (ev-number-of-edges ev))))
+            (top-node top-node)
+            (t nil)))))
 
 
 
@@ -184,27 +191,25 @@
     (next-treetop/rightward (pos-edge-ends-at e))))
 
 
-(defmethod next-treetop/leftward ((e edge))
-  (next-treetop/leftward (pos-edge-starts-at e)))
-
-(defmethod next-treetop/leftward ((p position))
+(defgeneric next-treetop/leftward (position)
   ;; analogous routine for a leftward walk
-  (let* ((vector (pos-ends-here p))
-         (topnode-field (ev-top-node vector))
-         (next-position (chart-position-before p)))
-
-    (cond ((eq topnode-field :multiple-initial-edges)
-           ;; presumes only terminals could have multiple edges
-           (values vector
-                   next-position
-                   t))
-
-          (topnode-field   ;; it's an edge 
-           (values topnode-field
-                   (pos-edge-starts-at topnode-field)))
-          (t
-           (values (pos-terminal next-position)
-                   next-position)))))
+  (:method ((p position))
+    (let* ((vector (pos-ends-here p))
+           (topnode-field (ev-top-node vector))
+           (next-position (chart-position-before p)))
+      (cond ((eq topnode-field :multiple-initial-edges)
+             ;; presumes only terminals could have multiple edges
+             (values vector
+                     next-position
+                     t))
+            (topnode-field   ;; it's an edge 
+             (values topnode-field
+                     (pos-edge-starts-at topnode-field)))
+            (t
+             (values (pos-terminal next-position)
+                     next-position)))))
+  (:method ((e edge))
+    (next-treetop/leftward (pos-edge-starts-at e))))
 
 
 ;;;---- and another that only reacts to edges
