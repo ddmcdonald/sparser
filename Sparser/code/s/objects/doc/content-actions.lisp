@@ -255,6 +255,21 @@ and make that file easier to understand. |#
 
 ;;--- TOC string decoding
 
+;; from ddm-util
+;;; copied from Denys, and modified...
+(defun break-string-at (string break-char)
+  (loop
+    for start0 = 0 then end
+    and end = 0
+    while (setq start0 (position-if-not
+		       #'(lambda (char) (char= char break-char))
+		       string :start start0))
+    do    (setq end (position-if
+		     #'(lambda (char) (char= char break-char))
+		     string :start start0))
+    collecting (subseq string start0 end)
+        while end))
+
 (defun explode-table-of-contents-string (toc-string) ; "0403-rxiv-40.2.p2"
   " <handle> . <section> . <paragraph> . <sentence> "
   (let* ((substrings (break-string-at toc-string #\.))
@@ -409,7 +424,10 @@ and make that file easier to understand. |#
            (offsets (mention-offsets m)))
       (if (or (null paragraph) (string-equal "" text))
         (format nil "no content in ~a" paragraph)            
-        (subseq text (1- (car offsets)) (1- (cdr offsets)))))))
+        (subseq text (if (zerop (car offsets))
+                         (car offsets)
+                         (1- (car offsets)))
+                (1- (cdr offsets)))))))
 
 (defgeneric para-for-mention (mention)
   (:method ((n number))
