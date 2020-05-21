@@ -1455,7 +1455,6 @@
 (def-indiv-with-id molecule "iloperidone" "PUBCHEM:71360") 
 (def-indiv-with-id molecule "idazoxan" "PUBCHEM:54459") 
 (def-indiv-with-id molecule "icatibant" "PUBCHEM:70678898") 
-(def-indiv-with-id molecule "ibuprofen" "PUBCHEM:3672") 
 (def-indiv-with-id molecule "hypericin" "PUBCHEM:5281051") 
 (def-indiv-with-id cellular-process "homeostatic process" "GO:0042592") 
 (def-indiv-with-id molecule "hexanol" "PUBCHEM:8103") 

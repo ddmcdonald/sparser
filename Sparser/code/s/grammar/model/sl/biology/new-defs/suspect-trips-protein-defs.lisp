@@ -6,7 +6,7 @@
 (define-protein "UP:Q9S795" ("BADH" "Betaine aldehyde dehydrogenase 1, chloroplastic")) 
 (define-protein "HGNC:1020" ("BCS" "BCS1 homolog, ubiquinol-cytochrome c reductase complex chaperone")) 
 (define-protein "NCIT:C97584" ("BDE" "HOXD13")) 
-(define-protein "NCIT:C104890" ("BPA" "DST")) 
+;(define-protein "NCIT:C104890" ("BPA" "DST")) 
 (define-protein "UP:P86970" ("BPL" "C-type lectin BpLec")) 
 (define-protein "NCIT:C126547" ("BSS" "GP1BA")) 
 (define-protein "UP:P41365" ("CALB" "Lipase B")) 

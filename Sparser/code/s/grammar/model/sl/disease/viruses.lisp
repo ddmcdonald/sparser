@@ -67,7 +67,7 @@
                    :synonyms ("SARS Coronavirus" "SARS virus" "HCoV-SARS" "SARSCoV" "SARS-CoV-1"
                                                  "Severe Acute Respiratory Syndrome Coronavirus"
                                                  "severe acute respiratory syndrome (SARS) virus" "hSARS"
-                                                 "SARScoronavirus" "SARS1"))
+                                                 "SARScoronavirus"))
 (def-indiv-with-id disease "SARS" "NCIT:C85064" :name "Severe Acute Respiratory Syndrome"
                    :synonyms ("severe acute respiratory syndrome"))
 

@@ -1144,6 +1144,7 @@
 (def-family-with-id "oncoprotein" "NCIT:C16934" :name "oncoprotein" :members ("UP:P16949")) ; many more
 (def-family-with-id "V-SRC" "NCIT:C19106" :name "V-SRC" :synonyms ("v-Src" "vSrc" "vsrc") :members ("UP:P15054" "UP:P00524"))
 (def-family-with-id "glycosidase" "GO:0016798" :name "glycosylase") ;many members
+(def-family-with-id "glycosyltransferase" "NCIT:C17434") 
 
 (def-family-with-id "ABC" "XFAM:PF00005" :name "ABC transporters") ;many members
 (def-family-with-id "bron" "XFAM:PF02498.15" :name "bro-N") 
@@ -1683,3 +1684,4 @@
 (def-family-with-id "Gprotein" "FPLX:G_protein" :name "G-protein") 
 (def-family-with-id "lnterferon" "FPLX:Interferon" :name "Interferon") 
 (def-family-with-id "eiF4E" "FPLX:EIF4E" :members ("UP:P06730")) 
+(def-family-with-id "immunoprotein" "NCIT:C16725") 

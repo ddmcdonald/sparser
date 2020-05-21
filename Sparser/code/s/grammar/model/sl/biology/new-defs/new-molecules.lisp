@@ -1571,7 +1571,7 @@
 (def-indiv-with-id molecule "NH3" "CHEBI:16134" :name "ammonia") 
 (def-indiv-with-id molecule "NaOH" "CHEBI:32145" :name "sodium hydroxide" :maintain-case t) 
 (def-indiv-with-id molecule "PUFA" "CHEBI:76567" :name "polyunsaturated fatty acid anion") 
-(def-indiv-with-id molecule "TPA" "CHEBI:37537" :name "12-O-Tetradecanoylphorbol-13-acetate")
+(def-indiv-with-id molecule "TPA" "CHEBI:37537" :name "12-O-Tetradecanoylphorbol-13-acetate" :synonyms ("Tetradecanoylphorbol Acetate" "tetradecanoylphorbol acetate" "tetradecanoyl phorbol acetate" "phorbol 12-myristate 13-acetate"))
 (def-indiv-with-id molecule "TPE" "CHEBI:30360" :name "tert-pentyl group") 
 (def-indiv-with-id molecule "UDP-glucose" "CHEBI:18066" :name "UDP-D-glucose") 
 (def-indiv-with-id molecule "amyloid-β" "CHEBI:64645" :name "beta-amyloid") 
@@ -1598,7 +1598,7 @@
 (def-indiv-with-id molecule "triterpenoid" "CHEBI:36615" :name "triterpenoid") 
 (def-indiv-with-id molecule "Polynucleotide" "CHEBI:15986" :name "polynucleotide") 
 (def-indiv-with-id molecule "PA" "CHEBI:16337" :name "phosphatidic acid" :maintain-case t) 
-(def-indiv-with-id molecule "VPA" "CHEBI:39867" :name "valproic acid") 
+(def-indiv-with-id molecule "VPA" "CHEBI:39867" :name "valproic acid" :synonyms ("Valproic Acid")) 
 (def-indiv-with-id molecule "Nonidet P-40" "CHEBI:78708" :name "Nonidet P-40") ;a lysis buffer
 (def-indiv-with-id molecule "DHT" "CHEBI:16330" :name "dihydrotestosterone") 
 (def-indiv-with-id molecule "Fura-2/AM" "PUBCHEM:3364574" :name "Fura-2-AM" :synonyms ("Fura-2-acetoxymethyl ester") :maintain-case t) 
@@ -1624,7 +1624,7 @@
 (def-indiv-with-id molecule "OA" "CHEBI:37659" :name "oleanolic acid") ;; OA definition intentionally overloaded to match HMS
 ;(def-indiv-with-id molecule "oleanolic acid" "PUBCHEM:10494") 
 (def-indiv-with-id molecule "creatine" "CHEBI:16919")
-(def-indiv-with-id molecule "PP2" "CHEBI:78331" :name "pyrazolopyrimidine 2") ;; note: this is an intentionally overloaded definition for PP2 to match HMS
+(def-indiv-with-id molecule "PP2" "CHEBI:78331" :name "pyrazolopyrimidine 2" :synonyms ("AG 1879")) ;; note: this is an intentionally overloaded definition for PP2 to match HMS
 (def-indiv-with-id molecule "ROS" "MESH:D017382" :name "Reactive Oxygen Species") ;; note: this is an intentionally overloaded definition for ROS to match HMS
 (def-indiv-with-id molecule "STZ" "PUBCHEM:29327" :name "streptozocin") ;; note: this is an intentionally overloaded definition for STZ to match HMS
 (def-indiv-with-id molecule "SPC" "CHEBI:17689" :name "sphingosine-1-phosphocholine") ;; SPC overloaded with protein def
@@ -2873,3 +2873,10 @@
 (def-indiv-with-id molecule "dichlormethane" "CHEBI:15767" :name "dichloromethane") 
 (def-indiv-with-id molecule "sulphone" "CHEBI:35850" :name "sulfone") 
 (def-indiv-with-id molecule "sulphonamide" "CHEBI:35358" :name "sulfonamide") 
+(def-indiv-with-id polysaccharide "zymosan" "MESH:D015054")
+(def-indiv-with-id molecule "tris(2-butoxyethyl)-phosphate" "PUBCHEM:6540" :name "tris(2-butoxyethyl) phosphate")
+(def-indiv-with-id molecule "bisphenol A" "CHEBI:33216" :name "bisphenol A" :synonyms ("BPA"))
+(def-indiv-with-id molecule "potassium dichromate" "PUBCHEM:24502" :name "Potassium Dichromate")
+(def-indiv-with-id molecule "sodium arsenate" "CHEBI:84070")
+(def-indiv-with-id molecule "Trinitrobenzenesulfonic Acid" "CHEBI:53063" :name "2,4,6-Trinitrobenzenesulfonic acid")
+(def-indiv-with-id molecule "benzo(k)fluoranthene" "PUBCHEM:9158")
