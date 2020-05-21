@@ -48,7 +48,7 @@
 (def-synonym nucleus (:noun "nucleus" :adj "nuclear")) 
 (def-synonym ordinal (:adj "ordinal")) 
 (def-synonym orientation (:noun "orientation")) 
-(def-synonym paragraph (:noun "paragraph")) 
+;;(def-synonym paragraph (:noun "paragraph")) NOW EXPLICITLY DEFINED
 (def-synonym pathogen (:noun "pathogen")) 
 (def-synonym percent (:noun "percent")) 
 (def-synonym person (:noun "person"))
