@@ -1,0 +1,16 @@
+(in-package :sparser)
+
+
+(def-indiv-with-id cell-line "ADEI" "CVCL:1N40" :name "CHO Ade-I" :no-plural t) 
+(def-indiv-with-id cell-line "HTE" "CVCL:2292" :name "833K-E" :no-plural t) 
+(def-indiv-with-id cell-line "LRD" "CVCL:5T96" :name "LRD" :no-plural t) 
+(def-indiv-with-id cell-line "deze" "CVCL:VU92" :name "BB90-MEL" :no-plural t) 
+(def-indiv-with-id cell-line "lek" "CVCL:F742" :name "LEK" :no-plural t) 
+(def-indiv-with-id cell-line "poco" "CVCL:WH54" :name "POCO" :no-plural t) 
+(def-indiv-with-id cell-line "Ehrlich" "CVCL:3873" :name "Ehrlich-Lettre ascites strain E" :no-plural t) 
+(def-indiv-with-id cell-line "Jon" "CVCL:M891" :name "JON" :no-plural t) 
+(def-indiv-with-id cell-line "Melle" "CVCL:C501" :name "Mel-LE" :no-plural t) 
+(def-indiv-with-id cell-type "Tlymphocytes" "BTO:0000782" :name "T-lymphocyte") 
+(def-indiv-with-id cell-line "cTLI" "CVCL:VN79" :name "HPB-CTL-I" :no-plural t) 
+(def-indiv-with-id cell-line "hNOS" "CVCL:M838" :name "HNOS" :no-plural t) 
+(def-indiv-with-id cell-line "kkP" "CVCL:WH05" :name "KKP" :no-plural t) 

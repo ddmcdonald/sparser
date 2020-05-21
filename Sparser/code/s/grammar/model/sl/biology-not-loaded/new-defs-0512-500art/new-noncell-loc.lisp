@@ -1,0 +1,15 @@
+(in-package :sparser)
+
+
+(def-indiv-with-id organism "JASMINE" "NCIT:C73955" :name "jasminum officinale") 
+(def-indiv-with-id organism "coonhound" "NCIT:C53921" :name "black and tan coonhound") 
+(def-indiv-with-id organism "papillon" "NCIT:C53939" :name "papillon") 
+(def-indiv-with-id bio-organ "sporozoa" "BTO:0000749" :name "sporozoan form") 
+(def-indiv-with-id bio-organ "Cysticercus" "BTO:0003168" :name "cysticercus") 
+(def-indiv-with-id organism "Dactylaria" "NCIT:C86061" :name "dactylaria") 
+(def-indiv-with-id organism "Geotrichum" "NCIT:C122315" :name "geotrichum") 
+(def-indiv-with-id organism "Landracecross" "NCIT:C77105" :name "landrace pig") 
+(def-indiv-with-id organism "Phialophora" "NCIT:C123543" :name "phialophora") 
+(def-indiv-with-id organism "Pleistophora" "NCIT:C124357" :name "pleistophora") 
+(def-indiv-with-id organism "Syncephalastrum" "NCIT:C125959" :name "syncephalastrum") 
+(def-indiv-with-id organism "Zygomycetes" "NCIT:C77194" :name "zygomycota") 
