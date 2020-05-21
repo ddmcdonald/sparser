@@ -86,31 +86,27 @@
                (or (symbolp corpus)
                    (stringp corpus)))
     (return-from make-article-from-handle nil))
+  (make-json-article-from-file-handle (corpus-file-handle corpus n))
+  )
 
-  (let* ((file-handle (corpus-file-handle corpus n))
-         (file-namestring (decoded-file file-handle)))
-    (unless file-namestring
+(defun make-json-article-from-file-handle (file-handle)
+  (let (file-namestring filepath sexp)
+    (unless (setq file-namestring (decoded-file file-handle))
       (warn "No registered json path found for file handle ~a.~
           ~%Run collect-json-directory to register a directory's files."
             file-handle)
-      (return-from make-article-from-handle nil))
+      (return-from make-json-article-from-file-handle nil))
 
-    (let ((rel-name (json-relative-pathname file-namestring))
-          (filepath (probe-file file-namestring)))
-      (unless filepath
-        (error "probe-file returned nil for file path ~s" file-namestring))
-      (when verbose
-        (format t "~&~% Processing file: ~s ~s~%" file-handle rel-name))
+    (unless (setq filepath (probe-file file-namestring))
+      (error "probe-file returned nil for file path ~s" file-namestring))
+    (unless (setq sexp (cl-json:decode-json-from-source filepath))
+      (warn "The json file looks empty.")
+      (return-from make-json-article-from-file-handle nil))
 
-      (let ((sexp (cl-json:decode-json-from-source filepath)))
-        (unless sexp
-          (warn "The json file looks empty.")
-          (return-from make-article-from-handle nil))
-
-        (let ((article (make-document sexp filepath :handle file-handle)))
-          (save-article file-handle article)
-          (values article
-                  sexp))))))
+    (let ((article (make-document sexp file-namestring :handle file-handle)))
+      (save-article file-handle article)
+      (values article
+              sexp))))
 
 
 ;;;--------------------
