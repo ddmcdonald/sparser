@@ -294,42 +294,46 @@
   (read-paragraph-guts p))
 
 (defun read-paragraph-guts (p)
-  (let ((*reading-populated-document* t)
-        (*recognize-sections-within-articles* nil) ;; turn of doc init
-        (*accumulate-content-across-documents* t) ;; don't clear history
-        (*current-document-element* p)
-        (*current-paragraph* p)) ;; read by sentence-maker
-    (declare (special *reading-populated-document*
-                      *recognize-sections-within-articles*
-                      *accumulate-content-across-documents*
-                      *current-document-element*
-                      *current-paragraph*))
-    (setf (contents p) (install-contents p))
-    (when (actually-reading)
-      (setf (starts-at-pos p) (chart-position 1)
-            (starts-at-char p) 1))
+  (handler-case
+      (let ((*reading-populated-document* t)
+            (*recognize-sections-within-articles* nil) ;; turn of doc init
+            (*accumulate-content-across-documents* t) ;; don't clear history
+            (*current-document-element* p)
+            (*current-paragraph* p)) ;; read by sentence-maker
+        (declare (special *reading-populated-document*
+                          *recognize-sections-within-articles*
+                          *accumulate-content-across-documents*
+                          *current-document-element*
+                          *current-paragraph*))
+        (setf (contents p) (install-contents p))
+        (when (actually-reading)
+          (setf (starts-at-pos p) (chart-position 1)
+                (starts-at-char p) 1))
     
-    (let* ((text (content-string p)))
-      (initialize-sentences) ;; set up or reuse the 1st sentence
-      (paragraph-trace-hook p)
+        (let* ((text (content-string p)))
+          (initialize-sentences) ;; set up or reuse the 1st sentence
+          (paragraph-trace-hook p)
       
-      ;; lifted from analyze-text-from-string 
-      (setq text (cl-ppcre:regex-replace-all " q q" text ""))
-      (establish-character-source/string text)
+          ;; lifted from analyze-text-from-string 
+          (setq text (cl-ppcre:regex-replace-all " q q" text ""))
+          (establish-character-source/string text)
 
-      ;; Needs to be debuged -- DAVID TAKE A LOOK
-      ;; look at what happens in
-      ;;  (run-nth-json-article 17 :skip-errors nil)
-      (when *prescan-character-input-buffer*
-        (scan-and-swap-character-buffer))
-      (analysis-core)
+          ;; Needs to be debuged -- DAVID TAKE A LOOK
+          ;; look at what happens in
+          ;;  (run-nth-json-article 17 :skip-errors nil)
+          (when *prescan-character-input-buffer*
+            (scan-and-swap-character-buffer))
+          (analysis-core)
 
-      (when (actually-reading)
-        (setf (ends-at-pos p)
-              (chart-position-before (next-chart-position-to-fill)))
-        (setf (ends-at-char p) (pos-character-index (ends-at-pos p))))
+          (when (actually-reading)
+            (setf (ends-at-pos p)
+                  (chart-position-before (next-chart-position-to-fill)))
+            (setf (ends-at-char p) (pos-character-index (ends-at-pos p))))
 
-      p)))
+          p))
+    (error (e)
+      (format t "~%&&&& ERROR ~s~% IN READING PARAGRAPH ~s~%"
+              e p))))
 
 
 (defvar *reading-section-title* nil
