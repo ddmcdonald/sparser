@@ -311,8 +311,11 @@
   "If this has a value then the words string for every newly created
    bio-entity will be pushed onto this list")
 
+(defparameter *bio-entity-count-ht* nil)
+
 (defun collect-bio-entity-strings ()
-  (setq *bio-entity-strings* (list *bio-entity-initial-string*)))
+  (setq *bio-entity-strings* (list *bio-entity-initial-string*))
+  (setq *bio-entity-count-ht* (make-hash-table :size 1000 :test #'equal)))
 
 (defun reify-ns-name-as-bio-entity (pos-before pos-after)
   "Called from reify-ns-name-and-make-edge when *big-mechanism*
@@ -358,28 +361,31 @@
        ;; Did we define it as a bio-entity on a previous pass?
        (let* ((w (resolve words-string))
 	      (bio-entity (find-individual 'bio-entity :name w)))
+         (when (and (hash-table-p *bio-entity-count-ht*)
+                    (gethash words-string *bio-entity-count-ht*))
+           (incf (gethash words-string *bio-entity-count-ht*)))
 	 (if bio-entity
-           (values category::bio-entity
-                   'reify-ns-name-as-bio-entity
-                   bio-entity)
-           (let* ((rs (rule-set-for w))
-                  (rule (and rs (car (rs-single-term-rewrites rs)))))
-             (cond
-               (rule
-                (values (cfr-category rule)
-                        rule
-                        (etypecase (cfr-referent rule)
-                          (individual (cfr-referent rule))
-                          (cons 
-                           ;;(lsp-break "bad referent ~s for bio-entity" (cfr-referent rule))
-                           (evaluate-unary-ref-actions (cfr-referent rule))))))
-               ((punctuation? w) ;; e.g. asterix
-                (throw :punt-on-nospace-without-resolution
-                  :single-character-punctuation))
-               (t 
-                (values category::bio-entity
-                        'reify-ns-name-as-bio-entity
-                        (find-or-make-individual 'bio-entity :name w))))))))
+             (values category::bio-entity
+                     'reify-ns-name-as-bio-entity
+                     bio-entity)
+             (let* ((rs (rule-set-for w))
+                    (rule (and rs (car (rs-single-term-rewrites rs)))))
+               (cond
+                 (rule
+                  (values (cfr-category rule)
+                          rule
+                          (etypecase (cfr-referent rule)
+                            (individual (cfr-referent rule))
+                            (cons 
+                             ;;(lsp-break "bad referent ~s for bio-entity" (cfr-referent rule))
+                             (evaluate-unary-ref-actions (cfr-referent rule))))))
+                 ((punctuation? w) ;; e.g. asterix
+                  (throw :punt-on-nospace-without-resolution
+                    :single-character-punctuation))
+                 (t 
+                  (values category::bio-entity
+                          'reify-ns-name-as-bio-entity
+                          (find-or-make-individual 'bio-entity :name w))))))))
 
       (t ;; by default make a bio-entity
        ;; Open-code key part of handle-unknown-word-as-bio-entity,
@@ -387,7 +393,10 @@
        (let* ((word (resolve/make words-string))
 	      (i (find-or-make-individual 'bio-entity :name word)))
          (when *bio-entity-strings*
-           (pushnew words-string *bio-entity-strings* :test #'equal))
+           (pushnew words-string *bio-entity-strings* :test #'equal)
+           (unless (hash-table-p *bio-entity-count-ht*)
+             (setq *bio-entity-count-ht* (make-hash-table :size 1000 :test #'equal)))
+           (incf (gethash words-string *bio-entity-count-ht* 0)))
 	 (values category::bio-entity
 		 'reify-ns-name-as-bio-entity
 		 i))))))
