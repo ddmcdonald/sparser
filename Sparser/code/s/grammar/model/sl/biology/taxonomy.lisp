@@ -217,7 +217,7 @@
   ;; Aspect was annotated with "will likely be useful"
   :binds ((as-comp as-comp)
           (certainty certainty))
-  :restrict ((participant (:or biological visual-representation)))
+  :restrict ((participant (:or biological document-part)))
   :realization
   (:s participant
       :as-comp as-comp
@@ -506,7 +506,6 @@
                bio-location ;; "the Y561 site displayed no difference..."
                disease ;; "SARS-CoV-2 infection shows ..."
                evidence
-               article-figure
                bio-quality
                bio-rhetorical
                bio-process ;; the B-RAFV600E mutation predicts
@@ -514,7 +513,9 @@
                bio-mechanism    ;; "this pathway describes ..."
                bio-predication ;; the success of raf and mek inhibitors
                measurement     ;; these data
-               visual-representation)))
+               document-part ;; subsumes article-figure
+
+               )))
   :binds ((ratio-condition ratio)
 	  (fig article-figure)
 	  (method bio-method)

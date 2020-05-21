@@ -478,6 +478,7 @@
              bio-mechanism     ;; "this pathway describes ..."
              bio-predication ;; the success of raf and mek inhibitors
              measurement     ;; these data
+             document-part
              visual-representation))
            (agent interlocutor))
             

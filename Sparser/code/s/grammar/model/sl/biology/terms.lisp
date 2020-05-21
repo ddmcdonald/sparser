@@ -495,8 +495,7 @@
 (define-category bib-reference
    :specializes document-part) ;; to allow "et al." to be easily ignored
 
-(define-category article-table
-    :specializes document-part
+(define-category article-table :specializes document-part
     :mixins (bio-abstract)) ;; to allow "et al." to be easily ignored
 
 (noun "et al." :super bib-reference)
@@ -505,8 +504,28 @@
 (noun "xref" :super bib-reference)
 
 
-(define-category article-figure
-  :specializes visual-representation
+(define-category published-article :specializes document-part
+  :realization
+  (:noun "article"))
+
+(define-category article-paragraph :specializes document-part
+  :realization
+  (:noun "paragraph"))
+
+(define-category article-sentence :specializes document-part
+  :realization
+  (:noun "sentence"))
+
+(define-category article-figure :specializes document-part
+  :mixins (visual-representation)
+  :binds ((label two-part-label))
+  :realization
+  (:noun "figure"))
+
+
+
+(define-category article-figure :specializes document-part
+  :mixins (visual-representation)
   :binds ((label two-part-label))
   :realization
   (:noun "figure"))
@@ -515,8 +534,8 @@
 
 (def-synonym article-figure (:noun "Fig"))
 
-(define-category article-table
-  :specializes visual-representation
+(define-category article-table :specializes document-part
+  :mixins (visual-representation)
   :binds ((label two-part-label))
   :realization
   (:noun "table"))
@@ -525,17 +544,20 @@
 (def-synonym article-table (:noun "Tab"))
 
 
-(define-category arrow :specializes visual-representation
-		 :realization
-		 (:noun "arrow"))
+(define-category arrow :specializes document-part
+    :mixins (visual-representation)
+    :realization
+    (:noun "arrow"))
 
-(define-category star :specializes visual-representation
-		 :realization
-		 (:noun "star"))
+(define-category star :specializes document-part
+    :mixins (visual-representation)
+    :realization
+    (:noun "star"))
 
-(define-category diagram :specializes visual-representation
-		 :realization
-		 (:noun "diagram"))
+(define-category diagram :specializes document-part
+    :mixins (visual-representation)
+    :realization
+    (:noun "diagram"))
 
 
  

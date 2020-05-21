@@ -88,7 +88,7 @@
   ;; we're doing organic or inorganic chemistry. 
   :mixins (reactome-category))
  
-(define-category visual-representation ;; figures, arrows, stars, etc.
+(define-mixin-category visual-representation ;; figures, arrows, stars, etc.
   :specializes bio-abstract)
 #| Interfers with the "observation" that is a kind of evidence
   :realization
