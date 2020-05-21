@@ -735,7 +735,8 @@ val-pred-var (pred vs modifier - left or right?)
 
 (defun np-number (np number)
   (if  *subcat-test*
-       (not (value-of np 'has-determiner))
+       (and (not (value-of np 'has-determiner))
+            (not (itypep np 'number)))
        (bind-dli-variable 'relative-position-number number np)))
 
 (defun create-partitive-np (spec of-pp)
