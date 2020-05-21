@@ -60,7 +60,8 @@
 (defparameter *new-units* nil)
 (defparameter *new-prot-fam* nil)
 
-(defparameter *non-bio-defs* nil) ;; ref-sem time-unit, organization
+(defparameter *new-orgs* nil)
+(defparameter *non-bio-defs* nil) ;; ref-sem time-unit, databases
 
 (defparameter *prot-fam-redef* nil) ;; holds protein families where the name is already defined as a category -- to be folded in later
 ;; define all the parameters to hold the new definitions
@@ -143,7 +144,7 @@
            (stash-def-indiv-with-id word category id name '*new-cell-loc*))
           (cellular-process
            (stash-def-indiv-with-id word category id name '*new-cell-proc*))
-          (drug ;; the old def function blocked plurals so this mirrors that
+          ((drug vaccine) ;; the old def function blocked plurals so this mirrors that
            (stash-def-indiv-with-id word category id name '*new-drugs* :no-plural t))
           (molecule
            (stash-def-indiv-with-id word category id name '*new-molecules*))
@@ -174,7 +175,9 @@
                (else (push `(def-family-with-id ,word ,id ,.(when name `(:name ,(pname name))))
                            *new-prot-fam*)
                      (car *new-prot-fam*))))
-          ((referential-sem time-unit organization)
+          (organization
+           (stash-def-indiv-with-id word category id name '*new-orgs*))
+          ((database referential-sem time-unit)
            (push term *non-bio-defs*))
           (t 
            (unless (or (eq category 'referential-sem)
@@ -320,6 +323,15 @@ uid binding, if there is one"
           #+ignore
           (word-diff-pos-name
            (push (list category word id name) *word-diff-pos-name*))
+          ((eq category 'organization)
+           (let ((capitalized-name (if (upper-case-p (char name 0))
+                                       name
+                                       (make-capitalized name))))
+             (push `(def-organization ,word :id ,id ,.(when name `(:name ,capitalized-name))
+                                      ,.(unless (equal name capitalized-name)
+                                          `(:synonyms (,name))))
+                   (symbol-value loc))))
+                                           
           (t
            (push `(def-indiv-with-id ,category ,word
                     ,(simplify-colons id)
@@ -404,6 +416,7 @@ uid binding, if there is one"
       (cell-line 'cell-line)
       (cell-part 'cellular-location)
       ((chemical molecule) 'molecule)
+      (database 'database)
       (gene-translation 'cellular-process) ;; so far only "translation" so mostly moot
       (injury 'injury) ;; added category modeled on disease
       (macromolecular-complex 'bio-complex)
@@ -415,7 +428,10 @@ uid binding, if there is one"
       ((organism nonhuman-animal animal fish insect invertebrate
                  microorganism person fungus plant bird vertebrate alga amphibian)
        'organism)
-      (pharmacologic-substance 'drug)
+      (pharmacologic-substance
+       (if (search "vaccine" name)
+           'vaccine
+           'drug))
       (physical-condition 'disease)
       (post-translational-modification 'post-translational-modification)
       (procedure 'bio-method)
@@ -442,6 +458,13 @@ uid binding, if there is one"
                    ":"
                    (subseq x (+ 2 (search "::" x) )))
       x))
+
+(defun make-capitalized (string)
+  (format nil "~{~a~^ ~}"
+          (loop for sub in (split string)
+                collect (if (member sub '("and" "for" "of" "the" "a" "in") :test #'equal)
+                            sub
+                            (string-capitalize sub)))))
 
 (defparameter *reach-phrases* nil)
     
@@ -516,7 +539,7 @@ uid binding, if there is one"
 
 (defparameter *suppressed-new-defs* '(*suppressed-hyphenated-new-words* *suppressed-mod-redefs* *id-mismatch-redef* *id-and-cat-mismatch* *no-id-redef* *namecat-id-mismatches* *no-rule-redef* *name-id-mismatches* *prot-fam-redef* *violates-no-plural* *word-diff-pos-name* *plurals-of-existing-cats* *diff-pos-of-existing-cats* *plurals-of-existing-words* *diff-pos-of-existing-words* *synonym-for-existing-words* *category-mismatch-existing-cats* *category-mismatch-existing-words* *suppressed-redefs* *non-bio-defs*))
 
-(defparameter *new-id-defs*  '(*new-diseases* *new-bacteria* *new-viruses* *new-cancers* *new-bio-complexes* *new-bio-meth* *new-bio-proc* *new-noncell-loc* *new-cells* *new-cell-loc* *new-cell-proc* *new-drugs* *new-molecules* *new-pathways* *new-prot-dom* *new-rna* *new-units* *new-prot-fam* *new-post-trans-mod* *new-substances*))
+(defparameter *new-id-defs*  '(*new-diseases* *new-bacteria* *new-viruses* *new-cancers* *new-bio-complexes* *new-bio-meth* *new-bio-proc* *new-noncell-loc* *new-cells* *new-cell-loc* *new-cell-proc* *new-drugs* *new-molecules* *new-pathways* *new-prot-dom* *new-rna* *new-units* *new-prot-fam* *new-post-trans-mod* *new-substances* *new-orgs*))
 
 (defun collect-all-new-defs (functions)
   "Call on a list of functions, e.g., (list #'load-trips-terms #'load-reach-terms)"

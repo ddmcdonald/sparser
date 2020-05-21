@@ -174,7 +174,7 @@ ns-filtering steps, that will be saved in sparser:tools;ns-stuff;"
     "`"  "|" "~" "«" "®" "°" "±" "´" "·" "º" "Å" "É"
     "Ö"  "ß" "ö" "͂" "‐" "–" "―" "…" " " "″" "™" "→" "↔" 
     "−" "∩" "∼" "≈" "≠" "≤" "≥" "≫" "⊇" "⋅" "▵" "⩽"
-    "⩾" "•" "“" "‑"))
+    "⩾" "•" "“" "‑" ")" "%" "." "×" "}" "(" "{" "."))
 
 ;; Set to ignore because of not everyone has ppcre loaded, so need to remove the ignore to do this step
 ;;; Now use the covering functions defined above
@@ -189,7 +189,9 @@ ns-filtering steps, that will be saved in sparser:tools;ns-stuff;"
                    (and (stringp n)
                         (or
                          (member (subseq n 0 1) *bad-end-chars* :test #'equal)
-                         (member (subseq n (- (length n) 1)) *bad-end-chars* :test #'equal)))
+                         (member (subseq n (- (length n) 1)) *bad-end-chars* :test #'equal)
+                         (loop for item in '("http" "com/" "net/" "edu/" "org /" "org/")
+                                 thereis (eq 0 (search item n :test #'equal)))))
                  collect (ppcre-split "[/:]" n))))
       (declare (special split-lists))
       (let ((split-strings (loop for l in split-lists when (consp l) append l)))
@@ -214,7 +216,7 @@ ns-filtering steps, that will be saved in sparser:tools;ns-stuff;"
                                         ; do (print (length x))
                                 unless
                                   (or (search " " x)
-                                      (ppcre-scan "^[-~+#0-9_&«*\"]" x)
+                                      (ppcre-scan "^[-~+#0-9_&«*\")]" x)
                                       (ppcre-scan "[‑–−-]$" x)
                                       (search "—" x) 
                                       ;; we need to not make em dashes
@@ -317,14 +319,13 @@ ns-filtering steps, that will be saved in sparser:tools;ns-stuff;"
 (defparameter *undef-ns* nil)
 
 (defparameter *bad-inits*
-  '("p-" "phospho-" "co-" "anti-" "#" "$" "&" "*" "+" "/"  ":" "=" "-"
-    "\\" "^" "_" "`"  "|" "~"
-    "«" "®" "°" "±" "´" "·" "º" "Å" "É" "Ö"  "ß" "ö" "͂"
-    "‐" "–" "―" "…" " " "″" "™" "→" "↔" 
-    "−" "∩" "∼" "≈" "≠" "≤" "≥" "≫" "⊇" "⋅" "▵" "⩽" "⩾" "•" "“" "‑" "∝"))
+  '("p-" "phospho-" "co-" "anti-" "Å" "É" "Ö" "ß" "ö"))
 
 (defparameter *bad-anywhere*
-  '("≈" "≠" "≤" "≥" "≫" "⊇" "⋅" "▵" "⩽" "⩾" "=" "<" ">" "∝" "±" "→" "↔" "∑" "{" "}" "!" "…" "")) ;; last item is weird char not space
+  '("#" "$" "&" "*" "+" "/" ":" "-" "\\" "^" "_" "`" "|" "¢" "£" "Ͻ" "Ͼ" "«" "®"
+ "°" "´" "·" "º"  "͂" "‐" "–" "―" " " "″" "™" "−" "∩" "∼" "∞"
+ "•" "“" "‑" "≈" "≠" "≤" "≥" "≫" "⊇" "⋅" "▵" "⩽" "⩾" "=" "<" ">" "∝" "±" "→"
+ "↔" "∑" "{" "}" "!" "…" "↓" "~" "%" "»" "¶" "†" "‡" "" "␣" "×" "Ϫ" "Ϯ" "" "¥" "" "@")) ;; last item is weird char not space
 
 (defparameter *hyphen-no*
     '("twenty" "thirty" "forty" "fifty" "sixty" "seventy" "eighty" "ninety"))

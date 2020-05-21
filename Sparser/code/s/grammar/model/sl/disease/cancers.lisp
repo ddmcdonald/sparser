@@ -189,8 +189,8 @@
 (def-indiv-with-id cancer "erythroleukemia" "EFO:1001955" :name "erythroleukemia")
 (def-indiv-with-id cancer "Cmn" "NCIT:C6569" :name "congenital mesoblastic nephroma")
 
-;(def-indiv-with-id cancer "IIIc" "NCIT:C88139" :name "stage IIIC uveal melanoma AJCC v7") 
-                                        ;(def-indiv-with-id cancer "IIc" "NCIT:C140168" :name "stage IIC prostate cancer AJCC v8")
+(def-indiv-with-id cancer "stage IIIC uveal melanoma AJCC v7" "NCIT:C88139" :name "stage IIIC uveal melanoma AJCC v7") 
+(def-indiv-with-id cancer "stage IIC prostate cancer AJCC v8" "NCIT:C140168" :name "stage IIC prostate cancer AJCC v8")
 ;(def-indiv-with-id cancer "TMDs" "NCIT:C27722" :name "therapy-related myelodysplastic syndrome") 
 (def-indiv-with-id cancer "ASIN" "NCIT:C7490" :name "anal canal squamous intraepithelial neoplasia") 
 (def-indiv-with-id cancer "ATLL" "EFO:0000209" :name "T-cell acute lymphoblastic leukemia") 
@@ -202,8 +202,13 @@
 (def-indiv-with-id cancer "DLBCL" "EFO:0000403" :name "diffuse large B-cell lymphoma") 
 (def-indiv-with-id cancer "ALCL" "NCIT:C3720" :name "anaplastic large cell lymphoma") 
 (def-indiv-with-id cancer "paraproteinemia" "EFO:0000203" :name "monoclonal gammopathy") 
-(def-indiv-with-id cancer "IVb" "NCIT:C133426" :name "pathologic stage IVB esophageal adenocarcinoma AJCC v8") 
 (def-indiv-with-id cancer "EoE" "NCIT:C7135" :name "extraosseous ewing sarcoma") 
 (def-indiv-with-id cancer "Gant" "NCIT:C27940" :name "gastrointestinal autonomic nerve tumor") 
-(def-indiv-with-id cancer "IIc" "NCIT:C140168" :name "stage IIC prostate cancer AJCC v8") 
-(def-indiv-with-id cancer "EscC" "NCIT:C4024" :name "esophageal squamous cell carcinoma") 
+ 
+(def-indiv-with-id cancer "EscC" "NCIT:C4024" :name "esophageal squamous cell carcinoma")
+;; dubious might be part of many things...
+(def-indiv-with-id cancer "IIc" "NCIT:C140168" :name "stage IIC prostate cancer AJCC v8")
+(def-indiv-with-id cancer "IVb" "NCIT:C133426" :name "pathologic stage IVB esophageal adenocarcinoma AJCC v8") 
+;; less dubious since these were the primary  hits for "IIA1" and 2 on google
+(def-indiv-with-id cancer "IIA1" "NCIT:C139745" :name "stage IIA1 cervical cancer AJCC v8") 
+(def-indiv-with-id cancer "IIA2" "NCIT:C139746" :name "stage IIA2 cervical cancer AJCC v8") 

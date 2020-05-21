@@ -9,9 +9,9 @@
 (def-indiv-with-id unit-of-measure "fmol" "UO:0000043" :name "femtomole")
 (def-indiv-with-id unit-of-measure "amol" "UO:0000044" :name "attomole") 
 
-(def-indiv-with-id unit-of-measure "Gram" "UO:0000021" :name "gram") 
+(def-indiv-with-id unit-of-measure "g" "UO:0000021" :name "gram") 
 (def-indiv-with-id unit-of-measure "mg" "UO:0000022" :name "milligram" :maintain-case t)
-(def-indiv-with-id unit-of-measure "μg" "UO:0000023" :name "microgram" :maintain-case t)
+(def-indiv-with-id unit-of-measure "μg" "UO:0000023" :name "microgram" :maintain-case t :synonyms ("ug"))
 (def-indiv-with-id unit-of-measure "picogram" "UO:0000025" :name "picogram") 
 (def-indiv-with-id unit-of-measure "ng" "UO:0000024" :name "nanogram") 
 
@@ -68,7 +68,7 @@
 (def-indiv-with-id unit-of-measure "eV" "UO:0000266" :name "electronvolt" :maintain-case t)
 (def-indiv-with-id unit-of-measure "meV" "NCIT:C67398" :name "millielectronvolt" :maintain-case t)
 (def-indiv-with-id unit-of-measure "MeV" "NCIT:C152057" :name "megaelectronvolt" :maintain-case t)
-
+(def-indiv-with-id unit-of-measure "Hz" "UO:0000106" :name "hertz" :maintain-case t)
 (def-indiv-with-id unit-of-measure "kHz" "NCIT:C67279" :name "kilohertz" :maintain-case t)
 (def-indiv-with-id unit-of-measure "MHz" "NCIT:C67314" :name "megahertz" :maintain-case t)
 (def-indiv-with-id unit-of-measure "kcal" "NCIT:C67194" :name "calorie")
@@ -98,7 +98,7 @@
 (def-indiv-with-id unit-of-measure "millisiemens" "UO:0010002" :name "millisiemens") 
 (def-indiv-with-id unit-of-measure "kda" "UO:0000222" :name "kilodalton" :maintain-case t) 
 (def-indiv-with-id unit-of-measure "kvh" "UO:0000230" :name "kilovolt-hour" :maintain-case t) 
-(def-indiv-with-id unit-of-measure "femtolitre" "UO:0000104" :name "femtoliter") 
+(def-indiv-with-id unit-of-measure "fl" "UO:0000104" :name "femtoliter") 
 (def-indiv-with-id unit-of-measure "nanometre" "UO:0000018" :name "nanometer") 
 (def-indiv-with-id unit-of-measure "deciliter" "UO:0000209" :name "deciliter") 
 (def-indiv-with-id unit-of-measure "nls" "UO:0000102" :name "nanoliter" :maintain-case t) 
@@ -106,3 +106,12 @@
 (def-indiv-with-id unit-of-measure "Amu" "UO:0000221" :name "dalton" :maintain-case t) 
 (def-indiv-with-id unit-of-measure "Curie" "UO:0000133" :name "curie") 
 (def-indiv-with-id unit-of-measure "Mil" "UO:0010012" :name "thou" :maintain-case t) 
+(def-indiv-with-id unit-of-measure "Gb" "UO:0000330" :name "gigabasepair" :maintain-case t)
+(def-indiv-with-id unit-of-measure "qt" "UO:0010029" :name "quart" :maintain-case t)
+(def-indiv-with-id unit-of-measure "lb" "UO:0010034" :name "pound" :maintain-case t)
+(def-indiv-with-id unit-of-measure "L" "NCIT:C48505" :name "liter")
+(def-indiv-with-id unit-of-measure "cc" "UO:0000097" :name "cubic centimeter")
+
+;; density measures for nucleotides
+(def-indiv-with-id bio-measurement "OD260" "NCIT:C48169" :name "OD260 unit" :synonyms ("absorbance at 260nm"))  
+(def-indiv-with-id bio-measurement "OD280" "NCIT:C48170" :name "OD280 unit" :synonyms ("absorbance at 280nm"))

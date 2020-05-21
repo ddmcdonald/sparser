@@ -222,8 +222,14 @@
 ;; subcategory and possibly we should have a whole biological drug
 ;; category that are both drugs and proteins
 
-                
-
+;; immunoglobulin is basically a synonym for antibody, at least by
+;; wikipedia, but it had been defined as a protein familly. It's very
+;; unclear whether to consider the immunoglobulin isotypes complexes
+;; or proteins, and then there are subclasses of those. For now, I've
+;; moved immunoglobulin and its isotypes and subclasses to
+;; bio-complexes where it specializes antibody and has bio-complex as
+;; a mixin
+;; 
 
 
 ;;(noun "condition" :super experimental-condition) OBE -- i taxonomy

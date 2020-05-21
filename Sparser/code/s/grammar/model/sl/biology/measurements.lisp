@@ -25,6 +25,8 @@
 		 :realization
 		 (:noun ("dataset" :plural "datasets")))
 
+(noun "COVIDx" :super dataset) ;; dataset/study
+
 ;; below is needed because of a use of "transients" in the CURE corpus
 (define-category transient-measurement :specializes bio-measurement
   :realization  (:noun ("transientXXX" :plural "transients"))) ;; don't pick up "transient" from COMLEX, and don't allow "transient" as a singular noun
@@ -37,6 +39,9 @@
 (noun "proportion" :super bio-scalar)
 (noun "scale" :super bio-scalar)     
 ;; (noun "concentration" :super bio-scalar) ;; now in harvard-terms
+
+(noun "TopoPSA" :super bio-measurement)
+(def-synonym TopoPSA (:noun ("Topological Polar Surface Area" "topological polar surface area")))
 
 ;;;------------------
 ;;; Units of measure

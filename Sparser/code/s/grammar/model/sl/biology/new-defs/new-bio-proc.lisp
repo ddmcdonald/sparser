@@ -165,10 +165,15 @@
 (def-indiv-with-id bio-process "pseudomembrane" "NCIT:C67353" :name "pseudomembrane formation") 
 (def-indiv-with-id bio-process "reticulophagy" "GO:0061709" :name "reticulophagy") 
 (def-indiv-with-id bio-process "anabolism" "GO:0009058" :name "biosynthetic process") 
-(def-indiv-with-id bio-process "ERphagy" "GO:0061709" :name "reticulophagy") 
+(def-indiv-with-id bio-process "ERphagy" "GO:0061709" :name "reticulophagy")
+;; EndoMT and EndMT have been vetted
 (def-indiv-with-id bio-process "EndoMT" "GO:0140074" :name "cardiac endothelial to mesenchymal transition") 
 (def-indiv-with-id bio-process "EndMT" "GO:0140074" :name "cardiac endothelial to mesenchymal transition") 
 (def-indiv-with-id bio-process "Commensalism" "GO:0044403" :name "symbiotic process") 
 (def-indiv-with-id bio-process "Mitophagy" "GO:0000423" :name "mitophagy") 
 (def-indiv-with-id bio-process "Lysophagy" "GO:0062093" :name "lysophagy") 
 (def-indiv-with-id bio-process "Pexophagy" "GO:0000425" :name "pexophagy") 
+
+(def-indiv-with-id bio-process "agglutination" "GO:0000752" :name "agglutination involved in conjugation with cellular fusion") 
+(def-indiv-with-id bio-process "perfusion" "NCIT:C150246" :name "perfusion") 
+(def-indiv-with-id bio-process "pinocytosis" "GO:0006907" :name "pinocytosis") 

@@ -23,8 +23,8 @@
 (def-indiv-with-id database "msigdb" "msigdb" :name "MSigDB" :synonyms ("Molecular Signatures Database"))
 (def-indiv-with-id database "pharmgkb" "pharmgkb" :name "PharmGKB" :synonyms ("Pharmacogenomics Knowledgebase"))
 (def-indiv-with-id database "biocarta" "biocarta" :name "BioCarta")
-(def-indiv-with-id database "MeSH" "MESH" :name "MeSH" :maintain-case t)
-
+(def-indiv-with-id database "MeSH" "MESH" :name "MeSH" :maintain-case t :synonyms ("Medical Subject Headings" "MSH"))
+(def-indiv-with-id database "GO" "NCIT:43520" :name "Gene Ontology" :synonyms ("GO Ontology"))
 
 ;; note: this is based on a question in
 ;; all-bioagent-capability-sentences but googling I can't actually
@@ -37,14 +37,22 @@
 (def-indiv-with-id database "GEO RNAi" "GEO-RNAi" :name "GEO RNAi database")
 
 ;; these have UIDs and came up in covid papers
-(def-indiv-with-id database "Unigene" "NCIT:C43563" :name "uniGene")
-(def-indiv-with-id database "uniprotkb" "NCIT:C47851" :name "uniProtKB")
-(def-indiv-with-id database "refseq" "NCIT:C45335" :name "refSeq")
-(def-indiv-with-id database "PFam" "NCIT:C43580" :name "protein families database")
-(def-indiv-with-id database "pubchem" "NCIT:C54563" :name "pubChem")
+(def-indiv-with-id database "uniGene" "NCIT:C43563" :name "UniGene")
+(def-indiv-with-id database "uniProtKB" "NCIT:C47851" :name "UniProtKB")
+(def-indiv-with-id database "uniProt" "NCIT:C43579" :name "Universal Protein Resource")
+(def-indiv-with-id database "swissprot" "NCIT:C43819" :name "Swiss-Prot" :synonyms ("swiss-prot" "swissProt"))
+(def-indiv-with-id database "refSeq" "NCIT:C45335" :name "RefSeq" :synonyms ("Reference Sequence Collection"))
+(def-indiv-with-id database "PFam" "NCIT:C43580" :name "Protein Families Database" :synonyms ("protein families database"))
+(def-indiv-with-id database "PDB" "NCIT:C49039" :name "Protein Data Bank" :synonyms ("protein data bank"))
+(def-indiv-with-id database "pubChem" "NCIT:C54563" :name "PubChem")
+(def-indiv-with-id database "pubMed" "NCIT:C42881" :name "PubMed")
 (def-indiv-with-id database "ensembl" "NCIT:C45763" :name "ENSEMBL")
 (def-indiv-with-id database "entrez" "NCIT:C45764" :name "Entrez")
-
+(def-indiv-with-id database "entrez gene" "NCIT:C45765" :name "Entrez Gene")
+(def-indiv-with-id database "genBank" "NCIT:C43818" :name "GenBank")
+(def-indiv-with-id database "chemBank" "NCIT:C71414" :name "ChemBank")
+(def-indiv-with-id database "NCIT" "NCIT:C43816" :name "NCI Thesaurus" :synonyms ("NCIt" "NCI thesaurus"))
+(def-indiv-with-id database "HPO" "NCIT:C154414" :name "Human Phenotype Ontology" :synonyms ("human phenotype ontology"))
 (def-indiv-with-id database "2019nCoVR" "2019nCoVR" :name "2019 Novel Coronavirus Resource")
 (def-indiv-with-id database "EpiCoV" "EpiCoV" :name "GISAID EpiCoV")
 
@@ -52,8 +60,9 @@
 (def-indiv-with-id database "ChEMBL" "ChEMBL" :name "ChEMBL")
 (def-indiv-with-id database "GeneDB" "GeneDB" :name "GeneDB")
 (def-indiv-with-id database "MEDLINE" "MEDLINE" :name "MEDLINE")
-
-
+(def-indiv-with-id database "HGNC" "HGNC" :name "HGNC" :synonyms ("HUGO Gene Nomenclature Committee"))
+(def-indiv-with-id database "EpiFlu" "EpiFlu" :name "EpiFlu")
+    
 (def-indiv-with-id database "BioRxiv" "BioRxiv" :name "BioRxiv")
 (def-indiv-with-id database "ChemRxiv" "ChemRxiv" :name "ChemRxiv")
 (def-indiv-with-id database "MedRxiv" "MedRxiv" :name "MedRxiv")

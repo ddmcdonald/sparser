@@ -130,3 +130,7 @@
 (def-indiv-with-id rna "TRV-AAC1-4" "HGNC:12353" :name "tRNA-Val (anticodon AAC) 1-4") 
 (def-indiv-with-id rna "Norad" "HGNC:44311" :name "non-coding RNA activated by DNA damage") 
 (def-indiv-with-id rna "Apal" "HGNC:44880" :name "ST8SIA6 antisense RNA 1") 
+(def-indiv-with-id rna "IRM" "HGNC:14574" :name "maternally expressed 8, small nucleolar RNA host gene")
+(def-indiv-with-id rna "Apr2" "HGNC:17505" :name "family with sequence similarity 215 member A") 
+(def-indiv-with-id rna "linc1992" "HGNC:49503" :name "TNF and HNRNPL related immunoregulatory long non-coding RNA") 
+(def-indiv-with-id rna "rp5" "HGNC:53953" :name "SREBF2 antisense RNA 1") 

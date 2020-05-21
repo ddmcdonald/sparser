@@ -333,3 +333,8 @@
 (def-indiv-with-id protein-domain "OprF" "XFAM:PF05736" :name "OprF") 
 (def-indiv-with-id protein-domain "Olduvai" "XFAM:PF06758" :name "olduvai") 
 (def-indiv-with-id protein-domain "BESs" "XFAM:PF02944" :name "BESS") 
+(def-indiv-with-id protein-domain "GGDEF" "XFAM:PF00990" :name "GGDEF") 
+(def-indiv-with-id protein-domain "fera" "XFAM:PF08165" :name "FerA") 
+(def-indiv-with-id protein-domain "CdvA" "XFAM:PF18822" :name "CdvA") 
+(def-indiv-with-id protein-domain "VP9" "XFAM:PF09625" :name "VP9") 
+(def-indiv-with-id protein-domain "gp37" "XFAM:PF09646" :name "gp37") 

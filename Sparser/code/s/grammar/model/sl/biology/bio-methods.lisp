@@ -340,7 +340,7 @@
 (noun "PME" :super bio-method)
 (def-synonym PME (:noun "particle mesh ewald")) ;; algorithm used in comp bio
 
-(noun "MAPE" :super bio-method) ;; block bad gene def
+(noun "MAPE" :super bio-measurement) ;; block bad gene def
 (def-synonym MAPE (:noun "mean absolute percentage error"))
 (def-synonym MAPE (:noun "Mean Absolute Percentage Error"))
 (noun "MSA" :super bio-method)
@@ -372,15 +372,17 @@
       (:noun "panel"
              :of component))
 
-(noun "RCT" :super bio-method)
-(def-synonym RCT (:noun "Randomized Controlled Trial")) ;; could also be radiochemotherapy
+
 
 
 ;; polymerase chain reaction
 (noun "PCR" :super bio-method)
+(def-synonym PCR (:noun ("polymerase chain reaction" "Polymerase Chain Reaction")))
 (noun "RT-PCR" :super PCR)
 (noun "qRT/PCR" :super PCR)
-
+(noun "mPCR" :super PCR)
+(def-synonym mPCR (:noun ("multiplex PCR" "multiplex polymerase chain reaction" "multiplex Polymerase Chain Reaction")))
+    
 ;; unrelated PCR - defining this partly to block a bad trips def
 (noun "ePCR" :super bio-method)
 (def-synonym ePCR (:noun "electronic Patient Care Reporting"))
@@ -412,6 +414,124 @@
 (noun ("ViroChip" "virochip") :super bio-method) ;; a panviral DNA microarray assay
 (noun "TBDev" :super bio-method) ;; a file sharing/torrent system which has an offshoot called BioTorrents for scientific data
 (noun "BioTorrents" :super bio-method)
+
+;; likely bio-methods/software but not all have been vetted - might be companies and drugs as well
+(noun "AccessQuick" :super bio-method) 
+(noun "AcroPrep" :super bio-method) 
+(noun "AmpSeq" :super bio-method) 
+(noun "ApopTag" :super bio-method) 
+(noun "ArcMap" :super bio-method) 
+(noun "ArrayScan" :super bio-method) 
+(noun "BacRep" :super bio-method) 
+(noun "BioCaster" :super bio-method) 
+(noun "BioFX" :super bio-method) 
+(noun "BioFire" :super bio-method) 
+(noun "BioID" :super bio-method) 
+(noun "BioMax" :super bio-method) 
+(noun "BioSpin" :super bio-method) 
+(noun "Biofire" :super bio-method) 
+(noun "CTscan" :super bio-method) 
+(noun "CellProfiler" :super bio-method) 
+(noun "ChipLC" :super bio-method) 
+(noun "CliqueSNV" :super bio-method) 
+(noun "CurveExpert" :super bio-method) 
+(noun "CyQuant" :super bio-method) 
+(noun "DEGSeq" :super bio-method) 
+(noun "DapMap" :super bio-method) 
+(noun "DeepFam" :super bio-method) 
+(noun "DexCom" :super bio-method) 
+(noun "EndNote" :super bio-method) 
+(noun "EuropaBio" :super bio-method) 
+(noun "FIREPol" :super bio-method) 
+(noun "FiberCell" :super bio-method) 
+(noun "FlexPen" :super bio-method) 
+(noun "FluTrackers" :super bio-method) 
+(noun "GelCode" :super bio-method) 
+(noun "GenBody" :super bio-method) 
+(noun "GenMark" :super bio-method) 
+(noun "GeneQuant" :super bio-method) 
+(noun "GeneSnap" :super bio-method) 
+(noun "GitHub" :super bio-method) 
+(noun "HotstarTaq" :super bio-method) 
+(noun "ISBiotech" :super bio-method) 
+(noun "ImageNet" :super bio-method) 
+(noun "ImmSim" :super bio-method) 
+(noun "ImmuoResearch" :super bio-method) 
+(noun "InvivoGen" :super bio-method) 
+(noun "Invivogen" :super bio-method) 
+(noun "IsoPlane" :super bio-method) 
+(noun "KwikPen" :super bio-method) 
+(noun "LoFreq" :super bio-method) 
+(noun "LongAmp" :super bio-method) 
+(noun "MaxQuant" :super bio-method) 
+(noun "MinION" :super bio-method) 
+(noun "MiniSeq" :super bio-method) 
+(noun "MiTAP" :super bio-method) 
+(noun "NanoLuc" :super bio-method) 
+(noun "NetPicoRNA" :super bio-method) 
+(noun "NextStrain" :super bio-method) 
+(noun "NovaBlot" :super bio-method) 
+(noun "NovaSeq" :super bio-method) 
+(noun "NucBlue" :super bio-method) 
+(noun "NucleoPrepII" :super bio-method) 
+(noun "OptEIA" :super bio-method) 
+(noun "OptiClust" :super bio-method) 
+(noun "OptiMEM" :super bio-method) 
+(noun "OptiPro" :super bio-method) 
+(noun ("POCOVIDScreen" "PocovidScreen") :super bio-method) ;; ai to detect covid on ultrasounds
+(noun "PacBio" :super bio-method) 
+(noun "ParaFit" :super bio-method) 
+(noun "PetPlan" :super bio-method) 
+(noun "Petcare" :super bio-method) 
+(noun "PhosSTOP" :super bio-method) 
+(noun "Phosphoflow" :super bio-method) 
+(noun "PolyFect" :super bio-method) 
+(noun "PortaCount" :super bio-method) 
+(noun "PrimerExpress" :super bio-method) 
+(noun "ProClin" :super bio-method) 
+(noun "ProZinc" :super bio-method) 
+(noun "Promocell" :super bio-method) 
+(noun "ProteOn" :super bio-method) 
+(noun ("Promega" "Prpmega") :super bio-method) 
+(noun "QconCAT" :super bio-method) 
+(noun "QuickAlign" :super bio-method) 
+(noun "Quickalign" :super bio-method) 
+(noun "RNAaemia" :super bio-method) 
+(noun "ScienceDirect" :super bio-method) 
+(noun "SeqBuilder" :super bio-method) 
+(noun "Sequencher" :super bio-method) 
+(noun "ShineGene" :super bio-method) 
+(noun "SigmaPlot" :super bio-method) 
+(noun "SimPlotß" :super bio-method) 
+(noun "SimRel" :super bio-method) 
+(noun "TempliPhi" :super bio-method) 
+(noun "TransGen" :super bio-method) 
+(noun "Transgen" :super bio-method) 
+(noun "TruSeq" :super bio-method) 
+(noun "TwinHelix" :super bio-method) 
+(noun "UVItec" :super bio-method) 
+(noun "UniFrac" :super bio-method) 
+(noun "VetPen" :super bio-method) 
+(noun "VetScan" :super bio-method) 
+(noun "VirusSeeker" :super bio-method) 
+(noun "WeChat" :super bio-method) 
+(noun "WestPico" :super bio-method) 
+(noun "WhatsApp" :super bio-method) 
+(noun "WorldClim" :super bio-method) 
+(noun "WorldPop" :super bio-method) 
+(noun "ampliSeqRNA" :super bio-method) 
+(noun "iBio" :super bio-method) 
+(noun "iPrep" :super bio-method) 
+(noun "iProof" :super bio-method) 
+(noun "iSelect" :super bio-method) 
+(noun "iTaqTM" :super bio-method) 
+(noun "iVtL" :super bio-method) 
+(noun "miniMACS" :super bio-method) 
+(noun "mirVana" :super bio-method) 
+(noun "nQuery" :super bio-method) 
+(noun "rANOVA" :super bio-method) 
+
+
 
 (noun "way" :super bio-method
       :restrict ((object over-ridden))
@@ -520,6 +640,9 @@ with something else
 (noun "pilot" :super bio-context)
 (def-synonym pilot (:noun "pilot study"))
 
+
+(noun "RCT" :super bio-method)
+(def-synonym RCT (:noun "Randomized Controlled Trial")) ;; could also be radiochemotherapy
 ;;;------------------------
 ;;; miscellaneous
 ;;;------------------------

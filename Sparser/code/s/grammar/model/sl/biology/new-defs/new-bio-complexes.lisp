@@ -11,12 +11,10 @@
 (def-indiv-with-id bio-complex "Rad17-RFC" "GO:0031389" :name "Rad17 RFC-like complex") 
 (def-indiv-with-id bio-complex "Pre-BCR" "GO:0035369" :name "pre-B cell receptor complex") 
 (def-indiv-with-id bio-complex "PIK" "GO:0019035" :name "viral integration complex") 
-(def-indiv-with-id bio-complex "IgG1" "GO:0071735" :name "IgG immunoglobulin complex") 
 (def-indiv-with-id bio-complex "F-actin" "GO:0031941" :name "filamentous actin") 
 (def-indiv-with-id bio-complex "DISC" "GO:0031264" :name "death-inducing signaling complex")
 
 (def-indiv-with-id bio-complex "connexon" "GO:0005922" :name "connexin complex") 
-(def-indiv-with-id bio-complex "HCAbs" "GO:0071762" :name "heavy chain immunoglobulin complex") 
 (def-indiv-with-id bio-complex "MBF" "GO:0030907" :name "MBF transcription complex") 
 (def-indiv-with-id bio-complex "ORC" "GO:0000808" :name "origin recognition complex") 
 (def-indiv-with-id bio-complex "Pan" "GO:0022623" :name "proteasome-activating nucleotidase complex") 
@@ -62,3 +60,4 @@
 (def-indiv-with-id bio-complex "Curli" "GO:0098774" :name "curli") 
 (def-indiv-with-id bio-complex "HCAb" "GO:0071762" :name "heavy chain immunoglobulin complex") 
 (def-indiv-with-id bio-complex "preBCR" "GO:0035369" :name "pre-B cell receptor complex") 
+

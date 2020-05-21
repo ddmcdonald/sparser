@@ -20,7 +20,8 @@
 (define-category coronavirus :specializes pos-sense-ssrna-virus
                  :mixins (pathogen-type)
                  :bindings (uid "NCIT:C26431")
-                 :realization (:noun ("coronavirus" "CoV" "coronaviridae" "Cov")))
+                 :realization (:noun ("coronavirus" "CoV" "coronaviridae" ;; this is technically a taxon above
+                                                    "Cov" "COV" "orthocoronavirinae")))
 (def-synonym coronavirus (:noun "coronvirus")) 
 (def-synonym coronavirus (:noun "coronoavirus"))
 (def-synonym coronavirus (:noun "coronovirus")) 
@@ -40,7 +41,7 @@
 
 (define-category gammacoronavirus :specializes coronavirus
                  :bindings (uid "NCIT:C122313")
-                 :realization (:noun ("gammacoronavirus" "gamma coronavirus" "gamma-coronavirus" "gammaCoV" "gamma-CoV" "Gamacoronavirus")))
+                 :realization (:noun ("gammacoronavirus" "gamma coronavirus" "gamma-coronavirus" "gammaCoV" "gamma-CoV" "Gamacoronavirus" "gammacoronovirus")))
 
 (define-category SARSr-CoV :specializes betacoronavirus
                  :realization (:noun "SARS-related coronavirus"))
@@ -54,13 +55,19 @@
                                           "novel-coronavirus-2019" "2019-CoV" "CoV-2019"
                                           ;; arguably the rest of these should be the disease
                                           ;; instead of the virus but currently not separating them
-                                          "covid19" "COVID19" "COVID-19" "covid-19" "COVID-9" ;;typo
-                                          "Corona Virus Disease 2019" "Coronavirus Disease-2019"))
+                                          "covid19" "COVID19" "COVID-19" "covid-19"
+                                          "Corona Virus Disease 2019" "Coronavirus Disease-2019"
+                                          "SEVERE ACUTE RESPIRATORY SYNDROME CORONAVIRUS 2"
+                                          ;; typos/misnomers
+                                          "COVID-9" "COVID" "COVD-19" "COVDI-19" "COVID-2" "COVID-2019"
+                                          "covid"
+                                          "Cov-19" "CoV-19" "COV-2" "CoV-2"))
 
 (def-indiv-with-id betacoronavirus "SARS-CoV" "NCIT:C112432" :name "SARS coronavirus"
                    :synonyms ("SARS Coronavirus" "SARS virus" "HCoV-SARS" "SARSCoV" "SARS-CoV-1"
                                                  "Severe Acute Respiratory Syndrome Coronavirus"
-                                                 "severe acute respiratory syndrome (SARS) virus"))
+                                                 "severe acute respiratory syndrome (SARS) virus" "hSARS"
+                                                 "SARScoronavirus" "SARS1"))
 (def-indiv-with-id disease "SARS" "NCIT:C85064" :name "Severe Acute Respiratory Syndrome"
                    :synonyms ("severe acute respiratory syndrome"))
 
@@ -103,7 +110,6 @@
 (noun ("RCoV" "rat coronavirus") :super betacoronavirus) ;; no NCIT "TI:11146"
 (noun ("ChRCoV" "chinese rat coronavirus") :super betacoronavirus) ;; no NCIT "TI:11146"
 
-
 (noun ("PorCoV" "porcine coronavirus")  :super coronavirus)
 (noun ("PDCoV" "porcine deltacoronavirus") :super deltacoronavirus)
 (noun ("PRCoV" "porcine respiratory coronavirus") :super coronavirus) ;; "TI:11146" 
@@ -123,7 +129,6 @@
 (noun ("SpDCoV" "SpdCoV" "sparrow deltacoronavirus") :super deltacoronavirus)
 (noun ("TCoV" "turkey coronavirus") :super coronavirus)
 (noun ("ThCoV" "thrush coronavirus") :super coronavirus)
-
 
 (noun ("hCoV" "hcoV" "hcov""human coronavirus") :super coronavirus) ;; no NCIT
 (noun ("HCoV-229E" "HCoV 229E" "human coronavirus 229E" "229E") :super alphacoronavirus) ;; no NCIT
@@ -204,7 +209,16 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (noun "MACV" :super virus) 
 (def-synonym MACV (:noun "machupo virus"))
 
+(noun "VDPV" :super virus)
+(def-synonym VDPV (:noun "vaccine-derived poliovirus"))
+(noun "iVDPV" :super VDPV)
+(def-synonym iVDPV (:noun "immunodeficiency-related vaccine-derived poliovirus"))
+(noun "ArkDPI" :super virus) ;; virus strain used in vaccines
+
+(def-indiv-with-id virus "DENV1" "NCIT:C112266" :name "dengue virus 1") 
 (def-indiv-with-id virus "DENV2" "NCIT:C112267" :name "dengue virus 2") 
+(def-indiv-with-id virus "DENV3" "NCIT:C112268" :name "dengue virus 3") 
+(def-indiv-with-id virus "DENV4" "NCIT:C112269" :name "dengue virus 4") 
 (def-indiv-with-id virus "EIAV" "NCIT:C14205" :name "equine infectious anemia virus") 
 (def-indiv-with-id virus "FIV" "NCIT:C14288" :name "feline immunodeficiency virus") 
 (def-indiv-with-id virus "Flaviviridae" "NCIT:C113201" :name "flaviviridae" :synonyms ("Flaviridae")) 
@@ -214,12 +228,19 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (def-indiv-with-id virus "HEV" "NCIT:C14295" :name "hepatitis E virus") 
 (def-indiv-with-id virus "HeV" "NCIT:C112289" :name "Hendra virus") 
 (def-indiv-with-id virus "HHV" "NCIT:C112419" :name "simplexvirus") 
+(def-indiv-with-id virus "HHV1" "NCIT:C14311" :name "human herpesvirus 1") 
+(def-indiv-with-id virus "HHV4" "NCIT:C14204" :name "epstein-barr virus") 
+(def-indiv-with-id virus "HHV3" "NCIT:C71091" :name "varicella zoster virus") 
 (def-indiv-with-id virus "HHV6" "NCIT:C14218" :name "human herpesvirus 6") 
+(def-indiv-with-id virus "HHV7" "NCIT:C112315" :name "human herpesvirus 7") 
 (def-indiv-with-id virus "HHV8" "NCIT:C14327" :name "human herpesvirus 8") 
 (def-indiv-with-id virus "HIV" "NCIT:C14219" :name "human immunodeficiency virus") 
 (def-indiv-with-id virus "HIV-1" "NCIT:C14220" :name "human immunodeficiency virus 1"
-                   :synonyms ("Human Immunodeficiency Virus type 1") )
-(def-indiv-with-id virus "HIV-2" "NCIT:C14221" :name "human immunodeficiency virus 2") 
+                   :synonyms ("Human Immunodeficiency Virus type 1" "HIV1"))
+(def-indiv-with-id virus "HIV-2" "NCIT:C14221" :name "human immunodeficiency virus 2"
+                   :synonyms ("Human Immunodeficiency Virus type 2" "HIV2")) 
+
+(def-indiv-with-id virus "HPIV1" "NCIT:C14254" :name "human parainfluenza virus 1") 
 (def-indiv-with-id virus "HPIV2" "NCIT:C112316" :name "human parainfluenza virus 2")
 
 (def-indiv-with-id virus "HPV11" "NCIT:C99178" :name "human papillomavirus-11") 
@@ -279,7 +300,7 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (def-indiv-with-id virus "paramyxovirus" "NCIT:C14310" :name "paramyxovirus") 
 (def-indiv-with-id virus "parapoxvirus" "NCIT:C112367" :name "parapoxvirus") 
 (def-indiv-with-id virus "phage" "NCIT:C14188" :name "bacteriophage") 
-(def-indiv-with-id virus "picornavirus" "NCIT:C14256" :name "picornavirus" :plural ("picornaviruses" "picornaviridae")) 
+(def-indiv-with-id virus "picornavirus" "NCIT:C14256" :name "picornavirus" :plural ("picornaviruses" "picornaviridae" "picronaviridae")) 
 (def-indiv-with-id virus "poliovirus" "NCIT:C14259" :name "poliovirus") 
 (def-indiv-with-id virus "polyoma" "NCIT:C14260" :name "polyomavirus") 
 (def-indiv-with-id virus "poxvirus" "NCIT:C14261" :name "poxvirus" :plural ("poxviruses" "poxviridae")) 
@@ -356,6 +377,13 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (def-indiv-with-id virus "hPIV-4" "NCIT:C112318" :name "human parainfluenza virus 4") 
 (def-indiv-with-id virus "hPIV-3" "NCIT:C112317" :name "human parainfluenza virus 3") 
 (def-indiv-with-id virus "hPIV-1" "NCIT:C14254" :name "human parainfluenza virus 1") 
+(def-indiv-with-id virus "papovavirus" "NCIT:C14253" :name "papovavirus") 
+(def-indiv-with-id virus "EVD68" "NCIT:C125639" :name "enterovirus D68") 
+(def-indiv-with-id virus "Morbillivus" "NCIT:C14309" :name "morbillivirus") 
+(def-indiv-with-id virus "Morbilivirus" "NCIT:C14309" :name "morbillivirus") 
+(def-indiv-with-id virus "Flaviriridae" "NCIT:C113201" :name "flaviviridae") 
+(def-indiv-with-id virus "Apthovirus" "NCIT:C112229" :name "aphthovirus") 
+(def-indiv-with-id virus "metapnemovirus" "NCIT:C125956" :name "metapneumovirus") 
 
 
 ;; need checking
@@ -410,4 +438,6 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
 (def-indiv-with-id virus "Birnaviridae" "TI:10993")
 (def-indiv-with-id virus "TrV" "TI:30075" :name "triatoma virus")
 (def-indiv-with-id virus "MHV-A59" "TI:11142" :name "murine coronavirus (strain A59)" :synonyms ("murine hepatitis virus (strain A59)"))
-
+(def-indiv-with-id virus "oliovirus" "NCIT:C14259" :name "poliovirus") 
+(def-indiv-with-id virus "rinovirus" "NCIT:C77200" :name "rhinovirus") 
+(def-indiv-with-id virus "AAV2" "NCIT:C48818" :name "adeno-associated virus type 2") 

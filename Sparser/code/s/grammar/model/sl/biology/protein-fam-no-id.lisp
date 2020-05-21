@@ -290,7 +290,9 @@
 (def-family "IL13R" :members ("UP:P78552" "UP:Q14627")) 
 ;(def-family "INPP4B" :members ("UP:O15327" "UP:Q9BS68")) 
 (def-family "IQGAP" :members ("IQGAP1" "IQGAP2" "IQGAP3")) 
-(def-family "IgG" :members ("UP:P12314" "UP:P31994" "UP:P55899"))
+(def-family "fc receptor"  :members ("UP:P12314" "UP:P31994" "UP:P31995" "UP:P55899" "UP:P06734") :synonyms ("fc-receptor"))
+(def-family "IgG Fc receptor" :members ("UP:P12314" "UP:P31994" "UP:P31995" "UP:P55899") :synonyms ("IgG Fc-receptor" "FcγR"))
+
 (def-family "ISM" :synonyms ("isthmin") :members ("UP:B1AKI9" "UP:Q6H9L7"))
 
 ;(def-family "JNK1/2" :synonyms ("JNK1-2") :members ("JNK1" "JNK2"))
@@ -830,7 +832,7 @@
 (def-family "GLUT10" :members ("UP:O95528" "UP:Q9BYW1")) 
 (def-family "GM" :members ("UP:O36388" "UP:Q16821")) 
 (def-family "GNG8" :members ("UP:O14610" "UP:Q9UK08")) 
-(def-family "GO" :members ("UP:O31616" "UP:P0CS93")) 
+;(def-family "GO" :members ("UP:O31616" "UP:P0CS93")) non-human more likely gene ontology
 (def-family "GP73" :members ("UP:P03399" "UP:Q8NBJ4")) 
 (def-family "GPAT" :members ("UP:Q06203" "UP:Q43307")) 
 (def-family "GPCR2" :members ("UP:Q61618" "UP:Q8TDV5")) 
@@ -1020,7 +1022,7 @@
 (def-family "MRS" :members ("UP:P59665" "UP:Q1RNF8")) 
 (def-family "MSCs" :members ("UP:O52401" "UP:O60682")) 
 (def-family "MSF1" :members ("UP:P08425" "UP:Q9UHD8")) 
-(def-family "MSH" :members ("UP:D4GTL2" "UP:Q03372"))
+;(def-family "MSH" :members ("UP:D4GTL2" "UP:Q03372"))non-human
 
 (def-family "MSP2" :members ("UP:P13263" "UP:Q9S841")) 
 (def-family "MST1" :members ("UP:P26927" "UP:Q13043") :synonyms ("Mst1")) ;; hms says just UP:Q13043 but MST1 is literally the gene name for UP:P26927
@@ -1425,7 +1427,7 @@
 (def-family "activin receptor-like kinase" :members ("UP:P36896" "UP:P36897")) 
 (def-family "acyl carrier protein" :members ("UP:B0CE03" "UP:O14561")) 
 (def-family "ad5" :members ("UP:P49768" "UP:P49810") :synonyms ("presenilin-2")) 
-(def-family "adenylate cyclase type 10" :members ("UP:Q8C0T9" "UP:Q96PN6")) 
+;(def-family "adenylate cyclase type 10" :members ("UP:Q8C0T9" "UP:Q96PN6"))  ;; one mouse
 (def-family "adenylate kinase 3" :members ("UP:P27144" "UP:Q9UIJ7")) 
 (def-family "adhesin" :members ("UP:P0C2T3" "UP:P42188")) 
 ;(def-family "alcohol dehydrogenase" :members ("UP:P42327" "UP:Q8IWW8")) 

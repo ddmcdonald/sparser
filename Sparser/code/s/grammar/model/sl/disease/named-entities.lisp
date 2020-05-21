@@ -64,13 +64,45 @@
 (def-organization "NLM" :id "NCIT:C82620" :name "National Library of Medicine")
 (def-organization "SCI" :id "NCIT:C105626" :name  "Stanford Cancer Institute")
 (def-organization "USDA" :id "NCIT:C68708" :name  "United States Department of Agriculture")
-
+(def-organization "AHRQ" :id "NCIT:C39304" :name "Agency for Healthcare Research and Quality"
+                  :synonyms ("agency for healthcare research and quality")) 
+(def-organization "CDER" :id "NCIT:C82669" :name "Center for Drug Evaluation and Research"
+                  :synonyms ("center for drug evaluation and research")) 
+(def-organization "CDRH" :id "NCIT:C82670" :name "Center for Devices and Radiological Health"
+                  :synonyms ("center for devices and radiological health")) 
+(def-organization "MHRA" :id "NCIT:C142608" :name "Medicines and Healthcare Products Regulatory Agency"
+                  :synonyms ("medicines and healthcare products regulatory agency")) 
+(def-organization "NDRI" :id "NCIT:C126658" :name "National Disease Research Interchange"
+                  :synonyms ("national disease research interchange")) 
+(def-organization "NIMH" :id "NCIT:C16894" :name "National Institute of Mental Health"
+                  :synonyms ("national institute of mental health")) 
+(def-organization "HL7" :id "NCIT:C80485" :name "Health Level Seven" :synonyms ("health level seven"))
 
 ;;-- these are labs -- change the superclass? -- do it for universities too?
 ;; though that rapidly escalates the number of classes when you recognize org's programmatically
 (def-organization "CSHL" :id "NCIT:C39335" :name "Cold Spring Harbor Laboratory Cancer Center")
 (def-organization "JAX" :id "NCIT:C39529" :name "Jackson Laboratory Cancer Center")
 
+(def-organization "HCI" :id "NCIT:C39422" :name "Huntsman Cancer Institute" :synonyms ("huntsman cancer institute")) 
+(def-organization "KCI" :id "NCIT:C39328" :name "Barbara Ann Karmano Cancer Institute" :synonyms ("barbara ann karmano cancer institute")) 
+
+;;(def-organization "Nanomaterials" :id "NCIT:C53671" :name "Nanomaterials" :synonyms ("nanomaterials")) 
+;;(def-organization "Sig" :id "NCIT:C19782" :name "Surveillance Implementation Group" :synonyms ("surveillance implementation group"))
+
+;; drug companies
+(noun ("Eli Lilly" "Eli Lilly and Company") :super organization)
+(noun ("GlaxoSmithKline" "GSK" "GlaxoSmithKline plc") :super organization)
+(noun ("Merck" "MERCK" "MSD" "Merck & Co., Inc." "Merck Sharp & Dohme") :super organization)
+(noun ("Novavax" "Novavax, Inc.") :super organization)
+(noun ("Novartis" "Novartis International AG") :super organization)
+(noun ("Pfizer" "Pfizer, Inc.") :super organization)
+(noun ("Vaccitech" "Vaccitech Limited") :super organization)
+(noun ("Moderna" "Moderna, Inc." "Moderna Therapeutics" "ModeRNA Therapeutics") :super organization)
+
+
+;; complicated -- can be plural
+(def-organization "IACUC" :id "NCIT:C19487" :name "Institutional Animal Care and Use Committee" :synonyms ("institutional animal care and use committee")) 
+(def-organization "IRB" :id "NCIT:C16741" :name "Institutional Review Board" :synonyms ("institutional review board")) 
 
 #| more professional organizations to add:
          

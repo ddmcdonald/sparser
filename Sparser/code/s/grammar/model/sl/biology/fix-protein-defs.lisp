@@ -1405,6 +1405,7 @@ new file to append to new-prot-fam, those without get filtered to "
 (defparameter *potential-other-reach-defs* nil) ; things where we can't determine a category based on the ontology
 (defparameter *reach-sparser-mismatch-defs* nil)
 
+
 (defun protein-or-nucleotide-p (string)
   (let* ((word (resolve string))
          (rule-list (when word (single-term-rewrite? word :no-warn t)))
@@ -1554,9 +1555,13 @@ new file to append to new-prot-fam, those without get filtered to "
             (push reach-def *potential-other-reach-defs*)))))
 
 (defparameter *suspect-trips-defs* nil)
-(defvar *trips-words-hash* (make-hash-table :size 5000 :test #'equalp))
+(defvar *trips-words-hash* (make-hash-table :size 5000 :test #'equal))
 
-(defun new-trips-defs->krisp-defs (file &optional (suppress-redef nil))
+(defun capitalized? (string)
+  (and (upper-case-p (char string 0))
+       (every #'lower-case-p (subseq string 1))))
+
+(defun new-trips-defs->krisp-defs (file &optional (suppress-redef nil)) ;; ADD covid-rxiv-defs; to filename
   (setq *suppress-redefinitions* suppress-redef)
   (with-open-file (stream (concatenate 'string "sparser:bio-not-loaded;" file ".lisp")
                           :direction :input 
@@ -1568,7 +1573,11 @@ new file to append to new-prot-fam, those without get filtered to "
                         (word-len (length word))
                         (id (getf (cddr term-def) :id)))
                    (unless (or (null id)
-                                 (gethash word *trips-words-hash*))
+                               (gethash word *trips-words-hash*)
+                               ;; if the only difference is initial cap, we don't need to redefine it  because we get the other for free, but otherwise
+                               (if (capitalized? word)
+                                   (gethash (string-downcase word) *trips-words-hash*)
+                                   (gethash (string-capitalize word) *trips-words-hash*)))
                        (setf (gethash word *trips-words-hash*) term-def)
                        (if (or (eq 2 word-len)
                                (and (search "-" word)

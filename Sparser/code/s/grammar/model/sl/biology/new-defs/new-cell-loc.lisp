@@ -214,3 +214,4 @@
 (def-indiv-with-id cellular-location "Stv" "GO:0097547" :name "synaptic vesicle protein transport vesicle") 
 (def-indiv-with-id cellular-location "NlB" "GO:1990934" :name "nucleolus-like body") 
 (def-indiv-with-id cellular-location "cisGolgi" "UP:SL-0067" :name "cis-Golgi network") 
+(def-indiv-with-id cellular-location "cSMAC" "GO:0001772" :name "immunological synapse" :synonyms ("supramolecular activation cluster" "central supramolecular activation cluster" "c-SMAC")) 	

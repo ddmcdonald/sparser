@@ -255,7 +255,7 @@
       :to extent))
 
 (define-category bio-measurement :specializes measurement
-  :mixins (bio-quality)
+  :mixins (bio-quality has-uid)
   :documentation "Provides a generalization over biological and measurement")
 
 (define-category value :specializes measurement
@@ -694,12 +694,14 @@
           :for tested-for))
 
 (define-category measure :specializes bio-method
+                 :mixins (has-uid)
   :binds ((method bio-method)
           (measured-item (:or bio-entity bio-process)))
   :realization 
     (:verb "measure"
      :etf (svo-passive)
-     :noun "measurement"
+     :noun "measurement" ;; unclear how this relates to the
+                         ;; measurement and bio-measurement categories
      :m measured-item
      :of :object
      :by method
@@ -891,7 +893,7 @@
             :for disease
             :for treatment
             :for target))
-(def-synonym drug (:noun "therapeutic agent"))
+(def-synonym drug (:noun ("therapeutic agent" "pharmaceutical")))
 
 ;; actually, vaccines are multi-component, not a single molecule
 (define-category vaccine :specializes drug

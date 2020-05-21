@@ -311,6 +311,55 @@
 (def-synonym calcium-calmodulin-complex
              (:noun "calcium/calmodulin"))
 
+(define-category immunoglobulin :specializes antibody
+                 :mixins (bio-complex)
+                 :bindings (uid "NCIT:C572") ;; also as family "FA:01833" "XFAM:PF00047"
+                 :realization
+                 (:noun ("immunoglobulin"  "Ig" "IG"
+                                           "immunoglobuline" "immnnoglobulin")))
+
+(define-category iga :specializes immunoglobulin
+                 :bindings (uid "NCIT:C565")
+                 :realization
+                 ;; some of these are overloaded with "UP:P11912" which is confusing -- I  don't understand how the two are related because it isn't a component of this, unlike the other two
+                 (:noun ("IgA" "iga" "IgA immunoglobulin complex"
+                               "Ig alpha" "IgA1-2" "immunoglobulin A")))
+(noun ("sIgA" "secretory IgA") :super iga)
+(noun ("IgA1" "iga1") :super iga) ;; contains "UP:P01876" "IGHA1_HUMAN"
+(noun ("IgA2" "iga2") :super iga) ;; contains "UP:P01877" "IGHA2_HUMAN"
+
+(define-category igd :specializes immunoglobulin
+                 :bindings (uid "NCIT:C566") ;; contains "UP:P01880"
+                 :realization
+                 (:noun ("IgD" "igd" "IgD immunoglobulin complex"
+                               "Ig delta" "IgD" "immunoglobulin D")))
+
+(define-category ige :specializes immunoglobulin
+                 :bindings (uid "NCIT:C567")
+                 :realization
+                 (:noun ("IgE" "ige" "IgE immunoglobulin complex"
+                               "Ig epsilon" "IgE" "immunoglobulin E")))
+
+(define-category igg :specializes immunoglobulin
+                 :bindings (uid "GO:0071735") ;; NCIT:568
+                 :realization
+                 (:noun ("IgG" "igg" "IgG immunoglobulin complex"
+                               "Ig gamma" "IgG1-4" "immunoglobulin G")))
+
+(def-indiv-with-id igg "IgG4" "NCIT:C78227") ;; contains "UP:P01861" ;; measurements NCIT:C122130
+;; the others have no uid
+(noun "IgG1" :super igg) ;; contains "UP:P01857" ;; measurements of it are NCIT:C122127
+(noun "IgG2" :super igg) ;; contains "UP:P01859" ;; measurements NCIT:C122128
+(noun "IgG2a" :super igg2) ;; might be only in mice?
+(noun "IgG2b" :super igg2) ;; might be only in mice?
+(noun "IgG3" :super igg) ;; contains "UP:P01860" ;; NCIT:C122129
+
+(define-category igm :specializes immunoglobulin
+                 :bindings (uid "NCIT:C569")
+                 :realization
+                 (:noun ("IgM" "igm" "IgM immunoglobulin complex"
+                               "Ig mu" "IgM" "immunoglobulin M")))
+
 ;;;-------------------------------------
 ;;; Complex definitions with IDs 
 ;;;-------------------------------------
