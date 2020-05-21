@@ -1205,7 +1205,7 @@
         collect
           (let ((article (run-json-article
                           (make-json-article-from-file-handle (car art-group)))))
-            (list article
+            (cons article
                   (loop for toc-right in (second art-group)
                         collect
                         toc-right
