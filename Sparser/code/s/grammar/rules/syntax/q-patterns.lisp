@@ -724,7 +724,8 @@
         (vp-ref (edge-referent vp+ed-edge)))
     (cond
       ((open-core-variable vp-ref)
-       (cond ((is-passive? vp+ed-edge)
+       (cond ((and (is-passive? vp+ed-edge)
+                   (find-subcat-var  i :object vp-ref))
               ;; open in object since there's a by-phrase
               (unless (missing-object-vars vp-ref)
                 (error "Why isn't passive open in its object?"))
