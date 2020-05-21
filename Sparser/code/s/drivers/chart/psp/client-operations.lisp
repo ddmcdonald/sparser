@@ -1018,3 +1018,204 @@
       (loop for item in list-struct
               thereis (contains-string string item))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;; New code used for indexing COVID (CORD-19) articles
+;;; THis is probably not the right place for this code, but for today...?
+;;; DAVID -- LET'S TALK
+
+;; how to do this generally?  We need to move the data. 
+(defparameter *mentions-dir*
+  "~/projects/r3/corpus/covid/2020-05-12/document_parses/pdf_json/mentions/")
+
+(defun mention-files ()
+  (uiop::directory-files *mentions-dir*))
+
+(defvar *mention-files* nil)
+
+(defun install-mention-files ( &key (n nil) (quiet nil))
+  (unless (consp *mention-files*)
+    (setq *mention-files* (mention-files)))
+  (unless n (setq n (length *mention-files*)))
+  (time
+   (loop for f in *mention-files*
+         as i from 1 to n
+         do
+           (when (and (not quiet)
+                      (eql i (* 100 (floor i 100))))
+             (print i))
+           (install-mention-file f))
+   ))
+
+    
+(defun install-mention-file (path)
+  (load path))
+
+(defvar *mentions-by-sent* (make-hash-table :test #'equal :size 3000000))
+(defvar *mentions-by-para* (make-hash-table :test #'equal :size 300000))
+
+(defun reset-mentions ()
+  (clrhash *mentions-by-sent*)
+  (clrhash *mentions-by-para*)
+  )
+
+(defun dprop (prop descrip)
+  (second (assoc prop descrip)))
+
+
+;; file format no longer allows for multiple articles in the list
+
+;; have to make sp::install-article-mentions a macro because the output
+;;  function for the files did not quote the second or third argument
+
+(defmacro install-article-mentions (file-name article-id by-cat)
+  `(install-article-mentions-fn ,file-name ',article-id ',by-cat))
+
+(defun install-article-mentions-fn (file-name article-id
+                                        by-cat)
+  ;;(format t "~%Installing article ~a" article-id)
+  (loop for (categ cat-data) in by-cat
+        ;;do (format t "~%Category ~a" categ)
+        do 
+          (loop for (descrip locations) in cat-data
+                do
+                  (loop for loc in locations
+                        do (install-mention descrip article-id loc)
+                          ))))
+
+
+;;; we want to install mentions by category and name (and possibly uid?)
+;;; later we'll deal with relations
+
+(defun install-mention (descrip article-id loc)
+  (let* ((loc-parts loc)
+         (full-loc (cons article-id loc-parts))
+         (para-parts (subseq loc 0 (find  "." loc :from-end t)))
+         )
+    ;; amazingly, because there are tens of thousands of descrips
+    ;;  that start with e.g. (protein ...)
+    ;;  it is faster to convert the descrip to a string and
+    ;;  hash on the string
+    (setq descrip (prin1-to-string descrip))
+    (push full-loc (gethash descrip *mentions-by-sent*))
+    (push full-loc (gethash descrip *mentions-by-para*))
+    ))
+
+    
+;;; cats list can include category symbols or names (strings)
+;;; collect all of the MENTIONS for each named category that where each mention from a pair appears in the same
+;;; paragraph or sentence
+
+(defparameter *location-hash* (make-hash-table :test #'equal))
+
+
+(defun find-intersecting-descrip-mentions (descrips &optional (in-paras nil))
+  (clrhash *location-hash*)
+  (let* ((ht (if in-paras *mentions-by-para* *mentions-by-sent*))
+         (descrips-mentions
+          (loop for descrip in descrips
+                do
+                  (loop for dloc in (gethash (prin1-to-string descrip) ht)
+                        do
+                          (pushnew descrip (gethash dloc *location-hash*))))))
+    (sort
+     (group-by (hal *location-hash*)
+               #'(lambda (x) (length (cdr x))))
+     #'>
+     :key #'car)))
+
+;;;  FIND THE INTERSECTING LOCATIONS
+;;; categories are <categorysymbol> or (<categorysymbol> "name")
+;;; may want to extend this later for relations etc. 
+;;; if in-paras is nil then in same sentences
+
+;;; OLD CODE
+#+ignore
+(defun find-intersecting-cat-mentions (cats &optional (in-paras nil))
+  (flet ((full-loc (m)
+           (list (mention-article m)
+                 (if in-paras (mention-para m) (mention-location m)))))
+
+    (let* ((ht (if in-paras *mentions-by-para* *mentions-by-sent*))
+           (numcats (length cats))
+           (all-hits nil)
+           (cats-mentions
+             (loop for cat in cats
+                   collect (list cat (gethash cat ht))))
+           loc-by-cat-ments
+           ) ;; hash returns list of mentions
+      (print cats-mentions)
+      (clrhash *location-hash*)
+      (loop for (cat mentions) in cats-mentions
+            do (loop for m in mentions
+                     for loc = (full-loc m)
+                     do (print (list loc cat m))
+                        (pushnew (list cat m) (gethash loc *location-hash*))))
+
+;;; for now get |probes| or |probes|-1  in same location
+;;; we might want to also n>1 matching rather than require all are together. 
+
+      (maphash #'(lambda (loc catments)
+                   (let ((loc-cat-count (length (remove-duplicates catments :key #'car))))
+                     (when (> loc-cat-count (max (- numcats 2) 1))
+                       (push (list loc-cat-count loc catments) all-hits))
+                     ))
+               *location-hash*)
+      (setf all-hits (sort all-hits #'> :key #'car)))))
+      
+
+
+
+(defun load-test-mentions (&optional (file "/Users/mark/cwc-integ/spire/covid/mentions-test-file.lisp"))
+  (reset-mentions)
+  (time (load file)))
+
+
+;;; THIS IS THE CODE TO SEARCH FOR SENTENCES THAT HAVE THE GREATEST NUMBER OF
+;;;  ITEMS IN COMMON WITH A QUERY
+
+
+(defun sentence-indexable-mentions (&optional (s (sentence)))
+  (loop for m in (sentence-mentions (sentence)) 
+        when (gethash (krisp->sexpr (mention-head-referent m))
+                      *mentions-by-sent*)
+        collect (krisp->sexpr (mention-head-referent m))))
+
+(defun best-references-for-sentence (&key (s (sentence))
+                                       (n-articles 5))
+  (when (stringp s)
+    (qepp s)
+    (setq s (sentence)))
+  (loop for art-group
+        in
+          (sort 
+           (group-by
+            (second
+             (car
+              (find-intersecting-descrip-mentions
+               (loop for d
+                     in
+                       (mapcar #'(lambda (m) (krisp->sexpr (mention-head-referent m)))
+                               (sentence-mentions (sentence)))
+                     when (gethash (prin1-to-string d) *mentions-by-sent*)
+                     collect d))))
+            #'caar
+            #'cdar)
+           #'>
+           :key #'(lambda(x)(length (second x))))
+        as i from 1 to n-articles
+        collect
+          (let ((article (run-json-article
+                          (make-json-article-from-file-handle (car art-group)))))
+            (list article
+                  (loop for toc-right in (second art-group)
+                        collect
+                        toc-right
+                        #+ignore
+                          (let ((sent
+                                 (sentence-for-toc
+                                  (format nil "~a.~a"
+                                                    (car art-group)
+                                                    toc-right)
+                                  article)))
+                            (when sent
+                              (list (1- (starts-at-char sent))
+                                    (1- (ends-at-char sent))))))))))
