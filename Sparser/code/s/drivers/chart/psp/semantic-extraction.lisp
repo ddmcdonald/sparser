@@ -918,8 +918,9 @@ in cwc-integ/spire/interface/sparser.lisp
                    (when *show-words-and-polywords* (push vv-pair desc)))
                   (category
                    (push `(,var-name ,(collect-model-description value)) desc))
-                  (cons (lsp-break "how did we get a CONS ~s as a value for variable ~s~%"
-                                   value var-name))
+                  (cons (warn "how did we get a CONS ~s as a value for variable ~s~%"
+                              value var-name)
+                        '**bad-cons-as-value**)
                   (rule-set) ;; the word "anti" presently does this
                   ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)
                   (otherwise
@@ -1050,7 +1051,8 @@ in cwc-integ/spire/interface/sparser.lisp
   "Recursively walk the dependency links in the mention, collecting any
    mentions on the links into an aggregated set for the mention
    as a whole."
-  (unless (member mention mentions-above)
+  (unless (or (eq mention t)
+              (member mention mentions-above))
     (setq mentions-above (cons mention mentions-above))
     `(,mention
       ,@
