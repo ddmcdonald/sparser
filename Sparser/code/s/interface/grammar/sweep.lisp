@@ -658,20 +658,20 @@ unknown words.|#
                               collect (word-pname word)))
                 (var-name (tailored-string 'comlex)))
             (format out "~&~%;; ~a extracted from Comlex~%" (length pnames))
-            (write-list-to-param "*Comlex-Words*" pnames out))))
+            (write-list-to-param "*Comlex-Word-List*" pnames out))))
 
     (error (e)
       (format t "~&Error in dumping unknown word set: ~a, Error is: ~a~%" name e))))
 
 (defun write-list-to-param (param-name list stream)
   (format stream
-          "~%~%(defparameter ~a~%    (remove-duplicates~%      (append ~%         (when (boundp '~a) (symbol-value `~a))~%         '("
+          "~%~%(defparameter ~a~%    (remove-duplicates~%      (append ~%         (when (boundp '~a) (symbol-value `~a))~%         '"
           param-name param-name param-name)
   (pprint list stream)
   #+gnore
   (loop for item in list
      do (format stream "~s " item))
-  (format stream "))~%    :test #'equalp))~%"))
+  (format stream ")~%    :test #'equalp))~%"))
 
 (defun push-list-on-param (file-handle items stream)
   (format stream
