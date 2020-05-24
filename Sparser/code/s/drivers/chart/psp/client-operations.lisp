@@ -1203,8 +1203,10 @@
            :key #'(lambda(x)(length (second x))))
         as i from 1 to n-articles
         collect
-          (let ((article (run-json-article
-                          (make-json-article-from-file-handle (car art-group)))))
+          (let* ((*write-article-objects-file* nil)
+                 (article (run-json-article
+                           (make-json-article-from-file-handle (car art-group)))))
+            (declare (special *write-article-objects-file*))
             (cons article
                   (loop for toc-right in (second art-group)
                         collect
