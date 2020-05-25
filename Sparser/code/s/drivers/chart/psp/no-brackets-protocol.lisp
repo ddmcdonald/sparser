@@ -432,6 +432,19 @@
                     *sentence-in-core*))
   (setf (sentence-mentions (contents sentence))
         (semantic-mentions-in-current-sentence sentence))
+  (loop for m in (sentence-mentions (contents sentence))
+        when (and (or (not (slot-boundp m 'location-in-article))
+                      (null (mentioned-in-article-where m)))
+                  (toc-index sentence)
+                  (parent sentence))
+        do
+          #+ignore
+          (warn "##### ----- mwention ~s without mentioned-in-article-where,~% should have ~s~%"
+                m
+                (cons (toc-index sentence) (parent sentence)))
+          (setf (mentioned-in-article-where m)
+                (cons (toc-index sentence) (parent sentence))))
+                
   (when *current-article* ;; probably won't need this
     (save-article-sentence *current-article* sentence)
     (setf (gethash sentence *article-sent-mentions*)
