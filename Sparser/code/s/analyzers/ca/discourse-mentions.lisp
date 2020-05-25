@@ -1008,10 +1008,13 @@ so we return the edge for the POBJ"
       (basic-add-new-dependencies top-edge old-dependencies edges i ii)))
 
 (defun fill-in-mention (m i source)
+  (declare (special *scanning-terminals*))
   (let* ((location
           (encode-mention-location
            (if (consp source) (second source) source)))
-         (toc (location-in-article-of-current-sentence)))
+         (toc (unless
+                  *scanning-terminals*
+                  (location-in-article-of-current-sentence))))
     (when (edge-p source)
       (setf (mention-source m) source)
       (setf (edge-mention source) m)
@@ -1021,14 +1024,29 @@ so we return the edge for the POBJ"
           (encode-mention-location
            (if (consp source) (second source) source)))
     (unless toc
-      (error "TOC is nil for ~a~%Mention will not get a location" m))
+      (unless *scanning-terminals*
+        #+ignore
+        (if (is-in-p "ACE2_HUMAN"
+                     (krisp->sexpr
+                      (mention-head-referent m))
+                     :test #'equalp)
+            (warn "TOC NIL for ACE2 mention ~s in fill-in-mention%" m)
+            (warn "TOC is nil for polyword creation of mention: ~s, which will not get a location" m))
+        (error "TOC is nil for ~a~%Mention will not get a location" m)))
     (when toc
       ;; some mentions get created in MAKE-EDGE-FOR-POLYWORD or other passes
       ;;  which occurs before sentences are delimited
       #+ignore
       (when (and *current-paragraph* (eq 0 (search "NIL" toc)))
         (lsp-break "why don't we have a real toc?"))
-            
+      #+ignore ;; tracking down bug with empty TOC
+      (when (is-in-p "ACE2_HUMAN"
+                      (krisp->sexpr
+                       (mention-head-referent m))
+                     :test #'equalp)
+        (warn "in fill-in-mention: ACE2 at TOC ~s~%" toc)
+        (when (equal toc "0512-PDF-4353.1.p2.s1")
+          (lsp-break "0512-PDF-4353.1.p2.s1")))
       (setf (mentioned-in-article-where m)
             (cons toc *current-paragraph*)))
    ))
