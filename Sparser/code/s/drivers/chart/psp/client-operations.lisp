@@ -1094,7 +1094,7 @@
     ;;  that start with e.g. (protein ...)
     ;;  it is faster to convert the descrip to a string and
     ;;  hash on the string
-    (setq descrip (prin1-to-string descrip))
+    (setq descrip (sp-prin1-to-string descrip))
     (push full-loc (gethash descrip *mentions-by-sent*))
     (push full-loc (gethash descrip *mentions-by-para*))
     ))
@@ -1105,7 +1105,15 @@
 ;;; paragraph or sentence
 
 (defparameter *location-hash* (make-hash-table :test #'equal))
+(defvar *mentions-files* nil)
 
+(defun maybe-initialize-mention-hashes ()
+  (unless (> (hash-table-count sp::*mentions-by-para*) 0)
+    (time (length
+           (setq *mentions-files*
+                        (directory "~/projects/r3/corpus/covid/2020-05-12/document_parses/pdf_json/mentions/*.lisp"))))
+    (time (loop for f in *mentions-files* as i from 1 to 15000  do (when (eql i (* 100 (floor i 100)))  (print i))(load f))))
+  )
 
 (defun find-intersecting-descrip-mentions (descrips &optional (in-paras nil))
   (clrhash *location-hash*)
@@ -1113,7 +1121,7 @@
          (descrips-mentions
           (loop for descrip in descrips
                 do
-                  (loop for dloc in (gethash (prin1-to-string descrip) ht)
+                  (loop for dloc in (gethash (sp-prin1-to-string descrip) ht)
                         do
                           (pushnew descrip (gethash dloc *location-hash*))))))
     (sort
@@ -1175,12 +1183,16 @@
 
 (defun sentence-indexable-mentions (&optional (s (sentence)))
   (loop for m in (sentence-mentions (sentence)) 
-        when (gethash (krisp->sexpr (mention-head-referent m))
+        when (gethash (print
+                       (let ((*package* (find-package :sp)))
+                         (format nil "~s"
+                                 (krisp->sexpr (mention-head-referent m)))))
                       *mentions-by-sent*)
         collect (krisp->sexpr (mention-head-referent m))))
 
 (defun best-references-for-sentence (&key (s (sentence))
                                        (n-articles 5))
+  (maybe-initialize-mention-hashes)
   (when (stringp s)
     (qepp s)
     (setq s (sentence)))
@@ -1191,12 +1203,7 @@
             (second
              (car
               (find-intersecting-descrip-mentions
-               (loop for d
-                     in
-                       (mapcar #'(lambda (m) (krisp->sexpr (mention-head-referent m)))
-                               (sentence-mentions (sentence)))
-                     when (gethash (prin1-to-string d) *mentions-by-sent*)
-                     collect d))))
+               (find-indexed-descriptions (sentence-mentions (sentence))))))
             #'caar
             #'cdar)
            #'>
@@ -1210,14 +1217,29 @@
             (cons article
                   (loop for toc-right in (second art-group)
                         collect
-                        toc-right
-                        #+ignore
-                          (let ((sent
-                                 (sentence-for-toc
-                                  (format nil "~a.~a"
-                                                    (car art-group)
-                                                    toc-right)
-                                  article)))
-                            (when sent
-                              (list (1- (starts-at-char sent))
-                                    (1- (ends-at-char sent))))))))))
+                          (let* ((sentence
+                                  (sentence-for-toc
+                                   (format nil "~a.~a" (slot-value article 'name) toc-right)
+                                   article))
+                                 (paragraph (parent sentence)))
+                            (declare (special sentence paragraph))
+                            (when sentence
+                              (list (toc-index paragraph)
+                                    ;;(subseq (content-string paragraph)
+                                    (1- (starts-at-char sentence))
+                                    (1- (ends-at-char sentence)) ;)
+                                    ))
+
+                            ))))))
+
+(defun find-indexed-descriptions (mentions)
+  (loop for d
+        in
+          (mapcar #'(lambda (m) (krisp->sexpr (mention-head-referent m))) 
+                  mentions)
+        when (gethash (sp-prin1-to-string d) *mentions-by-sent*)
+        collect d))
+
+(defun sp-prin1-to-string (item)
+  (let ((*package* (find-package :sp)))
+    (format nil "~s" item)))
