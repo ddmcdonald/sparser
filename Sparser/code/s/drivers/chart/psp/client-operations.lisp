@@ -1107,12 +1107,12 @@
 (defparameter *location-hash* (make-hash-table :test #'equal))
 (defvar *mentions-files* nil)
 
-(defun maybe-initialize-mention-hashes ()
+(defun maybe-initialize-mention-hashes (&key (n 15000))
   (unless (> (hash-table-count sp::*mentions-by-para*) 0)
     (time (length
            (setq *mentions-files*
                         (directory "~/projects/r3/corpus/covid/2020-05-12/document_parses/pdf_json/mentions/*.lisp"))))
-    (time (loop for f in *mentions-files* as i from 1 to 15000  do (when (eql i (* 100 (floor i 100)))  (print i))(load f))))
+    (time (loop for f in *mentions-files* as i from 1 to n  do (when (eql i (* 1000 (floor i 1000)))  (print i))(load f))))
   )
 
 (defun find-intersecting-descrip-mentions (descrips &optional (in-paras nil))
