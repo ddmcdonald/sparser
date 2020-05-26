@@ -1627,7 +1627,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                        (itypep np 'number))) ;; "two of them"
               (let ((i (sort-out-specifier/of np pobj-referent)))
                 (swap-rule-head *pobj-edge* i)
-                i)) ;;#################################################
+                i))
 
              ((when (and (use-methods)
                          (most-specific-k-method 'compose (list np pp)))
@@ -2491,7 +2491,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
             (make-simple-individual
              category::prepositional-phrase
              `((prep ,prep) (pobj ,pobj))))))))
-;;###################################3
+
 
 (defun make-prep-comp (prep complement)
   ;; Called for the pattern 
