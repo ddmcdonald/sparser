@@ -27,7 +27,6 @@
   :instantiates self
   :specializes geographical-region
   :lemma (:common-noun "city")
-  :rule-label region-type
   :binds ((name :primitive word)
           (aliases  :primitive list)
           (country . country)

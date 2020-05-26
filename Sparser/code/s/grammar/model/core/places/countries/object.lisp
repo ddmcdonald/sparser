@@ -29,7 +29,6 @@
   :instantiates  self
   :specializes geographical-region
   :lemma (:common-noun "country")
-  :rule-label region-type
   :binds ((name :primitive word)
           (adjective-form  :primitive word)
           (aliases  :primitive list))
@@ -89,7 +88,7 @@
          do (define-city string :country country)))
     (when provinces ;; bad for grammar, but makes them known
       (loop for string in provinces
-         do (define-city string :country country)))
+         do (define-province string)))
     (values country
             rules)))
 

@@ -245,7 +245,15 @@
 (define-type-instance-constructor sea)
 
 
+;;--- provinces (as in Canada or China)
 
+(define-category province ;; "Hunan province"
+  :specializes geographical-area
+  :rule-label province
+  ;; :lemma (:common-noun "province") <-- will region-type suffice?
+  :realization (:proper-noun name))
+
+(define-type-instance-constructor province)
 
 
 ;;;---------
