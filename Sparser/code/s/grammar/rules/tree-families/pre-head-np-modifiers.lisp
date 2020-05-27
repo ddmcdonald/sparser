@@ -1,10 +1,10 @@
   ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2005,2011-2014,2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2011-2014,2019-2020 David D. McDonald  -- all rights reserved
 ;;; copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "pre-head np modifiers"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  December 2019
+;;;  version:  May 2020
 
 ;; initiated 4/28/94 v2.3
 ;; 0.1 (10/20) refined some of the distinctions amoung cases
@@ -39,8 +39,10 @@
         modifier-creates-individual ------------ "Dutch company", "publishing group"
         modifier-creates-instance -------------- "NFkappaB2 gene"
         modifier-creates-definite-individual --- "last year"
+        modifier-creates-definite-individual/no-hyphen
         designated-instance-of-set ------------- "(the) third quarter"
-        quantity+kind -------------- "7 tons"
+        quantity+kind -------------- "7 tons", "7-ton"
+        quantity+kind/no-hyphen ---- ditto minus the hyphen
         number-of-quantity --------- "10 million", "7 dozen"
         quantity-of-kind ----------- "three companies"
         quantity+idiomatic-head ---- "45(-year) old"
@@ -131,6 +133,18 @@
                     :head right-edge))))
 
 
+(define-exploded-tree-family  modifier-creates-definite-individual/no-hyphen
+  :description "As above minus the hyphen rule"
+  :binding-parameters ( individuator  base-category )
+  :labels ( np modifier np-head result-type )
+  :cases
+     ((:definite-modifier
+        (np (modifier np-head)
+          :instantiate-individual result-type
+          :binds (individuator left-edge
+                  base-category right-edge)
+          :head right-edge ))))
+
 #| The head denotes a component of some larger entity, in the examplars the larger 
    entity has a specific, fixed number of these components. The addition of the 
    modifier (qualifier usually) picks out one of these components and
@@ -173,7 +187,18 @@
                   :head right-edge)
 
       (:hyphenated  (np-head ("-" np-head)
-                      :daughter right-edge))))
+                             :daughter right-edge))))
+
+(define-exploded-tree-family quantity+kind/no-hyphen
+  :description "Identical to quantity+kind except that the hyphen rule is omitted"
+  :binding-parameters ( quantity base )
+  :labels ( np modifier np-head result-type )
+  :cases
+     ((:modifier (np (modifier np-head)
+                  :instantiate-individual result-type
+                  :binds (quantity left-edge
+                          base right-edge))
+                  :head right-edge)))
 
 
 #| A variation on quantity+kind's structure that might be specific to numbers.

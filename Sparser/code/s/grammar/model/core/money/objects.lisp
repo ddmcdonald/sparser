@@ -88,7 +88,7 @@
   :instantiates :self
   :binds ((number . number)
           (currency . currency))
-  :realization ((:tree-family  quantity+kind   ;; "10 dollars"
+  :realization ((:tree-family  quantity+kind/no-hyphen   ;; "10 dollars"
                  :mapping ((quantity . number)
                            (base . currency)
                            (result-type . :self)
@@ -96,7 +96,7 @@
                            (modifier . number)
                            (np-head . (denomination/money
                                        fractional-denomination/money))))
-                (:tree-family  modifier-creates-definite-individual  ;; "$10"
+                (:tree-family  modifier-creates-definite-individual/no-hyphen  ;; "$10"
                  :mapping ((individuator . currency)
                            (base-category . number)
                            (result-type . :self)
