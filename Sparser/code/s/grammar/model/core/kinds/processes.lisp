@@ -146,7 +146,7 @@
  this documentation'. As you read, your 'cursor' in the documentation
  moves, and your understanding of what this model is like grows (or
  becomes more muddled as the case may be). At a the granularity of
- modeling where we call something a parosess, all of the temporal
+ modeling where we call something a process, all of the temporal
  parts of the process are the same. The Cyc folks like the example of
  someone giving a talk: Over the entire interval of the talk the
  person is talking, even though if we go to a finer granularity there

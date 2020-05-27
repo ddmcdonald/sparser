@@ -371,7 +371,7 @@
           (cdr pair))))))
 
 (defun find-variable (name-symbol)
-  "Returns a single variable if is is only bound by one category,
+  "Returns a single variable if it is only bound by one category,
    otherwise returns the full list or nil if undefined."
   (let ((entry (get-variable-category-pairs-for-var-name name-symbol)))
     (cond
