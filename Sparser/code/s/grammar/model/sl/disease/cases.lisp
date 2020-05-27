@@ -6,8 +6,17 @@
 ;;;    Module:   "sl;disease:"
 ;;;   version:   April 2016
 
-;;category to represent 'cases' - states where individuals are infected by some pathogen
-;;often confused with MILITARY-FORCE, because sparser believes the plural of "cas" is "cases" (ironically this would be the 'correct' plural of it)
+(in-package :sparser)
+
+#| NO LONGER LOADED -- 'cases' migrated to outbreak.lisp |# 
+
+
+
+
+;; Category to represent 'cases' - states where individuals are
+;; infected by some pathogen often confused with MILITARY-FORCE,
+;; because sparser believes the plural of "cas" is "cases" (ironically
+;; this would be the 'correct' plural of it)
 
 ;;;------------
 ;;; the object

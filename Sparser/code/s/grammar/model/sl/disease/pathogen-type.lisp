@@ -6,9 +6,10 @@
 ;;;    Module:   "sl;disease:"
 ;;;   version:   August 2013
 
-;;category to represent types of diseases: virus, bacteria, prion, etc.
-;;this category can be analagous to pronouns
-;;when a pathogen-type is mentioned, it is picking out a named pathogen from set of salient ones
+;; Category to represent types of disease vectors: virus, bacteria, prion, etc.
+;; this category can be analogous to pronouns
+;; when a pathogen-type is mentioned, it is picking out a named pathogen
+;; from set of salient ones
 
 
 (in-package :sparser)

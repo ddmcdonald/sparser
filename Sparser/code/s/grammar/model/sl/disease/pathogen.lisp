@@ -21,21 +21,13 @@
 
 ;;this is just a bare-bones representation, but works for now
 (define-category pathogen
-  :specializes nil
+  :specializes physical-agent
   :instantiates self
   :binds ((name :primitive word)
           (pathogen-type pathogen-type)) ;e.g. h5n1 is a virus, ecoli is a bacteria
           ;;(vector :primitive word) e.g. avian flu is spread by infected birds
   :index (:permanent :key name)
   :realization (:common-noun name)) 
-
-;;;-----------
-;;; citations
-;;;-----------
-
-;;"the bird flu virus h 5 n 1" from 1 Aljazeera_Jan-18.txt
-
-;;"the potentially fatal MERS virus" from Saudia Arabia MERS article
 
 
 ;;;------

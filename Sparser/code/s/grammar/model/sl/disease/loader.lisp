@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "sl;disease:"
-;;;   version:   March 2020
+;;;   version:   May 2020
 
 ;; initiated 12/27/07. Started expanding 5/6/13 with [named-entities],
 ;; [h-n-scanner]
@@ -20,7 +20,7 @@
 (gload "disease;h-n-scanner")
 (gload "disease;named-entities")
 (gload "disease;disease-ref")
-(gload "disease;cases")
+;; (gload "disease;cases") -- subsumed by outbreak
 
 (gload "disease;covid-19")
 
