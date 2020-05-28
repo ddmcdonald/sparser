@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "methods"
 ;;;   Module:  "model;core:places:"
-;;;  version:  November 2017.
+;;;  version:  November 2020
 
 ;; N.b. This file is loaded late after all categories have been defined.
 ;; It is for location-oriented compose methods
@@ -43,18 +43,19 @@
    The intended target of 'has-location' is anything that inherits from object."
   (declare (special *subcat-test* category::pp))
   (if *subcat-test*
-    t
+    (not (itypep place 'bio-scalar)) ; aspp2 #44
     (else
-      (tr :relative-location+has-location op place)
-      (let ((form (edge-form (parent-edge-for-referent))))
-        (cond
-          ((np-category? form) ;; called from noun-noun-compound
-           (add-dependent-location op place)) ;;?? "the bottom block"
-          ((eq form category::pp)
-           (make-relative-location/revise-parent op place))
-          (t
-           (push-debug `(,op ,place))
-           (error "Unanticipated form on parent edge: ~a" form)))))))
+      (unless (itypep place 'bio-scalar)
+        (tr :relative-location+has-location op place)
+        (let ((form (edge-form (parent-edge-for-referent))))
+          (cond
+            ((np-category? form) ;; called from noun-noun-compound
+             (add-dependent-location op place)) ;;?? "the bottom block"
+            ((eq form category::pp)
+             (make-relative-location/revise-parent op place))
+            (t
+             (push-debug `(,op ,place))
+             (error "Unanticipated form on parent edge: ~a" form))))))))
 
 ;; "next to it"
 (def-k-method compose ((op category::relative-location)
@@ -121,11 +122,12 @@
 (def-k-method compose ((operator category::relative-location)
                        (place category::location))
   (declare (special *subcat-test*))
-  (if *subcat-test*
-    (not (itypep place 'bio-location))
-    (else
-      (tr :relative-location+location operator place)
-      (make-relative-location/revise-parent operator place))))
+  (unless (itypep place 'bio-location) ; aspp2 #16, dry-run #30
+    (if *subcat-test*
+      (not (itypep place 'bio-location))
+      (else
+        (tr :relative-location+location operator place)
+        (make-relative-location/revise-parent operator place)))))
 
 
 
