@@ -173,6 +173,21 @@ like prepositional-phase (see syntax/syntactic-classes.lisp) |#
   (when (use-methods)
     `(most-specific-k-method ',method (list ,@arguments)) ))
 
+(defmacro valid-method (method &rest arguments)
+  "If there is an applicable signature for this method, apply the method
+   and return the results. Intended for use in the *subcat-test* portion
+   of a function, where a similar clause in the method applies its test."
+  (when (use-methods)
+    `(when (most-specific-k-method ',method (list ,@arguments))
+       (apply ',method (list ,@arguments)))))
+
+(defmacro apply-valid-method (method &rest arguments)
+  "Largely just a renaming, but leaves open the option of communicating the
+   'passed the test' flag some other way."
+  (when (use-methods)
+    `(when (most-specific-k-method ',method (list ,@arguments))
+       (apply ',method (list ,@arguments)))))
+
 
 
 ;;;-------------
@@ -523,7 +538,8 @@ val-pred-var (pred vs modifier - left or right?)
   ;; goes with (common-noun common-noun) syntactic rule
   ;; and {common-noun} → n-bar common-noun
   ;; or {proper-noun} → np proper-noun>
-  
+  ;; Also n-bar → {np n-bar}
+;;#####################################################################  
   (cond
     (*subcat-test*
      (let ((right-edge (right-edge-for-referent)))
@@ -554,7 +570,7 @@ val-pred-var (pred vs modifier - left or right?)
     ((and qualifier head)
      (setq head (individual-for-ref head))
      (cond
-       ((applicable-method compose qualifier head)
+       ((valid-method compose qualifier head)
         ;; "left side" (etc. see core/places/methods.lisp)
         (let ((result (compose qualifier head)))
           (tr :composed-qualifier-with-head qualifier head result)
@@ -682,7 +698,7 @@ val-pred-var (pred vs modifier - left or right?)
   (cond
     (*subcat-test*
      t) ;;(takes-adj? head adjective) precludes all the other legal cases
-    ((applicable-method compose adjective head)
+    ((valid-method compose adjective head)
      ;; "the Ras protein", where 'protein' is a type-marker
      (compose adjective head))
     ((itypep adjective 'attribute-value) ;; "red block"
@@ -755,8 +771,7 @@ val-pred-var (pred vs modifier - left or right?)
             (unless *sentence-in-core*
               (error "Threading bug. No value for *sentence-in-core*"))
             ;; (break "create-partitive spec = ~a" spec) ;;#########
-            (let* ((pobj-ref
-                    (individual-for-ref (edge-referent right-daughter)))
+            (let* ((pobj-ref (individual-for-ref (edge-referent right-daughter)))
                    (interpretation-of-head (sort-out-specifier/of spec pobj-ref)))
               (swap-rule-head right-daughter interpretation-of-head)
               interpretation-of-head))))))))
@@ -804,7 +819,7 @@ val-pred-var (pred vs modifier - left or right?)
           (add-def-ref determiner parent-edge))
       
         (cond
-          ((applicable-method compose determiner head)
+          ((valid-method compose determiner head)
            ;; There are a ton of categories that are defined to be
            ;; syntactic determiners that deserve their own careful
            ;; semantic treatment that might funnel through here
@@ -844,7 +859,7 @@ val-pred-var (pred vs modifier - left or right?)
   (declare (special word::|of|))
   (or
    *subcat-test*
-   (when (applicable-method compose possessive head)
+   (when (valid-method compose possessive head)
      (compose possessive head))
    (let ((var (subcategorized-variable head word::|of| possessive)))
      (if var
@@ -875,10 +890,9 @@ val-pred-var (pred vs modifier - left or right?)
 (defun quantify-comparative (quantifier comparative)
   (or *subcat-test* ;; this always composes
       (cond
-        #+ignore ;; for future expansion
-        ((applicable-method compose quantifier comparative)
+        ((valid-method compose quantifier comparative)
          (let ((result (compose quantifier comparative)))
-           ;;(tr :composed-qualifier-with-head qualifier head result)
+           (tr :composed-qualifier-with-head quantifier comparative result)
            result))
         (t
          ;; (if (itypep comparative 'less)
@@ -944,14 +958,14 @@ val-pred-var (pred vs modifier - left or right?)
                         (not (itypep head 'year)))) ;; "December 4 2017"
     (t
      (setq head (individual-for-ref head))
-     (when (or (individual-p head )(category-p head))
+     (when (or (individual-p head) (category-p head))
        (setq head (bind-dli-variable 'number number head)))
      head)))
 
 
 
 (defun verb+ing-noun-compound (verb head)
-  (or (when (applicable-method compose verb head)
+  (or (when (valid-method compose verb head)
         (compose verb head))
       (link-in-verb+ing verb head)))
 
@@ -1016,9 +1030,10 @@ there was an edge for the qualifier (e.g., there is no edge for the
      nil)
     (*subcat-test* (and (not (itypep qualifier 'do))
                         ;; don't allow "done" -- no "thus far was done using " but also "done deals"
-                        (subcategorized-variable qualifier :object head)))
+                        (subcategorized-variable qualifier :object head)
+                        (valid-method compose  qualifier head)))
     
-    (t (or (when (applicable-method compose  qualifier head)
+    (t (or (when (valid-method compose  qualifier head)
              (compose qualifier head))
 	   (link-in-verb qualifier head)
 	   (progn
@@ -1238,11 +1253,11 @@ there was an edge for the qualifier (e.g., there is no edge for the
                      (car (value-of 'items vg)) vg-phrase adverb)))
               t)
              (t
-             (when *show-missing-adverb-slots*
-               (warn "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
-                     (edge-string (left-edge-for-referent))
-                     (edge-string (right-edge-for-referent))
-                     (current-string)))
+              (when *show-missing-adverb-slots*
+                (warn "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
+                      (edge-string (left-edge-for-referent))
+                      (edge-string (right-edge-for-referent))
+                      (current-string)))
               nil)))
           (variable-to-bind
            (bind-dli-variable variable-to-bind adverb vg))
@@ -1315,7 +1330,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
       ((and (itypep adverb 'intensifier) ;; compose will apply
             (itypep adj-phrase 'qualifiable))
        ;; method is in core/adjuncts/others.lisp in the intensifier section
-       (compose adverb adj)) ;; "very unlikely"
+       (apply-valid-method compose adverb adj)) ;; "very unlikely"
 
       (variable-to-bind
        (bind-dli-variable variable-to-bind adverb adj))
@@ -1391,7 +1406,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
          finally (return vg)))
           
     ;; It's not a collection. Compare handlers in interpret-pp-adjunct-to-np
-    (or (when (applicable-method compose vg pp)
+    (or (when (valid-method compose vg pp)
           (compose vg pp))
         (multiple-value-bind (variable-to-bind pobj-referent prep-word *pobj-edge*)
             (variable-to-bind-pp-to-head (right-edge-for-referent) vg)
@@ -1581,7 +1596,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
            (or variable-to-bind
                (maybe-extend-premod-adjective-with-pp np pp)
                (and *force-modifiers* 'modifier)
-               (and (use-methods) (most-specific-k-method 'compose (list np pp)))
+               (applicable-method compose np pp)
                (is-domain-adjunctive-pp? np (right-edge-for-referent))
                (and (eq prep-word of)
                     (or (itypep np 'attribute)
@@ -1591,8 +1606,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                              (itypep pobj-referent 'partonomic))
                         (and (itypep np 'partonomic)
                              (compatible-with-specified-part-type pobj-referent np))
-                        (and (use-methods)
-                             (most-specific-k-method 'compose (list np pobj-referent))))))
+                        (valid-method compose np pobj-referent))))
 
            ;; This side runs when subcat test passed and we're really interpreting.
            ;; Specific cases are ordered before looking for applicable methods
@@ -1629,17 +1643,15 @@ there was an edge for the qualifier (e.g., there is no edge for the
                 (swap-rule-head *pobj-edge* i)
                 i))
 
-             ((when (and (use-methods)
-                         (most-specific-k-method 'compose (list np pp)))
+             ((when (valid-method 'compose np pp)
                 ;; e.g. has-location + location : "the block at the left end of the row"
                 (let ((result (compose np pp)))
                   (when result
                     (tr :np-pp-composition np pp)
                     result))))
 
-             ((when (and (use-methods)
-                         (eq prep-word of)
-                         (most-specific-k-method 'compose (list np pobj-referent)))
+             ((when (and (eq prep-word of)
+                         (valid-method compose np pobj-referent))
                 (let ((result (compose np pobj-referent)))
                   (when result
                     (tr :compose-other-of np pobj-referent result)
@@ -2181,7 +2193,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
   the conjunction as a modifier just to keep it around. My reading
   of Quirk et al. is that the ones that we're most interested in
   have an adverbial function in structuring the discourse (19.55)."
-  (or (when (applicable-method compose conj eventuality)
+  (or (when (valid-method compose conj eventuality)
         (compose conj eventuality))
       eventuality)) ;; for the moment dropping it on the floor
 
@@ -2282,7 +2294,7 @@ there was an edge for the qualifier (e.g., there is no edge for the
                       '(so))))
     (let ((cl
            (or
-            (when (applicable-method compose conj clause)
+            (when (valid-method compose conj clause)
               (compose conj clause))
            
             ;;in the case without methods, we simply want to put the
@@ -2354,7 +2366,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
       ((itypep wh-obj 'wh-pronoun)
        ;; "which", "who", "where", ... See syntax/wh-word-semantic.lisp
        ;; which also has the relevant compose method.
-       (cond ((top-level-wh-question?)
+       (cond ((and (top-level-wh-question?)
+                   (valid-method compose wh-obj predicate))
               (compose wh-obj predicate)) ;; k-methods in questions.lisp
              ((preposed-of?)
               ;; "Of the genes involved in apoptosis, which are regulated by stat3?"
@@ -2476,21 +2489,18 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
 (defun make-pp (prep pobj)
   (declare (special category::prepositional-phrase))
-  (let ((use-method? (and (use-methods)
-                          (most-specific-k-method 'compose (list prep pobj)))))
-    (if *subcat-test*
-      (or (and use-method? ; it's legal to use the method
-               (compose prep pobj)) ;; run subcat test in the method
-          (progn
-            (setq use-method? nil)
-            (not (itypep prep category::prepositional-phrase))))
-      (else
-        (setq prep (individual-for-ref prep))
-        (or (when use-method?              
-              (compose prep pobj))
-            (make-simple-individual
-             category::prepositional-phrase
-             `((prep ,prep) (pobj ,pobj))))))))
+  (if *subcat-test*
+    (or (valid-method compose prep pobj)
+        (not (itypep prep category::prepositional-phrase)))
+    (else
+      (setq prep (individual-for-ref prep))
+      (or #+ignore(when (valid-method compose prep pobj)
+                    (compose prep pobj))
+          (apply-valid-method compose prep pobj)
+          (make-simple-individual
+           category::prepositional-phrase
+           `((prep ,prep) (pobj ,pobj)))))))
+  
 
 
 (defun make-prep-comp (prep complement)
