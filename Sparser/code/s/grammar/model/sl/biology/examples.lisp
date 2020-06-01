@@ -13,6 +13,12 @@
 ;;; Example texts
 ;;;---------------
 
+;; From NYT 'On Politics' newsletter for 5/29/20
+(defun compare-death-tolls ()
+  ;; Required context for what year we're in (2020) and what virus
+  ;; we're talking about. Goal is to repesent the contrast.
+  (p "From early April to late May, the virus’s death toll skyrocketed. Just over 50,000 people had been killed by the pandemic worldwide at the start of last month, but today the death toll in the United States alone is more than 100,000."))
+
 
 ;; scraped from https://bfi.uchicago.edu/wp-content/uploads/BFI_WP_202058-1.pdf?campaign_id=116&emc=edit_pk_20200512&instance_id=18415&nl=paul-krugman&regi_id=21241184&segment_id=27424&te=1&user_id=2c8a54c8a23f13b62411bbe259d68b73  5//14/20
 (defun novel-virus ()
