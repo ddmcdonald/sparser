@@ -94,8 +94,6 @@
 
   (setq *referent* nil) ;; cleanup from last time
 
-  (record-rule rule)
-
   (cond
     ((or (eq rule :conjunction/identical-adjacent-labels)
          (eq rule :conjunction/identical-form-labels))
@@ -121,7 +119,9 @@
                    *left-edge-into-reference* *right-edge-into-reference*
                    *parent-edge-getting-reference* *rule-being-interpreted*
                    *head-edge* *arg-edge*))
-                        
+                     
+         (record-rule rule)
+   
          (when rule-field
            (if (listp rule-field)
                (then
