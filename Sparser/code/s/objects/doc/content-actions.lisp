@@ -423,11 +423,20 @@ and make that file easier to understand. |#
            (text (when paragraph (content-string paragraph)))
            (offsets (mention-offsets m)))
       (if (or (null paragraph) (string-equal "" text))
-        (format nil "no content in ~a" paragraph)            
-        (subseq text (if (zerop (car offsets))
-                         (car offsets)
-                         (1- (car offsets)))
-                (1- (cdr offsets)))))))
+          (format nil "no content in ~a" paragraph)
+          (cond ((and (> (length text) 0)
+                      (<= (1- (cdr offsets))
+                         (length text)))
+                 (subseq text (if (zerop (car offsets))
+                                  (car offsets)
+                                  (1- (car offsets)))
+                         (1- (cdr offsets))))
+                (t
+                 (warn "mention ~s with offsets ~s~% invalid for string ~s"
+                       m offsets text)
+                 (format nil
+                         "***OUT OF RANGE STRING*** for mention #~a"
+                         (mention-uid m))))))))
 
 (defgeneric para-for-mention (mention)
   (:method ((n number))
