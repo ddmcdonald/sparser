@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1998,2012-2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2012-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "printers"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   February 2019
+;;;   Version:   May 2020
 
 ;; 1.1 (5/2/92 v2.2) Added short-forms
 ;; 1.2 (9/3 v2.3) added cases for referential categories and (9/7) for
@@ -212,6 +212,20 @@
   ;; structure. Lifted from tts code
   ;; Removes "PSR-"
   (subseq (symbol-name (cfr-symbol rule)) 4))
+
+
+
+(defgeneric rule-name (rule)
+  (:documentation "Return the string created by from string-for-rule
+ as an uppercase symbol interned in the sparser package.
+ The rule-symbol function returns the short form of the rule as
+ as symbol in the rule package (e.g. rule::psr-751), where the number
+ is dependent on exactly when the rule was defined as the system was
+ loaded. This function shows its rewrite form, e.g. |S → {NP VP}|.")
+  (:method ((rule cfr))
+    (intern (string-upcase (string-for-rule rule))
+            (find-package :sparser))))
+
 
 
 ;;;--------------------------
