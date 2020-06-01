@@ -391,7 +391,8 @@
   ;; style of individual is being used and dispatches.
   ;; The discourse entry for a category is a push list, most
   ;; recent (and thereafter most specific) first
-  (declare (special *current-paragraph* category::prepositional-phrase category))
+  (declare (special *current-paragraph* category::prepositional-phrase category
+                      *scanning-terminals*))
   (when (null source) (lsp-break "null source in make-mention"))
   (when (null category) (setq category (itype-of i)))
   (let* (subsumed-mention
@@ -449,6 +450,11 @@
            (unless (eq (edge-form source) category::prepositional-phrase)
              (pushnew m (gethash category *maximal-lattice-mentions-in-paragraph*))))
          (when (and (current-sentence)
+                    ;; when a mention is produced while *scanning-terminals*
+                    ;;  the value of (current-sentence) is NOT VALID
+                    ;; and you can't just add the mention to the
+                    ;;  (sentence-mentions (contents (current-sentence)))
+                    (not *scanning-terminals*)
                     (not (member m (sentence-mentions (contents (current-sentence))))))
            (setf (sentence-mentions (contents (current-sentence)))
                  (cons m (sentence-mentions (contents (current-sentence))))))
@@ -660,6 +666,13 @@
                                (individual-p value))
                           `(,(binding-variable b) ,(value-of 'value value)))
                          ((and (member (pname (binding-variable b))
+                                       '(country))
+                               (individual-p value)
+                               ;; COUNTRY is filled in within the definition of
+                               ;;  a city, and does not have a mention
+                               )
+                          `(,(binding-variable b) ,value))
+                         ((and (member (pname (binding-variable b))
                                        '(previous next number-of-days
                                          position-in-year))
                                ;; making sure to only do this if the
@@ -728,7 +741,8 @@
 
 (defun find-binding-dependency (value edges top-edge &optional b &aux (top-ref (edge-referent top-edge)))
   (declare (special top-edge category::prepositional-phrase category::protein-family
-                    *contextually-supplied-edge*))
+                    *contextually-supplied-edge*
+                    *scanning-terminals*))
   (cond ((and b (eq (pname (binding-variable b)) 'items))
          (find-binding-dependencies-for-items value edges top-edge))
         ((and b (eq (pname (binding-variable b)) 'has-determiner))
@@ -757,35 +771,47 @@
              (mention-source wh-mention))))
         (t
          ;;new code
-         (or
+         (let ((found-edge
+             
+                (or
           
-          (when (and *contextually-supplied-edge*
-                     (eq value (edge-referent *contextually-supplied-edge*)))
-            ;;(break "we got here")
-            *contextually-supplied-edge*)
+                 (when (and *contextually-supplied-edge*
+                            (eq value (edge-referent *contextually-supplied-edge*)))
+                   ;;(break "we got here")
+                   *contextually-supplied-edge*)
           
-          ;; last-ditch effort caused by change in interpretation of
-          ;;  a previously ambiguous variable, which causes the
-          ;;  subsumed-mention to be missed
-          (loop for edge in edges when (and (dli-eq? value (edge-referent edge))
-                                            (typep (edge-mention edge) 'discourse-mention))
-                do (return edge))
-          (loop for edge in edges
-                as ref-edge = (find-dependent-edge edge)
-                as ref = (when ref-edge (edge-referent ref-edge))
-                when (and ref (dli-eq? ref value))
-                do (return ref-edge))
-          (loop for edge in edges
-                as ee = (and (typep (edge-mention edge) 'discourse-mention)
-                             (loop for d in (dependencies (edge-mention edge))
-                                   when (and (typep (second d) 'discourse-mention)
-                                             (dli-eq? value (base-description (second d))))
-                                   do (return (mention-source (second d)))))
-                do (when ee (return ee)))
-          (when (current-sentence) ;; NIL in prepass
-            (find-binding-dependency-in-sentence-mentions value))
-          (when b
-            (check-plausible-missing-edge-for-dependency b top-edge))))))
+                 ;; last-ditch effort caused by change in interpretation of
+                 ;;  a previously ambiguous variable, which causes the
+                 ;;  subsumed-mention to be missed
+                 (loop for edge in edges when (and (dli-eq? value (edge-referent edge))
+                                                   (typep (edge-mention edge) 'discourse-mention))
+                       do (return edge))
+                 (loop for edge in edges
+                       as ref-edge = (find-dependent-edge edge)
+                       as ref = (when ref-edge (edge-referent ref-edge))
+                       when (and ref (dli-eq? ref value))
+                       do (return ref-edge))
+                 (loop for edge in edges
+                       as ee = (and (typep (edge-mention edge) 'discourse-mention)
+                                    (loop for d in (dependencies (edge-mention edge))
+                                          when (and (typep (second d) 'discourse-mention)
+                                                    (dli-eq? value (base-description (second d))))
+                                          do (return (mention-source (second d)))))
+                       do (when ee (return ee))))))
+
+           (or
+            found-edge
+                          
+            (when (and (not *scanning-terminals*)
+                       (current-sentence)) ;; NIL in prepass
+              (let ((found-binding-dependency
+                     (find-binding-dependency-in-sentence-mentions value)))
+                #+ignore
+                (when found-binding-dependency
+                  (format t "found-binding-dependency = ~s~%" found-binding-dependency))
+                  found-binding-dependency))
+            (when b
+              (check-plausible-missing-edge-for-dependency b top-edge)))))))
 
 (defun find-binding-dependency-in-sentence-mentions (value)
   (loop for m in (sentence-mentions (current-sentence))
@@ -795,8 +821,12 @@
         ;;  PPs created from null NPs in relative clauses)
         ;; All mentions are now recorded in the sentence, whether or not
         ;;  they have edges, and thus can be found in this fashion.
-        when (eq value (base-description m))
-        do (return m)))
+        when (and
+              (eq value (base-description m))
+              (when (slot-boundp m 'location-in-article)
+                (car (mentioned-in-article-where m))))
+        do
+          (return m)))
 
 
 (defun find-mention-for-wh-element (*wh-element* top-edge)
