@@ -1607,7 +1607,7 @@ new file to append to new-prot-fam, those without get filtered to "
 (defparameter *one-human-prot-fam* nil)
 (defparameter *no-human-prot-fam* nil)
 (defparameter *no-members-prot-fam* nil)
-(defparameter *non-up-members-proxt-fam* nil)
+(defparameter *non-up-members-prot-fam* nil)
 (defparameter *new-id-fam-defs* nil)
 (defparameter *check-hms-id-fam* nil)
 
