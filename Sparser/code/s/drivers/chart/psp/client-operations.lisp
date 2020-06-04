@@ -1086,9 +1086,12 @@
 ;;; later we'll deal with relations
 
 (defun install-mention (descrip article-id loc)
-  (let* ((loc-parts loc)
+  (let* ((loc-string (etypecase loc
+                       (symbol (pname loc))
+                       (string loc)))
+         (loc-parts loc)
          (full-loc (cons article-id loc-parts))
-         (para-parts (subseq loc 0 (find  "." loc :from-end t)))
+         (para-parts (subseq loc-string 0 (find  "." loc-string :from-end t)))
          )
     ;; amazingly, because there are tens of thousands of descrips
     ;;  that start with e.g. (protein ...)
@@ -1219,7 +1222,9 @@
                         collect
                           (let* ((sentence
                                   (sentence-for-toc
-                                   (format nil "~a.~a" (slot-value article 'name) toc-right)
+                                   (format nil "~a.~a"
+                                           (slot-value article 'name)
+                                           toc-right)
                                    article))
                                  (paragraph (parent sentence)))
                             (declare (special sentence paragraph))
