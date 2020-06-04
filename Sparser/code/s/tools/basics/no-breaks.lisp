@@ -90,7 +90,7 @@ you can continue from a break (c.f. cerror).
 	  *original-fvalue-of-error*)
     (setf (symbol-function 'lisp:cerror)
 	  *original-fvalue-of-cerror*)))
-#-allegro
+#-(or allegro ccl)
 (defun restore-original-break-error-&-cerror-definitions ()
   (setf (symbol-function 'break)
         *original-fvalue-of-break*)
@@ -105,7 +105,7 @@ you can continue from a break (c.f. cerror).
     (preempt-break-function symbol-for-new-function)
     (preempt-error-function symbol-for-new-function)
     (preempt-cerror-function symbol-for-new-function)))
-#-allegro
+#-(or allegro ccl)
 (defun preempt-all-fns-that-stop-execution (symbol-for-new-function)
   (preempt-break-function symbol-for-new-function)
   (preempt-error-function symbol-for-new-function)

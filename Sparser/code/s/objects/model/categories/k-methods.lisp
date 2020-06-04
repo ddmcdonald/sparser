@@ -13,7 +13,7 @@
   specializers
   function)
 
-(deftype eql-specializer ()
+#-:ccl(deftype eql-specializer ()
   '(cons (eql eql) (cons * null)))
 
 (defun eql-specializer-p (object)
