@@ -135,11 +135,7 @@
 (gload "bio;visualization.lisp")
 (gload "bio;hms-hgnc-grounding")
 ;; (gload "bio;category-defining-words.lisp") - moved to load-the-grammar
-(when t #+ignore ;;always load
-      (and (boundp 'cl-user::*sparser-to-indra*)
-           (symbol-value 'cl-user::*sparser-to-indra*))
-      (asdf:load-system :cl-json)
-      (asdf:load-system :cl-ppcre)
-      (gload "bio;sparser-to-indra"))
+
+(gload "bio;sparser-to-indra")
 
 
