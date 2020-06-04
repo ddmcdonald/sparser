@@ -392,73 +392,80 @@
   ;; The discourse entry for a category is a push list, most
   ;; recent (and thereafter most specific) first
   (declare (special *current-paragraph* category::prepositional-phrase category
-                      *scanning-terminals*))
+                    *scanning-terminals*))
   (when (null source) (lsp-break "null source in make-mention"))
   (when (null category) (setq category (itype-of i)))
-  (let* (subsumed-mention
-         (*mention-individual* i)
-         (*mention-source* source)
-         (subsumed-mentions
-          (and (not dependencies) ;; creating a de novo mention with given dependencies
-               (or (not (edge-p source))
-                   (not (eq (edge-rule source) 'make-ns-pair)))
-               (subsumed-mentions? i source)))
-         (m (cond ((and (consp subsumed-mentions)
-                        (cdr subsumed-mentions)
-                        (setq subsumed-mention
-                              (loop for sm in subsumed-mentions
-                                    when (eq (base-description sm) i)
-                                    do (return sm))))
-                   (loop for sm in subsumed-mentions
-                         unless (eq (base-description sm) i)
-                         do (setf (edge-mention (mention-source sm)) t))
-                   (update-subsumed-mention subsumed-mention i source))
-                  ((setq subsumed-mention
-                         (if (consp subsumed-mentions)
-                             (car subsumed-mentions)
-                             subsumed-mentions))
-                   ;; "which accumulates and can act "
-                   ;;  tries to create a mention twice
-                   (update-subsumed-mention subsumed-mention i source))
-                  (t
-                   (let ((new-mention
-                          (make-instance 'discourse-mention
-                                         :uid (incf *mention-uid*))))
-                     ;;(lsp-break "new mention")
-                     (setf (gethash  *mention-uid* *mention-index-table*)
-                           new-mention)
-                     (setf (mention-head new-mention) source)
-                     (setf (mention-head-referent new-mention) i)
-                     (setf (dependencies new-mention)
-                           (or dependencies
-                               (when (individual-p i) ;; no dependencies for categories
-                                 (create-new-dependencies
-                                  (indiv-old-binds i)
-                                  (when (edge-p source) (semantic-edges-under source))
-                                  (when (edge-p source) source)))))
-                     (setf (mention-offsets new-mention) (cons (edge-start-offset source)
-                                                               (edge-end-offset source)))
-                     new-mention)))))
-         (declare (special m *mention-individual* *mention-source*))
-         (fill-in-mention m i source)
-         (unless subsumed-mention
-           (tr :making-new-mention m)
-           (push m (mention-history i))) ;; calls (check-consistent-mention m)
-         (when (edge-p source)
-           (pushnew m *lattice-individuals-mentioned-in-paragraph*)
-           (when category (pushnew m (discourse-entry category)))
-           (unless (eq (edge-form source) category::prepositional-phrase)
-             (pushnew m (gethash category *maximal-lattice-mentions-in-paragraph*))))
-         (when (and (current-sentence)
-                    ;; when a mention is produced while *scanning-terminals*
-                    ;;  the value of (current-sentence) is NOT VALID
-                    ;; and you can't just add the mention to the
-                    ;;  (sentence-mentions (contents (current-sentence)))
-                    (not *scanning-terminals*)
-                    (not (member m (sentence-mentions (contents (current-sentence))))))
-           (setf (sentence-mentions (contents (current-sentence)))
-                 (cons m (sentence-mentions (contents (current-sentence))))))
-         m))
+  (if (and (edge-p source)
+           (typep (edge-mention source) 'discourse-mention))
+      ;; case such as "broader approaches" where we ar in
+      ;;  update-category-discourse-history to handle the
+      ;;  linguistic category "comparative"
+      ;;  and we already have a mention
+      (return-from make-mention (edge-mention source))
+      (let* (subsumed-mention
+             (*mention-individual* i)
+             (*mention-source* source)
+             (subsumed-mentions
+              (and (not dependencies) ;; creating a de novo mention with given dependencies
+                   (or (not (edge-p source))
+                       (not (eq (edge-rule source) 'make-ns-pair)))
+                   (subsumed-mentions? i source)))
+             (m (cond ((and (consp subsumed-mentions)
+                            (cdr subsumed-mentions)
+                            (setq subsumed-mention
+                                  (loop for sm in subsumed-mentions
+                                        when (eq (base-description sm) i)
+                                        do (return sm))))
+                       (loop for sm in subsumed-mentions
+                             unless (eq (base-description sm) i)
+                             do (setf (edge-mention (mention-source sm)) t))
+                       (update-subsumed-mention subsumed-mention i source))
+                      ((setq subsumed-mention
+                             (if (consp subsumed-mentions)
+                                 (car subsumed-mentions)
+                                 subsumed-mentions))
+                       ;; "which accumulates and can act "
+                       ;;  tries to create a mention twice
+                       (update-subsumed-mention subsumed-mention i source))
+                      (t
+                       (let ((new-mention
+                              (make-instance 'discourse-mention
+                                             :uid (incf *mention-uid*))))
+                         ;;(lsp-break "new mention")
+                         (setf (gethash  *mention-uid* *mention-index-table*)
+                               new-mention)
+                         (setf (mention-head new-mention) source)
+                         (setf (mention-head-referent new-mention) i)
+                         (setf (dependencies new-mention)
+                               (or dependencies
+                                   (when (individual-p i) ;; no dependencies for categories
+                                     (create-new-dependencies
+                                      (indiv-old-binds i)
+                                      (when (edge-p source) (semantic-edges-under source))
+                                      (when (edge-p source) source)))))
+                         (setf (mention-offsets new-mention) (cons (edge-start-offset source)
+                                                                   (edge-end-offset source)))
+                         new-mention)))))
+        (declare (special m *mention-individual* *mention-source*))
+        (fill-in-mention m i source)
+        (unless subsumed-mention
+          (tr :making-new-mention m)
+          (push m (mention-history i))) ;; calls (check-consistent-mention m)
+        (when (edge-p source)
+          (pushnew m *lattice-individuals-mentioned-in-paragraph*)
+          (when category (pushnew m (discourse-entry category)))
+          (unless (eq (edge-form source) category::prepositional-phrase)
+            (pushnew m (gethash category *maximal-lattice-mentions-in-paragraph*))))
+        (when (and (current-sentence)
+                   ;; when a mention is produced while *scanning-terminals*
+                   ;;  the value of (current-sentence) is NOT VALID
+                   ;; and you can't just add the mention to the
+                   ;;  (sentence-mentions (contents (current-sentence)))
+                   (not *scanning-terminals*)
+                   (not (member m (sentence-mentions (contents (current-sentence))))))
+          (setf (sentence-mentions (contents (current-sentence)))
+                (cons m (sentence-mentions (contents (current-sentence))))))
+        m)))
 
 (defparameter *dont-check-dependencies* nil)
 
@@ -519,15 +526,12 @@
                      'discourse-mention))
          (return-from subsumed-mentions?
            (edge-mention (edge-left-daughter edge))))
-        (#+ignore
-         (not (itypep i category::wh-question))
-         
-         (and (not (itypep i category::wh-question))
+        ((and (not (itypep i category::wh-question))
               (embedded-statement? edge)
               ;; block cases like "supporting table s2"
               (not (itypep (value-of 'statement i)
-                          '(:or physical-object medical-condition
-                            ))))
+                           '(:or physical-object medical-condition
+                             ))))
          (return-from subsumed-mentions? nil))
         (t
          (let ((un-embedded-edge (un-embed-edge edge)))
@@ -559,6 +563,16 @@
                               (cfr-referent (edge-rule edge))))
                   (safe-edge-mention (edge-right-daughter
                                       (edge-right-daughter edge))))
+                 ((and (cfr-p (edge-rule edge))
+                       (equal '(:funcall maybe-extend-comparative-with-than-np left-referent
+                                right-referent)
+                              (cfr-referent (edge-rule edge))))
+                  (safe-edge-mention (edge-left-daughter edge)))
+                 ((and (cfr-p (edge-rule edge))
+                       (equal '(:funcall comparative-adj-noun-compound left-referent right-referent)
+                              (cfr-referent (edge-rule edge))))
+                  (safe-edge-mention 
+                   (edge-right-daughter edge)))
                  ((member (edge-rule edge) '(knit-parens-into-neighbor))
                   (safe-edge-mention (edge-left-daughter edge)))
                  ((eq (edge-rule edge) 'sdm-span-segment)

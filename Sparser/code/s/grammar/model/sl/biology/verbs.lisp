@@ -1250,7 +1250,9 @@
    :to destination))
 
 (define-category target-protein :specializes protein
-  :binds ((treatment (:or protein gene drug treatment)))
+                 :binds ((treatment (:or protein gene drug treatment
+                                         bio-process ;; "for cardiovascular protection"
+                                         )))
   :realization
   (:noun "target"
          :of agent
