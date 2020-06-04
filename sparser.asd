@@ -2,7 +2,7 @@
 ;;; Copyright (c) 2016-2020 SIFT LLC. All Rights Reserved.
 
 (defvar cl-user::script :default
-  "Specifies a set of Sparser parameters, switch values, grammar files, etc.
+  "The script specifies a set of Sparser parameters, switch values, grammar files, etc.
 This variable must be set before loading Sparser to have the correct effect.")
 
 (defsystem :sparser
@@ -11,6 +11,9 @@ This variable must be set before loading Sparser to have the correct effect.")
   :perform (load-op :after (o c) (pushnew :sparser *features*))
   :in-order-to ((test-op (test-op :sparser/tests))))
 
+#| This macrolet defines eight variations on the base Sparser system,
+ corresponding to different scripts. See init/loaders/scripts.lisp
+|#
 (macrolet ((define-sparser-system (script)
              (let ((script-system (format nil "sparser/script/~(~a~)" script))
                    (sparser-system (format nil "sparser/~(~a~)" script)))
