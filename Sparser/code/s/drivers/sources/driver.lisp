@@ -94,7 +94,7 @@
                (or (symbolp corpus)
                    (stringp corpus)))
     (return-from make-article-from-handle nil))
-  (make-json-article-from-file-handle (corpus-file-handle corpus n) :verbose verbose)))
+  (make-json-article-from-file-handle (corpus-file-handle corpus n) :verbose verbose))
 
 
 (defun make-json-article-from-file-handle (file-handle &key (verbose t) save?)
