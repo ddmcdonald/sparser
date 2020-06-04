@@ -198,7 +198,9 @@
                    (loop for m in (remove-duplicates (second g) :test #'equal)
                          collect
                            (let ((str (car (mentioned-in-article-where m))))
-                             (subseq str (+ 1 (search "." str)))))
+                             (intern
+                              (subseq str (+ 1 (search "." str)))
+                              (find-package :sp))))
                              
                    #+ignore
                    (list (subseq str (+ 1 (search ".p" str)))
@@ -264,7 +266,7 @@
 (defvar *article-json* nil)
 (defvar *json-article* nil)
 
-(defun run-nth-json-article (n &key ((:corpus article-set-name) '0403-com-pmc)
+(defun run-nth-json-article (n &key ((:corpus article-set-name) '0512-PDF)
                                  (quiet t) (skip-errors t) (show-sect nil)
                                  (sexp nil))
   (let* ((*article-short-name* (format nil "~a-~a" article-set-name n)) ; file-handle
