@@ -326,6 +326,7 @@ and make that file easier to understand. |#
     (unless stream (setq stream *standard-output*))
     (format stream "~&~%For ~a  (~a words)"
             a (insert-commas-into-number-string (token-count a)))
+    (report-time-to-read-article a stream)
     (show-parse-performance a stream)
     (display-top-bio-terms a stream)))
 

@@ -152,7 +152,8 @@
         (format t "~&=============================================~%~
                    ~%Actually Reading ~a~%" (name a)))
       ;; This clears the -previous- run's history and objects
-      (clean-out-history-and-temp-objects))
+      (clean-out-history-and-temp-objects)
+      (start-timer '*time-to-read-document*))
     (install-contents a)
     
     ;; --- parsing the title of the paper goes here ------
@@ -172,6 +173,7 @@
     (when (and *show-section-printouts* (actually-reading))
       (show-parse-performance a))
     (when (actually-reading)
+      (stop-timer '*time-to-read-document*)
       (close-article-semantic-file-if-needed))
     a))
 

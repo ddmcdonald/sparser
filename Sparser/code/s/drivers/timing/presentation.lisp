@@ -1,14 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2014-2018 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2014-2020 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "presentation"
 ;;;   Module:  "drivers;timing:"
-;;;  Version:  April 2018
+;;;  Version:  June 2020
 
 ;; file created 2/91. Given content 1/6/95
 ;; Added Time decoded 1/23. 10/2/07 Extended and added Allegro variation.
-;; 1/27/14 Brough openMCL details up to date. Added macro to reflect what
+;; 1/27/14 Brought openMCL details up to date. Added macro to reflect what
 ;; to turn off. 
 
 (in-package :sparser)
@@ -28,13 +28,44 @@
     (format stream "~&System loaded in ~a seconds~%"
             (trim-whitespace number-string))))
 
-
 (defun speed-of-last-run ()
   (declare (special *time-at-chart-level*))
   (let ((tps (/ *time-at-chart-level*
-                  *number-of-next-position*)))
-      (format t "~&speed: ~4,1F tokens/msec" (float tps))))
+                *number-of-next-position*)))
+    (format t "~&speed: ~4,1F tokens/msec" (float tps))))
 
+(defun report-time-to-read-article (article &optional (stream *standard-output*))
+  "Provisionally invoked from run-json-article"
+  (declare (special *time-to-read-document*))
+  (let* ((word-count (token-count article))
+         (wps-string (compute-words-per-second
+                      word-count *time-to-read-document* :msec))
+         (total-time *time-to-read-document*)) ;;/// if more than a second add comma
+    (format stream "~&total time: ~a msec  ~a~%"
+            total-time wps-string)))
+
+
+
+(defun compute-words-per-second (word-count number units)
+  "Common subroutine that appreciates the different units that the
+   'number' (system time ticks) represents."
+  (let ((tokens-per-second
+         (case units
+           (:microsec
+            (let ((tokens-per-microsecond (/ word-count number)))
+              (* tokens-per-microsecond 1000000)))
+           (:msec
+            (let ((tokens-per-milisecond (/ word-count number)))
+              (* tokens-per-milisecond 1000)))
+           (:sec
+            (/ word-count number))
+           (otherwise
+            (break "New time unit: ~a" units)))))
+    (let* ((speed-as-string 
+            (format nil "~4,1F" (float tokens-per-second)))
+           (speed-with-commas
+            (insert-commas-into-number-string speed-as-string)))
+      (format nil "~a words/second" speed-with-commas))))
 
 
 ;;;--------------------------------------------
@@ -44,7 +75,7 @@
 (defun run-string-for-timing (string)
   (declare (special *time-at-chart-level*))
   (with-inessentials-turned-off
-      (analyze-text-from-string string)
+    (analyze-text-from-string string)
     (let ((tps (/ *time-at-chart-level*
                   *number-of-next-position*)))
       (format t "~&speed: ~4,1F tokens/msec" (float tps)))))
@@ -52,11 +83,11 @@
 (defun run-string-for-timing/no-forest (string)
   (declare (special *time-at-chart-level*))
   (with-inessentials-turned-off
-      (let ((*do-forest-level* nil))
-        (analyze-text-from-string string)
-        (let ((tps (/ *time-at-chart-level*
-                      *number-of-next-position*)))
-          (format t "~&speed: ~4,1F tokens/msec" (float tps))))))
+    (let ((*do-forest-level* nil))
+      (analyze-text-from-string string)
+      (let ((tps (/ *time-at-chart-level*
+                    *number-of-next-position*)))
+        (format t "~&speed: ~4,1F tokens/msec" (float tps))))))
 
 
 ;;;-----------------------------------------------------------
@@ -65,7 +96,7 @@
 
 (defun time-analysis (input-string)
   (with-inessentials-turned-off
-      (let* ((trace-string (make-string-output-stream))
+    (let* ((trace-string (make-string-output-stream))
              (*trace-output* trace-string))
         (time (analyze-text-from-string input-string))
         (analyze-and-report-timing-data
@@ -74,24 +105,8 @@
 (defun analyze-and-report-timing-data (time-report-string)
   (multiple-value-bind (number units)
       (extract-ms-from-time-report-string time-report-string)
-    (let* ((word-count *number-of-next-position*)
-           (tokens-per-second
-            (case units
-              (:microsec
-               (let ((tokens-per-microsecond (/ word-count number)))
-                 (* tokens-per-microsecond 1000000)))
-              (:msec
-               (let ((tokens-per-milisecond (/ word-count number)))
-                 (* tokens-per-milisecond 1000)))
-              (:sec
-               (/ word-count number))
-              (otherwise
-               (break "New time unit: ~a" units)))))
-      (let* ((speed-as-string 
-              (format nil "~4,1F" (float tokens-per-second)))
-             (speed-with-commas
-              (insert-commas-into-number-string speed-as-string)))
-        (format t "~&speed: ~a tokens/second" speed-with-commas)))))
+    (let ((word-count *number-of-next-position*))
+      (compute-words-per-second word-count number units))))
 
 #+:sbcl
 (defun extract-ms-from-time-report-string (s)
