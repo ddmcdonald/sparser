@@ -125,10 +125,11 @@ The virus binds through its spike protein to ACE2 on the surface of AT2 epitheli
 
 ;;----- Brent's texts selected from article-preview-8
 #|
-(p "HPAI virus and MERS-CoV induce repressive histone modifications, which downregulate expression of ISG subsets.")
-(p "Notably, influenza A virus NS1 appears to play a central role in this histone-mediated downregulation")
+(p/s "HPAI virus and MERS-CoV induce repressive histone modifications, which downregulate expression of ISG subsets.")
 
-(p "NS1 contributes to ISG control via altered histone methylation")
+(p/s "Notably, influenza A virus NS1 appears to play a central role in this histone-mediated downregulation")
+
+(p/s "NS1 contributes to ISG control via altered histone methylation")
 
 (p "H1N1-09 quickly and robustly induced the majority (97%) of ISGs")
 
@@ -155,7 +156,7 @@ The virus binds through its spike protein to ACE2 on the surface of AT2 epitheli
 
 (p "the repressive H3K27me3 revealed enhanced association with CFHR1, DDX58, and SMAD9L during H5N1-VN1203 infection")
 
-(p "both MERS-CoV and SARS-CoV maintain delayed IFN induction")
+(p/s "both MERS-CoV and SARS-CoV maintain delayed IFN induction")
 
 (p "two genes (TLR3 and CFHR1) downregulated in both H5N1-VN1203 and MERS-CoV, but not SARS-CoV infection")
 
@@ -165,7 +166,7 @@ The virus binds through its spike protein to ACE2 on the surface of AT2 epitheli
 
 (p "mutations in PB1-F2 and PB2 resulted in significant ISG augmentation, the majority of ISGs maintain low or downregulated expression")
 
-(p "NS1 truncation halted ISG downregulation by H5N1-VN1203")
+(p/s "NS1 truncation halted ISG downregulation by H5N1-VN1203")
 
 (p "ORF4b, a MERS accessory protein with no homologue in SARS-CoV, maintains a purported nuclear localization signal, exhibits nuclear localization based on transfection, and may play a role in IFN antagonism")
 
@@ -180,9 +181,9 @@ The virus binds through its spike protein to ACE2 on the surface of AT2 epitheli
 
 (p "we  observe  the  induction  of  well-characterized  direct  effectors  of  the  innate  immune  response  including:  MX1,  IFITM3,  SAMHD1  and  TRIM25,  as  well  as  the  induction  of  viral  RNA  sensors  such  as  RIG-I  and  the  OAS1-3  genes")
 
-(p "SARS-CoV-2  lacks  the  induction  of  IFN-I  and  IFN-III  genes")
+(p/s "SARS-CoV-2  lacks  the  induction  of  IFN-I  and  IFN-III  genes")
 
-(p "two  cytokines  (EDN1  and  TNFSF15)  were  uniquely upregulated")
+(p/s "two  cytokines  (EDN1  and  TNFSF15)  were  uniquely upregulated")
 
 (p "Despite  the  apparent  muted  induction  of  antiviral  genes  in  response  to  SARS-CoV-2,  we do observe a significant up regulation of well-characterized ISGs including: IFIT1-3, ISG15,  DDX58,  and  others.")
 
