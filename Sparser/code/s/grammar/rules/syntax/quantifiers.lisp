@@ -36,6 +36,7 @@
   "Move the edge over quantifier to the flag and return the auxiliary
    as the the interpretation of the phrase."
   ;; Used by [model -> modal quantifier] in syntax;modals.lisp
+  (declare (special *floatable-quantifier*))
   (if *subcat-test*
     (if (and (one-word-long? (left-edge-for-referent)) ; "may also have"
              (memq quantifier *floatable-quantifier*))             

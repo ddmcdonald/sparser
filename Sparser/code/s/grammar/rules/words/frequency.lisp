@@ -604,6 +604,7 @@
 (defun define-2010-words-frequency-data (string doc-freq-data)
   "This is the body of def-word when it is used for repopulating
    or extending word frequency data"
+  (declare (special *def-word-definition*))
   (assert (eq *def-word-definition* :2010-frequency)
           () (error "*def-word-definition* should be :2010-frequency"))
   (let* ((word (or (word-named string)

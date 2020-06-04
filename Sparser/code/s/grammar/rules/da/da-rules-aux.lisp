@@ -167,6 +167,7 @@
    (adjective-phrase? (edge-right-daughter clause))))
 
 (defun failed-pp-attachment (pp clause-referent)
+  (declare (special *show-failed-fronted-pp-attachment*))
   (when *show-failed-fronted-pp-attachment*
     (format t "~&~&<<<<<<<>>>>>> attaching leading PP ~s to clause ~s without defined variable~&"
 	    (retrieve-surface-string pp)

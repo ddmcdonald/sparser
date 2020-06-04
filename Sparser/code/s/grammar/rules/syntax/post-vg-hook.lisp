@@ -20,6 +20,7 @@
     :vg-actions verb-group-final-actions)
 
 (defun verb-group-final-actions (vg-edge)
+  (declare (special *quantifier-in-vg*))
   (when (memq (edge-form vg-edge) ;; see note on the global
               *plausible-vg-categories*)
     (fold-in-preposed-auxiliary vg-edge)
