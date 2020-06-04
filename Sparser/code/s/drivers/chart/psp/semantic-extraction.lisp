@@ -798,11 +798,14 @@ in cwc-integ/spire/interface/sparser.lisp
                                       '(members count ras2-model))))
            collect
              (list (var-name (binding-variable b))
-                   (if (or (numberp value)
+                   (cond ((or (numberp value)
                            (symbolp value)
                            (stringp value))
-                       value
-                       (collect-model-description value)))))))
+                          value)
+                         ((lambda-variable-p value)
+                          `(lambda-variable ,(var-name value)))
+                         (t
+                          (collect-model-description value))))))))
     
     ((collection-p i)
      (setf (gethash i *semtree-seen-individuals*) t)
@@ -833,37 +836,37 @@ in cwc-integ/spire/interface/sparser.lisp
               (if (or (numberp value)
                       (symbolp value)
                       (stringp value))
-                (push (list var-name value) desc)
-                ;; // if b is fixed value print value but don't recurse //
-                (typecase value
-                  (individual 
-                   (if (and (not (or *for-spire* *sentence-results-stream*))
-                            (itypep value category::prepositional-phrase))
-                     (push (list var-name
-                                 (collect-model-description
-                                  (value-of 'pobj value)))
-                           desc)
-                     (push (list var-name
-                                 (collect-model-description value))
-                           desc)))
-                  ((or word polyword category)
-                   (push `(,var-name ,(collect-model-description value)) desc))
-                  (cons
-                   (unless (equal restriction '(:primitive list))
-                     (error "The value of the variable ~a is a cons but its ~
+                  (push (list var-name value) desc)
+                  ;; // if b is fixed value print value but don't recurse //
+                  (typecase value
+                    (individual 
+                     (if (and (not (or *for-spire* *sentence-results-stream*))
+                              (itypep value category::prepositional-phrase))
+                         (push (list var-name
+                                     (collect-model-description
+                                      (value-of 'pobj value)))
+                               desc)
+                         (push (list var-name
+                                     (collect-model-description value))
+                               desc)))
+                    ((or word polyword category)
+                     (push `(,var-name ,(collect-model-description value)) desc))
+                    (cons
+                     (unless (equal restriction '(:primitive list))
+                       (error "The value of the variable ~a is a cons but its ~
                              restriction, ~a, doesn't permit it.~%value = ~a"
-                            var-name restriction value))
-                   (push `(,var-name
-                           ,(loop for item in value
-                                collect (collect-model-description item)))
-                         desc))
-                  (rule-set) ;; the word "anti" presently does this
-                  ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)
-                  (lambda-variable
-                   (push `(,var-name ,(format nil "~a" value))
-                         desc))
-                  (otherwise
-                   (format t "~&~%Collect model: ~
+                              var-name restriction value))
+                     (push `(,var-name
+                             ,(loop for item in value
+                                    collect (collect-model-description item)))
+                           desc))
+                    (rule-set) ;; the word "anti" presently does this
+                    ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)
+                    (lambda-variable
+                     (push `(,var-name (lambda-variable ,(var-name value)))
+                           desc))
+                    (otherwise
+                     (format t "~&~%Collect model: ~
                             Unexpected type of value of a binding: ~a~%" value))))))
        (reverse desc)))))
 
