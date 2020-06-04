@@ -11,6 +11,37 @@
 
 (in-package :sparser)
 
+(defun run-json-article-from-handle (&key (n 1) (corpus '0512-pdf)
+                                       ((:sexp return-sexp) nil)
+                                       (sweep t) (read t)
+                                       (quiet t) (skip-errors t) (verbose t)
+                                       (show-sect nil) (stats nil))
+  "Assemble the file handle, use it to assemble an article,
+   and pass the article to run-json-article. Standard way to run an
+   article from the json corpus. Designed for iterating over:
+     (loop for i from 11 to 50 do (run-json-article-from-handle :n i))
+   Passes its keyword arguments through to the routines that actually
+   use them. 
+"
+  (declare (special *write-article-objects-file*))
+  (multiple-value-bind (article sexp)
+      (make-article-from-handle :n n :corpus corpus :verbose verbose)
+    (let ((result
+           (if return-sexp
+             sexp
+             (run-json-article article
+                               :sweep sweep
+                               :read read
+                               :quiet quiet 
+                               :show-sect show-sect
+                               :stats stats
+                               :skip-errors skip-errors
+                               :verbose verbose))))
+      (when *write-article-objects-file*
+        (write-article-objects-file article))
+      result)))
+
+
 (defun run-json-article (article &key (sweep t) (read t)
                                    (quiet t) (skip-errors t) (verbose t)
                                    (show-sect nil) (stats nil))
@@ -22,7 +53,7 @@
      :read -- second pass where the sentences are parsed. Runs for
    side-effects on the 'content' fields of the document elements.
      :quiet -- turn off printing from the parser. If it is nil
-   you'll aways see the bracketing of the phrases.
+   you will aways see the bracketing of the phrases.
      :skip-errors -- run via an error catch that traps any errors
    rather than going into the debugger. Error is printed to standard-
    out, usually includes the text of the sentence where it occurred."
@@ -45,51 +76,32 @@
       (if quiet
         (with-total-quiet (sp::read-from-document article))
         (read-from-document article)))
-    (when stats
-      (summary-document-stats article))
+    (if stats
+      (summary-document-stats article)
+      (report-time-to-read-article article))
     (when *write-article-objects-file*
       (write-article-objects-file article))
     article))
 
 
-(defun run-json-article-from-handle (&key (n 1) (corpus '0512-pdf)
-                                       ((:sexp return-sexp) nil)
-                                       (sweep t) (read t)
-                                       (quiet t) (skip-errors t) (verbose t)
-                                       (show-sect nil) (stats nil))
-  "Assemble the file handle, use it to assemble an article,
-   and pass the article to run-json-article. Standard way to run an
-   article from the json corpus. Designed for iterating over:
-     (loop for i from 11 to 50 do (run-json-article-from-handle :n i))"
-  (declare (special *write-article-objects-file*))
-  (multiple-value-bind (article sexp)
-      (make-article-from-handle :n n :corpus corpus :verbose verbose)
-    (let ((result
-           (if return-sexp
-               sexp
-               (run-json-article
-                article :sweep sweep :read read :quiet quiet 
-                :show-sect show-sect :stats stats))))
-      (when *write-article-objects-file*
-        (write-article-objects-file article))
-      result)))
-
-
 (defun make-article-from-handle (&key (n 1) (corpus '0512-pdf) (verbose t))
-  "Construct the file handle, check that it corresponds to a valid file,
-   extract the Lisp sexp from the JSON file, pass it to make-document
-   to assemble an article from it. Code is a different factoring of
-   what do-json does. 
+  "Checks that we've specified enough information, then calls
+   make-json-article-from-file-handle to extract the Lisp sexp from the JSON file,
+   pass it to make-document to assemble an article from it. 
    Returns the article and the sexp that is the translation of the JSON."
   (unless (and (and corpus n)
                (numberp n)
                (or (symbolp corpus)
                    (stringp corpus)))
     (return-from make-article-from-handle nil))
-  (make-json-article-from-file-handle (corpus-file-handle corpus n))
-  )
+  (make-json-article-from-file-handle (corpus-file-handle corpus n) :verbose verbose)))
 
-(defun make-json-article-from-file-handle (file-handle)
+
+(defun make-json-article-from-file-handle (file-handle &key (verbose t) save?)
+  "Locates the file indicated by the handle, reads it and converts its json to
+   an sexp (decode-json-from-source), has the sexp interpreted to instantiate
+   an instance of an article (make-document). Returns the article and the raw
+   sexp. Saves the article if the 'save?' parameter is set."
   (let (file-namestring filepath sexp)
     (unless (setq file-namestring (decoded-file file-handle))
       (warn "No registered json path found for file handle ~a.~
@@ -102,9 +114,11 @@
     (unless (setq sexp (cl-json:decode-json-from-source filepath))
       (warn "The json file looks empty.")
       (return-from make-json-article-from-file-handle nil))
-
+    (when verbose
+      (format t "~&Reading ~a~%" file-handle))
     (let ((article (make-document sexp file-namestring :handle file-handle)))
-      (save-article file-handle article)
+      (when save?
+        (save-article file-handle article))
       (values article
               sexp))))
 
