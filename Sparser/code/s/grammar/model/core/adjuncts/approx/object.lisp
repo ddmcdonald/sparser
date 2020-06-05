@@ -54,7 +54,9 @@
     :tree-families '(generic-np-premodifier)))
 
 (defun define-approximator/adverbial (string)
-  (define-adverb string :super-category 'approximator))
+  (define-adverb string
+      :super-category 'approximator
+      :rule-label 'approximator))
 
 
 ;;;-------
@@ -62,6 +64,10 @@
 ;;;-------
 
 (def-cfr number (approximator number)
+  :form number
+  :referent (:function determiner-noun left-edge right-edge))
+
+(def-cfr number (approximator percent) ; "only 35% of the ISGs"
   :form number
   :referent (:function determiner-noun left-edge right-edge))
 

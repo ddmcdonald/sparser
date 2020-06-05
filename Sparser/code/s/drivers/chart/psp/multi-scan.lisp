@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  February 2020
+;;;  version:  June 2020
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -774,12 +774,11 @@
       ;; The effect of this loop is to restart the sweep from
       ;; the beginning whenever it creates an edge.
       (loop while continue
-         do
-           (setq continue
-                 (eq :new-edge
-                     (do-early-rules-sweep-between
-                         (starts-at-pos sent)
-                       (ends-at-pos sent))))))
+         do (setq continue
+                  (eq :new-edge
+                      (do-early-rules-sweep-between
+                          (starts-at-pos sent)
+                        (ends-at-pos sent))))))
     (when *trace-early-rules-sweep*
       (break "finished early sweep"))))
 
@@ -847,39 +846,10 @@
       (show-early-rule? rule left right)
       (values new-edge rule))))
 
-        
-(defun show-early-rule? (rule left-edge right-edge)
-  (when (and rule
-             *show-early-rules*
-             (not (eq (cat-name (car (cfr-rhs rule))) 'subordinate-conjunction)))
-    (format t "~%**early rule: ~s on \"~a~a\""
-            rule
-            (retrieve-surface-string left-edge)
-            (retrieve-surface-string right-edge))))
-
-
-;; NEED TO FIND A WAY TO GENERALIZE THE TESTING OF EARLY RULES which is done
-;;  in a one-off way below
-;;  (not (and (itypep (edge-referent left-edge) 'amino-acid)
-;;            (itypep (edge-referent right-edge) 'number)))
-
-;; -- ddm this function is an example of that (and belons in edge-vectors/object.lisp
-(defgeneric includes-edge-over-literal? (position)
-  (:documentation "Are any of the edges starting at this position
-    edges over a literal?")
-  (:method ((e edge))
-    (includes-edge-over-literal? (edge-starts-at e)))
-  (:method ((p position))
-    (includes-edge-over-literal? (pos-starts-here p)))
-  (:method ((ev edge-vector))
-    (loop for edge in (all-edges-on ev)
-       when (literal-edge? edge)
-       return t
-       finally (return nil))))
-
 (defun early-rule-criteria (left-edge mid-pos right-edge)
   "If these criteria are met then we'll look for a rule that combines
-   the two edges."
+   the two edges. These are all positive criteria. If any of the
+   forms in the 'or' are true then we've met the criteria"
   (declare (special category::number category::plus-minus-number
                     *the-punctuation-plus-minus*))
   (and (and (edge-p left-edge)
@@ -892,6 +862,8 @@
         (and
          (eq (edge-referent left-edge) *the-punctuation-plus-minus*)                   
          (eq (edge-category right-edge) category::number))
+
+        (itypep (edge-referent left-edge) 'approximator) ; "only 35%"
 
         (not (pos-preceding-whitespace mid-pos))
         (and (eq script :biology)
@@ -922,6 +894,37 @@
               (and (eq script :biology)
                    (itypep (edge-referent left-edge) 'amino-acid)
                    (itypep (edge-referent right-edge) 'number))))  |#
+
+        
+(defun show-early-rule? (rule left-edge right-edge)
+  (when (and rule
+             *show-early-rules*
+             (not (eq (cat-name (car (cfr-rhs rule))) 'subordinate-conjunction)))
+    (format t "~%**early rule: ~s on \"~a~a\""
+            rule
+            (retrieve-surface-string left-edge)
+            (retrieve-surface-string right-edge))))
+
+
+;; NEED TO FIND A WAY TO GENERALIZE THE TESTING OF EARLY RULES which is done
+;;  in a one-off way below
+;;  (not (and (itypep (edge-referent left-edge) 'amino-acid)
+;;            (itypep (edge-referent right-edge) 'number)))
+
+;; -- ddm this function is an example of that (and belongs in edge-vectors/object.lisp
+(defgeneric includes-edge-over-literal? (position)
+  (:documentation "Are any of the edges starting at this position
+    edges over a literal?")
+  (:method ((e edge))
+    (includes-edge-over-literal? (edge-starts-at e)))
+  (:method ((p position))
+    (includes-edge-over-literal? (pos-starts-here p)))
+  (:method ((ev edge-vector))
+    (loop for edge in (all-edges-on ev)
+       when (literal-edge? edge)
+       return t
+       finally (return nil))))
+
 
 ;;;------------------------------
 ;;; 2d pass -- no-space patterns
