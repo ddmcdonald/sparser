@@ -1195,7 +1195,7 @@
 
 (defun best-references-for-sentence (&key (s (sentence))
                                        (n-articles 5))
-  (maybe-initialize-mention-hashes)
+  (maybe-initialize-mention-hashes) ;;test
   (when (stringp s)
     (qepp s)
     (setq s (sentence)))
