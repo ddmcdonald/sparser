@@ -1600,8 +1600,9 @@ there was an edge for the qualifier (e.g., there is no edge for the
                (is-domain-adjunctive-pp? np (right-edge-for-referent))
                (and (eq prep-word of)
                     (or (itypep np 'attribute)
-                        (or (itypep np 'measurement) ;; "42% of all new cases"
-                            (itypep np 'number)) ;; "two of them"
+                        (or (itypep np 'measurement) ; "42% of all new cases"
+                            (itypep np 'number) ; "two of them"
+                            (itypep np 'quantifier)) ; "all of them" "the majority of them"
                         (and (itypep np 'object-dependent-location)
                              (itypep pobj-referent 'partonomic))
                         (and (itypep np 'partonomic)
@@ -1638,7 +1639,8 @@ there was an edge for the qualifier (e.g., there is no edge for the
 
              ((and (eq prep-word of)
                    (or (itypep np 'measurement) ;; "42% of all new cases"
-                       (itypep np 'number))) ;; "two of them"
+                       (itypep np 'number) ;; "two of them"
+                       (itypep np 'quantifier))) ;; (itypep np 'quantifier)
               (let ((i (sort-out-specifier/of np pobj-referent)))
                 (swap-rule-head *pobj-edge* i)
                 i))

@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2016,2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "quantities"
 ;;;   module:  "model;core:amounts:"
@@ -12,37 +12,46 @@
 
 #|  A "quantity", like a number, is the answer to "how many"
     Quantities distribute exactly like numbers, including their composition
-    to form measurements and their capacity as determiners.  |#
+    to form measurements and their capacity as determiners. 
+
+Revision 6/8/20. To accommadate 'bulk' words (according to WordNet)
+ like "majority" or "bulk", which both act as partives, giving the
+ quantity "of" something, and also as simple nouns taking determiners
+ and standing by themselves as NP heads. Canonical quantifiers ("all")
+ don't take determiners.
+   This extra category gives us a place to put spell that out
+ |#
 
 ;;;--------
 ;;; object
 ;;;--------
 
-(define-category  quantity
-  :specializes abstract
+(define-category quantity
+  :specializes quantifier
   :instantiates self
   :binds ((name :primitive word))
   :index (:permanent :key name)
-  :realization (:word name))
+  :realization (:word name)
+  :documentation "A 'quantity' is number-like entity that acts like
+ a quantifier in that it partitions a set and is frequently the
+ specifier in partitive constructions. The set of them defined
+ in the dossier are particular in that they take determiners
+ ('a plurality of ...'). It's a open question as to whether that
+ property requires further machinery to enable it. It's also
+ open as to where we put the multitude of partitive terms that
+ are used to get a count term from a mass: 'a bit of cheese',
+ 'a piece of paper' -- See Quirk et al. #5.7 'Partition in
+ respect of quantity'.")
 
+;; dossiers/quantities.lisp
 
 ;;;------
 ;;; form
 ;;;------
 
-#| We need a form because we have to add np-initiating brackets to these words |#
-
 (defun define-quantity (string)
-  (or (find-individual 'quantity :name string)
-      (let ((q (define-individual 'quantity :name string))
-            (word (word-named string)))
-
-        (assign-bracket/expr word .[np )
-        (assign-bracket/expr word ].phrase )
-
-        (let ((cfr (car (get-rules q))))
-          (check-type cfr cfr)
-          (setf (cfr-form cfr) category::det)
-        
-          q ))))
-
+  (define-function-term string 'quantifier
+    :super-category 'quantity
+    :rule-label 'quantity
+    :word-variable 'name
+    :tree-families '(quantify-of-stuff)))

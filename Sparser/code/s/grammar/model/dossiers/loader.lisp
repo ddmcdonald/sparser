@@ -157,7 +157,7 @@
   ;; has to follow 'directions' because they're referenced
   ;; in 'change-in-amount verbs'
   (gload "dossiers;units of measure")
-  ;;(gload "dossiers;quantities") => modifiers
+  (gload "dossiers;quantities")
   (gload "dossiers;attributes")
 
 ;;/////////////// left off here. March 2005 ///////////////

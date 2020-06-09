@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "specifiers"
 ;;;   Module:  "grammar/rules/syntax/"
-;;;  version:  March 2020
+;;;  version:  June 2020
 
 ;; initated 2/13/20 to collect NP specifier ('spec') material in one place
 
@@ -205,6 +205,9 @@ demonstratives.)
     
     ((itypep spec 'number) ;; "two of the cases"
      ;;/// test for a number already in the head: "two of the five"
+     (bind-variable 'number spec head))
+
+    ((itypep spec 'quantity) ;; "the majority of them
      (bind-variable 'number spec head))
     
     ((or (itypep spec 'quantifier) ;; "all of these lines"
