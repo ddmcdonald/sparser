@@ -918,9 +918,12 @@
 (define-adjective "organismic")
 (define-adjective "original")
 (define-adjective "orthogonal")
+(define-adjective "other") ; was a quantifier at one point
 (define-adjective "outer" :form 'spatial-adjective)
 (define-adjective "overt")
 (define-adjective "own")
+
+
 (define-adjective "paradoxical")
 (define-adjective "particular")
 (define-adjective "passive")

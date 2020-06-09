@@ -137,7 +137,7 @@
 (define-quantifier "numerous")
 (define-quantifier "a number")
 ;;(define-quantifier "other")
-(define-adjective "other") 
+ 
 (define-quantifier "others")
 (define-quantifier "several")
 (define-quantifier "some")
