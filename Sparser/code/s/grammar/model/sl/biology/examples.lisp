@@ -13,6 +13,40 @@
 ;;; Example texts
 ;;;---------------
 
+;;--- Clipped from https://www.nytimes.com/2020/06/02/health/coronavirus-profile-covid.html?algo=identity&fellback=false&imp_id=90584100&action=click&module=Science%20%20Technology&pgtype=Homepage
+;; "Monster or Machine? A Profile of the Coronavirus at 6 Months"
+#|
+
+(p "It was formally identified on Jan. 7 by scientists in China. For weeks beforehand, a mysterious respiratory ailment had been circulating in the city of Wuhan. Health officials were worried that it might be a reappearance of severe acute respiratory syndrome, or SARS, an alarming viral illness that emerged abruptly in 2002, infected more than 8,000 people and killed nearly 800 in the next several months, then was quarantined into oblivion.")
+
+|#
+
+
+;;----- drugs, Adverse events
+
+;; Clipped from https://www.drugbank.ca/drugs/DB00503
+
+#| From "Description", page on Ritonavir
+
+(p "Ritonavir is an HIV protease inhibitor that interferes with the reproductive cycle of HIV. Although it was initially developed as an independent antiviral agent, it has been shown to possess advantageous properties in combination regimens with low-dose ritonavir and other protease inhibitors. It is now more commonly used as a booster of other protease inhibitors and is available in both liquid formulation and as capsules.")
+
+(p "While ritonavir is not an active antiviral agent against hepatitis C virus (HCV) infection, it is added in combination therapies indicated for treatment of HCV infections as a booster. Ritonavir is a potent CYP3A inhibitor that increases peak and trough plasma drug concentrations of other protease inhibitors such as Paritaprevir and overall drug exposure. American Association for the Study of Liver Diseases (AASLD) and the Infectious Diseases Society of America (IDSA) guidelines recommend ritonavir-boosted combination therapies as a first-line therapy for HCV Genotype 1a/b and 4 treatment-naïve patients with or without cirrhosis.")
+
+;; Pharmcology section
+  
+Associated Conditions:
+(p "Human Immunodeficiency Virus (HIV) Infections")
+
+Indication:
+(p "Indicated in combination with other antiretroviral agents for the treatment of HIV-1 infection.")
+
+Toxicity:
+(p "Human experience of acute overdose with ritonavir is limited. One patient in clinical trials took ritonavir 1500 mg/day for two days. The patient reported paresthesias which resolved after the dose was decreased. A post-marketing case of renal failure with eosinophilia has been reported with ritonavir overdose. The approximate lethal dose was found to be greater than 20 times the related human dose in rats and 10 times the related human dose in mice. Oral LD value in rats is >2500 mg/kg. Adverse effects of ritonavir may arise from drug-drug interactions. Other effects include hepatotoxicity, pancreatitis, and allergic reactions/hypersensitivity.")
+
+|#
+;;-------------------------------
+
+
 ;; From NYT 'On Politics' newsletter for 5/29/20
 (defun compare-death-tolls ()
   ;; Required context for what year we're in (2020) and what virus
@@ -108,7 +142,7 @@ Of 378 AAK1 inhibitors in the knowledge graph, 47 have been approved for medical
 By contrast, one of the six high-affinity AAK1-binding drugs was the janus kinase inhibitor baricitinib, which also binds the cyclin G-associated kinase, another regulator of endocytosis. Because the plasma concentration of baricitinib on therapeutic dosing (either as 2 mg or 4 mg once daily) is sufficient to inhibit AAK1, we suggest it could be trialled, using an appropriate patient population with 2019-nCoV acute respiratory disease, to reduce both the viral entry and the inflammation in patients, using endpoints such as the MuLBSTA score, an early warning model for predicting mortality in viral pneumonia.
 
 Figure: Viral entry via clathrin-mediated endocytosis
-The virus binds through its spike protein to ACE2 on the surface of AT2 epithelial cells (1), which induces activation of clathrin-mediated endocytosis. AAK1- and GAK-mediated phosphorylation of clathrin adapter proteins (2) starts the assembly of the clathrin cage around the enclosed virus, before it is pinched off and trafficked to endosomes (3). Inhibition of AAK1 and GAK by baricitinib thereby inhibits virus entry. SARS-CoV-2=severe acute respiratory syndrome coronavirus 2.
+The virus binds through its spike protein to ACE2 on the surface of AT2 epithelial cells (1), which induces activation of clathrin-mediated endocytosis. AAK1- and GAK-mediated phosphorylation of clathrin adapter proteins (2) starts the assembly of the clathrin cage around the enclosed virus, before it is pinched off and trafficked to endosomes (3). Inhibition of AAK1 and GAK by baricitinib thereby inhibits virus entry. SARS-CoV-2 severe acute respiratory syndrome coronavirus 2.
 |#
 
 (defun cov-reactome ()
