@@ -492,11 +492,7 @@
            :head :left-edge
            :form np
            :referent (:function apply-where-relative-clause left-edge right-edge)))
-     (eval
-      `(def-syntax-rule (,nb when-relative-clause)
-           :head :left-edge
-           :form np
-           :referent (:function apply-when-relative-clause left-edge right-edge)))
+
      (eval
       `(def-syntax-rule (,nb why-relative-clause)
            :head :left-edge
@@ -1207,13 +1203,19 @@ similar to an oncogenic RasG12V mutation (9)."))
     :form adjp ;;superlative-adjp ;; adjective ;;superlative
     :referent (:function interpret-superlative+adjective left-edge right-edge))
 
+
 (def-syntax-rule (superlative adverb) ;;/// what's an example of this??
     ;; "most frequently"
     :head :right-edge
     :form adverb ;;superlative-adverb ;; adverb ;;superlative
     :referent (:function interpret-superlative+adjective left-edge right-edge))
 
-
+(def-syntax-rule (comparative-adjective adverb) ; "more tightly"
+    :head :right-edge
+    :form adverb
+    :referent (:function interpret-comparative+adjective left-edge right-edge))
+;;/// these functions need method options since the implicatures
+;; are based on the direction of the comparative
 (def-syntax-rule (quantifier comparative) ;; "many more"
     :head :right-edge
     :form comparative
