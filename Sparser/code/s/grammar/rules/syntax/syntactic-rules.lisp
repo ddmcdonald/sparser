@@ -480,12 +480,12 @@
       `(def-syntax-rule (,nb transitive-clause-without-object)
            :head :left-edge
            :form np
-           :referent (:function apply-where-when-relative-clause left-edge right-edge)))
+           :referent (:function apply-when-relative-clause left-edge right-edge)))
      (eval
       `(def-syntax-rule (,nb when-relative-clause)
            :head :left-edge
            :form np
-           :referent (:function apply-where-when-relative-clause left-edge right-edge)))
+           :referent (:function apply-when-relative-clause left-edge right-edge)))
 
      (eval
       `(def-syntax-rule (,nb where-relative-clause)
