@@ -186,7 +186,9 @@
 
 (defun string-for-edge (edge)
   "Abbreviation for the long version"
-  (extract-string-spanned-by-edge edge))
+  (trim-whitespace
+   (replace-newline-with-space
+    (extract-string-spanned-by-edge edge))))
 
 (defun extract-string-spanned-by-edge (edge)
   (let* ((start-pos (pos-edge-starts-at edge))
