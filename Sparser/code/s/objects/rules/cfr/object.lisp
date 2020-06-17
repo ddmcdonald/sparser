@@ -155,8 +155,6 @@
 
 
 
-  
-
 ;;--- collect rules by type
     
 (defun collect-lexical-rules () ;; 2,805 in Fire
@@ -309,7 +307,9 @@ This sorts out what to use as the category in the unusual cases."
     
 
 
-(defvar *words-to-deleted-rules* (make-hash-table :test #'eq))
+(defvar *words-to-deleted-rules* (make-hash-table :test #'eq)
+  "Managed by strip-single-term-rules. It maps from the word
+   to the set of rules that were deleted")
 
 (defgeneric strip-single-term-rules (label)
   (:documentation "Remove every single-term rewrite rule from
