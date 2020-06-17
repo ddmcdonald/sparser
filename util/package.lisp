@@ -55,6 +55,7 @@
            #:remove-trailing-whitespace
            #:trim-whitespace
            #:contains-whitespace
+           #:replace-newline-with-space
            #:spaced-string
            #:underscore-interleaved-string
            #:remove-prefix

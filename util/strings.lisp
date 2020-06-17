@@ -60,6 +60,10 @@
 (defun contains-whitespace (string)
   (some #'(lambda (char) (find char string)) *whitespace-chars*))
 
+(defun replace-newline-with-space (string)
+  "Simple, single newline case"
+  (substitute #\space #\newline string))
+
 
 
 (defun spaced-string (list)
