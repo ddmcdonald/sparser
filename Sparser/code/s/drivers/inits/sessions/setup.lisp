@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1994,2016-2018 David D. McDonald -- all rights reserved
+;;; copyright (c) 1991-1994,2016-2020 David D. McDonald -- all rights reserved
 ;;; extensions copyright (c) 2009-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "setup"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  December 2018
+;;;  Version:  June 2020
 
 ;; 1.1  (1/17/91 v1.8)  Conditionalized the relevant intializations using
 ;;      the globals that control loading.
@@ -33,7 +33,7 @@
 (defun setup-session-globals/parser ()
   "Sets up the major reused working data structures of the system,
    and carries out some initializations that cannot be done as
-   the system's files are loading.  Should be executed after an
+   the system's files are loading. Should be executed after an
    image is launched but before any analyses are undertaken."
   (make-the-chart)
   (make-the-edge-resource)
@@ -42,11 +42,12 @@
 
 
 (defun setup-session-globals/grammar ()
-  ;; as above, should be executed as part of the launch configuration.
-  ;; None of this should be specific to any source type, just 
-  ;; initializations required by the definitions in the grammar that 
-  ;; we don't particularly want taking up space in an image.
+  "as above, should be executed as part of the launch configuration.
+   None of this should be specific to any source type, just 
+   initializations required by the definitions in the grammar that 
+   we don't particularly want taking up space in an image."
   (when *load-the-grammar*
     (cache-variable-lookup)
+    (collect-syntactic-function-usage) ; priming for recording rule usage
     (when *paragraph-detection* ;; the module, i.e. the code is included
       (setq *prior-para-newline-pos* (position# 0)))))
