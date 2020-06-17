@@ -903,7 +903,7 @@ val-pred-var (pred vs modifier - left or right?)
 
   
 (defun quantifier-noun-compound (quantifier head)
-  ;; Not all quantifiers are equivalent. We want to idenify
+  ;; Not all quantifiers are equivalent. We want to identify
   ;; cases of negation ("no increase") and eventually probably
   ;; float them up to the main verb, //// which will require
   ;; making a note somewhere on the sentence structure reminding
