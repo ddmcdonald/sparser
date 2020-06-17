@@ -31,7 +31,7 @@
 (lload "referent;decode exp")
 (lload "referent;unary driver")
 (lload "referent;cases")
-(lload "referent;record")
+(lload "referent;record") (lload "referent;save-restore-records")
 
 (when *include-model-facilities*
   (lload "referent;new decodings")

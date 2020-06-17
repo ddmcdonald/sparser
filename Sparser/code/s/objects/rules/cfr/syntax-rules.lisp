@@ -78,14 +78,18 @@
 
 
 
-
+(defvar *making-syntactic-rule* nil
+  "Flag read in form category checks to keep them from being
+   troubled by there being two form categories")
 
 (defun do-syntax-rule/resolved (rhs head-designator form referent schema)
+  "We're going to make a regular binary rule, except that the ids that
+   trigger it will be in form position rather than category position.
+   That is controlled by the routine used to knit in the rule."
   
-  ;; We're going to make a regular binary rule, except that the ids that
-  ;; trigger it will be in form position rather than category position.
-  ;; That is controlled by the routine used to knit in the rule.
-
+  (let ((*making-syntactic-rule* t))
+    (declare (special *making-syntactic-rule*))
+  
     ;; 1st check whether there already a rule based on this rhs
     (let ((earlier-cfr
            (lookup-rule/rhs rhs)))
@@ -98,7 +102,7 @@
                                      schema)))
 
           (setf (cfr-completion cfr) head-designator)
-          cfr ))))
+          cfr )))))
 
 
 ;;;----------

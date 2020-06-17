@@ -143,17 +143,24 @@ rules, including any DA rules.
 (defclass record-of-rule (named-object)
   ((count :initform 0 :accessor instance-count)
    (context :initform nil :accessor instance-context))
-  (:documentation ""))
+  (:documentation "This just record the number of times that
+   the rule was successfully executed (function passed the
+   *subcat-test*), and the text contexts in which each of
+   them occurred (as a list of rule-context objects)"))
 (setup-find-or-make record-of-rule)
 
 (defclass rule-context ()
   ((left :initform "" :initarg :left :accessor left-side)
    (right :initform "" :initarg :right :accessor right-side)
+   (pair :initform "" :initarg :pair :accessor pair-string)
    (s :initform "" :initarg :sentence :accessor sentence-context)
    ;; could add where the sentence is found
-   (rule :initform nil :initarg :rule :accessor for-rule)
-   )
-  (:documentation ""))
+   (rule :initform nil :initarg :rule :accessor for-rule))
+  (:documentation "Records the actual strings for the left and
+    righthand sides of a particular instance of the rule
+    being invoked as returned by string-for-edge. Also includes
+    the string for the full sentence via current-string. (excessive ??)
+    Rule context objects are only accessible from a rule's record"))
 
 (defmethod print-object ((rc rule-context) stream)
   (print-unreadable-object (rc stream :type t)
@@ -171,7 +178,7 @@ rules, including any DA rules.
    Regular rules are indexed off the rule. DA rules are indexed off
    the da rule object."
   (declare (special *subcat-test*))
-  (unless *subcat-test*
+  (unless *subcat-test* ; otherwise the count is doubled
     (pushnew rule *rules-ever-fired*)
     (let* ((rule-name
             (etypecase rule
@@ -199,20 +206,27 @@ rules, including any DA rules.
 (defun setup-rule-citations (record rule-name)
   "Record what text strings were involved. Assumes we're looking at a binary
    phrase structure rules from a calling point in referent-from-rule when
-   the refevant variables have values."  
+   the relevant variables have values."  
   (let* ((left-edge (left-edge-for-referent))
          (right-edge (right-edge-for-referent))
          (left-text (string-for-edge left-edge))
          (right-text (when (and right-edge (edge-p right-edge))
                        (string-for-edge right-edge)))
-         (s-text (current-string)))
-    (let ((rc (make-instance 'rule-context
-                             :left left-text
-                             :right right-text
-                             :sentence s-text
-                             :rule rule-name)))
-      (push rc (instance-context record))
-      rc)))
+         (s-text (current-string))
+         (paired (string-append left-text "%" right-text))
+         (recorded-cites (instance-context record)))
+    
+    (when (or (null recorded-cites)
+              (not (member paired recorded-cites
+                           :key #'pair-string :test #'string=)))
+      (let ((rc (make-instance 'rule-context
+                               :left left-text
+                               :right right-text
+                               :pair paired
+                               :sentence s-text
+                               :rule rule-name)))
+        (push rc (instance-context record))
+        rc))))
 
 
 
@@ -251,6 +265,12 @@ rules, including any DA rules.
     (cfr (string-for-rule r))
     (da-rule (symbol-name (da-name r)))))
 
+(defun sort-rules (r1 r2)
+  "Alphbetic sort function based on the sort-name"
+  (cond ((string< (sort-name r1) (sort-name r2)) t)
+        ((string> (sort-name r1) (sort-name r2)) nil)))
+
+
 (defun sort-rule-data (r1 r2)
   "Sort function. Input is a car/cdr pair of a rule and its instance count.
    Ordering is higher frequency (cound) and then alphabetically by name"
@@ -280,6 +300,7 @@ rules, including any DA rules.
     (let ((sorted (sort raw #'sort-rule-data)))
       (setq *sorted-rule-firing-data* sorted)
       (length sorted))))
+
 
 
 

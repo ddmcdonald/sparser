@@ -66,6 +66,58 @@
         (t (princ-cfr cfr stream)))  |#
 
 
+(defun expression-for-rule (rule)
+  "Express the rule as a list of left/righthand
+   sides from which we can recover the rule by calling
+   find-cfr, which takes expressions."
+  (labels ((sparser-intern (symbol)
+             (intern (symbol-name symbol) (find-package :sparser)))
+           (princ-item (item)
+             (etypecase item
+               (category (sparser-intern (cat-symbol item)))
+               (word (format nil "\"~a\"" (pname item)))
+               (polyword (format nil  "\"~a\"" (pw-pname item)))
+               (symbol (sparser-intern item)))))
+    (let ((lhs (cfr-category rule))
+          (rhs (cfr-rhs rule)))
+      (ecase (rule-type rule)
+        (:semantic
+         (let ((lhs-term (princ-item lhs))
+               (rhs-terms (loop for item in rhs
+                             collect (princ-item item))))
+           `(,lhs-term ,rhs-terms)))
+        (:form
+         (let* ((completion-field (cfr-completion rule))
+                (head-edge (if (consp completion-field)
+                             (car completion-field) ;; (:right-edge . #<ref-category COPULAR-PP>)
+                             completion-field))
+                (right? (eq head-edge :right-edge))
+                (lhs-term (if right?
+                            (princ-item (second rhs))
+                            (princ-item (first rhs))))
+                (rhs-terms (loop for item in rhs
+                              collect (princ-item item))))
+           `(,lhs-term ,rhs-terms)))
+        (:syntactic
+         (let* ((head-edge (cfr-completion rule))
+                (right? (ecase head-edge (:right-edge t) (:left-edge nil)))
+                (lhs-term (if right?
+                            (princ-item (second rhs))
+                            (princ-item (first rhs))))
+                (rhs-terms (loop for item in rhs
+                              collect (princ-item item))))
+           `(,lhs-term ,rhs-terms)))
+        (:context-sensitive
+         (let ((lhs-term (princ-item lhs))
+               (rhs-terms (loop for item in rhs
+                             collect (princ-item item))))
+           `(,lhs-term ,rhs-terms)))
+
+
+        ))))
+           
+
+
 ;;;--------------------
 ;;; the specific cases
 ;;;--------------------

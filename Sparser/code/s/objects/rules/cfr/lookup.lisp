@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2019 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "lookup"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   Jamuary 2019
+;;;   Version:   June 2019
 
 ;; 5.0 (9/3/92 v2.3) bumped the version to make changes that simplify
 ;;      the accounting. Revised most of the routines.
@@ -78,27 +78,42 @@
     (lookup-unary-rule lhs-label rhs-labels)
     (lookup-rule/rhs rhs-labels)))
 
+
 (defun lookup-rule/rhs (rhs-labels)
   "For a binary rule all that matters for rule identity is the
    two labels (words, polywords, categories) on its righthand side.
    We Look up the rule sets and indexes. If they are there then look at
-   the labels to distinguish among the three sorts of rules."
+   the ids of the labels to distinguish among the three sorts of rules.
+   This function's operation is complicated by the fact that now we
+   will let ourselves use referential-categories in form or syntactic
+   rules rather than just form-categories, consequently the type of
+   the rule is determined by the def forms and is reflected in the
+   pattern of the ids."
+  (declare (special *making-syntactic-rule* *sparser-loaded*))
   (let* ((left-label (first rhs-labels))
          (right-label (second rhs-labels))
          (left-rs (label-rule-set left-label))
          (right-rs (label-rule-set right-label)))
-    (when (and left-rs right-rs)
+    (when (and left-rs right-rs *sparser-loaded*)
       (let ((left-ids (rs-right-looking-ids left-rs))
             (right-ids (rs-left-looking-ids right-rs)))
+        ;;(break "left-ids: ~a~%right-ids: ~a" left-ids right-ids)
         (when (and left-ids right-ids)
+          ;; Most categories now participate in both semantic and
+          ;; form/syntactic rules, and typically have both
+          ;; ids, so we check for semantic rules first
           (cond
-            ((and (get-tag :form-category left-label)
-                  (get-tag :form-category right-label))
+            ((and (category-multiplier left-ids)
+                  (category-multiplier right-ids))
+             (lookup-semantic-rule left-ids right-ids))
+            ((and (form-multiplier left-ids)
+                  (form-multiplier right-ids))
              (lookup-syntactic-rule left-ids right-ids))
-            ((or (get-tag :form-category left-label)
-                 (get-tag :form-category right-label))
-             (lookup-form-rule rhs-labels left-ids right-ids))
-            (t (lookup-semantic-rule left-ids right-ids))))))))
+            ((or (form-multiplier left-ids)
+                 (form-multiplier right-ids))
+             (if *making-syntactic-rule*
+               nil ;; labels to hit in syntax rules not in place yet
+               (lookup-form-rule rhs-labels left-ids right-ids)))))))))
 
 
 ;;;-------
