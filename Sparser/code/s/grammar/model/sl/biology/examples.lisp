@@ -13,6 +13,12 @@
 ;;; Example texts
 ;;;---------------
 
+
+#| Clipped from NYT "Coronavirus Briefing" of 6/16/20
+
+"Six months into the outbreak, we have what might be the best news yet on a treatment: Scientists in Britain say they have identified the first drug shown to reduce coronavirus-related deaths. The steroid dexamethasone, a decades-old anti-inflammatory drug, appears to help patients with dire cases of Covid-19. Experts believe the drug is effective in calming the overactive immune response known as a cytokine storm. For patients on ventilators, it reduced the death rate by a third, the scientists said. For those on oxygen, death rates dropped by a fifth. The drug showed no benefit for patients who did not need respiratory support. Another benefit of the drug is that it’s very cheap — around $8 per treatment, according to one of the leaders of the trial. It’s also widely available and already sitting on pharmacy shelves around the world."
+|#
+
 ;;--- Clipped from https://www.nytimes.com/2020/06/02/health/coronavirus-profile-covid.html?algo=identity&fellback=false&imp_id=90584100&action=click&module=Science%20%20Technology&pgtype=Homepage
 ;; "Monster or Machine? A Profile of the Coronavirus at 6 Months"
 #|
