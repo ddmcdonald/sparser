@@ -136,7 +136,8 @@ from define-cfr it depends on whether redefinition-of-rule says yes,
                                        existing-cfr)))
   (declare (optimize debug))
   (check-type existing-cfr cfr)
-  (check-type new-lhs category)
+  (unless (syntactic-rule? existing-cfr) ;; has a keyword there
+    (check-type new-lhs category))
   (when *break-on-illegal-duplicate-rules*
     (restart-case (error 'duplicate-rule
                          :existing-cfr existing-cfr
