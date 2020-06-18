@@ -266,7 +266,7 @@
     (setf (name obj) (or name (known-in-context :name)))
     (setf (article-location obj)
           (or location (known-in-context :location)))
-    (setf (article-date obj)
+    #+ignore(setf (article-date obj)
           (or date (date-&-time-as-formatted-string)))
     (setf (article-source obj)
           (or source (known-in-context :source)))
