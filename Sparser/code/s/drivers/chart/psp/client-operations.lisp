@@ -1118,17 +1118,34 @@
     (time (loop for f in *mentions-files* as i from 1 to n  do (when (eql i (* 1000 (floor i 1000)))  (print i))(load f))))
   )
 
+(defparameter *multiple-count-class-terms* nil)
+
 (defun find-intersecting-descrip-mentions (descrips &optional (in-paras nil))
   (clrhash *location-hash*)
   (let* ((ht (if in-paras *mentions-by-para* *mentions-by-sent*))
          (descrips-mentions
           (loop for descrip in descrips
                 do
-                  (loop for dloc in (gethash (sp-prin1-to-string descrip) ht)
-                        do
-                          (pushnew descrip (gethash dloc *location-hash*))))))
+                  (let ((locs-or-indirect-locs (gethash (sp-prin1-to-string descrip) ht)))
+                    (case (car locs-or-indirect-locs)
+                      (:indirect
+                       (loop for indirect-description in (cdr locs-or-indirect-locs)
+                             ;; these are the descriptions of the proteins that are indirectly described
+                             ;;  by the class term -- so "kinases" will map to the set of all kinases
+                             do
+                               (loop for ind-loc in (gethash indirect-description ht)
+                                     do
+                                       (pushnew (if *multiple-count-class-terms*
+                                                    ;; do we count multiple instances of the class "kinase"
+                                                    indirect-description
+                                                    descrip)
+                                                (gethash ind-loc *location-hash*)))))
+                      (t
+                       (loop for dloc in locs-or-indirect-locs
+                             do
+                               (pushnew descrip (gethash dloc *location-hash*)))))))))
     (sort
-     (group-by (hal *location-hash*)
+     (group-by (hal *location-hash* )
                #'(lambda (x) (length (cdr x))))
      #'>
      :key #'car)))
@@ -1186,56 +1203,108 @@
 
 (defun sentence-indexable-mentions (&optional (s (sentence)))
   (loop for m in (sentence-mentions (sentence)) 
-        when (gethash (print
-                       (let ((*package* (find-package :sp)))
+        when (gethash (let ((*package* (find-package :sp)))
                          (format nil "~s"
-                                 (krisp->sexpr (mention-head-referent m)))))
+                                 (krisp->sexpr (mention-head-referent m))))
                       *mentions-by-sent*)
         collect (krisp->sexpr (mention-head-referent m))))
 
+(defparameter *sorted-intersection-descrip-mentions* nil)
+
+(defun sorted-intersection-descrip-mentions (sent-mentions)
+  (setq sent-mentions
+        (loop for m in sent-mentions
+              collect
+                (krisp->sexpr (mention-head-referent m))))
+  (setq *sorted-intersection-descrip-mentions*
+        (sort 
+         (group-by
+          (second
+           (car
+            (find-intersecting-descrip-mentions
+             sent-mentions
+             )))
+          #'caar
+          #'cdar)
+         #'>
+         :key #'(lambda(x)(length (second x))))))
+(defparameter *sent-mention-descriptions* nil)
+(defparameter *sent-mentions* nil)
+(defparameter *sent-mention-strings* nil)
+  
 (defun best-references-for-sentence (&key (s (sentence))
                                        (n-articles 5))
   (maybe-initialize-mention-hashes) ;;test
   (when (stringp s)
     (qepp s)
     (setq s (sentence)))
-  (loop for art-group
-        in
-          (sort 
-           (group-by
-            (second
-             (car
-              (find-intersecting-descrip-mentions
-               (find-indexed-descriptions (sentence-mentions (sentence))))))
-            #'caar
-            #'cdar)
-           #'>
-           :key #'(lambda(x)(length (second x))))
-        as i from 1 to n-articles
-        collect
-          (let* ((*write-article-objects-file* nil)
-                 (article (run-json-article
-                           (make-json-article-from-file-handle (car art-group)))))
-            (declare (special *write-article-objects-file*))
-            (cons article
-                  (loop for toc-right in (second art-group)
-                        collect
-                          (let* ((sentence
-                                  (sentence-for-toc
-                                   (format nil "~a.~a"
-                                           (slot-value article 'name)
-                                           toc-right)
-                                   article))
-                                 (paragraph (parent sentence)))
-                            (declare (special sentence paragraph))
-                            (when sentence
-                              (list (toc-index paragraph)
-                                    ;;(subseq (content-string paragraph)
-                                    (1- (starts-at-char sentence))
-                                    (1- (ends-at-char sentence)) ;)
-                                    ))
+  (setq *sent-mention-descriptions*
+        (remove-duplicates
+         (find-indexed-descriptions (sentence-mentions (sentence)))
+         :test #'equal))
+  (setq *sent-mentions* (find-indexed-mentions (sentence-mentions (sentence))))
 
-                            ))))))
+  (setq *sent-mention-strings*
+        (loop for m in *sent-mentions*
+              collect
+                (list (mention-string-from-sentence m (sentence-string s))
+                      (sp-prin1-to-string
+                       (krisp->sexpr (mention-head-referent m)))
+                      m)))
+  (list (sentence-and-mention-description s  *sent-mentions*)
+        (loop for art-group
+              in
+                (sorted-intersection-descrip-mentions *sent-mentions*)
+              as i from 1 to n-articles
+              collect
+                (let* ((*write-article-objects-file* nil)
+                       (article (run-json-article
+                                 (make-json-article-from-file-handle (car art-group))))
+                       (article-mention-ht (article-mention-ht article)))
+                  (declare (special *write-article-objects-file*))
+                  `(,article
+                    ,(loop for desc in *sent-mention-strings*
+                           collect
+                             `(,(car desc) ,(second desc)
+                                ,(gethash (second desc) article-mention-ht)))
+                    ,(loop for toc-right in (second art-group)
+                           collect
+                             (let* ((sentence
+                                     (sentence-for-toc
+                                      (format nil "~a.~a"
+                                              (slot-value article 'name)
+                                              toc-right)
+                                      article))
+                                    (paragraph (parent sentence)))
+                               (declare (special sentence paragraph))
+                               (when sentence
+                                 (list (toc-index paragraph)
+                                       ;;(subseq (content-string paragraph)
+                                       (1- (starts-at-char sentence))
+                                       (1- (ends-at-char sentence)) ;)
+                                       ))
+
+                               )))))))
+
+(defun sentence-and-mention-description (sent mentions)
+  (let ((str (sentence-string sent)))
+    (list str
+          (loop for m in mentions
+                collect
+                  (list (mention-string-from-sentence m str)
+                        (mention-offsets m)
+                        (sp-prin1-to-string
+                         (krisp->sexpr (mention-head-referent m)))
+                        ))
+    )))
+
+
+(defun mention-string-from-sentence (m sent-str)
+  (let* ((bounds (mention-offsets m))
+         (low (1- (car bounds)))
+         (high (1- (cdr bounds))))
+    (subseq sent-str low high)))
+
 
 (defun find-indexed-descriptions (mentions)
   (loop for d
@@ -1244,6 +1313,12 @@
                   mentions)
         when (gethash (sp-prin1-to-string d) *mentions-by-sent*)
         collect d))
+
+(defun find-indexed-mentions (mentions)
+  (loop for m
+        in mentions
+        when (gethash (sp-prin1-to-string (krisp->sexpr (mention-head-referent m))) *mentions-by-sent*)
+        collect m))
 
 (defun sp-prin1-to-string (item)
   (let ((*package* (find-package :sp)))

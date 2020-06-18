@@ -179,13 +179,19 @@
        mf)
       mention-file)))
 
-(defun grouped-article-mentions (article)
+(defparameter *article-mentions* nil)
+(defparameter *grouped-mention-article* nil)
+
+(defun grouped-article-mentions (article &optional (with-offsets nil))
+  (setq *grouped-mention-article* article)
+  (setq *article-mentions*
+        (article-relevant-mentions article))
   (list
    (name article)
    (sort
     (group-by
      (loop for g in
-             (group-by (loop for m in (article-relevant-mentions article)
+             (group-by (loop for m in *article-mentions*
                              unless (itypep (mention-head-referent m)
                                             '(:or number-sequence))
                              collect m)
@@ -197,20 +203,31 @@
              (list (car g)
                    (loop for m in (remove-duplicates (second g) :test #'equal)
                          collect
-                           (let ((str (car (mentioned-in-article-where m))))
-                             (intern
-                              (subseq str (+ 1 (search "." str)))
-                              (find-package :sp))))
-                             
-                   #+ignore
-                   (list (subseq str (+ 1 (search ".p" str)))
-                         (list (subseq str (+ 1 (search ".p" str)))
-                               (mention-uid m))
-                         )))
+                           (let* ((str (car (mentioned-in-article-where m)))
+                                  (where (intern
+                                          (subseq str (+ 1 (search "." str)))
+                                          (find-package :sp))))
+                             (if with-offsets
+                                 (list where (mentioned-where m))
+                                 where)))))
      #'caar)
     #'string<
     :key
     #'car)))
+
+(defparameter *gam* nil)
+(defparameter *dgs* nil)
+(defun article-mention-ht (article)
+  (let ((ht (make-hash-table :size 100 :test #'equal)))
+    (loop for group in (setq *gam* (second (grouped-article-mentions article t)))
+          do
+            (loop for descrip-group in (setq *dgs* (second group))
+                    do
+                    (setf (gethash (sp-prin1-to-string (car descrip-group)) ht )
+                          (second descrip-group))))
+    ht))
+
+
 
 
 
