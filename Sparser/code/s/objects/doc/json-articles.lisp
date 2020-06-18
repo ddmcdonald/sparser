@@ -85,7 +85,7 @@
       ;;     "ref_spans": [],
       ;;     "section": "Relative mean absolute error"
       ;;},
-      (let ((p (allocate-paragraph))) ;; (make-instance 'paragraph)
+      (let ((p (make-instance 'paragraph)))
         (setf (content-string p) text)
         (list p)))))
 
