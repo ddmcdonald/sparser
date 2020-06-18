@@ -459,6 +459,8 @@
 
 ;;--- subject + verb for relative clauses
 
+;; duplicate rules commented out -- ddm 6/18/20
+
 (loop for nb in `(np pronoun vp+ing vg+ing ,@*n-bar-categories*)
    do
      (eval 
@@ -468,19 +470,18 @@
            :referent (:function apply-copular-pp left-edge right-edge)))
      
      (loop for src in '(subject-relative-clause  vp+ing vg+ing)
-	 ;; vp+ed ;; reduced relative clauses
         do
           (eval 
            `(def-syntax-rule (,nb ,src)
                 :head :left-edge
                 :form np
                 :referent (:function apply-subject-relative-clause left-edge right-edge))))
-     
-     (eval
-      `(def-syntax-rule (,nb transitive-clause-without-object)
-           :head :left-edge
-           :form np
-           :referent (:function apply-when-relative-clause left-edge right-edge)))
+     ;; (eval
+     ;;  `(def-syntax-rule (,nb when-relative-clause)
+     ;;       :head :left-edge
+     ;;       :form np
+     ;;       :referent (:function apply-where-when-relative-clause left-edge right-edge)))
+
      (eval
       `(def-syntax-rule (,nb when-relative-clause)
            :head :left-edge
@@ -498,7 +499,18 @@
            :head :left-edge
            :form np
            :referent (:function apply-why-relative-clause left-edge right-edge)))
+    
+     ;; (eval
+     ;;  `(def-syntax-rule (,nb transitive-clause-without-object)
+     ;;       :head :left-edge
+     ;;       :form np
+     ;;       :referent (:function apply-where-when-relative-clause left-edge right-edge)))
 
+     ;; (eval
+     ;;  `(def-syntax-rule (,nb transitive-clause-without-object)
+     ;;       :head :left-edge
+     ;;       :form np
+     ;;       :referent (:function apply-where-when-relative-clause left-edge right-edge)))
      (eval
       `(def-syntax-rule (,nb transitive-clause-without-object)
            :head :left-edge
@@ -511,10 +523,11 @@
            :referent (:function apply-object-relative-clause left-edge right-edge))))
 
 
-(loop for n in `(np wh-pronoun demonstrative pronoun demonstrative ,@*n-bar-categories*) ;; move vp+ing vg+ing to da-rules
+(loop for n in `(np wh-pronoun demonstrative pronoun demonstrative ,@*n-bar-categories*)
   do
-  (loop for v in '(vp vg vp+passive vg+passive vp+past vp+ed
-                      ;; vg+ing ;; TO-DO see if this change improves or damages things
+  (loop for v in '(vp vg vp+passive vg+passive vp+past #|vp+ed|#
+                   ;; vg+ing ;; TO-DO see if this change improves or damages things
+                   ;; or move vp+ing vg+ing to da-rules
                       )
     do
     (eval
@@ -522,13 +535,13 @@
           :head :right-edge
           :form S
           :referent (:function assimilate-subject left-edge right-edge))))
-     ;; I don't really believe that you can have a subject befor the subordinate conjunction -- prove it
-     ;; OK -- proven -- "we thus tested whether ..."
-      (eval
+
+     (eval
        `(def-syntax-rule (,n subordinate-clause)
 	   :head :right-edge
 	   :form subordinate-clause
 	   :referent (:function assimilate-subject-to-subordinate-clause left-edge right-edge))))
+
 
 (loop for nb in `(np ,@*n-bar-categories*)
       do
@@ -545,7 +558,7 @@
           (loop for vv in '((verb+ing vg+ing)
                             (verb+present vg)
                             (verb vg)
-                            (vp+ed vp+ed) 
+                            #|(vp+ed vp+ed) |#
                             )
                 do
 
