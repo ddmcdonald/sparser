@@ -78,7 +78,29 @@
     (lookup-unary-rule lhs-label rhs-labels)
     (lookup-rule/rhs rhs-labels)))
 
+(defun lookup-rule/rhs (rhs-labels)
+  "For a binary rule all that matters for rule identity is the
+   two labels (words, polywords, categories) on its righthand side.
+   We Look up the rule sets and indexes. If they are there then look at
+   the labels to distinguish among the three sorts of rules."
+  (let* ((left-label (first rhs-labels))
+         (right-label (second rhs-labels))
+         (left-rs (label-rule-set left-label))
+         (right-rs (label-rule-set right-label)))
+    (when (and left-rs right-rs)
+      (let ((left-ids (rs-right-looking-ids left-rs))
+            (right-ids (rs-left-looking-ids right-rs)))
+        (when (and left-ids right-ids)
+          (cond
+            ((and (get-tag :form-category left-label)
+                  (get-tag :form-category right-label))
+             (lookup-syntactic-rule left-ids right-ids))
+            ((or (get-tag :form-category left-label)
+                 (get-tag :form-category right-label))
+             (lookup-form-rule rhs-labels left-ids right-ids))
+            (t (lookup-semantic-rule left-ids right-ids))))))))
 
+#+ignore ;; David's new code
 (defun lookup-rule/rhs (rhs-labels)
   "For a binary rule all that matters for rule identity is the
    two labels (words, polywords, categories) on its righthand side.
