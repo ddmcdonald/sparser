@@ -7,18 +7,25 @@
 ("cord_uid" "sha" "source_x" "title" "doi" "pmcid" "pubmed_id" "license" "abstract" "publish_time"
  "authors" "journal" "mag_id" "who_covidence_id" "arxiv_id" "pdf_json_files" "pmc_json_files" "url")
 |#
-(defun setup-metadata-ht (file)
+(defun setup-metadata-ht (file &optional (reset t))
+  (when reset
+    (clrhash *covid-metadata-ht*))
   (let* ((metadata-list (cl-csv::read-csv file))
          (headers (car metadata-list)))
     (loop for row in (cdr metadata-list)
           do (let* ((art-plist (make-art-plist row headers))
-                    (ht-id (cond ((> (length (getf art-plist :pdf_json_files)) 0)
-                                  (getf art-plist :pdf_json_files))
-                                 ((> (length (getf art-plist :pmc_json_files)) 0)
-                                  (getf art-plist :pmc_json_files))
-                                 (t (getf art-plist :cord_uid)))))
-               (setf (gethash ht-id *covid-metadata-ht*)
-                     art-plist)))))
+                    (art-ids `(,(getf art-plist :cord_uid)
+                                ,@(ppcre-split "; " 
+                                               (getf art-plist :pdf_json_files))
+                                ,@(ppcre-split "; "
+                                               (getf art-plist :pmc_json_files)))))
+               ;; some articles apparently have multiple pdf_json
+               ;; files separated by "; ", but a parsed article object
+               ;; will only have one source, so we need to make a hash
+               ;; entry for each
+               (loop for id in art-ids
+                      do (setf (gethash id *covid-metadata-ht*)
+                               art-plist))))))
 
 (defun make-art-plist (row headers)
   (loop as i from 0 to (1- (length row))
