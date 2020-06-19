@@ -2880,3 +2880,5 @@
 (def-indiv-with-id molecule "sodium arsenate" "CHEBI:84070")
 (def-indiv-with-id molecule "Trinitrobenzenesulfonic Acid" "CHEBI:53063" :name "2,4,6-Trinitrobenzenesulfonic acid")
 (def-indiv-with-id molecule "benzo(k)fluoranthene" "PUBCHEM:9158")
+(def-indiv-with-id molecule "hyaluronan" "CHEBI:16336")
+

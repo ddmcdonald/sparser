@@ -192,6 +192,9 @@
 (def-family "karyopherin α" :synonyms ("karyopherin αs" "karyopherin alpha")) 
 (def-family "karyopherin β" :synonyms ("karyopherin βs" "karyopherin beta"))
 (def-family "tyrphostin")
+(def-family "interleukin")
+
+(def-family "GDF" :synonyms ("growth differentiation factor" "gdf" "Growth Differentiation Factor" "growth/differentiation factor") :members ("UP:P27539" "UP:Q9UK05" "UP:P43026" "UP:Q6KF10" "UP:Q7Z4P5" "UP:O14793" "UP:O60383" "UP:P55107" "UP:O95390" "UP:O95972" "UP:Q99988" "UP:Q9NR23"))
 
 (def-family "20 alpha-hydroxysteroid dehydrogenase" :synonyms ("20 α-hydroxysteroid dehydrogenase" "20-α-HSD" "E2DH" "EDH17B2") :members ("UP:P14061" "UP:P37059" "UP:Q04828"))
 (def-family "20-alpha-HSD" :members ("UP:P14061" "UP:P37059" "UP:Q04828")) 

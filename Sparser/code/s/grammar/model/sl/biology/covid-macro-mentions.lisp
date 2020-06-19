@@ -24,7 +24,6 @@
       ("ABHD5" "(PROTEIN (UID \"UP:Q8WTS1\") (NAME (WD \"ABHD5_HUMAN\")))")
       ("ABHD8" "(BIO-ENTITY (NAME (WD \"ABHD8\")))")
       ("ACE" "(PROTEIN (UID \"UP:P12821\") (NAME (WD \"ACE_HUMAN\")))")
-      ("ACE" "(PROTEIN (UID \"UP:P12821\") (NAME (WD \"ACE_HUMAN\")))")
       ("ACE2" "(PROTEIN (UID \"UP:Q9BYF1\") (NAME (WD \"ACE2_HUMAN\")))")
       ("ACHE" "(PROTEIN (UID \"UP:P22303\") (NAME (WD \"ACES_HUMAN\")))")
       ("ACOT2" "(PROTEIN (UID \"UP:P49753\") (NAME (WD \"ACOT2_HUMAN\")))")
@@ -1346,7 +1345,7 @@
      (("TRA2A" "(PROTEIN (UID \"UP:Q13595\") (NAME (WD \"TRA2A_HUMAN\")))")
       ("CD16a" "(PROTEIN (UID \"UP:P08637\") (NAME (WD \"FCG3A_HUMAN\")))")
       ("CD16b" "(PROTEIN (UID \"UP:O75015\") (NAME (WD \"FCG3B_HUMAN\")))")
-      ("CD16-2" "(NUMBER (VALUE 2))") ("FCGR4" "(NUMBER (VALUE 4))")
+      ("CD16-2" "(NUMBER (VALUE 2))") ("FCGR4" "(NUMBER (VALUE 4))") ;;mouse
       ("CD32a" "(PROTEIN (UID \"UP:P12318\") (NAME (WD \"FCG2A_HUMAN\")))")
       ("FCGR2A" "(PROTEIN (UID \"UP:P12318\") (NAME (WD \"FCG2A_HUMAN\")))")
       ("CD32b" "(PROTEIN (UID \"UP:P31994\") (NAME (WD \"FCG2B_HUMAN\")))")
@@ -1407,6 +1406,11 @@
     ))
 
 
+(defparameter *covid-proteins*
+  '("covid protein" 
+    ("R1A_SARS2" "R1AB_SARS2" "SPIKE_SARS2" "NCAP_SARS2" "VME1_SARS2" "AP3A_SARS2"
+     "wORF3b" "NS6_SARS2" "NS7A_SARS2" "ORF9B_SARS2" "wORF9c" "VEMP_SARS2"
+     "NS7B_SARS2" "NS8_SARS2" "Y14_SARS2" "wORF10")))
 
 (defun initialize-macro-mentions ()
   (declare (special *macro-mentions*))
