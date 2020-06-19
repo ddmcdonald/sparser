@@ -16,6 +16,12 @@
                  :bindings (uid "GO:0038023")
                  :realization (:noun "receptor"))
 
+(define-category cytokine-receptor :specializes receptor
+                 :realization (:noun "cytokine receptor"))
+
+(define-category innate-immunity-receptor :specializes receptor
+                 :realization (:noun "innate-immunity receptor"))
+
 (noun "receptor protein" :super protein)
 (noun "receptor protein-tyrosine kinase" :super kinase)
 (noun ("scaffold" "scaffolding protein") :super protein)
