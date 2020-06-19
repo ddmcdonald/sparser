@@ -137,5 +137,6 @@
 ;; (gload "bio;category-defining-words.lisp") - moved to load-the-grammar
 
 (gload "bio;sparser-to-indra")
+(gload "bio;covid-macro-mentions")
 
 
