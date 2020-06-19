@@ -1133,8 +1133,8 @@
           (loop for descrip in descrips
                 do
                   (let ((macro-mention 
-                         (print (gethash (print (sp-prin1-to-string descrip))
-                                         *macro-mentions*))))
+                         (gethash (sp-prin1-to-string descrip)
+                                         *macro-mentions*)))
                     (if macro-mention
                         (mark-macro-mention-items macro-mention ht)
                         (let ((locs-or-indirect-locs (gethash (sp-prin1-to-string descrip) ht)))
