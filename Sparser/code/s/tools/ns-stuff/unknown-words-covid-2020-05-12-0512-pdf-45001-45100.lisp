@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-45001-45100 sample of unknown words
-;; created 6/19/20 2:1:33
+;; created 6/19/20 4:34:54
 
 (in-package :sparser)
 
@@ -2381,7 +2381,7 @@
  "worthy" "wound" "wounds" "wreak" "wright" "write" "writer" "writers" "wrote" "yahoo" "yearbook"
  "yearling" "yearlings" "yellowish" "yoga" "yolk" "yon" "yuan" "zigzag" "zonal" "zone" "zones"))
     :test #'equalp))
-es" "virology" "virtue" "visit"
+s" "virology" "virtue" "visit"
  "visitor" "visitors" "visits" "vital" "vitamin" "vitamins" "viva" "vivid" "voice" "volatilities"
  "volatility" "vole" "volume" "voucher" "vulnerabilities" "vulnerability" "wade" "wage" "wages"
  "walk" "walker" "wall" "walls" "walrus" "war" "warm" "warmer" "warp" "warrant" "warrants" "warren"

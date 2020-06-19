@@ -1,9 +1,9 @@
 ;; covid-2020-05-12-0512-PDF-19701-19800 sample of unknown words
-;; created 6/4/20 17:11:36
+;; created 6/19/20 3:45:41
 
 (in-package :sparser)
 
-;; 6070 extracted as unknown bio-entity
+;; 6069 extracted as unknown bio-entity
 
 
 (defparameter *All-Upper-Unknown-Words*
@@ -624,9 +624,9 @@
  "Amplicons" "Tilburg" "andM" "andẼ" "Azotemia" "bNAbs" "Bacteriuria" "bpVNTR" "cHis" "cPPT" "cPTT"
  "circRNAs" "dACC" "dFBS" "defineĠ" "defineḂ" "difFcile" "Elle" "eðtÞ" "fPBM" "hFIX" "hGH"
  "Hyperkalemia" "iGFP" "iXb" "inGLuc" "jEPlus" "kP" "kW" "kWh" "logRðtÞ" "Lutra" "mChip" "mHealth"
- "mRNAladen" "networkM" "oE" "oV" "oligodT" "oroV" "pAxcw" "pCLAMP" "pFastBac" "pGEMH" "pK" "pN"
- "pPERT" "pcDNA" "peGFPneo" "Phenylcyclidine" "Phenylpropanolamine" "pmirGLO" "rFIPV" "tBLASTx"
- "thatM" "uMSC" "Ultrasonography" "whereX" "whileŌ" "Âa" "Âtoquinol" "ϤϬϭϩ"))
+ "mRNAladen" "networkM" "oE" "oV" "oligodT" "oroV" "pAxcw" "pCLAMP" "pFastBac" "pGEMH" "pK" "pPERT"
+ "pcDNA" "peGFPneo" "Phenylcyclidine" "Phenylpropanolamine" "pmirGLO" "rFIPV" "tBLASTx" "thatM"
+ "uMSC" "Ultrasonography" "whereX" "whileŌ" "Âa" "Âtoquinol" "ϤϬϭϩ"))
     :test #'equalp))
 
 
@@ -747,7 +747,7 @@
  "Zucca" "Zumla" "Zurbruegg" "Zwick" "Kaiser" "Stockham" "miRanda"))
     :test #'equalp))
 
-;; 2643 defined as a bio-entity
+;; 2646 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-19701-19800
@@ -782,16 +782,16 @@
  "1 H/" "1 µg/kg" "1+" "1,2,3,5,6,7-hexahydro-1,5:3,7-dimethano-4-benzoxonin-3-amines"
  "1,2,3,5,6,7-hexahydro-1,5:3,7-dimethano-4benzoxonin-3-amines" "1,2-mannose" "1,2mannose"
  "1,5-dibromopentane" "1,8-diaminooctane" "1,8-diaza" "1-10 µ/kg/minute" "1-2°C" "1-3×10" "1-5×10"
- "1-Desamino-8-D-arginine" "1-ethyl-3-" "1.33 g/ml" "1.4 g/kg" "1.48-fold" "1.5-fold" "1.5x10"
- "1.5Â10" "1.7-fold" "1/100" "1/2" "1/20" "1/200" "1/2N" "1/3" "1/30" "1/400" "1/T" "1/Λ" "1/λ"
- "10 g/ml" "10,000/mm3" "10,000/µ" "10-11-day-old" "10.3 g/" "10/12" "100 g/ml" "1000¥" "100pfu/mL"
- "100U/ml" "100°F" "100μL" "1016/j" "101°F" "102,103.1~" "103°F" "103°F." "104-C1DL" "104C-1"
- "105°to" "109s110" "10m3" "10x" "10y0" "10Yoto" "10°" "10°are" "10°C" "10×" "11.3 ± 2.4-fold"
- "11/48" "110°F" "11}" "11Á15" "12/40" "12/56" "1200Âg" "121/497" "121/5781" "125:1001-6" "13/48"
- "1300×g" "13Á1" "14-116B123" "14.4 g/m" "143_en" "15 µ/kg/minute" "15-24year"
- "150326_TJF-Q180V_Customer_letter" "15mer-loop" "16/27" "16/44" "166À168°C" "16SYBER" "17/497"
- "170°C." "174/297" "17C1-1" "17Cl-1" "17Dtetravalent" "17H9" "18-dayold" "18/107" "18/48" "19/5"
- "193mer" "1986a" "1986b" "1988F3" "1995Q1-2010Q2" "1997a" "1997b" "1998Á2007" "1:100-diluted"
+ "1-Desamino-8-D-arginine" "1-ethyl-3-" "1.33 g/ml" "1.4 g/kg" "1.48-fold" "1.5x10" "1.5Â10"
+ "1.7-fold" "1/100" "1/2" "1/20" "1/200" "1/2N" "1/3" "1/30" "1/400" "1/T" "1/Λ" "1/λ" "10 g/ml"
+ "10,000/mm3" "10,000/µ" "10-11-day-old" "10.3 g/" "10/12" "100 g/ml" "1000¥" "100pfu/mL" "100U/ml"
+ "100°F" "100μL" "1016/j" "101°F" "102,103.1~" "103°F" "103°F." "104-C1DL" "104C-1" "105°to"
+ "109s110" "10m3" "10x" "10y0" "10Yoto" "10°" "10°are" "10°C" "10×" "11.3 ± 2.4-fold" "11/48"
+ "110°F" "11}" "11Á15" "12/40" "12/56" "1200Âg" "121/497" "121/5781" "125:1001-6" "13/48" "1300×g"
+ "13Á1" "14-116B123" "14.4 g/m" "143_en" "15 µ/kg/minute" "15-24year"
+ "150326_TJF-Q180V_Customer_letter" "15mer-loop" "16/44" "166À168°C" "16SYBER" "17/497" "170°C."
+ "174/297" "17C1-1" "17Cl-1" "17Dtetravalent" "17H9" "18-dayold" "18/107" "18/48" "19/5" "193mer"
+ "1986a" "1986b" "1988F3" "1995Q1-2010Q2" "1997a" "1997b" "1998Á2007" "1:100-diluted"
  "1:40-diluted" "1A ." "1ab" "1b-S-E-M-NS6-N-NS7-NS7a-3" "1e4" "1H-benzotriazole-1yl" "1lM" "1p"
  "1x10" "1}" "1~" "1°F" "1·" "1×" "1×10" "2 /2" "2 /2}" "2 /95%" "2 µ/kg" "2*CARD" "2+"
  "2,2,4,6,7pentamethyldihydrobenzofuran-5-sulfonyl" "2,3-linked" "2,3linked" "2-3°C"
@@ -862,25 +862,26 @@
  "anti-chicken" "anti-complementary" "anti-correlates" "anti-FCoV" "anti-gamma"
  "anti-glyceraldehyde 3-phosphate" "Anti-HCV" "anti-helmintic" "anti-human" "anti-infective"
  "anti-inflammatory" "anti-influenza virus" "anti-inhibitory" "anti-Leishmania" "anti-leishmanial"
- "anti-malarial" "anti-MERS-CoV" "anti-mouse" "anti-N" "anti-parallel" "anti-parasite" "anti-PDCoV"
+ "anti-malarial" "anti-MERS-CoV" "anti-mouse" "anti-parallel" "anti-parasite" "anti-PDCoV"
  "anti-phase" "anti-phospho-Akt" "anti-phospho-MDM2" "anti-phospholipid" "anti-rabbit" "anti-rat"
  "anti-retroviral" "anti-RNA" "anti-S2" "anti-SARS-CoV" "anti-SARS-CoV-2" "anti-scientific"
  "anti-SDAV" "anti-SDAV-681-positivecontrol" "anti-SDAV/RCV" "anti-ssDNA" "anti-trypanosoma"
  "anti-tumor" "Anti-tumoral" "anti-vaccination" "anti-vaccine" "anti-viral" "antibod-"
  "antigen/antibody" "antigen/mitogen" "anxiety/agitation" "Aoki-Kinoshita" "apparent/consistent"
- "appendiciti~" "appendi~itis" "appro-~riately" "area679" "article/supplementary" "as-yet"
+ "appendiciti~" "appendi~itis" "appro-~riately" "approximately 1 /2" "approximately 1.5-fold"
+ "approximately 15-fold" "approximately 2-fold" "area679" "article/supplementary" "as-yet"
  "as-yet-unknown" "Asp 2-Fc" "associated94,95.999" "asthma/atopy" "asymptomatic/mildly"
- "ATAGAATTTCTTGTA-3Ј" "ATCC#" "ATGGGAGGAAAT-3Ј" "ATPγS" "attitudinal/" "attitudinal/behavioural"
- "August-January" "author/funder" "autopsies4" "AxCAN-Cre" "AxCAw1" "AxshRNA-Control" "AxshRNA-HCV"
- "AY304495" "AY700211" "a~" "a~1" "a~h" "a~i" "a~m" "a~reus" "a~t" "a~~~" "B cells/plasma cells"
- "B-and" "B.V" "B.wt" "B/F" "B/Hong Kong/" "B623,624" "B7+CTLA4+" "bacilliL5"
- "bacteremia/septicemia" "bacterial/" "Baculo-virus" "baculovirus/" "baculovirus/insect"
- "baculovirus/mammalian" "Baden-Württemberg" "Bak-Tang-Wiesenfeld" "Bal-Tec" "BALB/cA" "BALB/cJ"
- "Barabási-Albert" "basal-like" "bat-SL-" "BCEC-1" "bcl2fastq" "BCX4430" "bda75" "beats/minute"
- "Becton-Dickenson" "behavior/depression" "behaviors/" "Belohrad~ky~~" "Benjamini-Hochberg"
- "beta1-integrin" "bi-variate" "bid-tid" "big-dog-little-dog" "Binding/Wash" "Bio-Rad" "biology/"
- "biotin-streptavidin" "birth222" "Bis-TrisGel" "bite/envenomation" "BMAP-27" "BMAP-28"
- "Boehringer-Mannheim" "boomerang-like" "bound/" "bound/free" "bound/unbound" "Bowtie2"
+ "at least 4-fold" "ATAGAATTTCTTGTA-3Ј" "ATCC#" "ATGGGAGGAAAT-3Ј" "ATPγS" "attitudinal/"
+ "attitudinal/behavioural" "August-January" "author/funder" "autopsies4" "AxCAN-Cre" "AxCAw1"
+ "AxshRNA-Control" "AxshRNA-HCV" "AY304495" "AY700211" "a~" "a~1" "a~h" "a~i" "a~m" "a~reus" "a~t"
+ "a~~~" "B cells/plasma cells" "B-and" "B.V" "B.wt" "B/F" "B/Hong Kong/" "B623,624" "B7+CTLA4+"
+ "bacilliL5" "bacteremia/septicemia" "bacterial/" "Baculo-virus" "baculovirus/"
+ "baculovirus/insect" "baculovirus/mammalian" "Baden-Württemberg" "Bak-Tang-Wiesenfeld" "Bal-Tec"
+ "BALB/cA" "BALB/cJ" "Barabási-Albert" "basal-like" "bat-SL-" "BCEC-1" "bcl2fastq" "BCX4430"
+ "bda75" "beats/minute" "Becton-Dickenson" "behavior/depression" "behaviors/" "Belohrad~ky~~"
+ "Benjamini-Hochberg" "beta1-integrin" "bi-variate" "bid-tid" "big-dog-little-dog" "Binding/Wash"
+ "Bio-Rad" "biology/" "biotin-streptavidin" "birth222" "Bis-TrisGel" "bite/envenomation" "BMAP-27"
+ "BMAP-28" "Boehringer-Mannheim" "boomerang-like" "bound/" "bound/free" "bound/unbound" "Bowtie2"
  "breaths/minute" "Brook632" "Brotz-Oesterhelt" "brucello~is" "BSL-3" "BUN/2.8"
  "but rather,excessive" "BV510-conjugated" "BX50" "by~10" "byβ" "byΛ" "b~i" "b~o"
  "b~ood~233.243,245.249" "b~rgdorfer" "C-areas" "C-terminally" "C.I." "C/min" "c01i" "C2symmetric"
@@ -1004,13 +1005,13 @@
  "NS2B" "NTU156" "Nunc-Immuno" "nurseries3I5" "Nutlin-3a" "n}" "n~" "n~h" "n~n" "n~~~" "n°5" "NΣ"
  "o-l" "o-nitrophenyl--D-galactopyranoside" "ob~ervations" "OCA-B/Bob" "occludens-1" "Oct1/Pou2f1"
  "Oct1deficient" "October-December" "ofΛ" "OIE" "OL68-1" "oliguric/anuric" "OmpFλ" "on-call"
- "One-day-old" "oocysts/g" "open/" "openbill-1604" "openbill-1640" "openbill-6-04" "opposite!"
- "opti-MEM" "or/and" "OR=1" "OR=2.5" "OR=3.1" "OR=3.7" "OR=4.4" "oral/nasal" "ORF1b" "ORF3abc"
- "org/" "org/10.1016/j" "org/licen" "organism^" "organism^^^-^" "organisms/20ng" "orpmirGLO-MRE-wt"
- "Osm/L" "other^" "OUtCOme~308,319,404,451" "outdoor/" "outdoor/indoor" "overconsump-Following"
- "o~" "o~r" "o~r~" "P-450" "P-452" "P-hemolytic" "p-lactam" "p-lactamase" "P-lactamase" "P-loop"
- "p-value" "p24Gag" "p85a" "p<0.0001" "p<0.001" "p<0.01" "P<0.05" "p=0" "packaging/virus"
- "paracentesi~" "parasites/μl" "passengers/vehicles" "pathogn~monic" "patient^"
+ "One-day-old" "only 16/27" "oocysts/g" "open/" "openbill-1604" "openbill-1640" "openbill-6-04"
+ "opposite!" "opti-MEM" "or/and" "OR=1" "OR=2.5" "OR=3.1" "OR=3.7" "OR=4.4" "oral/nasal" "ORF1b"
+ "ORF3abc" "org/" "org/10.1016/j" "org/licen" "organism^" "organism^^^-^" "organisms/20ng"
+ "orpmirGLO-MRE-wt" "Osm/L" "other^" "OUtCOme~308,319,404,451" "outdoor/" "outdoor/indoor"
+ "overconsump-Following" "o~" "o~r" "o~r~" "P-450" "P-452" "P-hemolytic" "p-lactam" "p-lactamase"
+ "P-lactamase" "P-loop" "p-value" "p24Gag" "p85a" "p<0.0001" "p<0.001" "p<0.01" "P<0.05" "p=0"
+ "packaging/virus" "paracentesi~" "parasites/μl" "passengers/vehicles" "pathogn~monic" "patient^"
  "patients/1 million" "PATIR-FTIR" "pAxshRNA-Control" "pAxshRNA-HCV" "PBS/0.3%" "PBS/Tween"
  "pCA-A105" "pCA-A105-120" "pCA-A120" "pCAGGS-Flag-2*CARD" "pCAGGS-HA" "pCAGGS-MCS"
  "pCAGGS-Myc-PDCoV-N" "pcDNA-MCON6gp160" "pcDNA3.1" "pCi-3cHis" "pCi-neo" "pCMV-Tat" "PCV13" "PCV2"
@@ -1100,7 +1101,7 @@
  "⟨ℓ⟩" "⟩/⟨k⟩"))
     :test #'equalp))
 
-;; 5706 extracted by morphology
+;; 5704 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1544,7 +1545,7 @@
  "lymphatics" "lymphocytic" "lymphocytosis" "lymphosarcoma" "lymphotropic" "lyophilized"
  "lysosomotropic" "machinelearning" "macroeconomic" "macroeconomics" "macromolecular" "macroscopic"
  "macroscopically" "maculopapular" "magnetic" "magnetoresistive" "magnification" "magnificent"
- "mailed" "maintenence" "majority" "majorly" "malabsorption" "maladaptive" "malarial" "malaysian"
+ "mailed" "maintenence" "majorly" "malabsorption" "maladaptive" "malarial" "malaysian"
  "maldistribution" "malevolent" "malfunction" "malfunctioning" "malian" "malicious" "malodorous"
  "malpositioning" "mammalianize" "mammogram" "manageable" "managed" "management" "managerial"
  "mandated" "mandatory" "mandible" "mandibular" "maneuvering" "manifested" "manipulation" "mannent"
@@ -1566,14 +1567,14 @@
  "microinjection" "microneutralization" "microscopic" "microscopical" "microscopically"
  "microsomal" "microthrombocytosis" "microwaving" "midlateral" "midposition" "migratory" "miliary"
  "military" "mimetic" "mimetics" "mimicking" "minced" "mineral" "mineralization" "mineralized"
- "miniaturized" "minimal" "minimised" "minimization" "minimizing" "mining" "ministerial" "minority"
- "minution" "miosis" "mirbase" "misclassification" "miscoding" "misdiagnosed" "misdiagnosis"
- "misexpression" "misfolding" "misidentified" "misincorporation" "misinformation" "misinformed"
- "misinterpretation" "misleading" "mismatched" "mismating" "missing" "mission" "mistakenly"
- "misunderstanding" "mitigation" "mitogenicity" "mitotic" "mitral" "mixed" "mnemonic" "moaning"
- "mobilisation" "mocktreated" "modeled" "modelling" "modernity" "modular" "modularity" "modulator"
- "mohamed" "mohammed" "moistened" "molecularly" "moment" "mondial" "monetary" "monitored"
- "monitoring" "monoclonal" "monofilament" "monographic" "monolithic" "monomeric" "mononuclear"
+ "miniaturized" "minimal" "minimised" "minimization" "minimizing" "mining" "ministerial" "minution"
+ "miosis" "mirbase" "misclassification" "miscoding" "misdiagnosed" "misdiagnosis" "misexpression"
+ "misfolding" "misidentified" "misincorporation" "misinformation" "misinformed" "misinterpretation"
+ "misleading" "mismatched" "mismating" "missing" "mission" "mistakenly" "misunderstanding"
+ "mitigation" "mitogenicity" "mitotic" "mitral" "mixed" "mnemonic" "moaning" "mobilisation"
+ "mocktreated" "modeled" "modelling" "modernity" "modular" "modularity" "modulator" "mohamed"
+ "mohammed" "moistened" "molecularly" "moment" "mondial" "monetary" "monitored" "monitoring"
+ "monoclonal" "monofilament" "monographic" "monolithic" "monomeric" "mononuclear"
  "monophosphorylated" "monophyletic" "monospecific" "monotherapeutic" "monotonically"
  "monotonously" "morbidity" "morbility" "morphing" "morphologic" "moshirian" "motion" "motivation"
  "motivational" "motorised" "mounting" "movable" "movement" "moverment" "mrnaloaded" "mucociliary"
@@ -1943,7 +1944,7 @@
  "ring" "rmed" "rsed" "tied" "usly" "weed" "ying" "αα" "αβ" "αλ" "βλ" "δλ" "κβ" "υγχρ"))
     :test #'equalp))
 
-;; 4121 extracted from Comlex
+;; 4120 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -2001,7 +2002,7 @@
  "breakthroughs" "breathe" "breather" "breathers" "breeder" "breve" "brew" "brick" "bridge" "brief"
  "bright" "brilliant" "brine" "bring" "brink" "bristle" "brittle" "broad" "broaden" "broader"
  "broiler" "brokerage" "bronchi" "bronchus" "brook" "broth" "brother" "brought" "brow" "bubble"
- "bucket" "buckets" "budget" "buffalo" "build" "buildings" "bulb" "bulk" "bull" "bulldog" "bullet"
+ "bucket" "buckets" "budget" "buffalo" "build" "buildings" "bulb" "bull" "bulldog" "bullet"
  "bulletin" "bundle" "burden" "bureau" "burke" "burn" "burr" "burst" "burton" "bus" "buses"
  "business" "butt" "butterflies" "butterfly" "buttock" "buttocks" "button" "buttons" "buy" "bypass"
  "bystander" "bystanders" "cab" "cabin" "cabins" "cabs" "cache" "caches" "calculi" "calculus"
@@ -2393,7 +2394,7 @@
  "worm" "worms" "worrisome" "worst" "worthwhile" "worthy" "wrap" "wraps" "wright" "wrist" "write"
  "wrote" "yarn" "youth" "youthful" "zealot" "zebra" "zebras" "zipper" "zone" "zoo" "zoom"))
     :test #'equalp))
-dlife" "willingness" "win" "wind" "window" "wing" "wings" "winner"
+er"
  "wins" "wipe" "wipes" "wireless" "wise" "wit" "withdraw" "withheld" "withhold" "witness"
  "witnesses" "wits" "wizard" "wolf" "wonder" "wood" "woodland" "woodlands" "woods" "wool" "word"
  "words" "worker" "workers" "workforce" "workload" "workplace" "workshop" "world" "worldwide"

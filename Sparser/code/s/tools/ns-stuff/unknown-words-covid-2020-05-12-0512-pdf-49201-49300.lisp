@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-49201-49300 sample of unknown words
-;; created 6/3/20 17:7:16
+;; created 6/19/20 6:12:52
 
 (in-package :sparser)
 
@@ -838,7 +838,7 @@
  "Zimmermann" "Zitzow" "Zlotnik" "Zuker" "Zumla" "Monceyron" "Watson"))
     :test #'equalp))
 
-;; 3428 defined as a bio-entity
+;; 3434 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-49201-49300
@@ -872,10 +872,10 @@
  "1,4dioxane" "1,500 g/min" "1-2L" "1-3GalNAc" "1-5-week-old" "1-ethyl-3-" "1.0ϳ1.6" "1.2-fold"
  "1.25Mpc" "1.42x104" "1.47v" "1.5xHbCBM18" "1.95e-13" "1.9keV" "1/" "1/1" "1/109" "1/12strength"
  "1/171" "1/2" "1/20,000" "1/200" "1/24/2020" "1/28/2020" "1/3" "1/32" "1/332" "1/35" "1/7" "1/b"
- "1/dilution" "1/mm" "1/R" "10-15-fold" "10-50pc" "10.1371/journal" "10.6019/PXD006442" "10/1"
- "100 g/ml" "100 m0.25" "100-115th" "100HAU/mL" "100~" "100×" "101/200" "101Torr" "103/110"
- "103/min" "103glutamine" "1046-2023/Ó" "105/65" "107/263" "10q11.1" "10X" "10°increments" "10½"
- "10×" "10C/min" "11,13e20" "11-mm-diam" "11.9kbp" "11/12" "11/14" "11/15" "11/min" "1101 /2020"
+ "1/dilution" "1/mm" "1/R" "10-50pc" "10.1371/journal" "10.6019/PXD006442" "10/1" "100 g/ml"
+ "100 m0.25" "100-115th" "100HAU/mL" "100~" "100×" "101/200" "101Torr" "103/110" "103/min"
+ "103glutamine" "1046-2023/Ó" "105/65" "107/263" "10q11.1" "10X" "10°increments" "10½" "10×"
+ "10C/min" "11,13e20" "11-mm-diam" "11.9kbp" "11/12" "11/14" "11/15" "11/min" "1101 /2020"
  "111/164" "113/99" "113M533" "119/304" "11:CXCR3" "11E10C7" "11p15" "11r" "12 l/min" "12,000×g"
  "12.5uL" "12.8-fold" "1200 µg/day" "1200µg/day" "123/526" "1280x" "12and" "12CA5" "13/14"
  "13708.40 g/mol" "13a" "13b" "13E2" "13°C" "13°C." "13½" "14-03-31196mol_a" "14-04-31897mol_a"
@@ -896,8 +896,8 @@
  "2000c" "2000g" "2001in" "2002/03" "2002/2003" "2003a" "2004/05" "2004a" "2005/06" "2005a" "2005b"
  "2006a" "2007a" "2007b" "2008a" "2008b" "2008c" "2009eJanuary" "200ns1" "200x" "2011a" "2011b"
  "2013-December" "2013-October" "2013/G3P" "2013a" "2015a" "2015b" "2017a" "2017b" "2017c" "2018ZX"
- "2019/20" "2020a" "2020b" "2020c" "204026/2012" "206/456" "20e50" "20oC" "20°C" "21bp" "21e24"
- "220C" "22GG" "22q11.2" "22q12-q13.2" "22q13" "23/26" "246CC" "24°C"
+ "2019/20" "2020a" "2020b" "2020c" "204026/2012" "206/456" "20e50" "20°C" "21bp" "21e24" "220C"
+ "22GG" "22q11.2" "22q12-q13.2" "22q13" "23/26" "246CC" "24°C"
  "25,5'diphenyl-9-ethiloxacarbocyanine-betaine" "25-dihydroxyvitamin" "250mg/ml" "256/residues"
  "26/33" "260 /ml" "260/230" "260/280" "260C" "27/40" "27/79" "27°" "281HHLK284" "28°" "29/"
  "2:3:3" "2A-i" "2A-ii" "2A-iii" "2A." "2ab" "2and" "2B ." "2B-i" "2B." "2brr" "2BX4" "2C." "2CYU"
@@ -919,8 +919,8 @@
  "4A." "4D ." "4L/min" "4°C" "4°C." "4×4" "4πGρ" "4C" "5 /ml" "5 g/ml" "5 s/cycle" "5#" "5%CO"
  "5,261/" "5-chloro-2-" "5-GAT-GGCTCTTAGCAAAGTCAAGTTAA-3=" "5-methylene-3,5-dihydroimidazole-4-one"
  "5.0 l/reaction" "5.75 l/reaction" "5/100,000" "5/116" "5/13" "5/16" "5/55" "5/6" "5/69" "5/7"
- "50 /0.1" "50 /animal" "50 /ml" "50 /mL" "50 g/ml" "50 µg/ml" "50-53°C" "50-56°C" "50x2.1" "50°"
- "50°C" "54/100" "54/307" "550-650eV" "55°C" "56°C" "57+" "57/387" "58e67" "58°C"
+ "50 /0.1" "50 /animal" "50 /ml" "50 /mL" "50 g/ml" "50 µg/ml" "50-53°C" "50-56°C" "50x2.1" "50°C"
+ "54/100" "54/307" "550-650eV" "55°C" "56°C" "57+" "57/387" "58e67" "58°C"
  "5=-6Fam-AATTTCCTCACTTCTCCAGTG-TAGTATTAGG-BHQ1-3=" "5=-6FAM-AGTGCTTTGGTCC-TCGTG-Tamra-3="
  "5=-6Fam-TTTGT-GTTCACGCTCACCGTGCC-BHQ1-3=" "5=-AACCTAATA-AGCCTCTTTCTC-3="
  "5=-AAGAC-CAATCCTGTCACCTCTGA-3=" "5=-ACCAGTCTAATTGTCTC-3=" "5=-ARCACICCICGR-ATGTCAAAG-3="
@@ -938,8 +938,8 @@
  "7,8-dihydro-8-oxoguanine" "7-dehydrocholesterol" "7-ethyl-10-hydroxy-camptothecin" "7/26" "7/385"
  "7/40" "7/7" "7000×g" "700bp" "700xg" "70°C" "7128amino acid" "718C." "72°C" "72C" "73/74"
  "75/min" "776/777" "793/B" "7>" "7A." "7DHC" "7DHCR" "7S proteins" "7ZB"
- "8-anilino-1-naphthalenesulphonic" "8-oxoG" "8.54x104" "8/9" "800 µg/day" "800-1000g" "800/200"
- "808C." "80v" "80°C" "85°C." "887Lys-Val888" "888C." "8C." "8e9" "8q24" "9 /L" "9-O-Ac-Sia"
+ "8-anilino-1-naphthalenesulphonic" "8-oxoG" "8.54x104" "8/9" "800 µg/day" "800/200" "808C." "80v"
+ "80°C" "85°C." "887Lys-Val888" "888C." "8C." "8e9" "8q24" "9 /L" "9-O-Ac-Sia"
  "9-O-Ac-Sia-dependent" "9-O-Ac-sialoglycans" "9-O-Ac-sialylated" "9-O-Ac-Sias" "9/50" "9/96"
  "90/488" "908C." "90°C" "90C" "92%∼99%" "94%/RA" "94°C" "94C" "95%CI" "95/discs" "95°C" "95°C."
  "95C" "97.9e100.7" "97°" "98°C" "99%/RA" "99.7°C" "99/113" "9½" ":=" ":total" "<0.001" "<0.01"
@@ -975,16 +975,18 @@
  "anti-E1" "Anti-EF2" "anti-eIF2α" "anti-fade" "anti-Fc" "Anti-FMDV" "anti-freeze" "Anti-GP"
  "anti-GQ1b" "anti-haemorrhagic" "anti-hamster" "anti-His" "anti-His-tag" "anti-His6" "anti-human"
  "Anti-IFN-β" "anti-infective" "anti-inflammatory" "anti-M13" "anti-malarial" "anti-microbial"
- "anti-miRNA" "anti-mite" "anti-monkey" "anti-mouse" "anti-MVH" "anti-N"
- "anti-N-methyl-D-aspartate" "anti-NDMAR" "anti-nuclear" "anti-oxidative" "anti-parallel"
- "anti-pathogenic" "anti-pathogenicity" "anti-phospho-TBK1" "anti-pig" "anti-proliferative"
- "anti-psychotic" "anti-rabbit" "anti-retroviral" "anti-rotaviral" "anti-S" "anti-S1"
- "anti-S1 /Slop" "anti-S1/" "anti-S1/AD293-S" "anti-S2" "anti-S2-Ept" "anti-S2/" "anti-S2/AD293-S"
- "anti-SARS-CoV" "anti-SARS-CoV-2" "anti-sense" "anti-sera" "anti-sGP/GP" "anti-sperm" "anti-swine"
- "anti-tag" "anti-tubercular" "anti-tumor" "anti-viral" "Anti-viral" "anti-␤"
- "antigen-major histocompatibility complex" "antigen/antibody" "antimicrobial/antiviral" "ANV-like"
- "APL1A" "APL1B" "APL1C" "APO-BEC3" "Apo-CML14" "APOBEC3H" "applications1" "Arbabi-Ghahroudi"
- "ARDS-like" "ARthropod-BOrne" "AS-MX" "AS69" "assembly/disassembly" "Asx/ST" "AT1selective"
+ "anti-miRNA" "anti-mite" "anti-monkey" "anti-mouse" "anti-MVH" "anti-N" "anti-NDMAR"
+ "anti-nuclear" "anti-oxidative" "anti-parallel" "anti-pathogenic" "anti-pathogenicity"
+ "anti-phospho-TBK1" "anti-pig" "anti-proliferative" "anti-psychotic" "anti-rabbit"
+ "anti-retroviral" "anti-rotaviral" "anti-S1" "anti-S1 /Slop" "anti-S1/" "anti-S1/AD293-S"
+ "anti-S2" "anti-S2-Ept" "anti-S2/" "anti-S2/AD293-S" "anti-SARS-CoV" "anti-SARS-CoV-2"
+ "anti-sense" "anti-sera" "anti-sGP/GP" "anti-sperm" "anti-swine" "anti-tag" "anti-tubercular"
+ "anti-tumor" "anti-viral" "Anti-viral" "anti-␤" "antigen-major histocompatibility complex"
+ "antigen/antibody" "antimicrobial/antiviral" "ANV-like" "APL1A" "APL1B" "APL1C" "APO-BEC3"
+ "Apo-CML14" "APOBEC3H" "applications1" "approximately 10-15-fold" "approximately 10-fold"
+ "approximately 100-fold" "approximately 20-fold" "approximately 200-fold" "approximately 20oC"
+ "approximately 3-fold" "approximately 50°" "approximately 60°C" "Arbabi-Ghahroudi" "ARDS-like"
+ "ARthropod-BOrne" "AS-MX" "AS69" "assembly/disassembly" "Asx/ST" "at least 15-fold" "AT1selective"
  "AT2-s" "AtCaM2" "ATCC®" "atomic/residue" "ATR03" "attachment/fusion" "AttRV" "AU-1-like"
  "AU-1-lke" "AU-1like" "AU-like" "author/funder" "auto-antibodies" "avg_logFC" "avian-like"
  "Axin2-CreER" "AY316300" "AY514485" "Ayala-Bretón" "Ayim-Akonor" "azquez-Campoy" "Aß42" "b*"
@@ -1165,8 +1167,8 @@
  "NAD1/H" "NAD1/NADH" "Nader-Djahal" "NADH/NAD1" "NADP1" "NADP1/H" "NADP1/NADPH" "naive /memory"
  "Nakatani-Webster" "nano-TiO2" "NaNO2" "nanodisc-CD155" "Nanodrop2000" "nanolC-MS/MS"
  "native-like" "Navas-Martin" "NAX10DROP2000" "NBD1" "NBT/BCIP" "NC_001846" "NC_003045" "NC_005147"
- "NCBI-106" "NCBI-108" "ncov-2019" "ND-1000" "ndowling@cdc" "Nedumpully-Govindan" "net/index"
- "Neuro2a" "New-Zealand" "NF-jB" "ng/l" "ng/reaction" "ng/well" "ng/μL" "NG_000002.1"
+ "NCBI-106" "NCBI-108" "ncov-2019" "ND-1000" "ndowling@cdc" "nearly 6-fold" "Nedumpully-Govindan"
+ "net/index" "Neuro2a" "New-Zealand" "NF-jB" "ng/l" "ng/reaction" "ng/well" "ng/μL" "NG_000002.1"
  "NG_000834.1/NG_000833.1" "Ni21affinity" "Nicola€" "Ninot-Pedrosa" "NlpC/P60-like" "NM_001028389"
  "NM_001043531.1" "NM_001202528.1" "NMN1/" "Nocula-Lugowska" "Nod-like" "NOD-like" "non-antibody"
  "non-envelope protein" "non-envelope proteins" "non-G-protein" "non-Hodgkin" "non-lymphoid"
@@ -1263,27 +1265,27 @@
  "transcription/translation" "transfection/infection" "transfection/transformation"
  "transition-state" "transporters/channel" "transporters/channels" "TrCel61A"
  "treatment/prevention" "tree-like" "TREM2+" "TRIM5a" "Tris-Hcl" "TritonX-100" "Trp47Gly" "Tru-Cut"
- "trypsin-like" "Tsi-Hsuan" "Tukey-Kramer" "TVAG_119910" "Tween20" "Tyler-McGowan" "type III IFN-l"
- "type1" "TZ/75" "TZ82" "U/50 l" "U/L" "U/L." "U/ml" "U00735" "U133" "U1F" "U1R" "U373" "U3A"
- "U977" "ua51" "UAAA-CUUUAUAA3" "Ub2" "Ube2KUb" "UBZ-ELRM:linear" "UCCAAAC3" "UCIBIO-Requimte"
- "UCUAAAA3" "UCUAAAC3" "ug/ml" "ug/mL" "uk/" "uk/software/profit" "uk/software/tracer/" "UL49.5"
- "UL49.5/gM" "unchanged1,2." "unfolded/refolded" "units/l" "units/ml" "up-to-now" "Up/Down"
- "urban/suburban" "US$110 billion" "USA/1967" "usingσ" "UTM-RT" "UUAAAAC3" "UV/Vis" "uñez-Ramirez"
- "v&o-synthesized" "V-QUEST" "V.1" "v/v" "v1.0.0" "v1.4.1" "v1.4.8" "V1/V2" "V2b" "V3.0" "V30M"
- "V483A." "V5-tagged" "v5.05" "v5.7.1" "V5/TOPO" "v6.1.8" "V600E ." "v7.1" "VA2c" "vaccine-HPIV3"
- "vaccine-i" "Val37Phe" "valadkhan@case" "Valiente-Echeverria" "value/high" "value="
- "variants-Ab40" "variants/37" "variants/40" "variants/44" "vector-like" "vector/water"
- "Velazquez-Campoy" "ventilation/perfusion" "Verma-Gaur" "vice-versa" "vicilin-like" "VII2D"
- "viral-suppressors-of-RNAi" "Viral/Pathogen" "virus-A9" "virus-encoded-suppressors-of-RNAi"
- "virus-like" "virus/disease" "virus/serum" "virus/viral RNA" "vitamin-B12" "Vmax5"
- "Vogt-Koyanaghi-Harada" "VPR_N3P/I5P" "VPR_N3P/I5P/N15D/Q142K" "VR-2332" "VR-759" "VR759" "VSV*Δ"
- "VSV*ΔG" "VSV*∆G" "VSVΔ" "VSVΔG" "VVPD359-/-" "vvZaE3L" "vvZaE3L-a3" "VW572" "vWF:Ag" "W.F" "W/m2"
- "w/v" "w/w" "w1-3uxu" "W54C/W112C" "Wa-like" "Waltner-Toews" "Warthin-Starry" "WBC/~d" "WC179"
- "WD4" "weight/" "weight/day" "weight/volume" "where5" "white-rot" "wiki/AIDS_origin"
- "Winthrop-University" "wmr-2014-no-profiles" "WND-POIG" "Wojciechowska-Bason"
- "world_malaria_report_2014" "wt/vol" "wtHPIV3" "WZ101" "WZ606" "X-axis" "x10" "X10-*"
- "xanthelasmas*" "Xba1" "XGG-X" "XGX-G" "XP_591770" "xTAG™" "Y-axis" "Y145H/del" "Yang-Gyun"
- "Yarov-Yarovoy" "Yi-Chuan" "Yi-Fen" "YK34" "YLP12" "YM3A" "yTrx1" "Yuan-Chao" "Yuh-Ju"
+ "trypsin-like" "Tsi-Hsuan" "Tukey-Kramer" "turn-around time" "TVAG_119910" "Tween20"
+ "Tyler-McGowan" "type III IFN-l" "type1" "TZ/75" "TZ82" "U/50 l" "U/L" "U/L." "U/ml" "U00735"
+ "U133" "U1F" "U1R" "U373" "U3A" "U977" "ua51" "UAAA-CUUUAUAA3" "Ub2" "Ube2KUb" "UBZ-ELRM:linear"
+ "UCCAAAC3" "UCIBIO-Requimte" "UCUAAAA3" "UCUAAAC3" "ug/ml" "ug/mL" "uk/" "uk/software/profit"
+ "uk/software/tracer/" "UL49.5" "UL49.5/gM" "unchanged1,2." "unfolded/refolded" "units/l"
+ "units/ml" "up-to-now" "Up/Down" "urban/suburban" "US$110 billion" "USA/1967" "usingσ" "UTM-RT"
+ "UUAAAAC3" "UV/Vis" "uñez-Ramirez" "v&o-synthesized" "V-QUEST" "V.1" "v/v" "v1.0.0" "v1.4.1"
+ "v1.4.8" "V1/V2" "V2b" "V3.0" "V30M" "V483A." "V5-tagged" "v5.05" "v5.7.1" "V5/TOPO" "v6.1.8"
+ "V600E ." "v7.1" "VA2c" "vaccine-HPIV3" "vaccine-i" "Val37Phe" "valadkhan@case"
+ "Valiente-Echeverria" "value/high" "value=" "variants-Ab40" "variants/37" "variants/40"
+ "variants/44" "vector-like" "vector/water" "Velazquez-Campoy" "ventilation/perfusion" "Verma-Gaur"
+ "vice-versa" "vicilin-like" "VII2D" "viral-suppressors-of-RNAi" "Viral/Pathogen" "virus-A9"
+ "virus-encoded-suppressors-of-RNAi" "virus-like" "virus/disease" "virus/serum" "virus/viral RNA"
+ "vitamin-B12" "Vmax5" "Vogt-Koyanaghi-Harada" "VPR_N3P/I5P" "VPR_N3P/I5P/N15D/Q142K" "VR-2332"
+ "VR-759" "VR759" "VSV*Δ" "VSV*ΔG" "VSV*∆G" "VSVΔ" "VSVΔG" "VVPD359-/-" "vvZaE3L" "vvZaE3L-a3"
+ "VW572" "vWF:Ag" "W.F" "W/m2" "w/v" "w/w" "w1-3uxu" "W54C/W112C" "Wa-like" "Waltner-Toews"
+ "Warthin-Starry" "WBC/~d" "WC179" "WD4" "weight/" "weight/day" "weight/volume" "where5"
+ "white-rot" "wiki/AIDS_origin" "Winthrop-University" "wmr-2014-no-profiles" "WND-POIG"
+ "Wojciechowska-Bason" "world_malaria_report_2014" "wt/vol" "wtHPIV3" "WZ101" "WZ606" "X-axis"
+ "x10" "X10-*" "xanthelasmas*" "Xba1" "XGG-X" "XGX-G" "XP_591770" "xTAG™" "Y-axis" "Y145H/del"
+ "Yang-Gyun" "Yarov-Yarovoy" "Yi-Chuan" "Yi-Fen" "YK34" "YLP12" "YM3A" "yTrx1" "Yuan-Chao" "Yuh-Ju"
  "YVAD-7-amido-4-methylcoumarin" "YVAD-cmk" "Z-IETD" "Z-LEHD" "z-VAD"
  "Z-Val-Ala-Asp-fluoromethylketone" "Z-VKD-FMK" "Z-WEHD-FMK" "ZAb3" "Zai-Xin" "Zbtb32+"
  "zinc-protein" "zinc/hIAPP" "Zn11" "Zn21" "Zn21dependent" "ZnCl2" "ZnEGR1" "ZnEgr1" "ZNF280A"
@@ -1306,7 +1308,7 @@
  "␤3like" "␤4" "␤5" "␤6" "␤7" "␤8" "␤CA" "⩽5" "⩾38°C" "99%" "g/ml" "l" "m" "0.20"))
     :test #'equalp))
 
-;; 5391 extracted by morphology
+;; 5389 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1729,12 +1731,12 @@
  "lymphoblastic" "lymphocyteassociated" "lymphocytic" "lymphocytosis" "lymphoproliferative"
  "lymphoreticular" "lymphotropic" "lyophilised" "lyophilising" "lyophilization" "lytically" "lyzed"
  "macromolecular" "macroscopic" "macular" "maculopapular" "magnetic" "magnetically" "magnevist"
- "majority" "malabsorption" "malabsorptive" "malarial" "maldigestion" "maldigestive" "mammogram"
- "managed" "management" "managerial" "mandatory" "manifested" "manning" "manual" "manually"
- "mapping" "marginal" "marital" "marketed" "martinsried" "massgeneral" "massive" "massively"
- "mastocytosis" "material" "maternal" "maternally" "maternity" "mathematical" "mathematics"
- "maturation" "maturational" "maximization" "maximize" "mcneal" "measurment" "mebatsion"
- "mechanical" "mechanics" "medaited" "medial" "mediastinal" "medicinal" "medicity" "megablast"
+ "malabsorption" "malabsorptive" "malarial" "maldigestion" "maldigestive" "mammogram" "managed"
+ "management" "managerial" "mandatory" "manifested" "manning" "manual" "manually" "mapping"
+ "marginal" "marital" "marketed" "martinsried" "massgeneral" "massive" "massively" "mastocytosis"
+ "material" "maternal" "maternally" "maternity" "mathematical" "mathematics" "maturation"
+ "maturational" "maximization" "maximize" "mcneal" "measurment" "mebatsion" "mechanical"
+ "mechanics" "medaited" "medial" "mediastinal" "medicinal" "medicity" "megablast"
  "megakaryoblastic" "megakaryocytic" "megakaryocytopoiesis" "melioidosis" "melitensis" "membered"
  "membraneenclosed" "membranous" "menacing" "mendelian" "mengeling" "meningeal" "meningococcal"
  "meningothelial" "menstrual" "mental" "mentation" "mentor" "mentoring" "mesangial" "mesenchymal"
@@ -1749,8 +1751,8 @@
  "microscopic" "microsomal" "microthrombosis" "microtubular" "microvacuolization" "microvascular"
  "microwaveassisted" "microwaved" "migratory" "military" "milled" "mimetic" "mimetics" "mimicking"
  "miming" "minced" "mineralization" "mingming" "minimal" "minimalist" "minimising" "minimization"
- "minimize" "mining" "minority" "mirbase" "mirnaguided" "mirnase" "mirnatargeted" "mirror"
- "mirroring" "misassembly" "misassigned" "misdiagnosed" "misdiagnosis" "misfolded" "misformulated"
+ "minimize" "mining" "mirbase" "mirnaguided" "mirnase" "mirnatargeted" "mirror" "mirroring"
+ "misassembly" "misassigned" "misdiagnosed" "misdiagnosis" "misfolded" "misformulated"
  "misinformation" "misleading" "mislocalization" "mislocalized" "mismatched" "misplacement"
  "missed" "mission" "misunderstanding" "mitigation" "mitochondrialdependent"
  "mitochondriatargeting" "mitotic" "mixed" "mockinfected" "mockvaccinated" "modeled" "modelling"
@@ -2117,7 +2119,7 @@
  "syed" "ured" "ying" "αβ" "γδ" "νβ"))
     :test #'equalp))
 
-;; 3664 extracted from Comlex
+;; 3663 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -2169,8 +2171,8 @@
  "brick" "bride" "bright" "brightness" "brine" "bring" "brings" "brisk" "bristle" "bristles"
  "brittle" "broad" "broaden" "broader" "brochure" "brochures" "broiler" "broilers" "broke"
  "bronchi" "bronchus" "brook" "broth" "brought" "brush" "brute" "buffalo" "build" "buildings"
- "bulb" "bulk" "bulky" "bull" "bullet" "burden" "burdens" "bureau" "bureaus" "burgess" "burke"
- "burn" "burns" "burrow" "burst" "bury" "busiest" "business" "busy" "button" "buy" "buyer" "bypass"
+ "bulb" "bulky" "bull" "bullet" "burden" "burdens" "bureau" "bureaus" "burgess" "burke" "burn"
+ "burns" "burrow" "burst" "bury" "busiest" "business" "busy" "button" "buy" "buyer" "bypass"
  "byproduct" "byproducts" "bystander" "cabin" "cabinet" "cabinets" "cadre" "cadres" "cairn"
  "calculus" "calf" "callus" "came" "camel" "camels" "camera" "campaign" "canal" "cancel"
  "cannibalism" "cant" "canton" "capacities" "capacity" "capillaries" "capillary" "capital"
@@ -2516,8 +2518,7 @@
  "wounds" "wrapper" "wren" "wright" "write" "yellowish" "yolk" "yuan" "zee" "zipper" "zippers"
  "zone" "zoo" "zoos"))
     :test #'equalp))
-ertebra" "vertebrae" "vertex" "vessel" "vessels" "vestibule" "vet" "vial"
- "vibrant" "vice" "victoria" "video" "view" "viewpoint" "virology" "virtue" "visa" "visas" "visit"
+ "visit"
  "visitor" "visitors" "visits" "vital" "vitamin" "vitamins" "vivid" "void" "voids" "volatile"
  "volume" "volunteer" "waddle" "wafer" "wafers" "wage" "wages" "wake" "walk" "wall" "walls"
  "walnut" "wander" "wane" "war" "ware" "warfare" "warm" "warmth" "warrant" "warren" "wars" "wash"

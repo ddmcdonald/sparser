@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-45801-45900 sample of unknown words
-;; created 6/3/20 16:34:34
+;; created 6/19/20 4:54:54
 
 (in-package :sparser)
 
@@ -570,7 +570,7 @@
  "Zomerdijk" "Zougman" "Zubieta" "Zuniga" "pO"))
     :test #'equalp))
 
-;; 2419 defined as a bio-entity
+;; 2421 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-45801-45900
@@ -647,15 +647,15 @@
  "6,33e35" "6-carboxylphenyl" "6-diamidino-2-phenylindole" "6-diamino-2-phenylindole" "6.7SD"
  "6.9e8.4" "6/11" "6/20" "6/82" "60kP" "60uC" "60°C" "63-123aa" "64e66" "65°C" "67e69" "6800/mm"
  "6a-d" "6B ." "6e9" "6HB" "6TG" "6·3%" "6·7%" "7+1" "7-isopropoxy-8-" "7.0c" "7.6e8.7" "7/9"
- "70-118aa" "70/171" "70e90%" "70S/" "70uC" "70°C" "70°C." "71/81" "72°C" "72ЊC" "75/1" "775nt"
- "7900HT" "79^81" "7mGpppG" "7mGpppG2" "7·9" "8,8´-diazaBINOL" "8-20bp" "8/165" "8/20" "8/9"
- "800°C" "82uF" "85e87" "8862.172476.3/μL" "8×" "8πκ/4πr" "9 /L" "9 /l" "9/10" "90 µg/ml" "90aa"
- "90e93" "90u" "92°C" "92°C." "94°C" "94ЊC" "95%CI" "95°C" "95ЊC" "96well" "96°C" "97e99" "98N12-5"
- "99.5°C" "9v6" "<-1" "<-152" "<-1e2" "<0.05" "<0.1%" "<0.10" "<0.20" "<1" "<1.0×10" "<10" "<10%"
- "<100" "<11°" "<11°in" "<150×10" "<2" "<20" "<200" "<3" "<3%" "<3.0" "<30%" "<35" "<37" "<4"
- "<4.0×10" "<40" "<5" "<50" "<500" "<6.0" "<60" "<75" "<80%" "<95%" "<c" "<fitdist" "<rep" "=0.08"
- "=N-NH" ">0.35" ">0.4" ">0.9" ">1" ">1.5%" ">100" ">170" ">2%" ">2-log" ">20" ">20:1" ">214" ">4"
- ">5" ">50%" ">500" ">60%" ">60,000" ">65" ">7.5×10" ">70" ">8" ">90%" ">95%" "_159CHNHdup"
+ "70-118aa" "70/171" "70S/" "70uC" "70°C" "70°C." "71/81" "72°C" "72ЊC" "75/1" "775nt" "7900HT"
+ "79^81" "7mGpppG" "7mGpppG2" "7·9" "8,8´-diazaBINOL" "8-20bp" "8/165" "8/20" "8/9" "800°C" "82uF"
+ "85e87" "8862.172476.3/μL" "8×" "8πκ/4πr" "9 /L" "9 /l" "9/10" "90 µg/ml" "90aa" "90e93" "90u"
+ "92°C" "92°C." "94°C" "94ЊC" "95%CI" "95°C" "95ЊC" "96well" "96°C" "97e99" "98N12-5" "99.5°C"
+ "9v6" "<-1" "<-152" "<-1e2" "<0.05" "<0.1%" "<0.10" "<0.20" "<1" "<1.0×10" "<10" "<10%" "<100"
+ "<11°" "<11°in" "<150×10" "<2" "<20" "<200" "<3" "<3%" "<3.0" "<30%" "<35" "<37" "<4" "<4.0×10"
+ "<40" "<5" "<50" "<500" "<6.0" "<60" "<75" "<80%" "<95%" "<c" "<fitdist" "<rep" "=0.08" "=N-NH"
+ ">0.35" ">0.4" ">0.9" ">1" ">1.5%" ">100" ">170" ">2%" ">2-log" ">20" ">20:1" ">214" ">4" ">5"
+ ">50%" ">500" ">60%" ">60,000" ">65" ">7.5×10" ">70" ">8" ">90%" ">95%" "_159CHNHdup"
  "_159dupCHNH"
  "________________________________________________________________________________________________________"
  "_conditioned" "`Sorting" "A&F" "A-alumoxanes" "A-and" "a-D-Gal-I" "a-helices"
@@ -666,38 +666,39 @@
  "accessory/regulatory" "acetate/2%" "acetyl-esterase" "ACI28620" "ACI28629" "actin-like" "AD+"
  "adaptor/cargo" "AG7088" "AGI-30" "AGI54797.1" "AGN211745" "AH12009" "AH3" "AHRS-z" "AHRS/AVRS"
  "AHV-1" "AI070495" "Aichi" "AL-Barram" "Al-Halbosiy" "AL-Jawad" "Al-Rajab" "Al-Zeer"
- "Alexa488-conjugated" "AlexaFluor/QSY" "ALI/ARDS" "alignment/Map" "AMBER03" "AMBER10" "AMBER14"
- "AMBER16" "ammine-B" "ampicillin/sulbactam" "amyloid precursor protein-cleaving enzyme1"
- "an-Suarez" "and+" "and/" "and4" "anti-aggregation" "Anti-Akt1" "anti-allergic" "anti-antiviral"
- "anti-apoptotic" "anti-atherogenic" "anti-B220" "anti-bacterially" "anti-chicken"
- "anti-depressant" "anti-DNA" "anti-dumping" "anti-ERTR-7" "anti-EYFP" "anti-F" "anti-Fcg"
- "anti-FMDV" "anti-fog" "anti-fusogenic" "anti-H" "anti-hamster" "anti-HBsAg" "anti-His"
- "anti-His-tag" "anti-hyperglycemic" "anti-infective" "anti-inflammation" "anti-inflammatory"
- "anti-influenza virus" "Anti-LC3" "anti-leader" "anti-LTbR" "anti-LyveI" "anti-MERS-CoV"
- "anti-microbial" "anti-mouse" "Anti-N" "Anti-NP" "anti-or" "anti-PA" "anti-parallel"
- "anti-parasite" "Anti-parasitic" "anti-phagocytic" "anti-plague" "anti-platelet"
+ "Alexa488-conjugated" "AlexaFluor/QSY" "ALI/ARDS" "alignment/Map" "almost 10-fold" "AMBER03"
+ "AMBER10" "AMBER14" "AMBER16" "ammine-B" "ampicillin/sulbactam"
+ "amyloid precursor protein-cleaving enzyme1" "an-Suarez" "and+" "and/" "and4" "anti-aggregation"
+ "Anti-Akt1" "anti-allergic" "anti-antiviral" "anti-apoptotic" "anti-atherogenic" "anti-B220"
+ "anti-bacterially" "anti-chicken" "anti-depressant" "anti-DNA" "anti-dumping" "anti-ERTR-7"
+ "anti-EYFP" "anti-F" "anti-Fcg" "anti-FMDV" "anti-fog" "anti-fusogenic" "anti-H" "anti-hamster"
+ "anti-HBsAg" "anti-His" "anti-His-tag" "anti-hyperglycemic" "anti-infective" "anti-inflammation"
+ "anti-inflammatory" "anti-influenza virus" "Anti-LC3" "anti-leader" "anti-LTbR" "anti-LyveI"
+ "anti-MERS-CoV" "anti-microbial" "anti-mouse" "Anti-N" "Anti-NP" "anti-or" "anti-PA"
+ "anti-parallel" "anti-parasite" "Anti-parasitic" "anti-phagocytic" "anti-plague" "anti-platelet"
  "anti-pneumocystis" "anti-ProPol" "anti-ProPol-positive" "anti-psychotic" "anti-rabbit"
  "anti-rabbit-IgG" "anti-rabies" "anti-rat-IgG" "anti-rebreathing" "anti-receptor" "anti-rhesus"
  "anti-SARS-CoV" "anti-SARS-CoV-2" "anti-SARS-CoV2" "anti-SCV" "anti-syrian" "anti-T1α" "anti-T2A"
  "anti-toxin" "anti-tumor" "anti-viral" "anti-X" "anti-X-antibody" "antigens/antibodies"
- "antimicrobial/antiviral" "Anton-Lamprecht" "aOR1.71" "ApaI3708-EcoRI" "April-September"
- "Arasur/87" "Aro/Hydro" "aromatic/hydrophobic" "as`helper" "Asfar-like" "assembly/disassembly"
- "asthma/reactive" "At-NUC-L1" "ATCC®" "Attune®" "Au-NP-Cys-PEP" "Au-toAssembler" "AUR1-C"
- "author/funder" "AutoAssembler™" "Avance-DPX-400" "AY278491" "AY508514" "a¤nity" "Aβ40" "Aβ42"
- "B#24" "B#43" "B#57" "B#58" "B#59" "B#60" "B-gelatin" "b-S-E-M-N-poly" "B.V." "B1b" "B6.129X1-Gt"
- "Bac-to-Bac®" "bacteria-like" "Bat-borne" "BCIP/NBT" "BCsc~" "BC~" "beads-on-a-string"
- "Beck-Friis" "bed/day" "Ben-Nathan" "Ben-Porat" "Benzotriazol-1yl" "beta-Dglucan" "BHV-1"
- "BHV-1-induced" "BHV-1induced" "BHV-1infected" "Bio-Rad" "Bio-Yeda" "Biodefense" "bioIogica1"
- "biosolids-PMB" "blue/red" "BoHV-1" "BPIV-3" "br0eathlessness" "branch/subsidiary" "breaths/min"
- "bromo-uridine" "BSA/AuNPs" "BSL-4" "BSL3" "Bsubunit-anthrax" "BT&C" "bulk-£ow" "by`helper" "Bβ"
- "C-TPAT" "C.pneumoniae" "C/" "c/16-nm" "C/Aichi" "C/D" "C/JHB" "C/Johannesburg" "C/Kanagawa"
- "C/Miyagi" "C/Sao" "C/T" "C/Taylor" "C/Victoria" "C/Yamagata" "c1-c2" "C20orf133"
- "C20orf133/MACROD2" "C3H" "C3H/HeJ" "C57BL/6" "C57BL/6J" "C57BL/6N" "C57BL/6N-Tg" "C5A" "C:N"
- "C=C" "C=N" "C=S" "ca/sparcs" "CA2001539A1" "CAGGAAACAGCTAT-GACC" "CaI-I" "CaMV35S" "canis-like"
- "CAOS/CAMM" "cases/" "cat /K" "CC-BY-NC-ND" "CCL-81" "CCL-81cells" "Ccl21b" "CCTGGCCAG-TCTAGAACY"
- "CDs0/ml" "CeHV-2" "cel/ml" "cell adhesion-like" "cell-ceU" "cell/tissue" "cells/" "cells/mL"
- "cells/mm" "cells/well" "cells/μL" "cellular/molecular" "CeO2" "Cervantes-Barragan"
- "Cervantes-Barragá" "CGGATATGTCGACCCACAGCCAGC3" "channel-like" "Chee-Sandford" "chol-siRNA"
+ "antimicrobial/antiviral" "Anton-Lamprecht" "aOR1.71" "ApaI3708-EcoRI" "approximately 3-fold"
+ "approximately 70e90%" "April-September" "Arasur/87" "Aro/Hydro" "aromatic/hydrophobic"
+ "as`helper" "Asfar-like" "assembly/disassembly" "asthma/reactive" "At-NUC-L1" "ATCC®" "Attune®"
+ "Au-NP-Cys-PEP" "Au-toAssembler" "AUR1-C" "author/funder" "AutoAssembler™" "Avance-DPX-400"
+ "AY278491" "AY508514" "a¤nity" "Aβ40" "Aβ42" "B#24" "B#43" "B#57" "B#58" "B#59" "B#60" "B-gelatin"
+ "b-S-E-M-N-poly" "B.V." "B1b" "B6.129X1-Gt" "Bac-to-Bac®" "bacteria-like" "Bat-borne" "BCIP/NBT"
+ "BCsc~" "BC~" "beads-on-a-string" "Beck-Friis" "bed/day" "Ben-Nathan" "Ben-Porat"
+ "Benzotriazol-1yl" "beta-Dglucan" "BHV-1" "BHV-1-induced" "BHV-1induced" "BHV-1infected" "Bio-Rad"
+ "Bio-Yeda" "Biodefense" "bioIogica1" "biosolids-PMB" "blue/red" "BoHV-1" "BPIV-3"
+ "br0eathlessness" "branch/subsidiary" "breaths/min" "bromo-uridine" "BSA/AuNPs" "BSL-4" "BSL3"
+ "Bsubunit-anthrax" "BT&C" "bulk-£ow" "by`helper" "Bβ" "C-TPAT" "C.pneumoniae" "C/" "c/16-nm"
+ "C/Aichi" "C/D" "C/JHB" "C/Johannesburg" "C/Kanagawa" "C/Miyagi" "C/Sao" "C/T" "C/Taylor"
+ "C/Victoria" "C/Yamagata" "c1-c2" "C20orf133" "C20orf133/MACROD2" "C3H" "C3H/HeJ" "C57BL/6"
+ "C57BL/6J" "C57BL/6N" "C57BL/6N-Tg" "C5A" "C:N" "C=C" "C=N" "C=S" "ca/sparcs" "CA2001539A1"
+ "CAGGAAACAGCTAT-GACC" "CaI-I" "CaMV35S" "canis-like" "CAOS/CAMM" "cases/" "cat /K" "CC-BY-NC-ND"
+ "CCL-81" "CCL-81cells" "Ccl21b" "CCTGGCCAG-TCTAGAACY" "CDs0/ml" "CeHV-2" "cel/ml"
+ "cell adhesion-like" "cell-ceU" "cell/tissue" "cells/" "cells/mL" "cells/mm" "cells/well"
+ "cells/μL" "cellular/molecular" "CeO2" "Cervantes-Barragan" "Cervantes-Barragá"
+ "CGGATATGTCGACCCACAGCCAGC3" "channel-like" "Chee-Sandford" "chol-siRNA"
  "cholesterol-conjugated-htt-siRNA" "chr3À/À" "chromatography/mass spectrometry" "Cifuentes-Rius"
  "Circovirus-like" "Cit-γ-Fe2O3" "CKX41" "class B2" "cleavage/recognition" "cliavist®" "clones/g"
  "club-like" "clustalw2/index" "CMTR2" "cnrs-mrs" "co-factor" "coat-proteins" "Cochrane-Armitage"
@@ -896,7 +897,7 @@
  "访视、" "重症、新型冠状病毒、武汉冠状病" "防护等级、防护分级等" "隔离、呼吸道传"))
     :test #'equalp))
 
-;; 4763 extracted by morphology
+;; 4761 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1268,15 +1269,15 @@
  "lymphopenic" "lymphoplasmacytic" "lymphoproliferation" "lymphosarcoma" "lyophilization"
  "lyophylization" "lysosomotropic" "macrolocalization" "macromolecular" "macroporosity"
  "macrovascular" "macular" "maculopapular" "magnetic" "magnifection" "magnification" "magnifying"
- "mailed" "majority" "malabsorptive" "malaysian" "malnourished" "managed" "management" "managerial"
- "mandated" "mandatory" "maned" "manifesting" "manipulating" "manned" "mannoseassociated"
- "mannuronic" "manual" "manually" "manufactured" "mapped" "marginal" "marginalized" "marked"
- "marketed" "marketing" "markovian" "massdistributed" "massive" "massively" "masturbation"
- "material" "maternal" "maternity" "mathematic" "mathematical" "mathematics" "matrixbased"
- "maturation" "maturity" "maximising" "maximization" "maximize" "mcnemar" "measureable"
- "mechanical" "mechanically" "mechanics" "medial" "medication" "medicinal" "medieval" "medonic"
- "medullary" "membraned" "membraneenveloped" "membranolytic" "membranous" "memorable" "mendelian"
- "mental" "mentally" "mentoring" "merchandising" "merged" "meristematic" "mesangial" "mesenchymal"
+ "mailed" "malabsorptive" "malaysian" "malnourished" "managed" "management" "managerial" "mandated"
+ "mandatory" "maned" "manifesting" "manipulating" "manned" "mannoseassociated" "mannuronic"
+ "manual" "manually" "manufactured" "mapped" "marginal" "marginalized" "marked" "marketed"
+ "marketing" "markovian" "massdistributed" "massive" "massively" "masturbation" "material"
+ "maternal" "maternity" "mathematic" "mathematical" "mathematics" "matrixbased" "maturation"
+ "maturity" "maximising" "maximization" "maximize" "mcnemar" "measureable" "mechanical"
+ "mechanically" "mechanics" "medial" "medication" "medicinal" "medieval" "medonic" "medullary"
+ "membraned" "membraneenveloped" "membranolytic" "membranous" "memorable" "mendelian" "mental"
+ "mentally" "mentoring" "merchandising" "merged" "meristematic" "mesangial" "mesenchymal"
  "mesoporous" "mesoscopic" "metabion" "metabolizing" "metabolomic" "metabolomics" "metachromatic"
  "metagenomic" "metallic" "metastable" "meteorological" "metered" "methodological"
  "methoxyethylmodified" "methyltansferase" "methyttransferase" "meticulously" "metric" "metrics"
@@ -1285,14 +1286,14 @@
  "microimmunofluorescence" "micropinocytosis" "microscopic" "microscopical" "microscopically"
  "microspherebased" "microtubular" "microtubulemediated" "microvascular" "military" "milling"
  "mimicking" "minced" "mined" "mineral" "mineralizable" "mineralization" "mineralizeable"
- "mineralized" "minimal" "minimization" "minimized" "ministerial" "minority" "mirror"
- "misappropriation" "misattribution" "misclassification" "misdiagnosis" "misfolded" "mismatched"
- "missing" "mission" "missorting" "mitochondriadependent" "mitogenactivated" "mitotic" "mixed"
- "moaning" "moazed" "mobilisation" "modeled" "modelling" "modernization" "modernizing" "modularity"
- "modulator" "modulatory" "mohammed" "moistened" "molarity" "moleculebinding" "molilor" "moment"
- "monetary" "monitor" "monitored" "monoclonal" "monocytic" "monogeneric" "monomeric" "mononuclear"
- "monotypic" "moralizing" "morbidity" "morphogenetic" "morphologic" "mortal" "motion" "motivated"
- "motivation" "motivational" "motive" "mottled" "mourning" "mucocilliary" "mucocutaneous" "mucosal"
+ "mineralized" "minimal" "minimization" "minimized" "ministerial" "mirror" "misappropriation"
+ "misattribution" "misclassification" "misdiagnosis" "misfolded" "mismatched" "missing" "mission"
+ "missorting" "mitochondriadependent" "mitogenactivated" "mitotic" "mixed" "moaning" "moazed"
+ "mobilisation" "modeled" "modelling" "modernization" "modernizing" "modularity" "modulator"
+ "modulatory" "mohammed" "moistened" "molarity" "moleculebinding" "molilor" "moment" "monetary"
+ "monitor" "monitored" "monoclonal" "monocytic" "monogeneric" "monomeric" "mononuclear" "monotypic"
+ "moralizing" "morbidity" "morphogenetic" "morphologic" "mortal" "motion" "motivated" "motivation"
+ "motivational" "motive" "mottled" "mourning" "mucocilliary" "mucocutaneous" "mucosal"
  "multiagency" "multiannual" "multicentric" "multidimensional" "multidisciplinary" "multifaceted"
  "multifactorial" "multifocal" "multifunctional" "multijurisdictional" "multilateral"
  "multilayered" "multinational" "multinucleated" "multiplexed" "multiplication" "multiplicity"
@@ -1598,7 +1599,7 @@
 ("ated" "bred" "ding" "holy" "jing" "king" "ling" "owed" "ping" "reed" "ugly" "wing" "xing" "πκ"))
     :test #'equalp))
 
-;; 3638 extracted from Comlex
+;; 3637 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1650,11 +1651,11 @@
  "bright" "brilliant" "brine" "bring" "broad" "broaden" "broadens" "broader" "broiler" "broilers"
  "broker" "brokers" "brook" "brooks" "broth" "brothel" "brothels" "brother" "brought" "brush"
  "bubble" "bubbles" "buck" "buckwheat" "budgerigar" "budgerigars" "budget" "buffalo" "bug" "bulb"
- "bulk" "bulky" "bull" "bundle" "bundles" "buoyant" "burden" "bureau" "bureaucrat" "bureaucrats"
- "burke" "burn" "burst" "bus" "bush" "business" "businesses" "busy" "button" "buttons" "buy"
- "buyer" "buyers" "bypass" "byproduct" "bystander" "cabbage" "cabinet" "cabinets" "cake" "calf"
- "callow" "callus" "came" "camel" "camels" "camera" "camp" "campaign" "camps" "campus" "canal"
- "canals" "cancel" "cant" "canto" "canton" "capillaries" "capillary" "capsule" "carbon" "carcass"
+ "bulky" "bull" "bundle" "bundles" "buoyant" "burden" "bureau" "bureaucrat" "bureaucrats" "burke"
+ "burn" "burst" "bus" "bush" "business" "businesses" "busy" "button" "buttons" "buy" "buyer"
+ "buyers" "bypass" "byproduct" "bystander" "cabbage" "cabinet" "cabinets" "cake" "calf" "callow"
+ "callus" "came" "camel" "camels" "camera" "camp" "campaign" "camps" "campus" "canal" "canals"
+ "cancel" "cant" "canto" "canton" "capillaries" "capillary" "capsule" "carbon" "carcass"
  "carcasses" "card" "cardboard" "care" "careful" "careless" "caretaker" "cargo" "carnivore"
  "carnivores" "carriage" "carrier" "carriers" "carrot" "carry" "cartel" "cartridge" "cassava"
  "cassette" "cast" "castor" "castors" "casts" "casualties" "casualty" "cat" "catalog" "catalogue"
@@ -1997,7 +1998,7 @@
  "workshops" "world" "worldwide" "worm" "worms" "worthwhile" "wound" "wounds" "wreath" "wright"
  "write" "writings" "wrote" "yellowish" "yuan" "zipper" "zone" "zoo" "zoom"))
     :test #'equalp))
-elength" "waves" "waybill" "weak" "weakness"
+ "weak" "weakness"
  "weaknesses" "wealth" "weapon" "weapons" "wear" "weather" "weaver" "web" "wedge" "weed" "weeds"
  "weigh" "weight" "weights" "welfare" "well" "wen" "went" "wet" "whale" "wheat" "whenever"
  "whereby" "wherein" "whey" "whisper" "whole" "wholesale" "wholesaler" "wholesalers" "wild"

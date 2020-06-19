@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-43501-43600 sample of unknown words
-;; created 6/3/20 16:8:34
+;; created 6/19/20 3:45:26
 
 (in-package :sparser)
 
@@ -784,7 +784,7 @@
  "Zurbriggen" "rJ"))
     :test #'equalp))
 
-;; 2015 defined as a bio-entity
+;; 2020 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-43501-43600
@@ -856,24 +856,25 @@
  "ABD-like" "ABI7500" "AC400" "ACAM2000®" "acid-labile" "acid/aptamers" "Ad26/MVA"
  "Adamantiades-Behçet" "ADG27631.1" "ADG27648.1" "administrative/nonpractitioner"
  "administrators/executives" "administrators/managers" "ADVAX™" "AE0.5" "AF546conjugated" "Ag/ml"
- "agency/foundation" "AH3" "AKN50623" "Alexa-Fluor" "Alexa680-conjugated" "allo-HSCT" "ALN-RSV01"
- "alone/pluridisciplinary" "Alpha-D-Mannosewill" "amino acids 1→6" "Ampli-Taq" "AMS541" "AMV-RT"
- "and/" "and~9" "Anpep\\tm1" "Anpep\\tm1Afk" "Anpep\\tm1Sid" "anti-146S" "anti-3B" "anti-6xHis"
- "anti-acetyl-Histone H3" "anti-angiogenesis" "anti-ap91-Stat1" "anti-apoptotic"
- "Anti-B-Zellantikörpern" "anti-bacterial" "anti-beta" "anti-biotin" "anti-bovine" "anti-BrdU"
- "Anti-Cancer" "anti-CD" "anti-CD20-Rituximab" "Anti-CD40" "anti-cI" "anti-depressant-like"
- "anti-E." "Anti-FLAG" "anti-galactosyl" "anti-H" "anti-HA" "Anti-HAV-IgG"
+ "agency/foundation" "AH3" "AKN50623" "Alexa-Fluor" "Alexa680-conjugated" "allo-HSCT"
+ "almost 2-fold" "ALN-RSV01" "alone/pluridisciplinary" "Alpha-D-Mannosewill" "amino acids 1→6"
+ "Ampli-Taq" "AMS541" "AMV-RT" "and/" "and~9" "Anpep\\tm1" "Anpep\\tm1Afk" "Anpep\\tm1Sid"
+ "anti-146S" "anti-3B" "anti-6xHis" "anti-acetyl-Histone H3" "anti-angiogenesis" "anti-ap91-Stat1"
+ "anti-apoptotic" "Anti-B-Zellantikörpern" "anti-bacterial" "anti-beta" "anti-biotin" "anti-bovine"
+ "anti-BrdU" "Anti-Cancer" "anti-CD" "anti-CD20-Rituximab" "Anti-CD40" "anti-cI"
+ "anti-depressant-like" "anti-E." "Anti-FLAG" "anti-galactosyl" "anti-H" "anti-HA" "Anti-HAV-IgG"
  "Anti-HAV-IgG-Antikörper" "Anti-HAV-IgM" "Anti-HAV-IgM-Antikörper" "Anti-HBs-Antikörpern"
  "anti-helminthic" "Anti-HHV-6-Antikörpertitern" "Anti-HHV-6-IgG" "Anti-HHV-6-IgM" "anti-His"
  "anti-HTLV" "anti-human" "anti-human coronavirus" "anti-human immunoglobulin G" "anti-idiotypic"
  "anti-IgG" "Anti-IL-5" "anti-immunoglobulin E" "anti-inflammation" "anti-inflammatory"
- "anti-insert" "anti-leukocyte" "anti-M13" "Anti-MBP" "anti-microbial" "anti-mouse" "anti-N"
- "Anti-NDV" "anti-nociceptive" "anti-oncogenic" "anti-phospho" "anti-proliferative"
- "Anti-proliferative" "anti-pSTAT1" "anti-pSTAT3" "anti-rabbit" "anti-rat" "anti-S" "anti-SA11"
- "anti-sense" "anti-thymocyte" "anti-thymocytic" "anti-vaccination" "Anti-vaccination" "anti-viral"
- "anti-VRS" "antibody/ml" "Antigen-Antikörper-Komplexe" "antigen/antibody" "antimouse-HRPO"
- "APC-Cy7labelled" "April-July" "AS/AP" "AS01-adjuvanted" "AS03" "AS1517499" "Asia-1" "Asia/West"
- "Asia1" "AT11" "AT11f" "ATC-AGTGTGGTGCTTACACTCATATAACTGCTAAG-3" "ATCC-3" "au/ChromasPro"
+ "anti-insert" "anti-leukocyte" "anti-M13" "Anti-MBP" "anti-microbial" "anti-mouse" "Anti-NDV"
+ "anti-nociceptive" "anti-oncogenic" "anti-phospho" "anti-proliferative" "Anti-proliferative"
+ "anti-pSTAT1" "anti-pSTAT3" "anti-rabbit" "anti-rat" "anti-SA11" "anti-sense" "anti-thymocyte"
+ "anti-thymocytic" "anti-vaccination" "Anti-vaccination" "anti-viral" "anti-VRS" "antibody/ml"
+ "Antigen-Antikörper-Komplexe" "antigen/antibody" "antimouse-HRPO" "APC-Cy7labelled"
+ "approximately 2·2" "approximately 2Â" "approximately 8-fold" "April-July" "AS/AP"
+ "AS01-adjuvanted" "AS03" "AS1517499" "Asia-1" "Asia/West" "Asia1" "at least 150-fold"
+ "at least 2-fold" "AT11" "AT11f" "ATC-AGTGTGGTGCTTACACTCATATAACTGCTAAG-3" "ATCC-3" "au/ChromasPro"
  "Augenregion!" "author/funder" "authorities/ministries" "avb3" "AY291451" "AY390556" "A→T"
  "b-actin1" "b-actin1/2" "B-anthrax" "b-D-1-thiogalactopyranoside" "B-GVTSAPDTRGVTSAPDTR" "B-pEBOV"
  "B-pVHX-6" "B-Zell-Lymphoproliferationen" "B-Zelllymphomen" "B.V." "B3SV" "B6/B6D2F" "B6D2F"
@@ -989,8 +990,8 @@
  "non-viral" "NONIDET/" "Norwalk-like" "November-April" "NP_001159.2" "NS2b" "NS3/" "NS3/4A"
  "NS5Bcro" "NSC62914" "nsp15/16" "NTP/CAP" "null&sKeyWord" "NYP-MSCH" "O-Ac-Sia-expressing"
  "O-Ac-sialoglycan" "O157:H7" "OAS1b" "OC43-like" "Ochsenbauer-Jambor" "of~120" "oligo-dT"
- "one-half" "one-size-fits-all" "One-year-old" "or/and" "ORF1A" "ORF1a-ORF1b-ORF2" "ORF1a/1b"
- "ORF1b" "org /10.1101" "org /10.1101 /10" "org/" "org/en/" "org/gp/" "org/stem"
+ "one-half" "one-size-fits-all" "One-year-old" "only 10-fold" "or/and" "ORF1A" "ORF1a-ORF1b-ORF2"
+ "ORF1a/1b" "ORF1b" "org /10.1101" "org /10.1101 /10" "org/" "org/en/" "org/gp/" "org/stem"
  "ortho-myxo-viruses" "oval-to-brick-shaped" "oxazin-4-one" "oxazin-4ones" "Oxidant/antioxidant"
  "P-450" "P-labeled" "p-value" "P-value" "p-value=" "p-values" "P/A" "P1-2A" "P1000,3"
  "p38 MAPK/STAT3mediated" "P4type" "p55/60" "p75/80" "p<0.01" "P=0" "p=0.01" "p=0.03" "p=0.4"
@@ -1059,7 +1060,7 @@
  "13,14" "13" "26,27" "40" "41" "7" "8" "-herpesvirinae" "-barrel" "-strands"))
     :test #'equalp))
 
-;; 3999 extracted by morphology
+;; 3997 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1380,23 +1381,23 @@
  "lokalisation" "longevity" "longitudinal" "looped" "loosening" "lowquality" "lowstringency"
  "lpsactivating" "luteinizing" "lying" "lymphatics" "lymphocytic" "lymphoproliferative"
  "lymphotropic" "macrocyclic" "macrophagic" "macular" "maculopapular" "macvector" "magnetic"
- "magnification" "magnocellular" "majority" "majorly" "malfunction" "malnourished" "malposition"
- "management" "managerial" "mandatory" "mandible" "manipulated" "manipulator" "manspecific"
- "manual" "manually" "manufactory" "mapping" "marginal" "marion" "martinsried" "maserninfektion"
- "massive" "massively" "mastitic" "mated" "material" "materialized" "maternal" "mathematical"
- "mathematician" "matrisian" "mattered" "maturation" "maturity" "maximize" "mckneally" "mechanical"
- "mechanically" "mechanized" "medial" "mediastinal" "medicalindividualistic" "medicinal" "medics"
- "medikamentendosis" "mediolateral" "meidated" "melkonian" "membraneassociated" "membranespanning"
- "membranous" "mendelian" "meningeal" "meningococcal" "mental" "mentored" "merged" "mesangial"
- "mesenchymal" "meshed" "mesothelial" "messaging" "metabolization" "metabolizing" "metacentric"
- "metagenomic" "metagenomics" "metallic" "metapopulation" "metastable" "methanotropic" "methodical"
+ "magnification" "magnocellular" "majorly" "malfunction" "malnourished" "malposition" "management"
+ "managerial" "mandatory" "mandible" "manipulated" "manipulator" "manspecific" "manual" "manually"
+ "manufactory" "mapping" "marginal" "marion" "martinsried" "maserninfektion" "massive" "massively"
+ "mastitic" "mated" "material" "materialized" "maternal" "mathematical" "mathematician" "matrisian"
+ "mattered" "maturation" "maturity" "maximize" "mckneally" "mechanical" "mechanically" "mechanized"
+ "medial" "mediastinal" "medicalindividualistic" "medicinal" "medics" "medikamentendosis"
+ "mediolateral" "meidated" "melkonian" "membraneassociated" "membranespanning" "membranous"
+ "mendelian" "meningeal" "meningococcal" "mental" "mentored" "merged" "mesangial" "mesenchymal"
+ "meshed" "mesothelial" "messaging" "metabolization" "metabolizing" "metacentric" "metagenomic"
+ "metagenomics" "metallic" "metapopulation" "metastable" "methanotropic" "methodical"
  "methodological" "methodologist" "metric" "mhcpred" "micellar" "micellized" "microbial"
  "microbicidal" "microbiocidal" "microbiologic" "microbiological" "microbiologist" "microblogging"
  "microcephaly" "microengraving" "microenvironment" "microglial" "microimmunofluorescence"
  "micromanipulator" "microneutralization" "microscopic" "microscopically" "microscopist"
  "microvascular" "midlactation" "migrational" "migratory" "military" "mimetic" "mimetics"
  "mimicking" "minced" "minded" "mineral" "miniaturized" "minimal" "minimalistic" "minimising"
- "minimization" "minimized" "mining" "minion" "minority" "mirrored" "miscellaneous" "misconception"
+ "minimization" "minimized" "mining" "minion" "mirrored" "miscellaneous" "misconception"
  "misfolding" "misinformation" "misleading" "mismatched" "mispriming" "missing" "mission"
  "mitigated" "mitigation" "mixed" "mockinfected" "modelbased" "modeled" "modelled" "modifiable"
  "modular" "mohamed" "moment" "monitor" "monitored" "monitoring" "monoclonal" "monoglucosylated"
@@ -1657,7 +1658,7 @@
 ("bred" "holy" "ized" "king" "ming" "reed" "ring" "sued" "toed" "γδ"))
     :test #'equalp))
 
-;; 3106 extracted from Comlex
+;; 3105 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1704,15 +1705,15 @@
  "brewer" "brick" "bridge" "brief" "bright" "brilliant" "bring" "brink" "broad" "broadcast"
  "broaden" "broader" "broiler" "broilers" "bronchi" "bronchus" "brook" "broth" "brother" "brought"
  "browse" "bubble" "bucket" "budget" "buffalo" "build" "builder" "builders" "buildings" "bulb"
- "bulge" "bulk" "bulky" "bullet" "bundle" "buoyancy" "buoyant" "burden" "bureau" "burial" "burials"
- "burn" "burns" "burst" "bursts" "bus" "busiest" "business" "busy" "butler" "buttock" "buttocks"
- "button" "buttons" "buy" "buyer" "bypass" "bystander" "cabin" "cabinet" "cabinets" "cable"
- "cadaver" "cadet" "cadets" "calf" "calif" "calm" "calve" "calves" "came" "camel" "camels" "camera"
- "cameras" "campaign" "campaigns" "campus" "canal" "cancellation" "cancellations" "canopy" "canto"
- "canyon" "capillaries" "capillary" "capitalize" "capitalizes" "capsule" "capsules" "captain"
- "carbon" "carcass" "care" "careful" "caretaker" "caretakers" "carmine" "carpenter" "carriage"
- "carrier" "cartoon" "cartridge" "cassette" "cat" "catalog" "catalyst" "cattle" "caul" "caveat"
- "cedar" "ceiling" "ceilings" "census" "centigrade" "centrifuge" "century" "ceremony" "certificate"
+ "bulge" "bulky" "bullet" "bundle" "buoyancy" "buoyant" "burden" "bureau" "burial" "burials" "burn"
+ "burns" "burst" "bursts" "bus" "busiest" "business" "busy" "butler" "buttock" "buttocks" "button"
+ "buttons" "buy" "buyer" "bypass" "bystander" "cabin" "cabinet" "cabinets" "cable" "cadaver"
+ "cadet" "cadets" "calf" "calif" "calm" "calve" "calves" "came" "camel" "camels" "camera" "cameras"
+ "campaign" "campaigns" "campus" "canal" "cancellation" "cancellations" "canopy" "canto" "canyon"
+ "capillaries" "capillary" "capitalize" "capitalizes" "capsule" "capsules" "captain" "carbon"
+ "carcass" "care" "careful" "caretaker" "caretakers" "carmine" "carpenter" "carriage" "carrier"
+ "cartoon" "cartridge" "cassette" "cat" "catalog" "catalyst" "cattle" "caul" "caveat" "cedar"
+ "ceiling" "ceilings" "census" "centigrade" "centrifuge" "century" "ceremony" "certificate"
  "certification" "certifications" "chain" "chamber" "channel" "chaos" "chaperon" "chapman"
  "chapter" "character" "chart" "charts" "chaste" "cheap" "check" "cheek" "chemical" "chemicals"
  "chemistry" "chest" "chew" "chick" "chicken" "chicks" "chief" "child" "childhood" "children"
@@ -1998,8 +1999,7 @@
  "workload" "workplace" "workshop" "world" "worldwide" "worse" "worthwhile" "wound" "wrap" "wright"
  "write" "wrote" "yahoo" "yak" "yellowish" "yoga" "yuan" "zero" "zeros" "zone" "zones" "zoom"))
     :test #'equalp))
-eakness" "wealth" "weapon" "weapons" "wear" "weather" "weaver" "web"
- "wedge" "weekend" "weekends" "weight" "welfare" "well" "went" "wet" "wheel" "wheeze" "whenever"
+"weekends" "weight" "welfare" "well" "went" "wet" "wheel" "wheeze" "whenever"
  "whereby" "wherein" "whisker" "whiskers" "whole" "wholesale" "wild" "wildlife" "willingness"
  "wind" "window" "windows" "winner" "wipe" "wise" "withdraw" "withstand" "witty" "wizard" "wolf"
  "wonder" "wood" "wooden" "wool" "word" "words" "workbench" "worker" "workers" "workforce"

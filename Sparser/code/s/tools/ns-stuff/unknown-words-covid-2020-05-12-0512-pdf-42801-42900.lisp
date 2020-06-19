@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-42801-42900 sample of unknown words
-;; created 6/3/20 16:2:9
+;; created 6/19/20 3:27:56
 
 (in-package :sparser)
 
@@ -604,7 +604,7 @@
  "Zoschke" "Zou" "Zoulek" "Zuo" "kW" "sY" "Wessa"))
     :test #'equalp))
 
-;; 2536 defined as a bio-entity
+;; 2544 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-42801-42900
@@ -626,7 +626,7 @@
  "000×g" "0111:B4" "016/2004" "0165-5728r97r$17.00" "0967-5868/Ó" "0e14" "0op" "0oρo1" "0ppp"
  "1 /1" "1 /3" "1 g/ml" "1&18" "1,3,5-trihydroxybenzene" "1,4-dibenzodioxin" "1-2-year-old"
  "1-90-CY" "1-naphthyl" "1.0e-15" "1.0e1.7" "1.0×10" "1.1e3.8" "1.1e4.1" "1.2e3.8" "1.3-fold"
- "1.3e2" "1.9-million-d-old" "1/150" "1/16" "1/3" "1/30" "1/5" "1/6" "1/7" "1/η" "1/ν" "10 µg/mL"
+ "1.3e2" "1.9-million-d-old" "1/16" "1/3" "1/30" "1/5" "1/6" "1/7" "1/η" "1/ν" "10 µg/mL"
  "10,000xg" "10/185" "10/30" "10/55" "100 g/L" "100 g/ml" "100-300-fold" "100-times" "1000/mm3"
  "1000×" "100mcg" "100TCID" "100yo" "100→100" "104TCID5" "104~5TCCD500f" "106for" "10am" "10X10"
  "10×" "11,17e21" "11-plex" "11.6 g/" "11/" "11/39" "11/48" "117/1018" "11e18" "11e32" "11e33"
@@ -639,26 +639,25 @@
  "1:16-1:512" "1:2-1:64" "1:5-1:160" "1A ." "1a" "1b" "1C ." "1D-F" "1e-15" "1e2" "1e3" "1e4"
  "1e5" "1e5,13e16" "1e84" "1GMY" "1mMNaF" "1ve" "1°C/min" "1×" "1×PBS" "1͑a͒" "1͑b͒" "1͑b͔͒"
  "2 % /O" "2 %and" "2+" "2,2′-azinobis" "2,3-diamino-pyridine" "2-8°C" "2-BM"
- "2-methyl-d-glucoside" "2-tetrahydrofuryl" "2.3-fold" "2.9e19" "2/13" "2/15" "2/2" "2/3" "2/30"
- "2/5" "2/7" "2/refined" "20 million/year" "20 µg/mL" "20-25K" "20-25°C" "20/40" "20/60" "2000a"
- "2000b" "2000c" "2000g" "2002e2003" "2003a" "2003b" "2004a" "2004b" "2006a" "2006b" "2007a"
- "2007b" "2008a" "2008b" "2009a" "2009b" "200K." "200X" "2010a" "2010b" "2010c" "2011a" "2011b"
- "2012/13" "2012a" "2012b" "2012e2015" "2013/14" "2014/" "2014/15" "2014a" "2014b" "2016C" "2018a"
- "2018b" "205/1393" "21.2°C" "219/1393" "22/123" "221nt-242nt" "229/E" "229/E/NL63" "22°C"
- "23-25°C" "23/53" "23/55" "230e1011" "24 ± 1°C" "24---48 h" "24/325" "24/53" "24/7" "24e48 h"
- "24well" "25/42" "250mcg" "250μL" "251-582aa" "255/981" "25°C" "26/41" "26/53" "261/603" "26e28"
- "26°C" "27 H9" "2700/mm" "28/48" "29/29" "29/53" "29e33" "2:l" "2A ." "2A-D" "2AJF" "2a" "2B ."
- "2B-3C1-3C2" "2b" "2C ." "2concentrations" "2DD8" "2e14" "2e3" "2e4" "2e6.8" "2h~z8" "2inhibited"
- "2p" "2s3" "2±" "2×" "2×250" "2×HBS" "2͑a͒" "2͑b͒" "2͑b͔͒" "2͑c͒" "23 fold" "3+"
- "3,3',5,5'-Tetramethybenzidine" "3,3′,5,5′-tetramethylbenzidine"
- "3-ethylbenzothiazoline-6-sulfonic" "3.2 million/year" "3.3e17.6" "3.5-fold" "3.5e11"
- "3.7 g/liter" "3.9e16.6" "3/15" "3/5" "3/63" "30/52" "30/53" "30/minute" "30°C" "30°C." "32°C"
- "35/86" "350μL" "355/417" "35°C" "36/60" "360nt" "362/1393" "37-3g" "37/62" "376-459-CY" "37uC"
- "37°C" "37°C." "38.0°C" "38.5°C" "38/60" "387/" "39-GCGAACTACTCAGTCGG-CCTT-59" "39/42" "39/48"
- "3=" "3aminoallyl" "3CL" "3Cpro" "3Dpol" "3e18" "3e4" "3e47" "3e5" "3T3" "3͑a͒" "3͑b͒"
- "3ϫFLAG-tagged" "4+" "4,5-dimethyl-2-thiazolyl" "4,5-triphosphate" "4/11" "4/48" "4/53" "4/91"
- "40/70" "400---500" "4000/mm" "408C." "41/1452" "41/70" "41/777" "41BB" "42.5-fold" "42/200"
- "42/60" "42°C" "43/53" "44/53" "45/53" "450 million/year" "458C." "459-607-CY" "46/70"
+ "2-methyl-d-glucoside" "2-tetrahydrofuryl" "2.9e19" "2/13" "2/2" "2/3" "2/30" "2/5" "2/7"
+ "2/refined" "20 million/year" "20 µg/mL" "20-25K" "20-25°C" "20/40" "20/60" "2000a" "2000b"
+ "2000c" "2000g" "2002e2003" "2003a" "2003b" "2004a" "2004b" "2006a" "2006b" "2007a" "2007b"
+ "2008a" "2008b" "2009a" "2009b" "200K." "200X" "2010a" "2010b" "2010c" "2011a" "2011b" "2012/13"
+ "2012a" "2012b" "2012e2015" "2013/14" "2014/" "2014/15" "2014a" "2014b" "2016C" "2018a" "2018b"
+ "205/1393" "21.2°C" "219/1393" "22/123" "221nt-242nt" "229/E" "229/E/NL63" "23-25°C" "23/53"
+ "23/55" "230e1011" "24 ± 1°C" "24---48 h" "24/325" "24/53" "24/7" "24e48 h" "24well" "25/42"
+ "250mcg" "250μL" "251-582aa" "255/981" "25°C" "26/41" "26/53" "261/603" "26e28" "26°C" "27 H9"
+ "2700/mm" "28/48" "29/29" "29/53" "29e33" "2:l" "2A ." "2A-D" "2AJF" "2a" "2B ." "2B-3C1-3C2"
+ "2b" "2C ." "2concentrations" "2DD8" "2e14" "2e4" "2e6.8" "2h~z8" "2inhibited" "2p" "2s3" "2±"
+ "2×" "2×250" "2×HBS" "2͑a͒" "2͑b͒" "2͑b͔͒" "2͑c͒" "23 fold" "3+" "3,3',5,5'-Tetramethybenzidine"
+ "3,3′,5,5′-tetramethylbenzidine" "3-ethylbenzothiazoline-6-sulfonic" "3.2 million/year" "3.3e17.6"
+ "3.5-fold" "3.5e11" "3.7 g/liter" "3.9e16.6" "3/5" "3/63" "30/52" "30/53" "30/minute" "30°C"
+ "30°C." "32°C" "35/86" "350μL" "355/417" "35°C" "36/60" "360nt" "362/1393" "37-3g" "37/62"
+ "376-459-CY" "37uC" "37°C" "37°C." "38.0°C" "38.5°C" "38/60" "387/" "39-GCGAACTACTCAGTCGG-CCTT-59"
+ "39/42" "39/48" "3=" "3aminoallyl" "3CL" "3Cpro" "3Dpol" "3e18" "3e4" "3e47" "3e5" "3T3" "3͑a͒"
+ "3͑b͒" "3ϫFLAG-tagged" "4+" "4,5-dimethyl-2-thiazolyl" "4,5-triphosphate" "4/11" "4/48" "4/53"
+ "4/91" "40/70" "400---500" "4000/mm" "408C." "41/1452" "41/70" "41/777" "41BB" "42.5-fold"
+ "42/200" "42/60" "42°C" "43/53" "44/53" "45/53" "450 million/year" "458C." "459-607-CY" "46/70"
  "466nt-486nt" "47s48" "48/50" "4=" "4A ." "4C ." "4e16" "4e8" "4e9" "4KMT" "4T1" "4uC" "4°C"
  "4°C." "4͑a͒" "4͑b͒" "5 g/ml" "5+3" "5-11C" "5-amidino-2-benzimidazolyl" "5-dimethylthiazol-2-yl"
  "5-diphenyltetrazolium" "5-FdUrd" "5-fluoro-1-" "5-fluoro-2¢-deoxyuridine" "5-fluorouridine"
@@ -707,26 +706,28 @@
  "anti-phospho" "anti-pig" "anti-Pla" "anti-rabbit" "anti-rabies" "anti-rat" "anti-retroviral"
  "anti-RVFV" "anti-sense" "anti-serum" "anti-snore" "anti-T-cell" "anti-TCR" "anti-tumor"
  "anti-tumour" "anti-V" "anti-viral" "anti-WHs" "Anti-YopD" "Antigen-Nachweis" "AP61"
- "Arellano-Sota" "arrayexpress/" "AS19-HC" "Asia1" "assaysHEK293" "associ-5" "associa-R" "AT1R"
- "Ataden-o6irus" "Atadeno6irus" "Atemwegs-und" "AtG3BP" "ATGAGCTGTTTTTTGAATTC-3" "Atlantis®"
- "ATP/Mg" "ATTTACCAGACGTGTCATCTAGC-3" "AU3%" "Aufenthalts-beziehungsweise" "author/funder"
- "AVLQ↓SGFR" "AY274119" "AY278487" "AY278491" "AY283797" "AY297028" "AY312588" "AY312589"
- "AY338174" "AY345986" "AY350750" "AY394978" "AY394979" "AY394987" "AY394988" "AY394998.1"
- "AY463059" "AY95003" "AZ-27" "a~25-fold" "a~4-fold" "a~7-fold" "B.06.01" "B.07.00" "B.V." "B2c"
- "B4.00" "Background/Purpose" "BAdV-4" "Balb/C" "base/pVII" "bate-actin" "Batgirl" "BAV-1" "BAV-2"
- "BAV-3" "BAV-7" "Bay117082" "BCECF/AM" "beats/min" "beats/minute" "Becton-Dickinson" "bed-days"
- "behavior/appearance" "below~100" "between~3-fold" "BHV-1" "Bi-oMerieux" "Bi-opsy"
- "bicarbonate/carbonate" "BigDye®" "BigDye™" "Bio-Chem" "Bio-M5" "Bio-Plex™" "Bio-Rad"
- "Birkum-Peterson" "bis-α-amidoketones" "BJ-4" "BJ02" "Blood-borne" "Boehringer-Manheim"
- "bond/ionic" "bony/" "Borna-like" "Breatheright™" "breaths/min" "brushing/" "BS/" "BS/U6" "BS/U6/"
- "BS/U6/gfp" "BS/U6/spag9" "BSL-3" "BSL-4" "b¼" "c-kit/abl" "C-terminally" "C-to" "C.A" "C.C" "C.G"
- "C.T" "C2089-shCYPA" "C2089-shNC" "C3%" "C3S" "C3S*" "C57BL/6" "C57Bl/6" "C6/36" "cage/site"
- "cages/poultry" "Calmette-Guérin" "canids/domestic" "canyon-like" "CaptureSelect™"
- "carbobenzoxy-D-phe-L-phe-nitro-L-arg" "carbonate/bicarbonate" "carbonic-anhydrase"
- "catheter-days" "cauliflower-like" "CBE" "CC-BY-NC-ND" "CC50" "CCL2+" "CCM34" "CCR5-delta32"
- "CD14+" "CD14+CCL2+" "CD141" "CD45R0+" "CD45RA+" "CD45RO+" "CD4enriched" "CDC/NHSN" "Cdk5-Nc5a"
- "CDK7and" "cell/well" "cells/kg" "cells/m" "cells/ml" "cells/plate" "cells/well" "cells49"
- "cellsr0.3" "CGAACAAAACCC-3" "cgcaatcccgccagtcaccctttttg-3" "cgi-bin" "charac-DM"
+ "approximately 1/3" "approximately 2-fold" "approximately 2.3-fold" "approximately 22°C"
+ "approximately 4-fold" "approximately 5-fold" "approximately ten-fold" "Arellano-Sota"
+ "arrayexpress/" "AS19-HC" "Asia1" "assaysHEK293" "associ-5" "associa-R" "at least 100-fold"
+ "at least 2-fold" "at least 2e3" "AT1R" "Ataden-o6irus" "Atadeno6irus" "Atemwegs-und" "AtG3BP"
+ "ATGAGCTGTTTTTTGAATTC-3" "Atlantis®" "ATP/Mg" "ATTTACCAGACGTGTCATCTAGC-3" "AU3%"
+ "Aufenthalts-beziehungsweise" "author/funder" "AVLQ↓SGFR" "AY274119" "AY278487" "AY278491"
+ "AY283797" "AY297028" "AY312588" "AY312589" "AY338174" "AY345986" "AY350750" "AY394978" "AY394979"
+ "AY394987" "AY394988" "AY394998.1" "AY463059" "AY95003" "AZ-27" "a~25-fold" "a~4-fold" "a~7-fold"
+ "B.06.01" "B.07.00" "B.V." "B2c" "B4.00" "Background/Purpose" "BAdV-4" "Balb/C" "base/pVII"
+ "bate-actin" "Batgirl" "BAV-1" "BAV-2" "BAV-3" "BAV-7" "Bay117082" "BCECF/AM" "beats/min"
+ "beats/minute" "Becton-Dickinson" "bed-days" "behavior/appearance" "below~100" "between~3-fold"
+ "BHV-1" "Bi-oMerieux" "Bi-opsy" "bicarbonate/carbonate" "BigDye®" "BigDye™" "Bio-Chem" "Bio-M5"
+ "Bio-Plex™" "Bio-Rad" "Birkum-Peterson" "bis-α-amidoketones" "BJ-4" "BJ02" "Blood-borne"
+ "Boehringer-Manheim" "bond/ionic" "bony/" "Borna-like" "Breatheright™" "breaths/min" "brushing/"
+ "BS/" "BS/U6" "BS/U6/" "BS/U6/gfp" "BS/U6/spag9" "BSL-3" "BSL-4" "b¼" "c-kit/abl" "C-terminally"
+ "C-to" "C.A" "C.C" "C.G" "C.T" "C2089-shCYPA" "C2089-shNC" "C3%" "C3S" "C3S*" "C57BL/6" "C57Bl/6"
+ "C6/36" "cage/site" "cages/poultry" "Calmette-Guérin" "canids/domestic" "canyon-like"
+ "CaptureSelect™" "carbobenzoxy-D-phe-L-phe-nitro-L-arg" "carbonate/bicarbonate"
+ "carbonic-anhydrase" "catheter-days" "cauliflower-like" "CBE" "CC-BY-NC-ND" "CC50" "CCL2+" "CCM34"
+ "CCR5-delta32" "CD14+" "CD14+CCL2+" "CD141" "CD45R0+" "CD45RA+" "CD45RO+" "CD4enriched" "CDC/NHSN"
+ "Cdk5-Nc5a" "CDK7and" "cell/well" "cells/kg" "cells/m" "cells/ml" "cells/plate" "cells/well"
+ "cells49" "cellsr0.3" "CGAACAAAACCC-3" "cgcaatcccgccagtcaccctttttg-3" "cgi-bin" "charac-DM"
  "character-VAPs" "childhood!" "children/parents" "CHR-2797" "CHR-79888" "Chromato-Vue"
  "ch~riomeningitis~" "CID:3241895" "CID:326798" "class I1" "CLC385" "clean/clean"
  "cleaning/disinfection" "clevudine/emtricitabine" "Clonase™" "CNF2" "co-" "co-circulate"
@@ -839,17 +840,18 @@
  "mushroom-like" "Muslim-majority" "Muñoz-Jordán" "myco-ϕ" "m¼" "MΩ" "N /d" "n+1"
  "N-acetygalactosamine" "N-acetylactosamine" "N-and" "N-GalNAc-" "N-GlcNAc-" "N-glycosalation"
  "N-methyl-D-aspartate" "N.C." "N.J." "n<" "n=100" "n=20" "n=26" "n=40" "n=46" "N=5" "Na2HPO4"
- "nasal/septal" "nausea/vomiting" "ND-1000" "ND-96" "net/" "NetV2" "NetView/Mobile"
- "Network/University" "neutral-pH" "New-Zealand" "ng/" "ng/10" "ng/gm" "ng/l" "ng/well" "ng/μL"
- "NGR-hTNF" "NGR-PM-DTX" "NH4HCO3" "NHC␣" "night-time" "NLS-CY" "nm/590" "nm/630" "nM/well"
- "NM_214393" "non-bite" "non-eIF2α" "non-H5" "non-Hodgkin" "non-OSA" "non-structural protein 2C"
- "Nonidet-P40" "Norwalk-like" "November-April" "NS1/2" "NS2b" "NS2b/3" "NS2B3" "NS3/4A" "nsp1α"
- "nsp1β" "Nt-G3BP1" "nt203" "nt256" "nt80" "NTF2-like" "NTF2like" "nts/s" "nuclear/cytoplasmic"
- "N}" "n~e" "N«N" "n¼" "n¼10" "N¼200" "O-phenolethylene" "O/SKR/" "O/SKR/2002" "o0.5" "o1" "o1/6"
- "O2 N2" "o2/6" "O287" "o3/6" "o4/6" "o5/6" "OAV287" "OC43/HKU1" "ODS-AM" "Of1" "of~1" "one N3"
- "one N5" "one N8" "one-quarter" "one-size-fits-all" "operation/differential" "or-pH" "Orang-utan"
- "order/disorder" "ordered/disordered" "ORF1a/1b" "ORF1ab-S-E-M-NS6-N-NS7" "ORF1b" "ORF2a" "ORF2b"
- "ORF3b" "org/" "org/0000-0002-5684-7249" "org/about" "org/age-structure" "org/articles"
+ "nasal/septal" "nausea/vomiting" "ND-1000" "ND-96" "nearly 10-fold" "net/" "NetV2"
+ "NetView/Mobile" "Network/University" "neutral-pH" "New-Zealand" "ng/" "ng/10" "ng/gm" "ng/l"
+ "ng/well" "ng/μL" "NGR-hTNF" "NGR-PM-DTX" "NH4HCO3" "NHC␣" "night-time" "NLS-CY" "nm/590" "nm/630"
+ "nM/well" "NM_214393" "non-bite" "non-eIF2α" "non-H5" "non-Hodgkin" "non-OSA"
+ "non-structural protein 2C" "Nonidet-P40" "Norwalk-like" "November-April" "NS1/2" "NS2b" "NS2b/3"
+ "NS2B3" "NS3/4A" "nsp1α" "nsp1β" "Nt-G3BP1" "nt203" "nt256" "nt80" "NTF2-like" "NTF2like" "nts/s"
+ "nuclear/cytoplasmic" "N}" "n~e" "N«N" "n¼" "n¼10" "N¼200" "O-phenolethylene" "O/SKR/"
+ "O/SKR/2002" "o0.5" "o1" "o1/6" "O2 N2" "o2/6" "O287" "o3/6" "o4/6" "o5/6" "OAV287" "OC43/HKU1"
+ "ODS-AM" "Of1" "of~1" "one N3" "one N5" "one N8" "one-quarter" "one-size-fits-all" "only 1/150"
+ "only 2/15" "only 3/15" "operation/differential" "or-pH" "Orang-utan" "order/disorder"
+ "ordered/disordered" "ORF1a/1b" "ORF1ab-S-E-M-NS6-N-NS7" "ORF1b" "ORF2a" "ORF2b" "ORF3b" "org/"
+ "org/0000-0002-5684-7249" "org/about" "org/age-structure" "org/articles"
  "org/download_area/CASP10/predictions/" "org/Resources" "ori-gir~" "orip-SV40-Luc" "or~1"
  "over-winter" "oxfordcovid-19-government-response-tracker" "o~t" "oβo1" "P-1" "p-125Luc" "P-2"
  "P-2000" "P-3" "p-55A2Luc" "p-55C1BLuc" "p-chlorobenzoic" "P-l" "P-labeled" "P-MEXP-34397"
@@ -942,7 +944,7 @@
  "␥-inducible" "␦1" "chain" "g" "g/mL" "L" "M" "：According to" "：The"))
     :test #'equalp))
 
-;; 4245 extracted by morphology
+;; 4244 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1272,13 +1274,13 @@
  "lymphoproliferative" "lymphotropic" "lyophilized" "lyrics" "maconformational" "macrocient"
  "macroendocytosis" "macroevolution" "macroparasitic" "macropinocytic" "macroscopic"
  "maculopapular" "magical" "magnanimous" "magnetic" "magnetically" "magnevist" "magnified" "maimed"
- "majority" "maladaptive" "malevolence" "malevolent" "malfunction" "malnourished" "manageable"
- "managed" "management" "mandating" "mandatory" "mandible" "mandibular" "maned" "manifestation"
- "manifested" "manipulating" "manual" "manually" "manufacturing" "manufacturor" "marginal"
- "marital" "marked" "marketed" "married" "marsupial" "massive" "massively" "masticatory" "material"
- "materialize" "maternal" "maternally" "maternity" "mathematical" "mathematics" "matrixscience"
- "maturation" "maxillamandibular" "maxillary" "maxillomandibular" "maximize" "maxpooling"
- "mebatsion" "mechabudding" "mechanical" "mechanics" "mechanotransduction" "mediastinal" "mediator"
+ "maladaptive" "malevolence" "malevolent" "malfunction" "malnourished" "manageable" "managed"
+ "management" "mandating" "mandatory" "mandible" "mandibular" "maned" "manifestation" "manifested"
+ "manipulating" "manual" "manually" "manufacturing" "manufacturor" "marginal" "marital" "marked"
+ "marketed" "married" "marsupial" "massive" "massively" "masticatory" "material" "materialize"
+ "maternal" "maternally" "maternity" "mathematical" "mathematics" "matrixscience" "maturation"
+ "maxillamandibular" "maxillary" "maxillomandibular" "maximize" "maxpooling" "mebatsion"
+ "mechabudding" "mechanical" "mechanics" "mechanotransduction" "mediastinal" "mediator"
  "medicalized" "medicalsurgical" "medicinal" "mediumsized" "memorial" "meningeal" "meningococcal"
  "menstrual" "mental" "mentality" "merging" "merization" "merous" "mesenchymal" "metaanalysis"
  "metachromatic" "metastable" "meteorological" "methodological" "metric" "metrics" "mfspssmpred"
@@ -1569,7 +1571,7 @@
  "wing" "͑red" "μτ"))
     :test #'equalp))
 
-;; 3328 extracted from Comlex
+;; 3327 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1616,9 +1618,9 @@
  "box" "boy" "braid" "brake" "brass" "bray" "breadth" "break" "breakdown" "breaker" "breakers"
  "breaks" "breakthrough" "breath" "breathe" "breeder" "breeders" "bridge" "bridges" "brief"
  "bright" "brightness" "brilliant" "bring" "broad" "broaden" "broader" "broiler" "broke" "broth"
- "brother" "brought" "brush" "bubble" "bubbles" "bucket" "buckle" "build" "buildings" "bulk"
- "bulky" "bull" "bulletin" "bump" "bundle" "burden" "burst" "busiest" "business" "buster" "busters"
- "busy" "butane" "butler" "butt" "button" "buttons" "bypass" "byproduct" "byproducts" "bystander"
+ "brother" "brought" "brush" "bubble" "bubbles" "bucket" "buckle" "build" "buildings" "bulky"
+ "bull" "bulletin" "bump" "bundle" "burden" "burst" "busiest" "business" "buster" "busters" "busy"
+ "butane" "butler" "butt" "button" "buttons" "bypass" "byproduct" "byproducts" "bystander"
  "bystanders" "calf" "calve" "calves" "came" "camera" "camp" "campaign" "camps" "campus" "campuses"
  "canal" "cane" "canister" "canyon" "capacities" "capacity" "cape" "capillaries" "capillary"
  "capital" "capitalism" "capitals" "capsule" "capture" "carbon" "carbons" "carcass" "card" "care"
@@ -1933,9 +1935,7 @@
  "writings" "yahoo" "yolk" "yolks" "youth" "yuan" "zebra" "zeppelin" "zipper" "zone" "zones" "zoo"
  "zoology"))
     :test #'equalp))
-vantage" "vapor" "variety" "vaudeville" "vehicle" "vein" "veins" "vendetta"
- "ventilator" "ventilators" "ventricle" "ventricles" "verse" "verses" "vertigo" "vessel" "vessels"
- "veteran" "veterans" "vial" "vials" "victim" "video" "videos" "view" "viewer" "viewpoint"
+als" "victim" "video" "videos" "view" "viewer" "viewpoint"
  "viewpoints" "vigilance" "vigilant" "villa" "villager" "villagers" "virology" "virtue" "visit"
  "visitor" "visitors" "vital" "vitamin" "voice" "volatile" "vole" "volume" "volunteer" "volunteers"
  "voyager" "wader" "waders" "waist" "waiver" "walker" "wall" "wallabies" "wallaby" "walls" "wane"

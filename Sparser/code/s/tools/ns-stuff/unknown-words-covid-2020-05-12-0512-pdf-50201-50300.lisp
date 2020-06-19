@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-50201-50300 sample of unknown words
-;; created 6/3/20 17:15:27
+;; created 6/19/20 6:32:33
 
 (in-package :sparser)
 
@@ -914,7 +914,7 @@
  "Zivadinov" "Zook" "Zouali" "Zuker" "deArruda" "Romanenko" "pK"))
     :test #'equalp))
 
-;; 2209 defined as a bio-entity
+;; 2211 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-50201-50300
@@ -938,20 +938,20 @@
  "0.29 µg/L" "0.4 µg/L" "0.4uC" "0.5 µg/mL" "0.5-1%/y" "0.53 m/s" "0.89 m/s" "0000--0000"
  "080/2006" "0968-0896/Ó" "0:00017 m" "0monophosphate" "0T20bp10G30bp" "0T30bp10G20bp" "1 µg/mL"
  "1+rT" "1,000-fold" "1,1,1-trichloro-2,2-bis" "1,2,3-triazole-pyrimidine"
- "1,2-benzenedicarboxylic" "1,3-dipolar" "1,3-Dipolar" "1,4benzene" "1--10%" "1-hydroxypyrene"
- "1-phospate" "1.0 µg/L" "1.0x10" "1.10A" "1.1A" "1.2A" "1.3 g/d" "1.38-fold" "1.39 µg/d" "1.3A"
- "1.3x10" "1.4x10" "1.5x10" "1.5×10" "1.66-fold" "1.7A" "1.8 g/100 g" "1.8x10" "1.91-fold" "1/2"
- "1/3" "10 µg/kg/d" "10 µg/m" "10-µg/m" "100 g/ml" "100 µg/m" "100,000-fold" "100/100" "100/438"
- "100/~g" "1000-1200°C." "1000xg" "1000°C" "100x" "1045/1967" "105/well" "106more" "10a" "10d"
- "10L/min" "10X" "10×" "11 µg/kg/d" "11-1a" "11/21" "1194/2004" "11a-f" "12.77km/h" "120 µg/m"
- "1200°C" "1224/1967" "12a" "12a-c" "12b" "12c" "13-epoxytrichothec-9-ene" "14-ite"
- "1472-6807-10-6-S1" "1477-8939/" "14·6%" "15 g/L" "15 g/ml" "15 µg/mL" "15/100" "150bp" "155/2010"
- "157--165" "16.3 µg/mL" "16.8 g/ml" "16/24" "16a-f" "16LPS" "16nonessential" "16residue" "16SSC"
- "17/23" "175°C" "175°C." "17a" "17syn" "188°C" "18:23ω6" "18:3ω3" "19/23" "1970a" "1972a" "1973b"
- "1976a" "1980a" "1980b" "1983a" "1983b" "1984/86" "1984a" "1987a" "1987b" "1988a" "1991a" "1992a"
- "1993a" "1993b" "1995a" "1995b" "1997/" "1997/1998" "1997a" "1997b" "1998a" "1999a" "1999b"
- "19:30 h" "1:1,000diluted" "1:1:1" "1:20,000-diluted" "1=2O" "1A ." "1ab" "1ahydroxylase" "1×"
- "2 /FiO" "2 /~Ci" "2,3,7,8-substituted" "2,3,7,8-tetrachlorodibenzo-p-dioxin" "2--3-days-old"
+ "1,2-benzenedicarboxylic" "1,3-dipolar" "1,3-Dipolar" "1,4benzene" "1-hydroxypyrene" "1-phospate"
+ "1.0 µg/L" "1.0x10" "1.10A" "1.1A" "1.2A" "1.3 g/d" "1.38-fold" "1.39 µg/d" "1.3A" "1.3x10"
+ "1.4x10" "1.5x10" "1.5×10" "1.66-fold" "1.7A" "1.8 g/100 g" "1.8x10" "1.91-fold" "1/2" "1/3"
+ "10 µg/kg/d" "10 µg/m" "10-µg/m" "100 g/ml" "100 µg/m" "100,000-fold" "100/100" "100/438" "100/~g"
+ "1000-1200°C." "1000xg" "1000°C" "100x" "1045/1967" "105/well" "10a" "10d" "10L/min" "10X" "10×"
+ "11 µg/kg/d" "11-1a" "11/21" "1194/2004" "11a-f" "12.77km/h" "120 µg/m" "1200°C" "1224/1967" "12a"
+ "12a-c" "12b" "12c" "13-epoxytrichothec-9-ene" "14-ite" "1472-6807-10-6-S1" "1477-8939/" "14·6%"
+ "15 g/L" "15 g/ml" "15 µg/mL" "15/100" "150bp" "155/2010" "157--165" "16.3 µg/mL" "16.8 g/ml"
+ "16/24" "16a-f" "16LPS" "16nonessential" "16residue" "16SSC" "17/23" "175°C" "175°C." "17a"
+ "17syn" "188°C" "18:23ω6" "18:3ω3" "19/23" "1970a" "1972a" "1973b" "1976a" "1980a" "1980b" "1983a"
+ "1983b" "1984/86" "1984a" "1987a" "1987b" "1988a" "1991a" "1992a" "1993a" "1993b" "1995a" "1995b"
+ "1997/" "1997/1998" "1997a" "1997b" "1998a" "1999a" "1999b" "19:30 h" "1:1,000diluted" "1:1:1"
+ "1:20,000-diluted" "1=2O" "1A ." "1ab" "1ahydroxylase" "1×" "2 /FiO" "2 /~Ci"
+ "2,3,7,8-substituted" "2,3,7,8-tetrachlorodibenzo-p-dioxin" "2--3-days-old"
  "2-acetyl-4-tetrahydroxybutylimidazole" "2-amino-1,3-propanediol" "2-Butoxyethanol"
  "2-butoxyethanol" "2-carboxyethyl" "2-ethyl-1-hexanol" "2-ethyl-5-hydroxyhexyl"
  "2-ethyl-5oxohexyl" "2-ethylhexyl" "2-methyl-2butanol" "2-methylbutane" "2-naphthyl" "2-Propenyl"
@@ -962,10 +962,10 @@
  "2008a" "2008b" "2009 /2010" "2009a" "2009b" "200a" "200°C" "2010a" "2010b" "2012a" "2012b"
  "2013a" "2016!" "2016a" "2016b" "2017GGH08" "2019a" "2020c" "20:4ω6" "20:5ω3" "20mg/kg" "20SF028"
  "20SF040" "20T20bp10G30bp" "20T30bp10G20bp" "20°C" "20°relative" "21-23nucleotide" "22-25°C"
- "2262uC" "2296/95" "229E/NL63" "22:6ω3" "23/68" "24--36 h" "242.3°C." "24°C" "25/26" "250/100"
- "2575/98" "25mers" "25°C" "25°C." "265°C" "266/1967" "26SSC" "26°C" "270°C" "28 N95" "280uC"
- "28°C" "2992/02" "2e4" "2HCl" "2MR04" "2P2Idb" "2parameter" "2ug/ml" "2×" "2×10" "2×YT" "2πRL"
- "3 m/s" "3 µg/m" "3%H" "3,3-diaminobenzidine-tetrahydrochloride" "3,3′,5,5′-tetramethylbenzidine"
+ "2262uC" "2296/95" "229E/NL63" "22:6ω3" "23/68" "24--36 h" "242.3°C." "25/26" "250/100" "2575/98"
+ "25mers" "25°C" "25°C." "265°C" "266/1967" "26SSC" "26°C" "270°C" "28 N95" "280uC" "28°C"
+ "2992/02" "2e4" "2HCl" "2MR04" "2P2Idb" "2parameter" "2ug/ml" "2×" "2×10" "2×YT" "2πRL" "3 m/s"
+ "3 µg/m" "3%H" "3,3-diaminobenzidine-tetrahydrochloride" "3,3′,5,5′-tetramethylbenzidine"
  "3,4-bisphosphate" "3,5,6-trichloro-2-pyridinol" "3-amino-1,8-naphthalimide"
  "3-Aminopropyl-triethoxysilane" "3-deaza-neplanocin" "3-deazaNpC" "3-deazaNpc" "3-propanodiols"
  "3.0 µg/m" "3.02 m/s" "3.2-fold" "3.5-fold" "3/19" "3/3" "30 µg/m" "30--50%" "30/~1" "300 m/s"
@@ -980,20 +980,19 @@
  "5-arylmethyl-2-methylisoxazolidin-3-yl-3-phosphonates"
  "5-arylmethyl-2-methylisoxazolidin-3-yl-3phosphonates" "5-arylmethylisoxazolidines"
  "5-hydroxylmethyl" "5-OH-MEHP" "5-oxo-MEHP" "5.5 µg/d" "5.5/child" "50 /mL" "50 /~g" "50 /~g/ml"
- "50 g/ml" "50,000 µg/m" "50-260°C" "50-foldlower" "500°C" "500×" "509c-42502-03" "50bp" "50uC"
- "50°C" "52°C" "55uC" "55°C." "560/590" "56FAM-CCTGCTTCA-ZEN-CCACCTTCTTGATG"
- "56FAM-TGGCGCAGA-ZEN-AGGGAAATCTCT" "58uC" "59-CATCGTCATCCGCTTCCCCGGAC-GACGCGG-39"
- "59-CTTCGAAGGCAAC-TACGC" "59-GTGACGTCA-TAGTTGTGGTC" "591/1967" "59:335-351" "5:30 h" "5=2H" "5A1"
- "5A2" "5B2" "5C2" "5PRIME" "5x10" "5¢-AAG" "5¢-CAT" "5¢-GGT" "5¢-TCC" "5¢-TCT" "5°C"
- "6-carboxy-c-rhodamine" "6-diamidino-2-phenylindole" "6.1 µg/d" "6.3x10" "6.5/child" "6.7-fold"
- "6.8x10" "6/~m" "60-65uC" "600°C." "60uC" "60x" "60°C" "63uC" "63°C" "64 µg/" "65uC" "65°C"
- "67,7uC" "68-79°F" "6C5" "6CO" "6JYT" "6M71" "7-deaza-sequencing" "7-dold"
+ "50 g/ml" "50,000 µg/m" "50-260°C" "500°C" "500×" "509c-42502-03" "50bp" "50uC" "50°C" "52°C"
+ "55uC" "55°C." "560/590" "56FAM-CCTGCTTCA-ZEN-CCACCTTCTTGATG" "56FAM-TGGCGCAGA-ZEN-AGGGAAATCTCT"
+ "58uC" "59-CATCGTCATCCGCTTCCCCGGAC-GACGCGG-39" "59-CTTCGAAGGCAAC-TACGC" "59-GTGACGTCA-TAGTTGTGGTC"
+ "591/1967" "59:335-351" "5:30 h" "5=2H" "5A1" "5A2" "5B2" "5C2" "5PRIME" "5x10" "5¢-AAG" "5¢-CAT"
+ "5¢-GGT" "5¢-TCC" "5¢-TCT" "6-carboxy-c-rhodamine" "6-diamidino-2-phenylindole" "6.1 µg/d"
+ "6.3x10" "6.5/child" "6.7-fold" "6.8x10" "6/~m" "60-65uC" "600°C." "60uC" "60x" "60°C" "63uC"
+ "63°C" "64 µg/" "65uC" "65°C" "67,7uC" "6C5" "6CO" "6JYT" "6M71" "7-deaza-sequencing" "7-dold"
  "7-methoxycoumarin-4-yl-acetyl" "7.3km/h" "70--80%" "70-yr" "700-1000°C" "700°C" "70mer" "70°C"
  "72uC" "72°C" "74 µg/m" "75/199" "75°F" "78 µg/mL" "7vPCV" "8.5-fold" "8/11" "80°C" "85 l/min"
- "8HT" "8°C" "9 /L" "9 /l" "9 µg/L" "9.4x10" "9/16" "90--100%" "900/~m" "92uC" "94uC" "94°C"
- "95 l/min" "95%CI" "95uC" "95°C" "96well" "96°C" "98/0310" "98°C" "9a-f" ":512" "<0.001" "<0.05"
- "<0.1%" "<0.1-0" "<0.2%" "<1" "<10" "<10 µ" "<10/LPF" "<100" "<1000/uL" "<2 h" "<20" "<200" "<3"
- "<35%" "<4" "<40" "<5" "<5%" "<50" "<500" "<51" "<8" "=0" "=1.00" "=12" "=2" "=49%" "=7" "=83%"
+ "8HT" "9 /L" "9 /l" "9 µg/L" "9.4x10" "9/16" "90--100%" "900/~m" "92uC" "94uC" "94°C" "95 l/min"
+ "95%CI" "95uC" "95°C" "96well" "96°C" "98/0310" "98°C" "9a-f" ":512" "<0.001" "<0.05" "<0.1%"
+ "<0.1-0" "<0.2%" "<1" "<10" "<10 µ" "<10/LPF" "<100" "<1000/uL" "<2 h" "<20" "<200" "<3" "<35%"
+ "<4" "<40" "<5" "<5%" "<50" "<500" "<51" "<8" "=0" "=1.00" "=12" "=2" "=49%" "=7" "=83%"
  "=explanatory" "=respiratory tract" "=t+1" "=0.0236" ">0.9" ">1" ">10" ">10/low" ">100"
  ">100-fold" ">1000" ">13" ">1500" ">16,000×" ">19,000" ">2" ">2.5" ">20" ">2000°" ">2000°C" ">25%"
  ">3" ">30" ">330" ">38.5" ">38˚C" ">4" ">48" ">5" ">50" ">50%" ">500" ">60" ">65" ">7" ">70%"
@@ -1006,19 +1005,21 @@
  "Adeno3" "Adeno4" "adenoviral-like" "adenovirus-like" "AdIi-GP" "AdIi-Ova" "AdM-IFN-γ" "AdV-GFP"
  "AF041041" "AF067124" "affinity/" "Afrin-coated" "Ag43/Fce3" "AGAatcgatGAAGCTGGGAC-GAGCAGGA"
  "age-like" "AH-H7N9" "Al-Ahsa" "Al-Tawfiq" "Alexa488-conjugated" "AlexaFluor633" "ALI/ARDS"
- "all /6" "alpha1-PI" "alpha1-proteinase" "ampli®cation" "amyloid-like" "analysis24" "and /6"
- "and/" "animal-to-human" "animal/plant" "Anti-ACE2" "anti-androgenic" "anti-androgens"
- "anti-apoptotic" "anti-CD8b" "anti-coagulant" "anti-dumping" "anti-EEHV"
+ "all /6" "almost 50-foldlower" "alpha1-PI" "alpha1-proteinase" "ampli®cation" "amyloid-like"
+ "analysis24" "and /6" "and/" "animal-to-human" "animal/plant" "Anti-ACE2" "anti-androgenic"
+ "anti-androgens" "anti-apoptotic" "anti-CD8b" "anti-coagulant" "anti-dumping" "anti-EEHV"
  "anti-Fc-fluorescein isothiocyanate" "anti-fungal" "Anti-GFP" "anti-HBsAg" "anti-herpesviral"
  "Anti-HSV" "anti-human" "anti-I-A" "anti-infectieux" "anti-inflammatory" "anti-ionized" "anti-JC"
- "anti-LPS" "anti-microbial" "anti-mouse" "anti-myelin" "anti-N" "anti-nutritive" "anti-pest"
- "anti-PI4P" "Anti-PI4P" "anti-pseudomonal" "anti-rabbit" "anti-receptor" "anti-retroviral"
- "anti-S" "anti-SCV" "anti-thrombotic" "Anti-thrombotic" "Anti-TNF" "anti-viral" "Anti-␤-actin"
- "Antibodies-Anti-PI4KB" "antibodies/humoral" "antigen-speci�c" "Anton-Erxleben" "Anyplex™" "AP33"
- "apoE4" "apoE−/−" "apoptosis/anergy" "April/" "arachidonic acid/100 g" "ARC&E"
- "archaebacterial-eukaryotic" "area-under-the-curve" "Arenzana-Seisdedos" "Arias-Ibarrondo"
- "aromatic/heteroaromatic" "arylcarbamoyl-2methylisoxazolidin-3-yl-3-phosphonates" "as-yet"
- "Asia/Pacific" "Aspergillus/Penicillium" "assay53" "asthma-like" "at-20°C." "AT1R" "author/funder"
+ "anti-LPS" "anti-microbial" "anti-mouse" "anti-myelin" "anti-nutritive" "anti-pest" "anti-PI4P"
+ "Anti-PI4P" "anti-pseudomonal" "anti-rabbit" "anti-receptor" "anti-retroviral" "anti-SCV"
+ "anti-thrombotic" "Anti-thrombotic" "Anti-TNF" "anti-viral" "Anti-␤-actin" "Antibodies-Anti-PI4KB"
+ "antibodies/humoral" "antigen-speci�c" "Anton-Erxleben" "Anyplex™" "AP33" "apoE4" "apoE−/−"
+ "apoptosis/anergy" "approximately 106more" "approximately 14-fold" "approximately 250-fold"
+ "approximately 5°C" "approximately 68-79°F" "approximately 8-fold" "April/"
+ "arachidonic acid/100 g" "ARC&E" "archaebacterial-eukaryotic" "area-under-the-curve"
+ "Arenzana-Seisdedos" "Arias-Ibarrondo" "aromatic/heteroaromatic" "around 24°C" "around 8°C"
+ "arylcarbamoyl-2methylisoxazolidin-3-yl-3-phosphonates" "as-yet" "Asia/Pacific"
+ "Aspergillus/Penicillium" "assay53" "asthma-like" "at-20°C." "AT1R" "author/funder"
  "auto-antibodies" "autoimmune�in�ammatory" "autopsie…" "AY970971" "AZ5GU-T66" "A~10-fold" "Aβ42"
  "a�er" "b-hydroxyphosphonate" "b-lactam-b-lactamase" "B/C" "B1c" "B30.2/SPRY" "B9PC-3" "B=1.077"
  "bacterium/virus" "Bar-Sagi" "Baratti-Mayer" "barcode/primer" "Barger-Lux" "Barkhof/Tintore"
@@ -1120,18 +1121,19 @@
  "N-allylnaphthalimides" "N-and" "N-deoxyribosyltransferases" "N-gS" "N-hydroxysuccinimidyl"
  "N-methyl-C-" "N-methyl-C-diethoxyphosphorylnitrone" "N.2" "N.4" "N.5" "N.A." "N95s" "n=14" "n=15"
  "n=158" "n=20" "n=3" "n=4" "n=446" "n=5" "n=51" "N=55" "n=8" "N=85" "Nascimento-Carvalho"
- "national/regional" "NBT/" "NCoV/novel" "neo-nates" "NF-jB" "NF-jB/p65" "NF-�" "NFEC-2020-026"
- "ng/g" "NH&l" "Nipah/Hendra" "nipples/areolae" "nitric oxide/cyclic" "nmol/l" "NOD-like" "non-ADE"
- "non-Ashkenazi" "non-CFTR" "non-histone" "non-Hodgkin" "non-integrin" "non-JE" "non-lymphoid"
- "non-membrane-bound" "non-TLR" "non-␤-lactamase-producing" "nonactive/" "non…" "NP366" "NP396"
- "NS2B" "NSF/ANSI" "nsP13s" "nt748-767" "NTPase/" "NTU-103-EL-3" "O111:B4" "O30" "O500" "OC43/HKU1"
- "occurrence/detection" "octanol/air" "ODsd9" "of /6" "OFIP1A" "OFIP2A" "OFIP3" "OFIP4" "ON+"
- "one-half" "one-quarter" "ont_meanlowtemp" "ontario_avghumidaverage" "ontario_avgtempaverage"
- "ontario_highhumidhighest" "ontario_hightemphighest" "ontario_lowhumidlowest"
- "ontario_lowtemplowest" "ontario_precipprecipitation" "OP-TIMA" "OP50" "opening/destruction"
- "operator33" "Opti-MEM" "OptiQuant/Cyclone" "or/and" "ORF1ab/N" "ORF3c" "org/"
- "org/0000-0002-0154-3459" "org/tools/protparam" "organ/systemic" "organisms30" "osteo-like"
- "osteon-like" "outbreaknetwork/en/" "outre-Atlantique" "overseen/underdiagnosed" "OXA-51-like"
+ "national/regional" "NBT/" "NCoV/novel" "nearly 10-fold" "neo-nates" "NF-jB" "NF-jB/p65" "NF-�"
+ "NFEC-2020-026" "ng/g" "NH&l" "Nipah/Hendra" "nipples/areolae" "nitric oxide/cyclic" "nmol/l"
+ "NOD-like" "non-ADE" "non-Ashkenazi" "non-CFTR" "non-histone" "non-Hodgkin" "non-integrin"
+ "non-JE" "non-lymphoid" "non-membrane-bound" "non-TLR" "non-␤-lactamase-producing" "nonactive/"
+ "non…" "NP366" "NP396" "NS2B" "NSF/ANSI" "nsP13s" "nt748-767" "NTPase/" "NTU-103-EL-3" "O111:B4"
+ "O30" "O500" "OC43/HKU1" "occurrence/detection" "octanol/air" "ODsd9" "of /6" "OFIP1A" "OFIP2A"
+ "OFIP3" "OFIP4" "ON+" "one-half" "one-quarter" "only 1--10%" "ont_meanlowtemp"
+ "ontario_avghumidaverage" "ontario_avgtempaverage" "ontario_highhumidhighest"
+ "ontario_hightemphighest" "ontario_lowhumidlowest" "ontario_lowtemplowest"
+ "ontario_precipprecipitation" "OP-TIMA" "OP50" "opening/destruction" "operator33" "Opti-MEM"
+ "OptiQuant/Cyclone" "or/and" "ORF1ab/N" "ORF3c" "org/" "org/0000-0002-0154-3459"
+ "org/tools/protparam" "organ/systemic" "organisms30" "osteo-like" "osteon-like"
+ "outbreaknetwork/en/" "outre-Atlantique" "overseen/underdiagnosed" "OXA-51-like"
  "oxygénothérapie…" "o�" "p-bond" "p-chlorophenyl" "p-dichlorobenzene" "P-labeled" "p-value"
  "p-value<" "p-xylene" "P.B" "P.L." "P1-2A" "P1-2A3C-transgenic" "p47 phox-/-" "p85␣" "p85␤"
  "P<0.001" "p<0.01" "p<0.05" "P<0.06" "p=0" "P=0.01" "p=0.22" "p=0.67" "p=0.91" "p=1.0" "P>0.05"
@@ -1214,7 +1216,7 @@
  "�ransgene-speci�c" "�rst" "��" "���"))
     :test #'equalp))
 
-;; 5071 extracted by morphology
+;; 5069 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1611,10 +1613,10 @@
  "lymphocytopenic" "lymphocytosis" "lymphohistocytosis" "lymphopenic" "lymphoplasmacytic"
  "lymphopoiesis" "lymphosarcoma" "lymphotropic" "lysophosphatidic" "lésion" "macrocytic"
  "macroscopic" "macular" "maculopapular" "magicalreligious" "magnetic" "magnetization"
- "magnification" "magnified" "mailed" "majoration" "majoritairement" "majority" "malabsorbed"
- "malabsorption" "malathion" "malaysian" "maldigestion" "malfunction" "malfunctioning"
- "malnourished" "malocclusion" "malodorous" "manageable" "managed" "management" "managerial"
- "mandated" "mandatory" "manifestation" "manifestent" "manipulation" "manning" "manual" "manually"
+ "magnification" "magnified" "mailed" "majoration" "majoritairement" "malabsorbed" "malabsorption"
+ "malathion" "malaysian" "maldigestion" "malfunction" "malfunctioning" "malnourished"
+ "malocclusion" "malodorous" "manageable" "managed" "management" "managerial" "mandated"
+ "mandatory" "manifestation" "manifestent" "manipulation" "manning" "manual" "manually"
  "manuellement" "manufacturing" "mapping" "marginal" "marginalization" "marginalized" "marginated"
  "marked" "marketed" "marketing" "married" "marsupial" "masculination" "massive" "massivement"
  "material" "materially" "maternal" "mathematical" "maturation" "maturity" "maximization"
@@ -1629,7 +1631,7 @@
  "microsporidiosis" "microstoma" "microthrombosis" "microtubular" "microvascular" "microwaved"
  "midexpiratory" "midgestation" "migratory" "military" "mimicking" "mincing" "mineral"
  "mineralized" "mingling" "miniaturisation" "miniaturization" "minimal" "minimization" "minimize"
- "mining" "minority" "mirror" "mirrored" "miscellaneous" "misclassification" "misincorporated"
+ "mining" "mirror" "mirrored" "miscellaneous" "misclassification" "misincorporated"
  "misinformation" "misleading" "mismatched" "misperceived" "misprocessing" "missing" "mission"
  "mistral" "mistreatment" "mitigating" "mitigation" "mitral" "mixed" "mixedbred" "modeled"
  "modelling" "modificationdependent" "modifiedlive" "modulator" "moment" "momentanément"
@@ -1967,7 +1969,7 @@
 ("amed" "bred" "ding" "feed" "fred" "jing" "king" "oily" "ping" "reed" "ring" "tied" "weed" "γδ"))
     :test #'equalp))
 
-;; 3745 extracted from Comlex
+;; 3744 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -2021,7 +2023,7 @@
  "brake" "brand" "brands" "breadth" "break" "breakage" "breakdown" "breaker" "breakthrough"
  "breath" "breathe" "breeder" "brief" "bright" "brighter" "brill" "brilliant" "bring" "brink"
  "brisk" "broad" "broadcast" "broader" "broke" "bronchi" "bronchus" "bronze" "brook" "brooks"
- "broth" "brought" "brownish" "brush" "buck" "build" "builder" "builders" "buildings" "bulb" "bulk"
+ "broth" "brought" "brownish" "brush" "buck" "build" "builder" "builders" "buildings" "bulb"
  "bulky" "bullet" "bundle" "buoyancy" "burden" "bureau" "burgess" "burner" "burr" "burrow" "burst"
  "bushy" "business" "butane" "butler" "butter" "butterflies" "butterfly" "button" "bypass"
  "byproduct" "byproducts" "bystander" "cabin" "cabinet" "cabinets" "cactus" "cadre" "calculation"
@@ -2371,8 +2373,7 @@
  "worthwhile" "wounds" "wrinkle" "write" "wrote" "yellowish" "yeoman" "yolk" "yuan" "zipper"
  "zonal" "zone" "zoo" "zoom" "zoos"))
     :test #'equalp))
-nteer" "vote" "voyage" "voyages" "wade" "waiver" "walker" "wall" "wane" "war" "wardroom"
- "wardrooms" "warfare" "warm" "warn" "warnings" "warrant" "warren" "wary" "wash" "washroom"
+"warm" "warn" "warnings" "warrant" "warren" "wary" "wash" "washroom"
  "washrooms" "waste" "waterborne" "watery" "watt" "watts" "wave" "wavelength" "weak" "weaken"
  "weakens" "weakness" "wealth" "wealthy" "wear" "weather" "weaver" "web" "weight" "welfare" "well"
  "wellington" "wen" "went" "westerner" "westerners" "wet" "wheat" "wheel" "wheelchair" "wheels"

@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-41201-41300 sample of unknown words
-;; created 6/3/20 22:22:9
+;; created 6/19/20 2:8:43
 
 (in-package :sparser)
 
@@ -535,7 +535,7 @@
  "Zheng" "Zhou" "Zhu" "Ziebuhr" "Zimmermann" "Zola" "Zuo" "Zwenger" "Şanlier"))
     :test #'equalp))
 
-;; 1624 defined as a bio-entity
+;; 1622 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-41201-41300
@@ -605,20 +605,20 @@
  "A*02:01" "A+" "a/b" "A/H1N1" "A/H1N1pdm09" "A/H3N2" "A/J" "A/T" "A1Si" "A26F" "A2a" "A2b"
  "aa1541-1855" "AB041962-TTMV5" "AB759118-APMV6-JP" "Abdul-Sater" "Abou-Donia" "Ad7" "adaptor-like"
  "Addi-tionally" "adsorption/desorption" "Adults/PEP" "AG7088" "AH-1500" "AJ1102" "Al-Tawfiq"
- "Ala181Gly" "alcohol/drug" "Alexafluor594" "ALN-RSV01" "alpha-interferon" "ampicillin/sulbactam"
- "Ampli-Calf" "and~700-fold" "anti-2C" "anti-allergic" "Anti-Anti" "anti-atherosclerotic"
- "anti-CD49" "Anti-Endemic" "anti-herbivore" "anti-HLA-A2" "anti-infective" "anti-inflammatory"
- "anti-insect" "anti-M2" "anti-Mannose" "anti-mouse" "anti-N" "anti-phospho-STAT1"
+ "Ala181Gly" "alcohol/drug" "Alexafluor594" "almost three-fourths" "ALN-RSV01" "alpha-interferon"
+ "ampicillin/sulbactam" "Ampli-Calf" "and~700-fold" "anti-2C" "anti-allergic" "Anti-Anti"
+ "anti-atherosclerotic" "anti-CD49" "Anti-Endemic" "anti-herbivore" "anti-HLA-A2" "anti-infective"
+ "anti-inflammatory" "anti-insect" "anti-M2" "anti-Mannose" "anti-mouse" "anti-phospho-STAT1"
  "anti-phospho-STAT2" "anti-picornaviral" "anti-proliferation" "anti-pSTAT1" "anti-pSTAT2"
- "anti-rabbit" "anti-rat" "anti-recombinant" "anti-S" "anti-S1" "anti-S2" "anti-SARS-CoV"
- "anti-tumor" "anti-viral" "anti-VRS" "antibiotic/anti-mycotic" "antibiotic/antimycotic" "APMV6"
- "Appr-1″-p" "as11-25%" "AT3s" "author/funder" "autocrine/paracrine" "autophagosome-like"
- "AY029299-APMV6-TW" "AY278741" "AY518894" "AY567487" "AY600442-AY600446" "AY662694-AY662698"
- "AY675541-AY675553" "AY758276" "AY758301" "a~15%" "B-lineages" "B2H" "B2MI" "BA-10" "BA-13"
- "BamHI/SalI" "BatAstv/" "BB7.2" "BCG3495" "BCX2798" "BCX2855" "Bellau-Pujol" "between-day" "BHV-1"
- "Bimeda-MTC" "Bio-Fire" "Bio-Rad" "BJ-2011-1" "BL/6" "BM-DC" "BO-SE" "Boillat-Blanco" "boldness/"
- "Boldness/Curiosity" "BoNT/" "BoNt/HcA" "Borzym-Kluczyk" "Boschi-Pinto" "Br1/87" "breaths/min"
- "bronchial/" "bronchiseptica+M." "BSL-3" "BTA188" "BtCoV-ITA26" "BtCoV-KW2E-F93" "BtCoV-UKR-G17"
+ "anti-rabbit" "anti-rat" "anti-recombinant" "anti-S1" "anti-S2" "anti-SARS-CoV" "anti-tumor"
+ "anti-viral" "anti-VRS" "antibiotic/anti-mycotic" "antibiotic/antimycotic" "APMV6" "Appr-1″-p"
+ "as11-25%" "AT3s" "author/funder" "autocrine/paracrine" "autophagosome-like" "AY029299-APMV6-TW"
+ "AY278741" "AY518894" "AY567487" "AY600442-AY600446" "AY662694-AY662698" "AY675541-AY675553"
+ "AY758276" "AY758301" "a~15%" "B-lineages" "B2H" "B2MI" "BA-10" "BA-13" "BamHI/SalI" "BatAstv/"
+ "BB7.2" "BCG3495" "BCX2798" "BCX2855" "Bellau-Pujol" "between-day" "BHV-1" "Bimeda-MTC" "Bio-Fire"
+ "Bio-Rad" "BJ-2011-1" "BL/6" "BM-DC" "BO-SE" "Boillat-Blanco" "boldness/" "Boldness/Curiosity"
+ "BoNT/" "BoNt/HcA" "Borzym-Kluczyk" "Boschi-Pinto" "Br1/87" "breaths/min" "bronchial/"
+ "bronchiseptica+M." "BSL-3" "BTA188" "BtCoV-ITA26" "BtCoV-KW2E-F93" "BtCoV-UKR-G17"
  "BtRf-AlphaCoV" "build-own-operate-sell" "build-own-operate-transfer" "build-rent-transfer"
  "Bunya-and" "by10" "C/s" "C3H" "C3H/" "C3s" "C57BL/6" "C:C" "Calici-and" "CAM36A" "canary-pox"
  "canis+B." "canis+CPIV" "capacity/local" "capital/Weighted" "CAR11" "carbonate/bicarbonate"
@@ -738,13 +738,13 @@
  "superf~imilies" "supply/value" "surface area/mass" "SURPI+" "symptoms/signs" "SZ3"
  "T cell/cellular" "T-maze" "T16A" "Table1" "tACE-2" "tachypnea/hyperventilation" "Tamura-Nei"
  "TAPI-2" "TBS+0.05%" "telemedicine/mHealth" "term=" "TGGTACTTCCACTCC-3" "thickening/consolidation"
- "Thr-Glu-Ala-Met" "three-fourths" "Three-hundredand-five" "Tier-1" "Tier-2" "Tier-3" "Tier-4"
- "Tier3" "TLA110" "TLR7/8" "Tobamo-like" "Toll/" "to~250,200" "TPB-1" "TRPMSS2" "ts6" "TVP-376"
- "Tween-20" "two N95" "TX/98" "TX1B3" "type-IItransmembrane" "type/size" "type/transport"
- "type/transportation" "U/ml" "U/mL" "U/μL" "uenza-like" "UK-Compton" "uk/ena/"
- "uk/Tools/psa/emboss_needle/" "UL-30" "UL-DVT" "UL18" "UN^N" "unit/ml" "units/day" "Units/ml"
- "v/v" "V3-cBot-HS" "V328I." "vacuole-like" "valving/pumping" "Vargas-Torres" "VECTA-SHIELD"
- "version2" "vibrations/s" "VIP-famihes" "virion/RNA" "virus-IBV" "virus-like"
+ "Thr-Glu-Ala-Met" "Three-hundredand-five" "Tier-1" "Tier-2" "Tier-3" "Tier-4" "Tier3" "TLA110"
+ "TLR7/8" "Tobamo-like" "Toll/" "to~250,200" "TPB-1" "TRPMSS2" "ts6" "TVP-376" "Tween-20" "two N95"
+ "TX/98" "TX1B3" "type-IItransmembrane" "type/size" "type/transport" "type/transportation" "U/ml"
+ "U/mL" "U/μL" "uenza-like" "UK-Compton" "uk/ena/" "uk/Tools/psa/emboss_needle/" "UL-30" "UL-DVT"
+ "UL18" "UN^N" "unit/ml" "units/day" "Units/ml" "v/v" "V3-cBot-HS" "V328I." "vacuole-like"
+ "valving/pumping" "Vargas-Torres" "VECTA-SHIELD" "version2" "vibrations/s" "VIP-famihes"
+ "virion/RNA" "virus-IBV" "virus-like"
  "viruses-Alphaviruses-Tobamovirus-hke-Potyvirus-like-Flavivirus-like-Luteo" "VisionWorks™" "VP1/"
  "VP16" "VR-2385" "VR8" "VU232" "VU239" "VUGP14" "W.H." "w/v" "w/w" "was~2.5" "weekly~30"
  "Weitz-Shapiro" "were~3.1" "WestPac-74" "which~100 million" "whole-protein" "Wiener-Kronish"
@@ -762,7 +762,7 @@
  "��" "���"))
     :test #'equalp))
 
-;; 3857 extracted by morphology
+;; 3856 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1065,10 +1065,10 @@
  "longitudinally" "longstanding" "loving" "lowsalience" "luminous" "lunging" "luteal" "lying"
  "lymphatic" "lymphatics" "lymphocytic" "lymphoproliferation" "lymphoproliferative" "lymphotropic"
  "macrocyclic" "macromolecular" "macroscopic" "macular" "magnetic" "magnification" "mailing"
- "majoritairement" "majority" "malabsorption" "malabsorptive" "malarial" "maldigestion"
- "malheureusement" "management" "managerial" "managing" "mandatory" "mandible" "mandibular" "maned"
- "manifested" "manifestement" "manipulated" "manipulation" "mannanbinding" "mannosebinding"
- "manquaient" "manual" "manually" "manufactured" "mapping" "marginal" "marginality" "marketed"
+ "majoritairement" "malabsorption" "malabsorptive" "malarial" "maldigestion" "malheureusement"
+ "management" "managerial" "managing" "mandatory" "mandible" "mandibular" "maned" "manifested"
+ "manifestement" "manipulated" "manipulation" "mannanbinding" "mannosebinding" "manquaient"
+ "manual" "manually" "manufactured" "mapping" "marginal" "marginality" "marketed"
  "marsupialization" "maskwearing" "massive" "massmediated" "mastelic" "mastered" "material"
  "maternal" "maternally" "mathematical" "maturation" "maturity" "maxillary" "maximize" "mayoral"
  "mazmanian" "mealy" "measureable" "mechanical" "mechanically" "mechanics" "medial" "mediastinal"
@@ -1331,7 +1331,7 @@
 ("abed" "bred" "feed" "fied" "king" "oily" "reed" "ring" "rmed" "ying"))
     :test #'equalp))
 
-;; 3318 extracted from Comlex
+;; 3317 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1381,11 +1381,11 @@
  "brackets" "brand" "breadth" "break" "breakdown" "breakthrough" "breath" "breeder" "breeders"
  "brief" "bright" "brilliant" "bring" "broad" "broaden" "broadens" "broader" "broke" "bromine"
  "bronchus" "brook" "brooks" "broth" "brought" "brush" "brushes" "bubble" "bucket" "buckle"
- "buckles" "budget" "budgets" "bug" "bugs" "bulb" "bulk" "bulky" "bullet" "burden" "bureau"
- "bureaucracy" "bureaucrat" "bureaucrats" "burn" "burns" "burton" "bus" "business" "businessman"
- "businessmen" "button" "buy" "buyer" "bypass" "bystander" "cabin" "cable" "cadaver" "cadavers"
- "cadre" "calculate" "calculation" "calculations" "calculi" "calculus" "calf" "calif" "callus"
- "came" "camel" "camels" "camera" "cameras" "campaign" "campaigns" "canal" "cancel" "cannon" "cant"
+ "buckles" "budget" "budgets" "bug" "bugs" "bulb" "bulky" "bullet" "burden" "bureau" "bureaucracy"
+ "bureaucrat" "bureaucrats" "burn" "burns" "burton" "bus" "business" "businessman" "businessmen"
+ "button" "buy" "buyer" "bypass" "bystander" "cabin" "cable" "cadaver" "cadavers" "cadre"
+ "calculate" "calculation" "calculations" "calculi" "calculus" "calf" "calif" "callus" "came"
+ "camel" "camels" "camera" "cameras" "campaign" "campaigns" "canal" "cancel" "cannon" "cant"
  "cantilever" "cantilevers" "capillaries" "capillary" "capitalize" "capitalizes" "capsule"
  "capsules" "captain" "caraway" "carbon" "carcass" "carcasses" "card" "care" "careful" "caretaker"
  "cargo" "carnivore" "carriage" "carrier" "carrot" "carrots" "carton" "cartoon" "cartridge"
@@ -1691,6 +1691,8 @@
  "wore" "worker" "workforce" "workload" "workloads" "workplace" "workshop" "workshops" "world"
  "worldwide" "worm" "worms" "worry" "worse" "worsen" "worthy" "wound" "wounds" "wreckage" "wright"
  "wrist" "write" "wrote" "yew" "youth" "yuan" "zone" "zoo" "zoology" "zoos"))
+    :test #'equalp))
+zoos"))
     :test #'equalp))
 
 "wavelengths" "weak" "weaken"

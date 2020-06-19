@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-45101-45200 sample of unknown words
-;; created 6/19/20 2:4:10
+;; created 6/19/20 4:36:58
 
 (in-package :sparser)
 
@@ -1910,7 +1910,7 @@
  "workshops" "world" "worldwide" "worsen" "worthwhile" "worthy" "wound" "wounds" "wren" "write"
  "wrote" "yearbook" "yogurt" "yogurts" "yolk" "youth" "yuan" "zone" "zones" "zoo" "zoom" "zucchini"))
     :test #'equalp))
-s" "wealth"
+" "wealth"
  "weapon" "weapons" "wear" "wearer" "weather" "weaver" "web" "weight" "welfare" "well" "wen" "went"
  "wet" "wether" "wheat" "wheeze" "whenever" "whereabouts" "whereby" "wherever" "whey" "whitish"
  "whole" "wild" "wildlife" "willingness" "win" "wind" "windless" "window" "wing" "wings" "wins"

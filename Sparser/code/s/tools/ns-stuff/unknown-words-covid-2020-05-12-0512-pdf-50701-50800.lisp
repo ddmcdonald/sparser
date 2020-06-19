@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-50701-50800 sample of unknown words
-;; created 6/3/20 17:19:24
+;; created 6/19/20 6:42:31
 
 (in-package :sparser)
 
@@ -634,7 +634,7 @@
  "Zudaire" "Zust" "Zweighaft" "Wangemann" "pR" "Çakmak"))
     :test #'equalp))
 
-;; 2151 defined as a bio-entity
+;; 2154 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-50701-50800
@@ -670,23 +670,23 @@
  "1pmol/ml" "1R21GM087617-01" "1tm1Mlg/J" "1x10" "1}" "1×" "1×10" "1×8" "1Á3" "1βKO" "2 /HCO"
  "2 g/kg" "2 g/L." "2+" "2,2-diphenyl-1-picrylhydrazyl" "2,2′,4′-trihydroxy-6"
  "2,2′-azino-bis-3-ethylbenzthiazoline-6-sulphonic" "2,3-dioleyloxy"
- "2,4-diacetamido-2,4,6-trideoxyhexose" "2--20" "2.1-time" "2.40-fold" "2.5/100" "2.6--3.6"
- "2.6--5.6" "2.9 µg/ml" "2/2" "2/9" "20 µg/mL" "20/215" "2002a" "2002b" "2003a" "2003b" "2005a"
- "2005b" "2005c" "2008a" "2008b" "2009a" "2009b" "200gl" "200RU" "200×100" "2010/2011" "2010a"
- "2010b" "2011a" "2011b" "2012a" "2012b" "2013a" "2013b" "2014a" "2014b" "2015a" "2017a" "2017b"
- "20x" "20°C" "20°C." "21/31" "215/100,000" "217/220" "219/100" "220uC" "221--240" "23S~2.9"
- "24--48 h" "24/61" "24/8" "24hpi" "250-300V" "250gg/ml" "27/27" "28/82" "280uC" "28mer" "28S~5050"
- "293FT" "29e48" "2:7:7" "2B." "2F5" "2FYG" "2G12" "2G9" "2nitro" "2OFZ" "2One-day-old" "2QIH"
- "2rid" "2}" "2·24" "2×2" "2×SDS" "2×SYBR" "2×YT" "3 /Da" "3,3′-dithiobis" "3,5 g/dl" "3--4" "3--5"
- "3-amino-3-" "3.30×10" "3.6--4.6" "3.6--5.6" "3.68--6.6" "3.7/100" "3/17" "3/18" "30 l/min"
- "305/57" "3072--6144" "308C." "31/48" "32°" "32°C" "33ºC" "34/34,699" "35°" "36.0°C" "36.2°C."
- "36.6°C" "37.5°C" "37/122" "371C." "378C." "37uC" "37~" "37°" "37°C" "37°C ." "37°C." "38°C"
- "3939-diaminobenzidine" "3a2" "3abc" "3p" "3R24" "3targeted" "3}" "3·4%" "3·58" "3×10" "4-1lG"
+ "2,4-diacetamido-2,4,6-trideoxyhexose" "2--20" "2.1-time" "2.40-fold" "2.6--3.6" "2.6--5.6"
+ "2.9 µg/ml" "2/2" "2/9" "20 µg/mL" "20/215" "2002a" "2002b" "2003a" "2003b" "2005a" "2005b"
+ "2005c" "2008a" "2008b" "2009a" "2009b" "200gl" "200RU" "2010/2011" "2010a" "2010b" "2011a"
+ "2011b" "2012a" "2012b" "2013a" "2013b" "2014a" "2014b" "2015a" "2017a" "2017b" "20x" "20°C"
+ "20°C." "21/31" "215/100,000" "217/220" "219/100" "220uC" "221--240" "23S~2.9" "24--48 h" "24/61"
+ "24/8" "24hpi" "250-300V" "250gg/ml" "27/27" "28/82" "280uC" "28mer" "28S~5050" "293FT" "29e48"
+ "2:7:7" "2B." "2F5" "2FYG" "2G12" "2G9" "2nitro" "2OFZ" "2One-day-old" "2QIH" "2rid" "2}" "2·24"
+ "2×2" "2×SDS" "2×SYBR" "2×YT" "3 /Da" "3,3′-dithiobis" "3,5 g/dl" "3--4" "3--5" "3-amino-3-"
+ "3.30×10" "3.6--4.6" "3.6--5.6" "3.68--6.6" "3.7/100" "3/17" "3/18" "30 l/min" "305/57"
+ "3072--6144" "308C." "31/48" "32°" "32°C" "33ºC" "34/34,699" "35°" "36.0°C" "36.2°C." "36.6°C"
+ "37.5°C" "37/122" "371C." "378C." "37uC" "37~" "37°" "37°C" "37°C ." "37°C." "38°C"
+ "3939-diaminobenzidine" "3a2" "3abc" "3p" "3R24" "3targeted" "3}" "3·58" "3×10" "4-1lG"
  "4-chloro-1-naphthol" "4-Hydroxycordoin" "4.03×10" "4.39-fold" "4.6--6.6" "4/17" "4/8" "40 µg/mL"
  "40gl" "42°C" "42°C." "45/100,000" "45/47" "450 /A" "450/630" "45uC" "45~64" "48C." "4E10" "4had"
  "4J3K" "4uC" "4~" "4°C" "4°C." "4·02%" "4ºC" "5 /ml" "5 µg/ml" "5--10" "5-10ml" "5.87×10" "5/17"
  "5/18" "5/80" "50e100" "50gl" "50mg/ml" "50x" "52b" "53°C" "55-60°C" "55°C" "56°C/30" "59HVR2"
- "5B19" "5bio" "5mer" "5p" "5x10" "5·1" "5×" "6--7" "6-diamidino-2-phenylindole"
+ "5B19" "5bio" "5mer" "5p" "5x10" "5·1" "5×" "6-diamidino-2-phenylindole"
  "6-diamidino-2phenylindol" "6-LSIGN" "6/12" "6/17" "6/19" "6/6" "6/9" "60--100%" "60x" "60°C"
  "60°C." "60°C/34 s" "61/279" "62/215" "62/806" "63°C" "63×" "66.8/100,000" "66••" "67••" "68b"
  "68°C" "6A ." "6A." "6q22-23" "6·47%" "6·87%" "7--14" "7--9" "7-10A" "7-1OA" "7-LSIGN" "7.6--17.6"
@@ -719,9 +719,11 @@
  "anti-Mac-1" "anti-malarial" "anti-mFc" "anti-microbial" "anti-miR" "anti-miRs" "anti-mouse"
  "anti-MPER" "anti-murine" "anti-myelin" "Anti-N protein" "anti-Na" "anti-nsp1β" "anti-parallel"
  "anti-peptide" "anti-phosphorylated" "anti-plaquettaires" "anti-polyhistidine"
- "anti-programmed cell death-protein 1" "anti-Pseudomonas" "anti-rabbit" "anti-Rousette" "anti-S"
- "anti-SARS-CoV" "anti-staphylococcal" "anti-tumor" "anti-tumoral" "anti-viral" "antigen/epitope"
- "Apol9a/b" "area--the" "Arthropod-borne" "as-yet" "AS03" "Astra-Zeneca" "asymptomatic/symptomatic"
+ "anti-programmed cell death-protein 1" "anti-Pseudomonas" "anti-rabbit" "anti-Rousette" "anti-S."
+ "Anti-S." "anti-SARS-CoV" "anti-staphylococcal" "anti-tumor" "anti-tumoral" "anti-viral"
+ "antigen/epitope" "Apol9a/b" "approximately 10-fold" "approximately 100-fold"
+ "approximately 2.5/100" "approximately 200×100" "approximately 3·4%" "approximately 6--7"
+ "area--the" "Arthropod-borne" "as-yet" "AS03" "Astra-Zeneca" "asymptomatic/symptomatic"
  "ATACTCmCACGACAGCTGCAACCTATTAACTAmTGATA~GATAGTTATC~GG~GTG~GTC~TGCTGAT~TAGTAC~CTAGTG~G~C~CATGTGAT~CACAGTAGGTAGTG"
  "ATcGTAATATGGCACTGAAGGGAACmACTATTGAGCAGACTATTGAGCAGACTATGGTTT~CCACC~~CT~cTGA~A~~TGGTA~GCT~~TC~TACCAAGG~A~~"
  "ATCTTTATGGTA~ACAGGCC~GGTA~~G~GAffi~AATGCGAC~ATTAT~TAG~GGCAGAACC~TATATGA~CT~TGGT~TCTCTATGG~TAGAGACTAC~~"
@@ -940,7 +942,7 @@
  "␤-d-thiogalactopyranoside" "␤-sheets" "n"))
     :test #'equalp))
 
-;; 4457 extracted by morphology
+;; 4455 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1290,12 +1292,12 @@
  "longlasting" "longstanding" "looping" "loosening" "lownormal" "lubrication" "lumbar" "lumenal"
  "lusively" "luteinizing" "lution" "lymphatic" "lymphatics" "lymphoblastic" "lymphocytic"
  "lymphoplasmacytic" "lymphosarcoma" "lymphotrophic" "lyophilized" "lysosomalassociated"
- "macgregor" "macromolecular" "macroscopic" "macular" "magnetic" "magnification" "majority"
- "majorly" "malabsorption" "malarial" "malaysian" "maleic" "malfunction" "malnourishment"
- "manageable" "managed" "management" "mandatory" "manifested" "manipulating" "manipulation"
- "manning" "mannosedependent" "mannuronic" "manoeuvring" "manual" "manually" "manufacturing"
- "mapped" "marginal" "marked" "marketed" "marred" "massive" "massscreening" "mastitisinducing"
- "mated" "material" "maternal" "maternally" "mathematical" "maturation" "maturity" "maxillary"
+ "macgregor" "macromolecular" "macroscopic" "macular" "magnetic" "magnification" "majorly"
+ "malabsorption" "malarial" "malaysian" "maleic" "malfunction" "malnourishment" "manageable"
+ "managed" "management" "mandatory" "manifested" "manipulating" "manipulation" "manning"
+ "mannosedependent" "mannuronic" "manoeuvring" "manual" "manually" "manufacturing" "mapped"
+ "marginal" "marked" "marketed" "marred" "massive" "massscreening" "mastitisinducing" "mated"
+ "material" "maternal" "maternally" "mathematical" "maturation" "maturity" "maxillary"
  "maximisation" "maximize" "mbled" "mechanical" "mechanically" "mechanotransduction" "medially"
  "mediastinal" "medicinal" "medics" "medullary" "meeting" "megastoma" "megatal" "membranous"
  "mendelian" "meningeal" "meningococcal" "mental" "merged" "merial" "mesenchymal" "mesenteric"
@@ -1308,7 +1310,7 @@
  "microscopically" "microsporidiosis" "microvacuolated" "microvascular" "microwaveassisted"
  "miethling" "migratory" "miliary" "military" "milled" "mimetic" "mimetics" "mimicking"
  "mineralemended" "mineralized" "miniaturize" "minimal" "minimisation" "minimising" "minimize"
- "minion" "ministerial" "minority" "mirrorimaging" "mirroring" "misclassification" "misfolded"
+ "minion" "ministerial" "mirrorimaging" "mirroring" "misclassification" "misfolded"
  "misinterpretation" "misinterpreted" "misleading" "mismanagement" "missibility" "missing"
  "missorting" "mitigation" "mitotic" "mitted" "mixed" "mockinfected" "modeled" "modelling"
  "modiolar" "modular" "molenaar" "molprobity" "moment" "monitor" "monitored" "monitoring"
@@ -1610,7 +1612,7 @@
  "βγ"))
     :test #'equalp))
 
-;; 3250 extracted from Comlex
+;; 3249 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1657,8 +1659,8 @@
  "bras" "bray" "breach" "breaches" "breadth" "breakage" "breakages" "breakdown" "breakneck"
  "breakthrough" "breath" "breed" "breeder" "breeds" "brevet" "bridge" "bridges" "brief" "bright"
  "brighter" "brilliant" "brine" "bring" "brings" "broad" "broader" "broiler" "broilers" "bronchi"
- "bronchus" "broth" "brought" "bruit" "brush" "brute" "buddy" "budget" "bulge" "bulk" "bulky"
- "bull" "bullet" "bulletin" "burden" "bureau" "burger" "burn" "burns" "burst" "bush" "business"
+ "bronchus" "broth" "brought" "bruit" "brush" "brute" "buddy" "budget" "bulge" "bulky" "bull"
+ "bullet" "bulletin" "burden" "bureau" "burger" "burn" "burns" "burst" "bush" "business"
  "businesses" "button" "bypass" "bypasses" "byproduct" "byproducts" "bystander" "calculation"
  "calculations" "calculus" "calf" "calif" "calm" "calve" "calves" "calyx" "came" "camel" "camels"
  "camera" "camp" "campaign" "camps" "campus" "canal" "canard" "canker" "cannibalism" "cant"
@@ -1965,8 +1967,7 @@
  "workshop" "world" "worldwide" "worm" "worse" "worsen" "worsens" "worthwhile" "worthy" "write"
  "wrote" "yolk" "zipper" "zone" "zones" "zoo" "zoom"))
     :test #'equalp))
-iety"
- "vary" "vegetable" "vegetables" "vehicle" "vehicles" "vein" "vendor" "vendors" "vent" "ventricle"
+nt" "ventricle"
  "venture" "ventures" "venue" "venues" "verge" "vessel" "vessels" "vet" "veteran" "veterans" "vial"
  "vibrant" "vie" "view" "viewpoint" "vigilance" "vigilant" "virology" "virtue" "visit" "visitor"
  "visitors" "visor" "vital" "volatile" "volume" "volunteer" "volunteers" "vomit" "waist" "waiver"
