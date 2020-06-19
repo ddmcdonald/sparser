@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-36201-36300 sample of unknown words
-;; created 6/3/20 18:31:46
+;; created 6/18/20 23:29:43
 
 (in-package :sparser)
 
@@ -634,7 +634,7 @@
  "Zichel" "Zinkl" "Zürcher" "nBreg"))
     :test #'equalp))
 
-;; 2208 defined as a bio-entity
+;; 2206 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-36201-36300
@@ -657,9 +657,9 @@
  "-rUrGrCrUrGrGrUrUrGrCrGrUrArUrGrUrArUrUrCrUrGrGrCrArG-3" "-TACCATGAGGACAAATATCATTCTG-3"
  "-TCCCATCGGGTTCCCATAA-3" "-TCTGGAATTTAGGCAACTCTCA-3" "-TGAGACAGCACGTGGATGCT-3" "-to-5"
  "-TTATGGTGCCATGGGTGATG-3" "-␣" ". /2020" "//doi.org" "//doi.org/10" "//doi.org/10.1101" "//ivdc"
- "0.04e0.2" "0.1 g/ml" "0.25 g/ml" "0.2e1.0" "0.3e" "0.3e1" "0.4e1.2" "0.51/hr" "0.53e0.69" "0.5ϫ"
- "0.65e" "0.75e0.81" "0/51" "055:B5" "0720-048X/$" "0C43" "0~5" "0·0026" "1 /T-helper" "1 g/ml"
- "1 l/ml" "1 million/µ" "1*10" "1+" "1,16e18" "1,2-dioleoyl-sn-glycero-3-"
+ "0.1 g/ml" "0.25 g/ml" "0.3e" "0.3e1" "0.4e1.2" "0.51/hr" "0.53e0.69" "0.5ϫ" "0.65e" "0.75e0.81"
+ "0/51" "055:B5" "0720-048X/$" "0C43" "0~5" "0·0026" "1 /T-helper" "1 g/ml" "1 l/ml" "1 million/µ"
+ "1*10" "1+" "1,16e18" "1,2-dioleoyl-sn-glycero-3-"
  "1,2-distearoyl-sn-glycero-3-phosphoethanolamine-polyethylene"
  "1,3,8-trihydroxy-6-methylanthraquinone" "1,6e10" "1-Ethyl-3-" "1-Step™" "1.00e+04" "1.11A"
  "1.19A" "1.5 g/L" "1.52/hour" "1.5°" "1.6e2" "1/" "1/10" "1/100" "1/15" "1/15-1370-Techapp"
@@ -683,13 +683,13 @@
  "2005/2006" "2005a" "2005b" "2006a" "2006b" "2008-January" "2008a" "2008b" "2008e2010" "200e260"
  "200TCID" "200°C" "200Â" "2010a" "2012a" "2013-June" "2013/" "2013/14" "2014-February"
  "2014-January" "2014/15" "2014a" "2014b" "2015a" "2015b" "2016/17" "2016YFC120" "2019-ncov"
- "2020a" "2020b" "2042019kf0206" "20e22" "20e30" "20°C" "20°C." "20Â" "215G/S" "21e24" "22/256"
- "22/65" "227/572" "2294nucleotide" "22°C" "23/260" "23/572" "230MT-HeLa" "24 h/day" "240°C."
- "241/572" "243G/S" "24well" "24°C." "25 g/mL" "25 ± 15°" "25,000/µ" "2500/µ" "250bed" "256/260"
- "25TK" "25°C" "25°C/min" "25•" "26/83" "260U" "267A/Q" "28e35" "29-yearold" "2A-2B" "2BC" "2F5"
- "2JTP" "2mercaptoethanol" "2°C" "2×" "2ϩdependent" "3 /hour" "3 /hr" "3 /s" "3-cholamidopropyl"
- "3.2A" "3/150" "3/43" "30 ± 40°" "300,000+" "30°C" "30°C." "31/" "31/3/17" "3130/3130xl" "3130xl"
- "315°C" "318e510" "32GN" "33e36" "33°C" "33°C." "34 g/ml" "34/45" "3400e9500" "340°C" "342Gly-Arg"
+ "2020a" "2020b" "2042019kf0206" "20e22" "20°C" "20°C." "20Â" "215G/S" "21e24" "22/256" "22/65"
+ "227/572" "2294nucleotide" "22°C" "23/260" "23/572" "230MT-HeLa" "24 h/day" "240°C." "241/572"
+ "243G/S" "24well" "24°C." "25 g/mL" "25 ± 15°" "25,000/µ" "2500/µ" "250bed" "256/260" "25TK"
+ "25°C" "25°C/min" "25•" "26/83" "260U" "267A/Q" "28e35" "29-yearold" "2A-2B" "2BC" "2F5" "2JTP"
+ "2mercaptoethanol" "2°C" "2×" "2ϩdependent" "3 /hour" "3 /hr" "3 /s" "3-cholamidopropyl" "3.2A"
+ "3/150" "3/43" "30 ± 40°" "300,000+" "30°C" "30°C." "31/" "31/3/17" "3130/3130xl" "3130xl" "315°C"
+ "318e510" "32GN" "33e36" "33°C" "33°C." "34 g/ml" "34/45" "3400e9500" "340°C" "342Gly-Arg"
  "35/168" "3500Dx/3500xL" "36-jarige" "36/246" "36/46" "360°C/min" "36:387-397" "37 ± 15°" "37,8°C"
  "37.2°C" "37.2℃" "37S/P" "37~" "37°C" "37°C." "38-jarige" "38/246" "387e393" "38e40" "39°C" "3="
  "3=-to-5=" "3=biotinylated" "3=polyadenylated" "3AB" "3C-like" "3C7" "3CD" "3CL" "3d-f" "3e10"
@@ -708,12 +708,12 @@
  "6,7,10e13" "6,7,10e14" "6-diamidino-2-phenylindole" "6-Diamidino-2-phenylindole"
  "6-fluoro-3-hydroxy-2-pyrazinecarboxamide" "6/" "6/17" "6/18-1983-App1" "6/246" "6/260" "6/44"
  "6/6" "6/82" "600,000/µ" "601/1,014" "60°C" "62.1%e" "620/0" "63×/1.4" "65-60°C" "65°C" "66°C"
- "6B1" "6B5" "6bc" "6C1" "6E10" "6e7" "6HIS-tag" "6×" "6×histidine" "7-Oglucoside" "7/13" "7/15"
- "7/17" "7/246" "7/46" "70e120" "70e90" "70°C" "70°C." "71-jarige" "72°C" "73/221" "759-SDD-761"
- "75°C" "76 m~" "76--250 m~" "766-amino-acid-long" "78V353I" "79--118 m~" "79/1146" "7e11" "7e9"
- "7f^" "8/12" "8/246" "8/49" "8/55" "8/9" "803e828" "80e90" "80°C" "84e97" "84°C" "85/123"
- "888/1,014" "8BW" "8e11" "8q24" "8°C" "9 /l" "9/11" "9/23" "90 m~z" "90/min" "91:1250-1262" "94°C"
- "95%CI" "95%HPD" "95°C" "95À99%" "96/258" "97/335" "98 m~" "9g/ml" ":237Ϫ242"
+ "6B1" "6B5" "6bc" "6C1" "6E10" "6e7" "6HIS-tag" "6×histidine" "7-Oglucoside" "7/13" "7/15" "7/17"
+ "7/246" "7/46" "70e120" "70e90" "70°C" "70°C." "71-jarige" "72°C" "73/221" "759-SDD-761" "75°C"
+ "76 m~" "76--250 m~" "766-amino-acid-long" "78V353I" "79--118 m~" "79/1146" "7e11" "7e9" "7f^"
+ "8/12" "8/246" "8/49" "8/55" "8/9" "803e828" "80e90" "80°C" "84e97" "84°C" "85/123" "888/1,014"
+ "8BW" "8e11" "8q24" "8°C" "9 /l" "9/11" "9/23" "90/min" "91:1250-1262" "94°C" "95%CI" "95%HPD"
+ "95°C" "95À99%" "96/258" "97/335" "98 m~" "9g/ml" ":237Ϫ242"
  "::=:::::::::::::::::::::::::::::::====" ":======::::" ":mittfected" "<0.001" "<0.05" "<0.3" "<1"
  "<1%" "<10" "<1:2" "<2" "<2%" "<20%" "<30" "<300" "<5-year-old" "<50" "<6" "<98%" "<i" "<j" "<k"
  ">0.5" ">1" ">10" ">100" ">200" ">5°" ">80" ">95%" ">98%" ">99%" "^t" "_____________________"
@@ -733,11 +733,12 @@
  "anti-cocaine" "anti-cow" "anti-DO11.10" "Anti-dsRNA" "anti-dsRNA" "anti-F" "anti-fade"
  "anti-feline" "anti-flag" "anti-G" "anti-goat" "anti-goat-FITC" "anti-HA" "anti-human"
  "anti-infective" "anti-infectives" "anti-inflammatory" "anti-influenza virus" "anti-malaria"
- "anti-MERS-CoV" "anti-mouse" "anti-multiple" "anti-N" "anti-NiV" "anti-Oketsu" "anti-parvoviral"
- "Anti-PDI" "anti-polio" "anti-proliferative" "anti-rabbit" "anti-rat" "anti-RBD"
- "anti-recombinant" "anti-Robinson" "anti-S" "anti-SARS-CoV" "anti-sense" "anti-spike" "anti-tumor"
- "anti-ulcerogenic" "anti-viral" "antibiotic/antimycotic" "antibody/virus" "antigen/antibody"
- "antigen/virus" "AP14" "AP6009b" "apigenin-7-O-glucoside" "apta-beacon-coupled" "AR2G"
+ "anti-MERS-CoV" "anti-mouse" "anti-multiple" "anti-NiV" "anti-Oketsu" "anti-parvoviral" "Anti-PDI"
+ "anti-polio" "anti-proliferative" "anti-rabbit" "anti-rat" "anti-RBD" "anti-recombinant"
+ "anti-Robinson" "anti-SARS-CoV" "anti-sense" "anti-spike" "anti-tumor" "anti-ulcerogenic"
+ "anti-viral" "antibiotic/antimycotic" "antibody/virus" "antigen/antibody" "antigen/virus" "AP14"
+ "AP6009b" "apigenin-7-O-glucoside" "approximately 0.04e0.2" "approximately 0.2e1.0"
+ "approximately 20e30" "approximately 6×" "approximately 90 m~z" "apta-beacon-coupled" "AR2G"
  "Araújo-Martins" "area-under-the-concentration" "asintomáticos/oligosintomáticos" "Aslt~"
  "Asp1053fs" "AST/ALT" "AT100" "ATHOS-3" "ATTCAAATTCTC-Phosphate" "aug-11" "author/funder" "AV12"
  "avian/swine" "AY028296" "AY101766" "AY113182" "AY113183" "AY121091" "AY121092" "AY167730"
@@ -924,7 +925,7 @@
  "␤-mercaptoethanol" "␤galactosidase" "␥-32"))
     :test #'equalp))
 
-;; 4527 extracted by morphology
+;; 4525 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1266,38 +1267,37 @@
  "luminescence" "lundquist" "lying" "lymeborreliosis" "lymphatic" "lymphoblastic" "lymphocytic"
  "lymphocytosis" "lymphopenic" "lymphopoietic" "lymphoproliferation" "lymphoproliferative"
  "lymphosarcoma" "lymphotropic" "lyophilized" "macrocytic" "macromolecular" "macroscopic" "madly"
- "magnetic" "magnificent" "magnified" "majority" "majorly" "malabsorption" "malaysian"
- "maldigestion" "managed" "management" "mandated" "mandatory" "mandible" "mandibular" "manifested"
- "manipulated" "manipulation" "mansion" "manual" "manually" "mapping" "marginal" "marked"
- "marketing" "marred" "married" "marsupial" "marvellous" "mashed" "massive" "mastered"
- "mastocytosis" "mately" "materiaal" "material" "maternal" "maternity" "mathematical" "mathematics"
- "maturation" "maturity" "maundering" "mcnemar" "mechanical" "mediastinal" "medicated" "medication"
- "medicinal" "medicolegal" "meestal" "megakaryoblastic" "megakaryocytic" "megaloblastic" "mejorar"
- "melanesian" "membranous" "memorial" "mendelian" "menial" "meningococcal" "menopausal" "mental"
- "meridian" "mesenchymal" "mesenteric" "mesothelial" "messaging" "metaanalysis" "metabolizing"
- "metachromatic" "metagenomic" "metagenomics" "metaphysical" "metapopulation" "meteorological"
- "metforminmediated" "methodological" "methodologically" "methoxymation" "metric" "metrics"
- "mhvinduced" "microbial" "microbiologic" "microbiological" "microcirculation" "microdilution"
- "microecological" "microelectromechanical" "microenvironment" "microfluidic" "microglial"
- "microinjection" "microneutralization" "microorganic" "microscopic" "microscopically"
- "microscopist" "microscopyÀbased" "microthrombosis" "microvascular" "migratory" "mihaljevic"
- "military" "mimicked" "minced" "mingled" "miniaturization" "minimal" "minimization" "minimizing"
- "mining" "minority" "minted" "mirrored" "mirroring" "misaligned" "misdiagnosed" "misdiagnosis"
- "miserable" "misidentification" "misidentified" "misinformed" "misleading" "mismatched"
- "misogynist" "missed" "mission" "mitigation" "mitotic" "mittfected" "mixing" "mldoubtedly"
- "moaning" "mockinfected" "modeled" "modelling" "modular" "modulator" "modulatory" "moment"
- "monetize" "monitor" "monitored" "monoadenylated" "monocarboxypeptidase" "monoclonal" "monocytic"
- "monocytosis" "monoinfection" "monomeric" "monomorphic" "mononuclear" "monophosphatase"
- "monotonic" "monotonicity" "monovalent" "montreal" "moolenaar" "morally"
- "morpholinepropanesulfonic" "morphologic" "mortuary" "motivated" "motivation" "mounted" "movement"
- "mucinous" "mucopolysaccharidosis" "mucosal" "multicellularity" "multicentric" "multicolor"
- "multicomponent" "multidimensional" "multidisciplinary" "multifaceted" "multifactorial"
- "multifocal" "multifunctional" "multilamellar" "multilateral" "multilingual" "multimeric"
- "multinational" "multinomial" "multinucleated" "multinucleation" "multiparous" "multiplexing"
- "multiplication" "multiplicity" "multiply" "multiplying" "multipotential" "multisector"
- "multivalency" "multivalent" "multivariable" "multivesicular" "mumbled" "municipal" "muramic"
- "murkily" "murmured" "musculoskeletal" "mutability" "mutagenicity" "mutational" "mutator"
- "mutilation" "muttered" "mvaprimed" "mycosis" "mycotic" "myeloablative" "myeloblastic"
+ "magnetic" "magnificent" "magnified" "majorly" "malabsorption" "malaysian" "maldigestion"
+ "managed" "management" "mandated" "mandatory" "mandible" "mandibular" "manifested" "manipulated"
+ "manipulation" "mansion" "manual" "manually" "mapping" "marginal" "marked" "marketing" "marred"
+ "married" "marsupial" "marvellous" "mashed" "massive" "mastered" "mastocytosis" "mately"
+ "materiaal" "material" "maternal" "maternity" "mathematical" "mathematics" "maturation" "maturity"
+ "maundering" "mcnemar" "mechanical" "mediastinal" "medicated" "medication" "medicinal"
+ "medicolegal" "meestal" "megakaryoblastic" "megakaryocytic" "megaloblastic" "mejorar" "melanesian"
+ "membranous" "memorial" "mendelian" "menial" "meningococcal" "menopausal" "mental" "meridian"
+ "mesenchymal" "mesenteric" "mesothelial" "messaging" "metaanalysis" "metabolizing" "metachromatic"
+ "metagenomic" "metagenomics" "metaphysical" "metapopulation" "meteorological" "metforminmediated"
+ "methodological" "methodologically" "methoxymation" "metric" "metrics" "mhvinduced" "microbial"
+ "microbiologic" "microbiological" "microcirculation" "microdilution" "microecological"
+ "microelectromechanical" "microenvironment" "microfluidic" "microglial" "microinjection"
+ "microneutralization" "microorganic" "microscopic" "microscopically" "microscopist"
+ "microscopyÀbased" "microthrombosis" "microvascular" "migratory" "mihaljevic" "military"
+ "mimicked" "minced" "mingled" "miniaturization" "minimal" "minimization" "minimizing" "mining"
+ "minted" "mirrored" "mirroring" "misaligned" "misdiagnosed" "misdiagnosis" "miserable"
+ "misidentification" "misidentified" "misinformed" "misleading" "mismatched" "misogynist" "missed"
+ "mission" "mitigation" "mitotic" "mittfected" "mixing" "mldoubtedly" "moaning" "mockinfected"
+ "modeled" "modelling" "modular" "modulator" "modulatory" "moment" "monetize" "monitor" "monitored"
+ "monoadenylated" "monocarboxypeptidase" "monoclonal" "monocytic" "monocytosis" "monoinfection"
+ "monomeric" "monomorphic" "mononuclear" "monophosphatase" "monotonic" "monotonicity" "monovalent"
+ "montreal" "moolenaar" "morally" "morpholinepropanesulfonic" "morphologic" "mortuary" "motivated"
+ "motivation" "mounted" "movement" "mucinous" "mucopolysaccharidosis" "mucosal" "multicellularity"
+ "multicentric" "multicolor" "multicomponent" "multidimensional" "multidisciplinary" "multifaceted"
+ "multifactorial" "multifocal" "multifunctional" "multilamellar" "multilateral" "multilingual"
+ "multimeric" "multinational" "multinomial" "multinucleated" "multinucleation" "multiparous"
+ "multiplexing" "multiplication" "multiplicity" "multiply" "multiplying" "multipotential"
+ "multisector" "multivalency" "multivalent" "multivariable" "multivesicular" "mumbled" "municipal"
+ "muramic" "murkily" "murmured" "musculoskeletal" "mutability" "mutagenicity" "mutational"
+ "mutator" "mutilation" "muttered" "mvaprimed" "mycosis" "mycotic" "myeloablative" "myeloblastic"
  "myelodysplastic" "myelofibrosis" "myelogenous" "myelomonocytic" "myelophthisic" "myelopoiesis"
  "myeloproliferative" "myelosis" "myelosuppressive" "myelotoxicity" "myocardial" "mysterious"
  "myxoma" "nally" "narrative" "nasally" "nasooral" "nasopharyngeal" "nationality" "nauseating"
@@ -1583,7 +1583,7 @@
  "leed" "reed" "rmed" "tied" "tted" "wing"))
     :test #'equalp))
 
-;; 4022 extracted from Comlex
+;; 4021 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1637,7 +1637,7 @@
  "breeze" "breve" "briar" "briars" "brick" "bridle" "brief" "bright" "bring" "brink" "broad"
  "broaden" "broadest" "broiler" "broke" "bronchi" "bronchus" "bronze" "broth" "brother" "brought"
  "bruise" "bruises" "brush" "brute" "brutes" "bucket" "buckets" "budget" "budgets" "buffalo" "bug"
- "buggy" "bugle" "bugles" "bugs" "build" "buildings" "bulk" "bulkhead" "bulkheads" "bull" "bullet"
+ "buggy" "bugle" "bugles" "bugs" "build" "buildings" "bulkhead" "bulkheads" "bull" "bullet"
  "bullets" "bulls" "bump" "bumpy" "bunch" "bundle" "burden" "bureau" "burrow" "burrows" "burst"
  "bus" "bush" "bushes" "business" "bust" "busy" "butcher" "butchers" "butler" "butt" "butter"
  "buttock" "button" "buy" "bypass" "bypasses" "byproduct" "cake" "cakes" "calculation"
@@ -2014,7 +2014,7 @@
  "wrist" "wrists" "write" "writer" "writings" "wrongful" "wrote" "yea" "yearling" "yearlings"
  "yearn" "yolk" "youth" "zonal" "zone" "zones"))
     :test #'equalp))
-heat" "wheel" "wheelchair" "wheels"
+r" "wheels"
  "whenever" "whereabouts" "whereby" "wherefore" "wherein" "whereupon" "wherever" "whiskey"
  "whither" "whole" "why" "whys" "wife" "wild" "wilderness" "wildfire" "wildlife" "wind" "window"
  "wink" "wipe" "wire" "wireless" "wires" "wisdom" "wise" "withstand" "witness" "witnesses" "wolf"

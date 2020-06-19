@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-37201-37300 sample of unknown words
-;; created 6/3/20 19:18:6
+;; created 6/19/20 0:6:52
 
 (in-package :sparser)
 
@@ -686,7 +686,7 @@
  "Zinter" "Zoulim" "Zu" "Zuniga" "Zust" "Zvyagintseva" "Gallus" "Çalişkan" "Śpiewanowski"))
     :test #'equalp))
 
-;; 2213 defined as a bio-entity
+;; 2217 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-37201-37300
@@ -752,54 +752,55 @@
  "2P-O-methyltransferase" "2P-OCH" "2P-OH" "2P-Omethyltransferase" "2xYT" "2×" "3 g/L" "3 µg/mL"
  "3+" "3-hydroxy-3-methylglutaryl" "3-like" "3-pyridyl" "3.0-H1" "3.04x10" "3.48x10" "3/3" "3/4"
  "3/6" "300 µg/µ" "3000 g/mol" "300K." "300xg" "300∼28,000" "30^40" "30Þ" "31-Jan" "330 g/day"
- "347/10" "349/94" "35.2°F" "37 ±0.5°C" "370-Gln→Arg" "37uC" "37~" "37°C" "37°C." "38/70" "38·1%"
- "39.5°C" "3=" "3=average" "3^10-fold" "3B3.1" "3B5C2" "3CL" "3d-f" "3I ." "3P-phosphate" "3TC"
- "3ZP-labeled" "3´" "3´DsRed" "3´Luc" "3´of" "3´reporter" "3·7%" "3×" "3×10"
- "4,5-dimethylthiazol-2-yl" "4-hydroxy-3-methoxyphenyl" "4-hydroxyquinolin-2-ones"
- "4-Isothiocyanatobenzyl" "4.66 %ID/g" "400xg" "40U" "40uC" "416DLS>NLS" "42.937084°N"
- "426-Asp→Glu" "42°C" "442-Thr→Ala" "44°F" "45.4/39.4" "48·8" "49·0" "4=heavy" "4CE"
- "4CE@i2b2foundation" "4d-f" "4HA" "4~5" "4°C" "4°C." "5-100-fold" "5-AZA-dC" "5-hydroxyindole"
- "5-methoxy-8-hydroxy" "5/77" "5/group" "50/0.2" "50uC" "50°C" "50×" "512-pixel" "51°C" "55/1"
- "55°C" "56~" "56°F" "56·0" "56·5" "58uC" "59-6-FAM-ATTATGGCTTCCACTCCTGCCCAAGT-39"
- "59-GCCA-CACAATGAATGGACACTAGAGC-39" "59.29 %ID/g" "59.3°F" "5=" "5=fat" "5^10" "5^7" "5A-C"
- "5point" "5U41068C" "5¢-deiodinase" "5´" "5´-ctcgagcagaactttagtcatctccttgtg-3´"
- "5´-gaattccccttgagggagggcccca" "5´-gctctagactagtagtcatcaaggtcaaa-3´"
- "5´-ggaattcaagatggcggacgaccccagtgct-3´and" "5´EGFP" "5´human" "5´reporter" "5×" "5×10" "5Â10"
- "6 /ml" "6--7-hr-old" "6-10-fold" "6-8-week-old" "6.903b" "6.96x10" "6.97x10" "6/1" "60-65°C"
- "600∼15,000" "60uC" "60°C" "63°C" "63°C." "650 µg/m" "65°C" "65·3" "69·2" "69·5" "6a 's" "6b 's"
- "6B ." "6b-e" "6b-g" "6C2" "6d 's" "6R-bromo-3S-" "6SD" "6x10" "6xHis-tagged" "6·0%"
- "6β-hydroxylation" "7,9-di-O-acetyl" "7.5x10" "7/" "7/77" "7/80" "70-yr-old" "700!" "705-vpr-F1"
- "70^100" "70°C" "710-vpr-R4" "71·5" "72°C" "75.6107°E" "75.6107°E." "77°F" "7:9:84" "7A-B" "7·3%"
- "7·5%" "7À ." "8 g/kg" "8-anilino-1-naphthalenesulfonic" "8-anilino-1naphthalenesulfonic"
- "8.34 %ID" "80+" "80°C" "80∼90%" "81.31 %ID/g" "81·2" "83·1" "83·3%" "84.7°C" "85°C" "87.62 %ID/g"
- "88.6/71.4" "89/105" "8:00-09:00" "8a-Figure" "8b-e" "8c-e" "8C." "8F8B5" "8G7D1" "8·5 million"
- "9 /l" "9+4+4=17" "9-Oacetyl" "9.5-fold" "9/18" "90u" "90·3" "91/156" "92.0∼94.7%" "94°C" "95%CI"
- "95uC" "95°C" "96/88" "96well" "96°C" "99/194" "9H3A6" "::" ":H" ":H7" ":NM" ":q" ":T" "<0.01"
- "<0.05" "<0.1" "<1%" "<1-fold" "<1.5" "<100" "<17.0" "<18" "<2.5" "<20" "<20%" "<5" "<6" "<70 %"
- "<750" "<http://www" "<o<" ">1.5" ">10" ">100" ">150.0" ">2" ">2-fold" ">20%" ">20-fold"
- ">25-fold" ">3,100" ">3-fold" ">30" ">30%" ">40" ">40.5" ">50 %" ">50%" ">6" ">60-fold" ">6Â"
- ">7-fold" ">70%" ">79" ">80%" ">85%" ">90%" ">90,000" ">95%" ">fivefold" "@<" "@w" "^one" "^the"
- "___" "A-grade" "A-infected" "A-shares" "A.1" "A5/C5" "A5C" "A6/C6" "A6C" "A:G" "a`chaperonelike"
- "AAV/" "AAV/HBV" "AAV/HBV1.3" "Aberdeen-Angus" "AC185982.3" "AC_113435.1" "AC_136625.2"
- "AC_137800.3" "AC_138511.2" "acaac-3´" "acetone-like" "acetyl-enzyme" "aCGH" "ACG→GCG"
- "acid-Schiff" "acid/protein" "ACN/H" "activity/accessibility" "activity/property" "Ad5/35"
- "Adeno-associated" "adopters/community" "affec-66" "AFM-Telethon" "Ag/FIV" "AGG/AGA" "Agri-Food"
- "AI064930" "AJ311673" "Al-Hawamdeh" "Al-Qaeda" "al20" "albopictus5" "Aliaga-Raudan" "All-day"
- "allergist/immunologists" "allo-MHC" "aluminum/silica" "amino acids/residues" "amino-C6"
- "AMPHORA2" "and/" "animal_dis_spec" "ankyrin-like" "Ankyrin/host" "anoikis-like" "ANOVA1"
- "anti-aging" "anti-allergy" "anti-angiogenesis" "anti-apoptotic" "anti-asialo-GM1" "Anti-cancer"
- "anti-DNA" "anti-dyslipidemia" "anti-endothelial" "anti-FCoV" "anti-FeLV"
- "anti-galactocerebroside" "Anti-glycolipid" "anti-HBsAg" "Anti-HBV" "anti-human"
- "anti-hypertensive" "anti-Ia" "anti-immunoglobulin" "anti-infectious" "anti-inflammation"
- "anti-inflammato-ries" "anti-inflammatory" "anti-Islamic" "anti-Israeli" "anti-MERS-CoV"
- "anti-MeV" "anti-MeV-H" "anti-monocytic" "anti-mouse" "anti-myelin" "Anti-neutrophil"
- "anti-nociceptive" "Anti-p27" "anti-peptide" "anti-proliferative" "anti-rabbit" "anti-rabbit-HRP"
- "anti-rat" "anti-retroviral" "anti-RNA" "anti-SARS virus" "anti-SARS-CoV" "Anti-SLT"
- "anti-spasmogenic" "anti-thymocyte" "anti-tumor" "anti-tumour" "anti-vector" "anti-viral"
- "anxiety-like" "anxiety/" "anxiety/depression" "apoptotic/necrotic" "approaching10" "ARDS-like"
- "ARDS/" "ARDS/PARDS" "Arias-Reyes" "article/Supplementary" "arXiv:2004" "Asia1,2" "assay~1" "at>"
- "ATGAATTTGCTACA-3" "ATW3" "ATW5" "au11" "au12" "au13" "au2" "au5" "au6" "au7" "au8"
- "author/funder" "AvaI-PstI" "average16" "AY265350.1" "AY278488" "AY395004" "AY742953"
+ "347/10" "349/94" "35.2°F" "370-Gln→Arg" "37uC" "37~" "37°C" "37°C." "38/70" "38·1%" "39.5°C" "3="
+ "3=average" "3^10-fold" "3B3.1" "3B5C2" "3CL" "3d-f" "3I ." "3P-phosphate" "3TC" "3ZP-labeled"
+ "3´" "3´DsRed" "3´Luc" "3´of" "3´reporter" "3·7%" "3×" "3×10" "4,5-dimethylthiazol-2-yl"
+ "4-hydroxy-3-methoxyphenyl" "4-hydroxyquinolin-2-ones" "4-Isothiocyanatobenzyl" "4.66 %ID/g"
+ "400xg" "40U" "40uC" "416DLS>NLS" "42.937084°N" "426-Asp→Glu" "42°C" "442-Thr→Ala" "44°F"
+ "45.4/39.4" "48·8" "49·0" "4=heavy" "4CE" "4CE@i2b2foundation" "4d-f" "4HA" "4~5" "4°C" "4°C."
+ "5-100-fold" "5-AZA-dC" "5-hydroxyindole" "5-methoxy-8-hydroxy" "5/77" "5/group" "50/0.2" "50uC"
+ "50°C" "50×" "512-pixel" "51°C" "55/1" "55°C" "56~" "56°F" "56·0" "56·5" "58uC"
+ "59-6-FAM-ATTATGGCTTCCACTCCTGCCCAAGT-39" "59-GCCA-CACAATGAATGGACACTAGAGC-39" "59.29 %ID/g"
+ "59.3°F" "5=" "5=fat" "5^10" "5^7" "5A-C" "5point" "5U41068C" "5¢-deiodinase" "5´"
+ "5´-ctcgagcagaactttagtcatctccttgtg-3´" "5´-gaattccccttgagggagggcccca"
+ "5´-gctctagactagtagtcatcaaggtcaaa-3´" "5´-ggaattcaagatggcggacgaccccagtgct-3´and" "5´EGFP"
+ "5´human" "5´reporter" "5×" "5×10" "5Â10" "6 /ml" "6--7-hr-old" "6-10-fold" "6-8-week-old"
+ "6.903b" "6.96x10" "6.97x10" "6/1" "60-65°C" "600∼15,000" "60uC" "60°C" "63°C" "63°C." "650 µg/m"
+ "65°C" "65·3" "69·2" "69·5" "6a 's" "6b 's" "6B ." "6b-e" "6b-g" "6C2" "6d 's" "6R-bromo-3S-"
+ "6SD" "6x10" "6xHis-tagged" "6·0%" "6β-hydroxylation" "7,9-di-O-acetyl" "7.5x10" "7/" "7/77"
+ "7/80" "70-yr-old" "700!" "705-vpr-F1" "70^100" "70°C" "710-vpr-R4" "71·5" "72°C" "75.6107°E"
+ "75.6107°E." "77°F" "7:9:84" "7A-B" "7·3%" "7·5%" "7À ." "8 g/kg"
+ "8-anilino-1-naphthalenesulfonic" "8-anilino-1naphthalenesulfonic" "8.34 %ID" "80+" "80°C"
+ "80∼90%" "81.31 %ID/g" "81·2" "83·1" "83·3%" "84.7°C" "85°C" "87.62 %ID/g" "88.6/71.4" "89/105"
+ "8:00-09:00" "8a-Figure" "8b-e" "8c-e" "8C." "8F8B5" "8G7D1" "8·5 million" "9 /l" "9+4+4=17"
+ "9-Oacetyl" "9.5-fold" "9/18" "90·3" "91/156" "92.0∼94.7%" "94°C" "95%CI" "95uC" "95°C" "96/88"
+ "96well" "96°C" "99/194" "9H3A6" "::" ":H" ":H7" ":NM" ":q" ":T" "<0.01" "<0.05" "<0.1" "<1%"
+ "<1-fold" "<1.5" "<100" "<17.0" "<18" "<2.5" "<20" "<20%" "<5" "<6" "<70 %" "<750" "<http://www"
+ "<o<" ">1.5" ">10" ">100" ">150.0" ">2" ">2-fold" ">20%" ">20-fold" ">25-fold" ">3,100" ">3-fold"
+ ">30" ">30%" ">40" ">40.5" ">50 %" ">50%" ">6" ">60-fold" ">6Â" ">7-fold" ">70%" ">79" ">80%"
+ ">85%" ">90%" ">90,000" ">95%" ">fivefold" "@<" "@w" "^one" "^the" "___" "A-grade" "A-infected"
+ "A-shares" "A.1" "A5/C5" "A5C" "A6/C6" "A6C" "A:G" "a`chaperonelike" "AAV/" "AAV/HBV" "AAV/HBV1.3"
+ "Aberdeen-Angus" "AC185982.3" "AC_113435.1" "AC_136625.2" "AC_137800.3" "AC_138511.2" "acaac-3´"
+ "acetone-like" "acetyl-enzyme" "aCGH" "ACG→GCG" "acid-Schiff" "acid/protein" "ACN/H"
+ "activity/accessibility" "activity/property" "Ad5/35" "Adeno-associated" "adopters/community"
+ "affec-66" "AFM-Telethon" "Ag/FIV" "AGG/AGA" "Agri-Food" "AI064930" "AJ311673" "Al-Hawamdeh"
+ "Al-Qaeda" "al20" "albopictus5" "Aliaga-Raudan" "All-day" "allergist/immunologists" "allo-MHC"
+ "almost 90u" "aluminum/silica" "amino acids/residues" "amino-C6" "AMPHORA2" "and/"
+ "animal_dis_spec" "ankyrin-like" "Ankyrin/host" "anoikis-like" "ANOVA1" "anti-aging"
+ "anti-allergy" "anti-angiogenesis" "anti-apoptotic" "anti-asialo-GM1" "Anti-cancer" "anti-DNA"
+ "anti-dyslipidemia" "anti-endothelial" "anti-FCoV" "anti-FeLV" "anti-galactocerebroside"
+ "Anti-glycolipid" "anti-HBsAg" "Anti-HBV" "anti-human" "anti-hypertensive" "anti-Ia"
+ "anti-immunoglobulin" "anti-infectious" "anti-inflammation" "anti-inflammato-ries"
+ "anti-inflammatory" "anti-Islamic" "anti-Israeli" "anti-MERS-CoV" "anti-MeV" "anti-MeV-H"
+ "anti-monocytic" "anti-mouse" "anti-myelin" "Anti-neutrophil" "anti-nociceptive" "Anti-p27"
+ "anti-peptide" "anti-proliferative" "anti-rabbit" "anti-rabbit-HRP" "anti-rat" "anti-retroviral"
+ "anti-RNA" "anti-SARS virus" "anti-SARS-CoV" "Anti-SLT" "anti-spasmogenic" "anti-thymocyte"
+ "anti-tumor" "anti-tumour" "anti-vector" "anti-viral" "anxiety-like" "anxiety/"
+ "anxiety/depression" "apoptotic/necrotic" "approaching10" "approximately 10-fold"
+ "approximately 3-fold" "approximately 37 ±0.5°C" "approximately three-fold" "ARDS-like" "ARDS/"
+ "ARDS/PARDS" "Arias-Reyes" "article/Supplementary" "arXiv:2004" "Asia1,2" "assay~1"
+ "at least two-fold" "at>" "ATGAATTTGCTACA-3" "ATW3" "ATW5" "au11" "au12" "au13" "au2" "au5" "au6"
+ "au7" "au8" "author/funder" "AvaI-PstI" "average16" "AY265350.1" "AY278488" "AY395004" "AY742953"
  "AY742955-New" "azide-PEG2000-DSPE" "A•U" "A→G" "B-1a" "B-lineage" "B.V" "b/a" "B18R" "B19R"
  "b2-microglobulin" "Balb-C" "Balb/e" "Barac-Latas" "BCIP/NBT" "Beckman-Coulter" "Bgp1a" "BH015"
  "BH026" "BH059" "BH097" "BH101" "BH125" "BH129" "BH130" "BH141" "BH195" "BHV-1" "BHV-I"
@@ -914,9 +915,9 @@
  "numer-au9" "nX2" "Nystatin/" "nystatin/progesterone" "n¼15" "n¼160" "n¼42" "O-glycosidically"
  "O-H···O" "O.C.T." "O/N" "O103" "O103:H2,12" "O111" "O157:H7" "O157:NM" "O26:H11" "O45:H2" "O5:NM"
  "OASL2" "object_id" "OC-43RNA" "OD/pad" "OD260/OD280" "off-the-beaten-track" "often/always" "of~1"
- "of~100" "on/5" "one-size-fits-all" "OPLS-AA" "OPLS2001" "OPTI-MA" "Opti-MEM" "OPY-1" "or`Eigen"
- "orcinol/Fe" "order/disorder" "ORF3a/b" "ORF3b" "ORF7a/b" "ORF8a/b" "org/" "org/censor/index"
- "org>" "over100" "OW1" "OW2" "OW3" "OW3A" "Oxy-Sept" "P#0.005" "p-258" "P-gene"
+ "of~100" "on/5" "one-size-fits-all" "only 3-fold" "OPLS-AA" "OPLS2001" "OPTI-MA" "Opti-MEM"
+ "OPY-1" "or`Eigen" "orcinol/Fe" "order/disorder" "ORF3a/b" "ORF3b" "ORF7a/b" "ORF8a/b" "org/"
+ "org/censor/index" "org>" "over100" "OW1" "OW2" "OW3" "OW3A" "Oxy-Sept" "P#0.005" "p-258" "P-gene"
  "p-maleimidophenyl" "P-O" "p-SCN-Bn-DOTA" "p-value" "P.R." "P/N" "P15776.1" "p27-h" "P388D1"
  "p53dim" "p<0.001" "p<0.005" "p<0.05" "package33" "package34" "Papain-like" "parent/child"
  "particles/mL" "particles/pathogens" "partition/genome" "patient/client" "pcDNA3.1" "pCG-MeV-H"
@@ -965,11 +966,11 @@
  "T20/20" "T2i88" "T2i88-8-pf" "T2ic8" "T2ic8-8-pf" "T2nr9" "T2R" "T81c-8-pf" "T=4" "T=n" "Table1"
  "Tan-TK1L" "Tan-TK2L" "Tan-TM1L" "Tan-TM2L" "TCID50" "TCID50/" "tech_note" "telecommunica-52"
  "temperatures≥39.5°C." "The`bare-bones" "the`error" "Theenzyme-linked" "theoretical/probable"
- "the~50%" "thread-like" "three-quarters" "tm1a" "tm1b" "tm1b/tm1b" "TM7" "TM9" "TNF␣" "TO4"
- "to`buffer" "Toll-like-receptor" "toll/IL-1" "TOP10" "to~50%" "TPR4" "trans-membrane protein"
- "translate/" "trimerof-hairpins" "Trotz-Williams" "True/False" "TTGTTCAT-MGB" "Tween-20"
- "type III IFN-λs" "Type-1" "Tyr→Ile" "T→G" "U-Cytech" "U/kg" "u/l" "U/ll" "U/ml" "U01" "U13369"
- "U251" "Ubp18" "ubp18" "UCHT1" "ug/ml" "UGA_U" "UGG>GGG>CGG>AGG" "umbilicus/urachus"
+ "the~50%" "thread-like" "tm1a" "tm1b" "tm1b/tm1b" "TM7" "TM9" "TNF␣" "TO4" "to`buffer"
+ "Toll-like-receptor" "toll/IL-1" "TOP10" "to~50%" "TPR4" "trans-membrane protein" "translate/"
+ "trimerof-hairpins" "Trotz-Williams" "True/False" "TTGTTCAT-MGB" "Tween-20" "type III IFN-λs"
+ "Type-1" "Tyr→Ile" "T→G" "U-Cytech" "U/kg" "u/l" "U/ll" "U/ml" "U01" "U13369" "U251" "Ubp18"
+ "ubp18" "UCHT1" "ug/ml" "UGA_U" "UGG>GGG>CGG>AGG" "umbilicus/urachus"
  "undecanoyl-sn-glycero-3-phosphocholine" "United-States-Environmental-Protection-Agency" "units/l"
  "units/ml" "unknown/not" "unmodified/unmutated" "UPLC-ESIMS" "uptake/viral" "US$330" "US$523·3"
  "USDA2013" "users-state" "UUC→UAC" "U→A" "V-bottom" "V/cm" "v/v" "V5-D-Topo" "V5-His" "vac-uolar"
@@ -994,7 +995,7 @@
  "≥3" "≥5" "9"))
     :test #'equalp))
 
-;; 5036 extracted by morphology
+;; 5034 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1387,9 +1388,9 @@
  "ltrable" "ltration" "lubrication" "luteal" "luteolysis" "lying" "lymphatic" "lymphatically"
  "lymphatics" "lymphocytic" "lymphohistiocytic" "lymphoproliferative" "lymphosarcoma"
  "lymphotropic" "lyophilised" "lyophilization" "lyophilized" "macapagal" "macerated" "macrocyclics"
- "macrocytic" "macroscopic" "magnetic" "magnification" "magnified" "majority" "malabsorption"
- "malathion" "malaysian" "malfunctioning" "malodor" "malodorous" "malpositioning" "malpresentation"
- "mamrnary" "management" "managerial" "mandatory" "mandible" "mandibular" "manent" "manifestation"
+ "macrocytic" "macroscopic" "magnetic" "magnification" "magnified" "malabsorption" "malathion"
+ "malaysian" "malfunctioning" "malodor" "malodorous" "malpositioning" "malpresentation" "mamrnary"
+ "management" "managerial" "mandatory" "mandible" "mandibular" "manent" "manifestation"
  "manipulated" "manipulation" "mannosidosis" "manquent" "manual" "manually" "manufacturing"
  "mapped" "marginal" "marginalized" "marginated" "margination" "marion" "marital" "marked"
  "marketed" "married" "massive" "massively" "mastitic" "matchmaking" "material" "maternal"
@@ -1404,8 +1405,8 @@
  "microcotyledonary" "microencephaly" "microenvironment" "microgliosis" "micronodular"
  "micropinocytosis" "microscopic" "microscopically" "microsomal" "migitated" "migratory" "military"
  "milkbased" "millar" "mimetic" "mimetics" "mimicking" "mineral" "mineralization" "mineralize"
- "minimal" "minimised" "minimization" "minimize" "mining" "ministerial" "minority" "minted"
- "mirror" "misassembled" "mischievous" "misdiagnosed" "misdiagnosis" "misfolding" "mismanagement"
+ "minimal" "minimised" "minimization" "minimize" "mining" "ministerial" "minted" "mirror"
+ "misassembled" "mischievous" "misdiagnosed" "misdiagnosis" "misfolding" "mismanagement"
  "mismatched" "missing" "misspecification" "mitigation" "mockimmunized" "modeled" "modelling"
  "modernisation" "modernizing" "modifiable" "modiwcation" "modi¢cation" "modi¢ed" "modular"
  "mohamed" "mohammed" "moment" "monitored" "monochromated" "monoclonal" "monocytic"
@@ -1737,7 +1738,7 @@
  "shed" "sued" "tied" "uted" "wing"))
     :test #'equalp))
 
-;; 3823 extracted from Comlex
+;; 3822 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1788,9 +1789,9 @@
  "breeders" "brewer" "bribe" "brick" "bridge" "brief" "bright" "brilliant" "bring" "brink" "brisk"
  "brisket" "brittle" "broad" "broaden" "broadens" "broader" "bronchi" "bronchus" "brook" "brooks"
  "broom" "broth" "brought" "brush" "brushes" "bubble" "bubbles" "buck" "bucket" "buckets" "buffalo"
- "builder" "bulb" "bulk" "bulky" "bull" "bulletin" "bunk" "bunks" "bunny" "buoyant" "burden"
- "bureau" "burn" "burns" "burst" "bursts" "bus" "business" "buster" "butler" "butter" "buttermilk"
- "buy" "bypass" "byproduct" "bystander" "cable" "cacao" "cache" "cadre" "cafe" "cafes" "calculate"
+ "builder" "bulb" "bulky" "bull" "bulletin" "bunk" "bunks" "bunny" "buoyant" "burden" "bureau"
+ "burn" "burns" "burst" "bursts" "bus" "business" "buster" "butler" "butter" "buttermilk" "buy"
+ "bypass" "byproduct" "bystander" "cable" "cacao" "cache" "cadre" "cafe" "cafes" "calculate"
  "calculation" "calculations" "calculi" "calculus" "calf" "calve" "calves" "came" "camera"
  "cameras" "camp" "campaign" "camps" "campus" "campuses" "canal" "canto" "cape" "capillaries"
  "capillary" "capitalist" "capitalists" "capsule" "car" "carbon" "carcass" "carcasses" "card"
@@ -2151,9 +2152,7 @@
  "worthy" "wound" "wounds" "wrap" "wraps" "wright" "wrinkle" "write" "wrote" "yahoo" "yearling"
  "yearlings" "yellowish" "youth" "yuan" "zebra" "zipper" "zone"))
     :test #'equalp))
-
- "worm" "worse" "worship" "worthwhile"
- "worthy" "wound" "wounds" "wrap" "wraps" "wright" "wrinkle" "write" "wrote" "yahoo" "yearling"
+right" "wrinkle" "write" "wrote" "yahoo" "yearling"
  "yearlings" "yellowish" "youth" "yuan" "zebra" "zipper" "zone"))
     :test #'equalp))
 er" "whiskers"

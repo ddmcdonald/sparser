@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-2901-3000 sample of unknown words
-;; created 6/4/20 14:11:33
+;; created 6/18/20 22:25:10
 
 (in-package :sparser)
 
@@ -663,7 +663,7 @@
  "Kidszun" "dC" "pI" "Álvarez" "Žižek"))
     :test #'equalp))
 
-;; 2543 defined as a bio-entity
+;; 2547 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-2901-3000
@@ -687,9 +687,9 @@
  "-TCACTGTCAGAACAACTTTGCTTGC-3" "-TGCTTCTGATTCTTTTCCTGAATGG-3" "-to-3" "-to-5" "-ΔΔCt" ". /2020"
  ".1 /xM" ".1016/j" ".7554/eLife" "//doi.org/10" "//doi.org/10.1101" "0,1410,31863,00.html"
  "0.000095*E1" "0.000095*I1" "0.000095*R1" "0.000095*U1" "0.0027*E1" "0.00567*" "0.01%BSA"
- "0.1%BSA" "0.1*10^" "0.1/100,000" "0.17*10^" "0.1Â" "0.27/100,000" "0.28404*I1" "0.3 g/kg"
- "0.31/100,000" "0.5-1 /xg" "0.5/100,000" "0.5Â" "0.5μg/ml" "0.6*10^" "0.6mg/ml" "0.7/" "0.8 µg/mL"
- "0.8/100,000" "0157:H7" "0278-4319/©" "0~1" "1 /ml" "1 /zg" "1 million-fold" "1,000-fold"
+ "0.1%BSA" "0.1*10^" "0.1/100,000" "0.17*10^" "0.1Â" "0.27/100,000" "0.28404*I1" "0.31/100,000"
+ "0.5/100,000" "0.5Â" "0.5μg/ml" "0.6*10^" "0.6mg/ml" "0.7/" "0.8 µg/mL" "0.8/100,000" "0157:H7"
+ "0278-4319/©" "0~1" "1 /ml" "1 /zg" "1 million-fold" "1,000-fold"
  "1,4,7,10-tetraazacyclododecane-1,4,7,10-tetraacetic" "1,4,7,10-tetrakis" "1,400-fold"
  "1,6-hexanediol" "1-already" "1-cyclopropyl-6-fluoro-4-oxo-7-" "1-ethyl-3-3-dimethylaminopropyl"
  "1.3-fold" "1.4-fold" "1.7-fold" "1/" "1/10" "1/100" "1/20,000" "1/3" "1/3200" "1/dilution" "1/e"
@@ -757,7 +757,7 @@
  "acetone/dmso" "ACGACCACTTTGTCAAGCTCATTTC3" "ACGATCGTCTTCCCCTCTTT3" "Acosta-Ramírez"
  "ACTACCT-GAGCACCCAGTCC" "activation/inhibition" "Adh1p" "adsorption/infection" "aeet\\l"
  "after~14 h" "agarose-TBE" "agarose-Tris-borate-EDTA" "Agri-food" "Ahmad-Nejad" "AIVH5" "Aju-CoV"
- "al-Assad" "Al-Jahdali" "Al-Qaeda" "alphavirus-like" "al}" "Amin-Chowdhury"
+ "al-Assad" "Al-Jahdali" "Al-Qaeda" "Almost 10-fold" "alphavirus-like" "al}" "Amin-Chowdhury"
  "amino acids 250-273-^" "amino acids/peptides" "Ampli-Scribe" "anatomy/pathology" "and /or" "and/"
  "and~4.0" "animals/group" "anti-AIV" "anti-bacterial" "anti-biofilm" "Anti-carp"
  "anti-cell division" "anti-CHIKV" "anti-clotting" "anti-coagulation" "anti-core" "Anti-core"
@@ -773,27 +773,28 @@
  "anti-tumor" "anti-tumour" "anti-ulcer" "anti-viral" "anti-viral-remdisivir" "antibodies/antigens"
  "antigen presentation*^^" "antigenic-antibody" "antigens^^"
  "Antiglyceraldehyde-3-phosphate dehydrogenase" "antiviral-ISG" "Antoine-Charles-Ernest" "AP6000a"
- "AP6008a" "AP6008b" "arenavirus-like" "ARV-C-F" "ARV-C-R" "as-yet" "ASC09" "Asselin-Paturel"
- "assignment!" "associated/spiked" "Assumed**" "astrovirus-like" "asymptom-A"
- "asymptomatic/subclinical" "at/" "ATCC-6057" "at~100°C" "auchyð0" "auramine-rhodamine"
- "author/funder" "auto-antibodies" "autologous-HSCT" "avoid/antagonize" "avoiding/antagonizing"
- "AY291451" "AY485277" "AY485278" "AY947539.1" "a~4.6" "B*1301" "B*1302" "B*15" "B*1501" "B*1502"
- "B*1505" "B*1525" "B*40" "B*4001" "B*4002" "B*46" "B*4601" "b-1b" "B-and" "B-or" "B-Trägertum"
- "B.01.03" "B.J.W." "B.L.Z." "B/A" "B/B" "B1-220A" "b\\" "backwards-in-time" "bacterial/viral"
- "BALF-4" "balloons/baggies" "BamHI-KpnI" "Barba-Spaeth" "bat-SL-CoVZX21" "bat-SL-CoVZX45"
- "BB23-8E6-8C8" "BB6-11C9" "behavioural/physiological" "Bermudez-Humaran" "Bernard-Jean-Antonin"
- "Bg/ll" "BHV-1" "bi-chlorodibenzo" "Bi12O8" "Bi2Cl10" "Bi38O44" "Bi6O4" "Bi9O7" "BiCl3" "BiCl6"
- "BiF5" "BiL3" "BiL3·" "BiNFeC-hTF" "BIO-RAD" "Bio-Rad" "Bio-Safe" "Biometra-Göttingen"
- "BiooPure-MP" "BiPh3" "BiPh3/GA" "BiPh3/NF" "Bi{C5H4NC" "BJH001" "BJH006" "blade-like" "BLOSUM62"
- "BmKDfsin4" "Boa3" "Boehringer-Mannheim" "Bornberg-Bauer" "Braam-Markson" "Braeburn/Camurus"
- "Braun-latour" "bronchiolitis-obliterans-organizing" "buffered-RPMI" "Butler-Ransohoff" "BY4733"
- "BY4741" "by~1000-fold" "by~20-to" "by~65-fold" "C-alpha" "C-and" "C-lobe" "C-P4H" "C-P4Hα"
- "C-pSTBlue-1" "C-S34L" "C-terminally" "c///" "C24V" "C57BL/6" "C57BL/6J" "C5a" "C6/36" "C6H5}3"
- "ca/" "calci-A" "Caledonia" "Calibeo-Hayes" "cancer/tackling" "carbon/" "carbon/energy"
- "cardiacum/brain" "Carmo-Fonseca" "cases/1000" "cases/clusters" "cat /K" "Cat#" "catA1"
- "CATGAGTGTGGATCCAGCTTG3" "CC-BY-NC-ND" "CC-Tri3" "CC50" "CCCAATTACCCATCCTTCCT3" "CCL-1.4" "ccp/"
- "CCTGAATAAGCAGATCCATGG3" "CCV1" "CCV2" "CD11c+" "CD14+" "CD141+" "CD2þ" "CD45RC" "CD80/86" "CD8α"
- "CDC-DB" "cell/tissue" "cells/" "cells/2" "cells/experiment" "cells/ml" "cells/sample"
+ "AP6008a" "AP6008b" "approximately 0.3 g/kg" "Approximately 0.5-1 /xg" "approximately 10-fold"
+ "approximately 20°C" "approximately six-fold" "arenavirus-like" "ARV-C-F" "ARV-C-R" "as-yet"
+ "ASC09" "Asselin-Paturel" "assignment!" "associated/spiked" "Assumed**" "astrovirus-like"
+ "asymptom-A" "asymptomatic/subclinical" "at/" "ATCC-6057" "at~100°C" "auchyð0"
+ "auramine-rhodamine" "author/funder" "auto-antibodies" "autologous-HSCT" "avoid/antagonize"
+ "avoiding/antagonizing" "AY291451" "AY485277" "AY485278" "AY947539.1" "a~4.6" "B*1301" "B*1302"
+ "B*15" "B*1501" "B*1502" "B*1505" "B*1525" "B*40" "B*4001" "B*4002" "B*46" "B*4601" "b-1b" "B-and"
+ "B-or" "B-Trägertum" "B.01.03" "B.J.W." "B.L.Z." "B/A" "B/B" "B1-220A" "b\\" "backwards-in-time"
+ "bacterial/viral" "BALF-4" "balloons/baggies" "BamHI-KpnI" "Barba-Spaeth" "bat-SL-CoVZX21"
+ "bat-SL-CoVZX45" "BB23-8E6-8C8" "BB6-11C9" "behavioural/physiological" "Bermudez-Humaran"
+ "Bernard-Jean-Antonin" "Bg/ll" "BHV-1" "bi-chlorodibenzo" "Bi12O8" "Bi2Cl10" "Bi38O44" "Bi6O4"
+ "Bi9O7" "BiCl3" "BiCl6" "BiF5" "BiL3" "BiL3·" "BiNFeC-hTF" "BIO-RAD" "Bio-Rad" "Bio-Safe"
+ "Biometra-Göttingen" "BiooPure-MP" "BiPh3" "BiPh3/GA" "BiPh3/NF" "Bi{C5H4NC" "BJH001" "BJH006"
+ "blade-like" "BLOSUM62" "BmKDfsin4" "Boa3" "Boehringer-Mannheim" "Bornberg-Bauer" "Braam-Markson"
+ "Braeburn/Camurus" "Braun-latour" "bronchiolitis-obliterans-organizing" "buffered-RPMI"
+ "Butler-Ransohoff" "BY4733" "BY4741" "by~1000-fold" "by~20-to" "by~65-fold" "C-alpha" "C-and"
+ "C-lobe" "C-P4H" "C-P4Hα" "C-pSTBlue-1" "C-S34L" "C-terminally" "c///" "C24V" "C57BL/6" "C57BL/6J"
+ "C5a" "C6/36" "C6H5}3" "ca/" "calci-A" "Caledonia" "Calibeo-Hayes" "cancer/tackling" "carbon/"
+ "carbon/energy" "cardiacum/brain" "Carmo-Fonseca" "cases/1000" "cases/clusters" "cat /K" "Cat#"
+ "catA1" "CATGAGTGTGGATCCAGCTTG3" "CC-BY-NC-ND" "CC-Tri3" "CC50" "CCCAATTACCCATCCTTCCT3" "CCL-1.4"
+ "ccp/" "CCTGAATAAGCAGATCCATGG3" "CCV1" "CCV2" "CD11c+" "CD14+" "CD141+" "CD2þ" "CD45RC" "CD80/86"
+ "CD8α" "CDC-DB" "cell/tissue" "cells/" "cells/2" "cells/experiment" "cells/ml" "cells/sample"
  "cells/tissues" "cells/well" "cells/μL" "cfH2" "CFR=D/N." "CFU/g" "cfu/ml" "CFU/ml" "CFX96"
  "ch/arlequin/" "CH3CH2OH" "change/social" "Charles-Michel" "CHARMM22" "Cheyne-Stokes" "Chi-square"
  "chloronapthol/0.05%" "cholera-like" "Chung-Ang" "Chung-Hsing" "Chung-Shan"
@@ -1000,7 +1001,7 @@
  "␥-irradiated" "␥-phosphate" "" "-factor" "-factor" "" "" "g"))
     :test #'equalp))
 
-;; 4459 extracted by morphology
+;; 4458 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1340,7 +1341,7 @@
  "loving" "lubricated" "lucrative" "lumbar" "luminescence" "lying" "lymphatic" "lymphatics"
  "lymphocytic" "lymphohistiocytic" "lymphoproliferative" "lymphotropic" "lyophilization"
  "lyophilized" "lysosomotropic" "maccreary" "maceration" "macroenvironment" "macromolecular"
- "macroscopic" "macular" "magnetic" "magnifection" "magnification" "magnified" "mailing" "majority"
+ "macroscopic" "macular" "magnetic" "magnifection" "magnification" "magnified" "mailing"
  "malabsorption" "malarial" "malfunctioning" "malicious" "malleability" "malnourished"
  "manageability" "manageable" "managed" "management" "mandated" "mandatory" "maniacal"
  "manipulated" "manipulation" "manual" "manually" "mapkinase" "mapping" "marcar" "marginal"
@@ -1655,7 +1656,7 @@
  "wing" "ying" "φθ"))
     :test #'equalp))
 
-;; 3478 extracted from Comlex
+;; 3477 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1706,7 +1707,7 @@
  "breathe" "breech" "breeches" "breeder" "bridge" "bridle" "brief" "bright" "brilliant" "bring"
  "brisk" "broad" "broaden" "broader" "broadside" "bronchus" "brood" "broth" "brother" "brothers"
  "brought" "browse" "brush" "bubble" "bubbles" "buck" "budget" "build" "buildings" "bulb" "bulge"
- "bulges" "bulk" "bulldog" "bullet" "bun" "bunch" "bunches" "bundle" "bungalow" "bungalows" "buns"
+ "bulges" "bulldog" "bullet" "bun" "bunch" "bunches" "bundle" "bungalow" "bungalows" "buns"
  "burden" "bureau" "burn" "burst" "bus" "bush" "bushy" "business" "businesses" "busy" "butler"
  "button" "buttons" "buyer" "bypass" "bystander" "cabinet" "calf" "caliber" "calif" "came" "camel"
  "camels" "campaign" "campaigns" "campus" "canal" "canker" "cant" "cantaloupe" "capsule" "capsules"
@@ -2030,8 +2031,7 @@
  "workshop" "world" "worldwide" "worm" "wormwood" "worry" "worse" "worthy" "wound" "wounds"
  "wright" "write" "writer" "writings" "wrote" "yew" "yogurt" "youth" "yuan" "zone" "zoo" "zoos"))
     :test #'equalp))
-villager" "villagers" "virology" "virtue" "viscid" "visitor" "visitors" "vital" "vitamin"
- "volatile" "volume" "volunteer" "volunteers" "voyage" "walk" "walker" "wall" "walls" "walnut"
+" "volume" "volunteer" "volunteers" "voyage" "walk" "walker" "wall" "walls" "walnut"
  "waltz" "war" "warfare" "warhead" "warheads" "warm" "warmer" "warn" "warns" "warren" "wary"
  "washer" "watch" "waterborne" "watercress" "waterfall" "watery" "watt" "wave" "wavelength" "weak"
  "wealth" "weapon" "weapons" "wear" "weather" "weave" "web" "wedge" "weight" "weights" "weird"

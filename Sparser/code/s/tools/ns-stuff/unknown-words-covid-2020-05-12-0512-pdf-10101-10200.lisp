@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-10101-10200 sample of unknown words
-;; created 6/4/20 13:40:53
+;; created 6/18/20 20:2:4
 
 (in-package :sparser)
 
@@ -776,7 +776,7 @@
  "Zorick" "Zou" "Zucht" "Andersson" "Arvola" "Roche"))
     :test #'equalp))
 
-;; 2198 defined as a bio-entity
+;; 2199 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-10101-10200
@@ -856,7 +856,7 @@
  "abo_covid_analysis" "aborigine^" "Acevedo-Whitehouse" "activi~" "ACYTDYTAGCRATCCTCATGGACTGG-3"
  "adenylate/guanylate" "adult-like" "AF192907" "afwijkin-gen" "Ag/Ab" "AhxB-PMO"
  "Aicardi-Goutières" "AIDS-Epidemiologie" "AIDS-Kranken" "AJ222685" "AJ235310" "AJ235324"
- "AJ235325" "AJ235326" "Al-Gabr" "aL8" "Albinana-Gimenez" "Alkamuls-EL620" "alkyne-Ub"
+ "AJ235325" "AJ235326" "Al-Gabr" "aL8" "Albinana-Gimenez" "Alkamuls-EL620" "alkyne-Ub" "almost 3X"
  "alpha-1antitrypsin" "alpha/beta" "AM08450PU-N" "Am18w" "AmelSCRB8" "America-1" "AN/905" "and /or"
  "and/" "and/spillage" "andpPG-COE-DCpep" "antagomiR-141" "anti-arythmiques" "anti-b"
  "anti-bacterial" "anti-bovine" "anti-CDV" "anti-CDV-F" "anti-CDV-F protein" "anti-CDV-H"
@@ -865,12 +865,12 @@
  "Anti-HAV-IgM-Nachweis" "Anti-HBc" "anti-HBc-positive" "Anti-HBc-Prävalenz" "Anti-HBs"
  "Anti-HBs-Wert" "anti-HCV-positiv" "Anti-HCV-Status" "anti-HDV-IgGpositiv" "Anti-HIV" "Anti-HIV-1"
  "anti-HTLV-I" "anti-human" "anti-I" "anti-IFV" "anti-inflammatory" "anti-malarial" "anti-mouse"
- "anti-mycobacterial" "anti-N" "Anti-PEDV" "anti-phospho-JNK" "anti-phospho-p47 phox" "anti-pig"
- "anti-PIV3" "anti-proliferative" "anti-rabbit" "anti-rabies" "anti-rat" "Anti-retroviral" "anti-S"
- "anti-S." "anti-SARS-CoV" "anti-seizure" "anti-sense" "anti-sera" "anti-serum" "anti-social"
- "anti-tag" "anti-trifluoroacetylated" "anti-trypanosomatid" "anti-trypanosomatids" "anti-ulcer"
- "anti-viral" "Anti-VZV-Bestimmung" "anticoagulant/antithrombotic" "antidepressant-like"
- "antigen/antibody" "anxiety-like" "as-yet-unknown" "Asia-1" "Asn-A*142" "AsnA*142" "Asp47/Tyr"
+ "anti-mycobacterial" "Anti-PEDV" "anti-phospho-JNK" "anti-phospho-p47 phox" "anti-pig" "anti-PIV3"
+ "anti-proliferative" "anti-rabbit" "anti-rabies" "anti-rat" "Anti-retroviral" "anti-S."
+ "anti-SARS-CoV" "anti-seizure" "anti-sense" "anti-sera" "anti-serum" "anti-social" "anti-tag"
+ "anti-trifluoroacetylated" "anti-trypanosomatid" "anti-trypanosomatids" "anti-ulcer" "anti-viral"
+ "Anti-VZV-Bestimmung" "anticoagulant/antithrombotic" "antidepressant-like" "antigen/antibody"
+ "anxiety-like" "around 4°C" "as-yet-unknown" "Asia-1" "Asn-A*142" "AsnA*142" "Asp47/Tyr"
  "assembling/disassembling" "assembly/" "as~750" "ATCA3" "ATCC#" "AUG-CCN" "author/funder"
  "Auto-encoders" "AUTODOCI0" "AY618992" "AY618993" "AY700211.1" "a~h" "B*" "B-and" "B-Hepatitiden"
  "B-like" "B-ring" "B.V." "b3-a4" "BacT/Alert" "bacterial/fungal" "Bacto-agar" "BamH1" "based-ABP"
@@ -1050,10 +1050,10 @@
  "TRAPPC1-TRAPPC3-TRAPPC4-TRAPPC6a" "TRAPPC3/Bet3p" "TRAPPC5/Trs31p" "TRAPPC6" "TRAPPC6/Trs33p"
  "Tris^HCl" "TRL3" "tRNA-like" "tropical/subtropical" "Trs120p" "Trs130p" "Trs20p" "Trs23p"
  "Trs31p" "Trs33p" "Trs65p" "Trs85p" "trypsin-like" "tryptophan-2,3-dioxygenase" "TS/total"
- "Tsui-Mongkok" "TUR09" "two^three" "Ty3" "typically~80%" "U.S" "U/ml" "U01-GM070708" "U037"
- "U87020" "U87021" "U87022" "U87023" "U:G" "U_UUA_AAC" "UAG-3" "Ub-E1" "Ub-like" "Ub-propargyl"
- "Ubl2" "UK-201844" "uk/arrayexpress" "uk/interpro/" "uk/mouseportal/" "uk/phyre2/"
- "uk/projects/fastqc/" "uk/software/" "uk/software/pathogen/" "uk/software/pfam"
+ "Tsui-Mongkok" "TUR09" "turn-around time" "two^three" "Ty3" "typically~80%" "U.S" "U/ml"
+ "U01-GM070708" "U037" "U87020" "U87021" "U87022" "U87023" "U:G" "U_UUA_AAC" "UAG-3" "Ub-E1"
+ "Ub-like" "Ub-propargyl" "Ubl2" "UK-201844" "uk/arrayexpress" "uk/interpro/" "uk/mouseportal/"
+ "uk/phyre2/" "uk/projects/fastqc/" "uk/software/" "uk/software/pathogen/" "uk/software/pfam"
  "uk/Software/Pfam/" "UNC-93Bdependent" "units/PCR" "units/year" "urine/total" "Uso1p" "u~t"
  "V-vial" "V.3.1.1.0" "V.I" "v/v" "V1-extended" "V1-loop" "V1-V5" "v1.3.3b" "V2.0" "v2.0a11" "V5.0"
  "v8.1.6" "v:v" "vac-cine" "Vam6p/" "variations/SNPs" "VARV-like" "Vaughan-Williams" "ven-Korean"
@@ -1074,7 +1074,7 @@
  "∼10" "∼25" "≈2" "≥18" "≥50" "⋅GTP" "␣-cyano-4-hydroxycinnamic" "＜50" "＞70" "＞95%"))
     :test #'equalp))
 
-;; 4397 extracted by morphology
+;; 4395 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1415,28 +1415,28 @@
  "lokaal" "longevity" "longitudinal" "longitudinally" "longlasting" "longstanding" "lowaffinity"
  "lucent" "lumenal" "luminescence" "lymphatic" "lymphoblastoma" "lymphocyteassociated"
  "lymphocytic" "lymphotropic" "lyophilized" "lyzed" "légalement" "lésion" "macromolecular"
- "macroscopic" "maculopapular" "madision" "magnetic" "magnification" "magni¢cation" "majority"
- "majorly" "malabsorption" "malarial" "malfunctioning" "malheureusement" "malnourished"
- "malnourishment" "malnutritioninfectionmalnutrition" "malnutrution" "maloriented" "malposition"
- "maltreatment" "manageable" "management" "managing" "mandated" "mandatory" "manifesting"
- "manipulation" "manual" "manually" "manufactured" "mapping" "marginal" "marginalization" "marital"
- "marketable" "marketing" "married" "massive" "massively" "masticated" "mated" "materiaal"
- "material" "maternal" "maternally" "maternity" "mathematical" "mathematics" "maturating"
- "maturation" "maundering" "maximize" "mdvinoculated" "mechanical" "mechanically" "mechanics"
- "medial" "mediastinal" "medicinal" "medicolegal" "medieval" "medikation" "medtronic" "meestal"
- "megakaryocytic" "melanization" "melanizing" "membraneassociated" "membranous" "menacent"
- "mendelian" "mental" "mentality" "mentation" "merged" "merial" "mesenteric" "messaging" "messing"
- "metaanalysis" "metaanalytic" "metabolize" "metabolizing" "metabolomics" "metagenomic"
- "metagenomics" "metaphylactic" "metastable" "metered" "methanolic" "methodologic" "methodological"
- "meticulous" "metric" "meurent" "microaerophilic" "microbial" "microbicidal" "microbiologic"
- "microbiological" "microbiologically" "microbiologist" "microcirculation" "microcompartment"
- "microenvironment" "microfilament" "microfluidics" "microimmunofluorescence" "microinjection"
- "microparasitic" "microscopic" "microscopically" "microsomal" "microsurgical" "microthrombosis"
- "microvascular" "migratory" "military" "mimicking" "miniaturized" "minimal" "minimisation"
- "minimization" "minimize" "minority" "mirrored" "mirroring" "misalignment" "miscellaneous"
- "misclassification" "misestimation" "mishandled" "misidentified" "misinformation" "misleading"
- "misplacement" "missing" "mission" "mitigation" "mitotic" "mixed" "mockinfected" "mocktreated"
- "modeled" "modelling" "moderation" "modifiable" "modular" "modulatable" "modulator" "modulatory"
+ "macroscopic" "maculopapular" "madision" "magnetic" "magnification" "magni¢cation" "majorly"
+ "malabsorption" "malarial" "malfunctioning" "malheureusement" "malnourished" "malnourishment"
+ "malnutritioninfectionmalnutrition" "malnutrution" "maloriented" "malposition" "maltreatment"
+ "manageable" "management" "managing" "mandated" "mandatory" "manifesting" "manipulation" "manual"
+ "manually" "manufactured" "mapping" "marginal" "marginalization" "marital" "marketable"
+ "marketing" "married" "massive" "massively" "masticated" "mated" "materiaal" "material" "maternal"
+ "maternally" "maternity" "mathematical" "mathematics" "maturating" "maturation" "maundering"
+ "maximize" "mdvinoculated" "mechanical" "mechanically" "mechanics" "medial" "mediastinal"
+ "medicinal" "medicolegal" "medieval" "medikation" "medtronic" "meestal" "megakaryocytic"
+ "melanization" "melanizing" "membraneassociated" "membranous" "menacent" "mendelian" "mental"
+ "mentality" "mentation" "merged" "merial" "mesenteric" "messaging" "messing" "metaanalysis"
+ "metaanalytic" "metabolize" "metabolizing" "metabolomics" "metagenomic" "metagenomics"
+ "metaphylactic" "metastable" "metered" "methanolic" "methodologic" "methodological" "meticulous"
+ "metric" "meurent" "microaerophilic" "microbial" "microbicidal" "microbiologic" "microbiological"
+ "microbiologically" "microbiologist" "microcirculation" "microcompartment" "microenvironment"
+ "microfilament" "microfluidics" "microimmunofluorescence" "microinjection" "microparasitic"
+ "microscopic" "microscopically" "microsomal" "microsurgical" "microthrombosis" "microvascular"
+ "migratory" "military" "mimicking" "miniaturized" "minimal" "minimisation" "minimization"
+ "minimize" "mirrored" "mirroring" "misalignment" "miscellaneous" "misclassification"
+ "misestimation" "mishandled" "misidentified" "misinformation" "misleading" "misplacement"
+ "missing" "mission" "mitigation" "mitotic" "mixed" "mockinfected" "mocktreated" "modeled"
+ "modelling" "moderation" "modifiable" "modular" "modulatable" "modulator" "modulatory"
  "modélisation" "molecularly" "moment" "mondialisation" "monitored" "monitoring" "monobasic"
  "monocistronic" "monoclonal" "monocytic" "mononuclear" "monophonic" "monospecific" "monsoonal"
  "montreal" "montrent" "monumental" "morality" "morally" "morbidity" "morphologic" "mortal"
@@ -1729,7 +1729,7 @@
 ("aged" "bled" "deed" "ding" "goed" "hing" "hnly" "iced" "reed" "ring" "tied" "tted" "ying"))
     :test #'equalp))
 
-;; 3288 extracted from Comlex
+;; 3287 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1778,18 +1778,18 @@
  "brass" "bray" "breach" "bread" "breadth" "break" "breakage" "breakdown" "breaks" "breakup"
  "breath" "breaths" "breeder" "breeders" "breve" "bridge" "bridges" "brief" "bright" "bring"
  "broad" "broaden" "broadens" "broader" "broiler" "bronchus" "brood" "broth" "brought" "brush"
- "brute" "bubble" "budget" "buffalo" "build" "buildings" "bulk" "bulkier" "bulky" "bull" "bunch"
- "bunches" "bundle" "bundles" "buoyant" "burden" "bureau" "bureaucracy" "burn" "burst" "bus"
- "buses" "business" "butcher" "butt" "buy" "bypass" "byproduct" "bystander" "cabin" "cabinet"
- "cabinets" "cactus" "cadaver" "cadre" "calculi" "calculus" "calf" "caliber" "calve" "calves"
- "came" "camel" "camera" "cameras" "campaign" "campaigns" "candid" "cant" "cape" "capillaries"
- "capillary" "capsule" "captain" "capture" "carbon" "card" "care" "career" "careful" "cargo"
- "carnivore" "carnivores" "carriage" "carrier" "carrot" "carrots" "carton" "cartridge" "caseload"
- "casket" "cassette" "cat" "catalog" "catalogue" "catalogues" "catalyst" "catalysts" "catch"
- "catchment" "catchments" "cattle" "catwalk" "catwalks" "caught" "caveat" "caveats" "cease"
- "century" "certificate" "chain" "chamber" "channel" "chap" "chapel" "chaps" "chapter" "charge"
- "chart" "cheap" "check" "chemical" "chemicals" "chemistry" "cherry" "chest" "chick" "chicken"
- "chickens" "chief" "child" "childbirth" "childhood" "children" "chill" "chills" "chimaera" "chine"
+ "brute" "bubble" "budget" "buffalo" "build" "buildings" "bulkier" "bulky" "bull" "bunch" "bunches"
+ "bundle" "bundles" "buoyant" "burden" "bureau" "bureaucracy" "burn" "burst" "bus" "buses"
+ "business" "butcher" "butt" "buy" "bypass" "byproduct" "bystander" "cabin" "cabinet" "cabinets"
+ "cactus" "cadaver" "cadre" "calculi" "calculus" "calf" "caliber" "calve" "calves" "came" "camel"
+ "camera" "cameras" "campaign" "campaigns" "candid" "cant" "cape" "capillaries" "capillary"
+ "capsule" "captain" "capture" "carbon" "card" "care" "career" "careful" "cargo" "carnivore"
+ "carnivores" "carriage" "carrier" "carrot" "carrots" "carton" "cartridge" "caseload" "casket"
+ "cassette" "cat" "catalog" "catalogue" "catalogues" "catalyst" "catalysts" "catch" "catchment"
+ "catchments" "cattle" "catwalk" "catwalks" "caught" "caveat" "caveats" "cease" "century"
+ "certificate" "chain" "chamber" "channel" "chap" "chapel" "chaps" "chapter" "charge" "chart"
+ "cheap" "check" "chemical" "chemicals" "chemistry" "cherry" "chest" "chick" "chicken" "chickens"
+ "chief" "child" "childbirth" "childhood" "children" "chill" "chills" "chimaera" "chine"
  "chipboard" "choc" "chocolate" "choice" "choose" "chose" "chow" "chunk" "chunks" "cider" "circle"
  "circuit" "circumstance" "circumstances" "circumvent" "circumvents" "cistern" "cisterns" "citizen"
  "citizens" "civet" "civets" "civil" "claim" "claims" "class" "clean" "cleaner" "cleaners" "clear"
@@ -2089,7 +2089,8 @@
  "wrist" "write" "writer" "writers" "writings" "wrote" "xenophobia" "yogurt" "yolk" "zenith"
  "zonal" "zone"))
     :test #'equalp))
-"weaker" "weakness" "weaknesses" "wealth" "weapon" "weaponry" "wear" "weather" "web"
+    :test #'equalp))
+" "weaknesses" "wealth" "weapon" "weaponry" "wear" "weather" "web"
  "wedge" "wee" "wees" "weft" "weight" "welcome" "welfare" "well" "wen" "went" "wet" "wheat"
  "wheeze" "wheezy" "whenever" "whereabouts" "whereby" "wherein" "whereupon" "whey" "whisker"
  "whole" "whorl" "whorls" "wild" "wildlife" "will" "willingness" "wills" "window" "wing" "wings"

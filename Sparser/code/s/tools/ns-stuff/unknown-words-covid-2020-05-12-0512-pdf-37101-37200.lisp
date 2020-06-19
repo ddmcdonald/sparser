@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-37101-37200 sample of unknown words
-;; created 6/3/20 19:12:43
+;; created 6/19/20 0:3:18
 
 (in-package :sparser)
 
@@ -829,7 +829,7 @@
  "Zhu" "Zidek" "Ziegler" "Zimmer" "Zou"))
     :test #'equalp))
 
-;; 2555 defined as a bio-entity
+;; 2562 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-37101-37200
@@ -880,10 +880,10 @@
  "2 /FiO" "2 /methanol" "2 g/kg" "2 µg/ml" "2+" "2,3-dimethoxy-1,4-naphthoquinone"
  "2,3-dioleoyloxy" "2-3mg/Kg" "2-aminoethanethio" "2-fucosyllactose" "2-hydroxyethyl"
  "2-nitro-4-trifluoromethyl-benzoyl" "2.2.3.4b" "2.4Â10" "2.639-fold" "2.72-fold" "2/20" "2/2a"
- "2/3" "2/3rd" "2/4" "2/82" "20-22°C." "200 /zl" "200 /~1" "200/lg" "200/zl" "2000c" "2001a"
- "2001b" "2002a" "2006a" "2006b" "2007a" "2007b" "200RHKQI205" "2010a" "2010b" "2011a" "2011b"
- "2012a" "2012b" "2013a" "2013b" "2016a" "2016b" "2017a" "2017b" "2019-nCoV-like" "2019-nCoVr"
- "2020a" "2030+" "207/794" "209 µg/g" "20corrected" "20data" "20input" "20p" "20p12" "20q13" "20°C"
+ "2/3" "2/3rd" "2/82" "20-22°C." "200 /zl" "200 /~1" "200/lg" "200/zl" "2000c" "2001a" "2001b"
+ "2002a" "2006a" "2006b" "2007a" "2007b" "200RHKQI205" "2010a" "2010b" "2011a" "2011b" "2012a"
+ "2012b" "2013a" "2013b" "2016a" "2016b" "2017a" "2017b" "2019-nCoV-like" "2019-nCoVr" "2020a"
+ "2030+" "207/794" "209 µg/g" "20corrected" "20data" "20input" "20p" "20p12" "20q13" "20°C"
  "21.2°C" "210 g/week" "21q-22.3" "21|" "21Á3%" "21♀" "220uC" "22q13" "22|" "23andMe" "23|" "24/7"
  "24K-kryos" "24|" "25 µl/well" "25/" "25/39" "25/44" "250 µg/g" "252Y." "25|" "260/280" "26|"
  "27E10" "27|" "27Á4%" "28/305" "28/46" "280uC" "28b" "28c" "28°C" "28Á7%" "29-31kDa" "29/66"
@@ -934,28 +934,30 @@
  "ADN-girasa" "AE100" "African-Americans" "after-hour" "Ag/Leukocytes" "Ag/serum" "AG0044" "AG0045"
  "AG44" "AG7088" "Ag7088" "Ag85" "Ag85A" "Ag85C" "AGG/AGA" "aggregation/precipitation"
  "Aguilar-Martínez" "AJ304381.1" "AJ854486" "Al-Hussaini" "Al-Mayouf" "Al-qaness" "Ala40a"
- "Albu-minp3.0 g" "Alexander-Miller" "ALGS1" "ALGS2" "ALP/total" "Alpers-Huttenlocher" "alpha-1AT"
+ "Albu-minp3.0 g" "Alexander-Miller" "ALGS1" "ALGS2" "almost 10-fold" "almost 30-fold"
+ "almost five-fold" "almost three-quarters" "ALP/total" "Alpers-Huttenlocher" "alpha-1AT"
  "Amador-del-Ángel" "amylopectin-like" "An-t6n" "and/" "angiopoietin-like" "annelaht@mappi" "Ant6n"
  "anthracis-Bacillus" "anti-6His" "anti-A2B5" "anti-adhesion" "anti-anaphylactic" "anti-apoptotic"
  "anti-bacterial" "anti-bovine" "anti-bribery" "anti-C9" "Anti-capsular" "anti-coagulants"
  "anti-coronal" "anti-coronavirus" "anti-corruption" "Anti-DT" "anti-endothelial cell" "Anti-FHA"
  "anti-fungal" "anti-HCoV" "anti-His" "Anti-HIV" "anti-human" "anti-idiotype" "anti-idiotypic"
  "anti-IFN-g" "anti-infective" "anti-inflammatory" "Anti-influenza" "anti-macrophage"
- "anti-malaria" "anti-malarial" "anti-MERS-CoV" "anti-mouse" "anti-N" "anti-nociception" "anti-PA"
+ "anti-malaria" "anti-malarial" "anti-MERS-CoV" "anti-mouse" "anti-nociception" "anti-PA"
  "anti-parasitic" "anti-PCV" "anti-pneumococci" "anti-proteolytic" "Anti-PRP" "anti-pyrexia"
- "anti-rabbit" "anti-reflux" "anti-resting" "anti-Ro" "anti-S" "Anti-SARS-CoV-2" "anti-sense"
+ "anti-rabbit" "anti-reflux" "anti-resting" "anti-Ro" "anti-S-RBD" "Anti-SARS-CoV-2" "anti-sense"
  "anti-smooth muscle" "anti-sperm" "anti-swine" "Anti-TT" "anti-tumor" "anti-viral" "anti-␤-actin"
- "anti/pro-apoptotic" "antigen/antibody" "antigenic/genetic" "anzhenchenfang@163" "argon/ion"
- "Asia-1" "asialo-GM2" "association/dissociation" "AST/ALT" "ATB7B" "Atg5deficient"
- "Ausbildungsbeitr€" "author/funder" "avian-like" "AY321986" "AY379543.1" "AY379544.1" "AY379545.1"
- "AY458656" "b-D-arabinofuranoside" "B-L-aspartamido" "B.E.I" "B.H.K." "B.V." "B/C" "B/D" "B/titer"
- "B1-O1" "B24-O24" "B6-cpk" "Baattrup-Pedersen" "BALB/cByJ" "Balenv" "Banana-like" "Bar-Joseph"
- "Bardet-Biedl" "Barrat-Segretain" "basement membrane-like" "Bcl-XL/Bcl-1associated" "Bcl-XL/BH3"
- "Beadbeater-8" "beak-like" "Becton-Dickinson" "BEI+FA" "Beni-Suef" "benign/symbiotic"
- "benzodiazepin-2-ones" "beta-lactamaseVP40" "BF48-MaPHYTE_database" "BH3/Bcl-2" "BHK13" "BHV-1"
- "binding/entry" "Bio-One" "Bio-Rad" "Bio-rad" "biomarkers---were" "biotin/streptavidin"
- "Bioulac-Sage" "BIR2" "BIR3" "bird/farm" "BL21-CodonPlus" "BM2640" "BMS618" "body-like"
- "Bofill-Mas" "Bonnardi~re" "Bootscan/Recscan" "bovine-respiratory-complex-like"
+ "anti/pro-apoptotic" "antigen/antibody" "antigenic/genetic" "anzhenchenfang@163"
+ "approximately 10-fold" "approximately 1:1" "approximately one-quarter" "argon/ion" "Asia-1"
+ "asialo-GM2" "association/dissociation" "AST/ALT" "at least 2-fold" "at least 2:1" "ATB7B"
+ "Atg5deficient" "Ausbildungsbeitr€" "author/funder" "avian-like" "AY321986" "AY379543.1"
+ "AY379544.1" "AY379545.1" "AY458656" "b-D-arabinofuranoside" "B-L-aspartamido" "B.E.I" "B.H.K."
+ "B.V." "B/C" "B/D" "B/titer" "B1-O1" "B24-O24" "B6-cpk" "Baattrup-Pedersen" "BALB/cByJ" "Balenv"
+ "Banana-like" "Bar-Joseph" "Bardet-Biedl" "Barrat-Segretain" "basement membrane-like"
+ "Bcl-XL/Bcl-1associated" "Bcl-XL/BH3" "Beadbeater-8" "beak-like" "Becton-Dickinson" "BEI+FA"
+ "Beni-Suef" "benign/symbiotic" "benzodiazepin-2-ones" "beta-lactamaseVP40" "BF48-MaPHYTE_database"
+ "BH3/Bcl-2" "BHK13" "BHV-1" "binding/entry" "Bio-One" "Bio-Rad" "Bio-rad" "biomarkers---were"
+ "biotin/streptavidin" "Bioulac-Sage" "BIR2" "BIR3" "bird/farm" "BL21-CodonPlus" "BM2640" "BMS618"
+ "body-like" "Bofill-Mas" "Bonnardi~re" "Bootscan/Recscan" "bovine-respiratory-complex-like"
  "bovine-respiratory-complexlike" "Bowman-Birk" "bo~Lh" "BRIC2" "BSA/10%" "BSL-2" "BSL-2/3" "BSL-3"
  "BSL-4" "BSL3" "BSL4" "BTA11" "BTA12" "BTA14" "BTA15" "BTA16" "BTA19" "BTA20" "BTA23" "BTA3"
  "BTA4" "BTA5" "BtRs-CalV" "Budd-Chiari" "Burrows-Wheeler" "businesses/organizations" "BX51"
@@ -1078,7 +1080,7 @@
  "NRDB-NCBI" "NS00795" "NS18" "NSTE-ACS" "numratecats=4" "O-fold" "O-l" "o-phthaldialdehyde"
  "O.D2/nSnJ" "O.D2/oSnJ" "O/" "O/pan" "O10" "o2" "O39%" "Oasl2" "objectto-variable-ratio"
  "observedz2" "OD450nm" "odk_planner" "Ojibwa-Cree" "OKM5" "oligodendrocyte-like" "One-month-old"
- "one-quarter" "One-year" "online-like" "or/" "or/and" "ORF1b" "org/" "org/10"
+ "One-year" "online-like" "only 2/4" "or/" "or/and" "ORF1b" "org/" "org/10"
  "org/ENSG00000130234-ACE2" "org/Vol" "or€" "Osorio-Sarabia" "P-dependent" "p-dimethylamino"
  "P-fimbriated" "P-labeled" "p-value" "p-value<0.001" "p-value<0.05" "p-value=1.2E-06"
  "p-value=1.3E-03" "p-values=0" "p-values=0.026" "P.P." "P.S." "p2luc" "P2luci" "p2luci" "p<"
@@ -1110,12 +1112,12 @@
  "Repli-g" "repositioning/discovery" "represent~Ltion" "restriction-enzymes" "reveals~900"
  "Reye-like" "rhIL-2" "ribonu-cleaseT2" "RibonucleaseV1" "Rico-Sánchez" "Riepenhoff-Talty"
  "riikonen@kuh" "RiskO-Gram" "Robert-Koch" "Roche/454" "Rodríguez-Romero" "Romer-Oberdorfer"
- "rotate/min" "RS-IIL" "rs17884712" "rs41291556l" "rs4244285" "rs4986893" "RSL-FucLac"
- "RSLII-MeaMan" "RT-PCR-pyroseq" "RT-PCR/pyrosequencing" "Runge-Kutta" "ruuskanen@tyks" "RV16"
- "Rv3407" "RV39" "s*" "S+M" "S+N" "S-rosette" "S-rosettes" "S.A." "S.A.M." "S.K." "S/P" "S1-ACE2"
- "S1-sACE2" "S1E" "S2A" "S2B" "S2C" "S2D" "S2E" "S3C" "S3D" "S3E" "S400HR" "S4A" "S4B" "S4C" "S5A"
- "S5C" "S6A" "S6C" "Saarinen-Pihkala" "sACE2" "SAdV-18" "SAdV-3" "SAdV-49" "SAdV-A"
- "salt/phospholipid" "Sanger-based" "Sanger-sequenced" "SARS-CoV-2/COVID-19"
+ "rotate/min" "roughly three-quarters" "RS-IIL" "rs17884712" "rs41291556l" "rs4244285" "rs4986893"
+ "RSL-FucLac" "RSLII-MeaMan" "RT-PCR-pyroseq" "RT-PCR/pyrosequencing" "Runge-Kutta"
+ "ruuskanen@tyks" "RV16" "Rv3407" "RV39" "s*" "S+M" "S+N" "S-rosette" "S-rosettes" "S.A." "S.A.M."
+ "S.K." "S/P" "S1-ACE2" "S1-sACE2" "S1E" "S2A" "S2B" "S2C" "S2D" "S2E" "S3C" "S3D" "S3E" "S400HR"
+ "S4A" "S4B" "S4C" "S5A" "S5C" "S6A" "S6C" "Saarinen-Pihkala" "sACE2" "SAdV-18" "SAdV-3" "SAdV-49"
+ "SAdV-A" "salt/phospholipid" "Sanger-based" "Sanger-sequenced" "SARS-CoV-2/COVID-19"
  "SARS-CoV-2spike protein" "Sa€" "Schaeren-Wiemers" "Schepp-Berglind" "Schultz-Cherry"
  "SDS-PAGE/silver" "Sec63p" "Sedeño-Díaz" "Semi-Dry" "sensitivity+" "sensitivity+specificity-1"
  "sensitivity=1" "Sentinel-5" "Sep63p" "SERAC1" "serine-protease" "serum/PBS" "serum/plasma"
@@ -1133,8 +1135,8 @@
  "TAG-CAGTGAGTTCATTGGATGGCCGAATCCCTGAGTACAGGGAAGTCGTCA" "Tamura-Nei" "Taqman-based" "Tay-Sachs"
  "TC50" "Technologies™" "Teknika-Cappel" "termination/polyadenylation" "test/validation"
  "testing/treatment" "tgg-3" "Th1/" "theoOFF2" "theoOFF2-SARSPK" "theoOFF2-Switch1" "theoOFF2-ZFC1"
- "this48-hr" "three H1" "three-quarters" "TIM3ef+I+G" "times/day" "TLR3/7" "TM6SF2" "TMEM181"
- "TMEM5" "toll-like-receptors" "tongue-like" "topo-isomerasa" "TPM3uf+I+G" "training/"
+ "this48-hr" "three H1" "TIM3ef+I+G" "times/day" "TLR3/7" "TM6SF2" "TMEM181" "TMEM5"
+ "toll-like-receptors" "tongue-like" "topo-isomerasa" "TPM3uf+I+G" "training/"
  "training/simulation" "training/test" "traits/diseases" "treatment/control" "tri-variate"
  "Tris-glycine/methanol" "TritonX-100" "TRNAC-ACA" "TRNAG-CCC" "TROUBLESHOOTING-Troubleshooting"
  "trypsin-like" "trypsine-EDTA" "Tsung-Hsien" "tumour-like" "TV/radio" "Tween-20" "twice/week"
@@ -1168,7 +1170,7 @@
  "␤-dthiogalactopyranoside" "␥-globulins" "►Fig." "10%"))
     :test #'equalp))
 
-;; 5007 extracted by morphology
+;; 5006 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1562,13 +1564,13 @@
  "lymphotropic" "lyophilized" "lysosomotropic" "maberly" "macroeconomics" "macrogenerative"
  "macromolecular" "macronodular" "macroregenerative" "macroscopic" "macroscopically"
  "macrovescicular" "macrovesicular" "macuiopapular" "macular" "maculopapular" "maduromycosis"
- "magnetic" "magnetically" "magnify" "majority" "malabsorption" "malarial" "malaysian"
- "maldevelopmental" "maldigestion" "malestar" "malformation" "malicious" "maljunction" "mallory"
- "malnourished" "malocclusion" "malrotation" "manageable" "management" "mandated" "mandatory"
- "mandible" "manning" "mannosebinding" "mannosidosis" "manual" "manually" "manufactured" "mapped"
- "marginal" "margination" "marked" "marketed" "martinsried" "massaging" "massive" "massively"
- "mastered" "material" "materialize" "maternal" "maternally" "maternity" "mathematical" "mation"
- "matrical" "matrixscience" "maturation" "maxillary" "maximize" "mcnemar" "measument" "mechanical"
+ "magnetic" "magnetically" "magnify" "malabsorption" "malarial" "malaysian" "maldevelopmental"
+ "maldigestion" "malestar" "malformation" "malicious" "maljunction" "mallory" "malnourished"
+ "malocclusion" "malrotation" "manageable" "management" "mandated" "mandatory" "mandible" "manning"
+ "mannosebinding" "mannosidosis" "manual" "manually" "manufactured" "mapped" "marginal"
+ "margination" "marked" "marketed" "martinsried" "massaging" "massive" "massively" "mastered"
+ "material" "materialize" "maternal" "maternally" "maternity" "mathematical" "mation" "matrical"
+ "matrixscience" "maturation" "maxillary" "maximize" "mcnemar" "measument" "mechanical"
  "mechanically" "mechanics" "medial" "mediastinal" "mediator" "medicalgenetics" "medicinal"
  "mediumsized" "medullary" "megakaryoblastic" "megakaryocytederived" "megakaryocytic"
  "megalocephaly" "mejorar" "melanosis" "membranous" "memorial" "mendelian" "meningeal"
@@ -1913,7 +1915,7 @@
  "rmed" "shed" "tied"))
     :test #'equalp))
 
-;; 3626 extracted from Comlex
+;; 3625 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1962,26 +1964,26 @@
  "breathe" "breed" "breeds" "breve" "bribery" "bridge" "brief" "bright" "brightness" "brilliant"
  "brim" "bring" "broad" "broader" "broiler" "broilers" "broke" "bronchus" "brook" "brooks" "broth"
  "brother" "brought" "brownish" "browse" "bubble" "bubbles" "buck" "bucket" "bucks" "budget"
- "buffalo" "buffet" "bug" "build" "buildings" "bulk" "bull" "bulls" "bump" "bundle" "burden"
- "bureau" "burgess" "burke" "burn" "burrow" "burrows" "bus" "buses" "bushel" "bushy" "business"
- "businesses" "businessman" "busy" "butcher" "butt" "button" "buttress" "buy" "bylaw" "bylaws"
- "bypass" "bystander" "cab" "cabin" "cabinet" "cache" "caches" "calculation" "calculations"
- "calculus" "calf" "caliber" "caller" "calm" "came" "camel" "camels" "camera" "camp" "campaign"
- "camps" "canal" "canaries" "canary" "candid" "cane" "canopies" "canopy" "canton" "capillaries"
- "capillary" "capsule" "capture" "car" "carbon" "carcass" "carcasses" "cardiologist"
- "cardiologists" "care" "careful" "cargo" "carmine" "carol" "carp" "carpenter" "carps" "carriage"
- "carrier" "cars" "cartilage" "casino" "cassette" "cast" "casts" "casualty" "cat" "catalogue"
- "catalogues" "catalyst" "catastrophe" "catastrophes" "catch" "cattle" "caught" "caveat" "cavities"
- "cavity" "cease" "celebrate" "celebrates" "census" "century" "cereal" "cereals" "ceremonies"
- "ceremony" "certificate" "chain" "chair" "chalet" "chamber" "chamberlain" "channel" "channels"
- "chapter" "character" "characters" "charger" "chargers" "chart" "cheap" "check" "checklist"
- "checklists" "cheese" "chemical" "chemicals" "chemist" "chemistry" "chemists" "chequer" "cherry"
- "chest" "chicken" "chief" "child" "childhood" "chill" "chills" "china" "chocolate" "choice"
- "choose" "chopper" "chose" "church" "cinnamon" "circle" "circles" "circuit" "circumstance"
- "circumstances" "cistern" "cisterns" "citizen" "citizens" "civet" "civets" "civil" "clamp"
- "clamps" "clash" "class" "classification" "classifications" "clause" "clean" "cleanliness" "clear"
- "clearance" "clearer" "cleft" "clever" "click" "client" "clients" "climate" "clime" "climes"
- "clock" "cloister" "closure" "clothe" "clothes" "cloud" "clue" "clumsiness" "coalesce" "coarse"
+ "buffalo" "buffet" "bug" "build" "buildings" "bull" "bulls" "bump" "bundle" "burden" "bureau"
+ "burgess" "burke" "burn" "burrow" "burrows" "bus" "buses" "bushel" "bushy" "business" "businesses"
+ "businessman" "busy" "butcher" "butt" "button" "buttress" "buy" "bylaw" "bylaws" "bypass"
+ "bystander" "cab" "cabin" "cabinet" "cache" "caches" "calculation" "calculations" "calculus"
+ "calf" "caliber" "caller" "calm" "came" "camel" "camels" "camera" "camp" "campaign" "camps"
+ "canal" "canaries" "canary" "candid" "cane" "canopies" "canopy" "canton" "capillaries" "capillary"
+ "capsule" "capture" "car" "carbon" "carcass" "carcasses" "cardiologist" "cardiologists" "care"
+ "careful" "cargo" "carmine" "carol" "carp" "carpenter" "carps" "carriage" "carrier" "cars"
+ "cartilage" "casino" "cassette" "cast" "casts" "casualty" "cat" "catalogue" "catalogues"
+ "catalyst" "catastrophe" "catastrophes" "catch" "cattle" "caught" "caveat" "cavities" "cavity"
+ "cease" "celebrate" "celebrates" "census" "century" "cereal" "cereals" "ceremonies" "ceremony"
+ "certificate" "chain" "chair" "chalet" "chamber" "chamberlain" "channel" "channels" "chapter"
+ "character" "characters" "charger" "chargers" "chart" "cheap" "check" "checklist" "checklists"
+ "cheese" "chemical" "chemicals" "chemist" "chemistry" "chemists" "chequer" "cherry" "chest"
+ "chicken" "chief" "child" "childhood" "chill" "chills" "china" "chocolate" "choice" "choose"
+ "chopper" "chose" "church" "cinnamon" "circle" "circles" "circuit" "circumstance" "circumstances"
+ "cistern" "cisterns" "citizen" "citizens" "civet" "civets" "civil" "clamp" "clamps" "clash"
+ "class" "classification" "classifications" "clause" "clean" "cleanliness" "clear" "clearance"
+ "clearer" "cleft" "clever" "click" "client" "clients" "climate" "clime" "climes" "clock"
+ "cloister" "closure" "clothe" "clothes" "cloud" "clue" "clumsiness" "coalesce" "coarse"
  "coastline" "coat" "cobra" "cocktail" "coefficient" "coefficients" "coffee" "cohort" "col" "cold"
  "colic" "collaborate" "collaborator" "collaborators" "collapse" "collapses" "collate" "colleague"
  "colleagues" "college" "colonize" "colonizes" "colony" "colorless" "colour" "colourless" "column"
@@ -2307,8 +2309,7 @@
  "write" "wrongful" "wrote" "yahoo" "yellowish" "yob" "youth" "youths" "yuan" "zebra" "zonal"
  "zone" "zones"))
     :test #'equalp))
-n" "virology" "virtue" "viscid" "visit" "visitor" "visitors"
- "visits" "vista" "visualization" "visualizations" "vital" "vitamin" "viva" "vivas" "voice" "void"
+
  "volume" "volunteer" "vortex" "vote" "voucher" "vulture" "wait" "wake" "walker" "wall" "wand"
  "wanton" "war" "warm" "warmer" "wary" "wasteful" "watch" "waterborne" "waterway" "watery" "wave"
  "wavelength" "waxy" "weak" "weakness" "weaknesses" "wealth" "wealthy" "weapon" "weapons" "wear"

@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-38601-38700 sample of unknown words
-;; created 6/3/20 20:20:24
+;; created 6/19/20 0:53:10
 
 (in-package :sparser)
 
@@ -756,7 +756,7 @@
  "Élez"))
     :test #'equalp))
 
-;; 2207 defined as a bio-entity
+;; 2208 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-38601-38700
@@ -780,8 +780,8 @@
  "-GGrTGrCrCCGrCTGGGGTG-3" "-Industrialization" "-L-phenylalanyl" "-M-5a-5b-N-Poly" "-M-Gene"
  "-N-UTR-3" "-NS5A-YFP" "-O-" "-O-carboxyl" "-O-ester" "-ORF-X" "-rTGrrGrTGGCGTCGrGTGrCG-3"
  "-SARS-CoVand" "-socio-economic" "-to-3" "-to-5" "-trideoxy-5" "-TTCAAGATCTCAA-AATGAGTGATATATT-3"
- "-WBGT-index" "-■-" "-△-" ".3 µg/ml" ".7774/cevr" "0 /F" "0.02 µg/ml" "0.08‰" "0.2°C"
- "0.41 g/100g" "0.5 µg/mL" "0.6w5.4" "0.8°C" "000×" "0042-6822/$" "0042~6822/X3" "05/2016" "07/1"
+ "-WBGT-index" "-■-" "-△-" ".3 µg/ml" ".7774/cevr" "0 /F" "0.02 µg/ml" "0.08‰" "0.41 g/100g"
+ "0.5 µg/mL" "0.6w5.4" "0.8°C" "000×" "0042-6822/$" "0042~6822/X3" "05/2016" "07/1"
  "0dideoxythymidine" "0mesyl-2" "1*1" "1,10-phe" "1,2,3-triazol-1-yl" "1,2,3-triazole"
  "1,2,3-triazolecontaining" "1,2,3-triazolyl" "1,2,3triazol-1-yl" "1,3-dipolar" "1,3dipolar"
  "1,4-ethylenepiperazine" "1,4-ethylenepiperazine-N-oxide" "1-azidofuranose" "1-dayold"
@@ -796,23 +796,23 @@
  "18X" "18°C" "18°C." "1918/1919" "1981a" "1981b" "1995a" "1995b" "1995c" "1996a" "1996b" "1999a"
  "1999b" "1A-1C ." "1a/1b" "1A5" "1ab" "1C-1E" "1E ." "1e2" "1e4" "1e−4" "1F ." "1gm/día" "1Z5H"
  "1}" "1°C" "1·5mM" "1×" "1×10" "1μmol" "1∼" "2 /g" "2+" "2-carboxyethyl" "2.1 µg/ml" "2.339x"
- "2.4G2" "2.5×10" "2.6-fold" "2/2" "2/4" "2/62" "2/9" "2/lo" "20 ± 2°C" "20,000×" "200 µg/mL"
- "2001a" "2001b" "2002/2003" "2002a" "2002b" "2003a" "2003b" "2004a" "2004b" "2005a" "2005c"
- "2005d" "2006a" "2006b" "2009a" "2012a" "2012b" "2013a" "2013b" "2014a" "2014b" "2015a" "2015b"
- "2016a" "2016b" "2018a" "2018b" "2018c" "2018d" "2018e" "2019-January" "20°-25°N" "20°C" "22.8°C."
- "229E/" "229E/NL63" "23/47" "23e25" "24e27" "24H2O" "24°-30°N" "25 ± 0.5°C" "25 ± 0.5°C."
- "250 µg/mL" "25°" "25°C" "26/600" "26°C" "275e300" "29755challenged" "2A ." "2A-2D ." "2AJF"
- "2c-are" "2c-f" "2e3" "2e4" "2G12" "2G12-glyco-epitopes" "2G12-specific" "2G12like" "2H4"
+ "2.4G2" "2.6-fold" "2/2" "2/4" "2/62" "2/9" "2/lo" "20 ± 2°C" "20,000×" "200 µg/mL" "2001a"
+ "2001b" "2002/2003" "2002a" "2002b" "2003a" "2003b" "2004a" "2004b" "2005a" "2005c" "2005d"
+ "2006a" "2006b" "2009a" "2012a" "2012b" "2013a" "2013b" "2014a" "2014b" "2015a" "2015b" "2016a"
+ "2016b" "2018a" "2018b" "2018c" "2018d" "2018e" "2019-January" "20°-25°N" "20°C" "22.8°C." "229E/"
+ "229E/NL63" "23/47" "23e25" "24e27" "24H2O" "24°-30°N" "25 ± 0.5°C" "25 ± 0.5°C." "250 µg/mL"
+ "25°" "25°C" "26/600" "26°C" "275e300" "29755challenged" "2A ." "2A-2D ." "2AJF" "2c-are" "2c-f"
+ "2e3" "2e4" "2G12" "2G12-glyco-epitopes" "2G12-specific" "2G12like" "2H4"
  "2hydroxypropyl-l3-cyclodextrin" "2R2" "2XDT" "2YT/ampicillin" "2}" "2°C" "2×10" "2•12H2O"
  "3,3V-diaminobenzidine" "3,4-dihydro-2,4-dioxopyrimidin-1" "3-furyl" "3-methylindole"
- "3-O-desacyl-4" "3-O-desacyl-4-monophosphoryl" "3.77e3.87" "3.77×10" "3/10" "3/10/20" "3/13"
- "3/13/20" "3/20" "3/33" "3/4" "300,000e500,000" "30°C" "30°C." "3130xl" "352×352" "35°C" "360/685"
- "360/λem" "375 g/kg" "37:217-224" "37°" "37°C" "38°-43°N" "3B7T" "3C-like" "3CLpros" "3E01"
- "3F1A2" "3F1H10" "3Seq" "3T3" "3´neighbors" "3×" "4,6pyDGalβ1" "4-methylpentatone"
- "4-methylumbelliferyl" "4-nitroanaline" "4-nitroanilide" "4-nitroaniline" "4-times" "4.5e6" "400Â"
- "402-IRGDE-406" "40e250" "40°" "41:586-591" "41°-46°N" "42-jarige" "420R." "42°C" "43e46" "45°C"
- "47e49" "48C." "4A ." "4B ." "4E11" "4e7" "4nitroanaline" "4nitroaniline" "4°C" "4°C." "5-25A"
- "5-39A" "5-47A" "5-47B" "5-56B" "5-59B" "5-acetoxyisoxazolidines"
+ "3-O-desacyl-4" "3-O-desacyl-4-monophosphoryl" "3.77e3.87" "3.77×10" "3/10" "3/10/20" "3/20"
+ "3/33" "3/4" "300,000e500,000" "30°C" "30°C." "3130xl" "352×352" "35°C" "360/685" "360/λem"
+ "375 g/kg" "37:217-224" "37°" "37°C" "38°-43°N" "3B7T" "3C-like" "3CLpros" "3E01" "3F1A2" "3F1H10"
+ "3Seq" "3T3" "3´neighbors" "3×" "4,6pyDGalβ1" "4-methylpentatone" "4-methylumbelliferyl"
+ "4-nitroanaline" "4-nitroanilide" "4-nitroaniline" "4-times" "4.5e6" "400Â" "402-IRGDE-406"
+ "40e250" "40°" "41:586-591" "41°-46°N" "42-jarige" "420R." "42°C" "43e46" "45°C" "47e49" "48C."
+ "4A ." "4B ." "4E11" "4e7" "4nitroanaline" "4nitroaniline" "4°C" "4°C." "5-25A" "5-39A" "5-47A"
+ "5-47B" "5-56B" "5-59B" "5-acetoxyisoxazolidines"
  "5-azido-2-methylisoxazolidin-3-yl-3-phosphonates" "5-azidoisoxazolidin-3-yl-3-phosphonate"
  "5-azidoisoxazolidines" "5-bromo-4-chloro-3-indolyphosphate" "5-monthold" "5.00am" "5.0c" "5/41"
  "5/47" "5/A" "50 /0.1" "50 /g" "50 /hamster" "50 /ml" "50 g/mL" "50 µg/mL" "50 µg/ml" "50+" "50°C"
@@ -844,34 +844,35 @@
  "amino acid 7-amino-4-trifluoromethyl-coumarin" "aminopeptidase M1" "AMSH-like" "and/" "angio-MRI"
  "angiotensina-2" "animal/plant" "Annexin V/PI" "anti-aggregant" "anti-apoptotic" "anti-Bacto-agar"
  "anti-Bactoagar" "anti-carbohydrate" "Anti-CD3" "Anti-chaperone" "anti-citrullinated"
- "Anti-citrullinated" "anti-cytoplasmic" "Anti-Dextran" "anti-dsDNA" "anti-E" "anti-fusion"
- "Anti-GFP" "anti-glycan" "anti-HBc" "anti-His" "anti-His-HRP" "anti-human" "anti-idiotype"
- "anti-IgG" "anti-infective" "anti-inflammatory" "anti-lipid" "anti-malarial" "Anti-Man9"
- "anti-Man9-cluster" "anti-mannose" "Anti-measles" "anti-microbial" "anti-microbials"
- "anti-miR-122" "anti-mouse" "anti-MRV" "anti-mycobacterium" "anti-oligomannose" "anti-PCV2"
- "anti-polyHistidine" "anti-porcine" "anti-rabbit" "anti-random" "anti-SARS-CoV" "anti-sera"
- "anti-serum" "anti-sulfatide" "anti-swine" "Anti-TNF-α" "anti-tumor" "anti-vaccination"
- "anti-viral" "antibody-glyco-eptiope" "apm1" "apoPTB/PTB" "apoptosis/necrosis" "approaches/RNAi"
+ "Anti-citrullinated" "anti-cytoplasmic" "Anti-Dextran" "anti-dsDNA" "anti-fusion" "Anti-GFP"
+ "anti-glycan" "anti-HBc" "anti-His" "anti-His-HRP" "anti-human" "anti-idiotype" "anti-IgG"
+ "anti-infective" "anti-inflammatory" "anti-lipid" "anti-malarial" "Anti-Man9" "anti-Man9-cluster"
+ "anti-mannose" "Anti-measles" "anti-microbial" "anti-microbials" "anti-miR-122" "anti-mouse"
+ "anti-MRV" "anti-mycobacterium" "anti-oligomannose" "anti-PCV2" "anti-polyHistidine"
+ "anti-porcine" "anti-rabbit" "anti-random" "anti-SARS-CoV" "anti-sera" "anti-serum"
+ "anti-sulfatide" "anti-swine" "Anti-TNF-α" "anti-tumor" "anti-vaccination" "anti-viral"
+ "antibody-glyco-eptiope" "apm1" "apoPTB/PTB" "apoptosis/necrosis" "approaches/RNAi"
+ "approximately 0.2°C" "approximately 2.5×10" "approximately 80°C" "approximately five-fold"
  "April-June" "array-like" "article/supplementary" "AS01" "AS02" "AS03" "AS04" "Asia-Pacifi"
- "Asilomar-like" "asthma-like" "Astra-Zeneca" "At1g63770" "At1g73960" "At4g33090" "At5g13520"
- "ATCC®" "ATGGCTC-CGGTATGTGCAA" "Attention-UNet" "auramine-rhodamine" "author/funder"
- "auto-antibodies" "auto-antibody" "autocrine/paracrine" "avidin/biotin" "AY342356" "AY342357"
- "AY514485" "AY847748" "AY851295" "AY864806.1" "a~~Iity" "b-AP15" "B.C." "B.R." "B.S." "B1299S_IgG"
- "B1355S_IgG" "B:2" "Background/rationale" "Bacto-agar" "Bacto_Agar_IgG" "baculovirus/insect"
- "BALB/" "Bale/c" "barber-pole" "Barrios-Rodiles" "basal-like" "BeadBlasterTM24" "Beast2"
- "behavior/readout" "behavior/response" "belching/reflux" "BG505" "BIO-41025" "Bio-Rad"
- "biosynthesis/" "bisTris±" "blinding/masking" "blood±" "blue-gray" "Bodman-Smith" "BoHV-1"
- "BoHV-5" "Bowtie2" "BPIV-3" "BPIV-3a" "BPIV-3b" "breathing-like" "bronchioles/bronchi"
- "bronchitis/" "bronchitis/asthma" "brorn~~be~o" "Brown-Hopps" "BSL-1" "BSL-2" "BSL-3" "BSL-4"
- "BSL3" "BU1" "BWW-40" "by-nc-nd" "BYD1" "c-RGDfV" "C-terminally" "C.K." "c/CD18" "C3bi/CD11b"
- "c3…" "c48/80" "C5-acetoxyisoxazolidines" "C57BL/6" "C57Bl/6J" "C6/36" "C6390CAG" "C6408UGG" "ca/"
- "Ca10x" "Calmette-Guerin" "Cao-Lormeau" "Cas12a" "Cas12a-based" "Cas12a-NER"
- "Casamitjana-Martínez" "casos/" "categories/topics" "Caviedes-Vidal" "CC-10" "CC-BY-NC-ND" "CC16"
- "CCAAT/" "CCCR2019/" "CCID50" "CCL-33" "CCL-94" "CCL81" "CD4/TCR" "CD40/40L" "CD40activated"
- "CD45population" "CD4þ" "CD8þ" "CDC27B/HOBBIT" "CDN$600,000" "cell survival/apoptosis"
- "cell/tissue" "Cells/Lung Cancer" "cells/mL" "cells/well" "CFU/ml" "chemosensory/brush"
- "Chi-squared" "chitinase-like" "chloroquine/hydroxychloroquine" "CHO/hSLAM" "Ci/mmol" "CIAS-1"
- "cis-5-acetoxy-2-methylisoxazolidin-3-yl-3phosphonates"
+ "Asilomar-like" "asthma-like" "Astra-Zeneca" "at least 10-fold" "At1g63770" "At1g73960"
+ "At4g33090" "At5g13520" "ATCC®" "ATGGCTC-CGGTATGTGCAA" "Attention-UNet" "auramine-rhodamine"
+ "author/funder" "auto-antibodies" "auto-antibody" "autocrine/paracrine" "avidin/biotin" "AY342356"
+ "AY342357" "AY514485" "AY847748" "AY851295" "AY864806.1" "a~~Iity" "b-AP15" "B.C." "B.R." "B.S."
+ "B1299S_IgG" "B1355S_IgG" "B:2" "Background/rationale" "Bacto-agar" "Bacto_Agar_IgG"
+ "baculovirus/insect" "BALB/" "Bale/c" "barber-pole" "Barrios-Rodiles" "basal-like"
+ "BeadBlasterTM24" "Beast2" "behavior/readout" "behavior/response" "belching/reflux" "BG505"
+ "BIO-41025" "Bio-Rad" "biosynthesis/" "bisTris±" "blinding/masking" "blood±" "blue-gray"
+ "Bodman-Smith" "BoHV-1" "BoHV-5" "Bowtie2" "BPIV-3" "BPIV-3a" "BPIV-3b" "breathing-like"
+ "bronchioles/bronchi" "bronchitis/" "bronchitis/asthma" "brorn~~be~o" "Brown-Hopps" "BSL-1"
+ "BSL-2" "BSL-3" "BSL-4" "BSL3" "BU1" "BWW-40" "by-nc-nd" "BYD1" "c-RGDfV" "C-terminally" "C.K."
+ "c/CD18" "C3bi/CD11b" "c3…" "c48/80" "C5-acetoxyisoxazolidines" "C57BL/6" "C57Bl/6J" "C6/36"
+ "C6390CAG" "C6408UGG" "ca/" "Ca10x" "Calmette-Guerin" "Cao-Lormeau" "Cas12a" "Cas12a-based"
+ "Cas12a-NER" "Casamitjana-Martínez" "casos/" "categories/topics" "Caviedes-Vidal" "CC-10"
+ "CC-BY-NC-ND" "CC16" "CCAAT/" "CCCR2019/" "CCID50" "CCL-33" "CCL-94" "CCL81" "CD4/TCR" "CD40/40L"
+ "CD40activated" "CD45population" "CD4þ" "CD8þ" "CDC27B/HOBBIT" "CDN$600,000"
+ "cell survival/apoptosis" "cell/tissue" "Cells/Lung Cancer" "cells/mL" "cells/well" "CFU/ml"
+ "chemosensory/brush" "Chi-squared" "chitinase-like" "chloroquine/hydroxychloroquine" "CHO/hSLAM"
+ "Ci/mmol" "CIAS-1" "cis-5-acetoxy-2-methylisoxazolidin-3-yl-3phosphonates"
  "cis-5-acetoxy-2methylisoxazolidin-3-yl-3-phosphonates" "cis-5-acetoxyisoxazolidines"
  "cis-5-azidoisoxazolidin-3-yl-3-phosphonates" "CL-4" "Clara-like" "class I1" "CLAVATA3"
  "claw-like" "CLC-ODS" "CLE19" "clinical/" "clinical/laboratory" "CMRF-44" "coef®" "colder/drier"
@@ -968,8 +969,8 @@
  "NUE1" "NUE2" "NY2A" "n~0" "n~ỹ" "N˚1252-December" "Nα-benzoyl-DL-arginine 4-nitroanilide"
  "O-acyl" "O-sialoglycoprotease" "o/w" "o2+" "OC43/HKU1" "OD254" "OD>0.2" "ODV-E66" "of~1500"
  "oil-in-water-based" "oil-inwater-based" "oligonucleotide-like" "ompP5" "once-in-a-lifetime"
- "Onco-Genomics" "one-half" "one-time" "or/and" "orf1a" "orf1a-crRNAmix" "orf1b" "ORF1b"
- "orf1b-crRNAmix" "ORF3b" "ORF3c" "ORF5a" "ORF5b" "org/" "org/10.1101/2020" "org/beta)"
+ "Onco-Genomics" "one-half" "one-time" "only 3/13" "or/and" "orf1a" "orf1a-crRNAmix" "orf1b"
+ "ORF1b" "orf1b-crRNAmix" "ORF3b" "ORF3c" "ORF5a" "ORF5b" "org/" "org/10.1101/2020" "org/beta)"
  "org/package=vegan" "org/toxo/" "org/web" "organs/lesions" "orphan receptor-γt"
  "ortho/paramyxoviruses" "o~Pn" "p-distance" "P-labeled" "p-MALc" "p-toluenesulfonate" "P-type"
  "p-value" "P-value" "P.L." "P.M.C." "P.Y." "p53mediated" "p65-Tag2B" "P<" "p<0.0001" "p=0.02"
@@ -1068,7 +1069,7 @@
  "100,000"))
     :test #'equalp))
 
-;; 5202 extracted by morphology
+;; 5200 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1479,7 +1480,7 @@
  "lymphoblastic" "lymphocytic" "lymphofollicular" "lymphohistiocytic" "lymphoplasmacytic"
  "lymphoproliferation" "lymphoproliferative" "lymphotrophic" "lyophilized" "lysated"
  "lysosomotropic" "macedonian" "macroeconomic" "macroevolution" "macroevolutionarily"
- "macromolecular" "macroscopic" "maculopapular" "magnetic" "magnification" "magnified" "majority"
+ "macromolecular" "macroscopic" "maculopapular" "magnetic" "magnification" "magnified"
  "malalignment" "malarial" "maldevelopment" "malestar" "malevolent" "malformation" "malicious"
  "malleable" "malodorous" "managed" "management" "mandated" "mandatory" "mandibular" "manipulated"
  "manipulation" "manual" "manually" "mapping" "marbled" "marginal" "marital" "marked" "marketed"
@@ -1499,7 +1500,7 @@
  "microscopically" "microsomal" "microtubular" "microtubuleassociated" "microvascular" "migratory"
  "miliary" "military" "mimetics" "mimicking" "minced" "mined" "mineral" "mineralization"
  "mineralized" "mingly" "miniaturization" "minimaal" "minimal" "minimising" "minimization"
- "minimizing" "minority" "mirror" "mirrored" "miscellaneous" "misclassification" "misclassified"
+ "minimizing" "mirror" "mirrored" "miscellaneous" "misclassification" "misclassified"
  "misexpressed" "misfolded" "misidentified" "misinformation" "misinterpretation" "misleading"
  "mislocalized" "mismatching" "misperception" "missed" "mission" "missionary" "misspecification"
  "mistargeting" "mitigation" "mitotic" "mitral" "mixed" "mjdfamily" "mmunity" "moaning"
@@ -1839,7 +1840,7 @@
  "ntly" "oily" "owed" "qing" "reed" "rmed" "rsed" "rved" "seed" "shed" "snly" "ssed" "tied" "weed"))
     :test #'equalp))
 
-;; 3735 extracted from Comlex
+;; 3734 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1894,7 +1895,7 @@
  "briefing" "briefings" "bright" "brightest" "brightness" "brilliant" "bring" "brisket" "brittle"
  "broad" "broadcast" "broaden" "broader" "broiler" "broilers" "bronchi" "bronchus" "brood" "brook"
  "brooks" "broth" "brought" "brush" "bubble" "bubbles" "budget" "buffalo" "build" "buildings"
- "bulb" "bulge" "bulk" "bulky" "bull" "bulletin" "bulletins" "bundle" "bundles" "bur" "burden"
+ "bulb" "bulge" "bulky" "bull" "bulletin" "bulletins" "bundle" "bundles" "bur" "burden"
  "burdensome" "bureau" "burrow" "burs" "busby" "bush" "business" "businesses" "businessman" "busy"
  "butt" "butterflies" "butterfly" "bypass" "bystander" "cabinet" "cabinets" "cacti" "cactus"
  "cadaver" "cadavers" "cadet" "cadets" "calculation" "calculations" "calf" "came" "camel" "camera"
@@ -2246,8 +2247,7 @@
  "worms" "worst" "worthless" "worthwhile" "worthy" "wren" "wright" "write" "wrongful" "wrote" "yak"
  "yolk" "youth" "yuan" "zebu" "zipper" "zonal" "zone" "zones" "zoo" "zoom"))
     :test #'equalp))
-e" "walk"
- "walker" "wall" "walls" "wander" "war" "warhead" "warm" "warn" "warnings" "warrant" "washout"
+rhead" "warm" "warn" "warnings" "warrant" "washout"
  "wastage" "watch" "waterborne" "waterfowl" "waterproof" "watershed" "watersheds" "watery" "wave"
  "wavelength" "wavelengths" "waves" "weak" "weaken" "weakness" "wealth" "wealthy" "weapon" "wear"
  "wearer" "weather" "web" "wedge" "wee" "weekend" "wees" "weight" "weir" "welcome" "welfare" "well"

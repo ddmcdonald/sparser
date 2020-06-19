@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-14901-15000 sample of unknown words
-;; created 6/4/20 14:37:4
+;; created 6/18/20 23:56:18
 
 (in-package :sparser)
 
@@ -541,7 +541,7 @@
  "Zima" "Zourkas" "Zulueta" "Zwickl" "Nicholas" "Stanford"))
     :test #'equalp))
 
-;; 2285 defined as a bio-entity
+;; 2288 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-14901-15000
@@ -570,12 +570,11 @@
  "-GACCCACAGUACUUCGAAUTT-3" "-GGACAGAACGUCCUGUCAATT-3" "-Health-care" "-homoaris-teromycin"
  "-hydroxy-5" "-Hydroxymethyl-4" "-i" "-large-scale" "-Lys-NH2" "-Multi-class" "-Non-coding"
  "-O-methyl-5" "-O-methyldiplacol" "-O-methyldiplacone" "-protease-treated" "-Short-term"
- ".162 g/ml" ".20 g/ml" "//rsb" "0 Nρ" "0.029À0.031" "0.05/43,211" "0.170 ± 0.052 g/L" "0.22-1am"
- "0.220/0.256" "0.368 ± 0.063 g/L" "0.5 g/ml" "0.6 µg/mL" "0.94~1.37" "0/20" "000/µ" "0040-5809/©"
- "010-BGB" "0168-1702/©" "0325-7541/©" "0À5" "1 g/6 h" "1+k" "1+ε"
- "1,1,1,3,3,3-hexafluoro-2propanol" "1,2-bis" "1,2-diamino-4,5-methylenediaoxy-benzene"
- "1,2-diamino-4,5methylenediaoxy-benzene" "1,2-diamino-4,5methylenedioxybenzene" "1-7/"
- "1-palmitoyl-2-oleoyl-sn-glycero-3-phosphocholine"
+ ".162 g/ml" ".20 g/ml" "//rsb" "0 Nρ" "0.05/43,211" "0.170 ± 0.052 g/L" "0.22-1am" "0.220/0.256"
+ "0.368 ± 0.063 g/L" "0.5 g/ml" "0.6 µg/mL" "0.94~1.37" "0/20" "000/µ" "0040-5809/©" "010-BGB"
+ "0168-1702/©" "0325-7541/©" "0À5" "1 g/6 h" "1+k" "1+ε" "1,1,1,3,3,3-hexafluoro-2propanol"
+ "1,2-bis" "1,2-diamino-4,5-methylenediaoxy-benzene" "1,2-diamino-4,5methylenediaoxy-benzene"
+ "1,2-diamino-4,5methylenedioxybenzene" "1-7/" "1-palmitoyl-2-oleoyl-sn-glycero-3-phosphocholine"
  "1-palmitoyl-2-oleoylsn-glycero-3-phosphocholine" "1-palmitoyl-2oleoyl-sn-glycero-3-phosphoserine"
  "1-~tm" "1.0-#m" "1.087 g/cm 3" "1.0e−1" "1.0e−6" "1.25•" "1.337 g/ml" "1.4t" "1.5×10" "1.66tn"
  "1.9-fold" "1/" "1/10" "1/100" "1/2" "1/2T" "1/3" "1/4" "1/5" "1/L" "1/ln" "1/m" "1/N" "1/S" "1/T"
@@ -641,11 +640,12 @@
  "anti-rat" "anti-rheumatic" "anti-SARS-CoV-2" "Anti-Schistosomiasis" "anti-seizure" "anti-spike"
  "anti-Spike" "Anti-Terrorist" "anti-Thy" "anti-Thyl" "anti-tumour" "anti-US" "anti-viral"
  "antibody:virus" "antimycotic/antibiotic" "antiseptic/" "antiseptic/disinfectant" "an~35%"
- "ap-expressingT" "apoCyto3a" "Appr-1Љ-p" "Apr.-Jun." "aprilchen@nuk" "arthralgias/arthritis"
- "as ,19-fold" "Ascencio-Valle" "Asian-i" "Assembly*" "assembly/" "ast:t" "asthma-like" "asτ" "Asτ"
- "Ata1a" "author/funder" "autism/schizophrenia" "auto-" "auto-antigen" "avian-like" "AY02031"
- "AY146761" "AY278741" "AY676376" "AY700211" "AY910861" "Ayeyawady-Chao" "A°" "aÀ1" "B-ring" "B.K."
- "B.V." "B/" "B/Brisbane" "B/Brisbane/60-008" "B/C" "B/Hong Kong" "B/Victoria" "B/Yamagata" "B22R"
+ "ap-expressingT" "apoCyto3a" "Appr-1Љ-p" "approximately 0.029À0.031" "approximately 10-fold"
+ "approximately 50-fold" "Apr.-Jun." "aprilchen@nuk" "arthralgias/arthritis" "as ,19-fold"
+ "Ascencio-Valle" "Asian-i" "Assembly*" "assembly/" "ast:t" "asthma-like" "asτ" "Asτ" "Ata1a"
+ "author/funder" "autism/schizophrenia" "auto-" "auto-antigen" "avian-like" "AY02031" "AY146761"
+ "AY278741" "AY676376" "AY700211" "AY910861" "Ayeyawady-Chao" "A°" "aÀ1" "B-ring" "B.K." "B.V."
+ "B/" "B/Brisbane" "B/Brisbane/60-008" "B/C" "B/Hong Kong" "B/Victoria" "B/Yamagata" "B22R"
  "BAA35107" "bacteria-like" "bacterial/viral" "bacteriocin-like" "BamH1" "Bandelin-Sonorex"
  "Bangladesh-China-India-Myanmar" "BCF1" "BCF~" "BCIM-EC" "beats/min" "Benjamini-Hochberg" "BerEP4"
  "Bernard-Henri" "beta-hemo-" "between10" "bibliometrics/scientometrics" "Bio-Rad"
@@ -751,11 +751,11 @@
  "MVA11-binding" "MVA11binding" "MW950" "n /s" "N 2 /γ" "n+1" "N-acetyl-D-" "N-and"
  "n-hexaneacetone" "N-tosyl-i-phenylalanine" "N/γ" "N3-3CL" "n=250,000" "n=631" "NA/" "namiki-s"
  "NASNet-Large" "NAT+" "NC-EIA" "NC_002645" "NC_003045" "NC_004718" "NC_005147" "NC_005831"
- "NC_006577" "NDM-1" "need…" "Nelsen-Salz" "Neu5,7,9Ac" "Neu5,7Ac" "Neu5,8Ac" "Neu5,9Ac"
- "Neu5-Gc9Ac" "Neu5Gc7,9Ac" "Neu5Gc7Ac" "Neu5Gc8Ac" "Neu5Gc9Ac" "NFκBindependent" "ng/" "ng/dL"
- "ng/L" "ng/lL" "NIH45-46" "NJ/60" "NL-63" "NM_003757" "NM_021642" "nmol/L" "no-SDS" "NOD-like"
- "non-Asians" "non-calcium binding" "non-core protein" "non-FIP" "non-integrin" "non-PML"
- "non-receptor tyrosine kinase" "Nonidet-P40" "North-Bogra-Rangpur-Bangalbandha"
+ "NC_006577" "NDM-1" "nearly 10-fold" "need…" "Nelsen-Salz" "Neu5,7,9Ac" "Neu5,7Ac" "Neu5,8Ac"
+ "Neu5,9Ac" "Neu5-Gc9Ac" "Neu5Gc7,9Ac" "Neu5Gc7Ac" "Neu5Gc8Ac" "Neu5Gc9Ac" "NFκBindependent" "ng/"
+ "ng/dL" "ng/L" "ng/lL" "NIH45-46" "NJ/60" "NL-63" "NM_003757" "NM_021642" "nmol/L" "no-SDS"
+ "NOD-like" "non-Asians" "non-calcium binding" "non-core protein" "non-FIP" "non-integrin"
+ "non-PML" "non-receptor tyrosine kinase" "Nonidet-P40" "North-Bogra-Rangpur-Bangalbandha"
  "North-Kushtia-Jessore-Khulna" "Note!" "NovelCoronavirus_11Feb13u" "NS3•4" "nsp1/3" "nsp12nsp2"
  "nsp22nsp3" "nucleus/nucleolus" "NUTM1" "Nð0" "Nσ" "O-day-old" "O-fold" "O-glycosidically" "O.A."
  "O.D." "O.g" "Objective:To" "OD600" "ODE45" "ofanti-Lyt2" "oligo-dT" "oncology-a" "one-half"
@@ -841,7 +841,7 @@
  "≥30/min" "≥320" "≥60" "≥640" "≥65" "≥90%" "⌬CS1" "⟨I" "61.1%" ""))
     :test #'equalp))
 
-;; 4419 extracted by morphology
+;; 4417 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1186,8 +1186,8 @@
  "lymphatic" "lymphatics" "lymphoblastic" "lymphocytic" "lymphoplasmacytic" "lymphoproliferative"
  "lyophilization" "lyophilized" "macerated" "maceration" "macrocytic" "macroperspective"
  "macroscopic" "macular" "maculopapular" "magnetic" "magnification" "magnitudinal" "mailed"
- "majority" "majorly" "majumdar" "makassar" "maladjusted" "malaysian" "malposition" "manageable"
- "management" "managerial" "manipulation" "manual" "manually" "manufacturing" "mapping" "marginal"
+ "majorly" "majumdar" "makassar" "maladjusted" "malaysian" "malposition" "manageable" "management"
+ "managerial" "manipulation" "manual" "manually" "manufacturing" "mapping" "marginal"
  "marginalisation" "marginalised" "marked" "marketed" "marketising" "massive" "material"
  "materially" "maternal" "mathematical" "mathematics" "matloubian" "mattered" "maturated"
  "maturation" "maxillary" "maximize" "mcherryexpressing" "mechanical" "mechanically" "mechanics"
@@ -1200,12 +1200,12 @@
  "microcal" "microcephaly" "microcotyledonary" "microcystic" "microenvironment" "microevolution"
  "microglial" "microneutralization" "micropapillary" "microscopic" "microscopically"
  "microvascular" "migrationpromoting" "military" "minassian" "minced" "mineral" "mineralized"
- "miniaturize" "minimal" "minimising" "minimization" "minimize" "ministerial" "minority"
- "miracidial" "mirror" "mirrored" "misappropriation" "miscellaneous" "misdiagnosed" "misdiagnosing"
- "misdiagnosis" "misguided" "misleading" "misplaced" "missed" "mission" "misspecification"
- "mitigation" "mitotic" "mittal" "mockinfected" "modeled" "modelled" "moderator" "modernisation"
- "modular" "mohammed" "molding" "moncion" "monetary" "monitor" "monitored" "monobasic" "monoclonal"
- "monocyclic" "monocytic" "monocytosis" "monodispersed" "monodispersion" "monogastrics" "monomeric"
+ "miniaturize" "minimal" "minimising" "minimization" "minimize" "ministerial" "miracidial" "mirror"
+ "mirrored" "misappropriation" "miscellaneous" "misdiagnosed" "misdiagnosing" "misdiagnosis"
+ "misguided" "misleading" "misplaced" "missed" "mission" "misspecification" "mitigation" "mitotic"
+ "mittal" "mockinfected" "modeled" "modelled" "moderator" "modernisation" "modular" "mohammed"
+ "molding" "moncion" "monetary" "monitor" "monitored" "monobasic" "monoclonal" "monocyclic"
+ "monocytic" "monocytosis" "monodispersed" "monodispersion" "monogastrics" "monomeric"
  "monomorphic" "mononuclear" "monophasic" "monotonic" "monotonous" "monotypic" "montreal"
  "morbidity" "morphologic" "mortal" "motion" "motivated" "motivation" "motorized" "mountainous"
  "mounted" "movement" "mucinous" "mucormycosis" "mucosal" "multicolor" "multidisciplinary"
@@ -1490,7 +1490,7 @@
  "uted" "wing" "xing" "ying" "αβ" "βσ" "γδ" "ερ" "ρσ"))
     :test #'equalp))
 
-;; 3515 extracted from Comlex
+;; 3514 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1540,7 +1540,7 @@
  "breakthrough" "breath" "breathe" "breeder" "breeders" "bribery" "brick" "bridge" "bridges"
  "brief" "bright" "brilliant" "bring" "broad" "broader" "broiler" "broilers" "broke" "bronchus"
  "brook" "brooks" "broom" "broth" "brought" "brownish" "browse" "brush" "bubble" "bucket"
- "buckshot" "budget" "budgets" "bug" "build" "buildings" "bulk" "bulky" "bullet" "bullets" "buoy"
+ "buckshot" "budget" "budgets" "bug" "build" "buildings" "bulky" "bullet" "bullets" "buoy"
  "buoyant" "buoys" "burden" "bureau" "bureaucrat" "bureaucrats" "burger" "burgers" "burn" "burst"
  "burton" "bush" "busiest" "business" "businessman" "businessmen" "busy" "butter" "buy" "buyer"
  "buyers" "bypass" "bypasses" "bystander" "cab" "cabinet" "cactus" "cadaver" "cadre" "cadres"
@@ -1873,8 +1873,7 @@
  "worthwhile" "worthy" "wound" "wounds" "wreak" "wright" "wrist" "wrists" "wristwatch"
  "wristwatches" "write" "wrote" "yearbook" "yellowish" "yob" "youth" "yuan" "zone"))
     :test #'equalp))
-hs" "waves" "weak"
- "weaken" "weakens" "weakness" "wealth" "wealthier" "wealthy" "weapon" "weapons" "weather" "web"
+ealth" "wealthier" "wealthy" "weapon" "weapons" "weather" "web"
  "weed" "weeds" "weekend" "weigh" "weight" "welfare" "well" "wen" "went" "wet" "whale" "whales"
  "wheat" "whenever" "whereby" "wherein" "whereupon" "wherever" "wherry" "whisker" "whisper"
  "whitlow" "whittle" "whole" "wholesale" "whorl" "whorls" "wife" "wild" "wildlife" "willingness"

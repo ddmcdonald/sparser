@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-21901-22000 sample of unknown words
-;; created 6/4/20 14:7:13
+;; created 6/18/20 21:6:25
 
 (in-package :sparser)
 
@@ -1004,7 +1004,7 @@
  "Zhuo" "Zinkernagel" "Zuker" "Rheumatology"))
     :test #'equalp))
 
-;; 2889 defined as a bio-entity
+;; 2887 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-21901-22000
@@ -1070,7 +1070,7 @@
  "5-hydroxytryptamine" "5.2/cm 3" "5.71e7.23" "5.8e7.1" "5/" "5/14" "5/30" "50 /0.05" "50 /g"
  "50 /ml" "50 /pig" "50 µg/mL" "50/" "500 µg/dose" "500 µg/pig" "50Gy" "50s /50" "50|" "50°C" "51|"
  "51•" "529 ± 169X" "52a" "52|" "53uC" "55-1°C" "55/315" "55e57" "55°C" "56uC" "56°C" "57.5t" "57o"
- "57uC" "58e76" "58°C" "5=" "5dpi" "5G/5G" "5H10" "5R43MH096663" "5UTR" "5x10" "5~20" "5°C"
+ "57uC" "58°C" "5=" "5dpi" "5G/5G" "5H10" "5R43MH096663" "5UTR" "5x10" "5~20" "5°C"
  "5Ј-GACCAATCCTGTCACCTC-3Ј" "5Ј-GATCTCCGTTCCCATTAAGAG-3Ј" "6,13e15" "6-8-week-old"
  "6-diamidino-2-phenylindole" "6-diazo-5-oxo-l-norleucine" "6.4x10" "6/28" "6/30" "6/39"
  "60-yearold" "60°C" "60°C." "62/250" "62e66" "63/1,836" "635°C" "63B10" "63°C" "63×" "6510e25095"
@@ -1103,14 +1103,14 @@
  "anti-IFN-␥" "anti-IFN-␥-treated" "anti-IFN␣/␤" "anti-IFN␥" "anti-IL-12Ab-treated"
  "anti-IL15RBeta" "anti-IL15Rbeta" "anti-immunity" "anti-infectieux" "anti-inflammatoires"
  "anti-inflammatories" "anti-inflammatory" "Anti-JCV" "anti-JCVantibodies" "Anti-Kickback"
- "anti-malaria" "anti-microbial" "anti-monkey" "anti-mouse" "anti-N" "anti-proliferative"
- "anti-rabbit" "anti-retroviral" "Anti-retroviral" "anti-retrovirals" "anti-S" "anti-S1-N"
- "anti-Saccharomyces cerevisiae" "anti-SARS-CoV" "anti-SCV" "anti-SV" "anti-tumor" "Anti-VEGF"
- "anti-viral" "anticipation/preparation" "anticoagulant/whole" "antigen-VLP" "antigen/drug"
- "antigen/target" "antiviral/antibacterial" "AP+2.0" "AP205" "AP205-derived" "AP3-like" "APMV1"
- "ApoE*4" "apoE3/" "apoE3/E3" "apoE3/E4" "apolipoprotein E3/E3" "apolipoprotein E3/E4"
- "AppDapxI-DapxIIC" "AppDapxIDap-xIIC" "AREX2" "areρ" "Arg180X" "Arg91Lysfs*14" "ART+"
- "as-yet-uncultured" "ASA404" "ascites/pleural effusion" "asβ" "AT1R" "ATCAC-C" "atp28@drexel"
+ "anti-malaria" "anti-microbial" "anti-monkey" "anti-mouse" "anti-proliferative" "anti-rabbit"
+ "anti-retroviral" "Anti-retroviral" "anti-retrovirals" "anti-S1-N" "anti-Saccharomyces cerevisiae"
+ "anti-SARS-CoV" "anti-SCV" "anti-SV" "anti-tumor" "Anti-VEGF" "anti-viral"
+ "anticipation/preparation" "anticoagulant/whole" "antigen-VLP" "antigen/drug" "antigen/target"
+ "antiviral/antibacterial" "AP+2.0" "AP205" "AP205-derived" "AP3-like" "APMV1" "ApoE*4" "apoE3/"
+ "apoE3/E3" "apoE3/E4" "apolipoprotein E3/E3" "apolipoprotein E3/E4" "AppDapxI-DapxIIC"
+ "AppDapxIDap-xIIC" "AREX2" "areρ" "Arg180X" "Arg91Lysfs*14" "ART+" "as-yet-uncultured" "ASA404"
+ "ascites/pleural effusion" "asβ" "at least 58e76" "AT1R" "ATCAC-C" "atp28@drexel"
  "attendants/patients" "ATTGTCTCATATGCAT-CAAGATGTTCAGAACTGATTCAG" "author/funder"
  "autopsy/neuropathology" "Avicel-591" "AX-Tobra™" "AY278488" "AY278741" "AY594255" "AY769946"
  "ayadav@mail" "a~1.4-to" "a~100" "a~1log" "a~50" "B-and" "b/λ" "B19infectie" "B19virus" "B3c"
@@ -1386,7 +1386,7 @@
  "≥95%" "␤-mediated" "␤1" "␥-herpesvirus" "␥-HV68" "␥-HV68-infected" "␥-MHV68"))
     :test #'equalp))
 
-;; 4874 extracted by morphology
+;; 4872 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1765,42 +1765,42 @@
  "lymphomononuclear" "lymphoplasmacytic" "lymphoproliferation" "lymphoproliferative"
  "lymphosarcoma" "lymphotropic" "lyophilization" "lyophilize" "lysylendopeptidase" "lésion"
  "macroallocation" "macromolecular" "macrophagemediated" "macroscopic" "macular" "magnetic"
- "magnetically" "magnetization" "magnification" "magnify" "majority" "majorly" "malabsorption"
- "maladaptive" "maleficence" "malfolded" "malfunction" "malheureusement" "mammillary" "manageable"
- "management" "mandated" "mandatory" "mandible" "manifested" "manipulation" "manly" "manned"
- "manual" "manually" "manufacturing" "mapping" "marginal" "marion" "marked" "marketed"
- "marsupialization" "masquerading" "massive" "massively" "massivement" "mastitic" "masvekar"
- "matchable" "material" "materialising" "maternal" "maternally" "mathematical" "maturation"
- "maximize" "mayotimonensis" "mechanical" "mechanically" "medial" "mediastinal" "medicated"
- "medicinal" "meditated" "medmined" "medullary" "meestal" "melancholic" "melding" "membered"
- "membraneassociated" "memorial" "mendelian" "mensuellement" "mental" "mentally" "merged"
- "mesenchymal" "mesenteric" "meshing" "mesial" "mesoallocation" "mesoallocative"
- "mesocorticolimbic" "mesodermal" "mesoporous" "mesothelial" "messaging" "metabolomic"
- "metabolomics" "metagenomic" "metagenomics" "metatranscriptomics" "meteorological"
- "methodological" "methodologically" "methylmalonic" "metric" "mettent" "mexian" "mgtropic"
- "micellar" "microaerobic" "microallocation" "microallocative" "microbial" "microbicidal"
- "microbiological" "microbiologically" "microcephaly" "microcirculation" "microcirculatory"
- "microdialysis" "microencapsulated" "microencapsulation" "microenvironment" "microfluidic"
- "microfluidics" "microglial" "microimmunofluorescence" "microinductive" "microinjection"
- "microneutralization" "microscopic" "microvascular" "middenooronsteking" "migratory" "mikaelian"
- "military" "mimicking" "minced" "minimal" "minimization" "minimize" "mining" "minority"
- "mirroring" "miscellaneous" "misconception" "misfolded" "misleading" "mislocalization"
- "mislocalized" "mismatched" "misnaming" "misreporting" "mission" "mitigation" "mitoma" "mitotic"
- "mixed" "modeled" "modelled" "modernity" "modernization" "modrehabilitation" "modularity"
- "modulator" "mokhtarian" "molding" "molecularly" "moment" "monitor" "monitored" "monoclonal"
- "monocytederived" "monocytic" "monogenic" "monoinfection" "monomeric" "mononuclear" "monoparesis"
- "monophyletic" "monospecific" "monotheistic" "monotonous" "monovalent" "montrent" "mopped"
- "morally" "morbidity" "morcellized" "morphogenetic" "motion" "motivated" "motivation"
- "motivational" "motorized" "msting" "mtropic" "mucinous" "mucosaassociated" "mucosal" "mucosally"
- "mulling" "multicolored" "multicomponent" "multidetection" "multidimensional" "multidisciplinary"
- "multifaceted" "multifactorial" "multifocal" "multifunctional" "multigenic" "multihospital"
- "multilobar" "multimeric" "multinomial" "multinucleated" "multiplication" "multiplicity"
- "multiplying" "multisectoral" "multivalent" "multivariable" "mummified" "municipal" "muscular"
- "musculoskeletal" "mustached" "mutagenizing" "mutational" "mutator" "myalgic" "mycobacterial"
- "mycobacteriosis" "mydial" "myeloproliferation" "myocardial" "myoclonic" "myofascial" "mysterious"
- "mythic" "médical" "médicalement" "médication" "nachweisbar" "nacional" "nanjing" "nanodiagnostic"
- "nanomaterial" "nanomodified" "nanondiagnostics" "nanoscience" "nanosized" "nanotechnological"
- "narcotics" "narrowed" "nasalassociated" "nasally" "nasopharyngeal" "natalizumabassociated"
+ "magnetically" "magnetization" "magnification" "magnify" "majorly" "malabsorption" "maladaptive"
+ "maleficence" "malfolded" "malfunction" "malheureusement" "mammillary" "manageable" "management"
+ "mandated" "mandatory" "mandible" "manifested" "manipulation" "manly" "manned" "manual" "manually"
+ "manufacturing" "mapping" "marginal" "marion" "marked" "marketed" "marsupialization"
+ "masquerading" "massive" "massively" "massivement" "mastitic" "masvekar" "matchable" "material"
+ "materialising" "maternal" "maternally" "mathematical" "maturation" "maximize" "mayotimonensis"
+ "mechanical" "mechanically" "medial" "mediastinal" "medicated" "medicinal" "meditated" "medmined"
+ "medullary" "meestal" "melancholic" "melding" "membered" "membraneassociated" "memorial"
+ "mendelian" "mensuellement" "mental" "mentally" "merged" "mesenchymal" "mesenteric" "meshing"
+ "mesial" "mesoallocation" "mesoallocative" "mesocorticolimbic" "mesodermal" "mesoporous"
+ "mesothelial" "messaging" "metabolomic" "metabolomics" "metagenomic" "metagenomics"
+ "metatranscriptomics" "meteorological" "methodological" "methodologically" "methylmalonic"
+ "metric" "mettent" "mexian" "mgtropic" "micellar" "microaerobic" "microallocation"
+ "microallocative" "microbial" "microbicidal" "microbiological" "microbiologically" "microcephaly"
+ "microcirculation" "microcirculatory" "microdialysis" "microencapsulated" "microencapsulation"
+ "microenvironment" "microfluidic" "microfluidics" "microglial" "microimmunofluorescence"
+ "microinductive" "microinjection" "microneutralization" "microscopic" "microvascular"
+ "middenooronsteking" "migratory" "mikaelian" "military" "mimicking" "minced" "minimal"
+ "minimization" "minimize" "mining" "mirroring" "miscellaneous" "misconception" "misfolded"
+ "misleading" "mislocalization" "mislocalized" "mismatched" "misnaming" "misreporting" "mission"
+ "mitigation" "mitoma" "mitotic" "mixed" "modeled" "modelled" "modernity" "modernization"
+ "modrehabilitation" "modularity" "modulator" "mokhtarian" "molding" "molecularly" "moment"
+ "monitor" "monitored" "monoclonal" "monocytederived" "monocytic" "monogenic" "monoinfection"
+ "monomeric" "mononuclear" "monoparesis" "monophyletic" "monospecific" "monotheistic" "monotonous"
+ "monovalent" "montrent" "mopped" "morally" "morbidity" "morcellized" "morphogenetic" "motion"
+ "motivated" "motivation" "motivational" "motorized" "msting" "mtropic" "mucinous"
+ "mucosaassociated" "mucosal" "mucosally" "mulling" "multicolored" "multicomponent"
+ "multidetection" "multidimensional" "multidisciplinary" "multifaceted" "multifactorial"
+ "multifocal" "multifunctional" "multigenic" "multihospital" "multilobar" "multimeric"
+ "multinomial" "multinucleated" "multiplication" "multiplicity" "multiplying" "multisectoral"
+ "multivalent" "multivariable" "mummified" "municipal" "muscular" "musculoskeletal" "mustached"
+ "mutagenizing" "mutational" "mutator" "myalgic" "mycobacterial" "mycobacteriosis" "mydial"
+ "myeloproliferation" "myocardial" "myoclonic" "myofascial" "mysterious" "mythic" "médical"
+ "médicalement" "médication" "nachweisbar" "nacional" "nanjing" "nanodiagnostic" "nanomaterial"
+ "nanomodified" "nanondiagnostics" "nanoscience" "nanosized" "nanotechnological" "narcotics"
+ "narrowed" "nasalassociated" "nasally" "nasopharyngeal" "natalizumabassociated"
  "natalizumabtreated" "nation" "navigating" "navigation" "negated" "negatively" "neglected"
  "negligible" "neighbor" "nematodiasis" "nendous" "neocortical" "neonatal" "neostriatal"
  "neotropical" "neovascular" "nervous" "nested" "neural" "neuritic" "neuroadaptive"
@@ -2099,7 +2099,7 @@
  "willing" "winning" "wischdesinfektion" "wisent" "withdrawing" "witnessed" "wondered" "worried"
  "worsened" "worsening" "wounding" "wrestling" "wroyal" "xation" "xenografting"
  "xenotransplantation" "xenotransplanted" "xenozoonosis" "yealy" "yeastbased" "yeastderived"
- "zhangliping" "zoonosis" "zoonotic" "zygomatic" "également" "émergence" "Émergence"
+ "zhangliping" "zoonosis" "zoonotic" "zygomatic" "Émergence" "également" "émergence"
  "épaississement" "étaient" "étonnamment" "évacuation" "évaluation" "évidence" "évitement"
  "évolution"))
     :test #'equalp))
@@ -2116,7 +2116,7 @@
  "reed" "ring" "wing" "xing" "αβ" "γδ"))
     :test #'equalp))
 
-;; 3460 extracted from Comlex
+;; 3459 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -2164,8 +2164,8 @@
  "breakthrough" "breakthroughs" "breathe" "breech" "breeder" "breeders" "bridge" "brief" "bright"
  "brightness" "brilliant" "bring" "brings" "brittle" "broad" "broadcast" "broader" "broke"
  "bronchus" "broth" "brother" "brothers" "brought" "brute" "bubble" "budget" "buffalo" "build"
- "buildings" "bulk" "buoyancy" "burden" "bureau" "burke" "burn" "burst" "bush" "bushy" "business"
- "busy" "butler" "butt" "button" "buy" "bypass" "bypasses" "cable" "cadre" "cafeteria" "cafeterias"
+ "buildings" "buoyancy" "burden" "bureau" "burke" "burn" "burst" "bush" "bushy" "business" "busy"
+ "butler" "butt" "button" "buy" "bypass" "bypasses" "cable" "cadre" "cafeteria" "cafeterias"
  "calculus" "calf" "calif" "caller" "calm" "came" "camel" "camels" "camera" "camp" "campaign"
  "canon" "cant" "canto" "canyon" "capillaries" "capillary" "capsule" "caravan" "caravans" "carbide"
  "carbon" "carcass" "carcasses" "card" "cardboard" "care" "careful" "cargo" "carnivore"
@@ -2495,6 +2495,8 @@
  "workforce" "workout" "workouts" "workplace" "world" "worldwide" "worse" "worthwhile" "worthy"
  "wound" "wounds" "wright" "wrist" "wrists" "write" "writes" "writings" "wrote" "xerox" "yoghurt"
  "yogurt" "yolk" "yuan" "yule" "zipper" "zone"))
+    :test #'equalp))
+ipper" "zone"))
     :test #'equalp))
 
  "visitors" "vista" "vital"

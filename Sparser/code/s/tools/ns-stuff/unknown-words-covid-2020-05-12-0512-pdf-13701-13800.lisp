@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-13701-13800 sample of unknown words
-;; created 6/4/20 14:21:2
+;; created 6/18/20 23:8:12
 
 (in-package :sparser)
 
@@ -1434,7 +1434,7 @@
  "Zuegge" "Zwaenepoel"))
     :test #'equalp))
 
-;; 2591 defined as a bio-entity
+;; 2593 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-13701-13800
@@ -1537,17 +1537,17 @@
  "anti-GQ1b" "anti-H9" "Anti-HCV" "anti-HCV-positiv" "Anti-HDV" "anti-HTLV-I" "anti-human"
  "anti-human-CD14" "anti-human-CD21" "anti-IFN-g" "anti-IL-10-PerCP" "anti-immunoglobulin"
  "anti-infectieuse" "anti-infl" "anti-inflammatory" "anti-interleukin-2Rα" "anti-Leishmania"
- "anti-MERS-CoV" "anti-microbial" "anti-mouse" "Anti-Mouse" "anti-N" "anti-oligomerization"
- "anti-oxidants" "anti-PARylation" "anti-pig" "anti-platelet" "anti-PPV-VP2" "anti-PT"
- "anti-pyrexial" "anti-rabbit-IgG" "anti-rabbit/mouse" "anti-rat" "anti-retroviral" "anti-rPPV-VP2"
- "anti-rS268" "anti-S" "anti-SAPK/JNK" "anti-SARS-CoV" "anti-sheep-IgG" "anti-spike"
- "anti-swine-IgG" "anti-T-bet-PerCP" "anti-V5Ab" "anti-vaccination" "anti-viral" "anti-virals"
- "antibody/B cell" "Antibody/FeLV" "antibody:glycan" "antiCD45RA" "antiCD45RO" "antigen/candidate"
- "antigen/epitopes" "Antipyretika!" "APC/Alexa" "apoptosis/necrosis" "ARF-Rezidiv" "ArgR/AhrC"
- "Armand-Frappier" "arpanmangal/CovidAID" "arXiv:2004" "as-of-yet" "ASA/NSAIDs" "Aspergillus-Arten"
- "assets/number" "Asteraceae/Compositae" "asthma/allergy" "attacks/month" "August/September"
- "author/funder" "auto-inducer" "AV600" "avian/" "avian/human" "AWMF-Leitlinie" "AWMF-S2k-Leitline"
- "AY278491" "AY310120" "AY852284-AY852962" "az~igens" "B-Stämmen" "B-vitamin" "B-Zell-Aktivierung"
+ "anti-MERS-CoV" "anti-microbial" "anti-mouse" "Anti-Mouse" "anti-oligomerization" "anti-oxidants"
+ "anti-PARylation" "anti-pig" "anti-platelet" "anti-PPV-VP2" "anti-PT" "anti-pyrexial"
+ "anti-rabbit-IgG" "anti-rabbit/mouse" "anti-rat" "anti-retroviral" "anti-rPPV-VP2" "anti-rS268"
+ "anti-SAPK/JNK" "anti-SARS-CoV" "anti-sheep-IgG" "anti-spike" "anti-swine-IgG" "anti-T-bet-PerCP"
+ "anti-V5Ab" "anti-vaccination" "anti-viral" "anti-virals" "antibody/B cell" "Antibody/FeLV"
+ "antibody:glycan" "antiCD45RA" "antiCD45RO" "antigen/candidate" "antigen/epitopes" "Antipyretika!"
+ "APC/Alexa" "apoptosis/necrosis" "ARF-Rezidiv" "ArgR/AhrC" "Armand-Frappier" "around 22°"
+ "arpanmangal/CovidAID" "arXiv:2004" "as-of-yet" "ASA/NSAIDs" "Aspergillus-Arten" "assets/number"
+ "Asteraceae/Compositae" "asthma/allergy" "attacks/month" "August/September" "author/funder"
+ "auto-inducer" "AV600" "avian/" "avian/human" "AWMF-Leitlinie" "AWMF-S2k-Leitline" "AY278491"
+ "AY310120" "AY852284-AY852962" "az~igens" "B-Stämmen" "B-vitamin" "B-Zell-Aktivierung"
  "B-Zell-Lymphomen" "B.1" "B.2" "B.3" "B.A." "B.V." "B/" "B/C" "B/Hep" "B/L" "B6.129P2-Il10" "B8:="
  "BAA06309" "BAA24439" "BAA82042" "bacteremia/sepsis" "bacteria/cell" "Bacteria:Moulds"
  "bacterial/viral" "BAE75855" "Bal-tec" "BALB-c" "BALB/cJ" "Ball-Goodrich" "Bannwarth-Syndrom"
@@ -1701,8 +1701,8 @@
  "o6.8" "O6K5" "o8.4" "o9.0" "OBD™" "occludens-1" "octanol/water" "OD1" "OD600" "Odyssey™" "of~10"
  "of~100:1" "OIE-2313" "OIE-2326" "OIE-2327" "OIE-2328" "OIE-2390" "OIE-2576" "OIE-2581" "OIE-2582"
  "OIE-2583" "OIE-2584" "OIE-2587" "OIE-2592" "OIE-2593" "OIE-2595" "OKN-1/JPN" "oligodendroc~es"
- "ome&cmd=DetailsSearch&term=streptococcus+suis&save_" "one-time" "only~4%" "only~8Å"
- "onzekerhe-Skipr" "OO-fold" "Opti-MEM" "or1000" "OR=odds" "ORF37" "ORF49" "org/"
+ "ome&cmd=DetailsSearch&term=streptococcus+suis&save_" "one-time" "only 11/13" "only 7b" "only~4%"
+ "only~8Å" "onzekerhe-Skipr" "OO-fold" "Opti-MEM" "or1000" "OR=odds" "ORF37" "ORF49" "org/"
  "org/leitlinien/detail/" "org/relate" "org/uploads" "org/Vol" "OSCOUR®" "Oumouna-Benachour" "p!1"
  "p-aminosalicylic" "p-carboxyl" "P-genotypes" "p-or" "p-TEF2b" "P-value" "p-values"
  "p-xylene-bis-pyridinium" "P.aeruginosa" "P.B." "P.V." "p15e" "P1viruses" "P2moiety"
@@ -1768,8 +1768,8 @@
  "TMP-SMX" "TNF/lymphotoxin" "to/in" "toluene-3,4-dithiolato" "TOP10" "Toxic-Shock-Syndrom" "TP/"
  "TP680DH" "transcription factors/regulatory" "transfection/" "transfection/expression"
  "transition/transversion" "transporters/secretion" "transposon-like" "Trente-trois" "trypsin-like"
- "Tsallis-Entropy" "TUK4" "Tukey-Kramer" "tumour necrosis factor-rela-ted" "turnover/"
- "Tusche-Präparat" "TX2" "tx_szleitlinien" "type IV-like" "type-IIS" "type1"
+ "Tsallis-Entropy" "TUK4" "Tukey-Kramer" "tumour necrosis factor-rela-ted" "turn-around time"
+ "turnover/" "Tusche-Präparat" "TX2" "tx_szleitlinien" "type IV-like" "type-IIS" "type1"
  "Tyr-Ser-Pro-Thr-Ser-Pro-Ser" "Tγδ" "U/kg" "U/kg/day" "U/ml" "U33843" "U373" "U38" "UCD-11a"
  "UCD-11b" "UCD14" "UCD18" "ug/ml" "uk/" "uk/tools/clustalw2/" "UL12" "UL12.5" "UL12.5-like" "UL47"
  "ulcer-like" "Uni12" "units/ml" "units/mL" "Ureta-Vidal" "US$60 billion" "UV100" "V.R." "V.V"
@@ -1802,7 +1802,7 @@
  "≈200" "≤0.2" "≤20%" "≤5" "≤˛i" "≥10" "≥4" "≥95%" "≥99%" "l"))
     :test #'equalp))
 
-;; 4713 extracted by morphology
+;; 4711 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -2165,7 +2165,7 @@
  "lymphoproliferative" "lymphosarcoma" "lyophilized" "lytically" "läsion" "mabbased" "macerated"
  "macrocytic" "macroeconomic" "macroeconomics" "macroenvironmental" "macromolecular"
  "macrophageengulfed" "macroscopic" "macroscopically" "macular" "magnetic" "magnification"
- "magnifying" "mailing" "mained" "majority" "majorly" "malabsorption" "malathion" "malformation"
+ "magnifying" "mailing" "mained" "majorly" "malabsorption" "malathion" "malformation"
  "malfunctioning" "malnourished" "malocclusion" "manageable" "managed" "management" "managerial"
  "mandal" "mandated" "mandatorily" "mandatory" "mandibular" "manifestation" "manipular"
  "manipulating" "manual" "manually" "manufactor" "manufactured" "mapped" "marginal" "marked"
@@ -2182,11 +2182,11 @@
  "microfilament" "microglial" "microinfused" "microinfusion" "microisolator" "microprocessor"
  "microscopic" "microscopical" "microscopically" "microsomal" "microtubular" "microvascular"
  "migrationsphase" "migratory" "military" "mimetic" "mimicking" "minced" "mindissociation"
- "miniaturized" "minimal" "minimalist" "minimization" "minimize" "mining" "ministerial" "minority"
- "miosis" "mirror" "mirrored" "miscoding" "misdiagnosis" "misleading" "misleadingly" "mismatched"
- "missed" "mission" "mistakenly" "mitigated" "mitigation" "mitogenstimulated" "mitotic" "mixing"
- "mobilised" "mockinfected" "modeled" "modelling" "moderated" "modular" "modularly" "modulatory"
- "moment" "monetary" "monitor" "monitored" "monitoring" "monoclonal" "monocytic" "monocytosis"
+ "miniaturized" "minimal" "minimalist" "minimization" "minimize" "mining" "ministerial" "miosis"
+ "mirror" "mirrored" "miscoding" "misdiagnosis" "misleading" "misleadingly" "mismatched" "missed"
+ "mission" "mistakenly" "mitigated" "mitigation" "mitogenstimulated" "mitotic" "mixing" "mobilised"
+ "mockinfected" "modeled" "modelling" "moderated" "modular" "modularly" "modulatory" "moment"
+ "monetary" "monitor" "monitored" "monitoring" "monoclonal" "monocytic" "monocytosis"
  "monodetection" "monoglycosylated" "monoisotopic" "monomeric" "mononuclear" "monophasic" "montal"
  "moonlighting" "morbidity" "morphometric" "mothering" "motion" "motivated" "motivation"
  "mousederived" "mouvement" "moveable" "movement" "mucociliary" "mucocutaneous" "mucopurulent"
@@ -2504,7 +2504,7 @@
  "γδ"))
     :test #'equalp))
 
-;; 3342 extracted from Comlex
+;; 3341 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -2552,7 +2552,7 @@
  "bray" "breach" "breadth" "break" "breakdown" "breaks" "breakthrough" "breeder" "bridge" "bridges"
  "brief" "bright" "brine" "bring" "broad" "broadcast" "broader" "broiler" "broilers" "brook"
  "brooks" "broth" "brothel" "brothels" "brother" "brought" "buccaneer" "budget" "buffalo" "build"
- "buildings" "bulbul" "bulk" "bulkier" "bulky" "bullet" "bulletin" "bundle" "burden" "bureau"
+ "buildings" "bulbul" "bulkier" "bulky" "bullet" "bulletin" "bundle" "burden" "bureau"
  "bureaucracy" "bureaus" "burke" "burn" "burst" "bush" "bushy" "business" "businessman"
  "businessmen" "bust" "busy" "butcher" "butchers" "butter" "bypass" "byproduct" "byproducts"
  "bystander" "cabinet" "cabinets" "cadre" "calf" "calif" "calm" "came" "campaign" "campus" "canal"
@@ -2869,8 +2869,7 @@
  "worldwide" "worm" "worms" "worry" "worst" "worthwhile" "wound" "wounds" "wrap" "wraps" "wright"
  "write" "wrote" "yogurt" "yon" "yuan" "zenith" "zone" "zoo" "zoom"))
     :test #'equalp))
-d"
- "upright" "upset" "uptake" "upwards" "urban" "urge" "urine" "usage" "usefulness" "user" "usual"
+ht" "upset" "uptake" "upwards" "urban" "urge" "urine" "usage" "usefulness" "user" "usual"
  "usurp" "uterine" "vacancy" "vacuum" "vagina" "vague" "valance" "valiant" "valid" "valley"
  "valuation" "valuations" "valve" "valves" "vapor" "variety" "vault" "vegetable" "vegetables"
  "vehicle" "vein" "vendor" "vendors" "ventricle" "ventricles" "venture" "vertebra" "vertebrae"

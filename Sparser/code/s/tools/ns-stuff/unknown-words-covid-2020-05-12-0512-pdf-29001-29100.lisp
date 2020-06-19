@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-29001-29100 sample of unknown words
-;; created 6/4/20 15:33:53
+;; created 6/19/20 1:18:56
 
 (in-package :sparser)
 
@@ -701,7 +701,7 @@
  "Zhu" "Zimmerberg" "Zinsser" "Zurbriggen" "McArthur" "deVellis" "pI"))
     :test #'equalp))
 
-;; 2843 defined as a bio-entity
+;; 2846 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-29001-29100
@@ -737,9 +737,9 @@
  "100uC" "100°C" "101.3°" "101.3°F" "101°" "103 /mm" "104°F" "105°F" "108/251" "10^100" "10e10"
  "10E7" "10His" "10X" "11/16" "11/25" "1101 /2020" "113-3F-c04" "116ºC" "117/265"
  "1186/s13063-019-3843-0" "119/265" "1196/6327" "11^16%" "11A/D" "12,000×g" "12.2°C" "12.8-fold"
- "12/15" "12/15-0272-Techapp1" "120/265" "124/76" "125^128" "12^25%" "12CA5" "13-Nov-07" "13.6°C"
- "13/17" "131^133" "134^136" "139/258" "139:K12" "139^141" "13a" "13E5" "14/124" "141:K85a"
- "143/249" "147^149" "14Á9" "15/249" "15/34" "15/98" "150^153" "150°C." "1585591269_594948"
+ "12/15" "12/15-0272-Techapp1" "120/265" "124/76" "125^128" "12CA5" "13-Nov-07" "13.6°C" "13/17"
+ "131^133" "134^136" "139/258" "139:K12" "139^141" "13a" "13E5" "14/124" "141:K85a" "143/249"
+ "147^149" "14Á9" "15/249" "15/34" "15/98" "150^153" "150°C." "1585591269_594948"
  "159,161^166,168^171" "159^171" "15^20%" "15^24-year" "15^40" "15^50" "15°" "16/24" "16/60"
  "16HBE14-bronchoepithelial" "16to" "173°" "179/294" "17^19" "17and" "17Cl-1" "180/π" "180Á6"
  "185/509" "187^189,199,200" "189,199^201" "18Sspecific" "192^201" "195/483" "195/6327" "1976b"
@@ -771,8 +771,8 @@
  "4x-fold" "4}" "4°C" "4°C." "4·" "4×1" "4Á2" "4Á4" "4•9%" "4•9-10•0" "5#-GCTGCTCCTCCCCAGA"
  "5#-GGGAAGGAGCTTCCTAGTG" "5,7-tetra-hydroxylflavone" "5,9Ac" "5-bromo-4-chloro-3-indolylphosphate"
  "5-bromo-4-chloro-3-indolylβ-D-galactopyranoside" "5-dimethylthiazol-2-yl" "5-dinone" "5.0 g/dL"
- "5.1-fold" "5.2-fold" "5.3-fold" "5/10" "5/100" "5/5" "5/8" "5/9" "5/group" "5/MC" "50 /ml"
- "50%of" "500 m/z" "5000×g" "50uC" "50°C" "52DB" "530/6327" "54−74yrs" "55°C" "56°C" "57/68"
+ "5.1-fold" "5.2-fold" "5.3-fold" "5/100" "5/5" "5/8" "5/9" "5/group" "5/MC" "50 /ml" "50%of"
+ "500 m/z" "5000×g" "50uC" "50°C" "52DB" "530/6327" "54−74yrs" "55°C" "56°C" "57/68"
  "59-ATAGTTTAGCGGCCGCTTA-GGGGGTTATGGGTTTTCT-39" "59-CCACGACCAATGACAY-GAAAA-39"
  "59-CGGAATTCATGGCT-TACCCATACGATGTACCTGACTATGCGATGGAAG" "59-GCAGCACAGTAGATGGAAT-TATAACAG"
  "59-GCTCATCATCACTCCTGT" "594conjugated" "5^1" "5^10" "5^6" "5^6 billion" "5Ac" "5log10" "5P-end"
@@ -801,21 +801,22 @@
  "AGAGGG-3" "AGATCTGAATTCatggaa-3" "Agglutinin-like" "Aguilera-Romero" "AH1252" "AH152" "airport/"
  "AJ867276" "Al-Awqati" "Al-Hasa_1" "Al-Hasa_14" "Al-Hasa_18" "Al-Hasa_19" "Al-Hasa_1_2013"
  "Al-Hasa_21_2013" "Al-Hasa_2_2013" "Al-Hasa_4_2013" "Al-Hasa_8_2013" "Al-Mashhadani" "Al-Muharrmi"
- "Al-Shboul" "Ala-pyrrolidonyl-2-nitrile" "alcohol/silica" "ALI/ARDS" "ALRI/pneumonia"
- "Amino-PEG500" "amoxicillin/clavulanate" "amoxicillin/clavulanic" "amplifiers/hosts"
- "amyloid-like" "AN-60" "analytical-SEC" "Ancylostoma/Uncinaria" "and/" "and^even" "and^in"
- "and^to" "and^unlike" "andσ" "Ang II/AT1R" "animal-care-and-use" "animal/mice" "ANOVA<0.0001"
- "ANOVA=0.044" "antFORF2" "Anti-3a" "anti-AdC6" "anti-ageing" "anti-allergic" "anti-amyloidogenic"
- "anti-apoptotic" "anti-bacterial" "anti-body" "anti-CDV" "anti-citrullinated" "Anti-citrullinated"
- "anti-coagulated" "anti-CoV" "anti-D" "anti-dsDNA" "Anti-Fade" "anti-fibrotic" "anti-flag"
- "anti-fog" "anti-Gram-negative" "anti-HA" "anti-HBsAg" "anti-HCoV-OC43" "anti-human" "anti-IKKα/β"
- "anti-inflammatory" "anti-Lawsonia" "anti-LV" "anti-MERS-CoV" "anti-microbial" "anti-mouse"
- "anti-muSOX" "anti-N" "anti-PABPC" "anti-parallel" "anti-pathogen" "anti-pathogenic" "anti-PDCoV"
- "anti-phospho-IKKα" "anti-proliferative" "anti-rabbit" "anti-rat" "anti-retroviral" "anti-S"
- "anti-sheep" "anti-staphylococcal" "anti-swine" "anti-tetrahistidine" "Anti-TNF"
- "anti-tuberculous" "anti-tumorigenic" "anti-viral" "Anti-␤-actin" "antibiotic/antimycotic"
- "antiphospho-Akt" "any/all" "AP-1b" "AP1b" "API20NE" "API32GN" "APPPS1" "April-May" "ara+"
- "Arg-6-" "Arg-Pro-Pro-" "arm/" "Art2a" "ARV-TN" "ASR=ancestral" "AST/ALT" "AT1R" "atan2"
+ "Al-Shboul" "Ala-pyrrolidonyl-2-nitrile" "alcohol/silica" "ALI/ARDS" "almost 10-fold"
+ "ALRI/pneumonia" "Amino-PEG500" "amoxicillin/clavulanate" "amoxicillin/clavulanic"
+ "amplifiers/hosts" "amyloid-like" "AN-60" "analytical-SEC" "Ancylostoma/Uncinaria" "and/"
+ "and^even" "and^in" "and^to" "and^unlike" "andσ" "Ang II/AT1R" "animal-care-and-use" "animal/mice"
+ "ANOVA<0.0001" "ANOVA=0.044" "antFORF2" "Anti-3a" "anti-AdC6" "anti-ageing" "anti-allergic"
+ "anti-amyloidogenic" "anti-apoptotic" "anti-bacterial" "anti-body" "anti-CDV" "anti-citrullinated"
+ "Anti-citrullinated" "anti-coagulated" "anti-CoV" "anti-D" "anti-dsDNA" "Anti-Fade"
+ "anti-fibrotic" "anti-flag" "anti-fog" "anti-Gram-negative" "anti-HA" "anti-HBsAg"
+ "anti-HCoV-OC43" "anti-human" "anti-IKKα/β" "anti-inflammatory" "anti-Lawsonia" "anti-LV"
+ "anti-MERS-CoV" "anti-microbial" "anti-mouse" "anti-muSOX" "anti-PABPC" "anti-parallel"
+ "anti-pathogen" "anti-pathogenic" "anti-PDCoV" "anti-phospho-IKKα" "anti-proliferative"
+ "anti-rabbit" "anti-rat" "anti-retroviral" "anti-sheep" "anti-staphylococcal" "anti-swine"
+ "anti-tetrahistidine" "Anti-TNF" "anti-tuberculous" "anti-tumorigenic" "anti-viral" "Anti-␤-actin"
+ "antibiotic/antimycotic" "antiphospho-Akt" "any/all" "AP-1b" "AP1b" "API20NE" "API32GN" "APPPS1"
+ "approximately 10-fold" "approximately 12^25%" "April-May" "ara+" "Arg-6-" "Arg-Pro-Pro-" "arm/"
+ "around 25°C" "Art2a" "ARV-TN" "ASR=ancestral" "AST/ALT" "at least 2-fold" "AT1R" "atan2"
  "ATCC25922" "ATCC27853" "ATCC29212" "Atf6α" "AUC=0.75" "AUC=0.80" "AUC=0.88" "author/funder"
  "Autumn…" "average/median" "avoidance/withdrawal" "Avsic-Zupanc" "AW6" "awake/" "Axone/Akhuni"
  "AY391777.1" "AY394850" "a~30" "Aα" "B-vitamins" "B-Yamagata" "B.H." "B.O." "B.V." "B4-fold" "B:4"
@@ -957,20 +958,20 @@
  "O150" "O157:H7" "O181" "O200" "O367" "O369" "O37" "O408" "O44" "O491" "O63:H6" "O78" "o800" "O84"
  "O93" "O94" "O_Al-Hasa_8_2013" "obstetrician/" "OC43/HKU1" "OES+HSS" "of interest/study" "of0RFs"
  "of~150" "ofΛ" "OH-FD100" "OH-FD22" "Ohio851/2013" "ompP2" "ompP5" "on-time" "One-day" "one-half"
- "one-year" "one/weekly" "Only~30%" "only~60%" "or/" "or/and" "OR=0.36" "OR=0.37" "OR=0.57"
- "OR=0.80" "OR=0.92" "OR=1" "ORF-3b" "ORF-6and" "ORF-8a" "ORF153" "orf1671" "ORF1A" "ORF1b" "orf3a"
- "Orf3A" "ORF54" "ORF8b" "org/" "org/amigo" "org/committees/" "org/docs/" "org/enzyme/"
- "org/journal/cha" "out of_" "overall^the" "Overcrowded/" "overuse/abuse" "overwhelmed--" "OXA-18"
- "OXA-20" "OXA-23" "OXA-23-like" "OXA-23encoding" "OXA-24" "OXA-40" "OXA-48" "OXA-51" "OXA-51-like"
- "OXA-58" "OXA-66" "OXA-69" "OXA-71" "P-450" "P-ATP" "P-labeled" "p-value" "P-value" "p-values"
- "P.F." "P.H.M." "P.K." "P.M." "p/3" "p24b" "P<0.0001" "P<0.001" "P<0.05" "P=0.002" "P=0.004"
- "P=0.005" "P=0.006" "P=0.01" "P=0.0116" "P=0.012" "P=0.016" "P=0.019" "P=0.02" "P=0.033" "P=0.034"
- "p=0·021" "PAdV-3" "Pam3Cys" "Panton-Valentin" "Panton-Valentine" "papain-like"
- "paracrine/autocrine" "ParC2ParE2" "particles/mL" "past/future" "patient-days" "patient-years"
- "patient/clinical" "PAUP*4.0b" "pB4" "pBGS18" "pbp1a" "PBP2a" "pbp2b" "pbp2x" "PBS-DMSO-treated"
- "pC15−1a" "pCDEF3" "pCDEF3-T7" "pCDEF3-T7-HA-muSOX" "pcDNA3" "pcDNA3.1" "pcDNA3.1-LMP1"
- "pcDNA3.1-Mat" "pCMV-EGFP-3UTR" "pCMV-EGFP-5UTR" "pCMV-EGFP-Fluc+" "pCMV-Fluc+-3UTR"
- "pCMV-Fluc+-5UTR" "pCMV-Rluc+" "pCMV-tag2B" "pCMV-tag2B-E" "pCMV-tag2B-M"
+ "one-year" "one/weekly" "Only 5/10" "Only~30%" "only~60%" "or/" "or/and" "OR=0.36" "OR=0.37"
+ "OR=0.57" "OR=0.80" "OR=0.92" "OR=1" "ORF-3b" "ORF-6and" "ORF-8a" "ORF153" "orf1671" "ORF1A"
+ "ORF1b" "orf3a" "Orf3A" "ORF54" "ORF8b" "org/" "org/amigo" "org/committees/" "org/docs/"
+ "org/enzyme/" "org/journal/cha" "out of_" "overall^the" "Overcrowded/" "overuse/abuse"
+ "overwhelmed--" "OXA-18" "OXA-20" "OXA-23" "OXA-23-like" "OXA-23encoding" "OXA-24" "OXA-40"
+ "OXA-48" "OXA-51" "OXA-51-like" "OXA-58" "OXA-66" "OXA-69" "OXA-71" "P-450" "P-ATP" "P-labeled"
+ "p-value" "P-value" "p-values" "P.F." "P.H.M." "P.K." "P.M." "p/3" "p24b" "P<0.0001" "P<0.001"
+ "P<0.05" "P=0.002" "P=0.004" "P=0.005" "P=0.006" "P=0.01" "P=0.0116" "P=0.012" "P=0.016" "P=0.019"
+ "P=0.02" "P=0.033" "P=0.034" "p=0·021" "PAdV-3" "Pam3Cys" "Panton-Valentin" "Panton-Valentine"
+ "papain-like" "paracrine/autocrine" "ParC2ParE2" "particles/mL" "past/future" "patient-days"
+ "patient-years" "patient/clinical" "PAUP*4.0b" "pB4" "pBGS18" "pbp1a" "PBP2a" "pbp2b" "pbp2x"
+ "PBS-DMSO-treated" "pC15−1a" "pCDEF3" "pCDEF3-T7" "pCDEF3-T7-HA-muSOX" "pcDNA3" "pcDNA3.1"
+ "pcDNA3.1-LMP1" "pcDNA3.1-Mat" "pCMV-EGFP-3UTR" "pCMV-EGFP-5UTR" "pCMV-EGFP-Fluc+"
+ "pCMV-Fluc+-3UTR" "pCMV-Fluc+-5UTR" "pCMV-Rluc+" "pCMV-tag2B" "pCMV-tag2B-E" "pCMV-tag2B-M"
  "pCMV-Tag2B-MutNΔ220-231" "pCMV-tag2B-N" "pCMV-tag2B-N1-341" "pCMV-tag2B-N1-422"
  "pCMV-tag2B-N61-422S" "pCMV-tag2B-N86-341" "pCMV-tag2B-N86-422" "pCMV-tag2B-N96-42"
  "pCMV-tag2B-NΔ220-231" "pCMV-Tag2B-NΔ220-231" "pCMV-tag2B-S" "PCV-13" "PDCoV-N-protein-specific"
@@ -1050,9 +1051,9 @@
  "tripalmitoyl-S-glyceryl-cysteine" "tripeptidyl-peptidases" "Triton-X100" "Triton™" "TRIzol5"
  "Trp-21-#-Val-22" "Tru-D" "TruSeq6" "trust--" "trypsin-like" "TT99000520" "TT99000559"
  "TT99000647" "TT99000665" "tubb5-Mm00495806_g1" "tuberculosis-like" "tunnel-like"
- "turn-around-time" "turn-around-times" "turnaround-time" "two-fifths" "type-1" "Tyr33/His31"
- "tyrosine-protein phosphatase" "T~" "t→∞" "t∈" "t≤ti" "t≥tij" "U /kg" "U.S" "U.S.A" "U/kg" "u/lv1"
- "U/ml" "U/mL" "u/u" "u0" "u1" "U122" "u2" "U274" "u3" "U50464" "Ub-AMC" "Ub-Rho110"
+ "turn-around time" "turn-around-time" "turn-around-times" "turnaround-time" "two-fifths" "type-1"
+ "Tyr33/His31" "tyrosine-protein phosphatase" "T~" "t→∞" "t∈" "t≤ti" "t≥tij" "U /kg" "U.S" "U.S.A"
+ "U/kg" "u/lv1" "U/ml" "U/mL" "u/u" "u0" "u1" "U122" "u2" "U274" "u3" "U50464" "Ub-AMC" "Ub-Rho110"
  "ubiquitin-rhodamine110" "ug/mL" "uk/" "uk/iubmb/enzyme/" "uk/Tools" "UL52" "under-sta⁄ng"
  "uniprot_sprot" "units/ml" "univ-paris-diderot" "univ-paris5" "urine/biofilm" "urine/shake" "US$"
  "US$150 million" "US$30-140" "US$700 million" "u∈U" "u≤T" "V/200" "v/v" "V75I"
@@ -1083,7 +1084,7 @@
  "≥38" "≥5" "≥60" "≥τij"))
     :test #'equalp))
 
-;; 4875 extracted by morphology
+;; 4873 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1465,14 +1466,14 @@
  "lymphatic" "lymphoblastic" "lymphocytic" "lymphogranuloma" "lymphopenic" "lyophilization"
  "lyophilized" "lytically" "lésion" "macroeconomic" "macroeconomics" "macromolecular" "macroscopic"
  "macroscopically" "maculopapular" "magentadashed" "magnetic" "magnification" "magnified" "mahase"
- "majority" "majorly" "malabsorption" "malarious" "malaysian" "malfunctioning" "malocclusion"
- "manageable" "managed" "management" "mandatory" "manifested" "manipulating" "mannosebinding"
- "manual" "manually" "manufactured" "manuscriptcentral" "mapping" "marginal" "marginalized"
- "marketed" "marketing" "marking" "married" "masquerading" "massaction" "massaging" "massive"
- "massively" "masticating" "mastication" "mated" "material" "materialized" "maternal"
- "mathematical" "mathematics" "maturation" "maximisation" "maximization" "maximize" "mblencoding"
- "mcnemar" "mechanical" "mechanically" "mechar" "medial" "mediator" "medication" "medicinal"
- "medullar" "meeting" "melanosomal" "melioidosis" "membraneassociated" "membranecomponent"
+ "majorly" "malabsorption" "malarious" "malaysian" "malfunctioning" "malocclusion" "manageable"
+ "managed" "management" "mandatory" "manifested" "manipulating" "mannosebinding" "manual"
+ "manually" "manufactured" "manuscriptcentral" "mapping" "marginal" "marginalized" "marketed"
+ "marketing" "marking" "married" "masquerading" "massaction" "massaging" "massive" "massively"
+ "masticating" "mastication" "mated" "material" "materialized" "maternal" "mathematical"
+ "mathematics" "maturation" "maximisation" "maximization" "maximize" "mblencoding" "mcnemar"
+ "mechanical" "mechanically" "mechar" "medial" "mediator" "medication" "medicinal" "medullar"
+ "meeting" "melanosomal" "melioidosis" "membraneassociated" "membranecomponent"
  "membraneinteracting" "membranespanning" "membranolytic" "membranous" "memorial" "mendatory"
  "mendelian" "meningeal" "meningococcal" "mental" "mentally" "mentor" "merging" "merited" "mesecar"
  "mesencephalic" "mesenchymal" "mesenteric" "mesodermal" "messaging" "metaanalysis" "metabolizing"
@@ -1483,7 +1484,7 @@
  "microfluidic" "microfluidics" "microglial" "microgliosis" "micrometric" "microscopic"
  "microsemal" "microsomal" "miction" "micturition" "migratory" "miliary" "militarized" "military"
  "mimicking" "minced" "miniaturised" "minimal" "minimalistic" "minimised" "minimization" "minimize"
- "mining" "ministerial" "minority" "mirbase" "mirrored" "miscibility" "misdiagnosed" "misdiagnosis"
+ "mining" "ministerial" "mirbase" "mirrored" "miscibility" "misdiagnosed" "misdiagnosis"
  "misfolded" "mislabeled" "misled" "mislocalization" "mismatched" "missing" "mission"
  "misspecification" "mistakenly" "mitigation" "mitotic" "mixed" "mobilisable" "mobilisation"
  "modeled" "modelling" "moderation" "modernization" "modular" "modulator" "modulatory" "mohamed"
@@ -1804,7 +1805,7 @@
  "tied" "vely" "wing" "ying" "δκ" "κβ" "κγ"))
     :test #'equalp))
 
-;; 3892 extracted from Comlex
+;; 3891 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1857,9 +1858,9 @@
  "breathe" "breech" "breeder" "breeders" "breve" "brewer" "brick" "brief" "bright" "brilliant"
  "bring" "brings" "brittle" "broad" "broadcaster" "broadcasters" "broaden" "broader" "broadness"
  "broiler" "broke" "brook" "brooks" "broth" "brother" "brought" "brush" "brute" "buck" "bucket"
- "budget" "bug" "bugs" "bulb" "bulk" "bulky" "bull" "bundle" "burden" "burdens" "bureau" "burgess"
- "burke" "burn" "burns" "burrow" "burrows" "burst" "bus" "bush" "bushes" "business" "busy" "butt"
- "butter" "buttery" "buttock" "button" "buttons" "buy" "bypass" "bypasses" "byproduct" "bystander"
+ "budget" "bug" "bugs" "bulb" "bulky" "bull" "bundle" "burden" "burdens" "bureau" "burgess" "burke"
+ "burn" "burns" "burrow" "burrows" "burst" "bus" "bush" "bushes" "business" "busy" "butt" "butter"
+ "buttery" "buttock" "button" "buttons" "buy" "bypass" "bypasses" "byproduct" "bystander"
  "bystanders" "cabinet" "cadre" "calculation" "calculations" "calculi" "calculus" "calf" "calif"
  "callus" "calm" "came" "camel" "camels" "camera" "camp" "campaign" "campaigns" "camps" "campus"
  "canal" "canals" "candour" "cannibalism" "canopy" "cant" "cantilever" "cantilevers" "capillaries"
@@ -2225,7 +2226,7 @@
  "wormy" "worries" "worrisome" "worry" "worsen" "wound" "wounds" "wright" "wrist" "write" "writer"
  "writings" "wrote" "wry" "youngster" "youngsters" "youth" "youths" "yuan" "zipper" "zone"))
     :test #'equalp))
-e" "walk" "walker" "wall" "walls" "war" "ware" "warfare" "warm" "warn"
+arn"
  "warnings" "warrant" "warrants" "wars" "waste" "watch" "waterborne" "waterfowl" "waterway"
  "waterways" "watery" "watt" "wattle" "watts" "wave" "wavelength" "weak" "weakness" "wealth"
  "weapon" "weaponry" "wear" "weather" "weaver" "web" "weigh" "weight" "weir" "welfare" "well" "wen"

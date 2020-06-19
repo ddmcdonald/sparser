@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-32601-32700 sample of unknown words
-;; created 6/4/20 18:10:17
+;; created 6/18/20 21:22:14
 
 (in-package :sparser)
 
@@ -708,7 +708,7 @@
  "Zulantay" "Forbes"))
     :test #'equalp))
 
-;; 2433 defined as a bio-entity
+;; 2435 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-32601-32700
@@ -741,8 +741,8 @@
  "-methoxy-4" "-MGB-3" "-N-arylthiourea" "-NPC-1" "-O-Si" "-pyridine-2-sulfonyl"
  "-S-ORF3-E-M-N-NS7a-3" "-TCAGAATGCCAATCTCCCCAAC-3" "-TCRCAYTTDGGRTARTCCCA-3" "-to-noise"
  "-TTAGAGAGGGAGCACGTAGAC-3" "0.016mol/L" "0.021e0.040" "0.05 µg/well" "0.1 m~" "0.1 µg/well"
- "0.2 µg/well" "0.3-fold" "0.3X" "0.4 µg/well" "0.4-fold" "0.5 g/ml" "0.5D." "0.7-fold" "0.7e41.5"
- "0.8}" "0.91b" "0.9}" "0/24" "0/40" "000/53" "000/mm" "0304-3894/©" "035bp" "06/IT" "099438A1"
+ "0.2 µg/well" "0.3-fold" "0.3X" "0.4 µg/well" "0.5 g/ml" "0.5D." "0.7-fold" "0.7e41.5" "0.8}"
+ "0.91b" "0.9}" "0/24" "0/40" "000/53" "000/mm" "0304-3894/©" "035bp" "06/IT" "099438A1"
  "0dihydroxyphenyl" "0to-3" "0~60" "1 g/1 g" "1 l/min" "1 µg/well" "1+e" "1,2,3-triazole"
  "1,2,3triazines" "1,2-a" "1,3-azetin-2-one" "1,3-beta-D-glucan" "1,3-bis" "1,3-diaxial"
  "1,3-dienes" "1,3-Dipolar" "1,3-dipolar" "1,3disubstituted" "1-2-day" "1-3and" "1-3m"
@@ -755,14 +755,14 @@
  "12 g/j" "12-keto" "12/15" "120+" "120keV" "120°C" "123a" "128bp" "12^14" "12a" "12b" "12e15"
  "12e16" "12q" "12V·144000C" "13,000×" "13a" "13b" "152bp" "15^18" "16.10A" "16.11A" "16.4A"
  "16.6A" "16.9A" "16/18" "16F6" "16×" "17-Plex" "177/264" "18/18" "18a" "18a-18d" "18aor" "18b"
- "1915/4" "1962a" "1962b" "1971a" "1971b" "1971c" "1976a" "1978a" "1978b" "1981a" "1981b" "1987a"
- "1990a" "1990b" "1993a" "1993b" "1993c" "1995a" "1995b" "1997/" "1998/1/3" "19a-d" "1:1:1" "1A-1F"
- "1a-p" "1AK4" "1azabicyclo" "1C^H" "1cis" "1cis-vRNA-nLuc" "1D^F ." "1e2" "1e3" "1e6"
- "1e60-day-old" "1F ." "1g-i" "1g-s" "1H3" "1j-l" "1m-o" "1U10" "1·" "1×" "1×buffer" "1−˛" "2 g/kg"
- "2 l/min" "2 µg/mL" "2 µg/ml" "2 µg/well" "2+" "2,3-b" "2,3-bis"
- "2,4-Diamino-10,10-dioxo-5,10-dihydro-10k" "2,4-dioxo-3,4-dihydroquinazolin-1"
- "2,4-dioxo-3-hydroxyiminochromane" "2-amino-1-methyl-6-phenylimidazo"
- "2-Benzenesulfonyl-4-methylbenzo" "2-methoxy-4-nitro-5-sulfophenyl" "2-methoxyphenyl"
+ "1962a" "1962b" "1971a" "1971b" "1971c" "1976a" "1978a" "1978b" "1981a" "1981b" "1987a" "1990a"
+ "1990b" "1993a" "1993b" "1993c" "1995a" "1995b" "1997/" "1998/1/3" "19a-d" "1:1:1" "1A-1F" "1a-p"
+ "1AK4" "1azabicyclo" "1C^H" "1cis" "1cis-vRNA-nLuc" "1D^F ." "1e2" "1e3" "1e6" "1e60-day-old"
+ "1F ." "1g-i" "1g-s" "1H3" "1j-l" "1m-o" "1U10" "1·" "1×" "1×buffer" "1−˛" "2 g/kg" "2 l/min"
+ "2 µg/mL" "2 µg/ml" "2 µg/well" "2+" "2,3-b" "2,3-bis" "2,4-Diamino-10,10-dioxo-5,10-dihydro-10k"
+ "2,4-dioxo-3,4-dihydroquinazolin-1" "2,4-dioxo-3-hydroxyiminochromane"
+ "2-amino-1-methyl-6-phenylimidazo" "2-Benzenesulfonyl-4-methylbenzo"
+ "2-methoxy-4-nitro-5-sulfophenyl" "2-methoxyphenyl"
  "2-O-b-D-glucopyranuronosyl-a-D-glucopyranuronosyl" "2-oxo-2H-chromen-4-yl"
  "2-silyloxycyclohexa-1,3-diene" "2.0x10" "2/" "2/10" "2/2" "2/3" "2/j" "20 µg/mL" "20,000×"
  "2000/2001" "2000a" "2000b" "2001a" "2001b" "2001Gross" "2002/2003" "2002a" "2002b" "2002e2003"
@@ -819,18 +819,18 @@
  "anti-GPIIIa49-66" "anti-guinea pig" "anti-His" "anti-HPA1a" "anti-human" "anti-idiotypic"
  "Anti-IFN-α" "anti-ii" "anti-immunology" "Anti-immunophilin" "anti-infective" "anti-inflammatory"
  "anti-influenza virus" "anti-influenzal" "anti-influneza" "anti-L" "anti-Lewis" "anti-M13"
- "Anti-measles" "anti-mice" "anti-mouse" "Anti-Mouse" "anti-N" "anti-NS5B" "anti-PDCoV-N"
- "anti-phospho-Akt" "anti-phospho-Gab1" "anti-pig" "anti-protein" "anti-rabbit" "anti-rabies"
- "anti-retroviral" "anti-S" "anti-S1-1~" "anti-S1-7" "anti-SeACoV" "anti-sense" "anti-SUDV"
- "anti-T7" "anti-tag" "anti-type" "Anti-vero-ACE2" "anti-viral" "anti-VP30" "anti-ZEBOV"
- "anti-β-xylosyl" "antibody/test" "antigen/" "antiphospho-FAK" "any/all" "AP2/EREBP" "areal /AL"
- "are~40" "Asia/Pacific" "Asp25/Asp25" "aT+b=R0" "AT683" "ATGTACTCATTCGTTTCGGAA3"
- "ATGTCTGATAATGGACCCCAA3" "ATGTTACTACAATTTGCCTATTC3" "author/funder" "AVI-4020" "AY274119"
- "AY519985" "AY520098" "B*0702" "B*0801" "B*1501" "B-and" "B-cell lymphoma/leukemia" "B-cells/μL."
- "b-D-ribofuranos-1" "B-from" "b-giardin" "B.V." "B/03" "B/03infected" "B/A"
- "b33b6936699f3fefdd075316c40a0734" "B6.129S2-Ifnar1tm1Agt" "Ba813" "bacterial/viral"
- "bafilomycinA1" "BamHⅠ" "BamHⅠ﹠" "band-like" "Bari-170" "basolateral/apical" "Baum-Welch"
- "bead-antibody" "bead/tube" "beat-per-minute" "beats/min" "beatsper-minute" "Beg9"
+ "Anti-measles" "anti-mice" "anti-mouse" "Anti-Mouse" "Anti-N" "anti-PDCoV-N" "anti-phospho-Akt"
+ "anti-phospho-Gab1" "anti-pig" "anti-protein" "anti-rabbit" "anti-rabies" "anti-retroviral"
+ "anti-S1-1~" "anti-S1-7" "anti-SeACoV" "anti-sense" "anti-SUDV" "anti-T7" "anti-tag" "anti-type"
+ "Anti-vero-ACE2" "anti-viral" "anti-VP30" "anti-ZEBOV" "anti-β-xylosyl" "antibody/test" "antigen/"
+ "antiphospho-FAK" "any/all" "AP2/EREBP" "approximately 0.4-fold" "approximately 10-fold"
+ "approximately 4-fold" "areal /AL" "are~40" "around 1915/4" "Asia/Pacific" "Asp25/Asp25" "aT+b=R0"
+ "AT683" "ATGTACTCATTCGTTTCGGAA3" "ATGTCTGATAATGGACCCCAA3" "ATGTTACTACAATTTGCCTATTC3"
+ "author/funder" "AVI-4020" "AY274119" "AY519985" "AY520098" "B*0702" "B*0801" "B*1501" "B-and"
+ "B-cell lymphoma/leukemia" "B-cells/μL." "b-D-ribofuranos-1" "B-from" "b-giardin" "B.V." "B/03"
+ "B/03infected" "B/A" "b33b6936699f3fefdd075316c40a0734" "B6.129S2-Ifnar1tm1Agt" "Ba813"
+ "bacterial/viral" "bafilomycinA1" "BamHⅠ" "BamHⅠ﹠" "band-like" "Bari-170" "basolateral/apical"
+ "Baum-Welch" "bead-antibody" "bead/tube" "beat-per-minute" "beats/min" "beatsper-minute" "Beg9"
  "behaviour/intentional" "Beijing-Tianjin-Hebei" "benchmark/threshold" "benzo-a-pyrone"
  "Between-week" "BFU-MK" "BHQ1" "bio-GP3" "Bio-Plex" "Bio-Rad" "biohazardous/infectious"
  "BioSep-SEC-S" "biosynthesis/side" "biotin-streptavidin" "biotin/PI-PLC" "BjCHI1" "Bland-Altman"
@@ -949,24 +949,25 @@
  "N-benzoyluracil" "N-benzyl-C-" "N-dialkylaminomethyl-3-hydroxycoumarins" "N-or" "N.benthamiana"
  "N.C" "N.D.W." "N/A" "N3-benzoylquinazolinonedione" "N3benzoylated" "n=1" "n=106/142" "n=142"
  "n=2" "n=25" "n=26" "n=4" "n=41" "n=7" "NaC1/1" "Naju-si" "Namwon-eup" "Nano-Glo" "nausea/"
- "nausea/vomiting" "NC_023761.1" "NC_023762.1" "NC_023765.1" "NC_023766.1" "ND-1000" "negative/not"
- "net/" "net:8080/prote" "NF-jB" "Niemann-Pick" "NIM-811" "nm/280" "NM_002745" "NM_016577"
- "NM_152787" "NN3" "no-antibody" "non-effectors" "non-GIV" "Non-USMED" "non-USMED" "Nonsan-si"
- "normal/healthy" "Norwalk-like" "Novy-Mac-Neal-Nicolle" "NP_041724" "NP_041726" "NP_828849" "NS2B"
- "Nsp3c" "NTF2-like" "nuclear pore/envelope" "nutrient/growth factor" "NWS/G70C" "NXF1-10RA"
- "NXF1-ΔRBD" "NXF1-∆RBD" "NY99-flamingo382-99" "O-alkyl" "O.H." "oct-1-enes" "of~1" "of~1040"
- "of~140" "of~15" "of~200" "of~70" "of˜900" "OligC-TesT" "OligoC-TesT" "omez-Couso" "on-call"
- "on/take" "oocysts/cysts" "OPBP1" "OPS21" "ORF1ab/N" "ORF1b" "org/" "org/licenses/bync/4.0/"
- "Organ-on-chip" "Organism:exp" "Ortega-Mora" "OsJAC1" "out-of-thebox" "oxazine-2,4-dione"
- "o~-galactose" "P-100" "p-chlorophenyl-thiazolidinone" "p-distance" "p-en" "P-Fect" "P-labeled"
- "p-value" "p-values" "P116A" "P13K" "p289-p290" "p289/p290" "p290/289" "P2domain" "p=0.027"
- "P=0.073" "P=0.891" "P=0.939" "P\\" "Panton-Valentine" "papain-like" "paper/procedure"
- "parameters-g" "parameters:-s" "parameters:-t" "parasite/180" "parasites/" "para¤n" "Parke-Davis"
- "PARR+" "particle/gas" "particles/h" "PAT-RIC" "pathogens/diseases" "patient/" "patient/legal"
- "Paul-Ehrlich-Institut" "pBI121" "pBIN35S-mGFP4" "PBMC/well" "PBS++" "PBS/" "PBS/Tween"
- "pCAGGS-1cis-vRNA-nLuc-RdM" "pCAGGS-flag" "pCAGGS-flag/HA-NXF1-10RA" "pcDNA3" "pcDNA3-EBOV-VP35"
- "pCEP4" "pCI-pAPN" "pCI-pAPN-or" "pCMV-β" "PCRrestrictiefragment-lengtepolymorfisme" "PD-178390"
- "PD099560" "pEF06R" "pEGFP-C1" "pEGFP-N3" "pEGFP/E" "pEGFP/M" "pEGFP/N." "pentane-2,4dione"
+ "nausea/vomiting" "NC_023761.1" "NC_023762.1" "NC_023765.1" "NC_023766.1" "ND-1000"
+ "nearly 100-fold" "negative/not" "net/" "net:8080/prote" "NF-jB" "Niemann-Pick" "NIM-811" "nm/280"
+ "NM_002745" "NM_016577" "NM_152787" "NN3" "no-antibody" "non-effectors" "non-GIV" "Non-USMED"
+ "non-USMED" "Nonsan-si" "normal/healthy" "Norwalk-like" "Novy-Mac-Neal-Nicolle" "NP_041724"
+ "NP_041726" "NP_828849" "NS2B" "Nsp3c" "NTF2-like" "nuclear pore/envelope"
+ "nutrient/growth factor" "NWS/G70C" "NXF1-10RA" "NXF1-ΔRBD" "NXF1-∆RBD" "NY99-flamingo382-99"
+ "O-alkyl" "O.H." "oct-1-enes" "of~1" "of~1040" "of~140" "of~15" "of~200" "of~70" "of˜900"
+ "OligC-TesT" "OligoC-TesT" "omez-Couso" "on-call" "on/take" "Only 3o" "oocysts/cysts" "OPBP1"
+ "OPS21" "ORF1ab/N" "ORF1b" "org/" "org/licenses/bync/4.0/" "Organ-on-chip" "Organism:exp"
+ "Ortega-Mora" "OsJAC1" "out-of-thebox" "oxazine-2,4-dione" "o~-galactose" "P-100"
+ "p-chlorophenyl-thiazolidinone" "p-distance" "p-en" "P-Fect" "P-labeled" "p-value" "p-values"
+ "P116A" "P13K" "p289-p290" "p289/p290" "p290/289" "P2domain" "p=0.027" "P=0.073" "P=0.891"
+ "P=0.939" "P\\" "Panton-Valentine" "papain-like" "paper/procedure" "parameters-g" "parameters:-s"
+ "parameters:-t" "parasite/180" "parasites/" "para¤n" "Parke-Davis" "PARR+" "particle/gas"
+ "particles/h" "PAT-RIC" "pathogens/diseases" "patient/" "patient/legal" "Paul-Ehrlich-Institut"
+ "pBI121" "pBIN35S-mGFP4" "PBMC/well" "PBS++" "PBS/" "PBS/Tween" "pCAGGS-1cis-vRNA-nLuc-RdM"
+ "pCAGGS-flag" "pCAGGS-flag/HA-NXF1-10RA" "pcDNA3" "pcDNA3-EBOV-VP35" "pCEP4" "pCI-pAPN"
+ "pCI-pAPN-or" "pCMV-β" "PCRrestrictiefragment-lengtepolymorfisme" "PD-178390" "PD099560" "pEF06R"
+ "pEGFP-C1" "pEGFP-N3" "pEGFP/E" "pEGFP/M" "pEGFP/N." "pentane-2,4dione"
  "peptidylcis-trans isomerase" "persona/animal" "pET32a" "pETBlue-2" "pETBlue-2-SUD" "PF00560"
  "PF13/251013-18" "pFLAG-CMV2" "pFLZIKV-RLuc" "PFU/cm 2" "PFU/cm 2 /min" "PFU/m" "pfu/ml" "pfu/mL"
  "pg/" "pg/ml" "pg/mL" "pGEX-6P-1" "pH8" "pH8.5" "phage/bacteria" "Phenix-Rosetta" "php#Q1"
@@ -1038,7 +1039,7 @@
  "≥12,000" "≥40%" "≥83%" "≥98%" "␣IIbIIIa" "␣IIb␤3" "␤2GPI"))
     :test #'equalp))
 
-;; 4371 extracted by morphology
+;; 4369 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1380,11 +1381,11 @@
  "longitudinal" "longlasting" "longstanding" "looming" "looping" "loosened" "lopsided" "lotion"
  "loved" "lumbar" "luminescence" "lurking" "lying" "lymphatic" "lymphoblastic" "lymphocytic"
  "lymphocytosis" "lymphoproliferative" "lyophilization" "lyrics" "lysophosphatidic" "macroeconomic"
- "maculopapular" "magnetic" "magnification" "magnify" "majority" "malabsorption" "malarial"
- "malaysian" "malestar" "malfunctioned" "malnourished" "maltreatment" "managed" "management"
- "managerial" "mandating" "mandatory" "manipulation" "mannosespecific" "manoeuvring" "manual"
- "manually" "manvar" "mapping" "marginaal" "marginal" "markably" "marked" "marketed" "massive"
- "massively" "materiaal" "material" "materially" "maternal" "maternally" "maternity" "mathematical"
+ "maculopapular" "magnetic" "magnification" "magnify" "malabsorption" "malarial" "malaysian"
+ "malestar" "malfunctioned" "malnourished" "maltreatment" "managed" "management" "managerial"
+ "mandating" "mandatory" "manipulation" "mannosespecific" "manoeuvring" "manual" "manually"
+ "manvar" "mapping" "marginaal" "marginal" "markably" "marked" "marketed" "massive" "massively"
+ "materiaal" "material" "materially" "maternal" "maternally" "maternity" "mathematical"
  "mathematics" "maturation" "maturity" "maximised" "maximization" "maximize" "mbpreactive"
  "mbpspecific" "mechanical" "mechanics" "medial" "mediastinal" "medicinal" "mediumsized"
  "medtronic" "medullary" "megakaryocytic" "megakaryopoiesis" "melanocytic" "membranebinding"
@@ -1398,8 +1399,8 @@
  "microglial" "microinjected" "microinjection" "microscopic" "microscopically" "microsomal"
  "microvacsular" "microvascular" "microvillar" "midsized" "migratory" "miklavcic" "military"
  "mimetic" "mimicking" "minced" "mined" "mineral" "miniaturized" "minimal" "minimization"
- "minimize" "ministerial" "minority" "mirror" "mirrored" "miscellaneous" "misdiagnosed"
- "misdiagnosis" "misfolded" "misjudgment" "misleading" "misled" "mispricing" "missing" "mission"
+ "minimize" "ministerial" "mirror" "mirrored" "miscellaneous" "misdiagnosed" "misdiagnosis"
+ "misfolded" "misjudgment" "misleading" "misled" "mispricing" "missing" "mission"
  "misspecification" "mistakenly" "mitigating" "mitigation" "mitoma" "mitotic" "mitral" "mixed"
  "mobilisation" "mobilising" "mocktreated" "modelderived" "modeled" "modelled" "moderateinfection"
  "modernization" "modifiable" "modifient" "modi¢cation" "modular" "modularity" "moelling"
@@ -1682,7 +1683,7 @@
  "ying" "¢ned" "¢xed"))
     :test #'equalp))
 
-;; 3704 extracted from Comlex
+;; 3703 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1737,7 +1738,7 @@
  "brief" "bright" "brighten" "brightness" "bring" "briquette" "briquettes" "broad" "broaden"
  "broader" "broke" "broker" "brokers" "brook" "broom" "brooms" "broth" "brother" "brothers"
  "brought" "brunt" "brush" "brute" "bubble" "bubbles" "bucket" "buckets" "buffalo" "bug" "bugs"
- "build" "builder" "builders" "buildings" "bulge" "bulk" "bulky" "bull" "bullet" "bullish" "bulls"
+ "build" "builder" "builders" "buildings" "bulge" "bulky" "bull" "bullet" "bullish" "bulls"
  "buoyancy" "burden" "bureau" "bureaucrat" "bureaucrats" "burgess" "burn" "burns" "burst" "burton"
  "bus" "business" "businessman" "busy" "butcher" "butchers" "butler" "button" "buy" "buzz" "bypass"
  "bystander" "cabbage" "cabinet" "cable" "calamities" "calamity" "calf" "calm" "calve" "calves"
@@ -2085,8 +2086,7 @@
  "worthwhile" "worthy" "wound" "wow" "wrap" "wright" "wrist" "wristband" "write" "writer" "wrote"
  "yahoo" "yellowish" "youth" "yuan" "zero" "zeros" "zipper" "zonal" "zone" "zones" "zoo"))
     :test #'equalp))
-er" "whole" "wholesale" "widen"
- "widens" "wife" "wight" "wild" "wildfire" "wildlife" "willow" "wind" "window" "winner" "wise"
+ "wight" "wild" "wildfire" "wildlife" "willow" "wind" "window" "winner" "wise"
  "wish" "wishes" "withdraw" "withheld" "withhold" "withstand" "witness" "wolf" "woo" "wood"
  "wooden" "wool" "word" "words" "wore" "work" "workbench" "worker" "workforce" "workings"
  "workload" "workloads" "workman" "workplace" "world" "worldwide" "worm" "worrisome" "worst"

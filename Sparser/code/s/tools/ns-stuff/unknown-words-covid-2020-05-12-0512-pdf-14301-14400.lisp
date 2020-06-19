@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-14301-14400 sample of unknown words
-;; created 6/4/20 14:27:41
+;; created 6/18/20 23:32:8
 
 (in-package :sparser)
 
@@ -788,7 +788,7 @@
  "Zimonja" "Zinkernagel" "Zsak" "Zuker" "Zunino" "Zuo" "Züst" "aBe"))
     :test #'equalp))
 
-;; 2161 defined as a bio-entity
+;; 2164 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-14301-14400
@@ -837,15 +837,15 @@
  "24-jarige" "24/7…This" "240/12D" "24well" "24°" "24˝to" "25 g/L" "253f" "258f" "25°" "26-plex"
  "26/41" "260/10B" "264f" "26e28" "26°C." "278f-284f" "278t" "27°32" "27°C" "28/200¥blood" "28/307"
  "281t" "286f" "28″S" "29/41" "290t" "291/307" "29°" "29˝" "2BC" "2DE-MS" "2e2" "2G12" "2K/N"
- "2NY7" "2×" "2À4" "2Á0 ± 0Á1 l" "2Á7" "3,5-diiodotyrosine" "3-1/2" "3-pyridyl" "3.0 g/dl" "3.0·10"
- "3/14" "3/3" "3/41" "3/7" "3000/μl" "300f" "303f" "30e70" "30°C" "3130XL" "316/5305" "34 g/mL"
- "344/1560" "354t" "358/" "358/1560" "35e45" "35˝C" "36/47" "36•" "37.2/20.2" "371C." "37~" "37°C"
- "37°C." "37˝C" "37ЊC" "38-41°C" "387/388" "38°13" "39°55" "3anchor" "3B ." "3B3" "3e90" "3e96"
- "3G ." "3G9" "3noncrossing" "3T3" "3to" "3°" "3×10" "4 /well" "4 ±1.3·10" "4-8˚C"
- "4-deoxyasbestinin" "4-isopropylcyclohexanol" "4.00*10" "4.5-fold" "4.7ˆ10" "4/14" "4/4" "4/5"
- "40-100x" "400×" "407/408" "409t" "40x" "40°C" "40ϫ" "410f" "42/47" "422t" "424t" "426t" "43.9″E"
- "459b" "459f-461f" "45Ti" "45°C" "45°C." "4642/5305" "464f" "467f" "469t" "471f" "47″E" "49/22"
- "4:6:90" "4e264" "4G2" "4S*" "4~" "4°" "4°C" "4°C." "4×" "4Á7" "4Á74" "4ˆ10" "4•" "5&disease"
+ "2NY7" "2×" "2À4" "2Á0 ± 0Á1 l" "2Á7" "3,5-diiodotyrosine" "3-pyridyl" "3.0 g/dl" "3.0·10" "3/14"
+ "3/3" "3/41" "3/7" "3000/μl" "300f" "303f" "30e70" "30°C" "3130XL" "316/5305" "34 g/mL" "344/1560"
+ "354t" "358/" "358/1560" "35e45" "35˝C" "36/47" "36•" "37.2/20.2" "371C." "37~" "37°C" "37°C."
+ "37˝C" "37ЊC" "38-41°C" "387/388" "38°13" "39°55" "3anchor" "3B ." "3B3" "3e90" "3e96" "3G ."
+ "3G9" "3noncrossing" "3T3" "3to" "3°" "3×10" "4 /well" "4 ±1.3·10" "4-8˚C" "4-deoxyasbestinin"
+ "4-isopropylcyclohexanol" "4.00*10" "4.5-fold" "4.7ˆ10" "4/14" "4/4" "4/5" "40-100x" "400×"
+ "407/408" "409t" "40x" "40°C" "40ϫ" "410f" "42/47" "422t" "424t" "426t" "43.9″E" "459b"
+ "459f-461f" "45Ti" "45°C" "45°C." "4642/5305" "464f" "467f" "469t" "471f" "47″E" "49/22" "4:6:90"
+ "4e264" "4G2" "4S*" "4~" "4°" "4°C" "4°C." "4×" "4Á7" "4Á74" "4ˆ10" "4•" "5&disease"
  "5,7,8-trihydroxyflavone" "5,7-dihydroxyflavone" "5,7-dihydroxylation" "5-methoxytetralone" "5.5×"
  "5/14" "5/5" "5/7" "50 /50" "50 /g" "50 /IC 50" "50 /mL" "50 g/L" "50 g/mL" "50,000Â"
  "5000-7000/μl" "5000/μl" "500ˆg" "50e150" "50mMTris-HCl" "50°C" "51.6″S" "5212,2432J" "527/736"
@@ -872,8 +872,8 @@
  "acyl-protein" "acyl-RAC" "Ad1-Ad51" "ADHEX1F" "ADHEX1R" "ADHEX2F" "ADHEX2R" "AG-3Ј" "Ag/" "Ag/Au"
  "AG129" "agents/active" "aggresome-like" "AH1L" "AHSV4-stimulated" "AK/98" "Al-Fardan" "Al-Kaissi"
  "Al-Khatteeb" "Al-Mana" "Al-Muharrami" "Al-Shehri" "Al-Siddiqi" "Al-Thani" "alk-14" "alk-16"
- "Alphacoronavirus-1" "alphavirus/CHIKV" "alternate-day" "Alvarez-Ramirez" "AMBU-65"
- "American/Asian" "ampli-Wed" "and/" "Anderson-Darling" "and~12" "anesthesia/airway"
+ "almost 10-fold" "Alphacoronavirus-1" "alphavirus/CHIKV" "alternate-day" "Alvarez-Ramirez"
+ "AMBU-65" "American/Asian" "ampli-Wed" "and/" "Anderson-Darling" "and~12" "anesthesia/airway"
  "animal/number" "anti-adhesive" "anti-allergic" "anti-antibiotic" "anti-apoptotic" "anti-b-actin"
  "anti-bid" "Anti-BL21" "anti-delta" "anti-depressant" "anti-diSia" "anti-endotoxin" "anti-FCoV"
  "anti-Giardia" "anti-H-1" "anti-HBcSP55" "anti-HBcSP70" "Anti-HBs" "anti-HBsAg" "anti-HTLV"
@@ -883,10 +883,11 @@
  "Anti-Parainfluenza" "anti-pEBOV" "anti-poly" "anti-polyhistidine" "anti-polySia" "anti-rabbit"
  "anti-RCV" "Anti-S." "anti-S1" "Anti-SAH" "anti-SARScoronavirus" "anti-SDAV" "Anti-SDAV"
  "anti-Sendai" "anti-sheep" "anti-simian" "anti-tumor" "anti-viral" "antibcl-2" "antibodies/"
- "antibody-Lumi4-Tb" "antibody/virus" "AP00792PU-N" "APT1/2" "area/pig" "ARVI-screen-FL»"
- "Asian/American" "astrocytesz9" "ATCC25923" "ATCC27853" "ATCC29212" "ATCC33591" "ATCC8739" "Au/Ag"
- "author/funder" "autophagy-like" "Avila-Perez" "AvrPphB-like" "AvrRpm1" "AY278488" "AY278741"
- "AY354458" "AY536757" "AY536758" "AY536759" "AY536760" "AY539954" "B&K" "B&P" "B.H." "B.V" "B19V"
+ "antibody-Lumi4-Tb" "antibody/virus" "AP00792PU-N" "approximately 1000-fold" "approximately 3-1/2"
+ "approximately 800-fold" "APT1/2" "area/pig" "ARVI-screen-FL»" "Asian/American" "astrocytesz9"
+ "ATCC25923" "ATCC27853" "ATCC29212" "ATCC33591" "ATCC8739" "Au/Ag" "author/funder"
+ "autophagy-like" "Avila-Perez" "AvrPphB-like" "AvrRpm1" "AY278488" "AY278741" "AY354458"
+ "AY536757" "AY536758" "AY536759" "AY536760" "AY539954" "B&K" "B&P" "B.H." "B.V" "B19V"
  "BAL-vloeistof" "be/sciences/biologie/urbm/bioinfo/" "behaviours/skills" "benefit/risk"
  "BH80/11-4" "Bina-Stein" "binding/occupancy" "Bio-EnzaBead" "Bio-Rad" "bioterrorism/biological"
  "biotin-HPDP" "BJ-01" "BLAST+" "BP1063P" "Bray-Curtis" "BRT7/5" "Bruce-Chwatt" "BSA-serumfree"
@@ -1080,7 +1081,7 @@
  "≥1e" "≥25" "≥28" "≥30" "≥8%" "≥80" "≺-maximal"))
     :test #'equalp))
 
-;; 4733 extracted by morphology
+;; 4732 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1159,7 +1160,7 @@
  "bordering" "brainpassaged" "brainstorming" "branching" "brazilian" "breathing" "breeding"
  "broadened" "bromatological" "broncheoalveolar" "bronchial" "bronchiectasis" "bronchiolar"
  "bronchiolectasis" "bronchoalveolar" "bronchopulmonary" "brownian" "brscic" "brucellosis"
- "bruikbaar" "brushing" "buddhist" "budgetary" "budgeting" "buffered" "buried" "bursal"
+ "bruikbaar" "brushing" "buddhist" "budgetary" "budgeting" "buffered" "bulking" "buried" "bursal"
  "businessdictionary" "butterfly" "cacodylic" "cadaveric" "caesarian" "calcified" "calculated"
  "calculation" "calculator" "calendar" "calgary" "calibrated" "calibration" "caloric" "canceled"
  "canceling" "cancelled" "candidiasis" "canned" "cannulation" "capacity" "capillary" "capital"
@@ -1447,7 +1448,7 @@
  "lyerly" "lying" "lymfekliervergroting" "lymphatic" "lymphatics" "lymphoblastic" "lymphocytic"
  "lymphoepithelial" "lymphohistiocytic" "lymphomatous" "lymphotropic" "lyophilized" "lysogenic"
  "lysosomalassociated" "lysosomotropic" "lyzed" "macgregor" "macrophagespecific" "macroreticular"
- "macroscopic" "magnetic" "magnification" "magnifying" "mailing" "mairal" "majority" "malabsorbed"
+ "macroscopic" "magnetic" "magnification" "magnifying" "mailing" "mairal" "malabsorbed"
  "malabsorption" "malabsorptive" "malassimilation" "maldigested" "malfunction" "mally"
  "malnourished" "manageable" "management" "mandatory" "mandible" "manifested" "manifestly"
  "manipulation" "manual" "manually" "manufacturing" "mapped" "marginal" "markable" "marked"
@@ -1465,20 +1466,20 @@
  "microfluidic" "microfluidics" "microimmunofluorescence" "microneutralization" "microscopic"
  "microsomal" "microvascular" "microxuidics" "migratory" "mildred" "military" "mimicked" "mined"
  "mineral" "mineralization" "miniaturized" "minimaal" "minimal" "minimed" "minimization"
- "ministerial" "minority" "mirror" "mirrored" "miscellaneous" "misfolded" "mishandling"
- "misleading" "mislocalization" "mismanagement" "mismatched" "misperception" "misrepresented"
- "missing" "mission" "misused" "mitigating" "mitigation" "mitotic" "mixed" "mkumar" "mnemonic"
- "mobilisation" "mockinfected" "modeled" "modelling" "modernization" "modernize" "modiwed"
- "modular" "modulatory" "moistened" "molecularly" "moment" "monary" "mondal" "mondiaal" "monetary"
- "monitor" "monitored" "monly" "monoclonal" "monocytic" "monogenic" "monoinfected" "monoinfection"
- "monomeric" "mononuclear" "monoparametric" "monophyletic" "monospecificity" "monotonically"
- "monotonous" "monounsaturated" "montreal" "monumental" "morbidity" "morbility" "morbimortality"
- "moredeveloped" "morphologic" "motion" "motivation" "motivator" "mottled" "mounted" "movement"
- "mucociliary" "mucocutaneous" "mucosal" "multibillion" "multicentric" "multidimensional"
- "multidirectional" "multidisciplinary" "multifaceted" "multifactor" "multifactorial" "multifocal"
- "multifunctional" "multilayered" "multinucleated" "multiplexing" "multiplicity" "multiplied"
- "multiply" "multisystemic" "multivalent" "multivalently" "multivariable" "mummified" "municable"
- "municipal" "municipality" "musculoskeletal" "mushahwar" "mutase" "mutational" "muted" "mycelial"
+ "ministerial" "mirror" "mirrored" "miscellaneous" "misfolded" "mishandling" "misleading"
+ "mislocalization" "mismanagement" "mismatched" "misperception" "misrepresented" "missing"
+ "mission" "misused" "mitigating" "mitigation" "mitotic" "mixed" "mkumar" "mnemonic" "mobilisation"
+ "mockinfected" "modeled" "modelling" "modernization" "modernize" "modiwed" "modular" "modulatory"
+ "moistened" "molecularly" "moment" "monary" "mondal" "mondiaal" "monetary" "monitor" "monitored"
+ "monly" "monoclonal" "monocytic" "monogenic" "monoinfected" "monoinfection" "monomeric"
+ "mononuclear" "monoparametric" "monophyletic" "monospecificity" "monotonically" "monotonous"
+ "monounsaturated" "montreal" "monumental" "morbidity" "morbility" "morbimortality" "moredeveloped"
+ "morphologic" "motion" "motivation" "motivator" "mottled" "mounted" "movement" "mucociliary"
+ "mucocutaneous" "mucosal" "multibillion" "multicentric" "multidimensional" "multidirectional"
+ "multidisciplinary" "multifaceted" "multifactor" "multifactorial" "multifocal" "multifunctional"
+ "multilayered" "multinucleated" "multiplexing" "multiplicity" "multiplied" "multiply"
+ "multisystemic" "multivalent" "multivalently" "multivariable" "mummified" "municable" "municipal"
+ "municipality" "musculoskeletal" "mushahwar" "mutase" "mutational" "muted" "mycelial"
  "mycobacterial" "mycophenolic" "mycoplasmosis" "mycotic" "myeloablative" "myeloidal"
  "myelosuppression" "myocardial" "myristic" "nally" "nanase" "nanoformulation" "nanomaterial"
  "narcotic" "narrated" "narrative" "narrowed" "narrowing" "nasofaryngeaal" "nasoocular"
@@ -1779,7 +1780,7 @@
  "ring" "rmed" "shed" "sing" "tied" "ying"))
     :test #'equalp))
 
-;; 3621 extracted from Comlex
+;; 3620 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1832,9 +1833,9 @@
  "brief" "bright" "brilliant" "brine" "bring" "brings" "broad" "broadcast" "broaden" "broadens"
  "broader" "brochure" "brochures" "broiler" "broilers" "broke" "bronchi" "bronchus" "brook" "broth"
  "brought" "bruin" "bruise" "bruises" "bubble" "bubbles" "buck" "budget" "budgets" "build"
- "builder" "buildings" "bulb" "bulk" "bullet" "bulletin" "bundle" "burden" "bureau" "bureaucracy"
- "burke" "burst" "bush" "bushy" "business" "businessman" "businessmen" "busy" "butler" "butter"
- "buy" "buys" "bypass" "byproduct" "byproducts" "cabinet" "cabinets" "cadet" "cadre" "cake" "calf"
+ "builder" "buildings" "bulb" "bullet" "bulletin" "bundle" "burden" "bureau" "bureaucracy" "burke"
+ "burst" "bush" "bushy" "business" "businessman" "businessmen" "busy" "butler" "butter" "buy"
+ "buys" "bypass" "byproduct" "byproducts" "cabinet" "cabinets" "cadet" "cadre" "cake" "calf"
  "camaraderie" "came" "camel" "camels" "camera" "camouflage" "camp" "campaign" "campaigns" "camps"
  "campus" "campuses" "canal" "cannon" "canopy" "cant" "canton" "capillaries" "capillary" "capital"
  "capitalize" "capitalizes" "capitals" "capsule" "capture" "car" "carbon" "cardboard" "care"
@@ -2174,7 +2175,7 @@
  "wound" "wounds" "wright" "wrinkle" "wrinkles" "wrist" "write" "writings" "wrote" "yearlong"
  "yellowish" "youth" "yuan" "zebra" "zipper" "zone" "zones" "zoo" "zoom"))
     :test #'equalp))
-ivers" "wake" "wakes" "wall" "wander" "wane" "war" "ware" "warfare" "warm"
+re" "warm"
  "warn" "warnings" "wartime" "washer" "waste" "watch" "waterfowl" "waterman" "watery" "wave"
  "wavelength" "waver" "weak" "weakness" "wealth" "wealthy" "wean" "weapon" "wear" "wearer"
  "wearers" "weather" "weaver" "web" "wedge" "wee" "weekend" "weekends" "weight" "weights" "welfare"

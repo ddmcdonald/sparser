@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-20001-20100 sample of unknown words
-;; created 6/4/20 13:41:15
+;; created 6/18/20 20:0:17
 
 (in-package :sparser)
 
@@ -802,7 +802,7 @@
  "Zukiwski" "Zumpe" "Zust" "Follmer"))
     :test #'equalp))
 
-;; 2529 defined as a bio-entity
+;; 2530 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-20001-20100
@@ -838,8 +838,8 @@
  "0untranslated regions" "0|x" "0|π" "0·2%" "0·5%" "0·75-0·96" "0·84" "1 g/day" "1 g/ml" "1*3"
  "1,3-dipolar" "1.2 g/L" "1.24--1.26 g/ml" "1.245 g/ml" "1.26 g/ml" "1.30 g/ml" "1.30g/ml"
  "1.31 g/ml" "1.33--1.34 g/ml" "1.34 g/mI" "1.34 g/ml" "1.38 g/mI" "1.39 g/ml" "1.39g/ml" "1.4 g/L"
- "1.41 g/ml" "1.42 g/ml" "1.43 g/ml" "1.5 µg/ml" "1.5-fold" "1.8 g/L" "1/" "1/100" "1/106" "1/18"
- "1/30" "1/300" "1/35" "1/360,000" "1/40,000" "1/500" "1/6" "10 g/dL" "10 g/ml" "10.1038/srep39549"
+ "1.41 g/ml" "1.42 g/ml" "1.43 g/ml" "1.5 µg/ml" "1.8 g/L" "1/" "1/100" "1/106" "1/18" "1/30"
+ "1/300" "1/35" "1/360,000" "1/40,000" "1/500" "1/6" "10 g/dL" "10 g/ml" "10.1038/srep39549"
  "10.1038/srep41226" "10/" "10/300" "100 g/L" "100 g/ml" "100/" "1000LD" "100CX" "100q" "100x"
  "100°C" "107/min" "10a" "10b" "10d" "10e-g" "10e15" "10°" "10°/1000" "10μl" "1171/1000" "11a-c"
  "11cr" "11CT+TM" "11d" "11e" "12-16℃" "12.25℃" "12.5 µg/ml" "12.5°" "121/63" "124/326"
@@ -850,19 +850,19 @@
  "1992a" "1993a" "1993b" "1994a" "1994b" "1994c" "1995a" "1995b" "1997a" "1997b" "1998a" "199i"
  "1:100" "1:1:1" "1:500-1:2000" "1=I-labeled" "1A ." "1a-1b-S-ORF3-E-M-N." "1A-1C" "1A-1F" "1A-F"
  "1a/1b" "1ab" "1c-f" "1D-1F ." "1D-1F." "1D." "1e6" "1e7" "1F." "1f0l" "1ikq" "1LP3" "1X71" "1|x"
- "1|π" "1~I" "1·4-5·7" "1·6-15·0" "1×" "1×/week" "1×MOPS" "1∼" "1≤i≤m" "2 /FiO" "2 g/kg" "2+"
- "2--4" "2-10:1" "2-4℃" "2-8°C" "2-8°C." "2-aminopyridinium" "2.2-fold" "2.2B10" "2.4G2" "2.5GH"
- "2.5HR" "2.718 g/dL" "2.87-times" "2/" "2/2" "2/3" "2/31" "2/6" "2/x" "20 h/wk" "20 l/min"
- "20%/40%" "20,000/km" "200 µg/L" "2003a" "2003b" "2003c" "2004a" "2004b" "2004c" "2004d" "2004e"
- "2004f" "2005a" "2005b" "2006/2007" "2006a" "2006b" "2007a" "2007b" "2008a" "2008b" "2009a"
- "2009b" "200e299" "200mesh" "200nt" "2010a" "2010b" "2011-January" "2011a" "2011b" "2013a" "2013b"
- "2013c" "2016a" "2016b" "2017a" "2017b" "2072/2459" "20mils" "20x" "20°" "20°C" "20·4%" "20℃"
- "21--29" "21.75℃" "2100TR" "22.7::~::0.5" "22℃" "24/min" "24HPI" "25 µg/mL" "25 µg/ml" "25-30°C"
- "25cmH2O" "25e34" "25°" "25°C" "26.25℃" "26.6e39.9" "260 /OD" "2691/1000" "26e50" "26℃" "27---31"
- "2755/1000" "28--30" "28.4-~1.0" "2808C." "284/447" "28°C" "28·3%" "28℃" "29-nt" "293/2885"
- "293TT" "29·8%" "2A-2C" "2A/furin" "2aai" "2aminopyridinium" "2B." "2d-f" "2D1" "2E ." "2E." "2e3"
- "2e5" "2e7" "2e9" "2F ." "2FA" "2FYZ" "2g-i" "2G1" "2G12" "2G9" "2HR" "2J ." "2WTK" "2x10" "2Y9Z"
- "2°" "2·06-22·84" "2·3%" "2·8" "2×" "2×/" "2×/week" "2×SSC" "2À10" "3 l/min" "3,3-DAB" "3,4,u"
+ "1|π" "1~I" "1·4-5·7" "1·6-15·0" "1×" "1×/week" "1×MOPS" "1≤i≤m" "2 /FiO" "2 g/kg" "2+" "2--4"
+ "2-10:1" "2-4℃" "2-8°C" "2-8°C." "2-aminopyridinium" "2.2-fold" "2.2B10" "2.4G2" "2.5GH" "2.5HR"
+ "2.718 g/dL" "2.87-times" "2/" "2/2" "2/3" "2/31" "2/6" "2/x" "20 h/wk" "20 l/min" "20%/40%"
+ "20,000/km" "200 µg/L" "2003a" "2003b" "2003c" "2004a" "2004b" "2004c" "2004d" "2004e" "2004f"
+ "2005a" "2005b" "2006/2007" "2006a" "2006b" "2007a" "2007b" "2008a" "2008b" "2009a" "2009b"
+ "200e299" "200mesh" "200nt" "2010a" "2010b" "2011-January" "2011a" "2011b" "2013a" "2013b" "2013c"
+ "2016a" "2016b" "2017a" "2017b" "2072/2459" "20mils" "20x" "20°" "20°C" "20·4%" "20℃" "21--29"
+ "21.75℃" "2100TR" "22.7::~::0.5" "22℃" "24/min" "24HPI" "25 µg/mL" "25 µg/ml" "25-30°C" "25cmH2O"
+ "25e34" "25°" "25°C" "26.25℃" "26.6e39.9" "260 /OD" "2691/1000" "26e50" "26℃" "27---31"
+ "2755/1000" "28--30" "28.4-~1.0" "2808C." "284/447" "28°C" "28·3%" "29-nt" "293/2885" "293TT"
+ "29·8%" "2A-2C" "2A/furin" "2aai" "2aminopyridinium" "2B." "2d-f" "2D1" "2E ." "2E." "2e5" "2e7"
+ "2e9" "2F ." "2FA" "2FYZ" "2g-i" "2G1" "2G12" "2G9" "2HR" "2J ." "2WTK" "2x10" "2Y9Z" "2°"
+ "2·06-22·84" "2·3%" "2·8" "2×" "2×/" "2×/week" "2×SSC" "2À10" "3 l/min" "3,3-DAB" "3,4,u"
  "3-CLpro" "3-cystine-like" "3-methoxypentane" "3.1°" "3.5-fold" "3/" "3/6" "30 g/ml" "30%/70%"
  "30/~g" "3000SW" "300e399" "30°" "30°C" "313-463aa" "32---34" "32.75℃" "326/1354" "33.5℃"
  "331/2020" "34 g/ml" "34.3°" "341/455" "34°C" "35e44" "35·3%" "35·7%" "36b1" "37.4°" "371/524"
@@ -878,10 +878,10 @@
  "5´-CATGGAGGACTTGGTGATAGCGC" "5´-CTTGGTGATAGCGCACCACGATATGGGCC"
  "5´-GAATTCGTCACTTATCATCATCATCCTTATAATCCTGCTGTGGCTCCAG"
  "5´-TGAATTCCACCATGGGCCAAGGTTGGGCTACTCCAGG-3´" "5·4%" "5À20" "6-8-week-old" "6/11" "6/9" "600/kg"
- "60x" "60°C" "62/38" "63/119" "63X/1.4" "63°C" "64/236" "66·7%" "6A-6C" "6A-B" "6D-F" "6e8" "6·82"
- "6×" "7-deaza-2" "7/30" "7/35" "700À1100" "70°c" "70·9%" "70À160" "71A-6" "71·2%" "72°" "72°C"
- "732/1000" "74·4%" "75°" "76/24" "76e100" "76H1N1" "77:388-391" "7a-b" "7A-C" "7a-e" "7c-e" "7D-F"
- "7}" "8 g/L" "8-azaguanine" "8-nt" "8.3°" "8/8%" "8/9" "80-yearold" "80i" "80mils" "82,109,12o"
+ "60x" "60°C" "62/38" "63/119" "63X/1.4" "63°C" "66·7%" "6A-6C" "6A-B" "6D-F" "6e8" "6·82" "6×"
+ "7-deaza-2" "7/35" "700À1100" "70°c" "70·9%" "70À160" "71A-6" "71·2%" "72°" "72°C" "732/1000"
+ "74·4%" "75°" "76/24" "76e100" "76H1N1" "77:388-391" "7a-b" "7A-C" "7a-e" "7c-e" "7D-F" "7}"
+ "8 g/L" "8-azaguanine" "8-nt" "8.3°" "8/8%" "8/9" "80-yearold" "80i" "80mils" "82,109,12o"
  "83---85" "8A-C" "8D-F" "8e10" "8°" "9 /L" "9/1,099" "9/11" "90°" "93°" "94°" "94°C" "95°" "95°C"
  "96well" "98.4°" "9A ." "9·3%" ":0.60-0" ":552-559" ":93-106" "<0.05" "<0.20" "<1" "<10%" "<18"
  "<2" "<20" "<20%" "<26" "<29" "<3" "<300bp" "<36" "<40" "<5" "<6" "=-0.4389" "=-0.5736" ">0" ">1"
@@ -895,7 +895,7 @@
  "AgSCT-gCgTggCKgCC" "AHU3" "AIDS-like" "AIDS-Vakzine" "AlexaFluor647" "alginateÀL-lysine-alginate"
  "Ali-Boucetta" "alpha/beta" "alpha1,3-fucosyltransferase" "amyloidβ-induced"
  "analytical/numerical" "and/" "and~2200" "andτ" "Anhui" "animals/plants" "anti-apoptotic"
- "anti-asthmatic" "anti-C15-VP2" "anti-CDHR3" "anti-digoxigenin" "anti-drug" "anti-E" "anti-FrCasE"
+ "anti-asthmatic" "anti-C15-VP2" "anti-CDHR3" "anti-digoxigenin" "anti-drug" "anti-FrCasE"
  "anti-fungal" "anti-His" "anti-HPV16L1" "Anti-HPV16L1" "anti-HPV16L1/18L1" "Anti-HPV18L1"
  "anti-HPV18L1" "Anti-HRPO" "anti-human" "anti-IFN-g" "anti-IFN-α/β" "anti-inflammatory"
  "anti-insects" "anti-JHM" "anti-JHMV" "anti-KLH" "anti-LEP100" "anti-Lewis" "anti-microbial"
@@ -903,9 +903,10 @@
  "anti-Rhesus" "anti-S1" "anti-SARS-CoV" "Anti-simian" "anti-spike" "anti-stalk"
  "anti-Streptococcus" "anti-Tac" "Anti-TacFv-PE38" "anti-tumor" "anti-viral"
  "antiacetylated-alpha-tubulin" "antibodies/ligands" "antibody-like" "antibody/ligand" "antibodyl6"
- "antigen/receptor" "antiIFN-g" "antiα" "APC/Ca" "Appr-1" "ARDS/acute" "areas/individuals" "Arg-1"
- "Arg-X-" "Arg-X-X-Arg" "arteri-" "article/Supplementary" "AS/" "aspx#mostvulnerable"
- "assur-Herzog" "astrovirus-like" "Astrovirus-like" "Attribution-NonCommercial-NoDerivs"
+ "antigen/receptor" "antiIFN-g" "antiα" "APC/Ca" "Appr-1" "approximately 1∼" "approximately 2-fold"
+ "approximately 5-fold" "ARDS/acute" "areas/individuals" "Arg-1" "Arg-X-" "Arg-X-X-Arg"
+ "around 28℃" "arteri-" "article/Supplementary" "AS/" "aspx#mostvulnerable" "assur-Herzog"
+ "astrovirus-like" "Astrovirus-like" "at least 2e3" "Attribution-NonCommercial-NoDerivs"
  "ATTTCATGC-3´" "attTn7" "author/funder" "Avelino-Silva" "average/overall" "AY816748.1" "AY988601"
  "Ayash-Rashkovsky" "a~57" "a~Ii" "b /S510" "B-which" "B3/25" "bacterial/plant" "bacterial/viral"
  "Banet-Noach" "Barja-Fidalgo" "barrier*" "bat/hedgehog" "Baum-Welch" "BC-819" "BC062328"
@@ -994,11 +995,11 @@
  "IO/6PZ5E" "isoform 1A" "isoform 1C" "isoform 1D" "Isoform 1E" "iTC200" "IU/" "IU/cat" "IU/kg"
  "IU/ml" "IU/mL" "IV×1" "i~a" "i¼1" "iÞψðiÞðiÞ" "J.3.3" "J.lm" "J00-J22" "J28" "J29" "j=1"
  "Jaburetox-2Ec" "jaburetox-2Ec" "Jalisco/1992" "January-February" "JF274479" "JIP60" "Jones-Engel"
- "June-July" "K.X." "K00992-M57477" "K63linked" "K63R" "Kaleidoscope™" "Kaplan-Meier"
- "Kaplan-Merier" "kcal/mol" "KDEL-like" "ke~t" "KF297339" "KLH/mouse" "KM71" "Koi-pla"
- "Konjunktiva-Schutz" "Kruskal-Wallis" "Kryspin-Sorensen" "Kunitz-type" "KwaZulu-Natal" "k~" "k~xt"
- "L-leucyl-L-leucine" "L-sélectine" "L-XZ" "L/body" "L/h" "l/min" "L/min" "L/min/lung" "L1-based"
- "la+" "LAMP3+" "Ld130" "Lead/Trust" "LearnCoil-VMF" "Lec13" "leisure/sport" "Lenti-X"
+ "June-July" "just 1.5-fold" "K.X." "K00992-M57477" "K63linked" "K63R" "Kaleidoscope™"
+ "Kaplan-Meier" "Kaplan-Merier" "kcal/mol" "KDEL-like" "ke~t" "KF297339" "KLH/mouse" "KM71"
+ "Koi-pla" "Konjunktiva-Schutz" "Kruskal-Wallis" "Kryspin-Sorensen" "Kunitz-type" "KwaZulu-Natal"
+ "k~" "k~xt" "L-leucyl-L-leucine" "L-sélectine" "L-XZ" "L/body" "L/h" "l/min" "L/min" "L/min/lung"
+ "L1-based" "la+" "LAMP3+" "Ld130" "Lead/Trust" "LearnCoil-VMF" "Lec13" "leisure/sport" "Lenti-X"
  "lentiCRISPRv2" "LEP100" "lesion/total" "LETTERSTONATURE----------------------------------"
  "Leu~4pro" "lg/g" "lg/mL" "lgE-mediated" "LHLJ" "licr+rM" "ligand-protein" "Limited/Standards"
  "LIT-*A" "LI~AA" "LKB1-STRADa-MO25a" "LL3" "Lleras-Muney" "ll~2-week-old" "LncRNA+mRNA" "lO-day"
@@ -1051,17 +1052,17 @@
  "non-Watson-Crick" "non-zero" "nonIgE-mediated" "Nonimmune-mediated" "Nordstr€" "NP_054711.1"
  "NPC1+" "NPC1+ /TPC2+" "nsp15F" "nsp15R" "nsp15s" "NT-647" "NucleoS+TM" "number^"
  "N°accession:AY291314" "N´" "N´-tetraacetic" "nº" "nσ" "O1-3" "O157:H7" "occupational/" "OD600"
- "ODE-SIS" "of~8.9" "ON-TARGETplus" "one-half" "one-quarter" "one-stepahead" "only/ratio"
- "onshore/" "onshore/offshore" "Oostrom-Ram" "operational/policy" "Opti-MEM" "or/and"
- "Oral/intravenous" "Ordinary-differential-equation-based" "ORF1b" "org/" "org/10" "org/10.1101"
- "org/10.1101/2020" "org/dataset/" "org/en/site/" "org/tools/" "Orthomyxoviridae-like" "OSRIP18"
- "outbreaks/" "ovalbumin…" "over30" "OX6" "o~" "o~/~" "p-eIF2" "P-glycoproteins"
- "p-phenylenediamine" "p-value" "P-value" "P.T.M" "P/F" "P/H" "P1353F3" "P1368D12" "P147.2R16"
- "P147.2R8" "P147.4R4" "P1472R16" "P1472R8" "P1474R4" "p16sheLL" "p18sheLL" "P2/FFP2" "P2A"
- "P4-fold" "p<" "p<0.001" "p<0.01" "p<0.05" "p<0·0001" "p=0·0004" "PA-L1" "PA-L1/LF" "PA-L2"
- "Pa/Fi" "PA/PrAg" "pack-year" "pack-years" "Pahl-Wostl" "Pandemrix®" "Panenza®" "Pareto-type"
- "parigidin-br1" "parvovirus-like" "par~ovirus-Iike" "pass/fail" "pBFP-N1" "pBM802" "PBS/10%"
- "pC15-GFP" "pC15-Rz" "pCHIKV-LR" "PCO2" "PCR-I~TE" "PCR-Nachweis" "PDB:2I88" "PDGFRA+"
+ "ODE-SIS" "of~8.9" "ON-TARGETplus" "one-half" "one-quarter" "one-stepahead" "only 64/236"
+ "only 7/30" "only/ratio" "onshore/" "onshore/offshore" "Oostrom-Ram" "operational/policy"
+ "Opti-MEM" "or/and" "Oral/intravenous" "Ordinary-differential-equation-based" "ORF1b" "org/"
+ "org/10" "org/10.1101" "org/10.1101/2020" "org/dataset/" "org/en/site/" "org/tools/"
+ "Orthomyxoviridae-like" "OSRIP18" "outbreaks/" "ovalbumin…" "over30" "OX6" "o~" "o~/~" "p-eIF2"
+ "P-glycoproteins" "p-phenylenediamine" "p-value" "P-value" "P.T.M" "P/F" "P/H" "P1353F3"
+ "P1368D12" "P147.2R16" "P147.2R8" "P147.4R4" "P1472R16" "P1472R8" "P1474R4" "p16sheLL" "p18sheLL"
+ "P2/FFP2" "P2A" "P4-fold" "p<" "p<0.001" "p<0.01" "p<0.05" "p<0·0001" "p=0·0004" "PA-L1"
+ "PA-L1/LF" "PA-L2" "Pa/Fi" "PA/PrAg" "pack-year" "pack-years" "Pahl-Wostl" "Pandemrix®" "Panenza®"
+ "Pareto-type" "parigidin-br1" "parvovirus-like" "par~ovirus-Iike" "pass/fail" "pBFP-N1" "pBM802"
+ "PBS/10%" "pC15-GFP" "pC15-Rz" "pCHIKV-LR" "PCO2" "PCR-I~TE" "PCR-Nachweis" "PDB:2I88" "PDGFRA+"
  "peptide-MHC" "performed…" "Perki-nElmer" "Perkin-Elmer" "persiste-t-elle" "persons/"
  "persons/year" "Personto-person" "pET21a" "pfu/mL" "pg/ml" "pH1N1" "pH8.0" "phage/VLPs"
  "phagocytosis/clearance" "phenylacetyl-Arg-Val-Arg-4-amidinobenzylamide" "Phos-phorImager"
@@ -1137,7 +1138,7 @@
  "≥50" "≥6" "≥7" "␤-cell" "␤-coronavirus" "g/ml"))
     :test #'equalp))
 
-;; 4658 extracted by morphology
+;; 4656 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1506,26 +1507,26 @@
  "lying" "lymphatic" "lymphatics" "lymphocytedependent" "lymphocytic" "lymphocytolytic"
  "lymphocytosis" "lymphocytotoxic" "lymphomonocytic" "lymphoplasmacytic" "lymphoproliferative"
  "lymphoreticular" "lymphotropic" "lyophilization" "lysogenic" "lysosomotropic" "macroeconomic"
- "macromolecular" "macroscopic" "magnetic" "magnetization" "magnification" "majority" "malarial"
- "malaysian" "malignent" "maligtion" "manageable" "managed" "management" "mandated" "mandatory"
- "manejar" "manifestation" "manifested" "manipulation" "manual" "manually" "mapped" "marcador"
- "marginal" "marginalised" "marginated" "marital" "marketable" "marketed" "mashed" "massaging"
- "massive" "material" "materially" "maternal" "maternally" "mathematical" "mathematics"
- "matriculation" "matrisian" "maturation" "maturity" "maxillary" "maximization" "maximize"
- "maxipreparation" "mcneely" "mechanical" "mechanically" "mechanics" "mechanizing" "medial"
- "mediastinal" "mediator" "medication" "medicinal" "mediumconcentration" "mejorar" "melioidosis"
- "melitensis" "membranal" "membraneanchored" "membranebounded" "membranous" "memetic" "mendelian"
- "mental" "mentoring" "merged" "mesenchymal" "mesenteric" "mesoporous" "messaging" "metaanalysis"
- "metaanálisis" "metabolization" "metabolize" "metabolomic" "metagenomic" "metagenomics"
- "metaheuristic" "metaheuristics" "metallic" "meteorological" "methacrylic" "methodological"
- "methylotrophic" "michiganensis" "microanatomical" "microattribution" "microbial"
- "microbiological" "microcal" "microcentrifugation" "microcephaly" "micrococcal" "microencephaly"
- "microenvironment" "microfusion" "microglial" "microinfusion" "microisolator" "micromanipulation"
+ "macromolecular" "macroscopic" "magnetic" "magnetization" "magnification" "malarial" "malaysian"
+ "malignent" "maligtion" "manageable" "managed" "management" "mandated" "mandatory" "manejar"
+ "manifestation" "manifested" "manipulation" "manual" "manually" "mapped" "marcador" "marginal"
+ "marginalised" "marginated" "marital" "marketable" "marketed" "mashed" "massaging" "massive"
+ "material" "materially" "maternal" "maternally" "mathematical" "mathematics" "matriculation"
+ "matrisian" "maturation" "maturity" "maxillary" "maximization" "maximize" "maxipreparation"
+ "mcneely" "mechanical" "mechanically" "mechanics" "mechanizing" "medial" "mediastinal" "mediator"
+ "medication" "medicinal" "mediumconcentration" "mejorar" "melioidosis" "melitensis" "membranal"
+ "membraneanchored" "membranebounded" "membranous" "memetic" "mendelian" "mental" "mentoring"
+ "merged" "mesenchymal" "mesenteric" "mesoporous" "messaging" "metaanalysis" "metaanálisis"
+ "metabolization" "metabolize" "metabolomic" "metagenomic" "metagenomics" "metaheuristic"
+ "metaheuristics" "metallic" "meteorological" "methacrylic" "methodological" "methylotrophic"
+ "michiganensis" "microanatomical" "microattribution" "microbial" "microbiological" "microcal"
+ "microcentrifugation" "microcephaly" "micrococcal" "microencephaly" "microenvironment"
+ "microfusion" "microglial" "microinfusion" "microisolator" "micromanipulation"
  "microneutralisation" "micropinocytosis" "microporous" "microscopic" "microtitration"
  "microtubular" "microvacuolation" "microvascular" "micturition" "midgestation" "migratory"
  "milgram" "military" "mimicking" "minced" "minimal" "minimised" "minimising" "minimizar"
- "minimization" "minimized" "mining" "minipreparation" "ministration" "minority" "minted" "mirror"
- "mirrored" "miscellaneous" "miserable" "misfolded" "misleading" "mismanagement" "missed" "mission"
+ "minimization" "minimized" "mining" "minipreparation" "ministration" "minted" "mirror" "mirrored"
+ "miscellaneous" "miserable" "misfolded" "misleading" "mismanagement" "missed" "mission"
  "mistrusted" "mitigation" "mitogenactivated" "mitotic" "mntagenesis" "mobilisation"
  "mockinoculated" "modeled" "modelling" "modernized" "modifiable" "modular" "modulator"
  "modulatory" "molecularly" "moment" "momulvinfected" "mondal" "monetary" "monitor" "monitored"
@@ -1826,7 +1827,7 @@
  "rmed" "rted" "vely" "ying" "αβ"))
     :test #'equalp))
 
-;; 3611 extracted from Comlex
+;; 3612 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1879,8 +1880,8 @@
  "breed" "breeder" "breeders" "breeds" "bridge" "brief" "bright" "brightness" "bring" "bristle"
  "broad" "broaden" "broader" "broker" "brokers" "bronchus" "brook" "brooks" "broth" "brother"
  "brought" "bubble" "budget" "budgets" "bug" "bugs" "build" "buildings" "bulb" "bulk" "bulkier"
- "bulky" "bull" "bulldog" "bullet" "bundle" "buoyant" "burden" "bureau" "burst" "burton" "bus"
- "buses" "bush" "business" "butler" "buy" "buyback" "buybacks" "buyer" "buyers" "bypass"
+ "bulks" "bulky" "bull" "bulldog" "bullet" "bundle" "buoyant" "burden" "bureau" "burst" "burton"
+ "bus" "buses" "bush" "business" "butler" "buy" "buyback" "buybacks" "buyer" "buyers" "bypass"
  "byproduct" "bystander" "cabbage" "cabin" "cabinet" "cad" "cads" "calculation" "calculations"
  "calculi" "calculus" "calf" "calif" "calm" "calve" "calves" "came" "camel" "camels" "camera"
  "camp" "campaign" "camps" "canal" "cant" "capillaries" "capillary" "captain" "carbon" "carcass"
@@ -2218,5 +2219,4 @@
  "world" "worldwide" "worm" "worms" "worry" "worthwhile" "worthy" "wound" "wounds" "wrap" "wright"
  "write" "wrote" "yolk" "yuan" "zipper" "zone" "zones" "zoo" "zoology" "zoos"))
     :test #'equalp))
-os")))
-    :test #'equalp))
+equalp))

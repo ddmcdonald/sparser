@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-10601-10700 sample of unknown words
-;; created 6/4/20 13:48:40
+;; created 6/18/20 20:24:23
 
 (in-package :sparser)
 
@@ -586,7 +586,7 @@
  "Zhao" "Zheng" "Zhi" "Zhirnov" "Zhong" "Zhou" "Zhu" "Ziebell" "Ziskind" "Zoellner" "aK" "sH"))
     :test #'equalp))
 
-;; 2132 defined as a bio-entity
+;; 2140 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-10601-10700
@@ -613,10 +613,10 @@
  "-GGCCTTGCCCTGGAACTTCGGG-3" "-GGCGGAAACCTAGTCGGAATA-3" "-hydroxycytidine-5" "-K-chloromethane"
  "-TAATACGACTCACTATAGGGAT-GTCTGATAATGGACCCCA-3" "-TCTGGTTACTGCCAGTTGAATCTG-3"
  "-TTAGGCCT-GAGTTGAGTCAG-3" "-x-_" ". /2020" ". /©" ".3346/jkms" "0--20" "0--30" "0--4" "0.001e10"
- "0.125 µg/mL" "0.194|" "0.1e10" "0.1×" "0.2%e1.2" "0.25e2" "0.5/10,000" "0.5e1" "000/mm"
- "0:024ðAE0:006Þ" "0:024ðAE0:008ÞMV" "0:306ðAE0:091Þ" "0:367ðAE0:074ÞI" "0:442ðAE0:094ÞKSI-1" "0e1"
- "0e24h" "0·1%" "0·25" "1 /FVC" "1 µg/mL" "1$12" "1$20,000" "1&12x70-75" "1*" "1+2" "1,000,000"
- "1,1-dioxide" "1,1-dioxides" "1,1-Dioxo-1,4,2-benzodithiazine" "1,1-dioxo-1,4,2-dithiazine"
+ "0.125 µg/mL" "0.194|" "0.1e10" "0.1×" "0.25e2" "0.5/10,000" "0.5e1" "000/mm" "0:024ðAE0:006Þ"
+ "0:024ðAE0:008ÞMV" "0:306ðAE0:091Þ" "0:367ðAE0:074ÞI" "0:442ðAE0:094ÞKSI-1" "0e1" "0e24h" "0·1%"
+ "0·25" "1 /FVC" "1 µg/mL" "1$12" "1$20,000" "1&12x70-75" "1*" "1+2" "1,000,000" "1,1-dioxide"
+ "1,1-dioxides" "1,1-Dioxo-1,4,2-benzodithiazine" "1,1-dioxo-1,4,2-dithiazine"
  "1,1′-carbonyldiimidazole" "1,253·8" "1,253·96/1,252" "1,254·1,254=0.342" "1,254·1,254=2.983"
  "1,254·1,254=5.555" "1,255·10" "1,255·11/1,254·1,254=0.342" "1,255·83" "1,255·98"
  "1,255·99/1,254·1,254=3.076" "1,3-benzoxazine" "1,4,2-benzodithiazin-3-amine"
@@ -627,8 +627,8 @@
  "1/43" "1/5" "1/8" "1/zm" "1/À" "1/ÀCpG" "1/γ" "10,000-fold" "10-20mg" "10-30mg" "10-fold-diluted"
  "10/1,254" "100 g/ml" "100 I~1" "100 m10.5" "100%/Y µ" "100,000×" "100-200mcg" "100/1" "1000Â"
  "1001/5606" "100e200" "100e400" "100°C." "100ä" "102.7°F" "10^9/l" "10bcells/ml" "10e100" "10e12"
- "10e20" "10e4" "10mg/24" "10×" "11-diene" "11.24 µg/mL" "11/1,255·39/" "11/54" "1101 /2020"
- "11q23" "11q24-25"
+ "10e4" "10mg/24" "10×" "11-diene" "11.24 µg/mL" "11/1,255·39/" "11/54" "1101 /2020" "11q23"
+ "11q24-25"
  "12-hydroxy-4,4,8,10,14pentamethyl-2,3,5,6,7,9,11,12,13,15,16,17-dodecahydro-1H-cyclopenta"
  "124/3601" "125°C." "129SvEv" "13,15-epoxy" "13,15-Epoxy-13-epi-brevifoliol" "13-oxo-11-"
  "13-TBDMS-5-oxo" "13-TBDMS-tax-" "13/66" "137a" "13×10" "14-0571-Techapp1" "15--30" "15/118"
@@ -679,8 +679,8 @@
  "6-chloro-3-methylthio-1,1-dioxo-1,4,2-benzodithiazin-7-carboxylic acid"
  "6-chloro-3methylthio-1,1-dioxo-1,4,2-benzodithiazin-7-carbonyl" "6-chloro-7-" "6-chloro-7-{4-"
  "6-OH-DA-induced" "6/29" "6/8" "6/9" "600Â" "60°C" "60°C." "60×" "62°C" "66/143" "6A.C3" "6NUR"
- "6xHis" "6°C" "6×" "7,070 H1" "7--14" "7-3H" "7.42×10" "7.5-ISG20m" "70/30" "70e80" "70°C" "72°C"
- "7DC" "7e12" "7e9" "8 /mL" "8-April" "8.3a" "8.3b" "8/" "8/16" "8/20" "8/8" "8/9" "80e90" "80°C"
+ "6xHis" "6°C" "6×" "7,070 H1" "7-3H" "7.42×10" "7.5-ISG20m" "70/30" "70e80" "70°C" "72°C" "7DC"
+ "7e12" "7e9" "8 /mL" "8-April" "8.3a" "8.3b" "8/" "8/16" "8/20" "8/8" "8/9" "80e90" "80°C"
  "82:235-241" "82°C" "83/1084" "83~5" "8:00--10" "8C." "8pg/ml" "9 /l" "9.5×10" "9.6yr" "9/54"
  "90/10" "90°C" "91/143" "94/107" "94°C" "95%/5%" "95°C" "97/" "98/1,254" "9B11" "9e14" "9e89"
  "9mer" "9·5%" ":4,5" ":e00275-16" ":t" "<0.0001" "<0.05" "<0.1" "<0.15" "<0.20" "<0.3 %" "<1"
@@ -693,9 +693,9 @@
  "ACT5" "ACTH/106" "ACTHI_39" "ADAS-Cog" "ADP-ribosel" "African-Americans" "after-tax" "AG7088"
  "Ag85" "agarose/1X" "AGGAGGGCGTTCTGACT-3" "AGL1" "AgPath-ID™" "Agro-ecological" "AI052439"
  "AI056979" "airway trypsin-like protease/differentially" "Al-Nakib" "Al-Saieg" "Ala268Val"
- "Ala348Thr" "alez-Guzm" "alpha=0.05" "alphavirus-like" "alter/hijack" "AMCF-II" "aminoallyl-RNA"
- "Amit-Romach" "amoxicillin/co-trimoxazole" "AMPC_" "ampicillin/amoxicillin" "An-lu"
- "anatomo-cyto-pathologie" "and10" "and=or" "annealing/extension" "Anti-A." "Anti-ANDV"
+ "Ala348Thr" "alez-Guzm" "almost 10-fold" "alpha=0.05" "alphavirus-like" "alter/hijack" "AMCF-II"
+ "aminoallyl-RNA" "Amit-Romach" "amoxicillin/co-trimoxazole" "AMPC_" "ampicillin/amoxicillin"
+ "An-lu" "anatomo-cyto-pathologie" "and10" "and=or" "annealing/extension" "Anti-A." "Anti-ANDV"
  "anti-bacterial" "anti-c-ADA" "Anti-C." "anti-C." "Anti-CA-gtf" "anti-CD41a" "anti-cell"
  "anti-chicken" "anti-ComD" "anti-core" "anti-coronavirus" "Anti-CYP2E1" "anti-DENV" "Anti-DENV2"
  "Anti-E2" "anti-Efb" "Anti-Efb" "Anti-ETEC" "Anti-F." "anti-FcαRI" "anti-gentamycin" "anti-goat"
@@ -711,9 +711,10 @@
  "anti-thrombotic" "anti-TioPV" "anti-tuberculeuses" "anti-turkey" "anti-venom" "anti-Vibrio"
  "anti-viral" "Anti-virus" "anti-Yo" "Anti-αhA" "anti-ανβ3" "antibiotic/" "antibiotic/antimycotic"
  "antibody/kg" "antiCD4-PE" "antiCD44-PECy5" "antiCD62L-FITC" "antiCD8-PE" "antiviral-like"
- "anxiety-like" "apoptosis/toxicity" "APP695" "ARDS-like" "ARDS/acute" "ARHTVAAYYTNAARTAYGC-3"
- "array_request" "Arthus-like" "as-yet-unclassified" "asialoglycoprotein-receptor" "Aspergil-lus"
- "at1a" "author/funder" "autumn/winter" "avian-like" "AY278741" "AY283798" "AY508813" "AY700211"
+ "anxiety-like" "apoptosis/toxicity" "APP695" "approximately 26-fold" "approximately one-half"
+ "ARDS-like" "ARDS/acute" "ARHTVAAYYTNAARTAYGC-3" "around one-half" "array_request" "Arthus-like"
+ "as-yet-unclassified" "asialoglycoprotein-receptor" "Aspergil-lus" "at least 2-fold" "at1a"
+ "author/funder" "autumn/winter" "avian-like" "AY278741" "AY283798" "AY508813" "AY700211"
  "AY903460" "AY910861" "a¼" "B-and" "b-D-arabino" "b-D-arabinofuran" "b-hydroxyketone" "b-keto"
  "B-lineage" "B/hepatitis C virus" "Background/Purpose" "Balb/C" "basic/essential" "bat-SRBD" "BC9"
  "BC9+" "Ben-Yosef" "Benjamini-Hochberg" "benzoxazin-4-imine" "beta 2b" "beta 2c" "BF>15"
@@ -791,27 +792,28 @@
  "mg/dL" "mg/g" "mg/kg" "mg/kg/" "mg/kg/bd" "mg/kg/day" "mg/kg/dose" "mg/L" "mg/L." "mg/ml"
  "mg/subject" "mg=ml" "milktryptone-glucose-glycerol" "mini-plasmin" "MIP2α" "ml/min" "mmol/"
  "mmol/L" "modi®ed" "MON/P" "monitoring/management" "monocyte/" "monocyte/macrophage"
- "monocytes/macrophages" "mononucleosis-like" "Mozes-Koch" "MPT63" "MPT64" "MR590" "MSPL/"
- "MSPL/TMPRSS13" "mucosa!" "mucosa}" "Muller-Jakic" "MVBs/exosomes" "myc-6Xhis" "MyD88induced" "M€"
- "N-2-hydroxy-ethylpiperazine-N" "N-acetyl-9-O-acetylneuraminic" "N-benzoyl-"
+ "monocytes/macrophages" "mononucleosis-like" "mostly 7--14" "Mozes-Koch" "MPT63" "MPT64" "MR590"
+ "MSPL/" "MSPL/TMPRSS13" "mucosa!" "mucosa}" "Muller-Jakic" "MVBs/exosomes" "myc-6Xhis"
+ "MyD88induced" "M€" "N-2-hydroxy-ethylpiperazine-N" "N-acetyl-9-O-acetylneuraminic" "N-benzoyl-"
  "N-Boc-L-glutamic acid" "N-bromosuccinimide" "N-methyl-D-aspartate" "N-or" "n/a" "N22°26" "N23°56"
  "N2a/" "N3-C3-N31" "N479K." "n=1" "n=12" "n=250" "n=28" "N=3" "N=5" "n=7" "n=8" "n^t" "Na*-free"
  "Na2C03and" "Na2S204in" "NaDodS04/polyacrylamide gel electrophoresis" "NAFTA5-p" "NaH2PO4"
  "NaHC03" "NaI04" "Nano-Glo" "NaOH/H" "Narrow-bore" "NBV-like"
  "NC-C-prM-E-NS1-NS2A-NS2B-NS3-NS4A-NS4B-NS5-NC3" "NC_001451" "NC_003436" "NC_009020" "nCov2"
- "NEG2" "nephritis-like" "Netzel-Arnett" "Neu5,9Ac" "neuro-endocrine" "neuron-like" "newborns>-•"
- "NF-jB" "NF-kB1" "NF-kB1-GFP" "ng/mm2" "ng/spot" "NH40H" "NHC/EIDD-2801" "nickel-*" "NiV-like"
- "nL/min" "NmLuc/ΔGDD" "NNeo" "NO1-A1-40091" "non-" "non-Aboriginal" "non-durables" "Non-durables"
- "non-Hodgkins" "non-integrin" "non-MDR" "non-NAFTA" "non-RV" "non-severe" "Non-traded"
- "non-translated" "non-typeable" "non-vaccine" "nonresilient/low" "nose/mouth" "NP968"
- "NRCE-HKU270" "NS5mut" "NS5mutA" "NS5mutB" "NS5mutC" "NS5mutC2" "NS5mutCn" "nsp10_" "nsp10_PID11"
- "nsp12_PID11" "nsp14_PID11" "nsP3-1ike" "nsP3-like" "nsP3like" "nsPl-like" "nsPl-nsP4"
- "NsPl-related" "NtaTnt1V" "NTPase/RNA" "Nuclear factor (erythroid-derived 2)-like" "nylon 6/6"
- "n¼1" "O-tert-butyldimethylsilyl" "O.Ol" "O157" "O157:H7" "o2" "OB/mL" "ob/ob" "OBQ-44" "OD600"
- "ofnsP1" "ofnsP2" "ofnsP3" "ofnsP4" "ofWAP-immunoglobulin" "ofWAP-LC" "of~10%" "ogawa@chem"
- "OH-13" "OIE" "one-half" "one-time" "opez-Moya" "ORF1b" "ORF7a/b" "org/" "org/10" "org/10.1101"
- "org/pig" "org/taxonomy/" "other_documents" "outbreaks/" "OVC-HSC" "oxan-3-yl" "oxane-3,4,5-triol"
- "oxazolopyrimidin-6-one" "oxolan-2-yl" "oxy-6-" "oxy-6-methylhept-5-en-2-yl"
+ "nearly 10-fold" "nearly 4-fold" "NEG2" "nephritis-like" "Netzel-Arnett" "Neu5,9Ac"
+ "neuro-endocrine" "neuron-like" "newborns>-•" "NF-jB" "NF-kB1" "NF-kB1-GFP" "ng/mm2" "ng/spot"
+ "NH40H" "NHC/EIDD-2801" "nickel-*" "NiV-like" "nL/min" "NmLuc/ΔGDD" "NNeo" "NO1-A1-40091" "non-"
+ "non-Aboriginal" "non-durables" "Non-durables" "non-Hodgkins" "non-integrin" "non-MDR" "non-NAFTA"
+ "non-RV" "non-severe" "Non-traded" "non-translated" "non-typeable" "non-vaccine"
+ "nonresilient/low" "nose/mouth" "NP968" "NRCE-HKU270" "NS5mut" "NS5mutA" "NS5mutB" "NS5mutC"
+ "NS5mutC2" "NS5mutCn" "nsp10_" "nsp10_PID11" "nsp12_PID11" "nsp14_PID11" "nsP3-1ike" "nsP3-like"
+ "nsP3like" "nsPl-like" "nsPl-nsP4" "NsPl-related" "NtaTnt1V" "NTPase/RNA"
+ "Nuclear factor (erythroid-derived 2)-like" "nylon 6/6" "n¼1" "O-tert-butyldimethylsilyl" "O.Ol"
+ "O157" "O157:H7" "o2" "OB/mL" "ob/ob" "OBQ-44" "OD600" "ofnsP1" "ofnsP2" "ofnsP3" "ofnsP4"
+ "ofWAP-immunoglobulin" "ofWAP-LC" "of~10%" "ogawa@chem" "OH-13" "OIE" "one-half" "one-time"
+ "only 0.2%e1.2" "only 10e20" "only 5,13-bis" "opez-Moya" "ORF1b" "ORF7a/b" "org/" "org/10"
+ "org/10.1101" "org/pig" "org/taxonomy/" "other_documents" "outbreaks/" "OVC-HSC" "oxan-3-yl"
+ "oxane-3,4,5-triol" "oxazolopyrimidin-6-one" "oxolan-2-yl" "oxy-6-" "oxy-6-methylhept-5-en-2-yl"
  "oxy-6-methyloxane-3,4,5triol" "oxy-6methyloxane-3,4,5-triol" "p!NG2003E-neo" "p!NG2016E-gpt"
  "p!NHC6A." "p!NLC6A." "P-450" "p-azophenylarsonate" "p-distance" "p-fluorobenzyl" "P-labeled"
  "P-labelled" "p-Luc-NF-jB" "P-naphthol" "p-NF-jB" "p-toluenesulfonyl" "p-tolyl" "p-value" "P.R."
@@ -887,7 +889,7 @@
  "M." "2003"))
     :test #'equalp))
 
-;; 4289 extracted by morphology
+;; 4287 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1230,8 +1232,8 @@
  "luminescent" "lundkvist" "luring" "lurking" "luthar" "lying" "lymphatic" "lymphatics"
  "lymphoblastic" "lymphohistiocytic" "lymphoproliferative" "lymphotropic" "macroeconomic"
  "macroeconomics" "macromolecular" "macroscopic" "maculopapular" "madgascar" "magnetic"
- "magnification" "majority" "malabsorption" "malaysian" "maldistribution" "mallory" "malposition"
- "manageable" "management" "mandatory" "mandibular" "manifested" "manipulated" "manual" "manually"
+ "magnification" "malabsorption" "malaysian" "maldistribution" "mallory" "malposition" "manageable"
+ "management" "mandatory" "mandibular" "manifested" "manipulated" "manual" "manually"
  "manufacturing" "marginal" "margination" "marked" "marketability" "marketing" "markovian"
  "marsupialization" "massive" "massively" "material" "maternal" "maternity" "mathematical"
  "matrixscience" "maturation" "maximization" "maximize" "mcmcsampled" "mcnemar" "mechanic"
@@ -1243,11 +1245,11 @@
  "microbicidal" "microbiologic" "microbiological" "microenvironment" "microglial" "microinjecting"
  "microinjection" "microneutralization" "micronic" "micropipetting" "microscopic" "microvascular"
  "midclavicular" "midlactation" "migratory" "military" "militating" "mimicking" "minced" "minimal"
- "minimization" "minimize" "mining" "minority" "mirroring" "misassignment" "miscellaneous"
- "misclassification" "misclassified" "misconception" "misfolding" "misincorporation" "mislabeled"
- "misleading" "misplaced" "missing" "mitigation" "mitotic" "mockinfected" "mockinoculated"
- "modacrylic" "modeled" "modelled" "moderatesized" "modifiable" "modular" "modularity" "modulatory"
- "molding" "moment" "momentous" "monetary" "monitor" "monitored" "monoaminoxidase" "monobasic"
+ "minimization" "minimize" "mining" "mirroring" "misassignment" "miscellaneous" "misclassification"
+ "misclassified" "misconception" "misfolding" "misincorporation" "mislabeled" "misleading"
+ "misplaced" "missing" "mitigation" "mitotic" "mockinfected" "mockinoculated" "modacrylic"
+ "modeled" "modelled" "moderatesized" "modifiable" "modular" "modularity" "modulatory" "molding"
+ "moment" "momentous" "monetary" "monitor" "monitored" "monoaminoxidase" "monobasic"
  "monocistronic" "monoclonal" "monocytederived" "monocytic" "monodispersed" "monoinfection"
  "monomeric" "mononuclear" "monophyletic" "monophyly" "monospecific" "monotopic" "monotypically"
  "monovalent" "moradian" "morality" "morbidity" "moreefficient" "morphogenetic" "morphologic"
@@ -1525,7 +1527,7 @@
  "ying" "Σρ" "ΦΧ" "ανβ" "γδ"))
     :test #'equalp))
 
-;; 3351 extracted from Comlex
+;; 3350 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1576,11 +1578,11 @@
  "breeder" "brew" "brewer" "bridgehead" "brief" "bright" "brightness" "brilliant" "brine" "bring"
  "brisk" "broad" "broaden" "broader" "broiler" "broke" "bronchus" "brook" "brooks" "broth"
  "brother" "brotherhood" "broths" "brought" "brush" "bubble" "buck" "bucket" "buddy" "budget"
- "budgets" "buffalo" "bug" "bugs" "builder" "bulb" "bulk" "bulky" "bull" "bullet" "bundle"
- "bundles" "burden" "burdock" "bureau" "burger" "burst" "bus" "business" "busy" "butler" "butter"
- "butters" "buy" "buyer" "bypass" "byproduct" "bystander" "bystanders" "cabinet" "cadre" "calf"
- "caliber" "came" "camel" "camels" "camera" "campaign" "cancel" "candies" "candy" "cant" "canyon"
- "cape" "capillaries" "capillary" "capsule" "capsules" "capture" "carbon" "care" "career" "careers"
+ "budgets" "buffalo" "bug" "bugs" "builder" "bulb" "bulky" "bull" "bullet" "bundle" "bundles"
+ "burden" "burdock" "bureau" "burger" "burst" "bus" "business" "busy" "butler" "butter" "butters"
+ "buy" "buyer" "bypass" "byproduct" "bystander" "bystanders" "cabinet" "cadre" "calf" "caliber"
+ "came" "camel" "camels" "camera" "campaign" "cancel" "candies" "candy" "cant" "canyon" "cape"
+ "capillaries" "capillary" "capsule" "capsules" "capture" "carbon" "care" "career" "careers"
  "careful" "carefulness" "caretaker" "caretakers" "cargo" "caricature" "carnivore" "carnivores"
  "carriage" "carrier" "cartilage" "cartoon" "cartridge" "carver" "cassette" "cast" "casts"
  "casualties" "casualty" "cat" "catalog" "catalogue" "catalyst" "catastrophe" "catch" "cater"
@@ -1890,8 +1892,7 @@
  "worry" "wound" "wright" "write" "wrote" "yardstick" "yolk" "youth" "youths" "yuan" "zero" "zeros"
  "zone"))
     :test #'equalp))
-eby" "wherein" "whereupon" "wherever" "whey" "whisker" "whiskers" "whole" "wholesale" "wild"
- "wilderness" "willingness" "wind" "windfall" "window" "windows" "wisdom" "wise" "withdraw"
+ndow" "windows" "wisdom" "wise" "withdraw"
  "wonder" "wood" "woods" "woody" "woof" "word" "words" "wore" "worker" "workers" "workforce"
  "workload" "workplace" "workplaces" "workshop" "world" "worldwide" "worm" "worries" "worrisome"
  "worry" "wound" "wright" "write" "wrote" "yardstick" "yolk" "youth" "youths" "yuan" "zero" "zeros"

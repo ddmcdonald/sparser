@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-901-1000 sample of unknown words
-;; created 6/4/20 13:49:28
+;; created 6/18/20 20:41:9
 
 (in-package :sparser)
 
@@ -619,7 +619,7 @@
  "Zhong" "Zhou" "Zhu" "Zientara"))
     :test #'equalp))
 
-;; 2167 defined as a bio-entity
+;; 2168 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-901-1000
@@ -687,7 +687,7 @@
  "3-naphthyl-1-phenyl-5-" "3-T3-L1" "3.0-fold" "3.1-fold" "3.2-fold" "3.3X" "3.5×10" "3.6e"
  "3.7-fold" "3.74~3.74" "3.8-fold" "3.9-fold" "3/" "3/6" "3/7" "30,000to" "30-800fold" "3000Âg"
  "31e33" "32°C" "33/65" "34-year-olds" "355/2024" "36e39" "36°C" "37.4-fold" "37:39-45" "37uC"
- "37°C" "37°C." "38.3°C" "39:293-300" "39°C." "3a-3d" "3AE40%" "3AE5-3AE7%" "3AE53-3AE69%" "3AE61%"
+ "37°C" "37°C." "38.3°C" "39:293-300" "3a-3d" "3AE40%" "3AE5-3AE7%" "3AE53-3AE69%" "3AE61%"
  "3AE72%" "3B ." "3C ." "3C7" "3CL" "3Clike" "3Cpro" "3CSY" "3Dx" "3e4" "3e56" "3F2" "3J0C" "3T3"
  "3T3-L1" "3TC" "3´-end" "3∼4" "4,5-dimethyithiazol-2-yl" "4,6-diamidino-2-phenylindole" "4-10°C"
  "4-8μm" "4-Aminophenyl" "4-aza-7,9-dideazaadenosine" "4-aza-7.9-dideazaadenosine"
@@ -705,7 +705,7 @@
  "6.3E-04" "6.4e" "6/11" "6/7" "6000/NaCl" "60°C" "60Њ" "62-year-olds" "62.5°C" "64.7e90.2" "65°C"
  "66nt-long" "67-jarige" "67.6e88.4" "68°C" "69/159" "6A ." "6AE2" "6e8" "6helix"
  "7-Deazaadenosine" "7.26/77.0" "7.4-fold" "7.4∼8.3" "7/14" "7/20" "70-71°N" "70-times" "70uC"
- "70°C" "70°N" "72°C" "72°C." "73À75" "75e395" "76.5e88.4" "7e9" "7H9" "7À12" "7Á9" "8-10μm" "8/13"
+ "70°C" "72°C" "72°C." "73À75" "75e395" "76.5e88.4" "7e9" "7H9" "7À12" "7Á9" "8-10μm" "8/13"
  "80 %~90 %" "80e100" "80~90 %" "80°C" "80°C." "81.3e90.2" "84À86" "86.6°C" "87À92" "8a-8d"
  "8hydroxysclerosporin" "8well" "8~~" "9 /l" "93TH975" "94°C" "95%CI" "95°C" "961/2165" "96ZM651"
  "98°C" "9a-9d" "9AE91%" "9mcg/m3" "9pscssicurrent" "9~" "://" ":10 through 1" ":10240" ":25-35"
@@ -720,10 +720,10 @@
  "Acid-Albumin-Dextrose-Catalase" "acidosis/serious" "ACIP/" "ACIP/AAP/" "AcNPV-S1133-muNS"
  "adenovims-2" "adenovirus-l" "adoles-~e" "adults9" "Aerosil-treatment" "Ag/FIV" "AG/G" "agar-BMS"
  "age25-34" "age35-44" "age45-54" "age55-62" "age63" "Ala603Thr" "alfa-2a" "alfa-2b" "Alll424"
- "allo~rafts" "alpha-interferon" "alpha-mannosidase-like" "alphaherpesvirus-1" "alphavirus-like"
- "ALX-201-061-U025" "AmpliPrep/Cobas" "anaerobic bacteria-like" "ANCA-negatieve" "and/" "and\\1"
- "angioplasty/stent" "animal-disease-surveillance-reports" "anorexia=2" "anosmia/dysgeusia"
- "anti-apoptotic" "anti-biotin" "anti-C5a" "Anti-CSFV" "anti-DENV" "anti-donor" "anti-E"
+ "allo~rafts" "almost 9-fold" "alpha-interferon" "alpha-mannosidase-like" "alphaherpesvirus-1"
+ "alphavirus-like" "ALX-201-061-U025" "AmpliPrep/Cobas" "anaerobic bacteria-like" "ANCA-negatieve"
+ "and/" "and\\1" "angioplasty/stent" "animal-disease-surveillance-reports" "anorexia=2"
+ "anosmia/dysgeusia" "anti-apoptotic" "anti-biotin" "anti-C5a" "Anti-CSFV" "anti-DENV" "anti-donor"
  "anti-EBNA" "anti-ei" "anti-EIA" "Anti-EIA" "anti-epidemic" "anti-feline" "anti-FIPV"
  "anti-genicity" "Anti-glutathione" "Anti-GM-CSF" "anti-grippe" "anti-H5N1" "anti-HA"
  "anti-hamster" "anti-HBc" "Anti-HCV" "anti-Hillary" "anti-HTLV-I/ll" "anti-human" "anti-IAV"
@@ -734,22 +734,22 @@
  "anti-proliferative" "anti-PRRSV" "anti-PvPep45" "anti-rabbit" "anti-rat" "anti-retroviral"
  "anti-SCV" "anti-sera" "anti-social" "Anti-TNFs" "anti-tumor" "anti-tumorigenic" "anti-viral"
  "anti-VRS" "anti-worm" "antigen/antibody" "antigens!9" "appetite/intake" "April-November"
- "arthralgia/arthritis" "Arthropod-borne" "Arthus-toxic" "as-yet" "ASI-Tirol" "Asia-1" "aspirate/"
- "aspirates/biopsies" "aspirates/washings" "aspiration/biopsy" "assets71-give" "asthma-like"
- "ATCC-CCL34" "ATCC-CCL94" "ATCC27294" "attendee^" "author/funder" "autophagosome-like" "AV1412"
- "AV150" "AV31" "available*" "availablez0" "average/max" "avian/" "avian/quail" "A~" "B-and" "B.85"
- "B.V." "B/MIC" "Back-Brito" "bacteremia/" "bacteria/oil" "bacterial/candidal" "bacterial/viral"
- "Baden-Württemberg" "Balada-Llasat" "Balb/C" "BALB/cAnNCrl" "BALB/cByJ" "BALB/cJ"
- "bandree@worldbank" "Banet-Noach" "Banos-Lara" "Bat-SARS-like" "BCCM/" "BCIP/NBT" "be/"
- "Becton-Dickenson" "bed-day" "bed-days" "beds/100,000" "Benjamini-Hochberg" "Berkeley-based"
- "BFU2010-22228" "BHQ1" "Bio-Plex" "Bio-Rad" "BioImage@" "biosafety/security" "Biosystems/Life"
- "Biosystems/MDS" "Blake/channel" "blood/tissue" "blood=4" "blood=7" "BLV/" "BMY-27709"
- "Boschi-Pinto" "Bosnia-Herzegovina" "Bowen-Jones" "BPIV3" "BPIV3-like" "Brandariz-Nuñez"
- "Brummer-Korvenkontio" "Brummer-Korvenkotio" "BSL-3" "BTV1" "BTV4" "BTV8" "BVDV1" "BVDV1a"
- "BVDV1b" "BVDV1c" "BVDV2" "BVDV2a" "BVDV2b" "BVDV3" "BWA-MEM" "BX51" "bÀ1" "C-and" "C-nucleoside"
- "C-or" "C-reactieve" "C-terminally" "C.19" "C.Y.H." "C18-s2" "C2-V5" "C3H" "C3H/" "C3H/HeN"
- "C3H/HeOuJ" "C57BL/" "C57BL/1" "C57BL/10SNJ" "C57BL/6" "C57Bl/6N" "C57Bl/6NCrl" "C8te"
- "ca/media/pdf/" "CACTCC-3" "camps110" "capture/prepare" "carcinoembryonic antigen/bCEA"
+ "around 39°C." "around April27" "arthralgia/arthritis" "Arthropod-borne" "Arthus-toxic" "as-yet"
+ "ASI-Tirol" "Asia-1" "aspirate/" "aspirates/biopsies" "aspirates/washings" "aspiration/biopsy"
+ "assets71-give" "asthma-like" "ATCC-CCL34" "ATCC-CCL94" "ATCC27294" "attendee^" "author/funder"
+ "autophagosome-like" "AV1412" "AV150" "AV31" "available*" "availablez0" "average/max" "avian/"
+ "avian/quail" "A~" "B-and" "B.85" "B.V." "B/MIC" "Back-Brito" "bacteremia/" "bacteria/oil"
+ "bacterial/candidal" "bacterial/viral" "Baden-Württemberg" "Balada-Llasat" "Balb/C" "BALB/cAnNCrl"
+ "BALB/cByJ" "BALB/cJ" "bandree@worldbank" "Banet-Noach" "Banos-Lara" "Bat-SARS-like" "BCCM/"
+ "BCIP/NBT" "be/" "Becton-Dickenson" "bed-day" "bed-days" "beds/100,000" "Benjamini-Hochberg"
+ "Berkeley-based" "BFU2010-22228" "BHQ1" "Bio-Plex" "Bio-Rad" "BioImage@" "biosafety/security"
+ "Biosystems/Life" "Biosystems/MDS" "Blake/channel" "blood/tissue" "blood=4" "blood=7" "BLV/"
+ "BMY-27709" "Boschi-Pinto" "Bosnia-Herzegovina" "Bowen-Jones" "BPIV3" "BPIV3-like"
+ "Brandariz-Nuñez" "Brummer-Korvenkontio" "Brummer-Korvenkotio" "BSL-3" "BTV1" "BTV4" "BTV8"
+ "BVDV1" "BVDV1a" "BVDV1b" "BVDV1c" "BVDV2" "BVDV2a" "BVDV2b" "BVDV3" "BWA-MEM" "BX51" "bÀ1"
+ "C-and" "C-nucleoside" "C-or" "C-reactieve" "C-terminally" "C.19" "C.Y.H." "C18-s2" "C2-V5" "C3H"
+ "C3H/" "C3H/HeN" "C3H/HeOuJ" "C57BL/" "C57BL/1" "C57BL/10SNJ" "C57BL/6" "C57Bl/6N" "C57Bl/6NCrl"
+ "C8te" "ca/media/pdf/" "CACTCC-3" "camps110" "capture/prepare" "carcinoembryonic antigen/bCEA"
  "card-agglutination-test-for-human-trypanosomiasis" "caspase 3-like" "caspase 3/7"
  "Castillo-Olivares" "Castro-Hermida" "Catheter-drawn" "CAU0680" "CAV-l" "CC-BY-NC-ND" "CC0"
  "CCL-75" "CCR6þ" "CD+4" "CD+4/CD+8" "CD+8" "CD11a/" "CD11a/CD18" "CD28+" "CD3+" "CD33+" "CD34+"
@@ -833,25 +833,26 @@
  "Mycoplasma-like" "N-a-9-flurenylmethyloxcarbonyl" "N-and" "N-butyldeoxynojirimycin"
  "N-nucleosides" "N-steroyl" "N.-peroneusneuropathie" "N/A" "N1*" "N1-deoxy" "N2O" "N4-deoxy" "N="
  "n=1" "n=1014" "n=124" "N=16" "n=2" "n=2090" "n=2498" "n=25" "n=29,859" "n=3" "N=4" "n=635" "n=68"
- "Nan-Shan" "NAP1/027" "nCov19" "NCT04288713" "NCT04315987" "NCT04320277" "Nebraska-like"
- "neces~ary" "neutrophilia/neutropenia" "ng/" "ng/100" "NL-63" "nl/kaarten" "NL63-like" "nm/280"
- "nmol/l" "Nod-like" "NOD-like" "non-core-patient-related" "non-group A" "non-ICU" "non-O157"
- "non-self-cross-reacting" "non-state" "nonclinical/administrative" "nonformed=2" "nonvaccinates=l"
- "normal/healthy" "normal/not" "normal=" "Norwalk-like" "November-April" "Novy-MacNeal-Nicolle"
- "NS2B" "NS2b" "NS3h" "nu/nu" "num-Jacobs" "nutrient/vitamin" "n~i" "n~n" "n~N" "n½" "O&P" "O.D."
- "O.D./prior to" "O157" "O157:H7" "obtained13" "OC38" "OC43Y" "occur3°" "Of9000" "OFR1a/b"
- "often-times" "of~270" "of~60" "Oker-Blom" "on/1 s" "one-half" "one-time" "one`s" "only=2"
- "only=4" "ORF10" "orf1a" "orf1ab" "ORF8b" "org/" "org/content" "org/practice-guideline" "org/prwp"
- "org/stdsstis/pid/" "organ/space" "organelle-like" "osteomyelitis/" "osteomyelitis/disc"
- "Overthe-counter" "Oð1=nÞ" "oðtÞ~N" "p-18" "p-18T-HCLV" "p-formaldehyde" "P-IgA"
- "p-phenylenediamine-procatechol" "P-radiolabeled" "p-toluenesulfonyl" "p-value" "p-values" "P.A.P"
- "P77were" "P<0" "p=0.005" "P=0.0075" "P=0.0088" "p=0.01" "p=0.02" "P=0.0308" "p=0.04" "P=0.0550"
- "p=0.07" "p=0.33" "p=0.86" "P=O" "P=O.O04" "p>0.14" "Pairl1" "PAML4.0" "papain-like"
- "para-nitrophenyl" "pathogen/host" "pathway/D" "patient-days" "PBS+0.05%" "PBST/2.5%" "pBud-CE4"
- "pCAGGS-CEACAM1a-FLAG-Tm" "pCAGGS-PSG16-4C1-FLAG-Tm" "pCAGGS-PSG16N1-CEACAM1a-Tm"
- "pCB-PSG16-4C2-FLAG-Tm" "pCB-PSG16-FLAG-4C1-FLAG-Tm" "pCB-TVA-CEACAM1a-"
- "pCB-TVA-PSG16-4N1*C2-FLAG-Tm" "pCB-TVA-PSG16-FLAG-Tm" "pcDNA3" "pCINeo-muNS" "PCR+" "PCR/" "pCR4"
- "PCV2" "PE-anti-mouse" "pEF6-myc-His" "pEF6myc-His" "PEI-β-CD" "PEI-β-CD-tegafur" "PEIβ-CD-based"
+ "Nan-Shan" "NAP1/027" "nCov19" "NCT04288713" "NCT04315987" "NCT04320277" "nearly 70°N"
+ "Nebraska-like" "neces~ary" "neutrophilia/neutropenia" "ng/" "ng/100" "NL-63" "nl/kaarten"
+ "NL63-like" "nm/280" "nmol/l" "Nod-like" "NOD-like" "non-core-patient-related" "non-group A"
+ "non-ICU" "non-O157" "non-self-cross-reacting" "non-state" "nonclinical/administrative"
+ "nonformed=2" "nonvaccinates=l" "normal/healthy" "normal/not" "normal=" "Norwalk-like"
+ "November-April" "Novy-MacNeal-Nicolle" "NS2B" "NS2b" "NS3h" "nu/nu" "num-Jacobs"
+ "nutrient/vitamin" "n~i" "n~n" "n~N" "n½" "O&P" "O.D." "O.D./prior to" "O157" "O157:H7"
+ "obtained13" "OC38" "OC43Y" "occur3°" "Of9000" "OFR1a/b" "often-times" "of~270" "of~60"
+ "Oker-Blom" "on/1 s" "one-half" "one-time" "one`s" "only=2" "only=4" "ORF10" "orf1a" "orf1ab"
+ "ORF8b" "org/" "org/content" "org/practice-guideline" "org/prwp" "org/stdsstis/pid/" "organ/space"
+ "organelle-like" "osteomyelitis/" "osteomyelitis/disc" "Overthe-counter" "Oð1=nÞ" "oðtÞ~N" "p-18"
+ "p-18T-HCLV" "p-formaldehyde" "P-IgA" "p-phenylenediamine-procatechol" "P-radiolabeled"
+ "p-toluenesulfonyl" "p-value" "p-values" "P.A.P" "P77were" "P<0" "p=0.005" "P=0.0075" "P=0.0088"
+ "p=0.01" "p=0.02" "P=0.0308" "p=0.04" "P=0.0550" "p=0.07" "p=0.33" "p=0.86" "P=O" "P=O.O04"
+ "p>0.14" "Pairl1" "PAML4.0" "papain-like" "para-nitrophenyl" "pathogen/host" "pathway/D"
+ "patient-days" "PBS+0.05%" "PBST/2.5%" "pBud-CE4" "pCAGGS-CEACAM1a-FLAG-Tm"
+ "pCAGGS-PSG16-4C1-FLAG-Tm" "pCAGGS-PSG16N1-CEACAM1a-Tm" "pCB-PSG16-4C2-FLAG-Tm"
+ "pCB-PSG16-FLAG-4C1-FLAG-Tm" "pCB-TVA-CEACAM1a-" "pCB-TVA-PSG16-4N1*C2-FLAG-Tm"
+ "pCB-TVA-PSG16-FLAG-Tm" "pcDNA3" "pCINeo-muNS" "PCR+" "PCR/" "pCR4" "PCV2" "PE-anti-mouse"
+ "pEF6-myc-His" "pEF6myc-His" "PEI-β-CD" "PEI-β-CD-tegafur" "PEIβ-CD-based"
  "penicillin/streptomycin" "People-centeredness" "peptide/mL" "Perki-nElmer" "person-time"
  "perspecti~e" "Peste-des-petitsruminants" "PET/CT" "pET259" "pe~ingens" "pe~ringens" "Pf-FCB-1"
  "Pf-P27" "Pf-P43" "Pf-P45" "Pf-P82" "Pf-P96" "PFU/" "PFU/cell" "PFU/ml" "pg/mL" "pg160" "PG31"
@@ -913,7 +914,7 @@
  "≥97%"))
     :test #'equalp))
 
-;; 4574 extracted by morphology
+;; 4572 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1270,14 +1271,14 @@
  "lymphopenic" "lymphoplasmacytic" "lymphoproliferation" "lymphoproliferative"
  "lymphoprolifération" "lymphosarcoma" "lymphotrophic" "lymphotropic" "lyophilized" "lyricinfected"
  "maceration" "macneal" "macroadenoma" "macroeconomic" "macroeconomics" "macrophagic" "macroscopic"
- "magnetic" "magnetization" "magnification" "magnify" "majoration" "majority" "malabsorption"
- "malabsorptive" "malacic" "maladaptive" "malarial" "malassimilation" "malaysian" "maldigestive"
- "malleable" "manageable" "managed" "management" "managerial" "managerialist" "manchurian"
- "mandatory" "mandible" "manipulated" "manipulation" "manipulative" "manual" "manually"
- "manufacturing" "mapped" "marginal" "marginalisation" "marginalised" "margination" "marinederived"
- "marital" "marked" "marketed" "married" "massive" "massively" "mated" "material" "maternal"
- "maternally" "mathematical" "mathematics" "maturation" "maxillary" "maximisation" "maximising"
- "maximize" "mcnemar" "measureable" "mechanical" "mechanically" "mechanics" "medial" "mediastinal"
+ "magnetic" "magnetization" "magnification" "magnify" "majoration" "malabsorption" "malabsorptive"
+ "malacic" "maladaptive" "malarial" "malassimilation" "malaysian" "maldigestive" "malleable"
+ "manageable" "managed" "management" "managerial" "managerialist" "manchurian" "mandatory"
+ "mandible" "manipulated" "manipulation" "manipulative" "manual" "manually" "manufacturing"
+ "mapped" "marginal" "marginalisation" "marginalised" "margination" "marinederived" "marital"
+ "marked" "marketed" "married" "massive" "massively" "mated" "material" "maternal" "maternally"
+ "mathematical" "mathematics" "maturation" "maxillary" "maximisation" "maximising" "maximize"
+ "mcnemar" "measureable" "mechanical" "mechanically" "mechanics" "medial" "mediastinal"
  "medicalization" "medication" "medicinal" "medics" "meditated" "meestal" "melenic" "melitensis"
  "mellor" "membered" "membranedisruptive" "membranous" "meningeal" "meningococcal" "menstruating"
  "mental" "mentation" "mercuric" "merged" "mesangial" "mesenchymal" "mesenteric" "metabolizing"
@@ -1285,7 +1286,7 @@
  "meticulous" "metric" "metrics" "microbial" "microbiologic" "microbiological" "microcephaly"
  "microdilution" "microenvironment" "microinjection" "microscopic" "microscopically" "microscopist"
  "microvascular" "microwaving" "migratory" "milgram" "military" "minced" "mineral" "minimal"
- "minimisation" "minimised" "minimize" "mining" "minipreparation" "minority" "mirrored" "mirroring"
+ "minimisation" "minimised" "minimize" "mining" "minipreparation" "mirrored" "mirroring"
  "misclassification" "miscoded" "misidentified" "misinformation" "misleading" "mismanaged"
  "mispriming" "misrepresent" "missed" "mission" "mistakenly" "mitigating" "mitigation" "mitotic"
  "mixing" "mmended" "mobilising" "mockinfected" "modeled" "modelling" "moderation" "modernization"
@@ -1593,7 +1594,7 @@
 ("ated" "bled" "ding" "fled" "heed" "illy" "king" "ping" "reed" "ring" "tied" "ΙΕΟΡ" "ΙΙΙ"))
     :test #'equalp))
 
-;; 3489 extracted from Comlex
+;; 3488 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1640,13 +1641,13 @@
  "bought" "bounds" "bourbon" "bout" "bouts" "boy" "boycott" "boycotts" "boys" "bracket" "bray"
  "breach" "breadth" "breakdown" "breath" "breech" "brief" "brigade" "bright" "brightness"
  "brilliant" "bring" "broad" "broaden" "broader" "bronchi" "bronchus" "broth" "brought" "brush"
- "bucket" "buckets" "budget" "buffalo" "bug" "build" "buildings" "bulb" "bulk" "bullet" "bum"
- "bunch" "bundle" "burden" "bureau" "burial" "burials" "burke" "burn" "burns" "burrow" "burst"
- "bus" "bushy" "busiest" "business" "businesses" "bust" "busy" "butcher" "butler" "button" "buy"
- "bypass" "bypasses" "cabin" "cabinet" "cadaver" "cadre" "calf" "calm" "came" "camel" "camels"
- "camera" "camp" "campaign" "campaigns" "camps" "campus" "canal" "candidacy" "capillaries"
- "capillary" "capsicum" "capsule" "capture" "captures" "carbon" "carcass" "card" "cardboard" "care"
- "careful" "caretaker" "caretakers" "cargo" "caribou" "carnivore" "carnivores" "carpenter" "carpet"
+ "bucket" "buckets" "budget" "buffalo" "bug" "build" "buildings" "bulb" "bullet" "bum" "bunch"
+ "bundle" "burden" "bureau" "burial" "burials" "burke" "burn" "burns" "burrow" "burst" "bus"
+ "bushy" "busiest" "business" "businesses" "bust" "busy" "butcher" "butler" "button" "buy" "bypass"
+ "bypasses" "cabin" "cabinet" "cadaver" "cadre" "calf" "calm" "came" "camel" "camels" "camera"
+ "camp" "campaign" "campaigns" "camps" "campus" "canal" "candidacy" "capillaries" "capillary"
+ "capsicum" "capsule" "capture" "captures" "carbon" "carcass" "card" "cardboard" "care" "careful"
+ "caretaker" "caretakers" "cargo" "caribou" "carnivore" "carnivores" "carpenter" "carpet"
  "carriage" "carrier" "carriers" "cartel" "cartels" "carter" "cartilage" "caseload" "cassette"
  "casualties" "casualty" "cat" "catalog" "catalogue" "catastrophe" "catch" "catfish" "cattle"
  "caught" "caveat" "caveats" "cease" "cedar" "cedars" "census" "centipede" "centipedes" "century"
@@ -1974,7 +1975,7 @@
  "wright" "write" "writer" "wrote" "wrought" "yardstick" "yardsticks" "yea" "youth" "yuan" "zephyr"
  "zero" "zeros" "zombie" "zone" "zones"))
     :test #'equalp))
- "wane" "war" "ware" "warfare" "warm" "warmer" "warn" "warnings" "warren" "waste"
+ar" "ware" "warfare" "warm" "warmer" "warn" "warnings" "warren" "waste"
  "waterborne" "waterproof" "watery" "watt" "watts" "wave" "wavelength" "wavelengths" "waves" "weak"
  "weaker" "weakness" "wealth" "wealthy" "weapon" "weapons" "wear" "weariness" "weather" "weaver"
  "web" "webs" "wedge" "weekend" "weekends" "weight" "welcome" "welfare" "well" "went" "wet"

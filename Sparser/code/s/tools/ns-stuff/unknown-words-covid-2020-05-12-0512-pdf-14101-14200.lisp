@@ -1,5 +1,5 @@
 ;; covid-2020-05-12-0512-PDF-14101-14200 sample of unknown words
-;; created 6/4/20 14:25:30
+;; created 6/18/20 23:24:49
 
 (in-package :sparser)
 
@@ -764,7 +764,7 @@
  "Zwitter" "Scandella"))
     :test #'equalp))
 
-;; 2057 defined as a bio-entity
+;; 2061 defined as a bio-entity
 
 
 (defparameter BIO-ENTITY-covid-2020-05-12-0512-PDF-14101-14200
@@ -814,12 +814,12 @@
  "20-oxopregnane" "200/mm" "2000a" "2000b" "2001a" "2003a" "2003b" "2004a" "2004b" "2005a" "2005b"
  "2006a" "2008a" "2008b" "2009a" "2009b" "200×" "2010_08_06" "2010a" "2010b" "2011a" "2014a"
  "2014b" "2014CB540600" "2019/20" "203/395" "20adenylate" "20°C" "20°C." "22°C" "23-monthold"
- "25:24:1" "27mer" "28 ± 1°C" "28/52" "28°C." "28×106" "2a-2c" "2a-d" "2A-H" "2DN" "2K ." "2mg/kg/"
+ "25:24:1" "27mer" "28 ± 1°C" "28/52" "28°C." "28×106" "2a-2c" "2a-d" "2A-H" "2K ." "2mg/kg/"
  "2Not" "2V6N" "2VJ1" "2x2" "2~" "2×" "2×10" "2×1010" "2→2" "3 /MeOH" "3 g/" "3 N·BH" "3%W/V" "3+"
  "3,6-dihydroxychromone" "3-dimethylaminopropyl" "3/34" "3/7" "30/70%" "30°" "31noculated"
  "3241Lys-Gln3240" "340/" "343/645" "34D03" "34·8" "35S-methionine" "35°C" "360°turns" "36·5 µ"
  "36·5°C" "37.8uC" "37/40" "371C." "37uC" "37°C" "37°C." "37·6°C" "3C-like" "3c-protease"
- "3c-proteases" "3carboxymethoxyphenyl" "3CL" "3D-Drucker" "3D8" "3E1" "3MM1860" "3x10" "3~" "3×"
+ "3c-proteases" "3carboxymethoxyphenyl" "3CL" "3D-Drucker" "3D8" "3E1" "3MM1860" "3~" "3×"
  "3″-N-desmethyl" "3∞" "4,5,7-trihydroxy" "4,5-dimethylthiazol-2-yl" "4,5-dimetylthiazol-2-yl"
  "4-1BBblocked" "4-1BBdeficient" "4-8°C" "4-dimethyla-mino" "4-dimethylaminobenzoyloxy"
  "4-sulfophenyl" "4.5-fold" "4/2013" "4/40" "401~750aa" "40°C" "40×" "40Â." "4122×g" "42°C" "45°C"
@@ -857,7 +857,8 @@
  "anti-procollagen" "anti-proliferative" "anti-rabbit" "anti-rat" "anti-SARS-CoV" "anti-SASR-CoV"
  "anti-sense" "anti-Shineafter" "anti-SMA" "anti-TGEV-IgA" "anti-total" "anti-Toxoplasma"
  "anti-viral" "antistreptolysin-O" "AP16" "APC-anti-IL-17α" "apical/basolateral"
- "Appenzeller-Herzog" "aprotinin/ml" "ARDS/acute" "aryl-β-d-glucosides" "as~40" "AT 1a" "AT2R"
+ "Appenzeller-Herzog" "Approximately three-quarters" "aprotinin/ml" "ARDS/acute"
+ "aryl-β-d-glucosides" "as~40" "AT 1a" "at least 10-fold" "at least 3x10" "at least 4A" "AT2R"
  "ATAGGGCCAGGGGCCTGTACGTTTTTA-3" "atelocollagen/siRNA" "atherosclerosis5" "atten-the-curve"
  "Atu-PLEX" "Atu027" "AtuFECT01" "author/funder" "Autodock4" "autophagosome-like"
  "autophagy/mitophagy" "AV300" "AV400" "Avenay-Val-d" "AvRV-1" "Ax+" "AY274119" "AY278488"
@@ -968,7 +969,7 @@
  "Norwalk-like" "not-for-profit" "NP40solubilized" "NS2B-NS3" "NSC122819" "NSC319990" "NSC345647"
  "NSC5069" "NTPase/" "NTPase/helicase" "NZ262" "Nα-p-tosyl-L-lysine" "n∈" "o1" "O25" "O31" "O32"
  "O350/mm" "O4casionally" "Od1" "of~6" "oligo-dT" "oligodendrogliopathy/myelinopathy"
- "oligomerization/dimerization" "OMT-Programms" "one-half" "One-week-old"
+ "oligomerization/dimerization" "OMT-Programms" "one-half" "One-week-old" "only 4/40"
  "Open-Source-Beatmungsgeräte" "or/and" "Orenes-Pinero" "ORF38" "org/" "org/licenses/by/4.0/"
  "OTUB1/2" "outpatient/inpatient" "outp~ttients" "Outright-Geschäfte" "oxirane-2-carbonyl"
  "O~phimurium" "O~phirnurium" "p-dimethylamino" "P-labeled" "p-nitroanilide" "p-value" "P.R." "P<"
@@ -999,13 +1000,13 @@
  "reticulospinal/raphespinal" "retropharyngeal/parapharyngeal" "Reyes-Zaràte" "RG3000"
  "rhinorrhea/postnasal" "rhinovirus/enterovirus" "rhM-CSF" "Rhoda-mine110" "Rhodamine110"
  "Rhodmaine110" "rias0pharyngeai" "ribo-E." "Rico" "risk/crisis" "Rivera-Quinones" "RN-BH-NR-BH"
- "RNase A/T1treated" "Roc70" "rod-like" "rota-TAstV-2" "RPR209120" "RQ1" "RQ2" "RQ3"
- "rROP18-immunized" "rROP5+" "rRT-PCR" "rSAG1" "RSV-EIA" "Runge-Kutta-like" "runny/congested" "rZ0"
- "S-atom" "S/N" "S1-binding" "S3C" "S3D" "S3E" "S3G" "same-day" "SAT05f" "satellite/BaMV"
- "sc-13560" "sc-23959" "sc-51885" "sc-56025" "sc-56077" "sc-58348" "sc-69879" "sc-70497" "sc-73039"
- "sc-7382" "sc-73974" "sc-79" "sc-8007" "sc-81662" "Schneider-Schaulies" "Schultz-Cherry" "SD/09"
- "Sec13p" "Sec23p" "Sec23pSec24p" "selection/sorting" "Sente-au-Beurre" "sepsis/septic"
- "SerB1 N-PheA140" "serum/virus" "several-hour"
+ "RNase A/T1treated" "Roc70" "rod-like" "rota-TAstV-2" "roughly 2DN" "roughly 3-fold" "RPR209120"
+ "RQ1" "RQ2" "RQ3" "rROP18-immunized" "rROP5+" "rRT-PCR" "rSAG1" "RSV-EIA" "Runge-Kutta-like"
+ "runny/congested" "rZ0" "S-atom" "S/N" "S1-binding" "S3C" "S3D" "S3E" "S3G" "same-day" "SAT05f"
+ "satellite/BaMV" "sc-13560" "sc-23959" "sc-51885" "sc-56025" "sc-56077" "sc-58348" "sc-69879"
+ "sc-70497" "sc-73039" "sc-7382" "sc-73974" "sc-79" "sc-8007" "sc-81662" "Schneider-Schaulies"
+ "Schultz-Cherry" "SD/09" "Sec13p" "Sec23p" "Sec23pSec24p" "selection/sorting" "Sente-au-Beurre"
+ "sepsis/septic" "SerB1 N-PheA140" "serum/virus" "several-hour"
  "severe acute respiratory syndrome/Middle East respiratory syndrome" "seviol-19-glucoside"
  "SGFRKME-Edans" "shATG5" "Shine-Dalgarno" "Sigma-Aldrich" "simi-lar" "SinoGeno-Max"
  "siRNA/Chitosan" "siRNA/kg" "siRNA/PEI" "siRNA:POA" "SJC19" "SJL/J" "SK6" "SmaI-linearized"
@@ -1016,37 +1017,36 @@
  "Syk-CARD9-BCL10-MALT1" "t!T" "t+t" "T-helper" "T.K." "T/NK" "T11/T12" "T323/S325" "T7-BaMV+6228"
  "T7-BaMV5" "T:B cell" "t=" "t=t" "tags/pits" "Taq™" "target/drug" "TAstV-2" "TBST/5%" "TCID50"
  "TCIDs0" "TCTATAT-3" "TCTCCGTCGGTGT-3" "test/myocardial" "testing/" "tests/perfusion" "TEV-1"
- "TGCCTGCCGTGTG-3" "TgCDPK1" "TGGA-3" "Th17" "three-quarters" "time…" "TIP3P" "TK+-HGPRT"
- "TK-HGPRT+" "TK/" "TK~" "TK~-HGPRT" "TLR3and" "TLR3mediated" "TLR7/8" "TMP/SMX" "TOP10" "toxin/"
- "toxin/Shiga-like" "TP10" "trans-activator protein" "trans-Sialidase" "tRNA-like"
- "Trp#A31/Ala#A70" "trypsin-like" "TTCTTGCGATGTGGC-3" "TTT-TTTTGGAAAAAACTGTAGAAA3"
- "TTTTTT-TTTTTTTGGAAAA3" "TTTTTTTTTTGG-AAAAAACTGTAGAAA3" "tw/" "Tween-20" "Ty-3" "typically~15-30"
- "tZ0" "tZ3" "tZ7" "t½" "t→+∞" "U/g" "U/h" "U/L" "U/ml" "U20589.1" "Ub-like"
- "UDP-glucose:glycoprotein" "ug/mL" "ul/min" "Umsatz-und" "units/ml" "US$" "US$0.9-3" "US$1.4-2"
- "US$1.85 billion" "US$100 trillion-is" "US$12-31" "US$120 billion" "US$2.1 billion"
- "US$2.5 billion" "US$20 billion" "US$23.4-33" "US$25.8-39" "US$33.5 billion" "US$48 billion"
- "US$500 million" "US$750 million" "use/bottle" "V/cm" "V/V" "v/v" "Vad12" "valueÞ=ðpRL" "vdBF09"
- "vdBF19" "Vero118" "vesicle-like" "VIP36like" "virus-like" "vSag7" "VX-765" "v∈R" "W/V" "w/v"
- "w/w" "W@8Hz" "warning/confirmation" "Watkins-Riedel" "WBC/high" "WBLUC0500" "weekly/fluactivity"
- "Wi-Fi" "WM15" "Wolwer-Rieck" "worldwide/" "WSLP/siRNA" "wt/vol" "WXT11" "Wösten-van" "w∈R" "w≥0"
- "X-axis" "X-irradiation" "x-ray" "X-tractor" "X13" "X87092" "XMF1.2" "XP-27" "XP-59" "xZ0.5"
- "xZ0.9" "x|" "Y-axis" "yes/no" "Z-DEVD-FMK" "z-IETD-FMK" "z:Az=y" "ZigBee/802.15.4"
- "ZJU201308-1-10-072" "z∈C" "z∈ΣS" "z≥0" "{0}" "{n" "{n}" "{w" "|e" "|R" "|W" "~0.1%" "~1" "~10"
- "~13" "~17,000" "~1mW" "~2" "~2-fold" "~25%" "~3" "~320" "~4" "~40" "~4000" "~5-6" "~50%" "~6"
- "~60%" "~7" "~8,000" "~9-fold" "~ensitivity" "~issay" "~m" "~~" "§4" "§5" "©Center" "°C" "°C."
- "± 1°C" "±SEM" "·BH" "ºC" "×10" "×g" "×N" "À/À" "À0.4" "À11.3" "À11.5" "À14.9" "À15.3" "À20"
- "À80°C" "États-Unis" "ð3:2Þ" "ð3:3Þ" "ð5:1Þ" "ðCD13" "ðpGL2" "Ͻ0.05" "Ͻ14" "Ͻ25%" "Ͼ38°C" "Ͼ75%"
- "α+β" "α-OHand" "α1,2-mannosidases" "α½" "α∆t" "β-1,2-d-glucopyranosyl" "β-1,2-glucosidic"
- "β-1,4-rhamnoglucosidase" "β-Glc-α-Rha" "β-Glc-β-Glc" "β-Glc-β-Xyl" "β-glucobioses" "β/NI"
- "βbarrel" "βf 2" "βSI" "γ=1/T" "γirradiated" "δand" "Δbulge" "ΔC" "ΔH" "ΔIL" "Δψ" "κB" "λt"
- "μ+c+γ" "μg/ml" "μg/mL" "μL" "μl" "μmol" "μmol/L" "σAv" "σF" "ΣS" "τ=1" "φ=0" "φ=−arctg" "Ϫ0.504"
- "ϫ20" "ϫ40" "Ϫ⌬⌬CT" "†Available" "…a" "…because" "…feedback" "…few" "…fi" "…have" "…identifi"
- "…natural" "…textbooks" "…the" "ℓ1" "ℓ1-norm" "ℓ2-norm" "→+∞" "∂F" "∆t" "−ΔΔCt" "∼3×" "∼600" "∼D"
- "≈0.1" "≈30ng/ml" "≤0.05" "≤0.2%" "≤0.25" "≤1" "≤12 g" "≤5" "≤5-years-of-age" "≤ǫ" "≥0.25" "≥0.75"
- "≥10" "≥3" "≥5" "►Fig."))
+ "TGCCTGCCGTGTG-3" "TgCDPK1" "TGGA-3" "Th17" "time…" "TIP3P" "TK+-HGPRT" "TK-HGPRT+" "TK/" "TK~"
+ "TK~-HGPRT" "TLR3and" "TLR3mediated" "TLR7/8" "TMP/SMX" "TOP10" "toxin/" "toxin/Shiga-like" "TP10"
+ "trans-activator protein" "trans-Sialidase" "tRNA-like" "Trp#A31/Ala#A70" "trypsin-like"
+ "TTCTTGCGATGTGGC-3" "TTT-TTTTGGAAAAAACTGTAGAAA3" "TTTTTT-TTTTTTTGGAAAA3"
+ "TTTTTTTTTTGG-AAAAAACTGTAGAAA3" "tw/" "Tween-20" "Ty-3" "typically~15-30" "tZ0" "tZ3" "tZ7" "t½"
+ "t→+∞" "U/g" "U/h" "U/L" "U/ml" "U20589.1" "Ub-like" "UDP-glucose:glycoprotein" "ug/mL" "ul/min"
+ "Umsatz-und" "units/ml" "US$" "US$0.9-3" "US$1.4-2" "US$1.85 billion" "US$100 trillion-is"
+ "US$12-31" "US$120 billion" "US$2.1 billion" "US$2.5 billion" "US$20 billion" "US$23.4-33"
+ "US$25.8-39" "US$33.5 billion" "US$48 billion" "US$500 million" "US$750 million" "use/bottle"
+ "V/cm" "V/V" "v/v" "Vad12" "valueÞ=ðpRL" "vdBF09" "vdBF19" "Vero118" "vesicle-like" "VIP36like"
+ "virus-like" "vSag7" "VX-765" "v∈R" "W/V" "w/v" "w/w" "W@8Hz" "warning/confirmation"
+ "Watkins-Riedel" "WBC/high" "WBLUC0500" "weekly/fluactivity" "Wi-Fi" "WM15" "Wolwer-Rieck"
+ "worldwide/" "WSLP/siRNA" "wt/vol" "WXT11" "Wösten-van" "w∈R" "w≥0" "X-axis" "X-irradiation"
+ "x-ray" "X-tractor" "X13" "X87092" "XMF1.2" "XP-27" "XP-59" "xZ0.5" "xZ0.9" "x|" "Y-axis" "yes/no"
+ "Z-DEVD-FMK" "z-IETD-FMK" "z:Az=y" "ZigBee/802.15.4" "ZJU201308-1-10-072" "z∈C" "z∈ΣS" "z≥0" "{0}"
+ "{n" "{n}" "{w" "|e" "|R" "|W" "~0.1%" "~1" "~10" "~13" "~17,000" "~1mW" "~2" "~2-fold" "~25%"
+ "~3" "~320" "~4" "~40" "~4000" "~5-6" "~50%" "~6" "~60%" "~7" "~8,000" "~9-fold" "~ensitivity"
+ "~issay" "~m" "~~" "§4" "§5" "©Center" "°C" "°C." "± 1°C" "±SEM" "·BH" "ºC" "×10" "×g" "×N" "À/À"
+ "À0.4" "À11.3" "À11.5" "À14.9" "À15.3" "À20" "À80°C" "États-Unis" "ð3:2Þ" "ð3:3Þ" "ð5:1Þ" "ðCD13"
+ "ðpGL2" "Ͻ0.05" "Ͻ14" "Ͻ25%" "Ͼ38°C" "Ͼ75%" "α+β" "α-OHand" "α1,2-mannosidases" "α½" "α∆t"
+ "β-1,2-d-glucopyranosyl" "β-1,2-glucosidic" "β-1,4-rhamnoglucosidase" "β-Glc-α-Rha" "β-Glc-β-Glc"
+ "β-Glc-β-Xyl" "β-glucobioses" "β/NI" "βbarrel" "βf 2" "βSI" "γ=1/T" "γirradiated" "δand" "Δbulge"
+ "ΔC" "ΔH" "ΔIL" "Δψ" "κB" "λt" "μ+c+γ" "μg/ml" "μg/mL" "μL" "μl" "μmol" "μmol/L" "σAv" "σF" "ΣS"
+ "τ=1" "φ=0" "φ=−arctg" "Ϫ0.504" "ϫ20" "ϫ40" "Ϫ⌬⌬CT" "†Available" "…a" "…because" "…feedback"
+ "…few" "…fi" "…have" "…identifi" "…natural" "…textbooks" "…the" "ℓ1" "ℓ1-norm" "ℓ2-norm" "→+∞"
+ "∂F" "∆t" "−ΔΔCt" "∼3×" "∼600" "∼D" "≈0.1" "≈30ng/ml" "≤0.05" "≤0.2%" "≤0.25" "≤1" "≤12 g" "≤5"
+ "≤5-years-of-age" "≤ǫ" "≥0.25" "≥0.75" "≥10" "≥3" "≥5" "►Fig."))
     :test #'equalp))
 
-;; 4511 extracted by morphology
+;; 4508 extracted by morphology
 
 
 (defparameter *Morph-Words*
@@ -1394,15 +1394,15 @@
  "loweracuity" "lowly" "lubacmediated" "luchar" "lumenal" "luminescence" "lumped" "lungcolonising"
  "lymphatic" "lymphoblastosis" "lymphocytic" "lymphosarcoma" "lymphotropic" "lyophilized"
  "lyososomal" "légèrement" "macroeconomics" "macroevolution" "macroevolutionary"
- "macrophagedepleted" "macroscopic" "macular" "magnetic" "magnification" "majority" "makary"
- "malabsorption" "malarial" "maldigestion" "malevolence" "malfunctioning" "malheureusement"
- "malicious" "maliciously" "malnourished" "manageable" "management" "managing" "mandated"
- "mandatory" "mandibular" "manipulation" "manual" "manually" "manufacturability" "manufacturing"
- "mapaction" "marginal" "marked" "marketed" "marketing" "marrowderived" "massive" "mastication"
- "material" "materialize" "maternal" "mathematical" "maturation" "maturity" "maxillary" "maximize"
- "mcnemar" "mcsenteric" "mechadifferent" "mechanical" "mechanically" "mechanics" "medial"
- "medialization" "medially" "mediastinal" "mediatedapoptosis" "medication" "medicinal" "medieval"
- "mejorar" "membered" "membranelocated" "membraneproximal" "membranous" "memorial" "meningeal"
+ "macrophagedepleted" "macroscopic" "macular" "magnetic" "magnification" "makary" "malabsorption"
+ "malarial" "maldigestion" "malevolence" "malfunctioning" "malheureusement" "malicious"
+ "maliciously" "malnourished" "manageable" "management" "managing" "mandated" "mandatory"
+ "mandibular" "manipulation" "manual" "manually" "manufacturability" "manufacturing" "mapaction"
+ "marginal" "marked" "marketed" "marketing" "marrowderived" "massive" "mastication" "material"
+ "materialize" "maternal" "mathematical" "maturation" "maturity" "maxillary" "maximize" "mcnemar"
+ "mcsenteric" "mechadifferent" "mechanical" "mechanically" "mechanics" "medial" "medialization"
+ "medially" "mediastinal" "mediatedapoptosis" "medication" "medicinal" "medieval" "mejorar"
+ "membered" "membranelocated" "membraneproximal" "membranous" "memorial" "meningeal"
  "meningococcal" "mental" "mented" "merged" "mesenteric" "mesophilic" "messaging" "metabolize"
  "metacarpal" "metagenomic" "metathesis" "methanolysis" "methodological" "methodologically"
  "metric" "metrics" "micellar" "microallocation" "microbial" "microbiologic" "microbiological"
@@ -1411,7 +1411,7 @@
  "micronucleation" "micropustular" "microscopic" "microscopically" "microseeding" "microsomal"
  "microvascular" "microvascularization" "migratory" "military" "milling" "mimetic" "mimicking"
  "minced" "mincledepleted" "mineral" "miniaturization" "minimal" "minimization" "minimized"
- "mining" "ministerial" "minority" "mirror" "misclassification" "miscommunication" "misconception"
+ "mining" "ministerial" "mirror" "misclassification" "miscommunication" "misconception"
  "misdiagnosis" "misdirected" "misinformation" "misinterpreted" "misleading" "misled"
  "mislocalized" "misplaced" "missing" "mission" "misunderstanding" "mitigated" "mitigation"
  "mitochondriamediated" "mitophagic" "mitosignal" "mitotic" "mitral" "mixed" "mockinfected"
@@ -1501,11 +1501,11 @@
  "picornaviridase" "piezoelectric" "pillar" "piloerection" "pinpointing" "pioneering"
  "piperonyloly" "pitation" "pivotal" "placental" "placentation" "planar" "plantderived" "plastic"
  "plasticity" "plated" "plateletderived" "plausible" "pleomorphic" "pleonastic" "pleural" "plugged"
- "plummeted" "plunged" "pluralistic" "plurality" "pluripotency" "pluripotent" "pneumococcal"
- "pneumologist" "pneumotropic" "poised" "polarization" "polarized" "political" "politically"
- "politics" "pollution" "polyadenyaltion" "polyarticular" "polycationic" "polydispersity"
- "polymeric" "polymicrobial" "polymorphous" "polyphenolics" "polytopic" "ponction" "popular"
- "populated" "portal" "portion" "positional" "positioned" "positively" "positivity" "possession"
+ "plummeted" "plunged" "pluralistic" "pluripotency" "pluripotent" "pneumococcal" "pneumologist"
+ "pneumotropic" "poised" "polarization" "polarized" "political" "politically" "politics"
+ "pollution" "polyadenyaltion" "polyarticular" "polycationic" "polydispersity" "polymeric"
+ "polymicrobial" "polymorphous" "polyphenolics" "polytopic" "ponction" "popular" "populated"
+ "portal" "portion" "positional" "positioned" "positively" "positivity" "possession"
  "postadmission" "postal" "postauricular" "postdiagnosis" "postenrollment" "posterior"
  "postinfection" "postinoculation" "postnasal" "postoperative" "postponing" "postsuccessive"
  "posttransfection" "posttranslational" "posttranslationally" "postulated" "postweaning" "potency"
@@ -1719,7 +1719,7 @@
  "reed" "ring" "rmed" "seed" "tied" "ugly" "κρ" "στ"))
     :test #'equalp))
 
-;; 3487 extracted from Comlex
+;; 3486 extracted from Comlex
 
 
 (defparameter *Comlex-Word-List*
@@ -1767,8 +1767,8 @@
  "break" "breakdown" "breaks" "breakthrough" "breathe" "breeder" "breeze" "breezes" "bridge"
  "bridges" "brief" "bright" "brine" "bring" "brings" "bristle" "bristles" "broad" "broadcast"
  "broader" "bronchi" "bronchus" "broom" "broth" "brought" "browse" "brush" "brute" "bubble"
- "bubbles" "budget" "buffet" "bugler" "build" "buildings" "bulge" "bulk" "bulky" "bulletin"
- "bundle" "burden" "bureaucrat" "bureaucrats" "burger" "burn" "burns" "burst" "bus" "buses" "bushy"
+ "bubbles" "budget" "buffet" "bugler" "build" "buildings" "bulge" "bulky" "bulletin" "bundle"
+ "burden" "bureaucrat" "bureaucrats" "burger" "burn" "burns" "burst" "bus" "buses" "bushy"
  "business" "businessman" "businessmen" "busy" "button" "buy" "bypass" "byproduct" "bystander"
  "cabin" "cabinet" "cable" "cactus" "calf" "caliber" "calif" "caller" "cam" "came" "camel"
  "camellia" "camels" "camera" "camouflage" "camp" "campaign" "campaigns" "camps" "canal" "cancel"
@@ -2098,7 +2098,7 @@
  "world" "worldwide" "worm" "worsen" "worst" "worthy" "wound" "wrestler" "wright" "write" "wrote"
  "yarrow" "yelp" "yob" "yolk" "zebra" "zero" "zeros" "zone" "zones" "zoo" "zoos"))
     :test #'equalp))
- "wildlife" "willingness" "wind" "window" "windows" "wireless" "wise"
+wireless" "wise"
  "wishful" "withdraw" "withheld" "withhold" "withstand" "withstood" "woo" "wood" "wooden" "word"
  "work" "worker" "workers" "workforce" "workings" "workload" "workmate" "workmates" "workplace"
  "world" "worldwide" "worm" "worsen" "worst" "worthy" "wound" "wrestler" "wright" "write" "wrote"
