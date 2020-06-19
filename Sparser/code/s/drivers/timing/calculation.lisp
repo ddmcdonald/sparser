@@ -37,7 +37,10 @@
   (unless (boundp symbol)
     (error "The symbol passed to the timer is undefined.~
             ~%       Check the spelling."))
-  (set symbol
-       (- (get-internal-real-time)
-          (symbol-value symbol))))
+  (let ((delta (- (get-internal-real-time)
+                  (symbol-value symbol))))
+    ;; avoid potential downstream divide by zero
+    (when (<= delta 0)
+      (setq delta 1))
+    (set symbol delta)))
 
