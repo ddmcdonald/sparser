@@ -49,23 +49,25 @@
 (defun compute-words-per-second (word-count number units)
   "Common subroutine that appreciates the different units that the
    'number' (system time ticks) represents."
-  (let ((tokens-per-second
-         (case units
-           (:microsec
-            (let ((tokens-per-microsecond (/ word-count number)))
-              (* tokens-per-microsecond 1000000)))
-           (:msec
-            (let ((tokens-per-milisecond (/ word-count number)))
-              (* tokens-per-milisecond 1000)))
-           (:sec
-            (/ word-count number))
-           (otherwise
-            (break "New time unit: ~a" units)))))
-    (let* ((speed-as-string 
-            (format nil "~4,1F" (float tokens-per-second)))
-           (speed-with-commas
-            (insert-commas-into-number-string speed-as-string)))
-      (format nil "~a words/second" speed-with-commas))))
+  (if (zerop number)
+      (format nil "avoiding a divide by zero error!! when number = ~s" number)
+      (let ((tokens-per-second
+             (case units
+               (:microsec
+                (let ((tokens-per-microsecond (/ word-count number)))
+                  (* tokens-per-microsecond 1000000)))
+               (:msec
+                (let ((tokens-per-milisecond (/ word-count number)))
+                  (* tokens-per-milisecond 1000)))
+               (:sec
+                (/ word-count number))
+               (otherwise
+                (break "New time unit: ~a" units)))))
+        (let* ((speed-as-string 
+                (format nil "~4,1F" (float tokens-per-second)))
+               (speed-with-commas
+                (insert-commas-into-number-string speed-as-string)))
+          (format nil "~a words/second" speed-with-commas)))))
 
 
 ;;;--------------------------------------------
