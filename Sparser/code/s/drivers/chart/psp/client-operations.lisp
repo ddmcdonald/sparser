@@ -1052,9 +1052,13 @@
 (defvar *mentions-by-sent* (make-hash-table :test #'equal :size 3000000))
 (defvar *mentions-by-para* (make-hash-table :test #'equal :size 300000))
 
+(defvar *macro-mentions* (make-hash-table :test #'equal :size 300000)
+  "mentions which stand for sets of other mentions, such as 'protease' or 'interact'")
+
 (defun reset-mentions ()
   (clrhash *mentions-by-sent*)
   (clrhash *mentions-by-para*)
+  (initialize-macro-mentions)
   )
 
 (defun dprop (prop descrip)
@@ -1116,6 +1120,8 @@
            (setq *mentions-files*
                         (directory "~/projects/r3/corpus/covid/2020-05-12/document_parses/pdf_json/mentions/*.lisp"))))
     (time (loop for f in *mentions-files* as i from 1 to n  do (when (eql i (* 1000 (floor i 1000)))  (print i))(load f))))
+  (unless (> (hash-table-count sp::*macro-mentions*) 0)
+    (initialize-macro-mentions))
   )
 
 (defparameter *multiple-count-class-terms* nil)
@@ -1126,34 +1132,45 @@
          (descrips-mentions
           (loop for descrip in descrips
                 do
-                  (let ((locs-or-indirect-locs (gethash (sp-prin1-to-string descrip) ht)))
-                    (case (car locs-or-indirect-locs)
-                      (:indirect
-                       (loop for indirect-description in (cdr locs-or-indirect-locs)
-                             ;; these are the descriptions of the proteins that are indirectly described
-                             ;;  by the class term -- so "kinases" will map to the set of all kinases
-                             do
-                               (loop for ind-loc in (gethash indirect-description ht)
-                                     do
-                                       (pushnew (if *multiple-count-class-terms*
-                                                    ;; do we count multiple instances of the class "kinase"
-                                                    indirect-description
-                                                    descrip)
-                                                (gethash ind-loc *location-hash*)))))
-                      (t
-                       (loop for dloc in locs-or-indirect-locs
-                             do
-                               (pushnew descrip (gethash dloc *location-hash*)))))))))
+                  (let ((macro-mention 
+                         (print (gethash (print (sp-prin1-to-string descrip))
+                                         *macro-mentions*))))
+                    (if macro-mention
+                        (mark-macro-mention-items macro-mention ht)
+                        (let ((locs-or-indirect-locs (gethash (sp-prin1-to-string descrip) ht)))
+                          (loop for dloc in locs-or-indirect-locs
+                                do
+                                  (pushnew descrip (gethash dloc *location-hash*)))))))))
     (sort
      (group-by (hal *location-hash* )
                #'(lambda (x) (length (cdr x))))
      #'>
      :key #'car)))
 
+(defun mark-macro-mention-items (macro-mention ht)
+  (loop for indirect-description in macro-mention
+        ;; these are the descriptions of the proteins that are indirectly described
+        ;;  by the class term -- so "kinases" will map to the set of all kinases
+        do
+          (loop for ind-loc in (gethash indirect-description ht)
+                do
+                  (pushnew (if *multiple-count-class-terms*
+                               ;; do we count multiple instances of the class "kinase"
+                               indirect-description
+                               macro-mention)
+                           (gethash ind-loc *location-hash*)))))
+
+
+
 ;;;  FIND THE INTERSECTING LOCATIONS
 ;;; categories are <categorysymbol> or (<categorysymbol> "name")
 ;;; may want to extend this later for relations etc. 
 ;;; if in-paras is nil then in same sentences
+
+
+
+
+
 
 ;;; OLD CODE
 #+ignore
@@ -1317,7 +1334,8 @@
 (defun find-indexed-mentions (mentions)
   (loop for m
         in mentions
-        when (gethash (sp-prin1-to-string (krisp->sexpr (mention-head-referent m))) *mentions-by-sent*)
+        when (or (gethash (sp-prin1-to-string (krisp->sexpr (mention-head-referent m))) *mentions-by-sent*)
+                 (gethash (sp-prin1-to-string (krisp->sexpr (mention-head-referent m))) *macro-mentions*))
         collect m))
 
 (defun sp-prin1-to-string (item)
