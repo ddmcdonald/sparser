@@ -49,8 +49,8 @@
 (defun compute-words-per-second (word-count number units)
   "Common subroutine that appreciates the different units that the
    'number' (system time ticks) represents."
-  (if (zerop number)
-      (format nil "avoiding a divide by zero error!! when number = ~s" number)
+  (when (numberp number)
+    (unless (zerop number) ;; return nil if we're not computing this
       (let ((tokens-per-second
              (case units
                (:microsec
@@ -67,7 +67,8 @@
                 (format nil "~4,1F" (float tokens-per-second)))
                (speed-with-commas
                 (insert-commas-into-number-string speed-as-string)))
-          (format nil "~a words/second" speed-with-commas)))))
+          (format nil "~a words/second" speed-with-commas))))))
+
 
 
 ;;;--------------------------------------------
