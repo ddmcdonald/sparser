@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2013-2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "syntax rules"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   May 2016
+;;;   Version:   June 2020
 
 ;; cloned from [form-rules form] 12/30/94  v2.3 
 ;; Rolled in stubbed specified schema 4/9/13. 
@@ -31,7 +31,7 @@
     (1 (error "A syntax rule has to have 2 terms in its righthand side.~
                ~%This one has just one: rhs = ~A"
                 rhs-expressions))
-    (2 )
+    (2)
     (otherwise
      (error "A syntax rule has to have 2 terms in its righthand side.~
              ~%This one has more:  rhs = ~A"
@@ -91,10 +91,9 @@
     (declare (special *making-syntactic-rule*))
   
     ;; 1st check whether there already a rule based on this rhs
-    (let ((earlier-cfr
-           (lookup-rule/rhs rhs)))
+    (let ((earlier-cfr (lookup-syntactic-rule/rhs rhs)))
       (if earlier-cfr
-        (revise-cfr-ancilaries earlier-cfr form referent)
+        (revise-cfr-ancilaries earlier-cfr form referent head-designator)
         (let ((cfr
                (construct-syntax-cfr rhs
                                      form
