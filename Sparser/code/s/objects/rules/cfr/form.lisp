@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995,2011-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2011-2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "form"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   January 2016
+;;;   Version:   June 2020
 
 ;; 6.0 (9/4/92 v2.3) Reworked the definition for parsimony with other cases
 ;;      and to have form and referent redone for already existing rules
@@ -54,18 +54,16 @@
         (decoded-referent-exp (resolve-referent-expression referent)))
     (define-cfr/resolved lhs rhs form-object decoded-referent-exp schema)))
 
+
 (defun define-cfr/resolved (lhs rhs form-object referent schema)
   (let ((existing-cfr (if (null (cdr rhs)) ;; unary rule
-                        (lookup/cfr lhs rhs)
-                        (lookup/cfr nil rhs))))
-
+                        (lookup-unary-rule lhs rhs)
+                        (lookup-semantic-rule/rhs rhs))))
     (if existing-cfr
       (cond
        ((probably-new-unary-rule? existing-cfr referent)
         (construct-cfr lhs rhs form-object
-                       referent :def-cfr schema)
-        #+ignore(define-additional-unary-rule lhs rhs form-object
-                                      referent :def-cfr schema))
+                       referent :def-cfr schema))
        ((redefinition-of-rule existing-cfr lhs rhs form-object)
         ;; pick out the rule with the matching lhs (when multiple
         ;; lhs are allowed) and replace its form and referent
@@ -95,7 +93,3 @@
                                  (polyword-p term)))))
     (when word?  
       (not (eq (cfr-referent existing-cfr) referent)))))
-
-#|(defun define-additional-unary-rule (lhs rhs form-object referent
-                                     source schema)
-  ) |#
