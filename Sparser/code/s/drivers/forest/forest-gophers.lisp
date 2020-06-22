@@ -233,7 +233,7 @@
     tp the highest.")
   (:method ((base edge))
     (let ((visited `(,base))
-           (daughter base)
+          (daughter base)
           parent  parents )
       (loop
          (push daughter visited)
@@ -246,7 +246,7 @@
          (setq daughter parent))
       (nreverse parents))))
 
-#| Original version that loops if the edges themselves aree
+#| Original version that loops if the edges themselves are
    in a loop
     (let ((parent (edge-used-in base)))
       (when parent
@@ -279,7 +279,7 @@
            
 
 (defgeneric search-tree-for-type (edge category)
-  (:documentation "Walk through binary tree of edges until yuo
+  (:documentation "Walk through binary tree of edges until you
     encounter an edge referent of a designated category as judged 
     by itypep. Return that edge.")
   (:method ((edge edge) (cat-name symbol))
@@ -323,13 +323,6 @@
           (research-edge-tree right test-fn visited)))))))
  
 
-
-
-
-;;/// move to edge file
-(defvar *right-daughter-keywords*
-  '(:single-term :context-sensitive :digit-based-number
-    :number-fsa))
 
 (defun find-head-word (tt)
   "Walk down the head line (not so obvious) and return
