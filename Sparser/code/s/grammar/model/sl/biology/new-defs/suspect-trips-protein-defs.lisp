@@ -473,7 +473,7 @@
 (define-protein "UP:Q03343" ("ArcView" "Adenylate cyclase type 6")) 
 (define-protein "UP:P02647" ("ApaI" "Apolipoprotein A-I")) 
 (define-protein "NCIT:C33977" ("Antova" "RNA-binding protein nova-2")) 
-(define-protein "NCIT:C16295" ("Antibiot" "antibody")) 
+;(define-protein "NCIT:C16295" ("Antibiot" "antibody")) 
 (define-protein "NCIT:C70547" ("Anas" "antinuclear antibody")) 
 (define-protein "UP:Q04507" ("Amoy" "Ammonia monooxygenase alpha subunit")) 
 (define-protein "NCIT:C112514" ("AffiniPure" "NPR1")) 
