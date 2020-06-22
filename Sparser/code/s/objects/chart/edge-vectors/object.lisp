@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2020  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edge-vectors:"
-;;;  Version:  March 2019
+;;;  Version:  June 2020
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;;     (5/5/93) Added Preterminal-edges
@@ -135,26 +135,58 @@
 
 
 (defun all-edges-on (ev)
-  ;; Called by peek-rightward but may be useful in general
-  ;; (surposing it doesn't already exist). Returns the edges
-  ;; in order from bottom (shortest) to top (longest). 
+  "Returns the edges in order from bottom (shortest)
+   to top (longest)."
   (let ((vector (ev-edge-vector ev)))
     (loop for i from 0 upto (1- (ev-number-of-edges ev))
-      collect (aref vector i))))
+       collect (aref vector i))))
+
+
+(defgeneric connected-fringe (ev)
+  (:documentation "Return a fresh list of the edges on this vector
+    ordered from the bottom (shortest) to the top (longest).
+    It is similar to all-edge-on except that unlike that function, 
+    it guarentees that each edge is 'used-in' the edge above it.
+    Designed for the situation where there are multiple preterminal
+    edges at the position, only one of which is used in the rest of
+    the tree.")
+  ;; sort of a combination of all-preterminals-at and edges-all-chain
+  (:method ((ev edge-vector))
+    (let ((vector (ev-edge-vector ev))
+          (index -1)
+          (max (ev-number-of-edges ev)))
+      ;; 11st identify the preterminals. Only one of them is
+      ;; expected to point up into the actual tree.
+      (let* ((preterminals
+              (loop for i from 0 to (1- max)
+                 as edge = (aref vector i)
+                 when (one-word-long? edge)
+                 collect edge))
+             (used-preterms
+              (loop for edge in preterminals
+                 when (edge-used-in edge)
+                 collect edge))
+             (preterm-to-include
+              (if (null (cdr used-preterms))
+                (car used-preterms)
+                ;; There must be multiple chains up from
+                ;; this position. For a knowledge-free decision
+                ;; we'd want the longest one and return that
+                ;; one's preterminal.
+                (car used-preterms))))
+        (edges-on-ev-above preterm-to-include ev)))))
+
+  
+
 
 (defun tt-edges-starting-at (start-ev)
   "Special purpose lookup for whack-a-rule.
    Called from adjacent-tt-pairs where we want to include literal rules.
-   We include them when either we  have multiple-initial-edges or
-   the top edge is just one word long (which handles cases like 'can't'
-   where the 'can' both participates in the rule for the contraction
-   and means something by itself)."
+   We include them when we have multiple-initial-edges, otherwise we
+   return the top edge."
   (let* ((top-edge (ev-top-node start-ev)))
-    (when top-edge ;; seem to be able to get a NIL in all positions of 
-      ;; the edge vector when we look at the end of sentence in an article
-      (if (or (eq top-edge :multiple-initial-edges)
-              ;;(one-word-long? top-edge)
-              )
+    (when top-edge ;; nil at the end of sentence in an article
+      (if (eq top-edge :multiple-initial-edges)
         (all-edges-on start-ev)
         `(,top-edge)))))
 
@@ -191,8 +223,8 @@
 
 
 (defun span-covered-by-one-edge? (start end)
-  ;; return the edge that starts and ends at the indicated positions
-  ;; if there is one
+  "Return the edge that starts and ends at the indicated positions
+  if there is one"
   (let ((start-vector (pos-starts-here start))
         (end-vector (pos-ends-here end)))
     (let ((start-top (ev-top-node start-vector))
@@ -244,8 +276,9 @@
 
 
 (defun preterminal-edges (position)
-  ;; return a list of the edges that start at this position and
-  ;; span just the one word here.
+  "Return a list of the edges that start at this position and
+   span just the one word here."
+  ;;/// identical (older?) version of what all-preterminals-at does
   (let ((starting-ev (pos-starts-here position)))
     (if (null (ev-top-node starting-ev))
       nil
@@ -404,8 +437,7 @@
   "When the chunker decides that the noun edge is highly implausible, then remove it from the chart -- e.g. 'these target SMAD2' where the noun reading of target is wrong"
   ;; was   (specify-top-edge (get-verb-edge e))
   (loop for ee in (get-non-verb-edges e)
-          do
-          (remove-edge-from-chart ee)))
+     do (remove-edge-from-chart ee)))
 
 (defun stipulate-edge-position (start-pos end-pos edge)
   "We're editing the chart, and we want to 'move' an edge
