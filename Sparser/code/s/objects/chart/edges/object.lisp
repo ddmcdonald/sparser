@@ -67,6 +67,10 @@
   )
 
 
+(defvar *right-daughter-keywords*
+  '(:single-term :context-sensitive :digit-based-number
+    :number-fsa))
+
 
 ;;;-------------------------------------------------------
 ;;; single code locus for setting the referent of an edge
@@ -229,22 +233,20 @@ code is make-edge-over-abbreviation and its feeders. |#
 
 
 (defun edges-between (p1 p2)
+  "Returns all the edges that span between the two positions"
   (let ((ev1 (pos-starts-here p1))
         (ev2 (pos-ends-here p2))                  
         edge edges )
-
     (when (ev-top-node ev1)
       (dotimes (i (ev-number-of-edges ev1))
         (setq edge (elt (ev-edge-vector ev1) i))
-        (when (eq (edge-ends-at edge)
-                  ev2)
+        (when (eq (edge-ends-at edge) ev2)
           (push edge edges))))
-
     edges ))
 
 (defun edge-between (p1 p2)
-  ;; returns just one edge, the topmost edge spanning the two
-  ;; positions.  If there is no such edge it returns nil.
+  "Returns just one edge, the topmost edge spanning the two
+   positions. If there is no such edge it returns nil."
   (when (eq p1 p2)
     (error "Positions to find the edge-between are identical: ~a" p1))
   (let* ((ev1 (pos-starts-here p1))
@@ -264,8 +266,8 @@ code is make-edge-over-abbreviation and its feeders. |#
 
 
 (defun continuous-edges-between (p1 p2)
-  ;; The caller has looked at the coverage between these positions
-  ;; (e.g. segment boundaries) and knows they're contiguous
+  "The caller has looked at the coverage between these positions
+   (e.g. segment boundaries) and knows they're contiguous"
   (let ((start-pos p1)
         end-pos  edge   edges )
     (loop
@@ -280,14 +282,14 @@ code is make-edge-over-abbreviation and its feeders. |#
 
 
 (defun preterminal-edge-at? (pos-before)
-  ;; just a predicate. If there is any edge of any kind
-  ;; over the word after this position, return non-nil
+  "just a predicate. If there is any edge of any kind
+   over the word after this position, return non-nil"
   (ev-top-node (pos-starts-here pos-before)))
 
 
 (defun 1st-preterminal-at (p)
-  ;; return the 1st edge to have spanned the word at position 'p'.
-  ;; If there were multiple edges over that word we ignore that.
+  "Return the 1st edge to have spanned the word at position 'p'.
+   If there were multiple edges over that word we ignore that."
   (declare (special *edge-vector-type*))
   (let ((ev (pos-starts-here p)))
     (ecase *edge-vector-type*
@@ -298,7 +300,7 @@ code is make-edge-over-abbreviation and its feeders. |#
 
 
 (defun highest-preterminal-at (p)
-  ;; finds the one at the largest index in the vector
+  "finds the edge at the largest index in the vector"
   (declare (special *edge-vector-type*))
   (let* ((ev (pos-starts-here p))
          (next-position (chart-position-after p))
@@ -317,7 +319,7 @@ code is make-edge-over-abbreviation and its feeders. |#
 
 
 (defun all-preterminals-at (p)
-  ;; collect up a list of every single-term edge starting at p
+  "Collect up a list of every single-term edge starting at p"
   (let* ((ev (pos-starts-here p))
          (next-position (chart-position-after p))
          (max (ev-number-of-edges ev))
@@ -329,7 +331,6 @@ code is make-edge-over-abbreviation and its feeders. |#
         (push edge edges)
         (return)))
     (nreverse edges)))
-
 
 
 
@@ -351,21 +352,16 @@ code is make-edge-over-abbreviation and its feeders. |#
   (pos-ends-here position))
 
 (defun top-edge-starting-at (position)
-  ;; until 1/3/95 this was just sugar for the field value. Now
-  ;; it's literally the topmost edge, ignoring the possibility of
-  ;; the caller wanting to worry about lexical ambiguities.
+  "Until 1/3/95 this was just sugar for the field value. Now
+   it's literally the topmost edge, ignoring the possibility of
+   the caller wanting to worry about lexical ambiguities."
   (top-edge-on-ev (pos-starts-here position)))
 
 
 (defun edge-spanning (start-pos end-pos)
-  ;; only makes sense in top-nodes-only alg., which is done
-  ;; with edge vectors, so won't bother with a kcons version
-  ;; (i.e. in that alg. there can only ever be one edge beginning
-  ;; and ending at those positions)
-  ;;    We'll just walk down the start vector till we hit and
-  ;; edge that ends at the end-pos.  Walking down both at once
-  ;; might be marginally faster if it's deeply embedded, but
-  ;; the control structure isn't worth writing.
+  "Walk down the start position vector untill we hit an
+   edge that ends at the end-pos. Return nil if there is
+   no such edge."
   (let* ((ev (pos-starts-here start-pos))
          (count (ev-number-of-edges ev))
          (array (ev-edge-vector ev))
@@ -377,8 +373,8 @@ code is make-edge-over-abbreviation and its feeders. |#
 
 
 (defun edge-scopes-word (edge pos-before)
-  ;; An instance of a word being defined by the position before
-  ;; it, this checks whether the edge covers the word
+  "An instance of a word being defined by the position before
+   it, this checks whether the edge covers the word"
   (let ((start (pos-token-index (pos-edge-starts-at edge)))
         (end (pos-token-index (pos-edge-ends-at edge)))
         (p (pos-token-index pos-before)))
@@ -387,9 +383,9 @@ code is make-edge-over-abbreviation and its feeders. |#
 
 
 (defmethod edges-higher-than (ev index)
-  ;; The index is the location of an edge returned by
-  ;; index-of-edge-in-vector. Return a list of all
-  ;; the edges above that
+  "The index is the location of an edge returned by
+   index-of-edge-in-vector. Return a list of all
+   the edges above that"
   (let ((array (ev-edge-vector ev)) ;; zero based
         (count (ev-number-of-edges ev)))
     (loop as i from (1+ index) to (1- count)
@@ -412,8 +408,9 @@ code is make-edge-over-abbreviation and its feeders. |#
 
 
 (defun starting-edge (position number)
-  (let ((ev (edges/starting-at
-             (chart-position position))))
+  "Return the 'number'th edge in the vector of edges that
+   start at this position."
+  (let ((ev (edges/starting-at (chart-position position))))
     (unless ev
       (error "No edges starting at position ~A" position))
     (let ((array (ev-edge-vector ev))
@@ -429,12 +426,13 @@ code is make-edge-over-abbreviation and its feeders. |#
 ;;;------------
 
 (defun one-word-long? (edge)
-  ;; this method is fast, but it's dependent on the encoding convention
-  (or (eq (edge-right-daughter edge) :literal-in-a-rule)
+  (= 1 (edge-length edge)))
 
-      ;; this is the obvious method
+#| Alternatives
+  (or (eq (edge-right-daughter edge) :literal-in-a-rule)
+        ;; or :single-term or ??
       (= 1 (number-of-terminals-between (pos-edge-starts-at edge)
-                                        (pos-edge-ends-at edge)))))
+                                        (pos-edge-ends-at edge)))) |#
 
 (defun word-under-edge (edge)
   "The caller has determined that this edge is one word long.
@@ -453,8 +451,9 @@ code is make-edge-over-abbreviation and its feeders. |#
 
 
 (defun edges-all-chain (position start/end)
-  ;; are all the edges that start (or end) at the position
-  ;; contributing to a single tree?  
+  "Using the edge-used-in link to determine whether or not
+   all of the edges that start (or end) at this position
+   are in a single tree."
   (declare (special *edge-vector-type*))
   (let* ((ev (ecase start/end
                (:start (pos-starts-here position))
@@ -492,13 +491,12 @@ code is make-edge-over-abbreviation and its feeders. |#
 ;;;------------------------------
 
 (defun edge-precedes (left-edge right-edge)
-  ;; does the "left-edge" end earlier (or the same as) the "right"
-  ;; edge starts?
-  (when
-      ;; had some cases where there were discourse-mentions whose 'source'
-      ;;  was the cons (LINK-IN_EDGE ...)
-      (and (edge-p left-edge)
-	   (edge-p right-edge))
+  "Does left edge end before (or on the same position as) right edge
+   starts"
+  ;; had some cases where there were discourse-mentions whose 'source'
+  ;; was the cons (LINK-IN_EDGE ...)
+  (when (and (edge-p left-edge)
+             (edge-p right-edge))
     (let ((left-end (pos-edge-ends-at left-edge))
 	  (right-start (pos-edge-starts-at right-edge)))
       (cond ((eq left-end right-start)
@@ -523,8 +521,8 @@ code is make-edge-over-abbreviation and its feeders. |#
 
 
 (defun edge-subsumes-edge? (higher-edge lower-edge)
-  ;; Checks whether the putative higher edge completely covers
-  ;; the lower edge.
+  "Checks whether the putative higher edge completely covers
+   the lower edge."
   (when (<= (pos-token-index (pos-edge-starts-at higher-edge))
             (pos-token-index (pos-edge-starts-at lower-edge)))
     (when (>= (pos-token-index (pos-edge-ends-at higher-edge))

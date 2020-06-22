@@ -262,7 +262,7 @@
 (defun lexical-items-between (start end)
   (if (< (pos-token-index start)
          (pos-token-index end))
-      (let ((lex-start (lexical-edge-at start)))
+    (let ((lex-start (lexical-edge-at start)))
       (when lex-start
         (cons lex-start
               (lexical-items-between
@@ -278,18 +278,11 @@
     (when (> (ev-number-of-edges ev) 0)
       (loop for i from 0 to (1- evl)
          do (let ((edge (aref (ev-edge-vector ev) i)))
-              (if (and (cfr-p (edge-rule edge))
-                       (unary-rule? (edge-rule edge))
-                       (typecase (car (cfr-rhs (edge-rule edge)))
-                         (word t)
-                         (polyword t)
-                         (t nil)))
+              (when (and (cfr-p (edge-rule edge))
+                         (unary-rule? (edge-rule edge))
+                         (typecase (car (cfr-rhs (edge-rule edge)))
+                           (word t)
+                           (polyword t)
+                           (t nil)))
                 (return edge)))))))
-    #+ignore
-    (when (> (ev-number-of-edges ev) 0)
-      (let ((lex-edge (elt evector 0)))
-        (cond ((edge-referent lex-edge) lex-edge)
-              ((and (> (ev-number-of-edges ev) 1)
-                    (edge-referent (elt evector 1)))
-               (elt evector 1))
-              (t lex-edge))))
+
