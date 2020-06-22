@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990=1991  Content Technologies Inc.
-;;; copyright (c) 1992-1993,2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2011-2015,2020 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "define"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   5.5 January 2015
+;;;   Version:   June 2020
 
 ;; ChangeLog:
 ;;  1.1 (12/17, v1.6)  moved in duplication-checking code from
@@ -38,10 +38,15 @@
 
 (in-package :sparser)
 
+;; Could this be merged with define-cfr/resolved?  The principal difference
+;; is the identity of the source.
+
 (defun define-cfr (lhs rhs &key form referent schema (source :define-cfr))
   "Takes only objects as its arguments. Any decoding should be done
    through forms that feed through Def-cfr/expr."
-  (let ((cfr (lookup/cfr lhs rhs)))
+  (let ((cfr (if (null (cdr rhs)) ;; unary rule
+               (lookup-unary-rule lhs rhs)
+               (lookup-semantic-rule/rhs rhs))))
     (if cfr
       (if (redefinition-of-rule cfr lhs rhs form)
         (changes-to-known-rule cfr lhs rhs form referent source)
