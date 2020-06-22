@@ -271,12 +271,15 @@
 
 
 
-(defun revise-cfr-ancilaries (cfr form referent)
-  ;; called from Def-form-rule/expr when the cfr was already defined
-  ;; and is being revised. The form and referent were resolved by
-  ;; the caller
+(defun revise-cfr-ancilaries (cfr form referent &optional head-designator)
+  "Called when an existing rule is being revised. The cfr object per se
+   is unaffected, we just modify its properties to accord with the
+   new definition. Note that the form and referent were resolved by
+   the caller"
   (setf (cfr-form cfr) form)
   (setf (cfr-referent cfr) referent)
+  (when head-designator ;; e.g. syntactic rule
+    (setf (cfr-completion cfr) head-designator))
   cfr )
 
 
