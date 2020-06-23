@@ -155,26 +155,33 @@
     (let ((vector (ev-edge-vector ev))
           (index -1)
           (max (ev-number-of-edges ev)))
-      ;; 11st identify the preterminals. Only one of them is
+      ;; 1st identify the preterminals. Only one of them is
       ;; expected to point up into the actual tree.
-      (let* ((preterminals
-              (loop for i from 0 to (1- max)
-                 as edge = (aref vector i)
-                 when (one-word-long? edge)
-                 collect edge))
-             (used-preterms
-              (loop for edge in preterminals
-                 when (edge-used-in edge)
-                 collect edge))
-             (preterm-to-include
-              (if (null (cdr used-preterms))
-                (car used-preterms)
-                ;; There must be multiple chains up from
-                ;; this position. For a knowledge-free decision
-                ;; we'd want the longest one and return that
-                ;; one's preterminal.
-                (car used-preterms))))
-        (edges-on-ev-above preterm-to-include ev)))))
+      (let ((preterminals
+             (loop for i from 0 to (1- max)
+                as edge = (aref vector i)
+                when (one-word-long? edge)
+                collect edge)))
+        (unless preterminals
+          ;; the bottom edge is more than one word long.
+          ;; e.g. "...  in vivo [37]" overnight #3
+          (setq preterminals `(,(aref vector 0))))
+        (let* ((used-preterms
+                (loop for edge in preterminals
+                   when (edge-used-in edge)
+                   collect edge))
+               (preterm-to-include
+                (if (null (cdr used-preterms))
+                  (car used-preterms)
+                  ;; Else there must be multiple chains up from
+                  ;; this position. For a knowledge-free decision
+                  ;; we'd want the longest chain and return that
+                  ;; one's preterminal. This flips a coin.
+                  (car used-preterms))))
+          (unless preterm-to-include
+            (error "connected-fringe - no used-in preterminals at ~a~
+                  ~%in ~s" ev (current-string)))
+          (edges-on-ev-above preterm-to-include ev))))))
 
   
 
