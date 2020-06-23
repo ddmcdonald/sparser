@@ -22,10 +22,9 @@
 ;;;-----------------------------------
 
 (defun find-cfr (lhs-expression rhs-expressions)
-  ;;//// Not called internally
-  ;; intended for external use by users, filters for the lhs when
-  ;; there are multiple definitions
-
+  "Primary way to retrieve a rule from an expression of symbols and strings.
+   Not used by internal rule-creating routines. Intended for external use
+   by rule developers"
   (when lhs-expression ;; i.e. allow it to be nil
     (typecase lhs-expression
       (symbol)
@@ -78,6 +77,8 @@
     (lookup-unary-rule lhs-label rhs-labels)
     (lookup-rule/rhs rhs-labels)))
 
+#+ignore ;; original version when these were used for duplication
+         ;; checks when rules were being created
 (defun lookup-rule/rhs (rhs-labels)
   "For a binary rule all that matters for rule identity is the
    two labels (words, polywords, categories) on its righthand side.
@@ -100,7 +101,7 @@
              (lookup-form-rule rhs-labels left-ids right-ids))
             (t (lookup-semantic-rule left-ids right-ids))))))))
 
-#+ignore ;; David's new code
+;; New version. Not used when rules are being defined
 (defun lookup-rule/rhs (rhs-labels)
   "For a binary rule all that matters for rule identity is the
    two labels (words, polywords, categories) on its righthand side.
@@ -111,12 +112,11 @@
    rules rather than just form-categories, consequently the type of
    the rule is determined by the def forms and is reflected in the
    pattern of the ids."
-  (declare (special *making-syntactic-rule* *sparser-loaded*))
   (let* ((left-label (first rhs-labels))
          (right-label (second rhs-labels))
          (left-rs (label-rule-set left-label))
          (right-rs (label-rule-set right-label)))
-    (when (and left-rs right-rs *sparser-loaded*)
+    (when (and left-rs right-rs)
       (let ((left-ids (rs-right-looking-ids left-rs))
             (right-ids (rs-left-looking-ids right-rs)))
         ;;(break "left-ids: ~a~%right-ids: ~a" left-ids right-ids)
@@ -124,23 +124,30 @@
           ;; Most categories now participate in both semantic and
           ;; form/syntactic rules, and typically have both
           ;; ids, so we check for semantic rules first
-          (cond
-            ((and (category-multiplier left-ids)
-                  (category-multiplier right-ids))
-             (lookup-semantic-rule left-ids right-ids))
-            ((and (form-multiplier left-ids)
-                  (form-multiplier right-ids))
-             (lookup-syntactic-rule left-ids right-ids))
-            ((or (form-multiplier left-ids)
-                 (form-multiplier right-ids))
-             (if *making-syntactic-rule*
-               nil ;; labels to hit in syntax rules not in place yet
-               (lookup-form-rule rhs-labels left-ids right-ids)))))))))
-
+          (or (when (and (category-multiplier left-ids)
+                         (category-multiplier right-ids))
+                (lookup-semantic-rule left-ids right-ids))
+              (when (and (form-multiplier left-ids)
+                         (form-multiplier right-ids))
+                (lookup-syntactic-rule left-ids right-ids))
+              (when (or (form-multiplier left-ids)
+                        (form-multiplier right-ids))
+                (lookup-form-rule rhs-labels left-ids right-ids))) )))))
 
 ;;;-------
 ;;; cases
 ;;;-------
+
+(defun lookup-semantic-rule/rhs (rhs)
+  (let* ((left-label (first rhs))
+         (right-label (second rhs))
+         (left-rs (label-rule-set left-label))
+         (right-rs (label-rule-set right-label)))
+    (when (and left-rs right-rs)
+      (let ((left-ids (rs-right-looking-ids left-rs))
+            (right-ids (rs-left-looking-ids right-rs)))
+        (when (and left-ids right-ids)
+          (lookup-semantic-rule left-ids right-ids))))))
 
 (defun lookup-semantic-rule (left-ids right-ids)
   (let ((left-semantic-id (car left-ids))
@@ -167,6 +174,19 @@
           (multiply-ids form-id regular-id)
           (multiply-ids regular-id form-id))))))
 
+
+
+(defun lookup-syntactic-rule/rhs (rhs)
+  ;; called from do-syntax-rule/resolved, which knowns what it needs
+  (let* ((left-label (first rhs))
+         (right-label (second rhs))
+         (left-rs (label-rule-set left-label))
+         (right-rs (label-rule-set right-label)))
+    (when (and left-rs right-rs)
+      (let ((left-ids (rs-right-looking-ids left-rs))
+            (right-ids (rs-left-looking-ids right-rs)))
+        (when (and left-ids right-ids)
+          (lookup-syntactic-rule left-ids right-ids))))))
 
 (defun lookup-syntactic-rule (left-ids right-ids)
   (let ((left-form-id (cdr left-ids))
