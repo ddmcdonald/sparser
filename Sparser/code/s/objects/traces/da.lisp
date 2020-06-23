@@ -183,10 +183,11 @@
   (when *da-execution*
     (display-edge-spec spec *trace-stream*)))
 
-(deftrace :da-fn-returned-edge (edge)
+(deftrace :da-fn-returned-edge (edge &optional dominating)
   ;; Called from standardized-apply-da-function-action
   (when *da-execution*
-    (trace-msg "[DA]   It returns ~a" edge)))
+    (trace-msg "[DA]   It returns ~a~
+              ~%       the dominating edge is ~a" edge dominating)))
 
 (deftrace :da-fn-failed ()
   ;; Called from standardized-apply-da-function-action

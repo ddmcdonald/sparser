@@ -168,7 +168,7 @@ SP> (stree 51)
                   :referent (edge-spec-referent *edge-spec*)
                   :rule (da-name rule)
                   :constituents new-constituents))
-           (tr :da-fn-returned-edge *new-edge*)
+           (tr :da-fn-returned-edge *new-edge* dominating)
            
            (cond (dominating
                   (tr :da-tuck-under dominating (edge-spec-direction *edge-spec*))
