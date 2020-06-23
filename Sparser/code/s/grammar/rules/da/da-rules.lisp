@@ -663,7 +663,8 @@
                       (right-fringe-of s-edge)
                       #'(lambda(x)
                           (and (np-target? x)
-                               (subcategorized-variable s-rel :subject (edge-referent x)))))))
+                               (subcategorized-variable
+                                s-rel :subject (edge-referent x)))))))
            ;; update-edge-as-lambda-predicate now returns NIL if there is
            ;;  no available binding for the variable (s-var or t-var) on srel-edge
            (t-pred (when target

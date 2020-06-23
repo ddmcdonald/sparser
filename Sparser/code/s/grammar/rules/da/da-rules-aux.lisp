@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2019-2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  January 2019
+;;;  Version:  June 2020
 
 ;; Initiated 1/15/19 to break out the predicates and work functions
 ;; from da-rules to make them both easier to read
@@ -209,11 +209,17 @@
 
 (defun find-target-satisfying (fringe pred)
   (loop for edge in fringe
-        when (and (not (eq (edge-mention edge) t))
-                  ;; only want maximal projections
-                  ;; not subsumed by a larger projection on the fringe/head-line
-                  (funcall pred edge))
+     when (and (not (eq (edge-mention edge) t))
+               ;; only want maximal projections
+               ;; not subsumed by a larger projection on the fringe/head-line
+               (funcall pred edge))
      return edge))
+
+(defun right-fringe-of (edge)
+  "Always used in conjunction with find-target-satisfying to supply
+   the candidate right fringe of edges that is anticipated to include
+   the target edge."
+  (connected-fringe (pos-ends-here (pos-edge-ends-at edge))))
 
 (defun np-target? (edge)
   (and
@@ -231,8 +237,6 @@
    (member (form-cat-name edge) '(thatcomp s)))
 
 
-(defun right-fringe-of (edge)
-  (all-edges-on (pos-ends-here (pos-edge-ends-at edge))))
 
 (defun adverb-at? (position)
   (loop for e in (all-edges-on (pos-starts-here position))
