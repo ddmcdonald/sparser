@@ -1440,8 +1440,9 @@
                        ))
           (agent (:or bio-chemical bio-process bio-mechanism)))
   :realization ;; (p/s "use KRAS to treat pancreatic cancer")
-  (:verb "use"
+        (:verb "use"
          :noun "use"
+         :of object ;; "Use of an embryonal lung fibroblast cell line"
          :etf (svo-passive)
          :to used-to
          :for purpose ;; (p/s "what drug should I use for pancreatic cancer?")
