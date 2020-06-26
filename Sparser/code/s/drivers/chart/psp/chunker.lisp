@@ -851,7 +851,7 @@ than a bare "to".  |#
             (loop for ee in (all-edges-at e)
                  thereis (eq (edge-form-name ee) 'verb)))
            ;; for "put" which is a verb+ed and verb, and is
-           ;;  used as an impurative
+           ;;  used as an imperative
            nil)
           ((or
             (and (sentence-initial? e)
