@@ -1396,13 +1396,14 @@ there was an edge for the qualifier (e.g., there is no edge for the
          always
            (let ((*right-edge-into-reference* pp-edge))
              (declare (special *right-edge-into-reference*))
-             (adjoin-pp-to-vg vg (edge-referent pp-edge))))
+             (unless (itypep 'conjunction (edge-referent pp-edge))
+               (adjoin-pp-to-vg vg (edge-referent pp-edge)))))
       
       (loop for pp-edge in (edge-constituents (right-edge-for-referent))
-         do
-           (let ((*right-edge-into-reference* pp-edge))
-             (declare (special *right-edge-into-reference*))
-             (setq vg (adjoin-pp-to-vg vg (edge-referent pp-edge))))
+         do (let ((*right-edge-into-reference* pp-edge))
+              (declare (special *right-edge-into-reference*))
+              (unless (itypep 'conjunction (edge-referent pp-edge))
+                (setq vg (adjoin-pp-to-vg vg (edge-referent pp-edge)))))
          finally (return vg)))
           
     ;; It's not a collection. Compare handlers in interpret-pp-adjunct-to-np
@@ -1424,6 +1425,14 @@ there was an edge for the qualifier (e.g., there is no edge for the
              vg)
             ((maybe-add-domain-adjunctive-predicate-to-phrase
               vg (right-edge-for-referent))))))))
+#| Good challenge case:
+ (p "Over the past decade, new strategies have been developed 
+ either to screen physical variables 
+ or to give emphasis to peculiar growth media 
+ and to take advantage of novel biotechnological tools 
+ for stabilizing macromolecular conformations by chaperone macromolecules.")
+Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjoin-pp-to-vg
+|#
 
 
 (defun variable-to-bind-pp-to-head (base-pp-edge head)
