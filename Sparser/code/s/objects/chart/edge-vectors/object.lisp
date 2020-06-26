@@ -178,10 +178,14 @@
                   ;; we'd want the longest chain and return that
                   ;; one's preterminal. This flips a coin.
                   (car used-preterms))))
-          (unless preterm-to-include
-            (error "connected-fringe - no used-in preterminals at ~a~
-                  ~%in ~s" ev (current-string)))
-          (edges-on-ev-above preterm-to-include ev))))))
+          (if preterm-to-include
+            (edges-on-ev-above preterm-to-include ev)
+            (cond
+              ((null (cdr preterminals)) ;; dec #55
+               preterminals)
+              (t
+               (error "connected-fringe - no used-in preterminals at ~a~
+                  ~%in ~s" ev (current-string))))))))))
 
   
 
