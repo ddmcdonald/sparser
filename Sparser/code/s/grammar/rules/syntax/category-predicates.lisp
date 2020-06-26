@@ -282,16 +282,13 @@
 ;; ng-start? is also in the chunker
 
 (defgeneric ng-start? (label)
-  (:documentation "Is a category which can occur inside a NG?"))
-
-(defmethod ng-start? ((w word))
-  nil)
-
-(defmethod ng-start? ((name symbol))
-  (memq name *ng-start-categories*))
-
-(defmethod ng-start? ((c referential-category))
-  (ng-start? (cat-symbol c)))
+  (:documentation "Is a category which can occur inside a NG?")
+  (:method ((w word))
+    nil)
+  (:method ((c referential-category))
+    (ng-start? (cat-symbol c)))
+  (:method ((name symbol))
+    (memq name *ng-start-categories*)))
 
 
 
