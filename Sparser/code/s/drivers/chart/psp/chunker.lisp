@@ -694,6 +694,7 @@
              thereis (eq 'preposition (form-cat-name ee)))
        nil)
       ((and (sentence-initial? e)
+            (not (followed-by-of e))
             (or (member (edge-cat-name e) '(do be))
                 (eq (form-cat-name e) 'modal))
             #+ignore
@@ -875,7 +876,9 @@ than a bare "to".  |#
           ((plural-noun-and-present-verb? e)
            (plural-noun-not-present-verb? e))
           ((singular-noun-and-present-verb? e)
-           (cond ((or (sentence-initial? e) ;; case of imperative verb like "DECREASE"
+           (cond ((or (and (sentence-initial? e)
+                           (not (followed-by-of e)))
+                            ;; case of imperative verb like "DECREASE"
                     (preceding-pronoun-or-which? e)
                     (preceding-plural-deictic? e)
                     (preceding-plural-noun? e)
@@ -899,21 +902,22 @@ than a bare "to".  |#
            ;; adjacent NG happens when the verb+ed is taken to stop the NG
            ;; as in "these drugs blocked ERK activity" where "blocked" is a main verb
            ;; as opposed to "direct binding to activated forms of RAS"
-           (let ((prev-edge (edge-just-to-left-of e)))
-             (and (not (preceding-adverb e))
-                  (not (and (edge-p prev-edge)
-                            (or (eq 'parentheses (edge-cat-name prev-edge))
-                                (eq 'conjunction (form-cat-name prev-edge)))))
-                  (not (and (edge-p prev-edge)
-                            ;; proposal-marker is for "Let's", which makes it highly likely
-                            ;; that the next word is a verb, not a part of the NG
-                            ;; (e.g. "Let's put ERK")
-                            (eq 'proposal-marker (edge-cat-name prev-edge))))
-                  (not (and
-                        (car *chunks*)
-                        (member 'ng (chunk-forms (car *chunks*)))
-                        (eq (chunk-end-pos (car *chunks*))
-                            (pos-edge-starts-at e)))))))
+           (and (not (followed-by-comparative e))
+                (let ((prev-edge (edge-just-to-left-of e)))
+                  (and (not (preceding-adverb e))
+                       (not (and (edge-p prev-edge)
+                                 (or (eq 'parentheses (edge-cat-name prev-edge))
+                                     (eq 'conjunction (form-cat-name prev-edge)))))
+                       (not (and (edge-p prev-edge)
+                                 ;; proposal-marker is for "Let's", which makes it highly likely
+                                 ;; that the next word is a verb, not a part of the NG
+                                 ;; (e.g. "Let's put ERK")
+                                 (eq 'proposal-marker (edge-cat-name prev-edge))))
+                       (not (and
+                             (car *chunks*)
+                             (member 'ng (chunk-forms (car *chunks*)))
+                             (eq (chunk-end-pos (car *chunks*))
+                                 (pos-edge-starts-at e))))))))
           
           ((and (eq (form-cat-name e) 'possessive)
                 (itypep (edge-referent e) 'time-unit)) ; "week's" in "last weeks's XX"
@@ -1865,6 +1869,11 @@ than a bare "to".  |#
      thereis
           (member (form-cat-name ee) '(verb verb+ed verb+ing))))
 
+(defun followed-by-comparative (e &optional (edges-after (edges-after e)))
+  (loop for ee in edges-after
+     thereis
+          (member (form-cat-name ee) '(comparative-adjective))))
+
 (defun followed-by-modal-or-be (e &optional (edges-after (edges-after e)))
   (loop for ee in edges-after
      thereis
@@ -1891,6 +1900,11 @@ than a bare "to".  |#
                (not (eq (edge-cat-name ee) 'first)))))
 
 (defun preceding-preposition (e &optional (edges (edges-before e)))
+  (loop for ee in edges
+     thereis
+          (member (form-cat-name ee) '(preposition spatial-preposition))))
+
+(defun following-preposition (e &optional (edges (edges-after e)))
   (loop for ee in edges
      thereis
        (member (form-cat-name ee) '(preposition spatial-preposition))))
