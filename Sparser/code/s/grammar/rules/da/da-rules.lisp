@@ -1669,7 +1669,7 @@
 ;; -- try to get the subject of the participials first
 
 (defun make-subj-vp-rule-pair (subj vp)
-  (let ((rule-name (intern (format nil "~s-~s" subj vp))))
+  (let ((rule-name (intern (format nil "~s-~s" subj vp)))) ; e.g. |vp+ing-vp|
     `(progn
        (define-debris-analysis-rule ,rule-name
            :pattern (,subj ,vp)
