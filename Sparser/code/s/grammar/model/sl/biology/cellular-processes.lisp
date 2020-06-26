@@ -132,11 +132,7 @@
 	   :noun "division"
 	   :etf (sv)))
 
-(define-category growth :specializes cellular-process
-    :realization
-    (:verb ("grow" :past-tense "grew")
-	   :noun "growth"
-	   :etf (sv)))
+
 
 (define-category proliferation :specializes cellular-process
                  :bindings (uid "GO:0008283")
@@ -192,9 +188,15 @@
                  :bindings (uid "GO:0006914")
                  :realization (:noun "autophagy"))
 
+(define-category growth :specializes cellular-process
+    :realization
+    (:verb ("grow" :past-tense "grew")
+	   :etf (sv)))
+
 (define-category cell-growth
     :specializes cellular-process
     :bindings (uid "GO:0016049")
+    :restrict ((participant (:or cell-entity organism)))
     :realization (:noun  ("cell growth" "cellular growth" "growth" "growing"
                                         "cell expansion" "cell enlargement")))
 
