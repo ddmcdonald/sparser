@@ -184,11 +184,15 @@
    (extract-characters-between-positions pos-before pos-after)))
 
 
-(defun string-for-edge (edge)
-  "Abbreviation for the long version"
-  (trim-whitespace
-   (replace-newline-with-space
-    (extract-string-spanned-by-edge edge))))
+(defgeneric string-for-edge (edge)
+  (:documentation "Uses extract-string-spanned-by-edge, but
+    cleans up the result for easier examination by people")
+  (:method ((n integer))
+    (string-for-edge (edge# n)))
+  (:method ((edge edge))
+    (trim-whitespace
+     (replace-newline-with-space
+      (extract-string-spanned-by-edge edge)))))
 
 (defun extract-string-spanned-by-edge (edge)
   (let* ((start-pos (pos-edge-starts-at edge))
