@@ -1550,9 +1550,9 @@
     (trace-msg "")))
 |#
 
-               
-
-;;--- details of the chunker's operation
+;;;-------------------------------------
+;;; details of the chunker's operation
+;;;-------------------------------------
 
 (deftrace :delimit-chunk-start (ev forms)
   ;; called from find-chunks
@@ -1611,6 +1611,58 @@
               ~%   selecting e~a"
                head-compatible
                (edge-position-in-resource-array edge))))
+
+(deftrace :filter-chunk-compatible (ev edges)
+  ;; called in filter-chunk-compatible-edges-from-ev
+  (when (or *trace-chunker* *trace-segments*)
+    (trace-msg "Chunk ev ~a has edges ~a" ev edges)))
+
+(deftrace :removing-chunk-incompatible-edge (edge)
+  ;; called in filter-chunk-compatible-edges-from-ev
+  (when (or *trace-chunker* *trace-segments*)
+    (trace-msg "Removing ~a" edge)))
+
+(deftrace :all-ev-edges-are-incompatible (ev)
+  ;; called in filter-chunk-compatible-edges-from-ev
+  (when (or *trace-chunker* *trace-segments*)
+    (trace-msg "None of the edges is compatible (~a)"
+               (ev-position ev))))
+
+
+(defparameter *delimit-next-chunk-trace* nil)
+(defun trace-delimit-chunk ()
+  (setq *delimit-next-chunk-trace* t))
+(defun untrace-delimit-chunk ()
+  (setq *delimit-next-chunk-trace* nil))
+
+(deftrace :dlc-before-loop (previous global)
+  (when *delimit-next-chunk-trace*
+    (trace-msg "[delimit] previous *chunk* is ~s, *chunk* is ~s" previous global)))
+
+(deftrace :dlc-still-possible (forms)
+  (when *delimit-next-chunk-trace*
+    (trace-msg "[delimit] forms ~s are still possible" forms)))
+
+(deftrace :dlc-pushing (compatible-head)
+  (when *delimit-next-chunk-trace*
+    (trace-msg "[delimit] pushing ~s onto possible-heads" compatible-head)))
+
+(deftrace :dlc-possible-heads (possible-heads)
+  (when *delimit-next-chunk-trace*
+    (trace-msg "[delimit] possible-heads is ~s" possible-heads)))
+
+(deftrace :dlc-found-head (end-pos)
+  (when *delimit-next-chunk-trace*
+    (trace-msg "[delimit] found head, set chunk-end-pos to ~s" end-pos)))
+
+(deftrace :dlc-no-head-end (end-pos)
+  (when *delimit-next-chunk-trace*
+    (trace-msg "[delimit] no head, set chunk-end-pos to ~s" end-pos)))
+  
+(deftrace :dlc-finished (end-pos ev-list)
+  (when *delimit-next-chunk-trace*
+    (trace-msg "[delimit] chunk-end-pos is ~s, evlist is ~s" end-pos ev-list)))
+
 
 
 ;;---- sanity checks working with a pre-populated document
