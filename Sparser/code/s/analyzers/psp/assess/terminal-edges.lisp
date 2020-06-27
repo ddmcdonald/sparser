@@ -44,7 +44,7 @@
 ;;; entry point
 ;;;-------------
 
-;; (*trace-network*)
+;; (trace-network)
 
 (defun install-terminal-edges (word position-scanned next-position)
   "Called from introduce-terminal-edges or from do-just-terminal-edges which
