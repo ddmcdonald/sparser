@@ -1085,7 +1085,8 @@
   :mixins (bio-whethercomp)
   :binds ((against pathway))
   :realization
-  (:verb "query" ;; keyword: ENDS-IN-ED 
+        (:verb "query" ;; keyword: ENDS-IN-ED 
+         :noun "query" ;; "matches the query protein"
          :etf (svo-passive)
          :against against)) ;; "12,484 genes were queried against KEGG biopathways"
 
