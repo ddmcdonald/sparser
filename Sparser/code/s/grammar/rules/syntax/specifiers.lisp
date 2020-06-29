@@ -215,11 +215,14 @@ demonstratives.)
      ;;/// test for interior case
      (bind-variable 'quantifier spec head))
 
+    ((itypep spec 'wh-pronoun) ; "how much of the database binding site"
+     (bind-variable 'quantifier spec head))
+
     (t
      (push-debug `(,spec ,head))
-     (warn "sort-out-specifier/of: no handler for specifiers ~
-            of type: ~a, ~a.~%in ~s"
-           (itype-of spec) spec (current-string))
+     (warn #|break|# "sort-out-specifier/of: no handler specifier: ~a~
+            ~%of type: ~a~%in ~s"
+           spec (itype-of spec) (current-string))
      ;; drop the spec on the floor
      head)))
 
