@@ -335,7 +335,8 @@
          (ltype (and cfr (cfr-referent cfr)
                      (itype-of (cfr-referent cfr)))))
     (when (itypep ltype 'bio-chemical-entity)
-      (warn "blocking verbification of ~s" lemma)
+      (when *show-verbification*
+        (warn "blocking verbification of ~s" lemma))
       t)))
 
 (defun warn-about-verbified-nouns ()
