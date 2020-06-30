@@ -719,6 +719,17 @@ val-pred-var (pred vs modifier - left or right?)
        (setq head (bind-dli-variable 'predication predicate head))
        head))))
 
+(defun adverb-noun-compound (adverb head)
+  (cond
+    (*subcat-test* t)
+    ((valid-method compose adverb head)
+     (compose adverb head))
+    ((itypep head 'takes-adverb)
+     (bind-variable 'adverb adverb head))
+    (t (bind-variable 'modifier adverb head))))
+    
+    
+
 
 
 (defparameter *premod-adjps* nil)
@@ -2810,6 +2821,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                       (edge-over-comparative
                        (search-tree-for-referent (left-edge-for-referent) comp-indiv)))
                   (unless edge-over-comparative
+                    ;; usually due to an sdm-span-segment constituent with :long-edge
                     (warn "Could not locate edge over ~a under ~a in~% ~s"
                           comp-indiv (left-edge-for-referent)
                           (current-string))

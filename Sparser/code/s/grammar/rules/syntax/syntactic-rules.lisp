@@ -164,6 +164,13 @@
            :head :right-edge
            :form n-bar
            :referent (:function adj-noun-compound left-edge right-edge)))
+
+     (eval
+      `(def-syntax-rule (adverb ,nb)
+           :head :right-edge
+           :form :np
+           :referent (:function adverb-noun-compound left-edge right-edge)))
+
      (eval
       `(def-syntax-rule (,nb adjective) ;; "RAS in vivo"
            :head :left-edge
