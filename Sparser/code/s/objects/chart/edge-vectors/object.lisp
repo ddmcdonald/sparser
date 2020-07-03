@@ -184,8 +184,10 @@
               ((null (cdr preterminals)) ;; dec #55
                preterminals)
               (t
+               #+ignore ; collect these as they expose redundant vocabulary
                (error "connected-fringe - no used-in preterminals at ~a~
-                  ~%in ~s" ev (current-string))))))))))
+                  ~%in ~s" ev (current-string))
+               (last preterminals)))))))))
 
   
 
