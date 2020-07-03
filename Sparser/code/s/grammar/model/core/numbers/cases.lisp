@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990  Content Technologies Inc.
-;;; copyright (c) 1992 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2020 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "numbers"
 ;;;   Module:  "model:dossiers:"
-;;;  Version:  January 1994
+;;;  Version:  July 2020
 
 ;; initiated 10/90.  Moved out of [numbers;] 1/7/94 v2.3 
 
@@ -46,4 +46,6 @@
 (define-number "1000000" :multiplicand "million")
 (define-number "1000000000" :multiplicand "billion")
 (define-number "1000000000000" :multiplicand "trillion")
+(define-number "1000000000000000" :multiplicand "quadrillion")
+(define-number "1000000000000000000" :multiplicand "quintillion")
 

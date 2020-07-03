@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2016,2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "form"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  March 2016
+;;;  Version:  July 2020
 
 ;; 2.0  (7/20/92 v2.3) made over to use "real" categories
 ;; 2.1  (10/5) tweeked construct-temporary... to not make a polyword
@@ -195,7 +195,8 @@
              (m
               ;; N.b. Can only use this function because we've already
               ;; decode the binding instructions
-              (find-or-make/individual multiplier binding-instructions)))
+              (find-or-make/individual multiplier binding-instructions))
+             (plural-pname (plural-version multiplicand)))
         ;;(push-debug `(,binding-instructions ,m))
         ;;(break "look at m (~a)" m)
         
@@ -204,9 +205,14 @@
         (let ((rule (define-cfr multiplier
                                 `(,multiplicand)
                       :form (category-named 'number)
-                      :referent m)))
+                      :referent m))
+              (p-rule (define-cfr multiplier `(,plural-pname)
+                        :form (category-named 'number)
+                        :referent m)))
           (setf (cfr-schema rule) schematic-rule)
-          (push rule rules))
+          (setf (cfr-schema p-rule) schematic-rule)
+          (push rule rules)
+          (push p-rule rules))
 
 
         ;; 8/24/00 This scheme has been confused and I'm a bit befuddled
