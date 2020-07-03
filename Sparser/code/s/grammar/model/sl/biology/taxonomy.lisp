@@ -1505,6 +1505,7 @@
 (define-category strain :specializes organism ;; biological variant - may want to change how this is implemented 
   :instantiates self 
   :index (:permanent :key name)
+  :bindings (uid "NCIT:C14419")
   :lemma (:common-noun "strain")
   :realization (:common-noun name))
 

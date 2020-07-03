@@ -1,6 +1,6 @@
 (in-package :sparser)
 
-(def-indiv-with-id organism "strain" "NCIT:C14419" :name "organism strains") 
+;;(def-indiv-with-id organism "strain" "NCIT:C14419" :name "organism strains") use def from taxonomy
 (def-indiv-with-id organism "prokaryote" "NCIT:C14263" :name "prokaryote") 
 (def-indiv-with-id organism "eukaryote" "NCIT:C25796" :name "eukaryota")
 (def-indiv-with-id organism "protista" "NCIT:C77914" :name "protista") 
