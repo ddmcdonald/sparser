@@ -168,7 +168,7 @@
      (eval
       `(def-syntax-rule (adverb ,nb)
            :head :right-edge
-           :form :np
+           :form :n-bar
            :referent (:function adverb-noun-compound left-edge right-edge)))
 
      (eval
