@@ -86,6 +86,8 @@
         ;; Convert any bio-entity to a protein
         (when (memq :bio-entity pattern)
           (convert-bio-entity-to-protein segments))
+        (unless (every #'edge-p segments) ;; "1:4-1:4000" where 4-1 is a protein
+          (throw :punt-on-nospace-without-resolution nil))
         (let* ((proteins (loop for edge in segments
                             collect (edge-referent edge)))
                (collection (find-or-make-individual 'collection
