@@ -313,6 +313,8 @@ places. ]]
       (brackets-for-adverb-noun-verb lemma clauses))
      
      ;; "firm" is four-ways ambiguous
+
+     ((equal combinations '(cardinal verb))) ;; "zero"
      
      (t (push-debug `(,lemma ,combinations ,clauses))
         (if (and (boundp '*word-to-be-defined?*)
