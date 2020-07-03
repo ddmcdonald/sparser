@@ -707,6 +707,7 @@
 (define-adverb "weakly")
 (define-adverb "well")
 (define-adverb "widely")
+(define-adverb "whatsoever") ; negative contexts: "none __"
 
 ;;;------
 ;;; adjectives
