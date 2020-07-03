@@ -110,10 +110,8 @@
            (push var variables)
            (when (eq j i-end) (return))
            (setq i j)
-           (warn "WH-nominal: looping ok?: i = ~a  j = ~a" i j)
-           (return-from walk-up-bound-in-to-indiv nil)
            ;;(break "WH-nominal: looping ok?: i = ~a  j = ~a" i j)
-           )))
+           (return-from walk-up-bound-in-to-indiv nil))))
     (nreverse variables)))
 
 (defgeneric starts-with-wh-pronoun? (place)
