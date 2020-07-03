@@ -13,6 +13,26 @@
 ;;; Example texts
 ;;;---------------
 
+#| clipped from https://www.nytimes.com/2020/06/30/world/asia/h1n1-swine-flu-virus-china-pig.html  7/1/20
+
+Scientists Say New Strain of Swine Flu Virus Is Spreading to Humans in China
+
+A new study warns that the strain of H1N1, common on China’s pig farms since 2016, should be “urgently” controlled to avoid another pandemic.
+
+A new strain of the H1N1 swine flu virus is spreading silently in workers on pig farms in China and should be “urgently” controlled to avoid another pandemic, a team of scientists says in a new study.
+
+H1N1 is highly transmissible and spread around the world in 2009, killing about 285,000 people and morphing into seasonal flu.
+
+The newer strain, known as G4 EA H1N1, has been common on China’s pig farms since 2016 and replicates efficiently in human airways, according to the study published on Monday. So far, it has infected some people without causing disease, but health experts fear that could change without warning.
+
+\“G4 viruses have all the essential hallmarks of a candidate pandemic virus,” the study said, adding that controlling the spread in pigs and closely monitoring human populations “should be urgently implemented.\”
+
+Eurasian variations of H1N1 have been circulating in pigs in Europe and Asia for decades, the study said, but the incidence of G4 viruses in farmed Chinese pigs with respiratory symptoms began rising sharply after 2014.
+
+Recent evidence \“indicates that G4 EA H1N1 virus is a growing problem in pig farms, and the widespread circulation of G4 viruses in pigs inevitably increases their exposure to humans,\” it said.
+
+|#
+
 
 #| Clipped from NYT "Coronavirus Briefing" of 6/16/20
 
