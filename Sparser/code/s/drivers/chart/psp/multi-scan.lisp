@@ -1265,6 +1265,7 @@ pos-after-close (nth 4 *)) |#
            one-edge-over-entire-segment?
            (one-word-long? first-edge)
            (eq (pos-capitalization pos-after-open) :all-caps))
+      #+ignore ;; too loud when not working on these
       (unless (and edge-to-left (edge-p edge-to-left))
         (warn "probable acronym w/o edge to its left: ~s~%in ~s"
               (string-for-edge first-edge) (current-string)))
