@@ -852,6 +852,14 @@ than a bare "to".  |#
             (ecn (edge-cat-name e)))
         (declare (special *ng-start-tests-in-progress*))
         (cond
+          ((and *chunks*
+                (eq (chunk-end-pos (car *chunks*))
+                    (start-pos e))
+                (member 'ng (chunk-forms (car *chunks*)))
+                (eq (edge-cat-name e) 'that))
+           ;; it is more likely that a "that" following an NG chunk is a
+           ;;  relative as in "the cells that STAT3 is ..."
+           nil)
           ((and
             (loop for ee in (all-edges-at e)
                  thereis (eq (edge-form-name ee) 'verb+ed))
