@@ -130,7 +130,7 @@
 
 (include-grammar-module  *collections*)
 (include-grammar-module  *proper-names*)
-;;(include-grammar-module  *people*)
+(include-grammar-module  *people*)
 
 #|(include-grammar-module  *companies*)
   (include-grammar-module  *company-core*)
