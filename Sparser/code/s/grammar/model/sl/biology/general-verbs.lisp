@@ -1083,6 +1083,7 @@
 
 (define-category query :specializes bio-method
   :mixins (bio-whethercomp)
+  :restrict ((object (:or biological measurement database)))
   :binds ((against pathway))
   :realization
         (:verb "query" ;; keyword: ENDS-IN-ED 
@@ -1438,6 +1439,7 @@
                        bio-method
                        experimental-condition cell-line
                        measurement ;; "data", "dataset"
+                       database
                        ))
           (agent (:or bio-chemical bio-process bio-mechanism)))
   :realization ;; (p/s "use KRAS to treat pancreatic cancer")
