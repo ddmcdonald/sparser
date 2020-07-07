@@ -31,20 +31,11 @@
   :bindings (var (find-variable-for-category 'age 'has-age))
   :binds ((age amount-of-time))
   :index (:key age)
-  ;; :realization (:common-noun "age")
+  :realization (:common-noun "age")
   :documentation "This provides the basis for using the attribute
  machinery, and also provides a representation of an amount
  of time as the value of an age per se, without having to simultaneously
  attribute it to something that has that age." )
-#|  Two edges over "old" -- from this and from qualitative-edge -- get to
-    disambiguate-head-of-chunk when the lack of a category label on this one
-    blocks the decision between the two.
-  :realization (:tree-family  item+idiomatic-head
-                :mapping ((np . :self)
-                          (modifier . amount-of-time)
-                          (np-head . "old")
-                          (result-type . :self)
-                          (item . age))) |#
 
 
 (define-category qualitative-age

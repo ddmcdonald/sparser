@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "viruses"
 ;;;    Module:   "sl;disease:"
-;;;   version:   May 2020
+;;;   version:   July 2020
 
 ;;; broken out from biology/new-defs/new-diseases.lisp 4/14/2020
 
@@ -158,15 +158,19 @@
                  :realization (:noun ("FLUAV" "influenza A virus" "Influenza A Virus")))
 
 (define-category HPAI :specializes FLUAV
-                 :realization (:noun ("HPAI" "Highly Pathogenic Asian Avian Influenza A" "Highly Pathogenic Asian Avian Influenza A Virus" "highly pathogenic avian influenza")))
-;(def-indiv-with-id HPAI "H5N1" "NCIT:C123490" :name "Influenza A (H5N1) Virus" :synonyms ("H5N1" "Highly Pathogenic Asian Avian Influenza A (H5N1) Virus" "HPAI H5N1 Virus")) 
+                 :realization (:noun ("HPAI" "Highly Pathogenic Asian Avian Influenza A"
+                                             "Highly Pathogenic Asian Avian Influenza A Virus"
+                                             "highly pathogenic avian influenza")))
 
 (define-category H5N1 :specializes HPAI
                  :bindings (uid "NCIT:C123490")
-                 :realization (:noun ("H5N1" "Influenza A (H5N1) Virus" "H5N1 Influenza A Virus"
+                 :realization (:noun ("H5N1" "Influenza A (H5N1) Virus"
+                                             "H5N1 Influenza A Virus"
                                              "Highly Pathogenic Asian Avian Influenza A (H5N1) Virus"
-                                             "HPAI H5N1 Virus" "HPAI H5N1")))
-;;(def-indiv-with-id virus "H5N1" "NCIT:C123490" :name "Influenza A (H5N1) Virus" :synonyms ("HPAI" "highly pathogenic avian influenza" "Influenza A (H5N1) Virus" "H5N1" "Highly Pathogenic Asian Avian Influenza A (H5N1) Virus" "HPAI H5N1 Virus"))
+                                             "HPAI H5N1 Virus"
+                                             "HPAI H5N1"
+                                             "bird flu")))
+
 (noun "H5N1VN1203" :super H5N1)
 (def-synonym H5N1VN1203 (:noun ("H5N1-VN1203" "influenza A/Vietnam/1203/2004")))
 
@@ -177,9 +181,13 @@ athogenic Asian Avian Influenza A (H5N2) Virus" "HPAI H5N2 Virus" "Highly Pathog
                  :bindings (uid "NCIT:C80445")
                  :realization (:noun ("H1N1" "Influenza A (H1N1) Virus" "Swine Influenza A (H1N1) Virus"
                                              "Swine-origin influenza A (H1N1) virus"
-                                             "H1N1 swine influenza virus")))
+                                             "H1N1 swine influenza virus"
+                                             "swine flu virus"
+                                             "swine flu")))
 (noun "H1N1-09" :super H1N1)
-(def-synonym H1N1-09 (:noun ("H1N1/09" "2009 swine flu virus" "2009 pandemic influenza A (H1N1)"))) 
+(def-synonym H1N1-09 (:noun ("H1N1/09"
+                             "2009 swine flu virus"
+                             "2009 pandemic influenza A (H1N1)"))) 
 
 (def-indiv-with-id FLUV "FLUBV" "NCIT:C53468" :name "influenza B virus") 
 (def-indiv-with-id FLUV "FLUCV" "NCIT:C97157" :name "influenza C virus")

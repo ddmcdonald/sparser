@@ -43,7 +43,12 @@
   :realization ((:common-noun ("person" :plural "people"))))
 
 
-; human ??
+(define-category  human
+  :instantiates person
+  :specializes person-type
+  :rule-label person
+  :realization (:common-noun "human"))
+
 ; male female ???
 
 

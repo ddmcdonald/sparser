@@ -1308,9 +1308,7 @@
   :etf (sv)
   :from source
   :to destination))
-
-
-
+;; same pname as the lemma assigned to 'transition' as specialization of process
 (def-synonym transition (:noun "transition"))
 
 
