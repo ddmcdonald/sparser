@@ -1093,12 +1093,11 @@
 
 
 (define-category bio-question :specializes bio-rhetorical
-    :mixins (bio-thatcomp)
-    :realization
-    (:verb "question" ;; keyword: ENDS-IN-ED
+   :mixins (bio-thatcomp
+            question) ; adds 'statement'
+   :realization
+          (:verb "question" ;; keyword: ENDS-IN-ED
            :noun "question"
-           ;;:noun "hypothesis"
-           ;; this is just wrong, plus it's already defined with hypthoesize
 	   :etf (svo-passive)))
 
 

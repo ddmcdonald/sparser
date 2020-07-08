@@ -24,7 +24,8 @@ and provides biology-specific restrictions on its varibles. |#
 
 (define-category answer
   :specializes process
-  :mixins (simple-action) ;; agent & theme
+  :mixins (simple-action) ;; actor & theme
+  :restrict ((theme question))
   :realization (:verb ("answer" :past-tense "answered"
                                 :present-participle "answering"
                                 :past-participle "answered")
