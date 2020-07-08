@@ -1118,15 +1118,23 @@
          :etf (svo-passive)))
 
 (define-category persist :specializes bio-predication
-  :realization
-  (:verb "persist" :etf (sv)))
+  :realization (:verb "persist" :etf (sv)))
 
 
 (define-category rely :specializes bio-relation
+  :restrict ((theme (:or information-container ; e.g. database
+                         biological predication abstract)) ; from bio-relation
+             (purpose (:or question ; "for pathway questions"
+                           bio-mechanism ; "for pathways"
+                           bio-control ; "for transcription factor regulation"
+                           bio-process))) ; "for disease association"
   :realization
-  (:verb "rely"
+        (:verb "rely"
          :etf (sv)
-         :on theme))
+         :on theme
+         :for purpose))
+
+
 
 (define-category remove :specializes bio-method
     :binds ((source (:or biological model)))

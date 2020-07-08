@@ -921,7 +921,8 @@
    np complement it should have"
   (let ((pp-rule (multiply-edges prep-edge displaced-pobj-edge)))
     (unless pp-rule
-      (warn "no rule for prep+np~%  ~a  +  ~a"  prep-edge displaced-pobj-edge)
+      (when *debug-questions*
+        (break "no rule for prep+np~%  ~a  +  ~a"  prep-edge displaced-pobj-edge))
       nil)
     (when pp-rule
       (let* ((displaced-pobj (edge-referent displaced-pobj-edge))
@@ -970,8 +971,9 @@
   (tr :wh-walk 'common-core-wh-modal-s-prep)
   (let* ((pp-edge (flesh-out-stranded-prep prep-edge wh-edge))
          (s+pp-rule (multiply-edges s-edge pp-edge)))
-    (unless s+pp-rule 
-      (warn "no rule to compose s+pp: ~a + ~a" s-edge pp-edge)
+    (unless s+pp-rule
+      (when *debug-questions*
+        (break "no rule to compose s+pp: ~a + ~a" s-edge pp-edge))
       nil)
     (when s+pp-rule
       (let* ((s+pp-edge (make-completed-binary-edge s-edge pp-edge s+pp-rule))
@@ -984,8 +986,29 @@
                              :rule 'common-core-wh-modal-s-prep
                              :constituents (list s+pp-edge))))))
 
+;; "what transcription factor databases do you rely on?"
+;;
+(defun wh-aux-s-stranded-prep (wh-edge aux-edge main-edge prep-edge start-pos end-pos)
+  "Really similar to wh-modal-s-prep-pp"
+  (tr :wh-walk 'wh-aux-s-stranded-prep)
+  (let ((inner-span
+         (common-core-wh-modal-s-prep wh-edge aux-edge main-edge prep-edge)))
+    (unless inner-span
+      (when *debug-questions*
+        (break "no inner-span"))
+      nil)
+    ;; That covers everything except the first two constiuents
+    (let ((i (incorporate-displaced-aux-into-predicate
+              aux-edge inner-span :left aux-edge :right inner-span)))
+      (make-question-and-edge
+       i start-pos end-pos
+       :head inner-span
+       :wh wh-edge
+       :rule 'wh-aux-s-stranded-prep))))
+
 
 ;; "What diseases can I ask about for microRNA?"
+;; "What databases do you rely on for pathway questions?")
 ;;
 (defun wh-modal-s-prep-pp (wh-edge modal-edge s-edge prep-edge pp-edge
                            start-pos end-pos)
@@ -994,8 +1017,14 @@
          (common-core-wh-modal-s-prep
           wh-edge modal-edge s-edge prep-edge)))
     (unless inner-span
-      (break "no"))
+      (when *debug-questions*
+        (break "no inner-span"))
+      nil)
     (let ((s+pp-rule (multiply-edges inner-span pp-edge)))
+      (unless s+pp-rule
+        (when *debug-questions*
+          (break "no rule composing ~a with ~a" inner-span pp-edge))
+        nil)
       (when s+pp-rule
         (let ((full-span (make-completed-binary-edge
                           inner-span pp-edge s+pp-rule)))
@@ -1006,6 +1035,8 @@
            :wh wh-edge
            :rule 'wh-modal-s-prep-pp))))))
           
+ 
+
 
 #| "Are there any genes stat3 is upstream of?" |#
 

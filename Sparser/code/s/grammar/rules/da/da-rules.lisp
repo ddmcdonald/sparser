@@ -1951,9 +1951,15 @@ assumed. |#
     (let ((end-pos (pos-edge-ends-at prep))) ;; (fix-da-ending-pos *da-ending-position*)))
       (wh-modal-s-prep np modal s prep *da-starting-position* end-pos))))
 
+
 (define-debris-analysis-rule np-modal-s-prep-pp
     :pattern (np modal s preposition pp)
     ;; "What diseases can I ask about for microRNA?"
+    :action  (:function wh-three-edges+prep+pp first second third fourth fifth))
+
+(define-debris-analysis-rule np-modal-s-prep-pp
+    :pattern (np vg s preposition pp)
+    ;; "what databases do you rely on for pathway questions?"
     :action  (:function wh-three-edges+prep+pp first second third fourth fifth))
 
 (defun wh-three-edges+prep+pp (np modal s prep pp)
@@ -1961,6 +1967,11 @@ assumed. |#
     (let ((end-pos (pos-edge-ends-at prep))) ;; (fix-da-ending-pos *da-ending-position*)))
       (wh-modal-s-prep-pp np modal s prep pp *da-starting-position* end-pos))))
 
+(defun wh-vg-s-stranded-prep (np vg s prep)
+  "what transcription factor databases do you rely on?"
+  (when (and (wh-edge? np) (edge-over-aux? vg))
+    (let ((end-pos (pos-edge-ends-at prep)))
+      (wh-aux-s-stranded-prep np vg s prep *da-starting-position* end-pos))))
 
 
 (define-debris-analysis-rule wh-be-thing
@@ -2001,6 +2012,11 @@ assumed. |#
     :pattern (wh-pronoun vg s preposition)
     ;; "what does MEK interact with?"
     :action (:function wh-three-edges+prep first second third fourth))
+
+(define-debris-analysis-rule  whnp-vg-s-prep
+    :pattern (np vg s preposition)
+    ;; "what transcription factor databases do you rely on?"
+    :action (:function wh-vg-s-stranded-prep first second third fourth))
 
 (define-debris-analysis-rule wh-modal-s
     :pattern (wh-pronoun modal s)
