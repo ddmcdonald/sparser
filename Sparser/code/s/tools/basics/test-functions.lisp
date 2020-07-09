@@ -1368,7 +1368,7 @@ divides it into good and bad. |#
       (setq *save-clause-semantics* :sentence-clauses))
     (loop for s in *list-of-bio-utterances*
        do (if split?
-            (test-bio-utterance/split s (incf count) stream quiet with-breaks)
+            (test-bio-utterance/split s (incf count) stream #|quiet with-breaks|#)
             (test-bio-utterance s (incf count) stream quiet with-breaks
                                 :track track-questions)))
     (format stream "~&~a sentences in *list-of-bio-utterances*~%" (+ 1 count))
