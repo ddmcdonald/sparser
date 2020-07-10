@@ -2074,6 +2074,11 @@ assumed. |#
     ;; "What are the genes regulated by STAT3?
     :action (:function wh-four-edges/vp  first second third fourth))
 
+(define-debris-analysis-rule whpn-vg-np-vg+ed
+    :pattern (wh-pronoun vg np vg+ed)
+    ;; "What is insulin's gene named?"
+    :action (:function wh-four-edges/vp  first second third fourth))
+
 (define-debris-analysis-rule whpn-vp-noun-vp+ed
     :pattern (wh-pronoun vg proper-noun vp+ed)
     ;; "How is stat3 involved in apoptotic regulation?"

@@ -723,20 +723,27 @@
                           (edge-referent np-edge)))
         (vp-ref (edge-referent vp+ed-edge)))
     (cond
-      ((open-core-variable vp-ref)
-       (cond ((and (is-passive? vp+ed-edge)
-                   (find-subcat-var  i :object vp-ref))
-              ;; open in object since there's a by-phrase
-              (unless (missing-object-vars vp-ref)
-                (error "Why isn't passive open in its object?"))
-              (let ((j (bind-variable (find-subcat-var  i :object vp-ref)
-                                      i vp-ref)))
-                (make-edge-over-question
-                 'wh-initial-four-edges/vp+ed
-                 j vp+ed-edge start-pos end-pos)))
-             (t (when *debug-questions*
-                  (break "~a is open in something, but not object"
-                         vp-ref)))))
+      ((open-core-variable vp-ref) ; i.e. subject or object
+       (cond
+         ((and (is-passive? vp+ed-edge)
+               (find-subcat-var i :object vp-ref))
+          ;; open in object since there's a by-phrase
+          (unless (missing-object-vars vp-ref)
+            (error "Why isn't passive open in its object?"))
+          (let ((j (bind-variable (find-subcat-var  i :object vp-ref)
+                                  i vp-ref)))
+            (make-edge-over-question
+             'wh-initial-four-edges/vp+ed
+             j vp+ed-edge start-pos end-pos)))
+         
+         ((itypep vp-ref 'attributing-verb) ; 'named', 'called'
+          ;; ought to see what -is- bound to be sure
+          ;; "What is insulin's gene named?" -- we're questioning the attribute
+          (let ((j (bind-variable 'patient i vp-ref)))
+            (make-edge-over-question
+             'wh-initial-four-edges/vp+ed
+             j vp+ed-edge start-pos end-pos)))))
+         
       (t (when *debug-questions*
            (break "New case for the vp+ed"))))))
 
