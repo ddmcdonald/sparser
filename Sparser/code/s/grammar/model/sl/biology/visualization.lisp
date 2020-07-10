@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2015,2020 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "visualization"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: May 2015
+;;; version: July 2020
 
 
 ;; Initialized 27 Jan 2019 for vocabulary and concepts relative to (SBGN?) visulaization of protein interactions
@@ -21,9 +21,10 @@
 
 
 (define-category highlight :specializes perdurant
-   :binds ((theme biological)
-           (agent interlocutor))
-   :realization (:verb "highlight"
-                       :o theme
-                       :s agent))
+ :binds ((theme biological)
+         (agent interlocutor))
+ :realization (:verb "highlight"
+               :etf (sv)
+               :s agent
+               :ac theme))
 

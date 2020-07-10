@@ -1126,6 +1126,7 @@
                          biological predication abstract)) ; from bio-relation
              (purpose (:or question ; "for pathway questions"
                            bio-mechanism ; "for pathways"
+                           bio-chemical-entity ; "for microRNAs"
                            bio-control ; "for transcription factor regulation"
                            bio-process))) ; "for disease association"
   :realization

@@ -275,3 +275,17 @@ probably to get the noun reading
 ;; "What is its relationship with BRAF?"
 
 
+;; The verb "term" is a bio-rhetorical in bio;verbs
+;;   There's also got to be a verion for 'period of time' as in
+;;     "short term" "long term" "school term"
+;;
+(define-category term-name
+  :specializes label ;;/// maybe 'name' -- same thing as 'word' (no yet defined)
+  :realization (:noun "term"
+                      ))
+"what GO terms are most frequent in these genes"
+"the most frequent GO terms for these genes"
+"for these genes"
+"are enriched for AKT1"
+"What GO terms are those genes enriched in?"
+"the most frequent GO terms among these genes"
