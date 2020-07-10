@@ -435,6 +435,7 @@
                   ))
             (object
              (:or bio-entity cell-entity molecular-location
+                  artifact ; "create a model"
                   ;;bio-process bio-mechanism
                   measurement bio-quality disease)))
     :realization
