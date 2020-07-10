@@ -70,7 +70,7 @@
 (define-adverb "mitotically")
 
 (define-adjective "bioactive")
-;; (define-adjective "biological") -- never never. Kills the mixin
+;; (define-adjective "biological") -- see taxonomy
 (define-adjective "cancerous")
 (define-adjective "catalytic")
 (define-adjective "chromosomal") ;chromosome
