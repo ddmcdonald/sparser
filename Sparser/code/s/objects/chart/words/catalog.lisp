@@ -50,8 +50,11 @@
 ;;;-------------------------
 
 (defun catalog/word (word symbol-for-word)
-  (note-file-location word)
+  (declare (special *defining-a-polyword*))
   (note-grammar-module word)
+  (if *defining-a-polyword*
+    (setf (get-tag :used-in-pw word) *defining-a-polyword*)
+    (note-file-location word))
   (mark-definition-source word)
   (push word *words-defined*)
   (set symbol-for-word word)

@@ -57,7 +57,9 @@ grammar/model/sl/NIH/gene-protein.lisp:    (let ((long-word (when long-form (def
    and along with that were drivers looks for them. In other respects
    the polywords are defined and scanned in the same way.")
 
-
+(defvar *defining-a-polyword* nil
+  "Conditionalizes recording the source location of words that
+   are created to support the polyword.")
 
 
 (defun define-polyword/expr (multi-word-string)
@@ -87,7 +89,9 @@ grammar/model/sl/NIH/gene-protein.lisp:    (let ((long-word (when long-form (def
           (if redefinition?
             (symbol-value symbol)
             (make-polyword :symbol symbol
-                           :pname multi-word-string ))))
+                           :pname multi-word-string )))
+         (*defining-a-polyword* polyword))
+    (declare (special *defining-a-polyword*))
 
     (when (word-p polyword)
       (error "multi-word-string defined as a word: ~A"
@@ -95,11 +99,11 @@ grammar/model/sl/NIH/gene-protein.lisp:    (let ((long-word (when long-form (def
 
     (let ((list-of-words
            (mapcan #'(lambda (word)
-                                        ;(unless (eq :whitespace (word-rules word))
                        (if (eq :whitespace (word-rules word))
-                           (list *one-space*) ;; canonicalizing whitespace that is part of a polyword
-                           ;;(lsp-break "whitespace word in ~s for word ~s" multi-word-string word)
-                           (list word)))
+                         ;; canonicalizing whitespace that is part of a polyword
+                         (list *one-space*)
+                         (list word)))
+                   ;; Words-in-string introduces the words using resolve/make
                    (words-in-string multi-word-string))))
      
       (setf (pw-words polyword) list-of-words)

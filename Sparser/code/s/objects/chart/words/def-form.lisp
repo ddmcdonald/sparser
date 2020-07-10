@@ -54,7 +54,8 @@
                      :symbol symbol
                      :pname  string )))))
 
-      (when new?
+      (when (or new?
+                (get-tag :used-in-pw word))
         (catalog/word word symbol))
       (when (word-p word)
         (calculate-properties-of-words-pname/in-buffer word))
