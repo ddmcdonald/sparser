@@ -268,6 +268,8 @@
 (define-category mention :specializes bio-rhetorical
   :realization (:verb "mention" :etf (svo-passive)))
 
+#+ignore ;; causes unnecessary confusion in
+;;"what  COVID-19 articles about the S protein mention ACE2"
 (def-synonym mention
              (:noun "mention"))
 
