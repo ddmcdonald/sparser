@@ -1055,10 +1055,11 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
    an earlier word."
   (let* ((words (pw-words pw))
          (last-word (car (last words)))
-         (last-word-plural (plural-version last-word)))
+         (last-word-plural (plural-version last-word))
+         (*defining-a-polyword* pw))
+    (declare (special *defining-a-polyword*)) ; don't catalog interior words
     (let* ((word-list (copy-list words))
            (final-cell (last word-list)))
-      (declare (special word-list))
       (rplaca final-cell last-word-plural)
       (let* ((word-strings (mapcar #'word-pname word-list))
              (pw-string
