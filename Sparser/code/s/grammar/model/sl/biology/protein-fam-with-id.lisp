@@ -307,15 +307,16 @@
 (def-family-with-id "interferon" "FPLX:Interferon" :synonyms ("IFN") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571" "UP:P01574" "UP:Q9P0W0" "UP:P05000" "UP:Q8IU54" "UP:Q8IZJ0" "UP:Q8IZI9" "UP:K9M1U5" "UP:P01579"))
 (def-family-with-id "interferon alpha" "FPLX:IFNA" :synonyms ("NCIT:C20494" "IFN-alpha" "IFN-α" "IFNA" "IFNalpha" "IFNα" "IFN-a" "IFNa" "ifnα") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571" "UP:Q8IU54" "UP:Q8IZJ0" "UP:Q8IZI9" "UP:K9M1U5"))
 (def-family-with-id "interferon beta"  "FPLX:IFNB" :synonyms ("IFN-beta" "IFN beta" "IFN-β" "IFNB" "IFNbeta") :members ("UP:P01574")) ;; not sure why HMS has this family because it seems to just have one member and they overload the synonyms to point to both so now we do too...
-(def-family-with-id "IFN-I" "IPR000471" :name "interferon type I" :synonyms ("type I interferon"  "IFN I" "type I IFN") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571" "UP:P01574" "UP:Q9P0W0" "UP:P05000"))
+(def-family-with-id "IFN-I" "IPR000471" :name "interferon type I" :synonyms ("type I interferon"  "IFN I" "type I IFN" "interferon-I" "interferon I") :members ("UP:P01563" "UP:P01562" "UP:P01566" "UP:P01567" "UP:P01568" "UP:P01569" "UP:P01570" "UP:P01571" "UP:P01574" "UP:Q9P0W0" "UP:P05000"))
 ;; type II consists of one protein in humans - interferon-gamma - so that's why it's not family
 (def-family-with-id "IFN-III" "IPR029177" :name "interferon type III" :synonyms ("type III interferon"  "IFN III" "type III IFN" "IFN-lambda" "IFN-λ" "IFNL" "IFN-L" "IFNlambda" "IFN lambda" "IFNλ" "interferon lambda" "ifnλ" "IFN-k" "IFNk") :members ("UP:Q8IU54" "UP:Q8IZJ0" "UP:Q8IZI9" "UP:K9M1U5")) ;; note: while there  is an IFN-kappa, "IFN-k" is much more frequently a bad OCR of "IFN-λ" -- nearly all google hits are for "IFN-ks" are for this while IFNK is the real
 
-(def-family-with-id "IL" "NCIT:C20497" :name "interleukin" :synonyms ("interleukine") :members ("UP:P01583" "UP:P01584" "UP:P05231" "UP:P08700" "UP:P10145" "UP:P13232" "UP:P60568")) 
-
-(def-family-with-id "IL-1" "FA:01820" :synonyms ("IL1" "il-1" "interleukin 1" "interleukin-1" "FPLX:IL1") :members ("UP:P01583" "UP:P01584")) 
+(def-family-with-id "IL" "NCIT:C20497" :name "interleukin" :synonyms ("interleukine") :members ("UP:P01583" "UP:P01584" "UP:P05231" "UP:P08700" "UP:P10145" "UP:P13232" "UP:P60568" "UP:O95760")) 
+(def-family-with-id "IL-1" "FPLX:IL1" :synonyms ("NCIT:C20506" "IL1" "il-1" "interleukin 1" "interleukin-1" "FA:01820" "interleukin 1 family") :members ("UP:P01583" "UP:P01584")) 
 (def-family-with-id "IL23" "XFAM:PF16649.3" :synonyms ("Il23" "il23"))
-(def-family-with-id "Interleukin-27" "NCIT:C118114" :name "interleukin-27" :synonyms ("Il27" "il27" "IL-27") :members ("UP:Q8NEV9" "UP:Q14213"))
+(def-family-with-id "Interleukin-27" "NCIT:C118114" :name "interleukin-27" :synonyms ("Il27" "il27" "IL-27" "IL-27") :members ("UP:Q8NEV9" "UP:Q14213"))
+;; (define-protein "NCIT:C20514" ("IL-12" "interleukin-12")) 
+(def-family-with-id "interleukin-17" "NCIT:C20519" :members ("UP:Q16552" "UP:Q8TAD2" "UP:Q9H293" "UP:Q9P0M4" "UP:Q9UHF5")) 
 (def-family-with-id "ITIH" "FA:01924") 
 ;(def-family-with-id "Jun" "FA:00409" :synonyms ("jun"))
 (def-family-with-id "KIN17" "FA:01961" :synonyms ("Kin17")) 
@@ -472,7 +473,7 @@
 (def-family-with-id "TCRP1" "XFAM:PF14944.4") 
 (def-family-with-id "TFA" "FA:03988" :synonyms ("TFAs"))
 (def-family-with-id "TGF-beta receptor" "FPLX:TGFBR" :synonyms ("GO:0005024" "TGF beta receptor" "TGF-beta-receptor" "TGF-βR" "TGF-βRs" "TGFβR" "TGFβRs" "transforming growth factor beta-activated receptor activity" "TGFBR") :members ("UP:P37173" "UP:P36897" "UP:Q03167")) 
-(def-family-with-id "TGF-beta" "FPLX:TGFB" :synonyms ("FA:03989" "IPR016319" "TGF-β" "TGF-βs" "TGFbeta" "TGFβ" "TGFβs" "Tgfbeta" "Tgfβ" "tgfbeta" "tgfβ" "TGF-B" "TGF-Beta" "Tgf-beta" "TGFb" "As60A" "transforming growth factor-beta" "transforming growth factor beta" "transforming growth factor-b" "TGFB" "TGF beta" "TGF-b") :members ("UP:P01137" "UP:P61812" "UP:P10600" "UP:O00292")) 
+(def-family-with-id "TGF-beta" "FPLX:TGFB" :synonyms ("FA:03989" "IPR016319" "TGF-β" "TGF-βs" "TGFbeta" "TGFβ" "TGFβs" "Tgfbeta" "Tgfβ" "tgfbeta" "tgfβ" "TGF-B" "TGF-Beta" "Tgf-beta" "TGFb" "As60A" "transforming growth factor-beta" "transforming growth factor beta" "transforming growth factor-b" "TGFB" "TGF beta" "TGF-b" "TGF-beta" "TGF BETA") :members ("UP:P01137" "UP:P61812" "UP:P10600" "UP:O00292")) 
 (def-family-with-id "TPH" "XFAM:PF13868.4" :synonyms ("Tph" "tph")) 
 (def-family-with-id "TRS85" "FA:04220") 
 (def-family-with-id "TSA" "XFAM:PF03249.11" :synonyms ("TSAs")) 

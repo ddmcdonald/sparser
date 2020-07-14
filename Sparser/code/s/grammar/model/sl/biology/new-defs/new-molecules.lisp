@@ -64,7 +64,7 @@
 (def-indiv-with-id molecule "Suberoylanilide Hydroxamic Acid" "PUBCHEM:5311") 
 (def-indiv-with-id molecule "guanosine triphosphate" "PUBCHEM:6830") 
 (def-indiv-with-id molecule "2-APB" "PUBCHEM:1598") 
-(def-indiv-with-id molecule "valproic acid" "PUBCHEM:3121") 
+;(def-indiv-with-id molecule "valproic acid" "PUBCHEM:3121") moved to drugs
 (def-indiv-with-id molecule "(3) H" "PUBCHEM:119434" :name "tritium" :synonyms ("[3H]")) 
 (def-indiv-with-id molecule "G418" "PUBCHEM:2733531") 
 (def-indiv-with-id molecule "poly I : C" "PUBCHEM:32744" :name "polyinosinic-polycytidylic acid" :synonyms ("pIpC" "pI-pC" "Poly(I+C)" "Poly(I:C)")) 
@@ -313,7 +313,7 @@
 (def-indiv-with-id molecule "betaine" "CHEBI:17750" :name "glycine betaine") 
 (def-indiv-with-id molecule "beta-naphthoflavone" "CHEBI:77013" :name "beta-naphthoflavone") 
 (def-indiv-with-id molecule "beta-lactose" "CHEBI:36218" :name "beta-lactose") 
-(def-indiv-with-id molecule "beta-estradiol" "CHEBI:16469" :name "17beta-estradiol") 
+(def-indiv-with-id molecule "beta-estradiol" "CHEBI:16469" :name "17beta-estradiol" :synonyms ("3beta-Adiol" "17beta-diol" "17β-estradiol" "3beta adiol" "17beta estradiol" "17beta diol")) 
 (def-indiv-with-id molecule "beta-Lapachone" "CHEBI:10429" :name "beta-lapachone") 
 (def-indiv-with-id molecule "azithromycin" "CHEBI:2955" :name "azithromycin") 
 (def-indiv-with-id molecule "arachidonate" "CHEBI:32395" :name "arachidonate") 
@@ -1578,7 +1578,8 @@
 (def-indiv-with-id molecule "benz" "CHEBI:217301" :name "benzylideneacetone") 
 (def-indiv-with-id molecule "cyclobutane" "CHEBI:30377" :name "cyclobutane") 
 (def-indiv-with-id molecule "ethoxycarbonyl" "CHEBI:52109" :name "ethoxycarbonyl group") 
-(def-indiv-with-id molecule "fibrin" "CHEBI:5054" :name "Fibrin") 
+(def-indiv-with-id molecule "fibrin" "CHEBI:5054" :name "Fibrin")
+(def-indiv-with-id molecule "folic acid" "PUBCHEM:6037" :synonyms ("folic")) 
 (def-indiv-with-id molecule "folates" "CHEBI:67011" :name "folates") 
 (def-indiv-with-id molecule "glycosylphosphatidylinositol" "CHEBI:24410" :name "glycosylphosphatidylinositol"
                    :synonyms ("glycosyl-phosphatidylinositol" "GPI")) 
@@ -2881,4 +2882,6 @@
 (def-indiv-with-id molecule "Trinitrobenzenesulfonic Acid" "CHEBI:53063" :name "2,4,6-Trinitrobenzenesulfonic acid")
 (def-indiv-with-id molecule "benzo(k)fluoranthene" "PUBCHEM:9158")
 (def-indiv-with-id molecule "hyaluronan" "CHEBI:16336")
-
+(def-indiv-with-id molecule "thyroid hormone" "CHEBI:60311")
+(def-indiv-with-id molecule "all-trans-retinoic acid" "PUBCHEM:444795" :synonyms ("all-trans-Retinoic acid" "all trans retinoic acid")) 
+(def-indiv-with-id molecule "vitamin" "CHEBI:33229") ;; should probably be a category

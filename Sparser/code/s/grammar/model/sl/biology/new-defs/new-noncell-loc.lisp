@@ -83,7 +83,9 @@
 (def-indiv-with-id tumor "lung tumour" "TS-0577") 
 (def-indiv-with-id tumor "mammary tumor" "TS-0597") 
 (def-indiv-with-id tumor "pancreatic tumor" "TS-0742") 
-(def-indiv-with-id tumor "thyroid tumor" "TS-1046") 
+(def-indiv-with-id tumor "thyroid tumor" "TS-1046")
+(def-indiv-with-id tumor "HNet" "NCIT:C5783" :name "hepatic carcinoid tumor") 
+
 
 (def-indiv-with-id bio-organ "capitellum" "EFO:0003398" :name "capitellum" :plural ("capitellums" "Capitella")) 
 (def-indiv-with-id bio-organ "LDA" "EFO:0003613" :name "lateral dorsal aorta") 
