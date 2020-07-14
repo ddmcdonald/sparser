@@ -2054,8 +2054,9 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                          ;; the NP preceding a participle inside a chunk
                          ;;  (of necessity an NG chunk)
                          ;;  is (almost?) always the subject, not the object
-                         (not inside?)) 
-                  (assimilate-subcat vp :object subj)
+                         (not inside?))
+                    (make-reduced-relative vp subj)
+                    
                   (else
                     (when (transitive-vp-missing-object? vp)
                       (revise-parent-edge :form category::transitive-clause-without-object))
@@ -2070,12 +2071,7 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
                      (loop for binding in (indiv-old-binds vp)
                         thereis (not (member (var-name (binding-variable binding))
                                              '(past raw-text)))))
-                ;; since this is applied to vp+ed, there is no syntactic object present
-                (setq vp (create-predication-and-edge-by-binding-and-insert-edge
-                          (subcategorized-variable vp :object subj) subj vp))       
-                (setq subj (bind-dli-variable 'predication vp subj)) ;; link the rc to the np
-                (revise-parent-edge :form category::np :category (itype-of subj))
-                subj)
+                (make-reduced-relative vp subj))
                
                ((can-fill-vp-subject? vp subj)
                 (when (transitive-vp-missing-object? vp)
@@ -2096,6 +2092,16 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
 
        result ))))
 
+(defun make-reduced-relative (vp subj)
+
+  ;; "EGFR bound to EGF"
+  ;; since this is applied to vp+ed, there is no syntactic object present
+  (setq vp (create-predication-and-edge-by-binding-and-insert-edge
+            (subcategorized-variable vp :object subj) subj vp))       
+  (setq subj (bind-dli-variable 'predication vp subj)) ;; link the rc to the np
+  (revise-parent-edge :form category::np :category (itype-of subj))
+  subj
+  )
   
     ;; Don't want to have a subject in a relative clause if there is
     ;; no object (complement) in the VP. Applies to main clauses
