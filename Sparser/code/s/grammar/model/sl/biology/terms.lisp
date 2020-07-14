@@ -497,7 +497,12 @@
 ;;; Hacked up to 'get through' the 9/4/14 target abstract
 ;;;-------------------------------------------------------
 
-(define-category document-part :specializes abstract)
+(define-category document-part :specializes abstract
+  :binds ((topic (:or medical-condition bio-chemical-entity)))
+  :realization
+  (:m topic
+      :about topic))
+                         
 (define-category bib-reference
    :specializes document-part) ;; to allow "et al." to be easily ignored
 
