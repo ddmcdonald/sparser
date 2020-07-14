@@ -576,6 +576,7 @@
          (treatment treatment))
  :realization
  (:verb "cycle"
+  :noun "cycle" ; "the reproductive cycle of HIV"
   :etf (sv)
   :from from
   :of treatment
