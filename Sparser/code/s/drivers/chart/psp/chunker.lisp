@@ -734,7 +734,10 @@
            (itypep (edge-referent e) 'least))
        t)
 
-      (t (compatible-with-vg? e)))))
+      (t (and (not (member (form-cat-name e)
+                           '(quantifier)))
+               ;; don;t allow "some ..." as start of a VG
+              (compatible-with-vg? e))))))
 
 ;;--- VG compatibility
 
