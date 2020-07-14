@@ -1053,11 +1053,11 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
    plural of the last word. Doesn't handle irregulars -- 'chairmen',
    and doesn't handle cases where the plurality should be marked on
    an earlier word."
+  (declare (special *defining-a-polyword*)) ; don't catalog interior words
   (let* ((words (pw-words pw))
          (last-word (car (last words)))
-         (last-word-plural (plural-version last-word))
-         (*defining-a-polyword* pw))
-    (declare (special *defining-a-polyword*)) ; don't catalog interior words
+         (*defining-a-polyword* pw)
+         (last-word-plural (plural-version last-word)))
     (let* ((word-list (copy-list words))
            (final-cell (last word-list)))
       (rplaca final-cell last-word-plural)
