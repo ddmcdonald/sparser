@@ -24,7 +24,7 @@
    use them. 
 "
   (declare (special *write-article-objects-file*))
-  (multiple-value-bind (article sexp)
+  (multiple-value-bind (article para-count sexp)
       (make-article-from-handle :n n :corpus corpus :verbose verbose)
     (let ((result
            (if return-sexp
@@ -36,13 +36,14 @@
                                :show-sect show-sect
                                :stats stats
                                :skip-errors skip-errors
-                               :verbose verbose))))
+                               :verbose verbose
+                               :para-count para-count))))
       (when *write-article-objects-file*
         (write-article-objects-file article))
       result)))
 
 
-(defun run-json-article (article &key (sweep t) (read t)
+(defun run-json-article (article &key (sweep t) (read t) para-count
                                    (quiet t) (skip-errors t) (verbose t)
                                    (show-sect nil) (stats nil))
   "Modeled directly on run-an-article in R3. This is how we
@@ -78,7 +79,9 @@
         (read-from-document article)))
     (if stats
       (summary-document-stats article)
-      (report-time-to-read-article article))
+      (else
+        (when para-count (format t "~&~a paragraphs~%" para-count))
+        (report-time-to-read-article article)))
     (when *write-article-objects-file*
       (write-article-objects-file article))
     article))
@@ -100,15 +103,15 @@
 (defun make-json-article-from-file-handle (file-handle &key (verbose t) save?)
   "Locates the file indicated by the handle, reads it and converts its json to
    an sexp (decode-json-from-source), has the sexp interpreted to instantiate
-   an instance of an article (make-document). Returns the article and the raw
-   sexp. Saves the article if the 'save?' parameter is set."
-  (let (file-namestring filepath sexp)
+   an instance of an article (make-document). Returns the article, the number
+   of paragraphs in it and the raw sexp.
+   Saves the article if the 'save?' parameter is set."
+  (let (file-namestring  filepath  sexp)
     (unless (setq file-namestring (decoded-file file-handle))
       (warn "No registered json path found for file handle ~a.~
           ~%Run collect-json-directory to register a directory's files."
             file-handle)
       (return-from make-json-article-from-file-handle nil))
-
     (unless (setq filepath (probe-file file-namestring))
       (error "probe-file returned nil for file path ~s" file-namestring))
     (unless (setq sexp (cl-json:decode-json-from-source filepath))
@@ -116,10 +119,12 @@
       (return-from make-json-article-from-file-handle nil))
     (when verbose
       (format t "~&Reading ~a~%" file-handle))
-    (let ((article (make-document sexp file-namestring :handle file-handle)))
+    (multiple-value-bind (article para-count)
+        (make-document sexp file-namestring :handle file-handle)
       (when save?
         (save-article file-handle article))
       (values article
+              para-count
               sexp))))
 
 
@@ -301,3 +306,23 @@
           (extract-authors-and-bibliography *article-json*)
           (run-json-article *json-article* :quiet quiet :skip-errors skip-errors)))))
 
+;;;-------------------------
+;;; gather paragraph counts
+;;;-------------------------
+
+(defun article-paragraph-count (&key (n 1) (corpus '0512-pdf) (stream *standard-output*))
+  "Have the article assembled from the JSON file indicated by the handle,
+   collect the paragraph count, and emit the handle and count on the stream."
+  (let ((handle (corpus-file-handle corpus n)))
+    (multiple-value-bind (article para-count sexp)
+        (make-article-from-handle :n n :corpus corpus :verbose nil)
+      (format stream "~&(~a . ~a)" handle para-count))))
+
+(defun save-article-paragraph-count (count
+                                     &optional (filepath "/users/ddm/temp/counts.lisp"))
+  (with-open-file (stream filepath
+                          :direction :output
+                          :if-does-not-exist :create
+                          :if-exists :append)
+    (loop for i from 1 to count do
+     (article-paragraph-count :n i :stream stream))))

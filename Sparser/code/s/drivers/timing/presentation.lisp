@@ -40,9 +40,10 @@
   (let* ((word-count (token-count article))
          (wps-string (compute-words-per-second
                       word-count *time-to-read-document* :msec))
-         (total-time *time-to-read-document*)) ;;/// if more than a second add comma
+         (total-time *time-to-read-document*))
     (format stream "~&total time: ~a msec  ~a~%"
-            total-time wps-string)))
+            (insert-commas-into-number-string total-time)
+            wps-string)))
 
 
 
