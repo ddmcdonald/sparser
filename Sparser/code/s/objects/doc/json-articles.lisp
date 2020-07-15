@@ -25,7 +25,8 @@
   ;; use a variant article that just dominates the paragraphs
   (declare (special *current-json-based-article*))
   (let ((article (make-instance 'article))
-        (tt (extract-title sexp)))
+        (tt (extract-title sexp))
+        (para-count 0))
     (setq *current-json-based-article* article)
     (setf (name article) (or handle
                              (next-indexical-name :article)))
@@ -44,14 +45,18 @@
           (setf (name s) (next-indexical-name :section))
           (setf (parent s) article)
           (setf (children s) (find-paragraphs text-blocks s))
+          (setq para-count (length (children s)))
           (setf (children article) (list s))))
 
       (let ((abstract (extract-abstract sexp article)))
         (when abstract
           (setf (children article)
-                (push abstract (children article)))))
+                (push abstract (children article)))
+          (setq para-count (+ (length (children abstract))
+                              para-count))))
         
-      article)))
+      (values article
+              para-count))))
 
 
 ;;--- text-blocks -> paragraphs
