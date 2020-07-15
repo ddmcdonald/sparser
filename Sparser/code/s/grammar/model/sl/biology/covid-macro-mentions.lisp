@@ -1403,7 +1403,26 @@
       ("CD120b" "(PROTEIN (UID \"UP:P20333\") (NAME (WD \"TNR1B_HUMAN\")))")
       ("TRAF3CD40BP" "(BIO-ENTITY (NAME (WD \"TRAF3CD40BP\")))")
       ("TRAF3IP1" "(PROTEIN (UID \"UP:Q8TDR0\") (NAME (WD \"MIPT3_HUMAN\")))")))
-    ))
+
+
+    (("SARS-COV2 protein" "(PROTEIN (RAW-TEXT \"SAR-COV-2 protein\") (UID \"SARS-COV2-PROTEIN\") (NAME (WD \"SARS-COV2-PROTEIN\")))")
+     (("R1A_SARS2" (PROTEIN (RAW-TEXT "R1A_SARS2") (UID "UP:P0DTC1") (NAME (WD "UP:P0DTC1"))))
+      ("R1AB_SARS2" (PROTEIN (RAW-TEXT "R1AB_SARS2") (UID "UP:P0DTD1") (NAME (WD "UP:P0DTD1"))))
+      ("SPIKE_SARS2" (PROTEIN (RAW-TEXT "SPIKE_SARS2") (UID "UP:P0DTC2") (NAME (WD "UP:P0DTC2"))))
+      ("NCAP_SARS2" (PROTEIN (RAW-TEXT "NCAP_SARS2") (UID "UP:P0DTC9") (NAME (WD "UP:P0DTC9"))))
+      ("VME1_SARS2" (PROTEIN (RAW-TEXT "VME1_SARS2") (UID "UP:P0DTC5") (NAME (WD "UP:P0DTC5"))))
+      ("AP3A_SARS2" (PROTEIN (RAW-TEXT "AP3A_SARS2") (UID "UP:P0DTC3") (NAME (WD "UP:P0DTC3"))))
+      ("wORF3b" (PROTEIN (RAW-TEXT "wORF3b") (UID "wORF3b") (NAME (WD "wORF3b"))))
+      ("NS6_SARS2" (PROTEIN (RAW-TEXT "NS6_SARS2") (UID "UP:P0DTC6") (NAME (WD "UP:P0DTC6"))))
+      ("NS7A_SARS2" (PROTEIN (RAW-TEXT "NS7A_SARS2") (UID "UP:P0DTD7") (NAME (WD "UP:P0DTD7"))))
+      ("ORF9B_SARS2" (PROTEIN (RAW-TEXT "ORF9B_SARS2") (UID "UP:P0DTD2") (NAME (WD "UP:P0DTD2"))))
+      ("wORF9c" (PROTEIN (RAW-TEXT "wORF9c") (UID "wORF9c") (NAME (WD "wORF9c"))))
+      ("VEMP_SARS2" (PROTEIN (RAW-TEXT "VEMP_SARS2") (UID "UP:P0DTC4") (NAME (WD "UP:P0DTC4"))))
+      ("NS7B_SARS2" (PROTEIN (RAW-TEXT "NS7B_SARS2") (UID "UP:P0DTD8") (NAME (WD "UP:P0DTD8"))))
+      ("NS8_SARS2" (PROTEIN (RAW-TEXT "NS8_SARS2") (UID "UP:P0DTC8") (NAME (WD "UP:P0DTC8"))))
+      ("Y14_SARS2" (PROTEIN (RAW-TEXT "Y14_SARS2") (UID "UP:P0DTD3") (NAME (WD "UP:P0DTD3"))))
+      ("wORF10" (PROTEIN (RAW-TEXT "wORF10") (UID "UP:A0A663DJA2") (NAME (WD "UP:A0A663DJA2")))))
+     )))
 
 
 (defparameter *covid-proteins*
@@ -1427,6 +1446,7 @@
                                   ;; first item is an example string for the parse
                                   (second val)
                                   val))))
-            (setf (gethash key *macro-mentions*) vals))))
+            (setf (gethash key *macro-mentions*) vals)))
+  )
 
                          

@@ -48,3 +48,7 @@
 ;;(define-protein "UP:Q80H93" ("NS8B_CVHSA" "non-structural protein 8b" "ns8b" "accessory protein 8b"))
 (define-protein "UP:P0DTD3" ("Y14_SARS2" "Uncharacterized protein 14" "ORF14" "Orf14"))
 (define-protein "UP:A0A663DJA2" ("A0A663DJA2_SARS2" "ORF10 protein" "wORF10" "Orf10")) ;; unreviewed
+
+
+;; a silly dummy for a macro definition for the proteins in SARS-COV2
+(define-protein "SARS-COV2-PROTEIN" ("SAR-COV-2 protein" "COVID-19 protein" "virus proteins" "viral proteins"))
