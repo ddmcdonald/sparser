@@ -4,7 +4,7 @@
 ;;;
 ;;;      File: "loader"
 ;;;    Module: "grammar;rules:SDM&P:
-;;;   Version: January 2020
+;;;   Version: July 2020
 
 ;; Initiated 2/9/07. Added [infer-categories] 9/4. Added [text-relations]
 ;; on 3/9/12.  4/1 moved in analyze-text-relations
@@ -18,4 +18,6 @@
 (gload "SDM&P;reify-relations")
 (lload "SDM&P;analyze-text-relations")
 
+;;-- loaded after dossiers are
+;; (gload "SDM&P;infer-rules")
 

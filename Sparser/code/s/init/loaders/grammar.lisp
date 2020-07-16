@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;loaders;"
-;;;   version:  February 2020
+;;;   version:  July 2020
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -285,17 +285,18 @@ omitted and then run (perhaps) after the image has been launched."
   (unless *nothing-Mac-specific*
     (gload "ad-tableau;autodef tableau"))
 
-  (when *DM&P*
-    (gload "DM&P;measure"))
-  (when *SDM&P*
-    (gload "SDM&P;noteworthy"))
-
   (gload "words;frequency")
   (gload "words;porter-stemmer")
   (gload "one-offs;loader")
 
   (gload "dossiers;loader")
   
+  (when *DM&P*
+    (gload "DM&P;measure"))
+  (when *SDM&P*
+    (gload "SDM&P;noteworthy")
+    (gload "SDM&P;infer-rules"))
+
   (gate-grammar *whos-news*
     (whos-news-post-dossiers-loader))
 
