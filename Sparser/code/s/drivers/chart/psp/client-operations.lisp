@@ -1336,8 +1336,9 @@
                       ag in
                         (sorted-intersection-descrip-mentions *sent-mentions*
                                                               *article-topic-mentions*)
-                      when (< (gethash (car ag) *article-paragraph-count-ht*)
-                              200)
+                      when (and (numberp  (gethash (car ag) *article-paragraph-count-ht*))
+                                (< (gethash (car ag) *article-paragraph-count-ht*)
+                                   200))
                       collect ag)
               as i from 1 to n-articles
               collect
