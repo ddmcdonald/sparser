@@ -376,6 +376,8 @@
                           rule
                           (etypecase (cfr-referent rule)
                             (individual (cfr-referent rule))
+                            ;;SARS-Cov2 is interpreted as a category::SARS-COV-2
+                            (referential-category (cfr-referent rule))
                             (cons 
                              ;;(lsp-break "bad referent ~s for bio-entity" (cfr-referent rule))
                              (evaluate-unary-ref-actions (cfr-referent rule))))))
