@@ -72,9 +72,14 @@
   (values (cdr (assq :section sexp))
           (cdr (assq :text sexp))))
 
-(defun make-paragraph (text-block)
+(defun make-paragraph (text-block &aux new-text)
   (multiple-value-bind (section text)
       (read-out-text-block text-block)
+    (setq new-text (remove-copyright-text text))
+    #+ignore
+    (unless (equal new-text text)
+      (print `(:new-text ,new-text :text ,text)))
+    (setq text new-text)
     ;; ignore the section till we see what may occur
     (when (eql (search ". " text) 0)
       ;; e.g. article rxiv-55 has
@@ -82,7 +87,9 @@
       ;;{
       ;; "text": ". In addition, SARS-CoV was detected in urine, feces and tears of some SARS-CoV infected patients.
       (setq text (subseq text 2)))
-    (unless (equal text ".")
+    (unless (or (equal text ".")
+                (equal text " ")
+                (equal text "")) ;; may happen after copyright removal
       ;; we have bizarre paragraphs like
       ;;{
       ;; "text": ".",
@@ -129,7 +136,11 @@
     (unless string
       (warn-or-error "could not find the title in JSON sexp"))
     (setf (name tt) (next-indexical-name :title-text))
-    (setf (content-string tt) string)
+    (setf (content-string tt)
+          (loop for header in '("title" "journal pre-print" "journal pre-proof")
+                do (if (eq 0 (search header string :test #'equalp))
+                       (setf string (subseq string (length header))))
+                  finally (return (string-left-trim '(#\: #\space) string))))
     tt))
 
 ;;--- abstract

@@ -63,5 +63,6 @@
 (lload "doc;content")
 (lload "doc;initialization")
 (lload "doc;save-doc-semantics")
+(lload "doc;remove-preprint-text")
 (lload "doc;json-articles")
 
