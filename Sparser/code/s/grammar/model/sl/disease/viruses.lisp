@@ -44,32 +44,26 @@
                  :realization (:noun ("gammacoronavirus" "gamma coronavirus" "gamma-coronavirus" "gammaCoV" "gamma-CoV" "Gamacoronavirus" "gammacoronovirus")))
 
 (define-category SARSr-CoV :specializes betacoronavirus
-                 :realization (:noun "SARS-related coronavirus"))
-(def-synonym SARSr-CoV (:noun ("SARSr-CoV" "Severe Acute Respiratory Syndrome-related Coronavirus" "SARSr" "SARr-CoV" "SL-CoV" "SARS-like coronavirus" "severe acute respiratory syndrome-related coronavirus")))
-
+                 :realization (:noun ("SARS-related coronavirus"
+                                      "SARSr-CoV" "Severe Acute Respiratory Syndrome-related Coronavirus"
+                                      "SARSr" "SARr-CoV" "SL-CoV" "SARS-like coronavirus"
+                                      "severe acute respiratory syndrome-related coronavirus")))
 
 (define-category SARS-CoV-2 :specializes betacoronavirus
                  :bindings (uid "NCIT:C169076")
-                 :realization (:noun "SARS-CoV-2"))
-(def-synonym SARS-CoV-2
-    (:noun ("SARS-CoV2" "2019-nCoV" "2019 Novel Coronavirus" "2019nCoV" 
-           "nCoV" "nCoV-2019" "SARS-CoV-2" "SARSCoV2" "SARSCoV-2"  "SARS Coronavirus 2"
-           "SAR-CoV-2" "HCoV-19" "hCoV-19"
-           "Severe Acute Respiratory Syndrome Coronavirus 2"
-           "novel-coronavirus-2019" "2019-CoV" "CoV-2019"
+                 :realization (:noun ("SARS-CoV-2"
+                                      "SARS-CoV2" "2019-nCoV" "2019 Novel Coronavirus" "2019nCoV" 
+                                      "nCoV" "nCoV-2019" "SARS-CoV-2" "SARSCoV2" "SARSCoV-2"
+                                      "SARS Coronavirus 2"
+                                      "SAR-CoV-2" "HCoV-19" "hCoV-19"
+                                      "Severe Acute Respiratory Syndrome Coronavirus 2"
+                                      "novel-coronavirus-2019" "2019-CoV" "CoV-2019"
+                                      "covid19 virus" "COVID19 virus" "COVID-19 virus"
+                                      "covid-19 virus"
+                                      "SEVERE ACUTE RESPIRATORY SYNDROME CORONAVIRUS 2"
+                                      "COV-2" "CoV-2")))
 
-           ;; arguably the rest of these should be the disease
-           ;; instead of the virus but currently not separating them
-           "covid19" "COVID19" "COVID-19" "covid-19"
-           "Corona Virus Disease 2019" "Coronavirus Disease-2019"
-           "coronavirus disease 2019"
-           "SEVERE ACUTE RESPIRATORY SYNDROME CORONAVIRUS 2"
-           ;; typos/misnomers
-           "COVID-9" "COVID" "COVD-19" "COVDI-19" "COVID-2" "COVID-2019"
-           "covid"
-           "Cov-19" "CoV-19" "COV-2" "CoV-2")))
-
-
+#+ignore
 (def-indiv-with-id betacoronavirus "SARS-CoV" "NCIT:C112432" :name "SARS coronavirus"
                    :synonyms ("SARS Coronavirus" "SARS virus" "HCoV-SARS" "SARSCoV" "SARS-CoV-1"
                                                  "Severe Acute Respiratory Syndrome Coronavirus"

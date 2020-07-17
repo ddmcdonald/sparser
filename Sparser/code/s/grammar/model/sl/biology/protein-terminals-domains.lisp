@@ -142,7 +142,11 @@ it is created from N-terminus to C-terminus.|#
 
 (define-category RBD :specializes binding-domain
       :realization 
-      (:noun "RBD"))
+      (:noun ("RBD" "Receptor Binding Domain" "receptor binding domain"
+                    "receptor-binding domain"
+                    "Receptor-Binding domain"
+                    "Receptor-Binding Domain")))
+
 (noun "Raf-RBD" :super RBD)
 (noun "G-domain" :super binding-domain) ;; somehow (def-bio "G-domain" protein-segment) did not work
 (noun ("BRCT" "BRCT domain") :super protein-domain)
