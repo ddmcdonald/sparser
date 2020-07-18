@@ -196,7 +196,11 @@
   (:method ((pw polyword))
     (file-location pw))
   (:method ((c category))
-    (file-location c)))
+    (cond
+      ((itypep c 'comlex-derived) :comlex)
+      (t (file-location c)))))
+        
+
 
 (defgeneric r-of (category)
   (:documentation "Look up the realization (or realizations) of
