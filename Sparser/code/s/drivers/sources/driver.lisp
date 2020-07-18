@@ -11,7 +11,7 @@
 
 (in-package :sparser)
 
-(defun run-json-article-from-handle (&key (n 1) (corpus '0512-pdf)
+(defun run-json-article-from-handle (&key (n 1) (corpus '0713-pdf)
                                        ((:sexp return-sexp) nil)
                                        (sweep t) (read t)
                                        (quiet t) (skip-errors t) (verbose t)
@@ -87,7 +87,7 @@
     article))
 
 
-(defun make-article-from-handle (&key (n 1) (corpus '0512-pdf) (verbose t))
+(defun make-article-from-handle (&key (n 1) (corpus '0713-pdf) (verbose t))
   "Checks that we've specified enough information, then calls
    make-json-article-from-file-handle to extract the Lisp sexp from the JSON file,
    pass it to make-document to assemble an article from it. 
@@ -288,7 +288,7 @@
 (defvar *article-json* nil)
 (defvar *json-article* nil)
 
-(defun run-nth-json-article (n &key ((:corpus article-set-name) '0512-PDF)
+(defun run-nth-json-article (n &key ((:corpus article-set-name) '0713-PDF)
                                  (quiet t) (skip-errors t) (show-sect nil)
                                  (sexp nil))
   (let* ((*article-short-name* (format nil "~a-~a" article-set-name n)) ; file-handle
@@ -310,7 +310,7 @@
 ;;; gather paragraph counts
 ;;;-------------------------
 
-(defun article-paragraph-count (&key (n 1) (corpus '0512-pdf) (stream *standard-output*))
+(defun article-paragraph-count (&key (n 1) (corpus '0713-pdf) (stream *standard-output*))
   "Have the article assembled from the JSON file indicated by the handle,
    collect the paragraph count, and emit the handle and count on the stream."
   (let ((handle (corpus-file-handle corpus n)))

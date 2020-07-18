@@ -52,6 +52,8 @@
     (0403-custom-pmc "2020-04-03/custom_license/pmc_json/")
     (0512-pmc "2020-05-12/document_parses/pmc_json/")
     (0512-pdf "2020-05-12/document_parses/pdf_json/")
+    (0713-pmc "2020-07-13/document_parses/pmc_json/")
+    (0713-pdf "2020-07-13/document_parses/pdf_json/")
     )
   "Modeled on the list in r3/code/evaluation/doc-support.
    Could be integrated into the file selection machinery to allow
