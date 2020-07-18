@@ -192,7 +192,6 @@
    category. When this flag is up we catch these potental clashes
    and give the proposed category a distinguishing name.")
 
-
 (defparameter *categories-created-by-setup*
   (make-hash-table :size 10000)
   "These are categories that were created while defining words.
@@ -438,17 +437,21 @@
   category-name)
 
 
+(defparameter *report-distinguishing-auto-category* nil
+  "Turn on to see the announcements of core-category overlaps or use the break")
+
 (defun distinguish-category (original-name)
   "Similar to construct-disambiguating-category-name but applies in
    any case where the name is already taken by an already defined
    category."
-  (let ((new-name (string-append original-name '#:-auto)))  
-    (if (search "-" (format nil "~a" original-name))
-      (format t "*** distinguish-category given ~a produces ~a~%"
-              original-name new-name)
+  (let ((new-name (string-append original-name '#:-auto)))
+    (when *report-distinguishing-auto-category*
+      (if (search "-" (format nil "~a" original-name))
+        (format t "*** distinguish-category given ~a produces ~a~%"
+                original-name new-name)
         ;;(lsp-break "*** CORE CATEGORY OVERLAP distinguish-category ~given ~a produces ~a~%" original-name new-name)
         (format t "*** CORE CATEGORY OVERLAP distinguish-category given ~a~
-                produces ~a~%" original-name new-name))
+                produces ~a~%" original-name new-name)))
     (name-to-use-for-category new-name)))
    
 
