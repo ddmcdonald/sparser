@@ -75,6 +75,10 @@
 (defun make-paragraph (text-block &aux new-text)
   (multiple-value-bind (section text)
       (read-out-text-block text-block)
+    ;; about to do re-indexing on new data, so now include this fix
+    ;; LEAVE THIS OUT UNTIL WE CAN RE-INDEX THE CORD-19 DATASET
+    ;;  IT IS LIKELY TO CHANGE THE SET OF SENTENCES IN A PARAGRAPH
+    ;;   AND THUS CAUSE OFF-BY-ONE ERRORS IN TOCS IN IN THE INDEX
     (setq new-text (remove-copyright-text text))
     #+ignore
     (unless (equal new-text text)
@@ -88,8 +92,13 @@
       ;; "text": ". In addition, SARS-CoV was detected in urine, feces and tears of some SARS-CoV infected patients.
       (setq text (subseq text 2)))
     (unless (or (equal text ".")
+                ;;; AGAIN, THESE ARE GOOD TO DO
+                ;;   BUT THEY WILL CAUSE THE PARAGRAPH NUMBERING ON
+                ;;   TOCS TO BE OFF RELATIVE TO THE INDEX
+                ;; about to do re-indexing on new data, so now include this fix
                 (equal text " ")
-                (equal text "")) ;; may happen after copyright removal
+                (equal text "")
+                ) ;; may happen after copyright removal
       ;; we have bizarre paragraphs like
       ;;{
       ;; "text": ".",
