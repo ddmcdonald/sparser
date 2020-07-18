@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1994,2012,2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1994,2012,2016,2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "catalog"
-;;;   Module:  "objects;words:"
-;;;  Version:  June 2016
+;;;   Module:  "objects/chart/words/"
+;;;  Version:  July 2020
 
 ;; 1.1 (2/13 v2.2) Moved the the file and grammar module checking into
 ;;     the catalog routine.
@@ -23,6 +23,9 @@
    Dynamically bound by definition creators. Intended to
    add information to the property lists for at least human
    consumption.")
+#| Bound to :comlex by continue-unpacking-lexical-entry
+         to :default by setup-unknown-word-by-default
+     and to :morphology by assign-morph-brackets-to-unknown-word  |#
 
 (defun mark-definition-source (unit)
   "If we're defining an unknown word or making a category for it
