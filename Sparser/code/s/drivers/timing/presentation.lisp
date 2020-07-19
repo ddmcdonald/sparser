@@ -41,7 +41,8 @@
          (wps-string (compute-words-per-second
                       word-count *time-to-read-document* :msec))
          (total-time *time-to-read-document*))
-    (format stream "~&total time: ~a msec  ~a~%"
+    (format stream "~&Parsing article: ~s, total time: ~a msec  ~a~%"
+            (name article)
             (insert-commas-into-number-string total-time)
             wps-string)))
 
