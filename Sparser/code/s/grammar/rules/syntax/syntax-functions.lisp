@@ -1028,8 +1028,10 @@ there was an edge for the qualifier (e.g., there is no edge for the
              (set-edge-referent edge-for-qualifier qualifier)
              qualifier))           
         (t
-         (lsp-break "call to extend-interpretation-of-verb-as-predication with null binding
-  variable, var"))) qualifier)
+         (warn "call to extend-interpretation-of-verb-as-predication with null binding
+  variable, var")
+         ))
+  qualifier)
 
 
 
