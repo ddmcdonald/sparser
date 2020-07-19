@@ -113,16 +113,18 @@
 (defun knit-paragraphs (list section)
   "Set the previous/next and parent pointers"
   (if (null (cdr list)) ;; just one paragraph
-    (let ((p (car list)))
-      (setf (parent p) section))
-    (do ((a (car list) (car rest))
-         (b (cadr list) (cadr rest))
-         (rest (cdr list) (cdr rest)))
-        ((null b))
-      (setf (next a) b)
-      (setf (previous b) a)
-      (setf (parent a) section)
-      (setf (parent b) section))))
+      (let ((p (car list)))
+        (if (null p) ;;occasionally a null paragraph -- not sure why
+            (warn "~%NULL PARAGRAPH~%")
+            (setf (parent p) section)))
+      (do ((a (car list) (car rest))
+           (b (cadr list) (cadr rest))
+           (rest (cdr list) (cdr rest)))
+          ((null b))
+        (setf (next a) b)
+        (setf (previous b) a)
+        (setf (parent a) section)
+        (setf (parent b) section))))
 
 
 ;;--- top-level tags
