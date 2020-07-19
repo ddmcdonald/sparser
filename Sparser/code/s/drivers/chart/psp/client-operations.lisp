@@ -1235,10 +1235,7 @@
 
 (defun sentence-indexable-mentions (&optional (s (sentence)))
   (loop for m in (sentence-mentions (sentence)) 
-        when (gethash 
-              (sp-prin1-to-string 
-                 (krisp->sexpr (mention-head-referent m)))
-              *mentions-by-sent*)
+        when (gethash (sp-head-mention-string m) *mentions-by-sent*)
         collect (krisp->sexpr (mention-head-referent m))))
 
 (defparameter *sorted-intersection-descrip-mentions* nil)
@@ -1278,10 +1275,7 @@
 (defun get-articles-about-topics (article-topic-mentions)
   (when (consp article-topic-mentions)
     (setq *articles-about-topics*
-          (gethash
-           (sp-prin1-to-string
-            (krisp->sexpr (mention-head-referent (car article-topic-mentions))))
-           *mentions-by-article*))
+          (gethash (sp-head-mention-string (car article-topic-mentions)) *mentions-by-article*))
     (loop for m in (cdr article-topic-mentions)
           do
             (setq *articles-about-topics*
@@ -1326,29 +1320,37 @@
         (loop for m in *sent-mentions*
               collect
                 (list (mention-string-from-sentence m (sentence-string s))
-                      (sp-prin1-to-string
-                       (krisp->sexpr (mention-head-referent m)))
+                      (sp-head-mention-string m)
                       m)))
+  
   (list (sentence-and-mention-description s  *sent-mentions*)
-        (loop for *art-group*
+        (loop for *art-group-with-article*
               in
-                (loop for
-                      ag in
-                        (sorted-intersection-descrip-mentions *sent-mentions*
-                                                              *article-topic-mentions*)
-                      when (and (numberp  (gethash (car ag) *article-paragraph-count-ht*))
-                                (< (gethash (car ag) *article-paragraph-count-ht*)
-                                   200))
-                      collect ag)
-              as i from 1 to n-articles
+                (collect-n-art-groups *sent-mentions* *article-topic-mentions*)
               collect
+              ;; (car *art-group-with-article*) is the document for the article
                 (let* ((*write-article-objects-file* nil)
-                       (article (run-json-article
-                                 (make-json-article-from-file-handle (car *art-group*))))
+                       (article (run-json-article (car *art-group-with-article*)))
                        (*article-mention-ht* (article-mention-ht article)))
                   (declare (special *write-article-objects-file*))
-                  (best-article-references article *sent-mention-strings* *art-group* *article-mention-ht*)
-                  ))))
+                  (best-article-references article *sent-mention-strings* (second *art-group-with-article*) *article-mention-ht*)))))
+
+(defun collect-n-art-groups (*sent-mentions* *article-topic-mentions* 
+                             &optional (n-articles 5)(max-ct 200)
+                             &aux art-list)
+  (declare (special *sent-mentions* *article-topic-mentions*))
+  (loop for ag in
+          (sorted-intersection-descrip-mentions *sent-mentions* *article-topic-mentions*)
+        do
+          (if (numberp  (gethash (car ag) *article-paragraph-count-ht*))
+              (when (< (gethash (car ag) *article-paragraph-count-ht*) max-ct)
+                (push (list (make-json-article-from-file-handle (car ag)) ag) art-list))
+              (multiple-value-bind (article para-count) (make-json-article-from-file-handle (car ag))
+                (when (< para-count max-ct)
+                  (push (list article ag) art-list))))
+          (when (>= (length art-list) n-articles)
+            (return art-list))))
+                  
 
 
 
@@ -1411,8 +1413,7 @@
                 collect
                   (list (mention-string-from-sentence m str)
                         (mention-offsets m)
-                        (sp-prin1-to-string
-                         (krisp->sexpr (mention-head-referent m)))
+                        (sp-head-mention-string m)
                         ))
     )))
 
@@ -1425,23 +1426,20 @@
 
 
 (defun find-indexed-descriptions (mentions)
-  (loop for d
-        in
-          (mapcar #'(lambda (m) (krisp->sexpr (mention-head-referent m))) 
-                  mentions)
-        when (or (gethash (sp-prin1-to-string d) *mentions-by-sent*)
-                 (gethash (sp-prin1-to-string d) *macro-mentions*))
-        collect d))
+  (loop for m in mentions
+        when
+          (let ((m-string (sp-head-mention-string m)))
+            (or (gethash m-string *mentions-by-sent*)
+                (gethash m-string *macro-mentions*)))
+        collect (krisp->sexpr (mention-head-referent m))))
 
 (defun find-indexed-mentions (mentions)
   (loop for m
         in mentions
-        when (or (gethash (sp-prin1-to-string (krisp->sexpr (mention-head-referent m))) *mentions-by-sent*)
+        when (or (gethash (sp-head-mention-string m) *mentions-by-sent*)
                  (loop for sub
                        in
-                         (gethash
-                          (sp-prin1-to-string (krisp->sexpr (mention-head-referent m)))
-                          *macro-mentions*)
+                         (gethash (sp-head-mention-string m) *macro-mentions*)
                          thereis (gethash sub *mentions-by-sent*)))
         collect m))
 
@@ -1460,12 +1458,15 @@
       descrip))
 
 
-(defun sp-head-mention-string (str)
-  (qepp str)
-  (sp-prin1-to-string
-   (krisp->sexpr
-    (mention-head-referent
-     (edge-mention (car (all-tts)))))))
+(defun sp-head-mention-string (item)
+  (etypecase item
+    (string (qepp item)
+            (sp-head-mention-string
+             (edge-mention (car (all-tts)))))
+    (discourse-mention 
+     (sp-prin1-to-string
+      (krisp->sexpr
+       (mention-head-referent item))))))
 
 
 
