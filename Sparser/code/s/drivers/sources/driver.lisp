@@ -293,7 +293,11 @@
                                  (sexp nil))
   (let* ((*article-short-name* (format nil "~a-~a" article-set-name n)) ; file-handle
          (file-path-name (decoded-file *article-short-name*))
-         (file-path (probe-file file-path-name)))
+         (file-path (when file-path-name
+                      (probe-file file-path-name))))
+    (unless file-path-name
+      (format t "~%~%No article #~s~%" n)
+      (return-from run-nth-json-article nil))
     (setq *article-json* (cl-json::decode-json-from-source file-path))
     (if sexp ;; return the decoding and don't do anything else
         *article-json*
