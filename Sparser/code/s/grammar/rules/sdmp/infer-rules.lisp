@@ -12,10 +12,26 @@
 
 
 (defun infer-preposition-rule (word pp head)
-  (push-debug `(,word ,pp ,head))
-  (break "~a takes ~s" head word))
-
+  "The treetops 'pp' and 'head' are edges. The head is the edge
+   returned by rightmost-salient-constituent applied to the treetop
+   just to the left of the preposition (nearly always embedded in
+   the pp). The 'word' is the preposition as a word, added to the
+   trigger by make-preposition-trigger when it defined the
+   function."  
+  ;;/// check for "and" &such as the head
+  (record-instance-of-preposition-pattern
+   word pp head))
+          
+ 
+(make-preposition-trigger "against")
 (make-preposition-trigger "as")
+(make-preposition-trigger "at")
+(make-preposition-trigger "between")
+(make-preposition-trigger "by")
 (make-preposition-trigger "in")
+(make-preposition-trigger "from")
 (make-preposition-trigger "of")
+(make-preposition-trigger "on")
+(make-preposition-trigger "to")
 (make-preposition-trigger "with")
+(make-preposition-trigger "via")

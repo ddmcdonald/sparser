@@ -1,20 +1,55 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2020  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "HA"
-;;;   Module:  "objects;traces:"
-;;;  Version:  July 1995
+;;;   Module:  "objects/traces/"
+;;;  Version:  July 2020
 
 ;; original flags defined 5/91. Started adding on/off routines 7/12/95.
-;; Added seg.compl. flags 12/12
+;; Added seg.compl. flags 12/12/95
 
 (in-package :sparser)
 
 
-(defparameter *trace-bracket-placement* nil
-  "Controls traces of the process that places phrase boundary
-   brackets at positions in the chart according to what word
-   has been located there.")
+;;;----------------
+;;; rule induction
+;;;----------------
+
+(defvar *trace-induction-sweep* nil)
+
+(defun trace-induction-sweep ()
+  (setq *trace-induction-sweep* t))
+
+(defun untrace-induction-sweep ()
+  (setq *trace-induction-sweep* nil))
+
+(deftrace :sweep/doc-element (object)
+  ;; Called from induction-sweep
+  (when *trace-induction-sweep*
+    (trace-msg "Sweeping ~a" object)))
+
+(deftrace ::sweep/no-debris ()
+  ;; Called from induction-sweep
+  (when *trace-induction-sweep*
+    (trace-msg "  Sentence is fully covered")))
+
+(deftrace :sweep/considering (tt category form)
+  ;; Called from induction-sweep
+  (when *trace-induction-sweep*
+    (trace-msg "tt e~a ~a, ~a"
+               (edge-position-in-resource-array tt)
+               (cat-name category) (cat-name form))))
+
+(deftrace :sweep/triggered (trigger)
+  ;; Called from induction-sweep
+  (when *trace-induction-sweep*
+    (trace-msg "  trigger: ~a" trigger)))
+
+(deftrace :sweep/takes-prep (head-edge word)
+  ;; Called from infer-preposition-rule
+  (when *trace-induction-sweep*
+    (trace-msg "  ~a takes ~s"
+               (edge-referent head-edge) word)))
 
 
 
@@ -29,7 +64,7 @@
 (defun trace-segment-completion ()
   (setq *trace-HA-contexts* t))
 
-(defun unTrace-segment-completion ()
+(defun unrace-segment-completion ()
   (setq *trace-HA-contexts* nil))
 
 
@@ -72,16 +107,16 @@
   "Read in Word-level-traversal-hook and announces everything
    that passes through it.")
 
-(defparameter *trace-traversal-hits* nil
-  "Read in Word-level-traversal-hook and announces only cases
-   where a traversal routine runs.")
-
-
 (defun trace-traversal-hook ()
   (setq *trace-traversal-hook* t))
 
 (defun untrace-traversal-hook ()
   (setq *trace-traversal-hook* nil))
+
+
+(defparameter *trace-traversal-hits* nil
+  "Read in Word-level-traversal-hook and announces only cases
+   where a traversal routine runs.")
 
 (defun trace-traversal-hits ()
   (setq *trace-traversal-hits* t))

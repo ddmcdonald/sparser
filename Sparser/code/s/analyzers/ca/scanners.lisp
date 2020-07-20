@@ -161,7 +161,7 @@
               (car (last (right-fringe tree))))        
              (symbol
               (unless (memq (edge-right-daughter tree) *right-daughter-keywords*)
-                (break "funny right daugher on ~a" tree))
+                (break "funny right daugher on ~a:~%~a" tree (edge-right-daughter tree)))
               tree)
              (otherwise (error "badly formed edge: ~a" tree)))))
       ;; what do we really want to return?

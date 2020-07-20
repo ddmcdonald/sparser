@@ -16,4 +16,5 @@
 (lload "pattern-objects;forms")
 
 (lload "pattern-objects;triggers")
+(lload "pattern-objects;records")
 
