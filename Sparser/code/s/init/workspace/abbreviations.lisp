@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "init;workspace:"
-;;;  version:  March 2020
+;;;  version:  July 2020
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -181,7 +181,7 @@
 
 (defgeneric loc (item)
   (:documentation "Where was this in the file system when it was 
-     catalogued. (The same name can be introduced several times")
+     catalogued. (The same name can be introduced several times.)")
   (:method ((pname string))
     (let ((w (resolve pname)))
       (if w
@@ -192,9 +192,14 @@
       (if c (loc c)
           (format nil "The symbol ~a does not name a category" name))))
   (:method ((w word))
-    (file-location w))
+    "If there's an explicit definition it is on the file-location.
+     If an undefined word got its properties from its form or via
+     Comlex, it's on the source tag."
+    (or (get-tag :source w)
+        (file-location w)))
   (:method ((pw polyword))
-    (file-location pw))
+    (or (get-tag :source pw)
+        (file-location pw)))
   (:method ((c category))
     (cond
       ((itypep c 'comlex-derived) :comlex)
