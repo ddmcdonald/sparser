@@ -1128,28 +1128,34 @@
   )
 
 (defparameter *multiple-count-class-terms* nil)
+(defparameter *in-article-ht* (make-hash-table :size 85000))
 
-(defun find-intersecting-descrip-mentions (descrips &key (in-articles nil) (in-paras nil))
+(defun find-biggest-intersecting-ment-strings (ment-strings &key (in-articles nil) (in-paras nil))
   (clrhash *location-hash*)
+  (clrhash *in-article-ht*)
   (let* ((ht (if in-paras *mentions-by-para* *mentions-by-sent*))
-         (descrips-mentions
-          (loop for descrip in descrips
-                do
-                  (let* ((dstring (sp-prin1-to-string descrip))
-                         (macro-mention (gethash dstring *macro-mentions*)))
-                    (if macro-mention
-                        (mark-macro-mention-items macro-mention dstring ht)
-                        (let ((locs (gethash dstring ht)))
-                          (loop for dloc in locs
-                                when (or (null in-articles)
-                                         (member (car dloc) in-articles)) 
-                                do
-                                  (pushnew descrip (gethash dloc *location-hash*)))))))))
-    (sort
-     (group-by (hal *location-hash* )
-               #'(lambda (x) (length (cdr x))))
-     #'>
-     :key #'car)))
+         (in-articles (when in-articles
+                        (loop for article in in-articles do (setf (gethash article *in-article-ht*) t))
+                        *in-article-ht*)))
+    (loop for ment-string in ment-strings
+          do
+            (let ((macro-mention (gethash ment-string *macro-mentions*)))
+              (if macro-mention
+                  (mark-macro-mention-items macro-mention ment-string ht)
+                  (let ((locs (gethash ment-string ht)))
+                    (loop for dloc in locs
+                          when (or (null in-articles)
+                                   (gethash (car dloc) *in-article-ht*))
+                          do
+                            (pushnew ment-string (gethash dloc *location-hash*)))))))
+    (second
+     ;; the actual sentence locations (loc-1 ... loc-k) with the highest number of items
+     (car ;; (#n ((loc-1 . matches-1) ... (loc-k . matches-k))) group of locations with maximum length
+      (sort
+       (group-by (hal *location-hash* )
+                 #'(lambda (x) (length (cdr x))))
+       #'>
+       :key #'car)))))
 
 (defun mark-macro-mention-items (macro-mention-items macro-mention ht)
   (loop for indirect-description in macro-mention-items
@@ -1242,25 +1248,20 @@
 
 (defparameter *articles-about-topics* nil)
 
-(defun sorted-intersection-descrip-mentions (sent-mentions article-topic-mentions)
-  (setq sent-mentions
+(defun sorted-intersection-descrip-mentions (sent-mentions article-topic-mentions n-articles &aux sent-mention-strings)
+  (setq sent-mention-strings
         (loop for m in sent-mentions
-              collect
-                (remove-raw-text
-                 (krisp->sexpr (mention-head-referent m)))))
+              collect (sp-head-mention-string m)))
   (setq *articles-about-topics* nil)
   (setq *articles-about-topics*
         (get-articles-about-topics article-topic-mentions))
                      
   (let ((*max-sentences*
-         (second
-          ;; the actual sentence locations (loc-1 ... loc-k) with the highest number of items
-          (car ;; (#n ((loc-1 . matches-1) ... (loc-k . matches-k))) group of locations with maximum length
-           (find-intersecting-descrip-mentions
-            sent-mentions
+           (find-biggest-intersecting-ment-strings
+            sent-mention-strings
             :in-articles
             *articles-about-topics*
-            )))))
+            )))
     (declare (special *max-sentences*))
     
     (setq *sorted-intersection-descrip-mentions*
@@ -1287,6 +1288,7 @@
 (defparameter *sent-mention-descriptions* nil)
 (defparameter *sent-mentions* nil)
 (defparameter *sent-mention-strings* nil)
+(defparameter *topic-mention-strings* nil)
 (defparameter *article-topic-mentions* nil)
 (defvar *article-mention-ht*)
 (defvar *art-group*)
@@ -1305,15 +1307,19 @@
            (sentence-mentions s)))
          :test #'equal))
   (setq *article-topic-mentions* (find-article-topic-mentions s))
-  
+  (setq *topic-mention-strings*
+        (loop for m in *article-topic-mentions*
+             collect
+             (list (mention-string-from-sentence m (sentence-string s))
+                   (sp-head-mention-string m)
+                   m)))
   (setq *sent-mentions*
         (remove-duplicates
          (loop for m
                in
                  (find-indexed-mentions (sentence-mentions s))
-               ;;unless (member m *article-topic-mentions* :test #'equal)
+               unless (member m *article-topic-mentions* :test #'equal)
                collect m)))
-
   
   (setq *sent-mention-strings*
         (loop for m in *sent-mentions*
@@ -1322,7 +1328,7 @@
                       (sp-head-mention-string m)
                       m)))
   
-  (list (sentence-and-mention-description s  *sent-mentions*)
+  (list (sentence-and-mention-description s  (append *article-topic-mentions* *sent-mentions*))
         (loop for *art-group-with-article*
               in
                 (collect-n-art-groups *sent-mentions* *article-topic-mentions*)
@@ -1332,14 +1338,18 @@
                        (article (run-json-article (car *art-group-with-article*)))
                        (*article-mention-ht* (article-mention-ht article)))
                   (declare (special *write-article-objects-file*))
-                  (best-article-references article *sent-mention-strings* (second *art-group-with-article*) *article-mention-ht*)))))
+                  (best-article-references article
+                                           (append *sent-mention-strings*
+                                                   *topic-mention-strings*)
+                                           (second *art-group-with-article*)
+                                           *article-mention-ht*)))))
 
 (defun collect-n-art-groups (*sent-mentions* *article-topic-mentions* 
                              &optional (n-articles 5)(max-ct 200)
                              &aux art-list)
-  (declare (special *sent-mentions* *article-topic-mentions*))
+  (declare (special *sent-mentions* *article-topic-mentions* *article-paragraph-count-ht*))
   (loop for ag in
-          (sorted-intersection-descrip-mentions *sent-mentions* *article-topic-mentions*)
+          (sorted-intersection-descrip-mentions *sent-mentions* *article-topic-mentions* n-articles)
         do
           (if (numberp  (gethash (car ag) *article-paragraph-count-ht*))
               (when (< (gethash (car ag) *article-paragraph-count-ht*) max-ct)
@@ -1348,7 +1358,10 @@
                 (when (< para-count max-ct)
                   (push (list article ag) art-list))))
           (when (>= (length art-list) n-articles)
-            (return art-list))))
+            (return art-list))
+        finally
+          (return art-list)
+          ))
                   
 
 
@@ -1470,17 +1483,4 @@
      (sp-prin1-to-string
       (krisp->sexpr
        (mention-head-referent item))))))
-
-
-
-
-
-
-
-
-
-
-
-
-
 
