@@ -1135,23 +1135,24 @@
       cmm
       (list cmm)))
 
-
 (defun initialize-macro-mentions ()
   (declare (special *macro-mentions*))
   (clrhash *macro-mentions*)
-  (loop for macro-mention in *covid-macro-descriptions*
-        do
-          (loop for car-mm in (car-mms (car macro-mention))
-                do
-                  (let ((key (if (consp car-mm)
-                                 ;; first item is an example string for the parse
-                                 (second car-mm)
-                                 car-mm))
-                        (vals (loop for val in (second macro-mention)
-                                    collect
-                                      (if (consp val)
-                                          ;; first item is an example string for the parse
-                                          (second val)
-                                          val))))
-                    (setf (gethash key *macro-mentions*) vals)))
-          ))
+  (let ((*package* (find-package :sp)))
+    (loop for macro-mention in *covid-macro-descriptions*
+          do
+            (loop for car-mm in (car-mms (car macro-mention))
+                  do
+                    (let ((key (if (consp car-mm)
+                                   ;; first item is an example string for the parse
+                                   (second car-mm)
+                                   car-mm))
+                          (vals (loop for val in (second macro-mention)
+                                      collect
+                                        (if (consp val)
+                                            ;; first item is an example string for the parse
+                                            (second val)
+                                            val))))
+                      (setf (gethash key *macro-mentions*) 
+                            (loop for val in vals collect (sp-prin1-to-string (read-from-string val))))))
+            )))

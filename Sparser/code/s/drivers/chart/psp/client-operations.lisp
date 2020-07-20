@@ -1050,8 +1050,8 @@
   (load path))
 
 (defvar *mentions-by-sent* (make-hash-table :test #'equal :size 3000000))
-(defvar *mentions-by-para* (make-hash-table :test #'equal :size 300000))
-(defvar *mentions-by-article* (make-hash-table :test #'equal :size 300000))
+(defvar *mentions-by-para* (make-hash-table :test #'equal :size 3000000))
+(defvar *mentions-by-article* (make-hash-table :test #'equal :size 3000000))
 
 (defvar *macro-mentions* (make-hash-table :test #'equal :size 300000)
   "mentions which stand for sets of other mentions, such as 'protease' or 'interact'")
@@ -1246,7 +1246,8 @@
   (setq sent-mentions
         (loop for m in sent-mentions
               collect
-                (krisp->sexpr (mention-head-referent m))))
+                (remove-raw-text
+                 (krisp->sexpr (mention-head-referent m)))))
   (setq *articles-about-topics* nil)
   (setq *articles-about-topics*
         (get-articles-about-topics article-topic-mentions))
@@ -1280,9 +1281,7 @@
           do
             (setq *articles-about-topics*
                   (loop for art in *articles-about-topics*
-                        when (member art (gethash (sp-prin1-to-string
-                                                   (krisp->sexpr (mention-head-referent m)))
-                                                  *mentions-by-article*))
+                        when (member art (gethash (sp-head-mention-string m)*mentions-by-article*))
                         collect art)))
     *articles-about-topics*))
 (defparameter *sent-mention-descriptions* nil)
@@ -1450,11 +1449,15 @@
 
 (defun remove-raw-text (descrip)
   (if (consp descrip)
-      (loop for d in descrip
-            unless (and (consp d)
-                        (member (car d)
-                                '(raw-text count family-members)))
-            collect d)
+      (let ((cleaned
+             (loop for d in descrip
+                   unless (and (consp d)
+                               (member (car d)
+                                       '(raw-text count family-members)))
+                   collect d)))
+        ;; normalize the order of the UID and NAME (among other fields)
+        ;;  for some reason, these are in different orders for "androgen" and "androgens"
+        `(,(car cleaned) ,.(sort (cdr cleaned) #'string< :key #'car)))
       descrip))
 
 
