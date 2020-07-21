@@ -1111,7 +1111,9 @@
         (rule (multiply-edges head-edge pp-edge)))
     ;; compose the head and the pp
     (unless rule
-      (error "No rule for ~a + ~a" head-edge pp-edge))
+      (when *debug-questions*
+        (error "No rule for ~a + ~a" head-edge pp-edge))
+      (return-from wh-subcat-stranded-prep nil))
     (let* ((extended-head-edge
             (make-completed-binary-edge head-edge pp-edge rule))
            (subsumed-edge head-edge) ;; rename to make tuck operation clear
