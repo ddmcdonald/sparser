@@ -1,7 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2019-2020  David D. McDonald  -- all rights reserved
 ;;; 
-;;;     File:  "loader"
+;;;     File:  "da-rules-aux"
 ;;;   Module:  "grammar;rules:DA:"
 ;;;  Version:  June 2020
 
@@ -33,8 +33,9 @@
                        subordinate-clause)))
          (find-base-np-vp-edge
           (second (loop for ee in (edges-under e)
-                        unless (or (not (edge-p ee))
-                                   (word-p (edge-category ee)))
+                     unless (or (not (edge-p ee))
+                                (word-p (edge-left-daughter ee))
+                                (word-p (edge-category ee)))
                         collect ee))))
         ((or (member (form-cat-name e)
                      '(vp vg vp+past vp+ed))
