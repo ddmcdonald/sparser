@@ -2851,34 +2851,6 @@ Get here via look-for-submerged-conjunct --> conjoin-and-rethread-edges --> adjo
             (setq np (bind-variable 'compared-to than-np np))))
         np))))
 
-#|
-      (open-attribution
-       (let* ((attribution (binding-value open-attribution))
-              (variable (binding-variable open-attribution))
-              (i (binding-body open-attribution))
-              (value-of-attr (value-of 'value attribution))
-              (edge-value (or value-of-attr attribution)))
-         (unless (eq i np)
-           (error "incorrect assumption about what's the head"))
-         (let ((complete-attribution
-                (bind-variable 'reference-set than-np attribution)))
-           (multiple-value-bind (edge-over-comparative)
-               (search-tree-for-referent (left-edge-for-referent) edge-value)
-             ;; Insert a new edge over the comparative edge
-             ;; of the np with the completed-attribution as its value.
-             (unless edge-over-comparative
-               (warn "Could not locate edge over ~a under ~a in ~s~%"
-                     attribution (left-edge-for-referent)
-                     (current-string))
-               (return-from maybe-extend-comparative-with-than-np nil))
-             (respan-edge-for-new-referent edge-over-comparative
-                                           complete-attribution)
-             (setq i (rebind-variable variable complete-attribution i))
-             i))))
-      (t (rebind-variable
-          'comparative-predication
-          (bind-dli-variable 'compared-to than-np (value-of 'comparative-predication np))
-          np)))  |#
 
 
 
