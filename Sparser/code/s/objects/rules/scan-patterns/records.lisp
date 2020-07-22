@@ -1,7 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2020 David D. McDonald  -- all rights reserved
 ;;;
-;;;     File:  "triggers"
+;;;     File:  "records"
 ;;;   Module:  "objects;rules:scan-patterns:"
 ;;;  version:  July 2020
 
