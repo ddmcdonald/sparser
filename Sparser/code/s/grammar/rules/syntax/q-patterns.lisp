@@ -296,6 +296,7 @@
                          copula-edge))))
 
 ;; called from make-this-a-question-if-appropriate
+;; And from DA: polar-postmodifying-adj
 (defun make-polar-adjective-question (start-pos end-pos edges)
   (tr :wh-walk "make-polar-adjective-question")
   (when (> (length (all-tts start-pos end-pos)) 3)
@@ -317,19 +318,23 @@
              :referent copular-adj)))
          (copular-pred-edge
           (when copular-adj
-            (let ((*left-edge-into-reference* (first edges))
+            (let ((*left-edge-into-reference* (first edges)) ; the aux
                   (*right-edge-into-reference* copular-adj-edge))
               (declare (special *left-edge-into-reference*
                                 *right-edge-into-reference*))
               (let ((interp (assimilate-subject np copular-adj nil)))
+                ;; in "Is allergy more common in OME patients?" interp is nil                
+                (unless interp ;; The triggering pattern is likely to be wrong
+                  (when *debug-questions*
+                    (break "interp is nil"))
+                  (return-from make-polar-adjective-question nil))
                 (make-edge-over-long-span
                  start-pos
                  end-pos
-                 (itype-of interp)
+                 (itype-of interp) ;; the category
                  :referent interp
-                 :rule 'make-polar-adjective-question-2
+                 :rule 'make-polar-adjective-question
                  :form category::s))))))
-    (declare (special copular-adj))
     (make-polar-edge copular-pred-edge)))
 
 ;; (p "is ATM in a pathway with MTOR")

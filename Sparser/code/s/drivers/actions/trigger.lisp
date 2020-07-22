@@ -35,9 +35,15 @@
                      (format t "~&  There aren't any -- empty action field~%"))))
                (when *trace-completion-hook*
                  (format t "~&  There aren't -- it has no rule set~%"))))))
-    (or (cond ((null (edge-category edge)) ;; REMOVE THIS WHEN DAVID FINISHES HIS WORK ON COMPARATIVE ADJECTIVES
-               (warn "null edge-category in check-for-completion-actions/category at edge"
-                         edge)
+
+    (or (cond ((null (edge-category edge))
+               ;; Happens in (at least) "Is allergy more common in OME patients?" and
+               ;; "The TWIRLS system is an automated process that can summarize the entities
+               ;; and genes specifically related to coronaviruses." where the problem is that
+               ;; the question code that gets invoked constructs a long edge using a variable
+               ;; for the category which turns out to be nil.
+               (break "null edge-category in edge ~a: ~s~%in ~s" edge (string-for-edge edge)
+                      (current-string))
                nil)
               (t (search-label-for-completion-action (edge-category edge))))
         (when (edge-form edge)
