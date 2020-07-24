@@ -173,16 +173,16 @@ syntactic properties of three types.
           "to this end"
 	  ;; "unexpectedly" go with 'intensifier' reading as an adverb
           "until"
+          "unless"  
           "until now"
+          ;;"upon"
           "whereas"
           "while"
           "whilst"
-          "unless"  
-          "until"   
-          ;;"upon"
           "whatever"
 	  "when" ;; also a wh-pronoun
-          "whether" ;; this is to allow "whether" to be a subordinating conjunction leading to a "whethercomp"
+          "whether" ;; this is to allow "whether" to be a subordinating conjunction
+                    ;; leading to a "whethercomp"
           ))
 
 
