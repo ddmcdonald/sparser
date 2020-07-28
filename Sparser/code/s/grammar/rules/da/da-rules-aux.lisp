@@ -20,6 +20,9 @@
       (edge-referent (edge-left-daughter real-s-edge)))))
 
 (defun find-base-np-vp-edge (e)
+  "Walk down the left side of 'e'. Return the first subject-like edge
+   you encounter (including participles), or nil if you encounter a vp-like
+   edge."
   (declare (special *show-failed-find-base-np-vp-edge*))
   (cond ((member (form-cat-name (edge-left-daughter e))
                  '(np proper-noun proper-name
@@ -31,12 +34,16 @@
              (member (form-cat-name (edge-left-daughter e))
                      '(adverb pp to-comp
                        subordinate-clause)))
-         (find-base-np-vp-edge
-          (second (loop for ee in (edges-under e)
+         (let ((viable-edges
+                (loop for ee in (edges-under e)
                      unless (or (not (edge-p ee))
-                                (word-p (edge-left-daughter ee))
-                                (word-p (edge-category ee)))
-                        collect ee))))
+                                (word-p (edge-left-daughter ee)) ; dry#26 "mechanistically"
+                                (word-p (edge-category ee))) ; "and"
+                   collect ee)))
+           (when viable-edges
+             (find-base-np-vp-edge (or (second viable-edges) ; skip over 1st edge
+                                       (car viable-edges)) ; 1st filtered out
+                                   ))))
         ((or (member (form-cat-name e)
                      '(vp vg vp+past vp+ed))
              (member (cat-name (edge-category (edge-left-daughter e)))
