@@ -69,7 +69,7 @@
 
 (defvar *right-daughter-keywords*
   '(:single-term :context-sensitive :digit-based-number
-    :number-fsa :long-span))
+    :number-fsa :long-span :literal-in-a-rule))
 
 
 ;;;-------------------------------------------------------
