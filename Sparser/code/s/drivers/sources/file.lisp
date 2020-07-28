@@ -23,6 +23,7 @@
                                       echo
                                       (ext-format :utf-8)
                                       ((:trace traces-on) t)
+                                      (quiet nil)
                                       ((:skip ignore-errors?) t))
 
   "Opens the indicated file an passes it to analysis-core for parsing.
@@ -60,12 +61,13 @@
       (scan-and-swap-character-buffer :echo echo))
 
     (let ((*paragraphs-from-orthography* make-orthographic-paragraphs)
-          (*tts-after-each-section* traces-on)
+          (*tts-after-each-section* (unless quiet traces-on))
           (*trap-error-skip-sentence* ignore-errors?))
       (declare (special *paragraphs-from-orthography* *tts-after-each-section*
                         *trap-error-skip-sentence*))
-
-      (analysis-core))
+      (if quiet
+        (with-total-quiet (analysis-core))
+        (analysis-core)))
 
     (when *open-stream-of-source-characters*
       (close-character-source-file))))

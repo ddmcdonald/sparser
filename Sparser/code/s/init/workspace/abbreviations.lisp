@@ -447,6 +447,7 @@
             ((:paragraph make-orthographic-paragraphs) t)
             ((:trace tts-after-para) t)
             ((:skip ignore-errors) t)
+            (quiet nil)
             (scan t)
             (ext-format :utf-8))
   (format t "~%analyzing ~A~%~%" pathname)
@@ -455,14 +456,17 @@
                                   :paragraph make-orthographic-paragraphs
                                   :skip ignore-errors
                                   :trace tts-after-para
+                                  :quiet quiet
                                   :prescan scan
                                   :ext-format ext-format))
     (analyze-text-from-file pathname
                             :paragraph make-orthographic-paragraphs
                             :skip ignore-errors
                             :trace tts-after-para
+                            :quiet quiet
                             :prescan scan
-                            :ext-format ext-format)))
+                            :ext-format ext-format))
+  (article))
 
 
 ;;------------ generic, switched routine
