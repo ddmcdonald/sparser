@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "master-loader"
 ;;;   module:  "init;loaders;"
-;;;  Version:   March 2020
+;;;  Version:   July 2020
 
 ;; 4/21  added loading of chart-drivers;new:loader
 ;; 4/25  split fsas into basics and model
@@ -314,10 +314,14 @@
 (gate-grammar *citations*
   (lload "citation-code;loader"))
 
+(lload "workspace;abbreviations") ; helps debug issues in grammar loading
+(lload "workspace;traces")
+(lload "workspace;switch settings")
 
-;;;------------------
-;;; optional grammar
-;;;------------------
+
+;;;-----------
+;;;  grammar
+;;;-----------
 
 (when *load-the-grammar*
   ;; (populate-functions-for-profiling) ;; (sp-profile:report) to see profile
@@ -328,11 +332,6 @@
 (when *connect-to-the-corpus*
   ;; Load the set of logicals that define articles in the corpus.
   (lload "corpus-data;loader"))
-
-;; Convenience files
-(lload "workspace;abbreviations")
-(lload "workspace;traces")
-(lload "workspace;switch settings")
 
 (when *external-workspace-files*
   (load *external-workspace-files*))
