@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2016-2017 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2016-2020 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "category-defining-words"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: April 2020
+;;; version: July 2020
 
 
 ;;;;;;;; These are definitions for words that have the same spelling as defined categories, and which
@@ -14,42 +14,44 @@
 
 (def-synonym achievement (:noun "achievement"))
 (def-synonym accomplishment (:noun "accomplishment"))
-(def-synonym acknowledgement (:noun "acknowledgement")) 
-(def-synonym adaptor (:noun "adaptor")) 
-(def-synonym additive (:adj "additive"))
+(def-synonym acknowledgement (:noun "acknowledgement"))
+(when (current-script :biology)
+  (def-synonym adaptor (:noun "adaptor"))
+  (def-synonym additive (:adj "additive")))
 (def-synonym adjective (:noun "adjective"))
 (def-synonym adjunct (:noun "adjunct")) 
 (def-synonym anonymous (:adj "anonymous")) 
-(def-synonym apology (:noun ("apology" :plural "apologies"))) 
-(def-synonym background (:noun "background")) 
-(def-synonym beagle (:noun "beagle")) 
-(def-synonym candidate (:noun "candidate" :adj "candidate")) 
+(def-synonym apology (:noun ("apology" :plural "apologies")))
+(when (current-script :biology)
+  (def-synonym background (:noun "background"))
+  (def-synonym beagle (:noun "beagle"))
+  (def-synonym candidate (:noun "candidate" :adj "candidate")))
 (def-synonym category (:noun ("category" :plural "categories"))) 
-
 (def-synonym company (:noun ("company" :plural "companies"))) 
 (def-synonym comparative (:noun "comparative")) 
 (def-synonym conjunction (:noun "conjunction")) 
 (def-synonym container (:noun "container")) 
-
 (def-synonym definite (:noun "definite")) 
 (def-synonym demonstrative (:noun "demonstrative")) 
-(def-synonym dimension (:noun "dimension")) 
-(def-synonym great (:adj ("great" :comparative "greater" :superlative "greatest")))
+(def-synonym dimension (:noun "dimension"))
+(when (current-script :biology)
+  (def-synonym great (:adj ("great" :comparative "greater" :superlative "greatest"))))
 (def-synonym imperative (:noun "imperative")) 
 (def-synonym indefinite (:noun "indefinite")) 
-(def-synonym interval (:noun "interval")) 
-(def-synonym ion (:noun "ion")) 
+(def-synonym interval (:noun "interval"))
+(when (current-script :biology) (def-synonym ion (:noun "ion")))
 (def-synonym modal (:adj "modal")) 
 (def-synonym modality (:noun ("modality" :plural "modalities"))) 
 (def-synonym multiplier (:noun "multiplier"))
 (def-synonym musical (:noun "musical" :adj "musical"))
 (def-synonym new (:adj "new")) 
-(def-synonym noun (:noun "noun")) 
-(def-synonym nucleus (:noun "nucleus" :adj "nuclear")) 
+(def-synonym noun (:noun "noun"))
+(when (current-script :biology)
+  (def-synonym nucleus (:noun "nucleus" :adj "nuclear")))
 (def-synonym ordinal (:adj "ordinal")) 
 (def-synonym orientation (:noun "orientation")) 
-;;(def-synonym paragraph (:noun "paragraph")) NOW EXPLICITLY DEFINED
-(def-synonym pathogen (:noun "pathogen")) 
+(when (current-script :biology)
+  (def-synonym pathogen (:noun "pathogen")))
 (def-synonym percent (:noun "percent")) 
 (def-synonym person (:noun "person"))
 (def-synonym plural (:noun "plural" :adj "plural")) 
