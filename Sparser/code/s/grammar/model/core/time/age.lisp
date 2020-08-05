@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2016-2019  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2016-2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "age"
 ;;;   Module:  "model;core:time:"
-;;;  version:  November 2019
+;;;  version:  August 2020
 
 ;; 0.1 (7/18 v1.8.6) Flushed the CA routines as redundant w/ the CS rules
 ;; 0.2 (4/16/92 v2.2) added two more rules to handle "60-year-old"
@@ -74,9 +74,6 @@
 
 
 
-
-
-
 (defun interpret-number-as-years-of-age (number)
   ;; called from cs rules
   (let ((amt (define-or-find-individual 'amount-of-time
@@ -85,6 +82,20 @@
     (let ((age (define-or-find-individual 'age
                  :age amt)))
       age )))
+
+
+(define-category amount-old
+  :specializes amount ; // or age? and inherit the variable?
+  :rule-label age
+  :binds ((amount amount-of-time)
+          (perspective qualitative-age))
+  :realization (:tree-family quantity+kind
+                :mapping ((np . :self)
+                          (modifier . amount-of-time)
+                          (np-head . age)
+                          (result-type . :self)
+                          (quantity . amount)
+                          (base . perspective))))
 
 
 
