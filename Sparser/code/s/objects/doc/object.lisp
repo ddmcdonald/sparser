@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  April 2020
+;;;  Version:  August 2020
 
 ;; Created 2/6/13 to solve the problem of keeping document/section context.
 ;; [sfriedman:20130206.2038CST] I'm writing this using /objects/chart/edges/object3.lisp as an analog.
@@ -242,6 +242,7 @@
   (setf (article-location a) nil)
   (setf (article-date a) nil)
   (setf (article-source a) nil)
+  (setf (contents a) nil)
   (call-next-method))
 
 (defun allocate-article ()
@@ -326,6 +327,7 @@
 (defmethod clear ((s section))
   (setf (parent s) nil) ;; these need their own clear's
   (setf (name s) nil)
+  (setf (contents s) nil)
   (call-next-method))
 
 (defun allocate-section ()
