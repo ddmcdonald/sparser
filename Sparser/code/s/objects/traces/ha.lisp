@@ -16,12 +16,19 @@
 ;;;----------------
 
 (defvar *trace-induction-sweep* nil)
+(defvar *trace-induction-triggers* nil)
 
 (defun trace-induction-sweep ()
   (setq *trace-induction-sweep* t))
-
 (defun untrace-induction-sweep ()
   (setq *trace-induction-sweep* nil))
+
+(defun trace-induction-triggers ()
+  (setq *trace-induction-triggers* t))
+(defun untrace-induction-triggers ()
+  (setq *trace-induction-triggers* nil))
+
+
 
 (deftrace :sweep/doc-element (object)
   ;; Called from induction-sweep
@@ -45,11 +52,19 @@
   (when *trace-induction-sweep*
     (trace-msg "  trigger: ~a" trigger)))
 
-(deftrace :sweep/takes-prep (head-edge word)
+(deftrace :sweep/takes-prep (word pp head)
   ;; Called from infer-preposition-rule
-  (when *trace-induction-sweep*
-    (trace-msg "  ~a takes ~s"
-               (edge-referent head-edge) word)))
+  (when (or *trace-induction-sweep* *trace-induction-triggers*)
+    (trace-msg "triggered: e~a ~s e~a"
+               (edge-position-in-resource-array head)
+               (pname word)
+               (edge-position-in-resource-array pp))))
+
+(deftrace :prep-pattern (prep left-str right-str)
+  ;; called from record-instance-of-preposition-pattern
+  (when *trace-induction-triggers*
+    (trace-msg "    ~s + ~s + ~s"
+               left-str (pname prep) right-str)))
 
 
 
@@ -64,7 +79,7 @@
 (defun trace-segment-completion ()
   (setq *trace-HA-contexts* t))
 
-(defun unrace-segment-completion ()
+(defun untrace-segment-completion ()
   (setq *trace-HA-contexts* nil))
 
 

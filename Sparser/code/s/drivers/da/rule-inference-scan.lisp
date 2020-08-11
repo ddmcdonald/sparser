@@ -28,6 +28,7 @@
       (loop for s in (sentences-in-paragraph p) do (induction-sweep s))))
   (:method ((s sentence))
     ;; modeled on loop in identify-relations
+    (declare (special *sentence-terminating-punctuation*))
     (tr :sweep/doc-element s)
     (let ((start-pos (starts-at-pos s))
           (end-pos (ends-at-pos s)))
@@ -42,7 +43,13 @@
               tt prior-tt pos-after trigger)
           (loop
              (multiple-value-setq (tt pos-after)
-               (next-treetop/rightward rightmost-pos))    
+               (next-treetop/rightward rightmost-pos))
+
+             (when (memq tt *sentence-terminating-punctuation*)
+               (return))
+             (when (typep tt 'edge-vector) ;; "when" in isolation
+               (setq tt (highest-edge tt)))
+ 
              (setq category (edge-category tt)
                    form (edge-form tt))
              (tr :sweep/considering tt category form)

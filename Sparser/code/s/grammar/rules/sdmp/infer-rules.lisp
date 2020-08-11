@@ -17,21 +17,30 @@
    just to the left of the preposition (nearly always embedded in
    the pp). The 'word' is the preposition as a word, added to the
    trigger by make-preposition-trigger when it defined the
-   function."  
-  ;;/// check for "and" &such as the head
-  (record-instance-of-preposition-pattern
-   word pp head))
+   function. Applies a few filters to eliminate cases that do not
+   fit the pattern."  
+  (unless (or (one-word-long? pp) ; bare preposition
+              (word-p (edge-referent head)) ; comma
+              (edge-over-function-word? head)) ; "and"
+    (tr :sweep/takes-prep word pp head)
+    (record-instance-of-preposition-pattern
+     word pp head)))
           
  
 (make-preposition-trigger "against")
+(make-preposition-trigger "among")
 (make-preposition-trigger "as")
 (make-preposition-trigger "at")
+(make-preposition-trigger "away")
 (make-preposition-trigger "between")
 (make-preposition-trigger "by")
 (make-preposition-trigger "in")
+(make-preposition-trigger "for")
 (make-preposition-trigger "from")
 (make-preposition-trigger "of")
+(make-preposition-trigger "off")
 (make-preposition-trigger "on")
+(make-preposition-trigger "out")
 (make-preposition-trigger "to")
 (make-preposition-trigger "with")
 (make-preposition-trigger "via")
