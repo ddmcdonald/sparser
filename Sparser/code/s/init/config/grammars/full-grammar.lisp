@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "full grammar"
 ;;;    Module:  "init;versions:v2.7:config:grammars:"
-;;;   version:  February 2019
+;;;   version:  July 2019
 
 ;; 7/18/92 v2.3 blocked out the gl and Tipster grammar
 ;; 12/4 pulled word options made irrelevant in master-loader
@@ -255,7 +255,7 @@
 ;;(include-grammar-module  *ambush*) 2/21/19 too many fragments
 (include-grammar-module  *call-signs*)
 (include-grammar-module  *checkpoint-ops*)
-(include-grammar-module  *disease*)
+;(include-grammar-module  *disease*) ; disease too tightly entwined w/ bio types
 ;(include-grammar-module  *biology*)
 (include-grammar-module  *hurricanes*)
 (include-grammar-module  *musica*)
