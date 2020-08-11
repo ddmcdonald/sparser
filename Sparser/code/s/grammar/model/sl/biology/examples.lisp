@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "examples"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: May 2020
+;;; version: August 2020
 
 ;; Broken out from Biology-workspace 10/8/15
 
@@ -12,6 +12,20 @@
 ;;;---------------
 ;;; Example texts
 ;;;---------------
+
+#| https://www.washingtonpost.com/politics/2020/08/03/most-dangerous-false-positive-trumps-ongoing-insistence-that-pandemic-is-under-control
+
+How did Italy, France and Spain do? After seeing initial surges in cases (and, sadly, in deaths), they managed to get the virus under control. That’s the same pattern that was seen in New York, but not in the United States broadly or in a number of large states.
+
+Over the past month in Spain, the number of new cases has increased fivefold — but the country is now seeing only 2,300 new cases a day on average, compared to the United States’ 62,000. That’s about 50 new cases for every million people in Spain versus more than 190 for every million Americans. And Spain is an exception, not the norm. Trump also pointed to a new outbreak in a region of Australia, where the number of new cases is again five times what it was a month ago.
+
+The country is now seeing about 430 new cases per day on average, according to data from Johns Hopkins University, about 18 per million residents.
+
+Victoria has been averaging 482 new cases per day over the past week, according to Johns Hopkins, 73 per million residents. Of Florida's 67 counties, three (Broward, Miami-Dade and Palm Beach) are currently averaging more daily cases than Victoria saw in the past 24 hours. Sixty-six of Florida's counties are seeing more cases each day on average as a function of population. In Texas, there are four counties with more cases and 187 of 254 counties with more cases as a function of population.
+
+
+
+|#
 
 #| clipped from https://www.nytimes.com/2020/06/30/world/asia/h1n1-swine-flu-virus-china-pig.html  7/1/20
 
