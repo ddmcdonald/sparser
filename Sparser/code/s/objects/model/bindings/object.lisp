@@ -406,3 +406,12 @@
       (memq var (cat-slots category)))))
 
 
+(defun suppress-bindings (list-of-bindings variables-to-suppress)
+  "Given a list of bindings, remove all instances of a binding with
+   one of the listed variables."
+  (loop for b in list-of-bindings
+     as var = (binding-variable b)
+     unless (memq var variables-to-suppress)
+     collect b))
+
+
