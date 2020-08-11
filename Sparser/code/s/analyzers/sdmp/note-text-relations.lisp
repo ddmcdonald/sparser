@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2013,2019 David D. McDonald all rights reserved
+;;; Copyright (c) 2013,2019-2020 David D. McDonald all rights reserved
 ;;;
 ;;;      File: "note-text-relations"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: August 2019
+;;;   Version: August 2020
 
 ;; Initiated 3/9/13. Elaborated through 3/28/13. 7/15/13 Added gate
 ;; on new cases. Occasional fixes to edge cases through 9/16/13.
@@ -24,41 +24,41 @@
   (unless (segment-denotes-interesting-object coverage)
     ;;(format-words-in-segment)
     (let* ((length (segment-length)))
-      (note-what-the-head-is)
-      (case coverage
-        (:one-edge-over-entire-segment
-         (unless (= length 1) ;; just a head, and we already did it.
+      (if (eq coverage :one-edge-over-entire-segment)
+        (then
+          (unless (= length 1) ;; just a head, and we already did it.
            ;; head and word just before
            (note-immediate-relations-to-head))
          (when (>= length 3)
            ;; adjacent (left right) -- ignore determiners, etc
            (unless (segment-spanned-by-multi-word-edge?)
              (note-in-segment-adgacences))))
-
-        (:all-contiguous-edges ;; has to have more than one
-         (note-immediate-relations-to-head))
-
-        (:no-edges
-         ;; happened in #1 for the word "burnt" which is not in
-         ;; Comlex's vocabulary. ///do by hand?
-         (when *dbg-print*
-           (format t "~&~%Ignoring the no-edges segment:")
-           (format-words-in-segment)
-           (terpri)))
-        (:discontinuous-edges
-         (when *dbg-print*
-           (format t "~&~%Ignoring discontinuous segment:")
-           (print-treetop-labels-in-current-segment)))
-        (:some-adjacent-edges
-         ;; "the deadly avian flu" where "avian" isn't in
-         ;; Comlex and for some reason no edge over "deadly"
-         (when *dbg-print*
-           (format t "~&~%Ignoring 'some adjacent' segment:")
-           (print-treetop-labels-in-current-segment)))
-        (otherwise
-         (when *debug-segment-handling*
-           (break "Unanticipated value for segment coverage: ~A"
-                  coverage))))))
+        (else
+          (note-what-the-head-is) ; not sensible if all under one edge
+          (case coverage
+            (:all-contiguous-edges ;; has to have more than one
+             (note-immediate-relations-to-head))
+            (:no-edges
+             ;; happened in #1 for the word "burnt" which is not in
+             ;; Comlex's vocabulary. ///do by hand?
+             (when *dbg-print*
+               (format t "~&~%Ignoring the no-edges segment:")
+               (format-words-in-segment)
+               (terpri)))
+            (:discontinuous-edges
+             (when *dbg-print*
+               (format t "~&~%Ignoring discontinuous segment:")
+               (print-treetop-labels-in-current-segment)))
+            (:some-adjacent-edges
+             ;; "the deadly avian flu" where "avian" isn't in
+             ;; Comlex and for some reason no edge over "deadly"
+             (when *dbg-print*
+               (format t "~&~%Ignoring 'some adjacent' segment:")
+               (print-treetop-labels-in-current-segment)))
+            (otherwise
+             (when *debug-segment-handling*
+               (break "Unanticipated value for segment coverage: ~A"
+                      coverage))))))))
     (normal-segment-finished-options coverage))
 
 ;;;-------
@@ -162,10 +162,12 @@
 (defparameter *edge-delivery-function* nil)
 
 (defun segment-denotes-interesting-object (coverage)
-  ;; called from note-text-relations-in-segment
-  (when (eq coverage :one-edge-over-entire-segment)
+  "N.b. This class-specific scheme, invoked from note-text-relations-in-segment
+   was much too labor intensive. It has been replaced, wholesale, by the
+   'note' machinery. See analyzers/sdmp/note.lisp"
+  #+ignore(when (eq coverage :one-edge-over-entire-segment)
     (let ((edge (edge-over-segment)))
-      #+ignore(edge-denotes-interesting-object edge))))
+      (edge-denotes-interesting-object edge))))
 
 (defun edge-denotes-interesting-object (edge)
   (declare (special category::parentheses category::name-word
