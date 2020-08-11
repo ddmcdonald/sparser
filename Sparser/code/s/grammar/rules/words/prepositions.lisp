@@ -190,6 +190,7 @@ these are really prepositions, and should function as such
 (define-preposition "in spite of") ;;in modifiers as a reflection-on
 (define-preposition "in terms of")
 (define-preposition "in the face of")
+(define-preposition "in light of")
 (define-preposition "in the light of")
 ;;(define-preposition "in the process of") ;; this is a meaningful NP in biology
 (define-preposition "in view of")
