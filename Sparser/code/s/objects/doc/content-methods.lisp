@@ -158,7 +158,7 @@
   (:documentation "Called by aggregate-terms to determine the name of
     the slot where we're going to store this item. Aggregate-terms manages
     the instance count on the item. That is problematic for mentions
-    since by definition each on is unique. To handle that we return
+    since by definition each one is unique. To handle that we return
     as a second value the individual that the mention is based on")
   (:method ((m discourse-mention))
     (let ((i (if (and (slot-boundp m 'ci)
@@ -168,7 +168,6 @@
       (values (aggregation-target i)
               i)))
   (:method ((i individual))
-    ;; Could also consider mutations, drugs, cell-lines, what else?
     (cond
       ((eq (itype-of i) (category-named 'bio-entity))
        'other)
@@ -197,14 +196,12 @@
       ((or (itypep i 'species)
            (and (itypep i 'organism)
                 (not (or (itypep i 'infectious-agent)
-                         ;; pathogens are not (always) infectious agents,  but for now...
                          (itypep i 'pathogen)))))
        'species)
       ((itypep i 'geographical-region) 'locations)
       ((and (get-tag :file-location (itype-of i))
             (eq :comlex (get-tag :file-location (itype-of i))))
        'COMLEX)
-      ;;((itypep i 'molecule) 'molecule)
       (T
        'other)))
   (:method ((cat referential-category))
@@ -272,8 +269,9 @@
    and return the corresponding 'short' (head) string"
   (let* ((m (car (third mention-entry)))
          (string (string-for-mention m)))
-    (unless string (break "no string for mention ~a" m)
-            (setq string "")) ;;// warn?
+    (unless string
+      (break "no string for mention ~a" m)
+      (setq string "")) ;;// warn?
     (trim-whitespace string)))
 
 
@@ -292,7 +290,7 @@
   
   (:method ((p paragraph))
     (declare (special *tts-after-each-section*))
-    (when (and (starts-at-pos p)(ends-at-pos p)) ;; patch for anomaly with David's new code
+    (when (and (starts-at-pos p) (ends-at-pos p))
       (let* ((content (contents p))
              (sentences (sentences-in-paragraph p)) ; list of sentence objects
              (start-index (pos-token-index (starts-at-pos p)))
