@@ -150,6 +150,16 @@ code is make-edge-over-abbreviation and its feeders. |#
   (eq :literal-in-a-rule (edge-right-daughter e)))
 
 
+(defgeneric edge-over-function-word? (edge)
+  (:documentation "Does this edge correspond to a function word,
+     i.e. does it directly dominate a word that was marked as
+     a function-word when it was defined.")
+  (:method ((n integer))
+    (edge-over-function-word? (edge# n)))
+  (:method ((e edge))
+    (let ((w (edge-left-daughter e)))
+      (when (word-p w)
+        (get-tag :function-word w)))))
 
 
 ;;;----------------------
