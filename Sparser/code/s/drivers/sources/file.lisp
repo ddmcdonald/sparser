@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "file"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   March 2020
+;;;  Version:   July 2020
 
 ;; initiated 2/91, added Analyze-text-from-file/at-filepos 12/14/94
 ;; 2/15/13 Folded in initializations from do-document-as-stream-of-files,
@@ -23,7 +23,7 @@
                                       echo
                                       (ext-format :utf-8)
                                       ((:trace traces-on) t)
-                                      (quiet nil)
+                                      quiet
                                       ((:skip ignore-errors?) t))
 
   "Opens the indicated file an passes it to analysis-core for parsing.
@@ -38,6 +38,8 @@
    its doing.
      :trace gates the display of a set of per-paragraph stats, notably this
    includes doing a tts to show what was parsed in the paragraph. 
+     :quiet turns off all normal during-parse printing such as segment
+   boundaries. Overrides trace so that end-of-paragraph printing is off.
      :skip enables the alternate parsing path for sentences that traps and
    reports errors when they occur rather than bring up the debugger."
   
