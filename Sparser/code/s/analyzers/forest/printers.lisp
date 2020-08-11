@@ -666,6 +666,10 @@ there were ever to be any.  ///hook into final actions ??  |#
 ;;; printing the words between two positions in the chart
 ;;;-------------------------------------------------------
 
+(defun edge-string (edge)
+  (terminals-in-segment/one-string (pos-edge-starts-at edge)
+                                   (pos-edge-ends-at edge)))
+
 (defun terminals-in-segment/one-string (starting-position ending-position)
   (let ((tokens
          (terminals-in-segment starting-position ending-position)))
