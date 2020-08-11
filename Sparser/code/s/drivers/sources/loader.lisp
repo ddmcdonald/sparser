@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:  March 2020
+;;;  Version:  August 2020
 
 ;; 1.1 (9/24/93 v2.3) broke out articles as their own directory
 ;;     (12/13) added [doc stream]
@@ -26,4 +26,5 @@
   (lload "source-drivers;scan-parsed-document")
   (lload "source-drivers;json-corpus-registry")
   (lload "source-drivers;reading-json")
-  (lload "source-drivers;driver"))
+  (lload "source-drivers;driver")
+  (lload "source-drivers;score"))
