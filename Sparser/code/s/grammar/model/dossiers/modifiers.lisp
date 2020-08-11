@@ -71,6 +71,7 @@
 (define-approximator/determiner "barely")
 (define-approximator/determiner "exactly") ;; not just a determiner..
 (define-approximator/determiner "just")
+(define-approximator/determiner "more than")
 (define-approximator/determiner "nearly") ;; could also be approx/adverbial. what to do for this type of "generic" modifier that can go before preps, adjs too?
 (define-approximator/determiner "precisely") ;;
 (define-approximator/determiner "roughly")
