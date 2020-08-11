@@ -70,6 +70,8 @@
 
 
 (defun note-relation (relation-name &rest args)
+  ;; Called from  individual relations (analyzer/sdmp/note-text-relations.lisp)
+  ;; such as note-in-segment-adgacences
   (let ((tr (text-relation-named relation-name)))
     (unless tr (error "No text-relation named ~a" relation-name))
     (let ((i (or (find-text-relation-instance tr args)

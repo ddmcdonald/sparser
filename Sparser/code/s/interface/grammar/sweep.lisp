@@ -84,7 +84,9 @@
 ;;;-----------------------------------
 
 (defun filter-list-of-items-for-relevance (list)
-  ;; different take on strip-model-descriptions
+  "Called by filter-for-relevant-mentions (in content-methods).
+   The list is the dedup'd sentence-mentions in a sentence,
+   and we collect individuals. Feeds into aggregate-terms"
   (loop for item in list
      when (relevant-type-of-individual item)
      collect item))
@@ -133,16 +135,16 @@
 
 (defparameter *names-of-irrelevant-to-dh-categories*
   '(
-    BIO-PAIR
-    BIO-USE
-    COPULAR-PREDICATION-OF-PP
-    EVENT-RELATION
-    PERCENT
-    POSITION-IN-A-SEQUENCE
-    RELATIVE-TIME
-    SEQUENCE
-    TIME-UNIT
-    WH-QUESTION
+    bio-pair
+    bio-use
+    copular-predication-of-pp
+    event-relation
+    percent
+    sequence
+    position-in-a-sequence
+    relative-time
+    time-unit
+    wh-question
     adverbial
     approximator
     be
@@ -157,8 +159,9 @@
     hyphenated-pair
     interlocutor
     knockout-pattern ; -/-
-    ;;linguistic -- kills items that inherit from has-location, etc.
-	;; remove "linguistic" as an ignored category, since too many items inherit from it, e.g. through has-location
+    ;;linguistic -- kills items that inherit from it
+    ;; remove "linguistic" as an ignored category, since too many items inherit from it,
+    ;; e.g. through has-location
     modality ; 'may', 'should'
     modifier
     number
@@ -227,7 +230,7 @@
 (defmethod collect-model ((c category)) nil) ;;`(,c))
 ;; anything else to be dropped on the floor?
 
-(defparameter *original-collect-mode-recursion-on-individuals* t)
+;;(defparameter *original-collect-mode-recursion-on-individuals* t)
 
 (defvar *categories-seen-by-collect-model* nil)
 (define-per-run-init-form
@@ -239,24 +242,36 @@
     Returns the list of bindings to use.")
   (:method ((i individual))
     ;; Evolve into eql signatures if this starts to get large
-    (let ((i-cat (cat-name (itype-of i)))
-          (bindings (indiv-binds i)))
+    (let* ((i-cat (cat-name (itype-of i)))
+           (bindings (indiv-binds i))
+           (redundant (redundant-bindings i i-cat)))
       (push i-cat *categories-seen-by-collect-model*)
-      (case i-cat
-        (company (break "company: ~a" i))
-        (otherwise
-         bindings)))))
+      (if redundant
+        (suppress-bindings bindings redundant)
+        bindings))))
+
+(defun redundant-bindings (i category-name)
+  "When we are tallying what kinds of individuals were encountered
+   in a document we get a skewed result if we also include normal
+   'parts' of this individuals. Returns a list of variables whose
+   bindings should be suppressed from a count, depending on the
+   category of the individual."
+  (labels ((find-var (name i)
+             "Return the specific lambda-variable object with
+            this name for the category of this individual"
+             (find-variable-for-category name i))
+           (map-names (list-of-names)
+             (loop for n in list-of-names collect (find-var n i))))
+    (case category-name
+      (company (map-names '(name)))
+      )))
 
 
 (defmethod collect-model ((i individual))
-  (declare (special category::number category::prepositional-phrase
-                    *original-collect-mode-recursion-on-individuals*))
-  
+
   (unless (gethash i *individuals-seen*)
     
-    (let ((bindings (if *original-collect-mode-recursion-on-individuals*
-                      (indiv-binds i)
-                      (filter-bindings-by-category i)))
+    (let ((bindings (filter-bindings-by-category i))
           objects )
       
       (push (if (itypep i category::number)
@@ -270,38 +285,18 @@
         (let* ((var (binding-variable b))
                (var-name (var-name var))
                (value (binding-value b)))
-          (declare (special var var-name value))
           (unless (or (memq var-name '(category trailing-parenthetical))
                       (typep value 'mixin-category)) ;; has-determiner
             (typecase value
               (individual
-               (if *original-collect-mode-recursion-on-individuals*
-                 (cond
-                   ;;((itypep value 'unclear) nil)
-                   ((itypep value category::prepositional-phrase)
-                    (cond ((value-of 'pobj value)
-                           (push (list var-name
-                                       (collect-model-description (value-of 'pobj value)))
-                                 objects))
-                          ((value-of 'comp value)
-                           (push (list var-name
-                                       (collect-model-description (value-of 'comp value)))
-                                 objects))))
-                   ((itypep value 'protein-family) ;; no longer use bio-family
-                    (push (list var-name value)
-                          objects))
-                   (t
-                    (push (list var-name (collect-model value))
-                          objects)))
-                 (else
-                   (let ((interior-objects
-                          (collect-from-individual i var-name value)))
-                     (loop for o in interior-objects
-                        do (push o objects))))))
+               (let ((interior-objects
+                      (collect-from-individual i var-name value)))
+                 (loop for o in interior-objects
+                    do (push o objects))))
               (number)
               (list (push (list var-name (list :list value))
                           objects))
-              (category ;; is this right?
+              (category
                (push `(,var-name ,value) objects))
               (lambda-variable)
               (symbol)
