@@ -629,7 +629,7 @@
     :binds ((to-be biological)
             (manner manner))
     :realization
-    (:verb "identify" ;; keyword: ENDS-IN-ED 
+    (:verb "identify"
 	   :noun "identification"
 	   :etf (svo-passive)
            :as to-be
