@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2010-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2010-2013,2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model/core/companies/"
-;;;  version:  1.3 August 2013
+;;;  version:  August 2020
 
 ;; initiated 5/22/93 v2.3; changed index, added print routine 6/7. Broke that out
 ;; as its own file 11/23/94.  5/3/95 added Define-company. 5/22 tweeked
@@ -30,7 +30,6 @@
 ;;; object
 ;;;--------
 
-
 (define-category  company
   :instantiates self
   :specializes named-object
@@ -44,10 +43,16 @@
                         :reclaim reclaim/company))
 
 
-(define-autodef-data 'company
-  :display-string "Company"
-  :not-instantiable t )
-
+(define-category company-component
+  :specializes company
+  :instantiates nil
+  :documentation "Covering category for all the things
+ a company could have: subsidiaries, divisions, (mfg) plants,
+ office buildings, headquarters, investors, advisors, shareholders,
+ C-suite officers, directorys, and so on. These can be used
+ as metonymic references to the company itself, so we let the
+ 'company' types pass through. In a properly fleshed out
+ semantic model we would include a back-pointer here")
 
 
 ;;;--------------------------------------------
@@ -264,6 +269,11 @@
 
 
     
+
+(define-autodef-data 'company
+  :display-string "Company"
+  :not-instantiable t )
+
 
 
 

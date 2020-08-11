@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2005,2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2016,2020  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "board of directors"
 ;;;   Module:  "model;sl:pct:"
-;;;  version:  April 2016
+;;;  version:  August 2020
 
 ;; initiated 10/7/94. 1st version finished 10/17. 3/16/05 Gave it some
 ;; realizations, working towards getting a psi out of "the board" when
@@ -13,9 +13,7 @@
 
 
 (define-category  board-of-directors
-  :specializes title
-  ;; It's a commitee that's a standard part of most any company
-  ;; but we don't have anything like that, so this will do now.
+  :specializes company-component
   :instantiates self
   :binds ((company . company))
   :index (:key company)
