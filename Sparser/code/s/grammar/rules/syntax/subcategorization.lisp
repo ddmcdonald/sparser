@@ -135,8 +135,6 @@
 ;;; assignments and access
 ;;;------------------------
 
-
-
 (defun filter-patterns (item &optional label)
   "Retrieve the subcategorization patterns of 'item', then filter them
  to collect all the patterns that have the same label as 'label'.
@@ -244,7 +242,6 @@
                 (satisfies-subcat-restriction? val (car sp))
               collect sp))))
         
-
 
 (defun make-subcategorization (category slots)
   "Make and install a subcategorization frame for a category."
@@ -361,8 +358,8 @@
     (apply #'decode-subcategorization-parameter-list sf category parameter-plist)))
 
 (defun decode-subcategorization-parameter-list (sf category &key prep)
+  "Parse the content and stash it in the subcat frame ('sf') structure."
   (declare (ignore category)) ;; switch category when prep used
-  "Parse the content and stash it in the sf structure."
   (when prep
     (setf (bound-prepositions sf) `(,prep)))
   sf)
@@ -450,7 +447,6 @@
     (let ((sc (get-subcategorization word)))
       (when sc
         (binds-preposition? sc prep))))
-
   (:method ((sc subcategorization-frame) (prep polyword))
     (let ((preps (bound-prepositions sc)))
       (when preps
@@ -461,6 +457,7 @@
         (memq prep preps)))))
 
 ;; Strange case -- "treated with or without ..." in ASPP2
+
 
 ;;;------------------
 ;;; tailored queries
@@ -627,42 +624,46 @@
                                 (resolve (string-downcase prep)))
                               variable))))
 
-(defmethod subject-variable (label)
-  (declare (ignore label)))
-(defmethod subject-variable ((e edge))
-  (subject-variable (edge-referent e)))
-(defmethod subject-variable ((c category))
-  (find-subcat-variable :subject (get-ref-subcategorization c)))
-(defmethod subject-variable ((i individual))
-  (find-subcat-variable :subject i))
+(defgeneric subject-variable (label)
+  (:method (label)
+    (declare (ignore label)))
+  (:method ((e edge))
+    (subject-variable (edge-referent e)))
+  (:method ((c category))
+    (find-subcat-variable :subject (get-ref-subcategorization c)))
+  (:method ((i individual))
+    (find-subcat-variable :subject i)))
 
-(defmethod object-variable (label)
-  (declare (ignore label)))
-(defmethod object-variable ((e edge))
-  (object-variable (edge-referent e)))
-(defmethod object-variable ((c category))
-  (find-subcat-variable :object (get-ref-subcategorization c)))
-(defmethod object-variable ((i individual))
-  (find-subcat-variable :object (get-ref-subcategorization i)))
+(defgeneric object-variable (label)
+  (:method (label)
+    (declare (ignore label)))
+  (:method ((e edge))
+    (object-variable (edge-referent e)))
+  (:method ((c category))
+    (find-subcat-variable :object (get-ref-subcategorization c)))
+  (:method ((i individual))
+    (find-subcat-variable :object (get-ref-subcategorization i))))
 
 
-(defmethod object-variables (label)
-  (declare (ignore label)))
-(defmethod object-variables ((e edge))
-  (object-variables (edge-referent e)))
-(defmethod object-variables ((c category))
-  (find-subcat-variables :object (get-ref-subcategorization c)))
-(defmethod object-variables ((i individual))
-  (find-subcat-variables :object (get-ref-subcategorization i)))
+(defgeneric object-variables (label)
+  (:method (label)
+    (declare (ignore label)))
+  (:method ((e edge))
+    (object-variables (edge-referent e)))
+  (:method ((c category))
+    (find-subcat-variables :object (get-ref-subcategorization c)))
+  (:method ((i individual))
+    (find-subcat-variables :object (get-ref-subcategorization i))))
 
-(defmethod thatcomp-variable (label)
-  (declare (ignore label)))
-(defmethod thatcomp-variable ((e edge))
-  (thatcomp-variable (edge-referent e)))
-(defmethod thatcomp-variable ((c category))
-  (find-subcat-variable :thatcomp (get-ref-subcategorization c)))
-(defmethod thatcomp-variable ((i individual))
-  (find-subcat-variable :thatcomp (get-ref-subcategorization i)))
+(defgeneric thatcomp-variable (label)
+  (:method  (label)
+    (declare (ignore label)))
+  (:method ((e edge))
+    (thatcomp-variable (edge-referent e)))
+  (:method ((c category))
+    (find-subcat-variable :thatcomp (get-ref-subcategorization c)))
+  (:method ((i individual))
+    (find-subcat-variable :thatcomp (get-ref-subcategorization i))))
 
 (defmethod complement-variable ((c category))
   (get-tag :complement-variable c))
@@ -737,9 +738,6 @@
 (defun save-cat-string (cat cat-string)
   (push cat-string (gethash cat *ref-cat-text*)))
 
-(defun edge-string (edge)
-  (terminals-in-segment/one-string (pos-edge-starts-at edge)
-                                   (pos-edge-ends-at edge)))
 
 (defun subcat-info (&optional (stream t))
   ;; Prints out the subcatgorization infomation collected by
@@ -767,7 +765,6 @@
       (format stream ")"))
     ;;(format #'(lambda (cat strings)(pprint (list (cat-name cat) strings))) *ref-cat-text*)
     ))
-
 
 
 ;;;---------------------------------------------
@@ -815,6 +812,7 @@
                        :if-does-not-exist :create)
       (np missing s))))
   
+
 
 ;;;-----------------------------------------------------------
 ;;; subcategorization tests / checks from syntactic functions
@@ -908,6 +906,7 @@
                      (> (value-of 'value item) 10))))
        (not (itypep item 'ordinal ))))
 
+
 (defun satisfies-subcat-restriction? (item pat-or-v/r)
   "Does the individual 'item' satisfy the type restriction specified in this
    subcat pattern. There are some general cases (e.g. pronouns) where we ignore
@@ -924,18 +923,12 @@
              pat-or-v/r))
         (source (when (subcat-pattern-p pat-or-v/r) (subcat-source pat-or-v/r)))
         (var (when (subcat-pattern-p pat-or-v/r) (subcat-variable pat-or-v/r)))
-        (override-category (unless (symbolp item) ;; happens for '*lambda-var*
+        (override-category (unless (symbolp item) ;; e.g. '*lambda-var*
                              (override-label (itype-of item)))))
     (when (and *trivial-subcat-test*
                (note-failed-tests item restriction))
       (return-from satisfies-subcat-restriction? t))
-    #+ignore
-    (when (and var (eq 'agent (var-name var))
-               (eq 'bio-entity (cat-name (itype-of item))))
-      (unless *subcat-test*
-        (format t "accepting ~s as AGENT in ~s~%"
-                item pat-or-v/r))
-      (return-from satisfies-subcat-restriction? t))
+
     (flet ((subcat-itypep (item category)
              ;; For protein-families and such that are re-written
              ;; as a more general catgory (e.g. protein). There's no
@@ -976,7 +969,8 @@
                      restriction))))
         ((category-p restriction)
          (subcat-itypep item restriction))
-        ((null restriction) t)
+        ((null restriction)
+         t)
         ((symbolp restriction) ;; this is the case for :prep subcat-patterns
          nil)
         (t (error "Unexpected type of subcat restriction: ~a"
@@ -1067,7 +1061,7 @@
          (subcat-patterns (known-subcategorization? head))
          (of-object
           (and  (equalp (pname label) "of")
-                *left-edge-into-reference* ;; it has a value
+                *left-edge-into-reference* ;; it has a non-nil value
                 (member (form-cat-name *left-edge-into-reference*)
                         '(np ng vg+ing))
                 (loop for pat in subcat-patterns
@@ -1100,6 +1094,7 @@
                 (warn "ambiguous-of-object for ~s attaching to ~s in ~s"
                       item head (current-string))))
           (setq label :object)))
+    
     (when subcat-patterns
       (setq *label* label ;; global scope to aid debugging
             *head* head)
@@ -1139,9 +1134,12 @@
                        (define-disjunctive-lambda-variable variable category)))
                     ;; else
                     (define-disjunctive-lambda-variable variable category))))
+        
         (when (and variable *subcat-use* (not *subcat-test*))
           (record-subcat-use label (itype-of head) variable item))
+        
         variable ))))
+
 
 (defun find-subcat-labels (item var head)
   "Return the syntactic labels associated with a variable bound to an item."
