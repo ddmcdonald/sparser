@@ -13,6 +13,9 @@
 ;;; Example texts
 ;;;---------------
 
+;;; Washingtom Post Cov newsletter 8/12/20
+"The amount of viral particles someone is exposed to is called the viral dose. Scientists have known for decades that exposure to a small amount of any given virus is easier for our immune systems to overcome than exposure to a large amount. It's hard to research exactly how high a dose of the coronavirus it takes to make someone severely ill, since intentionally exposing humans to it would be unethical."
+
 #| https://www.washingtonpost.com/politics/2020/08/03/most-dangerous-false-positive-trumps-ongoing-insistence-that-pandemic-is-under-control
 
 How did Italy, France and Spain do? After seeing initial surges in cases (and, sadly, in deaths), they managed to get the virus under control. That’s the same pattern that was seen in New York, but not in the United States broadly or in a number of large states.
