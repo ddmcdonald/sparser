@@ -10,6 +10,7 @@
 (defparameter *score-json* "~/temp/pre_remote_dicts/"
   "Directory that holds the JSON files")
 
+;; (collect-score-json)  <--- run before anything else
 (defun collect-score-json (&optional (dir *score-json*))
   "Read out the directory into the standard global"
   (let ((pathnames
@@ -34,12 +35,27 @@
 (defvar *sequence-of-block-texts* nil "cache for debugging by line number")
 (defvar *raw-paragraphs* nil)
 (defvar *ready-paragraphs* nil)
+(defvar *score-sections* nil)
 (defvar *s-sexp* nil)
 
 
 (defvar *pargraph-list* *raw-paragraphs*)
 (defun para# (n &optional set-para-list)
   (nth n *pargraph-list*))
+
+(defun blocks-include (title paragraph-list)
+  "Do any of the typed paragraphps in the list have this title?
+   Can noyt be used on text blocks."
+  (loop for p in paragraph-list
+     when (and (typep p 'score-paragraph)
+               (eq (flag p) titlr))
+     return p))
+
+(defun blocks-include-any (type-name paragraph-list)
+  "Are any of the blocks (paragraphs) paragraphs of this type"
+  (loop for p in paragraph-list
+     when (typep p type-name)
+     return p))
 
 
 ;;--- Principal entry point when all working
@@ -61,10 +77,11 @@
         (setf (name article) (intern handle (find-package :sparser)))
         (setf (article-source article) pathname)
         (sort-out-score-paragraphs article sexp)
-#|      (run-json-article article
-                          :quiet nil
+        (run-json-article article
+                          :quiet nil ; show paragraph chunking
                           :stats t
-                          )|#
+                          :show-sect t
+                          )
         article))))
 
 (defun sort-out-score-paragraphs (article sexp)
@@ -85,6 +102,9 @@
 
     (collect-score-json-paragraphs sexp) ;; -> *raw-paragraphs*
     ;; (print-raw-paragraphs)
+
+    (unless (or (blocks-include-any 'action-paragraph *raw-paragraphs*)
+                action-paragraphs)
 #|
     (setq action-paragraphs
           (loop for p in raw-paragraphs
@@ -92,9 +112,9 @@
              collect p))
     (if action-paragraphs
       (clean-score-paragraphs action-paragraphs) ;; -> *ready-paragraphs*
-      (setq *ready-paragraphs* *raw-paragraphs*))
+      (setq *ready-paragraphs* *raw-paragraphs*))|#
 
-    (aggregate-score-para-into-sections *ready-paragraphs* article) |#
+      (aggregate-score-para-into-sections *raw-paragraphs* article))
 
     article ))
 
@@ -121,7 +141,6 @@
     p))
 
 
-
 (defun collect-score-json-paragraphs (sexp)
   "Map through the sexp of the text extracted from each block
    and wrap it in the appropriate type of paragraph.
@@ -133,6 +152,8 @@
               collect (make-score-paragraph text))))
       (setq *raw-paragraphs* paragraphs)
       (length paragraphs))))
+
+
 
 (defun clean-score-paragraphs (action-paragraphs)
   "Extract the string to delete from the action paragraphs
@@ -165,60 +186,89 @@
   "Loop through the list of paragraph objects and see if we can
    identify larger-scale section-type structure. We also identify
    the title, keywords, etc. and directly fill the slots on the article."
- 
+  ;;/// ignoring keyword, authors and other front matter for now
   (let ((index -1)
+        (max-index (length paragraphs))
         index-after-title
-        index-first-section
-        p )
-    ;; First collect the title, or accept the 1st line as the title
+        first-section-head
+        p  section sections  index-of-next  )
+    
+    ;; First collect the first tagged title para, or accept the 1st line as the title
     (setq index-after-title (find-a-title-para paragraphs article))
 
-   
-  
+    ;; From the index of the title, walk through the list of paragraphs
+    ;; until the first major heading is reached.
+    (setq first-section-head (index-of-next-header index-after-title paragraphs))
 
-      ;; From the block index of the title, walk the index up
-      ;; until the first major heading is reached.
-    (setq first-section-head (index-of-next-header index-after-title))
-      
-;;############################
-      ;; From that section head, loop through the rest of the
-      ;; paragraphs, collecting headings and accumulated paragraphs.
-      ;; Can just use indexes for first pass.
+    ;; From that section head, loop through the rest of the
+    ;; paragraphs. Creat a new section at each heading whose children
+    ;; are the paragraphs from there to just before the next heading
+    (setq sections
+          (collect-all-the-sections first-section-head paragraphs))
+    (knit-sections sections article)
+    (setq *score-sections* sections)
 
-      ;; For each section heading + paragraphs, make the section object.
-      ;; knit together the paragraphs, and add the section to the article
+    (setf (children article) sections)
+    article ))
 
-    ))
+(defun collect-all-the-sections (starting-at paragraph-list)
+  "Walk through the paragraphs starting at a heading, and collect successive
+   sections through to the end. Caller will take care of kniting them together"
+  (let ((max-index (1- (length paragraph-list)))
+        sections section header-index index-of-next )
+    (setq header-index starting-at)
+    (loop
+       (multiple-value-setq (section index-of-next)
+         (collect-next-section header-index paragraph-list))
+       (push section sections)
+       (when (>= index-of-next max-index)
+         (return))
+       (setq header-index index-of-next))
+    (nreverse sections)))
+
+(defun collect-next-section (header-index paragraph-list)
+  "Collect the paragraphs from the starting para (and header)
+   up to but not including the next header (or the end of the
+   list of paragraphs). Make the section object based on the header paragraph
+   and set the accumulated paragraphs to be its children and knit them
+   together."
+  (let* ((header-para (nth header-index paragraph-list))
+         (index-of-next (index-of-next-header (1+ header-index) paragraph-list))
+         (start (1+ header-index))
+         (end (1- index-of-next)))
+    (let* ((section-paras
+            (loop for i from start to end
+               collect (nth i paragraph-list)))
+           (s (make-instance 'section))
+           (name (flag header-para))) ; e.g. :results
+      (setf (name s) name)
+      (setf (children s) section-paras)
+      (knit-paragraphs section-paras s) ; set previous, next, parent pointers
+      (values s
+              index-of-next))))
 
 (defun index-of-next-header (start paragraphs)
   "Walk the index across successive paragraphs until
-   a major header is reached. Return the value of the index"
+   a major header is reached. Return the value of the index.
+   When we're getting to the end of the list of pagagraphs
+   we don't expect it to end in a header paragraphs, but we
+   check for that"
   (let* ((index start)
+         (max-index (length paragraphs))
          (para (nth index paragraphs)))
     (until (major-section? para)
         index
       (format t "~&~a ~a" index para)
       (incf index)
+      (when (>= index max-index)
+        (return-from index-of-next-header (1- index)))
       (setq para (nth index paragraphs)))))
-
-(defun collect-next-section (header-index paragraph-list)
-  "Collect the paragraphs from the starting para (and header)
-   up to but not including the next header (or the end of the
-   list of paragraphs)"
-  (let* ((index-of-next (index-of-next-header (1+ header-index) paragraph-list))
-         (start header-index)
-         (end (index-of-next))
-    (let ((section-paras
-           (loop for i from start to end
-              collect (nth i paragraph-list))))
-
-
-
-      (values index-of-next
-              section-paras))))
 
 
 (defun find-a-title-para (paragraphs article)
+  "Identify and set the title of the article.
+   Return the index of the paragraph that comes just after the title"
+  ;;/// doesn't independently account for prior running heads and such
   (flet ((title-para? (p)
            (when (and (typep p 'heading-paragraph)
                       (memq (flag p) '(:title :short-title)))
@@ -226,9 +276,11 @@
              p)))
     (if (title-para? (nth 0 paragraphs))
       (then
-        (setf (title article (content-string p)))
+        (setf (title article) (content-string (nth 0 paragraphs)))
         (if (title-para? (nth 1 paragraphs)) 2 1))
-      (else ;; take the first regular line to be the title
+      (else
+        (setf (title article) (content-string (first paragraphs)))
+        1
         ))))
 
 
@@ -322,6 +374,7 @@
     (format stream "~a..." (prefix p))))
 
 
+   
 ;;;--------------------------
 ;;; text -> paragraph object
 ;;;--------------------------
@@ -389,8 +442,9 @@
           (otherwise
            (setq p (make-instance
                     'heading-paragraph :flag keyword)))))
-    p))
+      p )))
 
+ 
 (defun likely-short-header (length text)
   "A (sub)section header is a label that doesn't decompose into
    useful parts that we'd want to model independently of its identify.
@@ -498,8 +552,8 @@
 (defvar *current-score-json* nil "cache the one we're working on")
 
 (defun locate-blocks-in-json (sexp)
-  "Walk through the sexp version of the JSON and return
-   the succession of text bocks as a list of sexp"
+  "Walk through the sexp version of the full JSON expression
+    and return the succession of text bocks as a list of sexp"
   (setq *current-score-json* sexp)
   (let ((sub1 (cadr (assq :paper--content sexp))))
     (let ((blocks (cdr sub1)))
