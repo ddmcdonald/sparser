@@ -126,6 +126,19 @@
         (setf (parent a) section)
         (setf (parent b) section))))
 
+(defun knit-sections (list article)
+  (if (null (cdr list))
+    (let ((s (car list)))
+      (setf (parent s) article))
+    (do ((a (car list) (car rest))
+         (b (cadr list) (cadr rest))
+         (rest (cdr list) (cdr rest)))
+        ((null b))
+      (setf (next a) b)
+      (setf (previous b) a)
+      (setf (parent a) article)
+      (setf (parent b) article))))
+
 
 ;;--- top-level tags
 
