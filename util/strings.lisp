@@ -256,6 +256,32 @@
                 (break-up2 string m (1+ n) nmax (not quotep) delim-chars))
                (t (break-up2 string m (1+ n) nmax quotep delim-chars)))))))
 
+
+
+;;;------------------------------------------------
+;;; from Peter Clark's open-source utilities in KM
+;;;------------------------------------------------
+
+(defun break-up-at (string &key delimeter-chars)
+  (break-up-at0 delimeter-chars string 0 0 (length string) 'positive))
+
+(defun break-up-at0 (delimeter-chars string m n nmax polarity)
+  (cond
+    ((= n nmax) (list (subseq string m n)))             ; reached the end.
+    (t (let ( (curr-char (char string n)) )
+         (cond ((or (and (eq polarity 'positive)
+                         (member curr-char delimeter-chars :test #'char=))
+                    (and (eq polarity 'negative)
+                         (not (member curr-char delimeter-chars :test #'char=))))
+                (cons (subseq string m n)
+                      (break-up-at0 delimeter-chars string n n nmax
+                                    (cond ((eq polarity 'positive) 'negative) (t 'positive)))))
+               (t (break-up-at0 delimeter-chars string m (1+ n) nmax polarity)))))))
+
+
+
+
+
 ;;; ======================================================================  
 #|
 (fold <string> <n>): Break a long string up after approximately <n> characters,

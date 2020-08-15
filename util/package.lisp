@@ -12,7 +12,6 @@
            #:d
            #:then #:else
            #:reintern-symbols
-           #:break-up-at
            #:defobject
            #:until
            #:dbind
@@ -43,6 +42,7 @@
            #:take-first-n
            #:singletonp
            #:deep-copy
+
            #:flatten #:flattenc
            #:all-the-same
            #:invert-type
@@ -67,6 +67,7 @@
            #:string-to-list
            #:new-scan-to
            #:break-up
+           #:break-up-at
            #:fold
 
            ;; hash-tables
