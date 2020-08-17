@@ -7,40 +7,66 @@
 
 (in-package :sparser)
 
-(defparameter *score-json* "~/temp/pre_remote_dicts/"
-  "Directory that holds the JSON files")
-
-;; (collect-score-json)  <--- run before anything else
-(defun collect-score-json (&optional (dir *score-json*))
-  "Read out the directory into the standard global"
-  (let ((pathnames
-         (directory (merge-pathnames "*.json" dir))))
-    (setf *json-files-to-read* pathnames)
-    (length pathnames)))
-
-(defparameter *bad-score-files*
-  '("Alyami_covid_yl789" ; Unable to encode character 56319 as :utf-8
-    "Bello-Chavolla_covid_rb96l" ; #11 Error during string-to-utf8: Unable to encode character 54 as :utf-8.
-    ))
-
 #| How 2's
 
  (collect-score-json) ; first prime the pump -- 100 articles
+
+;; The driver
  (run-nth-score-article 9)
- (loop for n from 0 to (length *sequence-of-block-texts*) do (test-sp n))
- (print-raw-paragraphs)
+   -- Converts the JSON to our document structure then calls run-json-article,
+     with quiet off and show-sect on so you can see the text. Displays the CoV stats
+
+;; Looking at intermdiate results
+
+(print-extracted-block-texts)
+  -- numbers and prints out every the text from every block in the document.
+   Most useful if you've got your REPL in truncated mode
+
+(print-raw-paragraphs)
+  -- same idea for the specialized paragraph objects that the blocks' text
+   is converted to. Very useful for debugging mistaken assumptions about
+   the structure of a document and for extending the vocabulary ok known labels
 |#
 
+;;;-----------------------------
+;;; State globals and utilities
+;;;-----------------------------
 
-(defvar *sequence-of-block-texts* nil "cache for debugging by line number")
-(defvar *raw-paragraphs* nil)
-(defvar *ready-paragraphs* nil)
-(defvar *score-sections* nil)
-(defvar *s-sexp* nil)
+(defparameter *score-json* "~/temp/pre_remote_dicts/"
+  "Directory that holds the JSON files")
 
+(defvar *sequence-of-block-texts* nil
+  "Set by identify-score-block-texts, holds the list of the texts
+   from each block in the JSON. Listed by print-extracted-block-texts")
+
+(defvar *raw-paragraphs* nil
+  "Populated in collect-score-json-paragraphs in calls to make-score-paragraph
+   on the text directly lifted from the blocks. These are the initial paragraphs
+   before any text filter is done to them. Listed by print-raw-paragraphs")
+
+(defvar *ready-paragraphs* nil
+  "Set in sort-out-score-paragraphs, these have been filtered for null
+   or action paragraphs and are the input to the section-making procedure")
+
+(defvar *score-sections* nil
+  "Set by aggregate-score-para-into-sections after they've been knit together
+   but before they're added to the article")
+
+
+;;--- used by test-sp
+(defvar p-text "" "cache the sexp of the block we're working on")
+(defvar *p* nil "cache the paragraph we've constructed")
+
+(defvar *s-sexp* nil
+  "Useful when debugging. Set in nth-json-sexp to the decoding of
+   the whole JSON file")
 
 (defvar *pargraph-list* *raw-paragraphs*)
 (defun para# (n &optional set-para-list)
+  "Retrieve the nth paragraph from the specified list.
+   Note that all the lists in this code are zero-based except
+   for accessing a the file from the temp directory where we
+   add one before accessing"
   (nth n *pargraph-list*))
 
 (defun blocks-include (title paragraph-list)
@@ -58,7 +84,28 @@
      return p))
 
 
-;;--- Principal entry point when all working
+;; (collect-score-json)  <--- run before anything else
+(defun collect-score-json (&optional (dir *score-json*))
+  "Read out the directory into the standard global"
+  (let ((pathnames
+         (directory (merge-pathnames "*.json" dir))))
+    (setf *json-files-to-read* pathnames)
+    (length pathnames)))
+
+(defparameter *bad-score-files*
+  '("Alyami_covid_yl789" ; Unable to encode character 56319 as :utf-8
+    "Bello-Chavolla_covid_rb96l" ; #11 Error during string-to-utf8: Unable to encode character 54 as :utf-8.
+    "Gelfand_covid_n8dr9" ; #34 can't encode 56319
+    "Kachanoff_covid_gy9n7" ; 47 ditto
+    "Wise_covid_4qm4q" ; 96 ditto. Also 5741 -- caught by tokenizer so where's the complaint?
+    )
+  "The reader chokes when reading these file, how to fix (or even debug) this
+   isn't clear yet, so simplest to just ignore them")
+
+
+;;;--------
+;;; driver
+;;;--------
 
 (defun run-nth-score-article (n)
   "Process the nth ('1' -> nth of 0) json article in the directory"
@@ -77,12 +124,13 @@
         (setf (name article) (intern handle (find-package :sparser)))
         (setf (article-source article) pathname)
         (sort-out-score-paragraphs article sexp)
-        (run-json-article article
-                          :quiet nil ; show paragraph chunking
-                          :stats t
-                          :show-sect t
-                          )
-        article))))
+        (when (children article) ; could have aborted in para. construction
+          (run-json-article article
+                            :quiet nil ; show paragraph chunking
+                            :stats t
+                            :show-sect t ; crude way to separate the paragraph text
+                            )
+          article)))))
 
 (defun sort-out-score-paragraphs (article sexp)
   "Pull the paragraph text out of the JSON blocks. Type them and filter
@@ -103,10 +151,12 @@
     (collect-score-json-paragraphs sexp) ;; -> *raw-paragraphs*
     ;; (print-raw-paragraphs)
 
-    (unless (or (blocks-include-any 'action-paragraph *raw-paragraphs*)
-                action-paragraphs)
-#|
-    (setq action-paragraphs
+    (if (or (blocks-include-any 'action-paragraph *raw-paragraphs*)
+            action-paragraphs)
+      (then
+        (format t "~&~%Ignoring article because running-head aren't implemented~%")
+        (return-from sort-out-score-paragraphs nil))
+#|  (setq action-paragraphs
           (loop for p in raw-paragraphs
              when (eq (type-of p) 'action-paragraph)
              collect p))
@@ -114,9 +164,9 @@
       (clean-score-paragraphs action-paragraphs) ;; -> *ready-paragraphs*
       (setq *ready-paragraphs* *raw-paragraphs*))|#
 
-      (aggregate-score-para-into-sections *raw-paragraphs* article))
-
-    article ))
+      (else
+        (aggregate-score-para-into-sections *raw-paragraphs* article)
+        article ))))
 
 
 (defun identify-score-block-texts (sexp)
@@ -133,7 +183,8 @@
 (defun tacit-running-head? (text-line)
   "Is this line the sort of thing that we'd expect to find as running
    header or maybe footer?"
-  (string-equal "medRxiv" (subseq text-line 0 7)))
+  (when (> (length text-line) 7) ;; line might have just one character on it
+    (string-equal "medRxiv" (subseq text-line 0 7))))
 
 (defun make-running-head (text-line)
   (let ((p (make-instance  'action-paragraph :flag :running-head)))
@@ -152,7 +203,6 @@
               collect (make-score-paragraph text))))
       (setq *raw-paragraphs* paragraphs)
       (length paragraphs))))
-
 
 
 (defun clean-score-paragraphs (action-paragraphs)
@@ -179,7 +229,6 @@
                 collect (remove-specified-text p (car filter-strings)))))
         (setq *ready-paragraphs* clean)
         (length clean)))))
-
 
 
 (defun aggregate-score-para-into-sections (paragraphs article)
@@ -210,6 +259,7 @@
 
     (setf (children article) sections)
     article ))
+
 
 (defun collect-all-the-sections (starting-at paragraph-list)
   "Walk through the paragraphs starting at a heading, and collect successive
@@ -256,13 +306,18 @@
   (let* ((index start)
          (max-index (length paragraphs))
          (para (nth index paragraphs)))
-    (until (major-section? para)
-        index
-      (format t "~&~a ~a" index para)
-      (incf index)
-      (when (>= index max-index)
-        (return-from index-of-next-header (1- index)))
-      (setq para (nth index paragraphs)))))
+    (if (and (null para)
+             (= index max-index))
+      ;; we were called at the moment the outer walk had reached the end
+      (1- index)
+      (else
+        (until (major-section? para)
+            index
+          (format t "~&~a ~a" index para)
+          (incf index)
+          (when (>= index max-index)
+            (return-from index-of-next-header (1- index)))
+          (setq para (nth index paragraphs)))))))
 
 
 (defun find-a-title-para (paragraphs article)
@@ -317,9 +372,9 @@
        do (format t "~&~a: ~a" (incf count) p))))
 
 
-(defvar p-text "" "cache the sexp of the block we're working on")
-(defvar *p* nil "cache the paragraph we've constructed")
 (defun test-sp (n) ; 'test score paragraph
+  "Call the paragraph maker on the designated json text block.
+   Stash text and paragraph on globals"
   (setq p-text (nth n *sequence-of-block-texts*))
   (format t "~&~a: ~s" n p-text)
   ;;(format t "~%~a chars" (length p-text))
@@ -331,8 +386,6 @@
   
 
 
-
-
 ;;;-------------------------
 ;;; subclasses of paragraph
 ;;;-------------------------
@@ -341,19 +394,37 @@
   ((flag :initarg :flag :accessor flag)
    (arg-alist :initform nil :accessor arg-alist))
   (:documentation "Superclass to group the paragraphs that
-    are used for side-effects during document construction"))
+    are used to distinguish the different sorts of JSON block texts
+    so we can write our sweeping routines in terms of encountering
+    objects of a particular type. Parsing is transparent to these classes
+    since it works off the inherited content-string field.
+    The 'arg-alist' is a misnomer that should be changed since
+    its actually plist accessed via member. The 'type' of section is
+    recorded in the flag field"))
 
 (defun get-sp-arg (p keyword) ; 'get score paragraph argument'
   (cadr (memq keyword (arg-alist p))))
 
 (defclass heading-paragraph (score-paragraph)
   ()
-  (:documentation ""))
+  (:documentation "These are for anything that names a segment of the article.
+    Some of them are 'major' (see major-section?) always are in the own blocks.
+    Other kinds of headings like 'Figure' or 'Table' may or may not have their
+    content in the same block. Everything in the list *score-sect-titles* is
+    going to be packaged in this class of paragraph"))
+
+(defclass subheading-paragraph (score-paragraph)
+  ()
+  (:documentation "Like headings but not predefined (or remembered), since they
+    resemble headings but with out seeing the original article or believing in
+    accurate scraping of the PDFs we're just taking note. For parsing these
+    get rolled into the section like regular text"))
 
 (defclass action-paragraph (score-paragraph)
   ()
   (:documentation "Assembly level should take some action,
- but otherwise this isn't a content paragraph"))
+    but otherwise this isn't a content paragraph. So far these are just
+    used to flag headers and other things that need to be removed."))
 
 (defclass null-paragraph (score-paragraph)
   ()
@@ -363,10 +434,11 @@
   (print-unreadable-object (p stream :type t)
     (format stream "~a" (flag p))))
 
+
 (defclass text-paragraph (paragraph)
   ((prefix :initarg :s :accessor prefix))
   (:documentation "Since the printer for paragraphs proper used
- chart positions and TOC, we need something to use in debugging
+ chart positions and TOC, we need a different one here to give us something 
  that we can trace."))
 
 (defmethod print-object ((p text-paragraph) stream)
@@ -393,14 +465,18 @@
    paragraphs to impose a reasonable document structure."
   (let ((length (length text))
         p )
+    (when (< length 2)
+      (setq p (make-instance 'null-paragraph :flag :too-short))
+      (setf (content-string p) text)
+      (return-from make-score-paragraph p))
     (multiple-value-bind (keyword residue)
         (detect-score-title text)
       (unless keyword
         ;; it's either vanila text or a new short heading
         (if (likely-short-header length text)
           (then
-            (setq p (make-instance 'title-text)) ;;/// correct parsing behavior?
-            (setf (content-string p) text))
+            (setq p (make-instance 'subheading-paragraph
+                                   :flag text)))
           (else
             (setq p (make-instance 'text-paragraph))
             (setf (content-string p) text)
@@ -417,7 +493,7 @@
            (setf (arg-alist p)
                  `(:header ,residue)))
           
-          ((:table :figure :model :study)
+          ((:table :figure :model :study :supplementary-materials)
            (setq p (make-instance 'heading-paragraph :flag keyword))
            (let ((index-of-space (position #\space text)))
              (when index-of-space
@@ -497,6 +573,7 @@
     "Method"
     "Method and Results"
     "Model"
+    "Notes"
     "Original article"
     "Participants"
     "Participants and Procedures" ; subtitle
@@ -504,6 +581,7 @@
     "Results"
     "References" "Reference list"  ;; can be line-final
     "Study"
+    "Supplementary Materials"
     "Variables" 
     "Table" "Tables" 
     "Title" "Short title"
@@ -565,4 +643,7 @@
   "Return the string in the text field of the block"
   (let ((children (cadr (assq :children sexp))))
     (unless children (error "no :children field in block?"))
-    (cdr (assq :text children))))
+    (let ((text-string (cdr (assq :text children))))
+      (when (eql (aref text-string 0) #\no-break_space) ; prints like an underbar
+        (setq text-string (subseq text-string 1)))
+      text-string)))
