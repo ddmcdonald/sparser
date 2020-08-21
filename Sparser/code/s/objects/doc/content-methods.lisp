@@ -326,7 +326,10 @@
 ;;;--------------------------------
 
 ;; Uses sentence-parse-quality class
-   
+
+(defgeneric assess-sentence-analysis-quality (doc-element)
+  (:documentation "Aggregate parse information about the sentence"))
+
 (defmethod assess-sentence-analysis-quality ((p paragraph))
   (let* ((sentences (sentences-in-paragraph p))
          (content (contents p))
@@ -367,22 +370,25 @@
   "Add the 'grades' of each of the children to the grades
    in the sentence-parse-quality fields of this level."
   (when (typep content 'sentence-parse-quality)
-    ;; rule out title-text and such the caller could feed us
+    ;; rule out title-text and such that the caller could feed us
     (dolist (child (children doc-element))
       (let ((child-content (contents child)))
         (when (typep child-content 'sentence-parse-quality)
           (add-parse-quality-grades child-content content))))))
-             
-(defmethod summarize-parse-performance ((e document-element))
-  (let ((content (contents e))
-        (children (children e)))
-    (when (typep content 'sentence-parse-quality)
-      (dolist (child children)
-        (typecase child
-          ((or paragraph title-text)
-           (grade-sentence-tt-counts child content))
-          ((or section section-of-sections article)
-           (aggregate-parse-performance e content)))))))
+
+(defgeneric summarize-parse-performance (doc-element)
+  (:documentation "Collect up the stats on parse-quality
+    to pass to higher collector")
+  (:method  ((e document-element))
+    (let ((content (contents e))
+          (children (children e)))
+      (when (typep content 'sentence-parse-quality)
+        (dolist (child children)
+          (typecase child
+            ((or paragraph title-text)
+             (grade-sentence-tt-counts child content))
+            ((or section section-of-sections article)
+             (aggregate-parse-performance e content))))))))
 
 
 
