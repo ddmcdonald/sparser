@@ -333,14 +333,20 @@ and make that file easier to understand. |#
 
 (defun show-parse-performance (doc-element
                                &optional (stream *standard-output*))
+  (declare (special *readout-segments-inline-with-text*))
   (let ((content (contents doc-element)))
     (if (not (typep content 'sentence-parse-quality))
       (format stream "~a does not record parse quality" doc-element)
       (let ((great (parses-with-one-edge content))
             (medium (medium-quality-parses content))
             (horrible (horrible-parses content)))
-        (format stream "~&Parsing coverage: ~a (1 edge), ~a (2-5), ~a (> 5)~%"
-                great medium horrible)))))
+        (cond
+          ((typep doc-element 'article)
+           (format stream "~&Parsing coverage: ~a (1 edge), ~a (2-5), ~a (> 5)~%"
+                   great medium horrible))
+          (*readout-segments-inline-with-text*
+           ;; proxy for with-total-quiet
+           (format stream "~&~%~%")))))))
 
 
 
