@@ -136,6 +136,8 @@
    determine what to do on a given pass."))
 
 (defmethod read-from-document ((a article))
+  "Besides orchestrating the reading of its children, this is also
+   where we record the time to read the document"
   (declare (special *sentence-making-sweep* *sections-to-ignore*))
   (let ((*current-article* a)
         (*current-document-element* a))
