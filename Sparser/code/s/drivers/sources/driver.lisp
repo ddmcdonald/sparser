@@ -58,10 +58,8 @@
      :skip-errors -- run via an error catch that traps any errors
    rather than going into the debugger. Error is printed to standard-
    out, usually includes the text of the sentence where it occurred."
-  (let ((*show-section-printouts* show-sect)
-        (*trap-error-skip-sentence* skip-errors))
-    (declare (special *show-section-printouts*
-                      *trap-error-skip-sentence*
+  (let ((*trap-error-skip-sentence* skip-errors))
+    (declare (special *trap-error-skip-sentence*
                       *article*))
     (setq *article* article)
     ;; If sweep is nil, this returns the raw document,
@@ -76,7 +74,9 @@
     (when read
       (if quiet
         (with-total-quiet (sp::read-from-document article))
-        (read-from-document article)))
+        (let ((*show-section-printouts* show-sect))
+          (declare (special *show-sectsion-printouts*))
+          (read-from-document article))))
     (if stats
       (summary-document-stats article)
       (else
